@@ -223,7 +223,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
         ZeroMemory(data, sizeof(NHMainWindow));
         data->mapAcsiiModeSave = MAP_MODE_ASCII12x16;
-        data->wait_interval_counter = 0UL;
+        data->wait_interval_counter = 0L;
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) data);
 
         /* update menu items */
@@ -588,8 +588,8 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
 
     case WM_TIMER:
-        if(data->wait_interval_counter >= 0xCFFFFFFF)
-            data->wait_interval_counter = 1UL; /* It is on! */
+        if(data->wait_interval_counter == GH_LONG_MAX)
+            data->wait_interval_counter = 0L; /* It is on! */
         else
             data->wait_interval_counter++;
         break;

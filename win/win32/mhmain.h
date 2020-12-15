@@ -14,7 +14,7 @@
 
 typedef struct mswin_GnollHack_main_window {
     int mapAcsiiModeSave;
-    unsigned long wait_interval_counter;
+    long wait_interval_counter;
 } NHMainWindow, *PNHMainWindow;
 
 

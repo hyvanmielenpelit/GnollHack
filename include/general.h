@@ -254,5 +254,8 @@ enum game_cursor_types
 #define NUM_ZAP_SOURCE_BASE_DIRS 8
 #define NUM_ZAP_SOURCE_DIRS (NUM_ZAP_SOURCE_BASE_DIRS * 2)
 
+#define GH_LONG_MIN    (-2147483647L - 1)	// minimum (signed) long value
+#define GH_LONG_MAX      2147483647L		// maximum (signed) long value
+
 #endif /* GENERAL_H */
 

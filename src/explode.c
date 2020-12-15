@@ -967,7 +967,7 @@ explosion_wait_until_end()
     }
     context.explosion_animation_counter_on = FALSE;
     context.expl_milliseconds_to_wait_until_action = 0UL;
-    context.explosion_animation_counter = 0;
+    context.explosion_animation_counter = 0L;
 }
 
 /*explode.c*/

@@ -8052,7 +8052,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
         context.zap_animation_counter_on[i] = FALSE;
-        context.zap_animation_counter[i] = 0UL;
+        context.zap_animation_counter[i] = 0L;
         context.zap_animation_x[i] = 0;
         context.zap_animation_y[i] = 0;
     }
@@ -8061,7 +8061,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     if (playing_anim)
     {
         framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
-        anim_ms = framenum * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+        anim_ms = framenum * animations[anim].intervals_between_frames * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
     }
     int zap_tile_count = 0;
     boolean first_tile_found = FALSE;
@@ -8107,18 +8107,30 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         }
                     }
 
-                    prev_anim_counter_idx = idx;
-
                     context.zap_animation_x[idx] = sx;
                     context.zap_animation_y[idx] = sy;
-                    context.zap_animation_counter[idx] = 0UL;
+                    context.zap_animation_counter[idx] = 0L;
                     context.zap_animation_counter_on[idx] = TRUE;
                     context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
                     context.zap_aggregate_milliseconds_to_wait_until_end = anim_ms;
+
                     if (animations[anim].action_execution_frame > 0)
                     {
-                        context.zap_aggregate_milliseconds_to_wait_until_action = animations[anim].action_execution_frame * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+                        long intervals_to_execution = (unsigned long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
+                        if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
+                        {
+                            long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution - 1;
+                            if (abs(diff) <= 3) /* Extra check that something else is not going on */
+                            {
+                                context.zap_animation_counter[prev_anim_counter_idx] -= diff;
+                            }
+                        }
+
+                        context.zap_aggregate_milliseconds_to_wait_until_action = (unsigned long)intervals_to_execution * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
                     }
+
+                    prev_anim_counter_idx = idx;
+
                     if(!use_old)
                         zap_tile_count++;
                 }
@@ -8134,7 +8146,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 force_redraw_at(sx, sy);
                 if (animations[anim].sound_play_frame > 0)
                 {
-                    delay_output_milliseconds(animations[anim].sound_play_frame* (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
+                    delay_output_milliseconds(animations[anim].sound_play_frame * animations[anim].intervals_between_frames * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
                 }
                 update_ambient_ray_sound_to_location(soundset_id, sx, sy);
             }
@@ -8466,7 +8478,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
         context.zap_animation_counter_on[i] = FALSE;
-        context.zap_animation_counter[i] = 0UL;
+        context.zap_animation_counter[i] = 0L;
         context.zap_animation_x[i] = 0;
         context.zap_animation_y[i] = 0;
     }

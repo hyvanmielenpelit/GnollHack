@@ -16,7 +16,6 @@ enum layer_types
     LAYER_BACKGROUND_EFFECT,
     LAYER_OBJECT,
     LAYER_MONSTER,
-    LAYER_LEASH_AUTODRAW,
     LAYER_MISSILE,
     LAYER_COVER_OBJECT,
     LAYER_COVER_FEATURE,
@@ -27,10 +26,6 @@ enum layer_types
     LAYER_GENERAL_UI,
     MAX_LAYERS
 };
-
-#define NUM_AUTODRAW_LAYERS 1
-#define NUM_CHAIN_SOURCE_DIRS 4
-#define NUM_WORM_SOURCE_DIRS 4
 
 
 struct layer_info {

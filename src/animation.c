@@ -780,8 +780,8 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
       AUTODRAW_NONE,
-      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-      0, 2,
+      { 0, 1, 2, 3, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 },
+      0, 1,
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -792,7 +792,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-      0, 2,
+      0, 3,
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -3715,7 +3715,7 @@ maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, 
 short ntile;
 int tile_animation_idx;
 enum animation_play_types play_type;
-unsigned long interval_counter;
+long interval_counter;
 int *frame_idx_ptr, *main_tile_idx_ptr;
 boolean* mapAnimated;
 enum autodraw_types* autodraw_ptr;
@@ -3752,15 +3752,17 @@ enum autodraw_types* autodraw_ptr;
             *main_tile_idx_ptr = main_tile_frame_position;
         char additional_tile_num = (main_tile_frame_position > -1 ? 1 : 0);
         char animation_tile_offset = (main_tile_frame_position == 0 ? 1 : 0);
-        unsigned long numframes = (unsigned long)(animations[animation_idx].number_of_frames + additional_tile_num); /* add original tile as the first tile and frame */
-        char current_animation_frame = (char)((interval_counter / (unsigned long)animations[animation_idx].intervals_between_frames) % numframes);
+        char numframes = animations[animation_idx].number_of_frames + additional_tile_num; /* add original tile as the first tile and frame */
+        char current_animation_frame = (char)((interval_counter / (long)animations[animation_idx].intervals_between_frames) % (long)numframes);
+        if (current_animation_frame < 0)
+            current_animation_frame += numframes;
 
         if (frame_idx_ptr)
             *frame_idx_ptr = current_animation_frame;
         
         /* Separately played animations are played only once, and once the numframes is exceeded, the animation stops */
         if (play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY 
-            && (interval_counter / (unsigned long)animations[animation_idx].intervals_between_frames) >= numframes)
+            && (interval_counter / (long)animations[animation_idx].intervals_between_frames) >= (long)numframes)
             return ntile;
 
         if (current_animation_frame != main_tile_frame_position) /* 0 is the original picture */
@@ -4254,7 +4256,7 @@ boolean force_visibility;
         enum animation_types anim = special_effects[sp_effect].animation;
         if (anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
         {
-            context.special_effect_animation_counter[spef_number] = 0;
+            context.special_effect_animation_counter[spef_number] = 0L;
             context.special_effect_animation_counter_on[spef_number] = TRUE;
             force_redraw_at(x, y);
             flush_screen(0);
@@ -4317,8 +4319,8 @@ int spef_number;
     }
 
     context.special_effect_animation_counter_on[spef_number] = FALSE;
-    context.special_effect_animation_counter[spef_number] = 0UL;
-    context.spef_milliseconds_to_wait_until_action[spef_number] = 0UL;
+    context.special_effect_animation_counter[spef_number] = 0L;
+    context.spef_milliseconds_to_wait_until_action[spef_number] = 0L;
 
     if (isok(context.spef_action_animation_x[spef_number], context.spef_action_animation_y[spef_number]))
     {

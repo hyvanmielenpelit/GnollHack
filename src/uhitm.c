@@ -4896,7 +4896,7 @@ unsigned long simple_wait_multiplier;
 
 	context.u_milliseconds_to_wait_until_action = 0UL;
 	context.u_milliseconds_to_wait_until_end = 0UL;
-	context.u_action_animation_counter = 0;
+	context.u_action_animation_counter = 0L;
 	context.u_action_animation_counter_on = FALSE;
 
 	u.action = action;
@@ -4908,7 +4908,7 @@ unsigned long simple_wait_multiplier;
 		if (u.action != ACTION_TILE_NO_ACTION && anim > 0
 			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY && !u.usteed)
 		{
-			context.u_action_animation_counter = 0;
+			context.u_action_animation_counter = 0L;
 			context.u_action_animation_counter_on = TRUE;
 			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			force_redraw_at(u.ux, u.uy);
@@ -5024,7 +5024,7 @@ unsigned long simple_wait_multiplier;
 	context.m_milliseconds_to_wait_until_end = 0UL;
 	context.m_action_animation_x = 0;
 	context.m_action_animation_y = 0;
-	context.m_action_animation_counter = 0;
+	context.m_action_animation_counter = 0L;
 	context.m_action_animation_counter_on = FALSE;
 
 	mtmp->action = action;
@@ -5037,7 +5037,7 @@ unsigned long simple_wait_multiplier;
 		{
 			context.m_action_animation_x = mtmp->mx;
 			context.m_action_animation_y = mtmp->my;
-			context.m_action_animation_counter = 0;
+			context.m_action_animation_counter = 0L;
 			context.m_action_animation_counter_on = TRUE;
 			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			force_redraw_at(mtmp->mx, mtmp->my);

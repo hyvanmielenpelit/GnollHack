@@ -203,11 +203,11 @@ struct context_info
     boolean explosion_animation_counter_on;
     boolean zap_animation_counter_on[MAX_PLAYED_ZAP_ANIMATIONS];
     boolean special_effect_animation_counter_on[MAX_PLAYED_SPECIAL_EFFECTS];
-    unsigned long u_action_animation_counter;
-    unsigned long m_action_animation_counter;
-    unsigned long explosion_animation_counter;
-    unsigned long zap_animation_counter[MAX_PLAYED_ZAP_ANIMATIONS];
-    unsigned long special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
+    long u_action_animation_counter;
+    long m_action_animation_counter;
+    long explosion_animation_counter;
+    long zap_animation_counter[MAX_PLAYED_ZAP_ANIMATIONS];
+    long special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
     unsigned long u_milliseconds_to_wait_until_action;
     unsigned long u_milliseconds_to_wait_until_end;
     unsigned long m_milliseconds_to_wait_until_action;
