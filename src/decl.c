@@ -182,7 +182,7 @@ struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
     {"frost", CLR_WHITE, NO_ANIMATION},
     {"sleep", HI_ZAP, NO_ANIMATION},
     {"disintegration", CLR_BLACK, NO_ANIMATION},
-    {"lightning", CLR_WHITE, NO_ANIMATION},
+    {"lightning", CLR_WHITE, LIGHTNING_RAY_ANIMATION},
     {"poison", CLR_GREEN, NO_ANIMATION},
     {"acid", CLR_YELLOW, NO_ANIMATION},
     {"death", CLR_GRAY, NO_ANIMATION},
