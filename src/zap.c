@@ -8116,7 +8116,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
                     if (animations[anim].action_execution_frame > 0)
                     {
-                        long intervals_to_execution = (unsigned long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
+                        long intervals_to_execution = (long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
                         if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
                         {
                             long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution - 1;

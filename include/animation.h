@@ -134,7 +134,7 @@ struct animation_definition {
     char number_of_frames;
     int glyph_offset;
     char number_of_tile_animations;
-    int intervals_between_frames;
+    char intervals_between_frames;
     enum animation_play_types play_type;
     enum main_tile_use_types main_tile_use_style; /* 0 = play as first tile and frame, 1 = play as last tile and frame, 2 = ignore */
     enum autodraw_types  main_tile_autodraw;

@@ -4388,22 +4388,22 @@ boolean force_visibility;
             int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
             if (animations[anim].sound_play_frame <= -1)
             {
-                context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
+                context.spef_milliseconds_to_wait_until_action[spef_number] = (unsigned long)((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * (int)animations[anim].intervals_between_frames * framenum);
             }
             else
             {
                 if(animations[anim].sound_play_frame > 0)
-                    delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+                    delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * (int)animations[anim].intervals_between_frames * (int)animations[anim].sound_play_frame);
   
                 if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
                 {
-                    context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
+                    context.spef_milliseconds_to_wait_until_action[spef_number] = (unsigned long)((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * (int)animations[anim].intervals_between_frames * (int)(animations[anim].action_execution_frame - animations[anim].sound_play_frame));
                     if (animations[anim].action_execution_frame < framenum)
-                        context.spef_milliseconds_to_wait_until_end[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
+                        context.spef_milliseconds_to_wait_until_end[spef_number] = (unsigned long)((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * (int)animations[anim].intervals_between_frames * (int)(framenum - animations[anim].action_execution_frame));
                 }
                 else
                 {
-                    context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
+                    context.spef_milliseconds_to_wait_until_action[spef_number] = (unsigned long)((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * (int)animations[anim].intervals_between_frames * (int)(framenum - animations[anim].sound_play_frame));
                     context.spef_milliseconds_to_wait_until_end[spef_number] = 0UL;
                 }
             }
