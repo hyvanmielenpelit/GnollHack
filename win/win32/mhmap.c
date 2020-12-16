@@ -2771,7 +2771,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     int u_ball_dx = (int)(u_x - chain_x);
                                     int u_ball_dy = (int)(u_y - chain_y);
 
-                                    int source_glyph = ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF;
+                                    int source_glyph = autodraw_u_punished || autodraw == 0 ? ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF : autodraws[autodraw].source_glyph;
                                     int atile = glyph2tile[source_glyph];
                                     int at_x = TILEBMP_X(atile);
                                     int at_y = TILEBMP_Y(atile);

@@ -2407,6 +2407,50 @@ NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "chain-up-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_CHAIN_UP,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "chain-right-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_CHAIN_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "chain-down-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_CHAIN_DOWN,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "chain-left-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_CHAIN_LEFT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 
@@ -2865,6 +2909,46 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0UL
     },
+    {
+        "chain-autodraw-up",
+        AUTODRAW_DRAW_CHAIN,
+        1,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
+        "chain-autodraw-right",
+        AUTODRAW_DRAW_CHAIN,
+        2,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
+        "chain-autodraw-down",
+        AUTODRAW_DRAW_CHAIN,
+        3,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
+        "chain-autodraw-left",
+        AUTODRAW_DRAW_CHAIN,
+        4,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
 
 };
 
@@ -2934,6 +3018,10 @@ NEARDATA struct hit_tile_definition hit_tile_definitions[MAX_HIT_TILES] =
 NEARDATA struct general_tile_definition general_tile_definitions[MAX_GENERAL_TILES] =
 {
     {"death", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"chain-up", CHAIN_UP_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"chain-right", CHAIN_RIGHT_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"chain-down", CHAIN_DOWN_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"chain-left", CHAIN_LEFT_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 STATIC_DCL int FDECL(get_shore_tile_index, (struct rm* , struct rm*));
