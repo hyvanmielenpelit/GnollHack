@@ -796,6 +796,17 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "sleep-ray-animation", ANIMATION_TYPE_ZAP, SLEEP_RAY_ANIMATION_TILES,
+      SLEEP_RAY_ANIMATION_FRAMES, SLEEP_RAY_ANIMATION_OFF,
+      NUM_ZAP_CHARS,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      0, 4,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "frost-breath-animation", ANIMATION_TYPE_ZAP, FROST_BREATH_ANIMATION_TILES,
       FROST_BREATH_ANIMATION_FRAMES, FROST_BREATH_ANIMATION_OFF,
       NUM_ZAP_CHARS,

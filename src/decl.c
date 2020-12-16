@@ -180,7 +180,7 @@ struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
     {"magic", HI_ZAP, MAGIC_MISSILE_RAY_ANIMATION},
     {"fire", CLR_ORANGE, FIRE_RAY_ANIMATION},
     {"frost", CLR_WHITE, FROST_RAY_ANIMATION},
-    {"sleep", HI_ZAP, NO_ANIMATION},
+    {"sleep", HI_ZAP, SLEEP_RAY_ANIMATION},
     {"disintegration", CLR_BLACK, NO_ANIMATION},
     {"lightning", CLR_WHITE, LIGHTNING_RAY_ANIMATION},
     {"poison", CLR_GREEN, NO_ANIMATION},
