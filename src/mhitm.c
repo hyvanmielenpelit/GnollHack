@@ -1085,7 +1085,7 @@ register struct obj* omonwep;
 	boolean hittxtalreadydisplayed = FALSE;
 	boolean objectshatters = FALSE;
 	int critstrikeroll = rn2(100);
-    enum hit_tile_types hit_tile = HIT_TILE;
+    enum hit_tile_types hit_tile = HIT_GENERAL;
 
 	int extratmp = 0;
 	double damage = 0;
@@ -2170,7 +2170,7 @@ int mdead;
     int i;
 	double damage = 0;
 	int basedmg = 0;
-    enum hit_tile_types hit_tile = HIT_TILE;
+    enum hit_tile_types hit_tile = HIT_GENERAL;
 
     for (i = 0;; i++) 
     {

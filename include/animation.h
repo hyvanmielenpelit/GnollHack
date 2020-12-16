@@ -1119,8 +1119,17 @@ struct hit_tile_definition {
     enum enlargement_types enlargement;
 };
 
-
 extern NEARDATA struct hit_tile_definition hit_tile_definitions[MAX_HIT_TILES];
+
+
+struct general_tile_definition {
+    const char* name;
+    enum replacement_types replacement;
+    enum animation_types animation;
+    enum enlargement_types enlargement;
+};
+
+extern NEARDATA struct general_tile_definition general_tile_definitions[MAX_GENERAL_TILES];
 
 #define MAX_PLAYED_SPECIAL_EFFECTS 12  // Must be greater than or equal to MAXNASTIES
 #define MAX_PLAYED_ZAP_ANIMATIONS 16

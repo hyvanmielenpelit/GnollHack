@@ -1956,7 +1956,7 @@ boolean* obj_destroyed;
 		}
 	}
 
-	enum hit_tile_types hit_tile = skill_critical_success || strikefrombehind ? HIT_CRITICAL : poisondamage > 0 ? HIT_POISONED : HIT_TILE;
+	enum hit_tile_types hit_tile = skill_critical_success || strikefrombehind ? HIT_CRITICAL : poisondamage > 0 ? HIT_POISONED : HIT_GENERAL;
 	if (!hittxt) /* && (1 = 1 || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp)) */
 	{
 		const char* striketext = strikefrombehind ? "strike" : "hit";
@@ -2652,7 +2652,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	double damage = 0;
 	enum p_skills wtype = P_BARE_HANDED_COMBAT;
 	boolean incorrect_weapon_use = FALSE;
-	enum hit_tile_types hit_tile = HIT_TILE;
+	enum hit_tile_types hit_tile = HIT_GENERAL;
 
 	/*  First determine the base damage done */
 	struct obj* mweapon = omonwep;
@@ -3191,7 +3191,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	{
 		if (skill_critical_success)
 		{
-			if (hit_tile == HIT_TILE)
+			if (hit_tile == HIT_GENERAL)
 				hit_tile = HIT_CRITICAL;
 			Your("critical strike inflicts %d damage!", damagedealt);
 		}
@@ -4030,7 +4030,7 @@ boolean wep_was_destroyed;
     register struct permonst *ptr = mon->data;
     register int i, basedmg = 0;
 	double damage = 0;
-	enum hit_tile_types hit_tile = HIT_TILE;
+	enum hit_tile_types hit_tile = HIT_GENERAL;
 
     for (i = 0;; i++) 
 	{
@@ -5122,7 +5122,7 @@ unsigned long extra_flags;
 		return;
 
 	boolean is_you = (x == u.ux && y == u.uy);
-	unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_TILE)) << LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
+	unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_GENERAL)) << LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
 	unsigned long flags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
 
 	enum action_tile_types action_before = is_you ? u.action : mon->action;

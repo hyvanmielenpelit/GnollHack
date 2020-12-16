@@ -128,7 +128,7 @@ const char *name; /* if null, then format `*objp' */
 				else
 					You("are hit by %s for %d damage%s", onm, damagedealt, exclam(damagedealt));
 
-                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+                display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
             }
 			if (obj && objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver) 
 			{
@@ -559,7 +559,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
 		damage = adjust_damage(dmg, (struct monst*)0, mtmp, objects[otmp->otyp].oc_damagetype, ADFLAGS_NONE);
 
-        enum hit_tile_types hit_tile = (otmp->opoisoned && is_poisonable(otmp) && !resists_poison(mtmp) ? HIT_POISONED : HIT_TILE);
+        enum hit_tile_types hit_tile = (otmp->opoisoned && is_poisonable(otmp) && !resists_poison(mtmp) ? HIT_POISONED : HIT_GENERAL);
 
         if (vis) 
 		{

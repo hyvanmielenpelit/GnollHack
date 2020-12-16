@@ -30,7 +30,6 @@ NEARDATA struct tileset_definition default_tileset_definition =
 };
 
 NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = {
-    {"death",                   NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"general-ui",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 3, 16, 16, {"checkbox-unchecked", "checkbox-checked", "checkbox-count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"status",                  NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, MAX_STATUS_MARKS, 16, 16, {"petmark", "peacemark", "detectmark", "pilemark",  "hungry", "weak", "faint", "burdened",  "stressed", "strained", "overtaxed", "overloaded",  "two-weapon", "skill", "saddled", "low-hp",  "critical-hp", "spec-used", "trapped", "ustuck",  "", "", "", ""} },
     {"conditions",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, min(24, BL_MASK_BITS), 16, 16, {"", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
@@ -1679,6 +1678,22 @@ uchar* tilemapflags;
         tile_count++;
     }
 
+    set_name = "general-tile";
+    for (int i = 0; i < MAX_GENERAL_TILES; i++)
+    {
+        if (process_style == 0)
+        {
+            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, general_tile_definitions[i].name);
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_GENERAL_TILE_OFF;
+            tilemaparray[i + glyph_offset] = tile_count;
+        }
+        tile_count++;
+    }
+
     set_name = "ui-tile";
     for (int i = 0; i < MAX_UI_TILES; i++)
     {
@@ -2174,6 +2189,17 @@ uchar* tilemapflags;
             }
         }
 
+        /* General tiles */
+        for (int i = 0; i < MAX_GENERAL_TILES; i++)
+        {
+            if (general_tile_definitions[i].replacement)
+            {
+                int glyph = i + GLYPH_GENERAL_TILE_OFF;
+                short tile = glyph2tile[glyph];
+                tile2replacement[tile] = general_tile_definitions[i].replacement;
+            }
+        }
+
         /* UI Tiles */
         for (int i = 0; i < MAX_UI_TILES; i++)
         {
@@ -2415,6 +2441,17 @@ uchar* tilemapflags;
             }
         }
 
+        /* General tiles */
+        for (int i = 0; i < MAX_GENERAL_TILES; i++)
+        {
+            if (general_tile_definitions[i].animation)
+            {
+                int glyph = i + GLYPH_GENERAL_TILE_OFF;
+                short tile = glyph2tile[glyph];
+                tile2animation[tile] = general_tile_definitions[i].animation;
+            }
+        }
+
         /* UI Tiles */
         for (int i = 0; i < MAX_UI_TILES; i++)
         {
@@ -2617,6 +2654,17 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_HIT_TILE_OFF;
                 short tile = glyph2tile[glyph];
                 tile2enlargement[tile] = hit_tile_definitions[i].enlargement;
+            }
+        }
+
+        /* General tiles */
+        for (int i = 0; i < MAX_GENERAL_TILES; i++)
+        {
+            if (general_tile_definitions[i].enlargement)
+            {
+                int glyph = i + GLYPH_GENERAL_TILE_OFF;
+                short tile = glyph2tile[glyph];
+                tile2enlargement[tile] = general_tile_definitions[i].enlargement;
             }
         }
 

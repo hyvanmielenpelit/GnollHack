@@ -26,7 +26,7 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
-#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2 * 2) + 1 + NUM_ZAP_SOURCE_DIRS)
+#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2 * 2) + 1 + NUM_ZAP_SOURCE_DIRS + NUM_WORM_SOURCE_DIRS + NUM_CHAIN_SOURCE_DIRS)
 
 
 /* draw order definition */
@@ -34,7 +34,7 @@ struct draw_order_definition {
     enum layer_types layer;
     int enlargement_index;
     int tile_movement_index;
-    int zap_source_index;
+    int source_dir_index;
     uchar draw_to_buffer;
 };
 
@@ -1052,7 +1052,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         /* Drawing order from back to front */
         int enlarg_idx = draw_order[draw_index].enlargement_index;
         int tile_move_idx = draw_order[draw_index].tile_movement_index;
-        int zap_source_idx = draw_order[draw_index].zap_source_index;
+        int source_dir_idx = draw_order[draw_index].source_dir_index;
 
             /* Set coordinates */
             if (enlarg_idx == -1)
@@ -1224,11 +1224,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 boolean is_corner_tile = FALSE;
                 int adj_x = enl_i; /* should be the same as enl_i */
                 int adj_y = enl_j; /* should be the same as enl_j */
-                if (base_layer == LAYER_ZAP && zap_source_idx > 0)
+                if (source_dir_idx > 0)
                 {
                     int adjacent_zap_glyph = NO_GLYPH;
                     unsigned long adjacent_layer_flags = 0UL;
-                    switch ((zap_source_idx - 1) % NUM_ZAP_SOURCE_BASE_DIRS + 1)
+                    switch ((source_dir_idx - 1) % NUM_ZAP_SOURCE_BASE_DIRS + 1)
                     {
                     case 1:
                         adj_x = i - 1;
@@ -1270,16 +1270,29 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         signed_glyph = NO_GLYPH;
                     else
                     {
-                        adjacent_zap_glyph = data->map[adj_x][adj_y].layer_glyphs[LAYER_ZAP];
-                        adjacent_layer_flags = data->map[adj_x][adj_y].layer_flags;
+                        if (base_layer == LAYER_ZAP)
+                        {
+                            adjacent_zap_glyph = data->map[adj_x][adj_y].layer_glyphs[LAYER_ZAP];
+                            adjacent_layer_flags = data->map[adj_x][adj_y].layer_flags;
 
-                        if (adjacent_zap_glyph == NO_GLYPH || !glyph_is_zap(adjacent_zap_glyph))
+                            if (adjacent_zap_glyph == NO_GLYPH || !glyph_is_zap(adjacent_zap_glyph))
+                                signed_glyph = NO_GLYPH;
+                            else
+                                signed_glyph = zap_glyph_to_corner_glyph(adjacent_zap_glyph, adjacent_layer_flags, source_dir_idx);
+
+                            if (signed_glyph != NO_GLYPH)
+                                is_corner_tile = TRUE;
+                        }
+                        else if (base_layer == LAYER_MONSTER)
+                        {
+                            /* Worm */
                             signed_glyph = NO_GLYPH;
-                        else
-                            signed_glyph = zap_glyph_to_corner_glyph(adjacent_zap_glyph, adjacent_layer_flags, zap_source_idx);
-
-                        if(signed_glyph != NO_GLYPH)
-                            is_corner_tile = TRUE;
+                        }
+                        else if (base_layer == LAYER_OBJECT)
+                        {
+                            /* Object */
+                            signed_glyph = NO_GLYPH;
+                        }
                     }
                 }
                 else if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
@@ -3642,7 +3655,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     /* Draw death and hit markers */
                     if (glyph_is_dying_monster(monster_glyph) || glyph_is_female_dying_monster(monster_glyph) || glyph_is_dying_player(monster_glyph))
                     {
-                        int mglyph = DEATH_TILE + GLYPH_UI_TILE_OFF;
+                        int mglyph = GENERAL_TILE_DEATH + GLYPH_GENERAL_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
                         t_x = TILEBMP_X(mtile);
                         t_y = TILEBMP_Y(mtile);
@@ -3845,7 +3858,7 @@ static void setDrawOrder(PNHMapWindow data)
     data->draw_order[draw_count].enlargement_index = -1;
     data->draw_order[draw_count].layer = LAYER_FLOOR;
     data->draw_order[draw_count].tile_movement_index = 0;
-    data->draw_order[draw_count].zap_source_index = 0;
+    data->draw_order[draw_count].source_dir_index = 0;
     draw_count++;
 
     int same_level_z_order_array[3] = { 0, -1, 1 };
@@ -3865,7 +3878,7 @@ static void setDrawOrder(PNHMapWindow data)
                 data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                 data->draw_order[draw_count].layer = layer_idx;
                 data->draw_order[draw_count].tile_movement_index = 0;
-                data->draw_order[draw_count].zap_source_index = 0;
+                data->draw_order[draw_count].source_dir_index = 0;
                 draw_count++;
 
                 if (layer_idx == LAYER_MONSTER || layer_idx == LAYER_MONSTER_EFFECT)
@@ -3874,17 +3887,44 @@ static void setDrawOrder(PNHMapWindow data)
                     data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                     data->draw_order[draw_count].layer = layer_idx;
                     data->draw_order[draw_count].tile_movement_index = -1;
-                    data->draw_order[draw_count].zap_source_index = 0;
+                    data->draw_order[draw_count].source_dir_index = 0;
                     draw_count++;
 
                     /* These are drawn at the same time as lower positioned tiles */
                     data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
                     data->draw_order[draw_count].layer = layer_idx;
                     data->draw_order[draw_count].tile_movement_index = -1;
-                    data->draw_order[draw_count].zap_source_index = 0;
+                    data->draw_order[draw_count].source_dir_index = 0;
                     draw_count++;
                 }
-                else if (layer_idx == LAYER_ZAP && same_level_z_order_array[enl_idx] == -1)
+
+                if (layer_idx == LAYER_MONSTER && same_level_z_order_array[enl_idx] == -1)
+                {
+                    for (int i = 1; i <= NUM_WORM_SOURCE_DIRS; i++)
+                    {
+
+                        data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
+                        data->draw_order[draw_count].layer = layer_idx;
+                        data->draw_order[draw_count].tile_movement_index = 0;
+                        data->draw_order[draw_count].source_dir_index = i * 2;
+                        draw_count++;
+                    }
+                }
+
+                if (layer_idx == LAYER_OBJECT && same_level_z_order_array[enl_idx] == -1)
+                {
+                    for (int i = 1; i <= NUM_CHAIN_SOURCE_DIRS; i++)
+                    {
+
+                        data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
+                        data->draw_order[draw_count].layer = layer_idx;
+                        data->draw_order[draw_count].tile_movement_index = 0;
+                        data->draw_order[draw_count].source_dir_index = i * 2;
+                        draw_count++;
+                    }
+                }
+
+                if (layer_idx == LAYER_ZAP && same_level_z_order_array[enl_idx] == -1)
                 {
                     /* From below (i == 3) is drawn below */
                     for (int i = 1; i <= NUM_ZAP_SOURCE_DIRS; i++)
@@ -3894,7 +3934,7 @@ static void setDrawOrder(PNHMapWindow data)
                         data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                         data->draw_order[draw_count].layer = layer_idx;
                         data->draw_order[draw_count].tile_movement_index = 0;
-                        data->draw_order[draw_count].zap_source_index = i;
+                        data->draw_order[draw_count].source_dir_index = i;
                         draw_count++;
                     }
                 }
@@ -3913,7 +3953,7 @@ static void setDrawOrder(PNHMapWindow data)
                 data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
                 data->draw_order[draw_count].layer = layer_idx;
                 data->draw_order[draw_count].tile_movement_index = 0;
-                data->draw_order[draw_count].zap_source_index = 0;
+                data->draw_order[draw_count].source_dir_index = 0;
                 draw_count++;
 
                 if (layer_idx == LAYER_MONSTER || layer_idx == LAYER_MONSTER_EFFECT)
@@ -3922,13 +3962,13 @@ static void setDrawOrder(PNHMapWindow data)
                     data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                     data->draw_order[draw_count].layer = layer_idx;
                     data->draw_order[draw_count].tile_movement_index = 1;
-                    data->draw_order[draw_count].zap_source_index = 0;
+                    data->draw_order[draw_count].source_dir_index = 0;
                     draw_count++;
 
                     data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
                     data->draw_order[draw_count].layer = layer_idx;
                     data->draw_order[draw_count].tile_movement_index = 1;
-                    data->draw_order[draw_count].zap_source_index = 0;
+                    data->draw_order[draw_count].source_dir_index = 0;
                     draw_count++;
                 }
                 else if (layer_idx == LAYER_ZAP && different_level_z_order_array[enl_idx] == 3)
@@ -3941,7 +3981,7 @@ static void setDrawOrder(PNHMapWindow data)
                             data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
                             data->draw_order[draw_count].layer = layer_idx;
                             data->draw_order[draw_count].tile_movement_index = 0;
-                            data->draw_order[draw_count].zap_source_index = i;
+                            data->draw_order[draw_count].source_dir_index = i;
                             draw_count++;
                         }
                     }
@@ -4033,11 +4073,11 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
     if (glyph_is_zap(data->map[x][y].layer_glyphs[LAYER_ZAP]))
     {
         int rx = x, ry = y;
-        for (int zap_source_idx = 1; zap_source_idx <= NUM_ZAP_SOURCE_DIRS; zap_source_idx++)
+        for (int source_dir_idx = 1; source_dir_idx <= NUM_ZAP_SOURCE_DIRS; source_dir_idx++)
         {
-            if (zap_glyph_to_corner_glyph(data->map[x][y].layer_glyphs[LAYER_ZAP], data->map[x][y].layer_flags, zap_source_idx) != NO_GLYPH)
+            if (zap_glyph_to_corner_glyph(data->map[x][y].layer_glyphs[LAYER_ZAP], data->map[x][y].layer_flags, source_dir_idx) != NO_GLYPH)
             {
-                switch ((zap_source_idx - 1) % NUM_ZAP_SOURCE_BASE_DIRS + 1)
+                switch ((source_dir_idx - 1) % NUM_ZAP_SOURCE_BASE_DIRS + 1)
                 {
                 case 1:
                     rx = x + 1;

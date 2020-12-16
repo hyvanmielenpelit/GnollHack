@@ -205,7 +205,7 @@ enum special_level_naming_types {
 
 enum hit_tile_types
 {
-	HIT_TILE = 0,
+	HIT_GENERAL = 0,
 	HIT_POISONED,
 	HIT_DISINTEGRATED,
 	HIT_CRUSHED,
@@ -227,6 +227,12 @@ enum hit_tile_types
 	HIT_DRAIN_LEVEL,
 	HIT_SLOW,
 	MAX_HIT_TILES
+};
+
+enum general_tile_types
+{
+	GENERAL_TILE_DEATH = 0,
+	MAX_GENERAL_TILES
 };
 
 
@@ -253,6 +259,9 @@ enum game_cursor_types
 
 #define NUM_ZAP_SOURCE_BASE_DIRS 8
 #define NUM_ZAP_SOURCE_DIRS (NUM_ZAP_SOURCE_BASE_DIRS * 2)
+
+#define NUM_CHAIN_SOURCE_DIRS 4
+#define NUM_WORM_SOURCE_DIRS 4
 
 #define GH_LONG_MIN    (-2147483647L - 1)	// minimum (signed) long value
 #define GH_LONG_MAX      2147483647L		// maximum (signed) long value

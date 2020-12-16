@@ -1004,7 +1004,7 @@ cure_petrification_here:
             if (damagedealt > 0)
             {
                 pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
-                display_m_being_hit(mtmp, HIT_TILE, damagedealt, 0UL);
+                display_m_being_hit(mtmp, HIT_GENERAL, damagedealt, 0UL);
             }
             if (DEADMONSTER(mtmp))
             {
@@ -5148,7 +5148,7 @@ boolean ordinary;
 			damage = 0;
         } else {
 			pline("Idiot!  You've shot yourself!");
-            display_u_being_hit(HIT_TILE, 0, 0UL);
+            display_u_being_hit(HIT_GENERAL, 0, 0UL);
         }
         break;
 
@@ -6579,7 +6579,7 @@ const char* force; /* usually either "." or "!" */
 const char* adjective; /* usually either "" or " critically" */
 int damage;
 {
-    hit_with_hit_tile(str, mtmp, force, damage, adjective, HIT_TILE, FALSE);
+    hit_with_hit_tile(str, mtmp, force, damage, adjective, HIT_GENERAL, FALSE);
 }
 
 void
@@ -7489,7 +7489,7 @@ const char *fltxt;
 xchar sx, sy;
 {
     int dam = 0, abstyp = abs(type);
-    enum hit_tile_types hit_tile = HIT_TILE;
+    enum hit_tile_types hit_tile = HIT_GENERAL;
 
 	//Base damage here, set to zero, if not needed
 	if (origobj)
