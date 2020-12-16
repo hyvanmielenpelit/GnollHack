@@ -2793,13 +2793,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         boolean vflip_link = FALSE;
                                         int link_source_width = 16;
                                         int link_source_height = 16;
-                                        int link_diff_x = 6;
-                                        int link_diff_y = 9;
+                                        double link_diff_x = relevant_dx && relevant_dy ? 5.35 : 10.0;
+                                        double link_diff_y = relevant_dx && relevant_dy ? link_diff_x * 1.5 : 10.0;
                                         int mid_x = tileWidth / 2;
                                         int mid_y = tileHeight / 2;
                                         int dist_x = relevant_dx > 0 ? tileWidth - mid_x : mid_x;
                                         int dist_y = relevant_dy > 0 ? tileHeight - mid_y : mid_y;
-                                        int links = 1 + min((dist_y - link_source_height / 2) / link_diff_y, (dist_x - link_source_width / 2) / link_diff_x);
+                                        int links = relevant_dx && !relevant_dy && 0 ? (double)(dist_x - link_source_width / 2) / (double)link_diff_x :
+                                            !relevant_dx && relevant_dy && 0 ? (double)(dist_y - link_source_height / 2) / (double)link_diff_y :
+                                            2 + 1 +(int)min((double)(dist_y - link_source_height / 2) / (double)link_diff_y, (double)(dist_x - link_source_width / 2) / (double)link_diff_x);
 
                                         if (!is_chain && !autodraw_u_punished && n == 0 && links > 1)
                                             links = 1;
@@ -2812,25 +2814,73 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             {
                                                 for (int m = 0; m < links; m++)
                                                 {
+                                                    boolean used_hflip_link = hflip_link;
+                                                    if (m >= links && (relevant_dx < 0 || relevant_dy < 0))
+                                                        used_hflip_link = !((-relevant_dx > 0) != (-relevant_dy > 0));
+
                                                     int source_width = link_source_width;
                                                     int source_height = link_source_height;
                                                     int within_tile_source_x = relevant_dx && relevant_dy ? 32 : relevant_dy ? 16 : 0;
                                                     int within_tile_source_y = 23 + ((m % 2) == 1 ? link_source_height : 0);
-                                                    int target_x = rect->left + (rect->right - rect->left) / 2 - (int)((double)source_width * scale / 2.0) + (int)((double)(relevant_dx * link_diff_x * m) * scale);
-                                                    int target_y = rect->top + (rect->bottom - rect->top) / 2 - (int)((double)source_height * scale / 2.0) + (int)((double)(relevant_dy * link_diff_y * m) * scale);
+                                                    int target_left_added = (rect->right - rect->left) / 2 - (int)((double)source_width * scale / 2.0) + (int)(((double)relevant_dx * link_diff_x * (double)m) * scale);
+                                                    int target_top_added = (rect->bottom - rect->top) / 2 - (int)((double)source_height * scale / 2.0) + (int)(((double)relevant_dy * link_diff_y * (double)m) * scale);
+                                                    if (target_left_added < 0)
+                                                    {
+                                                        /* Cut off from left ==> Move source x right and reduce width to fix, flipped: just reduce width */
+                                                        if(!used_hflip_link)
+                                                            within_tile_source_x += (int)((double)-target_left_added / scale);
+
+                                                        source_width -= (int)((double)-target_left_added / scale);
+                                                        if (source_width <= 0)
+                                                            continue;
+                                                        target_left_added = 0;
+                                                    }
+                                                    if (target_top_added < 0)
+                                                    {
+                                                        within_tile_source_y += (int)((double)-target_top_added / scale);
+                                                        source_height -= (int)((double)-target_top_added / scale);
+                                                        if (source_height <= 0)
+                                                            continue;
+                                                        target_top_added = 0;
+                                                    }
+                                                    int target_x = rect->left + target_left_added;
+                                                    int target_y = rect->top + target_top_added;
                                                     int target_width = (int)((double)source_width * scale);
                                                     int target_height = (int)((double)source_height * scale);
+                                                    if (target_x + target_width > rect->right)
+                                                    {
+                                                        /* Cut off from right ==>Just reduce width to fix, flipped: Move source x right and reduce width to fix */
+                                                        int diff = (int)((double)(target_x + target_width - rect->right) / scale);
+
+                                                        if (used_hflip_link)
+                                                            within_tile_source_x += diff;
+
+                                                        source_width -= diff;
+                                                        if (source_width <= 0)
+                                                            continue;
+                                                        target_width -= target_x + target_width - rect->right;
+                                                    }
+                                                    if (target_y + target_height > rect->bottom)
+                                                    {
+                                                        int diff = (int)((double)(target_y + target_height - rect->bottom) / scale);
+                                                        
+                                                        source_height -= diff;
+                                                        if (source_height <= 0)
+                                                            continue;
+                                                        target_height -= target_y + target_height - rect->bottom;
+                                                    }
+
                                                     int source_x = at_x + within_tile_source_x;
                                                     int source_y = at_y + within_tile_source_y;
 
                                                     (*GetNHApp()->lpfnTransparentBlt)(
                                                         data->backBufferDC, target_x, target_y,
-                                                        target_width, target_height, data->tileDC, source_x + (hflip_link ? source_width - 1 : 0),
-                                                        source_y + (vflip_link ? source_height - 1 : 0), (hflip_link ? -1 : 1) * source_width,
+                                                        target_width, target_height, data->tileDC, source_x + (used_hflip_link ? source_width - 1 : 0),
+                                                        source_y + (vflip_link ? source_height - 1 : 0), (used_hflip_link ? -1 : 1) * source_width,
                                                         (vflip_link ? -1 : 1) * source_height, TILE_BK_COLOR);
                                                 }
 
-                                                /* Final links */
+
                                             }
                                         }
                                         else if (dir_idx > 0)
