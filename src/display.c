@@ -378,8 +378,6 @@ boolean exclude_ascii;
     struct trap* t = 0;
     if (isok(x, y) && (t = t_at(x, y)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
         in_pit = TRUE;
-    if (isok(x, y) && uchain && uchain->ox == x && uchain->oy == y)
-        is_iron_chain = TRUE;
 
     /* Save this object's glyph for showing in object pile */
     obj->glyph = glyph;
@@ -400,8 +398,6 @@ boolean exclude_ascii;
         levl[x][y].hero_memory_layers.layer_glyphs[layer] = new_glyph;
         if (in_pit)
             levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_IN_PIT;
-        if (is_iron_chain)
-            levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_CHAIN;
 
         struct obj* memobj = o_on_memory(obj->o_id, levl[x][y].hero_memory_layers.memory_objchn);
         if (!chain_check || (chain_check && !memobj))
@@ -424,7 +420,7 @@ boolean exclude_ascii;
         show_glyph_on_layer(x, y, glyph, layer);
         if(in_pit)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_O_IN_PIT);
-        if (is_iron_chain)
+        if (isok(x, y) && uchain && uchain->ox == x && uchain->oy == y)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_O_CHAIN);
     }
 }
@@ -1213,6 +1209,9 @@ int damage_shown;
 
     /* Extra info shown */
     show_extra_info(x, y, disp_flags, damage_shown);
+
+    /* Add chain, otherwise, remove it */
+
 
     /* Can physically see the location. */
     if (cansee(x, y)) 

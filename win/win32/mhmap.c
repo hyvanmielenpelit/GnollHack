@@ -1302,6 +1302,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                     }
                 }
+                else if (base_layer == LAYER_CHAIN && enlarg_idx == -1 && tile_move_idx == 0 && source_dir_idx == 0 && (data->map[adj_x][adj_y].layer_flags & LFLAGS_O_CHAIN))
+                    signed_glyph = GENERAL_TILE_CHAIN_MAIN + GLYPH_GENERAL_TILE_OFF;
                 else if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
                     signed_glyph = otmp_round->glyph == NO_GLYPH || otmp_round->glyph == 0 ? NO_GLYPH : otmp_round->glyph;
                 else
@@ -2759,7 +2761,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
                             else if (autodraw_u_punished || (((autodraws[autodraw].draw_type == AUTODRAW_DRAW_CHAIN /* && otmp_round == uchain */) || (autodraws[autodraw].draw_type == AUTODRAW_DRAW_BALL /* && otmp_round == uball*/))))
                             {
-                                if (1 /*uchain && uball*/)
+                                if (uchain && uball && cansee(enl_i, enl_j))
                                 {
                                     boolean is_chain = (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CHAIN);
                                     xchar chain_x = 0;
@@ -2858,7 +2860,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                         source_width -= diff;
                                                         if (source_width <= 0)
                                                             continue;
-                                                        target_width -= target_x + target_width - rect->right;
+                                                        target_width -= (target_x + target_width - rect->right);
                                                     }
                                                     if (target_y + target_height > rect->bottom)
                                                     {
@@ -2867,7 +2869,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                         source_height -= diff;
                                                         if (source_height <= 0)
                                                             continue;
-                                                        target_height -= target_y + target_height - rect->bottom;
+                                                        target_height -= (target_y + target_height - rect->bottom);
                                                     }
 
                                                     int source_x = at_x + within_tile_source_x;
