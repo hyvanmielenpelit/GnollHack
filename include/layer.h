@@ -14,6 +14,7 @@ enum layer_types
     LAYER_TRAP,
     LAYER_FEATURE_DOODAD, /* Doodads above features and traps */
     LAYER_BACKGROUND_EFFECT,
+    LAYER_CHAIN,
     LAYER_OBJECT,
     LAYER_MONSTER,
     LAYER_MISSILE,
@@ -83,8 +84,8 @@ struct layer_info {
 /* These are flags for showing extra stuff in graphical interfaces */
 #define LFLAGS_O_PILE               0x00100000UL
 #define LFLAGS_O_IN_PIT             0x00200000UL
-/* free for another obj flag */
-#define LFLAGS_O_MASK               0x00300000UL
+#define LFLAGS_O_CHAIN              0x00400000UL
+#define LFLAGS_O_MASK               0x00700000UL
 
 /* free for cmaps */
 /* free for cmaps */

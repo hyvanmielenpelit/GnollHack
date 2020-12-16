@@ -374,10 +374,12 @@ boolean exclude_ascii;
     register int glyph = obj_to_glyph(obj, newsym_rn2);
     boolean draw_in_front = is_obj_drawn_in_front(obj);
     enum layer_types layer = draw_in_front ? LAYER_COVER_OBJECT : LAYER_OBJECT;
-    boolean in_pit = FALSE;
+    boolean in_pit = FALSE, is_iron_chain = FALSE;
     struct trap* t = 0;
     if (isok(x, y) && (t = t_at(x, y)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
         in_pit = TRUE;
+    if (isok(x, y) && uchain && uchain->ox == x && uchain->oy == y)
+        is_iron_chain = TRUE;
 
     /* Save this object's glyph for showing in object pile */
     obj->glyph = glyph;
@@ -398,6 +400,8 @@ boolean exclude_ascii;
         levl[x][y].hero_memory_layers.layer_glyphs[layer] = new_glyph;
         if (in_pit)
             levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_IN_PIT;
+        if (is_iron_chain)
+            levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_CHAIN;
 
         struct obj* memobj = o_on_memory(obj->o_id, levl[x][y].hero_memory_layers.memory_objchn);
         if (!chain_check || (chain_check && !memobj))
@@ -420,6 +424,8 @@ boolean exclude_ascii;
         show_glyph_on_layer(x, y, glyph, layer);
         if(in_pit)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_O_IN_PIT);
+        if (is_iron_chain)
+            add_glyph_buffer_layer_flags(x, y, LFLAGS_O_CHAIN);
     }
 }
 
@@ -2533,7 +2539,7 @@ boolean remove;
         {
             int cmap_idx = generic_glyph_to_cmap(glyph);
             gbuf[y][x].layers.layer_glyphs[defsyms[cmap_idx].layer] = remove ? NO_GLYPH : glyph;
-            gbuf[y][x].layers.layer_flags &= LFLAGS_CMAP_MASK;
+            gbuf[y][x].layers.layer_flags &= ~LFLAGS_CMAP_MASK;
         }
         else if (glyph_is_monster(glyph) || glyph_is_invisible(glyph) || glyph_is_warning(glyph)) /* includes also players */
         {

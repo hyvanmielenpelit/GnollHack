@@ -1203,13 +1203,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 struct obj* otmp_round = (struct obj*)0;//otmp;
 
 
-                if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
+                if ((base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT))
                 {
-                    otmp_round = obj_pile[MAX_SHOWN_OBJECTS - 1 - layer_round];
+                    if (source_dir_idx == 0)
+                    {
+                        otmp_round = obj_pile[MAX_SHOWN_OBJECTS - 1 - layer_round];
 
-                    if (!otmp_round)
-                        continue; /* next round */
-
+                        if (!otmp_round)
+                            continue; /* next round */
+                    }
                 }
 
                 boolean draw_in_front = (otmp_round && is_obj_drawn_in_front(otmp_round) /* && otmp_round->ox == u.ux && otmp_round->oy == u.uy */);
@@ -1224,7 +1226,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 boolean is_corner_tile = FALSE;
                 int adj_x = enl_i; /* should be the same as enl_i */
                 int adj_y = enl_j; /* should be the same as enl_j */
-                if (source_dir_idx > 0)
+                if (source_dir_idx > 0 && enlarg_idx == -1 && tile_move_idx == 0)
                 {
                     int adjacent_zap_glyph = NO_GLYPH;
                     unsigned long adjacent_layer_flags = 0UL;
@@ -1288,10 +1290,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             /* Worm */
                             signed_glyph = NO_GLYPH;
                         }
-                        else if (base_layer == LAYER_OBJECT)
+                        else if (base_layer == LAYER_CHAIN)
                         {
-                            /* Object */
-                            signed_glyph = NO_GLYPH;
+                            /* Chain */
+                            if (data->map[adj_x][adj_y].layer_flags & LFLAGS_O_CHAIN)
+                            {
+                                signed_glyph = (source_dir_idx / 2 - 1) + GENERAL_TILE_CHAIN_UP + GLYPH_GENERAL_TILE_OFF;
+                            }
+                            else
+                                signed_glyph = NO_GLYPH;
                         }
                     }
                 }
@@ -2750,9 +2757,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 //int nglyph = otmp->corpsenm + (is_female_corpse_or_statue(otmp) ? GLYPH_FEMALE_STATUE_OFF : GLYPH_STATUE_OFF);
 
                             }
-                            else if (autodraw_u_punished || (otmp_round && ((autodraws[autodraw].draw_type == AUTODRAW_DRAW_CHAIN && otmp_round == uchain) || (autodraws[autodraw].draw_type == AUTODRAW_DRAW_BALL && otmp_round == uball))))
+                            else if (autodraw_u_punished || (((autodraws[autodraw].draw_type == AUTODRAW_DRAW_CHAIN /* && otmp_round == uchain */) || (autodraws[autodraw].draw_type == AUTODRAW_DRAW_BALL /* && otmp_round == uball*/))))
                             {
-                                if (uchain && uball)
+                                if (1 /*uchain && uball*/)
                                 {
                                     boolean is_chain = (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CHAIN);
                                     xchar chain_x = 0;
@@ -2772,6 +2779,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     int u_ball_dy = (int)(u_y - chain_y);
 
                                     int source_glyph = autodraw_u_punished || autodraw == 0 ? ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF : autodraws[autodraw].source_glyph;
+                                    int dir_idx = autodraws[autodraw].flags;
                                     int atile = glyph2tile[source_glyph];
                                     int at_x = TILEBMP_X(atile);
                                     int at_y = TILEBMP_Y(atile);
@@ -2779,54 +2787,160 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     for (int n = 0; n < 2; n++)
                                     {
-                                        int relevant_dx = autodraw_u_punished ? sgn(n == 0 ? -chain_u_dx : 0) : is_chain ? sgn(n == 0 ? chain_u_dx : chain_ball_dx) : sgn(n == 0 ?  0 : -chain_ball_dx);
-                                        int relevant_dy = autodraw_u_punished ? sgn(n == 0 ? -chain_u_dy : 0) : is_chain ? sgn(n == 0 ? chain_u_dy : chain_ball_dy) : sgn(n == 0 ?  1 : -chain_ball_dy);
-                                        if (relevant_dx || relevant_dy)
+                                        int relevant_dx = autodraw_u_punished ? sgn(n == 0 ? -chain_u_dx : 0) : is_chain ? sgn(n == 0 ? chain_u_dx : chain_ball_dx) : sgn(n == 0 ? 0 : -chain_ball_dx);
+                                        int relevant_dy = autodraw_u_punished ? sgn(n == 0 ? -chain_u_dy : 0) : is_chain ? sgn(n == 0 ? chain_u_dy : chain_ball_dy) : sgn(n == 0 ? 1 : -chain_ball_dy);
+                                        boolean hflip_link = !((relevant_dx > 0) != (relevant_dy > 0));
+                                        boolean vflip_link = FALSE;
+                                        int link_source_width = 16;
+                                        int link_source_height = 16;
+                                        int link_diff_x = 6;
+                                        int link_diff_y = 9;
+                                        int mid_x = tileWidth / 2;
+                                        int mid_y = tileHeight / 2;
+                                        int dist_x = relevant_dx > 0 ? tileWidth - mid_x : mid_x;
+                                        int dist_y = relevant_dy > 0 ? tileHeight - mid_y : mid_y;
+                                        int links = 1 + min((dist_y - link_source_height / 2) / link_diff_y, (dist_x - link_source_width / 2) / link_diff_x);
+
+                                        if (!is_chain && !autodraw_u_punished && n == 0 && links > 1)
+                                            links = 1;
+                                        else if (autodraw_u_punished && n == 1 && links > 1)
+                                            links = 1;
+
+                                        if (dir_idx == 0)
                                         {
-                                            boolean hflip_link = !((relevant_dx > 0) != (relevant_dy > 0));
-                                            boolean vflip_link = FALSE;
-                                            int within_tile_source_x = relevant_dx && relevant_dy ? 32 : relevant_dy ? 16 : 0;
-                                            int source_width = 16;
-                                            int source_height = 16;
-                                            int link_diff_x = 6;
-                                            int link_diff_y = 9;
-                                            int mid_x = tileWidth / 2;
-                                            int mid_y = tileHeight / 2;
-                                            int dist_x = relevant_dx > 0 ? tileWidth - mid_x : mid_x;
-                                            int dist_y = relevant_dy > 0 ? tileHeight - mid_y : mid_y;
-                                            int links = 1 + min((dist_y - source_height / 2) / link_diff_y, (dist_x - source_width / 2) / link_diff_x);
-
-                                            if (!is_chain && !autodraw_u_punished && n == 0 && links > 1)
-                                                links = 1;
-                                            else if (autodraw_u_punished && n == 1 && links > 1)
-                                                links = 1;
-
-                                            for (int m = 0; m < links; m++)
+                                            if (relevant_dx || relevant_dy)
                                             {
-                                                int within_tile_source_y = 23 + ((m % 2) == 1 ? source_height : 0);
-                                                int target_x = rect->left + (rect->right - rect->left) / 2 - (int)((double)source_width * scale / 2.0) + (int)((double)(relevant_dx * link_diff_x * m) * scale);
-                                                int target_y = rect->top + (rect->bottom - rect->top) / 2 - (int)((double)source_height * scale / 2.0) + (int)((double)(relevant_dy * link_diff_y * m) * scale);
-                                                int target_width = (int)((double)source_width * scale);
-                                                int target_height = (int)((double)source_height * scale);
-                                                int source_x = at_x + within_tile_source_x;
-                                                int source_y = at_y + within_tile_source_y;
+                                                for (int m = 0; m < links; m++)
+                                                {
+                                                    int source_width = link_source_width;
+                                                    int source_height = link_source_height;
+                                                    int within_tile_source_x = relevant_dx && relevant_dy ? 32 : relevant_dy ? 16 : 0;
+                                                    int within_tile_source_y = 23 + ((m % 2) == 1 ? link_source_height : 0);
+                                                    int target_x = rect->left + (rect->right - rect->left) / 2 - (int)((double)source_width * scale / 2.0) + (int)((double)(relevant_dx * link_diff_x * m) * scale);
+                                                    int target_y = rect->top + (rect->bottom - rect->top) / 2 - (int)((double)source_height * scale / 2.0) + (int)((double)(relevant_dy * link_diff_y * m) * scale);
+                                                    int target_width = (int)((double)source_width * scale);
+                                                    int target_height = (int)((double)source_height * scale);
+                                                    int source_x = at_x + within_tile_source_x;
+                                                    int source_y = at_y + within_tile_source_y;
 
-                                                (*GetNHApp()->lpfnTransparentBlt)(
-                                                    data->backBufferDC, target_x, target_y,
-                                                    target_width, target_height, data->tileDC, source_x + (hflip_link ? source_width - 1 : 0),
-                                                    source_y + (vflip_link ? source_height - 1 : 0), (hflip_link ? -1 : 1) * source_width,
-                                                    (vflip_link ? -1 : 1)* source_height, TILE_BK_COLOR);
+                                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                                        data->backBufferDC, target_x, target_y,
+                                                        target_width, target_height, data->tileDC, source_x + (hflip_link ? source_width - 1 : 0),
+                                                        source_y + (vflip_link ? source_height - 1 : 0), (hflip_link ? -1 : 1) * source_width,
+                                                        (vflip_link ? -1 : 1) * source_height, TILE_BK_COLOR);
+                                                }
+
+                                                /* Final links */
                                             }
                                         }
+                                        else if (dir_idx > 0)
+                                        {
+                                            if (relevant_dx && relevant_dy)
+                                            {
+                                                int added_source_x = 0, added_source_y = 0;
+                                                int added_target_x = 0, added_target_y = 0;
+                                                boolean draw_link = FALSE;
 
+                                                if (relevant_dx < 0 && relevant_dy < 0)
+                                                {
+                                                    if (dir_idx == 2)
+                                                    {
+                                                        added_source_x = 8;
+                                                        added_source_y = 8;
+                                                        added_target_x = tileWidth - 8;
+                                                        added_target_y = 0;
+                                                        draw_link = TRUE;
+                                                    }
+                                                    else if (dir_idx == 3)
+                                                    {
+                                                        added_source_x = 0;
+                                                        added_source_y = 0;
+                                                        added_target_x = 0;
+                                                        added_target_y = tileHeight - 8;
+                                                        draw_link = TRUE;
+                                                    }
+                                                }
+                                                else if (relevant_dx > 0 && relevant_dy < 0)
+                                                {
+                                                    if (dir_idx == 4)
+                                                    {
+                                                        added_source_x = 8;
+                                                        added_source_y = 8;
+                                                        added_target_x = 0;
+                                                        added_target_y = 0;
+                                                        draw_link = TRUE;
+                                                    }
+                                                    else if (dir_idx == 3)
+                                                    {
+                                                        added_source_x = 0;
+                                                        added_source_y = 0;
+                                                        added_target_x = tileWidth - 8;
+                                                        added_target_y = tileHeight - 8;
+                                                        draw_link = TRUE;
+                                                    }
+                                                }
+                                                else if (relevant_dx < 0 && relevant_dy > 0)
+                                                {
+                                                    if (dir_idx == 2)
+                                                    {
+                                                        added_source_x = 0;
+                                                        added_source_y = 0;
+                                                        added_target_x = tileWidth - 8;
+                                                        added_target_y = tileHeight - 8;
+                                                        draw_link = TRUE;
+                                                    }
+                                                    else if (dir_idx == 1)
+                                                    {
+                                                        added_source_x = 8;
+                                                        added_source_y = 8;
+                                                        added_target_x = 0;
+                                                        added_target_y = 0;
+                                                        draw_link = TRUE;
+                                                    }
+                                                }
+                                                else if (relevant_dx > 0 && relevant_dy > 0)
+                                                {
+                                                    if (dir_idx == 4)
+                                                    {
+                                                        added_source_x = 0;
+                                                        added_source_y = 0;
+                                                        added_target_x = 0;
+                                                        added_target_y = tileHeight - 8;
+                                                        draw_link = TRUE;
+                                                    }
+                                                    else if (dir_idx == 1)
+                                                    {
+                                                        added_source_x = 8;
+                                                        added_source_y = 8;
+                                                        added_target_x = tileWidth - 8;
+                                                        added_target_y = 0;
+                                                        draw_link = TRUE;
+                                                    }
+                                                }
+                                                if (draw_link)
+                                                {
+                                                    int source_width = 8;
+                                                    int source_height = 8;
+                                                    int within_tile_source_x = 32 + added_source_x;
+                                                    int within_tile_source_y = 23 + ((links + 1 % 2) == 1 ? link_source_height : 0) + added_source_y;
+                                                    int target_x = rect->left + (int)((double)(added_target_x) * scale);
+                                                    int target_y = rect->top + (int)((double)(added_target_y) * scale);
+                                                    int target_width = (int)((double)source_width * scale);
+                                                    int target_height = (int)((double)source_height * scale);
+                                                    int source_x = at_x + within_tile_source_x;
+                                                    int source_y = at_y + within_tile_source_y;
+
+                                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                                        data->backBufferDC, target_x, target_y,
+                                                        target_width, target_height, data->tileDC, source_x + (hflip_link ? source_width - 1 : 0),
+                                                        source_y + (vflip_link ? source_height - 1 : 0), (hflip_link ? -1 : 1)* source_width,
+                                                        (vflip_link ? -1 : 1)* source_height, TILE_BK_COLOR);
+
+                                                }
+
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_BALL && otmp_round)
-                            {
-                                if (otmp_round == uball)
-                                {
-
                                 }
                             }
                         }
@@ -3911,7 +4025,7 @@ static void setDrawOrder(PNHMapWindow data)
                     }
                 }
 
-                if (layer_idx == LAYER_OBJECT && same_level_z_order_array[enl_idx] == -1)
+                if (layer_idx == LAYER_CHAIN && same_level_z_order_array[enl_idx] == -1)
                 {
                     for (int i = 1; i <= NUM_CHAIN_SOURCE_DIRS; i++)
                     {
@@ -4121,6 +4235,42 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
                     InvalidateRect(data->hWnd, &rt2, FALSE);
                 }
+            }
+        }
+    }
+
+    if (data->map[x][y].layer_flags & LFLAGS_O_CHAIN)
+    {
+        int rx = x, ry = y;
+        for (int source_dir_idx = 2; source_dir_idx <= NUM_CHAIN_SOURCE_DIRS * 2; source_dir_idx = source_dir_idx + 2)
+        {
+            switch (source_dir_idx)
+            {
+            case 2:
+                rx = x;
+                ry = y + 1;
+                break;
+            case 4:
+                rx = x - 1;
+                ry = y;
+                break;
+            case 6:
+                rx = x;
+                ry = y - 1;
+                break;
+            case 8:
+                rx = x + 1;
+                ry = y;
+                break;
+            default:
+                break;
+            }
+            if (isok(rx, ry))
+            {
+                data->mapDirty[rx][ry] = TRUE;
+                RECT rt2;
+                nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
+                InvalidateRect(data->hWnd, &rt2, FALSE);
             }
         }
     }
