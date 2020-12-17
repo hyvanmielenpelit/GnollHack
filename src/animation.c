@@ -2473,6 +2473,28 @@ NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "long-worm-head-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_LONG_WORM_HEAD,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "long-worm-tail-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_LONG_WORM_TAIL,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 
@@ -2966,6 +2988,26 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DRAW_CHAIN,
         4,
         ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
+        "long-worm-autodraw-head",
+        AUTODRAW_DRAW_LONG_WORM,
+        0,
+        GENERAL_TILE_WORM_HEAD_GOING_UP + GLYPH_GENERAL_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
+        "long-worm-autodraw-tail",
+        AUTODRAW_DRAW_LONG_WORM,
+        0,
+        GENERAL_TILE_WORM_TAIL_GOING_UP + GLYPH_GENERAL_TILE_OFF,
         0,
         0,
         0,

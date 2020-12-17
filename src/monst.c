@@ -1705,7 +1705,7 @@ NEARDATA struct permonst mons[] = {
         M3_NONE, 
         M4_NONE, M5_NONE,
         2, CLR_MAGENTA, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("long worm", None, "enormous worm that can span across many squares", None, None, S_WORM, LVL(9, 3, 5, 0, 10, 0), (G_NOGEN | G_GENO | 2),
+    GENERAL_MON("long worm", None, "enormous worm that can span across many squares", None, None, S_WORM, LVL(9, 3, 5, 0, 10, 0), (G_NOGEN | G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 500, MS_SILENT, MZ_GIGANTIC, 1, 0, MAT_FLESH), STATS(STR19(19), 7, 20, 1, 1, 1),
@@ -1715,7 +1715,8 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NASTY,
         M3_NONE, 
         M4_NONE, M5_NONE, 
-		3, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		3, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, ACTION_INFO(LONG_WORM_HEAD_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ACTION_INFO(LONG_WORM_HEAD_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
     MON("purple worm", None, "gigantic purple-hued worm capable of engulfing opponents", None, None, S_WORM, LVL(15, 9, 6, 0, 20, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 8, 0, 0), ATTK(AT_ENGL, AD_DGST, 4, 10, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -5199,10 +5200,11 @@ struct permonst _mons2[] = {
      * dummy monster needed for visual interface
      * (marking it unique prevents figurines)
      */
-    MON("long worm tail", None, "tail part of a huge worm spanning over many squares", None, None, S_WORM_TAIL, LVL(0, 0, 0, 0, 0, 0),
+    GENERAL_MON("long worm tail", None, "tail part of a huge worm spanning over many squares", None, None, S_WORM_TAIL, LVL(0, 0, 0, 0, 0, 0),
         (G_NOGEN | G_NOCORPSE | G_UNIQ),
         A(NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(0, 0, 0, 0, 0, 0, MAT_FLESH), STATS(1, 9, 18, 1, 1, 1), MR_NONE, MR2_NONE, MC_NONE, 0L, M2_NOPOLY, M3_NONE, M4_NONE, M5_NONE, 0, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        SIZ(0, 0, 0, 0, 0, 0, MAT_FLESH), STATS(1, 9, 18, 1, 1, 1), MR_NONE, MR2_NONE, MC_NONE, 0L, M2_NOPOLY, M3_NONE, M4_NONE, M5_NONE, 0, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, ACTION_INFO(LONG_WORM_TAIL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ACTION_INFO(LONG_WORM_TAIL_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
     /* Note:
      * Worm tail must be between the normal monsters and the special
      * quest & pseudo-character ones because an optimization in the
