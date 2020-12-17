@@ -468,10 +468,13 @@ boolean use_detection_glyph;
 
     while (curr != wheads[worm->wormno]) {
         num = monnum_to_glyph(what_tail);
-        unsigned long extra_flags = ((use_detection_glyph ? LFLAGS_M_DETECTED : 0UL) | (is_tame(worm) ? LFLAGS_M_PET : 0UL));
+        unsigned long extra_flags = (LFLAGS_M_WORM_SEEN | LFLAGS_M_WORM_TAIL | ((use_detection_glyph ? LFLAGS_M_DETECTED : 0UL) | (is_tame(worm) ? LFLAGS_M_PET : 0UL)));
         show_monster_glyph_with_extra_info(curr->wx, curr->wy, num, worm, extra_flags, 0);
         curr = curr->nseg;
     }
+
+    if (wheads[worm->wormno] && isok(wheads[worm->wormno]->wx, wheads[worm->wormno]->wy))
+        add_glyph_buffer_layer_flags(wheads[worm->wormno]->wx, wheads[worm->wormno]->wy, LFLAGS_M_WORM_SEEN);
 }
 
 /*
@@ -1023,7 +1026,7 @@ int x, y;
                     {
                         if (prevy < cury)
                             i = 2;
-                        else if (prevx > cury)
+                        else if (prevy > cury)
                             i = 6;
                         else
                             i = 0;

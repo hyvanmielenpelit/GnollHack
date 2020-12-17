@@ -3666,7 +3666,7 @@ enum autodraw_types* autodraw_ptr;
             if (autodraw_ptr)
                 *autodraw_ptr = replacements[replacement_idx].general_autodraw;
 
-            if (count_wsegs(mtmp) > 1)
+            if (count_wsegs(mtmp) > 0)
             {
                 if (replacements[replacement_idx].number_of_tiles < 1)
                     return ntile;

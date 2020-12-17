@@ -76,9 +76,8 @@ struct layer_info {
 /* free for m_ flag 040 */
 /* free for m_ flag 080 */
 /* free for m_ flag 100 */
-/* free for m_ flag 020 */
-/* free for m_ flag 040 */
-#define LFLAGS_M_WORM_TAIL          0x00080000UL
+#define LFLAGS_M_WORM_TAIL          0x00040000UL
+#define LFLAGS_M_WORM_SEEN          0x00080000UL
 #define LFLAGS_M_MASK               0x000FFFFFUL
 
 /* These are flags for showing extra stuff in graphical interfaces */

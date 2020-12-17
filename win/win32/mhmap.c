@@ -1288,12 +1288,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         else if (base_layer == LAYER_MONSTER)
                         {
                             /* Worm */
+                            boolean is_adj_worm_tail = !!(data->map[adj_x][adj_y].layer_flags & LFLAGS_M_WORM_TAIL);
+                            boolean is_adj_worm_seen = !!(data->map[adj_x][adj_y].layer_flags & LFLAGS_M_WORM_SEEN);
                             genericptr_t worm_stored = data->map[adj_x][adj_y].monster_comp_ptr;
                             struct monst* worm_here = m_at(adj_x, adj_y);
-                            struct monst* worm = (worm_here == worm_stored) ? worm_here : (struct monst*)0;
-                            boolean is_adj_worm_tail = !!(data->map[adj_x][adj_y].layer_flags & LFLAGS_M_WORM_TAIL);
+                            struct monst* worm = !is_adj_worm_tail ? (struct monst*)0 : is_adj_worm_seen ? ((worm_here == worm_stored) ? worm_here : (struct monst*)0) : worm_here;
                             signed_glyph = NO_GLYPH;
-                            if (worm)
+
+                            if (worm && (cansee(enl_i, enl_j) || is_adj_worm_seen || (data->map[worm->mx][worm->my].layer_flags & LFLAGS_M_WORM_SEEN)))
                             {
                                 if (worm->mnum == PM_LONG_WORM && !is_adj_worm_tail)
                                 {

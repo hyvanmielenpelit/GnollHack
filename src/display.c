@@ -728,13 +728,14 @@ xchar worm_tail;            /* mon is actually a worm tail */
          * matter, but if not, showing them as pets is preferrable.
          */
         unsigned long extra_flags = 0;
+
         if (is_tame(mon) && !Hallucination) {
             if (worm_tail)
                 num = monnum_to_glyph(PM_LONG_WORM_TAIL);
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
 
-            extra_flags = LFLAGS_M_PET;
+            extra_flags |= LFLAGS_M_PET;
         } else if (sightflags == DETECTED) {
             if (worm_tail)
                 num = monnum_to_glyph(
@@ -742,7 +743,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
 
-            extra_flags = LFLAGS_M_DETECTED;
+            extra_flags |= LFLAGS_M_DETECTED;
         } else {
             if (worm_tail)
                 num = monnum_to_glyph(
@@ -751,7 +752,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
         if (worm_tail)
-            extra_flags |= LFLAGS_M_WORM_TAIL;
+            extra_flags |= (LFLAGS_M_WORM_TAIL | LFLAGS_M_WORM_SEEN);
 
         show_monster_glyph_with_extra_info(x, y, num, /*worm_tail ? (struct monst*)0 :*/ mon, extra_flags, 0);
         clear_monster_layer_memory_at(x, y);
@@ -1358,6 +1359,10 @@ int damage_shown;
             else if (mon && mon_warning(mon) && !is_worm_tail(mon)) 
             {
                 display_warning(mon);
+            }
+            else if (mon && is_worm_tail(mon))
+            {
+                add_glyph_buffer_layer_flags(x, y, LFLAGS_M_WORM_TAIL);
             }
         }
     }
