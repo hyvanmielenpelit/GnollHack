@@ -2474,25 +2474,25 @@ NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "long-worm-head-replacement",
-      0, 0,
+      LONG_WORM_HEAD_REPLACEMENT_TILES, LONG_WORM_HEAD_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
-      REPLACEMENT_ACTION_AUTODRAW,
-      AUTODRAW_LONG_WORM_HEAD,
-      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      REPLACEMENT_ACTION_AUTODRAW_AND_LONG_WORM,
+      AUTODRAW_NONE,
+      { "empty-canvas", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { AUTODRAW_LONG_WORM_HEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "long-worm-tail-replacement",
-      0, 0,
+      LONG_WORM_TAIL_REPLACEMENT_TILES, LONG_WORM_TAIL_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
-      REPLACEMENT_ACTION_AUTODRAW,
-      AUTODRAW_LONG_WORM_TAIL,
-      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      REPLACEMENT_ACTION_AUTODRAW_AND_LONG_WORM,
+      AUTODRAW_NONE,
+      { "empty-canvas", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { AUTODRAW_LONG_WORM_TAIL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
 };
@@ -2997,19 +2997,19 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         "long-worm-autodraw-head",
         AUTODRAW_DRAW_LONG_WORM,
         0,
-        GENERAL_TILE_WORM_HEAD_GOING_UP + GLYPH_GENERAL_TILE_OFF,
-        0,
-        0,
+        GENERAL_TILE_WORM_HEAD_COMING_FROM_UP + GLYPH_GENERAL_TILE_OFF,
+        GENERAL_TILE_WORM_SEGMENT_GOING_UP + GLYPH_GENERAL_TILE_OFF,
+        GENERAL_TILE_WORM_SEGMENT_BOTTOM + GLYPH_GENERAL_TILE_OFF,
         0,
         0UL
     },
     {
         "long-worm-autodraw-tail",
         AUTODRAW_DRAW_LONG_WORM,
-        0,
+        1,
         GENERAL_TILE_WORM_TAIL_GOING_UP + GLYPH_GENERAL_TILE_OFF,
-        0,
-        0,
+        GENERAL_TILE_WORM_SEGMENT_GOING_UP + GLYPH_GENERAL_TILE_OFF,
+        GENERAL_TILE_WORM_SEGMENT_BOTTOM + GLYPH_GENERAL_TILE_OFF,
         0,
         0UL
     },
@@ -3098,9 +3098,9 @@ NEARDATA struct general_tile_definition general_tile_definitions[MAX_GENERAL_TIL
     {"worm-tail-going-up", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"worm-tail-going-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"worm-tail-going-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-head-going-up", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-head-going-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-head-going-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-head-coming-from-up", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-head-coming-from-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-head-coming-from-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 STATIC_DCL int FDECL(get_shore_tile_index, (struct rm* , struct rm*));
@@ -3299,14 +3299,16 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 struct replacement_info
-data_to_replacement_info(signed_glyph, layer, otmp)
+data_to_replacement_info(signed_glyph, layer, otmp, mtmp)
 int signed_glyph, layer;
 struct obj* otmp;
+struct monst* mtmp;
 {
     struct replacement_info info = { 0 };
     info.signed_glyph = signed_glyph;
     info.layer = layer;
     info.object = otmp;
+    info.monster = mtmp;
 
     return info;
 }
@@ -3320,6 +3322,7 @@ enum autodraw_types* autodraw_ptr;
 {
 #ifdef USE_TILES
     struct obj* otmp = info.object;
+    struct monst* mtmp = info.monster;
     short replacement_idx = tile2replacement[ntile];
     if (replacement_idx > 0)
     {
@@ -3655,7 +3658,26 @@ enum autodraw_types* autodraw_ptr;
             }
             break;
         }
-        default:
+        case REPLACEMENT_ACTION_AUTODRAW_AND_LONG_WORM:
+        {
+            if (!mtmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (count_wsegs(mtmp) > 1)
+            {
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+
+                /* Return the first tile with index 0 */
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
+                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }        default:
             break;
         }
     }

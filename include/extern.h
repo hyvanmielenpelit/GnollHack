@@ -49,7 +49,7 @@ E int FDECL(get_tile_animation_index_from_glyph, (int));
 E short FDECL(get_replacement_base_tile, (short));
 E short FDECL(get_animation_base_tile, (short));
 E short FDECL(get_enlargement_base_tile, (short, short));
-E struct replacement_info FDECL(data_to_replacement_info, (int, int, struct obj*));
+E struct replacement_info FDECL(data_to_replacement_info, (int, int, struct obj*, struct monst*));
 E int FDECL(get_animation_frame_with_tile, (int, int));
 E void FDECL(play_special_effect_at, (enum special_effect_types, int, int, int, boolean));
 E void FDECL(special_effect_wait_until_action, (int));
@@ -3634,6 +3634,9 @@ E boolean FDECL(worm_known, (struct monst *));
 E boolean FDECL(worm_cross, (int, int, int, int));
 E int FDECL(wseg_at, (struct monst *, int, int));
 E int FDECL(get_wseg_dir_at, (struct monst*, int, int));
+E int FDECL(get_reverse_prev_wseg_dir_at, (struct monst*, int, int));
+E boolean FDECL(is_wseg_head, (struct monst*, int, int));
+E boolean FDECL(is_wseg_tailend, (struct monst*, int, int));
 
 
 /* ### worn.c ### */

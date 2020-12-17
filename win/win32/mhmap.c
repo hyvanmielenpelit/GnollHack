@@ -1120,8 +1120,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
             boolean showing_detection = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_DETECTION);
             boolean objects_in_pit = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_O_IN_PIT);
-            boolean zap_leading_edge = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_ZAP_LEADING_EDGE);
-            boolean zap_trailing_edge = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_ZAP_TRAILING_EDGE);
 
             if (enlarg_idx >= 0 && enlarg_idx != 3)
             {
@@ -1346,7 +1344,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 if (wdir == 1)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
                                                     manual_hflip = FALSE;
                                                     manual_vflip = FALSE;
                                                 }
@@ -1503,7 +1501,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !full_sized_item);
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
-                    ntile = maybe_get_replaced_tile(ntile, i, j, data_to_replacement_info(signed_glyph, base_layer, otmp_round), &autodraw);
+                    ntile = maybe_get_replaced_tile(ntile, i, j, data_to_replacement_info(signed_glyph, base_layer, otmp_round, mtmp), &autodraw);
                     if(context.u_action_animation_counter_on && base_layer == LAYER_MONSTER && enl_i == u.ux && enl_j == u.uy)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (context.m_action_animation_counter_on && base_layer == LAYER_MONSTER && context.m_action_animation_x == enl_i && context.m_action_animation_y == enl_j)
@@ -3090,6 +3088,111 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     }
                                 }
                             }
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_LONG_WORM && mtmp)
+                            {  
+                                /* Long worm here */
+                                
+                                int source_glyph_seg_end = autodraws[autodraw].source_glyph;
+                                int source_glyph_seg_dir = autodraws[autodraw].source_glyph2;
+                                int source_glyph_seg_layer = autodraws[autodraw].source_glyph3;
+                                int drawing_tail = autodraws[autodraw].flags;
+                                double scale = (double)(rect->bottom - rect->top) / (double)tileHeight;
+                                int wdir_out = get_wseg_dir_at(mtmp, enl_i, enl_j);
+                                int wdir_in = get_reverse_prev_wseg_dir_at(mtmp, enl_i, enl_j);
+                                boolean is_head = is_wseg_head(mtmp, enl_i, enl_j);
+                                boolean is_tailend = is_wseg_tailend(mtmp, enl_i, enl_j);
+                                for (int wlayer = 0; wlayer < 5; wlayer++)
+                                {
+                                    int source_glyph = NO_GLYPH;
+                                    boolean hflip_seg = FALSE;
+                                    boolean vflip_seg = FALSE;
+                                    switch (wlayer)
+                                    {
+                                    case 0:
+                                    case 2:
+                                    case 4:
+                                        source_glyph = source_glyph_seg_layer + wlayer / 2;
+                                        break;
+                                    case 1:
+                                        source_glyph = is_tailend ? NO_GLYPH : is_head ? source_glyph_seg_end : source_glyph_seg_dir;
+                                        break;
+                                    case 3:
+                                        source_glyph = is_tailend ? source_glyph_seg_end : is_head ? NO_GLYPH : source_glyph_seg_dir;
+                                        break;
+                                    default:
+                                        break;
+                                    }
+
+                                    if (source_glyph != NO_GLYPH)
+                                    {
+                                        int wdir = (wlayer == 1 ? wdir_in : wlayer == 3 ? wdir_out : 0);
+                                        switch (wdir)
+                                        {
+                                        case 1:
+                                            source_glyph += 2;
+                                            hflip_seg = FALSE;
+                                            vflip_seg = FALSE;
+                                            break;
+                                        case 2:
+                                            source_glyph += 0;
+                                            hflip_seg = FALSE;
+                                            vflip_seg = FALSE;
+                                            break;
+                                        case 3:
+                                            source_glyph += 2;
+                                            hflip_seg = TRUE;
+                                            vflip_seg = FALSE;
+                                            break;
+                                        case 4:
+                                            source_glyph += 1;
+                                            hflip_seg = TRUE;
+                                            vflip_seg = FALSE;
+                                            break;
+                                        case 5:
+                                            source_glyph += 2;
+                                            hflip_seg = TRUE;
+                                            vflip_seg = TRUE;
+                                            break;
+                                        case 6:
+                                            source_glyph += 0;
+                                            hflip_seg = FALSE;
+                                            vflip_seg = TRUE;
+                                            break;
+                                        case 7:
+                                            source_glyph += 2;
+                                            hflip_seg = FALSE;
+                                            vflip_seg = TRUE;
+                                            break;
+                                        case 8:
+                                            source_glyph += 1;
+                                            hflip_seg = FALSE;
+                                            vflip_seg = FALSE;
+                                            break;
+                                        default:
+                                            break;
+                                        }
+
+                                        int atile = glyph2tile[source_glyph];
+                                        int at_x = TILEBMP_X(atile);
+                                        int at_y = TILEBMP_Y(atile);
+
+                                        int source_width = tileWidth;
+                                        int source_height = tileHeight;
+                                        int target_x = rect->left;
+                                        int target_y = rect->top;
+                                        int target_width = (int)((double)source_width * scale);
+                                        int target_height = (int)((double)source_height * scale);
+                                        int source_x = at_x;
+                                        int source_y = at_y;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            data->backBufferDC, target_x, target_y,
+                                            target_width, target_height, data->tileDC, source_x + (hflip_seg ? source_width - 1 : 0),
+                                            source_y + (vflip_seg ? source_height - 1 : 0), (hflip_seg ? -1 : 1)* source_width,
+                                            (vflip_seg ? -1 : 1)* source_height, TILE_BK_COLOR);
+                                    }
+                                }
+                            }
                         }
                         /*
                          * AUTODRAW END
@@ -3837,7 +3940,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
                                 int tile_animation_idx = get_tile_animation_index_from_glyph(mglyph);
-                                mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round), (enum auto_drawtypes*)0);
+                                mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round, mtmp), (enum auto_drawtypes*)0);
                                 mtile = maybe_get_animated_tile(mtile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);

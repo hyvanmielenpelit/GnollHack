@@ -893,52 +893,82 @@ get_wseg_dir_at(mtmp, x, y)
 struct monst* mtmp;
 int x, y;
 {
+    if (!mtmp)
+        return 0;
+
     int i = 0;
-    struct wseg* curr;
+    struct wseg* curr, *prev;
 
     if (mtmp->wormno) 
     {
-        for (curr = wtails[mtmp->wormno]; curr; curr = curr->nseg)
+        for (curr = wtails[mtmp->wormno], prev = 0; curr; prev = curr, curr = curr->nseg)
         {
+            int prevx = prev ? prev->wx : 0;
+            int prevy = prev ? prev->wy : 0;
             int curx = curr->wx;
             int cury = curr->wy;
             if (curx == x && cury == y)
             {
                 struct wseg* next_wseg = curr->nseg;
+                int nextx = 0;
+                int nexty = 0;
                 if (next_wseg)
                 {
-                    int nextx = next_wseg->wx;
-                    int nexty = next_wseg->wy;
-
-                    if (isok(nextx, nexty) && isok(curx, cury))
+                    nextx = next_wseg->wx;
+                    nexty = next_wseg->wy;
+                }
+                else
+                {
+                    /* Special case for head direction */
+                    if (prev)
                     {
-                        if (nextx < curx)
+                        nextx = curx;
+                        nexty = cury;
+                        curx = prevx;
+                        cury = prevy;
+                    }
+                    else
+                    {
+                        if (mtmp->facing_right)
                         {
-                            if (nexty < cury)
-                                i = 1;
-                            else if (nexty > cury)
-                                i = 7;
-                            else
-                                i = 8;
-                        }
-                        else if (nextx > curx)
-                        {
-                            if (nexty < cury)
-                                i = 3;
-                            else if (nexty > cury)
-                                i = 5;
-                            else
-                                i = 4;
+                            i = 4;
                         }
                         else
                         {
-                            if (nexty < cury)
-                                i = 2;
-                            else if (nexty > cury)
-                                i = 6;
-                            else
-                                i = 0;
+                            i = 8;
                         }
+                        break;
+                    }
+                }
+
+                if (isok(nextx, nexty) && isok(curx, cury))
+                {
+                    if (nextx < curx)
+                    {
+                        if (nexty < cury)
+                            i = 1;
+                        else if (nexty > cury)
+                            i = 7;
+                        else
+                            i = 8;
+                    }
+                    else if (nextx > curx)
+                    {
+                        if (nexty < cury)
+                            i = 3;
+                        else if (nexty > cury)
+                            i = 5;
+                        else
+                            i = 4;
+                    }
+                    else
+                    {
+                        if (nexty < cury)
+                            i = 2;
+                        else if (nexty > cury)
+                            i = 6;
+                        else
+                            i = 0;
                     }
                 }
                 break;
@@ -948,5 +978,105 @@ int x, y;
     return i;
 }
 
+int
+get_reverse_prev_wseg_dir_at(mtmp, x, y)
+struct monst* mtmp;
+int x, y;
+{
+    if (!mtmp)
+        return 0;
+
+    int i = 0;
+    struct wseg* curr, * prev;
+
+    if (mtmp->wormno)
+    {
+        for (curr = wtails[mtmp->wormno], prev = 0; curr; prev = curr, curr = curr->nseg)
+        {
+            int prevx = prev ? prev->wx : 0;
+            int prevy = prev ? prev->wy : 0;
+            int curx = curr->wx;
+            int cury = curr->wy;
+            if (curx == x && cury == y)
+            {
+                if (isok(prevx, prevy) && isok(curx, cury))
+                {
+                    if (prevx < curx)
+                    {
+                        if (prevy < cury)
+                            i = 1;
+                        else if (prevy > cury)
+                            i = 7;
+                        else
+                            i = 8;
+                    }
+                    else if (prevx > curx)
+                    {
+                        if (prevy < cury)
+                            i = 3;
+                        else if (prevy > cury)
+                            i = 5;
+                        else
+                            i = 4;
+                    }
+                    else
+                    {
+                        if (prevy < cury)
+                            i = 2;
+                        else if (prevx > cury)
+                            i = 6;
+                        else
+                            i = 0;
+                    }
+                }
+                else
+                {
+                    if (mtmp->facing_right)
+                    {
+                        i = 4;
+                    }
+                    else
+                    {
+                        i = 8;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    return i;
+}
+
+boolean
+is_wseg_head(mtmp, x, y)
+struct monst* mtmp;
+int x, y;
+{
+    if (!mtmp || mtmp->wormno <= 0)
+        return FALSE;
+
+    struct wseg* whead = wheads[mtmp->wormno];
+
+    if (whead->wx == x && whead->wy == y)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+boolean
+is_wseg_tailend(mtmp, x, y)
+struct monst* mtmp;
+int x, y;
+{
+    if (!mtmp || mtmp->wormno <= 0)
+        return FALSE;
+
+    struct wseg* wtail = wtails[mtmp->wormno];
+
+    if (wtail->wx == x && wtail->wy == y)
+        return TRUE;
+    else
+        return FALSE;
+}
 
 /*worm.c*/
