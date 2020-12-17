@@ -1224,6 +1224,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 //int signed_main_glyph = data->map[enl_i][enl_j].glyph;
 
                 boolean is_corner_tile = FALSE;
+                boolean manual_hflip = FALSE;
+                boolean manual_vflip = FALSE;
                 int adj_x = enl_i; /* should be the same as enl_i */
                 int adj_y = enl_j; /* should be the same as enl_j */
                 if (source_dir_idx > 0 && enlarg_idx == -1 && tile_move_idx == 0)
@@ -1311,27 +1313,66 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             {
                                             case 2:
                                                 if (wdir == 7)
-                                                    tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_LEFT;
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_LEFT;
+                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                    manual_vflip = TRUE;
+                                                }
                                                 else if (wdir == 5)
-                                                    tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                    manual_hflip = TRUE;
+                                                    manual_vflip = TRUE;
+                                                }
                                                 break;
                                             case 4:
                                                 if (wdir == 1)
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
                                                     tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    manual_hflip = FALSE;
+                                                    manual_vflip = FALSE;
+                                                }
                                                 else if (wdir == 7)
-                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_DOWN_LEFT;
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_DOWN_LEFT;
+                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    manual_hflip = FALSE;
+                                                    manual_vflip = TRUE;
+                                                }
                                                 break;
                                             case 6:
                                                 if (wdir == 1)
-                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    manual_hflip = FALSE;
+                                                    manual_vflip = FALSE;
+                                                }
                                                 else if (wdir == 3)
-                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_RIGHT;
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_RIGHT;
+                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                    manual_hflip = TRUE;
+                                                    manual_vflip = FALSE;
+                                                }
                                                 break;
                                             case 8:
                                                 if (wdir == 3)
-                                                    tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_UP_RIGHT;
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_UP_RIGHT;
+                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    manual_hflip = TRUE;
+                                                    manual_vflip = FALSE;
+                                                }
                                                 else if (wdir == 5)
-                                                    tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                {
+                                                    //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    manual_hflip = TRUE;
+                                                    manual_vflip = TRUE;
+                                                }
                                                 break;
                                             default:
                                                 break;
@@ -1380,12 +1421,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean tileflag_hflip = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FLIP_HORIZONTALLY);
                     boolean tileflag_vflip = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FLIP_VERTICALLY);
 
-                    if ((signed_glyph < 0) != tileflag_hflip) /* XOR */
+                    if (((signed_glyph < 0) != tileflag_hflip) != manual_hflip) /* XOR */
                         hflip_glyph = TRUE;
                     else
                         hflip_glyph = FALSE;
 
-                    if (tileflag_vflip)
+                    if (tileflag_vflip != manual_vflip) /* XOR */
                         vflip_glyph = TRUE;
                     else
                         vflip_glyph = FALSE;
