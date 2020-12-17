@@ -3633,6 +3633,7 @@ E int FDECL(count_wsegs, (struct monst *));
 E boolean FDECL(worm_known, (struct monst *));
 E boolean FDECL(worm_cross, (int, int, int, int));
 E int FDECL(wseg_at, (struct monst *, int, int));
+E int FDECL(get_wseg_dir_at, (struct monst*, int, int));
 
 
 /* ### worn.c ### */

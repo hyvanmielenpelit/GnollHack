@@ -884,4 +884,69 @@ int x, y;
     return res;
 }
 
+
+/*  count_wsegs()
+ *  returns the number of segments that a worm has.
+ */
+int
+get_wseg_dir_at(mtmp, x, y)
+struct monst* mtmp;
+int x, y;
+{
+    int i = 0;
+    struct wseg* curr;
+
+    if (mtmp->wormno) 
+    {
+        for (curr = wtails[mtmp->wormno]; curr; curr = curr->nseg)
+        {
+            int curx = curr->wx;
+            int cury = curr->wy;
+            if (curx == x && cury == y)
+            {
+                struct wseg* next_wseg = curr->nseg;
+                if (next_wseg)
+                {
+                    int nextx = next_wseg->wx;
+                    int nexty = next_wseg->wy;
+
+                    if (isok(nextx, nexty) && isok(curx, cury))
+                    {
+                        if (nextx < curx)
+                        {
+                            if (nexty < cury)
+                                i = 1;
+                            else if (nexty > cury)
+                                i = 7;
+                            else
+                                i = 8;
+                        }
+                        else if (nextx > curx)
+                        {
+                            if (nexty < cury)
+                                i = 3;
+                            else if (nexty > cury)
+                                i = 5;
+                            else
+                                i = 4;
+                        }
+                        else
+                        {
+                            if (nexty < cury)
+                                i = 2;
+                            else if (nexty > cury)
+                                i = 6;
+                            else
+                                i = 0;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+    return i;
+}
+
+
 /*worm.c*/

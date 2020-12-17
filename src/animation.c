@@ -3045,6 +3045,14 @@ NEARDATA struct general_tile_definition general_tile_definitions[MAX_GENERAL_TIL
     {"chain-down", CHAIN_DOWN_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"chain-left", CHAIN_LEFT_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"chain-main", CHAIN_MAIN_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-up-going-down-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-up-going-down-right", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-right-going-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-right-going-down-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-down-going-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-down-going-up-right", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-left-going-up-right", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"worm-left-going-down-right", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 STATIC_DCL int FDECL(get_shore_tile_index, (struct rm* , struct rm*));

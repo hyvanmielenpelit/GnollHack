@@ -1288,14 +1288,67 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         else if (base_layer == LAYER_MONSTER)
                         {
                             /* Worm */
+                            genericptr_t worm_stored = data->map[adj_x][adj_y].monster_comp_ptr;
+                            struct monst* worm_here = m_at(adj_x, adj_y);
+                            struct monst* worm = (worm_here == worm_stored) ? worm_here : (struct monst*)0;
+                            boolean is_adj_worm_tail = !!(data->map[adj_x][adj_y].layer_flags & LFLAGS_M_WORM_TAIL);
                             signed_glyph = NO_GLYPH;
+                            if (worm)
+                            {
+                                if (worm->mnum == PM_LONG_WORM && !is_adj_worm_tail)
+                                {
+                                    signed_glyph = NO_GLYPH;
+                                }
+                                else if (worm->mnum == PM_LONG_WORM_TAIL || (worm->mnum == PM_LONG_WORM && is_adj_worm_tail))
+                                {
+                                    if (worm->wormno >= 1 && worm->wormno < MAX_NUM_WORMS)
+                                    {
+                                        int wdir = get_wseg_dir_at(worm, adj_x, adj_y);
+                                        if (wdir % 2 == 1)
+                                        {
+                                            int tilenum = -1;
+                                            switch (source_dir_idx)
+                                            {
+                                            case 2:
+                                                if (wdir == 7)
+                                                    tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_LEFT;
+                                                else if (wdir == 5)
+                                                    tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                break;
+                                            case 4:
+                                                if (wdir == 1)
+                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                else if (wdir == 7)
+                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_DOWN_LEFT;
+                                                break;
+                                            case 6:
+                                                if (wdir == 1)
+                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                else if (wdir == 3)
+                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_RIGHT;
+                                                break;
+                                            case 8:
+                                                if (wdir == 3)
+                                                    tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_UP_RIGHT;
+                                                else if (wdir == 5)
+                                                    tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                break;
+                                            default:
+                                                break;
+                                            }
+                                            if(tilenum > -1)
+                                                signed_glyph = tilenum + GLYPH_GENERAL_TILE_OFF;
+                                        }
+                                    }
+                                }
+                            }
                         }
                         else if (base_layer == LAYER_CHAIN)
                         {
                             /* Chain */
                             if (data->map[adj_x][adj_y].layer_flags & LFLAGS_O_CHAIN)
                             {
-                                signed_glyph = (source_dir_idx / 2 - 1) + GENERAL_TILE_CHAIN_UP + GLYPH_GENERAL_TILE_OFF;
+                                signed_glyph = (source_dir_idx / 2 - 1) + GENERAL_TILE_CHAIN_IS_UP + GLYPH_GENERAL_TILE_OFF;
                             }
                             else
                                 signed_glyph = NO_GLYPH;
@@ -2801,9 +2854,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         int mid_y = tileHeight / 2;
                                         int dist_x = relevant_dx > 0 ? tileWidth - mid_x : mid_x;
                                         int dist_y = relevant_dy > 0 ? tileHeight - mid_y : mid_y;
-                                        int links = relevant_dx && !relevant_dy && 0 ? (double)(dist_x - link_source_width / 2) / (double)link_diff_x :
+                                        int links = (int) (relevant_dx && !relevant_dy && 0 ? (double)(dist_x - link_source_width / 2) / (double)link_diff_x :
                                             !relevant_dx && relevant_dy && 0 ? (double)(dist_y - link_source_height / 2) / (double)link_diff_y :
-                                            2 + 1 +(int)min((double)(dist_y - link_source_height / 2) / (double)link_diff_y, (double)(dist_x - link_source_width / 2) / (double)link_diff_x);
+                                            2 + 1 +(int)min((double)(dist_y - link_source_height / 2) / (double)link_diff_y, (double)(dist_x - link_source_width / 2) / (double)link_diff_x)
+                                            );
 
                                         if (!is_chain && !autodraw_u_punished && n == 0 && links > 1)
                                             links = 1;
@@ -4068,7 +4122,6 @@ static void setDrawOrder(PNHMapWindow data)
                 {
                     for (int i = 1; i <= NUM_WORM_SOURCE_DIRS; i++)
                     {
-
                         data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                         data->draw_order[draw_count].layer = layer_idx;
                         data->draw_order[draw_count].tile_movement_index = 0;
@@ -4295,6 +4348,42 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
     {
         int rx = x, ry = y;
         for (int source_dir_idx = 2; source_dir_idx <= NUM_CHAIN_SOURCE_DIRS * 2; source_dir_idx = source_dir_idx + 2)
+        {
+            switch (source_dir_idx)
+            {
+            case 2:
+                rx = x;
+                ry = y + 1;
+                break;
+            case 4:
+                rx = x - 1;
+                ry = y;
+                break;
+            case 6:
+                rx = x;
+                ry = y - 1;
+                break;
+            case 8:
+                rx = x + 1;
+                ry = y;
+                break;
+            default:
+                break;
+            }
+            if (isok(rx, ry))
+            {
+                data->mapDirty[rx][ry] = TRUE;
+                RECT rt2;
+                nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
+                InvalidateRect(data->hWnd, &rt2, FALSE);
+            }
+        }
+    }
+
+    if (data->map[x][y].layer_flags & LFLAGS_M_WORM_TAIL)
+    {
+        int rx = x, ry = y;
+        for (int source_dir_idx = 2; source_dir_idx <= NUM_WORM_SOURCE_DIRS * 2; source_dir_idx = source_dir_idx + 2)
         {
             switch (source_dir_idx)
             {
