@@ -1233,14 +1233,15 @@ NEARDATA struct permonst mons[] = {
     /*
      * piercers
      */
-    MON("rock piercer", None, "stalagtitic life-form", None, None, S_PIERCER, LVL(3, 3, 3, 0, 0, 0), (G_GENO | 4),
+    GENERAL_MON("rock piercer", None, "stalagtitic life-form", None, None, S_PIERCER, LVL(3, 3, 3, 0, 0, 0), (G_GENO | 4),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(200, 200, MS_SILENT, MZ_SMALL, 1, 0, MAT_MINERAL), STATS(8, 10, 9, 1, 1, 1), 
         MR_NONE, MR2_NONE, MC_NONE,
         M1_CLING | M1_HIDE | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_CARNIVORE | M1_NOTAKE,
         M2_HOSTILE, M3_NONE, M4_STONY, M5_NONE,
-		2, CLR_GRAY, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		2, CLR_GRAY, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, ACTION_INFO(ROCK_PIERCER_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ACTION_INFO(ROCK_PIERCER_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
     MON("iron piercer", None, "stalagtitic life-form made of iron", None, None, S_PIERCER, LVL(5, 3, 0, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
