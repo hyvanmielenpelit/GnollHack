@@ -190,6 +190,8 @@ register struct monst *mtmp;
                     && mon->movement >= NORMAL_SPEED) 
                 {
                     mon->movement -= NORMAL_SPEED;
+                    bhitpos.x = mtmp->mx;
+                    bhitpos.y = mtmp->my;
                     notonhead = 0;
                     (void) mattackm(mon, mtmp); /* return attack */
                 }
@@ -1928,7 +1930,10 @@ register struct obj* omonwep;
 	int hp_after = mdef->mhp;
 	int damagedealt = hp_before - hp_after;
 	update_mon_maxhp(mdef);
-    play_monster_weapon_hit_sound(magr, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mdef), get_pm_attack_index(magr->data, mattk), omonwep, damage, 0);
+    if ((magr->mnum == PM_LONG_WORM && isok(bhitpos.x, bhitpos.y) && !is_wseg_head(magr, bhitpos.x, bhitpos.y)))
+        play_monster_weapon_hit_sound_at_location(magr, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mdef), get_pm_attack_index(magr->data, mattk), omonwep, damage, 0, bhitpos.x, bhitpos.y); 
+    else
+        play_monster_weapon_hit_sound(magr, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mdef), get_pm_attack_index(magr->data, mattk), omonwep, damage, 0);
 
 	//Adjust further if mhpmax is smaller
 	if (mdef->mhp > mdef->mhpmax)

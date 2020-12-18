@@ -5108,6 +5108,31 @@ enum hmon_atkmode_types thrown;
     if (Deaf)
         return;
 
+    xchar defx = 0, defy = 0;
+    get_hit_location(surface_type, surface_source_ptr, &defx, &defy);
+    if (!isok(defx, defy))
+        return;
+
+    play_monster_weapon_hit_sound_at_location(magr, surface_type, surface_source_ptr, attack_number, weapon, damage, thrown, defx, defy);
+}
+
+void
+play_monster_weapon_hit_sound_at_location(magr, surface_type, surface_source_ptr, attack_number, weapon, damage, thrown, x, y)
+struct monst* magr;
+enum hit_surface_source_types surface_type;
+anything* surface_source_ptr;
+int attack_number; /* attack_number == NATTK indicates kicking */
+struct obj* weapon;
+double damage;
+enum hmon_atkmode_types thrown;
+xchar x, y;
+{
+    if (!magr || !surface_source_ptr)
+        return;
+
+    if (Deaf)
+        return;
+
     boolean you_attack = (magr == &youmonst);
     boolean isfemale = you_attack ? (Upolyd ? u.mfemale : flags.female) : magr->female;
 
@@ -5116,8 +5141,7 @@ enum hmon_atkmode_types thrown;
     enum object_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUND_TYPE_HIT_MELEE : OBJECT_SOUND_TYPE_HIT_THROW);
     struct ghsound_immediate_info immediateinfo = { 0 };
 
-    xchar defx = 0, defy = 0;
-    get_hit_location(surface_type, surface_source_ptr, &defx, &defy);
+    xchar defx = x, defy = y;
     if (!isok(defx, defy))
         return;
 
@@ -5168,7 +5192,6 @@ enum hmon_atkmode_types thrown;
 
 }
 
-
 void
 play_object_hit_sound(obj, surface_type, surface_source_ptr, damage, thrown)
 struct obj* obj;
@@ -5183,15 +5206,36 @@ enum hmon_atkmode_types thrown;
     if (Deaf)
         return;
 
+    xchar defx = 0, defy = 0;
+    get_hit_location(surface_type, surface_source_ptr, &defx, &defy);
+    if (!isok(defx, defy))
+        return;
+
+    play_object_hit_sound_at_location(obj, surface_type, surface_source_ptr, damage, thrown, defx, defy);
+}
+
+void
+play_object_hit_sound_at_location(obj, surface_type, surface_source_ptr, damage, thrown, x, y)
+struct obj* obj;
+enum hit_surface_source_types surface_type;
+anything* surface_source_ptr;
+double damage;
+enum hmon_atkmode_types thrown;
+xchar x, y;
+{
+    if (!surface_source_ptr || !obj)
+        return;
+
+    if (Deaf)
+        return;
+
     struct monst* mdef = 0;
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     enum object_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUND_TYPE_HIT_MELEE : OBJECT_SOUND_TYPE_HIT_THROW);
     struct ghsound_immediate_info immediateinfo = { 0 };
 
-    xchar defx = 0, defy = 0;
-    get_hit_location(surface_type, surface_source_ptr, &defx, &defy);
-    if (!isok(defx, defy))
+    if (!isok(x, y))
         return;
 
     if (obj->oartifact && artilist[obj->oartifact].soundset > OBJECT_SOUNDSET_NONE)
@@ -5205,7 +5249,6 @@ enum hmon_atkmode_types thrown;
         set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
     }
 
-    xchar x = defx, y = defy;
     if (isok(x, y))
     {
         float hearing = hearing_array[x][y];

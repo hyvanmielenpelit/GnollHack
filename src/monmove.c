@@ -1221,6 +1221,8 @@ register int after;
         if ((dist2(mtmp->mx, mtmp->my, tx, ty) < 2) && intruder
             && (intruder != mtmp)) 
         {
+            bhitpos.x = tx;
+            bhitpos.y = ty;
             notonhead = (intruder->mx != tx || intruder->my != ty);
             if (mattackm(mtmp, intruder) == 2)
                 return 2;
@@ -1624,7 +1626,9 @@ register int after;
 
 			if(mtmp2)
 			{
-				notonhead = mtmp2 && (nix != mtmp2->mx || niy != mtmp2->my);
+                bhitpos.x = nix;
+                bhitpos.y = niy;
+                notonhead = mtmp2 && (nix != mtmp2->mx || niy != mtmp2->my);
 				/* note: mstatus returns 0 if mtmp2 is nonexistent */
 				mstatus = mattackm(mtmp, mtmp2);
 
@@ -1635,7 +1639,9 @@ register int after;
 					&& mtmp2->movement >= NORMAL_SPEED) 
                 {
 					mtmp2->movement -= NORMAL_SPEED;
-					notonhead = 0;
+                    bhitpos.x = mtmp->mx;
+                    bhitpos.y = mtmp->my;
+                    notonhead = 0;
 					mstatus = mattackm(mtmp2, mtmp); /* return attack */
 					if (mstatus & MM_DEF_DIED)
 						return 2;

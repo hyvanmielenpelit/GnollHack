@@ -1896,10 +1896,20 @@ boolean* obj_destroyed;
 
 	if (!already_killed)
 	{
-		if(thrown == HMON_MELEE)
-			play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown);
+		if ((mon->mnum == PM_LONG_WORM && isok(bhitpos.x, bhitpos.y) && !is_wseg_head(mon, bhitpos.x, bhitpos.y)))
+		{
+			if (thrown == HMON_MELEE)
+				play_monster_weapon_hit_sound_at_location(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown, bhitpos.x, bhitpos.y);
+			else
+				play_object_hit_sound_at_location(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), damage, thrown, bhitpos.x, bhitpos.y);
+		}
 		else
-			play_object_hit_sound(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), damage, thrown);
+		{
+			if (thrown == HMON_MELEE)
+				play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown);
+			else
+				play_object_hit_sound(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), damage, thrown);
+		}
 
 		deduct_monster_hp(mon, damage); //	mon->mhp -= tmp;
 	}
@@ -5160,7 +5170,7 @@ unsigned long extra_flags;
 		return;
 
 	if(!(u.uswallow && mon == u.ustuck))
-		display_being_hit(mon, mon->mx, mon->my, hit_symbol_shown, damage_shown, extra_flags);
+		display_being_hit(mon, bhitpos.x, bhitpos.y, hit_symbol_shown, damage_shown, extra_flags);
 }
 
 /*uhitm.c*/

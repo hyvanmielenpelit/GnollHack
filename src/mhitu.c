@@ -478,6 +478,8 @@ register struct monst *mtmp;
         if (!rn2(is_orc(mtmp->data) ? 2 : 4)
             && distu(mtmp->mx, mtmp->my) <= 2) {
             /* Attack your steed instead */
+            bhitpos.x = u.usteed->mx;
+            bhitpos.y = u.usteed->my;
             i = mattackm(mtmp, u.usteed);
             if ((i & MM_AGR_DIED))
                 return 1;
@@ -486,6 +488,8 @@ register struct monst *mtmp;
                 || distu(mtmp->mx, mtmp->my) > 2)
                 return 0;
             /* Let your steed retaliate */
+            bhitpos.x = mtmp->mx;
+            bhitpos.y = mtmp->my;
             return !!(mattackm(u.usteed, mtmp) & MM_DEF_DIED);
         }
     }

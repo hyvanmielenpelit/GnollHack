@@ -1453,6 +1453,8 @@ int after; /* this is extra fast monster movement */
             if (after)
                 return 0; /* hit only once each move */
 
+            bhitpos.x = mtmp2->mx;
+            bhitpos.y = mtmp2->my;
             notonhead = 0;
             mstatus = mattackm(mtmp, mtmp2);
 
@@ -1464,7 +1466,11 @@ int after; /* this is extra fast monster movement */
                 && mtmp2->mlstmv != monstermoves
                 && !onscary(mtmp->mx, mtmp->my, mtmp2)
                 /* monnear check needed: long worms hit on tail */
-                && monnear(mtmp2, mtmp->mx, mtmp->my)) {
+                && monnear(mtmp2, mtmp->mx, mtmp->my)) 
+            {
+                bhitpos.x = mtmp->mx;
+                bhitpos.y = mtmp->my;
+                notonhead = 0;
                 mstatus = mattackm(mtmp2, mtmp); /* return attack */
                 if (mstatus & MM_DEF_DIED)
                     return 2;
@@ -1615,6 +1621,9 @@ int after; /* this is extra fast monster movement */
             }
 			else
 			{
+                bhitpos.x = mtarg->mx;
+                bhitpos.y = mtarg->my;
+                notonhead = 0;
                 mstatus = mattackm(mtmp, mtarg);
 
                 /* Shouldn't happen, really */
@@ -1636,6 +1645,9 @@ int after; /* this is extra fast monster movement */
                      */
                     if (!is_blinded(mtarg) && haseyes(mtarg->data))
 					{
+                        bhitpos.x = mtmp->mx;
+                        bhitpos.y = mtmp->my;
+                        notonhead = 0;
                         mstatus = mattackm(mtarg, mtmp);
                         if (mstatus & MM_DEF_DIED)
                             return 2;
