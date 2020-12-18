@@ -2506,9 +2506,12 @@ boolean pick;
         goto spotdone;
 
     check_special_room(FALSE);
+
     if (IS_SINK(levl[u.ux][u.uy].typ) && Levitation)
         dosinkfall();
-    if (!in_steed_dismounting) { /* if dismounting, we'll check again later */
+
+    if (!in_steed_dismounting) 
+    { /* if dismounting, we'll check again later */
         boolean pit;
 
         /* if levitation is due to time out at the end of this
@@ -2516,11 +2519,15 @@ boolean pick;
            that a trap here is being triggered twice, so adjust
            the timeout to prevent that */
         if (trap && (HLevitation & TIMEOUT) == 1L
-            && !(ELevitation || (HLevitation & ~(I_SPECIAL | TIMEOUT)))) {
+            && !(ELevitation || (HLevitation & ~(I_SPECIAL | TIMEOUT)))) 
+        {
             if (rn2(2)) { /* defer timeout */
                 incr_itimeout(&HLevitation, 1L);
-            } else { /* timeout early */
-                if (float_down(I_SPECIAL | TIMEOUT, 0L)) {
+            } 
+            else 
+            { /* timeout early */
+                if (float_down(I_SPECIAL | TIMEOUT, 0L)) 
+                {
                     /* levitation has ended; we've already triggered
                        any trap and [usually] performed autopickup */
                     trap = 0;
@@ -2536,7 +2543,8 @@ boolean pick;
         if (pick && !pit)
             (void) pickup(1);
 
-        if (trap) {
+        if (trap) 
+        {
             /*
              * dotrap on a fire trap calls melt_ice() which triggers
              * spoteffects() (again) which can trigger the same fire
@@ -2545,7 +2553,8 @@ boolean pick;
              * (landmine to pit) and any new trap type
              * should get triggered.
              */
-            if (!spottrap || spottraptyp != trap->ttyp) {
+            if (!spottrap || spottraptyp != trap->ttyp) 
+            {
                 spottrap = trap;
                 spottraptyp = trap->ttyp;
                 dotrap(trap, trapflag); /* fall into arrow trap, etc. */
@@ -2556,9 +2565,12 @@ boolean pick;
         if (pick && pit)
             (void) pickup(1);
     }
+
     /* Warning alerts you to ice danger */
-    if (Warning && is_ice(u.ux, u.uy)) {
-        static const char *const icewarnings[] = {
+    if (Warning && is_ice(u.ux, u.uy))
+    {
+        static const char *const icewarnings[] = 
+        {
             "The ice seems very soft and slushy.",
             "You feel the ice shift beneath you!",
             "The ice, is gonna BREAK!", /* The Dead Zone */
@@ -2570,12 +2582,14 @@ boolean pick;
                                     : (time_left < 10L) ? 1
                                       : 0]);
     }
+
     if ((mtmp = m_at(u.ux, u.uy)) && !u.uswallow) 
     {
         newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_SHOW_UNDETECTED_MONSTERS);
         flush_screen(0);
         mtmp->mundetected = mtmp->msleeping = 0;
-        switch (mtmp->data->mlet) {
+        switch (mtmp->data->mlet) 
+        {
         case S_PIERCER:
             play_sfx_sound(SFX_PIERCER_DROPS);
             pline("%s suddenly drops from the %s!", Amonnam(mtmp),
@@ -2590,15 +2604,22 @@ boolean pick;
                 adjusted_delay_output();
             }
 
-            if (is_tame(mtmp)) { /* jumps to greet you, not attack */
+            if (is_tame(mtmp)) 
+            { /* jumps to greet you, not attack */
                 ;
-            } else if (uarmh && is_metallic(uarmh)) {
+            } 
+            else if (uarmh && is_metallic(uarmh)) 
+            {
                 pline("Its blow glances off your %s.",
                       helm_simple_name(uarmh));
-            } else if (u.uac + 3 <= rnd(20)) {
+            }
+            else if (u.uac + 3 <= rnd(20)) 
+            {
                 You("are almost hit by %s!",
                     x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
-            } else {
+            } 
+            else 
+            {
                 double damage;
 
                 You("are hit by %s!",
@@ -2625,13 +2646,24 @@ boolean pick;
             {
                 play_sfx_sound(SFX_SURPRISE_ATTACK);
                 pline("%s attacks you by surprise!", Amonnam(mtmp));
+
             }
+            if (iflags.using_gui_tiles)
+            {
+                adjusted_delay_output();
+                adjusted_delay_output();
+                adjusted_delay_output();
+                adjusted_delay_output();
+                adjusted_delay_output();
+            }
+
             break;
         }
         mnexto(mtmp); /* have to move the monster */
     }
  spotdone:
-    if (!--inspoteffects) {
+    if (!--inspoteffects) 
+    {
         spotterrain = STONE; /* 0 */
         spotloc.x = spotloc.y = 0;
     }

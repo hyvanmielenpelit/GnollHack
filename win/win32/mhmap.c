@@ -4608,18 +4608,25 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                         otmp = otmp->nexthere;
 
                     if (otmp)
-                        enlarg = tile2enlargement[glyph2tile[abs(otmp->glyph)]]; // obj_to_glyph(otmp, rn2_on_display_rng))]];
+                    {
+                        int ntile = glyph2tile[abs(otmp->glyph)];
+                        enum autodraw_types autodraw = AUTODRAW_NONE;
+                        ntile = maybe_get_replaced_tile(ntile, x, y, data_to_replacement_info(otmp->glyph, layer_idx, otmp, m_at(x, y), data->map[x][y].layer_flags), &autodraw);
+                        enlarg = tile2enlargement[ntile]; // obj_to_glyph(otmp, rn2_on_display_rng))]];
+                    }
                 }
             }
             else
             {
+                boolean mapanimateddummy = 0;
+                enum autodraw_types autodraw = AUTODRAW_NONE;
                 int anim_frame_idx = -1, main_tile_idx = -1;
                 int signed_glyph = data->map[x][y].layer_glyphs[layer_idx];
                 int glyph = abs(signed_glyph);
                 flipped = (signed_glyph < 0);
                 int ntile = glyph2tile[glyph];
-                boolean mapanimateddummy = 0;
-                enum autodraw_types autodraw = AUTODRAW_NONE;
+                ntile = maybe_get_replaced_tile(ntile, x, y, data_to_replacement_info(signed_glyph, layer_idx, (struct obj*)0, m_at(x, y), data->map[x][y].layer_flags), &autodraw);
+
                 int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
                 if (context.u_action_animation_counter_on && layer_idx == LAYER_MONSTER && x == u.ux && y == u.uy)
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
