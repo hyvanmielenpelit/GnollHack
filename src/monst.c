@@ -1706,7 +1706,7 @@ NEARDATA struct permonst mons[] = {
         M3_NONE, 
         M4_NONE, M5_NONE,
         2, CLR_MAGENTA, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    GENERAL_MON("long worm", None, "enormous worm that can span across many squares", None, None, S_WORM, LVL(9, 3, 5, 0, 10, 0), (G_NOGEN | G_GENO | 2),
+    GENERAL_MON("long worm", None, "enormous worm that can span across many squares", None, None, S_WORM, LVL(9, 3, 5, 0, 10, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 500, MS_SILENT, MZ_GIGANTIC, 1, 0, MAT_FLESH), STATS(STR19(19), 7, 20, 1, 1, 1),
