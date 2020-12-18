@@ -1321,9 +1321,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 else if (wdir == 5)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
-                                                    manual_hflip = TRUE;
-                                                    manual_vflip = TRUE;
+                                                    tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                    manual_hflip = FALSE;
+                                                    manual_vflip = FALSE;
                                                 }
                                                 break;
                                             case 4:
@@ -1353,25 +1353,25 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 else if (wdir == 3)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_RIGHT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
-                                                    manual_hflip = TRUE;
-                                                    manual_vflip = FALSE;
+                                                    tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                    manual_hflip = FALSE;
+                                                    manual_vflip = TRUE;
                                                 }
                                                 break;
                                             case 8:
                                                 if (wdir == 3)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_UP_RIGHT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
-                                                    manual_hflip = TRUE;
-                                                    manual_vflip = FALSE;
+                                                    tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                    manual_hflip = FALSE;
+                                                    manual_vflip = TRUE;
                                                 }
                                                 else if (wdir == 5)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
-                                                    manual_hflip = TRUE;
-                                                    manual_vflip = TRUE;
+                                                    tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                    manual_hflip = FALSE;
+                                                    manual_vflip = FALSE;
                                                 }
                                                 break;
                                             default:
@@ -3095,7 +3095,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 /* Long worm here */
                                 
                                 int source_glyph_seg_end = autodraws[autodraw].source_glyph;
-                                int source_glyph_seg_dir = autodraws[autodraw].source_glyph2;
+                                int source_glyph_seg_dir_out = autodraws[autodraw].source_glyph2;
+                                int source_glyph_seg_dir_in = autodraws[autodraw].source_glyph2 + 4;
                                 int source_glyph_seg_layer = autodraws[autodraw].source_glyph3;
                                 int drawing_tail = autodraws[autodraw].flags;
                                 double scale = (double)(rect->bottom - rect->top) / (double)tileHeight;
@@ -3113,13 +3114,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     case 0:
                                     case 2:
                                     case 4:
+                                        if (is_head || is_tailend)
+                                            continue;
                                         source_glyph = source_glyph_seg_layer + wlayer / 2;
                                         break;
                                     case 1:
-                                        source_glyph = is_tailend ? NO_GLYPH : is_head ? source_glyph_seg_end : source_glyph_seg_dir;
+                                        source_glyph = is_tailend ? NO_GLYPH : is_head ? source_glyph_seg_end : source_glyph_seg_dir_in;
                                         break;
                                     case 3:
-                                        source_glyph = is_tailend ? source_glyph_seg_end : is_head ? NO_GLYPH : source_glyph_seg_dir;
+                                        source_glyph = is_tailend ? source_glyph_seg_end : is_head ? NO_GLYPH : source_glyph_seg_dir_out;
                                         break;
                                     default:
                                         break;
@@ -3141,9 +3144,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             vflip_seg = FALSE;
                                             break;
                                         case 3:
-                                            source_glyph += 2;
-                                            hflip_seg = TRUE;
-                                            vflip_seg = FALSE;
+                                            source_glyph += 3;
+                                            hflip_seg = FALSE;
+                                            vflip_seg = TRUE;
                                             break;
                                         case 4:
                                             source_glyph += 1;
@@ -3151,9 +3154,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             vflip_seg = FALSE;
                                             break;
                                         case 5:
-                                            source_glyph += 2;
-                                            hflip_seg = TRUE;
-                                            vflip_seg = TRUE;
+                                            source_glyph += 3;
+                                            hflip_seg = FALSE;
+                                            vflip_seg = FALSE;
                                             break;
                                         case 6:
                                             source_glyph += 0;
@@ -3190,8 +3193,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             data->backBufferDC, target_x, target_y,
                                             target_width, target_height, data->tileDC, source_x + (hflip_seg ? source_width - 1 : 0),
-                                            source_y + (vflip_seg ? source_height - 1 : 0), (hflip_seg ? -1 : 1)* source_width,
-                                            (vflip_seg ? -1 : 1)* source_height, TILE_BK_COLOR);
+                                            source_y + (vflip_seg ? source_height - 1 : 0), (hflip_seg ? -1 : 1) * source_width,
+                                            (vflip_seg ? -1 : 1) * source_height, TILE_BK_COLOR);
                                     }
                                 }
                             }
