@@ -2583,7 +2583,11 @@ boolean pick;
 
             if (iflags.using_gui_tiles)
             {
-                delay_output_milliseconds(250);
+                adjusted_delay_output();
+                adjusted_delay_output();
+                adjusted_delay_output();
+                adjusted_delay_output();
+                adjusted_delay_output();
             }
 
             if (is_tame(mtmp)) { /* jumps to greet you, not attack */
