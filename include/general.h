@@ -66,6 +66,7 @@ struct replacement_info {
 	int layer;
 	struct obj* object;
 	struct monst* monster;
+	unsigned long layer_flags;
 };
 
 struct extended_menu_info {

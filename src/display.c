@@ -126,7 +126,7 @@
 #include "artilist.h"
 
 STATIC_DCL void FDECL(display_monster,
-                      (XCHAR_P, XCHAR_P, struct monst *, int, XCHAR_P));
+                      (XCHAR_P, XCHAR_P, struct monst *, int, XCHAR_P, boolean));
 STATIC_DCL int FDECL(swallow_to_glyph, (int, int));
 STATIC_DCL void FDECL(display_warning, (struct monst *));
 
@@ -612,12 +612,13 @@ int x, y, show;
  *
  */
 STATIC_OVL void
-display_monster(x, y, mon, sightflags, worm_tail)
+display_monster(x, y, mon, sightflags, worm_tail, dropping_piercer)
 register xchar x, y;        /* display position */
 register struct monst *mon; /* monster to display */
 int sightflags;             /* 1 if the monster is physically seen;
                                2 if detected using Detect_monsters */
 xchar worm_tail;            /* mon is actually a worm tail */
+boolean dropping_piercer;
 {
     boolean mon_mimic = (M_AP_TYPE(mon) != M_AP_NOTHING);
     int sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mon)));
@@ -754,7 +755,14 @@ xchar worm_tail;            /* mon is actually a worm tail */
         if (worm_tail)
             extra_flags |= (LFLAGS_M_WORM_TAIL | LFLAGS_M_WORM_SEEN);
 
-        show_monster_glyph_with_extra_info(x, y, num, /*worm_tail ? (struct monst*)0 :*/ mon, extra_flags, 0);
+        if (dropping_piercer)
+        {
+            extra_flags |= LFLAGS_M_DROPPING_PIERCER;
+            show_glyph_on_layer_and_ascii(x, y, num, LAYER_MISSILE);
+            show_extra_info(x, y, extra_flags, 0);
+        }
+        else
+            show_monster_glyph_with_extra_info(x, y, num, /*worm_tail ? (struct monst*)0 :*/ mon, extra_flags, 0);
         clear_monster_layer_memory_at(x, y);
     }
 }
@@ -1050,7 +1058,7 @@ xchar x, y;
                 (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon))
                 ? PHYSICALLY_SEEN
                 : DETECTED,
-                is_worm_tail(mon));
+                is_worm_tail(mon), FALSE);
     }
 
     /* Environment layer */
@@ -1251,12 +1259,27 @@ int damage_shown;
             boolean location_has_boulder = (sobj_at(BOULDER, x, y) != 0);
             if (see_self)
                 display_self_with_extra_info_choose_ascii(disp_flags, damage_shown, location_has_boulder);
+
+            if (newsym_flags & NEWSYM_FLAGS_SHOW_UNDETECTED_MONSTERS)
+            {
+                mon = m_at(x, y);
+                worm_tail = is_worm_tail(mon);
+                see_it = mon && mon->mundetected && (mon_visible(mon) || ((newsym_flags & NEWSYM_FLAGS_SHOW_UNDETECTED_MONSTERS) && mon_visible_less_undetected(mon))
+                    || (!worm_tail && (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon)))
+                    );
+                if (mon && (see_it || (!worm_tail && Detect_monsters)))
+                {
+                    display_monster(x, y, mon,
+                        see_it ? PHYSICALLY_SEEN : DETECTED,
+                        worm_tail, TRUE);
+                }
+            }
         }
         else
         {
             mon = m_at(x, y);
             worm_tail = is_worm_tail(mon);
-            see_it = mon && (mon_visible(mon)
+            see_it = mon && (mon_visible(mon) || ((newsym_flags & NEWSYM_FLAGS_SHOW_UNDETECTED_MONSTERS) && mon_visible_less_undetected(mon))
                              || (!worm_tail && (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon)))
                             );
 
@@ -1279,7 +1302,7 @@ int damage_shown;
                 /* also gets rid of any invisibility glyph */
                 display_monster(x, y, mon,
                     see_it ? PHYSICALLY_SEEN : DETECTED,
-                    worm_tail);
+                    worm_tail, FALSE);
 
                 check_special_level_naming_by_mon(mon);
 
@@ -1352,7 +1375,7 @@ int damage_shown;
                 /* Seen or sensed monsters are printed every time.
                    This also gets rid of any invisibility glyph. */
                 display_monster(x, y, mon, see_it ? 0 : DETECTED,
-                                is_worm_tail(mon) ? TRUE : FALSE);
+                                is_worm_tail(mon) ? TRUE : FALSE, FALSE);
 
                 check_special_level_naming_by_mon(mon);
             }

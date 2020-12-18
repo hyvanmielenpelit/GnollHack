@@ -34,6 +34,7 @@
 #define NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS (NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_MISSILE_AND_ZAP_GLYPHS)
 #define NEWSYM_FLAGS_KEEP_OLD_FLAGS                     0x00000020UL
 #define NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS_AND_FLAGS (NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS)
+#define NEWSYM_FLAGS_SHOW_UNDETECTED_MONSTERS           0x00000040UL
 
 /*
  * vobj_at()
@@ -96,11 +97,15 @@
  * vobj_at() returns a pointer to an object that the hero can see there.
  * Infravision is not taken into account.
  */
-#define mon_visible(mon) \
+#define mon_visible_less_undetected(mon) \
     (/* The hero can see the monster IF the monster                     */ \
      (!is_invisible(mon) || See_invisible)  /*     1. is not invisible        */ \
-     && !mon->mundetected             /* AND 2. not an undetected hider */ \
      && !(mon->mburied || u.uburied)) /* AND 3. neither you nor it is buried */
+
+#define mon_visible(mon) \
+    (/* The hero can see the monster IF the monster                     */ \
+     mon_visible_less_undetected(mon)  /*     1. As above        */ \
+     && !mon->mundetected) /* 2. not an undetected hider*/
 
 /*
  * see_with_infrared()

@@ -3319,16 +3319,18 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 struct replacement_info
-data_to_replacement_info(signed_glyph, layer, otmp, mtmp)
+data_to_replacement_info(signed_glyph, layer, otmp, mtmp, layer_flags)
 int signed_glyph, layer;
 struct obj* otmp;
 struct monst* mtmp;
+unsigned long layer_flags;
 {
     struct replacement_info info = { 0 };
     info.signed_glyph = signed_glyph;
     info.layer = layer;
     info.object = otmp;
     info.monster = mtmp;
+    info.layer_flags = layer_flags;
 
     return info;
 }
@@ -3343,6 +3345,7 @@ enum autodraw_types* autodraw_ptr;
 #ifdef USE_TILES
     struct obj* otmp = info.object;
     struct monst* mtmp = info.monster;
+    unsigned long layer_flags = info.layer_flags;
     short replacement_idx = tile2replacement[ntile];
     if (replacement_idx > 0)
     {
@@ -3700,7 +3703,7 @@ enum autodraw_types* autodraw_ptr;
         }  
         case REPLACEMENT_ACTION_PIERCER:
         {
-            if (!mtmp)
+            if (!mtmp && !(layer_flags & LFLAGS_M_DROPPING_PIERCER))
                 return ntile;
 
             if (autodraw_ptr)
@@ -3709,7 +3712,7 @@ enum autodraw_types* autodraw_ptr;
             if (replacements[replacement_idx].number_of_tiles < 1)
                 return ntile;
 
-            if (mtmp->mundetected)
+            if ((layer_flags & LFLAGS_M_DROPPING_PIERCER) || (mtmp && mtmp->mundetected))
             {
                 int glyph_idx = 0;
                 if (autodraw_ptr)

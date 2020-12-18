@@ -75,7 +75,7 @@ struct layer_info {
 /* hit_tile_bit 020 */
 /* free for m_ flag 040 */
 /* free for m_ flag 080 */
-/* free for m_ flag 100 */
+#define LFLAGS_M_DROPPING_PIERCER   0x00020000UL
 #define LFLAGS_M_WORM_TAIL          0x00040000UL
 #define LFLAGS_M_WORM_SEEN          0x00080000UL
 #define LFLAGS_M_MASK               0x000FFFFFUL

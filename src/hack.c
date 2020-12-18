@@ -2570,13 +2570,22 @@ boolean pick;
                                     : (time_left < 10L) ? 1
                                       : 0]);
     }
-    if ((mtmp = m_at(u.ux, u.uy)) && !u.uswallow) {
+    if ((mtmp = m_at(u.ux, u.uy)) && !u.uswallow) 
+    {
+        newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_SHOW_UNDETECTED_MONSTERS);
+        flush_screen(0);
         mtmp->mundetected = mtmp->msleeping = 0;
         switch (mtmp->data->mlet) {
         case S_PIERCER:
             play_sfx_sound(SFX_PIERCER_DROPS);
             pline("%s suddenly drops from the %s!", Amonnam(mtmp),
                   ceiling(u.ux, u.uy));
+
+            if (iflags.using_gui_tiles)
+            {
+                delay_output_milliseconds(250);
+            }
+
             if (is_tame(mtmp)) { /* jumps to greet you, not attack */
                 ;
             } else if (uarmh && is_metallic(uarmh)) {
