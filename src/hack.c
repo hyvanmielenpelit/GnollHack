@@ -2585,10 +2585,10 @@ boolean pick;
 
     if ((mtmp = m_at(u.ux, u.uy)) && !u.uswallow) 
     {
-        newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_SHOW_UNDETECTED_MONSTERS);
-        flush_screen(0);
         mtmp->mundetected = mtmp->msleeping = 0;
-        switch (mtmp->data->mlet) 
+        newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_SHOW_DROPPING_PIERCER);
+        flush_screen(0);
+        switch (mtmp->data->mlet)
         {
         case S_PIERCER:
             play_sfx_sound(SFX_PIERCER_DROPS);
@@ -2597,11 +2597,8 @@ boolean pick;
 
             if (iflags.using_gui_tiles)
             {
-                adjusted_delay_output();
-                adjusted_delay_output();
-                adjusted_delay_output();
-                adjusted_delay_output();
-                adjusted_delay_output();
+                for(int i = 0; i < 8; i++)
+                    adjusted_delay_output();
             }
 
             if (is_tame(mtmp)) 
@@ -2650,11 +2647,8 @@ boolean pick;
             }
             if (iflags.using_gui_tiles)
             {
-                adjusted_delay_output();
-                adjusted_delay_output();
-                adjusted_delay_output();
-                adjusted_delay_output();
-                adjusted_delay_output();
+                for (int i = 0; i < 8; i++)
+                    adjusted_delay_output();
             }
 
             break;

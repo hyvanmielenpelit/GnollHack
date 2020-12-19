@@ -1263,11 +1263,11 @@ int damage_shown;
             if (see_self)
                 display_self_with_extra_info_choose_ascii(disp_flags, damage_shown, location_has_boulder);
 
-            if (newsym_flags & NEWSYM_FLAGS_SHOW_UNDETECTED_MONSTERS)
+            if (newsym_flags & NEWSYM_FLAGS_SHOW_DROPPING_PIERCER)
             {
                 mon = m_at(x, y);
                 worm_tail = is_worm_tail(mon);
-                see_it = mon && mon->mundetected && (mon_visible(mon) || ((newsym_flags & NEWSYM_FLAGS_SHOW_UNDETECTED_MONSTERS) && mon_visible_less_undetected(mon))
+                see_it = mon && (mon_visible(mon)
                     || (!worm_tail && (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon)))
                     );
                 if (mon && (see_it || (!worm_tail && Detect_monsters)))
@@ -1282,7 +1282,7 @@ int damage_shown;
         {
             mon = m_at(x, y);
             worm_tail = is_worm_tail(mon);
-            see_it = mon && (mon_visible(mon) || ((newsym_flags & NEWSYM_FLAGS_SHOW_UNDETECTED_MONSTERS) && mon_visible_less_undetected(mon))
+            see_it = mon && (mon_visible(mon)
                              || (!worm_tail && (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon)))
                             );
 
