@@ -287,7 +287,7 @@ char *buf, *monbuf; /* buf: output, monbuf: optional output */
 struct monst *mtmp;
 int x, y;
 {
-    char *name, monnambuf[BUFSZ], headbuf[BUFSZ];
+    char *name, monnambuf[BUFSZ], headbuf[BUFSZ], tmpbuf[BUFSZ];
     boolean accurate = !Hallucination;
 
     name = (mtmp->data == &mons[PM_COYOTE] && accurate)
@@ -299,17 +299,21 @@ int x, y;
 	if ((mtmp->data->heads > 3 && !(mtmp->data->geno & G_UNIQ) && !is_mname_proper_name(mtmp->data)) || (mtmp->data->heads > 1 && mtmp->heads_left != mtmp->data->heads))
 		Sprintf(headbuf, "%d-headed ", mtmp->heads_left);
 
-    Sprintf(buf, "level %d %s%s%s%s", accurate ? mtmp->data->difficulty : rn2(3) ? rnd(30) : rnd(80),
+    strcpy(tmpbuf, "");
+    Sprintf(tmpbuf, "%s%s%s",
+        (is_tame(mtmp) && accurate)
+        ? "tame "
+        : (is_peaceful(mtmp) && accurate)
+        ? "peaceful "
+        : "",
+        headbuf,
+        name);
+
+    Sprintf(buf, "level %d %s%s", accurate ? mtmp->data->difficulty : rn2(3) ? rnd(30) : rnd(80),
             (mtmp->mx != x || mtmp->my != y)
-                ? ((mtmp->isshk && accurate) ? "tail of " : "tail of a ")
+                ? "tail of "
                 : "",
-            (is_tame(mtmp) && accurate)
-                ? "tame "
-                : (is_peaceful(mtmp) && accurate)
-                    ? "peaceful "
-                    : "",
-				headbuf,
-            name);
+        (mtmp->mx != x || mtmp->my != y) && !(mtmp->isshk && accurate) ? an(tmpbuf) : tmpbuf);
 
 
     if (u.ustuck == mtmp) {
