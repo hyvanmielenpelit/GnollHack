@@ -2603,7 +2603,7 @@ dosacrifice()
             if (u.ulevel > 2 && u.uluck >= 0
                 && !rn2(10 + (2 * u.ugifts * nartifacts))) 
             {
-                otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy), urole.rolenum == ROLE_MONK ? TRUE : FALSE);
+                otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy), urole.rolenum == ROLE_MONK ? MKARTIFACT_FLAGS_NONWEAPONS_ONLY : MKARTIFACT_FLAGS_NONE);
                 if (!otmp)
                 {
                     otmp = mksobj(get_artifact_replacement_item_otyp(), TRUE, FALSE, 2);

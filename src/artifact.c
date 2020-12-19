@@ -126,10 +126,10 @@ int artinum;
    for the 1st, ``obj = mk_artifact((struct obj *)0, some_alignment);''.
  */
 struct obj *
-mk_artifact(otmp, alignment, nonweaponsonly)
+mk_artifact(otmp, alignment, mkflags)
 struct obj *otmp;   /* existing object; ignored if alignment specified */
 aligntyp alignment; /* target alignment, or A_NONE */
-boolean nonweaponsonly; /* for monks */
+uchar mkflags; /* for monks */
 {
     const struct artifact *a;
     int m, n, altn;
@@ -137,6 +137,8 @@ boolean nonweaponsonly; /* for monks */
     short o_typ = (by_align || !otmp) ? 0 : otmp->otyp;
     boolean unique = !by_align && otmp && is_otyp_unique(o_typ);
     short eligible[NUM_ARTIFACTS];
+	boolean nonweaponsonly = !!(mkflags & MKARTIFACT_FLAGS_NONWEAPONS_ONLY);
+	boolean novorpal = !!(mkflags & MKARTIFACT_FLAGS_NO_VORPAL_WEAPONS);
 
     n = altn = 0;    /* no candidates found yet */
     eligible[0] = 0; /* lint suppression */
@@ -148,6 +150,8 @@ boolean nonweaponsonly; /* for monks */
         if ((a->aflags & AF_NOGEN) || unique)
             continue;
 		if (nonweaponsonly && objects[a->otyp].oc_class == WEAPON_CLASS)
+			continue;
+		if (novorpal && ((a->aflags & (AF_BEHEAD | AF_BISECT)) != 0 || (objects[a->otyp].oc_aflags & (A1_VORPAL | A1_BISECT)) != 0))
 			continue;
 
         if (!by_align) {

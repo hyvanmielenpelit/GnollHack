@@ -309,5 +309,9 @@ enum game_cursor_types
 #define GH_LONG_MIN    (-2147483647L - 1)	// minimum (signed) long value
 #define GH_LONG_MAX      2147483647L		// maximum (signed) long value
 
+#define MKARTIFACT_FLAGS_NONE				0x00
+#define MKARTIFACT_FLAGS_NONWEAPONS_ONLY	0x01
+#define MKARTIFACT_FLAGS_NO_VORPAL_WEAPONS	0x02
+
 #endif /* GENERAL_H */
 

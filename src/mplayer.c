@@ -274,7 +274,7 @@ register boolean special;
             else if (!rn2(2))
                 otmp->greased = 1;
             if (special && rn2(2))
-                otmp = mk_artifact(otmp, A_NONE, FALSE);
+                otmp = mk_artifact(otmp, A_NONE, MKARTIFACT_FLAGS_NO_VORPAL_WEAPONS);
             /* usually increase stack size if stackable weapon */
             if (objects[otmp->otyp].oc_merge && !otmp->oartifact
                 && monmightthrowwep(otmp))

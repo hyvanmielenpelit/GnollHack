@@ -2018,7 +2018,7 @@ struct mkroom *croom;
     }
     else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_ARTIFACT)
     {
-        otmp = mk_artifact((struct obj*)0, (aligntyp)A_NONE, FALSE);
+        otmp = mk_artifact((struct obj*)0, (aligntyp)A_NONE, MKARTIFACT_FLAGS_NONE);
         if(otmp)
             place_object(otmp, x, y);
         else
@@ -2026,7 +2026,7 @@ struct mkroom *croom;
     }
     else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_CLASS_ARTIFACT)
     {
-        otmp = mk_artifact((struct obj*)0, (aligntyp)A_NONE, Role_if(PM_MONK) ? TRUE : FALSE);
+        otmp = mk_artifact((struct obj*)0, (aligntyp)A_NONE, Role_if(PM_MONK) ? MKARTIFACT_FLAGS_NONWEAPONS_ONLY : MKARTIFACT_FLAGS_NONE);
         if (otmp)
             place_object(otmp, x, y);
         else

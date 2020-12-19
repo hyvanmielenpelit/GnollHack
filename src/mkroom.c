@@ -776,7 +776,7 @@ struct mkroom *sroom;
         }
         if (!special_item_created && lastbox && firstbox && rn2(100) < special_item_chance)
         {
-            struct obj* item = mk_artifact((struct obj*)0, A_NONE, FALSE);
+            struct obj* item = mk_artifact((struct obj*)0, A_NONE, MKARTIFACT_FLAGS_NONE);
             if (item)
             {
                 struct obj* box = !middlebox || rn2(3) ? (!rn2(2) ? firstbox : lastbox) : middlebox;
