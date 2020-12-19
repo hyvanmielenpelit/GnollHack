@@ -357,7 +357,7 @@ int x, y, gloc;
         /* unlike '/M', this skips monsters revealed by
            warning glyphs and remembered unseen ones */
         return (glyph_is_monster(glyph)
-                && glyph != monnum_to_glyph(PM_LONG_WORM_TAIL));
+                && glyph != monnum_to_glyph(PM_LONG_WORM_TAIL) && glyph != monnum_to_glyph(PM_ELDER_LONG_WORM_TAIL));
     case GLOC_OBJS:
         return (glyph_is_object(glyph)
                 && glyph != objnum_to_glyph(BOULDER)

@@ -344,7 +344,8 @@
 #define GLYPH_ZAP_OFF     ((MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS) + GLYPH_EXPLODE_OFF)
 #define GLYPH_SWALLOW_OFF ((MAX_ZAP_TYPES * NUM_ZAP_CHARS) + GLYPH_ZAP_OFF)
 #define GLYPH_WARNING_OFF ((NUM_MONSTERS * MAX_SWALLOW_CHARS) + GLYPH_SWALLOW_OFF)
-#define GLYPH_STATUE_OFF  (WARNCOUNT + GLYPH_WARNING_OFF)
+#define GLYPH_WORM_OFF    (WARNCOUNT + GLYPH_WARNING_OFF)
+#define GLYPH_STATUE_OFF  ((MAX_LONG_WORM_TYPES * MAX_WORM_TILES) + GLYPH_WORM_OFF)
 #define GLYPH_FEMALE_STATUE_OFF (NUM_MONSTERS + GLYPH_STATUE_OFF)
 #define GLYPH_BODY_OFF    (NUM_MONSTERS + GLYPH_FEMALE_STATUE_OFF)
 #define GLYPH_FEMALE_BODY_OFF    (NUM_MONSTERS + GLYPH_BODY_OFF)
@@ -681,7 +682,7 @@
 
 #define glyph_is_explosion(glyph)   \
     ((abs(glyph)) >= GLYPH_EXPLODE_OFF \
-     && (abs(glyph)) < (GLYPH_EXPLODE_OFF + (MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS)))
+     && (abs(glyph)) < (GLYPH_EXPLODE_OFF + (MAX_EXPLOSIONS * MAX_EXPLOSION_CHARS)))
 #define glyph_is_zap(glyph)   \
     ((abs(glyph)) >= GLYPH_ZAP_OFF \
      && (abs(glyph)) < (GLYPH_ZAP_OFF + (MAX_ZAP_TYPES * NUM_ZAP_CHARS)))
@@ -691,6 +692,9 @@
 #define glyph_is_warning(glyph)   \
     ((abs(glyph)) >= GLYPH_WARNING_OFF \
      && (abs(glyph)) < (GLYPH_WARNING_OFF + WARNCOUNT))
+#define glyph_is_worm(glyph)   \
+    ((abs(glyph)) >= GLYPH_WORM_OFF \
+     && (abs(glyph)) < (GLYPH_WORM_OFF + (MAX_LONG_WORM_TYPES * MAX_WORM_TILES)))
 
 #define glyph_is_cmap_boulder(glyph) \
     ((glyph_is_cmap(glyph) && (((abs(glyph)) - GLYPH_CMAP_OFF) % NUM_CMAP_TYPE_CHARS) == S_extra_boulder) \

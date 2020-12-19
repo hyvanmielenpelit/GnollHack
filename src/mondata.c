@@ -1533,4 +1533,16 @@ struct permonst *mdat;
     return TRUE;
 }
 
+int
+get_worm_tail_mnum(ptr)
+struct permonst* ptr;
+{
+    if (ptr == &mons[PM_ELDER_LONG_WORM])
+        return PM_ELDER_LONG_WORM_TAIL;
+    else if (ptr == &mons[PM_LONG_WORM])
+        return PM_LONG_WORM_TAIL;
+    else
+        return 0; /* Should not get here */
+}
+
 /*mondata.c*/

@@ -620,6 +620,9 @@ int sightflags;             /* 1 if the monster is physically seen;
 xchar worm_tail;            /* mon is actually a worm tail */
 boolean dropping_piercer;
 {
+    if (!mon)
+        return;
+
     boolean mon_mimic = (M_AP_TYPE(mon) != M_AP_NOTHING);
     int sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mon)));
     /*
@@ -732,7 +735,7 @@ boolean dropping_piercer;
 
         if (is_tame(mon) && !Hallucination) {
             if (worm_tail)
-                num = monnum_to_glyph(PM_LONG_WORM_TAIL);
+                num = monnum_to_glyph(get_worm_tail_mnum(mon->data));
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
 
@@ -740,7 +743,7 @@ boolean dropping_piercer;
         } else if (sightflags == DETECTED) {
             if (worm_tail)
                 num = monnum_to_glyph(
-                             what_mon(PM_LONG_WORM_TAIL, rn2_on_display_rng));
+                             what_mon(get_worm_tail_mnum(mon->data), rn2_on_display_rng));
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
 
@@ -748,7 +751,7 @@ boolean dropping_piercer;
         } else {
             if (worm_tail)
                 num = monnum_to_glyph(
-                             what_mon(PM_LONG_WORM_TAIL, rn2_on_display_rng));
+                             what_mon(get_worm_tail_mnum(mon->data), rn2_on_display_rng));
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
@@ -2662,8 +2665,11 @@ int x, y, glyph;
 			&& glyph < GLYPH_FEMALE_STATUE_OFF) { /* a statue */
 			text = "statue";
 			offset = glyph - GLYPH_STATUE_OFF;
+        } else if (glyph >= GLYPH_WORM_OFF && glyph  < GLYPH_STATUE_OFF) { /* worm */
+            text = "worm";
+            offset = glyph - GLYPH_WORM_OFF;
 		} else if (glyph >= GLYPH_WARNING_OFF
-            && glyph < GLYPH_STATUE_OFF) { /* a warning */
+            && glyph < GLYPH_WORM_OFF) { /* a warning */
             text = "warning";
             offset = glyph - GLYPH_WARNING_OFF;
         } else if (glyph >= GLYPH_SWALLOW_OFF) { /* swallow border */

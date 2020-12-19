@@ -1626,7 +1626,7 @@ struct obj *sobj; /* scroll--actually fake spellbook--object */
                 continue;
             newglyph = glyph_at(zx, zy);
             if (glyph_is_monster(newglyph)
-                && glyph_to_mon(newglyph) != PM_LONG_WORM_TAIL)
+                && glyph_to_mon(newglyph) != PM_LONG_WORM_TAIL && glyph_to_mon(newglyph) != PM_ELDER_LONG_WORM_TAIL)
                 map_invisible(zx, zy);
         }
     see_monsters();

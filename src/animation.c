@@ -2502,6 +2502,28 @@ NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { AUTODRAW_LONG_WORM_TAIL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "elder-long-worm-head-replacement",
+      ELDER_LONG_WORM_HEAD_REPLACEMENT_TILES, ELDER_LONG_WORM_HEAD_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW_AND_LONG_WORM,
+      AUTODRAW_NONE,
+      { "empty-canvas", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { AUTODRAW_ELDER_LONG_WORM_HEAD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elder-long-worm-tail-replacement",
+      ELDER_LONG_WORM_TAIL_REPLACEMENT_TILES, ELDER_LONG_WORM_TAIL_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW_AND_LONG_WORM,
+      AUTODRAW_NONE,
+      { "empty-canvas", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { AUTODRAW_ELDER_LONG_WORM_TAIL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "rock-piercer-replacement",
       ROCK_PIERCER_REPLACEMENT_TILES, ROCK_PIERCER_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
@@ -3015,20 +3037,40 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         "long-worm-autodraw-head",
         AUTODRAW_DRAW_LONG_WORM,
         0,
-        GENERAL_TILE_WORM_HEAD_COMING_FROM_UP + GLYPH_GENERAL_TILE_OFF,
-        GENERAL_TILE_WORM_SEGMENT_GOING_UP + GLYPH_GENERAL_TILE_OFF,
-        GENERAL_TILE_WORM_SEGMENT_BOTTOM + GLYPH_GENERAL_TILE_OFF,
-        GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + GLYPH_GENERAL_TILE_OFF,
+        WORM_TILE_WORM_HEAD_COMING_FROM_UP + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_SEGMENT_GOING_UP + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_SEGMENT_BOTTOM + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
         0UL
     },
     {
         "long-worm-autodraw-tail",
         AUTODRAW_DRAW_LONG_WORM,
         1,
-        GENERAL_TILE_WORM_TAIL_GOING_UP + GLYPH_GENERAL_TILE_OFF,
-        GENERAL_TILE_WORM_SEGMENT_GOING_UP + GLYPH_GENERAL_TILE_OFF,
-        GENERAL_TILE_WORM_SEGMENT_BOTTOM + GLYPH_GENERAL_TILE_OFF,
-        GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + GLYPH_GENERAL_TILE_OFF,
+        WORM_TILE_WORM_TAIL_GOING_UP + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_SEGMENT_GOING_UP + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_SEGMENT_BOTTOM + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + LONG_WORM_TYPE_ADULT * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        0UL
+    },
+    {
+        "elder-long-worm-autodraw-head",
+        AUTODRAW_DRAW_LONG_WORM,
+        0,
+        WORM_TILE_WORM_HEAD_COMING_FROM_UP + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_SEGMENT_GOING_UP + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_SEGMENT_BOTTOM + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        0UL
+    },
+    {
+        "elder-long-worm-autodraw-tail",
+        AUTODRAW_DRAW_LONG_WORM,
+        1,
+        WORM_TILE_WORM_TAIL_GOING_UP + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_SEGMENT_GOING_UP + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_SEGMENT_BOTTOM + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
+        WORM_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
         0UL
     },
 
@@ -3105,29 +3147,6 @@ NEARDATA struct general_tile_definition general_tile_definitions[MAX_GENERAL_TIL
     {"chain-down", CHAIN_DOWN_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"chain-left", CHAIN_LEFT_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"chain-main", CHAIN_MAIN_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-is-right-going-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-is-down-going-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-is-left-going-down-right", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-is-up-going-down-right", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-going-up", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-going-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-going-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-going-down-right", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-coming-from-up", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-coming-from-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-coming-from-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-coming-from-down-right", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-bottom", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-middle", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-segment-top", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-tail-going-up", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-tail-going-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-tail-going-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-tail-going-down-right", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-head-coming-from-up", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-head-coming-from-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-head-coming-from-up-left", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"worm-head-coming-from-down-right", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 STATIC_DCL int FDECL(get_shore_tile_index, (struct rm* , struct rm*));
@@ -4054,6 +4073,12 @@ int glyph;
     {
         int glyph_idx = absglyph - GLYPH_ZAP_OFF;
         int char_idx = glyph_idx % NUM_ZAP_CHARS;
+        return char_idx;
+    }
+    else if (glyph_is_worm(absglyph))
+    {
+        int glyph_idx = absglyph - GLYPH_WORM_OFF;
+        int char_idx = glyph_idx % MAX_WORM_TILES;
         return char_idx;
     }
     else

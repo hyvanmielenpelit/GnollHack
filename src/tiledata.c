@@ -1082,10 +1082,10 @@ uchar* tilemapflags;
 
     /* Miscellaneous tiles */
     tile_section_name = "misc";
-    for (int misc_idx = 0; misc_idx < 5; misc_idx++)
+    for (int misc_idx = 0; misc_idx < 6; misc_idx++)
     {
         set_name = (misc_idx == 0 ? "invisible" : misc_idx == 1 ? "explode" : misc_idx == 2 ? "zap" :
-            misc_idx == 3 ? "swallow" : "warning");
+            misc_idx == 3 ? "swallow" : misc_idx == 4 ? "warning" : "worm");
 
         if (misc_idx == 0)
         {
@@ -1292,6 +1292,64 @@ uchar* tilemapflags;
                 tile_count++;
             }
         }
+        else if (misc_idx == 5)
+        {        
+            const char* long_worm_type_names[MAX_LONG_WORM_TYPES] = {
+                "adult", "elder",
+             };
+
+            const char* worm_tile_name_array[MAX_WORM_TILES] = {
+                "WORM_TILE_WORM_IS_RIGHT_GOING_UP_LEFT",
+                "WORM_TILE_WORM_IS_DOWN_GOING_UP_LEFT",
+                "WORM_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT",
+                "WORM_TILE_WORM_IS_UP_GOING_DOWN_RIGHT",
+                "WORM_TILE_WORM_SEGMENT_GOING_UP",
+                "WORM_TILE_WORM_SEGMENT_GOING_LEFT",
+                "WORM_TILE_WORM_SEGMENT_GOING_UP_LEFT",
+                "WORM_TILE_WORM_SEGMENT_GOING_DOWN_RIGHT",
+                "WORM_TILE_WORM_SEGMENT_COMING_FROM_UP",
+                "WORM_TILE_WORM_SEGMENT_COMING_FROM_LEFT",
+                "WORM_TILE_WORM_SEGMENT_COMING_FROM_UP_LEFT",
+                "WORM_TILE_WORM_SEGMENT_COMING_FROM_DOWN_RIGHT",
+                "WORM_TILE_WORM_SEGMENT_BOTTOM",
+                "WORM_TILE_WORM_SEGMENT_MIDDLE",
+                "WORM_TILE_WORM_SEGMENT_TOP",
+                "WORM_TILE_WORM_RESERVED",
+                "WORM_TILE_WORM_TAIL_GOING_UP",
+                "WORM_TILE_WORM_TAIL_GOING_LEFT",
+                "WORM_TILE_WORM_TAIL_GOING_UP_LEFT",
+                "WORM_TILE_WORM_TAIL_GOING_DOWN_RIGHT",
+                "WORM_TILE_WORM_HEAD_COMING_FROM_UP",
+                "WORM_TILE_WORM_HEAD_COMING_FROM_LEFT",
+                "WORM_TILE_WORM_HEAD_COMING_FROM_UP_LEFT",
+                "WORM_TILE_WORM_HEAD_COMING_FROM_DOWN_RIGHT", 
+            };
+
+            int template_width = 4;
+            int template_height = MAX_WORM_TILES / template_width;
+
+            for (int j = 0; j < MAX_LONG_WORM_TYPES; j++)
+            {
+                const char* long_worm_type_name = long_worm_type_names[j];
+                for (int i = 0; i < MAX_WORM_TILES; i++)
+                {
+                    const char* worm_tile_name = worm_tile_name_array[i];
+                    int x_coord = i % template_width;
+                    int y_coord = i / template_width;
+                    if (process_style == 0)
+                    {
+                        Sprintf(buf, "%s,%s,%s,%s,%d,%d,%d,%d,1,1,0\n", tile_section_name, set_name, long_worm_type_name, worm_tile_name, x_coord, y_coord, template_width, template_height);
+                        (void)write(fd, buf, strlen(buf));
+                    }
+                    else if (process_style == 1)
+                    {
+                        glyph_offset = GLYPH_WORM_OFF + MAX_WORM_TILES * j;
+                        tilemaparray[i + glyph_offset] = tile_count;
+                    }
+                    tile_count++;
+                }
+            }
+        }    
     }
 
 

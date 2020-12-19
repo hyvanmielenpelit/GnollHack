@@ -1301,9 +1301,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     signed_glyph = NO_GLYPH;
                                 }
-                                else if (worm->mnum == PM_LONG_WORM_TAIL || (is_long_worm_with_tail(worm->data) && is_adj_worm_tail))
+                                else if (worm->mnum == PM_LONG_WORM_TAIL || worm->mnum == PM_ELDER_LONG_WORM_TAIL || (is_long_worm_with_tail(worm->data) && is_adj_worm_tail))
                                 {
-                                    int signed_main_glyph = data->map[enl_i][enl_j].layer_glyphs[base_layer];
+                                    int signed_main_glyph = data->map[adj_x][adj_y].layer_glyphs[base_layer];
                                     int main_glyph = abs(signed_main_glyph);
                                     int anim_frame_idx = -1, main_tile_idx = -1;
                                     int tile_animation_index = get_tile_animation_index_from_glyph(main_glyph);
@@ -1311,12 +1311,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     short main_tile = glyph2tile[main_glyph];
                                     boolean mapAnimatedDummy = FALSE;
                                     int anim_frame_idx_dummy = 0, main_tile_idx_dummy = 0;
-                                    main_tile = maybe_get_replaced_tile(main_tile, enl_i, enl_j, data_to_replacement_info(signed_main_glyph, base_layer, 0, worm, data->map[enl_i][enl_j].layer_flags), &autodraw);
+                                    main_tile = maybe_get_replaced_tile(main_tile, adj_x, adj_y, data_to_replacement_info(signed_main_glyph, base_layer, 0, worm, data->map[adj_x][adj_y].layer_flags), &autodraw);
 
-                                    if (context.m_action_animation_counter_on && base_layer == LAYER_MONSTER && context.m_action_animation_x == enl_i && context.m_action_animation_y == enl_j)
+                                    if (context.m_action_animation_counter_on && base_layer == LAYER_MONSTER && context.m_action_animation_x == adj_x && context.m_action_animation_y == adj_y)
                                         main_tile = maybe_get_animated_tile(main_tile, tile_animation_index, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx_dummy, &main_tile_idx_dummy, &mapAnimatedDummy, &autodraw);
 
-                                    int base_source_glyph = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + GLYPH_GENERAL_TILE_OFF;
+                                    int base_source_glyph = GLYPH_WORM_OFF;
                                     if (autodraw > 0)
                                     {
                                         base_source_glyph = autodraws[autodraw].source_glyph4;

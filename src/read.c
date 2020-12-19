@@ -4005,6 +4005,9 @@ struct obj *from_obj;
     } else if (*mtype == PM_LONG_WORM_TAIL) { /* for create_particular() */
         *mtype = PM_LONG_WORM;
         return TRUE;
+    } else if (*mtype == PM_ELDER_LONG_WORM_TAIL) { /* for create_particular() */
+        *mtype = PM_ELDER_LONG_WORM;
+        return TRUE;
     } else if (unique_corpstat(&mons[*mtype])
                && (!from_obj || !has_omonst(from_obj))) {
         /* unique corpses (from bones or wizard mode wish) or
@@ -4113,7 +4116,7 @@ struct _create_particular_data *d;
     {
         firstchoice = d->which;
         if (cant_revive(&d->which, FALSE, (struct obj *) 0)
-            && firstchoice != PM_LONG_WORM_TAIL) 
+            && firstchoice != PM_LONG_WORM_TAIL && firstchoice != PM_ELDER_LONG_WORM_TAIL)
         {
             /* wizard mode can override handling of special monsters */
             char buf[BUFSZ];

@@ -294,6 +294,7 @@ struct zap_type_definition {
 
 E NEARDATA struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES];
 
+
 /* Macros for explosion types */
 enum explosion_types {
     EXPL_DARK = 0,

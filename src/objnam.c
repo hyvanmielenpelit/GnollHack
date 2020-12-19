@@ -1065,7 +1065,7 @@ struct permonst *ptr;
     /* high priest is unique if it includes "of <deity>", otherwise not
        (caller needs to handle the 1st possibility; we assume the 2nd);
        worm tail should be irrelevant but is included for completeness */
-    if (ptr == &mons[PM_HIGH_PRIEST] || ptr == &mons[PM_LONG_WORM_TAIL])
+    if (ptr == &mons[PM_HIGH_PRIEST] || ptr == &mons[PM_LONG_WORM_TAIL] || ptr == &mons[PM_ELDER_LONG_WORM_TAIL])
         uniq = FALSE;
     /* Wizard no longer needs this; he's flagged as unique these days */
     if (ptr == &mons[PM_WIZARD_OF_YENDOR])
@@ -4775,6 +4775,8 @@ struct obj *no_wish;
     if (mntmp >= LOW_PM) {
         if (mntmp == PM_LONG_WORM_TAIL)
             mntmp = PM_LONG_WORM;
+        else if (mntmp == PM_ELDER_LONG_WORM_TAIL)
+            mntmp = PM_ELDER_LONG_WORM;
 
         switch (typ) {
         case TIN:

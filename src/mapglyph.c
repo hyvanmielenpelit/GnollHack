@@ -212,6 +212,11 @@ unsigned long *ospecial;
         if (is_objpile(x,y))
             special |= MG_OBJPILE;
     }
+    else if ((offset = (glyph - GLYPH_WORM_OFF)) >= 0)
+    { /* worm */
+        /* Should never get here -- These are for GUI drawing */
+        idx = S_WORM + SYM_OFF_M;
+    }
     else if ((offset = (glyph - GLYPH_WARNING_OFF)) >= 0)
     { /* warn flash */
         idx = offset + SYM_OFF_W;

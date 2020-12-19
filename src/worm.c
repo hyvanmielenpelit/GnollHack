@@ -460,11 +460,14 @@ detect_wsegs(worm, use_detection_glyph)
 struct monst *worm;
 boolean use_detection_glyph;
 {
+    if (!worm)
+        return;
+
     int num;
     struct wseg *curr = wtails[worm->wormno];
 
     /*  if (!mtmp->wormno) return;  bullet proofing */
-    int what_tail = what_mon(PM_LONG_WORM_TAIL, newsym_rn2);
+    int what_tail = what_mon(get_worm_tail_mnum(worm->data), newsym_rn2);
 
     while (curr != wheads[worm->wormno]) {
         num = monnum_to_glyph(what_tail);

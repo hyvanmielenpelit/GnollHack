@@ -2134,6 +2134,9 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_WARNING_OFF:
                 header = "WARNING_OFF";
                 break;
+            case GLYPH_WORM_OFF:
+                header = "EXPLODE_OFF";
+                break;
             case GLYPH_ARTIFACT_OFF:
                 header = "ARTIFACT_OFF";
                 break;

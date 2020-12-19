@@ -107,7 +107,7 @@
 #define is_unicorn(ptr) ((ptr)->mlet == S_UNICORN && likes_gems(ptr))
 #define is_long_worm(ptr)                                                   \
     (((ptr) == &mons[PM_BABY_LONG_WORM]) || ((ptr) == &mons[PM_LONG_WORM]) \
-     || ((ptr) == &mons[PM_LONG_WORM_TAIL]))
+     || ((ptr) == &mons[PM_LONG_WORM_TAIL]) || ((ptr) == &mons[PM_ELDER_LONG_WORM_TAIL]))
 #define is_long_worm_with_tail(ptr)                                                   \
     ( (ptr) == &mons[PM_LONG_WORM] || (ptr) == &mons[PM_ELDER_LONG_WORM] )
 #define is_covetous(ptr) (((ptr)->mflags3 & M3_COVETOUS))

@@ -337,7 +337,7 @@ struct entity *etmp;
         etmp->ex = x;
         etmp->ey = y;
         if (mtmp->wormno && (x != mtmp->mx || y != mtmp->my))
-            etmp->edata = &mons[PM_LONG_WORM_TAIL];
+            etmp->edata = &mons[get_worm_tail_mnum(mtmp->data)];
         else
             etmp->edata = mtmp->data;
     } else
