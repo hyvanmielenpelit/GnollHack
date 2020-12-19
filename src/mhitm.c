@@ -1930,7 +1930,7 @@ register struct obj* omonwep;
 	int hp_after = mdef->mhp;
 	int damagedealt = hp_before - hp_after;
 	update_mon_maxhp(mdef);
-    if ((magr->mnum == PM_LONG_WORM && isok(bhitpos.x, bhitpos.y) && !is_wseg_head(magr, bhitpos.x, bhitpos.y)))
+    if (is_long_worm_with_tail(mdef->data) && isok(bhitpos.x, bhitpos.y) && !is_wseg_head(mdef, bhitpos.x, bhitpos.y))
         play_monster_weapon_hit_sound_at_location(magr, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mdef), get_pm_attack_index(magr->data, mattk), omonwep, damage, 0, bhitpos.x, bhitpos.y); 
     else
         play_monster_weapon_hit_sound(magr, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mdef), get_pm_attack_index(magr->data, mattk), omonwep, damage, 0);

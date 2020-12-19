@@ -1372,7 +1372,8 @@ boolean showheads;
 		Sprintf(eos(info), "  Heads %d(%d)", mtmp->heads_left, mtmp->data->heads);
 	}
 
-	if (mtmp->data == &mons[PM_LONG_WORM]) {
+	if (is_long_worm_with_tail(mtmp->data)) 
+    {
 		int segndx, nsegs = count_wsegs(mtmp);
 
 		/* the worm code internals don't consider the head of be one of

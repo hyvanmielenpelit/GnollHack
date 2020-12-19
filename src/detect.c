@@ -87,7 +87,7 @@ boolean showtail;
         show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), mtmp, LFLAGS_M_DETECTED, 0);
 #endif
 
-    if (showtail && mtmp->data == &mons[PM_LONG_WORM])
+    if (showtail && is_long_worm_with_tail(mtmp->data))
         detect_wsegs(mtmp, 0);
 }
 
@@ -872,7 +872,7 @@ int mclass;                /* monster class, 0 for all */
             if (DEADMONSTER(mtmp))
                 continue;
             if (!mclass || mtmp->data->mlet == mclass
-                || (mtmp->data == &mons[PM_LONG_WORM]
+                || (is_long_worm_with_tail(mtmp->data)
                     && mclass == S_WORM_TAIL))
                 map_monst(mtmp, TRUE);
 

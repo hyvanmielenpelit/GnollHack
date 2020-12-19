@@ -2241,7 +2241,7 @@ register struct obj* omonwep;
 		{
             /* eat_brains() will miss if target is mindless (won't
                happen here; hero is considered to retain his mind
-               regardless of current shape) or is noncorporeal
+               regardless of current shape) or is is_incorporeal
                (can't happen here; no one can poly into a ghost
                or shade) so this check for missing is academic */
             if (eat_brains(mtmp, &youmonst, TRUE, (double *) 0) == MM_MISS)
@@ -2918,7 +2918,7 @@ register struct obj* omonwep;
 			hitmsg(mtmp, mattk, -1, FALSE);
 			pline_The("slime burns away!");
             damage = 0;
-        } else if (Unchanging || noncorporeal(youmonst.data)
+        } else if (Unchanging || is_incorporeal(youmonst.data)
                    || youmonst.data == &mons[PM_GREEN_SLIME]) {
 			hitmsg(mtmp, mattk, -1, FALSE);
 			You("are unaffected.");
@@ -2981,7 +2981,7 @@ register struct obj* omonwep;
 #if 0
 	//Black blade damage adjustment
 	if (mattk->aatyp == AT_WEAP && omonwep && omonwep->otyp == BLACK_BLADE_OF_DISINTEGRATION &&
-		!(Disint_resistance || noncorporeal(youmonst.data) || Invulnerable)) {
+		!(Disint_resistance || is_incorporeal(youmonst.data) || Invulnerable)) {
 		damage = 0; //Black blade does not do ordinary damage to disintegrateable monsters, to resistant monsters it inflicts normal damage
 	}
 #endif
@@ -3139,7 +3139,7 @@ register struct obj* omonwep;
 #if 0
 		if (omonwep->otyp == BLACK_BLADE_OF_DISINTEGRATION)
 		{
-			if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
+			if (Disint_resistance || is_incorporeal(youmonst.data) || Invulnerable) {					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
 				You("are not disintegrated.");
 			}
 			else if (uarms) {

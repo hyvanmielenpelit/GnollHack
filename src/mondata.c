@@ -126,7 +126,7 @@ static NEARDATA struct mflag_description m3flag_descriptions[] = {
 	{ M3_INFRAVISION, "infravision", "monsters with infravision" },
 	{ M3_KNIGHT, "knight", "knights" },
 	{ M3_HEALER, "healer", "healers" },
-	{ M3_NONCORPOREAL, "noncorporeal", "noncorporeal monsters" },
+	{ M3_INCORPOREAL, "incorporeal", "incorporeal monsters" },
 	{ M3_NONLIVING, "nonliving", "nonliving monster" },
 	{ M3_PRIEST, "priest", "priests" },
 	{ M3_REGENERATES_LOST_BODY_PARTS, "regenerates lost body parts", "monsters that regenerate lost body parts" },
@@ -662,7 +662,7 @@ sliparm(ptr)
 register struct permonst *ptr;
 {
     return (boolean) (is_whirly(ptr) || ptr->msize <= MZ_SMALL
-                      || noncorporeal(ptr));
+                      || is_incorporeal(ptr));
 }
 
 /* creature will break out of armor */
@@ -897,8 +897,8 @@ struct permonst *pm1, *pm2;
     if (pm1 == &mons[PM_KILLER_BEE] || pm1 == &mons[PM_QUEEN_BEE])
         return (pm2 == &mons[PM_KILLER_BEE] || pm2 == &mons[PM_QUEEN_BEE]);
 
-    if (is_longworm(pm1))
-        return is_longworm(pm2); /* handles tail */
+    if (is_long_worm(pm1))
+        return is_long_worm(pm2); /* handles tail */
     /* [currently there's no reason to bother matching up
         assorted bugs and blobs with their closest variants] */
     /* didn't match */
@@ -1327,6 +1327,7 @@ static const short grownups[][2] = {
     { PM_LARGE_MIMIC, PM_GIANT_MIMIC },
 	{ PM_GIANT_MIMIC, PM_CHAOS_MIMIC },
 	{ PM_BABY_LONG_WORM, PM_LONG_WORM },
+    { PM_LONG_WORM, PM_ELDER_LONG_WORM },
     { PM_BABY_PURPLE_WORM, PM_PURPLE_WORM },
     { PM_BABY_CROCODILE, PM_CROCODILE },
     { PM_SOLDIER, PM_SERGEANT },

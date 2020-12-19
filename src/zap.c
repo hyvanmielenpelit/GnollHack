@@ -696,7 +696,7 @@ struct monst* origmonst;
     case SPE_POLYMORPH:
     case POT_POLYMORPH:
 		res = 1;
-		if (mtmp->data == &mons[PM_LONG_WORM] && has_mcorpsenm(mtmp)) 
+		if (is_long_worm_with_tail(mtmp->data) && has_mcorpsenm(mtmp)) 
 		{
             /* if a long worm has mcorpsenm set, it was polymophed by
                the current zap and shouldn't be affected if hit again */
@@ -760,13 +760,15 @@ struct monst* origmonst;
             /* do this even if polymorphed failed (otherwise using
                flags.mon_polycontrol prompting to force mtmp to remain
                'long worm' would prompt again if zap hit another segment) */
-            if (!DEADMONSTER(mtmp) && mtmp->data == &mons[PM_LONG_WORM]) {
+            if (!DEADMONSTER(mtmp) && is_long_worm_with_tail(mtmp->data)) 
+            {
+                int mnum = mtmp->mnum;
                 if (!has_mcorpsenm(mtmp))
                     newmcorpsenm(mtmp);
                 /* flag to indicate that mtmp became a long worm
                    on current zap, so further hits (on mtmp's new
                    tail) don't do further transforms */
-                MCORPSENM(mtmp) = PM_LONG_WORM;
+                MCORPSENM(mtmp) = mnum; // PM_LONG_WORM;
                 /* flag to indicate that cleanup is needed; object
                    bypass cleanup also clears mon->mextra->mcorpsenm
                    for all long worms on the level */
@@ -5396,7 +5398,7 @@ boolean ordinary;
         break;
     case WAN_DISINTEGRATION:
 		damage = 0;
-		if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable)
+		if (Disint_resistance || is_incorporeal(youmonst.data) || Invulnerable)
 		{
 			pline((obj->otyp == WAN_DISINTEGRATION)
 				? "The wand shoots an apparently harmless beam at you."
@@ -7572,7 +7574,7 @@ xchar sx, sy;
         break;
     case ZT_DISINTEGRATION:
 		damage = 0;
-        if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) // || (magic_resistance_success && !(abstyp >= 20 && abstyp <= 39))
+        if (Disint_resistance || is_incorporeal(youmonst.data) || Invulnerable) // || (magic_resistance_success && !(abstyp >= 20 && abstyp <= 39))
 		{					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
             You("are not disintegrated.");
             break;

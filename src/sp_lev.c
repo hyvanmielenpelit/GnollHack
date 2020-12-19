@@ -1690,7 +1690,7 @@ struct permonst *pm;
         loc = WET;
     if (is_flyer(pm) || is_floater(pm))
         loc |= (HOT | WET);
-    if (passes_walls(pm) || noncorporeal(pm))
+    if (passes_walls(pm) || is_incorporeal(pm))
         loc |= SOLID;
     if (flaming(pm))
         loc |= HOT;

@@ -415,7 +415,7 @@ e_survives_at(etmp, x, y)
 struct entity *etmp;
 int x, y;
 {
-    if (noncorporeal(etmp->edata))
+    if (is_incorporeal(etmp->edata))
         return TRUE;
     if (is_pool(x, y))
         return (boolean) ((is_u(etmp) && (Wwalking || Amphibious || Swimming
@@ -503,7 +503,7 @@ automiss(etmp)
 struct entity *etmp;
 {
     return (boolean) ((is_u(etmp) ? Passes_walls : passes_walls(etmp->edata))
-                      || noncorporeal(etmp->edata));
+                      || is_incorporeal(etmp->edata));
 }
 
 /*
@@ -794,7 +794,7 @@ int x, y;
     if (MON_AT(x, y))
     {
         struct monst* mtmp = m_at(x, y);
-        if (mtmp && !is_flying(mtmp) && !is_levitating(mtmp) && !noncorporeal(mtmp->data) && !passes_walls(mtmp->data) && mtmp->data->cwt >= WT_ELF)
+        if (mtmp && !is_flying(mtmp) && !is_levitating(mtmp) && !is_incorporeal(mtmp->data) && !passes_walls(mtmp->data) && mtmp->data->cwt >= WT_ELF)
         {
             if(cansee(x, y) || cansee(x2, y2))
                 pline("The drawbridge starts to rise, but the weight of %s keeps it down.",
@@ -804,7 +804,7 @@ int x, y;
     }
     else if (u.ux == x && u.uy == y)
     {
-        if (!Flying && !Levitation && !noncorporeal(youmonst.data) && !passes_walls(youmonst.data) && youmonst.data->cwt >= WT_ELF)
+        if (!Flying && !Levitation && !is_incorporeal(youmonst.data) && !passes_walls(youmonst.data) && youmonst.data->cwt >= WT_ELF)
         {
             pline("The drawbridge starts to rise, but your weight keeps it down.");
             return;
@@ -815,7 +815,7 @@ int x, y;
     if (MON_AT(x2, y2))
     {
         struct monst* mtmp = m_at(x2, y2);
-        if (mtmp && !noncorporeal(mtmp->data) && !passes_walls(mtmp->data) && mtmp->data->msize >= MZ_MEDIUM)
+        if (mtmp && !is_incorporeal(mtmp->data) && !passes_walls(mtmp->data) && mtmp->data->msize >= MZ_MEDIUM)
         {
             if (cansee(x, y) || cansee(x2, y2))
                 pline("The drawbridge starts to close, but it gets blocked by %s and falls back down.",
@@ -825,7 +825,7 @@ int x, y;
     }
     else if (u.ux == x2 && u.uy == y2)
     {
-        if (!noncorporeal(youmonst.data) && !passes_walls(youmonst.data) && youmonst.data->msize >= MZ_MEDIUM)
+        if (!is_incorporeal(youmonst.data) && !passes_walls(youmonst.data) && youmonst.data->msize >= MZ_MEDIUM)
         {
             pline("The drawbridge starts to close, but it gets blocked by you and falls back down.");
             return;

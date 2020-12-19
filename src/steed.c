@@ -35,7 +35,7 @@ struct monst *mtmp;
 
     return (index(steeds, ptr->mlet) && (ptr->msize >= MZ_MEDIUM)
             && (!humanoid(ptr) || ptr->mlet == S_CENTAUR) && !amorphous(ptr)
-            && !noncorporeal(ptr) && !is_whirly(ptr) && !unsolid(ptr));
+            && !is_incorporeal(ptr) && !is_whirly(ptr) && !unsolid(ptr));
 #endif
 }
 
@@ -267,7 +267,7 @@ boolean force;      /* Quietly force this animal */
         pline("I see nobody there.");
         return (FALSE);
     }
-    if (mtmp->data == &mons[PM_LONG_WORM]
+    if (is_long_worm_with_tail(mtmp->data)
         && (u.ux + u.dx != mtmp->mx || u.uy + u.dy != mtmp->my))
     {
         /* 3.6.2:  test_move(below) is used to check for trying to mount

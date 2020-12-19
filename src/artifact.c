@@ -1508,7 +1508,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     *dmgptr = 0;
                     return (youattack || vis) * 2;
                 }
-                if (noncorporeal(mdef->data) || amorphous(mdef->data)) 
+                if (is_incorporeal(mdef->data) || amorphous(mdef->data)) 
 				{
                     pline("%s slices through %s %s.", The(wepdesc),
                           s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
@@ -1548,7 +1548,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     *dmgptr = 0;
                     return 2;
                 }
-                if (noncorporeal(youmonst.data) || amorphous(youmonst.data))
+                if (is_incorporeal(youmonst.data) || amorphous(youmonst.data))
 				{
                     pline("%s slices through your %s.", The(wepdesc),
                           body_part(NECK));
@@ -1784,7 +1784,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			}
 			else if (!youdefend) 
 			{
-				if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
+				if (is_incorporeal(mdef->data) || amorphous(mdef->data)) {
 					pline("%s through %s body.", Yobjnam2(otmp, "cut"),
 						s_suffix(mon_nam(mdef)));
 				}
@@ -1829,7 +1829,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			}
 			else 
 			{
-				if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
+				if (is_incorporeal(youmonst.data) || amorphous(youmonst.data)) {
 					pline("%s slices through your body.", The(xname(otmp)));
 				}
 				else if (bigmonst(youmonst.data)) 
@@ -1908,7 +1908,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 		{
 			if (!youdefend) 
 			{
-				if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
+				if (is_incorporeal(mdef->data) || amorphous(mdef->data)) {
 					pline("%s through %s %s.", Yobjnam2(otmp, "slice"),
 						s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
 				}
@@ -1935,7 +1935,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			}
 			else 
 			{
-				if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
+				if (is_incorporeal(youmonst.data) || amorphous(youmonst.data)) {
 					pline("%s slices through your %s.", The(xname(otmp)),
 						body_part(NECK));
 				}
@@ -1996,7 +1996,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 					else if (vis)
 						pline("Somehow, %s misses wildly.", mon_nam(magr));
 				}
-				else if (noncorporeal(mdef->data) || amorphous(mdef->data)) {
+				else if (is_incorporeal(mdef->data) || amorphous(mdef->data)) {
 					pline("%s through %s %s.", Yobjnam2(otmp, "slice"),
 						s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
 				}
@@ -2029,7 +2029,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				{
 					pline("Somehow, %s misses you wildly.", (magr ? mon_nam(magr) : the(xname(otmp))) );
 				}
-				else if (noncorporeal(youmonst.data) || amorphous(youmonst.data)) {
+				else if (is_incorporeal(youmonst.data) || amorphous(youmonst.data)) {
 					pline("%s slices through your %s.", The(xname(otmp)),
 						body_part(NECK));
 				}
@@ -2278,7 +2278,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 						else
 						{
 							pline("%s hits you.", The(xname(otmp)));
-							if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable
+							if (Disint_resistance || is_incorporeal(youmonst.data) || Invulnerable
 								|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
 									objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT ? -otmp->enchantment : 0)))
 								) 

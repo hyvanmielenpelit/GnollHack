@@ -3210,7 +3210,7 @@ boolean confused, helmet_protects, byu, skip_uswallow;
     otmp2->quan = confused ? rn1(5, 2) : 1;
     otmp2->owt = weight(otmp2);
     if (!amorphous(youmonst.data) && !Passes_walls
-        && !noncorporeal(youmonst.data) && !unsolid(youmonst.data)) {
+        && !is_incorporeal(youmonst.data) && !unsolid(youmonst.data)) {
         dmg = weapon_total_dmg_value(otmp2, &youmonst, (struct monst*)0, 1) * otmp2->quan;
         play_object_hit_sound(otmp2, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(&youmonst), dmg, HMON_THROWN);
         You("are hit by %s!", doname(otmp2));
@@ -3254,7 +3254,7 @@ boolean confused, byu;
     /* Find the monster here (won't be player) */
     mtmp = m_at(x, y);
     if (mtmp && !amorphous(mtmp->data) && !passes_walls(mtmp->data)
-        && !noncorporeal(mtmp->data) && !unsolid(mtmp->data)) {
+        && !is_incorporeal(mtmp->data) && !unsolid(mtmp->data)) {
         struct obj *helmet = which_armor(mtmp, W_ARMH);
         int mdmg;
 
@@ -3942,7 +3942,7 @@ struct obj *sobj;
     }
 
     if (amorphous(youmonst.data) || is_whirly(youmonst.data)
-        || unsolid(youmonst.data) || noncorporeal(youmonst.data)) {
+        || unsolid(youmonst.data) || is_incorporeal(youmonst.data)) {
         if (!reuse_ball) {
             pline("A ball and chain appears, then falls away.");
             dropy(mkobj(BALL_CLASS, TRUE, FALSE));

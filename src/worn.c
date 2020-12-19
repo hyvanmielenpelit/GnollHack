@@ -2115,7 +2115,7 @@ clear_bypasses()
            polymorph (so polymorph zap won't hit monster to transform it
            into a long worm, then hit that worm's tail and transform it
            again on same zap); clearing mcorpsenm reverts worm to normal */
-        if (mtmp->data == &mons[PM_LONG_WORM] && has_mcorpsenm(mtmp))
+        if (is_long_worm_with_tail(mtmp->data) && has_mcorpsenm(mtmp))
             MCORPSENM(mtmp) = NON_PM;
     }
     for (mtmp = migrating_mons; mtmp; mtmp = mtmp->nmon) {

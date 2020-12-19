@@ -1297,31 +1297,50 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                             if (worm && (cansee(enl_i, enl_j) || is_adj_worm_seen || (data->map[worm->mx][worm->my].layer_flags & LFLAGS_M_WORM_SEEN)))
                             {
-                                if (worm->mnum == PM_LONG_WORM && !is_adj_worm_tail)
+                                if (is_long_worm_with_tail(worm->data) && !is_adj_worm_tail)
                                 {
                                     signed_glyph = NO_GLYPH;
                                 }
-                                else if (worm->mnum == PM_LONG_WORM_TAIL || (worm->mnum == PM_LONG_WORM && is_adj_worm_tail))
+                                else if (worm->mnum == PM_LONG_WORM_TAIL || (is_long_worm_with_tail(worm->data) && is_adj_worm_tail))
                                 {
+                                    int signed_main_glyph = data->map[enl_i][enl_j].layer_glyphs[base_layer];
+                                    int main_glyph = abs(signed_main_glyph);
+                                    int anim_frame_idx = -1, main_tile_idx = -1;
+                                    int tile_animation_index = get_tile_animation_index_from_glyph(main_glyph);
+                                    enum autodraw_types autodraw = AUTODRAW_NONE;
+                                    short main_tile = glyph2tile[main_glyph];
+                                    boolean mapAnimatedDummy = FALSE;
+                                    int anim_frame_idx_dummy = 0, main_tile_idx_dummy = 0;
+                                    main_tile = maybe_get_replaced_tile(main_tile, enl_i, enl_j, data_to_replacement_info(signed_main_glyph, base_layer, 0, worm, data->map[enl_i][enl_j].layer_flags), &autodraw);
+
+                                    if (context.m_action_animation_counter_on && base_layer == LAYER_MONSTER && context.m_action_animation_x == enl_i && context.m_action_animation_y == enl_j)
+                                        main_tile = maybe_get_animated_tile(main_tile, tile_animation_index, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx_dummy, &main_tile_idx_dummy, &mapAnimatedDummy, &autodraw);
+
+                                    int base_source_glyph = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + GLYPH_GENERAL_TILE_OFF;
+                                    if (autodraw > 0)
+                                    {
+                                        base_source_glyph = autodraws[autodraw].source_glyph4;
+                                    }
+
                                     if (worm->wormno >= 1 && worm->wormno < MAX_NUM_WORMS)
                                     {
                                         int wdir = get_wseg_dir_at(worm, adj_x, adj_y);
+                                        int tilenum = -1;
                                         if (wdir % 2 == 1)
                                         {
-                                            int tilenum = -1;
                                             switch (source_dir_idx)
                                             {
                                             case 2:
                                                 if (wdir == 7)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_LEFT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                    tilenum = 1; //GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
                                                     manual_vflip = TRUE;
                                                 }
                                                 else if (wdir == 5)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                    tilenum = 3; // GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
                                                     manual_hflip = FALSE;
                                                     manual_vflip = FALSE;
                                                 }
@@ -1330,14 +1349,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 if (wdir == 1)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    tilenum = 0;  //GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
                                                     manual_hflip = FALSE;
                                                     manual_vflip = FALSE;
                                                 }
                                                 else if (wdir == 7)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_DOWN_LEFT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                    tilenum = 0; // GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
                                                     manual_hflip = FALSE;
                                                     manual_vflip = TRUE;
                                                 }
@@ -1346,14 +1365,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 if (wdir == 1)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                    tilenum = 1; // GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
                                                     manual_hflip = FALSE;
                                                     manual_vflip = FALSE;
                                                 }
                                                 else if (wdir == 3)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_RIGHT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                    tilenum = 3; // GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
                                                     manual_hflip = FALSE;
                                                     manual_vflip = TRUE;
                                                 }
@@ -1362,14 +1381,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 if (wdir == 3)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_UP_RIGHT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                    tilenum = 2; // GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
                                                     manual_hflip = FALSE;
                                                     manual_vflip = TRUE;
                                                 }
                                                 else if (wdir == 5)
                                                 {
                                                     //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
-                                                    tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                    tilenum = 2; // GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
                                                     manual_hflip = FALSE;
                                                     manual_vflip = FALSE;
                                                 }
@@ -1378,7 +1397,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 break;
                                             }
                                             if(tilenum > -1)
-                                                signed_glyph = tilenum + GLYPH_GENERAL_TILE_OFF;
+                                                signed_glyph = tilenum + base_source_glyph;
                                         }
                                     }
                                 }

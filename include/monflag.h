@@ -228,8 +228,8 @@
 #define M3_INFRAVISIBLE								0x00000200UL /* visible by infravision */
 
 #define M3_DISPLACES								0x00000400UL			/* moves monsters out of its way */
-#define M3_NONCORPOREAL								0x00000800UL      /* is noncorporeal, different from unsolid in the sense that
-																	an unsolid monster can be disintegrated, but noncorporeal not */
+#define M3_INCORPOREAL								0x00000800UL      /* is incorporeal, different from unsolid in the sense that
+																	an unsolid monster can be disintegrated, but is_incorporeal not */
 #define M3_NONLIVING								0x00001000UL	/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
 #define M3_MULTIWEAPON								0x00002000UL    /* fights with more than one weapon (i.e., the wielded weapon), if available*/
 #define M3_CONSTRICTOR								0x00004000UL    /* grabbing / sticking itself causes constriction */

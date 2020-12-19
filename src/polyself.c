@@ -1008,7 +1008,7 @@ int mntmp;
         reset_utrap(TRUE);
     }
     if (amorphous(youmonst.data) || is_whirly(youmonst.data)
-        || unsolid(youmonst.data) || noncorporeal(youmonst.data)) {
+        || unsolid(youmonst.data) || is_incorporeal(youmonst.data)) {
         if (Punished) {
             You("slip out of the iron chain.");
             unpunish();
@@ -1019,7 +1019,7 @@ int mntmp;
     }
     if (u.utrap && (u.utraptype == TT_WEB || u.utraptype == TT_BEARTRAP)
         && (amorphous(youmonst.data) || is_whirly(youmonst.data)
-            || unsolid(youmonst.data) || noncorporeal(youmonst.data) || (youmonst.data->msize <= MZ_SMALL
+            || unsolid(youmonst.data) || is_incorporeal(youmonst.data) || (youmonst.data->msize <= MZ_SMALL
                                           && u.utraptype == TT_BEARTRAP))) {
         You("are no longer stuck in the %s.",
             u.utraptype == TT_WEB ? "web" : "bear trap");

@@ -924,7 +924,7 @@ struct trap *trap;
     struct permonst *mptr = mtmp->data;
 
     if (amorphous(mptr) || is_whirly(mptr) || flaming(mptr)
-        || unsolid(mptr) || noncorporeal(mptr) || slurps_items(mptr))
+        || unsolid(mptr) || is_incorporeal(mptr) || slurps_items(mptr))
 	{
         xchar x = trap->tx;
         xchar y = trap->ty;
@@ -1233,7 +1233,7 @@ unsigned trflags;
 
         play_sfx_sound(SFX_BEAR_TRAP_CLOSES);
         if (amorphous(youmonst.data) || is_whirly(youmonst.data)
-            || unsolid(youmonst.data) || noncorporeal(youmonst.data))
+            || unsolid(youmonst.data) || is_incorporeal(youmonst.data))
         {
             pline("%s bear trap closes harmlessly through you.",
                   A_Your[trap->madeby_u]);

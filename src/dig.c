@@ -2794,7 +2794,7 @@ escape_tomb()
         boolean good;
 
         if (amorphous(youmonst.data) || Passes_walls
-            || noncorporeal(youmonst.data)
+            || is_incorporeal(youmonst.data)
             || (unsolid(youmonst.data)
                 && !is_watery(youmonst.data))
             || (tunnels(youmonst.data) && !needspick(youmonst.data))) {

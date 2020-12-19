@@ -72,7 +72,7 @@ struct permonst *ptr;
             return TRUE;
     } else if (Is_airlevel(&u.uz)) {
         if (!(is_flyer(ptr) && ptr->mlet != S_TRAPPER) && !is_floater(ptr)
-            && !amorphous(ptr) && !noncorporeal(ptr) && !is_whirly(ptr))
+            && !amorphous(ptr) && !is_incorporeal(ptr) && !is_whirly(ptr))
             return TRUE;
     }
     return FALSE;
@@ -2734,7 +2734,7 @@ int level_limit;
     if (in_mklev) 
     {
         if ((/* is_ndemon(ptr) ||*/ mndx == PM_WUMPUS
-             || mndx == PM_LONG_WORM || mndx == PM_GIANT_EEL)
+             || is_long_worm_with_tail(&mons[mndx]) || mndx == PM_GIANT_EEL)
             && !u.uhave.amulet && rn2(5))
             mtmp->msleeping = TRUE;
     } 
@@ -2762,11 +2762,11 @@ int level_limit;
 #endif
 
 #ifndef DCC30_BUG
-    if (mndx == PM_LONG_WORM && (mtmp->wormno = get_wormno()) != 0)
+    if (is_long_worm_with_tail(&mons[mndx]) && (mtmp->wormno = get_wormno()) != 0)
 #else
     /* DICE 3.0 doesn't like assigning and comparing mtmp->wormno in the
        same expression. */
-    if (mndx == PM_LONG_WORM
+    if (is_long_worm_with_tail(&mons[mndx])
         && (mtmp->wormno = get_wormno(), mtmp->wormno != 0))
 #endif
     {

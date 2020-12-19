@@ -815,7 +815,7 @@ static boolean
 leashable(mtmp)
 struct monst *mtmp;
 {
-    return (boolean) (mtmp->mnum != PM_LONG_WORM);
+    return (boolean) (!is_long_worm_with_tail(mtmp->data) && !is_whirly(mtmp->data) && !is_incorporeal(mtmp->data));
 }
 
 /* ARGSUSED */

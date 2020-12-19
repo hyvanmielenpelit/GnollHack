@@ -194,7 +194,7 @@ moverock()
             if (revive_nasty(rx, ry, "You sense movement on the other side."))
                 return -1;
 
-            if (mtmp && !noncorporeal(mtmp->data)
+            if (mtmp && !is_incorporeal(mtmp->data)
                 && (!mtmp->mtrapped
                     || !(ttmp && is_pit(ttmp->ttyp)))) 
             {
@@ -774,7 +774,7 @@ struct monst *mon;
 
     /* too big? */
     if (bigmonst(ptr)
-        && !(amorphous(ptr) || is_whirly(ptr) || noncorporeal(ptr)
+        && !(amorphous(ptr) || is_whirly(ptr) || is_incorporeal(ptr)
              || slithy(ptr) || can_fog(mon)))
         return 1;
 

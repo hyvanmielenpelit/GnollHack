@@ -1392,7 +1392,7 @@ struct monst *mtmp;
 			if (obj->otyp == SCR_EARTH
 				&& ((helmet && is_metallic(helmet)) || is_confused(mtmp)
 					|| amorphous(mtmp->data) || passes_walls(mtmp->data)
-					|| noncorporeal(mtmp->data) || unsolid(mtmp->data)
+					|| is_incorporeal(mtmp->data) || unsolid(mtmp->data)
 					|| !rn2(10))
 				&& dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
 				&& !is_blinded(mtmp) && haseyes(mtmp->data)
@@ -1823,7 +1823,7 @@ struct monst *mtmp;
         struct obj *helmet = which_armor(mtmp, W_ARMH);
 
         if ((helmet && is_metallic(helmet)) || amorphous(pm)
-            || passes_walls(pm) || noncorporeal(pm) || unsolid(pm))
+            || passes_walls(pm) || is_incorporeal(pm) || unsolid(pm))
             return SCR_EARTH;
     } /* fall through */
     case 1:

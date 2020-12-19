@@ -454,7 +454,7 @@ register struct monst *mtmp;
              * There's also a chance of displacing a "frozen" monster:
              * sleeping monsters might magically walk in their sleep.
              */
-			boolean foo = (Punished || !rn2(7) || (is_longworm(mtmp->data) && mtmp->wormno));
+			boolean foo = (Punished || !rn2(7) || (is_long_worm(mtmp->data) && mtmp->wormno));
             boolean inshop = FALSE;
             char *p;
 
@@ -1872,7 +1872,7 @@ boolean* obj_destroyed;
 
 #if 0
 	//Black blade adjustment for disintegrateable creatures - No damage
-	if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !(resists_disint(mon) || noncorporeal(mon->data)))
+	if (obj && obj->otyp == BLACK_BLADE_OF_DISINTEGRATION && !(resists_disint(mon) || is_incorporeal(mon->data)))
 	{
 		damage = 0;
 		hide_damage_amount = TRUE;
@@ -1896,7 +1896,7 @@ boolean* obj_destroyed;
 
 	if (!already_killed)
 	{
-		if ((mon->mnum == PM_LONG_WORM && isok(bhitpos.x, bhitpos.y) && !is_wseg_head(mon, bhitpos.x, bhitpos.y)))
+		if (is_long_worm_with_tail(mon->data) && isok(bhitpos.x, bhitpos.y) && !is_wseg_head(mon, bhitpos.x, bhitpos.y))
 		{
 			if (thrown == HMON_MELEE)
 				play_monster_weapon_hit_sound_at_location(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown, bhitpos.x, bhitpos.y);
@@ -2042,7 +2042,7 @@ boolean* obj_destroyed;
 			fmt = "%s is seared!";
 		}
 		/* note: s_suffix returns a modifiable buffer */
-		if (!noncorporeal(mdat) && !amorphous(mdat))
+		if (!is_incorporeal(mdat) && !amorphous(mdat))
 			whom = strcat(s_suffix(whom), " flesh");
 		pline(fmt, whom);
 	}
@@ -2068,7 +2068,7 @@ boolean* obj_destroyed;
 			fmt = "%s is seared!";
 		}
 		/* note: s_suffix returns a modifiable buffer */
-		if (!noncorporeal(mdat) && !amorphous(mdat))
+		if (!is_incorporeal(mdat) && !amorphous(mdat))
 			whom = strcat(s_suffix(whom), " flesh");
 		pline(fmt, whom);
 	}
@@ -2209,7 +2209,7 @@ boolean* obj_destroyed;
 	{
 		struct obj* otmp2 = (struct obj*) 0;
 
-		if (resists_disint(mon) || noncorporeal(mon->data)) {
+		if (resists_disint(mon) || is_incorporeal(mon->data)) {
 			m_shieldeff(mon);
 		}
 		else if (mon->worn_item_flags & W_ARMS) {
@@ -2489,7 +2489,7 @@ struct obj *obj;   /* weapon */
 
     /* odds to joust are expert:80%, skilled:60%, basic:40%, unskilled:20% */
     if ((joust_dieroll = rn2(5)) < skill_rating) {
-        if (joust_dieroll == 0 && rnl(50) == (50 - 1) && !unsolid(mon->data) && !noncorporeal(mon->data)
+        if (joust_dieroll == 0 && rnl(50) == (50 - 1) && !unsolid(mon->data) && !is_incorporeal(mon->data)
             && !obj_resists(obj, 0, 100))
             return -1; /* hit that breaks lance */
         return 1;      /* successful joust */

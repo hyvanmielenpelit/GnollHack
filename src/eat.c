@@ -511,7 +511,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 	double xtra_dmg = 0;
 	int int_loss = rnd(2);
 
-	if (noncorporeal(pd)) {
+	if (is_incorporeal(pd)) {
         if (visflag)
             pline("%s brain is unharmed.",
                   (mdef == &youmonst) ? "Your" : s_suffix(Monnam(mdef)));

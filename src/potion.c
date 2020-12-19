@@ -2170,7 +2170,7 @@ do_illness: /* Pestilence's potion of healing effect */
             (void)increase_mon_property_verbosely(mon, CONFUSION, duration);
 			break;
 		case POT_URINE:
-			if (canseemon(mon) && !noncorporeal(mon->data))
+			if (canseemon(mon) && !is_incorporeal(mon->data))
 				pline("%s looks concerened of %s body odor.", Monnam(mon), mhis(mon));
 			break;
 		case POT_DWARVEN_STOUT:

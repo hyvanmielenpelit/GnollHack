@@ -130,7 +130,7 @@ mon_sanity_check()
                     impossible("steed (%s) is on the map at <%d,%d>!",
                                fmt_ptr((genericptr_t) mtmp), x, y);
                 else if ((mtmp->mx != x || mtmp->my != y)
-                         && mtmp->data != &mons[PM_LONG_WORM])
+                         && !is_long_worm_with_tail(mtmp->data))
                     impossible("map mon (%s) at <%d,%d> is found at <%d,%d>?",
                                fmt_ptr((genericptr_t) mtmp),
                                mtmp->mx, mtmp->my, x, y);
@@ -458,7 +458,8 @@ boolean createcorpse;
 				obj->degraded_horn = 1;
 		}
 		goto default_1;
-	case PM_LONG_WORM:
+    case PM_LONG_WORM:
+    case PM_ELDER_LONG_WORM:
         if(!istame)
     		(void)mksobj_at(WORM_TOOTH, x, y, TRUE, FALSE);
 		goto default_1;
@@ -1648,7 +1649,7 @@ update_monster_timouts()
 						{
 							if (nolimbs(mtmp->data) || slithy(mtmp->data))
 								pline("Suddenly, %s stumbles.", mon_nam(mtmp));
-							else if (unsolid(mtmp->data) || noncorporeal(mtmp->data) || is_flying(mtmp) || is_levitating(mtmp))
+							else if (unsolid(mtmp->data) || is_incorporeal(mtmp->data) || is_flying(mtmp) || is_levitating(mtmp))
 								pline("Suddenly, %s seems highly unstable.", mon_nam(mtmp));
 							else
 								pline("Suddenly, %s trips over %s feet.", mon_nam(mtmp), mhis(mtmp));
@@ -3129,10 +3130,10 @@ register struct monst *mtmp;
                                && closed_door(mtmp->mx, mtmp->my)),
                 /* alternate message phrasing for some monster types */
                 spec_mon = (is_not_living(mtmp->data)
-                            || noncorporeal(mtmp->data)
+                            || is_incorporeal(mtmp->data)
                             || amorphous(mtmp->data)),
                 spec_death = (disintegested /* disintegrated or digested */
-                              || noncorporeal(mtmp->data)
+                              || is_incorporeal(mtmp->data)
                               || amorphous(mtmp->data));
 
             /* construct a format string before transformation;
@@ -5010,7 +5011,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         if (u.uswallow) {
             if (!attacktype(mdat, AT_ENGL)) {
                 /* Does mdat care? */
-                if (!noncorporeal(mdat) && !amorphous(mdat)
+                if (!is_incorporeal(mdat) && !amorphous(mdat)
                     && !is_whirly(mdat) && (mdat != &mons[PM_YELLOW_LIGHT])) {
                     char msgtrail[BUFSZ];
 
@@ -5041,12 +5042,12 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     }
 
 #ifndef DCC30_BUG
-    if (mdat == &mons[PM_LONG_WORM] && (mtmp->wormno = get_wormno()) != 0) {
+    if (is_long_worm_with_tail(mdat) && (mtmp->wormno = get_wormno()) != 0) {
 #else
     /* DICE 3.0 doesn't like assigning and comparing mtmp->wormno in the
      * same expression.
      */
-    if (mdat == &mons[PM_LONG_WORM]
+    if (is_long_worm_with_tail(mdat)
         && (mtmp->wormno = get_wormno(), mtmp->wormno != 0)) {
 #endif
         /* we can now create worms with tails - 11/91 */

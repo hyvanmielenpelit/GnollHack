@@ -105,15 +105,17 @@
 
 #define webmaker(ptr) (((ptr)->mflags3 & M3_WEBMAKER) != 0L)
 #define is_unicorn(ptr) ((ptr)->mlet == S_UNICORN && likes_gems(ptr))
-#define is_longworm(ptr)                                                   \
+#define is_long_worm(ptr)                                                   \
     (((ptr) == &mons[PM_BABY_LONG_WORM]) || ((ptr) == &mons[PM_LONG_WORM]) \
      || ((ptr) == &mons[PM_LONG_WORM_TAIL]))
+#define is_long_worm_with_tail(ptr)                                                   \
+    ( (ptr) == &mons[PM_LONG_WORM] || (ptr) == &mons[PM_ELDER_LONG_WORM] )
 #define is_covetous(ptr) (((ptr)->mflags3 & M3_COVETOUS))
 #define wants_bell(ptr) (((ptr)->mflags3 & M3_WANTSBELL))
 #define infravision(ptr) (((ptr)->mflags3 & M3_INFRAVISION))
 #define infravisible(ptr) (((ptr)->mflags3 & M3_INFRAVISIBLE))
 #define is_displacer(ptr) (((ptr)->mflags3 & M3_DISPLACES) != 0L)
-#define noncorporeal(ptr) (((ptr)->mflags3 & M3_NONCORPOREAL) != 0L) 
+#define is_incorporeal(ptr) (((ptr)->mflags3 & M3_INCORPOREAL) != 0L) 
 #define has_mflag_is_nonliving(ptr) (((ptr)->mflags3 & M3_NONLIVING) != 0L) /* do not use this normally; to make clearly different from is_not_living */
 #define is_multiweaponmonster(ptr) (((ptr)->mflags3 & M3_MULTIWEAPON) != 0L)
 #define leaves_corpses_randomly(ptr) (((ptr)->mflags3 & M3_RANDOM_CORPSE) != 0L)
@@ -182,7 +184,7 @@
     (is_undead(ptr) || has_mflag_is_nonliving(ptr))
 #define is_living(ptr) !is_not_living(ptr)
 #define slimeproof(ptr) \
-    ((ptr) == &mons[PM_GREEN_SLIME] || flaming(ptr) || noncorporeal(ptr))
+    ((ptr) == &mons[PM_GREEN_SLIME] || flaming(ptr) || is_incorporeal(ptr))
 
 
 /* Resistances and properties */
@@ -624,7 +626,7 @@
 
 /* permonst resistances */
 #define pm_resists_disint(ptr) \
-    (has_innate(ptr, MR_DISINT) || noncorporeal(ptr))
+    (has_innate(ptr, MR_DISINT) || is_incorporeal(ptr))
 
 #define pm_immune_to_fire(ptr) \
     (has_innate(ptr, MR_FIRE))
@@ -654,7 +656,7 @@
 #define is_mon_immune_to_magic_missile(mon) \
     (has_innate((mon)->data, MR_MAGIC_MISSILE) || has_property(mon, MAGIC_MISSILE_IMMUNITY))
 #define is_mon_immune_to_acid(mon) \
-    (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_IMMUNITY) || noncorporeal((mon)->data))
+    (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_IMMUNITY) || is_incorporeal((mon)->data))
 
 #define mon_resists_fire_weakly(mon) \
     ( pm_resists_fire((mon)->data) || has_property(mon, FIRE_RESISTANCE))
@@ -691,7 +693,7 @@
 #define resists_poison(mon) \
     (has_innate((mon)->data, MR_POISON) || has_property(mon, POISON_RESISTANCE) || is_not_living((mon)->data) || is_vampshifter(mon))
 #define resists_ston(mon) \
-    (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RESISTANCE) || noncorporeal((mon)->data))
+    (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RESISTANCE) || is_incorporeal((mon)->data))
 #define resists_magic(mon) \
     (has_innate((mon)->data, MR_MAGIC) || has_property(mon, ANTIMAGIC))
 #define resists_charm(mon) \
@@ -714,7 +716,7 @@
 
 /* other "resists" definitions */
 #define resists_bisection(mon) \
-    (has_property(mon, BISECTION_RESISTANCE) ||  noncorporeal((mon)->data) || amorphous((mon)->data))
+    (has_property(mon, BISECTION_RESISTANCE) ||  is_incorporeal((mon)->data) || amorphous((mon)->data))
 
 /* more on paralysis */
 #define is_paralyzed(mon) \
@@ -805,7 +807,7 @@
 /* G_NOCORPSE monsters might still be swallowed as a purple worm */
 /* Maybe someday this could be in mflags... */
 #define vegan(ptr)                                                 \
-    (is_vegan_food(ptr) || noncorporeal(ptr))
+    (is_vegan_food(ptr) || is_incorporeal(ptr))
 
 #define vegetarian(ptr) \
     (vegan(ptr) || is_vegetarian_food(ptr))
