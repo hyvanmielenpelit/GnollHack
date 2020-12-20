@@ -3375,8 +3375,6 @@ enum autodraw_types* autodraw_ptr;
     short replacement_idx = tile2replacement[ntile];
     if (replacement_idx > 0)
     {
-        int action_id = replacements[replacement_idx].replacement_action;
-
         switch (replacements[replacement_idx].replacement_action)
         {
         case REPLACEMENT_ACTION_BOTTOM_TILE:
