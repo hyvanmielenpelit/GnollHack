@@ -87,7 +87,7 @@ enum autodraw_drawing_types
 
 
 struct autodraw_definition {
-    char* autodraw_name;
+    const char* autodraw_name;
     enum autodraw_drawing_types draw_type;
     unsigned char flags;
     int source_glyph;
@@ -133,7 +133,7 @@ enum animation_main_types
 };
 
 struct animation_definition {
-    char* animation_name;
+    const char* animation_name;
     enum animation_main_types animation_type;
     char number_of_tiles;
     char number_of_frames;
@@ -502,7 +502,7 @@ extern NEARDATA struct animation_definition animations[];
 #define NUM_POSITIONS_IN_ENLARGEMENT 5
 
 struct enlargement_definition {
-    char* enlargement_name;
+    const char* enlargement_name;
     char number_of_animation_tiles;
     char number_of_animation_frames;
     char number_of_enlargement_tiles;
@@ -865,13 +865,13 @@ enum replacement_action_types
 
 
 struct replacement_definition {
-    char* replacement_name;
+    const char* replacement_name;
     char number_of_tiles;
     int glyph_offset;
     unsigned long replacement_events;
     enum replacement_action_types replacement_action; /* hard-coded - defines which tile to use and when */
     enum autodraw_types general_autodraw; /* For zero-tile replacements */
-    char* tile_names[MAX_TILES_PER_REPLACEMENT];
+    const char* tile_names[MAX_TILES_PER_REPLACEMENT];
     short tile_animation[MAX_TILES_PER_REPLACEMENT];
     short tile_enlargement[MAX_TILES_PER_REPLACEMENT];
     enum autodraw_types tile_autodraw[MAX_TILES_PER_REPLACEMENT];
