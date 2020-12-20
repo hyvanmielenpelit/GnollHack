@@ -5,6 +5,7 @@
 
 #include "hack.h"
 #include "artifact.h"
+#include <math.h>
 
 extern boolean notonhead;
 

@@ -9,6 +9,7 @@
 #include "artifact.h"
 #include "artilist.h"
 #include "lev.h"
+#include <math.h>
 
 STATIC_DCL void FDECL(trycall, (struct obj *));
 STATIC_DCL void NDECL(polymorph_sink);

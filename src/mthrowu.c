@@ -4,6 +4,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include <math.h>
 
 STATIC_DCL int FDECL(monmulti, (struct monst *, struct obj *, struct obj *));
 STATIC_DCL void FDECL(monshoot, (struct monst *, struct obj *, struct obj *));

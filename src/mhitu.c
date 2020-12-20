@@ -5,6 +5,7 @@
 
 #include "hack.h"
 #include "artifact.h"
+#include <math.h>
 
 STATIC_VAR NEARDATA struct obj *mon_currwep = (struct obj *) 0;
 

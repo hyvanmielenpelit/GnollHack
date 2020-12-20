@@ -5,6 +5,7 @@
 
 #include "hack.h"
 #include "artifact.h"
+#include <math.h>
 
 STATIC_DCL boolean FDECL(known_hitum, (struct monst *, struct obj *, int *,
                                        int, int, struct attack *, int));

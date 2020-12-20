@@ -6,6 +6,7 @@
 #include "hack.h"
 #include "artifact.h"
 #include "artilist.h"
+#include <math.h>
 
 /* Disintegration rays have special treatment; corpses are never left.
  * But the routine which calculates the damage is separate from the routine

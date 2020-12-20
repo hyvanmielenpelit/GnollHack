@@ -3,6 +3,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include <math.h>
 
 /* spellmenu arguments; 0 thru n-1 used as spl_book[] index when swapping */
 #define SPELLMENU_DETAILS (-4)

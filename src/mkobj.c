@@ -1571,7 +1571,7 @@ int mkobj_type;
             if (In_endgame(&u.uz))
             {
                 if (!rn2(4))
-                    otmp->exceptionality = (!rn2(3) && !objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                    otmp->exceptionality = (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
                 else if (!rn2(3))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
                 else if (!rn2(2))
@@ -1579,7 +1579,7 @@ int mkobj_type;
             }
             else if (Inhell)
             {
-                if (!rn2(10) && !objects[otmp->otyp].oc_material != MAT_SILVER)
+                if (!rn2(10) && objects[otmp->otyp].oc_material != MAT_SILVER)
                     otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
                 else if (!rn2(4))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
@@ -1589,7 +1589,7 @@ int mkobj_type;
             else if (depth(&u.uz) >= 20)
             {
                 if (!rn2(Is_stronghold(&u.uz) ? 20 : 40))
-                    otmp->exceptionality = (!rn2(3) && !objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                    otmp->exceptionality = (!rn2(3) && objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
                 else if (!rn2(6))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
                 else if (!rn2(3))

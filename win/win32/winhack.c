@@ -7,6 +7,7 @@
 
 #include "win10.h"
 #include <process.h>
+#include <math.h>
 
 #include "winMS.h"
 #include "hack.h"
