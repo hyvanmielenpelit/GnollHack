@@ -1139,9 +1139,9 @@ struct special_effect_definition {
     int frames_from_sound_to_action;
     int frames_from_action_to_end;
     enum layer_types layer;
-    enum replacement_types replacement;
-    enum animation_types animation;
-    enum enlargement_types enlargement;
+    short /*enum replacement_types*/ replacement;
+    short /*enum animation_types*/ animation;
+    short /*enum enlargement_types*/ enlargement;
 };
 
 extern NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS];
@@ -1149,9 +1149,9 @@ extern NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFF
 
 struct game_cursor_definition {
     const char* name;
-    enum replacement_types replacement;
-    enum animation_types animation;
-    enum enlargement_types enlargement;
+    short /*enum replacement_types*/ replacement;
+    short /*enum animation_types*/ animation;
+    short /*enum enlargement_types*/ enlargement;
 };
 
 
@@ -1159,9 +1159,9 @@ extern NEARDATA struct game_cursor_definition game_cursors[MAX_CURSORS];
 
 struct hit_tile_definition {
     const char* name;
-    enum replacement_types replacement;
-    enum animation_types animation;
-    enum enlargement_types enlargement;
+    short /*enum replacement_types*/ replacement;
+    short /*enum animation_types*/ animation;
+    short /*enum enlargement_types*/ enlargement;
 };
 
 extern NEARDATA struct hit_tile_definition hit_tile_definitions[MAX_HIT_TILES];
@@ -1169,9 +1169,9 @@ extern NEARDATA struct hit_tile_definition hit_tile_definitions[MAX_HIT_TILES];
 
 struct general_tile_definition {
     const char* name;
-    enum replacement_types replacement;
-    enum animation_types animation;
-    enum enlargement_types enlargement;
+    short /*enum replacement_types*/ replacement;
+    short /*enum animation_types*/ animation;
+    short /*enum enlargement_types*/ enlargement;
 };
 
 extern NEARDATA struct general_tile_definition general_tile_definitions[MAX_GENERAL_TILES];
