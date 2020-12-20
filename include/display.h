@@ -712,72 +712,72 @@
     ((abs(glyph)) >= GLYPH_PLAYER_OFF && (abs(glyph)) < (GLYPH_PLAYER_OFF + NUM_PLAYER_CHARACTERS))
 
 #define glyph_to_player(glyph) \
-    (glyph_is_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_OFF) : NO_GLYPH)
+    (glyph_is_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_OFF) : 0)
 
 #define glyph_is_attacking_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_ATTACK_OFF && (abs(glyph)) < (GLYPH_PLAYER_ATTACK_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_attacking_player(glyph) \
-    (glyph_is_attacking_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_ATTACK_OFF) : NO_GLYPH)
+    (glyph_is_attacking_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_ATTACK_OFF) : 0)
 
 #define glyph_is_throwing_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_THROW_OFF && (abs(glyph)) < (GLYPH_PLAYER_THROW_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_throwing_player(glyph) \
-    (glyph_is_throwing_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_THROW_OFF) : NO_GLYPH)
+    (glyph_is_throwing_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_THROW_OFF) : 0)
 
 #define glyph_is_firing_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_FIRE_OFF && (abs(glyph)) < (GLYPH_PLAYER_FIRE_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_firing_player(glyph) \
-    (glyph_is_firing_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_FIRE_OFF) : NO_GLYPH)
+    (glyph_is_firing_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_FIRE_OFF) : 0)
 
 #define glyph_is_nodir_casting_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_CAST_NODIR_OFF && (abs(glyph)) < (GLYPH_PLAYER_CAST_NODIR_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_nodir_casting_player(glyph) \
-    (glyph_is_nodir_casting_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_CAST_NODIR_OFF) : NO_GLYPH)
+    (glyph_is_nodir_casting_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_CAST_NODIR_OFF) : 0)
 
 #define glyph_is_dir_casting_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_CAST_DIR_OFF && (abs(glyph)) < (GLYPH_PLAYER_CAST_DIR_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_dir_casting_player(glyph) \
-    (glyph_is_dir_casting_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_CAST_DIR_OFF) : NO_GLYPH)
+    (glyph_is_dir_casting_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_CAST_DIR_OFF) : 0)
 
 #define glyph_is_special_attacking_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_SPECIAL_ATTACK_OFF && (abs(glyph)) < (GLYPH_PLAYER_SPECIAL_ATTACK_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_special_attacking_player(glyph) \
-    (glyph_is_special_attacking_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_SPECIAL_ATTACK_OFF) : NO_GLYPH)
+    (glyph_is_special_attacking_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_SPECIAL_ATTACK_OFF) : 0)
 
 #define glyph_is_kicking_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_KICK_OFF && (abs(glyph)) < (GLYPH_PLAYER_KICK_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_kicking_player(glyph) \
-    (glyph_is_kicking_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_KICK_OFF) : NO_GLYPH)
+    (glyph_is_kicking_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_KICK_OFF) : 0)
 
 #define glyph_is_passive_defense_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_PASSIVE_DEFENSE_OFF && (abs(glyph)) < (GLYPH_PLAYER_PASSIVE_DEFENSE_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_passive_defense_player(glyph) \
-    (glyph_is_passive_defense_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_PASSIVE_DEFENSE_OFF) : NO_GLYPH)
+    (glyph_is_passive_defense_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_PASSIVE_DEFENSE_OFF) : 0)
 
 #define glyph_is_defending_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_DEFEND_OFF && (abs(glyph)) < (GLYPH_PLAYER_DEFEND_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_defending_player(glyph) \
-    (glyph_is_defending_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_DEFEND_OFF) : NO_GLYPH)
+    (glyph_is_defending_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_DEFEND_OFF) : 0)
 
 #define glyph_is_damage_receiving_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_RECEIVE_DAMAGE_OFF && (abs(glyph)) < (GLYPH_PLAYER_RECEIVE_DAMAGE_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_damage_receiving_player(glyph) \
-    (glyph_is_damage_receiving_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_RECEIVE_DAMAGE_OFF) : NO_GLYPH)
+    (glyph_is_damage_receiving_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_RECEIVE_DAMAGE_OFF) : 0)
 
 #define glyph_is_item_using_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_ITEM_USE_OFF && (abs(glyph)) < (GLYPH_PLAYER_ITEM_USE_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_item_using_player(glyph) \
-    (glyph_is_item_using_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_ITEM_USE_OFF) : NO_GLYPH)
+    (glyph_is_item_using_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_ITEM_USE_OFF) : 0)
 
 #define glyph_is_door_using_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_DOOR_USE_OFF && (abs(glyph)) < (GLYPH_PLAYER_DOOR_USE_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_door_using_player(glyph) \
-    (glyph_is_door_using_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_DOOR_USE_OFF) : NO_GLYPH)
+    (glyph_is_door_using_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_DOOR_USE_OFF) : 0)
 
 #define glyph_is_dying_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_DEATH_OFF && (abs(glyph)) < (GLYPH_PLAYER_DEATH_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_dying_player(glyph) \
-    (glyph_is_dying_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_DEATH_OFF) : NO_GLYPH)
+    (glyph_is_dying_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_DEATH_OFF) : 0)
 
 #define glyph_is_monster(glyph)                            \
     ((abs(glyph) >= GLYPH_MON_OFF && abs(glyph) < GLYPH_INVIS_OFF)     \
@@ -885,7 +885,7 @@
                                          ? (door_use_glyph_to_player_mon(abs(glyph)))                    \
                                    : glyph_is_dying_player(glyph)     \
                                          ? (death_glyph_to_player_mon(abs(glyph)))                    \
-                                             : NO_GLYPH)
+                                             : 0)
 
 
 #define glyph_to_cmap(glyph) \
@@ -913,13 +913,11 @@
 
 #define glyph_to_trap(glyph) \
     (glyph_is_trap(glyph) ? (glyph_is_cmap(glyph) ? defsym_to_trap(generic_glyph_to_cmap(glyph)) : glyph_is_broken_cmap(glyph) ? defsym_to_trap(glyph_to_broken_cmap(glyph)) : glyph_is_cmap_variation(glyph) ? defsym_to_trap(defsym_variations[glyph_to_cmap_variation(glyph)].base_screen_symbol) : glyph_is_broken_cmap_variation(glyph) ? defsym_to_trap(defsym_variations[glyph_to_broken_cmap_variation(glyph)].base_screen_symbol) : NO_TRAP) : NO_TRAP)
-//      ((int) defsym_to_trap((abs(glyph)) - get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS - GLYPH_CMAP_OFF)) \
-//                          : NO_GLYPH)
 
 #define glyph_to_swallow(glyph) \
     (glyph_is_swallow(glyph) ? (((abs(glyph)) - GLYPH_SWALLOW_OFF) % MAX_SWALLOW_CHARS) : 0)
 #define glyph_to_warning(glyph) \
-    (glyph_is_warning(glyph) ? ((abs(glyph)) - GLYPH_WARNING_OFF) : NO_GLYPH);
+    (glyph_is_warning(glyph) ? ((abs(glyph)) - GLYPH_WARNING_OFF) : 0);
 
 #define glyph_to_obj(glyph) \
     (glyph_is_body(glyph) || glyph_is_female_body(glyph)  \
@@ -932,7 +930,7 @@
 				   ? artifact_to_obj(glyph_to_artifact(glyph))   \
 				   : glyph_is_normal_object(glyph)   \
 						 ? ((abs(glyph)) - GLYPH_OBJ_OFF) \
-						 : NO_GLYPH)
+						 : STRANGE_OBJECT)
 
 
 /*

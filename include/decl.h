@@ -475,7 +475,7 @@ E const char *const monexplain[], invisexplain[], *const oclass_names[];
 
 E char *fqn_prefix[PREFIX_COUNT];
 #ifdef PREFIXES_IN_USE
-E char *fqn_prefix_names[PREFIX_COUNT];
+E const char *fqn_prefix_names[PREFIX_COUNT];
 #endif
 
 E NEARDATA struct savefile_info sfcap, sfrestinfo, sfsaveinfo;

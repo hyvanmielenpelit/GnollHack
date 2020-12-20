@@ -743,7 +743,7 @@ struct obj* weapon;
         }
 
 		/* Hit only hostile monsters to make it better --JG */
-		if (mtmp && (!is_peaceful(mtmp) || is_crazed(mtmp) || Conflict) || mtmp == target)
+		if (mtmp && (!is_peaceful(mtmp) || is_crazed(mtmp) || Conflict || mtmp == target))
 		{
 			tmp = find_roll_to_hit(mtmp, uattk->aatyp, weapon,
 				&attknum, &armorpenalty);
@@ -4543,9 +4543,10 @@ unsigned long ad_flags;
 
 		/* Physical and spell damage adjustments */
 		if ((adtyp == AD_PHYS || adtyp == AD_ACID || adtyp == AD_DGST || adtyp == AD_MAGM) &&
-			((you_defend ? Half_physical_damage : has_half_physical_damage(mdef)))
-			|| (magr && (you_defend ? Half_physical_damage_against_undead_and_demons : has_half_physical_damage_against_undead_and_demons(mdef)) && (is_undead(magr->data) || is_demon(magr->data)))
-			)
+			 ((you_defend ? Half_physical_damage : has_half_physical_damage(mdef))
+			  || (magr && (you_defend ? Half_physical_damage_against_undead_and_demons : has_half_physical_damage_against_undead_and_demons(mdef)) && (is_undead(magr->data) || is_demon(magr->data)))
+			 )
+		   )
 		{
 			base_dmg_d /= 2.0;
 		}

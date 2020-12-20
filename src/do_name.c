@@ -1834,6 +1834,12 @@ boolean called;
 	/* note: uname is always at end */
     char *bp;
 
+    /* Remove gcc warning */
+    if (called)
+    {
+        /* Do nothing here */
+    }
+
     if (program_state.gameover)
         suppress |= SUPPRESS_HALLUCINATION;
     if (article == ARTICLE_YOUR && !is_tame(mtmp))

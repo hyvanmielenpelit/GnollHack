@@ -196,52 +196,71 @@ int x, y;
 		(madeby == BY_YOU && uwep && is_saw(uwep)) ? "cut" :
 		"dig in";
 
-    if (On_stairs(x, y)) {
-        if (x == xdnladder || x == xupladder) {
+    if (On_stairs(x, y))
+    {
+        if (x == xdnladder || x == xupladder)
+        {
             if (verbose)
                 pline_The("ladder resists your effort.");
-        } else if (verbose)
+        } 
+        else if (verbose)
             pline_The("stairs are too hard to %s.", verb);
         return FALSE;
-    } else if (IS_THRONE(levl[x][y].typ) && madeby != BY_OBJECT) {
+    } 
+    else if (IS_THRONE(levl[x][y].typ) && madeby != BY_OBJECT) 
+    {
         if (verbose)
             pline_The("throne is too hard to break apart.");
         return FALSE;
     }
-    else if (IS_ANVIL(levl[x][y].typ)) {
+    else if (IS_ANVIL(levl[x][y].typ)) 
+    {
         if (verbose)
             pline_The("anvil is too hard to break apart.");
         return FALSE;
-    } else if (IS_ALTAR(levl[x][y].typ)
+    }
+    else if (IS_ALTAR(levl[x][y].typ)
                && (madeby != BY_OBJECT || Is_astralevel(&u.uz)
-                   || Is_sanctum(&u.uz))) {
+                   || Is_sanctum(&u.uz))) 
+    {
         if (verbose)
             pline_The("altar is too hard to break apart.");
         return FALSE;
-    } else if (Is_airlevel(&u.uz)) {
+    }
+    else if (Is_airlevel(&u.uz)) 
+    {
         if (verbose)
             You("cannot %s thin air.", verb);
         return FALSE;
-    } else if (Is_waterlevel(&u.uz)) {
+    } 
+    else if (Is_waterlevel(&u.uz)) 
+    {
         if (verbose)
             pline_The("%s splashes and subsides.", hliquid("water"));
         return FALSE;
-    } else if ((IS_ROCK(levl[x][y].typ) && levl[x][y].typ != SDOOR
+    } 
+    else if ((IS_ROCK(levl[x][y].typ) && levl[x][y].typ != SDOOR
                 && (levl[x][y].wall_info & W_NONDIGGABLE) != 0)
-               || (ttmp && (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN)
+               || (ttmp && (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN))
                || (IS_DOOR_OR_SDOOR(levl[x][y].typ) && !is_door_diggable_at(x, y))
-               || (!Can_dig_down(&u.uz) && !levl[x][y].candig))) {
+               || (!Can_dig_down(&u.uz) && !levl[x][y].candig)
+              ) 
+    {
         if (verbose)
             pline_The("%s here is too hard to %s.", surface(x, y), verb);
         return FALSE;
-    } else if (sobj_at(BOULDER, x, y)) {
+    } 
+    else if (sobj_at(BOULDER, x, y)) 
+    {
         if (verbose)
             There("isn't enough room to %s here.", verb);
         return FALSE;
-    } else if (madeby == BY_OBJECT
+    }
+    else if (madeby == BY_OBJECT
                /* the block against existing traps is mainly to
                   prevent broken wands from turning holes into pits */
-               && (ttmp || is_pool_or_lava(x, y))) {
+               && (ttmp || is_pool_or_lava(x, y))) 
+    {
         /* digging by player handles pools separately */
         return FALSE;
     }
@@ -453,9 +472,9 @@ dig(VOID_ARGS)
                 create_simple_location(dpx, dpy, lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM, lev->floorsubtyp ? lev->floorsubtyp : r && r->orig_rtype == GARDEN ? get_initial_location_subtype(GRASS) : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(dpx, dpy), 0, 0, FALSE);
 
 				/* Wood */
-				struct obj* otmp = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
-				otmp->quan = d(1, 3);
-				otmp->owt = weight(otmp);
+				struct obj* otmp_wood = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
+                otmp_wood->quan = d(1, 3);
+                otmp_wood->owt = weight(otmp_wood);
 
 				/* Possibly some fruits */
 				if (!rn2(3))
@@ -1936,8 +1955,7 @@ struct obj* origobj;
         else if (maze_dig) 
         {
             int ltype = 0;
-            int lsubtype = 0;
-            uchar lflags = 0;
+            unsigned short lflags = 0;
 
             if (IS_WALL(room->typ))
             {
@@ -1952,7 +1970,7 @@ struct obj* origobj;
 
                     ltype = CORR;
                     play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
-                    create_simple_location(zx, zy, ltype, get_initial_location_subtype(ltype), 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
+                    create_simple_location(zx, zy, ltype, get_initial_location_subtype(ltype), lflags, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)
@@ -1985,7 +2003,7 @@ struct obj* origobj;
                 {
                     play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
                     struct rm* lev = &levl[zx][zy];
-                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : CORR, levl[zx][zy].floortyp ? levl[zx][zy].floorsubtyp : get_initial_location_subtype(CORR), 0, FALSE);
+                    create_basic_floor_location(zx, zy, lev->floortyp ? lev->floortyp : CORR, lev->floortyp ? lev->floorsubtyp : get_initial_location_subtype(CORR), 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)

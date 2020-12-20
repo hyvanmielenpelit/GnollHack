@@ -4490,6 +4490,7 @@ int x, y;
 
 const char*
 get_floor_doodad_explanation_at(x, y)
+int x, y;
 {
     const char* explanation = 0;
     if (levl[x][y].floor_doodad)

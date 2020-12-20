@@ -8,6 +8,7 @@
 #include "func_tab.h"
 #include "artifact.h"
 #include "artilist.h"
+#include <math.h>
 
 /* Macros for meta and ctrl modifiers:
  *   M and C return the meta/ctrl code for the given character;
@@ -729,7 +730,7 @@ struct available_ability
     struct monst* target_mtmp;
 };
 
-static struct available_ability available_ability_list[MAXABILITYNUM] = { { 0 } };
+static struct available_ability available_ability_list[MAXABILITYNUM] = { {"", 0, 0, 0} };
 
 int
 doability(VOID_ARGS)
@@ -894,7 +895,7 @@ doability(VOID_ARGS)
 
 		if (attacktype(youmonst.data, AT_GAZE))
 		{
-			char gazebuf[BUFSIZ] = "";
+			char gazebuf[BUFSIZ];
 			Sprintf(gazebuf, "Gaze%s", youmonst.data->mlet == S_EYE ? " with central eye" : "");
 			strcpy(available_ability_list[abilitynum].name, gazebuf);
 			available_ability_list[abilitynum].function_ptr = &dogaze;
@@ -1817,7 +1818,7 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 #else
 		fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
 #endif
-		char buf[BUFSIZ] = "";
+		char buf[BUFSIZ];
 
 		Sprintf(buf, "Name,Level,Move,AC,MC,MR,Alignment,GenoFlags,");
 		(void)write(fd, buf, strlen(buf));
@@ -1875,7 +1876,6 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 
 		for (int i = LOW_PM; i < NUM_MONSTERS; i++)
 		{
-			char letbuf[BUFSZ] = "";
 			Sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%lu,",
 				mons[i].mname, 
 				(int)mons[i].mlevel, (int)mons[i].mmove, 
@@ -1989,7 +1989,6 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
 #ifdef USE_TILES
     if (wizard)
     {
-        struct tileset_definition* tsd = &default_tileset_definition;
         const char* fq_save = "glyph2tile_out.csv";
         int fd;
         char buf[BUFSZ];
@@ -2682,8 +2681,6 @@ int propindx; /* index of a property which can be conveyed by worn item */
     /* simpler than from_what()/what_gives(); we don't attempt to
        handle artifacts and we deliberately ignore wielded items */
 
-	long spfx = prop_to_spfx(propindx);
-
     for (o = invent; o; o = o->nobj) 
 	{
 		if (!object_stats_known(o))
@@ -3073,7 +3070,7 @@ int final;
 	get_game_difficulty_multipliers(&monster_damage_mult, &monster_hp_mult);
 	int pct_monster_dmg_mult = (int)(monster_damage_mult * 100);
 	int pct_player_dmg_mult = (int)((1 / monster_hp_mult) * 100);
-	char difficultybuf[BUFSIZ] = "";
+	char difficultybuf[BUFSIZ];
 	Sprintf(difficultybuf, " (%d%% monster damage, %d%% player damage)", pct_monster_dmg_mult, pct_player_dmg_mult);
 	enl_msg("Your game difficulty ", "is ", "was ", buf, difficultybuf);
 
@@ -3181,7 +3178,7 @@ int mode, final, attrindx;
 		int tohitbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 1 : 0);
 		int dmgbonus_constant = (currstr < STR18(100) ? strength_damage_bonus(min(18, currstr)) : strength_damage_bonus(currstr));
 		int dmgbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 2 : 0);
-		int random_chance = ((currstr > 18 && currstr < STR18(100)) ? currstr - 18 : 0);
+		//int random_chance = ((currstr > 18 && currstr < STR18(100)) ? currstr - 18 : 0);
 		char tohitbuf[BUFSIZ];
 		char dmgbuf[BUFSIZ];
 
@@ -4606,7 +4603,8 @@ int cmdflag;
 		char descbuf[BUFSZ] = "";
 		char cmdbuf[BUFSZ] = "";
 		char buf[BUFSZ] = "";
-		int cmdchar = 'a' + n;
+
+        int cmdchar = 'a' + n;
 		size_t cmdlen = 0;
 
 		any.a_nfunc = efp->ef_funct;
@@ -4641,7 +4639,7 @@ int cmdflag;
 			(efp->key & ctrlmask) == 0 ? "Ctrl-" : (efp->key & altmask) == altmask ? "Alt-" : "",
 				(efp->key & ctrlmask) == 0 ? efp->key | ctrlmask : (efp->key & altmask) == altmask ? efp->key & ~altmask : efp->key);
 		else
-			Sprintf(shortcutbuf, "");
+			strcpy(shortcutbuf, "");
 
 		Sprintf(buf, "%s  %s%s", cmdbuf, descbuf, shortcutbuf);
 
@@ -7061,13 +7059,13 @@ boolean doit;
 
     if (IS_FOUNTAIN(typ) || IS_SINK(typ)) 
 	{
-        int ftyp = levl[u.ux][u.uy].subtyp; // (levl[u.ux][u.uy].fountainmask & FOUNTAIN_TYPE_MASK);
+        //int ftyp = levl[u.ux][u.uy].subtyp; // (levl[u.ux][u.uy].fountainmask & FOUNTAIN_TYPE_MASK);
         Sprintf(buf, "Drink from the %s", IS_FOUNTAIN(typ) ? get_fountain_name(u.ux, u.uy) : defsyms[S_sink].explanation);
         add_herecmd_menuitem(win, dodrink, buf);
     }
 	if (IS_FOUNTAIN(typ))
 	{
-        int ftyp = levl[u.ux][u.uy].subtyp; //  (levl[u.ux][u.uy].fountainmask& FOUNTAIN_TYPE_MASK);
+        //int ftyp = levl[u.ux][u.uy].subtyp; //  (levl[u.ux][u.uy].fountainmask& FOUNTAIN_TYPE_MASK);
 		Sprintf(buf, "Dip something into the %s", get_fountain_name(u.ux, u.uy));
 		add_herecmd_menuitem(win, dodip, buf);
 	}

@@ -131,7 +131,6 @@ STATIC_DCL int FDECL(swallow_to_glyph, (int, int));
 STATIC_DCL void FDECL(display_warning, (struct monst *));
 
 STATIC_DCL int FDECL(check_pos, (int, int, int));
-STATIC_DCL int FDECL(get_object_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_bk_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_doodad_layer_glyph, (XCHAR_P, XCHAR_P));
@@ -271,7 +270,7 @@ register int show;
         int feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE];
         int feature_doodad_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD];
         int cover_feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE];
-        unsigned long flags_before = gbuf[y][x].layers.layer_flags;
+        //unsigned long flags_before = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
@@ -374,7 +373,7 @@ boolean exclude_ascii;
     register int glyph = obj_to_glyph(obj, newsym_rn2);
     boolean draw_in_front = is_obj_drawn_in_front(obj);
     enum layer_types layer = draw_in_front ? LAYER_COVER_OBJECT : LAYER_OBJECT;
-    boolean in_pit = FALSE, is_iron_chain = FALSE;
+    boolean in_pit = FALSE;
     struct trap* t = 0;
     if (isok(x, y) && (t = t_at(x, y)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
         in_pit = TRUE;
@@ -420,7 +419,7 @@ boolean exclude_ascii;
         show_glyph_on_layer(x, y, glyph, layer);
         if(in_pit)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_O_IN_PIT);
-        if (isok(x, y) && uchain && uchain->ox == x && uchain->oy == y)
+        if (isok(x, y) && uchain && obj == uchain && uchain->ox == x && uchain->oy == y)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_O_CHAIN);
     }
 }
@@ -576,10 +575,10 @@ int x, y, show;
         for (obj = vobj_at(x, y); obj; obj = obj->nexthere)
         {
             boolean draw_in_front = is_obj_drawn_in_front(obj);
-            boolean show = (draw_in_front ? show_first_cover_layer : show_first_object_layer);
-            map_object_no_chain_check_choose_ascii(obj, show, !first);
+            boolean show_this_object = (draw_in_front ? show_first_cover_layer : show_first_object_layer);
+            map_object_no_chain_check_choose_ascii(obj, show_this_object, !first);
 
-            if(show)
+            if(show_this_object)
                 first = FALSE;
 
             if (draw_in_front)
@@ -815,7 +814,6 @@ struct monst *mon;
 
     if (mon_warning(mon)) 
     {
-        double power = 0;
         double difficulty_mulplier = context.game_difficulty <= -2 ? 0.707 : context.game_difficulty == -1 ? 0.841 : 
             context.game_difficulty == 0 ? 1.0 : context.game_difficulty == 1 ? 1.189 : 1.414;
         double ratio = ((double)mons[mon->mnum].difficulty) / ((double)(max(u.ulevel, 1)));
@@ -1161,7 +1159,7 @@ int damage_shown;
     register struct rm *lev = &(levl[x][y]);
     register int see_it;
     register xchar worm_tail;
-    int orig_glyph = lev->hero_memory_layers.glyph;
+    //int orig_glyph = lev->hero_memory_layers.glyph;
 
     if (in_mklev)
         return;
@@ -1987,7 +1985,7 @@ see_monsters()
 			}
 			if (flicker_ability)
 			{
-				if (new_count != uitem->detectioncount)
+				if (new_count != old_count)
 					Sting_effects(uitem, new_count);
 
 				uitem->detectioncount = new_count;
@@ -3602,7 +3600,6 @@ xchar x, y;
 {
     int idx;
     struct rm* ptr = &(levl[x][y]);
-    boolean is_variation = FALSE;
 
     if (ptr->floortyp && IS_FLOOR(ptr->floortyp))
     {
@@ -3717,20 +3714,6 @@ xchar x, y;
     return NO_GLYPH;
 }
 
-
-/* object glyph for object layer for transparent backglyphs */
-STATIC_OVL int
-get_object_layer_glyph(x, y)
-xchar x, y;
-{
-    struct obj* otmp = level.objects[x][y];
-    if (otmp && cansee(x, y) && !u.uswallow)
-    {
-        return obj_to_glyph(otmp, rn2);
-    }
-    else
-        return NO_GLYPH;
-}
 
 /* ------------------------------------------------------------------------ */
 /* Wall Angle ------------------------------------------------------------- */

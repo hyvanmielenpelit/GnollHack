@@ -61,7 +61,7 @@ struct obj* obj;
 {
     if (obj->charges <= 0)
     {
-        pline(nothing_happens);
+        pline("%s", nothing_happens);
         return 1;
     }
 
@@ -1315,10 +1315,14 @@ struct monst* origmonst;
 	boolean wake = TRUE; /* Most 'zaps' should wake monster */
 	boolean reveal_invis = FALSE, learn_it = FALSE;
 	boolean helpful_gesture = FALSE;
-	int dmg = 0;
 
 	if (!otmp || !mtmp)
 		return 0;
+
+    if (origmonst) /* Remove gcc warning */
+    {
+        /* Do nothing */
+    }
 
 	if (u.uswallow && mtmp == u.ustuck)
 		reveal_invis = FALSE;
@@ -1437,6 +1441,10 @@ struct obj* obj, * otmp;
 struct monst* origmonst;
 {
 	int res = 0; /* did not affect object by default */
+    if(origmonst) /* Remove gcc warning */
+    {
+        /* Do nothing */
+    }
 
 	if (obj == otmp)
 		return 0;
@@ -1686,10 +1694,10 @@ struct obj **optr;
 	{
 		boolean objsplitted = FALSE;
 		struct obj* lightedcandle = (struct obj*)0;
-		char qbuf[BUFSIZ] = "";
-		Sprintf(qbuf, "%s only one?", obj->lamplit ? "Snuff out" : "Light");
+		char qbuf2[BUFSIZ];
+		Sprintf(qbuf2, "%s only one?", obj->lamplit ? "Snuff out" : "Light");
 
-		if (obj->quan > 1L && yn_query(qbuf) == 'y') 
+		if (obj->quan > 1L && yn_query(qbuf2) == 'y') 
 		{
 			objsplitted = TRUE;
 			if (!carried(obj))
@@ -3018,7 +3026,7 @@ struct obj* obj;
 	char buftext[BUFSZ] = "";
 	char buftext2[BUFSZ] = "";
 	char buftext3[BUFSZ] = "";
-	boolean undonned = FALSE, wandknown = FALSE, suggestnamingwand = FALSE;
+    boolean undonned = FALSE, wandknown = FALSE, suggestnamingwand = FALSE;
 	int res = 1;
 
 	if (!obj || obj->oclass != WAND_CLASS)
@@ -5404,8 +5412,8 @@ use_golf_club(obj)
 struct obj* obj;
 {
 	int x, y;
-	int avrg_attrib;
-	int dmg = 0, glyph, oldglyph = -1;
+	//int avrg_attrib;
+	int glyph, oldglyph = -1;
 	register struct monst* mtmp;
 	boolean no_golf_swing = FALSE;
 	char kickobjnam[BUFSZ];
@@ -5470,11 +5478,12 @@ struct obj* obj;
 	y = u.uy + u.dy;
 
 	/* KMH -- Kicking boots always succeed */
+    /*
 	if (Magical_kicking)
 		avrg_attrib = 99;
 	else
 		avrg_attrib = (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3;
-
+    */
 	if (u.uswallow) 
 	{
 		switch (rn2(3)) 

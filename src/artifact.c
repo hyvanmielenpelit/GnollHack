@@ -359,6 +359,12 @@ int prop_index;
 	if (!otmp)
 		return FALSE;
 
+	/* Remove gcc warning */
+	if (!mon)
+	{
+		/* Do nothing, since mon is not being used */
+	}
+
 	const struct artifact* arti = get_artifact(otmp);
 	if (!arti)
 		return FALSE;
@@ -1663,6 +1669,7 @@ int
 pseudo_artifact_hit(magr, mdef, otmp, extradmg, dieroll, critstrikeroll, adtyp_ptr)
 struct monst* magr, * mdef;
 struct obj* otmp;
+int extradmg;
 int dieroll; /* needed for Magicbane and vorpal blades */
 int critstrikeroll; /* need to synchronize critical strike based abilities */
 int* adtyp_ptr; /* return value is the type of damage caused */
@@ -2608,7 +2615,6 @@ struct obj *obj;
 			struct obj pseudo = zeroobj;
 			pseudo.otyp = SPE_ARROW_OF_DIANA;
 			pseudo.quan = 20L; /* do not let useup get it */
-			int otyp = pseudo.otyp;
 			double damage = 0;
 
 			if (!getdir((char*)0))
@@ -2780,7 +2786,7 @@ struct obj *obj;
 				}
 				else if (obj->recharged != old_recharged)
 				{
-					pline("%s a bit more shiny.", Tobjnam(obj, "look"), OBJ_CONTENT_DESC(obj->otyp));
+					pline("%s a bit more shiny.", Tobjnam(obj, "look"));
 				}
 				else
 				{
@@ -3280,6 +3286,11 @@ struct monst* mon;
 struct obj* obj;
 int prop_index;
 {
+	if (!mon)
+	{
+		/* Do nothing, since mon is not being used */
+	}
+
 	long spfx = prop_to_spfx(prop_index);
 
 	return (obj && obj->oartifact && (artilist[obj->oartifact].carried_prop == prop_index || (artilist[obj->oartifact].cspfx & spfx)));
@@ -3447,11 +3458,11 @@ int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt 
 
 		if (!otmp->oartifact || strcmp(colorbuf, "no color") == 0)
 		{
-			if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLACK)
+			if ((objects[otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLACK)
 				strcpy(colorbuf, "black");
-			else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_WHITE)
+			else if ((objects[otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_WHITE)
 				strcpy(colorbuf, "white");
-			else if ((objects[otmp->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLUE)
+			else if ((objects[otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLUE)
 				strcpy(colorbuf, "blue");
 			else
 				strcpy(colorbuf, "red");
@@ -3459,7 +3470,7 @@ int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt 
 
 
 		char weapbuf[BUFSZ] = "";
-		Sprintf(weapbuf, Yname2(otmp));
+		strcpy(weapbuf, Yname2(otmp));
 
         if (orc_count == -1 && otmp->detectioncount > 0) {
             /* -1 means that blindness has just been toggled; give a

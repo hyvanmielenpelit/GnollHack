@@ -640,7 +640,7 @@ boolean verbose;
 	
 		schar absdiff = abs(diff);
 		const char* adj = diff < 0 ? "unluckier" : "luckier";
-		char buf[BUFSZ] = "";
+		char buf[BUFSZ];
 		switch (absdiff)
 		{
 		case 1:
@@ -1730,7 +1730,7 @@ int propidx; /* OBSOLETE: special cases can have negative values */
 				Sprintf(buf, because_of, "your surroundings");
 			else if (u.uprops[propidx].extrinsic & W_STUCK)
 			{
-				char ustuckbuf[BUFSIZ] = "";
+				char ustuckbuf[BUFSIZ];
 				if (u.ustuck)
 					Sprintf(ustuckbuf, "%s holding you", mon_nam(u.ustuck));
 				else
@@ -1928,7 +1928,8 @@ struct monst* mon;
 				)
 			{
 				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) ||
-					(objects[otyp].oc_pflags & P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
+					((objects[otyp].oc_pflags & P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1 : 1;
+
 				if (objects[otyp].oc_pflags & P1_HP_PERCENTAGE_BONUS)
 					adj += multiplier * (objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;
 				else
@@ -2145,7 +2146,7 @@ struct monst* mon;
 				)
 			{
 				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
-					(objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
+					((objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1 : 1;
 
 				boolean cursed_plus_cursed_good = uitem->cursed && cursed_are_good;
 				int applicable_enchantment = (cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);

@@ -2045,12 +2045,13 @@ register struct trobj *trop;
 		if (obj->oclass == MISCELLANEOUS_CLASS && !(umisc && umisc2 && umisc3 && umisc4 && umisc5))
 		{
 			if (objects[obj->otyp].oc_subtyp != MISC_MULTIPLE_PERMITTED &&
-				(umisc && objects[umisc->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				((umisc && objects[umisc->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (umisc2 && objects[umisc2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (umisc3 && objects[umisc3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (umisc4 && objects[umisc4->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (umisc5 && objects[umisc5->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				)
+			   )
 			{
 				//Nothing
 			}

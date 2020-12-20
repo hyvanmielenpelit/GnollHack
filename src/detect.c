@@ -1450,7 +1450,7 @@ register int x, y;
      * opposite to how normal vision behaves.
      */
     oldglyph = glyph_at(x, y);
-    unsigned long oldlayerflags = lev->hero_memory_layers.layer_flags;
+    //unsigned long oldlayerflags = lev->hero_memory_layers.layer_flags;
 
     if (level.flags.hero_memory)
     {
@@ -1825,7 +1825,7 @@ void
 find_trap(trap)
 struct trap *trap;
 {
-    int tt = what_trap(trap->ttyp, rn2);
+    //int tt = what_trap(trap->ttyp, rn2);
     boolean cleared = FALSE;
 
     trap->tseen = 1;

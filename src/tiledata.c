@@ -316,7 +316,7 @@ uchar* tilemapflags;
             }
 
 
-            const char* oclass_name = def_oc_syms[objects[i].oc_class].name;
+            const char* oclass_name = def_oc_syms[(int)objects[i].oc_class].name;
             /* Jump over gems that all look the same, just take pieces of glass and luckstone */
             if (objects[i].oc_class == GEM_CLASS)
             {
@@ -835,7 +835,7 @@ uchar* tilemapflags;
                             no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
                             no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr,
                             missile_tile_num == 1 ? "generic " : base_missile_direction_name_array[n], 
-                            artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[objects[artilist[i].otyp].oc_class].name, 
+                            artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[(int)objects[artilist[i].otyp].oc_class].name,
                             has_artifact_floor_tile(i)
                         );
                         (void)write(fd, buf, strlen(buf));
@@ -860,7 +860,7 @@ uchar* tilemapflags;
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[artilist[i].enlargement].width_in_tiles, enlargements[artilist[i].enlargement].height_in_tiles, enlargements[artilist[i].enlargement].main_tile_x_coordinate);
                     else
                         Sprintf(eos(buf), ",1,1,0");
-                    Sprintf(eos(buf), ",%d,%d,%s,%s", artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[objects[artilist[i].otyp].oc_class].name);
+                    Sprintf(eos(buf), ",%d,%d,%s,%s", artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[(int)objects[artilist[i].otyp].oc_class].name);
                     
                     if (has_artifact_floor_tile(i))
                         Sprintf(eos(buf), ",1");

@@ -73,7 +73,7 @@ docharacterstatistics()
 	putstr(datawin, 0, txt);
 
 	/* Empty line */
-	Sprintf(buf, "");
+	strcpy(buf, "");
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -131,14 +131,14 @@ docharacterstatistics()
 	putstr(datawin, 0, txt);
 
 	/* Experience */
-	Sprintf(buf, "Experience:        %d", u.uexp);
+	Sprintf(buf, "Experience:        %ld", u.uexp);
 
 	if (u.ulevel < MAXULEV)
 	{
 		int ulvl = (int)u.ulevel;
 		long exp_for_nxt_lvl = newuexp(ulvl);
 
-		Sprintf(eos(buf), " / %d", exp_for_nxt_lvl);
+		Sprintf(eos(buf), " / %ld", exp_for_nxt_lvl);
 	}
 	txt = buf;
 	putstr(datawin, 0, txt);
@@ -152,7 +152,7 @@ docharacterstatistics()
 	}
 
 	/* Empty line */
-	Sprintf(buf, "");
+	strcpy(buf, "");
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -180,12 +180,11 @@ docharacterstatistics()
 		{
 			trait_count++;
 
-			char buf2[BUFSIZ] = "";
+			char dbuf[BUFSIZ];
+			strcpy(dbuf, urace.trait_descriptions[i]);
+			*dbuf = highc(*dbuf);
 
-			strcpy(buf2, urace.trait_descriptions[i]);
-			*buf2 = highc(*buf2);
-
-			Sprintf(buf, " %2d - %s (Race)", trait_count, buf2);
+			Sprintf(buf, " %2d - %s (Race)", trait_count, dbuf);
 			txt = buf;
 			putstr(datawin, 0, txt);
 
@@ -200,12 +199,11 @@ docharacterstatistics()
 		{
 			trait_count++;
 
-			char buf2[BUFSIZ] = "";
+			char dbuf[BUFSIZ];
+			strcpy(dbuf, urole.trait_descriptions[i]);
+			*dbuf = highc(*dbuf);
 
-			strcpy(buf2, urole.trait_descriptions[i]);
-			*buf2 = highc(*buf2);
-
-			Sprintf(buf, " %2d - %s (Role)", trait_count, buf2);
+			Sprintf(buf, " %2d - %s (Role)", trait_count, dbuf);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
@@ -251,43 +249,43 @@ docharacterstatistics()
 		{
 			intrinsic_count++;
 
-			char buf2[BUFSZ];
-			char buf3[BUFSZ];
+			char dbuf2[BUFSZ];
+			char dbuf3[BUFSZ];
 
-			strcpy(buf2, get_property_name(i));
-			*buf2 = highc(*buf2);
-			strcpy(buf3, "");
+			strcpy(dbuf2, get_property_name(i));
+			*dbuf2 = highc(*dbuf2);
+			strcpy(dbuf3, "");
 
 			if (innate_intrinsic & FROM_RACE)
 			{
-				Sprintf(buf3, "race");
+				Sprintf(dbuf3, "race");
 			}
 			else if (innate_intrinsic & FROM_ROLE)
 			{
-				if(strcmp(buf3, ""))
-					Sprintf(eos(buf3), ", ");
+				if(strcmp(dbuf3, ""))
+					Sprintf(eos(dbuf3), ", ");
 
-				Sprintf(eos(buf3), "role");
+				Sprintf(eos(dbuf3), "role");
 			}
 			else if (innate_intrinsic & FROM_ACQUIRED)
 			{
-				if (strcmp(buf3, ""))
-					Sprintf(eos(buf3), ", ");
+				if (strcmp(dbuf3, ""))
+					Sprintf(eos(dbuf3), ", ");
 
-				Sprintf(eos(buf3), "acquired");
+				Sprintf(eos(dbuf3), "acquired");
 			}
 			else if (innate_intrinsic & FROM_FORM)
 			{
-				if (strcmp(buf3, ""))
-					Sprintf(eos(buf3), ", ");
+				if (strcmp(dbuf3, ""))
+					Sprintf(eos(dbuf3), ", ");
 
-				Sprintf(eos(buf3), "polymorphed form");
+				Sprintf(eos(dbuf3), "polymorphed form");
 			}
 
-			if (strcmp(buf3, ""))
-				*buf3 = highc(*buf3);
+			if (strcmp(dbuf3, ""))
+				*dbuf3 = highc(*dbuf3);
 
-			Sprintf(buf, " %2d - %s (%s)", intrinsic_count, buf2, buf3);
+			Sprintf(buf, " %2d - %s (%s)", intrinsic_count, dbuf2, dbuf3);
 			txt = buf;
 			putstr(datawin, 0, txt);
 
@@ -321,11 +319,11 @@ docharacterstatistics()
 				{
 					abil_count++;
 
-					char buf2[BUFSIZ] = "";
+					char dbuf2[BUFSIZ] = "";
 					strcpy(buf2, get_property_name(intrinsic_ability[table_index].propid));
-					*buf2 = highc(*buf2);
+					*dbuf2 = highc(*dbuf2);
 
-					Sprintf(buf, " Level %2d - %s", intrinsic_ability[table_index].ulevel, buf2);
+					Sprintf(buf, " Level %2d - %s", intrinsic_ability[table_index].ulevel, dbuf2);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
@@ -515,7 +513,7 @@ register struct obj* obj;
 	txt = buf;
 	putstr(datawin, 0, txt);
 
-	Sprintf(buf, "");
+	strcpy(buf, "");
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -975,7 +973,7 @@ register struct obj* obj;
 	putstr(datawin, 0, txt);
 
 	/* Type */
-	strcpy(buf3, def_oc_syms[obj->oclass].name);
+	strcpy(buf3, def_oc_syms[(int)obj->oclass].name);
 	*buf3 = highc(*buf3);
 	//Sprintf(buf, "Class:                  %s", buf2);
 	Sprintf(buf, "%s", makesingular(buf3));
@@ -1105,7 +1103,7 @@ register struct obj* obj;
 	txt = buf;
 	putstr(datawin, 0, txt);
 
-	Sprintf(buf, "");
+	strcpy(buf, "");
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -1126,7 +1124,7 @@ register struct obj* obj;
 	{
 		/* Gold value */
 		if(obj->oartifact)
-			Sprintf(buf2, "%d gold", artilist[obj->oartifact].cost);
+			Sprintf(buf2, "%ld gold", artilist[obj->oartifact].cost);
 		else
 			Sprintf(buf2, "%d gold", objects[otyp].oc_cost);
 
@@ -1663,13 +1661,13 @@ register struct obj* obj;
 
 
 
-	boolean affectsac = obj->oclass == ARMOR_CLASS
-			|| (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)
+	boolean affectsac = (obj->oclass == ARMOR_CLASS
+			|| (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
 			|| (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_armor_class != 0)
 			);
 
-	boolean affectsmc = obj->oclass == ARMOR_CLASS
-			|| (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)
+	boolean affectsmc = (obj->oclass == ARMOR_CLASS
+			|| (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
 			|| (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_magic_cancellation != 0)
 			|| (stats_known && objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
 			);
@@ -3523,7 +3521,6 @@ register struct obj* obj;
 		int diff_to_5_from_ac0 = 5 - chance_to_hit_ac0;
 		int ac_with_5_chance = diff_to_5_from_ac0 / 5;
 		int diff_to_95_from_ac0 = 95 - chance_to_hit_ac0;
-		int ac_with_95_chance = diff_to_95_from_ac0 / 5;
 
 		powercnt++;
 		Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
@@ -3531,6 +3528,7 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 
 #if 0
+		int ac_with_95_chance = diff_to_95_from_ac0 / 5;
 		powercnt++;
 		Sprintf(buf, " %2d - You have 95%% chance to hit AC %d", powercnt, ac_with_95_chance);
 		txt = buf;
@@ -3634,7 +3632,7 @@ register struct monst* mon;
 	winid datawin = WIN_ERR;
 	datawin = create_nhwindow(NHW_MENU);
 
-	int mnum = mon->mnum;
+	//int mnum = mon->mnum;
 	struct permonst* ptr = mon->data;
 	boolean is_you = (mon == &youmonst);
 
@@ -3683,13 +3681,13 @@ register struct monst* mon;
 	else
 	{
 		/* Type */
-		Sprintf(buf, "Level %d %s%s", ptr->difficulty, ptr->geno & G_UNIQ ? "unique " : "", def_monsyms[ptr->mlet].explain);
+		Sprintf(buf, "Level %d %s%s", ptr->difficulty, ptr->geno & G_UNIQ ? "unique " : "", def_monsyms[(int)ptr->mlet].explain);
 		//*buf = highc(*buf);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
 
-	Sprintf(buf, "");
+	strcpy(buf, "");
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -6321,7 +6319,7 @@ xchar x, y;
 void
 full_location_transform(x, y, type, subtype, location_flags, feature_doodad, floor_doodad, floortype, floorsubtype, facing_right, horizontal, key_otyp, special_quality, donewsym)
 xchar x, y;
-int type, subtype, feature_doodad, floor_doodad, floortype;
+int type, subtype, feature_doodad, floor_doodad, floortype, floorsubtype;
 unsigned short location_flags;
 boolean facing_right, horizontal, donewsym;
 short key_otyp, special_quality;

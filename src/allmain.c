@@ -1050,11 +1050,11 @@ display_gamewindows()
 }
 
 const char*
-get_game_difficulty_text(level)
-int level;
+get_game_difficulty_text(dif_level)
+int dif_level;
 {
 	
-	switch (level)
+	switch (dif_level)
 	{
 	case -2:
 		return "very easy";
@@ -1090,7 +1090,7 @@ choose_game_difficulty()
 		any = zeroany;
 		any.a_int = i + 3;
 		char diffchar = i + 2 + 'a';
-		char buf[BUFSZ] = "";
+		char buf[BUFSZ];
 		const char* leveltext;
 		
 		leveltext = get_game_difficulty_text(i);
@@ -1173,7 +1173,6 @@ newgame()
 	encounter_init();		/* initialize encounters and force linkage */
 
     mklev();
-	struct mkroom* croom = upstairs_room;
     u_on_upstairs();
     if (wizard)
         obj_delivery(FALSE); /* finish wizkit */

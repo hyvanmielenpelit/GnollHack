@@ -254,8 +254,9 @@ do_statusline2()
 		{
             panic("bot2: second status line exceeds MAXCO (%u > %d)",
                   (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1), MAXCO);
-			return "";
-        } 
+			strcpy(newbot2, "");
+            return newbot2;
+        }
 		else if ((dln - dx) + 1 + hln + 1 + xln + 1 + cln <= COLNO) 
 		{
             Sprintf(newbot2, "%s %s %s %s %s", dloc, hlth, expr, cond, tmmv);
@@ -2323,7 +2324,7 @@ boolean from_configfile;
     enum statusfields fld = BL_FLUSH;
     struct hilite_s hilite;
     char tmpbuf[BUFSZ];
-    static const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
+    //static const char *aligntxt[] = { "chaotic", "neutral", "lawful" };
     /* hu_stat[] from eat.c has trailing spaces which foul up comparisons */
     static const char *hutxt[] = { "Satiated", "", "Hungry", "Weak",
                                    "Fainting", "Fainted", "Starved" };

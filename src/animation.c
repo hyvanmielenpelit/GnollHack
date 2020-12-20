@@ -3186,6 +3186,12 @@ enum action_tile_types action;
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
     /* Write here the code that returns the right replacement for the combination that has a replacement */
+    /* To remove gcc warning */
+    if (roleidx == 0 && raceidx == 0 && genderidx == 0 && alignmentidx == 0 && levelidx == 0)
+    {
+        /* Do nothing */
+    }
+
     switch (action)
     {
     case ACTION_TILE_NO_ACTION:
@@ -3230,6 +3236,12 @@ enum action_tile_types action;
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
     /* Write here the code that returns the right animation for the combination that has an animation */
+    /* To remove gcc warning */
+    if (roleidx == 0 && raceidx == 0 && genderidx == 0 && alignmentidx == 0 && levelidx == 0)
+    {
+        /* Do nothing */
+    }
+
     switch (action)
     {
     case ACTION_TILE_NO_ACTION:
@@ -3414,7 +3426,7 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_SHORE_TILE:
         {
             int above_y = y - 1;
-            int below_y = y + 1;
+            //int below_y = y + 1;
             int floortype = IS_FLOOR(levl[x][y].typ) || IS_POOL(levl[x][y].typ) || levl[x][y].typ == LAVAPOOL || levl[x][y].typ == ICE ? levl[x][y].typ : levl[x][y].floortyp;
             boolean is_water_or_air_level = (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz));
 
@@ -4030,8 +4042,8 @@ enum autodraw_types* autodraw_ptr;
 
         if (current_animation_frame != main_tile_frame_position) /* 0 is the original picture */
         {
-            char animation_frame_index = current_animation_frame - animation_tile_offset;
-            if (animation_frame_index >= animations[animation_idx].number_of_frames)
+            int animation_frame_index = current_animation_frame - animation_tile_offset;
+            if (animation_frame_index >= (int)animations[animation_idx].number_of_frames)
             {
                 return ntile; /* original tile is the last if number_of_frames is exceeded by numframes */
             }
@@ -4040,7 +4052,7 @@ enum autodraw_types* autodraw_ptr;
                 *autodraw_ptr = animations[animation_idx].frame_autodraw[animation_frame_index];
 
             int tile_anim_idx = (tile_animation_idx < 0 || tile_animation_idx >= animations[animation_idx].number_of_tile_animations ? 0 : tile_animation_idx);
-            int animation_glyph = (int)animation_frame_index + tile_anim_idx * animations[animation_idx].number_of_frames + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
+            int animation_glyph = animation_frame_index + tile_anim_idx * (int)animations[animation_idx].number_of_frames + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
             short res = glyph2tile[animation_glyph]; /* animated version selected */
             return res;
         }
@@ -4090,6 +4102,11 @@ enum action_tile_types action;
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
     /* Write here the code that returns the right enlargement for the combination that has an enlargement */
+    if (roleidx == 0 && raceidx == 0 && genderidx == 0 && alignmentidx == 0 && levelidx == 0)
+    {
+        /* Do nothing */
+    }
+
     switch (action)
     {
     case ACTION_TILE_NO_ACTION:
@@ -4476,12 +4493,12 @@ short replacement_idx;
             {
                 for (int alignment = -1; alignment <= 1; alignment++)
                 {
-                    for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                    for (int glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
                     {
-                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, genderidx, alignment, level);
+                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, genderidx, alignment, glevel);
                         for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                         {
-                            if (get_player_replacement(action, roleidx, raceidx, genderidx, alignment, level) == replacement_idx)
+                            if (get_player_replacement(action, roleidx, raceidx, genderidx, alignment, glevel) == replacement_idx)
                                 return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
                         }
                     }

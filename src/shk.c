@@ -4899,7 +4899,7 @@ boolean eating;
     struct monst* shkp = (struct monst*)0;
     int omx = obj->ox, omy = obj->oy;
 
-    if (obj && obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(omx, omy)))
+    if (obj && (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(omx, omy))))
     {
         shkp = shop_keeper(inside_shop(omx, omy));
         char shopkeeper_name[BUFSZ] = "";

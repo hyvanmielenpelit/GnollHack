@@ -750,7 +750,7 @@
 #define EParalyzed u.uprops[PARALYZED].extrinsic
 #define Paralyzed (HParalyzed || EParalyzed)
 
-#define Paralyzed_or_immobile (Paralyzed || (is_undead(youmonst.data) && Undead_immobility) && !Free_action)
+#define Paralyzed_or_immobile ((Paralyzed || (is_undead(youmonst.data) && Undead_immobility)) && !Free_action)
 
 #define HFixed_abil u.uprops[FIXED_ABIL].intrinsic
 #define EFixed_abil u.uprops[FIXED_ABIL].extrinsic

@@ -5,6 +5,7 @@
 
 #include "hack.h"
 #include "artifact.h"
+#include <math.h>
 
 extern const char *const destroy_strings[][3]; /* from zap.c */
 
