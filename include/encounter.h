@@ -13,8 +13,8 @@
 #define MAX_ENCOUNTER_MONSTERS 25
 
 struct monsteritemdef {
-	int otyp;
-	int oartifact;
+	short otyp;
+	short oartifact;
 	int spe_constant;
 	int spe_random;
 	long iflags;

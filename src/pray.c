@@ -898,8 +898,8 @@ gcrownu()
     boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
 	boolean monkgauntlets = (Role_if(PM_MONK) && !gauntlets_already_exists);
 	boolean usegnollchaoticgift = (Race_if(PM_GNOLL) && !exist_artifact(FLAIL, artiname(ART_HOWLING_FLAIL)));
-	int chaotic_crowning_gift_oartifact = usegnollchaoticgift ? ART_HOWLING_FLAIL : ART_STORMBRINGER;
-	int chaotic_crowning_gift_baseitem = usegnollchaoticgift ? RUNED_FLAIL : RUNESWORD;
+	short chaotic_crowning_gift_oartifact = usegnollchaoticgift ? ART_HOWLING_FLAIL : ART_STORMBRINGER;
+    int chaotic_crowning_gift_baseitem = usegnollchaoticgift ? RUNED_FLAIL : RUNESWORD;
     enum p_skills chaotic_crowning_gift_skill = usegnollchaoticgift ? P_FLAIL : P_SWORD;
 
 	switch (u.ualign.type) {

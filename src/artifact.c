@@ -50,7 +50,7 @@ STATIC_OVL int spec_dbon_applies = 0;
 /* flags including which artifacts have already been created */
 static boolean artiexist[1 + NUM_ARTIFACTS + 1];
 /* and a discovery list for them (no dummy first entry here) */
-STATIC_OVL xchar artidisco[NUM_ARTIFACTS];
+STATIC_OVL short artidisco[NUM_ARTIFACTS];
 
 STATIC_DCL void NDECL(hack_artifacts);
 STATIC_DCL boolean FDECL(artifact_attack_type, (int, struct obj *));
@@ -107,7 +107,7 @@ int fd;
 
 const char *
 artiname(artinum)
-int artinum;
+short artinum;
 {
     if (artinum <= 0 || artinum > NUM_ARTIFACTS)
         return empty_string;
@@ -742,7 +742,7 @@ struct monst *mon;
 	if (badappropriate || badexceptional ||  (((badclass || badalign) && self_willed)
 			|| (badalign && (!yours || !rn2(4)))))
 	{
-			int dmg = 0, tmp = 0;
+			int dmg = 0;
 			double damage = 0;
 			char buf[BUFSZ];
 
@@ -1016,7 +1016,7 @@ double damage;
 /* add identified artifact to discoveries list */
 void
 discover_artifact(m)
-xchar m;
+short m;
 {
     int i;
 
@@ -1035,7 +1035,7 @@ xchar m;
 /* used to decide whether an artifact has been fully identified */
 boolean
 undiscovered_artifact(m)
-xchar m;
+short m;
 {
     int i;
 
@@ -1054,7 +1054,8 @@ int
 disp_artifact_discoveries(tmpwin)
 winid tmpwin; /* supplied by dodiscover() */
 {
-    int i, m, otyp;
+    int i, otyp;
+	short m;
     char buf[BUFSZ];
 
     for (i = 0; i < NUM_ARTIFACTS; i++) {
@@ -1066,7 +1067,7 @@ winid tmpwin; /* supplied by dodiscover() */
         if (i == 0)
             putstr(tmpwin, iflags.menu_headings, "Artifacts");
         m = artidisco[i];
-        otyp = artilist[m].otyp;
+        otyp = (int)artilist[m].otyp;
         Sprintf(buf, "  %s [%s %s]", artiname(m),
                 align_str(artilist[m].alignment), simple_typename(otyp));
         putstr(tmpwin, 0, buf);
@@ -1488,7 +1489,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                  */
                 *dmgptr = 2 * (double)(Upolyd ? u.mh : u.uhp) + FATAL_DAMAGE_MODIFIER;
                 pline("%s cuts you in half!", wepdesc);
-                otmp->dknown = 2;
+                otmp->dknown = TRUE;
                 return 2;
             }
         } 

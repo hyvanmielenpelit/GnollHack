@@ -1557,8 +1557,8 @@ int selected_encounter, x, y;
 
 				if (selected_item > -1)
 				{
-					int otyp = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].otyp;
-					int oartifact = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].oartifact;
+					int otyp = (int)encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].otyp;
+					short oartifact = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].oartifact;
 					long flags = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].iflags;
 					if (otyp > STRANGE_OBJECT)
 					{

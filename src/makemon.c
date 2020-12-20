@@ -538,7 +538,7 @@ register struct monst *mtmp;
             /* create minion stuff; can't use mongets */
 			
 			int weaptype = !rn2(3) || is_lord(ptr) || is_prince(ptr) ? SWORD_OF_HOLY_VENGEANCE : !rn2(3) ? LONG_SWORD : SILVER_LONG_SWORD;
-			int artifacttype = 0;
+			short artifacttype = 0;
 			
 #if 0
             if (!rn2(4))
@@ -806,7 +806,7 @@ register struct monst *mtmp;
 			for(int i = 0; i < 4; i++)
 			{
 				int weaptype = SILVER_SABER;
-				int artifacttype = ART_GRAYSWANDIR;
+				short artifacttype = ART_GRAYSWANDIR;
 
 				switch (rn2(6))
 				{
@@ -878,7 +878,7 @@ register struct monst *mtmp;
 		{
 			//(void) mongets(mtmp, WAN_DEATH); /* the Wand of Orcus */
 			int weaptype = MACE_OF_THE_UNDERWORLD;
-			int artifacttype = ART_WAND_OF_ORCUS;
+			short artifacttype = ART_WAND_OF_ORCUS;
 			otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
 
             if(otmp)
@@ -927,7 +927,7 @@ register struct monst *mtmp;
         case PM_YEENOGHU:
         {
             int weaptype = TRIPLE_HEADED_FLAIL;
-            int artifacttype = ART_TRIPLE_HEADED_FLAIL_OF_YEENOGHU;
+            short artifacttype = ART_TRIPLE_HEADED_FLAIL_OF_YEENOGHU;
             otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
 
             if (otmp)
@@ -1304,7 +1304,7 @@ register struct monst *mtmp;
 			if (!rn2(20))
 			{
 				int ringtype = RIN_SUPREME_POWER;
-				int artifacttype = ART_ONE_RING;
+				short artifacttype = ART_ONE_RING;
 
 				otmp = mksobj(ringtype, FALSE, FALSE, FALSE);
 
@@ -1610,7 +1610,7 @@ register struct monst *mtmp;
             /* Yacc is normally using an artifact ring as the nose ring */
 
             int weaptype = NOSE_RING_OF_BULL_STRENGTH;
-            int artifacttype = 0;
+            short artifacttype = 0;
             boolean three_wishes_ok = TRUE;
             boolean serpent_ring_ok = TRUE;
             boolean conflict_ok = TRUE;

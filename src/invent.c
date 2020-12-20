@@ -3031,7 +3031,7 @@ struct obj *otmp;
     makeknown(otmp->otyp);
 	if (otmp->oartifact)
 	{
-		discover_artifact((xchar)otmp->oartifact);
+		discover_artifact(otmp->oartifact);
 		otmp->aknown = 1;
 	}
     otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = 1;

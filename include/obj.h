@@ -75,7 +75,7 @@ struct obj {
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
-    char oartifact; /* artifact array index */
+    short oartifact; /* artifact array index */
 
     xchar where;        /* where the object thinks it is */
 #define OBJ_FREE 0      /* object not attached to anything */
