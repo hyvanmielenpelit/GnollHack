@@ -1266,11 +1266,17 @@ boolean verbose;
 	/* break charm */
 	if (has_charmed(mtmp))
 	{
-		(void)set_mon_property_verbosely(mtmp, CHARMED, -3);
-	}
+        if(verbose)
+    		(void)set_mon_property_verbosely(mtmp, CHARMED, -3);
+        else
+            (void)set_mon_property(mtmp, CHARMED, -3);
+    }
     if (has_undead_control(mtmp))
     {
-        (void)set_mon_property_verbosely(mtmp, UNDEAD_CONTROL, -3);
+        if (verbose)
+            (void)set_mon_property_verbosely(mtmp, UNDEAD_CONTROL, -3);
+        else
+            (void)set_mon_property(mtmp, UNDEAD_CONTROL, -3);
     }
 }
 

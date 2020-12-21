@@ -3520,7 +3520,6 @@ register struct obj* obj;
 		int ac_with_50_chance = diff_to_50_from_ac0 / 5;
 		int diff_to_5_from_ac0 = 5 - chance_to_hit_ac0;
 		int ac_with_5_chance = diff_to_5_from_ac0 / 5;
-		int diff_to_95_from_ac0 = 95 - chance_to_hit_ac0;
 
 		powercnt++;
 		Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
@@ -3529,6 +3528,7 @@ register struct obj* obj;
 
 #if 0
 		int ac_with_95_chance = diff_to_95_from_ac0 / 5;
+		int diff_to_95_from_ac0 = 95 - chance_to_hit_ac0;
 		powercnt++;
 		Sprintf(buf, " %2d - You have 95%% chance to hit AC %d", powercnt, ac_with_95_chance);
 		txt = buf;

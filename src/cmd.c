@@ -7362,7 +7362,7 @@ parse()
 #ifdef ALTMETA
     alt_esc = iflags.altmeta; /* readchar() hack */
 #endif
-    if (!Cmd.num_pad && !Cmd.gnh_layout || (foo = readchar()) == Cmd.spkeys[NHKF_COUNT]) {
+    if ((!Cmd.num_pad && !Cmd.gnh_layout) || ((foo = readchar()) == Cmd.spkeys[NHKF_COUNT])) {
         long tmpmulti = multi;
 
         foo = get_count((char *) 0, '\0', LARGEST_INT, &tmpmulti, FALSE);

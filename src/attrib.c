@@ -108,10 +108,10 @@ static const struct innate
                  { 3, SLEEP_RESISTANCE, "awake", "tired" },
 				 { 6, FREE_ACTION, "nimble", "stiff" },
 				 { 0, 0, 0, 0 } },
-
+/* Gnome has been removed -- JG
   gno_abil[] = { { 1, INFRAVISION, "", "" },
                  { 0, 0, 0, 0 } },
-
+*/
   orc_abil[] = { { 1, INFRAVISION, "", "" },
                  { 1, POISON_RESISTANCE, "", "" },
                  { 0, 0, 0, 0 } },
@@ -217,6 +217,7 @@ int msgflg; /* positive => no message, zero => message, and */
                      (incr > 0) ? "improved" : "declined");
             }
         }
+		old_amin = old_amin; /* remove gcc warning */
         return limitexceeded ? 2 : FALSE;
     }
 
@@ -241,16 +242,16 @@ m_adjattrib(mon, ndx, incr)
 struct monst* mon;
 int ndx, incr;
 {           
-	int old_acurr, old_abase, old_amin, old_amax, decr;
+	int old_acurr, /*old_abase, old_amin, old_amax,*/ decr;
 	boolean limitexceeded = FALSE;
 
 	if (mon->mprops[FIXED_ABIL] != 0 || !incr)
 		return FALSE;
 
 	old_acurr = M_ACURR(mon, ndx);
-	old_abase = M_ABASE(mon, ndx);
-	old_amax = M_AMAX(mon, ndx);
-	old_amin = M_AMIN(mon, ndx);
+	//old_abase = M_ABASE(mon, ndx);
+	//old_amax = M_AMAX(mon, ndx);
+	//old_amin = M_AMIN(mon, ndx);
 	M_ABASE(mon, ndx) += incr; /* when incr is negative, this reduces M_ABASE(mon, ndx) */
 	if (incr > 0) 
 	{
@@ -667,7 +668,7 @@ boolean verbose;
 			Sprintf(buf, "You feel Fortuna %s.", diff < 0 ? "is angry with you" : "is smiling on you");
 			break;
 		}
-		pline(buf);
+		pline("%s", buf);
 	}
 
 }
@@ -777,7 +778,7 @@ update_extrinsics()
 				inappr = TRUE;
 			}
 			/* Properties conferred by item */
-			if (objects[otyp].oc_oprop >= 0 
+			if (objects[otyp].oc_oprop > 0 
 				&& (bit != W_CARRIED || (bit == W_CARRIED && (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)))
 				&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
 					|| (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
@@ -785,14 +786,14 @@ update_extrinsics()
 					)
 				)
 				u.uprops[objects[otyp].oc_oprop].extrinsic |= bit;//W_CARRIED;
-			if (objects[otyp].oc_oprop2 >= 0 
+			if (objects[otyp].oc_oprop2 > 0 
 				&& (bit != W_CARRIED || (bit == W_CARRIED && (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)))
 				&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
 				|| (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
 				|| (inappr && (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
 				))
 				u.uprops[objects[otyp].oc_oprop2].extrinsic |= bit;//W_CARRIED;
-			if (objects[otyp].oc_oprop3 >= 0
+			if (objects[otyp].oc_oprop3 > 0
 				&& (bit != W_CARRIED || (bit == W_CARRIED && (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)))
 				&& ((!inappr && !(objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
 				|| (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
@@ -2015,7 +2016,6 @@ struct monst* mon;
 	boolean is_you = (mon == &youmonst);
 	int otyp = 0;
 	struct obj* uitem;
-	int adj = 0;
 
 	int blessed_luck_count = 0;
 	int uncursed_luck_count = 0;

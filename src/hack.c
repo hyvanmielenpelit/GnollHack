@@ -1590,7 +1590,6 @@ domove_core()
           ballx = 0, bally = 0;         /* ball&chain new positions */
     int bc_control = 0;                 /* control for ball&chain */
     boolean cause_delay = FALSE;        /* dragging ball will skip a move */
-    boolean facing_different = FALSE;
 
 	context.hide_melee_range_warning = FALSE;
 

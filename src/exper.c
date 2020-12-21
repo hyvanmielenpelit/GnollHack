@@ -18,7 +18,6 @@ int lev;
 		return 0;
 
 	long total_level_exp = 0L;
-	double multiplier = 1.0;
     double monsters_to_be_killed = 10.0;
     double base = 1.0525;
 
@@ -153,8 +152,9 @@ enmaxadjustment()
 					)
 				)
 			{
-				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
-					(objects[otyp].oc_pflags & P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
+				int multiplier = (((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
+					((objects[otyp].oc_pflags & P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1 : 1);
+
 				if (objects[otyp].oc_pflags & P1_MANA_PERCENTAGE_BONUS)
 					adj += multiplier * (objects[otyp].oc_mana_bonus * (baseen + baseadj)) / 100;
 				else
@@ -340,7 +340,7 @@ register int exper, gamescore;
             context.botl = TRUE;
 		
 		if(flags.tellexp && newexp - oldexp == added_experience)
-			You("gain %d experience point%s.", added_experience, added_experience == 1 ? "" : "s");
+			You("gain %ld experience point%s.", added_experience, added_experience == 1 ? "" : "s");
 
     }
     /* newrexp will always differ from oldrexp unless they're LONG_MAX */

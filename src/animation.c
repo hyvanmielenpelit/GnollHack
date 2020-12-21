@@ -4248,12 +4248,12 @@ short animidx;
             {
                 for (int alignment = -1; alignment <= 1; alignment++)
                 {
-                    for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                    for (int glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
                     {
-                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, genderidx, alignment, level);
+                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, genderidx, alignment, glevel);
                         for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                         {
-                            if (get_player_animation(action, roleidx, raceidx, genderidx, alignment, level) == animidx)
+                            if (get_player_animation(action, roleidx, raceidx, genderidx, alignment, glevel) == animidx)
                                 return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
                         }
                     }

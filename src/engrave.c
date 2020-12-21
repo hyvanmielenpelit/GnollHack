@@ -1351,10 +1351,10 @@ struct engr *ep;
  * The caller is responsible for newsym(x, y).
  */
 void
-make_grave(x, y, str, in_mklev)
+make_grave(x, y, str, in_mklev_var)
 int x, y;
 const char *str;
-boolean in_mklev;
+boolean in_mklev_var;
 {
     char buf[BUFSZ];
 
@@ -1363,7 +1363,7 @@ boolean in_mklev;
         return;
 
     /* Make the grave */
-    if (in_mklev)
+    if (in_mklev_var)
     {
         if (IS_FLOOR(levl[x][y].typ))
         {

@@ -2645,7 +2645,6 @@ struct obj *obj;
 			struct obj pseudo = zeroobj;
 			pseudo.otyp = SPE_FINGER_OF_DEATH;
 			pseudo.quan = 20L; /* do not let useup get it */
-			int otyp = pseudo.otyp;
 			double damage = 0;
 
 			if (!getdir((char*)0)) 

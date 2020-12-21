@@ -240,7 +240,6 @@ Cloak_off(VOID_ARGS)
     struct obj *otmp = uarmc;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
-	boolean wasinvisible = Invis;
 
     context.takeoff.mask &= ~W_ARMC;
     /* For mummy wrapping, taking it off first resets `Invisible'. */
@@ -425,8 +424,6 @@ Shirt_off(VOID_ARGS)
 {
 
 	struct obj* otmp = uarmu;
-	int otyp = otmp->otyp;
-	long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_SHIRT;
     context.takeoff.mask &= ~W_ARMU;
 
 	setworn((struct obj*) 0, W_ARMU);
@@ -446,9 +443,6 @@ Robe_on(VOID_ARGS)
 int
 Robe_off(VOID_ARGS)
 {
-	boolean wasinvisible = Invis;
-	struct obj* ud = uarmo;
-
 	context.takeoff.mask &= ~W_ARMO;
 	setworn((struct obj*) 0, W_ARMO);
 	context.takeoff.cancelled_don = FALSE;
@@ -516,7 +510,6 @@ struct obj* ud;
 	if (!ud)
 		return 0;
 
-	boolean hadhallucination = Hallucination;
 	long bit = ud->owornmask & W_MISCITEMS;
 
 	context.takeoff.mask &= ~bit;
@@ -704,8 +697,6 @@ Ring_on(obj)
 register struct obj *obj;
 {
     long oldprop = u.uprops[objects[obj->otyp].oc_oprop].extrinsic;
-    int old_attrib = 0, which = 0;
-    boolean observable = FALSE;
 
     /* make sure ring isn't wielded; can't use remove_worn_item()
        here because it has already been set worn in a ring slot */
@@ -799,7 +790,7 @@ void
 Blindf_off(otmp)
 struct obj *otmp;
 {
-    boolean was_blind = Blind, changed = FALSE;
+    boolean was_blind = Blind;
 
     if (!otmp) {
         impossible("Blindf_off without otmp");
@@ -1388,6 +1379,7 @@ STATIC_OVL void
 already_wearing(cc)
 const char *cc;
 {
+    play_sfx_sound(SFX_GENERAL_CANNOT);
     You("are already wearing %s%c", cc, (cc == c_that_) ? '!' : '.');
 }
 
@@ -1738,12 +1730,13 @@ struct obj *obj;
             }
 		} else if (obj->oclass == MISCELLANEOUS_CLASS) {
 			if (objects[obj->otyp].oc_subtyp != MISC_MULTIPLE_PERMITTED &&
-				(umisc && objects[umisc->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
+				((umisc && objects[umisc->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (umisc2 && objects[umisc2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (umisc3 && objects[umisc3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (umisc4 && objects[umisc4->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				|| (umisc5 && objects[umisc5->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
 				)
+               )
 			{
 				already_wearing(an(misc_type_names[objects[obj->otyp].oc_subtyp]));
 				return 0;

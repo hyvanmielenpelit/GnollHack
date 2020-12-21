@@ -1480,9 +1480,9 @@ int after; /* this is extra fast monster movement */
         if ((info[i] & ALLOW_MDISP) && MON_AT(nx, ny)
             && better_with_displacing && !undesirable_disp(mtmp, nx, ny)) {
             int mstatus;
-            register struct monst *mtmp2 = m_at(nx, ny);
+            register struct monst *mtmp3 = m_at(nx, ny);
 
-            mstatus = mdisplacem(mtmp, mtmp2, FALSE); /* displace monster */
+            mstatus = mdisplacem(mtmp, mtmp3, FALSE); /* displace monster */
             if (mstatus & MM_DEF_DIED)
                 return 2;
             return 0;

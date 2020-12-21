@@ -248,7 +248,7 @@ dlb *stream;
 
     if ((cnt = dlb_fread(ptr, size, nitems, stream)) != nitems) {
         panic(
-  "Premature EOF on dungeon description file!\r\nExpected %d bytes - got %d.",
+  "Premature EOF on dungeon description file!\r\nExpected %ld bytes - got %ld.",
               (size * nitems), (size * cnt));
         nh_terminate(EXIT_FAILURE);
     }
@@ -3256,9 +3256,10 @@ struct monst* mon;
         return;
 
     if (!level.flags.no_special_level_naming_checks && Is_special(&u.uz) && level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_SEEING_MONSTER &&
-        (level.flags.special_naming_seen_monster_type >= LOW_PM && level.flags.special_naming_seen_monster_type == mon->mnum)
-        || (level.flags.special_naming_seen_monster_type == NON_PM && level.flags.special_naming_seen_monster_class > 0 && level.flags.special_naming_seen_monster_class == mon->data->mlet)
+        ((level.flags.special_naming_seen_monster_type >= LOW_PM && level.flags.special_naming_seen_monster_type == mon->mnum)
+          || (level.flags.special_naming_seen_monster_type == NON_PM && level.flags.special_naming_seen_monster_class > 0 && level.flags.special_naming_seen_monster_class == mon->data->mlet)
         )
+       )
     {
         set_special_level_seen(&u.uz, TRUE);
     }

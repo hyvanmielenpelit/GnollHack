@@ -13,13 +13,14 @@
 #define NAMELIST_ARCH_LICH 3
 #define NAMELIST_LICH_KING 4
 
-static const char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] = {
-	{"", "", "", "",},
-	{"Urok", "Golluk", "Grimsh", "Urum",},
-	{"Deimos", "Kangaxx", "Lyran", "Karlat", "Vongoethe",},
-	{"Acererak ", "Vecna", "Zhengyi", "Jymahna", "Rhangaun", "Priamon Rakesk", "Shangalar the Black", "Kartak Spellseer",},
-	{"Ner'zhul", "Arthas Menethil", "Bolvar Fordragon",},
-	{ 0 }
+static const char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] = 
+{
+	{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+	{"Urok", "Golluk", "Grimsh", "Urum", "", "", "", "", "", "", "", "", "", "", "", "" },
+	{"Deimos", "Kangaxx", "Lyran", "Karlat", "Vongoethe", "", "", "", "", "", "", "", "", "", "", "" },
+	{"Acererak ", "Vecna", "Zhengyi", "Jymahna", "Rhangaun", "Priamon Rakesk", "Shangalar the Black", "Kartak Spellseer", "", "", "", "", "", "", "", "" },
+	{"Ner'zhul", "Arthas Menethil", "Bolvar Fordragon", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+	{ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }
 };
 
 
@@ -1459,7 +1460,7 @@ int selected_encounter, x, y;
 			}
 
 			int monster_difficulty = mons[pmid].difficulty;
-			long monster_experience = 1 + monster_difficulty * monster_difficulty;
+			//long monster_experience = 1 + monster_difficulty * monster_difficulty;
 			
 			if(xpdiff > 0 && total_monster_difficulty > 0)
 				mon->extra_encounter_xp = (xpdiff * monster_difficulty) / total_monster_difficulty;
@@ -1478,7 +1479,7 @@ int selected_encounter, x, y;
 				int listnamecnt = 0;
 				for (int j = 0; j < MAX_NAMELIST_NAMES; j++)
 				{
-					if (!namelists[nlid][j] || namelists[nlid][j] == '\0' || strcmp(namelists[nlid][j], "\0") == 0 || strcmp(namelists[nlid][j], "") == 0)
+					if (!namelists[nlid][j] || strcmp(namelists[nlid][j], "") == 0)
 						break;
 
 					char* bp;
@@ -1497,7 +1498,6 @@ int selected_encounter, x, y;
 					char buf[BUFSZ] = "";
 					char* bp;
 					char testbuf[BUFSIZ] = "";
-					int k = 0;
 					boolean allused = FALSE;
 
 					for(int k = 0; k <= roll; k++)
@@ -1522,8 +1522,6 @@ int selected_encounter, x, y;
 						strcpy(buf, namelists[nlid][selectedindex]);
 						if (!(
 							!namelists[nlid][selectedindex]
-							|| namelists[nlid][selectedindex] == '\0'
-							|| strcmp(namelists[nlid][selectedindex], "\0") == 0
 							|| strcmp(namelists[nlid][selectedindex], "") == 0))
 						{
 							(void)christen_monst(mon, buf);
@@ -1559,10 +1557,10 @@ int selected_encounter, x, y;
 				{
 					int otyp = (int)encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].otyp;
 					short oartifact = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].oartifact;
-					long flags = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].iflags;
+					long iflags = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].iflags;
 					if (otyp > STRANGE_OBJECT)
 					{
-						struct obj* otmp = mksobj(otyp, !!(flags & MI_INITIALIZE), !!(flags & MI_ALLOW_ARTIFACTS), FALSE);
+						struct obj* otmp = mksobj(otyp, !!(iflags & MI_INITIALIZE), !!(iflags & MI_ALLOW_ARTIFACTS), FALSE);
 
 						if (otmp)
 						{
@@ -1570,17 +1568,17 @@ int selected_encounter, x, y;
 							if (oartifact > 0)
 								otmp = oname(otmp, artiname(oartifact));
 
-							if (flags & MI_BLESSED)
+							if (iflags & MI_BLESSED)
 								bless(otmp);
-							else if (flags & MI_CURSED)
+							else if (iflags & MI_CURSED)
 								curse(otmp);
-							else if (flags & MI_UNCURSED)
+							else if (iflags & MI_UNCURSED)
 								otmp->blessed = otmp->cursed = 0;
 
-							if (flags & MI_ERODEPROOF)
+							if (iflags & MI_ERODEPROOF)
 								otmp->oerodeproof = TRUE;
 
-							if (!(flags & MI_IGNORE_SPE))
+							if (!(iflags & MI_IGNORE_SPE))
 							{
 								int enchantment = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].spe_constant;
 

@@ -4383,6 +4383,9 @@ STATIC_OVL int
 use_watch(obj)
 struct obj* obj;
 {
+    if (!obj)
+        return 0;
+
     if(midnight())
         You("check your watch. It is midnight!");
     else if (night())

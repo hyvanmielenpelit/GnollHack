@@ -3846,7 +3846,6 @@ const char *reason; /* explanation */
 {
 #ifdef PANICLOG
     FILE *lfile;
-    char buf[BUFSZ];
 
     if (!program_state.in_paniclog) {
         program_state.in_paniclog = 1;
@@ -3857,6 +3856,7 @@ const char *reason; /* explanation */
                            ubirthday, (plname ? plname : "(none)"),
                            type, reason);
 #else
+            char buf[BUFSZ];
             time_t now = getnow();
             int uid = getuid();
             char playmode = wizard ? 'D' : discover ? 'X' : '-';

@@ -98,9 +98,9 @@ register struct obj *obj;
         && !Has_contents(obj))
         return TRUE;
 
-	boolean carnivorous = carnivorous(youmonst.data);
-	boolean isgnoll = is_gnoll(youmonst.data);
-	boolean isorc = is_orc(youmonst.data);
+	//boolean carnivorous = carnivorous(youmonst.data);
+	//boolean isgnoll = is_gnoll(youmonst.data);
+	//boolean isorc = is_orc(youmonst.data);
 
     /* return (boolean) !!index(comestibles, obj->oclass); */
     return (boolean)is_obj_normally_edible(obj);
@@ -674,7 +674,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 
     }
 	else 
-{ /* mhitm */
+    { /* mhitm */
         /*
          * monster mind flayer is eating another monster's brain
          */
@@ -694,7 +694,6 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         } 
 		else 
 		{
-            int int_loss = rnd(2);
             if (m_adjattrib(mdef, A_INT, -int_loss) >= 2)
                 *dmg_p += mdef->mhp;
 
@@ -2421,8 +2420,8 @@ struct obj *otmp;
                 }
 				if (typ != RIN_SUPREME_POWER)
 					break;
-				else
-					; /* FALLTHRU */
+
+                /* FALLTHRU */
             case RIN_INVISIBILITY:
                 if (!oldprop && !EInvis && !Blocks_Invisibility && !See_invisible
                     && !Blind) {
@@ -3032,7 +3031,7 @@ struct obj *otmp;
             return 2;
     }
 
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC || cadaver && has_acidic_corpse(&mons[mnum]) && !Acid_immunity && !Acid_resistance) 
+    if ((objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC || (cadaver && has_acidic_corpse(&mons[mnum]))) && !Acid_immunity && !Acid_resistance) 
     {
         Sprintf(buf, "%s rather acidic.  %s", foodsmell, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
