@@ -2705,7 +2705,7 @@ int
 player_to_glyph_index(roleidx, raceidx, genderidx, alignmentidx, levelidx)
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
-    int number_of_roles = NUM_ROLES;
+    //int number_of_roles = NUM_ROLES;
     int number_of_races = NUM_RACES;
     int number_of_genders = 2;
     int number_of_alignments = 3;
@@ -2735,6 +2735,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     /* There's always a stand tile */
     if (action == ACTION_TILE_NO_ACTION)
         return TRUE;
+
+    if (levelidx > 0)
+        return FALSE;
 
     /* Real cases */
     switch (action)

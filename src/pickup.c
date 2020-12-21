@@ -1686,7 +1686,6 @@ boolean countem;
 
     for (cobj = level.objects[x][y]; cobj; cobj = nobj) {
         nobj = cobj->nexthere;
-		long flags2 = objects[cobj->otyp].oc_flags2;
         if (Is_container(cobj)) {
             container_count++;
             if (!countem)

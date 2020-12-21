@@ -267,9 +267,9 @@ boolean foundyou;
 
     if (mattk->adtyp == AD_SPEL)
     {
-        if (is_ultimate = is_ultimate_spell(mattk->adtyp, spellnum))
+        if ((is_ultimate = is_ultimate_spell(mattk->adtyp, spellnum)) != 0)
             appr_spec_ptr = &mtmp->mmageultimate_used;
-        else if (is_intermediate = is_intermediate_spell(mattk->adtyp, spellnum))
+        else if ((is_intermediate = is_intermediate_spell(mattk->adtyp, spellnum)) != 0)
             appr_spec_ptr = &mtmp->mmageintermediate_used;
         else
             appr_spec_ptr = &mtmp->mmagespell_used;

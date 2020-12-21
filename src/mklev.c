@@ -794,8 +794,8 @@ makelevel()
 
     /* Since all is set to STONE, set first its variations */
     /* NOTE: Subsequently, it is important to always set subtyp to right value! It may not be 0 by default */
-    for (int x = 1; x < COLNO; x++)
-        for (int y = 0; y < ROWNO; y++)
+    for (x = 1; x < COLNO; x++)
+        for (y = 0; y < ROWNO; y++)
             if (levl[x][y].typ == STONE) /* Paranoid check */
                 levl[x][y].subtyp = get_initial_location_subtype(STONE);
 
@@ -991,10 +991,7 @@ makelevel()
     /* for each room: put things inside */
 	register int altarsplaced = 0;
 	register int chance = 60;
-	register int tries = 0;
 	register int u_depth = depth(&u.uz);
-
-
 
 	/* Put items and other stuff in the rooms */
 	for (croom = rooms; croom->hx > 0; croom++) {
@@ -1048,13 +1045,13 @@ makelevel()
 							default:
 								break;
 							}
-							struct obj* pititem = mksobj_at(itemtype, x, y, FALSE, FALSE);
+							(void)mksobj_at(itemtype, x, y, FALSE, FALSE);
 						}
 
 						int itemnum2 = rn2(3) + (tmonst->data == &mons[PM_NEO_OTYUGH]) ? 1 : 0;
 						for (int i = 0; i < itemnum2; i++)
 						{
-							struct obj* pititem = mkobj_at(RANDOM_CLASS, x, y, TRUE);
+                            (void)mkobj_at(RANDOM_CLASS, x, y, TRUE);
 						}
 					}
 				}
@@ -1086,7 +1083,7 @@ makelevel()
 		if(startingroom)
 		{
 			/* Make stash */
-			int tryct = 0;
+			tryct = 0;
 			do {
 				x = somex(croom);
 				y = somey(croom);
@@ -1842,7 +1839,7 @@ coord *tm;
 		{
 			if(!rn2(2))
 			{
-				struct obj* skull = mksobj_at(HUMAN_SKULL, m.x, m.y, FALSE, FALSE);
+				(void)mksobj_at(HUMAN_SKULL, m.x, m.y, FALSE, FALSE);
 			}
 			struct obj* bones = mksobj_at(BONE, m.x, m.y, FALSE, FALSE);
 			bones->quan = rnd(4);

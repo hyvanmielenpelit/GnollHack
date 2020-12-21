@@ -1050,7 +1050,6 @@ boolean verbose;
         case RECHARGING_RING_OF_CONFLICT:
         case RECHARGING_WAND_OF_ORCUS:
         {
-            int lim = get_obj_max_charge(obj);
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
@@ -1106,7 +1105,6 @@ boolean verbose;
                 break;
             }
 
-            int lim = get_obj_max_charge(obj);
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
@@ -1121,7 +1119,6 @@ boolean verbose;
             }
             else
             {
-                int old_charges = obj->charges;
                 if (is_blessed)
                 {
                     obj->charges = lim;
@@ -1208,7 +1205,7 @@ int curse_bless;
 		}
 		else
 		{
-			long mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
+			//long mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
 
             if (s == 0)
                 play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);

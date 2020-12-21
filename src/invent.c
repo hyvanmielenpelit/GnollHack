@@ -132,11 +132,12 @@ struct obj *obj;
         else if (Is_container(obj))
             k = 1; /* regular container or unknown bag of tricks */
         else
+        {
             switch (otyp) {
             case WOODEN_FLUTE:
             case MAGIC_FLUTE:
-			case BRASS_HORN:
-			case TOOLED_HORN:
+            case BRASS_HORN:
+            case TOOLED_HORN:
             case FROST_HORN:
             case FIRE_HORN:
             case HORN_OF_CHAOS:
@@ -147,9 +148,12 @@ struct obj *obj;
             case DRUM_OF_EARTHQUAKE:
             case HORN_OF_PLENTY: /* not a musical instrument */
                 k = 3; /* instrument or unknown horn of plenty */
+                break;
             default:
                 k = 4; /* 'other' tool */
+                break;
             }
+        }
         break;
     case FOOD_CLASS:
         /* [what about separating "partly eaten" within each group?] */
@@ -223,7 +227,7 @@ struct obj *obj;
 {
     struct obj saveo;
     boolean save_debug;
-    char *res, *save_oname, * save_uoname;
+    char *res, /* *save_oname,*/ * save_uoname;
 
     /*
      * Deal with things that xname() includes as a prefix.  We don't
@@ -237,7 +241,7 @@ struct obj *obj;
 	saveo.charges = obj->charges;
 	saveo.speflags = obj->speflags;
 	saveo.owt = obj->owt;
-    save_oname = has_oname(obj) ? ONAME(obj) : 0;
+    //save_oname = has_oname(obj) ? ONAME(obj) : 0;
 	save_uoname = has_uoname(obj) ? UONAME(obj) : 0;
 	save_debug = flags.debug;
     /* suppress "diluted" for potions and "holy/unholy" for water;
@@ -918,7 +922,7 @@ boolean verbose;
     boolean was_slowed = Slowed;
 	boolean was_silenced = Silenced;
 	boolean was_cancelled = Cancelled;
-	long previous_warntype_obj = context.warntype.obj;
+	unsigned long previous_warntype_obj = context.warntype.obj;
     int oldstr = ACURR(A_STR);
     int olddex = ACURR(A_DEX);
     int oldcon = ACURR(A_CON);
@@ -1124,7 +1128,9 @@ boolean verbose;
 		|| (!Dwarf_warning && had_dwarf_warning)
 		|| (Gnome_warning && !had_gnome_warning)
 		|| (!Gnome_warning && had_gnome_warning)
-		|| (Demon_warning && !had_demon_warning)
+        || (Human_warning && !had_human_warning)
+        || (!Human_warning && had_human_warning)
+        || (Demon_warning && !had_demon_warning)
 		|| (!Demon_warning && had_demon_warning)
 		|| (Angel_warning && !had_angel_warning)
 		|| (!Angel_warning && had_angel_warning)
@@ -1543,7 +1549,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
     if (obj->oartifact) {
         /* place_object may change these */
         //boolean crysknife = (obj->otyp == CRYSKNIFE);
-        int oerode = obj->oerodeproof;
+        //int oerode = obj->oerodeproof;
         boolean wasUpolyd = Upolyd;
 
         /* in case touching this object turns out to be fatal */
@@ -1803,7 +1809,7 @@ int x, y;
         else if (Is_container(otmp))
         {
             struct obj* otmp2 = (struct obj*)0;
-            if (otmp2 = otyp_in_objchn(otyp, otmp->cobj))
+            if ((otmp2 = otyp_in_objchn(otyp, otmp->cobj)) != 0)
                 return otmp2;
         }
 
@@ -1816,7 +1822,7 @@ int x, y;
             else if (Is_container(otmp))
             {
                 struct obj* otmp2 = (struct obj*)0;
-                if (otmp2 = otyp_in_objchn(otyp, otmp->cobj))
+                if ((otmp2 = otyp_in_objchn(otyp, otmp->cobj)) != 0)
                     return otmp2;
             }
         }
@@ -2352,7 +2358,7 @@ const char* headertext;
     }
 
 	if (!iflags.force_invmenu && strcmp(headertext, "") != 0)
-		pline(headertext);
+		pline("%s", headertext);
 
 	for (;;) {
         cnt = 0;
@@ -3886,7 +3892,6 @@ const char* lets;
 boolean want_reply;
 int show_weights;
 {
-    int icnt = inv_cnt(FALSE);
     return display_pickinv(lets, (char*)0, (char*)0,
         want_reply, (long*)0, show_weights, "", TRUE);
 }
@@ -5163,7 +5168,7 @@ const char*
 get_class_name(oclass)
 char oclass;
 {
-	return names[oclass];
+	return names[(int)oclass];
 }
 
 

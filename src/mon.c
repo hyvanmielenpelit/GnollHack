@@ -347,11 +347,13 @@ boolean createcorpse;
             break;
         case PM_ANCIENT_RED_DRAGON:
             additionalash++;
+            /* FALLTHRU */
         case PM_RED_DRAGON:
         case PM_HELL_BAT:
         case PM_ELDER_FIRE_ELEMENTAL:
         case PM_PHOENIX:
             additionalash++;
+            /* FALLTHRU */
         case PM_PYROHYDRA:
         case PM_RED_NAGA:
         case PM_FIRE_VORTEX:
@@ -361,6 +363,7 @@ boolean createcorpse;
         case PM_FIRE_GIANT:
         case PM_HELL_HOUND:
             additionalash++;
+            /* FALLTHRU */
         case PM_FIRE_ANT:
         case PM_RED_NAGA_HATCHLING:
         case PM_RED_DRAGON_HATCHLING:
@@ -537,14 +540,17 @@ boolean createcorpse;
 	case PM_MUCILAGINOUS_CUBE:
 	case PM_OCHRE_JELLY:
 		sporequan++;
-	case PM_SPOTTED_JELLY:
+        /* FALLTHRU */
+    case PM_SPOTTED_JELLY:
 	case PM_BLUE_JELLY:
 		sporequan++;
-	case PM_SHRIEKER:
+        /* FALLTHRU */
+    case PM_SHRIEKER:
 	case PM_VIOLET_FUNGUS:
 	case PM_GELATINOUS_CUBE:
 		sporequan++;
-	case PM_ACID_BLOB:
+        /* FALLTHRU */
+    case PM_ACID_BLOB:
 	case PM_QUIVERING_BLOB:
 	case PM_BROWN_MOLD:
 	case PM_YELLOW_MOLD:
@@ -1132,7 +1138,6 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = wizard (no priest specific rea
 int
 randomore()
 {
-	int otyp = 0;
 	int totalprob = 0;
 
 	for (int i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
@@ -1642,6 +1647,7 @@ update_monster_timouts()
 							else
 								pline("Suddenly, %s looks absolutely hilarious.", mon_nam(mtmp));
 						}
+                        break;
 					case FUMBLING:
 						mtmp->mfrozen += 2;
 						mtmp->mcanmove = 0;
@@ -2238,21 +2244,22 @@ struct monst *mtmp;
      * and human weights.  Corpseless monsters are given a capacity
      * proportional to their size instead of weight.
      */
-	/*
-	if (!mtmp->data->cwt)
+
+#if 0
+    if (!mtmp->data->cwt)
         maxload = (MAX_CARR_CAP * (long) mtmp->data->msize) / MZ_HUMAN;
     else if (!strongmonst(mtmp->data)
              || (strongmonst(mtmp->data) && (mtmp->data->cwt > WT_HUMAN)))
         maxload = (MAX_CARR_CAP * (long) mtmp->data->cwt) / WT_HUMAN;
     else
-        maxload = MAX_CARR_CAP; /*strong monsters w/cwt <= WT_HUMAN
+        maxload = MAX_CARR_CAP; //strong monsters w/cwt <= WT_HUMAN
 
     if (!strongmonst(mtmp->data))
         maxload /= 2;
 
     if (maxload < 1)
         maxload = 1;
-	*/
+#endif
 
 	carrcap = 50 * (m_acurr(mtmp, A_STR) + m_acurr(mtmp, A_CON)) + 50;
 	if (mtmp->data->mlet == S_NYMPH)
@@ -3906,7 +3913,6 @@ boolean has_effects;
     if (!mtmp)
         return;
 
-    boolean res = FALSE;
     boolean spef1ok = FALSE;
     if (has_effects && isok(mtmp->mx, mtmp->my) && canspotmon(mtmp))
     {

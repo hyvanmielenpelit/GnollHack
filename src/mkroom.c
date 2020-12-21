@@ -664,7 +664,7 @@ struct mkroom *sroom;
                         }
 
                         int nobj = rnd(4) + (rn2(3) ? 1 : 0);
-                        for (int i = 0; i < nobj; i++)
+                        for (i = 0; i < nobj; i++)
                         {
                             struct obj* item = 0;
                             item = mkobj(box->otyp == WEAPON_RACK || rn2(2) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
@@ -756,7 +756,7 @@ struct mkroom *sroom;
                         }
 
                         int nobj = rnd(4) + (rn2(3) ? 1 : 0);
-                        for (int i = 0; i < nobj; i++)
+                        for (i = 0; i < nobj; i++)
                         {
                             struct obj* item = 0;
                             item = mkobj(rn2(5) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
@@ -1237,7 +1237,7 @@ mkgarden()
 					struct permonst* pm = level_difficulty() >= mons[PM_OGRE_OVERLORD].difficulty ? mkclass(S_OGRE, 0) : (struct permonst*)0;
 					
                     /* Otherwise, hobgoblins, bugbears or normal ogres + some bosses */
-                    struct monst* mon = makemon(!pm ? (&mons[
+                    (void)makemon(!pm ? (&mons[
                          level_difficulty() >= mons[PM_OGRE_LORD].difficulty && !rn2(4) ? PM_OGRE_LORD :
                         (level_difficulty() >= mons[PM_OGRE].difficulty && !rn2(4)) || level_difficulty() >= (mons[PM_OGRE].difficulty + 5) ? PM_OGRE :
                         (level_difficulty() >= mons[PM_BUGBEAR].difficulty && !rn2(4)) || level_difficulty() >= 7 ? PM_BUGBEAR :
@@ -1288,23 +1288,23 @@ mkdragonlair()
 		int dragontype = rn2(9);
 		int adults = min(maxdragons, rnd(2));
 		int hatchlings = min(maxdragons - adults, 1 + rnd(4));
-		for (int i = 1; i <= adults; i++)
+		for (i = 1; i <= adults; i++)
 		{
 			dragons[dragonindex] = PM_GRAY_DRAGON + dragontype;
 			dragonindex++;
 		}
-		for (int i = 1; i <= hatchlings; i++)
+		for (i = 1; i <= hatchlings; i++)
 		{
 			dragons[dragonindex] = PM_GRAY_DRAGON_HATCHLING + dragontype;
 			dragonindex++;
 		}
 	}
-	for (int i = 0; i < dragonindex; i++)
+	for (i = 0; i < dragonindex; i++)
 	{
 		int trycnt = 0;
-		int sx = 0;
-		int sy = 0;
-		for(int trycnt = 0; trycnt < 100; trycnt++)
+		sx = 0;
+		sy = 0;
+		for(trycnt = 0; trycnt < 100; trycnt++)
 		{
 			boolean success = somexy(sroom, &c);
 			if (!success)
@@ -1322,7 +1322,7 @@ mkdragonlair()
 		{
 			if(dragons[i] > 0)
 			{
-				struct monst* mon = makemon(&mons[dragons[i]], sx, sy, !rn2(2) ? MM_ASLEEP | MM_WAITFORU : MM_WAITFORU);
+				(void)makemon(&mons[dragons[i]], sx, sy, !rn2(2) ? MM_ASLEEP | MM_WAITFORU : MM_WAITFORU);
 			}
 
 			struct obj* otmp = mksobj_at(GOLD_PIECE, sx, sy, FALSE, FALSE);
@@ -1342,14 +1342,14 @@ mkdragonlair()
 				int gemcnt = 5 + rn2(6);
 				for (int j = 0; j < gemcnt; j++)
 				{
-					struct obj* otmp = mksobj_at(randomtruegem(), sx, sy, FALSE, FALSE);
+                    (void)mksobj_at(randomtruegem(), sx, sy, FALSE, FALSE);
 				}
 
 				/* Ancient dragons have 1-6 other items */
 				int itemcnt = rnd(6);
 				for (int j = 0; j < itemcnt; j++)
 				{
-					struct obj* otmp = mkobj_at(0, sx, sy, FALSE);
+                    (void)mkobj_at(0, sx, sy, FALSE);
 				}
 
 			}
@@ -1359,14 +1359,14 @@ mkdragonlair()
 				int gemcnt = rn2(6);
 				for (int j = 0; j < gemcnt; j++)
 				{
-					struct obj* otmp = mkobj_at(GEM_CLASS, sx, sy, FALSE);
+                    (void)mkobj_at(GEM_CLASS, sx, sy, FALSE);
 				}
 
 				/* Adult dragons have 0-3 other items */
 				int itemcnt = rn2(4);
 				for (int j = 0; j < itemcnt; j++)
 				{
-					struct obj* otmp = mkobj_at(0, sx, sy, FALSE);
+                    (void)mkobj_at(0, sx, sy, FALSE);
 				}
 			}
 			else if (dragons[i] >= PM_GRAY_DRAGON_HATCHLING && dragons[i] <= PM_YELLOW_DRAGON_HATCHLING)
@@ -1375,14 +1375,14 @@ mkdragonlair()
 				int gemcnt = rn2(3);
 				for (int j = 0; j < gemcnt; j++)
 				{
-					struct obj* otmp = mkobj_at(GEM_CLASS, sx, sy, FALSE);
+                    (void)mkobj_at(GEM_CLASS, sx, sy, FALSE);
 				}
 
 				/* Adult dragons have 0-1 other items */
 				int itemcnt = rn2(2);
 				for (int j = 0; j < itemcnt; j++)
 				{
-					struct obj* otmp = mkobj_at(0, sx, sy, FALSE);
+                    (void)mkobj_at(0, sx, sy, FALSE);
 				}
 			}
 		}
@@ -1404,12 +1404,12 @@ mkdragonlair()
 
 			if(!rn2(3))
 			{
-				struct obj* otmp2 = mkobj_at(GEM_CLASS, sx, sy, FALSE);
+                (void)mkobj_at(GEM_CLASS, sx, sy, FALSE);
 			}
 
 			if (!rn2(4))
 			{
-				struct obj* otmp2 = mkobj_at(0, sx, sy, FALSE);
+                (void)mkobj_at(0, sx, sy, FALSE);
 			}
 		}
 	}

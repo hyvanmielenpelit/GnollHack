@@ -2661,6 +2661,7 @@ struct obj *o1, *o2;
 		case POT_GAIN_LEVEL:
 			return POT_GAIN_ABILITY;
 		}
+        break;
     case POT_EXTRA_HEALING:
         switch (o2->otyp) {
         case POT_GAIN_ENERGY:
@@ -2671,7 +2672,8 @@ struct obj *o1, *o2;
 		case POT_GAIN_LEVEL:
 			return POT_GAIN_ABILITY;
 		}
-	case POT_GREATER_HEALING:
+        break;
+    case POT_GREATER_HEALING:
 		switch (o2->otyp) {
 		case POT_GAIN_ENERGY:
 		case POT_GREATER_ENERGY:
@@ -2680,7 +2682,8 @@ struct obj *o1, *o2;
 		case POT_GAIN_LEVEL:
 			return POT_GAIN_ABILITY;
 		}
-	case POT_FULL_HEALING:
+        break;
+    case POT_FULL_HEALING:
         switch (o2->otyp) {
         case POT_GAIN_LEVEL:
         case POT_GAIN_ENERGY:
@@ -2688,6 +2691,7 @@ struct obj *o1, *o2;
 		case POT_FULL_ENERGY:
 			return POT_GAIN_ABILITY;
         }
+        break;
     case UNICORN_HORN:
         switch (o2->otyp) {
         case POT_SICKNESS:

@@ -497,7 +497,7 @@ struct obj* pick;
 int x, y;
 boolean is_auto;
 {
-    int picktyp, special_quality, c, ch;
+    int picktyp, /*special_quality,*/ c, ch;
     coord cc;
     struct rm* door;
     struct obj* otmp;
@@ -515,7 +515,7 @@ boolean is_auto;
     cc.x = x;
     cc.y = y;
     picktyp = pick->otyp;
-    special_quality = pick->special_quality;
+    //special_quality = pick->special_quality;
 
     if (cc.x == u.ux && cc.y == u.uy) 
     { /* pick lock on a container */

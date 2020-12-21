@@ -365,9 +365,9 @@ struct monst* summoner;
 			mtmp->mspecialsummon_used = 30;
 			mtmp->mspecialsummon2_used = 30;
 
-			if (dtype = PM_GHOUL)
+			if (dtype == PM_GHOUL)
 				ghoul_cnt++;
-			else if (dtype = PM_GHAST)
+			else if (dtype == PM_GHAST)
 				ghoul_cnt++;
 			else
 				thoul_cnt++;

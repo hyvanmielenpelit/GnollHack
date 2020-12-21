@@ -1703,7 +1703,6 @@ register struct obj* omonwep;
 	boolean isdisintegrated = FALSE;
     boolean sharpness_effect = FALSE;
 	int critstrikeroll = rn2(100);
-    enum hit_tile_types hit_tile = HIT_GENERAL;
 
     if (!canspotmon(mtmp))
         map_invisible(mtmp->mx, mtmp->my);
@@ -1879,7 +1878,7 @@ register struct obj* omonwep;
                         if (hug_throttles(mtmp->data))
                         {
                             if (!has_neck(youmonst.data) || Magical_breathing || !can_be_strangled(&youmonst))
-                                You("do not feel particularly concerned.", Monnam(mtmp));
+                                You("do not feel particularly concerned.");
                             else
                                 pline("%s is choking you to death!", Monnam(mtmp));
                         }
@@ -2934,7 +2933,6 @@ register struct obj* omonwep;
 		else {
 			hitmsg(mtmp, mattk, damagedealt, TRUE);
 			pline("Yuck!");
-            hit_tile = HIT_SLIMED;
         }
         break;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
@@ -3270,7 +3268,6 @@ struct attack *mattk;
 	int tim_tmp;
     struct obj *otmp2;
     int i;
-    boolean physical_damage = FALSE;
     enum hit_tile_types hit_tile = HIT_GENERAL;
 
     if (!u.uswallow) { /* swallows you */
@@ -3369,7 +3366,6 @@ struct attack *mattk;
 
     switch (mattk->adtyp) {
     case AD_DGST:
-        physical_damage = TRUE;
         if (Slow_digestion) 
 		{
             /* Messages are handled below */
@@ -3390,7 +3386,6 @@ struct attack *mattk;
         }
         break;
     case AD_PHYS:
-        physical_damage = TRUE;
         if (mtmp->data == &mons[PM_FOG_CLOUD]) 
 		{
             You("are laden with moisture and %s",
@@ -3501,7 +3496,6 @@ struct attack *mattk;
 		damage = 0;
         break;
     default:
-        physical_damage = TRUE;
 		damage = 0;
         break;
     }
@@ -3539,7 +3533,7 @@ struct monst *mtmp;
 struct attack *mattk;
 boolean ufound;
 {
-    boolean physical_damage = TRUE, kill_agr = TRUE;
+    boolean kill_agr = TRUE;
 
     if (is_cancelled(mtmp))
         return 0;
@@ -3567,15 +3561,12 @@ boolean ufound;
         switch (mattk->adtyp)
 		{
         case AD_COLD:
-            physical_damage = FALSE;
             not_affected |= Cold_immunity;
             goto common;
         case AD_FIRE:
-            physical_damage = FALSE;
             not_affected |= Fire_immunity;
             goto common;
         case AD_ELEC:
-            physical_damage = FALSE;
             not_affected |= Shock_immunity;
             goto common;
         case AD_PHYS:
@@ -3601,12 +3592,6 @@ boolean ufound;
                 if (mattk->adtyp == AD_FIRE)
                     burn_away_slime();
 
-#if 0
-				if (physical_damage)
-                    tmp = Maybe_Half_Phys(tmp);
-				if (Invulnerable)
-					tmp = 0;
-#endif
 				mdamageu_with_hit_tile(mtmp, damage, TRUE, get_hit_tile_by_adtyp(mattk->adtyp));
             }
             break;

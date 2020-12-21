@@ -1086,7 +1086,7 @@ register struct obj* omonwep;
 	double poisondamage = 0;
 	boolean isdisintegrated = FALSE;
 	boolean hittxtalreadydisplayed = FALSE;
-	boolean objectshatters = FALSE;
+	//boolean objectshatters = FALSE;
 	int critstrikeroll = rn2(100);
     enum hit_tile_types hit_tile = HIT_GENERAL;
 
@@ -1945,6 +1945,11 @@ register struct obj* omonwep;
         display_m_being_hit(mdef, hit_tile, damagedealt, 0UL);
     }
 
+    if (hittxtalreadydisplayed)
+    {
+        /* Do nothing, to remove gcc warning */
+    }
+
     if (DEADMONSTER(mdef)) 
 	{
         if (poisondamage > 0 && ((double)mdef->mhp + ((double)mdef->mhp_fraction)/10000 - 1) > -poisondamage && vis && canspotmon(mdef) && !isdisintegrated)
@@ -2058,11 +2063,19 @@ boolean verbosely;
 /* `mon' is hit by a sleep attack; return 1 if it's affected, 0 otherwise */
 /* lvl needs to specified only if otmp == 0, level -1 == cannot be resisted */
 int
-sleep_monst(mon, otmp, amt, saving_throw_adjustment, tellstyle)
+sleep_monst(mon, origobj, amt, saving_throw_adjustment, tellstyle)
 struct monst *mon;
-struct obj* otmp;
+struct obj* origobj;
 int amt, saving_throw_adjustment, tellstyle;
 {
+    if (!mon)
+        return 0;
+
+    if (!origobj)
+    {
+        /* Do nothing, since not needed */
+    }
+
 	if (resists_sleep(mon))
 	{
 		if (tellstyle != NOTELL)

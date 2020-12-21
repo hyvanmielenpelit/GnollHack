@@ -77,9 +77,6 @@ set_uasmon()
             u.uprops[PropIndx].intrinsic |= FROM_FORM;  \
     } while (0)
 
-//			else                                           \
-//			u.uprops[PropIndx].intrinsic &= ~FROM_FORM; \
-
 	/* We add these additionally in the case creature type (e.g., undead) has resistances not conferred explicitly by MR_ fields */
     PROPSET(SLEEP_RESISTANCE, resists_sleep(&youmonst));
     PROPSET(DISINTEGRATION_RESISTANCE, resists_disint(&youmonst));
@@ -2032,8 +2029,6 @@ dogaze()
 int
 doeyestalk()
 {
-	uchar adtyp = 0;
-
 	if (Blind) {
 		You_cant("see anything to gaze at.");
 		return 0;

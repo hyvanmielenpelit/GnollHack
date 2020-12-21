@@ -1119,7 +1119,6 @@ int mkobj_type;
     int mndx, tryct;
     struct obj *otmp;
     char let = objects[otyp].oc_class;
-	int i1 = 0, i2 = 0, i3 = 0;
 
     otmp = newobj();
     *otmp = zeroobj;

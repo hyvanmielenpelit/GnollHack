@@ -491,7 +491,7 @@ struct monst *oracl;
 {
     long umoney;
 	int u_pay, minor_cost = max(1, (int)(25.0 * service_cost_charisma_adjustment(ACURR(A_CHA)))), major_cost = max(1, (int)((double)(250 + 25 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-	int unid_cnt = count_unidentified(invent);
+	//int unid_cnt = count_unidentified(invent);
 	int oracleaction = 0;
 	int add_xpts;
     char qbuf[QBUFSZ];

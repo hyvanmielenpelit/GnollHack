@@ -248,7 +248,6 @@ register struct monst *mtmp;
     register int mm = monsndx(ptr);
     struct obj *otmp;
     int bias, spe2, w1, w2;
-	int i = 0, n = 0;
 
     if (Is_rogue_level(&u.uz))
         return;
@@ -712,8 +711,7 @@ register struct monst *mtmp;
 		case PM_ORC_SHAMAN:
 			if (!rn2(2))
 			{
-				int n = 0;
-				n = rn2(3); //0...2
+				int n = rn2(3); //0...2
 				while (n--)
 					(void)mongets(mtmp, randomreagent(FALSE, 0));
 			}
@@ -1692,7 +1690,7 @@ register struct monst *mtmp;
                 if (!rn2(3))
                     (void)mongets(mtmp, !rn2(10) ? POT_FULL_ENERGY : !rn2(4) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
 
-				int n = rn2(3);
+				n = rn2(3);
 				for (int i = 0; i < n; i++)
 					(void)mongets(mtmp, randomreagent(FALSE, 0));
 
@@ -1768,7 +1766,6 @@ register struct monst *mtmp;
 		}
 		if (ptr == &mons[PM_GNOMISH_WIZARD])
 		{
-			int n = 0;
 			n = rnd(3);
 			for (int i = 0; i < n; i++)
 				(void)mongets(mtmp, randomreagent(TRUE, 0));
@@ -2053,7 +2050,7 @@ double
 monhp_per_lvl(mon)
 struct monst *mon;
 {
-    struct permonst *ptr = mon->data;
+    //struct permonst *ptr = mon->data;
     double hp = (double)rnd(8) + constitution_hp_bonus(m_acurr(mon, A_CON)); /* default is d8 */
 
 	if (!mon->m_lev) 
@@ -2131,9 +2128,9 @@ unsigned long mmflags;
 	boolean use_normalhd = !!(mmflags & MM_NORMAL_HIT_DICE);
 	//boolean no_dif_level_adj = !!(mmflags & MM_NO_DIFFICULTY_HP_CHANGE);
 	//boolean adj_existing_hp = !!(mmflags & MM_ADJUST_HP_FROM_EXISTING);
-	int old_maxhp = mon->mhpmax;
-	int old_basemaxhp = mon->mbasehpmax;
-	int old_hp = mon->mhp;
+	//int old_maxhp = mon->mhpmax;
+	//int old_basemaxhp = mon->mbasehpmax;
+	//int old_hp = mon->mhp;
 
 	//if(!adj_existing_hp)
 	mon->m_lev = use_normalhd ? ptr->mlevel : adj_lev(ptr);

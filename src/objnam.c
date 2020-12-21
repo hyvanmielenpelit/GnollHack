@@ -1160,7 +1160,7 @@ struct obj *obj;
 unsigned doname_flags;
 {
     if (!obj)
-        return "";
+        return xname(obj); /* Returns an empty string */
 
     boolean ispoisoned = FALSE,
             with_price = (doname_flags & DONAME_WITH_PRICE) != 0,
@@ -5110,6 +5110,9 @@ const char*
 miscitem_simple_name(miscitem)
 struct obj* miscitem;
 {
+    if (!miscitem)
+        return "invalid miscellaneous item";
+
 	return "miscellaneous item";
 }
 

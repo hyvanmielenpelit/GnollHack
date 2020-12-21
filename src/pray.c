@@ -2420,7 +2420,7 @@ dosacrifice()
     {
         int saved_anger = u.ugangr;
         int saved_cnt = u.uprayer_timeout;
-        int saved_luck = u.uluck;
+        //int saved_luck = u.uluck;
 
         /* Sacrificing at an altar of a different alignment */
         if (u.ualign.type != altaralign) 
@@ -2705,15 +2705,15 @@ dosacrifice()
 
 		if (bless_savestone)
 		{
-			for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+			for (struct obj* otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
 			{
-				if (is_obj_special_praying_item(otmp) && !otmp->blessed)
+				if (is_obj_special_praying_item(otmp2) && !otmp2->blessed)
 				{
                     play_sfx_sound(SFX_AURA_GLOW);
                     if(!Blind)
-						pline("%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
-					bless(otmp);
-					otmp->bknown = 1;
+						pline("%s with %s aura.", Yobjnam2(otmp2, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
+					bless(otmp2);
+					otmp2->bknown = 1;
 					break;
 				}
 			}

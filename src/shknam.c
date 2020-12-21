@@ -583,7 +583,7 @@ boolean deserted;
 		}
 		else
 		{
-			struct obj* otmp = mksobj_at(WAN_IDENTIFY, sx, sy, TRUE, FALSE);
+			(void)mksobj_at(WAN_IDENTIFY, sx, sy, TRUE, FALSE);
 		}
 		return;
 	}
@@ -1066,7 +1066,8 @@ struct monst *mtmp;
 		impossible("shkname: \"%s\" is not a shopkeeper.", nam);
     } else if (!has_eshk(mtmp)) {
 		panic("shkname: shopkeeper \"%s\" lacks 'eshk' data.", nam);
-		return "";
+        strcpy(nam, "");
+		return nam;
     } else {
         const char *shknm = ESHK(mtmp)->shknam;
 

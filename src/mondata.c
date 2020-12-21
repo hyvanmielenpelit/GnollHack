@@ -65,7 +65,7 @@ static NEARDATA struct ability_conversion_table prop2innate[] = {
 };
 
 struct mflag_description {
-	int mflag_bit;
+	unsigned long mflag_bit;
 	const char* singular_adjective;
 	const char* plural_noun;
 };

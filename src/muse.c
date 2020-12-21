@@ -1426,6 +1426,11 @@ register struct monst* origmonst;
     int tmp;
     boolean reveal_invis = FALSE;
 
+    if (origmonst)
+    {
+        /* Do nothing */
+    }
+
     if (mtmp != &youmonst)
 	{
         mtmp->msleeping = 0;
@@ -2335,7 +2340,7 @@ struct obj *obj;
     int typ = obj->otyp;
 
     if (is_obj_no_pickup(obj))
-        FALSE;
+        return FALSE;
 
     if (is_animal(mon->data) || mindless(mon->data)
         || mon->data == &mons[PM_GHOST]) /* don't loot bones piles */
@@ -2379,12 +2384,13 @@ struct obj *obj;
             return (boolean) !(is_not_living(mon->data) || is_vampshifter(mon));
         if (typ == AMULET_OF_REFLECTION)
             return TRUE;
-	case RING_CLASS:
+        break;
+    case RING_CLASS:
 		if ((mon->worn_item_flags & W_RING) == W_RING)
 			return FALSE;
 		if (!is_cursed_magic_item(obj))
 			return TRUE;
-			break;
+		break;
 	case MISCELLANEOUS_CLASS:
 		break;
 	case TOOL_CLASS:
@@ -3020,7 +3026,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         else 
         {
             m_useup(mon, obj); /* before explode() */
-            int dmg = (4 * bcsign(obj) + 2) / 3 + 1;
+            //int dmg = (4 * bcsign(obj) + 2) / 3 + 1;
             /* -11 => monster's fireball */
             explode(mon->mx, mon->my, -11, 1, 2, (4 * bcsign(obj) + 2) / 3, otyp, SCROLL_CLASS,
                     /* by_you: override -11 for mon but not others */

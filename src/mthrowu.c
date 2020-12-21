@@ -221,7 +221,7 @@ monmulti(mtmp, otmp, mwep)
 struct monst *mtmp;
 struct obj *otmp, *mwep;
 {
-    int skill = (int) objects[otmp->otyp].oc_skill;
+    //int skill = (int) objects[otmp->otyp].oc_skill;
     int multishot = 1;
 	int multishotrndextra = 0;
 
@@ -612,7 +612,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 					if (vis)
 						pline_The("cold sears %s!", mon_nam(mtmp));
 					else if (verbose && !target)
-						pline_The("cold sears it!", mon_nam(mtmp));
+						pline_The("cold sears it!");
 					damage += adjust_damage(d(12, 6), (struct monst*)0, mtmp, AD_COLD, ADFLAGS_NONE);
 				}
                 if(is_ammo(otmp) || throwing_weapon(otmp) || objects[otmp->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
@@ -895,9 +895,11 @@ struct obj *obj;         /* missile (or stack providing it) */
                 break;
             }
             oldumort = u.umortality;
+
+            int dam, hitv;
+            int mindistance = 0;
+
             switch (singleobj->otyp) {
-                int dam, hitv;
-				int mindistance = 0;
             case EGG:
                 if (!touch_petrifies(&mons[singleobj->corpsenm])) {
                     impossible("monster throwing egg type %d",
@@ -1320,11 +1322,13 @@ struct attack* mattk;
 }
 
 const char* get_eyestalk_ray_name(typ)
+int typ;
 {
 	return eyestalk[typ - 1];
 }
 
 const char* get_breath_weapon_name(typ)
+int typ;
 {
 	return breathwep[typ - 1];
 }
@@ -1411,7 +1415,7 @@ int *typ, *damn, *damd, *damp;
         return;
     }
 
-    boolean is_target_you = (mtarg == &youmonst);
+    //boolean is_target_you = (mtarg == &youmonst);
     boolean spell_ok[10] = { 0 };
 
     for (int i = AD_MAGM; i <= AD_STON; i++)
