@@ -108,7 +108,7 @@ const char *
 weapon_descr(obj)
 struct obj *obj;
 {
-    int skill = weapon_skill_type(obj);
+    enum p_skills skill = weapon_skill_type(obj);
     const char *descr = P_NAME(skill);
 
     /* assorted special cases */
@@ -2417,9 +2417,6 @@ enum p_skills
 weapon_skill_type(obj)
 struct obj *obj;
 {
-    /* KMH -- now uses the object table */
-    enum p_skills type;
-
     if (!obj || (is_gloves(obj) && (obj->owornmask & W_ARMG)))
         return (P_SKILL_LEVEL(P_MARTIAL_ARTS) <= P_UNSKILLED || P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) < P_EXPERT  ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS); /* Not using a weapon */
 
@@ -2429,8 +2426,8 @@ struct obj *obj;
         && obj->oclass != GEM_CLASS)
         return P_NONE;*/
 	/* Not a weapon, weapon-tool, or ammo */
-    type = objects[obj->otyp].oc_skill;
-    return (type < 0) ? -type : type;
+    schar type = objects[obj->otyp].oc_skill;
+    return (enum p_skills)((type < 0) ? -type : type);
 }
 
 enum p_skills
