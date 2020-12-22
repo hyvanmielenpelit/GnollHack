@@ -1539,7 +1539,7 @@ register struct monst *mtmp;
                 (void)mongets(mtmp, !rn2(50) ? POT_FULL_ENERGY : !rn2(10) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
             
             /* Some random reagants */
-			int n = rn2(3);
+			n = rn2(3);
 			for (int i = 0; i < n; i++)
 				(void)mongets(mtmp, randomreagent(TRUE, 0));
 
@@ -2069,7 +2069,7 @@ int
 monbasehp_per_lvl(mon)
 struct monst* mon;
 {
-    struct permonst* ptr = mon->data;
+    //struct permonst* ptr = mon->data;
     int hp = rnd(8); /* default is d8 */
 
 #if 0

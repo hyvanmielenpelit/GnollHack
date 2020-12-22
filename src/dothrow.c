@@ -37,7 +37,7 @@ boolean firing;
 {
     struct obj *otmp;
     int multishot;
-    schar skill;
+    //schar skill;
     long wep_mask;
     //boolean weakmultishot;
 
@@ -109,7 +109,7 @@ boolean firing;
      */
     multishot = 1;
 	int multishotrndextra = 0;
-    skill = objects[obj->otyp].oc_skill;
+    //skill = objects[obj->otyp].oc_skill;
     if (obj->quan > 1L /* no point checking if there's only 1 */
         /* ammo requires corresponding launcher be wielded */
         && (is_ammo(obj) ? matching_launcher(obj, uwep)

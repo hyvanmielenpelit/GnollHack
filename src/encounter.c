@@ -1557,10 +1557,10 @@ int selected_encounter, x, y;
 				{
 					int otyp = (int)encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].otyp;
 					short oartifact = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].oartifact;
-					long iflags = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].iflags;
+					long itemflags = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].iflags;
 					if (otyp > STRANGE_OBJECT)
 					{
-						struct obj* otmp = mksobj(otyp, !!(iflags & MI_INITIALIZE), !!(iflags & MI_ALLOW_ARTIFACTS), FALSE);
+						struct obj* otmp = mksobj(otyp, !!(itemflags & MI_INITIALIZE), !!(itemflags & MI_ALLOW_ARTIFACTS), FALSE);
 
 						if (otmp)
 						{
@@ -1568,17 +1568,17 @@ int selected_encounter, x, y;
 							if (oartifact > 0)
 								otmp = oname(otmp, artiname(oartifact));
 
-							if (iflags & MI_BLESSED)
+							if (itemflags & MI_BLESSED)
 								bless(otmp);
-							else if (iflags & MI_CURSED)
+							else if (itemflags & MI_CURSED)
 								curse(otmp);
-							else if (iflags & MI_UNCURSED)
+							else if (itemflags & MI_UNCURSED)
 								otmp->blessed = otmp->cursed = 0;
 
-							if (iflags & MI_ERODEPROOF)
+							if (itemflags & MI_ERODEPROOF)
 								otmp->oerodeproof = TRUE;
 
-							if (!(iflags & MI_IGNORE_SPE))
+							if (!(itemflags & MI_IGNORE_SPE))
 							{
 								int enchantment = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].spe_constant;
 

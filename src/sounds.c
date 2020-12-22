@@ -3902,7 +3902,7 @@ struct monst* mtmp;
 		char oclass = classorder[i];
 		boolean madeheader = FALSE;
 
-		if (flags.sortpack && !classhasitems[oclass])
+		if (flags.sortpack && !classhasitems[(int)oclass])
 			continue;
 
 		for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
@@ -4107,7 +4107,7 @@ struct monst* mtmp;
 	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
 	{
 		if (otmp->oclass > ILLOBJ_CLASS)
-			classhasitems[otmp->oclass] = TRUE;
+			classhasitems[(int)otmp->oclass] = TRUE;
 	}
 
 	for (int i = 0; i < MAX_OBJECT_CLASSES; i++)
@@ -4115,7 +4115,7 @@ struct monst* mtmp;
 		char oclass = classorder[i];
 		boolean madeheader = FALSE;
 
-		if (flags.sortpack && !classhasitems[oclass])
+		if (flags.sortpack && !classhasitems[(int)oclass])
 			continue;
 
 		for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
@@ -4797,6 +4797,11 @@ STATIC_OVL int
 do_chat_shk_pricequote(mtmp)
 struct monst* mtmp;
 {
+	if (!mtmp)
+	{
+		/* Do nothing, not used */
+	}
+
 	struct obj* otmp = shop_object(u.ux, u.uy);
 	if(otmp)
 		price_quote(otmp);
@@ -4987,7 +4992,7 @@ struct monst* mtmp;
 		return 0;
 
 
-	Sprintf(qbuf, "\"You need to pay %d %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+	Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
 
 	switch (ynq(qbuf)) {
 	default:

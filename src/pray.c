@@ -1605,9 +1605,10 @@ aligntyp g_align;
                 fix_worst_trouble(trouble);
             while ((trouble = in_trouble()) != 0);
             break;
-
         case 3:
-            fix_worst_trouble(trouble);
+            if (trouble > 0)
+                fix_worst_trouble(trouble);
+            /* FALLTHRU */
         case 2:
             /* arbitrary number of tries */
             play_sfx_sound(SFX_PRAY_FIX_ALL_TROUBLES);

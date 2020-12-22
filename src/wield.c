@@ -729,8 +729,6 @@ doswapweapon()
 	int result = 0;
 	int result2 = 0;
 
-	struct obj* oldweapon = uwep;
-
     /* May we attempt this? */
     multi = 0;
     if (cantwield(youmonst.data)) {

@@ -2302,13 +2302,13 @@ update_can_advance_any_skill()
 	/* check for more skills able to advance, if so then .. */
 	for (i = 0; i < P_NUM_SKILLS; i++) {
 		if (can_advance(i, FALSE)) {
-			if(!u.canadvanceskill);
+			if(!u.canadvanceskill)
 				context.botl = context.botlx = TRUE;
 			u.canadvanceskill = TRUE;
 			return;
 		}
 	}
-	if (u.canadvanceskill);
+	if (u.canadvanceskill)
 		context.botl = context.botlx = TRUE;
 
 	u.canadvanceskill = FALSE;
@@ -2371,9 +2371,12 @@ int n; /* number of slots to gain; normally one */
             before++;
     u.weapon_slots += n;
 	u.max_weapon_slots += n;
-	for (i = 0, after = 0; i < P_NUM_SKILLS; i++)
+    for (i = 0, after = 0; i < P_NUM_SKILLS; i++)
+    {
         if (can_advance(i, FALSE))
             after++;
+    }
+
     if (before < after)
         give_may_advance_msg(P_NONE);
 

@@ -1181,9 +1181,9 @@ struct monst *mtmp, *mtarg;
             score -= 1000;
         /* Even weak pets with breath attacks shouldn't take on very
            low-level monsters. Wasting breath on lichens is ridiculous. */
-        if (!mon_has_bloodlust(mtmp) && (mtarg->m_lev < 2 && mtmp->m_lev > 5)
+        if (!mon_has_bloodlust(mtmp) && ((mtarg->m_lev < 2 && mtmp->m_lev > 5)
             || (mtmp->m_lev > 12 && mtarg->m_lev < mtmp->m_lev - 9
-                && u.ulevel > 8 && mtarg->m_lev < u.ulevel - 7))
+                && u.ulevel > 8 && mtarg->m_lev < u.ulevel - 7)))
             score -= 25;
         /* for strength purposes, a vampshifter in weak form (vampire bat,
            fog cloud, maybe wolf) will attack as if in vampire form;
@@ -1734,7 +1734,7 @@ newdogpos:
 					if (buriedsearchablefound)
 					{
 						if(canseemon(mtmp))
-							pline("%s starts digging the ground.", Monnam(mtmp), vtense((char*)0, growl_sound(mtmp)));
+							pline("%s starts digging the ground.", Monnam(mtmp));
 
 						int itemsfound = unearth_objs(mtmp, nix, niy, canseemon(mtmp), TRUE);
 

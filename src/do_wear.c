@@ -422,8 +422,6 @@ Shirt_on(VOID_ARGS)
 int
 Shirt_off(VOID_ARGS)
 {
-
-	struct obj* otmp = uarmu;
     context.takeoff.mask &= ~W_ARMU;
 
 	setworn((struct obj*) 0, W_ARMU);
@@ -486,8 +484,6 @@ long wearslotmask;
 		setuswapwep((struct obj*) 0, W_SWAPWEP2);
 	else if (ud == uquiver)
 		setuqwep((struct obj*) 0);
-
-	boolean hadhallucination = Hallucination;
 
 	if (objects[ud->otyp].oc_subtyp == MISC_IOUN_STONE)
 	{
@@ -777,8 +773,6 @@ void
 Blindf_on(otmp)
 struct obj *otmp;
 {
-    boolean already_blind = Blind, changed = FALSE;
-
     /* blindfold might be wielded; release it for wearing */
     if (otmp->owornmask & W_WEAPON)
         remove_worn_item(otmp, FALSE);

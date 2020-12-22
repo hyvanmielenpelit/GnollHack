@@ -1842,7 +1842,7 @@ struct obj* objchn;
         else if (Is_container(otmp))
         {
             struct obj* otmp2 = (struct obj*)0;
-            if (otmp2 = otyp_in_objchn(otyp, otmp->cobj))
+            if ((otmp2 = otyp_in_objchn(otyp, otmp->cobj)) != 0)
                 return otmp2;
         }
 

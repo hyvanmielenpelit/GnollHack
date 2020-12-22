@@ -2747,6 +2747,11 @@ long timeout;
 	if (!obj)
 		return;
 
+    if (timeout)
+    {
+        /* Do nothing */
+    }
+
 	if (on_floor) {
 		x = obj->ox;
 		y = obj->oy;

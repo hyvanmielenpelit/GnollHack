@@ -6545,6 +6545,11 @@ int otyp;
     if (!mtmp)
         return 0;
 
+    if (otyp == STRANGE_OBJECT)
+    {
+        /* Do nothing for the time being */
+    }
+
     int hit_bon = 0;
     int dex = M_ACURR(mtmp, A_DEX);
 
