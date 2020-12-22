@@ -5229,7 +5229,6 @@ xchar x, y;
     if (Deaf)
         return;
 
-    struct monst* mdef = 0;
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     enum object_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUND_TYPE_HIT_MELEE : OBJECT_SOUND_TYPE_HIT_THROW);
@@ -5781,7 +5780,9 @@ update_ambient_sounds()
         if (curr->type == SOUNDSOURCE_OBJECT)
         {
             if (get_obj_location(curr->id.a_obj, &curr->x, &curr->y, 0))
-                ;
+            {
+                /* Do nothing */
+            }
 
             if (curr->id.a_obj)
                 lit = curr->id.a_obj->lamplit;
@@ -5789,7 +5790,9 @@ update_ambient_sounds()
         else if (curr->type == SOUNDSOURCE_MONSTER)
         {
             if (get_mon_location(curr->id.a_monst, &curr->x, &curr->y, 0))
-                ;
+            {
+                /* Do nothing */
+            }
 
             if (curr->id.a_monst)
                 lit = curr->id.a_monst->data->lightrange;
@@ -5805,7 +5808,9 @@ update_ambient_sounds()
         else if (curr->type == SOUNDSOURCE_REGION)
         {
             if (get_region_location(curr->id.a_nhregion, &curr->x, &curr->y, 0))
-                ;
+            {
+                /* Do nothing */
+            }
 
             if (curr->id.a_nhregion)
             {
@@ -5925,7 +5930,7 @@ anything* id;
     double absvolume = volume > 0.0 ? volume : -volume;
     if (absvolume > 1.0 || absvolume < 0.0) 
     {
-        impossible("new_sound_source:  illegal volume %d", volume);
+        impossible("new_sound_source:  illegal volume %f", volume);
         return;
     }
 
@@ -5954,7 +5959,7 @@ anything* id;
  */
 void
 del_sound_source(type, id)
-int type;
+enum soundsource_types type;
 anything* id;
 {
     sound_source* curr, * prev;
@@ -6674,12 +6679,10 @@ enum ghsound_types
 get_level_music(dlvl)
 struct d_level* dlvl;
 {
-    enum ghsound_types res = GHSOUND_NONE;
     if (!dlvl)
-        return res;
+        return GHSOUND_NONE;
 
     int dnum = dlvl->dnum;
-
 
     if (Is_valley(dlvl))
         return GHSOUND_GEHENNOM_MUSIC_VALLEY;
@@ -6713,8 +6716,6 @@ struct d_level* dlvl;
         return GHSOUND_ENDGAME_MUSIC_ASTRAL;
     else
         return get_dungeon_music(dnum);
-
-    return res;
 }
 
 enum ghsound_types
@@ -6850,12 +6851,8 @@ enum ghsound_types
 get_level_ambient_sounds(dlvl)
 struct d_level* dlvl;
 {
-    enum ghsound_types res = GHSOUND_NONE;
     if (!dlvl)
-        return res;
-
-    int dnum = dlvl->dnum;
-
+        return GHSOUND_NONE;
 
     if (Is_airlevel(dlvl))
         return GHSOUND_AIR_LEVEL_AMBIENT;
@@ -6865,8 +6862,6 @@ struct d_level* dlvl;
         return GHSOUND_GEHENNOM_VALLEY_AMBIENT;
     else
         return GHSOUND_NONE;
-
-    return res;
 }
 
 enum ghsound_types

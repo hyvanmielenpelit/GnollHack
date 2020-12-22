@@ -2890,7 +2890,7 @@ E void FDECL(update_hearing_array_and_ambient_sounds_if_point_within_hearing_ran
 E void FDECL(unblock_vision_and_hearing_at_point, (int, int));
 E void FDECL(block_vision_and_hearing_at_point, (int, int));
 E void FDECL(new_sound_source, (XCHAR_P, XCHAR_P, enum ghsound_types, double, enum soundsource_types, enum soundsource_ambient_subtypes, ANY_P*));
-E void FDECL(del_sound_source, (int, ANY_P*));
+E void FDECL(del_sound_source, (enum soundsource_types, ANY_P*));
 E void FDECL(save_sound_sources, (int, int, int));
 E void FDECL(restore_sound_sources, (int));
 E void FDECL(sound_stats, (const char*, char*, long*, size_t*));

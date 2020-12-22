@@ -360,9 +360,9 @@ struct monst *victim;
 }
 
 struct trap *
-maketrap(x, y, typ, permonstid, flags)
+maketrap(x, y, typ, permonstid, mkflags)
 int x, y, typ, permonstid;
-unsigned long flags;
+unsigned long mkflags;
 {
     static union vlaunchinfo zero_vl;
     boolean oldplace;
@@ -458,7 +458,7 @@ unsigned long flags;
 			if (is_helmet(otmp))
 				has_hat = TRUE;
         }
-		if (!has_hat && (flags & MKTRAPFLAG_GARDEN_GNOME_ITEMS))
+		if (!has_hat && (mkflags & MKTRAPFLAG_GARDEN_GNOME_ITEMS))
 		{
 			if(!rn2(2))
 			{
@@ -1025,7 +1025,7 @@ unsigned trflags;
             viasitting = (trflags & VIASITTING) != 0,
             conj_pit = conjoined_pits(trap, t_at(u.ux0, u.uy0), TRUE),
             adj_pit = adj_nonconjoined_pit(trap);
-    int oldumort;
+    //int oldumort;
     int steed_article = ARTICLE_THE;
 
     nomul(0);
@@ -1125,7 +1125,7 @@ unsigned trflags;
         otmp = t_missile(get_shooting_trap_object(trap), trap);
         if (!rn2(6))
             otmp->opoisoned = 1;
-        oldumort = u.umortality;
+        //oldumort = u.umortality;
 
         if (u.usteed && !rn2(2) && steedintrap(trap, otmp)) 
         {
@@ -1432,7 +1432,7 @@ unsigned trflags;
         set_utrap((unsigned) rn1(6, 2), TT_PIT);
         if (!steedintrap(trap, (struct obj *) 0)) {
             if (ttype == SPIKED_PIT) {
-                oldumort = u.umortality;
+                //oldumort = u.umortality;
                 losehp(adjust_damage(rnd(conj_pit ? 4 : adj_pit ? 6 : 10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                        /* note: these don't need locomotion() handling;
                           if fatal while poly'd and Unchanging, the
@@ -4569,7 +4569,8 @@ int skill_level;
 		case ROCKTRAP:
 		case ROLLING_BOULDER_TRAP:
 			probability = 75;
-		default:
+            break;
+        default:
 			probability = 83;
 			break;
 		}
@@ -4595,7 +4596,8 @@ int skill_level;
 		case ROCKTRAP:
 		case ROLLING_BOULDER_TRAP:
 			probability = 88;
-		default:
+            break;
+        default:
 			probability = 92;
 			break;
 		}
@@ -4974,8 +4976,10 @@ struct trap *ttmp;
 }
 
 /* getobj will filter down to cans of grease and known potions of oil */
+#if 0
 static NEARDATA const char oil[] = { ALL_CLASSES, TOOL_CLASS, POTION_CLASS,
                                      0 };
+#endif
 
 /* it may not make much sense to use grease on floor boards, but so what? */
 STATIC_OVL int
@@ -5482,7 +5486,7 @@ boolean force;
     struct obj* otmp;
     int boxcnt = 0;
     boolean deal_with_floor_trap = can_reach_floor(FALSE);
-    boolean useplural = FALSE, trap_skipped = FALSE;
+    boolean useplural = FALSE;
     char the_trap[BUFSIZ], qbuf[BUFSIZ];
 
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
@@ -5535,7 +5539,6 @@ boolean force;
                         return 0; /* Stops the whole process, no turn taken */
                     else
                     {
-                        trap_skipped = TRUE;
                         continue;
                     }
                 }

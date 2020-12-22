@@ -46,6 +46,10 @@ boolean
 has_generic_player_action_tile(action)
 enum action_tile_types action;
 {
+    if (action > 0)
+    {
+        /* Do nothing at the moment */
+    }
     return TRUE;
 }
 
@@ -198,14 +202,14 @@ uchar* tilemapflags;
                 }
                 else if (process_style == 1)
                 {
-                    int glyph_offset = (spset < MAX_ACTION_TILES) ? get_monster_action_glyph_offset(spset, 0) : spset == MAX_ACTION_TILES ? GLYPH_STATUE_OFF : GLYPH_BODY_OFF; // mon_glyph_offset_array[spset];
+                    int male_glyph_offset = (spset < MAX_ACTION_TILES) ? get_monster_action_glyph_offset(spset, 0) : spset == MAX_ACTION_TILES ? GLYPH_STATUE_OFF : GLYPH_BODY_OFF; // mon_glyph_offset_array[spset];
                     int female_glyph_offset = (spset < MAX_ACTION_TILES) ? get_monster_action_glyph_offset(spset, 1) : spset == MAX_ACTION_TILES ? GLYPH_FEMALE_STATUE_OFF : GLYPH_FEMALE_BODY_OFF;  //female_mon_glyph_offset_array[spset];
 
                     if (gender == 0)
                     {
-                        tilemaparray[i + glyph_offset] = tile_count;
+                        tilemaparray[i + male_glyph_offset] = tile_count;
                         if(spset == MAX_ACTION_TILES || spset == MAX_ACTION_TILES + 1)
-                            tilemapflags[i + glyph_offset] |= fullsizedflag;
+                            tilemapflags[i + male_glyph_offset] |= fullsizedflag;
 
                         if (spset == ACTION_TILE_NO_ACTION)
                         {
@@ -280,10 +284,12 @@ uchar* tilemapflags;
 
 #define NUM_BASE_TILE_DIRS 3 /* Up, left, up-left */
 
+#if 0
     const char* missile_direction_name_array[NUM_MISSILE_DIRS] = {
             "top-left", "top-center", "top-right",
             "middle-left",  "middle-right",
             "bottom-left", "bottom-center", "bottom-right" };
+#endif
 
     const char* base_missile_direction_name_array[NUM_BASE_TILE_DIRS] = {
             "top-center", "middle-left",  "top-left" };
@@ -762,9 +768,10 @@ uchar* tilemapflags;
 
                     /* Write generic corpse and statue tiles */
                     if (j == 0 &&
-                        (tsd->corpse_tile_style != 1 && i == CORPSE)
-                        || (!tsd->statue_tile_style && i == STATUE)
+                         ((tsd->corpse_tile_style != 1 && i == CORPSE)
+                          || (!tsd->statue_tile_style && i == STATUE)
                         )
+                       )
                     {
                         for (int gender = 0; gender <= 1; gender++)
                         {
@@ -943,7 +950,7 @@ uchar* tilemapflags;
     {
         tile_section_name = (spset == 0 ? "cmap" : "broken-cmap");
         int base_glyph_offset = (spset == 0 ? GLYPH_CMAP_OFF : GLYPH_BROKEN_CMAP_OFF);
-        int base_variation_glyph_offset = (spset == 0 ? GLYPH_CMAP_VARIATION_OFF : GLYPH_BROKEN_CMAP_VARIATION_OFF);
+        //int base_variation_glyph_offset = (spset == 0 ? GLYPH_CMAP_VARIATION_OFF : GLYPH_BROKEN_CMAP_VARIATION_OFF);
 
         for (int tileset_cmap_idx = 0; tileset_cmap_idx < MAX_CMAP_TYPES; tileset_cmap_idx++)
         {
@@ -1156,6 +1163,7 @@ uchar* tilemapflags;
 #define NUM_ZAP_BASE_TILES 18
 /* If updating, also update ZAP_INDEX_WITH_FIRST_TILE from tiledata.h */
 
+#if 0
             const char* zap_direction_name_array[NUM_ZAP_CHARS] = {
                 "up", "left", "up-left", "up-right",
                 "down", "right", "down-right", "down-left",
@@ -1172,6 +1180,7 @@ uchar* tilemapflags;
                 "leading-edge-up", "leading-edge-right", "leading-edge-down", "leading-edge-left",
                 "trailing-edge-up", "trailing-edge-right", "trailing-edge-down", "trailing-edge-left",
             };
+#endif
 
             const char* zap_template_tile_name_array[ZAP_TEMPLATE_WIDTH * ZAP_TEMPLATE_HEIGHT] = {
                 "leading-edge-up", "leading-edge-left", "left", "trailing-edge-left", "back-bounce-left",
@@ -1369,16 +1378,16 @@ uchar* tilemapflags;
             {
                 for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
                 {
-                    int role_as_monster = roles[roleidx].monsternum;
+                    //int role_as_monster = roles[roleidx].monsternum;
                     for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
                     {
                         for (int gender = 0; gender <= 1; gender++)
                         {
                             for (int alignment = -1; alignment <= 1; alignment++)
                             {
-                                for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                                for (int glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
                                 {
-                                    int player_glyph = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, level) + player_glyph_offset;
+                                    int player_glyph = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, glevel) + player_glyph_offset;
                                     tilemaparray[player_glyph] = get_monster_action_glyph_offset(spset, gender); // tilemaparray[role_as_monster + ((gender == 0) ? player_as_mon_glyph_offset_array[spset] : player_as_female_mon_glyph_offset_array[spset])];
                                 }
                             }
@@ -1438,9 +1447,9 @@ uchar* tilemapflags;
                                         for (int idx = 0; idx < 5; idx++)
                                         {
                                             enum action_tile_types action = action_array[idx];
-                                            if (!has_generic_player_action_tile(idx))
+                                            if (!has_generic_player_action_tile(action))
                                             {
-                                                int player_glyph2 = get_player_action_glyph_offset(idx);
+                                                int player_glyph2 = get_player_action_glyph_offset(action);
                                                 tilemaparray[player_glyph2] = tile_count;
                                             }
                                         }
@@ -1480,15 +1489,15 @@ uchar* tilemapflags;
                         for (int alignment = -1; alignment <= 1; alignment++)
                         {
                             const char* align_name = (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral" : alignment == 1 ? "lawful" : "unspecified");
-                            for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                            for (int glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
                             {
-                                if (!player_has_action_tile(spset, roleidx, raceidx, gender, alignment + 1, level))
+                                if (!player_has_action_tile(spset, roleidx, raceidx, gender, alignment + 1, glevel))
                                     continue;
 
                                 if (process_style == 0)
                                 {
-                                    Sprintf(buf, "%s,%s,%s,%s,%s,%s,level-%d", tile_section_name, set_name, role_name, race_name, gender_name, align_name, level);
-                                    int pl_enl = get_player_enlargement(spset, roleidx, raceidx, gender, alignment + 1, level);
+                                    Sprintf(buf, "%s,%s,%s,%s,%s,%s,level-%d", tile_section_name, set_name, role_name, race_name, gender_name, align_name, glevel);
+                                    int pl_enl = get_player_enlargement(spset, roleidx, raceidx, gender, alignment + 1, glevel);
                                     if (pl_enl > 0)
                                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[pl_enl].width_in_tiles, enlargements[pl_enl].height_in_tiles, enlargements[pl_enl].main_tile_x_coordinate);
                                     else
@@ -1498,7 +1507,7 @@ uchar* tilemapflags;
                                 }
                                 else if (process_style == 1)
                                 {
-                                    int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, level);
+                                    int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, glevel);
                                     int player_glyph = player_glyph_index + player_glyph_offset;
                                     tilemaparray[player_glyph] = tile_count;
 
@@ -1506,7 +1515,7 @@ uchar* tilemapflags;
                                     {
                                         for (enum action_tile_types action = ACTION_TILE_ATTACK; action < MAX_ACTION_TILES; action++)
                                         {
-                                            if (!player_has_action_tile(action, roleidx, raceidx, gender, alignment + 1, level))
+                                            if (!player_has_action_tile(action, roleidx, raceidx, gender, alignment + 1, glevel))
                                             {
                                                 int player_glyph2 = player_glyph_index + get_player_action_glyph_offset(action);
                                                 tilemaparray[player_glyph2] = tile_count;
@@ -1519,7 +1528,7 @@ uchar* tilemapflags;
                                         for (int idx = 0; idx < 5; idx++)
                                         {
                                             enum action_tile_types action = action_array[idx];
-                                            if (!player_has_action_tile(action, roleidx, raceidx, gender, alignment + 1, level))
+                                            if (!player_has_action_tile(action, roleidx, raceidx, gender, alignment + 1, glevel))
                                             {
                                                 int player_glyph2 = player_glyph_index + get_player_action_glyph_offset(action);
                                                 tilemaparray[player_glyph2] = tile_count;
@@ -1532,7 +1541,7 @@ uchar* tilemapflags;
                                         for (int idx = 0; idx < 3; idx++)
                                         {
                                             enum action_tile_types action = action_array[idx];
-                                            if (!player_has_action_tile(action, roleidx, raceidx, gender, alignment + 1, level))
+                                            if (!player_has_action_tile(action, roleidx, raceidx, gender, alignment + 1, glevel))
                                             {
                                                 int player_glyph2 = player_glyph_index + get_player_action_glyph_offset(action);
                                                 tilemaparray[player_glyph2] = tile_count;
@@ -2396,12 +2405,12 @@ uchar* tilemapflags;
                 {
                     for (int alignment = -1; alignment <= 1; alignment++)
                     {
-                        for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                        for (int glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
                         {
-                            int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, level);
+                            int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, glevel);
                             for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                             {
-                                int anim_idx = get_player_animation(action, roleidx, raceidx, gender, alignment + 1, level);
+                                int anim_idx = get_player_animation(action, roleidx, raceidx, gender, alignment + 1, glevel);
                                 if (anim_idx)
                                 {
                                     int player_glyph = player_glyph_index + get_player_action_glyph_offset(action);
@@ -2663,12 +2672,12 @@ uchar* tilemapflags;
                 {
                     for (int alignment = -1; alignment <= 1; alignment++)
                     {
-                        for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                        for (int glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
                         {
-                            int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, level);
+                            int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, glevel);
                             for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                             {
-                                int enlargement_idx = get_player_enlargement(action, roleidx, raceidx, gender, alignment, level);
+                                int enlargement_idx = get_player_enlargement(action, roleidx, raceidx, gender, alignment, glevel);
                                 if (enlargement_idx)
                                 {
                                     int player_glyph = player_glyph_index + get_player_action_glyph_offset(action);

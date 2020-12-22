@@ -3,13 +3,14 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include <math.h>
 
 STATIC_DCL boolean FDECL(mon_is_gecko, (struct monst *));
 STATIC_DCL int FDECL(domonnoise, (struct monst *));
 STATIC_DCL boolean NDECL(speak_check);
 STATIC_DCL boolean NDECL(yell_check);
 STATIC_DCL boolean FDECL(m_speak_check, (struct monst*));
-STATIC_DCL boolean FDECL(m_general_talk_check, (struct monst*, char*));
+STATIC_DCL boolean FDECL(m_general_talk_check, (struct monst*, const char*));
 STATIC_DCL int NDECL(dochat);
 STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
@@ -73,8 +74,8 @@ STATIC_DCL int FDECL(do_chat_npc_blessed_recharge, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
-STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int, char*));
-STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, int, char*));
+STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int, const char*));
+STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, int, const char*));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
@@ -1493,7 +1494,7 @@ struct monst* mtmp;
 STATIC_OVL boolean
 m_general_talk_check(mtmp, nomoodstr)
 struct monst* mtmp;
-char* nomoodstr;
+const char* nomoodstr;
 {
 	if (!nomoodstr || !mtmp)
 		return 0;
@@ -2847,7 +2848,7 @@ struct monst* mtmp;
 			Sprintf(shopbuf, "this %s", shoptypename(eshkp->shoptype));
 			Sprintf(eos(ansbuf), " I run %s.", shopbuf);
 		}
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 		mtmp->u_know_mname = 1;
 	}
 	else if (mtmp->ispriest || msound == MS_PRIEST)
@@ -2859,32 +2860,32 @@ struct monst* mtmp;
 		}
 		else
 			Sprintf(ansbuf, "I am %s.", mon_nam(mtmp));
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 	}
 	else if (mtmp->mnum == PM_ORACLE || msound == MS_ORACLE)
 	{
 		Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 		mtmp->u_know_mname = 1;
 
 		Sprintf(ansbuf, "I am the Oracle of Delphi.");
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 	}
 	else if (msound == MS_ARREST)
 	{
 		if(!is_peaceful(mtmp))
 		{
 			Sprintf(ansbuf, "Hah, I'm the DDPD officer who is going to arrest you, scum!");
-			verbalize(ansbuf);
+			verbalize("%s", ansbuf);
 		}
 		else
 		{
 			Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
-			verbalize(ansbuf);
+			verbalize("%s", ansbuf);
 			mtmp->u_know_mname = 1;
 
 			Sprintf(ansbuf, "I work for the DDPD.");
-			verbalize(ansbuf);
+			verbalize("%s", ansbuf);
 		}
 	}
 	else if (is_watch(mtmp->data))
@@ -2896,7 +2897,7 @@ struct monst* mtmp;
 			else
 				Sprintf(ansbuf, "The question is who are you, scum?");
 
-			verbalize(ansbuf);
+			verbalize("%s", ansbuf);
 		}
 		else
 		{
@@ -2906,13 +2907,13 @@ struct monst* mtmp;
 				Sprintf(ansbuf, "I am a local %s.", mon_monster_name(mtmp));
 
 			mtmp->u_know_mname = 1;
-			verbalize(ansbuf);
+			verbalize("%s", ansbuf);
 		}
 	}
 	else if (mtmp->m_id == quest_status.leader_m_id && msound > MS_ANIMAL)
 	{
 		Sprintf(ansbuf, "I am %s, your quest leader.", mon_nam(mtmp));
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 
 	}
 	else if (mtmp->issmith)
@@ -2923,7 +2924,7 @@ struct monst* mtmp;
 			Sprintf(ansbuf, "I am a local smith.");
 
 		mtmp->u_know_mname = 1;
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 	}
 	else if (mtmp->isnpc && has_enpc(mtmp))
 	{
@@ -2933,7 +2934,7 @@ struct monst* mtmp;
 			Sprintf(ansbuf, "I am a local %s.", npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name);
 
 		mtmp->u_know_mname = 1;
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 	}
 	else if (msound == MS_GUARDIAN)
 	{
@@ -2949,17 +2950,17 @@ struct monst* mtmp;
 		else
 			Sprintf(ansbuf, "I am %sa quest guardian.", namebuf);
 
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 	}
 	else if (msound == MS_NEMESIS)
 	{
 		Sprintf(ansbuf, "I am %s, your quest nemesis. Tremble before me!", mon_nam(mtmp));
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 	}
 	else if (has_mname(mtmp))
 	{
 		Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 		mtmp->u_know_mname = 1;
 	}
 	else if (is_mname_proper_name(mtmp->data))
@@ -2970,12 +2971,12 @@ struct monst* mtmp;
 			Sprintf(titlebuf, ", %s", mtmp->data->mtitle);
 
 		Sprintf(ansbuf, "I am %s%s.", mon_monster_name(mtmp), titlebuf);
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 	}
 	else
 	{
 		Sprintf(ansbuf, "My name is none of your business.");
-		verbalize(ansbuf);
+		verbalize("%s", ansbuf);
 	}
 
 	return 1;
@@ -3016,7 +3017,7 @@ struct monst* mtmp;
 			pline("%s answers: \"Yes, here's a piece of advice for you:\"", Monnam(mtmp));
 
 		/* Tell a rumor */
-		verbalize(rumor);
+		verbalize("%s", rumor);
 		mtmp->told_rumor = TRUE;
 	}
 
@@ -3227,7 +3228,6 @@ struct monst* mtmp;
 
 	int omx = mtmp->mx;
 	int omy = mtmp->my;
-	int udist = distu(omx, omy);
 
 	if (mtmp->mextra && mtmp->mextra->edog)
 		edog = mtmp->mextra->edog;
@@ -3244,7 +3244,6 @@ struct monst* mtmp;
 			if (carryamt > 0 && !obj->cursed && !mtmp->issummoned && !mtmp->ispartymember
 				&& could_reach_item(mtmp, obj->ox, obj->oy))
 			{
-				struct monst* shkp = (struct monst*)0;
 				shkpreaction = shk_chastise_pet(mtmp, obj, FALSE);
 
 				if (!shkpreaction)
@@ -3417,7 +3416,7 @@ struct monst* mtmp;
 			int tasty = dogfood(mtmp, otmp);
 			boolean foodmakesfriendly = (!is_tame(mtmp) && befriend_with_obj(mtmp->data, otmp) && tasty <= ACCFOOD);
 			boolean takesfood = (!is_tame(mtmp) && tasty <= (carnivorous(mtmp->data) ? MANFOOD : ACCFOOD));
-			boolean willeat = (is_tame(mtmp) && tasty < (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD) || foodmakesfriendly || takesfood);
+			boolean willeat = (is_tame(mtmp) && (tasty < (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD) || foodmakesfriendly || takesfood));
 
 			if (cnt < otmp->quan)
 			{
@@ -3575,7 +3574,6 @@ struct monst* mtmp;
 {
 	if (!mtmp)
 		return 0;
-	boolean issaddle = FALSE;
 	struct obj* otmp = (struct obj*)0;
 
 	otmp = which_armor(mtmp, W_ARMC);
@@ -3610,7 +3608,6 @@ struct monst* mtmp;
 	if (!otmp)
 	{
 		otmp = which_armor(mtmp, W_SADDLE);
-		issaddle = TRUE;
 	}
 
 	if (!otmp)
@@ -3764,12 +3761,12 @@ struct monst* mtmp;
 	if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) )
 	{
 		pline("%s first %s, but then says:", Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
-		Sprintf(qbuf, "\"You shall pay me a tribute of %d %s.\" Do you yield to this demand?", join_cost, currency(join_cost));
+		Sprintf(qbuf, "\"You shall pay me a tribute of %ld %s.\" Do you yield to this demand?", join_cost, currency(join_cost));
 	}
 	else
 	{
 		pline("%s looks at you and replies:", Monnam(mtmp));
-		Sprintf(qbuf, "\"I can join you for a fee of %d %s. Acceptable?\"", join_cost, currency(join_cost));
+		Sprintf(qbuf, "\"I can join you for a fee of %ld %s. Acceptable?\"", join_cost, currency(join_cost));
 	}
 	switch (ynq(qbuf)) {
 	default:
@@ -3836,12 +3833,12 @@ struct monst* mtmp;
 	if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10))
 	{
 		pline("%s first %s, but then says:", Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
-		Sprintf(qbuf, "\"You shall pay me %d %s for learning my statistics.\" Do you accept?", explain_cost, currency(explain_cost));
+		Sprintf(qbuf, "\"You shall pay me %ld %s for learning my statistics.\" Do you accept?", explain_cost, currency(explain_cost));
 	}
 	else
 	{
 		pline("%s looks at you and then says:", Monnam(mtmp));
-		Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %d %s. Do you accept?\"", explain_cost, currency(explain_cost));
+		Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %ld %s. Do you accept?\"", explain_cost, currency(explain_cost));
 	}
 	switch (ynq(qbuf))
 	{
@@ -3874,7 +3871,6 @@ struct monst* mtmp;
 	if (!m_general_talk_check(mtmp, "doing any business") || !m_speak_check(mtmp))
 		return 0;
 
-	int result = 0;
 	int sellable_item_count = 0;
 
 	menu_item* pick_list = (menu_item*)0;
@@ -3898,7 +3894,7 @@ struct monst* mtmp;
 	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
 	{
 		if (otmp->oclass > ILLOBJ_CLASS)
-			classhasitems[otmp->oclass] = TRUE;
+			classhasitems[(int)otmp->oclass] = TRUE;
 	}
 
 	for(int i = 0; i < MAX_OBJECT_CLASSES; i++)
@@ -4014,11 +4010,8 @@ struct monst* mtmp;
 					default:
 					case 'q':
 						doforbreak = TRUE;
+						break;
 					case 'n':
-						if (buy_count > 0)
-							result = 1;
-						else
-							result = 0;
 						break;
 					case 'y':
 						if (umoney < (long)item_cost) {
@@ -4037,11 +4030,6 @@ struct monst* mtmp;
 					if (umoney < (long)item_cost) {
 						play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 						You("don't have enough money for %s!", cxname(item_to_buy));
-						if (buy_count > 0)
-							result = 1;
-						else
-							result = 0;
-
 						break; /* for break */
 					}
 					bought = TRUE;
@@ -4055,7 +4043,7 @@ struct monst* mtmp;
 					else
 						Sprintf(qbuf, "took %s for no charge.", cxname(item_to_buy));
 
-					You(qbuf);
+					You("%s", qbuf);
 
 					money2mon(mtmp, (long)item_cost);
 					obj_extract_self(item_to_buy);
@@ -4096,7 +4084,6 @@ STATIC_OVL int
 do_chat_pet_takeitems(mtmp)
 struct monst* mtmp;
 {
-	int result = 0;
 	int item_count = 0;
 
 	menu_item* pick_list = (menu_item*)0;
@@ -4944,7 +4931,7 @@ struct monst* mtmp;
 		return 0;
 
 
-	Sprintf(qbuf, "\"You need to pay %d %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+	Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
 
 	switch (ynq(qbuf)) {
 	default:
@@ -5174,7 +5161,6 @@ struct monst* mtmp;
 
 	long umoney = money_cnt(invent);
 	int u_pay;
-	int service_action = 0;
 	char qbuf[QBUFSZ];
 
 	if (!m_general_talk_check(mtmp, "opening a branch portal") || !m_speak_check(mtmp))
@@ -5201,7 +5187,6 @@ struct monst* mtmp;
 			return 0;
 		}
 		u_pay = service_cost;
-		service_action = 1;
 		break;
 	}
 
@@ -5279,7 +5264,7 @@ struct monst* mtmp;
 		return 0;
 
 
-	Sprintf(qbuf, "\"You need to pay %d %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+	Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
 
 	switch (ynq(qbuf)) {
 	default:
@@ -5368,7 +5353,7 @@ struct monst* mtmp;
 	else if (!m_speak_check(mtmp))
 		return 0;
 	else if (mvitals[PM_WATCHMAN].died > 0 || mvitals[PM_WATCH_CAPTAIN].died > 0) {
-		pline("You will hang for your crimes, scum!", Monnam(mtmp));
+		verbalize("You will hang for your crimes, scum!");
 		return 0;
 	}
 	else if (mtmp->mhp < (3 * mtmp->mhpmax) / 4) {
@@ -5376,7 +5361,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"We can drop the case for %d %s. Agree?\"", reconcile_cost, currency(reconcile_cost));
+	Sprintf(qbuf, "\"We can drop the case for %ld %s. Agree?\"", reconcile_cost, currency(reconcile_cost));
 
 	switch (ynq(qbuf)) {
 	default:
@@ -5475,6 +5460,11 @@ struct monst* mtmp;
 
 	result = sell_to_npc(getobj(&sell_types[i], "sell", 3, ""), mtmp);
 
+	if (result)
+	{
+		/* Do nothing at the moment */
+	}
+
 	return 1;
 }
 
@@ -5490,6 +5480,11 @@ struct monst* mtmp;
 
 	result = sell_to_npc(getobj(&sell_types[i], "sell", 3, ""), mtmp);
 
+	if (result)
+	{
+		/* Do nothing at the moment */
+	}
+
 	return 1;
 }
 
@@ -5504,6 +5499,11 @@ struct monst* mtmp;
 	int result, i = (invent) ? 0 : (SIZE(sell_types) - 1);
 
 	result = sell_to_npc(getobj(&sell_types[i], "sell", 3, ""), mtmp);
+
+	if (result)
+	{
+		/* Do nothing at the moment */
+	}
 
 	return 1;
 }
@@ -5715,12 +5715,10 @@ struct monst* mtmp;
 	{
 		char qbuf[BUFSZ], qsfx[BUFSZ];
 		boolean short_funds = (offer > shkmoney), one;
-		char sell_response = 0;
 
 		if (short_funds)
 			offer = shkmoney;
 
-		long yourc = 0L;
 		Sprintf(qbuf, "%s offers%s %ld gold piece%s for %s ",
 			Monnam(mtmp), short_funds ? " only" : "", offer,
 			plur(offer),
@@ -5734,7 +5732,7 @@ struct monst* mtmp;
 		switch (yn_query(qbuf))
 		{
 		case 'n':
-			pline(Never_mind);
+			pline1(Never_mind);
 			break;
 		case 'y':
 			if (release_item_from_hero_inventory(obj))
@@ -5897,12 +5895,11 @@ spell_service_query(mtmp, service_spell_id, buc, service_verb, service_cost, no_
 struct monst* mtmp;
 int service_spell_id, buc, service_cost;
 const char* service_verb;
-char* no_mood_string;
+const char* no_mood_string;
 {
 
 	long umoney = money_cnt(invent);
 	int u_pay;
-	int service_action = 0;
 	char qbuf[QBUFSZ];
 
 	if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
@@ -5929,7 +5926,6 @@ char* no_mood_string;
 			return 0;
 		}
 		u_pay = service_cost;
-		service_action = 1;
 		break;
 	}
 
@@ -5963,12 +5959,11 @@ struct monst* mtmp;
 int service_cost;
 int (*service_func)(struct monst*);
 const char* service_verb;
-char* no_mood_string;
+const char* no_mood_string;
 {
 
 	long umoney = money_cnt(invent);
 	int u_pay;
-	int service_action = 0;
 	char qbuf[QBUFSZ];
 
 	if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
@@ -5995,7 +5990,6 @@ char* no_mood_string;
 			return 0;
 		}
 		u_pay = service_cost;
-		service_action = 1;
 		break;
 	}
 
@@ -6021,7 +6015,7 @@ struct monst* mtmp;
 
 	pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
 
-	if (otmp && !otmp->oclass == ARMOR_CLASS)
+	if (otmp && otmp->oclass != ARMOR_CLASS)
 	{
 		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, this is not an armor I can repair.");

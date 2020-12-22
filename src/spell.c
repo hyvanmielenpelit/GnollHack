@@ -140,7 +140,7 @@ struct obj *bp;
             pline("As you read the book, it %s in your %s!", explodes,
                   body_part(FACE));
             dmg = 2 * rnd(10) + 5;
-            losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding rune", KILLED_BY_AN);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding rune", KILLED_BY_AN);
         }
         return TRUE;
     default:
@@ -1124,11 +1124,11 @@ int objid;
 }
 
 int
-spell_skill_mana_cost_multiplier(level)
-int level;
+spell_skill_mana_cost_multiplier(slevel)
+int slevel;
 {
 	int multiplier = 100;
-	switch (level)
+	switch (slevel)
 	{
 	case P_BASIC:
 		multiplier = 85;
@@ -1196,7 +1196,7 @@ int spell;
 	putstr(datawin, 0, txt);
 
 	/* One empty line here */
-	Sprintf(buf, "");
+	strcpy(buf, "");
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -1618,7 +1618,6 @@ boolean atme;
 	int chance, n; // , intell;
     int otyp, skill, role_skill, res = 0;
     boolean confused = (Confusion != 0);
-    boolean physical_damage = FALSE;
     struct obj *pseudo;
 	boolean effect_happened = 1;
     //coord cc;
@@ -1873,8 +1872,6 @@ boolean atme;
 	case SPE_MAGIC_ARROW:
 	case SPE_ARROW_OF_DIANA:
 	case SPE_FORCE_BOLT:
-        physical_damage = TRUE;
-    /*FALLTHRU*/
 	case SPE_FIREBALL:
 	case SPE_FIRE_STORM:
 	case SPE_METEOR_SWARM:
@@ -3097,7 +3094,6 @@ int *spell_no;
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
 			char shortenedname[BUFSZ] = "";
 			char fullname[BUFSZ] = "";
-			char categorybuf[BUFSZ] = "";
 
 			if (!iflags.menu_tab_sep) {
 				Sprintf(fmt, "%%-%ds  %%c  %%s", namelength);
@@ -3783,14 +3779,14 @@ int spell;
 	//(void)mungspaces(answerbuf);
 	if (answerchar == '\033' || answerchar == 'q')
 	{
-		pline(Never_mind);
+		pline1(Never_mind);
 		return 0;
 	}
 	else if (answerchar == '\0' || answerchar == '-')
 	{
 		spellhotkey(spell) = 0;
 		Sprintf(buf, "Hotkey for \'%s\' cleared.", spellname(spell));
-		pline(buf);
+		pline1(buf);
 	}
 	else if (answerchar >= '0' && answerchar <= '9')
 	{
@@ -3814,7 +3810,7 @@ int spell;
 
 		spellhotkey(spell) = selected_hotkey;
 		Sprintf(buf, "Hotkey for \'%s\' set to \'%c\'.", spellname(spell), answerchar);
-		pline(buf);
+		pline1(buf);
 	}
 	else
 		pline("Illegal hotkey.");
@@ -3847,7 +3843,7 @@ int spell;
 		}
 		char buf[BUFSZ] = "";
 		Sprintf(buf, "You removed \'%s\' from your memory permanently.", spellnamebuf);
-		pline(buf);
+		pline1(buf);
 	}
 
 	return 0;
@@ -3991,10 +3987,10 @@ int spell;
     return chance;
 }
 
-int spell_skill_success_bonus(level)
-int level;
+int spell_skill_success_bonus(slevel)
+int slevel;
 {
-	return 80 * max(0, level - 1);
+	return 80 * max(0, slevel - 1);
 }
 
 STATIC_OVL
@@ -4202,16 +4198,14 @@ int spell;
 	for(int j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
 	{
 		matcnt++;
-		char buf[BUFSZ], buf3[BUFSZ], buf4[BUFSZ] = "";
+		struct obj* otmp = (struct obj*)0;
+		char buf[BUFSZ], buf3[BUFSZ], buf5[BUFSZ];
 		struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
 		strcpy(buf3, domatcompname(mc));
 
 		Sprintf(buf, "You need %s%s. ",
 			buf3, ((mc->flags & MATCOMP_NOT_SPENT) ? " as a catalyst" : " as a component"));
 
-
-		struct obj* otmp = (struct obj*) 0;
-		char buf5[BUFSZ];
 		Sprintf(buf5, "prepare \"%s\" with", spellname);
 
 		char allclassletters[MAX_MATCOMP_ALTERNATIVES + 1];
@@ -4262,9 +4256,10 @@ int spell;
 		//Check quantity
 		if (otmp->quan < mc->amount)
 		{
-			pline("%s requires %s as %s, but you have only %d.",
+			pline("%s requires %s%s, but you have only %ld.",
 				spellname,
 				buf3,
+				((mc->flags & MATCOMP_NOT_SPENT) ? " as a catalyst" : " as a component"),
 				otmp->quan);
 			return 0;
 		}
@@ -4356,11 +4351,12 @@ int spell;
 				|| objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED
 				|| objects[otmp->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED
 				|| otmp->owornmask & ~W_WEAPON
-				|| otmp->oclass == WEAPON_CLASS && (otmp->owornmask & W_WEAPON))
+				|| (otmp->oclass == WEAPON_CLASS && (otmp->owornmask & W_WEAPON)))
 				usecomps = FALSE;
 		}
+
 		//Use them all up
-		if (!(mc->flags & MATCOMP_NOT_SPENT) && !obj_resists(otmp,0,100) && otmp->oclass == objects[mc->objectid[0]].oc_class)
+		if (usecomps /*!(mc->flags & MATCOMP_NOT_SPENT) && !obj_resists(otmp,0,100) && otmp->oclass == objects[mc->objectid[0]].oc_class */)
 		{
 			int used_amount = (failure ? 1 : selected_multiplier) * mc->amount;
 			if(otmp->quan >= used_amount)
@@ -4411,7 +4407,7 @@ int spell;
 		//Success
 		int addedamount = spells_gained_per_mixing * selected_multiplier;
 		spellamount(spell) += addedamount;
-		You("successfully prepared the material components.", spellname);
+		You("successfully prepared the material components.");
 		if (addedamount == 1)
 			You("now have one more casting of \"%s\" prepared.", spellname);
 		else

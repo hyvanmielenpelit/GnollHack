@@ -3823,7 +3823,7 @@ struct sp_coder *coder;
             break;
         case SP_O_V_KEY_TYPE:
             if (OV_typ(parm) == SPOVAR_OBJ) {
-                char objclass = SP_OBJ_CLASS(OV_i(parm));
+                //char objclass = SP_OBJ_CLASS(OV_i(parm));
                 int otyp = SP_OBJ_TYP(OV_i(parm));
 
                 if (otyp > STRANGE_OBJECT && otyp < NUM_OBJECTS) {
@@ -4228,7 +4228,7 @@ struct sp_coder *coder;
         tmproom.mtype = NON_PM;
         if (OV_typ(mtype) == SPOVAR_MONST)
         {
-            char monclass = SP_MONST_CLASS(OV_i(mtype));
+            //char monclass = SP_MONST_CLASS(OV_i(mtype));
             int monid = SP_MONST_PM(OV_i(mtype));
 
             if (monid >= LOW_PM && monid < NUM_MONSTERS)
@@ -4422,7 +4422,7 @@ struct sp_coder *coder;
     tmpaltar.mtype = NON_PM;
     if (OV_typ(mtype) == SPOVAR_MONST) 
     {
-        char monclass = SP_MONST_CLASS(OV_i(mtype));
+        //char monclass = SP_MONST_CLASS(OV_i(mtype));
         int monid = SP_MONST_PM(OV_i(mtype));
 
         if (monid >= LOW_PM && monid < NUM_MONSTERS) 
@@ -5376,7 +5376,7 @@ struct sp_coder *coder;
             break;
         case SP_D_V_KEY_TYPE:
             if (OV_typ(parm) == SPOVAR_OBJ) {
-                char objclass = SP_OBJ_CLASS(OV_i(parm));
+                //char objclass = SP_OBJ_CLASS(OV_i(parm));
                 int otyp = SP_OBJ_TYP(OV_i(parm));
 
                 if (otyp > STRANGE_OBJECT && otyp < NUM_OBJECTS) {
@@ -5508,7 +5508,7 @@ struct sp_coder* coder;
     tmpanvil.mtype = NON_PM;
     if (OV_typ(mtype) == SPOVAR_MONST)
     {
-        char monclass = SP_MONST_CLASS(OV_i(mtype));
+        //char monclass = SP_MONST_CLASS(OV_i(mtype));
         int monid = SP_MONST_PM(OV_i(mtype));
 
         if (monid >= LOW_PM && monid < NUM_MONSTERS)
@@ -5584,7 +5584,7 @@ struct sp_coder* coder;
     tmpnpc.mtype = NON_PM;
     if (OV_typ(mtype) == SPOVAR_MONST)
     {
-        char monclass = SP_MONST_CLASS(OV_i(mtype));
+        //char monclass = SP_MONST_CLASS(OV_i(mtype));
         int monid = SP_MONST_PM(OV_i(mtype));
 
         if (monid >= LOW_PM && monid < NUM_MONSTERS)
@@ -6001,7 +6001,7 @@ struct sp_coder *coder;
 
     if (OV_typ(mtype) == SPOVAR_MONST)
     {
-        char monclass = SP_MONST_CLASS(OV_i(mtype));
+        //char monclass = SP_MONST_CLASS(OV_i(mtype));
         int monid = SP_MONST_PM(OV_i(mtype));
 
         if (monid >= LOW_PM && monid < NUM_MONSTERS)
@@ -6359,7 +6359,7 @@ struct sp_coder *coder;
     }
 
     tmpd.secret = (OV_i(secret) || secret_door_var);
-    tmpd.mask = (unsigned short)OV_i(mask);
+    tmpd.mask = (short)OV_i(mask);
     tmpd.pos = OV_i(pos);
     tmpd.wall = OV_i(wall);
 

@@ -411,7 +411,7 @@ typedef struct {
 
 typedef struct {
     xchar wall, pos, secret;
-    unsigned short mask;
+    short mask;
     unsigned short dflags;
     int key_otyp, key_special_quality, subtype;
 } room_door;

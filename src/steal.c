@@ -825,7 +825,8 @@ boolean is_mon_dead;
 			&& !is_quest_artifact(otmp)
 			)
 		{
-			int omx = mtmp->mx, omy = mtmp->my;
+            omx = mtmp->mx;
+            omy = mtmp->my;
 			boolean update_mon = FALSE;
 
 			if (otmp->owornmask)

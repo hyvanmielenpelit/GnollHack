@@ -1443,7 +1443,8 @@ nh_timeout()
 			case MAGICAL_STONESKIN:
 				if (!Magical_stoneskin)
 					Your("skin feels less stone-like than before.");
-			case BISECTION_RESISTANCE:
+                break;
+            case BISECTION_RESISTANCE:
 				if (!Bisection_resistance)
 					Your("skin feels less steel-like than before.");
 				break;
@@ -1813,6 +1814,11 @@ boolean wakeup_msg;
     stop_occupation();
 	incr_itimeout(&HSleeping, abs(how_long));
 	context.botl = context.botlx = 1;
+
+    if (wakeup_msg)
+    {
+        /* Do nothing at the moment */
+    }
 
 #if 0
     nomul(how_long);
@@ -2842,11 +2848,16 @@ unsummon_monster(arg, timeout)
 anything* arg;
 long timeout;
 {
-	xchar x = 0, y = 0;
 	struct monst* mon = arg->a_monst;
 
 	if (!mon || (mon && DEADMONSTER(mon)))
 		return;
+
+    if (timeout)
+    {
+        /* Do nothing */
+    }
+
 
     play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
     if (canseemon(mon)) {
@@ -2907,6 +2918,11 @@ restart_time(arg, timeout)
 anything* arg;
 long timeout;
 {
+    if (!arg && timeout)
+    {
+        /* Do nothing */
+    }
+
 	context.time_stopped = FALSE;
 	pline("The flow of time seems faster again.");
 }
@@ -3909,6 +3925,11 @@ make_sound_object(arg, timeout)
 anything* arg;
 long timeout;
 {
+    if (!arg && timeout)
+    {
+        /* Do nothing */
+    }
+
     return;
 }
 

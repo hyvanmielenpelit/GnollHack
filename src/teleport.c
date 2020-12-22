@@ -406,7 +406,7 @@ boolean allow_drag, keep_effect_glyphs;
     flush_screen(0);
     play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, nux, nuy, TRUE);
     special_effect_wait_until_action(1);
-    teleds(nux, nuy, FALSE, TRUE);
+    teleds(nux, nuy, allow_drag, keep_effect_glyphs);
     special_effect_wait_until_end(0);
     special_effect_wait_until_end(1);
 }
@@ -436,7 +436,7 @@ boolean allow_drag, keep_effect_glyphs;
     play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, u.ux, u.uy, FALSE);
     play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
     special_effect_wait_until_action(0);
-    boolean res = safe_teleds(allow_drag, allow_drag);
+    boolean res = safe_teleds(allow_drag, keep_effect_glyphs);
     play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, u.ux, u.uy, FALSE);
     special_effect_wait_until_action(1);
     special_effect_wait_until_end(0);
