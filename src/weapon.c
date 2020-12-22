@@ -43,9 +43,10 @@ STATIC_DCL void FDECL(skill_advance, (int));
 #define PN_THROWN_WEAPON (-23)
 #define PN_MARTIAL_ARTS (-24)
 #define PN_WANDS (-25)
+#define NUM_PN_CATEGORIES (26)
 
 
-STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
+NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     0, DAGGER, AXE, PICK_AXE, PN_SWORD, PN_BLUDGEONING_WEAPON, FLAIL,
     QUARTERSTAFF, PN_POLEARM, SPEAR, BOW, SLING,
     CROSSBOW, PN_THROWN_WEAPON, PN_WHIP,
@@ -56,7 +57,7 @@ STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
 };
 
 /* note: entry [0] isn't used */
-STATIC_VAR NEARDATA const char *const odd_skill_names[] = {
+NEARDATA const char *const odd_skill_names[NUM_PN_CATEGORIES] = {
     "no skill", "bare handed combat", /* use barehands_or_martial[] instead */
     "two weapon combat", "riding", "polearm", "saber", "hammer", "whip",
     "arcane spell", "clerical spell", "healing spell", "divination spell", "abjuration spell",
@@ -65,7 +66,7 @@ STATIC_VAR NEARDATA const char *const odd_skill_names[] = {
 	"bludgeoning weapon", "thrown weapon", "martial arts", "wand",
 };
 
-STATIC_VAR NEARDATA const char* const odd_skill_names_plural[] = {
+NEARDATA const char* const odd_skill_names_plural[NUM_PN_CATEGORIES] = {
 	"no skill", "bare handed combat", /* use barehands_or_martial[] instead */
 	"two weapon combat", "riding", "polearms", "sabers", "hammers", "whips",
 	"arcane spells", "clerical spells", "healing spells", "divination spells", "abjuration spells",
