@@ -1479,6 +1479,7 @@ E int FDECL(mapglyph, (struct layer_info, int *, int *, unsigned long*, int, int
 E char *FDECL(encglyph, (int));
 E char *FDECL(decode_mixed, (char *, const char *));
 E void FDECL(genl_putmixed, (winid, int, const char *));
+E int FDECL(zap_glyph_to_cmap, (int));
 
 /* ### mcastu.c ### */
 

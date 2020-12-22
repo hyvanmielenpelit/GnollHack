@@ -237,22 +237,7 @@ unsigned long *ospecial;
     else if ((offset = (glyph - GLYPH_ZAP_OFF)) >= 0)
     { /* zap beam */
         /* see zapdir_to_glyph() in display.c */
-        int zapnum = offset / NUM_ZAP_CHARS;
-        int zidx = (offset % NUM_ZAP_CHARS);
-        if (zapnum == ZAP_SPECIAL_DIGGING || zapnum == ZAP_SPECIAL_EVAPORATION)
-            idx = S_digbeam + SYM_OFF_P;
-        else if (zapnum == ZAP_SPECIAL_FLASHED_LIGHT)
-            idx = S_flashbeam + SYM_OFF_P;
-        else if (zidx < 2 * NUM_ASCII_ZAP_CHARS)
-            idx = (S_vbeam + (zidx % NUM_ASCII_ZAP_CHARS)) + SYM_OFF_P;
-        else if (zidx < 3 * NUM_ASCII_ZAP_CHARS)
-            idx = ((zidx % 2) == 0 ? S_rslant : S_lslant) + SYM_OFF_P;
-        else  if (zidx < 4 * NUM_ASCII_ZAP_CHARS)
-            idx = ((zidx % 2) == 1 ? S_rslant : S_lslant) + SYM_OFF_P;
-        else if (zidx < 6 * NUM_ASCII_ZAP_CHARS)
-            idx = (S_vbeam + (zidx % NUM_ASCII_ZAP_CHARS)) + SYM_OFF_P;
-        else
-            idx = S_unexplored; /* Illegal */
+        idx = zap_glyph_to_cmap(glyph);
 
         if (has_rogue_color && iflags.use_color)
             color = NO_COLOR;
@@ -626,5 +611,35 @@ const char *str;
     /* now send it to the normal putstr */
     putstr(window, attr, decode_mixed(buf, str));
 }
+
+int
+zap_glyph_to_cmap(glyph)
+int glyph;
+{
+    if (!glyph_is_zap(glyph))
+        return 0;
+
+    int idx = 0;
+    int offset = glyph - GLYPH_ZAP_OFF;
+    int zapnum = offset / NUM_ZAP_CHARS;
+    int zidx = (offset % NUM_ZAP_CHARS);
+    if (zapnum == ZAP_SPECIAL_DIGGING || zapnum == ZAP_SPECIAL_EVAPORATION)
+        idx = S_digbeam + SYM_OFF_P;
+    else if (zapnum == ZAP_SPECIAL_FLASHED_LIGHT)
+        idx = S_flashbeam + SYM_OFF_P;
+    else if (zidx < 2 * NUM_ASCII_ZAP_CHARS)
+        idx = (S_vbeam + (zidx % NUM_ASCII_ZAP_CHARS)) + SYM_OFF_P;
+    else if (zidx < 3 * NUM_ASCII_ZAP_CHARS)
+        idx = ((zidx % 2) == 0 ? S_rslant : S_lslant) + SYM_OFF_P;
+    else  if (zidx < 4 * NUM_ASCII_ZAP_CHARS)
+        idx = ((zidx % 2) == 1 ? S_rslant : S_lslant) + SYM_OFF_P;
+    else if (zidx < 6 * NUM_ASCII_ZAP_CHARS)
+        idx = (S_vbeam + (zidx % NUM_ASCII_ZAP_CHARS)) + SYM_OFF_P;
+    else
+        idx = S_unexplored; /* Illegal */
+
+    return idx;
+}
+
 
 /*mapglyph.c*/

@@ -196,7 +196,7 @@ VA_DECL(const char *, line)
     if (vision_full_recalc)
         vision_recalc(0);
     if (u.ux)
-        flush_screen(1);
+        flush_screen(0);
 
     putmesg(line);
 

@@ -455,17 +455,23 @@ curses_convert_glyph(int ch, int glyph)
         return ch;
     }
 
+    boolean is_cmap_or_var = glyph_is_cmap_or_cmap_variation(glyph);
+    boolean is_zap = glyph_is_zap(glyph);
+
     /* Save some processing time by returning if the glyph represents
        an object that we don't have custom characters for */
-    if (!glyph_is_cmap_or_cmap_variation(glyph)) {
+    if (!is_cmap_or_var && !is_zap) {
         return ch;
     }
 
-    symbol = generic_glyph_to_cmap(glyph);
+    if(is_cmap_or_var)
+        symbol = generic_glyph_to_cmap(glyph);
+    else
+        symbol = zap_glyph_to_cmap(glyph);
 
     /* If user selected a custom character for this object, don't
        override this. */
-    if (((glyph_is_cmap_or_cmap_variation(glyph)) && (ch != showsyms[symbol]))) {
+    if (((is_cmap_or_var || is_zap) && (ch != showsyms[symbol]))) {
         return ch;
     }
 
