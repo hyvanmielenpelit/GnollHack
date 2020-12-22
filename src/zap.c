@@ -7119,7 +7119,7 @@ boolean stop_at_first_hit_object;
             if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->oeroded || obj->oeroded2))
             {                
                 show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->oeroded, obj->oeroded2, get_missile_flags(obj));
-                flush_screen(0);
+                flush_screen(1);
             }
 
             adjusted_delay_output();
@@ -8323,7 +8323,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					}
                     tmp_at(sx, sy);
                     force_redraw_at(sx, sy);
-                    flush_screen(0);
+                    flush_screen(1);
                 }
                 range -= 2;
             } 

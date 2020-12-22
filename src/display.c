@@ -1545,7 +1545,7 @@ int x, y;
         tglyph->sidx = 0;
         tglyph->style = x;
         tglyph->glyph = y;
-        flush_screen(0); /* flush buffered glyphs */
+        flush_screen(1); /* flush buffered glyphs */
         return;
 
     case DISP_FREEMEM: /* in case game ends with tmp_at() in progress */
@@ -1588,7 +1588,7 @@ int x, y;
                     newsym(tglyph->saved[i].x, tglyph->saved[i].y);
                     show_glyph_on_layer_and_ascii(tglyph->saved[i - 1].x,
                                tglyph->saved[i - 1].y, tglyph->glyph, LAYER_MISSILE);
-                    flush_screen(0);   /* make sure it shows up */
+                    flush_screen(1);   /* make sure it shows up */
                     adjusted_delay_output();
                 }
                 tglyph->sidx = 1;
@@ -1640,7 +1640,7 @@ int x, y;
             }
             if (!cansee(x, y) && tglyph->style != DISP_ALWAYS)
             {
-                flush_screen(0);                 /* make sure it shows up */
+                flush_screen(1);                 /* make sure it shows up */
                 break;
             }
             tglyph->saved[0].x = x;
@@ -1650,7 +1650,7 @@ int x, y;
 
         show_glyph_on_layer_and_ascii(x, y, tglyph->glyph, 
             tglyph->style == DISP_BEAM || tglyph->style == DISP_BEAM_DIG || tglyph->style == DISP_ALL ? LAYER_ZAP : LAYER_MISSILE); /* show it */
-        flush_screen(0);                 /* make sure it shows up */
+        flush_screen(1);                 /* make sure it shows up */
         break;
     } /* end case */
 }

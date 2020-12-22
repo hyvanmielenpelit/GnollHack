@@ -2586,7 +2586,7 @@ boolean pick;
     {
         mtmp->mundetected = mtmp->msleeping = 0;
         newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_SHOW_DROPPING_PIERCER);
-        flush_screen(0);
+        flush_screen(1);
         switch (mtmp->data->mlet)
         {
         case S_PIERCER:

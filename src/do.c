@@ -5617,13 +5617,13 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
 		struct layer_info layers = layers_at(u.ux, u.uy);
 		show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
 		force_redraw_at(u.ux, u.uy);
-		flush_screen(0);
+		flush_screen(1);
 		play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 0, u.ux, u.uy, TRUE);
 		play_sfx_sound(SFX_LEVEL_TELEPORT);
 		special_effect_wait_until_action(0);
 		show_glyph_on_layer(u.ux, u.uy, layers.layer_glyphs[LAYER_MONSTER], LAYER_MONSTER);
 		force_redraw_at(u.ux, u.uy);
-		flush_screen(0);
+		flush_screen(1);
 		special_effect_wait_until_end(0);
 	}
 

@@ -1211,7 +1211,7 @@ boolean silently;
 	if (res)
 	{
 		newsym(mtmp->mx, mtmp->my);
-		flush_screen(0); /* Make sure you see the change immediately */
+		flush_screen(1); /* Make sure you see the change immediately */
 	}
 
 	return res;

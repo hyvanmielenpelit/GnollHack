@@ -4924,7 +4924,7 @@ unsigned long simple_wait_multiplier;
 			context.u_action_animation_counter_on = TRUE;
 			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			force_redraw_at(u.ux, u.uy);
-			flush_screen(0);
+			flush_screen(1);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
 			if (animations[anim].sound_play_frame <= -1)
 			{
@@ -4950,7 +4950,7 @@ unsigned long simple_wait_multiplier;
 			for (int frame = 0; frame < framenum; frame++)
 			{
 				force_redraw_at(u.ux, u.uy);
-				flush_screen(0);
+				flush_screen(1);
 				delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
 				//context.u_action_animation_counter += animations[anim].intervals_between_frames;
 			}
@@ -5053,7 +5053,7 @@ unsigned long simple_wait_multiplier;
 			context.m_action_animation_counter_on = TRUE;
 			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			force_redraw_at(mtmp->mx, mtmp->my);
-			flush_screen(0);
+			flush_screen(1);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
 			if (animations[anim].sound_play_frame <= -1)
 			{
@@ -5079,7 +5079,7 @@ unsigned long simple_wait_multiplier;
 			for (int frame = 0; frame < framenum; frame++)
 			{
 				force_redraw_at(mtmp->mx, mtmp->my);
-				flush_screen(0);
+				flush_screen(1);
 				delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
 				//context.u_action_animation_counter += animations[anim].intervals_between_frames;
 			}
@@ -5088,7 +5088,7 @@ unsigned long simple_wait_multiplier;
 		else
 		{
 			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
-			flush_screen(0);
+			flush_screen(1);
 			context.m_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
 			//adjusted_delay_output();
 			if (mtmp->action != ACTION_TILE_NO_ACTION)

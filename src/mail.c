@@ -340,7 +340,7 @@ register int tx, ty; /* destination of mail daemon */
             remove_monster(fx, fy);
         place_monster(md, fx, fy); /* put md down */
         newsym(fx, fy);            /* see it */
-        flush_screen(0);           /* make sure md shows up */
+        flush_screen(1);           /* make sure md shows up */
         adjusted_delay_output();            /* wait a little bit */
 
         /* Remove md from the dungeon.  Restore original mon, if necessary. */
@@ -376,7 +376,7 @@ register int tx, ty; /* destination of mail daemon */
 
     place_monster(md, fx, fy); /* place at final spot */
     newsym(fx, fy);
-    flush_screen(0);
+    flush_screen(1);
     adjusted_delay_output(); /* wait a little bit */
 
     return TRUE;

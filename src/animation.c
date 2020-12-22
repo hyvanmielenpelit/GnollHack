@@ -4606,7 +4606,7 @@ boolean force_visibility;
             context.special_effect_animation_counter[spef_number] = 0L;
             context.special_effect_animation_counter_on[spef_number] = TRUE;
             force_redraw_at(x, y);
-            flush_screen(0);
+            flush_screen(1);
 
             int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
             if (animations[anim].sound_play_frame <= -1)
@@ -4634,7 +4634,7 @@ boolean force_visibility;
         else
         {
             force_redraw_at(x, y);
-            flush_screen(0);
+            flush_screen(1);
             if(special_effects[sp_effect].frames_to_sound > 0)
                 delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * special_effects[sp_effect].frames_to_sound);
             context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * special_effects[sp_effect].frames_from_sound_to_action;
@@ -4673,7 +4673,7 @@ int spef_number;
     {
         show_glyph_on_layer(context.spef_action_animation_x[spef_number], context.spef_action_animation_y[spef_number], NO_GLYPH, context.spef_action_animation_layer[spef_number]);
         force_redraw_at(context.spef_action_animation_x[spef_number], context.spef_action_animation_y[spef_number]);
-        flush_screen(0);
+        flush_screen(1);
     }
     context.force_allow_keyboard_commands = FALSE;
 }

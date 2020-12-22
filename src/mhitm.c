@@ -286,7 +286,7 @@ boolean quietly;
               is_rider(pa) ? "the" : mhis(magr));
     newsym(fx, fy);  /* see it */
     newsym(tx, ty);  /*   all happen */
-    flush_screen(0); /* make sure it shows up */
+    flush_screen(1); /* make sure it shows up */
 
     return MM_HIT;
 }

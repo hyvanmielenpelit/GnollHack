@@ -3922,7 +3922,7 @@ boolean has_effects;
         special_effect_wait_until_action(0);
         show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
         force_redraw_at(mtmp->mx, mtmp->my);
-        flush_screen(0);
+        flush_screen(1);
     }
 
     unstuck(mtmp);

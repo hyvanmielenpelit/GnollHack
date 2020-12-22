@@ -388,7 +388,7 @@ boolean allow_drag, keep_effect_glyphs;
         show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_MONSTER_EFFECT], LAYER_MONSTER_EFFECT);
         show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_BACKGROUND_EFFECT], LAYER_BACKGROUND_EFFECT);
         force_redraw_at(x, y);
-        flush_screen(0);
+        flush_screen(1);
     }
 }
 
@@ -403,7 +403,7 @@ boolean allow_drag, keep_effect_glyphs;
     special_effect_wait_until_action(0);
     show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
     force_redraw_at(u.ux, u.uy);
-    flush_screen(0);
+    flush_screen(1);
     play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, nux, nuy, TRUE);
     special_effect_wait_until_action(1);
     teleds(nux, nuy, allow_drag, keep_effect_glyphs);
@@ -1159,7 +1159,7 @@ boolean iscontrolled;
             display_nhwindow(WIN_MESSAGE, FALSE);
             show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
             force_redraw_at(u.ux, u.uy);
-            flush_screen(0);
+            flush_screen(1);
             You("cease to exist.");
             if (invent)
                 Your("possessions land on the %s with a thud.",
@@ -1394,7 +1394,7 @@ int x, y;
     special_effect_wait_until_action(0);
     show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
     force_redraw_at(x, y);
-    flush_screen(0);
+    flush_screen(1);
     special_effect_wait_until_end(0);
 }
 
@@ -1645,7 +1645,7 @@ boolean suppress_impossible;
         special_effect_wait_until_action(0);
         show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
         force_redraw_at(mtmp->mx, mtmp->my);
-        flush_screen(0);
+        flush_screen(1);
     }
     res = rloc(mtmp, suppress_impossible);
     if (isok(mtmp->mx, mtmp->my) && canspotmon(mtmp))
@@ -1693,7 +1693,7 @@ register int x, y;
         special_effect_wait_until_action(0);
         show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
         force_redraw_at(mtmp->mx, mtmp->my);
-        flush_screen(0);
+        flush_screen(1);
     }
     rloc_to(mtmp, x, y);
     if (isok(mtmp->mx, mtmp->my) && canspotmon(mtmp))

@@ -2858,7 +2858,7 @@ int level_limit;
 
         if (mmflags & MM_ANIMATION_WAIT_UNTIL_END)
         {
-            flush_screen(0);
+            flush_screen(1);
             special_effect_wait_until_end(context.makemon_spef_idx);
         }
     }
