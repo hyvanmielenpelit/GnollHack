@@ -1310,7 +1310,6 @@ boolean silently;
 		return;
 
     int unseen = 0;
-    uchar mask = 0;
     struct obj *otmp = (struct obj*)0;
 	boolean was_tame = is_tame(mon);
 
@@ -1765,9 +1764,9 @@ boolean creation;
 	/* Accessories */
 	if (has_neck(mon->data))
 		wears_amulet = m_dowear_type(mon, W_AMUL, creation, FALSE);
-	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed)))
+	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || (!(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed))))
 		wears_ringr = m_dowear_type(mon, W_RINGR, creation, FALSE);
-	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed)))
+	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || (!(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed))))
 		wears_ringl = m_dowear_type(mon, W_RINGL, creation, FALSE);
 	if (!nolimbs(mon->data))
 		wears_misc1 = m_dowear_type(mon, W_MISC, creation, FALSE);
@@ -1839,7 +1838,6 @@ boolean creation;
 boolean racialexception;
 {
     struct obj *old, *best, *obj;
-    int m_delay = 0;
     int unseen = !canseemon(mon);
     boolean autocurse;
     char nambuf[BUFSZ];

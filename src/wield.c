@@ -581,7 +581,6 @@ long mask;
 	register struct obj *oldwep, * oldswap;
 	register struct obj *wep = (struct obj*)0, *altwep = (struct obj*)0, *swapwep = (struct obj*)0, *altswapwep = (struct obj*)0;
 	int result = 0;
-	struct obj* oldweapon = uwep;
 
 	if (mask == W_WEP)
 	{
@@ -687,6 +686,11 @@ long mask;
 		}
 	}
 #endif
+
+	if (result)
+	{
+		/* Do nothing */
+	}
 
 	//Do not take a turn
 	return 0; // result;
@@ -908,6 +912,10 @@ doswapweapon()
 		}
 	}
 #endif
+	if (result || result2)
+	{
+		/* Do nothing */
+	}
 
 	//Do not take a turn
 	return 0; // result;

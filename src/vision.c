@@ -159,7 +159,6 @@ register struct rm *lev;
 {
     struct obj *obj;
     struct monst *mon;
-    boolean doorsubtyp = lev->subtyp >= 0 && lev->subtyp < MAX_DOOR_SUBTYPES ? lev->subtyp : 0;
 
     /* Features that block . . */
     if (IS_ROCK(lev->typ) || lev->typ == TREE

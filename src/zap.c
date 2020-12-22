@@ -28,7 +28,7 @@ STATIC_DCL void FDECL(polyuse, (struct obj *, int, int));
 STATIC_DCL void FDECL(create_polymon, (struct obj *, int));
 STATIC_DCL int FDECL(stone_to_flesh_obj, (struct obj *));
 STATIC_DCL boolean FDECL(zap_updown, (struct obj *));
-STATIC_DCL void FDECL(zhitu, (int, struct obj*, struct monst*, int, int, int, const char *, XCHAR_P, XCHAR_P));
+STATIC_DCL void FDECL(zhitu, (int, struct obj*, struct monst*, int, int, int, const char *));
 STATIC_DCL void FDECL(revive_egg, (struct obj *));
 STATIC_DCL boolean FDECL(zap_steed, (struct obj *));
 STATIC_DCL void FDECL(skiprange, (int, int *, int *));
@@ -167,7 +167,6 @@ struct monst* origmonst;
 
         if (origmonst == &youmonst)
         {
-            int skill_level = P_SKILL_LEVEL(skill);
             res += -2 * (max(0, P_SKILL_LEVEL(skill) - 1) - 1);
         }
         else
@@ -205,7 +204,7 @@ struct monst* origmonst;
     int save_adj = get_saving_throw_adjustment(otmp, origmonst);
 
     boolean surpress_noeffect_message = FALSE;
-	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, 0, 0, NOTELL);
+	//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, 0, 0, NOTELL);
     boolean magic_cancellation_success = check_magic_cancellation_success(mtmp, save_adj);
 	if (u.uswallow && mtmp == u.ustuck)
         reveal_invis = FALSE;
@@ -1459,9 +1458,9 @@ struct monst* mtmp;
             if (i > 0)
                 bit = bit << i;
 
-            unsigned long flags = j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : j == 3 ? mtmp->data->mflags3 : j == 4 ? mtmp->data->mflags4 : mtmp->data->mflags5;
+            unsigned long mflags = j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : j == 3 ? mtmp->data->mflags3 : j == 4 ? mtmp->data->mflags4 : mtmp->data->mflags5;
 
-            if (flags & bit)
+            if (mflags & bit)
             {
                 char descbuf[BUFSZ] = "";
                 strcpy(descbuf, get_mflag_description(bit, FALSE, j));
@@ -1759,6 +1758,11 @@ int locflags; /* Unused */
 {
     if (!reg)
         return FALSE;
+
+    if (locflags)
+    {
+        /* Unused */
+    }
 
     if (hero_inside(reg))
     {
@@ -2265,22 +2269,22 @@ int montype;
 			}
 			else if (artifact_has_flag(uitem, AF_DMONS))
 			{
-				if (montype == artilist[uitem->oartifact].mtype)
+				if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
 					return TRUE;
 			}
 			else if (artifact_has_flag(uitem, AF_DCLAS))
 			{
-				if (mons[montype].mlet == artilist[uitem->oartifact].mtype)
+				if ((unsigned long)mons[montype].mlet == artilist[uitem->oartifact].mtype)
 					return TRUE;
 			}
 			else if (artifact_has_flag(uitem, AF_DALIGN))
 			{
-				if (sgn(mons[montype].maligntyp) != sgn(artilist[uitem->oartifact].mtype))
+				if (sgn((int)mons[montype].maligntyp) != artilist[uitem->oartifact].alignment)
 					return TRUE;
 			}
 			else
 			{
-				if (montype == artilist[uitem->oartifact].mtype)
+				if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
 					return TRUE;
 			}
 		}
@@ -2323,9 +2327,14 @@ int montype;
 						if (mons[montype].mflags4 & objects[otyp].oc_target_permissions)
 							return TRUE;
 					}
-					else
+                    else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M5_FLAG)
+                    {
+                        if (mons[montype].mflags5 & objects[otyp].oc_target_permissions)
+                            return TRUE;
+                    }
+                    else
 					{
-						if (mons[montype].mlet == objects[otyp].oc_target_permissions)
+						if ((unsigned long)mons[montype].mlet == objects[otyp].oc_target_permissions)
 							return TRUE;
 					}
 				}
@@ -2361,22 +2370,22 @@ int montype;
 			}
 			else if (artifact_has_flag(uitem, AF_DMONS))
 			{
-				if (montype == artilist[uitem->oartifact].mtype)
+				if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
 					return TRUE;
 			}
 			else if (artifact_has_flag(uitem, AF_DCLAS))
 			{
-				if (mons[montype].mlet == artilist[uitem->oartifact].mtype)
+				if ((unsigned long)mons[montype].mlet == artilist[uitem->oartifact].mtype)
 					return TRUE;
 			}
 			else if (artifact_has_flag(uitem, AF_DALIGN))
 			{
-				if (sgn(mons[montype].maligntyp) != sgn(artilist[uitem->oartifact].mtype))
+				if (sgn(mons[montype].maligntyp) != artilist[uitem->oartifact].alignment)
 					return TRUE;
 			}
 			else
 			{
-				if (montype == artilist[uitem->oartifact].mtype)
+				if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
 					return TRUE;
 			}
 		}
@@ -2420,9 +2429,14 @@ int montype;
 						if (mons[montype].mflags4 & objects[otyp].oc_target_permissions)
 							return TRUE;
 					}
-					else
+                    else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M5_FLAG)
+                    {
+                        if (mons[montype].mflags5 & objects[otyp].oc_target_permissions)
+                            return TRUE;
+                    }
+                    else
 					{
-						if (mons[montype].mlet == objects[otyp].oc_target_permissions)
+						if ((unsigned long)mons[montype].mlet == objects[otyp].oc_target_permissions)
 							return TRUE;
 					}
 				}
@@ -2491,7 +2505,6 @@ void
 cancel_item(obj)
 register struct obj *obj;
 {
-    boolean u_ring = (obj == uleft || obj == uright);
     int otyp = obj->otyp;
 
     if (objects[otyp].oc_magic
@@ -2849,6 +2862,8 @@ struct obj *obj;
     delobj(obj);
 }
 
+#if 0
+// OBSOLETE -- JG
 /* classes of items whose current charge count carries over across polymorph
  */
 static const char charged_objs[] = { WAND_CLASS, 
@@ -2856,6 +2871,8 @@ static const char charged_objs[] = { WAND_CLASS,
 
 static const char enchanted_objs[] = { WEAPON_CLASS, ARMOR_CLASS,
 									 '\0' };
+#endif
+
 /*
  * Polymorph the object to the given object ID.  If the ID is STRANGE_OBJECT
  * then pick random object from the source's class (this is the standard
@@ -3121,7 +3138,7 @@ int id;
          */
         if (old_wornmask) 
         {
-            boolean was_twohanded = bimanual(obj), was_twoweap = u.twoweap;
+            boolean was_twohanded = bimanual(obj);
 
             /* wearslot() returns a mask which might have multiple bits set;
                narrow that down to the bit(s) currently in use */
@@ -3336,6 +3353,11 @@ struct monst* origmonst;
 {
     int res = 0; /* affected object by default */
     boolean learn_it = FALSE, maybelearnit;
+
+    if (!origmonst)
+    {
+        /* Do nothing, this is ok */
+    }
 
     /* fundamental: a wand effect hitting itself doesn't do anything;
        otherwise we need to guard against accessing otmp after something
@@ -3926,7 +3948,7 @@ register struct obj *obj;
 	case SPE_CREATE_FOOD:
 	{
 		known = TRUE;
-		struct obj* otmp = mksobj(FOOD_RATION, FALSE, FALSE, FALSE);
+		otmp = mksobj(FOOD_RATION, FALSE, FALSE, FALSE);
 		(void)hold_another_object(otmp, "You drop %s!",
 			doname(otmp), "A delicious food ration forms before you!");
 		break;
@@ -3972,7 +3994,7 @@ register struct obj *obj;
 			break;
 		}
 
-		struct obj* otmp = mksobj(fruittype, FALSE, FALSE, FALSE);
+		otmp = mksobj(fruittype, FALSE, FALSE, FALSE);
 		otmp->quan = fruitnum;
 		otmp->owt = weight(otmp);
 		(void)hold_another_object(otmp, "You drop %s!",
@@ -3982,7 +4004,7 @@ register struct obj *obj;
 	case SPE_CREATE_WATER:
 	{
 		known = TRUE;
-		struct obj* otmp = mksobj(POT_WATER, FALSE, FALSE, FALSE);
+		otmp = mksobj(POT_WATER, FALSE, FALSE, FALSE);
 		(void)hold_another_object(otmp, "You drop %s!",
 			doname(otmp), "A potion appears out of thin air!");
 		break;
@@ -4542,7 +4564,7 @@ register struct obj *obj;
 					setmangry(mon, FALSE);
 
 				/* No other saving throw */
-				boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mon, (struct obj*)0,  u.ulevel, 0, 0, NOTELL);
+				//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mon, (struct obj*)0,  u.ulevel, 0, 0, NOTELL);
 
 				if (resists_disint(mon))
 				{
@@ -4934,11 +4956,10 @@ boolean ordinary;
         return 0.0;
 
     boolean learn_it = FALSE;
-    int meteors = 0;
 	int basedmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
 	int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
 	double damage = 0;
-	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
+	//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
     int save_adj = get_saving_throw_adjustment(obj, obj->oclass == SPBOOK_CLASS && !(obj->speflags & SPEFLAGS_SERVICED_SPELL) ? &youmonst : (struct monst*)0);
 
     switch (obj->otyp) {
@@ -5228,7 +5249,7 @@ boolean ordinary;
     case WAN_SPEED_MONSTER:
 	{
 		damage = 0;
-		boolean was_fast = Fast;
+		//boolean was_fast = Fast;
 		boolean was_very_fast = Very_fast;
 		incr_itimeout(&HVery_fast, 150 + rnd(50));
 		context.botl = context.botlx = TRUE;
@@ -5739,7 +5760,7 @@ struct attack *mattk;
     int dtyp = 20 + typ - 1;      /* breath by hero */
     const char *fltxt = flash_types[dtyp]; /* blast of <something> */
 
-    zhitu(dtyp, (struct obj*)0, &youmonst, mattk->damn, mattk->damd, mattk->damp, fltxt, u.ux, u.uy);
+    zhitu(dtyp, (struct obj*)0, &youmonst, mattk->damn, mattk->damd, mattk->damp, fltxt);
 }
 
 /* light damages hero in gremlin form */
@@ -6012,6 +6033,11 @@ int duration;
 
 	if (!obj)
 		return FALSE;
+
+    if (allow_cancel_kill || self_cancel)
+    {
+        /* Do nothing, these seem obsolete */
+    }
 
 	if (youdefend)
 	{
@@ -6546,7 +6572,6 @@ int otyp;
     if (!mtmp || objects[otyp].oc_class != WAND_CLASS)
         return 0;
 
-    int hit_bon = 0;
     int skill_level = P_ISRESTRICTED;
 
     if (mtmp == &youmonst)
@@ -7264,9 +7289,9 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     register int abstype = abs(type) % 10;
     boolean sho_shieldeff = FALSE;
     boolean sho_hit_eff = TRUE;
-    boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
+    //boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
 	int duration = 0;
-	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mon, origobj, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, 0, NOTELL);
+	//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mon, origobj, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, 0, NOTELL);
 
     *ootmp = (struct obj *) 0;
 	struct obj* otmp2;
@@ -7483,13 +7508,12 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 }
 
 STATIC_OVL void
-zhitu(type, origobj, origmonst, dmgdice, dicesize, dmgplus, fltxt, sx, sy)
+zhitu(type, origobj, origmonst, dmgdice, dicesize, dmgplus, fltxt)
 int type;
 struct obj* origobj;
 struct monst* origmonst;
 int dmgdice, dicesize, dmgplus;
 const char *fltxt;
-xchar sx, sy;
 {
     int dam = 0, abstyp = abs(type);
     enum hit_tile_types hit_tile = HIT_GENERAL;
@@ -8123,7 +8147,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
                         {
                             long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution - 1;
-                            if (abs(diff) <= 3) /* Extra check that something else is not going on */
+                            if (abs((int)diff) <= 3) /* Extra check that something else is not going on */
                             {
                                 context.zap_animation_counter[prev_anim_counter_idx] -= diff;
                             }
@@ -8339,7 +8363,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 else 
                 {
                     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, sx, sy);
-                    zhitu(type, origobj ? &origobj_copy : 0, origmonst, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
+                    zhitu(type, origobj ? &origobj_copy : 0, origmonst, dmgdice, dicesize, dmgplus, fltxt);
                 }
             } 
 			else if (!Blind) 
@@ -8352,16 +8376,21 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_WHIZZES_BY_YOU, sx, sy);
                 Your("%s tingles.", body_part(ARM));
             }
-			if (abstype == ZT_LIGHTNING)
-				if (origobj)
-				{
-					int dam = 0;
-					dam = d(objects[origobj_copy.otyp].oc_spell_dmg_dice, objects[origobj_copy.otyp].oc_spell_dmg_diesize) + objects[origobj_copy.otyp].oc_spell_dmg_plus; //Same for small and big
-						
-					(void) flashburn((long)dam);
-				}
-				else
-	                (void) flashburn((long) d(dmgdice, dicesize) + dmgplus);
+
+            /* Special effects */
+            if (abstype == ZT_LIGHTNING)
+            {
+                if (origobj)
+                {
+                    int dam = 0;
+                    dam = d(objects[origobj_copy.otyp].oc_spell_dmg_dice, objects[origobj_copy.otyp].oc_spell_dmg_diesize) + objects[origobj_copy.otyp].oc_spell_dmg_plus; //Same for small and big
+
+                    (void)flashburn((long)dam);
+                }
+                else
+                    (void)flashburn((long)d(dmgdice, dicesize) + dmgplus);
+            }
+
             stop_occupation();
             nomul(0);
             context.global_newsym_flags = 0UL;
@@ -9953,7 +9982,7 @@ struct obj* spell_otmp;
 struct monst*
 summoncreature(spl_otyp, monst_id, message_fmt, mmflags, capitalize, markassummoned, disregardstrength, disregardhealth, bloodlust, pacifist, faithful)
 int spl_otyp, monst_id;
-char* message_fmt; //input the summoning message with one %s, which is for the monster name
+const char* message_fmt; //input the summoning message with one %s, which is for the monster name
 int mmflags;
 boolean capitalize; //capitalize the monster name for %s
 boolean markassummoned; //mark as summoned
@@ -10055,7 +10084,7 @@ int spl_otyp;
 		if (!Blind)
 			pline("%s steps through the portal!", Monnam(mon));
 		else
-			You_feel("a deeply evil presence near you!", Monnam(mon));
+			You_feel("a deeply evil presence near you!");
 	}
 	else
 	{
@@ -10104,7 +10133,7 @@ int spl_otyp;
         if (!Blind)
             pline("%s descends from the heavens!", Monnam(mon));
         else
-            You_feel("a %s presence near you!", Monnam(mon), is_peaceful(mon) ? "benevolent" : "threatening");
+            You_feel("a %s presence near you!", is_peaceful(mon) ? "benevolent" : "threatening");
     }
     else
     {

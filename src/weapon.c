@@ -269,7 +269,6 @@ struct obj* launcher;
         return 0;
 
     int baserange = 0, range = 0;
-    boolean thrown = TRUE;
     boolean is_you = (mtmp == &youmonst);
     boolean curstr = M_ACURRSTR(mtmp);
 
@@ -284,7 +283,6 @@ struct obj* launcher;
         range = baserange;
     }
     else if (ammo && is_ammo(ammo) && launcher && ammo_and_launcher(ammo, launcher)) {
-        thrown = FALSE;
         if (objects[launcher->otyp].oc_range > 0)
             baserange = objects[launcher->otyp].oc_range;										/* Crossbows and the like */
         else if (objects[launcher->otyp].oc_range < 0)
@@ -357,6 +355,11 @@ int use_type; // OBSOLETE: /* 0 = Melee weapon (full enchantment bonuses), 1 = t
 {
 	if (!otmp || !mon)
 		return 0;
+
+    if (use_type)
+    {
+        /* OBSOLETE */
+    }
 
 	int tmp = 0;
 	boolean Is_weapon = is_weapon(otmp);
@@ -462,6 +465,11 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
 {
 	if (!otmp || !mon)
 		return 0;
+
+    if (use_type)
+    {
+        /* OBSOLETE */
+    }
 
     int tmp = 0, otyp = otmp->otyp;
     struct permonst *ptr = mon->data;
@@ -608,6 +616,11 @@ get_critical_strike_percentage_chance(weapon, mon, mattacker)
 struct obj* weapon;
 struct monst *mon, *mattacker;
 {
+    if (!mon || !mattacker)
+    {
+        /* Do nothing, this is ok */
+    }
+
     boolean youdefend = (mon == &youmonst);
     int crit_strike_probability = !weapon ? 0 :
         objects[weapon->otyp].oc_critical_strike_percentage == CRITICAL_STRIKE_SPECIAL_PERCENTAGE_HIT_DICE_SAVES ? max(5, 100 - 5 * (youdefend ? u.ulevel : mon ? mon->m_lev : 0)) :
@@ -635,8 +648,6 @@ int basedmg;
 	boolean criticalstrikesucceeded = FALSE;
 
     int crit_strike_probability = get_critical_strike_percentage_chance(otmp, mon, mattacker);
-    int crit_strike_die_roll_threshold = crit_strike_probability / 5;
-
 
 	if ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE) && !(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_IS_DEADLY))
 	{
@@ -704,17 +715,20 @@ struct monst* mattacker;
 	struct permonst* ptr = mon->data;
 
 	if ((!mattacker ? (objects[otyp].oc_power_permissions == PERMITTED_ALL) : !inappropriate_monster_character_type(mattacker, otmp))
-		&& (objects[otyp].oc_target_permissions == ALL_TARGETS && ((objects[otyp].oc_flags3 & (O3_PERMTTED_TARGET_CHAOTIC | O3_PERMTTED_TARGET_NEUTRAL | O3_PERMTTED_TARGET_LAWFUL)) == 0) || (
-		((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG) && (ptr->mflags1 & objects[otyp].oc_target_permissions))
-			|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) && (ptr->mflags2 & objects[otyp].oc_target_permissions))
-			|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
-			|| ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M4_FLAG) && (ptr->mflags4 & objects[otyp].oc_target_permissions))
-			|| (((objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG)) == 0) && (ptr->mlet == objects[otyp].oc_target_permissions))
-			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_CHAOTIC) && mon->malign < 0)
-			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL) && mon->malign == 0)
-			|| ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL) && mon->malign > 0)
-			)
-			))
+		&& ((objects[otyp].oc_target_permissions == ALL_TARGETS && ((objects[otyp].oc_flags3 & (O3_PERMTTED_TARGET_CHAOTIC | O3_PERMTTED_TARGET_NEUTRAL | O3_PERMTTED_TARGET_LAWFUL)) == 0))
+            || (
+		    ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG) && (ptr->mflags1 & objects[otyp].oc_target_permissions))
+			    || ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG) && (ptr->mflags2 & objects[otyp].oc_target_permissions))
+			    || ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
+			    || ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M4_FLAG) && (ptr->mflags4 & objects[otyp].oc_target_permissions))
+                || ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M5_FLAG) && (ptr->mflags5 & objects[otyp].oc_target_permissions))
+                || (((objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG)) == 0) && ((unsigned long)ptr->mlet == objects[otyp].oc_target_permissions))
+			    || ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_CHAOTIC) && mon->malign < 0)
+			    || ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL) && mon->malign == 0)
+			    || ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL) && mon->malign > 0)
+			    )
+		   )
+        )
 		return TRUE;
 	else
 		return FALSE;
@@ -1140,7 +1154,7 @@ register struct monst* mtmp;
 int handindex;
 {
 	register struct obj* otmp;
-	boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
+	//boolean strong = (strongmonst(mtmp->data) || mtmp->data->str >= 13);
 	boolean wearing_shield = (mtmp->worn_item_flags & W_ARMS) != 0;
 	int weaponindex = 1; //Start with second hand, if free
 
@@ -1152,7 +1166,7 @@ int handindex;
 		return MON_WEP(mtmp);
 
 	//Never select MON_WEP otherwise select weaponindex'th first suitable weapon, if none, then return 0
-	if (MON_WEP(mtmp) && objects[MON_WEP(mtmp)->otyp].oc_bimanual || wearing_shield)
+	if ((MON_WEP(mtmp) && objects[MON_WEP(mtmp)->otyp].oc_bimanual) || wearing_shield)
 		weaponindex++; //Second hand is not free, previously returned MON_WEP
 
 	//Is in hwep table, extra hands do not use two-handed weapons for simplicity (maybe too weak)
@@ -1406,8 +1420,8 @@ int
 u_ranged_strdex_to_hit_bonus()
 {
 	int sbon = 0;
-	int str = ACURR(A_STR), dex = ACURR(A_DEX);
-
+	int /*str = ACURR(A_STR),*/ dex = ACURR(A_DEX);
+    
     /* This is double the normal dexterity hit bonus, since strength does not count here */
 	sbon += dexterity_ranged_tohit_bonus(dex);
 
@@ -1872,7 +1886,7 @@ enhance_weapon_skill()
     anything any;
     winid win;
     boolean speedy = FALSE;
-	boolean firstheader = TRUE;
+	//boolean firstheader = TRUE;
 
     if (wizard && yn_query("Advance skills without practice?") == 'y')
         speedy = TRUE;
@@ -2061,7 +2075,7 @@ enhance_weapon_skill()
                     {
                         add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
                             skill_ranges[pass].name, MENU_UNSELECTED);
-                        firstheader = FALSE;
+                        //firstheader = FALSE;
                     }
                 }
                 if (P_RESTRICTED(i))

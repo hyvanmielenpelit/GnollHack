@@ -572,7 +572,7 @@ struct monst *summoner;
 {
     register struct monst *mtmp;
     register int i;
-    int castalign = (summoner ? sgn(summoner->data->maligntyp) : 0);
+    //int castalign = (summoner ? sgn(summoner->data->maligntyp) : 0);
     coord bypos;
     int count, census, summon_num, makeindex, s_cls, m_cls;
 

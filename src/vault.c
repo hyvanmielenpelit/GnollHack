@@ -750,7 +750,7 @@ register struct monst *grd;
 {
     int x, y, nx, ny, m, n;
     int dx, dy, gx = 0, gy = 0, fci;
-    uchar typ, subtyp;
+    uchar typ; // , subtyp;
     struct rm *crm;
     struct fakecorridor *fcp;
     register struct egd *egrd = EGD(grd);
@@ -929,7 +929,7 @@ register struct monst *grd;
             if ((nx == x || ny == y) && (nx != x || ny != y)
                 && isok(nx, ny)) {
                 typ = (crm = &levl[nx][ny])->typ;
-                subtyp = crm->subtyp;
+                //subtyp = crm->subtyp;
                 if (!IS_STWALL(typ) && !IS_POOL(typ)) {
                     if (in_fcorridor(grd, nx, ny))
                         goto nextnxy;
@@ -977,7 +977,7 @@ register struct monst *grd;
     while ((typ = (crm = &levl[nx][ny])->typ) != STONE) {
         /* in view of the above we must have IS_WALL(typ) or typ == POOL */
         /* must be a wall here */
-        subtyp = crm->subtyp;
+        //subtyp = crm->subtyp;
         if (isok(nx + nx - x, ny + ny - y) && !IS_POOL(typ)
             && IS_ROOM(levl[nx + nx - x][ny + ny - y].typ))
         {

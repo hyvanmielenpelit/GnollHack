@@ -3750,7 +3750,7 @@ E void NDECL(makewish);
 E void FDECL(summonitem, (struct obj*, int));
 E void FDECL(summonblackblade, (struct obj*));
 E void FDECL(summonmagearmor, (struct obj*));
-E struct monst* FDECL(summoncreature, (int, int, char *, int, boolean, boolean, boolean, boolean, boolean, boolean, boolean));
+E struct monst* FDECL(summoncreature, (int, int, const char *, int, boolean, boolean, boolean, boolean, boolean, boolean, boolean));
 E void FDECL(summondemon, (int));
 E void FDECL(summondemogorgon, (int));
 E void FDECL(summonbahamut, (int));

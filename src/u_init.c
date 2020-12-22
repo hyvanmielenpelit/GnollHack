@@ -1078,8 +1078,6 @@ u_init()
     u.nv_range = 1;
     u.xray_range = -1;
 
-	int n = 0;
-
     /*** Role-specific initializations ***/
     switch (Role_switch) {
     /* rn2(100) > 50 necessary for some choices because some
@@ -1615,7 +1613,7 @@ ini_inv(trop)
 register struct trobj *trop;
 {
     struct obj *obj;
-    int otyp, i;
+    int otyp;
 
     while (trop->trclass) {
         otyp = (int) trop->trotyp;
@@ -1732,7 +1730,7 @@ register struct trobj *trop;
                the 'if (otyp != UNDEF_TYP) { }' block above, but then
                substitutions didn't occur for randomly generated items
                (particularly food) which have racial substitutes */
-            for (i = 0; inv_subs[i].race_pm != NON_PM; ++i)
+            for (int i = 0; inv_subs[i].race_pm != NON_PM; ++i)
 				if (inv_subs[i].race_pm == urace.monsternum
 					&& otyp == inv_subs[i].item_otyp) {
 					debugpline3("ini_inv: substituting %s for %s%s",

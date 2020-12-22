@@ -271,7 +271,7 @@ int *attk_count, *role_roll_penalty;
 	int weaponskill = weapon_skill_type(weapon);
 	if (weaponskill == P_MARTIAL_ARTS)
 		weaponskill = P_BARE_HANDED_COMBAT;
-	int skill_level = P_SKILL_LEVEL(weaponskill);
+	//int skill_level = P_SKILL_LEVEL(weaponskill);
 	double skill_multiplier = 1.0;
 
 	if (Upolyd && aatyp != AT_WEAP && !weapon)
@@ -5135,16 +5135,16 @@ unsigned long extra_flags;
 
 	boolean is_you = (x == u.ux && y == u.uy);
 	unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_GENERAL)) << LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
-	unsigned long flags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
+	unsigned long hflags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
 
 	enum action_tile_types action_before = is_you ? u.action : mon->action;
-	show_extra_info(x, y, flags, damage_shown);
+	show_extra_info(x, y, hflags, damage_shown);
 	update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
 	if(mon == &youmonst)
 		u_wait_until_action();
 	else
 		m_wait_until_action();
-	//newsym_with_extra_info_and_flags(x, y, flags, damage_shown, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+	//newsym_with_extra_info_and_flags(x, y, hflags, damage_shown, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 	//flush_screen(is_you);
 	adjusted_delay_output();
 	update_m_action_core(mon, action_before, 0);
