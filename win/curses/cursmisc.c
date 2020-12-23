@@ -477,8 +477,10 @@ curses_convert_glyph(int ch, int glyph)
 
     switch (symbol) {
     case S_vwall:
+    case S_vbeam:
         return ACS_VLINE;
     case S_hwall:
+    case S_hbeam:
         return ACS_HLINE;
     case S_tlcorn:
         return ACS_ULCORNER;
