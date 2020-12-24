@@ -1685,23 +1685,34 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                             if (!full_sized_item)
                             {
+                                int used_item_height = (int)tileHeight / 2;
+                                int base_source_top_added = 0;
+                                int base_source_height_deducted = used_item_height;
+
                                 /* For all normal items, we use only lower part of the tile */
                                 if (otmp_round && has_obj_floor_tile(otmp_round) && !showing_detection)
                                 {
                                     source_top_added = 0;
+                                    if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0 && objects[otmp_round->otyp].oc_tile_floor_height < used_item_height && !showing_detection)
+                                    {
+                                        base_source_top_added += (used_item_height - objects[otmp_round->otyp].oc_tile_floor_height) / 2;
+                                        base_source_height_deducted += used_item_height - objects[otmp_round->otyp].oc_tile_floor_height;
+                                    }
                                 }
                                 else
                                 {
                                     source_top_added = (int)tileHeight / 2;
                                     if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0 && !showing_detection)
                                     {
-                                        obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / 48.0;
+                                        obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / ((double)used_item_height);
                                     }
                                 }
 
-                                source_height_deducted = (int)tileHeight / 2;
-                                dest_top_added = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
-                                dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
+                                source_top_added += base_source_top_added;
+                                source_height_deducted += base_source_height_deducted;
+
+                                dest_top_added = (int)(applicable_scaling_factor_y * ((double)((int)tileHeight - used_item_height + base_source_top_added)));
+                                dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)base_source_height_deducted));
 
                                 /* Leave a little room for monster feet if not cover object */
                                 if (base_layer == LAYER_OBJECT)
@@ -1765,9 +1776,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             double scaled_height = (obj_scaling_factor * (double)GetNHApp()->mapTile_Y / 2.0);
                             double scaled_width = (obj_scaling_factor * (double)GetNHApp()->mapTile_X);
 
-                            //if(is_object)
-                            //    dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
-                            //else
+                            if(is_object)
+                                dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
+                            else
                                 dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height) / 2.0);
 
                             dest_height_deducted += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
