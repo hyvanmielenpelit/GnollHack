@@ -5137,19 +5137,22 @@ unsigned long extra_flags;
 	unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_GENERAL)) << LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
 	unsigned long hflags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
 
-	enum action_tile_types action_before = is_you ? u.action : mon->action;
+	//enum action_tile_types action_before = is_you ? u.action : mon->action;
 	show_extra_info(x, y, hflags, damage_shown);
-	update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
+	//update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
 	if(mon == &youmonst)
 		u_wait_until_action();
 	else
 		m_wait_until_action();
 	//newsym_with_extra_info_and_flags(x, y, hflags, damage_shown, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 	//flush_screen(is_you);
+	flush_screen(1);
 	adjusted_delay_output();
-	update_m_action_core(mon, action_before, 0);
+	adjusted_delay_output();
+	adjusted_delay_output();
+	//update_m_action_core(mon, action_before, 0);
 	newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
-	flush_screen(is_you);
+	flush_screen(1);
 }
 
 void
