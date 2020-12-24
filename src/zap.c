@@ -26,7 +26,6 @@ extern boolean m_using;
 
 STATIC_DCL void FDECL(polyuse, (struct obj *, int, int));
 STATIC_DCL void FDECL(create_polymon, (struct obj *, int));
-STATIC_DCL int FDECL(stone_to_flesh_obj, (struct obj *));
 STATIC_DCL boolean FDECL(zap_updown, (struct obj *));
 STATIC_DCL void FDECL(zhitu, (int, struct obj*, struct monst*, int, int, int, const char *));
 STATIC_DCL void FDECL(revive_egg, (struct obj *));
@@ -3222,7 +3221,7 @@ int id;
 }
 
 /* stone-to-flesh spell hits and maybe transforms or animates obj */
-STATIC_OVL int
+int
 stone_to_flesh_obj(obj)
 struct obj *obj;
 {

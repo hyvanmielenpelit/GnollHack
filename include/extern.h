@@ -3764,6 +3764,7 @@ E void FDECL(disintegrate_mon, (struct monst*, int, const char*));
 E boolean FDECL(item_prevents_revival, (int));
 E boolean FDECL(item_prevents_summoning, (int));
 E int FDECL(get_displayed_object_type_from_subdir_type, (int));
+E int FDECL(stone_to_flesh_obj, (struct obj*));
 
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
 

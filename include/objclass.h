@@ -902,7 +902,7 @@ struct objclass {
 #define O4_FLOOR_TILE				0x00000004UL
 #define O4_FULL_SIZED_BITMAP		0x00000008UL
 #define O4_DRAWN_IN_FRONT		    0x00000010UL
-/* free bit */
+#define O4_ALLOWS_DIPPING_INTO		0x00000020UL
 /* free bit */
 /* free bit */
 #define O4_CAN_HAVE_EXCEPTIONALITY	0x00000100UL

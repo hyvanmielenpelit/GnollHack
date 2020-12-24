@@ -2129,8 +2129,9 @@ const char* headertext;
 {
     register struct obj *otmp;
     register char ilet = 0;
-    char buf[BUFSZ], qbuf[QBUFSZ];
+    char buf[BUFSZ], qbuf[QBUFSZ], leftbuf[BUFSZ], rightbuf[BUFSZ];
     char lets[BUFSZ], altlets[BUFSZ], *ap;
+    boolean is_dip_into = FALSE;
     register int foo = 0;
     register char *bp = buf;
     xchar allowcnt = 0; /* 0, 1 or 2 */
@@ -2150,6 +2151,39 @@ const char* headertext;
         let++, allowcnt = 1;
     if (*let == COIN_CLASS)
         let++, usegold = TRUE;
+    
+    /* Check for "dip into" */
+    if (word)
+    {
+        size_t l = strlen(word);
+
+        size_t leftnum = 3;
+        if (l >= leftnum)
+        {
+            strncpy(leftbuf, word, leftnum);
+            leftbuf[leftnum] = '\0';
+        }
+        else
+            strcpy(leftbuf, "");
+
+        size_t rightnum = 4;
+        if (l >= rightnum)
+        {
+            strncpy(rightbuf, word + l - rightnum, rightnum);
+            rightbuf[rightnum] = '\0';
+        }
+        else
+            strcpy(rightbuf, "");
+
+        if(!strcmp(leftbuf, "dip") && !strcmp(rightbuf, "into"))
+            is_dip_into = TRUE;
+    }
+    else
+    {
+        strcpy(leftbuf, "");
+        strcpy(rightbuf, "");
+        is_dip_into = FALSE;
+    }
 
     /* Equivalent of an "ugly check" for gold */
     if (usegold && !strcmp(word, "eat")
@@ -2220,7 +2254,9 @@ const char* headertext;
                      && otmp->quan == 1L)) /* ...unless more than one */
              || ((!strcmp(word, "dip") || !strcmp(word, "grease"))
                  && inaccessible_equipment(otmp, (const char *) 0, FALSE))
-             ) {
+             || (is_dip_into && !otyp_allows_object_to_be_dipped_into_it(otyp))
+             ) 
+            {
                 foo--;
                 foox++;
             }
@@ -2289,8 +2325,7 @@ const char* headertext;
  			 || (!strcmp(word, "fire") && (!uwep || !otmp || (otmp && uwep && !ammo_and_launcher(otmp, uwep))))
              || (!strcmp(word, "open") && otyp != TIN)
              || (!strcmp(word, "call") && !objtyp_is_callable(otyp))
-             || (!strcmp(word, "adjust") && otmp->oclass == COIN_CLASS
-                 && !usegold)
+             || (!strcmp(word, "adjust") && otmp->oclass == COIN_CLASS && !usegold)
              ) {
                 foo--;
             }

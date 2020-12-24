@@ -3114,7 +3114,10 @@ dodip()
         } 
 		else if (obj->opoisoned && (potion->otyp == POT_HEALING
                                       || potion->otyp == POT_EXTRA_HEALING || potion->otyp == POT_GREATER_HEALING
-                                      || potion->otyp == POT_FULL_HEALING)) 
+                                      || potion->otyp == POT_FULL_HEALING  || potion->otyp == JAR_OF_EXTRA_HEALING_SALVE
+                                      || potion->otyp == JAR_OF_GREATER_HEALING_SALVE || potion->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE
+                                      || potion->otyp == JAR_OF_MEDICINAL_SALVE
+            ))
 		{
             pline("A coating wears off %s.", the(xname(obj)));
             obj->opoisoned = 0;
@@ -3215,6 +3218,11 @@ dodip()
         obj->special_quality = 1;
         update_inventory();
         return 1;
+    }
+
+    if (potion->otyp == JAR_OF_BASILISK_BLOOD)
+    {
+        return stone_to_flesh_obj(obj);
     }
 
     potion->in_use = FALSE; /* didn't go poof */
