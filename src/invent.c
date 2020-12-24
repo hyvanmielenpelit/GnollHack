@@ -2254,7 +2254,6 @@ const char* headertext;
                      && otmp->quan == 1L)) /* ...unless more than one */
              || ((!strcmp(word, "dip") || !strcmp(word, "grease"))
                  && inaccessible_equipment(otmp, (const char *) 0, FALSE))
-             || (is_dip_into && !otyp_allows_object_to_be_dipped_into_it(otyp))
              ) 
             {
                 foo--;
@@ -2325,6 +2324,7 @@ const char* headertext;
  			 || (!strcmp(word, "fire") && (!uwep || !otmp || (otmp && uwep && !ammo_and_launcher(otmp, uwep))))
              || (!strcmp(word, "open") && otyp != TIN)
              || (!strcmp(word, "call") && !objtyp_is_callable(otyp))
+             || (is_dip_into && !otyp_allows_object_to_be_dipped_into_it(otyp))
              || (!strcmp(word, "adjust") && otmp->oclass == COIN_CLASS && !usegold)
              ) {
                 foo--;
