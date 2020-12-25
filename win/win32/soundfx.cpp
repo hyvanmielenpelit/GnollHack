@@ -654,6 +654,28 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Whistle/Magic Whistle Normal", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Whistle/Magic Whistle Cursed", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Whistle/Magic Whistle Underwater", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Improvise Normal", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Improvise Stunned", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Improvise Confused", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Improvise Hallucinated", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Improvise Far From Music", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Improvise Normal", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Improvise Stunned", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Improvise Confused", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Improvise Hallucinated", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Improvise Far From Music", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Improvise Normal", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Improvise Stunned", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Improvise Confused", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Improvise Hallucinated", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Improvise Far From Music", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Improvise Normal", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Improvise Stunned", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Improvise Confused", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Improvise Hallucinated", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Improvise Far From Music", 1.0f },
 
 };
 

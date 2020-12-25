@@ -1697,6 +1697,279 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
         OBJECT_RAY_SOUNDSET_GENERIC,
         OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
+    {
+        "drum",
+        OBJECT_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_ROCK,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_GENERIC,
+        OBJECT_INSTRUMENT_SOUNDSET_DRUM
+    }, 
+    {
+        "harp",
+        OBJECT_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_ROCK,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_GENERIC,
+        OBJECT_INSTRUMENT_SOUNDSET_HARP
+    },
+    {
+        "flute",
+        OBJECT_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_ROCK,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_GENERIC,
+        OBJECT_INSTRUMENT_SOUNDSET_FLUTE
+    }, 
+    {
+        "horn",
+        OBJECT_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_ROCK,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_GENERIC,
+        OBJECT_INSTRUMENT_SOUNDSET_HORN
+    },
+
 };
 
 NEARDATA struct occupation_soundset_definition occupation_soundset_definitions[MAX_OCCUPATION_SOUNDSETS] =
@@ -4071,6 +4344,10 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
         "",
         {
             {GHSOUND_NONE, 0.0f}, /* Improvise */
+            {GHSOUND_NONE, 0.0f}, /* Improvise Stunned */
+            {GHSOUND_NONE, 0.0f}, /* Improvise Confused */
+            {GHSOUND_NONE, 0.0f}, /* Improvise Hallucinated */
+            {GHSOUND_NONE, 0.0f}, /* Improvise Far from music */
             {GHSOUND_NONE, 0.0f}, /* Note A */
             {GHSOUND_NONE, 0.0f}, /* Note B */
             {GHSOUND_NONE, 0.0f}, /* Note C */
@@ -4083,7 +4360,11 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
     {
         "drum",
         {
-            {GHSOUND_NONE, 0.0f}, /* Improvise */
+            {GHSOUND_DRUM_IMPROVISE_NORMAL, 1.0f}, /* Improvise */
+            {GHSOUND_DRUM_IMPROVISE_STUNNED, 1.0f}, /* Improvise Stunned */
+            {GHSOUND_DRUM_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
+            {GHSOUND_DRUM_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
+            {GHSOUND_DRUM_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
             {GHSOUND_NONE, 0.0f}, /* Note A */
             {GHSOUND_NONE, 0.0f}, /* Note B */
             {GHSOUND_NONE, 0.0f}, /* Note C */
@@ -4096,7 +4377,11 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
     {
         "harp",
         {
-            {GHSOUND_NONE, 0.0f}, /* Improvise */
+            {GHSOUND_HARP_IMPROVISE_NORMAL, 1.0f}, /* Improvise */
+            {GHSOUND_HARP_IMPROVISE_STUNNED, 1.0f}, /* Improvise Stunned */
+            {GHSOUND_HARP_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
+            {GHSOUND_HARP_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
+            {GHSOUND_HARP_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
             {GHSOUND_NONE, 0.0f}, /* Note A */
             {GHSOUND_NONE, 0.0f}, /* Note B */
             {GHSOUND_NONE, 0.0f}, /* Note C */
@@ -4109,7 +4394,11 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
     {
         "flute",
         {
-            {GHSOUND_NONE, 0.0f}, /* Improvise */
+            {GHSOUND_FLUTE_IMPROVISE_NORMAL, 1.0f}, /* Improvise */
+            {GHSOUND_FLUTE_IMPROVISE_STUNNED, 1.0f}, /* Improvise Stunned */
+            {GHSOUND_FLUTE_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
+            {GHSOUND_FLUTE_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
+            {GHSOUND_FLUTE_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
             {GHSOUND_NONE, 0.0f}, /* Note A */
             {GHSOUND_NONE, 0.0f}, /* Note B */
             {GHSOUND_NONE, 0.0f}, /* Note C */
@@ -4122,7 +4411,11 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
     {
         "horn",
         {
-            {GHSOUND_NONE, 0.0f}, /* Improvise */
+            {GHSOUND_HORN_IMPROVISE_NORMAL, 1.0f}, /* Improvise */
+            {GHSOUND_HORN_IMPROVISE_STUNNED, 1.0f}, /* Improvise Stunned */
+            {GHSOUND_HORN_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
+            {GHSOUND_HORN_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
+            {GHSOUND_HORN_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
             {GHSOUND_NONE, 0.0f}, /* Note A */
             {GHSOUND_NONE, 0.0f}, /* Note B */
             {GHSOUND_NONE, 0.0f}, /* Note C */
@@ -5457,6 +5750,47 @@ int x, y;
 
     soundid = sfx_sounds[sfx_sound_id].sound.ghsound;
     volume = sfx_sounds[sfx_sound_id].sound.volume;
+
+    struct ghsound_immediate_info immediateinfo = { 0 };
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = min(1.0f, volume * hearing_array[x][y]);
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+
+    if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+}
+
+
+void
+play_immediate_instrument_sound(instrument_soundset_id, instrument_sound_type)
+enum object_instrument_soundset_types instrument_soundset_id;
+enum instrument_sound_types instrument_sound_type;
+{
+    play_immediate_instrument_sound_at_location(instrument_soundset_id, instrument_sound_type, u.ux, u.uy);
+}
+
+
+void
+play_immediate_instrument_sound_at_location(instrument_soundset_id, instrument_sound_type, x, y)
+enum object_instrument_soundset_types instrument_soundset_id;
+enum instrument_sound_types instrument_sound_type;
+int x, y;
+{
+    if (!isok(x, y) || hearing_array[x][y] == 0.0f)
+        return;
+
+    if (Deaf)
+        return;
+
+    enum object_instrument_soundset_types typ = instrument_soundset_id;
+    if (instrument_soundsets[typ].sounds[instrument_sound_type].ghsound == GHSOUND_NONE)
+        return;
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+
+    soundid = instrument_soundsets[typ].sounds[instrument_sound_type].ghsound;
+    volume = instrument_soundsets[typ].sounds[instrument_sound_type].volume;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;

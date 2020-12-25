@@ -483,6 +483,9 @@ STATIC_OVL int
 do_improvisation(instr)
 struct obj *instr;
 {
+    if (!instr)
+        return 0;
+
 	double damage = 0;
     int mode, do_spec = !(Stunned || Confusion);
     struct obj itmp;
@@ -525,17 +528,23 @@ struct obj *instr;
     if (Hallucination)
         mode |= PLAY_HALLU;
 
+    enum object_instrument_soundset_types iss = object_soundsets[objects[instr->otyp].oc_soundset].instrument_soundset;
+
     switch (mode) {
     case PLAY_NORMAL:
+        play_immediate_instrument_sound(iss, INSTRUMENT_SOUND_TYPE_IMPROVISE_NORMAL);
         You("start playing %s.", yname(instr));
         break;
     case PLAY_STUNNED:
+        play_immediate_instrument_sound(iss, INSTRUMENT_SOUND_TYPE_IMPROVISE_STUNNED);
         You("produce an obnoxious droning sound.");
         break;
     case PLAY_CONFUSED:
+        play_immediate_instrument_sound(iss, INSTRUMENT_SOUND_TYPE_IMPROVISE_CONFUSED);
         You("produce a raucous noise.");
         break;
     case PLAY_HALLU:
+        play_immediate_instrument_sound(iss, INSTRUMENT_SOUND_TYPE_IMPROVISE_HALLUCINATED);
         You("produce a kaleidoscopic display of floating butterfiles.");
         break;
     /* TODO? give some or all of these combinations their own feedback;
@@ -545,6 +554,7 @@ struct obj *instr;
     case PLAY_CONFUSED | PLAY_HALLU:
     case PLAY_STUNNED | PLAY_CONFUSED | PLAY_HALLU:
     default:
+        play_immediate_instrument_sound(iss, INSTRUMENT_SOUND_TYPE_IMPROVISE_FAR_FROM_MUSIC);
         pline("What you produce is quite far from music...");
         break;
     }
@@ -691,6 +701,9 @@ int
 do_play_instrument(instr)
 struct obj *instr;
 {
+    if (!instr)
+        return 0;
+
     char buf[BUFSZ] = DUMMY, c = 'y';
     char *s;
     int x, y;
@@ -740,19 +753,29 @@ struct obj *instr;
             }
         }
         You("extract a strange sound from %s!", the(xname(instr)));
+        boolean sound_played = FALSE;
+
 #ifdef UNIX386MUSIC
         /* if user is at the console, play through the console speaker */
         if (atconsole())
+        {
+            sound_played = TRUE;
             speaker(instr, buf);
+        }
 #endif
 #ifdef VPIX_MUSIC
         if (sco_flag_console)
+        {
+            sound_played = TRUE;
             speaker(instr, buf);
+        }
 #endif
 #ifdef MAC
+        sound_played = TRUE;
         mac_speaker(instr, buf);
 #endif
 #ifdef PCMUSIC
+        sound_played = TRUE;
         pc_speaker(instr, buf);
 #endif
 #ifdef AMIGA
@@ -766,8 +789,23 @@ struct obj *instr;
             }
             nbuf[i * 2] = 0;
             amii_speaker(instr, nbuf, AMII_OKAY_VOLUME);
+            sound_played = TRUE;
         }
 #endif
+        if (!sound_played && iflags.using_gui_sounds)
+        {
+            enum object_instrument_soundset_types iss = object_soundsets[objects[instr->otyp].oc_soundset].instrument_soundset;
+            for (s = buf; *s; s++)
+            {
+                enum instrument_sound_types isound = *s >= 'A' && *s <= 'G' ?  INSTRUMENT_SOUND_TYPE_NOTE_A + *s - 'A' : MAX_INSTRUMENT_SOUND_TYPES;
+                if (isound < MAX_INSTRUMENT_SOUND_TYPES)
+                {
+                    play_immediate_instrument_sound(iss, isound);
+                    delay_output_milliseconds(200);
+                }
+            }
+        }
+
         /* Check if there was the Stronghold drawbridge near
          * and if the tune conforms to what we're waiting for.
          */
