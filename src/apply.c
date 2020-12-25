@@ -636,16 +636,24 @@ struct obj *obj;
 	if (!obj)
 		return;
 
-    if (!can_blow(&youmonst)) {
+    if (!can_blow(&youmonst))
+    {
         You("are incapable of using the whistle.");
-    } else if (Underwater) {
+    } 
+    else if (Underwater) 
+    {
+        play_sfx_sound(SFX_WHISTLE_UNDERWATER);
         You("blow bubbles through %s.", yname(obj));
-    } else {
+    }
+    else
+    {
         if (Deaf)
             You_feel("rushing air tickle your %s.",
                         body_part(NOSE));
         else if(obj)
             You(whistle_str, obj->cursed ? "shrill" : "high");
+
+        play_sfx_sound(obj->cursed ? SFX_CURSED_WHISTLE : SFX_WHISTLE);
 
         wake_nearby();
 
@@ -672,13 +680,19 @@ struct obj *obj;
     register struct monst *mtmp, *nextmon, *selmon;
 	selmon = (struct monst*)0;
 
-    if (!can_blow(&youmonst)) {
+    if (!can_blow(&youmonst)) 
+    {
         You("are incapable of using the whistle.");
-    } else if (obj && obj->cursed && !rn2(2)) {
+    } 
+    else if (obj && obj->cursed && !rn2(2)) 
+    {
+        play_sfx_sound(SFX_CURSED_MAGIC_WHISTLE);
         You("produce a %shigh-pitched humming noise.",
             Underwater ? "very " : "");
         wake_nearby();
-    } else {
+    } 
+    else
+    {
         int pet_cnt = 0, omx, omy;
 
         /* it's magic!  it works underwater too (at a higher pitch) */
@@ -691,7 +705,10 @@ struct obj *obj;
 				Hallucination ? "normal" : Underwater ? "strange, high-pitched"
 				: "strange");
 		
-		for (mtmp = fmon; mtmp; mtmp = nextmon) {
+        play_sfx_sound(Hallucination ? SFX_WHISTLE : Underwater ? SFX_MAGIC_WHISTLE_UNDERWATER : SFX_MAGIC_WHISTLE);
+
+		for (mtmp = fmon; mtmp; mtmp = nextmon)
+        {
             nextmon = mtmp->nmon; /* trap might kill mon */
             if (DEADMONSTER(mtmp))
                 continue;
@@ -699,8 +716,10 @@ struct obj *obj;
                this avoids trap issues if you're on a trap location */
             if (mtmp == u.usteed)
                 continue;
-            if (is_tame(mtmp)) {
-                if (mtmp->mtrapped) {
+            if (is_tame(mtmp)) 
+            {
+                if (mtmp->mtrapped) 
+                {
                     /* no longer in previous trap (affects mintrap) */
                     mtmp->mtrapped = 0;
                     fill_pit(mtmp->mx, mtmp->my);
@@ -711,7 +730,8 @@ struct obj *obj;
                     seemimic(mtmp);
                 omx = mtmp->mx, omy = mtmp->my;
                 mnexto2(mtmp, TRUE);
-                if (mtmp->mx != omx || mtmp->my != omy) {
+                if (mtmp->mx != omx || mtmp->my != omy) 
+                {
                     mtmp->mundetected = 0; /* reveal non-mimic hider */
 					selmon = mtmp;
                     if (canspotmon(mtmp))

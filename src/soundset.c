@@ -266,7 +266,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_NONE,
             OCCUPATION_SOUNDSET_NONE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "generic",
@@ -333,7 +334,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_GENERIC
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "candle",
@@ -400,7 +402,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "quarterstaff",
@@ -467,7 +470,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "bow",
@@ -534,7 +538,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "crossbow",
@@ -601,7 +606,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "arrow",
@@ -668,7 +674,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "sword",
@@ -735,7 +742,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "axe",
@@ -802,7 +810,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "dagger",
@@ -869,7 +878,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "bone dagger",
@@ -936,7 +946,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "human barehanded",
@@ -1003,7 +1014,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "human barefooted",
@@ -1070,7 +1082,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "horse barefooted",
@@ -1137,7 +1150,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "cotton slippers",
@@ -1204,7 +1218,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "chest",
@@ -1271,7 +1286,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "coins",
@@ -1338,7 +1354,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "boulder",
@@ -1405,7 +1422,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_ROLLING_BOULDER
+        OBJECT_RAY_SOUNDSET_ROLLING_BOULDER,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "camera",
@@ -1472,7 +1490,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_CAMERA
+        OBJECT_RAY_SOUNDSET_CAMERA,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "wand",
@@ -1539,8 +1558,9 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_GENERIC
-    }, 
+        OBJECT_RAY_SOUNDSET_GENERIC,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
+    },
     {
         "stone",
         OBJECT_SOUNDSET_GENERIC,
@@ -1606,7 +1626,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_GENERIC
+        OBJECT_RAY_SOUNDSET_GENERIC,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
     },
     {
         "potion",
@@ -1673,8 +1694,9 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_GENERIC
-    }, 
+        OBJECT_RAY_SOUNDSET_GENERIC,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE
+    },
 };
 
 NEARDATA struct occupation_soundset_definition occupation_soundset_definitions[MAX_OCCUPATION_SOUNDSETS] =
@@ -3666,6 +3688,36 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_STUDIO_AUDIENCE_APPLAUDS, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_WHISTLE",
+        {GHSOUND_WHISTLE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_CURSED_WHISTLE",
+        {GHSOUND_CURSED_WHISTLE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_WHISTLE_UNDERWATER",
+        {GHSOUND_WHISTLE_UNDERWATER, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_MAGIC_WHISTLE",
+        {GHSOUND_MAGIC_WHISTLE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_CURSED_MAGIC_WHISTLE",
+        {GHSOUND_CURSED_MAGIC_WHISTLE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_MAGIC_WHISTLE_UNDERWATER",
+        {GHSOUND_MAGIC_WHISTLE_UNDERWATER, 1.0f},
+        TRUE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
@@ -4010,6 +4062,76 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
 
+};
+
+
+struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDSETS] =
+{
+    {
+        "",
+        {
+            {GHSOUND_NONE, 0.0f}, /* Improvise */
+            {GHSOUND_NONE, 0.0f}, /* Note A */
+            {GHSOUND_NONE, 0.0f}, /* Note B */
+            {GHSOUND_NONE, 0.0f}, /* Note C */
+            {GHSOUND_NONE, 0.0f}, /* Note D */
+            {GHSOUND_NONE, 0.0f}, /* Note E */
+            {GHSOUND_NONE, 0.0f}, /* Note F */
+            {GHSOUND_NONE, 0.0f}  /* Note G */
+        }
+    },
+    {
+        "drum",
+        {
+            {GHSOUND_NONE, 0.0f}, /* Improvise */
+            {GHSOUND_NONE, 0.0f}, /* Note A */
+            {GHSOUND_NONE, 0.0f}, /* Note B */
+            {GHSOUND_NONE, 0.0f}, /* Note C */
+            {GHSOUND_NONE, 0.0f}, /* Note D */
+            {GHSOUND_NONE, 0.0f}, /* Note E */
+            {GHSOUND_NONE, 0.0f}, /* Note F */
+            {GHSOUND_NONE, 0.0f}  /* Note G */
+        }
+    },
+    {
+        "harp",
+        {
+            {GHSOUND_NONE, 0.0f}, /* Improvise */
+            {GHSOUND_NONE, 0.0f}, /* Note A */
+            {GHSOUND_NONE, 0.0f}, /* Note B */
+            {GHSOUND_NONE, 0.0f}, /* Note C */
+            {GHSOUND_NONE, 0.0f}, /* Note D */
+            {GHSOUND_NONE, 0.0f}, /* Note E */
+            {GHSOUND_NONE, 0.0f}, /* Note F */
+            {GHSOUND_NONE, 0.0f}  /* Note G */
+        }
+    },
+    {
+        "flute",
+        {
+            {GHSOUND_NONE, 0.0f}, /* Improvise */
+            {GHSOUND_NONE, 0.0f}, /* Note A */
+            {GHSOUND_NONE, 0.0f}, /* Note B */
+            {GHSOUND_NONE, 0.0f}, /* Note C */
+            {GHSOUND_NONE, 0.0f}, /* Note D */
+            {GHSOUND_NONE, 0.0f}, /* Note E */
+            {GHSOUND_NONE, 0.0f}, /* Note F */
+            {GHSOUND_NONE, 0.0f}  /* Note G */
+        }
+    },
+    {
+        "horn",
+        {
+            {GHSOUND_NONE, 0.0f}, /* Improvise */
+            {GHSOUND_NONE, 0.0f}, /* Note A */
+            {GHSOUND_NONE, 0.0f}, /* Note B */
+            {GHSOUND_NONE, 0.0f}, /* Note C */
+            {GHSOUND_NONE, 0.0f}, /* Note D */
+            {GHSOUND_NONE, 0.0f}, /* Note E */
+            {GHSOUND_NONE, 0.0f}, /* Note F */
+            {GHSOUND_NONE, 0.0f}  /* Note G */
+        }
+    },
 };
 
 

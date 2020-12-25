@@ -550,6 +550,12 @@ enum ghsound_types {
 	GHSOUND_RUMBLING_EARTH,
 	GHSOUND_RUMBLE_OF_DISTANT_THUNDER,
 	GHSOUND_STUDIO_AUDIENCE_APPLAUDS,
+	GHSOUND_WHISTLE,
+	GHSOUND_CURSED_WHISTLE,
+	GHSOUND_WHISTLE_UNDERWATER,
+	GHSOUND_MAGIC_WHISTLE,
+	GHSOUND_CURSED_MAGIC_WHISTLE,
+	GHSOUND_MAGIC_WHISTLE_UNDERWATER,
 	MAX_GHSOUNDS
 };
 
@@ -896,6 +902,12 @@ enum sfx_sound_types {
 	SFX_RUMBLING_EARTH,
 	SFX_RUMBLE_OF_DISTANT_THUNDER,
 	SFX_STUDIO_AUDIENCE_APPLAUDS,
+	SFX_WHISTLE,
+	SFX_CURSED_WHISTLE,
+	SFX_WHISTLE_UNDERWATER,
+	SFX_MAGIC_WHISTLE,
+	SFX_CURSED_MAGIC_WHISTLE,
+	SFX_MAGIC_WHISTLE_UNDERWATER,
 	MAX_SFX_SOUND_TYPES
 };
 
@@ -1030,6 +1042,36 @@ enum object_ray_soundset_types {
 
 extern struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS];
 
+
+/* INSTRUMENT SOUNDSETS */
+enum instrument_sound_types {
+	INSTRUMENT_SOUND_TYPE_IMPROVISE = 0,	
+	INSTRUMENT_SOUND_TYPE_NOTE_A,
+	INSTRUMENT_SOUND_TYPE_NOTE_B,
+	INSTRUMENT_SOUND_TYPE_NOTE_C,
+	INSTRUMENT_SOUND_TYPE_NOTE_D,
+	INSTRUMENT_SOUND_TYPE_NOTE_E,
+	INSTRUMENT_SOUND_TYPE_NOTE_F,
+	INSTRUMENT_SOUND_TYPE_NOTE_G,
+	MAX_INSTRUMENT_SOUND_TYPES
+};
+
+struct instrument_soundset_definition {
+	const char* soundset_name;
+	struct ghsound_info sounds[MAX_INSTRUMENT_SOUND_TYPES];
+};
+
+enum object_instrument_soundset_types {
+	OBJECT_INSTRUMENT_SOUNDSET_NONE = 0,
+	OBJECT_INSTRUMENT_SOUNDSET_DRUM,
+	OBJECT_INSTRUMENT_SOUNDSET_HARP,
+	OBJECT_INSTRUMENT_SOUNDSET_FLUTE,
+	OBJECT_INSTRUMENT_SOUNDSET_HORN,
+	MAX_INSTRUMENT_SOUNDSETS
+};
+
+extern struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDSETS];
+
 /* OBJECT SOUNDSETS */
 enum object_sound_types {
 	OBJECT_SOUND_TYPE_AMBIENT = 0,		/* Ambient sound that is typically either continuously played or played when the object is lit */
@@ -1135,6 +1177,7 @@ struct object_soundset_definition {
 	enum soundsource_ambient_subtypes ambient_subtype;
 	enum occupation_soundset_types occupation_soundsets[MAX_OBJECT_OCCUPATION_TYPES];
 	enum object_ray_soundset_types ray_soundset;
+	enum object_instrument_soundset_types instrument_soundset;
 };
 
 extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS];

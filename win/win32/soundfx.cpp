@@ -648,6 +648,12 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
 
     { SOUND_BANK_MASTER, "event:/SFX/General/Rumble of Distant Thunder", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Studio Audience Applauds", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Whistle/Whistle Normal", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Whistle/Whistle Cursed", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Whistle/Whistle Underwater", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Whistle/Magic Whistle Normal", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Whistle/Magic Whistle Cursed", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Whistle/Magic Whistle Underwater", 1.0f },
 
 };
 
