@@ -4355,7 +4355,8 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
             {GHSOUND_NONE, 0.0f}, /* Note E */
             {GHSOUND_NONE, 0.0f}, /* Note F */
             {GHSOUND_NONE, 0.0f}  /* Note G */
-        }
+        },
+        0
     },
     {
         "drum",
@@ -4372,7 +4373,8 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
             {GHSOUND_DRUM_NOTE_E, 1.0f}, /* Note E */
             {GHSOUND_DRUM_NOTE_F, 1.0f}, /* Note F */
             {GHSOUND_DRUM_NOTE_G, 1.0f}  /* Note G */
-        }
+        },
+        200
     },
     {
         "harp",
@@ -4389,7 +4391,8 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
             {GHSOUND_HARP_NOTE_E, 1.0f}, /* Note E */
             {GHSOUND_HARP_NOTE_F, 1.0f}, /* Note F */
             {GHSOUND_HARP_NOTE_G, 1.0f}  /* Note G */
-        }
+        },
+        300
     },
     {
         "flute",
@@ -4406,7 +4409,8 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
             {GHSOUND_FLUTE_NOTE_E, 1.0f}, /* Note E */
             {GHSOUND_FLUTE_NOTE_F, 1.0f}, /* Note F */
             {GHSOUND_FLUTE_NOTE_G, 1.0f}  /* Note G */
-        }
+        },
+        2000
     },
     {
         "horn",
@@ -4423,7 +4427,8 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
             {GHSOUND_HORN_NOTE_E, 1.0f}, /* Note E */
             {GHSOUND_HORN_NOTE_F, 1.0f}, /* Note F */
             {GHSOUND_HORN_NOTE_G, 1.0f}  /* Note G */
-        }
+        },
+        650
     },
 };
 

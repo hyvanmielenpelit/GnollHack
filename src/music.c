@@ -752,7 +752,9 @@ struct obj *instr;
                     *s = 'B';
             }
         }
-        You("extract a strange sound from %s!", the(xname(instr)));
+        if (!iflags.using_gui_sounds)
+            You("extract a strange sound from %s!", the(xname(instr)));
+
         boolean sound_played = FALSE;
 
 #ifdef UNIX386MUSIC
@@ -792,18 +794,24 @@ struct obj *instr;
             sound_played = TRUE;
         }
 #endif
-        if (!sound_played && iflags.using_gui_sounds)
+        enum object_instrument_soundset_types iss = object_soundsets[objects[instr->otyp].oc_soundset].instrument_soundset;
+        if (iflags.using_gui_sounds && (sound_played || iss == OBJECT_INSTRUMENT_SOUNDSET_NONE))
+            You("extract a strange sound from %s!", the(xname(instr)));
+        else if (!sound_played && iflags.using_gui_sounds)
         {
-            enum object_instrument_soundset_types iss = object_soundsets[objects[instr->otyp].oc_soundset].instrument_soundset;
+            You("start playing %s...", the(xname(instr)));
             for (s = buf; *s; s++)
             {
                 enum instrument_sound_types isound = *s >= 'A' && *s <= 'G' ?  INSTRUMENT_SOUND_TYPE_NOTE_A + *s - 'A' : MAX_INSTRUMENT_SOUND_TYPES;
                 if (isound < MAX_INSTRUMENT_SOUND_TYPES)
                 {
                     play_immediate_instrument_sound(iss, isound);
-                    delay_output_milliseconds(200);
+                    int notelength = (int)instrument_soundsets[iss].note_length_in_milliseconds;
+                    if(notelength > 0)
+                        delay_output_milliseconds(notelength);
                 }
             }
+            You("finish playing %s.", the(xname(instr)));
         }
 
         /* Check if there was the Stronghold drawbridge near

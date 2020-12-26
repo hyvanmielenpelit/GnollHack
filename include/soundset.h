@@ -1111,6 +1111,7 @@ enum instrument_sound_types {
 struct instrument_soundset_definition {
 	const char* soundset_name;
 	struct ghsound_info sounds[MAX_INSTRUMENT_SOUND_TYPES];
+	short note_length_in_milliseconds;
 };
 
 enum object_instrument_soundset_types {
