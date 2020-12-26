@@ -504,9 +504,10 @@ xchar x, y;
  *  The gold object is *not* attached to the fobj chain!
  */
 boolean
-ghitm(mtmp, gold)
+ghitm(mtmp, gold, hitres_ptr)
 register struct monst *mtmp;
 register struct obj *gold;
+uchar* hitres_ptr;
 {
     boolean msg_given = FALSE;
 
@@ -523,6 +524,9 @@ register struct obj *gold;
             msg_given = TRUE;
         }
     } else {
+        if (hitres_ptr)
+            *hitres_ptr = 1;
+
         long umoney, value = gold->quan * objects[gold->otyp].oc_cost;
 
         mtmp->msleeping = 0;
@@ -951,13 +955,14 @@ boolean is_golf_swing;
     if (!kickedobj)
         return 1; /* object broken */
 
+    uchar hitres = 0;
     if (mon) {
         if (mon->isshk && kickedobj->where == OBJ_MINVENT
             && kickedobj->ocarry == mon)
             return 1; /* alert shk caught it */
         notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
-        if (isgold ? ghitm(mon, kickedobj)      /* caught? */
-                   : thitmonst(mon, kickedobj, is_golf_swing)) /* hit && used up? */
+        if (isgold ? ghitm(mon, kickedobj, &hitres)      /* caught? */
+                   : thitmonst(mon, kickedobj, is_golf_swing, &hitres)) /* hit && used up? */
             return 1;
     }
 
@@ -981,6 +986,7 @@ boolean is_golf_swing;
     if (kickedobj->unpaid)
         subfrombill(kickedobj, shkp);
     place_object(kickedobj, bhitpos.x, bhitpos.y);
+    play_object_floor_sound(kickedobj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW);
     stackobj(kickedobj);
     newsym(kickedobj->ox, kickedobj->oy);
     return 1;

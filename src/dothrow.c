@@ -685,8 +685,11 @@ int *shotlimit_p; /* (see dothrow()) */
         return FALSE;
         /*[what about !freehand(), aside from cursed missile launcher?]*/
     }
-    if (check_capacity((char *) 0))
+    if (check_capacity((char*)0))
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         return FALSE;
+    }
     return TRUE;
 }
 
@@ -819,6 +822,7 @@ dofire()
      */
 	if (!uwep || !is_launcher(uwep))
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("are not wielding a ranged weapon that fires ammunition.");
 		return 0;
 	}
@@ -830,6 +834,7 @@ dofire()
     {
         if (!flags.autoquiver)
         {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("have no ammunition readied.");
         } 
         else 
@@ -1816,6 +1821,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         }
     }
 
+    uchar hitres = 0;
     if (mon)
     {
         boolean obj_gone;
@@ -1828,7 +1834,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
 
         (void) snuff_candle(obj);
         notonhead = (bhitpos.x != mon->mx || bhitpos.y != mon->my);
-        obj_gone = thitmonst(mon, obj, FALSE);
+        obj_gone = thitmonst(mon, obj, FALSE, &hitres);
 
 		if (mon && DEADMONSTER(mon))
 			context.multishot_target_killed = TRUE;
@@ -2013,6 +2019,9 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         }
         thrownobj = (struct obj *) 0;
         place_object(obj, bhitpos.x, bhitpos.y);
+        if(hitres == 0)
+            play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW);
+
         /* container contents might break;
            do so before turning ownership of thrownobj over to shk
            (container_impact_dmg handles item already owned by shop) */
@@ -2117,10 +2126,11 @@ boolean maybe_wakeup;
  * Also used for kicked objects and for polearms/grapnel applied at range.
  */
 int
-thitmonst(mon, obj, is_golf)
+thitmonst(mon, obj, is_golf, hitres_ptr)
 struct monst *mon;
 struct obj *obj; /* thrownobj or kickedobj or uwep */
 boolean is_golf;
+uchar* hitres_ptr;
 {
 	if (!mon || !obj)
 		return 0;
@@ -2226,11 +2236,15 @@ boolean is_golf;
 		else if (is_tame(mon)) 
 		{
             pline("%s catches and drops %s.", Monnam(mon), the(xname(obj)));
+            if (hitres_ptr)
+                *hitres_ptr = 0;
             return 0;
         } 
 		else 
 		{
             pline("%s catches %s.", Monnam(mon), the(xname(obj)));
+            if (hitres_ptr)
+                *hitres_ptr = 2;
             return gem_accept(mon, obj);
         }
     }
@@ -2247,6 +2261,8 @@ boolean is_golf;
 
         if (mon_can_move(mon)) 
 		{
+            if (hitres_ptr)
+                *hitres_ptr = 2;
             pline("%s catches %s.", Monnam(mon), the(xname(obj)));
             if (is_peaceful(mon))
 			{
@@ -2336,6 +2352,9 @@ boolean is_golf;
             if (hmode == HMON_APPLIED)
                 u.uconduct.weaphit++;
 
+            if (hitres_ptr)
+                *hitres_ptr = 1;
+
             //DAMAGE IS DONE HERE
             boolean obj_destroyed = FALSE;
             if (hmon(mon, obj, hmode, dieroll, &obj_destroyed)) 
@@ -2403,6 +2422,9 @@ boolean is_golf;
 		{
             int was_swallowed = guaranteed_hit;
 
+            if (hitres_ptr)
+                *hitres_ptr = 1;
+
             exercise(A_DEX, TRUE);
 			boolean obj_destroyed = FALSE;
 			boolean malive = hmon(mon, obj, hmode, dieroll, &obj_destroyed);
@@ -2426,6 +2448,9 @@ boolean is_golf;
         exercise(A_STR, TRUE);
         if (tmp >= dieroll) 
 		{
+            if (hitres_ptr)
+                *hitres_ptr = 1;
+
             exercise(A_DEX, TRUE);
 			boolean obj_destroyed = FALSE;
 			(void) hmon(mon, obj, hmode, dieroll, &obj_destroyed);
@@ -2441,13 +2466,19 @@ boolean is_golf;
 	else if ((otyp == EGG || otyp == CREAM_PIE || otyp == BLINDING_VENOM || otyp == ACID_VENOM)
                && (guaranteed_hit || ACURR(A_DEX) > rnd(25)))
 	{
-		boolean obj_destroyed = FALSE;
+        if (hitres_ptr)
+            *hitres_ptr = 1;
+    
+        boolean obj_destroyed = FALSE;
         (void) hmon(mon, obj, hmode, dieroll, &obj_destroyed);
         return 1; /* hmon used it up */
 
     } 
 	else if (obj->oclass == POTION_CLASS && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) 
 	{
+        if (hitres_ptr)
+            *hitres_ptr = 1;
+    
         potionhit(mon, &obj, POTHIT_HERO_THROW);
         return 1;
 
@@ -2457,6 +2488,8 @@ boolean is_golf;
 	{
         if (tamedog(mon, obj, FALSE, FALSE, 0, TRUE, TRUE)) 
 		{
+            if (hitres_ptr)
+                *hitres_ptr = 2;
             return 1; /* obj is gone */
         } 
 		else 
@@ -2469,6 +2502,8 @@ boolean is_golf;
 	else if (guaranteed_hit) 
 	{
         /* this assumes that guaranteed_hit is due to swallowing */
+        if (hitres_ptr)
+            *hitres_ptr = 1;
         wakeup(mon, TRUE);
         if (obj->otyp == CORPSE && touch_petrifies(&mons[obj->corpsenm])) 
 		{
@@ -2836,6 +2871,7 @@ struct obj *obj;
 {
     int range, odx, ody;
     register struct monst *mon;
+    uchar hitres = 0;
 
     if (!u.dx && !u.dy && !u.dz) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -2880,7 +2916,7 @@ struct obj *obj;
             if (!obj)
                 return 1; /* object is gone */
             if (mon) {
-                if (ghitm(mon, obj)) /* was it caught? */
+                if (ghitm(mon, obj, &hitres)) /* was it caught? */
                     return 1;
             } else {
                 if (ship_object(obj, bhitpos.x, bhitpos.y, FALSE))
@@ -2894,6 +2930,7 @@ struct obj *obj;
     if (u.dz > 0)
         pline_The("gold hits the %s.", surface(bhitpos.x, bhitpos.y));
     place_object(obj, bhitpos.x, bhitpos.y);
+    play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW);
     if (*u.ushops)
         sellobj(obj, bhitpos.x, bhitpos.y);
     stackobj(obj);

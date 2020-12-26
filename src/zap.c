@@ -6418,7 +6418,7 @@ struct obj *obj;
             else if (objects[otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
                 hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
-			(void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags & S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+            (void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags & S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
         }
         zapwrapup(); /* give feedback for obj_zapped */
 
@@ -6975,7 +6975,7 @@ boolean stop_at_first_hit_object;
 				{
                     obj->ox = u.ux, obj->oy = u.uy;
                     (void) flash_hits_mon(mtmp, obj);
-                } 
+                }
                 else 
                 {
                     tmp_at(DISP_END, 0);
@@ -7055,8 +7055,12 @@ boolean stop_at_first_hit_object;
 							if (isok(px, py) && dist2(px, py, bhitpos.x, bhitpos.y) <= (radius + 1) * radius)
 							{
 								struct monst* mtmp2 = m_at(px, py);
-								if(mtmp2 && mtmp2 != mtmp && mtmp2 != &youmonst)
-									more_effect_num += (*fhitm)(mtmp2, obj, origmonst);
+                                if (mtmp2 && mtmp2 != mtmp && mtmp2 != &youmonst)
+                                {
+                                    int had_more_effect = 0;
+                                    had_more_effect = (*fhitm)(mtmp2, obj, origmonst);
+                                    more_effect_num += had_more_effect;
+                                }
 							}
 						}
 					}

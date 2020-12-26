@@ -1321,7 +1321,7 @@ struct obj* obj;
 
     You("raise %s high.", yname(obj));
     exercise(A_WIS, TRUE);
-	(void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, 0, ZAPPED_WAND, uthitm, uthito,
+    (void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, 0, ZAPPED_WAND, uthitm, uthito,
 		&obj, &youmonst, TRUE, FALSE);
 
 	return 1;
@@ -4316,6 +4316,7 @@ struct obj *obj;
     context.polearm.hitmon = (struct monst *) 0;
     /* Attack the monster there */
     bhitpos = cc;
+    boolean hitres = 0;
     if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != (struct monst *) 0) 
     {
         if (attack_checks(mtmp, uwep))
@@ -4327,7 +4328,7 @@ struct obj *obj;
         context.polearm.hitmon = mtmp;
         check_caitiff(mtmp);
         notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
-        (void) thitmonst(mtmp, uwep, FALSE);
+        (void) thitmonst(mtmp, uwep, FALSE, &hitres);
     } 
     else if (glyph_is_any_statue(glyph) /* might be hallucinatory */
                && sobj_at(STATUE, bhitpos.x, bhitpos.y)) 
@@ -4506,6 +4507,7 @@ struct obj *obj;
         u_wipe_engr(rnd(2));
 
     /* What did you hit? */
+    uchar hitres = 0;
     switch (tohit) {
     case 0: /* Trap */
         /* FIXME -- untrap needs to deal with non-adjacent traps */
@@ -4541,7 +4543,7 @@ struct obj *obj;
             (void) attack_checks(mtmp, uwep);
             flags.confirm = save_confirm;
             check_caitiff(mtmp);
-            (void) thitmonst(mtmp, uwep, FALSE);
+            (void) thitmonst(mtmp, uwep, FALSE, &hitres);
             return 1;
         }
     /*FALLTHRU*/

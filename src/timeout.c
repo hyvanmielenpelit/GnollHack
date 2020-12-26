@@ -1932,6 +1932,7 @@ long timeout;
                 mon = mon2;
             hatchcount -= i;
             egg->quan -= (long) hatchcount;
+            play_sfx_sound_at_location(SFX_EGG_HATCH, x, y);
         }
 #if 0
     /*
@@ -1972,6 +1973,9 @@ long timeout;
                monster, checked below
             */
         }
+
+        play_movement_sound(mon, CLIMBING_TYPE_STAIRS_DOWN);
+
         switch (egg->where) {
         case OBJ_INVENT:
             knows_egg = TRUE; /* true even if you are blind */

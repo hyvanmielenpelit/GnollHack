@@ -731,7 +731,7 @@ E boolean FDECL(dog_wants_to_eat, (struct monst*));
 
 /* ### dokick.c ### */
 
-E boolean FDECL(ghitm, (struct monst *, struct obj *));
+E boolean FDECL(ghitm, (struct monst *, struct obj *, uchar *));
 E void FDECL(container_impact_dmg, (struct obj *, XCHAR_P, XCHAR_P));
 E int NDECL(dokick);
 #ifdef ANDROID
@@ -757,7 +757,7 @@ E boolean FDECL(throwing_weapon, (struct obj *));
 E boolean FDECL(nonmelee_throwing_weapon, (struct obj*));
 E void FDECL(throwit, (struct obj *, long));
 E int FDECL(omon_adj, (struct monst *, struct obj *, BOOLEAN_P));
-E int FDECL(thitmonst, (struct monst *, struct obj *, BOOLEAN_P));
+E int FDECL(thitmonst, (struct monst *, struct obj *, BOOLEAN_P, uchar *));
 E int FDECL(hero_breaks, (struct obj *, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E int FDECL(breaks, (struct obj *, XCHAR_P, XCHAR_P));
 E void FDECL(release_camera_demon, (struct obj *, XCHAR_P, XCHAR_P));

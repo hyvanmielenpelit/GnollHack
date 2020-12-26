@@ -3068,6 +3068,7 @@ pickup_checks()
         return 0;
     }
     if (!can_reach_floor(TRUE)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         struct trap *traphere = t_at(u.ux, u.uy);
         if (traphere && uteetering_at_seen_pit(traphere))
             You("cannot reach the bottom of the pit.");
