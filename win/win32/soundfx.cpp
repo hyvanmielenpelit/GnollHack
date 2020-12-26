@@ -718,6 +718,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/General Resists", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Steed Refuses", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/General Reflects", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Drawbridge/Drawbridge Loud Splash", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Drawbridge/Drawbridge Loud Crash", 1.0f },
 
 };
 

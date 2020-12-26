@@ -4041,6 +4041,16 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_GENERAL_REFLECTS, 5.0f},
         FALSE
     },
+    {
+        "GHSOUND_DRAWBRIDGE_LOUD_SPLASH",
+        {GHSOUND_DRAWBRIDGE_LOUD_SPLASH, 20.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_DRAWBRIDGE_LOUD_CRASH",
+        {GHSOUND_DRAWBRIDGE_LOUD_CRASH, 20.0f},
+        TRUE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
@@ -6241,7 +6251,7 @@ int radius;
 	if ((IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ))
         || (mtmp && is_lightblocker_mappear(mtmp)))
 	{
-        if (mtmp)
+        if (1 /*mtmp*/)
         {
             /* Make sure that monsters walking through in walls etc. produce a sound when hit etc. */
             float new_prev_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing) / (20.0f)));
@@ -6252,7 +6262,7 @@ int radius;
                 hearing_array[x][y] = new_hearing;
         }
 	}
-	else if (IS_DOOR(levl[x][y].typ) && ((levl[x][y].doormask & D_MASK) != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN)) == 0))
+	else if (IS_DOOR(levl[x][y].typ) && ((levl[x][y].doormask & D_MASK) != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN | D_PORTCULLIS)) == 0))
 	{
         float new_prev_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing) / (10.0f)));
         float new_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing)));

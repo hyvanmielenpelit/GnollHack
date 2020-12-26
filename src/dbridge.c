@@ -924,7 +924,6 @@ int x, y;
     y2 = y;
     get_wall_for_db(&x2, &y2);
 
-    play_sfx_sound_at_location(SFX_OPEN_DRAWBRIDGE, x2, y2);
     if (cansee(x, y) || cansee(x2, y2))
         You_see("a drawbridge %s down!",
                 (distu(x2, y2) < distu(x, y)) ? "going" : "coming");
@@ -951,6 +950,8 @@ int x, y;
     newsym(x, y);
     newsym(x2, y2);
     unblock_vision_and_hearing_at_point(x2, y2); /* vision */
+    play_sfx_sound_at_location(SFX_OPEN_DRAWBRIDGE, x, y);
+
     if (Is_stronghold(&u.uz))
         u.uevent.uopened_dbridge = TRUE;
     nokiller();
@@ -985,12 +986,13 @@ boolean is_disintegrated;
 
         if (is_disintegrated)
         {
-            play_sfx_sound_at_location(SFX_DISINTEGRATE, x, y);
+            play_sfx_sound_at_location(SFX_DISINTEGRATE, x2, y2);
             if (cansee(x, y) || cansee(x2, y2))
                 pline_The("drawbridge disintegrates!");
         }
         else
         {
+            play_sfx_sound_at_location(SFX_DRAWBRIDGE_LOUD_SPLASH, x, y);
             if (lev1->typ == DRAWBRIDGE_UP) {
                 if (cansee(x2, y2))
                     pline_The("portcullis of the drawbridge falls into the %s!",
@@ -1013,6 +1015,7 @@ boolean is_disintegrated;
             (void) flooreffects(otmp2, x, y, "fall");
         }
     } else {
+        play_sfx_sound_at_location(SFX_DRAWBRIDGE_LOUD_CRASH, x, y);
         if (cansee(x, y))
             pline_The("drawbridge disintegrates!");
         else
