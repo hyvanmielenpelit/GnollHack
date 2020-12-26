@@ -676,6 +676,37 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Improvise Confused", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Improvise Hallucinated", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Improvise Far From Music", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Note A", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Note B", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Note C", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Note D", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Note E", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Note F", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Drum/Drum Note G", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Note A", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Note B", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Note C", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Note D", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Note E", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Note F", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Flute/Flute Note G", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Note A", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Note B", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Note C", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Note D", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Note E", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Note F", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Harp/Harp Note G", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Note A", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Note B", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Note C", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Note D", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Note E", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Note F", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Note G", 1.0f },
 
 };
 

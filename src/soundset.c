@@ -4365,13 +4365,13 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
             {GHSOUND_DRUM_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
             {GHSOUND_DRUM_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
             {GHSOUND_DRUM_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
-            {GHSOUND_NONE, 0.0f}, /* Note A */
-            {GHSOUND_NONE, 0.0f}, /* Note B */
-            {GHSOUND_NONE, 0.0f}, /* Note C */
-            {GHSOUND_NONE, 0.0f}, /* Note D */
-            {GHSOUND_NONE, 0.0f}, /* Note E */
-            {GHSOUND_NONE, 0.0f}, /* Note F */
-            {GHSOUND_NONE, 0.0f}  /* Note G */
+            {GHSOUND_DRUM_NOTE_A, 1.0f}, /* Note A */
+            {GHSOUND_DRUM_NOTE_B, 1.0f}, /* Note B */
+            {GHSOUND_DRUM_NOTE_C, 1.0f}, /* Note C */
+            {GHSOUND_DRUM_NOTE_D, 1.0f}, /* Note D */
+            {GHSOUND_DRUM_NOTE_E, 1.0f}, /* Note E */
+            {GHSOUND_DRUM_NOTE_F, 1.0f}, /* Note F */
+            {GHSOUND_DRUM_NOTE_G, 1.0f}  /* Note G */
         }
     },
     {
@@ -4382,13 +4382,13 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
             {GHSOUND_HARP_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
             {GHSOUND_HARP_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
             {GHSOUND_HARP_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
-            {GHSOUND_NONE, 0.0f}, /* Note A */
-            {GHSOUND_NONE, 0.0f}, /* Note B */
-            {GHSOUND_NONE, 0.0f}, /* Note C */
-            {GHSOUND_NONE, 0.0f}, /* Note D */
-            {GHSOUND_NONE, 0.0f}, /* Note E */
-            {GHSOUND_NONE, 0.0f}, /* Note F */
-            {GHSOUND_NONE, 0.0f}  /* Note G */
+            {GHSOUND_HARP_NOTE_A, 1.0f}, /* Note A */
+            {GHSOUND_HARP_NOTE_B, 1.0f}, /* Note B */
+            {GHSOUND_HARP_NOTE_C, 1.0f}, /* Note C */
+            {GHSOUND_HARP_NOTE_D, 1.0f}, /* Note D */
+            {GHSOUND_HARP_NOTE_E, 1.0f}, /* Note E */
+            {GHSOUND_HARP_NOTE_F, 1.0f}, /* Note F */
+            {GHSOUND_HARP_NOTE_G, 1.0f}  /* Note G */
         }
     },
     {
@@ -4399,13 +4399,13 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
             {GHSOUND_FLUTE_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
             {GHSOUND_FLUTE_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
             {GHSOUND_FLUTE_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
-            {GHSOUND_NONE, 0.0f}, /* Note A */
-            {GHSOUND_NONE, 0.0f}, /* Note B */
-            {GHSOUND_NONE, 0.0f}, /* Note C */
-            {GHSOUND_NONE, 0.0f}, /* Note D */
-            {GHSOUND_NONE, 0.0f}, /* Note E */
-            {GHSOUND_NONE, 0.0f}, /* Note F */
-            {GHSOUND_NONE, 0.0f}  /* Note G */
+            {GHSOUND_FLUTE_NOTE_A, 1.0f}, /* Note A */
+            {GHSOUND_FLUTE_NOTE_B, 1.0f}, /* Note B */
+            {GHSOUND_FLUTE_NOTE_C, 1.0f}, /* Note C */
+            {GHSOUND_FLUTE_NOTE_D, 1.0f}, /* Note D */
+            {GHSOUND_FLUTE_NOTE_E, 1.0f}, /* Note E */
+            {GHSOUND_FLUTE_NOTE_F, 1.0f}, /* Note F */
+            {GHSOUND_FLUTE_NOTE_G, 1.0f}  /* Note G */
         }
     },
     {
@@ -4416,13 +4416,13 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
             {GHSOUND_HORN_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
             {GHSOUND_HORN_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
             {GHSOUND_HORN_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
-            {GHSOUND_NONE, 0.0f}, /* Note A */
-            {GHSOUND_NONE, 0.0f}, /* Note B */
-            {GHSOUND_NONE, 0.0f}, /* Note C */
-            {GHSOUND_NONE, 0.0f}, /* Note D */
-            {GHSOUND_NONE, 0.0f}, /* Note E */
-            {GHSOUND_NONE, 0.0f}, /* Note F */
-            {GHSOUND_NONE, 0.0f}  /* Note G */
+            {GHSOUND_HORN_NOTE_A, 1.0f}, /* Note A */
+            {GHSOUND_HORN_NOTE_B, 1.0f}, /* Note B */
+            {GHSOUND_HORN_NOTE_C, 1.0f}, /* Note C */
+            {GHSOUND_HORN_NOTE_D, 1.0f}, /* Note D */
+            {GHSOUND_HORN_NOTE_E, 1.0f}, /* Note E */
+            {GHSOUND_HORN_NOTE_F, 1.0f}, /* Note F */
+            {GHSOUND_HORN_NOTE_G, 1.0f}  /* Note G */
         }
     },
 };
