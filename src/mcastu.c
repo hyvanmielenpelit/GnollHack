@@ -367,6 +367,7 @@ boolean foundyou;
     case AD_FIRE:
         pline("You're enveloped in flames.");
         if (Fire_immunity || Invulnerable) {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             pline("But you resist the effects.");
             damage = 0;
@@ -376,6 +377,7 @@ boolean foundyou;
     case AD_COLD:
         pline("You're covered in frost.");
         if (Cold_immunity || Invulnerable) {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             pline("But you resist the effects.");
             damage = 0;
@@ -384,6 +386,7 @@ boolean foundyou;
     case AD_MAGM:
         You("are hit by a shower of missiles!");
         if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
+            play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
             pline_The("missiles bounce off!");
             damage = 0;
@@ -725,6 +728,7 @@ int spellnum;
         pline("A bolt of lightning strikes down at you from above!");
         reflects = ureflects("It bounces off your %s%s.", "");
         if (reflects || Shock_immunity) {
+            play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
             damage = 0;
             if (reflects)

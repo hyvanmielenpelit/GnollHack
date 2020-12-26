@@ -46,7 +46,7 @@ SHUFFLE: $object
 $place = { (04,02),(58,02),(04,14) }
 SHUFFLE: $place
 
-$monster = monster: { 'L','N','E','H','M','O','R','T','X','Z' }
+$monster = monster: { 'L','N','E','H','z','O','R','T','X','Z' }
 SHUFFLE: $monster
 
 # Smithy

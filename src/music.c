@@ -859,12 +859,22 @@ struct obj *instr;
                             if (buf[x] == tune[x]) {
                                 gears++;
                                 matched[x] = TRUE;
+                                if (iflags.using_gui_sounds)
+                                {
+                                    play_sfx_sound(SFX_GEAR_TURN);
+                                    delay_output_milliseconds(650);
+                                }
                             } else
                                 for (y = 0; y < 5; y++)
                                     if (!matched[y] && buf[x] == tune[y]
                                         && buf[y] != tune[y]) {
                                         tumblers++;
                                         matched[y] = TRUE;
+                                        if (iflags.using_gui_sounds)
+                                        {
+                                            play_sfx_sound(SFX_TUMBLER_CLICK);
+                                            delay_output_milliseconds(250);
+                                        }
                                         break;
                                     }
                         }

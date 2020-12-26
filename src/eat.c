@@ -2083,7 +2083,10 @@ struct obj *otmp;
                    KILLED_BY_AN);
         } 
         else
+        {
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             You("seem unaffected by the poison.");
+        }
     /* now any corpse left too long will make you mildly ill */
     } 
     else if ((rotted > 5L || (rotted > 3L && rn2(5))) && !Sick_resistance)
@@ -3279,7 +3282,10 @@ doeat()
                 losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), xname(otmp), KILLED_BY_AN);
             } 
             else
+            {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 You("seem unaffected by the poison.");
+            }
         } 
         else if (!nodelicious) 
         {
@@ -3427,8 +3433,11 @@ doeat()
 				losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "poisonous food",
 					KILLED_BY_AN);
 			}
-			else
-				You("seem unaffected by the poison.");
+            else
+            {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
+                You("seem unaffected by the poison.");
+            }
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
 		}
 		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS)
@@ -3440,8 +3449,11 @@ doeat()
 				losehp(adjust_damage(d(5, 20), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "poisonous food",
 					KILLED_BY_AN);
 			}
-			else
-				You("seem unaffected by the poison.");
+            else
+            {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
+                You("seem unaffected by the poison.");
+            }
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
 		}
 		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING && !Sick_resistance)

@@ -147,8 +147,12 @@ struct obj *otmp;
             remove_worn_item(otmp, FALSE);
         freeinv(otmp);
         put_saddle_on_mon(otmp, mtmp);
-    } else
+    }
+    else
+    {
+        play_sfx_sound_at_location(SFX_STEED_REFUSES, mtmp->mx, mtmp->my);
         pline("%s resists!", Monnam(mtmp));
+    }
     return 1;
 }
 
@@ -338,6 +342,7 @@ boolean force;      /* Quietly force this animal */
     {
         /* no longer tame */
         newsym(mtmp->mx, mtmp->my);
+        play_sfx_sound_at_location(SFX_STEED_REFUSES, mtmp->mx, mtmp->my);
         pline("%s resists%s!", Monnam(mtmp),
               mtmp->mleashed ? " and its leash comes off" : "");
         if (mtmp->mleashed)

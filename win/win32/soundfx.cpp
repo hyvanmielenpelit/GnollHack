@@ -24,7 +24,7 @@ struct GNHSoundInstance {
     struct GNHSoundInstance* next_instance;
 };
 
-#define NUM_IMMEDIATE_SOUND_INSTANCES 16
+#define NUM_IMMEDIATE_SOUND_INSTANCES 32
 
 static GNHSoundInstance musicInstances[2] = { 0 };
 static GNHSoundInstance levelAmbientInstances[2] = { 0 };
@@ -707,6 +707,17 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Note E", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Note F", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Horn/Horn Note G", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Puzzle/Gear Turn", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Puzzle/Tumbler Click", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Drawbridge/Open Drawbridge", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Drawbridge/Close Drawbridge", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Location/Drawbridge/Drawbridge Starts to Rise", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Drawbridge/Drawbridge Gets Blocked", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/General Unaffected", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/General Resists", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Steed Refuses", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/General Reflects", 1.0f },
 
 };
 

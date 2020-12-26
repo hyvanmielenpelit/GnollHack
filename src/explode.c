@@ -504,6 +504,7 @@ int expltype;
 
                     if (check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, FALSE, 0, 0, FALSE)) {
                         /* inside_engulfer: <i+x-1,j+y-1> == <u.ux,u.uy> */
+                        play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
                         if (cansee(i + x - 1, j + y - 1) || inside_engulfer)
                             pline("%s resists the %s!", Monnam(mtmp), str);
                         mdam = ddam/2;

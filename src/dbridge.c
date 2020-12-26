@@ -796,6 +796,7 @@ int x, y;
         struct monst* mtmp = m_at(x, y);
         if (mtmp && !is_flying(mtmp) && !is_levitating(mtmp) && !is_incorporeal(mtmp->data) && !passes_walls(mtmp->data) && mtmp->data->cwt >= WT_ELF)
         {
+            play_sfx_sound_at_location(SFX_DRAWBRIDGE_STARTS_TO_RISE, x2, y2);
             if(cansee(x, y) || cansee(x2, y2))
                 pline("The drawbridge starts to rise, but the weight of %s keeps it down.",
                     canseemon(mtmp) ? mon_nam(mtmp) : "something");
@@ -806,6 +807,7 @@ int x, y;
     {
         if (!Flying && !Levitation && !is_incorporeal(youmonst.data) && !passes_walls(youmonst.data) && youmonst.data->cwt >= WT_ELF)
         {
+            play_sfx_sound_at_location(SFX_DRAWBRIDGE_STARTS_TO_RISE, x2, y2);
             pline("The drawbridge starts to rise, but your weight keeps it down.");
             return;
         }
@@ -817,6 +819,7 @@ int x, y;
         struct monst* mtmp = m_at(x2, y2);
         if (mtmp && !is_incorporeal(mtmp->data) && !passes_walls(mtmp->data) && mtmp->data->msize >= MZ_MEDIUM)
         {
+            play_sfx_sound_at_location(SFX_DRAWBRIDGE_GETS_BLOCKED, x2, y2);
             if (cansee(x, y) || cansee(x2, y2))
                 pline("The drawbridge starts to close, but it gets blocked by %s and falls back down.",
                 canseemon(mtmp) ? mon_nam(mtmp) : "something");
@@ -827,6 +830,7 @@ int x, y;
     {
         if (!is_incorporeal(youmonst.data) && !passes_walls(youmonst.data) && youmonst.data->msize >= MZ_MEDIUM)
         {
+            play_sfx_sound_at_location(SFX_DRAWBRIDGE_GETS_BLOCKED, x2, y2);
             pline("The drawbridge starts to close, but it gets blocked by you and falls back down.");
             return;
         }
@@ -853,6 +857,7 @@ int x, y;
     x2 = x;
     y2 = y;
     get_wall_for_db(&x2, &y2);
+    play_sfx_sound_at_location(SFX_CLOSE_DRAWBRIDGE, x2, y2);
     if (cansee(x, y) || cansee(x2, y2))
         You_see("a drawbridge %s up!",
                 (((u.ux == x || u.uy == y) && !Underwater)
@@ -918,6 +923,8 @@ int x, y;
     x2 = x;
     y2 = y;
     get_wall_for_db(&x2, &y2);
+
+    play_sfx_sound_at_location(SFX_OPEN_DRAWBRIDGE, x2, y2);
     if (cansee(x, y) || cansee(x2, y2))
         You_see("a drawbridge %s down!",
                 (distu(x2, y2) < distu(x, y)) ? "going" : "coming");

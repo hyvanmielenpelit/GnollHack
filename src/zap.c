@@ -249,7 +249,8 @@ struct monst* origmonst;
 
 		if (is_mon_immune_to_elec(mtmp))
 		{
-			m_shieldeff(mtmp);
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
 			pline("%s is unaffected by your electric touch!", Monnam(mtmp));
 			break;
 		}
@@ -267,7 +268,8 @@ struct monst* origmonst;
 
 		if (is_mon_immune_to_fire(mtmp))
 		{
-			m_shieldeff(mtmp);
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
 			pline("%s is unaffected by your fiery touch!", Monnam(mtmp));
 			break;
 		}
@@ -285,7 +287,8 @@ struct monst* origmonst;
 
 		if (is_mon_immune_to_cold(mtmp))
 		{
-			m_shieldeff(mtmp);
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
 			pline("%s is unaffected by your freezing touch!", Monnam(mtmp));
 			break;
 		}
@@ -310,6 +313,7 @@ struct monst* origmonst;
         }
         else
         {
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
             pline("%s is unaffected by the sunlight beam!", Monnam(mtmp));
         }
         break;
@@ -324,7 +328,8 @@ struct monst* origmonst;
 		}
 		else if (resists_death(mtmp))
 		{ /* match effect on player */
-			m_shieldeff(mtmp);
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
 			pline("%s is unaffected by your touch!", Monnam(mtmp));
 			break; /* skip makeknown */
 		} 
@@ -352,6 +357,7 @@ struct monst* origmonst;
         }
         else if (resists_disint(mtmp) || is_peaceful(mtmp))
         { /* match effect on player */
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
             pline("%s is unaffected by your touch!", Monnam(mtmp));
             break; /* skip makeknown */
@@ -368,8 +374,11 @@ struct monst* origmonst;
         break;
     case SPE_FLESH_TO_STONE:
 		res = 1;
-		if (resists_ston(mtmp))
-			pline("%s is unaffected.", Monnam(mtmp));
+        if (resists_ston(mtmp))
+        {
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            pline("%s is unaffected.", Monnam(mtmp));
+        }
 		else if (check_ability_resistance_success(mtmp, A_DEX, save_adj))
 			pline("%s dodges your spell.", Monnam(mtmp));
 		else
@@ -378,8 +387,11 @@ struct monst* origmonst;
 	case SPE_TOUCH_OF_PETRIFICATION:
 		res = 1;
 		You("reach out with your petrifying touch...");
-		if (resists_ston(mtmp))
-			pline("%s is unaffected.", Monnam(mtmp));
+        if (resists_ston(mtmp))
+        {
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            pline("%s is unaffected.", Monnam(mtmp));
+        }
 		else if (magic_cancellation_success)
 			pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
 		else
@@ -392,13 +404,17 @@ struct monst* origmonst;
 			pline("%s couldn't see your gaze.", Monnam(mtmp));
 		else if (mon_reflects(mtmp, (char*)0))
 		{
-			if (canseemon(mtmp))
-				(void)mon_reflects(mtmp, "Your gaze is reflected by %s %s.");
+            if (canseemon(mtmp))
+            {
+                play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
+                (void)mon_reflects(mtmp, "Your gaze is reflected by %s %s.");
+            }
 
 			if (!Blind) 
 			{
 				if (Reflecting) 
 				{
+                    play_sfx_sound(SFX_GENERAL_REFLECTS);
 					(void)ureflects("Your reflected gaze is reflected away by your %s.",
 						s_suffix(Monnam(mtmp)));
 				}
@@ -417,8 +433,11 @@ struct monst* origmonst;
 				}
 			}
 		}
-		else if (resists_ston(mtmp) || !mon_can_see(mtmp) || !haseyes(mtmp->data))
-			pline("%s is unaffected.", Monnam(mtmp));
+        else if (resists_ston(mtmp) || !mon_can_see(mtmp) || !haseyes(mtmp->data))
+        {
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            pline("%s is unaffected.", Monnam(mtmp));
+        }
 #if 0
 		else if (check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
 		{
@@ -439,7 +458,8 @@ struct monst* origmonst;
 		}
 		else if (resists_death(mtmp))
 		{ /* match effect on player */
-			m_shieldeff(mtmp);
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
@@ -455,7 +475,8 @@ struct monst* origmonst;
 		res = 1;
 		reveal_invis = TRUE;
 		if (mindless(mtmp->data)) { /* match effect on player */
-			m_shieldeff(mtmp);
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
@@ -476,7 +497,8 @@ struct monst* origmonst;
 		reveal_invis = TRUE;
 		if (!haseyes(mtmp->data) || mindless(mtmp->data))
 		{ /* match effect on player */
-			m_shieldeff(mtmp);
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
@@ -544,7 +566,8 @@ struct monst* origmonst;
         }
 		else
 		{
-			m_shieldeff(mtmp);
+            play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
 			pline("%s resists!", Monnam(mtmp));
 		}
 		break;
@@ -552,6 +575,7 @@ struct monst* origmonst;
         res = 1;
         if (!(is_undead(mtmp->data) || is_vampshifter(mtmp)))
         {
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
             pline("%s is unaffected.", Monnam(mtmp));
         }
         else if (!check_ability_resistance_success(mtmp, A_WIS, save_adj))
@@ -574,6 +598,7 @@ struct monst* origmonst;
         }
         else
         {
+            play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
             pline("%s resists!", Monnam(mtmp));
         }
@@ -1098,7 +1123,8 @@ cure_petrification_here:
         }
         else
 		{ /* Undead and other nonliving such as golems */
-			pline("%s is unaffected.", Monnam(mtmp));
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            pline("%s is unaffected.", Monnam(mtmp));
 		}
 		break;
 	case SPE_REPLENISH_UNDEATH:
@@ -1139,7 +1165,8 @@ cure_petrification_here:
         }
 		else
 		{ /* Non-undead */
-			pline("%s is unaffected.", Monnam(mtmp));
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            pline("%s is unaffected.", Monnam(mtmp));
 		}
 		break;
 	case WAN_LIGHT: /* (broken wand) */
@@ -4569,7 +4596,8 @@ register struct obj *obj;
 				{
 					if (canspotmon(mon))
 					{
-						m_shieldeff(mon);
+                        play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
+                        m_shieldeff(mon);
 						pline("%s is unaffected!", Monnam(mon));
 					}
 				}
@@ -4597,7 +4625,8 @@ register struct obj *obj;
 				{
 					if (canspotmon(mon))
 					{
-						m_shieldeff(mon);
+                        play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
+                        m_shieldeff(mon);
 						pline("%s is unaffected!", Monnam(mon));
 					}
 				}
@@ -4625,7 +4654,8 @@ register struct obj *obj;
 				{
 					if (canspotmon(mon))
 					{
-						m_shieldeff(mon);
+                        play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
+                        m_shieldeff(mon);
 						pline("%s is unaffected!", Monnam(mon));
 					}
 				}
@@ -4653,7 +4683,8 @@ register struct obj *obj;
 				{
 					if (canspotmon(mon))
 					{
-						m_shieldeff(mon);
+                        play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
+                        m_shieldeff(mon);
 						pline("%s is unaffected!", Monnam(mon));
 					}
 				}
@@ -4681,7 +4712,8 @@ register struct obj *obj;
 				{
 					if (canspotmon(mon))
 					{
-						m_shieldeff(mon);
+                        play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
+                        m_shieldeff(mon);
 						pline("%s is unaffected!", Monnam(mon));
 					}
 				}
@@ -5314,7 +5346,8 @@ boolean ordinary;
 		}
 		else
 		{
-			u_shieldeff();
+            play_sfx_sound(SFX_GENERAL_RESISTS);
+            u_shieldeff();
 			You("resist!");
 		}
 		break;
@@ -5333,6 +5366,7 @@ boolean ordinary;
         }
         else
         {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             You("resist!");
         }
@@ -7537,6 +7571,7 @@ const char *fltxt;
     case ZT_MAGIC_MISSILE:
         if (Magic_missile_immunity || Invulnerable)
 		{
+            play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff(); // shieldeff(sx, sy);
 			damage = 0;
             pline_The("missiles bounce off!");
@@ -7551,6 +7586,7 @@ const char *fltxt;
         hit_tile = HIT_ON_FIRE;
         if (Fire_immunity || Invulnerable)
 		{
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff(); // shieldeff(sx, sy);
 			You("don't feel hot!");
             ugolemeffects(AD_FIRE, damage);
@@ -7576,6 +7612,7 @@ const char *fltxt;
         hit_tile = HIT_FROZEN;
         if (Cold_immunity || Invulnerable)
 		{
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff(); // shieldeff(sx, sy);
             You("don't feel cold.");
             ugolemeffects(AD_COLD, damage);
@@ -7592,6 +7629,7 @@ const char *fltxt;
 		damage = 0;
         if (Sleep_resistance)
 		{
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff();
             You("don't feel sleepy.");
         }
@@ -7605,6 +7643,7 @@ const char *fltxt;
 		damage = 0;
         if (Disint_resistance || is_incorporeal(youmonst.data) || Invulnerable) // || (magic_resistance_success && !(abstyp >= 20 && abstyp <= 39))
 		{					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             You("are not disintegrated.");
             break;
         }
@@ -7643,6 +7682,7 @@ const char *fltxt;
 		damage = 0;
 		if (resists_death(&youmonst) || Death_resistance || Invulnerable)
 		{
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff(); // (sx, sy);
 			You("seem unaffected.");
 			break;
@@ -7651,7 +7691,8 @@ const char *fltxt;
 		else if ((Antimagic || check_magic_resistance_and_inflict_damage(&youmonst, origobj, 12, 0, 0, NOTELL)) 
 			&& !(abstyp >= 20 && abstyp <= 39)) /* Antimagic does not work breath weapons and eyestalks, just spells and wands */
 		{
-			shieldeff(sx, sy);
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
+            shieldeff(sx, sy);
 			You("aren't affected.");
 			break;
 		}
@@ -7665,6 +7706,7 @@ const char *fltxt;
 		damage = 0;
 		if (Stoned || Stone_resistance)
 		{
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff(); // shieldeff(sx, sy);
 			You("aren't affected.");
 		}
@@ -7680,6 +7722,7 @@ const char *fltxt;
                 }
                 else
                 {
+                    play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                     You("aren't affected.");
                 }
             }
@@ -7700,6 +7743,7 @@ const char *fltxt;
         hit_tile = HIT_ELECTROCUTED;
         if (Shock_immunity || Invulnerable)
 		{
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff(); // shieldeff(sx, sy);
 			You("aren't affected.");
             ugolemeffects(AD_ELEC, damage);
@@ -7723,6 +7767,7 @@ const char *fltxt;
         hit_tile = HIT_SPLASHED_ACID;
         if (Acid_immunity || Invulnerable)
 		{
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             pline_The("%s doesn't hurt.", hliquid("acid"));
 			damage = 0;
         }
@@ -7920,7 +7965,8 @@ const char* fltxt;
 		/* should never get here if the resistance and magic resistance are properly checked earlier */
 		if (canspotmon(mon))
 		{
-			m_shieldeff(mon);
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
+            m_shieldeff(mon);
 			pline("%s is unaffected!", Monnam(mon));
 		}
 	}
@@ -8221,6 +8267,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     if (cansee(mon->mx, mon->my))
 					{
                         hit(fltxt, mon, exclam(0), -1, "");
+                        play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mon->mx, mon->my);
                         m_shieldeff(mon);
                         (void) mon_reflects(mon,
                                             "But it reflects from %s %s!");
@@ -8353,6 +8400,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_BOUNCE, sx, sy);
                     tmp_at(DISP_CHANGE, zapbounce_to_glyph(dx, dy, -dx, -dy, zaptype));
                     tmp_at(sx, sy);
+                    play_sfx_sound(SFX_GENERAL_REFLECTS);
                     if (!Blind)
                     {
                         (void) ureflects("But %s reflects from your %s!",
@@ -9689,12 +9737,14 @@ int dmg, adtyp, tell;
 		{
 			if (is_you)
 			{
-				u_shieldeff();
+                play_sfx_sound(SFX_GENERAL_RESISTS);
+                u_shieldeff();
 				You("resist!");
 			}
 			else
 			{
-				m_shieldeff(mtmp);
+                play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
+                m_shieldeff(mtmp);
 				pline("%s resists!", Monnam(mtmp));
 			}
 		}

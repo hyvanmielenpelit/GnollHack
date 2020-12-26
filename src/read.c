@@ -1487,7 +1487,8 @@ struct monst* origmonst;
 		}
 		else if (resists_charm(mtmp))
 		{
-			pline("%s is unaffected.", Monnam(mtmp));
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            pline("%s is unaffected.", Monnam(mtmp));
 		}
 		else if (!check_ability_resistance_success(mtmp, A_WIS, adj_save))
 		{
@@ -1504,7 +1505,8 @@ struct monst* origmonst;
 			/* tame dog verbosely */
 			if (!tamedog(mtmp, (struct obj*) 0, FALSE, charmed, duration, TRUE, FALSE) || !is_tame(mtmp))
 			{
-				pline("%s is unaffected!", Monnam(mtmp));
+                play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+                pline("%s is unaffected!", Monnam(mtmp));
 			}
             else
             {
@@ -1515,7 +1517,8 @@ struct monst* origmonst;
         }
 		else
 		{
-			m_shieldeff(mtmp);
+            play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
 			pline("%s resists!", Monnam(mtmp));
 		}
         if ((!was_peaceful && is_peaceful(mtmp)) || (!was_tame && is_tame(mtmp)))
@@ -1564,11 +1567,13 @@ struct monst* origmonst;
             /* tame dog verbosely */
             if (!tamedog(mtmp, (struct obj*)0, FALSE, controlled, duration, TRUE, FALSE) || !is_tame(mtmp))
             {
+                play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
                 pline("%s is unaffected!", Monnam(mtmp));
             }
         }
         else
         {
+            play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
             pline("%s resists!", Monnam(mtmp));
         }
@@ -1576,8 +1581,10 @@ struct monst* origmonst;
             return 1;
     }
     else
+    {
+        play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
         pline("%s is unaffected!", Monnam(mtmp));
-
+    }
     return 0;
 }
 

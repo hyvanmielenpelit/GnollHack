@@ -1363,6 +1363,7 @@ boolean* obj_destroyed;
 						obj->dknown = 1;
 						if (check_magic_cancellation_success(mon, 0) || resists_ston(mon))
 						{
+							play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mon->mx, mon->my);
 							m_shieldeff(mon);
 							pline("%s resists!", Monnam(mon));
 						}
@@ -1430,6 +1431,7 @@ boolean* obj_destroyed;
 
 						if (check_magic_cancellation_success(mon, 0) || resists_ston(mon))
 						{
+							play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mon->mx, mon->my);
 							m_shieldeff(mon);
 							pline("%s resists!", Monnam(mon));
 						}
@@ -4194,7 +4196,8 @@ boolean wep_was_destroyed;
                     break;
                 }
                 if (!is_blinded(mon)) {
-                    if (ureflects("%s gaze is reflected by your %s.",
+					play_sfx_sound(SFX_GENERAL_REFLECTS);
+					if (ureflects("%s gaze is reflected by your %s.",
                                   s_suffix(Monnam(mon)))) {
                         ;
                     } else if (Free_action) {

@@ -1214,6 +1214,7 @@ struct obj **optr;
             }
             else
             {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 pline("%s your vision.", Tobjnam(obj, "assault"));
                 You("are unaffected!");
             }

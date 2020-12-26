@@ -375,7 +375,7 @@ boolean exclude_ascii;
     enum layer_types layer = draw_in_front ? LAYER_COVER_OBJECT : LAYER_OBJECT;
     boolean in_pit = FALSE;
     struct trap* t = 0;
-    if (isok(x, y) && (t = t_at(x, y)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
+    if (isok(x, y) && (t = t_at(x, y)) != 0 && t->tseen && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
         in_pit = TRUE;
 
     /* Save this object's glyph for showing in object pile */
@@ -1446,6 +1446,7 @@ xchar x, y;
             adjusted_delay_output();
         }
         newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS); /* restore the old information */
+        show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER_EFFECT);
     }
 }
 

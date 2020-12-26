@@ -865,14 +865,20 @@ struct attack *mattk;
     if (magr->data == &mons[PM_MEDUSA] && mon_reflects(mdef, (char *) 0))
 	{
         if (canseemon(mdef))
-            (void) mon_reflects(mdef, "The gaze is reflected away by %s %s.");
+        {
+            play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mdef->mx, mdef->my);
+            (void)mon_reflects(mdef, "The gaze is reflected away by %s %s.");
+        }
         if (!is_blinded(mdef)) 
 		{
             if (mon_reflects(magr, (char *) 0)) 
 			{
                 if (canseemon(magr))
-                    (void) mon_reflects(magr,
-                                      "The gaze is reflected away by %s %s.");
+                {
+                    play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, magr->mx, magr->my);
+                    (void)mon_reflects(magr,
+                        "The gaze is reflected away by %s %s.");
+                }
                 return MM_MISS;
             }
             if (is_invisible(mdef) && !has_see_invisible(magr))
@@ -1545,7 +1551,8 @@ register struct obj* omonwep;
 			if (canseemon(magr))
 			{
 				pline("%s gazes at %s.", Monnam(magr), mon_nam(mdef));
-				(void)mon_reflects(mdef, "The gaze is reflected away by %s %s!");
+                play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mdef->mx, mdef->my);
+                (void)mon_reflects(mdef, "The gaze is reflected away by %s %s!");
 			}
 			break;
 		}
@@ -1561,6 +1568,7 @@ register struct obj* omonwep;
 			}
             if (has_cancellation_resistance(mdef))
             {
+                play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mdef->mx, mdef->my);
                 pline("However, %s is unaffected!", mon_nam(mdef));
                 m_shieldeff(mdef);
             }
@@ -2078,15 +2086,21 @@ int amt, saving_throw_adjustment, tellstyle;
 
 	if (resists_sleep(mon))
 	{
-		if (tellstyle != NOTELL)
-			pline("%s is unaffected!", Monnam(mon));
+        if (tellstyle != NOTELL)
+        {
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
+            pline("%s is unaffected!", Monnam(mon));
+        }
 			
 		m_shieldeff(mon);
 	}
 	else if(saving_throw_adjustment > -100 && check_ability_resistance_success(mon, A_WIS, 0)) // check_magic_resistance_and_inflict_damage(mon, otmp, FALSE, 0, 0, tellstyle))
 	{
-		if (tellstyle != NOTELL)
-			pline("%s is unaffected!", Monnam(mon));
+        if (tellstyle != NOTELL)
+        {
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
+            pline("%s is unaffected!", Monnam(mon));
+        }
 
 		m_shieldeff(mon);
 	}
@@ -2225,7 +2239,10 @@ int mdead;
             if (is_mon_immune_to_acid(magr)) 
             {
                 if (canseemon(magr))
+                {
+                    play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, magr->mx, magr->my);
                     pline("%s is not affected.", Monnam(magr));
+                }
 				damage = 0;
             }
         }
@@ -2274,6 +2291,7 @@ int mdead;
 
                     if (mon_reflects(magr, canseemon(magr) ? buf : (char*)0))
                     {
+                        play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mdef->mx, mdef->my);
                         update_m_action_core(mdef, action_before, 1);
                         return (mdead | mhit);
                     }

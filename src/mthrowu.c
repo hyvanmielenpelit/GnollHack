@@ -696,7 +696,10 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             if (is_mon_immune_to_acid(mtmp)) 
 			{
                 if (vis || (verbose && !target))
+                {
+                    play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
                     pline("%s is unaffected.", Monnam(mtmp));
+                }
             } 
 			else 
 			{
@@ -711,7 +714,8 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 		{
 			if (check_magic_cancellation_success(mtmp, 0) || resists_ston(mtmp))
 			{
-				m_shieldeff(mtmp);
+                play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
+                m_shieldeff(mtmp);
 				pline("%s resists!", Monnam(mtmp));
 			}
 			else

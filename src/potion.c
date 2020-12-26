@@ -1198,8 +1198,11 @@ struct obj *otmp;
         break;
 	case POT_POISON:
 		pline("Yecch!  This stuff tastes like poison.");
-		if (Poison_resistance)
-			pline("However, you are unaffected by the poison.");
+        if (Poison_resistance)
+        {
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
+            pline("However, you are unaffected by the poison.");
+        }
 		else 
 		{
 			if (!Fixed_abil) 

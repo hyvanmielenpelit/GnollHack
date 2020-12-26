@@ -2050,7 +2050,10 @@ boolean give_feedback;
     if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) 
     {
         if (give_feedback)
+        {
+            play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
             pline("%s resists your magic!", Monnam(mtmp));
+        }
         return FALSE;
     }
     else

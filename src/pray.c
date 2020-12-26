@@ -695,17 +695,25 @@ aligntyp resp_god;
              * but not direct kill count (pacifist conduct).
              */
             xkilled(u.ustuck, XKILL_NOMSG | XKILL_NOCONDUCT);
-        } else
+        }
+        else
+        {
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             pline("%s seems unaffected.", Monnam(u.ustuck));
-    } else {
+        }
+    }
+    else 
+    {
         pline("Suddenly, a bolt of lightning strikes you!");
         if (Reflecting) {
+            play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
             if (Blind)
                 pline("For some reason you're unaffected.");
             else
                 (void) ureflects("%s reflects from your %s.", "It");
         } else if (Shock_immunity) {
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             u_shieldeff();
             pline("It seems not to affect you.");
         } else
@@ -719,8 +727,12 @@ aligntyp resp_god;
         if (!resists_disint(u.ustuck)) {
             pline("%s disintegrates into a pile of dust!", Monnam(u.ustuck));
             xkilled(u.ustuck, XKILL_NOMSG | XKILL_NOCORPSE | XKILL_NOCONDUCT);
-        } else
+        }
+        else
+        {
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             pline("%s seems unaffected.", Monnam(u.ustuck));
+        }
     } else {
         pline("A wide-angle disintegration beam hits you!");
 

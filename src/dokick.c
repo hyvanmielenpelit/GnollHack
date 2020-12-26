@@ -1659,6 +1659,7 @@ dokick() {
                 if (Blind)
                     feel_location(x, y); /* we know we hit it */
                 if (is_drawbridge_wall(x, y) >= 0) {
+                    play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, x, y);
                     pline_The("drawbridge is unaffected.");
                     /* update maploc to refer to the drawbridge */
                     (void) find_drawbridge(&x, &y);

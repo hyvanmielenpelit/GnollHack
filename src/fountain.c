@@ -326,6 +326,7 @@ drinkfountain()
 		pline_The("water tastes foul! It was poisoned!");
 		if (Poison_resistance) 
 		{
+			play_sfx_sound(SFX_GENERAL_UNAFFECTED);
 			pline("However, you are unaffected!");
 		}
 		else

@@ -1222,7 +1222,10 @@ struct obj *obj;
             pline("%s doesn't have a reflection.", Monnam(mtmp));
     } else if (monable && mtmp->data == &mons[PM_MEDUSA]) {
         if (mon_reflects(mtmp, "The gaze is reflected away by %s %s!"))
+        {
+            play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
             return 1;
+        }
         if (vis)
             pline("%s is turned to stone!", Monnam(mtmp));
         stoned = TRUE;

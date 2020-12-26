@@ -1944,7 +1944,8 @@ dogaze()
 						else if (is_reflecting(mtmp))
 						{
 							You("gaze at %s.", mon_nam(mtmp));
-							(void)mon_reflects(mtmp, "The gaze is reflected away by %s %s!");
+                            play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
+                            (void)mon_reflects(mtmp, "The gaze is reflected away by %s %s!");
 							break;
 						}
 #endif
@@ -1956,6 +1957,7 @@ dogaze()
 								You("focus your anti-magic gaze on %s.", mon_nam(mtmp));
                             if (has_cancellation_resistance(mtmp))
                             {
+                                play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
                                 pline("However, %s is unaffected!", mon_nam(mtmp));
                                 m_shieldeff(mtmp);
 

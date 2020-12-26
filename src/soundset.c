@@ -2788,7 +2788,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     },
     {
         "GHSOUND_DISINTEGRATE",
-        {GHSOUND_DISINTEGRATE, 1.0f},
+        {GHSOUND_DISINTEGRATE, 10.0f},
         FALSE
     },
     {
@@ -3990,6 +3990,56 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "GHSOUND_MAGIC_WHISTLE_UNDERWATER",
         {GHSOUND_MAGIC_WHISTLE_UNDERWATER, 1.0f},
         TRUE
+    },
+    {
+        "GHSOUND_GEAR_TURN",
+        {GHSOUND_GEAR_TURN, 20.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_TUMBLER_CLICK",
+        {GHSOUND_TUMBLER_CLICK, 20.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_OPEN_DRAWBRIDGE",
+        {GHSOUND_OPEN_DRAWBRIDGE, 20.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_CLOSE_DRAWBRIDGE",
+        {GHSOUND_CLOSE_DRAWBRIDGE, 20.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_DRAWBRIDGE_STARTS_TO_RISE",
+        {GHSOUND_DRAWBRIDGE_STARTS_TO_RISE, 10.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_DRAWBRIDGE_GETS_BLOCKED",
+        {GHSOUND_DRAWBRIDGE_GETS_BLOCKED, 10.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_GENERAL_UNAFFECTED",
+        {GHSOUND_GENERAL_UNAFFECTED, 5.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_GENERAL_RESISTS",
+        {GHSOUND_GENERAL_RESISTS, 5.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_STEED_REFUSES",
+        {GHSOUND_STEED_REFUSES, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_GENERAL_REFLECTS",
+        {GHSOUND_GENERAL_REFLECTS, 5.0f},
+        FALSE
     },
 };
 

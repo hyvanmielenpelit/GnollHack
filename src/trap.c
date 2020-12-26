@@ -5954,6 +5954,7 @@ boolean disarm;
             play_sfx_sound(SFX_ELECTRIC_SHOCK);
             You("are jolted by a surge of electricity!");
             if (Shock_immunity) {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 u_shieldeff();
                 You("don't seem to be affected.");
                 dmg = 0;
@@ -5980,8 +5981,12 @@ boolean disarm;
                 exercise(A_DEX, FALSE);
 #endif
                 nomovemsg = You_can_move_again;
-            } else
+            }
+            else
+            {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 You("momentarily stiffen.");
+            }
             break;
         case 2:
         case 1:

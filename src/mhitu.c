@@ -1925,6 +1925,7 @@ register struct obj* omonwep;
 
                     if (check_magic_cancellation_success(&youmonst, 0) || Stone_resistance)
                     {
+                        play_sfx_sound(SFX_GENERAL_RESISTS);
                         shieldeff(u.ux, u.uy);
                         You("resist!");
                     }
@@ -2537,6 +2538,7 @@ register struct obj* omonwep;
         } 
 		else if (nymphcancelled || resists_charm(&youmonst) || Charm_resistance) 
 		{
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             if (!Blind)
                 pline("%s tries to %s you, but you seem %s.",
                       Adjmonnam(mtmp, "plain"),
@@ -2921,7 +2923,8 @@ register struct obj* omonwep;
         } else if (Unchanging || is_incorporeal(youmonst.data)
                    || youmonst.data == &mons[PM_GREEN_SLIME]) {
 			hitmsg(mtmp, mattk, -1, FALSE);
-			You("are unaffected.");
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
+            You("are unaffected.");
 			damage = 0;
         } else if (!Slimed) {
 			hitmsg(mtmp, mattk, damagedealt, TRUE);
@@ -3630,6 +3633,9 @@ boolean ufound;
                     make_hallucinated(HHallucination + (long)basedmg, FALSE, 0L);
                 if(chg)
                     play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
+                else
+                    play_sfx_sound(SFX_GENERAL_UNAFFECTED);
+
                 You("%s.", chg ? "are freaked out" : "seem unaffected");
             }
             break;
@@ -3639,6 +3645,7 @@ boolean ufound;
         }
         if (not_affected) 
 		{
+            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             You("seem unaffected by it.");
             ugolemeffects((int) mattk->adtyp, damage);
         }
@@ -3696,12 +3703,20 @@ struct attack *mattk;
             boolean useeit = canseemon(mtmp);
 
             if (useeit)
-                (void) ureflects("%s gaze is reflected by your %s.",
-                                 s_suffix(Monnam(mtmp)));
+            {
+                play_sfx_sound(SFX_GENERAL_REFLECTS);
+                (void)ureflects("%s gaze is reflected by your %s.",
+                    s_suffix(Monnam(mtmp)));
+
+            }
             if (mon_reflects(
-                    mtmp, !useeit ? (char *) 0
-                                  : "The gaze is reflected away by %s %s!"))
+                mtmp, !useeit ? (char*)0
+                : "The gaze is reflected away by %s %s!"))
+            {
+                play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
                 break;
+            }
+
             if (!m_canseeu(mtmp)) { /* probably you're invisible */
                 if (useeit)
                     pline(
@@ -3780,7 +3795,8 @@ struct attack *mattk;
 				}
 				else
 				{
-					You("resist!");
+                    play_sfx_sound(SFX_GENERAL_RESISTS);
+                    You("resist!");
 					u_shieldeff();
 				}
             }
@@ -3877,9 +3893,11 @@ struct attack *mattk;
 #if 0
 		else if (Reflecting)
 		{
-			if (canseemon(mtmp))
-				(void)ureflects("%s gazes at you, but the gaze is reflected away by your %s.", Monnam(mtmp));
-
+            if (canseemon(mtmp))
+            {
+                play_sfx_sound(SFX_GENERAL_REFLECTS);
+                (void)ureflects("%s gazes at you, but the gaze is reflected away by your %s.", Monnam(mtmp));
+            }
 			break;
 		}
 #endif
@@ -3894,6 +3912,7 @@ struct attack *mattk;
 			}
             if (Cancellation_resistance)
             {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 pline("However, you are unaffected!");
                 u_shieldeff();
             }
@@ -4464,6 +4483,7 @@ struct attack *mattk;
                   !Upolyd ? "" : "your ", hliquid("acid"));
             if (is_mon_immune_to_acid(mtmp)) 
 			{
+                play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
                 pline("%s is not affected.", Monnam(mtmp));
                 damage = 0;
             }
@@ -4561,7 +4581,10 @@ struct attack *mattk;
 					{
                         update_u_action_core(action_before, 1);
                         if (mon_reflects(mtmp, "Your gaze is reflected by %s %s."))
+                        {
+                            play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
                             return 1;
+                        }
                         hit_tile = HIT_PARALYZED;
                         pline("%s is frozen by your gaze!", Monnam(mtmp));
                         paralyze_monst(mtmp, paralyse_duration, FALSE);

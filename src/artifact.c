@@ -2208,6 +2208,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 						}
 						else
 						{
+							play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mdef->mx, mdef->my);
 							m_shieldeff(mdef);
 							pline("%s is unaffected!", Monnam(mdef));
 						}
@@ -2227,6 +2228,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 							pline("%s hits you with a deadly blow!", The(xname(otmp)));
 						}
 
+						play_sfx_sound(SFX_GENERAL_UNAFFECTED);
 						u_shieldeff();
 						You("are unaffected!");
 					}
