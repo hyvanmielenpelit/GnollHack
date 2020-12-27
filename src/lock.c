@@ -238,7 +238,7 @@ picklock(VOID_ARGS)
     } 
     else 
     {
-        play_simple_object_sound(xlock.box, xlock.box->olocked ? OBJECT_SOUND_TYPE_UNLOCK_CONTAINER : OBJECT_SOUND_TYPE_LOCK_CONTAINER);
+        play_simple_container_sound(xlock.box, xlock.box->olocked ? CONTAINER_SOUND_TYPE_UNLOCK : CONTAINER_SOUND_TYPE_LOCK);
         
         if (xlock.box->olocked && (xlock.box->speflags & SPEFLAGS_USES_UP_KEY) && xlock.key && !is_obj_indestructible(xlock.key) && !xlock.key->oartifact)
         {

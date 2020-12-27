@@ -1167,6 +1167,35 @@ enum object_instrument_soundset_types {
 
 extern struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDSETS];
 
+
+/* CONTAINER SOUNDSETS */
+enum container_sound_types {
+	CONTAINER_SOUND_TYPE_OPEN = 0,
+	CONTAINER_SOUND_TYPE_CLOSE,
+	CONTAINER_SOUND_TYPE_UNLOCK,
+	CONTAINER_SOUND_TYPE_LOCK,
+	CONTAINER_SOUND_TYPE_BREAK_LOCK,
+	CONTAINER_SOUND_TYPE_LID_SLAM,
+	CONTAINER_SOUND_TYPE_RESIST_OPEN,
+	CONTAINER_SOUND_TYPE_TRY_LOCKED,
+	MAX_CONTAINER_SOUND_TYPES
+};
+
+struct container_soundset_definition {
+	const char* soundset_name;
+	struct ghsound_info sounds[MAX_CONTAINER_SOUND_TYPES];
+};
+
+enum object_container_soundset_types {
+	OBJECT_CONTAINER_SOUNDSET_NONE = 0,
+	OBJECT_CONTAINER_SOUNDSET_GENERIC,
+	OBJECT_CONTAINER_SOUNDSET_CHEST,
+	MAX_CONTAINER_SOUNDSETS
+};
+
+extern struct container_soundset_definition container_soundsets[MAX_CONTAINER_SOUNDSETS];
+
+
 /* OBJECT SOUNDSETS */
 enum object_sound_types {
 	OBJECT_SOUND_TYPE_AMBIENT = 0,		/* Ambient sound that is typically either continuously played or played when the object is lit */
@@ -1182,14 +1211,6 @@ enum object_sound_types {
 	OBJECT_SOUND_TYPE_PICK_UP,
 	OBJECT_SOUND_TYPE_DROP,
 	OBJECT_SOUND_TYPE_DROP_AFTER_THROW,
-	OBJECT_SOUND_TYPE_OPEN_CONTAINER,
-	OBJECT_SOUND_TYPE_CLOSE_CONTAINER,
-	OBJECT_SOUND_TYPE_UNLOCK_CONTAINER,
-	OBJECT_SOUND_TYPE_LOCK_CONTAINER,
-	OBJECT_SOUND_TYPE_BREAK_LOCK_CONTAINER,
-	OBJECT_SOUND_TYPE_LID_SLAM_CONTAINER,
-	OBJECT_SOUND_TYPE_RESIST_OPEN_CONTAINER,
-	OBJECT_SOUND_TYPE_TRY_LOCKED_CONTAINER,
 	OBJECT_SOUND_TYPE_WEAR,
 	OBJECT_SOUND_TYPE_TAKEOFF,
 	OBJECT_SOUND_TYPE_WIELD,
@@ -1278,6 +1299,7 @@ struct object_soundset_definition {
 	enum occupation_soundset_types occupation_soundsets[MAX_OBJECT_OCCUPATION_TYPES];
 	enum object_ray_soundset_types ray_soundset;
 	enum object_instrument_soundset_types instrument_soundset;
+	enum object_container_soundset_types container_soundset;
 };
 
 extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS];

@@ -2857,6 +2857,9 @@ E void FDECL(get_hit_location, (enum hit_surface_source_types, ANY_P*, xchar*, x
 E void FDECL(play_simple_object_sound, (struct obj*, enum object_sound_types));
 E void FDECL(play_simple_object_sound_at_location, (struct obj*, int, int, enum object_sound_types));
 E void FDECL(set_simple_object_sound_id_and_volume, (enum object_soundset_types, enum object_sound_types, enum ghsound_types*, float*));
+E void FDECL(play_simple_container_sound, (struct obj*, enum container_sound_types));
+E void FDECL(play_simple_container_sound_at_location, (struct obj*, int, int, enum container_sound_types));
+E void FDECL(set_simple_container_sound_id_and_volume, (enum object_soundset_types, enum container_sound_types, enum ghsound_types*, float*));
 E void FDECL(play_object_hit_sound, (struct obj*, enum hit_surface_source_types, ANY_P*, double, enum hmon_atkmode_types));
 E void FDECL(play_object_hit_sound_at_location, (struct obj*, enum hit_surface_source_types, ANY_P*, double, enum hmon_atkmode_types, xchar, xchar));
 E void FDECL(play_simple_player_sound, (enum monster_sound_types)); /* somewhat obsolete */

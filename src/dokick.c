@@ -875,7 +875,7 @@ boolean is_golf_swing;
             if (!rn2(5) || (martial() && !rn2(2))) {
                 if (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == NON_PM || kickedobj->keyotyp == SKELETON_KEY)
                 {
-                    play_simple_object_sound(kickedobj, OBJECT_SOUND_TYPE_BREAK_LOCK_CONTAINER);
+                    play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_BREAK_LOCK);
                     You("break open the lock!");
                     breakchestlock(kickedobj, FALSE);
                     if (otrp)
@@ -889,7 +889,7 @@ boolean is_golf_swing;
             }
         } else {
             if (!rn2(3) || (martial() && !rn2(2))) {
-                play_simple_object_sound(kickedobj, OBJECT_SOUND_TYPE_LID_SLAM_CONTAINER);
+                play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_LID_SLAM);
                 pline_The("lid slams open, then falls shut.");
                 kickedobj->lknown = 1;
                 if (otrp)
