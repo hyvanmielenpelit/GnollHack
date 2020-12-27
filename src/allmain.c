@@ -73,9 +73,12 @@ boolean resuming;
 
     if (!resuming)
 	{ /* new game */
+        boolean oldverbose = flags.verbose;
+        flags.verbose = FALSE;
         context.rndencode = rnd(9000);
         set_wear((struct obj *) 0); /* for side-effects of starting gear */
         (void) pickup(1);      /* autopickup at initial location */
+        flags.verbose = oldverbose;
     }
     context.botlx = TRUE; /* for STATUS_HILITES */
     update_inventory(); /* for perm_invent */

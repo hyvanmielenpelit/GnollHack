@@ -54,8 +54,11 @@ void
 off_msg(otmp)
 struct obj *otmp;
 {
-    if (flags.verbose)
+    if (flags.verbose && otmp)
+    {
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
         You("were wearing %s.", doname(otmp));
+    }
 }
 
 /* for items that involve no delay */
@@ -63,7 +66,7 @@ STATIC_OVL void
 on_msg(otmp)
 struct obj *otmp;
 {
-    if (flags.verbose) {
+    if (flags.verbose && otmp) {
         char how[BUFSZ];
         /* call xname() before obj_is_pname(); formatting obj's name
            might set obj->dknown and that affects the pname test */
@@ -72,6 +75,8 @@ struct obj *otmp;
         how[0] = '\0';
         if (otmp->otyp == TOWEL)
             Sprintf(how, " around your %s", body_part(HEAD));
+
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_WEAR);
         You("are now wearing %s%s.",
             obj_is_pname(otmp) ? the(otmp_name) : an(otmp_name), how);
     }
@@ -156,6 +161,9 @@ boolean on;
 int
 Boots_on(VOID_ARGS)
 {
+    if (flags.verbose && uarmf)
+        play_simple_object_sound(uarmf, OBJECT_SOUND_TYPE_WEAR);
+
     long oldprop =
         u.uprops[objects[uarmf->otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
@@ -183,6 +191,9 @@ Boots_off(VOID_ARGS)
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
+
+    if (flags.verbose && otmp)
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
 
     context.takeoff.mask &= ~W_ARMF;
     /* For levitation, float_down() returns if Levitation, so we
@@ -214,6 +225,9 @@ Boots_off(VOID_ARGS)
 STATIC_PTR int
 Cloak_on(VOID_ARGS)
 {
+    if (flags.verbose && uarmc)
+        play_simple_object_sound(uarmc, OBJECT_SOUND_TYPE_WEAR);
+
     long oldprop =
         u.uprops[objects[uarmc->otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
 
@@ -241,6 +255,9 @@ Cloak_off(VOID_ARGS)
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
 
+    if (flags.verbose && otmp)
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
+
     context.takeoff.mask &= ~W_ARMC;
     /* For mummy wrapping, taking it off first resets `Invisible'. */
     setworn((struct obj *) 0, W_ARMC);
@@ -261,6 +278,9 @@ STATIC_PTR
 int
 Helmet_on(VOID_ARGS)
 {
+    if (flags.verbose && uarmh)
+        play_simple_object_sound(uarmh, OBJECT_SOUND_TYPE_WEAR);
+
     switch (uarmh->otyp) {
     case HELM_OF_OPPOSITE_ALIGNMENT:
         /* changing alignment can toggle off active artifact
@@ -320,6 +340,9 @@ Helmet_on(VOID_ARGS)
 int
 Helmet_off(VOID_ARGS)
 {
+    if (flags.verbose && uarmh)
+        play_simple_object_sound(uarmh, OBJECT_SOUND_TYPE_TAKE_OFF);
+
     context.takeoff.mask &= ~W_ARMH;
 
     switch (uarmh->otyp) {
@@ -341,6 +364,8 @@ STATIC_PTR
 int
 Gloves_on(VOID_ARGS)
 {
+    if (flags.verbose && uarmg)
+        play_simple_object_sound(uarmg, OBJECT_SOUND_TYPE_WEAR);
 
     uarmg->known = 1; /* gloves' +/- evident because of status line AC */
 	return 0;
@@ -375,6 +400,9 @@ Gloves_off(VOID_ARGS)
 {
 	boolean on_purpose = !context.mon_moving && !uarmg->in_use;
 
+    if (flags.verbose && uarmg)
+        play_simple_object_sound(uarmg, OBJECT_SOUND_TYPE_TAKE_OFF);
+
     context.takeoff.mask &= ~W_ARMG;
 
 	setworn((struct obj*) 0, W_ARMG);
@@ -398,6 +426,9 @@ Gloves_off(VOID_ARGS)
 STATIC_PTR int
 Shield_on(VOID_ARGS)
 {
+    if (flags.verbose && uarms)
+        play_simple_object_sound(uarms, OBJECT_SOUND_TYPE_WEAR);
+
     uarms->known = 1; /* shield's +/- evident because of status line AC */
 	return 0;
 }
@@ -405,6 +436,9 @@ Shield_on(VOID_ARGS)
 int
 Shield_off(VOID_ARGS)
 {
+    if (flags.verbose && uarms)
+        play_simple_object_sound(uarms, OBJECT_SOUND_TYPE_TAKE_OFF);
+
     context.takeoff.mask &= ~W_ARMS;
 
     setworn((struct obj *) 0, W_ARMS);
@@ -415,6 +449,9 @@ Shield_off(VOID_ARGS)
 STATIC_PTR int
 Shirt_on(VOID_ARGS)
 {
+    if (flags.verbose && uarmu)
+        play_simple_object_sound(uarmu, OBJECT_SOUND_TYPE_WEAR);
+
     uarmu->known = 1; /* shirt's +/- evident because of status line AC */
 	return 0;
 }
@@ -422,6 +459,9 @@ Shirt_on(VOID_ARGS)
 int
 Shirt_off(VOID_ARGS)
 {
+    if (flags.verbose && uarmu)
+        play_simple_object_sound(uarmu, OBJECT_SOUND_TYPE_TAKE_OFF);
+
     context.takeoff.mask &= ~W_ARMU;
 
 	setworn((struct obj*) 0, W_ARMU);
@@ -433,6 +473,8 @@ Shirt_off(VOID_ARGS)
 STATIC_PTR int
 Robe_on(VOID_ARGS)
 {
+    if (flags.verbose && uarmo)
+        play_simple_object_sound(uarmo, OBJECT_SOUND_TYPE_WEAR);
 
 	uarmo->known = 1; /* shirt's +/- evident because of status line AC */
 	return 0;
@@ -441,6 +483,9 @@ Robe_on(VOID_ARGS)
 int
 Robe_off(VOID_ARGS)
 {
+    if (flags.verbose && uarmo)
+        play_simple_object_sound(uarmo, OBJECT_SOUND_TYPE_TAKE_OFF);
+
 	context.takeoff.mask &= ~W_ARMO;
 	setworn((struct obj*) 0, W_ARMO);
 	context.takeoff.cancelled_don = FALSE;
@@ -451,6 +496,9 @@ Robe_off(VOID_ARGS)
 STATIC_PTR int
 Bracers_on(VOID_ARGS)
 {
+    if (flags.verbose && uarmb)
+        play_simple_object_sound(uarmb, OBJECT_SOUND_TYPE_WEAR);
+
 	uarmb->known = 1;
 	return 0;
 }
@@ -458,6 +506,9 @@ Bracers_on(VOID_ARGS)
 int
 Bracers_off(VOID_ARGS)
 {
+    if (flags.verbose && uarmb)
+        play_simple_object_sound(uarmb, OBJECT_SOUND_TYPE_TAKE_OFF);
+
 	context.takeoff.mask &= ~W_ARMB;
 
 	setworn((struct obj*) 0, W_ARMB);
@@ -473,6 +524,9 @@ long wearslotmask;
 	/* Wear slot mask added to find out the situation before wearing */
 	if (!ud)
 		return 0;
+
+    if (flags.verbose && ud)
+        play_simple_object_sound(ud, OBJECT_SOUND_TYPE_WEAR);
 
 	if (ud == uwep)
 		setuwep((struct obj*) 0, W_WEP);
@@ -506,6 +560,9 @@ struct obj* ud;
 	if (!ud)
 		return 0;
 
+    if (flags.verbose && ud)
+        play_simple_object_sound(ud, OBJECT_SOUND_TYPE_TAKE_OFF);
+
 	long bit = ud->owornmask & W_MISCITEMS;
 
 	context.takeoff.mask &= ~bit;
@@ -524,6 +581,8 @@ STATIC_PTR
 int
 Armor_on(VOID_ARGS)
 {
+    if (flags.verbose && uarm)
+        play_simple_object_sound(uarm, OBJECT_SOUND_TYPE_WEAR);
     /*
      * No suits require special handling.  Special properties conferred by
      * suits are set up as intrinsics (actually 'extrinsics') by setworn()
@@ -536,6 +595,9 @@ Armor_on(VOID_ARGS)
 int
 Armor_off(VOID_ARGS)
 {
+    if (flags.verbose && uarm)
+        play_simple_object_sound(uarm, OBJECT_SOUND_TYPE_TAKE_OFF);
+
     context.takeoff.mask &= ~W_ARM;
     setworn((struct obj *) 0, W_ARM);
     context.takeoff.cancelled_don = FALSE;
@@ -560,6 +622,9 @@ Armor_gone()
 STATIC_OVL void
 Amulet_on()
 {
+    if (flags.verbose && uamul)
+        play_simple_object_sound(uamul, OBJECT_SOUND_TYPE_WEAR);
+
     /* make sure amulet isn't wielded; can't use remove_worn_item()
        here because it has already been set worn in amulet slot */
     if (uamul == uwep)
@@ -596,6 +661,9 @@ Amulet_on()
 void
 Amulet_off()
 {
+    if (flags.verbose && uamul)
+        play_simple_object_sound(uamul, OBJECT_SOUND_TYPE_TAKE_OFF);
+
     context.takeoff.mask &= ~W_AMUL;
 
     switch (uamul->otyp) {
@@ -692,6 +760,9 @@ void
 Ring_on(obj)
 register struct obj *obj;
 {
+    if(flags.verbose && obj)
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_WEAR);
+
     long oldprop = u.uprops[objects[obj->otyp].oc_oprop].extrinsic;
 
     /* make sure ring isn't wielded; can't use remove_worn_item()
@@ -730,8 +801,10 @@ Ring_off_or_gone(obj, gone)
 register struct obj *obj;
 boolean gone;
 {
-    long mask = (obj->owornmask & W_RING);
+    if (flags.verbose && obj && !gone)
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_TAKE_OFF);
 
+    long mask = (obj->owornmask & W_RING);
     context.takeoff.mask &= ~mask;
     if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
         impossible("Strange... I didn't know you had that ring.");
