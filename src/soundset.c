@@ -4503,7 +4503,7 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
             {GHSOUND_HARP_NOTE_F, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note F */
             {GHSOUND_HARP_NOTE_G, 1.0f, SOUND_PLAY_GROUP_NORMAL}  /* Note G */
         },
-        300
+        1000
     },
     {
         "flute",
