@@ -2444,43 +2444,63 @@ NEARDATA struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES] =
 {
     {
         "illegal",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
     },
     {
         "button-down",
-        {GHSOUND_UI_BUTTON_DOWN, 1.0f}
+        {GHSOUND_UI_BUTTON_DOWN, 1.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
     },
     {
         "menu-select",
-        {GHSOUND_UI_MENU_SELECT, 1.0f}
+        {GHSOUND_UI_MENU_SELECT, 1.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
     },
     {
         "",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
     },
     {
         "",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
     },
     {
         "",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
     },
     {
         "knapsack-full",
-        {GHSOUND_KNAPSACK_FULL, 1.0f}
+        {GHSOUND_KNAPSACK_FULL, 1.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
     },
     {
         "weapon-swapped",
-        {GHSOUND_WEAPON_SWAPPED, 1.0f}
+        {GHSOUND_WEAPON_SWAPPED, 1.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
     },
     {
         "start-two-weapon-combat",
-        {GHSOUND_START_TWO_WEAPON_COMBAT, 1.0f}
+        {GHSOUND_START_TWO_WEAPON_COMBAT, 1.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
     },
     {
         "stop-two-weapon-combat",
-        {GHSOUND_STOP_TWO_WEAPON_COMBAT, 1.0f}
+        {GHSOUND_STOP_TWO_WEAPON_COMBAT, 1.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
     },
 };
 
@@ -2490,1597 +2510,1597 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "",
         {GHSOUND_NONE, 0.0f}, 
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "read",
         {GHSOUND_SFX_READ, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "quaff",
         {GHSOUND_SFX_QUAFF, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "camera click",
         {GHSOUND_CAMERA_FLASH_CREATE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "zap",
         {GHSOUND_SFX_ZAP, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "",
         {GHSOUND_NONE, 0.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "",
         {GHSOUND_NONE, 0.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "shield effect",
         {GHSOUND_NONE, 0.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "talk effect",
         {GHSOUND_NONE, 0.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "push boulder",
         {GHSOUND_PUSH_BOULDER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "paralyzed",
         {GHSOUND_CAUSE_PARALYSIS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "sleeping",
         {GHSOUND_CAUSE_SLEEPING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "desecrate altar",
         {GHSOUND_DESECRATE_ALTAR, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "summon demon",
         {GHSOUND_SUMMON_DEMON, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "sacrifice pet",
         {GHSOUND_SACRIFICE_PET, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "sacrifice coaligned unicorn",
         {GHSOUND_SACRIFICE_COALIGNED_UNICORN, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar add alignment",
         {GHSOUND_ALTAR_ADD_ALIGNMENT, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar thunderclap",
         {GHSOUND_ALTAR_THUNDERCLAP, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar charged air",
         {GHSOUND_ALTAR_CHARGED_AIR, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar accepts sacrifice",
         {GHSOUND_ALTAR_ANGRY_ACCEPTS_SACRIFICE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar rejects sacrifice",
         {GHSOUND_ALTAR_ANGRY_REJECTS_SACRIFICE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar power increase",
         {GHSOUND_ALTAR_POWER_INCREASE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar power decrease",
         {GHSOUND_ALTAR_POWER_DECREASE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar god mollified",
         {GHSOUND_ALTAR_GOD_MOLLIFIED, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar inadequacy",
         {GHSOUND_ALTAR_INADEQUACY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar absolved",
         {GHSOUND_ALTAR_ABSOLVED, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar hopeful feeling",
         {GHSOUND_ALTAR_HOPEFUL_FEELING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar reconciliation",
         {GHSOUND_ALTAR_RECONCILIATION, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar gift",
         {GHSOUND_ALTAR_GIFT, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar four-leaf clover",
         {GHSOUND_ALTAR_FOUR_LEAF_CLOVER, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "aura glow",
         {GHSOUND_AURA_GLOW, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar burst of flame",
         {GHSOUND_ALTAR_BURST_OF_FLAME, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "altar offering vanish",
         {GHSOUND_ALTAR_OFFERING_VANISH, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray fail",
         {GHSOUND_PRAY_FAIL, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray pleased",
         {GHSOUND_PRAY_PLEASED, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray fix all troubles",
         {GHSOUND_PRAY_FIX_ALL_TROUBLES, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray fix one trouble",
         {GHSOUND_PRAY_FIX_ONE_TROUBLE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray repair",
         {GHSOUND_PRAY_REPAIR, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray healing",
         {GHSOUND_PRAY_HEALING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray uncurse",
         {GHSOUND_PRAY_UNCURSE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray gift",
         {GHSOUND_PRAY_GIFT, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray crowning",
         {GHSOUND_PRAY_CROWNING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray spellbook",
         {GHSOUND_PRAY_SPELLBOOK, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray bless water",
         {GHSOUND_PRAY_BLESS_WATER, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray curse water",
         {GHSOUND_PRAY_CURSE_WATER, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "pray shimmering light",
         {GHSOUND_PRAY_SHIMMERING_LIGHT, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENCHANT_ITEM_SUCCESS",
         {GHSOUND_ENCHANT_ITEM_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENCHANT_ITEM_BLESSED_SUCCESS",
         {GHSOUND_ENCHANT_ITEM_BLESSED_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENCHANT_ITEM_UNCURSE_AND_OTHER",
         {GHSOUND_ENCHANT_ITEM_UNCURSE_AND_OTHER, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENCHANT_ITEM_NEGATIVE",
         {GHSOUND_ENCHANT_ITEM_NEGATIVE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENCHANT_ITEM_VIOLENT_GLOW",
         {GHSOUND_ENCHANT_ITEM_VIOLENT_GLOW, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENCHANT_ITEM_VIBRATE_WARNING",
         {GHSOUND_ENCHANT_ITEM_VIBRATE_WARNING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENCHANT_ITEM_VIBRATE_AND_DESTROY",
         {GHSOUND_ENCHANT_ITEM_VIBRATE_AND_DESTROY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENCHANT_ITEM_SPECIAL_SUCCESS",
         {GHSOUND_ENCHANT_ITEM_SPECIAL_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENCHANT_ITEM_SPECIAL_NEGATIVE",
         {GHSOUND_ENCHANT_ITEM_SPECIAL_NEGATIVE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENCHANT_ITEM_GENERAL_FAIL",
         {GHSOUND_ENCHANT_ITEM_GENERAL_FAIL, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_HANDS_ITCH",
         {GHSOUND_HANDS_ITCH, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_PROTECT_ITEM_SUCCESS",
         {GHSOUND_PROTECT_ITEM_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_PROTECT_ITEM_FAIL",
         {GHSOUND_PROTECT_ITEM_FAIL, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_REPAIR_ITEM_SUCCESS",
         {GHSOUND_REPAIR_ITEM_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_REPAIR_ITEM_FAIL",
         {GHSOUND_REPAIR_ITEM_FAIL, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_BLESS_ITEM_SUCCESS",
         {GHSOUND_BLESS_ITEM_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_UNCURSE_ITEM_SUCCESS",
         {GHSOUND_UNCURSE_ITEM_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CURSE_ITEM_SUCCESS",
         {GHSOUND_CURSE_ITEM_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_UNBLESS_ITEM_SUCCESS",
         {GHSOUND_UNBLESS_ITEM_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_DISINTEGRATE",
         {GHSOUND_DISINTEGRATE, 10.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LIFE_SAVED",
         {GHSOUND_LIFE_SAVED, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_HEALING",
         {GHSOUND_HEALING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_FULL_HEALING",
         {GHSOUND_FULL_HEALING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CURE_DISEASE",
         {GHSOUND_CURE_DISEASE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CURE_AILMENT",
         {GHSOUND_CURE_AILMENT, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GAIN_ENERGY",
         {GHSOUND_GAIN_ENERGY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_FULL_ENERGY",
         {GHSOUND_FULL_ENERGY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GAIN_LEVEL",
         {GHSOUND_GAIN_LEVEL, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GAIN_SKILL",
         {GHSOUND_GAIN_SKILL, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LOSE_LEVEL",
         {GHSOUND_LOSE_LEVEL, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LOSE_ENERGY",
         {GHSOUND_LOSE_ENERGY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_MUFFLED_SHATTER",
         {GHSOUND_MUFFLED_SHATTER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_MUFFLED_CRACKING",
         {GHSOUND_MUFFLED_CRACKING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_MUFFLED_CRASH",
         {GHSOUND_MUFFLED_CRASH, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_MUFFLED_SPLAT",
         {GHSOUND_MUFFLED_SPLAT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SKILL_ADVANCED",
         {GHSOUND_SKILL_ADVANCED, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_EXPLOSION_DARK",
         {GHSOUND_EXPLOSION_DARK, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_NOXIOUS",
         {GHSOUND_EXPLOSION_NOXIOUS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_MUDDY",
         {GHSOUND_EXPLOSION_MUDDY, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_WET",
         {GHSOUND_EXPLOSION_WET, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_MAGICAL",
         {GHSOUND_EXPLOSION_MAGICAL, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_FIERY",
         {GHSOUND_EXPLOSION_FIERY, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_FROSTY",
         {GHSOUND_EXPLOSION_FROSTY, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_SURPRISE_ATTACK",
         {GHSOUND_SURPRISE_ATTACK, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_STATUE_BECOMES_ALIVE",
         {GHSOUND_STATUE_BECOMES_ALIVE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_WAS_HIDING",
         {GHSOUND_WAS_HIDING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_PIERCER_DROPS",
         {GHSOUND_PIERCER_DROPS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TRAP_FOUND",
         {GHSOUND_TRAP_FOUND, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_HIDDEN_DOOR_FOUND",
         {GHSOUND_HIDDEN_DOOR_FOUND, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_UNEARTHED_OBJECT_FOUND",
         {GHSOUND_UNEARTHED_OBJECT_FOUND, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_YOU_SURPRISE_MONSTER",
         {GHSOUND_YOU_SURPRISE_MONSTER, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ARROW_TRAP_FIRE",
         {GHSOUND_ARROW_TRAP_FIRE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_DART_TRAP_FIRE",
         {GHSOUND_DART_TRAP_FIRE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_HOLE_OPENS",
         {GHSOUND_HOLE_OPENS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TRAP_DOOR_OPENS",
         {GHSOUND_TRAP_DOOR_OPENS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_FALL_INTO_PIT",
         {GHSOUND_FALL_INTO_PIT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LAND_ON_SPIKES",
         {GHSOUND_LAND_ON_SPIKES, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SQUEAKY_BOARD",
         {GHSOUND_SQUEAKY_BOARD, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_FALLING_ROCK_TRAP_TRIGGER",
         {GHSOUND_FALLING_ROCK_TRAP_TRIGGER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ROLLING_BOOULDER_TRAP_TRIGGER",
         {GHSOUND_ROLLING_BOOULDER_TRAP_TRIGGER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TELEPORT",
         {GHSOUND_TELEPORT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_BEAR_TRAP_CLOSES",
         {GHSOUND_BEAR_TRAP_CLOSES, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ENVELOPED_IN_CLOUD_OF_GAS",
         {GHSOUND_ENVELOPED_IN_CLOUD_OF_GAS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GUSH_OF_WATER_HITS",
         {GHSOUND_GUSH_OF_WATER_HITS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_STEAMY_BUBBLES",
         {GHSOUND_STEAMY_BUBBLES, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TOWER_OF_FLAME_ERUPTS",
         {GHSOUND_TOWER_OF_FLAME_ERUPTS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TELEPORT_TRAP_ACTIVATE",
         {GHSOUND_TELEPORT_TRAP_ACTIVATE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LEVEL_TELEPORT_TRAP_ACTIVATE",
         {GHSOUND_LEVEL_TELEPORT_TRAP_ACTIVATE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LEVEL_TELEPORT",
         {GHSOUND_LEVEL_TELEPORT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SHUDDER_FOR_MOMENT",
         {GHSOUND_SHUDDER_FOR_MOMENT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_WRENCHING_SENSATION",
         {GHSOUND_WRENCHING_SENSATION, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_BURN_SPIDER_WEB",
         {GHSOUND_BURN_SPIDER_WEB, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CAUGHT_IN_WEB",
         {GHSOUND_CAUGHT_IN_WEB, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TEAR_THROUGH_WEB",
         {GHSOUND_TEAR_THROUGH_WEB, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_FLASH_AND_ROAR",
         {GHSOUND_FLASH_AND_ROAR, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SHIVER_RUNS_DOWN_SPINE",
         {GHSOUND_SHIVER_RUNS_DOWN_SPINE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_DISTANT_HOWLING",
         {GHSOUND_DISTANT_HOWLING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_MAGIC_TRAP_WEIRD_EFFECT",
         {GHSOUND_MAGIC_TRAP_WEIRD_EFFECT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_PACK_SHAKING",
         {GHSOUND_PACK_SHAKING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TAMING",
         {GHSOUND_TAMING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_MAGIC_TRAP_ACTIVATE",
         {GHSOUND_MAGIC_TRAP_ACTIVATE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ANTI_MAGIC_TRAP_ACTIVATE",
         {GHSOUND_ANTI_MAGIC_TRAP_ACTIVATE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LAND_MINE_ACTIVATE",
         {GHSOUND_LAND_MINE_ACTIVATE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_POLYMORPH_ACTIVATE",
         {GHSOUND_POLYMORPH_ACTIVATE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_MAGIC_PORTAL_ACTIVATE",
         {GHSOUND_MAGIC_PORTAL_ACTIVATE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_AT_VIBRATING_SQUARE",
         {GHSOUND_AT_VIBRATING_SQUARE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_MODRON_GLIMMER_SURROUNDS",
         {GHSOUND_MODRON_GLIMMER_SURROUNDS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_MODRON_TELEPORT_SUCCESS",
         {GHSOUND_MODRON_TELEPORT_SUCCESS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_DRAIN_ENERGY",
         {GHSOUND_DRAIN_ENERGY, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_FEELING_LETHARGIC",
         {GHSOUND_FEELING_LETHARGIC, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_YOU_RUST",
         {GHSOUND_YOU_RUST, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_YOU_SPLIT",
         {GHSOUND_YOU_SPLIT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ROCK_HITS_HARD_HELMET",
         {GHSOUND_ROCK_HITS_HARD_HELMET, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ROCK_HITS_YOU_ON_HEAD",
         {GHSOUND_ROCK_HITS_YOU_ON_HEAD, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GENERAL_GAIN_ABILITY_SPELL",
         {GHSOUND_GENERAL_GAIN_ABILITY_SPELL, 0.5f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GENERIC_PHYSICAL_TRAP_ACTIVATE",
         {GHSOUND_GENERIC_PHYSICAL_TRAP_ACTIVATE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GENERIC_MAGICAL_TRAP_ACTIVATE",
         {GHSOUND_GENERIC_MAGICAL_TRAP_ACTIVATE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_FALL_INTO_WATER",
         {GHSOUND_FALL_INTO_WATER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_PET_IN_WAY",
         {GHSOUND_PET_IN_WAY, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_PET_DOES_NOT_MOVE",
         {GHSOUND_PET_DOES_NOT_MOVE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LEVEL_BUBBLING_WATER",
         {GHSOUND_LEVEL_BUBBLING_WATER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_WATER_FALLING_ON_COINS",
         {GHSOUND_LEVEL_WATER_FALLING_ON_COINS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SPLASHING_OF_NAIAD",
         {GHSOUND_LEVEL_SPLASHING_OF_NAIAD, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SODA_FOUNTAIN",
         {GHSOUND_LEVEL_SODA_FOUNTAIN, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SLOW_DRIP",
         {GHSOUND_LEVEL_SLOW_DRIP, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_GURGLING_NOISE",
         {GHSOUND_LEVEL_GURGLING_NOISE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_DISHES_BEING_WASHED",
         {GHSOUND_LEVEL_DISHES_BEING_WASHED, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_COURTLY_CONVERSATION",
         {GHSOUND_LEVEL_COURTLY_CONVERSATION, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SCEPTRE_POUNDED",
         {GHSOUND_LEVEL_SCEPTRE_POUNDED, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_OFF_WITH_HEAD",
         {GHSOUND_LEVEL_OFF_WITH_HEAD, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_QUEENS_CATS",
         {GHSOUND_LEVEL_QUEENS_CATS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_MOSQUITOES",
         {GHSOUND_LEVEL_MOSQUITOES, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_MARSH_GAS",
         {GHSOUND_LEVEL_MARSH_GAS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_DONALD_DUCK",
         {GHSOUND_LEVEL_DONALD_DUCK, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SOMEONE_COUNTING_MONEY",
         {GHSOUND_LEVEL_SOMEONE_COUNTING_MONEY, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_QUARTERBACK_CALLING_PLAY",
         {GHSOUND_LEVEL_QUARTERBACK_CALLING_PLAY, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SOMEONE_SEARCHING",
         {GHSOUND_LEVEL_SOMEONE_SEARCHING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_FOOTSTEPS_OF_GUARD_PATROL",
         {GHSOUND_LEVEL_FOOTSTEPS_OF_GUARD_PATROL, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_EBENEZER_SCROOGE",
         {GHSOUND_LEVEL_EBENEZER_SCROOGE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_LOW_BUZZING",
         {GHSOUND_LEVEL_LOW_BUZZING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_ANGRY_DRONE",
         {GHSOUND_LEVEL_ANGRY_DRONE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_BEES_IN_BONNET",
         {GHSOUND_LEVEL_BEES_IN_BONNET, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SOMEONE_DEMANDING_QUIETNESS",
         {GHSOUND_LEVEL_SOMEONE_DEMANDING_QUIETNESS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_PAGES_TURNING_IN_HEAD",
         {GHSOUND_LEVEL_PAGES_TURNING_IN_HEAD, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_COINS_BEING_ASSEMBLED",
         {GHSOUND_LEVEL_COINS_BEING_ASSEMBLED, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_LOUD_DRAGON_SNORING",
         {GHSOUND_LEVEL_LOUD_DRAGON_SNORING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_LOUD_ROAR",
         {GHSOUND_LEVEL_LOUD_ROAR, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SOMEONE_CLAIMING_TO_BE_FIRE_AND_DEATH",
         {GHSOUND_LEVEL_SOMEONE_CLAIMING_TO_BE_FIRE_AND_DEATH, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_BLADES_BEING_HONED",
         {GHSOUND_LEVEL_BLADES_BEING_HONED, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_LOUD_HUMAN_SNORING",
         {GHSOUND_LEVEL_LOUD_HUMAN_SNORING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_DICE_BEING_THROWN",
         {GHSOUND_LEVEL_DICE_BEING_THROWN, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_GENERAL_MCARTHUR",
         {GHSOUND_LEVEL_GENERAL_MCARTHUR, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_ELEPHANT_STEPPING_ON_PEANUT",
         {GHSOUND_LEVEL_ELEPHANT_STEPPING_ON_PEANUT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SEAL_BREAKING",
         {GHSOUND_LEVEL_SEAL_BREAKING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_DOCTOR_DOLITTLE",
         {GHSOUND_LEVEL_DOCTOR_DOLITTLE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SOMEONE_CURSING_SHOPLIFTERS",
         {GHSOUND_LEVEL_SOMEONE_CURSING_SHOPLIFTERS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_CHIME_OF_CASH_REGISTER",
         {GHSOUND_LEVEL_CHIME_OF_CASH_REGISTER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_NEIMAN_AND_MARCUS_ARGUING",
         {GHSOUND_LEVEL_NEIMAN_AND_MARCUS_ARGUING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_FAINT_CHIME",
         {GHSOUND_LEVEL_FAINT_CHIME, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SOMEONE_PRAISING_GOD",
         {GHSOUND_LEVEL_SOMEONE_PRAISING_GOD, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SOMEONE_BESEECHING",
         {GHSOUND_LEVEL_SOMEONE_BESEECHING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_ANIMAL_CARCASS_BEING_OFFERED",
         {GHSOUND_LEVEL_ANIMAL_CARCASS_BEING_OFFERED, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_PLEA_FOR_DONATIONS",
         {GHSOUND_LEVEL_PLEA_FOR_DONATIONS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_IRON_BEING_FORGED",
         {GHSOUND_LEVEL_IRON_BEING_FORGED, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_LOUD_CLANGING",
         {GHSOUND_LEVEL_LOUD_CLANGING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_WATER_BEING_VAPORIZED",
         {GHSOUND_LEVEL_WATER_BEING_VAPORIZED, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SOMEONE_MUMBLING",
         {GHSOUND_LEVEL_SOMEONE_MUMBLING, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_DISTANT_CHITCHAT",
         {GHSOUND_LEVEL_DISTANT_CHITCHAT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_FOOTSTEPS_AT_DISTANCE",
         {GHSOUND_LEVEL_FOOTSTEPS_AT_DISTANCE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_STRANGE_WIND",
         {GHSOUND_LEVEL_STRANGE_WIND, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_CONVULSIVE_RAVINGS",
         {GHSOUND_LEVEL_CONVULSIVE_RAVINGS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SNORING_SNAKES",
         {GHSOUND_LEVEL_SNORING_SNAKES, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_NO_MORE_WOODCHUCKS",
         {GHSOUND_LEVEL_NO_MORE_WOODCHUCKS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_LOUD_ZOT",
         {GHSOUND_LEVEL_LOUD_ZOT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_SWORDS_BEING_UNSHEATED",
         {GHSOUND_LEVEL_SWORDS_BEING_UNSHEATED, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_ARMORS_BEING_WORN",
         {GHSOUND_LEVEL_ARMORS_BEING_WORN, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_WEAPONS_BEING_ASSEMBLED",
         {GHSOUND_LEVEL_WEAPONS_BEING_ASSEMBLED, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LEVEL_MASTER_CHIEF",
         {GHSOUND_LEVEL_MASTER_CHIEF, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_LIGHTNING_STRIKES",
         {GHSOUND_LIGHTNING_STRIKES, 10.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_START_STONING",
         {GHSOUND_START_STONING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_START_SLIMING",
         {GHSOUND_START_SLIMING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_START_STRANGULATION",
         {GHSOUND_START_STRANGULATION, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_START_SUFFOCATION",
         {GHSOUND_START_SUFFOCATION, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CATCH_FOOD_POISONING",
         {GHSOUND_CATCH_FOOD_POISONING, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CATCH_TERMINAL_ILLNESS",
         {GHSOUND_CATCH_TERMINAL_ILLNESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_BLINDNESS",
         {GHSOUND_ACQUIRE_BLINDNESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_CONFUSION",
         {GHSOUND_ACQUIRE_CONFUSION, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_STUN",
         {GHSOUND_ACQUIRE_STUN, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_HALLUCINATION",
         {GHSOUND_ACQUIRE_HALLUCINATION, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_SLOW",
         {GHSOUND_ACQUIRE_SLOW, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_PARALYSIS",
         {GHSOUND_ACQUIRE_PARALYSIS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_FEAR",
         {GHSOUND_ACQUIRE_FEAR, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_SLEEP",
         {GHSOUND_ACQUIRE_SLEEP, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_CANCELLATION",
         {GHSOUND_ACQUIRE_CANCELLATION, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_SILENCE",
         {GHSOUND_ACQUIRE_SILENCE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ACQUIRE_GRAB",
         {GHSOUND_ACQUIRE_GRAB, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CATCH_MUMMY_ROT",
         {GHSOUND_CATCH_MUMMY_ROT, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CATCH_LYCANTHROPY",
         {GHSOUND_CATCH_LYCANTHROPY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GAIN_ABILITY",
         {GHSOUND_GAIN_ABILITY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LOSE_ABILITY",
         {GHSOUND_LOSE_ABILITY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_RESTORE_ABILITY",
         {GHSOUND_RESTORE_ABILITY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_BLINDING_FLASH",
         {GHSOUND_BLINDING_FLASH, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SCALES_COVER_EYES",
         {GHSOUND_SCALES_COVER_EYES, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ELECTRIC_SHOCK",
         {GHSOUND_ELECTRIC_SHOCK, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_MALIGNANT_AURA_RESISTED",
         {GHSOUND_MALIGNANT_AURA_RESISTED, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_MALIGNANT_AURA_SURROUNDS",
         {GHSOUND_MALIGNANT_AURA_SURROUNDS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ITEM_RESISTS_NEGATIVE_EFFECT",
         {GHSOUND_ITEM_RESISTS_NEGATIVE_EFFECT, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SUMMON_MONSTER",
         {GHSOUND_SUMMON_MONSTER, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_VANISHES_IN_PUFF_OF_SMOKE",
         {GHSOUND_VANISHES_IN_PUFF_OF_SMOKE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_DISARM_TRAP_SUCCESS",
         {GHSOUND_DISARM_TRAP_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_DISARM_TRAP_FAIL",
         {GHSOUND_DISARM_TRAP_FAIL, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_NO_TRAPS_FOUND",
         {GHSOUND_NO_TRAPS_FOUND, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CANNOT_DISARM_TRAP",
         {GHSOUND_CANNOT_DISARM_TRAP, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_STUMBLE_ON_MIMIC",
         {GHSOUND_STUMBLE_ON_MIMIC, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CHEST_TRAP_TRIGGER",
         {GHSOUND_CHEST_TRAP_TRIGGER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TRAP_FLAME_FIZZLES_OUT",
         {GHSOUND_TRAP_FLAME_FIZZLES_OUT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TRAP_NEEDLE_MISSES",
         {GHSOUND_TRAP_NEEDLE_MISSES, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TRAP_CLOUD_BLOWS_AWAY",
         {GHSOUND_TRAP_CLOUD_BLOWS_AWAY, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TRAP_NEEDLE_PRICKS",
         {GHSOUND_TRAP_NEEDLE_PRICKS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_BLASTED_BY_POWER",
         {GHSOUND_BLASTED_BY_POWER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_IDENTIFY_SUCCESS",
         {GHSOUND_IDENTIFY_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_RECHARGE_SUCCESS",
         {GHSOUND_RECHARGE_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_BLESSED_RECHARGE_SUCCESS",
         {GHSOUND_BLESSED_RECHARGE_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_STRIP_CHARGES",
         {GHSOUND_STRIP_CHARGES, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CHARGES_AT_MAXIMUM",
         {GHSOUND_CHARGES_AT_MAXIMUM, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_RECHARGE_FAIL",
         {GHSOUND_RECHARGE_FAIL, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_WIZARD_LOCK_KLUNK",
         {GHSOUND_WIZARD_LOCK_KLUNK, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_KNOCK_KLICK",
         {GHSOUND_KNOCK_KLICK, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_JUMP",
         {GHSOUND_JUMP, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LEVER_SWITCH_FAIL",
         {GHSOUND_LEVER_SWITCH_FAIL, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LEVER_SWITCH_SUCCESS",
         {GHSOUND_LEVER_SWITCH_SUCCESS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LEVER_SWITCH_ON_SUCCESS",
         {GHSOUND_LEVER_SWITCH_ON_SUCCESS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_LEVER_SWITCH_OFF_SUCCESS",
         {GHSOUND_LEVER_SWITCH_OFF_SUCCESS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_WALL_GLOWS_THEN_FADES",
         {GHSOUND_WALL_GLOWS_THEN_FADES, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_PETRIFY",
         {GHSOUND_PETRIFY, 5.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_KEY_DOES_NOT_FIT",
         {GHSOUND_KEY_DOES_NOT_FIT, 5.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ITEM_VANISHES",
         {GHSOUND_ITEM_VANISHES, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GENOCIDE",
         {GHSOUND_GENOCIDE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ITEM_CRUMBLES_TO_DUST",
         {GHSOUND_ITEM_CRUMBLES_TO_DUST, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SINISTER_LAUGHTER",
         {GHSOUND_SINISTER_LAUGHTER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_MANIACAL_LAUGHTER",
         {GHSOUND_MANIACAL_LAUGHTER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_SELL_TO_NPC",
         {GHSOUND_SELL_TO_NPC, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_BUY_FROM_NPC",
         {GHSOUND_BUY_FROM_NPC, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SELL_TO_SHOPKEEPER",
         {GHSOUND_SELL_TO_SHOPKEEPER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_BUY_FROM_SHOPKEEPER",
         {GHSOUND_BUY_FROM_SHOPKEEPER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SEEMS_UNINTERESTED",
         {GHSOUND_SEEMS_UNINTERESTED, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CANNOT_PAY",
         {GHSOUND_CANNOT_PAY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_NOT_ENOUGH_MONEY",
         {GHSOUND_NOT_ENOUGH_MONEY, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TRANSACT_SINGLE_ITEM",
         {GHSOUND_TRANSACT_SINGLE_ITEM, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GENERAL_CANNOT",
         {GHSOUND_GENERAL_CANNOT, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SINK_CLANKING_FROM_PIPES",
         {GHSOUND_SINK_CLANKING_FROM_PIPES, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_SINK_SNATCHES_OF_SONG",
         {GHSOUND_SINK_SNATCHES_OF_SONG, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_SEX_CHANGE",
         {GHSOUND_SEX_CHANGE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_UNKNOWN_ODD_EFFECT",
         {GHSOUND_UNKNOWN_ODD_EFFECT, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_CELESTIAL_SUMMON_START",
         {GHSOUND_CELESTIAL_SUMMON_START, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_INFERNAL_SUMMON_START",
         {GHSOUND_INFERNAL_SUMMON_START, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_NEUTRAL_SUMMON_START",
         {GHSOUND_NEUTRAL_SUMMON_START, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GENERAL_SUMMON_START",
         {GHSOUND_GENERAL_SUMMON_START, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SUMMON_NASTY_START",
         {GHSOUND_SUMMON_NASTY_START, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SUMMON_UNDEAD_START",
         {GHSOUND_SUMMON_UNDEAD_START, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_ANIMATE_DEAD_START",
         {GHSOUND_ANIMATE_DEAD_START, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SMOKE_SUMMON_START",
         {GHSOUND_SMOKE_SUMMON_START, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_POLYMORPH_FAIL",
         {GHSOUND_POLYMORPH_FAIL, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_POLYMORPH_SUCCESS",
         {GHSOUND_POLYMORPH_SUCCESS, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_POLYMORPH_SCALES_MERGE",
         {GHSOUND_POLYMORPH_SCALES_MERGE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_POLYMORPH_SCALES_REVERT",
         {GHSOUND_POLYMORPH_SCALES_REVERT, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_POLYMORPH_NEW_MAN",
         {GHSOUND_POLYMORPH_NEW_MAN, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_WISH_FULFILLED",
         {GHSOUND_WISH_FULFILLED, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_WISH_FOR_OBJECT",
         {GHSOUND_WISH_FOR_OBJECT, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_STUCK_IN_TRAP",
         {GHSOUND_STUCK_IN_TRAP, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_WRIGGLE_FREE",
         {GHSOUND_WRIGGLE_FREE, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_RUMBLING_EARTH",
         {GHSOUND_RUMBLING_EARTH, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_RUMBLE_OF_DISTANT_THUNDER",
         {GHSOUND_RUMBLE_OF_DISTANT_THUNDER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_STUDIO_AUDIENCE_APPLAUDS",
         {GHSOUND_STUDIO_AUDIENCE_APPLAUDS, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_WHISTLE",
         {GHSOUND_WHISTLE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_CURSED_WHISTLE",
         {GHSOUND_CURSED_WHISTLE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_WHISTLE_UNDERWATER",
         {GHSOUND_WHISTLE_UNDERWATER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_MAGIC_WHISTLE",
         {GHSOUND_MAGIC_WHISTLE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_CURSED_MAGIC_WHISTLE",
         {GHSOUND_CURSED_MAGIC_WHISTLE, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_MAGIC_WHISTLE_UNDERWATER",
         {GHSOUND_MAGIC_WHISTLE_UNDERWATER, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_GEAR_TURN",
         {GHSOUND_GEAR_TURN, 20.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TUMBLER_CLICK",
         {GHSOUND_TUMBLER_CLICK, 20.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_OPEN_DRAWBRIDGE",
         {GHSOUND_OPEN_DRAWBRIDGE, 20.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_CLOSE_DRAWBRIDGE",
         {GHSOUND_CLOSE_DRAWBRIDGE, 20.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_DRAWBRIDGE_STARTS_TO_RISE",
         {GHSOUND_DRAWBRIDGE_STARTS_TO_RISE, 10.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_DRAWBRIDGE_GETS_BLOCKED",
         {GHSOUND_DRAWBRIDGE_GETS_BLOCKED, 10.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_GENERAL_UNAFFECTED",
         {GHSOUND_GENERAL_UNAFFECTED, 5.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GENERAL_RESISTS",
         {GHSOUND_GENERAL_RESISTS, 5.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_STEED_REFUSES",
         {GHSOUND_STEED_REFUSES, 1.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_GENERAL_REFLECTS",
         {GHSOUND_GENERAL_REFLECTS, 5.0f},
-        FALSE
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_DRAWBRIDGE_LOUD_SPLASH",
         {GHSOUND_DRAWBRIDGE_LOUD_SPLASH, 20.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_DRAWBRIDGE_LOUD_CRASH",
         {GHSOUND_DRAWBRIDGE_LOUD_CRASH, 20.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EGG_HATCH",
         {GHSOUND_EGG_HATCH, 1.0f},
-        TRUE
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
 };
 
@@ -4434,90 +4454,90 @@ struct instrument_soundset_definition instrument_soundsets[MAX_INSTRUMENT_SOUNDS
     {
         "",
         {
-            {GHSOUND_NONE, 0.0f}, /* Improvise */
-            {GHSOUND_NONE, 0.0f}, /* Improvise Stunned */
-            {GHSOUND_NONE, 0.0f}, /* Improvise Confused */
-            {GHSOUND_NONE, 0.0f}, /* Improvise Hallucinated */
-            {GHSOUND_NONE, 0.0f}, /* Improvise Far from music */
-            {GHSOUND_NONE, 0.0f}, /* Note A */
-            {GHSOUND_NONE, 0.0f}, /* Note B */
-            {GHSOUND_NONE, 0.0f}, /* Note C */
-            {GHSOUND_NONE, 0.0f}, /* Note D */
-            {GHSOUND_NONE, 0.0f}, /* Note E */
-            {GHSOUND_NONE, 0.0f}, /* Note F */
-            {GHSOUND_NONE, 0.0f}  /* Note G */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Stunned */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Confused */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Hallucinated */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Far from music */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note A */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note B */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note C */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note D */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note E */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note F */
+            {GHSOUND_NONE, 0.0f, SOUND_PLAY_GROUP_NORMAL}  /* Note G */
         },
         0
     },
     {
         "drum",
         {
-            {GHSOUND_DRUM_IMPROVISE_NORMAL, 1.0f}, /* Improvise */
-            {GHSOUND_DRUM_IMPROVISE_STUNNED, 1.0f}, /* Improvise Stunned */
-            {GHSOUND_DRUM_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
-            {GHSOUND_DRUM_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
-            {GHSOUND_DRUM_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
-            {GHSOUND_DRUM_NOTE_A, 1.0f}, /* Note A */
-            {GHSOUND_DRUM_NOTE_B, 1.0f}, /* Note B */
-            {GHSOUND_DRUM_NOTE_C, 1.0f}, /* Note C */
-            {GHSOUND_DRUM_NOTE_D, 1.0f}, /* Note D */
-            {GHSOUND_DRUM_NOTE_E, 1.0f}, /* Note E */
-            {GHSOUND_DRUM_NOTE_F, 1.0f}, /* Note F */
-            {GHSOUND_DRUM_NOTE_G, 1.0f}  /* Note G */
+            {GHSOUND_DRUM_IMPROVISE_NORMAL, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise */
+            {GHSOUND_DRUM_IMPROVISE_STUNNED, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Stunned */
+            {GHSOUND_DRUM_IMPROVISE_CONFUSED, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Confused */
+            {GHSOUND_DRUM_IMPROVISE_HALLUCINATION, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Hallucinated */
+            {GHSOUND_DRUM_IMPROVISE_FAR_FROM_MUSIC, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Far from music */
+            {GHSOUND_DRUM_NOTE_A, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note A */
+            {GHSOUND_DRUM_NOTE_B, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note B */
+            {GHSOUND_DRUM_NOTE_C, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note C */
+            {GHSOUND_DRUM_NOTE_D, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note D */
+            {GHSOUND_DRUM_NOTE_E, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note E */
+            {GHSOUND_DRUM_NOTE_F, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note F */
+            {GHSOUND_DRUM_NOTE_G, 1.0f, SOUND_PLAY_GROUP_NORMAL}  /* Note G */
         },
         200
     },
     {
         "harp",
         {
-            {GHSOUND_HARP_IMPROVISE_NORMAL, 1.0f}, /* Improvise */
-            {GHSOUND_HARP_IMPROVISE_STUNNED, 1.0f}, /* Improvise Stunned */
-            {GHSOUND_HARP_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
-            {GHSOUND_HARP_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
-            {GHSOUND_HARP_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
-            {GHSOUND_HARP_NOTE_A, 1.0f}, /* Note A */
-            {GHSOUND_HARP_NOTE_B, 1.0f}, /* Note B */
-            {GHSOUND_HARP_NOTE_C, 1.0f}, /* Note C */
-            {GHSOUND_HARP_NOTE_D, 1.0f}, /* Note D */
-            {GHSOUND_HARP_NOTE_E, 1.0f}, /* Note E */
-            {GHSOUND_HARP_NOTE_F, 1.0f}, /* Note F */
-            {GHSOUND_HARP_NOTE_G, 1.0f}  /* Note G */
+            {GHSOUND_HARP_IMPROVISE_NORMAL, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise */
+            {GHSOUND_HARP_IMPROVISE_STUNNED, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Stunned */
+            {GHSOUND_HARP_IMPROVISE_CONFUSED, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Confused */
+            {GHSOUND_HARP_IMPROVISE_HALLUCINATION, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Hallucinated */
+            {GHSOUND_HARP_IMPROVISE_FAR_FROM_MUSIC, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Far from music */
+            {GHSOUND_HARP_NOTE_A, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note A */
+            {GHSOUND_HARP_NOTE_B, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note B */
+            {GHSOUND_HARP_NOTE_C, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note C */
+            {GHSOUND_HARP_NOTE_D, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note D */
+            {GHSOUND_HARP_NOTE_E, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note E */
+            {GHSOUND_HARP_NOTE_F, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note F */
+            {GHSOUND_HARP_NOTE_G, 1.0f, SOUND_PLAY_GROUP_NORMAL}  /* Note G */
         },
         300
     },
     {
         "flute",
         {
-            {GHSOUND_FLUTE_IMPROVISE_NORMAL, 1.0f}, /* Improvise */
-            {GHSOUND_FLUTE_IMPROVISE_STUNNED, 1.0f}, /* Improvise Stunned */
-            {GHSOUND_FLUTE_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
-            {GHSOUND_FLUTE_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
-            {GHSOUND_FLUTE_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
-            {GHSOUND_FLUTE_NOTE_A, 1.0f}, /* Note A */
-            {GHSOUND_FLUTE_NOTE_B, 1.0f}, /* Note B */
-            {GHSOUND_FLUTE_NOTE_C, 1.0f}, /* Note C */
-            {GHSOUND_FLUTE_NOTE_D, 1.0f}, /* Note D */
-            {GHSOUND_FLUTE_NOTE_E, 1.0f}, /* Note E */
-            {GHSOUND_FLUTE_NOTE_F, 1.0f}, /* Note F */
-            {GHSOUND_FLUTE_NOTE_G, 1.0f}  /* Note G */
+            {GHSOUND_FLUTE_IMPROVISE_NORMAL, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise */
+            {GHSOUND_FLUTE_IMPROVISE_STUNNED, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Stunned */
+            {GHSOUND_FLUTE_IMPROVISE_CONFUSED, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Confused */
+            {GHSOUND_FLUTE_IMPROVISE_HALLUCINATION, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Hallucinated */
+            {GHSOUND_FLUTE_IMPROVISE_FAR_FROM_MUSIC, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Far from music */
+            {GHSOUND_FLUTE_NOTE_A, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note A */
+            {GHSOUND_FLUTE_NOTE_B, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note B */
+            {GHSOUND_FLUTE_NOTE_C, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note C */
+            {GHSOUND_FLUTE_NOTE_D, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note D */
+            {GHSOUND_FLUTE_NOTE_E, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note E */
+            {GHSOUND_FLUTE_NOTE_F, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note F */
+            {GHSOUND_FLUTE_NOTE_G, 1.0f, SOUND_PLAY_GROUP_NORMAL}  /* Note G */
         },
         2000
     },
     {
         "horn",
         {
-            {GHSOUND_HORN_IMPROVISE_NORMAL, 1.0f}, /* Improvise */
-            {GHSOUND_HORN_IMPROVISE_STUNNED, 1.0f}, /* Improvise Stunned */
-            {GHSOUND_HORN_IMPROVISE_CONFUSED, 1.0f}, /* Improvise Confused */
-            {GHSOUND_HORN_IMPROVISE_HALLUCINATION, 1.0f}, /* Improvise Hallucinated */
-            {GHSOUND_HORN_IMPROVISE_FAR_FROM_MUSIC, 1.0f}, /* Improvise Far from music */
-            {GHSOUND_HORN_NOTE_A, 1.0f}, /* Note A */
-            {GHSOUND_HORN_NOTE_B, 1.0f}, /* Note B */
-            {GHSOUND_HORN_NOTE_C, 1.0f}, /* Note C */
-            {GHSOUND_HORN_NOTE_D, 1.0f}, /* Note D */
-            {GHSOUND_HORN_NOTE_E, 1.0f}, /* Note E */
-            {GHSOUND_HORN_NOTE_F, 1.0f}, /* Note F */
-            {GHSOUND_HORN_NOTE_G, 1.0f}  /* Note G */
+            {GHSOUND_HORN_IMPROVISE_NORMAL, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise */
+            {GHSOUND_HORN_IMPROVISE_STUNNED, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Stunned */
+            {GHSOUND_HORN_IMPROVISE_CONFUSED, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Confused */
+            {GHSOUND_HORN_IMPROVISE_HALLUCINATION, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Hallucinated */
+            {GHSOUND_HORN_IMPROVISE_FAR_FROM_MUSIC, 1.0f, SOUND_PLAY_GROUP_LONG}, /* Improvise Far from music */
+            {GHSOUND_HORN_NOTE_A, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note A */
+            {GHSOUND_HORN_NOTE_B, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note B */
+            {GHSOUND_HORN_NOTE_C, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note C */
+            {GHSOUND_HORN_NOTE_D, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note D */
+            {GHSOUND_HORN_NOTE_E, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note E */
+            {GHSOUND_HORN_NOTE_F, 1.0f, SOUND_PLAY_GROUP_NORMAL}, /* Note F */
+            {GHSOUND_HORN_NOTE_G, 1.0f, SOUND_PLAY_GROUP_NORMAL}  /* Note G */
         },
         650
     },
@@ -4845,6 +4865,7 @@ enum climbing_types climbingid;
     immediateinfo.parameter_values[4] = (float)passingid;
     immediateinfo.parameter_names[5] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if(soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -4895,6 +4916,7 @@ enum object_sound_types sound_type;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -4939,6 +4961,7 @@ enum object_sound_types sound_type;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5152,6 +5175,7 @@ boolean is_underwater;
     immediateinfo.parameter_values[1] = weight;
     immediateinfo.parameter_names[2] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5196,6 +5220,7 @@ struct obj* container;
     immediateinfo.parameter_values[1] = weight;
     immediateinfo.parameter_names[2] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5248,6 +5273,7 @@ enum location_sound_types sound_type;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5286,6 +5312,7 @@ enum monster_sound_types sound_type;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5339,6 +5366,7 @@ enum monster_sound_types sound_type;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5411,6 +5439,7 @@ enum object_sound_types sound_type;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if(soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5466,6 +5495,7 @@ enum object_sound_types sound_type;
     immediateinfo.parameter_values[1] = weight;
     immediateinfo.parameter_names[2] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5704,6 +5734,7 @@ xchar x, y;
     immediateinfo.parameter_values[1] = (float)damage;
     immediateinfo.parameter_names[2] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5788,6 +5819,7 @@ xchar x, y;
     immediateinfo.parameter_values[1] = (float)damage;
     immediateinfo.parameter_names[2] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5811,6 +5843,7 @@ enum sfx_sound_types sfx_sound_id;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = sfx_sounds[sfx_sound_id].play_group;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5831,6 +5864,7 @@ enum ui_sound_types ui_sound_id;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = min(1.0f, volume);
     immediateinfo.sound_type = IMMEDIATE_SOUND_UI;
+    immediateinfo.play_group = ui_sounds[ui_sound_id].play_group;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5858,6 +5892,7 @@ int x, y;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = min(1.0f, volume * hearing_array[x][y]);
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = sfx_sounds[sfx_sound_id].play_group;
 
     if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5899,6 +5934,7 @@ int x, y;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = min(1.0f, volume * hearing_array[x][y]);
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = instrument_soundsets[typ].sounds[instrument_sound_type].play_group;
 
     if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -5930,6 +5966,7 @@ int x, y;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = min(1.0f, volume * hearing_array[x][y]);
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -6036,6 +6073,7 @@ enum occupation_sound_types sound_type;
     struct ghsound_immediate_info info = { 0 };
     info.ghsound = occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound;
     info.volume = min(1.0f, occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].volume);
+    info.play_group = SOUND_PLAY_GROUP_NORMAL;
 
     play_immediate_ghsound(info);
 }
@@ -6056,7 +6094,8 @@ int x, y;
     struct ghsound_immediate_info info = { 0 };
     info.ghsound = occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound;
     info.volume = min(1.0f, occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].volume * hearing_volume);
-    
+    info.play_group = SOUND_PLAY_GROUP_NORMAL;
+
     if(info.volume > 0.0f)
         play_immediate_ghsound(info);
 }

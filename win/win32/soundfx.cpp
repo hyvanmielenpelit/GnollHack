@@ -25,6 +25,7 @@ struct GNHSoundInstance {
 };
 
 #define NUM_IMMEDIATE_SOUND_INSTANCES 32
+#define NUM_LONG_IMMEDIATE_SOUND_INSTANCES 16
 
 static GNHSoundInstance musicInstances[2] = { 0 };
 static GNHSoundInstance levelAmbientInstances[2] = { 0 };
@@ -32,6 +33,7 @@ static GNHSoundInstance occupationAmbientInstances[2] = { 0 };
 static GNHSoundInstance effectAmbientInstances[2] = { 0 };
 static GNHSoundInstance environmentAmbientInstances[2] = { 0 };
 static GNHSoundInstance immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES] = { 0 };
+static GNHSoundInstance longImmediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES] = { 0 };
 static GNHSoundInstance* ambient_base = NULL; /* for sound source ambients */
 
 static float general_volume = 1.0f;
@@ -1453,6 +1455,7 @@ extern "C"
     {
         FMOD_RESULT result;
 
+        enum sound_play_groups play_group = info.play_group;
         enum ghsound_types soundid = info.ghsound;
         struct ghsound_eventmapping eventmap = ghsound2event[soundid];
         float event_volume = eventmap.volume;
@@ -1501,32 +1504,66 @@ extern "C"
         if (result != FMOD_OK)
             return FALSE;
 
-        if (immediateSoundInstances[0].eventInstance)
+        if (play_group == SOUND_PLAY_GROUP_LONG)
         {
-            /* Delete the last one */
-            if (immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance)
+            /* Long play group */
+            if (longImmediateSoundInstances[0].eventInstance)
             {
-                /* Stop playing just in case */
-                immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
-                /* Release */
-                immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance->release();
+                /* Delete the last one */
+                if (longImmediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance)
+                {
+                    /* Stop playing just in case */
+                    longImmediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                    /* Release */
+                    longImmediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance->release();
+                }
+
+                /* Move all others back */
+                for (int i = NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1; i >= 1; i--)
+                {
+                    longImmediateSoundInstances[i].eventInstance = longImmediateSoundInstances[i - 1].eventInstance;
+                    longImmediateSoundInstances[i].ghsound = longImmediateSoundInstances[i - 1].ghsound;
+                    longImmediateSoundInstances[i].normalVolume = longImmediateSoundInstances[i - 1].normalVolume;
+                    longImmediateSoundInstances[i].sound_type = longImmediateSoundInstances[i - 1].sound_type;
+                }
             }
 
-            /* Move all others back */
-            for (int i = NUM_IMMEDIATE_SOUND_INSTANCES - 1; i >= 1; i--)
-            {
-                immediateSoundInstances[i].eventInstance = immediateSoundInstances[i - 1].eventInstance;
-                immediateSoundInstances[i].ghsound = immediateSoundInstances[i - 1].ghsound;
-                immediateSoundInstances[i].normalVolume = immediateSoundInstances[i - 1].normalVolume;
-                immediateSoundInstances[i].sound_type = immediateSoundInstances[i - 1].sound_type;
-            }
+            /* Set the new instance as longImmediateSoundInstances[0] */
+            longImmediateSoundInstances[0].eventInstance = immediateSoundInstance;
+            longImmediateSoundInstances[0].ghsound = info.ghsound;
+            longImmediateSoundInstances[0].normalVolume = info.volume;
+            longImmediateSoundInstances[0].sound_type = info.sound_type;
         }
+        else
+        {
+            /* Normal play group */
+            if (immediateSoundInstances[0].eventInstance)
+            {
+                /* Delete the last one */
+                if (immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance)
+                {
+                    /* Stop playing just in case */
+                    immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                    /* Release */
+                    immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance->release();
+                }
 
-        /* Set the new instance as movementInstances[0] */
-        immediateSoundInstances[0].eventInstance = immediateSoundInstance;
-        immediateSoundInstances[0].ghsound = info.ghsound;
-        immediateSoundInstances[0].normalVolume = info.volume;
-        immediateSoundInstances[0].sound_type = info.sound_type;
+                /* Move all others back */
+                for (int i = NUM_IMMEDIATE_SOUND_INSTANCES - 1; i >= 1; i--)
+                {
+                    immediateSoundInstances[i].eventInstance = immediateSoundInstances[i - 1].eventInstance;
+                    immediateSoundInstances[i].ghsound = immediateSoundInstances[i - 1].ghsound;
+                    immediateSoundInstances[i].normalVolume = immediateSoundInstances[i - 1].normalVolume;
+                    immediateSoundInstances[i].sound_type = immediateSoundInstances[i - 1].sound_type;
+                }
+            }
+
+            /* Set the new instance as movementInstances[0] */
+            immediateSoundInstances[0].eventInstance = immediateSoundInstance;
+            immediateSoundInstances[0].ghsound = info.ghsound;
+            immediateSoundInstances[0].normalVolume = info.volume;
+            immediateSoundInstances[0].sound_type = info.sound_type;
+        }
 
         result = fmod_studio_system->update();
         if (result != FMOD_OK)
@@ -1606,6 +1643,17 @@ extern "C"
                 float event_volume = eventmap.volume;
                 float relevant_general_volume = (immediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sfx_volume);
                 result = immediateSoundInstances[i].eventInstance->setVolume(min(1.0f, immediateSoundInstances[i].normalVolume * event_volume * relevant_general_volume * general_volume));
+            }
+        }
+        for (int i = 0; i < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; i++)
+        {
+            if (longImmediateSoundInstances[i].eventInstance)
+            {
+                enum ghsound_types soundid = longImmediateSoundInstances[i].ghsound;
+                struct ghsound_eventmapping eventmap = ghsound2event[soundid];
+                float event_volume = eventmap.volume;
+                float relevant_general_volume = (longImmediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sfx_volume);
+                result = longImmediateSoundInstances[i].eventInstance->setVolume(min(1.0f, longImmediateSoundInstances[i].normalVolume * event_volume * relevant_general_volume * general_volume));
             }
         }
         for (GNHSoundInstance* curr = ambient_base; curr; curr = curr->next_instance)
@@ -1861,6 +1909,17 @@ extern "C"
                     if ((result = immediateSoundInstances[i].eventInstance->release()) != FMOD_OK)
                         return FALSE;
                     immediateSoundInstances[i].eventInstance = 0;
+                }
+            }
+            for (int i = 0; i < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; i++)
+            {
+                if (longImmediateSoundInstances[i].eventInstance)
+                {
+                    if (longImmediateSoundInstances[i].normalVolume > 0.0f && (result = longImmediateSoundInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
+                        return FALSE;
+                    if ((result = longImmediateSoundInstances[i].eventInstance->release()) != FMOD_OK)
+                        return FALSE;
+                    longImmediateSoundInstances[i].eventInstance = 0;
                 }
             }
         }

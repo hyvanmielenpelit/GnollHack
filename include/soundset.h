@@ -621,6 +621,15 @@ enum ghsound_types {
 	MAX_GHSOUNDS
 };
 
+
+/* Sound play groups */
+enum sound_play_groups {
+	SOUND_PLAY_GROUP_NORMAL = 0,
+	SOUND_PLAY_GROUP_LONG,
+	MAX_SOUND_PLAY_GROUPS
+};
+
+
 /* 
  * SOUND SOURCES ETC.
  */
@@ -1002,6 +1011,7 @@ struct ghsound_immediate_info {
 	float parameter_values[MAX_SOUND_PARAMETERS];
 	float volume;
 	enum immediate_sound_types sound_type;
+	enum sound_play_groups play_group;
 };
 
 struct ghsound_music_info {
@@ -1049,6 +1059,11 @@ struct ghsound_info {
 	float volume;
 };
 
+struct ghsound_extended_info {
+	enum ghsound_types ghsound;
+	float volume;
+	enum sound_play_groups play_group;
+};
 
 /* OCCUPATION SOUNDSETS */
 enum occupation_sound_types {
@@ -1137,7 +1152,7 @@ enum instrument_sound_types {
 
 struct instrument_soundset_definition {
 	const char* soundset_name;
-	struct ghsound_info sounds[MAX_INSTRUMENT_SOUND_TYPES];
+	struct ghsound_extended_info sounds[MAX_INSTRUMENT_SOUND_TYPES];
 	short note_length_in_milliseconds;
 };
 
@@ -1442,6 +1457,7 @@ struct effect_sound_definition {
 	const char* sound_name;
 	struct ghsound_info sound;
 	boolean affected_by_deafness;
+	enum sound_play_groups play_group;
 };
 
 extern struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES];
