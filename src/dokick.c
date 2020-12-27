@@ -986,7 +986,7 @@ boolean is_golf_swing;
     if (kickedobj->unpaid)
         subfrombill(kickedobj, shkp);
     place_object(kickedobj, bhitpos.x, bhitpos.y);
-    play_object_floor_sound(kickedobj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW);
+    play_object_floor_sound(kickedobj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW, Underwater);
     stackobj(kickedobj);
     newsym(kickedobj->ox, kickedobj->oy);
     return 1;

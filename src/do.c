@@ -4643,7 +4643,7 @@ boolean with_impact;
 	{
 		if (iflags.using_gui_sounds)
 		{
-			play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP);
+			play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP, Underwater);
 			delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
 		}
 		return;
@@ -4710,7 +4710,7 @@ boolean with_impact;
         place_object(obj, u.ux, u.uy);
 		if (iflags.using_gui_sounds)
 		{
-			play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP);
+			play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP, Underwater);
 			delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
 		}
 		if (with_impact)

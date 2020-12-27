@@ -4624,8 +4624,9 @@ play_environment_ambient_sounds()
 }
 
 enum floor_surface_types
-get_floor_surface_type(x, y)
+get_floor_surface_type(x, y, is_underwater)
 int x, y;
+boolean is_underwater;
 {
     if (!isok(x, y))
         return FLOOR_SURFACE_NONE;
@@ -4633,8 +4634,8 @@ int x, y;
     struct rm* lev = &levl[x][y];
 
     enum floor_surface_types floorid = FLOOR_SURFACE_NONE;
-    int ftyp = IS_FLOOR(lev->typ) || IS_POOL(lev->typ) ? lev->typ : lev->floortyp;
-    int fsubtyp = IS_FLOOR(lev->typ) || IS_POOL(lev->typ) ? lev->subtyp : lev->floorsubtyp;
+    int ftyp = IS_FLOOR(lev->typ) || (IS_POOL(lev->typ) && !is_underwater) ? lev->typ : lev->floortyp;
+    int fsubtyp = IS_FLOOR(lev->typ) || (IS_POOL(lev->typ) && !is_underwater) ? lev->subtyp : lev->floorsubtyp;
 
     enum obj_material_types floor_material = get_location_type_material(ftyp, fsubtyp);
     floorid = material_definitions[floor_material].floor_surface_mapping;
@@ -4655,11 +4656,15 @@ enum climbing_types climbingid;
 
 	boolean isyou = (mtmp == &youmonst);
     boolean isfemale = isyou ? (Upolyd ? u.mfemale : flags.female) : mtmp->female;
+    xchar ox = isyou ? u.ux : mtmp->mx, oy = isyou ? u.uy : mtmp->my;
+    if (!isok(ox, oy))
+        return;
 
+    boolean is_underwater = isyou ? Underwater : is_swimmer(mtmp->data) && is_pool(ox, oy);
     struct ghsound_immediate_info immediateinfo = { 0 };
 
     /* Parameters */
-	enum floor_surface_types floorid = get_floor_surface_type(isyou ? u.ux : mtmp->mx, isyou ? u.uy : mtmp->my); /* Set the appropriate floor here */
+	enum floor_surface_types floorid = get_floor_surface_type(ox, oy, is_underwater); /* Set the appropriate floor here */
     enum floor_treading_types treadingid = FLOOR_TREADING_TYPE_NORMAL;
     enum location_passing_types passingid = LOCATION_PASSING_TYPE_NORMAL;
 
@@ -5098,9 +5103,10 @@ enum monster_soundset_types mss;
 }
 
 void
-play_object_floor_sound(obj, sound_type)
+play_object_floor_sound(obj, sound_type, is_underwater)
 struct obj* obj;
 enum object_sound_types sound_type;
+boolean is_underwater;
 {
     if (!obj)
         return;
@@ -5116,7 +5122,7 @@ enum object_sound_types sound_type;
         return;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
-    enum floor_surface_types floorid = get_floor_surface_type(ox, oy);
+    enum floor_surface_types floorid = get_floor_surface_type(ox, oy, is_underwater);
     float weight = (float)obj->owt;
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
@@ -5426,8 +5432,9 @@ enum object_sound_types sound_type;
     if (!isok(ox, oy))
         return;
 
+    boolean is_underwater = isyou ? Underwater : is_swimmer(mtmp->data) && is_pool(ox, oy);
     struct ghsound_immediate_info immediateinfo = { 0 };
-    enum floor_surface_types floorid = get_floor_surface_type(ox, oy);
+    enum floor_surface_types floorid = get_floor_surface_type(ox, oy, is_underwater);
     float weight = 1.0f;
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;

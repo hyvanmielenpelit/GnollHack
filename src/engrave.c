@@ -1105,7 +1105,7 @@ doengrave()
     if (!otmp || otmp == &zeroobj)
         play_monster_attack_floor_sound(&youmonst, 0, OBJECT_SOUND_TYPE_ENGRAVE);
     else
-        play_object_floor_sound(otmp, OBJECT_SOUND_TYPE_ENGRAVE);
+        play_object_floor_sound(otmp, OBJECT_SOUND_TYPE_ENGRAVE, Underwater);
 
 
     /* Mix up engraving if surface or state of mind is unsound.

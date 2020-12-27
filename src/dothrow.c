@@ -2020,7 +2020,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         thrownobj = (struct obj *) 0;
         place_object(obj, bhitpos.x, bhitpos.y);
         if(hitres == 0)
-            play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW);
+            play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW, Underwater);
 
         /* container contents might break;
            do so before turning ownership of thrownobj over to shk
@@ -2930,7 +2930,7 @@ struct obj *obj;
     if (u.dz > 0)
         pline_The("gold hits the %s.", surface(bhitpos.x, bhitpos.y));
     place_object(obj, bhitpos.x, bhitpos.y);
-    play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW);
+    play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW, Underwater);
     if (*u.ushops)
         sellobj(obj, bhitpos.x, bhitpos.y);
     stackobj(obj);

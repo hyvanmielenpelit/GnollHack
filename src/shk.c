@@ -4925,7 +4925,7 @@ boolean eating;
                     else
                     {
                         verbalize("Drop that, now!");
-                        play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP);
+                        play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP, FALSE);
                         pline("%s drops %s.", Monnam(mtmp), the(cxname(obj)));
                     }
                     chastised = TRUE;
