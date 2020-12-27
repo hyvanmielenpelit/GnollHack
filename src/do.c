@@ -1939,7 +1939,7 @@ register struct obj* obj;
 		Sprintf(buf, "Elemental enchantment:  %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Flaming (+4d6 fire damage)" :
 			obj->elemental_enchantment == COLD_ENCHANTMENT ? "Freezing (+12d6 cold damage)" :
 			obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Electrified (+6d6 lightning damage)" :
-			obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Mortific (kills on hit)" : "Unknown enchantment"
+			obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Death-magical (kills on hit)" : "Unknown enchantment"
 		);
 
 		wep_avg_dmg += obj->elemental_enchantment == FIRE_ENCHANTMENT ? 14.0 :

@@ -2681,6 +2681,9 @@ register struct monst *mtmp;
                 You_see("a %s erupt from the %s!", tower_of_flame,
                         surface(mtmp->mx, mtmp->my));
 
+            if (in_sight || see_it)
+                seetrap(trap);
+
             if (is_mon_immune_to_fire(mtmp)) {
                 if (in_sight) {
                     m_shieldeff(mtmp);
