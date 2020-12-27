@@ -709,38 +709,48 @@ struct obj *instr;
     int x, y;
     boolean ok;
 
-    if (Underwater) {
+    if (Underwater) 
+    {
         You_cant("play music underwater!");
         return 0;
-    } else if ((instr->otyp == WOODEN_FLUTE || instr->otyp == MAGIC_FLUTE
-                || instr->otyp == TOOLED_HORN || instr->otyp == BRASS_HORN || instr->otyp == FROST_HORN
-                || instr->otyp == FIRE_HORN || instr->otyp == BUGLE)
-               && !can_blow(&youmonst)) {
+    }
+    else if ((objects[instr->otyp].oc_subtyp == TOOLTYPE_FLUTE || objects[instr->otyp].oc_subtyp == TOOLTYPE_HORN)
+               && !can_blow(&youmonst)) 
+    {
         You("are incapable of playing %s.", the(distant_name(instr, xname)));
         return 0;
     }
-    if (instr->otyp != LEATHER_DRUM && instr->otyp != DRUM_OF_EARTHQUAKE
-        && !(Stunned || Confusion || Hallucination)) {
+
+    if (objects[instr->otyp].oc_subtyp != TOOLTYPE_DRUM
+        && !(Stunned || Confusion || Hallucination)) 
+    {
         c = ynq("Improvise?");
         if (c == 'q')
             goto nevermind;
     }
 
-    if (c == 'n') {
+    if (c == 'n') 
+    {
         if (u.uevent.uheard_tune == 2)
             c = ynq("Play the passtune?");
-        if (c == 'q') {
+        if (c == 'q') 
+        {
             goto nevermind;
-        } else if (c == 'y') {
+        } 
+        else if (c == 'y') 
+        {
             Strcpy(buf, tune);
-        } else {
+        } 
+        else 
+        {
             getlin("What tune are you playing? [5 notes, A-G]", buf);
             (void) mungspaces(buf);
             if (*buf == '\033')
                 goto nevermind;
 
             /* convert to uppercase and change any "H" to the expected "B" */
-            for (s = buf; *s; s++) {
+            for (s = buf; *s; s++) 
+            {
 #ifndef AMIGA
                 *s = highc(*s);
 #else
@@ -752,6 +762,7 @@ struct obj *instr;
                     *s = 'B';
             }
         }
+
         if (!iflags.using_gui_sounds)
             You("extract a strange sound from %s!", the(xname(instr)));
 
@@ -785,7 +796,8 @@ struct obj *instr;
             char nbuf[20];
             int i;
 
-            for (i = 0; buf[i] && i < 5; ++i) {
+            for (i = 0; buf[i] && i < 5; ++i) 
+            {
                 nbuf[i * 2] = buf[i];
                 nbuf[(i * 2) + 1] = 'h';
             }
@@ -817,14 +829,17 @@ struct obj *instr;
         /* Check if there was the Stronghold drawbridge near
          * and if the tune conforms to what we're waiting for.
          */
-        if (Is_stronghold(&u.uz)) {
+        if (Is_stronghold(&u.uz)) 
+        {
             exercise(A_WIS, TRUE); /* just for trying */
-            if (!strcmp(buf, tune)) {
+            if (!strcmp(buf, tune)) 
+            {
                 /* Search for the drawbridge */
                 for (y = u.uy - 1; y <= u.uy + 1; y++)
                     for (x = u.ux - 1; x <= u.ux + 1; x++)
                         if (isok(x, y))
-                            if (find_drawbridge(&x, &y)) {
+                            if (find_drawbridge(&x, &y)) 
+                            {
                                 u.uevent.uheard_tune =
                                     2; /* tune now fully known */
                                 if (levl[x][y].typ == DRAWBRIDGE_DOWN)
@@ -833,7 +848,9 @@ struct obj *instr;
                                     open_drawbridge(x, y);
                                 return 1;
                             }
-            } else if (!Deaf) {
+            } 
+            else if (!Deaf)
+            {
                 if (u.uevent.uheard_tune < 1)
                     u.uevent.uheard_tune = 1;
                 /* Okay, it wasn't the right tune, but perhaps
@@ -846,7 +863,9 @@ struct obj *instr;
                             if (IS_DRAWBRIDGE(levl[x][y].typ)
                                 || is_drawbridge_wall(x, y) >= 0)
                                 ok = TRUE;
-                if (ok) { /* There is a drawbridge near */
+                
+                if (ok)
+                { /* There is a drawbridge near */
                     int tumblers, gears;
                     boolean matched[5];
 
@@ -854,9 +873,12 @@ struct obj *instr;
                     for (x = 0; x < 5; x++)
                         matched[x] = FALSE;
 
-                    for (x = 0; x < (int) strlen(buf); x++)
-                        if (x < 5) {
-                            if (buf[x] == tune[x]) {
+                    for (x = 0; x < (int)strlen(buf); x++)
+                    {
+                        if (x < 5)
+                        {
+                            if (buf[x] == tune[x])
+                            {
                                 gears++;
                                 matched[x] = TRUE;
                                 if (iflags.using_gui_sounds)
@@ -864,10 +886,14 @@ struct obj *instr;
                                     play_sfx_sound(SFX_GEAR_TURN);
                                     delay_output_milliseconds(650);
                                 }
-                            } else
+                            }
+                            else
+                            {
                                 for (y = 0; y < 5; y++)
+                                {
                                     if (!matched[y] && buf[x] == tune[y]
-                                        && buf[y] != tune[y]) {
+                                        && buf[y] != tune[y]) 
+                                    {
                                         tumblers++;
                                         matched[y] = TRUE;
                                         if (iflags.using_gui_sounds)
@@ -877,16 +903,23 @@ struct obj *instr;
                                         }
                                         break;
                                     }
+                                }
+                            }
                         }
+                    }
+
                     if (tumblers)
+                    {
                         if (gears)
                             You_hear("%d tumbler%s click and %d gear%s turn.",
-                                     tumblers, plur(tumblers), gears,
-                                     plur(gears));
+                                tumblers, plur(tumblers), gears,
+                                plur(gears));
                         else
                             You_hear("%d tumbler%s click.", tumblers,
-                                     plur(tumblers));
-                    else if (gears) {
+                                plur(tumblers));
+                    }
+                    else if (gears)
+                    {
                         You_hear("%d gear%s turn.", gears, plur(gears));
                         /* could only get `gears == 5' by playing five
                            correct notes followed by excess; otherwise,
@@ -898,8 +931,12 @@ struct obj *instr;
             }
         }
         return 1;
-    } else
+    } 
+    else
+    {
         return do_improvisation(instr);
+    }
+
 
 nevermind:
     pline1(Never_mind);
