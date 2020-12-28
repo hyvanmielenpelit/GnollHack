@@ -4066,8 +4066,32 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_ICY_COATING_FORMS, 1.0f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_MAGIC_ARROW_HIT",
+        {GHSOUND_MAGIC_ARROW_HIT, 10.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_MIXING_NOT_ENOUGH_COMPONENTS",
+        {GHSOUND_MIXING_NOT_ENOUGH_COMPONENTS, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_MIXING_FLARES_UP",
+        {GHSOUND_MIXING_FLARES_UP, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_MIXING_SUCCESS",
+        {GHSOUND_MIXING_SUCCESS, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_MIXING_FAILURE",
+        {GHSOUND_MIXING_FAILURE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
-
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
 {
@@ -5472,11 +5496,7 @@ enum monster_sound_types sound_type;
     if (!Upolyd && isyou)
     {
         enum player_soundset_types pss = get_player_soundset();
-        if (pss > PLAYER_SOUNDSET_NONE)
-        {
-            soundid = player_soundsets[pss].sounds[sound_type].ghsound;
-            volume = player_soundsets[pss].sounds[sound_type].volume;
-        }
+        set_simple_player_sound_id_and_volume(pss, sound_type, &soundid, &volume);
     }
 
     xchar x = isyou ? u.ux : mon->mx, y = isyou ? u.uy : mon->my;

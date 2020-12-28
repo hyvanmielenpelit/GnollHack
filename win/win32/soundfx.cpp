@@ -746,11 +746,17 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Corrodes", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Rots", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Scroll Fades", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/SFX/General/Potion Dilutes", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Poison Dissolves", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Flames Extinquished", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Electricity Crackles", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Icy Coating Forms", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Magic Arrow Hit", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Mixing/Mixing Not Enough Components", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Mixing/Mixing Flares Up", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Mixing/Mixing Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Mixing/Mixing Failure", 1.0f },
 
 };
 

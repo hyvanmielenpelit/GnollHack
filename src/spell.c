@@ -4256,6 +4256,7 @@ int spell;
 		//Check quantity
 		if (otmp->quan < mc->amount)
 		{
+			play_sfx_sound(SFX_MIXING_NOT_ENOUGH_COMPONENTS);
 			pline("%s requires %s%s, but you have only %ld.",
 				spellname,
 				buf3,
@@ -4398,6 +4399,7 @@ int spell;
 		}
 		else
 		{
+			play_sfx_sound(SFX_MIXING_FLARES_UP);
 			Your("concoction flares up, burning you!");
 			losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
 		}
@@ -4407,6 +4409,7 @@ int spell;
 		//Success
 		int addedamount = spells_gained_per_mixing * selected_multiplier;
 		spellamount(spell) += addedamount;
+		play_sfx_sound(SFX_MIXING_SUCCESS);
 		You("successfully prepared the material components.");
 		if (addedamount == 1)
 			You("now have one more casting of \"%s\" prepared.", spellname);

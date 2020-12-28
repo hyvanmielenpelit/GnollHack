@@ -224,6 +224,7 @@ struct monst* origmonst;
             seemimic(mtmp);
         if (is_mon_immune_to_magic_missile(mtmp) || Invulnerable)
 		{ /* match effect on player */
+            play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
             pline("Boing!");
             break; /* skip makeknown */
@@ -233,7 +234,8 @@ struct monst* origmonst;
 			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Spells do the same damage for small and big
 
 			/* resist deals the damage and displays the damage dealt */
-			hit(zap_type_text, mtmp, exclam(dmg), -1, "");
+            play_sfx_sound_at_location(SFX_MAGIC_ARROW_HIT, mtmp->mx, mtmp->my);
+            hit(zap_type_text, mtmp, exclam(dmg), -1, "");
 			(void) inflict_spell_damage(mtmp, otmp, dmg, AD_MAGM, TELL);
         } 
 		else
@@ -5022,7 +5024,8 @@ boolean ordinary;
         learn_it = TRUE;
 		if (Magic_missile_immunity || Invulnerable)
 		{
-			u_shieldeff();
+            play_sfx_sound(SFX_GENERAL_REFLECTS);
+            u_shieldeff();
 			damage = 0;
 			pline("Boing!");
 		}
