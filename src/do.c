@@ -3898,6 +3898,8 @@ boolean pushing;
         int chance = rn2(10); /* water: 90%; lava: 10% */
         fills_up = lava ? chance == 0 : chance != 0;
 
+		play_object_floor_sound_at_location(otmp, OBJECT_SOUND_TYPE_DROP, rx, ry, FALSE);
+
         if (fills_up) 
 		{
             struct trap *ttmp = t_at(rx, ry);

@@ -1267,8 +1267,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_ARROW_HIT, 1.0f},
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
-            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
-            {GHSOUND_GENERIC_ITEM_DROP_AFTER_THROW, 1.0f},
+            {GHSOUND_BOULDER_DROP, 1.0f},
+            {GHSOUND_BOULDER_DROP_AFTER_THROW, 1.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -5096,10 +5096,12 @@ enum monster_soundset_types mss;
     return volume;
 }
 
+
 void
-play_object_floor_sound(obj, sound_type, is_underwater)
+play_object_floor_sound_at_location(obj, sound_type, x, y, is_underwater)
 struct obj* obj;
 enum object_sound_types sound_type;
+int x, y;
 boolean is_underwater;
 {
     if (!obj)
@@ -5108,11 +5110,9 @@ boolean is_underwater;
     if (Deaf)
         return;
 
-    xchar ox = 0, oy = 0;
-    if(!get_obj_location(obj, &ox, &oy, 0))
-        return;
-    
-    if(!isok(ox, oy))
+    xchar ox = x, oy = y;
+
+    if (!isok(ox, oy))
         return;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
@@ -5150,6 +5150,29 @@ boolean is_underwater;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
+}
+
+
+void
+play_object_floor_sound(obj, sound_type, is_underwater)
+struct obj* obj;
+enum object_sound_types sound_type;
+boolean is_underwater;
+{
+    if (!obj)
+        return;
+
+    if (Deaf)
+        return;
+
+    xchar ox = 0, oy = 0;
+    if(!get_obj_location(obj, &ox, &oy, 0))
+        return;
+    
+    if(!isok(ox, oy))
+        return;
+
+    play_object_floor_sound_at_location(obj, sound_type, (int)ox, (int)oy, is_underwater);
 }
 
 void
