@@ -726,6 +726,12 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Drop After Throw", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Wear", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Take Off", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Wield", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Weapon/Sword/Sword Wield", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Weapon/Axe/Axe Wield", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Weapon/Dagger/Dagger Wield", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Weapon/Bow/Bow Wield", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Weapon/Crossbow/Crossbow Wield", 1.0f },
 
 };
 

@@ -375,7 +375,9 @@ dowield()
 
     /* May we attempt this? */
     multi = 0;
-    if (cantwield(youmonst.data)) {
+    if (cantwield(youmonst.data)) 
+	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("Don't be ridiculous!");
         return 0;
     }
@@ -386,7 +388,9 @@ dowield()
 		if (!(wep = getobj(wield_objs, "wield", 0, "")))
 			/* Cancelled */
 			return 0;
-		else if (wep == uwep || wep == uarms) {
+		else if (wep == uwep || wep == uarms)
+		{
+			play_sfx_sound(SFX_GENERAL_CANNOT);
 			You("are already wielding that!");
 			return 0;
 		}
@@ -423,10 +427,12 @@ dowield()
 				mask = W_WEP2;
 
 		}
-		else if (bimanual(wep)) {
+		else if (bimanual(wep)) 
+		{
 			mask = W_WEP;
 		}
-		else if (uwep && !uarms) {
+		else if (uwep && !uarms) 
+		{
 			if (bimanual(uwep))
 			{
 				play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -435,7 +441,8 @@ dowield()
 			}
 			mask = W_WEP2;
 		}
-		else if (uarms && !uwep) {
+		else if (uarms && !uwep)
+		{
 			if (bimanual(uarms))
 			{
 				play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -446,11 +453,13 @@ dowield()
 		}
 		else {
 			char answer = '\0';
-			do {
+			do 
+			{
 				Sprintf(qbuf, "Which %s, Right or Left?",
 					body_part(HAND));
 				answer = yn_function(qbuf, "rl", '\0');
-				switch (answer) {
+				switch (answer) 
+				{
 				case '\0':
 					return 0;
 				case 'l':
@@ -464,7 +473,8 @@ dowield()
 				}
 			} while (!mask);
 		}
-		if ((mask == W_WEP || bimanual(wep)) && uwep && welded(uwep, &youmonst)) {
+		if ((mask == W_WEP || bimanual(wep)) && uwep && welded(uwep, &youmonst)) 
+		{
 			weldmsg(uwep);
 			/* previously interrupted armor removal mustn't be resumed */
 			reset_remarm();
@@ -496,10 +506,12 @@ dowield()
 		}
 
 		/* Set your new primary weapon */
+		boolean ready_succeeded = FALSE;
 		if(mask == W_WEP)
 		{
 			oldwep = uwep;
 			result = ready_weapon(wep, W_WEP);
+			ready_succeeded = (uwep == wep);
 			if (flags.pushweapon && oldwep && uwep != oldwep)
 				setuswapwep(oldwep, W_SWAPWEP);
 		}
@@ -507,8 +519,17 @@ dowield()
 		{
 			oldwep = uarms;
 			result = ready_weapon(wep, W_WEP2);
+			ready_succeeded = (uarms == wep);
 			if (flags.pushweapon && oldwep && uarms != oldwep)
 				setuswapwep(oldwep, W_SWAPWEP2);
+		}
+
+		if (ready_succeeded)
+		{
+			if (wep)
+				play_simple_object_sound(wep, OBJECT_SOUND_TYPE_WIELD);
+			else if (oldwep)
+				play_simple_object_sound(oldwep, OBJECT_SOUND_TYPE_UNWIELD);
 		}
 	}
 	else
@@ -517,10 +538,13 @@ dowield()
 		if (!(wep = getobj(wield_objs, "wield", 0, "")))
 			/* Cancelled */
 			return 0;
-		else if (wep == uwep) {
+		else if (wep == uwep) 
+		{
+			play_sfx_sound(SFX_GENERAL_CANNOT);
 			You("are already wielding that!");
 			return 0;
-		} else if (welded(uwep, &youmonst)) {
+		} else if (welded(uwep, &youmonst))
+		{
 			weldmsg(uwep);
 			/* previously interrupted armor removal mustn't be resumed */
 			reset_remarm();
@@ -538,7 +562,8 @@ dowield()
 			return dosingleswapweapon(W_WEP2);
 		else if (wep == uquiver)
 			setuqwep((struct obj *) 0);
-		else if (wep->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) {
+		else if (wep->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) 
+		{
 			play_sfx_sound(SFX_GENERAL_CANNOT);
 			You("cannot wield that!");
 			return 0;
@@ -554,8 +579,17 @@ dowield()
 		/* Set your new primary weapon */
 		oldwep = uwep;
 		result = ready_weapon(wep, W_WEP);
+		boolean ready_succeeded = (uwep == wep);
 		if (flags.pushweapon && oldwep && uwep != oldwep)
 			setuswapwep(oldwep, W_SWAPWEP);
+
+		if (ready_succeeded)
+		{
+			if (wep)
+				play_simple_object_sound(wep, OBJECT_SOUND_TYPE_WIELD);
+			else if (oldwep)
+				play_simple_object_sound(oldwep, OBJECT_SOUND_TYPE_UNWIELD);
+		}
 
 #if 0
 		if (uwep && (!oldwep || uwep != oldwep) && is_launcher(uwep) && P_SKILL_LEVEL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
@@ -628,6 +662,7 @@ long mask;
 
 	if (!wep && !swapwep)
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		Your("%s %s is already empty.", mask == W_WEP ? "right" : "left", body_part(HAND));
 		return 0;
 	}
@@ -731,22 +766,27 @@ doswapweapon()
 
     /* May we attempt this? */
     multi = 0;
-    if (cantwield(youmonst.data)) {
-        pline("Don't be ridiculous!");
+    if (cantwield(youmonst.data))
+	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		pline("Don't be ridiculous!");
         return 0;
     }
 	if (u.twoweap)
 	{
-		if (uwep && welded(uwep, &youmonst)) {
+		if (uwep && welded(uwep, &youmonst)) 
+		{
 			weldmsg(uwep);
 			return 0;
 		}
-		if (uarms && welded(uarms, &youmonst)) {
+		if (uarms && welded(uarms, &youmonst)) 
+		{
 			weldmsg(uarms);
 			return 0;
 		}
 		if (!uwep && !uswapwep && !uarms && !uswapwep2)
 		{
+			play_sfx_sound(SFX_GENERAL_CANNOT);
 			Your("both %s are already empty.", makeplural(body_part(HAND)));
 			return 0;
 		}
@@ -818,6 +858,7 @@ doswapweapon()
 		}
 		if (!uwep && !uswapwep && !uarms && !uswapwep2)
 		{
+			play_sfx_sound(SFX_GENERAL_CANNOT);
 			You("are already empty %s.", body_part(HANDED));
 			return 0;
 		}
