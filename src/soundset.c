@@ -3932,6 +3932,26 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_EGG_HATCH, 1.0f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_ITEM_RUSTS",
+        {GHSOUND_ITEM_RUSTS, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_ITEM_GETS_BURNT",
+        {GHSOUND_ITEM_GETS_BURNT, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_ITEM_CORRODES",
+        {GHSOUND_ITEM_CORRODES, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_ITEM_ROTS",
+        {GHSOUND_ITEM_ROTS, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

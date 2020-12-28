@@ -194,6 +194,9 @@ int ef_flags;
         *const action[] = { "smoulder", "rust", "rot", "corrode" },
         *const msg[] = { "burnt", "rusted", "rotten", "corroded" },
         *const bythe[] = { "heat", "oxidation", "decay", "corrosion" };
+
+    enum sfx_sound_types erode_sounds[] = { SFX_ITEM_GETS_BURNT, SFX_ITEM_RUSTS, SFX_ITEM_ROTS, SFX_ITEM_CORRODES };
+
     boolean vulnerable = FALSE, is_primary = TRUE,
             check_grease = (ef_flags & EF_GREASE) ? TRUE : FALSE,
             print = (ef_flags & EF_VERBOSE) ? TRUE : FALSE,
@@ -204,13 +207,18 @@ int ef_flags;
     if (!otmp)
         return ER_NOTHING;
 
+    xchar x = 0, y = 0;
+    get_obj_location(otmp, &x, &y, 0);
+    boolean location_ok = isok(x, y);
+
     victim = carried(otmp) ? &youmonst : mcarried(otmp) ? otmp->ocarry : NULL;
     uvictim = (victim == &youmonst);
     vismon = victim && (victim != &youmonst) && canseemon(victim);
     /* Is bhitpos correct here? Ugh. */
     visobj = !victim && cansee(bhitpos.x, bhitpos.y);
 
-    switch (type) {
+    switch (type) 
+    {
     case ERODE_BURN:
         vulnerable = is_flammable(otmp);
         check_grease = FALSE;
@@ -244,18 +252,25 @@ int ef_flags;
     if (visobj && !(uvictim || vismon) && !strncmpi(ostr, "the ", 4))
         ostr += 4;
 
-    if (check_grease && otmp->greased) {
+    if (check_grease && otmp->greased)
+    {
         grease_protect(otmp, ostr, victim);
         return ER_GREASED;
-    } else if (!erosion_matters(otmp)) {
+    }
+    else if (!erosion_matters(otmp)) 
+    {
         return ER_NOTHING;
-    } else if (!vulnerable || (otmp->oerodeproof && otmp->rknown)) {
+    } 
+    else if (!vulnerable || (otmp->oerodeproof && otmp->rknown))
+    {
         if (flags.verbose && print && (uvictim || vismon))
             pline("%s %s %s not affected by %s.",
                   uvictim ? "Your" : s_suffix(Monnam(victim)),
                   ostr, vtense(ostr, "are"), bythe[type]);
         return ER_NOTHING;
-    } else if (otmp->oerodeproof || (otmp->blessed && !rnl(4))) {
+    }
+    else if (otmp->oerodeproof || (otmp->blessed && !rnl(4))) 
+    {
         if (flags.verbose && (print || otmp->oerodeproof)
             && (uvictim || vismon || visobj))
             pline("Somehow, %s %s %s not affected by the %s.",
@@ -268,24 +283,32 @@ int ef_flags;
          * the hero can distinguish this from an object that is
          * actually proof against damage.
          */
-        if (otmp->oerodeproof) {
+        if (otmp->oerodeproof)
+        {
             otmp->rknown = TRUE;
             if (victim == &youmonst)
                 update_inventory();
         }
 
         return ER_NOTHING;
-    } else if (erosion < MAX_ERODE) {
+    } 
+    else if (erosion < MAX_ERODE) 
+    {
         const char *adverb = (erosion + 1 == MAX_ERODE)
                                  ? " completely"
                                  : erosion ? " further" : "";
 
+
         if (uvictim || vismon || visobj)
+        {
+            if (location_ok)
+                play_sfx_sound_at_location(erode_sounds[type], x, y);
             pline("%s %s %s%s!",
-                  uvictim ? "Your"
-                          : !vismon ? "The" /* visobj */
-                                    : s_suffix(Monnam(victim)),
-                  ostr, vtense(ostr, action[type]), adverb);
+                uvictim ? "Your"
+                : !vismon ? "The" /* visobj */
+                : s_suffix(Monnam(victim)),
+                ostr, vtense(ostr, action[type]), adverb);
+        }
 
         if (ef_flags & EF_PAY)
             costly_alteration(otmp, cost_type);
@@ -299,13 +322,19 @@ int ef_flags;
             update_inventory();
 
         return ER_DAMAGED;
-    } else if (ef_flags & EF_DESTROY) {
+    }
+    else if (ef_flags & EF_DESTROY) 
+    {
         if (uvictim || vismon || visobj)
+        {
+            if (location_ok)
+                play_sfx_sound_at_location(erode_sounds[type], x, y);
             pline("%s %s %s away!",
-                  uvictim ? "Your"
-                          : !vismon ? "The" /* visobj */
-                                    : s_suffix(Monnam(victim)),
-                  ostr, vtense(ostr, action[type]));
+                uvictim ? "Your"
+                : !vismon ? "The" /* visobj */
+                : s_suffix(Monnam(victim)),
+                ostr, vtense(ostr, action[type]));
+        }
 
         if (ef_flags & EF_PAY)
             costly_alteration(otmp, cost_type);
@@ -313,8 +342,14 @@ int ef_flags;
         setnotworn(otmp);
         delobj(otmp);
         return ER_DESTROYED;
-    } else {
-        if (flags.verbose && print) {
+    } 
+    else 
+    {
+        if (flags.verbose && print) 
+        {
+            if ((uvictim || vismon || visobj) && location_ok)
+                play_sfx_sound_at_location(erode_sounds[type], x, y);
+
             if (uvictim)
                 Your("%s %s completely %s.",
                      ostr, vtense(ostr, Blind ? "feel" : "look"), msg[type]);

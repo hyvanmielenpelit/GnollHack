@@ -741,6 +741,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Unquiver", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Boulder/Boulder Drop", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Boulder/Boulder Drop After Throw", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Erosion/Item Rusts", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Erosion/Item Gets Burnt", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Erosion/Item Corrodes", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Erosion/Item Rots", 1.0f },
 
 };
 
