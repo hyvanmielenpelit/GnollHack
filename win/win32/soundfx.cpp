@@ -737,6 +737,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Weapon Swapping in Both Hands", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Unwield", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Quiver", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Unquiver", 1.0f },
 
 };
 
