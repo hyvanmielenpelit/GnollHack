@@ -724,6 +724,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Location/Drawbridge/Drawbridge Loud Crash", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Food/Egg/Egg Hatch", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Drop After Throw", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Wear", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Take Off", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Wield", 1.0f },
@@ -734,6 +735,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Crossbow/Crossbow Wield", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Weapon Swapping in Right Hand Only", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Weapon Swapping in Both Hands", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Unwield", 1.0f },
 
 };
 

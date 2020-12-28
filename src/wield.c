@@ -834,6 +834,10 @@ doswapweapon()
 				play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
 			}
 		}
+		else if (oldwep)
+		{
+			play_simple_object_sound(oldwep, OBJECT_SOUND_TYPE_UNWIELD);
+		}
 
 		if (oldswap2)
 		{
@@ -842,6 +846,10 @@ doswapweapon()
 			{
 				play_simple_object_sound(oldswap2, OBJECT_SOUND_TYPE_WIELD);
 			}
+		}
+		else if (oldwep2)
+		{
+			play_simple_object_sound(oldwep2, OBJECT_SOUND_TYPE_UNWIELD);
 		}
 
 
@@ -863,6 +871,7 @@ doswapweapon()
 					You("have no right hand alternate weapon readied.");
 			}
 		}
+
 		if (uarms == oldwep2) 
 		{
 			/* Wield failed for some reason */
@@ -935,7 +944,14 @@ doswapweapon()
 			if (uwep == oldswap)
 			{
 				/* Wield succeeded */
-				play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
+				if (oldswap)
+				{
+					play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
+				}
+				else if (oldwep)
+				{
+					play_simple_object_sound(oldwep, OBJECT_SOUND_TYPE_UNWIELD);
+				}
 			}
 
 			setuswapwep(oldwep, W_SWAPWEP);
@@ -976,7 +992,14 @@ doswapweapon()
 				if (uarms == oldswap2)
 				{
 					/* Wield succeeded */
-					play_simple_object_sound(oldswap2, OBJECT_SOUND_TYPE_WIELD);
+					if (oldswap2)
+					{
+						play_simple_object_sound(oldswap2, OBJECT_SOUND_TYPE_WIELD);
+					}
+					else if (oldwep2)
+					{
+						play_simple_object_sound(oldwep2, OBJECT_SOUND_TYPE_UNWIELD);
+					}
 				}
 
 				setuswapwep(oldwep2, W_SWAPWEP2);
@@ -986,7 +1009,6 @@ doswapweapon()
 					You("have no alternate shield readied.");
 			}
 		}
-
 	}
 
 #if 0

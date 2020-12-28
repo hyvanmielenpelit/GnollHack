@@ -280,7 +280,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_GENERIC_ITEM_WEAR, 1.0f},
             {GHSOUND_GENERIC_ITEM_TAKE_OFF, 1.0f},
             {GHSOUND_GENERIC_ITEM_WIELD, 1.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_GENERIC_ITEM_UNWIELD, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
