@@ -741,12 +741,19 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Unquiver", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Boulder/Boulder Drop", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Boulder/Boulder Drop After Throw", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Erosion/Item Rusts", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Erosion/Item Gets Burnt", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Erosion/Item Corrodes", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Erosion/Item Rots", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Rusts", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Gets Burnt", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Corrodes", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Rots", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Scroll Fades", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Potion Dilutes", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Poison Dissolves", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Flames Extinquished", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Electricity Crackles", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Icy Coating Forms", 1.0f },
 
 };
+
 
 extern "C" 
 {

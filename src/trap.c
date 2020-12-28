@@ -195,7 +195,7 @@ int ef_flags;
         *const msg[] = { "burnt", "rusted", "rotten", "corroded" },
         *const bythe[] = { "heat", "oxidation", "decay", "corrosion" };
 
-    enum sfx_sound_types erode_sounds[] = { SFX_ITEM_GETS_BURNT, SFX_ITEM_RUSTS, SFX_ITEM_ROTS, SFX_ITEM_CORRODES };
+    enum object_sound_types obj_erode_sounds[] = { OBJECT_SOUND_TYPE_EROSION_BURNT, OBJECT_SOUND_TYPE_EROSION_RUSTS, OBJECT_SOUND_TYPE_EROSION_ROTS, OBJECT_SOUND_TYPE_EROSION_CORRODES };
 
     boolean vulnerable = FALSE, is_primary = TRUE,
             check_grease = (ef_flags & EF_GREASE) ? TRUE : FALSE,
@@ -206,10 +206,6 @@ int ef_flags;
 
     if (!otmp)
         return ER_NOTHING;
-
-    xchar x = 0, y = 0;
-    get_obj_location(otmp, &x, &y, 0);
-    boolean location_ok = isok(x, y);
 
     victim = carried(otmp) ? &youmonst : mcarried(otmp) ? otmp->ocarry : NULL;
     uvictim = (victim == &youmonst);
@@ -301,8 +297,7 @@ int ef_flags;
 
         if (uvictim || vismon || visobj)
         {
-            if (location_ok)
-                play_sfx_sound_at_location(erode_sounds[type], x, y);
+            play_simple_object_sound(otmp, obj_erode_sounds[type]);
             pline("%s %s %s%s!",
                 uvictim ? "Your"
                 : !vismon ? "The" /* visobj */
@@ -327,8 +322,7 @@ int ef_flags;
     {
         if (uvictim || vismon || visobj)
         {
-            if (location_ok)
-                play_sfx_sound_at_location(erode_sounds[type], x, y);
+            play_simple_object_sound(otmp, obj_erode_sounds[type]);
             pline("%s %s %s away!",
                 uvictim ? "Your"
                 : !vismon ? "The" /* visobj */
@@ -347,8 +341,8 @@ int ef_flags;
     {
         if (flags.verbose && print) 
         {
-            if ((uvictim || vismon || visobj) && location_ok)
-                play_sfx_sound_at_location(erode_sounds[type], x, y);
+            if (uvictim || vismon || visobj)
+                play_simple_object_sound(otmp, obj_erode_sounds[type]);
 
             if (uvictim)
                 Your("%s %s completely %s.",
@@ -4006,6 +4000,9 @@ boolean force;
 
     boolean erodeprotection = FALSE;
 
+    xchar x = 0, y = 0;
+    get_obj_location(obj, &x, &y, 0);
+
     if (!ostr)
         ostr = cxname(obj);
 
@@ -4068,8 +4065,10 @@ boolean force;
         }
 
         if (carried(obj))
+        {
+            play_sfx_sound_at_location(SFX_SCROLL_FADES, x, y);
             pline("Your %s %s.", ostr, vtense(ostr, "fade"));
-
+        }
         obj->otyp = SCR_BLANK_PAPER;
         obj->dknown = 0;
         obj->special_quality = 0;
@@ -4081,6 +4080,7 @@ boolean force;
     {
         if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
         {
+            play_sfx_sound_at_location(SFX_STEAMY_BUBBLES, x, y);
             pline("Steam rises from %s.", the(xname(obj)));
             return 0;
         }
@@ -4093,8 +4093,10 @@ boolean force;
             return 0;
         }
         if (carried(obj))
+        {
+            play_sfx_sound_at_location(SFX_SCROLL_FADES, x, y);
             pline("Your %s %s.", ostr, vtense(ostr, "fade"));
-
+        }
         if (obj->otyp == SPE_NOVEL) 
         {
             obj->novelidx = 0;
@@ -4130,6 +4132,7 @@ boolean force;
              * variant.
              */
             bufp = simpleonames(obj);
+            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, x, y);
             pline("%s %s %s!", /* "A potion explodes!" */
                   !exploded ? (one ? "A" : "Some")
                             : (one ? "Another" : "More"),
@@ -4149,8 +4152,10 @@ boolean force;
         else if (obj->odiluted)
         {
             if (carried(obj))
+            {
+                play_sfx_sound_at_location(SFX_POTION_DILUTES, x, y);
                 pline("Your %s %s further.", ostr, vtense(ostr, "dilute"));
-
+            }
             obj->otyp = POT_WATER;
             obj->dknown = 0;
             obj->blessed = obj->cursed = 0;
@@ -4162,8 +4167,10 @@ boolean force;
         else if (obj->otyp != POT_WATER)
         {
             if (carried(obj))
+            {
+                play_sfx_sound_at_location(SFX_POTION_DILUTES, x, y);
                 pline("Your %s %s.", ostr, vtense(ostr, "dilute"));
-
+            }
             obj->odiluted++;
             if (carried(obj))
                 update_inventory();
@@ -4175,6 +4182,7 @@ boolean force;
         if (is_poisonable(obj) && obj->opoisoned)
         {
             obj->opoisoned = 0;
+            play_sfx_sound_at_location(SFX_POISON_DISSOLVES, x, y);
             pline("The poison on %s dissolves off.", yname(obj));
         }
         else if (is_elemental_enchantable(obj) && obj->elemental_enchantment)
@@ -4182,14 +4190,17 @@ boolean force;
             if (obj->elemental_enchantment == FIRE_ENCHANTMENT)
             {
                 obj->elemental_enchantment = 0;
+                play_sfx_sound_at_location(SFX_FLAMES_EXTINQUISHED, x, y);
                 pline("The flames on %s are extinguished.", yname(obj));
             }
             else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
             {
+                play_sfx_sound_at_location(SFX_ELECTRICITY_CRACKLES, x, y);
                 pline("The electricity on %s crackles.", yname(obj));
             }
             else if (obj->elemental_enchantment == COLD_ENCHANTMENT)
             {
+                play_sfx_sound_at_location(SFX_ICY_COATING_FORMS, x, y);
                 pline("An icy coating forms on %s.", yname(obj));
                 erodeprotection = TRUE;
             }
