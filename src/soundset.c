@@ -2320,6 +2320,18 @@ NEARDATA struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES] =
         FALSE,
         SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "weapon-swapping-in-right-hand-only",
+        {GHSOUND_WEAPON_SWAPPING_IN_RIGHT_HAND_ONLY, 1.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "weapon-swapping-in-both-hands",
+        {GHSOUND_WEAPON_SWAPPING_IN_BOTH_HANDS, 1.0f},
+        FALSE,
+        SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 

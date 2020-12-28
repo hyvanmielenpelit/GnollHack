@@ -732,6 +732,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Dagger/Dagger Wield", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Bow/Bow Wield", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Crossbow/Crossbow Wield", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Weapon Swapping in Right Hand Only", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Weapon Swapping in Both Hands", 1.0f },
 
 };
 

@@ -667,7 +667,7 @@ long mask;
 		return 0;
 	}
 
-	play_ui_sound(UI_SOUND_WEAPON_SWAPPED);
+	//play_ui_sound(UI_SOUND_WEAPON_SWAPPED);
 
 	/* Unwield your current secondary weapon */
 	oldwep = wep;
@@ -675,8 +675,8 @@ long mask;
 	if(mask == W_WEP)
 	{
 		setuswapwep((struct obj*)0, W_SWAPWEP);
-		result = ready_weapon(oldswap, W_WEP);
 		/* Set your new secondary weapon */
+		result = ready_weapon(oldswap, W_WEP);
 		if (uwep == oldwep) 
 		{
 			/* Wield failed for some reason */
@@ -684,6 +684,12 @@ long mask;
 		}
 		else
 		{
+			if (uwep == oldswap)
+			{
+				/* Wield succeeded */
+				play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
+			}
+
 			setuswapwep(oldwep, W_SWAPWEP);
 			if (uswapwep)
 				prinv((char*)0, uswapwep, 0L);
@@ -694,8 +700,8 @@ long mask;
 	else
 	{
 		setuswapwep((struct obj*)0, W_SWAPWEP2);
-		result = ready_weapon(oldswap, W_WEP2);
 		/* Set your new secondary weapon */
+		result = ready_weapon(oldswap, W_WEP2);
 		if (uarms == oldwep) 
 		{
 			/* Wield failed for some reason */
@@ -703,6 +709,12 @@ long mask;
 		}
 		else 
 		{
+			if (uarms == oldswap)
+			{
+				/* Wield succeeded */
+				play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
+			}
+
 			setuswapwep(oldwep, W_SWAPWEP2);
 			if (uswapwep2)
 				prinv((char*)0, uswapwep2, 0L);
@@ -738,9 +750,15 @@ doswaphandedness()
 	flags.swap_rhand_only = !flags.swap_rhand_only;
 
 	if (flags.swap_rhand_only)
+	{
+		play_ui_sound(UI_SOUND_WEAPON_SWAPPING_IN_RIGHT_HAND_ONLY);
 		You("are now swapping weapons only in your right %s.", body_part(HAND));
+	}
 	else
+	{
+		play_ui_sound(UI_SOUND_WEAPON_SWAPPING_IN_BOTH_HANDS);
 		You("are now swapping weapons in your both %s.", makeplural(body_part(HAND)));
+	}
 
 	return 0;
 }
@@ -791,7 +809,7 @@ doswapweapon()
 			return 0;
 		}
 
-		play_ui_sound(UI_SOUND_WEAPON_SWAPPED);
+		//play_ui_sound(UI_SOUND_WEAPON_SWAPPED);
 
 		/* Unwield your current secondary weapon */
 		oldwep = uwep;
@@ -808,13 +826,28 @@ doswapweapon()
 			setuwep((struct obj*) 0, W_WEP2);
 
 		/* Set your new primary weapon */
-		if(oldswap)
+		if (oldswap)
+		{
 			result = ready_weapon(oldswap, W_WEP);
-		if(oldswap2)
+			if (uwep == oldswap)
+			{
+				play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
+			}
+		}
+
+		if (oldswap2)
+		{
 			result2 = ready_weapon(oldswap2, W_WEP2);
+			if (uarms == oldswap2)
+			{
+				play_simple_object_sound(oldswap2, OBJECT_SOUND_TYPE_WIELD);
+			}
+		}
+
 
 		/* Set your new secondary weapon */
-		if (uwep == oldwep) {
+		if (uwep == oldwep)
+		{
 			/* Wield failed for some reason */
 			if(oldswap)
 				setuswapwep(oldswap, W_SWAPWEP);
@@ -830,7 +863,8 @@ doswapweapon()
 					You("have no right hand alternate weapon readied.");
 			}
 		}
-		if (uarms == oldwep2) {
+		if (uarms == oldwep2) 
+		{
 			/* Wield failed for some reason */
 			setuswapwep(oldswap2, W_SWAPWEP2);
 		}
@@ -848,11 +882,13 @@ doswapweapon()
 	}
 	else
 	{
-		if (welded(uwep, &youmonst)) {
+		if (welded(uwep, &youmonst))
+		{
 			weldmsg(uwep);
 			return 0;
 		}
-		if (uarms && uarms->cursed && (uswapwep2 || (uswapwep && bimanual(uswapwep)))) {
+		if (uarms && uarms->cursed && (uswapwep2 || (uswapwep && bimanual(uswapwep)))) 
+		{
 			weldmsg(uarms);
 			return 0;
 		}
@@ -863,7 +899,7 @@ doswapweapon()
 			return 0;
 		}
 
-		play_ui_sound(UI_SOUND_WEAPON_SWAPPED);
+		//play_ui_sound(UI_SOUND_WEAPON_SWAPPED);
 
 		/* Unwield your current secondary weapon */
 		oldwep = uwep;
@@ -896,6 +932,12 @@ doswapweapon()
 		} 
 		else 
 		{
+			if (uwep == oldswap)
+			{
+				/* Wield succeeded */
+				play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
+			}
+
 			setuswapwep(oldwep, W_SWAPWEP);
 			if (uswapwep)
 				prinv((char *) 0, uswapwep, 0L);
@@ -931,6 +973,12 @@ doswapweapon()
 			}
 			else 
 			{
+				if (uarms == oldswap2)
+				{
+					/* Wield succeeded */
+					play_simple_object_sound(oldswap2, OBJECT_SOUND_TYPE_WIELD);
+				}
+
 				setuswapwep(oldwep2, W_SWAPWEP2);
 				if (uswapwep2)
 					prinv((char*)0, uswapwep2, 0L);
@@ -986,51 +1034,71 @@ dowieldquiver()
                    : ready_objs;
     newquiver = getobj(quivee_types, "ready", 0, "");
 
-    if (!newquiver) {
+    if (!newquiver) 
+	{
         /* Cancelled */
         return 0;
-    } else if (newquiver == &zeroobj) { /* no object */
+    } 
+	else if (newquiver == &zeroobj) 
+	{ /* no object */
         /* Explicitly nothing */
-        if (uquiver) {
-            You("now have no ammunition readied.");
+        if (uquiver) 
+		{
+			play_simple_object_sound(uquiver, OBJECT_SOUND_TYPE_UNQUIVER);
+			You("now have no ammunition readied.");
             /* skip 'quivering: prinv()' */
             setuqwep((struct obj *) 0);
-        } else {
-            You("already have no ammunition readied!");
+        } 
+		else 
+		{
+			play_sfx_sound(SFX_GENERAL_CANNOT);
+			You("already have no ammunition readied!");
         }
         return 0;
-    } else if (newquiver->o_id == context.objsplit.child_oid) {
+    } 
+	else if (newquiver->o_id == context.objsplit.child_oid) 
+	{
         /* if newquiver is the result of supplying a count to getobj()
            we don't want to split something already in the quiver;
            for any other item, we need to give it its own inventory slot */
-        if (uquiver && uquiver->o_id == context.objsplit.parent_oid) {
+        if (uquiver && uquiver->o_id == context.objsplit.parent_oid)
+		{
             unsplitobj(newquiver);
             goto already_quivered;
         }
         finish_splitting = TRUE;
-    } else if (newquiver == uquiver) {
+    } 
+	else if (newquiver == uquiver) 
+	{
     already_quivered:
 		play_sfx_sound(SFX_GENERAL_CANNOT);
 		pline("That ammunition is already readied!");
         return 0;
-    } else if (newquiver->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) {
+    }
+	else if (newquiver->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) 
+	{
 		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("cannot ready that!");
         return 0;
     }
-	else if (newquiver == uwep && uwep) {
+	else if (newquiver == uwep && uwep) 
+	{
         int weld_res = !uwep->bknown;
 
-        if (welded(uwep, &youmonst)) {
+        if (welded(uwep, &youmonst))
+		{
             weldmsg(uwep);
             reset_remarm(); /* same as dowield() */
             return weld_res;
         }
+
         /* offer to split stack if wielding more than 1 */
-        if (uwep->quan > 1L && inv_cnt(FALSE) < 52 && splittable(uwep)) {
+        if (uwep->quan > 1L && inv_cnt(FALSE) < 52 && splittable(uwep))
+		{
             Sprintf(qbuf, "You are wielding %ld %s.  Ready %ld of them?",
                     uwep->quan, simpleonames(uwep), uwep->quan - 1L);
-            switch (ynq(qbuf)) {
+            switch (ynq(qbuf)) 
+			{
             case 'q':
                 return 0;
             case 'y':
@@ -1042,39 +1110,47 @@ dowieldquiver()
                 break;
             }
             Strcpy(qbuf, "Ready all of them instead?");
-        } else {
+        }
+		else
+		{
             boolean use_plural = (is_plural(uwep) || pair_of(uwep));
 
             Sprintf(qbuf, "You are wielding %s.  Ready %s instead?",
                     !use_plural ? "that" : "those",
                     !use_plural ? "it" : "them");
         }
+
         /* require confirmation to ready the main weapon */
-        if (ynq(qbuf) != 'y') {
+        if (ynq(qbuf) != 'y')
+		{
             (void) Shk_Your(qbuf, uwep); /* replace qbuf[] contents */
             pline("%s%s %s wielded.", qbuf,
                   simpleonames(uwep), otense(uwep, "remain"));
             return 0;
         }
         /* quivering main weapon, so no longer wielding it */
-        setuwep((struct obj *) 0, W_WEP);
-        //untwoweapon();
+		setuwep((struct obj *) 0, W_WEP);
+		//untwoweapon();
         was_uwep = TRUE;
     }
 	else if (newquiver == uarms && uarms) 
 	{
 		int weld_res = !uarms->bknown;
 
-		if (welded(uarms, &youmonst)) {
+		if (welded(uarms, &youmonst)) 
+		{
 			weldmsg(uarms);
 			reset_remarm(); /* same as dowield() */
 			return weld_res;
 		}
+		
 		/* offer to split stack if wielding more than 1 */
-		if (uarms->quan > 1L && inv_cnt(FALSE) < 52 && splittable(uarms)) {
+		if (uarms->quan > 1L && inv_cnt(FALSE) < 52 && splittable(uarms))
+		{
 			Sprintf(qbuf, "You are wielding %ld %s.  Ready %ld of them?",
 				uarms->quan, simpleonames(uarms), uarms->quan - 1L);
-			switch (ynq(qbuf)) {
+			switch (ynq(qbuf))
+			{
 			case 'q':
 				return 0;
 			case 'y':
@@ -1087,15 +1163,18 @@ dowieldquiver()
 			}
 			Strcpy(qbuf, "Ready all of them instead?");
 		}
-		else {
+		else 
+		{
 			boolean use_plural = (is_plural(uarms) || pair_of(uarms));
 
 			Sprintf(qbuf, "You are wielding %s.  Ready %s instead?",
 				!use_plural ? "that" : "those",
 				!use_plural ? "it" : "them");
 		}
+
 		/* require confirmation to ready the main weapon */
-		if (ynq(qbuf) != 'y') {
+		if (ynq(qbuf) != 'y') 
+		{
 			(void)Shk_Your(qbuf, uarms); /* replace qbuf[] contents */
 			pline("%s%s %s wielded.", qbuf,
 				simpleonames(uarms), otense(uarms, "remain"));
@@ -1109,12 +1188,14 @@ dowieldquiver()
 	else if (newquiver == uswapwep && uswapwep)
 	{
         if (uswapwep->quan > 1L && inv_cnt(FALSE) < 52
-            && splittable(uswapwep)) {
+            && splittable(uswapwep)) 
+		{
             Sprintf(qbuf, "%s %ld %s.  Ready %ld of them?",
                     "Your alternate weapon is",
                     uswapwep->quan, simpleonames(uswapwep),
                     uswapwep->quan - 1L);
-            switch (ynq(qbuf)) {
+            switch (ynq(qbuf)) 
+			{
             case 'q':
                 return 0;
             case 'y':
@@ -1126,7 +1207,9 @@ dowieldquiver()
                 break;
             }
             Strcpy(qbuf, "Ready all of them instead?");
-        } else {
+        }
+		else
+		{
             boolean use_plural = (is_plural(uswapwep) || pair_of(uswapwep));
 
             Sprintf(qbuf, "%s your %s weapon.  Ready %s instead?",
@@ -1134,8 +1217,10 @@ dowieldquiver()
                     "alternate",
                     !use_plural ? "it" : "them");
         }
+
         /* require confirmation to ready the alternate weapon */
-        if (ynq(qbuf) != 'y') {
+        if (ynq(qbuf) != 'y') 
+		{
             (void) Shk_Your(qbuf, uswapwep); /* replace qbuf[] contents */
             pline("%s%s %s %s.", qbuf,
                   simpleonames(uswapwep), otense(uswapwep, "remain"),
@@ -1143,18 +1228,20 @@ dowieldquiver()
             return 0;
         }
         /* quivering alternate weapon, so no more uswapwep */
-        setuswapwep((struct obj *) 0, W_SWAPWEP);
+		setuswapwep((struct obj *) 0, W_SWAPWEP);
         //untwoweapon();
     } 
 	else if (newquiver == uswapwep2 && uswapwep2)
 	{
 		if (uswapwep2->quan > 1L && inv_cnt(FALSE) < 52
-			&& splittable(uswapwep2)) {
+			&& splittable(uswapwep2)) 
+		{
 			Sprintf(qbuf, "%s %ld %s.  Ready %ld of them?",
 				"Your alternate weapon is",
 				uswapwep2->quan, simpleonames(uswapwep2),
 				uswapwep2->quan - 1L);
-			switch (ynq(qbuf)) {
+			switch (ynq(qbuf))
+			{
 			case 'q':
 				return 0;
 			case 'y':
@@ -1178,7 +1265,8 @@ dowieldquiver()
 		}
 
 		/* require confirmation to ready the alternate weapon */
-		if (ynq(qbuf) != 'y') {
+		if (ynq(qbuf) != 'y') 
+		{
 			(void)Shk_Your(qbuf, uswapwep2); /* replace qbuf[] contents */
 			pline("%s%s %s %s.", qbuf,
 				simpleonames(uswapwep2), otense(uswapwep2, "remain"),
@@ -1191,7 +1279,8 @@ dowieldquiver()
 	}
 
  quivering:
-    if (finish_splitting) {
+    if (finish_splitting) 
+	{
         freeinv(newquiver);
         newquiver->nomerge = 1;
         addinv(newquiver);
@@ -1199,7 +1288,8 @@ dowieldquiver()
     }
     /* place item in quiver before printing so that inventory feedback
        includes "(at the ready)" */
-    setuqwep(newquiver);
+	play_simple_object_sound(newquiver, OBJECT_SOUND_TYPE_QUIVER);
+	setuqwep(newquiver);
     prinv((char *) 0, newquiver, 0L);
 
     /* quiver is a convenience slot and manipulating it ordinarily
