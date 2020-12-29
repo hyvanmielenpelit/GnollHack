@@ -7482,7 +7482,7 @@ boolean* out_flags_ptr;
 		type = -1; /* so they don't get saving throws */
 		damage = (double)mon->mhp + 1;
         if (out_flags_ptr)
-            *out_flags_ptr |= ZHITM_FLAGS_DEATH;
+            *out_flags_ptr |= (ZHITM_FLAGS_DEATH | ZHITM_FLAGS_HIDE_DAMAGE);
         break;
 	case ZT_PETRIFICATION: 
 		if (resists_ston(mon))
@@ -8343,12 +8343,13 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     /* Normal hit text */
                     if (say || canseemon(mon))
                     {
+                        boolean hide_damage = !!(zhitm_out_flags & ZHITM_FLAGS_HIDE_DAMAGE);
                         boolean is_crit = !!(zhitm_out_flags & ZHITM_FLAGS_CRITICAL_STRIKE);
                         enum hit_tile_types htile = get_hit_tile_by_adtyp(abstype + 1);
                         if (htile == HIT_GENERAL && is_crit)
                             htile = HIT_CRITICAL;
 
-                        hit_with_hit_tile(fltxt, mon, exclam((int)ceil(damage)), (int)ceil(damage), is_crit ? " critically" : "", htile, show_hit_tile);
+                        hit_with_hit_tile(fltxt, mon, exclam((int)ceil(damage)), hide_damage ? 0 : (int)ceil(damage), is_crit ? " critically" : "", htile, show_hit_tile);
                     }
 
 					/* Rider non-disintegration */

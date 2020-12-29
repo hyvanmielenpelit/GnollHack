@@ -319,6 +319,7 @@ enum game_cursor_types
 #define ZHITM_FLAGS_DEATH					0x08
 #define ZHITM_FLAGS_SLEEP					0x10
 #define ZHITM_FLAGS_DO_NOT_SHOW_HIT_TILE	0x20
+#define ZHITM_FLAGS_HIDE_DAMAGE				0x40
 
 #define DEATH_MAX_HP_FROM_DEATH_RAY 2500
 
