@@ -7558,7 +7558,7 @@ boolean* out_flags_ptr;
     if (sho_shieldeff)
         m_shieldeff(mon);
     
-    if (origobj && objects[origobj->otyp].oc_class == WAND_CLASS)
+    if (origobj && objects[origobj->otyp].oc_class == WAND_CLASS && allow_critical_strike)
     {
         int skill_crit_chance = get_skill_critical_strike_chance(P_WAND, FALSE);
         if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
