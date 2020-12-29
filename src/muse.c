@@ -2955,6 +2955,7 @@ struct trap *trap;
 boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
 {               /* [by_you not honored if 'mon' triggers fire trap]. */
     struct obj *odummyp;
+    uchar zhitm_out_flags = 0;
 	int otyp = obj->otyp;
 	double damage = 0;
     boolean vis = canseemon(mon), res = TRUE;
@@ -3004,11 +3005,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         if (!rn2(3))
             mon->mspec_used = rn1(10, 5);
         /* -21 => monster's fire breath; 1 => # of damage dice */
-		damage = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, mon, 1, 8, 0, &odummyp);
-        if (damage == -1)
-        {
-            damage = 0;
-        }
+		damage = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, mon, 1, 8, 0, &odummyp, &zhitm_out_flags);
     }
     else if (otyp == SCR_FIRE) 
     {
@@ -3040,11 +3037,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         mzapmsg(mon, obj, TRUE);
         obj->charges--;
         /* -1 => monster's wand of fire; 2 => # of damage dice */
-        damage = zhitm(mon, by_you ? 1 : -1, (struct obj*)0, mon, 2, 8, 0, &odummyp);
-        if (damage == -1)
-        {
-            damage = 0;
-        }
+        damage = zhitm(mon, by_you ? 1 : -1, (struct obj*)0, mon, 2, 8, 0, &odummyp, &zhitm_out_flags);
     }
 
     if (damage > 0) 

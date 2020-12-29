@@ -3738,7 +3738,7 @@ E struct monst *FDECL(bhit, (int, int, int, int, enum bhit_call_types,
                              int (*)(MONST_P, OBJ_P, MONST_P),
                              int (*)(OBJ_P, OBJ_P, MONST_P), struct obj **, struct monst*, uchar, BOOLEAN_P));
 E struct monst *FDECL(boomhit, (struct obj *, int, int));
-E double FDECL(zhitm, (struct monst *, int, struct obj*, struct monst*, int, int, int, struct obj **));
+E double FDECL(zhitm, (struct monst *, int, struct obj*, struct monst*, int, int, int, struct obj **, uchar*));
 E int FDECL(burn_floor_objects, (int, int, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(buzz, (int, struct obj*, struct monst*, int, int, int, XCHAR_P, XCHAR_P, int, int));
 E void FDECL(dobuzz, (int, struct obj*, struct monst*, int, int, int, XCHAR_P, XCHAR_P, int, int, BOOLEAN_P));

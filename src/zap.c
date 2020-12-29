@@ -14,7 +14,6 @@
  * indicate that the monster should be disintegrated.
  */
 #define DISINTEGRATION_DUMMY_DAMAGE 5000
-#define PETRIFICATION_DUMMY_DAMAGE 6000
 
 static NEARDATA boolean obj_zapped;
 static NEARDATA int poly_zapped;
@@ -7324,19 +7323,21 @@ int dx, dy;
 /* used by buzz(); also used by munslime(muse.c); returns damage applied
    to mon; note: caller is responsible for killing mon if damage is fatal */
 double
-zhitm(mon, type, origobj, origmonst, dmgdice, dicesize, dmgplus, ootmp)
+zhitm(mon, type, origobj, origmonst, dmgdice, dicesize, dmgplus, ootmp, out_flags_ptr)
 register struct monst *mon;
 register int type;
 struct obj* origobj;
 struct monst* origmonst;
 int dmgdice, dicesize, dmgplus;
 struct obj **ootmp; /* to return worn armor for caller to disintegrate */
+boolean* out_flags_ptr;
 {
 	double damage = 0;
 	int dmg = 0;
     register int abstype = abs(type) % 10;
     boolean sho_shieldeff = FALSE;
     boolean sho_hit_eff = TRUE;
+    boolean sleep_eff = FALSE;
     //boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
 	int duration = 0;
 	//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mon, origobj, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, 0, NOTELL);
@@ -7357,6 +7358,10 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 
 	damage = adjust_damage(dmg, origmonst, mon, abstype + 1, (abs(type) >= 20 && abs(type) <=29) ? ADFLAGS_NONE : ADFLAGS_SPELL_DAMAGE);
 
+    if (out_flags_ptr)
+        *out_flags_ptr = 0;
+
+    boolean allow_critical_strike = FALSE;
     switch (abstype)
 	{
     case ZT_MAGIC_MISSILE:
@@ -7367,6 +7372,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 			damage = 0;
             break;
         }
+        allow_critical_strike = TRUE;
 		/*
         tmp = d(nd, 6);
         if (spellcaster)
@@ -7381,7 +7387,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
             damage = 0;
 			break;
         }
-		/*
+        allow_critical_strike = TRUE;
+        /*
 		tmp = d(nd, 6);
         if (is_mon_immune_to_cold(mon))
             tmp += 7;
@@ -7407,7 +7414,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
             damage = 0;
 			break;
         }
-		/*
+        allow_critical_strike = TRUE;
+        /*
 		tmp = d(nd, 6);
         if (is_mon_immune_to_fire(mon))
             tmp += d(nd, 3);
@@ -7419,7 +7427,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     case ZT_SLEEP:
 		damage = 0;
-        sho_hit_eff = sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0, NOTELL); // Duration 0 = permanent sleep
+        allow_critical_strike = TRUE;
+        /* moved after critical strike */
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
 		damage = 0;
@@ -7442,7 +7451,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		{
             /* no body armor, victim dies; destroy cloak
                 and shirt now in case target gets life-saved */
-			damage = DISINTEGRATION_DUMMY_DAMAGE;
+            if (out_flags_ptr)
+                *out_flags_ptr |= ZHITM_FLAGS_DISINTEGRATION;
             if ((otmp2 = which_armor(mon, W_ARMC)) != 0)
                 m_useup(mon, otmp2);
             if ((otmp2 = which_armor(mon, W_ARMU)) != 0)
@@ -7454,8 +7464,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		if (mon->data == &mons[PM_DEATH]) 
 		{
 			mon->mbasehpmax += mon->mbasehpmax / 2;
-			if (mon->mbasehpmax >= DISINTEGRATION_DUMMY_DAMAGE / 2)
-				mon->mbasehpmax = DISINTEGRATION_DUMMY_DAMAGE / 2 - 1;
+			if (mon->mbasehpmax > DEATH_MAX_HP_FROM_DEATH_RAY)
+				mon->mbasehpmax = DEATH_MAX_HP_FROM_DEATH_RAY;
 			update_mon_maxhp(mon);
 			mon->mhp = mon->mhpmax;
 			damage = 0;
@@ -7471,7 +7481,9 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		}
 		type = -1; /* so they don't get saving throws */
 		damage = (double)mon->mhp + 1;
-		break;
+        if (out_flags_ptr)
+            *out_flags_ptr |= ZHITM_FLAGS_DEATH;
+        break;
 	case ZT_PETRIFICATION: 
 		if (resists_ston(mon))
 		{
@@ -7481,8 +7493,12 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
             damage = 0;
 			break;
 		}
-		else
-			damage = PETRIFICATION_DUMMY_DAMAGE;
+        else
+        {
+            if (out_flags_ptr)
+                *out_flags_ptr |= ZHITM_FLAGS_PETRIFICATION;
+            damage = 0;  //PETRIFICATION_DUMMY_DAMAGE;
+        }
 		type = -1; /* so they don't get saving throws */
 		break;
 	case ZT_LIGHTNING:
@@ -7493,7 +7509,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
             damage = 0;
             /* can still blind the monster */
 		}
-		/*
+        allow_critical_strike = TRUE;
+        /*
         tmp = d(nd, 6);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
@@ -7519,6 +7536,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
             damage = 0;
 			break;
         }
+        allow_critical_strike = TRUE;
         //tmp = d(nd, 6);
         break;
     case ZT_ACID:
@@ -7529,6 +7547,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
             damage = 0;
 			break;
         }
+        allow_critical_strike = TRUE;
         //tmp = d(nd, 6);
         if (!rn2(6))
             acid_damage(MON_WEP(mon));
@@ -7539,7 +7558,29 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     if (sho_shieldeff)
         m_shieldeff(mon);
     
-	if (damage == PETRIFICATION_DUMMY_DAMAGE) /* caller starts delayed petrification */
+    if (origobj && objects[origobj->otyp].oc_class == WAND_CLASS)
+    {
+        int skill_crit_chance = get_skill_critical_strike_chance(P_WAND, FALSE);
+        if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
+        {
+            if (out_flags_ptr)
+                *out_flags_ptr |= ZHITM_FLAGS_CRITICAL_STRIKE;
+            if (damage >= 0.0)
+                damage *= 2.0;
+            if (duration >= 0)
+                duration *= 2;
+        }
+    }
+
+    if (abstype == ZT_SLEEP)
+    {
+        sleep_eff = sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0, NOTELL); // Duration 0 = permanent sleep
+        sho_hit_eff = sleep_eff;
+        if (out_flags_ptr && sleep_eff)
+            *out_flags_ptr |= ZHITM_FLAGS_SLEEP;
+    }
+
+	if (out_flags_ptr && (*out_flags_ptr & ZHITM_FLAGS_PETRIFICATION)) /* caller starts delayed petrification */
 		return damage;
 
 	if (damage < 0)
@@ -7549,10 +7590,10 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     if(damage > 0)
     	deduct_monster_hp(mon, damage);
 
-    if (damage == 0 && !sho_hit_eff)
-        return -1;
-    else
-        return damage;
+    if (out_flags_ptr && !sho_hit_eff)
+        *out_flags_ptr |= ZHITM_FLAGS_DO_NOT_SHOW_HIT_TILE;
+
+    return damage;
 }
 
 STATIC_OVL void
@@ -7946,8 +7987,8 @@ const char* fltxt;
 			pline("It seems even stronger than before.");
 		}
 		mon->mbasehpmax += mon->mbasehpmax / 2;
-		if (mon->mbasehpmax >= DISINTEGRATION_DUMMY_DAMAGE / 2)
-			mon->mbasehpmax = DISINTEGRATION_DUMMY_DAMAGE / 2 - 1;
+		if (mon->mbasehpmax > DEATH_MAX_HP_FROM_DEATH_RAY)
+			mon->mbasehpmax = DEATH_MAX_HP_FROM_DEATH_RAY;
 		update_mon_maxhp(mon);
 		mon->mhp = mon->mhpmax;
 		return TRUE;
@@ -8080,6 +8121,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     boolean shopdamage = FALSE;
     const char *fltxt;
     struct obj *otmp;
+    uchar zhitm_out_flags = 0;
 	int zaptype = 0;
     struct obj origobj_copy = origobj ? *origobj : zeroobj; /* Informatin copied here in the case origobj gets destroyed during buzz */
 
@@ -8100,11 +8142,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
         if (type < 0)
             return;
-		damage = zhitm(u.ustuck, type, origobj ? &origobj_copy : 0, origmonst, dmgdice, dicesize, dmgplus, &otmp);
-        if (damage == -1)
-        {
-            damage = 0;
-        }
+		damage = zhitm(u.ustuck, type, origobj ? &origobj_copy : 0, origmonst, dmgdice, dicesize, dmgplus, &otmp, &zhitm_out_flags);
 
         if (!u.ustuck)
             u.uswallow = 0;
@@ -8113,9 +8151,11 @@ boolean say; /* Announce out of sight hit/miss events if true */
                   exclam((int)damage));
 
 		/* Using disintegration from the inside only makes a hole... */
-        if (damage == DISINTEGRATION_DUMMY_DAMAGE)
+        if (zhitm_out_flags & ZHITM_FLAGS_DISINTEGRATION)
+        {
             u.ustuck->mhp = 0;
-		else if (damage == PETRIFICATION_DUMMY_DAMAGE)
+        }
+		else if (zhitm_out_flags & ZHITM_FLAGS_PETRIFICATION)
 		{
 			start_delayed_petrification(u.ustuck, TRUE);
 			damage = 0;
@@ -8289,17 +8329,26 @@ boolean say; /* Announce out of sight hit/miss events if true */
 				else 
 				{
 					/* Ray is not reflected */
-					
-					boolean mon_could_move = mon_can_move(mon);
+					//boolean mon_could_move = mon_can_move(mon);
 					
 					/* Ray does damage and actually reduces mon's hit points */
                     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, mon->mx, mon->my);
-                    double damage = zhitm(mon, type, origobj ? &origobj_copy : 0, origmonst, dmgdice, dicesize, dmgplus, &otmp);
+                    double damage = zhitm(mon, type, origobj ? &origobj_copy : 0, origmonst, dmgdice, dicesize, dmgplus, &otmp, &zhitm_out_flags);
                     boolean show_hit_tile = TRUE;
-                    if (damage == -1)
+                    if (zhitm_out_flags & ZHITM_FLAGS_DO_NOT_SHOW_HIT_TILE)
                     {
-                        damage = 0;
                         show_hit_tile = FALSE;
+                    }
+
+                    /* Normal hit text */
+                    if (say || canseemon(mon))
+                    {
+                        boolean is_crit = !!(zhitm_out_flags & ZHITM_FLAGS_CRITICAL_STRIKE);
+                        enum hit_tile_types htile = get_hit_tile_by_adtyp(abstype + 1);
+                        if (htile == HIT_GENERAL && is_crit)
+                            htile = HIT_CRITICAL;
+
+                        hit_with_hit_tile(fltxt, mon, exclam((int)ceil(damage)), (int)ceil(damage), is_crit ? " critically" : "", htile, show_hit_tile);
                     }
 
 					/* Rider non-disintegration */
@@ -8322,7 +8371,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					}
 
 					/* Disintegrate */
-					if (damage == DISINTEGRATION_DUMMY_DAMAGE)
+					if (zhitm_out_flags & ZHITM_FLAGS_DISINTEGRATION)
 					{ /* disintegration */
                         disintegrate_mon(mon, type, fltxt);
                     }
@@ -8351,18 +8400,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     }
 					else
 					{
-						boolean start_petrification = FALSE;
-						if (damage == PETRIFICATION_DUMMY_DAMAGE)
-							damage = 0, start_petrification = TRUE;
-
-						/* Normal hit */
-						if (!otmp)
-						{
-                            /* normal non-fatal hit text */
-                            if (say || canseemon(mon))
-                                hit_with_hit_tile(fltxt, mon, exclam((int)ceil(damage)), (int)ceil(damage), "", get_hit_tile_by_adtyp(abstype + 1), show_hit_tile);
-                        } 
-						else 
+						/* Disintegration ray hit a piece of armor, otmp */
+						if (otmp)
 						{
                             /* some armor was destroyed; no damage done */
                             play_sfx_sound_at_location(SFX_DISINTEGRATE, mon->mx, mon->my);
@@ -8372,9 +8411,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
                                       distant_name(otmp, xname));
                             m_useup(mon, otmp);
                         }
-						if (mon_could_move && !mon_can_move(mon)) /* ZT_SLEEP */
+						if (zhitm_out_flags & ZHITM_FLAGS_SLEEP) // (mon_could_move && !mon_can_move(mon)) /* ZT_SLEEP */
 							slept_monst(mon);
-						if (start_petrification)
+						if (zhitm_out_flags & ZHITM_FLAGS_PETRIFICATION)
 							start_delayed_petrification(mon, TRUE);
 					}
                     tmp_at(sx, sy);
