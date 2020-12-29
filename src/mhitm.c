@@ -2094,7 +2094,7 @@ int amt, saving_throw_adjustment, tellstyle;
 			
 		m_shieldeff(mon);
 	}
-	else if(saving_throw_adjustment > -100 && check_ability_resistance_success(mon, A_WIS, 0)) // check_magic_resistance_and_inflict_damage(mon, otmp, FALSE, 0, 0, tellstyle))
+	else if(saving_throw_adjustment > -100 && check_ability_resistance_success(mon, A_WIS, saving_throw_adjustment)) // check_magic_resistance_and_inflict_damage(mon, otmp, FALSE, 0, 0, tellstyle))
 	{
         if (tellstyle != NOTELL)
         {

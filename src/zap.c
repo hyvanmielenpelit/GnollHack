@@ -7574,7 +7574,12 @@ boolean* out_flags_ptr;
 
     if (abstype == ZT_SLEEP)
     {
-        sleep_eff = sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0, NOTELL); // Duration 0 = permanent sleep
+        int save_adj = 0;
+        if (out_flags_ptr && (*out_flags_ptr & ZHITM_FLAGS_CRITICAL_STRIKE))
+        {
+            save_adj = -4;
+        }
+        sleep_eff = sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, save_adj, NOTELL); // Duration 0 = permanent sleep
         sho_hit_eff = sleep_eff;
         if (out_flags_ptr && sleep_eff)
             *out_flags_ptr |= ZHITM_FLAGS_SLEEP;
