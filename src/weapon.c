@@ -1774,7 +1774,10 @@ int skill;
     if (skill == P_TWO_WEAPON_COMBAT)
         return max(1, (tmp + 1) / 2);
 
-//	if (skill <= P_LAST_WEAPON || skill == P_TWO_WEAPON_COMBAT)
+    if (skill == P_WAND)
+        return max(1, (tmp + 1) / 2);
+
+    //	if (skill <= P_LAST_WEAPON || skill == P_TWO_WEAPON_COMBAT)
  //       return tmp;
 
 	return max(1, tmp);
@@ -1946,20 +1949,25 @@ enhance_weapon_skill()
 				add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
 			}
 
-			if(disarmtrapslast)
-				Sprintf(buf, "success/cost for spells, to-hit for wands, and");
+            if (wandsshown)
+            {
+                Sprintf(buf, "to-hit/critical-%% for wands,");
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
+            }
+            
+            if (disarmtrapslast)
+            {
+                Sprintf(buf, "success/cost adjustment for spells, and");
+            }
 			else
 			{
-				if(wandsshown)
-					Sprintf(buf, "success/cost for spells, and to-hit for wands");
-				else
-					Sprintf(buf, "and success/cost adjustment for spells");
+				Sprintf(buf, "and success/cost adjustment for spells.");
 			}
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
 
 			if (disarmtrapslast)
 			{
-				Sprintf(buf, "arrow/magic trap untrap chance for disarm trap");
+				Sprintf(buf, "arrow/magic trap untrap chance for disarm trap.");
 				add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
 			}
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
@@ -2146,17 +2154,23 @@ enhance_weapon_skill()
                     if (i == P_WAND)
                     {
                         int tohitbonus = wand_skill_hit_bonus(P_SKILL_LEVEL(i));
+                        int criticalhitpct = get_skill_critical_strike_chance(i, FALSE);
                         char hbuf[BUFSZ] = "";
+                        char cbuf[BUFSZ] = "";
                         Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
-                        Sprintf(bonusbuf, "%5s", hbuf);
+                        Sprintf(cbuf, "%d%%", criticalhitpct);
+                        Sprintf(bonusbuf, "%5s/%s", hbuf, cbuf);
 
                         if (can_advance(i, speedy) || could_advance(i))
                         {
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
                             int tohitbonus2 = wand_skill_hit_bonus(nextlevel);
+                            int criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE);
                             char hbuf2[BUFSZ] = "";
+                            char cbuf2[BUFSZ] = "";
                             Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
-                            Sprintf(nextbonusbuf, "%5s", hbuf2);
+                            Sprintf(cbuf2, "%d%%", criticalhitpct2);
+                            Sprintf(nextbonusbuf, "%5s/%s", hbuf2, cbuf2);
                         }
                     }
                     else if (i == P_MARTIAL_ARTS)
@@ -2746,19 +2760,19 @@ int skill_level;
 		hit_bon = 0;
 		break;
 	case P_BASIC:
-		hit_bon = 3;
+		hit_bon = 4;
 		break;
 	case P_SKILLED:
-		hit_bon = 6;
+		hit_bon = 8;
 		break;
 	case P_EXPERT:
-		hit_bon = 9;
+		hit_bon = 12;
 		break;
     case P_MASTER:
-        hit_bon = 12;
+        hit_bon = 16;
         break;
     case P_GRAND_MASTER:
-        hit_bon = 15;
+        hit_bon = 20;
         break;
     }
 

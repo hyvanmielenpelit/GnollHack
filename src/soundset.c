@@ -2099,9 +2099,9 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_STONE_BREAK, 1.0f},
-            {GHSOUND_DOOR_CONSUMED_IN_FLAMES, 1.0f},
-            {GHSOUND_WATER_IS_FROZEN, 1.0f},
+            {GHSOUND_STONE_BREAK, 20.0f},
+            {GHSOUND_DOOR_CONSUMED_IN_FLAMES, 10.0f},
+            {GHSOUND_WATER_IS_FROZEN, 5.0f},
 
             {GHSOUND_ELECTRICITY_HITS_DOOR, 1.0f},
             {GHSOUND_SOME_WATER_EVAPORATES, 1.0f},
@@ -2126,7 +2126,7 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         {
             {GHSOUND_FOUNTAIN, 0.75f},
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_STONE_BREAK, 1.0f},
+            {GHSOUND_STONE_BREAK, 10.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
 
@@ -2153,7 +2153,7 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         {
             {GHSOUND_FIRE, 0.5f},
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_STONE_BREAK, 0.0f},
+            {GHSOUND_STONE_BREAK, 10.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
 
@@ -2180,11 +2180,11 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         {
             {MAX_GHSOUNDS, 0.0f},
             {GHSOUND_DOOR_WHAM, 1.0f},
-            {GHSOUND_DOOR_BREAK, 1.0f},
+            {GHSOUND_DOOR_BREAK, 10.0f},
             {GHSOUND_DOOR_CONSUMED_IN_FLAMES, 1.0f},
             {GHSOUND_DOOR_FREEZES_AND_SHATTERS, 1.0f},
 
-            {GHSOUND_ELECTRICITY_HITS_DOOR, 1.0f},
+            {GHSOUND_ELECTRICITY_HITS_DOOR, 10.0f},
             {GHSOUND_SOME_WATER_EVAPORATES, 1.0f},
             {GHSOUND_WATER_IS_FROZEN, 1.0f},
             {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
@@ -2207,7 +2207,7 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         {
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_TREE_BREAK, 1.0f},
+            {GHSOUND_TREE_BREAK, 20.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
 
@@ -2234,7 +2234,7 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         {
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_STONE_BREAK, 1.0f},
+            {GHSOUND_STONE_BREAK, 20.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
 
@@ -2261,14 +2261,14 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         {
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_WATER_BREAK, 1.0f},
-            {GHSOUND_WATER_BOILS, 1.0f},
-            {GHSOUND_WATER_IS_FROZEN, 1.0f},
+            {GHSOUND_WATER_BREAK, 5.0f},
+            {GHSOUND_WATER_BOILS, 5.0f},
+            {GHSOUND_WATER_IS_FROZEN, 5.0f},
 
-            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
-            {GHSOUND_SOME_WATER_EVAPORATES, 1.0f},
-            {GHSOUND_WATER_IS_FROZEN, 1.0f},
-            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 5.0f},
+            {GHSOUND_SOME_WATER_EVAPORATES, 5.0f},
+            {GHSOUND_WATER_IS_FROZEN, 5.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 5.0f},
             {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
@@ -2288,14 +2288,14 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         {
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_ICE_MELTS, 1.0f},
-            {GHSOUND_ICE_MELTS, 1.0f},
-            {GHSOUND_WATER_IS_FROZEN, 1.0f},
+            {GHSOUND_ICE_MELTS, 5.0f},
+            {GHSOUND_ICE_MELTS, 5.0f},
+            {GHSOUND_WATER_IS_FROZEN, 5.0f},
 
-            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
-            {GHSOUND_ICE_MELTS, 1.0f},
-            {GHSOUND_WATER_IS_FROZEN, 1.0f},
-            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 5.0f},
+            {GHSOUND_ICE_MELTS, 5.0f},
+            {GHSOUND_WATER_IS_FROZEN, 5.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 5.0f},
             {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
@@ -2315,14 +2315,14 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         {
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_LAVA_HARDENS, 1.0f},
+            {GHSOUND_LAVA_HARDENS, 5.0f},
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_LAVA_HARDENS, 1.0f},
+            {GHSOUND_LAVA_HARDENS, 5.0f},
 
-            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 5.0f},
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_LAVA_HARDENS, 1.0f},
-            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_LAVA_HARDENS, 5.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 5.0f},
             {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
@@ -4358,14 +4358,14 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "digging beam",
         {
-            {GHSOUND_BEAM_DIGGING_AMBIENT, 1.0f},
+            {GHSOUND_BEAM_DIGGING_AMBIENT, 5.0f},
             {GHSOUND_BEAM_DIGGING_CREATE, 100.0f},
-            {GHSOUND_BEAM_DIGGING_DESTROY, 10.0f},
+            {GHSOUND_BEAM_DIGGING_DESTROY, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_BEAM_DIGGING_HIT_LOCATION, 10.0f}
+            {GHSOUND_BEAM_DIGGING_HIT_LOCATION, 100.0f}
         }
     },
     {

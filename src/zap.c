@@ -6456,9 +6456,7 @@ struct obj *obj;
 		case RAY_WND_DEATH:
 		case RAY_WND_DISINTEGRATION:
 		case RAY_WND_PETRIFICATION:
-		case RAY_MAGIC_MISSILE:
-			use_skill(P_WAND, 1);
-			/* FALLTHRU*/
+        case RAY_MAGIC_MISSILE:
 		case RAY_FIRE:
 		case RAY_COLD:
 		case RAY_LIGHTNING:
@@ -6475,6 +6473,11 @@ struct obj *obj;
 			break;
 		}
 
+        /* Give skill points for wand use */
+        if (objects[otyp].oc_class == WAND_CLASS)
+        {
+            use_skill(P_WAND, 2);
+        }
 
 		/*
         if (otyp == WAN_DIGGING || otyp == SPE_DIG)
