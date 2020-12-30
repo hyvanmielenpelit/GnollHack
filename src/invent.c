@@ -4815,6 +4815,9 @@ struct obj *obj;
 {
     struct obj *otmp;
 
+    if (!obj || !isok(obj->ox, obj->oy))
+        return;
+
     for (otmp = level.objects[obj->ox][obj->oy]; otmp; otmp = otmp->nexthere)
         if (otmp != obj && merged(&obj, &otmp))
             break;

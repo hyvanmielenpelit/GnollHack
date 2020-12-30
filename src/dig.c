@@ -1955,7 +1955,22 @@ struct obj* origobj;
         tmp_at(zx, zy);
         force_redraw_at(zx, zy);
         update_ambient_ray_sound_to_location(OBJECT_RAY_SOUNDSET_DIGBEAM, zx, zy);
-        adjusted_delay_output(); /* wait a little bit */
+        
+        /* wait a little bit */
+        if (iflags.using_gui_tiles)
+        {
+            if (playing_anim)
+            {
+                delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_action);
+                context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+            }
+            else
+                adjusted_delay_output();
+        }
+        else
+        {
+            adjusted_delay_output(); /* wait a little */
+        }
 
         if (pitdig) 
         { /* we are already in a pit if this is true */
@@ -1978,6 +1993,7 @@ struct obj* origobj;
                         play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
                         dighole(TRUE, TRUE, &cc);
                         adjpit = t_at(zx, zy);
+                        force_redraw_at(zx, zy);
                     }
                 }
                 if (adjpit
@@ -2017,6 +2033,8 @@ struct obj* origobj;
                 watch_dig((struct monst*)0, zx, zy, TRUE);
                 room->doormask = (D_NODOOR | otherflags);
                 unblock_vision_and_hearing_at_point(zx, zy); /* vision */
+                newsym(zx, zy);
+                force_redraw_at(zx, zy);
             }
             else
             {
@@ -2048,7 +2066,9 @@ struct obj* origobj;
                     play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
                     create_simple_location(zx, zy, ltype, get_initial_location_subtype(ltype), lflags, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
-                } 
+                    newsym(zx, zy);
+                    force_redraw_at(zx, zy);
+                }
                 else if (!Blind)
                 {
                     play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
@@ -2064,6 +2084,8 @@ struct obj* origobj;
                     play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
                     create_simple_location(zx, zy, room->floortyp ? room->floortyp : GROUND, room->floortyp ? room->floorsubtyp : get_initial_location_subtype(GROUND), 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
+                    newsym(zx, zy);
+                    force_redraw_at(zx, zy);
                 }
                 else if (!Blind)
                 {
@@ -2081,7 +2103,9 @@ struct obj* origobj;
                     struct rm* lev = &levl[zx][zy];
                     create_basic_floor_location(zx, zy, lev->floortyp ? lev->floortyp : CORR, lev->floortyp ? lev->floorsubtyp : get_initial_location_subtype(CORR), 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
-                } 
+                    newsym(zx, zy);
+                    force_redraw_at(zx, zy);
+                }
                 else if (!Blind)
                 {
                     play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
@@ -2134,12 +2158,20 @@ struct obj* origobj;
             play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
             create_simple_location(zx, zy, ltype, lsubtype, lflags, back_to_broken_glyph(zx, zy), !IS_FLOOR(ltype) ? room->floortyp : 0, !IS_FLOOR(ltype) ? room->floorsubtyp : 0, FALSE);
             unblock_vision_and_hearing_at_point(zx, zy); /* vision */
+            newsym(zx, zy);
+            force_redraw_at(zx, zy);
         }
+        flush_screen(1);
         lzx = zx;
         lzy = zy;
         zx += u.dx;
         zy += u.dy;
     }                    /* while */
+    if (context.zap_aggregate_milliseconds_to_wait_until_end > 0)
+    {
+        delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_end);
+        context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
+    }
     context.global_newsym_flags = 0;
     tmp_at(DISP_END, 0); /* closing call */
     stop_ambient_ray_sound(OBJECT_RAY_SOUNDSET_DIGBEAM);
@@ -2229,7 +2261,8 @@ struct obj* origobj;
                 play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_DRY_UP);
                 /* replace the fountain with ordinary floor */
                 create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floortyp ? lev->floorsubtyp : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
-				if (see_it)
+                newsym(zx, zy);
+                if (see_it)
 					pline_The("fountain dries up!");
 				/* The location is seen if the hero/monster is invisible
 				   or felt if the hero is blind. */
@@ -2326,7 +2359,22 @@ struct obj* origobj;
         remove_glyph_buffer_layer_flags(lzx, lzy, LFLAGS_ZAP_LEADING_EDGE);
         add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_LEADING_EDGE);
         tmp_at(zx, zy);
-        adjusted_delay_output(); /* wait a little bit */
+
+        /* wait a little bit */
+        if (iflags.using_gui_tiles)
+        {
+            if (playing_anim)
+            {
+                delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_action);
+                context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+            }
+            else
+                adjusted_delay_output();
+        }
+        else
+        {
+            adjusted_delay_output(); /* wait a little */
+        }
 
 		struct rm* lev = &levl[zx][zy];
 		boolean see_it = cansee(zx, zy);
@@ -2388,8 +2436,7 @@ struct obj* origobj;
 					msgtxt = "The water evaporates.";
 			}
 			Norep("%s", msgtxt);
-			if (IS_FLOOR(lev->typ))
-				newsym(zx, zy);
+			newsym(zx, zy);
 		}
 		else if (IS_FOUNTAIN(lev->typ))
 		{
@@ -2397,7 +2444,8 @@ struct obj* origobj;
             play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
             play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_DRY_UP);
             create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floortyp ? lev->floorsubtyp : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
-			if (see_it)
+            newsym(zx, zy);
+            if (see_it)
 				pline_The("fountain dries up!");
 			/* The location is seen if the hero/monster is invisible
 			   or felt if the hero is blind. */
@@ -2411,11 +2459,17 @@ struct obj* origobj;
 				break;
 			}
 		}
+        flush_screen(1);
         lzx = zx;
         lzy = zy;
         zx += u.dx;
 		zy += u.dy;
 	}                    /* while */
+    if (context.zap_aggregate_milliseconds_to_wait_until_end > 0)
+    {
+        delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_end);
+        context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
+    }
     context.global_newsym_flags = 0;
     tmp_at(DISP_END, 0); /* closing call */
     stop_ambient_ray_sound(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM);
