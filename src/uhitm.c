@@ -1991,7 +1991,7 @@ boolean* obj_destroyed;
 					mon_nam(mon), critical_text, damagedealt, frombehindtext,
 					canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
 
-			display_m_being_hit(mon, hit_tile, damagedealt, 0UL);
+			display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
 		}
 		else 
 		{
@@ -2004,13 +2004,13 @@ boolean* obj_destroyed;
 					mon_nam(mon), critical_text,
 					canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
 
-			display_m_being_hit(mon, hit_tile, damagedealt, 0UL);
+			display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
 		}
 	}
 	else if (hittxt && displaysustain && damagedealt > 0)
 	{
 		pline("%s sustains %d damage.", Monnam(mon), damagedealt);
-		display_m_being_hit(mon, hit_tile, damagedealt, 0UL);
+		display_m_being_hit(mon, hit_tile, damagedealt, 0UL, TRUE);
 	}
 
 	if (silvermsg) 
@@ -2856,7 +2856,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_STON:
 		if (!negated && !resists_ston(mdef))
 		{
-			display_m_being_hit(mdef, HIT_PETRIFIED, 0, 0UL);
+			display_m_being_hit(mdef, HIT_PETRIFIED, 0, 0UL, FALSE);
 			if (mattk->aatyp == AT_GAZE)
 				minstapetrify(mdef, TRUE);
 			else
@@ -3210,7 +3210,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 		}
 		else
 			You("inflict %d damage.", damagedealt);
-		display_m_being_hit(mdef, hit_tile, damagedealt, 0UL);
+		display_m_being_hit(mdef, hit_tile, damagedealt, 0UL, FALSE);
 	}
     return 1;
 }
@@ -4075,7 +4075,7 @@ boolean wep_was_destroyed;
 			hit_tile = HIT_ON_FIRE;
 		if (mhit && !is_cancelled(mon) && weapon)
 		{
-            if (aatyp == AT_KICK)
+			if (aatyp == AT_KICK)
 			{
                 if (uarmf && !rn2(6))
                     (void) erode_obj(uarmf, xname(uarmf), ERODE_BURN,
@@ -4089,7 +4089,8 @@ boolean wep_was_destroyed;
 		hit_tile = HIT_SPLASHED_ACID;
         if (mhit && rn2(2)) 
 		{
-            if (Blind || !flags.verbose)
+			play_sfx_sound(SFX_MONSTER_GETS_SPLASHED_BY_ACID);
+			if (Blind || !flags.verbose)
                 You("are splashed!");
             else
                 You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
@@ -4162,11 +4163,13 @@ boolean wep_was_destroyed;
         break;
     case AD_MAGM:
         /* wrath of gods for attacking Oracle */
-        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
-            u_shieldeff();
+		if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
+			play_sfx_sound(SFX_HAIL_OF_MAGIC_MISSILES_MISSES);
+			u_shieldeff();
             pline("A hail of magic missiles narrowly misses you!");
         } else {
-            You("are hit by magic missiles appearing from thin air!");
+			play_sfx_sound(SFX_HAIL_OF_MAGIC_MISSILES_HITS);
+			You("are hit by magic missiles appearing from thin air!");
             mdamageu(mon, damage, TRUE);
         }
         break;
@@ -4201,14 +4204,16 @@ boolean wep_was_destroyed;
                                   s_suffix(Monnam(mon)))) {
                         ;
                     } else if (Free_action) {
-                        You("momentarily stiffen under %s gaze!",
+						play_sfx_sound(SFX_GENERAL_RESISTS);
+						You("momentarily stiffen under %s gaze!",
                             s_suffix(mon_nam(mon)));
                     } else if (Hallucination && rn2(4)) {
                         pline("%s looks %s%s.", Monnam(mon),
                               !rn2(2) ? "" : "rather ",
                               !rn2(2) ? "numb" : "stupified");
                     } else {
-                        You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
+						play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
+						You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
 						incr_itimeout(&HParalyzed, (ACURR(A_WIS) > 12 || rn2(4)) ? basedmg : 127);
 						context.botl = context.botlx = 1;
 
@@ -4225,9 +4230,11 @@ boolean wep_was_destroyed;
                         change_luck(-1, TRUE);
                 }
             } else if (Free_action) {
-                You("momentarily stiffen.");
+				play_sfx_sound(SFX_GENERAL_RESISTS);
+				You("momentarily stiffen.");
             } else { /* gelatinous cube */
-                You("are frozen by %s!", mon_nam(mon));
+				play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
+				You("are frozen by %s!", mon_nam(mon));
 				incr_itimeout(&HParalyzed, basedmg);
 				context.botl = context.botlx = 1;
 
@@ -4248,6 +4255,7 @@ boolean wep_was_destroyed;
                     break;
                 }
 				hit_tile = HIT_FROZEN;
+				play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
 				You("are suddenly very cold!");
                 mdamageu_with_hit_tile(mon, damage, TRUE, hit_tile);
                 /* monster gets stronger with your heat! */
@@ -4262,8 +4270,11 @@ boolean wep_was_destroyed;
             }
             break;
         case AD_STUN: /* specifically yellow mold */
-            if (!Stunned && !Stun_resistance)
-                make_stunned((long)basedmg, TRUE);
+			if (!Stunned && !Stun_resistance)
+			{
+				play_sfx_sound(SFX_ACQUIRE_STUN);
+				make_stunned((long)basedmg, TRUE);
+			}
             break;
         case AD_FIRE:
             if (monnear(mon, u.ux, u.uy))
@@ -4278,6 +4289,7 @@ boolean wep_was_destroyed;
                     ugolemeffects(AD_FIRE, damage);
                     break;
                 }
+				play_sfx_sound(SFX_MONSTER_ON_FIRE);
 				if (flaming(mon->data))
 				{
 					hit_tile = HIT_ON_FIRE;
@@ -4297,6 +4309,7 @@ boolean wep_was_destroyed;
                 break;
             }
 			hit_tile = HIT_ELECTROCUTED;
+			play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
 			You("are jolted with electricity!");
 			mdamageu_with_hit_tile(mon, damage, TRUE, hit_tile);
             break;
@@ -5168,17 +5181,18 @@ unsigned long extra_flags;
 }
 
 void
-display_m_being_hit(mon, hit_symbol_shown, damage_shown, extra_flags)
+display_m_being_hit(mon, hit_symbol_shown, damage_shown, extra_flags, use_bhitpos)
 struct monst* mon;
 enum hit_tile_types hit_symbol_shown;
 int damage_shown;
 unsigned long extra_flags;
+boolean use_bhitpos;
 {
 	if (!mon)
 		return;
 
 	if(!(u.uswallow && mon == u.ustuck))
-		display_being_hit(mon, bhitpos.x, bhitpos.y, hit_symbol_shown, damage_shown, extra_flags);
+		display_being_hit(mon, use_bhitpos ? bhitpos.x : mon->mx, use_bhitpos ? bhitpos.y : mon->my, hit_symbol_shown, damage_shown, extra_flags);
 }
 
 /*uhitm.c*/

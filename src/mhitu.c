@@ -2086,7 +2086,9 @@ register struct obj* omonwep;
         break;
     case AD_FIRE:
         hitmsg(mtmp, mattk, -1, TRUE);
-		if (uncancelled) {
+		if (uncancelled) 
+        {
+            play_sfx_sound(SFX_MONSTER_ON_FIRE);
             if (completelyburns(youmonst.data)) 
 			{ /* paper or straw golem */
                 You("go up in flames!");
@@ -2119,8 +2121,10 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, -1, TRUE);
 		if (uncancelled) 
 		{
-            if (Cold_immunity || damage == 0) 
+            play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
+            if (Cold_immunity || damage == 0)
 			{
+                play_sfx_sound(SFX_GENERAL_UNHARMED);
                 pline("You're covered in frost, but the frost doesn't feel cold!");
 				damage = 0;
             }
@@ -2140,9 +2144,11 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, -1, TRUE);
 		if (uncancelled)
 		{
-            if (Shock_immunity || damage == 0) 
+            play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
+            if (Shock_immunity || damage == 0)
 			{
-				You("get zapped, but the zap doesn't shock you!");
+                play_sfx_sound(SFX_GENERAL_UNHARMED);
+                You("get zapped, but the zap doesn't shock you!");
 				//pline_The("zap doesn't shock you!");
                 damage = 0;
             }
@@ -2173,7 +2179,8 @@ register struct obj* omonwep;
 			}
 			else
 			{
-				if (Blind)
+                play_sfx_sound(SFX_ACQUIRE_SLEEP);
+                if (Blind)
 					You("are put to sleep!");
 				else
 					You("are put to sleep by %s!", mon_nam(mtmp));
@@ -2209,6 +2216,7 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, damagedealt, FALSE);
         if (uncancelled && !rn2(2))
         {
+            play_sfx_sound(SFX_MONSTER_IS_POISONED);
             display_u_being_hit(HIT_POISONED, damagedealt, 0UL);
             Sprintf(buf, "%s %s", s_suffix(Monnam(mtmp)),
                     mpoisons_subj(mtmp, mattk));
@@ -2221,6 +2229,7 @@ register struct obj* omonwep;
     case AD_DRIN:
         hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (Brain_protection || !has_head(youmonst.data)) {
+            play_sfx_sound(SFX_GENERAL_UNHARMED);
             You("don't seem harmed.");
             /* Not clear what to do for green slimes */
             break;
@@ -2230,6 +2239,7 @@ register struct obj* omonwep;
 
         if (uarmh && rn2(8)) {
             /* not body_part(HEAD) */
+            play_sfx_sound(SFX_HELMET_BLOCKS_ATTACK);
             Your("%s blocks the attack to your head.",
                  helm_simple_name(uarmh));
             break;
@@ -2263,6 +2273,7 @@ register struct obj* omonwep;
             } 
 			else 
 			{
+                play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
                 display_u_being_hit(HIT_PARALYZED, damagedealt, 0UL);
                 if (Blind)
                     You("are frozen!");
@@ -2288,6 +2299,7 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, damagedealt, FALSE);
         if (sharpness_effect)
         {
+            play_sfx_sound(SFX_SHARPNESS_SLICE);
             display_u_being_hit(HIT_CRITICAL, damagedealt, 0UL);
             pline("%s strike slices a part of you off!", s_suffix(Monnam(mtmp)));
         } else if (damagedealt > 0)
@@ -2297,6 +2309,7 @@ register struct obj* omonwep;
 		hitmsg(mtmp, mattk, damagedealt, FALSE);
 		if (uncancelled && !Drain_resistance) //!rn2(3) && 
 		{
+            play_sfx_sound(SFX_DRAIN_LIFE);
             display_u_being_hit(HIT_DRAIN_LEVEL, damagedealt, 0UL);
             losexp("life drainage");
         }
@@ -2362,12 +2375,14 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, damagedealt, FALSE);
         if (!uncancelled) //Needs to bypass MC
 		{
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_COUGH);
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
             if (!Deaf)
                 You_hear("a cough from %s!", mon_nam(mtmp));
         }
 		else
 		{
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_HOWL_IN_ANGER);
             if (!Deaf)
                 You_hear("%s hissing!", s_suffix(mon_nam(mtmp)));
  do_stone:
@@ -2638,7 +2653,9 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (is_cancelled(mtmp))
             break;
-        if (is_iron(youmonst.data)) {
+        if (is_iron(youmonst.data))
+        {
+            play_sfx_sound(SFX_YOU_RUST);
             You("rust!");
             /* KMH -- this is okay with unchanging */
             rehumanize();
@@ -2656,7 +2673,9 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (is_cancelled(mtmp))
             break;
-        if (u.umonnum == PM_WOOD_GOLEM || u.umonnum == PM_LEATHER_GOLEM) {
+        if (u.umonnum == PM_WOOD_GOLEM || u.umonnum == PM_LEATHER_GOLEM) 
+        {
+            play_sfx_sound(SFX_YOU_RUST);
             You("rot!");
             /* KMH -- this is okay with unchanging */
             rehumanize();
@@ -2800,8 +2819,10 @@ register struct obj* omonwep;
     case AD_ACID:
         if (!is_cancelled(mtmp) && !rn2(3))
         {
+            play_sfx_sound(SFX_MONSTER_GETS_SPLASHED_BY_ACID);
             if (Acid_immunity)
             {
+                play_sfx_sound(SFX_GENERAL_UNHARMED);
                 hitmsg(mtmp, mattk, -1, TRUE);
                 pline("You're covered in %s, but it seems harmless.",
                     hliquid("acid"));
@@ -2822,8 +2843,9 @@ register struct obj* omonwep;
 		break;
     case AD_SLOW:
         hitmsg(mtmp, mattk, damagedealt, FALSE);
-        if (uncancelled && HFast)
+        if (uncancelled && !Slowed)
         {
+            play_sfx_sound(SFX_ACQUIRE_SLOW);
             display_u_being_hit(HIT_SLOW, damagedealt, 0UL);
             u_slow_down();
         } else if (damagedealt >0)
@@ -3046,7 +3068,8 @@ register struct obj* omonwep;
 
 		if (extradmg > 0)
 		{
-			pline("%s's %s %s your life energy!", Monnam(mtmp), cxname(omonwep), otense(omonwep, "leech"));
+            play_sfx_sound(SFX_LIFE_LEECH);
+            pline("%s's %s %s your life energy!", Monnam(mtmp), cxname(omonwep), otense(omonwep, "leech"));
 		}
 	}
 
@@ -3727,7 +3750,7 @@ struct attack *mattk;
             play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
             if (useeit)
             {
-                display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL);
+                display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL, FALSE);
                 pline("%s is turned to stone!", Monnam(mtmp));
             }
             stoned = TRUE;
@@ -4121,6 +4144,7 @@ struct monst *mon;
                 remove_worn_item(ring, FALSE);
             freeinv(ring);
             (void) mpickobj(mon, ring);
+            play_sfx_sound(SFX_STEAL_GOLD);
         } else {
             if (uleft && uright && uleft->otyp == RIN_ADORNMENT
                 && uright->otyp == RIN_ADORNMENT)
@@ -4520,7 +4544,7 @@ struct attack *mattk;
             }
             play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
             pline("%s turns to stone!", Monnam(mtmp));
-            display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL);
+            display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL, FALSE);
             stoned = 1;
             xkilled(mtmp, XKILL_NOMSG);
             update_u_action_core(action_before, 1);
@@ -4586,6 +4610,7 @@ struct attack *mattk;
                             return 1;
                         }
                         hit_tile = HIT_PARALYZED;
+                        play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mtmp->mx, mtmp->my);
                         pline("%s is frozen by your gaze!", Monnam(mtmp));
                         paralyze_monst(mtmp, paralyse_duration, FALSE);
                         return 3;
@@ -4596,6 +4621,7 @@ struct attack *mattk;
 			{ /* gelatinous cube */
                 hit_tile = HIT_PARALYZED;
                 pline("%s is frozen by you.", Monnam(mtmp));
+                play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mtmp->mx, mtmp->my);
                 paralyze_monst(mtmp, paralyse_duration, FALSE);
                 update_u_action_core(action_before, 1);
                 return 3;
@@ -4612,6 +4638,7 @@ struct attack *mattk;
                 break;
             }
             hit_tile = HIT_FROZEN;
+            play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mtmp->mx, mtmp->my);
             pline("%s is suddenly very cold!", Monnam(mtmp));
             u.mh += (int)damage / 2;
             if (u.mh - u.mhmax > 0)
@@ -4623,7 +4650,8 @@ struct attack *mattk;
         case AD_STUN: /* Yellow mold */
             if (!is_stunned(mtmp)) 
 			{
-				nonadditive_increase_mon_property(mtmp, STUNNED, 5 + rnd(5));
+                play_sfx_sound_at_location(SFX_ACQUIRE_STUN, mtmp->mx, mtmp->my);
+                nonadditive_increase_mon_property(mtmp, STUNNED, 5 + rnd(5));
 				pline("%s %s.", Monnam(mtmp),
                       makeplural(stagger(mtmp->data, "stagger")));
             }
@@ -4642,6 +4670,7 @@ struct attack *mattk;
                 break;
             }
             hit_tile = HIT_ON_FIRE;
+            play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mtmp->mx, mtmp->my);
             if (flaming(youmonst.data))
 				pline("%s is engulfed in your flames!", Monnam(mtmp));
 			else
@@ -4657,6 +4686,7 @@ struct attack *mattk;
                 break;
             }
             hit_tile = HIT_ELECTROCUTED;
+            play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mtmp->mx, mtmp->my);
             pline("%s is jolted with your electricity!", Monnam(mtmp));
             break;
         default:
@@ -4677,7 +4707,7 @@ assess_dmg:
     if (canseemon(mtmp) && damagedealt > 0)
     {
         pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
-        display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL);
+        display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL, FALSE);
     }
 
     if (mtmp->mhp <= 0)

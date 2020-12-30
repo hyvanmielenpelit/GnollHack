@@ -2218,7 +2218,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_BOOKSHELF_CONTENTS && otmp_round)
                             {
                                 int num_shelves = 4;
-                                int y_to_first_shelf = 43;
+                                int y_to_first_shelf = 49;
                                 int shelf_start = 8;
                                 int shelf_width = 50;
                                 int shelf_height = 10;
@@ -2304,7 +2304,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
                             else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_WEAPON_RACK_CONTENTS && otmp_round)
                             {
-                                int y_to_rack_top = 28;
+                                int y_to_rack_top = 31;
                                 int rack_start = 0; /* Assume weapons are drawn reasonably well in the center */
                                 int rack_width = 48;
                                 int rack_height = TILE_Y - y_to_rack_top;

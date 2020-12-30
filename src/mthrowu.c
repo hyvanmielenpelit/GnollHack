@@ -566,7 +566,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 		{
             if (otmp->otyp == EGG)
             {
-                display_m_being_hit(mtmp, hit_tile, 0, 0UL);
+                display_m_being_hit(mtmp, hit_tile, 0, 0UL, FALSE);
                 pline("Splat!  %s is hit with %s egg!", Monnam(mtmp),
                     otmp->known ? an(corpse_monster_name(otmp)) : "an");
             }
@@ -576,7 +576,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
         else if (verbose && !target)
         {
 
-            display_m_being_hit(mtmp, hit_tile, 0, 0UL);
+            display_m_being_hit(mtmp, hit_tile, 0, 0UL, FALSE);
             pline("%s%s is hit%s", (otmp->otyp == EGG) ? "Splat!  " : "",
                 Monnam(mtmp), exclam((int)ceil(damage)));
         }

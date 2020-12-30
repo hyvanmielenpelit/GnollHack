@@ -147,6 +147,7 @@ register struct monst *mtmp;
             setnotworn(ygold);
         freeinv(ygold);
         add_to_minv(mtmp, ygold);
+        play_sfx_sound(SFX_STEAL_GOLD);
         Your("purse feels lighter.");
         if (!tele_restrict(mtmp))
         {
@@ -493,6 +494,7 @@ gotobj:
     if (otmp->unpaid)
         subfrombill(otmp, shop_keeper(*u.ushops));
     freeinv(otmp);
+    play_sfx_sound(SFX_STEAL_ITEM);
     pline("%s stole %s.", named ? "She" : Monnam(mtmp), doname(otmp));
     could_petrify =
         (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm]));
@@ -642,6 +644,7 @@ struct monst *mtmp;
         freeinv(otmp);
         Strcpy(buf, doname(otmp));
         (void) mpickobj(mtmp, otmp); /* could merge and free otmp but won't */
+        play_sfx_sound(SFX_STEAL_ITEM);
         pline("%s steals %s!", Monnam(mtmp), buf);
         if (has_teleportation(mtmp) && !tele_restrict(mtmp))
         {

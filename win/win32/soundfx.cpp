@@ -758,6 +758,23 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Mixing/Mixing Success", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Mixing/Mixing Failure", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/SFX/General/General Unharmed", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Burp", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Monster on Fire", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Monster Covered in Frost", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Monster Gets Zapped", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Monster Gets Splashed by Acid", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Sharpness Slice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Steal Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Drain Life", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Steal Item", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Monster is Poisoned", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/General/Helmet Blocks Attack", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Life Leech", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Hail of Magic Missiles Misses", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Hail of Magic Missiles Hits", 1.0f },
+
 };
 
 

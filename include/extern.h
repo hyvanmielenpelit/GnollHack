@@ -3241,7 +3241,7 @@ E void FDECL(update_u_action_and_wait, (enum action_tile_types));
 E void FDECL(update_m_action_and_wait, (struct monst*, enum action_tile_types));
 E void FDECL(display_being_hit, (struct monst*, int, int, enum hit_tile_types, int, unsigned long));
 E void FDECL(display_u_being_hit, (enum hit_tile_types, int, unsigned long));
-E void FDECL(display_m_being_hit, (struct monst*, enum hit_tile_types, int, unsigned long));
+E void FDECL(display_m_being_hit, (struct monst*, enum hit_tile_types, int, unsigned long, boolean));
 E void NDECL(u_wait_until_action);
 E void NDECL(m_wait_until_action);
 

@@ -200,7 +200,7 @@ boolean clumsy;
 	{
 		You("%s%skick %s for no damage.", effbuf, kickstylebuf, mon_nam(mon));
 	}
-    display_m_being_hit(mon, HIT_GENERAL, dmg, 0UL);
+    display_m_being_hit(mon, HIT_GENERAL, dmg, 0UL, TRUE);
 
 	if (silverhit)
 		pline("Your silver boots sear %s flesh!", s_suffix(mon_nam(mon)));
@@ -1179,6 +1179,8 @@ dokick() {
 
     x = u.ux + u.dx;
     y = u.uy + u.dy;
+    bhitpos.x = x;
+    bhitpos.y = y;
 
     /* KMH -- Kicking boots always succeed */
 	/* JG  -- Martial artists always succeed */

@@ -1031,7 +1031,7 @@ cure_petrification_here:
             if (damagedealt > 0)
             {
                 pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
-                display_m_being_hit(mtmp, HIT_GENERAL, damagedealt, 0UL);
+                display_m_being_hit(mtmp, HIT_GENERAL, damagedealt, 0UL, FALSE);
             }
             if (DEADMONSTER(mtmp))
             {
@@ -6676,7 +6676,7 @@ boolean show_hit_tile_always;
 			pline("%s %s %s%s%s", The(str), vtense(str, "hit"), mon_nam(mtmp), adjective, force);
 
     if(damage > 0 || show_hit_tile_always)
-        display_m_being_hit(mtmp, hit_tile, damage, 0UL);
+        display_m_being_hit(mtmp, hit_tile, damage, 0UL, TRUE);
 
 }
 
@@ -8051,7 +8051,7 @@ const char *fltxt;
         if (!m_amulet)
         {
             pline("%s is disintegrated!", Monnam(mon));
-            display_m_being_hit(mon, HIT_DISINTEGRATED, 0, 0UL);
+            display_m_being_hit(mon, HIT_DISINTEGRATED, 0, 0UL, FALSE);
         }
         else
             hit(fltxt, mon, "!", -1, "");
@@ -9833,7 +9833,7 @@ int dmg, adtyp, tell;
 			if (tell && damagedealt > 0 && !(tell == TELL_LETHAL_STYLE && !resisted))
 			{//Lethal damage not shown, resisted though yes
 				pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
-                display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL);
+                display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL, FALSE);
             }
 
 			if (DEADMONSTER(mtmp))
@@ -9888,7 +9888,7 @@ int dmg, adtyp, tell;
             if (tell == TELL && damagedealt > 0)
             {//Lethal damage not shown
                 pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
-                display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL);
+                display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL, FALSE);
             }
 
             if (DEADMONSTER(mtmp))
