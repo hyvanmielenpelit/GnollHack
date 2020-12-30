@@ -226,6 +226,8 @@ struct context_info
     boolean force_allow_keyboard_commands;
     int makemon_spef_idx;
     unsigned long global_newsym_flags;
+    int tether_x;
+    int tether_y;
 };
 
 extern NEARDATA struct context_info context;

@@ -1546,6 +1546,8 @@ int x, y;
         tglyph->sidx = 0;
         tglyph->style = x;
         tglyph->glyph = y;
+        context.tether_x = 0;
+        context.tether_y = 0;
         flush_screen(1); /* flush buffered glyphs */
         return;
 
@@ -1556,6 +1558,8 @@ int x, y;
                 free((genericptr_t) tglyph);
             tglyph = tmp;
         }
+        context.tether_x = 0;
+        context.tether_y = 0;
         return;
 
     default:
@@ -1586,6 +1590,8 @@ int x, y;
             if (y == BACKTRACK && tglyph->sidx > 1) {
                 /* backtrack */
                 for (i = tglyph->sidx - 1; i > 0; i--) {
+                    context.tether_x = tglyph->saved[i - 1].x;
+                    context.tether_y = tglyph->saved[i - 1].y;
                     newsym(tglyph->saved[i].x, tglyph->saved[i].y);
                     show_glyph_on_layer_and_ascii(tglyph->saved[i - 1].x,
                                tglyph->saved[i - 1].y, tglyph->glyph, LAYER_MISSILE);
@@ -1594,6 +1600,8 @@ int x, y;
                 }
                 tglyph->sidx = 1;
             }
+            context.tether_x = 0;
+            context.tether_y = 0;
             for (i = 0; i < tglyph->sidx; i++)
                 newsym(tglyph->saved[i].x, tglyph->saved[i].y);
         } else {              /* DISP_FLASH or DISP_ALWAYS */
@@ -1630,6 +1638,8 @@ int x, y;
                 show_glyph_on_layer_and_ascii(px, py, tether_glyph(px, py), LAYER_MISSILE);
             }
             /* save pos for later use or erasure */
+            context.tether_x = x;
+            context.tether_y = y;
             tglyph->saved[tglyph->sidx].x = x;
             tglyph->saved[tglyph->sidx].y = y;
             tglyph->sidx += 1;

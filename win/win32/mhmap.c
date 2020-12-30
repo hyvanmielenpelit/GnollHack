@@ -1416,6 +1416,33 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                     }
                 }
+                else if (base_layer == LAYER_LEASH && cansee(enl_i, enl_j))
+                {
+                    signed_glyph = NO_GLYPH;
+                    /* This is effectively a non-tile-related autodraw */
+
+                    /* Draw leashes for leashed monsters */
+                    for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon )
+                    {
+                        if (leashed_mon->mleashed)
+                        {
+                            int mx = leashed_mon->mx, my = leashed_mon->my;
+                            if (isok(mx, my))
+                            {
+                                /* Draw the relevant leash */
+
+                            }
+                        }
+                    }
+
+                    /* Draw straps for thrown aklys */
+                    if (isok(context.tether_x, context.tether_y))
+                    {
+                        /* Draw the line attached to the aklys */
+
+                    }
+
+                }
                 else if (base_layer == LAYER_CHAIN && enlarg_idx == -1 && tile_move_idx == 0 && source_dir_idx == 0 && (data->map[adj_x][adj_y].layer_flags & LFLAGS_O_CHAIN))
                     signed_glyph = GENERAL_TILE_CHAIN_MAIN + GLYPH_GENERAL_TILE_OFF;
                 else if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
