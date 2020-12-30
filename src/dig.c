@@ -1786,7 +1786,7 @@ struct obj* origobj;
     struct monst *mtmp;
     struct obj *otmp;
     struct trap *trap_with_u = (struct trap *) 0;
-    int zx, zy, diridx = 8, digdepth, flow_x = -1, flow_y = -1;
+    int zx, zy, lzx, lzy, diridx = 8, digdepth, flow_x = -1, flow_y = -1;
     boolean shopdoor, shopwall, maze_dig, pitdig = FALSE, pitflow = FALSE;
 
     /*
@@ -1852,8 +1852,32 @@ struct obj* origobj;
     } /* up or down */
 
     /* normal case: digging across the level */
+    int framenum = 1;
+    int anim_ms = 0;
+    context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
+    context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+    for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
+    {
+        context.zap_animation_counter_on[i] = FALSE;
+        context.zap_animation_counter[i] = 0L;
+        context.zap_animation_x[i] = 0;
+        context.zap_animation_y[i] = 0;
+    }
+    enum animation_types anim = zap_type_definitions[ZAP_SPECIAL_DIGGING].animation;
+    boolean playing_anim = (iflags.using_gui_tiles && anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY);
+    if (playing_anim)
+    {
+        framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
+        anim_ms = framenum * animations[anim].intervals_between_frames * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+    }
+    int zap_tile_count = 0;
+    boolean first_tile_found = FALSE;
+    int prev_anim_counter_idx = -1;
+
     shopdoor = shopwall = FALSE;
     maze_dig = level.flags.is_maze_lev && !Is_earthlevel(&u.uz);
+    lzx = u.ux;
+    lzy = u.uy;
     zx = u.ux + u.dx;
     zy = u.uy + u.dy;
     if (u.utrap && u.utraptype == TT_PIT
@@ -1872,12 +1896,64 @@ struct obj* origobj;
     tmp_at(DISP_BEAM_DIG, zapdir_to_glyph(u.dx, u.dy, ZAP_SPECIAL_DIGGING)); // cmap_to_glyph(S_digbeam) + dir_to_beam_index(u.dx, u.dy));
 
     digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
+    context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH;
     while (--digdepth >= 0)
     {
         if (!isok(zx, zy))
             break;
         room = &levl[zx][zy];
+
+        if (playing_anim)
+        {
+            int used_count = min(zap_tile_count, MAX_PLAYED_ZAP_ANIMATIONS);
+            int idx = 0;
+            boolean use_old = FALSE;
+            for (idx = 0; idx < used_count; idx++)
+            {
+                if (context.zap_animation_counter_on[idx] == TRUE && context.zap_animation_x[idx] == zx && context.zap_animation_y[idx] == zy)
+                {
+                    use_old = TRUE;
+                    break;
+                }
+            }
+
+            context.zap_animation_x[idx] = zx;
+            context.zap_animation_y[idx] = zy;
+            context.zap_animation_counter[idx] = 0L;
+            context.zap_animation_counter_on[idx] = TRUE;
+            context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+            context.zap_aggregate_milliseconds_to_wait_until_end = anim_ms;
+
+            if (animations[anim].action_execution_frame > 0)
+            {
+                long intervals_to_execution = (long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
+                if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
+                {
+                    long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution - 1;
+                    if (abs((int)diff) <= 3) /* Extra check that something else is not going on */
+                    {
+                        context.zap_animation_counter[prev_anim_counter_idx] -= diff;
+                    }
+                }
+
+                context.zap_aggregate_milliseconds_to_wait_until_action = (unsigned long)intervals_to_execution * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+            }
+
+            prev_anim_counter_idx = idx;
+
+            if (!use_old)
+                zap_tile_count++;
+        }
+        remove_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_TRAILING_EDGE);
+        if (!first_tile_found)
+        {
+            add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_TRAILING_EDGE);
+            first_tile_found = TRUE;
+        }
+        remove_glyph_buffer_layer_flags(lzx, lzy, LFLAGS_ZAP_LEADING_EDGE);
+        add_glyph_buffer_layer_flags(zx, zy, LFLAGS_ZAP_LEADING_EDGE);
         tmp_at(zx, zy);
+        force_redraw_at(zx, zy);
         update_ambient_ray_sound_to_location(OBJECT_RAY_SOUNDSET_DIGBEAM, zx, zy);
         adjusted_delay_output(); /* wait a little bit */
 
@@ -2059,9 +2135,12 @@ struct obj* origobj;
             create_simple_location(zx, zy, ltype, lsubtype, lflags, back_to_broken_glyph(zx, zy), !IS_FLOOR(ltype) ? room->floortyp : 0, !IS_FLOOR(ltype) ? room->floorsubtyp : 0, FALSE);
             unblock_vision_and_hearing_at_point(zx, zy); /* vision */
         }
+        lzx = zx;
+        lzy = zy;
         zx += u.dx;
         zy += u.dy;
     }                    /* while */
+    context.global_newsym_flags = 0;
     tmp_at(DISP_END, 0); /* closing call */
     stop_ambient_ray_sound(OBJECT_RAY_SOUNDSET_DIGBEAM);
     play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_DESTROY, zx, zy);

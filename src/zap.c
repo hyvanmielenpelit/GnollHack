@@ -8197,11 +8197,10 @@ boolean say; /* Announce out of sight hit/miss events if true */
     }
     int zap_tile_count = 0;
     boolean first_tile_found = FALSE;
+    int prev_anim_counter_idx = -1;
 
     start_ambient_ray_sound_at_location(soundset_id, sx, sy);
     tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
-
-    int prev_anim_counter_idx = -1;
 
     while (range-- > 0)
 	{

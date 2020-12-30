@@ -199,7 +199,7 @@ struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
     {"death-breath", CLR_GRAY, NO_ANIMATION},
     {"petrification-breath", CLR_BROWN, NO_ANIMATION},
 
-    {"digging", CLR_GRAY, NO_ANIMATION},
+    {"digging", CLR_GRAY, DIGGING_RAY_ANIMATION},
     {"evaporation", CLR_BLUE, NO_ANIMATION},
     {"flashed-light", CLR_WHITE, NO_ANIMATION},
 };

@@ -862,6 +862,17 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "digging-ray-animation", ANIMATION_TYPE_ZAP, DIGGING_RAY_ANIMATION_TILES,
+      DIGGING_RAY_ANIMATION_FRAMES, DIGGING_RAY_ANIMATION_OFF,
+      NUM_ZAP_CHARS,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27 },
+      0, 4,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "generic-spell-effect-animation", ANIMATION_TYPE_NORMAL, GENERIC_SPELL_EFFECT_ANIMATION_TILES,
       GENERIC_SPELL_EFFECT_ANIMATION_FRAMES, GENERIC_SPELL_EFFECT_ANIMATION_OFF,
       1,
