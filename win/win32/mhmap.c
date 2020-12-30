@@ -26,7 +26,8 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
-#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2 * 2) + 1 + NUM_ZAP_SOURCE_DIRS + NUM_WORM_SOURCE_DIRS + NUM_CHAIN_SOURCE_DIRS)
+/* Layers floor, leash, and zap do not have enlargements; monster and monster effect layers have 2 'tile movement' draw order slots */
+#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 3 + 2 * 2) + 3 + NUM_ZAP_SOURCE_DIRS + NUM_WORM_SOURCE_DIRS + NUM_CHAIN_SOURCE_DIRS)
 
 
 /* draw order definition */
@@ -4263,17 +4264,22 @@ static void setDrawOrder(PNHMapWindow data)
     int same_level_z_order_array[3] = { 0, -1, 1 };
     int different_level_z_order_array[3] = { 2, 3, 4 };
 
-#define NUM_LAYER_PARTITIONS 3
+#define NUM_LAYER_PARTITIONS 4
 
     for (int layer_partition = 0; layer_partition < NUM_LAYER_PARTITIONS; layer_partition++)
     {
-        enum layer_types layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_ZAP, LAYER_ENVIRONMENT, MAX_LAYERS };
+        enum layer_types layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_LEASH, LAYER_ZAP, LAYER_ENVIRONMENT, MAX_LAYERS };
 
         /* Second, draw other layers on the same y */
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
         {
             for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
             {
+                if ((layer_idx == LAYER_LEASH || layer_idx == LAYER_ZAP) && same_level_z_order_array[enl_idx] != -1)
+                {
+                    continue;
+                }
+
                 data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                 data->draw_order[draw_count].layer = layer_idx;
                 data->draw_order[draw_count].tile_movement_index = 0;
@@ -4348,6 +4354,30 @@ static void setDrawOrder(PNHMapWindow data)
         {
             for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
             {
+                if (layer_idx == LAYER_LEASH)
+                {
+                    continue;
+                }
+                else if (layer_idx == LAYER_ZAP)
+                {
+                    if (different_level_z_order_array[enl_idx] == 3)
+                    {
+                        /* Others (i == 1-4,8) have been drawn earlier; from below (i == 5,6,7) is drawn here */
+                        for (int j = 0; j <= 1; j++)
+                        {
+                            for (int i = 5 + j * +NUM_ZAP_SOURCE_BASE_DIRS; i <= 7 + j * +NUM_ZAP_SOURCE_BASE_DIRS; i++)
+                            {
+                                data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
+                                data->draw_order[draw_count].layer = layer_idx;
+                                data->draw_order[draw_count].tile_movement_index = 0;
+                                data->draw_order[draw_count].source_dir_index = i;
+                                draw_count++;
+                            }
+                        }
+                    }
+                    continue;
+                }
+
                 data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
                 data->draw_order[draw_count].layer = layer_idx;
                 data->draw_order[draw_count].tile_movement_index = 0;
@@ -4368,21 +4398,6 @@ static void setDrawOrder(PNHMapWindow data)
                     data->draw_order[draw_count].tile_movement_index = 1;
                     data->draw_order[draw_count].source_dir_index = 0;
                     draw_count++;
-                }
-                else if (layer_idx == LAYER_ZAP && different_level_z_order_array[enl_idx] == 3)
-                {
-                    /* Others (i == 1-4,8) have been drawn earlier; from below (i == 5,6,7) is drawn here */
-                    for (int j = 0; j <= 1; j++)
-                    {
-                        for (int i = 5 + j * + NUM_ZAP_SOURCE_BASE_DIRS; i <= 7 + j * + NUM_ZAP_SOURCE_BASE_DIRS; i++)
-                        {
-                            data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
-                            data->draw_order[draw_count].layer = layer_idx;
-                            data->draw_order[draw_count].tile_movement_index = 0;
-                            data->draw_order[draw_count].source_dir_index = i;
-                            draw_count++;
-                        }
-                    }
                 }
             }
         }
