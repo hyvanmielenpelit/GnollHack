@@ -1522,6 +1522,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                         for (struct monst* leashed_mon = &tether_mon; leashed_mon; leashed_mon = leashed_mon->nmon)
                         {
+                            boolean is_tethered_weapon = (leashed_mon == &tether_mon);
                             if (leashed_mon->mleashed)
                             {
                                 int mx = leashed_mon->mx, my = leashed_mon->my;
@@ -1540,56 +1541,153 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         continue;
                                     }
 
-                                    /* Draw the relevant leash */
-                                    line_start_x_in_pixels = (double)ux * (double)tileWidth + (double)tileWidth / 2.0;
-                                    line_start_y_in_pixels = (double)uy * (double)tileHeight + (double)tileHeight / 2.0;
-                                    line_end_x_in_pixels = (double)mx * (double)tileWidth + (double)tileWidth / 2.0;
-                                    line_end_y_in_pixels = (double)my * (double)tileHeight + (double)tileHeight / 2.0;
+                                    /* Select appropriate start point */
+                                    int start_x_in_tile = tileWidth / 2;
+                                    int start_y_in_tile = tileHeight / 2;
 
-                                    if (line_start_x_in_pixels < tile_x_start && line_end_x_in_pixels < tile_x_start)
-                                        continue;
-                                    if (line_start_y_in_pixels < tile_y_start && line_end_y_in_pixels < tile_y_start)
-                                        continue;
-                                    if (line_start_x_in_pixels > tile_x_end && line_end_x_in_pixels > tile_x_end)
-                                        continue;
-                                    if (line_start_y_in_pixels > tile_y_end && line_end_y_in_pixels > tile_y_end)
-                                        continue;
+                                    /* Select appropriate end point */
+                                    int end_x_in_tile = tileWidth / 2;
+                                    int end_y_in_tile = tileHeight / 2 + 20; /* Since many pets are small */
 
-                                    double dx_in_pixels = line_end_x_in_pixels - line_start_x_in_pixels;
-                                    double dy_in_pixels = line_end_y_in_pixels - line_start_y_in_pixels;
-                                    if (dx_in_pixels == 0.0 && dy_in_pixels == 0.0)
-                                        continue;
-                                    double dx_in_tiles_from_pixels = (dx_in_pixels / (double)tileWidth);
-                                    double dy_in_tiles_from_pixels = (dy_in_pixels / (double)tileHeight);
-                                    boolean dx_is_larger = (fabs(dx_in_tiles_from_pixels) >= fabs(dy_in_tiles_from_pixels));
-                                    double for_start_value = 0.0;
-                                    double for_end_value = 1.0;
-                                    double for_increment = (!dx_is_larger && line_end_x_in_pixels - line_start_x_in_pixels != 0.0) || line_end_y_in_pixels - line_start_y_in_pixels == 0.0 ? 1.0 / fabs(line_end_x_in_pixels - line_start_x_in_pixels) : 1.0 / fabs(line_end_y_in_pixels - line_start_y_in_pixels);
-
-                                    for(double line_idx = for_start_value; line_idx <= for_end_value; line_idx += for_increment)
+                                    if (is_tethered_weapon)
                                     {
-                                        double cur_x_in_pixels = line_idx * (line_end_x_in_pixels - line_start_x_in_pixels) + line_start_x_in_pixels;
-                                        double cur_y_in_pixels = line_idx * (line_end_y_in_pixels - line_start_y_in_pixels) + line_start_y_in_pixels;
-                                        
-                                        if (dx > 0.0 && cur_x_in_pixels > tile_x_end)
-                                            break;
-                                        else if (dx < 0.0 && cur_x_in_pixels < tile_x_start)
-                                            break;
-                                        else if (dy > 0.0 && cur_y_in_pixels > tile_y_end)
-                                            break;
-                                        else if (dy < 0.0 && cur_y_in_pixels < tile_y_start)
-                                            break;
-                                        else if (cur_x_in_pixels < tile_x_start || cur_x_in_pixels > tile_x_end)
+                                        /* Adjusted by hand to match the graphics */
+                                        if (dx == 0)
+                                            end_x_in_tile = 29;
+                                        else if (dx < 0)
+                                            end_x_in_tile = tileWidth - 16;
+                                        else
+                                            end_x_in_tile = 16;
+
+                                        if (dy == 0)
+                                            end_y_in_tile = 51;
+                                        else if (dy < 0)
+                                            end_y_in_tile = tileHeight - 32;
+                                        else
+                                            end_y_in_tile = 32;
+                                    }
+
+                                    /* Draw the relevant leash */
+                                    int leash_width = 3;
+                                    for (int width_round = 0; width_round < leash_width; width_round++)
+                                    {
+                                        line_start_x_in_pixels = (double)ux * (double)tileWidth + (double)start_x_in_tile;
+                                        line_start_y_in_pixels = (double)uy * (double)tileHeight + (double)start_y_in_tile;
+                                        line_end_x_in_pixels = (double)mx * (double)tileWidth + (double)end_x_in_tile;
+                                        line_end_y_in_pixels = (double)my * (double)tileHeight + (double)end_y_in_tile;
+
+                                        if (dx && !dy)
+                                        {
+                                            if (width_round == 1)
+                                            {
+                                                line_start_y_in_pixels--;
+                                                line_end_y_in_pixels--;
+                                            }
+                                            else if (width_round == 2)
+                                            {
+                                                line_start_y_in_pixels++;
+                                                line_end_y_in_pixels++;
+                                            }
+                                        }
+                                        else if (!dx && dy)
+                                        {
+                                            if (width_round == 1)
+                                            {
+                                                line_start_x_in_pixels--;
+                                                line_end_x_in_pixels--;
+                                            }
+                                            else if (width_round == 2)
+                                            {
+                                                line_start_x_in_pixels++;
+                                                line_end_x_in_pixels++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (width_round == 1)
+                                            {
+                                                if (dy > 0)
+                                                {
+                                                    line_start_x_in_pixels++;
+                                                    line_end_x_in_pixels++;
+                                                    line_start_y_in_pixels--;
+                                                    line_end_y_in_pixels--;
+                                                }
+                                                else
+                                                {
+                                                    line_start_x_in_pixels++;
+                                                    line_end_x_in_pixels++;
+                                                    line_start_y_in_pixels++;
+                                                    line_end_y_in_pixels++;
+                                                }
+                                            }
+                                            else if (width_round == 2)
+                                            {
+                                                if (dy > 0)
+                                                {
+                                                    line_start_x_in_pixels--;
+                                                    line_end_x_in_pixels--;
+                                                    line_start_y_in_pixels--;
+                                                    line_end_y_in_pixels--;
+                                                }
+                                                else
+                                                {
+                                                    line_start_x_in_pixels--;
+                                                    line_end_x_in_pixels--;
+                                                    line_start_y_in_pixels++;
+                                                    line_end_y_in_pixels++;
+                                                }
+                                            }
+                                        }
+
+                                        if (line_start_x_in_pixels < tile_x_start && line_end_x_in_pixels < tile_x_start)
                                             continue;
-                                        else if (cur_y_in_pixels < tile_y_start || cur_y_in_pixels > tile_y_end)
+                                        if (line_start_y_in_pixels < tile_y_start && line_end_y_in_pixels < tile_y_start)
+                                            continue;
+                                        if (line_start_x_in_pixels > tile_x_end && line_end_x_in_pixels > tile_x_end)
+                                            continue;
+                                        if (line_start_y_in_pixels > tile_y_end && line_end_y_in_pixels > tile_y_end)
                                             continue;
 
-                                        int within_tile_x_in_pixels = (int)(cur_x_in_pixels - tile_x_start);
-                                        int within_tile_y_in_pixels = (int)(cur_y_in_pixels - tile_y_start);
-                                        int bitidx = within_tile_x_in_pixels * 4 + within_tile_y_in_pixels * (int)tileWidth * 4;
-                                        lpBitmapBitsLeash[bitidx + 0] = 0;  // blue
-                                        lpBitmapBitsLeash[bitidx + 1] = 0;  // green
-                                        lpBitmapBitsLeash[bitidx + 2] = 0;  // red 
+                                        double dx_in_pixels = line_end_x_in_pixels - line_start_x_in_pixels;
+                                        double dy_in_pixels = line_end_y_in_pixels - line_start_y_in_pixels;
+                                        if (dx_in_pixels == 0.0 && dy_in_pixels == 0.0)
+                                            continue;
+                                        double dx_in_tiles_from_pixels = (dx_in_pixels / (double)tileWidth);
+                                        double dy_in_tiles_from_pixels = (dy_in_pixels / (double)tileHeight);
+                                        boolean dx_is_larger = (fabs(dx_in_tiles_from_pixels) >= fabs(dy_in_tiles_from_pixels));
+                                        double for_start_value = 0.0;
+                                        double for_end_value = 1.0;
+                                        double for_increment = (dx_is_larger && dx_in_pixels != 0.0) || dy_in_pixels == 0.0 ? 1.0 / fabs(dx_in_pixels) : 1.0 / fabs(dy_in_pixels);
+
+                                        for (double line_idx = for_start_value; line_idx <= for_end_value; line_idx += for_increment)
+                                        {
+                                            double cur_x_in_pixels = line_idx * (line_end_x_in_pixels - line_start_x_in_pixels) + line_start_x_in_pixels;
+                                            double cur_y_in_pixels = line_idx * (line_end_y_in_pixels - line_start_y_in_pixels) + line_start_y_in_pixels;
+
+                                            if (dx > 0.0 && cur_x_in_pixels > tile_x_end)
+                                                break;
+                                            else if (dx < 0.0 && cur_x_in_pixels < tile_x_start)
+                                                break;
+                                            else if (dy > 0.0 && cur_y_in_pixels > tile_y_end)
+                                                break;
+                                            else if (dy < 0.0 && cur_y_in_pixels < tile_y_start)
+                                                break;
+                                            else if (cur_x_in_pixels < tile_x_start || cur_x_in_pixels > tile_x_end)
+                                                continue;
+                                            else if (cur_y_in_pixels < tile_y_start || cur_y_in_pixels > tile_y_end)
+                                                continue;
+
+                                            int within_tile_x_in_pixels = (int)(cur_x_in_pixels - tile_x_start);
+                                            int within_tile_y_in_pixels = (int)(cur_y_in_pixels - tile_y_start);
+                                            int bitidx = within_tile_x_in_pixels * 4 + within_tile_y_in_pixels * (int)tileWidth * 4;
+                                            int red = width_round == 0 ? 178 : 80;
+                                            int green = width_round == 0 ? 96 : 60;
+                                            int blue = width_round == 0 ? 9 : 40;
+                                            lpBitmapBitsLeash[bitidx + 0] = blue;  // blue
+                                            lpBitmapBitsLeash[bitidx + 1] = green;  // green
+                                            lpBitmapBitsLeash[bitidx + 2] = red;  // red 
+                                        }
                                     }
                                 }
                             }
