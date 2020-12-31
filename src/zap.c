@@ -7330,7 +7330,7 @@ struct obj* origobj;
 struct monst* origmonst;
 int dmgdice, dicesize, dmgplus;
 struct obj **ootmp; /* to return worn armor for caller to disintegrate */
-boolean* out_flags_ptr;
+uchar* out_flags_ptr;
 {
 	double damage = 0;
 	int dmg = 0;
