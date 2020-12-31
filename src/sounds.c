@@ -688,8 +688,10 @@ register struct monst *mtmp;
         growl_verb = h_sounds[rn2(SIZE(h_sounds))];
     else
         growl_verb = growl_sound(mtmp);
-    if (growl_verb) {
-        pline("%s %s!", Monnam(mtmp), vtense((char *) 0, growl_verb));
+    if (growl_verb) 
+	{
+		play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GROWL);
+		pline("%s %s!", Monnam(mtmp), vtense((char *) 0, growl_verb));
         if (context.run)
             nomul(0);
         wake_nearto(mtmp->mx, mtmp->my, mtmp->data->mlevel * 18);
@@ -770,7 +772,8 @@ register struct monst *mtmp;
             break;
         }
     if (whimper_verb) {
-        pline("%s %s.", Monnam(mtmp), vtense((char *) 0, whimper_verb));
+		play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_WHIMPER);
+		pline("%s %s.", Monnam(mtmp), vtense((char *) 0, whimper_verb));
         if (context.run)
             nomul(0);
         wake_nearto(mtmp->mx, mtmp->my, mtmp->data->mlevel * 6);

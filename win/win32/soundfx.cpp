@@ -784,6 +784,15 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Leash Snaps Loose", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Leash Goes Slack", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Fails to Leash", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Growl", 0.3f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Whimper", 0.30f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Growl", 0.7f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Whimper", 0.55f },
+    { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Growl", 0.7f },
+    { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Whimper", 0.25f },
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Yelp", 0.7f },
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Growl", 0.7f },
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Whimper", 0.7f },
 
 };
 
