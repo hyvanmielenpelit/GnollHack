@@ -3244,6 +3244,8 @@ E void FDECL(display_u_being_hit, (enum hit_tile_types, int, unsigned long));
 E void FDECL(display_m_being_hit, (struct monst*, enum hit_tile_types, int, unsigned long, boolean));
 E void NDECL(u_wait_until_action);
 E void NDECL(m_wait_until_action);
+E void NDECL(u_wait_until_end);
+E void NDECL(m_wait_until_end);
 
 /* ### unixmain.c ### */
 

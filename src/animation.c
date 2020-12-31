@@ -598,6 +598,17 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       HUMAN_WIZARD_MALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "human-wizard-male-cast-indir-animation", ANIMATION_TYPE_NORMAL, HUMAN_WIZARD_MALE_CAST_INDIR_ANIMATION_TILES,
+      HUMAN_WIZARD_MALE_CAST_INDIR_ANIMATION_FRAMES, HUMAN_WIZARD_MALE_CAST_INDIR_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      HUMAN_WIZARD_MALE_CAST_INDIR_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "dwarf-caveman-male-attack-animation", ANIMATION_TYPE_NORMAL, DWARF_CAVEMAN_MALE_ATTACK_ANIMATION_TILES,
       DWARF_CAVEMAN_MALE_ATTACK_ANIMATION_FRAMES, DWARF_CAVEMAN_MALE_ATTACK_ANIMATION_OFF,
       1,
@@ -1358,6 +1369,14 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         HUMAN_WIZARD_MALE_KICK_ENLARGEMENT_TILES, HUMAN_WIZARD_MALE_KICK_ENLARGEMENT_OFF,
         3, 1, 0,
         { -1, -1, -1, 0, 1},
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-wizard-male-cast-indir-enlargement",
+        HUMAN_WIZARD_MALE_CAST_INDIR_ANIMATION_TILES, HUMAN_WIZARD_MALE_CAST_INDIR_ANIMATION_FRAMES,
+        HUMAN_WIZARD_MALE_CAST_INDIR_ENLARGEMENT_TILES, HUMAN_WIZARD_MALE_CAST_INDIR_ENLARGEMENT_OFF,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
@@ -3380,12 +3399,12 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_KNIGHT_FEMALE_CAST_ANIMATION;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_WIZARD_MALE_CAST_INDIR_ANIMATION;
         break;
     case ACTION_TILE_CAST_DIR:
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION;
-        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
-            return HUMAN_KNIGHT_FEMALE_CAST_ANIMATION;
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)

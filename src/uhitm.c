@@ -5137,6 +5137,26 @@ m_wait_until_action()
 	}
 }
 
+void
+u_wait_until_end()
+{
+	if (context.u_milliseconds_to_wait_until_end > 0UL)
+	{
+		delay_output_milliseconds(context.u_milliseconds_to_wait_until_end);
+		context.u_milliseconds_to_wait_until_end = 0UL;
+	}
+}
+
+void
+m_wait_until_end()
+{
+	if (context.m_milliseconds_to_wait_until_end > 0UL)
+	{
+		delay_output_milliseconds(context.m_milliseconds_to_wait_until_end);
+		context.m_milliseconds_to_wait_until_end = 0UL;
+	}
+}
+
 
 void
 display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_flags)

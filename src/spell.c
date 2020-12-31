@@ -2367,6 +2367,7 @@ boolean atme;
 		result = 0;
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
+	u_wait_until_end();
 	update_u_action_revert(ACTION_TILE_NO_ACTION);
 
     return result;
