@@ -4330,6 +4330,7 @@ drown()
         return FALSE;
 
     if ((i = number_leashed()) > 0) {
+        play_sfx_sound(SFX_LEASH_GOES_SLACK);
         pline_The("leash%s slip%s loose.", (i > 1) ? "es" : "",
                   (i > 1) ? "" : "s");
         unleash_all();

@@ -777,8 +777,16 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Not Enough Mana", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Fail to Cast Correctly", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Magical Energy Released", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Put on Leash", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Remove Leash", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Pulls Free of Leash", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Leash Snaps Loose", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Leash Goes Slack", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Fails to Leash", 1.0f },
 
 };
+
 
 
 extern "C" 

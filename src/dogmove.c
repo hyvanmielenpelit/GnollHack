@@ -691,7 +691,10 @@ struct edog *edog;
 		{
  dog_died:
             if (mtmp->mleashed && mtmp != u.usteed)
+            {
+                play_sfx_sound(SFX_LEASH_GOES_SLACK);
                 Your("leash goes slack.");
+            }
             else if (cansee(mtmp->mx, mtmp->my))
                 pline("%s starves.", Monnam(mtmp));
             else
@@ -1668,7 +1671,8 @@ newdogpos:
 			{
 				if (mtmp->mleashed)
 				{ /* play it safe */
-					pline("%s breaks loose of %s leash!", Monnam(mtmp),
+                    play_sfx_sound(SFX_PULLS_FREE_OF_LEASH);
+                    pline("%s breaks loose of %s leash!", Monnam(mtmp),
 						  mhis(mtmp));
 					m_unleash(mtmp, FALSE);
 				}

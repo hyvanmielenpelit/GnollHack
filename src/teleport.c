@@ -478,6 +478,7 @@ boolean force_it;
             yelp(mtmp);
             return FALSE;
         } else {
+            play_sfx_sound(SFX_LEASH_GOES_SLACK);
             Your("leash goes slack.");
         release_it:
             m_unleash(mtmp, FALSE);

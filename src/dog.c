@@ -847,6 +847,7 @@ boolean pets_only; /* true for ascension or final escape */
             }
             if (stay_behind) {
                 if (mtmp->mleashed) {
+                    play_sfx_sound(SFX_LEASH_GOES_SLACK);
                     pline("%s leash suddenly comes loose.",
                           humanoid(mtmp->data)
                               ? (mtmp->female ? "Her" : "His")
@@ -894,6 +895,7 @@ boolean pets_only; /* true for ascension or final escape */
         } else if (mtmp->mleashed) {
             /* this can happen if your quest leader ejects you from the
                "home" level while a leashed pet isn't next to you */
+            play_sfx_sound(SFX_LEASH_GOES_SLACK);
             pline("%s leash goes slack.", s_suffix(Monnam(mtmp)));
             m_unleash(mtmp, FALSE);
         }

@@ -854,6 +854,7 @@ struct obj *obj;
            it from the engulfer versus from some other creature
            (note: the two in-use cases can't actually occur; all
            leashes are released when the hero gets engulfed) */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant((!obj->leashmon
                   ? "leash %s from inside."
                   : (obj->leashmon == (int) u.ustuck->m_id)
@@ -864,6 +865,7 @@ struct obj *obj;
     }
     if (!obj->leashmon && number_leashed() >= MAXLEASHED) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot leash any more pets.");
         return 0;
     }
@@ -879,6 +881,7 @@ struct obj *obj;
             spotmon = 1;
             goto got_target;
         }
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("Leash yourself?  Very funny...");
         return 0;
     }
@@ -889,6 +892,7 @@ struct obj *obj;
 
     if (!(mtmp = m_at(cc.x, cc.y)))
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         There("is no creature there.");
         (void) unmap_invisible(cc.x, cc.y);
         return 1;
@@ -901,6 +905,7 @@ struct obj *obj;
     {
         /* for the unleash case, we don't verify whether this unseen
            monster is the creature attached to the current leash */
+        play_sfx_sound(SFX_FAILS_TO_LEASH);
         You("fail to %sleash something.", obj->leashmon ? "un" : "");
         /* trying again will work provided the monster is tame
            (and also that it doesn't change location by retry time) */
@@ -908,6 +913,7 @@ struct obj *obj;
     } 
     else if (!is_tame(mtmp))
     {
+        play_sfx_sound(SFX_FAILS_TO_LEASH);
         pline("%s %s leashed!", Monnam(mtmp),
               (!obj->leashmon) ? "cannot be" : "is not");
     }
@@ -916,16 +922,19 @@ struct obj *obj;
         /* applying a leash which isn't currently in use */
         if (mtmp->mleashed)
         {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("This %s is already leashed.",
                   spotmon ? l_monnam(mtmp) : "creature");
         }
         else if (!leashable(mtmp)) 
         {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("The leash won't fit onto %s%s.", spotmon ? "your " : "",
                   l_monnam(mtmp));
         }
         else
         {
+            play_sfx_sound(SFX_PUT_ON_LEASH);
             You("slip the leash around %s%s.", spotmon ? "your " : "",
                 l_monnam(mtmp));
             mtmp->mleashed = 1;
@@ -938,10 +947,12 @@ struct obj *obj;
         /* applying a leash which is currently in use */
         if (obj->leashmon != (int) mtmp->m_id)
         {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("This leash is not attached to that creature.");
         }
         else if (obj->cursed) 
         {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_The("leash would not come off!");
             obj->bknown = 1;
         } 
@@ -949,6 +960,7 @@ struct obj *obj;
         {
             mtmp->mleashed = 0;
             obj->leashmon = 0;
+            play_sfx_sound(SFX_REMOVE_LEASH);
             You("remove the leash from %s%s.",
                 spotmon ? "your " : "", l_monnam(mtmp));
         }
@@ -990,6 +1002,8 @@ next_to_u()
                         && otmp->leashmon == (int) mtmp->m_id) {
                         if (otmp->cursed)
                             return FALSE;
+
+                        play_sfx_sound(SFX_LEASH_GOES_SLACK);
                         You_feel("%s leash go slack.",
                                  (number_leashed() > 1) ? "a" : "the");
                         mtmp->mleashed = 0;
@@ -1068,6 +1082,7 @@ register xchar x, y;
 			{
                 if (um_dist(mtmp->mx, mtmp->my, 5))
 				{
+                    play_sfx_sound(SFX_LEASH_SNAPS_LOOSE);
                     pline("%s leash snaps loose!", s_suffix(Monnam(mtmp)));
                     m_unleash(mtmp, FALSE);
                 } 

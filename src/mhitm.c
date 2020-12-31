@@ -1066,7 +1066,10 @@ struct attack *mattk;
         /* mondead() -> m_detach() -> m_unleash() always suppresses
            the m_unleash() slack message, so deliver it here instead */
         if (was_leashed)
+        {
+            play_sfx_sound(SFX_LEASH_GOES_SLACK);
             Your("leash falls slack.");
+        }
     }
 
     if (is_tame(magr)) /* give this one even if it was visible */
