@@ -1605,7 +1605,7 @@ weapon_here:
         } else {
 
             Sprintf(eos(bp), " (%sweapon in %s%s)",
-                    (obj->otyp == AKLYS) ? "tethered " : "", u.twoweap && !bimanual(obj) ? "right " : "", bimanual(obj)? hands_s : hand_s);
+                    is_obj_tethered_weapon(obj, obj->owornmask) ? "tethered " : "", u.twoweap && !bimanual(obj) ? "right " : "", bimanual(obj)? hands_s : hand_s);
 
         }
     }
@@ -1626,7 +1626,7 @@ weapon_here:
 			   in front of "(weapon in hand)"'s closing paren */
 			Sprintf(eos(bp), " (%s%sweapon in %s%s)",
 				(!u.twoweap ? "unused " : ""),
-				((obj->otyp == AKLYS) ? "tethered " : ""),
+				(is_obj_tethered_weapon(obj, obj->owornmask) ? "tethered " : ""),
 				(!bimanual(obj) ? (u.twoweap ? "left " : "another ") : ""), 
 				(bimanual(obj) ? hands_s : hand_s)
 			);

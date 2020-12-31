@@ -7158,9 +7158,9 @@ boolean stop_at_first_hit_object;
                 newsym(x, y);
             }
             tmp_at(bhitpos.x, bhitpos.y);
-            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->oeroded || obj->oeroded2))
+            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->oeroded || obj->oeroded2 || tethered_weapon))
             {                
-                show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->oeroded, obj->oeroded2, get_missile_flags(obj));
+                show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon));
                 flush_screen(1);
             }
 

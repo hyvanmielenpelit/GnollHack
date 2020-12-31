@@ -274,7 +274,7 @@ long mask;
             long dummy = wep->owornmask;
 
             wep->owornmask |= W_WEP;
-            if (wep->otyp == AKLYS && (wep->owornmask & W_WEP) != 0)
+            if (is_obj_tethered_weapon(wep, wep->owornmask))
                 You("secure the tether.");
             wep->owornmask = dummy;
 			*/

@@ -473,7 +473,7 @@ E void FDECL(clear_monster_layer_at, (int, int));
 E void FDECL(clear_monster_layer_memory_at, (int, int));
 E void FDECL(show_extra_info, (int, int, unsigned long, int));
 E void FDECL(show_missile_info, (int, int, uchar, uchar, uchar, uchar, uchar, unsigned long));
-E unsigned long FDECL(get_missile_flags, (struct obj*));
+E unsigned long FDECL(get_missile_flags, (struct obj*, boolean));
 E void FDECL(clear_layer_info, (struct layer_info*));
 E void FDECL(clear_all_glyphs_at, (int, int));
 E void FDECL(clear_hero_memory_at, (int, int));

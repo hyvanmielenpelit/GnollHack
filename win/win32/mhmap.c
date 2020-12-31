@@ -1665,13 +1665,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             double cur_x_in_pixels = line_idx * (line_end_x_in_pixels - line_start_x_in_pixels) + line_start_x_in_pixels;
                                             double cur_y_in_pixels = line_idx * (line_end_y_in_pixels - line_start_y_in_pixels) + line_start_y_in_pixels;
 
-                                            if (dx > 0.0 && cur_x_in_pixels > tile_x_end)
+                                            if (dx > 0 && cur_x_in_pixels > tile_x_end)
                                                 break;
-                                            else if (dx < 0.0 && cur_x_in_pixels < tile_x_start)
+                                            else if (dx < 0 && cur_x_in_pixels < tile_x_start)
                                                 break;
-                                            else if (dy > 0.0 && cur_y_in_pixels > tile_y_end)
+                                            else if (dy > 0 && cur_y_in_pixels > tile_y_end)
                                                 break;
-                                            else if (dy < 0.0 && cur_y_in_pixels < tile_y_start)
+                                            else if (dy < 0 && cur_y_in_pixels < tile_y_start)
                                                 break;
                                             else if (cur_x_in_pixels < tile_x_start || cur_x_in_pixels > tile_x_end)
                                                 continue;

@@ -1656,7 +1656,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
     register int range, urange;
     boolean impaired = (Confusion || Stunned || Blind
                                      || Hallucination || Fumbling);
-    boolean tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WIELDED_WEAPON) != 0);
+    boolean tethered_weapon = is_obj_tethered_weapon(obj, wep_mask);
 
     notonhead = FALSE; /* reset potentially stale value */
     if ((obj->cursed || obj->greased) && (u.dx || u.dy) && !rn2(7))

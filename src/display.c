@@ -2353,8 +2353,9 @@ unsigned long missile_flags;
 }
 
 unsigned long
-get_missile_flags(obj)
+get_missile_flags(obj, tethered_weapon)
 struct obj* obj;
+boolean tethered_weapon;
 {
     if (!obj)
         return 0UL;
@@ -2372,7 +2373,7 @@ struct obj* obj;
         res |= MISSILE_FLAGS_POISONABLE;
     if (obj->oerodeproof)
         res |= MISSILE_FLAGS_ERODEPROOF;
-    if (obj->otyp == AKLYS && (obj->owornmask & W_WIELDED_WEAPON) != 0)
+    if (tethered_weapon)
         res |= MISSILE_FLAGS_TETHERED;
 
     return res;
