@@ -1725,7 +1725,8 @@ boolean atme;
 	double dumana = (double)u.uen + ((double)u.uen_fraction) / 10000;
     if (denergy > dumana)
 	{
-        You("don't have enough mana to cast that spell.");
+		play_sfx_sound(SFX_NOT_ENOUGH_MANA);
+		You("don't have enough mana to cast that spell.");
         return res;
     } 
 	//else {
@@ -1800,6 +1801,7 @@ boolean atme;
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
 		u_wait_until_action();
+		play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
 		You("fail to cast the spell correctly.");
 		deduct_mana_cost(denergy / 2);
         context.botl = 1;
@@ -2041,7 +2043,8 @@ boolean atme;
                  * spelleffects() is organized means that aborting with
                  * "nevermind" is not an option.
                  */
-                pline_The("magical energy is released!");
+				play_sfx_sound(SFX_MAGICAL_ENERGY_RELEASED);
+				pline_The("magical energy is released!");
             }
 
             if (!u.dx && !u.dy && !u.dz)

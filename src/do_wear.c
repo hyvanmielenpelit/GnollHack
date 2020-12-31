@@ -806,8 +806,8 @@ boolean gone;
 
     long mask = (obj->owornmask & W_RING);
     context.takeoff.mask &= ~mask;
-    if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
-        impossible("Strange... I didn't know you had that ring.");
+    //if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
+    //   impossible("Strange... I didn't know you had that ring.");
     if (gone)
         setnotworn(obj);
     else

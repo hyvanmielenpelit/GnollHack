@@ -1989,6 +1989,7 @@ struct obj **optr;
         *optr = addinv(obj);
         return;
     } else if (Underwater) {
+        play_sfx_sound(GHSOUND_GENERAL_CANNOT);
         There("is not enough oxygen to sustain a fire.");
         return;
     }
@@ -2317,16 +2318,19 @@ int magic; /* 0=Physical, otherwise skill level */
             You("flail around a little.");
             return 1;
         }
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("don't have enough traction to jump.");
         return 0;
     } 
     else if (!magic && near_capacity() > UNENCUMBERED) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("are carrying too much to jump!");
         return 0;
     } 
     else if (!magic && (u.uhunger <= 100 || ACURR(A_STR) < 6))
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("lack the strength to jump!");
         return 0;
     }
@@ -3798,9 +3802,11 @@ struct obj *obj;
         proficient = 0;
 
     if (u.uswallow && attack(u.ustuck)) {
+        play_sfx_sound(GHSOUND_GENERAL_CANNOT);
         There("is not enough room to flick your bullwhip.");
 
     } else if (Underwater) {
+        play_sfx_sound(GHSOUND_GENERAL_CANNOT);
         There("is too much resistance to flick your bullwhip.");
 
     } else if (u.dz < 0) {
@@ -5491,7 +5497,8 @@ struct obj* obj;
 	if (no_golf_swing) 
 	{
 		/* ignore direction typed before player notices kick failed */
-		display_nhwindow(WIN_MESSAGE, TRUE); /* --More-- */
+        play_sfx_sound(GHSOUND_GENERAL_CANNOT);
+        display_nhwindow(WIN_MESSAGE, TRUE); /* --More-- */
 		return 0;
 	}
 

@@ -6514,7 +6514,7 @@ int subdir;
 	switch (subdir)
 	{
 	case IMMEDIATE_ITEM_ARROW:
-		displayedobjtype = BONE_ARROW;
+		displayedobjtype = ENCHANTED_ARROW;
 		break;
 	default:
 		break;

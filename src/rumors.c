@@ -608,7 +608,8 @@ struct monst* oracl;
 	}
 	else if (!umoney) 
     {
-		You("have no money.");
+        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+        You("have no money.");
 		return 0;
 	}
 
@@ -624,7 +625,8 @@ struct monst* oracl;
 	case 'y':
 		if (umoney < (long)minor_id_cost) 
         {
-			You("don't have enough money for that!");
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+            You("don't have enough money for that!");
 			return 0;
 		}
 		u_pay = minor_id_cost;
@@ -653,16 +655,20 @@ struct monst* oracl;
 	multi = 0;
 	umoney = money_cnt(invent);
 
-	if (!oracl) {
+	if (!oracl)
+    {
 		There("is no one here to enlighten you.");
 		return 0;
 	}
-	else if (!is_peaceful(oracl)) {
+	else if (!is_peaceful(oracl)) 
+    {
 		pline("%s is in no mood for enlightenment.", Monnam(oracl));
 		return 0;
 	}
-	else if (!umoney) {
-		You("have no money.");
+	else if (!umoney)
+    {
+        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+        You("have no money.");
 		return 0;
 	}
 
@@ -671,8 +677,10 @@ struct monst* oracl;
 	if (yn_query(qbuf) != 'y')
 		return 0;
 
-	if (umoney < (long)enl_cost) {
-		You("don't have enough money for that!");
+	if (umoney < (long)enl_cost)
+    {
+        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+        You("don't have enough money for that!");
 		return 0;
 	}
 	u_pay = enl_cost;

@@ -162,6 +162,7 @@ moverock()
         {
             if (Blind)
                 feel_location(sx, sy);
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("don't have enough leverage to push %s.", the(xname(otmp)));
             /* Give them a chance to climb over it? */
             return -1;
@@ -1603,7 +1604,9 @@ domove_core()
          || (wtcap > SLT_ENCUMBER
              && (Upolyd ? (u.mh < 5 && u.mh != u.mhmax)
                         : (u.uhp < 10 && u.uhp != u.uhpmax))))
-        && !Is_airlevel(&u.uz)) {
+        && !Is_airlevel(&u.uz)) 
+    {
+        play_sfx_sound(SFX_STUCK_IN_TRAP);
         if (wtcap < OVERLOADED) {
             You("don't have enough stamina to move.");
             exercise(A_CON, FALSE);

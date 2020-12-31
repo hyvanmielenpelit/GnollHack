@@ -1240,6 +1240,7 @@ struct obj *obj;
     } 
 	else if (u.dz < 0) 
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         if (Levitation)
             You("don't have enough leverage.");
         else

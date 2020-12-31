@@ -1484,7 +1484,9 @@ dobreathe()
         You_cant("breathe.  Sorry.");
         return 0;
     }
-    if (u.uen < 15) {
+    if (u.uen < 15) 
+    {
+        play_sfx_sound(SFX_NOT_ENOUGH_MANA);
         You("don't have enough energy to breathe!");
         return 0;
     }
@@ -2225,7 +2227,8 @@ dolayegg()
 	}
 	else if (u.uhunger < (int)objects[EGG].oc_nutrition)
 	{
-		You("don't have enough energy to lay an egg.");
+        play_sfx_sound(SFX_NOT_ENOUGH_MANA);
+        You("don't have enough energy to lay an egg.");
 		return 0;
 	}
 	else if (eggs_in_water(youmonst.data))

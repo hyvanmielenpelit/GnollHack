@@ -774,6 +774,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Life Leech", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Hail of Magic Missiles Misses", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Hail of Magic Missiles Hits", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Not Enough Mana", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Fail to Cast Correctly", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Magical Energy Released", 1.0f },
 
 };
 

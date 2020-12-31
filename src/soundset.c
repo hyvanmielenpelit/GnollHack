@@ -4166,6 +4166,21 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_HAIL_OF_MAGIC_MISSILES_HITS, 1.0f},
         FALSE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_NOT_ENOUGH_MANA",
+        {GHSOUND_NOT_ENOUGH_MANA, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_FAIL_TO_CAST_CORRECTLY",
+        {GHSOUND_FAIL_TO_CAST_CORRECTLY, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_MAGICAL_ENERGY_RELEASED",
+        {GHSOUND_MAGICAL_ENERGY_RELEASED, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
