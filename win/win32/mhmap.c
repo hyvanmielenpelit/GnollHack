@@ -18,6 +18,8 @@
 #include "artifact.h"
 #include "artilist.h"
 #include "general.h"
+#include <math.h>
+
 
 #define NHMAP_FONT_NAME TEXT("Terminal")
 #define NHMAP_TTFONT_NAME TEXT("Consolas")
@@ -1416,32 +1418,176 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                     }
                 }
-                else if (base_layer == LAYER_LEASH && cansee(enl_i, enl_j))
+                else if (base_layer == LAYER_LEASH && enlarg_idx == -1 && cansee(enl_i, enl_j))
                 {
                     signed_glyph = NO_GLYPH;
                     /* This is effectively a non-tile-related autodraw */
 
-                    /* Draw leashes for leashed monsters */
-                    for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon )
-                    {
-                        if (leashed_mon->mleashed)
-                        {
-                            int mx = leashed_mon->mx, my = leashed_mon->my;
-                            if (isok(mx, my))
-                            {
-                                /* Draw the relevant leash */
+                    int ux = u.ux, uy = u.uy;
+                    boolean something_to_draw = FALSE;
 
+                    /* Check first if anything needs to be drawn */
+                    if (isok(ux, uy))
+                    {
+                        for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
+                        {
+                            if (leashed_mon->mleashed)
+                            {
+                                int mx = leashed_mon->mx, my = leashed_mon->my;
+                                int dx = mx - ux, dy = my - uy;
+                                if (dx == 0 && dy == 0)
+                                    continue;
+                                if (isok(mx, my))
+                                {
+                                    double vx = mx == ux ? 0.0 : ((double)enl_i - (double)ux) / ((double)mx - (double)ux);
+                                    double vy = my == uy ? 0.0 : ((double)enl_j - (double)uy) / ((double)my - (double)uy);
+                                    if (vx >= 0.0 && vx <= 1.0 && vy >= 0.0 && vy <= 1.0)
+                                    {
+                                        something_to_draw = TRUE;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (isok(context.tether_x, context.tether_y))
+                        {
+                            double vx = context.tether_x == ux ? 0.0 : ((double)enl_i - (double)ux) / ((double)context.tether_x - (double)ux);
+                            double vy = context.tether_y == uy ? 0.0 : ((double)enl_j - (double)uy) / ((double)context.tether_y - (double)uy);
+                            if (vx >= 0 && vx <= 1.0 && vy >= 0 && vy <= 1.0)
+                            {
+                                something_to_draw = TRUE;
+                                break;
                             }
                         }
                     }
 
-                    /* Draw straps for thrown aklys */
-                    if (isok(context.tether_x, context.tether_y))
+                    if (something_to_draw && 0)
                     {
-                        /* Draw the line attached to the aklys */
+                        HDC hDCleash = CreateCompatibleDC(data->backBufferDC);
 
+                        unsigned char* lpBitmapBitsLeash;
+
+                        BITMAPINFO binfo_leash;
+                        ZeroMemory(&binfo_leash, sizeof(BITMAPINFO));
+                        binfo_leash.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                        binfo_leash.bmiHeader.biWidth = tileWidth;
+                        binfo_leash.bmiHeader.biHeight = tileHeight;
+                        binfo_leash.bmiHeader.biPlanes = 1;
+                        binfo_leash.bmiHeader.biBitCount = 32;
+
+                        HBITMAP newhBmp_leash = CreateDIBSection(hDCleash, &binfo_leash, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsLeash, NULL, 0);
+                        HGDIOBJ oldbmp_leash = SelectObject(hDCleash, newhBmp_leash);
+
+                        /* Make background transparent */
+                        LONG width = GetNHApp()->mapTile_X;
+                        LONG height = GetNHApp()->mapTile_Y;
+
+                        int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                        int idx, x, y;
+                        for (x = 0; x < width; x++)
+                        {
+                            for (y = 0; y < height; y++)
+                            {
+                                idx = y * pitch;
+                                idx += x * 4;
+
+                                lpBitmapBitsLeash[idx + 0] = TILE_BK_COLOR_BLUE;  // blue
+                                lpBitmapBitsLeash[idx + 1] = TILE_BK_COLOR_GREEN; // green
+                                lpBitmapBitsLeash[idx + 2] = TILE_BK_COLOR_RED;  // red 
+                            }
+                        }
+
+                        double line_start_x_in_pixels = 0.0;
+                        double line_start_y_in_pixels = 0.0;
+                        double line_end_x_in_pixels = 0.0;
+                        double line_end_y_in_pixels = 0.0;
+                        double line_in_pixels_to_next_tile_from_x_start = 0.0;
+                        double line_in_pixels_to_next_tile_from_y_start = 0.0;
+                        double tile_x_start = (double)enl_i * (double)tileWidth;
+                        double tile_y_start = (double)enl_j * (double)tileHeight;
+                        double tile_x_end = (double)(enl_i + 1) * (double)tileWidth - 1.0;
+                        double tile_y_end = (double)(enl_j + 1) * (double)tileHeight - 1.0;
+
+                        /* Draw leashes for leashed monsters */
+                        for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
+                        {
+                            if (leashed_mon->mleashed)
+                            {
+                                int mx = leashed_mon->mx, my = leashed_mon->my;
+                                int dx = mx - ux, dy = my - uy;
+                                if (dx == 0 && dy == 0)
+                                    continue;
+
+                                if (isok(mx, my))
+                                {
+                                    double vx = mx == ux ? 0.0 : ((double)enl_i - (double)ux) / ((double)mx - (double)ux);
+                                    double vy = my == uy ? 0.0 : ((double)enl_j - (double)uy) / ((double)my - (double)uy);
+                                    if (vx < 0 || vx > 1.0 || vy < 0 || vy > 1.0)
+                                    {
+                                        continue;
+                                    }
+
+                                    /* Draw the relevant leash */
+                                    line_start_x_in_pixels = (double)ux * (double)tileWidth + (double)tileWidth / 2.0;
+                                    line_start_y_in_pixels = (double)uy * (double)tileHeight + (double)tileHeight / 2.0;
+                                    line_end_x_in_pixels = (double)mx * (double)tileWidth + (double)tileWidth / 2.0;
+                                    line_end_y_in_pixels = (double)my * (double)tileHeight + (double)tileHeight / 2.0;
+
+                                    double dx_in_pixels = line_end_x_in_pixels - line_start_x_in_pixels;
+                                    double dy_in_pixels = line_end_y_in_pixels - line_start_y_in_pixels;
+                                    double dx_in_tiles_from_pixels = (dx_in_pixels / (double)tileWidth);
+                                    double dy_in_tiles_from_pixels = (dy_in_pixels / (double)tileHeight);
+                                    boolean dx_is_larger = (fabs(dx_in_tiles_from_pixels) >= fabs(dy_in_tiles_from_pixels));
+                                    double for_start_value = dx_is_larger ? line_start_x_in_pixels  : line_start_y_in_pixels;
+                                    double for_end_value = dx_is_larger ? line_end_x_in_pixels : line_end_y_in_pixels;
+                                    double for_increment = dx_is_larger ? (line_end_x_in_pixels >= line_start_x_in_pixels ? 1 : -1) : (line_end_y_in_pixels >= line_start_y_in_pixels ? 1 : -1);
+
+                                    for(double line_idx = for_start_value; for_increment >= 0 ? (line_idx <= for_end_value) : (line_idx >= for_end_value); line_idx += for_increment)
+                                    {
+                                        double cur_x_in_pixels = dx_is_larger ? line_idx : (line_idx - line_start_y_in_pixels) * (line_end_x_in_pixels - line_start_x_in_pixels) / (line_end_y_in_pixels - line_start_y_in_pixels) + line_start_x_in_pixels;
+                                        double cur_y_in_pixels = dx_is_larger ? (line_idx - line_start_x_in_pixels) * (line_end_y_in_pixels - line_start_y_in_pixels) / (line_end_x_in_pixels - line_start_x_in_pixels) + line_start_y_in_pixels : line_idx;
+                                        
+                                        if (dx > 0.0 && cur_x_in_pixels > tile_x_end)
+                                            break;
+                                        else if (dx < 0.0 && cur_x_in_pixels < tile_x_start)
+                                            break;
+                                        else if (dy > 0.0 && cur_y_in_pixels > tile_y_end)
+                                            break;
+                                        else if (dy < 0.0 && cur_y_in_pixels < tile_y_start)
+                                            break;
+                                        else if (cur_x_in_pixels < tile_x_start || cur_x_in_pixels > tile_x_end)
+                                            continue;
+                                        else if (cur_y_in_pixels < tile_y_start || cur_y_in_pixels > tile_y_end)
+                                            continue;
+
+                                        int within_tile_x_in_pixels = (int)(cur_x_in_pixels - tile_x_start);
+                                        int within_tile_y_in_pixels = (int)(cur_y_in_pixels - tile_y_start);
+                                        int bitidx = within_tile_x_in_pixels * 4 + within_tile_y_in_pixels * (int)tileWidth * 4;
+                                        lpBitmapBitsLeash[bitidx + 0] = 0;  // blue
+                                        lpBitmapBitsLeash[bitidx + 1] = 0;  // green
+                                        lpBitmapBitsLeash[bitidx + 2] = 0;  // red 
+                                    }
+                                }
+                            }
+                        }
+
+                        /* Draw straps for thrown aklys */
+                        if (isok(context.tether_x, context.tether_y))
+                        {
+                            /* Draw the line attached to the aklys */
+
+                        }
+
+                        /* Draw the leash to the map */
+                        (*GetNHApp()->lpfnTransparentBlt)(
+                            data->backBufferDC, rect->left, rect->top, data->xBackTile, data->yBackTile,
+                            hDCleash, 0, 0, GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+
+                        SelectObject(hDCleash, oldbmp_leash);
+                        DeleteDC(hDCleash);
+                        DeleteObject(newhBmp_leash);
                     }
-
                 }
                 else if (base_layer == LAYER_CHAIN && enlarg_idx == -1 && tile_move_idx == 0 && source_dir_idx == 0 && (data->map[adj_x][adj_y].layer_flags & LFLAGS_O_CHAIN))
                     signed_glyph = GENERAL_TILE_CHAIN_MAIN + GLYPH_GENERAL_TILE_OFF;
