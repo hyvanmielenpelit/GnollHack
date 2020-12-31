@@ -1240,6 +1240,7 @@ E struct obj* FDECL(any_obj_at, (int, int, int));
 E struct obj* FDECL(otyp_in_objchn, (int, struct obj*));
 E struct obj *FDECL(nxtobj, (struct obj *, int, BOOLEAN_P));
 E struct obj *FDECL(carrying, (int));
+E struct obj* NDECL(carrying_leashed_leash);
 E boolean NDECL(have_lizard);
 E struct obj *NDECL(u_have_novel);
 E struct obj *FDECL(o_on, (unsigned int, struct obj *));

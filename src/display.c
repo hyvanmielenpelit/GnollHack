@@ -630,7 +630,6 @@ boolean dropping_piercer;
      * so that when the position is out of sight, the hero remembers what
      * the mimic was mimicing.
      */
-
     if (mon_mimic && (sightflags == PHYSICALLY_SEEN)) {
         switch (M_AP_TYPE(mon)) {
         default:
@@ -731,6 +730,9 @@ boolean dropping_piercer;
          * matter, but if not, showing them as pets is preferrable.
          */
         unsigned long extra_flags = 0;
+
+        if (mon->mleashed)
+            extra_flags |= LFLAGS_M_TETHERED;
 
         if (is_tame(mon) && !Hallucination) {
             if (worm_tail)
@@ -1258,8 +1260,14 @@ int damage_shown;
             map_location(x, y, !see_self);
 #endif
             boolean location_has_boulder = (sobj_at(BOULDER, x, y) != 0);
+            unsigned long extra_flags = 0UL;
+            if (carrying_leashed_leash())
+                extra_flags |= LFLAGS_U_TETHERED;
+
             if (see_self)
-                display_self_with_extra_info_choose_ascii(disp_flags, damage_shown, location_has_boulder);
+                display_self_with_extra_info_choose_ascii(disp_flags | extra_flags, damage_shown, location_has_boulder);
+            else
+                show_extra_info(x, y, disp_flags | extra_flags, damage_shown);
 
             if (newsym_flags & NEWSYM_FLAGS_SHOW_DROPPING_PIERCER)
             {
@@ -1339,7 +1347,7 @@ int damage_shown;
             show_region(reg, x, y);
             //return; /* Not needed anymore since last */
         }
-    } 
+    }
     else
     {
         /* Can't see the location. */
@@ -2364,6 +2372,8 @@ struct obj* obj;
         res |= MISSILE_FLAGS_POISONABLE;
     if (obj->oerodeproof)
         res |= MISSILE_FLAGS_ERODEPROOF;
+    if (obj->otyp == AKLYS && (obj->owornmask & W_WIELDED_WEAPON) != 0)
+        res |= MISSILE_FLAGS_TETHERED;
 
     return res;
 }
@@ -4500,5 +4510,7 @@ struct monst* mon;
     shieldeff(mon->mx, mon->my);
     update_m_action_revert(mon, action_before);
 }
+
+
 
 /*display.c*/

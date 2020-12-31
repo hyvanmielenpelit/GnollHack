@@ -1439,9 +1439,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     continue;
                                 if (isok(mx, my))
                                 {
-                                    double vx = mx == ux ? 0.0 : ((double)enl_i - (double)ux) / ((double)mx - (double)ux);
-                                    double vy = my == uy ? 0.0 : ((double)enl_j - (double)uy) / ((double)my - (double)uy);
-                                    if (vx >= 0.0 && vx <= 1.0 && vy >= 0.0 && vy <= 1.0)
+                                    int min_x = min(mx, ux);
+                                    int min_y = min(my, uy);
+                                    int max_x = max(mx, ux);
+                                    int max_y = max(my, uy);
+                                    if (enl_i >= min_x && enl_i <= max_x && enl_j >= min_y && enl_j <= max_y)
                                     {
                                         something_to_draw = TRUE;
                                         break;
@@ -1452,17 +1454,18 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                         if (isok(context.tether_x, context.tether_y))
                         {
-                            double vx = context.tether_x == ux ? 0.0 : ((double)enl_i - (double)ux) / ((double)context.tether_x - (double)ux);
-                            double vy = context.tether_y == uy ? 0.0 : ((double)enl_j - (double)uy) / ((double)context.tether_y - (double)uy);
-                            if (vx >= 0 && vx <= 1.0 && vy >= 0 && vy <= 1.0)
+                            int min_x = min(context.tether_x, ux);
+                            int min_y = min(context.tether_y, uy);
+                            int max_x = max(context.tether_x, ux);
+                            int max_y = max(context.tether_y, uy);
+                            if (enl_i >= min_x && enl_i <= max_x && enl_j >= min_y && enl_j <= max_y)
                             {
                                 something_to_draw = TRUE;
-                                break;
                             }
                         }
                     }
 
-                    if (something_to_draw && 0)
+                    if (something_to_draw)
                     {
                         HDC hDCleash = CreateCompatibleDC(data->backBufferDC);
 
@@ -1506,11 +1509,18 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         double line_in_pixels_to_next_tile_from_y_start = 0.0;
                         double tile_x_start = (double)enl_i * (double)tileWidth;
                         double tile_y_start = (double)enl_j * (double)tileHeight;
-                        double tile_x_end = (double)(enl_i + 1) * (double)tileWidth - 1.0;
-                        double tile_y_end = (double)(enl_j + 1) * (double)tileHeight - 1.0;
+                        double tile_x_end = ((double)(enl_i + 1) * (double)tileWidth) - 1.0;
+                        double tile_y_end = ((double)(enl_j + 1) * (double)tileHeight) - 1.0;
 
                         /* Draw leashes for leashed monsters */
-                        for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
+                        /* Kludge to include also thrown aklys in the same drawing routine */
+                        struct monst tether_mon = zeromonst;
+                        tether_mon.nmon = fmon;
+                        tether_mon.mleashed = TRUE;
+                        tether_mon.mx = context.tether_x;
+                        tether_mon.my = context.tether_y;
+
+                        for (struct monst* leashed_mon = &tether_mon; leashed_mon; leashed_mon = leashed_mon->nmon)
                         {
                             if (leashed_mon->mleashed)
                             {
@@ -1521,9 +1531,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 if (isok(mx, my))
                                 {
-                                    double vx = mx == ux ? 0.0 : ((double)enl_i - (double)ux) / ((double)mx - (double)ux);
-                                    double vy = my == uy ? 0.0 : ((double)enl_j - (double)uy) / ((double)my - (double)uy);
-                                    if (vx < 0 || vx > 1.0 || vy < 0 || vy > 1.0)
+                                    int min_x = min(mx, ux);
+                                    int min_y = min(my, uy);
+                                    int max_x = max(mx, ux);
+                                    int max_y = max(my, uy);
+                                    if (!(enl_i >= min_x && enl_i <= max_x && enl_j >= min_y && enl_j <= max_y))
                                     {
                                         continue;
                                     }
@@ -1534,19 +1546,30 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     line_end_x_in_pixels = (double)mx * (double)tileWidth + (double)tileWidth / 2.0;
                                     line_end_y_in_pixels = (double)my * (double)tileHeight + (double)tileHeight / 2.0;
 
+                                    if (line_start_x_in_pixels < tile_x_start && line_end_x_in_pixels < tile_x_start)
+                                        continue;
+                                    if (line_start_y_in_pixels < tile_y_start && line_end_y_in_pixels < tile_y_start)
+                                        continue;
+                                    if (line_start_x_in_pixels > tile_x_end && line_end_x_in_pixels > tile_x_end)
+                                        continue;
+                                    if (line_start_y_in_pixels > tile_y_end && line_end_y_in_pixels > tile_y_end)
+                                        continue;
+
                                     double dx_in_pixels = line_end_x_in_pixels - line_start_x_in_pixels;
                                     double dy_in_pixels = line_end_y_in_pixels - line_start_y_in_pixels;
+                                    if (dx_in_pixels == 0.0 && dy_in_pixels == 0.0)
+                                        continue;
                                     double dx_in_tiles_from_pixels = (dx_in_pixels / (double)tileWidth);
                                     double dy_in_tiles_from_pixels = (dy_in_pixels / (double)tileHeight);
                                     boolean dx_is_larger = (fabs(dx_in_tiles_from_pixels) >= fabs(dy_in_tiles_from_pixels));
-                                    double for_start_value = dx_is_larger ? line_start_x_in_pixels  : line_start_y_in_pixels;
-                                    double for_end_value = dx_is_larger ? line_end_x_in_pixels : line_end_y_in_pixels;
-                                    double for_increment = dx_is_larger ? (line_end_x_in_pixels >= line_start_x_in_pixels ? 1 : -1) : (line_end_y_in_pixels >= line_start_y_in_pixels ? 1 : -1);
+                                    double for_start_value = 0.0;
+                                    double for_end_value = 1.0;
+                                    double for_increment = (!dx_is_larger && line_end_x_in_pixels - line_start_x_in_pixels != 0.0) || line_end_y_in_pixels - line_start_y_in_pixels == 0.0 ? 1.0 / fabs(line_end_x_in_pixels - line_start_x_in_pixels) : 1.0 / fabs(line_end_y_in_pixels - line_start_y_in_pixels);
 
-                                    for(double line_idx = for_start_value; for_increment >= 0 ? (line_idx <= for_end_value) : (line_idx >= for_end_value); line_idx += for_increment)
+                                    for(double line_idx = for_start_value; line_idx <= for_end_value; line_idx += for_increment)
                                     {
-                                        double cur_x_in_pixels = dx_is_larger ? line_idx : (line_idx - line_start_y_in_pixels) * (line_end_x_in_pixels - line_start_x_in_pixels) / (line_end_y_in_pixels - line_start_y_in_pixels) + line_start_x_in_pixels;
-                                        double cur_y_in_pixels = dx_is_larger ? (line_idx - line_start_x_in_pixels) * (line_end_y_in_pixels - line_start_y_in_pixels) / (line_end_x_in_pixels - line_start_x_in_pixels) + line_start_y_in_pixels : line_idx;
+                                        double cur_x_in_pixels = line_idx * (line_end_x_in_pixels - line_start_x_in_pixels) + line_start_x_in_pixels;
+                                        double cur_y_in_pixels = line_idx * (line_end_y_in_pixels - line_start_y_in_pixels) + line_start_y_in_pixels;
                                         
                                         if (dx > 0.0 && cur_x_in_pixels > tile_x_end)
                                             break;
@@ -1570,19 +1593,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     }
                                 }
                             }
-                        }
-
-                        /* Draw straps for thrown aklys */
-                        if (isok(context.tether_x, context.tether_y))
-                        {
-                            /* Draw the line attached to the aklys */
 
                         }
 
                         /* Draw the leash to the map */
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top, data->xBackTile, data->yBackTile,
-                            hDCleash, 0, 0, GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                            hDCleash, 0, tileHeight - 1, tileWidth, -tileHeight, TILE_BK_COLOR);
 
                         SelectObject(hDCleash, oldbmp_leash);
                         DeleteDC(hDCleash);
@@ -4779,6 +4796,55 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 RECT rt2;
                 nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
                 InvalidateRect(data->hWnd, &rt2, FALSE);
+            }
+        }
+    }
+
+    if ((data->map[x][y].layer_flags & LFLAGS_M_TETHERED) || (data->map[x][y].missile_flags & MISSILE_FLAGS_TETHERED))
+    {
+        if (isok(u.ux, u.uy))
+        {
+            int min_x = min(u.ux, x);
+            int min_y = min(u.uy, y);
+            int max_x = max(u.ux, x);
+            int max_y = max(u.uy, y);
+            for (int rx = min_x; rx <= max_x; rx++)
+            {
+                for (int ry = min_y; ry <= max_y; ry++)
+                {
+                    data->mapDirty[rx][ry] = TRUE;
+                    RECT rt2;
+                    nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
+                    InvalidateRect(data->hWnd, &rt2, FALSE);
+                }
+            }
+        }
+    }
+
+    if (data->map[x][y].layer_flags & LFLAGS_U_TETHERED)
+    {
+        for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
+        {
+            if (leashed_mon->mleashed)
+            {
+                int mx = leashed_mon->mx, my = leashed_mon->my;
+                if (isok(mx, my))
+                {
+                    int min_x = min(mx, x);
+                    int min_y = min(my, y);
+                    int max_x = max(mx, x);
+                    int max_y = max(my, y);
+                    for (int rx = min_x; rx <= max_x; rx++)
+                    {
+                        for (int ry = min_y; ry <= max_y; ry++)
+                        {
+                            data->mapDirty[rx][ry] = TRUE;
+                            RECT rt2;
+                            nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
+                            InvalidateRect(data->hWnd, &rt2, FALSE);
+                        }
+                    }
+                }
             }
         }
     }

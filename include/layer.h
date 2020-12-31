@@ -75,7 +75,8 @@ struct layer_info {
 /* hit_tile_bit 010 */
 /* hit_tile_bit 020 */
 /* free for m_ flag 040 */
-/* free for m_ flag 080 */
+#define LFLAGS_U_TETHERED           0x00008000UL /* You are tethered */
+#define LFLAGS_M_TETHERED           0x00010000UL /* Monster is tethered */
 #define LFLAGS_M_DROPPING_PIERCER   0x00020000UL
 #define LFLAGS_M_WORM_TAIL          0x00040000UL
 #define LFLAGS_M_WORM_SEEN          0x00080000UL
@@ -99,7 +100,6 @@ struct layer_info {
 #define LFLAGS_ZAP_TRAILING_EDGE    0x08000000UL /* Last (trailing) tile in a zap */
 #define LFLAGS_ZAP_MASK             (LFLAGS_ZAP_LEADING_EDGE | LFLAGS_ZAP_TRAILING_EDGE)
 
-/* free bits */
 
 #define MISSILE_FLAGS_CORRODEABLE   0x00000001UL
 #define MISSILE_FLAGS_ROTTABLE      0x00000002UL
@@ -107,5 +107,6 @@ struct layer_info {
 #define MISSILE_FLAGS_RUSTPRONE     0x00000008UL
 #define MISSILE_FLAGS_ERODEPROOF    0x00000010UL
 #define MISSILE_FLAGS_POISONABLE    0x00000020UL
+#define MISSILE_FLAGS_TETHERED      0x00000040UL /* Missile is tethered */
 
 #endif /* LAYER_H */

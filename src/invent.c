@@ -1880,6 +1880,17 @@ register int type;
     return (struct obj *) 0;
 }
 
+struct obj*
+carrying_leashed_leash()
+{
+    register struct obj* otmp;
+
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+        if (otmp->otyp == LEASH && otmp->leashmon != 0)
+            return  otmp;
+    return (struct obj*)0;
+}
+
 /* Fictional and not-so-fictional currencies.
  * http://concord.wikia.com/wiki/List_of_Fictional_Currencies
  */
