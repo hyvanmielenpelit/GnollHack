@@ -3179,6 +3179,7 @@ struct obj* obj;
 				if (otmp->oartifact == ART_ONE_RING)
 				{
 					wandknown = TRUE;
+                    play_sfx_sound(SFX_MONSTER_ON_FIRE);
 					pline("Flames emerge from %s and engulf %s!", the(xname(obj)), yname(otmp));
 					read_the_one_ring(otmp);
 					break;

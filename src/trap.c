@@ -3601,7 +3601,18 @@ struct obj *box; /* null for floor trap */
         destroy_item(SCROLL_CLASS, AD_FIRE);
         destroy_item(SPBOOK_CLASS, AD_FIRE);
         destroy_item(POTION_CLASS, AD_FIRE);
+
+        /* Check for the One Ring */
+        for (struct obj* oring = invent; oring; oring = oring->nobj)
+        {
+            if (oring->oartifact == ART_ONE_RING)
+            {
+                read_the_one_ring(oring);
+                break;
+            }
+        }
     }
+
 
     if (!box && burn_floor_objects(u.ux, u.uy, see_it, TRUE) && !see_it)
         You("smell paper burning.");
@@ -6389,7 +6400,8 @@ lava_effects()
      * make the player sink into the lava. Assumption: water walking only
      * comes from boots.
      */
-    if (uarmf && melts_in_lava(uarmf) && !uarmf->oerodeproof) {
+    if (uarmf && melts_in_lava(uarmf) && !uarmf->oerodeproof)
+    {
         obj = uarmf;
         pline("%s into flame!", Yobjnam2(obj, "burst"));
         iflags.in_lava_effects++; /* (see above) */
@@ -6398,14 +6410,18 @@ lava_effects()
         iflags.in_lava_effects--;
     }
 
-    if (!Fire_immunity) {
-        if (Wwalking) {
+    if (!Fire_immunity)
+    {
+        if (Wwalking) 
+        {
             pline_The("%s here burns you!", hliquid("lava"));
-            if (usurvive) {
+            if (usurvive) 
+            {
                 losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), lava_killer, KILLED_BY); /* lava damage */
                 goto burn_stuff;
             }
-        } else
+        }
+        else
             You("fall into the %s!", hliquid("lava"));
 
         usurvive = Lifesaved || discover;
@@ -6419,15 +6435,24 @@ lava_effects()
            here in the outer call (and access stale memory, probably panic) */
         iflags.in_lava_effects++;
 
-        for (obj = invent; obj; obj = obj2) {
+        for (obj = invent; obj; obj = obj2)
+        {
             obj2 = obj->nobj;
             /* above, we set in_use for objects which are to be destroyed */
-            if (obj->otyp == SPE_BOOK_OF_THE_DEAD && !Blind) {
+            if (obj->otyp == SPE_BOOK_OF_THE_DEAD && !Blind) 
+            {
                 if (usurvive)
                     pline("%s glows a strange %s, but remains intact.",
                           The(xname(obj)), hcolor("dark red"));
-            } else if (obj->in_use) {
-                if (obj->owornmask) {
+            }
+            else if (obj->oartifact == ART_ONE_RING)
+            {
+                read_the_one_ring(obj);
+            }
+            else if (obj->in_use)
+            {
+                if (obj->owornmask) 
+                {
                     if (usurvive)
                         pline("%s into flame!", Yobjnam2(obj, "burst"));
                     remove_worn_item(obj, TRUE);
@@ -6442,7 +6467,8 @@ lava_effects()
         boil_away = (is_watery(&mons[u.umonnum])
                      || u.umonnum == PM_STEAM_VORTEX
                      || u.umonnum == PM_FOG_CLOUD);
-        for (;;) {
+        for (;;)
+        {
             u.uhp = -1;
             /* killer format and name are reconstructed every iteration
                because lifesaving resets them */
@@ -6457,7 +6483,9 @@ lava_effects()
         }
         You("find yourself back on solid %s.", surface(u.ux, u.uy));
         return TRUE;
-    } else if (!Wwalking && (!u.utrap || u.utraptype != TT_LAVA)) {
+    } 
+    else if (!Wwalking && (!u.utrap || u.utraptype != TT_LAVA)) 
+    {
         boil_away = !Fire_immunity;
         /* if not fire resistant, sink_into_lava() will quickly be fatal;
            hero needs to escape immediately */

@@ -925,9 +925,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 	char anamebuf[BUFSZ] = "";
 	if (has_oname(obj) && nknown && dknown) {
         Strcat(buf, " named ");
-		makeThelower = TRUE;
-	nameit:
-		strcpy(anamebuf, ONAME(obj));
+        makeThelower = TRUE;
+    nameit:
+        strcpy(anamebuf, ONAME(obj));
 		if (makeThelower && !strncmpi(anamebuf, "The ", 4))
 			*anamebuf = lowc(*anamebuf);
         Strcat(buf, anamebuf);

@@ -54,11 +54,14 @@
 #define AF2_FLOOR_TILE						0x00000004UL  
 /* free bit */
 #define AF2_APPLICABLE_AS_AXE				0x00000010UL  
+#define AF2_NAME_IS_PROPER_NAME				0x00000020UL  /* Do not use 'The' */
 
 
 #define has_artifact_floor_tile(artifact_idx) \
 	((artilist[(artifact_idx)].aflags2 & AF2_FLOOR_TILE) != 0)
 
+#define has_artifact_proper_name(artifact_idx) \
+	((artilist[(artifact_idx)].aflags2 & AF2_NAME_IS_PROPER_NAME) != 0)
 
 /* wielded or carried special effects */
 #define SPFX_NONE				0x00000000UL  /* No special effects, just a bonus */

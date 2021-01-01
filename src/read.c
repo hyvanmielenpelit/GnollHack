@@ -458,20 +458,20 @@ void
 read_the_one_ring(otmp)
 struct obj* otmp;
 {
-	if (otmp->oartifact != ART_ONE_RING)
+	if (!otmp || otmp->oartifact != ART_ONE_RING)
 		return;
 
 	if (Blind)
-		pline("You feel that an inscription appears on %s, but you cannot see it.", the(cxname(otmp)));
+		pline("You feel that an inscription appears on %s, but you cannot see it.", yname(otmp));
 	else
 	{
-		pline("An inscription appears in %s in fiery letters:", the(cxname(otmp)));
+		pline("Suddenly, an inscription appears on %s in fiery letters:", yname(otmp));
 		verbalize("Ash nazg durbatuluk, ash nazg gimbatul,");
 		verbalize("Ash nazg thrakatuluk agh burzum-ishi krimpatul.");
-		pline("Huh. That was quite a tongue twister.");
 		if (!otmp->nknown)
 		{
-			otmp->nknown = TRUE;
+            pline("Huh. That was quite a tongue twister.");
+            otmp->nknown = TRUE;
 			otmp->aknown = TRUE;
 			if (carried(otmp))
 				prinv((char*)0, otmp, 0L);
