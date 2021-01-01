@@ -4527,6 +4527,8 @@ int x, y;
         cmap = S_grave; /* "grave" */
     else if (ltyp == TREE)
         cmap = S_tree; /* "tree" */
+    else if (ltyp == ANVIL)
+        cmap = S_anvil; /* "anvil" */
     else if (ltyp == IRONBARS)
         dfeature = "set of iron bars";
 

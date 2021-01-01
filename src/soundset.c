@@ -4862,8 +4862,10 @@ enum climbing_types climbingid;
 
         treadingid = Stealth ? FLOOR_TREADING_TYPE_STEALTH : FLOOR_TREADING_TYPE_NORMAL;
 
-        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-        volume = object_soundsets[oss].sounds[sound_type].volume;
+        set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
+
+//        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+//        volume = object_soundsets[oss].sounds[sound_type].volume;
 
         if (is_flyer(mtmp->data) || Flying)
         {
@@ -4872,13 +4874,15 @@ enum climbing_types climbingid;
             if (otmp)
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
-                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
-                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if (is_floater(mtmp->data) || Levitation)
@@ -4888,13 +4892,15 @@ enum climbing_types climbingid;
             if (otmp)
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
-                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
-                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if ((is_swimmer(mtmp->data) || amphibious(mtmp->data) || Swimming) && floorid == FLOOR_SURFACE_LIQUID)
@@ -4904,20 +4910,23 @@ enum climbing_types climbingid;
             if (otmp)
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
-                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
-                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if (uarmf)
         {
             enum object_soundset_types oss_boots = objects[uarmf->otyp].oc_soundset;
-            soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
-            volume = object_soundsets[oss_boots].sounds[sound_type].volume;
+            set_simple_object_sound_id_and_volume(oss_boots, sound_type, &soundid, &volume);
+//            soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
+//            volume = object_soundsets[oss_boots].sounds[sound_type].volume;
         }
 	}
 	else
@@ -4934,8 +4943,9 @@ enum climbing_types climbingid;
 
         treadingid = mtmp->mprops[STEALTH] != 0 ? FLOOR_TREADING_TYPE_STEALTH : FLOOR_TREADING_TYPE_NORMAL;
 
-        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-        volume = object_soundsets[oss].sounds[sound_type].volume;
+        set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
+//        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+//        volume = object_soundsets[oss].sounds[sound_type].volume;
 
         if (is_flying(mtmp))
         {
@@ -4944,13 +4954,15 @@ enum climbing_types climbingid;
             if (otmp)
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
-                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
-                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if (is_levitating(mtmp))
@@ -4960,13 +4972,15 @@ enum climbing_types climbingid;
             if (otmp)
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
-                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
-                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if ((has_swimming(mtmp) || amphibious(mtmp->data)) && floorid == FLOOR_SURFACE_LIQUID)
@@ -4976,13 +4990,15 @@ enum climbing_types climbingid;
             if (otmp)
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
-                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
-                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if (mtmp->worn_item_flags & W_ARMF)
@@ -4991,8 +5007,9 @@ enum climbing_types climbingid;
             if (omtp_boots)
             {
                 enum object_soundset_types oss_boots = objects[omtp_boots->otyp].oc_soundset;
-                soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
-                volume = object_soundsets[oss_boots].sounds[sound_type].volume;
+                set_simple_object_sound_id_and_volume(oss_boots, sound_type, &soundid, &volume);
+//                soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
+//                volume = object_soundsets[oss_boots].sounds[sound_type].volume;
             }
         }
         
