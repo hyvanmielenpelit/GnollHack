@@ -33,7 +33,7 @@
       <AdditionalOptions>/Gs /Oi- %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(SdlDir)winnt\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(SdlDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
@@ -43,8 +43,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;fmod_vc.lib;fsbank_vc.lib;fmodstudio_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FmodDir)core\lib\lib-x64\;$(FmodDir)fsbank\lib\lib-x64\;$(FmodDir)studio\lib\lib-x64\;$(SdlDir)winnt\lib\lib-x64\;$(SdlDir)winnt\lib\lib-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FmodDir)core\lib\lib-x86\;$(FmodDir)fsbank\lib\lib-x86\;$(FmodDir)studio\lib\lib-x86\:$(SdlDir)winnt\lib\lib-x86\;$(SdlDir)winnt\lib\lib-x86\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FmodDir)core\lib\winnt-x64\;$(FmodDir)fsbank\lib\winnt-x64\;$(FmodDir)studio\lib\winnt-x64\;$(SdlDir)lib\winnt-x64\;$(SdlDir)lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FmodDir)core\lib\winnt-x86\;$(FmodDir)fsbank\lib\winnt-x86\;$(FmodDir)studio\lib\winnt-x86\:$(SdlDir)lib\winnt-x86\;$(SdlDir)lib\winnt-x86\</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>$(WinWin32Dir)NethackW.exe.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -202,11 +202,11 @@
     <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
     <ClCompile Include="$(SrcDir)rm.c" />
     <ClCompile Include="$(SrcDir)npc.c" />
-    <ClCompile Include="..\..\..\ext\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\..\ext\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\..\..\ext\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\ext\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\..\..\ext\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="$(ImguiDir)imgui.cpp" />
+    <ClCompile Include="$(ImguiDir)imgui_demo.cpp" />
+    <ClCompile Include="$(ImguiDir)imgui_draw.cpp" />
+    <ClCompile Include="$(ImguiDir)imgui_tables.cpp" />
+    <ClCompile Include="$(ImguiDir)imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)winhack.rc" />
@@ -236,90 +236,90 @@
     <ClInclude Include="$(WinWin32Dir)mhwingdi.h" />
     <ClInclude Include="$(WinWin32Dir)resource.h" />
     <ClInclude Include="$(WinWin32Dir)soundfx.h" />
-    <ClInclude Include="..\..\..\ext\imgui\imconfig.h" />
-    <ClInclude Include="..\..\..\ext\imgui\imgui.h" />
-    <ClInclude Include="..\..\..\ext\imgui\imgui_internal.h" />
-    <ClInclude Include="..\..\..\ext\imgui\imstb_rectpack.h" />
-    <ClInclude Include="..\..\..\ext\imgui\imstb_textedit.h" />
-    <ClInclude Include="..\..\..\ext\imgui\imstb_truetype.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\begin_code.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\close_code.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_assert.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_atomic.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_audio.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_bits.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_blendmode.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_clipboard.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_config.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_config_windows.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_copying.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_cpuinfo.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_egl.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_endian.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_error.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_events.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_filesystem.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_gamecontroller.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_gesture.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_haptic.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_hints.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_joystick.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_keyboard.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_keycode.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_loadso.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_locale.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_log.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_main.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_messagebox.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_metal.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_misc.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_mouse.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_mutex.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_name.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengl.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles2.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles2_gl2.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles2_gl2ext.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles2_gl2platform.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles2_khrplatform.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengl_glext.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_pixels.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_platform.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_power.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_quit.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_rect.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_render.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_revision.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_rwops.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_scancode.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_sensor.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_shape.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_stdinc.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_surface.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_system.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_syswm.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_assert.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_common.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_compare.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_crc32.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_font.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_fuzzer.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_harness.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_images.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_log.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_md5.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_memory.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_random.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_thread.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_timer.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_touch.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_types.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_version.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_video.h" />
-    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_vulkan.h" />
+    <ClInclude Include="$(ImguiDir)imconfig.h" />
+    <ClInclude Include="$(ImguiDir)imgui.h" />
+    <ClInclude Include="$(ImguiDir)imgui_internal.h" />
+    <ClInclude Include="$(ImguiDir)imstb_rectpack.h" />
+    <ClInclude Include="$(ImguiDir)imstb_textedit.h" />
+    <ClInclude Include="$(ImguiDir)imstb_truetype.h" />
+    <ClInclude Include="$(SdlDir)include\begin_code.h" />
+    <ClInclude Include="$(SdlDir)include\close_code.h" />
+    <ClInclude Include="$(SdlDir)include\SDL.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_assert.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_atomic.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_audio.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_bits.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_blendmode.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_clipboard.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_config.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_config_windows.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_copying.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_cpuinfo.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_egl.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_endian.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_error.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_events.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_filesystem.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_gamecontroller.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_gesture.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_haptic.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_hints.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_joystick.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_keyboard.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_keycode.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_loadso.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_locale.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_log.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_main.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_messagebox.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_metal.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_misc.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_mouse.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_mutex.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_name.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_opengl.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_opengles.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_opengles2.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_opengles2_gl2.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_opengles2_gl2ext.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_opengles2_gl2platform.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_opengles2_khrplatform.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_opengl_glext.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_pixels.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_platform.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_power.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_quit.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_rect.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_render.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_revision.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_rwops.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_scancode.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_sensor.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_shape.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_stdinc.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_surface.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_system.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_syswm.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_assert.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_common.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_compare.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_crc32.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_font.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_fuzzer.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_harness.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_images.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_log.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_md5.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_memory.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_test_random.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_thread.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_timer.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_touch.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_types.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_version.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_video.h" />
+    <ClInclude Include="$(SdlDir)include\SDL_vulkan.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />
@@ -338,8 +338,8 @@
   <ItemGroup>
     <None Include="$(WinWin32Dir)Master.bank" />
     <None Include="$(WinWin32Dir)Master.strings.bank" />
-    <None Include="..\..\..\ext\sdl\winnt\include\SDL_config.h.cmake" />
-    <None Include="..\..\..\ext\sdl\winnt\include\SDL_config.h.in" />
+    <None Include="$(SdlDir)include\SDL_config.h.cmake" />
+    <None Include="$(SdlDir)include\SDL_config.h.in" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
