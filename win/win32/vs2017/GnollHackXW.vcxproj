@@ -34,7 +34,7 @@
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(SdlDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;SDL_MAIN_HANDLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -42,7 +42,7 @@
     </ResourceCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;fmod_vc.lib;fsbank_vc.lib;fmodstudio_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;fmod_vc.lib;fsbank_vc.lib;fmodstudio_vc.lib;sdl2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FmodDir)core\lib\winnt-x64\;$(FmodDir)fsbank\lib\winnt-x64\;$(FmodDir)studio\lib\winnt-x64\;$(SdlDir)lib\winnt-x64\;$(SdlDir)lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FmodDir)core\lib\winnt-x86\;$(FmodDir)fsbank\lib\winnt-x86\;$(FmodDir)studio\lib\winnt-x86\:$(SdlDir)lib\winnt-x86\;$(SdlDir)lib\winnt-x86\</AdditionalLibraryDirectories>
     </Link>
@@ -191,8 +191,6 @@
     <ClCompile Include="$(WinWin32Dir)mhsplash.c" />
     <ClCompile Include="$(WinWin32Dir)mhstatus.c" />
     <ClCompile Include="$(WinWin32Dir)mhtext.c" />
-    <ClCompile Include="$(WinWin32Dir)mswproc.c" />
-    <ClCompile Include="$(WinWin32Dir)winhack.c" />
     <ClCompile Include="$(SrcDir)encounter.c" />
     <ClCompile Include="$(SrcDir)matcomps.c" />
     <ClCompile Include="$(SrcDir)tiledata.c" />
@@ -207,9 +205,8 @@
     <ClCompile Include="$(ImguiDir)imgui_draw.cpp" />
     <ClCompile Include="$(ImguiDir)imgui_tables.cpp" />
     <ClCompile Include="$(ImguiDir)imgui_widgets.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="$(WinWin32Dir)winhack.rc" />
+    <ClCompile Include="..\sdl\sdlhack.c" />
+    <ClCompile Include="..\sdl\sdlproc.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(WinWin32Dir)mhaskyn.h" />
@@ -234,7 +231,6 @@
     <ClInclude Include="$(IncDir)matcomps.h" />
     <ClInclude Include="$(IncDir)soundset.h" />
     <ClInclude Include="$(WinWin32Dir)mhwingdi.h" />
-    <ClInclude Include="$(WinWin32Dir)resource.h" />
     <ClInclude Include="$(WinWin32Dir)soundfx.h" />
     <ClInclude Include="$(ImguiDir)imconfig.h" />
     <ClInclude Include="$(ImguiDir)imgui.h" />
@@ -320,6 +316,7 @@
     <ClInclude Include="$(SdlDir)include\SDL_version.h" />
     <ClInclude Include="$(SdlDir)include\SDL_video.h" />
     <ClInclude Include="$(SdlDir)include\SDL_vulkan.h" />
+    <ClInclude Include="..\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />
@@ -340,6 +337,9 @@
     <None Include="$(WinWin32Dir)Master.strings.bank" />
     <None Include="$(SdlDir)include\SDL_config.h.cmake" />
     <None Include="$(SdlDir)include\SDL_config.h.in" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\winhack.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
