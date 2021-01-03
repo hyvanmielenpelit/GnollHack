@@ -1,0 +1,354 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="config.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2EACFE95-31B1-4294-A4A2-D6F51D28DCE9}</ProjectGuid>
+    <RootNamespace>GnollHackXW</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <ProjectName>GnollHackXW</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="default.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="common.props" />
+  <Import Project="dirs.props" />
+  <Import Project="files.props" />
+  <PropertyGroup>
+    <OutDir>$(BinDir)</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalOptions>/Gs /Oi- %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(SdlDir)winnt\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;fmod_vc.lib;fsbank_vc.lib;fmodstudio_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FmodDir)core\lib\lib-x64\;$(FmodDir)fsbank\lib\lib-x64\;$(FmodDir)studio\lib\lib-x64\;$(SdlDir)winnt\lib\lib-x64\;$(SdlDir)winnt\lib\lib-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FmodDir)core\lib\lib-x86\;$(FmodDir)fsbank\lib\lib-x86\;$(FmodDir)studio\lib\lib-x86\:$(SdlDir)winnt\lib\lib-x86\;$(SdlDir)winnt\lib\lib-x86\</AdditionalLibraryDirectories>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>$(WinWin32Dir)NethackW.exe.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)allmain.c" />
+    <ClCompile Include="$(SrcDir)alloc.c" />
+    <ClCompile Include="$(SrcDir)apply.c" />
+    <ClCompile Include="$(SrcDir)artifact.c" />
+    <ClCompile Include="$(SrcDir)attrib.c" />
+    <ClCompile Include="$(SrcDir)ball.c" />
+    <ClCompile Include="$(SrcDir)bones.c" />
+    <ClCompile Include="$(SrcDir)botl.c" />
+    <ClCompile Include="$(SrcDir)cmd.c" />
+    <ClCompile Include="$(SrcDir)dbridge.c" />
+    <ClCompile Include="$(SrcDir)decl.c" />
+    <ClCompile Include="$(SrcDir)detect.c" />
+    <ClCompile Include="$(SrcDir)dig.c" />
+    <ClCompile Include="$(SrcDir)display.c" />
+    <ClCompile Include="$(SrcDir)dlb.c" />
+    <ClCompile Include="$(SrcDir)do.c" />
+    <ClCompile Include="$(SrcDir)dog.c" />
+    <ClCompile Include="$(SrcDir)dogmove.c" />
+    <ClCompile Include="$(SrcDir)dokick.c" />
+    <ClCompile Include="$(SrcDir)dothrow.c" />
+    <ClCompile Include="$(SrcDir)do_name.c" />
+    <ClCompile Include="$(SrcDir)do_wear.c" />
+    <ClCompile Include="$(SrcDir)drawing.c" />
+    <ClCompile Include="$(SrcDir)dungeon.c" />
+    <ClCompile Include="$(SrcDir)eat.c" />
+    <ClCompile Include="$(SrcDir)end.c" />
+    <ClCompile Include="$(SrcDir)engrave.c" />
+    <ClCompile Include="$(SrcDir)exper.c" />
+    <ClCompile Include="$(SrcDir)explode.c" />
+    <ClCompile Include="$(SrcDir)extralev.c" />
+    <ClCompile Include="$(SrcDir)files.c" />
+    <ClCompile Include="$(SrcDir)fountain.c" />
+    <ClCompile Include="$(SrcDir)hack.c" />
+    <ClCompile Include="$(SrcDir)hacklib.c" />
+    <ClCompile Include="$(SrcDir)invent.c" />
+    <ClCompile Include="$(SrcDir)isaac64.c" />
+    <ClCompile Include="$(SrcDir)light.c" />
+    <ClCompile Include="$(SrcDir)lock.c" />
+    <ClCompile Include="$(SrcDir)mail.c" />
+    <ClCompile Include="$(SrcDir)makemon.c" />
+    <ClCompile Include="$(SrcDir)mapglyph.c" />
+    <ClCompile Include="$(SrcDir)mcastu.c" />
+    <ClCompile Include="$(SrcDir)mhitm.c" />
+    <ClCompile Include="$(SrcDir)mhitu.c" />
+    <ClCompile Include="$(SrcDir)minion.c" />
+    <ClCompile Include="$(SrcDir)mklev.c" />
+    <ClCompile Include="$(SrcDir)mkmap.c" />
+    <ClCompile Include="$(SrcDir)mkmaze.c" />
+    <ClCompile Include="$(SrcDir)mkobj.c" />
+    <ClCompile Include="$(SrcDir)mkroom.c" />
+    <ClCompile Include="$(SrcDir)mon.c" />
+    <ClCompile Include="$(SrcDir)mondata.c" />
+    <ClCompile Include="$(SrcDir)monmove.c" />
+    <ClCompile Include="$(SrcDir)monst.c" />
+    <ClCompile Include="$(SrcDir)mplayer.c" />
+    <ClCompile Include="$(SrcDir)mthrowu.c" />
+    <ClCompile Include="$(SrcDir)muse.c" />
+    <ClCompile Include="$(SrcDir)music.c" />
+    <ClCompile Include="$(SrcDir)objects.c" />
+    <ClCompile Include="$(SrcDir)objnam.c" />
+    <ClCompile Include="$(SrcDir)options.c" />
+    <ClCompile Include="$(SrcDir)o_init.c" />
+    <ClCompile Include="$(SrcDir)pager.c" />
+    <ClCompile Include="$(SrcDir)pickup.c" />
+    <ClCompile Include="$(SrcDir)pline.c" />
+    <ClCompile Include="$(SrcDir)polyself.c" />
+    <ClCompile Include="$(SrcDir)potion.c" />
+    <ClCompile Include="$(SrcDir)pray.c" />
+    <ClCompile Include="$(SrcDir)priest.c" />
+    <ClCompile Include="$(SrcDir)quest.c" />
+    <ClCompile Include="$(SrcDir)questpgr.c" />
+    <ClCompile Include="$(SrcDir)read.c" />
+    <ClCompile Include="$(SrcDir)rect.c" />
+    <ClCompile Include="$(SrcDir)region.c" />
+    <ClCompile Include="$(SrcDir)restore.c" />
+    <ClCompile Include="$(SrcDir)rip.c" />
+    <ClCompile Include="$(SrcDir)rnd.c" />
+    <ClCompile Include="$(SrcDir)role.c" />
+    <ClCompile Include="$(SrcDir)rumors.c" />
+    <ClCompile Include="$(SrcDir)save.c" />
+    <ClCompile Include="$(SrcDir)shk.c" />
+    <ClCompile Include="$(SrcDir)shknam.c" />
+    <ClCompile Include="$(SrcDir)sit.c" />
+    <ClCompile Include="$(SrcDir)sounds.c" />
+    <ClCompile Include="$(SrcDir)spell.c" />
+    <ClCompile Include="$(SrcDir)sp_lev.c" />
+    <ClCompile Include="$(SrcDir)steal.c" />
+    <ClCompile Include="$(SrcDir)steed.c" />
+    <ClCompile Include="$(SrcDir)sys.c" />
+    <ClCompile Include="$(SrcDir)teleport.c" />
+    <ClCompile Include="$(SrcDir)timeout.c" />
+    <ClCompile Include="$(SrcDir)topten.c" />
+    <ClCompile Include="$(SrcDir)track.c" />
+    <ClCompile Include="$(SrcDir)trap.c" />
+    <ClCompile Include="$(SrcDir)uhitm.c" />
+    <ClCompile Include="$(SrcDir)u_init.c" />
+    <ClCompile Include="$(SrcDir)vault.c" />
+    <ClCompile Include="$(SrcDir)version.c" />
+    <ClCompile Include="$(SrcDir)vision.c" />
+    <ClCompile Include="$(SrcDir)vis_tab.c" />
+    <ClCompile Include="$(SrcDir)weapon.c" />
+    <ClCompile Include="$(SrcDir)were.c" />
+    <ClCompile Include="$(SrcDir)wield.c" />
+    <ClCompile Include="$(SrcDir)windows.c" />
+    <ClCompile Include="$(SrcDir)wizard.c" />
+    <ClCompile Include="$(SrcDir)worm.c" />
+    <ClCompile Include="$(SrcDir)worn.c" />
+    <ClCompile Include="$(SrcDir)write.c" />
+    <ClCompile Include="$(SrcDir)zap.c" />
+    <ClCompile Include="$(SysShareDir)cppregex.cpp" />
+    <ClCompile Include="$(SysShareDir)nhlan.c" />
+    <ClCompile Include="$(SysShareDir)random.c" />
+    <ClCompile Include="$(SysWinntDir)ntsound.c" />
+    <ClCompile Include="$(SysWinntDir)stubs.c">
+      <PreprocessorDefinitions>TTYSTUB;</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="$(SysWinntDir)windmain.c" />
+    <ClCompile Include="$(SysWinntDir)winnt.c" />
+    <ClCompile Include="$(SysWinntDir)win10.c" />
+    <ClCompile Include="$(WinShareDir)safeproc.c" />
+    <ClCompile Include="$(WinWin32Dir)mhaskyn.c" />
+    <ClCompile Include="$(WinWin32Dir)mhdlg.c" />
+    <ClCompile Include="$(WinWin32Dir)mhfont.c" />
+    <ClCompile Include="$(WinWin32Dir)mhinput.c" />
+    <ClCompile Include="$(WinWin32Dir)mhmain.c" />
+    <ClCompile Include="$(WinWin32Dir)mhmap.c" />
+    <ClCompile Include="$(WinWin32Dir)mhmenu.c" />
+    <ClCompile Include="$(WinWin32Dir)mhmsgwnd.c" />
+    <ClCompile Include="$(WinWin32Dir)mhrip.c" />
+    <ClCompile Include="$(WinWin32Dir)mhsplash.c" />
+    <ClCompile Include="$(WinWin32Dir)mhstatus.c" />
+    <ClCompile Include="$(WinWin32Dir)mhtext.c" />
+    <ClCompile Include="$(WinWin32Dir)mswproc.c" />
+    <ClCompile Include="$(WinWin32Dir)winhack.c" />
+    <ClCompile Include="$(SrcDir)encounter.c" />
+    <ClCompile Include="$(SrcDir)matcomps.c" />
+    <ClCompile Include="$(SrcDir)tiledata.c" />
+    <ClCompile Include="$(SrcDir)animation.c" />
+    <ClCompile Include="$(SrcDir)soundset.c" />
+    <ClCompile Include="$(WinWin32Dir)mhwingdi.cpp" />
+    <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
+    <ClCompile Include="$(SrcDir)rm.c" />
+    <ClCompile Include="$(SrcDir)npc.c" />
+    <ClCompile Include="..\..\..\ext\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\..\ext\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\..\ext\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\..\ext\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\..\..\ext\imgui\imgui_widgets.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(WinWin32Dir)winhack.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(WinWin32Dir)mhaskyn.h" />
+    <ClInclude Include="$(WinWin32Dir)mhdlg.h" />
+    <ClInclude Include="$(WinWin32Dir)mhfont.h" />
+    <ClInclude Include="$(WinWin32Dir)mhinput.h" />
+    <ClInclude Include="$(WinWin32Dir)mhmain.h" />
+    <ClInclude Include="$(WinWin32Dir)mhmap.h" />
+    <ClInclude Include="$(WinWin32Dir)mhmenu.h" />
+    <ClInclude Include="$(WinWin32Dir)mhmsg.h" />
+    <ClInclude Include="$(WinWin32Dir)mhmsgwnd.h" />
+    <ClInclude Include="$(WinWin32Dir)mhrip.h" />
+    <ClInclude Include="$(WinWin32Dir)mhsplash.h" />
+    <ClInclude Include="$(WinWin32Dir)mhstatus.h" />
+    <ClInclude Include="$(WinWin32Dir)mhtext.h" />
+    <ClInclude Include="$(WinWin32Dir)winMS.h" />
+    <ClInclude Include="$(FmodDir)core\inc\fmod.hpp" />
+    <ClInclude Include="$(FmodDir)fsbank\inc\fsbank.h" />
+    <ClInclude Include="$(FmodDir)fsbank\inc\fsbank_errors.h" />
+    <ClInclude Include="$(FmodDir)studio\inc\fmod_studio.hpp" />
+    <ClInclude Include="$(IncDir)encounter.h" />
+    <ClInclude Include="$(IncDir)matcomps.h" />
+    <ClInclude Include="$(IncDir)soundset.h" />
+    <ClInclude Include="$(WinWin32Dir)mhwingdi.h" />
+    <ClInclude Include="$(WinWin32Dir)resource.h" />
+    <ClInclude Include="$(WinWin32Dir)soundfx.h" />
+    <ClInclude Include="..\..\..\ext\imgui\imconfig.h" />
+    <ClInclude Include="..\..\..\ext\imgui\imgui.h" />
+    <ClInclude Include="..\..\..\ext\imgui\imgui_internal.h" />
+    <ClInclude Include="..\..\..\ext\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\..\..\ext\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\..\..\ext\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\begin_code.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\close_code.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_assert.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_atomic.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_audio.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_bits.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_blendmode.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_clipboard.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_config.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_config_windows.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_copying.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_cpuinfo.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_egl.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_endian.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_error.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_events.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_filesystem.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_gamecontroller.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_gesture.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_haptic.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_hints.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_joystick.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_keyboard.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_keycode.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_loadso.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_locale.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_log.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_main.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_messagebox.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_metal.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_misc.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_mouse.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_mutex.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_name.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengl.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles2.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles2_gl2.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles2_gl2ext.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles2_gl2platform.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengles2_khrplatform.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_opengl_glext.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_pixels.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_platform.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_power.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_quit.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_rect.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_render.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_revision.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_rwops.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_scancode.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_sensor.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_shape.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_stdinc.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_surface.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_system.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_syswm.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_assert.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_common.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_compare.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_crc32.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_font.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_fuzzer.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_harness.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_images.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_log.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_md5.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_memory.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_test_random.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_thread.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_timer.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_touch.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_types.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_version.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_video.h" />
+    <ClInclude Include="..\..\..\ext\sdl\winnt\include\SDL_vulkan.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="$(WinWin32Dir)GnollHackNew.ico" />
+    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png" />
+    <Image Include="$(WinWin32Dir)mnsel.bmp" />
+    <Image Include="$(WinWin32Dir)mnselcnt.bmp" />
+    <Image Include="$(WinWin32Dir)mnunsel.bmp" />
+    <Image Include="$(WinWin32Dir)rip.bmp" />
+    <Image Include="$(WinWin32Dir)splash.bmp" />
+    <Image Include="$(WinWin32Dir)gnollhack-logo-test-2.png" />
+    <Image Include="$(WinWin32Dir)FMOD-Logo-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="$(WinWin32Dir)uwch.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(WinWin32Dir)Master.bank" />
+    <None Include="$(WinWin32Dir)Master.strings.bank" />
+    <None Include="..\..\..\ext\sdl\winnt\include\SDL_config.h.cmake" />
+    <None Include="..\..\..\ext\sdl\winnt\include\SDL_config.h.in" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Target Name="AfterBuild">
+    <MSBuild Projects="afternethack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="AfterClean">
+    <MSBuild Projects="afternethack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="AfterRebuild">
+    <MSBuild Projects="afternethack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>
+</Project>

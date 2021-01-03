@@ -10,8 +10,8 @@
 Credit for the porting of NetHack to the Win32 Console Subsystem goes to 
 the NT Porting Team started by Michael Allison.
 
-Credit for the Win32 Graphical version of NetHack (aka "NetHack for
-Windows" or NetHackW) goes to Alex Kompel who initially developed and
+Credit for the Win32 Graphical version of NetHack (aka "GnollHack for
+Windows" or GnollHackW) goes to Alex Kompel who initially developed and
 contributed the port.
 
 Alex Kompel, Dion Nicolaas, Yitzhak Sapir, Derek S. Ray, Michael Allison,
@@ -137,13 +137,13 @@ THE COMMAND LINE."
 Two different versions of NetHack will be built for Windows from the
 command line using the Makefile approach:
     A tty port utilizing the Win32 Console I/O subsystem, Console
-        NetHack;
-    A Win32 native port built on the Windows API, Graphical NetHack or
-        NetHackW.
+        GnollHack;
+    A Win32 native port built on the Windows API, Graphical GnollHack or
+        GnollHackW.
 
-The executable for Console NetHack will be named NetHack.exe. The
-executable for Graphical NetHack will be named NetHackW.exe. The 
-Makefile configuration will build both; NetHackW.exe and NetHack.exe
+The executable for Console GnollHack will be named GnollHack.exe. The
+executable for Graphical GnollHack will be named GnollHackW.exe. The 
+Makefile configuration will build both; GnollHackW.exe and GnollHack.exe
 will be able to use the same datafiles, save files and bones files.
 
 Since the last official release of NetHack, compilers and computer 
@@ -311,8 +311,8 @@ Notes:
     Note that saved games are NOT compatible between the 32-bit and the
     64-bit versions at this time.
 
-NetHack.exe is the tty version. NetHackW.exe is the graphical version.
-Play NetHack. 
+GnollHack.exe is the tty version. GnollHackW.exe is the graphical version.
+Play GnollHack. 
 
 PROBLEMS
 

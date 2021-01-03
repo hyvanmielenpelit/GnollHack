@@ -37,7 +37,7 @@ menu_objsyms   show object symbols in menus if it is selectable   [FALSE]
 menu_overlay   overlay menus on the screen and align to right     [TRUE]
 nudist         start your character without armor                 [FALSE]
 null           allow nulls to be sent to your terminal            [TRUE]
-               try turning this option off (forcing NetHack to use its own
+               try turning this option off (forcing GnollHack to use its own
                delay code) if moving objects seem to teleport across rooms
 perm_invent    keep inventory in a permanent window               [FALSE]
 pickup_thrown  override pickup_types for thrown objects           [TRUE]
@@ -125,7 +125,7 @@ disclose      the types of information you want         [ni na nv ng nc no]
               monsters, 'g' genocided and extinct monsters, 'c' conduct,
               'o' dungeon overview)
 fruit         the name of a fruit you enjoy eating             [slime mold]
-              (basically a whimsy which NetHack uses from time to time).
+              (basically a whimsy which GnollHack uses from time to time).
 menustyle     user interface for selection of multiple objects:      [Full]
               Traditional -- prompt for classes of interest, then
                              prompt item-by-item for those classes;

@@ -17,8 +17,8 @@
 #   A tty port utilizing the Win32 Console I/O subsystem, Console
 #       NetHack.
 #
-#   A Win32 native port built on the Windows API, Graphical NetHack or
-#       NetHackW.
+#   A Win32 native port built on the Windows API, Graphical GnollHack or
+#       GnollHackW.
 #
 #   In addition to your C compiler,
 #
@@ -837,7 +837,7 @@ $(GAMEDIR)/NetHack.exe : gamedir.tag $(PDCLIB) $(O)tile.o $(O)nttty.o $(O)guistu
 		$(O)guistub.o $(O)conres.o $(PDCLIB) $(conlibs) -static -lstdc++
 	$(subst /,\,@if exist install.tag del install.tag)
 
-# NetHackW
+# GnollHackW
 # full tty linkage libs:
 #    libs: $(LIBS) $(guilibs) $(COMCTRL)
 #    objs: $(GAMEOBJ) $(GUIOBJ) $(TTYOBJ) $(O)tile.o $(O)nttty.o
@@ -846,7 +846,7 @@ $(GAMEDIR)/NetHack.exe : gamedir.tag $(PDCLIB) $(O)tile.o $(O)nttty.o $(O)guistu
 #    objs: $(GAMEOBJ) $(GUIOBJ) $(O)tile.o $(O)ttystub.o
 
 ifneq "$(SKIP_NETHACKW)" "Y"
-$(GAMEDIR)/NetHackW.exe : gamedir.tag $(PDCLIB) $(O)tile.o $(O)ttystub.o \
+$(GAMEDIR)/GnollHackW.exe : gamedir.tag $(PDCLIB) $(O)tile.o $(O)ttystub.o \
 			$(ALLOBJ) $(TTYOBJ) $(GUIOBJ) $(O)winres.o $(KEYDLLS)
 	@echo Linking $@...
 	$(link) $(lflags) -mwindows -o$@ $(ALLOBJ) $(GUIOBJ) $(O)tile.o $(O)ttystub.o \

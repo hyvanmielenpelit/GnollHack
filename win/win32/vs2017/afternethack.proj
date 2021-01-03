@@ -9,8 +9,10 @@
   	<Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(BinDir)"/>
   	<Copy SourceFiles="$(FmodDir)core\lib\lib-x86\fmod.dll;$(FmodDir)fsbank\lib\lib-x86\fsbank.dll;$(FmodDir)fsbank\lib\lib-x86\libfsbvorbis.dll;$(FmodDir)studio\lib\lib-x86\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
   	<Copy SourceFiles="$(FmodDir)core\lib\lib-x64\fmod.dll;$(FmodDir)fsbank\lib\lib-x64\fsbank.dll;$(FmodDir)fsbank\lib\lib-x64\libfsbvorbis64.dll;$(FmodDir)studio\lib\lib-x64\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
+    <Copy SourceFiles="$(SdlDir)winnt\lib\lib-x86\SDL2.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+    <Copy SourceFiles="$(SdlDir)winnt\lib\lib-x64\SDL2.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
 
-	</Target>
+  </Target>
   <Target Name="Clean">
 	  <Delete Files="$(BinDir)defaults.gnh;$(BinDir)Guidebook.txt;$(BinDir)license;$(BinDir)credits;$(BinDir)sysconf;$(BinDir)nethack.txt;$(BinDir)symbols;$(BinDir)record;$(BinDir)opthelp"/>
   </Target>

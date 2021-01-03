@@ -16,8 +16,8 @@
 #   A tty port utilizing the Win32 Console I/O subsystem, Console
 #       NetHack.exe
 #
-#   A Win32 native port built on the Windows API, Graphical NetHack or
-#       NetHackW.exe
+#   A Win32 native port built on the Windows API, Graphical GnollHack or
+#       GnollHackW.exe
 #
 #       In addition to your C compiler,
 #
@@ -665,7 +665,7 @@ default : install
 
 all :	install
 
-install: $(O)envchk.tag $(O)obj.tag $(O)utility.tag $(GAMEDIR)\NetHack.exe $(GAMEDIR)\NetHackW.exe $(O)install.tag
+install: $(O)envchk.tag $(O)obj.tag $(O)utility.tag $(GAMEDIR)\NetHack.exe $(GAMEDIR)\GnollHackW.exe $(O)install.tag
 	 @echo Done.
 
 $(O)install.tag: 	$(DAT)\data	$(DAT)\rumors	 $(DAT)\dungeon \
@@ -685,8 +685,8 @@ $(O)install.tag: 	$(DAT)\data	$(DAT)\rumors	 $(DAT)\dungeon \
 	if exist $(DAT)\symbols copy $(DAT)\symbols $(GAMEDIR)
 	if exist $(DOC)\guidebook.txt copy $(DOC)\guidebook.txt $(GAMEDIR)\Guidebook.txt
 	if exist $(DOC)\nethack.txt copy $(DOC)\nethack.txt $(GAMEDIR)\NetHack.txt
-	@if exist $(GAMEDIR)\NetHack.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NetHack.PDB to conserve space
-	@if exist $(GAMEDIR)\NetHackW.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NetHackW.PDB to conserve space
+	@if exist $(GAMEDIR)\GnollHack.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/GnollHack.PDB to conserve space
+	@if exist $(GAMEDIR)\GnollHackW.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/GnollHackW.PDB to conserve space
 	-if not exist $(GAMEDIR)\defaults.gnh copy $(MSWSYS)\defaults.gnh   $(GAMEDIR)\defaults.gnh
 	-if not exist $(GAMEDIR)\record. goto>$(GAMEDIR)\record.
 	echo install done > $@
@@ -800,7 +800,7 @@ GAMEOBJ=$(GAMEOBJ:^ =^
 #    objs: $(GAMEOBJ) $(TTYOBJ) $(O)tile.o $(O)guistub.o
 
 
-$(GAMEDIR)\NetHack.exe : $(O)gamedir.tag $(PDCLIB) $(O)tile.o $(O)nttty.o $(O)guistub.o \
+$(GAMEDIR)\GnollHack.exe : $(O)gamedir.tag $(PDCLIB) $(O)tile.o $(O)nttty.o $(O)guistub.o \
 			$(ALLOBJ) $(TTYOBJ) $(GUIOBJ) $(O)console.res $(KEYDLLS)
 	@if not exist $(GAMEDIR)\*.* mkdir $(GAMEDIR)
         @echo Linking $(@:\=/)
@@ -815,7 +815,7 @@ $(GAMEDIR)\NetHack.exe : $(O)gamedir.tag $(PDCLIB) $(O)tile.o $(O)nttty.o $(O)gu
 <<
 	@if exist $(O)install.tag del $(O)install.tag
 
-# NetHackW
+# GnollHackW
 # full tty linkage libs:
 #    libs: $(LIBS) $(guilibs) $(COMCTRL)
 #    objs: $(GAMEOBJ) $(GUIOBJ) $(TTYOBJ) $(O)tile.o $(O)nttty.o
@@ -823,7 +823,7 @@ $(GAMEDIR)\NetHack.exe : $(O)gamedir.tag $(PDCLIB) $(O)tile.o $(O)nttty.o $(O)gu
 #    libs: $(LIBS) $(guilibs) $(COMCTRL)
 #    objs: $(GAMEOBJ) $(GUIOBJ) $(O)tile.o $(O)ttystub.o
 
-$(GAMEDIR)\NetHackW.exe : $(O)gamedir.tag $(O)tile.o $(O)ttystub.o \
+$(GAMEDIR)\GnollHackW.exe : $(O)gamedir.tag $(O)tile.o $(O)ttystub.o \
 			$(ALLOBJ) $(TTYOBJ) $(GUIOBJ) $(O)winhack.res $(O)gamedir.tag $(KEYDLLS)
 	@if not exist $(GAMEDIR)\*.* mkdir $(GAMEDIR)
 	@echo   Linking $(@:\=/)

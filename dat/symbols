@@ -2,7 +2,7 @@
 # Copyright (c) 2006 by Michael Allison
 # GnollHack may be freely redistributed.  See license for details.
 #
-# Symbol sets for use in NetHack's text-based display.
+# Symbol sets for use in GnollHack's text-based display.
 #
 # IBMgraphics works by specifying special characters which reside
 # outside the range of normal printable characters.  It has subsets
@@ -12,7 +12,7 @@
 # DECgraphics works by switching back and forth between two fonts,
 # where the alternate one substitutes special characters in place
 # of ordinary printable characters in the lowercase letter range.
-# NetHack encodes the request to use the alternate font here by
+# GnollHack encodes the request to use the alternate font here by
 # having the high bit set (in hexadecimal, \x80 is combined with
 # a character code between \x60 and \x7f).
 

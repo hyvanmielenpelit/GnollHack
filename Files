@@ -357,7 +357,7 @@ getline.c  termcap.c  topl.c     wintty.c
 
 win/win32:
 (files for Windows versions - tested up to Windows 10)
-NetHackW.exe.manifest  dgnstuff-mingw32.mak   dgnstuff.mak
+GnollHackW.exe.manifest  dgnstuff-mingw32.mak   dgnstuff.mak
 levstuff-mingw32.mak   levstuff.mak           mhaskyn.c
 mhaskyn.h              mhdlg.c                mhdlg.h
 mhfont.c               mhfont.h               mhinput.c
@@ -376,7 +376,7 @@ winhack.c              winhack.rc
 
 win/win32/vs2017:
 (files for Visual Studio 2017 Community Edition builds)
-NetHack.sln         NetHack.vcxproj     NetHackW.vcxproj
+GnollHack.sln       GnollHack.vcxproj   GnollHack.vcxproj
 PDCurses.vcxproj    afterdgncomp.proj   afterdlb.proj
 afterlevcomp.proj   aftermakedefs.proj  afternethack.proj
 afterrecover.proj   aftertile2bmp.proj  aftertilemap.proj

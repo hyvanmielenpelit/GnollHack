@@ -13,7 +13,7 @@ it is much wiser to leave it alone).
 your location, GnollHack gives you a visual image of the dungeon level you are
 on.
 
-        NetHack uses the following symbols:
+        GnollHack uses the following symbols:
 
         - and |  The walls of a room, possibly also open doors or a grave.
         .        The floor of a room or a doorway.
@@ -75,7 +75,7 @@ b j n   1 2 3           g<dir>:   run in direction <dir> until something
                 used but 'y' and 'z' are swapped.
 
 Commands:
-        NetHack knows the following commands:
+        GnollHack knows the following commands:
         ?       Help menu.
         /       What-is, tell what a symbol represents.  You may choose to
                 specify a location or give a symbol argument.  Enabling the
