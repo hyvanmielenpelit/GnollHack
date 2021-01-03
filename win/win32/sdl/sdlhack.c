@@ -16,6 +16,7 @@
 #include "mhmain.h"
 #include "mhmap.h"
 #include "SDL.h"
+#include "sdlimgui.h"
 
 #if !defined(SAFEPROCS)
 #error You must #define SAFEPROCS to build winhack.c
@@ -203,6 +204,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         return 0;
     }
 
+    (void)StartImGuiExample();
 
     if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1)) {
         panic("Could not initialize SDL: %s.\n", SDL_GetError());
