@@ -159,6 +159,11 @@ mswin_display_splash_window(BOOL show_ver)
     Sprintf(strbuf.str, "%s\n%s\n%s\n%s\n\n", COPYRIGHT_BANNER_A,
             COPYRIGHT_BANNER_B, COPYRIGHT_BANNER_C, COPYRIGHT_BANNER_D);
 
+#ifdef PREALPHA
+    strbuf_append(&strbuf, "PRE-ALPHA - INCOMPLETE GRAPHICS AND SOUNDS");
+    strbuf_append(&strbuf, "\n\n");
+#endif
+
     if (show_ver) {
         /* Show complete version information */
         dlb *f;

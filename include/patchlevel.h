@@ -3,13 +3,13 @@
 /*-Copyright (c) Michael Allison, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
-/* GnollHack 4.0.x */
+/* GnollHack 4.1.x */
 #define VERSION_MAJOR 4
-#define VERSION_MINOR 0
+#define VERSION_MINOR 1
 /*
  * PATCHLEVEL is updated for each release.
  */
-#define PATCHLEVEL 24
+#define PATCHLEVEL 0
 /*
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
@@ -54,7 +54,7 @@
  */
 
 /*
- *  GnollHack 4.0.0, December 7, 2015
+ *  NetHack 3.6.0, December 7, 2015
  *
  *  Hundreds of bug fixes.
  *  Some code reorganization.
@@ -110,7 +110,7 @@
  */
 
 /*
- *  GnollHack 3.4.0, March 20, 2002
+ *  NetHack 3.4.0, March 20, 2002
  *
  *  Hundreds of general bug fixes including some for sliming, zapping,
  *conduct,
@@ -159,7 +159,7 @@
  */
 
 /*
- *  GnollHack 3.3.0, December 10, 1999
+ *  NetHack 3.3.0, December 10, 1999
  *
  *  Implement the differentiation of character class or role from the
  *  character race.
@@ -243,7 +243,7 @@
  */
 
 /*
- *  GnollHack 3.2.0, April 11, 1996
+ *  NetHack 3.2.0, April 11, 1996
  *  enhancements to the windowing systems including "tiles" or icons to
  *      visually represent monsters and objects (courtesy Warwick Allison)
  *  window based menu system introduced for inventory and selection
@@ -290,7 +290,7 @@
  */
 
 /*
- *  GnollHack 3.1.0, January 25, 1993
+ *  NetHack 3.1.0, January 25, 1993
  *  many, many changes and bugfixes -- some of the highlights include:
  *  display rewrite using line-of-sight vision
  *  general window interface, with the ability to use multiple interfaces
@@ -428,7 +428,7 @@
  */
 
 /*
- *  GnollHack 3.0 baseline release, July, 1989
+ *  NetHack 3.0 baseline release, July, 1989
  */
 
 /* Version 3.0 */

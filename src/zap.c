@@ -8604,11 +8604,11 @@ boolean say; /* Announce out of sight hit/miss events if true */
         }
 
     }
-    if (context.zap_aggregate_milliseconds_to_wait_until_end > 0)
+    if (!isexplosioneffect && context.zap_aggregate_milliseconds_to_wait_until_end > 0)
     {
         delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_end);
-        context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
     }
+    context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
 
     tmp_at(DISP_END, 0);
     stop_ambient_ray_sound(soundset_id);

@@ -1199,10 +1199,15 @@ const char *build_date;
     char subbuf[64], versbuf[64];
     char betabuf[64];
 
+    betabuf[0] = '\0';
+#ifdef PREALPHA
+    Strcpy(betabuf, " Pre-Alpha");
+#endif
+#ifdef ALPHA
+    Strcpy(betabuf, " Alpha");
+#endif
 #ifdef BETA
     Strcpy(betabuf, " Beta");
-#else
-    betabuf[0] = '\0';
 #endif
 
     subbuf[0] = '\0';
@@ -1222,16 +1227,24 @@ bannerc_string(outbuf, build_date)
 char *outbuf;
 const char *build_date;
 {
-    char subbuf[64], versbuf[64];
+    char subbuf[64], versbuf[64], betabuf[64];
 
     subbuf[0] = '\0';
 #ifdef PORT_SUB_ID
     subbuf[0] = ' ';
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
-#ifdef BETA
-    Strcat(subbuf, " Beta");
+    Strcpy(betabuf, "");
+#ifdef PREALPHA
+    Strcpy(betabuf, " Pre-Alpha");
 #endif
+#ifdef ALPHA
+    Strcpy(betabuf, " Alpha");
+#endif
+#ifdef BETA
+    Strcpy(betabuf, " Beta");
+#endif
+    Strcat(subbuf, betabuf);
 
     Sprintf(outbuf, "         Version %s %s%s, %s %s.",
             version_string(versbuf, "."), PORT_ID, subbuf,
