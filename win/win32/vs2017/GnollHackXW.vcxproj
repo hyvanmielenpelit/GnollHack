@@ -41,7 +41,7 @@
       <AdditionalOptions>/Gs /Oi- %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(ImguiDir);$(ImguiDir)backends\;$(SdlDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(ImguiDir);$(ImguiDir)backends\;$(SdlDir)include\;$(NuklearDir);$(StbDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;SDL_MAIN_HANDLED;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
@@ -217,6 +217,7 @@
     <ClCompile Include="..\..\..\ext\imgui\backends\imgui_impl_sdl.cpp" />
     <ClCompile Include="..\sdl\sdlhack.c" />
     <ClCompile Include="..\sdl\sdlimgui.cpp" />
+    <ClCompile Include="..\sdl\sdlnuklear.c" />
     <ClCompile Include="..\sdl\sdlproc.c" />
   </ItemGroup>
   <ItemGroup>
@@ -327,8 +328,12 @@
     <ClInclude Include="$(SdlDir)include\SDL_version.h" />
     <ClInclude Include="$(SdlDir)include\SDL_video.h" />
     <ClInclude Include="$(SdlDir)include\SDL_vulkan.h" />
-    <ClInclude Include="..\resource.h" />
-    <ClInclude Include="..\sdl\sdlimgui.h" />
+    <ClInclude Include="$(NuklearDir)nuklear.h" />
+    <ClInclude Include="$(StbDir)stb_image.h" />
+    <ClInclude Include="$(WinWin32Dir)\resource.h" />
+    <ClInclude Include="$(WinWin32Dir)\sdl\sdlimgui.h" />
+    <ClInclude Include="$(WinWin32Dir)\sdl\sdlnuklear.h" />
+    <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gl2.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />

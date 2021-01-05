@@ -13,6 +13,8 @@
     <FmodDir>$(RootDir)ext\fmod\</FmodDir>
     <SdlDir>$(RootDir)ext\sdl\</SdlDir>
     <ImguiDir>$(RootDir)ext\imgui\</ImguiDir>
+    <NuklearDir>$(RootDir)ext\nuklear\</NuklearDir>
+    <StbDir>$(RootDir)ext\stb\</StbDir>
     <IncDir>$(RootDir)include\</IncDir>
     <SrcDir>$(RootDir)src\</SrcDir>
     <SysDir>$(RootDir)sys\</SysDir>
