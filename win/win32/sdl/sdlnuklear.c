@@ -1551,7 +1551,7 @@ StartNuklearExample(HINSTANCE hInstance)
             media.scrollbar_dec_button = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 224, 15, 15));
             media.scrollbar_dec_button_hover = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 288, 15, 15));
             media.button = nk_subimage_id(media.skin2, 300, 331, nk_rect(27, 66, 245, 45));
-            media.button_hover = nk_subimage_id(media.skin2, 300, 331, nk_rect(27, 66, 245, 45));
+            media.button_hover = nk_subimage_id(media.skin2, 300, 331, nk_rect(27, 116, 245, 45));
             media.button_active = nk_subimage_id(media.skin2, 300, 331, nk_rect(27, 66, 245, 45));
             media.tab_minimize = nk_subimage_id(media.skin, 512, 512, nk_rect(451, 99, 9, 9));
             media.tab_maximize = nk_subimage_id(media.skin, 512, 512, nk_rect(467, 99, 9, 9));
