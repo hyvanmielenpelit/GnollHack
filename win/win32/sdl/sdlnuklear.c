@@ -49,6 +49,7 @@
 
 struct media {
     GLint skin;
+    GLint skin2;
     struct nk_image menu;
     struct nk_image check;
     struct nk_image check_cursor;
@@ -1490,7 +1491,20 @@ StartNuklearExample(HINSTANCE hInstance)
     /* Load Cursor: if you uncomment cursor loading please hide the cursor */
     {struct nk_font_atlas* atlas;
     nk_sdl_font_stash_begin(&atlas);
-    /*struct nk_font *droid = nk_font_atlas_add_from_file(atlas, "../../../extra_font/DroidSans.ttf", 14, 0);*/
+
+    /* Install font from resource */
+    struct nk_font* diablo = 0;
+    HRSRC res = FindResource(hInstance, MAKEINTRESOURCE(IDR_RCDATA_FONT_DIABLO), RT_RCDATA);
+
+    if (res)
+    {
+        HGLOBAL mem = LoadResource(hInstance, res);
+        void* data = LockResource(mem);
+        size_t len = SizeofResource(hInstance, res);
+
+        diablo = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 24, 0);
+    }
+
     /*struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Roboto-Regular.ttf", 16, 0);*/
     /*struct nk_font *future = nk_font_atlas_add_from_file(atlas, "../../../extra_font/kenvector_future_thin.ttf", 13, 0);*/
     /*struct nk_font *clean = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyClean.ttf", 12, 0);*/
@@ -1498,7 +1512,8 @@ StartNuklearExample(HINSTANCE hInstance)
     /*struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Cousine-Regular.ttf", 13, 0);*/
     nk_sdl_font_stash_end();
     /*nk_style_load_all_cursors(ctx, atlas->cursors);*/
-    /*nk_style_set_font(ctx, &roboto->handle)*/; }
+    if(diablo)
+        nk_style_set_font(ctx, &diablo->handle); }
 
 #ifdef INCLUDE_STYLE
     /*set_style(ctx, THEME_WHITE);*/
@@ -1523,6 +1538,7 @@ StartNuklearExample(HINSTANCE hInstance)
         {   /* skin */
             glEnable(GL_TEXTURE_2D);
             media.skin = image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST);
+            media.skin2 = image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_BUTTON_TEST);
             //media.skin = image_load("gwen.png");
             media.check = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 32, 15, 15));
             media.check_cursor = nk_subimage_id(media.skin, 512, 512, nk_rect(450, 34, 11, 11));
@@ -1534,9 +1550,9 @@ StartNuklearExample(HINSTANCE hInstance)
             media.scrollbar_inc_button_hover = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 320, 15, 15));
             media.scrollbar_dec_button = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 224, 15, 15));
             media.scrollbar_dec_button_hover = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 288, 15, 15));
-            media.button = nk_subimage_id(media.skin, 512, 512, nk_rect(384, 336, 127, 31));
-            media.button_hover = nk_subimage_id(media.skin, 512, 512, nk_rect(384, 368, 127, 31));
-            media.button_active = nk_subimage_id(media.skin, 512, 512, nk_rect(384, 400, 127, 31));
+            media.button = nk_subimage_id(media.skin2, 300, 331, nk_rect(27, 66, 245, 45));
+            media.button_hover = nk_subimage_id(media.skin2, 300, 331, nk_rect(27, 66, 245, 45));
+            media.button_active = nk_subimage_id(media.skin2, 300, 331, nk_rect(27, 66, 245, 45));
             media.tab_minimize = nk_subimage_id(media.skin, 512, 512, nk_rect(451, 99, 9, 9));
             media.tab_maximize = nk_subimage_id(media.skin, 512, 512, nk_rect(467, 99, 9, 9));
             media.slider = nk_subimage_id(media.skin, 512, 512, nk_rect(418, 33, 11, 14));
@@ -1830,7 +1846,7 @@ StartNuklearExample(HINSTANCE hInstance)
             static int op = EASY;
             static int property = 20;
 
-            nk_layout_row_static(ctx, 30, 80, 1);
+            nk_layout_row_static(ctx, 45, 245, 1);
             if (nk_button_label(ctx, "button"))
                 fprintf(stdout, "button pressed\n");
             nk_layout_row_dynamic(ctx, 30, 2);

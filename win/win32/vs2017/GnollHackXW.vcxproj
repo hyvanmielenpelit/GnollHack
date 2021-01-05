@@ -348,11 +348,14 @@
     <Image Include="$(WinWin32Dir)gnollhack-logo-test-2.png" />
     <Image Include="$(WinWin32Dir)FMOD-Logo-32.png" />
     <Image Include="..\png1.png" />
+    <Image Include="..\sdl\dtest.png" />
     <Image Include="..\sdl\gwen.png" />
+    <Image Include="sdl\dtest.png" />
     <Image Include="sdl\gwen.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="$(WinWin32Dir)uwch.ttf" />
+    <Font Include="..\sdl\diablo_h.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(WinWin32Dir)Master.bank" />

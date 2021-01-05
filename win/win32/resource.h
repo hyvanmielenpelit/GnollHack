@@ -33,8 +33,10 @@
 #define IDB_PNG_TILES                   166
 #define IDB_PNG_GNHLOGO                 168
 #define IDB_PNG_FMODLOGO                169
-#define IDB_PNG1                        174
 #define IDB_PNG_SDL_NUKLEAR_TEST        174
+#define IDB_PNG_SDL_NUKLEAR_BUTTON_TEST 175
+#define IDR_RCDATA2                     176
+#define IDR_RCDATA_FONT_DIABLO          176
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000
 #define IDC_CMD_MOVE_NW                 1001
@@ -157,7 +159,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        175
+#define _APS_NEXT_RESOURCE_VALUE        177
 #define _APS_NEXT_COMMAND_VALUE         32804
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110
