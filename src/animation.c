@@ -576,7 +576,28 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       HUMAN_SAMURAI_MALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "human-wizard-male-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_WIZARD_MALE_ATTACK_ANIMATION_TILES,
+    { "human-samurai-female-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_SAMURAI_FEMALE_ATTACK_ANIMATION_TILES,
+      HUMAN_SAMURAI_FEMALE_ATTACK_ANIMATION_FRAMES, HUMAN_SAMURAI_FEMALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      HUMAN_SAMURAI_FEMALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-samurai-female-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_SAMURAI_FEMALE_KICK_ANIMATION_TILES,
+      HUMAN_SAMURAI_FEMALE_KICK_ANIMATION_FRAMES, HUMAN_SAMURAI_FEMALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      HUMAN_SAMURAI_FEMALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    }, { "human-wizard-male-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_WIZARD_MALE_ATTACK_ANIMATION_TILES,
       HUMAN_WIZARD_MALE_ATTACK_ANIMATION_FRAMES, HUMAN_WIZARD_MALE_ATTACK_ANIMATION_OFF,
       1,
       1,
@@ -1367,7 +1388,22 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-      { "human-wizard-male-attack-enlargement",
+      { "human-samurai-female-attack-enlargement",
+        HUMAN_SAMURAI_FEMALE_ATTACK_ANIMATION_TILES, HUMAN_SAMURAI_FEMALE_ATTACK_ANIMATION_FRAMES,
+        HUMAN_SAMURAI_FEMALE_ATTACK_ENLARGEMENT_TILES, HUMAN_SAMURAI_FEMALE_ATTACK_ENLARGEMENT_OFF,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-samurai-female-kick-enlargement",
+        HUMAN_SAMURAI_FEMALE_KICK_ANIMATION_TILES, HUMAN_SAMURAI_FEMALE_KICK_ANIMATION_FRAMES,
+        HUMAN_SAMURAI_FEMALE_KICK_ENLARGEMENT_TILES, HUMAN_SAMURAI_FEMALE_KICK_ENLARGEMENT_OFF,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },      { "human-wizard-male-attack-enlargement",
         HUMAN_WIZARD_MALE_ATTACK_ANIMATION_TILES, HUMAN_WIZARD_MALE_ATTACK_ANIMATION_FRAMES,
         HUMAN_WIZARD_MALE_ATTACK_ENLARGEMENT_TILES, HUMAN_WIZARD_MALE_ATTACK_ENLARGEMENT_OFF,
         3, 2, 0,
@@ -3384,6 +3420,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_MONK_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_SAMURAI_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_SAMURAI_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
             return ORC_ROGUE_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_BARBARIAN && raceidx == RACE_ORC && genderidx == GENDER_MALE)
@@ -3444,6 +3482,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_MONK_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_SAMURAI_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_SAMURAI_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_KICK_ANIMATION;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)

@@ -5,7 +5,7 @@
 #ifndef SDLNUKLEAR_H
 #define SDLNUKLEAR_H
 
-extern int StartNuklearExample();
+extern int StartNuklearExample(HINSTANCE hInstance);
 
 #endif /* SDLNUKLEAR_H */
 

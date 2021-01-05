@@ -405,6 +405,8 @@ IDB_PNG_GNHLOGO         PNG                     "gnollhack-logo-test-2.png"
 
 IDB_PNG_FMODLOGO        PNG                     "FMOD-Logo-32.png"
 
+IDB_PNG_SDL_NUKLEAR_TEST PNG                     "sdl\\gwen.png"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

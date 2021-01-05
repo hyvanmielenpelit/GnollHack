@@ -205,8 +205,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         return 0;
     }
 
-    (void)StartImGuiExample();
-    (void)StartNuklearExample();
+    //(void)StartImGuiExample();
+    (void)StartNuklearExample(hInstance);
 
     if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1)) {
         panic("Could not initialize SDL: %s.\n", SDL_GetError());

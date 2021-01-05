@@ -1938,6 +1938,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         double obj_scaling_factor = 1.0;
                         boolean is_obj_missile = FALSE;
                         boolean is_object = FALSE;
+                        int base_source_top_added = 0;
 
                         if (base_layer == LAYER_MISSILE && glyph_is_missile(glyph))
                         {
@@ -1975,9 +1976,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (!full_sized_item)
                             {
                                 int used_item_height = (int)tileHeight / 2;
-                                int base_source_top_added = 0;
                                 int base_source_height_deducted = used_item_height;
-
                                 /* For all normal items, we use only lower part of the tile */
                                 if (otmp_round && has_obj_floor_tile(otmp_round) && !showing_detection)
                                 {
@@ -3530,7 +3529,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 (data->map[enl_i][enl_j].missile_poisoned || data->map[enl_i][enl_j].missile_elemental_enchantment > 0 || data->map[enl_i][enl_j].missile_eroded || data->map[enl_i][enl_j].missile_eroded2 || data->map[enl_i][enl_j].missile_exceptionality > 0))
                             )
                         {
-                            int y_start = (base_layer == LAYER_MISSILE && !move_obj_to_middle ? tileHeight / 4 : dest_top_added);
+                            int y_start = (base_layer == LAYER_MISSILE && !move_obj_to_middle ? tileHeight / 4 : dest_top_added - (int)(applicable_scaling_factor_y * base_source_top_added));
                             int x_start = dest_left_added;
                             int mark_width = 8;
                             int marks_per_row = TILE_X / mark_width;

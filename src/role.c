@@ -2751,7 +2751,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return TRUE;
@@ -2800,7 +2800,6 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
         break;
-        break;
     case ACTION_TILE_SPECIAL_ATTACK:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
@@ -2814,7 +2813,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return TRUE;

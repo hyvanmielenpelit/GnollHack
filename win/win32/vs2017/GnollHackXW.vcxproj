@@ -52,7 +52,7 @@
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;fmod_vc.lib;fsbank_vc.lib;fmodstudio_vc.lib;sdl2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FmodDir)core\lib\winnt-x64\;$(FmodDir)fsbank\lib\winnt-x64\;$(FmodDir)studio\lib\winnt-x64\;$(SdlDir)lib\winnt-x64\;$(SdlDir)lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FmodDir)core\lib\winnt-x86\;$(FmodDir)fsbank\lib\winnt-x86\;$(FmodDir)studio\lib\winnt-x86\:$(SdlDir)lib\winnt-x86\;$(SdlDir)lib\winnt-x86\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FmodDir)core\lib\winnt-x86\;$(FmodDir)fsbank\lib\winnt-x86\;$(FmodDir)studio\lib\winnt-x86\:$(SdlDir)lib\winnt-x86\;$(SdlDir)lib\winnt-x86\;</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>$(WinWin32Dir)NethackW.exe.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -215,6 +215,7 @@
     <ClCompile Include="$(ImguiDir)imgui_widgets.cpp" />
     <ClCompile Include="..\..\..\ext\imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\..\..\ext\imgui\backends\imgui_impl_sdl.cpp" />
+    <ClCompile Include="..\sdl\sdlmisc.cpp" />
     <ClCompile Include="..\sdl\sdlhack.c" />
     <ClCompile Include="..\sdl\sdlimgui.cpp" />
     <ClCompile Include="..\sdl\sdlnuklear.c" />
@@ -334,6 +335,7 @@
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlimgui.h" />
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlnuklear.h" />
     <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gl2.h" />
+    <ClInclude Include="..\sdl\sdlmisc.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />
@@ -345,6 +347,9 @@
     <Image Include="$(WinWin32Dir)splash.bmp" />
     <Image Include="$(WinWin32Dir)gnollhack-logo-test-2.png" />
     <Image Include="$(WinWin32Dir)FMOD-Logo-32.png" />
+    <Image Include="..\png1.png" />
+    <Image Include="..\sdl\gwen.png" />
+    <Image Include="sdl\gwen.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="$(WinWin32Dir)uwch.ttf" />
