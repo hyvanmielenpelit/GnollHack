@@ -1475,7 +1475,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         ZeroMemory(&binfo_leash, sizeof(BITMAPINFO));
                         binfo_leash.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
                         binfo_leash.bmiHeader.biWidth = tileWidth;
-                        binfo_leash.bmiHeader.biHeight = tileHeight;
+                        binfo_leash.bmiHeader.biHeight = -tileHeight; /* To make y-axis to be in normal order, i.e., (0,0) is top-left corner  */
                         binfo_leash.bmiHeader.biPlanes = 1;
                         binfo_leash.bmiHeader.biBitCount = 32;
 
@@ -1697,7 +1697,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         /* Draw the leash to the map */
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top, data->xBackTile, data->yBackTile,
-                            hDCleash, 0, tileHeight - 1, tileWidth, -tileHeight, TILE_BK_COLOR);
+                            hDCleash, 0, 0, tileWidth, tileHeight, TILE_BK_COLOR);
 
                         SelectObject(hDCleash, oldbmp_leash);
                         DeleteDC(hDCleash);
