@@ -42,7 +42,7 @@
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(ImguiDir);$(ImguiDir)backends\;$(SdlDir)include\;$(NuklearDir);$(StbDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;SDL_MAIN_HANDLED;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;SDL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;SDL_MAIN_HANDLED;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

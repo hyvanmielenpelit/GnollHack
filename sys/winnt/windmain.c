@@ -57,6 +57,10 @@ extern int GUILaunched;
 HANDLE hStdOut;
 #if defined(MSWIN_GRAPHICS)
 char default_window_sys[] = "mswin";
+#else
+#if defined(SDL_GRAPHICS)
+char default_window_sys[] = "sdl";
+#endif
 #endif
 #ifdef WANT_GETHDATE
 static struct stat hbuf;
@@ -264,7 +268,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
  */
 
     if (argc >= 1
-        && !strcmpi(default_window_sys, "mswin")
+        && (!strcmpi(default_window_sys, "mswin") || !strcmpi(default_window_sys, "sdl"))
         && (strstri(argv[0], "GnollHackw.exe") || GUILaunched))
             iflags.windowtype_locked = TRUE;
 
