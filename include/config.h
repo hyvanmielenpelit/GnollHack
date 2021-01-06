@@ -110,16 +110,18 @@
 #endif
 #endif
 
-#ifdef MSWIN_GRAPHICS
-#ifndef DEFAULT_WINDOW_SYS
-#define DEFAULT_WINDOW_SYS "mswin"
-#endif
-#define HACKDIR "\\GnollHack"
-#endif
-
 #ifdef SDL_GRAPHICS
 #ifndef DEFAULT_WINDOW_SYS
 #define DEFAULT_WINDOW_SYS "sdl"
+#endif
+#ifndef HACKDIR
+#define HACKDIR "\\GnollHack"
+#endif
+#endif
+
+#ifdef MSWIN_GRAPHICS
+#ifndef DEFAULT_WINDOW_SYS
+#define DEFAULT_WINDOW_SYS "mswin"
 #endif
 #ifndef HACKDIR
 #define HACKDIR "\\GnollHack"

@@ -28,7 +28,7 @@ boolean NDECL(fakeconsole);
 void NDECL(freefakeconsole);
 E void FDECL(gnollhack_exit, (int));
 E char chosen_windowtype[WINTYPELEN];   /* flag.h */
-#if defined(MSWIN_GRAPHICS)
+#if defined(MSWIN_GRAPHICS) || defined(SDL_GRAPHICS)
 E void NDECL(mswin_destroy_reg);
 #endif
 #ifdef TTY_GRAPHICS
@@ -55,11 +55,11 @@ boolean getreturn_enabled;
 extern int redirect_stdout;       /* from sys/share/pcsys.c */
 extern int GUILaunched;
 HANDLE hStdOut;
-#if defined(MSWIN_GRAPHICS)
-char default_window_sys[] = "mswin";
-#else
 #if defined(SDL_GRAPHICS)
 char default_window_sys[] = "sdl";
+#else
+#if defined(MSWIN_GRAPHICS)
+char default_window_sys[] = "mswin";
 #endif
 #endif
 #ifdef WANT_GETHDATE
