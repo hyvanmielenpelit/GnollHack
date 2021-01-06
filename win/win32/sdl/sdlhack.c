@@ -68,6 +68,7 @@ _nhapply_image_transparent(HDC hDC, int x, int y, int width, int height,
 
 // Global Variables:
 NHWinApp _GnollHack_app;
+GHSdlApp _GnollHack_SdlApp;
 extern int GUILaunched;     /* We tell shared startup code in windmain.c
                                that the GUI was launched via this */
 
@@ -78,7 +79,6 @@ extern int GUILaunched;     /* We tell shared startup code in windmain.c
 
 // Foward declarations of functions included in this code module:
 extern boolean FDECL(main, (int, char **));
-static void __cdecl mswin_moveloop(void *);
 
 #define MAX_CMDLINE_PARAM 255
 
@@ -170,8 +170,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     _GnollHack_app.mapTile_X = TILE_X;
     _GnollHack_app.mapTile_Y = TILE_Y;
 
-    //StopGdiplus();
-
     /* Process tiledata */
     int total_tiles = process_tiledata(2, (const char*)0, (short*)0, (uchar*)0);
     int tiles_per_line = (int)ceil(sqrt(1.5 * ((double)total_tiles)));
@@ -213,6 +211,10 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         panic("Could not initialize SDL: %s.\n", SDL_GetError());
         return 0;
     }
+
+    windowprocs.win_raw_print = sdl_raw_print;
+    windowprocs.win_raw_print_bold = sdl_raw_print_bold;
+    windowprocs.win_wait_synch = sdl_wait_synch;
 
     // init controls
     if (FAILED(GetComCtlVersion(&major, &minor))) {
@@ -279,10 +281,11 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
     iflags.using_gui_sounds = TRUE;
 
-    SDL_Quit();
-
     /* let main do the argument processing */
     (void) main(argc, argv);
+    
+    SDL_Quit();
+    StopGdiplus();
     return 0;
 }
 
@@ -291,6 +294,13 @@ GetNHApp()
 {
     return &_GnollHack_app;
 }
+
+PGHSdlApp
+GetGHSdlApp()
+{
+    return &_GnollHack_SdlApp;
+}
+
 
 TCHAR *
 _get_cmd_arg(TCHAR *pCmdLine)

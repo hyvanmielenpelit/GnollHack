@@ -166,8 +166,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     _GnollHack_app.mapTile_X = TILE_X;
     _GnollHack_app.mapTile_Y = TILE_Y;
 
-    //StopGdiplus();
-
     /* Process tiledata */
     int total_tiles = process_tiledata(2, (const char*)0, (short*)0, (uchar*)0);
     int tiles_per_line = (int)ceil(sqrt(1.5 * ((double)total_tiles)));
@@ -270,6 +268,9 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 
     /* let main do the argument processing */
     (void) main(argc, argv);
+
+    StopGdiplus();
+
     return 0;
 }
 

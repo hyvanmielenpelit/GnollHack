@@ -231,6 +231,7 @@
     <ClInclude Include="$(WinWin32Dir)mhwingdi.h" />
     <ClInclude Include="$(WinWin32Dir)resource.h" />
     <ClInclude Include="$(WinWin32Dir)soundfx.h" />
+    <ClInclude Include="..\..\..\include\extern.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />

@@ -4811,6 +4811,63 @@ int spef_number;
     context.force_allow_keyboard_commands = FALSE;
 }
 
+void
+reduce_counters(milliseconds)
+int milliseconds;
+{
+    /* Reduce animation ending counters */
+    if (context.u_action_animation_counter_on && context.u_milliseconds_to_wait_until_action == 0UL && context.u_milliseconds_to_wait_until_end > 0UL)
+    {
+        if (context.u_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
+            context.u_milliseconds_to_wait_until_end = 0UL;
+        else
+            context.u_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+    }
+
+    if (context.m_action_animation_counter_on && context.m_milliseconds_to_wait_until_action == 0UL && context.m_milliseconds_to_wait_until_end > 0UL)
+    {
+        if (context.m_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
+            context.m_milliseconds_to_wait_until_end = 0UL;
+        else
+            context.m_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+    }
+
+    if (context.explosion_animation_counter_on && context.expl_milliseconds_to_wait_until_action == 0UL && context.expl_milliseconds_to_wait_until_end > 0UL)
+    {
+        if (context.expl_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
+            context.expl_milliseconds_to_wait_until_end = 0UL;
+        else
+            context.expl_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+    }
+
+    for (int i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
+    {
+        if (context.special_effect_animation_counter_on[i] && context.spef_milliseconds_to_wait_until_action[i] == 0UL && context.spef_milliseconds_to_wait_until_end[i] > 0UL)
+        {
+            if (context.spef_milliseconds_to_wait_until_end[i] <= (unsigned long)milliseconds)
+                context.spef_milliseconds_to_wait_until_end[i] = 0UL;
+            else
+                context.spef_milliseconds_to_wait_until_end[i] -= (unsigned long)milliseconds;
+        }
+    }
+
+    if (context.zap_aggregate_milliseconds_to_wait_until_action > 0UL)
+    {
+        if (context.zap_aggregate_milliseconds_to_wait_until_action <= (unsigned long)milliseconds)
+            context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+        else
+            context.zap_aggregate_milliseconds_to_wait_until_action -= (unsigned long)milliseconds;
+    }
+
+    if (context.zap_aggregate_milliseconds_to_wait_until_end > 0UL)
+    {
+        if (context.zap_aggregate_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
+            context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
+        else
+            context.zap_aggregate_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+    }
+}
+
 
 /* animation.c */
 

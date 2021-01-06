@@ -54,6 +54,7 @@ E int FDECL(get_animation_frame_with_tile, (int, int));
 E void FDECL(play_special_effect_at, (enum special_effect_types, int, int, int, boolean));
 E void FDECL(special_effect_wait_until_action, (int));
 E void FDECL(special_effect_wait_until_end, (int));
+E void FDECL(reduce_counters, (int));
 
 /* ### apply.c ### */
 

@@ -183,7 +183,6 @@
     <ClCompile Include="$(SysWinntDir)stubs.c">
       <PreprocessorDefinitions>TTYSTUB;</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="$(SysWinntDir)windmain.c" />
     <ClCompile Include="$(SysWinntDir)winnt.c" />
     <ClCompile Include="$(SysWinntDir)win10.c" />
     <ClCompile Include="$(WinShareDir)safeproc.c" />
@@ -215,6 +214,7 @@
     <ClCompile Include="$(ImguiDir)imgui_widgets.cpp" />
     <ClCompile Include="..\..\..\ext\imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\..\..\ext\imgui\backends\imgui_impl_sdl.cpp" />
+    <ClCompile Include="..\..\..\sys\winnt\windmain.c" />
     <ClCompile Include="..\mswproc.c" />
     <ClCompile Include="..\sdl\sdlmisc.cpp" />
     <ClCompile Include="..\sdl\sdlhack.c" />
@@ -336,6 +336,7 @@
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlimgui.h" />
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlnuklear.h" />
     <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gl2.h" />
+    <ClInclude Include="..\..\..\include\extern.h" />
     <ClInclude Include="..\sdl\sdlmisc.h" />
     <ClInclude Include="..\sdl\sdlproc.h" />
   </ItemGroup>
