@@ -411,6 +411,10 @@ IDB_PNG_SDL_NUKLEAR_TEST PNG                     "sdl\\gwen.png"
 
 IDB_PNG_SDL_NUKLEAR_BUTTON_TEST PNG                     "sdl\\dtest.png"
 
+IDB_PNG_SDL_BUTTONS     PNG                     "sdl\\buttons.png"
+
+IDB_PNG_SDL_WINDOW      PNG                     "sdl\\window_background.png"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
