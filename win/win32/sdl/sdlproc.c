@@ -13,6 +13,7 @@
 #include "func_tab.h" /* for extended commands */
 #include "winMS.h"
 #include "sdlproc.h"
+#include "sdlnuklear.h"
 #include <assert.h>
 #include <mmsystem.h>
 #include "mhmap.h"
@@ -29,6 +30,8 @@
 #include "mhmain.h"
 #include "mhfont.h"
 #include "resource.h"
+
+extern void mswin_main_loop();
 
 #define LLEN 128
 
@@ -160,8 +163,35 @@ sdl_init_nhwindows(int *argc, char **argv)
 #endif
     logDebug("sdl_init_nhwindows()\n");
 
-    init_resource_fonts();
+    /* SDL setup */
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 800
+    SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
+    SDL_Init(SDL_INIT_VIDEO);
 
+    PGHSdlApp sdlapp = GetGHSdlApp();
+    PNHWinApp ghapp = GetNHApp();
+        
+    //SDL_Init(SDL_INIT_VIDEO);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    sdlapp->win = SDL_CreateWindow("Demo",
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
+    sdlapp->glContext = SDL_GL_CreateContext(sdlapp->win);
+    SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
+
+    windowprocs.win_raw_print = sdl_raw_print;
+    windowprocs.win_raw_print_bold = sdl_raw_print_bold;
+    windowprocs.win_wait_synch = sdl_wait_synch;
+
+    init_nuklear(ghapp->hApp, sdlapp);
+
+    //Other initializations
+    init_resource_fonts();
     mswin_nh_input_init();
 
     /* set it to WIN_ERR so we can detect attempts to
@@ -349,7 +379,7 @@ sdl_player_selection(void)
             }
         } else {
             /* select a role */
-            if (!mswin_player_selection_window()) {
+            if (!nuklear_player_selection(GetGHSdlApp())) {
                 sdl_bail(0);
             }
         }
@@ -755,6 +785,8 @@ sdl_exit_nhwindows(const char *str)
 {
     logDebug("sdl_exit_nhwindows(%s)\n", str);
 
+    (void)shutdown_nuklear(GetGHSdlApp());
+
     /* Write Window settings to the registry */
     sdl_write_reg();
 
@@ -762,9 +794,9 @@ sdl_exit_nhwindows(const char *str)
     windowprocs = *get_safe_procs(0);
 
     /* and make sure there is still a way to communicate something */
-    windowprocs.win_raw_print = sdl_raw_print;
-    windowprocs.win_raw_print_bold = sdl_raw_print_bold;
-    windowprocs.win_wait_synch = sdl_wait_synch;
+    windowprocs.win_raw_print = mswin_raw_print;
+    windowprocs.win_raw_print_bold = mswin_raw_print_bold;
+    windowprocs.win_wait_synch = mswin_wait_synch;
 }
 
 /* Prepare the window to be suspended. */
@@ -1449,15 +1481,22 @@ int nhgetch()   -- Returns a single character input from the user.
 int
 sdl_nhgetch()
 {
-    PMSNHEvent event;
     int key = 0;
 
     logDebug("sdl_nhgetch()\n");
+    PGHSdlApp sdlapp = GetGHSdlApp();
+    if (sdlapp->running)
+    {
+        key = nuklear_main_loop(sdlapp);
+    }
+    else
+    {
+        PMSNHEvent event;
+        while ((event = mswin_input_pop()) == NULL || event->type != NHEVENT_CHAR)
+            mswin_main_loop();
+        key = event->kbd.ch;
+    }
 
-    while ((event = mswin_input_pop()) == NULL || event->type != NHEVENT_CHAR)
-        sdl_main_loop();
-
-    key = event->kbd.ch;
     return (key);
 }
 
@@ -1480,22 +1519,31 @@ int
 sdl_nh_poskey(int *x, int *y, int *mod)
 {
     PMSNHEvent event;
-    int key;
+    int key = 0;
 
     logDebug("sdl_nh_poskey()\n");
 
-    while ((event = mswin_input_pop()) == NULL)
-        sdl_main_loop();
+    PGHSdlApp sdlapp = GetGHSdlApp();
+    if (sdlapp->running)
+    {
+        key = nuklear_main_loop(sdlapp);
+    }
+    else
+    {
+        while ((event = mswin_input_pop()) == NULL)
+            sdl_main_loop();
 
-    if (event->type == NHEVENT_MOUSE) {
-	if (iflags.wc_mouse_support) {
-            *mod = event->ms.mod;
-            *x = event->ms.x;
-            *y = event->ms.y;
+        if (event->type == NHEVENT_MOUSE) {
+            if (iflags.wc_mouse_support) {
+                *mod = event->ms.mod;
+                *x = event->ms.x;
+                *y = event->ms.y;
+            }
+            key = 0;
         }
-        key = 0;
-    } else {
-        key = event->kbd.ch;
+        else {
+            key = event->kbd.ch;
+        }
     }
     return (key);
 }
@@ -2195,6 +2243,8 @@ sdl_putmsghistory(const char *msg, BOOLEAN_P restoring)
 void
 sdl_main_loop()
 {
+    //OBSOLETE
+
     MSG msg;
 
     while (!mswin_have_input()) {
@@ -2202,7 +2252,7 @@ sdl_main_loop()
             if(GetMessage(&msg, NULL, 0, 0) != 0) {
                 if (GetNHApp()->regGnollHackMode
                     || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable,
-                                             &msg)) {
+                                                &msg)) {
                     TranslateMessage(&msg);
                     DispatchMessage(&msg);
                 }

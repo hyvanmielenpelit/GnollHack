@@ -47,7 +47,7 @@ logDebug(const char *fmt, ...)
 }
 #endif
 
-static void mswin_main_loop(void);
+void mswin_main_loop(void);
 static void mswin_wait_loop(int milliseconds);
 static BOOL initMapTiles(void);
 static void mswin_color_from_string(char *colorstring, HBRUSH *brushptr,

@@ -205,16 +205,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     }
 
     //(void)StartImGuiExample();
-    (void)StartNuklearExample(hInstance);
-
-    if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1)) {
-        panic("Could not initialize SDL: %s.\n", SDL_GetError());
-        return 0;
-    }
-
-    windowprocs.win_raw_print = sdl_raw_print;
-    windowprocs.win_raw_print_bold = sdl_raw_print_bold;
-    windowprocs.win_wait_synch = sdl_wait_synch;
+    //(void)StartNuklearExample(hInstance);
 
     // init controls
     if (FAILED(GetComCtlVersion(&major, &minor))) {

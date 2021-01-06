@@ -6,6 +6,10 @@
 #define SDLNUKLEAR_H
 
 extern int StartNuklearExample(HINSTANCE hInstance);
+extern int init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp);
+extern int nuklear_main_loop(PGHSdlApp sdlapp);
+extern boolean nuklear_player_selection(PGHSdlApp sdlapp);
+extern int shutdown_nuklear(PGHSdlApp sdlapp);
 
 #endif /* SDLNUKLEAR_H */
 

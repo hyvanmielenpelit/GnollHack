@@ -38,61 +38,17 @@
 #include "soundfx.h"
 #include "mhwingdi.h"
 #include "lev.h"
+#include <SDL.h>
+#include <SDL_opengl.h>
+
 
 typedef struct sdl_ghwindow_app {
-    HINSTANCE hApp;
-    HWND hMainWnd;
-    HACCEL hAccelTable;
-    HWND hPopupWnd; /* current popup window  */
+    /* Platform */
+    SDL_Window* win;
+    SDL_GLContext glContext;
+    int win_width, win_height;
+    int running;
 
-    MSNHWinData windowlist[MAXWINDOWS];
-
-    HICON iconTiles;
-    HBITMAP bmpTiles;
-    HBITMAP bmpMapTiles; /* custom tiles bitmap */
-    HBITMAP bmpRip;
-    HBITMAP bmpSplash;
-    HBITMAP bmpFMOD;
-    int mapTile_X;       /* tile width */
-    int mapTile_Y;       /* tile height */
-    int mapTilesPerLine; /* number of tile per row in the bitmap */
-
-    boolean bNoHScroll; /* disable cliparound for horizontal grid (map) */
-    boolean bNoVScroll; /* disable cliparound for vertical grid (map) */
-
-    int mapDisplayModeSave; /* saved map display mode */
-
-    char* saved_text;
-
-    DWORD saveRegistrySettings; /* Flag if we should save this time */
-    DWORD
-        regGnollHackMode; /* GnollHack mode means no Windows keys in some places
-                           */
-
-    COLORREF regMapColors[CLR_MAX];
-
-    LONG regMainMinX;
-    LONG regMainMinY;
-    LONG regMainMaxX;
-    LONG regMainMaxY;
-    LONG regMainLeft;
-    LONG regMainTop;
-    LONG regMainBottom;
-    LONG regMainRight;
-    DWORD regMainShowState;
-
-    BOOL bAutoLayout;
-    RECT rtMapWindow;
-    RECT rtMsgWindow;
-    RECT rtStatusWindow;
-    RECT rtMenuWindow;
-    RECT rtTextWindow;
-    RECT rtInvenWindow;
-    BOOL bWindowsLocked; /* TRUE if windows are "locked" - no captions */
-
-    BOOL bNoSounds; /* disable sounds */
-
-    LPTRANSPARENTBLT lpfnTransparentBlt; /* transparent blt function */
 } GHSdlApp, * PGHSdlApp;
 
 
