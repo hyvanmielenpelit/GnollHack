@@ -406,18 +406,25 @@ learn(VOID_ARGS)
 			gone = cursed_book(book);
 		else if (!book->blessed && !rn2(2))
 		{
+			play_sfx_sound(SFX_SPELL_LEARN_FAIL);
 			pline("These runes were just too much to comprehend.");
 			play_sfx_sound(SFX_ACQUIRE_CONFUSION);
 			make_confused(itimeout_incr(HConfusion, rnd(4) + 5), FALSE);
 		}
 		else
 		{
+			play_sfx_sound(SFX_SPELL_LEARN_FAIL);
 			pline("Despite your best efforts, you fail to understand the spell in %s.", the(cxname(book)));
 		}
 
 		if (gone || !rn2(2)) {
 			if (!gone)
+			{
+				if (iflags.using_gui_sounds)
+					delay_output_milliseconds(100); /* Some time so that the sounds do not come exactly at the same time */
+				play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
 				pline_The("spellbook crumbles to dust!");
+			}
 			if (!objects[book->otyp].oc_name_known
 				&& !objects[book->otyp].oc_uname)
 				docall(book);
@@ -456,19 +463,22 @@ learn(VOID_ARGS)
         /* normal book can be read and re-read a total of 4 times */
         if (book->spestudied > MAX_SPELL_STUDY)
 		{
-            pline("This spellbook is too faint to be read any more.");
+			play_sfx_sound(SFX_SPELL_TOO_FAINT);
+			pline("This spellbook is too faint to be read any more.");
             book->otyp = booktype = SPE_BLANK_PAPER;
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
         }
 		else if (spellknow(i) > KEEN / 10)
 		{
-            You("know %s quite well already.", splname);
+			play_sfx_sound(SFX_SPELL_KNOWN_ALREADY);
+			You("know %s quite well already.", splname);
             costly = FALSE;
         }
 		else
 		{ /* spellknow(i) <= KEEN/10 */
-            Your("knowledge of %s is %s.", splname,
+			play_sfx_sound(SFX_SPELL_KEENER);
+			Your("knowledge of %s is %s.", splname,
                  spellknow(i) ? "keener" : "restored");
             incrnknow(i, 1);
             book->spestudied++;
@@ -485,7 +495,8 @@ learn(VOID_ARGS)
            one less reading is available than when re-learning */
         if (book->spestudied >= MAX_SPELL_STUDY) {
             /* pre-used due to being the product of polymorph */
-            pline("This spellbook is too faint to read even once.");
+			play_sfx_sound(SFX_SPELL_TOO_FAINT);
+			pline("This spellbook is too faint to read even once.");
             book->otyp = booktype = SPE_BLANK_PAPER;
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
@@ -503,6 +514,7 @@ learn(VOID_ARGS)
 
 			incrnknow(i, 1);
             book->spestudied++;
+			play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
             You(i > 0 ? "add %s to your repertoire." : "learn %s.", splname);
 			learnsuccess = TRUE;
         }
@@ -522,6 +534,7 @@ learn(VOID_ARGS)
 
 	if (learnsuccess)
 	{
+		play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
 		pline_The("spellbook crumbles to dust.");
 		useup(book);
 	}
@@ -625,6 +638,7 @@ register struct obj *spellbook;
 				eyes = body_part(EYE);
 				if (eyecount(youmonst.data) > 1)
 					eyes = makeplural(eyes);
+				play_sfx_sound(SFX_ACQUIRE_SLEEP);
 				pline("This book is so dull that you can't keep your %s open.",
 					  eyes);
 				dullbook += rnd(2 * objects[booktype].oc_spell_level);
@@ -784,7 +798,9 @@ register struct obj *spellbook;
 		play_simple_object_sound(spellbook, OBJECT_SOUND_TYPE_READ);
 		You("begin to %s the runes.",
 			spellbook->otyp == SPE_BOOK_OF_THE_DEAD ? "recite" : spellbook->otyp == SPE_BOOK_OF_MODRON ? "decipher" : "memorize");
-    }
+		if (iflags.using_gui_sounds)
+			delay_output_milliseconds(100); /* Some time between sounds */
+	}
 
     context.spbook.book = spellbook;
     if (context.spbook.book)
@@ -845,11 +861,13 @@ rejectcasting()
     /* rejections which take place before selecting a particular spell */
     if (Stunned)
 	{
-        You("are too impaired to cast a spell.");
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You("are too impaired to cast a spell.");
         return TRUE;
     } 
 	else if (Cancelled)
 	{
+		play_sfx_sound(SFX_CANCELLATION_IN_FORCE);
 		Your("magic is not flowing properly to allow for casting a spell.");
 		return TRUE;
 	}
@@ -870,11 +888,13 @@ int spell;
 
 	if (!(objects[spellbookid].oc_spell_flags & S1_NO_VERBAL_COMPONENT) && !can_chant(&youmonst))
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("are unable to chant the incantation for a spell with a verbal component!");
 		return TRUE;
 	}
 	else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && nohands(youmonst.data))
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("do not have hands to cast a spell with a somatic component!");
 		return TRUE;
 	}
@@ -884,6 +904,7 @@ int spell;
 		 * weapon) are welded to hands, so "arms" probably doesn't need
 		 * to be makeplural(bodypart(ARM)).
 		 */
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		Your("arms are not free to cast a spell with a somatic component!");
 		return TRUE;
 	}
@@ -908,7 +929,8 @@ int spell_list_type;
     char ilet, lets[BUFSZ], qbuf[QBUFSZ];
 
     if (spellid(0) == NO_SPELL) {
-        You("don't know any spells right now.");
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You("don't know any spells right now.");
         return FALSE;
     }
     if (rejectcasting())
@@ -941,7 +963,8 @@ int spell_list_type;
 
             idx = spell_let_to_idx(ilet);
             if (idx < 0 || idx >= nspells) {
-                You("don't know that spell.");
+				play_sfx_sound(SFX_GENERAL_CANNOT);
+				You("don't know that spell.");
                 continue; /* ask again */
             }
             *spell_no = idx;
@@ -1693,11 +1716,13 @@ boolean atme;
         return 0;
     } else*/
 	if (ACURR(A_STR) < 4 && spellid(spell) != SPE_RESTORE_ABILITY) {
-        You("lack the strength to cast spells.");
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You("lack the strength to cast spells.");
         return 0;
     } else if (check_capacity(
                 "Your concentration falters while carrying so much stuff.")) {
-        return 1;
+		play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
+		return 1;
     }
 
 #if 0
@@ -2596,10 +2621,12 @@ int otyp;
 		range = objects[otyp].oc_spell_range;
 
     if (u.uinwater) {
-        pline("You're joking!  In this weather?");
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		pline("You're joking!  In this weather?");
         return 0;
     } else if (Is_waterlevel(&u.uz)) {
-        You("had better wait for the sun to come out.");
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You("had better wait for the sun to come out.");
         return 0;
     }
 
@@ -2610,10 +2637,12 @@ int otyp;
         return 0; /* user pressed ESC */
     /* The number of moves from hero to where the spell drops.*/
     if (distmin(u.ux, u.uy, cc.x, cc.y) > range) {
-        pline_The("spell dissipates over the distance!");
+		play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
+		pline_The("spell dissipates over the distance!");
         return 0;
     } else if (u.uswallow) {
-        pline_The("spell is cut short!");
+		play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
+		pline_The("spell is cut short!");
         exercise(A_WIS, FALSE); /* What were you THINKING! */
         u.dx = 0;
         u.dy = 0;
@@ -2621,7 +2650,8 @@ int otyp;
     } else if ((!cansee(cc.x, cc.y)
                 && (!(mtmp = m_at(cc.x, cc.y)) || !canspotmon(mtmp)))
                || IS_STWALL(levl[cc.x][cc.y].typ)) {
-        Your("mind fails to lock onto that location!");
+		play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
+		Your("mind fails to lock onto that location!");
         return 0;
     }
 
@@ -2967,7 +2997,8 @@ dovspell()
 
     if (spellid(0) == NO_SPELL)
 	{
-        You("don't know any spells right now.");
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You("don't know any spells right now.");
     } 
 	else 
 	{

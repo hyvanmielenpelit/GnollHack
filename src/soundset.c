@@ -4211,6 +4211,36 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_FAILS_TO_LEASH, 1.0f},
         FALSE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_SPELL_LEARN_FAIL",
+        {GHSOUND_SPELL_LEARN_FAIL, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_SPELL_LEARN_SUCCESS",
+        {GHSOUND_SPELL_LEARN_SUCCESS, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_SPELL_TOO_FAINT",
+        {GHSOUND_SPELL_TOO_FAINT, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_SPELL_KNOWN_ALREADY",
+        {GHSOUND_SPELL_KNOWN_ALREADY, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_SPELL_KEENER",
+        {GHSOUND_SPELL_KEENER, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_CANCELLATION_IN_FORCE",
+        {GHSOUND_CANCELLATION_IN_FORCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

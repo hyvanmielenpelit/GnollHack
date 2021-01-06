@@ -4926,7 +4926,7 @@ dozap()
 	}
 	else if (Cancelled)
 	{
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_CANCELLATION_IN_FORCE);
         Your("magic is not flowing properly to allow for using a wand.");
 		return 0;
 	}
@@ -5996,7 +5996,8 @@ int duration;
     /* now handle special cases */
     if (youdefend) 
 	{
-		You_feel("your magic is not flowing properly.");
+        play_sfx_sound(SFX_ACQUIRE_CANCELLATION);
+        You_feel("your magic is not flowing properly.");
 		incr_itimeout(&HCancelled, duration);
 		context.botl = context.botlx = TRUE;
 

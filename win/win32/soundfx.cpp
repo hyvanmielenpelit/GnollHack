@@ -791,11 +791,17 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Growl", 0.7f },
     { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Whimper", 0.25f },
     { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Yelp", 0.7f },
+
     { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Growl", 0.7f },
     { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Whimper", 0.7f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Learning/Spell Learn Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Learning/Spell Learn Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Learning/Too Faint", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Learning/Spell Known Already", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Learning/Spell Keener", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Cancellation in Force", 1.0f },
 
 };
-
 
 
 extern "C" 

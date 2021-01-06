@@ -18,7 +18,7 @@ STATIC_DCL void FDECL(launch_drop_spot, (struct obj *, XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(mkroll_launch, (struct trap *, XCHAR_P, XCHAR_P,
                                      SHORT_P, long));
 STATIC_DCL boolean FDECL(isclearpath, (coord *, int, SCHAR_P, SCHAR_P));
-STATIC_DCL void FDECL(dofiretrap, (struct obj *));
+STATIC_DCL void FDECL(dofiretrap, (struct obj *, int));
 STATIC_DCL void NDECL(domagictrap);
 STATIC_DCL boolean FDECL(emergency_disrobe, (boolean *));
 STATIC_DCL boolean FDECL(succeed_untrap, (struct trap *));
@@ -1385,7 +1385,7 @@ unsigned trflags;
     case FIRE_TRAP:
         seetrap(trap);
         play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
-        dofiretrap((struct obj *) 0);
+        dofiretrap((struct obj *) 0, 20);
         break;
 
     case PIT:
@@ -3514,11 +3514,15 @@ climb_pit()
 }
 
 STATIC_OVL void
-dofiretrap(box)
+dofiretrap(box, dice)
 struct obj *box; /* null for floor trap */
+int dice; /* of d6 */
 {
     boolean see_it = !Blind;
     int num, alt;
+
+    if (dice < 1)
+        dice = 1;
 
     /* Bug: for box case, the equivalent of burn_floor_objects() ought
      * to be done upon its contents.
@@ -3545,7 +3549,7 @@ struct obj *box; /* null for floor trap */
     }
     else if (Upolyd) 
     {
-        num = d(20, 6);
+        num = d(dice, 6);
         switch (u.umonnum) 
         {
         case PM_PAPER_GOLEM:
@@ -3577,7 +3581,7 @@ struct obj *box; /* null for floor trap */
     }
     else 
     {
-        num = d(20, 6);
+        num = d(dice, 6);
 #if 0
 		if (u.uhpmax > u.ulevel)
 		{
@@ -3680,7 +3684,7 @@ domagictrap()
             /* sometimes nothing happens */
             break;
         case 12: /* a flash of fire */
-            dofiretrap((struct obj *) 0);
+            dofiretrap((struct obj *) 0, 2);
             break;
 
         /* odd feelings */
@@ -6005,7 +6009,7 @@ boolean disarm;
         case 11:
         case 10:
         case 9:
-            dofiretrap(obj);
+            dofiretrap(obj, 4);
             break;
         case 8:
         case 7:
