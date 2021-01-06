@@ -2016,6 +2016,7 @@ nuklear_main_loop(PGHSdlApp sdlapp)
         {
             if (evt.type == SDL_QUIT) 
                 goto cleanup;
+            key = 0;
             nk_sdl_handle_event(&evt);
             if (evt.type == SDL_KEYUP)
             {
@@ -2026,13 +2027,8 @@ nuklear_main_loop(PGHSdlApp sdlapp)
                     if (keycode >= SDLK_a && keycode <= SDLK_z && SDL_GetModState() & KMOD_SHIFT)
                         key -= 32;
                 }
-                else
-                    key = 0;
-
                 break;
             }
-            else
-                key = 0;
         }
         nk_input_end(ctx);
 
@@ -2359,7 +2355,7 @@ nuklear_main_loop(PGHSdlApp sdlapp)
 
 cleanup:
     shutdown_nuklear(sdlapp);
-    return 0;
+    return -1;
 }
 
 

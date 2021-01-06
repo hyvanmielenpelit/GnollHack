@@ -1481,17 +1481,29 @@ int nhgetch()   -- Returns a single character input from the user.
 int
 sdl_nhgetch()
 {
+    PMSNHEvent event;
     int key = 0;
 
     logDebug("sdl_nhgetch()\n");
     PGHSdlApp sdlapp = GetGHSdlApp();
     if (sdlapp->running)
     {
+        /* Empty normal windows command queue */
+        while ((event = mswin_input_pop()) != NULL)
+            ;
+
         key = nuklear_main_loop(sdlapp);
+        if (key == -1)
+        {
+            /* Empty normal windows command queue */
+            while ((event = mswin_input_pop()) != NULL)
+                ;
+            
+            key = 0;
+        }
     }
     else
     {
-        PMSNHEvent event;
         while ((event = mswin_input_pop()) == NULL || event->type != NHEVENT_CHAR)
             mswin_main_loop();
         key = event->kbd.ch;
@@ -1526,12 +1538,24 @@ sdl_nh_poskey(int *x, int *y, int *mod)
     PGHSdlApp sdlapp = GetGHSdlApp();
     if (sdlapp->running)
     {
+        /* Empty normal windows command queue */
+        while ((event = mswin_input_pop()) != NULL)
+            ;
+
         key = nuklear_main_loop(sdlapp);
+        if (key == -1)
+        {
+            /* Empty normal windows command queue */
+            while ((event = mswin_input_pop()) != NULL)
+                ;
+
+            key = 0;
+        }
     }
     else
     {
         while ((event = mswin_input_pop()) == NULL)
-            sdl_main_loop();
+            mswin_main_loop();
 
         if (event->type == NHEVENT_MOUSE) {
             if (iflags.wc_mouse_support) {
