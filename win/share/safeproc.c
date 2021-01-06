@@ -101,7 +101,22 @@ struct window_procs safe_procs = {
     safe_status_update,
 #endif
     safe_can_suspend,
+    safe_stretch_window,
+    safe_set_animation_timer,
+    safe_open_special_view,
+    safe_stop_all_sounds,
+    safe_play_immediate_ghsound,
+    safe_play_ghsound_occupation_ambient,
+    safe_play_ghsound_effect_ambient,
+    safe_set_effect_ambient_volume,
+    safe_play_ghsound_music,
+    safe_play_ghsound_level_ambient,
+    safe_play_ghsound_environment_ambient,
+    safe_adjust_ghsound_general_volumes,
+    safe_delete_ambient_ghsound,
+    safe_set_ambient_ghsound_volume,
 };
+
 
 struct window_procs *
 get_safe_procs(optn)
@@ -399,6 +414,108 @@ safe_can_suspend()
 {
     return FALSE;
 }
+
+void
+safe_stretch_window(VOID_ARGS)
+{
+    return;
+}
+
+void
+safe_set_animation_timer(interval)
+unsigned int interval;
+{
+    return;
+}
+
+void
+safe_open_special_view(info)
+struct special_view_info info;
+{
+    return;
+}
+
+void
+safe_stop_all_sounds(info)
+struct stop_all_info info;
+{
+    return;
+}
+
+void
+safe_play_immediate_ghsound(info)
+struct ghsound_immediate_info info;
+{
+    return;
+}
+
+void
+safe_play_ghsound_occupation_ambient(info)
+struct ghsound_occupation_ambient_info info;
+{
+    return;
+}
+
+void
+safe_play_ghsound_effect_ambient(info)
+struct ghsound_effect_ambient_info info;
+{
+    return;
+}
+
+void
+safe_set_effect_ambient_volume(info)
+struct effect_ambient_volume_info info;
+{
+    return;
+}
+
+void
+safe_play_ghsound_music(info)
+struct ghsound_music_info info;
+{
+    return;
+}
+
+void
+safe_play_ghsound_level_ambient(info)
+struct ghsound_level_ambient_info info;
+{
+    return;
+}
+
+void
+safe_play_ghsound_environment_ambient(info)
+struct ghsound_environment_ambient_info info;
+{
+    return;
+}
+
+void
+safe_adjust_ghsound_general_volumes(VOID_ARGS)
+{
+    return;
+}
+
+void
+safe_add_ambient_ghsound(struct soundsource_t* soundsource)
+{
+    return;
+}
+
+void
+safe_delete_ambient_ghsound(struct soundsource_t* soundsource)
+{
+    return;
+}
+
+void
+safe_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
+{
+    return;
+}
+
+
 
 void
 safe_nhbell()

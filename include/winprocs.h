@@ -513,6 +513,22 @@ extern void FDECL(safe_status_enablefield,
                     (int, const char *, const char *, BOOLEAN_P));
 extern void FDECL(safe_status_update, (int, genericptr_t, int, int, int, unsigned long *));
 extern boolean NDECL(safe_can_suspend);
+extern void NDECL(safe_stretch_window);
+extern void FDECL(safe_set_animation_timer, (unsigned int));
+extern void FDECL(safe_open_special_view, (struct special_view_info));
+extern void FDECL(safe_stop_all_sounds, (struct stop_all_info));
+extern void FDECL(safe_play_ghsound_occupation_ambient, (struct ghsound_occupation_ambient_info));
+extern void FDECL(safe_play_ghsound_effect_ambient, (struct ghsound_effect_ambient_info));
+extern void FDECL(safe_set_effect_ambient_volume, (struct effect_ambient_volume_info));
+extern void FDECL(safe_play_ghsound_level_ambient, (struct ghsound_level_ambient_info));
+extern void FDECL(safe_play_ghsound_environment_ambient, (struct ghsound_environment_ambient_info));
+extern void FDECL(safe_play_ghsound_music, (struct ghsound_music_info));
+extern void FDECL(safe_play_immediate_ghsound, (struct ghsound_immediate_info));
+extern void NDECL(safe_adjust_ghsound_general_volumes);
+extern void FDECL(safe_add_ambient_ghsound, (struct soundsource_t*));
+extern void FDECL(safe_delete_ambient_ghsound, (struct soundsource_t*));
+extern void FDECL(safe_set_ambient_ghsound_volume, (struct soundsource_t*));
+
 extern void FDECL(stdio_raw_print, (const char *));
 extern void FDECL(stdio_raw_print_bold, (const char *));
 extern void NDECL(stdio_wait_synch);
