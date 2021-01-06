@@ -10,6 +10,7 @@
 #include <math.h>
 
 #include "winMS.h"
+#include "sdlproc.h"
 #include "hack.h"
 #include "dlb.h"
 #include "resource.h"

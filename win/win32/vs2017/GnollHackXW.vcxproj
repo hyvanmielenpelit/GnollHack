@@ -215,6 +215,7 @@
     <ClCompile Include="$(ImguiDir)imgui_widgets.cpp" />
     <ClCompile Include="..\..\..\ext\imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\..\..\ext\imgui\backends\imgui_impl_sdl.cpp" />
+    <ClCompile Include="..\mswproc.c" />
     <ClCompile Include="..\sdl\sdlmisc.cpp" />
     <ClCompile Include="..\sdl\sdlhack.c" />
     <ClCompile Include="..\sdl\sdlimgui.cpp" />
@@ -336,6 +337,7 @@
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlnuklear.h" />
     <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gl2.h" />
     <ClInclude Include="..\sdl\sdlmisc.h" />
+    <ClInclude Include="..\sdl\sdlproc.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />

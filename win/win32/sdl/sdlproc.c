@@ -12,6 +12,7 @@
 #include "dlb.h"
 #include "func_tab.h" /* for extended commands */
 #include "winMS.h"
+#include "sdlproc.h"
 #include <assert.h>
 #include <mmsystem.h>
 #include "mhmap.h"
@@ -40,48 +41,41 @@ extern void logDebug(const char *fmt, ...);
 # endif
 #endif
 
-#ifndef _DEBUG
-void
-logDebug(const char *fmt, ...)
-{
-}
-#endif
-
-static void mswin_main_loop(void);
-static void mswin_wait_loop(int milliseconds);
-static BOOL initMapTiles(void);
-static void mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
+static void sdl_main_loop(void);
+static void sdl_wait_loop(int milliseconds);
+static BOOL sdl_initMapTiles(void);
+static void sdl_color_from_string(char *colorstring, HBRUSH *brushptr,
                                     COLORREF *colorptr);
 static void prompt_for_player_selection(void);
 
-boolean disallow_keyboard_commands_in_wait_loop = FALSE;
+boolean sdl_disallow_keyboard_commands_in_wait_loop = FALSE;
 
 #define TOTAL_BRUSHES 10
-HBRUSH brush_table[TOTAL_BRUSHES];
-int max_brush = 0;
+HBRUSH sdl_brush_table[TOTAL_BRUSHES];
+int sdl_max_brush = 0;
 
-HBRUSH menu_bg_brush = NULL;
-HBRUSH menu_fg_brush = NULL;
-HBRUSH text_bg_brush = NULL;
-HBRUSH text_fg_brush = NULL;
-HBRUSH status_bg_brush = NULL;
-HBRUSH status_fg_brush = NULL;
-HBRUSH message_bg_brush = NULL;
-HBRUSH message_fg_brush = NULL;
+HBRUSH sdl_menu_bg_brush = NULL;
+HBRUSH sdl_menu_fg_brush = NULL;
+HBRUSH sdl_text_bg_brush = NULL;
+HBRUSH sdl_text_fg_brush = NULL;
+HBRUSH sdl_status_bg_brush = NULL;
+HBRUSH sdl_status_fg_brush = NULL;
+HBRUSH sdl_message_bg_brush = NULL;
+HBRUSH sdl_message_fg_brush = NULL;
 
-COLORREF menu_bg_color = RGB(0, 0, 0);
-COLORREF menu_fg_color = RGB(0xFF, 0xFF, 0xFF);
-COLORREF text_bg_color = RGB(0, 0, 0);
-COLORREF text_fg_color = RGB(0xFF, 0xFF, 0xFF);
-COLORREF status_bg_color = RGB(0, 0, 0);
-COLORREF status_fg_color = RGB(0xFF, 0xFF, 0xFF);
-COLORREF message_bg_color = RGB(0, 0, 0);
-COLORREF message_fg_color = RGB(0xFF, 0xFF, 0xFF);
+COLORREF sdl_menu_bg_color = RGB(0, 0, 0);
+COLORREF sdl_menu_fg_color = RGB(0xFF, 0xFF, 0xFF);
+COLORREF sdl_text_bg_color = RGB(0, 0, 0);
+COLORREF sdl_text_fg_color = RGB(0xFF, 0xFF, 0xFF);
+COLORREF sdl_status_bg_color = RGB(0, 0, 0);
+COLORREF sdl_status_fg_color = RGB(0xFF, 0xFF, 0xFF);
+COLORREF sdl_message_bg_color = RGB(0, 0, 0);
+COLORREF sdl_message_fg_color = RGB(0xFF, 0xFF, 0xFF);
 
-strbuf_t raw_print_strbuf = { 0 };
+strbuf_t sdl_raw_print_strbuf = { 0 };
 
 /* Interface definition, for windows.c */
-struct window_procs mswin_procs = {
+struct window_procs sdl_procs = {
     "MSWIN",
     WC_COLOR | WC_HILITE_PET | WC_ALIGN_MESSAGE | WC_ALIGN_STATUS | WC_INVERSE
         | WC_SCROLL_AMOUNT | WC_SCROLL_MARGIN | WC_MAP_MODE | WC_FONT_MESSAGE
@@ -93,47 +87,47 @@ struct window_procs mswin_procs = {
 #ifdef STATUS_HILITES
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
-    WC2_PREFERRED_SCREEN_SCALE, mswin_init_nhwindows, mswin_player_selection, mswin_askname,
-    mswin_get_nh_event, mswin_exit_nhwindows, mswin_suspend_nhwindows,
-    mswin_resume_nhwindows, mswin_create_nhwindow, mswin_clear_nhwindow,
-    mswin_display_nhwindow, mswin_destroy_nhwindow, mswin_curs, mswin_putstr,
-    genl_putmixed, mswin_display_file, mswin_start_menu, mswin_add_menu, mswin_add_extended_menu,
-    mswin_end_menu, mswin_select_menu,
+    WC2_PREFERRED_SCREEN_SCALE, sdl_init_nhwindows, sdl_player_selection, sdl_askname,
+    sdl_get_nh_event, sdl_exit_nhwindows, sdl_suspend_nhwindows,
+    sdl_resume_nhwindows, sdl_create_nhwindow, sdl_clear_nhwindow,
+    sdl_display_nhwindow, sdl_destroy_nhwindow, sdl_curs, sdl_putstr,
+    genl_putmixed, sdl_display_file, sdl_start_menu, sdl_add_menu, sdl_add_extended_menu,
+    sdl_end_menu, sdl_select_menu,
     genl_message_menu, /* no need for X-specific handling */
-    mswin_update_inventory, mswin_mark_synch, mswin_wait_synch,
+    sdl_update_inventory, sdl_mark_synch, sdl_wait_synch,
 #ifdef CLIPPING
-    mswin_cliparound,
+    sdl_cliparound,
 #endif
 #ifdef POSITIONBAR
     donull,
 #endif
-    mswin_print_glyph, mswin_raw_print, mswin_raw_print_bold, mswin_nhgetch,
-    mswin_nh_poskey, mswin_nhbell, mswin_doprev_message, mswin_yn_function,
-    mswin_getlin, mswin_get_ext_cmd, mswin_number_pad, mswin_delay_output, mswin_delay_output_milliseconds,
+    sdl_print_glyph, sdl_raw_print, sdl_raw_print_bold, sdl_nhgetch,
+    sdl_nh_poskey, sdl_nhbell, sdl_doprev_message, sdl_yn_function,
+    sdl_getlin, sdl_get_ext_cmd, sdl_number_pad, sdl_delay_output, sdl_delay_output_milliseconds,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
-    mswin, mswin_change_background,
+    mswin, sdl_change_background,
 #endif
     /* other defs that really should go away (they're tty specific) */
-    mswin_start_screen, mswin_end_screen, mswin_outrip,
-    mswin_preference_update, mswin_getmsghistory, mswin_putmsghistory,
-    mswin_status_init, mswin_status_finish, mswin_status_enablefield,
-    mswin_status_update,
+    sdl_start_screen, sdl_end_screen, sdl_outrip,
+    sdl_preference_update, sdl_getmsghistory, sdl_putmsghistory,
+    sdl_status_init, sdl_status_finish, sdl_status_enablefield,
+    sdl_status_update,
     genl_can_suspend_yes,
-    mswin_stretch_window,
-    mswin_set_animation_timer,
-    mswin_open_special_view,
-    mswin_stop_all_sounds,
-    mswin_play_immediate_ghsound,
-    mswin_play_ghsound_occupation_ambient,
-    mswin_play_ghsound_effect_ambient,
-    mswin_set_effect_ambient_volume,
-    mswin_play_ghsound_music,
-    mswin_play_ghsound_level_ambient,
-    mswin_play_ghsound_environment_ambient,
-    mswin_adjust_ghsound_general_volumes,
-    mswin_add_ambient_ghsound,
-    mswin_delete_ambient_ghsound,
-    mswin_set_ambient_ghsound_volume,
+    sdl_stretch_window,
+    sdl_set_animation_timer,
+    sdl_open_special_view,
+    sdl_stop_all_sounds,
+    sdl_play_immediate_ghsound,
+    sdl_play_ghsound_occupation_ambient,
+    sdl_play_ghsound_effect_ambient,
+    sdl_set_effect_ambient_volume,
+    sdl_play_ghsound_music,
+    sdl_play_ghsound_level_ambient,
+    sdl_play_ghsound_environment_ambient,
+    sdl_adjust_ghsound_general_volumes,
+    sdl_add_ambient_ghsound,
+    sdl_delete_ambient_ghsound,
+    sdl_set_ambient_ghsound_volume,
 };
 
 /*
@@ -151,7 +145,7 @@ init_nhwindows(int* argcp, char** argv)
                 ** windows?  Or at least all but WIN_INFO?      -dean
 */
 void
-mswin_init_nhwindows(int *argc, char **argv)
+sdl_init_nhwindows(int *argc, char **argv)
 {
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(argv);
@@ -164,7 +158,7 @@ mswin_init_nhwindows(int *argc, char **argv)
     }
 # endif
 #endif
-    logDebug("mswin_init_nhwindows()\n");
+    logDebug("sdl_init_nhwindows()\n");
 
     init_resource_fonts();
 
@@ -177,7 +171,7 @@ mswin_init_nhwindows(int *argc, char **argv)
     /* Read Windows settings from the reqistry */
     /* First set safe defaults */
     GetNHApp()->regMainMinX = CW_USEDEFAULT;
-    mswin_read_reg();
+    sdl_read_reg();
     /* Create the main window */
     GetNHApp()->hMainWnd = mswin_init_main_window();
     if (!GetNHApp()->hMainWnd) {
@@ -236,7 +230,7 @@ mswin_init_nhwindows(int *argc, char **argv)
     set_option_mod_status("mouse_support", SET_IN_GAME);
 
     /* initialize map tiles bitmap */
-    initMapTiles();
+    sdl_initMapTiles();
 
     /* set tile-related options to readonly */
     set_wc_option_mod_status(WC_TILE_WIDTH | WC_TILE_HEIGHT | WC_TILE_FILE,
@@ -251,21 +245,21 @@ mswin_init_nhwindows(int *argc, char **argv)
             | WC_FONTSIZ_TEXT | WC_VARY_MSGCOUNT,
         SET_IN_GAME);
 
-    mswin_color_from_string(iflags.wc_foregrnd_menu, &menu_fg_brush,
+    sdl_color_from_string(iflags.wc_foregrnd_menu, &menu_fg_brush,
                             &menu_fg_color);
-    mswin_color_from_string(iflags.wc_foregrnd_message, &message_fg_brush,
+    sdl_color_from_string(iflags.wc_foregrnd_message, &message_fg_brush,
                             &message_fg_color);
-    mswin_color_from_string(iflags.wc_foregrnd_status, &status_fg_brush,
+    sdl_color_from_string(iflags.wc_foregrnd_status, &status_fg_brush,
                             &status_fg_color);
-    mswin_color_from_string(iflags.wc_foregrnd_text, &text_fg_brush,
+    sdl_color_from_string(iflags.wc_foregrnd_text, &text_fg_brush,
                             &text_fg_color);
-    mswin_color_from_string(iflags.wc_backgrnd_menu, &menu_bg_brush,
+    sdl_color_from_string(iflags.wc_backgrnd_menu, &menu_bg_brush,
                             &menu_bg_color);
-    mswin_color_from_string(iflags.wc_backgrnd_message, &message_bg_brush,
+    sdl_color_from_string(iflags.wc_backgrnd_message, &message_bg_brush,
                             &message_bg_color);
-    mswin_color_from_string(iflags.wc_backgrnd_status, &status_bg_brush,
+    sdl_color_from_string(iflags.wc_backgrnd_status, &status_bg_brush,
                             &status_bg_color);
-    mswin_color_from_string(iflags.wc_backgrnd_text, &text_bg_brush,
+    sdl_color_from_string(iflags.wc_backgrnd_text, &text_bg_brush,
                             &text_bg_color);
 
     HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
@@ -304,9 +298,9 @@ mswin_init_nhwindows(int *argc, char **argv)
    the process. You need to fill in pl_character[0].
 */
 void
-mswin_player_selection(void)
+sdl_player_selection(void)
 {
-    logDebug("mswin_player_selection()\n");
+    logDebug("sdl_player_selection()\n");
 
     if (iflags.wc_player_selection == VIA_DIALOG) {
         /* pick player type randomly (use pre-selected
@@ -356,7 +350,7 @@ mswin_player_selection(void)
         } else {
             /* select a role */
             if (!mswin_player_selection_window()) {
-                bail(0);
+                sdl_bail(0);
             }
         }
     } else { /* iflags.wc_player_selection == VIA_PROMPTS */
@@ -391,7 +385,7 @@ prompt_for_player_selection(void)
 
         /* tty_putstr(BASE_WINDOW, 0, ""); */
         /* echoline = wins[BASE_WINDOW]->cury; */
-        box_result = NHMessageBox(NULL, prompt, MB_YESNOCANCEL | MB_DEFBUTTON1
+        box_result = SDL_NHMessageBox(NULL, prompt, MB_YESNOCANCEL | MB_DEFBUTTON1
                                                     | MB_ICONQUESTION);
         pick4u =
             (box_result == IDYES) ? 'y' : (box_result == IDNO) ? 'n' : '\033';
@@ -418,7 +412,7 @@ prompt_for_player_selection(void)
         give_up: /* Quit */
             if (selected)
                 free((genericptr_t) selected);
-            bail((char *) 0);
+            sdl_bail((char *) 0);
             /*NOTREACHED*/
             return;
         }
@@ -724,12 +718,12 @@ prompt_for_player_selection(void)
 
 /* Ask the user for a player name. */
 void
-mswin_askname(void)
+sdl_askname(void)
 {
-    logDebug("mswin_askname()\n");
+    logDebug("sdl_askname()\n");
 
     if (mswin_getlin_window("Who are you?", plname, PL_NSIZ) == IDCANCEL) {
-        bail("bye-bye");
+        sdl_bail("bye-bye");
         /* not reached */
     }
 }
@@ -738,11 +732,11 @@ mswin_askname(void)
    A noop for the tty and X window-ports.
 */
 void
-mswin_get_nh_event(void)
+sdl_get_nh_event(void)
 {
     MSG msg;
 
-    logDebug("mswin_get_nh_event()\n");
+    logDebug("sdl_get_nh_event()\n");
 
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0) {
         if (!TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable, &msg)) {
@@ -757,36 +751,36 @@ mswin_get_nh_event(void)
    except the "window" used for raw_print().  str is printed if possible.
 */
 void
-mswin_exit_nhwindows(const char *str)
+sdl_exit_nhwindows(const char *str)
 {
-    logDebug("mswin_exit_nhwindows(%s)\n", str);
+    logDebug("sdl_exit_nhwindows(%s)\n", str);
 
     /* Write Window settings to the registry */
-    mswin_write_reg();
+    sdl_write_reg();
 
     /* set things back to failsafes */
     windowprocs = *get_safe_procs(0);
 
     /* and make sure there is still a way to communicate something */
-    windowprocs.win_raw_print = mswin_raw_print;
-    windowprocs.win_raw_print_bold = mswin_raw_print_bold;
-    windowprocs.win_wait_synch = mswin_wait_synch;
+    windowprocs.win_raw_print = sdl_raw_print;
+    windowprocs.win_raw_print_bold = sdl_raw_print_bold;
+    windowprocs.win_wait_synch = sdl_wait_synch;
 }
 
 /* Prepare the window to be suspended. */
 void
-mswin_suspend_nhwindows(const char *str)
+sdl_suspend_nhwindows(const char *str)
 {
-    logDebug("mswin_suspend_nhwindows(%s)\n", str);
+    logDebug("sdl_suspend_nhwindows(%s)\n", str);
 
     return;
 }
 
 /* Restore the windows after being suspended. */
 void
-mswin_resume_nhwindows()
+sdl_resume_nhwindows()
 {
-    logDebug("mswin_resume_nhwindows()\n");
+    logDebug("sdl_resume_nhwindows()\n");
 
     return;
 }
@@ -799,12 +793,12 @@ mswin_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-mswin_create_nhwindow(int type)
+sdl_create_nhwindow(int type)
 {
     winid i = 0;
     MSNHMsgAddWnd data;
 
-    logDebug("mswin_create_nhwindow(%d)\n", type);
+    logDebug("sdl_create_nhwindow(%d)\n", type);
 
     /* Return the next available winid
      */
@@ -861,9 +855,9 @@ mswin_create_nhwindow(int type)
 
 /* Clear the given window, when asked to. */
 void
-mswin_clear_nhwindow(winid wid)
+sdl_clear_nhwindow(winid wid)
 {
-    logDebug("mswin_clear_nhwindow(%d)\n", wid);
+    logDebug("sdl_clear_nhwindow(%d)\n", wid);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -872,13 +866,13 @@ mswin_clear_nhwindow(winid wid)
                 if (iflags.wc_map_mode == MAP_MODE_ASCII_FIT_TO_SCREEN ||
                     iflags.wc_map_mode == MAP_MODE_TILES_FIT_TO_SCREEN)
 
-                    mswin_map_mode(mswin_hwnd_from_winid(WIN_MAP),
+                    mswin_map_mode(sdl_hwnd_from_winid(WIN_MAP),
                                    ROGUE_LEVEL_MAP_MODE_FIT_TO_SCREEN);
                 else
-                    mswin_map_mode(mswin_hwnd_from_winid(WIN_MAP),
+                    mswin_map_mode(sdl_hwnd_from_winid(WIN_MAP),
                                    ROGUE_LEVEL_MAP_MODE);
             else
-                mswin_map_mode(mswin_hwnd_from_winid(WIN_MAP),
+                mswin_map_mode(sdl_hwnd_from_winid(WIN_MAP),
                                iflags.wc_map_mode);
         }
 
@@ -897,9 +891,9 @@ mswin_clear_nhwindow(winid wid)
                    --more--, if necessary, in the tty window-port.
 */
 void
-mswin_display_nhwindow(winid wid, BOOLEAN_P block)
+sdl_display_nhwindow(winid wid, BOOLEAN_P block)
 {
-    logDebug("mswin_display_nhwindow(%d, %d)\n", wid, block);
+    logDebug("sdl_display_nhwindow(%d, %d)\n", wid, block);
     if (GetNHApp()->windowlist[wid].win != NULL) {
         ShowWindow(GetNHApp()->windowlist[wid].win, SW_SHOW);
         mswin_layout_main_window(GetNHApp()->windowlist[wid].win);
@@ -918,7 +912,7 @@ mswin_display_nhwindow(winid wid, BOOLEAN_P block)
                 UpdateWindow(GetNHApp()->windowlist[wid].win);
             } else {
                 if (GetNHApp()->windowlist[wid].type == NHW_MAP) {
-                    (void) mswin_nhgetch();
+                    (void) sdl_nhgetch();
                 }
             }
         }
@@ -927,7 +921,7 @@ mswin_display_nhwindow(winid wid, BOOLEAN_P block)
 }
 
 HWND
-mswin_hwnd_from_winid(winid wid)
+sdl_hwnd_from_winid(winid wid)
 {
     if (wid >= 0 && wid < MAXWINDOWS) {
         return GetNHApp()->windowlist[wid].win;
@@ -937,7 +931,7 @@ mswin_hwnd_from_winid(winid wid)
 }
 
 winid
-mswin_winid_from_handle(HWND hWnd)
+sdl_winid_from_handle(HWND hWnd)
 {
     winid i = 0;
 
@@ -948,7 +942,7 @@ mswin_winid_from_handle(HWND hWnd)
 }
 
 winid
-mswin_winid_from_type(int type)
+sdl_winid_from_type(int type)
 {
     winid i = 0;
 
@@ -959,7 +953,7 @@ mswin_winid_from_type(int type)
 }
 
 void
-mswin_window_mark_dead(winid wid)
+sdl_window_mark_dead(winid wid)
 {
     if (wid >= 0 && wid < MAXWINDOWS) {
         GetNHApp()->windowlist[wid].win = NULL;
@@ -971,9 +965,9 @@ mswin_window_mark_dead(winid wid)
  * already been dismissed.
 */
 void
-mswin_destroy_nhwindow(winid wid)
+sdl_destroy_nhwindow(winid wid)
 {
-    logDebug("mswin_destroy_nhwindow(%d)\n", wid);
+    logDebug("sdl_destroy_nhwindow(%d)\n", wid);
 
     if ((GetNHApp()->windowlist[wid].type == NHW_MAP)
         || (GetNHApp()->windowlist[wid].type == NHW_MESSAGE)
@@ -998,9 +992,9 @@ mswin_destroy_nhwindow(winid wid)
  the size of window.
 */
 void
-mswin_curs(winid wid, int x, int y)
+sdl_curs(winid wid, int x, int y)
 {
-    logDebug("mswin_curs(%d, %d, %d)\n", wid, x, y);
+    logDebug("sdl_curs(%d, %d, %d)\n", wid, x, y);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -1036,15 +1030,15 @@ Attributes
                    by calling more() or displaying both on the same line.
 */
 void
-mswin_putstr(winid wid, int attr, const char *text)
+sdl_putstr(winid wid, int attr, const char *text)
 {
-    logDebug("mswin_putstr(%d, %d, %s)\n", wid, attr, text);
+    logDebug("sdl_putstr(%d, %d, %s)\n", wid, attr, text);
 
-    mswin_putstr_ex(wid, attr, text, 0);
+    sdl_putstr_ex(wid, attr, text, 0);
 }
 
 void
-mswin_putstr_ex(winid wid, int attr, const char *text, int app)
+sdl_putstr_ex(winid wid, int attr, const char *text, int app)
 {
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
@@ -1064,7 +1058,7 @@ mswin_putstr_ex(winid wid, int attr, const char *text, int app)
                         (WPARAM) MSNH_MSG_PUTSTR, (LPARAM) &data);
         }
         /* yield a bit so it gets done immediately */
-        mswin_get_nh_event();
+        sdl_get_nh_event();
     } else {
         // build text to display later in message box
         GetNHApp()->saved_text =
@@ -1078,12 +1072,12 @@ mswin_putstr_ex(winid wid, int attr, const char *text, int app)
                    iff complain is TRUE.
 */
 void
-mswin_display_file(const char *filename, BOOLEAN_P must_exist)
+sdl_display_file(const char *filename, BOOLEAN_P must_exist)
 {
     dlb *f;
     TCHAR wbuf[BUFSZ];
 
-    logDebug("mswin_display_file(%s, %d)\n", filename, must_exist);
+    logDebug("sdl_display_file(%s, %d)\n", filename, must_exist);
 
     f = dlb_fopen(filename, RDTMODE);
     if (!f) {
@@ -1091,26 +1085,26 @@ mswin_display_file(const char *filename, BOOLEAN_P must_exist)
             TCHAR message[90];
             _stprintf(message, TEXT("Warning! Could not find file: %s\n"),
                       NH_A2W(filename, wbuf, sizeof(wbuf)));
-            NHMessageBox(GetNHApp()->hMainWnd, message,
+            SDL_NHMessageBox(GetNHApp()->hMainWnd, message,
                          MB_OK | MB_ICONEXCLAMATION);
         }
     } else {
         winid text;
         char line[LLEN];
 
-        text = mswin_create_nhwindow(NHW_TEXT);
+        text = sdl_create_nhwindow(NHW_TEXT);
 
         while (dlb_fgets(line, LLEN, f)) {
             size_t len;
             len = strlen(line);
             if (line[len - 1] == '\n')
                 line[len - 1] = '\x0';
-            mswin_putstr(text, ATR_NONE, line);
+            sdl_putstr(text, ATR_NONE, line);
         }
         (void) dlb_fclose(f);
 
-        mswin_display_nhwindow(text, 1);
-        mswin_destroy_nhwindow(text);
+        sdl_display_nhwindow(text, 1);
+        sdl_destroy_nhwindow(text);
     }
 }
 
@@ -1120,9 +1114,9 @@ mswin_display_file(const char *filename, BOOLEAN_P must_exist)
    be used for menus.
 */
 void
-mswin_start_menu(winid wid)
+sdl_start_menu(winid wid)
 {
-    logDebug("mswin_start_menu(%d)\n", wid);
+    logDebug("sdl_start_menu(%d)\n", wid);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
             && GetNHApp()->windowlist[wid].type == NHW_MENU) {
@@ -1171,11 +1165,11 @@ identifier
                    menu is displayed, set preselected to TRUE.
 */
 void
-mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct extended_menu_info info,
+sdl_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct extended_menu_info info,
                CHAR_P accelerator, CHAR_P group_accel, int attr,
                const char *str, BOOLEAN_P presel)
 {
-    logDebug("mswin_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
+    logDebug("sdl_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
              presel);
 
@@ -1200,11 +1194,11 @@ mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct ex
 }
 
 void
-mswin_add_menu(winid wid, int glyph, const ANY_P* identifier,
+sdl_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    mswin_add_extended_menu(wid, glyph, identifier, zeroextendedmenuinfo,
+    sdl_add_extended_menu(wid, glyph, identifier, zeroextendedmenuinfo,
         accelerator, group_accel, attr,
         str, presel);
 }
@@ -1219,9 +1213,9 @@ end_menu(window, prompt)
                 ** it ever did).  That should be select_menu's job.  -dean
 */
 void
-mswin_end_menu(winid wid, const char *prompt)
+sdl_end_menu(winid wid, const char *prompt)
 {
-    logDebug("mswin_end_menu(%d, %s)\n", wid, prompt);
+    logDebug("sdl_end_menu(%d, %s)\n", wid, prompt);
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         MSNHMsgEndMenu data;
@@ -1259,11 +1253,11 @@ int select_menu(windid window, int how, menu_item **selected)
                    create_nhwindow() time.
 */
 int
-mswin_select_menu(winid wid, int how, MENU_ITEM_P **selected)
+sdl_select_menu(winid wid, int how, MENU_ITEM_P **selected)
 {
     int nReturned = -1;
 
-    logDebug("mswin_select_menu(%d, %d)\n", wid, how);
+    logDebug("sdl_select_menu(%d, %d)\n", wid, how);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -1284,9 +1278,9 @@ mswin_select_menu(winid wid, int how, MENU_ITEM_P **selected)
         window up, otherwise empty.
 */
 void
-mswin_update_inventory()
+sdl_update_inventory()
 {
-    logDebug("mswin_update_inventory()\n");
+    logDebug("sdl_update_inventory()\n");
     if (iflags.perm_invent && program_state.something_worth_saving
         && iflags.window_inited && WIN_INVEN != WIN_ERR)
         display_inventory(NULL, FALSE, 0);
@@ -1298,9 +1292,9 @@ mark_synch()    -- Don't go beyond this point in I/O on any channel until
                    for the moment
 */
 void
-mswin_mark_synch()
+sdl_mark_synch()
 {
-    logDebug("mswin_mark_synch()\n");
+    logDebug("sdl_mark_synch()\n");
 }
 
 /*
@@ -1310,10 +1304,10 @@ wait_synch()    -- Wait until all pending output is complete (*flush*() for
                    display is OK when return from wait_synch().
 */
 void
-mswin_wait_synch()
+sdl_wait_synch()
 {
-    logDebug("mswin_wait_synch()\n");
-    mswin_raw_print_flush();
+    logDebug("sdl_wait_synch()\n");
+    sdl_raw_print_flush();
 }
 
 /*
@@ -1322,11 +1316,11 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-mswin_cliparound(int x, int y)
+sdl_cliparound(int x, int y)
 {
     winid wid = WIN_MAP;
 
-    logDebug("mswin_cliparound(%d, %d)\n", x, y);
+    logDebug("sdl_cliparound(%d, %d)\n", x, y);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -1351,12 +1345,12 @@ print_glyph(window, x, y, layers)
                    
 */
 void
-mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
+sdl_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
     int glyph = layers.glyph;
     int bkglyph = layers.bkglyph;
 
-    logDebug("mswin_print_glyph(%d, %d, %d, %d, %d)\n", wid, x, y, glyph, bkglyph);
+    logDebug("sdl_print_glyph(%d, %d, %d, %d, %d)\n", wid, x, y, glyph, bkglyph);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -1372,35 +1366,35 @@ mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 }
 
 /*
- * mswin_raw_print_accumulate() accumulate the given text into
+ * sdl_raw_print_accumulate() accumulate the given text into
  *   raw_print_strbuf.
  */
 void
-mswin_raw_print_accumulate(const char * str, boolean bold)
+sdl_raw_print_accumulate(const char * str, boolean bold)
 {
     bold; // ignored for now
 
-    if (raw_print_strbuf.str != NULL) strbuf_append(&raw_print_strbuf, "\n");
-    strbuf_append(&raw_print_strbuf, str);
+    if (sdl_raw_print_strbuf.str != NULL) strbuf_append(&sdl_raw_print_strbuf, "\n");
+    strbuf_append(&sdl_raw_print_strbuf, str);
 }
 
 /*
- * mswin_raw_print_flush() - display any text found in raw_print_strbuf in a
+ * sdl_raw_print_flush() - display any text found in raw_print_strbuf in a
  *   dialog box and clear raw_print_strbuf.
  */
 void
-mswin_raw_print_flush()
+sdl_raw_print_flush()
 {
-    if (raw_print_strbuf.str != NULL) {
-        size_t wlen = strlen(raw_print_strbuf.str) + 1;
+    if (sdl_raw_print_strbuf.str != NULL) {
+        size_t wlen = strlen(sdl_raw_print_strbuf.str) + 1;
         TCHAR * wbuf = (TCHAR *) alloc(wlen * sizeof(TCHAR));
         if (wbuf != NULL) {
-            NHMessageBox(GetNHApp()->hMainWnd,
-                            NH_A2W(raw_print_strbuf.str, wbuf, wlen),
+            SDL_NHMessageBox(GetNHApp()->hMainWnd,
+                            NH_A2W(sdl_raw_print_strbuf.str, wbuf, wlen),
                             MB_ICONINFORMATION | MB_OK);
             free(wbuf);
         }
-        strbuf_empty(&raw_print_strbuf);
+        strbuf_empty(&sdl_raw_print_strbuf);
     }
 }
 
@@ -1415,14 +1409,14 @@ raw_print(str)  -- Print directly to a screen, or otherwise guarantee that
                    updating status for micros (i.e, "saving").
 */
 void
-mswin_raw_print(const char *str)
+sdl_raw_print(const char *str)
 {
-    logDebug("mswin_raw_print(%s)\n", str);
+    logDebug("sdl_raw_print(%s)\n", str);
 
     if (str && *str) {
         extern int redirect_stdout;
         if (!redirect_stdout)
-            mswin_raw_print_accumulate(str, FALSE);
+            sdl_raw_print_accumulate(str, FALSE);
         else
             fprintf(stdout, "%s", str);
     }
@@ -1434,13 +1428,13 @@ raw_print_bold(str)
 possible).
 */
 void
-mswin_raw_print_bold(const char *str)
+sdl_raw_print_bold(const char *str)
 {
-    logDebug("mswin_raw_print_bold(%s)\n", str);
+    logDebug("sdl_raw_print_bold(%s)\n", str);
     if (str && *str) {
         extern int redirect_stdout;
         if (!redirect_stdout)
-            mswin_raw_print_accumulate(str, TRUE);
+            sdl_raw_print_accumulate(str, TRUE);
         else
             fprintf(stdout, "%s", str);
     }
@@ -1453,15 +1447,15 @@ int nhgetch()   -- Returns a single character input from the user.
                    Returned character _must_ be non-zero.
 */
 int
-mswin_nhgetch()
+sdl_nhgetch()
 {
     PMSNHEvent event;
     int key = 0;
 
-    logDebug("mswin_nhgetch()\n");
+    logDebug("sdl_nhgetch()\n");
 
     while ((event = mswin_input_pop()) == NULL || event->type != NHEVENT_CHAR)
-        mswin_main_loop();
+        sdl_main_loop();
 
     key = event->kbd.ch;
     return (key);
@@ -1483,15 +1477,15 @@ int nh_poskey(int *x, int *y, int *mod)
                    routine always returns a non-zero character.
 */
 int
-mswin_nh_poskey(int *x, int *y, int *mod)
+sdl_nh_poskey(int *x, int *y, int *mod)
 {
     PMSNHEvent event;
     int key;
 
-    logDebug("mswin_nh_poskey()\n");
+    logDebug("sdl_nh_poskey()\n");
 
     while ((event = mswin_input_pop()) == NULL)
-        mswin_main_loop();
+        sdl_main_loop();
 
     if (event->type == NHEVENT_MOUSE) {
 	if (iflags.wc_mouse_support) {
@@ -1512,9 +1506,9 @@ nhbell()        -- Beep at user.  [This will exist at least until sounds are
 anyway.]
 */
 void
-mswin_nhbell()
+sdl_nhbell()
 {
-    logDebug("mswin_nhbell()\n");
+    logDebug("sdl_nhbell()\n");
 }
 
 /*
@@ -1523,10 +1517,10 @@ doprev_message()
                 -- On the tty-port this scrolls WIN_MESSAGE back one line.
 */
 int
-mswin_doprev_message()
+sdl_doprev_message()
 {
-    logDebug("mswin_doprev_message()\n");
-    SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_VSCROLL,
+    logDebug("sdl_doprev_message()\n");
+    SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_VSCROLL,
                 MAKEWPARAM(SB_LINEUP, 0), (LPARAM) NULL);
     return 0;
 }
@@ -1551,7 +1545,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-mswin_yn_function(const char *question, const char *choices, CHAR_P def)
+sdl_yn_function(const char *question, const char *choices, CHAR_P def)
 {
     char ch;
     char yn_esc_map = '\033';
@@ -1560,7 +1554,7 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
     int createcaret;
     boolean digit_ok, allow_num;
 
-    logDebug("mswin_yn_function(%s, %s, %d)\n", question, choices, def);
+    logDebug("sdl_yn_function(%s, %s, %d)\n", question, choices, def);
 
     if (WIN_MESSAGE == WIN_ERR && choices == ynchars) {
         char *text =
@@ -1569,7 +1563,7 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
         DWORD box_result;
         strcat(text, question);
         box_result =
-            NHMessageBox(NULL, NH_W2A(text, message, sizeof(message)),
+            SDL_NHMessageBox(NULL, NH_W2A(text, message, sizeof(message)),
                          MB_ICONQUESTION | MB_YESNOCANCEL
                              | ((def == 'y') ? MB_DEFBUTTON1
                                              : (def == 'n') ? MB_DEFBUTTON2
@@ -1604,18 +1598,18 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
     }
 
     createcaret = 1;
-    SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+    SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
-    mswin_clear_nhwindow(WIN_MESSAGE);
-    mswin_putstr(WIN_MESSAGE, ATR_BOLD, message);
+    sdl_clear_nhwindow(WIN_MESSAGE);
+    sdl_putstr(WIN_MESSAGE, ATR_BOLD, message);
 
     /* Only here if main window is not present */
     ch = 0;
     do {
-        ShowCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
-        ch = mswin_nhgetch();
-        HideCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
+        ShowCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
+        ch = sdl_nhgetch();
+        HideCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
         if (choices)
             ch = lowc(ch);
         else
@@ -1635,19 +1629,19 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
             ch = def;
             break;
         } else if (!index(choices, ch) && !digit_ok) {
-            mswin_nhbell();
+            sdl_nhbell();
             ch = (char) 0;
             /* and try again... */
         } else if (ch == '#' || digit_ok) {
             char z, digit_string[2];
             int n_len = 0;
             long value = 0;
-            mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, ("#"), 1);
+            sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, ("#"), 1);
             n_len++;
             digit_string[1] = '\0';
             if (ch != '#') {
                 digit_string[0] = ch;
-                mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
+                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
                 n_len++;
                 value = ch - '0';
                 ch = '#';
@@ -1659,7 +1653,7 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
                     if (value < 0)
                         break; /* overflow: try again */
                     digit_string[0] = z;
-                    mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
+                    sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
                     n_len++;
                 } else if (z == 'y' || index(quitchars, z)) {
                     if (z == '\033')
@@ -1671,13 +1665,13 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
                         break;
                     } else {
                         value /= 10;
-                        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string,
+                        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string,
                                         -1);
                         n_len--;
                     }
                 } else {
                     value = -1; /* abort */
-                    mswin_nhbell();
+                    sdl_nhbell();
                     break;
                 }
             } while (z != '\n');
@@ -1686,7 +1680,7 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
             else if (value == 0)
                 ch = 'n'; /* 0 => "no" */
             else {        /* remove number from top line, then try again */
-                mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, -n_len);
+                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, -n_len);
                 n_len = 0;
                 ch = (char) 0;
             }
@@ -1694,14 +1688,14 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
     } while (!ch);
 
     createcaret = 0;
-    SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+    SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
     /* display selection in the message window */
     if (isprint((uchar) ch) && ch != '#') {
         res_ch[0] = ch;
         res_ch[1] = '\x0';
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1);
+        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1);
     }
 
     return ch;
@@ -1718,9 +1712,9 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-mswin_getlin(const char *question, char *input)
+sdl_getlin(const char *question, char *input)
 {
-    logDebug("mswin_getlin(%s, %p)\n", question, input);
+    logDebug("sdl_getlin(%s, %p)\n", question, input);
 
     if (!iflags.wc_popup_dialog) {
         char c;
@@ -1729,23 +1723,23 @@ mswin_getlin(const char *question, char *input)
         int createcaret;
 
         createcaret = 1;
-        SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+        SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
-        /* mswin_clear_nhwindow(WIN_MESSAGE); */
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, question, 0);
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, " ", 1);
+        /* sdl_clear_nhwindow(WIN_MESSAGE); */
+        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, question, 0);
+        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, " ", 1);
 #ifdef EDIT_GETLIN
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0);
+        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0);
         len = strlen(input);
 #else
         input[0] = '\0';
         len = 0;
 #endif
-        ShowCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
+        ShowCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
         done = FALSE;
         while (!done) {
-            c = mswin_nhgetch();
+            c = sdl_nhgetch();
             switch (c) {
             case VK_ESCAPE:
                 strcpy(input, "\033");
@@ -1758,7 +1752,7 @@ mswin_getlin(const char *question, char *input)
                 break;
             default:
                 if (input[0])
-                    mswin_putstr_ex(WIN_MESSAGE, ATR_NONE, input, -len);
+                    sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, input, -len);
                 if (c == VK_BACK) {
                     if (len > 0)
                         len--;
@@ -1769,13 +1763,13 @@ mswin_getlin(const char *question, char *input)
                     input[len++] = c;
                     input[len] = '\0';
                 }
-                mswin_putstr_ex(WIN_MESSAGE, ATR_NONE, input, 1);
+                sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, input, 1);
                 break;
             }
         }
-        HideCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
+        HideCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
         createcaret = 0;
-        SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+        SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
     } else {
         if (mswin_getlin_window(question, input, BUFSZ) == IDCANCEL) {
@@ -1791,10 +1785,10 @@ int get_ext_cmd(void)
                selection, -1 otherwise.
 */
 int
-mswin_get_ext_cmd()
+sdl_get_ext_cmd()
 {
     int ret;
-    logDebug("mswin_get_ext_cmd()\n");
+    logDebug("sdl_get_ext_cmd()\n");
 
     if (!iflags.wc_popup_dialog) {
         char c;
@@ -1803,18 +1797,18 @@ mswin_get_ext_cmd()
         int createcaret;
 
         createcaret = 1;
-        SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+        SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
         cmd[0] = '\0';
         i = -2;
-        mswin_clear_nhwindow(WIN_MESSAGE);
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, "#", 0);
+        sdl_clear_nhwindow(WIN_MESSAGE);
+        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, "#", 0);
         len = 0;
-        ShowCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
+        ShowCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
         while (i == -2) {
             int oindex, com_index;
-            c = mswin_nhgetch();
+            c = sdl_nhgetch();
             switch (c) {
             case VK_ESCAPE:
                 i = -1;
@@ -1833,7 +1827,7 @@ mswin_get_ext_cmd()
                 break;
             default:
                 if (cmd[0])
-                    mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd,
+                    sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd,
                                     -(int) strlen(cmd));
                 if (c == VK_BACK) {
                     if (len > 0)
@@ -1860,13 +1854,13 @@ mswin_get_ext_cmd()
                         Strcpy(cmd, extcmdlist[com_index].ef_txt);
                     }
                 }
-                mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd, 1);
+                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd, 1);
                 break;
             }
         }
-        HideCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
+        HideCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
         createcaret = 0;
-        SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+        SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
         return i;
     } else {
@@ -1882,10 +1876,10 @@ number_pad(state)
             -- Initialize the number pad to the given state.
 */
 void
-mswin_number_pad(int state)
+sdl_number_pad(int state)
 {
     /* Do Nothing */
-    logDebug("mswin_number_pad(%d)\n", state);
+    logDebug("sdl_number_pad(%d)\n", state);
 }
 
 /*
@@ -1894,31 +1888,31 @@ delay_output()  -- Causes a visible delay of 50ms in the output.
                by a nap(50ms), but allows asynchronous operation.
 */
 void
-mswin_delay_output()
+sdl_delay_output()
 {
-    logDebug("mswin_delay_output()\n");
+    logDebug("sdl_delay_output()\n");
     //Sleep(50);
-    mswin_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES);
+    sdl_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES);
 }
 
 void
-mswin_delay_output_milliseconds(int interval)
+sdl_delay_output_milliseconds(int interval)
 {
-    logDebug("mswin_delay_output_milliseconds()\n");
+    logDebug("sdl_delay_output_milliseconds()\n");
     //Sleep(interval);
-    mswin_wait_loop(interval);
+    sdl_wait_loop(interval);
 }
 
 void
-mswin_change_color()
+sdl_change_color()
 {
-    logDebug("mswin_change_color()\n");
+    logDebug("sdl_change_color()\n");
 }
 
 char *
-mswin_get_color_string()
+sdl_get_color_string()
 {
-    logDebug("mswin_get_color_string()\n");
+    logDebug("sdl_get_color_string()\n");
     return ("");
 }
 
@@ -1930,10 +1924,10 @@ start_screen()  -- Only used on Unix tty ports, but must be declared for
                just declare an empty function.
 */
 void
-mswin_start_screen()
+sdl_start_screen()
 {
     /* Do Nothing */
-    logDebug("mswin_start_screen()\n");
+    logDebug("sdl_start_screen()\n");
 }
 
 /*
@@ -1941,10 +1935,10 @@ end_screen()    -- Only used on Unix tty ports, but must be declared for
                completeness.  The complement of start_screen().
 */
 void
-mswin_end_screen()
+sdl_end_screen()
 {
     /* Do Nothing */
-    logDebug("mswin_end_screen()\n");
+    logDebug("sdl_end_screen()\n");
 }
 
 /*
@@ -1954,12 +1948,12 @@ outrip(winid, int, when)
 */
 #define STONE_LINE_LEN 16
 void
-mswin_outrip(winid wid, int how, time_t when)
+sdl_outrip(winid wid, int how, time_t when)
 {
     char buf[BUFSZ];
     long year;
 
-    logDebug("mswin_outrip(%d, %d, %ld)\n", wid, how, (long) when);
+    logDebug("sdl_outrip(%d, %d, %ld)\n", wid, how, (long) when);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         DestroyWindow(GetNHApp()->windowlist[wid].win);
         GetNHApp()->windowlist[wid].win = mswin_init_RIP_window();
@@ -1992,7 +1986,7 @@ mswin_outrip(winid wid, int how, time_t when)
 
 /* handle options updates here */
 void
-mswin_preference_update(const char *pref)
+sdl_preference_update(const char *pref)
 {
     if (stricmp(pref, "font_menu") == 0
         || stricmp(pref, "font_size_menu") == 0) 
@@ -2065,7 +2059,7 @@ mswin_preference_update(const char *pref)
         mswin_get_font(NHW_MESSAGE, ATR_INVERSE, hdc, TRUE);
         ReleaseDC(GetNHApp()->hMainWnd, hdc);
 
-        InvalidateRect(mswin_hwnd_from_winid(WIN_MESSAGE), NULL, TRUE);
+        InvalidateRect(sdl_hwnd_from_winid(WIN_MESSAGE), NULL, TRUE);
         mswin_layout_main_window(NULL);
         return;
     }
@@ -2094,12 +2088,12 @@ mswin_preference_update(const char *pref)
     }
 
     if (stricmp(pref, "scroll_amount") == 0) {
-        mswin_cliparound(u.ux, u.uy);
+        sdl_cliparound(u.ux, u.uy);
         return;
     }
 
     if (stricmp(pref, "scroll_margin") == 0) {
-        mswin_cliparound(u.ux, u.uy);
+        sdl_cliparound(u.ux, u.uy);
         return;
     }
 
@@ -2109,7 +2103,7 @@ mswin_preference_update(const char *pref)
     }
 
     if (stricmp(pref, "hilite_pet") == 0) {
-        InvalidateRect(mswin_hwnd_from_winid(WIN_MAP), NULL, TRUE);
+        InvalidateRect(sdl_hwnd_from_winid(WIN_MAP), NULL, TRUE);
         return;
     }
 
@@ -2120,19 +2114,19 @@ mswin_preference_update(const char *pref)
     }
 
     if (stricmp(pref, "vary_msgcount") == 0) {
-        InvalidateRect(mswin_hwnd_from_winid(WIN_MESSAGE), NULL, TRUE);
+        InvalidateRect(sdl_hwnd_from_winid(WIN_MESSAGE), NULL, TRUE);
         mswin_layout_main_window(NULL);
         return;
     }
 
     if (stricmp(pref, "perm_invent") == 0) {
-        mswin_update_inventory();
+        sdl_update_inventory();
         return;
     }
 
     if (stricmp(pref, "preferred_screen_scale") == 0) {
         dozoomnormal();
-        mswin_stretch_window();
+        sdl_stretch_window();
         return;
     }
 
@@ -2140,7 +2134,7 @@ mswin_preference_update(const char *pref)
 
 #define TEXT_BUFFER_SIZE 4096
 char *
-mswin_getmsghistory(BOOLEAN_P init)
+sdl_getmsghistory(BOOLEAN_P init)
 {
     static PMSNHMsgGetText text = 0;
     static char *next_message = 0;
@@ -2157,7 +2151,7 @@ mswin_getmsghistory(BOOLEAN_P init)
             - 1; /* make sure we always have 0 at the end of the buffer */
 
         ZeroMemory(text->buffer, TEXT_BUFFER_SIZE);
-        SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+        SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_GETTEXT, (LPARAM) text);
 
         next_message = text->buffer;
@@ -2181,7 +2175,7 @@ mswin_getmsghistory(BOOLEAN_P init)
 }
 
 void
-mswin_putmsghistory(const char *msg, BOOLEAN_P restoring)
+sdl_putmsghistory(const char *msg, BOOLEAN_P restoring)
 {
     BOOL save_sound_opt;
 
@@ -2192,14 +2186,14 @@ mswin_putmsghistory(const char *msg, BOOLEAN_P restoring)
     save_sound_opt = GetNHApp()->bNoSounds;
     GetNHApp()->bNoSounds =
         TRUE; /* disable sounds while restoring message history */
-    mswin_putstr_ex(WIN_MESSAGE, ATR_NONE, msg, 0);
+    sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, msg, 0);
     clear_nhwindow(WIN_MESSAGE); /* it is in fact end-of-turn indication so
                                     each message will print on the new line */
     GetNHApp()->bNoSounds = save_sound_opt; /* restore sounds option */
 }
 
 void
-mswin_main_loop()
+sdl_main_loop()
 {
     MSG msg;
 
@@ -2225,7 +2219,7 @@ mswin_main_loop()
 }
 
 void
-mswin_wait_loop(int milliseconds)
+sdl_wait_loop(int milliseconds)
 {
     if (milliseconds <= 0)
         return;
@@ -2330,16 +2324,16 @@ mswin_wait_loop(int milliseconds)
 
 /* clean up and quit */
 void
-bail(const char *mesg)
+sdl_bail(const char *mesg)
 {
     clearlocks();
-    mswin_exit_nhwindows(mesg);
+    sdl_exit_nhwindows(mesg);
     nh_terminate(EXIT_SUCCESS);
     /*NOTREACHED*/
 }
 
 BOOL
-initMapTiles(void)
+sdl_initMapTiles(void)
 {
     HBITMAP hBmp;
     BITMAP bm;
@@ -2397,12 +2391,12 @@ initMapTiles(void)
 
     map_size.cx = GetNHApp()->mapTile_X * COLNO;
     map_size.cy = GetNHApp()->mapTile_Y * ROWNO;
-    mswin_map_stretch(mswin_hwnd_from_winid(WIN_MAP), &map_size, TRUE);
+    mswin_map_stretch(sdl_hwnd_from_winid(WIN_MAP), &map_size, TRUE);
     return TRUE;
 }
 
 void
-mswin_popup_display(HWND hWnd, int *done_indicator)
+sdl_popup_display(HWND hWnd, int *done_indicator)
 {
     MSG msg;
     HWND hChild;
@@ -2459,7 +2453,7 @@ mswin_popup_display(HWND hWnd, int *done_indicator)
 }
 
 void
-mswin_popup_destroy(HWND hWnd)
+sdl_popup_destroy(HWND hWnd)
 {
     HWND hChild;
     HMENU hMenu;
@@ -2483,7 +2477,7 @@ mswin_popup_destroy(HWND hWnd)
     DrawMenuBar(GetNHApp()->hMainWnd);
 
     /* Don't hide the permanent inventory window ... leave it showing */
-    if (!iflags.perm_invent || mswin_winid_from_handle(hWnd) != WIN_INVEN)
+    if (!iflags.perm_invent || sdl_winid_from_handle(hWnd) != WIN_INVEN)
         ShowWindow(hWnd, SW_HIDE);
 
     GetNHApp()->hPopupWnd = NULL;
@@ -2492,26 +2486,6 @@ mswin_popup_destroy(HWND hWnd)
 
     SetFocus(GetNHApp()->hMainWnd);
 }
-
-#ifdef DEBUG
-# ifdef _DEBUG
-#include <stdarg.h>
-
-void
-logDebug(const char *fmt, ...)
-{
-    va_list args;
-
-    if (!showdebug(NHTRACE_LOG) || !_s_debugfp)
-        return;
-
-    va_start(args, fmt);
-    vfprintf(_s_debugfp, fmt, args);
-    va_end(args);
-    fflush(_s_debugfp);
-}
-# endif
-#endif
 
 /* Reading and writing settings from the registry. */
 #define CATEGORYKEY "Software"
@@ -2557,7 +2531,7 @@ logDebug(const char *fmt, ...)
 #define INTFKEY "Interface"
 
 void
-mswin_read_reg()
+sdl_read_reg()
 {
     HKEY key;
     DWORD size;
@@ -2669,7 +2643,7 @@ mswin_read_reg()
 }
 
 void
-mswin_write_reg()
+sdl_write_reg()
 {
     HKEY key;
     DWORD disposition;
@@ -2747,7 +2721,7 @@ mswin_write_reg()
 }
 
 void
-mswin_destroy_reg()
+sdl_destroy_reg()
 {
     char keystring[MAX_PATH];
     HKEY key;
@@ -2850,7 +2824,7 @@ static color_table_brush_value color_table_brush[] = {
 };
 
 static void
-mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
+sdl_color_from_string(char *colorstring, HBRUSH *brushptr,
                         COLORREF *colorptr)
 {
     color_table_value *ctv_ptr = color_table;
@@ -2908,18 +2882,18 @@ mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
             }
         }
     }
-	if (max_brush >= TOTAL_BRUSHES)
+	if (sdl_max_brush >= TOTAL_BRUSHES)
 	{
 		panic("Too many colors!");
 		return;
 	}
     *brushptr = CreateSolidBrush(*colorptr);
-    brush_table[max_brush] = *brushptr;
-	max_brush++;
+    sdl_brush_table[sdl_max_brush] = *brushptr;
+    sdl_max_brush++;
 }
 
 void
-mswin_get_window_placement(int type, LPRECT rt)
+sdl_get_window_placement(int type, LPRECT rt)
 {
     switch (type) {
     case NHW_MAP:
@@ -2953,7 +2927,7 @@ mswin_get_window_placement(int type, LPRECT rt)
 }
 
 void
-mswin_update_window_placement(int type, LPRECT rt)
+sdl_update_window_placement(int type, LPRECT rt)
 {
     LPRECT rt_conf = NULL;
 
@@ -2989,7 +2963,7 @@ mswin_update_window_placement(int type, LPRECT rt)
 }
 
 int
-NHMessageBox(HWND hWnd, LPCTSTR text, UINT type)
+SDL_NHMessageBox(HWND hWnd, LPCTSTR text, UINT type)
 {
     TCHAR title[MAX_LOADSTRING];
 
@@ -3048,9 +3022,9 @@ status_init()   -- core calls this to notify the window port that a status
                    the necessary initialization in here, allocate memory, etc.
 */
 void
-mswin_status_init(void)
+sdl_status_init(void)
 {
-    logDebug("mswin_status_init()\n");
+    logDebug("sdl_status_init()\n");
 
     for (int i = 0; i < SIZE(_status_fields); i++) {
         mswin_status_field * status_field = &_status_fields[i];
@@ -3123,9 +3097,9 @@ status_finish() -- called when it is time for the window port to tear down
                    the status display and free allocated memory, etc.
 */
 void
-mswin_status_finish(void)
+sdl_status_finish(void)
 {
-    logDebug("mswin_status_finish()\n");
+    logDebug("sdl_status_finish()\n");
 }
 
 /*
@@ -3143,10 +3117,10 @@ status_enablefield(int fldindex, char fldname, char fieldfmt, boolean enable)
                 -- There are MAXBLSTATS status fields (from botl.h)
 */
 void
-mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
+sdl_status_enablefield(int fieldidx, const char *nm, const char *fmt,
                          boolean enable)
 {
-    logDebug("mswin_status_enablefield(%d, %s, %s, %d)\n", fieldidx, nm, fmt,
+    logDebug("sdl_status_enablefield(%d, %s, %s, %d)\n", fieldidx, nm, fmt,
              (int) enable);
 
     nhassert(fieldidx <= SIZE(_status_fields));
@@ -3174,7 +3148,7 @@ mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 
 /* TODO: turn this into a commmon helper; multiple identical implementations */
 static int
-mswin_condcolor(bm, bmarray)
+sdl_condcolor(bm, bmarray)
 long bm;
 unsigned long *bmarray;
 {
@@ -3189,7 +3163,7 @@ unsigned long *bmarray;
 }
 
 static int
-mswin_condattr(bm, bmarray)
+sdl_condattr(bm, bmarray)
 long bm;
 unsigned long *bmarray;
 {
@@ -3250,7 +3224,7 @@ status_update(int fldindex, genericptr_t ptr, int chg, int percent, int color, u
                    color and attriubte.
 */
 void
-mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *condmasks)
+sdl_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *condmasks)
 {
     long cond, *condptr = (long *) ptr;
     char *text = (char *) ptr;
@@ -3258,7 +3232,7 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
     int ocolor, ochar;
     unsigned long ospecial;
 
-    logDebug("mswin_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
+    logDebug("sdl_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
 
     if (idx >= 0) {
 
@@ -3291,8 +3265,8 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
                 if (condition_field->mask & cond) {
                     status_string->str = condition_field->name;
                     status_string->space_in_front = TRUE;
-                    status_string->color = mswin_condcolor(condition_field->mask, condmasks);
-                    status_string->attribute = mswin_condattr(condition_field->mask, condmasks);
+                    status_string->color = sdl_condcolor(condition_field->mask, condmasks);
+                    status_string->attribute = sdl_condattr(condition_field->mask, condmasks);
                 }
                 else
                     status_string->str = NULL;
@@ -3355,13 +3329,13 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
         /* send command to status window to update */
         ZeroMemory(&update_cmd_data, sizeof(update_cmd_data));
         update_cmd_data.status_lines = &_status_lines;
-        SendMessage(mswin_hwnd_from_winid(WIN_STATUS), WM_MSNH_COMMAND,
+        SendMessage(sdl_hwnd_from_winid(WIN_STATUS), WM_MSNH_COMMAND,
             (WPARAM)MSNH_MSG_UPDATE_STATUS, (LPARAM)&update_cmd_data);
     }
 }
 
 void
-mswin_stretch_window(void)
+sdl_stretch_window(void)
 {
     if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
         MSNHMsgClipAround data;
@@ -3375,7 +3349,7 @@ mswin_stretch_window(void)
 }
 
 void
-mswin_set_animation_timer(unsigned int interval)
+sdl_set_animation_timer(unsigned int interval)
 {
     if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
         UINT data;
@@ -3389,13 +3363,13 @@ mswin_set_animation_timer(unsigned int interval)
 
 
 void
-mswin_open_special_view(struct special_view_info info)
+sdl_open_special_view(struct special_view_info info)
 {
     return;
 }
 
 void
-mswin_stop_all_sounds(struct stop_all_info info)
+sdl_stop_all_sounds(struct stop_all_info info)
 {
     if (!fmod_stop_all_sounds(info))
     {
@@ -3404,7 +3378,7 @@ mswin_stop_all_sounds(struct stop_all_info info)
 }
 
 void
-mswin_play_immediate_ghsound(struct ghsound_immediate_info info)
+sdl_play_immediate_ghsound(struct ghsound_immediate_info info)
 {
     if (!fmod_play_immediate_sound(info))
     {
@@ -3413,7 +3387,7 @@ mswin_play_immediate_ghsound(struct ghsound_immediate_info info)
 }
 
 void
-mswin_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
+sdl_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
 {
     if (!fmod_play_occupation_ambient_sound(info))
     {
@@ -3422,7 +3396,7 @@ mswin_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info inf
 }
 
 void
-mswin_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
+sdl_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 {
     if (!fmod_play_effect_ambient_sound(info))
     {
@@ -3431,7 +3405,7 @@ mswin_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 }
 
 void
-mswin_set_effect_ambient_volume(struct effect_ambient_volume_info info)
+sdl_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 {
     if (!fmod_set_effect_ambient_volume(info))
     {
@@ -3440,7 +3414,7 @@ mswin_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 }
 
 void
-mswin_play_ghsound_music(struct ghsound_music_info info)
+sdl_play_ghsound_music(struct ghsound_music_info info)
 {
     if (!fmod_play_music(info))
     {
@@ -3449,7 +3423,7 @@ mswin_play_ghsound_music(struct ghsound_music_info info)
 }
 
 void
-mswin_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
+sdl_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 {
     if (!fmod_play_level_ambient_sound(info))
     {
@@ -3458,7 +3432,7 @@ mswin_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 }
 
 void
-mswin_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info)
+sdl_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info)
 {
     if (!fmod_play_environment_ambient_sound(info))
     {
@@ -3467,7 +3441,7 @@ mswin_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info i
 }
 
 void
-mswin_adjust_ghsound_general_volumes(VOID_ARGS)
+sdl_adjust_ghsound_general_volumes(VOID_ARGS)
 {
     float new_general_volume = ((float)flags.sound_volume_general) / 100.0f;
     float new_music_volume = ((float)flags.sound_volume_music) / 100.0f;
@@ -3482,7 +3456,7 @@ mswin_adjust_ghsound_general_volumes(VOID_ARGS)
 }
 
 void
-mswin_add_ambient_ghsound(struct soundsource_t* soundsource)
+sdl_add_ambient_ghsound(struct soundsource_t* soundsource)
 {
     if (!fmod_add_ambient_ghsound(soundsource->ghsound, soundsource->heard_volume, &soundsource->ambient_ghsound_ptr))
     {
@@ -3491,7 +3465,7 @@ mswin_add_ambient_ghsound(struct soundsource_t* soundsource)
 }
 
 void
-mswin_delete_ambient_ghsound(struct soundsource_t* soundsource)
+sdl_delete_ambient_ghsound(struct soundsource_t* soundsource)
 {
     if (!fmod_delete_ambient_ghsound(soundsource->ambient_ghsound_ptr))
     {
@@ -3500,7 +3474,7 @@ mswin_delete_ambient_ghsound(struct soundsource_t* soundsource)
 }
 
 void
-mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
+sdl_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 {
     if (!fmod_set_ambient_ghsound_volume(soundsource->ambient_ghsound_ptr, soundsource->heard_volume))
     {
