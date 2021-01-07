@@ -45,6 +45,8 @@
 #define WINDOW_HEIGHT 800
 
 int shutdown_nuklear(PGHSdlApp sdlapp);
+static boolean plselRandomize();
+
 /* ===============================================================
  *
  *                          EXAMPLE
@@ -2384,11 +2386,70 @@ cleanup:
 boolean
 nuklear_player_selection(PGHSdlApp sdlapp)
 {
-    flags.initrace = pick_race(flags.initrole, ROLE_RANDOM, ROLE_RANDOM, ROLE_RANDOM);
-    flags.initgend = pick_gend(flags.initrole, flags.initrace, ROLE_RANDOM, ROLE_RANDOM);
-    flags.initalign = pick_align(flags.initrole, flags.initrace, flags.initgend, ROLE_RANDOM);
+    int win_width = 0, win_height = 0;
+    int plsel_width = 840, plsel_height = 640;
+    SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
+    int plsel_x = max(0, (win_width - plsel_width) / 2);
+    int plsel_y = max(0, (win_height - plsel_height) / 2);
 
-    while (sdlapp->running && 0)
+    SDL_RaiseWindow(sdlapp->win);
+
+    plselRandomize();
+
+    int current_role = flags.initrole;
+    int current_race = flags.initrace;
+    int current_gender = flags.initgend;
+    int current_alignment = flags.initalign;
+
+    /* option toggle */
+    struct nk_style_toggle* toggle;
+    toggle = &ctx->style.option;
+    toggle->normal = nk_style_item_image(media.option);
+    toggle->hover = nk_style_item_image(media.option);
+    toggle->active = nk_style_item_image(media.option);
+    toggle->cursor_normal = nk_style_item_image(media.option_cursor);
+    toggle->cursor_hover = nk_style_item_image(media.option_cursor);
+    toggle->text_normal = nk_rgb(60, 60, 60);
+    toggle->text_hover = nk_rgb(60, 60, 60);
+    toggle->text_active = nk_rgb(60, 60, 60);
+    
+    /* default button */
+    ctx->style.button.normal = nk_style_item_image(media.button);
+    ctx->style.button.hover = nk_style_item_image(media.button_hover);
+    ctx->style.button.active = nk_style_item_image(media.button_active);
+    ctx->style.button.border_color = nk_rgba(0, 0, 0, 0);
+    ctx->style.button.text_background = nk_rgba(0, 0, 0, 0);
+    ctx->style.button.text_normal = nk_rgb(180, 180, 180);
+    ctx->style.button.text_hover = nk_rgb(240, 240, 240);
+    ctx->style.button.text_active = nk_rgb(120, 120, 120);
+
+    /* default text */
+    ctx->style.text.color = nk_rgb(60, 60, 60);
+
+    /* window */
+    ctx->style.window.padding = nk_vec2(64, 64);
+    ctx->style.window.border = 32;
+
+    const char* role_names_male[NUM_ROLES] = { 0 };
+    const char* role_names_female[NUM_ROLES] = { 0 };
+    const char* race_names[NUM_RACES] = { 0 };
+    const char* gender_names[2] = { "Male", "Female" };
+    const char* alignment_names[3] = { "Lawful", "Neutral", "Chaotic" };
+
+    for (int i = 0; i < NUM_ROLES; i++)
+    {
+        role_names_male[i] = roles[i].name.m;
+        role_names_female[i] = roles[i].name.f;
+    }
+
+    for (int i = 0; i < NUM_RACES; i++)
+    {
+        race_names[i] = races[i].noun;
+    }
+
+    int res = 0;
+
+    while (sdlapp->running && res == 0)
     {
         /* Input */
         SDL_Event evt;
@@ -2401,166 +2462,109 @@ nuklear_player_selection(PGHSdlApp sdlapp)
         }
         nk_input_end(ctx);
 
-
-        /* scrollbar */
-        ctx->style.scrollv.normal = nk_style_item_color(nk_rgb(184, 184, 184));
-        ctx->style.scrollv.hover = nk_style_item_color(nk_rgb(184, 184, 184));
-        ctx->style.scrollv.active = nk_style_item_color(nk_rgb(184, 184, 184));
-        ctx->style.scrollv.cursor_normal = nk_style_item_color(nk_rgb(220, 220, 220));
-        ctx->style.scrollv.cursor_hover = nk_style_item_color(nk_rgb(235, 235, 235));
-        ctx->style.scrollv.cursor_active = nk_style_item_color(nk_rgb(99, 202, 255));
-        ctx->style.scrollv.dec_symbol = NK_SYMBOL_NONE;
-        ctx->style.scrollv.inc_symbol = NK_SYMBOL_NONE;
-        ctx->style.scrollv.show_buttons = nk_true;
-        ctx->style.scrollv.border_color = nk_rgb(81, 81, 81);
-        ctx->style.scrollv.cursor_border_color = nk_rgb(81, 81, 81);
-        ctx->style.scrollv.border = 1;
-        ctx->style.scrollv.rounding = 0;
-        ctx->style.scrollv.border_cursor = 1;
-        ctx->style.scrollv.rounding_cursor = 2;
-
-        /* scrollbar buttons */
-        ctx->style.scrollv.inc_button.normal = nk_style_item_image(media.scrollbar_inc_button);
-        ctx->style.scrollv.inc_button.hover = nk_style_item_image(media.scrollbar_inc_button_hover);
-        ctx->style.scrollv.inc_button.active = nk_style_item_image(media.scrollbar_inc_button_hover);
-        ctx->style.scrollv.inc_button.border_color = nk_rgba(0, 0, 0, 0);
-        ctx->style.scrollv.inc_button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.scrollv.inc_button.text_normal = nk_rgba(0, 0, 0, 0);
-        ctx->style.scrollv.inc_button.text_hover = nk_rgba(0, 0, 0, 0);
-        ctx->style.scrollv.inc_button.text_active = nk_rgba(0, 0, 0, 0);
-        ctx->style.scrollv.inc_button.border = 0.0f;
-
-        ctx->style.scrollv.dec_button.normal = nk_style_item_image(media.scrollbar_dec_button);
-        ctx->style.scrollv.dec_button.hover = nk_style_item_image(media.scrollbar_dec_button_hover);
-        ctx->style.scrollv.dec_button.active = nk_style_item_image(media.scrollbar_dec_button_hover);
-        ctx->style.scrollv.dec_button.border_color = nk_rgba(0, 0, 0, 0);
-        ctx->style.scrollv.dec_button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.scrollv.dec_button.text_normal = nk_rgba(0, 0, 0, 0);
-        ctx->style.scrollv.dec_button.text_hover = nk_rgba(0, 0, 0, 0);
-        ctx->style.scrollv.dec_button.text_active = nk_rgba(0, 0, 0, 0);
-        ctx->style.scrollv.dec_button.border = 0.0f;
-
-        /* checkbox toggle */
-        {struct nk_style_toggle* toggle;
-        toggle = &ctx->style.checkbox;
-        toggle->normal = nk_style_item_image(media.check);
-        toggle->hover = nk_style_item_image(media.check);
-        toggle->active = nk_style_item_image(media.check);
-        toggle->cursor_normal = nk_style_item_image(media.check_cursor);
-        toggle->cursor_hover = nk_style_item_image(media.check_cursor);
-        toggle->text_normal = nk_rgb(95, 95, 95);
-        toggle->text_hover = nk_rgb(95, 95, 95);
-        toggle->text_active = nk_rgb(95, 95, 95); }
-
-        /* option toggle */
-        {struct nk_style_toggle* toggle;
-        toggle = &ctx->style.option;
-        toggle->normal = nk_style_item_image(media.option);
-        toggle->hover = nk_style_item_image(media.option);
-        toggle->active = nk_style_item_image(media.option);
-        toggle->cursor_normal = nk_style_item_image(media.option_cursor);
-        toggle->cursor_hover = nk_style_item_image(media.option_cursor);
-        toggle->text_normal = nk_rgb(95, 95, 95);
-        toggle->text_hover = nk_rgb(95, 95, 95);
-        toggle->text_active = nk_rgb(95, 95, 95); }
-
-        /* default button */
-        ctx->style.button.normal = nk_style_item_image(media.button);
-        ctx->style.button.hover = nk_style_item_image(media.button_hover);
-        ctx->style.button.active = nk_style_item_image(media.button_active);
-        ctx->style.button.border_color = nk_rgba(0, 0, 0, 0);
-        ctx->style.button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.button.text_normal = nk_rgb(95, 95, 95);
-        ctx->style.button.text_hover = nk_rgb(95, 95, 95);
-        ctx->style.button.text_active = nk_rgb(95, 95, 95);
-
-        /* default text */
-        ctx->style.text.color = nk_rgb(95, 95, 95);
-
-        /* tree */
-        ctx->style.tab.text = nk_rgb(95, 95, 95);
-        ctx->style.tab.tab_minimize_button.normal = nk_style_item_image(media.tab_minimize);
-        ctx->style.tab.tab_minimize_button.hover = nk_style_item_image(media.tab_minimize);
-        ctx->style.tab.tab_minimize_button.active = nk_style_item_image(media.tab_minimize);
-        ctx->style.tab.tab_minimize_button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.tab_minimize_button.text_normal = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.tab_minimize_button.text_hover = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.tab_minimize_button.text_active = nk_rgba(0, 0, 0, 0);
-
-        ctx->style.tab.tab_maximize_button.normal = nk_style_item_image(media.tab_maximize);
-        ctx->style.tab.tab_maximize_button.hover = nk_style_item_image(media.tab_maximize);
-        ctx->style.tab.tab_maximize_button.active = nk_style_item_image(media.tab_maximize);
-        ctx->style.tab.tab_maximize_button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.tab_maximize_button.text_normal = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.tab_maximize_button.text_hover = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.tab_maximize_button.text_active = nk_rgba(0, 0, 0, 0);
-
-        ctx->style.tab.node_minimize_button.normal = nk_style_item_image(media.tab_minimize);
-        ctx->style.tab.node_minimize_button.hover = nk_style_item_image(media.tab_minimize);
-        ctx->style.tab.node_minimize_button.active = nk_style_item_image(media.tab_minimize);
-        ctx->style.tab.node_minimize_button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.node_minimize_button.text_normal = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.node_minimize_button.text_hover = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.node_minimize_button.text_active = nk_rgba(0, 0, 0, 0);
-
-        ctx->style.tab.node_maximize_button.normal = nk_style_item_image(media.tab_maximize);
-        ctx->style.tab.node_maximize_button.hover = nk_style_item_image(media.tab_maximize);
-        ctx->style.tab.node_maximize_button.active = nk_style_item_image(media.tab_maximize);
-        ctx->style.tab.node_maximize_button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.node_maximize_button.text_normal = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.node_maximize_button.text_hover = nk_rgba(0, 0, 0, 0);
-        ctx->style.tab.node_maximize_button.text_active = nk_rgba(0, 0, 0, 0);
-
-
-
-
         /* GUI */
-        if (nk_begin(ctx, "Demo", nk_rect(50, 50, 230, 250),
-            NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
-            NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE))
+        if (nk_begin(ctx, "PlayerSelection", nk_rect((float)plsel_x, (float)plsel_y, (float)plsel_width, (float)plsel_height),
+            NK_WINDOW_NO_SCROLLBAR))
         {
-            enum { EASY, HARD };
-            static int op = EASY;
-            static int property = 20;
+            nk_layout_row_dynamic(ctx, 30, 1);
+            nk_label(ctx, "Player Selection", NK_TEXT_CENTERED);
 
-            nk_layout_row_static(ctx, 45, 245, 1);
-            if (nk_button_label(ctx, "button"))
-                fprintf(stdout, "button pressed\n");
-            nk_layout_row_dynamic(ctx, 30, 2);
-            if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
-            if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
-            nk_layout_row_dynamic(ctx, 25, 1);
-            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
+            nk_layout_row_static(ctx, 25, 300, 2);
+            nk_label(ctx, "Player Name:", NK_TEXT_LEFT);
+            nk_label(ctx, plname, NK_TEXT_LEFT);
 
-            nk_layout_row_dynamic(ctx, 20, 1);
-            nk_label(ctx, "background:", NK_TEXT_LEFT);
-            nk_layout_row_dynamic(ctx, 25, 1);
-            if (nk_combo_begin_color(ctx, nk_rgb_cf(bg), nk_vec2(nk_widget_width(ctx), 400))) {
-                nk_layout_row_dynamic(ctx, 120, 1);
-                bg = nk_color_picker(ctx, bg, NK_RGBA);
-                nk_layout_row_dynamic(ctx, 25, 1);
-                bg.r = nk_propertyf(ctx, "#R:", 0, bg.r, 1.0f, 0.01f, 0.005f);
-                bg.g = nk_propertyf(ctx, "#G:", 0, bg.g, 1.0f, 0.01f, 0.005f);
-                bg.b = nk_propertyf(ctx, "#B:", 0, bg.b, 1.0f, 0.01f, 0.005f);
-                bg.a = nk_propertyf(ctx, "#A:", 0, bg.a, 1.0f, 0.01f, 0.005f);
-                nk_combo_end(ctx);
+            /* default combobox */
+            nk_layout_row_static(ctx, 25, 300, 1);
+            current_role = nk_combo(ctx, role_names_male, NK_LEN(role_names_male), current_role, 25, nk_vec2(300, 300));
+
+            nk_layout_row_static(ctx, 25, 150, NUM_RACES);
+            boolean curraceok = ok_race(current_role, current_race, ROLE_RANDOM, ROLE_RANDOM);
+            for (int i = 0; i < NUM_RACES; i++)
+            {
+                if (ok_race(current_role, i, ROLE_RANDOM, ROLE_RANDOM))
+                {
+                    if (!curraceok)
+                        current_race = i;
+                    current_race = nk_option_label(ctx, race_names[i], current_race == i) ? i : current_race;
+                }
+                else
+                {
+                    toggle->text_normal = nk_rgb(180, 180, 180);
+                    toggle->text_hover = nk_rgb(180, 180, 180);
+                    toggle->text_active = nk_rgb(180, 180, 180);
+                    (void)nk_option_label(ctx, race_names[i], FALSE);
+                    toggle->text_normal = nk_rgb(60, 60, 60);
+                    toggle->text_hover = nk_rgb(60, 60, 60);
+                    toggle->text_active = nk_rgb(60, 60, 60);
+                }
             }
+
+            nk_layout_row_static(ctx, 25, 150, 2);
+            boolean curgenderok = ok_gend(current_role, current_race, current_gender, ROLE_RANDOM);
+            for (int i = 0; i < 2; i++)
+            {
+                if (ok_gend(current_role, current_race, i, ROLE_RANDOM))
+                {
+                    if (!curgenderok)
+                        current_gender = i;
+                    current_gender = nk_option_label(ctx, gender_names[i], current_gender == i) ? i : current_gender;
+                }
+                else
+                {
+                    toggle->text_normal = nk_rgb(180, 180, 180);
+                    toggle->text_hover = nk_rgb(180, 180, 180);
+                    toggle->text_active = nk_rgb(180, 180, 180);
+                    (void)nk_option_label(ctx, gender_names[i], FALSE);
+                    toggle->text_normal = nk_rgb(60, 60, 60);
+                    toggle->text_hover = nk_rgb(60, 60, 60);
+                    toggle->text_active = nk_rgb(60, 60, 60);
+                }
+            }
+
+            nk_layout_row_static(ctx, 25, 150, 3);
+            boolean curalignok = ok_align(current_role, current_race, current_gender, current_alignment);
+            for (int i = 0; i < 3; i++)
+            {
+                if (ok_align(current_role, current_race, current_gender, i))
+                {
+                    if (!curalignok)
+                        current_alignment = i;
+                    current_alignment = nk_option_label(ctx, alignment_names[i], current_alignment == i) ? i : current_alignment;
+                }
+                else
+                {
+                    toggle->text_normal = nk_rgb(180, 180, 180);
+                    toggle->text_hover = nk_rgb(180, 180, 180);
+                    toggle->text_active = nk_rgb(180, 180, 180);
+                    (void)nk_option_label(ctx, alignment_names[i], FALSE);
+                    toggle->text_normal = nk_rgb(60, 60, 60);
+                    toggle->text_hover = nk_rgb(60, 60, 60);
+                    toggle->text_active = nk_rgb(60, 60, 60);
+                }
+            }
+
+            flags.initrole = current_role;
+            flags.initrace = current_race;
+            flags.initgend = current_gender;
+            flags.initalign = current_alignment;
+
+            nk_layout_row_static(ctx, 25, 75, 1);
+            nk_layout_row_static(ctx, 45, 150, 3);
+            if (nk_button_label(ctx, "Play"))
+                res = 1;
+            if (nk_button_label(ctx, "Random"))
+            {
+                plselRandomize();
+                current_role = flags.initrole;
+                current_race = flags.initrace;
+                current_gender = flags.initgend;
+                current_alignment = flags.initalign;
+            }
+            if (nk_button_label(ctx, "Quit"))
+                res = 2;
+
         }
         nk_end(ctx);
-
-        /* -------------- EXAMPLES ---------------- */
-        ctx->style.window.padding = nk_vec2(16, 16);
-        calculator(ctx);
-        ctx->style.window.padding = nk_vec2(0, 8);
-        ctx->style.window.border = 44;
-        overview(ctx);
-        ctx->style.window.padding = nk_vec2(16, 16);
-        ctx->style.window.border = 3;
-#ifdef INCLUDE_NODE_EDITOR
-        ctx->style.window.padding = nk_vec2(16, 16);
-        node_editor(ctx);
-#endif
-        /* ----------------------------------------- */
 
         /* Draw */
         SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
@@ -2575,7 +2579,9 @@ nuklear_player_selection(PGHSdlApp sdlapp)
         nk_sdl_render(NK_ANTI_ALIASING_ON);
         SDL_GL_SwapWindow(sdlapp->win);
     }
-    return 1;
+    if(res == 2)
+        (void)shutdown_nuklear(sdlapp);
+    return res == 1 ? 1 : 0;
 
 cleanup:
     (void)shutdown_nuklear(sdlapp);
@@ -2667,6 +2673,85 @@ cleanup:
 
 }
 
+
+boolean
+nuklear_splash_screen(PGHSdlApp sdlapp)
+{
+    return 1;
+}
+
+
+
+static boolean plselRandomize()
+{
+    boolean fully_specified = TRUE;
+
+    if (!flags.randomall) {
+        if (flags.initrole == ROLE_NONE || flags.initrace == ROLE_NONE
+            || flags.initgend == ROLE_NONE || flags.initalign == ROLE_NONE)
+            fully_specified = FALSE;
+    }
+
+    if (flags.initrole == ROLE_NONE)
+        flags.initrole = ROLE_RANDOM;
+    if (flags.initrace == ROLE_NONE)
+        flags.initrace = ROLE_RANDOM;
+    if (flags.initgend == ROLE_NONE)
+        flags.initgend = ROLE_RANDOM;
+    if (flags.initalign == ROLE_NONE)
+        flags.initalign = ROLE_RANDOM;
+
+    rigid_role_checks();
+
+    int role = flags.initrole;
+    int race = flags.initrace;
+    int gender = flags.initgend;
+    int alignment = flags.initalign;
+
+    assert(role != ROLE_RANDOM && role != ROLE_NONE);
+    assert(race != ROLE_RANDOM && race != ROLE_NONE);
+    assert(gender != ROLE_RANDOM && gender != ROLE_NONE);
+    assert(alignment != ROLE_RANDOM && alignment != ROLE_NONE);
+
+    if (!ok_role(role, race, gender, alignment)) {
+        fully_specified = FALSE;
+        flags.initrole = ROLE_RANDOM;
+    }
+
+    if (!ok_race(role, race, gender, alignment)) {
+        fully_specified = FALSE;
+        flags.initrace = ROLE_RANDOM;
+    }
+
+    if (!ok_gend(role, race, gender, alignment)) {
+        fully_specified = FALSE;
+        flags.initgend = ROLE_RANDOM;
+    }
+
+    if (!ok_align(role, race, gender, alignment))
+    {
+        fully_specified = FALSE;
+        flags.initalign = ROLE_RANDOM;
+    }
+
+    rigid_role_checks();
+
+    role = flags.initrole;
+    race = flags.initrace;
+    gender = flags.initgend;
+    alignment = flags.initalign;
+
+    assert(role != ROLE_RANDOM && role != ROLE_NONE);
+    assert(race != ROLE_RANDOM && race != ROLE_NONE);
+    assert(gender != ROLE_RANDOM && gender != ROLE_NONE);
+    assert(alignment != ROLE_RANDOM && alignment != ROLE_NONE);
+    assert(ok_role(role, race, gender, alignment));
+    assert(ok_race(role, race, gender, alignment));
+    assert(ok_gend(role, race, gender, alignment));
+    assert(ok_align(role, race, gender, alignment));
+
+    return fully_specified;
+}
 
 
  /* sdlnuklear.c */

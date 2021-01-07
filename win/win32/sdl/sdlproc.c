@@ -163,6 +163,32 @@ sdl_init_nhwindows(int *argc, char **argv)
 #endif
     logDebug("sdl_init_nhwindows()\n");
 
+    /* FMOD Banks */
+    HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
+    int rid[2] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS };
+    char* bfilename[2] = { 0, 0 };
+    bfilename[0] = iflags.wc2_master_bank_file;
+    bfilename[1] = iflags.wc2_master_strings_bank_file;
+    for (int i = 0; i < 2; i++)
+    {
+        if (bfilename[i])
+        {
+            if (!load_fmod_bank_from_file(hInstance, bfilename[i]))
+            {
+                impossible("cannot load FMOD sound bank %d from file", i);
+                /* Continue to loading from resource */
+            }
+            else
+                continue;
+        }
+
+        if (!load_fmod_bank_from_resource(hInstance, rid[i]))
+        {
+            panic("cannot load FMOD sound bank %d from resource", i);
+            return;
+        }
+    }
+
     /* SDL setup */
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
@@ -193,7 +219,11 @@ sdl_init_nhwindows(int *argc, char **argv)
     init_resource_fonts();
     mswin_nh_input_init();
 
-    /* Do main menu here */
+    /* Splash screen first */
+    if (iflags.wc_splash_screen)
+        (void)nuklear_splash_screen(sdlapp);
+
+    /* Main menu second */
     enum nuklear_main_menu_command ncmd = nuklear_main_menu(sdlapp);
 
     if (ncmd != MAIN_MENU_START_GAME)
@@ -296,34 +326,6 @@ sdl_init_nhwindows(int *argc, char **argv)
                             &status_bg_color);
     sdl_color_from_string(iflags.wc_backgrnd_text, &text_bg_brush,
                             &text_bg_color);
-
-    HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
-    int rid[2] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS };
-    char* bfilename[2] = { 0, 0 };
-    bfilename[0] = iflags.wc2_master_bank_file;
-    bfilename[1] = iflags.wc2_master_strings_bank_file;
-    for (int i = 0; i < 2; i++)
-    {
-        if (bfilename[i])
-        {
-            if (!load_fmod_bank_from_file(hInstance, bfilename[i]))
-            {
-                impossible("cannot load FMOD sound bank %d from file", i);
-                /* Continue to loading from resource */
-            }
-            else
-                continue;
-        }
-
-        if (!load_fmod_bank_from_resource(hInstance, rid[i]))
-        {
-            panic("cannot load FMOD sound bank %d from resource", i);
-            return;
-        }
-    }
-
-    if (iflags.wc_splash_screen)
-        mswin_display_splash_window(FALSE);
 
     iflags.window_inited = TRUE;
 }
