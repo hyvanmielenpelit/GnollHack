@@ -78,6 +78,7 @@ struct media {
     struct nk_image slider_active;
 
     struct nk_font* diablo24;
+    struct nk_font* diablo30;
     struct nk_font* diablo36;
 
 };
@@ -1934,7 +1935,7 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
     nk_sdl_font_stash_begin(&atlas);
 
     /* Install font from resource */
-    struct nk_font* diablo = 0, *diablo36 = 0;
+    struct nk_font* diablo = 0, *diablo30 = 0, *diablo36 = 0;
     HRSRC res = FindResource(hInstance, MAKEINTRESOURCE(IDR_RCDATA_FONT_DIABLO), RT_RCDATA);
 
     if (res)
@@ -1944,6 +1945,7 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
         size_t len = SizeofResource(hInstance, res);
 
         diablo = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 24, 0);
+        diablo30 = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 30, 0);
         diablo36 = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 36, 0);
     }
 
@@ -1953,6 +1955,7 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
     /*struct nk_font *tiny = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyTiny.ttf", 10, 0);*/
     /*struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Cousine-Regular.ttf", 13, 0);*/
     media.diablo24 = diablo;
+    media.diablo30 = diablo30;
     media.diablo36 = diablo36;
     nk_sdl_font_stash_end();
     /*nk_style_load_all_cursors(ctx, atlas->cursors);*/
@@ -2484,10 +2487,25 @@ nuklear_player_selection(PGHSdlApp sdlapp)
             nk_label(ctx, "Player Name:", NK_TEXT_LEFT);
             nk_label(ctx, plname, NK_TEXT_LEFT);
 
+            if (media.diablo30)
+                nk_style_set_font(ctx, &media.diablo30->handle);
+            nk_layout_row_dynamic(ctx, 10, 1);
+            nk_layout_row_dynamic(ctx, 25, 1);
+            nk_label(ctx, "Class", NK_TEXT_LEFT);
+            if (media.diablo24)
+                nk_style_set_font(ctx, &media.diablo24->handle);
+
             /* default combobox */
-            nk_layout_row_static(ctx, 25, 300, 1);
+            nk_layout_row_dynamic(ctx, 25, 1);
             current_role = nk_combo(ctx, role_names_male, NK_LEN(role_names_male), current_role, 25, nk_vec2(300, 300));
 
+            if (media.diablo30)
+                nk_style_set_font(ctx, &media.diablo30->handle);
+            nk_layout_row_dynamic(ctx, 10, 1);
+            nk_layout_row_dynamic(ctx, 25, 1);
+            nk_label(ctx, "Race", NK_TEXT_LEFT);
+            if (media.diablo24)
+                nk_style_set_font(ctx, &media.diablo24->handle);
             nk_layout_row_static(ctx, 25, 150, NUM_RACES);
             boolean curraceok = ok_race(current_role, current_race, ROLE_RANDOM, ROLE_RANDOM);
             for (int i = 0; i < NUM_RACES; i++)
@@ -2510,6 +2528,13 @@ nuklear_player_selection(PGHSdlApp sdlapp)
                 }
             }
 
+            if (media.diablo30)
+                nk_style_set_font(ctx, &media.diablo30->handle);
+            nk_layout_row_dynamic(ctx, 10, 1);
+            nk_layout_row_dynamic(ctx, 25, 1);
+            nk_label(ctx, "Gender", NK_TEXT_LEFT);
+            if (media.diablo24)
+                nk_style_set_font(ctx, &media.diablo24->handle);
             nk_layout_row_static(ctx, 25, 150, 2);
             boolean curgenderok = ok_gend(current_role, current_race, current_gender, ROLE_RANDOM);
             for (int i = 0; i < 2; i++)
@@ -2532,6 +2557,13 @@ nuklear_player_selection(PGHSdlApp sdlapp)
                 }
             }
 
+            if (media.diablo30)
+                nk_style_set_font(ctx, &media.diablo30->handle);
+            nk_layout_row_dynamic(ctx, 10, 1);
+            nk_layout_row_dynamic(ctx, 25, 1);
+            nk_label(ctx, "Alignment", NK_TEXT_LEFT);
+            if (media.diablo24)
+                nk_style_set_font(ctx, &media.diablo24->handle);
             nk_layout_row_static(ctx, 25, 150, 3);
             boolean curalignok = ok_align(current_role, current_race, current_gender, current_alignment);
             for (int i = 0; i < 3; i++)
