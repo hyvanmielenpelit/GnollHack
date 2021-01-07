@@ -11,6 +11,7 @@
 #include <windows.h>
 #include "resource.h"
 #include "hack.h"
+#include "patchlevel.h"
 
  /* nuklear - 1.32.0 - public domain */
 #include <stdio.h>
@@ -1911,6 +1912,9 @@ cleanup:
     return 0;
 }
 
+
+
+
 int
 init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
 {
@@ -2003,6 +2007,22 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
     return 1;
 }
 
+
+int
+shutdown_nuklear(PGHSdlApp sdlapp)
+{
+    if (sdlapp->running)
+    {
+        sdlapp->running = 0;
+        nk_sdl_shutdown();
+        SDL_GL_DeleteContext(sdlapp->glContext);
+        SDL_DestroyWindow(sdlapp->win);
+        SDL_Quit();
+    }
+    return 1;
+}
+
+
 int
 nuklear_main_loop(PGHSdlApp sdlapp)
 {
@@ -2021,7 +2041,9 @@ nuklear_main_loop(PGHSdlApp sdlapp)
             if (evt.type == SDL_KEYUP)
             {
                 SDL_KeyCode keycode = evt.key.keysym.sym;
-                if (keycode >= SDLK_SPACE && keycode <= SDLK_z)
+                if (keycode == SDLK_ESCAPE)
+                    goto cleanup;
+                else if (keycode >= SDLK_SPACE && keycode <= SDLK_z)
                 {
                     key = (int)keycode;
                     if (keycode >= SDLK_a && keycode <= SDLK_z && SDL_GetModState() & KMOD_SHIFT)
@@ -2455,26 +2477,6 @@ nuklear_player_selection(PGHSdlApp sdlapp)
         /* default text */
         ctx->style.text.color = nk_rgb(95, 95, 95);
 
-        /* contextual button */
-        ctx->style.contextual_button.normal = nk_style_item_color(nk_rgb(206, 206, 206));
-        ctx->style.contextual_button.hover = nk_style_item_color(nk_rgb(229, 229, 229));
-        ctx->style.contextual_button.active = nk_style_item_color(nk_rgb(99, 202, 255));
-        ctx->style.contextual_button.border_color = nk_rgba(0, 0, 0, 0);
-        ctx->style.contextual_button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.contextual_button.text_normal = nk_rgb(95, 95, 95);
-        ctx->style.contextual_button.text_hover = nk_rgb(95, 95, 95);
-        ctx->style.contextual_button.text_active = nk_rgb(95, 95, 95);
-
-        /* menu button */
-        ctx->style.menu_button.normal = nk_style_item_color(nk_rgb(206, 206, 206));
-        ctx->style.menu_button.hover = nk_style_item_color(nk_rgb(229, 229, 229));
-        ctx->style.menu_button.active = nk_style_item_color(nk_rgb(99, 202, 255));
-        ctx->style.menu_button.border_color = nk_rgba(0, 0, 0, 0);
-        ctx->style.menu_button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.menu_button.text_normal = nk_rgb(95, 95, 95);
-        ctx->style.menu_button.text_hover = nk_rgb(95, 95, 95);
-        ctx->style.menu_button.text_active = nk_rgb(95, 95, 95);
-
         /* tree */
         ctx->style.tab.text = nk_rgb(95, 95, 95);
         ctx->style.tab.tab_minimize_button.normal = nk_style_item_image(media.tab_minimize);
@@ -2509,131 +2511,7 @@ nuklear_player_selection(PGHSdlApp sdlapp)
         ctx->style.tab.node_maximize_button.text_hover = nk_rgba(0, 0, 0, 0);
         ctx->style.tab.node_maximize_button.text_active = nk_rgba(0, 0, 0, 0);
 
-        /* selectable */
-        ctx->style.selectable.normal = nk_style_item_color(nk_rgb(206, 206, 206));
-        ctx->style.selectable.hover = nk_style_item_color(nk_rgb(206, 206, 206));
-        ctx->style.selectable.pressed = nk_style_item_color(nk_rgb(206, 206, 206));
-        ctx->style.selectable.normal_active = nk_style_item_color(nk_rgb(185, 205, 248));
-        ctx->style.selectable.hover_active = nk_style_item_color(nk_rgb(185, 205, 248));
-        ctx->style.selectable.pressed_active = nk_style_item_color(nk_rgb(185, 205, 248));
-        ctx->style.selectable.text_normal = nk_rgb(95, 95, 95);
-        ctx->style.selectable.text_hover = nk_rgb(95, 95, 95);
-        ctx->style.selectable.text_pressed = nk_rgb(95, 95, 95);
-        ctx->style.selectable.text_normal_active = nk_rgb(95, 95, 95);
-        ctx->style.selectable.text_hover_active = nk_rgb(95, 95, 95);
-        ctx->style.selectable.text_pressed_active = nk_rgb(95, 95, 95);
 
-        /* slider */
-        ctx->style.slider.normal = nk_style_item_hide();
-        ctx->style.slider.hover = nk_style_item_hide();
-        ctx->style.slider.active = nk_style_item_hide();
-        ctx->style.slider.bar_normal = nk_rgb(156, 156, 156);
-        ctx->style.slider.bar_hover = nk_rgb(156, 156, 156);
-        ctx->style.slider.bar_active = nk_rgb(156, 156, 156);
-        ctx->style.slider.bar_filled = nk_rgb(156, 156, 156);
-        ctx->style.slider.cursor_normal = nk_style_item_image(media.slider);
-        ctx->style.slider.cursor_hover = nk_style_item_image(media.slider_hover);
-        ctx->style.slider.cursor_active = nk_style_item_image(media.slider_active);
-        ctx->style.slider.cursor_size = nk_vec2(16.5f, 21);
-        ctx->style.slider.bar_height = 1;
-
-        /* progressbar */
-        ctx->style.progress.normal = nk_style_item_color(nk_rgb(231, 231, 231));
-        ctx->style.progress.hover = nk_style_item_color(nk_rgb(231, 231, 231));
-        ctx->style.progress.active = nk_style_item_color(nk_rgb(231, 231, 231));
-        ctx->style.progress.cursor_normal = nk_style_item_color(nk_rgb(63, 242, 93));
-        ctx->style.progress.cursor_hover = nk_style_item_color(nk_rgb(63, 242, 93));
-        ctx->style.progress.cursor_active = nk_style_item_color(nk_rgb(63, 242, 93));
-        ctx->style.progress.border_color = nk_rgb(114, 116, 115);
-        ctx->style.progress.padding = nk_vec2(0, 0);
-        ctx->style.progress.border = 2;
-        ctx->style.progress.rounding = 1;
-
-        /* combo */
-        ctx->style.combo.normal = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.combo.hover = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.combo.active = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.combo.border_color = nk_rgb(95, 95, 95);
-        ctx->style.combo.label_normal = nk_rgb(95, 95, 95);
-        ctx->style.combo.label_hover = nk_rgb(95, 95, 95);
-        ctx->style.combo.label_active = nk_rgb(95, 95, 95);
-        ctx->style.combo.border = 1;
-        ctx->style.combo.rounding = 1;
-
-        /* combo button */
-        ctx->style.combo.button.normal = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.combo.button.hover = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.combo.button.active = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.combo.button.text_background = nk_rgb(216, 216, 216);
-        ctx->style.combo.button.text_normal = nk_rgb(95, 95, 95);
-        ctx->style.combo.button.text_hover = nk_rgb(95, 95, 95);
-        ctx->style.combo.button.text_active = nk_rgb(95, 95, 95);
-
-        /* property */
-        ctx->style.property.normal = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.property.hover = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.property.active = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.property.border_color = nk_rgb(81, 81, 81);
-        ctx->style.property.label_normal = nk_rgb(95, 95, 95);
-        ctx->style.property.label_hover = nk_rgb(95, 95, 95);
-        ctx->style.property.label_active = nk_rgb(95, 95, 95);
-        ctx->style.property.sym_left = NK_SYMBOL_TRIANGLE_LEFT;
-        ctx->style.property.sym_right = NK_SYMBOL_TRIANGLE_RIGHT;
-        ctx->style.property.rounding = 10;
-        ctx->style.property.border = 1;
-
-        /* edit */
-        ctx->style.edit.normal = nk_style_item_color(nk_rgb(240, 240, 240));
-        ctx->style.edit.hover = nk_style_item_color(nk_rgb(240, 240, 240));
-        ctx->style.edit.active = nk_style_item_color(nk_rgb(240, 240, 240));
-        ctx->style.edit.border_color = nk_rgb(62, 62, 62);
-        ctx->style.edit.cursor_normal = nk_rgb(99, 202, 255);
-        ctx->style.edit.cursor_hover = nk_rgb(99, 202, 255);
-        ctx->style.edit.cursor_text_normal = nk_rgb(95, 95, 95);
-        ctx->style.edit.cursor_text_hover = nk_rgb(95, 95, 95);
-        ctx->style.edit.text_normal = nk_rgb(95, 95, 95);
-        ctx->style.edit.text_hover = nk_rgb(95, 95, 95);
-        ctx->style.edit.text_active = nk_rgb(95, 95, 95);
-        ctx->style.edit.selected_normal = nk_rgb(99, 202, 255);
-        ctx->style.edit.selected_hover = nk_rgb(99, 202, 255);
-        ctx->style.edit.selected_text_normal = nk_rgb(95, 95, 95);
-        ctx->style.edit.selected_text_hover = nk_rgb(95, 95, 95);
-        ctx->style.edit.border = 1;
-        ctx->style.edit.rounding = 2;
-
-        /* property buttons */
-        ctx->style.property.dec_button.normal = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.property.dec_button.hover = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.property.dec_button.active = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.property.dec_button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.property.dec_button.text_normal = nk_rgb(95, 95, 95);
-        ctx->style.property.dec_button.text_hover = nk_rgb(95, 95, 95);
-        ctx->style.property.dec_button.text_active = nk_rgb(95, 95, 95);
-        ctx->style.property.inc_button = ctx->style.property.dec_button;
-
-        /* property edit */
-        ctx->style.property.edit.normal = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.property.edit.hover = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.property.edit.active = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.property.edit.border_color = nk_rgba(0, 0, 0, 0);
-        ctx->style.property.edit.cursor_normal = nk_rgb(95, 95, 95);
-        ctx->style.property.edit.cursor_hover = nk_rgb(95, 95, 95);
-        ctx->style.property.edit.cursor_text_normal = nk_rgb(216, 216, 216);
-        ctx->style.property.edit.cursor_text_hover = nk_rgb(216, 216, 216);
-        ctx->style.property.edit.text_normal = nk_rgb(95, 95, 95);
-        ctx->style.property.edit.text_hover = nk_rgb(95, 95, 95);
-        ctx->style.property.edit.text_active = nk_rgb(95, 95, 95);
-        ctx->style.property.edit.selected_normal = nk_rgb(95, 95, 95);
-        ctx->style.property.edit.selected_hover = nk_rgb(95, 95, 95);
-        ctx->style.property.edit.selected_text_normal = nk_rgb(216, 216, 216);
-        ctx->style.property.edit.selected_text_hover = nk_rgb(216, 216, 216);
-
-        /* chart */
-        ctx->style.chart.background = nk_style_item_color(nk_rgb(216, 216, 216));
-        ctx->style.chart.border_color = nk_rgb(81, 81, 81);
-        ctx->style.chart.color = nk_rgb(95, 95, 95);
-        ctx->style.chart.selected_color = nk_rgb(255, 0, 0);
-        ctx->style.chart.border = 1;
 
 
         /* GUI */
@@ -2705,18 +2583,90 @@ cleanup:
 
 }
 
-int
-shutdown_nuklear(PGHSdlApp sdlapp)
+enum nuklear_main_menu_command
+nuklear_main_menu(PGHSdlApp sdlapp)
 {
-    if (sdlapp->running)
+    int win_width = 0, win_height = 0;
+    int buttons_width = 320, buttons_height = 320;
+    SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
+    int buttons_x = max(0, (win_width - buttons_width) / 2);
+    int buttons_y = max(0, (win_height - buttons_height) / 2);
+    enum nuklear_main_menu_command res = MAIN_MENU_NONE;
+    char buf[BUFSZ];
+    Sprintf(buf, "GnollHack %d.%d.%d", VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
+
+    /* default button */
+    ctx->style.button.normal = nk_style_item_image(media.button);
+    ctx->style.button.hover = nk_style_item_image(media.button_hover);
+    ctx->style.button.active = nk_style_item_image(media.button_active);
+    ctx->style.button.border_color = nk_rgba(0, 0, 0, 0);
+    ctx->style.button.text_background = nk_rgba(0, 0, 0, 0);
+    ctx->style.button.text_normal = nk_rgb(180, 180, 180);
+    ctx->style.button.text_hover = nk_rgb(240, 240, 240);
+    ctx->style.button.text_active = nk_rgb(120, 120, 120);
+
+    /* default text */
+    ctx->style.text.color = nk_rgb(60, 60, 60);
+
+    /* window */
+    ctx->style.window.padding = nk_vec2(32, 32);
+    ctx->style.window.border = 16;
+
+    while (sdlapp->running && res == MAIN_MENU_NONE)
     {
-        sdlapp->running = 0;
-        nk_sdl_shutdown();
-        SDL_GL_DeleteContext(sdlapp->glContext);
-        SDL_DestroyWindow(sdlapp->win);
-        SDL_Quit();
+        /* Input */
+        SDL_Event evt;
+        nk_input_begin(ctx);
+        while (SDL_PollEvent(&evt))
+        {
+            if (evt.type == SDL_QUIT)
+                goto cleanup;
+            nk_sdl_handle_event(&evt);
+        }
+        nk_input_end(ctx);
+
+        /* GUI */
+        if (nk_begin(ctx, "Buttons", nk_rect((float)buttons_x, (float)buttons_y, (float)buttons_width, (float)buttons_height),
+            NK_WINDOW_NO_SCROLLBAR))
+        {
+            nk_layout_row_dynamic(ctx, 50, 1);
+            nk_label(ctx, buf, NK_TEXT_CENTERED);
+
+            nk_layout_row_dynamic(ctx, 87, 1);
+            if (nk_button_label(ctx, "Start Game"))
+                res = MAIN_MENU_START_GAME;
+
+            nk_layout_row_dynamic(ctx, 87, 1);
+            if (nk_button_label(ctx, "Exit Game"))
+                res = MAIN_MENU_EXIT_GAME;
+        }
+        nk_end(ctx);
+
+        /* ----------------------------------------- */
+
+        /* Draw */
+        SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
+        glViewport(0, 0, sdlapp->win_width, sdlapp->win_height);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(bg.r, bg.g, bg.b, bg.a);
+        /* IMPORTANT: `nk_sdl_render` modifies some global OpenGL state
+         * with blending, scissor, face culling, depth test and viewport and
+         * defaults everything back into a default state.
+         * Make sure to either a.) save and restore or b.) reset your own state after
+         * rendering the UI. */
+        nk_sdl_render(NK_ANTI_ALIASING_ON);
+        SDL_GL_SwapWindow(sdlapp->win);
     }
-    return 1;
+    if(res == MAIN_MENU_EXIT_GAME)
+        (void)shutdown_nuklear(sdlapp);
+    return res;
+
+cleanup:
+    (void)shutdown_nuklear(sdlapp);
+    return MAIN_MENU_EXIT_GAME;
+
 }
+
+
 
  /* sdlnuklear.c */

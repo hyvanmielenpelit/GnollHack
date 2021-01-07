@@ -337,6 +337,7 @@
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlnuklear.h" />
     <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gl2.h" />
     <ClInclude Include="..\..\..\include\extern.h" />
+    <ClInclude Include="..\..\..\include\general.h" />
     <ClInclude Include="..\sdl\sdlmisc.h" />
     <ClInclude Include="..\sdl\sdlproc.h" />
   </ItemGroup>

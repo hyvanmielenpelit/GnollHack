@@ -271,6 +271,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     GUILaunched = 1;
     iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
     iflags.using_gui_sounds = TRUE;
+    iflags.has_main_menu = TRUE;
 
     /* let main do the argument processing */
     (void) main(argc, argv);

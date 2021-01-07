@@ -180,7 +180,7 @@ sdl_init_nhwindows(int *argc, char **argv)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     sdlapp->win = SDL_CreateWindow("Demo",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
+        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN_DESKTOP);
     sdlapp->glContext = SDL_GL_CreateContext(sdlapp->win);
     SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
 
@@ -189,10 +189,15 @@ sdl_init_nhwindows(int *argc, char **argv)
     windowprocs.win_wait_synch = sdl_wait_synch;
 
     init_nuklear(ghapp->hApp, sdlapp);
-
     //Other initializations
     init_resource_fonts();
     mswin_nh_input_init();
+
+    /* Do main menu here */
+    enum nuklear_main_menu_command ncmd = nuklear_main_menu(sdlapp);
+
+    if (ncmd != MAIN_MENU_START_GAME)
+        sdl_bail((char*)0);
 
     /* set it to WIN_ERR so we can detect attempts to
        use this ID before it is inialized */
@@ -784,8 +789,6 @@ void
 sdl_exit_nhwindows(const char *str)
 {
     logDebug("sdl_exit_nhwindows(%s)\n", str);
-
-    (void)shutdown_nuklear(GetGHSdlApp());
 
     /* Write Window settings to the registry */
     sdl_write_reg();
@@ -1495,6 +1498,7 @@ sdl_nhgetch()
         key = nuklear_main_loop(sdlapp);
         if (key == -1)
         {
+            //sdl_bail((char*)0);
             /* Empty normal windows command queue */
             while ((event = mswin_input_pop()) != NULL)
                 ;
@@ -1545,6 +1549,8 @@ sdl_nh_poskey(int *x, int *y, int *mod)
         key = nuklear_main_loop(sdlapp);
         if (key == -1)
         {
+            //sdl_bail((char*)0);
+
             /* Empty normal windows command queue */
             while ((event = mswin_input_pop()) != NULL)
                 ;

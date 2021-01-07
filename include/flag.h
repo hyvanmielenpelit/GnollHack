@@ -326,6 +326,7 @@ struct instance_flags {
     boolean goldX;            /* for BUCX filtering, whether gold is X or U */
     boolean using_gui_tiles;  /* using GnollHack GUI tiles mode */
     boolean using_gui_sounds;  /* using GnollHack GUI with sounds */
+    boolean has_main_menu;     /* upon nh_terminate with EXIT_SUCCESS, fall back to main menu */
     boolean hilite_pile;      /* mark piles of objects with a hilite */
     boolean implicit_uncursed; /* maybe omit "uncursed" status in inventory */
     boolean mention_walls;    /* give feedback when bumping walls */

@@ -325,5 +325,12 @@ enum game_cursor_types
 
 #define DEATH_MAX_HP_FROM_DEATH_RAY 2500
 
+enum main_menu_command {
+	MAIN_MENU_NONE = 0,
+	MAIN_MENU_START_GAME,
+	MAIN_MENU_EXIT_GAME
+};
+
+
 #endif /* GENERAL_H */
 
