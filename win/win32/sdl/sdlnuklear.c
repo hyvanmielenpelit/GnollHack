@@ -76,6 +76,10 @@ struct media {
     struct nk_image slider;
     struct nk_image slider_hover;
     struct nk_image slider_active;
+
+    struct nk_font* diablo24;
+    struct nk_font* diablo36;
+
 };
 
 static int
@@ -1930,7 +1934,7 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
     nk_sdl_font_stash_begin(&atlas);
 
     /* Install font from resource */
-    struct nk_font* diablo = 0;
+    struct nk_font* diablo = 0, *diablo36 = 0;
     HRSRC res = FindResource(hInstance, MAKEINTRESOURCE(IDR_RCDATA_FONT_DIABLO), RT_RCDATA);
 
     if (res)
@@ -1940,6 +1944,7 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
         size_t len = SizeofResource(hInstance, res);
 
         diablo = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 24, 0);
+        diablo36 = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 36, 0);
     }
 
     /*struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Roboto-Regular.ttf", 16, 0);*/
@@ -1947,6 +1952,8 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
     /*struct nk_font *clean = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyClean.ttf", 12, 0);*/
     /*struct nk_font *tiny = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyTiny.ttf", 10, 0);*/
     /*struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Cousine-Regular.ttf", 13, 0);*/
+    media.diablo24 = diablo;
+    media.diablo36 = diablo36;
     nk_sdl_font_stash_end();
     /*nk_style_load_all_cursors(ctx, atlas->cursors);*/
     if (diablo)
@@ -2466,8 +2473,12 @@ nuklear_player_selection(PGHSdlApp sdlapp)
         if (nk_begin(ctx, "PlayerSelection", nk_rect((float)plsel_x, (float)plsel_y, (float)plsel_width, (float)plsel_height),
             NK_WINDOW_NO_SCROLLBAR))
         {
+            if (media.diablo36)
+                nk_style_set_font(ctx, &media.diablo36->handle);            
             nk_layout_row_dynamic(ctx, 30, 1);
             nk_label(ctx, "Player Selection", NK_TEXT_CENTERED);
+            if (media.diablo36 && media.diablo24)
+                nk_style_set_font(ctx, &media.diablo24->handle);
 
             nk_layout_row_static(ctx, 25, 300, 2);
             nk_label(ctx, "Player Name:", NK_TEXT_LEFT);
@@ -2692,14 +2703,10 @@ static boolean plselRandomize()
             fully_specified = FALSE;
     }
 
-    if (flags.initrole == ROLE_NONE)
-        flags.initrole = ROLE_RANDOM;
-    if (flags.initrace == ROLE_NONE)
-        flags.initrace = ROLE_RANDOM;
-    if (flags.initgend == ROLE_NONE)
-        flags.initgend = ROLE_RANDOM;
-    if (flags.initalign == ROLE_NONE)
-        flags.initalign = ROLE_RANDOM;
+    flags.initrole = ROLE_RANDOM;
+    flags.initrace = ROLE_RANDOM;
+    flags.initgend = ROLE_RANDOM;
+    flags.initalign = ROLE_RANDOM;
 
     rigid_role_checks();
 
