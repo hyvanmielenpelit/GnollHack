@@ -41,7 +41,7 @@
       <AdditionalOptions>/Gs /Oi- %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(ImguiDir);$(ImguiDir)backends\;$(SdlDir)include\;$(NuklearDir);$(StbDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(SdlDir)include\;$(NuklearDir);$(StbDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TILES;_WINDOWS;DLB;SDL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;SDL_MAIN_HANDLED;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
@@ -318,13 +318,13 @@
     <ClInclude Include="$(SdlDir)include\SDL_vulkan.h" />
     <ClInclude Include="$(NuklearDir)nuklear.h" />
     <ClInclude Include="$(StbDir)stb_image.h" />
-    <ClInclude Include="$(WinWin32Dir)\resource.h" />
-    <ClInclude Include="$(WinWin32Dir)\sdl\sdlnuklear.h" />
-    <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gl2.h" />
-    <ClInclude Include="..\..\..\include\extern.h" />
-    <ClInclude Include="..\..\..\include\general.h" />
-    <ClInclude Include="..\sdl\sdlmisc.h" />
-    <ClInclude Include="..\sdl\sdlproc.h" />
+    <ClInclude Include="$(WinWin32Dir)resource.h" />
+    <ClInclude Include="$(WinWin32Dir)sdl\sdlnuklear.h" />
+    <ClInclude Include="$(NuklearDir)nuklear_sdl_gl2.h" />
+    <ClInclude Include="$(IncDir)extern.h" />
+    <ClInclude Include="$(IncDir)general.h" />
+    <ClInclude Include="$(WinWin32Dir)sdl\sdlmisc.h" />
+    <ClInclude Include="$(WinWin32Dir)\sdl\sdlproc.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />
@@ -348,7 +348,7 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="$(WinWin32Dir)uwch.ttf" />
-    <Font Include="..\sdl\diablo_h.ttf" />
+    <Font Include="$(WinWin32Dir)sdl\diablo_h.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(WinWin32Dir)Master.bank" />
