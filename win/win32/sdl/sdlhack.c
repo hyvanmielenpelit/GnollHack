@@ -17,7 +17,6 @@
 #include "mhmain.h"
 #include "mhmap.h"
 #include "SDL.h"
-#include "sdlimgui.h"
 #include "sdlnuklear.h"
 
 #if !defined(SAFEPROCS)

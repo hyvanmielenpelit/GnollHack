@@ -207,18 +207,10 @@
     <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
     <ClCompile Include="$(SrcDir)rm.c" />
     <ClCompile Include="$(SrcDir)npc.c" />
-    <ClCompile Include="$(ImguiDir)imgui.cpp" />
-    <ClCompile Include="$(ImguiDir)imgui_demo.cpp" />
-    <ClCompile Include="$(ImguiDir)imgui_draw.cpp" />
-    <ClCompile Include="$(ImguiDir)imgui_tables.cpp" />
-    <ClCompile Include="$(ImguiDir)imgui_widgets.cpp" />
-    <ClCompile Include="..\..\..\ext\imgui\backends\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\..\..\ext\imgui\backends\imgui_impl_sdl.cpp" />
     <ClCompile Include="..\..\..\sys\winnt\windmain.c" />
     <ClCompile Include="..\mswproc.c" />
     <ClCompile Include="..\sdl\sdlmisc.cpp" />
     <ClCompile Include="..\sdl\sdlhack.c" />
-    <ClCompile Include="..\sdl\sdlimgui.cpp" />
     <ClCompile Include="..\sdl\sdlnuklear.c" />
     <ClCompile Include="..\sdl\sdlproc.c" />
   </ItemGroup>
@@ -246,12 +238,6 @@
     <ClInclude Include="$(IncDir)soundset.h" />
     <ClInclude Include="$(WinWin32Dir)mhwingdi.h" />
     <ClInclude Include="$(WinWin32Dir)soundfx.h" />
-    <ClInclude Include="$(ImguiDir)imconfig.h" />
-    <ClInclude Include="$(ImguiDir)imgui.h" />
-    <ClInclude Include="$(ImguiDir)imgui_internal.h" />
-    <ClInclude Include="$(ImguiDir)imstb_rectpack.h" />
-    <ClInclude Include="$(ImguiDir)imstb_textedit.h" />
-    <ClInclude Include="$(ImguiDir)imstb_truetype.h" />
     <ClInclude Include="$(SdlDir)include\begin_code.h" />
     <ClInclude Include="$(SdlDir)include\close_code.h" />
     <ClInclude Include="$(SdlDir)include\SDL.h" />
@@ -333,7 +319,6 @@
     <ClInclude Include="$(NuklearDir)nuklear.h" />
     <ClInclude Include="$(StbDir)stb_image.h" />
     <ClInclude Include="$(WinWin32Dir)\resource.h" />
-    <ClInclude Include="$(WinWin32Dir)\sdl\sdlimgui.h" />
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlnuklear.h" />
     <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gl2.h" />
     <ClInclude Include="..\..\..\include\extern.h" />
