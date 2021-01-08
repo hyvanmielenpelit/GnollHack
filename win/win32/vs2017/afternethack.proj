@@ -11,6 +11,18 @@
   	<Copy SourceFiles="$(FmodDir)core\lib\winnt-x64\fmod.dll;$(FmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(FmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(FmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
     <Copy SourceFiles="$(SdlDir)lib\winnt-x86\SDL2.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
     <Copy SourceFiles="$(SdlDir)lib\winnt-x64\SDL2.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\SDL2_image.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\SDL2_image.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\libpng16-16.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\libpng16-16.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\zlib1.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\zlib1.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\libjpeg-9.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\libjpeg-9.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\libtiff-5.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\libtiff-5.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\libwebp-7.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\libwebp-7.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
 
   </Target>
   <Target Name="Clean">

@@ -26,6 +26,7 @@
 
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <SDL_image.h>
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -2401,13 +2402,26 @@ nuklear_player_selection(PGHSdlApp sdlapp)
     SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
     int plsel_x = max(0, (win_width - plsel_width) / 2);
     int plsel_y = max(0, (win_height - plsel_height) / 2);
-    int glyph = 0;
-    short ntile = glyph2tile[glyph];
-    int base_t_x = SDL_TILEBMP_X(ntile);
-    int base_t_y = SDL_TILEBMP_Y(ntile);
-    
 
-    SDL_RaiseWindow(sdlapp->win);
+    SDL_Renderer* renderer = NULL;
+    SDL_Surface* surface = NULL;
+    SDL_Texture* img = NULL;
+    int w, h; // texture width & height
+    renderer = SDL_CreateRenderer(sdlapp->win, -1, SDL_RENDERER_ACCELERATED);
+    
+    // load our image
+    surface = sdl_surface_from_resource(sdlapp->hApp, IDB_PNG_TILES);
+    img = SDL_CreateTextureFromSurface(renderer, surface);
+    //img = IMG_LoadTexture(renderer, "gwen.png");
+    //surface = sdl_surface_from_resource(sdlapp->hApp, IDB_PNG_TILES);
+    img = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_QueryTexture(img, NULL, NULL, &w, &h);
+    //SDL_Surface* gScreenSurface = SDL_GetWindowSurface(sdlapp->win);
+    //TILE_X* sdlapp->mapTilesPerLine, TILE_Y* sdlapp->mapTileLines
+
+    // get the width and height of the texture
+    // put the location where we want the texture to be drawn into a rectangle
+    // I'm also scaling the texture 2x simply by setting the width and height
 
     struct ghsound_music_info info = { 0 };
     info.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
@@ -2420,6 +2434,24 @@ nuklear_player_selection(PGHSdlApp sdlapp)
     int current_race = flags.initrace;
     int current_gender = flags.initgend;
     int current_alignment = flags.initalign;
+
+    int player_role = flags.initrole;
+    int player_race = flags.initrace;
+    int player_gender = flags.initgend;
+    int player_alignment = flags.initalign;
+    int player_glyph_level = 0;
+    int player_glyph_index = player_to_glyph_index(player_role, player_race, player_gender, player_alignment, player_glyph_level);
+    int player_glyph_offset = GLYPH_PLAYER_OFF;
+    int glyph = player_glyph_index + player_glyph_offset;
+    short ntile = glyph2tile[glyph];
+    int base_t_x = SDL_TILEBMP_X(ntile);
+    int base_t_y = SDL_TILEBMP_Y(ntile);
+    SDL_Rect source_rect;
+    source_rect.x = base_t_x; source_rect.y = base_t_y; source_rect.w = TILE_X; source_rect.h = TILE_Y;
+    SDL_Rect target_rect;
+    target_rect.x = 0; target_rect.y = 0; target_rect.w = TILE_X; target_rect.h = TILE_Y;
+    GLuint pic = image_load_from_resource(sdlapp->hApp, IDB_PNG_TILES);
+    struct nk_image nkimg = nk_subimage_id(pic, w, h, nk_rect((float)source_rect.x, (float)source_rect.y, (float)source_rect.w, (float)source_rect.h));
 
     /* option toggle */
     struct nk_style_toggle* toggle;
@@ -2480,6 +2512,9 @@ nuklear_player_selection(PGHSdlApp sdlapp)
     boolean genderWasPressed[2] = { 0 };
     boolean alignmentIsPressed[3] = { 0 };
     boolean alignmentWasPressed[3] = { 0 };
+
+    SDL_RaiseWindow(sdlapp->win);
+
     while (sdlapp->running && res == 0)
     {
         /* Input */
@@ -2492,6 +2527,16 @@ nuklear_player_selection(PGHSdlApp sdlapp)
             nk_sdl_handle_event(&evt);
         }
         nk_input_end(ctx);
+
+        player_glyph_index = player_to_glyph_index(current_role, current_race, current_gender, current_alignment, player_glyph_level);
+        player_glyph_offset = GLYPH_PLAYER_OFF;
+        glyph = player_glyph_index + player_glyph_offset;
+        ntile = glyph2tile[glyph];
+        base_t_x = SDL_TILEBMP_X(ntile);
+        base_t_y = SDL_TILEBMP_Y(ntile);
+        source_rect.x = base_t_x; 
+        source_rect.y = base_t_y;
+        nkimg = nk_subimage_id(pic, w, h, nk_rect((float)source_rect.x, (float)source_rect.y, (float)source_rect.w, (float)source_rect.h));
 
         /* GUI */
         if (nk_begin(ctx, "PlayerSelection", nk_rect((float)plsel_x, (float)plsel_y, (float)plsel_width, (float)plsel_height),
@@ -2661,6 +2706,8 @@ nuklear_player_selection(PGHSdlApp sdlapp)
             flags.initgend = current_gender;
             flags.initalign = current_alignment;
 
+            nk_layout_row_static(ctx, (float)target_rect.h, target_rect.w, 1);
+            nk_image(ctx, nkimg);
             nk_layout_row_static(ctx, 25, 75, 1);
             nk_layout_row_static(ctx, 45, 150, 3);
             if (nk_button_label(ctx, "Play"))
@@ -2698,13 +2745,20 @@ nuklear_player_selection(PGHSdlApp sdlapp)
          * rendering the UI. */
         nk_sdl_render(NK_ANTI_ALIASING_ON);
         SDL_GL_SwapWindow(sdlapp->win);
+
     }
     sdl_play_immediate_ghsound(sound_info);
+    SDL_DestroyTexture(img);
+    SDL_FreeSurface(surface);
+    SDL_DestroyRenderer(renderer);
     if(res == 2)
         (void)shutdown_nuklear(sdlapp);
     return res == 1 ? 1 : 0;
 
 cleanup:
+        SDL_DestroyTexture(img);
+        SDL_FreeSurface(surface);
+        SDL_DestroyRenderer(renderer);
     (void)shutdown_nuklear(sdlapp);
     return 0;
 

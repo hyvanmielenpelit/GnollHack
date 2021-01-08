@@ -293,6 +293,10 @@ mswin_init_nhwindows(int *argc, char **argv)
         }
     }
 
+#ifdef USE_TILES
+    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
+#endif
+
     if (iflags.wc_splash_screen)
         mswin_display_splash_window(FALSE);
 

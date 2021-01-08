@@ -189,6 +189,10 @@ sdl_init_nhwindows(int *argc, char **argv)
         }
     }
 
+#ifdef USE_TILES
+    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
+#endif
+
     /* SDL setup */
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800

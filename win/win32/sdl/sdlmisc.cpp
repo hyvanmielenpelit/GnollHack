@@ -6,6 +6,7 @@
  */
 
 #pragma comment( lib, "OpenGL32" )          
+#pragma comment( lib, "SDL2_image" )          
 
 #include "win10.h"
 #include <windows.h>
@@ -28,6 +29,7 @@
 #include <time.h>
 
 #include <SDL.h>
+#include <SDL_image.h>
 #include <SDL_opengl.h>
 
 
@@ -124,7 +126,83 @@ extern "C"
 */
     }
 
+    SDL_Texture*
+    sdl_texture_from_resource(SDL_Renderer* renderer, HINSTANCE hInstance, int resource_id)
+    {
+        unsigned char* data = 0;
+        SDL_Texture* img = 0;
+
+        HRSRC hResource = ::FindResource(hInstance, MAKEINTRESOURCE(resource_id), "PNG");
+        if (!hResource)
+            return 0;
+
+        DWORD imageSize = ::SizeofResource(hInstance, hResource);
+        if (!imageSize)
+            return 0;
+
+        const void* pResourceData = ::LockResource(::LoadResource(hInstance, hResource));
+        if (!pResourceData)
+            return 0;
+
+        HGLOBAL m_hBuffer = ::GlobalAlloc(GMEM_MOVEABLE, imageSize);
+        if (m_hBuffer)
+        {
+            void* pBuffer = ::GlobalLock(m_hBuffer);
+            if (pBuffer)
+            {
+                CopyMemory(pBuffer, pResourceData, imageSize);
+
+                img = IMG_LoadTexture_RW(renderer, SDL_RWFromMem(pBuffer, imageSize), 1);
+
+                ::GlobalUnlock(m_hBuffer);
+            }
+            ::GlobalFree(m_hBuffer);
+            m_hBuffer = NULL;
+        }
+
+        return img;
+    }
+
+    SDL_Surface*
+    sdl_surface_from_resource(HINSTANCE hInstance, int resource_id)
+    {
+        unsigned char* data = 0;
+        SDL_Surface* img = 0;
+
+        HRSRC hResource = ::FindResource(hInstance, MAKEINTRESOURCE(resource_id), "PNG");
+        if (!hResource)
+            return 0;
+
+        DWORD imageSize = ::SizeofResource(hInstance, hResource);
+        if (!imageSize)
+            return 0;
+
+        const void* pResourceData = ::LockResource(::LoadResource(hInstance, hResource));
+        if (!pResourceData)
+            return 0;
+
+        HGLOBAL m_hBuffer = ::GlobalAlloc(GMEM_MOVEABLE, imageSize);
+        if (m_hBuffer)
+        {
+            void* pBuffer = ::GlobalLock(m_hBuffer);
+            if (pBuffer)
+            {
+                CopyMemory(pBuffer, pResourceData, imageSize);
+
+                img = IMG_Load_RW(SDL_RWFromMem(pBuffer, imageSize), 1);
+
+                ::GlobalUnlock(m_hBuffer);
+            }
+            ::GlobalFree(m_hBuffer);
+            m_hBuffer = NULL;
+        }
+
+        return img;
+    }
 
 }
+
+
+
 
 /* sdlmisc.cpp */

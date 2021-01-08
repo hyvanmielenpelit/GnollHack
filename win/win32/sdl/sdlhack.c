@@ -131,6 +131,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 
     /* init application structure */
     _GnollHack_app.hApp = hInstance;
+    _GnollHack_SdlApp.hApp = hInstance;
     _GnollHack_app.hAccelTable =
         LoadAccelerators(hInstance, (LPCTSTR) IDC_NETHACKW);
     _GnollHack_app.hMainWnd = NULL;
@@ -183,6 +184,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 
     _GnollHack_app.mapTilesPerLine = tiles_per_line; // TILES_PER_LINE;
     _GnollHack_SdlApp.mapTilesPerLine = tiles_per_line;
+    _GnollHack_SdlApp.totalMapTiles = total_tiles;
+    _GnollHack_SdlApp.mapTileLines = 1 + ((total_tiles - 1) / tiles_per_line);
 
     _GnollHack_app.bNoHScroll = FALSE;
     _GnollHack_app.bNoVScroll = FALSE;
