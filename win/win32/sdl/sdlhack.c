@@ -281,18 +281,18 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     (void)nuklear_splash_screen(sdlapp);
 
     enum nuklear_main_menu_command ncmd = MAIN_MENU_NONE;
-    boolean status = 0;
+    int status = EXIT_SUCCESS;
     do
     {
         /* Main menu second */
         ncmd = nuklear_main_menu(sdlapp);
         /* let main do the argument processing */
         if(ncmd == MAIN_MENU_START_GAME)
-        status = main(argc, argv);
+            status = (int)main(argc, argv);
         reset_program_state();
     } while (ncmd != MAIN_MENU_EXIT_GAME && sdlapp->running);
 
-    sdl_exit_platform(EXIT_SUCCESS);
+    sdl_exit_platform(status);
 
     return status;
 }

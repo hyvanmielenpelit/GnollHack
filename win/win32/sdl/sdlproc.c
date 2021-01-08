@@ -3483,7 +3483,7 @@ sdl_init_platform(VOID_ARGS)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     sdlapp->win = SDL_CreateWindow("GnollHack",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN_DESKTOP);
+        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI  /* | SDL_WINDOW_FULLSCREEN_DESKTOP */ );
     sdlapp->glContext = SDL_GL_CreateContext(sdlapp->win);
     SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
 

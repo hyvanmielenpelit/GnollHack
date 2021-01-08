@@ -2499,6 +2499,7 @@ nuklear_player_selection(PGHSdlApp sdlapp)
     boolean alignmentWasPressed[3] = { 0 };
 
     SDL_RaiseWindow(sdlapp->win);
+    //SDL_SetWindowInputFocus(sdlapp->win);
 
     while (sdlapp->running && res == 0)
     {
