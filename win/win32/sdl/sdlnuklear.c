@@ -2401,6 +2401,11 @@ nuklear_player_selection(PGHSdlApp sdlapp)
     SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
     int plsel_x = max(0, (win_width - plsel_width) / 2);
     int plsel_y = max(0, (win_height - plsel_height) / 2);
+    int glyph = 0;
+    short ntile = glyph2tile[glyph];
+    int base_t_x = SDL_TILEBMP_X(ntile);
+    int base_t_y = SDL_TILEBMP_Y(ntile);
+    
 
     SDL_RaiseWindow(sdlapp->win);
 

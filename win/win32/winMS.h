@@ -48,28 +48,8 @@
 #define NHW_RIP 32
 #define NHW_INVEN 33
 
-#ifndef TILE_X
-#define TILE_X 64
-#endif
-#define TILE_Y 96
-
-#ifndef MENU_TILE_X
-#define MENU_TILE_X 64
-#endif
-#define MENU_TILE_Y 48
-
-#define GLYPHLESS_MENU_HEIGHT 20
-
 /* tile background color */
-#define TILE_BK_COLOR_RED 71
-#define TILE_BK_COLOR_GREEN 108
-#define TILE_BK_COLOR_BLUE 108
 #define TILE_BK_COLOR RGB(TILE_BK_COLOR_RED, TILE_BK_COLOR_GREEN, TILE_BK_COLOR_BLUE)
-
-
-//extern short glyph2tile[MAX_GLYPH];
-//extern short tile2animation[MAX_GLYPH];
-//extern short tile2enlargement[MAX_GLYPH];
 
 #define TILEBMP_X(ntile) \
     ((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X)

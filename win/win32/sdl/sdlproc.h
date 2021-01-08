@@ -41,6 +41,11 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
+#define SDL_TILEBMP_X(ntile) \
+    ((ntile % GetGHSdlApp()->mapTilesPerLine) *  GetGHSdlApp()->mapTile_X)
+#define SDL_TILEBMP_Y(ntile) \
+    ((ntile / GetGHSdlApp()->mapTilesPerLine) *  GetGHSdlApp()->mapTile_Y)
+
 
 typedef struct sdl_ghwindow_app {
     /* Platform */
@@ -48,6 +53,11 @@ typedef struct sdl_ghwindow_app {
     SDL_GLContext glContext;
     int win_width, win_height;
     int running;
+    HBITMAP bmpTiles;
+    HBITMAP bmpMapTiles;
+    int mapTile_X;       /* tile width */
+    int mapTile_Y;       /* tile height */
+    int mapTilesPerLine; /* number of tile per row in the bitmap */
 
 } GHSdlApp, * PGHSdlApp;
 

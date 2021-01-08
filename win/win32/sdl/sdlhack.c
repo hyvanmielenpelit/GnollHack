@@ -140,6 +140,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     /* Load PNGs */
     StartGdiplus();
     _GnollHack_app.bmpTiles = LoadPNGFromResource(hInstance, IDB_PNG_TILES, TILE_BK_COLOR);
+    _GnollHack_SdlApp.bmpTiles = _GnollHack_app.bmpTiles;
+
     if (_GnollHack_app.bmpTiles == NULL)
 	{
 		panic("cannot load tiles bitmap");
@@ -169,6 +171,10 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     _GnollHack_app.mapTile_X = TILE_X;
     _GnollHack_app.mapTile_Y = TILE_Y;
 
+    _GnollHack_SdlApp.bmpMapTiles = _GnollHack_app.bmpTiles;
+    _GnollHack_SdlApp.mapTile_X = TILE_X;
+    _GnollHack_SdlApp.mapTile_Y = TILE_Y;
+
     /* Process tiledata */
     int total_tiles = process_tiledata(2, (const char*)0, (short*)0, (uchar*)0);
     int tiles_per_line = (int)ceil(sqrt(1.5 * ((double)total_tiles)));
@@ -176,6 +182,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         tiles_per_line += (3 - (tiles_per_line % 3));
 
     _GnollHack_app.mapTilesPerLine = tiles_per_line; // TILES_PER_LINE;
+    _GnollHack_SdlApp.mapTilesPerLine = tiles_per_line;
 
     _GnollHack_app.bNoHScroll = FALSE;
     _GnollHack_app.bNoVScroll = FALSE;

@@ -10,6 +10,22 @@
 #define BUFF_WIDTH 16
 #define BUFF_HEIGHT 16
 
+#ifndef TILE_X
+#define TILE_X 64
+#endif
+#define TILE_Y 96
+
+#ifndef MENU_TILE_X
+#define MENU_TILE_X 64
+#endif
+#define MENU_TILE_Y 48
+
+#define GLYPHLESS_MENU_HEIGHT 20
+
+#define TILE_BK_COLOR_RED 71
+#define TILE_BK_COLOR_GREEN 108
+#define TILE_BK_COLOR_BLUE 108
+
 struct tileset_definition {
     const char* cmap_names[MAX_CMAP_TYPES]; /* names of the cmaps in GnollHack */
     double you_darkening[MAX_CMAP_TYPES]; /* 0.0 is default */
