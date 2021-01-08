@@ -2404,6 +2404,11 @@ nuklear_player_selection(PGHSdlApp sdlapp)
 
     SDL_RaiseWindow(sdlapp->win);
 
+    struct ghsound_music_info info = { 0 };
+    info.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
+    info.volume = 1.0f;
+    sdl_play_ghsound_music(info);
+
     plselRandomize();
 
     int current_role = flags.initrole;
@@ -2432,13 +2437,18 @@ nuklear_player_selection(PGHSdlApp sdlapp)
     ctx->style.button.text_normal = nk_rgb(180, 180, 180);
     ctx->style.button.text_hover = nk_rgb(240, 240, 240);
     ctx->style.button.text_active = nk_rgb(120, 120, 120);
-
+    
     /* default text */
     ctx->style.text.color = nk_rgb(60, 60, 60);
 
     /* window */
     ctx->style.window.padding = nk_vec2(64, 64);
     ctx->style.window.border = 32;
+
+    struct ghsound_immediate_info sound_info = { 0 };
+    sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+    sound_info.volume = 1.0f;
+    sound_info.sound_type = IMMEDIATE_SOUND_UI;
 
     const char* role_names_male[NUM_ROLES] = { 0 };
     const char* role_names_female[NUM_ROLES] = { 0 };
@@ -2458,7 +2468,13 @@ nuklear_player_selection(PGHSdlApp sdlapp)
     }
 
     int res = 0;
-
+    boolean comboIsPressed = 0, comboWasPressed = 0;
+    boolean raceIsPressed[NUM_RACES] = { 0 };
+    boolean raceWasPressed[NUM_RACES] = { 0 };
+    boolean genderIsPressed[2] = { 0 };
+    boolean genderWasPressed[2] = { 0 };
+    boolean alignmentIsPressed[3] = { 0 };
+    boolean alignmentWasPressed[3] = { 0 };
     while (sdlapp->running && res == 0)
     {
         /* Input */
@@ -2479,7 +2495,7 @@ nuklear_player_selection(PGHSdlApp sdlapp)
             if (media.diablo36)
                 nk_style_set_font(ctx, &media.diablo36->handle);            
             nk_layout_row_dynamic(ctx, 30, 1);
-            nk_label(ctx, "Player Selection", NK_TEXT_CENTERED);
+            nk_label(ctx, "Character", NK_TEXT_CENTERED);
             if (media.diablo36 && media.diablo24)
                 nk_style_set_font(ctx, &media.diablo24->handle);
 
@@ -2497,7 +2513,16 @@ nuklear_player_selection(PGHSdlApp sdlapp)
 
             /* default combobox */
             nk_layout_row_dynamic(ctx, 25, 1);
-            current_role = nk_combo(ctx, role_names_male, NK_LEN(role_names_male), current_role, 25, nk_vec2(300, 300));
+            comboWasPressed = comboIsPressed;
+            comboIsPressed = nk_widget_has_mouse_click_down(ctx, NK_BUTTON_LEFT, TRUE);
+            int previous_role = current_role;
+            current_role = nk_combo(ctx, role_names_male, NK_LEN(role_names_male), current_role, 25, nk_vec2(300, NUM_ROLES * (25 + 2 * ctx->style.combo.content_padding.y)));
+            if (current_role != previous_role)
+            {
+                sound_info.ghsound = GHSOUND_UI_MENU_SELECT;
+                sdl_play_immediate_ghsound(sound_info);
+                sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+            }
 
             if (media.diablo30)
                 nk_style_set_font(ctx, &media.diablo30->handle);
@@ -2510,11 +2535,24 @@ nuklear_player_selection(PGHSdlApp sdlapp)
             boolean curraceok = ok_race(current_role, current_race, ROLE_RANDOM, ROLE_RANDOM);
             for (int i = 0; i < NUM_RACES; i++)
             {
+                raceWasPressed[i] = raceIsPressed[i];
+                raceIsPressed[i] = nk_widget_has_mouse_click_down(ctx, NK_BUTTON_LEFT, TRUE);
+
                 if (ok_race(current_role, i, ROLE_RANDOM, ROLE_RANDOM))
                 {
                     if (!curraceok)
                         current_race = i;
-                    current_race = nk_option_label(ctx, race_names[i], current_race == i) ? i : current_race;
+                    if (nk_option_label(ctx, race_names[i], current_race == i))
+                    {
+                        if (!raceIsPressed[i] && raceWasPressed[i]) 
+                        {
+                            sound_info.ghsound = GHSOUND_UI_MENU_SELECT;
+                            sdl_play_immediate_ghsound(sound_info);
+                            sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+                        }
+
+                        current_race = i;
+                    }
                 }
                 else
                 {
@@ -2539,11 +2577,25 @@ nuklear_player_selection(PGHSdlApp sdlapp)
             boolean curgenderok = ok_gend(current_role, current_race, current_gender, ROLE_RANDOM);
             for (int i = 0; i < 2; i++)
             {
+                genderWasPressed[i] = genderIsPressed[i];
+                genderIsPressed[i] = nk_widget_has_mouse_click_down(ctx, NK_BUTTON_LEFT, TRUE);
+
                 if (ok_gend(current_role, current_race, i, ROLE_RANDOM))
                 {
                     if (!curgenderok)
                         current_gender = i;
-                    current_gender = nk_option_label(ctx, gender_names[i], current_gender == i) ? i : current_gender;
+
+                    if(nk_option_label(ctx, gender_names[i], current_gender == i))
+                    {
+                        if (!genderIsPressed[i] && genderWasPressed[i])
+                        {
+                            sound_info.ghsound = GHSOUND_UI_MENU_SELECT;
+                            sdl_play_immediate_ghsound(sound_info);
+                            sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+                        }
+
+                        current_gender = i;
+                    }
                 }
                 else
                 {
@@ -2568,11 +2620,24 @@ nuklear_player_selection(PGHSdlApp sdlapp)
             boolean curalignok = ok_align(current_role, current_race, current_gender, current_alignment);
             for (int i = 0; i < 3; i++)
             {
+                alignmentWasPressed[i] = alignmentIsPressed[i];
+                alignmentIsPressed[i] = nk_widget_has_mouse_click_down(ctx, NK_BUTTON_LEFT, TRUE);
+
                 if (ok_align(current_role, current_race, current_gender, i))
                 {
                     if (!curalignok)
                         current_alignment = i;
-                    current_alignment = nk_option_label(ctx, alignment_names[i], current_alignment == i) ? i : current_alignment;
+                    if (nk_option_label(ctx, alignment_names[i], current_alignment == i))
+                    {
+                        if (!alignmentIsPressed[i] && alignmentWasPressed[i])
+                        {
+                            sound_info.ghsound = GHSOUND_UI_MENU_SELECT;
+                            sdl_play_immediate_ghsound(sound_info);
+                            sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+                        }
+
+                        current_alignment = i;
+                    }
                 }
                 else
                 {
@@ -2594,7 +2659,10 @@ nuklear_player_selection(PGHSdlApp sdlapp)
             nk_layout_row_static(ctx, 25, 75, 1);
             nk_layout_row_static(ctx, 45, 150, 3);
             if (nk_button_label(ctx, "Play"))
+            {
+                sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
                 res = 1;
+            }
             if (nk_button_label(ctx, "Random"))
             {
                 plselRandomize();
@@ -2602,9 +2670,13 @@ nuklear_player_selection(PGHSdlApp sdlapp)
                 current_race = flags.initrace;
                 current_gender = flags.initgend;
                 current_alignment = flags.initalign;
+                sdl_play_immediate_ghsound(sound_info);
             }
             if (nk_button_label(ctx, "Quit"))
+            {
+                sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
                 res = 2;
+            }
 
         }
         nk_end(ctx);
@@ -2622,6 +2694,7 @@ nuklear_player_selection(PGHSdlApp sdlapp)
         nk_sdl_render(NK_ANTI_ALIASING_ON);
         SDL_GL_SwapWindow(sdlapp->win);
     }
+    sdl_play_immediate_ghsound(sound_info);
     if(res == 2)
         (void)shutdown_nuklear(sdlapp);
     return res == 1 ? 1 : 0;
@@ -2636,13 +2709,18 @@ enum nuklear_main_menu_command
 nuklear_main_menu(PGHSdlApp sdlapp)
 {
     int win_width = 0, win_height = 0;
-    int buttons_width = 320, buttons_height = 320;
+    int buttons_width = 320, buttons_height = 360;
     SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
     int buttons_x = max(0, (win_width - buttons_width) / 2);
     int buttons_y = max(0, (win_height - buttons_height) / 2);
     enum nuklear_main_menu_command res = MAIN_MENU_NONE;
     char buf[BUFSZ];
     Sprintf(buf, "GnollHack %d.%d.%d", VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
+
+    struct ghsound_music_info music_info = { 0 };
+    music_info.ghsound = GHSOUND_MUSIC_MAIN_MENU;
+    music_info.volume = 1.0f;
+    sdl_play_ghsound_music(music_info);
 
     /* default button */
     ctx->style.button.normal = nk_style_item_image(media.button);
@@ -2660,6 +2738,11 @@ nuklear_main_menu(PGHSdlApp sdlapp)
     /* window */
     ctx->style.window.padding = nk_vec2(32, 32);
     ctx->style.window.border = 16;
+
+    struct ghsound_immediate_info sound_info = { 0 };
+    sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+    sound_info.volume = 1.0f;
+    sound_info.sound_type = IMMEDIATE_SOUND_UI;
 
     while (sdlapp->running && res == MAIN_MENU_NONE)
     {
@@ -2679,15 +2762,22 @@ nuklear_main_menu(PGHSdlApp sdlapp)
             NK_WINDOW_NO_SCROLLBAR))
         {
             nk_layout_row_dynamic(ctx, 50, 1);
+            nk_label(ctx, "Main Menu", NK_TEXT_CENTERED);
+
+            nk_layout_row_dynamic(ctx, 50, 1);
             nk_label(ctx, buf, NK_TEXT_CENTERED);
 
             nk_layout_row_dynamic(ctx, 87, 1);
             if (nk_button_label(ctx, "Start Game"))
+            {
                 res = MAIN_MENU_START_GAME;
+            }
 
             nk_layout_row_dynamic(ctx, 87, 1);
             if (nk_button_label(ctx, "Exit Game"))
+            {
                 res = MAIN_MENU_EXIT_GAME;
+            }
         }
         nk_end(ctx);
 
@@ -2706,6 +2796,7 @@ nuklear_main_menu(PGHSdlApp sdlapp)
         nk_sdl_render(NK_ANTI_ALIASING_ON);
         SDL_GL_SwapWindow(sdlapp->win);
     }
+    sdl_play_immediate_ghsound(sound_info);
     if(res == MAIN_MENU_EXIT_GAME)
         (void)shutdown_nuklear(sdlapp);
     return res;
@@ -2720,7 +2811,98 @@ cleanup:
 boolean
 nuklear_splash_screen(PGHSdlApp sdlapp)
 {
-    return 1;
+    int win_width = 0, win_height = 0;
+    int buttons_width = 240, buttons_height = 260;
+    SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
+    int buttons_x = max(0, (win_width - buttons_width) / 2);
+    int buttons_y = max(0, (win_height - buttons_height) / 2);
+    int res = 0;
+    char buf[BUFSZ];
+    Sprintf(buf, "GnollHack %d.%d.%d", VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
+
+    struct ghsound_music_info music_info = { 0 };
+    music_info.ghsound = GHSOUND_MUSIC_SPLASH;
+    music_info.volume = 1.0f;
+    sdl_play_ghsound_music(music_info);
+
+    /* default button */
+    ctx->style.button.normal = nk_style_item_image(media.button);
+    ctx->style.button.hover = nk_style_item_image(media.button_hover);
+    ctx->style.button.active = nk_style_item_image(media.button_active);
+    ctx->style.button.border_color = nk_rgba(0, 0, 0, 0);
+    ctx->style.button.text_background = nk_rgba(0, 0, 0, 0);
+    ctx->style.button.text_normal = nk_rgb(180, 180, 180);
+    ctx->style.button.text_hover = nk_rgb(240, 240, 240);
+    ctx->style.button.text_active = nk_rgb(120, 120, 120);
+
+    /* default text */
+    ctx->style.text.color = nk_rgb(60, 60, 60);
+
+    /* window */
+    ctx->style.window.padding = nk_vec2(32, 32);
+    ctx->style.window.border = 16;
+
+    struct ghsound_immediate_info sound_info = { 0 };
+    sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+    sound_info.volume = 1.0f;
+    sound_info.sound_type = IMMEDIATE_SOUND_UI;
+
+    while (sdlapp->running && res == MAIN_MENU_NONE)
+    {
+        /* Input */
+        SDL_Event evt;
+        nk_input_begin(ctx);
+        while (SDL_PollEvent(&evt))
+        {
+            if (evt.type == SDL_QUIT)
+                goto cleanup;
+            nk_sdl_handle_event(&evt);
+        }
+        nk_input_end(ctx);
+
+        /* GUI */
+        if (nk_begin(ctx, "Buttons", nk_rect((float)buttons_x, (float)buttons_y, (float)buttons_width, (float)buttons_height),
+            NK_WINDOW_NO_SCROLLBAR))
+        {
+            nk_layout_row_dynamic(ctx, 50, 1);
+            nk_label(ctx, "Splash Screen", NK_TEXT_CENTERED);
+
+            nk_layout_row_dynamic(ctx, 50, 1);
+            nk_label(ctx, buf, NK_TEXT_CENTERED);
+
+            nk_layout_row_dynamic(ctx, 44, 1);
+            if (nk_button_label(ctx, "OK"))
+            {
+                res = 1;
+            }
+
+        }
+        nk_end(ctx);
+
+        /* ----------------------------------------- */
+
+        /* Draw */
+        SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
+        glViewport(0, 0, sdlapp->win_width, sdlapp->win_height);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(bg.r, bg.g, bg.b, bg.a);
+        /* IMPORTANT: `nk_sdl_render` modifies some global OpenGL state
+            * with blending, scissor, face culling, depth test and viewport and
+            * defaults everything back into a default state.
+            * Make sure to either a.) save and restore or b.) reset your own state after
+            * rendering the UI. */
+        nk_sdl_render(NK_ANTI_ALIASING_ON);
+        SDL_GL_SwapWindow(sdlapp->win);
+    }
+    sdl_play_immediate_ghsound(sound_info);
+    if (res == 2)
+        (void)shutdown_nuklear(sdlapp);
+    return res == 1 ? 1 : 0;
+
+cleanup:
+    (void)shutdown_nuklear(sdlapp);
+    return 0;
+
 }
 
 

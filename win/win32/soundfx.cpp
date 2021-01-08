@@ -66,9 +66,9 @@ struct ghsound_eventmapping {
 const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_NONE, "", 0.0f },
 
-    { SOUND_BANK_MASTER, "event:/Music/Music-Splash", 0.5f},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Player-Selection", 0.3f},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Intro", 0.1f},
+    { SOUND_BANK_MASTER, "event:/Music/Start/Splash", 0.5f},
+    { SOUND_BANK_MASTER, "event:/Music/Start/Player Selection", 0.3f},
+    { SOUND_BANK_MASTER, "event:/Music/Start/Intro", 0.1f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Normal-1", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Oracle", 0.20f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Temple", BACKGROUND_MUSIC_VOLUME},
@@ -81,7 +81,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Normal", 0.12f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Valley", 0.08f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Sanctum", 0.08f},
-    { SOUND_BANK_MASTER, "event:/Music/Game Over", 0.1f},
+    { SOUND_BANK_MASTER, "event:/Music/Finish/Game Over", 0.1f},
     { SOUND_BANK_MASTER, "event:/Music/Shop/Normal", 0.07f},
     { SOUND_BANK_MASTER, "event:/Music/Shop/Angry", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Shop/Dead", BACKGROUND_MUSIC_VOLUME},
@@ -231,7 +231,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/End Game/Fire", 0.08f },
     { SOUND_BANK_MASTER, "event:/Music/End Game/Astral", 0.08f },
 
-    { SOUND_BANK_MASTER, "event:/Music/Victory", 0.20f },
+    { SOUND_BANK_MASTER, "event:/Music/Finish/Victory", 0.20f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Success", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Blessed Success", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Uncurse and Other", 0.3f },
@@ -800,6 +800,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Learning/Spell Known Already", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Learning/Spell Keener", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Cancellation in Force", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Start/Main Menu", 0.3f },
 
 };
 
