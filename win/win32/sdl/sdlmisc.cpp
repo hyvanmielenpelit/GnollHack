@@ -49,9 +49,13 @@ extern "C"
 
 
     GLuint
-    image_load_from_resource(HINSTANCE hInstance, int resource_id)
+    image_load_from_resource(HINSTANCE hInstance, int resource_id, int *x_ptr, int *y_ptr, int *n_ptr)
     {
-        int x, y, n;
+        if (!x_ptr || !y_ptr || !n_ptr)
+            return 0;
+
+        *x_ptr = 0, *y_ptr = 0;
+
         GLuint tex;
         unsigned char* data = 0;
 
@@ -74,8 +78,8 @@ extern "C"
             if (pBuffer)
             {
                 CopyMemory(pBuffer, pResourceData, imageSize);
-
-                data = stbi_load_from_memory((stbi_uc const*)pBuffer, imageSize, &x, &y, &n, 0);
+                
+                data = stbi_load_from_memory((stbi_uc const*)pBuffer, imageSize, x_ptr, y_ptr, n_ptr, 0);
 
                 ::GlobalUnlock(m_hBuffer);
             }
@@ -91,18 +95,22 @@ extern "C"
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, *x_ptr, *y_ptr, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         //glGenerateMipmap(GL_TEXTURE_2D);
         stbi_image_free(data);
         return tex;
     }
 
     GLuint
-    image_load(const char* filename)
+    image_load(const char* filename, int* x_ptr, int* y_ptr, int* n_ptr)
     {
-        int x, y, n;
+        if (!x_ptr || !y_ptr || !n_ptr)
+            return 0;
+
+        *x_ptr = 0, *y_ptr = 0;
+
         GLuint tex;
-        unsigned char* data = stbi_load(filename, &x, &y, &n, 0);
+        unsigned char* data = stbi_load(filename, x_ptr, y_ptr, n_ptr, 0);
         if (!data) die("failed to load image: %s", filename);
 
         glGenTextures(1, &tex);
@@ -111,7 +119,7 @@ extern "C"
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, *x_ptr, *y_ptr, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         //glGenerateMipmap(GL_TEXTURE_2D);
         stbi_image_free(data);
         return tex;

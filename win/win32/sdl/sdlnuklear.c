@@ -1537,9 +1537,10 @@ StartNuklearExample(HINSTANCE hInstance)
     bg.r = 0.10f, bg.g = 0.18f, bg.b = 0.24f, bg.a = 1.0f;
 
     glEnable(GL_TEXTURE_2D);
-    media.skin = image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST);
-    media.skin_buttons = image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS);
-    media.skin_window = image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW);
+    int x, y, n;
+    media.skin = image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST, &x, &y, &n);
+    media.skin_buttons = image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS, &x, &y, &n);
+    media.skin_window = image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW, &x, &y, &n);
     media.check = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 32, 15, 15));
     media.check_cursor = nk_subimage_id(media.skin, 512, 512, nk_rect(450, 34, 11, 11));
     media.option = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 64, 15, 15));
@@ -1971,11 +1972,11 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
 #endif
 
     bg.r = 0.10f, bg.g = 0.18f, bg.b = 0.24f, bg.a = 1.0f;
-
+    int x, y, n;
     glEnable(GL_TEXTURE_2D);
-    media.skin = image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST);
-    media.skin_buttons = image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS);
-    media.skin_window = image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW);
+    media.skin = image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST, &x, &y, &n);
+    media.skin_buttons = image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS, &x, &y, &n);
+    media.skin_window = image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW, &x, &y, &n);
     media.check = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 32, 15, 15));
     media.check_cursor = nk_subimage_id(media.skin, 512, 512, nk_rect(450, 34, 11, 11));
     media.option = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 64, 15, 15));
@@ -2398,30 +2399,10 @@ boolean
 nuklear_player_selection(PGHSdlApp sdlapp)
 {
     int win_width = 0, win_height = 0;
-    int plsel_width = 840, plsel_height = 640;
+    int plsel_width = 840, plsel_height = 740;
     SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
     int plsel_x = max(0, (win_width - plsel_width) / 2);
     int plsel_y = max(0, (win_height - plsel_height) / 2);
-
-    SDL_Renderer* renderer = NULL;
-    SDL_Surface* surface = NULL;
-    SDL_Texture* img = NULL;
-    int w, h; // texture width & height
-    renderer = SDL_CreateRenderer(sdlapp->win, -1, SDL_RENDERER_ACCELERATED);
-    
-    // load our image
-    surface = sdl_surface_from_resource(sdlapp->hApp, IDB_PNG_TILES);
-    img = SDL_CreateTextureFromSurface(renderer, surface);
-    //img = IMG_LoadTexture(renderer, "gwen.png");
-    //surface = sdl_surface_from_resource(sdlapp->hApp, IDB_PNG_TILES);
-    img = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_QueryTexture(img, NULL, NULL, &w, &h);
-    //SDL_Surface* gScreenSurface = SDL_GetWindowSurface(sdlapp->win);
-    //TILE_X* sdlapp->mapTilesPerLine, TILE_Y* sdlapp->mapTileLines
-
-    // get the width and height of the texture
-    // put the location where we want the texture to be drawn into a rectangle
-    // I'm also scaling the texture 2x simply by setting the width and height
 
     struct ghsound_music_info info = { 0 };
     info.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
@@ -2435,23 +2416,27 @@ nuklear_player_selection(PGHSdlApp sdlapp)
     int current_gender = flags.initgend;
     int current_alignment = flags.initalign;
 
-    int player_role = flags.initrole;
-    int player_race = flags.initrace;
-    int player_gender = flags.initgend;
-    int player_alignment = flags.initalign;
     int player_glyph_level = 0;
-    int player_glyph_index = player_to_glyph_index(player_role, player_race, player_gender, player_alignment, player_glyph_level);
-    int player_glyph_offset = GLYPH_PLAYER_OFF;
-    int glyph = player_glyph_index + player_glyph_offset;
-    short ntile = glyph2tile[glyph];
-    int base_t_x = SDL_TILEBMP_X(ntile);
-    int base_t_y = SDL_TILEBMP_Y(ntile);
-    SDL_Rect source_rect;
-    source_rect.x = base_t_x; source_rect.y = base_t_y; source_rect.w = TILE_X; source_rect.h = TILE_Y;
-    SDL_Rect target_rect;
-    target_rect.x = 0; target_rect.y = 0; target_rect.w = TILE_X; target_rect.h = TILE_Y;
-    GLuint pic = image_load_from_resource(sdlapp->hApp, IDB_PNG_TILES);
-    struct nk_image nkimg = nk_subimage_id(pic, w, h, nk_rect((float)source_rect.x, (float)source_rect.y, (float)source_rect.w, (float)source_rect.h));
+    int player_glyph_index = 0;
+    int glyph = 0;
+    short ntile = 0;
+    int base_t_x = 0;
+    int base_t_y = 0;
+
+    int pet_glyph = NO_GLYPH;
+    short pet_tile = 0;
+    int pet_x = 0;
+    int pet_y = 0;
+
+    int pet_glyph2 = NO_GLYPH;
+    short pet_tile2 = 0;
+    int pet_x2 = 0;
+    int pet_y2 = 0;
+
+    int tilemap_width, tilemap_height, tilemap_size;
+    GLuint pic = image_load_from_resource(sdlapp->hApp, IDB_PNG_TILES, &tilemap_width, &tilemap_height, &tilemap_size);
+    struct nk_image nkimg;
+    struct nk_image petimg, petimg2;
 
     /* option toggle */
     struct nk_style_toggle* toggle;
@@ -2529,14 +2514,36 @@ nuklear_player_selection(PGHSdlApp sdlapp)
         nk_input_end(ctx);
 
         player_glyph_index = player_to_glyph_index(current_role, current_race, current_gender, current_alignment, player_glyph_level);
-        player_glyph_offset = GLYPH_PLAYER_OFF;
-        glyph = player_glyph_index + player_glyph_offset;
+        glyph = player_glyph_index + GLYPH_PLAYER_OFF;
         ntile = glyph2tile[glyph];
         base_t_x = SDL_TILEBMP_X(ntile);
         base_t_y = SDL_TILEBMP_Y(ntile);
-        source_rect.x = base_t_x; 
-        source_rect.y = base_t_y;
-        nkimg = nk_subimage_id(pic, w, h, nk_rect((float)source_rect.x, (float)source_rect.y, (float)source_rect.w, (float)source_rect.h));
+        nkimg = nk_subimage_id(pic, tilemap_width, tilemap_height, nk_rect((float)base_t_x, (float)base_t_y, (float)TILE_X, (float)TILE_Y));
+
+        pet_glyph = NO_GLYPH;
+        pet_glyph2 = NO_GLYPH;
+        if (current_role >= 0 && roles[current_role].petnum > NON_PM)
+        {
+            pet_glyph = current_role >= 0 ? monnum_to_glyph(roles[current_role].petnum) : NO_GLYPH;
+            pet_tile = glyph2tile[pet_glyph];
+            pet_x = SDL_TILEBMP_X(pet_tile);
+            pet_y = SDL_TILEBMP_Y(pet_tile);
+            petimg = nk_subimage_id(pic, tilemap_width, tilemap_height, nk_rect((float)pet_x, (float)pet_y, (float)TILE_X, (float)TILE_Y));
+        }
+        else
+        {
+            pet_glyph = PM_LITTLE_DOG + GLYPH_MON_OFF;
+            pet_tile = glyph2tile[pet_glyph];
+            pet_x = SDL_TILEBMP_X(pet_tile);
+            pet_y = SDL_TILEBMP_Y(pet_tile);
+            petimg = nk_subimage_id(pic, tilemap_width, tilemap_height, nk_rect((float)pet_x, (float)pet_y, (float)TILE_X, (float)TILE_Y));
+
+            pet_glyph2 = PM_KITTEN + GLYPH_MON_OFF;
+            pet_tile2 = glyph2tile[pet_glyph2];
+            pet_x2 = SDL_TILEBMP_X(pet_tile2);
+            pet_y2 = SDL_TILEBMP_Y(pet_tile2);
+            petimg2 = nk_subimage_id(pic, tilemap_width, tilemap_height, nk_rect((float)pet_x2, (float)pet_y2, (float)TILE_X, (float)TILE_Y));
+        }
 
         /* GUI */
         if (nk_begin(ctx, "PlayerSelection", nk_rect((float)plsel_x, (float)plsel_y, (float)plsel_width, (float)plsel_height),
@@ -2706,8 +2713,33 @@ nuklear_player_selection(PGHSdlApp sdlapp)
             flags.initgend = current_gender;
             flags.initalign = current_alignment;
 
-            nk_layout_row_static(ctx, (float)target_rect.h, target_rect.w, 1);
+            if (media.diablo30)
+                nk_style_set_font(ctx, &media.diablo30->handle);
+            nk_layout_row_dynamic(ctx, 10, 1);
+            nk_layout_row_dynamic(ctx, 25, 1);
+            nk_label(ctx, "Preview", NK_TEXT_LEFT);
+
+            if (media.diablo36)
+                nk_style_set_font(ctx, &media.diablo36->handle);
+
+            nk_layout_row_static(ctx, (float)TILE_Y, TILE_X, 5);
             nk_image(ctx, nkimg);
+            nk_label(ctx, pet_glyph == NO_GLYPH ? "" : "+", NK_TEXT_CENTERED);
+            if(pet_glyph != NO_GLYPH)
+                nk_image(ctx, petimg);
+            else
+                nk_label(ctx, "", NK_TEXT_LEFT);
+
+            if (media.diablo24)
+                nk_style_set_font(ctx, &media.diablo24->handle);
+
+            nk_label(ctx, pet_glyph2 == NO_GLYPH ? "" : "or", NK_TEXT_CENTERED);
+
+            if (pet_glyph2 != NO_GLYPH)
+                nk_image(ctx, petimg2);
+            else
+                nk_label(ctx, "", NK_TEXT_LEFT);
+
             nk_layout_row_static(ctx, 25, 75, 1);
             nk_layout_row_static(ctx, 45, 150, 3);
             if (nk_button_label(ctx, "Play"))
@@ -2748,17 +2780,11 @@ nuklear_player_selection(PGHSdlApp sdlapp)
 
     }
     sdl_play_immediate_ghsound(sound_info);
-    SDL_DestroyTexture(img);
-    SDL_FreeSurface(surface);
-    SDL_DestroyRenderer(renderer);
     if(res == 2)
         (void)shutdown_nuklear(sdlapp);
     return res == 1 ? 1 : 0;
 
 cleanup:
-        SDL_DestroyTexture(img);
-        SDL_FreeSurface(surface);
-        SDL_DestroyRenderer(renderer);
     (void)shutdown_nuklear(sdlapp);
     return 0;
 
@@ -2768,7 +2794,7 @@ enum nuklear_main_menu_command
 nuklear_main_menu(PGHSdlApp sdlapp)
 {
     int win_width = 0, win_height = 0;
-    int buttons_width = 320, buttons_height = 360;
+    int buttons_width = 400, buttons_height = 360;
     SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
     int buttons_x = max(0, (win_width - buttons_width) / 2);
     int buttons_y = max(0, (win_height - buttons_height) / 2);
@@ -2820,8 +2846,12 @@ nuklear_main_menu(PGHSdlApp sdlapp)
         if (nk_begin(ctx, "Buttons", nk_rect((float)buttons_x, (float)buttons_y, (float)buttons_width, (float)buttons_height),
             NK_WINDOW_NO_SCROLLBAR))
         {
+            if (media.diablo36)
+                nk_style_set_font(ctx, &media.diablo36->handle);
             nk_layout_row_dynamic(ctx, 50, 1);
             nk_label(ctx, "Main Menu", NK_TEXT_CENTERED);
+            if (media.diablo24)
+                nk_style_set_font(ctx, &media.diablo24->handle);
 
             nk_layout_row_dynamic(ctx, 50, 1);
             nk_label(ctx, buf, NK_TEXT_CENTERED);
@@ -2871,13 +2901,19 @@ boolean
 nuklear_splash_screen(PGHSdlApp sdlapp)
 {
     int win_width = 0, win_height = 0;
-    int buttons_width = 240, buttons_height = 260;
     SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
-    int buttons_x = max(0, (win_width - buttons_width) / 2);
-    int buttons_y = max(0, (win_height - buttons_height) / 2);
     int res = 0;
     char buf[BUFSZ];
     Sprintf(buf, "GnollHack %d.%d.%d", VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
+
+    int logo_width, logo_height, logo_size;
+    GLuint pic = image_load_from_resource(sdlapp->hApp, IDB_PNG_GNHLOGO, &logo_width, &logo_height, &logo_size);
+    struct nk_image logoimg;
+
+    int left_padding = 32;
+    int buttons_width = max(240, logo_width) + 2 * left_padding, buttons_height = 200 + logo_height;
+    int buttons_x = max(0, (win_width - buttons_width) / 2);
+    int buttons_y = max(0, (win_height - buttons_height) / 2);
 
     struct ghsound_music_info music_info = { 0 };
     music_info.ghsound = GHSOUND_MUSIC_SPLASH;
@@ -2898,7 +2934,7 @@ nuklear_splash_screen(PGHSdlApp sdlapp)
     ctx->style.text.color = nk_rgb(60, 60, 60);
 
     /* window */
-    ctx->style.window.padding = nk_vec2(32, 32);
+    ctx->style.window.padding = nk_vec2((float)left_padding, (float)32);
     ctx->style.window.border = 16;
 
     struct ghsound_immediate_info sound_info = { 0 };
@@ -2923,8 +2959,9 @@ nuklear_splash_screen(PGHSdlApp sdlapp)
         if (nk_begin(ctx, "Buttons", nk_rect((float)buttons_x, (float)buttons_y, (float)buttons_width, (float)buttons_height),
             NK_WINDOW_NO_SCROLLBAR))
         {
-            nk_layout_row_dynamic(ctx, 50, 1);
-            nk_label(ctx, "Splash Screen", NK_TEXT_CENTERED);
+            nk_layout_row_static(ctx, (float)logo_height, logo_width, 1);
+            logoimg = nk_image_id(pic);
+            nk_image(ctx, logoimg);
 
             nk_layout_row_dynamic(ctx, 50, 1);
             nk_label(ctx, buf, NK_TEXT_CENTERED);
