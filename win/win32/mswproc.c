@@ -134,6 +134,7 @@ struct window_procs mswin_procs = {
     mswin_add_ambient_ghsound,
     mswin_delete_ambient_ghsound,
     mswin_set_ambient_ghsound_volume,
+    mswin_exit_hack,
 };
 
 /*
@@ -267,35 +268,6 @@ mswin_init_nhwindows(int *argc, char **argv)
                             &status_bg_color);
     mswin_color_from_string(iflags.wc_backgrnd_text, &text_bg_brush,
                             &text_bg_color);
-
-    HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
-    int rid[2] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS };
-    char* bfilename[2] = { 0, 0 };
-    bfilename[0] = iflags.wc2_master_bank_file;
-    bfilename[1] = iflags.wc2_master_strings_bank_file;
-    for (int i = 0; i < 2; i++)
-    {
-        if (bfilename[i])
-        {
-            if (!load_fmod_bank_from_file(hInstance, bfilename[i]))
-            {
-                impossible("cannot load FMOD sound bank %d from file", i);
-                /* Continue to loading from resource */
-            }
-            else
-                continue;
-        }
-
-        if (!load_fmod_bank_from_resource(hInstance, rid[i]))
-        {
-            panic("cannot load FMOD sound bank %d from resource", i);
-            return;
-        }
-    }
-
-#ifdef USE_TILES
-    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
-#endif
 
     if (iflags.wc_splash_screen)
         mswin_display_splash_window(FALSE);
@@ -775,6 +747,7 @@ mswin_exit_nhwindows(const char *str)
     windowprocs.win_raw_print = mswin_raw_print;
     windowprocs.win_raw_print_bold = mswin_raw_print_bold;
     windowprocs.win_wait_synch = mswin_wait_synch;
+    windowprocs.win_exit_hack = mswin_exit_hack;
 }
 
 /* Prepare the window to be suspended. */
@@ -3460,4 +3433,71 @@ mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
     {
         impossible("Cannot set ambient sound volume!");
     }
+}
+
+void
+mswin_init_platform(VOID_ARGS)
+{
+    /* GDI+ */
+    StartGdiplus();
+
+    /* FMOD Studio */
+    if (!initialize_fmod_studio())
+    {
+        panic("cannot initialize FMOD studio");
+        return;
+    }
+
+    /* FMOD Banks */
+    HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
+    int rid[2] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS };
+    char* bfilename[2] = { 0, 0 };
+    bfilename[0] = iflags.wc2_master_bank_file;
+    bfilename[1] = iflags.wc2_master_strings_bank_file;
+    for (int i = 0; i < 2; i++)
+    {
+        if (bfilename[i])
+        {
+            if (!load_fmod_bank_from_file(hInstance, bfilename[i]))
+            {
+                impossible("cannot load FMOD sound bank %d from file", i);
+                /* Continue to loading from resource */
+            }
+            else
+                continue;
+        }
+
+        if (!load_fmod_bank_from_resource(hInstance, rid[i]))
+        {
+            panic("cannot load FMOD sound bank %d from resource", i);
+            return;
+        }
+    }
+
+    /* Tiles */
+#ifdef USE_TILES
+    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
+#endif
+
+
+}
+
+void
+mswin_exit_platform(int status)
+{
+    StopGdiplus();
+
+    if (!close_fmod_studio())
+    {
+        /* Nothing, since we are exiting */
+        //panic("cannot initialize FMOD studio");
+        return;
+    }
+    gnollhack_exit(status);
+}
+
+void
+mswin_exit_hack(int status)
+{
+    mswin_exit_platform(status);
 }

@@ -589,4 +589,6 @@ struct window_procs chainin_procs = {
     genl_add_ambient_ghsound,
     genl_delete_ambient_ghsound,
     genl_set_ambient_ghsound_volume,
+    genl_init_platform,
+    genl_exit_platform,
 };

@@ -2524,7 +2524,10 @@ nuklear_player_selection(PGHSdlApp sdlapp)
         pet_glyph2 = NO_GLYPH;
         if (current_role >= 0 && roles[current_role].petnum > NON_PM)
         {
-            pet_glyph = current_role >= 0 ? monnum_to_glyph(roles[current_role].petnum) : NO_GLYPH;
+            if(current_role == ROLE_KNIGHT && current_race == RACE_DWARF)
+                pet_glyph = current_role >= 0 ? monnum_to_glyph(PM_RAM) : NO_GLYPH;
+            else
+                pet_glyph = current_role >= 0 ? monnum_to_glyph(roles[current_role].petnum) : NO_GLYPH;
             pet_tile = glyph2tile[pet_glyph];
             pet_x = SDL_TILEBMP_X(pet_tile);
             pet_y = SDL_TILEBMP_Y(pet_tile);
@@ -2780,12 +2783,9 @@ nuklear_player_selection(PGHSdlApp sdlapp)
 
     }
     sdl_play_immediate_ghsound(sound_info);
-    if(res == 2)
-        (void)shutdown_nuklear(sdlapp);
     return res == 1 ? 1 : 0;
 
 cleanup:
-    (void)shutdown_nuklear(sdlapp);
     return 0;
 
 }
@@ -2886,12 +2886,9 @@ nuklear_main_menu(PGHSdlApp sdlapp)
         SDL_GL_SwapWindow(sdlapp->win);
     }
     sdl_play_immediate_ghsound(sound_info);
-    if(res == MAIN_MENU_EXIT_GAME)
-        (void)shutdown_nuklear(sdlapp);
     return res;
 
 cleanup:
-    (void)shutdown_nuklear(sdlapp);
     return MAIN_MENU_EXIT_GAME;
 
 }
@@ -2991,12 +2988,9 @@ nuklear_splash_screen(PGHSdlApp sdlapp)
         SDL_GL_SwapWindow(sdlapp->win);
     }
     sdl_play_immediate_ghsound(sound_info);
-    if (res == 2)
-        (void)shutdown_nuklear(sdlapp);
     return res == 1 ? 1 : 0;
 
 cleanup:
-    (void)shutdown_nuklear(sdlapp);
     return 0;
 
 }

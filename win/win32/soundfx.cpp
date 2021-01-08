@@ -1650,8 +1650,6 @@ extern "C"
         return TRUE;
     }
 
-    
-
     int
     fmod_adjust_ghsound_general_volumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_sfx_volume, float new_general_ui_volume)
     {

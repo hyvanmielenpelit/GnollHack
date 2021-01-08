@@ -131,6 +131,7 @@ struct window_procs sdl_procs = {
     sdl_add_ambient_ghsound,
     sdl_delete_ambient_ghsound,
     sdl_set_ambient_ghsound_volume,
+    sdl_exit_hack,
 };
 
 /*
@@ -163,76 +164,15 @@ sdl_init_nhwindows(int *argc, char **argv)
 #endif
     logDebug("sdl_init_nhwindows()\n");
 
-    /* FMOD Banks */
-    HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
-    int rid[2] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS };
-    char* bfilename[2] = { 0, 0 };
-    bfilename[0] = iflags.wc2_master_bank_file;
-    bfilename[1] = iflags.wc2_master_strings_bank_file;
-    for (int i = 0; i < 2; i++)
-    {
-        if (bfilename[i])
-        {
-            if (!load_fmod_bank_from_file(hInstance, bfilename[i]))
-            {
-                impossible("cannot load FMOD sound bank %d from file", i);
-                /* Continue to loading from resource */
-            }
-            else
-                continue;
-        }
-
-        if (!load_fmod_bank_from_resource(hInstance, rid[i]))
-        {
-            panic("cannot load FMOD sound bank %d from resource", i);
-            return;
-        }
-    }
-
 #ifdef USE_TILES
     process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
 #endif
 
-    /* SDL setup */
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 800
-    SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
-    SDL_Init(SDL_INIT_VIDEO);
-
-    PGHSdlApp sdlapp = GetGHSdlApp();
-    PNHWinApp ghapp = GetNHApp();
-        
-    //SDL_Init(SDL_INIT_VIDEO);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-    sdlapp->win = SDL_CreateWindow("Demo",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN_DESKTOP);
-    sdlapp->glContext = SDL_GL_CreateContext(sdlapp->win);
-    SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
-
-    windowprocs.win_raw_print = sdl_raw_print;
-    windowprocs.win_raw_print_bold = sdl_raw_print_bold;
-    windowprocs.win_wait_synch = sdl_wait_synch;
-
-    init_nuklear(ghapp->hApp, sdlapp);
     //Other initializations
     init_resource_fonts();
     mswin_nh_input_init();
 
-    /* Splash screen first */
-    if (iflags.wc_splash_screen)
-        (void)nuklear_splash_screen(sdlapp);
-
-    /* Main menu second */
-    enum nuklear_main_menu_command ncmd = nuklear_main_menu(sdlapp);
-
-    if (ncmd != MAIN_MENU_START_GAME)
-        sdl_bail((char*)0);
-
+    PGHSdlApp sdlapp = GetGHSdlApp();
     /* set it to WIN_ERR so we can detect attempts to
        use this ID before it is inialized */
     WIN_MAP = WIN_ERR;
@@ -392,6 +332,7 @@ sdl_player_selection(void)
             /* select a role */
             if (!nuklear_player_selection(GetGHSdlApp())) {
                 sdl_bail(0);
+                return;
             }
         }
     } else { /* iflags.wc_player_selection == VIA_PROMPTS */
@@ -766,6 +707,7 @@ sdl_askname(void)
     if (mswin_getlin_window("Who are you?", plname, PL_NSIZ) == IDCANCEL) {
         sdl_bail("bye-bye");
         /* not reached */
+        return;
     }
 }
 
@@ -806,6 +748,7 @@ sdl_exit_nhwindows(const char *str)
     windowprocs.win_raw_print = mswin_raw_print;
     windowprocs.win_raw_print_bold = mswin_raw_print_bold;
     windowprocs.win_wait_synch = mswin_wait_synch;
+    windowprocs.win_exit_hack = sdl_exit_hack;
 }
 
 /* Prepare the window to be suspended. */
@@ -1319,7 +1262,7 @@ sdl_select_menu(winid wid, int how, MENU_ITEM_P **selected)
         window up, otherwise empty.
 */
 void
-sdl_update_inventory()
+sdl_update_inventory(VOID_ARGS)
 {
     logDebug("sdl_update_inventory()\n");
     if (iflags.perm_invent && program_state.something_worth_saving
@@ -1333,7 +1276,7 @@ mark_synch()    -- Don't go beyond this point in I/O on any channel until
                    for the moment
 */
 void
-sdl_mark_synch()
+sdl_mark_synch(VOID_ARGS)
 {
     logDebug("sdl_mark_synch()\n");
 }
@@ -1345,7 +1288,7 @@ wait_synch()    -- Wait until all pending output is complete (*flush*() for
                    display is OK when return from wait_synch().
 */
 void
-sdl_wait_synch()
+sdl_wait_synch(VOID_ARGS)
 {
     logDebug("sdl_wait_synch()\n");
     sdl_raw_print_flush();
@@ -3516,4 +3459,95 @@ sdl_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
     {
         impossible("Cannot set ambient sound volume!");
     }
+}
+
+void
+sdl_init_platform(VOID_ARGS)
+{
+    /* GDI+ */
+    StartGdiplus();
+
+    /* SDL */
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 800
+    SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
+    SDL_Init(SDL_INIT_VIDEO);
+
+    PGHSdlApp sdlapp = GetGHSdlApp();
+    PNHWinApp ghapp = GetNHApp();
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    sdlapp->win = SDL_CreateWindow("GnollHack",
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN_DESKTOP);
+    sdlapp->glContext = SDL_GL_CreateContext(sdlapp->win);
+    SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
+
+    /* Nuklear */
+    init_nuklear(ghapp->hApp, sdlapp);
+
+    /* Adjust raw prints */
+    windowprocs.win_raw_print = sdl_raw_print;
+    windowprocs.win_raw_print_bold = sdl_raw_print_bold;
+    windowprocs.win_wait_synch = sdl_wait_synch;
+
+    /* FMOD Studio */
+    if (!initialize_fmod_studio())
+    {
+        panic("cannot initialize FMOD studio");
+        return;
+    }
+
+    /* FMOD Banks */
+    HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
+    int rid[2] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS };
+    char* bfilename[2] = { 0, 0 };
+    bfilename[0] = iflags.wc2_master_bank_file;
+    bfilename[1] = iflags.wc2_master_strings_bank_file;
+    for (int i = 0; i < 2; i++)
+    {
+        if (bfilename[i])
+        {
+            if (!load_fmod_bank_from_file(hInstance, bfilename[i]))
+            {
+                impossible("cannot load FMOD sound bank %d from file", i);
+                /* Continue to loading from resource */
+            }
+            else
+                continue;
+        }
+
+        if (!load_fmod_bank_from_resource(hInstance, rid[i]))
+        {
+            panic("cannot load FMOD sound bank %d from resource", i);
+            return;
+        }
+    }
+
+}
+
+void
+sdl_exit_platform(int status)
+{
+    shutdown_nuklear(GetGHSdlApp());
+    SDL_Quit();
+    StopGdiplus();
+
+    if (!close_fmod_studio())
+    {
+        /* Nothing, since we are exiting */
+        //panic("cannot initialize FMOD studio");
+    }
+
+    gnollhack_exit(status);
+}
+
+void
+sdl_exit_hack(int status)
+{
+    sdl_exit_platform(EXIT_SUCCESS);
 }

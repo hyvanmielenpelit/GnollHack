@@ -397,6 +397,8 @@ attempt_restore:
 		{
 			/* CHOOSE PLAYER ROLE AND RACE */
 			player_selection();
+            if (program_state.exiting)
+                return program_state.exit_status;
             if (iflags.renameinprogress) 
 			{
             /* player has renamed the hero while selecting role;
@@ -423,9 +425,9 @@ attempt_restore:
 	//	iflags.debug_fuzzer = TRUE;
 
 	moveloop(resuming);
-    gnollhack_exit(EXIT_SUCCESS);
+    //gnollhack_exit(EXIT_SUCCESS);
     /*NOTREACHED*/
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 STATIC_OVL void

@@ -148,6 +148,7 @@ struct window_procs tty_procs = {
     genl_add_ambient_ghsound,
     genl_delete_ambient_ghsound,
     genl_set_ambient_ghsound_volume,
+    genl_exit_hack,
 };
 
 static int maxwin = 0; /* number of windows in use */

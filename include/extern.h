@@ -3593,6 +3593,7 @@ E void NDECL(genl_adjust_ghsound_general_volumes);
 E void FDECL(genl_add_ambient_ghsound, (struct soundsource_t*));
 E void FDECL(genl_delete_ambient_ghsound, (struct soundsource_t*));
 E void FDECL(genl_set_ambient_ghsound_volume, (struct soundsource_t*));
+E void FDECL(genl_exit_hack, (int));
 
 
 E void FDECL(dump_open_log, (time_t));

@@ -113,8 +113,10 @@ struct window_procs safe_procs = {
     safe_play_ghsound_level_ambient,
     safe_play_ghsound_environment_ambient,
     safe_adjust_ghsound_general_volumes,
+    safe_add_ambient_ghsound,
     safe_delete_ambient_ghsound,
     safe_set_ambient_ghsound_volume,
+    safe_exit_hack,
 };
 
 
@@ -515,6 +517,12 @@ safe_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
     return;
 }
 
+void
+safe_exit_hack(status)
+int status;
+{
+    exit(status);
+}
 
 
 void

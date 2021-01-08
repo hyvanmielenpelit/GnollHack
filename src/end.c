@@ -1806,7 +1806,11 @@ int status;
         return;
 #endif
     program_state.exiting = 1;
-    gnollhack_exit(status);
+    program_state.exit_status = status;
+    if (exit_hack)
+        exit_hack(status);
+    else
+        gnollhack_exit(status);
 }
 
 enum vanq_order_modes {

@@ -57,6 +57,7 @@ Version     _WIN_32IE   Platform/IE
 /*#define COMCTL_URL
  * "http://www.microsoft.com/msdownload/ieplatform/ie/comctrlx86.asp"*/
 
+static void reset_program_state();
 extern void FDECL(gnollhack_exit, (int));
 static TCHAR *_get_cmd_arg(TCHAR *pCmdLine);
 static HRESULT GetComCtlVersion(LPDWORD pdwMajor, LPDWORD pdwMinor);
@@ -128,6 +129,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 
     win10_init();
     sys_early_init();
+    sdl_init_platform();
 
     /* init application structure */
     _GnollHack_app.hApp = hInstance;
@@ -139,7 +141,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     //_GnollHack_app.bmpTiles = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_TILES)); 
 
     /* Load PNGs */
-    StartGdiplus();
     _GnollHack_app.bmpTiles = LoadPNGFromResource(hInstance, IDB_PNG_TILES, TILE_BK_COLOR);
     _GnollHack_SdlApp.bmpTiles = _GnollHack_app.bmpTiles;
 
@@ -205,13 +206,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     else
 #endif
         _GnollHack_app.lpfnTransparentBlt = _nhapply_image_transparent;
-
-    //Initialize FMOD Studio
-    if(!initialize_fmod_studio())
-    {
-        panic("cannot initialize FMOD studio");
-        return 0;
-    }
 
     //(void)StartImGuiExample();
     //(void)StartNuklearExample(hInstance);
@@ -282,12 +276,25 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     iflags.using_gui_sounds = TRUE;
     iflags.has_main_menu = TRUE;
 
-    /* let main do the argument processing */
-    (void) main(argc, argv);
-    
-    SDL_Quit();
-    StopGdiplus();
-    return 0;
+    /* Splash screen */
+    PGHSdlApp sdlapp = GetGHSdlApp();
+    (void)nuklear_splash_screen(sdlapp);
+
+    enum nuklear_main_menu_command ncmd = MAIN_MENU_NONE;
+    boolean status = 0;
+    do
+    {
+        /* Main menu second */
+        ncmd = nuklear_main_menu(sdlapp);
+        /* let main do the argument processing */
+        if(ncmd == MAIN_MENU_START_GAME)
+        status = main(argc, argv);
+        reset_program_state();
+    } while (ncmd != MAIN_MENU_EXIT_GAME && sdlapp->running);
+
+    sdl_exit_platform(EXIT_SUCCESS);
+
+    return status;
 }
 
 PNHWinApp
@@ -482,3 +489,13 @@ _nhapply_image_transparent(HDC hDC, int x, int y, int width, int height,
 
     return TRUE;
 }
+
+
+static void reset_program_state()
+{
+    /* Back to main menu */
+    program_state.exiting = 0;
+    program_state.exit_status = 0;
+
+}
+

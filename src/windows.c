@@ -315,6 +315,18 @@ genl_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
     return;
 }
 
+#if defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(ANDROID)
+extern void FDECL(gnollhack_exit, (int));
+#else
+#define gnollhack_exit exit
+#endif
+
+void
+genl_exit_hack(int status)
+{
+    gnollhack_exit(status);
+    return;
+}
 
 STATIC_OVL
 void

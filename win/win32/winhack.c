@@ -125,6 +125,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 
     win10_init();
     sys_early_init();
+    mswin_init_platform();
 
     /* init application structure */
     _GnollHack_app.hApp = hInstance;
@@ -269,7 +270,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     /* let main do the argument processing */
     (void) main(argc, argv);
 
-    StopGdiplus();
+    mswin_exit_platform(EXIT_SUCCESS);
 
     return 0;
 }

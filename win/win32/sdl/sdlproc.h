@@ -143,6 +143,7 @@ void sdl_adjust_ghsound_general_volumes(VOID_ARGS);
 void sdl_add_ambient_ghsound(struct soundsource_t* soundsource);
 void sdl_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void sdl_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
+void sdl_exit_hack(int status);
 
 /* helper function */
 HWND sdl_hwnd_from_winid(winid wid);
@@ -162,5 +163,7 @@ void sdl_get_window_placement(int type, LPRECT rt);
 void sdl_update_window_placement(int type, LPRECT rt);
 void sdl_apply_window_style(HWND hwnd);
 
+void sdl_init_platform(VOID_ARGS);
+void sdl_exit_platform(int);
 
 #endif /* SDLPROC_H */

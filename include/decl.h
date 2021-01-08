@@ -187,6 +187,7 @@ E NEARDATA struct sinfo {
     int something_worth_saving; /* in case of panic */
     int panicking;              /* `panic' is in progress */
     int exiting;                /* an exit handler is executing */
+    int exit_status;            /* status for exit */
     int in_moveloop;
     int in_impossible;
 #ifdef PANICLOG

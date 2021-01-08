@@ -211,6 +211,7 @@ void mswin_adjust_ghsound_general_volumes(VOID_ARGS);
 void mswin_add_ambient_ghsound(struct soundsource_t* soundsource);
 void mswin_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
+void mswin_exit_hack(int status);
 
 /* helper function */
 HWND mswin_hwnd_from_winid(winid wid);
@@ -229,6 +230,9 @@ void mswin_write_reg(void);
 void mswin_get_window_placement(int type, LPRECT rt);
 void mswin_update_window_placement(int type, LPRECT rt);
 void mswin_apply_window_style(HWND hwnd);
+
+void mswin_init_platform(VOID_ARGS);
+void mswin_exit_platform(int);
 
 int NHMessageBox(HWND hWnd, LPCTSTR text, UINT type);
 
