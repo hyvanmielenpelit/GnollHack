@@ -3533,16 +3533,10 @@ sdl_init_platform(VOID_ARGS)
 void
 sdl_exit_platform(int status)
 {
-    shutdown_nuklear(GetGHSdlApp());
+    (void)shutdown_nuklear(GetGHSdlApp());
     SDL_Quit();
     StopGdiplus();
-
-    if (!close_fmod_studio())
-    {
-        /* Nothing, since we are exiting */
-        //panic("cannot initialize FMOD studio");
-    }
-
+    (void)close_fmod_studio();
     gnollhack_exit(status);
 }
 

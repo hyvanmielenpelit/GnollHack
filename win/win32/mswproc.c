@@ -3486,13 +3486,7 @@ void
 mswin_exit_platform(int status)
 {
     StopGdiplus();
-
-    if (!close_fmod_studio())
-    {
-        /* Nothing, since we are exiting */
-        //panic("cannot initialize FMOD studio");
-        return;
-    }
+    (void)close_fmod_studio();
     gnollhack_exit(status);
 }
 

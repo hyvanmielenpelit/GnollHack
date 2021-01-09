@@ -885,7 +885,7 @@ extern "C"
         return TRUE;
     }
 
-    void
+    boolean
     close_fmod_studio()
     {
         FMOD_RESULT result;
@@ -894,6 +894,7 @@ extern "C"
         result = fmod_studio_system->release();
 
         fmod_studio_system = (Studio::System*)0;
+        return 1;
     }
 
     boolean 

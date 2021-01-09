@@ -135,8 +135,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     _GnollHack_app.hPopupWnd = NULL;
     //_GnollHack_app.bmpTiles = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_TILES)); 
 
-    /* Load PNGs */
-    StartGdiplus();
     _GnollHack_app.bmpTiles = LoadPNGFromResource(hInstance, IDB_PNG_TILES, TILE_BK_COLOR);
     if (_GnollHack_app.bmpTiles == NULL)
 	{
@@ -193,13 +191,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     else
 #endif
         _GnollHack_app.lpfnTransparentBlt = _nhapply_image_transparent;
-
-    //Initialize FMOD Studio
-    if(!initialize_fmod_studio())
-    {
-        panic("cannot initialize FMOD studio");
-        return 0;
-    }
 
     // init controls
     if (FAILED(GetComCtlVersion(&major, &minor))) {
