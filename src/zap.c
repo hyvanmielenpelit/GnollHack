@@ -7307,7 +7307,9 @@ int dx, dy;
         }
         tmp_at(bhitpos.x, bhitpos.y);
         adjusted_delay_output();
-        if (IS_SINK(levl[bhitpos.x][bhitpos.y].typ)) {
+        if (IS_SINK(levl[bhitpos.x][bhitpos.y].typ))
+        {
+            play_sfx_sound_at_location(SFX_SINK_KLUNK, bhitpos.x, bhitpos.y);
             if (!Deaf)
                 pline("Klonk!");
             break; /* boomerang falls on sink */

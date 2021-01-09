@@ -1155,6 +1155,12 @@ drinksink()
         return;
     }
 	
+	if (iflags.using_gui_sounds)
+	{
+		play_sfx_sound(SFX_SINK_OPEN_TAP);
+		delay_output_milliseconds(1000);
+	}
+
 	switch (rn2(20)) {
     case 0:
 		play_sfx_sound(SFX_QUAFF);

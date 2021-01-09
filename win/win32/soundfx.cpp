@@ -801,6 +801,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Learning/Spell Keener", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Cancellation in Force", 1.0f },
     { SOUND_BANK_MASTER, "event:/Music/Start/Main Menu", 0.3f },
+    { SOUND_BANK_MASTER, "event:/Location/Sink/Open Tap", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Location/Sink/Klunk", 1.0f },
 
 };
 

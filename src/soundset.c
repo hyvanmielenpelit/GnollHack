@@ -4241,6 +4241,16 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_CANCELLATION_IN_FORCE, 1.0f},
         FALSE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_SINK_OPEN_TAP",
+        {GHSOUND_SINK_OPEN_TAP, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_SINK_KLUNK",
+        {GHSOUND_SINK_KLUNK, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

@@ -5540,16 +5540,19 @@ struct obj* obj;
 		switch (rn2(3)) 
 		{
 		case 0:
-			You_cant("move your %s!", makeplural(body_part(ARM)));
+            play_sfx_sound(SFX_STUCK_IN_TRAP);
+            You_cant("move your %s!", makeplural(body_part(ARM)));
 			break;
 		case 1:
 			if (is_animal(u.ustuck->data)) 
 			{
-				pline("%s burps loudly.", Monnam(u.ustuck));
+                play_sfx_sound(SFX_BURP);
+                pline("%s burps loudly.", Monnam(u.ustuck));
 				break;
 			}
 			/*FALLTHRU*/
 		default:
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
 			Your("feeble swing has no effect.");
 			break;
 		}
@@ -5558,7 +5561,8 @@ struct obj* obj;
 	else if (u.utrap && u.utraptype == TT_PIT) 
 	{
 		/* must be Passes_walls */
-		You("swing at the side of the pit.");
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
+        You("swing at the side of the pit.");
 		return 1;
 	}
 
@@ -5576,7 +5580,8 @@ struct obj* obj;
 			&& !IS_DOOR(levl[xx][yy].typ)
 			&& (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) 
 		{
-			You("have nothing to brace yourself against.");
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You("have nothing to brace yourself against.");
 			return 0;
 		}
 	}
@@ -5742,7 +5747,8 @@ struct obj* obj;
 
 		if (maploc->typ == IRONBARS)
 		{
-			pline("Klunk!");
+            play_sfx_sound(SFX_SINK_KLUNK);
+            pline("Klunk!");
 			return 1;
 
 		}
@@ -5754,6 +5760,7 @@ struct obj* obj;
 
 		if (IS_SINK(maploc->typ)) 
 		{
+            play_sfx_sound(SFX_SINK_KLUNK);
 			pline("Klunk!");
 			return 1;
 		}
@@ -5782,7 +5789,7 @@ struct obj* obj;
 	if (Blind)
 		feel_location(x, y); /* we know we hit it */
 thump:
-	pline("Thump!");
+    pline("Thump!");
 	return 1;
 }
 

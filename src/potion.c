@@ -2868,8 +2868,13 @@ dodip()
 			}
 			else
 			{
-				You("open the tap and let the water run.");
-				if (obj->otyp == POT_ACID)
+                play_sfx_sound(SFX_SINK_OPEN_TAP);
+                You("open the tap and let the water run.");
+                if (iflags.using_gui_sounds)
+                {
+                    delay_output_milliseconds(1000);
+                }
+                if (obj->otyp == POT_ACID)
 					obj->in_use = 1;
 				if (water_damage(obj, 0, TRUE) != ER_DESTROYED && obj->in_use)
 					useup(obj);
