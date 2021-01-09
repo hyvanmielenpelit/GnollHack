@@ -260,10 +260,12 @@
     <Image Include="$(WinWin32Dir)FMOD-Logo-32.png" />
     <Image Include="..\png1.png" />
     <Image Include="..\sdl\buttons.png" />
+    <Image Include="..\sdl\cursor_final.png" />
     <Image Include="..\sdl\dtest.png" />
     <Image Include="..\sdl\gwen.png" />
     <Image Include="..\sdl\window_background.png" />
     <Image Include="sdl\buttons.png" />
+    <Image Include="sdl\cursor_final.png" />
     <Image Include="sdl\dtest.png" />
     <Image Include="sdl\gwen.png" />
     <Image Include="sdl\window_background.png" />

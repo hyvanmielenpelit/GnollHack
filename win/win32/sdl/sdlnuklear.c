@@ -58,6 +58,7 @@ struct media {
     GLint skin;
     GLint skin_buttons;
     GLint skin_window;
+    GLint skin_cursors;
     struct nk_image menu;
     struct nk_image check;
     struct nk_image check_cursor;
@@ -82,6 +83,7 @@ struct media {
     struct nk_font* diablo30;
     struct nk_font* diablo36;
 
+    struct nk_cursor custom_cursor;
 };
 
 static int
@@ -1977,6 +1979,7 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
     media.skin = image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST, &x, &y, &n);
     media.skin_buttons = image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS, &x, &y, &n);
     media.skin_window = image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW, &x, &y, &n);
+    media.skin_cursors = image_load_from_resource(hInstance, IDB_PNG_SDL_CURSORS, &x, &y, &n);
     media.check = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 32, 15, 15));
     media.check_cursor = nk_subimage_id(media.skin, 512, 512, nk_rect(450, 34, 11, 11));
     media.option = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 64, 15, 15));
@@ -2017,6 +2020,17 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
     ctx->style.window.header.label_normal = nk_rgb(95, 95, 95);
     ctx->style.window.header.label_hover = nk_rgb(50, 50, 50);
     ctx->style.window.header.label_active = nk_rgb(95, 95, 95);
+
+    /* cursors */
+    media.custom_cursor.img = nk_subimage_id(media.skin_cursors, 32, 32, nk_rect(0, 0, 32, 32));
+    media.custom_cursor.size.x = 32;
+    media.custom_cursor.size.y = 32;
+    media.custom_cursor.offset.x = 0;
+    media.custom_cursor.offset.y = 0;
+
+    nk_style_load_cursor(ctx, NK_CURSOR_ARROW, &media.custom_cursor);
+    nk_style_show_cursor(ctx);
+    (void)SDL_ShowCursor(SDL_DISABLE);
 
     return 1;
 }
