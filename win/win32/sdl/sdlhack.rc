@@ -32,7 +32,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_NETHACKW            ICON                    "GnollHackNew.ico"
+IDI_NETHACKW            ICON                    "..\\GnollHackNew.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -238,13 +238,13 @@ END
 // Bitmap
 //
 
-IDB_MENU_SEL            BITMAP                  "mnsel.bmp"
+IDB_MENU_SEL            BITMAP                  "..\\mnsel.bmp"
 
-IDB_MENU_UNSEL          BITMAP                  "mnunsel.bmp"
+IDB_MENU_UNSEL          BITMAP                  "..\\mnunsel.bmp"
 
-IDB_MENU_SEL_COUNT      BITMAP                  "mnselcnt.bmp"
+IDB_MENU_SEL_COUNT      BITMAP                  "..\\mnselcnt.bmp"
 
-IDB_RIP                 BITMAP                  "rip.bmp"
+IDB_RIP                 BITMAP                  "..\\rip.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -387,11 +387,13 @@ END
 // RCDATA
 //
 
-IDR_RCDATA_FONT         RCDATA                  "uwch.ttf"
+IDR_RCDATA_FONT         RCDATA                  "..\\uwch.ttf"
 
-IDR_RCDATA_MASTER       RCDATA                  "Master.bank"
+IDR_RCDATA_MASTER       RCDATA                  "..\\Master.bank"
 
-IDR_RCDATA_STRINGS      RCDATA                  "Master.strings.bank"
+IDR_RCDATA_STRINGS      RCDATA                  "..\\Master.strings.bank"
+
+IDR_RCDATA_FONT_DIABLO  RCDATA                  "diablo_h.ttf"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -399,11 +401,21 @@ IDR_RCDATA_STRINGS      RCDATA                  "Master.strings.bank"
 // PNG
 //
 
-IDB_PNG_TILES           PNG                     "gnollhack_64x96_transparent_32bits.png"
+IDB_PNG_TILES           PNG                     "..\\gnollhack_64x96_transparent_32bits.png"
 
-IDB_PNG_GNHLOGO         PNG                     "gnollhack-logo-test-2.png"
+IDB_PNG_GNHLOGO         PNG                     "..\\gnollhack-logo-test-2.png"
 
-IDB_PNG_FMODLOGO        PNG                     "FMOD-Logo-32.png"
+IDB_PNG_FMODLOGO        PNG                     "..\\FMOD-Logo-32.png"
+
+IDB_PNG_SDL_NUKLEAR_TEST PNG                     "gwen.png"
+
+IDB_PNG_SDL_NUKLEAR_BUTTON_TEST PNG                     "dtest.png"
+
+IDB_PNG_SDL_BUTTONS     PNG                     "buttons.png"
+
+IDB_PNG_SDL_WINDOW      PNG                     "window_background.png"
+
+IDB_PNG_SDL_CURSORS     PNG                     "cursor_final.png"
 
 
 /////////////////////////////////////////////////////////////////////////////

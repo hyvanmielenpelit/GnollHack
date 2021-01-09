@@ -246,6 +246,7 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="$(WinWin32Dir)uwch.ttf" />
+    <Font Include="..\sdl\diablo_h.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(WinWin32Dir)Master.bank" />
