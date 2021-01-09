@@ -5324,8 +5324,7 @@ struct window_procs Qt_procs = {
     genl_add_ambient_ghsound,
     genl_delete_ambient_ghsound,
     genl_set_ambient_ghsound_volume,
-    genl_init_platform,
-    genl_exit_platform,
+    genl_exit_hack,
 };
 
 extern "C" void play_usersound(const char* filename, int volume)

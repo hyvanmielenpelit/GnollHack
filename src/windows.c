@@ -325,7 +325,6 @@ void
 genl_exit_hack(int status)
 {
     gnollhack_exit(status);
-    return;
 }
 
 STATIC_OVL

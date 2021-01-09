@@ -69,8 +69,7 @@ struct window_procs amii_procs = {
     genl_add_ambient_ghsound,
     genl_delete_ambient_ghsound,
     genl_set_ambient_ghsound_volume,
-    genl_init_platform,
-    genl_exit_platform,
+    genl_exit_hack,
 };
 
 /* The view window layout uses the same function names so we can use
@@ -118,8 +117,7 @@ struct window_procs amiv_procs = {
     genl_add_ambient_ghsound,
     genl_delete_ambient_ghsound,
     genl_set_ambient_ghsound_volume,
-    genl_init_platform,
-    genl_exit_platform,
+    genl_exit_hack,
 };
 
 unsigned short amii_initmap[AMII_MAXCOLORS];
