@@ -2336,6 +2336,33 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
+    {
+        "sink",
+        LOCATION_SOUNDSET_GENERAL,
+        {
+            {MAX_GHSOUNDS, 0.0f},
+            {GHSOUND_SINK_KLUNK, 1.0f},
+            {GHSOUND_SINK_BREAK, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    }, 
 };
 
 
@@ -4251,7 +4278,23 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_SINK_KLUNK, 1.0f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_SCOLDED",
+        {GHSOUND_SCOLDED, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_LAVA_BURNT",
+        {GHSOUND_LAVA_BURNT, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_HIDDEN_TREASURE_FOUND",
+        {GHSOUND_HIDDEN_TREASURE_FOUND, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
+
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
 {

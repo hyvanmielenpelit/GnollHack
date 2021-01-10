@@ -1135,7 +1135,12 @@ void
 breaksink(x, y)
 int x, y;
 {
-    if (cansee(x, y) || (x == u.ux && y == u.uy))
+	if (iflags.using_gui_sounds)
+	{
+		play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
+		delay_output_milliseconds(1000);
+	}
+	if (cansee(x, y) || (x == u.ux && y == u.uy))
         pline_The("pipes break!  Water spurts out!");
 
 	create_simple_location(x, y, FOUNTAIN, 0, FOUNTAIN_NATURAL, 0 /*back_to_broken_glyph(x, y)*/, levl[x][y].floortyp, levl[x][y].floorsubtyp, FALSE);
@@ -1158,10 +1163,11 @@ drinksink()
 	if (iflags.using_gui_sounds)
 	{
 		play_sfx_sound(SFX_SINK_OPEN_TAP);
-		delay_output_milliseconds(1000);
+		delay_output_milliseconds(1500);
 	}
 
-	switch (rn2(20)) {
+	switch (rn2(20))
+	{
     case 0:
 		play_sfx_sound(SFX_QUAFF);
 		You("take a sip of very cold %s.", hliquid("water"));
@@ -1175,16 +1181,19 @@ drinksink()
 		You("take a sip of scalding hot %s.", hliquid("water"));
         if (Fire_immunity || Improved_fire_resistance || Fire_resistance)
             pline("It seems quite tasty.");
-        else
-            losehp(adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "sipping boiling water", KILLED_BY);
+		else
+		{
+			play_sfx_sound(SFX_SCOLDED);
+			losehp(adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "sipping boiling water", KILLED_BY);
+		}
         /* boiling water burns considered fire damage */
         break;
     case 3:
-		play_sfx_sound(SFX_WAS_HIDING);
 		if (mvitals[PM_SEWER_RAT].mvflags & G_GONE)
             pline_The("sink seems quite dirty.");
         else {
-            mtmp = makemon(&mons[PM_SEWER_RAT], u.ux, u.uy, NO_MM_FLAGS);
+			play_sfx_sound(SFX_WAS_HIDING);
+			mtmp = makemon(&mons[PM_SEWER_RAT], u.ux, u.uy, NO_MM_FLAGS);
             if (mtmp)
                 pline("Eek!  There's %s in the sink!",
                       (Blind || !canspotmon(mtmp)) ? "something squirmy"
@@ -1209,9 +1218,9 @@ drinksink()
         obfree(otmp, (struct obj *) 0);
         break;
     case 5:
-		play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
 		if (!(levl[u.ux][u.uy].looted & S_LRING)) {
-            You("find a ring in the sink!");
+			play_sfx_sound(SFX_HIDDEN_TREASURE_FOUND);
+			You("find a ring in the sink!");
             (void) mkobj_at(RING_CLASS, u.ux, u.uy, TRUE);
             levl[u.ux][u.uy].looted |= S_LRING;
             exercise(A_WIS, TRUE);
@@ -1223,12 +1232,13 @@ drinksink()
         breaksink(u.ux, u.uy);
         break;
     case 7:
-		play_sfx_sound(SFX_WAS_HIDING);
 		pline_The("%s moves as though of its own will!", hliquid("water"));
         if ((mvitals[PM_WATER_ELEMENTAL].mvflags & G_GONE)
             || !makemon(&mons[PM_WATER_ELEMENTAL], u.ux, u.uy, NO_MM_FLAGS))
             pline("But it quiets down.");
-        break;
+		else
+			play_sfx_sound(SFX_WAS_HIDING);
+		break;
     case 8:
 		play_sfx_sound(SFX_QUAFF);
 		pline("Yuk, this %s tastes awful.", hliquid("water"));
@@ -1245,7 +1255,7 @@ drinksink()
 		play_sfx_sound(SFX_QUAFF);
 		pline("This %s contains toxic wastes!", hliquid("water"));
         if (!Unchanging) {
-            You("undergo a freakish metamorphosis!");
+			You("undergo a freakish metamorphosis!");
             polyself(0);
         }
         break;

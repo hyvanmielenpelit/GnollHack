@@ -602,9 +602,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Human/Female/Push Effort", 0.25f },
     { SOUND_BANK_MASTER, "event:/SFX/Action/Zap", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Zap", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/General/Sink Clanking from Pipes", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Sink/Clanking from Pipes", 1.0f },
 
-    { SOUND_BANK_MASTER, "event:/SFX/General/Sink Snatches of Song", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Sink/Snatches of Song", 1.0f },
     { SOUND_BANK_MASTER, "event:/Location/Generic/Generic Bump Into", 1.0f },
     { SOUND_BANK_MASTER, "event:/Location/Door/Wooden/Wooden Door Bump Into", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Male Flounder", 1.0f },
@@ -804,6 +804,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Location/Sink/Open Tap", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Location/Sink/Klunk", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Scolded", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Lava Burnt", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Hidden Treasure Found", 0.2f },
+    { SOUND_BANK_MASTER, "event:/Location/Sink/Sink Break", 1.0f },
 
 };
 
