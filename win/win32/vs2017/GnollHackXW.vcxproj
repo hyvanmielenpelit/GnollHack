@@ -250,6 +250,7 @@
     <ClInclude Include="$(IncDir)general.h" />
     <ClInclude Include="$(WinWin32Dir)sdl\sdlmisc.h" />
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlproc.h" />
+    <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_native.h" />
     <ClInclude Include="..\sdl\resource.h" />
   </ItemGroup>
   <ItemGroup>

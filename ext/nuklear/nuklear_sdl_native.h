@@ -12,23 +12,23 @@
  *
  * ===============================================================
  */
-#ifndef NK_SDL_H_
-#define NK_SDL_H_
+#ifndef NK_SDL_NATIVE_H_
+#define NK_SDL_NATIVE_H_
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
+#include <SDL2_gfxPrimitives.h>
 
 typedef struct NKSdlFont NKSdlFont;
-NK_API struct nk_context*   nk_sdl_init(SDL_Window *win, SDL_Renderer *renderer);
-NK_API void                 nk_sdl_handle_event(SDL_Event *evt);
-NK_API void                 nk_sdl_render(void);
-NK_API void                 nk_sdl_shutdown(void);
+NK_API struct nk_context*   nk_sdl_native_init(SDL_Window *win, SDL_Renderer *renderer);
+NK_API void                 nk_sdl_native_handle_event(SDL_Event *evt);
+NK_API void                 nk_sdl_native_render(void);
+NK_API void                 nk_sdl_native_shutdown(void);
 
-NK_API void                 nk_sdl_font_stash_begin(struct nk_font_atlas **atlas);
-NK_API void                 nk_sdl_font_stash_end(void);
-NK_API void                 nk_sdl_font_create_from_file(const char *file_name, int font_size, int flags);
-NK_API void                 nk_sdl_font_del(void);
+NK_API void                 nk_sdl_native_font_stash_begin(struct nk_font_atlas **atlas);
+NK_API void                 nk_sdl_native_font_stash_end(void);
+NK_API void                 nk_sdl_native_font_create_from_file(const char *file_name, int font_size, int flags);
+NK_API void                 nk_sdl_native_font_del(void);
 
 #endif
 /*
@@ -55,7 +55,7 @@ static struct nk_sdl {
     int font_height;
 } sdl;
 
-NK_API void nk_sdl_font_create_from_file(const char *file_name, int font_size, int flags)
+NK_API void nk_sdl_native_font_create_from_file(const char *file_name, int font_size, int flags)
 {
     TTF_Init();
 
@@ -66,17 +66,17 @@ NK_API void nk_sdl_font_create_from_file(const char *file_name, int font_size, i
 }
 
 NK_API void
-nk_sdl_font_del(void)
+nk_sdl_native_font_del(void)
 {
     if(!sdl.ttf_font) return;
     TTF_CloseFont(sdl.ttf_font);
 }
 
 NK_INTERN void
-nk_sdl_device_upload_atlas(const void *image, int width, int height)
+nk_sdl_native_device_upload_atlas(const void *image, int width, int height)
 {
     #if 0
-    struct nk_sdl_device *dev = &sdl.ogl;
+    struct nk_sdl_native_device *dev = &sdl.ogl;
     glGenTextures(1, &dev->font_tex);
     glBindTexture(GL_TEXTURE_2D, dev->font_tex);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -153,7 +153,7 @@ void sdl_draw_image(const struct nk_command_image *image, int x, int y, int w, i
 }
 
 NK_API void
-nk_sdl_render(void)
+nk_sdl_native_render(void)
 {
     const struct nk_command *cmd;
     nk_foreach(cmd, &sdl.ctx)
@@ -247,7 +247,7 @@ nk_sdl_render(void)
 }
 
 static void
-nk_sdl_clipboard_paste(nk_handle usr, struct nk_text_edit *edit)
+nk_sdl_native_clipboard_paste(nk_handle usr, struct nk_text_edit *edit)
 {
     const char *text = SDL_GetClipboardText();
     if (text) nk_textedit_paste(edit, text, nk_strlen(text));
@@ -255,7 +255,7 @@ nk_sdl_clipboard_paste(nk_handle usr, struct nk_text_edit *edit)
 }
 
 static void
-nk_sdl_clipboard_copy(nk_handle usr, const char *text, int len)
+nk_sdl_native_clipboard_copy(nk_handle usr, const char *text, int len)
 {
     char *str = 0;
     (void)usr;
@@ -269,7 +269,7 @@ nk_sdl_clipboard_copy(nk_handle usr, const char *text, int len)
 }
 
 static float
-nk_sdl_font_get_text_width(nk_handle handle, float height, const char *text, int len)
+nk_sdl_native_font_get_text_width(nk_handle handle, float height, const char *text, int len)
 {
     TTF_Font *font = (TTF_Font*)handle.ptr;
     if (!font || !text) {
@@ -289,12 +289,12 @@ nk_sdl_font_get_text_width(nk_handle handle, float height, const char *text, int
 }
 
 NK_API struct nk_context*
-nk_sdl_init(SDL_Window *win, SDL_Renderer *renderer)
+nk_sdl_native_init(SDL_Window *win, SDL_Renderer *renderer)
 {
     struct nk_user_font *font = &sdl.user_font;
     font->userdata = nk_handle_ptr(sdl.ttf_font);
     font->height = TTF_FontHeight(sdl.ttf_font);
-    font->width = nk_sdl_font_get_text_width;
+    font->width = nk_sdl_native_font_get_text_width;
 
     sdl.win = win;
     sdl.renderer = renderer;
@@ -302,15 +302,15 @@ nk_sdl_init(SDL_Window *win, SDL_Renderer *renderer)
     nk_init_default(&sdl.ctx, font);
     nk_buffer_init_default(&sdl.cmds);
     
-    sdl.ctx.clip.copy = nk_sdl_clipboard_copy;
-    sdl.ctx.clip.paste = nk_sdl_clipboard_paste;
+    sdl.ctx.clip.copy = nk_sdl_native_clipboard_copy;
+    sdl.ctx.clip.paste = nk_sdl_native_clipboard_paste;
     sdl.ctx.clip.userdata = nk_handle_ptr(0);
 
     return &sdl.ctx;
 }
 
 NK_API void
-nk_sdl_font_stash_begin(struct nk_font_atlas **atlas)
+nk_sdl_native_font_stash_begin(struct nk_font_atlas **atlas)
 {
     nk_font_atlas_init_default(&sdl.atlas);
     nk_font_atlas_begin(&sdl.atlas);
@@ -318,18 +318,18 @@ nk_sdl_font_stash_begin(struct nk_font_atlas **atlas)
 }
 
 NK_API void
-nk_sdl_font_stash_end(void)
+nk_sdl_native_font_stash_end(void)
 {
     const void *image; int w, h;
     image = nk_font_atlas_bake(&sdl.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
-    nk_sdl_device_upload_atlas(image, w, h);
+    nk_sdl_native_device_upload_atlas(image, w, h);
     nk_font_atlas_end(&sdl.atlas, nk_handle_id((int)sdl.ogl.font_tex), &sdl.ogl.null);
     if (sdl.atlas.default_font)
         nk_style_set_font(&sdl.ctx, &sdl.atlas.default_font->handle);
 }
 
 NK_API void
-nk_sdl_handle_event(SDL_Event *evt)
+nk_sdl_native_handle_event(SDL_Event *evt)
 {
     struct nk_context *ctx = &sdl.ctx;
 
@@ -425,7 +425,7 @@ nk_sdl_handle_event(SDL_Event *evt)
 }
 
 NK_API
-void nk_sdl_shutdown(void)
+void nk_sdl_native_shutdown(void)
 {
     nk_free(&sdl.ctx);
     nk_buffer_free(&sdl.cmds);
