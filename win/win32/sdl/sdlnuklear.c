@@ -37,7 +37,7 @@
 #define NK_INCLUDE_DEFAULT_FONT
 #define NK_IMPLEMENTATION
 #define NK_SDL_GL2_IMPLEMENTATION
-#define NK_SDL_NATIVE_IMPLEMENTATION
+//#define NK_SDL_NATIVE_IMPLEMENTATION
 #include "nuklear.h"
 #include "nuklear_sdl_gl2.h"
 #include "nuklear_sdl_native.h"

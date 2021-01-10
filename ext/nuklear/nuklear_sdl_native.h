@@ -38,13 +38,13 @@ NK_API void                 nk_sdl_native_font_del(void);
  *
  * ===============================================================
  */
-#ifdef NK_SDL2_IMPLEMENTATION
+#ifdef NK_SDL_NATIVE_IMPLEMENTATION
 
 #ifndef NK_SDL_TEXT_MAX
 #define NK_SDL_TEXT_MAX 256
 #endif
 
-static struct nk_sdl {
+static struct nk_sdl_native {
     SDL_Window *win;
     SDL_Renderer *renderer;
     struct nk_context ctx;
@@ -53,14 +53,14 @@ static struct nk_sdl {
     TTF_Font *ttf_font;
     struct nk_user_font *user_font;
     int font_height;
-} sdl;
+} sdl_native;
 
 NK_API void nk_sdl_native_font_create_from_file(const char *file_name, int font_size, int flags)
 {
     TTF_Init();
 
-    sdl.ttf_font = TTF_OpenFont(file_name, font_size);
-    if (sdl.ttf_font == NULL) {
+    sdl_native.ttf_font = TTF_OpenFont(file_name, font_size);
+    if (sdl_native.ttf_font == NULL) {
         fprintf(stdout, "Unable to load font file: %s\n", file_name);
     }
 }
@@ -68,15 +68,15 @@ NK_API void nk_sdl_native_font_create_from_file(const char *file_name, int font_
 NK_API void
 nk_sdl_native_font_del(void)
 {
-    if(!sdl.ttf_font) return;
-    TTF_CloseFont(sdl.ttf_font);
+    if(!sdl_native.ttf_font) return;
+    TTF_CloseFont(sdl_native.ttf_font);
 }
 
 NK_INTERN void
 nk_sdl_native_device_upload_atlas(const void *image, int width, int height)
 {
     #if 0
-    struct nk_sdl_native_device *dev = &sdl.ogl;
+    struct nk_sdl_native_device *dev = &sdl_native.ogl;
     glGenTextures(1, &dev->font_tex);
     glBindTexture(GL_TEXTURE_2D, dev->font_tex);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -88,82 +88,81 @@ nk_sdl_native_device_upload_atlas(const void *image, int width, int height)
 
 void sdl_draw_text(TTF_Font *font, const char *str, int x, int y, struct nk_color c) {
     SDL_Surface *surface = TTF_RenderText_Blended(font, str, (SDL_Color){c.r, c.g, c.b});
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(sdl.renderer, surface);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(sdl_native.renderer, surface);
     int texW = 0, texH = 0;
     SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
     SDL_Rect dstrect = {x, y, texW, texH };
-    SDL_RenderCopy(sdl.renderer, texture, NULL, &dstrect);
+    SDL_RenderCopy(sdl_native.renderer, texture, NULL, &dstrect);
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
 }
 
 void sdl_draw_rect(int x, int y, int w, int h, int rounding, struct nk_color color) {
-    roundedRectangleRGBA(sdl.renderer, x, y, (x + w), (y + h),
+    roundedRectangleRGBA(sdl_native.renderer, x, y, (x + w), (y + h),
     rounding, color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_rect_fill(int x, int y, int w, int h, int rounding, struct nk_color color) {
-    roundedBoxRGBA(sdl.renderer, x, y, (x + w), (y + h),
+    roundedBoxRGBA(sdl_native.renderer, x, y, (x + w), (y + h),
     NK_MAX(rounding, 2), color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_line(int x, int y, int x2, int y2, struct nk_color color) {
-    lineRGBA(sdl.renderer, x, y, x2, y2, color.r, color.g, color.b, color.a);
+    lineRGBA(sdl_native.renderer, x, y, x2, y2, color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_ellipse(int x, int y, int rx, int ry, struct nk_color color) {
-    ellipseRGBA(sdl.renderer, x, y, rx, ry, color.r, color.g, color.b, color.a);
+    ellipseRGBA(sdl_native.renderer, x, y, rx, ry, color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_ellipse_filled(int x, int y, int rx, int ry, struct nk_color color) {
-    filledEllipseRGBA(sdl.renderer, x, y, rx, ry, color.r, color.g, color.b, color.a);
+    filledEllipseRGBA(sdl_native.renderer, x, y, rx, ry, color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_circle_filled(int x, int y, int rad, struct nk_color color) {
-    filledCircleRGBA(sdl.renderer, x, y, rad, color.r, color.g, color.b, color.a);
+    filledCircleRGBA(sdl_native.renderer, x, y, rad, color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_triangle(int x1,int y1, int x2, int y2, int x3, int y3, struct nk_color color) {
-    trigonRGBA(sdl.renderer, x1,y1, x2,y2, x3,y3, color.r, color.g, color.b, color.a);
+    trigonRGBA(sdl_native.renderer, x1,y1, x2,y2, x3,y3, color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_filled_triangle(int x1,int y1, int x2, int y2, int x3, int y3, struct nk_color color) {
-    filledTrigonRGBA(sdl.renderer, x1,y1, x2,y2, x3,y3, color.r, color.g, color.b, color.a);
+    filledTrigonRGBA(sdl_native.renderer, x1,y1, x2,y2, x3,y3, color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_polyline(const Sint16 *vx, const Sint16 *vy, int n, struct nk_color color) {
-    polygonRGBA(sdl.renderer, vx, vy, n, color.r, color.g, color.b, color.a);
+    polygonRGBA(sdl_native.renderer, vx, vy, n, color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_arc(int x, int y, int rad, int start, int end, struct nk_color color) {
-    arcRGBA(sdl.renderer, x,y, rad, start,end, color.r, color.g, color.b, color.a);
+    arcRGBA(sdl_native.renderer, x,y, rad, start,end, color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_filled_polygon(const Sint16 *vx, const Sint16 *vy, int n, struct nk_color color) {
-    filledPolygonRGBA(sdl.renderer, vx, vy, n, color.r, color.g, color.b, color.a);
+    filledPolygonRGBA(sdl_native.renderer, vx, vy, n, color.r, color.g, color.b, color.a);
 }
 
 void sdl_draw_image(const struct nk_command_image *image, int x, int y, int w, int h) {
-    
-    SDL_Texture *t = SDL_CreateTexture(sdl.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, w, h);
+    SDL_Texture *t = SDL_CreateTexture(sdl_native.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, w, h);
     SDL_SetTextureColorMod(t, image->col.r,image->col.g, image->col.b);
     SDL_QueryTexture(t, NULL, &image->img.handle.ptr, &w, &h);
     SDL_UpdateTexture(t, &(SDL_Rect){x, y, w, h}, &image->img.handle.ptr, sizeof(*image->img.handle.ptr));
-    SDL_RenderCopy(sdl.renderer, t, NULL, &(SDL_Rect){x, y, w, h});
+    SDL_RenderCopy(sdl_native.renderer, t, NULL, &(SDL_Rect){x, y, w, h});
 }
 
 NK_API void
 nk_sdl_native_render(void)
 {
     const struct nk_command *cmd;
-    nk_foreach(cmd, &sdl.ctx)
+    nk_foreach(cmd, &sdl_native.ctx)
     {
     //    Uint32 color; temporalmente no tiene uso. 
        switch (cmd->type) {
             case NK_COMMAND_NOP: {}break;
             case NK_COMMAND_SCISSOR: {
                 const struct nk_command_scissor *s = (const struct nk_command_scissor*)cmd;
-                SDL_RenderSetClipRect(sdl.renderer, &(SDL_Rect){(int)s->x, (int)s->y, (int)s->w, (int)s->h} );
+                SDL_RenderSetClipRect(sdl_native.renderer, &(SDL_Rect){(int)s->x, (int)s->y, (int)s->w, (int)s->h} );
             }break;
             case NK_COMMAND_LINE: {
                 const struct nk_command_line *l = (const struct nk_command_line *)cmd;
@@ -243,7 +242,7 @@ nk_sdl_native_render(void)
             default: break;
        }
     }
-    nk_clear(&sdl.ctx);
+    nk_clear(&sdl_native.ctx);
 }
 
 static void
@@ -291,47 +290,47 @@ nk_sdl_native_font_get_text_width(nk_handle handle, float height, const char *te
 NK_API struct nk_context*
 nk_sdl_native_init(SDL_Window *win, SDL_Renderer *renderer)
 {
-    struct nk_user_font *font = &sdl.user_font;
-    font->userdata = nk_handle_ptr(sdl.ttf_font);
-    font->height = TTF_FontHeight(sdl.ttf_font);
+    struct nk_user_font *font = &sdl_native.user_font;
+    font->userdata = nk_handle_ptr(sdl_native.ttf_font);
+    font->height = TTF_FontHeight(sdl_native.ttf_font);
     font->width = nk_sdl_native_font_get_text_width;
 
-    sdl.win = win;
-    sdl.renderer = renderer;
+    sdl_native.win = win;
+    sdl_native.renderer = renderer;
     
-    nk_init_default(&sdl.ctx, font);
-    nk_buffer_init_default(&sdl.cmds);
+    nk_init_default(&sdl_native.ctx, font);
+    nk_buffer_init_default(&sdl_native.cmds);
     
-    sdl.ctx.clip.copy = nk_sdl_native_clipboard_copy;
-    sdl.ctx.clip.paste = nk_sdl_native_clipboard_paste;
-    sdl.ctx.clip.userdata = nk_handle_ptr(0);
+    sdl_native.ctx.clip.copy = nk_sdl_native_clipboard_copy;
+    sdl_native.ctx.clip.paste = nk_sdl_native_clipboard_paste;
+    sdl_native.ctx.clip.userdata = nk_handle_ptr(0);
 
-    return &sdl.ctx;
+    return &sdl_native.ctx;
 }
 
 NK_API void
 nk_sdl_native_font_stash_begin(struct nk_font_atlas **atlas)
 {
-    nk_font_atlas_init_default(&sdl.atlas);
-    nk_font_atlas_begin(&sdl.atlas);
-    *atlas = &sdl.atlas;
+    nk_font_atlas_init_default(&sdl_native.atlas);
+    nk_font_atlas_begin(&sdl_native.atlas);
+    *atlas = &sdl_native.atlas;
 }
 
 NK_API void
 nk_sdl_native_font_stash_end(void)
 {
     const void *image; int w, h;
-    image = nk_font_atlas_bake(&sdl.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
+    image = nk_font_atlas_bake(&sdl_native.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
     nk_sdl_native_device_upload_atlas(image, w, h);
-    nk_font_atlas_end(&sdl.atlas, nk_handle_id((int)sdl.ogl.font_tex), &sdl.ogl.null);
-    if (sdl.atlas.default_font)
-        nk_style_set_font(&sdl.ctx, &sdl.atlas.default_font->handle);
+    nk_font_atlas_end(&sdl_native.atlas, nk_handle_id((int)sdl_native.ogl.font_tex), &sdl_native.ogl.null);
+    if (sdl_native.atlas.default_font)
+        nk_style_set_font(&sdl_native.ctx, &sdl_native.atlas.default_font->handle);
 }
 
 NK_API void
 nk_sdl_native_handle_event(SDL_Event *evt)
 {
-    struct nk_context *ctx = &sdl.ctx;
+    struct nk_context *ctx = &sdl_native.ctx;
 
     /* optional grabbing behavior */
     if (ctx->input.mouse.grab) {
@@ -340,7 +339,7 @@ nk_sdl_native_handle_event(SDL_Event *evt)
     } else if (ctx->input.mouse.ungrab) {
         int x = (int)ctx->input.mouse.prev.x, y = (int)ctx->input.mouse.prev.y;
         SDL_SetRelativeMouseMode(SDL_FALSE);
-        SDL_WarpMouseInWindow(sdl.win, x, y);
+        SDL_WarpMouseInWindow(sdl_native.win, x, y);
         ctx->input.mouse.ungrab = 0;
     }
     if (evt->type == SDL_KEYUP || evt->type == SDL_KEYDOWN) {
@@ -427,9 +426,9 @@ nk_sdl_native_handle_event(SDL_Event *evt)
 NK_API
 void nk_sdl_native_shutdown(void)
 {
-    nk_free(&sdl.ctx);
-    nk_buffer_free(&sdl.cmds);
-    memset(&sdl, 0, sizeof(sdl));
+    nk_free(&sdl_native.ctx);
+    nk_buffer_free(&sdl_native.cmds);
+    memset(&sdl_native, 0, sizeof(sdl_native));
 }
 
 #endif
