@@ -23,6 +23,8 @@
     <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\libtiff-5.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
     <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\libwebp-7.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
     <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\libwebp-7.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
+    <Copy SourceFiles="$(SdlTtfDir)lib\winnt-x86\libfreetype-6.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+    <Copy SourceFiles="$(SdlTtfDir)lib\winnt-x64\libfreetype-6.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
 
   </Target>
   <Target Name="Clean">
