@@ -120,7 +120,7 @@ rolling boulder trap's boulder will knock another one that it collides
 	with into motion in its place
 make it harder to abuse detect monster and confusion spells
 prevent D[a from producing odd message sequence in (c)ombination mode
-avoid messages like "the silver bell" after being drained by mind flayer
+avoid messages like "the silver bell" after being drained by tentacled one
 after polymorph, actually drop both weapons when a message says this happened
 curb unicorn horn creation abuse by limiting the chance of a unicorn
 	leaving one if it has been revived
@@ -262,7 +262,7 @@ when polymorphed into a silent creature, do not "pronounce" scroll formula
 ensure hilite turns off immediately when pet stops being tame
 hitting with a polearm counts as hitting with a weapon for conduct
 traps detected while blind and levitating were not displayed
-when a mind flayer uses its mind attack, it should wake the victim
+when a tentacled one uses its mind attack, it should wake the victim
 shapechangers restored from disk would no longer change shape
 allow "tame" prefix when using the wizmode C-g command to create new monster(s)
 display a more appropriate name for a high priestess when using ;/ commands
@@ -306,7 +306,7 @@ tame stuck monsters should release you after regaining their senses
 engraving Elbereth exercises wisdom, engraving anything else does not
 artifact bows get any special attack bonus added to missile to-hit roll
 monsters with gaze attacks should not try to blind the hero with potions
-players polymorphed into umber hulks should not try to eat boulders in Sokoban
+players polymorphed into under hulks should not try to eat boulders in Sokoban
 when a monster uses up a partially eaten food item, cleanup was not performed
 temple priests shouldn't be created with two robes
 give some quest leaders and nemeses equipment appropriate for their class
@@ -428,7 +428,7 @@ score bonus was missing from scrolls of identify and fire
 make wands of speed or slow monster known if their effect
 	on monsters is observed; likewise for speed boots
 gold detection "materially poor" message inappropriate if you have hidden_gold()
-cannot reflect back an invisible umber hulk or medusa's attack
+cannot reflect back an invisible under hulk or medusa's attack
 monsters with M3_WANTSBOOK often couldn't move in the Wizard-level
 Vlad should want the Candelabrum
 if you float_down on a trap in which you're already trapped, don't retrap

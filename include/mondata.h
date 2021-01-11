@@ -32,8 +32,8 @@
     (!haseyes(ptr) ? 0 : ((ptr) == &mons[PM_CYCLOPS]          \
                           || (ptr) == &mons[PM_FLOATING_EYE]) \
                              ? 1                              \
-							 : (ptr) == &mons[PM_BEHOLDER] || (ptr) == &mons[PM_ELDER_ORB] ? 7	\
-							 : (ptr) == &mons[PM_DEATH_TYRANT] ? 4	\
+							 : (ptr) == &mons[PM_GAZER] || (ptr) == &mons[PM_ELDER_GAZER] ? 7	\
+							 : (ptr) == &mons[PM_DEATH_GAZER] ? 4	\
                              : 2 * (ptr)->heads)
 #define nolimbs(ptr) (((ptr)->mflags1 & M1_NOLIMBS) == M1_NOLIMBS) /* two bits */
 #define nohands(ptr) (((ptr)->mflags1 & M1_NOHANDS) != 0L) /* also covers no limbs because of the bit in M1_NOLIMBS  */
@@ -788,7 +788,7 @@
 #define emitted_light_range(ptr) ((ptr)->lightrange)
 #define touch_petrifies(ptr) (((ptr)->mflags1 & M1_TOUCH_PETRIFIES) != 0)
 #define flesh_petrifies(ptr) (touch_petrifies(ptr) || (ptr) == &mons[PM_MEDUSA])
-#define is_mind_flayer(ptr) (((ptr)->mflags2 & M2_MIND_FLAYER) != 0)
+#define is_tentacled_one(ptr) (((ptr)->mflags2 & M2_TENTACLED_ONE) != 0)
 #define is_mimic(ptr) (((ptr)->mflags2 & M2_MIMIC) != 0)
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
 #define mon_ambient_sound(ptr) get_monster_ambient_sound_id((ptr)->soundset)//((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? GHSOUND_NONE : monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].ghsound < MAX_GHSOUNDS ? monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].ghsound : GHSOUND_NONE)

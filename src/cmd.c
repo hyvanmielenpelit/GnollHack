@@ -835,7 +835,7 @@ doability(VOID_ARGS)
 		|| is_were(youmonst.data)
 		|| webmaker(youmonst.data)
 		|| is_hider(youmonst.data)
-		|| is_mind_flayer(youmonst.data)
+		|| is_tentacled_one(youmonst.data)
 		|| u.umonnum == PM_GREMLIN
 		|| is_unicorn(youmonst.data)
 		|| youmonst.data->msound == MS_SHRIEK
@@ -971,7 +971,7 @@ doability(VOID_ARGS)
 			abilitynum++;
 		}
 
-		if (is_mind_flayer(youmonst.data))
+		if (is_tentacled_one(youmonst.data))
 		{
 			strcpy(available_ability_list[abilitynum].name, "Project a mind blast");
 			available_ability_list[abilitynum].function_ptr = &domindblast;
@@ -1213,7 +1213,7 @@ domonability(VOID_ARGS)
         return dospinweb();
     else if (is_hider(youmonst.data))
         return dohide();
-    else if (is_mind_flayer(youmonst.data))
+    else if (is_tentacled_one(youmonst.data))
         return domindblast();
     else if (u.umonnum == PM_GREMLIN) {
         if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)) {

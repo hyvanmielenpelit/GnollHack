@@ -559,7 +559,7 @@ start: Blank
         S_troll: \032
         S_trwall: \032
         S_tuwall: \032
-        S_umber: \032
+        S_under: \032
         S_unicorn: \032
         S_upladder: \032
         S_upstair: \032

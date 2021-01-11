@@ -964,7 +964,7 @@ int mntmp;
             pline(use_thec, monsterc, "multiply in a fountain");
         if (is_unicorn(youmonst.data))
             pline(use_thec, monsterc, "use your horn");
-        if (is_mind_flayer(youmonst.data))
+        if (is_tentacled_one(youmonst.data))
             pline(use_thec, monsterc, "emit a mental blast");
         if (youmonst.data->msound == MS_SHRIEK)
             pline(use_thec, monsterc, "shriek");

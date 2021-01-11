@@ -136,7 +136,7 @@ char *buf;
         "Young Men's Cavedigging Association",
         "Occupy Fort Ludios",
         "I couldn't afford this T-shirt so I stole it!",
-        "Mind flayers suck",
+        "Tentacled ones suck",
         "I'm not wearing any pants",
         "Down with the living!",
         "Pudding farmer",
@@ -532,7 +532,7 @@ struct obj *obj;
     if (obj->oclass == WAND_CLASS)
         return TRUE;
 
-	/* known && !oc_name_known is possible after amnesia/mind flayer */
+	/* known && !oc_name_known is possible after amnesia/tentacled one */
 //    if (obj->oclass == RING_CLASS)
         return (boolean) (objects[obj->otyp].oc_charged
                           && (obj->known

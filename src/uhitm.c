@@ -3773,7 +3773,7 @@ register struct monst *mon;
                                                 &silverhit);
                     break;
                 case AT_TENT:
-                    /* assumes mind flayer's tentacles-on-head rather
+                    /* assumes tentacled one's tentacles-on-head rather
                        than sea monster's tentacle-as-arm */
                     verb = "tentacles";
                     break;

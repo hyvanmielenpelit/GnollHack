@@ -58,7 +58,7 @@ enum mon_class_types {
     S_RUSTMONST  = 44, /* R */
     S_SNAKE      = 45, /* S */
     S_TROLL      = 46, /* T */
-    S_UMBER      = 47, /* U: umber hulk or an aberration, such as otyugh or chimera */
+    S_UNDER      = 47, /* U: under hulk or an aberration, such as otyugh or chimera */
     S_VAMPIRE    = 48, /* V */
     S_WRAITH     = 49, /* W */
     S_XORN       = 50, /* X */
@@ -129,7 +129,7 @@ enum mon_class_types {
 #define DEF_RUSTMONST   'R'
 #define DEF_SNAKE       'S'
 #define DEF_TROLL       'T'
-#define DEF_UMBER       'U'
+#define DEF_UNDER       'U'
 #define DEF_VAMPIRE     'V'
 #define DEF_WRAITH      'W'
 #define DEF_XORN        'X'

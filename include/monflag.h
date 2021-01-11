@@ -158,7 +158,7 @@
 #define M1_OVIPAROUS	0x00400000UL   /* can lay eggs */
 #define M1_FLOATER		0x00800000UL   /* can float */
 #define M1_TELEKINETIC_OPERATOR \
-						0x01000000UL   /* can use telekinesis as hands for certain purposes (for beholder opening doors etc.) */
+						0x01000000UL   /* can use telekinesis as hands for certain purposes (for gazer opening doors etc.) */
 #define M1_TOUCH_PETRIFIES 0x02000000UL   /* touching the corpse petrifies */
 #define M1_ROCKTHROW	0x04000000UL    /* throws boulders */
 #define M1_STEED        0x08000000UL    /* can be saddled and ridden */
@@ -190,7 +190,7 @@
 #define M2_MINION		0x00004000UL       /* is a minion of a deity */
 #define M2_GIANT		0x00008000UL        /* is a giant */
 #define M2_SHAPESHIFTER 0x00010000UL /* is a shapeshifting species */
-#define M2_MIND_FLAYER  0x00020000UL   /* is a mindflayer */
+#define M2_TENTACLED_ONE  0x00020000UL   /* is a tentacled one */
 #define M2_ANGEL		0x00040000UL       /* is an angelic being */
 #define M2_MALE			0x00080000UL         /* always male */
 #define M2_FEMALE		0x00100000UL       /* always female */

@@ -3974,7 +3974,7 @@ struct attack *mattk;
             }
         }
         break;
-#endif /* BEHOLDER */
+#endif
     default:
         impossible("Gaze attack %d?", mattk->adtyp);
         break;

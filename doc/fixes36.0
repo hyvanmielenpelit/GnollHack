@@ -220,7 +220,7 @@ hero could still see for brief period after being blinded by potion vapors
 avoid crash when thrown potion hits bars before a monster
 don't give messages about seeing things happen while asleep
 adjust health threshold where wounded hero will be healed by successful prayer
-protect hero from mind flayer's remote mental blast during successful prayer
+protect hero from tentacled one's remote mental blast during successful prayer
 recognize if hero has already entered Gehennom by means other than usual route
 	so that prompt can be skipped if Valley's stairs are subsequently used
 once you've passed the Valley, drawbridge tune is no longer a prayer reward
@@ -244,8 +244,8 @@ some messages which referred to "mirror" ought to have used "looking glass"
 incubi react to mirrors
 losing a level while polymorphed affects hero's current monster HP as well as
 	underlying normal HP
-mind flayer brain eating is subject to certain fatal targets and to cannibalism
-mind flayer can't eat brains of ghost or shade
+tentacled one brain eating is subject to certain fatal targets and to cannibalism
+tentacled one can't eat brains of ghost or shade
 alignment of Angels was handled inconsistently
 corpses of unique monsters in bones behaved incorrectly if revived or eaten
 pets capable of digging could pass through walls and stone on the Rogue level
@@ -294,7 +294,7 @@ fix monsndx panic which happened after currently moving monster expelled
 	no longer replaces monster
 reduced message verbosity when re-entering a temple
 reduced message verbosity when monster with multiple attacks missed wildly
-recognize "mindflayer" as an alternative spelling for "mind flayer"
+recognize "tentacle one" as an alternative spelling for "tentacled one"
 putting on a never seen ring while blinded won't make the ring a discovery
 zapping a never seen wand while blinded won't make the wand a discovery
 zapping an unID'd wand of teleportation at self will discover it (usually)

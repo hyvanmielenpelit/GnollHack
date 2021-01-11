@@ -1162,7 +1162,7 @@ struct obj *obj;
                 }
             } else if (youmonst.data->mlet == S_VAMPIRE)
                 You("don't have a reflection.");
-            else if (u.umonnum == PM_UMBER_HULK) {
+            else if (u.umonnum == PM_UNDER_HULK) {
                 pline("Huh?  That doesn't look like you!");
                 if (!Confusion)
                     play_sfx_sound(SFX_ACQUIRE_CONFUSION);
@@ -1254,7 +1254,7 @@ struct obj *obj;
         else
             You_hear("%s stop moving.", something);
         paralyze_monst(mtmp, (int) mtmp->mfrozen + tmp, FALSE);
-    } else if (monable && mtmp->data == &mons[PM_UMBER_HULK]) {
+    } else if (monable && mtmp->data == &mons[PM_UNDER_HULK]) {
         if (vis)
             pline("%s confuses itself!", Monnam(mtmp));
 		nonadditive_increase_mon_property(mtmp, CONFUSION, 10 + rnd(10));

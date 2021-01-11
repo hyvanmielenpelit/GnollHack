@@ -2508,7 +2508,7 @@ found in the dungeon.  Swallowing and digesting a monster while polymorphed
 is treated as if you ate the creature's corpse.
 Eating leather, dragon hide, or bone items while
 polymorphed into a creature that can digest it, or eating monster brains
-while polymorphed into a mind flayer, is considered eating
+while polymorphed into a tentacled one, is considered eating
 an animal, although wax is only an animal byproduct.
 .pg
 Regardless of conduct, there will be some items which are indigestible,
@@ -4509,7 +4509,7 @@ t	S_trapper	(trapper or lurker above)
 T	S_troll	(troll)
 |	S_trwall	(wall)
 \-	S_tuwall	(wall)
-U	S_umber	(umber hulk)
+U	S_under	(under hulk)
 u	S_unicorn	(unicorn or horse)
 <	S_upladder	(ladder up)
 <	S_upstair	(staircase up)

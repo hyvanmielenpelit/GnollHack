@@ -25,7 +25,7 @@ update status line when cloning yourself halves your hit points
 suppress clone's initial inventory for poly'd player just as for monsters
 update the documention describing the O command
 polyself: immediately update vision when reverting to human from eyeless form
-use right pronoun when a mind flayer's attack is blocked by a monster's helmet
+use right pronoun when a tentacled one's attack is blocked by a monster's helmet
 tins of lizard meat are never rotten, just like the corresponding corpses
 tattered capes should not match ape entry in database
 booze should not match ooze entry in database
@@ -66,7 +66,7 @@ Riders can open locked doors without a key, just like the Wizard
 Riders, angels, and elves won't avoid stepping on Elbereth/scare monster when
 	deciding where to walk
 Riders and angels will ignore the sanctuary effect of temples
-mind flayers cannot suck out brains by hitting long worm tails
+tentacled ones cannot suck out brains by hitting long worm tails
 don't ignore object age when #offering a partially eaten corpse
 inability to pick up is not as general as nolimbs (blobs may pick up with
 	pseudopods and purple worms by swallowing)
@@ -157,7 +157,7 @@ make sure that nemeses don't leave corpses if the message says there's no body
 fix wizard-mode problem with generating Master of Thieves (was singularizing it)
 allow weapon-using monsters who ignore gems to throw darts
 make flint stones be the preferred ammo for sling wielding monsters
-gaining/losing telepathy via polymorph (i.e. mind flayer) redisplays monsters
+gaining/losing telepathy via polymorph (i.e. tentacled one) redisplays monsters
 prayer result of ``escape from solid rock'' isn't inhibited by teleport
 	restrictions (attempting to fix all troubles got stuck in a loop)
 fix surviving level teleport to a negative destination from somewhere other
@@ -330,7 +330,7 @@ crysknives can be "fixed"
 vampires now #chat back
 new monsters: chickatrice,pyrolisk,fox,coyote,winter wolf cub,dingo, 
 	gas spore,flaming sphere,shocking sphere,lynx,panther,raven, 
-	glass piercer,mastodon,woodchuck,centipede,master mind flayer, 
+	glass piercer,mastodon,woodchuck,centipede,elder tentacled one, 
 	pony,horse,warhorse,silver dragon,lichen,storm giant,arch-lich,
 	dwarf mummy,green slime,disenchanter,monkey,dwarf zombie,ghoul, 
 	paper golem, gold golem,glass golem,prisoner,jellyfish,piranha,

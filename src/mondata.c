@@ -112,7 +112,7 @@ static NEARDATA struct mflag_description m2flag_descriptions[] = {
 	{ M2_GNOLL, "gnoll", "gnolls" },
 	{ M2_GNOME, "gnome", "gnomes" },
 	{ M2_HUMAN, "human", "human beings" },
-	{ M2_MIND_FLAYER, "mind flayer", "mind flayers" },
+	{ M2_TENTACLED_ONE, "tentacled one", "tentacled ones" },
 	{ M2_MODRON, "modron", "modrons" },
 	{ M2_ORC, "orc", "orcs" },
 	{ M2_SHAPESHIFTER, "shapeshifter", "shapeshifters" },
@@ -825,8 +825,8 @@ struct permonst *pm1, *pm2;
         return is_giant(pm2); /* open to quibbling here */
     if (is_golem(pm1))
         return is_golem(pm2); /* even moreso... */
-    if (is_mind_flayer(pm1))
-        return is_mind_flayer(pm2);
+    if (is_tentacled_one(pm1))
+        return is_tentacled_one(pm2);
     if (let1 == S_KOBOLD || pm1 == &mons[PM_KOBOLD_ZOMBIE]
         || pm1 == &mons[PM_KOBOLD_MUMMY])
         return (let2 == S_KOBOLD || pm2 == &mons[PM_KOBOLD_ZOMBIE]
@@ -992,8 +992,11 @@ const char *in_str;
 			{ "grey unicorn", PM_GRAY_UNICORN },
             { "grey ooze", PM_GRAY_OOZE },
             { "gray-elf", PM_GREY_ELF },
-            { "mindflayer", PM_MIND_FLAYER },
-            { "master mindflayer", PM_MASTER_MIND_FLAYER },
+            { "mindflayer", PM_TENTACLED_ONE },
+            { "master mindflayer", PM_ELDER_TENTACLED_ONE },
+            { "mind flayer", PM_TENTACLED_ONE },
+            { "master mind flayer", PM_ELDER_TENTACLED_ONE },
+            { "umber hulk", PM_UNDER_HULK },
             /* More alternates; priest and priestess are separate monster
                types but that isn't the case for {aligned,high} priests */
             { "aligned priestess", PM_ALIGNED_PRIEST },
@@ -1279,7 +1282,7 @@ static const short grownups[][2] = {
 	{ PM_GNOLL_LORD, PM_GNOLL_KING },
     { PM_GNOLL_WARDEN, PM_GNOLL_SUPREME_WARDEN },
     { PM_FLIND, PM_FLIND_LORD },
-	{ PM_MIND_FLAYER, PM_MASTER_MIND_FLAYER },
+	{ PM_TENTACLED_ONE, PM_ELDER_TENTACLED_ONE },
     { PM_ORC, PM_ORC_CAPTAIN },
     { PM_HILL_ORC, PM_ORC_CAPTAIN },
     { PM_MORDOR_ORC, PM_ORC_CAPTAIN },

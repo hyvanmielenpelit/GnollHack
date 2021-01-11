@@ -223,7 +223,7 @@ MONSTER:$monster[3],(27,11)
 MONSTER:$monster[4],(30,11)
 MONSTER:$monster[5],(33,11)
 MONSTER:$monster[6],(36,11)
-MONSTER:('e',"beholder"),(37,08)
+MONSTER:('e',"gazer"),(37,08)
 # MazeWalks
 MAZEWALK:(00,10),west
 MAZEWALK:(62,06),east

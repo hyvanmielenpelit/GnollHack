@@ -466,7 +466,7 @@ struct mkroom *sroom;
 			if (roll <= 2)
 				librarytype = 2; //Liches
 			else
-				librarytype = 3; //Mind flayers
+				librarytype = 3; //Tentacled ones
 		}
 
 		if (librarytype == 0) // Gnomes
@@ -492,13 +492,13 @@ struct mkroom *sroom;
 					mainlibrarymonst = &mons[PM_LICH];
 			}
 		}
-		else if (librarytype == 3) // Mindflayers
+		else if (librarytype == 3) // Tentacled ones
 		{
 			if ((hd >= 25 || Inhell || In_endgame(&u.uz)) && !rn2(3)) {
-				mainlibrarymonst = &mons[PM_MASTER_MIND_FLAYER];
+				mainlibrarymonst = &mons[PM_ELDER_TENTACLED_ONE];
 			}
 			else
-				mainlibrarymonst = &mons[PM_MIND_FLAYER];
+				mainlibrarymonst = &mons[PM_TENTACLED_ONE];
 		}
 		else
 			mainlibrarymonst = &mons[PM_GNOMISH_WIZARD];
@@ -925,13 +925,13 @@ int type;
 		else if (i <= 100)
 			return &mons[PM_IMP];
 	}
-	else if (type == 3) // Mindflayers
+	else if (type == 3) // Tentacled ones
 	{
 		if ((Inhell || In_endgame(&u.uz)) && !rn2(4)) {
-			return &mons[PM_MASTER_MIND_FLAYER];
+			return &mons[PM_ELDER_TENTACLED_ONE];
 		}
 		else
-			return &mons[PM_MIND_FLAYER];
+			return &mons[PM_TENTACLED_ONE];
 	}
 
 	return (struct permonst*) 0;

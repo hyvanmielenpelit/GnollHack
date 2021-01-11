@@ -1290,7 +1290,7 @@ struct attack  *mattk;
 }
 
 
-/* beholder gazes at monster (ranged) */
+/* gazer gazes at monster (ranged) */
 int
 eyesmm(mtmp, mattk, mtarg)
 struct monst* mtmp, * mtarg;
@@ -1750,7 +1750,7 @@ struct attack *mattk;
     return 0;
 }
 
-/* beholder fires an eyestalk at you (ranged) */
+/* gazer fires an eyestalk at you (ranged) */
 int
 eyesmu(mtmp, mattk)
 struct monst *mtmp;

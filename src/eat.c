@@ -498,7 +498,7 @@ struct permonst *pd;
         violated_vegetarian();
 }
 
-/* handle side-effects of mind flayer's tentacle attack */
+/* handle side-effects of tentacled one's tentacle attack */
 int
 eat_brains(magr, mdef, visflag, dmg_p)
 struct monst *magr, *mdef;
@@ -530,7 +530,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 
     if (flesh_petrifies(pd))
 	{
-        /* mind flayer has attempted to eat the brains of a petrification
+        /* tentacled one has attempted to eat the brains of a petrification
            inducing critter (most likely Medusa; attacking a cockatrice via
            tentacle-touch should have been caught before reaching this far) */
         if (magr == &youmonst) 
@@ -541,7 +541,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 		else
 		{
             /* no need to check for poly_when_stoned or Stone_resistance;
-               mind flayers don't have those capabilities */
+               tentacled ones don't have those capabilities */
             if(visflag)
                 play_sfx_sound_at_location(SFX_PETRIFY, magr->mx, magr->my);
 
@@ -566,7 +566,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
     if (magr == &youmonst) 
 	{
         /*
-         * player mind flayer is eating something's brain
+         * player tentacled one is eating something's brain
          */
         eating_conducts(pd);
         if (mindless(pd) || has_fixed_ability(mdef) || has_brain_protection(mdef))
@@ -610,7 +610,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 			if (!has_fixed_ability(mdef))
 				pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
 		}
-        /* targetting another mind flayer or your own underlying species
+        /* targetting another tentacled one or your own underlying species
            is cannibalism */
         (void) maybe_cannibal(monsndx(pd), TRUE);
 
@@ -618,7 +618,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 	else if (mdef == &youmonst) 
 	{
         /*
-         * monster mind flayer is eating hero's brain
+         * monster tentacled one is eating hero's brain
          */
         /* no such thing as mindless players */
 
@@ -676,7 +676,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 	else 
     { /* mhitm */
         /*
-         * monster mind flayer is eating another monster's brain
+         * monster tentacled one is eating another monster's brain
          */
         if (mindless(pd) || has_fixed_ability(mdef) || has_brain_protection(mdef))
 		{
@@ -722,7 +722,7 @@ boolean allowmsg;
     static NEARDATA long ate_brains = 0L;
     struct permonst *fptr = &mons[pm]; /* food type */
 
-    /* when poly'd into a mind flayer, multiple tentacle hits in one
+    /* when poly'd into a tentacled one, multiple tentacle hits in one
        turn cause multiple digestion checks to occur; avoid giving
        multiple luck penalties for the same attack */
     if (moves == ate_brains)
@@ -1296,8 +1296,8 @@ int pm;
         attrcurse();
         break;
 #if 0
-    case PM_MIND_FLAYER:
-    case PM_MASTER_MIND_FLAYER:
+    case PM_TENTACLED_ONE:
+    case PM_ELDER_TENTACLED_ONE:
         if (ABASE(A_INT) < ATTRMAX(A_INT)) {
             if (!rn2(2)) {
                 pline("Yum!  That was real brain food!");
@@ -1366,7 +1366,7 @@ int pm;
             percent = 20;
         else if (ptr == &mons[PM_FLOATING_EYE])
             percent = 100;
-        else if (is_mind_flayer(ptr))
+        else if (is_tentacled_one(ptr))
             percent = 25;
         else
             percent = min(30, max(1, mdifficulty));

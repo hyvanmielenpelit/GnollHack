@@ -26,7 +26,7 @@
 #define AT_BOOM 14  /* explodes when killed */
 #define AT_GAZE 15  /* gaze - ranged */
 #define AT_TENT 16  /* tentacles */
-#define AT_EYES 17  /* beholder eye stalk - ranged */
+#define AT_EYES 17  /* gazer eye stalk - ranged */
 
 #define AT_PASV 252 /* passive defense */
 #define AT_SMMN 253 /* uses demon special abilities */
@@ -64,14 +64,14 @@
 #define AD_SEDU 22  /* seduces & steals multiple items */
 #define AD_TLPT 23  /* teleports you (Quantum Mech.) */
 #define AD_RUST 24  /* rusts armour (Rust Monster)*/
-#define AD_CONF 25  /* confuses (Umber Hulk) */
+#define AD_CONF 25  /* confuses (Under Hulk) */
 #define AD_DGST 26  /* digests opponent (trapper, etc.) */
 #define AD_HEAL 27  /* heals opponent's wounds (nurse) */
 #define AD_WRAP 28  /* special "stick" for eels */
 #define AD_WERE 29  /* confers lycanthropy */
 #define AD_DRDX 30  /* drains dexterity (quasit) */
 #define AD_DRCO 31  /* drains constitution */
-#define AD_DRIN 32  /* drains intelligence (mind flayer) */
+#define AD_DRIN 32  /* drains intelligence (tentacled one) */
 #define AD_DISE 33  /* confers terminal disease */
 #define AD_DCAY 34  /* decays organics (brown Pudding) */
 #define AD_SSEX 35  /* Succubus seduction (extended) */

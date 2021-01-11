@@ -23,7 +23,7 @@ maggot
 pterodactyl
 tyrannosaurus rex
 basilisk
-beholder
+watcher
 nightmare
 efreeti
 marid

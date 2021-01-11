@@ -75,7 +75,7 @@ MONSTER:('E',"earth elemental"),(61,05),hostile
 MONSTER:('s',"scorpion"),(62,05)
 MONSTER:('p',"rock piercer"),(63,05)
 #
-MONSTER:('U',"umber hulk"),(40,05)
+MONSTER:('U',"under hulk"),(40,05)
 MONSTER:('v',"dust vortex"),(42,05)
 MONSTER:('T',"rock troll"),(38,06)
 MONSTER:('E',"elder earth elemental"),(39,06),hostile
