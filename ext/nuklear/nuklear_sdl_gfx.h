@@ -12,8 +12,10 @@
  *
  * ===============================================================
  */
-#ifndef NK_SDL_NATIVE_H_
-#define NK_SDL_NATIVE_H_
+#pragma comment(lib, "SDL2_ttf")
+
+#ifndef NK_SDL_GFX_H_
+#define NK_SDL_GFX_H_
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -38,7 +40,7 @@ NK_API void                 nk_sdl_native_font_del(void);
  *
  * ===============================================================
  */
-#ifdef NK_SDL_NATIVE_IMPLEMENTATION
+#ifdef NK_SDL_GFX_IMPLEMENTATION
 
 #ifndef NK_SDL_TEXT_MAX
 #define NK_SDL_TEXT_MAX 256
@@ -53,6 +55,7 @@ static struct nk_sdl_native {
     TTF_Font *ttf_font;
     struct nk_user_font *user_font;
     int font_height;
+    struct nk_font_atlas atlas;
 } sdl_native;
 
 NK_API void nk_sdl_native_font_create_from_file(const char *file_name, int font_size, int flags)
@@ -143,12 +146,14 @@ void sdl_draw_filled_polygon(const Sint16 *vx, const Sint16 *vy, int n, struct n
     filledPolygonRGBA(sdl_native.renderer, vx, vy, n, color.r, color.g, color.b, color.a);
 }
 
-void sdl_draw_image(const struct nk_command_image *image, int x, int y, int w, int h) {
+void sdl_draw_image(const struct nk_command_image *image, int x, int y, int w, int h) 
+{
+    SDL_Rect rect = (SDL_Rect){ x, y, w, h };
     SDL_Texture *t = SDL_CreateTexture(sdl_native.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, w, h);
     SDL_SetTextureColorMod(t, image->col.r,image->col.g, image->col.b);
-    SDL_QueryTexture(t, NULL, &image->img.handle.ptr, &w, &h);
-    SDL_UpdateTexture(t, &(SDL_Rect){x, y, w, h}, &image->img.handle.ptr, sizeof(*image->img.handle.ptr));
-    SDL_RenderCopy(sdl_native.renderer, t, NULL, &(SDL_Rect){x, y, w, h});
+    SDL_QueryTexture(t, (Uint32*)0, (int*)image->img.handle.ptr, &w, &h);
+    SDL_UpdateTexture(t, &rect, (const void*)image->img.handle.ptr, w * 4); // sizeof(*image->img.handle.ptr));
+    SDL_RenderCopy(sdl_native.renderer, t, NULL, &rect);
 }
 
 NK_API void
@@ -166,7 +171,7 @@ nk_sdl_native_render(void)
             }break;
             case NK_COMMAND_LINE: {
                 const struct nk_command_line *l = (const struct nk_command_line *)cmd;
-                sdl_draw_line((float)l->begin.x, (float)l->begin.y, (float)l->end.x, (float)l->end.y, l->color);
+                sdl_draw_line((int)l->begin.x, (int)l->begin.y, (int)l->end.x, (int)l->end.y, l->color);
             }break;
             case NK_COMMAND_RECT: {
                 const struct nk_command_rect *r = (const struct nk_command_rect *)cmd;
@@ -181,46 +186,51 @@ nk_sdl_native_render(void)
                 int xr, yr;
                 xr = c->w/2;
                 yr = c->h/2;
-                sdl_draw_ellipse(((float)(c->x)) + xr, ((float)c->y) + yr, xr, yr, c->color);
+                sdl_draw_ellipse(((int)(c->x)) + xr, ((int)c->y) + yr, xr, yr, c->color);
             }break;
             case NK_COMMAND_CIRCLE_FILLED: {
                 const struct nk_command_circle_filled *c = (const struct nk_command_circle_filled *)cmd;
                 int xr, yr;
                 xr = c->w/2;
                 yr = c->h/2;
-                sdl_draw_ellipse_filled(((float)(c->x)) + xr, ((float)c->y) + yr, xr, yr, c->color);
+                sdl_draw_ellipse_filled(((int)(c->x)) + xr, ((int)c->y) + yr, xr, yr, c->color);
             }break;
             case NK_COMMAND_TRIANGLE: {
                 const struct nk_command_triangle*t = (const struct nk_command_triangle*)cmd;
-                sdl_draw_triangle((float)t->a.x, (float)t->a.y, (float)t->b.x, (float)t->b.y,
-                    (float)t->c.x, (float)t->c.y, t->color);
+                sdl_draw_triangle((int)t->a.x, (int)t->a.y, (int)t->b.x, (int)t->b.y,
+                    (int)t->c.x, (int)t->c.y, t->color);
             }break;
             case NK_COMMAND_TRIANGLE_FILLED: {
                 const struct nk_command_triangle_filled *t = (const struct nk_command_triangle_filled *)cmd;
-                sdl_draw_filled_triangle((float)t->a.x, (float)t->a.y, (float)t->b.x,
-                    (float)t->b.y, (float)t->c.x, (float)t->c.y, t->color);
+                sdl_draw_filled_triangle((int)t->a.x, (int)t->a.y, (int)t->b.x,
+                    (int)t->b.y, (int)t->c.x, (int)t->c.y, t->color);
             }break;
             case NK_COMMAND_POLYGON: {
                 const struct nk_command_polygon *p = (const struct nk_command_polygon*)cmd;
                 int i;
-                float vertices[p->point_count * 2];
+                float* verticesx = (float*)malloc((size_t)(p->point_count * 2) * sizeof(float)); // [p->point_count * 2] ;
+                float* verticesy = (float*)malloc((size_t)(p->point_count * 2) * sizeof(float)); // [p->point_count * 2] ;
                 for (i = 0; i < p->point_count; i++) {
-                    vertices[i*2] = p->points[i].x;
-                    vertices[(i*2) + 1] = p->points[i].y;
+                    verticesx[i * 2] = p->points[i].x;
+                    verticesy[(i * 2) + 1] = p->points[i].y;
                 }
-                sdl_draw_polyline((const float*)&vertices, (2 * sizeof(float)),(int)p->point_count, p->color);
+                sdl_draw_polyline((const Sint16*)verticesx, (const Sint16*)verticesy, (int)p->point_count, p->color);
+                free(verticesx);
+                free(verticesy);
             }break;
             case NK_COMMAND_POLYGON_FILLED: {
                 const struct nk_command_polygon_filled *p = (const struct nk_command_polygon_filled *)cmd;
                 int i;
-                float verticesx[p->point_count * 2];
-                float verticesy[p->point_count * 2];
+                short* verticesx = (short*)malloc((size_t)(p->point_count * 2) * sizeof(short)); // [p->point_count * 2] ;
+                short* verticesy = (short*)malloc((size_t)(p->point_count * 2) * sizeof(short)); // [p->point_count * 2] ;
                 for (i = 0; i < p->point_count; i++) {
-                    verticesx[i*2] = p->points[i].x;
-                    verticesy[(i*2) + 1] = p->points[i].y;
+                    verticesx[i * 2] = p->points[i].x;
+                    verticesy[(i * 2) + 1] = p->points[i].y;
                 }
-                sdl_draw_filled_polygon((const float*)&verticesx, (const float*)&verticesy,
-                (int)p->point_count, p->color);
+                sdl_draw_filled_polygon((const Sint16*)&verticesx, (const Sint16*)&verticesy, (int)p->point_count, p->color);
+                free(verticesx);
+                free(verticesy);
+
             }break;
             case NK_COMMAND_POLYLINE: {}break;
             case NK_COMMAND_TEXT: {
@@ -231,7 +241,7 @@ nk_sdl_native_render(void)
             case NK_COMMAND_CURVE: {}break;
             case NK_COMMAND_ARC: {
                 const struct nk_command_arc *a = (const struct nk_command_arc *)cmd;
-                sdl_draw_arc((float)a->cx, (float)a->cy, (float)a->r, a->a[0],a->a[1], a->color);
+                sdl_draw_arc((int)a->cx, (int)a->cy, (int)a->r, (int)a->a[0], (int)a->a[1], a->color);
             }break;
             case NK_COMMAND_IMAGE: {
                 const struct nk_command_image *i = (const struct nk_command_image *)cmd;
@@ -278,21 +288,22 @@ nk_sdl_native_font_get_text_width(nk_handle handle, float height, const char *te
        as nuklear uses variable size buffers and al_get_text_width doesn't
        accept a length, it infers length from null-termination
        (which is unsafe API design by allegro devs!) */
-    char tmp_buffer[len+1];
+    char* tmp_buffer = (char*)malloc((size_t)len * sizeof(char));
     strncpy((char*)&tmp_buffer, text, len);
     tmp_buffer[len] = '\0';
     
     int w, h;
     TTF_SizeText(font, tmp_buffer, &w, &h);
+    free(tmp_buffer);
     return (float)w;
 }
 
 NK_API struct nk_context*
 nk_sdl_native_init(SDL_Window *win, SDL_Renderer *renderer)
 {
-    struct nk_user_font *font = &sdl_native.user_font;
+    struct nk_user_font *font = sdl_native.user_font;
     font->userdata = nk_handle_ptr(sdl_native.ttf_font);
-    font->height = TTF_FontHeight(sdl_native.ttf_font);
+    font->height = (float)TTF_FontHeight(sdl_native.ttf_font);
     font->width = nk_sdl_native_font_get_text_width;
 
     sdl_native.win = win;
@@ -322,7 +333,7 @@ nk_sdl_native_font_stash_end(void)
     const void *image; int w, h;
     image = nk_font_atlas_bake(&sdl_native.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
     nk_sdl_native_device_upload_atlas(image, w, h);
-    nk_font_atlas_end(&sdl_native.atlas, nk_handle_id((int)sdl_native.ogl.font_tex), &sdl_native.ogl.null);
+    //nk_font_atlas_end(&sdl_native.atlas, nk_handle_id((int)sdl_native.ogl.font_tex), &sdl_native.ogl.null);
     if (sdl_native.atlas.default_font)
         nk_style_set_font(&sdl_native.ctx, &sdl_native.atlas.default_font->handle);
 }
