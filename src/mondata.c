@@ -931,7 +931,16 @@ struct alt_spl {
 /* figure out what type of monster a user-supplied string is specifying */
 int
 name_to_mon(in_str)
+const char* in_str;
+{
+    int fem = 0;
+    return name_to_mon_ex(in_str, &fem);
+}
+
+int
+name_to_mon_ex(in_str, fem_ptr)
 const char *in_str;
+int* fem_ptr;
 {
     /* Be careful.  We must check the entire string in case it was
      * something such as "ettin zombie corpse".  The calling routine
@@ -1100,7 +1109,13 @@ const char *in_str;
         }
 
         if (found)
+        {
+            if (j == 1 && fem_ptr && mntmp >= LOW_PM && mntmp < NUM_MONSTERS && mons[mntmp].mfemalename)
+                *fem_ptr = 0;
+            if (j == 2 && fem_ptr)
+                *fem_ptr = 1;
             break;
+        }
     }
 
     if (mntmp == NON_PM)

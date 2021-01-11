@@ -93,7 +93,7 @@ extern "C"
     }
 
     GLuint
-    gl2_image_load(const char* filename, int* x_ptr, int* y_ptr, int* n_ptr)
+    gl2_image_load(const char* filename, int* x_ptr, int* y_ptr, size_t* n_ptr)
     {
         if (!x_ptr || !y_ptr || !n_ptr)
             return 0;
@@ -103,7 +103,7 @@ extern "C"
         GLuint tex;
         int comps;
         unsigned char* data = stbi_load(filename, x_ptr, y_ptr, &comps, STBI_rgb_alpha);
-        *n_ptr = *x_ptr * *y_ptr * STBI_rgb_alpha;
+        *n_ptr = (size_t )(*x_ptr * *y_ptr * STBI_rgb_alpha);
         if (!data) die("failed to load image: %s", filename);
 
         glGenTextures(1, &tex);
@@ -120,14 +120,12 @@ extern "C"
 
 
     unsigned char*
-    image_load_from_resource(HINSTANCE hInstance, int resource_id, int* x_ptr, int* y_ptr, int* n_ptr)
+    image_load_from_resource(HINSTANCE hInstance, int resource_id, int* x_ptr, int* y_ptr, size_t* n_ptr)
     {
         if (!x_ptr || !y_ptr || !n_ptr)
             return 0;
 
         *x_ptr = 0, * y_ptr = 0;
-
-        GLuint tex;
         unsigned char* data = 0;
 
         HRSRC hResource = ::FindResource(hInstance, MAKEINTRESOURCE(resource_id), "PNG");

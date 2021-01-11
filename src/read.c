@@ -4084,7 +4084,7 @@ struct _create_particular_data *d;
         d->randmonst = TRUE;
         return TRUE;
     }
-    d->which = name_to_mon(bufp);
+    d->which = name_to_mon_ex(bufp, &d->fem);
     if (d->which >= LOW_PM)
         return TRUE; /* got one */
     d->monclass = name_to_monclass(bufp, &d->which);
