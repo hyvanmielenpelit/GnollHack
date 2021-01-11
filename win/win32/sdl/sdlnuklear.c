@@ -1541,10 +1541,13 @@ StartNuklearExample(HINSTANCE hInstance)
     bg.r = 0.10f, bg.g = 0.18f, bg.b = 0.24f, bg.a = 1.0f;
 
     glEnable(GL_TEXTURE_2D);
-    int x, y, n;
-    media.skin = image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST, &x, &y, &n);
-    media.skin_buttons = image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS, &x, &y, &n);
-    media.skin_window = image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW, &x, &y, &n);
+    
+    int x, y;
+    size_t n;
+
+    media.skin = gl2_image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST, &x, &y, &n);
+    media.skin_buttons = gl2_image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS, &x, &y, &n);
+    media.skin_window = gl2_image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW, &x, &y, &n);
     media.check = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 32, 15, 15));
     media.check_cursor = nk_subimage_id(media.skin, 512, 512, nk_rect(450, 34, 11, 11));
     media.option = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 64, 15, 15));
@@ -1928,6 +1931,19 @@ cleanup:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 int
 init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
 {
@@ -1950,9 +1966,12 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
         void* data = LockResource(mem);
         size_t len = SizeofResource(hInstance, res);
 
-        diablo = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 24, 0);
-        diablo30 = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 30, 0);
-        diablo36 = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 36, 0);
+        if (data)
+        {
+            diablo = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 24, 0);
+            diablo30 = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 30, 0);
+            diablo36 = nk_font_atlas_add_from_memory(atlas, data, (nk_size)len, 36, 0);
+        }
     }
 
     /*struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Roboto-Regular.ttf", 16, 0);*/
@@ -1976,12 +1995,14 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
 #endif
 
     bg.r = 0.10f, bg.g = 0.18f, bg.b = 0.24f, bg.a = 1.0f;
-    int x, y, n;
+    int x, y;
+    size_t n;
+
     glEnable(GL_TEXTURE_2D);
-    media.skin = image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST, &x, &y, &n);
-    media.skin_buttons = image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS, &x, &y, &n);
-    media.skin_window = image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW, &x, &y, &n);
-    media.skin_cursors = image_load_from_resource(hInstance, IDB_PNG_SDL_CURSORS, &x, &y, &n);
+    media.skin = gl2_image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST, &x, &y, &n);
+    media.skin_buttons = gl2_image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS, &x, &y, &n);
+    media.skin_window = gl2_image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW, &x, &y, &n);
+    media.skin_cursors = gl2_image_load_from_resource(hInstance, IDB_PNG_SDL_CURSORS, &x, &y, &n);
     media.check = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 32, 15, 15));
     media.check_cursor = nk_subimage_id(media.skin, 512, 512, nk_rect(450, 34, 11, 11));
     media.option = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 64, 15, 15));
@@ -2449,8 +2470,9 @@ nuklear_player_selection(PGHSdlApp sdlapp)
     int pet_x2 = 0;
     int pet_y2 = 0;
 
-    int tilemap_width, tilemap_height, tilemap_size;
-    GLuint pic = image_load_from_resource(sdlapp->hApp, IDB_PNG_TILES, &tilemap_width, &tilemap_height, &tilemap_size);
+    int tilemap_width, tilemap_height;
+    size_t tilemap_size;
+    GLuint pic = gl2_image_load_from_resource(sdlapp->hApp, IDB_PNG_TILES, &tilemap_width, &tilemap_height, &tilemap_size);
     struct nk_image nkimg;
     struct nk_image petimg, petimg2;
 
@@ -2920,8 +2942,9 @@ nuklear_splash_screen(PGHSdlApp sdlapp)
     char buf[BUFSZ];
     Sprintf(buf, "GnollHack %d.%d.%d", VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
 
-    int logo_width, logo_height, logo_size;
-    GLuint pic = image_load_from_resource(sdlapp->hApp, IDB_PNG_GNHLOGO, &logo_width, &logo_height, &logo_size);
+    int logo_width, logo_height;
+    size_t logo_size;
+    GLuint pic = gl2_image_load_from_resource(sdlapp->hApp, IDB_PNG_GNHLOGO, &logo_width, &logo_height, &logo_size);
     struct nk_image logoimg;
 
     int left_padding = 32;

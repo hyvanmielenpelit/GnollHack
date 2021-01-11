@@ -148,10 +148,9 @@ void sdl_draw_filled_polygon(const Sint16 *vx, const Sint16 *vy, int n, struct n
 
 void sdl_draw_image(const struct nk_command_image *image, int x, int y, int w, int h) 
 {
-    SDL_Rect rect = (SDL_Rect){ x, y, w, h };
     SDL_Texture *t = SDL_CreateTexture(sdl_native.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, w, h);
     SDL_SetTextureColorMod(t, image->col.r,image->col.g, image->col.b);
-    SDL_QueryTexture(t, (Uint32*)0, (int*)image->img.handle.ptr, &w, &h);
+    SDL_Rect rect = (SDL_Rect){ x, y, w, h };
     SDL_UpdateTexture(t, &rect, (const void*)image->img.handle.ptr, w * 4); // sizeof(*image->img.handle.ptr));
     SDL_RenderCopy(sdl_native.renderer, t, NULL, &rect);
 }
@@ -208,8 +207,8 @@ nk_sdl_native_render(void)
             case NK_COMMAND_POLYGON: {
                 const struct nk_command_polygon *p = (const struct nk_command_polygon*)cmd;
                 int i;
-                float* verticesx = (float*)malloc((size_t)(p->point_count * 2) * sizeof(float)); // [p->point_count * 2] ;
-                float* verticesy = (float*)malloc((size_t)(p->point_count * 2) * sizeof(float)); // [p->point_count * 2] ;
+                Sint16* verticesx = (Sint16*)malloc((size_t)(p->point_count * 2) * sizeof(Sint16)); // [p->point_count * 2] ;
+                Sint16* verticesy = (Sint16*)malloc((size_t)(p->point_count * 2) * sizeof(Sint16)); // [p->point_count * 2] ;
                 for (i = 0; i < p->point_count; i++) {
                     verticesx[i * 2] = p->points[i].x;
                     verticesy[(i * 2) + 1] = p->points[i].y;
@@ -221,8 +220,8 @@ nk_sdl_native_render(void)
             case NK_COMMAND_POLYGON_FILLED: {
                 const struct nk_command_polygon_filled *p = (const struct nk_command_polygon_filled *)cmd;
                 int i;
-                short* verticesx = (short*)malloc((size_t)(p->point_count * 2) * sizeof(short)); // [p->point_count * 2] ;
-                short* verticesy = (short*)malloc((size_t)(p->point_count * 2) * sizeof(short)); // [p->point_count * 2] ;
+                Sint16* verticesx = (Sint16*)malloc((size_t)(p->point_count * 2) * sizeof(Sint16)); // [p->point_count * 2] ;
+                Sint16* verticesy = (Sint16*)malloc((size_t)(p->point_count * 2) * sizeof(Sint16)); // [p->point_count * 2] ;
                 for (i = 0; i < p->point_count; i++) {
                     verticesx[i * 2] = p->points[i].x;
                     verticesy[(i * 2) + 1] = p->points[i].y;

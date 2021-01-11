@@ -49,7 +49,7 @@ extern "C"
 
 
     GLuint
-    image_load_from_resource(HINSTANCE hInstance, int resource_id, int *x_ptr, int *y_ptr, int *n_ptr)
+    gl2_image_load_from_resource(HINSTANCE hInstance, int resource_id, int *x_ptr, int *y_ptr, size_t *n_ptr)
     {
         if (!x_ptr || !y_ptr || !n_ptr)
             return 0;
@@ -71,23 +71,14 @@ extern "C"
         if (!pResourceData)
             return 0;
 
-        HGLOBAL m_hBuffer = ::GlobalAlloc(GMEM_MOVEABLE, imageSize);
-        if (m_hBuffer)
-        {
-            void* pBuffer = ::GlobalLock(m_hBuffer);
-            if (pBuffer)
-            {
-                CopyMemory(pBuffer, pResourceData, imageSize);
-                
-                data = stbi_load_from_memory((stbi_uc const*)pBuffer, imageSize, x_ptr, y_ptr, n_ptr, 0);
+        int comps;
+        data = stbi_load_from_memory((stbi_uc const*)pResourceData, imageSize, x_ptr, y_ptr, &comps, STBI_rgb_alpha);
 
-                ::GlobalUnlock(m_hBuffer);
-            }
-            ::GlobalFree(m_hBuffer);
-            m_hBuffer = NULL;
-        }
+        if (!data) 
+            die("failed to load image form memory");
 
-        if (!data) die("failed to load image form memory");
+        size_t memsize = (size_t)(*x_ptr * *y_ptr * STBI_rgb_alpha);
+        *n_ptr = memsize;
 
         glGenTextures(1, &tex);
         glBindTexture(GL_TEXTURE_2D, tex);
@@ -102,7 +93,7 @@ extern "C"
     }
 
     GLuint
-    image_load(const char* filename, int* x_ptr, int* y_ptr, int* n_ptr)
+    gl2_image_load(const char* filename, int* x_ptr, int* y_ptr, int* n_ptr)
     {
         if (!x_ptr || !y_ptr || !n_ptr)
             return 0;
@@ -110,7 +101,9 @@ extern "C"
         *x_ptr = 0, *y_ptr = 0;
 
         GLuint tex;
-        unsigned char* data = stbi_load(filename, x_ptr, y_ptr, n_ptr, 0);
+        int comps;
+        unsigned char* data = stbi_load(filename, x_ptr, y_ptr, &comps, STBI_rgb_alpha);
+        *n_ptr = *x_ptr * *y_ptr * STBI_rgb_alpha;
         if (!data) die("failed to load image: %s", filename);
 
         glGenTextures(1, &tex);
@@ -123,16 +116,47 @@ extern "C"
         //glGenerateMipmap(GL_TEXTURE_2D);
         stbi_image_free(data);
         return tex;
-        /*
-            struct nk_sdl_device *dev = &sdl.ogl;
-    glGenTextures(1, &dev->font_tex);
-    glBindTexture(GL_TEXTURE_2D, dev->font_tex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0,
-                GL_RGBA, GL_UNSIGNED_BYTE, image);
-*/
     }
+
+
+    unsigned char*
+    image_load_from_resource(HINSTANCE hInstance, int resource_id, int* x_ptr, int* y_ptr, int* n_ptr)
+    {
+        if (!x_ptr || !y_ptr || !n_ptr)
+            return 0;
+
+        *x_ptr = 0, * y_ptr = 0;
+
+        GLuint tex;
+        unsigned char* data = 0;
+
+        HRSRC hResource = ::FindResource(hInstance, MAKEINTRESOURCE(resource_id), "PNG");
+        if (!hResource)
+            return 0;
+
+        DWORD imageSize = ::SizeofResource(hInstance, hResource);
+        if (!imageSize)
+            return 0;
+
+        const void* pResourceData = ::LockResource(::LoadResource(hInstance, hResource));
+        if (!pResourceData)
+            return 0;
+
+        int comps;
+        data = stbi_load_from_memory((stbi_uc const*)pResourceData, imageSize, x_ptr, y_ptr, &comps, STBI_rgb_alpha);
+
+        if (!data)
+            return 0;
+
+        size_t memsize = (size_t)(*x_ptr * *y_ptr * STBI_rgb_alpha);
+        *n_ptr = memsize;
+        unsigned char* retptr = (unsigned char*)malloc(memsize);
+        CopyMemory(retptr, data, memsize);
+
+        stbi_image_free(data);
+        return retptr;
+    }
+
 
     SDL_Texture*
     sdl_texture_from_resource(SDL_Renderer* renderer, HINSTANCE hInstance, int resource_id)
@@ -148,25 +172,11 @@ extern "C"
         if (!imageSize)
             return 0;
 
-        const void* pResourceData = ::LockResource(::LoadResource(hInstance, hResource));
+        void* pResourceData = ::LockResource(::LoadResource(hInstance, hResource));
         if (!pResourceData)
             return 0;
 
-        HGLOBAL m_hBuffer = ::GlobalAlloc(GMEM_MOVEABLE, imageSize);
-        if (m_hBuffer)
-        {
-            void* pBuffer = ::GlobalLock(m_hBuffer);
-            if (pBuffer)
-            {
-                CopyMemory(pBuffer, pResourceData, imageSize);
-
-                img = IMG_LoadTexture_RW(renderer, SDL_RWFromMem(pBuffer, imageSize), 1);
-
-                ::GlobalUnlock(m_hBuffer);
-            }
-            ::GlobalFree(m_hBuffer);
-            m_hBuffer = NULL;
-        }
+        img = IMG_LoadTexture_RW(renderer, SDL_RWFromMem(pResourceData, imageSize), 1);
 
         return img;
     }
