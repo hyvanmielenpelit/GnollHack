@@ -1110,7 +1110,7 @@ int* fem_ptr;
 
         if (found)
         {
-            if (j == 1 && fem_ptr && mntmp >= LOW_PM && mntmp < NUM_MONSTERS && mons[mntmp].mfemalename)
+            if (j == 1 && fem_ptr && mntmp >= LOW_PM && mntmp < NUM_MONSTERS && mons[mntmp].mfemalename && *fem_ptr == -1)
                 *fem_ptr = 0;
             if (j == 2 && fem_ptr)
                 *fem_ptr = 1;
