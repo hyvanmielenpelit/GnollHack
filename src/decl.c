@@ -186,7 +186,7 @@ struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
     {"poison", CLR_GREEN, NO_ANIMATION},
     {"acid", CLR_YELLOW, NO_ANIMATION},
     {"death", CLR_GRAY, NO_ANIMATION},
-    {"petrification", CLR_BROWN, NO_ANIMATION},
+    {"petrification", CLR_BROWN, PETRIFICATION_RAY_ANIMATION},
 
     {"magic-breath", HI_ZAP, NO_ANIMATION},
     {"fire-breath", CLR_ORANGE, NO_ANIMATION},
