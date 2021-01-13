@@ -3468,24 +3468,10 @@ sdl_init_platform(VOID_ARGS)
     StartGdiplus();
 
     /* SDL */
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 800
-    SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
-    SDL_Init(SDL_INIT_VIDEO);
 
     PGHSdlApp sdlapp = GetGHSdlApp();
     PNHWinApp ghapp = GetNHApp();
 
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-    sdlapp->win = SDL_CreateWindow("GnollHack",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI  /* | SDL_WINDOW_FULLSCREEN_DESKTOP */ );
-    sdlapp->glContext = SDL_GL_CreateContext(sdlapp->win);
-    SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
 
     /* Nuklear */
     init_nuklear(ghapp->hApp, sdlapp);
@@ -3533,8 +3519,12 @@ sdl_init_platform(VOID_ARGS)
 void
 sdl_exit_platform(int status)
 {
-    (void)shutdown_nuklear(GetGHSdlApp());
-    SDL_Quit();
+    PGHSdlApp sdlapp = GetGHSdlApp();
+    if (sdlapp->running)
+    {
+        sdlapp->running = 0;
+        (void)shutdown_nuklear();
+    }
     StopGdiplus();
     (void)close_fmod_studio();
     gnollhack_exit(status);

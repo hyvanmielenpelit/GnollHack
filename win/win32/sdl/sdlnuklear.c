@@ -26,7 +26,6 @@
 
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <SDL_image.h>
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -37,17 +36,12 @@
 #define NK_INCLUDE_DEFAULT_FONT
 #define NK_IMPLEMENTATION
 #define NK_SDL_GL2_IMPLEMENTATION
-#define NK_SDL_GFX_IMPLEMENTATION
 #include "nuklear.h"
 #include "nuklear_sdl_gl2.h"
-#include "nuklear_sdl_gfx.h"
 #include "sdlmisc.h"
 #include "sdlproc.h"
 
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 800
-
-int shutdown_nuklear(PGHSdlApp sdlapp);
+int shutdown_nuklear();
 static boolean plselRandomize();
 
 /* ===============================================================
@@ -56,11 +50,19 @@ static boolean plselRandomize();
  *
  * ===============================================================*/
 
+SDL_GLContext glContext = 0;
+
 struct media {
     GLint skin;
     GLint skin_buttons;
     GLint skin_window;
     GLint skin_cursors;
+    /*
+    SDL_Surface* surface_skin;
+    SDL_Surface* surface_skin_buttons;
+    SDL_Surface* surface_skin_window;
+    SDL_Surface* surface_skin_cursors;
+    */
     struct nk_image menu;
     struct nk_image check;
     struct nk_image check_cursor;
@@ -1483,9 +1485,11 @@ StartNuklearExample(HINSTANCE hInstance)
 {
     /* Platform */
     SDL_Window* win;
-    SDL_GLContext glContext;
     int win_width, win_height;
     int running = 1;
+    
+    SDL_DisplayMode dm;
+    SDL_GetDesktopDisplayMode(0, &dm);
 
     /* SDL setup */
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
@@ -1497,7 +1501,7 @@ StartNuklearExample(HINSTANCE hInstance)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     win = SDL_CreateWindow("Demo",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
+        min(dm.w, 1200), min(dm.h, 800), SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
     glContext = SDL_GL_CreateContext(win);
     SDL_GetWindowSize(win, &win_width, &win_height);
 
@@ -1942,14 +1946,33 @@ cleanup:
 
 
 
-
-
 int
 init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
 {
+    SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
+    SDL_Init(SDL_INIT_VIDEO);
+
+    SDL_DisplayMode dm;
+    SDL_GetDesktopDisplayMode(0, &dm);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    sdl.win = SDL_CreateWindow("GnollHack",
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        min(1200, dm.w), min(800, dm.h), SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI  /* | SDL_WINDOW_FULLSCREEN_DESKTOP */);
+    //sdl_gnh.renderer = SDL_CreateRenderer(sdl_gnh.win, -1, 0);
+    glContext = SDL_GL_CreateContext(sdl.win);
+    SDL_GetWindowSize(sdl.win, &sdlapp->win_width, &sdlapp->win_height);
+
     /* GUI */
-    ctx = nk_sdl_init(sdlapp->win);
+    //ctx = nk_sdl_gnh_init(sdl_gnh.win, sdl_gnh.renderer);
+    ctx = nk_sdl_init(sdl.win);
     sdlapp->running = 1;
+
+    /* Create drawing surface */
+    //sdl_gnh.device.draw_surface = SDL_CreateRGBSurfaceWithFormat(0, sdlapp->win_width, sdlapp->win_height, 32, SDL_PIXELFORMAT_ARGB8888);
 
     /* Load Fonts: if none of these are loaded a default font will be used  */
     /* Load Cursor: if you uncomment cursor loading please hide the cursor */
@@ -2003,6 +2026,12 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
     media.skin_buttons = gl2_image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS, &x, &y, &n);
     media.skin_window = gl2_image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW, &x, &y, &n);
     media.skin_cursors = gl2_image_load_from_resource(hInstance, IDB_PNG_SDL_CURSORS, &x, &y, &n);
+    /*
+    media.surface_skin = sdl_surface_image_load_from_resource(hInstance, IDB_PNG_SDL_NUKLEAR_TEST, &x, &y, &n);
+    media.surface_skin_buttons = sdl_surface_image_load_from_resource(hInstance, IDB_PNG_SDL_BUTTONS, &x, &y, &n);
+    media.surface_skin_window = sdl_surface_image_load_from_resource(hInstance, IDB_PNG_SDL_WINDOW, &x, &y, &n);
+    media.surface_skin_cursors = sdl_surface_image_load_from_resource(hInstance, IDB_PNG_SDL_CURSORS, &x, &y, &n);
+    */
     media.check = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 32, 15, 15));
     media.check_cursor = nk_subimage_id(media.skin, 512, 512, nk_rect(450, 34, 11, 11));
     media.option = nk_subimage_id(media.skin, 512, 512, nk_rect(464, 64, 15, 15));
@@ -2060,16 +2089,27 @@ init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
 
 
 int
-shutdown_nuklear(PGHSdlApp sdlapp)
+shutdown_nuklear()
 {
-    if (sdlapp->running)
-    {
-        sdlapp->running = 0;
-        nk_sdl_shutdown();
-        SDL_GL_DeleteContext(sdlapp->glContext);
-        SDL_DestroyWindow(sdlapp->win);
-        SDL_Quit();
-    }
+#if 0
+    if(media.surface_skin)
+        SDL_FreeSurface(media.surface_skin);
+    if (media.surface_skin_buttons)
+        SDL_FreeSurface(media.surface_skin_buttons);
+    if (media.surface_skin_window)
+        SDL_FreeSurface(media.surface_skin_window);
+    if (media.surface_skin_cursors)
+        SDL_FreeSurface(media.surface_skin_cursors);
+
+    media.surface_skin = media.surface_skin_buttons = media.surface_skin_window = media.surface_skin_cursors = 0;
+#endif
+
+    nk_sdl_shutdown();
+
+    //SDL_DestroyRenderer(sdl_gnh.renderer);
+    SDL_DestroyWindow(sdl.win);
+    SDL_GL_DeleteContext(glContext);
+    SDL_Quit();
     return 1;
 }
 
@@ -2411,7 +2451,7 @@ nuklear_main_loop(PGHSdlApp sdlapp)
         /* ----------------------------------------- */
 
         /* Draw */
-        SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
+        SDL_GetWindowSize(sdl.win, &sdlapp->win_width, &sdlapp->win_height);
         glViewport(0, 0, sdlapp->win_width, sdlapp->win_height);
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(bg.r, bg.g, bg.b, bg.a);
@@ -2421,13 +2461,17 @@ nuklear_main_loop(PGHSdlApp sdlapp)
          * Make sure to either a.) save and restore or b.) reset your own state after
          * rendering the UI. */
         nk_sdl_render(NK_ANTI_ALIASING_ON);
-        SDL_GL_SwapWindow(sdlapp->win);
+        SDL_GL_SwapWindow(sdl.win);
     }
 
     return key;
 
 cleanup:
-    shutdown_nuklear(sdlapp);
+    if (sdlapp->running)
+    {
+        sdlapp->running = 0;
+        (void)shutdown_nuklear();
+    }
     return -1;
 }
 
@@ -2437,7 +2481,7 @@ nuklear_player_selection(PGHSdlApp sdlapp)
 {
     int win_width = 0, win_height = 0;
     int plsel_width = 840, plsel_height = 740;
-    SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
+    SDL_GetWindowSize(sdl.win, &win_width, &win_height);
     int plsel_x = max(0, (win_width - plsel_width) / 2);
     int plsel_y = max(0, (win_height - plsel_height) / 2);
 
@@ -2536,7 +2580,7 @@ nuklear_player_selection(PGHSdlApp sdlapp)
     boolean alignmentIsPressed[3] = { 0 };
     boolean alignmentWasPressed[3] = { 0 };
 
-    SDL_RaiseWindow(sdlapp->win);
+    SDL_RaiseWindow(sdl.win);
     //SDL_SetWindowInputFocus(sdlapp->win);
 
     while (sdlapp->running && res == 0)
@@ -2808,7 +2852,7 @@ nuklear_player_selection(PGHSdlApp sdlapp)
         nk_end(ctx);
 
         /* Draw */
-        SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
+        SDL_GetWindowSize(sdl.win, &sdlapp->win_width, &sdlapp->win_height);
         glViewport(0, 0, sdlapp->win_width, sdlapp->win_height);
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(bg.r, bg.g, bg.b, bg.a);
@@ -2818,7 +2862,7 @@ nuklear_player_selection(PGHSdlApp sdlapp)
          * Make sure to either a.) save and restore or b.) reset your own state after
          * rendering the UI. */
         nk_sdl_render(NK_ANTI_ALIASING_ON);
-        SDL_GL_SwapWindow(sdlapp->win);
+        SDL_GL_SwapWindow(sdl.win);
 
     }
     sdl_play_immediate_ghsound(sound_info);
@@ -2834,7 +2878,7 @@ nuklear_main_menu(PGHSdlApp sdlapp)
 {
     int win_width = 0, win_height = 0;
     int buttons_width = 400, buttons_height = 360;
-    SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
+    SDL_GetWindowSize(sdl.win, &win_width, &win_height);
     int buttons_x = max(0, (win_width - buttons_width) / 2);
     int buttons_y = max(0, (win_height - buttons_height) / 2);
     enum nuklear_main_menu_command res = MAIN_MENU_NONE;
@@ -2912,7 +2956,7 @@ nuklear_main_menu(PGHSdlApp sdlapp)
         /* ----------------------------------------- */
 
         /* Draw */
-        SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
+        SDL_GetWindowSize(sdl.win, &sdlapp->win_width, &sdlapp->win_height);
         glViewport(0, 0, sdlapp->win_width, sdlapp->win_height);
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(bg.r, bg.g, bg.b, bg.a);
@@ -2922,7 +2966,7 @@ nuklear_main_menu(PGHSdlApp sdlapp)
          * Make sure to either a.) save and restore or b.) reset your own state after
          * rendering the UI. */
         nk_sdl_render(NK_ANTI_ALIASING_ON);
-        SDL_GL_SwapWindow(sdlapp->win);
+        SDL_GL_SwapWindow(sdl.win);
     }
     sdl_play_immediate_ghsound(sound_info);
     return res;
@@ -2937,7 +2981,7 @@ boolean
 nuklear_splash_screen(PGHSdlApp sdlapp)
 {
     int win_width = 0, win_height = 0;
-    SDL_GetWindowSize(sdlapp->win, &win_width, &win_height);
+    SDL_GetWindowSize(sdl.win, &win_width, &win_height);
     int res = 0;
     char buf[BUFSZ];
     Sprintf(buf, "GnollHack %d.%d.%d", VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
@@ -3015,7 +3059,7 @@ nuklear_splash_screen(PGHSdlApp sdlapp)
         /* ----------------------------------------- */
 
         /* Draw */
-        SDL_GetWindowSize(sdlapp->win, &sdlapp->win_width, &sdlapp->win_height);
+        SDL_GetWindowSize(sdl.win, &sdlapp->win_width, &sdlapp->win_height);
         glViewport(0, 0, sdlapp->win_width, sdlapp->win_height);
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(bg.r, bg.g, bg.b, bg.a);
@@ -3025,7 +3069,7 @@ nuklear_splash_screen(PGHSdlApp sdlapp)
             * Make sure to either a.) save and restore or b.) reset your own state after
             * rendering the UI. */
         nk_sdl_render(NK_ANTI_ALIASING_ON);
-        SDL_GL_SwapWindow(sdlapp->win);
+        SDL_GL_SwapWindow(sdl.win);
     }
     sdl_play_immediate_ghsound(sound_info);
     return res == 1 ? 1 : 0;
@@ -3104,5 +3148,104 @@ static boolean plselRandomize()
     return fully_specified;
 }
 
+#if 0
+boolean
+nuklear_splash_screen2(PGHSdlApp sdlapp)
+{
+    int win_width = 0, win_height = 0;
+    SDL_GetWindowSize(sdl_gnh.win, &win_width, &win_height);
+    int res = 0;
+    char buf[BUFSZ];
+    Sprintf(buf, "GnollHack %d.%d.%d", VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
+
+    int logo_width, logo_height;
+    size_t logo_size;
+    SDL_Surface* pic = sdl_surface_image_load_from_resource(sdlapp->hApp, IDB_PNG_GNHLOGO, &logo_width, &logo_height, &logo_size);
+    struct nk_image logoimg;
+
+    int left_padding = 32;
+    int buttons_width = max(240, logo_width) + 2 * left_padding, buttons_height = 200 + logo_height;
+    int buttons_x = max(0, (win_width - buttons_width) / 2);
+    int buttons_y = max(0, (win_height - buttons_height) / 2);
+
+    struct ghsound_music_info music_info = { 0 };
+    music_info.ghsound = GHSOUND_MUSIC_SPLASH;
+    music_info.volume = 1.0f;
+    sdl_play_ghsound_music(music_info);
+
+    /* default button */
+    ctx->style.button.normal = nk_style_item_image(media.button);
+    ctx->style.button.hover = nk_style_item_image(media.button_hover);
+    ctx->style.button.active = nk_style_item_image(media.button_active);
+    ctx->style.button.border_color = nk_rgba(0, 0, 0, 0);
+    ctx->style.button.text_background = nk_rgba(0, 0, 0, 0);
+    ctx->style.button.text_normal = nk_rgb(180, 180, 180);
+    ctx->style.button.text_hover = nk_rgb(240, 240, 240);
+    ctx->style.button.text_active = nk_rgb(120, 120, 120);
+
+    /* default text */
+    ctx->style.text.color = nk_rgb(60, 60, 60);
+
+    /* window */
+    ctx->style.window.padding = nk_vec2((float)left_padding, (float)32);
+    ctx->style.window.border = 16;
+
+    struct ghsound_immediate_info sound_info = { 0 };
+    sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+    sound_info.volume = 1.0f;
+    sound_info.sound_type = IMMEDIATE_SOUND_UI;
+
+    while (sdlapp->running && res == MAIN_MENU_NONE)
+    {
+        /* Input */
+        SDL_Event evt;
+        nk_input_begin(ctx);
+        while (SDL_PollEvent(&evt))
+        {
+            if (evt.type == SDL_QUIT)
+                goto cleanup;
+            nk_sdl_handle_event(&evt);
+        }
+        nk_input_end(ctx);
+
+        /* GUI */
+        if (nk_begin(ctx, "Buttons", nk_rect((float)buttons_x, (float)buttons_y, (float)buttons_width, (float)buttons_height),
+            NK_WINDOW_NO_SCROLLBAR))
+        {
+            nk_layout_row_static(ctx, (float)logo_height, logo_width, 1);
+            logoimg = nk_image_ptr(pic);
+            nk_image(ctx, logoimg);
+
+            nk_layout_row_dynamic(ctx, 50, 1);
+            nk_label(ctx, buf, NK_TEXT_CENTERED);
+
+            nk_layout_row_dynamic(ctx, 44, 1);
+            if (nk_button_label(ctx, "OK"))
+            {
+                res = 1;
+            }
+
+        }
+        nk_end(ctx);
+
+        /* ----------------------------------------- */
+
+        /* Draw */
+        nk_sdl_render(NK_ANTI_ALIASING_ON);
+        SDL_Texture* tex = SDL_CreateTextureFromSurface(sdl_gnh.renderer, sdl_gnh.device.draw_surface);
+        SDL_RenderCopy(sdl_gnh.renderer, tex, NULL, NULL);
+        SDL_RenderPresent(sdl_gnh.renderer);
+        SDL_DestroyTexture(tex);
+
+    }
+    sdl_play_immediate_ghsound(sound_info);
+    SDL_FreeSurface(pic);
+    return res == 1 ? 1 : 0;
+
+cleanup:
+    SDL_FreeSurface(pic);
+    return 0;
+}
+#endif
 
  /* sdlnuklear.c */
