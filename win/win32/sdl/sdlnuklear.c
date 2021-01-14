@@ -3249,10 +3249,4 @@ struct media {
     }
     #endif
 
-struct nk_sdl*
-get_nuklear_sdl()
-{
-    return &sdl;
-}
-
  /* sdlnuklear.c */
