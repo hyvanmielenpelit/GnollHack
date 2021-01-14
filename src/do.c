@@ -4645,7 +4645,7 @@ boolean with_impact;
 	{
 		if (iflags.using_gui_sounds)
 		{
-			play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP, Underwater);
+			play_object_floor_sound_at_location(obj, OBJECT_SOUND_TYPE_DROP, u.ux, u.uy, Underwater);
 			delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
 		}
 		return;

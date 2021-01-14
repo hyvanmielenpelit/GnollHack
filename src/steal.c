@@ -733,7 +733,7 @@ boolean verbosely;
     /* obj_no_longer_held(obj); -- done by place_object */
     if (verbosely)
     {
-        play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP, is_swimmer(mon->data) && is_pool(omx, omy));
+        play_object_floor_sound_at_location(obj, OBJECT_SOUND_TYPE_DROP, omx, omy, is_swimmer(mon->data) && is_pool(omx, omy));
 
         if(cansee(omx, omy))
             pline("%s drops %s.", Monnam(mon), distant_name(obj, doname));
