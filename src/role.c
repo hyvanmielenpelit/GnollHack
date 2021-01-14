@@ -2749,7 +2749,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN)
             return TRUE;
@@ -2811,7 +2811,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN)
             return TRUE;

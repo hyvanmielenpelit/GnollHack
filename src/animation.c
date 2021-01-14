@@ -554,6 +554,28 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       HUMAN_MONK_MALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "human-monk-female-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_MONK_FEMALE_ATTACK_ANIMATION_TILES,
+      HUMAN_MONK_FEMALE_ATTACK_ANIMATION_FRAMES, HUMAN_MONK_FEMALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      3, 6,
+      HUMAN_MONK_FEMALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-monk-female-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_MONK_FEMALE_KICK_ANIMATION_TILES,
+      HUMAN_MONK_FEMALE_KICK_ANIMATION_FRAMES, HUMAN_MONK_FEMALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      2, 5,
+      HUMAN_MONK_FEMALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "human-samurai-male-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_SAMURAI_MALE_ATTACK_ANIMATION_TILES,
       HUMAN_SAMURAI_MALE_ATTACK_ANIMATION_FRAMES, HUMAN_SAMURAI_MALE_ATTACK_ANIMATION_OFF,
       1,
@@ -907,6 +929,17 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
     },
     { "petrification-ray-animation", ANIMATION_TYPE_ZAP, PETRIFICATION_RAY_ANIMATION_TILES,
       PETRIFICATION_RAY_ANIMATION_FRAMES, PETRIFICATION_RAY_ANIMATION_OFF,
+      NUM_ZAP_CHARS,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 6, 7, 6, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 },
+      0, 4,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "death-ray-animation", ANIMATION_TYPE_ZAP, DEATH_RAY_ANIMATION_TILES,
+      DEATH_RAY_ANIMATION_FRAMES, DEATH_RAY_ANIMATION_OFF,
       NUM_ZAP_CHARS,
       1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
@@ -1428,6 +1461,22 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { "human-monk-male-kick-enlargement",
         HUMAN_MONK_MALE_KICK_ANIMATION_TILES, HUMAN_MONK_MALE_KICK_ANIMATION_FRAMES,
         HUMAN_MONK_MALE_KICK_ENLARGEMENT_TILES, HUMAN_MONK_MALE_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-monk-female-attack-enlargement",
+        HUMAN_MONK_FEMALE_ATTACK_ANIMATION_TILES, HUMAN_MONK_FEMALE_ATTACK_ANIMATION_FRAMES,
+        HUMAN_MONK_FEMALE_ATTACK_ENLARGEMENT_TILES, HUMAN_MONK_FEMALE_ATTACK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-monk-female-kick-enlargement",
+        HUMAN_MONK_FEMALE_KICK_ANIMATION_TILES, HUMAN_MONK_FEMALE_KICK_ANIMATION_FRAMES,
+        HUMAN_MONK_FEMALE_KICK_ENLARGEMENT_TILES, HUMAN_MONK_FEMALE_KICK_ENLARGEMENT_OFF,
         3, 1, 0,
         { -1, -1, -1, 0, 1 },
         { 0, 0, 0, 0, 0 },
@@ -3507,6 +3556,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return DWARF_KNIGHT_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_MONK_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_MONK_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_SAMURAI_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
@@ -3569,6 +3620,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         //    return DWARF_KNIGHT_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_MONK_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_MONK_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_SAMURAI_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
