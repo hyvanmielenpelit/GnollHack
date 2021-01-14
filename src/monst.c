@@ -846,7 +846,7 @@ NEARDATA struct permonst mons[] = {
 		M2_TENTACLED_ONE | M2_HOSTILE | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, M4_NONE, M5_NONE, 
 		20, CLR_BRIGHT_MAGENTA, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("tentacled one lich", None, "spell-casting undead octopus-headed humanoid that uses psionics and eats brains", None, None, S_HUMANOID, LVL(18, 12, -5, 18, 95, -16),
+    MON("death flayer", None, "spell-casting undead octopus-headed humanoid that uses psionics and eats brains", None, None, S_HUMANOID, LVL(18, 12, -5, 18, 95, -16),
         (G_HELL | G_GENO | G_NOCORPSE | G_NOMINES | 1),
         A(ATTK(AT_TUCH, AD_COLD, 3, 8, 0, 0), ATTK(AT_TENT, AD_DRIN, 2, 1, 0, -4),
           ATTK(AT_TENT, AD_DRIN, 2, 1, 0, -4), ATTK(AT_TENT, AD_DRIN, 2, 1, 0, -4),

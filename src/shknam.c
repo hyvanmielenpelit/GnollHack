@@ -859,35 +859,35 @@ int origtype;
     boolean master_lich_gone = (mvitals[PM_MASTER_LICH].mvflags & G_GONE);
     boolean demilich_gone = (mvitals[PM_DEMILICH].mvflags & G_GONE);
     boolean lich_gone = (mvitals[PM_LICH].mvflags & G_GONE);
-    boolean illithilich_gone = (mvitals[PM_TENTACLED_ONE_LICH].mvflags & G_GONE);
+    boolean death_flayer_gone = (mvitals[PM_DEATH_FLAYER].mvflags & G_GONE);
     boolean ghost_gone = (mvitals[PM_GHOST].mvflags & G_GONE);
     boolean vampire_mage_gone = (mvitals[PM_VAMPIRE_MAGE].mvflags & G_GONE);
     boolean all_liches_gone = arch_lich_gone && master_lich_gone && demilich_gone && lich_gone;
 
     if (arch_lich_gone && all_liches_gone && vampire_mage_gone && ghost_gone)
         shkomontype = PM_SHOPKEEPER;
-    else if (all_liches_gone && illithilich_gone && vampire_mage_gone)
+    else if (all_liches_gone && death_flayer_gone && vampire_mage_gone)
         shkomontype = PM_GHOST;
-    else if (all_liches_gone && illithilich_gone && !ghost_gone)
+    else if (all_liches_gone && death_flayer_gone && !ghost_gone)
         shkomontype = !rn2(2) ? PM_VAMPIRE_MAGE : PM_GHOST;
-    else if (all_liches_gone && illithilich_gone)
+    else if (all_liches_gone && death_flayer_gone)
         shkomontype = PM_VAMPIRE_MAGE;
     else if (all_liches_gone)
-        shkomontype = !rn2(2) ? PM_TENTACLED_ONE_LICH : PM_VAMPIRE_MAGE;
-    else if (!arch_lich_gone && !illithilich_gone)
-        shkomontype = !rn2(2) ? PM_TENTACLED_ONE_LICH : PM_ARCH_LICH;
+        shkomontype = !rn2(2) ? PM_DEATH_FLAYER : PM_VAMPIRE_MAGE;
+    else if (!arch_lich_gone && !death_flayer_gone)
+        shkomontype = !rn2(2) ? PM_DEATH_FLAYER : PM_ARCH_LICH;
     else if (!arch_lich_gone)
         shkomontype = PM_ARCH_LICH;
-    else if (!master_lich_gone && !illithilich_gone)
-        shkomontype = !rn2(2) ? PM_TENTACLED_ONE_LICH : PM_MASTER_LICH;
+    else if (!master_lich_gone && !death_flayer_gone)
+        shkomontype = !rn2(2) ? PM_DEATH_FLAYER : PM_MASTER_LICH;
     else if (!arch_lich_gone)
         shkomontype = PM_MASTER_LICH;
-    else if (!demilich_gone && !illithilich_gone)
-        shkomontype = !rn2(2) ? PM_TENTACLED_ONE_LICH : PM_DEMILICH;
+    else if (!demilich_gone && !death_flayer_gone)
+        shkomontype = !rn2(2) ? PM_DEATH_FLAYER : PM_DEMILICH;
     else if (!demilich_gone)
         shkomontype = PM_DEMILICH;
-    else if (!lich_gone && !illithilich_gone)
-        shkomontype = !rn2(2) ? PM_TENTACLED_ONE_LICH : PM_LICH;
+    else if (!lich_gone && !death_flayer_gone)
+        shkomontype = !rn2(2) ? PM_DEATH_FLAYER : PM_LICH;
     else if (!lich_gone)
         shkomontype = PM_LICH;
 

@@ -208,7 +208,7 @@ register struct monst* mtmp;
 	if (is_gnome(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
 		christen_monst(mtmp, upstart(randomize_gnome_name(mnamebuf)));
 
-    if (is_undead(mtmp->data) && (mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_TENTACLED_ONE_LICH] || mtmp->data == &mons[PM_VAMPIRE_MAGE]) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
+    if (is_undead(mtmp->data) && (mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_DEATH_FLAYER] || mtmp->data == &mons[PM_VAMPIRE_MAGE]) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_undead_spellcaster_name(mnamebuf)));
 
     if (mtmp->data == &mons[PM_ANGEL] || mtmp->data == &mons[PM_ALEAX] || mtmp->data == &mons[PM_ARCHON])
@@ -1422,7 +1422,7 @@ register struct monst *mtmp;
 	case S_HUMANOID:
 		//Some spellbooks
 		n = 0;
-		if (ptr == &mons[PM_TENTACLED_ONE_LICH])
+		if (ptr == &mons[PM_DEATH_FLAYER])
 		{
 			//Bracers
 			if (!rn2(7))
