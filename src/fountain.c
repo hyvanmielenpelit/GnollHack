@@ -460,7 +460,7 @@ drinkfountain()
         case 25: /* See invisible */
 			pline_The("water is tasteless.");
 			if (Blind) {
-                if (Invisible) {
+                if (Invisib) {
                     You("feel transparent.");
                 } else {
                     You("feel very self-conscious.");

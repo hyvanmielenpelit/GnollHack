@@ -21,16 +21,6 @@ NK_API int                  nk_sdl_handle_event(SDL_Event *evt);
 NK_API void                 nk_sdl_render(enum nk_anti_aliasing);
 NK_API void                 nk_sdl_shutdown(void);
 
-#endif
-/*
- * ==============================================================
- *
- *                          IMPLEMENTATION
- *
- * ===============================================================
- */
-#ifdef NK_SDL_GL2_IMPLEMENTATION
-
 struct nk_sdl_device {
     struct nk_buffer cmds;
     struct nk_draw_null_texture null;
@@ -43,12 +33,24 @@ struct nk_sdl_vertex {
     nk_byte col[4];
 };
 
-static struct nk_sdl {
-    SDL_Window *win;
+struct nk_sdl {
+    SDL_Window* win;
     struct nk_sdl_device ogl;
     struct nk_context ctx;
     struct nk_font_atlas atlas;
-} sdl;
+};
+
+#endif
+/*
+ * ==============================================================
+ *
+ *                          IMPLEMENTATION
+ *
+ * ===============================================================
+ */
+#ifdef NK_SDL_GL2_IMPLEMENTATION
+
+static struct nk_sdl sdl;
 
 NK_INTERN void
 nk_sdl_device_upload_atlas(const void *image, int width, int height)

@@ -3690,6 +3690,8 @@ E boolean FDECL(increase_mon_property_verbosely, (struct monst*, int, int));
 E boolean FDECL(increase_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
 E boolean FDECL(nonadditive_increase_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
 E boolean FDECL(set_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
+E int FDECL(count_unworn_items, (struct obj*));
+
 
 /* ### write.c ### */
 

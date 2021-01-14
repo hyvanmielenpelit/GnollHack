@@ -94,6 +94,7 @@ enum game_ui_status_mark_types
     STATUS_MARK_SPEC_USED,
     STATUS_MARK_TRAPPED,
     STATUS_MARK_USTUCK,
+    STATUS_MARK_INVENTORY,
     MAX_STATUS_MARKS
 };
 

@@ -3905,7 +3905,7 @@ int final;
                 (adorn > 0) ? "more " : (adorn < 0) ? "less " : "");
         you_are(buf, from_what(ADORNED));
     }
-    if (Invisible)
+    if (Invisib)
         you_are("invisible", from_what(INVISIBILITY));
 	if (Blocks_Invisibility)
 		you_are("blocking invisibility ", from_what(BLOCKS_INVISIBILITY));

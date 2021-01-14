@@ -2407,4 +2407,21 @@ struct obj *obj;
 
     return 0;
 }
+
+int
+count_unworn_items(struct obj* inv)
+{
+	if (!inv)
+		return 0;
+
+	int cnt = 0;
+	for (struct obj* otmp = inv; otmp; otmp = otmp->nobj)
+	{
+		if (otmp->owornmask == 0UL)
+		{
+			cnt++;
+		}
+	}
+	return cnt;
+}
 /*worn.c*/

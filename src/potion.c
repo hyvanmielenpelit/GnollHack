@@ -1019,7 +1019,7 @@ struct obj *otmp;
     case POT_SEE_INVISIBLE: /* tastes like fruit juice in Rogue */
     case POT_FRUIT_JUICE: 
     {
-        int msg = Invisible && !Blind;
+        int msg = Invisib && !Blind;
 
         unkn++;
         if (otmp->cursed)

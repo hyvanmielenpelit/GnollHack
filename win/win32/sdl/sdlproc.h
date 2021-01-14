@@ -50,6 +50,7 @@
 typedef struct sdl_ghwindow_app {
     /* Platform */
     HINSTANCE hApp;
+    SDL_Window* win;
     int win_width, win_height;
     int running;
     HBITMAP bmpTiles;
@@ -163,5 +164,6 @@ void sdl_apply_window_style(HWND hwnd);
 
 void sdl_init_platform(VOID_ARGS);
 void sdl_exit_platform(int);
+
 
 #endif /* SDLPROC_H */

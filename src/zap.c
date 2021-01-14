@@ -4749,7 +4749,7 @@ register struct obj *obj;
 	}
 	case SPE_DETECT_UNSEEN:
 	{
-		int msg = Invisible && !Blind;
+		int msg = Invisib && !Blind;
 		int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
 		incr_itimeout(&HSee_invisible, duration);
 		set_mimic_blocking(); /* do special mimic handling */

@@ -459,7 +459,7 @@ char *buf, *monbuf;
            (even if you could also see yourself via other means).
            Sensing self while blind or swallowed is treated as if it
            were by normal vision (cf canseeself()). */
-        if ((Invisible || u.uundetected) && !Blind
+        if ((Invisib || u.uundetected) && !Blind
             && !(u.uswallow || iflags.save_uswallow))
         {
             unsigned how = 0;

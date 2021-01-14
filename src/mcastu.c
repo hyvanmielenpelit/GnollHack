@@ -332,7 +332,7 @@ boolean foundyou;
               canspotmon(mtmp) ? Monnam(mtmp) : "Something",
               is_undirected_spell(mattk->adtyp, spellnum)
                   ? ""
-                  : (Invisible && !has_see_invisible(mtmp)
+                  : (Invisib && !has_see_invisible(mtmp)
                      && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                         ? " at a spot near you"
                         : (Displaced
@@ -508,7 +508,7 @@ int spellnum;
 
             /* messages not quite right if plural monsters created but
                only a single monster is seen */
-            if (Invisible && !has_see_invisible(mtmp)
+            if (Invisib && !has_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                 pline("%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
@@ -536,7 +536,7 @@ int spellnum;
 
             /* messages not quite right if plural monsters created but
                only a single monster is seen */
-            if (Invisible && !has_see_invisible(mtmp)
+            if (Invisib && !has_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
                 pline("%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
@@ -828,7 +828,7 @@ int spellnum;
             fmt = "%s casts at a clump of sticks, but nothing happens.";
         else if (let == S_SNAKE)
             fmt = (summon_quan == 1 ? "%s transforms a stick of wood into a snake!" : "%s transforms a clump of sticks into snakes!");
-        else if (Invisible && !has_see_invisible(mtmp)
+        else if (Invisib && !has_see_invisible(mtmp)
                  && (mtmp->mux != u.ux || mtmp->muy != u.uy))
             fmt = (summon_quan == 1 ? "%s summons an insect around a spot near you!" : "%s summons insects around a spot near you!");
         else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))

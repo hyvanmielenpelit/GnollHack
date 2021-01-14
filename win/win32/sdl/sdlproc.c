@@ -3472,7 +3472,6 @@ sdl_init_platform(VOID_ARGS)
     PGHSdlApp sdlapp = GetGHSdlApp();
     PNHWinApp ghapp = GetNHApp();
 
-
     /* Nuklear */
     init_nuklear(ghapp->hApp, sdlapp);
 

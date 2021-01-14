@@ -16,6 +16,9 @@
     <SdlImageDir>$(RootDir)ext\sdl_image\</SdlImageDir>
     <SdlGfxDir>$(RootDir)ext\sdl_gfx\</SdlGfxDir>
     <SdlTtfDir>$(RootDir)ext\sdl_ttf\</SdlTtfDir>
+    <BgfxDir>$(RootDir)ext\bgfx\</BgfxDir>
+    <BxDir>$(RootDir)ext\bx\</BxDir>
+    <BimgDir>$(RootDir)ext\bimg\</BimgDir>
     -->
     <NuklearDir>$(RootDir)ext\nuklear\</NuklearDir>
     <StbDir>$(RootDir)ext\stb\</StbDir>

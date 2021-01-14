@@ -4094,6 +4094,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     if (mtmp == u.ustuck && !u.uswallow)
                                         display_this_status_mark = TRUE;
                                     break;
+                                case STATUS_MARK_INVENTORY:
+                                    if (!loc_is_you && ispet && count_unworn_items(mtmp->minvent) > 0)
+                                        display_this_status_mark = TRUE;
+                                    break;
                                 default:
                                     break;
                                 }

@@ -16,6 +16,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "resource.h"
+#include "hack.h"
+#include "patchlevel.h"
+
  /* nuklear - 1.32.0 - public domain */
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +33,6 @@
 
 #include <SDL.h>
 #include <SDL_opengl.h>
-
 
 extern "C"
 {
@@ -153,8 +156,7 @@ extern "C"
         stbi_image_free(data);
         return retptr;
     }
-
-
+ 
 
 }
 

@@ -138,7 +138,7 @@ boolean on;
            we'll notice that monsters have trouble spotting the hero */
         && ((!Blind         /* see anything */
              && !u.uswallow /* see surroundings */
-             && !Invisible) /* see self */
+             && !Invisib) /* see self */
             /* actively sensing nearby monsters via telepathy or extended
                monster detection overrides vision considerations because
                hero also senses self in this situation */

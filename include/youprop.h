@@ -401,7 +401,7 @@
 #define HInvis u.uprops[INVISIBILITY].intrinsic
 #define EInvis u.uprops[INVISIBILITY].extrinsic
 #define Invis ((HInvis || EInvis) && !Blocks_Invisibility)
-#define Invisible (Invis && !See_invisible)
+#define Invisib (Invis && !See_invisible)
 /* Note: invisibility also hides inventory and steed */
 
 #define EDisplaced u.uprops[DISPLACED].extrinsic
