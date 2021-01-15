@@ -32,7 +32,13 @@
 #include <time.h>
 
 #include <SDL.h>
+#ifdef GNH_GL2_GRAPHICS
 #include <SDL_opengl.h>
+#endif
+#ifdef GNH_GLES2_GRAPHICS
+#include <SDL_opengles2.h>
+#endif
+
 
 extern "C"
 {

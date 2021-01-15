@@ -5,7 +5,12 @@
  * Copyright (c) Janne Gustafsson, 2021
  */
 
+#ifdef GNH_GL2_GRAPHICS
 #pragma comment( lib, "OpenGL32" )          
+#endif
+#ifdef GNH_GLES2_GRAPHICS
+#pragma comment( lib, "OpenGLES2" )  // Put relevant OpenGLES2 library here        
+#endif
 
 #include "win10.h"
 #include <windows.h>
@@ -26,7 +31,12 @@
 #include <time.h>
 
 #include <SDL.h>
+#ifdef GNH_GL2_GRAPHICS
 #include <SDL_opengl.h>
+#endif
+#ifdef GNH_GLES2_GRAPHICS
+#include <SDL_opengles2.h>
+#endif
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -36,11 +46,24 @@
 #define NK_INCLUDE_FONT_BAKING
 #define NK_INCLUDE_DEFAULT_FONT
 #define NK_IMPLEMENTATION
-#define NK_SDL_GL2_IMPLEMENTATION
 #include "nuklear.h"
+
+#ifdef GNH_GL2_GRAPHICS
+#define NK_SDL_GL2_IMPLEMENTATION
 #include "nuklear_sdl_gl2.h"
+#endif
+
+#ifdef GNH_GLES2_GRAPHICS
+#define NK_SDL_GLES2_IMPLEMENTATION
+#include "nuklear_sdl_gles2.h"
+#endif
+
 #include "sdlmisc.h"
 #include "sdlproc.h"
+
+#define MAX_VERTEX_MEMORY 512 * 1024
+#define MAX_ELEMENT_MEMORY 128 * 1024
+
 
 int shutdown_nuklear();
 static boolean plselRandomize();
@@ -1921,7 +1944,14 @@ struct media {
              * defaults everything back into a default state.
              * Make sure to either a.) save and restore or b.) reset your own state after
              * rendering the UI. */
+
+#ifdef NK_SDL_GL2_IMPLEMENTATION
             nk_sdl_render(NK_ANTI_ALIASING_ON);
+#endif
+#ifdef NK_SDL_GLES2_IMPLEMENTATION
+            nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
+#endif
+
             SDL_GL_SwapWindow(win);
         }
 
@@ -1951,21 +1981,44 @@ struct media {
     init_nuklear(HINSTANCE hInstance, PGHSdlApp sdlapp)
     {
         SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
-        SDL_Init(SDL_INIT_VIDEO);
 
+#ifdef NK_SDL_GL2_IMPLEMENTATION
+        SDL_Init(SDL_INIT_VIDEO);
+#endif
+#ifdef NK_SDL_GLES2_IMPLEMENTATION
+        //No SDL initialization on GLES
+#endif
+        
         SDL_DisplayMode dm;
         SDL_GetDesktopDisplayMode(0, &dm);
+        int sdl_win_width = min(1200, dm.w);
+        int sdl_win_height = min(800, dm.h);
+
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+#ifdef NK_SDL_GL2_IMPLEMENTATION
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+#endif
+#ifdef NK_SDL_GLES2_IMPLEMENTATION
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+#endif
+
         sdlapp->win = sdl.win = SDL_CreateWindow("GnollHack",
             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            min(1200, dm.w), min(800, dm.h), SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI  /* | SDL_WINDOW_FULLSCREEN_DESKTOP */);
-        //sdl_gnh.renderer = SDL_CreateRenderer(sdl_gnh.win, -1, 0);
-        glContext = SDL_GL_CreateContext(sdl.win);
+            sdl_win_width, sdl_win_height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI  /* | SDL_WINDOW_FULLSCREEN_DESKTOP */);
         SDL_GetWindowSize(sdl.win, &sdlapp->win_width, &sdlapp->win_height);
+        glContext = SDL_GL_CreateContext(sdl.win);
+
+#ifdef NK_SDL_GLES2_IMPLEMENTATION
+        /* OpenGL setup */
+        glViewport(0, 0, sdl_win_width, sdl_win_height);
+#endif
 
         /* GUI */
         //ctx = nk_sdl_gnh_init(sdl_gnh.win, sdl_gnh.renderer);
@@ -2092,22 +2145,7 @@ struct media {
     int
     shutdown_nuklear()
     {
-    #if 0
-        if(media.surface_skin)
-            SDL_FreeSurface(media.surface_skin);
-        if (media.surface_skin_buttons)
-            SDL_FreeSurface(media.surface_skin_buttons);
-        if (media.surface_skin_window)
-            SDL_FreeSurface(media.surface_skin_window);
-        if (media.surface_skin_cursors)
-            SDL_FreeSurface(media.surface_skin_cursors);
-
-        media.surface_skin = media.surface_skin_buttons = media.surface_skin_window = media.surface_skin_cursors = 0;
-    #endif
-
         nk_sdl_shutdown();
-
-        //SDL_DestroyRenderer(sdl_gnh.renderer);
         SDL_DestroyWindow(sdl.win);
         SDL_GL_DeleteContext(glContext);
         SDL_Quit();
@@ -2461,7 +2499,14 @@ struct media {
              * defaults everything back into a default state.
              * Make sure to either a.) save and restore or b.) reset your own state after
              * rendering the UI. */
+
+#ifdef NK_SDL_GL2_IMPLEMENTATION
             nk_sdl_render(NK_ANTI_ALIASING_ON);
+#endif
+#ifdef NK_SDL_GLES2_IMPLEMENTATION
+            nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
+#endif
+
             SDL_GL_SwapWindow(sdl.win);
         }
 
@@ -2862,7 +2907,14 @@ struct media {
              * defaults everything back into a default state.
              * Make sure to either a.) save and restore or b.) reset your own state after
              * rendering the UI. */
+
+#ifdef NK_SDL_GL2_IMPLEMENTATION
             nk_sdl_render(NK_ANTI_ALIASING_ON);
+#endif
+#ifdef NK_SDL_GLES2_IMPLEMENTATION
+            nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
+#endif
+
             SDL_GL_SwapWindow(sdl.win);
 
         }
@@ -2966,7 +3018,14 @@ struct media {
              * defaults everything back into a default state.
              * Make sure to either a.) save and restore or b.) reset your own state after
              * rendering the UI. */
+
+#ifdef NK_SDL_GL2_IMPLEMENTATION
             nk_sdl_render(NK_ANTI_ALIASING_ON);
+#endif
+#ifdef NK_SDL_GLES2_IMPLEMENTATION
+            nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
+#endif
+
             SDL_GL_SwapWindow(sdl.win);
         }
         sdl_play_immediate_ghsound(sound_info);
@@ -3069,7 +3128,14 @@ struct media {
                 * defaults everything back into a default state.
                 * Make sure to either a.) save and restore or b.) reset your own state after
                 * rendering the UI. */
+
+#ifdef NK_SDL_GL2_IMPLEMENTATION
             nk_sdl_render(NK_ANTI_ALIASING_ON);
+#endif
+#ifdef NK_SDL_GLES2_IMPLEMENTATION
+            nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
+#endif
+
             SDL_GL_SwapWindow(sdl.win);
         }
         sdl_play_immediate_ghsound(sound_info);
@@ -3149,104 +3215,5 @@ struct media {
         return fully_specified;
     }
 
-    #if 0
-    boolean
-    nuklear_splash_screen2(PGHSdlApp sdlapp)
-    {
-        int win_width = 0, win_height = 0;
-        SDL_GetWindowSize(sdl_gnh.win, &win_width, &win_height);
-        int res = 0;
-        char buf[BUFSZ];
-        Sprintf(buf, "GnollHack %d.%d.%d", VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);
-
-        int logo_width, logo_height;
-        size_t logo_size;
-        SDL_Surface* pic = sdl_surface_image_load_from_resource(sdlapp->hApp, IDB_PNG_GNHLOGO, &logo_width, &logo_height, &logo_size);
-        struct nk_image logoimg;
-
-        int left_padding = 32;
-        int buttons_width = max(240, logo_width) + 2 * left_padding, buttons_height = 200 + logo_height;
-        int buttons_x = max(0, (win_width - buttons_width) / 2);
-        int buttons_y = max(0, (win_height - buttons_height) / 2);
-
-        struct ghsound_music_info music_info = { 0 };
-        music_info.ghsound = GHSOUND_MUSIC_SPLASH;
-        music_info.volume = 1.0f;
-        sdl_play_ghsound_music(music_info);
-
-        /* default button */
-        ctx->style.button.normal = nk_style_item_image(media.button);
-        ctx->style.button.hover = nk_style_item_image(media.button_hover);
-        ctx->style.button.active = nk_style_item_image(media.button_active);
-        ctx->style.button.border_color = nk_rgba(0, 0, 0, 0);
-        ctx->style.button.text_background = nk_rgba(0, 0, 0, 0);
-        ctx->style.button.text_normal = nk_rgb(180, 180, 180);
-        ctx->style.button.text_hover = nk_rgb(240, 240, 240);
-        ctx->style.button.text_active = nk_rgb(120, 120, 120);
-
-        /* default text */
-        ctx->style.text.color = nk_rgb(60, 60, 60);
-
-        /* window */
-        ctx->style.window.padding = nk_vec2((float)left_padding, (float)32);
-        ctx->style.window.border = 16;
-
-        struct ghsound_immediate_info sound_info = { 0 };
-        sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
-        sound_info.volume = 1.0f;
-        sound_info.sound_type = IMMEDIATE_SOUND_UI;
-
-        while (sdlapp->running && res == MAIN_MENU_NONE)
-        {
-            /* Input */
-            SDL_Event evt;
-            nk_input_begin(ctx);
-            while (SDL_PollEvent(&evt))
-            {
-                if (evt.type == SDL_QUIT)
-                    goto cleanup;
-                nk_sdl_handle_event(&evt);
-            }
-            nk_input_end(ctx);
-
-            /* GUI */
-            if (nk_begin(ctx, "Buttons", nk_rect((float)buttons_x, (float)buttons_y, (float)buttons_width, (float)buttons_height),
-                NK_WINDOW_NO_SCROLLBAR))
-            {
-                nk_layout_row_static(ctx, (float)logo_height, logo_width, 1);
-                logoimg = nk_image_ptr(pic);
-                nk_image(ctx, logoimg);
-
-                nk_layout_row_dynamic(ctx, 50, 1);
-                nk_label(ctx, buf, NK_TEXT_CENTERED);
-
-                nk_layout_row_dynamic(ctx, 44, 1);
-                if (nk_button_label(ctx, "OK"))
-                {
-                    res = 1;
-                }
-
-            }
-            nk_end(ctx);
-
-            /* ----------------------------------------- */
-
-            /* Draw */
-            nk_sdl_render(NK_ANTI_ALIASING_ON);
-            SDL_Texture* tex = SDL_CreateTextureFromSurface(sdl_gnh.renderer, sdl_gnh.device.draw_surface);
-            SDL_RenderCopy(sdl_gnh.renderer, tex, NULL, NULL);
-            SDL_RenderPresent(sdl_gnh.renderer);
-            SDL_DestroyTexture(tex);
-
-        }
-        sdl_play_immediate_ghsound(sound_info);
-        SDL_FreeSurface(pic);
-        return res == 1 ? 1 : 0;
-
-    cleanup:
-        SDL_FreeSurface(pic);
-        return 0;
-    }
-    #endif
 
  /* sdlnuklear.c */

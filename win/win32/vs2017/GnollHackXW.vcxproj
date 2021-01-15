@@ -42,7 +42,7 @@
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(SdlDir)include\;$(NuklearDir);$(StbDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;SDL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;SDL_MAIN_HANDLED;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;SDL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;SDL_MAIN_HANDLED;GNH_GL2_GRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -246,6 +246,7 @@
     <ClInclude Include="$(IncDir)general.h" />
     <ClInclude Include="$(WinWin32Dir)sdl\sdlmisc.h" />
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlproc.h" />
+    <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gles2.h" />
     <ClInclude Include="..\sdl\resource.h" />
   </ItemGroup>
   <ItemGroup>

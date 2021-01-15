@@ -39,7 +39,13 @@
 #include "mhwingdi.h"
 #include "lev.h"
 #include <SDL.h>
+#ifdef GNH_GL2_GRAPHICS
 #include <SDL_opengl.h>
+#endif
+#ifdef GNH_GLES2_GRAPHICS
+#include <SDL_opengles2.h>
+#endif
+
 
 #define SDL_TILEBMP_X(ntile) \
     ((ntile % GetGHSdlApp()->mapTilesPerLine) *  GetGHSdlApp()->mapTile_X)

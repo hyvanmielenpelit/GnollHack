@@ -331,6 +331,5 @@ enum main_menu_command {
 	MAIN_MENU_EXIT_GAME
 };
 
-
 #endif /* GENERAL_H */
 
