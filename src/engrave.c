@@ -888,7 +888,10 @@ doengrave()
         switch (otmp->otyp) {
         case MAGIC_MARKER:
             if (otmp->charges <= 0)
+            {
+                play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
                 Your("marker has dried out.");
+            }
             else
                 type = MARK;
             break;

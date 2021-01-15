@@ -61,6 +61,7 @@ struct obj* obj;
 {
     if (obj->charges <= 0)
     {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline("%s", nothing_happens);
         return 1;
     }
@@ -78,7 +79,8 @@ boolean drink_yourself;
 {
 	if (obj->charges <= 0)
 	{
-		pline("%s empty.", Tobjnam(obj, "are"));
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
+        pline("%s empty.", Tobjnam(obj, "are"));
 		return 0;
 	}
 
@@ -151,9 +153,11 @@ boolean drink_yourself;
 		weffects(obj);
 	}
 
-    if(obj->charges == 0)
+    if (obj->charges <= 0)
+    {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline("%s now empty.", Tobjnam(obj, "are"));
-    
+    }
     return 1;
 }
 
@@ -166,6 +170,7 @@ boolean drink_yourself;
 
     if (obj->charges <= 0)
     {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline("%s empty.", Tobjnam(obj, "are"));
         return 0;
     }
@@ -227,9 +232,11 @@ boolean drink_yourself;
         weffects(obj);
     }
 
-    if (obj->charges == 0)
+    if (obj->charges <= 0)
+    {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline("%s now empty.", Tobjnam(obj, "are"));
-
+    }
     return 1;
 }
 
@@ -241,6 +248,7 @@ struct obj *obj;
     struct monst *mtmp;
 
     if (Underwater) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("Using your camera underwater would void the warranty.");
         return 0;
     }
@@ -249,7 +257,9 @@ struct obj *obj;
 
     update_u_facing(TRUE);
 
-    if (obj->charges <= 0) {
+    if (obj->charges <= 0) 
+    {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline1(nothing_happens);
         return 1;
     }
@@ -1320,6 +1330,7 @@ struct obj* obj;
 
     if (obj->charges <= 0)
     {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         You("raise %s high, but nothing happens.", yname(obj));
         return 0;
     }
@@ -2521,6 +2532,7 @@ struct obj *obj;
      */
     if (obj->charges <= 0) 
 	{
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         You("seem to be out of tins.");
         return;
     }
@@ -2599,7 +2611,8 @@ struct obj *obj;
 
 
 	if (obj->charges <= 0) {
-		pline1(nothing_happens);
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
+        pline1(nothing_happens);
 		return;
 	}
 	consume_obj_charge(obj, TRUE);
@@ -3089,6 +3102,7 @@ struct obj *obj;
     } 
 	else 
 	{
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         if (obj->known)
             pline("%s empty.", Tobjnam(obj, "are"));
         else
@@ -3456,6 +3470,7 @@ struct obj* obj;
 	}
 	else 
 	{
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
 		res = 0;
 		if (obj->known)
 			pline("%s out of charges.", Tobjnam(obj, "are"));

@@ -3542,6 +3542,7 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
     } 
 	else if (horn->charges < 1)
 	{
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline1(nothing_happens);
     }
 	else 

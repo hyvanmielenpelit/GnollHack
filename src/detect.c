@@ -1375,6 +1375,7 @@ struct obj **optr;
 
     if (obj->charges <= 0)
     {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline_The("vision is unclear.");
     } 
     else

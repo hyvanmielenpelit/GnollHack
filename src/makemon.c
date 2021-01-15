@@ -4135,6 +4135,7 @@ int *seencount;  /* secondary output */
     if (!bag || bag->otyp != BAG_OF_TRICKS) {
         impossible("bad bag o' tricks");
     } else if (bag->charges < 1) {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         /* if tipping known empty bag, give normal empty container message */
         pline1((tipping && bag->cknown) ? "It's empty." : nothing_happens);
         /* now known to be empty if sufficiently discovered */

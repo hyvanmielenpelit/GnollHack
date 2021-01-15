@@ -4935,28 +4935,39 @@ dozap()
 
     /* zappable addition done by GAN 11/03/86 */
     if (!zappable(obj))
+    {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline1(nothing_happens);
-    else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE)) {
+    }
+    else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE)) 
+    {
         backfire(obj); /* the wand blows up in your face! */
         exercise(A_STR, FALSE);
         return taketurn;
-    } else if (!(objects[obj->otyp].oc_dir == NODIR) && !getdir((char *) 0)) {
+    }
+    else if (!(objects[obj->otyp].oc_dir == NODIR) && !getdir((char *) 0)) 
+    {
         play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
         if (!Blind)
             pline("%s glows and fades.", The(xname(obj)));
         /* make him pay for knowing !NODIR */
-    } else if (!u.dx && !u.dy && !u.dz
-               && !(objects[obj->otyp].oc_dir == NODIR)) {
+    } 
+    else if (!u.dx && !u.dy && !u.dz
+               && !(objects[obj->otyp].oc_dir == NODIR)) 
+    {
 
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_ZAP);
 
-        if ((damage = zapyourself(obj, TRUE)) != 0) {
+        if ((damage = zapyourself(obj, TRUE)) != 0) 
+        {
             char buf[BUFSZ];
 
             Sprintf(buf, "zapped %sself with a wand", uhim());
             losehp(damage, buf, NO_KILLER_PREFIX);
         }
-    } else {
+    }
+    else
+    {
         /*      Are we having fun yet?
          * weffects -> buzz(obj->otyp) -> zhitm (temple priest) ->
          * attack -> hitum -> known_hitum -> ghod_hitsu ->
@@ -4971,7 +4982,9 @@ dozap()
         obj = current_wand;
         current_wand = 0;
     }
-    if (obj && obj->charges < 0) {
+    if (obj && obj->charges < 0) 
+    {
+        play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         pline("%s to dust.", Tobjnam(obj, "turn"));
         useup(obj);
     }

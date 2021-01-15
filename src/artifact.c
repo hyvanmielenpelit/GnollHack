@@ -2450,6 +2450,7 @@ struct obj *obj;
 	}
 	else if ((oart->aflags & AF_INVOKE_EXPENDS_CHARGE) && obj->charges <= 0)
 	{
+		play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
 		pline("Unfortunately, nothing happens.");
 		return 1;
 	}
