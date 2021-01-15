@@ -813,7 +813,15 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Something Interesting There", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Nothing There", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Does Not Fit", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/SFX/General/Welded", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Bell/Bell Ring", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Bell/Muffled Bell Ring", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Out of Charges", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Bell of Opening/Cursed Bell of Opening Effect", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Bell of Opening/Uncursed Bell of Opening Effect", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Bell of Opening/Blessed Bell of Opening Effect", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Bell of Opening/Unsettling Shrill Sound", 1.0f },
 
 };
 

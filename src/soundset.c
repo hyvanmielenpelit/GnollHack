@@ -287,7 +287,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_GENERIC_ITEM_UNWIELD, 1.0f},
             {GHSOUND_GENERIC_ITEM_QUIVER, 1.0f},
             {GHSOUND_GENERIC_ITEM_UNQUIVER, 1.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_BELL_RING, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_SFX_QUAFF, 1.0f},
             {GHSOUND_SFX_READ, 1.0f},
@@ -4323,8 +4323,37 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_GENERAL_WELDED, 1.0f},
         FALSE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_MUFFLED_BELL_RING",
+        {GHSOUND_MUFFLED_BELL_RING, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_GENERAL_OUT_OF_CHARGES",
+        {GHSOUND_GENERAL_OUT_OF_CHARGES, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_CURSED_BELL_OF_OPENING_EFFECT",
+        {GHSOUND_CURSED_BELL_OF_OPENING_EFFECT, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_UNCURSED_BELL_OF_OPENING_EFFECT",
+        {GHSOUND_UNCURSED_BELL_OF_OPENING_EFFECT, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_BLESSED_BELL_OF_OPENING_EFFECT",
+        {GHSOUND_BLESSED_BELL_OF_OPENING_EFFECT, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_BELL_OF_OPENING_UNSETTLING_SHRILL_SOUND",
+        {GHSOUND_BELL_OF_OPENING_UNSETTLING_SHRILL_SOUND, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
 };
-
 
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

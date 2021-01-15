@@ -1538,21 +1538,34 @@ struct obj **optr;
 
     You("ring %s.", the(xname(obj)));
 
-    if (Underwater || (u.uswallow && ordinary)) {
+    if (Underwater || (u.uswallow && ordinary)) 
+    {
 #ifdef AMIGA
         amii_speaker(obj, "AhDhGqEqDhEhAqDqFhGw", AMII_MUFFLED_VOLUME);
+#else
+        play_sfx_sound(SFX_MUFFLED_BELL_RING);
 #endif
         pline("But the sound is muffled.");
 
-    } else if (invoking && ordinary) {
+    } 
+    else if (invoking && ordinary)
+    {
         /* needs to be recharged... */
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline("But it makes no sound.");
         learno = TRUE; /* help player figure out why */
 
-    } else if (ordinary) {
+    } 
+    else if (ordinary)
+    {
 #ifdef AMIGA
         amii_speaker(obj, "ahdhgqeqdhehaqdqfhgw", AMII_MUFFLED_VOLUME);
 #endif
+        if (iflags.using_gui_sounds)
+        {
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
+            delay_output_milliseconds(1000);
+        }
         if (obj->cursed && !rn2(4)
             /* note: once any of them are gone, we stop all of them */
             && !(mvitals[PM_WOOD_NYMPH].mvflags & G_GONE)
@@ -1584,14 +1597,23 @@ struct obj **optr;
     } else {
         /* charged Bell of Opening */
         consume_obj_charge(obj, TRUE);
+        if (iflags.using_gui_sounds)
+        {
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
+            delay_output_milliseconds(750);
+        }
 
-        if (u.uswallow) {
+        if (u.uswallow) 
+        {
             if (!obj->cursed)
                 (void) openit();
             else
                 pline1(nothing_happens);
 
-        } else if (obj->cursed) {
+        } 
+        else if (obj->cursed)
+        {
+            play_sfx_sound(SFX_CURSED_BELL_OF_OPENING_EFFECT);
             coord mm;
 
             mm.x = u.ux;
@@ -1599,30 +1621,42 @@ struct obj **optr;
             mkundead(&mm, FALSE, MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION);
             wakem = TRUE;
 
-        } else if (invoking) {
-            pline("%s an unsettling shrill sound...", Tobjnam(obj, "issue"));
+        } 
+        else if (invoking) 
+        {
 #ifdef AMIGA
             amii_speaker(obj, "aefeaefeaefeaefeaefe", AMII_LOUDER_VOLUME);
+#else
+            play_sfx_sound(SFX_BELL_OF_OPENING_UNSETTLING_SHRILL_SOUND);
 #endif
+            pline("%s an unsettling shrill sound...", Tobjnam(obj, "issue"));
             obj->age = moves;
             learno = TRUE;
             wakem = TRUE;
 
-        } else if (obj->blessed) {
+        } 
+        else if (obj->blessed) 
+        {
             int res = 0;
 
 #ifdef AMIGA
             amii_speaker(obj, "ahahahDhEhCw", AMII_SOFT_VOLUME);
+#else
+            play_sfx_sound(SFX_BLESSED_BELL_OF_OPENING_EFFECT);
 #endif
-            if (uchain) {
+            if (uchain)
+            {
                 unpunish();
                 res = 1;
-            } else if (u.utrap && u.utraptype == TT_BURIEDBALL) {
+            }
+            else if (u.utrap && u.utraptype == TT_BURIEDBALL) 
+            {
                 buried_ball_to_freedom();
                 res = 1;
             }
             res += openit();
-            switch (res) {
+            switch (res)
+            {
             case 0:
                 pline1(nothing_happens);
                 break;
@@ -1636,9 +1670,13 @@ struct obj **optr;
                 break;
             }
 
-        } else { /* uncursed */
+        } 
+        else 
+        { /* uncursed */
 #ifdef AMIGA
             amii_speaker(obj, "AeFeaeFeAefegw", AMII_OKAY_VOLUME);
+#else
+            play_sfx_sound(SFX_UNCURSED_BELL_OF_OPENING_EFFECT);
 #endif
             if (findit() != 0)
                 learno = TRUE;
@@ -1648,7 +1686,8 @@ struct obj **optr;
 
     } /* charged BofO */
 
-    if (learno) {
+    if (learno)
+    {
         makeknown(BELL_OF_OPENING);
         obj->known = 1;
     }
