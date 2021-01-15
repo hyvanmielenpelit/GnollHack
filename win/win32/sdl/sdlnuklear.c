@@ -2015,10 +2015,8 @@ struct media {
         SDL_GetWindowSize(sdl.win, &sdlapp->win_width, &sdlapp->win_height);
         glContext = SDL_GL_CreateContext(sdl.win);
 
-#ifdef NK_SDL_GLES2_IMPLEMENTATION
         /* OpenGL setup */
         glViewport(0, 0, sdl_win_width, sdl_win_height);
-#endif
 
         /* GUI */
         //ctx = nk_sdl_gnh_init(sdl_gnh.win, sdl_gnh.renderer);
