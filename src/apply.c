@@ -922,13 +922,13 @@ struct obj *obj;
         /* applying a leash which isn't currently in use */
         if (mtmp->mleashed)
         {
-            play_sfx_sound(SFX_GENERAL_CANNOT);
+            play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
             pline("This %s is already leashed.",
                   spotmon ? l_monnam(mtmp) : "creature");
         }
         else if (!leashable(mtmp)) 
         {
-            play_sfx_sound(SFX_GENERAL_CANNOT);
+            play_sfx_sound(SFX_GENERAL_DOES_NOT_FIT);
             pline("The leash won't fit onto %s%s.", spotmon ? "your " : "",
                   l_monnam(mtmp));
         }
@@ -952,7 +952,7 @@ struct obj *obj;
         }
         else if (obj->cursed) 
         {
-            play_sfx_sound(SFX_GENERAL_CANNOT);
+            play_sfx_sound(SFX_GENERAL_WELDED);
             pline_The("leash would not come off!");
             obj->bknown = 1;
         } 

@@ -876,11 +876,13 @@ int x, y;
     int res = 0;
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("open anything -- you have no hands!");
         return 0;
     }
 
     if (u.utrap && u.utraptype == TT_PIT) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("reach over the edge of the pit.");
         return 0;
     }
@@ -919,14 +921,26 @@ int x, y;
     if (portcullis || !IS_DOOR(door->typ)) {
         /* closed portcullis or spot that opened bridge would span */
         if (is_db_wall(cc.x, cc.y) || door->typ == DRAWBRIDGE_UP)
+        {
+            play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
             There("is no obvious way to open the drawbridge.");
+        }
         else if (portcullis || door->typ == DRAWBRIDGE_DOWN)
+        {
+            play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
             pline_The("drawbridge is already open.");
+        }
         else if (container_at(cc.x, cc.y, TRUE))
+        {
+            play_sfx_sound(SFX_GENERAL_SOMETHING_INTERESTING_THERE);
             pline("%s like something lootable over there.",
-                  Blind ? "Feels" : "Seems");
+                Blind ? "Feels" : "Seems");
+        }
         else
+        {
+            play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
             You("%s no door there.", Blind ? "feel" : "see");
+        }
         return res;
     }
 
@@ -936,20 +950,25 @@ int x, y;
 		boolean locked = FALSE;
         char lbuf[BUFSZ];
         strcpy(lbuf, "");
+        enum sfx_sound_types sfx = SFX_ILLEGAL;
 
         switch (door->doormask & D_MASK) 
         {
         case D_BROKEN:
             mesg = " is broken";
+            sfx = SFX_GENERAL_CANNOT;
             break;
         case D_NODOOR:
             mesg = "way has no door";
+            sfx = SFX_GENERAL_NOTHING_THERE;
             break;
         case D_ISOPEN:
             mesg = " is already open";
+            sfx = SFX_GENERAL_ALREADY_DONE;
             break;
         case D_PORTCULLIS:
             mesg = " is already open";
+            sfx = SFX_GENERAL_ALREADY_DONE;
             break;
         default:
             mesg = " is locked";
@@ -959,6 +978,9 @@ int x, y;
             locked = TRUE;
 			break;
         }
+        if(sfx != SFX_ILLEGAL)
+            play_sfx_sound(sfx);
+
         pline("This %s%s%s.", door_name, mesg, lbuf);
 #ifdef ANDROID
 		if (locked && flags.autokick) {
@@ -993,6 +1015,7 @@ int x, y;
     }
 
     if (verysmall(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("You're too small to pull the %s open.", door_name);
         return res;
     }

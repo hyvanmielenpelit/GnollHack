@@ -808,6 +808,12 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Lava Burnt", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Hidden Treasure Found", 0.2f },
     { SOUND_BANK_MASTER, "event:/Location/Sink/Sink Break", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/You Do Not Know How", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Already Done", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Something Interesting There", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Nothing There", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Does Not Fit", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Welded", 1.0f },
 
 };
 

@@ -1167,6 +1167,7 @@ armor_or_accessory_off(obj)
 struct obj *obj;
 {
     if (!(obj->owornmask & (W_ARMOR | W_ACCESSORY))) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("are not wearing that.");
         return 0;
     }
@@ -1230,6 +1231,7 @@ struct obj *obj;
         } else {
             Strcpy(why, "; it's embedded");
         }
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("take that off%s.", why);
         return 0;
     }
@@ -1288,6 +1290,7 @@ dotakeoff()
     count_worn_stuff(&otmp, FALSE);
     if (!Narmorpieces && !Naccessories) {
         /* assert( GRAY_DRAGON_SCALES > YELLOW_DRAGON_SCALE_MAIL ); */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         if (uskin)
             pline_The("%s merged with your skin!",
                       uskin->otyp >= GRAY_DRAGON_SCALES
@@ -1339,6 +1342,7 @@ register struct obj *otmp;
         boolean use_plural = (is_boots(otmp) || is_gloves(otmp) || is_bracers(otmp)
                                || otmp->quan > 1L);
 
+        play_sfx_sound(SFX_GENERAL_WELDED);
         You("can't.  %s cursed.", use_plural ? "They are" : "It is");
         otmp->bknown = TRUE;
         return 1;

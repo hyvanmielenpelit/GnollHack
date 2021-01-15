@@ -2259,7 +2259,7 @@ register struct obj *obj;
     }
 	else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) 
 	{
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_WELDED);
         obj->bknown = 1;
         pline("%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
         return 0;
@@ -2269,7 +2269,7 @@ register struct obj *obj;
         || ((objects[current_container->otyp].oc_flags4 & O4_CONTAINER_ACCEPTS_ONLY_WEAPONS) && !(obj->oclass == WEAPON_CLASS))
         )
     {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_DOES_NOT_FIT);
         pline("%s is not made for holding %s.", The(cxname(current_container)), obj->quan > 1 ? cxname(obj) : makeplural(cxname(obj)));
         return 0;
     }
@@ -2348,6 +2348,7 @@ register struct obj *obj;
          *  use the result of strcpy() within You() --- the order
          *  of evaluation of the parameters is undefined.
          */
+        play_sfx_sound(SFX_GENERAL_DOES_NOT_FIT);
         Strcpy(buf, the(xname(obj)));
         You("cannot fit %s into %s.", buf, the(xname(current_container)));
         return 0;

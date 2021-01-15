@@ -3620,6 +3620,7 @@ struct monst* mtmp;
 	{
 		if (otmp->cursed && !cursed_items_are_positive_mon(mtmp))
 		{
+			play_sfx_sound(SFX_GENERAL_WELDED);
 			if (otmp->owornmask & W_SADDLE)
 				You("try to remove %s from %s, but you can't. It's cursed!", cxname(otmp), mon_nam(mtmp));
 			else
@@ -3711,6 +3712,7 @@ struct monst* mtmp;
 	{
 		if (mwelded(mwep, mtmp))
 		{
+			play_sfx_sound(SFX_GENERAL_WELDED);
 			pline("%s tries to unwield %s, but can't. It's cursed!", Monnam(mtmp), cxname(mwep));
 			mwep->bknown = TRUE;
 		}
