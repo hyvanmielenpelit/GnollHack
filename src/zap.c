@@ -610,8 +610,9 @@ struct monst* origmonst;
         if (disguised_mimic)
             seemimic(mtmp);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
-        boolean visible_effect = increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+        play_sfx_sound_at_location(SFX_ACQUIRE_HASTE, mtmp->mx, mtmp->my);
         special_effect_wait_until_action(0);
+        boolean visible_effect = increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
         if (visible_effect)
             makeknown(WAN_SPEED_MONSTER);
         m_dowear(mtmp, FALSE); /* might want speed boots */
@@ -5013,6 +5014,7 @@ boolean ordinary;
         learn_it = TRUE;
         if (Magic_missile_immunity || Invulnerable)
 		{
+            play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
 			damage = 0;
             pline("Boing!");
@@ -5021,6 +5023,7 @@ boolean ordinary;
 		{
             if (ordinary)
 			{
+                play_sfx_sound(SFX_MAGIC_ARROW_HIT);
                 You("bash yourself!");
 			} 
 			else
@@ -5045,7 +5048,8 @@ boolean ordinary;
 		{
 			if (ordinary)
 			{
-				You("shoot yourself with a magical arrow!");
+                play_sfx_sound(SFX_MAGIC_ARROW_HIT);
+                You("shoot yourself with a magical arrow!");
 			}
 			else
 				basedmg = d(1 + obj->charges, 3);
@@ -5056,13 +5060,16 @@ boolean ordinary;
 		break;
 	case SPE_SHOCKING_TOUCH:
 		learn_it = TRUE;
-		if (!Shock_immunity && !Invulnerable) {
-			You("shock yourself!");
+		if (!Shock_immunity && !Invulnerable)
+        {
+            play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
+            You("shock yourself!");
 			exercise(A_CON, FALSE);
 			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_ELEC, ADFLAGS_SPELL_DAMAGE);
 		}
 		else
 		{
+            play_sfx_sound(SFX_GENERAL_RESISTS);
 			u_shieldeff();
 			You("shock yourself, but seem unharmed.");
 			ugolemeffects(AD_ELEC, damage);
@@ -5073,13 +5080,15 @@ boolean ordinary;
 		learn_it = TRUE;
 		if (!Fire_immunity && !Invulnerable)
 		{
-			You("burn yourself!");
+            play_sfx_sound(SFX_MONSTER_ON_FIRE);
+            You("burn yourself!");
 			exercise(A_CON, FALSE);
 			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_FIRE, ADFLAGS_SPELL_DAMAGE);
 		}
 		else
 		{
-			u_shieldeff();
+            play_sfx_sound(SFX_GENERAL_RESISTS);
+            u_shieldeff();
 			You("burn yourself, but seem unharmed.");
 			ugolemeffects(AD_FIRE, damage);
 			damage = 0;
@@ -5087,14 +5096,17 @@ boolean ordinary;
 		break;
 	case SPE_FREEZING_TOUCH:
 		learn_it = TRUE;
-		if (!Cold_immunity && !Invulnerable) {
-			You("freeze yourself!");
+		if (!Cold_immunity && !Invulnerable) 
+        {
+            play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
+            You("freeze yourself!");
 			exercise(A_CON, FALSE);
 			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_COLD, ADFLAGS_SPELL_DAMAGE);
 		}
 		else
 		{
-			u_shieldeff();
+            play_sfx_sound(SFX_GENERAL_RESISTS);
+            u_shieldeff();
 			You("freeze yourself, but seem unharmed.");
 			ugolemeffects(AD_COLD, damage);
 			damage = 0;
@@ -5104,11 +5116,16 @@ boolean ordinary;
 	case WAN_LIGHTNING:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_ELEC, ADFLAGS_SPELL_DAMAGE);
-		if (!Shock_immunity && !Invulnerable) {
+		if (!Shock_immunity && !Invulnerable)
+        {
+            play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
             You("shock yourself!");
             display_u_being_hit(HIT_ELECTROCUTED, 0, 0UL);
             exercise(A_CON, FALSE);
-        } else {
+        } 
+        else 
+        {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             You("zap yourself, but seem unharmed.");
             ugolemeffects(AD_ELEC, damage);
@@ -5157,6 +5174,7 @@ boolean ordinary;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_FIRE, ADFLAGS_SPELL_DAMAGE);
 		if (Fire_immunity || Invulnerable) 
         {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             You_feel("rather warm.");
             ugolemeffects(AD_FIRE, damage);
@@ -5164,6 +5182,7 @@ boolean ordinary;
         }
         else 
         {
+            play_sfx_sound(SFX_MONSTER_ON_FIRE);
             pline("You've set yourself afire!");
             display_u_being_hit(HIT_ON_FIRE, 0, 0UL);
         }
@@ -5195,12 +5214,14 @@ boolean ordinary;
     case FROST_HORN:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_COLD, ADFLAGS_SPELL_DAMAGE);
-		if (Cold_immunity || Invulnerable) {
+		if (Cold_immunity || Invulnerable) 
+        {
             u_shieldeff();
             You_feel("a little chill.");
             ugolemeffects(AD_COLD, damage);
 			damage = 0;
         } else {
+            play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
             You("imitate a popsicle!");
             display_u_being_hit(HIT_FROZEN, 0, 0UL);
         }
@@ -5212,12 +5233,15 @@ boolean ordinary;
     case SPE_GREATER_MAGIC_MISSILE:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE);
-		if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
+		if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) 
+        {
+            play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
             pline_The("missiles bounce!");
 			damage = 0;
         } else {
-			pline("Idiot!  You've shot yourself!");
+            play_sfx_sound(SFX_MAGIC_ARROW_HIT);
+            pline("Idiot!  You've shot yourself!");
             display_u_being_hit(HIT_GENERAL, 0, 0UL);
         }
         break;
@@ -5258,7 +5282,8 @@ boolean ordinary;
         damage = 0; /* No additional damage */
         break;
 
-    case WAN_MAKE_INVISIBLE: {
+    case WAN_MAKE_INVISIBLE: 
+    {
 		damage = 0;
 		/* have to test before changing HInvis but must change
          * HInvis before doing newsym().
@@ -5302,7 +5327,8 @@ boolean ordinary;
 		if (Very_fast && !was_very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
 		{
 			learn_it = TRUE;
-			You("speed up.");
+            play_sfx_sound(SFX_ACQUIRE_HASTE);
+            You("speed up.");
 			exercise(A_DEX, TRUE);
 		}
 		break;
@@ -5311,10 +5337,15 @@ boolean ordinary;
     case SPE_SLEEP:
 		damage = 0;
 		learn_it = TRUE;
-        if (Sleep_resistance) {
+        if (Sleep_resistance) 
+        {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             You("don't feel sleepy!");
-        } else {
+        }
+        else 
+        {
+            play_sfx_sound(SFX_ACQUIRE_SLEEP);
             pline_The("sleep ray hits you!");
             fall_asleep(-duration, TRUE);
         }
@@ -5330,7 +5361,8 @@ boolean ordinary;
 		if (Slowed && !was_slowed)
 		{
 			learn_it = TRUE;
-			You("slow down.");
+            play_sfx_sound(SFX_ACQUIRE_SLOW);
+            You("slow down.");
 		}
 		//u_slow_down();
         break;
@@ -5342,7 +5374,8 @@ boolean ordinary;
 		if (Very_fast && !was_very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
 		{
 			learn_it = TRUE;
-			You("speed up.");
+            play_sfx_sound(SFX_ACQUIRE_HASTE);
+            You("speed up.");
 		}
 		break;
 	case SPE_HOLD_MONSTER:
@@ -5356,7 +5389,8 @@ boolean ordinary;
 			if (Paralyzed_or_immobile && !was_paralyzed)
 			{
 				learn_it = TRUE;
-				You("are paralyzed!");
+                play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
+                You("are paralyzed!");
 			}
 		}
 		else
@@ -5376,6 +5410,7 @@ boolean ordinary;
             if (Paralyzed_or_immobile && !was_paralyzed)
             {
                 learn_it = TRUE;
+                play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
                 You("are paralyzed!");
             }
         }
@@ -5394,7 +5429,8 @@ boolean ordinary;
 		if (Silenced && !was_silenced)
 		{
 			learn_it = TRUE;
-			Your("voice disappears.");
+            play_sfx_sound(SFX_ACQUIRE_SILENCE);
+            Your("voice disappears.");
 		}
 		break;
     case WAN_TELEPORTATION:

@@ -1316,6 +1316,7 @@ struct obj *otmp;
         }
         exercise(A_DEX, TRUE);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
+        play_sfx_sound(SFX_ACQUIRE_HASTE);
         special_effect_wait_until_action(0);
         incr_itimeout(otmp->otyp == POT_LIGHTNING_SPEED ? &HLightning_fast : otmp->otyp == POT_GREATER_SPEED ? &HSuper_fast : &HUltra_fast, duration);
         special_effect_wait_until_end(0);
@@ -2502,6 +2503,7 @@ struct obj *obj;
         kn++;
         if (!Free_action) 
 		{
+            play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
             pline("%s seems to be holding you.", Something);
 			incr_itimeout(&HParalyzed, duration);
 			context.botl = context.botlx = 1;
@@ -2518,6 +2520,7 @@ struct obj *obj;
     case POT_SLEEPING:
         kn++;
         if (!Free_action && !Sleep_resistance) {
+            play_sfx_sound(SFX_ACQUIRE_SLEEP);
             You_feel("rather tired.");
 			fall_asleep(-duration, FALSE);
 #if 0
@@ -2534,6 +2537,7 @@ struct obj *obj;
     case POT_LIGHTNING_SPEED:
         if (obj->otyp == POT_LIGHTNING_SPEED ? !Lightning_fast : obj->otyp == POT_LIGHTNING_SPEED ? !Lightning_fast && !Super_fast : !Lightning_fast && !Super_fast && !Ultra_fast)
             Your("knees seem more flexible now.");
+        play_sfx_sound(SFX_ACQUIRE_HASTE);
         incr_itimeout(obj->otyp == POT_LIGHTNING_SPEED ? &HLightning_fast : obj->otyp == POT_GREATER_SPEED ? &HSuper_fast : &HUltra_fast, duration);
         exercise(A_DEX, TRUE);
         break;

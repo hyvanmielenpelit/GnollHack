@@ -4353,6 +4353,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_BELL_OF_OPENING_UNSETTLING_SHRILL_SOUND, 1.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
+    {
+        "GHSOUND_ACQUIRE_HASTE",
+        {GHSOUND_ACQUIRE_HASTE, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 
