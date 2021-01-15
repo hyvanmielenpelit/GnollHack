@@ -1068,10 +1068,12 @@ boolean quietly;
         if (!quietly) {
             if ((mtmp->mx != x) || (mtmp->my != y)) {
                 /* worm tail */
+                play_sfx_sound(SFX_SOMETHING_IN_WAY);
                 pline("%s%s blocks the way!",
                       !canspotmon(mtmp) ? Something : s_suffix(Monnam(mtmp)),
                       !canspotmon(mtmp) ? "" : " tail");
             } else {
+                play_sfx_sound(SFX_SOMETHING_IN_WAY);
                 pline("%s blocks the way!",
                       !canspotmon(mtmp) ? "Some creature" : Monnam(mtmp));
             }
@@ -1083,7 +1085,10 @@ boolean quietly;
     if (OBJ_AT(x, y)) {
  objhere:
         if (!quietly)
+        {
+            play_sfx_sound(SFX_SOMETHING_IN_WAY);
             pline("%s's in the way.", Something);
+        }
         return TRUE;
     }
     return FALSE;
@@ -1099,11 +1104,13 @@ doclose()
     int res = 0;
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("close anything -- you have no hands!");
         return 0;
     }
 
     if (u.utrap && u.utraptype == TT_PIT) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("reach over the edge of the pit.");
         return 0;
     }
@@ -1114,6 +1121,7 @@ doclose()
     x = u.ux + u.dx;
     y = u.uy + u.dy;
     if ((x == u.ux) && (y == u.uy)) {
+        play_sfx_sound(SFX_SOMETHING_IN_WAY);
         You("are in the way!");
         return 1;
     }
@@ -1145,11 +1153,18 @@ doclose()
     if (portcullis || !IS_DOOR(door->typ)) {
         /* is_db_wall: closed portcullis */
         if (is_db_wall(x, y) || door->typ == DRAWBRIDGE_UP)
+        {
+            play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
             pline_The("drawbridge is already closed.");
+        }
         else if (portcullis || door->typ == DRAWBRIDGE_DOWN)
+        {
+            play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
             There("is no obvious way to close the drawbridge.");
+        }
         else {
  nodoor:
+            play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
             You("%s no door there.", Blind ? "feel" : "see");
         }
         return res;
@@ -1157,11 +1172,13 @@ doclose()
 
     if ((door->doormask & D_MASK) == D_NODOOR)
     {
+        play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
         pline("This doorway has no door.");
         return res;
     } 
     else if ((door->doormask & D_MASK) == D_PORTCULLIS)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("This portcullis can be closed only by lifting the drawbridge.");
         return res;
     }
@@ -1171,11 +1188,13 @@ doclose()
     } 
     else if ((door->doormask & D_MASK) == D_BROKEN) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("This %s is broken.", get_door_name_at_ptr(door));
         return res;
     } 
     else if ((door->doormask & D_MASK) & (D_CLOSED | D_LOCKED))
     {
+        play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
         pline("This %s is already closed.", get_door_name_at_ptr(door));
         return res;
     }
@@ -1184,6 +1203,7 @@ doclose()
     {
         if (verysmall(youmonst.data) && !u.usteed) 
         {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("You're too small to push the door closed.");
             return res;
         }

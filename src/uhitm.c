@@ -477,7 +477,7 @@ register struct monst *mtmp;
                 monflee(mtmp, rnd(6), FALSE, FALSE);
                 Strcpy(buf, y_monnam(mtmp));
                 buf[0] = highc(buf[0]);
-				play_sfx_sound(SFX_PET_IN_WAY);
+				play_sfx_sound(SFX_SOMETHING_IN_WAY);
                 You("stop.  %s is in the way!", buf);
                 context.travel = context.travel1 = context.mv = context.run
                     = 0;
