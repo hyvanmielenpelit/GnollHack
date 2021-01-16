@@ -1948,8 +1948,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             {
                                 int otyp = (glyph - GLYPH_OBJ_MISSILE_OFF) / NUM_MISSILE_DIRS;
                                 use_floor_tile = has_otyp_floor_tile(otyp);
-                                if (!has_otyp_floor_tile(otyp) && objects[otyp].oc_tile_floor_height > 0)
-                                    obj_scaling_factor = ((double)objects[otyp].oc_tile_floor_height) / 48.0;
+                                if (!has_otyp_floor_tile(otyp) && OBJ_TILE_HEIGHT(otyp) > 0)
+                                    obj_scaling_factor = ((double)OBJ_TILE_HEIGHT(otyp)) / 48.0;
                             }
                             else if (glyph_is_artifact_missile(glyph))
                             {
@@ -1982,19 +1982,19 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 if (otmp_round && has_obj_floor_tile(otmp_round) && !showing_detection)
                                 {
                                     source_top_added = 0;
-                                    if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0 && objects[otmp_round->otyp].oc_tile_floor_height < used_item_height && !showing_detection)
+                                    if (otmp_round && OBJ_TILE_HEIGHT(otmp_round->otyp) > 0 && OBJ_TILE_HEIGHT(otmp_round->otyp) < used_item_height && !showing_detection)
                                     {
-                                        base_dest_added_from_source = used_item_height - objects[otmp_round->otyp].oc_tile_floor_height;
+                                        base_dest_added_from_source = used_item_height - OBJ_TILE_HEIGHT(otmp_round->otyp);
                                         base_source_top_added += base_dest_added_from_source / 2;
-                                        base_source_height_deducted += used_item_height - objects[otmp_round->otyp].oc_tile_floor_height;
+                                        base_source_height_deducted += used_item_height - OBJ_TILE_HEIGHT(otmp_round->otyp);
                                     }
                                 }
                                 else
                                 {
                                     source_top_added = (int)tileHeight / 2;
-                                    if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0 && !showing_detection)
+                                    if (otmp_round && OBJ_TILE_HEIGHT(otmp_round->otyp) > 0 && !showing_detection)
                                     {
-                                        obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / ((double)used_item_height);
+                                        obj_scaling_factor = ((double)OBJ_TILE_HEIGHT(otmp_round->otyp)) / ((double)used_item_height);
                                     }
                                 }
 
@@ -2606,7 +2606,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_obj_floor_tile(contained_obj) ? 0 : TILE_Y / 2);
                                     int dest_x = 0, dest_y = 0;
-                                    int item_width = has_obj_floor_tile(contained_obj) ? TILE_Y / 2 : objects[contained_obj->otyp].oc_tile_floor_height ? objects[contained_obj->otyp].oc_tile_floor_height : TILE_Y / 2;
+                                    int item_width = has_obj_floor_tile(contained_obj) ? TILE_Y / 2 : OBJ_TILE_HEIGHT(contained_obj->otyp) ? OBJ_TILE_HEIGHT(contained_obj->otyp) : TILE_Y / 2;
                                     int item_height = (item_width * TILE_Y) / TILE_X;
                                     int padding = (TILE_Y / 2 - item_width) / 2;
                                     int vertical_padding = (TILE_X - item_height) / 2;

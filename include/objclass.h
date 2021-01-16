@@ -713,7 +713,6 @@ struct objclass {
 	int oc_critical_strike_percentage;	/* percentage to be used with A1_CRITICAL_STRIKE; can be used for other purposes for a S1_ flag, too */
 
 	int oc_multigen_type;				/* class number multi multigen_type */
-	int oc_tile_floor_height;			/* (scaled) height of the item tile in pixels when it appears on the floor */
 	enum object_soundset_types oc_soundset;
 
 /* oc_dir_subtypes for spells */
@@ -993,6 +992,7 @@ struct objdescr {
 	const char* oc_content_name; /* true description of contents (jars) */
 	const char* oc_content_description; /* unknown description of contents (spellbooks, jars) */
 	const char* oc_item_description; /* description of the item */
+	int oc_tile_floor_height;			/* (scaled) height of the item tile in pixels when it appears on the floor */
 	short stand_animation;
 	short enlargement;
 	short replacement;
@@ -1085,6 +1085,7 @@ struct fruit {
 
 #define OBJ_ITEM_DESC(otyp) (obj_descr[objects[(otyp)].oc_name_idx].oc_item_description)
 
+#define OBJ_TILE_HEIGHT(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].oc_tile_floor_height)
 #define OBJ_STAND_ANIMATION(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].stand_animation)
 
 
