@@ -823,6 +823,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Bell of Opening/Blessed Bell of Opening Effect", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Bell of Opening/Unsettling Shrill Sound", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Buff/Acquired/Haste", 0.5f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Flaming Sphere", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Freezing Sphere", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Shocking Sphere", 1.0f },
 
 };
 

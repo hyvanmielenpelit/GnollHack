@@ -3559,14 +3559,41 @@ struct monst *mtmp;
 struct attack *mattk;
 boolean ufound;
 {
+    if (!mtmp || !mattk)
+        return 0;
+
     boolean kill_agr = TRUE;
 
     if (is_cancelled(mtmp))
         return 0;
 
+    enum sfx_sound_types sfx_sound = SFX_ILLEGAL;
+
+    switch (mattk->adtyp)
+    {
+    case AD_COLD:
+        sfx_sound = SFX_EXPLOSION_FREEZING_SPHERE;
+        break;
+    case AD_FIRE:
+        sfx_sound = SFX_EXPLOSION_FLAMING_SPHERE;
+        break;
+    case AD_ELEC:
+        sfx_sound = SFX_EXPLOSION_SHOCKING_SPHERE;
+        break;
+    case AD_BLND:
+    case AD_HALU:
+        sfx_sound = SFX_BLINDING_FLASH;
+        break;
+    default:
+        break;
+    }
+
+    if (sfx_sound != SFX_ILLEGAL)
+        play_sfx_sound_at_location(sfx_sound, mtmp->mx, mtmp->my);
+
     if (!ufound)
 	{
-        pline("%s explodes at a spot in %s!",
+       pline("%s explodes at a spot in %s!",
               canseemon(mtmp) ? Monnam(mtmp) : "It",
               levl[mtmp->mux][mtmp->muy].typ == WATER ? "empty water"
                                                       : "thin air");
@@ -3602,7 +3629,6 @@ boolean ufound;
                False when tested below; it's right, but having that in
                place means one less thing to update if AD_PHYS gets added */
  common:
-
             if (!not_affected)
 			{
                 if (ACURR(A_DEX) > rnd(20)) 
@@ -3629,7 +3655,6 @@ boolean ufound;
                 /* sometimes you're affected even if it's invisible */
                 if (mon_visible(mtmp) || (rnd(basedmg /= 2) > u.ulevel)) 
 				{
-                    play_sfx_sound(SFX_BLINDING_FLASH);
                     You("are blinded by a blast of light!");
                     make_blinded((long)basedmg, FALSE);
                     if (!Blind)
