@@ -1977,13 +1977,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             {
                                 int used_item_height = (int)tileHeight / 2;
                                 int base_source_height_deducted = used_item_height;
+                                int base_dest_added_from_source = 0;
                                 /* For all normal items, we use only lower part of the tile */
                                 if (otmp_round && has_obj_floor_tile(otmp_round) && !showing_detection)
                                 {
                                     source_top_added = 0;
                                     if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0 && objects[otmp_round->otyp].oc_tile_floor_height < used_item_height && !showing_detection)
                                     {
-                                        base_source_top_added += (used_item_height - objects[otmp_round->otyp].oc_tile_floor_height) / 2;
+                                        base_dest_added_from_source = used_item_height - objects[otmp_round->otyp].oc_tile_floor_height;
+                                        base_source_top_added += base_dest_added_from_source / 2;
                                         base_source_height_deducted += used_item_height - objects[otmp_round->otyp].oc_tile_floor_height;
                                     }
                                 }
@@ -1999,7 +2001,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 source_top_added += base_source_top_added;
                                 source_height_deducted += base_source_height_deducted;
 
-                                dest_top_added = (int)(applicable_scaling_factor_y * ((double)((int)tileHeight - used_item_height + base_source_top_added)));
+                                dest_top_added = (int)(applicable_scaling_factor_y * ((double)((int)tileHeight - used_item_height + base_dest_added_from_source)));
                                 dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)base_source_height_deducted));
 
                                 /* Leave a little room for monster feet if not cover object */

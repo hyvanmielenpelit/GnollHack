@@ -4994,7 +4994,7 @@ update_m_action(mtmp, action)
 struct monst* mtmp;
 enum action_tile_types action;
 {
-	update_m_action_core(mtmp, action, 3);
+	update_m_action_core(mtmp, action, 2);
 }
 
 void
@@ -5014,7 +5014,7 @@ update_m_action_and_wait(mtmp, action)
 struct monst* mtmp;
 enum action_tile_types action;
 {
-	update_m_action_core(mtmp, action, 3);
+	update_m_action_core(mtmp, action, 2);
 	if (mtmp == &youmonst)
 		u_wait_until_action();
 	else
@@ -5043,7 +5043,8 @@ unsigned long simple_wait_multiplier;
 	{
 		if (context.m_milliseconds_to_wait_until_end > 0)
 		{
-			delay_output_milliseconds(context.m_milliseconds_to_wait_until_end);
+			if(canseemon(mtmp))
+				delay_output_milliseconds(context.m_milliseconds_to_wait_until_end);
 			context.m_milliseconds_to_wait_until_end = 0UL;
 		}
 	}
@@ -5105,13 +5106,13 @@ unsigned long simple_wait_multiplier;
 		{
 			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			flush_screen(1);
-			context.m_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
-			//adjusted_delay_output();
-			if (mtmp->action != ACTION_TILE_NO_ACTION)
+			if(canseemon(mtmp))
 			{
-				context.m_milliseconds_to_wait_until_action *= simple_wait_multiplier;
-				//adjusted_delay_output();
-				//adjusted_delay_output();
+				context.m_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
+				if (mtmp->action != ACTION_TILE_NO_ACTION)
+				{
+					context.m_milliseconds_to_wait_until_action *= simple_wait_multiplier;
+				}
 			}
 		}
 	}
@@ -5183,7 +5184,7 @@ unsigned long extra_flags;
 	//newsym_with_extra_info_and_flags(x, y, hflags, damage_shown, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 	//flush_screen(is_you);
 	flush_screen(1);
-	adjusted_delay_output();
+	//adjusted_delay_output();
 	adjusted_delay_output();
 	adjusted_delay_output();
 	//update_m_action_core(mon, action_before, 0);
@@ -5211,8 +5212,10 @@ boolean use_bhitpos;
 	if (!mon)
 		return;
 
-	if(!(u.uswallow && mon == u.ustuck))
-		display_being_hit(mon, use_bhitpos ? bhitpos.x : mon->mx, use_bhitpos ? bhitpos.y : mon->my, hit_symbol_shown, damage_shown, extra_flags);
+	int x = use_bhitpos ? bhitpos.x : mon->mx;
+	int y = use_bhitpos ? bhitpos.y : mon->my;
+	if(!(u.uswallow && mon == u.ustuck) && isok(x, y) && cansee(x, y))
+		display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_flags);
 }
 
 /*uhitm.c*/
