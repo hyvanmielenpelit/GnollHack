@@ -500,7 +500,11 @@ int spellnum;
         if (count == 0)
             cursetxt(mtmp, TRUE);
         else if (mtmp->iswiz)
+        {
             verbalize("Destroy the thief, my pet%s!", plur(count));
+            if(canseemon(mtmp))
+                talkeff(mtmp->mx, mtmp->my);
+        }
         else
         {
             const char *mappear =
@@ -528,7 +532,11 @@ int spellnum;
         if (count == 0)
             cursetxt(mtmp, TRUE);
         else if (mtmp->iswiz)
+        {
             verbalize("Destroy the thief, my pet%s!", plur(count));
+            if (canseemon(mtmp))
+                talkeff(mtmp->mx, mtmp->my);
+        }
         else
         {
             const char* mappear =

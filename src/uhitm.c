@@ -5214,7 +5214,7 @@ boolean use_bhitpos;
 
 	int x = use_bhitpos ? bhitpos.x : mon->mx;
 	int y = use_bhitpos ? bhitpos.y : mon->my;
-	if(!(u.uswallow && mon == u.ustuck) && isok(x, y) && cansee(x, y))
+	if(!(u.uswallow && mon == u.ustuck) && isok(x, y) && cansee(x, y)) // Show hit to invisible, if you can see the location
 		display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_flags);
 }
 

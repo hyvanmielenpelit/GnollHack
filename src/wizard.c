@@ -843,6 +843,8 @@ resurrect()
         if (!Deaf) {
             pline("A voice booms out...");
             verbalize("So thou thought thou couldst %s me, fool.", verb);
+            if(canseemon(mtmp))
+               talkeff(mtmp->mx, mtmp->my);
         }
     }
 }
@@ -907,19 +909,21 @@ const char *const random_malediction[] = {
 };
 
 /* Insult or intimidate the player */
-void
+boolean
 cuss(mtmp)
 register struct monst *mtmp;
 {
     if (Deaf)
-        return;
+        return FALSE;
+
+    boolean res = TRUE;
+
     if (mtmp->iswiz)
     {
         if (!rn2(5)) /* typical bad guy action */
         {
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
             pline("%s laughs fiendishly.", Monnam(mtmp));
-
         }
         else if (u.uhave.amulet && !rn2(SIZE(random_insult)))
             verbalize("Relinquish the amulet, %s!",
@@ -948,6 +952,7 @@ register struct monst *mtmp;
         else
             com_pager(rn2(QTN_DEMONIC) + QT_DEMONIC);
     }
+    return res;
 }
 
 /*wizard.c*/

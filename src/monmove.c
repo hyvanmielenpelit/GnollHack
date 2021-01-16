@@ -161,7 +161,8 @@ struct monst* mon;
                             strcpy(someitembuf, "some items");
                         }
 
-                        talkeff(mon->mx, mon->my);
+                        if (canseemon(mon))
+                            talkeff(mon->mx, mon->my);
                         
                         char yellbuf[BUFSZ];
 
@@ -1006,11 +1007,20 @@ register struct monst *mtmp;
 	check_mon_talk(mtmp);
     /* special speeches for quest monsters */
     if (mon_can_move(mtmp) && nearby)
-        quest_talk(mtmp);
+    {
+        boolean spoke = quest_talk(mtmp);
+        if (spoke && canseemon(mtmp))
+            talkeff(mtmp->mx, mtmp->my);
+    }
+
     /* extra emotional attack for vile monsters */
     if (inrange && mtmp->data->msound == MS_CUSS && !is_peaceful(mtmp)
         && couldsee(mtmp->mx, mtmp->my) && !is_invisible(mtmp) && !rn2(5))
-        cuss(mtmp);
+    {
+        boolean spoke = cuss(mtmp);
+        if(spoke && canseemon(mtmp))
+            talkeff(mtmp->mx, mtmp->my);
+    }
 
     return (tmp == 2);
 }

@@ -18,10 +18,10 @@ STATIC_DCL void NDECL(on_goal);
 STATIC_DCL boolean NDECL(not_capable);
 STATIC_DCL int FDECL(is_pure, (BOOLEAN_P));
 STATIC_DCL void FDECL(expulsion, (BOOLEAN_P));
-STATIC_DCL void NDECL(chat_with_leader);
-STATIC_DCL void NDECL(chat_with_nemesis);
-STATIC_DCL void NDECL(chat_with_guardian);
-STATIC_DCL void FDECL(prisoner_speaks, (struct monst *));
+STATIC_DCL boolean NDECL(chat_with_leader);
+STATIC_DCL boolean NDECL(chat_with_nemesis);
+STATIC_DCL boolean NDECL(chat_with_guardian);
+STATIC_DCL boolean FDECL(prisoner_speaks, (struct monst *));
 
 STATIC_OVL void
 on_start()
@@ -246,9 +246,10 @@ struct obj *obj; /* quest artifact; possibly null if carrying Amulet */
     }
 }
 
-STATIC_OVL void
+STATIC_OVL boolean
 chat_with_leader()
 {
+    boolean res = FALSE;
     /*  Rule 0: Cheater checks. */
     if (u.uhave.questart && !Qstat(met_nemesis))
         Qstat(cheater) = TRUE;
@@ -256,7 +257,9 @@ chat_with_leader()
     /*  It is possible for you to get the amulet without completing
      *  the quest.  If so, try to induce the player to quest.
      */
-    if (Qstat(got_thanks)) {
+    if (Qstat(got_thanks)) 
+    {
+        res = TRUE;
         /* Rule 1: You've gone back with/without the amulet. */
         if (u.uhave.amulet)
             finish_quest((struct obj *) 0);
@@ -266,7 +269,10 @@ chat_with_leader()
             qt_pager(QT_POSTHANKS);
 
     /* Rule 3: You've got the artifact and are back to return it. */
-    } else if (u.uhave.questart) {
+    }
+    else if (u.uhave.questart)
+    {
+        res = TRUE;
         struct obj *otmp;
 
         for (otmp = invent; otmp; otmp = otmp->nobj)
@@ -276,49 +282,71 @@ chat_with_leader()
         finish_quest(otmp);
 
     /* Rule 4: You haven't got the artifact yet. */
-    } else if (Qstat(got_quest)) {
+    } 
+    else if (Qstat(got_quest))
+    {
+        res = TRUE;
         qt_pager(rn1(10, QT_ENCOURAGE));
 
     /* Rule 5: You aren't yet acceptable - or are you? */
-    } else {
-        if (!Qstat(met_leader)) {
+    } 
+    else
+    {
+        res = TRUE;
+        if (!Qstat(met_leader)) 
+        {
             qt_pager(QT_FIRSTLEADER);
             Qstat(met_leader) = TRUE;
             Qstat(not_ready) = 0;
-        } else
+        } 
+        else
             qt_pager(QT_NEXTLEADER);
 
         /* the quest leader might have passed through the portal into
            the regular dungeon; none of the remaining make sense there */
         if (!on_level(&u.uz, &qstart_level))
-            return;
+            return res;
 
-        if (not_capable()) {
+        if (not_capable())
+        {
             qt_pager(QT_BADLEVEL);
             exercise(A_WIS, TRUE);
+            res = FALSE; // For safety
             expulsion(FALSE);
-        } else if (is_pure(TRUE) < 0) {
+        }
+        else if (is_pure(TRUE) < 0) 
+        {
             com_pager(QT_BANISHED);
+            res = FALSE; // For safety
             expulsion(TRUE);
-        } else if (is_pure(TRUE) == 0) {
+        } 
+        else if (is_pure(TRUE) == 0)
+        {
             qt_pager(QT_BADALIGN);
-            if (Qstat(not_ready) == MAX_QUEST_TRIES) {
+            if (Qstat(not_ready) == MAX_QUEST_TRIES)
+            {
                 qt_pager(QT_LASTLEADER);
+                res = FALSE; // For safety
                 expulsion(TRUE);
-            } else {
+            }
+            else 
+            {
                 Qstat(not_ready)++;
                 exercise(A_WIS, TRUE);
                 expulsion(FALSE);
             }
-        } else { /* You are worthy! */
+        }
+        else 
+        { /* You are worthy! */
             qt_pager(QT_ASSIGNQUEST);
             exercise(A_WIS, TRUE);
             Qstat(got_quest) = TRUE;
         }
     }
+    return res;
 }
 
-void
+boolean
 leader_speaks(mtmp)
 struct monst *mtmp;
 {
@@ -330,28 +358,34 @@ struct monst *mtmp;
     /* the quest leader might have passed through the portal into the
        regular dungeon; if so, mustn't perform "backwards expulsion" */
     if (!on_level(&u.uz, &qstart_level))
-        return;
+        return FALSE;
 
     if (Qstat(pissed_off)) {
         qt_pager(QT_LASTLEADER);
-        expulsion(TRUE);
+        expulsion(TRUE); // Return FALSE for safety
     } else
-        chat_with_leader();
+        return chat_with_leader();
+
+    return FALSE;
 }
 
-STATIC_OVL void
+STATIC_OVL boolean
 chat_with_nemesis()
 {
     /*  The nemesis will do most of the talking, but... */
     qt_pager(rn1(10, QT_DISCOURAGE));
     if (!Qstat(met_nemesis))
         Qstat(met_nemesis++);
+
+    return TRUE;
 }
 
-void
+boolean
 nemesis_speaks()
 {
-    if (!Qstat(in_battle)) {
+    boolean res = TRUE;
+    if (!Qstat(in_battle)) 
+    {
         if (u.uhave.questart)
             qt_pager(QT_NEMWANTSIT);
         else if (Qstat(made_goal) == 1 || !Qstat(met_nemesis))
@@ -362,15 +396,24 @@ nemesis_speaks()
             qt_pager(QT_OTHERNEMESIS);
         else if (!rn2(5))
             qt_pager(rn1(10, QT_DISCOURAGE));
+        else
+            res = FALSE;
+
         if (Qstat(made_goal) < 7)
             Qstat(made_goal)++;
         Qstat(met_nemesis) = TRUE;
-    } else /* he will spit out random maledictions */
+    } 
+    else
+    {/* he will spit out random maledictions */
         if (!rn2(5))
-        qt_pager(rn1(10, QT_DISCOURAGE));
+            qt_pager(rn1(10, QT_DISCOURAGE));
+        else
+            res = FALSE;
+    }
+    return res;
 }
 
-STATIC_OVL void
+STATIC_OVL boolean
 chat_with_guardian()
 {
     /*  These guys/gals really don't have much to say... */
@@ -378,14 +421,16 @@ chat_with_guardian()
         qt_pager(rn1(5, QT_GUARDTALK2));
     else
         qt_pager(rn1(5, QT_GUARDTALK));
+
+    return TRUE;
 }
 
-STATIC_OVL void
+STATIC_OVL boolean
 prisoner_speaks(mtmp)
 struct monst *mtmp;
 {
 	if (!mtmp)
-		return;
+		return FALSE;
 
     if (mtmp->data == &mons[PM_PRISONER]
         && (mtmp->mstrategy & STRAT_WAITMASK)) {
@@ -402,48 +447,56 @@ struct monst *mtmp;
 
         /* ...But the guards are not */
         (void) angry_guards(FALSE);
+        return TRUE;
     }
-    return;
+    return FALSE;
 }
 
-void
+boolean
 quest_chat(mtmp)
 register struct monst *mtmp;
 {
-    if (mtmp->m_id == Qstat(leader_m_id)) {
-        chat_with_leader();
-        return;
+    if (mtmp->m_id == Qstat(leader_m_id)) 
+    {
+        return chat_with_leader();
     }
-    switch (mtmp->data->msound) {
+
+    switch (mtmp->data->msound) 
+    {
     case MS_NEMESIS:
-        chat_with_nemesis();
+        return chat_with_nemesis();
         break;
     case MS_GUARDIAN:
-        chat_with_guardian();
+        return chat_with_guardian();
         break;
     default:
         impossible("quest_chat: Unknown quest character %s.", mon_nam(mtmp));
     }
+    return FALSE;
 }
 
-void
+boolean
 quest_talk(mtmp)
 struct monst *mtmp;
 {
-    if (mtmp->m_id == Qstat(leader_m_id)) {
-        leader_speaks(mtmp);
-        return;
+    if (mtmp->m_id == Qstat(leader_m_id)) 
+    {
+        return leader_speaks(mtmp);
     }
-    switch (mtmp->data->msound) {
+
+    switch (mtmp->data->msound)
+    {
     case MS_NEMESIS:
-        nemesis_speaks();
+        return nemesis_speaks();
         break;
     case MS_DJINNI:
-        prisoner_speaks(mtmp);
+        return prisoner_speaks(mtmp);
         break;
     default:
         break;
     }
+
+    return FALSE;
 }
 
 void

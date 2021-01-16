@@ -2452,10 +2452,10 @@ E void NDECL(onquest);
 E void NDECL(nemdead);
 E void FDECL(artitouch, (struct obj *));
 E boolean NDECL(ok_to_quest);
-E void FDECL(leader_speaks, (struct monst *));
-E void NDECL(nemesis_speaks);
-E void FDECL(quest_chat, (struct monst *));
-E void FDECL(quest_talk, (struct monst *));
+E boolean FDECL(leader_speaks, (struct monst *));
+E boolean NDECL(nemesis_speaks);
+E boolean FDECL(quest_chat, (struct monst *));
+E boolean FDECL(quest_talk, (struct monst *));
 E void FDECL(quest_stat_check, (struct monst *));
 E void FDECL(finish_quest, (struct obj *));
 
@@ -3625,7 +3625,7 @@ E int FDECL(summon_level_appropriate_monsters, (struct monst*));
 E void NDECL(resurrect);
 E void NDECL(intervene);
 E void NDECL(wizdead);
-E void FDECL(cuss, (struct monst *));
+E boolean FDECL(cuss, (struct monst *));
 
 /* ### worm.c ### */
 
