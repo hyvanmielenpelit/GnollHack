@@ -5819,10 +5819,16 @@ const char *pre_msg, *post_msg;
 		typmask |= 16;
 	else if (portal_flag == 4)
 		typmask |= 32;
+
 	if (portal_flag < 0)
-        typmask |= 0200; /* flag for portal removal */
+	{
+		typmask |= 4; /* The same otherwise as 1 */
+		typmask |= 0200; /* flag for portal removal */
+	}
+
 	if (teleport)
 		typmask |= 0400; /* flag for teleport in effect on new level */
+
 	u.utotype = typmask;
     /* destination level */
     assign_level(&u.utolev, tolev);
