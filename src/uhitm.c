@@ -3223,7 +3223,33 @@ register struct attack *mattk;
     boolean resistance; /* only for cold/fire/elec */
     double damage = adjust_damage(d((int) mattk->damn, (int) mattk->damd), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
 
-    You("explode!");
+	enum sfx_sound_types sfx_sound = SFX_ILLEGAL;
+
+	switch (mattk->adtyp)
+	{
+	case AD_COLD:
+		sfx_sound = SFX_EXPLOSION_FREEZING_SPHERE;
+		break;
+	case AD_FIRE:
+		sfx_sound = SFX_EXPLOSION_FLAMING_SPHERE;
+		break;
+	case AD_ELEC:
+		sfx_sound = SFX_EXPLOSION_SHOCKING_SPHERE;
+		break;
+	case AD_BLND:
+		sfx_sound = SFX_BLINDING_FLASH;
+		break;
+	case AD_HALU:
+		sfx_sound = SFX_HALLUCINATING_FLASH;
+		break;
+	default:
+		break;
+	}
+
+	if (sfx_sound != SFX_ILLEGAL)
+		play_sfx_sound(sfx_sound);
+	
+	You("explode!");
     switch (mattk->adtyp) {
     case AD_BLND:
         if (!resists_blnd(mdef)) {

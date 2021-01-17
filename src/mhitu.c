@@ -3581,8 +3581,10 @@ boolean ufound;
         sfx_sound = SFX_EXPLOSION_SHOCKING_SPHERE;
         break;
     case AD_BLND:
-    case AD_HALU:
         sfx_sound = SFX_BLINDING_FLASH;
+        break;
+    case AD_HALU:
+        sfx_sound = SFX_HALLUCINATING_FLASH;
         break;
     default:
         break;

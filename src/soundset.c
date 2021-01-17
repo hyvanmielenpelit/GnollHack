@@ -3605,8 +3605,8 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     },
     {
         "GHSOUND_BLINDING_FLASH",
-        {GHSOUND_BLINDING_FLASH, 1.0f},
-        TRUE, SOUND_PLAY_GROUP_NORMAL
+        {GHSOUND_BLINDING_FLASH, 10.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_SCALES_COVER_EYES",
@@ -4371,6 +4371,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_EXPLOSION_SHOCKING_SPHERE",
         {GHSOUND_EXPLOSION_SHOCKING_SPHERE, 20.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_HALLUCINATING_FLASH",
+        {GHSOUND_HALLUCINATING_FLASH, 10.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
 };

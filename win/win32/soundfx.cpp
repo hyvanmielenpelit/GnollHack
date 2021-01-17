@@ -480,7 +480,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Gain Ability", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Lose Ability", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Restore Ability", 0.5f },
-    { SOUND_BANK_MASTER, "event:/SFX/General/Blinding Flash", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Blinding Flash", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Clerical Monster/Scales Cover Eyes", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/SFX/General/Weapon Swapped", 1.0f },
@@ -824,8 +824,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Bell of Opening/Unsettling Shrill Sound", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Buff/Acquired/Haste", 0.5f },
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Flaming Sphere", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Freezing Sphere", 1.0f },
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Shocking Sphere", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Hallucinating Flash", 1.0f },
 
 };
 

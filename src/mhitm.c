@@ -1046,6 +1046,32 @@ struct attack *mattk;
     if (is_cancelled(magr))
         return MM_MISS;
 
+    enum sfx_sound_types sfx_sound = SFX_ILLEGAL;
+
+    switch (mattk->adtyp)
+    {
+    case AD_COLD:
+        sfx_sound = SFX_EXPLOSION_FREEZING_SPHERE;
+        break;
+    case AD_FIRE:
+        sfx_sound = SFX_EXPLOSION_FLAMING_SPHERE;
+        break;
+    case AD_ELEC:
+        sfx_sound = SFX_EXPLOSION_SHOCKING_SPHERE;
+        break;
+    case AD_BLND:
+        sfx_sound = SFX_BLINDING_FLASH;
+        break;
+    case AD_HALU:
+        sfx_sound = SFX_HALLUCINATING_FLASH;
+        break;
+    default:
+        break;
+    }
+
+    if (sfx_sound != SFX_ILLEGAL)
+        play_sfx_sound_at_location(sfx_sound, magr->mx, magr->my);
+
     if (cansee(magr->mx, magr->my))
         pline("%s explodes!", Monnam(magr));
     else
@@ -2264,7 +2290,7 @@ int mdead;
     else
 		basedmg = max(0, mddat->mattk[i].damp);
 
-	damage += adjust_damage(basedmg, magr, mdef, mddat->mattk[i].adtyp, ADFLAGS_NONE);
+	damage += adjust_damage(basedmg, mdef, magr, mddat->mattk[i].adtyp, ADFLAGS_NONE); /* Defender deals damage in passive defense */
 	
     enum action_tile_types action_before = mdef->action;
     update_m_action(mdef, ACTION_TILE_PASSIVE_DEFENSE);
