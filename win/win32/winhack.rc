@@ -66,6 +66,14 @@ BEGIN
         MENUITEM "&Copy To Clipboard (ASCII)",  IDM_SETTING_SCREEN_TO_CLIPBOARD
         MENUITEM "&Save to File (ASCII)",       IDM_SETTING_SCREEN_TO_FILE
     END
+    POPUP "&Zoom"
+    BEGIN
+        MENUITEM "Zoom &in\t Alt++",            IDM_ZOOM_ZOOMIN
+        MENUITEM "Zoom &out\tAlt+-",            IDM_ZOOM_ZOOMOUT
+        MENUITEM SEPARATOR
+        MENUITEM "&Normal zoom\tAlt+.",         IDM_ZOOM_NORMALZOOM
+        MENUITEM "&Minimap zoom\tAlt+,",        IDM_ZOOM_MINIMAPZOOM
+    END
     POPUP "Windows &Settings"
     BEGIN
         MENUITEM "GnollHack Mode",              IDM_NHMODE
@@ -100,8 +108,8 @@ END
 
 IDC_GNOLLHACKW ACCELERATORS
 BEGIN
-    "?",            IDM_ABOUT,              ASCII,  ALT
-    "/",            IDM_ABOUT,              ASCII,  ALT
+    "/",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
+    "?",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
 END
 
 

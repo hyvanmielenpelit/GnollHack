@@ -1058,7 +1058,21 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         free(wtext);
     } break;
 
-    case IDM_NHMODE: {
+    case IDM_ZOOM_ZOOMIN:
+        (void)dozoomin();
+        break;
+    case IDM_ZOOM_ZOOMOUT:
+        (void)dozoomout();
+        break;
+    case IDM_ZOOM_MINIMAPZOOM:
+        (void)dozoommini();
+        break;
+    case IDM_ZOOM_NORMALZOOM:
+        (void)dozoomnormal();
+        break;
+
+    case IDM_NHMODE: 
+    {
         GetNHApp()->regGnollHackMode = GetNHApp()->regGnollHackMode ? 0 : 1;
         mswin_menu_check_intf_mode();
         mswin_apply_window_style_all();

@@ -149,6 +149,16 @@
 #define ID_HELP_GNOLLHACKCREDITS        32801
 #define ID_HELP_CREDITS                 32802
 #define IDM_HELP_CREDITS                32803
+#define ID_ZOOM_ZOOMIN                  32804
+#define ID_ZOOM_ZOOMOUT                 32805
+#define ID_ZOOM_FIT                     32806
+#define ID_ZOOM_MINIMAPZOOM             32807
+#define ID_ZOOM_NORMAL_ZOOM             32808
+#define ID_ZOOM_NORMALZOOM              32809
+#define IDM_ZOOM_ZOOMIN                 32810
+#define IDM_ZOOM_ZOOMOUT                32811
+#define IDM_ZOOM_NORMALZOOM             32812
+#define IDM_ZOOM_MINIMAPZOOM            32813
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -156,7 +166,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        180
-#define _APS_NEXT_COMMAND_VALUE         32804
+#define _APS_NEXT_COMMAND_VALUE         32817
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

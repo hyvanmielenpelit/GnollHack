@@ -140,8 +140,6 @@ STATIC_PTR int NDECL(dosh_core);
 STATIC_PTR int NDECL(doherecmdmenu);
 STATIC_PTR int NDECL(dotherecmdmenu);
 STATIC_PTR int NDECL(doprev_message);
-STATIC_PTR int NDECL(dozoomin);
-STATIC_PTR int NDECL(dozoomout);
 STATIC_PTR int NDECL(dolight);
 STATIC_PTR int NDECL(timed_occupation);
 STATIC_PTR int NDECL(doextcmd);
@@ -7709,7 +7707,7 @@ dozoomnormal(VOID_ARGS)
     return 0;
 }
 
-STATIC_PTR int
+int
 dozoomin(VOID_ARGS)
 {
     double scale_level = round(flags.screen_scale_adjustment / KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP);
@@ -7722,7 +7720,7 @@ dozoomin(VOID_ARGS)
     return 0;
 }
 
-STATIC_PTR int
+int
 dozoomout(VOID_ARGS)
 {
     double scale_level = round(flags.screen_scale_adjustment / KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP);

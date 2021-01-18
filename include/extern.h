@@ -325,6 +325,8 @@ E char* FDECL(key2txt, (UCHAR_P, char *));
 E char FDECL(yn_function, (const char *, const char *, CHAR_P));
 E boolean FDECL(paranoid_query, (BOOLEAN_P, const char *));
 E boolean FDECL(object_stats_known, (struct obj*));
+E int NDECL(dozoomin);
+E int NDECL(dozoomout);
 E int NDECL(dozoomnormal);
 E int NDECL(dozoommini);
 E int NDECL(dozoomhalf);
