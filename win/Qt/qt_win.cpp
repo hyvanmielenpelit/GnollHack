@@ -205,7 +205,7 @@ int qt_compact_mode = 0;
 extern const char *enc_stat[]; /* from botl.c */
 extern const char *hu_stat[]; /* from eat.c */
 extern int total_tiles_used; // from tile.c
-extern short glyph2tile[]; // from tile.c
+extern int glyph2tile[]; // from tile.c
 }
 
 static int tilefile_tile_W=16;

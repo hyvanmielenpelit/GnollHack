@@ -13,7 +13,7 @@
 #define NHMAP_FONT_NAME TEXT("Terminal")
 #define MAXWINDOWTEXT 255
 
-extern short glyph2tile[];
+extern int glyph2tile[];
 
 /* map window data */
 typedef struct mswin_nethack_map_window {
@@ -670,7 +670,7 @@ onPaint(HWND hWnd)
             for (i = paint_rt.left; i < paint_rt.right; i++)
                 for (j = paint_rt.top; j < paint_rt.bottom; j++)
                     if (data->map[i][j] >= 0) {
-                        short ntile;
+                        int ntile;
                         int t_x, t_y;
                         RECT glyph_rect;
 

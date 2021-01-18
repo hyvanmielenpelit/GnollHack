@@ -35,7 +35,7 @@
 
 STATIC_VAR FILE *tilefile;
 STATIC_VAR FILE *tilefile_O;
-extern short glyph2tile[]; /* in tile.c (made from tilemap.c) */
+extern int glyph2tile[]; /* in tile.c (made from tilemap.c) */
 
 #ifdef TILES_IN_RAM
 struct planar_cell_struct *ramtiles;

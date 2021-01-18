@@ -102,7 +102,7 @@
 #include <conio.h>
 #endif
 
-extern short glyph2tile[];
+extern int glyph2tile[];
 
 /* STATIC_DCL void FDECL(vga_NoBorder, (int));  */
 void FDECL(vga_gotoloc, (int, int)); /* This should be made a macro */

@@ -2544,17 +2544,17 @@ struct media {
         int player_glyph_level = 0;
         int player_glyph_index = 0;
         int glyph = 0;
-        short ntile = 0;
+        int ntile = 0;
         int base_t_x = 0;
         int base_t_y = 0;
 
         int pet_glyph = NO_GLYPH;
-        short pet_tile = 0;
+        int pet_tile = 0;
         int pet_x = 0;
         int pet_y = 0;
 
         int pet_glyph2 = NO_GLYPH;
-        short pet_tile2 = 0;
+        int pet_tile2 = 0;
         int pet_x2 = 0;
         int pet_y2 = 0;
 

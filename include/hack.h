@@ -298,7 +298,7 @@ typedef struct sortloot_item Loot;
 /* Tiles */
 #include "tiledata.h"
 #ifdef USE_TILES
-extern short glyph2tile[MAX_GLYPH];
+extern int glyph2tile[MAX_GLYPH];
 extern uchar glyphtileflags[MAX_GLYPH];
 extern short tile2replacement[MAX_TILES];
 extern short tile2animation[MAX_TILES];

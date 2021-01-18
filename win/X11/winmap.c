@@ -45,7 +45,7 @@
 #endif
 
 /* from tile.c */
-extern short glyph2tile[];
+extern int glyph2tile[];
 extern int total_tiles_used;
 
 /* Define these if you really want a lot of junk on your screen. */

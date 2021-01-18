@@ -1062,7 +1062,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     TEXTMETRIC tm;
     HGDIOBJ saveFont, normalFont;
     HDC tileDC;
-    short ntile;
+    int ntile;
     int t_x, t_y;
     int x, y;
     TCHAR wbuf[BUFSZ];
@@ -1269,7 +1269,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     if (enltile >= 0)
                     {
                         int glyph = enltile + enlargements[enlargement_idx].glyph_offset + GLYPH_ENLARGEMENT_OFF;
-                        short etile = glyph2tile[glyph];
+                        int etile = glyph2tile[glyph];
                         t_x = TILEBMP_X(etile) + (flip_tile ? tileWidth - 1 : 0);
                         t_y = TILEBMP_Y(etile);
                         int target_x = 0;

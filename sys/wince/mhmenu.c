@@ -59,7 +59,7 @@ typedef struct mswin_nethack_menu_window {
     HBITMAP bmpNotChecked;
 } NHMenuWindow, *PNHMenuWindow;
 
-extern short glyph2tile[];
+extern int glyph2tile[];
 
 static WNDPROC wndProcListViewOrig = NULL;
 static WNDPROC editControlWndProc = NULL;

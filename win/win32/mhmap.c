@@ -976,7 +976,7 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 static void
 paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 {
-    short ntile;
+    int ntile;
     int t_x, t_y;
     int glyph, signed_glyph;
 
@@ -1311,7 +1311,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     int anim_frame_idx = -1, main_tile_idx = -1;
                                     int tile_animation_index = get_tile_animation_index_from_glyph(main_glyph);
                                     enum autodraw_types autodraw = AUTODRAW_NONE;
-                                    short main_tile = glyph2tile[main_glyph];
+                                    int main_tile = glyph2tile[main_glyph];
                                     boolean mapAnimatedDummy = FALSE;
                                     int anim_frame_idx_dummy = 0, main_tile_idx_dummy = 0;
                                     main_tile = maybe_get_replaced_tile(main_tile, adj_x, adj_y, data_to_replacement_info(signed_main_glyph, base_layer, 0, worm, data->map[adj_x][adj_y].layer_flags), &autodraw);
@@ -4754,13 +4754,13 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
         {
             for (int i = 0; i < 2; i++)
             {
-                short tile_upside = glyph2tile[abs(data->map[rx][ry].glyph)];
-                short bktile_upside = glyph2tile[abs(data->map[rx][ry].bkglyph)];
+                int tile_upside = glyph2tile[abs(data->map[rx][ry].glyph)];
+                int bktile_upside = glyph2tile[abs(data->map[rx][ry].bkglyph)];
                 short replacement_idx_upside = tile2replacement[tile_upside];
                 short bk_replacement_idx_upside = tile2replacement[bktile_upside];
 
                 short used_ridx = (i == 0 ? replacement_idx_upside : bk_replacement_idx_upside);
-                short used_tile = (i == 0 ? tile_upside : bktile_upside);
+                int used_tile = (i == 0 ? tile_upside : bktile_upside);
                 if (used_ridx > 0)
                 {
                     /* Update tile area */
@@ -4956,7 +4956,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
     {
         int layer_rounds = 1;
         struct obj* otmp = (struct obj*)0;
-        short ntile = -1;
+        int ntile = -1;
         if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER_OBJECT)
         {
             layer_rounds = MAX_SHOWN_OBJECTS;

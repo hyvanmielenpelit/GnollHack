@@ -21,7 +21,7 @@
 #define index strchr
 #undef time
 
-extern short glyph2tile[]; /* From tile.c */
+extern int glyph2tile[]; /* From tile.c */
 
 typedef struct {
     GdkImlibImage *im;

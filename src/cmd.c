@@ -1958,7 +1958,7 @@ wiz_save_tiledata(VOID_ARGS) /* Save a csv file for tile data */
     {
         const char* fq_save = "tile_definition.csv";
         pline("Starting writing %s...", fq_save);
-        int cnt = process_tiledata(0, fq_save, (short*)0, (uchar*)0);
+        int cnt = process_tiledata(0, fq_save, (int*)0, (uchar*)0);
         pline("Done writing %s. %d tiles written.", fq_save, cnt);
     }
     else
@@ -1974,7 +1974,7 @@ wiz_count_tiles(VOID_ARGS) /* Save a csv file for tile data */
 #ifdef USE_TILES
     if (wizard)
     {
-        int cnt = process_tiledata(2, (const char*)0, (short*)0, (uchar*)0);
+        int cnt = process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
         pline("There are %d tiles.", cnt);
     }
     else
@@ -5072,7 +5072,7 @@ struct ext_func_tab extcmdlist[] = {
             wiz_save_tiledata, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizcounttiles", "count the number of tiles",
             wiz_count_tiles, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { '\0', "wizsaveglyph2tiles", "save glyph2tiles into a file",
+    { '\0', "wizsaveglyph2tiles", "save glyph2tile into a file",
             wiz_save_glyph2tiles, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 	{ '\0', "wizcrown", "make the god crown you",
 			wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },

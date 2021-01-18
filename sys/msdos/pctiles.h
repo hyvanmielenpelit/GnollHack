@@ -61,7 +61,7 @@ extern int FDECL(ReadPlanarTileFile_O,
 extern int FDECL(ReadPackedTileFile, (int, char (*)[TILE_X]));
 #endif
 
-extern short glyph2tile[MAX_GLYPH]; /* in tile.c (made from tilemap.c) */
+extern int glyph2tile[MAX_GLYPH]; /* in tile.c (made from tilemap.c) */
 
 #endif /* USE_TILES */
 

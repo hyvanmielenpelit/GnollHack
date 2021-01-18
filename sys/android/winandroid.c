@@ -65,7 +65,7 @@ static void and_status_flush();
 
 int GnollHackMain(int argc, char** argv);
 
-extern short glyph2tile[];
+extern int glyph2tile[];
 
 struct window_procs and_procs = {
 	"and",

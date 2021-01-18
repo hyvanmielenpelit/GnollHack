@@ -3690,10 +3690,10 @@ unsigned long layer_flags;
     return info;
 }
 
-short
+int
 maybe_get_replaced_tile(ntile, x, y, info, autodraw_ptr)
 int x, y;
-short ntile;
+int ntile;
 struct replacement_info info;
 enum autodraw_types* autodraw_ptr;
 {
@@ -4302,9 +4302,9 @@ struct rm *lev, *above_lev, *left_lev, *right_lev;
     return typ;
 }
 
-short
+int
 maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr)
-short ntile;
+int ntile;
 int tile_animation_idx;
 enum animation_play_types play_type;
 long interval_counter;
@@ -4370,7 +4370,7 @@ enum autodraw_types* autodraw_ptr;
 
             int tile_anim_idx = (tile_animation_idx < 0 || tile_animation_idx >= animations[animation_idx].number_of_tile_animations ? 0 : tile_animation_idx);
             int animation_glyph = animation_frame_index + tile_anim_idx * (int)animations[animation_idx].number_of_frames + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
-            short res = glyph2tile[animation_glyph]; /* animated version selected */
+            int res = glyph2tile[animation_glyph]; /* animated version selected */
             return res;
         }
     }
@@ -4463,7 +4463,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 
-short
+int
 get_animation_base_tile(animidx)
 short animidx;
 {
@@ -4607,7 +4607,7 @@ short animidx;
 }
 
 
-short
+int
 get_enlargement_base_tile(enlidx, enl_anim_tile_idx)
 short enlidx, enl_anim_tile_idx;
 {
@@ -4750,7 +4750,7 @@ int animidx, tileidx;
     return 0;
 }
 
-short
+int
 get_replacement_base_tile(replacement_idx)
 short replacement_idx;
 {

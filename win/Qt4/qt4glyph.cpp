@@ -26,7 +26,7 @@ extern "C" {
 #include "qt4set.h"
 #include "qt4str.h"
 
-extern short glyph2tile[]; // from tile.c
+extern int glyph2tile[]; // from tile.c
 
 namespace nethack_qt4 {
 

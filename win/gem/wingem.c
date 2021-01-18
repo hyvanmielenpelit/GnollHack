@@ -30,7 +30,7 @@ extern void mar_set_msg_align(int);
 extern void mar_set_tilefile(char *);
 extern void mar_set_tilex(int);
 extern void mar_set_tiley(int);
-extern short glyph2tile[MAX_GLYPH];      /* from tile.c */
+extern int glyph2tile[MAX_GLYPH];      /* from tile.c */
 extern void mar_display_nhwindow(winid); /* from wingem1.c */
 
 void Gem_outrip(winid, int, time_t);

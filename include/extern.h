@@ -43,12 +43,12 @@ E short FDECL(get_player_enlargement, (enum action_tile_types, int, int, int, in
 E int FDECL(get_player_action_glyph_offset, (enum action_tile_types));
 E int FDECL(get_monster_action_glyph_offset, (enum action_tile_types, int));
 
-E short FDECL(maybe_get_replaced_tile, (short, int, int, struct replacement_info, enum autodraw_types*));
-E short FDECL(maybe_get_animated_tile, (short, int, enum animation_play_types, long, int*, int*, boolean*, enum autodraw_types*));
+E int FDECL(maybe_get_replaced_tile, (int, int, int, struct replacement_info, enum autodraw_types*));
+E int FDECL(maybe_get_animated_tile, (int, int, enum animation_play_types, long, int*, int*, boolean*, enum autodraw_types*));
 E int FDECL(get_tile_animation_index_from_glyph, (int));
-E short FDECL(get_replacement_base_tile, (short));
-E short FDECL(get_animation_base_tile, (short));
-E short FDECL(get_enlargement_base_tile, (short, short));
+E int FDECL(get_replacement_base_tile, (short));
+E int FDECL(get_animation_base_tile, (short));
+E int FDECL(get_enlargement_base_tile, (short, short));
 E struct replacement_info FDECL(data_to_replacement_info, (int, int, struct obj*, struct monst*, unsigned long));
 E int FDECL(get_animation_frame_with_tile, (int, int));
 E void FDECL(play_special_effect_at, (enum special_effect_types, int, int, int, boolean));
@@ -3070,7 +3070,7 @@ E void FDECL(substitute_tiles, (d_level *));
 /* ### tiledata.c ###*/
 E void NDECL(init_tiledata);
 E boolean FDECL(has_generic_player_action_tile, (enum action_tile_types action));
-E int FDECL(process_tiledata, (int, const char*, short*, uchar*));
+E int FDECL(process_tiledata, (int, const char*, int*, uchar*));
 E boolean FDECL(is_dir_from_base_dir, (int, int, boolean*, boolean*));
 E boolean FDECL(is_zap_char_from_base_zap_char, (int, int, boolean*, boolean*));
 
