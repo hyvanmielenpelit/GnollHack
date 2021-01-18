@@ -279,6 +279,17 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       HUMAN_KNIGHT_MALE_ATTACK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "human-knight-male-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_KNIGHT_MALE_KICK_ANIMATION_TILES,
+      HUMAN_KNIGHT_MALE_KICK_ANIMATION_FRAMES, HUMAN_KNIGHT_MALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      HUMAN_KNIGHT_MALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "elf-priest-male-chaotic-cast-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES,
         ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_OFF,
         1,
@@ -422,7 +433,28 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       HUMAN_TOURIST_MALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "human-barbarian-male-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_BARBARIAN_MALE_ATTACK_ANIMATION_TILES,
+    { "human-tourist-female-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_TOURIST_FEMALE_ATTACK_ANIMATION_TILES,
+      HUMAN_TOURIST_FEMALE_ATTACK_ANIMATION_FRAMES, HUMAN_TOURIST_FEMALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      6, 9,
+      HUMAN_TOURIST_FEMALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-tourist-female-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_TOURIST_FEMALE_KICK_ANIMATION_TILES,
+      HUMAN_TOURIST_FEMALE_KICK_ANIMATION_FRAMES, HUMAN_TOURIST_FEMALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      3, 7,
+      HUMAN_TOURIST_FEMALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    }, { "human-barbarian-male-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_BARBARIAN_MALE_ATTACK_ANIMATION_TILES,
       HUMAN_BARBARIAN_MALE_ATTACK_ANIMATION_FRAMES, HUMAN_BARBARIAN_MALE_ATTACK_ANIMATION_OFF,
       1,
       1,
@@ -1266,6 +1298,14 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "human-knight-male-kick-enlargement", 
+      HUMAN_KNIGHT_MALE_KICK_ANIMATION_TILES, HUMAN_KNIGHT_MALE_KICK_ANIMATION_FRAMES,
+      HUMAN_KNIGHT_MALE_KICK_ENLARGEMENT_TILES, HUMAN_KNIGHT_MALE_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "elf-priest-male-chaotic-cast-enlargement",
       ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES,
       ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT_OFF,
@@ -1365,6 +1405,22 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { "human-tourist-male-kick-enlargement",
         HUMAN_TOURIST_MALE_KICK_ANIMATION_TILES, HUMAN_TOURIST_MALE_KICK_ANIMATION_FRAMES,
         HUMAN_TOURIST_MALE_KICK_ENLARGEMENT_TILES, HUMAN_TOURIST_MALE_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-tourist-female-attack-enlargement",
+        HUMAN_TOURIST_FEMALE_ATTACK_ANIMATION_TILES, HUMAN_TOURIST_FEMALE_ATTACK_ANIMATION_FRAMES,
+        HUMAN_TOURIST_FEMALE_ATTACK_ENLARGEMENT_TILES, HUMAN_TOURIST_FEMALE_ATTACK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-tourist-female-kick-enlargement",
+        HUMAN_TOURIST_FEMALE_KICK_ANIMATION_TILES, HUMAN_TOURIST_FEMALE_KICK_ANIMATION_FRAMES,
+        HUMAN_TOURIST_FEMALE_KICK_ENLARGEMENT_TILES, HUMAN_TOURIST_FEMALE_KICK_ENLARGEMENT_OFF,
         3, 1, 0,
         { -1, -1, -1, 0, 1 },
         { 0, 0, 0, 0, 0 },
@@ -3568,6 +3624,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return ORC_BARBARIAN_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_TOURIST_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_BARBARIAN && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_BARBARIAN_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
@@ -3608,12 +3666,16 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_SPECIAL_ATTACK:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_TOURIST_FEMALE_ATTACK_ANIMATION;
         break;
     case ACTION_TILE_KICK:
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
             return PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_KNIGHT_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_KNIGHT_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return DWARF_KNIGHT_FEMALE_KICK_ANIMATION;
         //if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
@@ -3634,6 +3696,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return ORC_BARBARIAN_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_TOURIST_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_TOURIST_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_BARBARIAN && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_BARBARIAN_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_VALKYRIE && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
@@ -3659,6 +3723,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_ITEM_USE:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
         break;
     case ACTION_TILE_DOOR_USE:

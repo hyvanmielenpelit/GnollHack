@@ -2745,9 +2745,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_NO_ACTION:
         break;
     case ACTION_TILE_ATTACK:
-        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
-            return TRUE;
-        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN)
             return TRUE;
@@ -2763,7 +2761,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return TRUE;
-        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_BARBARIAN && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
@@ -2801,15 +2799,13 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
-        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
             return TRUE;
         break;
     case ACTION_TILE_KICK:
-        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN)
             return TRUE;
-        if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
-            return TRUE;
-        if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF)
             return TRUE;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN)
             return TRUE;
@@ -2821,7 +2817,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_BARBARIAN && raceidx == RACE_ORC && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_BARBARIAN && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
@@ -2847,7 +2843,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_RECEIVE_DAMAGE:
         break;
     case ACTION_TILE_ITEM_USE:
-        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
             return TRUE;
         break;
     case ACTION_TILE_DOOR_USE:
