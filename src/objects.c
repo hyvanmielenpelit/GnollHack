@@ -1215,9 +1215,9 @@ BOW("Galadhrim bow", "ornamental long bow",
 #define SHIRT(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIRT, P_NONE, metal, c, 0, soundset, flags, flags2, flags3,flags4, powconfermask)
-#define ROBE(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
+#define ROBE(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_ROBE, P_NONE, metal, c, 0, soundset, flags, flags2, flags3,flags4, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_ROBE, P_NONE, metal, c, height, soundset, flags, flags2, flags3,flags4, powconfermask)
 #define BRACERS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BRACERS, P_NONE, metal, c, 24, soundset, flags, flags2, flags3,flags4 | O4_FLOOR_TILE, powconfermask)
@@ -1497,34 +1497,34 @@ CLOAK("cloak of displacement", "piece of cloth",
 /* robes and gowns */
 /* with shuffled appearances... */
 ROBE("robe", "old robe", //STARTMARKER 1 & 2
-	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 10, 1, 20,  25,  10, 5, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_RED, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 10, 1, 20,  25,  10, 5, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_RED, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("robe of protection", "golden ornamental robe",
-	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 10, 1, 25, 400,  7, 8, 0, 0, 0, 0, 0, MAT_CLOTH, HI_GOLD, OBJECT_SOUNDSET_GENERIC, O1_ENCHANTMENT_AFFECTS_MC, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 10, 1, 25, 400,  7, 8, 0, 0, 0, 0, 0, MAT_CLOTH, HI_GOLD, 0, OBJECT_SOUNDSET_GENERIC, O1_ENCHANTMENT_AFFECTS_MC, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("robe of magic resistance", "shining white robe",
-	0, 1, ANTIMAGIC, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 9, 1, 25, 400,  9, 5, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 1, ANTIMAGIC, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 9, 1, 25, 400,  9, 5, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("gown of the archbishops", "shining purple robe",
-	0, 1, CURSE_RESISTANCE, DEATH_RESISTANCE, DRAIN_RESISTANCE, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 5, 2, 30, 400,  9, 4, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_MAGENTA, OBJECT_SOUNDSET_GENERIC, O1_NOT_CURSEABLE, O2_GENERATED_BLESSED, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 1, CURSE_RESISTANCE, DEATH_RESISTANCE, DRAIN_RESISTANCE, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 5, 2, 30, 400,  9, 4, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_MAGENTA, 0, OBJECT_SOUNDSET_GENERIC, O1_NOT_CURSEABLE, O2_GENERATED_BLESSED, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("robe of powerlessness", "shining green robe",
-	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 10, 1, 25, 400,  9, 4, 0, 0, BONUS_TO_STR | BONUS_TO_INT | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM | IGNORE_ENCHANTMENT, 3, 0, MAT_CLOTH, CLR_GREEN, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 10, 1, 25, 400,  9, 4, 0, 0, BONUS_TO_STR | BONUS_TO_INT | SETS_FIXED_ATTRIBUTE | FIXED_IS_MAXIMUM | IGNORE_ENCHANTMENT, 3, 0, MAT_CLOTH, CLR_GREEN, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CURSED_MAGIC_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("robe of eyes", "star-patterned robe",
-	0, 1, INFRAVISION, SEE_INVISIBLE, SEARCHING, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 5, 1, 25, 400,  9, 3, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_CYAN, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 1, INFRAVISION, SEE_INVISIBLE, SEARCHING, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 5, 1, 25, 400,  9, 3, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_CYAN, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("robe of the archmagi", "shining blue robe",
-	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 5, 2, 30, 400,  9, 5, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, HI_ZAP, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 5, 2, 30, 400,  9, 5, 0, 0, BONUS_TO_INT | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, HI_ZAP, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("robe of splendor", "shining purple robe",
-	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 5, 2, 30, 400,  9, 5, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, CLR_MAGENTA, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 5, 2, 30, 400,  9, 5, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, CLR_MAGENTA, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("robe of starry wisdom", "shining black robe", //ENDMARKER 2
-	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 5, 2, 30, 400,  9, 5, 0, 0, BONUS_TO_WIS | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, CLR_BLACK, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 5, 2, 30, 400,  9, 5, 0, 0, BONUS_TO_WIS | SETS_FIXED_ATTRIBUTE, 20, 0, MAT_CLOTH, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 /* without shuffled appearances... */
 ROBE("bathrobe", "soft cotton robe",
-	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 6, 1, 25,   5, 10, 4, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 6, 1, 25,   5, 10, 4, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, 32, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, PERMITTED_ALL),
 ROBE("clerical gown", None,
-	1, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 6, 1, 15,  25, 10, 5, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_GENERATED_BLESSED, O3_NONE, O4_NONE, PERMITTED_ALL),
+	1, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 6, 1, 15,  25, 10, 5, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_GENERATED_BLESSED, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("tailored silk robe", "fine robe",
-	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 4, 1, 30, 100, 10, 5, 0, 0, 0, 0, 0, MAT_SILK, CLR_BROWN, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_GNOMISH_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 4, 1, 30, 100, 10, 5, 0, 0, 0, 0, 0, MAT_SILK, CLR_BROWN, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_GNOMISH_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("gnollish haircloth robe", "crude robe",
-	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 6, 1, 30,  10,  9, 6, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BROWN, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+	0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 6, 1, 30,  10,  9, 6, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BROWN, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_GNOLLISH_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 ROBE("mummy wrapping", None, //ENDMARKER 1
-	1, 0, BLOCKS_INVISIBILITY, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 0, 0,  3,   2, 10, 6, 0, 0, 0, 0, 2, MAT_CLOTH, CLR_GRAY, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+	1, 0, BLOCKS_INVISIBILITY, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 0, 0,  3,   2, 10, 6, 0, 0, 0, 0, 2, MAT_CLOTH, CLR_GRAY, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 	/* worn mummy wrapping blocks invisibility */
 
 

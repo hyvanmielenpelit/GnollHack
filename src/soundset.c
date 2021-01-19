@@ -2880,37 +2880,37 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     },
     {
         "GHSOUND_EXPLOSION_DARK",
-        {GHSOUND_EXPLOSION_DARK, 100.0f},
+        {GHSOUND_EXPLOSION_DARK, 1000.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_NOXIOUS",
-        {GHSOUND_EXPLOSION_NOXIOUS, 100.0f},
+        {GHSOUND_EXPLOSION_NOXIOUS, 1000.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_MUDDY",
-        {GHSOUND_EXPLOSION_MUDDY, 100.0f},
+        {GHSOUND_EXPLOSION_MUDDY, 1000.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_WET",
-        {GHSOUND_EXPLOSION_WET, 100.0f},
+        {GHSOUND_EXPLOSION_WET, 1000.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_MAGICAL",
-        {GHSOUND_EXPLOSION_MAGICAL, 100.0f},
+        {GHSOUND_EXPLOSION_MAGICAL, 1000.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_FIERY",
-        {GHSOUND_EXPLOSION_FIERY, 100.0f},
+        {GHSOUND_EXPLOSION_FIERY, 1000.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_FROSTY",
-        {GHSOUND_EXPLOSION_FROSTY, 100.0f},
+        {GHSOUND_EXPLOSION_FROSTY, 1000.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
@@ -6885,7 +6885,8 @@ update_ambient_sounds()
                 total_volume = 0.0f;
         }
 
-        if(total_volume < 0.001f)
+#define SOUND_HEARING_THRESHOLD 0.000001f
+        if(total_volume < SOUND_HEARING_THRESHOLD)
             total_volume = 0.0f; /* turn off if too quiet */
 
         curr->heard_volume = total_volume;
