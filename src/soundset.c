@@ -12,7 +12,6 @@
 #define SSF_NEEDS_FIXUP 0x2 /* need oid fixup */
 #define SSF_SILENCE_SOURCE 0x4 /* emits silence rather than sound */
 
-
 NEARDATA struct soundsource_t* sound_base = 0;
 STATIC_DCL void FDECL(set_hearing_array, (int, int, double, int));
 
@@ -2880,37 +2879,37 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     },
     {
         "GHSOUND_EXPLOSION_DARK",
-        {GHSOUND_EXPLOSION_DARK, 1000.0f},
+        {GHSOUND_EXPLOSION_DARK, 200.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_NOXIOUS",
-        {GHSOUND_EXPLOSION_NOXIOUS, 1000.0f},
+        {GHSOUND_EXPLOSION_NOXIOUS, 200.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_MUDDY",
-        {GHSOUND_EXPLOSION_MUDDY, 1000.0f},
+        {GHSOUND_EXPLOSION_MUDDY, 200.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_WET",
-        {GHSOUND_EXPLOSION_WET, 1000.0f},
+        {GHSOUND_EXPLOSION_WET, 200.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_MAGICAL",
-        {GHSOUND_EXPLOSION_MAGICAL, 1000.0f},
+        {GHSOUND_EXPLOSION_MAGICAL, 200.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_FIERY",
-        {GHSOUND_EXPLOSION_FIERY, 1000.0f},
+        {GHSOUND_EXPLOSION_FIERY, 200.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_EXPLOSION_FROSTY",
-        {GHSOUND_EXPLOSION_FROSTY, 1000.0f},
+        {GHSOUND_EXPLOSION_FROSTY, 200.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
@@ -6324,13 +6323,24 @@ enum ui_sound_types ui_sound_id;
         play_immediate_ghsound(immediateinfo);
 }
 
-
 void
 play_sfx_sound_at_location(sfx_sound_id, x, y)
 enum sfx_sound_types sfx_sound_id;
 int x, y;
 {
-    if (!isok(x, y) || hearing_array[x][y] == 0.0f)
+    play_sfx_sound_at_location_with_minimum_volume(sfx_sound_id, x, y, 0.0f);
+}
+
+void
+play_sfx_sound_at_location_with_minimum_volume(sfx_sound_id, x, y, min_volume)
+enum sfx_sound_types sfx_sound_id;
+int x, y;
+float min_volume;
+{
+    if (min_volume < 0.0f)
+        min_volume = 0.0f;
+
+    if (!isok(x, y) || (hearing_array[x][y] == 0.0f && min_volume == 0.0f))
         return;
 
     if (Deaf && sfx_sounds[sfx_sound_id].affected_by_deafness)
@@ -6344,7 +6354,7 @@ int x, y;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = min(1.0f, volume * hearing_array[x][y]);
+    immediateinfo.volume = min(1.0f, max(min_volume, volume * hearing_array[x][y]));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = sfx_sounds[sfx_sound_id].play_group;
 
@@ -6885,7 +6895,6 @@ update_ambient_sounds()
                 total_volume = 0.0f;
         }
 
-#define SOUND_HEARING_THRESHOLD 0.000001f
         if(total_volume < SOUND_HEARING_THRESHOLD)
             total_volume = 0.0f; /* turn off if too quiet */
 

@@ -1443,7 +1443,9 @@ int x, y;
             {
                 if (MON_AT(x, y))
                     (void) mb_trapped(m_at(x, y));
-                else if (flags.verbose) {
+                else if (flags.verbose) 
+                {
+                    play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, x, y, 0.15f);
                     if (cansee(x, y))
                         pline("KABOOM!!  You see a door explode.");
                     else
@@ -1463,7 +1465,9 @@ int x, y;
             {
                 door->doormask &= ~D_MASK;
                 door->doormask |= D_BROKEN;
-                if (flags.verbose) {
+                if (flags.verbose) 
+                {
+                    play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
                     if (cansee(x, y))
                         pline_The("door crashes open!");
                     else
@@ -1478,7 +1482,9 @@ int x, y;
             }
             else
             {
-                if (flags.verbose) {
+                if (flags.verbose) 
+                {
+                    play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
                     if (cansee(x, y))
                         pline_The("%s resists!", get_door_name_at(x, y));
                     else

@@ -26,7 +26,7 @@ struct monst *mtmp;
 {
     if (flags.verbose)
 	{
-        play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my);
+        play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.15f);
         if (cansee(mtmp->mx, mtmp->my) && !Unaware)
             pline("KABOOM!!  You see a door explode.");
         else if (!Deaf)

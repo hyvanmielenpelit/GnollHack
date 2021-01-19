@@ -30,6 +30,8 @@ enum layer_types
 };
 
 
+#define MAXLEASHED 2
+
 struct layer_info {
     int glyph; /* For ascii compatibility */
     int bkglyph; /* For ascii compatibility */
@@ -53,6 +55,8 @@ struct layer_info {
     uchar missile_eroded2;
     unsigned long missile_flags;
 
+    xchar leash_mon_x[MAXLEASHED];
+    xchar leash_mon_y[MAXLEASHED];
 };
 
 /* These are standard flags replacing earlier glyph system -- To be used mostly in map_glyph for tty */

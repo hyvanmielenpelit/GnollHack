@@ -233,6 +233,7 @@
     <ClInclude Include="$(WinWin32Dir)resource.h" />
     <ClInclude Include="$(WinWin32Dir)soundfx.h" />
     <ClInclude Include="..\..\..\include\extern.h" />
+    <ClInclude Include="..\..\..\include\general.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />

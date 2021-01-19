@@ -2994,7 +2994,7 @@ register struct monst *mtmp;
             }
 
             play_sfx_sound_at_location(SFX_LAND_MINE_ACTIVATE, mtmp->mx, mtmp->my);
-            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my);
+            play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.25f);
 
             if (!in_sight && !Deaf)
                 pline("Kaablamm!  You hear an explosion in the distance!");

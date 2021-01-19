@@ -2881,6 +2881,7 @@ E void FDECL(play_simple_location_sound, (xchar, xchar, enum location_sound_type
 E void FDECL(play_ui_sound, (enum ui_sound_types));
 E void FDECL(play_sfx_sound, (enum sfx_sound_types));
 E void FDECL(play_sfx_sound_at_location, (enum sfx_sound_types, int, int));
+E void FDECL(play_sfx_sound_at_location_with_minimum_volume, (enum sfx_sound_types, int, int, float));
 E void FDECL(play_immediate_instrument_sound, (enum object_instrument_soundset_types, enum instrument_sound_types));
 E void FDECL(play_immediate_instrument_sound_at_location, (enum object_instrument_soundset_types, enum instrument_sound_types, int, int));
 E void FDECL(play_immediate_ray_sound_at_location, (int, enum ray_sound_types, int, int));

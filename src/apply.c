@@ -835,8 +835,6 @@ unleash_all()
         mtmp->mleashed = 0;
 }
 
-#define MAXLEASHED 2
-
 /* TODO:
  *  This ought to exclude various other things, such as lights and gas
  *  spore, is_whirly() critters, ethereal creatures, possibly others.

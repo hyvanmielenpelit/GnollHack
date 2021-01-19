@@ -8334,6 +8334,32 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 update_ambient_ray_sound_to_location(soundset_id, sx, sy);
             }
         }
+        else
+        {
+            if (playing_anim)
+            {
+                /* Wait as though the zap would be going forward */
+                if (animations[anim].action_execution_frame > 0)
+                {
+                    long intervals_to_execution = (long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
+                    if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
+                    {
+                        long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution - 1;
+                        if (abs((int)diff) <= 3) /* Extra check that something else is not going on */
+                        {
+                            context.zap_animation_counter[prev_anim_counter_idx] -= diff;
+                        }
+                    }
+
+                    context.zap_aggregate_milliseconds_to_wait_until_action = (unsigned long)intervals_to_execution * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+                }
+                if (animations[anim].sound_play_frame > 0)
+                {
+                    delay_output_milliseconds(animations[anim].sound_play_frame * animations[anim].intervals_between_frames * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
+                }
+            }
+            update_ambient_ray_sound_to_location(soundset_id, sx, sy);
+        }
 
         /* hit() and miss() need bhitpos to match the target */
         bhitpos.x = sx, bhitpos.y = sy;

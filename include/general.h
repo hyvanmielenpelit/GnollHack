@@ -331,5 +331,10 @@ enum main_menu_command {
 	MAIN_MENU_EXIT_GAME
 };
 
+#define BACKGROUND_MUSIC_VOLUME 0.04f
+#define SIMPLE_STEALTH_VOLUME 0.08f
+#define MAX_HEARING_DISTANCE 12
+#define SOUND_HEARING_THRESHOLD 0.00001f
+
 #endif /* GENERAL_H */
 
