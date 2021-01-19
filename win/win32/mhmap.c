@@ -4719,7 +4719,6 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 
     InvalidateRect(data->hWnd, &rt, FALSE);
 
-    /* Check REPLACEMENT_EVENT_UPDATE_FROM_BELOW */
     for (int dir = 0; dir < 4; dir++)
     {
         int rx = 0;
