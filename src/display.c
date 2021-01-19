@@ -732,8 +732,10 @@ boolean dropping_piercer;
         unsigned long extra_flags = 0;
 
         if (mon->mleashed)
+        {
             extra_flags |= LFLAGS_M_TETHERED;
-
+            show_leash_info(x, y, mon->mx, mon->my, u.ux, u.uy);
+        }
         if (is_tame(mon) && !Hallucination) {
             if (worm_tail)
                 num = monnum_to_glyph(get_worm_tail_mnum(mon->data));
@@ -1262,8 +1264,20 @@ int damage_shown;
             boolean location_has_boulder = (sobj_at(BOULDER, x, y) != 0);
             unsigned long extra_flags = 0UL;
             if (carrying_leashed_leash())
+            {
                 extra_flags |= LFLAGS_U_TETHERED;
-
+                for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
+                {
+                    if (leashed_mon->mleashed)
+                    {
+                        int mx = leashed_mon->mx, my = leashed_mon->my;
+                        if (isok(mx, my))
+                        {
+                            show_leash_info(x, y, mx, my, u.ux, u.uy);
+                        }
+                    }
+                }
+            }
             if (see_self)
                 display_self_with_extra_info_choose_ascii(disp_flags | extra_flags, damage_shown, location_has_boulder);
             else
@@ -2305,6 +2319,49 @@ enum layer_types layer_idx;
     }
 }
 
+void
+show_leash_info(x, y, mx, my, ux, uy)
+int x, y;
+xchar mx, my;
+xchar ux, uy;
+{
+    if (isok(x, y) && isok(ux, uy))
+    {
+        boolean different = FALSE;
+
+        if (isok(ux, uy))
+        {
+            if (gbuf[y][x].layers.leash_mon_x[MAXLEASHED] != ux)
+                different = TRUE;
+            if (gbuf[y][x].layers.leash_mon_y[MAXLEASHED] != uy)
+                different = TRUE;
+            gbuf[y][x].layers.leash_mon_x[MAXLEASHED] = ux;
+            gbuf[y][x].layers.leash_mon_y[MAXLEASHED] = uy;
+        }
+
+        if (isok(mx, my))
+        {
+            for (int i = 0; i < MAXLEASHED; i++)
+            {
+                if (gbuf[y][x].layers.leash_mon_x[i] == 0 && gbuf[y][x].layers.leash_mon_y[i] == 0)
+                {
+                    different = TRUE;
+                    gbuf[y][x].layers.leash_mon_x[i] = mx;
+                    gbuf[y][x].layers.leash_mon_y[i] = my;
+                }
+            }
+        }
+
+        if (different)
+        {
+            gbuf[y][x].new = 1;
+            if (gbuf_start[y] > x)
+                gbuf_start[y] = x;
+            if (gbuf_stop[y] < x)
+                gbuf_stop[y] = x;
+        }
+    }
+}
 
 void
 show_extra_info(x, y, disp_flags, damage_displayed)

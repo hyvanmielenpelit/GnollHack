@@ -6354,7 +6354,7 @@ float min_volume;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = min(1.0f, max(min_volume, volume * hearing_array[x][y]));
+    immediateinfo.volume = min(1.0f, max((float)min_volume, (float)(volume * hearing_array[x][y])));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = sfx_sounds[sfx_sound_id].play_group;
 

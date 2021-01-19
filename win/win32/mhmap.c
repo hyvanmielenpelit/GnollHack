@@ -4903,14 +4903,37 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
         }
     }
 
-    if ((data->map[x][y].layer_flags & LFLAGS_M_TETHERED) || (data->map[x][y].missile_flags & MISSILE_FLAGS_TETHERED))
+    if (data->map[x][y].missile_flags & MISSILE_FLAGS_TETHERED)
     {
-        if (isok(u.ux, u.uy))
+        int ux = data->map[x][y].leash_mon_x[MAXLEASHED], uy = data->map[x][y].leash_mon_y[MAXLEASHED];
+        if (isok(ux, uy))
         {
-            int min_x = min(u.ux, x);
-            int min_y = min(u.uy, y);
-            int max_x = max(u.ux, x);
-            int max_y = max(u.uy, y);
+            int min_x = min(ux, x);
+            int min_y = min(uy, y);
+            int max_x = max(ux, x);
+            int max_y = max(uy, y);
+            for (int rx = min_x; rx <= max_x; rx++)
+            {
+                for (int ry = min_y; ry <= max_y; ry++)
+                {
+                    data->mapDirty[rx][ry] = TRUE;
+                    RECT rt2;
+                    nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
+                    InvalidateRect(data->hWnd, &rt2, FALSE);
+                }
+            }
+        }
+    }
+
+    if (data->map[x][y].layer_flags & LFLAGS_M_TETHERED)
+    {
+        int ux = data->map[x][y].leash_mon_x[MAXLEASHED], uy = data->map[x][y].leash_mon_y[MAXLEASHED];
+        if (isok(ux, uy))
+        {
+            int min_x = min(ux, x);
+            int min_y = min(uy, y);
+            int max_x = max(ux, x);
+            int max_y = max(uy, y);
             for (int rx = min_x; rx <= max_x; rx++)
             {
                 for (int ry = min_y; ry <= max_y; ry++)
@@ -4926,6 +4949,28 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 
     if (data->map[x][y].layer_flags & LFLAGS_U_TETHERED)
     {
+        for (int i = 0; i < MAXLEASHED; i++)
+        {
+            int mx = data->map[x][y].leash_mon_x[i], my = data->map[x][y].leash_mon_y[i];
+            if (isok(mx, my))
+            {
+                int min_x = min(mx, x);
+                int min_y = min(my, y);
+                int max_x = max(mx, x);
+                int max_y = max(my, y);
+                for (int rx = min_x; rx <= max_x; rx++)
+                {
+                    for (int ry = min_y; ry <= max_y; ry++)
+                    {
+                        data->mapDirty[rx][ry] = TRUE;
+                        RECT rt2;
+                        nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
+                        InvalidateRect(data->hWnd, &rt2, FALSE);
+                    }
+                }
+            }
+        }
+#if 0
         for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
         {
             if (leashed_mon->mleashed)
@@ -4950,6 +4995,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 }
             }
         }
+#endif
     }
 
     for (enum layer_types layer_idx = LAYER_FLOOR/*-2*/; layer_idx < MAX_LAYERS; layer_idx++)
