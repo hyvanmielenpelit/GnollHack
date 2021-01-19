@@ -5181,14 +5181,14 @@ enum climbing_types climbingid;
         }
         
         float hearing = hearing_array[mtmp->mx][mtmp->my];
-        if (hearing == 0.0f)
+        if (hearing == 0.0f && context.global_minimum_volume <= 0.0f)
             return;
         else
             volume *= hearing_array[mtmp->mx][mtmp->my];
 	}
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = base_volume * volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, base_volume * volume));
     immediateinfo.parameter_names[0] = "FloorSurface";
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = "Weight";
@@ -5241,7 +5241,7 @@ enum object_sound_types sound_type;
     if (isok(x, y))
     {
         float hearing = hearing_array[x][y];
-        if (hearing == 0.0f)
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
             return;
         else
             volume *= hearing_array[x][y];
@@ -5250,7 +5250,7 @@ enum object_sound_types sound_type;
         return;
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
@@ -5289,13 +5289,13 @@ enum object_sound_types sound_type;
     }
 
     float hearing = hearing_array[x][y];
-    if (hearing == 0.0f)
+    if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
         return;
     else
         volume *= hearing_array[x][y];
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
@@ -5387,13 +5387,13 @@ enum container_sound_types sound_type;
     }
 
     float hearing = hearing_array[x][y];
-    if (hearing == 0.0f)
+    if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
         return;
     else
         volume *= hearing_array[x][y];
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
@@ -5596,13 +5596,13 @@ boolean is_underwater;
     }
 
     float hearing = hearing_array[ox][oy];
-    if (hearing == 0.0f)
+    if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
         return;
     else
         volume *= hearing_array[ox][oy];
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.parameter_names[0] = "FloorSurface";
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = "Weight";
@@ -5670,7 +5670,7 @@ struct obj* container;
     }
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.parameter_names[0] = "FloorSurface";
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = "Weight";
@@ -5722,13 +5722,13 @@ enum location_sound_types sound_type;
         hear_x = x, hear_y = y;
 
     float hearing = hearing_array[hear_x][hear_y];
-    if (hearing == 0.0f)
+    if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
         return;
     else
         volume *= hearing_array[hear_x][hear_y];
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
@@ -5758,7 +5758,7 @@ enum monster_sound_types sound_type;
     if (isok(x, y))
     {
         float hearing = hearing_array[x][y];
-        if (hearing == 0.0f)
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
             return;
         else
             volume *= hearing_array[x][y];
@@ -5767,7 +5767,7 @@ enum monster_sound_types sound_type;
         return;
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
@@ -5808,7 +5808,7 @@ enum monster_sound_types sound_type;
     if (isok(x, y))
     {
         float hearing = hearing_array[x][y];
-        if (hearing == 0.0f)
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
             return;
         else
             volume *= hearing_array[x][y];
@@ -5817,7 +5817,7 @@ enum monster_sound_types sound_type;
         return;
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
@@ -5880,7 +5880,7 @@ enum object_sound_types sound_type;
         if (isok(magr->mx, magr->my))
         {
             float hearing = hearing_array[magr->mx][magr->my];
-            if (hearing == 0.0f)
+            if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
                 return;
             else
                 volume *= hearing_array[magr->mx][magr->my];
@@ -5890,7 +5890,7 @@ enum object_sound_types sound_type;
     }
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
@@ -5935,13 +5935,13 @@ enum object_sound_types sound_type;
     }
 
     float hearing = hearing_array[ox][oy];
-    if (hearing == 0.0f)
+    if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
         return;
     else
         volume *= hearing_array[ox][oy];
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.parameter_names[0] = "FloorSurface";
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = "Weight";
@@ -6171,7 +6171,7 @@ xchar x, y;
     if (isok(defx, defy))
     {
         float hearing = hearing_array[defx][defy];
-        if (hearing == 0.0f)
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
             return;
         else
             volume *= hearing_array[defx][defy];
@@ -6180,7 +6180,7 @@ xchar x, y;
     enum hit_surface_types surfaceid = get_hit_surface_type(surface_type, surface_source_ptr);
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.parameter_names[0] = "HitSurface";
     immediateinfo.parameter_values[0] = (float)surfaceid;
     immediateinfo.parameter_names[1] = "Damage";
@@ -6253,7 +6253,7 @@ xchar x, y;
     if (isok(x, y))
     {
         float hearing = hearing_array[x][y];
-        if (hearing == 0.0f)
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
             return;
         else
             volume *= hearing_array[x][y];
@@ -6265,7 +6265,7 @@ xchar x, y;
     enum hit_surface_types surfaceid = get_hit_surface_type(surface_type, surface_source_ptr);
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.parameter_names[0] = "HitSurface";
     immediateinfo.parameter_values[0] = (float)surfaceid;
     immediateinfo.parameter_names[1] = "Damage";
@@ -6340,7 +6340,7 @@ float min_volume;
     if (min_volume < 0.0f)
         min_volume = 0.0f;
 
-    if (!isok(x, y) || (hearing_array[x][y] == 0.0f && min_volume == 0.0f))
+    if (!isok(x, y) || (hearing_array[x][y] == 0.0f && min_volume == 0.0f && context.global_minimum_volume == 0.0f))
         return;
 
     if (Deaf && sfx_sounds[sfx_sound_id].affected_by_deafness)
@@ -6354,7 +6354,7 @@ float min_volume;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = min(1.0f, max((float)min_volume, (float)(volume * hearing_array[x][y])));
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, max((float)min_volume, (float)(volume * hearing_array[x][y]))));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = sfx_sounds[sfx_sound_id].play_group;
 
@@ -6378,7 +6378,7 @@ enum object_instrument_soundset_types instrument_soundset_id;
 enum instrument_sound_types instrument_sound_type;
 int x, y;
 {
-    if (!isok(x, y) || hearing_array[x][y] == 0.0f)
+    if (!isok(x, y) || (hearing_array[x][y] == 0.0f && context.global_minimum_volume == 0.0f))
         return;
 
     if (Deaf)
@@ -6396,7 +6396,7 @@ int x, y;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = min(1.0f, volume * hearing_array[x][y]);
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume * hearing_array[x][y]));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = instrument_soundsets[typ].sounds[instrument_sound_type].play_group;
 
@@ -6428,7 +6428,7 @@ int x, y;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = min(1.0f, volume * hearing_array[x][y]);
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume * hearing_array[x][y]));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
@@ -6451,7 +6451,7 @@ int x, y;
 
     struct ghsound_effect_ambient_info info = { 0 };
     info.ghsound = ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound;
-    info.volume = min(1.0f, ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].volume * hearing_volume);
+    info.volume = min(1.0f, max((float)context.global_minimum_volume, ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].volume * hearing_volume));
 
     play_ghsound_effect_ambient(info);
 }
@@ -6470,7 +6470,7 @@ int x, y;
         hearing_volume = hearing_array[x][y];
 
     struct effect_ambient_volume_info vinfo = { 0 };
-    vinfo.volume = min(1.0f, ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].volume * hearing_volume);
+    vinfo.volume = min(1.0f, max((float)context.global_minimum_volume, ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].volume * hearing_volume));
 
     set_effect_ambient_volume(vinfo);
 }

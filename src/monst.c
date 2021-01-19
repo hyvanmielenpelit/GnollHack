@@ -1246,7 +1246,7 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE, M3_NONE, M4_STONY, M5_NONE,
 		2, CLR_GRAY, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
         NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, ACTION_INFO(ROCK_PIERCER_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ACTION_INFO(ROCK_PIERCER_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
-    MON("iron piercer", None, "stalagtitic life-form made of iron", None, None, S_PIERCER, LVL(5, 3, 0, 0, 0, 0), (G_GENO | 2),
+    GENERAL_MON("iron piercer", None, "stalagtitic life-form made of iron", None, None, S_PIERCER, LVL(5, 3, 0, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(400, 300, MS_SILENT, MZ_MEDIUM, 1, 0, MAT_IRON), STATS(10, 10, 10, 1, 1, 1),
@@ -1256,8 +1256,9 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE,
         M3_NONE, 
         M4_IRON, M5_NONE, 
-		4, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("glass piercer", None, "stalagtitic life-form made of glass", None, None, S_PIERCER, LVL(7, 3, 0, 0, 0, 0), (G_GENO | 1),
+		4, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, ACTION_INFO(IRON_PIERCER_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ACTION_INFO(IRON_PIERCER_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+    GENERAL_MON("glass piercer", None, "stalagtitic life-form made of glass", None, None, S_PIERCER, LVL(7, 3, 0, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 3, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(400, 300, MS_SILENT, MZ_MEDIUM, 1, 0, MAT_GLASS), STATS(12, 10, 12, 1, 1, 1), 
@@ -1267,7 +1268,8 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE, 
         M3_NONE, 
         M4_NONE, M5_NONE, 
-		6, CLR_WHITE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		6, CLR_WHITE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, ACTION_INFO(GLASS_PIERCER_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ACTION_INFO(GLASS_PIERCER_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
     /*
      * quadrupeds
      */

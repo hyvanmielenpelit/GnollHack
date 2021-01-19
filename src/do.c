@@ -320,7 +320,7 @@ docharacterstatistics()
 					abil_count++;
 
 					char dbuf2[BUFSIZ] = "";
-					strcpy(buf2, get_property_name(intrinsic_ability[table_index].propid));
+					strcpy(dbuf2, get_property_name(intrinsic_ability[table_index].propid));
 					*dbuf2 = highc(*dbuf2);
 
 					Sprintf(buf, " Level %2d - %s", intrinsic_ability[table_index].ulevel, dbuf2);

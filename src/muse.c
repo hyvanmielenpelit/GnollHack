@@ -176,7 +176,9 @@ boolean self;
 	if (!mtmp || !otmp)
 		return;
 
+    context.global_minimum_volume = 0.15f;
     play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_ZAP);
+    context.global_minimum_volume = 0.0f;
 
     if (!canseemon(mtmp)) {
         int range = couldsee(mtmp->mx, mtmp->my) /* 9 or 5 */
