@@ -706,7 +706,7 @@ dodrink()
         case JAR_OF_BASILISK_BLOOD:
             return use_salve(otmp, TRUE);
         default:
-            play_sfx_sound(SFX_GENERAL_CANNOT);
+            play_sfx_sound(SFX_GENERAL_THATS_SILLY);
             pline("That's a silly thing to drink!");
             return 0;
             break;

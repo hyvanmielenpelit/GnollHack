@@ -828,9 +828,16 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Freezing Sphere", 1.0f },
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Shocking Sphere", 1.0f },
     { SOUND_BANK_MASTER, "event:/Explosion/Hallucinating Flash", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Currently Unable to Do", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Monster Does Not Notice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/That Did Nothing", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/That Is Silly", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Monster Is Busy", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Not At Right Location", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/General/Another Action Needed", 1.0f },
 
 };
-
 
 extern "C" 
 {

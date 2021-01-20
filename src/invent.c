@@ -2622,7 +2622,7 @@ struct obj *otmp;
             !(is_plural(otmp) || pair_of(otmp)) ? "that" : "those", s3);
     else
 #endif
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_THATS_SILLY);
         pline(silly_thing_to, word);
 }
 

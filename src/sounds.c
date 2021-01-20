@@ -1525,6 +1525,7 @@ dochat()
 
 	if (u.uswallow)
 	{
+		play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
 		pline("They won't hear you out there.");
 		return 0;
 	}
@@ -1539,7 +1540,8 @@ dochat()
 	{
         if (!mon_can_move(u.usteed)) 
 		{
-            pline("%s seems not to notice you.", Monnam(u.usteed));
+			play_sfx_sound(SFX_MONSTER_DOES_NOT_NOTICE);
+			pline("%s seems not to notice you.", Monnam(u.usteed));
             return 1;
         } else
             return domonnoise(u.usteed);
@@ -1547,7 +1549,8 @@ dochat()
 
     if (u.dz)
 	{
-        pline("They won't hear you %s there.", u.dz < 0 ? "up" : "down");
+		play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
+		pline("They won't hear you %s there.", u.dz < 0 ? "up" : "down");
         return 0;
     }
 
@@ -1563,7 +1566,8 @@ dochat()
             return 1;
         }
          */
-        pline("Talking to yourself is a bad habit for a dungeoneer.");
+		play_sfx_sound(SFX_GENERAL_THATS_SILLY);
+		pline("Talking to yourself is a bad habit for a dungeoneer.");
         return 0;
     }
 
@@ -1583,7 +1587,8 @@ dochat()
         /* Talking to a statue */
         if (!Blind) 
 		{
-            pline_The("%s seems not to notice you.",
+			play_sfx_sound(SFX_MONSTER_DOES_NOT_NOTICE);
+			pline_The("%s seems not to notice you.",
                       /* if hallucinating, you can't tell it's a statue */
                       Hallucination ? rndmonnam((char *) 0) : "statue");
         }
@@ -1593,6 +1598,7 @@ dochat()
 	if (!mtmp || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE
 		|| M_AP_TYPE(mtmp) == M_AP_OBJECT)
 	{
+		play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
 		pline("There is no-one to talk to.");
 		return 0;
 	}
@@ -1624,8 +1630,11 @@ dochat()
     if (!mon_can_move(mtmp) && !mtmp->ispriest) {
         /* If it is unseen, the player can't tell the difference between
            not noticing him and just not existing, so skip the message. */
-        if (canspotmon(mtmp))
-            pline("%s seems not to notice you.", Monnam(mtmp));
+		if (canspotmon(mtmp))
+		{
+			play_sfx_sound(SFX_MONSTER_DOES_NOT_NOTICE);
+			pline("%s seems not to notice you.", Monnam(mtmp));
+		}
         return 0;
     }
 
@@ -1635,7 +1644,8 @@ dochat()
     if (is_tame(mtmp) && mtmp->meating) {
         if (!canspotmon(mtmp))
             map_invisible(mtmp->mx, mtmp->my);
-        pline("%s is eating noisily.", Monnam(mtmp));
+		play_sfx_sound(SFX_MONSTER_IS_BUSY);
+		pline("%s is eating noisily.", Monnam(mtmp));
         return 0;
     }
 

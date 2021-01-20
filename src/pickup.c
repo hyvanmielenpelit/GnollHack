@@ -1842,14 +1842,17 @@ doloot()
     int prev_inquiry = 0;
     boolean prev_loot = FALSE;
     int num_conts = 0;
+    boolean did_something = FALSE;
 
     abort_looting = FALSE;
 
     if (check_capacity((char *) 0)) {
         /* "Can't do that while carrying so much stuff." */
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         return 0;
     }
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("have no hands!"); /* not `body_part(HAND)' */
         return 0;
     }
@@ -1857,6 +1860,7 @@ doloot()
         if (rn2(6) && reverse_loot())
             return 1;
         if (rn2(2)) {
+            play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
             pline("Being confused, you find nothing to loot.");
             return 1; /* costs a turn */
         }             /* else fallthrough to normal looting */
@@ -1872,7 +1876,10 @@ doloot()
         boolean anyfound = FALSE;
 
         if (!able_to_loot(cc.x, cc.y, TRUE))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             return 0;
+        }
 
         if (Blind && !uarmg) {
             /* if blind and without gloves, attempting to #loot at the
@@ -1948,6 +1955,7 @@ doloot()
                 c = 'y';
         }
     } else if (IS_GRAVE(levl[cc.x][cc.y].typ)) {
+        play_sfx_sound(SFX_GENERAL_ANOTHER_ACTION_NEEDED);
         You("need to dig up the grave to effectively loot it...");
     }
 
@@ -1955,25 +1963,43 @@ doloot()
      * 3.3.1 introduced directional looting for some things.
      */
  lootmon:
-    if (c != 'y' && mon_beside(u.ux, u.uy)) {
+    if (c != 'y' && mon_beside(u.ux, u.uy))
+    {
         if (!get_adjacent_loc("Loot in what direction?",
-                              "Invalid loot location", u.ux, u.uy, &cc))
+            "Invalid loot location", u.ux, u.uy, &cc))
+        {
             return 0;
-        if (cc.x == u.ux && cc.y == u.uy) {
+        }
+
+        if (cc.x == u.ux && cc.y == u.uy) 
+        {
             underfoot = TRUE;
             if (container_at(cc.x, cc.y, FALSE))
+            {
+                did_something = TRUE;
                 goto lootcont;
-        } else
+            }
+        } 
+        else
             underfoot = FALSE;
-        if (u.dz < 0) {
+        
+        if (u.dz < 0) 
+        {
+            did_something = TRUE;
+            play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
             You("%s to loot on the %s.", dont_find_anything,
                 ceiling(cc.x, cc.y));
             timepassed = 1;
             return timepassed;
         }
+
         mtmp = m_at(cc.x, cc.y);
         if (mtmp)
+        {
             timepassed = loot_mon(mtmp, &prev_inquiry, &prev_loot);
+            did_something = TRUE;
+        }
+
         /* always use a turn when choosing a direction is impaired,
            even if you've successfully targetted a saddled creature
            and then answered "no" to the "remove its saddle?" prompt */
@@ -1984,22 +2010,43 @@ doloot()
          * Adjust this if-block to allow container looting
          * from one square away to change that in the future.
          */
-        if (!underfoot) {
-            if (container_at(cc.x, cc.y, FALSE)) {
-                if (mtmp) {
+        if (!underfoot) 
+        {
+            did_something = TRUE;
+            if (container_at(cc.x, cc.y, FALSE))
+            {
+                if (mtmp)
+                {
+                    play_sfx_sound(SFX_SOMETHING_IN_WAY);
                     You_cant("loot anything %sthere with %s in the way.",
                              prev_inquiry ? "else " : "", mon_nam(mtmp));
                     return timepassed;
-                } else {
+                } 
+                else
+                {
+                    play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
                     You("have to be at a container to loot it.");
                 }
-            } else {
+            } 
+            else
+            {
+                play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
                 You("%s %sthere to loot.", dont_find_anything,
                     (prev_inquiry || prev_loot) ? "else " : "");
                 return timepassed;
             }
         }
-    } else if (c != 'y' && c != 'n') {
+
+        if (!did_something)
+        {
+            You("%s %sthere to loot.", dont_find_anything,
+                (prev_inquiry || prev_loot) ? "else " : "");
+            play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
+        }
+    }
+    else if (c != 'y' && c != 'n')
+    {
+        play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
         You("%s %s to loot.", dont_find_anything,
             underfoot ? "here" : "there");
     }
@@ -2240,13 +2287,13 @@ register struct obj *obj;
     } 
 	else if (obj == uball || obj == uchain) 
 	{
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_THATS_SILLY);
         You("must be kidding.");
         return 0;
     }
 	else if (obj == current_container)
 	{
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_THATS_SILLY);
         pline("That would be an interesting topological exercise.");
         return 0;
     }
