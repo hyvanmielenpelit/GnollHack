@@ -1083,13 +1083,13 @@ dokick() {
     kickobjnam[0] = '\0';
     if (nolimbs(youmonst.data) || slithy(youmonst.data)) 
 	{
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You("have no legs to kick with.");
         no_kick = TRUE;
     }
 	else if (verysmall(youmonst.data))
 	{
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You("are too small to do any kicking.");
         no_kick = TRUE;
     } 
@@ -1114,7 +1114,7 @@ dokick() {
 
         if (wl == BOTH_SIDES)
             bp = makeplural(bp);
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         Your("%s%s %s in no shape for kicking.",
              (wl == LEFT_SIDE) ? "left " : (wl == RIGHT_SIDE) ? "right " : "",
              bp, (wl == BOTH_SIDES) ? "are" : "is");
@@ -1122,13 +1122,13 @@ dokick() {
     } 
 	else if (near_capacity() > SLT_ENCUMBER)
 	{
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         Your("load is too heavy to balance yourself for a kick.");
         no_kick = TRUE;
     }
 	else if (youmonst.data->mlet == S_LIZARD) 
 	{
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         Your("legs cannot kick effectively.");
         no_kick = TRUE;
     } 
@@ -1145,12 +1145,16 @@ dokick() {
 		{
         case TT_PIT:
             if (!Passes_walls)
+            {
+                play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
                 pline("There's not enough room to kick down here.");
+            }
             else
                 no_kick = FALSE;
             break;
         case TT_WEB:
         case TT_BEARTRAP:
+            play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
             You_cant("move your %s!", body_part(LEG));
             break;
         default:
@@ -1196,11 +1200,13 @@ dokick() {
         switch (rn2(3)) 
 		{
         case 0:
+            play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
             You_cant("move your %s!", body_part(LEG));
             break;
         case 1:
             if (is_animal(u.ustuck->data))
 			{
+                play_sfx_sound(SFX_BURP);
                 pline("%s burps loudly.", Monnam(u.ustuck));
                 break;
             }
@@ -1243,6 +1249,7 @@ dokick() {
             && !IS_DOOR(levl[xx][yy].typ)
             && (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) 
 		{
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("have nothing to brace yourself against.");
             return 0;
         }
@@ -1601,7 +1608,9 @@ dokick() {
 
             play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
             
-            if (rn2(5)) {
+            if (rn2(5)) 
+            {
+                play_sfx_sound(SFX_SINK_KLUNK);
                 if (!Deaf)
                     pline("Klunk!  The pipes vibrate noisily.");
                 else
@@ -1695,6 +1704,7 @@ dokick() {
             if (Blind)
                 feel_location(x, y);
         } else {
+            play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
             pline("Dumb move!  You strain a muscle.");
             exercise(A_STR, FALSE);
             set_wounded_legs(RIGHT_SIDE, 5 + rnd(5));
