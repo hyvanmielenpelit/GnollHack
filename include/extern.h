@@ -2654,6 +2654,7 @@ E int NDECL(u_to_glyph);
 E int FDECL(player_to_glyph_index, (int, int, int, int, int));
 E boolean FDECL(player_has_action_tile, (enum action_tile_types, int, int, int, int, int));
 E unsigned long FDECL(get_player_action_flags, (enum action_tile_types, int, int, int, int, int));
+E unsigned long FDECL(u_action_flags,(enum action_tile_types));
 E unsigned long NDECL(u_item_use_flags);
 #if 0
 E boolean FDECL(player_has_attack_tile, (int, int, int, int, int));

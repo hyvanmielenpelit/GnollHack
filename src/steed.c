@@ -11,6 +11,7 @@ STATIC_DCL void FDECL(maybewakesteed, (struct monst *));
 void
 rider_cant_reach()
 {
+    play_sfx_sound(SFX_GENERAL_NOT_SKILLED_ENOUGH);
     You("aren't skilled enough to reach from %s.", y_monnam(u.usteed));
 }
 
@@ -219,6 +220,7 @@ boolean force;      /* Quietly force this animal */
     /* Sanity checks */
     if (u.usteed)
     {
+        play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
         You("are already riding %s.", mon_nam(u.usteed));
         return (FALSE);
     }
@@ -226,6 +228,7 @@ boolean force;      /* Quietly force this animal */
     /* Is the player in the right form? */
     if (Hallucination && !force) 
     {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         pline("Maybe you should find a designated driver.");
         return (FALSE);
     }
@@ -244,6 +247,7 @@ boolean force;      /* Quietly force this animal */
      */
     if (Wounded_legs)
     {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         Your("%s are in no shape for riding.", makeplural(body_part(LEG)));
         if (force && wizard && yn_query("Heal your legs?") == 'y')
             HWounded_legs = EWounded_legs = 0L;
@@ -254,11 +258,13 @@ boolean force;      /* Quietly force this animal */
     if (Upolyd && (!humanoid(youmonst.data) || verysmall(youmonst.data)
                    || bigmonst(youmonst.data) || slithy(youmonst.data)))
     {
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You("won't fit on a saddle.");
         return (FALSE);
     }
     if (!force && (near_capacity() > SLT_ENCUMBER))
     {
+        play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
         You_cant("do that while carrying so much stuff.");
         return (FALSE);
     }
@@ -268,6 +274,7 @@ boolean force;      /* Quietly force this animal */
                              || M_AP_TYPE(mtmp) == M_AP_FURNITURE
                              || M_AP_TYPE(mtmp) == M_AP_OBJECT)))
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
         pline("I see nobody there.");
         return (FALSE);
     }
@@ -279,6 +286,7 @@ boolean force;      /* Quietly force this animal */
            attempting to mount a tail segment when hero was not adjacent
            to worm's head could trigger an impossible() in worm_cross()
            called from test_move(), so handle not-on-head before that */
+        play_sfx_sound(SFX_GENERAL_NOT_A_GOOD_IDEA);
         You("couldn't ride %s, let alone its tail.", a_monnam(mtmp));
         return FALSE;
     }
@@ -286,6 +294,7 @@ boolean force;      /* Quietly force this animal */
         || !test_move(u.ux, u.uy, mtmp->mx - u.ux, mtmp->my - u.uy,
                       TEST_MOVE)) 
     {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         if (Punished || !(u.uswallow || u.ustuck || u.utrap))
             You("are unable to swing your %s over.", body_part(LEG));
         else
@@ -312,7 +321,7 @@ boolean force;      /* Quietly force this animal */
     }
     if (!is_tame(mtmp) || mtmp->isminion)
     {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_MONSTER_DOES_NOT_ALLOW);
         pline("I think %s would mind.", mon_nam(mtmp));
         return (FALSE);
     }
@@ -322,7 +331,7 @@ boolean force;      /* Quietly force this animal */
 
         if (t)
         {
-            play_sfx_sound(SFX_GENERAL_CANNOT);
+            play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
             You_cant("mount %s while %s's trapped in %s.", mon_nam(mtmp),
                 mhe(mtmp), an(get_trap_explanation(t)));
         }
@@ -351,7 +360,7 @@ boolean force;      /* Quietly force this animal */
     }
     if (!force && Underwater && !is_swimmer(ptr))
     {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You_cant("ride that creature while under %s.",
                  hliquid("water"));
         return (FALSE);
@@ -367,12 +376,13 @@ boolean force;      /* Quietly force this animal */
     if (!force && !(is_flying(mtmp) || is_levitating(mtmp)) && Levitation
         && !Lev_at_will)
     {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
         You("cannot reach %s.", mon_nam(mtmp));
         return (FALSE);
     }
     if (!force && uarm && is_metallic(uarm) && greatest_erosion(uarm)) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         Your("%s armor is too stiff to be able to mount %s.",
              uarm->oeroded ? "rusty" : "corroded", mon_nam(mtmp));
         return (FALSE);

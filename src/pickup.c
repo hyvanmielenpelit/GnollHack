@@ -1713,11 +1713,11 @@ boolean looting; /* loot vs tip */
             hliquid(is_lava(x, y) ? "lava" : "water"));
         return FALSE;
     } else if (nolimbs(youmonst.data)) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         pline("Without limbs, you cannot %s anything.", verb);
         return FALSE;
     } else if (looting && !freehand()) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         pline("Without a free %s, you cannot loot anything.",
               body_part(HAND));
         return FALSE;

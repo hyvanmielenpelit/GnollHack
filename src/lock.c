@@ -444,6 +444,7 @@ struct obj *pick;
         }
         else if (u.uswallow || (xlock.box && !can_reach_floor(TRUE))) 
         {
+            play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
             pline(no_longer, "reach the", "lock");
             reset_pick();
             return PICKLOCK_LEARNED_SOMETHING;
@@ -527,20 +528,29 @@ boolean is_auto;
         if (u.dz < 0) 
         {
             if (!is_auto)
+            {
+                play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
                 There("isn't any sort of lock up %s.",
-                Levitation ? "here" : "there");
+                    Levitation ? "here" : "there");
+            }
             return PICKLOCK_LEARNED_SOMETHING;
         }
         else if (is_lava(u.ux, u.uy))
         {
             if (!is_auto)
+            {
+                play_sfx_sound(SFX_GENERAL_NOT_A_GOOD_IDEA);
                 pline("Doing that would probably melt %s.", yname(pick));
+            }
             return PICKLOCK_LEARNED_SOMETHING;
         }
         else if (is_pool(u.ux, u.uy) && !Underwater) 
         {
             if (!is_auto)
+            {
+                play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
                 pline_The("%s has no lock.", hliquid("water"));
+            }
             return PICKLOCK_LEARNED_SOMETHING;
         }
 
@@ -552,8 +562,11 @@ boolean is_auto;
                 ++count;
                 if (!can_reach_floor(TRUE)) 
                 {
-                    if(!is_auto)
+                    if (!is_auto)
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
                         You_cant("reach %s from up here.", the(xname(otmp)));
+                    }
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
                 it = 0;
@@ -631,6 +644,7 @@ boolean is_auto;
 
         if (u.utrap && u.utraptype == TT_PIT) 
         {
+            play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
             You_cant("reach over the edge of the pit.");
             return PICKLOCK_LEARNED_SOMETHING;
         }
@@ -882,7 +896,7 @@ int x, y;
     }
 
     if (u.utrap && u.utraptype == TT_PIT) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
         You_cant("reach over the edge of the pit.");
         return 0;
     }
@@ -1110,7 +1124,7 @@ doclose()
     }
 
     if (u.utrap && u.utraptype == TT_PIT) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
         You_cant("reach over the edge of the pit.");
         return 0;
     }

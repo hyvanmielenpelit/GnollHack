@@ -2872,10 +2872,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
     /* There's always a stand tile */
     if (action == ACTION_TILE_NO_ACTION)
-        return ACTION_ITEM_USE_NONE;
+        return ACTION_ITEM_USE_FLAGS_NONE;
 
     if (levelidx > 0)
-        return ACTION_ITEM_USE_NONE;
+        return ACTION_ITEM_USE_FLAGS_NONE;
 
     /* Real cases */
     switch (action)
@@ -2883,6 +2883,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_NO_ACTION:
         break;
     case ACTION_TILE_ATTACK:
+        if (roleidx == ROLE_ARCHEOLOGIST)
+            return ACTION_ATTACK_FLAGS_PICK_AXE;
         break;
     case ACTION_TILE_THROW:
         break;
@@ -2893,6 +2895,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_CAST_DIR:
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
+            return ACTION_SPECIAL_ATTACK_FLAGS_CAMERA;
         break;
     case ACTION_TILE_KICK:
         break;
@@ -2904,9 +2908,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_ITEM_USE:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
-            return ACTION_ITEM_USE_CAMERA;
+            return ACTION_ITEM_USE_FLAGS_CAMERA;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
-            return ACTION_ITEM_USE_POTION;
+            return ACTION_ITEM_USE_FLAGS_POTION;
         break;
     case ACTION_TILE_DOOR_USE:
         break;
@@ -2918,14 +2922,21 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     }
 
-    return ACTION_ITEM_USE_NONE;
+    return ACTION_ITEM_USE_FLAGS_NONE;
+}
+
+unsigned long
+u_action_flags(action)
+enum action_tile_types action; 
+{
+    return Upolyd ? 0UL /* Monster action flags here */ :
+        get_player_action_flags(action, urole.rolenum, urace.racenum, flags.female, u.ualign.type + 1, 0);
 }
 
 unsigned long 
 u_item_use_flags()
 {
-    return Upolyd ? 0UL /* Monster item use flags here */ : 
-        get_player_action_flags(ACTION_TILE_ITEM_USE, urole.rolenum, urace.racenum, flags.female, u.ualign.type + 1, 0);
+    return u_action_flags(ACTION_TILE_ITEM_USE);
 }
 
 int

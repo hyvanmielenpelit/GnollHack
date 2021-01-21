@@ -4777,6 +4777,7 @@ boolean force_failure;
         if ((invent && (inv_weight() + weight_cap() > 600))
             || bigmonst(youmonst.data)) {
             /* don't allow untrap if they can't get thru to it */
+            play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
             You("are unable to reach the %s!",
                 trapdesc);
             return 0;
@@ -4787,8 +4788,11 @@ boolean force_failure;
         if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC)
             rider_cant_reach();
         else
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
             You("are unable to reach the %s!",
                 trapdesc);
+        }
         return 0;
     }
 
@@ -5176,6 +5180,7 @@ struct trap *ttmp;
 
     /* Will our hero succeed? */
     if ((untrap_ok = succeed_untrap(ttmp)) && mon_can_move(mtmp)) {
+        play_sfx_sound(SFX_MONSTER_DOES_NOT_ALLOW);
         You("try to reach out your %s, but %s backs away skeptically.",
             makeplural(body_part(ARM)), mon_nam(mtmp));
         return 1;
@@ -5302,10 +5307,13 @@ boolean force;
 
         /* note: boxcnt and useplural will always be 0 for !here case */
         if (ttmp || boxcnt)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
             There("%s %s %s but you can't reach %s%s.",
-                  useplural ? "are" : "is", the_trap, here ? "here" : "there",
-                  useplural ? "them" : "it",
-                  u.usteed ? " while mounted" : "");
+                useplural ? "are" : "is", the_trap, here ? "here" : "there",
+                useplural ? "them" : "it",
+                u.usteed ? " while mounted" : "");
+        }
         trap_skipped = (ttmp != 0);
     }
     else 
@@ -5571,10 +5579,13 @@ boolean force;
 
         /* note: boxcnt and useplural will always be 0 for !here case */
         if (boxcnt)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
             There("%s %s %s but you can't reach %s%s.",
                 useplural ? "are" : "is", the_trap, "here",
                 useplural ? "them" : "it",
                 u.usteed ? " while mounted" : "");
+        }
     }
     else
     { /* deal_with_floor_trap */

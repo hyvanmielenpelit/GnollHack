@@ -162,7 +162,7 @@ moverock()
         {
             if (Blind)
                 feel_location(sx, sy);
-            play_sfx_sound(SFX_GENERAL_CANNOT);
+            play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_LEVERAGE);
             You("don't have enough leverage to push %s.", the(xname(otmp)));
             /* Give them a chance to climb over it? */
             return -1;
@@ -171,6 +171,7 @@ moverock()
         {
             if (Blind)
                 feel_location(sx, sy);
+            play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
             pline("You're too small to push that %s.", xname(otmp));
             goto cannot_push;
         }
@@ -389,6 +390,7 @@ moverock()
 
                 if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC) 
                 {
+                    play_sfx_sound(SFX_GENERAL_NOT_SKILLED_ENOUGH);
                     You("aren't skilled enough to %s %s from %s.",
                         willpickup ? "pick up" : "push aside",
                         the(xname(otmp)), y_monnam(u.usteed));
@@ -3015,11 +3017,16 @@ pickup_checks()
     if (u.uswallow) {
         if (!u.ustuck->minvent) {
             if (is_animal(u.ustuck->data)) {
+                play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
                 You("pick up %s tongue.", s_suffix(mon_nam(u.ustuck)));
                 pline("But it's kind of slimy, so you drop it.");
-            } else
+            }
+            else
+            {
+                play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
                 You("don't %s anything in here to pick up.",
                     Blind ? "feel" : "see");
+            }
             return 1;
         } else {
             return -2; /* loot the monster inventory */
@@ -3028,10 +3035,12 @@ pickup_checks()
     if (is_pool(u.ux, u.uy)) {
         if (Wwalking || is_floater(youmonst.data) || is_clinger(youmonst.data)
             || (Flying && !Breathless)) {
+            play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
             You("cannot dive into the %s to pick things up.",
                 hliquid("water"));
             return 0;
         } else if (!Underwater) {
+            play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
             You_cant("even see the bottom, let alone pick up %s.", something);
             return 0;
         }
@@ -3039,9 +3048,11 @@ pickup_checks()
     if (is_lava(u.ux, u.uy)) {
         if (Wwalking || is_floater(youmonst.data) || is_clinger(youmonst.data)
             || (Flying && !Breathless)) {
+            play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
             You_cant("reach the bottom to pick things up.");
             return 0;
         } else if (!likes_lava(youmonst.data)) {
+            play_sfx_sound(SFX_GENERAL_NOT_A_GOOD_IDEA);
             You("would burn to a crisp trying to pick things up.");
             return 0;
         }
@@ -3050,28 +3061,55 @@ pickup_checks()
         register struct rm *lev = &levl[u.ux][u.uy];
 
         if (IS_THRONE(lev->typ))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("It must weigh%s a ton!", lev->looted ? " almost" : "");
+        }
         else if (IS_SINK(lev->typ))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_The("plumbing connects it to the floor.");
+        }
         else if (IS_GRAVE(lev->typ))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("don't need a gravestone.  Yet.");
+        }
         else if (IS_FOUNTAIN(lev->typ))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("could drink the %s...", hliquid("water"));
+        }
         else if (IS_DOOR(lev->typ) && (lev->doormask & D_ISOPEN))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("It won't come off the hinges.");
+        }
         else if (IS_ALTAR(lev->typ))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("Moving the altar would be a very bad idea.");
+        }
         else if (IS_ANVIL(lev->typ))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("The anvil is bolted down to the floor.");
+        }
         else if (lev->typ == STAIRS)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_The("stairs are solidly fixed to the %s.",
-                      surface(u.ux, u.uy));
+                surface(u.ux, u.uy));
+        }
         else
+        {
+            play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
             There("is nothing here to pick up.");
+        }
         return 0;
     }
     if (!can_reach_floor(TRUE)) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
         struct trap *traphere = t_at(u.ux, u.uy);
         if (traphere && uteetering_at_seen_pit(traphere))
             You("cannot reach the bottom of the pit.");

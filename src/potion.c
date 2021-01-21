@@ -751,7 +751,7 @@ dodrink()
 
     otmp->in_use = TRUE; /* you've opened the stopper */
 
-    if (u_item_use_flags() & ACTION_ITEM_USE_POTION)
+    if (u_item_use_flags() & ACTION_ITEM_USE_FLAGS_POTION)
     {
         action_taken = TRUE;
         update_u_action(ACTION_TILE_ITEM_USE);
@@ -765,7 +765,7 @@ dodrink()
             && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_GHOST].born))) {
             ghost_from_bottle();
             useup(otmp);
-            if (u_item_use_flags() & ACTION_ITEM_USE_POTION)
+            if (action_taken)
                 update_u_action_revert(ACTION_TILE_NO_ACTION);
             return 1;
         } else if (!strcmp(potion_descr, "smoky")
@@ -773,7 +773,7 @@ dodrink()
                    && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_DJINNI].born))) {
             djinni_from_bottle(otmp);
             useup(otmp);
-            if (u_item_use_flags() & ACTION_ITEM_USE_POTION)
+            if (action_taken)
                 update_u_action_revert(ACTION_TILE_NO_ACTION);
             return 1;
         }

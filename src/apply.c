@@ -246,6 +246,7 @@ use_camera(obj)
 struct obj *obj;
 {
     struct monst *mtmp;
+    boolean action_taken = FALSE;
 
     if (Underwater) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -265,10 +266,17 @@ struct obj *obj;
     }
     consume_obj_charge(obj, TRUE);
 
-    if(urole.rolenum == ROLE_TOURIST)
+    if (u_action_flags(ACTION_TILE_SPECIAL_ATTACK) & ACTION_SPECIAL_ATTACK_FLAGS_CAMERA)
+    {
         update_u_action(ACTION_TILE_SPECIAL_ATTACK);
-    else
+        action_taken = TRUE;
+    }
+    else  if (u_action_flags(ACTION_TILE_ITEM_USE) & ACTION_SPECIAL_ATTACK_FLAGS_CAMERA)
+    {
         update_u_action(ACTION_TILE_ITEM_USE);
+        action_taken = TRUE;
+    }
+
     play_sfx_sound(SFX_CAMERA_CLICK);
     u_wait_until_action();
 
@@ -288,7 +296,10 @@ struct obj *obj;
         obj->ox = u.ux, obj->oy = u.uy;
         (void) flash_hits_mon(mtmp, obj);
     }
-    update_u_action_revert(ACTION_TILE_NO_ACTION);
+
+    if(action_taken)
+        update_u_action_revert(ACTION_TILE_NO_ACTION);
+
     return 1;
 }
 
@@ -4367,22 +4378,26 @@ struct obj *obj;
     glyph = glyph_at(cc.x, cc.y);
     if (distu(cc.x, cc.y) > max_range)
     {
+        play_sfx_sound(SFX_GENERAL_TOO_FAR);
         pline("Too far!");
         return res;
     } 
     else if (distu(cc.x, cc.y) < min_range) 
     {
+        play_sfx_sound(SFX_GENERAL_TOO_CLOSE);
         pline("Too close!");
         return res;
     } 
     else if (!cansee(cc.x, cc.y) && !glyph_is_monster(glyph)
                && !glyph_is_invisible(glyph) && !glyph_is_any_statue(glyph))
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
         You(cant_see_spot);
         return res;
     } 
     else if (!couldsee(cc.x, cc.y)) 
     { /* Eyes of the Overworld */
+        play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
         You(cant_reach);
         return res;
     }
@@ -4534,12 +4549,15 @@ struct obj *obj;
     else
         max_range = 8;
     if (distu(cc.x, cc.y) > max_range) {
+        play_sfx_sound(SFX_GENERAL_TOO_FAR);
         pline("Too far!");
         return res;
     } else if (!cansee(cc.x, cc.y)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
         You(cant_see_spot);
         return res;
     } else if (!couldsee(cc.x, cc.y)) { /* Eyes of the Overworld */
+        play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
         You(cant_reach);
         return res;
     }

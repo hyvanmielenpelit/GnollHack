@@ -177,7 +177,7 @@ cant_reach_floor(x, y, up, check_pit)
 int x, y;
 boolean up, check_pit;
 {
-    play_sfx_sound(SFX_GENERAL_CANNOT);
+    play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
     You("can't reach the %s.",
         up ? ceiling(x, y)
            : (check_pit && can_reach_floor(FALSE))

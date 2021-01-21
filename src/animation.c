@@ -3814,7 +3814,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
-            return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
+            return HUMAN_TOURIST_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_HEALER_FEMALE_POTION_DRINK_ANIMATION;
         break;
