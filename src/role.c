@@ -2849,6 +2849,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_ITEM_USE:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
             return TRUE;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return TRUE;
         break;
     case ACTION_TILE_DOOR_USE:
         break;
@@ -2863,6 +2865,68 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     return FALSE;
 }
 
+unsigned long
+get_player_action_flags(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
+enum action_tile_types action;
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* There's always a stand tile */
+    if (action == ACTION_TILE_NO_ACTION)
+        return ACTION_ITEM_USE_NONE;
+
+    if (levelidx > 0)
+        return ACTION_ITEM_USE_NONE;
+
+    /* Real cases */
+    switch (action)
+    {
+    case ACTION_TILE_NO_ACTION:
+        break;
+    case ACTION_TILE_ATTACK:
+        break;
+    case ACTION_TILE_THROW:
+        break;
+    case ACTION_TILE_FIRE:
+        break;
+    case ACTION_TILE_CAST_NODIR:
+        break;
+    case ACTION_TILE_CAST_DIR:
+        break;
+    case ACTION_TILE_SPECIAL_ATTACK:
+        break;
+    case ACTION_TILE_KICK:
+        break;
+    case ACTION_TILE_PASSIVE_DEFENSE:
+        break;
+    case ACTION_TILE_DEFEND:
+        break;
+    case ACTION_TILE_RECEIVE_DAMAGE:
+        break;
+    case ACTION_TILE_ITEM_USE:
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
+            return ACTION_ITEM_USE_CAMERA;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return ACTION_ITEM_USE_POTION;
+        break;
+    case ACTION_TILE_DOOR_USE:
+        break;
+    case ACTION_TILE_DEATH:
+        break;
+    case MAX_ACTION_TILES:
+        break;
+    default:
+        break;
+    }
+
+    return ACTION_ITEM_USE_NONE;
+}
+
+unsigned long 
+u_item_use_flags()
+{
+    return Upolyd ? 0UL /* Monster item use flags here */ : 
+        get_player_action_flags(ACTION_TILE_ITEM_USE, urole.rolenum, urace.racenum, flags.female, u.ualign.type + 1, 0);
+}
 
 int
 glyph_to_player_mon(int glyph)

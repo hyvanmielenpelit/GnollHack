@@ -586,6 +586,17 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       HUMAN_HEALER_FEMALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     }, 
+    { "human-healer-female-potion-drink-animation", ANIMATION_TYPE_NORMAL, HUMAN_HEALER_FEMALE_POTION_DRINK_ANIMATION_TILES,
+      HUMAN_HEALER_FEMALE_POTION_DRINK_ANIMATION_FRAMES, HUMAN_HEALER_FEMALE_POTION_DRINK_ANIMATION_OFF,
+      1,
+      3,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      12, 15,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "human-monk-male-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_MONK_MALE_ATTACK_ANIMATION_TILES,
       HUMAN_MONK_MALE_ATTACK_ANIMATION_FRAMES, HUMAN_MONK_MALE_ATTACK_ANIMATION_OFF,
       1,
@@ -3804,6 +3815,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_HEALER_FEMALE_POTION_DRINK_ANIMATION;
         break;
     case ACTION_TILE_DOOR_USE:
         break;

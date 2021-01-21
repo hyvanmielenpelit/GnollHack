@@ -87,13 +87,17 @@ boolean talk;
     if (Unaware)
         talk = FALSE;
 
-    if (!xtime && old) {
+    if (!xtime && old) 
+    {
         if (talk)
             You_feel("%s now.",
                      Hallucination ? "less wobbly" : "a bit steadier");
     }
-    if (xtime && !old) {
-        if (talk) {
+
+    if (xtime && !old) 
+    {
+        if (talk)
+        {
             if (u.usteed)
                 You("wobble in the saddle.");
             else
@@ -657,8 +661,10 @@ dodrink()
 {
     struct obj *otmp;
     const char *potion_descr;
+    boolean action_taken = FALSE;
 
     if (Strangled) {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         pline("If you can't breathe air, how can you drink liquid?");
         return 0;
     }
@@ -712,6 +718,22 @@ dodrink()
             break;
         }
     }
+
+    if (Race_if(PM_GNOLL))
+    {
+        if (otmp->otyp == POT_SICKNESS || otmp->otyp == POT_POISON || otmp->otyp == POT_URINE)
+        {
+            char qbuf[BUFSZ];
+            Sprintf(qbuf, "This potion smells %s. Drink it?",
+                otmp->otyp == POT_SICKNESS ? "contaminated" : otmp->otyp == POT_POISON ? "like poison" : otmp->otyp == POT_URINE ? "like urine" : "foul");
+
+            char qres = yn_query(qbuf);
+
+            if (qres != 'y')
+                return 0;
+        }
+    }
+
     /* quan > 1 used to be left to useup(), but we need to force
        the current potion to be unworn, and don't want to do
        that for the entire stack when starting with more than 1.
@@ -726,7 +748,15 @@ dodrink()
     } else if (otmp->owornmask) {
         remove_worn_item(otmp, FALSE);
     }
+
     otmp->in_use = TRUE; /* you've opened the stopper */
+
+    if (u_item_use_flags() & ACTION_ITEM_USE_POTION)
+    {
+        action_taken = TRUE;
+        update_u_action(ACTION_TILE_ITEM_USE);
+        u_wait_until_action();
+    }
 
     potion_descr = OBJ_DESCR(objects[otmp->otyp]);
     if (potion_descr) {
@@ -735,32 +765,27 @@ dodrink()
             && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_GHOST].born))) {
             ghost_from_bottle();
             useup(otmp);
+            if (u_item_use_flags() & ACTION_ITEM_USE_POTION)
+                update_u_action_revert(ACTION_TILE_NO_ACTION);
             return 1;
         } else if (!strcmp(potion_descr, "smoky")
                    && !(mvitals[PM_DJINNI].mvflags & G_GONE)
                    && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_DJINNI].born))) {
             djinni_from_bottle(otmp);
             useup(otmp);
+            if (u_item_use_flags() & ACTION_ITEM_USE_POTION)
+                update_u_action_revert(ACTION_TILE_NO_ACTION);
             return 1;
         }
     }
 
-	if (Race_if(PM_GNOLL))
-	{
-		if (otmp->otyp == POT_SICKNESS || otmp->otyp == POT_POISON || otmp->otyp == POT_URINE)
-		{
-			char qbuf[BUFSZ];
-			Sprintf(qbuf, "This potion smells %s. Drink it?",
-				otmp->otyp == POT_SICKNESS ? "contaminated" : otmp->otyp == POT_POISON ? "like poison" : otmp->otyp == POT_URINE ? "like urine" : "foul");
-			
-			char qres = yn_query(qbuf);
-
-			if (qres != 'y')
-				return 0;
-		}
-	}
-
-    return dopotion(otmp);
+    int res = dopotion(otmp);
+    if (action_taken)
+    {
+        u_wait_until_end();
+        update_u_action_revert(ACTION_TILE_NO_ACTION);
+    }
+    return res;
 }
 
 int

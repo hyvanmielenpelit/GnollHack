@@ -235,6 +235,7 @@
     <ClInclude Include="$(IncDir)extern.h" />
     <ClInclude Include="$(IncDir)general.h" />
     <ClInclude Include="$(IncDir)layer.h" />
+    <ClInclude Include="..\..\..\include\action.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />
