@@ -4470,7 +4470,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_ITEM_WELDS",
         {GHSOUND_ITEM_WELDS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
 };
 
