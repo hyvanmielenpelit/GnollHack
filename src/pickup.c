@@ -1852,7 +1852,7 @@ doloot()
         return 0;
     }
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You("have no hands!"); /* not `body_part(HAND)' */
         return 0;
     }
@@ -2844,9 +2844,11 @@ boolean
 u_handsy()
 {
     if (nohands(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You("have no hands!"); /* not `body_part(HAND)' */
         return FALSE;
     } else if (!freehand()) {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You("have no free %s.", body_part(HAND));
         return FALSE;
     }

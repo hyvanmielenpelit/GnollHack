@@ -1089,7 +1089,7 @@ dokick() {
     }
 	else if (verysmall(youmonst.data))
 	{
-        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You("are too small to do any kicking.");
         no_kick = TRUE;
     } 

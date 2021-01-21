@@ -521,13 +521,15 @@ register struct obj *obj;
                             && !rn2(Role_if(PM_HEALER) ? 10 : 3));
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You("have no hands!"); /* not `body_part(HAND)' */
         return 0;
     } else if (Deaf) {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You_cant("hear anything!");
         return 0;
     } else if (!freehand() && !is_telekinetic_operator(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You("have no free %s.", body_part(HAND));
         return 0;
     }

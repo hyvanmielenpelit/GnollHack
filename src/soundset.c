@@ -4462,6 +4462,16 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_MONSTER_DOES_NOT_ALLOW, 1.0f},
         FALSE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_GENERAL_NOT_ENOUGH_STAMINA",
+        {GHSOUND_GENERAL_NOT_ENOUGH_STAMINA, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_ITEM_WELDS",
+        {GHSOUND_ITEM_WELDS, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 

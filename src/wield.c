@@ -250,7 +250,9 @@ long mask;
                 tmp = thestr;
             else
                 tmp = "";
-            pline("%s%s %s to your %s!", tmp, aobjnam(wep, "weld"),
+
+			play_sfx_sound(SFX_ITEM_WELDS);
+			pline("%s%s %s to your %s!", tmp, aobjnam(wep, "weld"),
                   (wep->quan == 1L) ? "itself" : "themselves", /* a3 */
                   bimanual(wep) ? (const char *) makeplural(body_part(HAND))
                                 : body_part(HAND));

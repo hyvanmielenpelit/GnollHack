@@ -1716,7 +1716,7 @@ boolean atme;
         return 0;
     } else*/
 	if (ACURR(A_STR) < 4 && spellid(spell) != SPE_RESTORE_ABILITY) {
-		play_sfx_sound(SFX_GENERAL_CANNOT);
+		play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_STAMINA);
 		You("lack the strength to cast spells.");
         return 0;
     } else if (check_capacity(

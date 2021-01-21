@@ -462,6 +462,7 @@ struct obj *pick;
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) 
     {
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You_cant("hold %s -- you have no hands!", doname(pick));
         return PICKLOCK_DID_NOTHING;
     }
@@ -890,7 +891,7 @@ int x, y;
     int res = 0;
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You_cant("open anything -- you have no hands!");
         return 0;
     }
@@ -1029,7 +1030,7 @@ int x, y;
     }
 
     if (verysmall(youmonst.data)) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         pline("You're too small to pull the %s open.", door_name);
         return res;
     }
@@ -1118,7 +1119,7 @@ doclose()
     int res = 0;
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You_cant("close anything -- you have no hands!");
         return 0;
     }
@@ -1217,7 +1218,7 @@ doclose()
     {
         if (verysmall(youmonst.data) && !u.usteed) 
         {
-            play_sfx_sound(SFX_GENERAL_CANNOT);
+            play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
             pline("You're too small to push the door closed.");
             return res;
         }

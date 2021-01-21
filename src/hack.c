@@ -1608,12 +1608,17 @@ domove_core()
                         : (u.uhp < 10 && u.uhp != u.uhpmax))))
         && !Is_airlevel(&u.uz)) 
     {
-        play_sfx_sound(SFX_STUCK_IN_TRAP);
-        if (wtcap < OVERLOADED) {
+        if (wtcap < OVERLOADED) 
+        {
+            play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_STAMINA);
             You("don't have enough stamina to move.");
             exercise(A_CON, FALSE);
-        } else
+        }
+        else
+        {
+            play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
             You("collapse under your load.");
+        }
         nomul(0);
         return;
     }
@@ -3632,6 +3637,7 @@ check_capacity(str)
 const char *str;
 {
     if (near_capacity() >= EXT_ENCUMBER) {
+        play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
         if (str)
             pline1(str);
         else
