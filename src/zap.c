@@ -7076,27 +7076,30 @@ boolean stop_at_first_hit_object;
             }
 			else 
 			{
+                boolean bhitadded = FALSE;
+                /* ZAPPED_WAND */
+                if (weapon == ZAPPED_WAND && zapped_wand_obj_displayed && !zapped_wand_beam)
+                {
+                    bhitadded = TRUE;
+                    context.bhitcount++;
+                    if (hit_only_one && context.bhitcount >= bhitlimit)
+                    {
+                        tmp_at(DISP_END, 0);
+                        if (obj)
+                            play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
+                        beam_cleared_off = TRUE;
+                    }
+                    else
+                        tmp_at(bhitpos.x, bhitpos.y);
+                }
+                
                 int had_effect = (*fhitm)(mtmp, obj, origmonst);
                 int more_effect_num = 0;
 
                 if (had_effect && obj)
                     play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_MONSTER, bhitpos.x, bhitpos.y);
 
-                /* ZAPPED_WAND */
-				if (weapon == ZAPPED_WAND && zapped_wand_obj_displayed && !zapped_wand_beam)
-				{
-                    context.bhitcount++;
-                    if (hit_only_one && context.bhitcount >= bhitlimit)
-					{
-                        tmp_at(DISP_END, 0);
-                        if(obj)
-                            play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
-                        beam_cleared_off = TRUE;
-					}
-					else
-						tmp_at(bhitpos.x, bhitpos.y);
-				}
-                else if (had_effect)
+                if (had_effect && !bhitadded)
                     context.bhitcount++;
 
 				/* Make radius if it is specified */
