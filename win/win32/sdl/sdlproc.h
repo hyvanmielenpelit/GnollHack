@@ -71,7 +71,12 @@ typedef struct sdl_ghwindow_app {
 
 
 extern PGHSdlApp GetGHSdlApp(void);
+#if defined(SDL_GRAPHICS)
 extern struct window_procs sdl_procs;
+#endif
+#if defined(GLFW_GRAPHICS)
+extern struct window_procs glfw_procs;
+#endif
 
 int SDL_NHMessageBox(HWND hWnd, LPCTSTR text, UINT type);
 void sdl_bail(const char* mesg);

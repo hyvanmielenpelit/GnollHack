@@ -77,6 +77,7 @@ COLORREF sdl_message_fg_color = RGB(0xFF, 0xFF, 0xFF);
 
 strbuf_t sdl_raw_print_strbuf = { 0 };
 
+#if defined(SDL_GRAPHICS)
 /* Interface definition, for windows.c */
 struct window_procs sdl_procs = {
     "SDL",
@@ -133,6 +134,65 @@ struct window_procs sdl_procs = {
     sdl_set_ambient_ghsound_volume,
     sdl_exit_hack,
 };
+#endif
+
+#if defined (GLFW_GRAPHICS)
+struct window_procs glfw_procs = {
+    "GLFW",
+    WC_COLOR | WC_HILITE_PET | WC_ALIGN_MESSAGE | WC_ALIGN_STATUS | WC_INVERSE
+        | WC_SCROLL_AMOUNT | WC_SCROLL_MARGIN | WC_MAP_MODE | WC_FONT_MESSAGE
+        | WC_FONT_STATUS | WC_FONT_MENU | WC_FONT_TEXT | WC_FONT_MAP
+        | WC_FONTSIZ_MESSAGE | WC_FONTSIZ_STATUS | WC_FONTSIZ_MENU
+        | WC_FONTSIZ_TEXT | WC_TILE_WIDTH | WC_TILE_HEIGHT | WC_TILE_FILE
+        | WC_VARY_MSGCOUNT | WC_WINDOWCOLORS | WC_PLAYER_SELECTION
+        | WC_SPLASH_SCREEN | WC_POPUP_DIALOG | WC_MOUSE_SUPPORT,
+#ifdef STATUS_HILITES
+    WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
+#endif
+    WC2_PREFERRED_SCREEN_SCALE, sdl_init_nhwindows, sdl_player_selection, sdl_askname,
+    sdl_get_nh_event, sdl_exit_nhwindows, sdl_suspend_nhwindows,
+    sdl_resume_nhwindows, sdl_create_nhwindow, sdl_clear_nhwindow,
+    sdl_display_nhwindow, sdl_destroy_nhwindow, sdl_curs, sdl_putstr,
+    genl_putmixed, sdl_display_file, sdl_start_menu, sdl_add_menu, sdl_add_extended_menu,
+    sdl_end_menu, sdl_select_menu,
+    genl_message_menu, /* no need for X-specific handling */
+    sdl_update_inventory, sdl_mark_synch, sdl_wait_synch,
+#ifdef CLIPPING
+    sdl_cliparound,
+#endif
+#ifdef POSITIONBAR
+    donull,
+#endif
+    sdl_print_glyph, sdl_raw_print, sdl_raw_print_bold, sdl_nhgetch,
+    sdl_nh_poskey, sdl_nhbell, sdl_doprev_message, sdl_yn_function,
+    sdl_getlin, sdl_get_ext_cmd, sdl_number_pad, sdl_delay_output, sdl_delay_output_milliseconds,
+#ifdef CHANGE_COLOR /* only a Mac option currently */
+    mswin, sdl_change_background,
+#endif
+    /* other defs that really should go away (they're tty specific) */
+    sdl_start_screen, sdl_end_screen, sdl_outrip,
+    sdl_preference_update, sdl_getmsghistory, sdl_putmsghistory,
+    sdl_status_init, sdl_status_finish, sdl_status_enablefield,
+    sdl_status_update,
+    genl_can_suspend_yes,
+    sdl_stretch_window,
+    sdl_set_animation_timer,
+    sdl_open_special_view,
+    sdl_stop_all_sounds,
+    sdl_play_immediate_ghsound,
+    sdl_play_ghsound_occupation_ambient,
+    sdl_play_ghsound_effect_ambient,
+    sdl_set_effect_ambient_volume,
+    sdl_play_ghsound_music,
+    sdl_play_ghsound_level_ambient,
+    sdl_play_ghsound_environment_ambient,
+    sdl_adjust_ghsound_general_volumes,
+    sdl_add_ambient_ghsound,
+    sdl_delete_ambient_ghsound,
+    sdl_set_ambient_ghsound_volume,
+    sdl_exit_hack,
+};
+#endif
 
 /*
 init_nhwindows(int* argcp, char** argv)

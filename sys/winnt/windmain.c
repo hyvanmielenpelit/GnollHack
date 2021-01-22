@@ -57,10 +57,10 @@ extern int GUILaunched;
 HANDLE hStdOut;
 #if defined(SDL_GRAPHICS)
 char default_window_sys[] = "sdl";
-#else
-#if defined(MSWIN_GRAPHICS)
+#elif defined(GLFW_GRAPHICS)
+char default_window_sys[] = "glfw";
+#elif defined(MSWIN_GRAPHICS)
 char default_window_sys[] = "mswin";
-#endif
 #endif
 #ifdef WANT_GETHDATE
 static struct stat hbuf;
@@ -268,7 +268,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
  */
 
     if (argc >= 1
-        && (!strcmpi(default_window_sys, "mswin") || !strcmpi(default_window_sys, "sdl"))
+        && (!strcmpi(default_window_sys, "mswin") || !strcmpi(default_window_sys, "sdl") || !strcmpi(default_window_sys, "glfw"))
         && (strstri(argv[0], "GnollHackw.exe") || GUILaunched))
             iflags.windowtype_locked = TRUE;
 
@@ -303,7 +303,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 
     GnollHack_enter(argc, argv);
     iflags.use_background_glyph = FALSE;
-    if (WINDOWPORT("mswin") || WINDOWPORT("sdl"))
+    if (WINDOWPORT("mswin") || WINDOWPORT("sdl") || WINDOWPORT("glfw"))
         iflags.use_background_glyph = TRUE;
     if (WINDOWPORT("tty"))
         nttty_open(1);

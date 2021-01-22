@@ -13,6 +13,7 @@
     <FmodDir>$(RootDir)ext\fmod\</FmodDir>
     <SdlDir>$(RootDir)ext\sdl\</SdlDir>
     <!--
+    <GlfwDir>$(RootDir)ext\glfw\</GlfwDir>
     <SdlImageDir>$(RootDir)ext\sdl_image\</SdlImageDir>
     <SdlGfxDir>$(RootDir)ext\sdl_gfx\</SdlGfxDir>
     <SdlTtfDir>$(RootDir)ext\sdl_ttf\</SdlTtfDir>

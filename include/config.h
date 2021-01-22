@@ -119,6 +119,15 @@
 #endif
 #endif
 
+#ifdef GLFW_GRAPHICS
+#ifndef DEFAULT_WINDOW_SYS
+#define DEFAULT_WINDOW_SYS "glfw"
+#endif
+#ifndef HACKDIR
+#define HACKDIR "\\GnollHack"
+#endif
+#endif
+
 #ifdef MSWIN_GRAPHICS
 #ifndef DEFAULT_WINDOW_SYS
 #define DEFAULT_WINDOW_SYS "mswin"

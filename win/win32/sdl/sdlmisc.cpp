@@ -31,6 +31,7 @@
 #include <limits.h>
 #include <time.h>
 
+#ifdef SDL_GRAPHICS
 #include <SDL.h>
 #ifdef GNH_GL2_GRAPHICS
 #include <SDL_opengl.h>
@@ -38,7 +39,11 @@
 #ifdef GNH_GLES2_GRAPHICS
 #include <SDL_opengles2.h>
 #endif
+#endif
 
+#ifdef GLFW_GRAPHICS
+#include <glfw3.h>
+#endif
 
 extern "C"
 {
@@ -125,7 +130,7 @@ extern "C"
         return tex;
     }
 
-
+#ifdef SDL_GRAPHICS
     SDL_Surface*
     sdl_surface_image_load_from_resource(HINSTANCE hInstance, int resource_id, int* x_ptr, int* y_ptr, size_t* n_ptr)
     {
@@ -162,7 +167,7 @@ extern "C"
         stbi_image_free(data);
         return retptr;
     }
- 
+#endif
 
 }
 

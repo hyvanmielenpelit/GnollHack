@@ -11,7 +11,9 @@
   	<Copy SourceFiles="$(FmodDir)core\lib\winnt-x64\fmod.dll;$(FmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(FmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(FmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
     <Copy SourceFiles="$(SdlDir)lib\winnt-x86\SDL2.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
     <Copy SourceFiles="$(SdlDir)lib\winnt-x64\SDL2.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-<!--
+    <!--
+    <Copy SourceFiles="$(GlfwDir)lib\winnt-x86-vc2019\glfw3.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+    <Copy SourceFiles="$(GlfwDir)lib\winnt-x64-vc2019\glfw3.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
     <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\SDL2_image.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
     <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\SDL2_image.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
     <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\libpng16-16.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
