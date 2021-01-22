@@ -159,6 +159,16 @@
 #define IDM_ZOOM_ZOOMOUT                32811
 #define IDM_ZOOM_NORMALZOOM             32812
 #define IDM_ZOOM_MINIMAPZOOM            32813
+#define ID_VIEW_TOGGLETARGETING         32817
+#define ID_VIEW_TOGGLEUMARK             32818
+#define ID_VIEW_TOGGLEHITPOINTBARS      32819
+#define IDM_VIEW_TOGGLEHITPOINTBARS     32820
+#define IDM_VIEW_TOGGLEUMARK            32821
+#define IDM_VIEW_TOGGLETARGETING        32822
+#define IDM_VIEW_MINIMAPZOOM            32823
+#define IDM_VIEW_NORMALZOOM             32824
+#define IDM_VIEW_ZOOMOUT                32825
+#define IDM_VIEW_ZOOMIN                 32826
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -166,7 +176,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        180
-#define _APS_NEXT_COMMAND_VALUE         32817
+#define _APS_NEXT_COMMAND_VALUE         32827
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

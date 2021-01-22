@@ -66,13 +66,17 @@ BEGIN
         MENUITEM "&Copy To Clipboard (ASCII)",  IDM_SETTING_SCREEN_TO_CLIPBOARD
         MENUITEM "&Save to File (ASCII)",       IDM_SETTING_SCREEN_TO_FILE
     END
-    POPUP "&Zoom"
+    POPUP "&View"
     BEGIN
-        MENUITEM "Zoom &in\t Alt++",            IDM_ZOOM_ZOOMIN
-        MENUITEM "Zoom &out\tAlt+-",            IDM_ZOOM_ZOOMOUT
+        MENUITEM "Zoom &in\t Alt++",            IDM_VIEW_ZOOMIN
+        MENUITEM "Zoom &out\tAlt+-",            IDM_VIEW_ZOOMOUT
+        MENUITEM "&Normal zoom\tAlt+.",         IDM_VIEW_NORMALZOOM
+        MENUITEM "&Minimap zoom\tAlt+,",        IDM_VIEW_MINIMAPZOOM
         MENUITEM SEPARATOR
-        MENUITEM "&Normal zoom\tAlt+.",         IDM_ZOOM_NORMALZOOM
-        MENUITEM "&Minimap zoom\tAlt+,",        IDM_ZOOM_MINIMAPZOOM
+        MENUITEM "Toggle &player mark\tAlt+:",  IDM_VIEW_TOGGLEUMARK
+        MENUITEM "Toggle &targeting\tAlt+;",    IDM_VIEW_TOGGLETARGETING
+        MENUITEM SEPARATOR
+        MENUITEM "Toggle hit point &bars\t Alt+b", IDM_VIEW_TOGGLEHITPOINTBARS
     END
     POPUP "Windows &Settings"
     BEGIN

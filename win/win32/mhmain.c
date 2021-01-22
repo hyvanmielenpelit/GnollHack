@@ -1058,18 +1058,28 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         free(wtext);
     } break;
 
-    case IDM_ZOOM_ZOOMIN:
+    case IDM_VIEW_ZOOMIN:
         (void)dozoomin();
         break;
-    case IDM_ZOOM_ZOOMOUT:
+    case IDM_VIEW_ZOOMOUT:
         (void)dozoomout();
         break;
-    case IDM_ZOOM_MINIMAPZOOM:
+    case IDM_VIEW_MINIMAPZOOM:
         (void)dozoommini();
         break;
-    case IDM_ZOOM_NORMALZOOM:
+    case IDM_VIEW_NORMALZOOM:
         (void)dozoomnormal();
         break;
+    case IDM_VIEW_TOGGLETARGETING:
+        (void)dotogglemonstertargeting();
+        break;
+    case IDM_VIEW_TOGGLEUMARK:
+        (void)dotoggleumark();
+        break;
+    case IDM_VIEW_TOGGLEHITPOINTBARS:
+        (void)dotogglehpbars();
+        break;
+
 
     case IDM_NHMODE: 
     {

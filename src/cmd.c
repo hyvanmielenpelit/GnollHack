@@ -4845,7 +4845,7 @@ struct ext_func_tab extcmdlist[] = {
             dotogglepickup, IFBURIED },
 #ifdef USE_TILES
     { M('b'), "bars", "toggle tile hit point bars on/off",
-            dotogglehpbars, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+            dotogglehpbars, IFBURIED | AUTOCOMPLETE },
 #endif
     { C('b'), "break", "break something", dobreak, AUTOCOMPLETE | INCMDMENU },
     { 'c', "close", "close a door", doclose },
@@ -4977,9 +4977,9 @@ struct ext_func_tab extcmdlist[] = {
     { M('t')/*'A'*/, "takeoffall", "remove all armor", doddoremarm },
 #ifdef USE_TILES
     { M(';'), "targeting", "toggle tile targeting graphics on/off",
-            dotogglemonstertargeting, IFBURIED | AUTOCOMPLETE | INCMDMENU },
-    { M(':'), "umark", "toggle tile targeting graphics on/off",
-            dotoggleumark, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+            dotogglemonstertargeting, IFBURIED | AUTOCOMPLETE },
+    { M(':'), "umark", "toggle tile player mark graphics on/off",
+            dotoggleumark, IFBURIED | AUTOCOMPLETE },
 #endif
     { C('t'), "teleport", "teleport around the level", dotelecmd, IFBURIED },
     { '\0', "terrain", "show map without obstructions",
