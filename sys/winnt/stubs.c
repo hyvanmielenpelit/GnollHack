@@ -12,11 +12,8 @@
 
 int GUILaunched;
 struct window_procs mswin_procs = { "-guistubs" };
-#ifdef SDL_GRAPHICS
-struct window_procs sdl_procs = { "-guistubs" };
-#endif
-#ifdef GLFW_GRAPHICS
-struct window_procs glfw_procs = { "-guistubs" };
+#ifdef NUKLEAR_GRAPHICS
+struct window_procs nuklear_procs = { "-guistubs" };
 #endif
 #ifdef QT_GRAPHICS
 struct window_procs Qt_procs = { "-guistubs" };

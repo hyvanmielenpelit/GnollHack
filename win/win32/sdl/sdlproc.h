@@ -38,14 +38,15 @@
 #include "soundfx.h"
 #include "mhwingdi.h"
 #include "lev.h"
+
+#if defined(SDL_GRAPHICS)
 #include <SDL.h>
-#ifdef GNH_GL2_GRAPHICS
+#if defined(GL2_GRAPHICS)
 #include <SDL_opengl.h>
-#endif
-#ifdef GNH_GLES2_GRAPHICS
+#elif defined(GLES2_GRAPHICS)
 #include <SDL_opengles2.h>
 #endif
-
+#endif
 
 #define SDL_TILEBMP_X(ntile) \
     ((ntile % GetGHSdlApp()->mapTilesPerLine) *  GetGHSdlApp()->mapTile_X)
@@ -71,11 +72,8 @@ typedef struct sdl_ghwindow_app {
 
 
 extern PGHSdlApp GetGHSdlApp(void);
-#if defined(SDL_GRAPHICS)
-extern struct window_procs sdl_procs;
-#endif
-#if defined(GLFW_GRAPHICS)
-extern struct window_procs glfw_procs;
+#if defined(NUKLEAR_GRAPHICS)
+extern struct window_procs nuklear_procs;
 #endif
 
 int SDL_NHMessageBox(HWND hWnd, LPCTSTR text, UINT type);

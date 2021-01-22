@@ -31,17 +31,14 @@
 #include <limits.h>
 #include <time.h>
 
-#ifdef SDL_GRAPHICS
+#if defined(SDL_GRAPHICS)
 #include <SDL.h>
-#ifdef GNH_GL2_GRAPHICS
+#if defined(GL2_GRAPHICS)
 #include <SDL_opengl.h>
-#endif
-#ifdef GNH_GLES2_GRAPHICS
+#elif defined(GLES2_GRAPHICS)
 #include <SDL_opengles2.h>
 #endif
-#endif
-
-#ifdef GLFW_GRAPHICS
+#elif defined(GLFW_GRAPHICS)
 #include <glfw3.h>
 #endif
 
@@ -59,7 +56,7 @@ extern "C"
         exit(EXIT_FAILURE);
     }
 
-
+#ifdef GL2_GRAPHICS
     GLuint
     gl2_image_load_from_resource(HINSTANCE hInstance, int resource_id, int *x_ptr, int *y_ptr, size_t *n_ptr)
     {
@@ -129,6 +126,7 @@ extern "C"
         stbi_image_free(data);
         return tex;
     }
+#endif
 
 #ifdef SDL_GRAPHICS
     SDL_Surface*

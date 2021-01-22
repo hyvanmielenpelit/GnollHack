@@ -46,11 +46,8 @@ extern struct window_procs Gnome_procs;
 #ifdef MSWIN_GRAPHICS
 extern struct window_procs mswin_procs;
 #endif
-#ifdef SDL_GRAPHICS
-extern struct window_procs sdl_procs;
-#endif
-#ifdef GLFW_GRAPHICS
-extern struct window_procs glfw_procs;
+#ifdef NUKLEAR_GRAPHICS
+extern struct window_procs nuklear_procs;
 #endif
 #ifdef ANDROID_GRAPHICS
 extern struct window_procs and_procs;
@@ -141,11 +138,8 @@ static struct win_choices {
 #ifdef MSWIN_GRAPHICS
     { &mswin_procs, 0 CHAINR(0) },
 #endif
-#ifdef SDL_GRAPHICS
-    { &sdl_procs, 0 CHAINR(0) },
-#endif
-#ifdef GLFW_GRAPHICS
-    { &glfw_procs, 0 CHAINR(0) },
+#ifdef NUKLEAR_GRAPHICS
+    { &nuklear_procs, 0 CHAINR(0) },
 #endif
 #ifdef ANDROID_GRAPHICS
 	{ &and_procs, 0 CHAINR(0) },

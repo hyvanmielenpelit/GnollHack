@@ -5,10 +5,10 @@
  * Copyright (c) Janne Gustafsson, 2021
  */
 
-#ifdef GNH_GL2_GRAPHICS
+#ifdef GL2_GRAPHICS
 #pragma comment( lib, "OpenGL32" )          
 #endif
-#ifdef GNH_GLES2_GRAPHICS
+#ifdef GLES2_GRAPHICS
 #pragma comment( lib, "OpenGLES2" )  // Put relevant OpenGLES2 library here        
 #endif
 
@@ -36,12 +36,11 @@
 #include <limits.h>
 #include <time.h>
 
-#ifdef SDL_GRAPHICS
+#if defined(SDL_GRAPHICS)
 #include <SDL.h>
-#ifdef GNH_GL2_GRAPHICS
+#if defined(GL2_GRAPHICS)
 #include <SDL_opengl.h>
-#endif
-#ifdef GNH_GLES2_GRAPHICS
+#elif defined(GLES2_GRAPHICS)
 #include <SDL_opengles2.h>
 #endif
 #endif
@@ -56,20 +55,16 @@
 #define NK_IMPLEMENTATION
 #include "nuklear.h"
 
-#ifdef SDL_GRAPHICS
-#ifdef GNH_GL2_GRAPHICS
+#if defined(SDL_GRAPHICS)
+#if defined(GL2_GRAPHICS)
 #define NK_SDL_GL2_IMPLEMENTATION
 #include "nuklear_sdl_gl2.h"
-#endif
-
-#ifdef GNH_GLES2_GRAPHICS
+#elif defined(GLES2_GRAPHICS)
 #define NK_SDL_GLES2_IMPLEMENTATION
 #include "nuklear_sdl_gles2.h"
 #endif
-#endif
-
-#ifdef GLFW_GRAPHICS
-#ifdef GNH_GLFW3_GL2_GRAPHICS
+#elif defined(GLFW_GRAPHICS)
+#ifdef GL2_GRAPHICS
 #define NK_GLFW_GL2_IMPLEMENTATION
 #define NK_KEYSTATE_BASED_INPUT
 #include "nuklear_glfw_gl2.h"
@@ -86,7 +81,7 @@
 int shutdown_nuklear();
 static boolean plselRandomize();
 
-#ifdef SDL_GRAPHICS
+#ifdef NK_SDL_GL2_IMPLEMENTATION
 /* ===============================================================
  *
  *                          EXAMPLE
@@ -3165,7 +3160,7 @@ struct media {
 #endif
 
 
-#ifdef GLFW_GRAPHICS
+#ifdef NK_GLFW3_GL2_IMPLEMENTATION
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
 /* ===============================================================

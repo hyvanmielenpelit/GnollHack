@@ -16,7 +16,6 @@
 #include "resource.h"
 #include "mhmain.h"
 #include "mhmap.h"
-#include "SDL.h"
 #include "sdlnuklear.h"
 
 #if !defined(SAFEPROCS)

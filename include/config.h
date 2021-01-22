@@ -50,7 +50,7 @@
 /* #define QT_GRAPHICS */    /* Qt interface */
 /* #define GNOME_GRAPHICS */ /* Gnome interface */
 /* #define MSWIN_GRAPHICS */ /* Windows NT, CE, Graphics */
-/* #define SDL_GRAPHICS */   /* SDL2 / Nuklear */
+/* #define NUKLEAR_GRAPHICS */ /* Nuklear */
 /* #define ANDROID_GRAPHICS */ /* Android graphics */
 
 /*
@@ -110,18 +110,9 @@
 #endif
 #endif
 
-#ifdef SDL_GRAPHICS
+#ifdef NUKLEAR_GRAPHICS
 #ifndef DEFAULT_WINDOW_SYS
-#define DEFAULT_WINDOW_SYS "sdl"
-#endif
-#ifndef HACKDIR
-#define HACKDIR "\\GnollHack"
-#endif
-#endif
-
-#ifdef GLFW_GRAPHICS
-#ifndef DEFAULT_WINDOW_SYS
-#define DEFAULT_WINDOW_SYS "glfw"
+#define DEFAULT_WINDOW_SYS "nuklear"
 #endif
 #ifndef HACKDIR
 #define HACKDIR "\\GnollHack"

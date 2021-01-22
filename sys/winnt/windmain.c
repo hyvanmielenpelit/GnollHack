@@ -28,7 +28,7 @@ boolean NDECL(fakeconsole);
 void NDECL(freefakeconsole);
 E void FDECL(gnollhack_exit, (int));
 E char chosen_windowtype[WINTYPELEN];   /* flag.h */
-#if defined(MSWIN_GRAPHICS) || defined(SDL_GRAPHICS)
+#if defined(MSWIN_GRAPHICS) || defined(NUKLEAR_GRAPHICS)
 E void NDECL(mswin_destroy_reg);
 #endif
 #ifdef TTY_GRAPHICS
@@ -55,10 +55,8 @@ boolean getreturn_enabled;
 extern int redirect_stdout;       /* from sys/share/pcsys.c */
 extern int GUILaunched;
 HANDLE hStdOut;
-#if defined(SDL_GRAPHICS)
-char default_window_sys[] = "sdl";
-#elif defined(GLFW_GRAPHICS)
-char default_window_sys[] = "glfw";
+#if defined(NUKLEAR_GRAPHICS)
+char default_window_sys[] = "nuklear";
 #elif defined(MSWIN_GRAPHICS)
 char default_window_sys[] = "mswin";
 #endif
@@ -268,7 +266,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
  */
 
     if (argc >= 1
-        && (!strcmpi(default_window_sys, "mswin") || !strcmpi(default_window_sys, "sdl") || !strcmpi(default_window_sys, "glfw"))
+        && (!strcmpi(default_window_sys, "mswin") || !strcmpi(default_window_sys, "nuklear"))
         && (strstri(argv[0], "GnollHackw.exe") || GUILaunched))
             iflags.windowtype_locked = TRUE;
 
@@ -303,7 +301,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 
     GnollHack_enter(argc, argv);
     iflags.use_background_glyph = FALSE;
-    if (WINDOWPORT("mswin") || WINDOWPORT("sdl") || WINDOWPORT("glfw"))
+    if (WINDOWPORT("mswin") || WINDOWPORT("nuklear"))
         iflags.use_background_glyph = TRUE;
     if (WINDOWPORT("tty"))
         nttty_open(1);
