@@ -1102,6 +1102,28 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       SUMMON_CELESTIAL_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "sleep-gas-trap-effect-animation", ANIMATION_TYPE_NORMAL, SLEEP_GAS_TRAP_EFFECT_ANIMATION_TILES,
+      SLEEP_GAS_TRAP_EFFECT_ANIMATION_FRAMES, SLEEP_GAS_TRAP_EFFECT_ANIMATION_OFF,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      0, 6,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "poison-cloud-animation", ANIMATION_TYPE_NORMAL, POISON_CLOUD_ANIMATION_TILES,
+      POISON_CLOUD_ANIMATION_FRAMES, POISON_CLOUD_ANIMATION_OFF,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_IGNORE,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      0, 0,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "twisted-candle-lit-animation", ANIMATION_TYPE_NORMAL, TWISTED_CANDLE_ANIMATION_TILES,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 
       1,
@@ -3533,6 +3555,7 @@ NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS] =
     {"summon-in-smoke",     0, 0, 2,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, SUMMON_DEMON_ANIMATION, NO_ENLARGEMENT },
     {"puff-of-smoke",       0, 0, 4,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
     {"disintegrated",       0, 0, 4,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    {"sleep-gas-trap-effect", 0, 6, 6,    LAYER_GENERAL_EFFECT, NO_REPLACEMENT, SLEEP_GAS_TRAP_EFFECT_ANIMATION, NO_ENLARGEMENT },
 };
 
 
