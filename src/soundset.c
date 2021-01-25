@@ -2520,12 +2520,12 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "paralyzed",
         {GHSOUND_CAUSE_PARALYSIS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "sleeping",
         {GHSOUND_CAUSE_SLEEPING, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "desecrate altar",
@@ -3550,7 +3550,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_ACQUIRE_PARALYSIS",
         {GHSOUND_ACQUIRE_PARALYSIS, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ACQUIRE_FEAR",
@@ -3560,7 +3560,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_ACQUIRE_SLEEP",
         {GHSOUND_ACQUIRE_SLEEP, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
         "GHSOUND_ACQUIRE_CANCELLATION",
