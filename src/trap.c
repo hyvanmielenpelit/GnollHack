@@ -1206,20 +1206,45 @@ unsigned trflags;
             {
                 if (is_metallic(uarmh)) 
                 {
-                    play_sfx_sound(SFX_ROCK_HITS_HARD_HELMET);
-                    pline("Fortunately, you are wearing a hard helmet.");
+                    if (flags.verbose)
+                    {
+                        if (iflags.using_gui_sounds)
+                        {
+                            delay_output_milliseconds(150);
+                            play_sfx_sound(SFX_ROCK_HITS_HARD_HELMET);
+                        }
+                        pline("Fortunately, you are wearing a hard helmet.");
+                    }
                     dmg = 2;
                 } 
                 else 
                 {
-                    play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
                     if (flags.verbose)
+                    {
+                        if (iflags.using_gui_sounds)
+                        {
+                            delay_output_milliseconds(150);
+                            play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
+                        }
                         pline("%s does not protect you.", Yname2(uarmh));
+                        if (iflags.using_gui_sounds)
+                        {
+                            delay_output_milliseconds(150);
+                            play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                        }
+                    }
                 }
             }
             else
-                play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
-
+            {
+                if (iflags.using_gui_sounds)
+                {
+                    delay_output_milliseconds(150);
+                    play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
+                    delay_output_milliseconds(150);
+                    play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                }
+            }
             if (!Blind)
                 otmp->dknown = 1;
             stackobj(otmp);
