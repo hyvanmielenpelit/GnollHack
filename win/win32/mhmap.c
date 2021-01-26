@@ -73,7 +73,6 @@ typedef struct mswin_GnollHack_map_window {
     double monitorScale;        /* from 96dpi to monitor dpi*/
 
     boolean cursorOn;
-    long interval_counter;
     int yNoBlinkCursor;         /* non-blinking cursor height inback buffer
                                    in pixels */
     int yBlinkCursor;           /* blinking cursor height inback buffer
@@ -685,10 +684,10 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_TIMER:
     {
-        if(data->interval_counter == GH_LONG_MAX)
-            data->interval_counter = 0L;
+        if(context.general_animation_counter == GH_LONG_MAX)
+            context.general_animation_counter = 0L;
         else
-            data->interval_counter++;
+            context.general_animation_counter++;
 
         if (context.u_action_animation_counter_on)
         {
@@ -754,12 +753,12 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         else
         {
 
-            if (data->interval_counter == GH_LONG_MAX)
-                data->interval_counter = 0L;
+            if (context.general_animation_counter == GH_LONG_MAX)
+                context.general_animation_counter = 0L;
             else
-                data->interval_counter++;
+                context.general_animation_counter++;
 
-            if (flags.blinking_cursor_on_tiles && data->interval_counter % CURSOR_BLINK_IN_INTERVALS == 0)
+            if (flags.blinking_cursor_on_tiles && context.general_animation_counter % CURSOR_BLINK_IN_INTERVALS == 0)
             {
                 if (flags.force_paint_at_cursor)
                 {
@@ -955,7 +954,7 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     data->bAsciiMode = FALSE;
     data->cursorOn = TRUE;
-    data->interval_counter = 0;
+    context.general_animation_counter = 0;
 
     data->xFrontTile = GetNHApp()->mapTile_X;
     data->yFrontTile = GetNHApp()->mapTile_Y;
@@ -1835,7 +1834,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
  
                         /* Otherwise, normal animation check */
                         if (!zap_found)
-                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     }
                     else
                     {
@@ -1856,7 +1855,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     
                         /* Otherwise, normal animation check */
                         if(!spef_found)
-                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     }
                     if (enlarg_idx >= 0)
                     {
@@ -3886,7 +3885,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int ctile = glyph2tile[cglyph];
                             int tile_animation_idx = get_tile_animation_index_from_glyph(cglyph);
                             ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
-                            ctile = maybe_get_animated_tile(ctile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
+                            ctile = maybe_get_animated_tile(ctile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
                             t_x = TILEBMP_X(ctile);
                             t_y = TILEBMP_Y(ctile);
 
@@ -4270,7 +4269,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 mtile = glyph2tile[mglyph];
                                 int tile_animation_idx = get_tile_animation_index_from_glyph(mglyph);
                                 mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags), (enum auto_drawtypes*)0);
-                                mtile = maybe_get_animated_tile(mtile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
+                                mtile = maybe_get_animated_tile(mtile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
                                 /* Define draw location in target */
@@ -5098,7 +5097,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 
                     /* Otherwise, normal animation check */
                     if (!spef_found)
-                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 }
                 enlarg = tile2enlargement[ntile];
             }

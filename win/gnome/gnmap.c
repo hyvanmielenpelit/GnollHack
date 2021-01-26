@@ -255,6 +255,8 @@ ghack_init_map_window()
                        GTK_SIGNAL_FUNC(ghack_delay), NULL);
     gtk_signal_connect(GTK_OBJECT(ghack_map.canvas), "gnome_delay_output_milliseconds",
         GTK_SIGNAL_FUNC(ghack_delay), NULL);
+    gtk_signal_connect(GTK_OBJECT(ghack_map.canvas), "gnome_delay_output_intervals",
+        GTK_SIGNAL_FUNC(ghack_delay), NULL);
 
     return GTK_WIDGET(vbox);
 }

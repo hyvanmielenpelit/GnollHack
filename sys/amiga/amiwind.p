@@ -37,5 +37,6 @@ void FDECL( FreeNewWindow, (struct NewWindow *));
 void NDECL( bell );
 void NDECL( amii_delay_output );
 void FDECL( amii_delay_output_milliseconds, (int) );
+void FDECL( amii_delay_output_intervals, (int) );
 void FDECL( amii_number_pad, (int ));
 void amii_cleanup( void );

@@ -597,6 +597,28 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "human-healer-female-cast-dir-animation", ANIMATION_TYPE_NORMAL, HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION_TILES,
+      HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION_FRAMES, HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION_OFF,
+      1,
+      3,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      8, 18,
+      HUMAN_HEALER_FEMALE_CAST_DIR_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-healer-female-cast-indir-animation", ANIMATION_TYPE_NORMAL, HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION_TILES,
+      HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION_FRAMES, HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION_OFF,
+      1,
+      3,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      9, 18,
+      HUMAN_HEALER_FEMALE_CAST_INDIR_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "human-monk-male-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_MONK_MALE_ATTACK_ANIMATION_TILES,
       HUMAN_MONK_MALE_ATTACK_ANIMATION_FRAMES, HUMAN_MONK_MALE_ATTACK_ANIMATION_OFF,
       1,
@@ -1574,6 +1596,22 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         HUMAN_HEALER_FEMALE_KICK_ENLARGEMENT_TILES, HUMAN_HEALER_FEMALE_KICK_ENLARGEMENT_OFF,
         3, 1, 0,
         { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-healer-female-cast-dir-enlargement",
+        HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION_TILES, HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION_FRAMES,
+        HUMAN_HEALER_FEMALE_CAST_DIR_ENLARGEMENT_TILES, HUMAN_HEALER_FEMALE_KICK_ENLARGEMENT_OFF,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-healer-female-cast-indir-enlargement",
+        HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION_TILES, HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION_FRAMES,
+        HUMAN_HEALER_FEMALE_CAST_INDIR_ENLARGEMENT_TILES, HUMAN_HEALER_FEMALE_CAST_INDIR_ENLARGEMENT_OFF,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
@@ -3766,12 +3804,16 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_KNIGHT_FEMALE_CAST_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_WIZARD_MALE_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION;
         break;
     case ACTION_TILE_CAST_DIR:
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_WIZARD_MALE_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION;
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -5050,8 +5092,8 @@ boolean force_visibility;
         context.spef_action_animation_layer[spef_number] = layer;
         context.spef_action_animation_x[spef_number] = x;
         context.spef_action_animation_y[spef_number] = y;
-        context.spef_milliseconds_to_wait_until_action[spef_number] = 0;
-        context.spef_milliseconds_to_wait_until_end[spef_number] = 0;
+        context.spef_intervals_to_wait_until_action[spef_number] = 0;
+        context.spef_intervals_to_wait_until_end[spef_number] = 0;
         context.force_allow_keyboard_commands = TRUE;
         show_glyph_on_layer(x, y, sp_effect + GLYPH_SPECIAL_EFFECT_OFF, layer);
 
@@ -5066,23 +5108,25 @@ boolean force_visibility;
             int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
             if (animations[anim].sound_play_frame <= -1)
             {
-                context.spef_milliseconds_to_wait_until_action[spef_number] = (unsigned long)((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * (int)animations[anim].intervals_between_frames * framenum);
+                context.spef_intervals_to_wait_until_action[spef_number] = (unsigned long)((int)animations[anim].intervals_between_frames * framenum);
             }
             else
             {
                 if(animations[anim].sound_play_frame > 0)
-                    delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * (int)animations[anim].intervals_between_frames * (int)animations[anim].sound_play_frame);
+                    delay_output_intervals((int)animations[anim].intervals_between_frames * (int)animations[anim].sound_play_frame);
   
+                //(flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL)
+
                 if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
                 {
-                    context.spef_milliseconds_to_wait_until_action[spef_number] = (unsigned long)((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * (int)animations[anim].intervals_between_frames * (int)(animations[anim].action_execution_frame - animations[anim].sound_play_frame));
+                    context.spef_intervals_to_wait_until_action[spef_number] = (unsigned long)((int)animations[anim].intervals_between_frames * (int)(animations[anim].action_execution_frame - animations[anim].sound_play_frame));
                     if (animations[anim].action_execution_frame < framenum)
-                        context.spef_milliseconds_to_wait_until_end[spef_number] = (unsigned long)((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * (int)animations[anim].intervals_between_frames * (int)(framenum - animations[anim].action_execution_frame));
+                        context.spef_intervals_to_wait_until_end[spef_number] = (unsigned long)((int)animations[anim].intervals_between_frames * (int)(framenum - animations[anim].action_execution_frame));
                 }
                 else
                 {
-                    context.spef_milliseconds_to_wait_until_action[spef_number] = (unsigned long)((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * (int)animations[anim].intervals_between_frames * (int)(framenum - animations[anim].sound_play_frame));
-                    context.spef_milliseconds_to_wait_until_end[spef_number] = 0UL;
+                    context.spef_intervals_to_wait_until_action[spef_number] = (unsigned long)((int)animations[anim].intervals_between_frames * (int)(framenum - animations[anim].sound_play_frame));
+                    context.spef_intervals_to_wait_until_end[spef_number] = 0UL;
                 }
             }
         }
@@ -5091,9 +5135,9 @@ boolean force_visibility;
             force_redraw_at(x, y);
             flush_screen(1);
             if(special_effects[sp_effect].frames_to_sound > 0)
-                delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * special_effects[sp_effect].frames_to_sound);
-            context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * special_effects[sp_effect].frames_from_sound_to_action;
-            context.spef_milliseconds_to_wait_until_end[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * special_effects[sp_effect].frames_from_action_to_end;
+                delay_output_intervals(special_effects[sp_effect].frames_to_sound);
+            context.spef_intervals_to_wait_until_action[spef_number] = special_effects[sp_effect].frames_from_sound_to_action;
+            context.spef_intervals_to_wait_until_end[spef_number] = special_effects[sp_effect].frames_from_action_to_end;
         }
 
     }
@@ -5103,10 +5147,10 @@ void
 special_effect_wait_until_action(spef_number)
 int spef_number;
 {
-    if (context.spef_milliseconds_to_wait_until_action[spef_number] > 0UL)
+    if (context.spef_intervals_to_wait_until_action[spef_number] > 0UL)
     {
-        delay_output_milliseconds(context.spef_milliseconds_to_wait_until_action[spef_number]);
-        context.spef_milliseconds_to_wait_until_action[spef_number] = 0UL;
+        delay_output_intervals(context.spef_intervals_to_wait_until_action[spef_number]);
+        context.spef_intervals_to_wait_until_action[spef_number] = 0UL;
     }
 }
 
@@ -5114,15 +5158,15 @@ void
 special_effect_wait_until_end(spef_number)
 int spef_number;
 {
-    if (context.spef_milliseconds_to_wait_until_end[spef_number] > 0)
+    if (context.spef_intervals_to_wait_until_end[spef_number] > 0)
     {
-        delay_output_milliseconds(context.spef_milliseconds_to_wait_until_end[spef_number]);
-        context.spef_milliseconds_to_wait_until_end[spef_number] = 0UL;
+        delay_output_intervals(context.spef_intervals_to_wait_until_end[spef_number]);
+        context.spef_intervals_to_wait_until_end[spef_number] = 0UL;
     }
 
     context.special_effect_animation_counter_on[spef_number] = FALSE;
     context.special_effect_animation_counter[spef_number] = 0L;
-    context.spef_milliseconds_to_wait_until_action[spef_number] = 0L;
+    context.spef_intervals_to_wait_until_action[spef_number] = 0L;
 
     if (isok(context.spef_action_animation_x[spef_number], context.spef_action_animation_y[spef_number]))
     {
@@ -5137,59 +5181,72 @@ void
 reduce_counters(milliseconds)
 int milliseconds;
 {
+    if (milliseconds < 0)
+        return;
+
+    unsigned long interval_length = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+    unsigned long intervals = (unsigned long)milliseconds / interval_length;
+
+    reduce_counters_intervals(intervals);
+}
+
+
+void
+reduce_counters_intervals(intervals)
+int intervals;
+{
     /* Reduce animation ending counters */
-    if (context.u_action_animation_counter_on && context.u_milliseconds_to_wait_until_action == 0UL && context.u_milliseconds_to_wait_until_end > 0UL)
+    if (context.u_action_animation_counter_on && context.u_intervals_to_wait_until_action == 0UL && context.u_intervals_to_wait_until_end > 0UL)
     {
-        if (context.u_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
-            context.u_milliseconds_to_wait_until_end = 0UL;
+        if (context.u_intervals_to_wait_until_end <= (unsigned long)intervals)
+            context.u_intervals_to_wait_until_end = 0UL;
         else
-            context.u_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+            context.u_intervals_to_wait_until_end -= (unsigned long)intervals;
     }
 
-    if (context.m_action_animation_counter_on && context.m_milliseconds_to_wait_until_action == 0UL && context.m_milliseconds_to_wait_until_end > 0UL)
+    if (context.m_action_animation_counter_on && context.m_intervals_to_wait_until_action == 0UL && context.m_intervals_to_wait_until_end > 0UL)
     {
-        if (context.m_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
-            context.m_milliseconds_to_wait_until_end = 0UL;
+        if (context.m_intervals_to_wait_until_end <= (unsigned long)intervals)
+            context.m_intervals_to_wait_until_end = 0UL;
         else
-            context.m_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+            context.m_intervals_to_wait_until_end -= (unsigned long)intervals;
     }
 
-    if (context.explosion_animation_counter_on && context.expl_milliseconds_to_wait_until_action == 0UL && context.expl_milliseconds_to_wait_until_end > 0UL)
+    if (context.explosion_animation_counter_on && context.expl_intervals_to_wait_until_action == 0UL && context.expl_intervals_to_wait_until_end > 0UL)
     {
-        if (context.expl_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
-            context.expl_milliseconds_to_wait_until_end = 0UL;
+        if (context.expl_intervals_to_wait_until_end <= (unsigned long)intervals)
+            context.expl_intervals_to_wait_until_end = 0UL;
         else
-            context.expl_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+            context.expl_intervals_to_wait_until_end -= (unsigned long)intervals;
     }
 
     for (int i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
     {
-        if (context.special_effect_animation_counter_on[i] && context.spef_milliseconds_to_wait_until_action[i] == 0UL && context.spef_milliseconds_to_wait_until_end[i] > 0UL)
+        if (context.special_effect_animation_counter_on[i] && context.spef_intervals_to_wait_until_action[i] == 0UL && context.spef_intervals_to_wait_until_end[i] > 0UL)
         {
-            if (context.spef_milliseconds_to_wait_until_end[i] <= (unsigned long)milliseconds)
-                context.spef_milliseconds_to_wait_until_end[i] = 0UL;
+            if (context.spef_intervals_to_wait_until_end[i] <= (unsigned long)intervals)
+                context.spef_intervals_to_wait_until_end[i] = 0UL;
             else
-                context.spef_milliseconds_to_wait_until_end[i] -= (unsigned long)milliseconds;
+                context.spef_intervals_to_wait_until_end[i] -= (unsigned long)intervals;
         }
     }
 
-    if (context.zap_aggregate_milliseconds_to_wait_until_action > 0UL)
+    if (context.zap_aggregate_intervals_to_wait_until_action > 0UL)
     {
-        if (context.zap_aggregate_milliseconds_to_wait_until_action <= (unsigned long)milliseconds)
-            context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+        if (context.zap_aggregate_intervals_to_wait_until_action <= (unsigned long)intervals)
+            context.zap_aggregate_intervals_to_wait_until_action = 0UL;
         else
-            context.zap_aggregate_milliseconds_to_wait_until_action -= (unsigned long)milliseconds;
+            context.zap_aggregate_intervals_to_wait_until_action -= (unsigned long)intervals;
     }
 
-    if (context.zap_aggregate_milliseconds_to_wait_until_end > 0UL)
+    if (context.zap_aggregate_intervals_to_wait_until_end > 0UL)
     {
-        if (context.zap_aggregate_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
-            context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
+        if (context.zap_aggregate_intervals_to_wait_until_end <= (unsigned long)intervals)
+            context.zap_aggregate_intervals_to_wait_until_end = 0UL;
         else
-            context.zap_aggregate_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+            context.zap_aggregate_intervals_to_wait_until_end -= (unsigned long)intervals;
     }
 }
-
 
 /* animation.c */
 

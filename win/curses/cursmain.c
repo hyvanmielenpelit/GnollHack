@@ -68,6 +68,7 @@ struct window_procs curses_procs = {
     curses_number_pad,
     curses_delay_output,
     curses_delay_output_milliseconds,
+    curses_delay_output_intervals,
 #ifdef CHANGE_COLOR             /* only a Mac option currently */
     donull,
     donull,
@@ -881,6 +882,15 @@ curses_delay_output_milliseconds(int interval)
      * but that's why we're here */
     refresh();
     napms(interval);
+}
+
+void
+curses_delay_output_intervals(int intervals)
+{
+    /* refreshing the whole display is a waste of time,
+     * but that's why we're here */
+    refresh();
+    napms(intervals * (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
 }
 
 /*

@@ -874,6 +874,14 @@ int interval;
 }
 
 void
+amii_delay_output_interval(intervals)
+int intervals;
+{
+    /* not implemented */
+    amii_delay_output();
+}
+
+void
 amii_number_pad(state)
 int state;
 {

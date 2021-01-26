@@ -615,6 +615,13 @@ void NetHackQtBind::qt_delay_output_milliseconds(int interval)
 #endif
 }
 
+void NetHackQtBind::qt_delay_output_intervals(int intervals)
+{
+#ifdef TIMED_DELAY
+    NetHackQtDelay delay(intervals * (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
+    delay.wait();
+#endif
+}
 
 void NetHackQtBind::qt_start_screen()
 {

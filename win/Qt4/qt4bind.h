@@ -79,6 +79,7 @@ public:
 	static void qt_number_pad(int);
 	static void qt_delay_output();
 	static void qt_delay_output_milliseconds(int);
+	static void qt_delay_output_intervals(int);
 	static void qt_start_screen();
 	static void qt_end_screen();
 

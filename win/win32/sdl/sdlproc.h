@@ -122,6 +122,7 @@ int sdl_get_ext_cmd(void);
 void sdl_number_pad(int state);
 void sdl_delay_output(void);
 void sdl_delay_output_milliseconds(int interval);
+void sdl_delay_output_intervals(int intervals);
 void sdl_change_color(void);
 char *sdl_get_color_string(void);
 void sdl_start_screen(void);

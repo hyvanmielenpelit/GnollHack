@@ -497,6 +497,16 @@ int interval;
     (*tdp->nprocs->win_delay_output_milliseconds)(interval);
 }
 
+void
+chainout_delay_output_intervals(vp, intrevals)
+void* vp;
+int intervals;
+{
+    struct chainout_data* tdp = vp;
+
+    (*tdp->nprocs->win_delay_output_intervals)(intervals);
+}
+
 #ifdef CHANGE_COLOR
 void
 chainout_change_color(vp, color, value, reverse)
@@ -699,7 +709,7 @@ struct chain_procs chainout_procs = {
     chainout_print_glyph, chainout_raw_print, chainout_raw_print_bold,
     chainout_nhgetch, chainout_nh_poskey, chainout_nhbell,
     chainout_doprev_message, chainout_yn_function, chainout_getlin,
-    chainout_get_ext_cmd, chainout_number_pad, chainout_delay_output, chainout_delay_output_milliseconds,
+    chainout_get_ext_cmd, chainout_number_pad, chainout_delay_output, chainout_delay_output_milliseconds, chainout_delay_output_intervals,
 #ifdef CHANGE_COLOR
     chainout_change_color,
 #ifdef MAC

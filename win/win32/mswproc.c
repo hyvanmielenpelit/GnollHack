@@ -49,6 +49,7 @@ logDebug(const char *fmt, ...)
 
 void mswin_main_loop(void);
 static void mswin_wait_loop(int milliseconds);
+static void mswin_wait_loop_intervals(int intervals);
 static BOOL initMapTiles(void);
 static void mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
                                     COLORREF *colorptr);
@@ -109,7 +110,7 @@ struct window_procs mswin_procs = {
 #endif
     mswin_print_glyph, mswin_raw_print, mswin_raw_print_bold, mswin_nhgetch,
     mswin_nh_poskey, mswin_nhbell, mswin_doprev_message, mswin_yn_function,
-    mswin_getlin, mswin_get_ext_cmd, mswin_number_pad, mswin_delay_output, mswin_delay_output_milliseconds,
+    mswin_getlin, mswin_get_ext_cmd, mswin_number_pad, mswin_delay_output, mswin_delay_output_milliseconds, mswin_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     mswin, mswin_change_background,
 #endif
@@ -1875,7 +1876,8 @@ mswin_delay_output()
 {
     logDebug("mswin_delay_output()\n");
     //Sleep(50);
-    mswin_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES);
+    //mswin_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
+    mswin_wait_loop_intervals(DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
 }
 
 void
@@ -1883,8 +1885,21 @@ mswin_delay_output_milliseconds(int interval)
 {
     logDebug("mswin_delay_output_milliseconds()\n");
     //Sleep(interval);
+    int counter_before = context.general_animation_counter;
     mswin_wait_loop(interval);
+    int counter_after = context.general_animation_counter;
+    int counter_diff = counter_after - counter_before;
+    logDebug("mswin_delay_output_milliseconds counter_diff %d\n", counter_diff);
 }
+
+void
+mswin_delay_output_intervals(int intervals)
+{
+    logDebug("mswin_delay_output_intervals()\n");
+    //Sleep(interval);
+    mswin_wait_loop_intervals(intervals);
+}
+
 
 void
 mswin_change_color()
@@ -2211,8 +2226,9 @@ mswin_wait_loop(int milliseconds)
     SYSTEMTIME start_systime = { 0 };
     FILETIME start_filetime = { 0 };
     ULARGE_INTEGER start_largeint = { 0 };
-    GetSystemTime(&start_systime);
-    SystemTimeToFileTime(&start_systime, &start_filetime);
+    GetSystemTimeAsFileTime(&start_filetime);
+    //GetSystemTime(&start_systime);
+    //SystemTimeToFileTime(&start_systime, &start_filetime);
     start_largeint.LowPart = start_filetime.dwLowDateTime;
     start_largeint.HighPart = start_filetime.dwHighDateTime;
 
@@ -2242,8 +2258,9 @@ mswin_wait_loop(int milliseconds)
             break;
         }
 
-        GetSystemTime(&current_systime);
-        SystemTimeToFileTime(&current_systime, &current_filetime);
+        GetSystemTimeAsFileTime(&current_filetime);
+        //GetSystemTime(&current_systime);
+        //SystemTimeToFileTime(&current_systime, &current_filetime);
         current_largeint.LowPart = current_filetime.dwLowDateTime;
         current_largeint.HighPart = current_filetime.dwHighDateTime;
 
@@ -2253,6 +2270,43 @@ mswin_wait_loop(int milliseconds)
     disallow_keyboard_commands_in_wait_loop = FALSE;
 
     reduce_counters(milliseconds);
+}
+
+void
+mswin_wait_loop_intervals(int intervals)
+{
+    if (intervals <= 0)
+        return;
+
+    MSG msg;
+    int counter_before = context.general_animation_counter;
+    int counter_after = context.general_animation_counter;
+
+    disallow_keyboard_commands_in_wait_loop = TRUE;
+
+    do
+    {
+        if (GetMessage(&msg, NULL, 0, 0) != 0)
+        {
+            if (GetNHApp()->regGnollHackMode || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+        else
+        {
+            /* WM_QUIT */
+            break;
+        }
+
+        counter_after = context.general_animation_counter;
+
+    } while (counter_after - counter_before < intervals && counter_after >= counter_before);
+
+    disallow_keyboard_commands_in_wait_loop = FALSE;
+
+    reduce_counters_intervals(intervals);
 }
 
 /* clean up and quit */

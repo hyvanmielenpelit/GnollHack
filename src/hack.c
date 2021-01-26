@@ -3712,7 +3712,7 @@ adjusted_delay_output()
 {
     if (flags.animation_frame_interval_in_milliseconds > 0)
     {
-        delay_output_milliseconds(flags.animation_frame_interval_in_milliseconds * DELAY_OUTPUT_INTERVAL_IN_FRAMES);
+        delay_output_intervals(DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
     }
     else
     {

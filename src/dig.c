@@ -1891,8 +1891,8 @@ struct obj* origobj;
     /* normal case: digging across the level */
     int framenum = 1;
     int anim_ms = 0;
-    context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
-    context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+    context.zap_aggregate_intervals_to_wait_until_end = 0UL;
+    context.zap_aggregate_intervals_to_wait_until_action = 0UL;
     for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
         context.zap_animation_counter_on[i] = FALSE;
@@ -1958,8 +1958,8 @@ struct obj* origobj;
             context.zap_animation_y[idx] = zy;
             context.zap_animation_counter[idx] = 0L;
             context.zap_animation_counter_on[idx] = TRUE;
-            context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
-            context.zap_aggregate_milliseconds_to_wait_until_end = anim_ms;
+            context.zap_aggregate_intervals_to_wait_until_action = 0UL;
+            context.zap_aggregate_intervals_to_wait_until_end = anim_ms;
 
             if (animations[anim].action_execution_frame > 0)
             {
@@ -1973,7 +1973,7 @@ struct obj* origobj;
                     }
                 }
 
-                context.zap_aggregate_milliseconds_to_wait_until_action = (unsigned long)intervals_to_execution * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+                context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
             }
 
             prev_anim_counter_idx = idx;
@@ -1998,8 +1998,8 @@ struct obj* origobj;
         {
             if (playing_anim)
             {
-                delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_action);
-                context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+                delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_action);
+                context.zap_aggregate_intervals_to_wait_until_action = 0UL;
             }
             else
                 adjusted_delay_output();
@@ -2204,10 +2204,10 @@ struct obj* origobj;
         zx += u.dx;
         zy += u.dy;
     }                    /* while */
-    if (context.zap_aggregate_milliseconds_to_wait_until_end > 0)
+    if (context.zap_aggregate_intervals_to_wait_until_end > 0)
     {
-        delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_end);
-        context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
+        delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_end);
+        context.zap_aggregate_intervals_to_wait_until_end = 0UL;
     }
     context.global_newsym_flags = 0;
     tmp_at(DISP_END, 0); /* closing call */
@@ -2310,8 +2310,8 @@ struct obj* origobj;
 
     int framenum = 1;
     int anim_ms = 0;
-    context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
-    context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+    context.zap_aggregate_intervals_to_wait_until_end = 0UL;
+    context.zap_aggregate_intervals_to_wait_until_action = 0UL;
     for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
         context.zap_animation_counter_on[i] = FALSE;
@@ -2364,8 +2364,8 @@ struct obj* origobj;
             context.zap_animation_y[idx] = zy;
             context.zap_animation_counter[idx] = 0L;
             context.zap_animation_counter_on[idx] = TRUE;
-            context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
-            context.zap_aggregate_milliseconds_to_wait_until_end = anim_ms;
+            context.zap_aggregate_intervals_to_wait_until_action = 0UL;
+            context.zap_aggregate_intervals_to_wait_until_end = anim_ms;
 
             if (animations[anim].action_execution_frame > 0)
             {
@@ -2379,7 +2379,7 @@ struct obj* origobj;
                     }
                 }
 
-                context.zap_aggregate_milliseconds_to_wait_until_action = (unsigned long)intervals_to_execution * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+                context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
             }
 
             prev_anim_counter_idx = idx;
@@ -2402,8 +2402,8 @@ struct obj* origobj;
         {
             if (playing_anim)
             {
-                delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_action);
-                context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+                delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_action);
+                context.zap_aggregate_intervals_to_wait_until_action = 0UL;
             }
             else
                 adjusted_delay_output();
@@ -2502,10 +2502,10 @@ struct obj* origobj;
         zx += u.dx;
 		zy += u.dy;
 	}                    /* while */
-    if (context.zap_aggregate_milliseconds_to_wait_until_end > 0)
+    if (context.zap_aggregate_intervals_to_wait_until_end > 0)
     {
-        delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_end);
-        context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
+        delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_end);
+        context.zap_aggregate_intervals_to_wait_until_end = 0UL;
     }
     context.global_newsym_flags = 0;
     tmp_at(DISP_END, 0); /* closing call */

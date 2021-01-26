@@ -44,12 +44,12 @@ struct window_procs amii_procs = {
 #endif
     amii_print_glyph, amii_raw_print, amii_raw_print_bold, amii_nhgetch,
     amii_nh_poskey, amii_bell, amii_doprev_message, amii_yn_function,
-    amii_getlin, amii_get_ext_cmd, amii_number_pad, amii_delay_output, amii_delay_output_milliseconds,
+    amii_getlin, amii_get_ext_cmd, amii_number_pad, amii_delay_output, amii_delay_output_milliseconds, amii_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     amii_change_color, amii_get_color_string,
 #endif
     /* other defs that really should go away (they're tty specific) */
-    amii_delay_output, amii_delay_output_milliseconds, amii_delay_output, amii_outrip, genl_preference_update,
+    amii_delay_output, amii_delay_output_milliseconds, amii_delay_output_intervals, amii_delay_output, amii_outrip, genl_preference_update,
     genl_getmsghistory, genl_putmsghistory,
     genl_status_init, genl_status_finish, genl_status_enablefield,
     genl_status_update,
@@ -92,12 +92,12 @@ struct window_procs amiv_procs = {
 #endif
     amii_print_glyph, amii_raw_print, amii_raw_print_bold, amii_nhgetch,
     amii_nh_poskey, amii_bell, amii_doprev_message, amii_yn_function,
-    amii_getlin, amii_get_ext_cmd, amii_number_pad, amii_delay_output, amii_delay_output_milliseconds,
+    amii_getlin, amii_get_ext_cmd, amii_number_pad, amii_delay_output, amii_delay_output_milliseconds, amii_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     amii_change_color, amii_get_color_string,
 #endif
     /* other defs that really should go away (they're tty specific) */
-    amii_delay_output, amii_delay_output_milliseconds, amii_outrip, genl_preference_update,
+    amii_delay_output, amii_delay_output_milliseconds, amii_delay_output_intervals, amii_outrip, genl_preference_update,
     genl_getmsghistory, genl_putmsghistory,
     genl_status_init, genl_status_finish, genl_status_enablefield,
     genl_status_update,

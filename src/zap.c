@@ -8237,9 +8237,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
     /* Start the zap */
     int framenum = 1;
-    int anim_ms = 0;
-    context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
-    context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+    int anim_intervals = 0;
+    context.zap_aggregate_intervals_to_wait_until_end = 0UL;
+    context.zap_aggregate_intervals_to_wait_until_action = 0UL;
     for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
         context.zap_animation_counter_on[i] = FALSE;
@@ -8252,7 +8252,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     if (playing_anim)
     {
         framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
-        anim_ms = framenum * animations[anim].intervals_between_frames * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+        anim_intervals = framenum * animations[anim].intervals_between_frames;
     }
     int zap_tile_count = 0;
     boolean first_tile_found = FALSE;
@@ -8301,8 +8301,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     context.zap_animation_y[idx] = sy;
                     context.zap_animation_counter[idx] = 0L;
                     context.zap_animation_counter_on[idx] = TRUE;
-                    context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
-                    context.zap_aggregate_milliseconds_to_wait_until_end = anim_ms;
+                    context.zap_aggregate_intervals_to_wait_until_action = 0UL;
+                    context.zap_aggregate_intervals_to_wait_until_end = anim_intervals;
 
                     if (animations[anim].action_execution_frame > 0)
                     {
@@ -8316,7 +8316,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                             }
                         }
 
-                        context.zap_aggregate_milliseconds_to_wait_until_action = (unsigned long)intervals_to_execution * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+                        context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
                     }
 
                     prev_anim_counter_idx = idx;
@@ -8336,7 +8336,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 force_redraw_at(sx, sy);
                 if (animations[anim].sound_play_frame > 0)
                 {
-                    delay_output_milliseconds(animations[anim].sound_play_frame * animations[anim].intervals_between_frames * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
+                    delay_output_intervals(animations[anim].sound_play_frame * animations[anim].intervals_between_frames);
                 }
                 update_ambient_ray_sound_to_location(soundset_id, sx, sy);
             }
@@ -8358,11 +8358,11 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         }
                     }
 
-                    context.zap_aggregate_milliseconds_to_wait_until_action = (unsigned long)intervals_to_execution * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+                    context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
                 }
                 if (animations[anim].sound_play_frame > 0)
                 {
-                    delay_output_milliseconds(animations[anim].sound_play_frame * animations[anim].intervals_between_frames * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
+                    delay_output_intervals(animations[anim].sound_play_frame * animations[anim].intervals_between_frames);
                 }
             }
             update_ambient_ray_sound_to_location(soundset_id, sx, sy);
@@ -8676,8 +8676,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
         {
             if (playing_anim)
             {
-                delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_action);
-                context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+                delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_action);
+                context.zap_aggregate_intervals_to_wait_until_action = 0UL;
             }
             else
                 adjusted_delay_output();
@@ -8689,11 +8689,11 @@ boolean say; /* Announce out of sight hit/miss events if true */
         }
 
     }
-    if (!isexplosioneffect && context.zap_aggregate_milliseconds_to_wait_until_end > 0)
+    if (!isexplosioneffect && context.zap_aggregate_intervals_to_wait_until_end > 0)
     {
-        delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_end);
+        delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_end);
     }
-    context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
+    context.zap_aggregate_intervals_to_wait_until_end = 0UL;
 
     tmp_at(DISP_END, 0);
     stop_ambient_ray_sound(soundset_id);

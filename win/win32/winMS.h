@@ -182,6 +182,7 @@ int mswin_get_ext_cmd(void);
 void mswin_number_pad(int state);
 void mswin_delay_output(void);
 void mswin_delay_output_milliseconds(int interval);
+void mswin_delay_output_intervals(int intervals);
 void mswin_change_color(void);
 char *mswin_get_color_string(void);
 void mswin_start_screen(void);

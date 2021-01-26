@@ -871,6 +871,20 @@ int interval;
     POST;
 }
 
+void
+trace_delay_output_intervals(vp, intervals)
+void* vp;
+int intervals;
+{
+    struct trace_data* tdp = vp;
+
+    fprintf(wc_tracelogf, "%sdelay_output_intervals()\n", INDENT);
+
+    PRE;
+    (*tdp->nprocs->win_delay_output_intervals)(tdp->ndata, intervals);
+    POST;
+}
+
 #ifdef CHANGE_COLOR
 void
 trace_change_color(vp, color, value, reverse)
@@ -1180,7 +1194,7 @@ struct chain_procs trace_procs = {
 #endif
     trace_print_glyph, trace_raw_print, trace_raw_print_bold, trace_nhgetch,
     trace_nh_poskey, trace_nhbell, trace_doprev_message, trace_yn_function,
-    trace_getlin, trace_get_ext_cmd, trace_number_pad, trace_delay_output, trace_delay_output_milliseconds,
+    trace_getlin, trace_get_ext_cmd, trace_number_pad, trace_delay_output, trace_delay_output_milliseconds, trace_delay_output_intervals,
 #ifdef CHANGE_COLOR
     trace_change_color,
 #ifdef MAC

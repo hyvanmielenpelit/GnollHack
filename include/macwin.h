@@ -244,6 +244,7 @@ E int NDECL(mac_get_ext_cmd);
 E void FDECL(mac_number_pad, (int));
 E void NDECL(mac_delay_output);
 E void FDECL(mac_delay_output_milliseconds, (int));
+E void FDECL(mac_delay_output_intervals, (int));
 
 #undef E
 

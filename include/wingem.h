@@ -97,6 +97,7 @@ E int NDECL(Gem_get_ext_cmd);
 E void FDECL(Gem_number_pad, (int));
 E void NDECL(Gem_delay_output);
 E void FDECL(Gem_delay_output_milliseconds, (int));
+E void FDECL(Gem_delay_output_intervals, (int));
 #ifdef CHANGE_COLOR
 E void FDECL(Gem_change_color, (int color, long rgb, int reverse));
 E char *NDECL(Gem_get_color_string);

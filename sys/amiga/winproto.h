@@ -75,6 +75,7 @@ void FreeNewWindow(struct NewWindow *win);
 void bell(void);
 void amii_delay_output(void);
 void amii_delay_output_milliseconds(int interval);
+void amii_delay_output_intervals(int intervals);
 void amii_number_pad(int state);
 #ifndef SHAREDLIB
 void amiv_loadlib(void);

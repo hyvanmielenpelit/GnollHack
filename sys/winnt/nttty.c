@@ -737,6 +737,23 @@ int interval;
     }
 }
 
+void
+tty_delay_output_intervals(intervals)
+int intervals;
+{
+    /* delay 50 ms - uses ANSI C clock() function now */
+    clock_t goal;
+    int k;
+
+    goal = intervals * (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) + clock();
+    back_buffer_flip();
+    if (iflags.debug_fuzzer)
+        return;
+
+    while (goal > clock()) {
+        k = junk; /* Do nothing */
+    }
+}
 
 #ifdef TEXTCOLOR
 /*

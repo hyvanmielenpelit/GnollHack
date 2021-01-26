@@ -96,6 +96,9 @@ ghack_init_message_window(void)
     gtk_signal_connect(GTK_OBJECT(MW_table), "gnome_delay_output_milliseconds",
         GTK_SIGNAL_FUNC(ghack_delay), NULL);
 
+    gtk_signal_connect(GTK_OBJECT(MW_table), "gnome_delay_output_intervals",
+        GTK_SIGNAL_FUNC(ghack_delay), NULL);
+
     gtk_widget_show_all(MW_table);
 
     return GTK_WIDGET(MW_table);

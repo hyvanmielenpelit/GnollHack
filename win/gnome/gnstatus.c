@@ -427,6 +427,9 @@ ghack_init_status_window()
     gtk_signal_connect(GTK_OBJECT(statTable), "gnome_delay_output_milliseconds",
         GTK_SIGNAL_FUNC(ghack_delay), NULL);
 
+    gtk_signal_connect(GTK_OBJECT(statTable), "gnome_delay_output_intervals",
+        GTK_SIGNAL_FUNC(ghack_delay), NULL);
+
     /* Lastly, show the status window and everything in it */
     gtk_widget_show_all(statTable);
 

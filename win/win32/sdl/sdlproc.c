@@ -46,6 +46,7 @@ extern void logDebug(const char *fmt, ...);
 
 static void sdl_main_loop(void);
 static void sdl_wait_loop(int milliseconds);
+static void sdl_wait_loop_intervals(int intervals);
 static BOOL sdl_initMapTiles(void);
 static void sdl_color_from_string(char *colorstring, HBRUSH *brushptr,
                                     COLORREF *colorptr);
@@ -107,7 +108,7 @@ struct window_procs nuklear_procs = {
 #endif
     sdl_print_glyph, sdl_raw_print, sdl_raw_print_bold, sdl_nhgetch,
     sdl_nh_poskey, sdl_nhbell, sdl_doprev_message, sdl_yn_function,
-    sdl_getlin, sdl_get_ext_cmd, sdl_number_pad, sdl_delay_output, sdl_delay_output_milliseconds,
+    sdl_getlin, sdl_get_ext_cmd, sdl_number_pad, sdl_delay_output, sdl_delay_output_milliseconds, sdl_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     mswin, sdl_change_background,
 #endif
@@ -1921,7 +1922,8 @@ sdl_delay_output()
 {
     logDebug("sdl_delay_output()\n");
     //Sleep(50);
-    sdl_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES);
+    //sdl_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
+    sdl_wait_loop_intervals(DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
 }
 
 void
@@ -1930,6 +1932,14 @@ sdl_delay_output_milliseconds(int interval)
     logDebug("sdl_delay_output_milliseconds()\n");
     //Sleep(interval);
     sdl_wait_loop(interval);
+}
+
+void
+sdl_delay_output_intervals(int intervals)
+{
+    logDebug("sdl_delay_output_intervals()\n");
+    //Sleep(interval);
+    sdl_wait_loop_intervals(intervals);
 }
 
 void
@@ -2301,6 +2311,43 @@ sdl_wait_loop(int milliseconds)
     disallow_keyboard_commands_in_wait_loop = FALSE;
 
     reduce_counters(milliseconds);
+}
+
+void
+sdl_wait_loop_intervals(int intervals)
+{
+    if (intervals <= 0)
+        return;
+
+    MSG msg;
+    int counter_before = context.general_animation_counter;
+    int counter_after = context.general_animation_counter;
+
+    disallow_keyboard_commands_in_wait_loop = TRUE;
+
+    do
+    {
+        if (GetMessage(&msg, NULL, 0, 0) != 0)
+        {
+            if (GetNHApp()->regGnollHackMode || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+        else
+        {
+            /* WM_QUIT */
+            break;
+        }
+        
+        counter_after = context.general_animation_counter;
+
+    } while (counter_after - counter_before < intervals && counter_after >= counter_before);
+
+    disallow_keyboard_commands_in_wait_loop = FALSE;
+
+    reduce_counters_intervals(intervals);
 }
 
 /* clean up and quit */

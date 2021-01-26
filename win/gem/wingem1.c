@@ -2838,6 +2838,13 @@ int interval;
     Event_Timer(interval, 0, FALSE); /* wait 50ms */
 }
 
+void
+Gem_delay_output_intervals(intervals)
+int intervals;
+{
+    Event_Timer(intervals * (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL), 0, FALSE); /* wait 50ms */
+}
+
 int
 Gem_doprev_message()
 {

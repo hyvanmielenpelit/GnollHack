@@ -840,6 +840,63 @@ int interval;
 #endif /* MICRO */
 }
 
+/* delay intervals ms */
+void
+tty_delay_output_intervals(intervals)
+int intervals;
+{
+#if defined(MICRO)
+    register int i;
+#endif
+    if (iflags.debug_fuzzer)
+        return;
+#ifdef TIMED_DELAY
+    if (flags.nap) {
+        (void)fflush(stdout);
+        msleep(intervals * (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL)); /* sleep for interval milliseconds */
+        return;
+    }
+#endif
+#if defined(MICRO)
+    /* simulate the delay with "cursor here" */
+    for (i = 0; i < 3; i++) {
+        cmov(ttyDisplay->curx, ttyDisplay->cury);
+        (void)fflush(stdout);
+    }
+#else /* MICRO */
+    /* BUG: if the padding character is visible, as it is on the 5620
+       then this looks terrible. */
+    if (flags.null) {
+#ifdef TERMINFO
+        /* cbosgd!cbcephus!pds for SYS V R2 */
+#ifdef NHSTDC
+        tputs("$<50>", 1, (int (*) ()) xputc);
+#else
+        tputs("$<50>", 1, xputc);
+#endif
+#else
+#if defined(NHSTDC) || defined(ULTRIX_PROTO)
+        tputs("50", 1, (int (*) ()) xputc);
+#else
+        tputs("50", 1, xputc);
+#endif
+#endif
+
+    }
+    else if (ospeed > 0 && ospeed < SIZE(tmspc10) && nh_CM) {
+        /* delay by sending cm(here) an appropriate number of times */
+        register int cmlen =
+            strlen(tgoto(nh_CM, ttyDisplay->curx, ttyDisplay->cury));
+        register int i = 500 + tmspc10[ospeed] / 2;
+
+        while (i > 0) {
+            cmov((int)ttyDisplay->curx, (int)ttyDisplay->cury);
+            i -= cmlen * tmspc10[ospeed];
+        }
+    }
+#endif /* MICRO */
+}
+
 /* must only be called with curx = 1 */
 void
 cl_eos() /* free after Robert Viduya */

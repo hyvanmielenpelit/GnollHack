@@ -66,7 +66,7 @@ struct window_procs mswin_procs = {
 #endif
     mswin_print_glyph, mswin_raw_print, mswin_raw_print_bold, mswin_nhgetch,
     mswin_nh_poskey, mswin_nhbell, mswin_doprev_message, mswin_yn_function,
-    mswin_getlin, mswin_get_ext_cmd, mswin_number_pad, mswin_delay_output, mswin_delay_output_milliseconds,
+    mswin_getlin, mswin_get_ext_cmd, mswin_number_pad, mswin_delay_output, mswin_delay_output_milliseconds, mswin_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     mswin, mswin_change_background,
 #endif
@@ -1538,6 +1538,13 @@ mswin_delay_output_milliseconds(int interval)
 {
     logDebug("mswin_delay_output_milliseconds()\n");
     Sleep(interval);
+}
+
+void
+mswin_delay_output_intervals(int intervals)
+{
+    logDebug("mswin_delay_output_milliseconds()\n");
+    Sleep(intervals * (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
 }
 
 void

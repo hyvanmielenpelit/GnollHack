@@ -82,7 +82,7 @@ struct window_procs safe_procs = {
 #endif
     safe_print_glyph, safe_raw_print, safe_raw_print_bold, safe_nhgetch,
     safe_nh_poskey, safe_nhbell, safe_doprev_message, safe_yn_function,
-    safe_getlin, safe_get_ext_cmd, safe_number_pad, safe_delay_output, safe_delay_output_milliseconds,
+    safe_getlin, safe_get_ext_cmd, safe_number_pad, safe_delay_output, safe_delay_output_milliseconds, safe_delay_output_intervals,
 #ifdef CHANGE_COLOR /* the Mac uses a palette device */
     safe_change_color,
 #ifdef MAC
@@ -577,6 +577,13 @@ safe_delay_output()
 void
 safe_delay_output_milliseconds(interval)
 int interval;
+{
+    return;
+}
+
+void
+safe_delay_output_intervals(intervals)
+int intervals;
 {
     return;
 }

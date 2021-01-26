@@ -41,7 +41,7 @@ struct window_procs Gnome_procs = {
 #endif
     gnome_print_glyph, gnome_raw_print, gnome_raw_print_bold, gnome_nhgetch,
     gnome_nh_poskey, gnome_nhbell, gnome_doprev_message, gnome_yn_function,
-    gnome_getlin, gnome_get_ext_cmd, gnome_number_pad, gnome_delay_output, gnome_delay_output_milliseconds,
+    gnome_getlin, gnome_get_ext_cmd, gnome_number_pad, gnome_delay_output, gnome_delay_output_milliseconds, gnome_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     donull, donull,
 #endif
@@ -1169,6 +1169,15 @@ gnome_delay_output_milliseconds(int interval)
     if (gnome_windowlist[WIN_MESSAGE].win != NULL) {
         gtk_signal_emit(GTK_OBJECT(gnome_windowlist[WIN_MESSAGE].win),
             ghack_signals[GHSIG_DELAY], (guint)interval);
+    }
+}
+
+void
+gnome_delay_output_intervals(int intervals)
+{
+    if (gnome_windowlist[WIN_MESSAGE].win != NULL) {
+        gtk_signal_emit(GTK_OBJECT(gnome_windowlist[WIN_MESSAGE].win),
+            ghack_signals[GHSIG_DELAY], (guint)intervals * (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
     }
 }
 

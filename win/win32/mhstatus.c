@@ -151,7 +151,7 @@ mswin_init_status_window()
     }
 
     /* set cursor blink timer */
-    SetTimer(ret, 0, STATUS_BLINK_INTERVAL, NULL);
+    //SetTimer(ret, 0, STATUS_BLINK_INTERVAL, NULL);
 
     return ret;
 }

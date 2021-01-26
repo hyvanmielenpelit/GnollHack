@@ -63,7 +63,6 @@ typedef struct mswin_GnollHack_menu_window {
     };
     int result;
     int done;
-    unsigned long intervalCounter;
 
     HBITMAP bmpChecked;
     HBITMAP bmpCheckedCount;
@@ -155,7 +154,7 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
     }
 
     data->is_active = activate && !GetNHApp()->regGnollHackMode;
-    data->intervalCounter = 0UL;
+    context.general_animation_counter = 0UL;
 
     /* set menu type */
     SetMenuListType(hWnd, how);
@@ -534,10 +533,10 @@ MenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         return TRUE;
     case WM_TIMER:
-        if (data->intervalCounter >= 0xCFFFFFFFUL)
-            data->intervalCounter = 0UL;
+        if (context.general_animation_counter == GH_LONG_MAX)
+            context.general_animation_counter = 0UL;
         else
-            data->intervalCounter++;
+            context.general_animation_counter++;
 
         for (int i = 0; i < data->menu.size; i++)
         {
