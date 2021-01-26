@@ -1966,7 +1966,7 @@ struct obj* origobj;
                 long intervals_to_execution = (long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
                 if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
                 {
-                    long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution - 1;
+                    long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution /* - 1*/;
                     if (abs((int)diff) <= 3) /* Extra check that something else is not going on */
                     {
                         context.zap_animation_counter[prev_anim_counter_idx] -= diff;
@@ -2372,7 +2372,7 @@ struct obj* origobj;
                 long intervals_to_execution = (long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
                 if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
                 {
-                    long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution - 1;
+                    long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution /* - 1*/;
                     if (abs((int)diff) <= 3) /* Extra check that something else is not going on */
                     {
                         context.zap_animation_counter[prev_anim_counter_idx] -= diff;
