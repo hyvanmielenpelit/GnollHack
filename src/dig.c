@@ -1890,7 +1890,7 @@ struct obj* origobj;
 
     /* normal case: digging across the level */
     int framenum = 1;
-    int anim_ms = 0;
+    int anim_intervals = 0;
     context.zap_aggregate_intervals_to_wait_until_end = 0UL;
     context.zap_aggregate_intervals_to_wait_until_action = 0UL;
     for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
@@ -1905,7 +1905,7 @@ struct obj* origobj;
     if (playing_anim)
     {
         framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
-        anim_ms = framenum * animations[anim].intervals_between_frames * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+        anim_intervals = framenum * animations[anim].intervals_between_frames;
     }
     int zap_tile_count = 0;
     boolean first_tile_found = FALSE;
@@ -1959,7 +1959,7 @@ struct obj* origobj;
             context.zap_animation_counter[idx] = 0L;
             context.zap_animation_counter_on[idx] = TRUE;
             context.zap_aggregate_intervals_to_wait_until_action = 0UL;
-            context.zap_aggregate_intervals_to_wait_until_end = anim_ms;
+            context.zap_aggregate_intervals_to_wait_until_end = anim_intervals;
 
             if (animations[anim].action_execution_frame > 0)
             {
@@ -2309,7 +2309,7 @@ struct obj* origobj;
 	} /* up or down */
 
     int framenum = 1;
-    int anim_ms = 0;
+    int anim_intervals = 0;
     context.zap_aggregate_intervals_to_wait_until_end = 0UL;
     context.zap_aggregate_intervals_to_wait_until_action = 0UL;
     for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
@@ -2324,7 +2324,7 @@ struct obj* origobj;
     if (playing_anim)
     {
         framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
-        anim_ms = framenum * animations[anim].intervals_between_frames * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+        anim_intervals = framenum * animations[anim].intervals_between_frames;
     }
     int zap_tile_count = 0;
     boolean first_tile_found = FALSE;
@@ -2365,7 +2365,7 @@ struct obj* origobj;
             context.zap_animation_counter[idx] = 0L;
             context.zap_animation_counter_on[idx] = TRUE;
             context.zap_aggregate_intervals_to_wait_until_action = 0UL;
-            context.zap_aggregate_intervals_to_wait_until_end = anim_ms;
+            context.zap_aggregate_intervals_to_wait_until_end = anim_intervals;
 
             if (animations[anim].action_execution_frame > 0)
             {

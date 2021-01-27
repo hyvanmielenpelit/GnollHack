@@ -251,6 +251,9 @@
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlproc.h" />
     <ClInclude Include="..\..\..\ext\nuklear\nuklear_glfw_gl2.h" />
     <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gles2.h" />
+    <ClInclude Include="..\..\..\include\onames.h" />
+    <ClInclude Include="..\..\..\include\patchlevel.h" />
+    <ClInclude Include="..\..\..\include\pm.h" />
     <ClInclude Include="..\sdl\resource.h" />
   </ItemGroup>
   <ItemGroup>
