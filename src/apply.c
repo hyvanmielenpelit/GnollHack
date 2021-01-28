@@ -2384,6 +2384,7 @@ int magic; /* 0=Physical, otherwise skill level */
             You("writhe a little in the grasp of %s!", mon_nam(u.ustuck));
             return 1;
         }
+        play_sfx_sound(SFX_STUCK_IN_TRAP);
         You("cannot escape from %s!", mon_nam(u.ustuck));
         return 0;
     }

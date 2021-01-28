@@ -1840,8 +1840,11 @@ domove_core()
                 case 1:
                 case 2:
  pull_free:
+                    play_sfx_sound(SFX_WRIGGLE_FREE);
                     You("pull free from %s.", mon_nam(u.ustuck));
                     u.ustuck = 0;
+                    if (iflags.using_gui_sounds)
+                        delay_output_milliseconds(100); // Just give a bit of time for the sound before moving on.
                     break;
                 case 3:
                     if (!mon_can_move(u.ustuck)) 
@@ -1854,8 +1857,11 @@ domove_core()
                 default:
                     if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck) && !is_crazed(u.ustuck))
                         goto pull_free;
+                    play_sfx_sound(SFX_STUCK_IN_TRAP);
                     You("cannot escape from %s!", mon_nam(u.ustuck));
                     nomul(0);
+                    if (iflags.using_gui_sounds)
+                        delay_output_milliseconds(100); // Just give a bit of time for the sound before moving on.
                     return;
                 }
             }
