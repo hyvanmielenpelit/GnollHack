@@ -2628,6 +2628,8 @@ int level_limit;
 	if (ptr->mflags3 & M3_KNOWS_TRAPS)
 		mtmp->mtrapseen = ~0;
 
+    mtmp->facing_right = (mmflags & MM_FACING_LEFT) ? 0 : (mmflags & MM_FACING_RIGHT) ? 1 : rn2(2);
+
     place_monster(mtmp, x, y);
     mtmp->mcanmove = mtmp->mwantstomove = mtmp->mwantstodrop = TRUE;
     mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);

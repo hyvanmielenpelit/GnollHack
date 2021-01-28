@@ -363,6 +363,9 @@ extern short tile2enlargement[MAX_TILES];
 
 #define MM_PLAY_SUMMON_SOUND            0x10000000UL
 #define MM_ANIMATION_WAIT_UNTIL_END     0x20000000UL
+#define MM_FACING_LEFT                  0x40000000UL
+#define MM_FACING_RIGHT                  0x80000000UL
+
 
 /* flags for make_corpse() and mkcorpstat() */
 #define CORPSTAT_NONE 0x00

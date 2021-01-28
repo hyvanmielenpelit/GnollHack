@@ -619,6 +619,61 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       HUMAN_HEALER_FEMALE_CAST_INDIR_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "human-healer-male-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_HEALER_MALE_ATTACK_ANIMATION_TILES,
+      HUMAN_HEALER_MALE_ATTACK_ANIMATION_FRAMES, HUMAN_HEALER_MALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      3, 6,
+     HUMAN_HEALER_MALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-healer-male-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_HEALER_MALE_KICK_ANIMATION_TILES,
+      HUMAN_HEALER_MALE_KICK_ANIMATION_FRAMES, HUMAN_HEALER_MALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      2, 5,
+      HUMAN_HEALER_MALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-healer-male-potion-drink-animation", ANIMATION_TYPE_NORMAL, HUMAN_HEALER_MALE_POTION_DRINK_ANIMATION_TILES,
+      HUMAN_HEALER_MALE_POTION_DRINK_ANIMATION_FRAMES, HUMAN_HEALER_MALE_POTION_DRINK_ANIMATION_OFF,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      13, 15,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-healer-male-cast-dir-animation", ANIMATION_TYPE_NORMAL, HUMAN_HEALER_MALE_CAST_DIR_ANIMATION_TILES,
+      HUMAN_HEALER_MALE_CAST_DIR_ANIMATION_FRAMES, HUMAN_HEALER_MALE_CAST_DIR_ANIMATION_OFF,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      15, 18,
+      HUMAN_HEALER_MALE_CAST_DIR_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-healer-male-cast-indir-animation", ANIMATION_TYPE_NORMAL, HUMAN_HEALER_MALE_CAST_INDIR_ANIMATION_TILES,
+      HUMAN_HEALER_MALE_CAST_INDIR_ANIMATION_FRAMES, HUMAN_HEALER_MALE_CAST_INDIR_ANIMATION_OFF,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      15, 18,
+      HUMAN_HEALER_MALE_CAST_INDIR_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "human-monk-male-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_MONK_MALE_ATTACK_ANIMATION_TILES,
       HUMAN_MONK_MALE_ATTACK_ANIMATION_FRAMES, HUMAN_MONK_MALE_ATTACK_ANIMATION_OFF,
       1,
@@ -1601,7 +1656,7 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       },
       { "human-healer-female-cast-dir-enlargement",
         HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION_TILES, HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION_FRAMES,
-        HUMAN_HEALER_FEMALE_CAST_DIR_ENLARGEMENT_TILES, HUMAN_HEALER_FEMALE_KICK_ENLARGEMENT_OFF,
+        HUMAN_HEALER_FEMALE_CAST_DIR_ENLARGEMENT_TILES, HUMAN_HEALER_FEMALE_CAST_DIR_ENLARGEMENT_OFF,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
         { 0, 0, 0, 0, 0 },
@@ -1610,6 +1665,38 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { "human-healer-female-cast-indir-enlargement",
         HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION_TILES, HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION_FRAMES,
         HUMAN_HEALER_FEMALE_CAST_INDIR_ENLARGEMENT_TILES, HUMAN_HEALER_FEMALE_CAST_INDIR_ENLARGEMENT_OFF,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-healer-male-attack-enlargement",
+        HUMAN_HEALER_MALE_ATTACK_ANIMATION_TILES, HUMAN_HEALER_MALE_ATTACK_ANIMATION_FRAMES,
+        HUMAN_HEALER_MALE_ATTACK_ENLARGEMENT_TILES, HUMAN_HEALER_MALE_ATTACK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-healer-male-kick-enlargement",
+        HUMAN_HEALER_MALE_KICK_ANIMATION_TILES, HUMAN_HEALER_MALE_KICK_ANIMATION_FRAMES,
+        HUMAN_HEALER_MALE_KICK_ENLARGEMENT_TILES, HUMAN_HEALER_MALE_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-healer-male-cast-dir-enlargement",
+        HUMAN_HEALER_MALE_CAST_DIR_ANIMATION_TILES, HUMAN_HEALER_MALE_CAST_DIR_ANIMATION_FRAMES,
+        HUMAN_HEALER_MALE_CAST_DIR_ENLARGEMENT_TILES, HUMAN_HEALER_MALE_CAST_DIR_ENLARGEMENT_OFF,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-healer-male-cast-indir-enlargement",
+        HUMAN_HEALER_MALE_CAST_INDIR_ANIMATION_TILES, HUMAN_HEALER_MALE_CAST_INDIR_ANIMATION_FRAMES,
+        HUMAN_HEALER_MALE_CAST_INDIR_ENLARGEMENT_TILES, HUMAN_HEALER_MALE_CAST_INDIR_ENLARGEMENT_OFF,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
         { 0, 0, 0, 0, 0 },
@@ -3758,6 +3845,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return DWARF_KNIGHT_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_HEALER_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_HEALER_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_MONK_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
@@ -3806,6 +3895,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_WIZARD_MALE_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_HEALER_MALE_CAST_INDIR_ANIMATION;
         break;
     case ACTION_TILE_CAST_DIR:
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
@@ -3814,6 +3905,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_WIZARD_MALE_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_HEALER_MALE_CAST_DIR_ANIMATION;
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -3834,6 +3927,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return DWARF_KNIGHT_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_HEALER_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_HEALER_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_MONK_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
@@ -3882,6 +3977,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_TOURIST_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_HEALER_FEMALE_POTION_DRINK_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_HEALER_MALE_POTION_DRINK_ANIMATION;
         break;
     case ACTION_TILE_DOOR_USE:
         break;
