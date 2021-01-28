@@ -1984,7 +1984,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int base_source_height_deducted = used_item_height;
                                 int base_dest_added_from_source = 0;
                                 /* For all normal items, we use only lower part of the tile */
-                                if (otmp_round && has_obj_floor_tile(otmp_round) && !showing_detection)
+                                if (otmp_round && has_obj_floor_tile(otmp_round) && !showing_detection && !Hallucination)
                                 {
                                     source_top_added = 0;
                                     if (otmp_round && OBJ_TILE_HEIGHT(otmp_round->otyp) > 0 && OBJ_TILE_HEIGHT(otmp_round->otyp) < used_item_height && !showing_detection)
@@ -1997,7 +1997,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 else
                                 {
                                     source_top_added = (int)tileHeight / 2;
-                                    if (otmp_round && OBJ_TILE_HEIGHT(otmp_round->otyp) > 0 && !showing_detection)
+                                    if (otmp_round && OBJ_TILE_HEIGHT(otmp_round->otyp) > 0 && !showing_detection && !Hallucination)
                                     {
                                         obj_scaling_factor = ((double)OBJ_TILE_HEIGHT(otmp_round->otyp)) / ((double)used_item_height);
                                     }
