@@ -1096,8 +1096,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 darkening_j = j + 1 + tile_move_idx;
             }
 
-            if (enlarg_idx >= 0 && !isok(enl_i, enl_j))
+            if (!isok(enl_i, enl_j))
                 continue;
+
+            if (!isok(darkening_i, darkening_j))
+            {
+                darkening_i = enl_i;
+                darkening_j = enl_j;
+            }
 
             int monster_layer_height = data->map[enl_i][enl_j].special_monster_layer_height;
             if (base_layer == LAYER_MONSTER || base_layer == LAYER_MONSTER_EFFECT)
