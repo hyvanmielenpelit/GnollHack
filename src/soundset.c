@@ -4472,8 +4472,12 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_ITEM_WELDS, 1.0f},
         FALSE, SOUND_PLAY_GROUP_LONG
     },
+    {
+        "GHSOUND_CRUNCHING_SOUND",
+        {GHSOUND_CRUNCHING_SOUND, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
 };
-
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
 {
@@ -6423,15 +6427,17 @@ play_sfx_sound_at_location(sfx_sound_id, x, y)
 enum sfx_sound_types sfx_sound_id;
 int x, y;
 {
-    play_sfx_sound_at_location_with_minimum_volume(sfx_sound_id, x, y, 0.0f);
+    play_sfx_sound_at_location_with_minimum_volume(sfx_sound_id, x, y, 0.0);
 }
 
 void
-play_sfx_sound_at_location_with_minimum_volume(sfx_sound_id, x, y, min_volume)
+play_sfx_sound_at_location_with_minimum_volume(sfx_sound_id, x, y, min_volume_d)
 enum sfx_sound_types sfx_sound_id;
 int x, y;
-float min_volume;
+double min_volume_d;
 {
+    float min_volume = (float)min_volume_d;
+
     if (min_volume < 0.0f)
         min_volume = 0.0f;
 

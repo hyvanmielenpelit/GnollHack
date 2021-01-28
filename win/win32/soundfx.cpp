@@ -849,6 +849,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Error/Monster Does Not Allow", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Not Enough Stamina", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Item Welds", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Crunching Sound", 1.0f },
 
 };
 

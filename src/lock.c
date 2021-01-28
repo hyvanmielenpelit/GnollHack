@@ -1460,7 +1460,7 @@ int x, y;
                     (void) mb_trapped(m_at(x, y));
                 else if (flags.verbose) 
                 {
-                    play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, x, y, 0.15f);
+                    play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, x, y, 0.15);
                     if (cansee(x, y))
                         pline("KABOOM!!  You see a door explode.");
                     else

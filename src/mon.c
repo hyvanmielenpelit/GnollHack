@@ -1920,11 +1920,15 @@ register struct monst *mtmp;
                           distant_name(otmp, doname));
                 }
             } else {
-                if (cansee(mtmp->mx, mtmp->my) && flags.verbose)
-                    pline("%s eats %s!", Monnam(mtmp),
-                          distant_name(otmp, doname));
-                else if (flags.verbose)
-                    You_hear("a crunching sound.");
+                if (flags.verbose)
+                {
+                    play_sfx_sound_at_location_with_minimum_volume(SFX_CRUNCHING_SOUND, mtmp->mx, mtmp->my, 0.25);
+                    if (cansee(mtmp->mx, mtmp->my))
+                        pline("%s eats %s!", Monnam(mtmp),
+                            distant_name(otmp, doname));
+                    else
+                        You_hear("a crunching sound.");
+                }
                 mtmp->meating = otmp->owt / 2 + 1;
                 /* Heal up to the object's weight in hp */
                 if (mtmp->mhp < mtmp->mhpmax) {
