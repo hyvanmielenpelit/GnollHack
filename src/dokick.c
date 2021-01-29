@@ -1668,7 +1668,7 @@ dokick() {
             play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
  ouch:
 
-            play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_OUCH);
+            play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
             pline("Ouch!  That hurts!");
             exercise(A_DEX, FALSE);
             exercise(A_STR, FALSE);
