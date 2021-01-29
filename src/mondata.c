@@ -160,6 +160,18 @@ static NEARDATA struct mflag_description m5flag_descriptions[] = {
     { 0 , "", "" }
 };
 
+static NEARDATA struct mflag_description m6flag_descriptions[] = {
+    { 0 , "", "" }
+};
+
+static NEARDATA struct mflag_description m7flag_descriptions[] = {
+    { 0 , "", "" }
+};
+
+static NEARDATA struct mflag_description m8flag_descriptions[] = {
+    { 0 , "", "" }
+};
+
 const char*
 get_mflag_description(mflag_bit, plural, mindex)
 unsigned long mflag_bit;
@@ -176,6 +188,12 @@ unsigned char mindex;
 		mtable = m4flag_descriptions;
     else if (mindex == 5)
         mtable = m5flag_descriptions;
+    else if (mindex == 6)
+        mtable = m6flag_descriptions;
+    else if (mindex == 7)
+        mtable = m7flag_descriptions;
+    else if (mindex == 8)
+        mtable = m8flag_descriptions;
 
 	for (int i = 0; mtable[i].mflag_bit != 0 ; i++)
 	{

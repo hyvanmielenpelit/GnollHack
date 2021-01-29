@@ -330,6 +330,12 @@
 #define M5_MAKES_SOUND_RANDOMLY     0x08000000UL
 #define M5_SEMI_TRANSPARENT         0x10000000UL /* Tile drawn with some transparency (default: 50% constant) */
 #define M5_RADIAL_TRANSPARENCY      0x20000000UL /* Tile drawn with radial transparency (0% at center and 96% at radius of 32 and 96% thereafter) */
+/* Free bit */
+/* Free bit */
+
+#define M6_NONE						0x00000000UL
+#define M7_NONE						0x00000000UL
+#define M8_NONE						0x00000000UL
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

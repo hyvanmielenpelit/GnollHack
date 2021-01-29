@@ -49,6 +49,8 @@ struct action_info
 #include "monattk.h"
 #include "monflag.h"
 
+#define NUM_MFLAGS 8
+
 struct permonst {
     const char *mname;          /* full name */
     const char* mtitle;         /* title or description of a unique monster with proper name, e.g., Prince of Demons or Ixoth, red dragon */
@@ -81,7 +83,7 @@ struct permonst {
     unsigned long mresists2;             /* more resistances */
     unsigned long mconveys;             /* conveyed by eating */
     unsigned long mflags1,      /* boolean bitflags */
-        mflags2, mflags3, mflags4, mflags5;       /* more boolean bitflags */
+        mflags2, mflags3, mflags4, mflags5, mflags6, mflags7, mflags8;       /* more boolean bitflags, if added, remember to update NUM_MFLAGS above */
     int difficulty;		/* toughness (formerly from  makedefs -m) */
 #ifdef TEXTCOLOR
     uchar mcolor; /* color to use */

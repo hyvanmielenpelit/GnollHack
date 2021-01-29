@@ -1478,15 +1478,18 @@ struct monst* mtmp;
 
     abilcnt = 0;
 
-    for (int j = 1; j <= 5; j++)
+    for (int j = 1; j <= NUM_MFLAGS; j++)
     {
-        for (int i = 0; i < 32; i++)
+        for (int i = 0; i < NUM_UNSIGNED_LONG_BITS; i++)
         {
             unsigned long bit = 0x00000001UL;
             if (i > 0)
                 bit = bit << i;
 
-            unsigned long mflags = j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : j == 3 ? mtmp->data->mflags3 : j == 4 ? mtmp->data->mflags4 : mtmp->data->mflags5;
+            unsigned long mflags = 
+                j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : j == 3 ? mtmp->data->mflags3 : j == 4 ? mtmp->data->mflags4 : 
+                j == 5 ? mtmp->data->mflags5 : j == 6 ? mtmp->data->mflags6 : j == 7 ? mtmp->data->mflags7 : j == 8 ? mtmp->data->mflags8 : 
+                mtmp->data->mflags1; /* Fall back case*/
 
             if (mflags & bit)
             {
@@ -1607,6 +1610,19 @@ struct monst* mtmp;
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Eschews lit items");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    int zombietype = mon_to_zombie(mtmp->mnum);
+    int mummytype = mon_to_mummy(mtmp->mnum);
+
+    if (zombietype > NON_PM || mummytype > NON_PM)
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, 
+            zombietype > NON_PM && mummytype > NON_PM ? "Zombifiable and mummifiable corpse" : 
+            zombietype > NON_PM ? "Zombifiable corpse" : "Mummifiable corpse");
         txt = buf;
         putstr(datawin, 0, txt);
     }
@@ -3667,25 +3683,10 @@ struct monst* origmonst;
 			}
 			break;
 		case SPE_RAISE_MINOR_ZOMBIE:
-			if (obj->otyp == CORPSE && obj->corpsenm > 0)
+			if (obj->otyp == CORPSE && obj->corpsenm > NON_PM)
 			{
-				int zombietype = NON_PM;
-				if (obj->corpsenm == PM_HUMAN || mons[obj->corpsenm].mflags2 & M2_HUMAN)
-					zombietype = PM_HUMAN_ZOMBIE;
-				else if (obj->corpsenm == PM_DWARF || mons[obj->corpsenm].mflags2 & M2_DWARF)
-					zombietype = PM_DWARF_ZOMBIE;
-				else if (obj->corpsenm == PM_ELF || mons[obj->corpsenm].mflags2 & M2_ELF)
-					zombietype = PM_ELF_ZOMBIE;
-				else if (obj->corpsenm == PM_GNOLL || mons[obj->corpsenm].mflags2 & M2_GNOLL)
-					zombietype = PM_GNOLL_ZOMBIE;
-				else if (obj->corpsenm == PM_GNOLL || mons[obj->corpsenm].mflags2 & M2_GNOME)
-					zombietype = PM_GNOME_ZOMBIE;
-				else if (obj->corpsenm == PM_ORC || mons[obj->corpsenm].mflags2 & M2_ORC)
-					zombietype = PM_ORC_ZOMBIE;
-                else if (obj->corpsenm == PM_KOBOLD || mons[obj->corpsenm].mlet == S_KOBOLD)
-                    zombietype = PM_KOBOLD_ZOMBIE;
-
-                if (zombietype > NON_PM && animate_corpse(obj, zombietype))
+				int zombietype = mon_to_zombie(obj->corpsenm);
+                if (zombietype > NON_PM && zombietype != PM_GIANT_ZOMBIE && zombietype != PM_ETTIN_ZOMBIE && animate_corpse(obj, zombietype))
 				{
 					/* success */
 					res = 1;
@@ -3697,14 +3698,11 @@ struct monst* origmonst;
 			}
 			break;
 		case SPE_RAISE_GIANT_ZOMBIE:
-			if (obj->otyp == CORPSE && obj->corpsenm > 0)
+			if (obj->otyp == CORPSE && obj->corpsenm > NON_PM)
 			{
-				int zombietype = NON_PM;
-				if (obj->corpsenm == PM_ETTIN)
-					zombietype = PM_ETTIN_ZOMBIE;
-				else if (obj->corpsenm == PM_GIANT || mons[obj->corpsenm].mflags2 & M2_GIANT)
-					zombietype = PM_GIANT_ZOMBIE;
-				if (zombietype > NON_PM&& animate_corpse(obj, zombietype))
+				int zombietype = mon_to_zombie(obj->corpsenm);
+
+                if (zombietype > NON_PM && animate_corpse(obj, zombietype)) /* Raise giant zombie alternatively works also for smaller zombies as an added benefit */
 				{
 					/* success */
 					res = 1;
@@ -3718,23 +3716,9 @@ struct monst* origmonst;
 		case SPE_CREATE_MINOR_MUMMY:
 			if (obj->otyp == CORPSE && obj->corpsenm > 0)
 			{
-				int zombietype = NON_PM;
-				if (obj->corpsenm == PM_HUMAN || mons[obj->corpsenm].mflags2 & M2_HUMAN)
-					zombietype = PM_HUMAN_MUMMY;
-				else if (obj->corpsenm == PM_DWARF || mons[obj->corpsenm].mflags2 & M2_DWARF)
-					zombietype = PM_DWARF_MUMMY;
-				else if (obj->corpsenm == PM_ELF || mons[obj->corpsenm].mflags2 & M2_ELF)
-					zombietype = PM_ELF_MUMMY;
-				else if (obj->corpsenm == PM_GNOLL || mons[obj->corpsenm].mflags2 & M2_GNOLL)
-					zombietype = PM_GNOLL_MUMMY;
-				else if (obj->corpsenm == PM_GNOLL || mons[obj->corpsenm].mflags2 & M2_GNOME)
-					zombietype = PM_GNOME_MUMMY;
-				else if (obj->corpsenm == PM_ORC || mons[obj->corpsenm].mflags2 & M2_ORC)
-					zombietype = PM_ORC_MUMMY;
-                else if (obj->corpsenm == PM_KOBOLD || mons[obj->corpsenm].mlet == S_KOBOLD)
-                    zombietype = PM_KOBOLD_MUMMY;
+				int zombietype = mon_to_mummy(obj->corpsenm);
                 
-                if (zombietype > NON_PM && animate_corpse(obj, zombietype))
+                if (zombietype > NON_PM && zombietype != PM_ETTIN_MUMMY && zombietype != PM_GIANT_MUMMY && animate_corpse(obj, zombietype))
 				{
 					/* success */
 					res = 1;
@@ -3748,13 +3732,10 @@ struct monst* origmonst;
 		case SPE_CREATE_GIANT_MUMMY:
 			if (obj->otyp == CORPSE && obj->corpsenm > 0)
 			{
-				int zombietype = NON_PM;
-				if (obj->corpsenm == PM_ETTIN)
-					zombietype = PM_ETTIN_MUMMY;
-				else if (obj->corpsenm == PM_GIANT || mons[obj->corpsenm].mflags2 & M2_GIANT)
-						zombietype = PM_GIANT_MUMMY;
+				int zombietype = mon_to_mummy(obj->corpsenm);
+
 				if (zombietype > NON_PM && animate_corpse(obj, zombietype))
-				{
+				{ /* Works for smaller mummies as an added benefit */
 					/* success */
 					res = 1;
 				}
@@ -4403,30 +4384,15 @@ register struct obj *obj;
 
 		while(sobj)
 		{
-			zombietype = -1;
+			zombietype = NON_PM;
 			if ((radius < 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * (radius + 1)) //+1 to make a bit larger and square-like
 				&& cansee(sobj->ox, sobj->oy)
 				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
 			{
-				if (sobj->otyp == CORPSE && sobj->corpsenm > 0)
+				if (sobj->otyp == CORPSE && sobj->corpsenm > NON_PM)
 				{
-					if (sobj->corpsenm == PM_HUMAN || mons[sobj->corpsenm].mflags2 & M2_HUMAN)
-						zombietype = PM_HUMAN_ZOMBIE;
-					else if (sobj->corpsenm == PM_DWARF || mons[sobj->corpsenm].mflags2 & M2_DWARF)
-						zombietype = PM_DWARF_ZOMBIE;
-					else if (sobj->corpsenm == PM_ELF || mons[sobj->corpsenm].mflags2 & M2_ELF)
-						zombietype = PM_ELF_ZOMBIE;
-					else if (sobj->corpsenm == PM_GNOLL || mons[sobj->corpsenm].mflags2 & M2_GNOLL)
-						zombietype = PM_GNOLL_ZOMBIE;
-					else if (sobj->corpsenm == PM_GNOLL || mons[sobj->corpsenm].mflags2 & M2_GNOME)
-						zombietype = PM_GNOME_ZOMBIE;
-					else if (sobj->corpsenm == PM_ORC || mons[sobj->corpsenm].mflags2 & M2_ORC)
-						zombietype = PM_ORC_ZOMBIE;
-					else if (sobj->corpsenm == PM_GIANT || mons[sobj->corpsenm].mflags2 & M2_GIANT)
-						zombietype = PM_GIANT_ZOMBIE;
-					else if (sobj->corpsenm == PM_ETTIN)
-						zombietype = PM_ETTIN_ZOMBIE;
-					if (zombietype > 0)
+                    zombietype = mon_to_zombie(sobj->corpsenm);
+					if (zombietype > NON_PM)
 					{
 						if (animate_corpse(sobj, zombietype))
 							monstcount++;
@@ -4457,25 +4423,10 @@ register struct obj *obj;
 				&& cansee(sobj->ox, sobj->oy)
 				&& !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
 			{
-				if (sobj->otyp == CORPSE && sobj->corpsenm > 0)
+				if (sobj->otyp == CORPSE && sobj->corpsenm > NON_PM)
 				{
-					if (sobj->corpsenm == PM_HUMAN || mons[sobj->corpsenm].mflags2 & M2_HUMAN)
-						zombietype = PM_HUMAN_MUMMY;
-					else if (sobj->corpsenm == PM_DWARF || mons[sobj->corpsenm].mflags2 & M2_DWARF)
-						zombietype = PM_DWARF_MUMMY;
-					else if (sobj->corpsenm == PM_ELF || mons[sobj->corpsenm].mflags2 & M2_ELF)
-						zombietype = PM_ELF_MUMMY;
-					else if (sobj->corpsenm == PM_GNOLL || mons[sobj->corpsenm].mflags2 & M2_GNOLL)
-						zombietype = PM_GNOLL_MUMMY;
-					else if (sobj->corpsenm == PM_GNOLL || mons[sobj->corpsenm].mflags2 & M2_GNOME)
-						zombietype = PM_GNOME_MUMMY;
-					else if (sobj->corpsenm == PM_ORC || mons[sobj->corpsenm].mflags2 & M2_ORC)
-						zombietype = PM_ORC_MUMMY;
-					else if (sobj->corpsenm == PM_ETTIN)
-						zombietype = PM_ETTIN_MUMMY;
-					else if (sobj->corpsenm == PM_GIANT || mons[sobj->corpsenm].mflags2 & M2_GIANT)
-						zombietype = PM_GIANT_MUMMY;
-					if (zombietype > 0)
+                    zombietype = mon_to_mummy(sobj->corpsenm);
+					if (zombietype > NON_PM)
 					{
 						if (animate_corpse(sobj, zombietype))
 							monstcount++;
@@ -10382,6 +10333,61 @@ timestop()
 	context.time_stopped = TRUE;
 	begin_timestoptimer(d(objects[SPE_TIME_STOP].oc_spell_dur_dice, objects[SPE_TIME_STOP].oc_spell_dur_diesize) + objects[SPE_TIME_STOP].oc_spell_dur_plus);
 
+}
+
+
+int
+mon_to_zombie(montype)
+int montype;
+{
+    int zombietype = NON_PM;
+    if (montype == PM_HUMAN || mons[montype].mflags2 & M2_HUMAN)
+        zombietype = PM_HUMAN_ZOMBIE;
+    else if (montype == PM_DWARF || mons[montype].mflags2 & M2_DWARF)
+        zombietype = PM_DWARF_ZOMBIE;
+    else if (montype == PM_ELF || mons[montype].mflags2 & M2_ELF)
+        zombietype = PM_ELF_ZOMBIE;
+    else if (montype == PM_GNOLL || mons[montype].mflags2 & M2_GNOLL)
+        zombietype = PM_GNOLL_ZOMBIE;
+    else if (montype == PM_GNOME || mons[montype].mflags2 & M2_GNOME)
+        zombietype = PM_GNOME_ZOMBIE;
+    else if (montype == PM_ORC || mons[montype].mflags2 & M2_ORC)
+        zombietype = PM_ORC_ZOMBIE;
+    else if (montype == PM_KOBOLD || mons[montype].mlet == S_KOBOLD)
+        zombietype = PM_KOBOLD_ZOMBIE;
+    else if (montype == PM_ETTIN)
+        zombietype = PM_ETTIN_ZOMBIE;
+    else if (montype == PM_GIANT || mons[montype].mflags2 & M2_GIANT)
+        zombietype = PM_GIANT_ZOMBIE;
+
+    return zombietype;
+}
+
+int
+mon_to_mummy(montype)
+int montype;
+{
+    int zombietype = NON_PM;
+    if (montype == PM_HUMAN || mons[montype].mflags2 & M2_HUMAN)
+        zombietype = PM_HUMAN_MUMMY;
+    else if (montype == PM_DWARF || mons[montype].mflags2 & M2_DWARF)
+        zombietype = PM_DWARF_MUMMY;
+    else if (montype == PM_ELF || mons[montype].mflags2 & M2_ELF)
+        zombietype = PM_ELF_MUMMY;
+    else if (montype == PM_GNOLL || mons[montype].mflags2 & M2_GNOLL)
+        zombietype = PM_GNOLL_MUMMY;
+    else if (montype == PM_GNOME || mons[montype].mflags2 & M2_GNOME)
+        zombietype = PM_GNOME_MUMMY;
+    else if (montype == PM_ORC || mons[montype].mflags2 & M2_ORC)
+        zombietype = PM_ORC_MUMMY;
+    else if (montype == PM_KOBOLD || mons[montype].mlet == S_KOBOLD)
+        zombietype = PM_KOBOLD_MUMMY;
+    else if (montype == PM_ETTIN)
+        zombietype = PM_ETTIN_MUMMY;
+    else if (montype == PM_GIANT || mons[montype].mflags2 & M2_GIANT)
+        zombietype = PM_GIANT_MUMMY;
+
+    return zombietype;
 }
 
 

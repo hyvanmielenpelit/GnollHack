@@ -310,6 +310,7 @@ enum game_cursor_types
 #define GH_LONG_MAX      2147483647L		// maximum (signed) long value
 
 #define GH_UNREFERENCED_PARAMETER(P)        (P)
+#define NUM_UNSIGNED_LONG_BITS 32
 
 #define MKARTIFACT_FLAGS_NONE				0x00
 #define MKARTIFACT_FLAGS_NONWEAPONS_ONLY	0x01

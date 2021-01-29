@@ -2672,7 +2672,7 @@ register struct obj* obj;
 					else if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M5_FLAG))
 						flag_idx = 5;
 
-					for (int idx = 0; idx < 32; idx++)
+					for (int idx = 0; idx < NUM_UNSIGNED_LONG_BITS; idx++)
 					{
 						unsigned long bit = 1;
 						if (idx > 0)
@@ -2892,26 +2892,48 @@ register struct obj* obj;
 				putstr(datawin, 0, txt);
 			}
 		}
+
+
+		/* Item properties */
+		if (otyp == CORPSE && obj->corpsenm > NON_PM)
+		{
+			int powercnt = 0;
+
+			Sprintf(buf, "Corpse properties:");
+			txt = buf;
+			putstr(datawin, 0, txt);
+
+			/* Flags here */
+			if (mon_to_zombie(obj->corpsenm) > NON_PM)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Zombifiable", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (mon_to_mummy(obj->corpsenm) > NON_PM)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Mummifiable", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (touch_petrifies(&mons[obj->corpsenm]))
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Touching petrifies", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (powercnt == 0)
+			{
+				Sprintf(buf, " (None)");
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+		}
 	}
 
-
-	/* Description */
-	if (stats_known && OBJ_ITEM_DESC(otyp) /* && !(obj->oartifact && obj->nknown) */)
-	{
-#if 0
-		/* One empty line here */
-		strcpy(buf, "");
-		txt = buf;
-		putstr(datawin, 0, txt);
-#endif
-		strcpy(buf, "Description:");
-		txt = buf;
-		putstr(datawin, 0, txt);
-
-		Sprintf(buf, "  %s", OBJ_ITEM_DESC(otyp));
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
 
 
 	/* Artifact powers */
@@ -3378,7 +3400,7 @@ register struct obj* obj;
 				strcpy(affectbuf, "");
 
 				int cnt = 0;
-				for (int i = 0; i < 32; i++)
+				for (int i = 0; i < NUM_UNSIGNED_LONG_BITS; i++)
 				{
 					unsigned long bit = 1UL;
 
@@ -3390,7 +3412,7 @@ register struct obj* obj;
 				}
 
 				int idx = 0;
-				for (int i = 0; i < 32; i++)
+				for (int i = 0; i < NUM_UNSIGNED_LONG_BITS; i++)
 				{
 					unsigned long bit = 1UL;
 
@@ -3433,6 +3455,25 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
+	}
+
+
+	/* Description */
+	if (stats_known && OBJ_ITEM_DESC(otyp) /* && !(obj->oartifact && obj->nknown) */)
+	{
+#if 0
+		/* One empty line here */
+		strcpy(buf, "");
+		txt = buf;
+		putstr(datawin, 0, txt);
+#endif
+		strcpy(buf, "Description:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		Sprintf(buf, "  %s", OBJ_ITEM_DESC(otyp));
+		txt = buf;
+		putstr(datawin, 0, txt);
 	}
 
 	/* Weapon statistics */
