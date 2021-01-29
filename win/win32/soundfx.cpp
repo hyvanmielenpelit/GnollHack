@@ -850,6 +850,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Error/Not Enough Stamina", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Item Welds", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Crunching Sound", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Player/Generic/Male/Generic Male Pray", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Player/Generic/Female/Generic Female Pray", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Player/Generic/Male/Generic Male Death", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Player/Generic/Female/Generic Female Death", 1.0f },
 
 };
 

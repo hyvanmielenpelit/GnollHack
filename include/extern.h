@@ -2873,8 +2873,10 @@ E void FDECL(play_simple_container_sound_at_location, (struct obj*, int, int, en
 E void FDECL(set_simple_container_sound_id_and_volume, (enum object_soundset_types, enum container_sound_types, enum ghsound_types*, float*));
 E void FDECL(play_object_hit_sound, (struct obj*, enum hit_surface_source_types, ANY_P*, double, enum hmon_atkmode_types));
 E void FDECL(play_object_hit_sound_at_location, (struct obj*, enum hit_surface_source_types, ANY_P*, double, enum hmon_atkmode_types, xchar, xchar));
-E void FDECL(play_simple_player_sound, (enum monster_sound_types)); /* somewhat obsolete */
+E void FDECL(play_simple_player_sound, (enum monster_sound_types));
+E void FDECL(play_simple_player_voice, (enum player_voice_types));
 E void FDECL(set_simple_player_sound_id_and_volume, (enum player_soundset_types, enum monster_sound_types, enum ghsound_types*, float*));
+E void FDECL(set_simple_player_voice_id_and_volume, (enum player_soundset_types, enum player_voice_types, enum ghsound_types*, float*));
 E void FDECL(play_simple_monster_sound, (struct monst*, enum monster_sound_types));
 E void FDECL(set_simple_monster_sound_id_and_volume, (enum monster_soundset_types, enum monster_sound_types, enum ghsound_types*, float*));
 E void FDECL(play_monster_simple_weapon_sound, (struct monst*, int, struct obj*, enum object_sound_types));

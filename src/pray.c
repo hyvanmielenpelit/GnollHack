@@ -2834,7 +2834,12 @@ dopray()
     multi_reason = "praying";
     nomovemsg = "You finish your prayer.";
     afternmv = prayer_done;
-    play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_PRAY);
+
+    if (iflags.using_gui_sounds)
+    {
+        play_simple_player_voice(PLAYER_VOICE_TYPE_PRAY);
+        delay_output_milliseconds(1500);
+    }
 
     if (p_type == 3 && !Inhell) {
         /* if you've been true to your god you can't die while you pray */

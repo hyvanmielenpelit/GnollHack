@@ -23,33 +23,36 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
         PLAYER_SOUNDSET_NONE,
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f},{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE}
-	},
+        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f}}
+    },
 	{
-		"Generic",
+		"Generic Male",
         PLAYER_SOUNDSET_NONE,
         {
             {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_PUSH_EFFORT, 1.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_OUCH_MALE, 1.0f}, {GHSOUND_GENERIC_FLOUNDER_MALE, 1.0f}, {GHSOUND_GENERIC_TRIP_MALE, 1.0f}, {GHSOUND_GENERIC_SLIP_MALE, 1.0f}, 
             {GHSOUND_GENERIC_STUMBLE_MALE, 1.0f}, {GHSOUND_GENERIC_BUMP_INTO, 1.0f}, {GHSOUND_GENERIC_SEARCH_MALE, 1.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, 
             {GHSOUND_GENERIC_LAUGHTER, 10.0f},  {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_YELL_MALE, 1.0f}, {GHSOUND_NONE, 0.0f}, 
-            {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_MALE_SHUDDER, 1.0f}, {GHSOUND_GOBLIN_DEATH, 1.0f}
+            {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_MALE_SHUDDER, 1.0f}, {GHSOUND_GENERIC_PLAYER_MALE_DEATH, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f},  {GHSOUND_GENERIC_PLAYER_MALE_PRAY, 1.0f}}
     },
 	{
-		"Female",
+		"Generic Female",
         PLAYER_SOUNDSET_GENERAL,
         {
             {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_PUSH_EFFORT_FEMALE, 1.0f}, {MAX_GHSOUNDS, 0.0f},  {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_OUCH_FEMALE, 1.0f}, {GHSOUND_GENERIC_FLOUNDER_FEMALE, 1.0f}, {GHSOUND_GENERIC_TRIP_FEMALE, 1.0f}, {GHSOUND_GENERIC_SLIP_FEMALE, 1.0f}, 
             {GHSOUND_GENERIC_STUMBLE_FEMALE, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_SEARCH_FEMALE, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, 
             {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_YELL_FEMALE, 1.0f}, {MAX_GHSOUNDS, 0.0f}, 
-            {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_FEMALE_SHUDDER, 1.0f}, {MAX_GHSOUNDS, 0.0f}
+            {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_FEMALE_SHUDDER, 1.0f}, {GHSOUND_GENERIC_PLAYER_FEMALE_DEATH, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f},  {GHSOUND_GENERIC_PLAYER_FEMALE_PRAY, 1.0f}}
     }
 };
 
@@ -135,7 +138,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
     {
         "Wizard of Yendor",
         MONSTER_SOUNDSET_GENERIC,
-        {{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_YELP, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_WARN_CURSED, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, {GHSOUND_EVIL_LAUGHTER, 10.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},  {MAX_GHSOUNDS, 0.0f}, {GHSOUND_MONSTER_DEATH_GENERIC, 1.0f}},
+        {{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_YELP, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_WARN_CURSED, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, {GHSOUND_EVIL_LAUGHTER, 10.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},  {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_PLAYER_MALE_DEATH, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
@@ -149,7 +152,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
     {
         "Demoness",
         MONSTER_SOUNDSET_GENERIC,
-        {{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_YELP, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_WARN_CURSED, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, {GHSOUND_DEMONIC_LAUGHTER, 10.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},  {MAX_GHSOUNDS, 0.0f}, {GHSOUND_MONSTER_DEATH_GENERIC, 1.0f}},
+        {{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_YELP, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_WARN_CURSED, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, {GHSOUND_DEMONIC_LAUGHTER, 10.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},  {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_PLAYER_FEMALE_DEATH, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
@@ -5604,6 +5607,39 @@ float* volume_ptr;
 }
 
 void
+set_simple_player_voice_id_and_volume(pss, sound_type, sound_id_ptr, volume_ptr)
+enum player_soundset_types pss;
+enum player_voice_types sound_type;
+enum ghsound_types* sound_id_ptr;
+float* volume_ptr;
+{
+    if (!sound_id_ptr || !volume_ptr)
+        return;
+
+    enum ghsound_types soundid = player_soundsets[pss].voices[sound_type].ghsound;
+    float volume = player_soundsets[pss].voices[sound_type].volume;
+
+    if (soundid < MAX_GHSOUNDS || player_soundsets[pss].base_soundset == PLAYER_SOUNDSET_NONE || player_soundsets[pss].base_soundset == pss)
+    {
+        if (soundid >= MAX_GHSOUNDS)
+        {
+            *sound_id_ptr = GHSOUND_NONE;
+            *volume_ptr = 0.0f;
+        }
+        else
+        {
+            *sound_id_ptr = soundid;
+            *volume_ptr = volume;
+        }
+    }
+    else
+    {
+        enum player_soundset_types base_pss = player_soundsets[pss].base_soundset;
+        set_simple_player_voice_id_and_volume(base_pss, sound_type, sound_id_ptr, volume_ptr);
+    }
+}
+
+void
 set_simple_monster_sound_id_and_volume(mss, sound_type, sound_id_ptr, volume_ptr)
 enum monster_soundset_types mss;
 enum monster_sound_types sound_type;
@@ -5869,6 +5905,45 @@ enum monster_sound_types sound_type;
     immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
+
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+
+}
+
+void
+play_simple_player_voice(sound_type)
+enum player_voice_types sound_type;
+{
+    /* Do not use for hit sounds */
+
+    if (Deaf)
+        return;
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+    struct ghsound_immediate_info immediateinfo = { 0 };
+
+    enum player_soundset_types pss = get_player_soundset();
+    set_simple_player_voice_id_and_volume(pss, sound_type, &soundid, &volume);
+
+    xchar x = u.ux, y = u.uy;
+
+    if (isok(x, y))
+    {
+        float hearing = hearing_array[x][y];
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
+            return;
+        else
+            volume *= hearing_array[x][y];
+    }
+    else
+        return;
+
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_LONG;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
