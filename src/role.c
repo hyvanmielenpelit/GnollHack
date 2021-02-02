@@ -2739,6 +2739,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     if (levelidx > 0)
         return FALSE;
 
+    /* All characters have attack and kick tiles */
+    if (action == ACTION_TILE_ATTACK || action == ACTION_TILE_KICK)
+        return TRUE;
+
     /* Real cases */
     switch (action)
     {
