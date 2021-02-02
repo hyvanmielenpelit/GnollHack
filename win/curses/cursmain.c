@@ -507,9 +507,9 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
         curses_get_window_size(INV_WIN, &height, &width);
         boolean has_border = curses_window_has_border(INV_WIN);
         int applicable_height = height;
-        if (inv_update <= applicable_height)
+        int applied_y = 1 + inv_update - (has_border ? 0 : 1);
+        if (applied_y <= applicable_height)
         {
-            int applied_y = inv_update - (has_border ? 0 : 1);
             curses_add_inv(applied_y, glyph, accelerator, curses_attr, str);
             inv_update++;
         }
@@ -543,7 +543,10 @@ void
 curses_end_menu(winid wid, const char *prompt)
 {
     if (inv_update)
+    {
+        curses_finalize_inv(prompt);
         return;
+    }
 
     curses_finalize_nhmenu(wid, prompt);
 }
