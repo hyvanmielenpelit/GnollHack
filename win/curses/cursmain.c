@@ -506,7 +506,7 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
         int height = 0, width = 0;
         curses_get_window_size(INV_WIN, &height, &width);
         boolean has_border = curses_window_has_border(INV_WIN);
-        int applicable_height = height;
+        int applicable_height = height - (has_border ? 0 : 1);
         int applied_y = 1 + inv_update - (has_border ? 0 : 1);
         if (applied_y <= applicable_height)
         {

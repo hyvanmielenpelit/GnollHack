@@ -45,7 +45,7 @@ curses_update_inv(void)
     /* Clear the window as it is at the moment. */
     werase(win);
 
-    display_inventory(NULL, FALSE, 1);
+    display_inventory_with_header(NULL, FALSE, 1);
 
     if (border)
         box(win, 0, 0);
@@ -123,7 +123,7 @@ curses_finalize_inv(const char* str)
     attr_t bold = A_BOLD;
 
     wattron(win, bold);
-    wprintw(win, str);
+    wprintw(win, "%s", str);
     wattroff(win, bold);
     wclrtoeol(win);
 }
