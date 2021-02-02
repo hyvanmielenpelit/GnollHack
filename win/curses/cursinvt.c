@@ -114,7 +114,6 @@ void
 curses_finalize_inv(const char* str)
 {
     WINDOW* win = curses_get_nhwin(INV_WIN);
-    int color = NO_COLOR;
 
     boolean has_border = curses_window_has_border(INV_WIN);
     int x = has_border ? 1 : 0;
@@ -126,4 +125,5 @@ curses_finalize_inv(const char* str)
     wattron(win, bold);
     wprintw(win, str);
     wattroff(win, bold);
+    wclrtoeol(win);
 }
