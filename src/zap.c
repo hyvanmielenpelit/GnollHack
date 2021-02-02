@@ -3530,7 +3530,7 @@ struct monst* origmonst;
                     pline_The("boulder falls apart.");
                 else
                     You_hear("a crumbling sound.");
-                fracture_rock(obj);
+                fracture_rock(obj, TRUE);
             } 
 			else if (obj->otyp == STATUE) 
 			{
@@ -9248,27 +9248,33 @@ short exploding_wand_typ;
 
 /* fractured by pick-axe or wand of striking */
 void
-fracture_rock(obj)
+fracture_rock(obj, verbose)
 register struct obj *obj; /* no texts here! */
+boolean verbose;
 {
     xchar x, y;
     boolean by_you = !context.mon_moving;
 
-    if (by_you && get_obj_location(obj, &x, &y, 0) && costly_spot(x, y)) {
+    if (by_you && get_obj_location(obj, &x, &y, 0) && costly_spot(x, y))
+    {
         struct monst *shkp = 0;
         char objroom = *in_rooms(x, y, SHOPBASE);
 
-        if (billable(&shkp, obj, objroom, FALSE)) {
+        if (billable(&shkp, obj, objroom, FALSE)) 
+        {
             /* shop message says "you owe <shk> <$> for it!" so we need
                to precede that with a message explaining what "it" is */
-            You("fracture %s %s.", s_suffix(shkname(shkp)), xname(obj));
+            if(verbose)
+                You("fracture %s %s.", s_suffix(shkname(shkp)), xname(obj));
             breakobj(obj, x, y, TRUE, FALSE); /* charges for shop goods */
         }
     }
+
     if (by_you && obj->otyp == BOULDER)
         sokoban_guilt();
 
-    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
+    if(verbose)
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
 
     obj->otyp = ROCK;
     obj->oclass = GEM_CLASS;
@@ -9278,7 +9284,8 @@ register struct obj *obj; /* no texts here! */
     obj->known = objects[obj->otyp].oc_uses_known ? 0 : 1;
     dealloc_oextra(obj);
 
-    if (obj->where == OBJ_FLOOR) {
+    if (obj->where == OBJ_FLOOR) 
+    {
         obj_extract_self(obj); /* move rocks back on top */
         place_object(obj, obj->ox, obj->oy);
         if (!does_block(obj->ox, obj->oy, &levl[obj->ox][obj->oy]))
@@ -9312,7 +9319,7 @@ register struct obj *obj;
         adjalign(-1);
     }
     obj->speflags &= ~SPEFLAGS_STATUE_HISTORIC;
-    fracture_rock(obj);
+    fracture_rock(obj, TRUE);
     return TRUE;
 }
 

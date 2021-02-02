@@ -2207,7 +2207,7 @@ int style;
                         del_engr_at(bhitpos.x, bhitpos.y);
                         place_object(singleobj, bhitpos.x, bhitpos.y);
                         singleobj->otrapped = 0;
-                        fracture_rock(singleobj);
+                        fracture_rock(singleobj, TRUE);
                         (void) scatter(bhitpos.x, bhitpos.y, 4,
                                        MAY_DESTROY | MAY_HIT | MAY_FRACTURE
                                            | VIS_EFFECTS,

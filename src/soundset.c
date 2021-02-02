@@ -1366,7 +1366,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_STONE_ENGRAVE, 1.0f},
             {MAX_GHSOUNDS, 0.0f},
 
-            {MAX_GHSOUNDS, 0.0f},
+            {GHSOUND_STONE_BREAK, 1.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},

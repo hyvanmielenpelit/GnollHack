@@ -780,7 +780,7 @@ struct obj *obj; /* only scatter this obj        */
                     pline("%s apart.", Tobjnam(otmp, "break"));
                 else
                     You_hear("stone breaking.");
-                fracture_rock(otmp);
+                fracture_rock(otmp, TRUE);
                 place_object(otmp, sx, sy);
                 if ((otmp = sobj_at(BOULDER, sx, sy)) != 0) {
                     /* another boulder here, restack it to the top */

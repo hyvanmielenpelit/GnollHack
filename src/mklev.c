@@ -2241,7 +2241,7 @@ int dist;
     make_rocks = (dist != 1 && dist != 4 && dist != 5) ? TRUE : FALSE;
     while ((otmp = sobj_at(BOULDER, x, y)) != 0) {
         if (make_rocks) {
-            fracture_rock(otmp);
+            fracture_rock(otmp, FALSE);
             make_rocks = FALSE; /* don't bother with more rocks */
         } else {
             obj_extract_self(otmp);
