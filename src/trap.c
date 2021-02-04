@@ -1354,8 +1354,10 @@ unsigned trflags;
          * first rustable one or the body, we take whatever we get,
          * even if it is not rustable.
          */
+        play_special_effect_at(SPECIAL_EFFECT_TRAP_RUST, 0, trap->tx, trap->ty, FALSE);
         play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
         play_sfx_sound(SFX_GUSH_OF_WATER_HITS);
+        special_effect_wait_until_action(0);
         switch (rn2(5))
         {
         case 0:
@@ -1408,6 +1410,7 @@ unsigned trflags;
             (void) split_mon(&youmonst, (struct monst *) 0);
         }
 
+        special_effect_wait_until_end(0);
         break;
 
     case FIRE_TRAP:
@@ -2657,19 +2660,27 @@ register struct monst *mtmp;
                 trapkilled = thitm(0, mtmp, (struct obj *) 0, d(2, 4), FALSE);
             break;
         case SLP_GAS_TRAP:
-            if (in_sight) 
+            if (in_sight)
             {
                 seetrap(trap);
                 newsym(trap->tx, trap->ty);
                 flush_screen(1);
                 play_special_effect_at(SPECIAL_EFFECT_TRAP_SLEEP_GAS, 0, trap->tx, trap->ty, FALSE);
-                play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
-                play_sfx_sound_at_location(SFX_ENVELOPED_IN_CLOUD_OF_GAS, mtmp->mx, mtmp->my);
+            }
+
+            play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+            play_sfx_sound_at_location(SFX_ENVELOPED_IN_CLOUD_OF_GAS, mtmp->mx, mtmp->my);
+
+            if (in_sight)
                 special_effect_wait_until_action(0);
-                if(!resists_sleep(mtmp) && !has_innate_breathless(mptr) && mon_can_move(mtmp) && sleep_monst(mtmp, (struct obj*)0, rn1(7, 8), -100, FALSE))
-                    pline("%s suddenly falls asleep!", Monnam(mtmp));
-                else
-                    pline("%s is enveloped in a cloud of gas!", Monnam(mtmp));
+
+            if (!resists_sleep(mtmp) && !has_innate_breathless(mptr) && mon_can_move(mtmp) && sleep_monst(mtmp, (struct obj*)0, rn1(7, 8), -100, FALSE))
+                pline("%s suddenly falls asleep!", Monnam(mtmp));
+            else
+                pline("%s is enveloped in a cloud of gas!", Monnam(mtmp));
+
+            if (in_sight)
+            {
                 special_effect_wait_until_end(0);
                 effect_played = TRUE;
             }
@@ -2681,11 +2692,17 @@ register struct monst *mtmp;
             break;
         case RUST_TRAP: {
             struct obj *target;
+            if (in_sight)
+            {
+                seetrap(trap);
+                newsym(mtmp->mx, mtmp->my);
+                play_special_effect_at(SPECIAL_EFFECT_TRAP_RUST, 0, mtmp->mx, mtmp->my, FALSE);
+            }
             play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
             play_sfx_sound_at_location(SFX_GUSH_OF_WATER_HITS, mtmp->mx, mtmp->my);
-
             if (in_sight)
-                seetrap(trap);
+                special_effect_wait_until_action(0);
+
             switch (rn2(5)) {
             case 0:
                 if (in_sight)
@@ -2742,6 +2759,9 @@ register struct monst *mtmp;
             } else if (mptr == &mons[PM_GREMLIN] && rn2(3)) {
                 (void) split_mon(mtmp, (struct monst *) 0);
             }
+
+            if (in_sight)
+                special_effect_wait_until_end(0);
             break;
         } /* RUST_TRAP */
         case FIRE_TRAP:

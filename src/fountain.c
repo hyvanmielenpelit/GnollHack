@@ -1143,9 +1143,15 @@ int x, y;
 	if (cansee(x, y) || (x == u.ux && y == u.uy))
         pline_The("pipes break!  Water spurts out!");
 
+	play_special_effect_at(SPECIAL_EFFECT_TRAP_RUST, 0, x, y, FALSE);
+	play_sfx_sound(SFX_GUSH_OF_WATER_HITS);
+	special_effect_wait_until_action(0);
+
 	create_simple_location(x, y, FOUNTAIN, 0, FOUNTAIN_NATURAL, 0 /*back_to_broken_glyph(x, y)*/, levl[x][y].floortyp, levl[x][y].floorsubtyp, FALSE);
     SET_FOUNTAIN_LOOTED(x, y);
     newsym(x, y);
+
+	special_effect_wait_until_end(0);
 }
 
 void
