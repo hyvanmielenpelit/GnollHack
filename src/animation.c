@@ -1063,7 +1063,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       FIERY_EXPLOSION_ANIMATION_FRAMES, FIERY_EXPLOSION_ANIMATION_OFF,
       MAX_EXPLOSION_CHARS,
       1,
-      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       -1, -1,
@@ -1074,7 +1074,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       MAGIC_EXPLOSION_ANIMATION_FRAMES, MAGIC_EXPLOSION_ANIMATION_OFF,
       MAX_EXPLOSION_CHARS,
       1,
-      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       -1, -1,
@@ -1085,7 +1085,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       FROSTY_EXPLOSION_ANIMATION_FRAMES, FROSTY_EXPLOSION_ANIMATION_OFF,
       MAX_EXPLOSION_CHARS,
       1,
-      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       -1, -1,
@@ -1096,7 +1096,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       NOXIOUS_EXPLOSION_ANIMATION_FRAMES, NOXIOUS_EXPLOSION_ANIMATION_OFF,
       MAX_EXPLOSION_CHARS,
       1,
-      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       -1, -1,
@@ -4830,7 +4830,7 @@ enum autodraw_types* autodraw_ptr;
         if (mapAnimated)
             *mapAnimated = TRUE;
 
-        char main_tile_frame_position = -1; /* ignore */
+        schar main_tile_frame_position = -1; /* ignore */
         if (animations[animation_idx].main_tile_use_style == ANIMATION_MAIN_TILE_USE_FIRST)
         {
             main_tile_frame_position = 0;
@@ -4841,10 +4841,10 @@ enum autodraw_types* autodraw_ptr;
         }
         if (main_tile_idx_ptr)
             *main_tile_idx_ptr = main_tile_frame_position;
-        char additional_tile_num = (main_tile_frame_position > -1 ? 1 : 0);
-        char animation_tile_offset = (main_tile_frame_position == 0 ? 1 : 0);
-        char numframes = animations[animation_idx].number_of_frames + additional_tile_num; /* add original tile as the first tile and frame */
-        char current_animation_frame = (char)((interval_counter / (long)animations[animation_idx].intervals_between_frames) % (long)numframes);
+        schar additional_tile_num = (main_tile_frame_position > -1 ? 1 : 0);
+        schar animation_tile_offset = (main_tile_frame_position == 0 ? 1 : 0);
+        schar numframes = animations[animation_idx].number_of_frames + additional_tile_num; /* add original tile as the first tile and frame */
+        schar current_animation_frame = (char)((interval_counter / (long)animations[animation_idx].intervals_between_frames) % (long)numframes);
         if (current_animation_frame < 0)
             current_animation_frame += numframes;
 
@@ -4852,9 +4852,18 @@ enum autodraw_types* autodraw_ptr;
             *frame_idx_ptr = current_animation_frame;
         
         /* Separately played animations are played only once, and once the numframes is exceeded, the animation stops */
-        if (play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY 
+        if (play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY
             && (interval_counter / (long)animations[animation_idx].intervals_between_frames) >= (long)numframes)
-            return ntile;
+        {
+            if (animations[animation_idx].main_tile_use_style == ANIMATION_MAIN_TILE_IGNORE)
+            {
+                current_animation_frame = (int)animations[animation_idx].number_of_frames - 1; /* Set to last frame of the animation */
+            }
+            else
+            {
+                return ntile;  /* Return the original tile in other cases */
+            }
+        }
 
         if (current_animation_frame != main_tile_frame_position) /* 0 is the original picture */
         {
