@@ -838,6 +838,7 @@ MONSTER:('T',"thoul"),random
 #
 MAZE: "tarrasque" , ' '
 FLAGS:mapping_does_not_reveal_special
+TILESET: gehennom_cavernous_tileset
 INIT_MAP: mines, ':' , ' ' , true , true , random , true
 NAMING:"Many corpses littered around", name_revealed_seeing_monster, montype:"Tarrasque"
 NOMAP
@@ -1070,6 +1071,7 @@ TELEPORT_REGION:levregion(54,1,79,18),(0,0,0,0),down
 #
 #############################################################
 MAZE: "hellfill" , ' '
+TILESET: gehennom_cavernous_tileset
 INIT_MAP: mines, ':' , ' ' , true , true , random , true
 NOMAP
 #
