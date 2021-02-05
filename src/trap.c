@@ -5949,6 +5949,7 @@ boolean disarm;
     char buf[80];
     const char *msg;
     enum sfx_sound_types sfx = 0;
+    enum special_effect_types spef = MAX_SPECIAL_EFFECTS;
     coord cc;
 
     if (get_obj_location(obj, &cc.x, &cc.y, 0)) /* might be carried */
@@ -5959,6 +5960,9 @@ boolean disarm;
     play_sfx_sound(SFX_CHEST_TRAP_TRIGGER);
     You(disarm ? "set it off!" : "trigger a trap!");
     display_nhwindow(WIN_MESSAGE, FALSE);
+
+    if (iflags.using_gui_sounds)
+        delay_output_milliseconds(100);
 
     if (Luck > -13 && rn2(13 + Luck) > 7) 
     { /* saved by luck */
@@ -5973,7 +5977,7 @@ boolean disarm;
         case 10:
         case 9:
             msg = "electric charge is grounded";
-            sfx = 0;
+            sfx = SFX_ELECTRICITY_CRACKLES;
             break;
         case 8:
         case 7:
@@ -6000,9 +6004,15 @@ boolean disarm;
         }
         if (msg)
         {
+            if(spef < MAX_SPECIAL_EFFECTS)
+                play_special_effect_at(spef, 0, obj->ox, obj->oy, FALSE);
             if(sfx > 0)
                 play_sfx_sound_at_location(sfx, obj->ox, obj->oy);
+            if (spef < MAX_SPECIAL_EFFECTS)
+                special_effect_wait_until_action(0);
             pline("But luckily the %s!", msg);
+            if (spef < MAX_SPECIAL_EFFECTS)
+                special_effect_wait_until_end(0);
 
         }
     }
@@ -6067,17 +6077,28 @@ boolean disarm;
         case 19:
         case 18:
         case 17:
-            play_sfx_sound_at_location(SFX_EXPLOSION_NOXIOUS, obj->ox, obj->oy);
+            play_special_effect_at(SPECIAL_EFFECT_TRAP_SLEEP_GAS, 0, obj->ox, obj->oy, FALSE);
+            play_sfx_sound(SFX_ENVELOPED_IN_CLOUD_OF_GAS);
+            special_effect_wait_until_action(0);
             pline("A cloud of noxious gas billows from %s.", the(xname(obj)));
             poisoned("gas cloud", A_STR, "cloud of poison gas", 0, FALSE, 2);
             exercise(A_CON, FALSE);
+            special_effect_wait_until_end(0);
             break;
         case 16:
         case 15:
         case 14:
         case 13:
-            play_sfx_sound(SFX_TRAP_NEEDLE_PRICKS);
+            if (iflags.using_gui_sounds)
+                play_sfx_sound(SFX_TRAP_NEEDLE_PRICKS);
+
             You_feel("a needle prick your %s.", body_part(bodypart));
+
+            if (iflags.using_gui_sounds)
+            {
+                delay_output_milliseconds(100);
+                play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+            }
             poisoned("needle", A_CON, "poisoned needle", 0, FALSE, 2);
             exercise(A_CON, FALSE);
             break;
@@ -6099,12 +6120,21 @@ boolean disarm;
                 u_shieldeff();
                 You("don't seem to be affected.");
                 dmg = 0;
-            } else
+            }
+            else
+            {
                 dmg = d(4, 4);
+            }
+            double damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE);
             destroy_item(RING_CLASS, AD_ELEC);
             destroy_item(WAND_CLASS, AD_ELEC);
-            if (dmg)
-                losehp(dmg, "electric shock", KILLED_BY_AN);
+            if (damage > 0.0)
+            {
+                int hp_before = Upolyd ? u.mh : u.uhp;
+                losehp(damage, "electric shock", KILLED_BY_AN);
+                int hp_after = Upolyd ? u.mh : u.uhp;
+                display_u_being_hit(HIT_ELECTROCUTED, hp_before - hp_after, 0UL);
+            }
             break;
         } /* case 6 */
         case 5:
@@ -6132,6 +6162,9 @@ boolean disarm;
         case 2:
         case 1:
         case 0:
+            play_special_effect_at(SPECIAL_EFFECT_TRAP_SLEEP_GAS, 0, obj->ox, obj->oy, FALSE);
+            play_sfx_sound(SFX_ENVELOPED_IN_CLOUD_OF_GAS);
+            special_effect_wait_until_action(0);
             pline("A cloud of %s gas billows from %s.",
                   Blind ? blindgas[rn2(SIZE(blindgas))] : rndcolor(),
                   the(xname(obj)));
@@ -6148,6 +6181,7 @@ boolean disarm;
             make_stunned((HStun & TIMEOUT) + (long) rn1(7, 16), FALSE);
             (void) make_hallucinated(
                 (HHallucination & TIMEOUT) + (long) rn1(5, 16), FALSE, 0L);
+            special_effect_wait_until_end(0);
             break;
         default:
             impossible("bad chest trap");
