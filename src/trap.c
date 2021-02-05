@@ -5959,10 +5959,10 @@ boolean disarm;
                            chest kills you and ends up in bones file */
     play_sfx_sound(SFX_CHEST_TRAP_TRIGGER);
     You(disarm ? "set it off!" : "trigger a trap!");
-    display_nhwindow(WIN_MESSAGE, FALSE);
-
     if (iflags.using_gui_sounds)
         delay_output_milliseconds(100);
+
+    display_nhwindow(WIN_MESSAGE, FALSE);
 
     if (Luck > -13 && rn2(13 + Luck) > 7) 
     { /* saved by luck */
