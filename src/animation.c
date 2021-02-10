@@ -960,6 +960,50 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       DWARF_CAVEMAN_MALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "gnoll-caveman-male-attack-animation", ANIMATION_TYPE_NORMAL, GNOLL_CAVEMAN_MALE_ATTACK_ANIMATION_TILES,
+      GNOLL_CAVEMAN_MALE_ATTACK_ANIMATION_FRAMES, GNOLL_CAVEMAN_MALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      GNOLL_CAVEMAN_MALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "gnoll-caveman-male-kick-animation", ANIMATION_TYPE_NORMAL, GNOLL_CAVEMAN_MALE_KICK_ANIMATION_TILES,
+      GNOLL_CAVEMAN_MALE_KICK_ANIMATION_FRAMES, GNOLL_CAVEMAN_MALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      GNOLL_CAVEMAN_MALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "gnoll-caveman-female-attack-animation", ANIMATION_TYPE_NORMAL, GNOLL_CAVEMAN_FEMALE_ATTACK_ANIMATION_TILES,
+      GNOLL_CAVEMAN_FEMALE_ATTACK_ANIMATION_FRAMES, GNOLL_CAVEMAN_FEMALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      GNOLL_CAVEMAN_FEMALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "gnoll-caveman-female-kick-animation", ANIMATION_TYPE_NORMAL, GNOLL_CAVEMAN_FEMALE_KICK_ANIMATION_TILES,
+      GNOLL_CAVEMAN_FEMALE_KICK_ANIMATION_FRAMES, GNOLL_CAVEMAN_FEMALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      GNOLL_CAVEMAN_FEMALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "dwarf-archeologist-male-attack-animation", ANIMATION_TYPE_NORMAL, DWARF_ARCHEOLOGIST_MALE_ATTACK_ANIMATION_TILES,
       DWARF_ARCHEOLOGIST_MALE_ATTACK_ANIMATION_FRAMES, DWARF_ARCHEOLOGIST_MALE_ATTACK_ANIMATION_OFF,
       1,
@@ -1580,6 +1624,48 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "tentacled-one-enlargement", 0, 0,
+      TENTACLED_ONE_ENLARGEMENT_TILES, TENTACLED_ONE_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "tentacled-one-statue-enlargement", 0, 0,
+      TENTACLED_ONE_STATUE_ENLARGEMENT_TILES, TENTACLED_ONE_STATUE_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elder-tentacled-one-enlargement", 0, 0,
+      ELDER_TENTACLED_ONE_ENLARGEMENT_TILES, ELDER_TENTACLED_ONE_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elder-tentacled-one-statue-enlargement", 0, 0,
+      ELDER_TENTACLED_ONE_STATUE_ENLARGEMENT_TILES, ELDER_TENTACLED_ONE_STATUE_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "death-flayer-enlargement", 0, 0,
+      DEATH_FLAYER_ENLARGEMENT_TILES, DEATH_FLAYER_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "death-flayer-statue-enlargement", 0, 0,
+      DEATH_FLAYER_STATUE_ENLARGEMENT_TILES, DEATH_FLAYER_STATUE_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "tree-enlargement", 0, 0,
       TREE_ENLARGEMENT_TILES, TREE_ENLARGEMENT_OFF,
       3, 2, 0,
@@ -2098,6 +2184,38 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { "dwarf-caveman-male-kick-enlargement",
             DWARF_CAVEMAN_MALE_KICK_ANIMATION_TILES, DWARF_CAVEMAN_MALE_KICK_ANIMATION_FRAMES,
             DWARF_CAVEMAN_MALE_KICK_ENLARGEMENT_TILES, DWARF_CAVEMAN_MALE_KICK_ENLARGEMENT_OFF,
+            3, 1, 0,
+            { -1, -1, -1, 0, 1},
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }
+        },
+        { "gnoll-caveman-male-attack-enlargement",
+            GNOLL_CAVEMAN_MALE_ATTACK_ANIMATION_TILES, GNOLL_CAVEMAN_MALE_ATTACK_ANIMATION_FRAMES,
+            GNOLL_CAVEMAN_MALE_ATTACK_ENLARGEMENT_TILES, GNOLL_CAVEMAN_MALE_ATTACK_ENLARGEMENT_OFF,
+            3, 1, 0,
+            { -1, -1, -1, 0, 1},
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }
+        },
+        { "gnoll-caveman-male-kick-enlargement",
+            GNOLL_CAVEMAN_MALE_KICK_ANIMATION_TILES, GNOLL_CAVEMAN_MALE_KICK_ANIMATION_FRAMES,
+            GNOLL_CAVEMAN_MALE_KICK_ENLARGEMENT_TILES, GNOLL_CAVEMAN_MALE_KICK_ENLARGEMENT_OFF,
+            3, 1, 0,
+            { -1, -1, -1, 0, 1},
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }
+        },
+        { "gnoll-caveman-female-attack-enlargement",
+            GNOLL_CAVEMAN_FEMALE_ATTACK_ANIMATION_TILES, GNOLL_CAVEMAN_FEMALE_ATTACK_ANIMATION_FRAMES,
+            GNOLL_CAVEMAN_FEMALE_ATTACK_ENLARGEMENT_TILES, GNOLL_CAVEMAN_FEMALE_ATTACK_ENLARGEMENT_OFF,
+            3, 1, 0,
+            { -1, -1, -1, 0, 1},
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }
+        },
+        { "gnoll-caveman-female-kick-enlargement",
+            GNOLL_CAVEMAN_FEMALE_KICK_ANIMATION_TILES, GNOLL_CAVEMAN_FEMALE_KICK_ANIMATION_FRAMES,
+            GNOLL_CAVEMAN_FEMALE_KICK_ENLARGEMENT_TILES, GNOLL_CAVEMAN_FEMALE_KICK_ENLARGEMENT_OFF,
             3, 1, 0,
             { -1, -1, -1, 0, 1},
             { 0, 0, 0, 0, 0 },
@@ -4482,6 +4600,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_WIZARD_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_CAVEMAN && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
             return DWARF_CAVEMAN_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_CAVEMAN && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
+            return GNOLL_CAVEMAN_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_CAVEMAN && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE)
+            return GNOLL_CAVEMAN_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
             return DWARF_ARCHEOLOGIST_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
@@ -4582,6 +4704,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_WIZARD_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_CAVEMAN && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
             return DWARF_CAVEMAN_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_CAVEMAN && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
+            return GNOLL_CAVEMAN_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_CAVEMAN && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE)
+            return GNOLL_CAVEMAN_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
             return DWARF_ARCHEOLOGIST_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
