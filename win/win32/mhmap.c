@@ -4279,10 +4279,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
                                 /* Define draw location in target */
-                                int unscaled_left = 3;
-                                int unscaled_right = unscaled_left + tileWidth / 2;
-                                int unscaled_top = 3;
-                                int unscaled_bottom = unscaled_top + tileHeight / 2;
+                                int unscaled_left = 2 + 2 + BUFF_WIDTH;
+                                int unscaled_right = tileWidth - unscaled_left;
+                                int unscaled_top = (tileHeight - ((unscaled_right - unscaled_left) * tileHeight) / tileWidth) / 2;
+                                int unscaled_bottom = unscaled_top + ((unscaled_right - unscaled_left) * tileHeight) / tileWidth;
 
                                 /* Frame and background first */
                                 HBRUSH hbr_frame = CreateSolidBrush(RGB(100, 50, 0));
@@ -4294,8 +4294,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 frame_rect.top = rect->top + (int)(y_scaling_factor * (double)(unscaled_top - 1));
                                 frame_rect.bottom = rect->top + (int)(y_scaling_factor * (double)(unscaled_bottom + 1));
 
-                                FillRect(data->backBufferDC, &frame_rect, hbr_background);
-                                FrameRect(data->backBufferDC, &frame_rect, hbr_frame);
+                                //FillRect(data->backBufferDC, &frame_rect, hbr_background);
+                                //FrameRect(data->backBufferDC, &frame_rect, hbr_frame);
 
                                 /* Now the actual picture */
                                 RECT source_rt = { 0 };
