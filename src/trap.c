@@ -1676,7 +1676,9 @@ unsigned trflags;
 
     case ANTI_MAGIC_TRAP:
         seetrap(trap);
+        play_special_effect_at(SPECIAL_EFFECT_ANTIMAGIC_TRAP_LIGHT_FLASH, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_ANTI_MAGIC_TRAP_ACTIVATE);
+        special_effect_wait_until_action(0);
         /* hero without magic resistance loses spell energy,
            hero with magic resistance takes damage instead;
            possibly non-intuitive but useful for play balance */
@@ -1705,13 +1707,16 @@ unsigned trflags;
             /* opposite of magical explosion */
             losehp(adjust_damage(dmgval2, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "anti-magical implosion", KILLED_BY_AN);
         }
+        special_effect_wait_until_end(0);
         break;
 
     case POLY_TRAP: {
         char verbbuf[BUFSZ];
 
         seetrap(trap);
+        play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_LIGHT_FLASH, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_POLYMORPH_ACTIVATE);
+        special_effect_wait_until_action(0);
 
         if (viasitting)
             Strcpy(verbbuf, "trigger"); /* follows "You sit down." */
@@ -1736,6 +1741,7 @@ unsigned trflags;
             You_feel("a change coming over you.");
             polyself(0);
         }
+        special_effect_wait_until_end(0);
         break;
     }
     case LANDMINE: 
@@ -2986,13 +2992,23 @@ register struct monst *mtmp;
         case STATUE_TRAP:
             break;
         case MAGIC_TRAP:
-            play_sfx_sound_at_location(SFX_MAGIC_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
             /* A magic trap.  Monsters usually immune. */
             if (!rn2(21))
                 goto mfiretrap;
+            else
+            {
+                newsym(mtmp->mx, mtmp->my);
+                play_special_effect_at(SPECIAL_EFFECT_MAGIC_TRAP_LIGHT_FLASH, 0, mtmp->mx, mtmp->my, FALSE);
+                play_sfx_sound_at_location(SFX_MAGIC_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
+            }
             break;
         case ANTI_MAGIC_TRAP:
+            newsym(mtmp->mx, mtmp->my);
+            play_special_effect_at(SPECIAL_EFFECT_ANTIMAGIC_TRAP_LIGHT_FLASH, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_ANTI_MAGIC_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+            special_effect_wait_until_action(0);
             /* similar to hero's case, more or less */
             if (!resists_magic(mtmp)) { /* lose spell energy */
                 if (!is_cancelled(mtmp) && (attacktype(mptr, AT_MAGC)
@@ -3032,6 +3048,7 @@ register struct monst *mtmp;
                 if (see_it)
                     newsym(trap->tx, trap->ty);
             }
+            special_effect_wait_until_end(0);
             break;
         case LANDMINE:
             if (rn2(3))
@@ -3085,7 +3102,10 @@ register struct monst *mtmp;
             }
             break;
         case POLY_TRAP:
+            newsym(mtmp->mx, mtmp->my);
+            play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_LIGHT_FLASH, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_POLYMORPH_ACTIVATE, mtmp->mx, mtmp->my);
+            special_effect_wait_until_action(0);
             if (resists_magic(mtmp)) {
                 play_sfx_sound_at_location(SFX_POLYMORPH_FAIL, mtmp->mx, mtmp->my);
                 m_shieldeff(mtmp);
@@ -3100,6 +3120,7 @@ register struct monst *mtmp;
                 if (in_sight)
                     seetrap(trap);
             }
+            special_effect_wait_until_end(0);
             break;
         case ROLLING_BOULDER_TRAP:
             if (!(is_flying(mtmp) || is_levitating(mtmp))) {
@@ -3701,7 +3722,9 @@ domagictrap()
         /* Most of the time, it creates some monsters. */
         int cnt = rnd(4);
 
+        play_special_effect_at(SPECIAL_EFFECT_MAGIC_TRAP_LIGHT_FLASH, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_FLASH_AND_ROAR);
+        special_effect_wait_until_action(0);
         /* blindness effects */
         if (!resists_blnd(&youmonst) && !Flash_resistance)
         {
@@ -3740,6 +3763,7 @@ domagictrap()
         /* roar: wake monsters in vicinity, after placing trap-created ones */
         wake_nearto(u.ux, u.uy, 7 * 7);
         /* [flash: should probably also hit nearby gremlins with light] */
+        special_effect_wait_until_end(0);
     }
     else
         switch (fate)
@@ -3814,7 +3838,9 @@ domagictrap()
             struct obj pseudo;
             long save_conf = HConfusion;
 
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
+            special_effect_wait_until_action(0);
 
             pseudo = zeroobj; /* neither cursed nor blessed,
                                  and zero out oextra */
@@ -3823,6 +3849,7 @@ domagictrap()
             boolean effect_happened = 0;
             (void) seffects(&pseudo, &effect_happened);
             HConfusion = save_conf;
+            special_effect_wait_until_end(0);
             break;
         }
         default:
