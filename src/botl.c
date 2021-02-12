@@ -435,10 +435,11 @@ char *buf;
 {
     int ret = 1;
 	char modebuf[BUFSZ];
+    const char* difsym = get_game_difficulty_symbol(context.game_difficulty);
 
 	Sprintf(modebuf, "%s%s%s", wizard ? "W" : discover ? "X" : "",
-		context.game_difficulty == -2 ? "E" : context.game_difficulty == -1 ? "e" : context.game_difficulty == 1 ? "h" : context.game_difficulty == 2 ? "H" : "",
-		(wizard || discover || context.game_difficulty != 0) ? " " : "");
+        difsym,
+		(wizard || discover || strcmp(difsym, "")) ? " " : "");
 
     /* TODO:    Add in dungeon name */
     if (Is_knox(&u.uz)) {

@@ -1059,21 +1059,53 @@ int dif_level;
 	
 	switch (dif_level)
 	{
-	case -2:
+	case -4:
 		return "very easy";
-	case -1:
+	case -3:
 		return  "easy";
-	case 0:
-		return  "normal";
-	case 1:
+	case -2:
+		return  "medium";
+	case -1:
 		return "hard";
-	case 2:
-		return "very hard";
-	default:
+	case 0:
+		return "expert";
+    case 1:
+        return "master";
+    case 2:
+        return "grand master";
+    default:
 		return "unknown";
 	}
 
 	return "unknown";
+}
+
+const char*
+get_game_difficulty_symbol(dif_level)
+int dif_level;
+{
+
+    switch (dif_level)
+    {
+    case -4:
+        return "E";
+    case -3:
+        return "e";
+    case -2:
+        return "";
+    case -1:
+        return  "h";
+    case 0:
+        return  "x";
+    case 1:
+        return "m";
+    case 2:
+        return "M";
+    default:
+        return "?";
+    }
+
+    return "?";
 }
 
 
@@ -1088,16 +1120,17 @@ choose_game_difficulty()
 	start_menu(menuwin);
 	anything any = zeroany;
 
-	for(int i = -2; i <= 2; i++)
+	for(int i = MIN_DIFFICULTY_LEVEL; i <= MAX_DIFFICULTY_LEVEL; i++)
 	{
 		any = zeroany;
-		any.a_int = i + 3;
-		char diffchar = i + 2 + 'a';
+		any.a_int = i - MIN_DIFFICULTY_LEVEL + 1;
+		char diffchar = i - MIN_DIFFICULTY_LEVEL + 'a';
 		char buf[BUFSZ];
 		const char* leveltext;
 		
 		leveltext = get_game_difficulty_text(i);
 		strcpy(buf, leveltext);
+        *buf = highc(*buf);
 
 		add_menu(menuwin, NO_GLYPH, &any, diffchar, 0, ATR_NONE,
 			buf, MENU_UNSELECTED);
@@ -1107,11 +1140,11 @@ choose_game_difficulty()
 	n = select_menu(menuwin, PICK_ONE, &selected);
 	if (n > 0)
 	{
-		context.game_difficulty = selected->item.a_int - 3;
+		context.game_difficulty = selected->item.a_int + MIN_DIFFICULTY_LEVEL - 1;
 		free((genericptr_t)selected);
 	}
 	else
-		context.game_difficulty = 0;
+		context.game_difficulty = MIN_DIFFICULTY_LEVEL;
 
 	destroy_nhwindow(menuwin);
 }

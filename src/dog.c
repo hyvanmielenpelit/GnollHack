@@ -1235,8 +1235,6 @@ boolean thrown;
     else if(is_tame(mtmp) && !was_tame)
 	{
 		newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
-		//if (context.game_difficulty != 0)
-		//	newmonhp(mtmp, mtmp->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
 	}
 
     if (obj) { /* thrown food */

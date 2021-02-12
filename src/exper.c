@@ -296,7 +296,13 @@ long points_added;
 	/* game difficulty adjustment */
 	switch (context.game_difficulty)
 	{
-	case -2:
+    case -4:
+        added_gamescore /= 100;
+        break;
+    case -3:
+        added_gamescore /= 30;
+        break;
+    case -2:
 		added_gamescore /= 10;
 		break;
 	case -1:

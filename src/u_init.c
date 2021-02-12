@@ -1382,7 +1382,7 @@ u_init()
 	add_school_specific_spellbooks();
 
 	/* Easy mode wand of probing */
-	if (context.game_difficulty < 0 && !carrying(WAN_PROBING))
+	if (context.game_difficulty <= WAND_OF_PROBING_DIFFICULTY_THRESHOLD && !carrying(WAN_PROBING))
 	{
 		ini_inv(WandOfProbing);
 		knows_object(WAN_PROBING);

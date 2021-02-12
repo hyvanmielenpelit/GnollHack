@@ -2186,17 +2186,6 @@ unsigned long mmflags;
 	if (basemaxhp < 1)
 		basemaxhp = 1;
 
-#if 0
-	/* This is the new max_hp_percentage */
-	int max_hp_percentage = (int)(((unsigned long)hp * 100) / (unsigned long)basemaxhp);
-	mon->max_hp_percentage = max_hp_percentage;
-#endif
-
-#if 0
-	/* Difficulty  and dungeon level adjustments */
-	if (!no_dif_level_adj)
-		hp = monhp_difficulty_adjustment(hp, context.game_difficulty);
-#endif
 	if (is_home_elemental(ptr))
 		hp *= 2;
 

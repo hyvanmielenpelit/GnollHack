@@ -1717,6 +1717,7 @@ unsigned trflags;
         play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_LIGHT_FLASH, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_POLYMORPH_ACTIVATE);
         special_effect_wait_until_action(0);
+        context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
 
         if (viasitting)
             Strcpy(verbbuf, "trigger"); /* follows "You sit down." */
@@ -1737,10 +1738,11 @@ unsigned trflags;
         } else {
             (void) steedintrap(trap, (struct obj *) 0);
             deltrap(trap);      /* delete trap before polymorph */
-            newsym(u.ux, u.uy); /* get rid of trap symbol */
             You_feel("a change coming over you.");
             polyself(0);
+            newsym(u.ux, u.uy); /* get rid of trap symbol */
         }
+        context.global_newsym_flags = 0UL;
         special_effect_wait_until_end(0);
         break;
     }
@@ -3778,7 +3780,8 @@ domagictrap()
 
         /* odd feelings */
         case 13:
-            play_sfx_sound(SFX_SHIVER_RUNS_DOWN_SPINE);
+            //play_sfx_sound(SFX_SHIVER_RUNS_DOWN_SPINE);
+            play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
             pline("A shiver runs up and down your %s!", body_part(SPINE));
             break;
         case 14:
@@ -3820,18 +3823,39 @@ domagictrap()
             int i, j;
             struct monst *mtmp;
 
-            play_sfx_sound(SFX_TAMING);
-
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
+            play_sfx_sound(SFX_GAIN_ABILITY);
+            special_effect_wait_until_action(0);
             (void) adjattrib(A_CHA, 1, FALSE);
+            int cnt = 1;
             for (i = -1; i <= 1; i++)
+            {
                 for (j = -1; j <= 1; j++) 
                 {
                     if (!isok(u.ux + i, u.uy + j))
                         continue;
                     mtmp = m_at(u.ux + i, u.uy + j);
                     if (mtmp)
-                        (void) tamedog(mtmp, (struct obj *) 0, FALSE, FALSE, 0, FALSE, FALSE);
+                    {
+                        if (tamedog(mtmp, (struct obj*)0, FALSE, FALSE, 0, FALSE, FALSE))
+                        {
+                            if (canseemon(mtmp))
+                            {
+                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, cnt, u.ux, u.uy, FALSE);
+                                cnt++;
+                                play_sfx_sound(SFX_TAMING);
+                                special_effect_wait_until_action(cnt);
+                                if (iflags.using_gui_sounds)
+                                    delay_output_milliseconds(100);
+                            }
+                        }
+                    }
                 }
+            }
+            for (int idx = 0; idx < cnt; idx++)
+            {
+                special_effect_wait_until_end(idx);
+            }
             break;
         }
         case 20: { /* uncurse stuff */
