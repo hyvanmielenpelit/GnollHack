@@ -106,7 +106,7 @@ char *argv[];
      * The environment variable HACKDIR is overridden by a
      *  -d command line option (must be the first option given).
      */
-    dir = nh_getenv("´GNOLLHACKDIR");
+    dir = nh_getenv("GNOLLHACKDIR");
 	if (!dir)
 		dir = nh_getenv("NETHACKDIR");
 	if (!dir)
