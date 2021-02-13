@@ -2017,12 +2017,13 @@ register struct obj* omonwep;
     if (vis && ((is_tame(mdef) && canspotmon(mdef)) || (is_tame(magr) && canspotmon(magr))))
     {
         display_m_being_hit(mdef, hit_tile, damagedealt, 0UL, TRUE);
+
+        if (!hittxtalreadydisplayed && damagedealt > 0)
+        {
+            pline("%s sustains %d damage!", Monnam(mdef), damagedealt);
+        }
     }
 
-    if (hittxtalreadydisplayed)
-    {
-        /* Do nothing, to remove gcc warning */
-    }
 
     if (DEADMONSTER(mdef)) 
 	{
@@ -2099,10 +2100,6 @@ register struct obj* omonwep;
         /* caveat: above digestion handling doesn't keep `pa' up to date */
 
         return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
-    }
-	else if (vis && damagedealt > 0 && ((is_tame(mdef) && canspotmon(mdef)) || (is_tame(magr) && canspotmon(magr))))
-	{
-		pline("%s sustains %d damage!", Monnam(mdef), damagedealt);
     }
 
     return (res == MM_AGR_DIED) ? MM_AGR_DIED : MM_HIT;
