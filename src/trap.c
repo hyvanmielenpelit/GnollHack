@@ -1415,8 +1415,11 @@ unsigned trflags;
 
     case FIRE_TRAP:
         seetrap(trap);
+        play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, trap->tx, trap->ty, FALSE);
         play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
+        special_effect_wait_until_action(0);
         dofiretrap((struct obj *) 0, 20);
+        special_effect_wait_until_end(0);
         break;
 
     case PIT:
@@ -2774,8 +2777,12 @@ register struct monst *mtmp;
         } /* RUST_TRAP */
         case FIRE_TRAP:
         mfiretrap:
+            if (in_sight)
+                play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
             play_sfx_sound_at_location(SFX_TOWER_OF_FLAME_ERUPTS, mtmp->mx, mtmp->my);
+            if (in_sight)
+                special_effect_wait_until_action(0);
             if (in_sight)
                 pline("A %s erupts from the %s under %s!", tower_of_flame,
                       surface(mtmp->mx, mtmp->my), mon_nam(mtmp));
@@ -2842,6 +2849,8 @@ register struct monst *mtmp;
                 melt_ice(mtmp->mx, mtmp->my, (char *) 0);
             if (see_it && t_at(mtmp->mx, mtmp->my))
                 seetrap(trap);
+            if(in_sight)
+                special_effect_wait_until_end(0);
             break;
         case PIT:
         case SPIKED_PIT:
@@ -3775,7 +3784,11 @@ domagictrap()
             /* sometimes nothing happens */
             break;
         case 12: /* a flash of fire */
+            play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, u.ux, u.uy, FALSE);
+            play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
+            special_effect_wait_until_action(0);
             dofiretrap((struct obj *) 0, 2);
+            special_effect_wait_until_end(0);
             break;
 
         /* odd feelings */
@@ -6157,7 +6170,11 @@ boolean disarm;
         case 11:
         case 10:
         case 9:
+            play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, u.ux, u.uy, FALSE);
+            play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
+            special_effect_wait_until_action(0);
             dofiretrap(obj, 4);
+            special_effect_wait_until_end(0);
             break;
         case 8:
         case 7:
