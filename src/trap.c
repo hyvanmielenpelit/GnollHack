@@ -2464,7 +2464,6 @@ register struct monst *mtmp;
     boolean trapkilled = FALSE;
     struct permonst *mptr = mtmp->data;
     struct obj *otmp;
-    boolean effect_played = FALSE;
 
     if (!trap)
 	{
@@ -2671,39 +2670,43 @@ register struct monst *mtmp;
                 trapkilled = thitm(0, mtmp, (struct obj *) 0, d(2, 4), FALSE);
             break;
         case SLP_GAS_TRAP:
-            if (in_sight)
+            if (in_sight || see_it)
             {
                 seetrap(trap);
                 newsym(trap->tx, trap->ty);
                 flush_screen(1);
                 play_special_effect_at(SPECIAL_EFFECT_TRAP_SLEEP_GAS, 0, trap->tx, trap->ty, FALSE);
-            }
-
-            play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
-            play_sfx_sound_at_location(SFX_ENVELOPED_IN_CLOUD_OF_GAS, mtmp->mx, mtmp->my);
-
-            if (in_sight)
+                play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+                play_sfx_sound_at_location(SFX_ENVELOPED_IN_CLOUD_OF_GAS, mtmp->mx, mtmp->my);
                 special_effect_wait_until_action(0);
 
-            if (!resists_sleep(mtmp) && !has_innate_breathless(mptr) && mon_can_move(mtmp) && sleep_monst(mtmp, (struct obj*)0, rn1(7, 8), -100, FALSE))
-                pline("%s suddenly falls asleep!", Monnam(mtmp));
-            else
-                pline("%s is enveloped in a cloud of gas!", Monnam(mtmp));
-
-            if (in_sight)
-            {
-                special_effect_wait_until_end(0);
-                effect_played = TRUE;
             }
-            if (!effect_played)
+            else
             {
                 play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
                 play_sfx_sound_at_location(SFX_ENVELOPED_IN_CLOUD_OF_GAS, mtmp->mx, mtmp->my);
             }
+
+            if (!resists_sleep(mtmp) && !has_innate_breathless(mptr) && mon_can_move(mtmp) && sleep_monst(mtmp, (struct obj*)0, rn1(7, 8), -100, FALSE))
+            {
+                if(in_sight || see_it)
+                    pline("%s suddenly falls asleep!", Monnam(mtmp));
+            }
+            else
+            {
+                if (in_sight || see_it)
+                    pline("%s is enveloped in a cloud of gas!", Monnam(mtmp));
+            }
+
+            if (in_sight || see_it)
+            {
+                special_effect_wait_until_end(0);
+            }
             break;
-        case RUST_TRAP: {
+        case RUST_TRAP:
+        {
             struct obj *target;
-            if (in_sight)
+            if (in_sight || see_it)
             {
                 seetrap(trap);
                 newsym(mtmp->mx, mtmp->my);
@@ -2711,10 +2714,11 @@ register struct monst *mtmp;
             }
             play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
             play_sfx_sound_at_location(SFX_GUSH_OF_WATER_HITS, mtmp->mx, mtmp->my);
-            if (in_sight)
+            if (in_sight || see_it)
                 special_effect_wait_until_action(0);
 
-            switch (rn2(5)) {
+            switch (rn2(5)) 
+            {
             case 0:
                 if (in_sight)
                     pline("%s %s on the %s!", A_gush_of_water_hits,
@@ -2759,7 +2763,8 @@ register struct monst *mtmp;
                     (void) water_damage(target, "shirt", TRUE);
             }
 
-            if (is_iron(mptr)) {
+            if (is_iron(mptr)) 
+            {
                 if (in_sight)
                     pline("%s falls to pieces!", Monnam(mtmp));
                 else if (is_tame(mtmp))
@@ -2767,22 +2772,32 @@ register struct monst *mtmp;
                 mondied(mtmp);
                 if (DEADMONSTER(mtmp))
                     trapkilled = TRUE;
-            } else if (mptr == &mons[PM_GREMLIN] && rn2(3)) {
+            } 
+            else if (mptr == &mons[PM_GREMLIN] && rn2(3)) 
+            {
                 (void) split_mon(mtmp, (struct monst *) 0);
             }
 
-            if (in_sight)
+            if (in_sight || see_it)
                 special_effect_wait_until_end(0);
             break;
         } /* RUST_TRAP */
         case FIRE_TRAP:
         mfiretrap:
-            if (in_sight)
+            if (in_sight || see_it)
+            {
+                newsym(mtmp->mx, mtmp->my);
                 play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, mtmp->mx, mtmp->my, FALSE);
-            play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
-            play_sfx_sound_at_location(SFX_TOWER_OF_FLAME_ERUPTS, mtmp->mx, mtmp->my);
-            if (in_sight)
+                play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+                play_sfx_sound_at_location(SFX_TOWER_OF_FLAME_ERUPTS, mtmp->mx, mtmp->my);
                 special_effect_wait_until_action(0);
+            }
+            else
+            {
+                play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+                play_sfx_sound_at_location(SFX_TOWER_OF_FLAME_ERUPTS, mtmp->mx, mtmp->my);
+            }
+
             if (in_sight)
                 pline("A %s erupts from the %s under %s!", tower_of_flame,
                       surface(mtmp->mx, mtmp->my), mon_nam(mtmp));
@@ -2793,18 +2808,23 @@ register struct monst *mtmp;
             if (in_sight || see_it)
                 seetrap(trap);
 
-            if (is_mon_immune_to_fire(mtmp)) {
-                if (in_sight) {
+            if (is_mon_immune_to_fire(mtmp)) 
+            {
+                if (in_sight)
+                {
                     m_shieldeff(mtmp);
                     pline("%s is uninjured.", Monnam(mtmp));
                 }
-            } else {
-                int num = d(2, 4), alt;
+            }
+            else 
+            {
+                int num = d(20, 6), alt;
                 boolean immolate = FALSE;
 
                 /* paper burns very fast, assume straw is tightly
                  * packed and burns a bit slower */
-                switch (monsndx(mptr)) {
+                switch (monsndx(mptr)) 
+                {
                 case PM_PAPER_GOLEM:
                     immolate = TRUE;
                     alt = mtmp->mhpmax;
@@ -2825,8 +2845,10 @@ register struct monst *mtmp;
                 if (alt > num)
                     num = alt;
 
-                if (thitm(0, mtmp, (struct obj *) 0, num, immolate))
+                if (thitm(0, mtmp, (struct obj*)0, num, immolate))
+                {
                     trapkilled = TRUE;
+                }
 #if 0
                 else
 				{
@@ -2837,20 +2859,27 @@ register struct monst *mtmp;
 				}
 #endif
             }
-            if (burnarmor(mtmp) || rn2(3)) {
+
+            if (burnarmor(mtmp) || rn2(3))
+            {
                 (void) destroy_mitem(mtmp, SCROLL_CLASS, AD_FIRE);
                 (void) destroy_mitem(mtmp, SPBOOK_CLASS, AD_FIRE);
                 (void) destroy_mitem(mtmp, POTION_CLASS, AD_FIRE);
             }
+
             if (burn_floor_objects(mtmp->mx, mtmp->my, see_it, FALSE)
                 && !see_it && distu(mtmp->mx, mtmp->my) <= 3 * 3)
                 You("smell smoke.");
+
             if (is_ice(mtmp->mx, mtmp->my))
                 melt_ice(mtmp->mx, mtmp->my, (char *) 0);
+
             if (see_it && t_at(mtmp->mx, mtmp->my))
                 seetrap(trap);
-            if(in_sight)
+
+            if(in_sight || see_it)
                 special_effect_wait_until_end(0);
+
             break;
         case PIT:
         case SPIKED_PIT:
@@ -2858,22 +2887,30 @@ register struct monst *mtmp;
             fallverb = "falls";
             if (is_flying(mtmp) || is_levitating(mtmp)
                 || (mtmp->wormno && count_wsegs(mtmp) > 5)
-                || is_clinger(mptr)) {
-                if (force_mintrap && !Sokoban) {
+                || is_clinger(mptr))
+            {
+                if (force_mintrap && !Sokoban) 
+                {
                     /* openfallingtrap; not inescapable here */
-                    if (in_sight) {
+                    if (in_sight)
+                    {
                         seetrap(trap);
                         pline("%s doesn't fall into the pit.", Monnam(mtmp));
                     }
                     break; /* inescapable = FALSE; */
                 }
+
                 if (!inescapable)
                     break;               /* avoids trap */
+
                 fallverb = "is dragged"; /* sokoban pit */
             }
+
             if (!passes_walls(mptr) && !has_pitwalk(mptr))
                 mtmp->mtrapped = 1;
-            if (in_sight) {
+
+            if (in_sight) 
+            {
                 pline("%s %s into %s pit!", Monnam(mtmp), fallverb,
                       a_your[trap->madeby_u]);
                 if (mptr == &mons[PM_PIT_VIPER]
@@ -2881,24 +2918,31 @@ register struct monst *mtmp;
                     pline("How pitiful.  Isn't that the pits?");
                 seetrap(trap);
             }
+
             mselftouch(mtmp, "Falling, ", FALSE);
             if (DEADMONSTER(mtmp) || thitm(0, mtmp, (struct obj *) 0,
                                         rnd((tt == PIT) ? 6 : 10), FALSE))
                 trapkilled = TRUE;
             break;
         case HOLE:
-        case TRAPDOOR: {
-            if (!Can_fall_thru(&u.uz)) {
+        case TRAPDOOR: 
+        {
+            if (!Can_fall_thru(&u.uz)) 
+            {
                 impossible("mintrap: %ss cannot exist on this level.",
                     defsyms[trap_to_defsym(tt)].explanation);
                 break; /* don't activate it after all */
             }
+
             if (is_flying(mtmp) || is_levitating(mtmp) || mptr == &mons[PM_WUMPUS]
                 || (mtmp->wormno && count_wsegs(mtmp) > 5)
-                || mptr->msize >= MZ_HUGE) {
-                if (force_mintrap && !Sokoban) {
+                || mptr->msize >= MZ_HUGE) 
+            {
+                if (force_mintrap && !Sokoban)
+                {
                     /* openfallingtrap; not inescapable here */
-                    if (in_sight) {
+                    if (in_sight)
+                    {
                         seetrap(trap);
                         if (tt == TRAPDOOR)
                             pline(
@@ -2910,8 +2954,11 @@ register struct monst *mtmp;
                     }
                     break; /* inescapable = FALSE; */
                 }
-                if (inescapable) { /* sokoban hole */
-                    if (in_sight) {
+
+                if (inescapable) 
+                { /* sokoban hole */
+                    if (in_sight) 
+                    {
                         pline("%s seems to be yanked down!", Monnam(mtmp));
                         /* suppress message in mlevel_tele_trap() */
                         in_sight = FALSE;
@@ -2921,6 +2968,7 @@ register struct monst *mtmp;
                 else
                     break;
             }
+
             int mlev_res;
 
             play_sfx_sound_at_location(tt == TRAPDOOR ? SFX_TRAP_DOOR_OPENS : SFX_HOLE_OPENS, mtmp->mx, mtmp->my);
@@ -2929,8 +2977,10 @@ register struct monst *mtmp;
                 return mlev_res;
             break;
         }
+
         case LEVEL_TELEP:
-        case MAGIC_PORTAL: {
+        case MAGIC_PORTAL:
+        {
             int mlev_res;
 
             play_sfx_sound_at_location(tt == MAGIC_PORTAL ? SFX_MAGIC_PORTAL_ACTIVATE : SFX_LEVEL_TELEPORT_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
@@ -2949,9 +2999,11 @@ register struct monst *mtmp;
             if (mu_maybe_destroy_web(mtmp, in_sight, trap))
                 break;
             tear_web = FALSE;
-            switch (monsndx(mptr)) {
+            switch (monsndx(mptr))
+            {
             default:
-                if (is_bear(mptr) && !in_sight) {
+                if (is_bear(mptr) && !in_sight) 
+                {
                     play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_HOWL_IN_ANGER);
                     You_hear("the roaring of a confused bear!");
                     mtmp->mtrapped = 1;
@@ -2960,9 +3012,12 @@ register struct monst *mtmp;
                 else if (mptr->mlet == S_GIANT
                     /* exclude baby dragons and relatively short worms */
                     || (mptr->mlet == S_DRAGON && extra_nasty(mptr))
-                    || (mtmp->wormno && count_wsegs(mtmp) > 5)) {
+                    || (mtmp->wormno && count_wsegs(mtmp) > 5)) 
+                {
                     tear_web = TRUE;
-                } else if (in_sight) {
+                }
+                else if (in_sight) 
+                {
                     pline("%s is caught in %s spider web.", Monnam(mtmp),
                           a_your[trap->madeby_u]);
                     seetrap(trap);
@@ -2986,14 +3041,19 @@ register struct monst *mtmp;
                 tear_web = TRUE;
                 break;
             }
-            if (tear_web) {
+
+            if (tear_web)
+            {
                 if (in_sight)
                     pline("%s tears through %s spider web!", Monnam(mtmp),
                           a_your[trap->madeby_u]);
                 deltrap(trap);
                 newsym(mtmp->mx, mtmp->my);
-            } else if (force_mintrap && !mtmp->mtrapped) {
-                if (in_sight) {
+            }
+            else if (force_mintrap && !mtmp->mtrapped) 
+            {
+                if (in_sight) 
+                {
                     pline("%s avoids %s spider web!", Monnam(mtmp),
                           a_your[trap->madeby_u]);
                     seetrap(trap);
@@ -3064,22 +3124,27 @@ register struct monst *mtmp;
         case LANDMINE:
             if (rn2(3))
                 break; /* monsters usually don't set it off */
-            if (is_flying(mtmp) || is_levitating(mtmp)) {
+            if (is_flying(mtmp) || is_levitating(mtmp)) 
+            {
                 boolean already_seen = trap->tseen;
 
-                if (in_sight && !already_seen) {
+                if (in_sight && !already_seen) 
+                {
                     pline("A trigger appears in a pile of soil below %s.",
                           mon_nam(mtmp));
                     seetrap(trap);
                 }
                 if (rn2(3))
                     break;
-                if (in_sight) {
+                if (in_sight)
+                {
                     newsym(mtmp->mx, mtmp->my);
                     pline_The("air currents set %s off!",
                               already_seen ? "a land mine" : "it");
                 }
-            } else if (in_sight) {
+            } 
+            else if (in_sight) 
+            {
                 newsym(mtmp->mx, mtmp->my);
                 pline("%s%s triggers %s land mine!",
                       !Deaf ? "KAABLAMM!!!  " : "", Monnam(mtmp),
@@ -3096,9 +3161,12 @@ register struct monst *mtmp;
             /* explosion might have destroyed a drawbridge; don't
                dish out more damage if monster is already dead */
             if (DEADMONSTER(mtmp)
-                || thitm(0, mtmp, (struct obj *) 0, rnd(16), FALSE)) {
+                || thitm(0, mtmp, (struct obj *) 0, rnd(16), FALSE))
+            {
                 trapkilled = TRUE;
-            } else {
+            } 
+            else 
+            {
                 /* monsters recursively fall into new pit */
                 if (mintrap(mtmp) == 2)
                     trapkilled = TRUE;
@@ -3107,7 +3175,8 @@ register struct monst *mtmp;
             fill_pit(trap->tx, trap->ty);
             if (DEADMONSTER(mtmp))
                 trapkilled = TRUE;
-            if (unconscious()) {
+            if (unconscious())
+            {
                 multi = -1;
                 nomovemsg = "The explosion awakens you!";
             }
@@ -3117,10 +3186,14 @@ register struct monst *mtmp;
             play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_LIGHT_FLASH, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_POLYMORPH_ACTIVATE, mtmp->mx, mtmp->my);
             special_effect_wait_until_action(0);
-            if (resists_magic(mtmp)) {
+
+            if (resists_magic(mtmp)) 
+            {
                 play_sfx_sound_at_location(SFX_POLYMORPH_FAIL, mtmp->mx, mtmp->my);
                 m_shieldeff(mtmp);
-            } else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, FALSE, 0, 0, NOTELL)) {
+            } 
+            else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, FALSE, 0, 0, NOTELL))
+            {
                 if (newcham(mtmp, (struct permonst*)0, FALSE, FALSE))
                 {
                     play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my); // Since msg is FALSE in newcham
@@ -3134,7 +3207,8 @@ register struct monst *mtmp;
             special_effect_wait_until_end(0);
             break;
         case ROLLING_BOULDER_TRAP:
-            if (!(is_flying(mtmp) || is_levitating(mtmp))) {
+            if (!(is_flying(mtmp) || is_levitating(mtmp))) 
+            {
                 play_sfx_sound_at_location(SFX_ROLLING_BOOULDER_TRAP_TRIGGER, mtmp->mx, mtmp->my);
 
                 int style = ROLL | (in_sight ? 0 : LAUNCH_UNSEEN);
@@ -3144,28 +3218,35 @@ register struct monst *mtmp;
                     pline("Click!  %s triggers %s.", Monnam(mtmp),
                           trap->tseen ? "a rolling boulder trap" : something);
                 if (launch_obj(BOULDER, trap->launch.x, trap->launch.y,
-                               trap->launch2.x, trap->launch2.y, style)) {
+                               trap->launch2.x, trap->launch2.y, style)) 
+                {
                     if (in_sight)
                         trap->tseen = TRUE;
                     if (DEADMONSTER(mtmp))
                         trapkilled = TRUE;
-                } else {
+                }
+                else 
+                {
                     deltrap(trap);
                     newsym(mtmp->mx, mtmp->my);
                 }
             }
             break;
         case VIBRATING_SQUARE:
-            if (see_it && !Blind) {
+            if (see_it && !Blind) 
+            {
                 seetrap(trap); /* before messages */
                 if (in_sight) {
                     char buf[BUFSZ], *p, *monnm = mon_nam(mtmp);
 
                     if (nolimbs(mtmp->data)
-                        || is_flying(mtmp) || is_levitating(mtmp)) {
+                        || is_flying(mtmp) || is_levitating(mtmp)) 
+                    {
                         /* just "beneath <mon>" */
                         Strcpy(buf, monnm);
-                    } else {
+                    }
+                    else 
+                    {
                         Strcpy(buf, s_suffix(monnm));
                         p = eos(strcat(buf, " "));
                         Strcpy(p, makeplural(mbodypart(mtmp, FOOT)));
@@ -3173,7 +3254,9 @@ register struct monst *mtmp;
                         (void) strsubst(p, "rear ", "");
                     }
                     You_see("a strange vibration beneath %s.", buf);
-                } else {
+                }
+                else 
+                {
                     /* notice something (hearing uses a larger threshold
                        for 'nearby') */
                     You_see("the ground vibrate %s.",
@@ -3693,7 +3776,14 @@ int dice; /* of d6 */
     if (damage <= 0.0)
         You("are uninjured.");
     else
+    {
+        int hp_before = Upolyd ? u.mh : u.uhp;
         losehp(damage, tower_of_flame, KILLED_BY_AN); /* fire damage */
+        int hp_after = Upolyd ? u.mh : u.uhp;
+        int damage_done = hp_before - hp_after;
+        if(damage_done > 0)
+            You("sustain %d damage%s", damage_done, exclam(damage_done));
+    }
 
     burn_away_slime();
 
@@ -6507,7 +6597,12 @@ boolean nocorpse;
                 dam = 1;
         }
 		
-		deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE));
+        int hp_before = mon->mhp;
+        deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE));
+        int hp_after = mon->mhp;
+        int damage_done = hp_before - hp_after;
+        if (damage_done > 0)
+            pline("%s sustains %d damage%s", Monnam(mon), damage_done, exclam(damage_done));
 
 		if (DEADMONSTER(mon)) 
 		{
