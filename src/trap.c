@@ -6127,22 +6127,26 @@ boolean disarm;
         case 11:
             msg = "explosive charge is a dud";
             sfx = 0;
+            spef = SPECIAL_EFFECT_GENERAL_EXCLAMATION;
             break;
         case 10:
         case 9:
             msg = "electric charge is grounded";
             sfx = SFX_ELECTRICITY_CRACKLES;
+            spef = SPECIAL_EFFECT_GENERAL_EXCLAMATION;
             break;
         case 8:
         case 7:
             msg = "flame fizzles out";
             sfx = SFX_TRAP_FLAME_FIZZLES_OUT;
+            spef = SPECIAL_EFFECT_GENERAL_EXCLAMATION;
             break;
         case 6:
         case 5:
         case 4:
             msg = "poisoned needle misses";
             sfx = SFX_TRAP_NEEDLE_MISSES;
+            spef = SPECIAL_EFFECT_TRAP_NEEDLE;
             break;
         case 3:
         case 2:
@@ -6191,7 +6195,10 @@ boolean disarm;
             insider = (*u.ushops && inside_shop(u.ux, u.uy)
                        && *in_rooms(ox, oy, SHOPBASE) == *u.ushops);
 
+            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, u.ux, u.uy, FALSE);
             play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, ox, oy);
+            special_effect_wait_until_action(0);
+            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
             pline("%s!", Tobjnam(obj, "explode"));
             Sprintf(buf, "exploding %s", xname(obj));
 
@@ -6226,6 +6233,9 @@ boolean disarm;
                     make_angry_shk(shkp, ox, oy);
                 }
             }
+            context.global_newsym_flags = 0UL;
+            special_effect_wait_until_end(0);
+
             return TRUE;
         } /* case 21 */
         case 20:
@@ -6244,18 +6254,20 @@ boolean disarm;
         case 15:
         case 14:
         case 13:
-            if (iflags.using_gui_sounds)
-                play_sfx_sound(SFX_TRAP_NEEDLE_PRICKS);
-
+            play_special_effect_at(SPECIAL_EFFECT_TRAP_NEEDLE, 0, obj->ox, obj->oy, FALSE);
+            play_sfx_sound(SFX_TRAP_NEEDLE_PRICKS);
+            special_effect_wait_until_action(0);
             You_feel("a needle prick your %s.", body_part(bodypart));
-
             if (iflags.using_gui_sounds)
             {
                 delay_output_milliseconds(100);
                 play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
             }
+            display_u_being_hit(HIT_POISONED, 0, 0UL);
             poisoned("needle", A_CON, "poisoned needle", 0, FALSE, 2);
+
             exercise(A_CON, FALSE);
+            special_effect_wait_until_end(0);
             break;
         case 12:
         case 11:
@@ -6274,7 +6286,9 @@ boolean disarm;
 
             play_sfx_sound(SFX_ELECTRIC_SHOCK);
             You("are jolted by a surge of electricity!");
-            if (Shock_immunity) {
+            display_u_being_hit(HIT_ELECTROCUTED, 0, 0UL);
+            if (Shock_immunity)
+            {
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 u_shieldeff();
                 You("don't seem to be affected.");
@@ -6285,6 +6299,7 @@ boolean disarm;
                 dmg = d(4, 4);
             }
             double damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE);
+
             destroy_item(RING_CLASS, AD_ELEC);
             destroy_item(WAND_CLASS, AD_ELEC);
             if (damage > 0.0)
@@ -6299,7 +6314,9 @@ boolean disarm;
         case 5:
         case 4:
         case 3:
-            if (!Free_action) 
+            play_special_effect_at(SPECIAL_EFFECT_GENERAL_EXCLAMATION, 0, obj->ox, obj->oy, FALSE);
+            special_effect_wait_until_action(0);
+            if (!Free_action)
             {
                 play_sfx_sound(SFX_CAUSE_PARALYSIS);
                 incr_itimeout(&HParalyzed, d(5, 6));
@@ -6317,6 +6334,7 @@ boolean disarm;
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 You("momentarily stiffen.");
             }
+            special_effect_wait_until_end(0);
             break;
         case 2:
         case 1:
