@@ -6150,6 +6150,7 @@ boolean disarm;
         case 0:
             msg = "gas cloud blows away";
             sfx = SFX_TRAP_CLOUD_BLOWS_AWAY;
+            spef = SPECIAL_EFFECT_TRAP_SLEEP_GAS;
             break;
         default:
             impossible("chest disarm bug");
