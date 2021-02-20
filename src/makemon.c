@@ -1724,7 +1724,7 @@ register struct monst *mtmp;
 			boolean gothat = FALSE;
 			if (!rn2(2))
 			{
-				(void)mongets(mtmp, SILK_TOP_HAT);
+				(void)mongets(mtmp, ptr == &mons[PM_GNOME_KING] && rn2(17) ? DUCAL_CROWN : SILK_TOP_HAT);
 				gothat = TRUE;
 			}
 			if (!gothat || !rn2(2))
@@ -1751,7 +1751,9 @@ register struct monst *mtmp;
 			{
 				if (!rn2(8))
 				{
-					if (!rn2(20))
+                    if(ptr == &mons[PM_GNOME_KING] && rn2(17))
+                        (void)mongets(mtmp, DUCAL_CROWN);
+                    else if (!rn2(20))
 						(void)mongets(mtmp, DUNCE_CAP);
 					else
 						(void)mongets(mtmp, GNOMISH_FELT_HAT);
