@@ -6195,7 +6195,7 @@ boolean disarm;
             insider = (*u.ushops && inside_shop(u.ux, u.uy)
                        && *in_rooms(ox, oy, SHOPBASE) == *u.ushops);
 
-            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, u.ux, u.uy, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, ox, oy, FALSE);
             play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, ox, oy);
             special_effect_wait_until_action(0);
             context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
@@ -6273,7 +6273,7 @@ boolean disarm;
         case 11:
         case 10:
         case 9:
-            play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, u.ux, u.uy, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, obj->ox, obj->oy, FALSE);
             play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
             special_effect_wait_until_action(0);
             dofiretrap(obj, 4);

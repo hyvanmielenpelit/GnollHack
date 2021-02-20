@@ -1623,7 +1623,8 @@ register struct trobj *trop;
     struct obj *obj;
     int otyp;
 
-    while (trop->trclass) {
+    while (trop->trclass) 
+	{
         otyp = (int) trop->trotyp;
         if (otyp != UNDEF_TYP)
 		{
@@ -1701,7 +1702,8 @@ register struct trobj *trop;
 							   || objects[otyp].oc_skill == P_ABJURATION_SPELL
 							   || objects[otyp].oc_skill == P_MOVEMENT_SPELL
 							   ))
-						   ))) {
+						   ))) 
+			{
                 dealloc_obj(obj);
                 obj = mkobj(trop->trclass, FALSE, FALSE);
                 otyp = obj->otyp;
@@ -1711,13 +1713,18 @@ register struct trobj *trop;
             if (objects[otyp].oc_enchantable && obj->enchantment <= 0)
                 obj->enchantment = rne(3);
 
+			/* Don't start with exceptional non-artifact weapons */
+			if (can_have_exceptionality(obj) && obj->oartifact == 0 && obj->exceptionality > EXCEPTIONALITY_NORMAL)
+				obj->enchantment = EXCEPTIONALITY_NORMAL;
+
             /* Heavily relies on the fact that 1) we create wands
              * before rings, 2) that we create rings before
              * spellbooks, and that 3) not more than 1 object of a
              * particular symbol is to be prohibited.  (For more
              * objects, we need more nocreate variables...)
              */
-            switch (otyp) {
+            switch (otyp) 
+			{
             case WAN_POLYMORPH:
             case RIN_POLYMORPH:
             case POT_POLYMORPH:
