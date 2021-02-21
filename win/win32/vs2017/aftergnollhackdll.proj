@@ -1,13 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="dirs.props"/>
   <Import Project="files.props"/>
-  <!-- TODO not copying record -->
-  <Target Name="Build"
-	Inputs="$(BinDir)GnollHackDLL.dll;"
-	Outputs="$(MonoGameBinDir)GnollHackDLL.dll;">
-    <Copy SourceFiles="$(BinDir)GnollHackDLL.dll;" DestinationFolder="$(MonoGameBinDir)" />
+  <!-- TODO not copying record-->
+  <Target Name="Build">
   </Target>
   <Target Name="Clean">
-	  <Delete Files="$(MonoGameBinDir)GnollHackDLL.dll;"/>
   </Target>
 </Project>

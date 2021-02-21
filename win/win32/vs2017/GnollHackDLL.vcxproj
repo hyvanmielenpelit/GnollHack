@@ -27,7 +27,7 @@
   <Import Project="dirs.props" />
   <Import Project="files.props" />
   <PropertyGroup>
-    <OutDir>$(BinDir)</OutDir>
+    <OutDir>$(MonoGameBinDir)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>.dll</TargetExt>
