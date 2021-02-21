@@ -6,19 +6,31 @@
     <TieredCompilation>false</TieredCompilation>
   </PropertyGroup>
   <PropertyGroup>
+    <ApplicationIcon>GnollHackNew.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>..\..\GnollHackNew.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>5</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="..\..\GnollHackNew.ico" />
-    <None Remove="..\..\GnollHackNew.bmp" />
+    <None Remove="GnollHackNew.ico" />
+    <None Remove="GnollHackNew.bmp" />
+    <None Remove="Icon.ico" />
+    <None Remove="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\GnollHackNew.ico" />
-    <EmbeddedResource Include="..\..\GnollHackNew.bmp" />
+    <EmbeddedResource Include="GnollHackNew.ico">
+      <LogicalName>GnollHackNew.ico</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GnollHackNew.bmp">
+      <LogicalName>GnollHackNew.bmp</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icon.ico">
+      <LogicalName>Icon.ico</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icon.bmp">
+      <LogicalName>Icon.bmp</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
