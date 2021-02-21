@@ -34,6 +34,7 @@
     <WinShareDir>$(RootDir)win\share\</WinShareDir>
     <WinTtyDir>$(RootDir)win\tty\</WinTtyDir>
     <WinWin32Dir>$(RootDir)win\win32\</WinWin32Dir>
+    <MonoGameBinDir>$(RootDir)win\win32\monogame\GnollHackMG\bin\$(Configuration)\netcoreapp3.1</MonoGameBinDir>
     <OutDir>$(ToolsDir)</OutDir>
 	<IntDir>$(ObjDir)</IntDir>
 	<WinCursDir>$(RootDir)win\curses\</WinCursDir>
@@ -42,3 +43,4 @@
 	<PDCURSES>$(RootDir)..\PDCurses\</PDCURSES>
   </PropertyGroup>
 </Project>
+

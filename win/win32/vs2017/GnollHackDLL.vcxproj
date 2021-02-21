@@ -2,10 +2,10 @@
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="config.props" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2EACFE95-31B1-4294-A4A2-D6F51D28DCE9}</ProjectGuid>
-    <RootNamespace>GnollHackXW</RootNamespace>
+    <ProjectGuid>{5B19B136-C876-4975-B8B8-3753D797B0A8}</ProjectGuid>
+    <RootNamespace>GnollHackDLL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
-    <ProjectName>GnollHackXW</ProjectName>
+    <ProjectName>GnollHackDLL</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -13,6 +13,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PlatformToolset>v142</PlatformToolset>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PlatformToolset>v142</PlatformToolset>
@@ -29,21 +30,15 @@
     <OutDir>$(BinDir)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalOptions>/Gs /Oi- %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;$(SdlDir)include\;$(NuklearDir);$(StbDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <!--$(GlfwDir)include\;-->
-      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;NUKLEAR_GRAPHICS;SDL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;SDL_MAIN_HANDLED;GL2_GRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -51,11 +46,10 @@
     </ResourceCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;fmod_vc.lib;fsbank_vc.lib;fmodstudio_vc.lib;sdl2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FmodDir)core\lib\winnt-x64\;$(FmodDir)fsbank\lib\winnt-x64\;$(FmodDir)studio\lib\winnt-x64\;$(SdlDir)lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <!--$(GlfwDir)lib\winnt-x64-vc2019\;-->
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FmodDir)core\lib\winnt-x86\;$(FmodDir)fsbank\lib\winnt-x86\;$(FmodDir)studio\lib\winnt-x86\:$(SdlDir)lib\winnt-x86\;</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FmodDir)core\lib\winnt-x64\;$(FmodDir)fsbank\lib\winnt-x64\;$(FmodDir)studio\lib\winnt-x64\;$(SdlDir)lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;fmod_vc.lib;fsbank_vc.lib;fmodstudio_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FmodDir)core\lib\winnt-x64\;$(FmodDir)fsbank\lib\winnt-x64\;$(FmodDir)studio\lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FmodDir)core\lib\winnt-x86\;$(FmodDir)fsbank\lib\winnt-x86\;$(FmodDir)studio\lib\winnt-x86\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FmodDir)core\lib\winnt-x64\;$(FmodDir)fsbank\lib\winnt-x64\;$(FmodDir)studio\lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>$(WinWin32Dir)NethackW.exe.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -186,6 +180,7 @@
     <ClCompile Include="$(SysWinntDir)stubs.c">
       <PreprocessorDefinitions>TTYSTUB;</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="$(SysWinntDir)windmain.c" />
     <ClCompile Include="$(SysWinntDir)winnt.c" />
     <ClCompile Include="$(SysWinntDir)win10.c" />
     <ClCompile Include="$(WinShareDir)safeproc.c" />
@@ -201,6 +196,8 @@
     <ClCompile Include="$(WinWin32Dir)mhsplash.c" />
     <ClCompile Include="$(WinWin32Dir)mhstatus.c" />
     <ClCompile Include="$(WinWin32Dir)mhtext.c" />
+    <ClCompile Include="$(WinWin32Dir)mswproc.c" />
+    <ClCompile Include="$(WinWin32Dir)winhack.c" />
     <ClCompile Include="$(SrcDir)encounter.c" />
     <ClCompile Include="$(SrcDir)matcomps.c" />
     <ClCompile Include="$(SrcDir)tiledata.c" />
@@ -210,12 +207,10 @@
     <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
     <ClCompile Include="$(SrcDir)rm.c" />
     <ClCompile Include="$(SrcDir)npc.c" />
-    <ClCompile Include="..\..\..\sys\winnt\windmain.c" />
-    <ClCompile Include="..\mswproc.c" />
-    <ClCompile Include="..\sdl\sdlmisc.cpp" />
-    <ClCompile Include="..\sdl\sdlhack.c" />
-    <ClCompile Include="..\sdl\sdlnuklear.c" />
-    <ClCompile Include="..\sdl\sdlproc.c" />
+    <ClCompile Include="..\dll\dllmain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(WinWin32Dir)winhack.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(WinWin32Dir)mhaskyn.h" />
@@ -240,21 +235,69 @@
     <ClInclude Include="$(IncDir)matcomps.h" />
     <ClInclude Include="$(IncDir)soundset.h" />
     <ClInclude Include="$(WinWin32Dir)mhwingdi.h" />
+    <ClInclude Include="$(WinWin32Dir)resource.h" />
     <ClInclude Include="$(WinWin32Dir)soundfx.h" />
-    <ClInclude Include="$(NuklearDir)nuklear.h" />
-    <ClInclude Include="$(StbDir)stb_image.h" />
-    <ClInclude Include="$(WinWin32Dir)sdl\sdlnuklear.h" />
-    <ClInclude Include="$(NuklearDir)nuklear_sdl_gl2.h" />
     <ClInclude Include="$(IncDir)extern.h" />
     <ClInclude Include="$(IncDir)general.h" />
-    <ClInclude Include="$(WinWin32Dir)sdl\sdlmisc.h" />
-    <ClInclude Include="$(WinWin32Dir)\sdl\sdlproc.h" />
-    <ClInclude Include="..\..\..\ext\nuklear\nuklear_glfw_gl2.h" />
-    <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gles2.h" />
+    <ClInclude Include="$(IncDir)layer.h" />
+    <ClInclude Include="..\..\..\include\action.h" />
+    <ClInclude Include="..\..\..\include\align.h" />
+    <ClInclude Include="..\..\..\include\animation.h" />
+    <ClInclude Include="..\..\..\include\artifact.h" />
+    <ClInclude Include="..\..\..\include\artilist.h" />
+    <ClInclude Include="..\..\..\include\attrib.h" />
+    <ClInclude Include="..\..\..\include\botl.h" />
+    <ClInclude Include="..\..\..\include\color.h" />
+    <ClInclude Include="..\..\..\include\config.h" />
+    <ClInclude Include="..\..\..\include\context.h" />
+    <ClInclude Include="..\..\..\include\coord.h" />
+    <ClInclude Include="..\..\..\include\date.h" />
+    <ClInclude Include="..\..\..\include\decl.h" />
+    <ClInclude Include="..\..\..\include\display.h" />
+    <ClInclude Include="..\..\..\include\dlb.h" />
+    <ClInclude Include="..\..\..\include\dungeon.h" />
+    <ClInclude Include="..\..\..\include\engrave.h" />
+    <ClInclude Include="..\..\..\include\flag.h" />
+    <ClInclude Include="..\..\..\include\fountain.h" />
+    <ClInclude Include="..\..\..\include\global.h" />
+    <ClInclude Include="..\..\..\include\hack.h" />
+    <ClInclude Include="..\..\..\include\integer.h" />
+    <ClInclude Include="..\..\..\include\isaac64.h" />
+    <ClInclude Include="..\..\..\include\lev.h" />
+    <ClInclude Include="..\..\..\include\mextra.h" />
+    <ClInclude Include="..\..\..\include\mfndpos.h" />
+    <ClInclude Include="..\..\..\include\mkroom.h" />
+    <ClInclude Include="..\..\..\include\mondata.h" />
+    <ClInclude Include="..\..\..\include\monflag.h" />
+    <ClInclude Include="..\..\..\include\monst.h" />
+    <ClInclude Include="..\..\..\include\monsym.h" />
+    <ClInclude Include="..\..\..\include\npc.h" />
+    <ClInclude Include="..\..\..\include\obj.h" />
+    <ClInclude Include="..\..\..\include\objclass.h" />
     <ClInclude Include="..\..\..\include\onames.h" />
-    <ClInclude Include="..\..\..\include\patchlevel.h" />
+    <ClInclude Include="..\..\..\include\permonst.h" />
     <ClInclude Include="..\..\..\include\pm.h" />
-    <ClInclude Include="..\sdl\resource.h" />
+    <ClInclude Include="..\..\..\include\prop.h" />
+    <ClInclude Include="..\..\..\include\quest.h" />
+    <ClInclude Include="..\..\..\include\rect.h" />
+    <ClInclude Include="..\..\..\include\region.h" />
+    <ClInclude Include="..\..\..\include\rm.h" />
+    <ClInclude Include="..\..\..\include\skills.h" />
+    <ClInclude Include="..\..\..\include\spell.h" />
+    <ClInclude Include="..\..\..\include\sp_lev.h" />
+    <ClInclude Include="..\..\..\include\sys.h" />
+    <ClInclude Include="..\..\..\include\system.h" />
+    <ClInclude Include="..\..\..\include\tcap.h" />
+    <ClInclude Include="..\..\..\include\tiledata.h" />
+    <ClInclude Include="..\..\..\include\timeout.h" />
+    <ClInclude Include="..\..\..\include\trap.h" />
+    <ClInclude Include="..\..\..\include\vision.h" />
+    <ClInclude Include="..\..\..\include\winprocs.h" />
+    <ClInclude Include="..\..\..\include\wintty.h" />
+    <ClInclude Include="..\..\..\include\wintype.h" />
+    <ClInclude Include="..\..\..\include\you.h" />
+    <ClInclude Include="..\..\..\include\youprop.h" />
+    <ClInclude Include="..\dll\dllmain.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />
@@ -266,37 +309,26 @@
     <Image Include="$(WinWin32Dir)splash.bmp" />
     <Image Include="$(WinWin32Dir)gnollhack-logo-test-2.png" />
     <Image Include="$(WinWin32Dir)FMOD-Logo-32.png" />
-    <Image Include="..\png1.png" />
-    <Image Include="..\sdl\buttons.png" />
-    <Image Include="..\sdl\cursor_final.png" />
-    <Image Include="..\sdl\dtest.png" />
-    <Image Include="..\sdl\gwen.png" />
-    <Image Include="..\sdl\window_background.png" />
-    <Image Include="sdl\buttons.png" />
-    <Image Include="sdl\cursor_final.png" />
-    <Image Include="sdl\dtest.png" />
-    <Image Include="sdl\gwen.png" />
-    <Image Include="sdl\window_background.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="$(WinWin32Dir)uwch.ttf" />
-    <Font Include="$(WinWin32Dir)sdl\diablo_h.ttf" />
+    <Font Include="..\sdl\diablo_h.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(WinWin32Dir)Master.bank" />
     <None Include="$(WinWin32Dir)Master.strings.bank" />
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\sdl\sdlhack.rc" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
     <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <MSBuild Projects="aftergnollhackdll.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
     <MSBuild Projects="aftergnollhack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+    <MSBuild Projects="aftergnollhackdll.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterRebuild">
     <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <MSBuild Projects="aftergnollhackdll.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
 </Project>

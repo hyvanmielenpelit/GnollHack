@@ -378,7 +378,7 @@ win/win32/vs2017:
 (files for Visual Studio 2017 Community Edition builds)
 GnollHack.sln       GnollHack.vcxproj   GnollHack.vcxproj
 PDCurses.vcxproj    afterdgncomp.proj   afterdlb.proj
-afterlevcomp.proj   aftermakedefs.proj  afternethack.proj
+afterlevcomp.proj   aftermakedefs.proj  aftergnollhack.proj
 afterrecover.proj   aftertile2bmp.proj  aftertilemap.proj
 afteruudecode.proj  build.bat           common.props
 config.props        console.props       default.props

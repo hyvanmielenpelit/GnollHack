@@ -1,5 +1,5 @@
                            GNOLLHACK CREDITS
-                (Copyright 2020 Hyv�n mielen pelit ry)
+            (Copyright 2020-2021 Hyvän mielen pelit ry)
 
                               DEVELOPMENT
 
@@ -7,14 +7,15 @@ Game Design:     Tommi Gustafsson, Janne Gustafsson
 Programming:     Janne Gustafsson (GnollHack, GnollHackW)
                  Tommi Gustafsson (Tileset Compiler, Dgamelaunch mod)  
 Tile Graphics:   Riikka Laakkonen (Players, monsters, dungeon features)
-                 Anu Kogger (Dungeon graphics)
-                 Markus Turunen (Various animations)
-                 Janne Rajam�ki (Various corpses)
-                 Janne Gustafsson (Various UI icons)
+                 Anu Kogger (Dungeon tilesets)
+                 Markus Turunen (Animations)
+                 Janne Rajamäki (Additional dungeon tilesets and graphics)
+                 Janne Gustafsson (Various UI and item graphics)
 Contributors:    Mikko Kangas (Graphics management)
                  Elina Palmroos (Various audio files)
                  Olli Lounela (Improved TTY Player)
-                 Jenni Berg (Graphics assistance)
+                 Jenni Berg (Additional monster graphics)
+                 Krista Rusanen (Voice actor management)
 Playtesting:     Tommi Gustafsson, Mikko Kangas
 
 
@@ -25,19 +26,17 @@ Sound system:  FMOD by Firelight Technologies
 
                                GRAPHICS
 
-[Specify, if any]
+[Specify]
 
 
                                 MUSIC
 
 Zapsplat
 Eric Matyas, soundimage.org
-  [Specify]
 
 
                             SOUND EFFECTS
 
 Zapsplat
 Eric Matyas, soundimage.org
-  [Specify]
 Hyena laughter, CC Attribution
