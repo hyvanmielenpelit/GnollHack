@@ -2793,7 +2793,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_CAST_NODIR:
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return TRUE;
-        if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN)
             return TRUE;
@@ -2803,7 +2803,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return TRUE;
-        if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN)
             return TRUE;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN)
             return TRUE;

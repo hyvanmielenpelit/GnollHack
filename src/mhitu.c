@@ -2141,10 +2141,10 @@ register struct obj* omonwep;
 
 		break;
     case AD_ELEC:
+        play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
         hitmsg(mtmp, mattk, -1, TRUE);
 		if (uncancelled)
 		{
-            play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
             if (Shock_immunity || damage == 0)
 			{
                 play_sfx_sound(SFX_GENERAL_UNHARMED);
