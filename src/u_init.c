@@ -1629,7 +1629,9 @@ register struct trobj *trop;
         if (otyp != UNDEF_TYP)
 		{
             obj = mksobj(otyp, TRUE, FALSE, FALSE);
-		} else { /* UNDEF_TYP */
+		}
+		else 
+		{ /* UNDEF_TYP */
             static NEARDATA short nocreate = STRANGE_OBJECT;
             static NEARDATA short nocreate2 = STRANGE_OBJECT;
             static NEARDATA short nocreate3 = STRANGE_OBJECT;
@@ -1709,14 +1711,6 @@ register struct trobj *trop;
                 otyp = obj->otyp;
             }
 
-            /* Don't start with +0 or negative rings */
-            if (objects[otyp].oc_enchantable && obj->enchantment <= 0)
-                obj->enchantment = rne(3);
-
-			/* Don't start with exceptional non-artifact weapons */
-			if (can_have_exceptionality(obj) && obj->oartifact == 0 && obj->exceptionality > EXCEPTIONALITY_NORMAL)
-				obj->enchantment = EXCEPTIONALITY_NORMAL;
-
             /* Heavily relies on the fact that 1) we create wands
              * before rings, 2) that we create rings before
              * spellbooks, and that 3) not more than 1 object of a
@@ -1739,6 +1733,14 @@ register struct trobj *trop;
             if (obj->oclass == RING_CLASS || obj->oclass == SPBOOK_CLASS)
                 nocreate4 = otyp;
         }
+
+		/* Don't start with +0 or negative rings */
+		if (objects[otyp].oc_enchantable && obj->enchantment <= 0)
+			obj->enchantment = rne(3);
+
+		/* Don't start with exceptional non-artifact weapons */
+		if (can_have_exceptionality(obj) && obj->oartifact == 0 && obj->exceptionality > EXCEPTIONALITY_NORMAL)
+			obj->enchantment = EXCEPTIONALITY_NORMAL;
 
         if (urace.monsternum != PM_HUMAN) {
             /* substitute race-specific items; this used to be in
