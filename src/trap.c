@@ -2644,23 +2644,30 @@ register struct monst *mtmp;
             wake_nearto(mtmp->mx, mtmp->my, 40);
             break;
         case BEAR_TRAP:
-            play_sfx_sound_at_location(SFX_BEAR_TRAP_CLOSES, mtmp->mx, mtmp->my);
             if (mptr->msize > MZ_SMALL && !amorphous(mptr) && !(is_flying(mtmp) || is_levitating(mtmp))
-                && !is_whirly(mptr) && !unsolid(mptr)) {
+                && !is_whirly(mptr) && !unsolid(mptr))
+            {
+                play_sfx_sound_at_location(SFX_BEAR_TRAP_CLOSES, mtmp->mx, mtmp->my);
                 mtmp->mtrapped = 1;
-                if (in_sight) {
+                if (in_sight) 
+                {
                     pline("%s is caught in %s bear trap!", Monnam(mtmp),
                           a_your[trap->madeby_u]);
                     seetrap(trap);
-                } else {
+                } 
+                else 
+                {
                     if (is_bear(mptr))
                     {
                         play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_HOWL_IN_ANGER);
                         You_hear("the roaring of an angry bear!");
                     }
                 }
-            } else if (force_mintrap) {
-                if (in_sight) {
+            }
+            else if (force_mintrap) 
+            {
+                if (in_sight)
+                {
                     pline("%s evades %s bear trap!", Monnam(mtmp),
                           a_your[trap->madeby_u]);
                     seetrap(trap);
