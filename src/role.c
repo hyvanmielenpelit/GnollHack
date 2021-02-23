@@ -2743,7 +2743,14 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     if (action == ACTION_TILE_ATTACK || action == ACTION_TILE_KICK)
         return TRUE;
 
-    /* Real cases */
+    /* All spell casters have cast indir and cast dir tiles*/
+    if (action == ACTION_TILE_CAST_NODIR || action == ACTION_TILE_CAST_DIR)
+    {
+        if(roleidx == ROLE_WIZARD || roleidx == ROLE_PRIEST || roleidx == ROLE_HEALER)
+            return TRUE;
+    }
+
+    /* Other cases */
     switch (action)
     {
     case ACTION_TILE_NO_ACTION:

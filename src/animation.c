@@ -27,17 +27,6 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "elf-wizard-female-cast-animation", ANIMATION_TYPE_NORMAL, PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_TILES,
-      PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_FRAMES, PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_OFF, 
-      1,
-      3,
-      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
-      AUTODRAW_NONE,
-      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-      -1, -1,
-      NO_ENLARGEMENT,
-      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-    },
     { "brass-lantern-lit-animation", ANIMATION_TYPE_NORMAL, BRASS_LANTERN_LIT_ANIMATION_TILES,
       BRASS_LANTERN_LIT_ANIMATION_FRAMES, BRASS_LANTERN_LIT_ANIMATION_OFF, 3,
       1,
@@ -163,17 +152,6 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_IGNORE,
-      AUTODRAW_NONE,
-      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-      -1, -1,
-      NO_ENLARGEMENT,
-      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-    },
-    { "elf-wizard-female-kick-animation", ANIMATION_TYPE_NORMAL, PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_TILES,
-      PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_FRAMES, PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_OFF, 
-      1,
-      1,
-      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       -1, -1,
@@ -1113,6 +1091,39 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       3, 10,
       HUMAN_WIZARD_FEMALE_CAST_DIR_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-wizard-female-attack-animation", ANIMATION_TYPE_NORMAL, ELF_WIZARD_FEMALE_ATTACK_ANIMATION_TILES,
+      ELF_WIZARD_FEMALE_ATTACK_ANIMATION_FRAMES, ELF_WIZARD_FEMALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      ELF_WIZARD_FEMALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-wizard-female-kick-animation", ANIMATION_TYPE_NORMAL, ELF_WIZARD_FEMALE_KICK_ANIMATION_TILES,
+      ELF_WIZARD_FEMALE_KICK_ANIMATION_FRAMES, ELF_WIZARD_FEMALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      ELF_WIZARD_FEMALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-wizard-female-cast-animation", ANIMATION_TYPE_NORMAL, ELF_WIZARD_FEMALE_CAST_ANIMATION_TILES,
+      ELF_WIZARD_FEMALE_CAST_ANIMATION_FRAMES, ELF_WIZARD_FEMALE_CAST_ANIMATION_OFF,
+      1,
+      3,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      -1, -1,
+      NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "dwarf-caveman-male-attack-animation", ANIMATION_TYPE_NORMAL, DWARF_CAVEMAN_MALE_ATTACK_ANIMATION_TILES,
@@ -2618,6 +2629,22 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
           HUMAN_WIZARD_FEMALE_CAST_DIR_ENLARGEMENT_TILES, HUMAN_WIZARD_FEMALE_CAST_DIR_ENLARGEMENT_OFF,
           3, 2, 0,
           { 0, 1, 2, 3, 4 },
+          { 0, 0, 0, 0, 0 },
+          { 0, 0, 0, 0, 0 }
+        },
+        { "elf-wizard-female-attack-enlargement",
+          ELF_WIZARD_FEMALE_ATTACK_ANIMATION_TILES, ELF_WIZARD_FEMALE_ATTACK_ANIMATION_FRAMES,
+          ELF_WIZARD_FEMALE_ATTACK_ENLARGEMENT_TILES, ELF_WIZARD_FEMALE_ATTACK_ENLARGEMENT_OFF,
+          3, 2, 0,
+          { 0, 1, 2, 3, 4 },
+          { 0, 0, 0, 0, 0 },
+          { 0, 0, 0, 0, 0 }
+        },
+        { "elf-wizard-female-kick-enlargement",
+          ELF_WIZARD_FEMALE_KICK_ANIMATION_TILES, ELF_WIZARD_FEMALE_KICK_ANIMATION_FRAMES,
+          ELF_WIZARD_FEMALE_KICK_ENLARGEMENT_TILES, ELF_WIZARD_FEMALE_KICK_ENLARGEMENT_OFF,
+          3, 1, 0,
+          { -1, -1, -1, 0, 1},
           { 0, 0, 0, 0, 0 },
           { 0, 0, 0, 0, 0 }
         },
@@ -5075,6 +5102,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_NO_ACTION:
         break;
     case ACTION_TILE_ATTACK:
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+            return ELF_WIZARD_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_KNIGHT_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -5169,7 +5198,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_CAST_NODIR:
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
-            return PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION;
+            return ELF_WIZARD_FEMALE_CAST_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_KNIGHT_FEMALE_CAST_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -5201,7 +5230,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_KICK:
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
-            return PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION;
+            return ELF_WIZARD_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_KNIGHT_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
