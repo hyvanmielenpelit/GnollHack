@@ -2777,7 +2777,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_RANGER && raceidx == RACE_ELF && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_RANGER && raceidx == RACE_ELF)
             return TRUE;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
@@ -2787,7 +2787,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_THROW:
         break;
     case ACTION_TILE_FIRE:
-        if (roleidx == ROLE_RANGER && raceidx == RACE_ELF && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_RANGER && raceidx == RACE_ELF)
             return TRUE;
         break;
     case ACTION_TILE_CAST_NODIR:
@@ -2839,7 +2839,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_RANGER && raceidx == RACE_ELF && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_RANGER && raceidx == RACE_ELF)
             return TRUE;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return TRUE;
