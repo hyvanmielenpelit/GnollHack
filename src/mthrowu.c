@@ -586,12 +586,16 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             if (resists_poison(mtmp)) 
 			{
                 if (vis)
+                {
+                    play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
                     pline_The("poison doesn't seem to affect %s.",
-                              mon_nam(mtmp));
+                        mon_nam(mtmp));
+                }
             } 
 			else 
 			{
-				poisondamage = adjust_damage(d(2, 6), (struct monst*)0, mtmp, AD_DRST, ADFLAGS_NONE);
+                play_sfx_sound_at_location(SFX_MONSTER_IS_POISONED, mtmp->mx, mtmp->my);
+                poisondamage = adjust_damage(d(2, 6), (struct monst*)0, mtmp, AD_DRST, ADFLAGS_NONE);
 				damage += poisondamage;
             }
         }
@@ -603,16 +607,25 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 			case COLD_ENCHANTMENT:
 				if (is_mon_immune_to_cold(mtmp)) 
 				{
-					if (vis)
-						pline_The("cold doesn't seem to affect %s.",
-							mon_nam(mtmp));
+                    if (vis)
+                    {
+                        play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+                        pline_The("cold doesn't seem to affect %s.",
+                            mon_nam(mtmp));
+                    }
 				}
 				else 
 				{
-					if (vis)
-						pline_The("cold sears %s!", mon_nam(mtmp));
-					else if (verbose && !target)
-						pline_The("cold sears it!");
+                    if (vis)
+                    {
+                        play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mtmp->mx, mtmp->my);
+                        pline_The("cold sears %s!", mon_nam(mtmp));
+                    }
+                    else if (verbose && !target)
+                    {
+                        play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mtmp->mx, mtmp->my);
+                        pline_The("cold sears it!");
+                    }
 					damage += adjust_damage(d(12, 6), (struct monst*)0, mtmp, AD_COLD, ADFLAGS_NONE);
 				}
                 if(is_ammo(otmp) || throwing_weapon(otmp) || objects[otmp->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
@@ -621,16 +634,25 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 			case FIRE_ENCHANTMENT:
 				if (is_mon_immune_to_fire(mtmp)) 
 				{
-					if (vis)
-						pline_The("fire doesn't seem to affect %s.",
-							mon_nam(mtmp));
+                    if (vis)
+                    {
+                        play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+                        pline_The("fire doesn't seem to affect %s.",
+                            mon_nam(mtmp));
+                    }
 				}
 				else 
 				{
-					if (vis)
-						pline_The("fire burns %s!", mon_nam(mtmp));
-					else if (verbose && !target)
-						pline_The("fire burns it!");
+                    if (vis)
+                    {
+                        play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mtmp->mx, mtmp->my);
+                        pline_The("fire burns %s!", mon_nam(mtmp));
+                    }
+                    else if (verbose && !target)
+                    {
+                        play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mtmp->mx, mtmp->my);
+                        pline_The("fire burns it!");
+                    }
 					damage += adjust_damage(d(4, 6), (struct monst*)0, mtmp, AD_FIRE, ADFLAGS_NONE);
 				}
                 if (is_ammo(otmp) || throwing_weapon(otmp) || objects[otmp->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
@@ -639,16 +661,25 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 			case LIGHTNING_ENCHANTMENT:
 				if (is_mon_immune_to_elec(mtmp)) 
 				{
-					if (vis)
-						pline_The("lightning doesn't seem to affect %s.",
-							mon_nam(mtmp));
+                    if (vis)
+                    {
+                        play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+                        pline_The("lightning doesn't seem to affect %s.",
+                            mon_nam(mtmp));
+                    }
 				}
 				else
 				{
-					if (vis)
-						pline("%s is jolted by lightning!", Monnam(mtmp));
-					else if (verbose && !target)
-						pline("It is jolted by lightning!");
+                    if (vis)
+                    {
+                        play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mtmp->mx, mtmp->my);
+                        pline("%s is jolted by lightning!", Monnam(mtmp));
+                    }
+                    else if (verbose && !target)
+                    {
+                        play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mtmp->mx, mtmp->my);
+                        pline("It is jolted by lightning!");
+                    }
 
 					damage += adjust_damage(d(6, 6), (struct monst*)0, mtmp, AD_ELEC, ADFLAGS_NONE);
 				}
@@ -662,16 +693,26 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				}
 				else if (resists_death(mtmp)) 
 				{
-					if (vis)
-						pline_The("death magic doesn't seem to affect %s.",
-							mon_nam(mtmp));
+                    if (vis)
+                    {
+                        play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+                        pline_The("death magic doesn't seem to affect %s.",
+                            mon_nam(mtmp));
+                    }
 				}
 				else 
 				{
-					if (vis)
-						pline("%s is slain!", Monnam(mtmp));
-					else if (verbose && !target)
-						pline("It is slain!");
+                    if (vis)
+                    {
+                        play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mtmp->mx, mtmp->my);
+                        pline("%s is slain!", Monnam(mtmp));
+
+                    }
+                    else if (verbose && !target)
+                    {
+                        play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mtmp->mx, mtmp->my);
+                        pline("It is slain!");
+                    }
 					damage = (double)mtmp->mhp + 1;
 				}
 				otmp->elemental_enchantment = 0;

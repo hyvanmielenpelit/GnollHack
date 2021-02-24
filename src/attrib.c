@@ -543,11 +543,13 @@ boolean lifesavedalready;
 			plural ? "are" : "is");
 		if (Cold_immunity || Invulnerable) 
 		{
+			play_sfx_sound(SFX_GENERAL_UNAFFECTED);
 			u_shieldeff();
 			pline_The("cold doesn't seem to affect you.");
 			return;
 		}
 
+		play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
 		damage = adjust_damage(d(12, 6), (struct monst*)0, &youmonst, AD_COLD, ADFLAGS_NONE);
 		losehp(damage, pkiller, kprefix);
 	}
@@ -558,11 +560,13 @@ boolean lifesavedalready;
 			plural ? "are" : "is");
 		if (Fire_immunity || Invulnerable)
 		{
+			play_sfx_sound(SFX_GENERAL_UNAFFECTED);
 			u_shieldeff();
 			pline_The("fire doesn't seem to affect you.");
 			return;
 		}
 
+		play_sfx_sound(SFX_MONSTER_ON_FIRE);
 		damage = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE);
 		losehp(damage, pkiller, kprefix);
 	}
@@ -573,11 +577,13 @@ boolean lifesavedalready;
 			plural ? "jolt" : "jolts");
 		if (Shock_immunity || Invulnerable) 
 		{
+			play_sfx_sound(SFX_GENERAL_UNAFFECTED);
 			u_shieldeff();
 			pline_The("lightning doesn't seem to affect you.");
 			return;
 		}
 
+		play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
 		damage = adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE);
 		losehp(damage, pkiller, kprefix);
 	}
@@ -588,11 +594,13 @@ boolean lifesavedalready;
 			plural ? "were" : "was");
 		if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data))
 		{
+			play_sfx_sound(SFX_GENERAL_UNAFFECTED);
 			u_shieldeff();
 			pline_The("death magic doesn't seem to affect you.");
 			return;
 		}
 
+		play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC);
 
 		if (lifesavedalready)
 		{

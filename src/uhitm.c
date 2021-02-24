@@ -2273,38 +2273,52 @@ boolean* obj_destroyed;
 	{
 
 		if (needpoismsg)
+		{
+			play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
 			pline_The("poison doesn't seem to affect %s.", mon_nam(mon));
+		}
 
 		if (needenchantmsg && !destroyed)	
 		{
 			switch (needenchantmsg)
 			{
 			case -COLD_ENCHANTMENT:
+				play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
 				pline_The("cold doesn't seem to affect %s.", mon_nam(mon));
 				break;
 			case -FIRE_ENCHANTMENT:
+				play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
 				pline_The("fire doesn't seem to affect %s.", mon_nam(mon));
 				break;
 			case -LIGHTNING_ENCHANTMENT:
+				play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
 				pline_The("electricity doesn't seem to affect %s.", mon_nam(mon));
 				break;
 			case -DEATH_ENCHANTMENT:
 				if (!check_rider_death_absorption(mon, (const char*)0))
+				{
+					play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
 					pline_The("death magic doesn't seem to affect %s.", mon_nam(mon));
+				}
 				break;
 			case COLD_ENCHANTMENT:
+				play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mon->mx, mon->my);
 				pline_The("cold sears %s.", mon_nam(mon));
 				break;
 			case FIRE_ENCHANTMENT:
+				play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mon->mx, mon->my);
 				pline_The("fire burns %s.", mon_nam(mon));
 				break;
 			case LIGHTNING_ENCHANTMENT:
+				play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mon->mx, mon->my);
 				pline("%s is jolted by lightning.", Monnam(mon));
 				break;
 			case DEATH_ENCHANTMENT:
+				play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mon->mx, mon->my);
 				pline("%s feels its life energy draining away.", Monnam(mon));
 				break;
 			default:
+				play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
 				pline_The("enchantment doesn't seem to affect %s.", mon_nam(mon));
 				break;
 			}
@@ -2334,7 +2348,10 @@ boolean* obj_destroyed;
 				increase_mon_property(mon, CONFUSION, d(1, 20) + 20);
 				if (!is_stunned(mon) && mon_can_move(mon)
 					&& canseemon(mon))
+				{
+					play_sfx_sound_at_location(SFX_ACQUIRE_CONFUSION, mon->mx, mon->my);
 					pline("%s appears confused.", Monnam(mon));
+				}
 			}
 		}
 
@@ -2388,12 +2405,18 @@ boolean* obj_destroyed;
 	{
 		//No longer messages
 		if (unpoisonmsg)
+		{
+			play_sfx_sound(SFX_WEAPON_NO_LONGER_POISONED);
 			Your("%s %s no longer poisoned.", saved_oname,
 				vtense(saved_oname, "are"));
+		}
 
 		if (unenchantmsg)
+		{
+			play_sfx_sound(SFX_WEAPON_NO_LONGER_ENCHANTED);
 			Your("%s %s no longer enchanted.", saved_oname,
 				vtense(saved_oname, "are"));
+		}
 
 	}
 
