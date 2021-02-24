@@ -2287,7 +2287,7 @@ boolean atme;
 			switch (otyp)
 			{
 			case SPE_DEATH_ENCHANT_ITEM:
-				if (is_elemental_enchantable(otmp) && is_death_enchantable(otmp))
+				if (is_death_enchantable(otmp))
 				{
 					You("enchant %s with death magic.", yname(otmp));
 					otmp = elemental_enchant_quan(otmp, DEATH_ENCHANTMENT_QUANTITY_NORMAL, DEATH_ENCHANTMENT);

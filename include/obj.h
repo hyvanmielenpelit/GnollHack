@@ -293,7 +293,10 @@ struct obj {
 /* Unusual definition to account for weapons appropriately */
 #define is_elemental_enchantable(o)	 ((is_weapon(o) && !is_launcher(o)) || is_otyp_elemental_enchantable((o)->otyp))
 
-#define is_death_enchantable(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].death_enchantable != 0)
+#define is_otyp_material_death_enchantable(otyp)     \
+	(material_definitions[objects[otyp].oc_material].death_enchantable != 0)
+
+#define is_death_enchantable(o)  (is_elemental_enchantable(o) && is_otyp_material_death_enchantable((o)->otyp))
 
 #define can_otyp_have_exceptionality(otyp)     \
 	(objects[(otyp)].oc_flags4 & O4_CAN_HAVE_EXCEPTIONALITY)

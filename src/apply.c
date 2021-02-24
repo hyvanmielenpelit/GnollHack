@@ -3176,7 +3176,7 @@ struct obj* obj;
 			switch (obj->otyp)
 			{
 			case WAN_DEATH:
-				if (is_elemental_enchantable(otmp) && is_death_enchantable(otmp))
+				if (is_death_enchantable(otmp))
 				{
 					wandknown = TRUE;
 					You("enchant %s with death magic.", yname(otmp));

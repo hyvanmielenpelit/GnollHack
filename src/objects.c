@@ -180,7 +180,7 @@ PROJECTILE("bone arrow", None,
 	AD_PHYS, 1, 4, 0, 1, 5, 0, AD_PHYS,	0, 0, 0, A1_NONE, A2_NONE, 0, 
 	0, 0, MAT_BONE, WEP_ARROW, P_BOW, -P_BOW, CLR_WHITE, 16, OBJECT_SOUNDSET_ARROW,
 	O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, ALL_TARGETS),
-PROJECTILE("enchanted arrow", None, /* Special item for showing in arrow spells */
+PROJECTILE("enchanted arrow", None, /* Special item for display in arrow spells */
 	1, 1, 0, MULTIGEN_SINGLE, 1, 50,
 	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS,	0, 0, 0, A1_NONE, A2_NONE, 0, 
 	0, 0, MAT_FORCEFIELD, WEP_ARROW, P_BOW, -P_BOW, HI_ZAP, 16, OBJECT_SOUNDSET_ARROW,

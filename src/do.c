@@ -2740,7 +2740,8 @@ register struct obj* obj;
 		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
 			| O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD) 
 			|| otyp_shines_magical_light(otyp)
-			|| is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp) //|| is_otyp_elemental_enchantable(otyp) 
+			|| is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp)
+			|| is_death_enchantable(obj) //|| is_otyp_elemental_enchantable(otyp) 
 			)
 		{
 			int powercnt = 0;
@@ -2873,6 +2874,13 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Consumes nutrition every 20 rounds when worn", powercnt);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			if (is_death_enchantable(obj))
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Death-magically enchantable", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
