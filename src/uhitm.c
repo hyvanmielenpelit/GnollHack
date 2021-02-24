@@ -2161,7 +2161,8 @@ boolean* obj_destroyed;
 		if (extradmg > 0)
 		{
 			char* whom = mon_nam(mon);
-			if (canspotmon(mon)) {
+			if (canspotmon(mon)) 
+			{
 				pline("%s the life energy from %s to you!", Yobjnam2(obj, "leech"), whom);
 			}
 		}
@@ -2280,6 +2281,9 @@ boolean* obj_destroyed;
 
 		if (needenchantmsg && !destroyed)	
 		{
+			if (iflags.using_gui_sounds)
+				delay_output_milliseconds(100);
+
 			switch (needenchantmsg)
 			{
 			case -COLD_ENCHANTMENT:
@@ -2324,17 +2328,28 @@ boolean* obj_destroyed;
 			}
 		}
 
-		if (poiskilled) {
+		if (poiskilled) 
+		{
 			pline_The("poison was deadly...");
 			if (!already_killed)
 				killed(mon); //xkilled(mon, XKILL_NOMSG);
 			destroyed = TRUE; /* return FALSE; */
-		} else if (enchantkilled) {
+		} 
+		else if (enchantkilled) 
+		{
+			if (iflags.using_gui_sounds)
+			{
+				delay_output_milliseconds(100);
+				play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mon->mx, mon->my);
+				delay_output_milliseconds(200);
+			}
 			pline_The("magic was deadly...");
 			if (!already_killed)
 				killed(mon);  //xkilled(mon, XKILL_NOMSG);
 			destroyed = TRUE; /* return FALSE; */
-		} else if (destroyed) {
+		} 
+		else if (destroyed) 
+		{
 			if (!already_killed)
 			{
 				if (isdisintegrated)
@@ -2342,9 +2357,12 @@ boolean* obj_destroyed;
 				else
 					killed(mon); /* takes care of most messages */
 			}
-		} else if (u.umconf && hand_to_hand) {
+		}
+		else if (u.umconf && hand_to_hand) 
+		{
 			nohandglow(mon);
-			if (!is_confused(mon) && !check_ability_resistance_success(mon, A_WIS, 0)) {
+			if (!is_confused(mon) && !check_ability_resistance_success(mon, A_WIS, 0))
+			{
 				increase_mon_property(mon, CONFUSION, d(1, 20) + 20);
 				if (!is_stunned(mon) && mon_can_move(mon)
 					&& canseemon(mon))
@@ -2406,14 +2424,22 @@ boolean* obj_destroyed;
 		//No longer messages
 		if (unpoisonmsg)
 		{
-			play_sfx_sound(SFX_WEAPON_NO_LONGER_POISONED);
+			if (iflags.using_gui_sounds)
+			{
+				delay_output_milliseconds(150);
+				play_sfx_sound(SFX_WEAPON_NO_LONGER_POISONED);
+			}
 			Your("%s %s no longer poisoned.", saved_oname,
 				vtense(saved_oname, "are"));
 		}
 
 		if (unenchantmsg)
 		{
-			play_sfx_sound(SFX_WEAPON_NO_LONGER_ENCHANTED);
+			if (iflags.using_gui_sounds)
+			{
+				delay_output_milliseconds(150);
+				play_sfx_sound(SFX_WEAPON_NO_LONGER_ENCHANTED);
+			}
 			Your("%s %s no longer enchanted.", saved_oname,
 				vtense(saved_oname, "are"));
 		}
