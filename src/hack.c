@@ -585,7 +585,7 @@ xchar x, y;
         {
             lev->doormask &= ~D_MASK;
             lev->doormask |= D_NODOOR;
-            b_trapped("secret door", 0);
+            b_trapped("secret door", 0, x, y);
         }
         else 
         {
@@ -607,7 +607,7 @@ xchar x, y;
         {
             lev->doormask &= ~D_MASK;
             lev->doormask |= D_NODOOR;
-            b_trapped(get_door_name_at_ptr(lev), 0);
+            b_trapped(get_door_name_at_ptr(lev), 0, x, y);
         } 
         else 
         {

@@ -3202,7 +3202,7 @@ E boolean FDECL(chest_trap, (struct obj *, int, BOOLEAN_P));
 E void FDECL(deltrap, (struct trap *));
 E boolean FDECL(delfloortrap, (struct trap *));
 E struct trap *FDECL(t_at, (int, int));
-E void FDECL(b_trapped, (const char *, int));
+E void FDECL(b_trapped, (const char *, int, xchar, xchar));
 E boolean NDECL(unconscious);
 E void FDECL(blow_up_landmine, (struct trap *));
 E int FDECL(launch_obj, (SHORT_P, int, int, int, int, int));

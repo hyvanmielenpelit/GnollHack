@@ -218,7 +218,7 @@ picklock(VOID_ARGS)
 
         if (xlock.door->doormask & D_TRAPPED)
         {
-            b_trapped(get_door_name_at_ptr(xlock.door), FINGER);
+            b_trapped(get_door_name_at_ptr(xlock.door), FINGER, u.ux + u.dx, u.uy + u.dy);
             xlock.door->doormask |= D_NODOOR;
             unblock_vision_and_hearing_at_point(u.ux + u.dx, u.uy + u.dy);
             if (*in_rooms(u.ux + u.dx, u.uy + u.dy, SHOPBASE))
@@ -1045,7 +1045,7 @@ int x, y;
 
         if (door->doormask & D_TRAPPED) 
         {
-            b_trapped(door_name, FINGER);
+            b_trapped(door_name, FINGER, cc.x, cc.y);
             door->doormask &= ~D_MASK;
             door->doormask |= D_NODOOR;
             if (*in_rooms(cc.x, cc.y, SHOPBASE))
@@ -1456,15 +1456,24 @@ int x, y;
         {
             if (door->doormask & D_TRAPPED)
             {
+                boolean spef_on = FALSE;
                 if (MON_AT(x, y))
                     (void) mb_trapped(m_at(x, y));
                 else if (flags.verbose) 
                 {
-                    play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, x, y, 0.15);
-                    if (cansee(x, y))
+                    if (cansee(x, y) && !Unaware)
+                    {
+                        play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, x, y, FALSE);
+                        play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, x, y, 0.15);
+                        special_effect_wait_until_action(0);
+                        spef_on = TRUE;
                         pline("KABOOM!!  You see a door explode.");
-                    else
+                    }
+                    else if (!Deaf)
+                    {
+                        play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, x, y, 0.15);
                         You_hear("a distant explosion.");
+                    }
                 }
                 if (is_door_destroyed_by_booby_trap_at_ptr(door))
                 {
@@ -1473,6 +1482,8 @@ int x, y;
                     unblock_vision_and_hearing_at_point(x, y);
                     newsym(x, y);
                 }
+                if(spef_on)
+                    special_effect_wait_until_end(0);
                 loudness = 40;
                 break;
             }

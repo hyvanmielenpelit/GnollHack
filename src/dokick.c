@@ -1378,7 +1378,7 @@ dokick() {
                 {
                     maploc->doormask &= ~D_MASK;
                     maploc->doormask |= D_NODOOR;
-                    b_trapped(get_door_name_at_ptr(maploc), FOOT);
+                    b_trapped(get_door_name_at_ptr(maploc), FOOT, x, y);
                 }
                 else if ((maploc->doormask & D_MASK) != D_NODOOR && (maploc->doormask & D_MASK) != D_PORTCULLIS
                     && !(maploc->doormask & D_LOCKED))
@@ -1734,7 +1734,7 @@ dokick() {
             if (flags.verbose)
                 You("kick the %s.", get_door_name_at(x, y));
             exercise(A_STR, FALSE);
-            b_trapped(get_door_name_at_ptr(maploc), FOOT);
+            b_trapped(get_door_name_at_ptr(maploc), FOOT, x, y);
 
             if (!is_door_indestructible_at_ptr(maploc))
             {

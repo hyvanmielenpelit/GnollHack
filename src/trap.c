@@ -1760,6 +1760,7 @@ unsigned trflags;
     }
     case LANDMINE: 
     {
+        boolean spef_on = FALSE;
         unsigned steed_mid = 0;
         struct obj *saddle = 0;
 
@@ -1773,6 +1774,12 @@ unsigned trflags;
                   trap->madeby_u ? "the trigger of your mine" : "a trigger");
             if (already_seen && rn2(3))
                 break;
+
+            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
+            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
+            special_effect_wait_until_action(0);
+            spef_on = TRUE;
+
             pline("KAABLAMM!!!  %s %s%s off!",
                   forcebungle ? "Your inept attempt sets"
                               : "The air currents set",
@@ -1790,7 +1797,14 @@ unsigned trflags;
             if (recursive_mine)
                 break;
             feeltrap(trap);
+
             play_sfx_sound(SFX_LAND_MINE_ACTIVATE);
+
+            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
+            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
+            special_effect_wait_until_action(0);
+            spef_on = TRUE;
+
             pline("KAABLAMM!!!  You triggered %s land mine!",
                   a_your[trap->madeby_u]);
             if (u.usteed)
@@ -1812,6 +1826,10 @@ unsigned trflags;
         if ((trap = t_at(u.ux, u.uy)) != 0)
             dotrap(trap, RECURSIVETRAP);
         fill_pit(u.ux, u.uy);
+
+        if(spef_on)
+            special_effect_wait_until_end(0);
+
         break;
     }
 
@@ -1936,9 +1954,24 @@ struct obj *otmp;
         special_effect_wait_until_end(0);
         break;
     case LANDMINE:
-        trapkilled = thitm(0, steed, (struct obj *) 0, rnd(16), FALSE);
+    {
+        boolean spef_on = FALSE;
+        if (cansee(trap->tx, trap->ty))
+        {
+            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
+            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
+            special_effect_wait_until_action(0);
+            spef_on = TRUE;
+        }
+        else
+            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
+
+        trapkilled = thitm(0, steed, (struct obj*)0, rnd(16), FALSE);
         steedhit = TRUE;
+        if(spef_on)
+            special_effect_wait_until_end(0);
         break;
+    }
     case PIT:
     case SPIKED_PIT:
         trapkilled = (DEADMONSTER(steed)
@@ -2217,30 +2250,53 @@ int style;
                     break;
                 }
             }
-            if (t && otyp == BOULDER) {
-                switch (t->ttyp) {
+            if (t && otyp == BOULDER)
+            {
+                switch (t->ttyp) 
+                {
                 case LANDMINE:
-                    if (rn2(10) > 2) {
+                {
+                    if (rn2(10) > 2)
+                    {
+                        boolean spef_on = FALSE;
+                        if (cansee(t->tx, t->ty))
+                        {
+                            newsym(bhitpos.x, bhitpos.y);
+                            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, t->tx, t->ty, FALSE);
+                            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, t->tx, t->ty);
+                            special_effect_wait_until_action(0);
+                            spef_on = TRUE;
+                            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+                        }
+                        else
+                            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, t->tx, t->ty);
+
                         pline(
                             "KAABLAMM!!!%s",
                             cansee(bhitpos.x, bhitpos.y)
-                                ? " The rolling boulder triggers a land mine."
-                                : "");
+                            ? " The rolling boulder triggers a land mine."
+                            : "");
                         deltrap(t);
                         del_engr_at(bhitpos.x, bhitpos.y);
                         place_object(singleobj, bhitpos.x, bhitpos.y);
                         singleobj->otrapped = 0;
                         fracture_rock(singleobj, TRUE);
-                        (void) scatter(bhitpos.x, bhitpos.y, 4,
-                                       MAY_DESTROY | MAY_HIT | MAY_FRACTURE
-                                           | VIS_EFFECTS,
-                                       (struct obj *) 0);
+                        (void)scatter(bhitpos.x, bhitpos.y, 4,
+                            MAY_DESTROY | MAY_HIT | MAY_FRACTURE
+                            | VIS_EFFECTS,
+                            (struct obj*)0);
                         if (cansee(bhitpos.x, bhitpos.y))
                             newsym(bhitpos.x, bhitpos.y);
                         used_up = TRUE;
-                        launch_drop_spot((struct obj *) 0, 0, 0);
+                        launch_drop_spot((struct obj*)0, 0, 0);
+                        if (spef_on)
+                        {
+                            special_effect_wait_until_end(0);
+                            context.global_newsym_flags = 0UL;
+                        }
                     }
                     break;
+                }
                 case LEVEL_TELEP:
                 case TELEP_TRAP:
                     if (cansee(bhitpos.x, bhitpos.y))
@@ -3177,6 +3233,8 @@ register struct monst *mtmp;
             special_effect_wait_until_end(0);
             break;
         case LANDMINE:
+        {
+            boolean spef_on = FALSE;
             if (rn2(3))
                 break; /* monsters usually don't set it off */
             if (is_flying(mtmp) || is_levitating(mtmp)) 
@@ -3207,7 +3265,16 @@ register struct monst *mtmp;
             }
 
             play_sfx_sound_at_location(SFX_LAND_MINE_ACTIVATE, mtmp->mx, mtmp->my);
-            play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.25);
+
+            if (in_sight)
+            {
+                play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
+                play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.25);
+                special_effect_wait_until_action(0);
+                spef_on = TRUE;
+            }
+            else
+                play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.25);
 
             if (!in_sight && !Deaf)
                 pline("Kaablamm!  You hear an explosion in the distance!");
@@ -3235,7 +3302,10 @@ register struct monst *mtmp;
                 multi = -1;
                 nomovemsg = "The explosion awakens you!";
             }
+            if(spef_on)
+                special_effect_wait_until_end(0);
             break;
+        }
         case POLY_TRAP:
             newsym(mtmp->mx, mtmp->my);
             play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_LIGHT_FLASH, 0, mtmp->mx, mtmp->my, FALSE);
@@ -5795,7 +5865,7 @@ boolean force;
             {
                 play_sfx_sound(SFX_DISARM_TRAP_FAIL);
                 You("set it off!");
-                b_trapped(get_short_door_name_at(x, y), FINGER);
+                b_trapped(get_short_door_name_at(x, y), FINGER, x, y);
                 levl[x][y].doormask &= ~D_MASK;
                 levl[x][y].doormask |= D_NODOOR;
                 unblock_vision_and_hearing_at_point(x, y);
@@ -6606,14 +6676,18 @@ register struct trap *ttmp;
 
 /* used for doors (also tins).  can be used for anything else that opens. */
 void
-b_trapped(item, bodypart)
+b_trapped(item, bodypart, x, y)
 const char *item;
 int bodypart;
+xchar x, y;
 {
     int lvl = level_difficulty(),
         dmg = rnd(5 + (lvl < 5 ? lvl : 2 + lvl / 2));
 
-    play_sfx_sound(SFX_EXPLOSION_FIERY);
+    play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, x, y, FALSE);
+    play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, x, y);
+    special_effect_wait_until_action(0);
+
     pline("KABOOM!!  %s was booby-trapped!", The(item));
     wake_nearby();
     losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "explosion", KILLED_BY_AN);
@@ -6621,6 +6695,7 @@ int bodypart;
     if (bodypart)
         exercise(A_CON, FALSE);
     make_stunned((HStun & TIMEOUT) + (long) dmg, TRUE);
+    special_effect_wait_until_end(0);
 }
 
 /* Monster is hit by trap. */

@@ -24,13 +24,22 @@ boolean
 mb_trapped(mtmp)
 struct monst *mtmp;
 {
+    boolean spef_on = FALSE;
     if (flags.verbose)
 	{
-        play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.15);
         if (cansee(mtmp->mx, mtmp->my) && !Unaware)
+        {
+            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, mtmp->mx, mtmp->my, FALSE);
+            play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.15);
+            special_effect_wait_until_action(0);
+            spef_on = TRUE;
             pline("KABOOM!!  You see a door explode.");
+        }
         else if (!Deaf)
+        {
+            play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.15);
             You_hear("a distant explosion.");
+        }
     }
     wake_nearto(mtmp->mx, mtmp->my, 7 * 7);
 	increase_mon_property(mtmp, STUNNED, 5 + rnd(10));
@@ -38,11 +47,19 @@ struct monst *mtmp;
     if (DEADMONSTER(mtmp)) 
 	{
         mondied(mtmp);
+
+        if(spef_on)
+           special_effect_wait_until_end(0);
+
         if (!DEADMONSTER(mtmp)) /* lifesaved */
             return FALSE;
         else
             return TRUE;
     }
+
+    if (spef_on)
+        special_effect_wait_until_end(0);
+
     return FALSE;
 }
 

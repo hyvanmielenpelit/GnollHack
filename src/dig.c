@@ -591,7 +591,7 @@ dig(VOID_ARGS)
         }
         if (IS_DOOR(lev->typ) && (lev->doormask & D_TRAPPED)) 
         {
-            b_trapped(get_door_name_at_ptr(lev), 0);
+            b_trapped(get_door_name_at_ptr(lev), 0, dpx, dpy);
             if (is_door_destroyed_by_booby_trap_at_ptr(lev))
             {
                 lev->doormask &= ~D_MASK;

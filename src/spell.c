@@ -4436,6 +4436,7 @@ int spell;
 		{
 			play_sfx_sound(SFX_MIXING_FLARES_UP);
 			Your("concoction flares up, burning you!");
+			display_u_being_hit(HIT_ON_FIRE, dmg, 0UL);
 			losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
 		}
 	}
