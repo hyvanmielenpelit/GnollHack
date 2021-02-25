@@ -1186,6 +1186,7 @@ unsigned trflags;
         play_special_effect_at(SPECIAL_EFFECT_FALLING_ROCK_TRAP_TRAP_DOOR, 0, trap->tx, trap->ty, FALSE);
         play_sfx_sound(SFX_FALLING_ROCK_TRAP_TRIGGER);
         special_effect_wait_until_action(0);
+        context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
         if (trap->once && trap->tseen && !rn2(15))
         {
             pline("A trap door in %s opens, but nothing falls out!",
@@ -1261,6 +1262,7 @@ unsigned trflags;
             exercise(A_STR, FALSE);
             special_effect_wait_until_end(1);
         }
+        context.global_newsym_flags = 0UL;
         special_effect_wait_until_end(0);
         break;
 
@@ -2669,6 +2671,7 @@ register struct monst *mtmp;
             {
                 newsym(trap->tx, trap->ty);
                 play_special_effect_at(SPECIAL_EFFECT_FALLING_ROCK_TRAP_TRAP_DOOR, 0, trap->tx, trap->ty, FALSE);
+                context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
             }
 
             play_sfx_sound_at_location(SFX_FALLING_ROCK_TRAP_TRIGGER, mtmp->mx, mtmp->my);
@@ -2689,6 +2692,7 @@ register struct monst *mtmp;
                 newsym(mtmp->mx, mtmp->my);
                 if (in_sight && see_it)
                     special_effect_wait_until_end(0);
+                context.global_newsym_flags = 0UL;
                 break;
             }
             trap->once = 1;
@@ -2718,6 +2722,7 @@ register struct monst *mtmp;
             }
             if (in_sight)
             {
+                context.global_newsym_flags = 0UL;
                 special_effect_wait_until_end(0);
             }
             break;
