@@ -1183,7 +1183,9 @@ unsigned trflags;
         break;
 
     case ROCKTRAP:
+        play_special_effect_at(SPECIAL_EFFECT_FALLING_ROCK_TRAP_TRAP_DOOR, 0, trap->tx, trap->ty, FALSE);
         play_sfx_sound(SFX_FALLING_ROCK_TRAP_TRIGGER);
+        special_effect_wait_until_action(0);
         if (trap->once && trap->tseen && !rn2(15))
         {
             pline("A trap door in %s opens, but nothing falls out!",
@@ -1193,15 +1195,20 @@ unsigned trflags;
         }
         else 
         {
-            int dmg = d(2, 6); /* should be std ROCK dmg? */
-
             trap->once = 1;
             feeltrap(trap);
+
+            play_special_effect_at(SPECIAL_EFFECT_FALLING_ROCK_TRAP_FALLING_ROCK, 1, trap->tx, trap->ty, FALSE);
+
             otmp = t_missile(get_shooting_trap_object(trap), trap);
+            pline("A trap door in %s opens and %s falls on your %s!",
+                the(ceiling(u.ux, u.uy)), an(xname(otmp)), body_part(HEAD));
+
+            special_effect_wait_until_action(1);
+
+            int dmg = d(2, 6); /* should be std ROCK dmg? */
             place_object(otmp, u.ux, u.uy);
 
-            pline("A trap door in %s opens and %s falls on your %s!",
-                  the(ceiling(u.ux, u.uy)), an(xname(otmp)), body_part(HEAD));
             if (uarmh) 
             {
                 if (is_metallic(uarmh)) 
@@ -1210,7 +1217,7 @@ unsigned trflags;
                     {
                         if (iflags.using_gui_sounds)
                         {
-                            delay_output_milliseconds(150);
+                            //delay_output_milliseconds(150);
                             play_sfx_sound(SFX_ROCK_HITS_HARD_HELMET);
                         }
                         pline("Fortunately, you are wearing a hard helmet.");
@@ -1223,7 +1230,7 @@ unsigned trflags;
                     {
                         if (iflags.using_gui_sounds)
                         {
-                            delay_output_milliseconds(150);
+                            //delay_output_milliseconds(150);
                             play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
                         }
                         pline("%s does not protect you.", Yname2(uarmh));
@@ -1239,7 +1246,7 @@ unsigned trflags;
             {
                 if (iflags.using_gui_sounds)
                 {
-                    delay_output_milliseconds(150);
+                    //delay_output_milliseconds(150);
                     play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
                     delay_output_milliseconds(150);
                     play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
@@ -1252,7 +1259,9 @@ unsigned trflags;
 
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "falling rock", KILLED_BY_AN);
             exercise(A_STR, FALSE);
+            special_effect_wait_until_end(1);
         }
+        special_effect_wait_until_end(0);
         break;
 
     case SQKY_BOARD: /* stepped on a squeaky board */
@@ -2600,22 +2609,61 @@ register struct monst *mtmp;
                 trapkilled = TRUE;
             break;
         case ROCKTRAP:
+            if (in_sight)
+            {
+                newsym(trap->tx, trap->ty);
+                play_special_effect_at(SPECIAL_EFFECT_FALLING_ROCK_TRAP_TRAP_DOOR, 0, trap->tx, trap->ty, FALSE);
+            }
+
             play_sfx_sound_at_location(SFX_FALLING_ROCK_TRAP_TRIGGER, mtmp->mx, mtmp->my);
-            if (trap->once && trap->tseen && !rn2(15)) {
-                if (in_sight && see_it)
-                    pline(
-                        "A trap door above %s opens, but nothing falls out!",
-                        mon_nam(mtmp));
+            
+            if (in_sight)
+                special_effect_wait_until_action(0);
+            
+            if (trap->once && trap->tseen && !rn2(15)) 
+            {
+                if (in_sight)
+                {
+                    if(see_it)
+                        pline("A trap door above %s opens, but nothing falls out!", mon_nam(mtmp));
+                    else
+                        You_see("a trap door open at a distance, but nothing falls out!");
+                }
                 deltrap(trap);
                 newsym(mtmp->mx, mtmp->my);
+                if (in_sight && see_it)
+                    special_effect_wait_until_end(0);
                 break;
             }
             trap->once = 1;
+
             otmp = t_missile(get_shooting_trap_object(trap), trap);
             if (in_sight)
                 seetrap(trap);
+
+            if (in_sight && otmp)
+                play_special_effect_at(SPECIAL_EFFECT_FALLING_ROCK_TRAP_FALLING_ROCK, 1, trap->tx, trap->ty, FALSE);
+
+            if (in_sight && otmp)
+                special_effect_wait_until_action(1);
+
             if (thitm(0, mtmp, otmp, d(2, 6), FALSE))
                 trapkilled = TRUE;
+
+            if (iflags.using_gui_sounds && !trapkilled)
+            {
+                delay_output_milliseconds(100);
+                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_YELP);
+            }
+
+            if (in_sight && otmp)
+            {
+                special_effect_wait_until_end(1);
+            }
+            if (in_sight)
+            {
+                special_effect_wait_until_end(0);
+            }
             break;
         case SQKY_BOARD:
             if (is_flying(mtmp) || is_levitating(mtmp))
@@ -6623,6 +6671,9 @@ boolean nocorpse;
                 dam = 1;
         }
 		
+        if(obj)
+            play_object_hit_sound_at_location(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), dam, HMON_THROWN, mon->mx, mon->my);
+
         int hp_before = mon->mhp;
         deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE));
         int hp_after = mon->mhp;
