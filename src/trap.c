@@ -2725,7 +2725,7 @@ register struct monst *mtmp;
             if (is_flying(mtmp) || is_levitating(mtmp))
                 break;
             /* stepped on a squeaky board */
-            play_sfx_sound_at_location(SFX_SQUEAKY_BOARD, mtmp->mx, mtmp->my);
+            play_sfx_sound_at_location_with_minimum_volume(SFX_SQUEAKY_BOARD, mtmp->mx, mtmp->my, 0.15);
             if (in_sight) {
                 if (!Deaf) {
                     pline("A board beneath %s squeaks %s loudly.",
