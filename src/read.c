@@ -2195,7 +2195,7 @@ boolean *effect_happened_ptr;
 			+ ((sblessed || rn2(73)) ? 0 : rnd(4)),
 			confused ? &mons[PM_ACID_BLOB]
 			: (struct permonst*) 0,
-			FALSE))
+			TRUE))
 			known = TRUE;
 		/* no need to flush monsters; we ask for identification only if the
 		 * monsters are not visible

@@ -2735,6 +2735,7 @@ int level_limit;
             newsym_with_flags(mtmp->mx, mtmp->my, (mmflags& MM_PLAY_SUMMON_ANIMATION) ? NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS : NEWSYM_FLAGS_NONE); /* make sure the mon shows up */
             //newsym(mtmp->mx, mtmp->my);
             set_apparxy(mtmp);
+            flush_screen(1);
         }
     }
 
@@ -2941,12 +2942,16 @@ boolean neverask;
     boolean known = FALSE;
     boolean ask = (wizard && !neverask);
 
-    while (cnt--) {
-        if (ask) {
-            if (create_particular()) {
+    while (cnt--) 
+    {
+        if (ask)
+        {
+            if (create_particular()) 
+            {
                 known = TRUE;
                 continue;
-            } else
+            }
+            else
                 ask = FALSE; /* ESC will shut off prompting */
         }
         x = u.ux, y = u.uy;
@@ -2955,14 +2960,15 @@ boolean neverask;
         if (!mptr && u.uinwater && enexto(&c, x, y, &mons[PM_GIANT_EEL]))
             x = c.x, y = c.y;
 
-        mon = makemon(mptr, x, y, NO_MM_FLAGS);
+        mon = makemon(mptr, x, y,  MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND);
         if (mon)
         {
-            play_sfx_sound_at_location(SFX_SUMMON_MONSTER, mon->mx, mon->my);
+            //play_sfx_sound_at_location(SFX_SUMMON_MONSTER, mon->mx, mon->my);
             if(canspotmon(mon))
                 known = TRUE;
         }
     }
+    makemon_animation_wait_until_end();
     return known;
 }
 
@@ -4143,7 +4149,7 @@ int *seencount;  /* secondary output */
         if (!rn2(23))
             creatcnt += rnd(7);
         do {
-            mtmp = makemon((struct permonst *) 0, u.ux, u.uy, NO_MM_FLAGS);
+            mtmp = makemon((struct permonst *) 0, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
             if (mtmp) {
                 ++moncount;
                 if (canspotmon(mtmp))
