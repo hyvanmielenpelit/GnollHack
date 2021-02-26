@@ -270,6 +270,7 @@
     <ClInclude Include="..\..\..\include\obj.h" />
     <ClInclude Include="..\..\..\include\objclass.h" />
     <ClInclude Include="..\..\..\include\onames.h" />
+    <ClInclude Include="..\..\..\include\patchlevel.h" />
     <ClInclude Include="..\..\..\include\permonst.h" />
     <ClInclude Include="..\..\..\include\pm.h" />
     <ClInclude Include="..\..\..\include\prop.h" />
