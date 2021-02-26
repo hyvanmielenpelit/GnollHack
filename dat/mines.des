@@ -55,7 +55,7 @@ LOOP [1 + 1d2] {
       }
     }
 
-IF [90%] {
+IF [95%] {
   LOOP [1d4] {
             OBJECT: ('(', "mine cart"), random
   }
@@ -1036,6 +1036,9 @@ OBJECT:('%', "healing mushroom"),random
 [50%]: OBJECT:('%', "healing mushroom"),random
 [25%]: OBJECT:('%', "mana mushroom"),random
 OBJECT:('%', "panther cap"),random
+LOOP [1d4] {
+  OBJECT: ('(', "mine cart"), random
+}
 
 OBJECT:random,random
 OBJECT:random,random
@@ -1200,6 +1203,10 @@ OBJECT:('%', "healing mushroom"),random
 [50%]: OBJECT:('%', "healing mushroom"),random
 [25%]: OBJECT:('%', "mana mushroom"),random
 OBJECT:('%', "panther cap"),random
+LOOP [1d4] {
+  OBJECT: ('(', "mine cart"), random
+}
+
 # Random traps
 TRAP:random,random
 TRAP:random,random
@@ -1315,6 +1322,10 @@ OBJECT:('%', "healing mushroom"),random
 [50%]: OBJECT:('%', "healing mushroom"),random
 [25%]: OBJECT:('%', "mana mushroom"),random
 OBJECT:('%', "panther cap"),random
+LOOP [1d4] {
+  OBJECT: ('(', "mine cart"), random
+}
+
 TRAP:random,random
 TRAP:random,random
 TRAP:random,random
