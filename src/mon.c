@@ -284,7 +284,7 @@ int mndx;
 /* for deciding whether corpse will carry along full monster data */
 #define KEEPTRAITS(mon)                                                 \
     ((mon)->isshk || (mon)->mtame || unique_corpstat((mon)->data)       \
-     || is_reviver((mon)->data)                                         \
+     || is_reviver((mon)->data) || pm_has_female_name((mon)->data)      \
         /* normally quest leader will be unique, */                     \
         /* but he or she might have been polymorphed  */                \
      || (mon)->m_id == quest_status.leader_m_id                         \

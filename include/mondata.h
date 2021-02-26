@@ -784,6 +784,7 @@
    note that high priests and the Wizard of Yendor are flagged
    as unique even though they really aren't; that's ok here */
 #define unique_corpstat(ptr) (((ptr)->geno & G_UNIQ) != 0)
+#define pm_has_female_name(ptr) ((ptr)->mfemalename != 0)
 
 #define emitted_light_range(ptr) ((ptr)->lightrange)
 #define touch_petrifies(ptr) (((ptr)->mflags1 & M1_TOUCH_PETRIFIES) != 0)

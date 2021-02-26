@@ -3244,6 +3244,7 @@ E double FDECL(adjust_damage, (int, struct monst*, struct monst*, int, unsigned 
 E int FDECL(deduct_player_hp, (double));
 E int FDECL(deduct_monster_hp, (struct monst*, double));
 E void FDECL(get_game_difficulty_multipliers, (double*, double*));
+E void FDECL(get_game_difficulty_multipliers_by_level, (double*, double*, schar));
 E void FDECL(update_u_facing, (uchar));
 E void FDECL(update_u_action, (enum action_tile_types));
 E void FDECL(update_m_action, (struct monst*, enum action_tile_types));

@@ -316,6 +316,8 @@ static struct trobj ScrollOfIdentify[] = { { SCR_IDENTIFY, 0, SCROLL_CLASS, 1, 0
 									{ 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj WandOfProbing[] = { { WAN_PROBING, 0, WAND_CLASS, 1, 0, 0, 0 },
 									{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj ScrollOfRemoveCurse[] = { { SCR_REMOVE_CURSE, 0, SCROLL_CLASS, 1, 0, 0, 0 },
+									{ 0, 0, 0, 0, 0, 0, 0 } };
 
 /* race-based substitutions for initial inventory;
    the weaker cloak for elven rangers is intentional--they shoot better */
@@ -1381,14 +1383,21 @@ u_init()
 	/* Add school-specific spells */
 	add_school_specific_spellbooks();
 
-	/* Easy mode wand of probing */
+	/* Wand of probing if playing below expert */
 	if (context.game_difficulty <= WAND_OF_PROBING_DIFFICULTY_THRESHOLD && !carrying(WAN_PROBING))
 	{
 		ini_inv(WandOfProbing);
 		knows_object(WAN_PROBING);
 	}
 
-    if (discover)
+	/* Easy mode scroll of remove curse */
+	if (context.game_difficulty <= SCROLL_OF_REMOVE_CURSE_DIFFICULTY_THRESHOLD)
+	{
+		ini_inv(ScrollOfRemoveCurse);
+		knows_object(SCR_REMOVE_CURSE);
+	}
+	
+	if (discover)
         ini_inv(Wishing);
 
     if (wizard)

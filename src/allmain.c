@@ -1125,15 +1125,23 @@ choose_game_difficulty()
 		any = zeroany;
 		any.a_int = i - MIN_DIFFICULTY_LEVEL + 1;
 		char diffchar = i - MIN_DIFFICULTY_LEVEL + 'a';
-		char buf[BUFSZ];
+		char buf[BUFSZ] = "", buf2[BUFSZ] = "";
 		const char* leveltext;
+        double m_dmg_mult = 0, m_hp_mult = 0;
+        get_game_difficulty_multipliers_by_level(&m_dmg_mult, &m_hp_mult, (schar)i);
+        int combat_damage_percentage = (int)(m_dmg_mult * m_hp_mult * 100.0);
 		
 		leveltext = get_game_difficulty_text(i);
 		strcpy(buf, leveltext);
         *buf = highc(*buf);
 
+        if(iflags.menu_tab_sep)
+            Sprintf(buf2, "%s\t(%d%% in combat)", buf, combat_damage_percentage);
+        else
+            Sprintf(buf2, "%s (%d%% in combat)", buf, combat_damage_percentage);
+
 		add_menu(menuwin, NO_GLYPH, &any, diffchar, 0, ATR_NONE,
-			buf, MENU_UNSELECTED);
+			buf2, MENU_UNSELECTED);
 	}
 
 	end_menu(menuwin, "Pick a level for game difficulty");

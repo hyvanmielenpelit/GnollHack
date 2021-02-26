@@ -4776,11 +4776,19 @@ unsigned long ad_flags;
 	return base_dmg_d;
 }
 
-
 void
 get_game_difficulty_multipliers(monster_damage_multiplier_ptr, monster_hp_multiplier_ptr)
+double* monster_damage_multiplier_ptr;
+double* monster_hp_multiplier_ptr;
+{
+	get_game_difficulty_multipliers_by_level(monster_damage_multiplier_ptr, monster_hp_multiplier_ptr, context.game_difficulty);
+}
+
+void
+get_game_difficulty_multipliers_by_level(monster_damage_multiplier_ptr, monster_hp_multiplier_ptr, difficulty_level)
 double *monster_damage_multiplier_ptr;
 double *monster_hp_multiplier_ptr;
+schar difficulty_level;
 {
 	if (!monster_damage_multiplier_ptr || !monster_hp_multiplier_ptr)
 		return;
@@ -4788,7 +4796,7 @@ double *monster_hp_multiplier_ptr;
 	*monster_damage_multiplier_ptr = 1.0;
 	*monster_hp_multiplier_ptr = 1.0;
 
-	switch (context.game_difficulty)
+	switch (difficulty_level)
 	{
 	case -4:
 		*monster_damage_multiplier_ptr = 0.25;
