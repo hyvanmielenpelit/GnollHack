@@ -403,13 +403,17 @@ struct obj *box;
 
     box->cobj = (struct obj *) 0;
 
-    switch (box->otyp) {
+    switch (box->otyp) 
+    {
     case ICE_BOX:
         n = 20;
         break;
 	case BOOKSHELF:
 		n = (level_difficulty() >= 13) ? 7 : (level_difficulty() >= 10) ? 5 : 3;
 		break;
+    case MINE_CART:
+        n = 8;
+        break;
     case WEAPON_RACK:
         n = 4;
         break;
@@ -445,26 +449,50 @@ struct obj *box;
         break;
     }
 
-    for (n = rn2(n + 1); n > 0; n--) {
-		if (box->otyp == ICE_BOX) {
+    for (n = rn2(n + 1); n > 0; n--) 
+    {
+		if (box->otyp == ICE_BOX) 
+        {
 			if (!(otmp = mksobj(CORPSE, TRUE, TRUE, TRUE)))
 				continue;
 			/* Note: setting age to 0 is correct.  Age has a different
 			 * from usual meaning for objects stored in ice boxes. -KAA
 			 */
 			otmp->age = 0L;
-			if (otmp->timed) {
+			if (otmp->timed) 
+            {
 				(void)stop_timer(ROT_CORPSE, obj_to_any(otmp));
 				(void)stop_timer(REVIVE_MON, obj_to_any(otmp));
 			}
-		} else if (box->otyp == BOOKSHELF) {
+		}
+        else if (box->otyp == BOOKSHELF) 
+        {
 			if (rn2(3))
 				otmp = mkobj(SCROLL_CLASS, FALSE, TRUE);
 			else
 				otmp = mkobj(SPBOOK_CLASS, FALSE, TRUE);
-        } else if (box->otyp == WEAPON_RACK) {
+        } 
+        else if (box->otyp == MINE_CART)
+        {
+            if (!rn2(3))
+            {
+                otmp = mksobj(ROCK, TRUE, FALSE, 1);
+            }
+            else if (!rn2(2))
+            {
+                otmp = mksobj(rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE), TRUE, FALSE, 1);
+            }
+            else
+            {
+                otmp = mkobj(GEM_CLASS, FALSE, TRUE);
+            }
+        }
+        else if (box->otyp == WEAPON_RACK)
+        {
             otmp = mkobj(WEAPON_CLASS, TRUE, TRUE);
-        } else {
+        }
+        else
+        {
             register int tprob;
             const struct icp *iprobs = boxiprobs;
 
@@ -474,26 +502,33 @@ struct obj *box;
                 continue;
 
             /* handle a couple of special cases */
-            if (otmp->oclass == COIN_CLASS) {
+            if (otmp->oclass == COIN_CLASS)
+            {
                 /* 2.5 x level's usual amount; weight adjusted below */
                 otmp->quan = (long) (rnd(level_difficulty() + 2) * rnd(75));
                 otmp->owt = weight(otmp);
-            } else
-                while (is_rock(otmp)) {
+            }
+            else
+                while (is_rock(otmp))
+                {
                     otmp->otyp = rnd_class(DILITHIUM_CRYSTAL, JINXSTONE);
                     if (otmp->quan > 2L)
                         otmp->quan = 1L;
                     otmp->owt = weight(otmp);
                 }
-            if (Is_weight_changing_bag(box)) {
-                if (Is_mbag(otmp)) {
+
+            if (Is_weight_changing_bag(box)) 
+            {
+                if (Is_mbag(otmp)) 
+                {
                     otmp->otyp = SACK;
                     otmp->enchantment = 0;
 					otmp->special_quality = 0;
 					otmp->charges = 0;
 					otmp->speflags = 0;
 					otmp->owt = weight(otmp);
-                } else
+                } 
+                else
                     while (otmp->otyp == WAN_CANCELLATION || otmp->otyp == WAN_DISJUNCTION)
                         otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
             }
@@ -1292,7 +1327,8 @@ int mkobj_type;
                 otmp->quan = 1L;
             break;
         case TOOL_CLASS:
-            switch (otmp->otyp) 
+            /* Primary initialization */
+            switch (otmp->otyp)
             {
             case TALLOW_CANDLE:
             case WAX_CANDLE:
@@ -1324,21 +1360,6 @@ int mkobj_type;
             case LARGE_BOX:
                 otmp->olocked = !!(rn2(5));
                 otmp->otrapped = !(rn2(10));
-                /*FALLTHRU*/
-            case ICE_BOX:
-			case BOOKSHELF:
-            case WEAPON_RACK:
-            case SACK:
-			case BACKPACK:
-			case OILSKIN_SACK:
-			case LEATHER_BAG:
-			case ORIENTAL_SILK_SACK:
-			case EXPENSIVE_HANDBAG:
-			case BAG_OF_HOLDING:
-			case BAG_OF_WIZARDRY:
-			case BAG_OF_TREASURE_HAULING:
-            case BAG_OF_THE_GLUTTON:
-                mkbox_cnts(otmp);
 				break;
             case EXPENSIVE_CAMERA:
             case TINNING_KIT:
@@ -1370,7 +1391,11 @@ int mkobj_type;
                 blessorcurse(otmp, 4);
                 break;
             }
-			//otmp->charges = get_obj_init_charge(otmp);
+
+            /* Make container contents */
+            if (Is_proper_container(otmp))
+                mkbox_cnts(otmp);
+
 			break;
         case AMULET_CLASS:
             if (otmp->otyp == AMULET_OF_YENDOR)

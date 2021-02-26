@@ -55,6 +55,12 @@ LOOP [1 + 1d2] {
       }
     }
 
+IF [90%] {
+  LOOP [1d4] {
+            OBJECT: ('(', "mine cart"), random
+  }
+}
+
 [15%]: OBJECT: ('%', "penny bun"), random
 [10%]: OBJECT: ('%', "penny bun"), random
 
