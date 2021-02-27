@@ -161,6 +161,8 @@ static NEARDATA struct mflag_description m5flag_descriptions[] = {
 };
 
 static NEARDATA struct mflag_description m6flag_descriptions[] = {
+    { M6_NON_EATER, "non-eating living monster", "non-eating living monsters" },
+    { M6_CORPSE_EATER, "corpse-eating monster", "corpse-eating monsters" },
     { 0 , "", "" }
 };
 

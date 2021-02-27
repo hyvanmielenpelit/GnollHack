@@ -41,16 +41,6 @@ NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = 
     {"jar-foreground",          NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 2, 64, 48, {"transparent", "opaque", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
 };
 
-NEARDATA const char* monster_tile_template_name_array[NUM_MONSTER_TILE_TEMPLATES] =
-{
-    "",
-    "dragon hatchling",
-    "adult dragon",
-    "ancient dragon",
-    "naga hatchling",
-    "adult naga",
-};
-
 boolean
 has_generic_player_action_tile(action)
 enum action_tile_types action;
@@ -206,9 +196,9 @@ uchar* tilemapflags;
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[enlargement].width_in_tiles, enlargements[enlargement].height_in_tiles, enlargements[enlargement].main_tile_x_coordinate);
                     else
                         Sprintf(eos(buf), ",1,1,0");
-                    int tile_template_idx = (int)(mons[i].mflags6 & M6_MONSTER_TILE_TEMPLATE_MASK);
-                    Sprintf(eos(buf), ",%d,%d,%s", (int)mons[i].mcolor, tile_template_idx, monster_tile_template_name_array[tile_template_idx]);
-                    Sprintf(eos(buf), "\n");
+//                    int tile_template_idx = (int)(mons[i].mflags6 & M6_MONSTER_TILE_TEMPLATE_MASK);
+//                    Sprintf(eos(buf), ",%d,%d,%s", (int)mons[i].mcolor, tile_template_idx, monster_tile_template_name_array[tile_template_idx]);
+//                    Sprintf(eos(buf), "\n");
                     (void)write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)

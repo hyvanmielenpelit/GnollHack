@@ -179,12 +179,18 @@
 #define is_semi_transparent(ptr) (((ptr)->mflags5 & M5_SEMI_TRANSPARENT) != 0)
 #define is_radially_transparent(ptr) (((ptr)->mflags5 & M5_RADIAL_TRANSPARENCY) != 0)
 
+#define has_mflag_is_non_eater(ptr) (((ptr)->mflags6 & M6_NON_EATER) != 0L)
+#define is_corpse_eater(ptr) (((ptr)->mflags6 & M6_CORPSE_EATER) != 0L)
+
 /* combinations */
 #define is_not_living(ptr) \
     (is_undead(ptr) || has_mflag_is_nonliving(ptr))
 #define is_living(ptr) !is_not_living(ptr)
 #define slimeproof(ptr) \
     ((ptr) == &mons[PM_GREEN_SLIME] || flaming(ptr) || is_incorporeal(ptr))
+
+#define is_non_eater(ptr) \
+    ((is_not_living(ptr) || is_angel(ptr) || is_demon(ptr) || has_mflag_is_non_eater(ptr)) && !is_corpse_eater(ptr))
 
 
 /* Resistances and properties */

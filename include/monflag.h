@@ -334,17 +334,8 @@
 /* Free bit */
 
 #define M6_NONE                     0x00000000UL
-
-enum m6flag_monster_tile_templates {
-    M6_MONSTER_TILE_TEMPLATE_DRAGON_HATCHLING = 1UL,
-    M6_MONSTER_TILE_TEMPLATE_ADULT_DRAGON,
-    M6_MONSTER_TILE_TEMPLATE_ANCIENT_DRAGON,
-    M6_MONSTER_TILE_TEMPLATE_NAGA_HATCHLING,
-    M6_MONSTER_TILE_TEMPLATE_ADULT_NAGA,
-    NUM_MONSTER_TILE_TEMPLATES
-};
-
-#define M6_MONSTER_TILE_TEMPLATE_MASK       0x000000FFUL
+#define M6_NON_EATER                0x00000001UL /* Living beings like elementals */
+#define M6_CORPSE_EATER             0x00000002UL /* Overrides undead or non_eater flags for corpses, e.g., ghoul */
 
 #define M7_NONE						0x00000000UL
 #define M8_NONE						0x00000000UL

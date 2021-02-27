@@ -651,8 +651,8 @@ struct edog *edog;
 	if (!mtmp || !edog)
 		return FALSE;
 
-	/* Nonliving and angelic creatures do not get hungry */
-	if (is_not_living(mtmp->data) || is_angel(mtmp->data))
+	/* Non-eaters do not get hungry */
+	if (is_non_eater(mtmp->data))
 	{
 		edog->hungrytime = monstermoves + 500;
 		return FALSE;
@@ -665,7 +665,7 @@ struct edog *edog;
 			edog->hungrytime = monstermoves + 500;
 			/* but not too high; it might polymorph */
 		}
-		else if (!edog->mhpmax_penalty)
+		else if (!edog->mhpmax_penalty && !is_not_living(mtmp->data))
 		{
 			/* starving pets are limited in healing */
 			int newmhpmax = mtmp->mhpmax / 3;
@@ -686,7 +686,7 @@ struct edog *edog;
 				You_feel("worried about %s.", y_monnam(mtmp));
 			stop_occupation();
 		}
-		else if (monstermoves >= edog->hungrytime + 750
+		else if ((monstermoves >= edog->hungrytime + 750 && !is_not_living(mtmp->data))
                    || DEADMONSTER(mtmp)) 
 		{
  dog_died:
@@ -837,7 +837,7 @@ struct monst* mtmp;
     if(!mtmp || !mtmp->mextra || !EDOG(mtmp))
         return FALSE;
 
-    if (is_not_living(mtmp->data) || is_angel(mtmp->data))
+    if (is_non_eater(mtmp->data))
         return FALSE;
 
     return (EDOG(mtmp)->hungrytime < monstermoves + 3000); /* twice the satiated amount for the player for convenience */

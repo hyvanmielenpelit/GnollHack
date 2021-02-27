@@ -976,8 +976,11 @@ register struct obj *obj;
     if (is_quest_artifact(obj) || obj_resists(obj, 0, 95))
         return obj->cursed ? TABU : APPORT;
 
-	if (is_not_living(mptr))
+	if (is_non_eater(mptr))
 		return TABU;
+
+    if (is_corpse_eater(mptr) && obj->otyp != CORPSE)
+        return TABU;
 
     switch (obj->oclass) 
 	{

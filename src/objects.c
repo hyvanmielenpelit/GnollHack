@@ -2857,7 +2857,7 @@ SPELL("animate air",	  "wave-patterned", None, "Summons a permanent elemental fo
 SPELL("animate earth",	  "octagonal-patterned", None, "Summons a permanent earth elemental for a duration",
 	P_CONJURATION_SPELL,		 5,  3,			 0, 2, 15, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("animate fire",	  "flame-patterned", None, "Summons a permanent fire elemental",
-	P_CONJURATION_SPELL,		 5,  3,			 0, 3, 20, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
+	P_CONJURATION_SPELL,		 5,  3,			 0, 4, 30, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 SPELL("animate water",	  "water-drop-patterned", None, "Summons a permanent water elemental",
 	P_CONJURATION_SPELL,		 5,  3,			 0, 2, 15, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("create monster",  "turquoise", None, "Creates a permanent random monster",
