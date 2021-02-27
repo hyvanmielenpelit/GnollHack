@@ -45,6 +45,7 @@ STATIC_DCL int FDECL(do_chat_priest_normal_healing, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_cure_sickness, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_chat, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_divination, (struct monst*));
+STATIC_DCL int FDECL(do_chat_priest_teach_spells, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_payitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
@@ -71,6 +72,7 @@ STATIC_OVL int FDECL(sell_to_npc, (struct obj*, struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_enchant_accessory, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_recharge, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_blessed_recharge, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_teach_spells, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
@@ -79,6 +81,8 @@ STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
+STATIC_DCL int FDECL(learn_spell_func, (struct monst*));
+STATIC_DCL int FDECL(spell_teaching, (struct monst*, int*));
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -2262,6 +2266,19 @@ dochat()
 
 		chatnum++;
 
+		strcpy(available_chat_list[chatnum].name, "Teach spells");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_teach_spells;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
 		if (mtmp->ispriest && inhistemple(mtmp))
 		{
 			strcpy(available_chat_list[chatnum].name, "Chat about a monetary contribution to the temple");
@@ -2277,6 +2294,7 @@ dochat()
 
 			chatnum++;
 		}
+
 	}
 	else if (is_peaceful(mtmp) && is_priest(mtmp->data) && msound != MS_ORACLE)
 	{
@@ -2751,6 +2769,24 @@ dochat()
 			{
 				Sprintf(available_chat_list[chatnum].name, "Open a branch portal");
 				available_chat_list[chatnum].function_ptr = &do_chat_npc_branch_portal;
+				available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+				any = zeroany;
+				any.a_char = available_chat_list[chatnum].charnum;
+
+				add_menu(win, NO_GLYPH, &any,
+					any.a_char, 0, ATR_NONE,
+					available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+				chatnum++;
+			}
+
+			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELLS_MASK)
+			{
+				char sbuf[BUFSIZ];
+				Sprintf(sbuf, "Teach spells");
+				strcpy(available_chat_list[chatnum].name, sbuf);
+				available_chat_list[chatnum].function_ptr = &do_chat_npc_teach_spells;
 				available_chat_list[chatnum].charnum = 'a' + chatnum;
 
 				any = zeroany;
@@ -5352,6 +5388,42 @@ struct monst* mtmp;
 	return spell_service_query(mtmp, SCR_CHARGING, 1, "fully recharge an item", cost, "fully recharging an item");
 }
 
+STATIC_OVL int
+do_chat_npc_teach_spells(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
+		return 0;
+
+	int spell_otyps[5] = { 0, 0, 0, 0, 0 };
+	int teach_num = 0;
+	if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT)
+	{
+		spell_otyps[teach_num] = SPE_LIGHTNING_BOLT;
+		teach_num++;
+	}
+	if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD)
+	{
+		spell_otyps[teach_num] = SPE_CONE_OF_COLD;
+		teach_num++;
+	}
+	spell_otyps[teach_num] = 0;
+
+	return spell_teaching(mtmp, spell_otyps);
+}
+
+STATIC_OVL int
+do_chat_priest_teach_spells(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->ispriest || !mtmp->mextra || !EPRI(mtmp))
+		return 0;
+
+	int spell_otyps[5] = { SPE_EXTRA_HEALING, SPE_GREATER_HEALING, 0, 0, 0 };
+
+	return spell_teaching(mtmp, spell_otyps);
+}
+
 
 STATIC_OVL int
 do_chat_watchman_reconciliation(mtmp)
@@ -6159,6 +6231,169 @@ struct monst* mtmp;
 	return 1;
 }
 
+STATIC_OVL int
+spell_teaching(mtmp, spell_otyps)
+struct monst* mtmp;
+int* spell_otyps;
+{
+	if(!mtmp || !spell_otyps)
+		return 0;
 
+	int cnt = 0, not_known_cnt = 0;
+	for (int* spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
+	{
+		cnt++;
+		int i = *spell_otyp_ptr;
+		if (!already_learnt_spell_type(i))
+			not_known_cnt++;
+	}
+
+	if (cnt == 0)
+	{
+		verbalize("Unfortunately, I cannot teach any spells at the moment.");
+		return 1;
+	}
+	else if (not_known_cnt == 0)
+	{
+		verbalize("Unfortunately, I cannot teach any spells you do not already know.");
+		return 1;
+	}
+
+
+	int spell_count = 0;
+
+	menu_item* selected = (menu_item*)0;
+	winid win;
+	anything any;
+
+	any = zeroany;
+	win = create_nhwindow(NHW_MENU);
+	start_menu(win);
+
+	for(int* spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
+	{
+		int i = *spell_otyp_ptr;
+
+		if (already_learnt_spell_type(i))
+			continue;
+
+		any = zeroany;
+		char spellbuf[BUFSIZ] = "";
+		struct obj pseudo = zeroobj;
+		pseudo.otyp = i;
+		pseudo.blessed = 1;
+		long cost = get_cost(&pseudo, mtmp);
+		Sprintf(spellbuf, "%s (%ld %s)", OBJ_NAME(objects[i]), cost, currency(cost));
+		*spellbuf = highc(*spellbuf);
+
+		any.a_int = i;
+		char let = 'a' + spell_count;
+
+		add_menu(win, NO_GLYPH, &any,
+			let, 0, ATR_NONE,
+			spellbuf, MENU_UNSELECTED);
+
+		spell_count++;
+	}
+
+	/* Finish the menu */
+	end_menu(win, "Which spell do you want to learn?");
+
+	if (spell_count <= 0)
+	{
+		pline("%s doesn't have any spells to teach.", Monnam(mtmp));
+		destroy_nhwindow(win);
+		return 0;
+	}
+
+	/* Now generate the menu */
+	int pick_count = 0;
+	int learn_count = 0;
+	if ((pick_count = select_menu(win, PICK_ONE, &selected)) > 0)
+	{
+		int spell_to_learn = selected->item.a_int;
+		if (spell_to_learn > 0 && objects[spell_to_learn].oc_class == SPBOOK_CLASS)
+		{
+			struct obj pseudo = zeroobj;
+			pseudo.otyp = spell_to_learn;
+			pseudo.blessed = 1;
+			long cost = get_cost(&pseudo, mtmp);
+			char buf[BUFSIZ] = "";
+			char buf2[BUFSIZ] = "";
+			Sprintf(buf, "learn the spell '%s'", OBJ_NAME(objects[spell_to_learn]));
+			Sprintf(buf2, "learning the spell '%s'", OBJ_NAME(objects[spell_to_learn]));
+			context.spbook.book = &pseudo;
+			context.spbook.reading_result = READING_RESULT_SUCCESS;
+			learn_count = general_service_query(mtmp, learn_spell_func, buf, (int)cost, buf2);
+			context.spbook.book = 0;
+			context.spbook.reading_result = 0;
+		}
+	}
+	else
+		pline1(Never_mind);
+
+	free((genericptr_t)selected);
+	destroy_nhwindow(win);
+
+	if (learn_count > 0)
+		return 1;
+	else
+		return 0;
+}
+
+STATIC_OVL int
+learn_spell_func(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !context.spbook.book)
+		return 0;
+
+	int i = 0;
+	int booktype = context.spbook.book->otyp;
+
+	for (i = 0; i < MAXSPELL; i++)
+		if (spellid(i) == booktype || spellid(i) == NO_SPELL)
+			break;
+
+	if (i == MAXSPELL)
+	{
+		impossible("Too many spells memorized!");
+	}
+	else if (spellid(i) == booktype)
+	{
+		/* Should not happen */
+		if (spellknow(i) > SPELL_IS_KEEN / 10)
+		{
+			play_sfx_sound(SFX_SPELL_KNOWN_ALREADY);
+			You("know %s quite well already.", OBJ_NAME(objects[booktype]));
+		}
+		else
+		{ /* spellknow(i) <= SPELL_IS_KEEN/10 */
+			play_sfx_sound(SFX_SPELL_KEENER);
+			Your("knowledge of %s is %s.", OBJ_NAME(objects[booktype]),
+				spellknow(i) ? "keener" : "restored");
+			incr_spell_nknow(i, 1);
+		}
+	}
+	else
+	{ 
+		spl_book[i].sp_id = booktype;
+		spl_book[i].sp_lev = objects[booktype].oc_spell_level;
+		spl_book[i].sp_matcomp = objects[booktype].oc_material_components;
+		if (spl_book[i].sp_matcomp)
+			spl_book[i].sp_amount = 0; //How many times material components have been mixed
+		else
+			spl_book[i].sp_amount = -1; //Infinite
+		spl_book[i].sp_cooldownlength = objects[booktype].oc_spell_cooldown;
+		spl_book[i].sp_cooldownleft = 0;
+		spl_book[i].sp_skillchance = objects[booktype].oc_spell_skill_chance;
+
+		incr_spell_nknow(i, 1);
+		play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
+		You(i > 0 ? "add %s to your repertoire." : "learn %s.", OBJ_NAME(objects[booktype]));
+	}
+
+	return 1;
+}
 
 /*sounds.c*/

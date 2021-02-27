@@ -12,16 +12,6 @@
 #define SPELLMENU_VIEW (-1)
 #define SPELLMENU_SORT (MAXSPELL) /* special menu entry */
 
-/* spell retention period, in turns; at 10% of this value, player becomes
-   eligible to reread the spellbook and regain 100% retention (the threshold
-   used to be 1000 turns, which was 10% of the original 10000 turn retention
-   period but didn't get adjusted when that period got doubled to 20000) */
-#define KEEN 20000
-/* x: need to add 1 when used for reading a spellbook rather than for hero
-   initialization; spell memory is decremented at the end of each turn,
-   including the turn on which the spellbook is read; without the extra
-   increment, the hero used to get cheated out of 1 turn of retention */
-#define incrnknow(spell, x) (spl_book[spell].sp_know = KEEN + (x))
 
 #define spellev(spell) spl_book[spell].sp_lev
 #define spellamount(spell) spl_book[spell].sp_amount
@@ -469,18 +459,18 @@ learn(VOID_ARGS)
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
         }
-		else if (spellknow(i) > KEEN / 10)
+		else if (spellknow(i) > SPELL_IS_KEEN / 10)
 		{
 			play_sfx_sound(SFX_SPELL_KNOWN_ALREADY);
 			You("know %s quite well already.", splname);
             costly = FALSE;
         }
 		else
-		{ /* spellknow(i) <= KEEN/10 */
+		{ /* spellknow(i) <= SPELL_IS_KEEN/10 */
 			play_sfx_sound(SFX_SPELL_KEENER);
 			Your("knowledge of %s is %s.", splname,
                  spellknow(i) ? "keener" : "restored");
-            incrnknow(i, 1);
+            incr_spell_nknow(i, 1);
             book->spestudied++;
             exercise(A_WIS, TRUE); /* extra study */
         }
@@ -512,7 +502,7 @@ learn(VOID_ARGS)
 			spl_book[i].sp_cooldownleft = 0;
 			spl_book[i].sp_skillchance = objects[booktype].oc_spell_skill_chance;
 
-			incrnknow(i, 1);
+			incr_spell_nknow(i, 1);
             book->spestudied++;
 			play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
             You(i > 0 ? "add %s to your repertoire." : "learn %s.", splname);
@@ -1692,13 +1682,13 @@ boolean atme;
         pline("It invokes nightmarish images in your mind...");
         spell_backfire(spell);
         return 1;
-    } else if (spellknow(spell) <= KEEN / 200) { // 100 turns left
+    } else if (spellknow(spell) <= SPELL_IS_KEEN / 200) { // 100 turns left
         You("strain to recall the spell.");
-    } else if (spellknow(spell) <= KEEN / 40) { // 500 turns left
+    } else if (spellknow(spell) <= SPELL_IS_KEEN / 40) { // 500 turns left
         You("have difficulty remembering the spell.");
-    } else if (spellknow(spell) <= KEEN / 20) { // 1000 turns left
+    } else if (spellknow(spell) <= SPELL_IS_KEEN / 20) { // 1000 turns left
         Your("knowledge of this spell is growing faint.");
-    } else if (spellknow(spell) <= KEEN / 10) { // 2000 turns left
+    } else if (spellknow(spell) <= SPELL_IS_KEEN / 10) { // 2000 turns left
         Your("recall of this spell is gradually fading.");
     }
 	*/
@@ -2706,7 +2696,7 @@ int what;
 			spl_book[i].sp_cooldownleft = 0;
 			spl_book[i].sp_skillchance = objects[SPE_TELEPORT_MONSTER].oc_spell_skill_chance;
 			spl_book[i].sp_amount = -1; //Infinite??
-			spl_book[i].sp_know = KEEN;
+			spl_book[i].sp_know = SPELL_IS_KEEN;
             return REMOVESPELL; /* operation needed to reverse */
         }
     } else { /* spellid(i) == SPE_TELEPORT_MONSTER */
@@ -4074,7 +4064,7 @@ char *outbuf;
     if (turnsleft < 1L) {
         /* spell has expired; hero can't successfully cast it anymore */
         Strcpy(outbuf, "(gone)");
-    } else if (turnsleft >= (long) KEEN) {
+    } else if (turnsleft >= (long) SPELL_IS_KEEN) {
         /* full retention, first turn or immediately after reading book */
         Strcpy(outbuf, "100%");
     } else {
@@ -4090,9 +4080,9 @@ char *outbuf;
          *
          * At the low end of each range, a value of N% really means
          * (N-1)%+1 through N%; so 1% is "greater than 0, at most 200".
-         * KEEN is a multiple of 100; KEEN/100 loses no precision.
+         * SPELL_IS_KEEN is a multiple of 100; SPELL_IS_KEEN/100 loses no precision.
          */
-        percent = (turnsleft - 1L) / ((long) KEEN / 100L) + 1L;
+        percent = (turnsleft - 1L) / ((long) SPELL_IS_KEEN / 100L) + 1L;
         accuracy =
             (skill >= P_EXPERT) ? 2L : (skill == P_SKILLED)
                                            ? 5L
@@ -4153,7 +4143,7 @@ struct obj *obj;
 		spl_book[i].sp_cooldownleft = 0;
 		spl_book[i].sp_skillchance = objects[otyp].oc_spell_skill_chance;
 
-		incrnknow(i, 0);
+		incr_spell_nknow(i, 0);
     }
     return;
 }

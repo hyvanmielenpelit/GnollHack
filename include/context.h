@@ -57,7 +57,7 @@ struct book_info {
     struct obj *book; /* last/current book being xscribed */
     unsigned o_id;    /* o_id of book in save file */
     schar delay;      /* moves left for this spell */
-	boolean reading_result;
+	uchar reading_result;
 };
 
 #define READING_RESULT_SUCCESS 0

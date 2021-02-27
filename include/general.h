@@ -342,5 +342,18 @@ enum main_menu_command {
 #define WAND_OF_PROBING_DIFFICULTY_THRESHOLD -1
 #define SCROLL_OF_REMOVE_CURSE_DIFFICULTY_THRESHOLD -3
 
+/* Moved from spell.c */
+/* spell retention period, in turns; at 10% of this value, player becomes
+   eligible to reread the spellbook and regain 100% retention (the threshold
+   used to be 1000 turns, which was 10% of the original 10000 turn retention
+   period but didn't get adjusted when that period got doubled to 20000) */
+#define SPELL_IS_KEEN 20000
+   /* x: need to add 1 when used for reading a spellbook rather than for hero
+	  initialization; spell memory is decremented at the end of each turn,
+	  including the turn on which the spellbook is read; without the extra
+	  increment, the hero used to get cheated out of 1 turn of retention */
+#define incr_spell_nknow(spell, x) (spl_book[spell].sp_know = SPELL_IS_KEEN + (x))
+
+
 #endif /* GENERAL_H */
 
