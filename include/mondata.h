@@ -371,7 +371,7 @@
 	(!is_blinded(mon))
 
 #define is_deaf(mon) \
-	has_property(mon, DEAF)
+	(has_property(mon, DEAF))
 
 
 /* hallucination */

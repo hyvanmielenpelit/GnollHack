@@ -3430,12 +3430,24 @@ boolean shk_buying;
     }
     else
     {
-        if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
-            tmp *= 5;
-        else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
-            tmp *= 20;
-        else if (obj->exceptionality > EXCEPTIONALITY_ELITE)
-            tmp *= 50;
+        if (shk_buying)
+        {
+            if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
+                tmp = (tmp * 3) /2;
+            else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
+                tmp *= 2;
+            else if (obj->exceptionality > EXCEPTIONALITY_ELITE)
+                tmp *= 3;
+        }
+        else
+        {
+            if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
+                tmp *= 2;
+            else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
+                tmp *= 4;
+            else if (obj->exceptionality > EXCEPTIONALITY_ELITE)
+                tmp *= 8;
+        }
     }
 
     switch (obj->oclass)

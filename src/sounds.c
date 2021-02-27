@@ -1397,12 +1397,15 @@ doyell()
 		boolean petfound = FALSE;
 		for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
 		{
-			if (!DEADMONSTER(mtmp) && is_tame(mtmp) && !is_deaf(mtmp))
+			if (!DEADMONSTER(mtmp) && is_tame(mtmp))
 			{
-				mtmp->mcomingtou = 100 + rnd(50);
-				mtmp->yell_x = u.ux;
-				mtmp->yell_y = u.uy;
 				petfound = TRUE;
+				if (!is_deaf(mtmp))
+				{
+					mtmp->mcomingtou = 100 + rnd(50);
+					mtmp->yell_x = u.ux;
+					mtmp->yell_y = u.uy;
+				}
 			}
 		}
 		You("yell loudly%s!", petfound ? " for your companions" : "");
