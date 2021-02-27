@@ -2095,7 +2095,7 @@ reverse_loot()
         otmp = 0;
         for (coffers = fobj; coffers; coffers = coffers->nobj)
             if (coffers->otyp == CHEST) {
-                if (coffers->special_quality == 2)
+                if (coffers->speflags & SPEFLAGS_ROYAL_COFFER)
                     break; /* a throne room chest */
                 if (!otmp
                     || distu(coffers->ox, coffers->oy)

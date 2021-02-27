@@ -1183,6 +1183,7 @@ int mkobj_type;
     otmp->blessed = 0;
     otmp->lamplit = 0;
     otmp->makingsound = 0;
+    otmp->special_quality = 0;
 
     if (init) 
 	{
