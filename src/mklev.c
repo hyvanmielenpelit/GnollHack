@@ -942,6 +942,11 @@ makelevel()
             && nroom >= room_threshold && shopok)  // rn2(u_depth) < 3))
             res = mkroom(SHOPBASE);
 
+        if (!res && u_depth > 8 && u_depth < depth(&medusa_level) &&
+            ((context.made_temple_count == 0 && (!rn2(7) || u_depth > depth(&oracle_level) + 4))) 
+              || (context.made_temple_count > 0 && !rn2(17))
+            )
+            res = mkroom(TEMPLE);
         if (!res && u_depth > 1 && !rn2(7))
             res = mkroom(SMITHY);
         if (!res && u_depth >= min_npc_appearance_depth() && !rn2(7))
@@ -955,8 +960,6 @@ makelevel()
 			res = mkroom(COURT);
 		if (!res && u_depth > 7 && !rn2(7))
 			res = mkroom(LIBRARY);
-        if (!res && u_depth > 8 && !rn2(6))
-			res = mkroom(TEMPLE);
         if (!res && u_depth > 9 && u_depth < 20 && !rn2(6)
 			&& !(mvitals[PM_KILLER_BEE].mvflags & G_GONE))
 			res = mkroom(BEEHIVE);

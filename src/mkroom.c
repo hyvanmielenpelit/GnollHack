@@ -1503,6 +1503,7 @@ mktemple()
     priestini(&u.uz, sroom, shrine_spot->x, shrine_spot->y, FALSE, NON_PM);
     lev->altarmask |= AM_SHRINE;
     level.flags.has_temple = 1;
+    context.made_temple_count++;
 	return 1;
 }
 

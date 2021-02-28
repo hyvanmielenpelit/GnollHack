@@ -158,6 +158,7 @@ struct context_info
 	boolean made_witch_king;
 	boolean spellpray;	/* is praying initiated by the prayer spell */
 	int made_shop_count;
+    int made_temple_count;
     int made_armory_box_count;
     char used_names[BUFSIZ * 32];
 	struct prop_info properties[LAST_PROP + 1]; /* here until a better place can be found */
