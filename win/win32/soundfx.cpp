@@ -856,6 +856,20 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Player/Generic/Female/Generic Female Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Monster Is Hit with Death Magic", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Weapon No Longer Poisoned", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Unluckily Your Touch Did Not Work", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Luckily Its Touch Did Not Work", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/You Resistance Success STR", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/You Resistance Success DEX", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/You Resistance Success CON", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/You Resistance Success INT", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/You Resistance Success WIS", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/You Resistance Success CHA", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success STR", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success DEX", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success CON", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success INT", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success WIS", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success CHA", 1.0f },
 
 };
 

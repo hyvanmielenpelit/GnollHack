@@ -256,7 +256,8 @@ struct monst* origmonst;
 			break;
 		}
 		/* resist deals the damage and displays the damage dealt */
-		Your("touch jolts %s with electricity!", mon_nam(mtmp));
+        play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
+        Your("touch jolts %s with electricity!", mon_nam(mtmp));
 		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_ELEC, TELL);
 		learn_it = TRUE;
 		break;
@@ -275,7 +276,8 @@ struct monst* origmonst;
 			break;
 		}
 		/* resist deals the damage and displays the damage dealt */
-		Your("fiery touch burns %s!", mon_nam(mtmp));
+        play_sfx_sound(SFX_MONSTER_ON_FIRE);
+        Your("fiery touch burns %s!", mon_nam(mtmp));
 		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_FIRE, TELL);
 		learn_it = TRUE;
 		break;
@@ -294,7 +296,8 @@ struct monst* origmonst;
 			break;
 		}
 		/* resist deals the damage and displays the damage dealt */
-		Your("freezing touch sears %s!", mon_nam(mtmp));
+        play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
+        Your("freezing touch sears %s!", mon_nam(mtmp));
 		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL);
 		learn_it = TRUE;
 		break;
@@ -336,12 +339,14 @@ struct monst* origmonst;
 		} 
 		else if (magic_cancellation_success)
 		{
-			pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
+            play_sfx_sound_at_location(SFX_UNLUCKILY_YOUR_TOUCH_DID_NOT_WORK, mtmp->mx, mtmp->my);
+            pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
 			break; /* skip makeknown */
 		}
 		else
 		{ //Otherwise dead
-			mtmp->mhp = 0;
+            play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mtmp->mx, mtmp->my);
+            mtmp->mhp = 0;
 			if (DEADMONSTER(mtmp)) {
 				killed(mtmp);
 			}
@@ -365,11 +370,13 @@ struct monst* origmonst;
         }
         else if (magic_cancellation_success)
         {
+            play_sfx_sound_at_location(SFX_UNLUCKILY_YOUR_TOUCH_DID_NOT_WORK, mtmp->mx, mtmp->my);
             pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
             break; /* skip makeknown */
         }
         else
         { //Otherwise dead
+            play_sfx_sound(SFX_DISINTEGRATE);
             disintegrate_mon(mtmp, 1, "obliteration spell");
         }
         break;
@@ -380,8 +387,11 @@ struct monst* origmonst;
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
             pline("%s is unaffected.", Monnam(mtmp));
         }
-		else if (check_ability_resistance_success(mtmp, A_DEX, save_adj))
-			pline("%s dodges your spell.", Monnam(mtmp));
+        else if (check_ability_resistance_success(mtmp, A_DEX, save_adj))
+        {
+            play_sfx_sound_at_location(SFX_ENEMY_RESISTANCE_SUCCESS_DEX, mtmp->mx, mtmp->my);
+            pline("%s dodges your spell.", Monnam(mtmp));
+        }
 		else
 			start_delayed_petrification(mtmp, TRUE);
 		break;
@@ -393,8 +403,11 @@ struct monst* origmonst;
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
             pline("%s is unaffected.", Monnam(mtmp));
         }
-		else if (magic_cancellation_success)
-			pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
+        else if (magic_cancellation_success)
+        {
+            play_sfx_sound_at_location(SFX_UNLUCKILY_YOUR_TOUCH_DID_NOT_WORK, mtmp->mx, mtmp->my);
+            pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
+        }
 		else
 			start_delayed_petrification(mtmp, TRUE);
 		break;
@@ -466,7 +479,8 @@ struct monst* origmonst;
 		}
 		else if(!check_ability_resistance_success(mtmp, A_CON, save_adj)) // if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
 		{ //Otherwise dead
-			mtmp->mhp = 0;
+            play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mtmp->mx, mtmp->my);
+            mtmp->mhp = 0;
 			if (DEADMONSTER(mtmp)) {
 				killed(mtmp);
 			}
@@ -489,6 +503,7 @@ struct monst* origmonst;
 		{
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
+            play_sfx_sound_at_location(SFX_ACQUIRE_STUN, mtmp->mx, mtmp->my);
             increase_mon_property_verbosely(mtmp, STUNNED, 10 + rnd(10));
             special_effect_wait_until_end(0);
         }
@@ -512,6 +527,7 @@ struct monst* origmonst;
 		{
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
+            play_sfx_sound_at_location(SFX_ACQUIRE_BLINDNESS, mtmp->mx, mtmp->my);
             increase_mon_property_verbosely(mtmp, BLINDED, duration);
             special_effect_wait_until_end(0);
         }
@@ -523,7 +539,9 @@ struct monst* origmonst;
 		if (!check_ability_resistance_success(mtmp, A_WIS, save_adj)) {
             if (disguised_mimic)
                 seemimic(mtmp);
-			increase_mon_property_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+
+            play_sfx_sound_at_location(SFX_ACQUIRE_SLOW, mtmp->mx, mtmp->my);
+            increase_mon_property_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
 			m_dowear(mtmp, FALSE); /* might want speed boots */
             if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) {
                 You("disrupt %s!", mon_nam(mtmp));
@@ -541,6 +559,7 @@ struct monst* origmonst;
 	case SPE_HASTE_MONSTER:
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
+        play_sfx_sound_at_location(SFX_ACQUIRE_HASTE, mtmp->mx, mtmp->my);
         increase_mon_property_verbosely(mtmp, VERY_FAST, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
         special_effect_wait_until_end(0);
 		break;
@@ -551,7 +570,9 @@ struct monst* origmonst;
 		{
 			if (disguised_mimic)
 				seemimic(mtmp);
-			increase_mon_property_verbosely(mtmp, PARALYZED, duration);
+
+            play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mtmp->mx, mtmp->my);
+            increase_mon_property_verbosely(mtmp, PARALYZED, duration);
 			if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) 
 			{
 				You("disrupt %s!", mon_nam(mtmp));
@@ -583,6 +604,8 @@ struct monst* origmonst;
         {
             if (disguised_mimic)
                 seemimic(mtmp);
+
+            play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mtmp->mx, mtmp->my);
             increase_mon_property_verbosely(mtmp, UNDEAD_IMMOBILITY, duration);
             if (u.uswallow && (mtmp == u.ustuck) && (is_undead(mtmp->data) || is_vampshifter(mtmp)) && is_whirly(mtmp->data))
             {
@@ -5406,6 +5429,7 @@ boolean ordinary;
                       : "You seem no deader than before.");
             break;
         }
+        play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC);
         learn_it = TRUE;
         Sprintf(killer.name, "shot %sself with a death ray", uhim());
         killer.format = NO_KILLER_PREFIX;

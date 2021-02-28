@@ -2908,6 +2908,7 @@ register struct obj* omonwep;
         case 2:
         case 1:
         case 0:
+            play_sfx_sound(SFX_LUCKILY_ITS_TOUCH_DID_NOT_WORK);
             if (Death_resistance)
                 u_shieldeff();
             pline("Lucky for you, it didn't work!");

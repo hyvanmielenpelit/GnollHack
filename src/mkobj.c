@@ -1458,7 +1458,7 @@ int mkobj_type;
         case WAND_CLASS:
 			if (mkobj_type == 0)
 			{
-				if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION)
+				if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION || otmp->otyp == WAN_PETRIFICATION)
 					otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
 
 			}

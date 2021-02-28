@@ -473,6 +473,7 @@ int spellnum;
         } 
 		else 
 		{
+            play_sfx_sound(SFX_LUCKILY_ITS_TOUCH_DID_NOT_WORK);
             //if (Antimagic || magic_resistance_success)
             //    u_shieldeff();
             pline("Lucky for you, it didn't work!");
@@ -704,7 +705,8 @@ int spellnum;
 		}
 		else
 		{
-			pline("Lucky for you, it didn't work!");
+            play_sfx_sound(SFX_LUCKILY_ITS_TOUCH_DID_NOT_WORK);
+            pline("Lucky for you, it didn't work!");
 		}
 		damage = 0;
 		break;
