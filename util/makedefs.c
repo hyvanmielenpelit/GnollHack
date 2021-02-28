@@ -1734,7 +1734,7 @@ static struct win_info window_opts[] = {
 #ifdef MSWIN_GRAPHICS
     { "mswin", "mswin" },
 #endif
-#ifdef MSWIN_GRAPHICS
+#ifdef DLL_GRAPHICS
     { "dll", "dll" },
 #endif
 #ifdef NUKLEAR_GRAPHICS
@@ -1745,7 +1745,8 @@ static struct win_info window_opts[] = {
 #endif
 #ifdef ANDROID_GRAPHICS
 	{ "and", "Android" },
-#endif    { 0, 0 }
+#endif    
+    { 0, 0 }
 };
 
 static void
