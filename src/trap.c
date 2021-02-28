@@ -1429,7 +1429,7 @@ unsigned trflags;
         play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, trap->tx, trap->ty, FALSE);
         play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
         special_effect_wait_until_action(0);
-        dofiretrap((struct obj *) 0, 20);
+        dofiretrap((struct obj *) 0, In_endgame(&u.uz) ? 25 : max(2, min(20, (level_difficulty() * 2) / 3)));
         special_effect_wait_until_end(0);
         break;
 
@@ -2934,7 +2934,8 @@ register struct monst *mtmp;
             }
             else 
             {
-                int num = d(20, 6), alt;
+                int dicenum = In_endgame(&u.uz) ? 25 : max(2, min(20, (level_difficulty() * 2) / 3));
+                int num = d(dicenum, 6), alt;
                 boolean immolate = FALSE;
 
                 /* paper burns very fast, assume straw is tightly
@@ -4007,7 +4008,7 @@ domagictrap()
             play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
             special_effect_wait_until_action(0);
-            dofiretrap((struct obj *) 0, 2);
+            dofiretrap((struct obj *) 0, In_endgame(&u.uz) ? 25 : max(2, min(20, (level_difficulty() * 2) / 3)));
             special_effect_wait_until_end(0);
             break;
 
@@ -6406,7 +6407,7 @@ boolean disarm;
             play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, obj->ox, obj->oy, FALSE);
             play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
             special_effect_wait_until_action(0);
-            dofiretrap(obj, 4);
+            dofiretrap(obj, 3);
             special_effect_wait_until_end(0);
             break;
         case 8:
