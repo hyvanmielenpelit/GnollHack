@@ -55,8 +55,6 @@ static void mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
                                     COLORREF *colorptr);
 static void prompt_for_player_selection(void);
 
-boolean disallow_keyboard_commands_in_wait_loop = FALSE;
-
 #define TOTAL_BRUSHES 10
 HBRUSH brush_table[TOTAL_BRUSHES];
 int max_brush = 0;

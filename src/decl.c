@@ -245,6 +245,7 @@ NEARDATA const struct layer_info zerolayerinfo = DUMMY;
 NEARDATA const struct replacement_info zeroreplacementinfo = DUMMY;
 NEARDATA const struct extended_menu_info zeroextendedmenuinfo = DUMMY;
 
+boolean disallow_keyboard_commands_in_wait_loop = FALSE;
 
 /* originally from dog.c */
 NEARDATA char dogname[PL_PSIZ] = DUMMY;

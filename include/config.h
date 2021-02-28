@@ -52,6 +52,7 @@
 /* #define MSWIN_GRAPHICS */ /* Windows NT, CE, Graphics */
 /* #define NUKLEAR_GRAPHICS */ /* Nuklear */
 /* #define ANDROID_GRAPHICS */ /* Android graphics */
+/* #define DLL_GRAPHICS */     /* Windows via DLL callback */
 
 /*
  * Define the default window system.  This should be one that is compiled
@@ -122,6 +123,15 @@
 #ifdef MSWIN_GRAPHICS
 #ifndef DEFAULT_WINDOW_SYS
 #define DEFAULT_WINDOW_SYS "mswin"
+#endif
+#ifndef HACKDIR
+#define HACKDIR "\\GnollHack"
+#endif
+#endif
+
+#ifdef DLL_GRAPHICS
+#ifndef DEFAULT_WINDOW_SYS
+#define DEFAULT_WINDOW_SYS "dll"
 #endif
 #ifndef HACKDIR
 #define HACKDIR "\\GnollHack"

@@ -38,7 +38,7 @@
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TILES;_WINDOWS;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -196,8 +196,6 @@
     <ClCompile Include="$(WinWin32Dir)mhsplash.c" />
     <ClCompile Include="$(WinWin32Dir)mhstatus.c" />
     <ClCompile Include="$(WinWin32Dir)mhtext.c" />
-    <ClCompile Include="$(WinWin32Dir)mswproc.c" />
-    <ClCompile Include="$(WinWin32Dir)winhack.c" />
     <ClCompile Include="$(SrcDir)encounter.c" />
     <ClCompile Include="$(SrcDir)matcomps.c" />
     <ClCompile Include="$(SrcDir)tiledata.c" />
@@ -207,7 +205,10 @@
     <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
     <ClCompile Include="$(SrcDir)rm.c" />
     <ClCompile Include="$(SrcDir)npc.c" />
+    <ClCompile Include="..\dll\dllhack.c" />
     <ClCompile Include="..\dll\dllmain.cpp" />
+    <ClCompile Include="..\dll\dllproc.c" />
+    <ClCompile Include="..\mswproc.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)winhack.rc" />
@@ -226,7 +227,6 @@
     <ClInclude Include="$(WinWin32Dir)mhsplash.h" />
     <ClInclude Include="$(WinWin32Dir)mhstatus.h" />
     <ClInclude Include="$(WinWin32Dir)mhtext.h" />
-    <ClInclude Include="$(WinWin32Dir)winMS.h" />
     <ClInclude Include="$(FmodDir)core\inc\fmod.hpp" />
     <ClInclude Include="$(FmodDir)fsbank\inc\fsbank.h" />
     <ClInclude Include="$(FmodDir)fsbank\inc\fsbank_errors.h" />
@@ -298,6 +298,8 @@
     <ClInclude Include="..\..\..\include\you.h" />
     <ClInclude Include="..\..\..\include\youprop.h" />
     <ClInclude Include="..\dll\dllmain.h" />
+    <ClInclude Include="..\dll\dllproc.h" />
+    <ClInclude Include="..\winMS.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(WinWin32Dir)GnollHackNew.ico" />

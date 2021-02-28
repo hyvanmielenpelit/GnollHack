@@ -11,9 +11,8 @@
 #include "color.h"
 #include "dlb.h"
 #include "func_tab.h" /* for extended commands */
+#include "dllproc.h"
 #include "winMS.h"
-#include "sdlproc.h"
-#include "sdlnuklear.h"
 #include <assert.h>
 #include <mmsystem.h>
 #include "mhmap.h"
@@ -31,8 +30,6 @@
 #include "mhfont.h"
 #include "resource.h"
 
-extern void mswin_main_loop();
-
 #define LLEN 128
 
 #define NHTRACE_LOG "nhtrace.log"
@@ -40,46 +37,52 @@ extern void mswin_main_loop();
 #ifdef DEBUG
 # ifdef _DEBUG
 static FILE* _s_debugfp = NULL;
-extern void logDebug(const char *fmt, ...);
+extern void dll_logDebug(const char *fmt, ...);
 # endif
 #endif
 
-static void sdl_main_loop(void);
-static void sdl_wait_loop(int milliseconds);
-static void sdl_wait_loop_intervals(int intervals);
-static BOOL sdl_initMapTiles(void);
-static void sdl_color_from_string(char *colorstring, HBRUSH *brushptr,
+#ifndef _DEBUG
+void
+dll_logDebug(const char *fmt, ...)
+{
+}
+#endif
+
+void dll_main_loop(void);
+static void dll_wait_loop(int milliseconds);
+static void dll_wait_loop_intervals(int intervals);
+static BOOL initMapTiles(void);
+static void dll_color_from_string(char *colorstring, HBRUSH *brushptr,
                                     COLORREF *colorptr);
 static void prompt_for_player_selection(void);
 
-#define TOTAL_BRUSHES 10
-HBRUSH sdl_brush_table[TOTAL_BRUSHES];
-int sdl_max_brush = 0;
+#define DLL_TOTAL_BRUSHES 10
+HBRUSH dll_brush_table[DLL_TOTAL_BRUSHES];
+int dll_max_brush = 0;
 
-HBRUSH sdl_menu_bg_brush = NULL;
-HBRUSH sdl_menu_fg_brush = NULL;
-HBRUSH sdl_text_bg_brush = NULL;
-HBRUSH sdl_text_fg_brush = NULL;
-HBRUSH sdl_status_bg_brush = NULL;
-HBRUSH sdl_status_fg_brush = NULL;
-HBRUSH sdl_message_bg_brush = NULL;
-HBRUSH sdl_message_fg_brush = NULL;
+HBRUSH dll_menu_bg_brush = NULL;
+HBRUSH dll_menu_fg_brush = NULL;
+HBRUSH dll_text_bg_brush = NULL;
+HBRUSH dll_text_fg_brush = NULL;
+HBRUSH dll_status_bg_brush = NULL;
+HBRUSH dll_status_fg_brush = NULL;
+HBRUSH dll_message_bg_brush = NULL;
+HBRUSH dll_message_fg_brush = NULL;
 
-COLORREF sdl_menu_bg_color = RGB(0, 0, 0);
-COLORREF sdl_menu_fg_color = RGB(0xFF, 0xFF, 0xFF);
-COLORREF sdl_text_bg_color = RGB(0, 0, 0);
-COLORREF sdl_text_fg_color = RGB(0xFF, 0xFF, 0xFF);
-COLORREF sdl_status_bg_color = RGB(0, 0, 0);
-COLORREF sdl_status_fg_color = RGB(0xFF, 0xFF, 0xFF);
-COLORREF sdl_message_bg_color = RGB(0, 0, 0);
-COLORREF sdl_message_fg_color = RGB(0xFF, 0xFF, 0xFF);
+COLORREF dll_menu_bg_color = RGB(0, 0, 0);
+COLORREF dll_menu_fg_color = RGB(0xFF, 0xFF, 0xFF);
+COLORREF dll_text_bg_color = RGB(0, 0, 0);
+COLORREF dll_text_fg_color = RGB(0xFF, 0xFF, 0xFF);
+COLORREF dll_status_bg_color = RGB(0, 0, 0);
+COLORREF dll_status_fg_color = RGB(0xFF, 0xFF, 0xFF);
+COLORREF dll_message_bg_color = RGB(0, 0, 0);
+COLORREF dll_message_fg_color = RGB(0xFF, 0xFF, 0xFF);
 
-strbuf_t sdl_raw_print_strbuf = { 0 };
-
+strbuf_t dll_raw_print_strbuf = { 0 };
 
 /* Interface definition, for windows.c */
-struct window_procs nuklear_procs = {
-    "nuklear",
+struct window_procs dll_procs = {
+    "DLL",
     WC_COLOR | WC_HILITE_PET | WC_ALIGN_MESSAGE | WC_ALIGN_STATUS | WC_INVERSE
         | WC_SCROLL_AMOUNT | WC_SCROLL_MARGIN | WC_MAP_MODE | WC_FONT_MESSAGE
         | WC_FONT_STATUS | WC_FONT_MENU | WC_FONT_TEXT | WC_FONT_MAP
@@ -90,50 +93,49 @@ struct window_procs nuklear_procs = {
 #ifdef STATUS_HILITES
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
-    WC2_PREFERRED_SCREEN_SCALE, sdl_init_nhwindows, sdl_player_selection, sdl_askname,
-    sdl_get_nh_event, sdl_exit_nhwindows, sdl_suspend_nhwindows,
-    sdl_resume_nhwindows, sdl_create_nhwindow, sdl_clear_nhwindow,
-    sdl_display_nhwindow, sdl_destroy_nhwindow, sdl_curs, sdl_putstr,
-    genl_putmixed, sdl_display_file, sdl_start_menu, sdl_add_menu, sdl_add_extended_menu,
-    sdl_end_menu, sdl_select_menu,
+    WC2_PREFERRED_SCREEN_SCALE, dll_init_nhwindows, dll_player_selection, dll_askname,
+    dll_get_nh_event, dll_exit_nhwindows, dll_suspend_nhwindows,
+    dll_resume_nhwindows, dll_create_nhwindow, dll_clear_nhwindow,
+    dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr,
+    genl_putmixed, dll_display_file, dll_start_menu, dll_add_menu, dll_add_extended_menu,
+    dll_end_menu, dll_select_menu,
     genl_message_menu, /* no need for X-specific handling */
-    sdl_update_inventory, sdl_mark_synch, sdl_wait_synch,
+    dll_update_inventory, dll_mark_synch, dll_wait_synch,
 #ifdef CLIPPING
-    sdl_cliparound,
+    dll_cliparound,
 #endif
 #ifdef POSITIONBAR
     donull,
 #endif
-    sdl_print_glyph, sdl_raw_print, sdl_raw_print_bold, sdl_nhgetch,
-    sdl_nh_poskey, sdl_nhbell, sdl_doprev_message, sdl_yn_function,
-    sdl_getlin, sdl_get_ext_cmd, sdl_number_pad, sdl_delay_output, sdl_delay_output_milliseconds, sdl_delay_output_intervals,
+    dll_print_glyph, dll_raw_print, dll_raw_print_bold, dll_nhgetch,
+    dll_nh_poskey, dll_nhbell, dll_doprev_message, dll_yn_function,
+    dll_getlin, dll_get_ext_cmd, dll_number_pad, dll_delay_output, dll_delay_output_milliseconds, dll_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
-    mswin, sdl_change_background,
+    mswin, dll_change_background,
 #endif
     /* other defs that really should go away (they're tty specific) */
-    sdl_start_screen, sdl_end_screen, sdl_outrip,
-    sdl_preference_update, sdl_getmsghistory, sdl_putmsghistory,
-    sdl_status_init, sdl_status_finish, sdl_status_enablefield,
-    sdl_status_update,
+    dll_start_screen, dll_end_screen, dll_outrip,
+    dll_preference_update, dll_getmsghistory, dll_putmsghistory,
+    dll_status_init, dll_status_finish, dll_status_enablefield,
+    dll_status_update,
     genl_can_suspend_yes,
-    sdl_stretch_window,
-    sdl_set_animation_timer,
-    sdl_open_special_view,
-    sdl_stop_all_sounds,
-    sdl_play_immediate_ghsound,
-    sdl_play_ghsound_occupation_ambient,
-    sdl_play_ghsound_effect_ambient,
-    sdl_set_effect_ambient_volume,
-    sdl_play_ghsound_music,
-    sdl_play_ghsound_level_ambient,
-    sdl_play_ghsound_environment_ambient,
-    sdl_adjust_ghsound_general_volumes,
-    sdl_add_ambient_ghsound,
-    sdl_delete_ambient_ghsound,
-    sdl_set_ambient_ghsound_volume,
-    sdl_exit_hack,
+    dll_stretch_window,
+    dll_set_animation_timer,
+    dll_open_special_view,
+    dll_stop_all_sounds,
+    dll_play_immediate_ghsound,
+    dll_play_ghsound_occupation_ambient,
+    dll_play_ghsound_effect_ambient,
+    dll_set_effect_ambient_volume,
+    dll_play_ghsound_music,
+    dll_play_ghsound_level_ambient,
+    dll_play_ghsound_environment_ambient,
+    dll_adjust_ghsound_general_volumes,
+    dll_add_ambient_ghsound,
+    dll_delete_ambient_ghsound,
+    dll_set_ambient_ghsound_volume,
+    dll_exit_hack,
 };
-
 
 /*
 init_nhwindows(int* argcp, char** argv)
@@ -150,7 +152,7 @@ init_nhwindows(int* argcp, char** argv)
                 ** windows?  Or at least all but WIN_INFO?      -dean
 */
 void
-sdl_init_nhwindows(int *argc, char **argv)
+dll_init_nhwindows(int *argc, char **argv)
 {
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(argv);
@@ -163,17 +165,12 @@ sdl_init_nhwindows(int *argc, char **argv)
     }
 # endif
 #endif
-    logDebug("sdl_init_nhwindows()\n");
+    dll_logDebug("dll_init_nhwindows()\n");
 
-#ifdef USE_TILES
-    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
-#endif
-
-    //Other initializations
     init_resource_fonts();
+
     mswin_nh_input_init();
 
-    PGHSdlApp sdlapp = GetGHSdlApp();
     /* set it to WIN_ERR so we can detect attempts to
        use this ID before it is inialized */
     WIN_MAP = WIN_ERR;
@@ -181,7 +178,7 @@ sdl_init_nhwindows(int *argc, char **argv)
     /* Read Windows settings from the reqistry */
     /* First set safe defaults */
     GetNHApp()->regMainMinX = CW_USEDEFAULT;
-    sdl_read_reg();
+    dll_read_reg();
     /* Create the main window */
     GetNHApp()->hMainWnd = mswin_init_main_window();
     if (!GetNHApp()->hMainWnd) {
@@ -240,7 +237,7 @@ sdl_init_nhwindows(int *argc, char **argv)
     set_option_mod_status("mouse_support", SET_IN_GAME);
 
     /* initialize map tiles bitmap */
-    sdl_initMapTiles();
+    initMapTiles();
 
     /* set tile-related options to readonly */
     set_wc_option_mod_status(WC_TILE_WIDTH | WC_TILE_HEIGHT | WC_TILE_FILE,
@@ -255,22 +252,25 @@ sdl_init_nhwindows(int *argc, char **argv)
             | WC_FONTSIZ_TEXT | WC_VARY_MSGCOUNT,
         SET_IN_GAME);
 
-    sdl_color_from_string(iflags.wc_foregrnd_menu, &menu_fg_brush,
-                            &menu_fg_color);
-    sdl_color_from_string(iflags.wc_foregrnd_message, &message_fg_brush,
-                            &message_fg_color);
-    sdl_color_from_string(iflags.wc_foregrnd_status, &status_fg_brush,
-                            &status_fg_color);
-    sdl_color_from_string(iflags.wc_foregrnd_text, &text_fg_brush,
-                            &text_fg_color);
-    sdl_color_from_string(iflags.wc_backgrnd_menu, &menu_bg_brush,
-                            &menu_bg_color);
-    sdl_color_from_string(iflags.wc_backgrnd_message, &message_bg_brush,
-                            &message_bg_color);
-    sdl_color_from_string(iflags.wc_backgrnd_status, &status_bg_brush,
-                            &status_bg_color);
-    sdl_color_from_string(iflags.wc_backgrnd_text, &text_bg_brush,
-                            &text_bg_color);
+    dll_color_from_string(iflags.wc_foregrnd_menu, &dll_menu_fg_brush,
+                            &dll_menu_fg_color);
+    dll_color_from_string(iflags.wc_foregrnd_message, &dll_message_fg_brush,
+                            &dll_message_fg_color);
+    dll_color_from_string(iflags.wc_foregrnd_status, &dll_status_fg_brush,
+                            &dll_status_fg_color);
+    dll_color_from_string(iflags.wc_foregrnd_text, &dll_text_fg_brush,
+                            &dll_text_fg_color);
+    dll_color_from_string(iflags.wc_backgrnd_menu, &dll_menu_bg_brush,
+                            &dll_menu_bg_color);
+    dll_color_from_string(iflags.wc_backgrnd_message, &dll_message_bg_brush,
+                            &dll_message_bg_color);
+    dll_color_from_string(iflags.wc_backgrnd_status, &dll_status_bg_brush,
+                            &dll_status_bg_color);
+    dll_color_from_string(iflags.wc_backgrnd_text, &dll_text_bg_brush,
+                            &dll_text_bg_color);
+
+    if (iflags.wc_splash_screen)
+        mswin_display_splash_window(FALSE);
 
     iflags.window_inited = TRUE;
 }
@@ -280,9 +280,9 @@ sdl_init_nhwindows(int *argc, char **argv)
    the process. You need to fill in pl_character[0].
 */
 void
-sdl_player_selection(void)
+dll_player_selection(void)
 {
-    logDebug("sdl_player_selection()\n");
+    dll_logDebug("dll_player_selection()\n");
 
     if (iflags.wc_player_selection == VIA_DIALOG) {
         /* pick player type randomly (use pre-selected
@@ -331,9 +331,8 @@ sdl_player_selection(void)
             }
         } else {
             /* select a role */
-            if (!nuklear_player_selection(GetGHSdlApp())) {
-                sdl_bail(0);
-                return;
+            if (!mswin_player_selection_window()) {
+                dll_bail(0);
             }
         }
     } else { /* iflags.wc_player_selection == VIA_PROMPTS */
@@ -352,7 +351,7 @@ prompt_for_player_selection(void)
     menu_item *selected = 0;
     DWORD box_result;
 
-    logDebug("prompt_for_player_selection()\n");
+    dll_logDebug("prompt_for_player_selection()\n");
 
     /* prevent an unnecessary prompt */
     rigid_role_checks();
@@ -368,7 +367,7 @@ prompt_for_player_selection(void)
 
         /* tty_putstr(BASE_WINDOW, 0, ""); */
         /* echoline = wins[BASE_WINDOW]->cury; */
-        box_result = SDL_NHMessageBox(NULL, prompt, MB_YESNOCANCEL | MB_DEFBUTTON1
+        box_result = dll_NHMessageBox(NULL, prompt, MB_YESNOCANCEL | MB_DEFBUTTON1
                                                     | MB_ICONQUESTION);
         pick4u =
             (box_result == IDYES) ? 'y' : (box_result == IDNO) ? 'n' : '\033';
@@ -395,7 +394,7 @@ prompt_for_player_selection(void)
         give_up: /* Quit */
             if (selected)
                 free((genericptr_t) selected);
-            sdl_bail((char *) 0);
+            dll_bail((char *) 0);
             /*NOTREACHED*/
             return;
         }
@@ -701,14 +700,13 @@ prompt_for_player_selection(void)
 
 /* Ask the user for a player name. */
 void
-sdl_askname(void)
+dll_askname(void)
 {
-    logDebug("sdl_askname()\n");
+    dll_logDebug("dll_askname()\n");
 
     if (mswin_getlin_window("Who are you?", plname, PL_NSIZ) == IDCANCEL) {
-        sdl_bail("bye-bye");
+        dll_bail("bye-bye");
         /* not reached */
-        return;
     }
 }
 
@@ -716,11 +714,11 @@ sdl_askname(void)
    A noop for the tty and X window-ports.
 */
 void
-sdl_get_nh_event(void)
+dll_get_nh_event(void)
 {
     MSG msg;
 
-    logDebug("sdl_get_nh_event()\n");
+    dll_logDebug("dll_get_nh_event()\n");
 
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0) {
         if (!TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable, &msg)) {
@@ -735,37 +733,37 @@ sdl_get_nh_event(void)
    except the "window" used for raw_print().  str is printed if possible.
 */
 void
-sdl_exit_nhwindows(const char *str)
+dll_exit_nhwindows(const char *str)
 {
-    logDebug("sdl_exit_nhwindows(%s)\n", str);
+    dll_logDebug("dll_exit_nhwindows(%s)\n", str);
 
     /* Write Window settings to the registry */
-    sdl_write_reg();
+    dll_write_reg();
 
     /* set things back to failsafes */
     windowprocs = *get_safe_procs(0);
 
     /* and make sure there is still a way to communicate something */
-    windowprocs.win_raw_print = mswin_raw_print;
-    windowprocs.win_raw_print_bold = mswin_raw_print_bold;
-    windowprocs.win_wait_synch = mswin_wait_synch;
-    windowprocs.win_exit_hack = sdl_exit_hack;
+    windowprocs.win_raw_print = dll_raw_print;
+    windowprocs.win_raw_print_bold = dll_raw_print_bold;
+    windowprocs.win_wait_synch = dll_wait_synch;
+    windowprocs.win_exit_hack = dll_exit_hack;
 }
 
 /* Prepare the window to be suspended. */
 void
-sdl_suspend_nhwindows(const char *str)
+dll_suspend_nhwindows(const char *str)
 {
-    logDebug("sdl_suspend_nhwindows(%s)\n", str);
+    dll_logDebug("dll_suspend_nhwindows(%s)\n", str);
 
     return;
 }
 
 /* Restore the windows after being suspended. */
 void
-sdl_resume_nhwindows()
+dll_resume_nhwindows()
 {
-    logDebug("sdl_resume_nhwindows()\n");
+    dll_logDebug("dll_resume_nhwindows()\n");
 
     return;
 }
@@ -778,12 +776,12 @@ sdl_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-sdl_create_nhwindow(int type)
+dll_create_nhwindow(int type)
 {
     winid i = 0;
     MSNHMsgAddWnd data;
 
-    logDebug("sdl_create_nhwindow(%d)\n", type);
+    dll_logDebug("dll_create_nhwindow(%d)\n", type);
 
     /* Return the next available winid
      */
@@ -840,9 +838,9 @@ sdl_create_nhwindow(int type)
 
 /* Clear the given window, when asked to. */
 void
-sdl_clear_nhwindow(winid wid)
+dll_clear_nhwindow(winid wid)
 {
-    logDebug("sdl_clear_nhwindow(%d)\n", wid);
+    dll_logDebug("dll_clear_nhwindow(%d)\n", wid);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -851,13 +849,13 @@ sdl_clear_nhwindow(winid wid)
                 if (iflags.wc_map_mode == MAP_MODE_ASCII_FIT_TO_SCREEN ||
                     iflags.wc_map_mode == MAP_MODE_TILES_FIT_TO_SCREEN)
 
-                    mswin_map_mode(sdl_hwnd_from_winid(WIN_MAP),
+                    mswin_map_mode(dll_hwnd_from_winid(WIN_MAP),
                                    ROGUE_LEVEL_MAP_MODE_FIT_TO_SCREEN);
                 else
-                    mswin_map_mode(sdl_hwnd_from_winid(WIN_MAP),
+                    mswin_map_mode(dll_hwnd_from_winid(WIN_MAP),
                                    ROGUE_LEVEL_MAP_MODE);
             else
-                mswin_map_mode(sdl_hwnd_from_winid(WIN_MAP),
+                mswin_map_mode(dll_hwnd_from_winid(WIN_MAP),
                                iflags.wc_map_mode);
         }
 
@@ -876,9 +874,9 @@ sdl_clear_nhwindow(winid wid)
                    --more--, if necessary, in the tty window-port.
 */
 void
-sdl_display_nhwindow(winid wid, BOOLEAN_P block)
+dll_display_nhwindow(winid wid, BOOLEAN_P block)
 {
-    logDebug("sdl_display_nhwindow(%d, %d)\n", wid, block);
+    dll_logDebug("dll_display_nhwindow(%d, %d)\n", wid, block);
     if (GetNHApp()->windowlist[wid].win != NULL) {
         ShowWindow(GetNHApp()->windowlist[wid].win, SW_SHOW);
         mswin_layout_main_window(GetNHApp()->windowlist[wid].win);
@@ -897,7 +895,7 @@ sdl_display_nhwindow(winid wid, BOOLEAN_P block)
                 UpdateWindow(GetNHApp()->windowlist[wid].win);
             } else {
                 if (GetNHApp()->windowlist[wid].type == NHW_MAP) {
-                    (void) sdl_nhgetch();
+                    (void) dll_nhgetch();
                 }
             }
         }
@@ -906,7 +904,7 @@ sdl_display_nhwindow(winid wid, BOOLEAN_P block)
 }
 
 HWND
-sdl_hwnd_from_winid(winid wid)
+dll_hwnd_from_winid(winid wid)
 {
     if (wid >= 0 && wid < MAXWINDOWS) {
         return GetNHApp()->windowlist[wid].win;
@@ -916,7 +914,7 @@ sdl_hwnd_from_winid(winid wid)
 }
 
 winid
-sdl_winid_from_handle(HWND hWnd)
+dll_winid_from_handle(HWND hWnd)
 {
     winid i = 0;
 
@@ -927,7 +925,7 @@ sdl_winid_from_handle(HWND hWnd)
 }
 
 winid
-sdl_winid_from_type(int type)
+dll_winid_from_type(int type)
 {
     winid i = 0;
 
@@ -938,7 +936,7 @@ sdl_winid_from_type(int type)
 }
 
 void
-sdl_window_mark_dead(winid wid)
+dll_window_mark_dead(winid wid)
 {
     if (wid >= 0 && wid < MAXWINDOWS) {
         GetNHApp()->windowlist[wid].win = NULL;
@@ -950,9 +948,9 @@ sdl_window_mark_dead(winid wid)
  * already been dismissed.
 */
 void
-sdl_destroy_nhwindow(winid wid)
+dll_destroy_nhwindow(winid wid)
 {
-    logDebug("sdl_destroy_nhwindow(%d)\n", wid);
+    dll_logDebug("dll_destroy_nhwindow(%d)\n", wid);
 
     if ((GetNHApp()->windowlist[wid].type == NHW_MAP)
         || (GetNHApp()->windowlist[wid].type == NHW_MESSAGE)
@@ -977,9 +975,9 @@ sdl_destroy_nhwindow(winid wid)
  the size of window.
 */
 void
-sdl_curs(winid wid, int x, int y)
+dll_curs(winid wid, int x, int y)
 {
-    logDebug("sdl_curs(%d, %d, %d)\n", wid, x, y);
+    dll_logDebug("dll_curs(%d, %d, %d)\n", wid, x, y);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -1015,15 +1013,15 @@ Attributes
                    by calling more() or displaying both on the same line.
 */
 void
-sdl_putstr(winid wid, int attr, const char *text)
+dll_putstr(winid wid, int attr, const char *text)
 {
-    logDebug("sdl_putstr(%d, %d, %s)\n", wid, attr, text);
+    dll_logDebug("dll_putstr(%d, %d, %s)\n", wid, attr, text);
 
-    sdl_putstr_ex(wid, attr, text, 0);
+    dll_putstr_ex(wid, attr, text, 0);
 }
 
 void
-sdl_putstr_ex(winid wid, int attr, const char *text, int app)
+dll_putstr_ex(winid wid, int attr, const char *text, int app)
 {
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
@@ -1043,7 +1041,7 @@ sdl_putstr_ex(winid wid, int attr, const char *text, int app)
                         (WPARAM) MSNH_MSG_PUTSTR, (LPARAM) &data);
         }
         /* yield a bit so it gets done immediately */
-        sdl_get_nh_event();
+        dll_get_nh_event();
     } else {
         // build text to display later in message box
         GetNHApp()->saved_text =
@@ -1057,12 +1055,12 @@ sdl_putstr_ex(winid wid, int attr, const char *text, int app)
                    iff complain is TRUE.
 */
 void
-sdl_display_file(const char *filename, BOOLEAN_P must_exist)
+dll_display_file(const char *filename, BOOLEAN_P must_exist)
 {
     dlb *f;
     TCHAR wbuf[BUFSZ];
 
-    logDebug("sdl_display_file(%s, %d)\n", filename, must_exist);
+    dll_logDebug("dll_display_file(%s, %d)\n", filename, must_exist);
 
     f = dlb_fopen(filename, RDTMODE);
     if (!f) {
@@ -1070,26 +1068,26 @@ sdl_display_file(const char *filename, BOOLEAN_P must_exist)
             TCHAR message[90];
             _stprintf(message, TEXT("Warning! Could not find file: %s\n"),
                       NH_A2W(filename, wbuf, sizeof(wbuf)));
-            SDL_NHMessageBox(GetNHApp()->hMainWnd, message,
+            dll_NHMessageBox(GetNHApp()->hMainWnd, message,
                          MB_OK | MB_ICONEXCLAMATION);
         }
     } else {
         winid text;
         char line[LLEN];
 
-        text = sdl_create_nhwindow(NHW_TEXT);
+        text = dll_create_nhwindow(NHW_TEXT);
 
         while (dlb_fgets(line, LLEN, f)) {
             size_t len;
             len = strlen(line);
             if (line[len - 1] == '\n')
                 line[len - 1] = '\x0';
-            sdl_putstr(text, ATR_NONE, line);
+            dll_putstr(text, ATR_NONE, line);
         }
         (void) dlb_fclose(f);
 
-        sdl_display_nhwindow(text, 1);
-        sdl_destroy_nhwindow(text);
+        dll_display_nhwindow(text, 1);
+        dll_destroy_nhwindow(text);
     }
 }
 
@@ -1099,9 +1097,9 @@ sdl_display_file(const char *filename, BOOLEAN_P must_exist)
    be used for menus.
 */
 void
-sdl_start_menu(winid wid)
+dll_start_menu(winid wid)
 {
-    logDebug("sdl_start_menu(%d)\n", wid);
+    dll_logDebug("dll_start_menu(%d)\n", wid);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
             && GetNHApp()->windowlist[wid].type == NHW_MENU) {
@@ -1150,11 +1148,11 @@ identifier
                    menu is displayed, set preselected to TRUE.
 */
 void
-sdl_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct extended_menu_info info,
+dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct extended_menu_info info,
                CHAR_P accelerator, CHAR_P group_accel, int attr,
                const char *str, BOOLEAN_P presel)
 {
-    logDebug("sdl_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
+    dll_logDebug("dll_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
              presel);
 
@@ -1179,11 +1177,11 @@ sdl_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct exte
 }
 
 void
-sdl_add_menu(winid wid, int glyph, const ANY_P* identifier,
+dll_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    sdl_add_extended_menu(wid, glyph, identifier, zeroextendedmenuinfo,
+    dll_add_extended_menu(wid, glyph, identifier, zeroextendedmenuinfo,
         accelerator, group_accel, attr,
         str, presel);
 }
@@ -1198,9 +1196,9 @@ end_menu(window, prompt)
                 ** it ever did).  That should be select_menu's job.  -dean
 */
 void
-sdl_end_menu(winid wid, const char *prompt)
+dll_end_menu(winid wid, const char *prompt)
 {
-    logDebug("sdl_end_menu(%d, %s)\n", wid, prompt);
+    dll_logDebug("dll_end_menu(%d, %s)\n", wid, prompt);
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         MSNHMsgEndMenu data;
@@ -1238,11 +1236,11 @@ int select_menu(windid window, int how, menu_item **selected)
                    create_nhwindow() time.
 */
 int
-sdl_select_menu(winid wid, int how, MENU_ITEM_P **selected)
+dll_select_menu(winid wid, int how, MENU_ITEM_P **selected)
 {
     int nReturned = -1;
 
-    logDebug("sdl_select_menu(%d, %d)\n", wid, how);
+    dll_logDebug("dll_select_menu(%d, %d)\n", wid, how);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -1263,9 +1261,9 @@ sdl_select_menu(winid wid, int how, MENU_ITEM_P **selected)
         window up, otherwise empty.
 */
 void
-sdl_update_inventory(VOID_ARGS)
+dll_update_inventory()
 {
-    logDebug("sdl_update_inventory()\n");
+    dll_logDebug("dll_update_inventory()\n");
     if (iflags.perm_invent && program_state.something_worth_saving
         && iflags.window_inited && WIN_INVEN != WIN_ERR)
         display_inventory(NULL, FALSE, 0);
@@ -1277,9 +1275,9 @@ mark_synch()    -- Don't go beyond this point in I/O on any channel until
                    for the moment
 */
 void
-sdl_mark_synch(VOID_ARGS)
+dll_mark_synch()
 {
-    logDebug("sdl_mark_synch()\n");
+    dll_logDebug("dll_mark_synch()\n");
 }
 
 /*
@@ -1289,10 +1287,10 @@ wait_synch()    -- Wait until all pending output is complete (*flush*() for
                    display is OK when return from wait_synch().
 */
 void
-sdl_wait_synch(VOID_ARGS)
+dll_wait_synch()
 {
-    logDebug("sdl_wait_synch()\n");
-    sdl_raw_print_flush();
+    dll_logDebug("dll_wait_synch()\n");
+    dll_raw_print_flush();
 }
 
 /*
@@ -1301,11 +1299,11 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-sdl_cliparound(int x, int y)
+dll_cliparound(int x, int y)
 {
     winid wid = WIN_MAP;
 
-    logDebug("sdl_cliparound(%d, %d)\n", x, y);
+    dll_logDebug("dll_cliparound(%d, %d)\n", x, y);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -1330,12 +1328,12 @@ print_glyph(window, x, y, layers)
                    
 */
 void
-sdl_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
+dll_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
     int glyph = layers.glyph;
     int bkglyph = layers.bkglyph;
 
-    logDebug("sdl_print_glyph(%d, %d, %d, %d, %d)\n", wid, x, y, glyph, bkglyph);
+    dll_logDebug("dll_print_glyph(%d, %d, %d, %d, %d)\n", wid, x, y, glyph, bkglyph);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
@@ -1351,35 +1349,35 @@ sdl_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 }
 
 /*
- * sdl_raw_print_accumulate() accumulate the given text into
+ * dll_raw_print_accumulate() accumulate the given text into
  *   raw_print_strbuf.
  */
 void
-sdl_raw_print_accumulate(const char * str, boolean bold)
+dll_raw_print_accumulate(const char * str, boolean bold)
 {
     bold; // ignored for now
 
-    if (sdl_raw_print_strbuf.str != NULL) strbuf_append(&sdl_raw_print_strbuf, "\n");
-    strbuf_append(&sdl_raw_print_strbuf, str);
+    if (dll_raw_print_strbuf.str != NULL) strbuf_append(&dll_raw_print_strbuf, "\n");
+    strbuf_append(&dll_raw_print_strbuf, str);
 }
 
 /*
- * sdl_raw_print_flush() - display any text found in raw_print_strbuf in a
+ * dll_raw_print_flush() - display any text found in raw_print_strbuf in a
  *   dialog box and clear raw_print_strbuf.
  */
 void
-sdl_raw_print_flush()
+dll_raw_print_flush()
 {
-    if (sdl_raw_print_strbuf.str != NULL) {
-        size_t wlen = strlen(sdl_raw_print_strbuf.str) + 1;
+    if (dll_raw_print_strbuf.str != NULL) {
+        size_t wlen = strlen(dll_raw_print_strbuf.str) + 1;
         TCHAR * wbuf = (TCHAR *) alloc(wlen * sizeof(TCHAR));
         if (wbuf != NULL) {
-            SDL_NHMessageBox(GetNHApp()->hMainWnd,
-                            NH_A2W(sdl_raw_print_strbuf.str, wbuf, wlen),
+            dll_NHMessageBox(GetNHApp()->hMainWnd,
+                            NH_A2W(dll_raw_print_strbuf.str, wbuf, wlen),
                             MB_ICONINFORMATION | MB_OK);
             free(wbuf);
         }
-        strbuf_empty(&sdl_raw_print_strbuf);
+        strbuf_empty(&dll_raw_print_strbuf);
     }
 }
 
@@ -1394,14 +1392,14 @@ raw_print(str)  -- Print directly to a screen, or otherwise guarantee that
                    updating status for micros (i.e, "saving").
 */
 void
-sdl_raw_print(const char *str)
+dll_raw_print(const char *str)
 {
-    logDebug("sdl_raw_print(%s)\n", str);
+    dll_logDebug("dll_raw_print(%s)\n", str);
 
     if (str && *str) {
         extern int redirect_stdout;
         if (!redirect_stdout)
-            sdl_raw_print_accumulate(str, FALSE);
+            dll_raw_print_accumulate(str, FALSE);
         else
             fprintf(stdout, "%s", str);
     }
@@ -1413,13 +1411,13 @@ raw_print_bold(str)
 possible).
 */
 void
-sdl_raw_print_bold(const char *str)
+dll_raw_print_bold(const char *str)
 {
-    logDebug("sdl_raw_print_bold(%s)\n", str);
+    dll_logDebug("dll_raw_print_bold(%s)\n", str);
     if (str && *str) {
         extern int redirect_stdout;
         if (!redirect_stdout)
-            sdl_raw_print_accumulate(str, TRUE);
+            dll_raw_print_accumulate(str, TRUE);
         else
             fprintf(stdout, "%s", str);
     }
@@ -1432,37 +1430,17 @@ int nhgetch()   -- Returns a single character input from the user.
                    Returned character _must_ be non-zero.
 */
 int
-sdl_nhgetch()
+dll_nhgetch()
 {
     PMSNHEvent event;
     int key = 0;
 
-    logDebug("sdl_nhgetch()\n");
-    PGHSdlApp sdlapp = GetGHSdlApp();
-    if (sdlapp->running)
-    {
-        /* Empty normal windows command queue */
-        while ((event = mswin_input_pop()) != NULL)
-            ;
+    dll_logDebug("dll_nhgetch()\n");
 
-        key = nuklear_main_loop(sdlapp);
-        if (key == -1)
-        {
-            //sdl_bail((char*)0);
-            /* Empty normal windows command queue */
-            while ((event = mswin_input_pop()) != NULL)
-                ;
-            
-            key = 0;
-        }
-    }
-    else
-    {
-        while ((event = mswin_input_pop()) == NULL || event->type != NHEVENT_CHAR)
-            mswin_main_loop();
-        key = event->kbd.ch;
-    }
+    while ((event = mswin_input_pop()) == NULL || event->type != NHEVENT_CHAR)
+        dll_main_loop();
 
+    key = event->kbd.ch;
     return (key);
 }
 
@@ -1482,48 +1460,25 @@ int nh_poskey(int *x, int *y, int *mod)
                    routine always returns a non-zero character.
 */
 int
-sdl_nh_poskey(int *x, int *y, int *mod)
+dll_nh_poskey(int *x, int *y, int *mod)
 {
     PMSNHEvent event;
-    int key = 0;
+    int key;
 
-    logDebug("sdl_nh_poskey()\n");
+    dll_logDebug("dll_nh_poskey()\n");
 
-    PGHSdlApp sdlapp = GetGHSdlApp();
-    if (sdlapp->running)
-    {
-        /* Empty normal windows command queue */
-        while ((event = mswin_input_pop()) != NULL)
-            ;
+    while ((event = mswin_input_pop()) == NULL)
+        dll_main_loop();
 
-        key = nuklear_main_loop(sdlapp);
-        if (key == -1)
-        {
-            //sdl_bail((char*)0);
-
-            /* Empty normal windows command queue */
-            while ((event = mswin_input_pop()) != NULL)
-                ;
-
-            key = 0;
+    if (event->type == NHEVENT_MOUSE) {
+	if (iflags.wc_mouse_support) {
+            *mod = event->ms.mod;
+            *x = event->ms.x;
+            *y = event->ms.y;
         }
-    }
-    else
-    {
-        while ((event = mswin_input_pop()) == NULL)
-            mswin_main_loop();
-
-        if (event->type == NHEVENT_MOUSE) {
-            if (iflags.wc_mouse_support) {
-                *mod = event->ms.mod;
-                *x = event->ms.x;
-                *y = event->ms.y;
-            }
-            key = 0;
-        }
-        else {
-            key = event->kbd.ch;
-        }
+        key = 0;
+    } else {
+        key = event->kbd.ch;
     }
     return (key);
 }
@@ -1534,9 +1489,9 @@ nhbell()        -- Beep at user.  [This will exist at least until sounds are
 anyway.]
 */
 void
-sdl_nhbell()
+dll_nhbell()
 {
-    logDebug("sdl_nhbell()\n");
+    dll_logDebug("dll_nhbell()\n");
 }
 
 /*
@@ -1545,10 +1500,10 @@ doprev_message()
                 -- On the tty-port this scrolls WIN_MESSAGE back one line.
 */
 int
-sdl_doprev_message()
+dll_doprev_message()
 {
-    logDebug("sdl_doprev_message()\n");
-    SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_VSCROLL,
+    dll_logDebug("dll_doprev_message()\n");
+    SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_VSCROLL,
                 MAKEWPARAM(SB_LINEUP, 0), (LPARAM) NULL);
     return 0;
 }
@@ -1573,7 +1528,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-sdl_yn_function(const char *question, const char *choices, CHAR_P def)
+dll_yn_function(const char *question, const char *choices, CHAR_P def)
 {
     char ch;
     char yn_esc_map = '\033';
@@ -1582,7 +1537,7 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
     int createcaret;
     boolean digit_ok, allow_num;
 
-    logDebug("sdl_yn_function(%s, %s, %d)\n", question, choices, def);
+    dll_logDebug("dll_yn_function(%s, %s, %d)\n", question, choices, def);
 
     if (WIN_MESSAGE == WIN_ERR && choices == ynchars) {
         char *text =
@@ -1591,7 +1546,7 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
         DWORD box_result;
         strcat(text, question);
         box_result =
-            SDL_NHMessageBox(NULL, NH_W2A(text, message, sizeof(message)),
+            dll_NHMessageBox(NULL, NH_W2A(text, message, sizeof(message)),
                          MB_ICONQUESTION | MB_YESNOCANCEL
                              | ((def == 'y') ? MB_DEFBUTTON1
                                              : (def == 'n') ? MB_DEFBUTTON2
@@ -1626,18 +1581,18 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
     }
 
     createcaret = 1;
-    SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+    SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
-    sdl_clear_nhwindow(WIN_MESSAGE);
-    sdl_putstr(WIN_MESSAGE, ATR_BOLD, message);
+    dll_clear_nhwindow(WIN_MESSAGE);
+    dll_putstr(WIN_MESSAGE, ATR_BOLD, message);
 
     /* Only here if main window is not present */
     ch = 0;
     do {
-        ShowCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
-        ch = sdl_nhgetch();
-        HideCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
+        ShowCaret(dll_hwnd_from_winid(WIN_MESSAGE));
+        ch = dll_nhgetch();
+        HideCaret(dll_hwnd_from_winid(WIN_MESSAGE));
         if (choices)
             ch = lowc(ch);
         else
@@ -1657,19 +1612,19 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
             ch = def;
             break;
         } else if (!index(choices, ch) && !digit_ok) {
-            sdl_nhbell();
+            dll_nhbell();
             ch = (char) 0;
             /* and try again... */
         } else if (ch == '#' || digit_ok) {
             char z, digit_string[2];
             int n_len = 0;
             long value = 0;
-            sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, ("#"), 1);
+            dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, ("#"), 1);
             n_len++;
             digit_string[1] = '\0';
             if (ch != '#') {
                 digit_string[0] = ch;
-                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
+                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
                 n_len++;
                 value = ch - '0';
                 ch = '#';
@@ -1681,7 +1636,7 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
                     if (value < 0)
                         break; /* overflow: try again */
                     digit_string[0] = z;
-                    sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
+                    dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
                     n_len++;
                 } else if (z == 'y' || index(quitchars, z)) {
                     if (z == '\033')
@@ -1693,13 +1648,13 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
                         break;
                     } else {
                         value /= 10;
-                        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string,
+                        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string,
                                         -1);
                         n_len--;
                     }
                 } else {
                     value = -1; /* abort */
-                    sdl_nhbell();
+                    dll_nhbell();
                     break;
                 }
             } while (z != '\n');
@@ -1708,7 +1663,7 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
             else if (value == 0)
                 ch = 'n'; /* 0 => "no" */
             else {        /* remove number from top line, then try again */
-                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, -n_len);
+                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, -n_len);
                 n_len = 0;
                 ch = (char) 0;
             }
@@ -1716,14 +1671,14 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
     } while (!ch);
 
     createcaret = 0;
-    SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+    SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
     /* display selection in the message window */
     if (isprint((uchar) ch) && ch != '#') {
         res_ch[0] = ch;
         res_ch[1] = '\x0';
-        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1);
+        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1);
     }
 
     return ch;
@@ -1740,9 +1695,9 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-sdl_getlin(const char *question, char *input)
+dll_getlin(const char *question, char *input)
 {
-    logDebug("sdl_getlin(%s, %p)\n", question, input);
+    dll_logDebug("dll_getlin(%s, %p)\n", question, input);
 
     if (!iflags.wc_popup_dialog) {
         char c;
@@ -1751,23 +1706,23 @@ sdl_getlin(const char *question, char *input)
         int createcaret;
 
         createcaret = 1;
-        SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+        SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
-        /* sdl_clear_nhwindow(WIN_MESSAGE); */
-        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, question, 0);
-        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, " ", 1);
+        /* dll_clear_nhwindow(WIN_MESSAGE); */
+        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, question, 0);
+        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, " ", 1);
 #ifdef EDIT_GETLIN
-        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0);
+        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0);
         len = strlen(input);
 #else
         input[0] = '\0';
         len = 0;
 #endif
-        ShowCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
+        ShowCaret(dll_hwnd_from_winid(WIN_MESSAGE));
         done = FALSE;
         while (!done) {
-            c = sdl_nhgetch();
+            c = dll_nhgetch();
             switch (c) {
             case VK_ESCAPE:
                 strcpy(input, "\033");
@@ -1780,7 +1735,7 @@ sdl_getlin(const char *question, char *input)
                 break;
             default:
                 if (input[0])
-                    sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, input, -len);
+                    dll_putstr_ex(WIN_MESSAGE, ATR_NONE, input, -len);
                 if (c == VK_BACK) {
                     if (len > 0)
                         len--;
@@ -1791,13 +1746,13 @@ sdl_getlin(const char *question, char *input)
                     input[len++] = c;
                     input[len] = '\0';
                 }
-                sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, input, 1);
+                dll_putstr_ex(WIN_MESSAGE, ATR_NONE, input, 1);
                 break;
             }
         }
-        HideCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
+        HideCaret(dll_hwnd_from_winid(WIN_MESSAGE));
         createcaret = 0;
-        SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+        SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
     } else {
         if (mswin_getlin_window(question, input, BUFSZ) == IDCANCEL) {
@@ -1813,10 +1768,10 @@ int get_ext_cmd(void)
                selection, -1 otherwise.
 */
 int
-sdl_get_ext_cmd()
+dll_get_ext_cmd()
 {
     int ret;
-    logDebug("sdl_get_ext_cmd()\n");
+    dll_logDebug("dll_get_ext_cmd()\n");
 
     if (!iflags.wc_popup_dialog) {
         char c;
@@ -1825,18 +1780,18 @@ sdl_get_ext_cmd()
         int createcaret;
 
         createcaret = 1;
-        SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+        SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
         cmd[0] = '\0';
         i = -2;
-        sdl_clear_nhwindow(WIN_MESSAGE);
-        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, "#", 0);
+        dll_clear_nhwindow(WIN_MESSAGE);
+        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, "#", 0);
         len = 0;
-        ShowCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
+        ShowCaret(dll_hwnd_from_winid(WIN_MESSAGE));
         while (i == -2) {
             int oindex, com_index;
-            c = sdl_nhgetch();
+            c = dll_nhgetch();
             switch (c) {
             case VK_ESCAPE:
                 i = -1;
@@ -1855,7 +1810,7 @@ sdl_get_ext_cmd()
                 break;
             default:
                 if (cmd[0])
-                    sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd,
+                    dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd,
                                     -(int) strlen(cmd));
                 if (c == VK_BACK) {
                     if (len > 0)
@@ -1882,13 +1837,13 @@ sdl_get_ext_cmd()
                         Strcpy(cmd, extcmdlist[com_index].ef_txt);
                     }
                 }
-                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd, 1);
+                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd, 1);
                 break;
             }
         }
-        HideCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
+        HideCaret(dll_hwnd_from_winid(WIN_MESSAGE));
         createcaret = 0;
-        SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+        SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
         return i;
     } else {
@@ -1904,10 +1859,10 @@ number_pad(state)
             -- Initialize the number pad to the given state.
 */
 void
-sdl_number_pad(int state)
+dll_number_pad(int state)
 {
     /* Do Nothing */
-    logDebug("sdl_number_pad(%d)\n", state);
+    dll_logDebug("dll_number_pad(%d)\n", state);
 }
 
 /*
@@ -1916,40 +1871,45 @@ delay_output()  -- Causes a visible delay of 50ms in the output.
                by a nap(50ms), but allows asynchronous operation.
 */
 void
-sdl_delay_output()
+dll_delay_output()
 {
-    logDebug("sdl_delay_output()\n");
+    dll_logDebug("dll_delay_output()\n");
     //Sleep(50);
-    //sdl_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
-    sdl_wait_loop_intervals(DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
+    //dll_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
+    dll_wait_loop_intervals(DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
 }
 
 void
-sdl_delay_output_milliseconds(int interval)
+dll_delay_output_milliseconds(int interval)
 {
-    logDebug("sdl_delay_output_milliseconds()\n");
+    dll_logDebug("dll_delay_output_milliseconds()\n");
     //Sleep(interval);
-    sdl_wait_loop(interval);
+    int counter_before = context.general_animation_counter;
+    dll_wait_loop(interval);
+    int counter_after = context.general_animation_counter;
+    int counter_diff = counter_after - counter_before;
+    dll_logDebug("dll_delay_output_milliseconds counter_diff %d\n", counter_diff);
 }
 
 void
-sdl_delay_output_intervals(int intervals)
+dll_delay_output_intervals(int intervals)
 {
-    logDebug("sdl_delay_output_intervals()\n");
+    dll_logDebug("dll_delay_output_intervals()\n");
     //Sleep(interval);
-    sdl_wait_loop_intervals(intervals);
+    dll_wait_loop_intervals(intervals);
 }
 
+
 void
-sdl_change_color()
+dll_change_color()
 {
-    logDebug("sdl_change_color()\n");
+    dll_logDebug("dll_change_color()\n");
 }
 
 char *
-sdl_get_color_string()
+dll_get_color_string()
 {
-    logDebug("sdl_get_color_string()\n");
+    dll_logDebug("dll_get_color_string()\n");
     return ("");
 }
 
@@ -1961,10 +1921,10 @@ start_screen()  -- Only used on Unix tty ports, but must be declared for
                just declare an empty function.
 */
 void
-sdl_start_screen()
+dll_start_screen()
 {
     /* Do Nothing */
-    logDebug("sdl_start_screen()\n");
+    dll_logDebug("dll_start_screen()\n");
 }
 
 /*
@@ -1972,10 +1932,10 @@ end_screen()    -- Only used on Unix tty ports, but must be declared for
                completeness.  The complement of start_screen().
 */
 void
-sdl_end_screen()
+dll_end_screen()
 {
     /* Do Nothing */
-    logDebug("sdl_end_screen()\n");
+    dll_logDebug("dll_end_screen()\n");
 }
 
 /*
@@ -1985,12 +1945,12 @@ outrip(winid, int, when)
 */
 #define STONE_LINE_LEN 16
 void
-sdl_outrip(winid wid, int how, time_t when)
+dll_outrip(winid wid, int how, time_t when)
 {
     char buf[BUFSZ];
     long year;
 
-    logDebug("sdl_outrip(%d, %d, %ld)\n", wid, how, (long) when);
+    dll_logDebug("dll_outrip(%d, %d, %ld)\n", wid, how, (long) when);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         DestroyWindow(GetNHApp()->windowlist[wid].win);
         GetNHApp()->windowlist[wid].win = mswin_init_RIP_window();
@@ -2023,7 +1983,7 @@ sdl_outrip(winid wid, int how, time_t when)
 
 /* handle options updates here */
 void
-sdl_preference_update(const char *pref)
+dll_preference_update(const char *pref)
 {
     if (stricmp(pref, "font_menu") == 0
         || stricmp(pref, "font_size_menu") == 0) 
@@ -2096,7 +2056,7 @@ sdl_preference_update(const char *pref)
         mswin_get_font(NHW_MESSAGE, ATR_INVERSE, hdc, TRUE);
         ReleaseDC(GetNHApp()->hMainWnd, hdc);
 
-        InvalidateRect(sdl_hwnd_from_winid(WIN_MESSAGE), NULL, TRUE);
+        InvalidateRect(dll_hwnd_from_winid(WIN_MESSAGE), NULL, TRUE);
         mswin_layout_main_window(NULL);
         return;
     }
@@ -2125,12 +2085,12 @@ sdl_preference_update(const char *pref)
     }
 
     if (stricmp(pref, "scroll_amount") == 0) {
-        sdl_cliparound(u.ux, u.uy);
+        dll_cliparound(u.ux, u.uy);
         return;
     }
 
     if (stricmp(pref, "scroll_margin") == 0) {
-        sdl_cliparound(u.ux, u.uy);
+        dll_cliparound(u.ux, u.uy);
         return;
     }
 
@@ -2140,7 +2100,7 @@ sdl_preference_update(const char *pref)
     }
 
     if (stricmp(pref, "hilite_pet") == 0) {
-        InvalidateRect(sdl_hwnd_from_winid(WIN_MAP), NULL, TRUE);
+        InvalidateRect(dll_hwnd_from_winid(WIN_MAP), NULL, TRUE);
         return;
     }
 
@@ -2151,19 +2111,19 @@ sdl_preference_update(const char *pref)
     }
 
     if (stricmp(pref, "vary_msgcount") == 0) {
-        InvalidateRect(sdl_hwnd_from_winid(WIN_MESSAGE), NULL, TRUE);
+        InvalidateRect(dll_hwnd_from_winid(WIN_MESSAGE), NULL, TRUE);
         mswin_layout_main_window(NULL);
         return;
     }
 
     if (stricmp(pref, "perm_invent") == 0) {
-        sdl_update_inventory();
+        dll_update_inventory();
         return;
     }
 
     if (stricmp(pref, "preferred_screen_scale") == 0) {
         dozoomnormal();
-        sdl_stretch_window();
+        dll_stretch_window();
         return;
     }
 
@@ -2171,7 +2131,7 @@ sdl_preference_update(const char *pref)
 
 #define TEXT_BUFFER_SIZE 4096
 char *
-sdl_getmsghistory(BOOLEAN_P init)
+dll_getmsghistory(BOOLEAN_P init)
 {
     static PMSNHMsgGetText text = 0;
     static char *next_message = 0;
@@ -2188,7 +2148,7 @@ sdl_getmsghistory(BOOLEAN_P init)
             - 1; /* make sure we always have 0 at the end of the buffer */
 
         ZeroMemory(text->buffer, TEXT_BUFFER_SIZE);
-        SendMessage(sdl_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
+        SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_GETTEXT, (LPARAM) text);
 
         next_message = text->buffer;
@@ -2212,7 +2172,7 @@ sdl_getmsghistory(BOOLEAN_P init)
 }
 
 void
-sdl_putmsghistory(const char *msg, BOOLEAN_P restoring)
+dll_putmsghistory(const char *msg, BOOLEAN_P restoring)
 {
     BOOL save_sound_opt;
 
@@ -2223,17 +2183,15 @@ sdl_putmsghistory(const char *msg, BOOLEAN_P restoring)
     save_sound_opt = GetNHApp()->bNoSounds;
     GetNHApp()->bNoSounds =
         TRUE; /* disable sounds while restoring message history */
-    sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, msg, 0);
+    dll_putstr_ex(WIN_MESSAGE, ATR_NONE, msg, 0);
     clear_nhwindow(WIN_MESSAGE); /* it is in fact end-of-turn indication so
                                     each message will print on the new line */
     GetNHApp()->bNoSounds = save_sound_opt; /* restore sounds option */
 }
 
 void
-sdl_main_loop()
+dll_main_loop()
 {
-    //OBSOLETE
-
     MSG msg;
 
     while (!mswin_have_input()) {
@@ -2241,7 +2199,7 @@ sdl_main_loop()
             if(GetMessage(&msg, NULL, 0, 0) != 0) {
                 if (GetNHApp()->regGnollHackMode
                     || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable,
-                                                &msg)) {
+                                             &msg)) {
                     TranslateMessage(&msg);
                     DispatchMessage(&msg);
                 }
@@ -2258,7 +2216,7 @@ sdl_main_loop()
 }
 
 void
-sdl_wait_loop(int milliseconds)
+dll_wait_loop(int milliseconds)
 {
     if (milliseconds <= 0)
         return;
@@ -2267,8 +2225,9 @@ sdl_wait_loop(int milliseconds)
     SYSTEMTIME start_systime = { 0 };
     FILETIME start_filetime = { 0 };
     ULARGE_INTEGER start_largeint = { 0 };
-    GetSystemTime(&start_systime);
-    SystemTimeToFileTime(&start_systime, &start_filetime);
+    GetSystemTimeAsFileTime(&start_filetime);
+    //GetSystemTime(&start_systime);
+    //SystemTimeToFileTime(&start_systime, &start_filetime);
     start_largeint.LowPart = start_filetime.dwLowDateTime;
     start_largeint.HighPart = start_filetime.dwHighDateTime;
 
@@ -2298,8 +2257,9 @@ sdl_wait_loop(int milliseconds)
             break;
         }
 
-        GetSystemTime(&current_systime);
-        SystemTimeToFileTime(&current_systime, &current_filetime);
+        GetSystemTimeAsFileTime(&current_filetime);
+        //GetSystemTime(&current_systime);
+        //SystemTimeToFileTime(&current_systime, &current_filetime);
         current_largeint.LowPart = current_filetime.dwLowDateTime;
         current_largeint.HighPart = current_filetime.dwHighDateTime;
 
@@ -2312,7 +2272,7 @@ sdl_wait_loop(int milliseconds)
 }
 
 void
-sdl_wait_loop_intervals(int intervals)
+dll_wait_loop_intervals(int intervals)
 {
     if (intervals <= 0)
         return;
@@ -2338,7 +2298,7 @@ sdl_wait_loop_intervals(int intervals)
             /* WM_QUIT */
             break;
         }
-        
+
         counter_after = context.general_animation_counter;
 
     } while (counter_after - counter_before < intervals && counter_after >= counter_before);
@@ -2350,16 +2310,16 @@ sdl_wait_loop_intervals(int intervals)
 
 /* clean up and quit */
 void
-sdl_bail(const char *mesg)
+dll_bail(const char *mesg)
 {
     clearlocks();
-    sdl_exit_nhwindows(mesg);
+    dll_exit_nhwindows(mesg);
     nh_terminate(EXIT_SUCCESS);
     /*NOTREACHED*/
 }
 
 BOOL
-sdl_initMapTiles(void)
+initMapTiles(void)
 {
     HBITMAP hBmp;
     BITMAP bm;
@@ -2417,12 +2377,12 @@ sdl_initMapTiles(void)
 
     map_size.cx = GetNHApp()->mapTile_X * COLNO;
     map_size.cy = GetNHApp()->mapTile_Y * ROWNO;
-    mswin_map_stretch(sdl_hwnd_from_winid(WIN_MAP), &map_size, TRUE);
+    mswin_map_stretch(dll_hwnd_from_winid(WIN_MAP), &map_size, TRUE);
     return TRUE;
 }
 
 void
-sdl_popup_display(HWND hWnd, int *done_indicator)
+dll_popup_display(HWND hWnd, int *done_indicator)
 {
     MSG msg;
     HWND hChild;
@@ -2479,7 +2439,7 @@ sdl_popup_display(HWND hWnd, int *done_indicator)
 }
 
 void
-sdl_popup_destroy(HWND hWnd)
+dll_popup_destroy(HWND hWnd)
 {
     HWND hChild;
     HMENU hMenu;
@@ -2503,7 +2463,7 @@ sdl_popup_destroy(HWND hWnd)
     DrawMenuBar(GetNHApp()->hMainWnd);
 
     /* Don't hide the permanent inventory window ... leave it showing */
-    if (!iflags.perm_invent || sdl_winid_from_handle(hWnd) != WIN_INVEN)
+    if (!iflags.perm_invent || dll_winid_from_handle(hWnd) != WIN_INVEN)
         ShowWindow(hWnd, SW_HIDE);
 
     GetNHApp()->hPopupWnd = NULL;
@@ -2512,6 +2472,26 @@ sdl_popup_destroy(HWND hWnd)
 
     SetFocus(GetNHApp()->hMainWnd);
 }
+
+#ifdef DEBUG
+# ifdef _DEBUG
+#include <stdarg.h>
+
+void
+dll_logDebug(const char *fmt, ...)
+{
+    va_list args;
+
+    if (!showdebug(NHTRACE_LOG) || !_s_debugfp)
+        return;
+
+    va_start(args, fmt);
+    vfprintf(_s_debugfp, fmt, args);
+    va_end(args);
+    fflush(_s_debugfp);
+}
+# endif
+#endif
 
 /* Reading and writing settings from the registry. */
 #define CATEGORYKEY "Software"
@@ -2557,7 +2537,7 @@ sdl_popup_destroy(HWND hWnd)
 #define INTFKEY "Interface"
 
 void
-sdl_read_reg()
+dll_read_reg()
 {
     HKEY key;
     DWORD size;
@@ -2669,7 +2649,7 @@ sdl_read_reg()
 }
 
 void
-sdl_write_reg()
+dll_write_reg()
 {
     HKEY key;
     DWORD disposition;
@@ -2747,7 +2727,7 @@ sdl_write_reg()
 }
 
 void
-sdl_destroy_reg()
+dll_destroy_reg()
 {
     char keystring[MAX_PATH];
     HKEY key;
@@ -2780,7 +2760,7 @@ sdl_destroy_reg()
 typedef struct ctv {
     const char *colorstring;
     COLORREF colorvalue;
-} color_table_value;
+} dll_color_table_value;
 
 /*
  * The color list here is a combination of:
@@ -2788,7 +2768,7 @@ typedef struct ctv {
  * HTML colors. (See http://www.w3.org/TR/REC-html40/types.html#h-6.5 )
  */
 
-static color_table_value color_table[] = {
+static dll_color_table_value color_table[] = {
     /* GnollHack colors */
     { "black", RGB(0x55, 0x55, 0x55) },
     { "red", RGB(0xFF, 0x00, 0x00) },
@@ -2823,9 +2803,9 @@ static color_table_value color_table[] = {
 typedef struct ctbv {
     char *colorstring;
     int syscolorvalue;
-} color_table_brush_value;
+} dll_color_table_brush_value;
 
-static color_table_brush_value color_table_brush[] = {
+static dll_color_table_brush_value color_table_brush[] = {
     { "activeborder", COLOR_ACTIVEBORDER },
     { "activecaption", COLOR_ACTIVECAPTION },
     { "appworkspace", COLOR_APPWORKSPACE },
@@ -2850,11 +2830,11 @@ static color_table_brush_value color_table_brush[] = {
 };
 
 static void
-sdl_color_from_string(char *colorstring, HBRUSH *brushptr,
+dll_color_from_string(char *colorstring, HBRUSH *brushptr,
                         COLORREF *colorptr)
 {
-    color_table_value *ctv_ptr = color_table;
-    color_table_brush_value *ctbv_ptr = color_table_brush;
+    dll_color_table_value *ctv_ptr = color_table;
+    dll_color_table_brush_value *ctbv_ptr = color_table_brush;
     int red_value, blue_value, green_value;
     static char *hexadecimals = "0123456789abcdef";
 
@@ -2908,18 +2888,18 @@ sdl_color_from_string(char *colorstring, HBRUSH *brushptr,
             }
         }
     }
-	if (sdl_max_brush >= TOTAL_BRUSHES)
+	if (dll_max_brush >= DLL_TOTAL_BRUSHES)
 	{
 		panic("Too many colors!");
 		return;
 	}
     *brushptr = CreateSolidBrush(*colorptr);
-    sdl_brush_table[sdl_max_brush] = *brushptr;
-    sdl_max_brush++;
+    dll_brush_table[dll_max_brush] = *brushptr;
+    dll_max_brush++;
 }
 
 void
-sdl_get_window_placement(int type, LPRECT rt)
+dll_get_window_placement(int type, LPRECT rt)
 {
     switch (type) {
     case NHW_MAP:
@@ -2953,7 +2933,7 @@ sdl_get_window_placement(int type, LPRECT rt)
 }
 
 void
-sdl_update_window_placement(int type, LPRECT rt)
+dll_update_window_placement(int type, LPRECT rt)
 {
     LPRECT rt_conf = NULL;
 
@@ -2988,8 +2968,9 @@ sdl_update_window_placement(int type, LPRECT rt)
     }
 }
 
+
 int
-SDL_NHMessageBox(HWND hWnd, LPCTSTR text, UINT type)
+dll_NHMessageBox(HWND hWnd, LPCTSTR text, UINT type)
 {
     TCHAR title[MAX_LOADSTRING];
 
@@ -2997,6 +2978,7 @@ SDL_NHMessageBox(HWND hWnd, LPCTSTR text, UINT type)
 
     return MessageBox(hWnd, text, title, type);
 }
+
 
 static mswin_status_lines _status_lines;
 static mswin_status_string _status_strings[MAXBLSTATS];
@@ -3048,9 +3030,9 @@ status_init()   -- core calls this to notify the window port that a status
                    the necessary initialization in here, allocate memory, etc.
 */
 void
-sdl_status_init(void)
+dll_status_init(void)
 {
-    logDebug("sdl_status_init()\n");
+    dll_logDebug("dll_status_init()\n");
 
     for (int i = 0; i < SIZE(_status_fields); i++) {
         mswin_status_field * status_field = &_status_fields[i];
@@ -3123,9 +3105,9 @@ status_finish() -- called when it is time for the window port to tear down
                    the status display and free allocated memory, etc.
 */
 void
-sdl_status_finish(void)
+dll_status_finish(void)
 {
-    logDebug("sdl_status_finish()\n");
+    dll_logDebug("dll_status_finish()\n");
 }
 
 /*
@@ -3143,10 +3125,10 @@ status_enablefield(int fldindex, char fldname, char fieldfmt, boolean enable)
                 -- There are MAXBLSTATS status fields (from botl.h)
 */
 void
-sdl_status_enablefield(int fieldidx, const char *nm, const char *fmt,
+dll_status_enablefield(int fieldidx, const char *nm, const char *fmt,
                          boolean enable)
 {
-    logDebug("sdl_status_enablefield(%d, %s, %s, %d)\n", fieldidx, nm, fmt,
+    dll_logDebug("dll_status_enablefield(%d, %s, %s, %d)\n", fieldidx, nm, fmt,
              (int) enable);
 
     nhassert(fieldidx <= SIZE(_status_fields));
@@ -3174,7 +3156,7 @@ sdl_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 
 /* TODO: turn this into a commmon helper; multiple identical implementations */
 static int
-sdl_condcolor(bm, bmarray)
+dll_condcolor(bm, bmarray)
 long bm;
 unsigned long *bmarray;
 {
@@ -3189,7 +3171,7 @@ unsigned long *bmarray;
 }
 
 static int
-sdl_condattr(bm, bmarray)
+dll_condattr(bm, bmarray)
 long bm;
 unsigned long *bmarray;
 {
@@ -3250,7 +3232,7 @@ status_update(int fldindex, genericptr_t ptr, int chg, int percent, int color, u
                    color and attriubte.
 */
 void
-sdl_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *condmasks)
+dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *condmasks)
 {
     long cond, *condptr = (long *) ptr;
     char *text = (char *) ptr;
@@ -3258,7 +3240,7 @@ sdl_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, un
     int ocolor, ochar;
     unsigned long ospecial;
 
-    logDebug("sdl_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
+    dll_logDebug("dll_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
 
     if (idx >= 0) {
 
@@ -3291,8 +3273,8 @@ sdl_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, un
                 if (condition_field->mask & cond) {
                     status_string->str = condition_field->name;
                     status_string->space_in_front = TRUE;
-                    status_string->color = sdl_condcolor(condition_field->mask, condmasks);
-                    status_string->attribute = sdl_condattr(condition_field->mask, condmasks);
+                    status_string->color = dll_condcolor(condition_field->mask, condmasks);
+                    status_string->attribute = dll_condattr(condition_field->mask, condmasks);
                 }
                 else
                     status_string->str = NULL;
@@ -3355,13 +3337,13 @@ sdl_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, un
         /* send command to status window to update */
         ZeroMemory(&update_cmd_data, sizeof(update_cmd_data));
         update_cmd_data.status_lines = &_status_lines;
-        SendMessage(sdl_hwnd_from_winid(WIN_STATUS), WM_MSNH_COMMAND,
+        SendMessage(dll_hwnd_from_winid(WIN_STATUS), WM_MSNH_COMMAND,
             (WPARAM)MSNH_MSG_UPDATE_STATUS, (LPARAM)&update_cmd_data);
     }
 }
 
 void
-sdl_stretch_window(void)
+dll_stretch_window(void)
 {
     if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
         MSNHMsgClipAround data;
@@ -3375,7 +3357,7 @@ sdl_stretch_window(void)
 }
 
 void
-sdl_set_animation_timer(unsigned int interval)
+dll_set_animation_timer(unsigned int interval)
 {
     if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
         UINT data;
@@ -3389,13 +3371,13 @@ sdl_set_animation_timer(unsigned int interval)
 
 
 void
-sdl_open_special_view(struct special_view_info info)
+dll_open_special_view(struct special_view_info info)
 {
     return;
 }
 
 void
-sdl_stop_all_sounds(struct stop_all_info info)
+dll_stop_all_sounds(struct stop_all_info info)
 {
     if (!fmod_stop_all_sounds(info))
     {
@@ -3404,7 +3386,7 @@ sdl_stop_all_sounds(struct stop_all_info info)
 }
 
 void
-sdl_play_immediate_ghsound(struct ghsound_immediate_info info)
+dll_play_immediate_ghsound(struct ghsound_immediate_info info)
 {
     if (!fmod_play_immediate_sound(info))
     {
@@ -3413,7 +3395,7 @@ sdl_play_immediate_ghsound(struct ghsound_immediate_info info)
 }
 
 void
-sdl_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
+dll_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
 {
     if (!fmod_play_occupation_ambient_sound(info))
     {
@@ -3422,7 +3404,7 @@ sdl_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
 }
 
 void
-sdl_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
+dll_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 {
     if (!fmod_play_effect_ambient_sound(info))
     {
@@ -3431,7 +3413,7 @@ sdl_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 }
 
 void
-sdl_set_effect_ambient_volume(struct effect_ambient_volume_info info)
+dll_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 {
     if (!fmod_set_effect_ambient_volume(info))
     {
@@ -3440,7 +3422,7 @@ sdl_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 }
 
 void
-sdl_play_ghsound_music(struct ghsound_music_info info)
+dll_play_ghsound_music(struct ghsound_music_info info)
 {
     if (!fmod_play_music(info))
     {
@@ -3449,7 +3431,7 @@ sdl_play_ghsound_music(struct ghsound_music_info info)
 }
 
 void
-sdl_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
+dll_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 {
     if (!fmod_play_level_ambient_sound(info))
     {
@@ -3458,7 +3440,7 @@ sdl_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 }
 
 void
-sdl_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info)
+dll_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info)
 {
     if (!fmod_play_environment_ambient_sound(info))
     {
@@ -3467,7 +3449,7 @@ sdl_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info inf
 }
 
 void
-sdl_adjust_ghsound_general_volumes(VOID_ARGS)
+dll_adjust_ghsound_general_volumes(VOID_ARGS)
 {
     float new_general_volume = ((float)flags.sound_volume_general) / 100.0f;
     float new_music_volume = ((float)flags.sound_volume_music) / 100.0f;
@@ -3482,7 +3464,7 @@ sdl_adjust_ghsound_general_volumes(VOID_ARGS)
 }
 
 void
-sdl_add_ambient_ghsound(struct soundsource_t* soundsource)
+dll_add_ambient_ghsound(struct soundsource_t* soundsource)
 {
     if (!fmod_add_ambient_ghsound(soundsource->ghsound, soundsource->heard_volume, &soundsource->ambient_ghsound_ptr))
     {
@@ -3491,7 +3473,7 @@ sdl_add_ambient_ghsound(struct soundsource_t* soundsource)
 }
 
 void
-sdl_delete_ambient_ghsound(struct soundsource_t* soundsource)
+dll_delete_ambient_ghsound(struct soundsource_t* soundsource)
 {
     if (!fmod_delete_ambient_ghsound(soundsource->ambient_ghsound_ptr))
     {
@@ -3500,7 +3482,7 @@ sdl_delete_ambient_ghsound(struct soundsource_t* soundsource)
 }
 
 void
-sdl_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
+dll_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 {
     if (!fmod_set_ambient_ghsound_volume(soundsource->ambient_ghsound_ptr, soundsource->heard_volume))
     {
@@ -3509,23 +3491,10 @@ sdl_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 }
 
 void
-sdl_init_platform(VOID_ARGS)
+dll_init_platform(VOID_ARGS)
 {
     /* GDI+ */
     StartGdiplus();
-
-    /* SDL */
-
-    PGHSdlApp sdlapp = GetGHSdlApp();
-    PNHWinApp ghapp = GetNHApp();
-
-    /* Nuklear */
-    init_nuklear(ghapp->hApp, sdlapp);
-
-    /* Adjust raw prints */
-    windowprocs.win_raw_print = sdl_raw_print;
-    windowprocs.win_raw_print_bold = sdl_raw_print_bold;
-    windowprocs.win_wait_synch = sdl_wait_synch;
 
     /* FMOD Studio */
     if (!initialize_fmod_studio())
@@ -3560,24 +3529,24 @@ sdl_init_platform(VOID_ARGS)
         }
     }
 
+    /* Tiles */
+#ifdef USE_TILES
+    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
+#endif
+
+
 }
 
 void
-sdl_exit_platform(int status)
+dll_exit_platform(int status)
 {
-    PGHSdlApp sdlapp = GetGHSdlApp();
-    if (sdlapp->running)
-    {
-        sdlapp->running = 0;
-        (void)shutdown_nuklear();
-    }
     StopGdiplus();
     (void)close_fmod_studio();
     gnollhack_exit(status);
 }
 
 void
-sdl_exit_hack(int status)
+dll_exit_hack(int status)
 {
-    sdl_exit_platform(EXIT_SUCCESS);
+    dll_exit_platform(status);
 }

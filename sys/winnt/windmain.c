@@ -28,7 +28,7 @@ boolean NDECL(fakeconsole);
 void NDECL(freefakeconsole);
 E void FDECL(gnollhack_exit, (int));
 E char chosen_windowtype[WINTYPELEN];   /* flag.h */
-#if defined(MSWIN_GRAPHICS) || defined(NUKLEAR_GRAPHICS)
+#if defined(MSWIN_GRAPHICS) || defined(NUKLEAR_GRAPHICS) || defined(DLL_GRAPHICS)
 E void NDECL(mswin_destroy_reg);
 #endif
 #ifdef TTY_GRAPHICS
@@ -57,6 +57,8 @@ extern int GUILaunched;
 HANDLE hStdOut;
 #if defined(NUKLEAR_GRAPHICS)
 char default_window_sys[] = "nuklear";
+#elif defined(DLL_GRAPHICS)
+char default_window_sys[] = "dll";
 #elif defined(MSWIN_GRAPHICS)
 char default_window_sys[] = "mswin";
 #endif
@@ -266,7 +268,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
  */
 
     if (argc >= 1
-        && (!strcmpi(default_window_sys, "mswin") || !strcmpi(default_window_sys, "nuklear"))
+        && (!strcmpi(default_window_sys, "mswin") || !strcmpi(default_window_sys, "nuklear") || !strcmpi(default_window_sys, "dll"))
         && (strstri(argv[0], "GnollHackw.exe") || GUILaunched))
             iflags.windowtype_locked = TRUE;
 

@@ -529,7 +529,8 @@ struct early_opt {
     boolean valallowed;
 };
 
-NEARDATA extern coord bhitpos; /* place where throw or zap hits or stops */
+NEARDATA E coord bhitpos; /* place where throw or zap hits or stops */
+E boolean disallow_keyboard_commands_in_wait_loop;
 
 #undef E
 

@@ -15,6 +15,9 @@ struct window_procs mswin_procs = { "-guistubs" };
 #ifdef NUKLEAR_GRAPHICS
 struct window_procs nuklear_procs = { "-guistubs" };
 #endif
+#ifdef DLL_GRAPHICS
+struct window_procs dll_procs = { "-guistubs" };
+#endif
 #ifdef QT_GRAPHICS
 struct window_procs Qt_procs = { "-guistubs" };
 int qt_tilewidth, qt_tileheight, qt_fontsize, qt_compact_mode;
