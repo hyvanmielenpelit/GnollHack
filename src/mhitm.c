@@ -1070,7 +1070,7 @@ struct attack *mattk;
     }
 
     if (sfx_sound != SFX_ILLEGAL)
-        play_sfx_sound_at_location(sfx_sound, magr->mx, magr->my);
+        play_sfx_sound_at_location_with_minimum_volume(sfx_sound, magr->mx, magr->my, 0.15);
 
     if (cansee(magr->mx, magr->my))
         pline("%s explodes!", Monnam(magr));
