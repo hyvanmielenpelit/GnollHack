@@ -139,6 +139,7 @@ uchar mkflags; /* for monks */
     short eligible[NUM_ARTIFACTS];
 	boolean nonweaponsonly = !!(mkflags & MKARTIFACT_FLAGS_NONWEAPONS_ONLY);
 	boolean novorpal = !!(mkflags & MKARTIFACT_FLAGS_NO_VORPAL_WEAPONS);
+	boolean weaponsonly = !!(mkflags & MKARTIFACT_FLAGS_WEAPONS_ONLY);
 
     n = altn = 0;    /* no candidates found yet */
     eligible[0] = 0; /* lint suppression */
@@ -150,6 +151,8 @@ uchar mkflags; /* for monks */
         if ((a->aflags & AF_NOGEN) || unique)
             continue;
 		if (nonweaponsonly && objects[a->otyp].oc_class == WEAPON_CLASS)
+			continue;
+		if (weaponsonly && objects[a->otyp].oc_class != WEAPON_CLASS)
 			continue;
 		if (novorpal && ((a->aflags & (AF_BEHEAD | AF_BISECT)) != 0 || (objects[a->otyp].oc_aflags & (A1_VORPAL | A1_BISECT)) != 0))
 			continue;

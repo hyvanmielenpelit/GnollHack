@@ -776,12 +776,15 @@ struct mkroom *sroom;
         }
         if (!special_item_created && lastbox && firstbox && rn2(100) < special_item_chance)
         {
-            struct obj* item = mk_artifact((struct obj*)0, A_NONE, MKARTIFACT_FLAGS_NONE);
-            if (item)
+            struct obj* box = !middlebox || rn2(3) ? (!rn2(2) ? firstbox : lastbox) : middlebox;
+            if (box)
             {
-                struct obj* box = !middlebox || rn2(3) ? (!rn2(2) ? firstbox : lastbox) : middlebox;
-                add_to_container(box, item);
-                box->owt = weight(box);
+                struct obj* item = mk_artifact((struct obj*)0, A_NONE, MKARTIFACT_FLAGS_WEAPONS_ONLY);
+                if (item)
+                {
+                    add_to_container(box, item);
+                    box->owt = weight(box);
+                }
             }
         }
         if (!anvil_created)
