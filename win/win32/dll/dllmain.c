@@ -5,10 +5,12 @@
 
 #include <windows.h>
 #include "dllmain.h"
+#include "tradstdc.h"
+
 
 extern boolean main(int argc, char** argv);
 extern struct callback_procs dll_callbacks;
-extern void set_dll_wincaps(unsigned long wincap1, unsigned long wincap2);
+extern void FDECL(set_dll_wincaps, (unsigned long, unsigned long));
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
