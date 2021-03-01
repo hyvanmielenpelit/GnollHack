@@ -34,7 +34,8 @@
     <WinShareDir>$(RootDir)win\share\</WinShareDir>
     <WinTtyDir>$(RootDir)win\tty\</WinTtyDir>
     <WinWin32Dir>$(RootDir)win\win32\</WinWin32Dir>
-    <MonoGameBinDir>$(RootDir)bin\$(Configuration)\netcoreapp3.1</MonoGameBinDir>
+    <MonoGameBinDir>$(RootDir)bin\$(Configuration)\netcoreapp3.1\</MonoGameBinDir>
+    <GnollHackServerBinDir>$(RootDir)bin\$(Configuration)\net5.0\</GnollHackServerBinDir>
     <OutDir>$(ToolsDir)</OutDir>
 	<IntDir>$(ObjDir)</IntDir>
 	<WinCursDir>$(RootDir)win\curses\</WinCursDir>
