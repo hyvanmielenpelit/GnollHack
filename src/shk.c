@@ -3437,7 +3437,7 @@ boolean shk_buying;
         if (shk_buying)
         {
             if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
-                tmp = (tmp * 3) /2;
+                tmp = (tmp * 3) / 2;
             else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
                 tmp *= 2;
             else if (obj->exceptionality > EXCEPTIONALITY_ELITE)

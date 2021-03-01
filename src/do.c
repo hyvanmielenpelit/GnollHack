@@ -1128,7 +1128,7 @@ register struct obj* obj;
 		else
 			Sprintf(buf2, "%d gold", objects[otyp].oc_cost);
 
-		Sprintf(buf, "Value:                  %s", buf2);
+		Sprintf(buf, "Base value:             %s", buf2);
 		txt = buf;
 		putstr(datawin, 0, txt);
 

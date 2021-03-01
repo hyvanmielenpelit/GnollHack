@@ -72,9 +72,8 @@ extern int GUILaunched;     /* We tell shared startup code in windmain.c
 #define _strdup(s1) strdup(s1)
 #endif
 
-// Foward declarations of functions included in this code module:
+// Forward declarations of functions included in this code module:
 extern boolean FDECL(main, (int, char **));
-static void __cdecl mswin_moveloop(void *);
 
 #define MAX_CMDLINE_PARAM 255
 
