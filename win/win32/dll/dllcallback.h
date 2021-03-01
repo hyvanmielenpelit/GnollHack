@@ -28,7 +28,7 @@ typedef int(__stdcall* BooleanVoidCallback)();
 
 /* Specific callback types */
 typedef VoidVoidCallback InitWindowsCallback;
-typedef VoidVoidCallback PlayerSelectionCallback;
+typedef IntVoidCallback PlayerSelectionCallback;
 typedef VoidVoidCallback AskNameCallback;
 typedef VoidVoidCallback GetEventCallback;
 typedef VoidConstCharCallback ExitWindowsCallback;
