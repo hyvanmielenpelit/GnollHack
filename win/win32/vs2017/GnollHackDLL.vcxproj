@@ -205,8 +205,7 @@
     <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
     <ClCompile Include="$(SrcDir)rm.c" />
     <ClCompile Include="$(SrcDir)npc.c" />
-    <ClCompile Include="..\dll\dllhack.c" />
-    <ClCompile Include="..\dll\dllmain.cpp" />
+    <ClCompile Include="..\dll\dllmain.c" />
     <ClCompile Include="..\dll\dllproc.c" />
     <ClCompile Include="..\mswproc.c" />
   </ItemGroup>
@@ -297,6 +296,7 @@
     <ClInclude Include="..\..\..\include\wintype.h" />
     <ClInclude Include="..\..\..\include\you.h" />
     <ClInclude Include="..\..\..\include\youprop.h" />
+    <ClInclude Include="..\dll\dllcallback.h" />
     <ClInclude Include="..\dll\dllmain.h" />
     <ClInclude Include="..\dll\dllproc.h" />
     <ClInclude Include="..\winMS.h" />

@@ -29,6 +29,9 @@
 #include "mhmain.h"
 #include "mhfont.h"
 #include "resource.h"
+#include "dllcallback.h"
+
+NHWinApp _GnollHack_app;
 
 #define LLEN 128
 
@@ -136,6 +139,8 @@ struct window_procs dll_procs = {
     dll_set_ambient_ghsound_volume,
     dll_exit_hack,
 };
+
+struct callback_procs dll_callbacks = { 0 }; /* To be set by RunGnollHack in dllmain.cpp */
 
 /*
 init_nhwindows(int* argcp, char** argv)
@@ -3549,4 +3554,244 @@ void
 dll_exit_hack(int status)
 {
     dll_exit_platform(status);
+}
+
+
+
+
+
+#if !defined(SAFEPROCS)
+#error You must #define SAFEPROCS to build winhack.c
+#endif
+
+/* Borland and MinGW redefine "boolean" in shlwapi.h,
+   so just use the little bit we need */
+typedef struct _DLLVERSIONINFO {
+    DWORD cbSize;
+    DWORD dwMajorVersion; // Major version
+    DWORD dwMinorVersion; // Minor version
+    DWORD dwBuildNumber;  // Build number
+    DWORD dwPlatformID;   // DLLVER_PLATFORM_*
+} DLLVERSIONINFO;
+
+//
+// The caller should always GetProcAddress("DllGetVersion"), not
+// implicitly link to it.
+//
+
+typedef HRESULT(CALLBACK* DLLGETVERSIONPROC)(DLLVERSIONINFO*);
+
+/* end of shlwapi.h */
+
+/* Minimal common control library version
+Version     _WIN_32IE   Platform/IE
+=======     =========   ===========
+4.00        0x0200      Microsoft(r) Windows 95/Windows NT 4.0
+4.70        0x0300      Microsoft(r) Internet Explorer 3.x
+4.71        0x0400      Microsoft(r) Internet Explorer 4.0
+4.72        0x0401      Microsoft(r) Internet Explorer 4.01
+...and probably going on infinitely...
+*/
+#define MIN_COMCTLMAJOR 4
+#define MIN_COMCTLMINOR 71
+#define INSTALL_NOTES "http://www.GnollHack.org/v340/ports/download-win.html#cc"
+/*#define COMCTL_URL
+ * "http://www.microsoft.com/msdownload/ieplatform/ie/comctrlx86.asp"*/
+
+PNHWinApp
+GetNHApp()
+{
+    return &_GnollHack_app;
+}
+
+TCHAR*
+_get_cmd_arg(TCHAR* pCmdLine)
+{
+    static TCHAR* pArgs = NULL;
+    TCHAR* pRetArg;
+    BOOL bQuoted;
+
+    if (!pCmdLine && !pArgs)
+        return NULL;
+    if (!pArgs)
+        pArgs = pCmdLine;
+
+    /* skip whitespace */
+    for (pRetArg = pArgs; *pRetArg && _istspace(*pRetArg);
+        pRetArg = CharNext(pRetArg))
+        ;
+    if (!*pRetArg) {
+        pArgs = NULL;
+        return NULL;
+    }
+
+    /* check for quote */
+    if (*pRetArg == TEXT('"')) {
+        bQuoted = TRUE;
+        pRetArg = CharNext(pRetArg);
+        pArgs = _tcschr(pRetArg, TEXT('"'));
+    }
+    else {
+        /* skip to whitespace */
+        for (pArgs = pRetArg; *pArgs && !_istspace(*pArgs);
+            pArgs = CharNext(pArgs))
+            ;
+    }
+
+    if (pArgs && *pArgs) {
+        TCHAR* p;
+        p = pArgs;
+        pArgs = CharNext(pArgs);
+        *p = (TCHAR)0;
+    }
+    else {
+        pArgs = NULL;
+    }
+
+    return pRetArg;
+}
+
+/* Get the version of the Common Control library on this machine.
+   Copied from the Microsoft SDK
+ */
+HRESULT
+GetComCtlVersion(LPDWORD pdwMajor, LPDWORD pdwMinor)
+{
+    HINSTANCE hComCtl;
+    HRESULT hr = S_OK;
+    DLLGETVERSIONPROC pDllGetVersion;
+
+    if (IsBadWritePtr(pdwMajor, sizeof(DWORD))
+        || IsBadWritePtr(pdwMinor, sizeof(DWORD)))
+        return E_INVALIDARG;
+    // load the DLL
+    hComCtl = LoadLibrary(TEXT("comctl32.dll"));
+    if (!hComCtl)
+        return E_FAIL;
+
+    /*
+    You must get this function explicitly because earlier versions of the DLL
+    don't implement this function. That makes the lack of implementation of
+    the
+    function a version marker in itself.
+    */
+    pDllGetVersion =
+        (DLLGETVERSIONPROC)GetProcAddress(hComCtl, TEXT("DllGetVersion"));
+    if (pDllGetVersion) {
+        DLLVERSIONINFO dvi;
+        ZeroMemory(&dvi, sizeof(dvi));
+        dvi.cbSize = sizeof(dvi);
+        hr = (*pDllGetVersion)(&dvi);
+        if (SUCCEEDED(hr)) {
+            *pdwMajor = dvi.dwMajorVersion;
+            *pdwMinor = dvi.dwMinorVersion;
+        }
+        else {
+            hr = E_FAIL;
+        }
+    }
+    else {
+        /*
+        If GetProcAddress failed, then the DLL is a version previous to the
+        one
+        shipped with IE 3.x.
+        */
+        *pdwMajor = 4;
+        *pdwMinor = 0;
+    }
+    FreeLibrary(hComCtl);
+    return hr;
+}
+
+/* apply bitmap pointed by sourceDc transparently over
+bitmap pointed by hDC */
+BOOL WINAPI
+_nhapply_image_transparent(HDC hDC, int x, int y, int width, int height,
+    HDC sourceDC, int s_x, int s_y, int s_width,
+    int s_height, UINT cTransparent)
+{
+    /* Don't use TransparentBlt; According to Microsoft, it contains a memory
+     * leak in Window 95/98. */
+    HDC hdcMem, hdcBack, hdcObject, hdcSave;
+    COLORREF cColor;
+    HBITMAP bmAndBack, bmAndObject, bmAndMem, bmSave;
+    HBITMAP bmBackOld, bmObjectOld, bmMemOld, bmSaveOld;
+
+    /* Create some DCs to hold temporary data. */
+    hdcBack = CreateCompatibleDC(hDC);
+    hdcObject = CreateCompatibleDC(hDC);
+    hdcMem = CreateCompatibleDC(hDC);
+    hdcSave = CreateCompatibleDC(hDC);
+
+    /* this is bitmap for our pet image */
+    bmSave = CreateCompatibleBitmap(hDC, width, height);
+
+    /* Monochrome DC */
+    bmAndBack = CreateBitmap(width, height, 1, 1, NULL);
+    bmAndObject = CreateBitmap(width, height, 1, 1, NULL);
+
+    /* resulting bitmap */
+    bmAndMem = CreateCompatibleBitmap(hDC, width, height);
+
+    /* Each DC must select a bitmap object to store pixel data. */
+    bmBackOld = SelectObject(hdcBack, bmAndBack);
+    bmObjectOld = SelectObject(hdcObject, bmAndObject);
+    bmMemOld = SelectObject(hdcMem, bmAndMem);
+    bmSaveOld = SelectObject(hdcSave, bmSave);
+
+    /* copy source image because it is going to be overwritten */
+    SetStretchBltMode(hdcSave, COLORONCOLOR);
+    StretchBlt(hdcSave, 0, 0, width, height, sourceDC, s_x, s_y, s_width,
+        s_height, SRCCOPY);
+
+    /* Set the background color of the source DC to the color.
+    contained in the parts of the bitmap that should be transparent */
+    cColor = SetBkColor(hdcSave, cTransparent);
+
+    /* Create the object mask for the bitmap by performing a BitBlt
+    from the source bitmap to a monochrome bitmap. */
+    BitBlt(hdcObject, 0, 0, width, height, hdcSave, 0, 0, SRCCOPY);
+
+    /* Set the background color of the source DC back to the original
+    color. */
+    SetBkColor(hdcSave, cColor);
+
+    /* Create the inverse of the object mask. */
+    BitBlt(hdcBack, 0, 0, width, height, hdcObject, 0, 0, NOTSRCCOPY);
+
+    /* Copy background to the resulting image  */
+    BitBlt(hdcMem, 0, 0, width, height, hDC, x, y, SRCCOPY);
+
+    /* Mask out the places where the source image will be placed. */
+    BitBlt(hdcMem, 0, 0, width, height, hdcObject, 0, 0, SRCAND);
+
+    /* Mask out the transparent colored pixels on the source image. */
+    BitBlt(hdcSave, 0, 0, width, height, hdcBack, 0, 0, SRCAND);
+
+    /* XOR the source image with the beckground. */
+    BitBlt(hdcMem, 0, 0, width, height, hdcSave, 0, 0, SRCPAINT);
+
+    /* blt resulting image to the screen */
+    BitBlt(hDC, x, y, width, height, hdcMem, 0, 0, SRCCOPY);
+
+    /* cleanup */
+    DeleteObject(SelectObject(hdcBack, bmBackOld));
+    DeleteObject(SelectObject(hdcObject, bmObjectOld));
+    DeleteObject(SelectObject(hdcMem, bmMemOld));
+    DeleteObject(SelectObject(hdcSave, bmSaveOld));
+
+    DeleteDC(hdcMem);
+    DeleteDC(hdcBack);
+    DeleteDC(hdcObject);
+    DeleteDC(hdcSave);
+
+    return TRUE;
+}
+
+void
+set_dll_wincaps(wincap1, wincap2)
+unsigned long wincap1, wincap2;
+{
+    dll_procs.wincap = wincap1;
+    dll_procs.wincap2 = wincap2;
 }
