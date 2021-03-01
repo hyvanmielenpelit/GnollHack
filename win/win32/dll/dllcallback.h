@@ -1,8 +1,8 @@
 #pragma once
 
 /*
- * * dllcallback.h
- * Copyright (c) Janne Gustafsson, 2020
+ * dllcallback.h
+ * Copyright (c) Janne Gustafsson, 2021
  */
 
 #ifndef DLLCALLBACK_H
@@ -27,7 +27,7 @@ typedef int(__stdcall* BooleanVoidCallback)();
 
 
 /* Specific callback types */
-typedef void(__stdcall* InitWindowsCallback)(int);
+typedef VoidVoidCallback InitWindowsCallback;
 typedef VoidVoidCallback PlayerSelectionCallback;
 typedef VoidVoidCallback AskNameCallback;
 typedef VoidVoidCallback GetEventCallback;

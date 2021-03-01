@@ -1,5 +1,7 @@
-/* GnollHack 4.0	mswproc.c	$NHDT-Date: 1545705822 2018/12/25 02:43:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.130 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/*
+ *  dllproc.c
+ * Copyright (c) Janne Gustafsson, 2021
+ */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 /*
@@ -140,7 +142,7 @@ struct window_procs dll_procs = {
     dll_exit_hack,
 };
 
-struct callback_procs dll_callbacks = { 0 }; /* To be set by RunGnollHack in dllmain.cpp */
+struct callback_procs dll_callbacks = { 0 }; /* To be set by RunGnollHack in dllmain.c */
 
 /*
 init_nhwindows(int* argcp, char** argv)
@@ -172,27 +174,9 @@ dll_init_nhwindows(int *argc, char **argv)
 #endif
     dll_logDebug("dll_init_nhwindows()\n");
 
-    init_resource_fonts();
-
-    mswin_nh_input_init();
-
     /* set it to WIN_ERR so we can detect attempts to
        use this ID before it is inialized */
     WIN_MAP = WIN_ERR;
-
-    /* Read Windows settings from the reqistry */
-    /* First set safe defaults */
-    GetNHApp()->regMainMinX = CW_USEDEFAULT;
-    dll_read_reg();
-    /* Create the main window */
-    GetNHApp()->hMainWnd = mswin_init_main_window();
-    if (!GetNHApp()->hMainWnd) {
-        panic("Cannot create main window");
-		return;
-    }
-
-    /* Set menu check mark for interface mode */
-    mswin_menu_check_intf_mode();
 
     /* check default values */
     if (iflags.wc_fontsiz_status < NHFONT_SIZE_MIN
@@ -241,9 +225,6 @@ dll_init_nhwindows(int *argc, char **argv)
     //set_option_mod_status("perm_invent", SET_IN_FILE);
     set_option_mod_status("mouse_support", SET_IN_GAME);
 
-    /* initialize map tiles bitmap */
-    initMapTiles();
-
     /* set tile-related options to readonly */
     set_wc_option_mod_status(WC_TILE_WIDTH | WC_TILE_HEIGHT | WC_TILE_FILE,
                              DISP_IN_GAME);
@@ -257,25 +238,7 @@ dll_init_nhwindows(int *argc, char **argv)
             | WC_FONTSIZ_TEXT | WC_VARY_MSGCOUNT,
         SET_IN_GAME);
 
-    dll_color_from_string(iflags.wc_foregrnd_menu, &dll_menu_fg_brush,
-                            &dll_menu_fg_color);
-    dll_color_from_string(iflags.wc_foregrnd_message, &dll_message_fg_brush,
-                            &dll_message_fg_color);
-    dll_color_from_string(iflags.wc_foregrnd_status, &dll_status_fg_brush,
-                            &dll_status_fg_color);
-    dll_color_from_string(iflags.wc_foregrnd_text, &dll_text_fg_brush,
-                            &dll_text_fg_color);
-    dll_color_from_string(iflags.wc_backgrnd_menu, &dll_menu_bg_brush,
-                            &dll_menu_bg_color);
-    dll_color_from_string(iflags.wc_backgrnd_message, &dll_message_bg_brush,
-                            &dll_message_bg_color);
-    dll_color_from_string(iflags.wc_backgrnd_status, &dll_status_bg_brush,
-                            &dll_status_bg_color);
-    dll_color_from_string(iflags.wc_backgrnd_text, &dll_text_bg_brush,
-                            &dll_text_bg_color);
-
-    if (iflags.wc_splash_screen)
-        mswin_display_splash_window(FALSE);
+    dll_callbacks.callback_init_nhwindows();
 
     iflags.window_inited = TRUE;
 }
@@ -288,6 +251,7 @@ void
 dll_player_selection(void)
 {
     dll_logDebug("dll_player_selection()\n");
+    dll_callbacks.callback_player_selection();
 
     if (iflags.wc_player_selection == VIA_DIALOG) {
         /* pick player type randomly (use pre-selected

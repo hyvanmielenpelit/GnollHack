@@ -1,23 +1,49 @@
-
 /*
- * * dllmain.h
- * Copyright (c) Janne Gustafsson, 2020
+ * dllmain.h
+ * Copyright (c) Janne Gustafsson, 2021
  */
 
+#include <windows.h>
 #include "dllcallback.h"
+#include "tradstdc.h"
 
 #ifndef DLLMAIN_H
 #define DLLMAIN_H
 
-
-typedef void(__stdcall* ProgressCallback)(int);
-
 #define DLL __declspec(dllexport)
 
 /* Test functions*/
-DLL int DoSomeCalc();
+DLL int NDECL(DoSomeCalc);
 typedef void(__stdcall* ProgressCallback)(int);
-DLL void DoWork(ProgressCallback progressCallback);
+DLL void FDECL(DoWork, (ProgressCallback));
+
+/* Utility functions */
+DLL boolean FDECL(validrole, (int));
+DLL boolean FDECL(validrace, (int, int));
+DLL boolean FDECL(validgend, (int, int, int));
+DLL boolean FDECL(validalign, (int, int, int));
+DLL int FDECL(randrole, (BOOLEAN_P));
+DLL int FDECL(randrace, (int));
+DLL int FDECL(randgend, (int, int));
+DLL int FDECL(randalign, (int, int));
+DLL int FDECL(str2role, (const char*));
+DLL int FDECL(str2race, (const char*));
+DLL int FDECL(str2gend, (const char*));
+DLL int FDECL(str2align, (const char*));
+DLL boolean FDECL(ok_role, (int, int, int, int));
+DLL int FDECL(pick_role, (int, int, int, int));
+DLL boolean FDECL(ok_race, (int, int, int, int));
+DLL int FDECL(pick_race, (int, int, int, int));
+DLL boolean FDECL(ok_gend, (int, int, int, int));
+DLL int FDECL(pick_gend, (int, int, int, int));
+DLL boolean FDECL(ok_align, (int, int, int, int));
+DLL int FDECL(pick_align, (int, int, int, int));
+DLL void NDECL(rigid_role_checks);
+DLL boolean FDECL(setrolefilter, (const char*));
+DLL boolean NDECL(gotrolefilter);
+DLL void NDECL(clearrolefilter);
+DLL char* FDECL(build_plselection_prompt, (char*, int, int, int, int, int));
+DLL char* FDECL(root_plselection_prompt, (char*, int, int, int, int, int));
 
 
 /* Main GnollHack routine with all the necessary callback functions */

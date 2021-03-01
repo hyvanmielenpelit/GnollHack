@@ -1,8 +1,6 @@
-// dllmain.cpp : Defines the entry point for the DLL application.
-
 /*
- * * dllmain.c
- * Copyright (c) Janne Gustafsson, 2020
+ * dllmain.c
+ * Copyright (c) Janne Gustafsson, 2021
  */
 
 #include <windows.h>
