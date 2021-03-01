@@ -1065,7 +1065,7 @@ int spellnum;
             return TRUE;
 
         if (is_peaceful(mtmp)
-            && (spellnum == MGC_AGGRAVATION || spellnum == MGC_SUMMON_MONS || spellnum == MGC_SUMMON_NASTY
+            && (spellnum == MGC_AGGRAVATION || spellnum == MGC_SUMMON_MONS || spellnum == MGC_SUMMON_NASTY || spellnum == MGC_DISAPPEAR
                 || spellnum == MGC_CLONE_WIZ))
             return TRUE;
 
@@ -1077,6 +1077,8 @@ int spellnum;
         if ((has_invisibility(mtmp) || has_blocks_invisibility(mtmp)) && spellnum == MGC_DISAPPEAR)
             return TRUE;
 
+#if 0
+        /* Removed becoming invisible completely from peaceful monsters -- JG */
         /* peaceful monster won't cast invisibility if you can't see
            invisible,
            same as when monsters drink potions of invisibility.  This doesn't
@@ -1084,6 +1086,7 @@ int spellnum;
            peaceful monsters by mistake */
         if (is_peaceful(mtmp) && !See_invisible && spellnum == MGC_DISAPPEAR)
             return TRUE;
+#endif
 
         /* healing when already healed */
         if (mtmp->mhp == mtmp->mhpmax && spellnum == MGC_CURE_SELF)
