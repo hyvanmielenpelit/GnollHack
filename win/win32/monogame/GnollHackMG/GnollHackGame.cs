@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Buffers.Text;
 using System.Text.Encodings.Web;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace GnollHackMG
 {
@@ -81,10 +82,20 @@ namespace GnollHackMG
 
             try
             {
+                using var client = new HttpClient();
+
+                var content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("Input.UserName", "Tommi"),
+                    new KeyValuePair<string, string>("Input.Password", "HMPTommi1!")
+                });
+
+                //var result = await client.PostAsync("https://localhost:44333/Identity/Account/LoginRemote", content);
+                var s = "https://localhost:44333/Identity/Account/LoginRemote?UserName=Tommi&Password=HMPTommi1!";
+                var result = await client.GetAsync(s);
+
                 await connection.StartAsync();
 
-                await connection.InvokeAsync("Login",
-                    "Tommi", "HMPTommi1");
                 await connection.InvokeAsync("SendMessage",
                     "user", "My message");
             }

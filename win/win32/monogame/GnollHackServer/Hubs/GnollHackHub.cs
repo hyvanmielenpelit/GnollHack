@@ -25,19 +25,5 @@ namespace GnollHackServer.Hubs
             await Clients.Caller.SendAsync("ReceiveMessage", user, message);
         }
 
-        public async Task Login(string userName, string password)
-        {
-            var result = await _signInManager.PasswordSignInAsync(userName, password, true, lockoutOnFailure: false);
-
-            if (result == SignInResult.Success)
-            {
-                await Clients.Caller.SendAsync("LoginMessage", userName, "Login Successful");
-            }
-            else
-            {
-                await Clients.Caller.SendAsync("LoginMessage", userName, "Login Failed");
-            }
-        }
-
     }
 }
