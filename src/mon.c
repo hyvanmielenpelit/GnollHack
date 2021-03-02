@@ -3129,13 +3129,15 @@ register struct monst *mtmp;
     if (!DEADMONSTER(mtmp))
         return;
 
-    if (is_vampshifter(mtmp)) {
+    if (is_vampshifter(mtmp))
+    {
         int mndx = mtmp->cham;
         int x = mtmp->mx, y = mtmp->my;
 
         /* this only happens if shapeshifted */
         if (mndx >= LOW_PM && mndx != monsndx(mtmp->data)
-            && !(mvitals[mndx].mvflags & G_GENOD)) {
+            && !(mvitals[mndx].mvflags & G_GENOD)) 
+        {
             char buf[BUFSZ];
             boolean in_door = (amorphous(mtmp->data)
                                && closed_door(mtmp->mx, mtmp->my)),
@@ -3170,16 +3172,20 @@ register struct monst *mtmp;
 			mtmp->heads_left = mtmp->data->heads;
 			/* mtmp==u.ustuck can happen if previously a fog cloud
                or poly'd hero is hugging a vampire bat */
-            if (mtmp == u.ustuck) {
+            if (mtmp == u.ustuck) 
+            {
                 if (u.uswallow)
                     expels(mtmp, mtmp->data, FALSE);
                 else
                     uunstick();
             }
-            if (in_door) {
+
+            if (in_door)
+            {
                 coord new_xy;
 
-                if (enexto(&new_xy, mtmp->mx, mtmp->my, &mons[mndx])) {
+                if (enexto(&new_xy, mtmp->mx, mtmp->my, &mons[mndx])) 
+                {
                     rloc_to(mtmp, new_xy.x, new_xy.y);
                 }
             }
@@ -3188,7 +3194,14 @@ register struct monst *mtmp;
                 mtmp->cham = NON_PM;
             else
                 mtmp->cham = mndx;
-            if (canspotmon(mtmp)) {
+
+            boolean spef_on = FALSE;
+            if (canspotmon(mtmp)) 
+            {
+                play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, mtmp->mx, mtmp->my, FALSE);
+                play_sfx_sound_at_location(SFX_VAMPIRE_TRANSFORMS, mtmp->mx, mtmp->my);
+                spef_on = TRUE;
+                special_effect_wait_until_action(0);
                 /* 3.6.0 used a_monnam(mtmp); that was weird if mtmp was
                    named: "Dracula suddenly transforms and rises as Dracula";
                    3.6.1 used mtmp->data->mname; that ignored hallucination */
@@ -3199,6 +3212,11 @@ register struct monst *mtmp;
                 vamp_rise_msg = TRUE;
             }
             newsym(x, y);
+            if (spef_on)
+            {
+                flush_screen(0);
+                special_effect_wait_until_end(0);
+            }
             return;
         }
     }
@@ -3521,7 +3539,10 @@ int how;
     /* no corpses if digested or disintegrated */
     disintegested = (how == AD_DGST || how == -AD_RBRE);
 
-    if (!disintegested)
+    boolean is_transforming_vampshifter = is_vampshifter(mdef) && mdef->cham >= LOW_PM && mdef->cham != monsndx(mdef->data)
+        && !(mvitals[mdef->cham].mvflags & G_GENOD);
+
+    if (!disintegested && !is_transforming_vampshifter)
         play_simple_monster_sound(mdef, MONSTER_SOUND_TYPE_DEATH);
 
     if (disintegested)

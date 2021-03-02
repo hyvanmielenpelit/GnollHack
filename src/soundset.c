@@ -4579,8 +4579,12 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_ENEMY_RESISTANCE_SUCCESS_CHA, 1.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     }, 
+    {
+        "GHSOUND_VAMPIRE_TRANSFORMS",
+        {GHSOUND_VAMPIRE_TRANSFORMS, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
 };
-
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
 {

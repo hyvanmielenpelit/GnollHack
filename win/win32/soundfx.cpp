@@ -768,8 +768,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Steal Gold", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Drain Life", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Steal Item", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/General/Monster is Poisoned", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/SFX/General/Monster is Poisoned", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Helmet Blocks Attack", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Life Leech", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Hail of Magic Missiles Misses", 1.0f },
@@ -779,8 +779,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Magical Energy Released", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Put on Leash", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Remove Leash", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Pulls Free of Leash", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Pulls Free of Leash", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Leash Snaps Loose", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Leash Goes Slack", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Fails to Leash", 1.0f },
@@ -790,8 +790,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Whimper", 0.55f },
     { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Growl", 0.7f },
     { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Whimper", 0.25f },
-    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Yelp", 0.7f },
 
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Yelp", 0.7f },
     { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Growl", 0.7f },
     { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Whimper", 0.7f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Learning/Spell Learn Fail", 1.0f },
@@ -801,8 +801,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Learning/Spell Keener", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Cancellation in Force", 1.0f },
     { SOUND_BANK_MASTER, "event:/Music/Start/Main Menu", 0.3f },
-    { SOUND_BANK_MASTER, "event:/Location/Sink/Open Tap", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Location/Sink/Open Tap", 1.0f },
     { SOUND_BANK_MASTER, "event:/Location/Sink/Klunk", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Scolded", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Lava Burnt", 1.0f },
@@ -812,8 +812,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Error/Already Done", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Something Interesting There", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Nothing There", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Error/Does Not Fit", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/SFX/Error/Does Not Fit", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Welded", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Bell/Bell Ring", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Bell/Muffled Bell Ring", 1.0f },
@@ -823,8 +823,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Bell of Opening/Blessed Bell of Opening Effect", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Bell of Opening/Unsettling Shrill Sound", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Buff/Acquired/Haste", 0.5f },
-    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Flaming Sphere", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Flaming Sphere", 1.0f },
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Freezing Sphere", 1.0f },
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Shocking Sphere", 1.0f },
     { SOUND_BANK_MASTER, "event:/Explosion/Hallucinating Flash", 1.0f },
@@ -834,7 +834,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Error/That Is Silly", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Monster Is Busy", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Not At Right Location", 1.0f },
-
+    
     { SOUND_BANK_MASTER, "event:/SFX/Error/Another Action Needed", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Not a Good Idea", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Cannot Reach", 1.0f },
@@ -856,6 +856,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Player/Generic/Female/Generic Female Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Monster Is Hit with Death Magic", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Weapon No Longer Poisoned", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/General/Weapon No Longer Enchanted", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Unluckily Your Touch Did Not Work", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Luckily Its Touch Did Not Work", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/You Resistance Success STR", 1.0f },
@@ -865,11 +867,13 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/You Resistance Success WIS", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/You Resistance Success CHA", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success STR", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success DEX", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success CON", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success INT", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success WIS", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success CHA", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Vampire Transforms", 1.0f },
 
 };
 
