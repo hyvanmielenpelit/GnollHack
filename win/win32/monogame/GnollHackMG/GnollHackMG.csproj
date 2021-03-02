@@ -11,7 +11,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>5</WarningLevel>
-    <OutputPath>..\..\..\..\bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\bin\Debug\Client\</OutputPath>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\..\..\bin\Release\Client\</OutputPath>
+    <WarningLevel>5</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="GnollHackNew.ico" />

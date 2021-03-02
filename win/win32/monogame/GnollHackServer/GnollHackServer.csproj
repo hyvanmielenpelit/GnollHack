@@ -3,15 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>aspnet-GnollHackServer-3B3AB3AC-D286-47C9-932C-F7D462CF83BB</UserSecretsId>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>5</WarningLevel>
-    <OutputPath>..\..\..\..\bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\bin\Debug\Server\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\..\..\bin\Release\</OutputPath>
+    <OutputPath>..\..\..\..\bin\Release\Server\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
