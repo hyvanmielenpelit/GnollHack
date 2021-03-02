@@ -3211,7 +3211,7 @@ register struct monst *mtmp;
                                 | SUPPRESS_INVISIBLE), FALSE));
                 vamp_rise_msg = TRUE;
             }
-            newsym(x, y);
+            newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
             if (spef_on)
             {
                 flush_screen(0);
