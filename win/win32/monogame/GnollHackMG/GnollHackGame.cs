@@ -5,6 +5,10 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Buffers.Text;
+using System.Text.Encodings.Web;
+using System.Collections.Generic;
 
 namespace GnollHackMG
 {
@@ -16,6 +20,8 @@ namespace GnollHackMG
         private SpriteFont _spriteFont;
         private HubConnection connection;
         private string _message = "";
+        private string _message2 = "";
+        private string _accessToken = "MyAccessToken";
 
         [DllImport(@"GnollHackDLL.dll", CharSet = CharSet.Unicode)]
         public static extern int DoSomeCalc();
@@ -35,7 +41,11 @@ namespace GnollHackMG
 
             // TODO: use this.Content to load your game content here
             connection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:44333/gnollhack")
+                .WithUrl("https://localhost:44333/gnollhack", options =>
+                {
+                    var cookie = new System.Net.Cookie(".AspNetCore.Cookies", _accessToken, "/", "localhost");
+                    options.Cookies.Add(cookie); 
+                })
                 .Build();
 
             connection.Closed += async (error) =>
@@ -47,6 +57,11 @@ namespace GnollHackMG
             connection.On<string, string>("ReceiveMessage", (user, message) =>
             {
                 _message = message;
+            });
+
+            connection.On<string, string>("LoginMessage", (user, message) =>
+            {
+                _message2 = message;
             });
         }
 
@@ -63,13 +78,21 @@ namespace GnollHackMG
             _spriteFont = Content.Load<SpriteFont>("Font1");
 
 
+
             try
             {
                 await connection.StartAsync();
+
+                var bytes = System.Text.UnicodeEncoding.UTF8.GetBytes("HMPTommi1!");
+                //await connection.InvokeAsync("Login3",
+                //    "Tommi", bytes);
+                await connection.InvokeAsync("Login2",
+                    "Tommi", "HMPTommiiiiiiiiiiiiiiiiiiiiiiiiiii");
+                var base64 = System.Convert.ToBase64String(bytes);
+                await connection.InvokeAsync("Login",
+                    "Tommi", base64);
                 await connection.InvokeAsync("SendMessage",
                     "user", "My message");
-                await connection.InvokeAsync("Login",
-                    "UserName1", "Password1");
             }
             catch (Exception ex)
             {
@@ -105,6 +128,7 @@ namespace GnollHackMG
             _spriteBatch.DrawString(_spriteFont, "Hello World!", new Vector2(10, 10), Color.White);
             _spriteBatch.DrawString(_spriteFont, fromDLLvalue.ToString(), new Vector2(10, 30), Color.White);
             _spriteBatch.DrawString(_spriteFont, _message, new Vector2(10, 70), Color.White);
+            _spriteBatch.DrawString(_spriteFont, _message2, new Vector2(10, 110), Color.White);
 
             DoWork(callback);
 
