@@ -198,7 +198,8 @@ uchar* tilemapflags;
                         Sprintf(eos(buf), ",1,1,0");
 //                    int tile_template_idx = (int)(mons[i].mflags6 & M6_MONSTER_TILE_TEMPLATE_MASK);
 //                    Sprintf(eos(buf), ",%d,%d,%s", (int)mons[i].mcolor, tile_template_idx, monster_tile_template_name_array[tile_template_idx]);
-//                    Sprintf(eos(buf), "\n");
+ 
+                    Sprintf(eos(buf), "\n");
                     (void)write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
