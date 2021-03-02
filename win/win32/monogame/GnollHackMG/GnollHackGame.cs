@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.SignalR.Client;
+using System.Threading.Tasks;
 
 namespace GnollHackMG
 {
@@ -12,6 +14,8 @@ namespace GnollHackMG
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SpriteFont _spriteFont;
+        private HubConnection connection;
+        private string _message = "";
 
         [DllImport(@"GnollHackDLL.dll", CharSet = CharSet.Unicode)]
         public static extern int DoSomeCalc();
@@ -29,6 +33,21 @@ namespace GnollHackMG
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
+            // TODO: use this.Content to load your game content here
+            connection = new HubConnectionBuilder()
+                .WithUrl("https://localhost:44333/gnollhack")
+                .Build();
+
+            connection.Closed += async (error) =>
+            {
+                await Task.Delay(new Random().Next(0, 5) * 1000);
+                await connection.StartAsync();
+            };
+
+            connection.On<string, string>("ReceiveMessage", (user, message) =>
+            {
+                _message = message;
+            });
         }
 
         protected override void Initialize()
@@ -38,12 +57,24 @@ namespace GnollHackMG
             base.Initialize();
         }
 
-        protected override void LoadContent()
+        protected async override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _spriteFont = Content.Load<SpriteFont>("Font1");
 
-            // TODO: use this.Content to load your game content here
+
+            try
+            {
+                await connection.StartAsync();
+                await connection.InvokeAsync("SendMessage",
+                    "user", "My message");
+                await connection.InvokeAsync("Login",
+                    "UserName1", "Password1");
+            }
+            catch (Exception ex)
+            {
+                //Error
+            }
         }
 
         protected override void Update(GameTime gameTime)
@@ -73,6 +104,8 @@ namespace GnollHackMG
 
             _spriteBatch.DrawString(_spriteFont, "Hello World!", new Vector2(10, 10), Color.White);
             _spriteBatch.DrawString(_spriteFont, fromDLLvalue.ToString(), new Vector2(10, 30), Color.White);
+            _spriteBatch.DrawString(_spriteFont, _message, new Vector2(10, 70), Color.White);
+
             DoWork(callback);
 
             _spriteBatch.End();
