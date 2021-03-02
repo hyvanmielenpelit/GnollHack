@@ -83,14 +83,8 @@ namespace GnollHackMG
             {
                 await connection.StartAsync();
 
-                var bytes = System.Text.UnicodeEncoding.UTF8.GetBytes("HMPTommi1!");
-                //await connection.InvokeAsync("Login3",
-                //    "Tommi", bytes);
-                await connection.InvokeAsync("Login2",
-                    "Tommi", "HMPTommiiiiiiiiiiiiiiiiiiiiiiiiiii");
-                var base64 = System.Convert.ToBase64String(bytes);
                 await connection.InvokeAsync("Login",
-                    "Tommi", base64);
+                    "Tommi", "HMPTommi1");
                 await connection.InvokeAsync("SendMessage",
                     "user", "My message");
             }

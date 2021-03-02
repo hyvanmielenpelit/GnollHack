@@ -27,23 +27,6 @@ namespace GnollHackServer.Hubs
 
         public async Task Login(string userName, string password)
         {
-            var bytes = Convert.FromBase64String(password);
-            string pw = System.Text.UnicodeEncoding.UTF8.GetString(bytes);
-
-            var result = await _signInManager.PasswordSignInAsync(userName, pw, true, lockoutOnFailure: false);
-
-            if(result == SignInResult.Success)
-            {
-                await Clients.Caller.SendAsync("LoginMessage", userName, "Login Successful");
-            }
-            else
-            {
-                await Clients.Caller.SendAsync("LoginMessage", userName, "Login Failed");
-            }
-        }
-
-        public async Task Login2(string userName, string password)
-        {
             var result = await _signInManager.PasswordSignInAsync(userName, password, true, lockoutOnFailure: false);
 
             if (result == SignInResult.Success)
@@ -56,20 +39,5 @@ namespace GnollHackServer.Hubs
             }
         }
 
-        public async Task Login3(string userName, byte[] bytes)
-        {
-            string password = System.Text.UnicodeEncoding.UTF8.GetString(bytes);
-
-            var result = await _signInManager.PasswordSignInAsync(userName, password, true, lockoutOnFailure: false);
-
-            if (result == SignInResult.Success)
-            {
-                await Clients.Caller.SendAsync("LoginMessage", userName, "Login Successful");
-            }
-            else
-            {
-                await Clients.Caller.SendAsync("LoginMessage", userName, "Login Failed");
-            }
-        }
     }
 }
