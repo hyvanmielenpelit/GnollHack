@@ -818,6 +818,50 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       HUMAN_RANGER_FEMALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "orc-ranger-male-fire-animation", ANIMATION_TYPE_NORMAL, ORC_RANGER_MALE_FIRE_ANIMATION_TILES,
+      ORC_RANGER_MALE_FIRE_ANIMATION_FRAMES, ORC_RANGER_MALE_FIRE_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      9, 10,
+      ORC_RANGER_MALE_FIRE_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "orc-ranger-male-kick-animation", ANIMATION_TYPE_NORMAL, ORC_RANGER_MALE_KICK_ANIMATION_TILES,
+      ORC_RANGER_MALE_KICK_ANIMATION_FRAMES, ORC_RANGER_MALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      3, 7,
+      ORC_RANGER_MALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "orc-ranger-female-fire-animation", ANIMATION_TYPE_NORMAL, ORC_RANGER_FEMALE_FIRE_ANIMATION_TILES,
+      ORC_RANGER_FEMALE_FIRE_ANIMATION_FRAMES, ORC_RANGER_FEMALE_FIRE_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      9, 10,
+      ORC_RANGER_FEMALE_FIRE_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "orc-ranger-female-kick-animation", ANIMATION_TYPE_NORMAL, ORC_RANGER_FEMALE_KICK_ANIMATION_TILES,
+      ORC_RANGER_FEMALE_KICK_ANIMATION_FRAMES, ORC_RANGER_FEMALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      3, 7,
+      ORC_RANGER_FEMALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "gnoll-healer-male-attack-animation", ANIMATION_TYPE_NORMAL, GNOLL_HEALER_MALE_ATTACK_ANIMATION_TILES,
       GNOLL_HEALER_MALE_ATTACK_ANIMATION_FRAMES, GNOLL_HEALER_MALE_ATTACK_ANIMATION_OFF,
       1,
@@ -2855,6 +2899,38 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { "human-ranger-female-kick-enlargement",
         HUMAN_RANGER_FEMALE_KICK_ANIMATION_TILES, HUMAN_RANGER_FEMALE_KICK_ANIMATION_FRAMES,
         HUMAN_RANGER_FEMALE_KICK_ENLARGEMENT_TILES, HUMAN_RANGER_FEMALE_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "orc-ranger-male-fire-enlargement",
+        ORC_RANGER_MALE_FIRE_ANIMATION_TILES, ORC_RANGER_MALE_FIRE_ANIMATION_FRAMES,
+        ORC_RANGER_MALE_FIRE_ENLARGEMENT_TILES, ORC_RANGER_MALE_FIRE_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "orc-ranger-male-kick-enlargement",
+        ORC_RANGER_MALE_KICK_ANIMATION_TILES, ORC_RANGER_MALE_KICK_ANIMATION_FRAMES,
+        ORC_RANGER_MALE_KICK_ENLARGEMENT_TILES, ORC_RANGER_MALE_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "orc-ranger-female-fire-enlargement",
+        ORC_RANGER_FEMALE_FIRE_ANIMATION_TILES, ORC_RANGER_FEMALE_FIRE_ANIMATION_FRAMES,
+        ORC_RANGER_FEMALE_FIRE_ENLARGEMENT_TILES, ORC_RANGER_FEMALE_FIRE_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "orc-ranger-female-kick-enlargement",
+        ORC_RANGER_FEMALE_KICK_ANIMATION_TILES, ORC_RANGER_FEMALE_KICK_ANIMATION_FRAMES,
+        ORC_RANGER_FEMALE_KICK_ENLARGEMENT_TILES, ORC_RANGER_FEMALE_KICK_ENLARGEMENT_OFF,
         3, 1, 0,
         { -1, -1, -1, 0, 1 },
         { 0, 0, 0, 0, 0 },
@@ -5722,6 +5798,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_RANGER_MALE_FIRE_ANIMATION;
         if (roleidx == ROLE_RANGER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_RANGER_FEMALE_FIRE_ANIMATION;
+        if (roleidx == ROLE_RANGER && raceidx == RACE_ORC && genderidx == GENDER_MALE)
+            return ORC_RANGER_MALE_FIRE_ANIMATION;
+        if (roleidx == ROLE_RANGER && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
+            return ORC_RANGER_FEMALE_FIRE_ANIMATION;
         break;
     case ACTION_TILE_CAST_NODIR:
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
@@ -5830,6 +5910,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_RANGER_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_RANGER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_RANGER_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_RANGER && raceidx == RACE_ORC && genderidx == GENDER_MALE)
+            return ORC_RANGER_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_RANGER && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
+            return ORC_RANGER_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_WIZARD_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
