@@ -31,6 +31,7 @@
 /* Layers floor, leash, and zap do not have enlargements; monster and monster effect layers have 2 'tile movement' draw order slots */
 #define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 3 + 2 * 2) + 3 + NUM_ZAP_SOURCE_DIRS + NUM_WORM_SOURCE_DIRS + NUM_CHAIN_SOURCE_DIRS)
 
+#define IDX_LAYER_MONSTER_SHADOW LAYER_GENERAL_EFFECT
 
 /* draw order definition */
 struct draw_order_definition {
@@ -39,6 +40,7 @@ struct draw_order_definition {
     int tile_movement_index;
     int source_dir_index;
     uchar draw_to_buffer;
+    uchar draw_monster_shadow;
 };
 
 
@@ -991,6 +993,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean monster_copied = FALSE;
     boolean monster_darkened = FALSE;
     boolean draw_monster_shadow = FALSE;
+    boolean monster_shadow_drawn = FALSE;
 
     for (int idx = 0; idx < MAX_SHOWN_OBJECTS; idx++)
     {
@@ -1002,6 +1005,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     int darkening_i = -1, darkening_j = -1;
     boolean enlarged = FALSE;
     short position_index = 0;
+
 
     /* enlarg_index form an u around the main tile X = -1:
      * 0 X 1
@@ -2100,8 +2104,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
                         }
 
-                        if (enlarg_idx >= 0)
-                            draw_monster_shadow = TRUE;
+                        if (enlarg_idx >= 0 || (base_layer >= LAYER_COVER_OBJECT && base_layer < IDX_LAYER_MONSTER_SHADOW))
+                             draw_monster_shadow = TRUE;
 
                         /* Scale object to be of oc_tile_floor_height height */
                         if ((is_obj_missile || is_object) && obj_scaling_factor != 1.0)
@@ -3925,9 +3929,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 int monster_glyph = data->map[enl_i][enl_j].layer_glyphs[LAYER_MONSTER];
 
-                /* All UI related symbols and cursors */
-                if (base_layer == LAYER_LEASH && monster_copied && draw_monster_shadow) /* Everything about monsters and objects should already be printed now to screen */
+                if (draw_order[draw_index].draw_monster_shadow && monster_copied && draw_monster_shadow && !monster_shadow_drawn) /* Everything about monsters and objects should already be printed now to screen */
                 {
+                    /* Monster as transparent shadow */
+                    monster_shadow_drawn = TRUE;
+
                     /* Create copy of background */
                     HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
 
@@ -3982,6 +3988,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 }
                 else if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
                 {
+                    /* All UI related symbols and cursors */
+
                     boolean loc_is_you = (i == u.ux && j == u.uy);
 
                     /* Chain lock mark */
@@ -4787,6 +4795,10 @@ static void setDrawOrder(PNHMapWindow data)
 
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
         {
+            /* Draw monster shadow just before the second partition */
+            if (layer_idx == IDX_LAYER_MONSTER_SHADOW)
+                data->draw_order[draw_count - 1].draw_monster_shadow = 1;
+
             for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
             {
                 if (layer_idx == LAYER_LEASH)
