@@ -988,6 +988,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean ispeaceful = !!(data->map[i][j].layer_flags & LFLAGS_M_PEACEFUL);
     boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
     boolean issteed = !!(data->map[i][j].layer_flags & LFLAGS_M_RIDDEN);
+    boolean monster_copied = FALSE;
+    boolean monster_darkened = FALSE;
+    boolean draw_monster_shadow = FALSE;
 
     for (int idx = 0; idx < MAX_SHOWN_OBJECTS; idx++)
     {
@@ -1030,8 +1033,40 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
     HBITMAP newhBmp = CreateDIBSection(hDCcopy, &binfo, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsCopy, NULL, 0);
     HGDIOBJ oldbmp = SelectObject(hDCcopy, newhBmp);
+
+
+    /* Create DIB Section for storing darkened monster, so it can be drawn later as a shadow */
+    HDC hDCmonster = CreateCompatibleDC(data->backBufferDC);
+
+    unsigned char* lpBitmapBitsMonster;
+    BITMAPINFO binfo_monster;
+    ZeroMemory(&binfo_monster, sizeof(BITMAPINFO));
+    binfo_monster.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    binfo_monster.bmiHeader.biWidth = tileWidth;
+    binfo_monster.bmiHeader.biHeight = tileHeight;
+    binfo_monster.bmiHeader.biPlanes = 1;
+    binfo_monster.bmiHeader.biBitCount = 32;
+    HBITMAP newhBmpMonster = CreateDIBSection(hDCmonster, &binfo_monster, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsMonster, NULL, 0);
+    HGDIOBJ oldBmpMonster = SelectObject(hDCmonster, newhBmpMonster);
+
+    int pitch_monster = 4 * tileWidth; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+    int idx_monster, x_monster, y_monster;
+    for (x_monster = 0; x_monster < tileWidth; x_monster++)
+    {
+        for (y_monster = 0; y_monster < tileHeight; y_monster++)
+        {
+            idx_monster = y_monster * pitch_monster;
+            idx_monster += x_monster * 4;
+
+            lpBitmapBitsMonster[idx_monster + 0] = TILE_BK_COLOR_BLUE;  // blue
+            lpBitmapBitsMonster[idx_monster + 1] = TILE_BK_COLOR_GREEN; // green
+            lpBitmapBitsMonster[idx_monster + 2] = TILE_BK_COLOR_RED;  // red 
+        }
+    }
+
     SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
     SetStretchBltMode(hDCcopy, COLORONCOLOR);
+    SetStretchBltMode(hDCmonster, COLORONCOLOR);
 
     boolean opaque_background_drawn = FALSE;
     boolean print_first_directly_to_map = TRUE;
@@ -2065,6 +2100,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
                         }
 
+                        if (enlarg_idx >= 0)
+                            draw_monster_shadow = TRUE;
+
                         /* Scale object to be of oc_tile_floor_height height */
                         if ((is_obj_missile || is_object) && obj_scaling_factor != 1.0)
                         {
@@ -2243,6 +2281,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 opaque_background_drawn = TRUE;
                             }
 
+                            /* Copy to be a shadow */
+                            if (base_layer == LAYER_MONSTER && enlarg_idx == -1 && tile_move_idx == 0 && !monster_copied)
+                            {
+                                monster_copied = TRUE;
+                                StretchBlt(hDCmonster, dest_left_added, dest_top_added,
+                                    GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, hDCsemitransparent,
+                                    (hflip_glyph ? tileWidth - 1 : 0), source_top_added + (vflip_glyph ? tileHeight - 1 : 0), hmultiplier* width,
+                                    vmultiplier * (height - source_height_deducted), SRCCOPY);
+                            }
+
                             SelectObject(hDCsemitransparent, oldbmp_st);
                             DeleteDC(hDCsemitransparent);
                             DeleteObject(newhBmp_st);
@@ -2313,6 +2361,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         vmultiplier * (GetNHApp()->mapTile_Y - source_height_deducted), SRCCOPY);
                                 }
                                 opaque_background_drawn = TRUE;
+                            }
+                            if (base_layer == LAYER_MONSTER && enlarg_idx == -1 && tile_move_idx == 0 && !monster_copied)
+                            {
+                                monster_copied = TRUE;
+
+                                StretchBlt(hDCmonster, dest_left_added, dest_top_added,
+                                    GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                    t_x, t_y + source_top_added, hmultiplier* GetNHApp()->mapTile_X,
+                                    vmultiplier* (GetNHApp()->mapTile_Y - source_height_deducted), SRCCOPY);
                             }
                         }
                         /* 
@@ -3817,6 +3874,31 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     }
                                 }
 
+                                /* Darken also copy of the monster */
+                                if (monster_copied && !monster_darkened)
+                                {
+                                    LONG width = GetNHApp()->mapTile_X;
+                                    LONG height = GetNHApp()->mapTile_Y;
+
+                                    int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                    int idx, x, y;
+                                    for (x = 0; x < width; x++)
+                                    {
+                                        for (y = 0; y < height; y++)
+                                        {
+                                            idx = y * pitch;
+                                            idx += x * 4;
+
+                                            if (lpBitmapBitsMonster[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsMonster[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsMonster[idx + 2] == TILE_BK_COLOR_RED)
+                                                continue;
+
+                                            lpBitmapBitsMonster[idx + 0] = (unsigned char)(((double)lpBitmapBitsMonster[idx + 0]) * multiplier);  // blue
+                                            lpBitmapBitsMonster[idx + 1] = (unsigned char)(((double)lpBitmapBitsMonster[idx + 1]) * multiplier); // green
+                                            lpBitmapBitsMonster[idx + 2] = (unsigned char)(((double)lpBitmapBitsMonster[idx + 2]) * multiplier);  // red 
+                                        }
+                                    }
+                                    monster_darkened = TRUE;
+                                }
                             }
                         }
                     }
@@ -3844,7 +3926,61 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 int monster_glyph = data->map[enl_i][enl_j].layer_glyphs[LAYER_MONSTER];
 
                 /* All UI related symbols and cursors */
-                if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
+                if (base_layer == LAYER_LEASH && monster_copied && draw_monster_shadow) /* Everything about monsters and objects should already be printed now to screen */
+                {
+                    /* Create copy of background */
+                    HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
+
+                    unsigned char* lpBitmapBits;
+                    LONG width = rect->right - rect->left;
+                    LONG height = rect->bottom - rect->top;
+
+                    BITMAPINFO bi;
+                    ZeroMemory(&bi, sizeof(BITMAPINFO));
+                    bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                    bi.bmiHeader.biWidth = width;
+                    bi.bmiHeader.biHeight = height;
+                    bi.bmiHeader.biPlanes = 1;
+                    bi.bmiHeader.biBitCount = 32;
+
+                    HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
+                    HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
+                    StretchBlt(hDCMem, 0, 0, width, height,
+                        data->backBufferDC, rect->left,
+                        rect->top, width, height, SRCCOPY);
+
+                    /* Draw monster shadow */
+                    int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                    int idx, x, y;
+                    double semi_transparency = 0.5;
+
+                    for (x = 0; x < width; x++)
+                    {
+                        for (y = 0; y < height; y++)
+                        {
+                            idx = y * pitch;
+                            idx += x * 4;
+
+                            if (lpBitmapBitsMonster[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsMonster[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsMonster[idx + 2] == TILE_BK_COLOR_RED)
+                                continue;
+
+                            lpBitmapBitsMonster[idx + 0] = (unsigned char)(((double)lpBitmapBitsMonster[idx + 0]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 0]) * (semi_transparency));  // blue
+                            lpBitmapBitsMonster[idx + 1] = (unsigned char)(((double)lpBitmapBitsMonster[idx + 1]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 1]) * (semi_transparency));  // green
+                            lpBitmapBitsMonster[idx + 2] = (unsigned char)(((double)lpBitmapBitsMonster[idx + 2]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 2]) * (semi_transparency));  // red 
+                        }
+                    }
+
+                    (*GetNHApp()->lpfnTransparentBlt)(
+                        data->backBufferDC, rect->left, rect->top,
+                        data->xBackTile, data->yBackTile, hDCmonster, 0,
+                        0, GetNHApp()->mapTile_X,
+                        GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+
+                    SelectObject(hDCMem, oldbmp);
+                    DeleteDC(hDCMem);
+                    DeleteObject(bitmap);
+                }
+                else if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
                 {
                     boolean loc_is_you = (i == u.ux && j == u.uy);
 
@@ -4405,6 +4541,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     DeleteDC(hDCcopy);
     DeleteObject(newhBmp);
 
+    SelectObject(hDCmonster, oldBmpMonster);
+    DeleteDC(hDCmonster);
+    DeleteObject(newhBmpMonster);
 }
 
 
@@ -4568,7 +4707,6 @@ static void setDrawOrder(PNHMapWindow data)
     {
         enum layer_types layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_LEASH, LAYER_ZAP, LAYER_ENVIRONMENT, MAX_LAYERS };
 
-        /* Second, draw other layers on the same y */
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
         {
             for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
@@ -4647,7 +4785,6 @@ static void setDrawOrder(PNHMapWindow data)
         /* Monster tile mark will be potentially darkened, other UI symbols come on the top undarkened */
         data->draw_order[draw_count - 1].draw_to_buffer = 1;
 
-        /* Fourth, the three positions at y + 1, in reverse enl_pos / layer_idx order */
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
         {
             for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
