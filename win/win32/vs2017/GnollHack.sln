@@ -98,7 +98,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackMG", "..\monogame\
 		{5B19B136-C876-4975-B8B8-3753D797B0A8} = {5B19B136-C876-4975-B8B8-3753D797B0A8}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackServer", "..\monogame\GnollHackServer\GnollHackServer.csproj", "{272434B5-141B-48AD-9C5E-87F0CB6C5161}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackServer", "..\monogame\GnollHackServer\GnollHackServer.csproj", "{272434B5-141B-48AD-9C5E-87F0CB6C5161}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -31,7 +31,7 @@
 /* Layers floor, leash, and zap do not have enlargements; monster and monster effect layers have 2 'tile movement' draw order slots */
 #define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 3 + 2 * 2) + 3 + NUM_ZAP_SOURCE_DIRS + NUM_WORM_SOURCE_DIRS + NUM_CHAIN_SOURCE_DIRS)
 
-#define IDX_LAYER_MONSTER_SHADOW LAYER_GENERAL_EFFECT
+#define IDX_LAYER_MONSTER_SHADOW LAYER_ENVIRONMENT
 
 /* draw order definition */
 struct draw_order_definition {
@@ -2104,7 +2104,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
                         }
 
-                        if (enlarg_idx >= 0 || (base_layer >= LAYER_COVER_OBJECT && base_layer < IDX_LAYER_MONSTER_SHADOW))
+                        if (enlarg_idx >= 0 || (base_layer >= LAYER_COVER_OBJECT && base_layer <= IDX_LAYER_MONSTER_SHADOW))
                              draw_monster_shadow = TRUE;
 
                         /* Scale object to be of oc_tile_floor_height height */
@@ -4708,15 +4708,23 @@ static void setDrawOrder(PNHMapWindow data)
 
     int same_level_z_order_array[3] = { 0, -1, 1 };
     int different_level_z_order_array[3] = { 2, 3, 4 };
+    boolean draw_monster_shadow_placed = FALSE;
 
-#define NUM_LAYER_PARTITIONS 4
+#define NUM_LAYER_PARTITIONS 5
 
     for (int layer_partition = 0; layer_partition < NUM_LAYER_PARTITIONS; layer_partition++)
     {
-        enum layer_types layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_LEASH, LAYER_ZAP, LAYER_ENVIRONMENT, MAX_LAYERS };
+        enum layer_types layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_LEASH, LAYER_ENVIRONMENT, LAYER_ZAP, LAYER_GENERAL_EFFECT, MAX_LAYERS };
 
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
         {
+            /* Draw monster shadow */
+            if (layer_idx == IDX_LAYER_MONSTER_SHADOW + 1 && !draw_monster_shadow_placed)
+            {
+                data->draw_order[draw_count - 1].draw_monster_shadow = 1;
+                draw_monster_shadow_placed = TRUE;
+            }
+
             for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
             {
                 if ((layer_idx == LAYER_LEASH || layer_idx == LAYER_ZAP) && same_level_z_order_array[enl_idx] != -1)
@@ -4795,10 +4803,6 @@ static void setDrawOrder(PNHMapWindow data)
 
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
         {
-            /* Draw monster shadow just before the second partition */
-            if (layer_idx == IDX_LAYER_MONSTER_SHADOW)
-                data->draw_order[draw_count - 1].draw_monster_shadow = 1;
-
             for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
             {
                 if (layer_idx == LAYER_LEASH)
@@ -4847,6 +4851,7 @@ static void setDrawOrder(PNHMapWindow data)
                     draw_count++;
                 }
             }
+
         }
         /* Mark to be drawn to back buffer and darkened if needed */
         /* Note these all use the darkness of the tile below the target, so they will be shaded similarly */
