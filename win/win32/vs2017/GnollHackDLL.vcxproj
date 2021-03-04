@@ -39,6 +39,8 @@
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TILES;_WINDOWS;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -180,7 +182,6 @@
     <ClCompile Include="$(SysWinntDir)stubs.c">
       <PreprocessorDefinitions>TTYSTUB;</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="$(SysWinntDir)windmain.c" />
     <ClCompile Include="$(SysWinntDir)winnt.c" />
     <ClCompile Include="$(SysWinntDir)win10.c" />
     <ClCompile Include="$(WinShareDir)safeproc.c" />
@@ -205,8 +206,9 @@
     <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
     <ClCompile Include="$(SrcDir)rm.c" />
     <ClCompile Include="$(SrcDir)npc.c" />
-    <ClCompile Include="..\dll\dllmain.c" />
+    <ClCompile Include="..\dll\dllentry.c" />
     <ClCompile Include="..\dll\dllproc.c" />
+    <ClCompile Include="..\dll\dllmain.c" />
     <ClCompile Include="..\mswproc.c" />
   </ItemGroup>
   <ItemGroup>
@@ -297,7 +299,7 @@
     <ClInclude Include="..\..\..\include\you.h" />
     <ClInclude Include="..\..\..\include\youprop.h" />
     <ClInclude Include="..\dll\dllcallback.h" />
-    <ClInclude Include="..\dll\dllmain.h" />
+    <ClInclude Include="..\dll\dllentry.h" />
     <ClInclude Include="..\dll\dllproc.h" />
     <ClInclude Include="..\winMS.h" />
   </ItemGroup>

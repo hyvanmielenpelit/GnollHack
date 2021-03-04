@@ -2004,6 +2004,7 @@ uchar* tilemapflags;
     for (int i = 1; i < MAX_ENLARGEMENTS; i++)  /* enlargement number, starts at 1 */
     {
         short enl_anim_tiles = enlargements[i].number_of_animation_tiles ? enlargements[i].number_of_animation_tiles : 1;
+        short enl_anim_frames = enlargements[i].number_of_animation_frames ? enlargements[i].number_of_animation_frames : 1;
         for (int m = 0; m < enl_anim_tiles; m++)
         {
             short enl_anim_tile_idx = enlargements[i].number_of_animation_tiles ? m : -1;
@@ -2056,10 +2057,26 @@ uchar* tilemapflags;
                 else if (process_style == 1)
                 {
                     glyph_offset = GLYPH_ENLARGEMENT_OFF;
-                    int addedindex = enl_anim_tile_idx >= 0 ?
-                        enl_anim_tile_idx * enlargements[i].number_of_enlargement_tiles
-                        : 0;
-                    tilemaparray[j + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+                    int anim = get_enlargement_animation(i);
+                    if (anim >= 0)
+                    {
+                        for (int f = 0; f < enl_anim_frames; f++)
+                        {
+                            if (animations[anim].frame2tile[f] == enl_anim_tile_idx)
+                            {
+                                int addedindex = f * enlargements[i].number_of_enlargement_tiles;
+                                tilemaparray[j + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int addedindex = enl_anim_tile_idx >= 0 ?
+                            enl_anim_tile_idx * enlargements[i].number_of_enlargement_tiles
+                            : 0;
+                        tilemaparray[j + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+                    }
+
 #if 0
                     for (int k = 0; k < min(enlargements[i].number_of_enlargement_tiles, NUM_POSITIONS_IN_ENLARGEMENT); k++)  /* frame number */
                     {
@@ -3519,6 +3536,19 @@ boolean* hflip_ptr, * vflip_ptr;
 #endif
 
     return FALSE;
+}
+
+int
+get_enlargement_animation(enlargement_idx)
+int enlargement_idx;
+{
+    for (int i = 0; i < MAX_ANIMATIONS; i++)
+    {
+        if (animations[i].tile_enlargement == enlargement_idx)
+            return i;
+    }
+
+    return -1;
 }
 
 /*tiledata.c*/

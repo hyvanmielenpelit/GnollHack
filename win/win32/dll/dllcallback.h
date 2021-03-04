@@ -55,8 +55,8 @@ typedef void(__stdcall* PrintGlyphCallback)(int);
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;
 typedef IntVoidCallback GetChCallback;
-typedef VoidVoidCallback BellCallback;
 typedef void(__stdcall* PosKeyCallback)(int);
+typedef VoidVoidCallback BellCallback;
 typedef IntVoidCallback DoPrevMessageCallback;
 typedef void(__stdcall* YnFunctionCallback)(int);
 typedef void(__stdcall* GetLinCallback)(int);
@@ -96,6 +96,8 @@ typedef void(__stdcall* AddAmbientSoundCallback)(int);
 typedef void(__stdcall* DeleteAmbientSoundCallback)(int);
 typedef void(__stdcall* SetAmbientVolumeCallback)(int);
 typedef void(__stdcall* ExitHackCallback)(int);
+
+typedef char*(__stdcall* GetCwdCallback)();
 
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;
@@ -173,6 +175,8 @@ struct callback_procs {
     DeleteAmbientSoundCallback callback_delete_ambient_ghsound;
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume;
     ExitHackCallback callback_exit_hack;
+
+    GetCwdCallback callback_getcwd;
 };
 
 #endif /* DLLCALLBACK_H */

@@ -3770,3 +3770,20 @@ DLL int dll_str2role(const char* role_str)
 {
     return str2role(role_str);
 }
+
+
+char* dll_getcwd(char* dest_buf, int size_in_bytes)
+{
+   char* cwd = dll_callbacks.callback_getcwd();
+   if (!cwd)
+       return 0;
+
+   size_t length = strlen(cwd);
+   if (length >= size_in_bytes)
+       return 0;
+
+   strncpy(dest_buf, cwd, size_in_bytes - 1);
+   dest_buf[size_in_bytes - 1] = '\0';
+
+   return dest_buf;
+}

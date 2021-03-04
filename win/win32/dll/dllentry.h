@@ -1,5 +1,5 @@
 /*
- * dllmain.h
+ * dllentry.h
  * Copyright (c) Janne Gustafsson, 2021
  */
 
@@ -7,8 +7,8 @@
 #include "dllcallback.h"
 #include "tradstdc.h"
 
-#ifndef DLLMAIN_H
-#define DLLMAIN_H
+#ifndef DLLENTRY_H
+#define DLLENTRY_H
 
 /* Test functions*/
 DLL int NDECL(DoSomeCalc);
@@ -40,8 +40,6 @@ DLL int FDECL(dll_pick_align, (int, int, int, int));
 
 /* Main GnollHack routine with all the necessary callback functions in dllmain.c */
 DLL int RunGnollHack(
-    int argc,
-    char* argv[],
     unsigned long wincap1,
     unsigned long wincap2,
     InitWindowsCallback callback_init_nhwindows,
@@ -120,7 +118,9 @@ DLL int RunGnollHack(
     AddAmbientSoundCallback callback_add_ambient_ghsound,
     DeleteAmbientSoundCallback callback_delete_ambient_ghsound,
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume,
-    ExitHackCallback callback_exit_hack
+    ExitHackCallback callback_exit_hack,
+
+    GetCwdCallback callback_getcwd
 );
 
-#endif //DLLMAIN_H
+#endif //DLLENTRY_H
