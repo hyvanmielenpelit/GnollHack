@@ -2016,6 +2016,12 @@ int spe_type_index;
     case ENCHTYPE_ELVEN_ARMOR:
         initspe = Inhell ? rne(5) : rne(4);
         break;
+    case ENCHTYPE_LEATHER_NONBODY_ARMOR:
+        initspe = Inhell ? rne(6) : rne(4);
+        break;
+    case ENCHTYPE_LEATHER_BODY_ARMOR:
+        initspe = Inhell ? rne(9) : rne(5);
+        break;
     case ENCHTYPE_ALWAYS_1:
 		initspe = 1;
 		break;
@@ -2091,6 +2097,12 @@ int spe_type_index;
         break;
     case ENCHTYPE_ELVEN_ARMOR:
         maxspe = 5;
+        break;
+    case ENCHTYPE_LEATHER_NONBODY_ARMOR:
+        maxspe = 6;
+        break;
+    case ENCHTYPE_LEATHER_BODY_ARMOR:
+        maxspe = 9;
         break;
     case ENCHTYPE_ALWAYS_1:
 		maxspe = 1;

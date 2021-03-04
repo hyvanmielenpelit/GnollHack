@@ -215,7 +215,3 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 {
     return 0;
 }
-
-
-
-

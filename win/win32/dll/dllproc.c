@@ -3759,3 +3759,14 @@ unsigned long wincap1, wincap2;
     dll_procs.wincap = wincap1;
     dll_procs.wincap2 = wincap2;
 }
+
+
+DLL boolean dll_validrole(int role)
+{
+    return validrole(role);
+}
+
+DLL int dll_str2role(const char* role_str)
+{
+    return str2role(role_str);
+}

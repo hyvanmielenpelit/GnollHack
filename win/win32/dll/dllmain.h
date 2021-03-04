@@ -10,43 +10,35 @@
 #ifndef DLLMAIN_H
 #define DLLMAIN_H
 
-#define DLL __declspec(dllexport)
-
 /* Test functions*/
 DLL int NDECL(DoSomeCalc);
 typedef void(__stdcall* ProgressCallback)(int);
 DLL void FDECL(DoWork, (ProgressCallback));
 
-/* Utility functions */
-DLL boolean FDECL(validrole, (int));
-DLL boolean FDECL(validrace, (int, int));
-DLL boolean FDECL(validgend, (int, int, int));
-DLL boolean FDECL(validalign, (int, int, int));
-DLL int FDECL(randrole, (BOOLEAN_P));
-DLL int FDECL(randrace, (int));
-DLL int FDECL(randgend, (int, int));
-DLL int FDECL(randalign, (int, int));
-DLL int FDECL(str2role, (const char*));
-DLL int FDECL(str2race, (const char*));
-DLL int FDECL(str2gend, (const char*));
-DLL int FDECL(str2align, (const char*));
-DLL boolean FDECL(ok_role, (int, int, int, int));
-DLL int FDECL(pick_role, (int, int, int, int));
-DLL boolean FDECL(ok_race, (int, int, int, int));
-DLL int FDECL(pick_race, (int, int, int, int));
-DLL boolean FDECL(ok_gend, (int, int, int, int));
-DLL int FDECL(pick_gend, (int, int, int, int));
-DLL boolean FDECL(ok_align, (int, int, int, int));
-DLL int FDECL(pick_align, (int, int, int, int));
-DLL void NDECL(rigid_role_checks);
-DLL boolean FDECL(setrolefilter, (const char*));
-DLL boolean NDECL(gotrolefilter);
-DLL void NDECL(clearrolefilter);
-DLL char* FDECL(build_plselection_prompt, (char*, int, int, int, int, int));
-DLL char* FDECL(root_plselection_prompt, (char*, int, int, int, int, int));
+/* Utility functions in dllproc.c */
+DLL boolean FDECL(dll_validrole, (int));
+DLL boolean FDECL(dll_validrace, (int, int));
+DLL boolean FDECL(dll_validgend, (int, int, int));
+DLL boolean FDECL(dll_validalign, (int, int, int));
+DLL int FDECL(dll_randrole, (BOOLEAN_P));
+DLL int FDECL(dll_randrace, (int));
+DLL int FDECL(dll_randgend, (int, int));
+DLL int FDECL(dll_randalign, (int, int));
+DLL int FDECL(dll_str2role, (const char*));
+DLL int FDECL(dll_str2race, (const char*));
+DLL int FDECL(dll_str2gend, (const char*));
+DLL int FDECL(dll_str2align, (const char*));
+DLL boolean FDECL(dll_ok_role, (int, int, int, int));
+DLL int FDECL(dll_pick_role, (int, int, int, int));
+DLL boolean FDECL(dll_ok_race, (int, int, int, int));
+DLL int FDECL(dll_pick_race, (int, int, int, int));
+DLL boolean FDECL(dll_ok_gend, (int, int, int, int));
+DLL int FDECL(dll_pick_gend, (int, int, int, int));
+DLL boolean FDECL(dll_ok_align, (int, int, int, int));
+DLL int FDECL(dll_pick_align, (int, int, int, int));
 
 
-/* Main GnollHack routine with all the necessary callback functions */
+/* Main GnollHack routine with all the necessary callback functions in dllmain.c */
 DLL int RunGnollHack(
     int argc,
     char* argv[],
@@ -72,7 +64,7 @@ DLL int RunGnollHack(
     AddExtendedMenuCallback callback_add_extended_menu,
     EndMenuCallback callback_end_menu,
     SelectMenuCallback callback_select_menu,
-    MessageMenuCallback callback_message_menu, /* no need for X-specific handling */
+    MessageMenuCallback callback_message_menu,
     UpdateInventoryCallback callback_update_inventory,
     MarkSynchCallback callback_mark_synch,
     WaitSynchCallback callback_wait_synch,
@@ -102,7 +94,6 @@ DLL int RunGnollHack(
     SetFontNameCallback callback_set_font_name,
     GetColorStringCallback callback_get_color_string,
 
-    /* other defs that really should go away (they're tty specific) */
     StartScreenCallback callback_start_screen,
     EndScreenCallback callback_end_screen,
     OutRipCallback callback_outrip,

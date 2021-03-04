@@ -824,7 +824,10 @@ struct mkroom *sroom;
     eshkp->billct = eshkp->visitct = 0;
     eshkp->bill_p = (struct bill_x *) 0;
     eshkp->customer[0] = '\0';
-    mkmonmoney(shk, u.uz.dnum != main_dungeon_dnum ? 10000L + 30L * (long)d(5, 100) : 1000L + 30L * (long) rnd(100)); /* initial capital */
+    long shk_money = 
+        u.uz.dnum != main_dungeon_dnum ? 10000L + 30L * (long)d(5, 100) 
+        : 2000L + 60L * (long)rnd(100);
+    mkmonmoney(shk, shk_money); /* initial capital */
     if (shp->shknms == shkrings)
         (void) mongets(shk, TOUCHSTONE);
     nameshk(shk, shp->shknms);

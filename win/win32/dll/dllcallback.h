@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  * dllcallback.h
  * Copyright (c) Janne Gustafsson, 2021
@@ -7,6 +5,8 @@
 
 #ifndef DLLCALLBACK_H
 #define DLLCALLBACK_H
+
+#define DLL __declspec(dllexport)
 
  /* General callback types */
 typedef void(__stdcall* VoidVoidCallback)();
@@ -16,12 +16,10 @@ typedef int(__stdcall* IntIntCallback)(int);
 typedef void(__stdcall* VoidIntCallback)(int);
 typedef void(__stdcall* VoidIntIntCallback)(int, int);
 typedef void(__stdcall* VoidIntIntIntCallback)(int, int, int);
-//typedef void(__stdcall* VoidIntBooleanCallback)(int, boolean);
-typedef VoidIntIntCallback VoidIntBooleanCallback;
+typedef void(__stdcall* VoidIntBooleanCallback)(int, unsigned char);
 typedef void(__stdcall* VoidIntIntConstCharCallback)(int, const char*);
 typedef void(__stdcall* VoidConstCharIntCallback)(const char*, int);
-typedef VoidConstCharIntCallback VoidConstCharBooleanCallback;
-//typedef void(__stdcall* VoidConstCharBooleanCallback)(const char*, boolean);
+typedef void(__stdcall* VoidConstCharBooleanCallback)(const char*, unsigned char);
 typedef int(__stdcall* IntVoidCallback)();
 typedef int(__stdcall* BooleanVoidCallback)();
 
@@ -102,7 +100,7 @@ typedef void(__stdcall* ExitHackCallback)(int);
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;
     PlayerSelectionCallback callback_player_selection;
-        AskNameCallback callback_askname;
+    AskNameCallback callback_askname;
     GetEventCallback callback_get_nh_event;
     ExitWindowsCallback callback_exit_nhwindows;
     SuspendWindowsCallback callback_suspend_nhwindows;
@@ -120,7 +118,7 @@ struct callback_procs {
     AddExtendedMenuCallback callback_add_extended_menu;
     EndMenuCallback callback_end_menu;
     SelectMenuCallback callback_select_menu;
-    MessageMenuCallback callback_message_menu; /* no need for X-specific handling */
+    MessageMenuCallback callback_message_menu;
     UpdateInventoryCallback callback_update_inventory;
     MarkSynchCallback callback_mark_synch;
     WaitSynchCallback callback_wait_synch;
@@ -148,7 +146,6 @@ struct callback_procs {
     SetFontNameCallback callback_set_font_name;
     GetColorStringCallback callback_get_color_string;
     
-    /* other defs that really should go away (they're tty specific) */
     StartScreenCallback callback_start_screen;
     EndScreenCallback callback_end_screen;
     OutRipCallback callback_outrip;
