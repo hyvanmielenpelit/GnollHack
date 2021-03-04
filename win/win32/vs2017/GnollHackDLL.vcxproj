@@ -20,6 +20,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PlatformToolset>v142</PlatformToolset>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -32,6 +33,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalOptions>/Gs /Oi- %(AdditionalOptions)</AdditionalOptions>
@@ -39,8 +43,9 @@
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TILES;_WINDOWS;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MultiThreadedDebug</RuntimeLibrary>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MultiThreadedDLL</RuntimeLibrary>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Cdecl</CallingConvention>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -206,7 +211,7 @@
     <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
     <ClCompile Include="$(SrcDir)rm.c" />
     <ClCompile Include="$(SrcDir)npc.c" />
-    <ClCompile Include="..\dll\dllentry.c" />
+    <ClCompile Include="..\dll\dllhack.c" />
     <ClCompile Include="..\dll\dllproc.c" />
     <ClCompile Include="..\dll\dllmain.c" />
     <ClCompile Include="..\mswproc.c" />
@@ -299,7 +304,7 @@
     <ClInclude Include="..\..\..\include\you.h" />
     <ClInclude Include="..\..\..\include\youprop.h" />
     <ClInclude Include="..\dll\dllcallback.h" />
-    <ClInclude Include="..\dll\dllentry.h" />
+    <ClInclude Include="..\dll\dllhack.h" />
     <ClInclude Include="..\dll\dllproc.h" />
     <ClInclude Include="..\winMS.h" />
   </ItemGroup>

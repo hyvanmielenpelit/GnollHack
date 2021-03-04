@@ -992,4 +992,4 @@ gotlock:
 }
 #endif /* PC_LOCKING */
 
-/*windmain.c*/
+/*dllmain.c*/

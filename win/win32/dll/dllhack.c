@@ -3,14 +3,13 @@
  * Copyright (c) Janne Gustafsson, 2021
  */
 
-#include <windows.h>
-#include "dllentry.h"
+#include "dllhack.h"
+#include "dllproc.h"
 #include "tradstdc.h"
 
-
-extern boolean main(int argc, char** argv);
 extern struct callback_procs dll_callbacks;
 extern void FDECL(set_dll_wincaps, (unsigned long, unsigned long));
+
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -43,7 +42,7 @@ DLL void DoWork(ProgressCallback progressCallback)
 }
 
 
-DLL int RunGnollHack(
+DLL int WINAPI RunGnollHack(
     unsigned long wincap1,
     unsigned long wincap2,
     InitWindowsCallback callback_init_nhwindows,
@@ -205,11 +204,8 @@ DLL int RunGnollHack(
     dll_callbacks.callback_exit_hack = callback_exit_hack;
     dll_callbacks.callback_getcwd = callback_getcwd;
 
-    int argc = 1;
-    char argv[1][1] = { "" };
-
     /* Start GnollHack by calling main */
-    return (int)main(argc, (char**)argv);
+    return GnollHackStart();
 }
 
 /* Unused */
@@ -219,3 +215,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 {
     return 0;
 }
+
+
+

@@ -9,6 +9,7 @@
  * code in the mswin port and the rest of the GnollHack game engine.
 */
 
+#include "win10.h"
 #include "hack.h"
 #include "color.h"
 #include "dlb.h"
@@ -33,6 +34,7 @@
 #include "resource.h"
 #include "dllcallback.h"
 
+
 NHWinApp _GnollHack_app;
 
 #define LLEN 128
@@ -52,6 +54,13 @@ dll_logDebug(const char *fmt, ...)
 {
 }
 #endif
+
+extern boolean main(int argc, char** argv);
+extern void FDECL(gnollhack_exit, (int));
+static TCHAR* _get_cmd_arg(TCHAR* pCmdLine);
+// Global Variables:
+extern int GUILaunched;     /* We tell shared startup code in windmain.c
+                               that the GUI was launched via this */
 
 void dll_main_loop(void);
 static void dll_wait_loop(int milliseconds);
@@ -3462,55 +3471,12 @@ dll_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 void
 dll_init_platform(VOID_ARGS)
 {
-    /* GDI+ */
-    StartGdiplus();
-
-    /* FMOD Studio */
-    if (!initialize_fmod_studio())
-    {
-        panic("cannot initialize FMOD studio");
-        return;
-    }
-
-    /* FMOD Banks */
-    HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
-    int rid[2] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS };
-    char* bfilename[2] = { 0, 0 };
-    bfilename[0] = iflags.wc2_master_bank_file;
-    bfilename[1] = iflags.wc2_master_strings_bank_file;
-    for (int i = 0; i < 2; i++)
-    {
-        if (bfilename[i])
-        {
-            if (!load_fmod_bank_from_file(hInstance, bfilename[i]))
-            {
-                impossible("cannot load FMOD sound bank %d from file", i);
-                /* Continue to loading from resource */
-            }
-            else
-                continue;
-        }
-
-        if (!load_fmod_bank_from_resource(hInstance, rid[i]))
-        {
-            panic("cannot load FMOD sound bank %d from resource", i);
-            return;
-        }
-    }
-
-    /* Tiles */
-#ifdef USE_TILES
-    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
-#endif
-
 
 }
 
 void
 dll_exit_platform(int status)
 {
-    StopGdiplus();
-    (void)close_fmod_studio();
     gnollhack_exit(status);
 }
 
@@ -3519,7 +3485,6 @@ dll_exit_hack(int status)
 {
     dll_exit_platform(status);
 }
-
 
 
 
@@ -3615,143 +3580,6 @@ _get_cmd_arg(TCHAR* pCmdLine)
     return pRetArg;
 }
 
-/* Get the version of the Common Control library on this machine.
-   Copied from the Microsoft SDK
- */
-HRESULT
-GetComCtlVersion(LPDWORD pdwMajor, LPDWORD pdwMinor)
-{
-    HINSTANCE hComCtl;
-    HRESULT hr = S_OK;
-    DLLGETVERSIONPROC pDllGetVersion;
-
-    if (IsBadWritePtr(pdwMajor, sizeof(DWORD))
-        || IsBadWritePtr(pdwMinor, sizeof(DWORD)))
-        return E_INVALIDARG;
-    // load the DLL
-    hComCtl = LoadLibrary(TEXT("comctl32.dll"));
-    if (!hComCtl)
-        return E_FAIL;
-
-    /*
-    You must get this function explicitly because earlier versions of the DLL
-    don't implement this function. That makes the lack of implementation of
-    the
-    function a version marker in itself.
-    */
-    pDllGetVersion =
-        (DLLGETVERSIONPROC)GetProcAddress(hComCtl, TEXT("DllGetVersion"));
-    if (pDllGetVersion) {
-        DLLVERSIONINFO dvi;
-        ZeroMemory(&dvi, sizeof(dvi));
-        dvi.cbSize = sizeof(dvi);
-        hr = (*pDllGetVersion)(&dvi);
-        if (SUCCEEDED(hr)) {
-            *pdwMajor = dvi.dwMajorVersion;
-            *pdwMinor = dvi.dwMinorVersion;
-        }
-        else {
-            hr = E_FAIL;
-        }
-    }
-    else {
-        /*
-        If GetProcAddress failed, then the DLL is a version previous to the
-        one
-        shipped with IE 3.x.
-        */
-        *pdwMajor = 4;
-        *pdwMinor = 0;
-    }
-    FreeLibrary(hComCtl);
-    return hr;
-}
-
-/* apply bitmap pointed by sourceDc transparently over
-bitmap pointed by hDC */
-BOOL WINAPI
-_nhapply_image_transparent(HDC hDC, int x, int y, int width, int height,
-    HDC sourceDC, int s_x, int s_y, int s_width,
-    int s_height, UINT cTransparent)
-{
-    /* Don't use TransparentBlt; According to Microsoft, it contains a memory
-     * leak in Window 95/98. */
-    HDC hdcMem, hdcBack, hdcObject, hdcSave;
-    COLORREF cColor;
-    HBITMAP bmAndBack, bmAndObject, bmAndMem, bmSave;
-    HBITMAP bmBackOld, bmObjectOld, bmMemOld, bmSaveOld;
-
-    /* Create some DCs to hold temporary data. */
-    hdcBack = CreateCompatibleDC(hDC);
-    hdcObject = CreateCompatibleDC(hDC);
-    hdcMem = CreateCompatibleDC(hDC);
-    hdcSave = CreateCompatibleDC(hDC);
-
-    /* this is bitmap for our pet image */
-    bmSave = CreateCompatibleBitmap(hDC, width, height);
-
-    /* Monochrome DC */
-    bmAndBack = CreateBitmap(width, height, 1, 1, NULL);
-    bmAndObject = CreateBitmap(width, height, 1, 1, NULL);
-
-    /* resulting bitmap */
-    bmAndMem = CreateCompatibleBitmap(hDC, width, height);
-
-    /* Each DC must select a bitmap object to store pixel data. */
-    bmBackOld = SelectObject(hdcBack, bmAndBack);
-    bmObjectOld = SelectObject(hdcObject, bmAndObject);
-    bmMemOld = SelectObject(hdcMem, bmAndMem);
-    bmSaveOld = SelectObject(hdcSave, bmSave);
-
-    /* copy source image because it is going to be overwritten */
-    SetStretchBltMode(hdcSave, COLORONCOLOR);
-    StretchBlt(hdcSave, 0, 0, width, height, sourceDC, s_x, s_y, s_width,
-        s_height, SRCCOPY);
-
-    /* Set the background color of the source DC to the color.
-    contained in the parts of the bitmap that should be transparent */
-    cColor = SetBkColor(hdcSave, cTransparent);
-
-    /* Create the object mask for the bitmap by performing a BitBlt
-    from the source bitmap to a monochrome bitmap. */
-    BitBlt(hdcObject, 0, 0, width, height, hdcSave, 0, 0, SRCCOPY);
-
-    /* Set the background color of the source DC back to the original
-    color. */
-    SetBkColor(hdcSave, cColor);
-
-    /* Create the inverse of the object mask. */
-    BitBlt(hdcBack, 0, 0, width, height, hdcObject, 0, 0, NOTSRCCOPY);
-
-    /* Copy background to the resulting image  */
-    BitBlt(hdcMem, 0, 0, width, height, hDC, x, y, SRCCOPY);
-
-    /* Mask out the places where the source image will be placed. */
-    BitBlt(hdcMem, 0, 0, width, height, hdcObject, 0, 0, SRCAND);
-
-    /* Mask out the transparent colored pixels on the source image. */
-    BitBlt(hdcSave, 0, 0, width, height, hdcBack, 0, 0, SRCAND);
-
-    /* XOR the source image with the beckground. */
-    BitBlt(hdcMem, 0, 0, width, height, hdcSave, 0, 0, SRCPAINT);
-
-    /* blt resulting image to the screen */
-    BitBlt(hDC, x, y, width, height, hdcMem, 0, 0, SRCCOPY);
-
-    /* cleanup */
-    DeleteObject(SelectObject(hdcBack, bmBackOld));
-    DeleteObject(SelectObject(hdcObject, bmObjectOld));
-    DeleteObject(SelectObject(hdcMem, bmMemOld));
-    DeleteObject(SelectObject(hdcSave, bmSaveOld));
-
-    DeleteDC(hdcMem);
-    DeleteDC(hdcBack);
-    DeleteDC(hdcObject);
-    DeleteDC(hdcSave);
-
-    return TRUE;
-}
-
 void
 set_dll_wincaps(wincap1, wincap2)
 unsigned long wincap1, wincap2;
@@ -3787,3 +3615,110 @@ char* dll_getcwd(char* dest_buf, int size_in_bytes)
 
    return dest_buf;
 }
+
+
+
+
+#if !defined(SAFEPROCS)
+#error You must #define SAFEPROCS to build winhack.c
+#endif
+
+
+#ifdef __BORLANDC__
+#define _stricmp(s1, s2) stricmp(s1, s2)
+#define _strdup(s1) strdup(s1)
+#endif
+
+#define MAX_CMDLINE_PARAM 255
+
+int APIENTRY
+GnollHackStart()
+{
+    int argc;
+    char* argv[MAX_CMDLINE_PARAM];
+    size_t len;
+    TCHAR* p;
+    TCHAR wbuf[BUFSZ];
+    char buf[BUFSZ];
+
+    HINSTANCE hInstance = GetModuleHandle(NULL);
+    /*
+     * Get a set of valid safe windowport function
+     * pointers during early startup initialization.
+     *
+     * When get_safe_procs is called with 0 as the param,
+     * non-functional, but safe function pointers are set
+     * for all windowport routines.
+     *
+     * When get_safe_procs is called with 1 as the param,
+     * raw_print, raw_print_bold, and wait_synch, and nhgetch
+     * are set to use C stdio routines via stdio_raw_print,
+     * stdio_raw_print_bold, stdio_wait_synch, and
+     * stdio_nhgetch.
+     */
+    windowprocs = *get_safe_procs(0);
+
+    /*
+     * Now we are going to override a couple
+     * of the windowprocs functions so that
+     * error messages are handled in a suitable
+     * way for the graphical version.
+     */
+    windowprocs.win_raw_print = dll_raw_print;
+    windowprocs.win_raw_print_bold = dll_raw_print_bold;
+    windowprocs.win_wait_synch = dll_wait_synch;
+
+    win10_init();
+    sys_early_init();
+    dll_init_platform();
+
+
+    /* get command line parameters */
+    p = _get_cmd_arg(GetCommandLine());
+    p = _get_cmd_arg(NULL); /* skip first paramter - command name */
+    for (argc = 1; p && argc < MAX_CMDLINE_PARAM; argc++) {
+        len = _tcslen(p);
+        if (len > 0) {
+            argv[argc] = _strdup(NH_W2A(p, buf, BUFSZ));
+        }
+        else {
+            argv[argc] = "";
+        }
+        p = _get_cmd_arg(NULL);
+    }
+    GetModuleFileName(NULL, wbuf, BUFSZ);
+    argv[0] = _strdup(NH_W2A(wbuf, buf, BUFSZ));
+
+    if (argc == 2) {
+        TCHAR* savefile = strdup(argv[1]);
+        TCHAR* plname;
+        for (p = savefile; *p && *p != '-'; p++)
+            ;
+        if (*p) {
+            /* we found a '-' */
+            plname = p + 1;
+            for (p = plname; *p && *p != '.'; p++)
+                ;
+            if (*p) {
+                if (strcmp(p + 1, "GnollHack-saved-game") == 0) {
+                    *p = '\0';
+                    argv[1] = "-u";
+                    argv[2] = _strdup(plname);
+                    argc = 3;
+                }
+            }
+        }
+        free(savefile);
+    }
+    GUILaunched = 1;
+    iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
+    iflags.using_gui_sounds = TRUE;
+
+    /* let main do the argument processing */
+    (void)main(argc, argv);
+
+    dll_exit_platform(EXIT_SUCCESS);
+
+    return 0;
+}
+

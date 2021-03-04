@@ -1,5 +1,5 @@
 /*
- * dllentry.h
+ * dllhack.h
  * Copyright (c) Janne Gustafsson, 2021
  */
 
@@ -7,8 +7,8 @@
 #include "dllcallback.h"
 #include "tradstdc.h"
 
-#ifndef DLLENTRY_H
-#define DLLENTRY_H
+#ifndef DLLHACK_H
+#define DLLHACK_H
 
 /* Test functions*/
 DLL int NDECL(DoSomeCalc);
@@ -123,4 +123,4 @@ DLL int RunGnollHack(
     GetCwdCallback callback_getcwd
 );
 
-#endif //DLLENTRY_H
+#endif //DLLHACK_H
