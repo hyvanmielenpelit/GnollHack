@@ -11,14 +11,14 @@
 
 #include "win10.h"
 #include "hack.h"
-#include "color.h"
 #include "dlb.h"
 #include "func_tab.h" /* for extended commands */
 #include "dllproc.h"
-#include "winMS.h"
 #include <assert.h>
-#include <mmsystem.h>
 #if 0
+#include "winMS.h"
+#include "color.h"
+#include <mmsystem.h>
 #include "mhmap.h"
 #include "mhstatus.h"
 #include "mhtext.h"
@@ -35,8 +35,6 @@
 #endif
 #include "resource.h"
 #include "dllcallback.h"
-
-NHWinApp _GnollHack_app;
 
 #define LLEN 128
 
@@ -135,6 +133,11 @@ init_nhwindows(int* argcp, char** argv)
 */
 #define DLL_DEF_CLIPAROUND_MARGIN 5
 #define DLL_DEF_CLIPAROUND_AMOUNT 1
+#define DLL_NHFONT_DEFAULT_SIZE 9
+#define DLL_NHFONT_SIZE_MIN 3
+#define DLL_NHFONT_SIZE_MAX 20
+
+#define DLL_MAX_LOADSTRING 100
 
 void
 dll_init_nhwindows(int *argc, char **argv)
@@ -157,21 +160,21 @@ dll_init_nhwindows(int *argc, char **argv)
     WIN_MAP = WIN_ERR;
 
     /* check default values */
-    if (iflags.wc_fontsiz_status < NHFONT_SIZE_MIN
-        || iflags.wc_fontsiz_status > NHFONT_SIZE_MAX)
-        iflags.wc_fontsiz_status = NHFONT_DEFAULT_SIZE;
+    if (iflags.wc_fontsiz_status < DLL_NHFONT_SIZE_MIN
+        || iflags.wc_fontsiz_status > DLL_NHFONT_SIZE_MAX)
+        iflags.wc_fontsiz_status = DLL_NHFONT_DEFAULT_SIZE;
 
-    if (iflags.wc_fontsiz_message < NHFONT_SIZE_MIN
-        || iflags.wc_fontsiz_message > NHFONT_SIZE_MAX)
-        iflags.wc_fontsiz_message = NHFONT_DEFAULT_SIZE;
+    if (iflags.wc_fontsiz_message < DLL_NHFONT_SIZE_MIN
+        || iflags.wc_fontsiz_message > DLL_NHFONT_SIZE_MAX)
+        iflags.wc_fontsiz_message = DLL_NHFONT_DEFAULT_SIZE;
 
-    if (iflags.wc_fontsiz_text < NHFONT_SIZE_MIN
-        || iflags.wc_fontsiz_text > NHFONT_SIZE_MAX)
-        iflags.wc_fontsiz_text = NHFONT_DEFAULT_SIZE;
+    if (iflags.wc_fontsiz_text < DLL_NHFONT_SIZE_MIN
+        || iflags.wc_fontsiz_text > DLL_NHFONT_SIZE_MAX)
+        iflags.wc_fontsiz_text = DLL_NHFONT_DEFAULT_SIZE;
 
-    if (iflags.wc_fontsiz_menu < NHFONT_SIZE_MIN
-        || iflags.wc_fontsiz_menu > NHFONT_SIZE_MAX)
-        iflags.wc_fontsiz_menu = NHFONT_DEFAULT_SIZE;
+    if (iflags.wc_fontsiz_menu < DLL_NHFONT_SIZE_MIN
+        || iflags.wc_fontsiz_menu > DLL_NHFONT_SIZE_MAX)
+        iflags.wc_fontsiz_menu = DLL_NHFONT_DEFAULT_SIZE;
 
     if (iflags.wc_align_message == 0)
         iflags.wc_align_message = ALIGN_TOP;
@@ -2247,10 +2250,10 @@ dll_logDebug(const char *fmt, ...)
 int
 GNHMessageBox(char* text, unsigned int type)
 {
-    char title[MAX_LOADSTRING];
+    char title[DLL_MAX_LOADSTRING];
     HINSTANCE hApp = GetModuleHandle(NULL);
 
-    LoadString(hApp, IDS_APP_TITLE_SHORT, title, MAX_LOADSTRING);
+    LoadString(hApp, IDS_APP_TITLE_SHORT, title, DLL_MAX_LOADSTRING);
 
     return dll_callbacks.callback_messagebox(text, title, type);
 }
@@ -2854,13 +2857,6 @@ dll_exit_hack(int status)
 }
 
 
-
-PNHWinApp
-GetNHApp()
-{
-    return &_GnollHack_app;
-}
-
 void
 set_dll_wincaps(wincap1, wincap2)
 unsigned long wincap1, wincap2;
@@ -2916,3 +2912,8 @@ DLL int DoSomeCalc2()
     return (int)length;
 }
 
+void
+mswin_destroy_reg()
+{
+    /* Nothing */
+}

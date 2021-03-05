@@ -232,20 +232,7 @@
     <ClInclude Include="..\lib\dllproc.h" />
     <ClInclude Include="..\lib\framework.h" />
     <ClInclude Include="..\lib\pch.h" />
-    <ClInclude Include="..\mhaskyn.h" />
-    <ClInclude Include="..\mhdlg.h" />
-    <ClInclude Include="..\mhfont.h" />
-    <ClInclude Include="..\mhinput.h" />
-    <ClInclude Include="..\mhmain.h" />
-    <ClInclude Include="..\mhmap.h" />
-    <ClInclude Include="..\mhmenu.h" />
-    <ClInclude Include="..\mhmsg.h" />
-    <ClInclude Include="..\mhmsgwnd.h" />
-    <ClInclude Include="..\mhrip.h" />
-    <ClInclude Include="..\mhsplash.h" />
-    <ClInclude Include="..\mhstatus.h" />
-    <ClInclude Include="..\mhtext.h" />
-    <ClInclude Include="..\mhwingdi.h" />
+    <ClInclude Include="..\lib\resource.h" />
     <ClInclude Include="..\resource.h" />
     <ClInclude Include="..\soundfx.h" />
     <ClInclude Include="..\winMS.h" />
@@ -390,43 +377,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\mhaskyn.c" />
-    <ClCompile Include="..\mhdlg.c" />
-    <ClCompile Include="..\mhfont.c" />
-    <ClCompile Include="..\mhinput.c" />
-    <ClCompile Include="..\mhmain.c" />
-    <ClCompile Include="..\mhmap.c" />
-    <ClCompile Include="..\mhmenu.c" />
-    <ClCompile Include="..\mhmsgwnd.c" />
-    <ClCompile Include="..\mhrip.c" />
-    <ClCompile Include="..\mhsplash.c" />
-    <ClCompile Include="..\mhstatus.c" />
-    <ClCompile Include="..\mhtext.c" />
-    <ClCompile Include="..\mhwingdi.cpp" />
-    <ClCompile Include="..\mswproc.c" />
     <ClCompile Include="..\soundfx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="..\sdl\diablo_h.ttf" />
-    <Font Include="..\uwch.ttf" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\FMOD-Logo-32.png" />
-    <Image Include="..\gnollhack-logo-test-2.png" />
     <Image Include="..\GnollHackNew.ico" />
-    <Image Include="..\gnollhack_64x96_transparent_32bits.png" />
-    <Image Include="..\mnsel.bmp" />
-    <Image Include="..\mnselcnt.bmp" />
-    <Image Include="..\mnunsel.bmp" />
-    <Image Include="..\rip.bmp" />
-    <Image Include="..\splash.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Master.bank" />
-    <None Include="..\Master.strings.bank" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\winhack.rc" />
+    <ResourceCompile Include="..\lib\dllhack.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

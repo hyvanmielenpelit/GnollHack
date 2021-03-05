@@ -385,7 +385,7 @@ namespace GnollHackMG
         {
             base.BeginRun();
 
-            if (1 == 1)
+            if (0 == 1)
             {
                 RunGnollHack(
                     0,

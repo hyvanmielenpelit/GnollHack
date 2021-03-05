@@ -135,48 +135,6 @@
     <ClInclude Include="..\..\..\include\mfndpos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mhaskyn.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhdlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhfont.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhinput.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhmain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhmenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhmsg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhmsgwnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhrip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhsplash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhstatus.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhtext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mhwingdi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\mkroom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -280,6 +238,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\youprop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -434,49 +395,10 @@
     <ClCompile Include="..\..\..\src\mcastu.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mhaskyn.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhdlg.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhfont.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhinput.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\mhitm.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\mhitu.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhmain.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhmap.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhmenu.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhmsgwnd.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhrip.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhsplash.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhstatus.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhtext.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mhwingdi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\minion.c">
@@ -510,9 +432,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\mplayer.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mswproc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\mthrowu.c">
@@ -718,44 +637,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="..\sdl\diablo_h.ttf" />
-    <Font Include="..\uwch.ttf" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\FMOD-Logo-32.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\gnollhack_64x96_transparent_32bits.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\gnollhack-logo-test-2.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="..\GnollHackNew.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="..\mnsel.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\mnselcnt.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\mnunsel.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\rip.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\splash.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Master.bank" />
-    <None Include="..\Master.strings.bank" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\winhack.rc">
+    <ResourceCompile Include="..\lib\dllhack.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
