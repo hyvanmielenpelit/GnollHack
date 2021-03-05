@@ -4,8 +4,7 @@
 // Windows Header Files
 #include <windows.h>
 #include "tradstdc.h"
-
-#define DLL __declspec(dllexport)
+#include "dllcallback.h"
 
 /* Test functions*/
 DLL int DoSomeCalc2();

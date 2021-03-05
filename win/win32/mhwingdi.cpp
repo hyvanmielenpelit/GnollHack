@@ -55,8 +55,11 @@ extern "C" {
         HBITMAP hBmp = (HBITMAP)0;
         Color bkclr;
         bkclr.SetFromCOLORREF(bkcolor);
-
+#ifdef UNICODE
+        HRSRC hResource = ::FindResource(hInstance, MAKEINTRESOURCE(resource_id), L"PNG");
+#else
         HRSRC hResource = ::FindResource(hInstance, MAKEINTRESOURCE(resource_id), "PNG");
+#endif
         if (!hResource)
             return hBmp;
 

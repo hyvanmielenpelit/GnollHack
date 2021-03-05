@@ -303,7 +303,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 
     GnollHack_enter(argc, argv);
     iflags.use_background_glyph = FALSE;
-    if (WINDOWPORT("mswin") || WINDOWPORT("nuklear"))
+    if (WINDOWPORT("mswin") || WINDOWPORT("nuklear") || WINDOWPORT("dll"))
         iflags.use_background_glyph = TRUE;
     if (WINDOWPORT("tty"))
         nttty_open(1);

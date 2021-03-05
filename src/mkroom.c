@@ -399,7 +399,7 @@ struct mkroom *sroom;
 
 	register int roll = rn2(4);
 	int hd = level_difficulty();
-	struct permonst* mainlibrarymonst;
+	struct permonst* mainlibrarymonst = 0;
     boolean special_item_created = FALSE;
     int special_item_chance = 0;
     struct obj* firstbox = 0;;

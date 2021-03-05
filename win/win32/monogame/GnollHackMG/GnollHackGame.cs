@@ -148,13 +148,13 @@ namespace GnollHackMG
         typedef void (__stdcall* SetAmbientVolumeCallback) (int);
         typedef void (__stdcall* ExitHackCallback) (int);         
         */
-        [DllImport(@"GnollHackDLL.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"libgnollhack.dll", CharSet = CharSet.Unicode)]
         public static extern int RunGnollHack(
             UInt32 wincaps1,
             UInt32 wincaps2,
             VoidVoidCallback callback_init_nhwindows,
             IntVoidCallback callback_player_selection,
-            VoidVoidCallback callback_askname,
+            CharVoidCallback callback_askname,
             VoidVoidCallback callback_get_nh_event,
             VoidConstCharCallback callback_exit_nhwindows,
             VoidConstCharCallback callback_suspend_nhwindows,
@@ -230,19 +230,10 @@ namespace GnollHackMG
             CharVoidCallback callback_getcwd
         );
 
-        [DllImport(@"GnollHackDLL.dll", CharSet = CharSet.Unicode)]
-        public static extern int DoSomeCalc();
-
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        public delegate void ProgressCallback(int value);
-
-        [DllImport(@"GnollHackDLL.dll")]
-        public static extern void DoWork([MarshalAs(UnmanagedType.FunctionPtr)] ProgressCallback callbackPointer);
-
-        [DllImport(@"GnollHackDLL.dll")]
+        [DllImport(@"libgnollhack.dll")]
         public static extern byte dll_validrole(int role);
 
-        [DllImport(@"GnollHackDLL.dll")]
+        [DllImport(@"libgnollhack.dll")]
         public static extern byte dll_str2role([MarshalAs(UnmanagedType.LPStr)] string role_str);
 
 
@@ -337,28 +328,18 @@ namespace GnollHackMG
 
             _spriteBatch.Begin();
 
-            int fromDLLvalue = DoSomeCalc();
             byte fromDLLvalue2 = dll_validrole(2);
             int fromDLLvalue3 = dll_str2role("knight");
-
             int fromDLL2value1 = DoSomeCalc2();
 
             // define a progress callback delegate
-            ProgressCallback callback =
-                (value) =>
-                {
-                    _spriteBatch.DrawString(_spriteFont, value.ToString(), new Vector2(10, 50), Color.White);
-                };
 
             _spriteBatch.DrawString(_spriteFont, "Hello World!", new Vector2(10, 10), Color.White);
-            _spriteBatch.DrawString(_spriteFont, fromDLLvalue.ToString(), new Vector2(10, 30), Color.White);
             _spriteBatch.DrawString(_spriteFont, _message, new Vector2(10, 70), Color.White);
             _spriteBatch.DrawString(_spriteFont, _message2, new Vector2(10, 110), Color.White);
             _spriteBatch.DrawString(_spriteFont, fromDLLvalue2.ToString(), new Vector2(10, 150), Color.White);
-            _spriteBatch.DrawString(_spriteFont, fromDLLvalue3.ToString(), new Vector2(10, 190), Color.White);
-            _spriteBatch.DrawString(_spriteFont, fromDLL2value1.ToString(), new Vector2(10, 230), Color.White);
-
-            DoWork(callback);
+            _spriteBatch.DrawString(_spriteFont, fromDLLvalue3.ToString(), new Vector2(10, 170), Color.White);
+            _spriteBatch.DrawString(_spriteFont, fromDLL2value1.ToString(), new Vector2(10, 190), Color.White);
 
             _spriteBatch.End();
 
@@ -376,7 +357,7 @@ namespace GnollHackMG
                     0,
                     MG_InitWindows,
                     MG_IntVoidDummy,
-                    MG_VoidVoidDummy,
+                    MG_AskName,
                     MG_VoidVoidDummy,
                     MG_VoidConstCharDummy,
                     MG_VoidConstCharDummy,
@@ -460,6 +441,11 @@ namespace GnollHackMG
 
         }
 
+
+        protected string MG_AskName()
+        {
+            return "Janne Test";
+        }
 
         /*
         typedef void (__stdcall* VoidVoidCallback) ();

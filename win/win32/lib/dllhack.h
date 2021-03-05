@@ -16,10 +16,10 @@ typedef void(__stdcall* ProgressCallback)(int);
 DLL void FDECL(DoWork, (ProgressCallback));
 
 /* Utility functions in dllproc.c */
-DLL boolean FDECL(dll_validrole, (int));
-DLL boolean FDECL(dll_validrace, (int, int));
-DLL boolean FDECL(dll_validgend, (int, int, int));
-DLL boolean FDECL(dll_validalign, (int, int, int));
+DLL unsigned char FDECL(dll_validrole, (int));
+DLL unsigned char FDECL(dll_validrace, (int, int));
+DLL unsigned char FDECL(dll_validgend, (int, int, int));
+DLL unsigned char FDECL(dll_validalign, (int, int, int));
 DLL int FDECL(dll_randrole, (BOOLEAN_P));
 DLL int FDECL(dll_randrace, (int));
 DLL int FDECL(dll_randgend, (int, int));
@@ -28,13 +28,13 @@ DLL int FDECL(dll_str2role, (const char*));
 DLL int FDECL(dll_str2race, (const char*));
 DLL int FDECL(dll_str2gend, (const char*));
 DLL int FDECL(dll_str2align, (const char*));
-DLL boolean FDECL(dll_ok_role, (int, int, int, int));
+DLL unsigned char FDECL(dll_ok_role, (int, int, int, int));
 DLL int FDECL(dll_pick_role, (int, int, int, int));
-DLL boolean FDECL(dll_ok_race, (int, int, int, int));
+DLL unsigned char FDECL(dll_ok_race, (int, int, int, int));
 DLL int FDECL(dll_pick_race, (int, int, int, int));
-DLL boolean FDECL(dll_ok_gend, (int, int, int, int));
+DLL unsigned char FDECL(dll_ok_gend, (int, int, int, int));
 DLL int FDECL(dll_pick_gend, (int, int, int, int));
-DLL boolean FDECL(dll_ok_align, (int, int, int, int));
+DLL unsigned char FDECL(dll_ok_align, (int, int, int, int));
 DLL int FDECL(dll_pick_align, (int, int, int, int));
 
 

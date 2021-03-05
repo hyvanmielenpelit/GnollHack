@@ -22,12 +22,13 @@ typedef void(__stdcall* VoidConstCharIntCallback)(const char*, int);
 typedef void(__stdcall* VoidConstCharBooleanCallback)(const char*, unsigned char);
 typedef int(__stdcall* IntVoidCallback)();
 typedef int(__stdcall* BooleanVoidCallback)();
+typedef char*(__stdcall* CharVoidCallback)();
 
 
 /* Specific callback types */
 typedef VoidVoidCallback InitWindowsCallback;
 typedef IntVoidCallback PlayerSelectionCallback;
-typedef VoidVoidCallback AskNameCallback;
+typedef CharVoidCallback AskNameCallback;
 typedef VoidVoidCallback GetEventCallback;
 typedef VoidConstCharCallback ExitWindowsCallback;
 typedef VoidConstCharCallback SuspendWindowsCallback;
