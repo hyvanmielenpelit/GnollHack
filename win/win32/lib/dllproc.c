@@ -18,6 +18,7 @@
 #include "winMS.h"
 #include <assert.h>
 #include <mmsystem.h>
+#if 0
 #include "mhmap.h"
 #include "mhstatus.h"
 #include "mhtext.h"
@@ -31,6 +32,7 @@
 #include "mhrip.h"
 #include "mhmain.h"
 #include "mhfont.h"
+#endif
 #include "resource.h"
 #include "dllcallback.h"
 
@@ -131,6 +133,9 @@ init_nhwindows(int* argcp, char** argv)
                 ** Why not have init_nhwindows() create all of the "standard"
                 ** windows?  Or at least all but WIN_INFO?      -dean
 */
+#define DLL_DEF_CLIPAROUND_MARGIN 5
+#define DLL_DEF_CLIPAROUND_AMOUNT 1
+
 void
 dll_init_nhwindows(int *argc, char **argv)
 {
@@ -173,9 +178,9 @@ dll_init_nhwindows(int *argc, char **argv)
     if (iflags.wc_align_status == 0)
         iflags.wc_align_status = ALIGN_BOTTOM;
     if (iflags.wc_scroll_margin == 0)
-        iflags.wc_scroll_margin = DEF_CLIPAROUND_MARGIN;
+        iflags.wc_scroll_margin = DLL_DEF_CLIPAROUND_MARGIN;
     if (iflags.wc_scroll_amount == 0)
-        iflags.wc_scroll_amount = DEF_CLIPAROUND_AMOUNT;
+        iflags.wc_scroll_amount = DLL_DEF_CLIPAROUND_AMOUNT;
     if (iflags.wc_tile_width == 0)
         iflags.wc_tile_width = TILE_X;
     if (iflags.wc_tile_height == 0)
@@ -1733,7 +1738,9 @@ void
 dll_getlin(const char *question, char *input)
 {
     dll_logDebug("dll_getlin(%s, %p)\n", question, input);
+    dll_callbacks.callback_getlin(question, input);
 
+#if 0
     if (!iflags.wc_popup_dialog) {
         char c;
         int len;
@@ -1794,6 +1801,7 @@ dll_getlin(const char *question, char *input)
             strcpy(input, "\033");
         }
     }
+#endif
 }
 
 /*
@@ -1805,9 +1813,11 @@ int get_ext_cmd(void)
 int
 dll_get_ext_cmd()
 {
-    int ret;
     dll_logDebug("dll_get_ext_cmd()\n");
+    return dll_callbacks.callback_get_ext_cmd();
 
+#if 0
+    int ret;
     if (!iflags.wc_popup_dialog) {
         char c;
         char cmd[BUFSZ];
@@ -1887,6 +1897,7 @@ dll_get_ext_cmd()
         else
             return ret;
     }
+#endif
 }
 
 /*
@@ -2120,28 +2131,6 @@ dll_preference_update(const char *pref)
         return;
     }
 
-    if (stricmp(pref, "map_mode") == 0) {
-        mswin_select_map_mode(iflags.wc_map_mode);
-        return;
-    }
-
-    if (stricmp(pref, "hilite_pet") == 0) {
-        InvalidateRect(dll_hwnd_from_winid(WIN_MAP), NULL, TRUE);
-        return;
-    }
-
-    if (stricmp(pref, "align_message") == 0
-        || stricmp(pref, "align_status") == 0) {
-        mswin_layout_main_window(NULL);
-        return;
-    }
-
-    if (stricmp(pref, "vary_msgcount") == 0) {
-        InvalidateRect(dll_hwnd_from_winid(WIN_MESSAGE), NULL, TRUE);
-        mswin_layout_main_window(NULL);
-        return;
-    }
-
     if (stricmp(pref, "perm_invent") == 0) {
         dll_update_inventory();
         return;
@@ -2161,6 +2150,9 @@ dll_preference_update(const char *pref)
 char *
 dll_getmsghistory(BOOLEAN_P init)
 {
+    return dll_callbacks.callback_getmsghistory(init);
+
+#if 0
     static PMSNHMsgGetText text = 0;
     static char *next_message = 0;
 
@@ -2197,11 +2189,14 @@ dll_getmsghistory(BOOLEAN_P init)
                 *p-- = (char) 0; /* delete trailing whitespace */
         return retval;
     }
+#endif
 }
 
 void
 dll_putmsghistory(const char *msg, BOOLEAN_P restoring)
 {
+    dll_callbacks.callback_putmsghistory(msg, restoring);
+#if 0
     BOOL save_sound_opt;
 
     UNREFERENCED_PARAMETER(restoring);
@@ -2215,6 +2210,7 @@ dll_putmsghistory(const char *msg, BOOLEAN_P restoring)
     clear_nhwindow(WIN_MESSAGE); /* it is in fact end-of-turn indication so
                                     each message will print on the new line */
     GetNHApp()->bNoSounds = save_sound_opt; /* restore sounds option */
+#endif
 }
 
 /* clean up and quit */
@@ -2252,8 +2248,9 @@ int
 GNHMessageBox(char* text, unsigned int type)
 {
     char title[MAX_LOADSTRING];
+    HINSTANCE hApp = GetModuleHandle(NULL);
 
-    LoadString(GetNHApp()->hApp, IDS_APP_TITLE_SHORT, title, MAX_LOADSTRING);
+    LoadString(hApp, IDS_APP_TITLE_SHORT, title, MAX_LOADSTRING);
 
     return dll_callbacks.callback_messagebox(text, title, type);
 }
@@ -2273,10 +2270,13 @@ typedef struct dll_status_string {
     int bar_attribute; /* attributes of percentage bar */
 } dll_status_string;
 
+#define DLL_MAX_LINE_STRINGS 100
+#define DLL_MAX_LINE_FIELDS 32
+
 typedef struct dll_status_strings
 {
     int count;
-    dll_status_string* status_strings[MSWIN_MAX_LINE_STRINGS];
+    dll_status_string* status_strings[DLL_MAX_LINE_STRINGS];
 } dll_status_strings;
 
 typedef struct dll_status_field {
@@ -2301,7 +2301,7 @@ typedef struct dll_condition_field {
 
 typedef struct dll_status_fields {
     int count;
-    dll_status_field* status_fields[MSWIN_MAX_LINE_FIELDS];
+    dll_status_field* status_fields[DLL_MAX_LINE_FIELDS];
 } dll_status_fields;
 
 typedef struct dll_status_line {
@@ -2310,7 +2310,7 @@ typedef struct dll_status_line {
 } dll_status_line;
 
 typedef struct dll_status_lines {
-    dll_status_line lines[NHSW_LINES]; /* number of strings to be rendered on each line */
+    dll_status_line lines[MAX_STATUS_LINES]; /* number of strings to be rendered on each line */
 } dll_status_lines;
 
 static dll_status_lines _status_lines;
@@ -2366,7 +2366,9 @@ void
 dll_status_init(void)
 {
     dll_logDebug("dll_status_init()\n");
+    dll_callbacks.callback_status_init();
 
+#if 0
     for (int i = 0; i < SIZE(_status_fields); i++) {
         dll_status_field * status_field = &_status_fields[i];
         status_field->field_index = i;
@@ -2418,7 +2420,7 @@ dll_status_init(void)
             }
         }
     }
-
+#endif
 
     for (int i = 0; i < MAXBLSTATS; ++i) {
 #ifdef STATUS_HILITES
@@ -2912,32 +2914,5 @@ DLL int DoSomeCalc2()
     if (getcwd(buf, 256))
         length = strlen(buf);
     return (int)length;
-}
-
-
-
-
-
-/* Probably unnecessary */
-winid
-dll_winid_from_handle(HWND hWnd)
-{
-    winid i = 0;
-
-    for (i = 1; i < MAXWINDOWS; i++)
-        if (GetNHApp()->windowlist[i].win == hWnd)
-            return i;
-    return -1;
-}
-
-HWND
-dll_hwnd_from_winid(winid wid)
-{
-    if (wid >= 0 && wid < MAXWINDOWS) {
-        return GetNHApp()->windowlist[wid].win;
-    }
-    else {
-        return NULL;
-    }
 }
 

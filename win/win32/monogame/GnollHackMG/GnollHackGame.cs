@@ -82,14 +82,21 @@ namespace GnollHackMG
         public delegate byte BooleanDoubleVoidPtrCallback(double value1, IntPtr value2);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate byte BooleanVoidPtrCallback(IntPtr value1);
-
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate void VoidIntIntIntIntIntCallback(int value1, int value2, int value3, int value4, int value5);
+        
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.LPStr)]
         public delegate string CharVoidCallback();
-
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.LPStr)]
+        public delegate string CharPtrBooleanCallback(byte value1);
+                
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate sbyte CharConstCharPtrConstCharPtrCharCallback([MarshalAs(UnmanagedType.LPStr)] string value1, [MarshalAs(UnmanagedType.LPStr)] string value2, sbyte value3);
-
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate void VoidConstCharPtrCharPtrCallback([MarshalAs(UnmanagedType.LPStr)] string value1, [MarshalAs(UnmanagedType.LPStr)] string value2);
+        
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate int IntCharCharUintCallback([MarshalAs(UnmanagedType.LPStr)] string value1, [MarshalAs(UnmanagedType.LPStr)] string value2, uint value3);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -207,7 +214,7 @@ namespace GnollHackMG
             VoidIntIntCallback callback_cliparound,
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
-            VoidIntCallback callback_print_glyph,
+            VoidIntIntIntIntIntCallback callback_print_glyph,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
             IntVoidCallback callback_nhgetch,
@@ -215,7 +222,7 @@ namespace GnollHackMG
             VoidVoidCallback callback_nhbell,
             IntVoidCallback callback_doprev_message,
             CharConstCharPtrConstCharPtrCharCallback callback_yn_function,
-            VoidIntCallback callback_getlin,
+            VoidConstCharPtrCharPtrCallback callback_getlin,
             IntVoidCallback callback_get_ext_cmd,
             VoidIntCallback callback_number_pad,
             VoidVoidCallback callback_delay_output,
@@ -231,7 +238,7 @@ namespace GnollHackMG
             VoidVoidCallback callback_end_screen,
             VoidIntCallback callback_outrip,
             VoidConstCharCallback callback_preference_update,
-            VoidIntCallback callback_getmsghistory,
+            CharPtrBooleanCallback callback_getmsghistory,
             VoidConstCharBooleanCallback callback_putmsghistory,
             VoidVoidCallback callback_status_init,
             VoidVoidCallback callback_status_finish,
@@ -411,7 +418,7 @@ namespace GnollHackMG
                     MG_VoidIntIntDummy,
                     /* If positionbar is on */
                     MG_VoidCharDummy,
-                    MG_VoidIntDummy,
+                    MG_VoidIntIntIntIntIntDummy,
                     MG_VoidConstCharDummy,
                     MG_VoidConstCharDummy,
                     MG_IntVoidDummy,
@@ -419,7 +426,7 @@ namespace GnollHackMG
                     MG_VoidVoidDummy,
                     MG_IntVoidDummy,
                     MG_CharConstCharPtrConstCharPtrCharDummy,
-                    MG_VoidIntDummy,
+                    MG_VoidConstCharPtrCharPtrDummy,
                     MG_IntVoidDummy,
                     MG_VoidIntDummy,
                     MG_VoidVoidDummy,
@@ -435,7 +442,7 @@ namespace GnollHackMG
                     MG_VoidVoidDummy,
                     MG_VoidIntDummy,
                     MG_VoidConstCharDummy,
-                    MG_VoidIntDummy,
+                    MG_CharPtrBooleanDummy,
                     MG_VoidConstCharBooleanDummy,
                     MG_VoidVoidDummy,
                     MG_VoidVoidDummy,
@@ -604,6 +611,19 @@ namespace GnollHackMG
         {
             return 0;
         }
+        protected void MG_VoidConstCharPtrCharPtrDummy(string value1, string value2)
+        {
+            return;
+        }
+        protected string MG_CharPtrBooleanDummy(byte value1)
+        {
+            return "message here";
+        }
+        protected void MG_VoidIntIntIntIntIntDummy(int value1, int value2, int value3, int value4, int value5)
+        {
+            return;
+        }
+
         
     }
 }

@@ -113,14 +113,10 @@ void dll_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void dll_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
 void dll_exit_hack(int status);
 
-/* helper function */
-HWND dll_hwnd_from_winid(winid wid);
-winid dll_winid_from_handle(HWND hWnd);
+/* Helper functions */
 void dll_bail(const char *mesg);
-
 void dll_init_platform(VOID_ARGS);
 void dll_exit_platform(int);
-
 int GNHMessageBox(char* text, unsigned int type);
 
 

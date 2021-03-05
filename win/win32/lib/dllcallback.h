@@ -30,6 +30,9 @@ typedef unsigned char(__stdcall* BooleanIntDoubleVoidPtrCallback)(int, double, v
 typedef unsigned char(__stdcall* BooleanVoidPtrDoubleCallback)(void* , double);
 typedef unsigned char(__stdcall* BooleanVoidPtrCallback)(void*);
 typedef char(__stdcall* CharConstCharPtrConstCharPtrCharCallback)(const char*, const char*, char);
+typedef void(__stdcall* VoidConstCharPtrCharPtrCallback)(const char*, char*);
+typedef char*(__stdcall* CharPtrBooleanCallback)(unsigned char);
+typedef void(__stdcall* VoidIntIntIntIntInt)(int, int, int, int, int);
 
 
 /* Specific callback types */
@@ -59,7 +62,7 @@ typedef VoidVoidCallback MarkSynchCallback;
 typedef VoidVoidCallback WaitSynchCallback;
 typedef VoidIntIntCallback ClipAroundCallback;
 typedef VoidCharCallback UpdatePositionBarCallback;
-typedef void(__stdcall* PrintGlyphCallback)(int);
+typedef VoidIntIntIntIntInt PrintGlyphCallback;
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;
 typedef IntVoidCallback GetChCallback;
@@ -67,7 +70,7 @@ typedef int(__stdcall* PosKeyCallback)(int*, int*, int*);
 typedef VoidVoidCallback BellCallback;
 typedef IntVoidCallback DoPrevMessageCallback;
 typedef CharConstCharPtrConstCharPtrCharCallback YnFunctionCallback;
-typedef void(__stdcall* GetLinCallback)(int);
+typedef VoidConstCharPtrCharPtrCallback GetLinCallback;
 typedef IntVoidCallback GetExtCmdCallback;
 typedef VoidIntCallback NumberPadCallback;
 typedef VoidVoidCallback DelayOutputCallback;
@@ -81,7 +84,7 @@ typedef VoidVoidCallback StartScreenCallback;
 typedef VoidVoidCallback EndScreenCallback;
 typedef void(__stdcall* OutRipCallback)(int);
 typedef VoidConstCharCallback PreferenceUpdateCallback;
-typedef void(__stdcall* GetMsgHistoryCallback)(int);
+typedef CharPtrBooleanCallback GetMsgHistoryCallback;
 typedef VoidConstCharBooleanCallback PutMsgHistoryCallback;
 typedef VoidVoidCallback StatusInitCallback;
 typedef VoidVoidCallback StatusFinishCallback;
