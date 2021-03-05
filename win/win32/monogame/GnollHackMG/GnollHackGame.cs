@@ -91,7 +91,9 @@ namespace GnollHackMG
         public delegate void VoidIntIntPtrIntIntIntUlongPtrCallback(int value1, ref int value2, int value3, int value4, int value5, ref UInt32 value6);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void VoidUlongCallback(UInt32 value);
-
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate void VoidIntConstCharPtrConstCharPtrBooleanCallback(int value1, string value2, string value3, byte value4);
+        
         [DllImport(@"libgnollhack.dll", CharSet = CharSet.Unicode)]
         public static extern int RunGnollHack(
             UInt32 wincaps1,
@@ -152,7 +154,7 @@ namespace GnollHackMG
             VoidConstCharBooleanCallback callback_putmsghistory,
             VoidVoidCallback callback_status_init,
             VoidVoidCallback callback_status_finish,
-            VoidIntCallback callback_status_enablefield,
+            VoidIntConstCharPtrConstCharPtrBooleanCallback callback_status_enablefield,
             VoidIntIntPtrIntIntIntUlongPtrCallback callback_status_update,
             BooleanVoidCallback callback_can_suspend_yes,
             VoidVoidCallback callback_stretch_window,
@@ -294,7 +296,7 @@ namespace GnollHackMG
         {
             base.BeginRun();
 
-            if (0 == 1)
+            if (1 == 1)
             {
                 RunGnollHack(
                     0,
@@ -355,7 +357,7 @@ namespace GnollHackMG
                     MG_VoidConstCharBooleanDummy,
                     MG_VoidVoidDummy,
                     MG_VoidVoidDummy,
-                    MG_VoidIntDummy,
+                    MG_VoidIntConstCharPtrConstCharPtrBooleanDummy,
                     MG_VoidIntIntPtrIntIntIntUlongPtrDummy,
                     MG_BooleanVoidDummy,
                     MG_VoidVoidDummy,
@@ -532,7 +534,9 @@ namespace GnollHackMG
         {
             return;
         }
-
-        
+        protected void MG_VoidIntConstCharPtrConstCharPtrBooleanDummy(int value1, string value2, string value3, byte value4)
+        {
+            return;
+        }
     }
 }

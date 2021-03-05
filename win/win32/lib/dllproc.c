@@ -2259,7 +2259,7 @@ GNHMessageBox(char* text, unsigned int type)
 }
 
 
-
+#if 0
 /* when status hilites are enabled, we use an array of mswin_status_strings
  * to represent what needs to be rendered. */
 typedef struct dll_status_string {
@@ -2360,6 +2360,8 @@ typedef struct hilite_data_struct {
 } hilite_data_t;
 static hilite_data_t _status_hilites[MAXBLSTATS];
 #endif /* STATUS_HILITES */
+
+#endif
 /*
 status_init()   -- core calls this to notify the window port that a status
                    display is required. The window port should perform
@@ -2423,7 +2425,6 @@ dll_status_init(void)
             }
         }
     }
-#endif
 
     for (int i = 0; i < MAXBLSTATS; ++i) {
 #ifdef STATUS_HILITES
@@ -2433,6 +2434,7 @@ dll_status_init(void)
         _status_hilites[i].over = BL_HILITE_NONE;
 #endif /* STATUS_HILITES */
     }
+#endif
     /* Use a window for the genl version; backward port compatibility */
     WIN_STATUS = create_nhwindow(NHW_STATUS);
     display_nhwindow(WIN_STATUS, FALSE);
@@ -2446,6 +2448,7 @@ void
 dll_status_finish(void)
 {
     dll_logDebug("dll_status_finish()\n");
+    dll_callbacks.callback_status_finish();
 }
 
 /*
@@ -2468,7 +2471,9 @@ dll_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 {
     dll_logDebug("dll_status_enablefield(%d, %s, %s, %d)\n", fieldidx, nm, fmt,
              (int) enable);
+    dll_callbacks.callback_status_enablefield(fieldidx, nm, fmt, enable);
 
+#if 0
     nhassert(fieldidx <= SIZE(_status_fields));
     dll_status_field * field = &_status_fields[fieldidx];
 
@@ -2490,39 +2495,10 @@ dll_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 
         string->draw_bar = (field->enabled && field->field_index == BL_TITLE);
     }
+#endif
+
 }
 
-/* TODO: turn this into a commmon helper; multiple identical implementations */
-static int
-dll_condcolor(bm, bmarray)
-long bm;
-unsigned long *bmarray;
-{
-    int i;
-
-    if (bm && bmarray)
-        for (i = 0; i < CLR_MAX; ++i) {
-            if ((bm & bmarray[i]) != 0)
-                return i;
-        }
-    return NO_COLOR;
-}
-
-static int
-dll_condattr(bm, bmarray)
-long bm;
-unsigned long *bmarray;
-{
-    if (bm && bmarray) {
-        if (bm & bmarray[HL_ATTCLR_DIM]) return HL_DIM;
-        if (bm & bmarray[HL_ATTCLR_BLINK]) return HL_BLINK;
-        if (bm & bmarray[HL_ATTCLR_ULINE]) return HL_ULINE;
-        if (bm & bmarray[HL_ATTCLR_INVERSE]) return HL_INVERSE;
-        if (bm & bmarray[HL_ATTCLR_BOLD]) return HL_BOLD;
-    }
-
-    return HL_NONE;
-}
 
 /*
 

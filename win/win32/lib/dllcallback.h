@@ -33,6 +33,7 @@ typedef char(__stdcall* CharConstCharPtrConstCharPtrCharCallback)(const char*, c
 typedef void(__stdcall* VoidConstCharPtrCharPtrCallback)(const char*, char*);
 typedef char*(__stdcall* CharPtrBooleanCallback)(unsigned char);
 typedef void(__stdcall* VoidIntIntIntIntInt)(int, int, int, int, int);
+typedef void(__stdcall* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, unsigned char);
 
 
 /* Specific callback types */
@@ -88,7 +89,7 @@ typedef CharPtrBooleanCallback GetMsgHistoryCallback;
 typedef VoidConstCharBooleanCallback PutMsgHistoryCallback;
 typedef VoidVoidCallback StatusInitCallback;
 typedef VoidVoidCallback StatusFinishCallback;
-typedef void(__stdcall* StatusEnableFieldCallback)(int);
+typedef VoidIntConstCharPtrConstCharPtrBooleanCallback StatusEnableFieldCallback;
 typedef void(__stdcall* StatusUpdateCallback)(int, void*, int, int, int, unsigned long*);
 typedef BooleanVoidCallback CanSuspendYesCallback;
 typedef VoidVoidCallback StretchWindowCallback;
