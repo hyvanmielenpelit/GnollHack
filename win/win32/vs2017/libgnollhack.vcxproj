@@ -230,8 +230,6 @@
     <ClInclude Include="..\lib\dllcallback.h" />
     <ClInclude Include="..\lib\dllhack.h" />
     <ClInclude Include="..\lib\dllproc.h" />
-    <ClInclude Include="..\lib\framework.h" />
-    <ClInclude Include="..\lib\pch.h" />
     <ClInclude Include="..\lib\resource.h" />
     <ClInclude Include="..\resource.h" />
     <ClInclude Include="..\soundfx.h" />
@@ -371,12 +369,6 @@
     <ClCompile Include="..\lib\dllhack.c" />
     <ClCompile Include="..\lib\dllmain.c" />
     <ClCompile Include="..\lib\dllproc.c" />
-    <ClCompile Include="..\lib\pch.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="..\soundfx.cpp" />
   </ItemGroup>
   <ItemGroup>

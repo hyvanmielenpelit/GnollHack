@@ -14,9 +14,7 @@
 DLL void FDECL(dll_reduce_counters_intervals, (int));
 
 /* Test functions*/
-DLL int NDECL(DoSomeCalc);
-typedef void(__stdcall* ProgressCallback)(int);
-DLL void FDECL(DoWork, (ProgressCallback));
+DLL int NDECL(DoSomeCalc2);
 
 /* Utility functions in dllproc.c */
 DLL unsigned char FDECL(dll_validrole, (int));

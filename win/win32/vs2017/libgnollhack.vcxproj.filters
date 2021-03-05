@@ -21,12 +21,6 @@
     <ClInclude Include="..\lib\dllhack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\framework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\dllproc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -246,9 +240,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\lib\dllmain.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\pch.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\dllhack.c">
