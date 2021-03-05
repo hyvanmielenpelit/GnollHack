@@ -1946,13 +1946,14 @@ void
 dll_change_color()
 {
     dll_logDebug("dll_change_color()\n");
+    dll_callbacks.callback_change_color();
 }
 
 char *
 dll_get_color_string()
 {
     dll_logDebug("dll_get_color_string()\n");
-    return ("");
+    return dll_callbacks.callback_get_color_string();
 }
 
 /*
@@ -1967,6 +1968,7 @@ dll_start_screen()
 {
     /* Do Nothing */
     dll_logDebug("dll_start_screen()\n");
+    dll_callbacks.callback_start_screen();
 }
 
 /*
@@ -1978,6 +1980,7 @@ dll_end_screen()
 {
     /* Do Nothing */
     dll_logDebug("dll_end_screen()\n");
+    dll_callbacks.callback_end_screen();
 }
 
 /*
@@ -1993,7 +1996,7 @@ dll_outrip(winid wid, int how, time_t when)
     long year;
 
     dll_logDebug("dll_outrip(%d, %d, %ld)\n", wid, how, (long) when);
-    dll_callbacks.callback_outrip(wid); //Begin
+    dll_callbacks.callback_outrip_begin(wid); //Begin
 
     /* Put name on stone */
     Sprintf(buf, "%s", plname);
@@ -2016,7 +2019,7 @@ dll_outrip(winid wid, int how, time_t when)
     Sprintf(buf, "%4ld", year);
     putstr(wid, 0, buf);
 
-    dll_callbacks.callback_outrip(wid);  //End
+    dll_callbacks.callback_outrip_end(wid);  //End
 }
 
 /* handle options updates here */

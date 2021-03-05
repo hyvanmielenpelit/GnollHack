@@ -77,10 +77,10 @@ typedef VoidIntCallback NumberPadCallback;
 typedef VoidVoidCallback DelayOutputCallback;
 typedef VoidIntCallback DelayOutputMillisecondsCallback;
 typedef VoidIntCallback DelayOutputIntervalsCallback;
-typedef void(__stdcall* ChangeColorCallback)(int);
+typedef VoidVoidCallback ChangeColorCallback;
 typedef VoidIntCallback ChangeBackgroundCallback;
 typedef void(__stdcall* SetFontNameCallback)(int);
-typedef const char* (__stdcall* GetColorStringCallback)(int);
+typedef CharVoidCallback GetColorStringCallback;
 typedef VoidVoidCallback StartScreenCallback;
 typedef VoidVoidCallback EndScreenCallback;
 typedef void(__stdcall* OutRipCallback)(int);
@@ -111,6 +111,8 @@ typedef void(__stdcall* ExitHackCallback)(int);
 
 typedef char*(__stdcall* GetCwdCallback)();
 typedef int (__stdcall* MessageBoxCallback)(char*, char*, unsigned int);
+typedef VoidIntCallback OutRipBeginCallback;
+typedef VoidIntCallback OutRipEndCallback;
 
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;
@@ -191,6 +193,8 @@ struct callback_procs {
 
     GetCwdCallback callback_getcwd;
     MessageBoxCallback callback_messagebox;
+    OutRipBeginCallback callback_outrip_begin;
+    OutRipEndCallback callback_outrip_end;
 };
 
 #endif /* DLLCALLBACK_H */

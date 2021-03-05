@@ -141,10 +141,10 @@ namespace GnollHackMG
             VoidIntCallback callback_delay_output_milliseconds,
             VoidIntCallback callback_delay_output_intervals,
 
-            VoidIntCallback callback_change_color,
+            VoidVoidCallback callback_change_color,
             VoidIntCallback callback_change_background,
             VoidIntCallback callback_set_font_name,
-            VoidIntCallback callback_get_color_string,
+            CharVoidCallback callback_get_color_string,
 
             VoidVoidCallback callback_start_screen,
             VoidVoidCallback callback_end_screen,
@@ -174,7 +174,9 @@ namespace GnollHackMG
             BooleanDoubleVoidPtrCallback callback_set_ambient_ghsound_volume,
             VoidIntCallback callback_exit_hack,
             CharVoidCallback callback_getcwd,
-            IntCharCharUintCallback callback_messagebox
+            IntCharCharUintCallback callback_messagebox,
+            VoidIntCallback callback_outrip_begin,
+            VoidIntCallback callback_outrip_end
         );
 
         [DllImport(@"libgnollhack.dll")]
@@ -344,10 +346,10 @@ namespace GnollHackMG
                     MG_VoidIntDummy,
                     MG_VoidIntDummy,
 
+                    MG_VoidVoidDummy,
                     MG_VoidIntDummy,
                     MG_VoidIntDummy,
-                    MG_VoidIntDummy,
-                    MG_VoidIntDummy,
+                    MG_CharVoidDummy,
 
                     MG_VoidVoidDummy,
                     MG_VoidVoidDummy,
@@ -377,7 +379,9 @@ namespace GnollHackMG
                     MG_BooleanDoubleVoidPtrDummy,
                     MG_VoidIntDummy,
                     MG_GetCwd,
-                    MG_MessageBox
+                    MG_MessageBox,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy
                 );
             }
         }
@@ -529,6 +533,10 @@ namespace GnollHackMG
         protected string MG_CharPtrBooleanDummy(byte value1)
         {
             return "message here";
+        }
+        protected string MG_CharVoidDummy()
+        {
+            return "";
         }
         protected void MG_VoidIntIntIntIntIntDummy(int value1, int value2, int value3, int value4, int value5)
         {
