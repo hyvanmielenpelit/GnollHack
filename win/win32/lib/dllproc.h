@@ -115,26 +115,13 @@ void dll_exit_hack(int status);
 
 /* helper function */
 HWND dll_hwnd_from_winid(winid wid);
-winid dll_winid_from_type(int type);
 winid dll_winid_from_handle(HWND hWnd);
-void dll_window_mark_dead(winid wid);
 void dll_bail(const char *mesg);
-
-void dll_popup_display(HWND popup, int *done_indicator);
-void dll_popup_destroy(HWND popup);
-
-void dll_read_reg(void);
-void dll_destroy_reg(void);
-void dll_write_reg(void);
-
-void dll_get_window_placement(int type, LPRECT rt);
-void dll_update_window_placement(int type, LPRECT rt);
-void dll_apply_window_style(HWND hwnd);
 
 void dll_init_platform(VOID_ARGS);
 void dll_exit_platform(int);
 
-int dll_NHMessageBox(HWND hWnd, LPCTSTR text, UINT type);
+int GNHMessageBox(char* text, unsigned int type);
 
 
 #endif /* DLLPROC_H */

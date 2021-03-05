@@ -10,6 +10,9 @@
 #ifndef DLLHACK_H
 #define DLLHACK_H
 
+/* Functions in dllproc.c */
+DLL void FDECL(dll_reduce_counters_intervals, (int));
+
 /* Test functions*/
 DLL int NDECL(DoSomeCalc);
 typedef void(__stdcall* ProgressCallback)(int);
@@ -54,7 +57,7 @@ DLL int RunGnollHack(
     DisplayWindowCallback callback_display_nhwindow,
     DestroyWindowCallback callback_destroy_nhwindow,
     CursCallback callback_curs,
-    PutStrCallback callback_putstr,
+    PutStrExCallback callback_putstr_ex,
     PutMixedCallback callback_putmixed,
     DisplayFileCallback callback_display_file,
     StartMenuCallback callback_start_menu,
@@ -120,7 +123,8 @@ DLL int RunGnollHack(
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume,
     ExitHackCallback callback_exit_hack,
 
-    GetCwdCallback callback_getcwd
+    GetCwdCallback callback_getcwd,
+    MessageBoxCallback callback_messagebox
 );
 
 #endif //DLLHACK_H

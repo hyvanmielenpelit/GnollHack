@@ -18,11 +18,18 @@ typedef void(__stdcall* VoidIntIntCallback)(int, int);
 typedef void(__stdcall* VoidIntIntIntCallback)(int, int, int);
 typedef void(__stdcall* VoidIntBooleanCallback)(int, unsigned char);
 typedef void(__stdcall* VoidIntIntConstCharCallback)(int, const char*);
+typedef void(__stdcall* VoidIntIntConstCharIntCallback)(int, int, const char*, int);
 typedef void(__stdcall* VoidConstCharIntCallback)(const char*, int);
 typedef void(__stdcall* VoidConstCharBooleanCallback)(const char*, unsigned char);
 typedef int(__stdcall* IntVoidCallback)();
-typedef int(__stdcall* BooleanVoidCallback)();
+typedef unsigned char(__stdcall* BooleanVoidCallback)();
 typedef char*(__stdcall* CharVoidCallback)();
+typedef unsigned char(__stdcall* BooleanIntDoubleCallback)(int, double);
+typedef unsigned char(__stdcall* BooleanDoubleDoubleDoubleDoubleDoubleCallback)(double, double, double, double, double);
+typedef unsigned char(__stdcall* BooleanIntDoubleVoidPtrCallback)(int, double, void*);
+typedef unsigned char(__stdcall* BooleanVoidPtrDoubleCallback)(void* , double);
+typedef unsigned char(__stdcall* BooleanVoidPtrCallback)(void*);
+typedef char(__stdcall* CharConstCharPtrConstCharPtrCharCallback)(const char*, const char*, char);
 
 
 /* Specific callback types */
@@ -38,14 +45,14 @@ typedef VoidIntCallback ClearWindowCallback;
 typedef VoidIntBooleanCallback DisplayWindowCallback;
 typedef VoidIntCallback DestroyWindowCallback;
 typedef VoidIntIntIntCallback CursCallback;
-typedef VoidIntIntConstCharCallback PutStrCallback;
+typedef VoidIntIntConstCharIntCallback PutStrExCallback;
 typedef VoidIntIntConstCharCallback PutMixedCallback;
 typedef VoidConstCharBooleanCallback DisplayFileCallback;
 typedef VoidIntCallback StartMenuCallback;
 typedef void(__stdcall* AddMenuCallback)(int);
 typedef void(__stdcall* AddExtendedMenuCallback)(int);
 typedef VoidIntIntConstCharCallback EndMenuCallback;
-typedef void(__stdcall* SelectMenuCallback)(int);
+typedef int(__stdcall* SelectMenuCallback)(int, int, void*);
 typedef void(__stdcall* MessageMenuCallback)(int);
 typedef VoidVoidCallback UpdateInventoryCallback;
 typedef VoidVoidCallback MarkSynchCallback;
@@ -56,10 +63,10 @@ typedef void(__stdcall* PrintGlyphCallback)(int);
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;
 typedef IntVoidCallback GetChCallback;
-typedef void(__stdcall* PosKeyCallback)(int);
+typedef int(__stdcall* PosKeyCallback)(int*, int*, int*);
 typedef VoidVoidCallback BellCallback;
 typedef IntVoidCallback DoPrevMessageCallback;
-typedef void(__stdcall* YnFunctionCallback)(int);
+typedef CharConstCharPtrConstCharPtrCharCallback YnFunctionCallback;
 typedef void(__stdcall* GetLinCallback)(int);
 typedef IntVoidCallback GetExtCmdCallback;
 typedef VoidIntCallback NumberPadCallback;
@@ -79,26 +86,27 @@ typedef VoidConstCharBooleanCallback PutMsgHistoryCallback;
 typedef VoidVoidCallback StatusInitCallback;
 typedef VoidVoidCallback StatusFinishCallback;
 typedef void(__stdcall* StatusEnableFieldCallback)(int);
-typedef void(__stdcall* StatusUpdateCallback)(int);
+typedef void(__stdcall* StatusUpdateCallback)(int, void*, int, int, int, unsigned long*);
 typedef BooleanVoidCallback CanSuspendYesCallback;
 typedef VoidVoidCallback StretchWindowCallback;
-typedef void(__stdcall* SetAnimationTimerCallback)(int);
+typedef void(__stdcall* SetAnimationTimerCallback)(unsigned long);
 typedef void(__stdcall* OpenSpecialViewCallback)(int);
-typedef void(__stdcall* StopAllSoundsCallback)(int);
-typedef void(__stdcall* PlayImmediateSoundCallback)(int);
-typedef void(__stdcall* PlayOccupationAmbientCallback)(int);
-typedef void(__stdcall* PlayEffectAmbientCallback)(int);
-typedef void(__stdcall* SetEffectAmbientVolumeCallback)(int);
-typedef void(__stdcall* PlayMusicCallback)(int);
-typedef void(__stdcall* PlayLevelAmbientCallback)(int);
-typedef void(__stdcall* PlayEnvironmentAmbientCallback)(int);
-typedef void(__stdcall* AdjustGeneralVolumesCallback)(int);
-typedef void(__stdcall* AddAmbientSoundCallback)(int);
-typedef void(__stdcall* DeleteAmbientSoundCallback)(int);
-typedef void(__stdcall* SetAmbientVolumeCallback)(int);
+typedef BooleanVoidCallback StopAllSoundsCallback;
+typedef BooleanIntDoubleCallback PlayImmediateSoundCallback;
+typedef BooleanIntDoubleCallback PlayOccupationAmbientCallback;
+typedef BooleanIntDoubleCallback PlayEffectAmbientCallback;
+typedef unsigned char(__stdcall* SetEffectAmbientVolumeCallback)(double);
+typedef BooleanIntDoubleCallback PlayMusicCallback;
+typedef BooleanIntDoubleCallback PlayLevelAmbientCallback;
+typedef BooleanIntDoubleCallback PlayEnvironmentAmbientCallback;
+typedef BooleanDoubleDoubleDoubleDoubleDoubleCallback AdjustGeneralVolumesCallback;
+typedef BooleanIntDoubleVoidPtrCallback AddAmbientSoundCallback;
+typedef BooleanVoidPtrCallback DeleteAmbientSoundCallback;
+typedef BooleanVoidPtrDoubleCallback SetAmbientVolumeCallback;
 typedef void(__stdcall* ExitHackCallback)(int);
 
 typedef char*(__stdcall* GetCwdCallback)();
+typedef int (__stdcall* MessageBoxCallback)(char*, char*, unsigned int);
 
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;
@@ -113,7 +121,7 @@ struct callback_procs {
     DisplayWindowCallback callback_display_nhwindow;
     DestroyWindowCallback callback_destroy_nhwindow;
     CursCallback callback_curs;
-    PutStrCallback callback_putstr;
+    PutStrExCallback callback_putstr_ex;
     PutMixedCallback callback_putmixed;
     DisplayFileCallback callback_display_file;
     StartMenuCallback callback_start_menu;
@@ -178,6 +186,7 @@ struct callback_procs {
     ExitHackCallback callback_exit_hack;
 
     GetCwdCallback callback_getcwd;
+    MessageBoxCallback callback_messagebox;
 };
 
 #endif /* DLLCALLBACK_H */

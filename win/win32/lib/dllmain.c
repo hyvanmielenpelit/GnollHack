@@ -38,7 +38,7 @@ DLL int WINAPI RunGnollHack(
     DisplayWindowCallback callback_display_nhwindow,
     DestroyWindowCallback callback_destroy_nhwindow,
     CursCallback callback_curs,
-    PutStrCallback callback_putstr,
+    PutStrExCallback callback_putstr_ex,
     PutMixedCallback callback_putmixed,
     DisplayFileCallback callback_display_file,
     StartMenuCallback callback_start_menu,
@@ -104,7 +104,8 @@ DLL int WINAPI RunGnollHack(
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume,
     ExitHackCallback callback_exit_hack,
 
-    GetCwdCallback callback_getcwd
+    GetCwdCallback callback_getcwd,
+    MessageBoxCallback callback_messagebox
 )
 {
     /* Set wincaps */
@@ -122,7 +123,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_display_nhwindow = callback_display_nhwindow;
     dll_callbacks.callback_display_file = callback_display_file;
     dll_callbacks.callback_curs = callback_curs;
-    dll_callbacks.callback_putstr = callback_putstr;
+    dll_callbacks.callback_putstr_ex = callback_putstr_ex;
     dll_callbacks.callback_putmixed = callback_putmixed;
     dll_callbacks.callback_display_file = callback_display_file;
     dll_callbacks.callback_start_menu = callback_start_menu;
@@ -184,6 +185,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_set_ambient_ghsound_volume = callback_set_ambient_ghsound_volume;
     dll_callbacks.callback_exit_hack = callback_exit_hack;
     dll_callbacks.callback_getcwd = callback_getcwd;
+    dll_callbacks.callback_messagebox = callback_messagebox;
 
     /* Start GnollHack by calling main */
     return GnollHackStart();

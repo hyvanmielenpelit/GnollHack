@@ -55,37 +55,7 @@ dll_logDebug(const char *fmt, ...)
 #endif
 
 extern void FDECL(gnollhack_exit, (int));
-
-void dll_main_loop(void);
-static void dll_wait_loop(int milliseconds);
-static void dll_wait_loop_intervals(int intervals);
-static BOOL initMapTiles(void);
-static void dll_color_from_string(char *colorstring, HBRUSH *brushptr,
-                                    COLORREF *colorptr);
 static void prompt_for_player_selection(void);
-
-#define DLL_TOTAL_BRUSHES 10
-HBRUSH dll_brush_table[DLL_TOTAL_BRUSHES];
-int dll_max_brush = 0;
-
-HBRUSH dll_menu_bg_brush = NULL;
-HBRUSH dll_menu_fg_brush = NULL;
-HBRUSH dll_text_bg_brush = NULL;
-HBRUSH dll_text_fg_brush = NULL;
-HBRUSH dll_status_bg_brush = NULL;
-HBRUSH dll_status_fg_brush = NULL;
-HBRUSH dll_message_bg_brush = NULL;
-HBRUSH dll_message_fg_brush = NULL;
-
-COLORREF dll_menu_bg_color = RGB(0, 0, 0);
-COLORREF dll_menu_fg_color = RGB(0xFF, 0xFF, 0xFF);
-COLORREF dll_text_bg_color = RGB(0, 0, 0);
-COLORREF dll_text_fg_color = RGB(0xFF, 0xFF, 0xFF);
-COLORREF dll_status_bg_color = RGB(0, 0, 0);
-COLORREF dll_status_fg_color = RGB(0xFF, 0xFF, 0xFF);
-COLORREF dll_message_bg_color = RGB(0, 0, 0);
-COLORREF dll_message_fg_color = RGB(0xFF, 0xFF, 0xFF);
-
 strbuf_t dll_raw_print_strbuf = { 0 };
 
 /* Interface definition, for windows.c */
@@ -254,26 +224,31 @@ void
 dll_player_selection(void)
 {
     dll_logDebug("dll_player_selection()\n");
-    dll_callbacks.callback_player_selection();
 
-    if (iflags.wc_player_selection == VIA_DIALOG) {
+    if (iflags.wc_player_selection == VIA_DIALOG) 
+    {
         /* pick player type randomly (use pre-selected
          * role/race/gender/alignment) */
-        if (flags.randomall) {
-            if (flags.initrole < 0) {
+        if (flags.randomall)
+        {
+            if (flags.initrole < 0) 
+            {
                 flags.initrole = pick_role(flags.initrace, flags.initgend,
                                            flags.initalign, PICK_RANDOM);
-                if (flags.initrole < 0) {
+                if (flags.initrole < 0)
+                {
                     raw_print("Incompatible role!");
                     flags.initrole = randrole(FALSE);
                 }
             }
 
             if (flags.initrace < 0
-                || !validrace(flags.initrole, flags.initrace)) {
+                || !validrace(flags.initrole, flags.initrace))
+            {
                 flags.initrace = pick_race(flags.initrole, flags.initgend,
                                            flags.initalign, PICK_RANDOM);
-                if (flags.initrace < 0) {
+                if (flags.initrace < 0) 
+                {
                     raw_print("Incompatible race!");
                     flags.initrace = randrace(flags.initrole);
                 }
@@ -281,10 +256,12 @@ dll_player_selection(void)
 
             if (flags.initgend < 0
                 || !validgend(flags.initrole, flags.initrace,
-                              flags.initgend)) {
+                              flags.initgend)) 
+            {
                 flags.initgend = pick_gend(flags.initrole, flags.initrace,
                                            flags.initalign, PICK_RANDOM);
-                if (flags.initgend < 0) {
+                if (flags.initgend < 0) 
+                {
                     raw_print("Incompatible gender!");
                     flags.initgend = randgend(flags.initrole, flags.initrace);
                 }
@@ -292,22 +269,29 @@ dll_player_selection(void)
 
             if (flags.initalign < 0
                 || !validalign(flags.initrole, flags.initrace,
-                               flags.initalign)) {
+                               flags.initalign)) 
+            {
                 flags.initalign = pick_align(flags.initrole, flags.initrace,
                                              flags.initgend, PICK_RANDOM);
-                if (flags.initalign < 0) {
+                if (flags.initalign < 0) 
+                {
                     raw_print("Incompatible alignment!");
                     flags.initalign =
                         randalign(flags.initrole, flags.initrace);
                 }
             }
-        } else {
+        } 
+        else 
+        {
             /* select a role */
-            if (!mswin_player_selection_window()) {
+            if (!dll_callbacks.callback_player_selection())
+            {
                 dll_bail(0);
             }
         }
-    } else { /* iflags.wc_player_selection == VIA_PROMPTS */
+    } 
+    else 
+    { /* iflags.wc_player_selection == VIA_PROMPTS */
         prompt_for_player_selection();
     }
 }
@@ -331,7 +315,9 @@ prompt_for_player_selection(void)
     /* Should we randomly pick for the player? */
     if (!flags.randomall
         && (flags.initrole == ROLE_NONE || flags.initrace == ROLE_NONE
-            || flags.initgend == ROLE_NONE || flags.initalign == ROLE_NONE)) {
+            || flags.initgend == ROLE_NONE || flags.initalign == ROLE_NONE)
+        ) 
+    {
         /* int echoline; */
         char *prompt = build_plselection_prompt(
             pbuf, QBUFSZ, flags.initrole, flags.initrace, flags.initgend,
@@ -339,22 +325,27 @@ prompt_for_player_selection(void)
 
         /* tty_putstr(BASE_WINDOW, 0, ""); */
         /* echoline = wins[BASE_WINDOW]->cury; */
-        box_result = dll_NHMessageBox(NULL, prompt, MB_YESNOCANCEL | MB_DEFBUTTON1
+        box_result = GNHMessageBox(prompt, MB_YESNOCANCEL | MB_DEFBUTTON1
                                                     | MB_ICONQUESTION);
         pick4u =
             (box_result == IDYES) ? 'y' : (box_result == IDNO) ? 'n' : '\033';
         /* tty_putstr(BASE_WINDOW, 0, prompt); */
-        do {
+        do 
+        {
             /* pick4u = lowc(readchar()); */
             if (index(quitchars, pick4u))
                 pick4u = 'y';
-        } while (!index(ynqchars, pick4u));
-        if ((int) strlen(prompt) + 1 < CO) {
+        } 
+        while (!index(ynqchars, pick4u));
+
+        if ((int) strlen(prompt) + 1 < CO) 
+        {
             /* Echo choice and move back down line */
             /* tty_putsym(BASE_WINDOW, (int)strlen(prompt)+1, echoline,
              * pick4u); */
             /* tty_putstr(BASE_WINDOW, 0, ""); */
-        } else
+        } 
+        else
             /* Otherwise it's hard to tell where to echo, and things are
              * wrapping a bit messily anyway, so (try to) make sure the next
              * question shows up well and doesn't get wrapped at the
@@ -362,7 +353,8 @@ prompt_for_player_selection(void)
              */
             /* tty_clear_nhwindow(BASE_WINDOW) */;
 
-        if (pick4u != 'y' && pick4u != 'n') {
+        if (pick4u != 'y' && pick4u != 'n') 
+        {
         give_up: /* Quit */
             if (selected)
                 free((genericptr_t) selected);
@@ -379,44 +371,56 @@ prompt_for_player_selection(void)
     /* Select a role, if necessary */
     /* we'll try to be compatible with pre-selected race/gender/alignment,
      * but may not succeed */
-    if (flags.initrole < 0) {
+    if (flags.initrole < 0)
+    {
         char rolenamebuf[QBUFSZ];
         /* Process the choice */
         if (pick4u == 'y' || flags.initrole == ROLE_RANDOM
-            || flags.randomall) {
+            || flags.randomall) 
+        {
             /* Pick a random role */
             flags.initrole = pick_role(flags.initrace, flags.initgend,
                                        flags.initalign, PICK_RANDOM);
-            if (flags.initrole < 0) {
+            if (flags.initrole < 0)
+            {
                 /* tty_putstr(BASE_WINDOW, 0, "Incompatible role!"); */
                 flags.initrole = randrole(FALSE);
             }
-        } else {
+        } 
+        else
+        {
             /* tty_clear_nhwindow(BASE_WINDOW); */
             /* tty_putstr(BASE_WINDOW, 0, "Choosing Character's Role"); */
             /* Prompt for a role */
             win = create_nhwindow(NHW_MENU);
             start_menu(win);
             any = zeroany; /* zero out all bits */
-            for (i = 0; roles[i].name.m; i++) {
+            for (i = 0; roles[i].name.m; i++) 
+            {
                 if (ok_role(i, flags.initrace, flags.initgend,
-                            flags.initalign)) {
+                            flags.initalign)) 
+                {
                     any.a_int = i + 1; /* must be non-zero */
                     thisch = lowc(roles[i].name.m[0]);
                     if (thisch == lastch)
                         thisch = highc(thisch);
                     if (flags.initgend != ROLE_NONE
-                        && flags.initgend != ROLE_RANDOM) {
+                        && flags.initgend != ROLE_RANDOM) 
+                    {
                         if (flags.initgend == 1 && roles[i].name.f)
                             Strcpy(rolenamebuf, roles[i].name.f);
                         else
                             Strcpy(rolenamebuf, roles[i].name.m);
-                    } else {
-                        if (roles[i].name.f) {
+                    }
+                    else 
+                    {
+                        if (roles[i].name.f)
+                        {
                             Strcpy(rolenamebuf, roles[i].name.m);
                             Strcat(rolenamebuf, "/");
                             Strcat(rolenamebuf, roles[i].name.f);
-                        } else
+                        } 
+                        else
                             Strcpy(rolenamebuf, roles[i].name.m);
                     }
                     add_menu(win, NO_GLYPH, &any, thisch, 0, ATR_NONE,
@@ -453,7 +457,8 @@ prompt_for_player_selection(void)
     /* Select a race, if necessary */
     /* force compatibility with role, try for compatibility with
      * pre-selected gender/alignment */
-    if (flags.initrace < 0 || !validrace(flags.initrole, flags.initrace)) {
+    if (flags.initrace < 0 || !validrace(flags.initrole, flags.initrace)) 
+    {
         /* pre-selected race not valid */
         if (pick4u == 'y' || flags.initrace == ROLE_RANDOM
             || flags.randomall) {
@@ -463,20 +468,26 @@ prompt_for_player_selection(void)
                 /* tty_putstr(BASE_WINDOW, 0, "Incompatible race!"); */
                 flags.initrace = randrace(flags.initrole);
             }
-        } else { /* pick4u == 'n' */
+        } 
+        else 
+        { /* pick4u == 'n' */
             /* Count the number of valid races */
             n = 0; /* number valid */
             k = 0; /* valid race */
-            for (i = 0; races[i].noun; i++) {
+            for (i = 0; races[i].noun; i++)
+            {
                 if (ok_race(flags.initrole, i, flags.initgend,
                             flags.initalign)) {
                     n++;
                     k = i;
                 }
             }
+
             if (n == 0) {
-                for (i = 0; races[i].noun; i++) {
-                    if (validrace(flags.initrole, i)) {
+                for (i = 0; races[i].noun; i++) 
+                {
+                    if (validrace(flags.initrole, i)) 
+                    {
                         n++;
                         k = i;
                     }
@@ -484,7 +495,8 @@ prompt_for_player_selection(void)
             }
 
             /* Permit the user to pick, if there is more than one */
-            if (n > 1) {
+            if (n > 1) 
+            {
                 /* tty_clear_nhwindow(BASE_WINDOW); */
                 /* tty_putstr(BASE_WINDOW, 0, "Choosing Race"); */
                 win = create_nhwindow(NHW_MENU);
@@ -492,11 +504,13 @@ prompt_for_player_selection(void)
                 any = zeroany; /* zero out all bits */
                 for (i = 0; races[i].noun; i++)
                     if (ok_race(flags.initrole, i, flags.initgend,
-                                flags.initalign)) {
+                                flags.initalign)) 
+                    {
                         any.a_int = i + 1; /* must be non-zero */
                         add_menu(win, NO_GLYPH, &any, races[i].noun[0], 0,
                                  ATR_NONE, races[i].noun, MENU_UNSELECTED);
                     }
+
                 any.a_int = pick_race(flags.initrole, flags.initgend,
                                       flags.initalign, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
@@ -527,30 +541,40 @@ prompt_for_player_selection(void)
     /* force compatibility with role/race, try for compatibility with
      * pre-selected alignment */
     if (flags.initgend < 0
-        || !validgend(flags.initrole, flags.initrace, flags.initgend)) {
+        || !validgend(flags.initrole, flags.initrace, flags.initgend)) 
+    {
         /* pre-selected gender not valid */
         if (pick4u == 'y' || flags.initgend == ROLE_RANDOM
-            || flags.randomall) {
+            || flags.randomall)
+        {
             flags.initgend = pick_gend(flags.initrole, flags.initrace,
                                        flags.initalign, PICK_RANDOM);
             if (flags.initgend < 0) {
                 /* tty_putstr(BASE_WINDOW, 0, "Incompatible gender!"); */
                 flags.initgend = randgend(flags.initrole, flags.initrace);
             }
-        } else { /* pick4u == 'n' */
+        } 
+        else 
+        { /* pick4u == 'n' */
             /* Count the number of valid genders */
             n = 0; /* number valid */
             k = 0; /* valid gender */
-            for (i = 0; i < ROLE_GENDERS; i++) {
+            for (i = 0; i < ROLE_GENDERS; i++) 
+            {
                 if (ok_gend(flags.initrole, flags.initrace, i,
-                            flags.initalign)) {
+                            flags.initalign)) 
+                {
                     n++;
                     k = i;
                 }
             }
-            if (n == 0) {
-                for (i = 0; i < ROLE_GENDERS; i++) {
-                    if (validgend(flags.initrole, flags.initrace, i)) {
+
+            if (n == 0)
+            {
+                for (i = 0; i < ROLE_GENDERS; i++)
+                {
+                    if (validgend(flags.initrole, flags.initrace, i))
+                    {
                         n++;
                         k = i;
                     }
@@ -558,7 +582,8 @@ prompt_for_player_selection(void)
             }
 
             /* Permit the user to pick, if there is more than one */
-            if (n > 1) {
+            if (n > 1)
+            {
                 /* tty_clear_nhwindow(BASE_WINDOW); */
                 /* tty_putstr(BASE_WINDOW, 0, "Choosing Gender"); */
                 win = create_nhwindow(NHW_MENU);
@@ -566,11 +591,13 @@ prompt_for_player_selection(void)
                 any = zeroany; /* zero out all bits */
                 for (i = 0; i < ROLE_GENDERS; i++)
                     if (ok_gend(flags.initrole, flags.initrace, i,
-                                flags.initalign)) {
+                                flags.initalign))
+                    {
                         any.a_int = i + 1;
                         add_menu(win, NO_GLYPH, &any, genders[i].adj[0], 0,
                                  ATR_NONE, genders[i].adj, MENU_UNSELECTED);
                     }
+
                 any.a_int = pick_gend(flags.initrole, flags.initrace,
                                       flags.initalign, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
@@ -600,30 +627,40 @@ prompt_for_player_selection(void)
     /* Select an alignment, if necessary */
     /* force compatibility with role/race/gender */
     if (flags.initalign < 0
-        || !validalign(flags.initrole, flags.initrace, flags.initalign)) {
+        || !validalign(flags.initrole, flags.initrace, flags.initalign)) 
+    {
         /* pre-selected alignment not valid */
         if (pick4u == 'y' || flags.initalign == ROLE_RANDOM
-            || flags.randomall) {
+            || flags.randomall) 
+        {
             flags.initalign = pick_align(flags.initrole, flags.initrace,
                                          flags.initgend, PICK_RANDOM);
-            if (flags.initalign < 0) {
+            if (flags.initalign < 0) 
+            {
                 /* tty_putstr(BASE_WINDOW, 0, "Incompatible alignment!"); */
                 flags.initalign = randalign(flags.initrole, flags.initrace);
             }
-        } else { /* pick4u == 'n' */
+        } 
+        else 
+        { /* pick4u == 'n' */
             /* Count the number of valid alignments */
             n = 0; /* number valid */
             k = 0; /* valid alignment */
-            for (i = 0; i < ROLE_ALIGNS; i++) {
+            for (i = 0; i < ROLE_ALIGNS; i++) 
+            {
                 if (ok_align(flags.initrole, flags.initrace, flags.initgend,
-                             i)) {
+                             i)) 
+                {
                     n++;
                     k = i;
                 }
             }
-            if (n == 0) {
-                for (i = 0; i < ROLE_ALIGNS; i++) {
-                    if (validalign(flags.initrole, flags.initrace, i)) {
+            if (n == 0) 
+            {
+                for (i = 0; i < ROLE_ALIGNS; i++) 
+                {
+                    if (validalign(flags.initrole, flags.initrace, i)) 
+                    {
                         n++;
                         k = i;
                     }
@@ -631,7 +668,8 @@ prompt_for_player_selection(void)
             }
 
             /* Permit the user to pick, if there is more than one */
-            if (n > 1) {
+            if (n > 1) 
+            {
                 /* tty_clear_nhwindow(BASE_WINDOW); */
                 /* tty_putstr(BASE_WINDOW, 0, "Choosing Alignment"); */
                 win = create_nhwindow(NHW_MENU);
@@ -639,11 +677,13 @@ prompt_for_player_selection(void)
                 any = zeroany; /* zero out all bits */
                 for (i = 0; i < ROLE_ALIGNS; i++)
                     if (ok_align(flags.initrole, flags.initrace,
-                                 flags.initgend, i)) {
+                                 flags.initgend, i)) 
+                    {
                         any.a_int = i + 1;
                         add_menu(win, NO_GLYPH, &any, aligns[i].adj[0], 0,
                                  ATR_NONE, aligns[i].adj, MENU_UNSELECTED);
                     }
+
                 any.a_int = pick_align(flags.initrole, flags.initrace,
                                        flags.initgend, PICK_RANDOM) + 1;
                 if (any.a_int == 0) /* must be non-zero */
@@ -694,17 +734,8 @@ dll_askname(void)
 void
 dll_get_nh_event(void)
 {
-    MSG msg;
-
     dll_logDebug("dll_get_nh_event()\n");
-
-    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0) {
-        if (!TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable, &msg)) {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
-    return;
+    dll_callbacks.callback_get_nh_event();
 }
 
 /* Exits the window system.  This should dismiss all windows,
@@ -715,9 +746,6 @@ dll_exit_nhwindows(const char *str)
 {
     dll_logDebug("dll_exit_nhwindows(%s)\n", str);
 
-    /* Write Window settings to the registry */
-    dll_write_reg();
-
     /* set things back to failsafes */
     windowprocs = *get_safe_procs(0);
 
@@ -726,6 +754,8 @@ dll_exit_nhwindows(const char *str)
     windowprocs.win_raw_print_bold = dll_raw_print_bold;
     windowprocs.win_wait_synch = dll_wait_synch;
     windowprocs.win_exit_hack = dll_exit_hack;
+
+    dll_callbacks.callback_exit_nhwindows(str);
 }
 
 /* Prepare the window to be suspended. */
@@ -733,8 +763,7 @@ void
 dll_suspend_nhwindows(const char *str)
 {
     dll_logDebug("dll_suspend_nhwindows(%s)\n", str);
-
-    return;
+    dll_callbacks.callback_suspend_nhwindows(str);
 }
 
 /* Restore the windows after being suspended. */
@@ -742,8 +771,7 @@ void
 dll_resume_nhwindows()
 {
     dll_logDebug("dll_resume_nhwindows()\n");
-
-    return;
+    dll_callbacks.callback_resume_nhwindows();
 }
 
 /*  Create a window of type "type" which can be
@@ -757,12 +785,14 @@ winid
 dll_create_nhwindow(int type)
 {
     winid i = 0;
-    MSNHMsgAddWnd data;
-
     dll_logDebug("dll_create_nhwindow(%d)\n", type);
+    i = dll_callbacks.callback_create_nhwindow(type);
 
+#if 0
     /* Return the next available winid
      */
+
+    MSNHMsgAddWnd data;
 
     for (i = 1; i < MAXWINDOWS; i++)
         if (GetNHApp()->windowlist[i].win == NULL
@@ -811,6 +841,7 @@ dll_create_nhwindow(int type)
     data.wid = i;
     SendMessage(GetNHApp()->hMainWnd, WM_MSNH_COMMAND,
                 (WPARAM) MSNH_MSG_ADDWND, (LPARAM) &data);
+#endif
     return i;
 }
 
@@ -819,7 +850,9 @@ void
 dll_clear_nhwindow(winid wid)
 {
     dll_logDebug("dll_clear_nhwindow(%d)\n", wid);
+    dll_callbacks.callback_clear_nhwindow((int)wid);
 
+#if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         if (GetNHApp()->windowlist[wid].type == NHW_MAP) {
@@ -840,6 +873,7 @@ dll_clear_nhwindow(winid wid)
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CLEAR_WINDOW, (LPARAM) NULL);
     }
+#endif
 }
 
 /* -- Display the window on the screen.  If there is data
@@ -855,6 +889,9 @@ void
 dll_display_nhwindow(winid wid, BOOLEAN_P block)
 {
     dll_logDebug("dll_display_nhwindow(%d, %d)\n", wid, block);
+    dll_callbacks.callback_display_nhwindow((int)wid, (boolean)block);
+
+#if 0
     if (GetNHApp()->windowlist[wid].win != NULL) {
         ShowWindow(GetNHApp()->windowlist[wid].win, SW_SHOW);
         mswin_layout_main_window(GetNHApp()->windowlist[wid].win);
@@ -879,48 +916,9 @@ dll_display_nhwindow(winid wid, BOOLEAN_P block)
         }
         SetFocus(GetNHApp()->hMainWnd);
     }
+#endif
 }
 
-HWND
-dll_hwnd_from_winid(winid wid)
-{
-    if (wid >= 0 && wid < MAXWINDOWS) {
-        return GetNHApp()->windowlist[wid].win;
-    } else {
-        return NULL;
-    }
-}
-
-winid
-dll_winid_from_handle(HWND hWnd)
-{
-    winid i = 0;
-
-    for (i = 1; i < MAXWINDOWS; i++)
-        if (GetNHApp()->windowlist[i].win == hWnd)
-            return i;
-    return -1;
-}
-
-winid
-dll_winid_from_type(int type)
-{
-    winid i = 0;
-
-    for (i = 1; i < MAXWINDOWS; i++)
-        if (GetNHApp()->windowlist[i].type == type)
-            return i;
-    return -1;
-}
-
-void
-dll_window_mark_dead(winid wid)
-{
-    if (wid >= 0 && wid < MAXWINDOWS) {
-        GetNHApp()->windowlist[wid].win = NULL;
-        GetNHApp()->windowlist[wid].dead = 1;
-    }
-}
 
 /* Destroy will dismiss the window if the window has not
  * already been dismissed.
@@ -929,7 +927,9 @@ void
 dll_destroy_nhwindow(winid wid)
 {
     dll_logDebug("dll_destroy_nhwindow(%d)\n", wid);
+    dll_callbacks.callback_destroy_nhwindow((int)wid);
 
+#if 0
     if ((GetNHApp()->windowlist[wid].type == NHW_MAP)
         || (GetNHApp()->windowlist[wid].type == NHW_MESSAGE)
         || (GetNHApp()->windowlist[wid].type == NHW_STATUS)) {
@@ -945,6 +945,7 @@ dll_destroy_nhwindow(winid wid)
         GetNHApp()->windowlist[wid].type = 0;
         GetNHApp()->windowlist[wid].dead = 0;
     }
+#endif
 }
 
 /* Next output to window will start at (x,y), also moves
@@ -956,7 +957,9 @@ void
 dll_curs(winid wid, int x, int y)
 {
     dll_logDebug("dll_curs(%d, %d, %d)\n", wid, x, y);
+    dll_callbacks.callback_curs((int)wid, x, y);
 
+#if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         MSNHMsgCursor data;
@@ -965,6 +968,7 @@ dll_curs(winid wid, int x, int y)
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CURSOR, (LPARAM) &data);
     }
+#endif
 }
 
 /*
@@ -1001,6 +1005,9 @@ dll_putstr(winid wid, int attr, const char *text)
 void
 dll_putstr_ex(winid wid, int attr, const char *text, int app)
 {
+    dll_callbacks.callback_putstr_ex((int)wid, attr, text, app);
+
+#if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
             && GetNHApp()->windowlist[wid].type == NHW_MENU) {
@@ -1027,6 +1034,7 @@ dll_putstr_ex(winid wid, int attr, const char *text, int app)
                     strlen(text) + strlen(GetNHApp()->saved_text) + 1);
         strcat(GetNHApp()->saved_text, text);
     }
+#endif
 }
 
 /* Display the file named str.  Complain about missing files
@@ -1036,20 +1044,24 @@ void
 dll_display_file(const char *filename, BOOLEAN_P must_exist)
 {
     dlb *f;
-    TCHAR wbuf[BUFSZ];
+    char wbuf[BUFSZ];
 
     dll_logDebug("dll_display_file(%s, %d)\n", filename, must_exist);
 
     f = dlb_fopen(filename, RDTMODE);
-    if (!f) {
-        if (must_exist) {
-            TCHAR message[90];
+    if (!f) 
+    {
+        if (must_exist) 
+        {
+            char message[90];
             _stprintf(message, TEXT("Warning! Could not find file: %s\n"),
-                      NH_A2W(filename, wbuf, sizeof(wbuf)));
-            dll_NHMessageBox(GetNHApp()->hMainWnd, message,
+                      GNH_A2W(filename, wbuf, sizeof(wbuf)));
+            GNHMessageBox(message,
                          MB_OK | MB_ICONEXCLAMATION);
         }
-    } else {
+    } 
+    else 
+    {
         winid text;
         char line[LLEN];
 
@@ -1078,6 +1090,8 @@ void
 dll_start_menu(winid wid)
 {
     dll_logDebug("dll_start_menu(%d)\n", wid);
+    dll_callbacks.callback_start_menu((int)wid);
+#if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
             && GetNHApp()->windowlist[wid].type == NHW_MENU) {
@@ -1091,6 +1105,7 @@ dll_start_menu(winid wid)
                         (WPARAM) MSNH_MSG_STARTMENU, (LPARAM) NULL);
         }
     }
+#endif
 }
 
 /*
@@ -1134,6 +1149,9 @@ dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct exte
              identifier, (char) accelerator, (char) group_accel, attr, str,
              presel);
 
+    dll_callbacks.callback_add_extended_menu(0);
+
+#if 0
     struct obj* otmp = info.object;
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
@@ -1152,6 +1170,7 @@ dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct exte
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_ADDMENU, (LPARAM) &data);
     }
+#endif;
 }
 
 void
@@ -1177,6 +1196,9 @@ void
 dll_end_menu(winid wid, const char *prompt)
 {
     dll_logDebug("dll_end_menu(%d, %s)\n", wid, prompt);
+    dll_callbacks.callback_end_menu(wid, prompt);
+
+#if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         MSNHMsgEndMenu data;
@@ -1186,6 +1208,7 @@ dll_end_menu(winid wid, const char *prompt)
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_ENDMENU, (LPARAM) &data);
     }
+#endif
 }
 
 /*
@@ -1220,6 +1243,9 @@ dll_select_menu(winid wid, int how, MENU_ITEM_P **selected)
 
     dll_logDebug("dll_select_menu(%d, %d)\n", wid, how);
 
+    nReturned = dll_callbacks.callback_select_menu((int)wid, how, (void*)selected);
+
+#if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         ShowWindow(GetNHApp()->windowlist[wid].win, SW_SHOW);
@@ -1230,6 +1256,8 @@ dll_select_menu(winid wid, int how, MENU_ITEM_P **selected)
                                       perm_invent is on */
             );
     }
+#endif
+
     return nReturned;
 }
 
@@ -1282,7 +1310,9 @@ dll_cliparound(int x, int y)
     winid wid = WIN_MAP;
 
     dll_logDebug("dll_cliparound(%d, %d)\n", x, y);
+    dll_callbacks.callback_cliparound(x, y);
 
+#if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         MSNHMsgClipAround data;
@@ -1291,6 +1321,7 @@ dll_cliparound(int x, int y)
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CLIPAROUND, (LPARAM) &data);
     }
+#endif
 }
 
 /*
@@ -1312,7 +1343,9 @@ dll_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     int bkglyph = layers.bkglyph;
 
     dll_logDebug("dll_print_glyph(%d, %d, %d, %d, %d)\n", wid, x, y, glyph, bkglyph);
+    dll_callbacks.callback_print_glyph(wid, (int)x, (int)y, glyph, bkglyph);
 
+#if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         MSNHMsgPrintGlyph data;
@@ -1324,6 +1357,7 @@ dll_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_PRINT_GLYPH, (LPARAM) &data);
     }
+#endif
 }
 
 /*
@@ -1335,8 +1369,11 @@ dll_raw_print_accumulate(const char * str, boolean bold)
 {
     bold; // ignored for now
 
-    if (dll_raw_print_strbuf.str != NULL) strbuf_append(&dll_raw_print_strbuf, "\n");
+    if (dll_raw_print_strbuf.str != NULL)
+        strbuf_append(&dll_raw_print_strbuf, "\n");
+
     strbuf_append(&dll_raw_print_strbuf, str);
+
 }
 
 /*
@@ -1346,12 +1383,13 @@ dll_raw_print_accumulate(const char * str, boolean bold)
 void
 dll_raw_print_flush()
 {
-    if (dll_raw_print_strbuf.str != NULL) {
+    if (dll_raw_print_strbuf.str != NULL) 
+    {
         size_t wlen = strlen(dll_raw_print_strbuf.str) + 1;
         TCHAR * wbuf = (TCHAR *) alloc(wlen * sizeof(TCHAR));
-        if (wbuf != NULL) {
-            dll_NHMessageBox(GetNHApp()->hMainWnd,
-                            NH_A2W(dll_raw_print_strbuf.str, wbuf, wlen),
+        if (wbuf != NULL)
+        {
+            GNHMessageBox(GNH_A2W(dll_raw_print_strbuf.str, wbuf, wlen),
                             MB_ICONINFORMATION | MB_OK);
             free(wbuf);
         }
@@ -1374,12 +1412,13 @@ dll_raw_print(const char *str)
 {
     dll_logDebug("dll_raw_print(%s)\n", str);
 
-    if (str && *str) {
+    if (str && *str)
+    {
         extern int redirect_stdout;
         if (!redirect_stdout)
             dll_raw_print_accumulate(str, FALSE);
         else
-            fprintf(stdout, "%s", str);
+            dll_callbacks.callback_raw_print(str); //fprintf(stdout, "%s", str);
     }
 }
 
@@ -1392,12 +1431,13 @@ void
 dll_raw_print_bold(const char *str)
 {
     dll_logDebug("dll_raw_print_bold(%s)\n", str);
-    if (str && *str) {
+    if (str && *str) 
+    {
         extern int redirect_stdout;
         if (!redirect_stdout)
             dll_raw_print_accumulate(str, TRUE);
         else
-            fprintf(stdout, "%s", str);
+            dll_callbacks.callback_raw_print_bold(str); //fprintf(stdout, "%s", str);
     }
 }
 
@@ -1410,6 +1450,9 @@ int nhgetch()   -- Returns a single character input from the user.
 int
 dll_nhgetch()
 {
+    return dll_callbacks.callback_nhgetch();
+
+#if 0
     PMSNHEvent event;
     int key = 0;
 
@@ -1420,6 +1463,7 @@ dll_nhgetch()
 
     key = event->kbd.ch;
     return (key);
+#endif
 }
 
 /*
@@ -1440,6 +1484,9 @@ int nh_poskey(int *x, int *y, int *mod)
 int
 dll_nh_poskey(int *x, int *y, int *mod)
 {
+    return dll_callbacks.callback_nh_poskey(x, y, mod);
+
+#if 0
     PMSNHEvent event;
     int key;
 
@@ -1459,6 +1506,7 @@ dll_nh_poskey(int *x, int *y, int *mod)
         key = event->kbd.ch;
     }
     return (key);
+#endif
 }
 
 /*
@@ -1470,6 +1518,7 @@ void
 dll_nhbell()
 {
     dll_logDebug("dll_nhbell()\n");
+    dll_callbacks.callback_nhbell();
 }
 
 /*
@@ -1481,9 +1530,12 @@ int
 dll_doprev_message()
 {
     dll_logDebug("dll_doprev_message()\n");
+    return dll_callbacks.callback_doprev_message();
+#if 0
     SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_VSCROLL,
                 MAKEWPARAM(SB_LINEUP, 0), (LPARAM) NULL);
     return 0;
+#endif
 }
 
 /*
@@ -1508,6 +1560,10 @@ char yn_function(const char *ques, const char *choices, char default)
 char
 dll_yn_function(const char *question, const char *choices, CHAR_P def)
 {
+    dll_logDebug("dll_yn_function(%s, %s, %d)\n", question, choices, def);
+    return dll_callbacks.callback_yn_function(question, choices, def);
+
+#if 0
     char ch;
     char yn_esc_map = '\033';
     char message[BUFSZ];
@@ -1524,7 +1580,7 @@ dll_yn_function(const char *question, const char *choices, CHAR_P def)
         DWORD box_result;
         strcat(text, question);
         box_result =
-            dll_NHMessageBox(NULL, NH_W2A(text, message, sizeof(message)),
+            GNHMessageBox(GNH_W2A(text, message, sizeof(message)),
                          MB_ICONQUESTION | MB_YESNOCANCEL
                              | ((def == 'y') ? MB_DEFBUTTON1
                                              : (def == 'n') ? MB_DEFBUTTON2
@@ -1660,6 +1716,7 @@ dll_yn_function(const char *question, const char *choices, CHAR_P def)
     }
 
     return ch;
+#endif
 }
 
 /*
@@ -1841,6 +1898,7 @@ dll_number_pad(int state)
 {
     /* Do Nothing */
     dll_logDebug("dll_number_pad(%d)\n", state);
+    dll_callbacks.callback_number_pad(state);
 }
 
 /*
@@ -1852,29 +1910,21 @@ void
 dll_delay_output()
 {
     dll_logDebug("dll_delay_output()\n");
-    //Sleep(50);
-    //dll_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
-    dll_wait_loop_intervals(DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
+    dll_callbacks.callback_delay_output();
 }
 
 void
 dll_delay_output_milliseconds(int interval)
 {
     dll_logDebug("dll_delay_output_milliseconds()\n");
-    //Sleep(interval);
-    int counter_before = context.general_animation_counter;
-    dll_wait_loop(interval);
-    int counter_after = context.general_animation_counter;
-    int counter_diff = counter_after - counter_before;
-    dll_logDebug("dll_delay_output_milliseconds counter_diff %d\n", counter_diff);
+    dll_callbacks.callback_delay_output_milliseconds(interval);
 }
 
 void
 dll_delay_output_intervals(int intervals)
 {
     dll_logDebug("dll_delay_output_intervals()\n");
-    //Sleep(interval);
-    dll_wait_loop_intervals(intervals);
+    dll_callbacks.callback_delay_output_intervals(intervals);
 }
 
 
@@ -1929,12 +1979,7 @@ dll_outrip(winid wid, int how, time_t when)
     long year;
 
     dll_logDebug("dll_outrip(%d, %d, %ld)\n", wid, how, (long) when);
-    if ((wid >= 0) && (wid < MAXWINDOWS)) {
-        DestroyWindow(GetNHApp()->windowlist[wid].win);
-        GetNHApp()->windowlist[wid].win = mswin_init_RIP_window();
-        GetNHApp()->windowlist[wid].type = NHW_RIP;
-        GetNHApp()->windowlist[wid].dead = 0;
-    }
+    dll_callbacks.callback_outrip(wid); //Begin
 
     /* Put name on stone */
     Sprintf(buf, "%s", plname);
@@ -1956,13 +2001,15 @@ dll_outrip(winid wid, int how, time_t when)
     year = yyyymmdd(when) / 10000L;
     Sprintf(buf, "%4ld", year);
     putstr(wid, 0, buf);
-    mswin_finish_rip_text(wid);
+
+    dll_callbacks.callback_outrip(wid);  //End
 }
 
 /* handle options updates here */
 void
 dll_preference_update(const char *pref)
 {
+#if 0
     if (stricmp(pref, "font_menu") == 0
         || stricmp(pref, "font_size_menu") == 0) 
     {
@@ -2061,6 +2108,7 @@ dll_preference_update(const char *pref)
         mswin_layout_main_window(NULL);
         return;
     }
+#endif
 
     if (stricmp(pref, "scroll_amount") == 0) {
         dll_cliparound(u.ux, u.uy);
@@ -2105,6 +2153,8 @@ dll_preference_update(const char *pref)
         return;
     }
 
+    /* Otherwise do callback */
+    dll_callbacks.callback_preference_update(pref);
 }
 
 #define TEXT_BUFFER_SIZE 4096
@@ -2167,125 +2217,6 @@ dll_putmsghistory(const char *msg, BOOLEAN_P restoring)
     GetNHApp()->bNoSounds = save_sound_opt; /* restore sounds option */
 }
 
-void
-dll_main_loop()
-{
-    MSG msg;
-
-    while (!mswin_have_input()) {
-        if (!iflags.debug_fuzzer || PeekMessage(&msg, NULL, 0, 0, FALSE)) {
-            if(GetMessage(&msg, NULL, 0, 0) != 0) {
-                if (GetNHApp()->regGnollHackMode
-                    || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable,
-                                             &msg)) {
-                    TranslateMessage(&msg);
-                    DispatchMessage(&msg);
-                }
-            } else {
-                /* WM_QUIT */
-                break;
-            }
-        } else {
-            nhassert(iflags.debug_fuzzer);
-            PostMessage(GetNHApp()->hMainWnd, WM_MSNH_COMMAND,
-                        MSNH_MSG_RANDOM_INPUT, 0);
-        }
-    }
-}
-
-void
-dll_wait_loop(int milliseconds)
-{
-    if (milliseconds <= 0)
-        return;
-
-    MSG msg;
-    SYSTEMTIME start_systime = { 0 };
-    FILETIME start_filetime = { 0 };
-    ULARGE_INTEGER start_largeint = { 0 };
-    GetSystemTimeAsFileTime(&start_filetime);
-    //GetSystemTime(&start_systime);
-    //SystemTimeToFileTime(&start_systime, &start_filetime);
-    start_largeint.LowPart = start_filetime.dwLowDateTime;
-    start_largeint.HighPart = start_filetime.dwHighDateTime;
-
-    SYSTEMTIME current_systime = { 0 };
-    FILETIME current_filetime = { 0 };
-    ULARGE_INTEGER current_largeint = { 0 };
-    ULONGLONG timepassed = 0;
-    ULONGLONG threshold = (ULONGLONG)milliseconds * 10000ULL;
-    if (threshold > 50000000ULL)
-        threshold = 50000000ULL;
-
-    disallow_keyboard_commands_in_wait_loop = TRUE;
-
-    do 
-    {
-        if (GetMessage(&msg, NULL, 0, 0) != 0) 
-        {
-            if (GetNHApp()->regGnollHackMode || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable, &msg)) 
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
-        }
-        else 
-        {
-            /* WM_QUIT */
-            break;
-        }
-
-        GetSystemTimeAsFileTime(&current_filetime);
-        //GetSystemTime(&current_systime);
-        //SystemTimeToFileTime(&current_systime, &current_filetime);
-        current_largeint.LowPart = current_filetime.dwLowDateTime;
-        current_largeint.HighPart = current_filetime.dwHighDateTime;
-
-        timepassed = current_largeint.QuadPart - start_largeint.QuadPart;
-    } while (timepassed < threshold);
-
-    disallow_keyboard_commands_in_wait_loop = FALSE;
-
-    reduce_counters(milliseconds);
-}
-
-void
-dll_wait_loop_intervals(int intervals)
-{
-    if (intervals <= 0)
-        return;
-
-    MSG msg;
-    int counter_before = context.general_animation_counter;
-    int counter_after = context.general_animation_counter;
-
-    disallow_keyboard_commands_in_wait_loop = TRUE;
-
-    do
-    {
-        if (GetMessage(&msg, NULL, 0, 0) != 0)
-        {
-            if (GetNHApp()->regGnollHackMode || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable, &msg))
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
-        }
-        else
-        {
-            /* WM_QUIT */
-            break;
-        }
-
-        counter_after = context.general_animation_counter;
-
-    } while (counter_after - counter_before < intervals && counter_after >= counter_before);
-
-    disallow_keyboard_commands_in_wait_loop = FALSE;
-
-    reduce_counters_intervals(intervals);
-}
-
 /* clean up and quit */
 void
 dll_bail(const char *mesg)
@@ -2294,161 +2225,6 @@ dll_bail(const char *mesg)
     dll_exit_nhwindows(mesg);
     nh_terminate(EXIT_SUCCESS);
     /*NOTREACHED*/
-}
-
-BOOL
-initMapTiles(void)
-{
-    HBITMAP hBmp;
-    BITMAP bm;
-    DWORD errcode;
-    int tl_num;
-    SIZE map_size;
-    int total_tiles_used = process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
-
-    /* no file - no tile */
-    if (!(iflags.wc_tile_file && *iflags.wc_tile_file))
-        return TRUE;
-
-    /* load bitmap */
-    hBmp = LoadPNGFromFile(iflags.wc_tile_file, TILE_BK_COLOR);
-
-    if (hBmp == NULL) {
-        char errmsg[BUFSZ];
-
-        errcode = GetLastError();
-        Sprintf(errmsg, "%s (0x%x).",
-            "Cannot load tiles from the file. Reverting back to default",
-            errcode);
-        raw_print(errmsg);
-        return FALSE;
-    }
-
-    /* calculate tile dimensions */
-    GetObject(hBmp, sizeof(BITMAP), (LPVOID) &bm);
-    if (bm.bmWidth % iflags.wc_tile_width
-        || bm.bmHeight % iflags.wc_tile_height) {
-        DeleteObject(hBmp);
-        raw_print("Tiles bitmap does not match tile_width and tile_height "
-                  "options. Reverting back to default.");
-        return FALSE;
-    }
-
-    tl_num = (bm.bmWidth / iflags.wc_tile_width)
-             * (bm.bmHeight / iflags.wc_tile_height);
-    if (tl_num < total_tiles_used) {
-        DeleteObject(hBmp);
-        raw_print("Number of tiles in the bitmap is less than required by "
-                  "the game. Reverting back to default.");
-        return FALSE;
-    }
-
-    /* set the tile information */
-    if (GetNHApp()->bmpMapTiles != GetNHApp()->bmpTiles) {
-        DeleteObject(GetNHApp()->bmpMapTiles);
-    }
-
-    GetNHApp()->bmpMapTiles = hBmp;
-    GetNHApp()->mapTile_X = iflags.wc_tile_width;
-    GetNHApp()->mapTile_Y = iflags.wc_tile_height;
-    GetNHApp()->mapTilesPerLine = bm.bmWidth / iflags.wc_tile_width;
-
-    map_size.cx = GetNHApp()->mapTile_X * COLNO;
-    map_size.cy = GetNHApp()->mapTile_Y * ROWNO;
-    mswin_map_stretch(dll_hwnd_from_winid(WIN_MAP), &map_size, TRUE);
-    return TRUE;
-}
-
-void
-dll_popup_display(HWND hWnd, int *done_indicator)
-{
-    MSG msg;
-    HWND hChild;
-    HMENU hMenu;
-    int mi_count;
-    int i;
-
-    /* activate the menu window */
-    GetNHApp()->hPopupWnd = hWnd;
-
-    mswin_layout_main_window(hWnd);
-
-    /* disable game windows */
-    for (hChild = GetWindow(GetNHApp()->hMainWnd, GW_CHILD); hChild;
-         hChild = GetWindow(hChild, GW_HWNDNEXT)) {
-        if (hChild != hWnd)
-            EnableWindow(hChild, FALSE);
-    }
-
-    /* disable menu */
-    hMenu = GetMenu(GetNHApp()->hMainWnd);
-    mi_count = GetMenuItemCount(hMenu);
-    for (i = 0; i < mi_count; i++) {
-        EnableMenuItem(hMenu, i, MF_BYPOSITION | MF_GRAYED);
-    }
-    DrawMenuBar(GetNHApp()->hMainWnd);
-
-    /* bring menu window on top */
-    SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-    SetFocus(hWnd);
-
-    /* go into message loop */
-    while (IsWindow(hWnd) && (done_indicator == NULL || !*done_indicator)) {
-        if (!iflags.debug_fuzzer || PeekMessage(&msg, NULL, 0, 0, FALSE)) {
-            if(GetMessage(&msg, NULL, 0, 0) != 0) {
-                if (msg.message == WM_MSNH_COMMAND ||
-                    !IsDialogMessage(hWnd, &msg)) {
-                    if (!TranslateAccelerator(msg.hwnd,
-                                              GetNHApp()->hAccelTable, &msg)) {
-                        TranslateMessage(&msg);
-                        DispatchMessage(&msg);
-                    }
-                }
-            } else {
-                /* WM_QUIT */
-                break;
-            }
-        } else {
-            nhassert(iflags.debug_fuzzer);
-            PostMessage(hWnd, WM_MSNH_COMMAND, MSNH_MSG_RANDOM_INPUT, 0);
-        }
-    }
-}
-
-void
-dll_popup_destroy(HWND hWnd)
-{
-    HWND hChild;
-    HMENU hMenu;
-    int mi_count;
-    int i;
-
-    /* enable game windows */
-    for (hChild = GetWindow(GetNHApp()->hMainWnd, GW_CHILD); hChild;
-         hChild = GetWindow(hChild, GW_HWNDNEXT)) {
-        if (hChild != hWnd) {
-            EnableWindow(hChild, TRUE);
-        }
-    }
-
-    /* enable menu */
-    hMenu = GetMenu(GetNHApp()->hMainWnd);
-    mi_count = GetMenuItemCount(hMenu);
-    for (i = 0; i < mi_count; i++) {
-        EnableMenuItem(hMenu, i, MF_BYPOSITION | MF_ENABLED);
-    }
-    DrawMenuBar(GetNHApp()->hMainWnd);
-
-    /* Don't hide the permanent inventory window ... leave it showing */
-    if (!iflags.perm_invent || dll_winid_from_handle(hWnd) != WIN_INVEN)
-        ShowWindow(hWnd, SW_HIDE);
-
-    GetNHApp()->hPopupWnd = NULL;
-
-    mswin_layout_main_window(hWnd);
-
-    SetFocus(GetNHApp()->hMainWnd);
 }
 
 #ifdef DEBUG
@@ -2471,499 +2247,78 @@ dll_logDebug(const char *fmt, ...)
 # endif
 #endif
 
-/* Reading and writing settings from the registry. */
-#define CATEGORYKEY "Software"
-#define COMPANYKEY "GnollHack"
-#define PRODUCTKEY "GnollHack 3.6.2"
-#define SETTINGSKEY "Settings"
-#define MAINSHOWSTATEKEY "MainShowState"
-#define MAINMINXKEY "MainMinX"
-#define MAINMINYKEY "MainMinY"
-#define MAINMAXXKEY "MainMaxX"
-#define MAINMAXYKEY "MainMaxY"
-#define MAINLEFTKEY "MainLeft"
-#define MAINRIGHTKEY "MainRight"
-#define MAINTOPKEY "MainTop"
-#define MAINBOTTOMKEY "MainBottom"
-#define MAINAUTOLAYOUT "AutoLayout"
-#define MAPLEFT "MapLeft"
-#define MAPRIGHT "MapRight"
-#define MAPTOP "MapTop"
-#define MAPBOTTOM "MapBottom"
-#define MSGLEFT "MsgLeft"
-#define MSGRIGHT "MsgRight"
-#define MSGTOP "MsgTop"
-#define MSGBOTTOM "MsgBottom"
-#define STATUSLEFT "StatusLeft"
-#define STATUSRIGHT "StatusRight"
-#define STATUSTOP "StatusTop"
-#define STATUSBOTTOM "StatusBottom"
-#define MENULEFT "MenuLeft"
-#define MENURIGHT "MenuRight"
-#define MENUTOP "MenuTop"
-#define MENUBOTTOM "MenuBottom"
-#define TEXTLEFT "TextLeft"
-#define TEXTRIGHT "TextRight"
-#define TEXTTOP "TextTop"
-#define TEXTBOTTOM "TextBottom"
-#define INVENTLEFT "InventLeft"
-#define INVENTRIGHT "InventRight"
-#define INVENTTOP "InventTop"
-#define INVENTBOTTOM "InventBottom"
-
-/* #define all the subkeys here */
-#define INTFKEY "Interface"
-
-void
-dll_read_reg()
-{
-    HKEY key;
-    DWORD size;
-    DWORD safe_buf;
-    char keystring[MAX_PATH];
-    int i;
-    COLORREF default_mapcolors[CLR_MAX] = {
-	RGB(0x55, 0x55, 0x55), /* CLR_BLACK */
-	RGB(0xFF, 0x00, 0x00), /* CLR_RED */
-	RGB(0x00, 0x80, 0x00), /* CLR_GREEN */
-	RGB(0xA5, 0x2A, 0x2A), /* CLR_BROWN */
-	RGB(0x00, 0x00, 0xFF), /* CLR_BLUE */
-	RGB(0xFF, 0x00, 0xFF), /* CLR_MAGENTA */
-	RGB(0x00, 0xFF, 0xFF), /* CLR_CYAN */
-	RGB(0xC0, 0xC0, 0xC0), /* CLR_GRAY */
-	RGB(0xFF, 0xFF, 0xFF), /* NO_COLOR */
-	RGB(0xFF, 0xA5, 0x00), /* CLR_ORANGE */
-	RGB(0x00, 0xFF, 0x00), /* CLR_BRIGHT_GREEN */
-	RGB(0xFF, 0xFF, 0x00), /* CLR_YELLOW */
-	RGB(0x00, 0xC0, 0xFF), /* CLR_BRIGHT_BLUE */
-	RGB(0xFF, 0x80, 0xFF), /* CLR_BRIGHT_MAGENTA */
-	RGB(0x80, 0xFF, 0xFF), /* CLR_BRIGHT_CYAN */
-	RGB(0xFF, 0xFF, 0xFF)  /* CLR_WHITE */
-    };
-
-    sprintf(keystring, "%s\\%s\\%s\\%s", CATEGORYKEY, COMPANYKEY, PRODUCTKEY,
-            SETTINGSKEY);
-
-    /* Set the defaults here. The very first time the app is started, nothing
-       is
-       read from the registry, so these defaults apply. */
-    GetNHApp()->saveRegistrySettings = 1; /* Normally, we always save */
-    GetNHApp()->regGnollHackMode = TRUE;
-
-    for (i = 0; i < CLR_MAX; i++)
-        GetNHApp()->regMapColors[i] = default_mapcolors[i];
-
-    if (RegOpenKeyEx(HKEY_CURRENT_USER, keystring, 0, KEY_READ, &key)
-        != ERROR_SUCCESS)
-        return;
-
-    size = sizeof(DWORD);
-
-#define NHGETREG_DWORD(name, val)                                       \
-    RegQueryValueEx(key, (name), 0, NULL, (unsigned char *)(&safe_buf), \
-                    &size);                                             \
-    (val) = safe_buf;
-
-    /* read the keys here */
-    NHGETREG_DWORD(INTFKEY, GetNHApp()->regGnollHackMode);
-
-    /* read window placement */
-    NHGETREG_DWORD(MAINSHOWSTATEKEY, GetNHApp()->regMainShowState);
-    NHGETREG_DWORD(MAINMINXKEY, GetNHApp()->regMainMinX);
-    NHGETREG_DWORD(MAINMINYKEY, GetNHApp()->regMainMinY);
-    NHGETREG_DWORD(MAINMAXXKEY, GetNHApp()->regMainMaxX);
-    NHGETREG_DWORD(MAINMAXYKEY, GetNHApp()->regMainMaxY);
-    NHGETREG_DWORD(MAINLEFTKEY, GetNHApp()->regMainLeft);
-    NHGETREG_DWORD(MAINRIGHTKEY, GetNHApp()->regMainRight);
-    NHGETREG_DWORD(MAINTOPKEY, GetNHApp()->regMainTop);
-    NHGETREG_DWORD(MAINBOTTOMKEY, GetNHApp()->regMainBottom);
-
-    NHGETREG_DWORD(MAINAUTOLAYOUT, GetNHApp()->bAutoLayout);
-    NHGETREG_DWORD(MAPLEFT, GetNHApp()->rtMapWindow.left);
-    NHGETREG_DWORD(MAPRIGHT, GetNHApp()->rtMapWindow.right);
-    NHGETREG_DWORD(MAPTOP, GetNHApp()->rtMapWindow.top);
-    NHGETREG_DWORD(MAPBOTTOM, GetNHApp()->rtMapWindow.bottom);
-    NHGETREG_DWORD(MSGLEFT, GetNHApp()->rtMsgWindow.left);
-    NHGETREG_DWORD(MSGRIGHT, GetNHApp()->rtMsgWindow.right);
-    NHGETREG_DWORD(MSGTOP, GetNHApp()->rtMsgWindow.top);
-    NHGETREG_DWORD(MSGBOTTOM, GetNHApp()->rtMsgWindow.bottom);
-    NHGETREG_DWORD(STATUSLEFT, GetNHApp()->rtStatusWindow.left);
-    NHGETREG_DWORD(STATUSRIGHT, GetNHApp()->rtStatusWindow.right);
-    NHGETREG_DWORD(STATUSTOP, GetNHApp()->rtStatusWindow.top);
-    NHGETREG_DWORD(STATUSBOTTOM, GetNHApp()->rtStatusWindow.bottom);
-    NHGETREG_DWORD(MENULEFT, GetNHApp()->rtMenuWindow.left);
-    NHGETREG_DWORD(MENURIGHT, GetNHApp()->rtMenuWindow.right);
-    NHGETREG_DWORD(MENUTOP, GetNHApp()->rtMenuWindow.top);
-    NHGETREG_DWORD(MENUBOTTOM, GetNHApp()->rtMenuWindow.bottom);
-    NHGETREG_DWORD(TEXTLEFT, GetNHApp()->rtTextWindow.left);
-    NHGETREG_DWORD(TEXTRIGHT, GetNHApp()->rtTextWindow.right);
-    NHGETREG_DWORD(TEXTTOP, GetNHApp()->rtTextWindow.top);
-    NHGETREG_DWORD(TEXTBOTTOM, GetNHApp()->rtTextWindow.bottom);
-    NHGETREG_DWORD(INVENTLEFT, GetNHApp()->rtInvenWindow.left);
-    NHGETREG_DWORD(INVENTRIGHT, GetNHApp()->rtInvenWindow.right);
-    NHGETREG_DWORD(INVENTTOP, GetNHApp()->rtInvenWindow.top);
-    NHGETREG_DWORD(INVENTBOTTOM, GetNHApp()->rtInvenWindow.bottom);
-#undef NHGETREG_DWORD
-
-    for (i = 0; i < CLR_MAX; i++) {
-        COLORREF cl;
-        char mapcolorkey[64];
-        sprintf(mapcolorkey, "MapColor%02d", i);
-        if (RegQueryValueEx(key, mapcolorkey, NULL, NULL, (BYTE *)&cl, &size) == ERROR_SUCCESS)
-            GetNHApp()->regMapColors[i] = cl;
-    }
-
-    RegCloseKey(key);
-
-    /* check the data for validity */
-    if (IsRectEmpty(&GetNHApp()->rtMapWindow)
-        || IsRectEmpty(&GetNHApp()->rtMsgWindow)
-        || IsRectEmpty(&GetNHApp()->rtStatusWindow)
-        || IsRectEmpty(&GetNHApp()->rtMenuWindow)
-        || IsRectEmpty(&GetNHApp()->rtTextWindow)
-        || IsRectEmpty(&GetNHApp()->rtInvenWindow)) {
-        GetNHApp()->bAutoLayout = TRUE;
-    }
-}
-
-void
-dll_write_reg()
-{
-    HKEY key;
-    DWORD disposition;
-    int i;
-
-    if (GetNHApp()->saveRegistrySettings) {
-        char keystring[MAX_PATH];
-        DWORD safe_buf;
-
-        sprintf(keystring, "%s\\%s\\%s\\%s", CATEGORYKEY, COMPANYKEY,
-                PRODUCTKEY, SETTINGSKEY);
-
-        if (RegOpenKeyEx(HKEY_CURRENT_USER, keystring, 0, KEY_WRITE, &key)
-            != ERROR_SUCCESS) {
-            RegCreateKeyEx(HKEY_CURRENT_USER, keystring, 0, "",
-                           REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
-                           &key, &disposition);
-        }
-
-#define NHSETREG_DWORD(name, val)                                   \
-    RegSetValueEx(key, (name), 0, REG_DWORD,                        \
-                  (unsigned char *)((safe_buf = (val)), &safe_buf), \
-                  sizeof(DWORD));
-
-        /* Write the keys here */
-        NHSETREG_DWORD(INTFKEY, GetNHApp()->regGnollHackMode);
-
-        /* Main window placement */
-        NHSETREG_DWORD(MAINSHOWSTATEKEY, GetNHApp()->regMainShowState);
-        NHSETREG_DWORD(MAINMINXKEY, GetNHApp()->regMainMinX);
-        NHSETREG_DWORD(MAINMINYKEY, GetNHApp()->regMainMinY);
-        NHSETREG_DWORD(MAINMAXXKEY, GetNHApp()->regMainMaxX);
-        NHSETREG_DWORD(MAINMAXYKEY, GetNHApp()->regMainMaxY);
-        NHSETREG_DWORD(MAINLEFTKEY, GetNHApp()->regMainLeft);
-        NHSETREG_DWORD(MAINRIGHTKEY, GetNHApp()->regMainRight);
-        NHSETREG_DWORD(MAINTOPKEY, GetNHApp()->regMainTop);
-        NHSETREG_DWORD(MAINBOTTOMKEY, GetNHApp()->regMainBottom);
-
-        NHSETREG_DWORD(MAINAUTOLAYOUT, GetNHApp()->bAutoLayout);
-        NHSETREG_DWORD(MAPLEFT, GetNHApp()->rtMapWindow.left);
-        NHSETREG_DWORD(MAPRIGHT, GetNHApp()->rtMapWindow.right);
-        NHSETREG_DWORD(MAPTOP, GetNHApp()->rtMapWindow.top);
-        NHSETREG_DWORD(MAPBOTTOM, GetNHApp()->rtMapWindow.bottom);
-        NHSETREG_DWORD(MSGLEFT, GetNHApp()->rtMsgWindow.left);
-        NHSETREG_DWORD(MSGRIGHT, GetNHApp()->rtMsgWindow.right);
-        NHSETREG_DWORD(MSGTOP, GetNHApp()->rtMsgWindow.top);
-        NHSETREG_DWORD(MSGBOTTOM, GetNHApp()->rtMsgWindow.bottom);
-        NHSETREG_DWORD(STATUSLEFT, GetNHApp()->rtStatusWindow.left);
-        NHSETREG_DWORD(STATUSRIGHT, GetNHApp()->rtStatusWindow.right);
-        NHSETREG_DWORD(STATUSTOP, GetNHApp()->rtStatusWindow.top);
-        NHSETREG_DWORD(STATUSBOTTOM, GetNHApp()->rtStatusWindow.bottom);
-        NHSETREG_DWORD(MENULEFT, GetNHApp()->rtMenuWindow.left);
-        NHSETREG_DWORD(MENURIGHT, GetNHApp()->rtMenuWindow.right);
-        NHSETREG_DWORD(MENUTOP, GetNHApp()->rtMenuWindow.top);
-        NHSETREG_DWORD(MENUBOTTOM, GetNHApp()->rtMenuWindow.bottom);
-        NHSETREG_DWORD(TEXTLEFT, GetNHApp()->rtTextWindow.left);
-        NHSETREG_DWORD(TEXTRIGHT, GetNHApp()->rtTextWindow.right);
-        NHSETREG_DWORD(TEXTTOP, GetNHApp()->rtTextWindow.top);
-        NHSETREG_DWORD(TEXTBOTTOM, GetNHApp()->rtTextWindow.bottom);
-        NHSETREG_DWORD(INVENTLEFT, GetNHApp()->rtInvenWindow.left);
-        NHSETREG_DWORD(INVENTRIGHT, GetNHApp()->rtInvenWindow.right);
-        NHSETREG_DWORD(INVENTTOP, GetNHApp()->rtInvenWindow.top);
-        NHSETREG_DWORD(INVENTBOTTOM, GetNHApp()->rtInvenWindow.bottom);
-#undef NHSETREG_DWORD
-
-        for (i = 0; i < CLR_MAX; i++) {
-            COLORREF cl = GetNHApp()->regMapColors[i];
-            char mapcolorkey[64];
-            sprintf(mapcolorkey, "MapColor%02d", i);
-            RegSetValueEx(key, mapcolorkey, 0, REG_DWORD, (BYTE *)&cl, sizeof(DWORD));
-        }
-
-        RegCloseKey(key);
-    }
-}
-
-void
-dll_destroy_reg()
-{
-    char keystring[MAX_PATH];
-    HKEY key;
-    DWORD nrsubkeys;
-
-    /* Delete keys one by one, as NT does not delete trees */
-    sprintf(keystring, "%s\\%s\\%s\\%s", CATEGORYKEY, COMPANYKEY, PRODUCTKEY,
-            SETTINGSKEY);
-    RegDeleteKey(HKEY_CURRENT_USER, keystring);
-    sprintf(keystring, "%s\\%s\\%s", CATEGORYKEY, COMPANYKEY, PRODUCTKEY);
-    RegDeleteKey(HKEY_CURRENT_USER, keystring);
-    /* The company key will also contain information about newer versions
-       of GnollHack (e.g. a subkey called GnollHack 4.0), so only delete that
-       if it's empty now. */
-    sprintf(keystring, "%s\\%s", CATEGORYKEY, COMPANYKEY);
-    /* If we cannot open it, we probably cannot delete it either... Just
-       go on and see what happens. */
-    RegOpenKeyEx(HKEY_CURRENT_USER, keystring, 0, KEY_READ, &key);
-    nrsubkeys = 0;
-    RegQueryInfoKey(key, NULL, NULL, NULL, &nrsubkeys, NULL, NULL, NULL, NULL,
-                    NULL, NULL, NULL);
-    RegCloseKey(key);
-    if (nrsubkeys == 0)
-        RegDeleteKey(HKEY_CURRENT_USER, keystring);
-
-    /* Prevent saving on exit */
-    GetNHApp()->saveRegistrySettings = 0;
-}
-
-typedef struct ctv {
-    const char *colorstring;
-    COLORREF colorvalue;
-} dll_color_table_value;
-
-/*
- * The color list here is a combination of:
- * GnollHack colors.  (See mhmap.c)
- * HTML colors. (See http://www.w3.org/TR/REC-html40/types.html#h-6.5 )
- */
-
-static dll_color_table_value color_table[] = {
-    /* GnollHack colors */
-    { "black", RGB(0x55, 0x55, 0x55) },
-    { "red", RGB(0xFF, 0x00, 0x00) },
-    { "green", RGB(0x00, 0x80, 0x00) },
-    { "brown", RGB(0xA5, 0x2A, 0x2A) },
-    { "blue", RGB(0x00, 0x00, 0xFF) },
-    { "magenta", RGB(0xFF, 0x00, 0xFF) },
-    { "cyan", RGB(0x00, 0xFF, 0xFF) },
-    { "orange", RGB(0xFF, 0xA5, 0x00) },
-    { "brightgreen", RGB(0x00, 0xFF, 0x00) },
-    { "yellow", RGB(0xFF, 0xFF, 0x00) },
-    { "brightblue", RGB(0x00, 0xC0, 0xFF) },
-    { "brightmagenta", RGB(0xFF, 0x80, 0xFF) },
-    { "brightcyan", RGB(0x80, 0xFF, 0xFF) },
-    { "white", RGB(0xFF, 0xFF, 0xFF) },
-    /* Remaining HTML colors */
-    { "trueblack", RGB(0x00, 0x00, 0x00) },
-    { "gray", RGB(0x80, 0x80, 0x80) },
-    { "grey", RGB(0x80, 0x80, 0x80) },
-    { "purple", RGB(0x80, 0x00, 0x80) },
-    { "silver", RGB(0xC0, 0xC0, 0xC0) },
-    { "maroon", RGB(0x80, 0x00, 0x00) },
-    { "fuchsia", RGB(0xFF, 0x00, 0xFF) }, /* = GnollHack magenta */
-    { "lime", RGB(0x00, 0xFF, 0x00) },    /* = GnollHack bright green */
-    { "olive", RGB(0x80, 0x80, 0x00) },
-    { "navy", RGB(0x00, 0x00, 0x80) },
-    { "teal", RGB(0x00, 0x80, 0x80) },
-    { "aqua", RGB(0x00, 0xFF, 0xFF) }, /* = GnollHack cyan */
-    { "", RGB(0x00, 0x00, 0x00) },
-};
-
-typedef struct ctbv {
-    char *colorstring;
-    int syscolorvalue;
-} dll_color_table_brush_value;
-
-static dll_color_table_brush_value color_table_brush[] = {
-    { "activeborder", COLOR_ACTIVEBORDER },
-    { "activecaption", COLOR_ACTIVECAPTION },
-    { "appworkspace", COLOR_APPWORKSPACE },
-    { "background", COLOR_BACKGROUND },
-    { "btnface", COLOR_BTNFACE },
-    { "btnshadow", COLOR_BTNSHADOW },
-    { "btntext", COLOR_BTNTEXT },
-    { "captiontext", COLOR_CAPTIONTEXT },
-    { "graytext", COLOR_GRAYTEXT },
-    { "greytext", COLOR_GRAYTEXT },
-    { "highlight", COLOR_HIGHLIGHT },
-    { "highlighttext", COLOR_HIGHLIGHTTEXT },
-    { "inactiveborder", COLOR_INACTIVEBORDER },
-    { "inactivecaption", COLOR_INACTIVECAPTION },
-    { "menu", COLOR_MENU },
-    { "menutext", COLOR_MENUTEXT },
-    { "scrollbar", COLOR_SCROLLBAR },
-    { "window", COLOR_WINDOW },
-    { "windowframe", COLOR_WINDOWFRAME },
-    { "windowtext", COLOR_WINDOWTEXT },
-    { "", -1 },
-};
-
-static void
-dll_color_from_string(char *colorstring, HBRUSH *brushptr,
-                        COLORREF *colorptr)
-{
-    dll_color_table_value *ctv_ptr = color_table;
-    dll_color_table_brush_value *ctbv_ptr = color_table_brush;
-    int red_value, blue_value, green_value;
-    static char *hexadecimals = "0123456789abcdef";
-
-    if (colorstring == NULL)
-        return;
-    if (*colorstring == '#') {
-        if (strlen(++colorstring) != 6)
-            return;
-
-        red_value = (int) (index(hexadecimals, tolower((uchar) *colorstring))
-                           - hexadecimals);
-        ++colorstring;
-        red_value *= 16;
-        red_value += (int) (index(hexadecimals, tolower((uchar) *colorstring))
-                            - hexadecimals);
-        ++colorstring;
-
-        green_value = (int) (index(hexadecimals,
-                                   tolower((uchar) *colorstring))
-                             - hexadecimals);
-        ++colorstring;
-        green_value *= 16;
-        green_value += (int) (index(hexadecimals,
-                                    tolower((uchar) *colorstring))
-                              - hexadecimals);
-        ++colorstring;
-
-        blue_value = (int) (index(hexadecimals, tolower((uchar) *colorstring))
-                            - hexadecimals);
-        ++colorstring;
-        blue_value *= 16;
-        blue_value += (int) (index(hexadecimals,
-                                   tolower((uchar) *colorstring))
-                             - hexadecimals);
-        ++colorstring;
-
-        *colorptr = RGB(red_value, green_value, blue_value);
-    } else {
-        while (*ctv_ptr->colorstring
-               && stricmp(ctv_ptr->colorstring, colorstring))
-            ++ctv_ptr;
-        if (*ctv_ptr->colorstring) {
-            *colorptr = ctv_ptr->colorvalue;
-        } else {
-            while (*ctbv_ptr->colorstring
-                   && stricmp(ctbv_ptr->colorstring, colorstring))
-                ++ctbv_ptr;
-            if (*ctbv_ptr->colorstring) {
-                *brushptr = SYSCLR_TO_BRUSH(ctbv_ptr->syscolorvalue);
-                *colorptr = GetSysColor(ctbv_ptr->syscolorvalue);
-            }
-        }
-    }
-	if (dll_max_brush >= DLL_TOTAL_BRUSHES)
-	{
-		panic("Too many colors!");
-		return;
-	}
-    *brushptr = CreateSolidBrush(*colorptr);
-    dll_brush_table[dll_max_brush] = *brushptr;
-    dll_max_brush++;
-}
-
-void
-dll_get_window_placement(int type, LPRECT rt)
-{
-    switch (type) {
-    case NHW_MAP:
-        *rt = GetNHApp()->rtMapWindow;
-        break;
-
-    case NHW_MESSAGE:
-        *rt = GetNHApp()->rtMsgWindow;
-        break;
-
-    case NHW_STATUS:
-        *rt = GetNHApp()->rtStatusWindow;
-        break;
-
-    case NHW_MENU:
-        *rt = GetNHApp()->rtMenuWindow;
-        break;
-
-    case NHW_TEXT:
-        *rt = GetNHApp()->rtTextWindow;
-        break;
-
-    case NHW_INVEN:
-        *rt = GetNHApp()->rtInvenWindow;
-        break;
-
-    default:
-        SetRect(rt, 0, 0, 0, 0);
-        break;
-    }
-}
-
-void
-dll_update_window_placement(int type, LPRECT rt)
-{
-    LPRECT rt_conf = NULL;
-
-    switch (type) {
-    case NHW_MAP:
-        rt_conf = &GetNHApp()->rtMapWindow;
-        break;
-
-    case NHW_MESSAGE:
-        rt_conf = &GetNHApp()->rtMsgWindow;
-        break;
-
-    case NHW_STATUS:
-        rt_conf = &GetNHApp()->rtStatusWindow;
-        break;
-
-    case NHW_MENU:
-        rt_conf = &GetNHApp()->rtMenuWindow;
-        break;
-
-    case NHW_TEXT:
-        rt_conf = &GetNHApp()->rtTextWindow;
-        break;
-
-    case NHW_INVEN:
-        rt_conf = &GetNHApp()->rtInvenWindow;
-        break;
-    }
-
-    if (rt_conf && !IsRectEmpty(rt) && !EqualRect(rt_conf, rt)) {
-        *rt_conf = *rt;
-    }
-}
-
 
 int
-dll_NHMessageBox(HWND hWnd, LPCTSTR text, UINT type)
+GNHMessageBox(char* text, unsigned int type)
 {
-    TCHAR title[MAX_LOADSTRING];
+    char title[MAX_LOADSTRING];
 
     LoadString(GetNHApp()->hApp, IDS_APP_TITLE_SHORT, title, MAX_LOADSTRING);
 
-    return MessageBox(hWnd, text, title, type);
+    return dll_callbacks.callback_messagebox(text, title, type);
 }
 
 
-static mswin_status_lines _status_lines;
-static mswin_status_string _status_strings[MAXBLSTATS];
-static mswin_status_string _condition_strings[BL_MASK_BITS];
-static mswin_status_field _status_fields[MAXBLSTATS];
 
-static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
+/* when status hilites are enabled, we use an array of mswin_status_strings
+ * to represent what needs to be rendered. */
+typedef struct dll_status_string {
+    const char* str; /* ascii string to be displayed */
+    boolean space_in_front; /* render with a space in front of string */
+    int color; /* string text color index */
+    int attribute; /* string text attributes */
+    boolean draw_bar; /* draw a percentage bar  */
+    int bar_percent; /* a percentage to indicate */
+    int bar_color; /* color index of percentage bar */
+    int bar_attribute; /* attributes of percentage bar */
+} dll_status_string;
+
+typedef struct dll_status_strings
+{
+    int count;
+    dll_status_string* status_strings[MSWIN_MAX_LINE_STRINGS];
+} dll_status_strings;
+
+typedef struct dll_status_field {
+    int field_index; // field index
+    boolean enabled; // whether the field is enabled
+    const char* name; // name of status field
+    const char* format; // format of field
+    boolean space_in_front; // add a space in front of the field
+
+    int percent;
+    int color;
+    int attribute;
+    char string[BUFSZ];
+
+} dll_status_field;
+
+typedef struct dll_condition_field {
+    unsigned long mask;
+    const char* name;
+    int bit_position;
+} dll_condition_field;
+
+typedef struct dll_status_fields {
+    int count;
+    dll_status_field* status_fields[MSWIN_MAX_LINE_FIELDS];
+} dll_status_fields;
+
+typedef struct dll_status_line {
+    dll_status_strings status_strings;
+    dll_status_fields status_fields;
+} dll_status_line;
+
+typedef struct dll_status_lines {
+    dll_status_line lines[NHSW_LINES]; /* number of strings to be rendered on each line */
+} dll_status_lines;
+
+static dll_status_lines _status_lines;
+static dll_status_string _status_strings[MAXBLSTATS];
+static dll_status_string _condition_strings[BL_MASK_BITS];
+static dll_status_field _status_fields[MAXBLSTATS];
+
+static dll_condition_field _condition_fields[BL_MASK_BITS] = {
     { BL_MASK_STONE, "Stone" },
     { BL_MASK_SLIME, "Slime" },
     { BL_MASK_STRNGL, "Strngl" },
@@ -3013,34 +2368,34 @@ dll_status_init(void)
     dll_logDebug("dll_status_init()\n");
 
     for (int i = 0; i < SIZE(_status_fields); i++) {
-        mswin_status_field * status_field = &_status_fields[i];
+        dll_status_field * status_field = &_status_fields[i];
         status_field->field_index = i;
         status_field->enabled = FALSE;
     }
 
     for (int i = 0; i < SIZE(_condition_fields); i++) {
-        mswin_condition_field * condition_field = &_condition_fields[i];
+        dll_condition_field * condition_field = &_condition_fields[i];
         nhassert(condition_field->mask == (1 << i));
         condition_field->bit_position = i;
     }
 
     for (int i = 0; i < SIZE(_status_strings); i++) {
-        mswin_status_string * status_string = &_status_strings[i];
+        dll_status_string * status_string = &_status_strings[i];
         status_string->str = NULL;
     }
 
     for (int i = 0; i < SIZE(_condition_strings); i++) {
-        mswin_status_string * status_string = &_condition_strings[i];
+        dll_status_string * status_string = &_condition_strings[i];
         status_string->str = NULL;
     }
 
     for (int lineIndex = 0; lineIndex < iflags.wc2_statuslines /* SIZE(_status_lines.lines)*/; lineIndex++) {
-        mswin_status_line * line = &_status_lines.lines[lineIndex];
+        dll_status_line * line = &_status_lines.lines[lineIndex];
 
-        mswin_status_fields * status_fields = &line->status_fields;
+        dll_status_fields * status_fields = &line->status_fields;
         status_fields->count = 0;
 
-        mswin_status_strings * status_strings = &line->status_strings;
+        dll_status_strings * status_strings = &line->status_strings;
         status_strings->count = 0;
 
         for (int i = 0; i < fieldcounts[lineIndex]; i++) {
@@ -3110,10 +2465,10 @@ dll_status_enablefield(int fieldidx, const char *nm, const char *fmt,
              (int) enable);
 
     nhassert(fieldidx <= SIZE(_status_fields));
-    mswin_status_field * field = &_status_fields[fieldidx];
+    dll_status_field * field = &_status_fields[fieldidx];
 
     nhassert(fieldidx <= SIZE(_status_strings));
-    mswin_status_string * string = &_status_strings[fieldidx];
+    dll_status_string * string = &_status_strings[fieldidx];
 
     if (field != NULL) {
         field->format = fmt;
@@ -3212,22 +2567,24 @@ status_update(int fldindex, genericptr_t ptr, int chg, int percent, int color, u
 void
 dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *condmasks)
 {
-    long cond, *condptr = (long *) ptr;
-    char *text = (char *) ptr;
+    dll_logDebug("dll_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
+    dll_callbacks.callback_status_update(idx, ptr, chg, percent, color, condmasks);
+
+#if 0
+    long cond, * condptr = (long*)ptr;
+    char* text = (char*)ptr;
     MSNHMsgUpdateStatus update_cmd_data;
     int ocolor, ochar;
     unsigned long ospecial;
 
-    dll_logDebug("dll_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
-
     if (idx >= 0) {
 
         nhassert(idx <= SIZE(_status_fields));
-        mswin_status_field * status_field = &_status_fields[idx];
+        dll_status_field * status_field = &_status_fields[idx];
         nhassert(status_field->field_index == idx);
 
         nhassert(idx <= SIZE(_status_strings));
-        mswin_status_string * status_string = &_status_strings[idx];
+        dll_status_string * status_string = &_status_strings[idx];
 
         if (!status_field->enabled) {
             nhassert(status_string->str == NULL);
@@ -3239,7 +2596,7 @@ dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, un
 
         switch (idx) {
         case BL_CONDITION: {
-            mswin_condition_field * condition_field = _condition_fields;
+            dll_condition_field * condition_field = _condition_fields;
 
             nhassert(status_string->str == NULL);
 
@@ -3298,7 +2655,7 @@ dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, un
          * bar percent and bar color for the title string */
         if (idx == BL_HP || idx == BL_HPMAX)
         {
-            mswin_status_string * title_string = &_status_strings[BL_TITLE];
+            dll_status_string * title_string = &_status_strings[BL_TITLE];
 
             if (idx == BL_HP)
             {
@@ -3318,11 +2675,15 @@ dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, un
         SendMessage(dll_hwnd_from_winid(WIN_STATUS), WM_MSNH_COMMAND,
             (WPARAM)MSNH_MSG_UPDATE_STATUS, (LPARAM)&update_cmd_data);
     }
+#endif
 }
 
 void
 dll_stretch_window(void)
 {
+    dll_callbacks.callback_stretch_window();
+
+#if 0
     if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
         MSNHMsgClipAround data;
 
@@ -3332,11 +2693,14 @@ dll_stretch_window(void)
         SendMessage(GetNHApp()->windowlist[WIN_MAP].win, WM_MSNH_COMMAND,
             (WPARAM)MSNH_MSG_STRETCH_MAP, (LPARAM)&data);
     }
+#endif
 }
 
 void
 dll_set_animation_timer(unsigned int interval)
 {
+    dll_callbacks.callback_set_animation_timer(interval);
+#if 0
     if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
         UINT data;
 
@@ -3345,6 +2709,7 @@ dll_set_animation_timer(unsigned int interval)
         SendMessage(GetNHApp()->windowlist[WIN_MAP].win, WM_MSNH_COMMAND,
             (WPARAM)MSNH_MSG_SET_ANIMATION_TIMER, (LPARAM)&data);
     }
+#endif
 }
 
 
@@ -3357,7 +2722,7 @@ dll_open_special_view(struct special_view_info info)
 void
 dll_stop_all_sounds(struct stop_all_info info)
 {
-    if (!fmod_stop_all_sounds(info))
+    if (!dll_callbacks.callback_stop_all_sounds())
     {
         impossible("Cannot stop all sounds!");
     }
@@ -3366,7 +2731,7 @@ dll_stop_all_sounds(struct stop_all_info info)
 void
 dll_play_immediate_ghsound(struct ghsound_immediate_info info)
 {
-    if (!fmod_play_immediate_sound(info))
+    if (!dll_callbacks.callback_play_immediate_ghsound(info.ghsound, (double)info.volume))
     {
         impossible("Cannot play immediate sound!");
     }
@@ -3375,7 +2740,7 @@ dll_play_immediate_ghsound(struct ghsound_immediate_info info)
 void
 dll_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
 {
-    if (!fmod_play_occupation_ambient_sound(info))
+    if (!dll_callbacks.callback_play_ghsound_occupation_ambient(info.ghsound, (double)info.volume))
     {
         impossible("Cannot play occupation ambient sound!");
     }
@@ -3384,7 +2749,7 @@ dll_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
 void
 dll_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 {
-    if (!fmod_play_effect_ambient_sound(info))
+    if (!dll_callbacks.callback_play_ghsound_effect_ambient(info.ghsound, (double)info.volume))
     {
         impossible("Cannot play effect ambient sound!");
     }
@@ -3393,7 +2758,7 @@ dll_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 void
 dll_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 {
-    if (!fmod_set_effect_ambient_volume(info))
+    if (!dll_callbacks.callback_set_effect_ambient_volume((double)info.volume))
     {
         impossible("Cannot play set effect ambient volume!");
     }
@@ -3402,7 +2767,7 @@ dll_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 void
 dll_play_ghsound_music(struct ghsound_music_info info)
 {
-    if (!fmod_play_music(info))
+    if (!dll_callbacks.callback_play_ghsound_music(info.ghsound, (double)info.volume))
     {
         impossible("Cannot play music!");
     }
@@ -3411,7 +2776,7 @@ dll_play_ghsound_music(struct ghsound_music_info info)
 void
 dll_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 {
-    if (!fmod_play_level_ambient_sound(info))
+    if (!dll_callbacks.callback_play_ghsound_level_ambient(info.ghsound, (double)info.volume))
     {
         impossible("Cannot play level ambient sound!");
     }
@@ -3420,7 +2785,7 @@ dll_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 void
 dll_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info)
 {
-    if (!fmod_play_environment_ambient_sound(info))
+    if (!dll_callbacks.callback_play_ghsound_environment_ambient(info.ghsound, (double)info.volume))
     {
         impossible("Cannot play environment ambient sound!");
     }
@@ -3435,7 +2800,7 @@ dll_adjust_ghsound_general_volumes(VOID_ARGS)
     float new_effects_volume = ((float)flags.sound_volume_effects) / 100.0f;
     float new_ui_volume = ((float)flags.sound_volume_ui) / 100.0f;
 
-    if (!fmod_adjust_ghsound_general_volumes(new_general_volume, new_music_volume, new_ambient_volume, new_effects_volume, new_ui_volume))
+    if (!dll_callbacks.callback_adjust_ghsound_general_volumes(new_general_volume, new_music_volume, new_ambient_volume, new_effects_volume, new_ui_volume))
     {
         impossible("Cannot adjust volume!");
     }
@@ -3444,7 +2809,7 @@ dll_adjust_ghsound_general_volumes(VOID_ARGS)
 void
 dll_add_ambient_ghsound(struct soundsource_t* soundsource)
 {
-    if (!fmod_add_ambient_ghsound(soundsource->ghsound, soundsource->heard_volume, &soundsource->ambient_ghsound_ptr))
+    if (!dll_callbacks.callback_add_ambient_ghsound(soundsource->ghsound, soundsource->heard_volume, soundsource->ambient_ghsound_ptr))
     {
         impossible("Cannot add ambient sound!");
     }
@@ -3453,7 +2818,7 @@ dll_add_ambient_ghsound(struct soundsource_t* soundsource)
 void
 dll_delete_ambient_ghsound(struct soundsource_t* soundsource)
 {
-    if (!fmod_delete_ambient_ghsound(soundsource->ambient_ghsound_ptr))
+    if (!dll_callbacks.callback_delete_ambient_ghsound(soundsource->ambient_ghsound_ptr))
     {
         impossible("Cannot delete ambient sound!");
     }
@@ -3462,7 +2827,7 @@ dll_delete_ambient_ghsound(struct soundsource_t* soundsource)
 void
 dll_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 {
-    if (!fmod_set_ambient_ghsound_volume(soundsource->ambient_ghsound_ptr, soundsource->heard_volume))
+    if (!dll_callbacks.callback_set_ambient_ghsound_volume(soundsource->ambient_ghsound_ptr, soundsource->heard_volume))
     {
         impossible("Cannot set ambient sound volume!");
     }
@@ -3487,45 +2852,6 @@ dll_exit_hack(int status)
 }
 
 
-
-
-#if !defined(SAFEPROCS)
-#error You must #define SAFEPROCS to build winhack.c
-#endif
-
-/* Borland and MinGW redefine "boolean" in shlwapi.h,
-   so just use the little bit we need */
-typedef struct _DLLVERSIONINFO {
-    DWORD cbSize;
-    DWORD dwMajorVersion; // Major version
-    DWORD dwMinorVersion; // Minor version
-    DWORD dwBuildNumber;  // Build number
-    DWORD dwPlatformID;   // DLLVER_PLATFORM_*
-} DLLVERSIONINFO;
-
-//
-// The caller should always GetProcAddress("DllGetVersion"), not
-// implicitly link to it.
-//
-
-typedef HRESULT(CALLBACK* DLLGETVERSIONPROC)(DLLVERSIONINFO*);
-
-/* end of shlwapi.h */
-
-/* Minimal common control library version
-Version     _WIN_32IE   Platform/IE
-=======     =========   ===========
-4.00        0x0200      Microsoft(r) Windows 95/Windows NT 4.0
-4.70        0x0300      Microsoft(r) Internet Explorer 3.x
-4.71        0x0400      Microsoft(r) Internet Explorer 4.0
-4.72        0x0401      Microsoft(r) Internet Explorer 4.01
-...and probably going on infinitely...
-*/
-#define MIN_COMCTLMAJOR 4
-#define MIN_COMCTLMINOR 71
-#define INSTALL_NOTES "http://www.GnollHack.org/v340/ports/download-win.html#cc"
-/*#define COMCTL_URL
- * "http://www.microsoft.com/msdownload/ieplatform/ie/comctrlx86.asp"*/
 
 PNHWinApp
 GetNHApp()
@@ -3569,6 +2895,15 @@ char* dll_getcwd(char* dest_buf, int size_in_bytes)
    return dest_buf;
 }
 
+DLL void
+dll_reduce_counters_intervals(int intervals)
+{
+    reduce_counters_intervals(intervals);
+}
+
+
+
+/* Test */
 DLL int DoSomeCalc2()
 {
     HINSTANCE hinst = GetModuleHandle(NULL);
@@ -3577,5 +2912,32 @@ DLL int DoSomeCalc2()
     if (getcwd(buf, 256))
         length = strlen(buf);
     return (int)length;
+}
+
+
+
+
+
+/* Probably unnecessary */
+winid
+dll_winid_from_handle(HWND hWnd)
+{
+    winid i = 0;
+
+    for (i = 1; i < MAXWINDOWS; i++)
+        if (GetNHApp()->windowlist[i].win == hWnd)
+            return i;
+    return -1;
+}
+
+HWND
+dll_hwnd_from_winid(winid wid)
+{
+    if (wid >= 0 && wid < MAXWINDOWS) {
+        return GetNHApp()->windowlist[wid].win;
+    }
+    else {
+        return NULL;
+    }
 }
 
