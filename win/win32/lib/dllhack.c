@@ -1,9 +1,6 @@
-/* GnollHack 4.0    winhack.c    $NHDT-Date: 1449488876 2015/12/07 11:47:56 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.44 $ */
-/* Copyright (C) 2001 by Alex Kompel      */
+/* GnollHack 4.0    dllhack.c    $NHDT-Date: 1449488876 2015/12/07 11:47:56 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.44 $ */
+/* Copyright (C) 2001 by Alex Kompel, 2021 Janne Gustafsson      */
 /* GnollHack may be freely redistributed.  See license for details. */
-
-// winhack.cpp : Defines the entry point for the application.
-//
 
 #include "win10.h"
 #include <process.h>
@@ -13,47 +10,10 @@
 #include "hack.h"
 #include "dlb.h"
 #include "resource.h"
-#include "mhmain.h"
-#include "mhmap.h"
-#include "pch.h"
 
 #if !defined(SAFEPROCS)
 #error You must #define SAFEPROCS to build winhack.c
 #endif
-
-/* Borland and MinGW redefine "boolean" in shlwapi.h,
-   so just use the little bit we need */
-typedef struct _DLLVERSIONINFO {
-    DWORD cbSize;
-    DWORD dwMajorVersion; // Major version
-    DWORD dwMinorVersion; // Minor version
-    DWORD dwBuildNumber;  // Build number
-    DWORD dwPlatformID;   // DLLVER_PLATFORM_*
-} DLLVERSIONINFO;
-
-//
-// The caller should always GetProcAddress("DllGetVersion"), not
-// implicitly link to it.
-//
-
-typedef HRESULT(CALLBACK *DLLGETVERSIONPROC)(DLLVERSIONINFO *);
-
-/* end of shlwapi.h */
-
-/* Minimal common control library version
-Version     _WIN_32IE   Platform/IE
-=======     =========   ===========
-4.00        0x0200      Microsoft(r) Windows 95/Windows NT 4.0
-4.70        0x0300      Microsoft(r) Internet Explorer 3.x
-4.71        0x0400      Microsoft(r) Internet Explorer 4.0
-4.72        0x0401      Microsoft(r) Internet Explorer 4.01
-...and probably going on infinitely...
-*/
-#define MIN_COMCTLMAJOR 4
-#define MIN_COMCTLMINOR 71
-#define INSTALL_NOTES "http://www.GnollHack.org/v340/ports/download-win.html#cc"
-/*#define COMCTL_URL
- * "http://www.microsoft.com/msdownload/ieplatform/ie/comctrlx86.asp"*/
 
 extern void FDECL(gnollhack_exit, (int));
 static TCHAR *_get_cmd_arg(TCHAR *pCmdLine);
@@ -79,9 +39,6 @@ int GnollHackStart()
     TCHAR wbuf[BUFSZ];
     char buf[BUFSZ];
 
-    DWORD major, minor;
-    /* OSVERSIONINFO osvi; */
-
     HINSTANCE hInstance = GetModuleHandle(NULL);
 
     /*
@@ -106,9 +63,9 @@ int GnollHackStart()
      * error messages are handled in a suitable
      * way for the graphical version.
      */
-    windowprocs.win_raw_print = mswin_raw_print;
-    windowprocs.win_raw_print_bold = mswin_raw_print_bold;
-    windowprocs.win_wait_synch = mswin_wait_synch;
+    windowprocs.win_raw_print = dll_raw_print;
+    windowprocs.win_raw_print_bold = dll_raw_print_bold;
+    windowprocs.win_wait_synch = dll_wait_synch;
 
     win10_init();
     sys_early_init();
@@ -120,14 +77,14 @@ int GnollHackStart()
     for (argc = 1; p && argc < MAX_CMDLINE_PARAM; argc++) {
         len = _tcslen(p);
         if (len > 0) {
-            argv[argc] = _strdup(NH_W2A(p, buf, BUFSZ));
+            argv[argc] = _strdup(GNH_W2A(p, buf, BUFSZ));
         } else {
             argv[argc] = "";
         }
         p = _get_cmd_arg(NULL);
     }
     GetModuleFileName(NULL, wbuf, BUFSZ);
-    argv[0] = _strdup(NH_W2A(wbuf, buf, BUFSZ));
+    argv[0] = _strdup(GNH_W2A(wbuf, buf, BUFSZ));
 
     if (argc == 2) {
         TCHAR *savefile = strdup(argv[1]);
@@ -150,10 +107,10 @@ int GnollHackStart()
         }
         free(savefile);
     }
+
     GUILaunched = 1;
     iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
     iflags.using_gui_sounds = TRUE;
-
 
     /* let main do the argument processing */
     (void) main(argc, argv);

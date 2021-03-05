@@ -33,7 +33,6 @@
 #include "mhfont.h"
 #include "resource.h"
 #include "dllcallback.h"
-#include "pch.h"
 
 NHWinApp _GnollHack_app;
 
@@ -55,12 +54,7 @@ dll_logDebug(const char *fmt, ...)
 }
 #endif
 
-extern boolean main(int argc, char** argv);
 extern void FDECL(gnollhack_exit, (int));
-static TCHAR* _get_cmd_arg(TCHAR* pCmdLine);
-// Global Variables:
-extern int GUILaunched;     /* We tell shared startup code in windmain.c
-                               that the GUI was launched via this */
 
 void dll_main_loop(void);
 static void dll_wait_loop(int milliseconds);
@@ -3539,53 +3533,6 @@ GetNHApp()
     return &_GnollHack_app;
 }
 
-TCHAR*
-_get_cmd_arg(TCHAR* pCmdLine)
-{
-    static TCHAR* pArgs = NULL;
-    TCHAR* pRetArg;
-    BOOL bQuoted;
-
-    if (!pCmdLine && !pArgs)
-        return NULL;
-    if (!pArgs)
-        pArgs = pCmdLine;
-
-    /* skip whitespace */
-    for (pRetArg = pArgs; *pRetArg && _istspace(*pRetArg);
-        pRetArg = CharNext(pRetArg))
-        ;
-    if (!*pRetArg) {
-        pArgs = NULL;
-        return NULL;
-    }
-
-    /* check for quote */
-    if (*pRetArg == TEXT('"')) {
-        bQuoted = TRUE;
-        pRetArg = CharNext(pRetArg);
-        pArgs = _tcschr(pRetArg, TEXT('"'));
-    }
-    else {
-        /* skip to whitespace */
-        for (pArgs = pRetArg; *pArgs && !_istspace(*pArgs);
-            pArgs = CharNext(pArgs))
-            ;
-    }
-
-    if (pArgs && *pArgs) {
-        TCHAR* p;
-        p = pArgs;
-        pArgs = CharNext(pArgs);
-        *p = (TCHAR)0;
-    }
-    else {
-        pArgs = NULL;
-    }
-
-    return pRetArg;
-}
-
 void
 set_dll_wincaps(wincap1, wincap2)
 unsigned long wincap1, wincap2;
@@ -3622,4 +3569,13 @@ char* dll_getcwd(char* dest_buf, int size_in_bytes)
    return dest_buf;
 }
 
+DLL int DoSomeCalc2()
+{
+    HINSTANCE hinst = GetModuleHandle(NULL);
+    char buf[256];
+    size_t length = 0;
+    if (getcwd(buf, 256))
+        length = strlen(buf);
+    return (int)length;
+}
 

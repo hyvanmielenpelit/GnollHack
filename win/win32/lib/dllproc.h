@@ -10,12 +10,27 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
+#include <tchar.h>
 #include "hack.h"
 #include "color.h"
 #include "soundfx.h"
 #include "lev.h"
 
 /* Create an array to keep track of the various windows */
+
+
+/* unicode stuff */
+#ifdef _UNICODE
+#define GNH_W2A(w, a, cb) \
+    (WideCharToMultiByte(NH_CODEPAGE, 0, (w), -1, (a), (cb), NULL, NULL), (a))
+
+#define GNH_A2W(a, w, cb) \
+    (MultiByteToWideChar(NH_CODEPAGE, 0, (a), -1, (w), (cb)), (w))
+#else
+#define GNH_W2A(w, a, cb) (strncpy((a), (w), (cb)))
+
+#define GNH_A2W(a, w, cb) (strncpy((w), (a), (cb)))
+#endif
 
 #define E extern
 

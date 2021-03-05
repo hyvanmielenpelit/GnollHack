@@ -1,7 +1,5 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
-#include "win32api.h" /* for GetModuleFileName */
 #include "pch.h"
-#include "direct.h"
 #include "dllhack.h"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
@@ -20,19 +18,10 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     return TRUE;
 }
 
-DLL int DoSomeCalc2()
-{
-    HINSTANCE hinst = GetModuleHandle(NULL);
-    char buf[256];
-    size_t length = 0;
-    if(getcwd(buf, 256))
-        length = strlen(buf);
-    return (int)length;
-}
-
 
 extern struct callback_procs dll_callbacks;
 extern void FDECL(set_dll_wincaps, (unsigned long, unsigned long));
+extern int NDECL(GnollHackStart);
 
 DLL int WINAPI RunGnollHack(
     unsigned long wincap1,
