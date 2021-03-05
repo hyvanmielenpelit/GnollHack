@@ -96,9 +96,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackMG", "..\monogame\GnollHackMG\GnollHackMG.csproj", "{0E0D76B5-BC9B-4BF7-9C63-334C4B3287AA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5B19B136-C876-4975-B8B8-3753D797B0A8} = {5B19B136-C876-4975-B8B8-3753D797B0A8}
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66} = {31BFD9BC-3798-4A01-ADBD-59CD1D323C66}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackServer", "..\monogame\GnollHackServer\GnollHackServer.csproj", "{272434B5-141B-48AD-9C5E-87F0CB6C5161}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libgnollhack", "libgnollhack.vcxproj", "{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -288,6 +291,16 @@ Global
 		{272434B5-141B-48AD-9C5E-87F0CB6C5161}.Release|Win32.Build.0 = Release|Any CPU
 		{272434B5-141B-48AD-9C5E-87F0CB6C5161}.Release|x64.ActiveCfg = Release|Any CPU
 		{272434B5-141B-48AD-9C5E-87F0CB6C5161}.Release|x64.Build.0 = Release|Any CPU
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|Win32.ActiveCfg = Debug|Win32
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|Win32.Build.0 = Debug|Win32
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|x64.ActiveCfg = Debug|x64
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|x64.Build.0 = Debug|x64
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|Any CPU.ActiveCfg = Release|Win32
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|Win32.ActiveCfg = Release|Win32
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|Win32.Build.0 = Release|Win32
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|x64.ActiveCfg = Release|x64
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

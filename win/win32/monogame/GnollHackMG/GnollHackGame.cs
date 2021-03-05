@@ -246,6 +246,8 @@ namespace GnollHackMG
         public static extern byte dll_str2role([MarshalAs(UnmanagedType.LPStr)] string role_str);
 
 
+        [DllImport(@"libgnollhack.dll", CharSet = CharSet.Unicode)]
+        public static extern int DoSomeCalc2();
 
 
         public GnollHackGame()
@@ -339,6 +341,8 @@ namespace GnollHackMG
             byte fromDLLvalue2 = dll_validrole(2);
             int fromDLLvalue3 = dll_str2role("knight");
 
+            int fromDLL2value1 = DoSomeCalc2();
+
             // define a progress callback delegate
             ProgressCallback callback =
                 (value) =>
@@ -352,6 +356,7 @@ namespace GnollHackMG
             _spriteBatch.DrawString(_spriteFont, _message2, new Vector2(10, 110), Color.White);
             _spriteBatch.DrawString(_spriteFont, fromDLLvalue2.ToString(), new Vector2(10, 150), Color.White);
             _spriteBatch.DrawString(_spriteFont, fromDLLvalue3.ToString(), new Vector2(10, 190), Color.White);
+            _spriteBatch.DrawString(_spriteFont, fromDLL2value1.ToString(), new Vector2(10, 230), Color.White);
 
             DoWork(callback);
 
@@ -364,86 +369,89 @@ namespace GnollHackMG
         {
             base.BeginRun();
 
-            RunGnollHack(
-                0,
-                0,
-                MG_InitWindows,
-                MG_IntVoidDummy,
-                MG_VoidVoidDummy,
-                MG_VoidVoidDummy,
-                MG_VoidConstCharDummy,
-                MG_VoidConstCharDummy,
-                MG_VoidVoidDummy,
-                MG_IntIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntBooleanDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntIntIntDummy,
-                MG_VoidIntIntConstCharDummy,
-                MG_VoidIntIntConstCharDummy,
-                MG_VoidConstCharBooleanDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntIntConstCharDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy, /* no need for X-specific handling */
-                MG_VoidVoidDummy,
-                MG_VoidVoidDummy,
-                MG_VoidVoidDummy,
-                /* If clipping is on */
-                MG_VoidIntIntDummy,
-                /* If positionbar is on */
-                MG_VoidCharDummy,
-                MG_VoidIntDummy,
-                MG_VoidConstCharDummy,
-                MG_VoidConstCharDummy,
-                MG_IntVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidVoidDummy,
-                MG_IntVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_IntVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
+            if (0 == 1)
+            {
+                RunGnollHack(
+                    0,
+                    0,
+                    MG_InitWindows,
+                    MG_IntVoidDummy,
+                    MG_VoidVoidDummy,
+                    MG_VoidVoidDummy,
+                    MG_VoidConstCharDummy,
+                    MG_VoidConstCharDummy,
+                    MG_VoidVoidDummy,
+                    MG_IntIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntBooleanDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntIntIntDummy,
+                    MG_VoidIntIntConstCharDummy,
+                    MG_VoidIntIntConstCharDummy,
+                    MG_VoidConstCharBooleanDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntIntConstCharDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy, /* no need for X-specific handling */
+                    MG_VoidVoidDummy,
+                    MG_VoidVoidDummy,
+                    MG_VoidVoidDummy,
+                    /* If clipping is on */
+                    MG_VoidIntIntDummy,
+                    /* If positionbar is on */
+                    MG_VoidCharDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidConstCharDummy,
+                    MG_VoidConstCharDummy,
+                    MG_IntVoidDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidVoidDummy,
+                    MG_IntVoidDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_IntVoidDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidVoidDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
 
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
 
-                MG_VoidVoidDummy,
-                MG_VoidVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidConstCharDummy,
-                MG_VoidIntDummy,
-                MG_VoidConstCharBooleanDummy,
-                MG_VoidVoidDummy,
-                MG_VoidVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_BooleanVoidDummy,
-                MG_VoidVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_GetCwd
-            );
+                    MG_VoidVoidDummy,
+                    MG_VoidVoidDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidConstCharDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidConstCharBooleanDummy,
+                    MG_VoidVoidDummy,
+                    MG_VoidVoidDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_BooleanVoidDummy,
+                    MG_VoidVoidDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_VoidIntDummy,
+                    MG_GetCwd
+                );
+            }
         }
 
 
