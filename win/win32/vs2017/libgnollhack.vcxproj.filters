@@ -527,9 +527,6 @@
     <ClCompile Include="..\..\..\src\sit.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\soundfx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\sounds.c">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -25,6 +25,7 @@ namespace GnollHackMG
         private HubConnection connection;
         private string _message = "";
         private string _message2 = "";
+        private int _result = 0;
         private string _accessToken = "MyAccessToken";
         private Thread _gnhthread;
 
@@ -219,6 +220,11 @@ namespace GnollHackMG
                 _message = message;
             });
 
+            connection.On<int>("CalcResult", (result) =>
+            {
+                _result = result;
+            });
+
             connection.On<string, string>("LoginMessage", (user, message) =>
             {
                 _message2 = message;
@@ -258,6 +264,8 @@ namespace GnollHackMG
 
                 await connection.InvokeAsync("SendMessage",
                     "user", "My message");
+
+                await connection.InvokeAsync("DoCalc");
             }
             catch (Exception ex)
             {
@@ -289,7 +297,8 @@ namespace GnollHackMG
 
             _spriteBatch.DrawString(_spriteFont, "Hello World!", new Vector2(10, 10), Color.White);
             _spriteBatch.DrawString(_spriteFont, _message, new Vector2(10, 70), Color.White);
-            _spriteBatch.DrawString(_spriteFont, _message2, new Vector2(10, 110), Color.White);
+            _spriteBatch.DrawString(_spriteFont, _message2, new Vector2(10, 90), Color.White);
+            _spriteBatch.DrawString(_spriteFont, _result.ToString(), new Vector2(10, 110), Color.White);
             _spriteBatch.DrawString(_spriteFont, fromDLLvalue2.ToString(), new Vector2(10, 150), Color.White);
             _spriteBatch.DrawString(_spriteFont, fromDLLvalue3.ToString(), new Vector2(10, 170), Color.White);
             _spriteBatch.DrawString(_spriteFont, fromDLL2value1.ToString(), new Vector2(10, 190), Color.White);

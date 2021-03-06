@@ -138,8 +138,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(FmodDir)core\lib\winnt-x64\;$(FmodDir)fsbank\lib\winnt-x64\;$(FmodDir)studio\lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;fmod_vc.lib;fsbank_vc.lib;fmodstudio_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -371,7 +371,6 @@
     <ClCompile Include="..\lib\dllhack.c" />
     <ClCompile Include="..\lib\dllmain.c" />
     <ClCompile Include="..\lib\dllproc.c" />
-    <ClCompile Include="..\soundfx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\GnollHackNew.ico" />
