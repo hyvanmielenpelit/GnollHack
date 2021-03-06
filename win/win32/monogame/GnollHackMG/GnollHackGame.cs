@@ -26,6 +26,7 @@ namespace GnollHackMG
         private string _message = "";
         private string _message2 = "";
         private int _result = 0;
+        private int _result2 = 0;
         private string _accessToken = "MyAccessToken";
         private Thread _gnhthread;
 
@@ -244,7 +245,7 @@ namespace GnollHackMG
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _spriteFont = Content.Load<SpriteFont>("Font1");
 
-
+            _result2 = DoSomeCalc2();
 
             try
             {
@@ -291,7 +292,7 @@ namespace GnollHackMG
 
             byte fromDLLvalue2 = dll_validrole(2);
             int fromDLLvalue3 = dll_str2role("knight");
-            int fromDLL2value1 = DoSomeCalc2();
+            int fromDLL2value1 = _result2;
 
             // define a progress callback delegate
 

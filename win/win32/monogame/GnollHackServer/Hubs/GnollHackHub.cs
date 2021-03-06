@@ -23,7 +23,6 @@ namespace GnollHackServer.Hubs
 
         public async Task SendMessage(string user, string message)
         {
-            
             //Arg1 function
             //Arg2 and later can be any object
             await Clients.Caller.SendAsync("ReceiveMessage", user, message);

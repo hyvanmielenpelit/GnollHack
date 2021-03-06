@@ -8,14 +8,15 @@
 
     <Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(MonoGameBinDir)"/>
     <Copy SourceFiles="$(BinDir)nhdat;$(BinDir)nh340key.dll;$(BinDir)nhdefkey.dll;$(BinDir)nhraykey.dll;$(BinDir)recover.exe" DestinationFolder="$(MonoGameBinDir)"/>
-    <Copy SourceFiles="$(FmodDir)core\lib\winnt-x86\fmod.dll;$(FmodDir)fsbank\lib\winnt-x86\fsbank.dll;$(FmodDir)fsbank\lib\winnt-x86\libfsbvorbis.dll;$(FmodDir)studio\lib\winnt-x86\fmodstudio.dll;" DestinationFolder="$(MonoGameBinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(FmodDir)core\lib\winnt-x64\fmod.dll;$(FmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(FmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(FmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(MonoGameBinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <Copy SourceFiles="$(SdlDir)lib\winnt-x86\SDL2.dll;" DestinationFolder="$(MonoGameBinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(SdlDir)lib\winnt-x64\SDL2.dll;" DestinationFolder="$(MonoGameBinDir)" Condition=" '$(Platform)' == 'x64' "/>
 
-    <Copy SourceFiles="$(MonoGameBinDir)libgnollhack.dll" DestinationFolder="$(GnollHackServerBinDir)"/>
     <Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(GnollHackServerBinDir)"/>
     <Copy SourceFiles="$(BinDir)nhdat;$(BinDir)nh340key.dll;$(BinDir)nhdefkey.dll;$(BinDir)nhraykey.dll;$(BinDir)recover.exe" DestinationFolder="$(GnollHackServerBinDir)"/>
+
+    <Copy SourceFiles="$(GnollHackServerBinDir)libgnollhack.dll" DestinationFolder="$(MonoGameBinDir)"/>
+    <Copy SourceFiles="$(GnollHackServerBinDir)libgnollhack.exp" DestinationFolder="$(MonoGameBinDir)"/>
+    <Copy SourceFiles="$(GnollHackServerBinDir)libgnollhack.ilk" DestinationFolder="$(MonoGameBinDir)"/>
+    <Copy SourceFiles="$(GnollHackServerBinDir)libgnollhack.lib" DestinationFolder="$(MonoGameBinDir)"/>
+
   </Target>
   <Target Name="Clean">
     <Delete Files="$(MonoGameBinDir)defaults.gnh;$(MonoGameBinDir)Guidebook.txt;$(MonoGameBinDir)license;$(MonoGameBinDir)credits;$(MonoGameBinDir)sysconf;$(MonoGameBinDir)nethack.txt;$(MonoGameBinDir)symbols;$(MonoGameBinDir)record;$(MonoGameBinDir)opthelp"/>

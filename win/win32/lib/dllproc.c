@@ -139,6 +139,7 @@ init_nhwindows(int* argcp, char** argv)
 
 #define DLL_MAX_LOADSTRING 100
 
+
 void
 dll_init_nhwindows(int *argc, char **argv)
 {
