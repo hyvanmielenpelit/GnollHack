@@ -781,6 +781,7 @@ doability(VOID_ARGS)
     {
         strcpy(available_ability_list[abilitynum].name, "Polymorphed form");
         available_ability_list[abilitynum].function_ptr = &dopolyformstatistics;
+        available_ability_list[abilitynum].target_mtmp = 0;
 
         any = zeroany;
         any.a_int = abilitynum + 1;
@@ -801,6 +802,7 @@ doability(VOID_ARGS)
 	/* Ride */
 	strcpy(available_ability_list[abilitynum].name, "Ride");
 	available_ability_list[abilitynum].function_ptr = &doride;
+    available_ability_list[abilitynum].target_mtmp = 0;
 
 	any = zeroany;
     any.a_int = abilitynum + 1;
@@ -814,6 +816,7 @@ doability(VOID_ARGS)
 	/* Untrap */
 	strcpy(available_ability_list[abilitynum].name, "Untrap");
 	available_ability_list[abilitynum].function_ptr = &dountrap;
+    available_ability_list[abilitynum].target_mtmp = 0;
 
 	any = zeroany;
     any.a_int = abilitynum + 1;
@@ -850,6 +853,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Use breath weapon");
 			available_ability_list[abilitynum].function_ptr = &dobreathe;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -865,6 +869,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Spit");
 			available_ability_list[abilitynum].function_ptr = &dospit;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -880,6 +885,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Remove chained items");
 			available_ability_list[abilitynum].function_ptr = &doremove;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -897,7 +903,7 @@ doability(VOID_ARGS)
 			Sprintf(gazebuf, "Gaze%s", youmonst.data->mlet == S_EYE ? " with central eye" : "");
 			strcpy(available_ability_list[abilitynum].name, gazebuf);
 			available_ability_list[abilitynum].function_ptr = &dogaze;
-
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -913,6 +919,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Gaze with one or more eyestalks");
 			available_ability_list[abilitynum].function_ptr = &doeyestalk;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -928,6 +935,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Summon monsters");
 			available_ability_list[abilitynum].function_ptr = &dosummon;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -943,6 +951,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Spin web");
 			available_ability_list[abilitynum].function_ptr = &dospinweb;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -958,6 +967,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Hide");
 			available_ability_list[abilitynum].function_ptr = &dohide;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -973,6 +983,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Project a mind blast");
 			available_ability_list[abilitynum].function_ptr = &domindblast;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -988,6 +999,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Dry a fountain");
 			available_ability_list[abilitynum].function_ptr = &dodryfountain;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -1003,6 +1015,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Use your horn");
 			available_ability_list[abilitynum].function_ptr = &douseunicornhorn;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -1018,6 +1031,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Shriek");
 			available_ability_list[abilitynum].function_ptr = &doshriek;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -1033,6 +1047,7 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Assume another form");
 			available_ability_list[abilitynum].function_ptr = &dopoly;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -1048,6 +1063,7 @@ doability(VOID_ARGS)
 		{
 			Sprintf(available_ability_list[abilitynum].name, "%s an egg", eggs_in_water(youmonst.data) ? "Spawn" : "Lay");
 			available_ability_list[abilitynum].function_ptr = &dolayegg;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
 			any = zeroany;
             any.a_int = abilitynum + 1;
@@ -1079,6 +1095,7 @@ doability(VOID_ARGS)
                 strcpy(available_ability_list[abilitynum].name, "Command steed to use breath weapon");
 
             available_ability_list[abilitynum].function_ptr = &dosteedbreathe;
+            available_ability_list[abilitynum].target_mtmp = 0;
 
             any = zeroany;
             any.a_int = abilitynum + 1;
