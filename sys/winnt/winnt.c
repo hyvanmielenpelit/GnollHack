@@ -521,7 +521,11 @@ int code;
     }
     if (getreturn_enabled)
         wait_synch();
+#ifdef EXIT_THREAD_ON_EXIT
+    ExitThread(code);
+#else
     exit(code);
+#endif
 }
 
 #undef kbhit

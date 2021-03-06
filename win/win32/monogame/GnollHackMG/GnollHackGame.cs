@@ -11,6 +11,8 @@ using System.Text.Encodings.Web;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.IO;
+using System.Threading;
+using System.Diagnostics;
 
 namespace GnollHackMG
 {
@@ -24,6 +26,7 @@ namespace GnollHackMG
         private string _message = "";
         private string _message2 = "";
         private string _accessToken = "MyAccessToken";
+        private Thread _gnhthread;
 
         /* General */
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -189,6 +192,7 @@ namespace GnollHackMG
         public static extern int DoSomeCalc2();
 
 
+
         public GnollHackGame()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -220,6 +224,7 @@ namespace GnollHackMG
                 _message2 = message;
             });
         }
+
 
         protected override void Initialize()
         {
@@ -294,10 +299,8 @@ namespace GnollHackMG
             base.Draw(gameTime);
         }
 
-        protected override void BeginRun()
+        protected void GNHThreadProc()
         {
-            base.BeginRun();
-
             if (1 == 1)
             {
                 RunGnollHack(
@@ -377,13 +380,23 @@ namespace GnollHackMG
                     MG_BooleanIntDoubleVoidPtrDummy,
                     MG_BooleanVoidPtrDummy,
                     MG_BooleanDoubleVoidPtrDummy,
-                    MG_VoidIntDummy,
+                    MG_ExitHack,
                     MG_GetCwd,
                     MG_MessageBox,
                     MG_VoidIntDummy,
                     MG_VoidIntDummy
                 );
             }
+        }
+        protected override void BeginRun()
+        {
+            base.BeginRun();
+
+            Thread t = new Thread(GNHThreadProc);
+            _gnhthread = t;
+            t.Start();
+            Debug.WriteLine("Thread started");
+
         }
 
 
@@ -396,6 +409,11 @@ namespace GnollHackMG
         protected string MG_AskName()
         {
             return "Janne Test";
+        }
+
+        protected void MG_ExitHack(int status)
+        {
+            Debug.WriteLine("ExitHack called");
         }
 
         /*

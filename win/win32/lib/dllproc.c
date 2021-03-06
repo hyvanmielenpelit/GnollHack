@@ -2826,13 +2826,15 @@ dll_init_platform(VOID_ARGS)
 void
 dll_exit_platform(int status)
 {
-    gnollhack_exit(status);
+
 }
 
 void
 dll_exit_hack(int status)
 {
     dll_exit_platform(status);
+    dll_callbacks.callback_exit_hack(status);
+    gnollhack_exit(status);
 }
 
 
