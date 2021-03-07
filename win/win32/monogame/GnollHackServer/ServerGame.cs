@@ -190,11 +190,11 @@ namespace GnollHackServer
         private Thread _gnhthread;
         private ServerGameCenter _serverGameCenter;
 
-        public ServerGame(ServerGameCenter serverGameCenter)
+        public ServerGame()
         {
             Thread t = new Thread(new ThreadStart(GNHThreadProc));
             _gnhthread = t;
-            _serverGameCenter = serverGameCenter;
+            _serverGameCenter = ServerGameCenter.Instance;
         }
         public void StartGame()
         {

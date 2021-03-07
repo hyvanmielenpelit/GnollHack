@@ -38,7 +38,7 @@ namespace GnollHackServer
 
         public void AddNewGame()
         {
-            ServerGame newgame = new ServerGame(this);
+            ServerGame newgame = new ServerGame();
             /*
             var games = new List<ServerGame>
             {
