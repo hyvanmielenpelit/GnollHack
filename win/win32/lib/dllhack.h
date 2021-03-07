@@ -127,4 +127,8 @@ DLL int RunGnollHack(
     OutRipEndCallback callback_outrip_end
 );
 
+DLL int RunGnollHackSimple(
+    unsigned long wincap1,
+    unsigned long wincap2);
+
 #endif //DLLHACK_H

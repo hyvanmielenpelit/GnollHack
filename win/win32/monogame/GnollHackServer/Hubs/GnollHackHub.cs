@@ -7,20 +7,41 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System.Runtime.InteropServices;
 
-
 namespace GnollHackServer.Hubs
 {
     public class GnollHackHub : Hub
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ServerGameCenter _serverGameCenter;
+
         [DllImport(@"libgnollhack.dll", CharSet = CharSet.Unicode)]
         public static extern int DoSomeCalc2();
 
-        public GnollHackHub(SignInManager<IdentityUser> signInManager)
+        /*
+        public GnollHackHub()
         {
-            _signInManager = signInManager;
+
+        }
+        */
+        public GnollHackHub(IHubContext<GnollHackHub> hubContext)
+        {
+            _serverGameCenter = ServerGameCenter.Instance;
+            _serverGameCenter.InitializeHubContext(hubContext);
         }
 
+        /*
+        public GnollHackHub(IHubContext<GnollHackHub> hubContext) : this(hubContext, ServerGameCenter.Instance) { }
+
+        public GnollHackHub(IHubContext<GnollHackHub> hubContext, ServerGameCenter serverGameCenter)
+        {
+            _serverGameCenter = serverGameCenter;
+            _serverGameCenter.InitializeHubContext(hubContext);
+        }
+
+        public IEnumerable<ServerGame> GetAllServerGames()
+        {
+            return _serverGameCenter.GetAllServerGames();
+        }
+        */
         public async Task SendMessage(string user, string message)
         {
             //Arg1 function
@@ -33,6 +54,14 @@ namespace GnollHackServer.Hubs
             //Arg1 function
             //Arg2 and later can be any object
             await Clients.Caller.SendAsync("CalcResult", result);
+        }
+        public async Task AddNewServerGame()
+        {
+            int result = 1;
+            _serverGameCenter.AddNewGame();
+            //Arg1 function
+            //Arg2 and later can be any object
+            await Clients.Caller.SendAsync("AddNewGameResult", result);
         }
 
     }

@@ -196,3 +196,14 @@ DLL int WINAPI RunGnollHack(
     /* Start GnollHack by calling main */
     return GnollHackStart();
 }
+
+DLL int WINAPI RunGnollHackSimple(
+    unsigned long wincap1,
+    unsigned long wincap2)
+{
+    /* Set wincaps */
+    set_dll_wincaps(wincap1, wincap2);
+
+    return GnollHackStart();
+}
+

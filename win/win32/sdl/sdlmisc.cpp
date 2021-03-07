@@ -44,18 +44,6 @@
 
 extern "C"
 {
-
-    static void
-    die(const char* fmt, ...)
-    {
-        va_list ap;
-        va_start(ap, fmt);
-        vfprintf(stderr, fmt, ap);
-        va_end(ap);
-        fputs("\n", stderr);
-        exit(EXIT_FAILURE);
-    }
-
 #ifdef GL2_GRAPHICS
     GLuint
     gl2_image_load_from_resource(HINSTANCE hInstance, int resource_id, int *x_ptr, int *y_ptr, size_t *n_ptr)
@@ -84,7 +72,7 @@ extern "C"
         data = stbi_load_from_memory((stbi_uc const*)pResourceData, imageSize, x_ptr, y_ptr, &comps, STBI_rgb_alpha);
 
         if (!data) 
-            die("failed to load image form memory");
+            return 0;
 
         size_t memsize = (size_t)(*x_ptr * *y_ptr * STBI_rgb_alpha);
         *n_ptr = memsize;
@@ -113,7 +101,8 @@ extern "C"
         int comps;
         unsigned char* data = stbi_load(filename, x_ptr, y_ptr, &comps, STBI_rgb_alpha);
         *n_ptr = (size_t )(*x_ptr * *y_ptr * STBI_rgb_alpha);
-        if (!data) die("failed to load image: %s", filename);
+        if (!data) 
+            return 0;
 
         glGenTextures(1, &tex);
         glBindTexture(GL_TEXTURE_2D, tex);

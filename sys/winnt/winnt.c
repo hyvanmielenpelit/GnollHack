@@ -72,6 +72,18 @@ switchar()
     return '-';
 }
 
+
+void
+appropriate_exit(code)
+int code;
+{
+#ifdef EXIT_THREAD_ON_EXIT
+    ExitThread(code);
+#else
+    exit(code);
+#endif
+}
+
 long
 freediskspace(path)
 char *path;
@@ -234,7 +246,11 @@ VA_DECL(const char *, s)
         raw_printf(buf);
     }
     VA_END();
+#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
+    appropriate_exit(EXIT_FAILURE);
+#else
     exit(EXIT_FAILURE);
+#endif
 }
 
 void
@@ -521,11 +537,8 @@ int code;
     }
     if (getreturn_enabled)
         wait_synch();
-#ifdef EXIT_THREAD_ON_EXIT
-    ExitThread(code);
-#else
-    exit(code);
-#endif
+
+    appropriate_exit(code);
 }
 
 #undef kbhit

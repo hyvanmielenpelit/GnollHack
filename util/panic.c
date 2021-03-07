@@ -17,6 +17,9 @@
 #ifdef VMS
 extern void NDECL(vms_abort);
 #endif
+#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
+extern void FDECL(appropriate_exit, (int));
+#endif
 
 /*VARARGS1*/
 boolean panicking;
@@ -43,7 +46,12 @@ VA_DECL(const char *, str)
         abort(); /* generate core dump */
 #endif
     VA_END();
-    exit(EXIT_FAILURE); /* redundant */
+
+#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
+    appropriate_exit(EXIT_FAILURE);
+#else
+    exit(EXIT_FAILURE);
+#endif
 }
 
 #ifdef ALLOCA_HACK

@@ -47,7 +47,7 @@ void win10_init()
 
         gWin10.Valid = TRUE;
     }
-
+#ifndef DLL_GRAPHICS
     if (gWin10.Valid) {
 		if (!gWin10.AreDpiAwarenessContextsEqual(
 			gWin10.GetThreadDpiAwarenessContext(),
@@ -57,7 +57,7 @@ void win10_init()
 			return;
 		}
     }
-
+#endif
 }
 
 int win10_monitor_dpi(HWND hWnd)

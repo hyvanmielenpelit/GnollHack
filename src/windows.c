@@ -69,6 +69,10 @@ extern void FDECL(trace_procs_init, (int));
 extern void *FDECL(trace_procs_chain, (int, int, void *, void *, void *));
 #endif
 
+#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
+extern void FDECL(appropriate_exit, (int));
+#endif
+
 STATIC_DCL void FDECL(def_raw_print, (const char *s));
 STATIC_DCL void NDECL(def_wait_synch);
 
@@ -503,7 +507,11 @@ commit_windowchain()
     p->wincp = win_choices_find("-chainin");
     if (!p->wincp) {
         raw_printf("Can't locate processor '-chainin'");
+#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
+        appropriate_exit(EXIT_FAILURE);
+#else
         exit(EXIT_FAILURE);
+#endif
     }
     wl_addhead(p);
 
@@ -511,7 +519,11 @@ commit_windowchain()
     p->wincp = win_choices_find("-chainout");
     if (!p->wincp) {
         raw_printf("Can't locate processor '-chainout'");
+#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
+        appropriate_exit(EXIT_FAILURE);
+#else
         exit(EXIT_FAILURE);
+#endif
     }
     wl_addtail(p);
 
