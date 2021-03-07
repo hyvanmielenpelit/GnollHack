@@ -134,8 +134,14 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 		dir = nh_getenv("NETHACKDIR");
 	if (dir == (char *) 0)
         dir = nh_getenv("HACKDIR");
+#ifdef GNOLLHACK_SERVER
     if (dir == (char *) 0)
+        dir = orgdir;
+#else
+    if (dir == (char*)0)
         dir = exepath(argv[0]);
+#endif
+
 #ifdef _MSC_VER
     if (IsDebuggerPresent())
 	{

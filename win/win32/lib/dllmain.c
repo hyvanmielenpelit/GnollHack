@@ -207,3 +207,18 @@ DLL int WINAPI RunGnollHackSimple(
     return GnollHackStart();
 }
 
+DLL int WINAPI RunGnollHackSimple2(
+    unsigned long wincap1,
+    unsigned long wincap2,
+    InitWindowsCallback callback_init_nhwindows
+    )
+{
+    /* Set wincaps */
+    set_dll_wincaps(wincap1, wincap2);
+
+    /* Set callback function pointers here */
+    dll_callbacks.callback_init_nhwindows = callback_init_nhwindows;
+
+    return GnollHackStart();
+}
+

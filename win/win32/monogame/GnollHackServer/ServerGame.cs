@@ -172,7 +172,13 @@ namespace GnollHackServer
             UInt32 wincaps2
         );
 
-[DllImport(@"libgnollhack.dll")]
+        [DllImport(@"libgnollhack.dll")]
+        public static extern int RunGnollHackSimple2(
+            UInt32 wincaps1,
+            UInt32 wincaps2,
+            VoidVoidCallback callback_init_nhwindows);
+
+        [DllImport(@"libgnollhack.dll")]
         public static extern byte dll_validrole(int role);
 
         [DllImport(@"libgnollhack.dll")]
@@ -195,9 +201,12 @@ namespace GnollHackServer
         protected void GNHThreadProc()
         {
             int res = DoSomeCalc2();
-            RunGnollHackSimple(0, 0);
+            //RunGnollHackSimple2(0, 0, MG_InitWindows);
 
-            if(0==1)
+            string curdir = Directory.GetCurrentDirectory() + "\\..\\..\\..\\..\\bin\\Debug\\Server\\netcoreapp3.1";
+            Directory.SetCurrentDirectory(curdir);
+//            System.Environment.SetEnvironmentVariable("GNOLLHACKDIR", curdir, EnvironmentVariableTarget.Process);
+
             RunGnollHack(
                 0,
                 0,

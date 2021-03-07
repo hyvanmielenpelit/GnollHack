@@ -128,7 +128,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;TILES;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;EXIT_THREAD_ON_EXIT;GNOLLHACK_MAIN_PROGRAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;TILES;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;EXIT_THREAD_ON_EXIT;GNOLLHACK_MAIN_PROGRAM;GNOLLHACK_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -148,7 +148,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;TILES;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;EXIT_THREAD_ON_EXIT;GNOLLHACK_MAIN_PROGRAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;TILES;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;EXIT_THREAD_ON_EXIT;GNOLLHACK_MAIN_PROGRAM;GNOLLHACK_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>..\lib\pch.h</PrecompiledHeaderFile>

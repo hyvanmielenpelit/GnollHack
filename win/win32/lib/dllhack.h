@@ -131,4 +131,9 @@ DLL int RunGnollHackSimple(
     unsigned long wincap1,
     unsigned long wincap2);
 
+DLL int RunGnollHackSimple2(
+    unsigned long wincap1,
+    unsigned long wincap2,
+    InitWindowsCallback callback_init_nhwindows);
+
 #endif //DLLHACK_H
