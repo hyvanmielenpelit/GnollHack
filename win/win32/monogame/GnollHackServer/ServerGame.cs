@@ -212,7 +212,7 @@ namespace GnollHackServer
         protected void GNHThreadProc()
         {
             int res = DoSomeCalc2();
-            //RunGnollHackSimple2(0, 0, MG_InitWindows);
+            //RunGnollHackSimple2(0, 0, GameCallback_InitWindows);
 
             //Thread.Sleep(5000);
 
@@ -223,102 +223,110 @@ namespace GnollHackServer
             RunGnollHack(
                 0,
                 0,
-                MG_InitWindows,
-                MG_IntVoidDummy,
-                MG_AskName,
-                MG_VoidVoidDummy,
-                MG_VoidConstCharDummy,
-                MG_VoidConstCharDummy,
-                MG_VoidVoidDummy,
-                MG_IntIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntBooleanDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntIntIntDummy,
-                MG_VoidIntIntConstCharIntDummy,
-                MG_VoidIntIntConstCharDummy,
-                MG_VoidConstCharBooleanDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntIntConstCharDummy,
-                MG_IntIntIntVoidPtrDummy,
-                MG_VoidIntDummy, /* no need for X-specific handling */
-                MG_VoidVoidDummy,
-                MG_VoidVoidDummy,
-                MG_VoidVoidDummy,
+                GameCallback_InitWindows,
+                GameCallback_PlayerSelection,
+                GameCallback_AskName,
+                GameCallback_VoidVoidDummy,
+                GameCallback_VoidConstCharDummy,
+                GameCallback_VoidConstCharDummy,
+                GameCallback_VoidVoidDummy,
+                GameCallback_IntIntDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_VoidIntBooleanDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_VoidIntIntIntDummy,
+                GameCallback_VoidIntIntConstCharIntDummy,
+                GameCallback_VoidIntIntConstCharDummy,
+                GameCallback_VoidConstCharBooleanDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_VoidIntIntConstCharDummy,
+                GameCallback_IntIntIntVoidPtrDummy,
+                GameCallback_VoidIntDummy, /* no need for X-specific handling */
+                GameCallback_VoidVoidDummy,
+                GameCallback_VoidVoidDummy,
+                GameCallback_VoidVoidDummy,
                 /* If clipping is on */
-                MG_VoidIntIntDummy,
+                GameCallback_VoidIntIntDummy,
                 /* If positionbar is on */
-                MG_VoidCharDummy,
-                MG_VoidIntIntIntIntIntDummy,
-                MG_VoidConstCharDummy,
-                MG_VoidConstCharDummy,
-                MG_IntVoidDummy,
-                MG_IntIntPtrIntPtrIntPtrDummy,
-                MG_VoidVoidDummy,
-                MG_IntVoidDummy,
-                MG_CharConstCharPtrConstCharPtrCharDummy,
-                MG_VoidConstCharPtrCharPtrDummy,
-                MG_IntVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
+                GameCallback_VoidCharDummy,
+                GameCallback_VoidIntIntIntIntIntDummy,
+                GameCallback_VoidConstCharDummy,
+                GameCallback_VoidConstCharDummy,
+                GameCallback_IntVoidDummy,
+                GameCallback_IntIntPtrIntPtrIntPtrDummy,
+                GameCallback_VoidVoidDummy,
+                GameCallback_IntVoidDummy,
+                GameCallback_CharConstCharPtrConstCharPtrCharDummy,
+                GameCallback_VoidConstCharPtrCharPtrDummy,
+                GameCallback_IntVoidDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_VoidVoidDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_VoidIntDummy,
 
-                MG_VoidVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy,
-                MG_CharVoidDummy,
+                GameCallback_VoidVoidDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_CharVoidDummy,
 
-                MG_VoidVoidDummy,
-                MG_VoidVoidDummy,
-                MG_VoidIntDummy,
-                MG_VoidConstCharDummy,
-                MG_CharPtrBooleanDummy,
-                MG_VoidConstCharBooleanDummy,
-                MG_VoidVoidDummy,
-                MG_VoidVoidDummy,
-                MG_VoidIntConstCharPtrConstCharPtrBooleanDummy,
-                MG_VoidIntIntPtrIntIntIntUlongPtrDummy,
-                MG_BooleanVoidDummy,
-                MG_VoidVoidDummy,
-                MG_VoidUlongDummy,
-                MG_VoidIntDummy,
-                MG_BooleanVoidDummy,
-                MG_BooleanIntDoubleDummy,
-                MG_BooleanIntDoubleDummy,
-                MG_BooleanIntDoubleDummy,
-                MG_BooleanDoubleDummy,
-                MG_BooleanDoubleDummy,
-                MG_BooleanDoubleDummy,
-                MG_BooleanDoubleDummy,
-                MG_BooleanDoubleDoubleDoubleDoubleDoubleDummy,
-                MG_BooleanIntDoubleVoidPtrDummy,
-                MG_BooleanVoidPtrDummy,
-                MG_BooleanDoubleVoidPtrDummy,
-                MG_ExitHack,
-                MG_GetCwd,
-                MG_MessageBox,
-                MG_VoidIntDummy,
-                MG_VoidIntDummy
+                GameCallback_VoidVoidDummy,
+                GameCallback_VoidVoidDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_VoidConstCharDummy,
+                GameCallback_CharPtrBooleanDummy,
+                GameCallback_VoidConstCharBooleanDummy,
+                GameCallback_VoidVoidDummy,
+                GameCallback_VoidVoidDummy,
+                GameCallback_VoidIntConstCharPtrConstCharPtrBooleanDummy,
+                GameCallback_VoidIntIntPtrIntIntIntUlongPtrDummy,
+                GameCallback_BooleanVoidDummy,
+                GameCallback_VoidVoidDummy,
+                GameCallback_VoidUlongDummy,
+                GameCallback_VoidIntDummy,
+                GameCallback_BooleanVoidDummy,
+                GameCallback_BooleanIntDoubleDummy,
+                GameCallback_BooleanIntDoubleDummy,
+                GameCallback_BooleanIntDoubleDummy,
+                GameCallback_BooleanDoubleDummy,
+                GameCallback_BooleanDoubleDummy,
+                GameCallback_BooleanDoubleDummy,
+                GameCallback_BooleanDoubleDummy,
+                GameCallback_BooleanDoubleDoubleDoubleDoubleDoubleDummy,
+                GameCallback_BooleanIntDoubleVoidPtrDummy,
+                GameCallback_BooleanVoidPtrDummy,
+                GameCallback_BooleanDoubleVoidPtrDummy,
+                GameCallback_ExitHack,
+                GameCallback_GetCwd,
+                GameCallback_MessageBox,
+                GameCallback_VoidIntDummy,
+                GameCallback_VoidIntDummy
             );
         }
 
-        protected void MG_InitWindows()
+        protected void GameCallback_InitWindows()
         {
-
+            Debug.WriteLine("GameCallback_InitWindows");
+        }
+        protected int GameCallback_PlayerSelection()
+        {
+            Debug.WriteLine("GameCallback_PlayerSelection");
+            _serverGameCenter.ServerCenter_PlayerSelection(this);
+            System.Threading.Thread.Sleep(3000);
+            return 1;
         }
 
 
-        protected string MG_AskName()
+        protected string GameCallback_AskName()
         {
+            Debug.WriteLine("GameCallback_AskName");
             return "Janne Test";
         }
 
-        protected void MG_ExitHack(int status)
+        protected void GameCallback_ExitHack(int status)
         {
-            Debug.WriteLine("ExitHack called");
+            Debug.WriteLine("GameCallback_ExitHack");
             _serverGameCenter.ServerCenter_ExitHack(this, status);
         }
 
@@ -337,136 +345,136 @@ namespace GnollHackServer
         typedef int (__stdcall* IntVoidCallback) ();
         typedef int (__stdcall* BooleanVoidCallback) ();
          */
-        protected void MG_VoidVoidDummy()
+        protected void GameCallback_VoidVoidDummy()
         {
 
         }
-        protected void MG_VoidCharDummy(string value)
+        protected void GameCallback_VoidCharDummy(string value)
         {
 
         }
-        protected void MG_VoidConstCharDummy(string value)
+        protected void GameCallback_VoidConstCharDummy(string value)
         {
 
         }
-        protected int MG_IntIntDummy(int value1)
+        protected int GameCallback_IntIntDummy(int value1)
         {
             return 0;
         }
-        protected void MG_VoidIntDummy(int value1)
+        protected void GameCallback_VoidIntDummy(int value1)
         {
 
         }
-        protected void MG_VoidIntIntDummy(int value1, int value2)
+        protected void GameCallback_VoidIntIntDummy(int value1, int value2)
         {
 
         }
-        protected void MG_VoidIntIntIntDummy(int value1, int value2, int value3)
+        protected void GameCallback_VoidIntIntIntDummy(int value1, int value2, int value3)
         {
 
         }
-        protected void MG_VoidIntBooleanDummy(int value1, byte value2)
+        protected void GameCallback_VoidIntBooleanDummy(int value1, byte value2)
         {
 
         }
-        protected void MG_VoidIntCharDummy(int value1, string value2)
+        protected void GameCallback_VoidIntCharDummy(int value1, string value2)
         {
 
         }
-        protected void MG_VoidIntIntConstCharDummy(int value1, int value2, string value3)
+        protected void GameCallback_VoidIntIntConstCharDummy(int value1, int value2, string value3)
         {
 
         }
-        protected void MG_VoidIntIntConstCharIntDummy(int value1, int value2, string value3, int value4)
+        protected void GameCallback_VoidIntIntConstCharIntDummy(int value1, int value2, string value3, int value4)
         {
 
         }
-        protected void MG_VoidConstCharIntDummy(string value1, int value2)
+        protected void GameCallback_VoidConstCharIntDummy(string value1, int value2)
         {
 
         }
-        protected void MG_VoidConstCharBooleanDummy(string value1, byte value2)
+        protected void GameCallback_VoidConstCharBooleanDummy(string value1, byte value2)
         {
 
         }
-        protected int MG_IntVoidDummy()
+        protected int GameCallback_IntVoidDummy()
         {
             return 0;
         }
-        protected byte MG_BooleanVoidDummy()
+        protected byte GameCallback_BooleanVoidDummy()
         {
             return 0;
         }
 
-        protected string MG_GetCwd()
+        protected string GameCallback_GetCwd()
         {
             return Directory.GetCurrentDirectory();
         }
-        protected int MG_MessageBox(string text, string title, uint type)
+        protected int GameCallback_MessageBox(string text, string title, uint type)
         {
             return 1;
         }
-        protected int MG_IntIntIntVoidPtrDummy(int value1, int value2, IntPtr value3)
+        protected int GameCallback_IntIntIntVoidPtrDummy(int value1, int value2, IntPtr value3)
         {
             return 0;
         }
-        protected int MG_IntIntPtrIntPtrIntPtrDummy(ref int value1, ref int value2, ref int value3)
+        protected int GameCallback_IntIntPtrIntPtrIntPtrDummy(ref int value1, ref int value2, ref int value3)
         {
             return 0;
         }
-        protected void MG_VoidIntIntPtrIntIntIntUlongPtrDummy(int value1, ref int value2, int value3, int value4, int value5, ref UInt32 value6)
+        protected void GameCallback_VoidIntIntPtrIntIntIntUlongPtrDummy(int value1, ref int value2, int value3, int value4, int value5, ref UInt32 value6)
         {
             return;
         }
-        protected void MG_VoidUlongDummy(UInt32 value1)
+        protected void GameCallback_VoidUlongDummy(UInt32 value1)
         {
 
         }
-        protected byte MG_BooleanIntDoubleDummy(int value1, double value2)
+        protected byte GameCallback_BooleanIntDoubleDummy(int value1, double value2)
         {
             return 0;
         }
-        protected byte MG_BooleanDoubleDummy(double value1)
+        protected byte GameCallback_BooleanDoubleDummy(double value1)
         {
             return 0;
         }
-        protected byte MG_BooleanDoubleDoubleDoubleDoubleDoubleDummy(double value1, double value2, double value3, double value4, double value5)
+        protected byte GameCallback_BooleanDoubleDoubleDoubleDoubleDoubleDummy(double value1, double value2, double value3, double value4, double value5)
         {
             return 0;
         }
-        protected byte MG_BooleanIntDoubleVoidPtrDummy(int value1, double value2, IntPtr value3)
+        protected byte GameCallback_BooleanIntDoubleVoidPtrDummy(int value1, double value2, IntPtr value3)
         {
             return 0;
         }
-        protected byte MG_BooleanDoubleVoidPtrDummy(double value1, IntPtr value2)
+        protected byte GameCallback_BooleanDoubleVoidPtrDummy(double value1, IntPtr value2)
         {
             return 0;
         }
-        protected byte MG_BooleanVoidPtrDummy(IntPtr value1)
+        protected byte GameCallback_BooleanVoidPtrDummy(IntPtr value1)
         {
             return 0;
         }
-        protected sbyte MG_CharConstCharPtrConstCharPtrCharDummy(string value1, string value2, sbyte value3)
+        protected sbyte GameCallback_CharConstCharPtrConstCharPtrCharDummy(string value1, string value2, sbyte value3)
         {
             return 0;
         }
-        protected void MG_VoidConstCharPtrCharPtrDummy(string value1, string value2)
+        protected void GameCallback_VoidConstCharPtrCharPtrDummy(string value1, string value2)
         {
             return;
         }
-        protected string MG_CharPtrBooleanDummy(byte value1)
+        protected string GameCallback_CharPtrBooleanDummy(byte value1)
         {
             return "message here";
         }
-        protected string MG_CharVoidDummy()
+        protected string GameCallback_CharVoidDummy()
         {
             return "";
         }
-        protected void MG_VoidIntIntIntIntIntDummy(int value1, int value2, int value3, int value4, int value5)
+        protected void GameCallback_VoidIntIntIntIntIntDummy(int value1, int value2, int value3, int value4, int value5)
         {
             return;
         }
-        protected void MG_VoidIntConstCharPtrConstCharPtrBooleanDummy(int value1, string value2, string value3, byte value4)
+        protected void GameCallback_VoidIntConstCharPtrConstCharPtrBooleanDummy(int value1, string value2, string value3, byte value4)
         {
             return;
         }

@@ -124,7 +124,9 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_suspend_nhwindows = callback_suspend_nhwindows;
     dll_callbacks.callback_resume_nhwindows = callback_resume_nhwindows;
     dll_callbacks.callback_create_nhwindow = callback_create_nhwindow;
+    dll_callbacks.callback_clear_nhwindow = callback_clear_nhwindow;
     dll_callbacks.callback_display_nhwindow = callback_display_nhwindow;
+    dll_callbacks.callback_destroy_nhwindow = callback_destroy_nhwindow;
     dll_callbacks.callback_display_file = callback_display_file;
     dll_callbacks.callback_curs = callback_curs;
     dll_callbacks.callback_putstr_ex = callback_putstr_ex;

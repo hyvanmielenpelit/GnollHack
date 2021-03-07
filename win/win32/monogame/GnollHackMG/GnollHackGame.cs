@@ -247,6 +247,10 @@ namespace GnollHackMG
             {
                 _message5 = "ExitHack: Hash: " + hash +", Status: " + status;
             });
+            connection.On<int>("Client_PlayerSelection", (hash) =>
+            {
+                _message5 = "PlayerSelection: Hash: " + hash;
+            });
         }
 
 

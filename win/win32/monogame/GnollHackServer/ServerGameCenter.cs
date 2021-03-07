@@ -94,7 +94,6 @@ namespace GnollHackServer
         {
             return true;
         }
-
         private async void BroadcastServerGameState(ServerGame serverGame)
         {
             await Clients.All.SendAsync("GameAliveResult", serverGame.IsGameAlive()); //.All.updateStockPrice(stock);
@@ -102,7 +101,11 @@ namespace GnollHackServer
 
         public async void ServerCenter_ExitHack(ServerGame serverGame, int status)
         {
-            await Clients.All.SendAsync("Client_ExitHack", serverGame.GetHashCode(), status); //.All.updateStockPrice(stock);
+            await Clients.All.SendAsync("Client_ExitHack", serverGame.GetHashCode(), status);
+        }
+        public async void ServerCenter_PlayerSelection(ServerGame serverGame)
+        {
+            await Clients.All.SendAsync("Client_PlayerSelection", serverGame.GetHashCode());
         }
     }
 }
