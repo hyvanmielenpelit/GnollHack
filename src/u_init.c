@@ -1747,18 +1747,16 @@ register struct trobj *trop;
 		if (objects[otyp].oc_enchantable && obj->enchantment <= 0)
 			obj->enchantment = rne(3);
 
-		/* Don't start with exceptional non-artifact weapons */
-		if (can_have_exceptionality(obj) && obj->oartifact == 0 && obj->exceptionality > EXCEPTIONALITY_NORMAL)
-			obj->enchantment = EXCEPTIONALITY_NORMAL;
-
-        if (urace.monsternum != PM_HUMAN) {
+        if (urace.monsternum != PM_HUMAN) 
+		{
             /* substitute race-specific items; this used to be in
                the 'if (otyp != UNDEF_TYP) { }' block above, but then
                substitutions didn't occur for randomly generated items
                (particularly food) which have racial substitutes */
             for (int i = 0; inv_subs[i].race_pm != NON_PM; ++i)
 				if (inv_subs[i].race_pm == urace.monsternum
-					&& otyp == inv_subs[i].item_otyp) {
+					&& otyp == inv_subs[i].item_otyp)
+				{
 					debugpline3("ini_inv: substituting %s for %s%s",
 						OBJ_NAME(objects[inv_subs[i].subs_otyp]),
 						(trop->trotyp == UNDEF_TYP) ? "random " : "",
@@ -1990,26 +1988,38 @@ register struct trobj *trop;
 			}
 		}
 
-		if (trop->trclass == COIN_CLASS) {
+		if (trop->trclass == COIN_CLASS) 
+		{
             /* no "blessed" or "identified" money */
             obj->quan = u.umoney0;
-        } else {
+        }
+		else 
+		{
             if (objects[otyp].oc_uses_known)
                 obj->known = 1;
             obj->dknown = obj->bknown = obj->rknown = obj->nknown = 1;
-            if (Is_container(obj) || obj->otyp == STATUE) {
+            
+			if (Is_container(obj) || obj->otyp == STATUE) 
+			{
                 obj->cknown = obj->lknown = 1;
                 obj->otrapped = 0;
             }
+
             obj->cursed = 0;
-            if (obj->opoisoned && u.ualign.type != A_CHAOTIC)
+            
+			if (obj->opoisoned && u.ualign.type != A_CHAOTIC)
                 obj->opoisoned = 0;
-            if (obj->oclass == WEAPON_CLASS || obj->oclass == TOOL_CLASS) {
+           
+			if (obj->oclass == WEAPON_CLASS || obj->oclass == TOOL_CLASS) 
+			{
                 obj->quan = (long) trop->trquan;
                 trop->trquan = 1;
-            } else if (obj->oclass == GEM_CLASS && is_graystone(obj)) {
+            } 
+			else if (obj->oclass == GEM_CLASS && is_graystone(obj))
+			{
                 obj->quan = 1L;
             }
+
             if (trop->trspe != UNDEF_SPE)
                 obj->enchantment = trop->trspe;
             if (trop->trbless != UNDEF_BLESS)
@@ -2022,8 +2032,8 @@ register struct trobj *trop;
 				if(is_ammo(obj))
 					obj->quan += rnd(2);
 			}
-			if (trop->exceptionality > 0)
-				obj->exceptionality = trop->exceptionality;
+
+			obj->exceptionality = trop->exceptionality;
 		}
         /* defined after setting otyp+quan + blessedness */
         obj->owt = weight(obj);
@@ -2035,15 +2045,18 @@ register struct trobj *trop;
         if (otyp == OIL_LAMP)
             discover_object(POT_OIL, TRUE, FALSE);
 
-        if (obj->oclass == ARMOR_CLASS) {
-            if (is_shield(obj) && !uarms && !(uwep && bimanual(uwep))) {
+        if (obj->oclass == ARMOR_CLASS) 
+		{
+            if (is_shield(obj) && !uarms && !(uwep && bimanual(uwep)))
+			{
                 setwornquietly(obj, W_ARMS);
                 /* 3.6.2: this used to unset uswapwep if it was set, but
                    wearing a shield doesn't prevent having an alternate
                    weapon ready to swap with the primary; just make sure we
                    aren't two-weaponing (academic; no one starts that way) */
                 u.twoweap = FALSE;
-            } else if (is_helmet(obj) && !uarmh)
+            } 
+			else if (is_helmet(obj) && !uarmh)
                 setwornquietly(obj, W_ARMH);
             else if (is_gloves(obj) && !uarmg)
                 setwornquietly(obj, W_ARMG);
@@ -2120,7 +2133,8 @@ register struct trobj *trop;
         if (--trop->trquan)
             continue; /* make a similar object */
 #else
-        if (trop->trquan) { /* check if zero first */
+        if (trop->trquan) 
+		{ /* check if zero first */
             --trop->trquan;
             if (trop->trquan)
                 continue; /* make a similar object */
