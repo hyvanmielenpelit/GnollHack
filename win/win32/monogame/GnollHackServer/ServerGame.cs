@@ -314,7 +314,7 @@ namespace GnollHackServer
             Debug.WriteLine("GameCallback_PlayerSelection");
             _serverGameCenter.ServerCenter_PlayerSelection(this);
             System.Threading.Thread.Sleep(3000);
-            return 1;
+            return 0;
         }
 
 
