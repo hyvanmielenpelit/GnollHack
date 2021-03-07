@@ -26,6 +26,8 @@ namespace GnollHackMG
         private string _message = "";
         private string _message2 = "";
         private string _message3 = "";
+        private string _message4 = "";
+        private string _message5 = "";
         private int _result = 0;
         private int _result2 = 0;
         private string _accessToken = "MyAccessToken";
@@ -236,6 +238,15 @@ namespace GnollHackMG
             {
                 _message3 = "New Game Added: "+ result;
             });
+
+            connection.On<bool>("GameAliveResult", (result) =>
+            {
+                _message4 = "Game Alive: " + result.ToString();
+            });
+            connection.On<int, int>("Client_ExitHack", (hash, status) =>
+            {
+                _message5 = "ExitHack: Hash: " + hash +", Status: " + status;
+            });
         }
 
 
@@ -311,6 +322,9 @@ namespace GnollHackMG
             _spriteBatch.DrawString(_spriteFont, fromDLLvalue2.ToString(), new Vector2(10, 150), Color.White);
             _spriteBatch.DrawString(_spriteFont, fromDLLvalue3.ToString(), new Vector2(10, 170), Color.White);
             _spriteBatch.DrawString(_spriteFont, fromDLL2value1.ToString(), new Vector2(10, 190), Color.White);
+            _spriteBatch.DrawString(_spriteFont, _message3, new Vector2(10, 210), Color.White);
+            _spriteBatch.DrawString(_spriteFont, _message4, new Vector2(10, 230), Color.White);
+            _spriteBatch.DrawString(_spriteFont, _message5, new Vector2(10, 250), Color.White);
 
             _spriteBatch.End();
 

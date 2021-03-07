@@ -20,9 +20,13 @@ namespace GnollHackServer
 
         private readonly object _updateServerGamesLock = new object();
 
+        private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(250);
+        private readonly Timer _timer;
+        private volatile bool _updatingServerGames = false;
         private ServerGameCenter()
         {
             _serverGames.Clear();
+            _timer = new Timer(UpdateServerGames, null, _updateInterval, _updateInterval);
         }
 
         private IHubContext<GnollHackHub> _hubContext;
@@ -34,7 +38,7 @@ namespace GnollHackServer
 
         public void AddNewGame()
         {
-            ServerGame newgame = new ServerGame();
+            ServerGame newgame = new ServerGame(this);
             /*
             var games = new List<ServerGame>
             {
@@ -67,25 +71,23 @@ namespace GnollHackServer
 
         private void UpdateServerGames(object state)
         {
-            /*
-            lock (_updateStockPricesLock)
+            lock (_updateServerGamesLock)
             {
-                if (!_updatingStockPrices)
+                if (!_updatingServerGames)
                 {
-                    _updatingStockPrices = true;
+                    _updatingServerGames = true;
 
-                    foreach (var stock in _stocks.Values)
+                    foreach (var serverGame in _serverGames.Values)
                     {
-                        if (TryUpdateStockPrice(stock))
+                        if (TryUpdateServerGame(serverGame))
                         {
-                            BroadcastStockPrice(stock);
+                            BroadcastServerGameState(serverGame);
                         }
                     }
 
-                    _updatingStockPrices = false;
+                    _updatingServerGames = false;
                 }
             }
-            */
         }
 
         private bool TryUpdateServerGame(ServerGame serverGame)
@@ -93,10 +95,14 @@ namespace GnollHackServer
             return true;
         }
 
-        private async void BroadcastServerGameStates(ServerGame serverGame)
+        private async void BroadcastServerGameState(ServerGame serverGame)
         {
-            await Clients.All.SendAsync("SendGameState", serverGame); //.All.updateStockPrice(stock);
+            await Clients.All.SendAsync("GameAliveResult", serverGame.IsGameAlive()); //.All.updateStockPrice(stock);
         }
 
+        public async void ServerCenter_ExitHack(ServerGame serverGame, int status)
+        {
+            await Clients.All.SendAsync("Client_ExitHack", serverGame.GetHashCode(), status); //.All.updateStockPrice(stock);
+        }
     }
 }

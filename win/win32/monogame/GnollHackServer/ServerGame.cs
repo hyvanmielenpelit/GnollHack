@@ -188,20 +188,33 @@ namespace GnollHackServer
         public static extern int DoSomeCalc2();
 
         private Thread _gnhthread;
+        private ServerGameCenter _serverGameCenter;
 
-        public ServerGame()
+        public ServerGame(ServerGameCenter serverGameCenter)
         {
             Thread t = new Thread(new ThreadStart(GNHThreadProc));
             _gnhthread = t;
+            _serverGameCenter = serverGameCenter;
         }
         public void StartGame()
         {
             _gnhthread.Start();
         }
+        public bool IsGameAlive()
+        {
+            return _gnhthread.IsAlive;
+        }
+
+
+
+
+
         protected void GNHThreadProc()
         {
             int res = DoSomeCalc2();
             //RunGnollHackSimple2(0, 0, MG_InitWindows);
+
+            //Thread.Sleep(5000);
 
             string curdir = Directory.GetCurrentDirectory() + "\\..\\..\\..\\..\\bin\\Debug\\Server\\netcoreapp3.1";
             Directory.SetCurrentDirectory(curdir);
@@ -306,6 +319,7 @@ namespace GnollHackServer
         protected void MG_ExitHack(int status)
         {
             Debug.WriteLine("ExitHack called");
+            _serverGameCenter.ServerCenter_ExitHack(this, status);
         }
 
         /*
