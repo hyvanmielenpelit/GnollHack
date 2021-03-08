@@ -12,11 +12,12 @@
     <Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(GnollHackServerBinDir)"/>
     <Copy SourceFiles="$(BinDir)nhdat;$(BinDir)nh340key.dll;$(BinDir)nhdefkey.dll;$(BinDir)nhraykey.dll;$(BinDir)recover.exe" DestinationFolder="$(GnollHackServerBinDir)"/>
 
+<!--
     <Copy SourceFiles="$(GnollHackServerBinDir)libgnollhack.dll" DestinationFolder="$(MonoGameBinDir)"/>
     <Copy SourceFiles="$(GnollHackServerBinDir)libgnollhack.exp" DestinationFolder="$(MonoGameBinDir)"/>
     <Copy SourceFiles="$(GnollHackServerBinDir)libgnollhack.ilk" DestinationFolder="$(MonoGameBinDir)"/>
     <Copy SourceFiles="$(GnollHackServerBinDir)libgnollhack.lib" DestinationFolder="$(MonoGameBinDir)"/>
-
+-->
   </Target>
   <Target Name="Clean">
     <Delete Files="$(MonoGameBinDir)defaults.gnh;$(MonoGameBinDir)Guidebook.txt;$(MonoGameBinDir)license;$(MonoGameBinDir)credits;$(MonoGameBinDir)sysconf;$(MonoGameBinDir)nethack.txt;$(MonoGameBinDir)symbols;$(MonoGameBinDir)record;$(MonoGameBinDir)opthelp"/>
