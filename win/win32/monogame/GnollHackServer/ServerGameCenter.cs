@@ -24,6 +24,8 @@ namespace GnollHackServer
         private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(250);
         private readonly Timer _timer;
         private volatile bool _updatingServerGames = false;
+        private readonly ConcurrentQueue<GHMessage> _commandQueue = new ConcurrentQueue<GHMessage>();
+        private readonly ConcurrentQueue<GHMessage> _responseQueue = new ConcurrentQueue<GHMessage>();
         private ServerGameCenter()
         {
             _serverGames.Clear();
