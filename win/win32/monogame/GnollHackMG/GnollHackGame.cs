@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
+using GnollHackCommon;
 
 namespace GnollHackMG
 {

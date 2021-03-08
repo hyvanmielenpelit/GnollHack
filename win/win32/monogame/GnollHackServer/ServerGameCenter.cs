@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using Microsoft.AspNetCore.SignalR;
 using GnollHackServer.Hubs;
+using GnollHackCommon;
 
 namespace GnollHackServer
 {

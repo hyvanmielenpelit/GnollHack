@@ -6,6 +6,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Diagnostics;
+using GnollHackCommon;
 
 namespace GnollHackServer
 {
