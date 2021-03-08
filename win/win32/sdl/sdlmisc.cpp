@@ -38,8 +38,6 @@
 #elif defined(GLES2_GRAPHICS)
 #include <SDL_opengles2.h>
 #endif
-#elif defined(GLFW_GRAPHICS)
-#include <glfw3.h>
 #endif
 
 extern "C"
