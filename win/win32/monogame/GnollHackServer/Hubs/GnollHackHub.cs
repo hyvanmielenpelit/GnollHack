@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System.Runtime.InteropServices;
+using GnollHackCommon;
 
 namespace GnollHackServer.Hubs
 {
@@ -62,6 +63,11 @@ namespace GnollHackServer.Hubs
             //Arg1 function
             //Arg2 and later can be any object
             await Clients.Caller.SendAsync("AddNewGameResult", result);
+        }
+        public async Task ResponseFromClient(GHResponseFromClient response)
+        {
+            bool success = _serverGameCenter.AddResponseToIncomingQueue(response);
+            await Clients.Caller.SendAsync("ResponseFromClientResult", response.CommandId, success ? 1 : 0);
         }
 
     }

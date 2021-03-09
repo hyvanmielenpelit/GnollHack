@@ -109,7 +109,7 @@ int GnollHackStart()
     }
 
     GUILaunched = 1;
-    iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
+    iflags.using_gui_tiles = TRUE;
     iflags.using_gui_sounds = TRUE;
 
     /* let main do the argument processing */

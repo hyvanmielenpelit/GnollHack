@@ -301,17 +301,141 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       HUMAN_KNIGHT_MALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "elf-priest-male-chaotic-cast-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES,
-        ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_OFF,
+    { "human-priest-male-lawful-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_TILES,
+        HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_FRAMES, HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_OFF,
         1,
-        2,
+        1,
         ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
         { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-        -1, -1,
-        ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT,
+        3, 7,
+        HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "human-priest-male-lawful-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_MALE_LAWFUL_KICK_ANIMATION_TILES,
+        HUMAN_PRIEST_MALE_LAWFUL_KICK_ANIMATION_FRAMES, HUMAN_PRIEST_MALE_LAWFUL_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        HUMAN_PRIEST_MALE_LAWFUL_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-priest-female-lawful-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION_TILES,
+        HUMAN_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION_FRAMES, HUMAN_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 7,
+        HUMAN_PRIEST_FEMALE_LAWFUL_ATTACK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-priest-female-lawful-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION_TILES,
+        HUMAN_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION_FRAMES, HUMAN_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        HUMAN_PRIEST_FEMALE_LAWFUL_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+
+    { "human-priest-male-neutral-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION_TILES,
+        HUMAN_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION_FRAMES, HUMAN_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 7,
+        HUMAN_PRIEST_MALE_NEUTRAL_ATTACK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-priest-male-neutral-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_MALE_NEUTRAL_KICK_ANIMATION_TILES,
+        HUMAN_PRIEST_MALE_NEUTRAL_KICK_ANIMATION_FRAMES, HUMAN_PRIEST_MALE_NEUTRAL_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        HUMAN_PRIEST_MALE_NEUTRAL_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-priest-female-neutral-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION_TILES,
+        HUMAN_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION_FRAMES, HUMAN_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 7,
+        HUMAN_PRIEST_FEMALE_NEUTRAL_ATTACK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-priest-female-neutral-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION_TILES,
+        HUMAN_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION_FRAMES, HUMAN_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        HUMAN_PRIEST_FEMALE_NEUTRAL_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+
+    { "human-priest-male-chaotic-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_TILES,
+        HUMAN_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_FRAMES, HUMAN_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 7,
+        HUMAN_PRIEST_MALE_CHAOTIC_ATTACK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-priest-male-chaotic-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_MALE_CHAOTIC_KICK_ANIMATION_TILES,
+        HUMAN_PRIEST_MALE_CHAOTIC_KICK_ANIMATION_FRAMES, HUMAN_PRIEST_MALE_CHAOTIC_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        HUMAN_PRIEST_MALE_CHAOTIC_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-priest-female-chaotic-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_TILES,
+        HUMAN_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_FRAMES, HUMAN_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 7,
+        HUMAN_PRIEST_FEMALE_CHAOTIC_ATTACK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-priest-female-chaotic-kick-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION_TILES,
+        HUMAN_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION_FRAMES, HUMAN_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        HUMAN_PRIEST_FEMALE_CHAOTIC_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+
     { "elf-priest-male-chaotic-attack-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_TILES,
         ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_FRAMES, ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_OFF,
         1,
@@ -334,6 +458,18 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
         ELF_PRIEST_MALE_CHAOTIC_KICK_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "elf-priest-male-chaotic-cast-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES,
+        ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_OFF,
+        1,
+        2,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        -1, -1,
+        ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+
     { "dwarf-knight-female-attack-animation", ANIMATION_TYPE_NORMAL, DWARF_KNIGHT_FEMALE_ATTACK_ANIMATION_TILES,
       DWARF_KNIGHT_FEMALE_ATTACK_ANIMATION_FRAMES, DWARF_KNIGHT_FEMALE_ATTACK_ANIMATION_OFF,
       1,
@@ -2572,14 +2708,106 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
-    { "elf-priest-male-chaotic-cast-enlargement",
-      ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES,
-      ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT_OFF,
+
+      { "human-priest-male-lawful-attack-enlargement",
+        HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_TILES, HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_FRAMES,
+        HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ENLARGEMENT_TILES, HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-priest-male-lawful-kick-enlargement",
+        HUMAN_PRIEST_MALE_LAWFUL_KICK_ANIMATION_TILES, HUMAN_PRIEST_MALE_LAWFUL_KICK_ANIMATION_FRAMES,
+        HUMAN_PRIEST_MALE_LAWFUL_KICK_ENLARGEMENT_TILES, HUMAN_PRIEST_MALE_LAWFUL_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-priest-female-lawful-attack-enlargement",
+        HUMAN_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION_TILES, HUMAN_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION_FRAMES,
+        HUMAN_PRIEST_FEMALE_LAWFUL_ATTACK_ENLARGEMENT_TILES, HUMAN_PRIEST_FEMALE_LAWFUL_ATTACK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-priest-female-lawful-kick-enlargement",
+        HUMAN_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION_TILES, HUMAN_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION_FRAMES,
+        HUMAN_PRIEST_FEMALE_LAWFUL_KICK_ENLARGEMENT_TILES, HUMAN_PRIEST_FEMALE_LAWFUL_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+
+      { "human-priest-male-neutral-attack-enlargement",
+        HUMAN_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION_TILES, HUMAN_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION_FRAMES,
+        HUMAN_PRIEST_MALE_NEUTRAL_ATTACK_ENLARGEMENT_TILES, HUMAN_PRIEST_MALE_NEUTRAL_ATTACK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-priest-male-neutral-kick-enlargement",
+        HUMAN_PRIEST_MALE_NEUTRAL_KICK_ANIMATION_TILES, HUMAN_PRIEST_MALE_NEUTRAL_KICK_ANIMATION_FRAMES,
+        HUMAN_PRIEST_MALE_NEUTRAL_KICK_ENLARGEMENT_TILES, HUMAN_PRIEST_MALE_NEUTRAL_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-priest-female-neutral-attack-enlargement",
+        HUMAN_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION_TILES, HUMAN_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION_FRAMES,
+        HUMAN_PRIEST_FEMALE_NEUTRAL_ATTACK_ENLARGEMENT_TILES, HUMAN_PRIEST_FEMALE_NEUTRAL_ATTACK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-priest-female-neutral-kick-enlargement",
+        HUMAN_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION_TILES, HUMAN_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION_FRAMES,
+        HUMAN_PRIEST_FEMALE_NEUTRAL_KICK_ENLARGEMENT_TILES, HUMAN_PRIEST_FEMALE_NEUTRAL_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+
+    { "human-priest-male-chaotic-attack-enlargement",
+      HUMAN_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_TILES, HUMAN_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_FRAMES,
+      HUMAN_PRIEST_MALE_CHAOTIC_ATTACK_ENLARGEMENT_TILES, HUMAN_PRIEST_MALE_CHAOTIC_ATTACK_ENLARGEMENT_OFF,
       3, 1, 0,
       { -1, -1, -1, 0, 1 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "human-priest-male-chaotic-kick-enlargement",
+      HUMAN_PRIEST_MALE_CHAOTIC_KICK_ANIMATION_TILES, HUMAN_PRIEST_MALE_CHAOTIC_KICK_ANIMATION_FRAMES,
+      HUMAN_PRIEST_MALE_CHAOTIC_KICK_ENLARGEMENT_TILES, HUMAN_PRIEST_MALE_CHAOTIC_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "human-priest-female-chaotic-attack-enlargement",
+      HUMAN_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_TILES, HUMAN_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_FRAMES,
+      HUMAN_PRIEST_FEMALE_CHAOTIC_ATTACK_ENLARGEMENT_TILES, HUMAN_PRIEST_FEMALE_CHAOTIC_ATTACK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "human-priest-female-chaotic-kick-enlargement",
+      HUMAN_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION_TILES, HUMAN_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION_FRAMES,
+      HUMAN_PRIEST_FEMALE_CHAOTIC_KICK_ENLARGEMENT_TILES, HUMAN_PRIEST_FEMALE_CHAOTIC_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+
     { "elf-priest-male-chaotic-attack-enlargement",
       ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_FRAMES,
       ELF_PRIEST_MALE_CHAOTIC_ATTACK_ENLARGEMENT_TILES, ELF_PRIEST_MALE_CHAOTIC_ATTACK_ENLARGEMENT_OFF,
@@ -2591,6 +2819,14 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
     { "elf-priest-male-chaotic-kick-enlargement",
       ELF_PRIEST_MALE_CHAOTIC_KICK_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_KICK_ANIMATION_FRAMES,
       ELF_PRIEST_MALE_CHAOTIC_KICK_ENLARGEMENT_TILES, ELF_PRIEST_MALE_CHAOTIC_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-male-chaotic-cast-enlargement",
+      ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES,
+      ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT_OFF,
       3, 1, 0,
       { -1, -1, -1, 0, 1 },
       { 0, 0, 0, 0, 0 },
@@ -5836,6 +6072,18 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return GNOLL_HEALER_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE)
             return GNOLL_HEALER_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_LAWFUL + 1)
+            return HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_LAWFUL + 1)
+            return HUMAN_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_NEUTRAL + 1)
+            return HUMAN_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_NEUTRAL + 1)
+            return HUMAN_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
+            return HUMAN_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_CHAOTIC + 1)
+            return HUMAN_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -5944,6 +6192,18 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_SAMURAI_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_SAMURAI_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_LAWFUL + 1)
+            return HUMAN_PRIEST_MALE_LAWFUL_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_LAWFUL + 1)
+            return HUMAN_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_NEUTRAL + 1)
+            return HUMAN_PRIEST_MALE_NEUTRAL_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_NEUTRAL + 1)
+            return HUMAN_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
+            return HUMAN_PRIEST_MALE_CHAOTIC_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_CHAOTIC + 1)
+            return HUMAN_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_KICK_ANIMATION;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)

@@ -86,6 +86,14 @@ namespace GnollHackMG
             {
                 _message5 = "PlayerSelection: Hash: " + hash;
             });
+            connection.On<GHCommandFromServer>("CommandFromServer", (command) =>
+            {
+                _message5 = "CommandFromServer: "+ command.CommandName +", GUID: " + command.Id.ToString();
+            });
+            connection.On<Guid, int>("ResponseFromClientResult", (guid, result) =>
+            {
+                _message5 = "ResponseFromClientResult: " + result + ", GUID: " + guid;
+            });
         }
 
 
@@ -168,6 +176,16 @@ namespace GnollHackMG
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        protected async void ClientPlayerSelectionResponse(GHCommandFromServer command, int selectedRole, int selectedRace, int selectedGender, int selectedAlignment)
+        {
+            GHResponseFromClient response = new GHResponseFromClient(command.Id);
+            response.ReturnValues.Add("selectedRole", selectedRole);
+            response.ReturnValues.Add("selectedRace", selectedRace);
+            response.ReturnValues.Add("selectedGender", selectedGender);
+            response.ReturnValues.Add("selectedAlignment", selectedAlignment);
+            await connection.InvokeAsync("ResponseFromClient", response);
         }
     }
 }
