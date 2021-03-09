@@ -2937,6 +2937,9 @@ E enum ghsound_types FDECL(get_room_ambient_sounds, (struct mkroom*));
 E enum ghsound_types NDECL(get_environment_ambient_sounds);
 E enum ghsound_types FDECL(get_monster_ambient_sound_id, (enum monster_soundset_types));
 E float FDECL(get_monster_ambient_sound_volume, (enum monster_soundset_types));
+E void NDECL(play_intro_text);
+E void NDECL(stop_all_immediate_sounds);
+
 
 /* ### sys.c ### */
 

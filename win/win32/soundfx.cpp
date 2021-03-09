@@ -874,6 +874,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success WIS", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success CHA", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Vampire Transforms", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
 
 };
 
@@ -1601,9 +1602,55 @@ extern "C"
         return (result == FMOD_OK);
     }
 
+    boolean fmod_stop_all_immediate_sounds()
+    {
+        FMOD_RESULT result;
+        boolean stop_failed = FALSE;
+        boolean update_failed = FALSE;
+
+        for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)
+        {
+            if (immediateSoundInstances[i].eventInstance && immediateSoundInstances[i].normalVolume > 0.0f)
+            {
+                /* Stop sound */
+                result = immediateSoundInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                if (result != FMOD_OK)
+                {
+                    stop_failed = TRUE;
+                }
+                immediateSoundInstances[i].normalVolume = 0.0f;
+            }
+        }
+        for (int i = 0; i < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; i++)
+        {
+            if (longImmediateSoundInstances[i].eventInstance && longImmediateSoundInstances[i].normalVolume > 0.0f)
+            {
+                /* Stop sound */
+                result = longImmediateSoundInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                if (result != FMOD_OK)
+                {
+                    stop_failed = TRUE;
+                }
+                longImmediateSoundInstances[i].normalVolume = 0.0f;
+            }
+        }
+
+        result = fmod_studio_system->update();
+        if (result != FMOD_OK)
+            update_failed = TRUE;
+
+        return !update_failed && !result;
+    }
+
+
     boolean
     fmod_play_immediate_sound(struct ghsound_immediate_info info)
     {
+        if (info.stop_sounds)
+        {
+            return fmod_stop_all_immediate_sounds();
+        }
+
         FMOD_RESULT result;
 
         enum sound_play_groups play_group = info.play_group;

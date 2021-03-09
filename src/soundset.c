@@ -8311,5 +8311,354 @@ get_environment_ambient_sounds()
     return res;
 }
 
+void
+play_intro_text()
+{
+    int godindex = 7;
+    int titleandgodindex = 9;
+    enum role_types yourrole = urole.rolenum;
+
+    switch (yourrole)
+    {
+    case ROLE_ARCHEOLOGIST:
+        if (u.ualign.type == A_LAWFUL)
+        {
+            godindex = 0;
+            titleandgodindex = 0;
+        }
+        else if (u.ualign.type == A_NEUTRAL)
+        {
+            godindex = 1;
+            titleandgodindex = 1;
+        }
+        break;
+    case ROLE_BARBARIAN:
+        if (u.ualign.type == A_CHAOTIC)
+        {
+            godindex = 2;
+            titleandgodindex = flags.female ? 2 : 3;
+        }
+        else if (u.ualign.type == A_NEUTRAL)
+        {
+            godindex = 3;
+            titleandgodindex = flags.female ? 4 : 5;
+        }
+        break;
+    case ROLE_CAVEMAN:
+        if (u.ualign.type == A_LAWFUL)
+        {
+            godindex = 4;
+            titleandgodindex = 6;
+        }
+        else if (u.ualign.type == A_NEUTRAL)
+        {
+            godindex = 5;
+            titleandgodindex = 7;
+        }
+        break;
+    case ROLE_HEALER:
+        if (u.ualign.type == A_NEUTRAL)
+        {
+            godindex = 8;
+            titleandgodindex = 10;
+        }
+        break;
+    case ROLE_KNIGHT:
+        if (u.ualign.type == A_LAWFUL)
+        {
+            godindex = 9;
+            titleandgodindex = 11;
+        }
+        break;
+    case ROLE_MONK:
+        if (u.ualign.type == A_CHAOTIC)
+        {
+            godindex = 10;
+            titleandgodindex = 12;
+        }
+        else if (u.ualign.type == A_LAWFUL)
+        {
+            godindex = 11;
+            titleandgodindex = 13;
+        }
+        else if (u.ualign.type == A_NEUTRAL)
+        {
+            godindex = 12;
+            titleandgodindex = 14;
+        }
+        break;
+    case ROLE_PRIEST:
+    {
+        enum role_types yourpantheon = flags.pantheon;
+        if (u.ualign.type == A_CHAOTIC)
+        {
+            switch (yourpantheon)
+            {
+            case ROLE_ARCHEOLOGIST:
+                godindex = 13;
+                titleandgodindex = 15;
+                break;
+            case ROLE_BARBARIAN:
+                godindex = 2;
+                titleandgodindex = 16;
+                break;
+            case ROLE_CAVEMAN:
+                godindex = 14;
+                titleandgodindex = 17;
+                break;
+            case ROLE_HEALER:
+                godindex = 15;
+                titleandgodindex = 18;
+                break;
+            case ROLE_KNIGHT:
+                godindex = 16;
+                titleandgodindex = 19;
+                break;
+            case ROLE_MONK:
+                godindex = 10;
+                titleandgodindex = 20;
+                break;
+            case ROLE_PRIEST:
+                break;
+            case ROLE_ROGUE:
+                godindex = 31;
+                titleandgodindex = 22;
+                break;
+            case ROLE_RANGER:
+                godindex = 29;
+                titleandgodindex = 21;
+                break;
+            case ROLE_SAMURAI:
+                godindex = 17;
+                titleandgodindex = 23;
+                break;
+            case ROLE_TOURIST:
+                godindex = 18;
+                titleandgodindex = 24;
+                break;
+            case ROLE_VALKYRIE:
+                godindex = 19;
+                titleandgodindex = 25;
+                break;
+            case ROLE_WIZARD:
+                godindex = 36;
+                titleandgodindex = 26;
+                break;
+            case NUM_ROLES:
+                break;
+            default:
+                break;
+            }
+        }
+        else if (u.ualign.type == A_LAWFUL)
+        {
+            switch (yourpantheon)
+            {
+            case ROLE_ARCHEOLOGIST:
+                godindex = 0;
+                titleandgodindex = 27;
+                break;
+            case ROLE_BARBARIAN:
+                godindex = 20;
+                titleandgodindex = 28;
+                break;
+            case ROLE_CAVEMAN:
+                godindex = 4;
+                titleandgodindex = 29;
+                break;
+            case ROLE_HEALER:
+                godindex = 21;
+                titleandgodindex = 30;
+                break;
+            case ROLE_KNIGHT:
+                godindex = 9;
+                titleandgodindex = 31;
+                break;
+            case ROLE_MONK:
+                godindex = 11;
+                titleandgodindex = 32;
+                break;
+            case ROLE_PRIEST:
+                break;
+            case ROLE_ROGUE:
+                godindex = 23;
+                titleandgodindex = 34;
+                break;
+            case ROLE_RANGER:
+                godindex = 22;
+                titleandgodindex = 33;
+                break;
+            case ROLE_SAMURAI:
+                godindex = 17;
+                titleandgodindex = 35;
+                break;
+            case ROLE_TOURIST:
+                godindex = 24;
+                titleandgodindex = 36;
+                break;
+            case ROLE_VALKYRIE:
+                godindex = 34;
+                titleandgodindex = 37;
+                break;
+            case ROLE_WIZARD:
+                godindex = 25;
+                titleandgodindex = 38;
+                break;
+            case NUM_ROLES:
+                break;
+            default:
+                break;
+            }
+        }
+        else if (u.ualign.type == A_NEUTRAL)
+        {
+        switch (yourpantheon)
+        {
+        case ROLE_ARCHEOLOGIST:
+            godindex = 1;
+            titleandgodindex = 39;
+            break;
+        case ROLE_BARBARIAN:
+            godindex = 3;
+            titleandgodindex = 40;
+            break;
+        case ROLE_CAVEMAN:
+            godindex = 5;
+            titleandgodindex = 41;
+            break;
+        case ROLE_HEALER:
+            godindex = 8;
+            titleandgodindex = 42;
+            break;
+        case ROLE_KNIGHT:
+            godindex = 26;
+            titleandgodindex = 43;
+            break;
+        case ROLE_MONK:
+            godindex = 12;
+            titleandgodindex = 44;
+            break;
+        case ROLE_PRIEST:
+            break;
+        case ROLE_ROGUE:
+            godindex = 27;
+            titleandgodindex = 46;
+            break;
+        case ROLE_RANGER:
+            godindex = 30;
+            titleandgodindex = 45;
+            break;
+        case ROLE_SAMURAI:
+            godindex = 28;
+            titleandgodindex = 47;
+            break;
+        case ROLE_TOURIST:
+            godindex = 33;
+            titleandgodindex = 48;
+            break;
+        case ROLE_VALKYRIE:
+            godindex = 35;
+            titleandgodindex = 49;
+            break;
+        case ROLE_WIZARD:
+            godindex = 37;
+            titleandgodindex = 50;
+            break;
+        case NUM_ROLES:
+            break;
+        default:
+            break;
+        }
+        }
+
+        break;
+    }
+    case ROLE_ROGUE:
+        if (u.ualign.type == A_CHAOTIC)
+        {
+            godindex = 31;
+            titleandgodindex = 53;
+        }
+        break;
+    case ROLE_RANGER:
+        if (u.ualign.type == A_CHAOTIC)
+        {
+            godindex = 29;
+            titleandgodindex = 51;
+        }
+        else if (u.ualign.type == A_NEUTRAL)
+        {
+            godindex = 30;
+            titleandgodindex = 52;
+        }
+        break;
+    case ROLE_SAMURAI:
+        if (u.ualign.type == A_LAWFUL)
+        {
+            godindex = 32;
+            titleandgodindex = 54;
+        }
+        break;
+    case ROLE_TOURIST:
+        if (u.ualign.type == A_NEUTRAL)
+        {
+            godindex = 33;
+            titleandgodindex = 55;
+        }
+        break;
+    case ROLE_VALKYRIE:
+        if (u.ualign.type == A_LAWFUL)
+        {
+            godindex = 34;
+            titleandgodindex = 56;
+        }
+        else if (u.ualign.type == A_NEUTRAL)
+        {
+            godindex = 35;
+            titleandgodindex = 57;
+        }
+        break;
+    case ROLE_WIZARD:
+        if (u.ualign.type == A_CHAOTIC)
+        {
+            godindex = 36;
+            titleandgodindex = 58;
+        }
+        else if (u.ualign.type == A_NEUTRAL)
+        {
+            godindex = 37;
+            titleandgodindex = 59;
+        }
+        break;
+    case NUM_ROLES:
+        break;
+    default:
+        break;
+    }
+
+
+    struct ghsound_immediate_info info = { 0 };
+    info.ghsound = GHSOUND_INTRO_TEXT;
+    info.volume = 1.0f;
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.parameter_names[0] = "GodIndex";
+    info.parameter_values[0] = (float)godindex;
+    info.parameter_names[1] = "TitleAndGodIndex";
+    info.parameter_values[1] = (float)titleandgodindex;
+    info.parameter_names[2] = (char*)0;
+
+    play_immediate_ghsound(info);
+}
+
+void
+stop_all_immediate_sounds()
+{
+    struct ghsound_immediate_info info = { 0 };
+    info.ghsound = GHSOUND_NONE;
+    info.volume = 0.0f;
+    info.stop_sounds = TRUE;
+
+    play_immediate_ghsound(info);
+}
 
 /* soundset.c */

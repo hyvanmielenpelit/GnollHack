@@ -1231,7 +1231,9 @@ newgame()
 
     if (flags.legacy) {
         flush_screen(1);
+        play_intro_text();
         com_pager(1);
+        stop_all_immediate_sounds();
     }
 
     urealtime.realtime = 0L;

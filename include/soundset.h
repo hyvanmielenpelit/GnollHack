@@ -750,6 +750,7 @@ enum ghsound_types {
 	GHSOUND_ENEMY_RESISTANCE_SUCCESS_WIS,
 	GHSOUND_ENEMY_RESISTANCE_SUCCESS_CHA,
 	GHSOUND_VAMPIRE_TRANSFORMS,
+	GHSOUND_INTRO_TEXT,
 	MAX_GHSOUNDS
 };
 
@@ -1247,6 +1248,7 @@ struct ghsound_immediate_info {
 	float volume;
 	enum immediate_sound_types sound_type;
 	enum sound_play_groups play_group;
+	boolean stop_sounds;
 };
 
 struct ghsound_music_info {
