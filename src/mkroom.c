@@ -1391,28 +1391,35 @@ mkdragonlair()
 		}
 	}
 
-	for (sx = sroom->lx; sx <= sroom->hx; sx++)
+
+    int roomsize = (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly);
+    int averagegold = roomsize > 4 ? 3000 + rn2(2000) : 2000;
+    int goldpersquare = roomsize > 0 ? averagegold / roomsize : 100;
+    int gemoneinchance = max(3, roomsize / 4);
+    int itemoneinchance = max(4, roomsize / 3);
+
+    for (sx = sroom->lx; sx <= sroom->hx; sx++)
 	{
 		for (sy = sroom->ly; sy <= sroom->hy; sy++)
 		{
-			if(rn2(5))
+			if(rn2(6))
 			{
 				struct obj* otmp = mksobj_at(GOLD_PIECE, sx, sy, TRUE, FALSE);
 				if (otmp)
 				{
-					otmp->quan = 5 + rn2(101);
+					otmp->quan = 1 + rn2(2 * goldpersquare);
 					otmp->owt = weight(otmp);
 				}
 			}
 
-			if(!rn2(3))
+			if(!rn2(gemoneinchance))
 			{
                 (void)mkobj_at(GEM_CLASS, sx, sy, FALSE);
 			}
 
-			if (!rn2(4))
+			if (!rn2(itemoneinchance))
 			{
-                (void)mkobj_at(0, sx, sy, FALSE);
+                (void)mkobj_at(RANDOM_CLASS, sx, sy, FALSE);
 			}
 		}
 	}
