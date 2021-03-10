@@ -108,7 +108,7 @@ const struct class_sym def_monsyms[MAX_MONSTER_CLASSES] = {
     { DEF_RUSTMONST, "rust monsters and disenchanters", "rust monster or disenchanter" },
     { DEF_SNAKE, "snakes", "snake" },
     { DEF_TROLL, "trolls and monsters with similar powers", "troll or monster with similar powers" },
-    { DEF_UNDER, "under hulks, otyughs, or chimeras", "under hulk, otyugh, or chimera" },
+    { DEF_UNDER, "underworld hulks, otyughs, or chimeras", "underworld hulk, otyugh, or chimera" },
     { DEF_VAMPIRE, "vampires", "vampire" },
     { DEF_WRAITH, "wraiths", "wraith" },
     { DEF_XORN, "xorns", "xorn" },

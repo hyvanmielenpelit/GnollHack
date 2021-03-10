@@ -502,6 +502,10 @@
 #define ESlow_digestion u.uprops[SLOW_DIGESTION].extrinsic
 #define Slow_digestion (HSlow_digestion || ESlow_digestion) /* KMH */
 
+#define HHalf_slow_digestion u.uprops[HALF_SLOW_DIGESTION].intrinsic
+#define EHalf_slow_digestion u.uprops[HALF_SLOW_DIGESTION].extrinsic
+#define Half_slow_digestion (HHalf_slow_digestion || EHalf_slow_digestion) /* JG */
+
 #define HHalf_spell_damage u.uprops[HALF_SPELL_DAMAGE].intrinsic
 #define EHalf_spell_damage u.uprops[HALF_SPELL_DAMAGE].extrinsic
 #define Half_spell_damage (HHalf_spell_damage || EHalf_spell_damage)

@@ -196,6 +196,7 @@ const struct propname {
     { UNDEAD_IMMOBILITY, "held magically immobile", "magically induced undead immobility" },
     { UNDEAD_CONTROL, "controlled as undead", "undead control" },
     { CANCELLATION_RESISTANCE, "resistant to cancellation", "cancellation resistance" },
+    { HALF_SLOW_DIGESTION, "digesting half slower than normal", "half slower digestion" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };

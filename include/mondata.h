@@ -78,6 +78,9 @@
 #define is_demon(ptr) (((ptr)->mflags2 & M2_DEMON) != 0L)
 #define is_angel(ptr) (((ptr)->mflags2 & M2_ANGEL) != 0L)
 #define is_modron(ptr) (((ptr)->mflags2 & M2_MODRON) != 0L)
+#define is_tentacled_one(ptr) (((ptr)->mflags2 & M2_TENTACLED_ONE) != 0)
+#define is_mimic(ptr) (((ptr)->mflags2 & M2_MIMIC) != 0)
+#define is_elemental(ptr) (((ptr)->mflags2 & M2_ELEMENTAL) != 0)
 #define is_male(ptr) (((ptr)->mflags2 & M2_MALE) != 0L)
 #define is_female(ptr) (((ptr)->mflags2 & M2_FEMALE) != 0L)
 #define is_neuter(ptr) (((ptr)->mflags2 & M2_NEUTER) != 0L)
@@ -695,9 +698,9 @@
 #define resists_death(mon) \
     (has_innate((mon)->data, MR_DEATH) || has_property(mon, DEATH_RESISTANCE) || is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
 #define resists_lycanthropy(mon) \
-    (has_innate((mon)->data, MR_LYCANTHROPY) || has_property(mon, LYCANTHROPY_RESISTANCE) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_LYCANTHROPY) || has_property(mon, LYCANTHROPY_RESISTANCE) || is_not_living((mon)->data) || is_demon((mon)->data) || is_elemental((mon)->data) || is_incorporeal((mon)->data) || unsolid((mon)->data) || is_vampshifter(mon))
 #define resists_poison(mon) \
-    (has_innate((mon)->data, MR_POISON) || has_property(mon, POISON_RESISTANCE) || is_not_living((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_POISON) || has_property(mon, POISON_RESISTANCE) || is_not_living((mon)->data) || is_elemental((mon)->data) || is_incorporeal((mon)->data) || unsolid((mon)->data) || is_vampshifter(mon))
 #define resists_ston(mon) \
     (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RESISTANCE) || is_incorporeal((mon)->data))
 #define resists_magic(mon) \
@@ -714,7 +717,7 @@
 #define resists_flash(mon) \
     (has_innate((mon)->data, MR_FLASH) || has_property(mon, FLASH_RESISTANCE) || is_blinded(mon) || !haseyes((mon)->data) )
 #define resists_sickness(mon) \
-    (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RESISTANCE) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon) )
+    (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RESISTANCE) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_elemental((mon)->data) || is_incorporeal((mon)->data) || unsolid((mon)->data) || is_vampshifter(mon) )
 #define resists_paralysis(mon) \
     (has_innate((mon)->data, MR_FREE_ACTION) || has_property(mon, FREE_ACTION) ||  is_not_living((mon)->data) || is_vampshifter(mon))
 #define resists_stun(mon) \
@@ -795,9 +798,8 @@
 #define emitted_light_range(ptr) ((ptr)->lightrange)
 #define touch_petrifies(ptr) (((ptr)->mflags1 & M1_TOUCH_PETRIFIES) != 0)
 #define flesh_petrifies(ptr) (touch_petrifies(ptr) || (ptr) == &mons[PM_MEDUSA])
-#define is_tentacled_one(ptr) (((ptr)->mflags2 & M2_TENTACLED_ONE) != 0)
-#define is_mimic(ptr) (((ptr)->mflags2 & M2_MIMIC) != 0)
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
+
 #define mon_ambient_sound(ptr) get_monster_ambient_sound_id((ptr)->soundset)//((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? GHSOUND_NONE : monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].ghsound < MAX_GHSOUNDS ? monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].ghsound : GHSOUND_NONE)
 #define mon_ambient_volume(ptr) get_monster_ambient_sound_volume((ptr)->soundset) //((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? 0 : monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].volume)
 #define mon_ambient_subtype(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? SOUNDSOURCE_AMBIENT_GENERAL : monster_soundsets[(ptr)->soundset].ambient_subtype)

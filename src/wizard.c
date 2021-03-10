@@ -50,7 +50,7 @@ static NEARDATA const int nasties[] = {
 
 static NEARDATA const unsigned wizapp[] = {
     PM_HUMAN,      PM_WATER_DEMON,  PM_VAMPIRE,       PM_RED_DRAGON,
-    PM_TROLL,      PM_UNDER_HULK,   PM_XORN,          PM_XAN,
+    PM_TROLL,      PM_UNDERWORLD_HULK,   PM_XORN,          PM_XAN,
     PM_COCKATRICE, PM_FLOATING_EYE, PM_GUARDIAN_NAGA, PM_TRAPPER,
 };
 

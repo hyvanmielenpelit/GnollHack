@@ -184,8 +184,8 @@
 #define M2_GNOME		0x00000100UL        /* is a gnome */
 #define M2_DEMON		0x00000200UL        /* is a demon */
 #define M2_MODRON		0x00000400UL		/* is a modron */
-#define M2_MIMIC 		0x00008000UL        /* is a mimic */
-/* free bit */
+#define M2_MIMIC 		0x00000800UL        /* is a mimic */
+#define M2_ELEMENTAL 	0x00001000UL        /* is an elemental being */
 /* free bit */
 #define M2_MINION		0x00004000UL       /* is a minion of a deity */
 #define M2_GIANT		0x00008000UL        /* is a giant */

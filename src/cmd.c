@@ -4064,6 +4064,13 @@ int final;
 
 	if (Slow_digestion)
         you_have("slower digestion", from_what(SLOW_DIGESTION));
+    if (Half_slow_digestion)
+    {
+        if(Slow_digestion)
+            enl_msg("You latently ", "have", "had", " half slower digestion", from_what(HALF_SLOW_DIGESTION));
+        else
+            you_have("half slower digestion", from_what(HALF_SLOW_DIGESTION));
+    }
     if (u.ubasehitinc + u.uhitinc)
         you_have(enlght_combatinc("to hit", u.ubasehitinc + u.uhitinc, final, buf), "");
     if (u.ubasedaminc + u.udaminc)

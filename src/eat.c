@@ -3619,7 +3619,20 @@ gethungry()
             || herbivorous(youmonst.data)
             || metallivorous(youmonst.data))
         && !Slow_digestion)
-        u.uhunger--; /* ordinary food consumption */
+    {
+        if (Half_slow_digestion)
+        {
+            if (moves % 2)
+            { /* odd turns */
+                u.uhunger--; /* ordinary food consumption */
+            }
+        }
+        else
+        {
+            /* every turn */
+            u.uhunger--; /* ordinary food consumption */
+        }
+    }
 
     /* Now hunger is doubly fast, used to be just even turns --JG */
     if (Hunger)

@@ -73,7 +73,6 @@ struct mflag_description {
 static NEARDATA struct mflag_description m1flag_descriptions[] = {
 	{ M1_AMORPHOUS, "amorphous", "amorphous monsters" },
 	{ M1_AMPHIBIOUS, "amphibious", "amphibious monsters" },
-	{ M1_AMORPHOUS, "animal", "animals" },
 	{ M1_BREATHLESS, "breathless", "breathless monsters" },
 	{ M1_CARNIVORE, "carnivore", "carnivores" },
 	{ M1_CLING, "clinging", "clingers" },
@@ -105,7 +104,7 @@ static NEARDATA struct mflag_description m1flag_descriptions[] = {
 
 static NEARDATA struct mflag_description m2flag_descriptions[] = {
 	{ M2_DEMON, "demon", "demons" },
-    { M2_DEMON, "angelic being", "angelic beings" },
+    { M2_ANGEL, "angelic being", "angelic beings" },
     { M2_DWARF, "dwarf", "dwarves" },
 	{ M2_ELF, "elf", "elves" },
 	{ M2_GIANT, "giant", "giants" },
@@ -114,7 +113,9 @@ static NEARDATA struct mflag_description m2flag_descriptions[] = {
 	{ M2_HUMAN, "human", "human beings" },
 	{ M2_TENTACLED_ONE, "tentacled one", "tentacled ones" },
 	{ M2_MODRON, "modron", "modrons" },
-	{ M2_ORC, "orc", "orcs" },
+    { M2_MIMIC, "mimic", "mimics" },
+    { M2_ELEMENTAL, "elemental", "elementals" },
+    { M2_ORC, "orc", "orcs" },
 	{ M2_SHAPESHIFTER, "shapeshifter", "shapeshifters" },
 	{ M2_UNDEAD, "undead", "undead" },
 	{ M2_WERE, "lycanthrope", "lycanthropes" },
@@ -1025,7 +1026,7 @@ int* fem_ptr;
             { "master mindflayer", PM_ELDER_TENTACLED_ONE },
             { "mind flayer", PM_TENTACLED_ONE },
             { "master mind flayer", PM_ELDER_TENTACLED_ONE },
-            { "umber hulk", PM_UNDER_HULK },
+            { "umber hulk", PM_UNDERWORLD_HULK },
             /* More alternates; priest and priestess are separate monster
                types but that isn't the case for {aligned,high} priests */
             { "aligned priestess", PM_ALIGNED_PRIEST },

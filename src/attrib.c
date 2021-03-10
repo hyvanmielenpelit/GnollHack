@@ -51,7 +51,7 @@ static const struct innate
 
   mon_abil[] = { { 1, FAST, "", "" },
                  { 1, SLEEP_RESISTANCE, "", "" },
-				 { 4, SLOW_DIGESTION, "less hungry", "more hungry" },
+				 { 4, HALF_SLOW_DIGESTION, "less hungry", "more hungry" },
 				 { 7, POISON_RESISTANCE, "healthy", "" },
 				 { 10, JUMPING, "jumpy", "" },
 				 { 13, SEE_INVISIBLE, "", "" },
