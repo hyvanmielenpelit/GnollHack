@@ -377,7 +377,7 @@ HSOURCES = $(HACKINCL) date.h onames.h pm.h animoff.h animtotals.h vis_tab.h\
 		lev_comp.h dgn_comp.h dgn_file.h
 
 # the following .o's _must_ be made before any others (for makedefs)
-FIRSTOBJ = monst.o objects.o
+FIRSTOBJ = monst.o objects.o animdefs.o
 
 HOBJ = $(FIRSTOBJ) allmain.o alloc.o apply.o artifact.o attrib.o ball.o \
 	bones.o botl.o cmd.o dbridge.o decl.o detect.o dig.o display.o dlb.o \
@@ -476,6 +476,10 @@ objects.o:
 	$(CC) $(CFLAGS) -c objects.c
 	@rm -f $(MAKEDEFS)
 
+animdefs.o:
+	$(CC) $(CFLAGS) -c animdefs.c
+	@rm -f $(MAKEDEFS)
+
 # Qt windowport meta-object-compiler output
 qt_kde0.moc: ../include/qt_kde0.h
 	$(QTDIR)/bin/moc -o qt_kde0.moc ../include/qt_kde0.h
@@ -486,7 +490,7 @@ qt_win.moc: ../include/qt_win.h
 qttableview.moc: ../include/qttableview.h
 	$(QTDIR)/bin/moc -o qttableview.moc ../include/qttableview.h
 
-$(MAKEDEFS): ../util/makedefs.c  $(CONFIG_H) ../include/permonst.h \
+$(MAKEDEFS): ../util/makedefs.c  $(CONFIG_H) ../include/permonst.h ../include/animation.h \
 		../include/objclass.h ../include/monsym.h \
 		../include/artilist.h ../include/dungeon.h ../include/obj.h \
 		../include/monst.h ../include/you.h ../include/flag.h \
