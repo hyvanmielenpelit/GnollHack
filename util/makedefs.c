@@ -13,6 +13,7 @@
 #endif
 #include "permonst.h"
 #include "objclass.h"
+//#include "animation.h"
 #include "monsym.h"
 #include "artilist.h"
 #include "dungeon.h"
@@ -60,6 +61,7 @@ static const char SCCS_Id[] UNUSED = "@(#)makedefs.c\t3.6\t2019/05/07";
 #define DATE_FILE "date.h"
 #define MONST_FILE "pm.h"
 #define ONAME_FILE "onames.h"
+#define ANIMATION_FILE "animation_offsets.h"
 #ifndef OPTIONS_FILE
 #define OPTIONS_FILE "options"
 #endif
@@ -160,6 +162,7 @@ void NDECL(do_date);
 void NDECL(do_options);
 void NDECL(do_monstr);
 void NDECL(do_permonst);
+void NDECL(do_animation_offsets);
 void NDECL(do_questtxt);
 void NDECL(do_rumors);
 void NDECL(do_oracles);
@@ -320,6 +323,10 @@ char *options;
             Fprintf(stderr, "makedefs -%c\n", *options);
 
         switch (*options) {
+        case 'a':
+        case 'A':
+            do_animation_offsets();
+            break;
         case 'o':
         case 'O':
             do_objs();
@@ -2365,6 +2372,48 @@ do_permonst()
     Fprintf(ofp, "\n\n#define\tNUM_MONSTERS\t%d\n", i);
     Fprintf(ofp, "\n#endif /* PM_H */\n");
     Fclose(ofp);
+    return;
+}
+
+void
+do_animation_offsets()
+{
+#if 0
+    int i;
+
+    filename[0] = '\0';
+#ifdef FILE_PREFIX
+    Strcat(filename, file_prefix);
+#endif
+    Sprintf(eos(filename), INCLUDE_TEMPLATE, ANIMATION_FILE);
+    if (!(ofp = fopen(filename, WRTMODE))) {
+        perror(filename);
+        exit(EXIT_FAILURE);
+    }
+    Fprintf(ofp, "%s", Dont_Edit_Code);
+    Fprintf(ofp, "#ifndef ANIMATION_OFFSETS_H\n#define ANIMATION_OFFSETS_H\n");
+
+    int cnt = 0;
+    for (i = 0; i < MAX_ANIMATIONS; i++) {
+        SpinCursor(3);
+
+        Fprintf(ofp, "\n#define\t%s-%d_OFFSET\t%d", "ANIMATION_NAME_HERE", i, cnt);
+        cnt += animations[i].number_of_frames;
+    }
+    Fprintf(ofp, "\n\n#define\tTOTAL_ANIMATION_FRAMES\t%d\n", cnt);
+
+    cnt = 0;
+    for (i = 0; i < MAX_ENLARGEMENTS; i++) {
+        SpinCursor(3);
+
+        Fprintf(ofp, "\n#define\t%s-%d_OFFSET\t%d", "ENLARGEMENT_NAME_HERE", i, cnt);
+        cnt += enlargements[i].number_of_enlargement_tiles;
+    }
+    Fprintf(ofp, "\n\n#define\tTOTAL_ENLARGEMENT_FRAMES\t%d\n", cnt);
+
+    Fprintf(ofp, "\n\n#endif /* ANIMATION_OFFSETS_H */\n");
+    Fclose(ofp);
+#endif
     return;
 }
 

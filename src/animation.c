@@ -302,6 +302,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
 
+    /* Priest attack and kick animations */
     { "human-priest-male-lawful-attack-animation", ANIMATION_TYPE_NORMAL, HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_TILES,
         HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_FRAMES, HUMAN_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_OFF,
         1,
@@ -572,6 +573,95 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
 
+    { "elf-priest-male-lawful-attack-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_TILES,
+        ELF_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_FRAMES, ELF_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 7,
+        ELF_PRIEST_MALE_LAWFUL_ATTACK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-male-lawful-kick-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_LAWFUL_KICK_ANIMATION_TILES,
+        ELF_PRIEST_MALE_LAWFUL_KICK_ANIMATION_FRAMES, ELF_PRIEST_MALE_LAWFUL_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        ELF_PRIEST_MALE_LAWFUL_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-female-lawful-attack-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION_TILES,
+        ELF_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION_FRAMES, ELF_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 7,
+        ELF_PRIEST_FEMALE_LAWFUL_ATTACK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-female-lawful-kick-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION_TILES,
+        ELF_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION_FRAMES, ELF_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        ELF_PRIEST_FEMALE_LAWFUL_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+
+    { "elf-priest-male-neutral-attack-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION_TILES,
+        ELF_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION_FRAMES, ELF_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 7,
+        ELF_PRIEST_MALE_NEUTRAL_ATTACK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-male-neutral-kick-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_NEUTRAL_KICK_ANIMATION_TILES,
+        ELF_PRIEST_MALE_NEUTRAL_KICK_ANIMATION_FRAMES, ELF_PRIEST_MALE_NEUTRAL_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        ELF_PRIEST_MALE_NEUTRAL_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-female-neutral-attack-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION_TILES,
+        ELF_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION_FRAMES, ELF_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 7,
+        ELF_PRIEST_FEMALE_NEUTRAL_ATTACK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-female-neutral-kick-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION_TILES,
+        ELF_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION_FRAMES, ELF_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        ELF_PRIEST_FEMALE_NEUTRAL_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "elf-priest-male-chaotic-attack-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_TILES,
         ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_FRAMES, ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_OFF,
         1,
@@ -594,6 +684,30 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
         ELF_PRIEST_MALE_CHAOTIC_KICK_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "elf-priest-female-chaotic-attack-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_TILES,
+        ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_FRAMES, ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 7,
+        ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-female-chaotic-kick-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION_TILES,
+        ELF_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION_FRAMES, ELF_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        4, 7,
+        ELF_PRIEST_FEMALE_CHAOTIC_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+
+    /* Priest cast animations */
     { "elf-priest-male-chaotic-cast-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES,
         ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_OFF,
         1,
@@ -3043,6 +3157,71 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 }
     },
 
+    { "elf-priest-male-lawful-attack-enlargement",
+      ELF_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_TILES, ELF_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION_FRAMES,
+      ELF_PRIEST_MALE_LAWFUL_ATTACK_ENLARGEMENT_TILES, ELF_PRIEST_MALE_LAWFUL_ATTACK_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-male-lawful-kick-enlargement",
+      ELF_PRIEST_MALE_LAWFUL_KICK_ANIMATION_TILES, ELF_PRIEST_MALE_LAWFUL_KICK_ANIMATION_FRAMES,
+      ELF_PRIEST_MALE_LAWFUL_KICK_ENLARGEMENT_TILES, ELF_PRIEST_MALE_LAWFUL_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-female-lawful-attack-enlargement",
+      ELF_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION_TILES, ELF_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION_FRAMES,
+      ELF_PRIEST_FEMALE_LAWFUL_ATTACK_ENLARGEMENT_TILES, ELF_PRIEST_FEMALE_LAWFUL_ATTACK_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-female-lawful-kick-enlargement",
+      ELF_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION_TILES, ELF_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION_FRAMES,
+      ELF_PRIEST_FEMALE_LAWFUL_KICK_ENLARGEMENT_TILES, ELF_PRIEST_FEMALE_LAWFUL_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+
+    { "elf-priest-male-neutral-attack-enlargement",
+      ELF_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION_TILES, ELF_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION_FRAMES,
+      ELF_PRIEST_MALE_NEUTRAL_ATTACK_ENLARGEMENT_TILES, ELF_PRIEST_MALE_NEUTRAL_ATTACK_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-male-neutral-kick-enlargement",
+      ELF_PRIEST_MALE_NEUTRAL_KICK_ANIMATION_TILES, ELF_PRIEST_MALE_NEUTRAL_KICK_ANIMATION_FRAMES,
+      ELF_PRIEST_MALE_NEUTRAL_KICK_ENLARGEMENT_TILES, ELF_PRIEST_MALE_NEUTRAL_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-female-neutral-attack-enlargement",
+      ELF_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION_TILES, ELF_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION_FRAMES,
+      ELF_PRIEST_FEMALE_NEUTRAL_ATTACK_ENLARGEMENT_TILES, ELF_PRIEST_FEMALE_NEUTRAL_ATTACK_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-female-neutral-kick-enlargement",
+      ELF_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION_TILES, ELF_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION_FRAMES,
+      ELF_PRIEST_FEMALE_NEUTRAL_KICK_ENLARGEMENT_TILES, ELF_PRIEST_FEMALE_NEUTRAL_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
 
     { "elf-priest-male-chaotic-attack-enlargement",
       ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_FRAMES,
@@ -3060,6 +3239,24 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "elf-priest-female-chaotic-attack-enlargement",
+      ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_TILES, ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_FRAMES,
+      ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ENLARGEMENT_TILES, ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-female-chaotic-kick-enlargement",
+      ELF_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION_TILES, ELF_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION_FRAMES,
+      ELF_PRIEST_FEMALE_CHAOTIC_KICK_ENLARGEMENT_TILES, ELF_PRIEST_FEMALE_CHAOTIC_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+
+
     { "elf-priest-male-chaotic-cast-enlargement",
       ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES,
       ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT_OFF,
@@ -3068,6 +3265,7 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+
     { "dwarf-knight-female-attack-enlargement",
       DWARF_KNIGHT_FEMALE_ATTACK_ANIMATION_TILES, DWARF_KNIGHT_FEMALE_ATTACK_ANIMATION_FRAMES,
       DWARF_KNIGHT_FEMALE_ATTACK_ENLARGEMENT_TILES, DWARF_KNIGHT_FEMALE_ATTACK_ENLARGEMENT_OFF,
@@ -6332,8 +6530,18 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return GNOLL_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE && alignmentidx == A_CHAOTIC + 1)
             return GNOLL_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_LAWFUL + 1)
+            return ELF_PRIEST_MALE_LAWFUL_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_FEMALE && alignmentidx == A_LAWFUL + 1)
+            return ELF_PRIEST_FEMALE_LAWFUL_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_NEUTRAL + 1)
+            return ELF_PRIEST_MALE_NEUTRAL_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_FEMALE && alignmentidx == A_NEUTRAL + 1)
+            return ELF_PRIEST_FEMALE_NEUTRAL_ATTACK_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_FEMALE && alignmentidx == A_CHAOTIC + 1)
+            return ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_WIZARD_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
@@ -6464,8 +6672,18 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return GNOLL_PRIEST_MALE_CHAOTIC_KICK_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE && alignmentidx == A_CHAOTIC + 1)
             return GNOLL_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_LAWFUL + 1)
+            return ELF_PRIEST_MALE_LAWFUL_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_FEMALE && alignmentidx == A_LAWFUL + 1)
+            return ELF_PRIEST_FEMALE_LAWFUL_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_NEUTRAL + 1)
+            return ELF_PRIEST_MALE_NEUTRAL_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_FEMALE && alignmentidx == A_NEUTRAL + 1)
+            return ELF_PRIEST_FEMALE_NEUTRAL_KICK_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_KICK_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_FEMALE && alignmentidx == A_CHAOTIC + 1)
+            return ELF_PRIEST_FEMALE_CHAOTIC_KICK_ANIMATION;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
             return ORC_ROGUE_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_MALE)
