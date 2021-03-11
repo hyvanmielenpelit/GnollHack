@@ -1239,7 +1239,7 @@ enum autodraw_types* autodraw_ptr;
 
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
-                return glyph2tile[repl_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[repl_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1295,7 +1295,7 @@ enum autodraw_types* autodraw_ptr;
 
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[tileidx];
-                return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[tileidx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
 
             break;
@@ -1320,7 +1320,7 @@ enum autodraw_types* autodraw_ptr;
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[tileidx];
 
-                return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[tileidx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
 
             break;
@@ -1342,7 +1342,7 @@ enum autodraw_types* autodraw_ptr;
                 int tileidx = get_solid_floor_tile_index(&levl[x][y]);
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[tileidx];
-                return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[tileidx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1366,7 +1366,7 @@ enum autodraw_types* autodraw_ptr;
                 int tileidx = get_shore_and_floor_adjusted_tile_index(&levl[x][y], isok(x, above_y) ? &levl[x][above_y] : 0, isok(left_x, y) ? &levl[left_x][y] : 0, isok(right_x, y) ? &levl[right_x][y] : 0);
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[tileidx];
-                return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[tileidx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1386,7 +1386,7 @@ enum autodraw_types* autodraw_ptr;
                 /* Return the first tile with index 0 */
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
-                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1403,7 +1403,7 @@ enum autodraw_types* autodraw_ptr;
                 /* Return the first tile with index 0 */
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
-                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1420,7 +1420,7 @@ enum autodraw_types* autodraw_ptr;
                 /* Return the first tile with index 0 */
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
-                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1440,7 +1440,7 @@ enum autodraw_types* autodraw_ptr;
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
 
-                return glyph2tile[glyph_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }        
@@ -1460,7 +1460,7 @@ enum autodraw_types* autodraw_ptr;
                 int glyph_idx = (otmp->quan <= 6 ? 0 : 1);
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
-                return glyph2tile[glyph_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1480,14 +1480,14 @@ enum autodraw_types* autodraw_ptr;
                 int glyph_idx = 0;
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
-                return glyph2tile[glyph_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             else if (otmp->obroken)
             {
                 int glyph_idx = 1;
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
-                return glyph2tile[glyph_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1513,7 +1513,7 @@ enum autodraw_types* autodraw_ptr;
                 /* Return the first tile with index 0 */
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
-                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1533,7 +1533,7 @@ enum autodraw_types* autodraw_ptr;
                 /* Return the first tile with index 0 */
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
-                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1553,7 +1553,7 @@ enum autodraw_types* autodraw_ptr;
                 /* Return the first tile with index 0 */
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
-                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }  
@@ -1573,7 +1573,7 @@ enum autodraw_types* autodraw_ptr;
                 int glyph_idx = (layer_flags & LFLAGS_M_DROPPING_PIERCER) ? 1 : 0;
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
-                return glyph2tile[glyph_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
             }
             break;
         }
@@ -1881,7 +1881,7 @@ enum autodraw_types* autodraw_ptr;
                 *autodraw_ptr = animations[animation_idx].frame_autodraw[animation_frame_index];
 
             int tile_anim_idx = (tile_animation_idx < 0 || tile_animation_idx >= animations[animation_idx].number_of_tile_animations ? 0 : tile_animation_idx);
-            int animation_glyph = animation_frame_index + tile_anim_idx * (int)animations[animation_idx].number_of_frames + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
+            int animation_glyph = animation_frame_index + tile_anim_idx * (int)animations[animation_idx].number_of_frames + animation_offsets[animation_idx] /* animations[animation_idx].glyph_offset */ + GLYPH_ANIMATION_OFF;
             int res = glyph2tile[animation_glyph]; /* animated version selected */
             return res;
         }
@@ -2111,7 +2111,7 @@ short animidx;
         for (int j = 0; j < replacements[i].number_of_tiles; j++)
         {
             if (replacements[i].tile_animation[j] == animidx)
-                return glyph2tile[j + replacements[i].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[j + replacement_offsets[i] /* replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
         }
     }
 
@@ -2231,7 +2231,7 @@ short enlidx, enl_anim_tile_idx;
         for (int j = 0; j < replacements[i].number_of_tiles; j++)
         {
             if (replacements[i].tile_enlargement[j] == enlidx)
-                return glyph2tile[j + replacements[i].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[j + replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
         }
     }
 
@@ -2241,7 +2241,7 @@ short enlidx, enl_anim_tile_idx;
         for (int j = 0; j < animations[i].number_of_tiles; j++)
         {
             if (animations[i].tile_enlargement == enlidx && (enl_anim_tile_idx < 0 || enl_anim_tile_idx == j))
-                return glyph2tile[get_animation_frame_with_tile(i, j) + animations[i].glyph_offset + GLYPH_ANIMATION_OFF];
+                return glyph2tile[get_animation_frame_with_tile(i, j) + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF];
         }
     }
 
@@ -2253,7 +2253,7 @@ int
 get_animation_frame_with_tile(animidx, tileidx)
 int animidx, tileidx;
 {
-    for (int i = 0; i < TOTAL_ANIMATION_FRAMES; i++)
+    for (int i = 0; i < TOTAL_NUM_ANIMATION_FRAMES; i++)
     {
         if (animations[animidx].frame2tile[i] == tileidx)
             return i;

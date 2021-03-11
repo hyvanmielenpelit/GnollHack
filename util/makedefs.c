@@ -2400,12 +2400,14 @@ do_animation_offsets()
     Fprintf(ofp, "\nint animation_offsets[MAX_ANIMATIONS] = {");
 
     int cnt = 0;
+    int tileanims = 0;
     for (i = 0; i < MAX_ANIMATIONS; i++) {
         SpinCursor(3);
 
         Fprintf(ofp, "\n\t%d, /* %s */", cnt, animations[i].animation_name);
         //Fprintf(ofp, "\n#define\t%s_%d_OFFSET\t%d /* %s */", "ANIMATION_NAME_HERE", i, cnt, animations[i].animation_name);
-        cnt += animations[i].number_of_frames;
+        tileanims = (int)animations[i].number_of_tile_animations;
+        cnt += animations[i].number_of_frames * (tileanims > 1 ? tileanims : 1);
     }
     Fprintf(ofp, "\n};\n");
     animtot = cnt;

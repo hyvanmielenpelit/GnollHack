@@ -1934,7 +1934,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         addedindex = anim_frame_idx * enlargements[tile2enlargement[ntile]].number_of_enlargement_tiles;
                                     }
                                 }
-                                int enl_glyph = enl_tile_idx + addedindex + enlargements[tile2enlargement[ntile]].glyph_offset + GLYPH_ENLARGEMENT_OFF;
+                                int enl_glyph = enl_tile_idx + addedindex + enlargement_offsets[tile2enlargement[ntile]] /* enlargements[tile2enlargement[ntile]].glyph_offset*/ + GLYPH_ENLARGEMENT_OFF;
                                 ntile = glyph2tile[enl_glyph]; /* replace */
                             }
                             else

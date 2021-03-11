@@ -147,7 +147,6 @@ struct animation_definition {
     enum animation_main_types animation_type;
     char number_of_tiles;
     char number_of_frames;
-    int glyph_offset;
     char number_of_tile_animations;
     char intervals_between_frames;
     enum animation_play_types play_type;
@@ -175,7 +174,6 @@ enum animation_types
     LARGE_KOBOLD_ANIMATION,
     KOBOLD_LORD_ANIMATION,
     KOBOLD_SHAMAN_ANIMATION,
-    /* Do not add before this */
     FREEZING_SPHERE_STAND_ANIMATION,
     FLAMING_SPHERE_STAND_ANIMATION,
     DRACOLICH_ATTACK_ANIMATION,
@@ -1080,7 +1078,6 @@ struct enlargement_definition {
     char number_of_animation_tiles;
     char number_of_animation_frames;
     char number_of_enlargement_tiles;
-    int glyph_offset;
     char width_in_tiles;
     char height_in_tiles;
     char main_tile_x_coordinate; /* Always 0 or 1 on the last row */
@@ -1099,7 +1096,6 @@ struct enlargement_definition {
 
 enum enlargement_types
 {
-    /* Do not add after this until the next comment */
     NO_ENLARGEMENT = 0,
     DRACOLICH_ENLARGEMENT,
     DRACOLICH_STATUE_ENLARGEMENT,
@@ -1161,7 +1157,6 @@ enum enlargement_types
     ANCIENT_BLUE_DRAGON_STATUE_ENLARGEMENT,
     ANCIENT_GREEN_DRAGON_STATUE_ENLARGEMENT,
     ANCIENT_YELLOW_DRAGON_STATUE_ENLARGEMENT,
-    /* Do not add before this */
     TREE_ENLARGEMENT,
     DUNGEON_NORMAL_UPSTAIRS_ENLARGEMENT,
     DUNGEON_NORMAL_BRANCH_UPSTAIRS_ENLARGEMENT,
@@ -2131,7 +2126,6 @@ enum replacement_action_types
 struct replacement_definition {
     const char* replacement_name;
     char number_of_tiles;
-    int glyph_offset;
     unsigned long replacement_events;
     enum replacement_action_types replacement_action; /* hard-coded - defines which tile to use and when */
     enum autodraw_types general_autodraw; /* For zero-tile replacements */

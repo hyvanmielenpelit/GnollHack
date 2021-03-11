@@ -1267,7 +1267,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     char enltile = enlargements[enlargement_idx].position2tile[idx];
                     if (enltile >= 0)
                     {
-                        int glyph = enltile + enlargements[enlargement_idx].glyph_offset + GLYPH_ENLARGEMENT_OFF;
+                        int glyph = enltile + enlargement_offsets[enlargement_idx] /* enlargements[enlargement_idx].glyph_offset */ + GLYPH_ENLARGEMENT_OFF;
                         int etile = glyph2tile[glyph];
                         t_x = TILEBMP_X(etile) + (flip_tile ? tileWidth - 1 : 0);
                         t_y = TILEBMP_Y(etile);

@@ -1844,7 +1844,7 @@ uchar* tilemapflags;
             }
             else if (process_style == 1)
             {
-                tilemaparray[j + replacements[i].glyph_offset + GLYPH_REPLACEMENT_OFF] = tile_count;
+                tilemaparray[j + replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF] = tile_count;
             }
             tile_count++;
         }
@@ -1886,7 +1886,7 @@ uchar* tilemapflags;
                             if (animations[i].frame2tile[k] == j || animations[i].frame2tile[k] == -1)
                             {
                                 int used_tile = animations[i].frame2tile[k] == j ? tile_count : base_tile;
-                                tilemaparray[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = used_tile;
+                                tilemaparray[k + n_frames * m + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF] = used_tile;
                             }
                         }
                     }
@@ -1931,11 +1931,11 @@ uchar* tilemapflags;
                                     if (animations[i].frame2tile[k] == j || animations[i].frame2tile[k] == -1)
                                     {
                                         int used_tile = animations[i].frame2tile[k] == j ? tile_count : base_tile;
-                                        tilemaparray[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = used_tile;
+                                        tilemaparray[k + n_frames * m + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF] = used_tile;
                                         if (hflip)
-                                            tilemapflags[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                            tilemapflags[k + n_frames * m + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
                                         if (vflip)
-                                            tilemapflags[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                            tilemapflags[k + n_frames * m + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
                                     }
                                 }
                             }
@@ -1982,11 +1982,11 @@ uchar* tilemapflags;
                                     if (animations[i].frame2tile[k] == j || animations[i].frame2tile[k] == -1)
                                     {
                                         int used_tile = animations[i].frame2tile[k] == j ? tile_count : base_tile;
-                                        tilemaparray[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = used_tile;
+                                        tilemaparray[k + n_frames * m + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF] = used_tile;
                                         if(hflip)
-                                            tilemapflags[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                            tilemapflags[k + n_frames * m + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
                                         if (vflip)
-                                            tilemapflags[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                            tilemapflags[k + n_frames * m + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
                                     }
                                 }
                             }
@@ -2065,7 +2065,7 @@ uchar* tilemapflags;
                             if (animations[anim].frame2tile[f] == enl_anim_tile_idx)
                             {
                                 int addedindex = f * enlargements[i].number_of_enlargement_tiles;
-                                tilemaparray[j + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+                                tilemaparray[j + addedindex + enlargement_offsets[i] /* enlargements[i].glyph_offset */ + GLYPH_ENLARGEMENT_OFF] = tile_count;
                             }
                         }
                     }
@@ -2074,14 +2074,14 @@ uchar* tilemapflags;
                         int addedindex = enl_anim_tile_idx >= 0 ?
                             enl_anim_tile_idx * enlargements[i].number_of_enlargement_tiles
                             : 0;
-                        tilemaparray[j + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+                        tilemaparray[j + addedindex + enlargement_offsets[i] /* enlargements[i].glyph_offset */ + GLYPH_ENLARGEMENT_OFF] = tile_count;
                     }
 
 #if 0
                     for (int k = 0; k < min(enlargements[i].number_of_enlargement_tiles, NUM_POSITIONS_IN_ENLARGEMENT); k++)  /* frame number */
                     {
                         if (enlargements[i].position2tile[k] == j)
-                            tilemaparray[k + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+                            tilemaparray[k + addedindex + enlargement_offsets[i] /* enlargements[i].glyph_offset */ + GLYPH_ENLARGEMENT_OFF] = tile_count;
                     }
 #endif
                 }
@@ -2560,7 +2560,7 @@ uchar* tilemapflags;
                 int anim_idx = replacements[i].tile_animation[j];
                 if (anim_idx)
                 {
-                    int glyph = j + replacements[i].glyph_offset + GLYPH_REPLACEMENT_OFF;
+                    int glyph = j + replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF;
                     int tile = glyph2tile[glyph];
                     tile2animation[tile] = anim_idx;
                 }
@@ -2776,7 +2776,7 @@ uchar* tilemapflags;
                 int enl_idx = replacements[i].tile_enlargement[j];
                 if (enl_idx)
                 {
-                    int glyph = j + replacements[i].glyph_offset + GLYPH_REPLACEMENT_OFF;
+                    int glyph = j + replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF;
                     int tile = glyph2tile[glyph];
                     tile2enlargement[tile] = enl_idx;
                 }
@@ -2791,7 +2791,7 @@ uchar* tilemapflags;
                 char animation_tile_glyph_index = animations[i].frame2tile[j];
                 if (animation_tile_glyph_index >= 0 && animations[i].tile_enlargement)
                 {
-                    int glyph = (int)animation_tile_glyph_index + animations[i].glyph_offset + GLYPH_ANIMATION_OFF;
+                    int glyph = (int)animation_tile_glyph_index + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF;
                     int tile = glyph2tile[glyph];
                     tile2enlargement[tile] = animations[i].tile_enlargement;
                 }
