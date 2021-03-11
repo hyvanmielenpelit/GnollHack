@@ -1533,11 +1533,7 @@ genl_chat_message()
 		if (!*buf || *buf == '\033')
 			return;
 
-#ifdef CURSES_GRAPHICS
-		(void)yn_function(buf, "q", 'q');
-#else
 		pline("> %s", buf);
-#endif
 	}
 }
 
