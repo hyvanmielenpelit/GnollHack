@@ -502,7 +502,7 @@ HSOURCES = $(HACKINCL) date.h onames.h pm.h animoff.h animtotals.h vis_tab.h \
 		lev_comp.h dgn_comp.h dgn_file.h
 
 # the following .o's _must_ be made before any others (for makedefs)
-FIRSTOBJ = monst.o objects.o animdefs.o
+FIRSTOBJ = monst.o objects.o animdef.o
 
 HOBJ = $(FIRSTOBJ) allmain.o alloc.o animation.o apply.o artifact.o attrib.o ball.o \
 	bones.o botl.o cmd.o dbridge.o decl.o detect.o dig.o display.o dlb.o \
@@ -595,8 +595,8 @@ objects.o:
 	$(CC) $(CFLAGS) -c objects.c
 	@rm -f $(MAKEDEFS)
 
-animdefs.o:
-	$(CC) $(CFLAGS) -c animdefs.c
+animdef.o:
+	$(CC) $(CFLAGS) -c animdef.c
 	@rm -f $(MAKEDEFS)
 
 # Qt 3 windowport meta-object-compiler output
