@@ -25,6 +25,9 @@
     <Defs Include = "$(DatDir)oracles"/>
 	<!-- -e -->
     <Defs Include = "$(DatDir)dungeon.pdf"/>
+	<!-- -a -->
+    <Defs Include = "$(IncDir)animoff.h"/>
+    <Defs Include = "$(IncDir)animtotals.h"/>
   </ItemGroup>
   <ItemGroup>
     <Desfiles Include = "arch.des"/>

@@ -192,7 +192,7 @@ HACK_H = $(INCL)\hack.h $(CONFIG_H) $(INCL)\align.h \
 		$(INCL)\dungeon.h $(INCL)\monsym.h $(INCL)\mkroom.h \
 		$(INCL)\objclass.h $(INCL)\youprop.h $(INCL)\prop.h \
 		$(INCL)\permonst.h $(INCL)\mextra.h $(INCL)\monattk.h \
-		$(INCL)\monflag.h $(INCL)\mondata.h $(INCL)\pm.h \
+		$(INCL)\monflag.h $(INCL)\mondata.h $(INCL)\pm.h $(INCL)\animoff.h $(INCL)\animtotals.h \
 		$(INCL)\wintype.h $(INCL)\decl.h $(INCL)\quest.h \
 		$(INCL)\spell.h $(INCL)\color.h $(INCL)\obj.h \
 		$(INCL)\you.h $(INCL)\attrib.h $(INCL)\monst.h \
@@ -227,7 +227,7 @@ default : all
 #  Everything
 #
 
-all :	$(INCL)\date.h	$(INCL)\onames.h $(INCL)\pm.h \
+all :	$(INCL)\date.h	$(INCL)\onames.h $(INCL)\pm.h $(INCL)\animoff.h $(INCL)\animtotals.h \
 	$(SRC)\monstr.c	$(SRC)\vis_tab.c $(U)lev_comp.exe $(INCL)\vis_tab.h \
 	$(U)dgn_comp.exe $(U)uudecode.exe \
 	$(DAT)\data	$(DAT)\rumors	 $(DAT)\dungeon \
@@ -313,6 +313,12 @@ $(INCL)\onames.h : $(U)makedefs.exe
 
 $(INCL)\pm.h : $(U)makedefs.exe
 	$(U)makedefs -p
+
+$(INCL)\animoff.h : $(U)makedefs.exe
+	$(U)makedefs -a
+
+$(INCL)\animtotals.h : $(U)makedefs.exe
+	$(U)makedefs -a
 
 #$(INCL)\trap.h : $(U)makedefs.exe
 #	$(U)makedefs -t

@@ -332,7 +332,7 @@ HACK_H = $(INCL)\hack.h $(CONFIG_H) $(INCL)\align.h $(INCL)\context.h \
 		$(INCL)\dungeon.h $(INCL)\monsym.h $(INCL)\mkroom.h \
 		$(INCL)\objclass.h $(INCL)\youprop.h $(INCL)\prop.h \
 		$(INCL)\permonst.h $(INCL)\monattk.h \
-		$(INCL)\monflag.h $(INCL)\mondata.h $(INCL)\pm.h \
+		$(INCL)\monflag.h $(INCL)\mondata.h $(INCL)\pm.h $(INCL)\animoff.h $(INCL)\animtotals.h \
 		$(INCL)\wintype.h $(INCL)\decl.h $(INCL)\quest.h \
 		$(INCL)\spell.h $(INCL)\color.h $(INCL)\obj.h \
 		$(INCL)\you.h $(INCL)\attrib.h $(INCL)\monst.h $(INCL)\lint.h \
@@ -736,7 +736,7 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\bovine.des  $(DAT)\ca
 	cd $(SRC)
 	echo sp_levs done > $(O)sp_lev.tag
 
-$(O)utility.tag: $(INCL)\date.h $(INCL)\onames.h $(INCL)\pm.h \
+$(O)utility.tag: $(INCL)\date.h $(INCL)\onames.h $(INCL)\pm.h $(INCL)\animoff.h $(INCL)\animtotals.h \
 		$(SRC)\vis_tab.c  \
 		$(U)levcomp.exe	$(INCL)\vis_tab.h \
 		$(U)dgncomp.exe $(TILEUTIL16)
@@ -937,6 +937,12 @@ $(INCL)\onames.h : $(U)makedefs.exe
 
 $(INCL)\pm.h : $(U)makedefs.exe
 	$(U)makedefs -p
+
+$(INCL)\animoff.h : $(U)makedefs.exe
+	$(U)makedefs -a
+
+$(INCL)\animtotals.h : $(U)makedefs.exe
+	$(U)makedefs -a
 
 $(INCL)\vis_tab.h: $(U)makedefs.exe
 	$(U)makedefs -z
@@ -1289,6 +1295,8 @@ spotless: clean
 	if exist $(INCL)\date.h          del $(INCL)\date.h
 	if exist $(INCL)\onames.h        del $(INCL)\onames.h
 	if exist $(INCL)\pm.h            del $(INCL)\pm.h
+	if exist $(INCL)\animoff.h       del $(INCL)\animoff.h
+	if exist $(INCL)\animtotals.h    del $(INCL)\animtotals.h
 	if exist $(INCL)\vis_tab.h       del $(INCL)\vis_tab.h
 	if exist $(SRC)\vis_tab.c        del $(SRC)\vis_tab.c
 	if exist $(SRC)\tile.c           del $(SRC)\tile.c

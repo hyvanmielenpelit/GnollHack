@@ -31,15 +31,18 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\animdef.c" />
     <ClCompile Include="..\..\..\util\makedefs.c" />
     <ClCompile Include="..\..\..\src\monst.c" />
     <ClCompile Include="..\..\..\src\objects.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\animation.h" />
     <ClInclude Include="..\..\..\include\config.h" />
     <ClInclude Include="..\..\..\include\config1.h" />
     <ClInclude Include="..\..\..\include\context.h" />
     <ClInclude Include="..\..\..\include\coord.h" />
+    <ClInclude Include="..\..\..\include\general.h" />
     <ClInclude Include="..\..\..\include\global.h" />
     <ClInclude Include="..\..\..\include\monattk.h" />
     <ClInclude Include="..\..\..\include\monflag.h" />

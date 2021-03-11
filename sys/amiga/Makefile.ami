@@ -130,7 +130,7 @@ OO = $(NH)objo/
 #   of SAS/C, we would comment out these following two lines.
 #   If we don't use precompiled header files, we uncomment it as well.
 
-HDEP	= $(I)hack.h $(I)pm.h $(I)onames.h
+HDEP	= $(I)hack.h $(I)pm.h $(I)animoff.h $(I)animtotals.h $(I)onames.h
 CSYM	=
 
 #[MANX]
@@ -204,7 +204,7 @@ ASM	= asm
 #
 #GSTSRC=$(AMI)gst.c
 #
-#GSTHEAD=$(I)hack.h $(I)pm.h $(I)trap.h $(I)onames.h \
+#GSTHEAD=$(I)hack.h $(I)pm.h $(I)animoff.h $(I)animtotals.h $(I)trap.h $(I)onames.h \
 #	$(AMI)winami.p $(AMI)amidos.p $(AMI)amiwind.p
 #
 #GSTFILE=$(O)NetHack.gst
@@ -639,12 +639,16 @@ spotless:  clean
 #	-delete $(TDFILES)
 #	-delete $(VDFILES)
 #	-delete $(WDFILES)
-	-delete $(I)onames.h $(I)pm.h $(I)date.h
+	-delete $(I)onames.h $(I)pm.h $(I)animoff.h $(I)animtotals.h $(I)date.h
 	-delete $(NHS)tile.c $(NHS)monstr.c
 	-delete $(I)tile.h 
 #	-echo to $(I)onames.h "" noline
 #	-wait 2
 #	-echo to $(I)pm.h "" noline
+#	-wait 2
+#	-echo to $(I)animoff.h "" noline
+#	-wait 2
+#	-echo to $(I)animtotals.h "" noline
 #	-wait 2
 #	-setdate $(UTIL)makedefs.c
 #	-wait 2
@@ -662,7 +666,7 @@ spotless:  clean
 ###   sys/amiga sources, compiled first, define things differently than the
 ###   main sources want them.
 ##
-##$(HDEP):  $(I)hack.h $(I)pm.h $(I)onames.h
+##$(HDEP):  $(I)hack.h $(I)pm.h $(I)animoff.h $(I)animtotals.h $(I)onames.h
 ##	-delete $(I)hack.sym
 ##	echo to Ram:hackincl.c "#include <hack.h>"
 ##	$(CC) $(CFLAGS) $(CSYM) $(OBJSPEC)Ram:hackincl.o Ram:hackincl.c
@@ -711,7 +715,7 @@ $(SBIN)lev_comp:  $(SPLEVOBJS)
 $(SBIN)dgn_comp:  $(DGNCOMPOBJS)
 	$(LINK) $(LNSPEC) $(SBIN)dgn_comp $(LIN) $(DGNCOMPOBJS) $(FBFIL) $(FLLIB)
 
-$(OO)lev_yacc.o:  $(UTIL)lev_yacc.c $(HDEP) $(I)sp_lev.h $(I)pm.h $(I)onames.h
+$(OO)lev_yacc.o:  $(UTIL)lev_yacc.c $(HDEP) $(I)sp_lev.h $(I)pm.h $(I)animoff.h $(I)animtotals.h $(I)onames.h
 #	setdate $(UTIL)lev_yacc.c
 	$(CC) $(DEFSPEC)LEV_LEX_C $(DEFSPEC)PREFIX="NH:slib/" $(CFLAGS) \
 		$(DEFSPEC)alloca=malloc $(OBJSPEC)$@ $(UTIL)lev_yacc.c
@@ -719,7 +723,7 @@ $(OO)lev_yacc.o:  $(UTIL)lev_yacc.c $(HDEP) $(I)sp_lev.h $(I)pm.h $(I)onames.h
 $(OO)lev_lex.o: $(UTIL)lev_lex.c $(HDEP) $(I)lev_comp.h $(I)sp_lev.h
 	$(CC) $(DEFSPEC)LEV_LEX_C $(CFLAGS) $(OBJSPEC)$@ $(UTIL)lev_lex.c
 
-$(OO)lev_main.o:  $(UTIL)lev_main.c $(HDEP) $(I)pm.h $(I)onames.h $(I)date.h
+$(OO)lev_main.o:  $(UTIL)lev_main.c $(HDEP) $(I)pm.h $(I)animoff.h $(I)animtotals.h $(I)onames.h $(I)date.h
 	$(CC) $(DEFSPEC)LEV_LEX_C $(DEFSPEC)AMIGA $(CFLAGS) $(OBJSPEC)$@ \
 		$(UTIL)lev_main.c
 
@@ -815,6 +819,18 @@ $(I)pm.h:  $(SBIN)makedefs
 	$(SBIN)makedefs -p
 	$(EXECUTE) $(AMI)ifchange TOUCH $(I)t.pm.h $(I)pm.h $(I)decl.h $(I)youprop.h
 	$(EXECUTE) $(AMI)ifchange MOVE $(I)t.pm.h $(I)pm.h
+	-wait 2
+
+$(I)animoff.h:  $(SBIN)makedefs
+	$(SBIN)makedefs -a
+	$(EXECUTE) $(AMI)ifchange TOUCH $(I)t.animoff.h $(I)animoff.h $(I)decl.h $(I)youprop.h
+	$(EXECUTE) $(AMI)ifchange MOVE $(I)t.animoff.h $(I)animoff.h
+	-wait 2
+
+$(I)animtotals.h:  $(SBIN)makedefs
+	$(SBIN)makedefs -a
+	$(EXECUTE) $(AMI)ifchange TOUCH $(I)t.animtotals.h $(I)animtotals.h $(I)decl.h $(I)youprop.h
+	$(EXECUTE) $(AMI)ifchange MOVE $(I)t.animtotals.h $(I)animtotals.h
 	-wait 2
 
 $(SLIB)quest.dat:	$(DAT)quest.txt $(SBIN)makedefs

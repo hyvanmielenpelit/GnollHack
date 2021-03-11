@@ -2045,8 +2045,8 @@ boolean give_feedback;
 
     coord cc;
 
-    //if(tele_restrict(mtmp))
-    //    return FALSE;
+    if((mtmp->data->geno & G_UNIQ) && tele_restrict(mtmp))
+        return FALSE;
 
     if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) 
     {

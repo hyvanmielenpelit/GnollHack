@@ -379,7 +379,7 @@ PCCONF_H   = $(INCL)/micro.h	$(INCL)/system.h    $(INCL)/pcconf.h \
 CONFIG_H   = $(GLOBAL_H)	$(INCL)/tradstdc.h  $(INCL)/config1.h \
 	    $(INCL)/config.h
 DECL_H	   = $(YOU_H)		$(INCL)/spell.h	    $(INCL)/color.h   \
-	     $(INCL)/obj.h	$(INCL)/onames.h    $(INCL)/pm.h      \
+	     $(INCL)/obj.h	$(INCL)/onames.h    $(INCL)/pm.h     $(INCL)/animoff.h     $(INCL)/animtotals.h       \
 	      $(INCL)/decl.h
 GLOBAL_H   = $(PCCONF_H)	$(INCL)/coord.h	   $(INCL)/global.h
 HACK_H	   = $(CONFIG_H)	$(INCL)/context.h  $(DUNGEON_H)	       \
@@ -426,7 +426,7 @@ default: $(GAMEFILE)
 util: $(O)utility.tag
 
 $(O)utility.tag: $(INCL)/date.h $(INCL)/trap.h    $(INCL)/onames.h	       \
-	$(INCL)/pm.h	  monstr.c   vis_tab.c	\
+	$(INCL)/pm.h	$(INCL)/animoff.h	$(INCL)/animtotals.h	   monstr.c   vis_tab.c	\
 	$(U)lev_comp.exe $(U)dgn_comp.exe $(TILEUTIL)
 	$(subst /,\,echo utilities made > $@)
 
@@ -570,6 +570,8 @@ spotless: clean
 	$(subst /,\,if exist $(INCL)/vis_tab.h del $(INCL)/vis_tab.h)
 	$(subst /,\,if exist $(INCL)/onames.h del $(INCL)/onames.h)
 	$(subst /,\,if exist $(INCL)/pm.h del $(INCL)/pm.h)
+	$(subst /,\,if exist $(INCL)/animoff.h del $(INCL)/animoff.h)
+	$(subst /,\,if exist $(INCL)/animtotals.h del $(INCL)/animtotals.h)
 	$(subst /,\,if exist $(INCL)/date.h del $(INCL)/date.h)
 	$(subst /,\,if exist $(INCL)/dgn_comp.h del $(INCL)/dgn_comp.h)
 	$(subst /,\,if exist $(INCL)/lev_comp.h del $(INCL)/lev_comp.h)
@@ -627,6 +629,12 @@ $(INCL)/onames.h: $(U)makedefs.exe
 
 $(INCL)/pm.h: $(U)makedefs.exe
 	-$(subst /,\,$(U)makedefs -p)
+
+$(INCL)/animoff.h: $(U)makedefs.exe
+	-$(subst /,\,$(U)makedefs -a)
+
+$(INCL)/animtotals.h: $(U)makedefs.exe
+	-$(subst /,\,$(U)makedefs -a)
 
 monstr.c: $(U)makedefs.exe
 	-$(subst /,\,$(U)makedefs -m)

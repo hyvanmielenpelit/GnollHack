@@ -181,7 +181,7 @@ HACKINCL = align.h amiconf.h artifact.h artilist.h attrib.h beconf.h color.h \
 	   tosconf.h tradstdc.h trampoli.h trap.h unixconf.h vision.h \
 	   vmsconf.h wintty.h winX.h winprocs.h wintype.h you.h youprop.h
 
-#HSOURCES = $(HACKINCL) date.h onames.h pm.h vis_tab.h\
+#HSOURCES = $(HACKINCL) date.h onames.h pm.h animoff.h animtotals.h vis_tab.h\
 #		lev_comp.h dgn_comp.h dgn_file.h
 
 # the following .obj's should be made before any others (for makedefs)
@@ -297,6 +297,14 @@ $(INC)pm.h :	$(MAKEDEFS)
 	$(CD) $(UTL)
 	$(MAKE)$(MAKEFLAGS) $(INC)pm.h
       @ $(CD) $(SRC)
+$(INC)animoff.h :	$(MAKEDEFS)
+	$(CD) $(UTL)
+	$(MAKE)$(MAKEFLAGS) $(INC)animoff.h
+      @ $(CD) $(SRC)
+$(INC)animtotals.h :	$(MAKEDEFS)
+	$(CD) $(UTL)
+	$(MAKE)$(MAKEFLAGS) $(INC)animtotals.h
+      @ $(CD) $(SRC)
 # both vis_tab.h and vis_tab.c are made at the same time by makedefs
 $(INC)vis_tab.h : vis_tab.c
 	$(TOUCH) $(INC)vis_tab.h
@@ -337,7 +345,7 @@ spotless :	clean
       - if f$search("$(SYSTEM)").nes."" then  delete $(SYSTEM)
       - if f$search("$(GAME)").nes."" then  delete $(GAME)
       - delete vis_tab.c;,$(INC)vis_tab.h;,\
- $(INC)pm.h;,$(INC)onames.h;,$(INC)date.h;
+ $(INC)pm.h;,$(INC)animoff.h;,$(INC)animtotals.h;,$(INC)onames.h;,$(INC)date.h;
       - if f$search("tile.c").nes."" then  delete tile.c;
       - if f$search("tclib.c").nes."" then  delete tclib.c;
       - if f$search("random.c").nes."" then  delete random.c;
@@ -358,7 +366,7 @@ $(HACK_H) : $(INC)hack.h $(CONFIG_H) $(INC)align.h \
 		$(INC)dungeon.h $(INC)monsym.h $(INC)mkroom.h \
 		$(INC)objclass.h $(INC)youprop.h $(INC)prop.h \
 		$(INC)permonst.h $(INC)monattk.h \
-		$(INC)monflag.h $(INC)mondata.h $(INC)pm.h \
+		$(INC)monflag.h $(INC)mondata.h $(INC)pm.h $(INC)animoff.h $(INC)animtotals.h \
 		$(INC)wintype.h $(INC)context.h $(INC)decl.h $(INC)quest.h \
 		$(INC)spell.h $(INC)color.h $(INC)obj.h \
 		$(INC)you.h $(INC)attrib.h $(INC)monst.h \

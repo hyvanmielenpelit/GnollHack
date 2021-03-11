@@ -220,7 +220,6 @@ typedef struct strbuf {
 
 #include "align.h"
 #include "dungeon.h"
-#include "fountain.h"
 #include "monsym.h"
 #include "mkroom.h"
 #include "npc.h"
@@ -275,6 +274,10 @@ typedef struct sortloot_item Loot;
 */
 
 #include "animation.h"
+extern int animation_offsets[MAX_ANIMATIONS];
+extern int enlargement_offsets[MAX_ENLARGEMENTS];
+extern int replacement_offsets[MAX_REPLACEMENTS];
+
 #include "trap.h"
 #include "flag.h"
 #include "rm.h"

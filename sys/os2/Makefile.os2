@@ -720,7 +720,7 @@ HACK_H	   = $(CONFIG_H) $(INCL)\context.h $(DECL_H) $(INCL)\monsym.h $(INCL)\mkr
 	     $(INCL)\objclass.h $(TRAP_H) $(INCL)\engrave.h $(INCL)\flag.h \
 	     $(INCL)\rm.h $(INCL)\dungeon.h $(INCL)\hack.h $(INCL)\display.h \
 	     $(INCL)\vision.h $(INCL)\wintty.h $(INCL)\wintype.h $(INCL)\align.h \
-	     $(INCL)\winprocs.h $(INCL)\sys.h $(INCL)\npc.h $(INCL)\general.h
+	     $(INCL)\winprocs.h $(INCL)\sys.h $(INCL)\npc.h $(INCL)\general.h $(INCL)\animoff.h $(INCL)\animtotals.h
 
 #
 #	The default target.
@@ -1172,6 +1172,9 @@ $(INCL)\onames.h : $(TEMP)\makedefs.exe
 $(INCL)\pm.h : $(TEMP)\makedefs.exe
 	$(TEMP)\makedefs -p
 
+$(INCL)\animoff.h : $(TEMP)\makedefs.exe
+	$(TEMP)\makedefs -a
+
 monstr.c : $(TEMP)\makedefs.exe
 	$(TEMP)\makedefs -m
 
@@ -1519,6 +1522,8 @@ spotless : clean
 	-$(RM) $(INCL)\date.h
 	-$(RM) $(INCL)\onames.h
 	-$(RM) $(INCL)\pm.h
+	-$(RM) $(INCL)\animoff.h
+	-$(RM) $(INCL)\animtotals.h
 	-$(RM) $(INCL)\vis_tab.h
 	-$(RM) vis_tab.c
 	-$(RM) monstr.c

@@ -2,6 +2,8 @@
  * Layers. Copyright (c) Janne Gustafsson, 2020
  *
  */
+#include "tradstdc.h"
+#include "config.h"
 
 #ifndef LAYER_H
 #define LAYER_H

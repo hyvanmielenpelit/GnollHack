@@ -410,12 +410,16 @@ spotless:  clean
 #	-delete $(TDFILES)
 #	-delete $(VDFILES)
 #	-delete $(WDFILES)
-	-delete $(I)onames.h $(I)pm.h $(I)date.h
+	-delete $(I)onames.h $(I)pm.h $(I)animoff.h $(I)animtotals.h $(I)date.h
 	-delete $(NHS)tile.c $(NHS)monstr.c
 	-delete $(I)tile.h 
 #	-echo to $(I)onames.h "" noline
 #	-c:wait 2
 #	-echo to $(I)pm.h "" noline
+#	-c:wait 2
+#	-echo to $(I)animoff.h "" noline
+#	-c:wait 2
+#	-echo to $(I)animtotals.h "" noline
 #	-c:wait 2
 #	-setdate $(UTIL)makedefs.c
 #	-c:wait 2
@@ -442,7 +446,7 @@ $(SBIN)lev_comp:  $(SPLEVOBJS)
 $(SBIN)dgn_comp:  $(DGNCOMPOBJS)
 	$(LINK) $(LNSPEC) $(SBIN)dgn_comp $(LIN) $(DGNCOMPOBJS) $(FBFIL) $(FLLIB)
 
-$(OO)lev_yacc.o:  $(UTIL)lev_yacc.c $(HDEP) $(I)sp_lev.h $(I)pm.h $(I)onames.h
+$(OO)lev_yacc.o:  $(UTIL)lev_yacc.c $(HDEP) $(I)sp_lev.h $(I)pm.h $(I)animoff.h $(I)animtotals.h $(I)onames.h
 #	setdate $(UTIL)lev_yacc.c
 	$(CC) $(DEFSPEC)LEV_LEX_C $(DEFSPEC)PREFIX="NH:slib/" $(CFLAGS) \
 		$(DEFSPEC)alloca=malloc $(OBJSPEC)$@ $(UTIL)lev_yacc.c
@@ -450,7 +454,7 @@ $(OO)lev_yacc.o:  $(UTIL)lev_yacc.c $(HDEP) $(I)sp_lev.h $(I)pm.h $(I)onames.h
 $(OO)lev_lex.o: $(UTIL)lev_lex.c $(HDEP) $(I)lev_comp.h $(I)sp_lev.h
 	$(CC) $(DEFSPEC)LEV_LEX_C $(CFLAGS) $(OBJSPEC)$@ $(UTIL)lev_lex.c
 
-$(OO)lev_main.o:  $(UTIL)lev_main.c $(HDEP) $(I)pm.h $(I)onames.h $(I)date.h
+$(OO)lev_main.o:  $(UTIL)lev_main.c $(HDEP) $(I)pm.h $(I)animoff.h $(I)animtotals.h $(I)onames.h $(I)date.h
 	$(CC) $(DEFSPEC)LEV_LEX_C $(DEFSPEC)AMIGA $(CFLAGS) $(OBJSPEC)$@ \
 		$(UTIL)lev_main.c
 
@@ -543,6 +547,18 @@ $(I)pm.h:  $(SBIN)makedefs
 	$(SBIN)makedefs -p
 	$(EXECUTE) ifchange TOUCH $(I)t.pm.h $(I)pm.h $(I)decl.h $(I)youprop.h
 	$(EXECUTE) ifchange MOVE $(I)t.pm.h $(I)pm.h
+	-c:wait 2
+
+$(I)animoff.h:  $(SBIN)makedefs
+	$(SBIN)makedefs -a
+	$(EXECUTE) ifchange TOUCH $(I)t.animoff.h $(I)animoff.h $(I)decl.h $(I)youprop.h
+	$(EXECUTE) ifchange MOVE $(I)t.animoff.h $(I)animoff.h
+	-c:wait 2
+
+$(I)animtotals.h:  $(SBIN)makedefs
+	$(SBIN)makedefs -a
+	$(EXECUTE) ifchange TOUCH $(I)t.animtotals.h $(I)animtotals.h $(I)decl.h $(I)youprop.h
+	$(EXECUTE) ifchange MOVE $(I)t.animtotals.h $(I)animtotals.h
 	-c:wait 2
 
 $(SLIB)quest.dat:	$(DAT)quest.txt $(SBIN)makedefs

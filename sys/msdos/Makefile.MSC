@@ -262,7 +262,7 @@ PCCONF_H   = $(INCL)\micro.h	$(INCL)\system.h    $(INCL)\pcconf.h \
 CONFIG_H   = $(GLOBAL_H)	$(INCL)\tradstdc.h  $(INCL)\config1.h \
 	    $(INCL)\config.h
 DECL_H	   = $(YOU_H)		$(INCL)\spell.h	    $(INCL)\color.h   \
-	     $(INCL)\obj.h	$(INCL)\onames.h    $(INCL)\pm.h      \
+	     $(INCL)\obj.h	$(INCL)\onames.h    $(INCL)\pm.h    $(INCL)\animoff.h    $(INCL)\animtotals.h     \
 	      $(INCL)\decl.h
 GLOBAL_H   = $(PCCONF_H)	$(INCL)\coord.h	    $(INCL)\global.h
 HACK_H	   = $(CONFIG_H)	$(INCL)\context.h   $(DUNGEON_H) $(DECL_H) \
@@ -448,7 +448,7 @@ $(O)sp_lev.tag: $(O)utility.tag $(SPLEVDES)
 	@echo sp_levs done >$(O)sp_lev.tag
 	
 $(O)utility.tag: $(INCL)\date.h $(INCL)\trap.h  \
-        $(INCL)\onames.h $(INCL)\pm.h monstr.c vis_tab.c \
+        $(INCL)\onames.h $(INCL)\pm.h $(INCL)\animoff.h $(INCL)\animtotals.h monstr.c vis_tab.c \
 	$(U)lev_comp.exe $(U)dgn_comp.exe $(U)recover.exe $(TILEUTIL)
 	-@if exist $(O)utility.tag del $(O)utility.tag
 	@echo utilities made > $@
@@ -512,6 +512,8 @@ spotless: clean
 	if exist $(U)recover.exe   del $(U)recover.exe
 	if exist $(INCL)\onames.h  del $(INCL)\onames.h
 	if exist $(INCL)\pm.h	   del $(INCL)\pm.h
+	if exist $(INCL)\animoff.h	   del $(INCL)\animoff.h
+	if exist $(INCL)\animtotals.h	   del $(INCL)\animtotals.h
 	if exist $(INCL)\vis_tab.h del $(INCL)\vis_tab.h
 	if exist $(INCL)\pcvideo.h del $(INCL)\pcvideo.h
 	if exist $(MSYS)\pctiles.h del $(MSYS)\pctiles.h
@@ -546,6 +548,8 @@ spotless: clean
 	if exist $(INCL)\date.h	   del $(INCL)\date.h
 	if exist $(INCL)\onames.h  del $(INCL)\onames.h
 	if exist $(INCL)\pm.h	   del $(INCL)\pm.h
+	if exist $(INCL)\animoff.h	   del $(INCL)\animoff.h
+	if exist $(INCL)\animtotals.h	   del $(INCL)\animtotals.h
 	if exist $(INCL)\vis_tab.h del $(INCL)\vis_tab.h
 	if exist vis_tab.c	   del vis_tab.c
 	if exist *.lnk		   del *.lnk
@@ -607,6 +611,11 @@ $(INCL)\onames.h: $(U)makedefs.exe
 
 $(INCL)\pm.h: $(U)makedefs.exe
 	-$(U)makedefs -p
+
+$(INCL)\animoff.h: $(U)makedefs.exe
+	-$(U)makedefs -a
+$(INCL)\animtotals.h: $(U)makedefs.exe
+	-$(U)makedefs -a
 
 monstr.c: $(U)makedefs.exe
 	-$(U)makedefs -m

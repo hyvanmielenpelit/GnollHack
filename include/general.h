@@ -16,6 +16,7 @@
 #define TALK_COUNT 10  
 #define NATTK 8	         /* Maximum number of attacks per monster */
 #define MAXNASTIES 10    /* more than this can be created */
+#define WARNCOUNT 7		 /* number of different warning levels */
 
 /* types of calls to bhit() */
 enum bhit_call_types {
@@ -310,6 +311,20 @@ struct special_view_info {
 	enum special_view_types viewtype;
 };
 
+/* Fountain types */
+enum fountain_subtypes
+{
+	FOUNTAIN_NATURAL = 0,
+	FOUNTAIN_MAGIC,
+	FOUNTAIN_HEALING,
+	FOUNTAIN_MANA,
+	FOUNTAIN_POWER,
+	FOUNTAIN_POISON,
+	FOUNTAIN_WATER,
+	MAX_FOUNTAIN_SUBTYPES
+};
+
+#define LAST_SHUFFLED_FOUNTAIN FOUNTAIN_POISON
 
 
 #define PICKLOCK_LEARNED_SOMETHING (-1) /* time passes */

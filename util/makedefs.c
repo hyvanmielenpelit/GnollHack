@@ -13,7 +13,7 @@
 #endif
 #include "permonst.h"
 #include "objclass.h"
-//#include "animation.h"
+#include "animation.h"
 #include "monsym.h"
 #include "artilist.h"
 #include "dungeon.h"
@@ -61,7 +61,8 @@ static const char SCCS_Id[] UNUSED = "@(#)makedefs.c\t3.6\t2019/05/07";
 #define DATE_FILE "date.h"
 #define MONST_FILE "pm.h"
 #define ONAME_FILE "onames.h"
-#define ANIMATION_FILE "animation_offsets.h"
+#define ANIMATION_OFFSET_FILE "animoff.h"
+#define ANIMATION_TOTALS_FILE "animtotals.h"
 #ifndef OPTIONS_FILE
 #define OPTIONS_FILE "options"
 #endif
@@ -2378,42 +2379,83 @@ do_permonst()
 void
 do_animation_offsets()
 {
-#if 0
+
     int i;
+    int animtot = 0, enltot = 0, repltot = 0;
 
     filename[0] = '\0';
 #ifdef FILE_PREFIX
     Strcat(filename, file_prefix);
 #endif
-    Sprintf(eos(filename), INCLUDE_TEMPLATE, ANIMATION_FILE);
+    Sprintf(eos(filename), INCLUDE_TEMPLATE, ANIMATION_OFFSET_FILE);
     if (!(ofp = fopen(filename, WRTMODE))) {
         perror(filename);
         exit(EXIT_FAILURE);
     }
     Fprintf(ofp, "%s", Dont_Edit_Code);
-    Fprintf(ofp, "#ifndef ANIMATION_OFFSETS_H\n#define ANIMATION_OFFSETS_H\n");
+    //Fprintf(ofp, "#ifndef ANIMOFF_H\n#define ANIMOFF_H\n");
+
+    Fprintf(ofp, "\n#include \"animation.h\"\n");
+
+    Fprintf(ofp, "\nint animation_offsets[MAX_ANIMATIONS] = {");
 
     int cnt = 0;
     for (i = 0; i < MAX_ANIMATIONS; i++) {
         SpinCursor(3);
 
-        Fprintf(ofp, "\n#define\t%s-%d_OFFSET\t%d", "ANIMATION_NAME_HERE", i, cnt);
+        Fprintf(ofp, "\n\t%d, /* %s */", cnt, animations[i].animation_name);
+        //Fprintf(ofp, "\n#define\t%s_%d_OFFSET\t%d /* %s */", "ANIMATION_NAME_HERE", i, cnt, animations[i].animation_name);
         cnt += animations[i].number_of_frames;
     }
-    Fprintf(ofp, "\n\n#define\tTOTAL_ANIMATION_FRAMES\t%d\n", cnt);
+    Fprintf(ofp, "\n};\n");
+    animtot = cnt;
 
+    Fprintf(ofp, "\nint enlargement_offsets[MAX_ENLARGEMENTS] = {");
     cnt = 0;
     for (i = 0; i < MAX_ENLARGEMENTS; i++) {
         SpinCursor(3);
 
-        Fprintf(ofp, "\n#define\t%s-%d_OFFSET\t%d", "ENLARGEMENT_NAME_HERE", i, cnt);
-        cnt += enlargements[i].number_of_enlargement_tiles;
+        Fprintf(ofp, "\n\t%d, /* %s */", cnt, enlargements[i].enlargement_name);
+        //Fprintf(ofp, "\n#define\t%s_%d_OFFSET\t%d /* %s */", "ENLARGEMENT_NAME_HERE", i, cnt, enlargements[i].enlargement_name);
+        cnt += enlargements[i].number_of_enlargement_tiles * max(1, enlargements[i].number_of_animation_frames);
     }
-    Fprintf(ofp, "\n\n#define\tTOTAL_ENLARGEMENT_FRAMES\t%d\n", cnt);
+    Fprintf(ofp, "\n};\n");
+    enltot = cnt;
 
-    Fprintf(ofp, "\n\n#endif /* ANIMATION_OFFSETS_H */\n");
+    Fprintf(ofp, "\nint replacement_offsets[MAX_REPLACEMENTS] = {");
+    cnt = 0;
+    for (i = 0; i < MAX_REPLACEMENTS; i++) {
+        SpinCursor(3);
+
+        Fprintf(ofp, "\n\t%d, /* %s */", cnt, replacements[i].replacement_name);
+        //Fprintf(ofp, "\n#define\t%s_%d_OFFSET\t%d /* %s */", "REPLACEMENT_NAME_HERE", i, cnt, replacements[i].replacement_name);
+        cnt += replacements[i].number_of_tiles;
+    }
+    Fprintf(ofp, "\n};\n");
+    repltot = cnt;
+
+    //Fprintf(ofp, "\n\n#endif /* ANIMOFF_H */\n");
     Fclose(ofp);
+
+
+    filename[0] = '\0';
+#ifdef FILE_PREFIX
+    Strcat(filename, file_prefix);
 #endif
+    Sprintf(eos(filename), INCLUDE_TEMPLATE, ANIMATION_TOTALS_FILE);
+    if (!(ofp = fopen(filename, WRTMODE))) {
+        perror(filename);
+        exit(EXIT_FAILURE);
+    }
+    Fprintf(ofp, "%s", Dont_Edit_Code);
+    Fprintf(ofp, "#ifndef ANIMTOTALS_H\n#define ANIMTOTALS_H\n");
+    Fprintf(ofp, "\n#define\tTOTAL_NUM_ANIMATION_FRAMES\t%d", animtot);
+    Fprintf(ofp, "\n#define\tTOTAL_NUM_ENLARGEMENT_TILES\t%d", enltot);
+    Fprintf(ofp, "\n#define\tTOTAL_NUM_REPLACEMENT_TILES\t%d", repltot);
+    Fprintf(ofp, "\n\n#endif /* ANIMTOTALS_H */\n");
+
+    Fclose(ofp);
+
     return;
 }
 

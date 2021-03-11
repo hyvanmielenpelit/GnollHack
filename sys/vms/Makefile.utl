@@ -173,6 +173,10 @@ $(INC)onames.h	: $(MAKEDEFS)
 	$(RUN) $(MAKEDEFS) -o
 $(INC)pm.h	: $(MAKEDEFS)
 	$(RUN) $(MAKEDEFS) -p
+$(INC)animoff.h	: $(MAKEDEFS)
+	$(RUN) $(MAKEDEFS) -a
+$(INC)animtotals.h	: $(MAKEDEFS)
+	$(RUN) $(MAKEDEFS) -a
 # both vis_tab.h and vis_tab.c are made at the same time by makedefs -z
 $(INC)vis_tab.h : $(SRC)vis_tab.c
 	$(TOUCH) $(INC)vis_tab.h

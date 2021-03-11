@@ -191,6 +191,7 @@
     <ClCompile Include="$(SrcDir)matcomps.c" />
     <ClCompile Include="$(SrcDir)tiledata.c" />
     <ClCompile Include="$(SrcDir)animation.c" />
+    <ClCompile Include="$(SrcDir)animdef.c" />
     <ClCompile Include="$(SrcDir)soundset.c" />
     <ClCompile Include="$(SrcDir)rm.c" />
     <ClCompile Include="$(SrcDir)npc.c" />
@@ -262,8 +263,9 @@
     <ClInclude Include="$(WinCursDir)cursstat.h" />
     <ClInclude Include="$(WinCursDir)curswins.h" />
     <ClInclude Include="$(IncDir)animation.h" />
+    <ClInclude Include="$(IncDir)animoff.h" />
+    <ClInclude Include="$(IncDir)animtotals.h" />
     <ClInclude Include="$(IncDir)encounter.h" />
-    <ClInclude Include="$(IncDir)fountain.h" />
     <ClInclude Include="$(IncDir)matcomps.h" />
     <ClInclude Include="$(IncDir)tiledata.h" />
     <ClInclude Include="$(IncDir)layer.h" />

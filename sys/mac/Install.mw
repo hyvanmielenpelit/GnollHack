@@ -34,6 +34,7 @@ default).  Later you may wish to only run a few of them.  The options are
 				-r creates :lib:rumors
 				-h creates :lib:oracles
 				-q creates :lib:quest.dat
+				-a creates :include:animoff.h
 
 
 4. If you are _not_ using DLB, follow these directions.  As of v3.3, DLB is ON

@@ -6,21 +6,12 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#ifndef VISION_H
 #include "vision.h"
-#endif
-#ifndef MONDATA_H
 #include "mondata.h" /* for mindless() */
-#endif
-#ifndef YOU_H
 #include "you.h"
-#endif
-#ifndef LAYER_H
 #include "layer.h"
-#endif
-#ifndef GENERAL_H
 #include "general.h"
-#endif
+#include "animtotals.h"
 
 /* Flags for newsym */
 #define NEWSYM_FLAGS_NONE                               0x00000000UL
@@ -368,9 +359,9 @@
 #define GLYPH_UI_TILE_OFF  (MAX_GENERAL_TILES + GLYPH_GENERAL_TILE_OFF)
 #define GLYPH_BUFF_OFF  (MAX_UI_TILES + GLYPH_UI_TILE_OFF)
 #define GLYPH_REPLACEMENT_OFF  (MAX_BUFF_TILES + GLYPH_BUFF_OFF)
-#define GLYPH_ANIMATION_OFF  (TOTAL_REPLACEMENT_TILES + GLYPH_REPLACEMENT_OFF)
-#define GLYPH_ENLARGEMENT_OFF  (TOTAL_ANIMATION_FRAMES + GLYPH_ANIMATION_OFF)
-#define MAX_GLYPH         (TOTAL_ENLARGEMENT_TILES + GLYPH_ENLARGEMENT_OFF)
+#define GLYPH_ANIMATION_OFF  (TOTAL_NUM_REPLACEMENT_TILES + GLYPH_REPLACEMENT_OFF)
+#define GLYPH_ENLARGEMENT_OFF  (TOTAL_NUM_ANIMATION_FRAMES + GLYPH_ANIMATION_OFF)
+#define MAX_GLYPH         (TOTAL_NUM_ENLARGEMENT_TILES + GLYPH_ENLARGEMENT_OFF)
 
 #define NO_GLYPH          MAX_GLYPH
 #define GLYPH_INVISIBLE   GLYPH_INVIS_OFF

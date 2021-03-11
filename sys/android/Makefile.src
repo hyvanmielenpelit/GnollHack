@@ -316,7 +316,7 @@ HACK_H	= ../src/hack.h-t
 
 # all .c that are part of the main NetHack program and are not operating- or
 # windowing-system specific
-HACKCSRC = allmain.c alloc.c animation.c apply.c artifact.c attrib.c ball.c bones.c \
+HACKCSRC = allmain.c alloc.c animation.c animdef.c animoff.c animoff.c apply.c artifact.c attrib.c ball.c bones.c \
 	   botl.c cmd.c dbridge.c decl.c detect.c dig.c display.c dlb.c do.c \
 	   do_name.c do_wear.c dog.c dogmove.c dokick.c dothrow.c drawing.c \
 	   dungeon.c eat.c encounter.c end.c engrave.c exper.c explode.c extralev.c \
@@ -364,7 +364,7 @@ CSOURCES = $(HACKCSRC) $(SYSSRC) $(WINCSRC) $(GENCSRC)
 #
 HACKINCL = action.h align.h amiconf.h androidconf.h animation.h artifact.h artilist.h attrib.h beconf.h \
 	botl.h color.h config.h config1.h context.h coord.h decl.h def_os2.h \
-	display.h dlb.h dungeon.h encounter.h engrave.h extern.h flag.h fountain.h func_tab.h \
+	display.h dlb.h dungeon.h encounter.h engrave.h extern.h flag.h func_tab.h \
 	general.h global.h hack.h layer.h lev.h lint.h macconf.h matcomps.h mextra.h mfndpos.h micro.h \
 	mkroom.h \
 	monattk.h mondata.h monflag.h monst.h monsym.h npc.h obj.h objclass.h \
@@ -373,7 +373,7 @@ HACKINCL = action.h align.h amiconf.h androidconf.h animation.h artifact.h artil
 	trampoli.h trap.h unixconf.h vision.h vmsconf.h wintty.h \
 	winX.h winprocs.h wintype.h you.h youprop.h
 
-HSOURCES = $(HACKINCL) date.h onames.h pm.h vis_tab.h\
+HSOURCES = $(HACKINCL) date.h onames.h pm.h animoff.h animtotals.h vis_tab.h\
 		lev_comp.h dgn_comp.h dgn_file.h
 
 # the following .o's _must_ be made before any others (for makedefs)
@@ -497,6 +497,9 @@ $(MAKEDEFS): ../util/makedefs.c  $(CONFIG_H) ../include/permonst.h \
 	@( cd ../util ; $(MAKE) ../include/onames.h )
 ../include/pm.h: $(MAKEDEFS)
 	@( cd ../util ; $(MAKE) ../include/pm.h )
+../include/animoff.h: $(MAKEDEFS)
+	@( cd ../util ; $(MAKE) ../include/animoff.h )
+# makedefs -z makes both animoff.h and animtotals.h, but writes the animoff.h first
 monstr.c: $(MAKEDEFS)
 	@( cd ../util ; $(MAKE) ../src/monstr.c )
 ../include/vis_tab.h: $(MAKEDEFS)
@@ -541,7 +544,7 @@ clean:
 
 spotless: clean
 	-rm -f a.out core $(GAME) Sys*
-	-rm -f ../include/date.h ../include/onames.h ../include/pm.h
+	-rm -f ../include/date.h ../include/onames.h ../include/pm.h ../include/animoff.h ../include/animtotals.h
 	-rm -f monstr.c ../include/vis_tab.h vis_tab.c tile.c *.moc
 	-rm -f ../win/gnome/gn_rip.h
 
@@ -579,7 +582,7 @@ $(HACK_H): ../include/hack.h $(CONFIG_H) ../include/lint.h ../include/align.h \
 		../include/dungeon.h ../include/monsym.h ../include/mkroom.h \
 		../include/objclass.h ../include/youprop.h ../include/prop.h \
 		../include/permonst.h ../include/monattk.h \
-		../include/monflag.h ../include/mondata.h ../include/pm.h \
+		../include/monflag.h ../include/mondata.h ../include/pm.h ../include/animoff.h ../include/animtotals.h \
 		../include/wintype.h ../include/context.h ../include/decl.h \
 		../include/quest.h ../include/spell.h ../include/color.h \
 		../include/obj.h ../include/you.h ../include/attrib.h \

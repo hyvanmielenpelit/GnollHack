@@ -859,7 +859,7 @@ YOUPROP_H   = $(INCL)\prop.h $(PERMONST_H) $(INCL)\pm.h $(INCL)\youprop.h \
 YOU_H	    = $(INCL)\attrib.h $(INCL)\monst.h $(INCL)\mextra.h $(YOUPROP_H) \
               $(INCL)\align.h
 DECL_H      = $(INCL)\quest.h $(INCL)\spell.h $(INCL)\color.h \
-	      $(INCL)\obj.h $(YOU_H) $(INCL)\onames.h $(INCL)\pm.h
+	      $(INCL)\obj.h $(YOU_H) $(INCL)\onames.h $(INCL)\pm.h $(INCL)\animtotals.h
 
 CONFIG_H    = $(INCL)\config1.h $(INCL)\tradstdc.h $(INCL)\coord.h $(PCCONF_H) \
 	      $(INCL)\config.h
@@ -991,7 +991,7 @@ $(DAT)\sp_lev.tag: $(U)utility.tag $(SPLEVDES)
 	echo sp_levs done > $(DAT)\sp_lev.tag
 
 $(U)utility.tag: envchk			$(INCL)\date.h	$(INCL)\onames.h \
-		$(INCL)\pm.h 		$(SRC)\monstr.c	$(SRC)\vis_tab.c \
+		$(INCL)\pm.h 		$(INCL)\animoff.h 	$(INCL)\animtotals.h 	$(SRC)\monstr.c	$(SRC)\vis_tab.c \
 		$(U)lev_comp.exe	$(VIS_TAB_H) 	$(U)dgn_comp.exe \
 		$(U)recover.exe		$(TILEUTIL)
              @echo utilities made >$@
@@ -1047,6 +1047,12 @@ $(INCL)\onames.h : $(U)makedefs.exe
 
 $(INCL)\pm.h : $(U)makedefs.exe
 	$(U)makedefs -p
+
+$(INCL)\animoff.h : $(U)makedefs.exe
+	$(U)makedefs -a
+
+$(INCL)\animtotals.h : $(U)makedefs.exe
+	$(U)makedefs -a
 
 #$(INCL)\trap.h : $(U)makedefs.exe
 #	$(U)makedefs -t
@@ -1399,6 +1405,8 @@ spotless: clean
 	if exist $(DATE_H)    del $(DATE_H)
 	if exist $(INCL)\onames.h  del $(INCL)\onames.h
 	if exist $(INCL)\pm.h      del $(INCL)\pm.h
+	if exist $(INCL)\animoff.h      del $(INCL)\animoff.h
+	if exist $(INCL)\animtotals.h      del $(INCL)\animtotals.h
 	if exist $(VIS_TAB_H) del $(VIS_TAB_H)
 	if exist $(SRC)\vis_tab.c  del $(SRC)\vis_tab.c
 	if exist $(SRC)\tile.c     del $(SRC)\tile.c

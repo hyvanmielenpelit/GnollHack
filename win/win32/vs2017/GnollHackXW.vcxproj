@@ -205,6 +205,7 @@
     <ClCompile Include="$(SrcDir)matcomps.c" />
     <ClCompile Include="$(SrcDir)tiledata.c" />
     <ClCompile Include="$(SrcDir)animation.c" />
+    <ClCompile Include="$(SrcDir)animdef.c" />
     <ClCompile Include="$(SrcDir)soundset.c" />
     <ClCompile Include="$(WinWin32Dir)mhwingdi.cpp" />
     <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
@@ -251,9 +252,11 @@
     <ClInclude Include="$(WinWin32Dir)\sdl\sdlproc.h" />
     <ClInclude Include="..\..\..\ext\nuklear\nuklear_glfw_gl2.h" />
     <ClInclude Include="..\..\..\ext\nuklear\nuklear_sdl_gles2.h" />
-    <ClInclude Include="..\..\..\include\onames.h" />
-    <ClInclude Include="..\..\..\include\patchlevel.h" />
-    <ClInclude Include="..\..\..\include\pm.h" />
+    <ClInclude Include="$(IncDir)onames.h" />
+    <ClInclude Include="$(IncDir)patchlevel.h" />
+    <ClInclude Include="$(IncDir)pm.h" />
+    <ClInclude Include="$(IncDir)animoff.h" />
+    <ClInclude Include="$(IncDir)animtotals.h" />
     <ClInclude Include="..\sdl\resource.h" />
   </ItemGroup>
   <ItemGroup>

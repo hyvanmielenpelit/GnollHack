@@ -271,6 +271,7 @@ $ link makedefs.obj,'nethacklib'/Lib,[-.src]ident.opt/Opt,[-.src]crtl/Opt
 $ milestone "makedefs"
 $! create some build-time files
 $ makedefs -p	!pm.h
+$ makedefs -a	!animoff.h, animtotals.h
 $ makedefs -o	!onames.h
 $ makedefs -v	!date.h
 $ milestone " (*.h)"

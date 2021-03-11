@@ -169,6 +169,8 @@
     <ClInclude Include="..\..\..\include\action.h" />
     <ClInclude Include="..\..\..\include\align.h" />
     <ClInclude Include="..\..\..\include\animation.h" />
+    <ClInclude Include="..\..\..\include\animoff.h" />
+    <ClInclude Include="..\..\..\include\animtotals.h" />
     <ClInclude Include="..\..\..\include\artifact.h" />
     <ClInclude Include="..\..\..\include\artilist.h" />
     <ClInclude Include="..\..\..\include\attrib.h" />
@@ -186,7 +188,6 @@
     <ClInclude Include="..\..\..\include\engrave.h" />
     <ClInclude Include="..\..\..\include\extern.h" />
     <ClInclude Include="..\..\..\include\flag.h" />
-    <ClInclude Include="..\..\..\include\fountain.h" />
     <ClInclude Include="..\..\..\include\general.h" />
     <ClInclude Include="..\..\..\include\global.h" />
     <ClInclude Include="..\..\..\include\hack.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="..\..\..\src\allmain.c" />
     <ClCompile Include="..\..\..\src\alloc.c" />
     <ClCompile Include="..\..\..\src\animation.c" />
+    <ClCompile Include="..\..\..\src\animdef.c" />
     <ClCompile Include="..\..\..\src\apply.c" />
     <ClCompile Include="..\..\..\src\artifact.c" />
     <ClCompile Include="..\..\..\src\attrib.c" />

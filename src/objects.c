@@ -3030,7 +3030,7 @@ SPELL("sphere of domination", "pyramid-patterned", None, "Charms adjacent monste
 SPELL("mass domination", "fractal-patterned", "some long-forgotten arcane magic", "Charms nearby monsters permanently",
       P_ENCHANTMENT_SPELL,		2, 10,			 0,11,500, A_MAX_INT_CHA, 0, 5, 100, -4, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, S1_SPELL_IS_NONREVERSIBLE_PERMANENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("invisibility",     "dark brown", None, "The caster becomes invisible",
-      P_ENCHANTMENT_SPELL,		5,  5,			120,4,30, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 2, 10, 80, S1_NONE, CLR_BROWN, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+      P_ENCHANTMENT_SPELL,		5,  5,			 0, 4,30, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 2, 10, 80, S1_NONE, CLR_BROWN, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("enchant armor",		  "glowing", None, "Increases the enchantment on a piece of armor",
 	  P_ENCHANTMENT_SPELL,		5, 3,			 0, 3,20, A_MAX_INT_CHA, 0, 0, 300, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("enchant weapon",		  "dark gray", None, "Increases the enchantment on a weapon",

@@ -242,6 +242,9 @@ mdgreph: mdgrep.pl
 	./makedefs -o
 ../include/pm.h: makedefs
 	./makedefs -p
+../include/animoff.h: makedefs
+	./makedefs -a
+# makedefs -a makes both animoff.h and animtotals.h, but writes the animoff.h first
 ../include/vis_tab.h: makedefs
 	./makedefs -z
 # makedefs -z makes both vis_tab.h and vis_tab.c, but writes the .h first
