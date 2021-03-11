@@ -1523,12 +1523,46 @@ const char* nomoodstr;
 	return 1;
 }
 
+void
+genl_chat_message()
+{
+	while (1)
+	{
+		char buf[BUFSIZ] = "";
+		getlin("Chat>", buf);
+		if (!*buf || *buf == '\033')
+			return;
+
+#ifdef CURSES_GRAPHICS
+		(void)yn_function(buf, "q", 'q');
+#else
+		pline("> %s", buf);
+#endif
+	}
+}
+
 STATIC_OVL int
 dochat()
 {
     struct monst *mtmp;
     int tx, ty;
     struct obj *otmp;
+
+    if (!getdir("Talk to whom? (in what direction)")) 
+	{
+        /* decided not to chat */
+        return 0;
+    }
+
+	if (u.dx == 0 && u.dy == 0)
+	{
+		struct special_view_info info = { 0 };
+		info.viewtype = SPECIAL_VIEW_CHAT_MESSAGE;
+
+		/* Chat message functionality */
+		open_special_view(info);
+		return 0;
+	}
 
 	if (u.uswallow)
 	{
@@ -1537,13 +1571,7 @@ dochat()
 		return 0;
 	}
 
-    if (!getdir("Talk to whom? (in what direction)")) 
-	{
-        /* decided not to chat */
-        return 0;
-    }
-
-    if (u.usteed && u.dz > 0)
+	if (u.usteed && u.dz > 0)
 	{
         if (!mon_can_move(u.usteed)) 
 		{
@@ -1563,6 +1591,8 @@ dochat()
 
     if (u.dx == 0 && u.dy == 0) 
 	{
+		/* Note: Used above for chat message --JG */
+
         /*
          * Let's not include this.
          * It raises all sorts of questions: can you wear

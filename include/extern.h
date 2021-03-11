@@ -2851,7 +2851,7 @@ E boolean FDECL(is_npc_item_identification_type, (struct obj*, int));
 E int FDECL(release_item_from_hero_inventory, (struct obj*));
 E int FDECL(ask_shk_reconciliation, (struct monst*));
 E double FDECL(service_cost_charisma_adjustment, (int));
-
+E void NDECL(genl_chat_message);
 
 /* ### soundset.c ### */
 

@@ -242,6 +242,14 @@ void
 genl_open_special_view(info)
 struct special_view_info info;
 {
+    switch (info.viewtype)
+    {
+    case SPECIAL_VIEW_CHAT_MESSAGE:
+        genl_chat_message();
+        break;
+    default:
+        break;
+    }
     return;
 }
 

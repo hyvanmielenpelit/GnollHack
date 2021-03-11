@@ -69,9 +69,5 @@ typedef struct soundsource_t {
 
 
 
-struct special_view_info {
-    int data1;
-};
-
 
 #endif /* LEV_H */

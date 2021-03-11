@@ -296,6 +296,22 @@ enum game_cursor_types
 	MAX_CURSORS
 };
 
+
+
+/* Special view */
+enum special_view_types
+{
+	SPECIAL_VIEW_NONE = 0,
+	SPECIAL_VIEW_CHAT_MESSAGE,
+	MAX_SPECIAL_VIEW_TYPES
+};
+
+struct special_view_info {
+	enum special_view_types viewtype;
+};
+
+
+
 #define PICKLOCK_LEARNED_SOMETHING (-1) /* time passes */
 #define PICKLOCK_DID_NOTHING 0          /* no time passes */
 #define PICKLOCK_DID_SOMETHING 1
