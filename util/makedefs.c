@@ -2412,12 +2412,14 @@ do_animation_offsets()
 
     Fprintf(ofp, "\nint enlargement_offsets[MAX_ENLARGEMENTS] = {");
     cnt = 0;
+    int frames = 0;
     for (i = 0; i < MAX_ENLARGEMENTS; i++) {
         SpinCursor(3);
 
         Fprintf(ofp, "\n\t%d, /* %s */", cnt, enlargements[i].enlargement_name);
         //Fprintf(ofp, "\n#define\t%s_%d_OFFSET\t%d /* %s */", "ENLARGEMENT_NAME_HERE", i, cnt, enlargements[i].enlargement_name);
-        cnt += enlargements[i].number_of_enlargement_tiles * max(1, enlargements[i].number_of_animation_frames);
+        frames = (int)enlargements[i].number_of_animation_frames;
+        cnt += enlargements[i].number_of_enlargement_tiles * (frames > 1 ? frames : 1);
     }
     Fprintf(ofp, "\n};\n");
     enltot = cnt;
