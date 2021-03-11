@@ -5440,7 +5440,8 @@ boolean ordinary;
         break;
 	case SPE_TOUCH_OF_PETRIFICATION:
 	case SPE_FLESH_TO_STONE:
-		if (!Stoned && !Stone_resistance
+    case WAN_PETRIFICATION:
+        if (!Stoned && !Stone_resistance
 			&& !(poly_when_stoned(youmonst.data)
 				&& polymon(PM_STONE_GOLEM))) {
 			int kformat = NO_KILLER_PREFIX;
@@ -5477,6 +5478,7 @@ boolean ordinary;
             damage = 0;
         }
         break;
+    case SPE_DISINTEGRATE:
     case WAN_DISINTEGRATION:
 		damage = 0;
 		if (Disint_resistance || is_incorporeal(youmonst.data) || Invulnerable)
