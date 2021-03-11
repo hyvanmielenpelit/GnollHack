@@ -316,7 +316,7 @@ HACK_H	= ../src/hack.h-t
 
 # all .c that are part of the main NetHack program and are not operating- or
 # windowing-system specific
-HACKCSRC = allmain.c alloc.c animation.c animdef.c animoff.c animoff.c apply.c artifact.c attrib.c ball.c bones.c \
+HACKCSRC = allmain.c alloc.c animation.c animdef.c apply.c artifact.c attrib.c ball.c bones.c \
 	   botl.c cmd.c dbridge.c decl.c detect.c dig.c display.c dlb.c do.c \
 	   do_name.c do_wear.c dog.c dogmove.c dokick.c dothrow.c drawing.c \
 	   dungeon.c eat.c encounter.c end.c engrave.c exper.c explode.c extralev.c \

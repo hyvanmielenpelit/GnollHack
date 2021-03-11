@@ -186,8 +186,8 @@ DLBSRC = dlb_main.c
 UTILSRCS = $(MAKESRC) panic.c $(SPLEVSRC) $(DGNCOMPSRC) $(RECOVSRC) $(DLBSRC)
 
 # files that define all monsters and objects
-CMONOBJ = ../src/monst.c ../src/objects.c
-OMONOBJ = $(OBJDIR)/monst.o $(OBJDIR)/objects.o
+CMONOBJ = ../src/monst.c ../src/objects.c ../src/animdef.c
+OMONOBJ = $(OBJDIR)/monst.o $(OBJDIR)/objects.o $(OBJDIR)/animdef.o
 # files that provide access to GnollHack's names
 CNAMING = ../src/drawing.c ../src/decl.c $(CMONOBJ)
 ONAMING = $(OBJDIR)/drawing.o $(OBJDIR)/decl.o $(OMONOBJ)
@@ -228,7 +228,7 @@ YACCDIST =
 makedefs:	$(MAKEOBJS) mdgrep.h
 	$(CC) $(LFLAGS) -o makedefs $(MAKEOBJS)
 
-makedefs.o: makedefs.c $(CONFIG_H) ../include/permonst.h \
+makedefs.o: makedefs.c $(CONFIG_H) ../include/permonst.h ../include/animation.h \
 		../include/objclass.h ../include/monsym.h \
 		../include/artilist.h ../include/dungeon.h ../include/obj.h \
 		../include/monst.h ../include/you.h ../include/flag.h \

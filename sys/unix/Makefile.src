@@ -437,7 +437,7 @@ HACK_H	= ../src/hack.h-t
 
 # all .c that are part of the main GnollHack program and are not operating- or
 # windowing-system specific
-HACKCSRC = allmain.c animation.c animdef.c animoff.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
+HACKCSRC = allmain.c animation.c animdef.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 	   botl.c cmd.c dbridge.c decl.c detect.c dig.c display.c dlb.c do.c \
 	   do_name.c do_wear.c dog.c dogmove.c dokick.c dothrow.c drawing.c \
 	   dungeon.c eat.c encounter.c end.c engrave.c exper.c explode.c \
@@ -989,7 +989,6 @@ allmain.o: allmain.c $(HACK_H)
 alloc.o: alloc.c $(CONFIG_H)
 animation.o: animation.c $(HACK_H)
 animdef.o: animdef.c $(HACK_H)
-animoff.o: animoff.c $(HACK_H)
 apply.o: apply.c $(HACK_H)
 artifact.o: artifact.c $(HACK_H) ../include/artifact.h ../include/artilist.h
 attrib.o: attrib.c $(HACK_H)
