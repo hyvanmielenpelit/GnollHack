@@ -294,7 +294,8 @@ struct monst* origmonst;
         learn_it = TRUE;
         break;
 	case SPE_SHOCKING_TOUCH:
-		res = 1;
+    case SPE_ELECTROCUTE:
+        res = 1;
 		reveal_invis = TRUE;
 		if (disguised_mimic)
 			seemimic(mtmp);
@@ -333,7 +334,8 @@ struct monst* origmonst;
         learn_it = TRUE;
         break;
     case SPE_BURNING_HANDS:
-		res = 1;
+    case SPE_INCINERATE:
+        res = 1;
 		reveal_invis = TRUE;
 		if (disguised_mimic)
 			seemimic(mtmp);
@@ -352,7 +354,8 @@ struct monst* origmonst;
 		learn_it = TRUE;
 		break;
 	case SPE_FREEZING_TOUCH:
-		res = 1;
+    case SPE_GLACIAL_GRASP:
+        res = 1;
 		reveal_invis = TRUE;
 		if (disguised_mimic)
 			seemimic(mtmp);
@@ -3907,6 +3910,9 @@ struct monst* origmonst;
 		case SPE_SHOCKING_TOUCH:
 		case SPE_BURNING_HANDS:
 		case SPE_FREEZING_TOUCH:
+        case SPE_INCINERATE:
+        case SPE_ELECTROCUTE:
+        case SPE_GLACIAL_GRASP:
         case SPE_HEAVENLY_TOUCH:
         case SPE_TOUCH_OF_DIVINITY:
         case SPE_TOUCH_OF_DEATH:
@@ -5199,7 +5205,8 @@ boolean ordinary;
 		}
 		break;
 	case SPE_SHOCKING_TOUCH:
-		learn_it = TRUE;
+    case SPE_ELECTROCUTE:
+        learn_it = TRUE;
 		if (!Shock_immunity && !Invulnerable)
         {
             play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
@@ -5217,6 +5224,7 @@ boolean ordinary;
 		}
 		break;
     case SPE_BURNING_HANDS:
+    case SPE_INCINERATE:
         learn_it = TRUE;
         if (!Fire_immunity && !Invulnerable)
         {
@@ -5254,7 +5262,8 @@ boolean ordinary;
 		}
 		break;
 	case SPE_FREEZING_TOUCH:
-		learn_it = TRUE;
+    case SPE_GLACIAL_GRASP:
+        learn_it = TRUE;
 		if (!Cold_immunity && !Invulnerable) 
         {
             play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
@@ -5270,8 +5279,9 @@ boolean ordinary;
 			ugolemeffects(AD_COLD, damage);
 			damage = 0;
 		}
-	break;	
-	case SPE_LIGHTNING_BOLT:
+	    break;	
+    case SPE_THUNDERSTRIKE:
+    case SPE_LIGHTNING_BOLT:
 	case WAN_LIGHTNING:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_ELEC, ADFLAGS_SPELL_DAMAGE);
@@ -5310,7 +5320,8 @@ boolean ordinary;
         explode(u.ux, u.uy, objects[obj->otyp].oc_dir_subtype, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, expl_type);
         break;
     }
-	case SPE_FIRE_BOLT:
+    case SPE_FLAME_BURST:
+    case SPE_FIRE_BOLT:
 	case WAN_FIRE:
     case FIRE_HORN:
         learn_it = TRUE;
@@ -5352,7 +5363,8 @@ boolean ordinary;
 		destroy_item(POTION_CLASS, AD_FIRE);
 		destroy_item(POTION_CLASS, AD_FIRE);
 		break;
-	case WAN_COLD:
+    case SPE_GREATER_FROST_RAY:
+    case WAN_COLD:
     case SPE_CONE_OF_COLD:
     case FROST_HORN:
         learn_it = TRUE;
@@ -6101,6 +6113,9 @@ struct obj *obj; /* wand or spell */
 	case SPE_SHOCKING_TOUCH:
 	case SPE_BURNING_HANDS:
 	case SPE_FREEZING_TOUCH:
+    case SPE_INCINERATE:
+    case SPE_ELECTROCUTE:
+    case SPE_GLACIAL_GRASP:
     case SPE_HEAVENLY_TOUCH:
     case SPE_TOUCH_OF_DIVINITY:
     case SPE_TOUCH_OF_DEATH:
