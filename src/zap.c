@@ -129,7 +129,7 @@ struct monst* origmonst;
 
         int applied_level = min(max_level, origmonst == &youmonst ? u.ulevel : origmonst->m_lev);
         int applied_bonuses = applied_level / (int)objects[otyp].oc_spell_per_level_step;
-        for(int i = 0; i < applied_level; i++)
+        for(int i = 0; i < applied_bonuses; i++)
             dmg += (d(objects[otyp].oc_spell_per_level_dice, objects[otyp].oc_spell_per_level_diesize) + objects[otyp].oc_spell_per_level_plus);
     }
     

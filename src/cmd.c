@@ -4962,8 +4962,6 @@ struct ext_func_tab extcmdlist[] = {
 	{ 'S', "skill", "view and advance skills",
 			enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
     { M('s'), "save", "save the game and exit", dosave, IFBURIED | AUTOCOMPLETE | GENERALCMD },
-	{ 'S', "skill", "view and advance skills",
-			enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
 	{ '*', "seeall", "show all equipment in use", doprinuse, IFBURIED },
     { AMULET_SYM, "seeamulet", "show the amulet currently worn",
             dopramulet, IFBURIED },

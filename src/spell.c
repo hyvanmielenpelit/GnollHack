@@ -1436,7 +1436,16 @@ int spell;
 			int max_level = get_maximum_applicable_spell_damage_level(booktype, &youmonst);
 			if(max_level < MAXULEV)
 			{
-				Sprintf(buf, "Level limit:  %d", max_level);
+				int skill_type = objects[booktype].oc_skill;
+				char skillnamebuf[BUFSZ];
+				char skilllevelnamebuf[BUFSZ];
+
+				(void)skill_level_name(skill_type, skilllevelnamebuf, FALSE);
+				strcpy(skillnamebuf, skill_name(skill_type, TRUE));
+				//*skilllevelnamebuf = lowc(*skilllevelnamebuf);
+
+				Sprintf(buf, "Level limit:  %d (%s at %s)", max_level, skilllevelnamebuf, skillnamebuf);
+
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
