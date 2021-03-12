@@ -137,7 +137,7 @@ register struct monst *mtmp;
             monflee(mtmp, 0, FALSE, FALSE);
         }
     } else if (ygold) {
-        const int gold_price = objects[GOLD_PIECE].oc_cost;
+        const long gold_price = objects[GOLD_PIECE].oc_cost;
 
         tmp = (somegold(money_cnt(invent)) + gold_price - 1) / gold_price;
         tmp = min(tmp, ygold->quan);

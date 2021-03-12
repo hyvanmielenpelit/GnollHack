@@ -284,8 +284,6 @@ struct monst* origmonst;
         }
 		else if (u.uswallow || 1)
 		{ //rnd(20) < 10 + find_mac(mtmp))
-			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Spells do the same damage for small and big
-
 			/* resist deals the damage and displays the damage dealt */
             play_sfx_sound_at_location(SFX_MAGIC_ARROW_HIT, mtmp->mx, mtmp->my);
             hit(zap_type_text, mtmp, exclam(dmg), -1, "");
@@ -300,7 +298,6 @@ struct monst* origmonst;
 		reveal_invis = TRUE;
 		if (disguised_mimic)
 			seemimic(mtmp);
-		dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
 
 		if (is_mon_immune_to_elec(mtmp))
 		{
@@ -315,12 +312,31 @@ struct monst* origmonst;
 		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_ELEC, TELL);
 		learn_it = TRUE;
 		break;
-	case SPE_BURNING_HANDS:
+    case SPE_HEAVENLY_TOUCH:
+    case SPE_TOUCH_OF_DIVINITY:
+        res = 1;
+        reveal_invis = TRUE;
+        if (disguised_mimic)
+            seemimic(mtmp);
+
+        if (!(is_demon(mtmp->data) || is_undead(mtmp->data) || is_vampshifter(mtmp)))
+        {
+            play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
+            pline("%s is unaffected by your !", Monnam(mtmp), OBJ_NAME(objects[otyp]));
+            break;
+        }
+        /* resist deals the damage and displays the damage dealt */
+        play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC);
+        Your("%s sears %s!", OBJ_NAME(objects[otyp]), mon_nam(mtmp));
+        (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL);
+        learn_it = TRUE;
+        break;
+    case SPE_BURNING_HANDS:
 		res = 1;
 		reveal_invis = TRUE;
 		if (disguised_mimic)
 			seemimic(mtmp);
-		dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
 
 		if (is_mon_immune_to_fire(mtmp))
 		{
@@ -340,7 +356,6 @@ struct monst* origmonst;
 		reveal_invis = TRUE;
 		if (disguised_mimic)
 			seemimic(mtmp);
-		dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
 
 		if (is_mon_immune_to_cold(mtmp))
 		{
@@ -355,24 +370,24 @@ struct monst* origmonst;
 		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL);
 		learn_it = TRUE;
 		break;
+    case SPE_RAY_OF_RADIANCE:
     case SPE_SUNLIGHT_BEAM:
         res = 1;
         reveal_invis = TRUE;
         if (disguised_mimic)
             seemimic(mtmp);
-        dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
 
         if (is_undead(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp) || hates_light(mtmp->data))
         {
             /* resist deals the damage and displays the damage dealt */
-            pline("The sunlight beam sears %s!", mon_nam(mtmp));
+            pline("The %s sears %s!", OBJ_NAME(objects[otyp]),  mon_nam(mtmp));
             (void)inflict_spell_damage(mtmp, otmp, dmg, AD_CLRC, TELL);
             learn_it = TRUE;
         }
         else
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
-            pline("%s is unaffected by the sunlight beam!", Monnam(mtmp));
+            pline("%s is unaffected by the %s!", Monnam(mtmp), OBJ_NAME(objects[otyp]));
         }
         break;
     case SPE_TOUCH_OF_DEATH:
@@ -1217,7 +1232,7 @@ cure_petrification_here:
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
             special_effect_wait_until_action(0);
-            mtmp->mhp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+            mtmp->mhp += dmg;
 
 			if (mtmp->mhp > mtmp->mhpmax)
 				mtmp->mhp = mtmp->mhpmax;
@@ -3678,6 +3693,7 @@ struct monst* origmonst;
 		case SPE_POWER_WORD_STUN:
 		case SPE_POWER_WORD_BLIND:
         case SPE_SUNLIGHT_BEAM:
+        case SPE_RAY_OF_RADIANCE:
             //Effect moved to resurrection
             break;
 		case WAN_RESURRECTION:
@@ -3891,7 +3907,9 @@ struct monst* origmonst;
 		case SPE_SHOCKING_TOUCH:
 		case SPE_BURNING_HANDS:
 		case SPE_FREEZING_TOUCH:
-		case SPE_TOUCH_OF_DEATH:
+        case SPE_HEAVENLY_TOUCH:
+        case SPE_TOUCH_OF_DIVINITY:
+        case SPE_TOUCH_OF_DEATH:
 		case SPE_TOUCH_OF_PETRIFICATION:
 		case SPE_FLESH_TO_STONE:
 		case SPE_GAZE_OF_PETRIFICATION:
@@ -4710,7 +4728,31 @@ register struct obj *obj;
 
 		break;
 	}
-	case SPE_CIRCLE_OF_FIRE:
+    case SPE_CIRCLE_OF_SUNLIGHT:
+    case SPE_CIRCLE_OF_RADIANCE:
+    {
+        int radius = objects[obj->otyp].oc_spell_radius;
+        for (struct monst* mon = fmon; mon; mon = mon->nmon)
+        {
+            if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
+            {
+                int dmg = get_spell_damage(obj->otyp, &youmonst);
+                if (is_undead(mon->data) || is_demon(mon->data) || is_vampshifter(mon) || hates_light(mon->data))
+                {
+                    if (is_peaceful(mon))
+                        setmangry(mon, FALSE);
+
+                    if (!DEADMONSTER(mon) && mon != u.usteed)
+                    {
+                        (void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, TRUE, dmg, AD_CLRC, canspotmon(mon) ? TELL : NOTELL);
+                    }
+                }
+            }
+        }
+
+        break;
+    }
+    case SPE_CIRCLE_OF_FIRE:
 	{
 		int radius = objects[obj->otyp].oc_spell_radius;
 		for (struct monst* mon = fmon; mon; mon = mon->nmon)
@@ -5174,12 +5216,31 @@ boolean ordinary;
 			damage = 0;
 		}
 		break;
-	case SPE_BURNING_HANDS:
-		learn_it = TRUE;
-		if (!Fire_immunity && !Invulnerable)
-		{
+    case SPE_BURNING_HANDS:
+        learn_it = TRUE;
+        if (!Fire_immunity && !Invulnerable)
+        {
             play_sfx_sound(SFX_MONSTER_ON_FIRE);
             You("burn yourself!");
+            exercise(A_CON, FALSE);
+            damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_FIRE, ADFLAGS_SPELL_DAMAGE);
+        }
+        else
+        {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
+            u_shieldeff();
+            You("burn yourself, but seem unharmed.");
+            ugolemeffects(AD_FIRE, damage);
+            damage = 0;
+        }
+        break;
+    case SPE_HEAVENLY_TOUCH:
+    case SPE_TOUCH_OF_DIVINITY:
+        learn_it = TRUE;
+		if ((is_demon(youmonst.data) || is_undead(youmonst.data)) && !Invulnerable)
+		{
+            play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC);
+            You("sear yourself!");
 			exercise(A_CON, FALSE);
 			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_FIRE, ADFLAGS_SPELL_DAMAGE);
 		}
@@ -5234,37 +5295,21 @@ boolean ordinary;
         (void) flashburn((long) rnd(100));
         break;
 	case SPE_FIREBALL:
-		You("explode a fireball on top of yourself!");
-        explode(u.ux, u.uy, RAY_FIRE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
-        break;
 	case SPE_FIRE_STORM:
-		You("conjure a fire storm on top of yourself!");
-		explode(u.ux, u.uy, RAY_FIRE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
-		break;
 	case SPE_METEOR_SWARM:
-		pline("A meteor shoots at you!");
-		explode(u.ux, u.uy, RAY_FIRE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
-		break;
 	case SPE_ICE_STORM:
-		You("conjure an ice storm on top of yourself!");
-		explode(u.ux, u.uy, RAY_FIRE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FROSTY);
-		break;
-	case SPE_MAGICAL_IMPLOSION:
-		You("engulf yourself in a magical implosion!");
-		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
-		break;
-	case SPE_MAGIC_STORM:
-		You("conjure a storm of arcane magic on top of yourself!");
-		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
-		break;
-	case SPE_THUNDERSTORM:
-		You("conjure a thunderstorm on top of yourself!");
-		explode(u.ux, u.uy, RAY_LIGHTNING, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
-		break;
-	case SPE_DEATHSPELL:
-		You("conjure a death field on top of yourself!");
-		explode(u.ux, u.uy, RAY_DEATH, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
-		break;
+    case SPE_MAGICAL_IMPLOSION:
+    case SPE_MAGIC_STORM:
+    case SPE_THUNDERSTORM:
+    case SPE_CELESTIAL_STORM:
+    case SPE_WRATH_OF_GOD:
+    case SPE_DEATHSPELL:
+    {
+        int expl_type = objects[obj->otyp].oc_damagetype == AD_FIRE ? EXPL_FIERY : objects[obj->otyp].oc_damagetype == AD_COLD ? EXPL_FROSTY : EXPL_MAGICAL;
+        You("conjure % on top of yourself!", OBJ_CONTENT_NAME(obj->otyp) ? an(OBJ_CONTENT_NAME(obj->otyp)) : an(OBJ_NAME(objects[obj->otyp])));
+        explode(u.ux, u.uy, objects[obj->otyp].oc_dir_subtype, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, expl_type);
+        break;
+    }
 	case SPE_FIRE_BOLT:
 	case WAN_FIRE:
     case FIRE_HORN:
@@ -5592,13 +5637,14 @@ boolean ordinary;
 		break;
 	}
     case SPE_SUNLIGHT_BEAM:
+    case SPE_RAY_OF_RADIANCE:
         learn_it = TRUE;
-        damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_CLRC, ADFLAGS_SPELL_DAMAGE);
+        damage = adjust_damage(basedmg, &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_SPELL_DAMAGE);
         if (is_undead(youmonst.data) || is_demon(youmonst.data) || hates_light(youmonst.data)) {
-            pline("Idiot!  You've shot yourself with a sunlight beam!");
+            pline("Idiot!  You've shot yourself with a %s!", OBJ_NAME(objects[obj->otyp]));
         }
         else {
-            pline_The("sunlight beam has no effect on you.");
+            pline_The("%s has no effect on you.", OBJ_NAME(objects[obj->otyp]));
             damage = 0;
         }
         break;
@@ -6055,7 +6101,9 @@ struct obj *obj; /* wand or spell */
 	case SPE_SHOCKING_TOUCH:
 	case SPE_BURNING_HANDS:
 	case SPE_FREEZING_TOUCH:
-	case SPE_TOUCH_OF_DEATH:
+    case SPE_HEAVENLY_TOUCH:
+    case SPE_TOUCH_OF_DIVINITY:
+    case SPE_TOUCH_OF_DEATH:
 	case SPE_TOUCH_OF_PETRIFICATION:
 	case SPE_FLESH_TO_STONE:
 	case SPE_GAZE_OF_PETRIFICATION:
@@ -6063,6 +6111,7 @@ struct obj *obj; /* wand or spell */
 	case SPE_POWER_WORD_STUN:
 	case SPE_POWER_WORD_BLIND:
     case SPE_SUNLIGHT_BEAM:
+    case SPE_RAY_OF_RADIANCE:
     case SPE_MAGIC_ARROW:
     case SPE_ARROW_OF_DIANA:
     case WAN_SLOW_MONSTER:

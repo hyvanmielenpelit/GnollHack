@@ -406,6 +406,7 @@ struct objclass {
 #define IMMEDIATE_TWO_TO_SIX_TARGETS 9 /*		directional but 2 target for cursed, 4 targets for uncursed and 6 targets for blessed in a line like a ray */
 
 #define IMMEDIATE_ITEM_ARROW 1
+#define NODIR_NONE 0
 #define TOUCH_NONE 0
 
 #define PIERCE 1 /* for weapons & tools used as weapons */
@@ -483,15 +484,15 @@ struct objclass {
     unsigned int oc_weight; /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
 	unsigned int oc_nutrition; /* food value */
 
-	int oc_cost;            /* base cost in shops */
+	long oc_cost;            /* base cost in shops */
     
 							  /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
-	int oc_damagetype;						/* Type of damage caused by the (magic) weapon, the same as for monster attacks */
-	int oc_wsdice, oc_wsdam, oc_wsdmgplus;	/* small monster damage, also used for spell damage */
-	int oc_wldice, oc_wldam, oc_wldmgplus;	/* large monster damage, also used for duration for spells */
-	int oc_extra_damagetype;				/* Type of extra damage caused by the (magic) weapon */
-	int oc_wedice, oc_wedam, oc_wedmgplus;	/* extra damage used as a special effect influenced by target permissions mask */
+	short oc_damagetype;						/* Type of damage caused by the (magic) weapon, the same as for monster attacks */
+	short oc_wsdice, oc_wsdam, oc_wsdmgplus;	/* small monster damage, also used for spell damage */
+	short oc_wldice, oc_wldam, oc_wldmgplus;	/* large monster damage, also used for duration for spells */
+	short oc_extra_damagetype;				/* Type of extra damage caused by the (magic) weapon */
+	short oc_wedice, oc_wedam, oc_wedmgplus;	/* extra damage used as a special effect influenced by target permissions mask */
 	unsigned long oc_aflags, oc_aflags2;	/* attack related flags, e.g. whether the attack is vorpal */
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
@@ -566,20 +567,20 @@ struct objclass {
 
 #define S2_NONE									0x00000000UL
 
-	int oc_hitbonus;						/* weapons: "to hit" bonus */
-	int oc_mc_adjustment;					/* weapons: adjustment to any MC checks; spells and wands: MC adjustment */
-	int oc_fixed_damage_bonus;				/* fixed strength-based damage bonus for crossbows; O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH must be on; can be used for other purposes for a spellbook flag */
-	int oc_range;							/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
+	short oc_hitbonus;						/* weapons: "to hit" bonus */
+	short oc_mc_adjustment;					/* weapons: adjustment to any MC checks; spells and wands: MC adjustment */
+	short oc_fixed_damage_bonus;				/* fixed strength-based damage bonus for crossbows; O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH must be on; can be used for other purposes for a spellbook flag */
+	short oc_range;							/* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 
 	/* general purpose */
-	int oc_oc1;		/* Used for spell cooldown; weapons and armors: ac bonus */
-	int oc_oc2;		/* Used for spell level; weapons and armors: mc bonus */
-	int oc_oc3;		/* Used for spell mana cost; other items: mana pool bonus */
-	int oc_oc4;		/* Used for spell attributes; other items: hit point bonus */
-	int oc_oc5;		/* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses to using otmp->enchantment */
-	int oc_oc6;		/* Used for spell radius; non-spellbooks: 0 => enchantment is used, otherise fixed bonus */
-	int oc_oc7;		/* Used for spell casting penalty */
-	int oc_oc8;		/* Used for multishot count */
+	long oc_oc1;		/* Used for spell cooldown; weapons and armors: ac bonus */
+	long oc_oc2;		/* Used for spell level; weapons and armors: mc bonus */
+	long oc_oc3;		/* Used for spell mana cost; other items: mana pool bonus */
+	long oc_oc4;		/* Used for spell attributes; other items: hit point bonus */
+	long oc_oc5;		/* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses to using otmp->enchantment */
+	long oc_oc6;		/* Used for spell radius; non-spellbooks: 0 => enchantment is used, otherise fixed bonus */
+	long oc_oc7;		/* Used for spell casting penalty */
+	long oc_oc8;		/* Used for multishot count */
 
 /* general*/
 #define oc_armor_class oc_oc1						/* weapons and armor: AC used in ARM_AC_BONUS in do.c */

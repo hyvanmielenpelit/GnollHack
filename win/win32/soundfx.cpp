@@ -876,6 +876,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Vampire Transforms", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Gem/Glass/Glass Break", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Monster Is Hit with Celestial Magic", 1.0f },
 
 };
 

@@ -1070,7 +1070,7 @@ boolean* obj_destroyed;
 						displaysustain = TRUE;
 				}
 
-				int spec_adtyp = 0;
+				short spec_adtyp = 0;
 				int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, uarmg, extratmp, dieroll, critstrikeroll, &spec_adtyp);
 				if (special_hit_dmg < 0)
 				{
@@ -1248,7 +1248,7 @@ boolean* obj_destroyed;
 						displaysustain = TRUE;
 				}
 
-				int spec_adtyp = 0;
+				short spec_adtyp = 0;
 				int special_hit_dmg = pseudo_artifact_hit(&youmonst, mon, obj, extratmp, dieroll, critstrikeroll, &spec_adtyp);
 				if (special_hit_dmg < 0)
 				{
@@ -4614,7 +4614,7 @@ adjust_damage(basedamage, magr, mdef, adtyp, ad_flags)
 int basedamage;
 struct monst* magr;
 struct monst* mdef;
-int adtyp;
+short adtyp;
 unsigned long ad_flags;
 {
 	double base_dmg_d = (double)basedamage;
@@ -4622,6 +4622,9 @@ unsigned long ad_flags;
 	boolean you_defend = (mdef && mdef == &youmonst);
 	double monster_damage_multiplier = 1;
 	double monster_hp_multiplier = 1;
+
+	if (adtyp == AD_NONE)
+		adtyp = AD_PHYS; /* Just make sure it does not bypass all checks */
 
 	get_game_difficulty_multipliers(&monster_damage_multiplier, &monster_hp_multiplier);
 

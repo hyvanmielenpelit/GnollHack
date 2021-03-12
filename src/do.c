@@ -1126,7 +1126,7 @@ register struct obj* obj;
 		if(obj->oartifact)
 			Sprintf(buf2, "%ld gold", artilist[obj->oartifact].cost);
 		else
-			Sprintf(buf2, "%d gold", objects[otyp].oc_cost);
+			Sprintf(buf2, "%ld gold", objects[otyp].oc_cost);
 
 		Sprintf(buf, "Base value:             %s", buf2);
 		txt = buf;
@@ -2977,7 +2977,7 @@ register struct obj* obj;
 		if (artilist[obj->oartifact].attk.damn != 0 || artilist[obj->oartifact].attk.damd != 0 || artilist[obj->oartifact].attk.damp != 0)
 		{
 			char dmgttext[BUFSZ] = "";
-			strcpy(dmgttext, get_damage_type_text(artilist[obj->oartifact].attk.adtyp));
+			strcpy(dmgttext, get_damage_type_text((short)artilist[obj->oartifact].attk.adtyp));
 
 			powercnt++;
 			Sprintf(buf, " %2d - Artifact damage type is %s damage", powercnt, dmgttext);
@@ -3637,7 +3637,7 @@ static const char* damage_type_names[] = {
 };
 
 static const char* damage_type_names_high[] = {
-	"fire or poison gas", "disintegration or cold", "ancient gold dragon", "clerical", "magic",
+	"fire or poison gas", "disintegration or cold", "ancient gold dragon", "celestial", "magic",
 	"random draconic", "demon", "controlled creatures", "gnolls", "ghouls",
 	"undead", "minotaurs", "random eye stalk", "random eye stalk", "bison",
 	"steals amulet", "curse",
@@ -3645,7 +3645,7 @@ static const char* damage_type_names_high[] = {
 
 
 const char* get_damage_type_text(damagetype)
-int damagetype;
+short damagetype;
 {
 	if (damagetype >= AD_RBGD && damagetype - AD_RBGD < SIZE(damage_type_names))
 		return damage_type_names_high[damagetype - AD_RBGD];
@@ -3831,7 +3831,7 @@ register struct monst* mon;
 		*attypebuf = highc(*attypebuf);
 
 		strcpy(adtypebuf, "");
-		const char* adtxt = get_damage_type_text(mon->data->mattk[i].adtyp);
+		const char* adtxt = get_damage_type_text((short)mon->data->mattk[i].adtyp);
 		if (adtxt && strcmp(adtxt, ""))
 		{
 			Sprintf(adtypebuf, ", %s", adtxt);

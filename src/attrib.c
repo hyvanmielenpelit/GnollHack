@@ -2153,15 +2153,15 @@ struct monst* mon;
 					)
 				)
 			{
-				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
-					((objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1 : 1;
+				long multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
+					((objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1L : 1L;
 
 				boolean cursed_plus_cursed_good = uitem->cursed && cursed_are_good;
-				int applicable_enchantment = (cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);
+				long applicable_enchantment = (long)(cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);
 
 				for (int i = 0; i <= A_MAX + 6; i++)
 				{
-					int bit = 0;
+					long bit = 0;
 					switch (i)
 					{
 					case A_STR:
@@ -2216,73 +2216,73 @@ struct monst* mon;
 							{
 								if (objects[otyp].oc_bonus_attributes & FIXED_IS_MAXIMUM)
 								{
-									int afixmaxcandidate = objects[otyp].oc_attribute_bonus;
+									long afixmaxcandidate = objects[otyp].oc_attribute_bonus;
 									if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
 										afixmaxcandidate += applicable_enchantment;
 
 									/* Take the lowest maximum (most constraining) */
 									if (afixmaxcandidate < *afixmax_ptr[i])
-										*afixmax_ptr[i] = afixmaxcandidate;
+										*afixmax_ptr[i] = (schar)afixmaxcandidate;
 								}
 								else
 								{
-									int afixmincandidate = objects[otyp].oc_attribute_bonus;
+									long afixmincandidate = objects[otyp].oc_attribute_bonus;
 									if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
 										afixmincandidate += applicable_enchantment;
 
 									/* Take the highest minimum (most constraining) */
 									if (afixmincandidate > *afixmin_ptr[i])
-										*afixmin_ptr[i] = afixmincandidate;
+										*afixmin_ptr[i] = (schar)afixmincandidate;
 								}
 							}
 							else
 							{
-								*abon_ptr[i] += multiplier * objects[otyp].oc_attribute_bonus;
+								*abon_ptr[i] += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
 								if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-									*abon_ptr[i] += applicable_enchantment;
+									*abon_ptr[i] += (schar)applicable_enchantment;
 							}
 						}
 						else if (i == A_MAX + 0)
 						{
-							*daminc_ptr += multiplier * objects[otyp].oc_attribute_bonus;
+							*daminc_ptr += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								*daminc_ptr += applicable_enchantment;
+								*daminc_ptr += (schar)applicable_enchantment;
 						}
 						else if (i == A_MAX + 1)
 						{
-							*hitinc_ptr += multiplier * objects[otyp].oc_attribute_bonus;
+							*hitinc_ptr += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								*hitinc_ptr += applicable_enchantment;
+								*hitinc_ptr += (schar)applicable_enchantment;
 						}
 						else if (i == A_MAX + 2)
 						{
-							*acbonus_ptr += multiplier * objects[otyp].oc_attribute_bonus;
+							*acbonus_ptr += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								*acbonus_ptr += applicable_enchantment;
+								*acbonus_ptr += (schar)applicable_enchantment;
 						}
 						else if (i == A_MAX + 3)
 						{
-							*mcbonus_ptr += multiplier * objects[otyp].oc_attribute_bonus;
+							*mcbonus_ptr += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								*mcbonus_ptr += applicable_enchantment / 3;
+								*mcbonus_ptr += (schar)(applicable_enchantment / 3);
 						}
 						else if (i == A_MAX + 4 && is_you)
 						{
-							u.uspellcastingbonus += multiplier * objects[otyp].oc_attribute_bonus;
+							u.uspellcastingbonus += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								u.uspellcastingbonus += applicable_enchantment;
+								u.uspellcastingbonus += (schar)applicable_enchantment;
 						}
 						else if (i == A_MAX + 5 && is_you)
 						{
-							u.uexperiencebonus += multiplier * objects[otyp].oc_attribute_bonus;
+							u.uexperiencebonus += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								u.uexperiencebonus += applicable_enchantment;
+								u.uexperiencebonus += (schar)applicable_enchantment;
 						}
 						else if (i == A_MAX + 6 && is_you)
 						{
-							u.uarcherybonus += multiplier * objects[otyp].oc_attribute_bonus;
+							u.uarcherybonus += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								u.uarcherybonus += applicable_enchantment;
+								u.uarcherybonus += (schar)applicable_enchantment;
 						}
 					}
 				}

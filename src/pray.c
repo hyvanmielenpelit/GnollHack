@@ -1349,7 +1349,7 @@ gcrownu()
                     discover_artifact(ART_KATANA_OF_MASAMUNE);
                 }
             }
-            else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj->otyp].oc_cost < 2000 && !obj->oartifact)
+            else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj->otyp].oc_cost < 2000L && !obj->oartifact)
 			{
 				if (!Blind)
 					Your("sword shines brightly for a moment.");
@@ -1362,7 +1362,7 @@ gcrownu()
 				}
 			}
 			/* acquire Excalibur's skill regardless of weapon or gift */
-			else if (obj2 && objects[obj2->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj2->otyp].oc_cost < 2000 && !obj2->oartifact)
+			else if (obj2 && objects[obj2->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj2->otyp].oc_cost < 2000L && !obj2->oartifact)
 			{
 				if (!Blind)
 					Your("sword shines brightly for a moment.");

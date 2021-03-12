@@ -4649,6 +4649,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_VAMPIRE_TRANSFORMS, 1.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
+    {
+        "GHSOUND_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC",
+        {GHSOUND_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

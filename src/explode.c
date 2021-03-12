@@ -49,6 +49,14 @@ int expltype;
     coord grabxy;
     char hallu_buf[BUFSZ], killr_buf[BUFSZ];
     short exploding_wand_typ = objtype;
+    struct obj* otmp = (struct obj*)0;
+    struct obj tempobj = { 0 };
+    if (objtype > STRANGE_OBJECT)
+    {
+        tempobj.otyp = objtype;
+        tempobj.oclass = objects[objtype].oc_class;
+        otmp = &tempobj;
+    }
 
     /* muse_unslime: SCR_FIRE */
     if (expltype < 0) {
@@ -105,13 +113,12 @@ int expltype;
             break;
         case 1:
             str = (olet == BURNING_OIL) ? "burning oil"
-                     : (olet == SCROLL_CLASS) ? "tower of flame" : (objtype == SPE_FIRE_STORM) ? "fire storm"
-					 : (objtype == SPE_METEOR_SWARM) ? "meteor explosion" : "fireball";
+                     : (olet == SCROLL_CLASS) ? "tower of flame" : "ball of fire";
             /* fire damage, not physical damage */
             adtyp = AD_FIRE;
             break;
         case 2:
-            str = (objtype == SPE_ICE_STORM) ? "ice storm" : "ball of cold";
+            str = "ball of cold";
             adtyp = AD_COLD;
             break;
         case 4:
@@ -120,7 +127,7 @@ int expltype;
 			instadeath = TRUE;
 			break;
         case 5:
-            str = (objtype == SPE_THUNDERSTORM) ? "thunderstorm" : "ball of lightning";
+            str = "ball of lightning";
             adtyp = AD_ELEC;
             break;
         case 6:
@@ -139,6 +146,17 @@ int expltype;
 		default:
             impossible("explosion base type %d?", type);
             return;
+        }
+
+        /* Override using otyp */
+        if (objtype > 0)
+        {
+            if (OBJ_CONTENT_NAME(objtype) && strcmp(OBJ_CONTENT_NAME(objtype), ""))
+            {
+                str = OBJ_CONTENT_NAME(objtype);
+            }
+            if(objects[objtype].oc_damagetype != AD_NONE)
+                adtyp = (uchar)objects[objtype].oc_damagetype;
         }
 	}
     int damui = objtype > 0 ? get_spell_damage(objtype, origmonst) : max(0, d(dmg_n, dmg_d) + dmg_p);
@@ -205,6 +223,9 @@ int expltype;
                 case AD_ACID:
                     explmask[i][j] = !!Acid_immunity;
                     break;
+                case AD_CLRC:
+                    explmask[i][j] = 3 * !(is_demon(youmonst.data) || is_undead(youmonst.data));
+                    break;
                 default:
                     impossible("explosion type %d?", adtyp);
                     break;
@@ -214,6 +235,7 @@ int expltype;
             mtmp = m_at(i + x - 1, j + y - 1);
             if (!mtmp && i + x - 1 == u.ux && j + y - 1 == u.uy)
                 mtmp = u.usteed;
+
             if (mtmp) 
             {
                 if (DEADMONSTER(mtmp))
@@ -247,10 +269,18 @@ int expltype;
                     case AD_ACID:
                         explmask[i][j] |= is_mon_immune_to_acid(mtmp);
                         break;
+                    case AD_CLRC:
+                        explmask[i][j] |= 3 * !(is_demon(mtmp->data) || is_undead(mtmp->data) || is_vampshifter(mtmp) || hates_light(mtmp->data)); /* Hide shield effect */
+                        break;
                     default:
                         impossible("explosion type %d?", adtyp);
                         break;
                     }
+            }
+            else
+            {
+                if(adtyp == AD_CLRC && !(i + x - 1 == u.ux && j + y - 1 == u.uy))
+                    explmask[i][j] |= 2; /* No floor effects for celestial spells */
             }
 
             if (mtmp && cansee(i + x - 1, j + y - 1) && !canspotmon(mtmp))
@@ -282,8 +312,8 @@ int expltype;
         for (i = 0; i < 3; i++)
             for (j = 0; j < 3; j++) 
             {
-                if (explmask[i][j] == 2)
-                    continue;
+                //if (explmask[i][j] == 2) // Not sure why explosion would not be drawn on dead monsters --JG
+                //    continue;
                 tmp_at(starting ? DISP_BEAM : DISP_CHANGE,
                     explosion_to_glyph(expltype, explosion[i][j]));
                 tmp_at(i + x - 1, j + y - 1);
@@ -378,6 +408,17 @@ int expltype;
             {
                 if (explmask[i][j] == 2)
                     continue;
+
+                if (explmask[i][j] == 3)
+                {
+                    mtmp = m_at(i + x - 1, j + y - 1);
+                    if (!mtmp && i + x - 1 == u.ux && j + y - 1 == u.uy)
+                        mtmp = u.usteed;
+                    if (mtmp)
+                        pline("%s is unaffected.", Monnam(mtmp));
+                    continue;
+                }
+
                 if (i + x - 1 == u.ux && j + y - 1 == u.uy)
                     uhurt = (explmask[i][j] == 1) ? 1 : 2;
                 /* for inside_engulfer, only <u.ux,u.uy> is affected */
@@ -436,6 +477,9 @@ int expltype;
                         case AD_ACID:
                             adj = "an upset stomach";
                             break;
+                        case AD_CLRC:
+                            adj = "irradiated by celestial light";
+                            break;
                         default:
                             adj = "fried";
                             break;
@@ -466,6 +510,9 @@ int expltype;
                             break;
                         case AD_ACID:
                             adj = "burned";
+                            break;
+                        case AD_CLRC:
+                            adj = "seared by celestial light";
                             break;
                         default:
                             adj = "fried";
@@ -503,7 +550,8 @@ int expltype;
                      */
                     double mdam = ddam;
 
-                    if (check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, FALSE, 0, 0, FALSE)) {
+                    if (check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, FALSE)) 
+                    {
                         /* inside_engulfer: <i+x-1,j+y-1> == <u.ux,u.uy> */
                         play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
                         if (cansee(i + x - 1, j + y - 1) || inside_engulfer)

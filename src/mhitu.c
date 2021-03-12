@@ -1967,7 +1967,7 @@ register struct obj* omonwep;
 				if (ahres == 1)
 					displaysustain = TRUE;
 
-				int spec_adtyp = 0;
+				short spec_adtyp = 0;
 				int special_hit_dmg = pseudo_artifact_hit(mtmp, &youmonst, otmp, extradmg, dieroll, critstrikeroll, &spec_adtyp);
 				if (special_hit_dmg < 0)
 				{

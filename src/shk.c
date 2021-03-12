@@ -2148,7 +2148,7 @@ register struct monst *shkp; /* if angry, impose a surcharge */
                 i = STRANGE_OBJECT;
                 break;
             }
-            tmp = (long) objects[i].oc_cost;
+            tmp = objects[i].oc_cost;
         }
 		else if (oid_price_adjustment(obj, obj->o_id) > 0) 
 		{
@@ -2245,7 +2245,7 @@ boolean unpaid_only;
                 && otmp->oclass != BALL_CLASS
                 && !(otmp->oclass == FOOD_CLASS && otmp->oeaten)
                 && !(is_candle(otmp)
-                     && otmp->age < 30L * (long) objects[otmp->otyp].oc_cost))
+                     && otmp->age < 30L * objects[otmp->otyp].oc_cost))
                 price += set_cost(otmp, shkp);
         } else {
             /* no_charge is only set for floor items (including
@@ -3193,7 +3193,7 @@ xchar x, y;
         || obj->oclass == BALL_CLASS || obj->oclass == CHAIN_CLASS
         || offer == 0L || (obj->oclass == FOOD_CLASS && obj->oeaten)
         || (is_candle(obj)
-            && obj->age < 30L * (long) objects[obj->otyp].oc_cost)) 
+            && obj->age < 30L * objects[obj->otyp].oc_cost)) 
     {
         play_sfx_sound(SFX_SEEMS_UNINTERESTED);
 
@@ -3424,7 +3424,7 @@ getprice(obj, shk_buying)
 register struct obj *obj;
 boolean shk_buying;
 {
-    register long tmp = (long) objects[obj->otyp].oc_cost;
+    register long tmp = objects[obj->otyp].oc_cost;
 
     if (obj->oartifact)
     {
@@ -3478,7 +3478,7 @@ boolean shk_buying;
         break;
     case TOOL_CLASS:
         if (is_candle(obj)
-            && obj->age < 30L * (long) objects[obj->otyp].oc_cost)
+            && obj->age < 30L * objects[obj->otyp].oc_cost)
             tmp /= 2L;
         break;
     }
@@ -4592,7 +4592,7 @@ boolean altusage; /* some items have an "alternate" use with different cost */
            what is charged for an ordinary lamp (don't bother with
            angry shk surcharge) */
         if (!altusage)
-            tmp = (long) objects[OIL_LAMP].oc_cost;
+            tmp = objects[OIL_LAMP].oc_cost;
         else
             tmp += tmp / 3L;                 /* djinni is being released */
     } 

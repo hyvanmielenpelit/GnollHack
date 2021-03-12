@@ -491,8 +491,8 @@ learn(VOID_ARGS)
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
         } else {
-            spl_book[i].sp_id = booktype;
-            spl_book[i].sp_lev = objects[booktype].oc_spell_level;
+            spl_book[i].sp_id = (short)booktype;
+            spl_book[i].sp_lev = (xchar)objects[booktype].oc_spell_level;
 			spl_book[i].sp_matcomp = objects[booktype].oc_material_components;
 			if(spl_book[i].sp_matcomp)
 				spl_book[i].sp_amount = 0; //How many times material components have been mixed
@@ -679,7 +679,7 @@ register struct obj *spellbook;
             return 1;
         }
 
-		context.spbook.delay = -min(8, max(1, (objects[booktype].oc_spell_level)))
+		context.spbook.delay = -min(8, max(1, (schar)(objects[booktype].oc_spell_level)))
 			* objects[booktype].oc_delay;
 
         /* Books are often wiser than their readers (Rus.) */
@@ -1372,8 +1372,11 @@ int spell;
 	}
 
 	/* Damage or Healing */
+	boolean damageprinted = FALSE;
 	if (objects[booktype].oc_spell_dmg_dice > 0 || objects[booktype].oc_spell_dmg_diesize > 0 || objects[booktype].oc_spell_dmg_plus > 0)
 	{
+		damageprinted = TRUE;
+
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
 
@@ -1452,9 +1455,24 @@ int spell;
 		}
 	}
 
+	boolean damagetypeprinted = FALSE;
+	if (objects[booktype].oc_damagetype != AD_NONE && damageprinted)
+	{
+		damagetypeprinted = TRUE;
+		char dmgttext[BUFSZ] = "";
+		strcpy(dmgttext, get_damage_type_text(objects[booktype].oc_damagetype));
+		*dmgttext = highc(*dmgttext);
+		if (strcmp(dmgttext, "") != 0)
+		{
+			Sprintf(buf, "Damage type:  %s", dmgttext);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+	}
+	
 	if (objects[booktype].oc_dir_subtype > 0)
 	{
-		if (objects[booktype].oc_dir == RAY)
+		if (objects[booktype].oc_dir == RAY && !damagetypeprinted)
 		{
 			strcpy(buf2, "");
 			strcpy(buf3, "Effect");
@@ -1905,6 +1923,8 @@ boolean atme;
 	case SPE_THUNDERSTORM:
 	case SPE_MAGICAL_IMPLOSION:
 	case SPE_MAGIC_STORM:
+	case SPE_CELESTIAL_STORM:
+	case SPE_WRATH_OF_GOD:
 	case SPE_FIRE_BOLT:
 	case SPE_LIGHTNING_BOLT:
 	case SPE_CONE_OF_COLD:
@@ -1946,6 +1966,8 @@ boolean atme;
 	case SPE_SHOCKING_TOUCH:
 	case SPE_BURNING_HANDS:
 	case SPE_FREEZING_TOUCH:
+	case SPE_HEAVENLY_TOUCH:
+	case SPE_TOUCH_OF_DIVINITY:
 	case SPE_CHARM_MONSTER:
 	case SPE_CONTROL_UNDEAD:
 	case SPE_DOMINATE_MONSTER:
@@ -2019,6 +2041,8 @@ boolean atme;
 	case SPE_MASS_CREATE_MUMMY:
 	case SPE_MASS_CREATE_DRACOLICH:
 	case SPE_SPHERE_OF_ANNIHILATION:
+	case SPE_CIRCLE_OF_SUNLIGHT:
+	case SPE_CIRCLE_OF_RADIANCE:
 	case SPE_CIRCLE_OF_FIRE:
 	case SPE_CIRCLE_OF_FROST:
 	case SPE_CIRCLE_OF_LIGHTNING:
@@ -2705,7 +2729,7 @@ int what;
             save_tport.savespell = spl_book[i];
             save_tport.tport_indx = i;
             spl_book[i].sp_id = SPE_TELEPORT_MONSTER;
-            spl_book[i].sp_lev = objects[SPE_TELEPORT_MONSTER].oc_spell_level;
+            spl_book[i].sp_lev = (xchar)objects[SPE_TELEPORT_MONSTER].oc_spell_level;
 			spl_book[i].sp_matcomp = objects[SPE_TELEPORT_MONSTER].oc_material_components;
 			spl_book[i].sp_cooldownlength = objects[SPE_TELEPORT_MONSTER].oc_spell_cooldown;
 			spl_book[i].sp_cooldownleft = 0;
@@ -4147,8 +4171,8 @@ struct obj *obj;
         /* initial inventory shouldn't contain duplicate spellbooks */
         impossible("Spell %s already known.", OBJ_NAME(objects[otyp]));
     } else {
-        spl_book[i].sp_id = otyp;
-        spl_book[i].sp_lev = objects[otyp].oc_spell_level;
+        spl_book[i].sp_id = (short)otyp;
+        spl_book[i].sp_lev = (xchar)objects[otyp].oc_spell_level;
 		spl_book[i].sp_matcomp = objects[otyp].oc_material_components;
 		if(spl_book[i].sp_matcomp)
 			spl_book[i].sp_amount = matlists[spl_book[i].sp_matcomp].spellsgained; /* Some amount in the beginning */

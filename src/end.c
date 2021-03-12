@@ -1544,7 +1544,7 @@ int how;
             for (i = 0; i < val->size; i++)
                 if (val->list[i].count != 0L) {
                     tmp = val->list[i].count
-                          * (long) objects[val->list[i].typ].oc_cost;
+                          * objects[val->list[i].typ].oc_cost;
                     nowrap_add(u.u_gamescore, tmp);
                 }
 
@@ -1608,7 +1608,7 @@ int how;
                         free_oname(otmp);
                     otmp->quan = count;
                     Sprintf(pbuf, "%8ld %s (worth %ld %s),", count,
-                            xname(otmp), count * (long) objects[typ].oc_cost,
+                            xname(otmp), count * objects[typ].oc_cost,
                             currency(2L));
                     obfree(otmp, (struct obj *) 0);
                 } else {

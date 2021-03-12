@@ -1675,7 +1675,7 @@ struct obj* otmp;
 int extradmg;
 int dieroll; /* needed for Magicbane and vorpal blades */
 int critstrikeroll; /* need to synchronize critical strike based abilities */
-int* adtyp_ptr; /* return value is the type of damage caused */
+short* adtyp_ptr; /* return value is the type of damage caused */
 {
 	if (!otmp || !magr || !mdef)
 		return 0;
@@ -3085,11 +3085,11 @@ arti_cost(otmp)
 struct obj *otmp;
 {
     if (!otmp->oartifact)
-        return (long) objects[otmp->otyp].oc_cost;
+        return objects[otmp->otyp].oc_cost;
     else if (artilist[(int) otmp->oartifact].cost)
         return artilist[(int) otmp->oartifact].cost;
     else
-        return (100L * (long) objects[otmp->otyp].oc_cost);
+        return (100L * objects[otmp->otyp].oc_cost);
 }
 
 struct abil2adtyp_tag {

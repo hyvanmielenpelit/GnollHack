@@ -1337,7 +1337,7 @@ int mkobj_type;
             case WAX_CANDLE:
 				otmp->special_quality = 1;
                 otmp->age = 30L * /* 600 or 300 */
-                            (long) objects[otmp->otyp].oc_cost;
+                            objects[otmp->otyp].oc_cost;
                 otmp->lamplit = 0;
                 otmp->quan = 1L + (long) (rn2(2) ? rn2(7) : 0);
                 blessorcurse(otmp, 5);

@@ -77,7 +77,7 @@ STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
 STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int, const char*));
-STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, int, const char*));
+STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, long, const char*));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
@@ -5131,7 +5131,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	long cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return general_service_query(mtmp, repair_armor_func, "repair an armor", cost, "repairing an armor");
 }
 
@@ -5142,7 +5142,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	long cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return general_service_query(mtmp, repair_weapon_func, "repair a weapon", cost, "repairing a weapon");
 }
 
@@ -5176,7 +5176,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(5, (int)((max(objects[BRASS_LANTERN].oc_cost, objects[POT_OIL].oc_cost)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	long cost = max(5, (int)((max(objects[BRASS_LANTERN].oc_cost, objects[POT_OIL].oc_cost)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return general_service_query(mtmp, refill_lantern_func, "refill a lamp or lantern", cost, "refilling a lamp or lantern");
 }
 
@@ -6077,14 +6077,14 @@ const char* no_mood_string;
 STATIC_OVL int
 general_service_query(mtmp, service_func, service_verb, service_cost, no_mood_string)
 struct monst* mtmp;
-int service_cost;
 int (*service_func)(struct monst*);
 const char* service_verb;
+long service_cost;
 const char* no_mood_string;
 {
 
 	long umoney = money_cnt(invent);
-	int u_pay;
+	long u_pay;
 	char qbuf[QBUFSZ];
 
 	if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
@@ -6096,7 +6096,7 @@ const char* no_mood_string;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to %s?\" (%d %s)", service_verb, service_cost, currency((long)service_cost));
+	Sprintf(qbuf, "\"Would you like to %s?\" (%ld %s)", service_verb, service_cost, currency(service_cost));
 	switch (ynq(qbuf))
 	{
 	default:
@@ -6104,7 +6104,7 @@ const char* no_mood_string;
 	case 'q':
 		return 0;
 	case 'y':
-		if (umoney < (long)service_cost)
+		if (umoney < service_cost)
 		{
 			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
@@ -6117,7 +6117,7 @@ const char* no_mood_string;
 	int res = service_func(mtmp);
 	if (res)
 	{
-		money2mon(mtmp, (long)u_pay);
+		money2mon(mtmp, u_pay);
 		context.botl = 1;
 	}
 
@@ -6350,7 +6350,7 @@ int* spell_otyps;
 			Sprintf(buf2, "learning the spell '%s'", OBJ_NAME(objects[spell_to_learn]));
 			context.spbook.book = &pseudo;
 			context.spbook.reading_result = READING_RESULT_SUCCESS;
-			learn_count = general_service_query(mtmp, learn_spell_func, buf, (int)cost, buf2);
+			learn_count = general_service_query(mtmp, learn_spell_func, buf, cost, buf2);
 			context.spbook.book = 0;
 			context.spbook.reading_result = 0;
 		}
@@ -6375,7 +6375,7 @@ struct monst* mtmp;
 		return 0;
 
 	int i = 0;
-	int booktype = context.spbook.book->otyp;
+	int booktype = (short)context.spbook.book->otyp;
 
 	for (i = 0; i < MAXSPELL; i++)
 		if (spellid(i) == booktype || spellid(i) == NO_SPELL)
@@ -6403,8 +6403,8 @@ struct monst* mtmp;
 	}
 	else
 	{ 
-		spl_book[i].sp_id = booktype;
-		spl_book[i].sp_lev = objects[booktype].oc_spell_level;
+		spl_book[i].sp_id = (short)booktype;
+		spl_book[i].sp_lev = (xchar)objects[booktype].oc_spell_level;
 		spl_book[i].sp_matcomp = objects[booktype].oc_material_components;
 		if (spl_book[i].sp_matcomp)
 			spl_book[i].sp_amount = 0; //How many times material components have been mixed

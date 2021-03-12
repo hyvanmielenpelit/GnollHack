@@ -1513,7 +1513,7 @@ weapon_here:
                    || obj->otyp == BRASS_LANTERN || is_candle(obj)) 
 		{
             if ((is_candle(obj) && obj->otyp != MAGIC_CANDLE
-                && obj->age < 30L * (long) objects[obj->otyp].oc_cost)
+                && obj->age < 30L * objects[obj->otyp].oc_cost)
 				|| (obj->otyp == MAGIC_CANDLE && obj->special_quality < 2)
 				)
                 Strcat(prefix, "partly used ");
@@ -3472,7 +3472,17 @@ static const struct alt_spellings {
 	{ "garlic", CLOVE_OF_GARLIC },
 	{ "sulfurous ash", PINCH_OF_SULFUROUS_ASH },
 	{ "sulphurous ash", PINCH_OF_SULFUROUS_ASH },
-	{ "ash", PINCH_OF_SULFUROUS_ASH },
+    { "iron ore", NUGGET_OF_IRON_ORE },
+    { "copper ore", NUGGET_OF_COPPER_ORE },
+    { "silver ore", NUGGET_OF_SILVER_ORE },
+    { "gold ore", NUGGET_OF_GOLD_ORE },
+    { "platinum ore", NUGGET_OF_PLATINUM_ORE },
+    { "orichalcum ore", NUGGET_OF_ORICHALCUM_ORE },
+    { "orihacon ore", NUGGET_OF_ORICHALCUM_ORE },
+    { "nugget of orihacon ore", NUGGET_OF_ORICHALCUM_ORE },
+    { "mithril ore", NUGGET_OF_MITHRIL_ORE },
+    { "adamantium ore", NUGGET_OF_ADAMANTIUM_ORE },
+    { "ash", PINCH_OF_SULFUROUS_ASH },
 	{ "spinach", HANDFUL_OF_SPINACH_LEAVES },
 	{ "ring of death resistance", RIN_PROTECTION_FROM_UNDEATH },
     { "ring of drain resistance", RIN_PROTECTION_FROM_UNDEATH },

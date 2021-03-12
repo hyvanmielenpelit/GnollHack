@@ -649,7 +649,7 @@ do_oracle_enlightenment(oracl)
 struct monst* oracl;
 {
 	long umoney;
-	int u_pay, enl_cost = max(1, (int)((double)(objects[POT_ENLIGHTENMENT].oc_cost + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int u_pay, enl_cost = max(1, (int)((double)(objects[POT_ENLIGHTENMENT].oc_cost + 5L * (long)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
 	multi = 0;
