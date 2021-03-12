@@ -406,6 +406,7 @@ struct objclass {
 #define IMMEDIATE_TWO_TO_SIX_TARGETS 9 /*		directional but 2 target for cursed, 4 targets for uncursed and 6 targets for blessed in a line like a ray */
 
 #define IMMEDIATE_ITEM_ARROW 1
+#define TOUCH_NONE 0
 
 #define PIERCE 1 /* for weapons & tools used as weapons */
 #define SLASH 2  /* (latter includes iron ball & chain) */
@@ -561,6 +562,7 @@ struct objclass {
 #define S1_NO_VERBAL_COMPONENT					0x00000040UL
 #define S1_DOES_NOT_TAKE_A_TURN					0x00000080UL
 #define S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE 0x00000100UL
+#define S1_LDMG_IS_PER_LEVEL_DMG_INCREASE		0x00000200UL
 
 #define S2_NONE									0x00000000UL
 
@@ -670,7 +672,7 @@ struct objclass {
 #define oc_spell_range oc_oc5			/* books: spell range */
 #define oc_spell_radius oc_oc6			/* books: spell radius */
 #define oc_spell_skill_chance oc_oc7	/* books: % chance of gaining skill points upon casting, also % multiplier for mixing */
-/* oc_oc8 free */
+#define oc_spell_per_level_step oc_oc8	/* books: how many levels to get one per level bonus */
 #define oc_spell_saving_throw_adjustment oc_mc_adjustment	/* books: spell saving throw adjustment */
 #define oc_spell_dmg_dice oc_wsdice		/* books: spell damage no of dice */
 #define oc_spell_dmg_diesize oc_wsdam	/* books: spell damage size of dice */
@@ -678,6 +680,9 @@ struct objclass {
 #define oc_spell_dur_dice oc_wldice		/* books: spell duration no of dice */
 #define oc_spell_dur_diesize oc_wldam	/* books: spell duration size of dice */
 #define oc_spell_dur_plus oc_wldmgplus	/* books: spell duration constant added */
+#define oc_spell_per_level_dice oc_wldice		/* books: spell per level bonus no of dice */
+#define oc_spell_per_level_diesize oc_wldam		/* books: spell per level bonus size of dice */
+#define oc_spell_per_level_plus oc_wldmgplus	/* books: spell per level bonus constant added */
 
 /* potions */
 #define oc_potion_breathe_buc_multiplier oc_oc1
@@ -1090,6 +1095,7 @@ struct fruit {
 #define OBJ_TILE_HEIGHT(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].oc_tile_floor_height)
 #define OBJ_STAND_ANIMATION(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].stand_animation)
 
-
+#define has_spell_otyp_per_level_bonus(otyp) \
+	((objects[otyp].oc_spell_flags & S1_LDMG_IS_PER_LEVEL_DMG_INCREASE) != 0 && objects[otyp].oc_spell_per_level_step > 0)
 
 #endif /* OBJCLASS_H */

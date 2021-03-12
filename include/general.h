@@ -357,6 +357,7 @@ enum fountain_subtypes
 #define ZHITM_FLAGS_HIDE_DAMAGE				0x40
 
 #define DEATH_MAX_HP_FROM_DEATH_RAY 2500
+#define NUM_METEOR_SWARM_METEORS 4
 
 enum main_menu_command {
 	MAIN_MENU_NONE = 0,

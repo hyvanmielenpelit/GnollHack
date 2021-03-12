@@ -2471,7 +2471,7 @@ register struct obj *obj;
             current_container->no_charge = save_no_charge.no_charge;
         }
 
-        explode(u.ux, u.uy, RAY_MAGIC_MISSILE, 2, 6, 0, saved_otyp, saved_oclass, EXPL_MAGICAL);
+        explode(u.ux, u.uy, RAY_MAGIC_MISSILE, (struct monst*)0, 2, 6, 0, saved_otyp, saved_oclass, EXPL_MAGICAL);
         /*delete_contents(current_container);*/
         register struct obj* curr;
         while ((curr = current_container->cobj) != 0) {

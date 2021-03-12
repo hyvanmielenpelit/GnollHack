@@ -25,9 +25,10 @@ static int explosion[3][3] = { { S_explode1, S_explode4, S_explode7 },
  *      that Half_physical_damage only affects the damage applied to the hero.
  */
 void
-explode(x, y, type, dmg_n, dmg_d, dmg_p, objtype, olet, expltype)
+explode(x, y, type, origmonst, dmg_n, dmg_d, dmg_p, objtype, olet, expltype)
 int x, y;
 int type; /* the same as in zap.c; passes -(wand typ) for some WAND_CLASS */
+struct monst* origmonst;
 int dmg_n, dmg_d, dmg_p;
 int objtype;
 char olet;
@@ -140,8 +141,8 @@ int expltype;
             return;
         }
 	}
-    int damui = max(0, d(dmg_n, dmg_d) + dmg_p);
-	double damu = adjust_damage(damui, (struct monst*)0, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
+    int damui = objtype > 0 ? get_spell_damage(objtype, origmonst) : max(0, d(dmg_n, dmg_d) + dmg_p);
+	double damu = adjust_damage(damui, origmonst, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
 	if (olet == WAND_CLASS)
 	{
 		switch (Role_switch)
@@ -371,7 +372,7 @@ int expltype;
             You_hear("a blast.");
     }
 
-    if (((dmg_n > 0 && dmg_d > 0) || dmg_p > 0) || instadeath)
+    if (((dmg_n > 0 && dmg_d > 0) || dmg_p > 0) || objtype > 0 || instadeath)
         for (i = 0; i < 3; i++)
             for (j = 0; j < 3; j++) 
             {
@@ -486,7 +487,7 @@ int expltype;
                 idamnonres += adjust_damage(destroy_mitem(mtmp, WAND_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
                 idamnonres += adjust_damage(destroy_mitem(mtmp, RING_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
 
-                int ddami = max(0, d(dmg_n, dmg_d) + dmg_p);
+                int ddami = objtype > 0 ? get_spell_damage(objtype, origmonst) : max(0, d(dmg_n, dmg_d) + dmg_p);
                 double ddam = adjust_damage(ddami, (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
 
                 if (explmask[i][j] == 1) 
@@ -924,7 +925,7 @@ boolean diluted_oil;
 {
 /* ZT_SPELL(ZT_FIRE) = ZT_SPELL(AD_FIRE-1) = 10+(2-1) = 11 */
 #define ZT_SPELL_O_FIRE 11 /* value kludge, see zap.c */
-    explode(x, y, ZT_SPELL_O_FIRE, diluted_oil ? 3 : 4, 4, 0, 0, BURNING_OIL, EXPL_FIERY);
+    explode(x, y, ZT_SPELL_O_FIRE, (struct monst*)0, diluted_oil ? 3 : 4, 4, 0, 0, BURNING_OIL, EXPL_FIERY);
 }
 
 /* lit potion of oil is exploding; extinguish it as a light source before

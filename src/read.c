@@ -3078,9 +3078,9 @@ boolean *effect_happened_ptr;
         }
 
         if (increased_damage)
-            explode(cc.x, cc.y, 11, 5, 6, 10, otyp, SCROLL_CLASS, EXPL_FIERY);
+            explode(cc.x, cc.y, 11, (struct monst*)0, 5, 6, 10, otyp, SCROLL_CLASS, EXPL_FIERY);
         else
-            explode(cc.x, cc.y, 11, 1, 2, (4 * sbcsign + 2) / 3, otyp, SCROLL_CLASS, EXPL_FIERY);
+            explode(cc.x, cc.y, 11, (struct monst*)0, 1, 2, (4 * sbcsign + 2) / 3, otyp, SCROLL_CLASS, EXPL_FIERY);
 
         break;
     }
@@ -3159,7 +3159,7 @@ boolean *effect_happened_ptr;
             pline("The target is invalid. The spell fizzles out with no effect.");
             break;
         }
-        (void)explode(cc.x, cc.y, RAY_FIRE, 6, 6, 0, otyp, SPBOOK_CLASS, EXPL_FIERY);
+        (void)explode(cc.x, cc.y, RAY_FIRE, &youmonst, 6, 6, 0, otyp, SPBOOK_CLASS, EXPL_FIERY);
         break;
     }
     case SPE_STINKING_CLOUD:

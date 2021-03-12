@@ -84,6 +84,61 @@ const char *const flash_types[] =       /* also used in buzzmu(mcastu.c) */
 
 };
 
+int
+get_maximum_applicable_spell_damage_level(otyp, origmonst)
+int otyp;
+struct monst* origmonst;
+{
+    if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
+        return 0;
+
+    int skill_type = objects[otyp].oc_skill;
+    enum skill_levels skill_level = origmonst == &youmonst ? P_SKILL_LEVEL(skill_type) : is_prince(origmonst->data) ? P_EXPERT : is_lord(origmonst->data) ? P_SKILLED : P_BASIC;
+    int max_level = MAXULEV;
+    if (skill_level <= P_UNSKILLED)
+    {
+        max_level = 6;
+    }
+    else if (skill_level <= P_BASIC)
+    {
+        max_level = 12;
+    }
+    else if (skill_level <= P_SKILLED)
+    {
+        max_level = 24;
+    }
+    else if (skill_level >= P_EXPERT)
+    {
+        max_level = 36;
+    }
+    return max_level;
+}
+
+int 
+get_spell_damage(otyp, origmonst)
+int otyp;
+struct monst* origmonst;
+{
+    if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
+        return 0;
+
+    int dmg = d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;
+    if (has_spell_otyp_per_level_bonus(otyp) && origmonst)
+    {
+        int max_level = get_maximum_applicable_spell_damage_level(otyp, origmonst);
+
+        int applied_level = min(max_level, origmonst == &youmonst ? u.ulevel : origmonst->m_lev);
+        int applied_bonuses = applied_level / (int)objects[otyp].oc_spell_per_level_step;
+        for(int i = 0; i < applied_level; i++)
+            dmg += (d(objects[otyp].oc_spell_per_level_dice, objects[otyp].oc_spell_per_level_diesize) + objects[otyp].oc_spell_per_level_plus);
+    }
+    
+    if (dmg < 0)
+        dmg = 0;
+
+    return dmg;
+}
+
 /*
  * Recognizing unseen wands by zapping:  in 3.4.3 and earlier, zapping
  * most wand types while blind would add that type to the discoveries
@@ -197,8 +252,7 @@ struct monst* origmonst;
     boolean disguised_mimic = (is_mimic(mtmp->data)
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
 	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
-	int dmg = d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;
-
+    int dmg = get_spell_damage(otyp, origmonst);
     int save_adj = get_saving_throw_adjustment(otmp, origmonst);
 
     boolean surpress_noeffect_message = FALSE;
@@ -4596,8 +4650,8 @@ register struct obj *obj;
 				if (is_peaceful(mon))
 					setmangry(mon, FALSE);
 
-				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
-				if (is_mon_immune_to_fire(mon))
+                int dmg = get_spell_damage(obj->otyp, &youmonst);
+                if (is_mon_immune_to_fire(mon))
 				{
 					if (canspotmon(mon))
 					{
@@ -4625,8 +4679,8 @@ register struct obj *obj;
 				if (is_peaceful(mon))
 					setmangry(mon, FALSE);
 
-				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
-				if (is_mon_immune_to_cold(mon))
+                int dmg = get_spell_damage(obj->otyp, &youmonst);
+                if (is_mon_immune_to_cold(mon))
 				{
 					if (canspotmon(mon))
 					{
@@ -4654,8 +4708,8 @@ register struct obj *obj;
 				if (is_peaceful(mon))
 					setmangry(mon, FALSE);
 
-				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
-				if (is_mon_immune_to_elec(mon))
+                int dmg = get_spell_damage(obj->otyp, &youmonst);
+                if (is_mon_immune_to_elec(mon))
 				{
 					if (canspotmon(mon))
 					{
@@ -4683,8 +4737,8 @@ register struct obj *obj;
 				if(is_peaceful(mon))
 					setmangry(mon, FALSE);
 
-				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
-				if (resists_magic(mon))
+                int dmg = get_spell_damage(obj->otyp, &youmonst);
+                if (resists_magic(mon))
 				{
 					if (canspotmon(mon))
 					{
@@ -4976,7 +5030,7 @@ boolean ordinary;
         return 0.0;
 
     boolean learn_it = FALSE;
-	int basedmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
+    int basedmg = get_spell_damage(obj->otyp, &youmonst);
 	int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
 	double damage = 0;
 	//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
@@ -5111,35 +5165,35 @@ boolean ordinary;
         break;
 	case SPE_FIREBALL:
 		You("explode a fireball on top of yourself!");
-        explode(u.ux, u.uy, RAY_FIRE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
+        explode(u.ux, u.uy, RAY_FIRE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
         break;
 	case SPE_FIRE_STORM:
 		You("conjure a fire storm on top of yourself!");
-		explode(u.ux, u.uy, RAY_FIRE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
+		explode(u.ux, u.uy, RAY_FIRE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
 		break;
 	case SPE_METEOR_SWARM:
 		pline("A meteor shoots at you!");
-		explode(u.ux, u.uy, RAY_FIRE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
+		explode(u.ux, u.uy, RAY_FIRE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
 		break;
 	case SPE_ICE_STORM:
 		You("conjure an ice storm on top of yourself!");
-		explode(u.ux, u.uy, RAY_FIRE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FROSTY);
+		explode(u.ux, u.uy, RAY_FIRE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FROSTY);
 		break;
 	case SPE_MAGICAL_IMPLOSION:
 		You("engulf yourself in a magical implosion!");
-		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_MAGIC_STORM:
 		You("conjure a storm of arcane magic on top of yourself!");
-		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_THUNDERSTORM:
 		You("conjure a thunderstorm on top of yourself!");
-		explode(u.ux, u.uy, RAY_LIGHTNING, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_LIGHTNING, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_DEATHSPELL:
 		You("conjure a death field on top of yourself!");
-		explode(u.ux, u.uy, RAY_DEATH, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_DEATH, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_FIRE_BOLT:
 	case WAN_FIRE:
@@ -7384,7 +7438,7 @@ uchar* out_flags_ptr;
 	//Base damage here, set to zero, if not needed
 	if (origobj)
 	{
-		dmg = d(objects[origobj->otyp].oc_spell_dmg_dice, objects[origobj->otyp].oc_spell_dmg_diesize) + objects[origobj->otyp].oc_spell_dmg_plus; //Same for smal and big
+        dmg = get_spell_damage(origobj->otyp, origmonst);
 	}
 	else
 		dmg = d(dmgdice, dicesize) + dmgplus;
@@ -7651,7 +7705,7 @@ const char *fltxt;
 	//Base damage here, set to zero, if not needed
 	if (origobj)
 	{
-		dam = d(objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam) + objects[origobj->otyp].oc_wsdmgplus; //Same for small and big
+        dam = get_spell_damage(origobj->otyp, origmonst);
 	}
 	else
 		dam = d(dmgdice, dicesize) + dmgplus;
@@ -8550,10 +8604,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
             {
                 if (origobj)
                 {
-                    int dam = 0;
-                    dam = d(objects[origobj_copy.otyp].oc_spell_dmg_dice, objects[origobj_copy.otyp].oc_spell_dmg_diesize) + objects[origobj_copy.otyp].oc_spell_dmg_plus; //Same for small and big
-
-                    (void)flashburn((long)dam);
+                    long dam = (long)get_spell_damage(origobj_copy.otyp, origmonst);
+                    (void)flashburn(dam);
                 }
                 else
                     (void)flashburn((long)d(dmgdice, dicesize) + dmgplus);
@@ -8717,9 +8769,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
 		}
 
         if (origobj)
-            explode(sx, sy, type, objects[origobj_copy.otyp].oc_wsdice, objects[origobj_copy.otyp].oc_wsdam, objects[origobj_copy.otyp].oc_wsdice, otyp, oclass, expltype);
+            explode(sx, sy, type, origmonst, objects[origobj_copy.otyp].oc_wsdice, objects[origobj_copy.otyp].oc_wsdam, objects[origobj_copy.otyp].oc_wsdice, otyp, oclass, expltype);
         else
-            explode(sx, sy, type, dmgdice, dicesize, dmgplus, otyp, oclass, expltype);
+            explode(sx, sy, type, origmonst, dmgdice, dicesize, dmgplus, otyp, oclass, expltype);
     }
     if (shopdamage)
         pay_for_damage(abstype == ZT_FIRE

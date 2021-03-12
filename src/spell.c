@@ -1399,9 +1399,48 @@ int spell;
 			Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dmg_plus);
 			Strcat(buf, plusbuf);
 		}
+
 		txt = buf;
 		putstr(datawin, 0, txt);
 
+		/* Per level */
+		if ((objects[booktype].oc_spell_flags & S1_LDMG_IS_PER_LEVEL_DMG_INCREASE) && objects[booktype].oc_spell_per_level_step > 0)
+		{
+			Sprintf(buf, "Level bonus:  ");
+			if (objects[booktype].oc_spell_per_level_dice > 0 && objects[booktype].oc_spell_per_level_diesize > 0)
+			{
+				maindiceprinted = TRUE;
+				Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_per_level_dice, objects[booktype].oc_spell_per_level_diesize);
+				Strcat(buf, plusbuf);
+			}
+
+			if (objects[booktype].oc_spell_per_level_plus != 0)
+			{
+				if (maindiceprinted && objects[booktype].oc_spell_per_level_plus > 0)
+				{
+					Sprintf(plusbuf, "+");
+					Strcat(buf, plusbuf);
+				}
+				Sprintf(plusbuf, "%d", objects[booktype].oc_spell_per_level_plus);
+				Strcat(buf, plusbuf);
+			}
+
+			if(objects[booktype].oc_spell_per_level_step == 1)
+				Sprintf(eos(buf), " per caster level");
+			else
+				Sprintf(eos(buf), " per %d caster levels", objects[booktype].oc_spell_per_level_step);
+
+			txt = buf;
+			putstr(datawin, 0, txt);
+
+			int max_level = get_maximum_applicable_spell_damage_level(booktype, &youmonst);
+			if(max_level < MAXULEV)
+			{
+				Sprintf(buf, "Level limit:  %d", max_level);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+		}
 	}
 
 	if (objects[booktype].oc_dir_subtype > 0)
@@ -1485,7 +1524,7 @@ int spell;
 	}
 
 	/* Duration */
-	if (objects[booktype].oc_spell_dur_dice > 0 || objects[booktype].oc_spell_dur_diesize > 0 || objects[booktype].oc_spell_dur_plus > 0)
+	if (!has_spell_otyp_per_level_bonus(booktype) && (objects[booktype].oc_spell_dur_dice > 0 || objects[booktype].oc_spell_dur_diesize > 0 || objects[booktype].oc_spell_dur_plus > 0))
 	{
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
@@ -1846,45 +1885,6 @@ boolean atme;
      * effects, e.g. more damage, further distance, and so on, without
      * additional cost to the spellcaster.
      */
-#if 0		
-		if (throwspell(otyp)) {
-            cc.x = u.dx;
-            cc.y = u.dy;
-			//One time only //n = rnd(8) + 1;
-			int shots = 1;
-			if(otyp == SPE_METEOR_SWARM)
-				shots = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
-
-			for (n = 0; n < shots; n++) {
-                if (!u.dx && !u.dy && !u.dz) {
-                    if ((damage = zapyourself(pseudo, TRUE)) != 0) {
-                        char buf[BUFSZ];
-                        Sprintf(buf, "zapped %sself with a spell",
-                                uhim());
-                        losehp(damage, buf, NO_KILLER_PREFIX);
-                    }
-                } else {
-					if (otyp == SPE_METEOR_SWARM)
-						You("shoot a meteor!");
-
-                    explode(u.dx, u.dy,
-                            objects[otyp].oc_dir_subtype,
-							objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize, objects[otyp].oc_spell_dmg_plus,
-							otyp, 0,
-                            subdirtype2explosiontype(objects[otyp].oc_dir_subtype));
-                }
-                u.dx = cc.x + rnd(3) - 2;
-                u.dy = cc.y + rnd(3) - 2;
-                if (!isok(u.dx, u.dy) || !cansee(u.dx, u.dy)
-                    || IS_STWALL(levl[u.dx][u.dy].typ) || u.uswallow) {
-                    /* Spell is reflected back to center */
-                    u.dx = cc.x;
-                    u.dy = cc.y;
-                }
-            }
-        }
-        break; */
-#endif
     /* these spells are all duplicates of wand effects */
 	case SPE_MAGIC_ARROW:
 	case SPE_ARROW_OF_DIANA:
@@ -2086,8 +2086,7 @@ boolean atme;
 
 				if (otyp == SPE_METEOR_SWARM)
 				{
-					int shots = 1;
-					shots = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
+					int shots = NUM_METEOR_SWARM_METEORS;
 
 					for (n = 0; n < shots; n++)
 					{
@@ -4421,7 +4420,7 @@ int spell;
 			//One more damage
 			Your("concoction explodes in a large ball of fire!");
 			losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
-			explode(u.ux, u.uy, RAY_FIRE, 0, 0, 1, 0, 0, EXPL_FIERY);
+			explode(u.ux, u.uy, RAY_FIRE, (struct monst*)0, 0, 0, 1, 0, 0, EXPL_FIERY);
 		}
 		else
 		{

@@ -3028,7 +3028,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
             m_useup(mon, obj); /* before explode() */
             //int dmg = (4 * bcsign(obj) + 2) / 3 + 1;
             /* -11 => monster's fireball */
-            explode(mon->mx, mon->my, -11, 1, 2, (4 * bcsign(obj) + 2) / 3, otyp, SCROLL_CLASS,
+            explode(mon->mx, mon->my, -11, mon, 1, 2, (4 * bcsign(obj) + 2) / 3, otyp, SCROLL_CLASS,
                     /* by_you: override -11 for mon but not others */
                     by_you ? -EXPL_FIERY : EXPL_FIERY);
             damage = 0; /* damage has been applied by explode() */

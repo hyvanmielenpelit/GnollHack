@@ -995,7 +995,7 @@ E long FDECL(rndexp, (BOOLEAN_P));
 
 /* ### explode.c ### */
 
-E void FDECL(explode, (int, int, int, int, int, int, int, CHAR_P, int));
+E void FDECL(explode, (int, int, int, struct monst*, int, int, int, int, CHAR_P, int));
 E long FDECL(scatter, (int, int, int, unsigned int, struct obj *));
 E void FDECL(splatter_burning_oil, (int, int, BOOLEAN_P));
 E void FDECL(explode_oil, (struct obj *, int, int));
@@ -3797,6 +3797,8 @@ E int FDECL(get_displayed_object_type_from_subdir_type, (int));
 E int FDECL(stone_to_flesh_obj, (struct obj*));
 E int FDECL(mon_to_zombie, (int));
 E int FDECL(mon_to_mummy, (int));
+E int FDECL(get_spell_damage, (int, struct monst*));
+E int FDECL(get_maximum_applicable_spell_damage_level, (int, struct monst*));
 
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
 
