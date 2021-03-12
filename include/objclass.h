@@ -406,6 +406,7 @@ struct objclass {
 #define IMMEDIATE_TWO_TO_SIX_TARGETS 9 /*		directional but 2 target for cursed, 4 targets for uncursed and 6 targets for blessed in a line like a ray */
 
 #define IMMEDIATE_ITEM_ARROW 1
+#define IMMEDIATE_NONE 0
 #define NODIR_NONE 0
 #define TOUCH_NONE 0
 
