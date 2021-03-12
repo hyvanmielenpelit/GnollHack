@@ -1495,7 +1495,7 @@ E int FDECL(buzzmu, (struct monst *, struct attack *));
 
 /* ### mhitm.c ### */
 
-E int FDECL(fightm, (struct monst *));
+E int FDECL(fightm, (struct monst *, BOOLEAN_P));
 E int FDECL(mattackm, (struct monst *, struct monst *));
 E boolean FDECL(engulf_target, (struct monst *, struct monst *));
 E int FDECL(mdisplacem, (struct monst *, struct monst *, BOOLEAN_P));
@@ -3781,7 +3781,7 @@ E void NDECL(makewish);
 E void FDECL(summonitem, (struct obj*, int));
 E void FDECL(summonblackblade, (struct obj*));
 E void FDECL(summonmagearmor, (struct obj*));
-E struct monst* FDECL(summoncreature, (int, int, const char *, int, boolean, boolean, boolean, boolean, boolean, boolean, boolean));
+E struct monst* FDECL(summoncreature, (int, int, const char*, unsigned long, unsigned long)); // int, boolean, boolean, boolean, boolean, boolean, boolean, boolean));
 E void FDECL(summondemon, (int));
 E void FDECL(summondemogorgon, (int));
 E void FDECL(summonbahamut, (int));

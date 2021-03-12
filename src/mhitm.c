@@ -123,8 +123,9 @@ struct attack *mattk;
  */
  /* have monsters fight each other */
 int
-fightm(mtmp)
+fightm(mtmp, attack_only_hostiles)
 register struct monst *mtmp;
+boolean attack_only_hostiles;
 {
     register struct monst *mon, *nmon;
     int result, has_u_swallowed;
@@ -149,6 +150,10 @@ register struct monst *mtmp;
         nmon = mon->nmon;
         if (nmon == mtmp)
             nmon = mtmp->nmon;
+
+        if (attack_only_hostiles && (is_peaceful(mtmp) || is_tame(mtmp)))
+            continue;
+
         /* Be careful to ignore monsters that are already dead, since we
          * might be calling this before we've cleaned them up.  This can
          * happen if the monster attacked a cockatrice bare-handedly, for

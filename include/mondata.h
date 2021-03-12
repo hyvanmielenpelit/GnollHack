@@ -141,6 +141,7 @@
 #define mon_has_bloodlust(mtmp) (has_bloodlust((mtmp)->data) || (mtmp)->hasbloodlust)
 #define mon_disregards_own_health(mtmp) (does_disregard_own_health((mtmp)->data) || (mtmp)->disregards_own_health)
 #define mon_disregards_enemy_strength(mtmp) (does_disregard_enemy_strength((mtmp)->data) || (mtmp)->disregards_enemy_strength)
+#define is_protector(mtmp) ((mtmp)->isprotector)
 #define does_split_upon_hit(ptr) (((ptr)->mflags4 & M4_SPLITS_UPON_HIT) != 0L)
 #define is_vegetarian_food(ptr) (((ptr)->mflags4 & M4_VEGETARIAN_FOOD) != 0L)
 #define is_vegan_food(ptr) (((ptr)->mflags4 & M4_VEGAN_FOOD) != 0L)
@@ -438,6 +439,7 @@
 #define is_peaceful(mon) \
 	(is_charmed(mon) || (mon)->mpeaceful)
 
+#define is_mon_protecting(mtmp) (is_protector(mtmp) && is_peaceful(mtmp))
 
 /* fearful and fleeing */
 #define has_fearful(mon) \

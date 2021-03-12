@@ -171,7 +171,8 @@ struct monst {
 	Bitfield(hasbloodlust, 1);					/* attacks also peaceful */
 	Bitfield(ispacifist, 1);					/* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
 	Bitfield(isfaithful, 1);					/* being separate from the owner does not reduce tameness */
-	Bitfield(ispartymember, 1);					/* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
+    Bitfield(isprotector, 1);					/* attacks hostiles if itself is being peaceful */
+    Bitfield(ispartymember, 1);					/* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
 	Bitfield(talkstate, 3);						/* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
 	Bitfield(leaves_no_corpse, 1);				/* this particular monster does not leave a corpse */
 	Bitfield(delayed_killer_by_you, 1);			/* is petrification or other delayed killer initiated by you */

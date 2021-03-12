@@ -1829,7 +1829,7 @@ movemon()
         }
 
         /* continue if the monster died fighting */
-        if ((Conflict || is_crazed(mtmp)) && !mtmp->iswiz && !is_blinded(mtmp)) 
+        if ((Conflict || is_crazed(mtmp) || is_mon_protecting(mtmp)) && !mtmp->iswiz && !is_blinded(mtmp)) 
         {
             /* Note:
              *  Conflict does not take effect in the first round.
@@ -1841,7 +1841,7 @@ movemon()
              */
             if (couldsee(mtmp->mx, mtmp->my)
                 && (distu(mtmp->mx, mtmp->my) <= M_SHOOT_RANGE * M_SHOOT_RANGE)
-                && fightm(mtmp))
+                && fightm(mtmp, is_mon_protecting(mtmp) && !Conflict && !is_crazed(mtmp)))
                 continue; /* mon might have died */
         }
         if (dochugw(mtmp)) /* otherwise just move the monster */
@@ -2682,7 +2682,13 @@ struct monst *magr, /* monster that is currently deciding where to move */
 	if (is_angel(magr->data) && is_demon(mdef->data))
 		return ALLOW_M | ALLOW_TM;
 
-	/* Various other combinations such as dog vs cat, cat vs rat, and
+    if (is_mon_protecting(magr) && (!is_peaceful(mdef) && !is_tame(mdef)))
+        return ALLOW_M | ALLOW_TM;
+    
+    if (is_mon_protecting(mdef) && (!is_peaceful(magr) && !is_tame(magr)))
+        return ALLOW_M | ALLOW_TM;
+
+    /* Various other combinations such as dog vs cat, cat vs rat, and
        elf vs orc have been suggested.  For the time being we don't
        support those. */
 
