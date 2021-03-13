@@ -1373,6 +1373,11 @@ int spell;
 
 	/* Damage or Healing */
 	boolean damageprinted = FALSE;
+	double baseavg = 0;
+	double perlevelavg = 0;
+	int used_level = 0;
+	int used_bonuses = 1;
+
 	if (objects[booktype].oc_spell_dmg_dice > 0 || objects[booktype].oc_spell_dmg_diesize > 0 || objects[booktype].oc_spell_dmg_plus > 0)
 	{
 		damageprinted = TRUE;
@@ -1390,6 +1395,7 @@ int spell;
 			maindiceprinted = TRUE;
 			Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dmg_dice, objects[booktype].oc_spell_dmg_diesize);
 			Strcat(buf, plusbuf);
+			baseavg += (double)objects[booktype].oc_spell_dmg_dice * (double)(1.0 + objects[booktype].oc_spell_dmg_diesize) / 2.0;
 		}
 
 		if (objects[booktype].oc_spell_dmg_plus != 0)
@@ -1401,6 +1407,7 @@ int spell;
 			}
 			Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dmg_plus);
 			Strcat(buf, plusbuf);
+			baseavg += (double)objects[booktype].oc_spell_dmg_plus;
 		}
 
 		txt = buf;
@@ -1415,6 +1422,7 @@ int spell;
 				maindiceprinted = TRUE;
 				Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_per_level_dice, objects[booktype].oc_spell_per_level_diesize);
 				Strcat(buf, plusbuf);
+				perlevelavg += (double)objects[booktype].oc_spell_per_level_dice * (double)(1.0 + objects[booktype].oc_spell_per_level_diesize) / 2.0;
 			}
 
 			if (objects[booktype].oc_spell_per_level_plus != 0)
@@ -1426,6 +1434,7 @@ int spell;
 				}
 				Sprintf(plusbuf, "%d", objects[booktype].oc_spell_per_level_plus);
 				Strcat(buf, plusbuf);
+				perlevelavg += (double)objects[booktype].oc_spell_per_level_plus;
 			}
 
 			if(objects[booktype].oc_spell_per_level_step == 1)
@@ -1437,6 +1446,9 @@ int spell;
 			putstr(datawin, 0, txt);
 
 			int max_level = get_maximum_applicable_spell_damage_level(booktype, &youmonst);
+			used_level = min(max_level, u.ulevel);
+			used_bonuses = used_level / (max(1, objects[booktype].oc_spell_per_level_step));
+
 			if(max_level < MAXULEV)
 			{
 				int skill_type = objects[booktype].oc_skill;
@@ -1663,10 +1675,30 @@ int spell;
 		putstr(datawin, 0, txt);
 
 	}
+
+
+	/* Statistics */
+	if (damageprinted)
+	{
+		int cnt = 1;
+		strcpy(buf, "Statistics:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		if (damageprinted)
+		{
+			double avg = baseavg + perlevelavg * ((double)used_bonuses);
+			Sprintf(buf, "  %d - %.1f average damage", cnt, avg);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+	}
+
+
 	/*
 	//This is for unimplemented longer description
-	int i, subs = 0;
-	const char* gang = (char*)0;
+	int i;
 	const char** textp;
 	const char* bufarray[] = { "Line 1","Line 2","Line 3","Line 4","Line 5", (char *)0 };
 	textp = bufarray;
