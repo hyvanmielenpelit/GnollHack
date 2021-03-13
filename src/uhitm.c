@@ -3166,10 +3166,10 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         /* if (negated) break; */
         break;
     case AD_SLOW:
-        if (!negated) 
+        if (!negated && ((mdef->mprops[SLOWED] & M_TIMEOUT) < 300))
 		{
 			hit_tile = HIT_SLOW;
-			(void)set_mon_property_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
+			(void)increase_mon_property_verbosely(mdef, SLOWED, 20 + rnd(10));
 		}
         break;
     case AD_CONF:

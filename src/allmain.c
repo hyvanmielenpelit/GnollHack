@@ -161,69 +161,7 @@ boolean resuming;
 						create_monster_or_encounter();
 					}
 
-                    /* calculate how much time passed. */
-                    if (u.usteed && u.umoved) 
-					{
-                        /* your speed doesn't augment steed's speed */
-                        moveamt = mcalcmove(u.usteed);
-                    } 
-					else 
-					{
-                        if (!Slowed)
-                            moveamt = youmonst.data->mmove;
-                        else
-                            moveamt = (youmonst.data->mmove * 2 + 2) / 3;
-
-                        if (Lightning_fast)
-                        {
-                            moveamt += NORMAL_SPEED;
-                            if (rn2(3) != 0)
-                                moveamt += NORMAL_SPEED;
-                        }
-                        else if (Super_fast)
-                        {
-                            moveamt += NORMAL_SPEED;
-                            if (rn2(3) == 0)
-                                moveamt += NORMAL_SPEED;
-                        }
-                        else if (Ultra_fast)
-                        {
-                            moveamt += NORMAL_SPEED;
-                        }
-                        else if (Very_fast)
-						{
-							/* randomization is here to avoid the player from optimizing the speed difference -- a slower monster has a chance of catching up! */
-                            /* gain a free action on 2/3 of turns */
-                            if (rn2(3) != 0)
-								moveamt += NORMAL_SPEED;
-                        } 
-                        else if (Fast)
-                        {
-                            /* gain a free action on 1/3 of turns */
-                            if (rn2(3) == 0)
-	                            moveamt += NORMAL_SPEED;
-                        }
-                    }
-
-                    switch (wtcap) 
-					{
-                    case UNENCUMBERED:
-                        break;
-                    case SLT_ENCUMBER:
-                        moveamt -= (moveamt / 4);
-                        break;
-                    case MOD_ENCUMBER:
-                        moveamt -= (moveamt / 2);
-                        break;
-                    case HVY_ENCUMBER:
-                        moveamt -= ((moveamt * 3) / 4);
-                        break;
-                    case EXT_ENCUMBER:
-                        moveamt -= ((moveamt * 7) / 8);
-                        break;
-                    default:
-                        break;
-                    }
+                    moveamt = get_u_move_speed(FALSE);
 
                     youmonst.movement += moveamt;
                     if (youmonst.movement < 0)
@@ -1525,4 +1463,109 @@ const char *opts;
 #endif
     return;
 }
+
+
+int
+get_u_move_speed(return_expected_value)
+boolean return_expected_value;
+{
+    int wtcap = near_capacity();
+    int moveamt = 0;
+
+    /* calculate how much time passed. */
+    if (u.usteed && u.umoved)
+    {
+        /* your speed doesn't augment steed's speed */
+        moveamt = mcalcmove(u.usteed);
+    }
+    else
+    {
+        if (!Slowed)
+            moveamt = youmonst.data->mmove;
+        else
+            moveamt = (youmonst.data->mmove * 2 + 2) / 3;
+
+        if (Lightning_fast)
+        {
+            moveamt += NORMAL_SPEED;
+            if (return_expected_value)
+            {
+                moveamt += (2 * NORMAL_SPEED) /3;
+            }
+            else
+            {
+                if (rn2(3) != 0)
+                    moveamt += NORMAL_SPEED;
+            }
+        }
+        else if (Super_fast)
+        {
+            moveamt += NORMAL_SPEED;
+            if (return_expected_value)
+            {
+                moveamt += (1 * NORMAL_SPEED) / 3;
+            }
+            else
+            {
+                if (rn2(3) == 0)
+                    moveamt += NORMAL_SPEED;
+            }
+        }
+        else if (Ultra_fast)
+        {
+            moveamt += NORMAL_SPEED;
+        }
+        else if (Very_fast)
+        {
+            /* randomization is here to avoid the player from optimizing the speed difference -- a slower monster has a chance of catching up! */
+            /* gain a free action on 2/3 of turns */
+            if (return_expected_value)
+            {
+                moveamt += (2 * NORMAL_SPEED) / 3;
+            }
+            else
+            {
+                if (rn2(3) != 0)
+                    moveamt += NORMAL_SPEED;
+            }
+        }
+        else if (Fast)
+        {
+            /* gain a free action on 1/3 of turns */
+            if (return_expected_value)
+            {
+                moveamt += (1 * NORMAL_SPEED) / 3;
+            }
+            else
+            {
+                if (rn2(3) == 0)
+                    moveamt += NORMAL_SPEED;
+            }
+        }
+    }
+
+    switch (wtcap)
+    {
+    case UNENCUMBERED:
+        break;
+    case SLT_ENCUMBER:
+        moveamt -= (moveamt / 4);
+        break;
+    case MOD_ENCUMBER:
+        moveamt -= (moveamt / 2);
+        break;
+    case HVY_ENCUMBER:
+        moveamt -= ((moveamt * 3) / 4);
+        break;
+    case EXT_ENCUMBER:
+        moveamt -= ((moveamt * 7) / 8);
+        break;
+    default:
+        break;
+    }
+
+    return moveamt;
+}
+
+
 /*allmain.c*/

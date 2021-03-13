@@ -1551,10 +1551,10 @@ register struct obj* omonwep;
         }
         break;
     case AD_SLOW:
-        if (!cancelled) 
+        if (!cancelled && (mdef->mprops[SLOWED] & M_TIMEOUT) < 300)
 		{
             play_sfx_sound_at_location(SFX_ACQUIRE_SLOW, mdef->mx, mdef->my);
-            (void)set_mon_property_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
+            (void)increase_mon_property_verbosely(mdef, SLOWED, 20 + rnd(10));
 			mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         break;

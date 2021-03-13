@@ -123,9 +123,9 @@ do_statusline2()
          /* dungeon location (and gold), hero health (HP, PW, AC),
             experience (HD if poly'd, else Exp level and maybe Exp points),
             time (in moves), varying number of status conditions */
-         dloc[QBUFSZ], hlth[QBUFSZ], expr[QBUFSZ], tmmv[QBUFSZ], cond[QBUFSZ], skll[QBUFSZ];
+         dloc[QBUFSZ], hlth[QBUFSZ], expr[QBUFSZ], tmmv[QBUFSZ], move[QBUFSZ], cond[QBUFSZ], skll[QBUFSZ];
     register char *nb;
-    unsigned dln, dx, hln, xln, tln, cln, sln;
+    unsigned dln, dx, hln, xln, mln, tln, cln, sln;
     int hp, hpmax, cap;
 
     /*
@@ -160,6 +160,13 @@ do_statusline2()
     else
         Sprintf(expr, "XL:%u", u.ulevel);
     xln = strlen(expr);
+
+    /* move */
+    if (flags.showmove)
+        Sprintf(move, "M:%d", get_u_move_speed(TRUE));
+    else
+        move[0] = '\0';
+    mln = strlen(move);
 
     /* time/move counter */
     if (flags.time)
@@ -244,16 +251,16 @@ do_statusline2()
      * wider displays can still show wider status than the map if the
      * interface supports that.
      */
-    if ((dln - dx) + 1 + hln + 1 + xln + tln + 1 + sln + 1 + cln <= COLNO) 
+    if ((dln - dx) + 1 + hln + 1 + xln + 1 + mln + 1 + tln + 1 + sln + 1 + cln <= COLNO) 
 	{
-        Sprintf(newbot2, "%s %s %s %s %s %s", dloc, hlth, expr, tmmv, skll, cond);
+        Sprintf(newbot2, "%s %s %s %s %s %s %s", dloc, hlth, expr, move, tmmv, skll, cond);
     }
 	else
 	{
-        if (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1 > MAXCO)
+        if (dln + 1 + hln + 1 + xln + 1 + mln + 1 + tln + 1 + cln + 1 > MAXCO)
 		{
             panic("bot2: second status line exceeds MAXCO (%u > %d)",
-                  (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1), MAXCO);
+                  (dln + 1 + hln + 1 + xln + 1 + mln + 1 + tln + 1 + cln + 1), MAXCO);
 			strcpy(newbot2, "");
             return newbot2;
         }
@@ -583,7 +590,8 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
 	INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
 	INIT_BLSTAT("magic-cancellation-level", " MC:%s", ANY_INT, 10, BL_MC_LVL),
 	INIT_BLSTAT("magic-cancellation-percentage", "/%s%%", ANY_INT, 10, BL_MC_PCT),
-	INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
+    INIT_BLSTAT("move", " MS:%s", ANY_LONG, 10, BL_MOVE),
+    INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
     INIT_BLSTAT("time", " T:%s", ANY_LONG, 20, BL_TIME),
     /* hunger used to be 'ANY_UINT'; see note below in bot_via_windowport() */
     INIT_BLSTAT("hunger", " %s", ANY_INT, 40, BL_HUNGER),
@@ -766,6 +774,9 @@ bot_via_windowport()
 	Strcpy(blstats[idx][BL_SKILL].val,
 		(u.canadvanceskill == TRUE) ? "Skill" : "");
 	valset[BL_SKILL] = TRUE;
+
+    /* Move speed */
+    blstats[idx][BL_MOVE].a.a_long = (long)get_u_move_speed(TRUE);
 
     /* Time (moves) */
     blstats[idx][BL_TIME].a.a_long = moves;
@@ -1239,6 +1250,7 @@ boolean *valsetlist;
         if (((i == BL_SCORE) && !flags.showscore)
             || ((i == BL_EXP) && !flags.showexp)
             || ((i == BL_TIME) && !flags.time)
+            || ((i == BL_MOVE) && !flags.showmove)
             || ((i == BL_HD) && !Upolyd)
             || ((i == BL_XP || i == BL_EXP) && Upolyd)) {
             notpresent++;
@@ -1308,6 +1320,7 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
         fldenabl = (fld == BL_SCORE) ? flags.showscore
                    : (fld == BL_TIME) ? flags.time
                      : (fld == BL_EXP) ? (boolean) (flags.showexp && !Upolyd)
+                       : (fld == BL_MOVE) ? flags.showmove
                        : (fld == BL_XP) ? (boolean) !Upolyd
                          : (fld == BL_HD) ? (boolean) Upolyd
                            : TRUE;
@@ -1720,6 +1733,9 @@ static struct fieldid_t {
 	{ "mc-lvl",   BL_MC_LVL },
 	{ "mc-pct",   BL_MC_PCT },
 	{ "hit-dice", BL_HD },
+    { "move-speed", BL_MOVE },
+    { "movement-speed", BL_MOVE },
+    { "speed",    BL_MOVE },
     { "turns",    BL_TIME },
     { "hp",       BL_HP },
     { "hp-max",   BL_HPMAX },

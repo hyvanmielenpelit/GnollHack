@@ -203,6 +203,7 @@ struct attack *mattk;
 void
 u_slow_down()
 {
+    /* OBSOLETE, now shade really slows */
     HFast = 0L;
     if (!Fast)
         You("slow down.");
@@ -2843,12 +2844,21 @@ register struct obj* omonwep;
 		break;
     case AD_SLOW:
         hitmsg(mtmp, mattk, damagedealt, FALSE);
-        if (uncancelled && !Slowed)
+        if (uncancelled && ((HSlowed & TIMEOUT) < 300L))
         {
             play_sfx_sound(SFX_ACQUIRE_SLOW);
             display_u_being_hit(HIT_SLOW, damagedealt, 0UL);
-            u_slow_down();
-        } else if (damagedealt >0)
+            int speed_before = get_u_move_speed(TRUE);
+            if ((HSlowed & TIMEOUT) > 100L)
+                incr_itimeout(&HSlowed, 1);
+            else
+                incr_itimeout(&HSlowed, (rnd(10) + 20));
+            int speed_after = get_u_move_speed(TRUE);
+            if (speed_after < speed_before)
+                You("slow down.");
+            context.botl = context.botlx = 1;
+        } 
+        else if (damagedealt >0)
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
         break;
     case AD_DREN:

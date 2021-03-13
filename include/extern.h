@@ -57,6 +57,7 @@ E void FDECL(special_effect_wait_until_action, (int));
 E void FDECL(special_effect_wait_until_end, (int));
 E void FDECL(reduce_counters, (int));
 E void FDECL(reduce_counters_intervals, (int));
+E int FDECL(get_u_move_speed, (boolean));
 
 /* ### apply.c ### */
 

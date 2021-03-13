@@ -232,6 +232,7 @@ static struct Bool_Opt {
     { "search_box_traps", &flags.search_box_traps, TRUE, SET_IN_GAME },
     { "selectsaved", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME }, /*WC*/
     { "showexp", &flags.showexp, FALSE, SET_IN_GAME },
+    { "showmove", &flags.showmove, FALSE, SET_IN_GAME },
     { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },
     { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
     { "show_tile_u_hp_bar", &flags.show_tile_u_hp_bar, FALSE, SET_IN_GAME },
@@ -4532,7 +4533,9 @@ boolean tinitial, tfrom_file;
 #ifdef SCORE_ON_BOTL
                 || boolopt[i].addr == &flags.showscore
 #endif
-                || boolopt[i].addr == &flags.showexp)
+                || boolopt[i].addr == &flags.showexp
+                || boolopt[i].addr == &flags.showmove
+                )
             {
                 if (VIA_WINDOWPORT())
                     status_initialize(REASSESS_ONLY);

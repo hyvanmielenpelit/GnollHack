@@ -54,6 +54,7 @@ struct flag {
     boolean safe_dog;        /* give complete protection to the dog */
     boolean showexp;         /* show experience points */
 	boolean tellexp;		 /* tell experience points when received */
+    boolean showmove;         /* show move on statusline */
     boolean search_box_traps; /* search all boxes for traps when pressing s */
     boolean underline_peaceful;	 /* underline non-tame peaceful monsters */
     boolean partylinecolor;	 /* use fixed partyline coloring */
