@@ -1658,6 +1658,24 @@ int spell;
 
 	}
 
+	/* Statistics */
+	if (damageprinted)
+	{
+		int cnt = 1;
+		strcpy(buf, "Spell statistics:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		if (damageprinted)
+		{
+			double avg = baseavg + perlevelavg * ((double)used_bonuses);
+			Sprintf(buf, "  %d - Average damage is %.1f", cnt, avg);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+	}
+
 	/* Description*/
 	if (OBJ_ITEM_DESC(booktype))
 	{
@@ -1677,23 +1695,6 @@ int spell;
 	}
 
 
-	/* Statistics */
-	if (damageprinted)
-	{
-		int cnt = 1;
-		strcpy(buf, "Statistics:");
-		txt = buf;
-		putstr(datawin, 0, txt);
-
-		if (damageprinted)
-		{
-			double avg = baseavg + perlevelavg * ((double)used_bonuses);
-			Sprintf(buf, "  %d - %.1f average damage", cnt, avg);
-			txt = buf;
-			putstr(datawin, 0, txt);
-			cnt++;
-		}
-	}
 
 
 	/*
