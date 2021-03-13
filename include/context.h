@@ -219,6 +219,8 @@ struct context_info
     uchar spef_action_animation_y[MAX_PLAYED_SPECIAL_EFFECTS];
     unsigned long spef_intervals_to_wait_until_action[MAX_PLAYED_SPECIAL_EFFECTS];
     unsigned long spef_intervals_to_wait_until_end[MAX_PLAYED_SPECIAL_EFFECTS];
+    uchar explosion_animation_x;
+    uchar explosion_animation_y;
     unsigned long expl_intervals_to_wait_until_action;
     unsigned long expl_intervals_to_wait_until_end;
     boolean force_allow_keyboard_commands;

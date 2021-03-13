@@ -239,7 +239,7 @@ int expltype;
             if (mtmp) 
             {
                 if (DEADMONSTER(mtmp))
-                    explmask[i][j] = 2;
+                    explmask[i][j] = 4;
                 else
                     switch (adtyp)
                     {
@@ -280,7 +280,7 @@ int expltype;
             else
             {
                 if(adtyp == AD_CLRC && !(i + x - 1 == u.ux && j + y - 1 == u.uy))
-                    explmask[i][j] |= 2; /* No floor effects for celestial spells */
+                    explmask[i][j] = 4; /* No floor effects for celestial spells */
             }
 
             if (mtmp && cansee(i + x - 1, j + y - 1) && !canspotmon(mtmp))
@@ -301,6 +301,8 @@ int expltype;
         context.explosion_animation_counter_on = FALSE;
         context.expl_intervals_to_wait_until_action = 0;
         context.expl_intervals_to_wait_until_end = 0;
+        context.explosion_animation_x = 0; /* Not used here */
+        context.explosion_animation_y = 0; /* Not used here */
         enum animation_types anim = explosion_type_definitions[expltype].animation;
         boolean playing_anim = (iflags.using_gui_tiles && anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY);
         if (playing_anim)
@@ -312,8 +314,8 @@ int expltype;
         for (i = 0; i < 3; i++)
             for (j = 0; j < 3; j++) 
             {
-                //if (explmask[i][j] == 2) // Not sure why explosion would not be drawn on dead monsters --JG
-                //    continue;
+                if (explmask[i][j] == 2)
+                    continue;
                 tmp_at(starting ? DISP_BEAM : DISP_CHANGE,
                     explosion_to_glyph(expltype, explosion[i][j]));
                 tmp_at(i + x - 1, j + y - 1);
@@ -406,7 +408,7 @@ int expltype;
         for (i = 0; i < 3; i++)
             for (j = 0; j < 3; j++) 
             {
-                if (explmask[i][j] == 2)
+                if (explmask[i][j] == 2 || explmask[i][j] == 4)
                     continue;
 
                 if (explmask[i][j] == 3)
@@ -992,6 +994,72 @@ int x, y;
 }
 
 void
+play_explosion_animation_at(x, y, expltype)
+int x, y;
+enum explosion_types expltype;
+{
+    if (!isok(x, y))
+        return;
+
+    if (iflags.using_gui_tiles && isok(x, y))
+    {
+        int i, j, framenum = 1;
+        context.explosion_animation_counter = 0;
+        context.explosion_animation_counter_on = FALSE;
+        context.expl_intervals_to_wait_until_action = 0;
+        context.expl_intervals_to_wait_until_end = 0;
+        enum animation_types anim = explosion_type_definitions[expltype].animation;
+        boolean playing_anim = (iflags.using_gui_tiles && anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY);
+
+        for (i = 0; i < 3; i++)
+            for (j = 0; j < 3; j++)
+            {
+                if (!isok(i + x - 1, j + y - 1) || !cansee(i + x - 1, j + y - 1))
+                    continue;
+
+                show_glyph_on_layer(i + x - 1, j + y - 1, explosion_to_glyph(expltype, explosion[i][j]), defsyms[explosion[i][j]].layer);
+                force_redraw_at(i + x - 1, j + y - 1);
+            }
+
+        flush_screen(1);
+
+        if (playing_anim)
+        {
+            framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
+            context.explosion_animation_x = x;
+            context.explosion_animation_y = y;
+            context.explosion_animation_counter_on = TRUE;
+
+            if (animations[anim].sound_play_frame <= -1)
+            {
+                context.expl_intervals_to_wait_until_action = animations[anim].intervals_between_frames * framenum;
+            }
+            else
+            {
+                delay_output_intervals(animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+                if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
+                {
+                    context.expl_intervals_to_wait_until_action = animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
+                    if (animations[anim].action_execution_frame < framenum)
+                        context.expl_intervals_to_wait_until_end = animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
+                }
+                else
+                {
+                    context.expl_intervals_to_wait_until_action = animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
+                    context.expl_intervals_to_wait_until_end = 0UL;
+                }
+            }
+        }
+        else
+        {
+            context.expl_intervals_to_wait_until_action = 2 * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS;
+            context.expl_intervals_to_wait_until_end = 2 * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS;
+        }
+    }
+
+}
+
+void
 explosion_wait_until_action()
 {
     if (context.expl_intervals_to_wait_until_action > 0UL)
@@ -1009,7 +1077,26 @@ explosion_wait_until_end()
         delay_output_intervals(context.expl_intervals_to_wait_until_end);
         context.expl_intervals_to_wait_until_end = 0UL;
     }
+
     context.explosion_animation_counter_on = FALSE;
+
+    int x = context.explosion_animation_x;
+    int y = context.explosion_animation_y;
+    if (isok(x, y)) // Used only in play_explosion_animation_at, not in explode
+    {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                if (!isok(i + x - 1, j + y - 1)) // || !cansee(i + x - 1, j + y - 1) // Clear just in case visibility has changed in the meanwhile
+                    continue;
+
+                show_glyph_on_layer(i + x - 1, j + y - 1, NO_GLYPH, defsyms[explosion[i][j]].layer);
+                force_redraw_at(i + x - 1, j + y - 1);
+            }
+
+        flush_screen(1);
+    }
+
     context.expl_intervals_to_wait_until_action = 0UL;
     context.explosion_animation_counter = 0L;
 }

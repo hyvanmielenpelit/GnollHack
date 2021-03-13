@@ -61,6 +61,19 @@ enum zap_types {
 
 #define NUM_ZAP 10       /* Number of basic zap beam types */
 
+
+enum explosion_types {
+	EXPL_DARK = 0,
+	EXPL_NOXIOUS,
+	EXPL_MUDD,
+	EXPL_WET,
+	EXPL_MAGICAL,
+	EXPL_FIERY,
+	EXPL_FROSTY,
+	MAX_EXPLOSIONS
+};
+
+
 enum tailed_long_worm_types {
 	LONG_WORM_TYPE_ADULT = 0,
 	LONG_WORM_TYPE_ELDER,

@@ -295,18 +295,6 @@ struct zap_type_definition {
 E NEARDATA struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES];
 
 
-/* Macros for explosion types */
-enum explosion_types {
-    EXPL_DARK = 0,
-    EXPL_NOXIOUS = 1,
-    EXPL_MUDDY = 2,
-    EXPL_WET = 3,
-    EXPL_MAGICAL = 4,
-    EXPL_FIERY = 5,
-    EXPL_FROSTY = 6,
-    MAX_EXPLOSIONS = 7
-};
-
 struct explosion_type_definition {
     const char* name;
     const int color;

@@ -1000,6 +1000,7 @@ E void FDECL(explode, (int, int, int, struct monst*, int, int, int, int, CHAR_P,
 E long FDECL(scatter, (int, int, int, unsigned int, struct obj *));
 E void FDECL(splatter_burning_oil, (int, int, BOOLEAN_P));
 E void FDECL(explode_oil, (struct obj *, int, int));
+E void FDECL(play_explosion_animation_at, (int, int, enum explosion_types));
 E void NDECL(explosion_wait_until_action);
 E void NDECL(explosion_wait_until_end);
 
