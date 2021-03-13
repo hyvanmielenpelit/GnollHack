@@ -2316,7 +2316,7 @@ boolean replaceundead;
             }
             /* tame the revived monster if its ghost was tame */
             if (ghost->mtame && !mtmp->mtame) {
-                if (tamedog(mtmp, (struct obj *) 0, FALSE, FALSE, 0, FALSE, FALSE)) {
+                if (tamedog(mtmp, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE)) {
                     /* ghost's edog data is ignored */
                     mtmp->mtame = ghost->mtame;
                 }
@@ -2351,7 +2351,7 @@ boolean replaceundead;
 	if (animateintomon >= 0)
 	{
 		//Animated are tamed
-		tamedog(mtmp, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
+		tamedog(mtmp, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
 		mtmp->disregards_enemy_strength = TRUE;
 		mtmp->disregards_own_health = TRUE;
 	}
@@ -10371,7 +10371,7 @@ unsigned long scflags;
         if(!mon->isfaithful)
     		mon->isfaithful = faithful;
 
-		(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
+		(void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
 
 		if((objects[spl_otyp].oc_spell_dur_dice > 1 && objects[spl_otyp].oc_spell_dur_diesize > 1) || objects[spl_otyp].oc_spell_dur_plus)
 			mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
@@ -10406,7 +10406,7 @@ int spl_otyp;
 		mon->disregards_enemy_strength = TRUE;
 		mon->disregards_own_health = FALSE;
 		mon->hasbloodlust = TRUE;
-		(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
+		(void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
 		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
         //play_sfx_sound_at_location(SFX_SUMMON_DEMON, mon->mx, mon->my);
@@ -10420,20 +10420,20 @@ summondemogorgon(spl_otyp)
 int spl_otyp;
 {
 	struct monst* mon = (struct monst*) 0;
-	int monindex = 0;
+	int monindex = PM_DEMOGORGON;
 
 	if(!Blind)
 		pline("A pitch black gate forms in the air before you...");
 	else
 		You("start to smell unnatural stench of death and decay!");
 
-	if (mvitals[PM_DEMOGORGON].mvflags & G_GONE)
+	if (mvitals[monindex].mvflags & G_GONE || mvitals[monindex].born > 0)
 	{
 		pline("However, nobody answers your call.");
 		return;
 	}
 
-	mon = makemon(&mons[monindex = PM_DEMOGORGON], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+	mon = makemon(&mons[monindex], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
 
 	if (mon)
 	{
@@ -10472,35 +10472,36 @@ summonbahamut(spl_otyp)
 int spl_otyp;
 {
     struct monst* mon = (struct monst*) 0;
-    int monindex = 0;
+    int monindex = PM_BAHAMUT;
 
     if (Deaf)
         pline("You feel vibrations in the air...");
     else
         You("start to hear a distinctive heavenly melody from a distance!");
 
-    if (mvitals[PM_BAHAMUT].mvflags & G_GONE)
+    if ((mvitals[monindex].mvflags & G_GONE) || mvitals[monindex].born > 0)
     {
         pline("However, the music stops suddenly.");
         return;
     }
 
-    mon = makemon(&mons[monindex = PM_BAHAMUT], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+    mon = makemon(&mons[monindex], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
 
     if (mon)
     {
-        //Bahamut gets bored and goes back to the heavens
-        mon->issummoned = TRUE;
+        (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
+
+        //mon->issummoned = TRUE;
         mon->disregards_enemy_strength = TRUE;
         mon->disregards_own_health = FALSE;
         mon->hasbloodlust = FALSE;
         if (u.ualign.type != A_CHAOTIC)
         {
-            mon->mpeaceful = TRUE;
-            mon->isprotector = TRUE;
+            //mon->mpeaceful = TRUE;
+            //mon->isprotector = TRUE;
         }
-        mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
-        begin_summontimer(mon);
+        //mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
+        //begin_summontimer(mon);
         if (!Blind)
             pline("%s descends from the heavens!", Monnam(mon));
         else

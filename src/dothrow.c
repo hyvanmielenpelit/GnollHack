@@ -2486,7 +2486,7 @@ uchar* hitres_ptr;
 	else if (befriend_with_obj(mon->data, obj)
                || (is_tame(mon) && dogfood(mon, obj) <= ACCFOOD)) 
 	{
-        if (tamedog(mon, obj, FALSE, FALSE, 0, TRUE, TRUE)) 
+        if (tamedog(mon, obj, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, TRUE))
 		{
             if (hitres_ptr)
                 *hitres_ptr = 2;

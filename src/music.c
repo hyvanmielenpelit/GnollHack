@@ -221,7 +221,7 @@ int distance, saving_throw_adjustment;
     if (u.uswallow)
 	{
         if (!check_ability_resistance_success(u.ustuck, A_WIS, saving_throw_adjustment))
-            (void) tamedog(u.ustuck, (struct obj *) 0, FALSE, TRUE, 200 + rnd(100), TRUE, FALSE);
+            (void) tamedog(u.ustuck, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, TRUE, 200 + rnd(100), TRUE, FALSE);
     }
 	else
 	{
@@ -234,7 +234,7 @@ int distance, saving_throw_adjustment;
             if (distu(mtmp->mx, mtmp->my) <= distance) 
 			{
                 if (!check_ability_resistance_success(mtmp, A_WIS, saving_throw_adjustment))
-                    (void) tamedog(mtmp, (struct obj *) 0, FALSE, TRUE, 200 + rnd(100), TRUE, FALSE);
+                    (void) tamedog(mtmp, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, TRUE, 200 + rnd(100), TRUE, FALSE);
             }
         }
     }

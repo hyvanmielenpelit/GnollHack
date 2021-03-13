@@ -1507,7 +1507,7 @@ struct monst* origmonst;
 			}
 
 			/* tame dog verbosely */
-			if (!tamedog(mtmp, (struct obj*) 0, FALSE, charmed, duration, TRUE, FALSE) || !is_tame(mtmp))
+			if (!tamedog(mtmp, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, charmed, duration, TRUE, FALSE) || !is_tame(mtmp))
 			{
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
                 pline("%s is unaffected!", Monnam(mtmp));
@@ -1569,7 +1569,7 @@ struct monst* origmonst;
             }
 
             /* tame dog verbosely */
-            if (!tamedog(mtmp, (struct obj*)0, FALSE, controlled, duration, TRUE, FALSE) || !is_tame(mtmp))
+            if (!tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, controlled, duration, TRUE, FALSE) || !is_tame(mtmp))
             {
                 play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
                 pline("%s is unaffected!", Monnam(mtmp));
@@ -4169,7 +4169,7 @@ struct _create_particular_data *d;
 
         if (d->maketame) 
         {
-            (void) tamedog(mtmp, (struct obj *) 0, TRUE, FALSE, 0, FALSE, FALSE);
+            (void) tamedog(mtmp, (struct obj *) 0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
         } 
         else if (d->makepeaceful || d->makehostile) 
         {

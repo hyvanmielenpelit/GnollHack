@@ -1051,8 +1051,6 @@ register struct monst *mtmp;
         }
         break;
     case S_DRAGON:
-        if (monsndx(ptr) == PM_BAHAMUT)
-            (void)mon_gets_noinit_item(mtmp, FORTUNE_COOKIE, 8);
         break;
     case S_DOG:
         if (is_steed(mtmp->data) && !rn2(4)) /* Warg */
@@ -1984,7 +1982,7 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
 			 * must be made non-tame to get initialized properly.
 			 */
 			m2->mtame = 0;
-			if (tamedog(m2, (struct obj*) 0, FALSE, FALSE, 0, FALSE, FALSE))
+			if (tamedog(m2, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE))
 			{
 				if(m2->mextra && mon->mextra)
 					*(EDOG(m2)) = *(EDOG(mon));

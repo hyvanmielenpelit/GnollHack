@@ -1433,7 +1433,7 @@ struct monst* origmonst;
 					if (mtmp->m_lev <= 10 && mtmp->m_lev < u.ulevel && rn2(100) < (percentchance - 100))
 					{
 						You("successfully take control of %s.", the(mon_nam(mtmp)));
-						(void)tamedog(mtmp, (struct obj*) 0, FALSE, FALSE, 0, FALSE);
+						(void)tamedog(mtmp, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE);
 					}
 					else
 					{

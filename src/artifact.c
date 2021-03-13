@@ -2734,7 +2734,7 @@ struct obj *obj;
 			if (mon)
 			{
 				mon->issummoned = TRUE;
-				(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
+				(void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
 
 				if (temporary_effect)
 				{
@@ -2762,7 +2762,7 @@ struct obj *obj;
 			if (mon)
 			{
 				mon->issummoned = TRUE;
-				(void)tamedog(mon, (struct obj*)0, TRUE, FALSE, 0, FALSE, FALSE);
+				(void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
 
 				if (temporary_effect)
 				{

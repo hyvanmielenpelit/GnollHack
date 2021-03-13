@@ -570,7 +570,7 @@ int trap_type;
 					if (u_depth >= 3 && u_depth <= 6 && !context.made_orc_and_a_pie && !rn2(3))
 					{
 						dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
-						struct monst* mon = makemon(&mons[PM_ORC], xx, yy + dy, MM_MAX_HP);
+						struct monst* mon = makemon(&mons[PM_ORC], xx, yy + dy, MM_MAX_HP | MM_WAITFORU);
 						if (mon)
 						{
 							context.made_orc_and_a_pie = TRUE;

@@ -1124,7 +1124,7 @@ boolean
 tamedog(mtmp, obj, forcetaming, charm_type, duration, verbose, thrown)
 register struct monst *mtmp;
 register struct obj *obj;
-boolean forcetaming;
+uchar forcetaming; /* 0 = no force, 1 = force non-uniques, 2 = force all */
 int charm_type; /* 0 = permanent, 1 = charm, 2 = control undead */
 unsigned short duration;
 boolean verbose;
@@ -1200,7 +1200,7 @@ boolean thrown;
             return FALSE;
     }
 
-    if ((mtmp->mtame) ||  (mtmp->data->geno & G_UNIQ) /* Unique monsters cannot be tamed -- JG */
+    if ((mtmp->mtame) ||  (!forcetaming && (mtmp->data->geno & G_UNIQ)) /* Unique monsters cannot be tamed -- JG */
         /* monsters with conflicting structures cannot be tamed */
         || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc /* shopkeepers, guards, and priests cannot be forced to be tame for now -- JG */
         || (!forcetaming && 

@@ -2564,7 +2564,7 @@ demonpet()
     pm = i != NON_PM ? &mons[i] : youmonst.data;
 	if ((dtmp = makemon(pm, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)
 	{
-		(void)tamedog(dtmp, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
+		(void)tamedog(dtmp, (struct obj*) 0, TAMEDOG_FORCE_NON_UNIQUE, FALSE, 0, FALSE, FALSE);
 
 		dtmp->issummoned = TRUE;
 		dtmp->disregards_enemy_strength = TRUE;

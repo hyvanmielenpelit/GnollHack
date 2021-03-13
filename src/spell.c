@@ -279,7 +279,7 @@ struct obj *book2;
 							mtmp->mtame++;
 					}
 					else
-						(void)tamedog(mtmp, (struct obj*) 0, FALSE, FALSE, 0, FALSE, FALSE);
+						(void)tamedog(mtmp, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE);
 				}
 				else 
 				{

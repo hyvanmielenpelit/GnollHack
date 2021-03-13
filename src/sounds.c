@@ -3538,7 +3538,7 @@ struct monst* mtmp;
 					{
 						/* dog_eat expects a floor object */
 						if (foodmakesfriendly)
-							tamedog(mtmp, otmp, FALSE, FALSE, 0, TRUE, FALSE);
+							tamedog(mtmp, otmp, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE);
 						else if (is_tame(mtmp) && mtmp->mextra && EDOG(mtmp))
 						{
 							place_object(otmp, mtmp->mx, mtmp->my);
@@ -3863,7 +3863,7 @@ struct monst* mtmp;
 		money2mon(mtmp, (long)u_pay);
 		context.botl = 1;
 
-		boolean success = tamedog(mtmp, (struct obj*)0, TRUE, FALSE, 0, FALSE, FALSE);
+		boolean success = tamedog(mtmp, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
 		if (success)
 		{
 			mtmp->ispartymember = TRUE;
