@@ -3244,7 +3244,7 @@ char *buf;
 	if (strlen(buf) >= INBUF_SIZ)
 		buf[INBUF_SIZ - 1] = '\0';
 
-	otmp = readobjnam(buf, (struct obj*) 0);
+	otmp = readobjnam(buf, (struct obj*) 0, TRUE);
 
     if (otmp) {
         if (otmp != &zeroobj)

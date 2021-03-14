@@ -2724,7 +2724,7 @@ struct obj *obj;
 		}
 		case ARTINVOKE_WISHING:
 		{
-			makewish();
+			makewish(FALSE);
 			break;
 		}
 		case ARTINVOKE_DEMON_SUMMON:

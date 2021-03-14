@@ -4138,7 +4138,7 @@ register struct obj *obj;
 		break;
 	case SPE_WISH:
 		known = TRUE;
-		makewish();
+		makewish(FALSE);
 		break;
 	case SPE_TIME_STOP:
 		known = TRUE;
@@ -4940,7 +4940,7 @@ register struct obj *obj;
             pline("Unfortunately, nothing happens.");
             break;
         }
-        makewish();
+        makewish(FALSE);
         break;
 	case WAN_IDENTIFY:
 		if (invent)
@@ -10234,7 +10234,8 @@ int triesleft;
 }
 
 void
-makewish()
+makewish(is_wiz_wish)
+boolean is_wiz_wish;
 {
     char buf[BUFSZ] = DUMMY;
     char promptbuf[BUFSZ];
@@ -10267,13 +10268,13 @@ retry:
      *  has been denied.  Wishing for "nothing" requires a separate
      *  value to remain distinct.
      */
-    otmp = readobjnam(buf, &nothing);
+    otmp = readobjnam(buf, &nothing, is_wiz_wish);
     if (!otmp) {
         pline("Nothing fitting that description exists in the game.");
         if (++tries < MAXWISHTRY)
             goto retry;
         pline1(thats_enough_tries);
-        otmp = readobjnam((char *) 0, (struct obj *) 0);
+        otmp = readobjnam((char *) 0, (struct obj *) 0, is_wiz_wish);
         if (!otmp)
             return; /* for safety; should never happen */
     } else if (otmp == &nothing) {

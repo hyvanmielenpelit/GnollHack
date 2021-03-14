@@ -609,6 +609,9 @@ OBJECT: ('`', "statue"), (15,04), montype:"erinys", 1
 OBJECT: ('`', "statue"), (07,08), montype:"erinys", 1
 OBJECT: ('`', "statue"), (15,08), montype:"erinys", 1
 
+# Dispater's personal altar of Moloch.
+ALTAR:(11,06),noalign,altar
+
 # Weapon racks
 OBJECT:('(',"weapon rack"),(15,01)
 OBJECT:('(',"weapon rack"),(17,01)

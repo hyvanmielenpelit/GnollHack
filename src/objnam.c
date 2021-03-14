@@ -3605,9 +3605,10 @@ char oclass;
  * return null.
  */
 struct obj *
-readobjnam(bp, no_wish)
+readobjnam(bp, no_wish, is_wiz_wish)
 register char *bp;
 struct obj *no_wish;
+boolean is_wiz_wish;
 {
     register char *p;
     register int i;
@@ -3641,6 +3642,7 @@ struct obj *no_wish;
     char *un, *dn, *actualn, *origbp = bp;
     const char *name = 0;
 	boolean isartifact = FALSE;
+    boolean wiz_wishing = (wizard && is_wiz_wish);
 
     cnt = enchantment = charges = chargesfound = spesgn = typ = 0;
     very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = exceptionality =
@@ -3769,7 +3771,7 @@ struct obj *no_wish;
         }
         else if (!strncmpi(bp, "trapped ", l = 8)) {
             trapped = 0; /* undo any previous "untrapped" */
-            if (wizard)
+            if (wiz_wishing)
                 trapped = 1;
         } else if (!strncmpi(bp, "untrapped ", l = 10)) {
             trapped = 2; /* not trapped */
@@ -4135,7 +4137,7 @@ struct obj *no_wish;
         || !BSTRCMPI(bp, p - 7, "zorkmid")
         || !strcmpi(bp, "gold") || !strcmpi(bp, "money")
         || !strcmpi(bp, "coin") || *bp == GOLD_SYM) {
-        if (cnt > 5000 && !wizard)
+        if (cnt > 5000 && !wiz_wishing)
             cnt = 5000;
         else if (cnt < 1)
             cnt = 1;
@@ -4148,7 +4150,7 @@ struct obj *no_wish;
 
     /* check for single character object class code ("/" for wand, &c) */
     if (strlen(bp) == 1 && (i = def_char_to_objclass(*bp)) < MAX_OBJECT_CLASSES
-        && i > ILLOBJ_CLASS && (i != VENOM_CLASS || wizard)) {
+        && i > ILLOBJ_CLASS && (i != VENOM_CLASS || wiz_wishing)) {
         oclass = i;
         goto any;
     }
@@ -4223,7 +4225,7 @@ struct obj *no_wish;
      * " object", but " trap" is suggested--to either the trap
      * name or the object name.
      */
-    if (wizard && (!strncmpi(bp, "bear", 4) || !strncmpi(bp, "land", 4))) {
+    if (wiz_wishing && (!strncmpi(bp, "bear", 4) || !strncmpi(bp, "land", 4))) {
         boolean beartrap = (lowc(*bp) == 'b');
         char *zp = bp + 4; /* skip "bear"/"land" */
 
@@ -4316,7 +4318,7 @@ struct obj *no_wish;
         }
     }
 
-	if (wizard && actualn && wishymatch(actualn, OBJ_NAME(objects[AMULET_OF_YENDOR]), TRUE))
+	if (wiz_wishing && actualn && wishymatch(actualn, OBJ_NAME(objects[AMULET_OF_YENDOR]), TRUE))
 	{
 		typ = AMULET_OF_YENDOR;
 		goto typfnd;
@@ -4441,7 +4443,7 @@ struct obj *no_wish;
  * Disallow such topology tweaks for WIZKIT startup wishes.
  */
  wiztrap:
-    if (wizard && !program_state.wizkit_wishing) {
+    if (wiz_wishing && !program_state.wizkit_wishing) {
         struct rm *lev;
         int trap, x = u.ux, y = u.uy;
 
@@ -4603,7 +4605,7 @@ struct obj *no_wish;
         oclass = objects[typ].oc_class;
 
     /* handle some objects that are only allowed in wizard mode */
-    if (typ && (!wizard || (wizard && (
+    if (typ && (!wiz_wishing || (wiz_wishing && (
 		   typ == AMULET_OF_YENDOR 
 		|| typ == CANDELABRUM_OF_INVOCATION
 		|| typ == BELL_OF_OPENING
@@ -4656,12 +4658,12 @@ struct obj *no_wish;
 
     /* if player specified a reasonable count, maybe honor it */
     if (cnt > 0 && objects[typ].oc_merge
-        && (wizard || cnt < rnd(6) || (cnt <= 7 && is_candle(otmp))
+        && (wiz_wishing || cnt < rnd(6) || (cnt <= 7 && is_candle(otmp))
             || (cnt <= 20 && ((oclass == WEAPON_CLASS && is_ammo(otmp))
                               || is_rock(otmp) || is_missile(otmp)))))
         otmp->quan = (long) cnt;
 
-	if (oclass == GEM_CLASS && !wizard)
+	if (oclass == GEM_CLASS && !wiz_wishing)
 		otmp->quan = 1;
 
 
@@ -4669,7 +4671,7 @@ struct obj *no_wish;
     if (spesgn == 0) {
         enchantment = otmp->enchantment;
     }
-	else if (wizard)
+	else if (wiz_wishing)
 	{
         ; /* no alteration to enchantment */
     }
@@ -4717,7 +4719,7 @@ struct obj *no_wish;
 		charges = 0;
 	else if (!chargesfound)
 		charges = otmp->charges;
-	else if (wizard)
+	else if (wiz_wishing)
 	{
 		; /* no alteration to charges */
 	}
@@ -4732,7 +4734,7 @@ struct obj *no_wish;
 		if (charges < 0)
 			charges = 0;
 
-		if (typ == WAN_WISHING && !wizard)
+		if (typ == WAN_WISHING && !wiz_wishing)
 		{
 			charges = (rn2(10) ? -1 : 0);
 		}
@@ -4801,14 +4803,14 @@ struct obj *no_wish;
             otmp->special_quality = 0; /* No spinach */
             if (dead_species(mntmp, FALSE)) {
                 otmp->corpsenm = NON_PM; /* it's empty */
-            } else if ((!(mons[mntmp].geno & G_UNIQ) || wizard)
+            } else if ((!(mons[mntmp].geno & G_UNIQ) || wiz_wishing)
                        && !(mvitals[mntmp].mvflags & G_NOCORPSE)
                        && mons[mntmp].cnutrit != 0) {
                 otmp->corpsenm = mntmp;
             }
             break;
         case CORPSE:
-            if ((!(mons[mntmp].geno & G_UNIQ) || wizard)
+            if ((!(mons[mntmp].geno & G_UNIQ) || wiz_wishing)
                 && !(mvitals[mntmp].mvflags & G_NOCORPSE)) {
                 if (mons[mntmp].msound == MS_GUARDIAN)
                     mntmp = genus(mntmp, 1);
@@ -4854,10 +4856,10 @@ struct obj *no_wish;
         curse(otmp);
     } else if (uncursed) {
         otmp->blessed = 0;
-        otmp->cursed = (Luck < 0 && !wizard);
+        otmp->cursed = (Luck < 0 && !wiz_wishing);
     } else if (blessed) {
-        otmp->blessed = (Luck >= 0 || wizard);
-        otmp->cursed = (Luck < 0 && !wizard);
+        otmp->blessed = (Luck >= 0 || wiz_wishing);
+        otmp->cursed = (Luck < 0 && !wiz_wishing);
     } else if (spesgn < 0) {
         curse(otmp);
     }
@@ -4875,13 +4877,13 @@ struct obj *no_wish;
          * so don't prevent player from wishing for such a combination.
          */
         if (erodeproof && (is_damageable(otmp) || otmp->otyp == CRYSKNIFE))
-            otmp->oerodeproof = (Luck >= 0 || wizard);
+            otmp->oerodeproof = (Luck >= 0 || wiz_wishing);
     }
 
     /* set otmp->recharged */
     if (oclass == WAND_CLASS) {
         /* prevent wishing abuse */
-        if (otmp->otyp == WAN_WISHING && !wizard)
+        if (otmp->otyp == WAN_WISHING && !wiz_wishing)
             rechrg = 1;
         otmp->recharged = (char) rechrg;
     }
@@ -4916,7 +4918,7 @@ struct obj *no_wish;
     {
         if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
         {
-            if(wizard || exceptionality <= EXCEPTIONALITY_EXCEPTIONAL)
+            if(wiz_wishing || exceptionality <= EXCEPTIONALITY_EXCEPTIONAL)
                 otmp->exceptionality = exceptionality;
             else
             {
@@ -4968,7 +4970,7 @@ struct obj *no_wish;
         otmp->odiluted = 1;
 
     /* set tin variety */
-    if (otmp->otyp == TIN && tvariety >= 0 && (rn2(4) || wizard))
+    if (otmp->otyp == TIN && tvariety >= 0 && (rn2(4) || wiz_wishing))
         set_tin_variety(otmp, tvariety);
 
     if (name) {
@@ -5006,7 +5008,7 @@ struct obj *no_wish;
     /* more wishing abuse: don't allow wishing for certain artifacts */
     /* and make them pay; charge them for the wish anyway! */
     if ((is_quest_artifact(otmp)
-         || (otmp->oartifact && rn2(nartifact_exist()) > 1)) && !wizard) 
+         || (otmp->oartifact && rn2(nartifact_exist()) > 1)) && !wiz_wishing)
 	{
         artifact_exists(otmp, safe_oname(otmp), FALSE);
         obfree(otmp, (struct obj *) 0);
