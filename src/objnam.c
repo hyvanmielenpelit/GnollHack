@@ -4918,24 +4918,15 @@ boolean is_wiz_wish;
     {
         if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
         {
-            if(wiz_wishing || exceptionality <= EXCEPTIONALITY_EXCEPTIONAL)
+            if(wiz_wishing || exceptionality <= EXCEPTIONALITY_ELITE)
                 otmp->exceptionality = exceptionality;
             else
             {
-                if (exceptionality >= EXCEPTIONALITY_CELESTIAL)
-                {
-                    if(!rn2(4) && Luck >= 0)
-                        otmp->exceptionality = exceptionality;
-                    else
-                        otmp->exceptionality = EXCEPTIONALITY_NORMAL;
-                }
-                else if (exceptionality == EXCEPTIONALITY_ELITE)
-                {
-                    if (rn2(5) && Luck >= 0)
-                        otmp->exceptionality = exceptionality;
-                    else
-                        otmp->exceptionality = EXCEPTIONALITY_NORMAL;
-                }
+                /* Celestial / Primordial / Infernal */
+                if (rn2(3) && Luck >= 0)
+                    otmp->exceptionality = exceptionality;
+                else
+                    otmp->exceptionality = EXCEPTIONALITY_NORMAL;
             }
         }
     }
