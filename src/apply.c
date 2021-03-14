@@ -1857,40 +1857,55 @@ struct obj **optr;
         Strcpy(q, " to ");
     /* last, format final "attach candles to candelabrum?" query */
     if (yn_query(safe_qbuf(qbuf, qbuf, "?", otmp, yname, thesimpleoname, "it"))
-        == 'n') {
+        == 'n') 
+    {
         use_lamp(obj);
         return;
-    } else {
-        if ((long) otmp->special_quality + obj->quan > 7L) {
+    } 
+    else 
+    {
+        if ((long) otmp->special_quality + obj->quan > 7L) 
+        {
             obj = splitobj(obj, 7L - (long) otmp->special_quality);
             /* avoid a grammatical error if obj->quan gets
                reduced to 1 candle from more than one */
             s = (obj->quan != 1) ? "candles" : "candle";
-        } else
+        } 
+        else
             *optr = 0;
+
+        play_sfx_sound(SFX_ATTACH_CANDLE);
         You("attach %ld%s %s to %s.", obj->quan, !otmp->special_quality ? "" : " more", s,
             the(xname(otmp)));
+
         if (!otmp->special_quality || otmp->age > obj->age)
             otmp->age = obj->age;
+
         otmp->special_quality += (int) obj->quan;
+
         if (otmp->lamplit && !obj->lamplit)
             pline_The("new %s magically %s!", s, vtense(s, "ignite"));
         else if (!otmp->lamplit && obj->lamplit)
             pline("%s out.", (obj->quan > 1L) ? "They go" : "It goes");
+
         if (obj->unpaid)
             verbalize("You %s %s, you bought %s!",
                       otmp->lamplit ? "burn" : "use",
                       (obj->quan > 1L) ? "them" : "it",
                       (obj->quan > 1L) ? "them" : "it");
+
         if (obj->quan < 7L && otmp->special_quality == 7)
             pline("%s now has seven%s candles attached.", The(xname(otmp)),
                   otmp->lamplit ? " lit" : "");
+        
         /* candelabrum's light range might increase */
         if (otmp->lamplit)
             obj_merge_light_sources(otmp, otmp);
+
         /* candles are no longer a separate light source */
         if (obj->lamplit)
             end_burn(obj, TRUE);
+
         /* candles are now gone */
         useupall(obj);
         /* candelabrum's weight is changing */
