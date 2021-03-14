@@ -1725,26 +1725,36 @@ register struct obj *obj;
 
     if (obj->lamplit)
 	{
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         You("snuff the %s.", s);
         end_burn(obj, TRUE);
         return;
     }
     if (obj->special_quality <= 0) 
 	{
+        play_sfx_sound(SFX_GENERAL_NOT_IN_THE_RIGHT_CONDITION);
         pline("This %s has no %s.", xname(obj), s);
         return;
     }
     if (Underwater) 
 	{
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You("cannot make fire under water.");
         return;
     }
     if (u.uswallow || obj->cursed) {
         if (!Blind)
+        {
+            play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
             pline_The("%s %s for a moment, then %s.", s, vtense(s, "flicker"),
-                      vtense(s, "die"));
+                vtense(s, "die"));
+
+        }
         return;
     }
+
+
+    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
     if (obj->special_quality < 7) {
         There("%s only %d %s in %s.", vtense(s, "are"), obj->special_quality, s,
               the(xname(obj)));
@@ -1784,6 +1794,7 @@ struct obj **optr;
 
     if (u.uswallow)
 	{
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You(no_elbow_room);
         return;
     }
@@ -1984,17 +1995,23 @@ struct obj *obj;
 
     if (obj->lamplit) 
 	{
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
             || obj->otyp == BRASS_LANTERN)
+        {
             pline("%slamp is now off.", Shk_Your(buf, obj));
+        }
         else
+        {
             You("snuff out %s.", yname(obj));
+        }
         end_burn(obj, TRUE);
         return;
     }
 
     if (Underwater)
 	{
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         pline(!is_candle(obj) ? "This is not a diving lamp"
                               : "Sorry, fire and water don't mix.");
         return;
@@ -2004,6 +2021,7 @@ struct obj *obj;
     if ((!is_candle(obj) && obj->age == 0)
         || (obj->otyp == MAGIC_LAMP && obj->special_quality  == 0))
 	{
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         if (obj->otyp == BRASS_LANTERN)
             Your("lamp has run out of power.");
         else
@@ -2012,12 +2030,14 @@ struct obj *obj;
     }
     if ((obj->cursed && !rn2(2)) || (obj->otyp == MAGIC_CANDLE && obj->special_quality == 0))
 	{
+        play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         if (!Blind)
             pline("%s for a moment, then %s.", Tobjnam(obj, "flicker"),
                   otense(obj, "die"));
     } 
 	else
 	{
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
         if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
             || obj->otyp == BRASS_LANTERN) 
 		{

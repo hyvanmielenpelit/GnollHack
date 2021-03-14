@@ -879,6 +879,16 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Monster Is Hit with Celestial Magic", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Body Crumbles To Dust", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/SFX/Error/Tried Action But It Failed", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Lamp/Lamp Turn On", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Lamp/Lamp Turn Off", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Lantern/Lantern Turn On", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Lantern/Lantern Turn Off", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Candle/Candle Light Up", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Candle/Candle Snuff Out", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Candelabrum/Attach Candle", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Error/Not in the Right Condition", 1.0f },
+
 };
 
 extern "C" 
