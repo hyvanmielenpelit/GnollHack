@@ -1784,6 +1784,9 @@ nh_terminate(status)
 int status;
 {
     program_state.in_moveloop = 0; /* won't be returning to normal play */
+    program_state.freeing_dynamic_data = 1;
+    stop_animations();
+
 #ifdef MAC
     getreturn("to exit");
 #endif
@@ -1825,6 +1828,7 @@ enum vanq_order_modes {
 
     NUM_VANQ_ORDER_MODES
 };
+
 
 static const char *vanqorders[NUM_VANQ_ORDER_MODES] = {
     "traditional: by monster level, by internal monster index",

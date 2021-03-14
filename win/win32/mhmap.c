@@ -977,6 +977,9 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 static void
 paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 {
+    if (program_state.freeing_dynamic_data == 1 || program_state.exiting > 0)
+        return;
+
     int ntile;
     int t_x, t_y;
     int glyph, signed_glyph;

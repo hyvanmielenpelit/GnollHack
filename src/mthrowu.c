@@ -1772,14 +1772,25 @@ struct attack *mattk;
             otmp = mksobj(ACID_VENOM, TRUE, FALSE, FALSE);
             break;
         }
-        if (!rn2(max(1, M_SHOOT_CHANCE_RANGE
+        if (otmp && !rn2(max(1, M_SHOOT_CHANCE_RANGE
                  - distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy))))
 		{
+            boolean action_taken = FALSE;
+            if (canseemon(mtmp))
+            {
+                action_taken = TRUE;
+                update_m_action(mtmp, ACTION_TILE_FIRE);
+            }
+            play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);
+            if (action_taken)
+                m_wait_until_action();
             if (canseemon(mtmp))
                 pline("%s spits venom!", Monnam(mtmp));
             m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby),
                     distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy), otmp);
             nomul(0);
+            if (action_taken)
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             return 0;
         }
 		else 
@@ -1814,13 +1825,25 @@ struct attack *mattk;
         }
         if ((typ >= AD_MAGM) && (typ <= AD_STON))
 		{
+            boolean action_taken = FALSE;
+            if (canseemon(mtmp))
+            {
+                action_taken = TRUE;
+                update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
+            }
+            play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);
+            if (action_taken)
+                m_wait_until_action();
+
             if (canseemon(mtmp))
                 pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)),
                         eyestalk[typ - 1]);
 			buzz((int)(-30 - (typ - 1)), (struct obj*)0, mtmp, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
                     mtmp->my, sgn(tbx), sgn(tby));
             nomul(0);
-        } 
+            if (action_taken)
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+        }
 		else
             impossible("Eyestalk %d used", typ - 1);
     }
@@ -1859,7 +1882,19 @@ struct attack* mattk;
         {
 			if ((typ >= AD_MAGM) && (typ <= AD_STON))
             {
-				if (canseemon(mtmp))
+                boolean action_taken = FALSE;
+                if (canseemon(mtmp))
+                {
+                    action_taken = TRUE;
+                    update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
+                }
+
+                play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);
+
+                if (action_taken)
+                    m_wait_until_action();
+
+                if (canseemon(mtmp))
 					pline("%s breathes %s!", Monnam(mtmp),
 						breathwep[typ - 1]);
 				buzz((int)(-20 - (typ - 1)), (struct obj*)0, mtmp, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
@@ -1873,7 +1908,10 @@ struct attack* mattk;
 				
                 if (typ == AD_SLEE && !Sleep_resistance)
 					mtmp->mspec_used += rnd(20);
-			}
+                
+                if (action_taken)
+                    update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+            }
 			else
 				impossible("Breath weapon %d used", typ - 1);
 		}

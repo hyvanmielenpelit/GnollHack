@@ -589,7 +589,7 @@ int expltype;
 						deduct_monster_hp(mtmp, mdam + idamres + idamnonres);
                         int hp_after = mtmp->mhp;
                         int damage_dealt = hp_before - hp_after;
-                        if (damage_dealt > 0)
+                        if (damage_dealt > 0 && canseemon(mtmp))
                             pline("%s sustains %d damage!", Monnam(mtmp), damage_dealt);
 
                         //mtmp->mhp -= mdam;

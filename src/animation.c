@@ -2538,6 +2538,18 @@ int intervals;
     }
 }
 
+void
+stop_animations()
+{
+    context.explosion_animation_counter_on = FALSE;
+    context.m_action_animation_counter_on = FALSE;
+    context.u_action_animation_counter_on = FALSE;
+    for(int i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
+        context.special_effect_animation_counter_on[i] = FALSE;
+    for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
+        context.zap_animation_counter_on[i] = FALSE;
+}
+
 /* animation.c */
 
 

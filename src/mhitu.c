@@ -825,32 +825,20 @@ register struct monst *mtmp;
         case AT_BREA:
             if (range2)
             {
-                update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
-                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
-                m_wait_until_action();
                 sum[i] = breamu(mtmp, mattk);
-                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
             /* Note: breamu takes care of displacement */
             break;
 		case AT_EYES:
             if (!is_blinded(mtmp) && !Reflecting && (!range2 || rn2(6))) /* Blinded already here to prevent continuous blinking */
             {
-                update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
-                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
-                m_wait_until_action();
                 sum[i] = eyesmu(mtmp, mattk);
-                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
 			break;
 		case AT_SPIT:
             if (range2)
             {
-                update_m_action(mtmp, ACTION_TILE_FIRE);
-                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
-                m_wait_until_action();
                 sum[i] = spitmu(mtmp, mattk);
-                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
             /* Note: spitmu takes care of displacement */
             break;

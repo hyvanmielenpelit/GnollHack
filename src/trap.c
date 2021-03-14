@@ -3602,6 +3602,8 @@ float_up()
     /* levitation gives maximum carrying capacity, so encumbrance
        state might be reduced */
     (void) encumber_msg();
+    newsym(u.ux, u.uy);
+
     return;
 }
 
@@ -3776,6 +3778,8 @@ long hmask, emask; /* might cancel timeout */
            and goto_level does its own pickup() call */
         && on_level(&u.uz, &current_dungeon_level))
         (void) pickup(1);
+
+    newsym(u.ux, u.uy);
     return 1;
 }
 
@@ -3822,6 +3826,8 @@ climb_pit()
                       ? "You've fallen, and you can't get up."
                       : "You are still in a pit.");
     }
+
+    newsym(u.ux, u.uy);
 }
 
 STATIC_OVL void
@@ -6759,7 +6765,7 @@ boolean nocorpse;
         deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE));
         int hp_after = mon->mhp;
         int damage_done = hp_before - hp_after;
-        if (damage_done > 0)
+        if (damage_done > 0 && canseemon(mon))
             pline("%s sustains %d damage%s", Monnam(mon), damage_done, exclam(damage_done));
 
 		if (DEADMONSTER(mon)) 

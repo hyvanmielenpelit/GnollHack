@@ -553,18 +553,19 @@ FLAGS: noteleport
 NAMING:"A hellish castle", name_revealed_seeing_monster, montype:"Dispater"
 # First part
 GEOMETRY:half-left,center
+#12345678901234567890
 MAP
 ---------------------
 |.............|.....|
 |.............S.....|
 |---+------------...|
 |.....|.........|-+--
-|..---|.........|....
+|S----|.........|....
 |..|..S.........|....
 |..|..|.........|....
 |..|..|.........|-+--
 |..|..-----------...|
-|..S..........|.....|
+|..S..+.......|.....|
 ---------------------
 ENDMAP
 STAIR:levregion(01,00,6,20),levregion(6,1,70,16),up
@@ -575,6 +576,7 @@ TELEPORT_REGION:levregion(01,00,6,20),levregion(6,1,70,16)
 DOOR:closed,(04,03),subtype:door_obsidian
 DOOR:locked,(18,04),subtype:door_obsidian
 DOOR:closed,(18,08),subtype:door_obsidian
+DOOR:closed,(06,10),subtype:door_obsidian
 #
 STAIR:(13,07),down
 # Non diggable walls
@@ -601,18 +603,61 @@ CONTAINER:('(',"chest"),trapped,locked,(12,07),keytype:('(',"ornamental key"),sp
    [25%]:OBJECT:'?'
 }
 #ENGRAVING:(12,07),burn,"Morgoth"
+# Statues in Dispater's room
+OBJECT: ('`', "statue"), (07,04), montype:"erinys", 1
+OBJECT: ('`', "statue"), (15,04), montype:"erinys", 1
+OBJECT: ('`', "statue"), (07,08), montype:"erinys", 1
+OBJECT: ('`', "statue"), (15,08), montype:"erinys", 1
 
-# Some random weapons and armor.
-OBJECT:'[',random
-OBJECT:'[',random
-OBJECT:')',random
-OBJECT:')',random
-OBJECT:'*',random
-OBJECT:'!',random
-OBJECT:'!',random
-OBJECT:'?',random
-OBJECT:'?',random
-OBJECT:'?',random
+# Weapon racks
+OBJECT:('(',"weapon rack"),(15,01)
+OBJECT:('(',"weapon rack"),(17,01)
+OBJECT:('(',"weapon rack"),(19,01)
+CONTAINER:('(',"chest"),trapped,locked,(19,03) {
+   OBJECT:'['
+   OBJECT:'['
+   OBJECT:'['
+   [50%]:OBJECT:'['
+   [50%]:OBJECT:'['
+}
+
+# Large reagent room
+OBJECT:'9',(17,09)
+OBJECT:'9',(18,09)
+OBJECT:'9',(19,09)
+OBJECT:'9',(15,10)
+OBJECT:'9',(16,10)
+OBJECT:'9',(17,10)
+OBJECT:'9',(18,10)
+OBJECT:'9',(19,10)
+
+# Small reagent room
+OBJECT:'9',(01,04)
+OBJECT:'9',(02,04)
+OBJECT:'9',(03,04)
+OBJECT:'9',(04,04)
+OBJECT:'9',(05,04)
+
+# Dispater's library
+OBJECT:('(',"bookshelf"),(02,01)
+OBJECT:('(',"bookshelf"),(05,01)
+OBJECT:('(',"bookshelf"),(08,01)
+OBJECT:('(',"bookshelf"),(11,01)
+
+# More weapons
+OBJECT:('(',"weapon rack"),(08,10)
+OBJECT:('(',"weapon rack"),(10,10)
+OBJECT:('(',"weapon rack"),(12,10)
+CONTAINER:('(',"chest"),trapped,locked,(13,10) {
+   [50%]:OBJECT:random_contents
+   [50%]:OBJECT:random_contents
+   OBJECT:'['
+   OBJECT:'['
+   OBJECT:'['
+   [50%]:OBJECT:'['
+   [50%]:OBJECT:'['
+}
+
 # Some traps.
 TRAP:"spiked pit", (05,02)
 TRAP:"fire", (08,06)
@@ -621,16 +666,20 @@ TRAP:"anti magic", random
 TRAP:"fire", random
 TRAP:"magic", random
 TRAP:"magic", random
-# Random monsters.
-MONSTER:(' ',"ghost"),(11,07)
+
+# Monsters.
 MONSTER:('&',"horned devil"),(10,05)
+MONSTER:('&',"pit fiend"),(02,08)
+MONSTER:'L',(02,10)
 MONSTER:'L',random
-# Some Vampires for good measure
-MONSTER:'V',random
-MONSTER:'V',random
-MONSTER:'V',random
+MONSTER:('&',"erinys"),random
+MONSTER:('&',"erinys"),random
+MONSTER:('&',"horned devil"),random
+MONSTER:('&',"horned devil"),random
+
 # Second part
 GEOMETRY:half-right,center
+#1234567890123456789012345678901234567890
 MAP
 ---------------------------------
 ................................|
@@ -644,9 +693,24 @@ NON_DIGGABLE:(00,00,32,04)
 SPECIAL_REGION:(00,00,32,04),region_special_level_seen
 
 DOOR:closed,(32,02),subtype:door_black_gate
+OBJECT: ('`', "statue"), (00,01), montype:"pit fiend", 1
+OBJECT: ('`', "statue"), (06,01), montype:"erinys", 1
+OBJECT: ('`', "statue"), (12,01), montype:"horned devil", 1
+OBJECT: ('`', "statue"), (18,01), montype:"ice devil", 1
+OBJECT: ('`', "statue"), (24,01), montype:"barbed devil", 1
+OBJECT: ('`', "statue"), (30,01), montype:"pit fiend", 1
+OBJECT: ('`', "statue"), (00,03), montype:"pit fiend", 1
+OBJECT: ('`', "statue"), (06,03), montype:"erinys", 1
+OBJECT: ('`', "statue"), (12,03), montype:"horned devil", 1
+OBJECT: ('`', "statue"), (18,03), montype:"ice devil", 1
+OBJECT: ('`', "statue"), (24,03), montype:"barbed devil", 1
+OBJECT: ('`', "statue"), (30,03), montype:"pit fiend", 1
+
 MONSTER:'&',random
 MONSTER:'&',random
-MONSTER:'&',random
+MONSTER:'&',random {
+  OBJECT: ('(', "skeleton key")
+}
 TRAP:"anti magic", random
 TRAP:"fire", random
 TRAP:"magic", random

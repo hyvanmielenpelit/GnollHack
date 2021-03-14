@@ -3318,7 +3318,14 @@ boolean was_swallowed; /* digestion */
     if (corpse_crumbles_to_dust(mdat)) 
 	{
         if (cansee(mon->mx, mon->my) && !was_swallowed)
+        {
             pline("%s body crumbles into dust.", s_suffix(Monnam(mon)));
+            if (iflags.using_gui_sounds)
+            {
+                delay_output_milliseconds(100);
+                play_sfx_sound_at_location(SFX_BODY_CRUMBLES_TO_DUST, mon->mx, mon->my);
+            }
+        }
         return FALSE;
     }
 
