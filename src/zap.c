@@ -254,7 +254,6 @@ struct monst* origmonst;
 	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
     int dmg = get_spell_damage(otyp, origmonst);
     int save_adj = get_saving_throw_adjustment(otmp, origmonst);
-
     boolean surpress_noeffect_message = FALSE;
 	//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, 0, 0, NOTELL);
     boolean magic_cancellation_success = check_magic_cancellation_success(mtmp, save_adj);
@@ -286,7 +285,7 @@ struct monst* origmonst;
 		{ //rnd(20) < 10 + find_mac(mtmp))
 			/* resist deals the damage and displays the damage dealt */
             play_sfx_sound_at_location(SFX_MAGIC_ARROW_HIT, mtmp->mx, mtmp->my);
-            hit(zap_type_text, mtmp, exclam(dmg), -1, "");
+            hit_with_hit_tile(zap_type_text, mtmp, exclam(dmg), -1, "", HIT_GENERAL, FALSE);
 			(void) inflict_spell_damage(mtmp, otmp, dmg, AD_MAGM, TELL);
         } 
 		else
@@ -310,6 +309,7 @@ struct monst* origmonst;
 		/* resist deals the damage and displays the damage dealt */
         play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
         Your("touch jolts %s with electricity!", mon_nam(mtmp));
+        display_m_being_hit(mtmp, HIT_ELECTROCUTED, dmg, 0UL, FALSE);
 		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_ELEC, TELL);
 		learn_it = TRUE;
 		break;
@@ -330,6 +330,7 @@ struct monst* origmonst;
         /* resist deals the damage and displays the damage dealt */
         play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC);
         Your("%s sears %s!", OBJ_NAME(objects[otyp]), mon_nam(mtmp));
+        display_m_being_hit(mtmp, HIT_GENERAL, dmg, 0UL, FALSE);
         (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL);
         learn_it = TRUE;
         break;
@@ -350,7 +351,8 @@ struct monst* origmonst;
 		/* resist deals the damage and displays the damage dealt */
         play_sfx_sound(SFX_MONSTER_ON_FIRE);
         Your("fiery touch burns %s!", mon_nam(mtmp));
-		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_FIRE, TELL);
+        display_m_being_hit(mtmp, HIT_ON_FIRE, dmg, 0UL, FALSE);
+        (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_FIRE, TELL);
 		learn_it = TRUE;
 		break;
 	case SPE_FREEZING_TOUCH:
@@ -370,7 +372,8 @@ struct monst* origmonst;
 		/* resist deals the damage and displays the damage dealt */
         play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
         Your("freezing touch sears %s!", mon_nam(mtmp));
-		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL);
+        display_m_being_hit(mtmp, HIT_FROZEN, dmg, 0UL, FALSE);
+        (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL);
 		learn_it = TRUE;
 		break;
     case SPE_RAY_OF_RADIANCE:
@@ -383,7 +386,9 @@ struct monst* origmonst;
         if (is_undead(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp) || hates_light(mtmp->data))
         {
             /* resist deals the damage and displays the damage dealt */
+            play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC);
             pline("The %s sears %s!", OBJ_NAME(objects[otyp]),  mon_nam(mtmp));
+            display_m_being_hit(mtmp, HIT_GENERAL, dmg, 0UL, FALSE);
             (void)inflict_spell_damage(mtmp, otmp, dmg, AD_CLRC, TELL);
             learn_it = TRUE;
         }
@@ -418,6 +423,7 @@ struct monst* origmonst;
 		else
 		{ //Otherwise dead
             play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mtmp->mx, mtmp->my);
+            display_m_being_hit(mtmp, HIT_DEATH, 1000, 0UL, FALSE);
             mtmp->mhp = 0;
 			if (DEADMONSTER(mtmp)) {
 				killed(mtmp);
@@ -449,6 +455,7 @@ struct monst* origmonst;
         else
         { //Otherwise dead
             play_sfx_sound(SFX_DISINTEGRATE);
+            display_m_being_hit(mtmp, HIT_DISINTEGRATED, 1000, 0UL, FALSE);
             disintegrate_mon(mtmp, 1, "obliteration spell");
         }
         break;
@@ -552,6 +559,7 @@ struct monst* origmonst;
 		else if(!check_ability_resistance_success(mtmp, A_CON, save_adj)) // if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
 		{ //Otherwise dead
             play_sfx_sound_at_location(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC, mtmp->mx, mtmp->my);
+            display_m_being_hit(mtmp, HIT_DEATH, 1000, 0UL, FALSE);
             mtmp->mhp = 0;
 			if (DEADMONSTER(mtmp)) {
 				killed(mtmp);
