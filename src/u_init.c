@@ -314,6 +314,12 @@ static struct trobj PriestSilverGauntlets[] = { { SILVER_GAUNTLETS, 0, ARMOR_CLA
 								{ 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj ScrollOfIdentify[] = { { SCR_IDENTIFY, 0, SCROLL_CLASS, 1, 0, 0, 0 },
 									{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj TwoScrollsOfIdentify[] = { { SCR_IDENTIFY, 0, SCROLL_CLASS, 2, 0, 0, 0 },
+									{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj ThreeScrollsOfIdentify[] = { { SCR_IDENTIFY, 0, SCROLL_CLASS, 3, 0, 0, 0 },
+									{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj FourScrollsOfIdentify[] = { { SCR_IDENTIFY, 0, SCROLL_CLASS, 4, 0, 0, 0 },
+									{ 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj WandOfProbing[] = { { WAN_PROBING, 0, WAND_CLASS, 1, 0, 0, 0 },
 									{ 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj ScrollOfRemoveCurse[] = { { SCR_REMOVE_CURSE, 0, SCROLL_CLASS, 1, 0, 0, 0 },
@@ -1294,13 +1300,6 @@ u_init()
 	/* Initilize skills based on roles */
 	u_skills_init();
 
-	/* Everybody starts with one scroll of identify */
-	ini_inv(ScrollOfIdentify);
-
-	/* Scroll of identify self-identifies itself, in the case previous did not do it automatically */
-	knows_object(SCR_IDENTIFY);
-
-
     /*** Race-specific initializations ***/
     switch (Race_switch) {
     case PM_HUMAN:
@@ -1383,6 +1382,23 @@ u_init()
 	/* Add school-specific spells */
 	add_school_specific_spellbooks();
 
+	/* 
+	 * Difficulty level specific initializations 
+	 */
+	/* Everybody starts with one or more scrolls of identify */
+	if (context.game_difficulty <= -4)
+		ini_inv(FourScrollsOfIdentify);
+	else if (context.game_difficulty == -3)
+		ini_inv(ThreeScrollsOfIdentify);
+	else if (context.game_difficulty == -2)
+		ini_inv(TwoScrollsOfIdentify);
+	else
+		ini_inv(ScrollOfIdentify);
+
+	/* Scroll of identify self-identifies itself, in the case previous did not do it automatically */
+	knows_object(SCR_IDENTIFY);
+
+
 	/* Wand of probing if playing below expert */
 	if (context.game_difficulty <= WAND_OF_PROBING_DIFFICULTY_THRESHOLD && !carrying(WAN_PROBING))
 	{
@@ -1397,6 +1413,9 @@ u_init()
 		knows_object(SCR_REMOVE_CURSE);
 	}
 	
+	/* 
+	 * Final stuff
+	 */
 	if (discover)
         ini_inv(Wishing);
 
@@ -1405,27 +1424,9 @@ u_init()
 
     if (u.umoney0)
         ini_inv(Money);
+
     u.umoney0 += hidden_gold(); /* in case sack has gold in it */
 
-	/* //OBSOLETE, DONE BELOW
-	find_ac();     
-	find_mc();
-	*/
-
-	/*
-     *  Do we really need this?
-     */
-    for (i = 0; i < A_MAX; i++)
-        if (!rn2(20)) 
-		{
-            register int xd = rn2(7) - 2; /* biased variation */
-
-            (void) adjattrib(i, xd, TRUE);
-            if (ABASE(i) < AMAX(i))
-                AMAX(i) = ABASE(i);
-			if (ABASE(i) > AMIN(i))
-				AMIN(i) = ABASE(i);
-		}
 
     /* make sure you can carry all you have - especially for Tourists */
     while (inv_weight() > 0) 
