@@ -412,7 +412,7 @@ struct obj *box;
 		n = (level_difficulty() >= 13) ? 7 : (level_difficulty() >= 10) ? 5 : 3;
 		break;
     case MINE_CART:
-        n = 8;
+        n = !rn2(3) ? 0 : 8; /* At least one third of the mine carts are empty */
         break;
     case WEAPON_RACK:
         n = 4;
@@ -474,17 +474,17 @@ struct obj *box;
         } 
         else if (box->otyp == MINE_CART)
         {
-            if (!rn2(3))
+            if (!rn2(2))
             {
-                otmp = mksobj(ROCK, TRUE, FALSE, 1);
+                otmp = mksobj(ROCK, TRUE, FALSE, 1); /* Half the contents are just rocks */
             }
             else if (!rn2(2))
             {
-                otmp = mksobj(rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE), TRUE, FALSE, 1);
+                otmp = mksobj(rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE), TRUE, FALSE, 1); /* Lots of ores */
             }
             else
             {
-                otmp = mkobj(GEM_CLASS, FALSE, TRUE);
+                otmp = mkobj(GEM_CLASS, FALSE, TRUE); /* And some GEM_CLASS stuff in general */
             }
         }
         else if (box->otyp == WEAPON_RACK)

@@ -1653,7 +1653,7 @@ struct player_soundset_definition {
 	const char* soundset_name;
 	enum player_soundset_types base_soundset;
 
-	/* Overrides monster-specific values */
+	/* Overrides monster-specific values when not polymorphed */
 	struct ghsound_info sounds[MAX_MONSTER_SOUND_TYPES];
 	enum soundsource_ambient_subtypes ambient_subtype;
 
