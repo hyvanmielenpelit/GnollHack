@@ -2212,7 +2212,7 @@ NEARDATA struct permonst mons[] = {
     /*
      * Centaurs
      */
-    MON("plains centaur", None, "fast creature half human half horse", "plains centauress", None, S_CENTAUR, LVL(4, 18, 4, 0, 0, 0), (G_GENO | 1),
+    ENLARGED_MON("plains centaur", None, "fast creature half human half horse", "plains centauress", None, S_CENTAUR, LVL(4, 18, 4, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), ATTK(AT_KICK, AD_PHYS, 1, 6, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2500, 500, MS_HUMANOID, MZ_LARGE, 1, 0, MAT_FLESH), STATS(18, 15, 15, 9, 8, 8), 
@@ -2222,8 +2222,10 @@ NEARDATA struct permonst mons[] = {
         M2_GREEDY | M2_COLLECT,
         M3_INFRAVISIBLE | M3_CHAT_CAN_JOIN_PARTY, 
         M4_NONE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE, 
-		8, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("forest centaur", None, "fast creature half human half horse", "forest centauress", None, S_CENTAUR, LVL(5, 18, 3, 0, 10, -1), (G_GENO | 1),
+		8, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(PLAINS_CENTAUR_MALE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PLAINS_CENTAUR_MALE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(PLAINS_CENTAUR_FEMALE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PLAINS_CENTAUR_FEMALE_STATUE_ENLARGEMENT, 0, 0)),
+    ENLARGED_MON("forest centaur", None, "fast creature half human half horse", "forest centauress", None, S_CENTAUR, LVL(5, 18, 3, 0, 10, -1), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8, 0, 0), ATTK(AT_KICK, AD_PHYS, 1, 6, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2550, 600, MS_HUMANOID, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR18(51), 15, 16, 9, 8, 8),
@@ -2233,8 +2235,10 @@ NEARDATA struct permonst mons[] = {
         M2_GREEDY | M2_COLLECT,
         M3_INFRAVISIBLE | M3_CHAT_CAN_JOIN_PARTY, 
         M4_NONE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
-		10, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("mountain centaur", None, "very fast creature half human half horse", "mountain centauress", None, S_CENTAUR, LVL(6, 20, 2, 0, 10, -3), (G_GENO | 1),
+		10, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(FOREST_CENTAUR_MALE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FOREST_CENTAUR_MALE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(FOREST_CENTAUR_FEMALE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FOREST_CENTAUR_FEMALE_STATUE_ENLARGEMENT, 0, 0)),
+    ENLARGED_MON("mountain centaur", None, "very fast creature half human half horse", "mountain centauress", None, S_CENTAUR, LVL(6, 20, 2, 0, 10, -3), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 10, 0, 0), ATTK(AT_KICK, AD_PHYS, 1, 6, 0, 0),
           ATTK(AT_KICK, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2550, 500, MS_HUMANOID, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR18(76), 15, 17, 9, 8, 8), 
@@ -2244,7 +2248,9 @@ NEARDATA struct permonst mons[] = {
         M2_GREEDY | M2_COLLECT,
         M3_INFRAVISIBLE | M3_CHAT_CAN_JOIN_PARTY, 
         M4_NONE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
-		13, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		13, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(MOUNTAIN_CENTAUR_MALE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MOUNTAIN_CENTAUR_MALE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(MOUNTAIN_CENTAUR_FEMALE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MOUNTAIN_CENTAUR_FEMALE_STATUE_ENLARGEMENT, 0, 0)),
     /*
      * Dragons
      */

@@ -463,27 +463,39 @@ int enlargement_offsets[MAX_ENLARGEMENTS] = {
 	4531, /* large-ram-statue-enlargement */
 	4533, /* warram-enlargement */
 	4535, /* warram-statue-enlargement */
-	4537, /* direwolf-enlargement */
-	4538, /* direwolf-statue-enlargement */
-	4539, /* large-direwolf-enlargement */
-	4540, /* large-direwolf-statue-enlargement */
-	4541, /* dungeon-normal-smaller-upstairs-enlargement */
-	4542, /* dungeon-undead-upstairs-enlargement */
-	4543, /* dungeon-undead-branch-upstairs-enlargement */
-	4544, /* dungeon-undead-special-branch-upstairs-enlargement */
-	4545, /* dracolich-attack-enlargement */
-	4565, /* summon-demon-enlargement */
-	4665, /* summon-celestial-enlargement */
-	4780, /* magic-trap-light-flash-enlargement */
-	4800, /* antimagic-trap-light-flash-enlargement */
-	4820, /* polymorph-trap-light-flash-enlargement */
-	4840, /* falling-rock-trap-trap-door-enlargement */
-	4853, /* falling-rock-trap-falling-rock-enlargement */
-	4862, /* bookshelf-enlargement */
-	4863, /* weapon-rack-enlargement */
-	4864, /* rock-piercer-dropping-enlargement */
-	4865, /* iron-piercer-dropping-enlargement */
-	4866, /* glass-piercer-dropping-enlargement */
+	4537, /* plains-centaur-male-enlargement */
+	4539, /* plains-centaur-male-statue-enlargement */
+	4541, /* plains-centaur-female-enlargement */
+	4543, /* plains-centaur-female-statue-enlargement */
+	4545, /* forest-centaur-male-enlargement */
+	4547, /* forest-centaur-male-statue-enlargement */
+	4549, /* forest-centaur-female-enlargement */
+	4551, /* forest-centaur-female-statue-enlargement */
+	4553, /* mountain-centaur-male-enlargement */
+	4555, /* mountain-centaur-male-statue-enlargement */
+	4557, /* mountain-centaur-female-enlargement */
+	4559, /* mountain-centaur-female-statue-enlargement */
+	4561, /* direwolf-enlargement */
+	4562, /* direwolf-statue-enlargement */
+	4563, /* large-direwolf-enlargement */
+	4564, /* large-direwolf-statue-enlargement */
+	4565, /* dungeon-normal-smaller-upstairs-enlargement */
+	4566, /* dungeon-undead-upstairs-enlargement */
+	4567, /* dungeon-undead-branch-upstairs-enlargement */
+	4568, /* dungeon-undead-special-branch-upstairs-enlargement */
+	4569, /* dracolich-attack-enlargement */
+	4589, /* summon-demon-enlargement */
+	4689, /* summon-celestial-enlargement */
+	4804, /* magic-trap-light-flash-enlargement */
+	4824, /* antimagic-trap-light-flash-enlargement */
+	4844, /* polymorph-trap-light-flash-enlargement */
+	4864, /* falling-rock-trap-trap-door-enlargement */
+	4877, /* falling-rock-trap-falling-rock-enlargement */
+	4886, /* bookshelf-enlargement */
+	4887, /* weapon-rack-enlargement */
+	4888, /* rock-piercer-dropping-enlargement */
+	4889, /* iron-piercer-dropping-enlargement */
+	4890, /* glass-piercer-dropping-enlargement */
 };
 
 int replacement_offsets[MAX_REPLACEMENTS] = {
