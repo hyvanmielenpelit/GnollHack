@@ -353,7 +353,7 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
             { C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD),           /*5*/C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD),            /*10*/ C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD) }, 
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },       /* throne */
+            {1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },       /* throne */
 /*30*/ { '#', "sink",  "remains of a sink",               LAYER_FEATURE, TRUE,      0, 0,     
             { C(CLR_GRAY), C(CLR_GRAY), C(CLR_RED), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) }, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                 /* sink */
        { '{', "fountain", "dried fountain",           LAYER_FEATURE, TRUE,      FOUNTAIN_VARIATIONS, FOUNTAIN_VARIATION_OFFSET,

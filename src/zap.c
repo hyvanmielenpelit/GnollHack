@@ -218,21 +218,33 @@ struct monst* origmonst;
         else 
             skill = P_WAND;
 
+        int skill_level = P_UNSKILLED;
         if (origmonst == &youmonst)
         {
-            res += -2 * (max(0, P_SKILL_LEVEL(skill) - 1) - 1);
+            skill_level = P_SKILL_LEVEL(skill);
         }
         else
         {
             if (is_prince(origmonst->data))
-                return -4;
+                skill_level = P_EXPERT;
             else if (is_lord(origmonst->data))
-                return -2;
+                skill_level = P_SKILLED;
+            else
+                skill_level = P_BASIC;
         }
+        res += get_skill_level_saving_throw_adjustment(skill_level);
     }
 
     return res;
 }
+
+int
+get_skill_level_saving_throw_adjustment(skill_level)
+int skill_level;
+{
+    return -4 * (max(0, skill_level - 1) - 1);
+}
+
 
 /* Routines for IMMEDIATE wands and spells. */
 /* bhitm: monster mtmp was hit by the effect of wand or spell otmp */

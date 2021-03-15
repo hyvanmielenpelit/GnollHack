@@ -1682,6 +1682,7 @@ boolean ismax;
     const char *ptr;
 
     switch (ismax ? P_MAX_SKILL_LEVEL(skill) : P_SKILL_LEVEL(skill)) {
+    case P_ISRESTRICTED:
     case P_UNSKILLED:
         ptr = "Unskilled";
         break;

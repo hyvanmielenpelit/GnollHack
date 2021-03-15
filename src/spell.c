@@ -1267,7 +1267,7 @@ int spell;
 			break;
 		}
 
-		Sprintf(buf, "Attributes:   %s", statbuf);
+		Sprintf(buf, "Attributes:       %s", statbuf);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -1283,7 +1283,7 @@ int spell;
 	{
 		strcpy(buf2, "None");
 	}
-	Sprintf(buf, "Mana cost:    %s", buf2);
+	Sprintf(buf, "Mana cost:        %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -1293,7 +1293,7 @@ int spell;
 	else
 		strcpy(buf2, "1 round");
 
-	Sprintf(buf, "Casting time: %s", buf2);
+	Sprintf(buf, "Casting time:     %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -1308,7 +1308,7 @@ int spell;
 	}
 
 
-	Sprintf(buf, "Cooldown:     %s", buf2);
+	Sprintf(buf, "Cooldown:         %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -1351,14 +1351,14 @@ int spell;
 		default:
 			break;
 		}
-		Sprintf(buf, "Targeting:    %s", buf2);
+		Sprintf(buf, "Targeting:        %s", buf2);
 		putstr(datawin, 0, txt);
 	}
 
 	/* Range */
 	if (objects[booktype].oc_spell_range > 0)
 	{
-		Sprintf(buf, "Range:        %d'", objects[booktype].oc_spell_range * 5);
+		Sprintf(buf, "Range:            %d'", objects[booktype].oc_spell_range * 5);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -1366,7 +1366,7 @@ int spell;
 	/* Radius */
 	if (objects[booktype].oc_spell_radius > 0)
 	{
-		Sprintf(buf, "Radius:       %d'", objects[booktype].oc_spell_radius * 5);
+		Sprintf(buf, "Radius:           %d'", objects[booktype].oc_spell_radius * 5);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -1386,9 +1386,9 @@ int spell;
 		boolean maindiceprinted = FALSE;
 
 		if (objects[booktype].oc_skill == P_HEALING_SPELL)
-			Sprintf(buf, "Healing:      ");
+			Sprintf(buf, "Healing:          ");
 		else
-			Sprintf(buf, "Damage:       ");
+			Sprintf(buf, "Damage:           ");
 
 		if (objects[booktype].oc_spell_dmg_dice > 0 && objects[booktype].oc_spell_dmg_diesize > 0)
 		{
@@ -1416,7 +1416,7 @@ int spell;
 		/* Per level */
 		if ((objects[booktype].oc_spell_flags & S1_LDMG_IS_PER_LEVEL_DMG_INCREASE) && objects[booktype].oc_spell_per_level_step > 0)
 		{
-			Sprintf(buf, "Level bonus:  ");
+			Sprintf(buf, "Level bonus:      ");
 			if (objects[booktype].oc_spell_per_level_dice > 0 && objects[booktype].oc_spell_per_level_diesize > 0)
 			{
 				maindiceprinted = TRUE;
@@ -1459,7 +1459,7 @@ int spell;
 				strcpy(skillnamebuf, skill_name(skill_type, TRUE));
 				//*skilllevelnamebuf = lowc(*skilllevelnamebuf);
 
-				Sprintf(buf, "Level limit:  %d (%s at %s)", max_level, skilllevelnamebuf, skillnamebuf);
+				Sprintf(buf, "Level limit:      %d (%s at %s)", max_level, skilllevelnamebuf, skillnamebuf);
 
 				txt = buf;
 				putstr(datawin, 0, txt);
@@ -1476,7 +1476,7 @@ int spell;
 		*dmgttext = highc(*dmgttext);
 		if (strcmp(dmgttext, "") != 0)
 		{
-			Sprintf(buf, "Damage type:  %s", dmgttext);
+			Sprintf(buf, "Damage type:      %s", dmgttext);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
@@ -1555,7 +1555,7 @@ int spell;
 			}
 			if (strcmp(buf2, "") != 0) // Something else than ""
 			{
-				Sprintf(buf, "%s type:  %s", buf3, buf2);
+				Sprintf(buf, "%s type:      %s", buf3, buf2);
 				putstr(datawin, 0, txt);
 			}
 		}
@@ -1568,7 +1568,7 @@ int spell;
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
 
-		Sprintf(buf, "Duration:     ");
+		Sprintf(buf, "Duration:         ");
 
 		if (objects[booktype].oc_spell_dur_dice > 0 && objects[booktype].oc_spell_dur_diesize > 0)
 		{
@@ -1594,8 +1594,69 @@ int spell;
 		putstr(datawin, 0, txt);
 	}
 
+	/* Saving throw adjustment */
+	if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_MASK)
+	{
+		char vsbuf[BUFSZ];
+		if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_MAGIC_CANCELLATION)
+			strcpy(vsbuf, "magic cancellation");
+		else if(objects[booktype].oc_spell_flags& S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_STR)
+			strcpy(vsbuf, "strength");
+		else if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_DEX)
+			strcpy(vsbuf, "dexterity");
+		else if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_CON)
+			strcpy(vsbuf, "constitution");
+		else if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_INT)
+			strcpy(vsbuf, "intelligence");
+		else if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_WIS)
+			strcpy(vsbuf, "wisdom");
+		else if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_CHA)
+			strcpy(vsbuf, "charisma");
+		else
+			strcpy(vsbuf, "unknown type");
+
+		Sprintf(buf, "Saving throw:     Against %s", vsbuf);
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		char baseadjbuf[BUFSZ];
+		int baseadj = objects[booktype].oc_spell_saving_throw_adjustment;
+		Sprintf(baseadjbuf, "%s%d", baseadj >= 0 ? "+" : "", baseadj);
+
+		int skill_level = P_SKILL_LEVEL(objects[booktype].oc_skill);
+		int skilladj = get_skill_level_saving_throw_adjustment(skill_level);
+		char skill_level_namebuf[BUFSZ] = "";
+		(void)skill_level_name(objects[booktype].oc_skill, skill_level_namebuf, FALSE);
+		*skill_level_namebuf = lowc(*skill_level_namebuf);
+
+		char skilladjbuf[BUFSZ];
+		Sprintf(skilladjbuf, "%s%d", skilladj >= 0 ? "+" : "", skilladj);
+
+		int totaladj = baseadj + skilladj;
+		char totaladjbuf[BUFSZ];
+		Sprintf(totaladjbuf, "%s%d", totaladj >= 0 ? "+" : "", totaladj);
+
+		Sprintf(buf, "Save adjustment:  %s (%s base, %s %s skill)", totaladjbuf, baseadjbuf, skilladjbuf, skill_level_namebuf);
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	/* Magic resistance */
+	if (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_MAGIC_RESISTANCE_MASK)
+	{
+
+		Sprintf(buf, "Magic resistance: %s by magic resistance", 
+			(objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_USES_MAGIC_RESISTANCE) ? "Affected" : 
+			(objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_DOES_NOT_USE_MAGIC_RESISTANCE) ? "Unaffected" : "Unknown if affected");
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 	/* Skill chance */
-	Sprintf(buf, "Train chance: %d%%", objects[booktype].oc_spell_skill_chance);
+	Sprintf(buf, "Train chance:     %d%%", objects[booktype].oc_spell_skill_chance);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -1603,9 +1664,9 @@ int spell;
 	if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 	{
 		if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE)
-			Sprintf(buf, "Other:                  %s", "Bypasses magic resistance for all monsters");
+			Sprintf(buf, "Other:                      %s", "Bypasses magic resistance for all monsters");
 		else
-			Sprintf(buf, "Other:                  %s", "Bypasses magic resistance for non-unique monsters");
+			Sprintf(buf, "Other:                      %s", "Bypasses magic resistance for non-unique monsters");
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -1633,7 +1694,7 @@ int spell;
 	if (!strcmp(buf2, ""))
 		strcpy(buf2, "None");
 
-	Sprintf(buf, "Components:   %s", buf2);
+	Sprintf(buf, "Components:       %s", buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
