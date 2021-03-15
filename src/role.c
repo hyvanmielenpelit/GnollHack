@@ -2617,7 +2617,7 @@ struct monst *mtmp;
     case PM_KNIGHT:
         return "Salutations"; /* Olde English */
     case PM_SAMURAI:
-        return (mtmp && mtmp->data == &mons[PM_SHOPKEEPER])
+        return (mtmp && mtmp->isshk)
                     ? "Irasshaimase"
                     : "Konnichi wa"; /* Japanese */
     case PM_TOURIST:

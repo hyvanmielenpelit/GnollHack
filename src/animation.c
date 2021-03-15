@@ -1457,7 +1457,7 @@ enum autodraw_types* autodraw_ptr;
 
             if (otmp->quan > 1)
             {
-                int glyph_idx = (otmp->quan <= 8 ? otmp->quan - 2 : otmp->quan <= 50 ? 7 : otmp->quan <= 500 ? 8 : otmp->quan <= 1000 ? 9 : 10);
+                int glyph_idx = (otmp->quan <= 8 ? otmp->quan - 2 : otmp->quan <= 100 ? 7 : otmp->quan <= 400 ? 8 : otmp->quan <= 1000 ? 9 : 10);
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
                 return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];

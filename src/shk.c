@@ -607,9 +607,17 @@ char *enterstring;
 		if (!Deaf && !muteshk(shkp))
 		{
 			shkp->u_know_mname = 1;
-			verbalize("%s, %s!  Welcome%s to %s %s!", Hello(shkp), plname,
-				eshkp->visitct++ ? " again" : "",
-				s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
+            if (iflags.using_gui_sounds)
+            {
+                play_voice_shopkeeper_welcome(shkp, rt);
+                verbalize("%s, adventurer!  Welcome to my %s!", Hello(shkp), shtypes[rt - SHOPBASE].name);
+            }
+            else
+            {
+                verbalize("%s, %s!  Welcome%s to %s %s!", Hello(shkp), plname,
+                    eshkp->visitct++ ? " again" : "",
+                    s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
+            }
 		}
         else
             You("enter %s %s%s!",

@@ -2942,7 +2942,7 @@ E enum ghsound_types FDECL(get_monster_ambient_sound_id, (enum monster_soundset_
 E float FDECL(get_monster_ambient_sound_volume, (enum monster_soundset_types));
 E void NDECL(play_intro_text);
 E void NDECL(stop_all_immediate_sounds);
-
+E void FDECL(play_voice_shopkeeper_welcome, (struct monst*, int));
 
 /* ### sys.c ### */
 

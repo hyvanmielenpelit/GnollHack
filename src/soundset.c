@@ -8981,4 +8981,26 @@ stop_all_immediate_sounds()
     play_immediate_ghsound(info);
 }
 
+void
+play_voice_shopkeeper_welcome(shkp, rt)
+struct monst* shkp;
+int rt;
+{
+    int shoptype = (rt - SHOPBASE);
+    enum role_types yourrole = urole.rolenum;
+
+    struct ghsound_immediate_info info = { 0 };
+    info.ghsound = is_undead(shkp->data) || is_demon(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME  : GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME;
+    info.volume = 1.0f;
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.parameter_names[0] = "RoleIndex";
+    info.parameter_values[0] = (float)yourrole;
+    info.parameter_names[1] = "ShopType";
+    info.parameter_values[1] = (float)shoptype;
+    info.parameter_names[2] = (char*)0;
+
+    play_immediate_ghsound(info);
+
+}
+
 /* soundset.c */

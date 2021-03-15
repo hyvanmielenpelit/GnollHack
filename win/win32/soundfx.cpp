@@ -888,6 +888,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Candle/Candle Snuff Out", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Candelabrum/Attach Candle", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Not in the Right Condition", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Welcome", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Welcome", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Welcome", 1.0f },
 
 };
 
