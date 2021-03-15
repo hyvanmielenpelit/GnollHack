@@ -1444,7 +1444,7 @@ enum autodraw_types* autodraw_ptr;
             }
             break;
         }        
-        case REPLACEMENT_ACTION_COIN_QUANTITY:
+        case REPLACEMENT_ACTION_STACK_QUANTITY:
         {
             if (!otmp)
                 return ntile;
