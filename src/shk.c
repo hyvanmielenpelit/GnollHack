@@ -577,7 +577,10 @@ char *enterstring;
     if (Invis) {
         pline("%s senses your presence.", Shknam(shkp));
         if (!Deaf && !muteshk(shkp))
+        {
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_INVISIBLE_CUSTOMERS_NOT_WELCOME);
             verbalize("Invisible customers are not welcome!");
+        }
         else
             pline("%s stands firm as if %s knows you are there.",
                   Shknam(shkp), noit_mhe(shkp));
@@ -610,14 +613,18 @@ char *enterstring;
             if (iflags.using_gui_sounds)
             {
                 play_voice_shopkeeper_welcome(shkp, rt);
-                verbalize("%s, adventurer!  Welcome to my %s!", Hello(shkp), shtypes[rt - SHOPBASE].name);
+                if(eshkp->visitct > 0)
+                    verbalize("%s, adventurer!  Welcome back to my store!", Hello(shkp));
+                else
+                    verbalize("%s, adventurer!  Welcome to my %s!", Hello(shkp), shtypes[rt - SHOPBASE].name);
             }
             else
             {
                 verbalize("%s, %s!  Welcome%s to %s %s!", Hello(shkp), plname,
-                    eshkp->visitct++ ? " again" : "",
+                    eshkp->visitct ? " again" : "",
                     s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
             }
+            eshkp->visitct++;
 		}
         else
             You("enter %s %s%s!",
@@ -672,10 +679,13 @@ char *enterstring;
                     makeknown(SPADE_OF_COLOSSAL_EXCAVATION);
             }
             if (!Deaf && !muteshk(shkp))
+            {
+                play_voice_shopkeeper_leave_pick_outside(shkp, tool, cnt, !NOTANGRY(shkp));
                 verbalize(NOTANGRY(shkp)
-                              ? "Will you please leave your %s%s outside?"
-                              : "Leave the %s%s outside.",
-                          tool, plur(cnt));
+                    ? "Will you please leave your %s%s outside?"
+                    : "Leave the %s%s outside.",
+                    tool, plur(cnt));
+            }
             else
                 pline("%s %s to let you in with your %s%s.",
                       Shknam(shkp),
@@ -684,9 +694,12 @@ char *enterstring;
             should_block = TRUE;
         } else if (u.usteed) {
             if (!Deaf && !muteshk(shkp))
+            {
+                play_voice_shopkeeper_leave_pick_outside(shkp, "steed", 1, !NOTANGRY(shkp));
                 verbalize(NOTANGRY(shkp) ? "Will you please leave %s outside?"
-                                     : "Leave %s outside.",
-                          y_monnam(u.usteed));
+                    : "Leave %s outside.",
+                    y_monnam(u.usteed));
+            }
             else
                 pline("%s %s to let you in while you're riding %s.",
                       Shknam(shkp),
@@ -1606,9 +1619,18 @@ dopay()
         play_sfx_sound(SFX_BUY_FROM_SHOPKEEPER);
         if (!Deaf && !muteshk(shkp))
         {
-            verbalize("Thank you for shopping in %s %s!",
-                s_suffix(shkname(shkp)),
-                shtypes[eshkp->shoptype - SHOPBASE].name);
+            if (iflags.using_gui_sounds)
+            {
+                delay_output_milliseconds(200);
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THANK_YOU_SHOPPING_IN_MY_STORE);
+                verbalize("Thank you for shopping in my store!");
+            }
+            else
+            {
+                verbalize("Thank you for shopping in %s %s!",
+                    s_suffix(shkname(shkp)),
+                    shtypes[eshkp->shoptype - SHOPBASE].name);
+            }
         }
         else
         {

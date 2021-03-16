@@ -21,6 +21,7 @@ struct GNHSoundInstance {
     enum ghsound_types ghsound;
     float normalVolume;
     int sound_type;
+    boolean queued;
     struct GNHSoundInstance* next_instance;
 };
 
@@ -891,8 +892,60 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Welcome", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Welcome", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Welcome", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Welcome Back", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Welcome Back", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Welcome Back", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Thank You for Shopping in My Store", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Thank You for Shopping in My Store", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Thank You for Shopping in My Store", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Invisible Customers Are Not Welcome", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Invisible Customers Are Not Welcome", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Invisible Customers Are Not Welcome", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Leave Pick Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Leave Pick Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Leave Pick Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Leave Picks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Leave Picks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Leave Picks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Leave Mattock Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Leave Mattock Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Leave Mattock Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Leave Mattocks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Leave Mattocks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Leave Mattocks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Leave Spade Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Leave Spade Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Leave Spade Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Leave Spades Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Leave Spades Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Leave Spades Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Leave Steed Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Leave Steed Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Leave Steed Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Will You Please Leave Pick Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Pick Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Pick Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Will You Please Leave Picks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Picks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Picks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Will You Please Leave Mattock Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Mattock Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Mattock Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Will You Please Leave Mattocks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Mattocks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Mattocks Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Will You Please Leave Spade Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Spade Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Spade Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Will You Please Leave Spades Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Spades Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Spades Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Will You Please Leave Steed Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Steed Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Steed Outside", 1.0f },
 
 };
+
 
 extern "C" 
 {
@@ -1618,6 +1671,49 @@ extern "C"
         return (result == FMOD_OK);
     }
 
+    FMOD_RESULT F_CALLBACK GNHEventCallback(
+        FMOD_STUDIO_EVENT_CALLBACK_TYPE type,
+        FMOD_STUDIO_EVENTINSTANCE* event,
+        void* parameters)
+    {
+        if (type == FMOD_STUDIO_EVENT_CALLBACK_STOPPED)
+        {
+            void* ptr = (void*)event;
+            for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)
+            {
+                if (immediateSoundInstances[i].eventInstance == (Studio::EventInstance*)ptr)
+                {
+                    if (i > 0 && immediateSoundInstances[i - 1].queued)
+                    {
+                        immediateSoundInstances[i - 1].queued = 0;
+                        (void)immediateSoundInstances[i - 1].eventInstance->start();
+                        return  fmod_studio_system->update();
+                    }
+                    else
+                        return FMOD_OK;
+
+                }
+            }
+            for (int i = 0; i < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; i++)
+            {
+                if (longImmediateSoundInstances[i].eventInstance == (Studio::EventInstance*)ptr)
+                {
+                    if (i > 0 && longImmediateSoundInstances[i - 1].queued)
+                    {
+                        longImmediateSoundInstances[i - 1].queued = 0;
+                        (void)longImmediateSoundInstances[i - 1].eventInstance->start();
+                        return fmod_studio_system->update();
+                    }
+                    else
+                        return FMOD_OK;
+                }
+            }
+
+        }
+        return FMOD_OK;
+    }
+   
+
     boolean fmod_stop_all_immediate_sounds()
     {
         FMOD_RESULT result;
@@ -1713,11 +1809,6 @@ extern "C"
                 return FALSE;
         }
 
-        /* Play sound */
-        result = immediateSoundInstance->start();
-        if (result != FMOD_OK)
-            return FALSE;
-
         if (play_group == SOUND_PLAY_GROUP_LONG)
         {
             /* Long play group */
@@ -1739,6 +1830,7 @@ extern "C"
                     longImmediateSoundInstances[i].ghsound = longImmediateSoundInstances[i - 1].ghsound;
                     longImmediateSoundInstances[i].normalVolume = longImmediateSoundInstances[i - 1].normalVolume;
                     longImmediateSoundInstances[i].sound_type = longImmediateSoundInstances[i - 1].sound_type;
+                    longImmediateSoundInstances[i].queued = longImmediateSoundInstances[i - 1].queued;
                 }
             }
 
@@ -1747,6 +1839,8 @@ extern "C"
             longImmediateSoundInstances[0].ghsound = info.ghsound;
             longImmediateSoundInstances[0].normalVolume = info.volume;
             longImmediateSoundInstances[0].sound_type = info.sound_type;
+            longImmediateSoundInstances[0].queued = info.play_after_current_has_finished;
+
         }
         else
         {
@@ -1769,6 +1863,7 @@ extern "C"
                     immediateSoundInstances[i].ghsound = immediateSoundInstances[i - 1].ghsound;
                     immediateSoundInstances[i].normalVolume = immediateSoundInstances[i - 1].normalVolume;
                     immediateSoundInstances[i].sound_type = immediateSoundInstances[i - 1].sound_type;
+                    immediateSoundInstances[i].queued = immediateSoundInstances[i - 1].queued;
                 }
             }
 
@@ -1777,11 +1872,46 @@ extern "C"
             immediateSoundInstances[0].ghsound = info.ghsound;
             immediateSoundInstances[0].normalVolume = info.volume;
             immediateSoundInstances[0].sound_type = info.sound_type;
+            immediateSoundInstances[0].queued = info.play_after_current_has_finished;
         }
 
-        result = fmod_studio_system->update();
-        if (result != FMOD_OK)
-            return FALSE;
+        if (info.play_after_current_has_finished)
+        {
+            if (play_group == SOUND_PLAY_GROUP_LONG)
+            {
+                if (longImmediateSoundInstances[1].eventInstance && longImmediateSoundInstances[1].ghsound > 0 && longImmediateSoundInstances[1].normalVolume > 0.0f)
+                    result = longImmediateSoundInstances[1].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_STOPPED);
+                else
+                {
+                    longImmediateSoundInstances[0].queued = 0;
+                    result = immediateSoundInstance->start();
+                }
+            }
+            else
+            {
+                if (immediateSoundInstances[1].eventInstance && immediateSoundInstances[1].ghsound > 0 && immediateSoundInstances[1].normalVolume > 0.0f)
+                    result = immediateSoundInstances[1].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_STOPPED);
+                else
+                {
+                    immediateSoundInstances[0].queued = 0;
+                    result = immediateSoundInstance->start();
+                }
+            }
+
+            if (result != FMOD_OK)
+                return FALSE;
+        }
+        else
+        {
+            /* Play sound */
+            result = immediateSoundInstance->start();
+            if (result != FMOD_OK)
+                return FALSE;
+
+            result = fmod_studio_system->update();
+            if (result != FMOD_OK)
+                return FALSE;
+        }
 
         return TRUE;
     }

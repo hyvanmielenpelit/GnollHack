@@ -8986,21 +8986,208 @@ play_voice_shopkeeper_welcome(shkp, rt)
 struct monst* shkp;
 int rt;
 {
+    if (!shkp || !shkp->mextra || !ESHK(shkp) || Deaf)
+        return;
+
     int shoptype = (rt - SHOPBASE);
     enum role_types yourrole = urole.rolenum;
+    struct eshk* eshkp = ESHK(shkp);
 
     struct ghsound_immediate_info info = { 0 };
-    info.ghsound = is_undead(shkp->data) || is_demon(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME  : GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME;
-    info.volume = 1.0f;
-    info.play_group = SOUND_PLAY_GROUP_LONG;
-    info.parameter_names[0] = "RoleIndex";
-    info.parameter_values[0] = (float)yourrole;
-    info.parameter_names[1] = "ShopType";
-    info.parameter_values[1] = (float)shoptype;
-    info.parameter_names[2] = (char*)0;
+    if (eshkp->visitct == 0)
+    {
+        info.ghsound = is_undead(shkp->data) || is_demon(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME : GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME;
+        info.volume = 1.0f;
+        info.play_group = SOUND_PLAY_GROUP_LONG;
+        info.parameter_names[0] = "RoleIndex";
+        info.parameter_values[0] = (float)yourrole;
+        info.parameter_names[1] = "ShopType";
+        info.parameter_values[1] = (float)shoptype;
+        info.parameter_names[2] = (char*)0;
+    }
+    else
+    {
+        info.ghsound = is_undead(shkp->data) || is_demon(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME_BACK : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME_BACK : GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME_BACK;
+        info.volume = 1.0f;
+        info.play_group = SOUND_PLAY_GROUP_LONG;
+        info.parameter_names[0] = "RoleIndex";
+        info.parameter_values[0] = (float)yourrole;
+        info.parameter_names[1] = (char*)0;
+    }
 
     play_immediate_ghsound(info);
 
 }
 
+
+void
+play_voice_shopkeeper_simple_line(shkp, line_idx)
+struct monst* shkp;
+enum shopkeeper_lines line_idx;
+{
+    if (!shkp || !shkp->mextra || !ESHK(shkp) || line_idx == SHOPKEEPER_LINE_NONE || Deaf)
+        return;
+
+    enum role_types yourrole = urole.rolenum;
+    boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+
+    struct ghsound_immediate_info info = { 0 };
+
+    switch (line_idx)
+    {
+    case SHOPKEEPER_LINE_NONE:
+        break;
+    case SHOPKEEPER_LINE_THANK_YOU_SHOPPING_IN_MY_STORE:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THANK_YOU_SHOPPING_IN_MY_STORE : 
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THANK_YOU_SHOPPING_IN_MY_STORE : 
+            GHSOUND_VOICE_SHOPKEEPER_MALE_THANK_YOU_SHOPPING_IN_MY_STORE;
+        break;
+    case SHOPKEEPER_LINE_INVISIBLE_CUSTOMERS_NOT_WELCOME:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_INVISIBLE_CUSTOMERS_NOT_WELCOME :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_INVISIBLE_CUSTOMERS_NOT_WELCOME :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_INVISIBLE_CUSTOMERS_NOT_WELCOME;
+        break;
+    default:
+        break;
+    }
+
+    info.volume = 1.0f;
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+
+    play_immediate_ghsound(info);
+
+}
+
+
+void
+play_voice_shopkeeper_leave_pick_outside(shkp, tool_str, cnt, is_angry)
+struct monst* shkp;
+const char* tool_str;
+int cnt;
+boolean is_angry;
+{
+    if (!shkp || !shkp->mextra || !ESHK(shkp) || Deaf)
+        return;
+
+    enum role_types yourrole = urole.rolenum;
+    boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+
+    struct ghsound_immediate_info info = { 0 };
+    if (is_angry)
+    {
+        if (!strcmp(tool_str, "pick"))
+        {
+            if (cnt > 1)
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_PICK_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_PICK_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_PICK_OUTSIDE;
+            }
+            else
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_PICKS_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_PICKS_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_PICKS_OUTSIDE;
+            }
+        }
+        else if (!strcmp(tool_str, "mattock"))
+        {
+            if (cnt > 1)
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_MATTOCK_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_MATTOCK_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_MATTOCK_OUTSIDE;
+            }
+            else
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_MATTOCKS_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_MATTOCKS_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_MATTOCKS_OUTSIDE;
+            }
+        }
+        else if (!strcmp(tool_str, "spade"))
+        {
+            if (cnt > 1)
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_SPADE_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_SPADE_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_MATTOCK_OUTSIDE;
+            }
+            else
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_SPADES_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_SPADES_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_SPADES_OUTSIDE;
+            }
+        }
+        else if (!strcmp(tool_str, "steed"))
+        {
+            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_STEED_OUTSIDE :
+                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_STEED_OUTSIDE :
+                GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_STEED_OUTSIDE;
+        }
+    }
+    else
+    {
+        if (!strcmp(tool_str, "pick") || !strcmp(tool_str, "pick-axe"))
+        {
+            if (cnt == 1)
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_PICK_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_PICK_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_PICK_OUTSIDE;
+            }
+            else
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_PICKS_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_PICKS_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_PICKS_OUTSIDE;
+            }
+        }
+        else if (!strcmp(tool_str, "mattock"))
+        {
+            if (cnt > 1)
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_MATTOCK_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_MATTOCK_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_MATTOCK_OUTSIDE;
+            }
+            else
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_MATTOCKS_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_MATTOCKS_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_MATTOCKS_OUTSIDE;
+            }
+        }
+        else if (!strcmp(tool_str, "spade"))
+        {
+            if (cnt > 1)
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_SPADE_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_SPADE_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_MATTOCK_OUTSIDE;
+            }
+            else
+            {
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_SPADES_OUTSIDE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_SPADES_OUTSIDE :
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_SPADES_OUTSIDE;
+            }
+        }
+        else if (!strcmp(tool_str, "steed"))
+        {
+            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_STEED_OUTSIDE :
+                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_STEED_OUTSIDE :
+                GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_STEED_OUTSIDE;
+        }
+    }
+
+    info.volume = 1.0f;
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.play_after_current_has_finished = TRUE;
+
+    if(info.ghsound > GHSOUND_NONE)
+       play_immediate_ghsound(info);
+
+}
 /* soundset.c */
