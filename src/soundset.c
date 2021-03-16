@@ -9075,7 +9075,7 @@ boolean is_angry;
     struct ghsound_immediate_info info = { 0 };
     if (is_angry)
     {
-        if (!strcmp(tool_str, "pick"))
+        if (!strcmp(tool_str, "pick") || !strcmp(tool_str, "pick-axe"))
         {
             if (cnt > 1)
             {
@@ -9111,7 +9111,7 @@ boolean is_angry;
             {
                 info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_SPADE_OUTSIDE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_SPADE_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_MATTOCK_OUTSIDE;
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_SPADE_OUTSIDE;
             }
             else
             {
@@ -9119,6 +9119,12 @@ boolean is_angry;
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_SPADES_OUTSIDE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_SPADES_OUTSIDE;
             }
+        }
+        else if (!strcmp(tool_str, "digging tool"))
+        {
+            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_DIGGING_TOOLS_OUTSIDE :
+                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_DIGGING_TOOLS_OUTSIDE :
+                GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_DIGGING_TOOLS_OUTSIDE;
         }
         else if (!strcmp(tool_str, "steed"))
         {
@@ -9165,7 +9171,7 @@ boolean is_angry;
             {
                 info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_SPADE_OUTSIDE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_SPADE_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_MATTOCK_OUTSIDE;
+                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_SPADE_OUTSIDE;
             }
             else
             {
@@ -9173,6 +9179,12 @@ boolean is_angry;
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_SPADES_OUTSIDE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_SPADES_OUTSIDE;
             }
+        }
+        else if (!strcmp(tool_str, "digging tool"))
+        {
+            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_DIGGING_TOOLS_OUTSIDE :
+                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_DIGGING_TOOLS_OUTSIDE :
+                GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_DIGGING_TOOLS_OUTSIDE;
         }
         else if (!strcmp(tool_str, "steed"))
         {

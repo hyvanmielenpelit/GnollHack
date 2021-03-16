@@ -889,6 +889,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Candle/Candle Snuff Out", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Candelabrum/Attach Candle", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Not in the Right Condition", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Welcome", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Welcome", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Welcome", 1.0f },
@@ -919,6 +920,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Leave Spades Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Leave Spades Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Leave Spades Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Leave Digging Tools Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Leave Digging Tools Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Leave Digging Tools Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Leave Steed Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Leave Steed Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Leave Steed Outside", 1.0f },
@@ -940,6 +944,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Will You Please Leave Spades Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Spades Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Spades Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Will You Please Leave Digging Tools Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Digging Tools Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Digging Tools Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Shopkeeper Male Will You Please Leave Steed Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Steed Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Steed Outside", 1.0f },
@@ -1879,8 +1886,10 @@ extern "C"
         {
             if (play_group == SOUND_PLAY_GROUP_LONG)
             {
-                if (longImmediateSoundInstances[1].eventInstance && longImmediateSoundInstances[1].ghsound > 0 && longImmediateSoundInstances[1].normalVolume > 0.0f)
-                    result = longImmediateSoundInstances[1].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_STOPPED);
+                if ((longImmediateSoundInstances[1].eventInstance && longImmediateSoundInstances[1].ghsound > 0 && longImmediateSoundInstances[1].normalVolume > 0.0f) || longImmediateSoundInstances[1].queued)
+                {
+                    result = longImmediateSoundInstances[1].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
+                }
                 else
                 {
                     longImmediateSoundInstances[0].queued = 0;
@@ -1889,8 +1898,8 @@ extern "C"
             }
             else
             {
-                if (immediateSoundInstances[1].eventInstance && immediateSoundInstances[1].ghsound > 0 && immediateSoundInstances[1].normalVolume > 0.0f)
-                    result = immediateSoundInstances[1].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_STOPPED);
+                if ((immediateSoundInstances[1].eventInstance && immediateSoundInstances[1].ghsound > 0 && immediateSoundInstances[1].normalVolume > 0.0f) || immediateSoundInstances[1].queued)
+                    result = immediateSoundInstances[1].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
                 else
                 {
                     immediateSoundInstances[0].queued = 0;
