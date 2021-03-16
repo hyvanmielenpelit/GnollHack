@@ -1444,7 +1444,7 @@ enum autodraw_types* autodraw_ptr;
             }
             break;
         }        
-        case REPLACEMENT_ACTION_STACK_QUANTITY:
+        case REPLACEMENT_ACTION_COIN_QUANTITY:
         {
             if (!otmp)
                 return ntile;
@@ -1457,7 +1457,27 @@ enum autodraw_types* autodraw_ptr;
 
             if (otmp->quan > 1)
             {
-                int glyph_idx = (otmp->quan <= 8 ? otmp->quan - 2 : otmp->quan <= 100 ? 7 : otmp->quan <= 400 ? 8 : otmp->quan <= 1000 ? 9 : 10);
+                int glyph_idx = (otmp->quan <= 8 ? otmp->quan - 2 : otmp->quan <= 30 ? 7 : otmp->quan <= 100 ? 8 : otmp->quan <= 1000 ? 9 : 10);
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_PEBBLE_QUANTITY:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (otmp->quan > 1)
+            {
+                int glyph_idx = (otmp->quan <= 8 ? otmp->quan - 2 : otmp->quan <= 20 ? 7 : otmp->quan <= 50 ? 8 : otmp->quan <= 100 ? 9 : 10);
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
                 return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
