@@ -1729,6 +1729,7 @@ extern "C"
         FMOD_STUDIO_EVENTINSTANCE* event,
         void* parameters)
     {
+        FMOD_RESULT result;
         if (type == FMOD_STUDIO_EVENT_CALLBACK_STOPPED)
         {
             void* ptr = (void*)event;
@@ -1737,15 +1738,16 @@ extern "C"
                 if (immediateSoundInstances[i].eventInstance == (Studio::EventInstance*)ptr)
                 {
                     immediateSoundInstances[i].finished_playing = 1;
-                    if (i > 0 && immediateSoundInstances[i - 1].queued)
+                    for (int j = i - 1; j >= 0; j--)
                     {
-                        immediateSoundInstances[i - 1].queued = 0;
-                        (void)immediateSoundInstances[i - 1].eventInstance->start();
-                        return  fmod_studio_system->update();
+                        if (immediateSoundInstances[j].queued)
+                        {
+                            immediateSoundInstances[j].queued = 0;
+                            result = immediateSoundInstances[j].eventInstance->start();
+                            result = fmod_studio_system->update();
+                            return FMOD_OK;
+                        }
                     }
-                    else
-                        return FMOD_OK;
-
                 }
             }
             for (int i = 0; i < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; i++)
@@ -1753,14 +1755,16 @@ extern "C"
                 if (longImmediateSoundInstances[i].eventInstance == (Studio::EventInstance*)ptr)
                 {
                     longImmediateSoundInstances[i].finished_playing = 1;
-                    if (i > 0 && longImmediateSoundInstances[i - 1].queued)
+                    for (int j = i - 1; j >= 0; j--)
                     {
-                        longImmediateSoundInstances[i - 1].queued = 0;
-                        (void)longImmediateSoundInstances[i - 1].eventInstance->start();
-                        return fmod_studio_system->update();
+                        if (longImmediateSoundInstances[j].queued)
+                        {
+                            longImmediateSoundInstances[j].queued = 0;
+                            result = longImmediateSoundInstances[j].eventInstance->start();
+                            result = fmod_studio_system->update();
+                            return FMOD_OK;
+                        }
                     }
-                    else
-                        return FMOD_OK;
                 }
             }
 
@@ -1907,6 +1911,13 @@ extern "C"
 
             if (info.sound_type == IMMEDIATE_SOUND_DIALOGUE)
                 result = longImmediateSoundInstances[0].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
+
+            /* Fallback if queued for too long */
+            if (longImmediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].queued && !longImmediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].finished_playing)
+            {
+                longImmediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].queued = 0;
+                (void)longImmediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance->start();
+            }
         }
         else
         {
@@ -1948,6 +1959,13 @@ extern "C"
 
             if (info.sound_type == IMMEDIATE_SOUND_DIALOGUE)
                 result = immediateSoundInstances[0].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
+
+            /* Fallback if queued for too long */
+            if (immediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].queued && !immediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].finished_playing)
+            {
+                immediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].queued = 0;
+                (void)immediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance->start();
+            }
         }
 
         boolean play_sound = TRUE;
@@ -1986,11 +2004,11 @@ extern "C"
             result = immediateSoundInstance->start();
             if (result != FMOD_OK)
                 return FALSE;
-
-            result = fmod_studio_system->update();
-            if (result != FMOD_OK)
-                return FALSE;
         }
+
+        result = fmod_studio_system->update();
+        if (result != FMOD_OK)
+            return FALSE;
 
         return TRUE;
     }
