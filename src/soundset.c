@@ -9296,7 +9296,7 @@ const char* cad_str;
     {
         info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_FIEND :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_FIEND :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_CAD;
+            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_FIEND;
     }
     else if (!strcmp(cad_str, "beast"))
     {
