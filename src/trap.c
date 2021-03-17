@@ -1774,13 +1774,17 @@ unsigned trflags;
             pline("%s %s in a pile of soil below you.",
                   already_seen ? "There is" : "You discover",
                   trap->madeby_u ? "the trigger of your mine" : "a trigger");
+
             if (already_seen && rn2(3))
                 break;
 
-            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
-            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
+            flush_screen(1);
+            play_special_effect_at(SPECIAL_EFFECT_LAND_MINE_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
+            play_sfx_sound(SFX_LAND_MINE_ACTIVATE);
             special_effect_wait_until_action(0);
+            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
             spef_on = TRUE;
+            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
 
             pline("KAABLAMM!!!  %s %s%s off!",
                   forcebungle ? "Your inept attempt sets"
@@ -1800,12 +1804,13 @@ unsigned trflags;
                 break;
             feeltrap(trap);
 
+            flush_screen(1);
+            play_special_effect_at(SPECIAL_EFFECT_LAND_MINE_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
             play_sfx_sound(SFX_LAND_MINE_ACTIVATE);
-
-            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
-            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
             special_effect_wait_until_action(0);
+            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
             spef_on = TRUE;
+            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
 
             pline("KAABLAMM!!!  You triggered %s land mine!",
                   a_your[trap->madeby_u]);
@@ -1829,9 +1834,11 @@ unsigned trflags;
             dotrap(trap, RECURSIVETRAP);
         fill_pit(u.ux, u.uy);
 
-        if(spef_on)
+        if (spef_on)
+        {
             special_effect_wait_until_end(0);
-
+            context.global_newsym_flags = 0UL;
+        }
         break;
     }
 
@@ -1960,18 +1967,24 @@ struct obj *otmp;
         boolean spef_on = FALSE;
         if (cansee(trap->tx, trap->ty))
         {
-            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
-            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
+            flush_screen(1);
+            play_special_effect_at(SPECIAL_EFFECT_LAND_MINE_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
+            play_sfx_sound_at_location(SFX_LAND_MINE_ACTIVATE, trap->tx, trap->ty);
             special_effect_wait_until_action(0);
+            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
             spef_on = TRUE;
+            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
         }
         else
             play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, trap->tx, trap->ty);
 
         trapkilled = thitm(0, steed, (struct obj*)0, rnd(16), FALSE);
         steedhit = TRUE;
-        if(spef_on)
+        if (spef_on)
+        {
             special_effect_wait_until_end(0);
+            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+        }
         break;
     }
     case PIT:
@@ -2264,9 +2277,11 @@ int style;
                         if (cansee(t->tx, t->ty))
                         {
                             newsym(bhitpos.x, bhitpos.y);
-                            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, t->tx, t->ty, FALSE);
-                            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, t->tx, t->ty);
+                            flush_screen(1);
+                            play_special_effect_at(SPECIAL_EFFECT_LAND_MINE_EXPLOSION, 0, t->tx, t->ty, FALSE);
+                            play_sfx_sound_at_location(SFX_LAND_MINE_ACTIVATE, t->tx, t->ty);
                             special_effect_wait_until_action(0);
+                            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, t->tx, t->ty);
                             spef_on = TRUE;
                             context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
                         }
@@ -3270,14 +3285,15 @@ register struct monst *mtmp;
                       a_your[trap->madeby_u]);
             }
 
-            play_sfx_sound_at_location(SFX_LAND_MINE_ACTIVATE, mtmp->mx, mtmp->my);
-
             if (in_sight)
             {
-                play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
-                play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.25);
+                flush_screen(1);
+                play_special_effect_at(SPECIAL_EFFECT_LAND_MINE_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
+                play_sfx_sound_at_location(SFX_LAND_MINE_ACTIVATE, mtmp->mx, mtmp->my);
                 special_effect_wait_until_action(0);
+                play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.25);
                 spef_on = TRUE;
+                context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
             }
             else
                 play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.25);
@@ -3308,8 +3324,11 @@ register struct monst *mtmp;
                 multi = -1;
                 nomovemsg = "The explosion awakens you!";
             }
-            if(spef_on)
+            if (spef_on)
+            {
                 special_effect_wait_until_end(0);
+                context.global_newsym_flags = 0UL;
+            }
             break;
         }
         case POLY_TRAP:

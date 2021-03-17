@@ -4903,6 +4903,16 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_GENERAL_NOT_IN_THE_RIGHT_CONDITION, 1.0f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_LAND_MINE_SET_UP",
+        {GHSOUND_LAND_MINE_SET_UP, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_BEAR_TRAP_SET_UP",
+        {GHSOUND_BEAR_TRAP_SET_UP, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 

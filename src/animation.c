@@ -681,6 +681,7 @@ NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS] =
     {"polymorph-trap-light-flash",  0, 0, 4,  LAYER_GENERAL_EFFECT, NO_REPLACEMENT, POLYMORPH_TRAP_LIGHT_FLASH_ANIMATION, NO_ENLARGEMENT },
     {"falling-rock-trap-trap-door", 0, 4, 9,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, FALLING_ROCK_TRAP_TRAP_DOOR_ANIMATION, NO_ENLARGEMENT },
     {"falling-rock-trap-falling-rock", 0, 0, 9,   LAYER_MONSTER_EFFECT, NO_REPLACEMENT, FALLING_ROCK_TRAP_FALLING_ROCK_ANIMATION, NO_ENLARGEMENT },
+    {"land-mine-explosion",     0, 0, 4,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, LAND_MINE_EXPLOSION_ANIMATION, NO_ENLARGEMENT },
     {"needle",                  0, 0, 12,     LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
     {"general-exclamation",     0, 0, 12,     LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
     {"small-fiery-explosion",   0, 0, 8,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, SMALL_FIERY_EXPLOSION_ANIMATION, NO_ENLARGEMENT },
@@ -984,6 +985,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_WIZARD_MALE_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_WIZARD_FEMALE_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_ORC && genderidx == GENDER_MALE)
+            return ORC_WIZARD_MALE_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
+            return ORC_WIZARD_FEMALE_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -996,6 +1001,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_WIZARD_MALE_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_WIZARD_FEMALE_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_ORC && genderidx == GENDER_MALE)
+            return ORC_WIZARD_MALE_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
+            return ORC_WIZARD_FEMALE_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)

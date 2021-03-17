@@ -3848,8 +3848,16 @@ set_trap()
             add_damage(u.ux, u.uy, 0L); /* schedule removal */
         }
         if (!trapinfo.force_bungle)
+        {
+
+            if (ttyp == LANDMINE)
+                play_sfx_sound(SFX_LAND_MINE_SET_UP);
+            else
+                play_sfx_sound(SFX_BEAR_TRAP_SET_UP);
+
             You("finish arming %s.",
                 the(defsyms[trap_to_defsym(what_trap(ttyp, rn2))].explanation));
+        }
         if (((otmp->cursed || Fumbling) && (rnl(10) > 5))
             || trapinfo.force_bungle)
             dotrap(ttmp,
