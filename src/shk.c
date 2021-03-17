@@ -733,10 +733,15 @@ struct obj *obj;
 
         /* if you bring a sack of N picks into a shop to sell,
            don't repeat this N times when they're taken out */
-        if (moves != pickmovetime) {
+        if (moves != pickmovetime) 
+        {
             if (!Deaf && !muteshk(shkp))
+            {
+                const char* cad_str = cad(FALSE);
+                play_voice_shopkeeper_sneaky_thing(shkp, cad_str);
                 verbalize("You sneaky %s!  Get out of here with that pick!",
-                      cad(FALSE));
+                    cad_str);
+            }
             else
                 pline("%s %s your pick!",
                       Shknam(shkp),
@@ -4965,12 +4970,22 @@ boolean eating;
 
                     if (eating)
                     {
-                        verbalize("Stay away from %s %s!", obj->quan > 1 ? "those" : "that", cxname(obj));
+                        if (iflags.using_gui_sounds)
+                        {
+                            play_voice_shopkeeper_simple_line(shkp, obj->quan > 1 ? SHOPKEEPER_LINE_STAY_AWAY_FROM_THOSE : SHOPKEEPER_LINE_STAY_AWAY_FROM_THAT);
+                            verbalize("Stay away from %s!", obj->quan > 1 ? "those" : "that");
+                        }
+                        else
+                            verbalize("Stay away from %s %s!", obj->quan > 1 ? "those" : "that", cxname(obj));
+
                         pline("%s backs away from %s.", Monnam(mtmp), the(cxname(obj)));
                     }
                     else
                     {
+                        play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DROP_THAT_NOW);
                         verbalize("Drop that, now!");
+                        if (iflags.using_gui_sounds)
+                            delay_output_milliseconds(200);
                         play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP, FALSE);
                         pline("%s drops %s.", Monnam(mtmp), the(cxname(obj)));
                     }

@@ -424,23 +424,35 @@ dosounds()
             }
         }
     }
-    if (level.flags.has_shop && !rn2(200)) {
+    if (level.flags.has_shop && !rn2(200)) 
+	{
         if (!(sroom = search_special(ANY_SHOP))) {
             /* strange... */
             level.flags.has_shop = 0;
             return;
         }
+
         if (tended_shop(sroom)
-            && !index(u.ushops, (int) (ROOM_INDEX(sroom) + ROOMOFFSET))) {
+            && !index(u.ushops, (int) (ROOM_INDEX(sroom) + ROOMOFFSET)))
+		{
             static const char *const shop_msg[3] = {
                 "someone cursing shoplifters.",
                 "the chime of a cash register.", "Neiman and Marcus arguing!",
             };
+
 			static enum sfx_sound_types shop_sound[3] = {
 				SFX_LEVEL_SOMEONE_CURSING_SHOPLIFTERS, SFX_LEVEL_CHIME_OF_CASH_REGISTER, SFX_LEVEL_NEIMAN_AND_MARCUS_ARGUING,
 			};
+
 			int roll = rn2(2) + hallu;
-			play_sfx_sound(shop_sound[roll]);
+			struct monst* shkp = sroom->resident;
+			if (roll == 0 && shkp) /* Should be in his shop, since it is tended */
+			{
+				play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_CURSING_SHOPLIFTERS);
+			}
+			else
+				play_sfx_sound(shop_sound[roll]);
+
 			You_hear1(shop_msg[roll]);
         }
         return;

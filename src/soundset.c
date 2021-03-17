@@ -8997,8 +8997,6 @@ int rt;
     if (eshkp->visitct == 0)
     {
         info.ghsound = is_undead(shkp->data) || is_demon(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME : GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME;
-        info.volume = 1.0f;
-        info.play_group = SOUND_PLAY_GROUP_LONG;
         info.parameter_names[0] = "RoleIndex";
         info.parameter_values[0] = (float)yourrole;
         info.parameter_names[1] = "ShopType";
@@ -9008,12 +9006,25 @@ int rt;
     else
     {
         info.ghsound = is_undead(shkp->data) || is_demon(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME_BACK : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME_BACK : GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME_BACK;
-        info.volume = 1.0f;
-        info.play_group = SOUND_PLAY_GROUP_LONG;
         info.parameter_names[0] = "RoleIndex";
         info.parameter_values[0] = (float)yourrole;
         info.parameter_names[1] = (char*)0;
     }
+
+    float volume = SHOPKEEPER_BASE_VOLUME;
+    if (isok(shkp->mx, shkp->my))
+    {
+        float hearing = hearing_array[shkp->mx][shkp->my];
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
+            return;
+        else
+            volume *= hearing_array[shkp->mx][shkp->my];
+    }
+
+    info.volume = min(1.0f, max(SHOPKEEPER_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume)));
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    info.dialogue_mid = shkp->m_id;
 
     play_immediate_ghsound(info);
 
@@ -9047,12 +9058,44 @@ enum shopkeeper_lines line_idx;
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_INVISIBLE_CUSTOMERS_NOT_WELCOME :
             GHSOUND_VOICE_SHOPKEEPER_MALE_INVISIBLE_CUSTOMERS_NOT_WELCOME;
         break;
+    case SHOPKEEPER_LINE_DROP_THAT_NOW:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DROP_THAT_NOW :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_DROP_THAT_NOW :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_DROP_THAT_NOW;
+        break;
+    case SHOPKEEPER_LINE_CURSING_SHOPLIFTERS:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_CURSING_SHOPLIFTERS :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_CURSING_SHOPLIFTERS :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_CURSING_SHOPLIFTERS;
+        break;
+    case SHOPKEEPER_LINE_STAY_AWAY_FROM_THOSE:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_STAY_AWAY_FROM_THOSE :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_STAY_AWAY_FROM_THOSE :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_STAY_AWAY_FROM_THOSE;
+        break;
+    case SHOPKEEPER_LINE_STAY_AWAY_FROM_THAT:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_STAY_AWAY_FROM_THOSE :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_STAY_AWAY_FROM_THOSE :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_STAY_AWAY_FROM_THOSE;
+        break;
     default:
         break;
     }
 
-    info.volume = 1.0f;
+    float volume = SHOPKEEPER_BASE_VOLUME; /* Shopkeeper */
+    if (isok(shkp->mx, shkp->my))
+    {
+        float hearing = hearing_array[shkp->mx][shkp->my];
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
+            return;
+        else
+            volume *= hearing_array[shkp->mx][shkp->my];
+    }
+
+    info.volume = min(1.0f, max(SHOPKEEPER_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume)));
     info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    info.dialogue_mid = shkp->m_id;
 
     play_immediate_ghsound(info);
 
@@ -9194,12 +9237,87 @@ boolean is_angry;
         }
     }
 
-    info.volume = 1.0f;
+    float volume = SHOPKEEPER_BASE_VOLUME; /* Shopkeeper */
+    if (isok(shkp->mx, shkp->my))
+    {
+        float hearing = hearing_array[shkp->mx][shkp->my];
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
+            return;
+        else
+            volume *= hearing_array[shkp->mx][shkp->my];
+    }
+
+    info.volume = min(1.0f, max(SHOPKEEPER_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume)));
     info.play_group = SOUND_PLAY_GROUP_LONG;
-    info.play_after_current_has_finished = TRUE;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    info.dialogue_mid = shkp->m_id;
 
     if(info.ghsound > GHSOUND_NONE)
        play_immediate_ghsound(info);
+
+}
+
+void
+play_voice_shopkeeper_sneaky_thing(shkp, cad_str)
+struct monst* shkp;
+const char* cad_str;
+{
+    if (!shkp || !shkp->mextra || !ESHK(shkp) || Deaf)
+        return;
+
+    enum role_types yourrole = urole.rolenum;
+    boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+
+    struct ghsound_immediate_info info = { 0 };
+
+    if (!strcmp(cad_str, "cad"))
+    {
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_CAD :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_CAD :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_CAD;
+    }
+    else if (!strcmp(cad_str, "minx"))
+    {
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_MINX :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_MINX :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_MINX;
+    }
+    else if (!strcmp(cad_str, "fiend"))
+    {
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_FIEND :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_FIEND :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_CAD;
+    }
+    else if (!strcmp(cad_str, "beast"))
+    {
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_BEAST :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_BEAST :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_BEAST;
+    }
+    else if (!strcmp(cad_str, "thing"))
+    {
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_THING :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_THING :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_THING;
+    }
+
+    float volume = SHOPKEEPER_BASE_VOLUME; /* Shopkeeper */
+    if (isok(shkp->mx, shkp->my))
+    {
+        float hearing = hearing_array[shkp->mx][shkp->my];
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
+            return;
+        else
+            volume *= hearing_array[shkp->mx][shkp->my];
+    }
+
+    info.volume = min(1.0f, max(SHOPKEEPER_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume)));
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    info.dialogue_mid = shkp->m_id;
+
+    if (info.ghsound > GHSOUND_NONE)
+        play_immediate_ghsound(info);
 
 }
 /* soundset.c */

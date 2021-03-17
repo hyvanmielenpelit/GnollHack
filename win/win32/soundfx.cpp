@@ -951,6 +951,34 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Shopkeeper Female Will You Please Leave Steed Outside", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Shopkeeper Undead Will You Please Leave Steed Outside", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Drop That Now", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Drop That Now", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Drop That Now", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Stay Away From Those", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Stay Away From Those", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Stay Away From Those", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Stay Away From That", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Stay Away From That", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Stay Away From That", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Cursing Shoplifters", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Cursing Shoplifters", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Cursing Shoplifters", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Sneaky Minx", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Sneaky Minx", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Sneaky Minx", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Sneaky Fiend", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Sneaky Fiend", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Sneaky Fiend", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Sneaky Cad", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Sneaky Cad", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Sneaky Cad", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Sneaky Thing", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Sneaky Thing", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Sneaky Thing", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Sneaky Beast", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Sneaky Beast", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Sneaky Beast", 1.0f },
+
 };
 
 
@@ -1690,6 +1718,7 @@ extern "C"
             {
                 if (immediateSoundInstances[i].eventInstance == (Studio::EventInstance*)ptr)
                 {
+                    immediateSoundInstances[i].normalVolume = 0.0f;
                     if (i > 0 && immediateSoundInstances[i - 1].queued)
                     {
                         immediateSoundInstances[i - 1].queued = 0;
@@ -1705,6 +1734,7 @@ extern "C"
             {
                 if (longImmediateSoundInstances[i].eventInstance == (Studio::EventInstance*)ptr)
                 {
+                    longImmediateSoundInstances[i].normalVolume = 0.0f;
                     if (i > 0 && longImmediateSoundInstances[i - 1].queued)
                     {
                         longImmediateSoundInstances[i - 1].queued = 0;
@@ -1816,8 +1846,12 @@ extern "C"
                 return FALSE;
         }
 
+
+        boolean queue_sound = FALSE;
         if (play_group == SOUND_PLAY_GROUP_LONG)
         {
+            queue_sound = (info.sound_type == IMMEDIATE_SOUND_DIALOGUE && longImmediateSoundInstances[0].sound_type == IMMEDIATE_SOUND_DIALOGUE && !longImmediateSoundInstances[0].queued && longImmediateSoundInstances[0].normalVolume > 0.0f);
+
             /* Long play group */
             if (longImmediateSoundInstances[0].eventInstance)
             {
@@ -1846,11 +1880,15 @@ extern "C"
             longImmediateSoundInstances[0].ghsound = info.ghsound;
             longImmediateSoundInstances[0].normalVolume = info.volume;
             longImmediateSoundInstances[0].sound_type = info.sound_type;
-            longImmediateSoundInstances[0].queued = info.play_after_current_has_finished;
+            longImmediateSoundInstances[0].queued = queue_sound;
 
+            if (info.sound_type == IMMEDIATE_SOUND_DIALOGUE)
+                result = longImmediateSoundInstances[0].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
         }
         else
         {
+            queue_sound = (info.sound_type == IMMEDIATE_SOUND_DIALOGUE && immediateSoundInstances[0].sound_type == IMMEDIATE_SOUND_DIALOGUE && !immediateSoundInstances[0].queued && immediateSoundInstances[0].normalVolume > 0.0f);
+
             /* Normal play group */
             if (immediateSoundInstances[0].eventInstance)
             {
@@ -1879,38 +1917,43 @@ extern "C"
             immediateSoundInstances[0].ghsound = info.ghsound;
             immediateSoundInstances[0].normalVolume = info.volume;
             immediateSoundInstances[0].sound_type = info.sound_type;
-            immediateSoundInstances[0].queued = info.play_after_current_has_finished;
+            immediateSoundInstances[0].queued = queue_sound;
+
+            if (info.sound_type == IMMEDIATE_SOUND_DIALOGUE)
+                result = immediateSoundInstances[0].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
         }
 
-        if (info.play_after_current_has_finished)
+        boolean play_sound = TRUE;
+        if (queue_sound)
         {
             if (play_group == SOUND_PLAY_GROUP_LONG)
             {
-                if ((longImmediateSoundInstances[1].eventInstance && longImmediateSoundInstances[1].ghsound > 0 && longImmediateSoundInstances[1].normalVolume > 0.0f) || longImmediateSoundInstances[1].queued)
+                /* Is the previous still playing? */
+                if ((longImmediateSoundInstances[1].eventInstance && longImmediateSoundInstances[1].ghsound > 0 && longImmediateSoundInstances[1].normalVolume > 0.0f) /* || longImmediateSoundInstances[1].queued */)
                 {
-                    result = longImmediateSoundInstances[1].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
+                    play_sound = FALSE;
                 }
                 else
                 {
                     longImmediateSoundInstances[0].queued = 0;
-                    result = immediateSoundInstance->start();
                 }
             }
             else
             {
-                if ((immediateSoundInstances[1].eventInstance && immediateSoundInstances[1].ghsound > 0 && immediateSoundInstances[1].normalVolume > 0.0f) || immediateSoundInstances[1].queued)
-                    result = immediateSoundInstances[1].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
+                /* Is the previous still playing? */
+                if ((immediateSoundInstances[1].eventInstance && immediateSoundInstances[1].ghsound > 0 && immediateSoundInstances[1].normalVolume > 0.0f) /* || immediateSoundInstances[1].queued */)
+                {
+                    play_sound = FALSE;
+
+                }
                 else
                 {
                     immediateSoundInstances[0].queued = 0;
-                    result = immediateSoundInstance->start();
                 }
             }
-
-            if (result != FMOD_OK)
-                return FALSE;
         }
-        else
+
+        if(play_sound)
         {
             /* Play sound */
             result = immediateSoundInstance->start();
