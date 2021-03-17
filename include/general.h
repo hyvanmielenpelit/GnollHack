@@ -379,8 +379,9 @@ enum main_menu_command {
 };
 
 /* Shopkeeper */
-#define SHOPKEEPER_BASE_VOLUME 2.0f
-#define SHOPKEEPER_MINIMUM_VOLUME 0.25f
+#define SHOPKEEPER_BASE_VOLUME 5.0f
+#define SHOPKEEPER_DISTANT_VOLUME 0.15f
+#define SHOPKEEPER_NEARBY_MINIMUM_VOLUME 0.25f
 
 enum shopkeeper_lines
 {

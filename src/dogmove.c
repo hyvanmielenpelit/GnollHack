@@ -1439,18 +1439,21 @@ int after; /* this is extra fast monster movement */
 		{
             int mstatus;
 
-            if ((!mon_disregards_own_health(mtmp) && (int) mtmp2->m_lev >= (int) mtmp->m_lev + 2)
-                || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
-                    && !is_blinded(mtmp) && haseyes(mtmp->data) && !is_blinded(mtmp2)
-                    && (has_see_invisible(mtmp) || !is_invisible(mtmp2)))
-                || (slurps_items(mtmp2->data) && rn2(10))
-                || (is_tame(mtmp2) && !Conflict && !is_crazed(mtmp2))
-				|| (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
-				|| (((!mon_disregards_own_health(mtmp) && mtmp->mhp * 4 < mtmp->mhpmax)
-                     || mtmp2->data->msound == MS_GUARDIAN
-                     || mtmp2->data->msound == MS_LEADER || !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) && is_peaceful(mtmp2)
-                    && !Conflict && !is_crazed(mtmp) && !mon_has_bloodlust(mtmp))
-                || (touch_petrifies(mtmp2->data) && !resists_ston(mtmp) && !MON_WEP(mtmp)))
+            if (
+                (!mon_disregards_own_health(mtmp) && (int) mtmp2->m_lev >= (int) mtmp->m_lev + 2)
+                    || (
+                        (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
+                        && !is_blinded(mtmp) && haseyes(mtmp->data) && !is_blinded(mtmp2)
+                        && (has_see_invisible(mtmp) || !is_invisible(mtmp2)))
+                    || (slurps_items(mtmp2->data) && rn2(10))
+                    || (is_tame(mtmp2) && !Conflict && !is_crazed(mtmp2))
+				    || (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
+				    || (is_peaceful(mtmp2) && (mtmp2->data->msound == MS_GUARDIAN
+                         || mtmp2->data->msound == MS_LEADER || (!mon_has_bloodlust(mtmp)
+                        && !Conflict && !is_crazed(mtmp) && !mon_has_bloodlust(mtmp))))
+                    || (touch_petrifies(mtmp2->data) && !resists_ston(mtmp) && !MON_WEP(mtmp))
+                    )
+                )
                 continue;
 
             if (after)

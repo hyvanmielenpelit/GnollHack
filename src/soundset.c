@@ -9025,13 +9025,13 @@ int rt;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
-            return;
+        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+            volume = SHOPKEEPER_DISTANT_VOLUME;
         else
-            volume *= hearing_array[shkp->mx][shkp->my];
+            volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
     }
 
-    info.volume = min(1.0f, max(SHOPKEEPER_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume)));
+    info.volume = min(1.0f, volume);
     info.play_group = SOUND_PLAY_GROUP_LONG;
     info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
     info.dialogue_mid = shkp->m_id;
@@ -9092,17 +9092,17 @@ enum shopkeeper_lines line_idx;
         break;
     }
 
-    float volume = SHOPKEEPER_BASE_VOLUME; /* Shopkeeper */
+    float volume = SHOPKEEPER_BASE_VOLUME;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
-            return;
+        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+            volume = SHOPKEEPER_DISTANT_VOLUME;
         else
-            volume *= hearing_array[shkp->mx][shkp->my];
+            volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
     }
 
-    info.volume = min(1.0f, max(SHOPKEEPER_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume)));
+    info.volume = min(1.0f, volume);
     info.play_group = SOUND_PLAY_GROUP_LONG;
     info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
     info.dialogue_mid = shkp->m_id;
@@ -9247,17 +9247,17 @@ boolean is_angry;
         }
     }
 
-    float volume = SHOPKEEPER_BASE_VOLUME; /* Shopkeeper */
+    float volume = SHOPKEEPER_BASE_VOLUME;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
-            return;
+        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+            volume = SHOPKEEPER_DISTANT_VOLUME;
         else
-            volume *= hearing_array[shkp->mx][shkp->my];
+            volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
     }
 
-    info.volume = min(1.0f, max(SHOPKEEPER_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume)));
+    info.volume = min(1.0f, volume);
     info.play_group = SOUND_PLAY_GROUP_LONG;
     info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
     info.dialogue_mid = shkp->m_id;
@@ -9311,17 +9311,17 @@ const char* cad_str;
             GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_THING;
     }
 
-    float volume = SHOPKEEPER_BASE_VOLUME; /* Shopkeeper */
+    float volume = SHOPKEEPER_BASE_VOLUME;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
-            return;
+        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+            volume = SHOPKEEPER_DISTANT_VOLUME;
         else
-            volume *= hearing_array[shkp->mx][shkp->my];
+            volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
     }
 
-    info.volume = min(1.0f, max(SHOPKEEPER_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume)));
+    info.volume = min(1.0f, volume);
     info.play_group = SOUND_PLAY_GROUP_LONG;
     info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
     info.dialogue_mid = shkp->m_id;

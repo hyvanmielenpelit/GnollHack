@@ -10375,14 +10375,14 @@ unsigned long mmflags;
 unsigned long scflags;
 {
 	struct monst* mon = (struct monst*)0;
-    boolean capitalize = !!(scflags && SUMMONCREATURE_FLAGS_CAPITALIZE); //capitalize the monster name for %s
-    boolean markassummoned = !!(scflags && SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED); //mark as summoned
-    boolean disregardstrength = !!(scflags && SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH);
-    boolean disregardhealth = !!(scflags && SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH);
-    boolean bloodlust = !!(scflags && SUMMONCREATURE_FLAGS_BLOODLUST);
-    boolean pacifist = !!(scflags && SUMMONCREATURE_FLAGS_PACIFIST);
-    boolean faithful = !!(scflags && SUMMONCREATURE_FLAGS_FAITHFUL);
-    boolean protector = !!(scflags && SUMMONCREATURE_FLAGS_PROTECTOR);
+    boolean capitalize = !!(scflags & SUMMONCREATURE_FLAGS_CAPITALIZE); //capitalize the monster name for %s
+    boolean markassummoned = !!(scflags & SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED); //mark as summoned
+    boolean disregardstrength = !!(scflags & SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH);
+    boolean disregardhealth = !!(scflags & SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH);
+    boolean bloodlust = !!(scflags & SUMMONCREATURE_FLAGS_BLOODLUST);
+    boolean pacifist = !!(scflags & SUMMONCREATURE_FLAGS_PACIFIST);
+    boolean faithful = !!(scflags & SUMMONCREATURE_FLAGS_FAITHFUL);
+    boolean protector = !!(scflags & SUMMONCREATURE_FLAGS_PROTECTOR);
 
 	mon = makemon(&mons[monst_id], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_NO_DIFFICULTY_HP_CHANGE | MM_PLAY_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | mmflags);
 	if (mon)

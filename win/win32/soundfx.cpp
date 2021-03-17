@@ -22,6 +22,7 @@ struct GNHSoundInstance {
     float normalVolume;
     int sound_type;
     boolean queued;
+    boolean finished_playing; /* Used just for queable dialogues */
     struct GNHSoundInstance* next_instance;
 };
 
@@ -1182,10 +1183,13 @@ extern "C"
             if (musicInstances[1].eventInstance)
                 musicInstances[1].eventInstance->release();
 
+            musicInstances[1] = musicInstances[0];
+            /*
             musicInstances[1].eventInstance = musicInstances[0].eventInstance;
             musicInstances[1].ghsound = musicInstances[0].ghsound;
             musicInstances[1].normalVolume = musicInstances[0].normalVolume;
             musicInstances[1].sound_type = musicInstances[0].sound_type;
+            */
         }
 
         /* Set the new instance as musicInstances[0] */
@@ -1308,10 +1312,13 @@ extern "C"
             if (levelAmbientInstances[1].eventInstance)
                 levelAmbientInstances[1].eventInstance->release();
 
+            levelAmbientInstances[1] = levelAmbientInstances[0];
+            /*
             levelAmbientInstances[1].eventInstance = levelAmbientInstances[0].eventInstance;
             levelAmbientInstances[1].ghsound = levelAmbientInstances[0].ghsound;
             levelAmbientInstances[1].normalVolume = levelAmbientInstances[0].normalVolume;
             levelAmbientInstances[1].sound_type = levelAmbientInstances[0].sound_type;
+            */
         }
 
         /* Set the new instance as levelAmbientInstances[0] */
@@ -1433,10 +1440,13 @@ extern "C"
             if (environmentAmbientInstances[1].eventInstance)
                 environmentAmbientInstances[1].eventInstance->release();
 
+            environmentAmbientInstances[1] = environmentAmbientInstances[0];
+            /*
             environmentAmbientInstances[1].eventInstance = environmentAmbientInstances[0].eventInstance;
             environmentAmbientInstances[1].ghsound = environmentAmbientInstances[0].ghsound;
             environmentAmbientInstances[1].normalVolume = environmentAmbientInstances[0].normalVolume;
             environmentAmbientInstances[1].sound_type = environmentAmbientInstances[0].sound_type;
+            */
         }
 
         /* Set the new instance as environmentAmbientInstances[0] */
@@ -1558,10 +1568,13 @@ extern "C"
             if (occupationAmbientInstances[1].eventInstance)
                 occupationAmbientInstances[1].eventInstance->release();
 
+            occupationAmbientInstances[1] = occupationAmbientInstances[0];
+            /*
             occupationAmbientInstances[1].eventInstance = occupationAmbientInstances[0].eventInstance;
             occupationAmbientInstances[1].ghsound = occupationAmbientInstances[0].ghsound;
             occupationAmbientInstances[1].normalVolume = occupationAmbientInstances[0].normalVolume;
             occupationAmbientInstances[1].sound_type = occupationAmbientInstances[0].sound_type;
+            */
         }
 
         /* Set the new instance as occupationAmbientInstances[0] */
@@ -1692,10 +1705,13 @@ extern "C"
             if (effectAmbientInstances[1].eventInstance)
                 effectAmbientInstances[1].eventInstance->release();
 
+            effectAmbientInstances[1] = effectAmbientInstances[0];
+            /*
             effectAmbientInstances[1].eventInstance = effectAmbientInstances[0].eventInstance;
             effectAmbientInstances[1].ghsound = effectAmbientInstances[0].ghsound;
             effectAmbientInstances[1].normalVolume = effectAmbientInstances[0].normalVolume;
             effectAmbientInstances[1].sound_type = effectAmbientInstances[0].sound_type;
+            */
         }
 
         /* Set the new instance as effectAmbientInstances[0] */
@@ -1720,7 +1736,7 @@ extern "C"
             {
                 if (immediateSoundInstances[i].eventInstance == (Studio::EventInstance*)ptr)
                 {
-                    immediateSoundInstances[i].normalVolume = 0.0f;
+                    immediateSoundInstances[i].finished_playing = 1;
                     if (i > 0 && immediateSoundInstances[i - 1].queued)
                     {
                         immediateSoundInstances[i - 1].queued = 0;
@@ -1736,7 +1752,7 @@ extern "C"
             {
                 if (longImmediateSoundInstances[i].eventInstance == (Studio::EventInstance*)ptr)
                 {
-                    longImmediateSoundInstances[i].normalVolume = 0.0f;
+                    longImmediateSoundInstances[i].finished_playing = 1;
                     if (i > 0 && longImmediateSoundInstances[i - 1].queued)
                     {
                         longImmediateSoundInstances[i - 1].queued = 0;
@@ -1852,7 +1868,7 @@ extern "C"
         boolean queue_sound = FALSE;
         if (play_group == SOUND_PLAY_GROUP_LONG)
         {
-            queue_sound = (info.sound_type == IMMEDIATE_SOUND_DIALOGUE && longImmediateSoundInstances[0].sound_type == IMMEDIATE_SOUND_DIALOGUE && !longImmediateSoundInstances[0].queued && longImmediateSoundInstances[0].normalVolume > 0.0f);
+            queue_sound = (info.sound_type == IMMEDIATE_SOUND_DIALOGUE && longImmediateSoundInstances[0].sound_type == IMMEDIATE_SOUND_DIALOGUE && !longImmediateSoundInstances[0].finished_playing);
 
             /* Long play group */
             if (longImmediateSoundInstances[0].eventInstance)
@@ -1869,11 +1885,15 @@ extern "C"
                 /* Move all others back */
                 for (int i = NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1; i >= 1; i--)
                 {
+                    longImmediateSoundInstances[i] = longImmediateSoundInstances[i - 1];
+                    /*
                     longImmediateSoundInstances[i].eventInstance = longImmediateSoundInstances[i - 1].eventInstance;
                     longImmediateSoundInstances[i].ghsound = longImmediateSoundInstances[i - 1].ghsound;
                     longImmediateSoundInstances[i].normalVolume = longImmediateSoundInstances[i - 1].normalVolume;
                     longImmediateSoundInstances[i].sound_type = longImmediateSoundInstances[i - 1].sound_type;
                     longImmediateSoundInstances[i].queued = longImmediateSoundInstances[i - 1].queued;
+                    longImmediateSoundInstances[i].finished_playing = longImmediateSoundInstances[i - 1].finished_playing;
+                    */
                 }
             }
 
@@ -1883,13 +1903,14 @@ extern "C"
             longImmediateSoundInstances[0].normalVolume = info.volume;
             longImmediateSoundInstances[0].sound_type = info.sound_type;
             longImmediateSoundInstances[0].queued = queue_sound;
+            longImmediateSoundInstances[0].finished_playing = 0;
 
             if (info.sound_type == IMMEDIATE_SOUND_DIALOGUE)
                 result = longImmediateSoundInstances[0].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
         }
         else
         {
-            queue_sound = (info.sound_type == IMMEDIATE_SOUND_DIALOGUE && immediateSoundInstances[0].sound_type == IMMEDIATE_SOUND_DIALOGUE && !immediateSoundInstances[0].queued && immediateSoundInstances[0].normalVolume > 0.0f);
+            queue_sound = (info.sound_type == IMMEDIATE_SOUND_DIALOGUE && immediateSoundInstances[0].sound_type == IMMEDIATE_SOUND_DIALOGUE && !immediateSoundInstances[0].finished_playing);
 
             /* Normal play group */
             if (immediateSoundInstances[0].eventInstance)
@@ -1906,11 +1927,15 @@ extern "C"
                 /* Move all others back */
                 for (int i = NUM_IMMEDIATE_SOUND_INSTANCES - 1; i >= 1; i--)
                 {
+                    immediateSoundInstances[i] = immediateSoundInstances[i - 1];
+                    /*
                     immediateSoundInstances[i].eventInstance = immediateSoundInstances[i - 1].eventInstance;
                     immediateSoundInstances[i].ghsound = immediateSoundInstances[i - 1].ghsound;
                     immediateSoundInstances[i].normalVolume = immediateSoundInstances[i - 1].normalVolume;
                     immediateSoundInstances[i].sound_type = immediateSoundInstances[i - 1].sound_type;
                     immediateSoundInstances[i].queued = immediateSoundInstances[i - 1].queued;
+                    immediateSoundInstances[i].finished_playing = immediateSoundInstances[i - 1].finished_playing;
+                    */
                 }
             }
 
@@ -1931,7 +1956,7 @@ extern "C"
             if (play_group == SOUND_PLAY_GROUP_LONG)
             {
                 /* Is the previous still playing? */
-                if ((longImmediateSoundInstances[1].eventInstance && longImmediateSoundInstances[1].ghsound > 0 && longImmediateSoundInstances[1].normalVolume > 0.0f) /* || longImmediateSoundInstances[1].queued */)
+                if (((longImmediateSoundInstances[1].eventInstance && longImmediateSoundInstances[1].ghsound > 0 && longImmediateSoundInstances[1].normalVolume > 0.0f) || longImmediateSoundInstances[1].queued) && !longImmediateSoundInstances[1].finished_playing)
                 {
                     play_sound = FALSE;
                 }
@@ -1943,7 +1968,7 @@ extern "C"
             else
             {
                 /* Is the previous still playing? */
-                if ((immediateSoundInstances[1].eventInstance && immediateSoundInstances[1].ghsound > 0 && immediateSoundInstances[1].normalVolume > 0.0f) /* || immediateSoundInstances[1].queued */)
+                if (((immediateSoundInstances[1].eventInstance && immediateSoundInstances[1].ghsound > 0 && immediateSoundInstances[1].normalVolume > 0.0f) || immediateSoundInstances[1].queued) && !immediateSoundInstances[1].finished_playing)
                 {
                     play_sound = FALSE;
 

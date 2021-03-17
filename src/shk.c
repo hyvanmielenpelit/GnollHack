@@ -634,7 +634,7 @@ char *enterstring;
     }
     /* can't do anything about blocking if teleported in */
     if (!inside_shop(u.ux, u.uy)) {
-        boolean should_block;
+        boolean should_block = FALSE;
         int cnt;
         const char *tool;
         struct obj *pick = carrying(PICK_AXE),
@@ -643,7 +643,9 @@ char *enterstring;
 
         if (pick || mattock || spade) 
 		{
-			int typecnt = (pick ? 1 : 0) + (mattock ? 1 : 0) + (spade ? 1 : 0);
+            (void)dochug(shkp); /* shk blocks first, then speaks */
+            
+            int typecnt = (pick ? 1 : 0) + (mattock ? 1 : 0) + (spade ? 1 : 0);
             cnt = 1;
             if (typecnt > 1) 
 			{ /* carrying both types */
@@ -691,8 +693,11 @@ char *enterstring;
                       Shknam(shkp),
                       NOTANGRY(shkp) ? "is hesitant" : "refuses",
                       tool, plur(cnt));
-            should_block = TRUE;
-        } else if (u.usteed) {
+
+        } 
+        else if (u.usteed)
+        {
+            (void)dochug(shkp); /* shk blocks first, then speaks */
             if (!Deaf && !muteshk(shkp))
             {
                 play_voice_shopkeeper_leave_pick_outside(shkp, "steed", 1, !NOTANGRY(shkp));
@@ -705,8 +710,10 @@ char *enterstring;
                       Shknam(shkp),
                       NOTANGRY(shkp) ? "doesn't want" : "refuses",
                       y_monnam(u.usteed));
-            should_block = TRUE;
-        } else {
+
+        }
+        else 
+        {
             should_block =
                 (Fast && (sobj_at(PICK_AXE, u.ux, u.uy)
                           || sobj_at(DWARVISH_MATTOCK, u.ux, u.uy) 
