@@ -308,25 +308,32 @@ register int show;
     struct monst* mtmp = m_at(x, y);
     boolean utrapped = (x == u.ux && y == u.uy && u.utrap > 0);
     boolean mtrapped = (mtmp && mtmp->mtrapped);
+    boolean trapped_draw_in_front = ((utrapped || mtrapped) && (trap->ttyp == WEB || trap->ttyp == BEAR_TRAP));
 
     if (level.flags.hero_memory)
     {
         levl[x][y].hero_memory_layers.glyph = glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_TRAP] = glyph;
+        if(trapped_draw_in_front)
+            levl[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_TRAP] = glyph; /* Semi-transparent redraw */
         if(mtrapped || utrapped)
             levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_T_TRAPPED;
         else
             levl[x][y].hero_memory_layers.layer_flags &= ~LFLAGS_T_TRAPPED;
+
     }
 
     if (show)
     {
         show_glyph_ascii(x, y, glyph);
         show_glyph_on_layer(x, y, glyph, LAYER_TRAP);
+        if (trapped_draw_in_front)
+            show_glyph_on_layer(x, y, glyph, LAYER_COVER_TRAP);
         if (mtrapped || utrapped)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_T_TRAPPED);
         else
             remove_glyph_buffer_layer_flags(x, y, LFLAGS_T_TRAPPED);
+
     }
 }
 
@@ -573,6 +580,7 @@ int x, y, show;
     else if (level.flags.hero_memory)
     {
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_TRAP] = NO_GLYPH;
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_TRAP] = NO_GLYPH;
     }
 
     /* Object layer */

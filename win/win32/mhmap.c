@@ -1806,6 +1806,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             make_invis_transparent = TRUE;
 
                     }
+                    else if (base_layer == LAYER_COVER_TRAP)
+                        make_semi_transparent = TRUE;
 
                     /* Set position_index */
                     if (enlarg_idx == -1)

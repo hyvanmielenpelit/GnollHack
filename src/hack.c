@@ -1445,6 +1445,7 @@ struct trap *desttrap; /* nonnull if another trap at <x,y> */
         } 
         else
         {
+            play_sfx_sound(SFX_WRIGGLE_FREE);
             if (u.usteed)
                 pline("%s breaks out of the web.", upstart(steedname));
             else

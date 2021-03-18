@@ -1296,7 +1296,9 @@ unsigned short trflags;
         context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
         struct layer_info layers = layers_at(trap->tx, trap->ty);
         int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+        int old_cover_glyph = layers.layer_glyphs[LAYER_COVER_TRAP];
         show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_TRAP);
+        show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_COVER_TRAP);
         flush_screen(1);
         play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_CLOSE, 0, trap->tx, trap->ty, FALSE);
         play_sfx_sound(SFX_BEAR_TRAP_CLOSES);
@@ -1313,6 +1315,7 @@ unsigned short trflags;
             special_effect_wait_until_action(0);
             special_effect_wait_until_end(0);
             show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
+            show_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, LAYER_COVER_TRAP);
             flush_screen(1);
             break;
         }
@@ -1327,6 +1330,7 @@ unsigned short trflags;
             special_effect_wait_until_action(0);
             special_effect_wait_until_end(0);
             show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
+            show_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, LAYER_COVER_TRAP);
             flush_screen(1);
             break;
         }
@@ -2804,7 +2808,9 @@ register struct monst *mtmp;
                     context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
                     struct layer_info layers = layers_at(trap->tx, trap->ty);
                     int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                    int old_cover_glyph = layers.layer_glyphs[LAYER_COVER_TRAP];
                     show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_TRAP);
+                    show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_COVER_TRAP);
                     flush_screen(1);
                     play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_CLOSE, 0, trap->tx, trap->ty, FALSE);
                     play_sfx_sound(SFX_BEAR_TRAP_CLOSES);
@@ -2814,6 +2820,7 @@ register struct monst *mtmp;
                     seetrap(trap);
                     special_effect_wait_until_end(0);
                     show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
+                    show_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, LAYER_COVER_TRAP);
                     flush_screen(1);
                     context.global_newsym_flags = 0UL;
                 }
@@ -2843,12 +2850,15 @@ register struct monst *mtmp;
                     context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
                     struct layer_info layers = layers_at(trap->tx, trap->ty);
                     int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                    int old_cover_glyph = layers.layer_glyphs[LAYER_COVER_TRAP];
                     show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_TRAP);
+                    show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_COVER_TRAP);
                     flush_screen(1);
                     play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, trap->tx, trap->ty, FALSE);
                     special_effect_wait_until_action(0);
                     special_effect_wait_until_end(0);
                     show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
+                    show_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, LAYER_COVER_TRAP);
                     flush_screen(1);
                     context.global_newsym_flags = 0UL;
                 }
@@ -6209,7 +6219,9 @@ boolean *noticed; /* set to true iff hero notices the effect; */
                 context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
                 struct layer_info layers = layers_at(t->tx, t->ty);
                 int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                int old_cover_glyph = layers.layer_glyphs[LAYER_COVER_TRAP];
                 show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_TRAP);
+                show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_COVER_TRAP);
                 flush_screen(1);
                 play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, t->tx, t->ty, FALSE);
                 play_sfx_sound(SFX_BEAR_TRAP_SET_UP);
@@ -6218,6 +6230,7 @@ boolean *noticed; /* set to true iff hero notices the effect; */
                     trapdescr);
                 special_effect_wait_until_end(0);
                 show_glyph_on_layer(t->tx, t->ty, old_glyph, LAYER_TRAP);
+                show_glyph_on_layer(t->tx, t->ty, old_cover_glyph, LAYER_COVER_TRAP);
                 flush_screen(1);
                 context.global_newsym_flags = 0UL;
             }
@@ -6236,7 +6249,9 @@ boolean *noticed; /* set to true iff hero notices the effect; */
                 context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
                 struct layer_info layers = layers_at(t->tx, t->ty);
                 int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                int old_cover_glyph = layers.layer_glyphs[LAYER_COVER_TRAP];
                 show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_TRAP);
+                show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_COVER_TRAP);
                 flush_screen(1);
                 play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, t->tx, t->ty, FALSE);
                 play_sfx_sound(SFX_BEAR_TRAP_SET_UP);
@@ -6244,6 +6259,7 @@ boolean *noticed; /* set to true iff hero notices the effect; */
                 pline("%s%s opens.", upstart(strcpy(buf, which)), trapdescr);
                 special_effect_wait_until_end(0);
                 show_glyph_on_layer(t->tx, t->ty, old_glyph, LAYER_TRAP);
+                show_glyph_on_layer(t->tx, t->ty, old_cover_glyph, LAYER_COVER_TRAP);
                 flush_screen(1);
                 context.global_newsym_flags = 0UL;
             }
