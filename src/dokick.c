@@ -555,8 +555,12 @@ uchar* hitres_ptr;
                     ESHK(mtmp)->credit += value;
                     You("have %ld %s in credit.", ESHK(mtmp)->credit,
                         currency(ESHK(mtmp)->credit));
-                } else
-                    verbalize("Thanks, scum!");
+                }
+                else
+                {
+                    play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_THANK_YOU_SCUM);
+                    verbalize("Thank you, scum!");
+                }
             }
         } else if (mtmp->ispriest) {
             if (is_peaceful(mtmp))

@@ -2371,26 +2371,41 @@ boolean quietly;
 {
     /* for unique situations */
     if (ESHK(shkp)->shoptype == CANDLESHOP
-        && obj->otyp == CANDELABRUM_OF_INVOCATION) {
-        if (!quietly) {
-            if (is_izchak(shkp, TRUE) && !u.uevent.invoked) {
-                if (Deaf || muteshk(shkp)) {
+        && obj->otyp == CANDELABRUM_OF_INVOCATION)
+    {
+        if (!quietly)
+        {
+            if (is_izchak(shkp, TRUE) && !u.uevent.invoked) 
+            {
+                if (Deaf || muteshk(shkp))
+                {
                     pline("%s seems %s that you want to sell that.",
                           Shknam(shkp),
                           (obj->special_quality < 7) ? "horrified" : "concerned");
-                } else {
+                }
+                else 
+                {
+                    play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ID_HANG_ONTO_THAT);
                     verbalize("No thanks, I'd hang onto that if I were you.");
                     if (obj->special_quality < 7)
+                    {
+                        play_voice_shopkeeper_candelabrum_candles(shkp, obj);
                         verbalize(
-                             "You'll need %d%s candle%s to go along with it.",
-                                (7 - obj->special_quality), (obj->special_quality > 0) ? " more" : "",
-                                  plur(7 - obj->special_quality));
+                            "You'll need %d%s candle%s to go along with it.",
+                            (7 - obj->special_quality), (obj->special_quality > 0) ? " more" : "",
+                            plur(7 - obj->special_quality));
+                    }
                     /* [what if hero is already carrying enough candles?
                        should Izchak explain how to attach them instead?] */
                 }
-            } else {
+            }
+            else 
+            {
                 if (!Deaf && !muteshk(shkp))
+                {
+                    play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_I_WONT_STOCK_THAT);
                     verbalize("I won't stock that.  Take it out of here!");
+                }
                 else
                     pline("%s shakes %s %s in refusal.",
                           Shknam(shkp), noit_mhis(shkp),
@@ -3167,7 +3182,10 @@ xchar x, y;
 
     if (ANGRY(shkp)) { /* they become shop-objects, no pay */
         if (!Deaf && !muteshk(shkp))
+        {
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THANK_YOU_SCUM);
             verbalize("Thank you, scum!");
+        }
         else
             pline("%s smirks with satisfaction.", Shknam(shkp));
         subfrombill(obj, shkp);
@@ -3182,9 +3200,12 @@ xchar x, y;
         if ((eshkp->robbed -= offer < 0L))
             eshkp->robbed = 0L;
         if (offer && !Deaf && !muteshk(shkp))
+        {
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THANK_YOU_FOR_YOUR_CONTRIBUTION);
             verbalize(
-  "Thank you for your contribution to restock this recently plundered shop.");
-        subfrombill(obj, shkp);
+                "Thank you for your contribution to restock this recently plundered shop.");
+            subfrombill(obj, shkp);
+        }
         return;
     }
 
@@ -3545,7 +3566,10 @@ register xchar x, y;
         /* if it is the shk's pos, you hit and anger him */
         && (shkp->mx != x || shkp->my != y)) {
         if (mnearto(shkp, x, y, TRUE, FALSE) == 2 && !Deaf && !muteshk(shkp))
+        {
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_OUT_OF_MY_WAY_SCUM);
             verbalize("Out of my way, scum!");
+        }
         if (cansee(x, y)) {
             pline("%s nimbly%s catches %s.", Shknam(shkp),
                   (x == shkp->mx && y == shkp->my) ? "" : " reaches over and",
@@ -3863,7 +3887,10 @@ boolean catchup; /* restoring a level */
              * has Passes_walls ability.
              */
             if (!Deaf && !muteshk(shkp))
+            {
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_GET_YOUR_JUNK_OUT_OF_MY_WALL);
                 verbalize("Get your junk out of my wall!");
+            }
             unplacebc(); /* pick 'em up */
             placebc();   /* put 'em down */
         }
@@ -4080,36 +4107,51 @@ register int fall;
     else if (shkp->data->msound >= MS_HUMANOID)
         lang = 2;
 
-    if (!inhishop(shkp)) {
-        if (Role_if(PM_KNIGHT)) {
+    if (!inhishop(shkp))
+    {
+        if (Role_if(PM_KNIGHT))
+        {
             You_feel("like a common thief.");
             adjalign(-sgn(u.ualign.type));
         }
         return;
     }
 
-    if (!fall) {
-        if (lang == 2) {
-            if (!Deaf && !muteshk(shkp)) {
+    if (!fall) 
+    {
+        if (lang == 2)
+        {
+            if (!Deaf && !muteshk(shkp)) 
+            {
                 if (u.utraptype == TT_PIT)
+                {
+                    play_voice_shopkeeper_simple_line(shkp, flags.female ? SHOPKEEPER_LINE_BE_CAREFUL_MADAM_FALL_THROUGH_THE_FLOOR : SHOPKEEPER_LINE_BE_CAREFUL_SIR_FALL_THROUGH_THE_FLOOR);
                     verbalize(
                         "Be careful, %s, or you might fall through the floor.",
                         flags.female ? "madam" : "sir");
+                }
                 else
+                {
+                    play_voice_shopkeeper_simple_line(shkp, flags.female ? SHOPKEEPER_LINE_MADAM_DO_NOT_DAMAGE_FLOOR : SHOPKEEPER_LINE_SIR_DO_NOT_DAMAGE_FLOOR);
                     verbalize("%s, do not damage the floor here!",
                         flags.female ? "Madam" : "Sir");
+                }
             }
         }
-        if (Role_if(PM_KNIGHT)) {
+        if (Role_if(PM_KNIGHT))
+        {
             You_feel("like a common thief.");
             adjalign(-sgn(u.ualign.type));
         }
-    } else if (!um_dist(shkp->mx, shkp->my, 5)
+    } 
+    else if (!um_dist(shkp->mx, shkp->my, 5)
                && mon_can_move(shkp)
-               && (ESHK(shkp)->billct || ESHK(shkp)->debit)) {
+               && (ESHK(shkp)->billct || ESHK(shkp)->debit)) 
+    {
         register struct obj *obj, *obj2;
 
-        if (nolimbs(shkp->data)) {
+        if (nolimbs(shkp->data)) 
+        {
             grabs = "knocks off";
 #if 0
             /* This is what should happen, but for balance
@@ -4122,10 +4164,12 @@ register int fall;
             return;
 #endif
         }
-        if (distu(shkp->mx, shkp->my) > 2) {
+        if (distu(shkp->mx, shkp->my) > 2) 
+        {
             mnexto(shkp);
             /* for some reason the shopkeeper can't come next to you */
-            if (distu(shkp->mx, shkp->my) > 2) {
+            if (distu(shkp->mx, shkp->my) > 2)
+            {
                 if (lang == 2)
                     pline("%s curses you in anger and frustration!",
                           Shknam(shkp));
@@ -4133,13 +4177,16 @@ register int fall;
                     growl(shkp);
                 rile_shk(shkp);
                 return;
-            } else
+            } 
+            else
                 pline("%s %s, and %s your backpack!", Shknam(shkp),
                       makeplural(locomotion(shkp->data, "leap")), grabs);
-        } else
+        }
+        else
             pline("%s %s your backpack!", Shknam(shkp), grabs);
 
-        for (obj = invent; obj; obj = obj2) {
+        for (obj = invent; obj; obj = obj2) 
+        {
             obj2 = obj->nobj;
             if ((obj->owornmask & ~(W_SWAPWEP | W_SWAPWEP2 | W_QUIVER)) != 0
                 || (obj->otyp == LEASH && obj->leashmon))
@@ -4290,7 +4337,9 @@ boolean cant_mollify;
          */
         if (MON_AT(x, y)) {
             if (!animal) {
-                if (!Deaf && !muteshk(shkp)) {
+                if (!Deaf && !muteshk(shkp)) 
+                {
+                    play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_OUT_OF_MY_WAY_SCUM);
                     You_hear("an angry voice:");
                     verbalize("Out of my way, scum!");
                 }
@@ -4522,7 +4571,8 @@ struct monst *shkp;
     struct eshk *eshk;
     long shkmoney;
 
-    if (!shkp->isshk) {
+    if (!shkp->isshk) 
+    {
         /* The monster type is shopkeeper, but this monster is
            not actually a shk, which could happen if someone
            wishes for a shopkeeper statue and then animates it.
@@ -4536,26 +4586,41 @@ struct monst *shkp;
     }
 
     eshk = ESHK(shkp);
-    if (ANGRY(shkp)) {
+    if (ANGRY(shkp))
+    {
         pline("%s %s how much %s dislikes %s customers.",
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "mentions" : "indicates",
               noit_mhe(shkp), eshk->robbed ? "non-paying" : "rude");
-    } else if (eshk->following) {
-        if (strncmp(eshk->customer, plname, PL_NSIZ)) {
+    } 
+    else if (eshk->following) 
+    {
+        if (strncmp(eshk->customer, plname, PL_NSIZ)) 
+        {
             if (!Deaf && !muteshk(shkp))
+            {
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_I_WAS_LOOKING_FOR_SOMEONE_ELSE);
                 verbalize("%s %s!  I was looking for %s.",
-                      Hello(shkp), plname, eshk->customer);
+                    Hello(shkp), plname, eshk->customer);
+            }
             eshk->following = 0;
-        } else {
+        }
+        else 
+        {
             if (!Deaf && !muteshk(shkp))
+            {
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DIDNT_YOU_FORGET_TO_PAY);
                 verbalize("%s %s!  Didn't you forget to pay?",
-                          Hello(shkp), plname);
+                    Hello(shkp), plname);
+
+            }
             else
                 pline("%s taps you on the %s.",
                       Shknam(shkp), body_part(ARM));
         }
-    } else if (eshk->billct) {
+    } 
+    else if (eshk->billct) 
+    {
         register long total = addupbill(shkp) + eshk->debit;
 
         pline("%s %s that your bill comes to %ld %s.",
