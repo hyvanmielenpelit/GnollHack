@@ -408,5 +408,11 @@ enum main_menu_command {
 #define TAMEDOG_FORCE_NON_UNIQUE	1
 #define TAMEDOG_FORCE_ALL			2
 
+/* Moved from shk.c */
+#define NOTANGRY(mon) ((mon)->mpeaceful)
+#define ANGRY(mon) (!NOTANGRY(mon))
+#define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
+
+
 #endif /* GENERAL_H */
 

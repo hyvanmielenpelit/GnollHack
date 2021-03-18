@@ -15,10 +15,6 @@ STATIC_DCL void FDECL(makekops, (coord *));
 STATIC_DCL void FDECL(call_kops, (struct monst *, BOOLEAN_P));
 STATIC_DCL void FDECL(kops_gone, (BOOLEAN_P));
 
-#define NOTANGRY(mon) ((mon)->mpeaceful)
-#define ANGRY(mon) (!NOTANGRY(mon))
-#define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
-
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
 STATIC_VAR NEARDATA long int followmsg; /* last time of follow message */
@@ -425,9 +421,12 @@ boolean newlev;
          * Try to intimidate him into paying his bill
          */
         if (!Deaf && !muteshk(shkp))
+        {
+            play_voice_shopkeeper_simple_line(shkp, NOTANGRY(shkp) ? SHOPKEEPER_LINE_PLEASE_PAY_BEFORE_LEAVING : SHOPKEEPER_LINE_DONT_YOU_LEAVE_BEFORE_PAYING);
             verbalize(NOTANGRY(shkp) ? "%s!  Please pay before leaving."
-                                 : "%s!  Don't you leave without paying!",
-                      plname);
+                : "%s!  Don't you leave without paying!",
+                iflags.using_gui_sounds ? "Adventurer" : plname);
+        }
         else
             pline("%s %s that you need to pay before leaving%s",
                   Shknam(shkp),
@@ -592,8 +591,16 @@ char *enterstring;
     if (ANGRY(shkp)) {
 		if (!Deaf && !muteshk(shkp))
 		{
-			verbalize("So, %s, you dare return to %s %s?!", plname,
-				s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
+            if (iflags.using_gui_sounds)
+            {
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_DARE_TO_RETURN);
+                verbalize("So, adventurer, you dare return to my store?!");
+            }
+            else
+            {
+                verbalize("So, %s, you dare return to %s %s?!", plname,
+                    s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
+            }
 		}
         else
             pline("%s seems %s over your return to %s %s!",
@@ -1709,16 +1716,23 @@ boolean itemize;
         (void) safe_qbuf(qbuf, (char *) 0, qsfx, obj,
                          (quan == 1L) ? Doname2 : doname, ansimpleoname,
                          (quan == 1L) ? "that" : "those");
-        if (yn_query(qbuf) == 'n') {
+        if (yn_query(qbuf) == 'n')
+        {
             buy = PAY_SKIP;                         /* don't want to buy */
-        } else if (quan < bp->bquan && !consumed) { /* partly used goods */
+        } 
+        else if (quan < bp->bquan && !consumed) 
+        { /* partly used goods */
             obj->quan = bp->bquan - save_quan;      /* used up amount */
-            if (!Deaf && !muteshk(shkp)) {
+            if (!Deaf && !muteshk(shkp))
+            {
+                play_voice_shopkeeper_pay_before_buying(shkp, obj->quan, save_quan);
                 verbalize("%s for the other %s before buying %s.",
                       ANGRY(shkp) ? "Pay" : "Please pay",
                       simpleonames(obj), /* short name suffices */
                       save_quan > 1L ? "these" : "this one");
-            } else {
+            }
+            else
+            {
                 pline("%s %s%s your bill for the other %s first.",
                       Shknam(shkp),
                       ANGRY(shkp) ? "angrily " : "",
@@ -4253,7 +4267,8 @@ boolean cant_mollify;
                  nearest_damage = nearest_shk;
     int picks = 0;
 
-    for (tmp_dam = level.damagelist; tmp_dam; tmp_dam = tmp_dam->next) {
+    for (tmp_dam = level.damagelist; tmp_dam; tmp_dam = tmp_dam->next) 
+    {
         char *shp;
 
         if (tmp_dam->when != monstermoves || !tmp_dam->cost)
@@ -4261,28 +4276,37 @@ boolean cant_mollify;
         cost_of_damage += tmp_dam->cost;
         Strcpy(shops_affected,
                in_rooms(tmp_dam->place.x, tmp_dam->place.y, SHOPBASE));
-        for (shp = shops_affected; *shp; shp++) {
+
+        for (shp = shops_affected; *shp; shp++)
+        {
             struct monst *tmp_shk;
             unsigned int shk_distance;
 
             if (!(tmp_shk = shop_keeper(*shp)))
                 continue;
-            if (tmp_shk == shkp) {
+
+            if (tmp_shk == shkp) 
+            {
                 unsigned int damage_distance =
                     distu(tmp_dam->place.x, tmp_dam->place.y);
 
-                if (damage_distance < nearest_damage) {
+                if (damage_distance < nearest_damage) 
+                {
                     nearest_damage = damage_distance;
                     appear_here = tmp_dam;
                 }
                 continue;
             }
+
             if (!inhishop(tmp_shk))
                 continue;
+
             shk_distance = distu(tmp_shk->mx, tmp_shk->my);
+
             if (shk_distance > nearest_shk)
                 continue;
-            if ((shk_distance == nearest_shk) && picks) {
+            if ((shk_distance == nearest_shk) && picks)
+            {
                 if (rn2(++picks))
                     continue;
             } else
@@ -4306,37 +4330,45 @@ boolean cant_mollify;
     (void) strncpy(ESHK(shkp)->customer, plname, PL_NSIZ);
 
     /* if the shk is already on the war path, be sure it's all out */
-    if (ANGRY(shkp) || ESHK(shkp)->following) {
+    if (ANGRY(shkp) || ESHK(shkp)->following)
+    {
         hot_pursuit(shkp);
         return;
     }
 
     /* if the shk is not in their shop.. */
-    if (!*in_rooms(shkp->mx, shkp->my, SHOPBASE)) {
+    if (!*in_rooms(shkp->mx, shkp->my, SHOPBASE))
+    {
         if (!cansee(shkp->mx, shkp->my))
             return;
         pursue = TRUE;
         goto getcad;
     }
 
-    if (uinshp) {
+    if (uinshp) 
+    {
         if (um_dist(shkp->mx, shkp->my, 1)
-            && !um_dist(shkp->mx, shkp->my, 3)) {
+            && !um_dist(shkp->mx, shkp->my, 3))
+        {
             pline("%s leaps towards you!", Shknam(shkp));
             mnexto(shkp);
         }
         pursue = um_dist(shkp->mx, shkp->my, 1);
         if (pursue)
             goto getcad;
-    } else {
+    }
+    else 
+    {
         /*
          * Make shkp show up at the door.  Effect:  If there is a monster
          * in the doorway, have the hero hear the shopkeeper yell a bit,
          * pause, then have the shopkeeper appear at the door, having
          * yanked the hapless critter out of the way.
          */
-        if (MON_AT(x, y)) {
-            if (!animal) {
+        if (MON_AT(x, y)) 
+        {
+            if (!animal) 
+            {
                 if (!Deaf && !muteshk(shkp)) 
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_OUT_OF_MY_WAY_SCUM);
@@ -4350,7 +4382,9 @@ boolean cant_mollify;
 #endif
                     sleep(1);
 #endif
-            } else {
+            } 
+            else
+            {
                 growl(shkp);
             }
         }
@@ -4359,25 +4393,38 @@ boolean cant_mollify;
 
     if ((um_dist(x, y, 1) && !uinshp) || cant_mollify
         || (money_cnt(invent) + ESHK(shkp)->credit) < cost_of_damage
-        || !rn2(50)) {
+        || !rn2(50))
+    {
  getcad:
-        if (muteshk(shkp)) {
+        if (muteshk(shkp))
+        {
             if (animal && mon_can_move(shkp))
                 yelp(shkp);
-        } else if (pursue || uinshp || !um_dist(x, y, 1)) {
+        }
+        else if (pursue || uinshp || !um_dist(x, y, 1))
+        {
             if (!Deaf)
+            {
+                play_voice_shopkeeper_how_dare_you_damage(shkp, 0, dmgstr, dugwall);
                 verbalize("How dare you %s my %s?", dmgstr,
-                          dugwall ? "shop" : "door");
+                    dugwall ? "shop" : "door");
+            }
             else
                 pline("%s is %s that you decided to %s %s %s!",
                       Shknam(shkp), angrytexts[rn2(SIZE(angrytexts))],
                       dmgstr, noit_mhis(shkp), dugwall ? "shop" : "door");
-        } else {
-            if (!Deaf) {
+        } 
+        else 
+        {
+            if (!Deaf) 
+            {
                 pline("%s shouts:", Shknam(shkp));
+                play_voice_shopkeeper_how_dare_you_damage(shkp, 1, dmgstr, dugwall);
                 verbalize("Who dared %s my %s?", dmgstr,
                           dugwall ? "shop" : "door");
-            } else {
+            } 
+            else
+            {
                 pline("%s is %s that someone decided to %s %s %s!",
                       Shknam(shkp), angrytexts[rn2(SIZE(angrytexts))],
                       dmgstr, noit_mhis(shkp), dugwall ? "shop" : "door");
@@ -4392,9 +4439,11 @@ boolean cant_mollify;
     Sprintf(qbuf, "%sYou did %ld %s worth of damage!%s  Pay?",
             !animal ? cad(TRUE) : "", cost_of_damage,
             currency(cost_of_damage), !animal ? "\"" : "");
-    if (yn_query(qbuf) != 'n') {
+    if (yn_query(qbuf) != 'n')
+    {
         cost_of_damage = check_credit(cost_of_damage, shkp);
-        if (cost_of_damage > 0L) {
+        if (cost_of_damage > 0L) 
+        {
             money2mon(shkp, cost_of_damage);
             context.botl = 1;
         }
@@ -4402,16 +4451,21 @@ boolean cant_mollify;
         /* move shk back to his home loc */
         home_shk(shkp, FALSE);
         pacify_shk(shkp);
-    } else {
-        if (!animal) {
+    } 
+    else
+    {
+        if (!animal) 
+        {
             if (!Deaf && !muteshk(shkp))
                 verbalize("Oh, yes!  You'll pay!");
             else
                 pline("%s lunges %s %s toward your %s!",
                       Shknam(shkp), noit_mhis(shkp),
                       mbodypart(shkp, HAND), body_part(NECK));
-        } else
+        } 
+        else
             growl(shkp);
+
         hot_pursuit(shkp);
         adjalign(-sgn(u.ualign.type));
     }

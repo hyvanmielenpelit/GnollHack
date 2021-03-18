@@ -2947,6 +2947,8 @@ E void FDECL(play_voice_shopkeeper_simple_line, (struct monst*, enum shopkeeper_
 E void FDECL(play_voice_shopkeeper_leave_pick_outside, (struct monst*, const char*, int, boolean));
 E void FDECL(play_voice_shopkeeper_sneaky_thing, (struct monst*, const char*));
 E void FDECL(play_voice_shopkeeper_candelabrum_candles, (struct monst*, struct obj*));
+E void FDECL(play_voice_shopkeeper_pay_before_buying, (struct monst*, int, int));
+E void FDECL(play_voice_shopkeeper_how_dare_you_damage, (struct monst*, uchar, const char*, boolean));
 
 /* ### sys.c ### */
 
