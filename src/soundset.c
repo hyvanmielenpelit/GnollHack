@@ -9170,6 +9170,61 @@ enum shopkeeper_lines line_idx;
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_DARE_TO_RETURN :
             GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_DARE_TO_RETURN;
         break;
+    case SHOPKEEPER_LINE_OH_YES_YOULL_PAY:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_DARE_TO_RETURN :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_DARE_TO_RETURN :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_DARE_TO_RETURN;
+        break;
+    case SHOPKEEPER_LINE_DIDNT_YOU_FORGET_TO_PAY2:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DIDNT_YOU_FORGET_TO_PAY2 :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_DIDNT_YOU_FORGET_TO_PAY2 :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_DIDNT_YOU_FORGET_TO_PAY2;
+        break;
+    case SHOPKEEPER_LINE_WHOA:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHOA :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHOA :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_WHOA;
+        break;
+    case SHOPKEEPER_LINE_WATCH_IT:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WATCH_IT :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WATCH_IT :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_WATCH_IT;
+        break;
+    case SHOPKEEPER_LINE_HEY:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HEY :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HEY :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_HEY;
+        break;
+    case SHOPKEEPER_LINE_AHEM:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_AHEM :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_AHEM :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_AHEM;
+        break;
+    case SHOPKEEPER_LINE_YOU_OWE_ME_SOME_GOLD:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_OWE_ME_SOME_GOLD :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_OWE_ME_SOME_GOLD :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_OWE_ME_SOME_GOLD;
+        break;
+    case SHOPKEEPER_LINE_YOU_OWE_ME_SOME_ADDITIONAL_GOLD:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_OWE_ME_SOME_ADDITIONAL_GOLD :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_OWE_ME_SOME_ADDITIONAL_GOLD :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_OWE_ME_SOME_ADDITIONAL_GOLD;
+        break;
+    case SHOPKEEPER_LINE_THAT_WILL_COST_YOU_SOME_GOLD:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THAT_WILL_COST_YOU_SOME_GOLD :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THAT_WILL_COST_YOU_SOME_GOLD :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_THAT_WILL_COST_YOU_SOME_GOLD;
+        break;
+    case SHOPKEEPER_LINE_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD;
+        break;
+    case SHOPKEEPER_LINE_USAGE_FEE_SOME_GOLD:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USAGE_FEE_SOME_GOLD :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_USAGE_FEE_SOME_GOLD :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_USAGE_FEE_SOME_GOLD;
+        break;
     default:
         break;
     }
@@ -9413,6 +9468,71 @@ const char* cad_str;
         play_immediate_ghsound(info);
 
 }
+
+void
+play_voice_shopkeeper_no_free_library(shkp, cad_str)
+struct monst* shkp;
+const char* cad_str;
+{
+    if (!shkp || !shkp->mextra || !ESHK(shkp) || Deaf)
+        return;
+
+    enum role_types yourrole = urole.rolenum;
+    boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+
+    struct ghsound_immediate_info info = { 0 };
+
+    if (!strcmp(cad_str, "cad"))
+    {
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY_CAD :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY_CAD :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY_CAD;
+    }
+    else if (!strcmp(cad_str, "minx"))
+    {
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY_MINX :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY_MINX :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY_MINX;
+    }
+    else if (!strcmp(cad_str, "fiend"))
+    {
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY_FIEND :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY_FIEND :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY_FIEND;
+    }
+    else if (!strcmp(cad_str, "beast"))
+    {
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY_BEAST :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY_BEAST :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY_BEAST;
+    }
+    else if (!strcmp(cad_str, "thing"))
+    {
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY_THING :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY_THING :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY_THING;
+    }
+
+    float volume = SHOPKEEPER_BASE_VOLUME;
+    if (isok(shkp->mx, shkp->my))
+    {
+        float hearing = hearing_array[shkp->mx][shkp->my];
+        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+            volume = SHOPKEEPER_DISTANT_VOLUME;
+        else
+            volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
+    }
+
+    info.volume = min(1.0f, volume);
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    info.dialogue_mid = shkp->m_id;
+
+    if (info.ghsound > GHSOUND_NONE)
+        play_immediate_ghsound(info);
+
+}
+
 
 void
 play_voice_shopkeeper_candelabrum_candles(shkp, candelabrum)

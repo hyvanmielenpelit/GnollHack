@@ -4827,13 +4827,29 @@ boolean altusage;
     arg1 = arg2 = "";
     if (otmp->oclass == SPBOOK_CLASS) 
 	{
+        boolean roll = rn2(2);
+        const char* cad_str = cad(FALSE);
+        
+        if (!Deaf && !muteshk(shkp))
+        {
+            if (roll)
+                play_voice_shopkeeper_no_free_library(shkp, cad_str);
+
+            play_voice_shopkeeper_simple_line(shkp, ESHK(shkp)->debit > 0L ? SHOPKEEPER_LINE_YOU_OWE_ME_SOME_ADDITIONAL_GOLD : SHOPKEEPER_LINE_YOU_OWE_ME_SOME_GOLD);
+        }
+
         fmt = "%sYou owe%s %ld %s.";
-        Sprintf(buf, "This is no free library, %s!  ", cad(FALSE));
-        arg1 = rn2(2) ? buf : "";
+        Sprintf(buf, "This is no free library, %s!  ", cad_str);
+        arg1 = roll ? buf : "";
         arg2 = ESHK(shkp)->debit > 0L ? " an additional" : "";
     } 
 	else if (otmp->otyp == POT_OIL) 
 	{
+
+        if (!Deaf && !muteshk(shkp))
+        {
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THAT_WILL_COST_YOU_SOME_GOLD);
+        }
         fmt = "%s%sThat will cost you %ld %s (Yendorian Fuel Tax).";
     }
 	else if (altusage && (otmp->otyp == BAG_OF_TRICKS
@@ -4841,17 +4857,40 @@ boolean altusage;
 	{
         fmt = "%s%sEmptying that will cost you %ld %s.";
         if (!rn2(3))
+        {
             arg1 = "Whoa!  ";
+            if (!Deaf && !muteshk(shkp))
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_WHOA);
+        }
+        
         if (!rn2(3))
-            arg1 = "Watch it!  ";
+        {
+            arg2 = "Watch it!  ";
+            if (!Deaf && !muteshk(shkp))
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_WATCH_IT);
+        }
+        if (!Deaf && !muteshk(shkp))
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THAT_WILL_COST_YOU_SOME_GOLD);
     }
 	else 
 	{
         fmt = "%s%sUsage fee, %ld %s.";
         if (!rn2(3))
+        {
             arg1 = "Hey!  ";
-        if (!rn2(3))
+            if (!Deaf && !muteshk(shkp))
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_HEY);
+        }
+
+        if (!rn2(3)) 
+        {
             arg2 = "Ahem.  ";
+            if (!Deaf && !muteshk(shkp))
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_AHEM);
+        }
+
+        if (!Deaf && !muteshk(shkp))
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_USAGE_FEE_SOME_GOLD);
     }
 
     if (!Deaf && !muteshk(shkp)) 
