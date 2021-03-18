@@ -338,8 +338,8 @@ struct you {
                            +: turn right, -: turn left */
     int ulevel;         /* 1 to MAXULEV */
     int ulevelmax;
-    unsigned utrap;     /* trap timeout */
-    unsigned utraptype; /* defined if utrap nonzero. one of utraptypes */
+    unsigned long utrap;    /* trap timeout */
+    uchar utraptype; /* defined if utrap nonzero. one of utraptypes */
     char urooms[5];         /* rooms (roomno + 3) occupied now */
     char urooms0[5];        /* ditto, for previous position */
     char uentered[5];       /* rooms (roomno + 3) entered this turn */

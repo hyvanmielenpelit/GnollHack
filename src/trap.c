@@ -1008,15 +1008,11 @@ struct trap *trap;
 
 void
 set_utrap(tim, typ)
-unsigned tim, typ;
+unsigned long tim;
+uchar typ;
 {
     u.utrap = tim;
-    /* FIXME:
-     * utraptype==0 is bear trap rather than 'none'; we probably ought
-     * to change that but can't do so until save file compatability is
-     * able to be broken.
-     */
-    u.utraptype = tim ? typ : 0;
+    u.utraptype = typ;
 
     float_vs_flight(); /* maybe block Lev and/or Fly */
 }
@@ -1040,7 +1036,7 @@ boolean msg;
 void
 dotrap(trap, trflags)
 register struct trap *trap;
-unsigned trflags;
+unsigned short trflags;
 {
     register int ttype = trap->ttyp;
     const char* trapdesc = get_trap_explanation(trap);
@@ -1297,12 +1293,27 @@ unsigned trflags;
             break;
         feeltrap(trap);
 
+        context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+        struct layer_info layers = layers_at(trap->tx, trap->ty);
+        int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+        show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_TRAP);
+        flush_screen(1);
+        play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_CLOSE, 0, trap->tx, trap->ty, FALSE);
         play_sfx_sound(SFX_BEAR_TRAP_CLOSES);
+        special_effect_wait_until_action(0);
+
         if (amorphous(youmonst.data) || is_whirly(youmonst.data)
             || unsolid(youmonst.data) || is_incorporeal(youmonst.data))
         {
             pline("%s bear trap closes harmlessly through you.",
                   A_Your[trap->madeby_u]);
+
+            special_effect_wait_until_end(0);
+            play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, trap->tx, trap->ty, FALSE);
+            special_effect_wait_until_action(0);
+            special_effect_wait_until_end(0);
+            show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
+            flush_screen(1);
             break;
         }
 
@@ -1310,16 +1321,27 @@ unsigned trflags;
         {
             pline("%s bear trap closes harmlessly over you.",
                   A_Your[trap->madeby_u]);
+
+            special_effect_wait_until_end(0);
+            play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, trap->tx, trap->ty, FALSE);
+            special_effect_wait_until_action(0);
+            special_effect_wait_until_end(0);
+            show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
+            flush_screen(1);
             break;
         }
         set_utrap((unsigned) rn1(4, 4), TT_BEARTRAP);
-
         if (u.usteed) 
         {
             pline("%s bear trap closes on %s %s!", A_Your[trap->madeby_u],
                   s_suffix(mon_nam(u.usteed)), mbodypart(u.usteed, FOOT));
-            if (thitm(0, u.usteed, (struct obj *) 0, dmg, FALSE))
+            if (thitm(0, u.usteed, (struct obj*)0, dmg, FALSE))
+            {
+                special_effect_wait_until_end(0);
+                play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, trap->tx, trap->ty, FALSE);
+                special_effect_wait_until_action(0);
                 reset_utrap(TRUE); /* steed died, hero not trapped */
+            }
         } 
         else 
         {
@@ -1333,6 +1355,10 @@ unsigned trflags;
             }
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "bear trap", KILLED_BY_AN);
         }
+        special_effect_wait_until_end(0);
+        context.global_newsym_flags = 0UL;
+        newsym(trap->tx, trap->ty);
+        flush_screen(1);
         exercise(A_DEX, FALSE);
         break;
     }
@@ -2771,14 +2797,26 @@ register struct monst *mtmp;
             if (mptr->msize > MZ_SMALL && !amorphous(mptr) && !(is_flying(mtmp) || is_levitating(mtmp))
                 && !is_whirly(mptr) && !unsolid(mptr))
             {
-                play_sfx_sound_at_location(SFX_BEAR_TRAP_CLOSES, mtmp->mx, mtmp->my);
                 mtmp->mtrapped = 1;
                 if (in_sight) 
                 {
+                    newsym(trap->tx, trap->ty);
+                    context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+                    struct layer_info layers = layers_at(trap->tx, trap->ty);
+                    int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                    show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_TRAP);
+                    flush_screen(1);
+                    play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_CLOSE, 0, trap->tx, trap->ty, FALSE);
+                    play_sfx_sound(SFX_BEAR_TRAP_CLOSES);
+                    special_effect_wait_until_action(0);
                     pline("%s is caught in %s bear trap!", Monnam(mtmp),
                           a_your[trap->madeby_u]);
                     seetrap(trap);
-                } 
+                    special_effect_wait_until_end(0);
+                    show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
+                    flush_screen(1);
+                    context.global_newsym_flags = 0UL;
+                }
                 else 
                 {
                     if (is_bear(mptr))
@@ -2798,7 +2836,23 @@ register struct monst *mtmp;
                 }
             }
             if (mtmp->mtrapped)
-                trapkilled = thitm(0, mtmp, (struct obj *) 0, d(2, 4), FALSE);
+            {
+                trapkilled = thitm(0, mtmp, (struct obj*)0, d(2, 4), FALSE);
+                if (in_sight && trapkilled)
+                {
+                    context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+                    struct layer_info layers = layers_at(trap->tx, trap->ty);
+                    int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                    show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_TRAP);
+                    flush_screen(1);
+                    play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, trap->tx, trap->ty, FALSE);
+                    special_effect_wait_until_action(0);
+                    special_effect_wait_until_end(0);
+                    show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
+                    flush_screen(1);
+                    context.global_newsym_flags = 0UL;
+                }
+            }
             break;
         case SLP_GAS_TRAP:
             if (in_sight || see_it)
@@ -6088,9 +6142,11 @@ boolean *noticed; /* set to true iff hero notices the effect; */
 
     t = t_at(ishero ? u.ux : mon->mx, ishero ? u.uy : mon->my);
 
-    if (ishero && u.utrap) { /* all u.utraptype values are holding traps */
+    if (ishero && u.utrap)
+    { /* all u.utraptype values are holding traps */
         which = "";
-        switch (u.utraptype) {
+        switch (u.utraptype) 
+        {
         case TT_LAVA:
             trapdescr = "molten lava";
             break;
@@ -6112,7 +6168,9 @@ boolean *noticed; /* set to true iff hero notices the effect; */
             trapdescr = "trap";
             break;
         }
-    } else {
+    }
+    else
+    {
         /* if no trap here or it's not a holding trap, we're done */
         if (!t || (t->ttyp != BEAR_TRAP && t->ttyp != WEB))
             return FALSE;
@@ -6136,22 +6194,61 @@ boolean *noticed; /* set to true iff hero notices the effect; */
             Strcpy(buf, "You are");
         pline("%s released from %s%s.", buf, which, trapdescr);
         reset_utrap(TRUE);
-    } else {
+    } 
+    else 
+    {
         if (!mon->mtrapped)
             return FALSE;
+
         mon->mtrapped = 0;
-        if (canspotmon(mon)) {
+        if (canspotmon(mon)) 
+        {
             *noticed = TRUE;
-            pline("%s is released from %s%s.", Monnam(mon), which,
-                  trapdescr);
-        } else if (cansee(t->tx, t->ty) && t->tseen) {
+            if (t->ttyp == BEAR_TRAP)
+            {
+                context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+                struct layer_info layers = layers_at(t->tx, t->ty);
+                int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_TRAP);
+                flush_screen(1);
+                play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, t->tx, t->ty, FALSE);
+                play_sfx_sound(SFX_BEAR_TRAP_SET_UP);
+                special_effect_wait_until_action(0);
+                pline("%s is released from %s%s.", Monnam(mon), which,
+                    trapdescr);
+                special_effect_wait_until_end(0);
+                show_glyph_on_layer(t->tx, t->ty, old_glyph, LAYER_TRAP);
+                flush_screen(1);
+                context.global_newsym_flags = 0UL;
+            }
+            else
+                pline("%s is released from %s%s.", Monnam(mon), which,
+                    trapdescr);
+        }
+        else if (cansee(t->tx, t->ty) && t->tseen) 
+        {
             *noticed = TRUE;
             if (t->ttyp == WEB)
                 pline("%s is released from %s%s.", Something, which,
                       trapdescr);
             else /* BEAR_TRAP */
+            {
+                context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+                struct layer_info layers = layers_at(t->tx, t->ty);
+                int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_TRAP);
+                flush_screen(1);
+                play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, t->tx, t->ty, FALSE);
+                play_sfx_sound(SFX_BEAR_TRAP_SET_UP);
+                special_effect_wait_until_action(0);
                 pline("%s%s opens.", upstart(strcpy(buf, which)), trapdescr);
+                special_effect_wait_until_end(0);
+                show_glyph_on_layer(t->tx, t->ty, old_glyph, LAYER_TRAP);
+                flush_screen(1);
+                context.global_newsym_flags = 0UL;
+            }
         }
+        newsym(t->tx, t->ty);
         /* might pacify monster if adjacent */
         if (rn2(2) && distu(mon->mx, mon->my) <= 2)
             reward_untrap(t, mon);
@@ -6167,7 +6264,7 @@ struct monst *mon;
 boolean *noticed; /* set to true iff hero notices the effect; */
 {                 /* otherwise left with its previous value intact */
     struct trap *t;
-    unsigned dotrapflags;
+    unsigned short dotrapflags;
     boolean ishero = (mon == &youmonst), result;
 
     if (!mon)
@@ -6179,7 +6276,8 @@ boolean *noticed; /* set to true iff hero notices the effect; */
     if (!t || (t->ttyp != BEAR_TRAP && t->ttyp != WEB))
         return FALSE;
 
-    if (ishero) {
+    if (ishero) 
+    {
         if (u.utrap)
             return FALSE; /* already trapped */
         *noticed = TRUE;
@@ -6191,7 +6289,9 @@ boolean *noticed; /* set to true iff hero notices the effect; */
         dotrap(t, dotrapflags);
         --force_mintrap;
         result = (u.utrap != 0);
-    } else {
+    }
+    else 
+    {
         if (mon->mtrapped)
             return FALSE; /* already trapped */
         /* you notice it if you see the trap close/tremble/whatever

@@ -3861,7 +3861,7 @@ set_trap()
         if (((otmp->cursed || Fumbling) && (rnl(10) > 5))
             || trapinfo.force_bungle)
             dotrap(ttmp,
-                   (unsigned) (trapinfo.force_bungle ? FORCEBUNGLE : 0));
+                   (unsigned short) (trapinfo.force_bungle ? FORCEBUNGLE : 0));
     } else {
         /* this shouldn't happen */
         Your("trap setting attempt fails.");

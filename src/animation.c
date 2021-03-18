@@ -683,6 +683,7 @@ NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS] =
     {"falling-rock-trap-falling-rock", 0, 0, 9,   LAYER_MONSTER_EFFECT, NO_REPLACEMENT, FALLING_ROCK_TRAP_FALLING_ROCK_ANIMATION, NO_ENLARGEMENT },
     {"land-mine-explosion",     0, 0, 4,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, LAND_MINE_EXPLOSION_ANIMATION, NO_ENLARGEMENT },
     {"bear-trap-close",         0, 0, 4,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, BEAR_TRAP_CLOSE_ANIMATION, NO_ENLARGEMENT },
+    {"bear-trap-open",         0, 0, 4,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, BEAR_TRAP_OPEN_ANIMATION, NO_ENLARGEMENT },
     {"needle",                  0, 0, 12,     LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
     {"general-exclamation",     0, 0, 12,     LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
     {"small-fiery-explosion",   0, 0, 8,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, SMALL_FIERY_EXPLOSION_ANIMATION, NO_ENLARGEMENT },
@@ -1607,6 +1608,26 @@ enum autodraw_types* autodraw_ptr;
             }
             break;
         }
+        case REPLACEMENT_ACTION_BEAR_TRAP:
+        {
+            if (!(layer_flags & LFLAGS_T_TRAPPED))
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (layer_flags & LFLAGS_T_TRAPPED)
+            {
+                int glyph_idx = 0;
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
         default:
             break;
         }
@@ -1913,6 +1934,7 @@ enum autodraw_types* autodraw_ptr;
             int tile_anim_idx = (tile_animation_idx < 0 || tile_animation_idx >= animations[animation_idx].number_of_tile_animations ? 0 : tile_animation_idx);
             int animation_glyph = animation_frame_index + tile_anim_idx * (int)animations[animation_idx].number_of_frames + animation_offsets[animation_idx] /* animations[animation_idx].glyph_offset */ + GLYPH_ANIMATION_OFF;
             int res = glyph2tile[animation_glyph]; /* animated version selected */
+
             return res;
         }
     }

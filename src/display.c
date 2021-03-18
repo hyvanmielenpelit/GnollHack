@@ -305,17 +305,28 @@ register int show;
 {
     register int x = trap->tx, y = trap->ty;
     register int glyph = trap_to_glyph(trap, newsym_rn2);
+    struct monst* mtmp = m_at(x, y);
+    boolean utrapped = (x == u.ux && y == u.uy && u.utrap > 0);
+    boolean mtrapped = (mtmp && mtmp->mtrapped);
 
     if (level.flags.hero_memory)
     {
         levl[x][y].hero_memory_layers.glyph = glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_TRAP] = glyph;
+        if(mtrapped || utrapped)
+            levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_T_TRAPPED;
+        else
+            levl[x][y].hero_memory_layers.layer_flags &= ~LFLAGS_T_TRAPPED;
     }
 
     if (show)
     {
         show_glyph_ascii(x, y, glyph);
         show_glyph_on_layer(x, y, glyph, LAYER_TRAP);
+        if (mtrapped || utrapped)
+            add_glyph_buffer_layer_flags(x, y, LFLAGS_T_TRAPPED);
+        else
+            remove_glyph_buffer_layer_flags(x, y, LFLAGS_T_TRAPPED);
     }
 }
 

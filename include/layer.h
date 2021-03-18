@@ -94,17 +94,19 @@ struct layer_info {
 #define LFLAGS_O_CHAIN              0x00400000UL
 #define LFLAGS_O_MASK               0x00700000UL
 
-/* free for cmaps */
-/* free for cmaps */
-#define LFLAGS_CMAP_MASK            0x00C00000UL
+/* free bit for CMAPs */
+#define LFLAGS_CMAP_MASK            0x00800000UL
 
-/* Rest are important general flags */
+/* Important general flags */
 #define LFLAGS_SHOWING_MEMORY       0x01000000UL /* also implies that you cannot see the location (and hence showing memory) */
 #define LFLAGS_SHOWING_DETECTION    0x02000000UL /* Do not darken */
 
 #define LFLAGS_ZAP_LEADING_EDGE     0x04000000UL /* First (leading) tile in a zap */
 #define LFLAGS_ZAP_TRAILING_EDGE    0x08000000UL /* Last (trailing) tile in a zap */
 #define LFLAGS_ZAP_MASK             (LFLAGS_ZAP_LEADING_EDGE | LFLAGS_ZAP_TRAILING_EDGE)
+
+/* Traps */
+#define LFLAGS_T_TRAPPED            0x10000000UL
 
 
 #define MISSILE_FLAGS_CORRODEABLE   0x00000001UL

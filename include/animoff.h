@@ -224,14 +224,15 @@ int animation_offsets[MAX_ANIMATIONS] = {
 	10937, /* falling-rock-trap-falling-rock-animation */
 	10946, /* land-mine-explosion-animation */
 	10976, /* bear-trap-close-animation */
-	10986, /* small-fiery-explosion-animation */
-	10996, /* poison-cloud-animation */
-	11008, /* twisted-candle-lit-animation */
-	11009, /* old-fashioned-candle-lit-animation */
-	11010, /* oriental-brass-lamp-lit-animation */
-	11011, /* antiquated-brass-lamp-lit-animation */
-	11012, /* vibrating-square-animation */
-	11013, /* candelabrum-lit-animation */
+	10986, /* bear-trap-close-animation */
+	10994, /* small-fiery-explosion-animation */
+	11004, /* poison-cloud-animation */
+	11016, /* twisted-candle-lit-animation */
+	11017, /* old-fashioned-candle-lit-animation */
+	11018, /* oriental-brass-lamp-lit-animation */
+	11019, /* antiquated-brass-lamp-lit-animation */
+	11020, /* vibrating-square-animation */
+	11021, /* candelabrum-lit-animation */
 };
 
 int enlargement_offsets[MAX_ENLARGEMENTS] = {
@@ -619,4 +620,5 @@ int replacement_offsets[MAX_REPLACEMENTS] = {
 	272, /* rock-piercer-replacement */
 	274, /* iron-piercer-replacement */
 	276, /* glass-piercer-replacement */
+	278, /* bear-trap-replacement */
 };
