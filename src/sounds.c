@@ -904,21 +904,34 @@ register struct monst *mtmp;
         quest_chat(mtmp);
         break;
     case MS_SELL: /* pitch, pay, total */
-		Sprintf(verbuf, "Welcome, adventurer!");
 		if (mtmp->isshk)
 		{
 			register struct eshk* eshkp = (struct eshk*)0;
 			if (mtmp->mextra && mtmp->mextra->eshk)
 				eshkp = mtmp->mextra->eshk;
 
-			if (eshkp)
+			if (eshkp && !Deaf && !muteshk(mtmp))
 			{
 				char shopbuf[BUFSZ] = "";
 				Sprintf(shopbuf, "my %s", shoptypename(eshkp->shoptype));
 				if (is_peaceful(mtmp))
-					Sprintf(verbuf, "Welcome to %s, adventurer!", shopbuf);
+				{
+					if (eshkp->visitct > 1)
+					{
+						play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_WELCOME_BACK_TO_MY_STORE);
+						Sprintf(verbuf, "Welcome back to my store!");
+					}
+					else
+					{
+						play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_WELCOME_TO_MY_STORE);
+						Sprintf(verbuf, "Welcome to %s!", shopbuf);
+					}
+				}
 				else
-					Sprintf(verbuf, "You rotten thief!");
+				{
+					play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_YOU_DARE_TO_RETURN);
+					Sprintf(verbuf, "So, adventurer, you dare to return to my store!");
+				}
 			}
 		}
 		else

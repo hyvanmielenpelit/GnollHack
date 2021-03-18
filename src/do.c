@@ -5762,6 +5762,7 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
         if (new || !mvitals[PM_CROESUS].died) 
 		{
             You("have penetrated a high security area!");
+			play_sfx_sound(SFX_ALARM_SOUNDS);
             pline("An alarm sounds!");
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
 			{

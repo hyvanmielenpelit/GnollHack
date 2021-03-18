@@ -335,7 +335,10 @@ register boolean nearshop;
         return;
 
     if (!Deaf)
+    {
+        play_sfx_sound(SFX_ALARM_SOUNDS);
         pline("An alarm sounds!");
+    }
 
     nokops = ((mvitals[PM_KEYSTONE_KOP].mvflags & G_GONE)
               && (mvitals[PM_KOP_SERGEANT].mvflags & G_GONE)
@@ -3990,17 +3993,29 @@ struct monst *shkp;
             return 0;
         }
         if (eshkp->following) {
-            if (strncmp(eshkp->customer, plname, PL_NSIZ)) {
+            if (strncmp(eshkp->customer, plname, PL_NSIZ)) 
+            {
                 if (!Deaf && !muteshk(shkp))
-                    verbalize("%s, %s!  I was looking for %s.", Hello(shkp),
-                              plname, eshkp->customer);
+                {
+                    if (iflags.using_gui_sounds)
+                    {
+                        play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_I_WAS_LOOKING_FOR_SOMEONE_ELSE);
+                        verbalize("%s, adventurer!  I was looking for someone else.", Hello(shkp));
+                    }
+                    else
+                        verbalize("%s, %s!  I was looking for %s.", Hello(shkp),
+                            plname, eshkp->customer);
+                }
                 eshkp->following = 0;
                 return 0;
             }
             if (moves > followmsg + 4) {
                 if (!Deaf && !muteshk(shkp))
+                {
+                    play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DIDNT_YOU_FORGET_TO_PAY);
                     verbalize("%s, %s!  Didn't you forget to pay?",
-                              Hello(shkp), plname);
+                        Hello(shkp), iflags.using_gui_sounds ? "adventurer" : plname);
+                }
                 else
                     pline("%s holds out %s upturned %s.",
                           Shknam(shkp), noit_mhis(shkp),
@@ -4239,7 +4254,7 @@ coord *mm;
         while (cnt--)
             if (enexto(mm, mm->x, mm->y, &mons[mndx]))
             {
-                struct monst* mtmp = makemon(&mons[mndx], mm->x, mm->y, NO_MM_FLAGS);
+                struct monst* mtmp = makemon(&mons[mndx], mm->x, mm->y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
                 if(mtmp)
                     context.makemon_spef_idx++;
             }
@@ -4405,7 +4420,7 @@ boolean cant_mollify;
         {
             if (!Deaf)
             {
-                play_voice_shopkeeper_how_dare_you_damage(shkp, 0, dmgstr, dugwall);
+                play_voice_shopkeeper_how_dare_you_damage(shkp, 1, dmgstr, dugwall);
                 verbalize("How dare you %s my %s?", dmgstr,
                     dugwall ? "shop" : "door");
             }
@@ -4419,7 +4434,7 @@ boolean cant_mollify;
             if (!Deaf) 
             {
                 pline("%s shouts:", Shknam(shkp));
-                play_voice_shopkeeper_how_dare_you_damage(shkp, 1, dmgstr, dugwall);
+                play_voice_shopkeeper_how_dare_you_damage(shkp, 0, dmgstr, dugwall);
                 verbalize("Who dared %s my %s?", dmgstr,
                           dugwall ? "shop" : "door");
             } 
@@ -4457,7 +4472,10 @@ boolean cant_mollify;
         if (!animal) 
         {
             if (!Deaf && !muteshk(shkp))
+            {
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_OH_YES_YOULL_PAY);
                 verbalize("Oh, yes!  You'll pay!");
+            }
             else
                 pline("%s lunges %s %s toward your %s!",
                       Shknam(shkp), noit_mhis(shkp),
@@ -4653,9 +4671,14 @@ struct monst *shkp;
         {
             if (!Deaf && !muteshk(shkp))
             {
-                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_I_WAS_LOOKING_FOR_SOMEONE_ELSE);
-                verbalize("%s %s!  I was looking for %s.",
-                    Hello(shkp), plname, eshk->customer);
+                if (iflags.using_gui_sounds)
+                {
+                    play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_I_WAS_LOOKING_FOR_SOMEONE_ELSE);
+                    verbalize("%s, adventurer!  I was looking for someone else.", Hello(shkp));
+                }
+                else
+                    verbalize("%s, %s!  I was looking for %s.",
+                        Hello(shkp), plname, eshk->customer);
             }
             eshk->following = 0;
         }
@@ -4664,8 +4687,8 @@ struct monst *shkp;
             if (!Deaf && !muteshk(shkp))
             {
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DIDNT_YOU_FORGET_TO_PAY);
-                verbalize("%s %s!  Didn't you forget to pay?",
-                    Hello(shkp), plname);
+                verbalize("%s, %s!  Didn't you forget to pay?",
+                    Hello(shkp), iflags.using_gui_sounds ? "adventurer" : plname);
 
             }
             else
@@ -4847,9 +4870,8 @@ boolean altusage;
 	{
 
         if (!Deaf && !muteshk(shkp))
-        {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THAT_WILL_COST_YOU_SOME_GOLD);
-        }
+
         fmt = "%s%sThat will cost you %ld %s (Yendorian Fuel Tax).";
     }
 	else if (altusage && (otmp->otyp == BAG_OF_TRICKS
@@ -4870,7 +4892,7 @@ boolean altusage;
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_WATCH_IT);
         }
         if (!Deaf && !muteshk(shkp))
-            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THAT_WILL_COST_YOU_SOME_GOLD);
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD);
     }
 	else 
 	{

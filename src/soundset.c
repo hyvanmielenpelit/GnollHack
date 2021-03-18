@@ -4913,7 +4913,13 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_BEAR_TRAP_SET_UP, 1.0f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_ALARM_SOUNDS",
+        {GHSOUND_ALARM_SOUNDS, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
 };
+
 
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
@@ -9224,6 +9230,19 @@ enum shopkeeper_lines line_idx;
         info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USAGE_FEE_SOME_GOLD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_USAGE_FEE_SOME_GOLD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_USAGE_FEE_SOME_GOLD;
+        break;
+    case SHOPKEEPER_LINE_WELCOME_TO_MY_STORE:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME_TO_MY_STORE_SHORT :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME_TO_MY_STORE_SHORT :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME_TO_MY_STORE_SHORT;
+        info.parameter_names[0] = "ShopType";
+        info.parameter_values[0] = max(0, (float)(ESHK(shkp)->shoptype - SHOPBASE));
+        info.parameter_names[1] = (char*)0;
+        break;
+    case SHOPKEEPER_LINE_WELCOME_BACK_TO_MY_STORE:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME_BACK_TO_MY_STORE_SHORT :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME_BACK_TO_MY_STORE_SHORT :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME_BACK_TO_MY_STORE_SHORT;
         break;
     default:
         break;
