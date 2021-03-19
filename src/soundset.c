@@ -4918,6 +4918,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_ALARM_SOUNDS, 1.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
+    {
+        "GHSOUND_ESCAPE_TRAP",
+        {GHSOUND_ESCAPE_TRAP, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 
@@ -7397,7 +7402,11 @@ int radius;
     {
         multiplier = 0.75f; /* Specially adjusted value */
     }
-    else if (radius >= 2)
+    else if (radius < 5)
+    {
+        multiplier = 0.65f; /* Specially adjusted value */
+    }
+    else if (radius >= 5)
     {
         float prev_factor = 1.0f / ((float)(radius - 1) * (float)(radius - 1));
         float curr_factor = 1.0f / ((float)radius * (float)radius);
@@ -9031,7 +9040,7 @@ int rt;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
             volume = SHOPKEEPER_DISTANT_VOLUME;
         else
             volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
@@ -9252,7 +9261,7 @@ enum shopkeeper_lines line_idx;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
             volume = SHOPKEEPER_DISTANT_VOLUME;
         else
             volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
@@ -9408,7 +9417,7 @@ boolean is_angry;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
             volume = SHOPKEEPER_DISTANT_VOLUME;
         else
             volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
@@ -9472,7 +9481,7 @@ const char* cad_str;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
             volume = SHOPKEEPER_DISTANT_VOLUME;
         else
             volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
@@ -9536,7 +9545,7 @@ const char* cad_str;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
             volume = SHOPKEEPER_DISTANT_VOLUME;
         else
             volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
@@ -9596,7 +9605,7 @@ struct obj* candelabrum;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
             volume = SHOPKEEPER_DISTANT_VOLUME;
         else
             volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
@@ -9697,7 +9706,7 @@ int obj_quan, save_quan;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
             volume = SHOPKEEPER_DISTANT_VOLUME;
         else
             volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
@@ -9950,7 +9959,7 @@ boolean is_shop;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (max(hearing, context.global_minimum_volume) <= 0.01f)
+        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
             volume = SHOPKEEPER_DISTANT_VOLUME;
         else
             volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));

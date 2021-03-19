@@ -5913,13 +5913,18 @@ boolean ordinary;
     case WAN_OPENING:
     case SPE_KNOCK:
 		damage = 0;
-        if (Punished) {
+        if (Punished) 
+        {
             learn_it = TRUE;
             unpunish();
         }
-        if (u.utrap) { /* escape web or bear trap */
+
+        if (u.utrap)
+        { /* escape web or bear trap */
             (void) openholdingtrap(&youmonst, &learn_it);
-        } else {
+        } 
+        else 
+        {
             struct obj *otmp;
             /* unlock carried boxes */
             for (otmp = invent; otmp; otmp = otmp->nobj)
@@ -5928,11 +5933,13 @@ boolean ordinary;
             /* trigger previously escaped trapdoor */
             (void) openfallingtrap(&youmonst, TRUE, &learn_it);
         }
+
         break;
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
 		damage = 0;
-		if (!u.utrap) {
+		if (!u.utrap) 
+        {
             (void) closeholdingtrap(&youmonst, &learn_it);
         }
         break;
@@ -5942,14 +5949,17 @@ boolean ordinary;
     case WAN_NOTHING:
 		damage = 0;
 		break;
-	case WAN_PROBING: {
-	case SPE_PROBE_MONSTER:
+    case SPE_PROBE_MONSTER:
+    case WAN_PROBING: 
+    {
 		damage = 0;
 		struct obj *otmp;
 
-        for (otmp = invent; otmp; otmp = otmp->nobj) {
+        for (otmp = invent; otmp; otmp = otmp->nobj) 
+        {
             otmp->dknown = 1;
-            if (Is_container(otmp) || otmp->otyp == STATUE) {
+            if (Is_container(otmp) || otmp->otyp == STATUE) 
+            {
                 otmp->lknown = 1;
                 if (!SchroedingersBox(otmp))
                     otmp->cknown = 1;
@@ -5961,7 +5971,8 @@ boolean ordinary;
 		break;
     }
     case JAR_OF_BASILISK_BLOOD:
-    case SPE_STONE_TO_FLESH: {
+    case SPE_STONE_TO_FLESH: 
+    {
 		damage = 0;
 		//struct obj *otmp, *onxt;
         //boolean didmerge;
@@ -5969,17 +5980,21 @@ boolean ordinary;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
 
-        if (u.umonnum == PM_STONE_GOLEM) {
+        if (u.umonnum == PM_STONE_GOLEM) 
+        {
             learn_it = TRUE;
             (void) polymon(PM_FLESH_GOLEM);
         }
-        if (Stoned) {
+
+        if (Stoned)
+        {
             learn_it = TRUE;
             fix_petrification(); /* saved! */
         }
 #if 0
         /* but at a cost.. */
-        for (otmp = invent; otmp; otmp = onxt) {
+        for (otmp = invent; otmp; otmp = onxt) 
+        {
             onxt = otmp->nobj;
             if (bhito(otmp, obj, &youmonst))
                 learn_it = TRUE;
@@ -5989,11 +6004,13 @@ boolean ordinary;
          * Do a highly paranoid merge.  Restart from the beginning
          * until no merges.
          */
-        do {
+        do
+        {
             didmerge = FALSE;
             for (otmp = invent; !didmerge && otmp; otmp = otmp->nobj)
                 for (onxt = otmp->nobj; onxt; onxt = onxt->nobj)
-                    if (merged(&otmp, &onxt)) {
+                    if (merged(&otmp, &onxt))
+                    {
                         didmerge = TRUE;
                         break;
                     }

@@ -5172,6 +5172,9 @@ boolean eating;
                         play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DROP_THAT_NOW);
                         verbalize("Drop that, now!");
                         if (iflags.using_gui_sounds)
+                            delay_output_milliseconds(1200);
+                        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_WHIMPER);
+                        if (iflags.using_gui_sounds)
                             delay_output_milliseconds(200);
                         play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP, FALSE);
                         pline("%s drops %s.", Monnam(mtmp), the(cxname(obj)));

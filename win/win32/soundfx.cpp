@@ -787,11 +787,11 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Leash Goes Slack", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Leash/Fails to Leash", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Growl", 0.3f },
-    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Whimper", 0.30f },
-    { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Growl", 0.7f },
-    { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Whimper", 0.55f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Whimper", 0.40f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Growl", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Whimper", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Growl", 0.7f },
-    { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Whimper", 0.25f },
+    { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Whimper", 0.30f },
 
     { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Yelp", 0.7f },
     { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Growl", 0.7f },
@@ -893,6 +893,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Land Mine Set Up", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Bear Trap Set Up", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Alarm Sounds", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Escape Trap", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Shopkeeper Male Welcome", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Shopkeeper Female Welcome", 1.0f },
