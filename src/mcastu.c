@@ -76,10 +76,16 @@ boolean undirected;
         else
             point_msg = "at you, then curses";
 
+        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CURSE);
         pline("%s points %s.", Monnam(mtmp), point_msg);
-    } else if ((!(moves % 4) || !rn2(4))) {
+    } 
+    else if ((!(moves % 4) || !rn2(4)))
+    {
         if (!Deaf)
+        {
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CURSE);
             Norep("You hear a mumbled curse.");
+        }
     }
 }
 

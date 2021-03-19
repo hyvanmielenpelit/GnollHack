@@ -1161,8 +1161,11 @@ register struct monst *mtmp;
                         }
 						else if(!is_silenced(mtmp) && canseemon(mtmp))
 						{
-							if (!rn2(2))
-								pline("%s curses at you!", Monnam(mtmp));
+                            if (!rn2(2))
+                            {
+                                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CURSE);
+                                pline("%s curses at you!", Monnam(mtmp));
+                            }
                             else
                             {
                                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);

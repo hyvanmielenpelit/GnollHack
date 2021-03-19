@@ -1404,9 +1404,13 @@ struct attack* mattk;
         update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
         if (is_cancelled(mtmp))
         {
-            if (!Deaf) {
+            if (!Deaf) 
+            {
+                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CURSE);
                 if (canseemon(mtmp))
+                {
                     pline("%s curses at %s.", Monnam(mtmp), mon_nam(mtarg));
+                }
                 else
                     You_hear("a curse.");
             }

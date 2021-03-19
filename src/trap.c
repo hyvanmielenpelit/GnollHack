@@ -3214,6 +3214,7 @@ register struct monst *mtmp;
                 }
                 else if (in_sight) 
                 {
+                    play_sfx_sound_at_location(SFX_CAUGHT_IN_WEB, mtmp->mx, mtmp->my);
                     pline("%s is caught in %s spider web.", Monnam(mtmp),
                           a_your[trap->madeby_u]);
                     seetrap(trap);
