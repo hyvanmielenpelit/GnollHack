@@ -5165,6 +5165,9 @@ boolean eating;
                         else
                             verbalize("Stay away from %s %s!", obj->quan > 1 ? "those" : "that", cxname(obj));
 
+                        if (iflags.using_gui_sounds)
+                            delay_output_milliseconds(1200);
+                        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_WHIMPER);
                         pline("%s backs away from %s.", Monnam(mtmp), the(cxname(obj)));
                     }
                     else
