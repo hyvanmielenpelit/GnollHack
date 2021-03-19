@@ -393,8 +393,7 @@ register struct monst *magr, *mdef;
 
 	int tmp2 = tmp;
 	int bite_butt_count = 0;
-
-    play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+    boolean first_attack = TRUE;
 
     /* Now perform all attacks for the monster. */
     for (i = 0; i < NATTK; i++) 
@@ -485,6 +484,12 @@ register struct monst *magr, *mdef;
 
 			int mdef_x = mdef->mx;
 			int mdef_y = mdef->my;
+
+            if (first_attack)
+            {
+                play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+                first_attack = FALSE;
+            }
 
             update_m_action(magr, mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
             play_monster_simple_weapon_sound(magr, i, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
@@ -601,6 +606,12 @@ register struct monst *magr, *mdef;
             break;
 
         case AT_HUGS: /* automatic if prev two attacks succeed */
+            if (first_attack)
+            {
+                play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+                first_attack = FALSE;
+            }
+
             update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
             play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             m_wait_until_action();
@@ -613,6 +624,12 @@ register struct monst *magr, *mdef;
 
         case AT_GAZE:
             strike = 0;
+            if (first_attack)
+            {
+                play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+                first_attack = FALSE;
+            }
+
             update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
             play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             m_wait_until_action();
@@ -624,6 +641,12 @@ register struct monst *magr, *mdef;
             /* D: Prevent explosions from a distance */
             if (distmin(magr->mx,magr->my,mdef->mx,mdef->my) > 1)
                 continue;
+
+            if (first_attack)
+            {
+                play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+                first_attack = FALSE;
+            }
 
             res[i] = explmm(magr, mdef, mattk);
             if (res[i] == MM_MISS) 
@@ -647,6 +670,12 @@ register struct monst *magr, *mdef;
             if (distmin(magr->mx, magr->my, mdef->mx, mdef->my) > 1)
                 continue;
             /* Engulfing attacks are directed at the hero if possible. -dlc */
+            if (first_attack)
+            {
+                play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+                first_attack = FALSE;
+            }
+
             update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
             play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             m_wait_until_action();
@@ -662,6 +691,12 @@ register struct monst *magr, *mdef;
         case AT_BREA:
             if (!monnear(magr, mdef->mx, mdef->my))
 			{
+                if (first_attack)
+                {
+                    play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
+
                 update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
@@ -684,6 +719,12 @@ register struct monst *magr, *mdef;
 			strike = 0;
             if ((monnear(magr, mdef->mx, mdef->my) || rn2(6)) && !is_reflecting(mdef) && !is_blinded(magr))
             {
+                if (first_attack)
+                {
+                    play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
+
                 update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
@@ -703,6 +744,12 @@ register struct monst *magr, *mdef;
         case AT_MAGC:
             if (!monnear(magr, mdef->mx, mdef->my))
             {
+                if (first_attack)
+                {
+                    play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
+
                 update_m_action(magr, ACTION_TILE_CAST_DIR);
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
@@ -722,7 +769,14 @@ register struct monst *magr, *mdef;
             break;
 
         case AT_SPIT:
-            if (!monnear(magr, mdef->mx, mdef->my)) {
+            if (!monnear(magr, mdef->mx, mdef->my)) 
+            {
+                if (first_attack)
+                {
+                    play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
+
                 update_m_action(magr, ACTION_TILE_FIRE);
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();

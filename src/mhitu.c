@@ -704,7 +704,7 @@ register struct monst *mtmp;
 	int weaponattackcount = 0;
 	int bite_butt_count = 0;
 
-    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+    boolean first_attack = TRUE;
 
     for (i = 0; i < NATTK; i++) 
 	{
@@ -733,6 +733,11 @@ register struct monst *mtmp;
         case AT_TENT:
             if (!range2 && (!MON_WEP(mtmp) || is_confused(mtmp) || Conflict || is_crazed(mtmp) || !touch_petrifies(youmonst.data)))
 			{
+                if (first_attack)
+                {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
                 update_m_action(mtmp, mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
@@ -761,6 +766,12 @@ register struct monst *mtmp;
             if ((!range2 && ((!hug_requires_two_previous_attacks(mtmp->data) && tmp > (j = rnd(20 + i))) || (hug_requires_two_previous_attacks(mtmp->data) && i >= 2 && sum[i - 1] && sum[i - 2])))
                 || mtmp == u.ustuck)
             {
+                if (first_attack)
+                {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
+
                 update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
@@ -774,6 +785,12 @@ register struct monst *mtmp;
                dochug(); don't gaze more than once per round. */
             if (mdat != &mons[PM_MEDUSA])
             {
+                if (first_attack)
+                {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
+
                 update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
@@ -785,6 +802,12 @@ register struct monst *mtmp;
         case AT_EXPL: /* automatic hit if next to, and aimed at you */
             if (!range2)
             {
+                if (first_attack)
+                {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
+
                 update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
@@ -794,8 +817,14 @@ register struct monst *mtmp;
             break;
 
         case AT_ENGL:
-            if (!range2) {
-                if (foundyou) 
+            if (!range2) 
+            {
+                if (first_attack)
+                {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
+                if (foundyou)
                 {
                     update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                     play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
@@ -825,6 +854,11 @@ register struct monst *mtmp;
         case AT_BREA:
             if (range2)
             {
+                if (first_attack)
+                {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
                 sum[i] = breamu(mtmp, mattk);
             }
             /* Note: breamu takes care of displacement */
@@ -832,12 +866,22 @@ register struct monst *mtmp;
 		case AT_EYES:
             if (!is_blinded(mtmp) && !Reflecting && (!range2 || rn2(6))) /* Blinded already here to prevent continuous blinking */
             {
+                if (first_attack)
+                {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
                 sum[i] = eyesmu(mtmp, mattk);
             }
 			break;
 		case AT_SPIT:
             if (range2)
             {
+                if (first_attack)
+                {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
                 sum[i] = spitmu(mtmp, mattk);
             }
             /* Note: spitmu takes care of displacement */
@@ -874,6 +918,11 @@ register struct monst *mtmp;
                         break;
                 }
 
+                if (first_attack)
+                {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
                 update_m_action(mtmp, ACTION_TILE_ATTACK);
                 if (foundyou)
 				{
@@ -936,6 +985,11 @@ register struct monst *mtmp;
         case AT_MAGC:
 			if(!is_cancelled(mtmp) && !is_silenced(mtmp))
 			{
+                if (first_attack)
+                {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+                    first_attack = FALSE;
+                }
                 if (range2)
                 {
                     update_m_action(mtmp, ACTION_TILE_CAST_DIR);
