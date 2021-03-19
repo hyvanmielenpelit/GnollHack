@@ -3684,7 +3684,7 @@ STATIC_OVL int
 get_bk_glyph(x, y)
 xchar x, y;
 {
-    if (gbuf[y][x].layers.glyph == cmap_to_glyph(S_unexplored))
+    if (glyph_is_specific_cmap_or_its_variation(gbuf[y][x].layers.glyph, S_unexplored))
         return NO_GLYPH;
     else
         return back_to_glyph(x, y);

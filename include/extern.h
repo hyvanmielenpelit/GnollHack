@@ -59,6 +59,8 @@ E void FDECL(reduce_counters, (int));
 E void FDECL(reduce_counters_intervals, (int));
 E int FDECL(get_u_move_speed, (boolean));
 E void NDECL(stop_animations);
+E boolean FDECL(glyph_is_specific_cmap_or_its_variation, (int, int));
+
 
 /* ### apply.c ### */
 

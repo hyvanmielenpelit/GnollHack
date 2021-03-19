@@ -977,7 +977,7 @@ struct permonst **for_supplement;
     else if (((u.uswallow || submerged) && distu(cc.x, cc.y) > 2)
                /* detection showing some category, so mostly background */
                || ((iflags.terrainmode & (TER_DETECT | TER_MAP)) == TER_DETECT
-                   && glyph == cmap_to_glyph(S_unexplored)))
+                   && glyph_is_specific_cmap_or_its_variation(glyph, S_unexplored)))
     {
         x_str = unreconnoitered;
         need_to_look = FALSE;

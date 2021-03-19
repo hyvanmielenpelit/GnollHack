@@ -1224,12 +1224,16 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_BOTTOM_TILE:
         {
             int below_y = y + 1;
+            int ux = u.ux, uy = u.uy;
+            boolean cs = cansee(x, y);
+            int cmaps = cmap_to_glyph(S_stone);
+            int gl = levl[x][below_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR];
             if (!isok(x, below_y) 
-                || levl[x][below_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored) 
+                || glyph_is_specific_cmap_or_its_variation(levl[x][below_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
                 || (IS_DOORJOIN(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) 
                 || levl[x][below_y].typ == DOOR 
                 || levl[x][below_y].typ == UNEXPLORED 
-                || (!cansee(x, y) && levl[x][below_y].hero_memory_layers.glyph == cmap_to_glyph(S_stone))
+                || (!cansee(x, y) && glyph_is_specific_cmap_or_its_variation(levl[x][below_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_stone))
                 || (levl[x][y].seenv & (SV3 | SV4 | SV5 | SV6 | SV7)) == 0)
             {
                 /* No action */
@@ -1263,7 +1267,7 @@ enum autodraw_types* autodraw_ptr;
 
             if (!(is_water_or_air_level && info.layer == LAYER_FLOOR) && (Underwater || !isok(x, above_y)
                 || (levl[x][y].typ == levl[x][above_y].typ && get_location_category(levl[x][y].typ, levl[x][y].subtyp) == get_location_category(levl[x][above_y].typ, levl[x][above_y].subtyp))
-                || (level.flags.hero_memory && levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored))
+                || (level.flags.hero_memory && glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored))
                 || levl[x][above_y].typ == UNEXPLORED || (IS_SOLID_FLOOR(floortype) && (IS_DOORJOIN(levl[x][above_y].typ)))))
             {
                 /* No action */
@@ -1314,7 +1318,7 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_SHORE_ADJUSTED_TILE:
         {
             int above_y = y - 1;
-            if (Underwater || !isok(x, above_y) || levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
+            if (Underwater || !isok(x, above_y) || glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
                 || levl[x][above_y].typ == UNEXPLORED)
             {
                 /* No action */
@@ -1338,7 +1342,7 @@ enum autodraw_types* autodraw_ptr;
         }        
         case REPLACEMENT_ACTION_FLOOR_ADJUSTED_TILE:
         {
-            if (Underwater || levl[x][y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
+            if (Underwater || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
                 || !IS_SOLID_FLOOR(levl[x][y].floortyp))
             {
                 /* No action */
@@ -1362,7 +1366,7 @@ enum autodraw_types* autodraw_ptr;
             int above_y = y - 1;
             int left_x = x - 1;
             int right_x = x + 1;
-            if (Underwater || levl[x][y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
+            if (Underwater || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
                 || !IS_SOLID_FLOOR(levl[x][y].floortyp))
             {
                 /* No action */
@@ -2601,6 +2605,30 @@ stop_animations()
     for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
         context.zap_animation_counter_on[i] = FALSE;
 }
+
+
+boolean
+glyph_is_specific_cmap_or_its_variation(glyph, s_idx)
+int glyph, s_idx;
+{
+    int base_glyph = cmap_to_glyph(s_idx);
+    if (glyph == base_glyph)
+        return TRUE;
+
+    int variations = defsyms[s_idx].variations;
+    int variation_offset = defsyms[s_idx].variation_offset;
+
+    int var_glyph = 0;
+    for (int i = 0; i < variations; i++)
+    {
+        var_glyph = cmap_variation_to_glyph(i + variation_offset);
+        if (glyph == var_glyph)
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
 
 /* animation.c */
 

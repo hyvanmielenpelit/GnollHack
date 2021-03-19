@@ -486,7 +486,7 @@ static const struct def_skill Skill_C_Init[] = {
 
 
 static const struct def_skill Skill_H_Max[] = {
-    { P_DAGGER, P_EXPERT },
+    { P_DAGGER, P_GRAND_MASTER },
     { P_SWORD, P_SKILLED },
     { P_BLUDGEONING_WEAPON, P_SKILLED },
     { P_QUARTERSTAFF, P_EXPERT },
@@ -497,7 +497,7 @@ static const struct def_skill Skill_H_Max[] = {
     { P_HEALING_SPELL, P_EXPERT },
 	{ P_ABJURATION_SPELL, P_SKILLED },
 	{ P_BARE_HANDED_COMBAT, P_BASIC },
-	{ P_WAND, P_EXPERT },
+	{ P_WAND, P_GRAND_MASTER },
 	{ P_DISARM_TRAP, P_SKILLED },
 	{ P_NONE, 0 }
 };

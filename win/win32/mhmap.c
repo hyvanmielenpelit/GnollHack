@@ -1016,7 +1016,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     */
 
     /* Adjust draw_order for floor layer */
-    if (data->map[i][j].layer_glyphs[LAYER_FLOOR] == NO_GLYPH || data->map[i][j].layer_glyphs[LAYER_FLOOR] == cmap_to_glyph(S_unexplored))
+    if (data->map[i][j].layer_glyphs[LAYER_FLOOR] == NO_GLYPH || glyph_is_specific_cmap_or_its_variation(data->map[i][j].layer_glyphs[LAYER_FLOOR], S_unexplored))
         data->draw_order[0].draw_to_buffer = 1;
     else
         data->draw_order[0].draw_to_buffer = 0;
@@ -1764,7 +1764,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 if (base_layer == LAYER_FLOOR && glyph == NO_GLYPH)
                     glyph = cmap_to_glyph(S_unexplored);
 
-                if (showing_detection || u.uswallow || (base_layer == LAYER_FLOOR && glyph == cmap_to_glyph(S_unexplored)))
+                if (showing_detection || u.uswallow || (base_layer == LAYER_FLOOR && glyph_is_specific_cmap_or_its_variation(glyph, S_unexplored)))
                     skip_darkening = TRUE;
 
                 /*
@@ -2437,7 +2437,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             break;
                                         }
 
-#define NO_WALL_END_AUTODRAW(x,y) (!isok(x, y) || levl[x][y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored) || (IS_DOORJOIN(levl[x][y].typ) && !IS_TREE(levl[x][y].typ)) || levl[x][y].typ == DOOR || levl[x][y].typ == UNEXPLORED /*|| (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0 */)
+#define NO_WALL_END_AUTODRAW(x,y) (!isok(x, y) || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored) || (IS_DOORJOIN(levl[x][y].typ) && !IS_TREE(levl[x][y].typ)) || levl[x][y].typ == DOOR || levl[x][y].typ == UNEXPLORED /*|| (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0 */)
 
                                         if (NO_WALL_END_AUTODRAW(rx, ry))
                                         {
