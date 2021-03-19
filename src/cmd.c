@@ -167,6 +167,7 @@ STATIC_DCL int NDECL(wiz_save_monsters);
 STATIC_DCL int NDECL(wiz_save_tiledata);
 STATIC_DCL int NDECL(wiz_count_tiles);
 STATIC_DCL int NDECL(wiz_save_glyph2tiles);
+STATIC_DCL int NDECL(wiz_save_quest_texts);
 STATIC_DCL void NDECL(wiz_levltyp_legend);
 #if defined(__BORLANDC__) && !defined(_WIN32)
 extern void FDECL(show_borlandc_stats, (winid));
@@ -2226,6 +2227,33 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
 }
 
 
+/* Save monster list */
+STATIC_PTR int
+wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
+{
+    if (wizard)
+    {
+        pline("Starting writing quest_texts.txt...");
+        const char* fq_save = "quest_texts.txt";
+        int fd;
+
+        (void)remove(fq_save);
+
+#ifdef MAC
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        write_quest_texts(fd);
+
+        (void)close(fd);
+        pline("Done writing %s.", fq_save);
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_quest_texts)));
+
+    return 0;
+}
 
 
 /* temporary? hack, since level type codes aren't the same as screen
@@ -5094,7 +5122,9 @@ struct ext_func_tab extcmdlist[] = {
             wiz_count_tiles, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsaveglyph2tiles", "save glyph2tile into a file",
             wiz_save_glyph2tiles, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-	{ '\0', "wizcrown", "make the god crown you",
+    { '\0', "wizsavequesttexts", "save quest texts into a file",
+            wiz_save_quest_texts, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizcrown", "make the god crown you",
 			wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 	{ '\0', "wizrumorcheck", "verify rumor boundaries",
             wiz_rumor_check, IFBURIED | AUTOCOMPLETE | WIZMODECMD },

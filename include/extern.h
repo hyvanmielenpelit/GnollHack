@@ -2481,6 +2481,7 @@ E void FDECL(com_pager, (int));
 E void FDECL(qt_pager, (int));
 E struct permonst *NDECL(qt_montype);
 E void NDECL(deliver_splev_message);
+E void FDECL(write_quest_texts, (int));
 
 /* ### random.c ### */
 

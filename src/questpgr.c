@@ -32,7 +32,11 @@ STATIC_DCL void FDECL(convert_arg, (CHAR_P));
 STATIC_DCL void FDECL(convert_line, (char *,char *));
 STATIC_DCL void FDECL(deliver_by_pline, (struct qtmsg *));
 STATIC_DCL void FDECL(deliver_by_window, (struct qtmsg *, int));
+STATIC_DCL void FDECL(deliver_by_file_write, (struct qtmsg*, int));
 STATIC_DCL boolean FDECL(skip_pager, (BOOLEAN_P));
+STATIC_DCL void FDECL(deliver_by_file_write, (struct qtmsg*, int));
+STATIC_DCL void FDECL(file_write_pager, (dlb*, struct qtmsg*, int, int));
+
 
 static char cvt_buf[64];
 static struct qtlists qt_list;
@@ -583,6 +587,23 @@ int how;
         putmsghistory(out_line, FALSE);
 }
 
+STATIC_OVL void
+deliver_by_file_write(qt_msg, fd)
+struct qtmsg* qt_msg;
+int fd;
+{
+    long size;
+    char in_line[BUFSZ], out_line[BUFSZ];
+
+    *in_line = '\0';
+    for (size = 0; size < qt_msg->size; size += (long)strlen(in_line)) {
+        (void)dlb_fgets(in_line, sizeof in_line, msg_file);
+        convert_line(in_line, out_line);
+        Sprintf(eos(out_line), " ");
+        (void)write(fd, out_line, strlen(out_line));
+    }
+}
+
 boolean
 skip_pager(common)
 boolean common;
@@ -700,6 +721,149 @@ deliver_splev_message()
         free((genericptr_t) lev_message);
         lev_message = 0;
     }
+}
+
+
+STATIC_OVL
+void
+file_write_pager(temp_msg_file, msg_chain, fd, msgnum)
+dlb* temp_msg_file;
+struct qtmsg* msg_chain;
+int fd, msgnum;
+{
+    struct qtmsg* qt_msg;
+
+    qt_msg = msg_in(msg_chain, msgnum);
+    
+    if (!qt_msg)
+    {
+        /* some roles have an alternate message for return to the goal
+           level when the quest artifact is absent (handled by caller)
+           but some don't; for the latter, use the normal goal message;
+           note: for first visit, artifact is assumed to always be
+           present which might not be true for wizard mode but we don't
+           worry about quest message references in that situation */
+        if (msgnum == QT_ALTGOAL)
+            qt_msg = msg_in(msg_chain, QT_NEXTGOAL);
+    }
+    
+    if (!qt_msg) 
+    {
+        /* Nothing found */
+        return;
+    }
+
+    (void)dlb_fseek(msg_file, qt_msg->offset, SEEK_SET);
+
+    char buf[BUFSIZ];
+    Sprintf(buf, "%d. ", msgnum);
+    (void)write(fd, buf, strlen(buf));
+
+    deliver_by_file_write(qt_msg, fd);
+    
+    Sprintf(buf, "\n");
+    (void)write(fd, buf, strlen(buf));
+
+    return;
+}
+
+
+
+void
+write_quest_texts(fd)
+int fd;
+{
+    int n_classes, i;
+    char qt_classes[N_HDR][LEN_HDR];
+    long qt_offsets[N_HDR];
+    
+    struct qtlists temp_qt_list;
+
+    dlb* msg_file2 = dlb_fopen(QTEXT_FILE, RDBMODE);
+    if (!msg_file2)
+    {
+        panic("CANNOT OPEN QUEST TEXT FILE %s.", QTEXT_FILE);
+        return;
+    }
+
+    /*
+     * Read in the number of classes, then the ID's & offsets for
+     * each header.
+     */
+
+    Fread(&n_classes, sizeof(int), 1, msg_file2);
+    Fread(&qt_classes[0][0], sizeof(char) * LEN_HDR, n_classes, msg_file2);
+    Fread(qt_offsets, sizeof(long), n_classes, msg_file2);
+
+    /*
+     * Now construct the message lists for quick reference later
+     * on when we are actually paging the messages out.
+     */
+
+    temp_qt_list.common = temp_qt_list.chrole = (struct qtmsg*)0;
+
+    struct Role save_role = urole;
+    struct Race save_race = urace;
+    int save_pantheon = flags.pantheon;
+
+    for (int j = 0; j < NUM_ROLES; j++)
+    {
+        flags.initrole = j;
+        role_init();
+
+        const char* role_filecode = roles[j].filecode;
+        const char* race_filecode = races[j].filecode;
+        for (i = 0; i < n_classes; i++)
+        {
+            if (!strncmp(COMMON_ID, qt_classes[i], LEN_HDR))
+            {
+                temp_qt_list.common = construct_qtlist(qt_offsets[i]);
+            }
+            else if (!strncmp(role_filecode, qt_classes[i], LEN_HDR))
+            {
+                temp_qt_list.chrole = construct_qtlist(qt_offsets[i]);
+            }
+#if 0 /* UNUSED but available */
+            else if (!strncmp(race_filecode, qt_classes[i], LEN_HDR))
+            {
+                temp_qt_list.chrace = construct_qtlist(qt_offsets[i]);
+            }
+#endif
+        }
+
+        char buf[BUFSIZ];
+        if (!temp_qt_list.common || !temp_qt_list.chrole)
+            impossible("load_qtlist: cannot load quest text for '%s'.", role_filecode);
+        else
+        {
+            Sprintf(buf, "-- %s --\n", roles[j].name.m);
+            (void)write(fd, buf, strlen(buf));
+            Sprintf(buf, "A - Common\n");
+            (void)write(fd, buf, strlen(buf));
+            for (int k = 1; k <= 80; k++)
+            {
+                file_write_pager(msg_file2, temp_qt_list.common, fd, k);
+            }
+            Sprintf(buf, "B - Quest\n");
+            (void)write(fd, buf, strlen(buf));
+            for (int k = 1; k <= 100; k++)
+            {
+                file_write_pager(msg_file2, temp_qt_list.chrole, fd, k);
+            }
+        }
+        if (temp_qt_list.common)
+            free(temp_qt_list.common);
+
+        if (temp_qt_list.chrole)
+            free(temp_qt_list.chrole);
+    }
+
+    urole = save_role;
+    urace = save_race;
+    flags.pantheon = save_pantheon;
+
+    dlb_fclose(msg_file2);
+
 }
 
 /*questpgr.c*/
