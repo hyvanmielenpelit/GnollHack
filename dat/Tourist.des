@@ -94,7 +94,10 @@ MONSTER: ('C',"forest centaur"),random
 MONSTER: ('C',"forest centaur"),random
 MONSTER: 'C',random
 # Twoflower
-MONSTER:('@',"Twoflower"),(64,03)
+MONSTER:('@',"Twoflower"),(64,03) {
+    OBJECT:('[', "Hawaiian shirt")
+    OBJECT:('8', "lenses")
+}
 # The treasure of Twoflower
 OBJECT:('(',"chest"),(64,03)
 # Twoflower's Luggage
