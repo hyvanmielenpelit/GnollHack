@@ -278,7 +278,7 @@ const struct Role roles[] = {
       ART_STAFF_OF_AESCULAPIUS,
       MH_HUMAN | MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
-      {  7,  7, 13,  7, 11, 16 },
+      {  7,  13, 13, 10, 11, 16 },
       { 15, 20, 20, 15, 25, 5 },
       /* Init   Lower  Higher */
       { 11, 0, 0, 7, 1, 0 }, /* Hit points */

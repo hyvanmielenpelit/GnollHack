@@ -32,10 +32,9 @@ STATIC_DCL void FDECL(convert_arg, (CHAR_P));
 STATIC_DCL void FDECL(convert_line, (char *,char *));
 STATIC_DCL void FDECL(deliver_by_pline, (struct qtmsg *));
 STATIC_DCL void FDECL(deliver_by_window, (struct qtmsg *, int));
-STATIC_DCL void FDECL(deliver_by_file_write, (struct qtmsg*, int));
-STATIC_DCL boolean FDECL(skip_pager, (BOOLEAN_P));
-STATIC_DCL void FDECL(deliver_by_file_write, (struct qtmsg*, int));
+STATIC_DCL void FDECL(deliver_by_file_write, (dlb*, struct qtmsg*, int, int));
 STATIC_DCL void FDECL(file_write_pager, (dlb*, struct qtmsg*, int, int));
+STATIC_DCL boolean FDECL(skip_pager, (BOOLEAN_P));
 
 
 static char cvt_buf[64];
@@ -587,23 +586,6 @@ int how;
         putmsghistory(out_line, FALSE);
 }
 
-STATIC_OVL void
-deliver_by_file_write(qt_msg, fd)
-struct qtmsg* qt_msg;
-int fd;
-{
-    long size;
-    char in_line[BUFSZ], out_line[BUFSZ];
-
-    *in_line = '\0';
-    for (size = 0; size < qt_msg->size; size += (long)strlen(in_line)) {
-        (void)dlb_fgets(in_line, sizeof in_line, msg_file);
-        convert_line(in_line, out_line);
-        Sprintf(eos(out_line), " ");
-        (void)write(fd, out_line, strlen(out_line));
-    }
-}
-
 boolean
 skip_pager(common)
 boolean common;
@@ -724,6 +706,63 @@ deliver_splev_message()
 }
 
 
+STATIC_OVL void
+deliver_by_file_write(temp_msg_file, qt_msg, fd, msgnum)
+dlb* temp_msg_file;
+struct qtmsg* qt_msg;
+int fd, msgnum;
+{
+    long size;
+    char in_line[BUFSZ], out_line[BUFSZ];
+    char cur_outline[BUFSIZ * 10];
+    char prev_outline[BUFSIZ * 10];
+    char buf[BUFSIZ];
+    strcpy(prev_outline, "");
+
+    int rounds = flags.initrole == ROLE_PRIEST ? NUM_ROLES : 1;
+    for (int k = 0; k < rounds; k++)
+    {
+        if (k == ROLE_PRIEST)
+            continue;
+
+        if (flags.initrole == ROLE_PRIEST)
+            flags.pantheon = k;
+
+        for (int j = A_CHAOTIC + 1; j <= A_LAWFUL + 1; j++)
+        {
+            flags.initalign = j;
+            if (!validalign(flags.initrole, flags.initrace, flags.initalign))
+                continue;
+
+            role_init();
+            u.ualignbase[A_CURRENT] = u.ualignbase[A_ORIGINAL] = u.ualign.type =
+                aligns[flags.initalign].value;
+
+            (void)dlb_fseek(temp_msg_file, qt_msg->offset, SEEK_SET);
+
+            *in_line = '\0';
+            *cur_outline = '\0';
+            for (size = 0; size < qt_msg->size; size += (long)strlen(in_line))
+            {
+                (void)dlb_fgets(in_line, sizeof in_line, temp_msg_file);
+                convert_line(in_line, out_line);
+                Strcat(cur_outline, out_line);
+                Strcat(cur_outline, " ");
+            }
+            if (!strcmp(cur_outline, prev_outline))
+                continue;
+
+            strcpy(prev_outline, cur_outline);
+
+            Sprintf(buf, "%d. ", msgnum);
+            (void)write(fd, buf, strlen(buf));
+            (void)write(fd, cur_outline, strlen(cur_outline));
+            Sprintf(buf, "\n");
+            (void)write(fd, buf, strlen(buf));
+        }
+    }
+}
+
 STATIC_OVL
 void
 file_write_pager(temp_msg_file, msg_chain, fd, msgnum)
@@ -753,16 +792,7 @@ int fd, msgnum;
         return;
     }
 
-    (void)dlb_fseek(msg_file, qt_msg->offset, SEEK_SET);
-
-    char buf[BUFSIZ];
-    Sprintf(buf, "%d. ", msgnum);
-    (void)write(fd, buf, strlen(buf));
-
-    deliver_by_file_write(qt_msg, fd);
-    
-    Sprintf(buf, "\n");
-    (void)write(fd, buf, strlen(buf));
+    deliver_by_file_write(temp_msg_file, qt_msg, fd, msgnum);
 
     return;
 }
@@ -805,12 +835,16 @@ int fd;
     struct Role save_role = urole;
     struct Race save_race = urace;
     int save_pantheon = flags.pantheon;
+    boolean common_printed = FALSE;
+    char plbuf[PL_NSIZ];
+    strcpy(plbuf, plname);
+    strcpy(plname, "adventurer");
+    int current_alignbase = u.ualignbase[A_CURRENT];
+    int original_alignbase = u.ualignbase[A_ORIGINAL];
+    int ualigntype = u.ualign.type;
 
     for (int j = 0; j < NUM_ROLES; j++)
     {
-        flags.initrole = j;
-        role_init();
-
         const char* role_filecode = roles[j].filecode;
         const char* race_filecode = races[j].filecode;
         for (i = 0; i < n_classes; i++)
@@ -836,17 +870,23 @@ int fd;
             impossible("load_qtlist: cannot load quest text for '%s'.", role_filecode);
         else
         {
-            Sprintf(buf, "-- %s --\n", roles[j].name.m);
-            (void)write(fd, buf, strlen(buf));
-            Sprintf(buf, "A - Common\n");
-            (void)write(fd, buf, strlen(buf));
-            for (int k = 1; k <= 80; k++)
+            flags.initrole = j;
+            flags.initrace = randrace(flags.initrole);
+            flags.initgend = 1;
+
+            if (!common_printed)
             {
-                file_write_pager(msg_file2, temp_qt_list.common, fd, k);
+                Sprintf(buf, "-- Common --\n");
+                (void)write(fd, buf, strlen(buf));
+                for (int k = 1; k <= 60; k++)
+                {
+                    file_write_pager(msg_file2, temp_qt_list.common, fd, k);
+                }
+                common_printed = TRUE;
             }
-            Sprintf(buf, "B - Quest\n");
+            Sprintf(buf, "-- %s Quest --\n", roles[j].name.m);
             (void)write(fd, buf, strlen(buf));
-            for (int k = 1; k <= 100; k++)
+            for (int k = 1; k <= 91; k++)
             {
                 file_write_pager(msg_file2, temp_qt_list.chrole, fd, k);
             }
@@ -861,6 +901,10 @@ int fd;
     urole = save_role;
     urace = save_race;
     flags.pantheon = save_pantheon;
+    strcpy(plname, plbuf);
+    u.ualign.type = ualigntype;
+    u.ualignbase[A_CURRENT] = current_alignbase;
+    u.ualignbase[A_ORIGINAL] = original_alignbase;
 
     dlb_fclose(msg_file2);
 
