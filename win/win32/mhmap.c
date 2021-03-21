@@ -3991,7 +3991,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     DeleteDC(hDCMem);
                     DeleteObject(bitmap);
                 }
-                else if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
+                else if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1 && tile_move_idx == 0)
                 {
                     /* All UI related symbols and cursors */
 
@@ -4715,11 +4715,11 @@ static void setDrawOrder(PNHMapWindow data)
     int different_level_z_order_array[3] = { 2, 3, 4 };
     boolean draw_monster_shadow_placed = FALSE;
 
-#define NUM_LAYER_PARTITIONS 5
+#define NUM_LAYER_PARTITIONS 7
 
     for (int layer_partition = 0; layer_partition < NUM_LAYER_PARTITIONS; layer_partition++)
     {
-        enum layer_types layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_LEASH, LAYER_ENVIRONMENT, LAYER_ZAP, LAYER_GENERAL_EFFECT, MAX_LAYERS };
+        enum layer_types layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_LEASH, LAYER_ENVIRONMENT, LAYER_ZAP, LAYER_GENERAL_EFFECT, LAYER_MONSTER_EFFECT, LAYER_GENERAL_UI, MAX_LAYERS };
 
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
         {

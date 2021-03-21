@@ -70,6 +70,8 @@ enum explosion_types {
 	EXPL_MAGICAL,
 	EXPL_FIERY,
 	EXPL_FROSTY,
+	/* Various large effects here */
+	EXPL_CIRCLE_OF_FIRE,
 	MAX_EXPLOSIONS
 };
 

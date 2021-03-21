@@ -4785,6 +4785,8 @@ register struct obj *obj;
     case SPE_CIRCLE_OF_FIRE:
 	{
 		int radius = objects[obj->otyp].oc_spell_radius;
+        play_explosion_animation_at(u.ux, u.uy, EXPL_CIRCLE_OF_FIRE);
+        explosion_wait_until_action();
 		for (struct monst* mon = fmon; mon; mon = mon->nmon)
 		{
 			if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
@@ -4808,8 +4810,8 @@ register struct obj *obj;
 				}
 			}
 		}
-
-		break;	
+        explosion_wait_until_end();
+        break;
 	}
 	case SPE_CIRCLE_OF_FROST:
 	{

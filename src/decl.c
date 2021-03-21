@@ -211,7 +211,9 @@ struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS] = {
     {"wet", CLR_BLUE, NO_ANIMATION, SFX_EXPLOSION_WET},
     {"magical", CLR_MAGENTA, MAGIC_EXPLOSION_ANIMATION, SFX_EXPLOSION_MAGICAL},
     {"fiery", CLR_ORANGE, FIERY_EXPLOSION_ANIMATION, SFX_EXPLOSION_FIERY},
-    {"frosty", CLR_WHITE, FROSTY_EXPLOSION_ANIMATION, SFX_EXPLOSION_FROSTY}
+    {"frosty", CLR_WHITE, FROSTY_EXPLOSION_ANIMATION, SFX_EXPLOSION_FROSTY},
+    /* Large effects start here */
+    {"circle-of-fire", CLR_WHITE, NO_ANIMATION, SFX_EXPLOSION_FIERY},
 };
 
 

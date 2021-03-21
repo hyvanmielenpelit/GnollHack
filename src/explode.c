@@ -1023,11 +1023,12 @@ enum explosion_types expltype;
 
         flush_screen(1);
 
+        context.explosion_animation_x = x;
+        context.explosion_animation_y = y;
+
         if (playing_anim)
         {
             framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
-            context.explosion_animation_x = x;
-            context.explosion_animation_y = y;
             context.explosion_animation_counter_on = TRUE;
 
             if (animations[anim].sound_play_frame <= -1)
@@ -1053,10 +1054,11 @@ enum explosion_types expltype;
         else
         {
             context.expl_intervals_to_wait_until_action = 2 * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS;
-            context.expl_intervals_to_wait_until_end = 2 * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS;
+            context.expl_intervals_to_wait_until_end = 4 * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS;
         }
-    }
 
+        context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+    }
 }
 
 void
@@ -1097,8 +1099,11 @@ explosion_wait_until_end()
         flush_screen(1);
     }
 
+    context.global_newsym_flags = 0UL;
     context.expl_intervals_to_wait_until_action = 0UL;
     context.explosion_animation_counter = 0L;
+    context.explosion_animation_x = 0;
+    context.explosion_animation_y = 0;
 }
 
 /*explode.c*/
