@@ -5430,7 +5430,7 @@ struct permonst _mons2[] = {
     /*
      * quest leaders
      */
-    MON("Lord Carnarvon", "Professor in Archeology", None, None, None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
+    MON("Lord Carnarvon", "Professor of Archeology", None, None, None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(15, 15, 17, 18, 18, 18), 
