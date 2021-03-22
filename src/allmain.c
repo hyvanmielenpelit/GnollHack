@@ -1074,9 +1074,9 @@ choose_game_difficulty()
         *buf = highc(*buf);
 
         if(iflags.menu_tab_sep)
-            Sprintf(buf2, "%s\t(%d%% in combat)", buf, combat_damage_percentage);
+            Sprintf(buf2, "%s\t(%d%% combat)", buf, combat_damage_percentage);
         else
-            Sprintf(buf2, "%s (%d%% in combat)", buf, combat_damage_percentage);
+            Sprintf(buf2, "%s (%d%% combat)", buf, combat_damage_percentage);
 
 		add_menu(menuwin, NO_GLYPH, &any, diffchar, 0, ATR_NONE,
 			buf2, MENU_UNSELECTED);

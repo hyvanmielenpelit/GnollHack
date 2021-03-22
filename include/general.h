@@ -72,6 +72,9 @@ enum explosion_types {
 	EXPL_FROSTY,
 	/* Various large effects here */
 	EXPL_CIRCLE_OF_FIRE,
+	EXPL_CIRCLE_OF_FROST,
+	EXPL_CIRCLE_OF_LIGHTNING,
+	EXPL_CIRCLE_OF_MAGIC,
 	MAX_EXPLOSIONS
 };
 
