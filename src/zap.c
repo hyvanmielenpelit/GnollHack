@@ -10116,7 +10116,7 @@ int dmg, adtyp, tell;
 		{
 			boolean was_polyd = Upolyd;
 			hp_before = Upolyd ? u.mh : u.uhp;
-			losehp(dmg, otmp ? cxname(otmp) : "damage source", KILLED_BY);
+			losehp(damage, otmp ? cxname(otmp) : "damage source", KILLED_BY);
 			hp_after = Upolyd ? u.mh : u.uhp;
 			boolean polyd_same = (Upolyd && was_polyd) || (!Upolyd && !was_polyd);
 
@@ -10130,7 +10130,7 @@ int dmg, adtyp, tell;
 		else
 		{
 			hp_before = mtmp->mhp;
-			deduct_monster_hp(mtmp, dmg);
+			deduct_monster_hp(mtmp, damage);
 			hp_after = mtmp->mhp;
 
 			int damagedealt = hp_before - hp_after;
