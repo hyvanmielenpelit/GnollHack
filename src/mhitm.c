@@ -1106,6 +1106,7 @@ struct attack *mattk;
         return MM_MISS;
 
     enum sfx_sound_types sfx_sound = SFX_ILLEGAL;
+    enum special_effect_types spef_idx = MAX_SPECIAL_EFFECTS;
 
     switch (mattk->adtyp)
     {
@@ -1120,16 +1121,29 @@ struct attack *mattk;
         break;
     case AD_BLND:
         sfx_sound = SFX_BLINDING_FLASH;
+        spef_idx = SPECIAL_EFFECT_YELLOW_LIGHT_FLASH;
         break;
     case AD_HALU:
         sfx_sound = SFX_HALLUCINATING_FLASH;
+        spef_idx = SPECIAL_EFFECT_BLACK_LIGHT_FLASH;
         break;
     default:
         break;
     }
 
+    if (spef_idx < MAX_SPECIAL_EFFECTS)
+        play_special_effect_at(spef_idx, 0, magr->mx, magr->my, FALSE);
+
     if (sfx_sound != SFX_ILLEGAL)
         play_sfx_sound_at_location_with_minimum_volume(sfx_sound, magr->mx, magr->my, 0.15);
+
+    if (spef_idx < MAX_SPECIAL_EFFECTS)
+    {
+        context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+        special_effect_wait_until_action(0);
+        show_glyph_on_layer(magr->mx, magr->my, NO_GLYPH, LAYER_MONSTER);
+        flush_screen(1);
+    }
 
     if (cansee(magr->mx, magr->my))
         pline("%s explodes!", Monnam(magr));
@@ -1159,6 +1173,12 @@ struct attack *mattk;
 
     if (is_tame(magr)) /* give this one even if it was visible */
         You(brief_feeling, "melancholy");
+
+    if (spef_idx < MAX_SPECIAL_EFFECTS)
+    {
+        special_effect_wait_until_end(0);
+        context.global_newsym_flags = 0UL;
+    }
 
     return result;
 }

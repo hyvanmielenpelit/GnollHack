@@ -687,6 +687,8 @@ NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS] =
     {"needle",                  0, 0, 12,       LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
     {"general-exclamation",     0, 0, 12,       LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
     {"small-fiery-explosion",   0, 0, 8,        LAYER_GENERAL_EFFECT, NO_REPLACEMENT, SMALL_FIERY_EXPLOSION_ANIMATION, NO_ENLARGEMENT },
+    {"yellow-light-flash",      0, 0, 3,        LAYER_GENERAL_EFFECT, NO_REPLACEMENT, YELLOW_LIGHT_FLASH_ANIMATION, NO_ENLARGEMENT },
+    {"black-light-flash",       0, 0, 3,        LAYER_GENERAL_EFFECT, NO_REPLACEMENT, BLACK_LIGHT_FLASH_ANIMATION, NO_ENLARGEMENT },
 };
 
 

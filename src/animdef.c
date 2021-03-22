@@ -2556,6 +2556,28 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       NO_ENLARGEMENT,
       { AUTODRAW_CANDELABRUM_ANIMATION_TILE_1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "yellow-light-flash-animation", ANIMATION_TYPE_NORMAL, YELLOW_LIGHT_FLASH_ANIMATION_TILES,
+        YELLOW_LIGHT_FLASH_ANIMATION_FRAMES,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      0, 4,
+      YELLOW_LIGHT_FLASH_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "black-light-flash-animation", ANIMATION_TYPE_NORMAL, BLACK_LIGHT_FLASH_ANIMATION_TILES,
+        BLACK_LIGHT_FLASH_ANIMATION_FRAMES,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      0, 4,
+      BLACK_LIGHT_FLASH_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
@@ -4636,6 +4658,22 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         GLASS_PIERCER_DROPPING_ENLARGEMENT_TILES,
         1, 2, 0,
         { -1, 0, -1, -1, -1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "yellow-light-flash-enlargement",
+        YELLOW_LIGHT_FLASH_ANIMATION_TILES, YELLOW_LIGHT_FLASH_ANIMATION_FRAMES,
+        YELLOW_LIGHT_FLASH_ENLARGEMENT_TILES,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "black-light-flash-enlargement",
+        BLACK_LIGHT_FLASH_ANIMATION_TILES, BLACK_LIGHT_FLASH_ANIMATION_FRAMES,
+        BLACK_LIGHT_FLASH_ENLARGEMENT_TILES,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },

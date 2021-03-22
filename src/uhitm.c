@@ -3273,6 +3273,7 @@ register struct attack *mattk;
     double damage = adjust_damage(d((int) mattk->damn, (int) mattk->damd), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
 
 	enum sfx_sound_types sfx_sound = SFX_ILLEGAL;
+	enum special_effect_types spef_idx = MAX_SPECIAL_EFFECTS;
 
 	switch (mattk->adtyp)
 	{
@@ -3287,27 +3288,43 @@ register struct attack *mattk;
 		break;
 	case AD_BLND:
 		sfx_sound = SFX_BLINDING_FLASH;
+		spef_idx = SPECIAL_EFFECT_YELLOW_LIGHT_FLASH;
 		break;
 	case AD_HALU:
 		sfx_sound = SFX_HALLUCINATING_FLASH;
+		spef_idx = SPECIAL_EFFECT_BLACK_LIGHT_FLASH;
 		break;
 	default:
 		break;
 	}
 
+	if (spef_idx < MAX_SPECIAL_EFFECTS)
+		play_special_effect_at(spef_idx, 0, u.ux, u.uy, FALSE);
+
 	if (sfx_sound != SFX_ILLEGAL)
 		play_sfx_sound(sfx_sound);
 	
+	if (spef_idx < MAX_SPECIAL_EFFECTS)
+	{
+		context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+		special_effect_wait_until_action(0);
+		show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
+		flush_screen(1);
+	}
+
 	You("explode!");
-    switch (mattk->adtyp) {
+    switch (mattk->adtyp) 
+	{
     case AD_BLND:
-        if (!resists_blnd(mdef)) {
+        if (!resists_blnd(mdef)) 
+		{
             pline("%s is blinded by your flash of light!", Monnam(mdef));
 			increase_mon_property(mdef, BLINDED, (int)ceil(damage));
         }
         break;
     case AD_HALU:
-        if (haseyes(mdef->data) && !is_blinded(mdef)) {
+        if (haseyes(mdef->data) && !is_blinded(mdef)) 
+		{
             pline("%s is affected by your flash of light!", Monnam(mdef));
 			increase_mon_property_verbosely(mdef, HALLUC, 100 + rnd(100));
         }
@@ -3321,14 +3338,25 @@ register struct attack *mattk;
     case AD_ELEC:
         resistance = is_mon_immune_to_elec(mdef);
  common:
-        if (!resistance) {
+        if (!resistance) 
+		{
             pline("%s gets blasted!", Monnam(mdef));
 			deduct_monster_hp(mdef, damage);
-            if (DEADMONSTER(mdef)) {
+            if (DEADMONSTER(mdef)) 
+			{
                 killed(mdef);
+
+				if (spef_idx < MAX_SPECIAL_EFFECTS)
+				{
+					special_effect_wait_until_end(0);
+					context.global_newsym_flags = 0UL;
+				}
+
                 return 2;
             }
-        } else {
+        } 
+		else
+		{
             m_shieldeff(mdef);
             if (is_golem(mdef->data))
                 golemeffects(mdef, (int) mattk->adtyp, damage);
@@ -3339,6 +3367,13 @@ register struct attack *mattk;
     default:
         break;
     }
+
+	if (spef_idx < MAX_SPECIAL_EFFECTS)
+	{
+		special_effect_wait_until_end(0);
+		context.global_newsym_flags = 0UL;
+	}
+
     return 1;
 }
 
