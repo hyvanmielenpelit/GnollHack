@@ -5269,7 +5269,7 @@ enum hit_tile_types hit_symbol_shown;
 int damage_shown;
 unsigned long extra_flags;
 {
-	if (!iflags.using_gui_tiles)
+	if (!iflags.using_gui_tiles || hit_symbol_shown >= MAX_HIT_TILES || hit_symbol_shown < 0)
 		return;
 
 	boolean is_you = (x == u.ux && y == u.uy);

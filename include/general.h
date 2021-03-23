@@ -283,6 +283,7 @@ enum hit_tile_types
 	HIT_WERE,
 	HIT_DRAIN_LEVEL,
 	HIT_SLOW,
+	HIT_HALLUCINATED,
 	MAX_HIT_TILES
 };
 

@@ -732,6 +732,7 @@ NEARDATA struct hit_tile_definition hit_tile_definitions[MAX_HIT_TILES] =
     {"were", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"drain-level", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"slow", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"hallucinated", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 /* General tile */

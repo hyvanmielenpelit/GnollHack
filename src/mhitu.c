@@ -2041,7 +2041,8 @@ register struct obj* omonwep;
 				else if (displaysustain && damagedealt > 0)
 					You("sustain %d damage.", damagedealt);
 
-                display_u_being_hit(isdisintegrated ? HIT_DISINTEGRATED : HIT_GENERAL, damagedealt, 0UL);
+                if(damagedealt > 0)
+                    display_u_being_hit(isdisintegrated ? HIT_DISINTEGRATED : HIT_GENERAL, damagedealt, 0UL);
                 
                 /* Silver message immediately next */
 				if (silvermsg)
@@ -4944,6 +4945,12 @@ int adtyp;
         break;
     case AD_FAMN:
         hit_tile = HIT_FAMINE;
+        break;
+    case AD_BLND:
+        hit_tile = HIT_FLASHED_LIGHT;
+        break;
+    case AD_HALU:
+        hit_tile = HIT_HALLUCINATED;
         break;
     default:
         break;
