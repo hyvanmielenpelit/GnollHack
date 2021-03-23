@@ -68,6 +68,7 @@ enum m_ap_types {
 struct monst {
     struct monst *nmon;
     struct permonst *data;
+    unsigned short subtype; /* Reserved for races of dogs, varying appearances for humans, etc. */
     unsigned m_id;
     short mnum;           /* permanent monster index number */
     short cham;           /* if shapeshifter, orig mons[] idx goes here */
@@ -126,6 +127,24 @@ struct monst {
     unsigned short mspecialsummon_used;    /* special (nondemon) summon timeout */
     unsigned short mspecialsummon2_used;   /* another special (nondemon) summon timeout */
 
+    short mcomingtou;
+    xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
+    int notalktimer;
+    short rumorsleft;       /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
+    uchar action;		/* the monster is currently in the midst of one of its attacks or actions */
+
+    short mflee_timer;  /* timeout for mflee */
+    short mfrozen;
+    short mstaying;	/* commanded to stay in place, similar to frozen, but commanded */
+    short mcarrying;
+
+    /* Bitfield flags -- Keep all bitfields in a row */
+    Bitfield(mflee, 1);     /* fleeing */
+    Bitfield(msleeping, 1); /* asleep until woken */
+    Bitfield(mcanmove, 1);  /* paralysis, similar to mblinded */
+    Bitfield(mwantstomove, 1);  /* mon wants to move, not staying in place */
+    Bitfield(mwantstodrop, 1);
+
     Bitfield(female, 1);		/* is female */
 	Bitfield(mburied, 1);		/* has been buried */
     Bitfield(mundetected, 1);	/* not seen in present hiding place;
@@ -136,26 +155,6 @@ struct monst {
     Bitfield(mrevived, 1);  /* has been revived from the dead */
     Bitfield(mcloned, 1);   /* has been cloned from another */
     Bitfield(mavenge, 1);   /* did something to deserve retaliation */
-    Bitfield(mflee, 1);     /* fleeing */
-
-    short mflee_timer;  /* timeout for mflee */
-    Bitfield(msleeping, 1); /* asleep until woken */
-
-	short mfrozen;
-    Bitfield(mcanmove, 1);  /* paralysis, similar to mblinded */
-
-	short mstaying;	/* commanded to stay in place, similar to frozen, but commanded */
-	Bitfield(mwantstomove, 1);  /* mon wants to move, not staying in place */
-
-	short mcarrying;
-	Bitfield(mwantstodrop, 1);
-
-    short mcomingtou;
-    xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
-    int notalktimer;
-    short rumorsleft;       /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
-    uchar action;		/* the monster is currently in the midst of one of its attacks or actions */
-
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */
     Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */
     Bitfield(mleashed, 1);  /* monster is on a leash */
@@ -182,11 +181,13 @@ struct monst {
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */
-    /* 2 free bits */
+    /* About 20 free bits */
 
 #define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
 
+    unsigned long mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
     unsigned long mstrategy; /* for monsters with mflag3: current strategy */
+
 #ifdef NHSTDC
 #define STRAT_APPEARMSG 0x80000000UL
 #else

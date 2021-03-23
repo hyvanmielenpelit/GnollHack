@@ -989,6 +989,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_WIZARD_MALE_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_WIZARD_FEMALE_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_MALE)
+            return ELF_WIZARD_MALE_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ORC && genderidx == GENDER_MALE)
             return ORC_WIZARD_MALE_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
@@ -1005,6 +1007,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_WIZARD_MALE_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_WIZARD_FEMALE_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_MALE)
+            return ELF_WIZARD_MALE_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ORC && genderidx == GENDER_MALE)
             return ORC_WIZARD_MALE_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
