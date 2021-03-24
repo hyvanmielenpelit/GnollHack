@@ -43,8 +43,7 @@ struct layer_info {
 
     unsigned long layer_flags;
 
-    /* Monster info for display */
-    genericptr_t monster_comp_ptr;  /* invalidate the pointer use for any other purposes than comparing the memory address */
+    unsigned m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
 
     struct obj* memory_objchn;     /* Pointer to the location's first memory object*/
 

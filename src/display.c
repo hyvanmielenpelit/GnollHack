@@ -2558,7 +2558,7 @@ int x, y;
     show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
     clear_monster_extra_info(x, y);
 
-    gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
+    gbuf[y][x].layers.m_id = 0;
     gbuf[y][x].layers.special_monster_layer_height = 0;
 }
 
@@ -2590,7 +2590,7 @@ boolean exclude_ascii;
         clear_monster_extra_info(x, y);
         show_extra_info(x, y, disp_flags, damage_displayed);
 
-        gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
+        gbuf[y][x].layers.m_id = 0;
         gbuf[y][x].layers.special_monster_layer_height = 0;
 
         if (disp_flags & LFLAGS_M_YOU)
@@ -2619,7 +2619,7 @@ boolean exclude_ascii;
         if (mtmp)
         {
             if (!Hallucination)
-                gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)mtmp;
+                gbuf[y][x].layers.m_id = mtmp->m_id;
 
             unsigned long extra_flags = 0UL;
             if(is_tame(mtmp) && !Hallucination)
@@ -2672,7 +2672,7 @@ boolean remove;
             gbuf[y][x].layers.layer_glyphs[LAYER_MONSTER] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.special_monster_layer_height = 0;
             gbuf[y][x].layers.layer_flags &= ~LFLAGS_M_MASK;
-            gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
+            gbuf[y][x].layers.m_id = 0;
         }
         else if (glyph_is_object(glyph))
         {

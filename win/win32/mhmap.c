@@ -1161,9 +1161,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             }
 
             boolean is_enl_you = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_M_YOU);
-            genericptr_t m_stored = data->map[enl_i][enl_j].monster_comp_ptr;
+            unsigned m_id_stored = data->map[enl_i][enl_j].m_id;
             struct monst* m_here = m_at(enl_i, enl_j);
-            struct monst* mtmp = is_enl_you ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
+            struct monst* mtmp = is_enl_you ? &youmonst : (m_here && m_here->m_id == m_id_stored) ? m_here : (struct monst*)0;
             struct trap* trap_here = 0;
             boolean is_worm_tail = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_M_WORM_TAIL);
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
@@ -1340,9 +1340,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             /* Worm */
                             boolean is_adj_worm_tail = !!(data->map[adj_x][adj_y].layer_flags & LFLAGS_M_WORM_TAIL);
                             boolean is_adj_worm_seen = !!(data->map[adj_x][adj_y].layer_flags & LFLAGS_M_WORM_SEEN);
-                            genericptr_t worm_stored = data->map[adj_x][adj_y].monster_comp_ptr;
+                            unsigned worm_id_stored = data->map[adj_x][adj_y].m_id;
                             struct monst* worm_here = m_at(adj_x, adj_y);
-                            struct monst* worm = !is_adj_worm_tail ? (struct monst*)0 : is_adj_worm_seen ? ((worm_here == worm_stored) ? worm_here : (struct monst*)0) : worm_here;
+                            struct monst* worm = !is_adj_worm_tail ? (struct monst*)0 : is_adj_worm_seen ? ((worm_here && worm_here->m_id == worm_id_stored) ? worm_here : (struct monst*)0) : worm_here;
                             signed_glyph = NO_GLYPH;
 
                             if (worm && (cansee(enl_i, enl_j) || is_adj_worm_seen || (data->map[worm->mx][worm->my].layer_flags & LFLAGS_M_WORM_SEEN)))
