@@ -4029,16 +4029,16 @@ struct monst* mtmp;
 
 				long price = get_cost_of_monster_item(otmp, mtmp);
 				if (price > 0L)
-					Sprintf(eos(itembuf), " (%s, %ld %s)", "for sale", price, currency(price));
+					Sprintf(eos(itembuf), " (%s, %ld %s%s)", "for sale", price, currency(price), otmp->quan > 1 ? " each" : "");
 				else
 					Strcat(itembuf, " (no charge)");
 
 				any.a_obj = otmp;
-				char let = 'a' + sellable_item_count;
-				char accel = def_oc_syms[(int)otmp->oclass].sym;
+//				char let = 'a' + sellable_item_count;
+//				char accel = def_oc_syms[(int)otmp->oclass].sym;
 
 				add_menu(win, NO_GLYPH, &any,
-					let, accel, ATR_NONE,
+					0, 0, ATR_NONE,
 					itembuf, MENU_UNSELECTED);
 
 				sellable_item_count++;
@@ -4094,21 +4094,29 @@ struct monst* mtmp;
 		for (int i = 0; i < pick_count; i++)
 		{
 			struct obj* item_to_buy = pick_list[i].item.a_obj;
-			if (item_to_buy)
+			long quan = min(item_to_buy->quan, pick_list[i].count);
+			if (item_to_buy && quan > 0)
 			{
-				long item_cost = get_cost_of_monster_item(item_to_buy, mtmp);
+				long item_cost = quan * get_cost_of_monster_item(item_to_buy, mtmp);
 				
 				long umoney = money_cnt(invent);
 				char qbuf[QBUFSZ];
 				boolean bought = FALSE;
+				char ibuf[QBUFSZ];
+				if(quan == 1)
+					Sprintf(ibuf, "%s", an(cxname_singular(item_to_buy)));
+				else
+					Sprintf(ibuf, "%d %s", quan, cxname(item_to_buy));
 
 				if(itemized)
 				{
 					boolean doforbreak = FALSE;
-					if(item_cost)
-						Sprintf(qbuf, "Buy %s for %ld %s?", cxname(item_to_buy), item_cost, currency(item_cost));
+					if (item_cost)
+					{
+						Sprintf(qbuf, "Buy %s for %ld %s?", ibuf, item_cost, currency(item_cost));
+					}
 					else
-						Sprintf(qbuf, "Take %s for no charge?", cxname(item_to_buy));
+						Sprintf(qbuf, "Take %s for no charge?", ibuf);
 
 					switch (ynq(qbuf)) 
 					{
@@ -4144,13 +4152,17 @@ struct monst* mtmp;
 				{
 					play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
 					if (item_cost)
-						Sprintf(qbuf, "bought %s for %ld %s.", cxname(item_to_buy), item_cost, currency(item_cost));
+						Sprintf(qbuf, "bought %s for %ld %s.", ibuf, item_cost, currency(item_cost));
 					else
-						Sprintf(qbuf, "took %s for no charge.", cxname(item_to_buy));
+						Sprintf(qbuf, "took %s for no charge.", ibuf);
 
 					You("%s", qbuf);
 
 					money2mon(mtmp, (long)item_cost);
+					
+					if (quan < item_to_buy->quan)
+						item_to_buy = splitobj(item_to_buy, quan);
+					
 					obj_extract_self(item_to_buy);
 					hold_another_object(item_to_buy, "Oops!  %s out of your grasp!",
 						The(aobjnam(item_to_buy, "slip")),
@@ -4310,8 +4322,7 @@ struct monst* mtmp;
 
 }
 
-/* Returns the price of an arbitrary item in the shop,
-   0 if the item doesn't belong to a shopkeeper or hero is not in the shop. */
+/* Returns the price of an arbitrary item per one item */
 long
 get_cost_of_monster_item(obj, mtmp)
 register struct obj* obj;
@@ -4323,7 +4334,7 @@ register struct monst* mtmp;
 	for (top = obj; top->where == OBJ_CONTAINED; top = top->ocontainer)
 		continue;
 
-	cost = obj->quan * get_cost(obj, mtmp);
+	cost = get_cost(obj, mtmp);
 
 	if (Has_contents(obj))
 		cost += m_contained_cost(obj, mtmp);

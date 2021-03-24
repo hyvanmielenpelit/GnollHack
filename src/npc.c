@@ -29,7 +29,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         6, 0,
         10, 1000, 15000,
         NPC_SERVICE_BUY_GEMS_AND_STONES | NPC_SERVICE_IDENTIFY_GEMS_AND_STONES,
-        NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_DOUBLE_MONEY_IN_HELL
+        NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_DOUBLE_MONEY_IN_HELL | NPC_FLAGS_GEOLOGIST_ITEMS
     },
     {
         PM_MODRON_QUARTON,
@@ -367,6 +367,17 @@ int mtype;
             (void)mongetsgold(npc, npcmoney);
         }
 
+        if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_GEOLOGIST_ITEMS)
+        {
+            for (int i = 0; i < 24; i++)
+            {
+                mongets(npc, rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE));
+            }
+            for (int i = 0; i < 24; i++)
+            {
+                mongets(npc, rnd_class(DILITHIUM_CRYSTAL, LUCKSTONE - 1));
+            }
+        }
     }
 }
 

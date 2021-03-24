@@ -2156,6 +2156,7 @@ register struct monst *shkp; /* if angry, impose a surcharge */
 
 	boolean shkp_is_shopkeeper = (shkp && shkp->isshk && shkp->mextra && ESHK(shkp));
     boolean shkp_is_priest = (shkp && shkp->ispriest && shkp->mextra && EPRI(shkp));
+    boolean shkp_is_smith = (shkp && shkp->issmith && shkp->mextra && ESMI(shkp));
     boolean shkp_is_npc = (shkp && shkp->isnpc && shkp->mextra && ENPC(shkp));
 
     if (!tmp)
@@ -2239,7 +2240,7 @@ register struct monst *shkp; /* if angry, impose a surcharge */
         multiplier *= 4L, divisor *= 3L;
 
 	
-    if (!shkp_is_shopkeeper && (shkp_is_priest || shkp_is_npc)) /* Priest and npcs teach spells */
+    if (!shkp_is_shopkeeper && (shkp_is_priest || shkp_is_npc || shkp_is_smith)) /* Priest and npcs teach spells */
         multiplier *= 3L, divisor *= 2L;
     else if (!shkp_is_shopkeeper) /* Monsters sell cheaper */
 		multiplier *= 2L, divisor *= 3L;
