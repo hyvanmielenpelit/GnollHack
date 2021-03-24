@@ -4037,7 +4037,7 @@ struct monst* mtmp;
 //				char let = 'a' + sellable_item_count;
 //				char accel = def_oc_syms[(int)otmp->oclass].sym;
 
-				add_menu(win, NO_GLYPH, &any,
+				add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any,
 					0, 0, ATR_NONE,
 					itembuf, MENU_UNSELECTED);
 

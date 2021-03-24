@@ -369,10 +369,20 @@ int mtype;
 
         if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_GEOLOGIST_ITEMS)
         {
+            /* High chance of at least one ore of each type */
+            for (int i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
+            {
+                if(rn2(9))
+                    mongets(npc, i);
+            }
+
+            /* Random ores */
             for (int i = 0; i < 24; i++)
             {
                 mongets(npc, rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE));
             }
+
+            /* Random gems */
             for (int i = 0; i < 24; i++)
             {
                 mongets(npc, rnd_class(DILITHIUM_CRYSTAL, LUCKSTONE - 1));
