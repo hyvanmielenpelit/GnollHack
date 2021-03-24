@@ -2399,6 +2399,8 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -2426,7 +2428,9 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {GHSOUND_DOOR_TRY_LOCKED, 1.0f},
 
             {GHSOUND_GENERIC_BUMP_INTO, 1.0f},
-            {GHSOUND_FOUNTAIN_DRIES_UP, 1.0f}
+            {GHSOUND_FOUNTAIN_DRIES_UP, 1.0f},
+            {GHSOUND_CANDLE_LIGHT_UP, 1.0f},
+            {GHSOUND_CANDLE_SNUFF_OUT, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -2453,7 +2457,9 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_FOUNTAIN_DRIES_UP, 1.0f}
+            {GHSOUND_FOUNTAIN_DRIES_UP, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -2480,7 +2486,9 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f}
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_LIT
     },
@@ -2507,7 +2515,9 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {GHSOUND_DOOR_TRY_LOCKED, 1.0f},
 
             {GHSOUND_DOOR_WOODEN_BUMP_INTO, 1.0f},
-            {MAX_GHSOUNDS, 0.0f}
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -2534,7 +2544,9 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f}
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -2561,7 +2573,9 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f}
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -2588,7 +2602,9 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_WATER_DRIES_UP, 1.0f}
+            {GHSOUND_WATER_DRIES_UP, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -2615,7 +2631,9 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
-            {GHSOUND_ICE_MELTS, 1.0f}
+            {GHSOUND_ICE_MELTS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -2643,6 +2661,8 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
 
             {MAX_GHSOUNDS, 0.0f},
             {GHSOUND_LAVA_HARDENS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -2669,7 +2689,9 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f}
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     }, 

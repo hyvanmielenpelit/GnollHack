@@ -7830,6 +7830,7 @@ dolight(VOID_ARGS)
             char ans = yn_query(qbuf);
             if (ans == 'y')
             {
+                play_simple_location_sound(u.ux, u.uy, LOCATION_SOUND_TYPE_APPLY);
                 maybe_create_location_light_source(u.ux, u.uy);
                 newsym(u.ux, u.uy);
                 return 1;
@@ -7850,6 +7851,7 @@ dolight(VOID_ARGS)
                 levl[u.ux][u.uy].lamplit = FALSE;
                 del_light_source(LS_LOCATION, xy_to_any(u.ux, u.uy));
                 newsym(u.ux, u.uy);
+                play_simple_location_sound(u.ux, u.uy, LOCATION_SOUND_TYPE_APPLY2);
                 return 1;
             }
         }
@@ -7872,6 +7874,7 @@ dolight(VOID_ARGS)
         {
             maybe_create_location_light_source(cc.x, cc.y);
             newsym(cc.x, cc.y);
+            play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_APPLY);
             You("light the %s%s up.", ebuf, dfeature_at(cc.x, cc.y));
             return 1;
         }
@@ -7880,12 +7883,14 @@ dolight(VOID_ARGS)
             levl[cc.x][cc.y].lamplit = FALSE;
             del_light_source(LS_LOCATION, xy_to_any(cc.x, cc.y));
             newsym(cc.x, cc.y);
+            play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_APPLY2);
             You("snuff the %s%s out.", ebuf, dfeature_at(cc.x, cc.y));
             return 1;
         }
     }
     else
     {
+        play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
         pline("There's nothing to light or snuff out.");
     }
 
