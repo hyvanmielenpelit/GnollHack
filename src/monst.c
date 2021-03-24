@@ -3386,7 +3386,7 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
     /*
      * Ogres
      */
-    ENLARGED_MON("ogre", None, "tough large humanoid", None, None, S_OGRE, LVL(5, 10, 5, 0, 0, -3), (G_SGROUP | G_GENO | 1 | G_GENDER_ONE_EIGTH),
+    ENLARGED_MON("ogre", None, "tough large humanoid", "ogress", None, S_OGRE, LVL(5, 10, 5, 0, 0, -3), (G_SGROUP | G_GENO | 1 | G_GENDER_ONE_EIGTH),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 5, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
             NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1600, 500, MS_GRUNT, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR18(76), 9, 20, 8, 7, 5),
