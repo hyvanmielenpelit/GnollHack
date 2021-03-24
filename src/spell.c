@@ -2314,6 +2314,8 @@ boolean atme;
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
 		u_wait_until_action();
+		if (iflags.using_gui_sounds)
+			delay_output_milliseconds(200);
 		use_magic_whistle((struct obj*) 0);
 		break;
 	case SPE_CLAIRVOYANCE:

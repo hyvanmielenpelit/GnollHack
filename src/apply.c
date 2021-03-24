@@ -729,6 +729,8 @@ struct obj *obj;
 				: "strange");
 		
         play_sfx_sound(Hallucination ? SFX_WHISTLE : Underwater ? SFX_MAGIC_WHISTLE_UNDERWATER : SFX_MAGIC_WHISTLE);
+        if (iflags.using_gui_sounds)
+            delay_output_milliseconds(500);
 
 		for (mtmp = fmon; mtmp; mtmp = nextmon)
         {
