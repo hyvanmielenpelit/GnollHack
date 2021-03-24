@@ -2642,7 +2642,7 @@ struct media {
             }
             nk_input_end(ctx);
 
-            player_glyph_index = player_to_glyph_index(current_role, current_race, current_gender, current_alignment, player_glyph_level);
+            player_glyph_index = player_to_glyph_index(current_role, current_race, current_gender, aligns[current_alignment].value, player_glyph_level);
             glyph = player_glyph_index + GLYPH_PLAYER_OFF;
             ntile = glyph2tile[glyph];
             base_t_x = SDL_TILEBMP_X(ntile);

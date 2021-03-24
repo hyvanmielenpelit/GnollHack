@@ -5053,7 +5053,7 @@ unsigned long simple_wait_multiplier;
 	if (iflags.using_gui_tiles && action_before != u.action)
 	{
 		context.force_allow_keyboard_commands = TRUE;
-		enum animation_types anim = get_player_animation(action, urole.rolenum, urace.racenum, flags.female, u.ualign.type + 1, 0);
+		enum animation_types anim = get_player_animation(action, urole.rolenum, urace.racenum, flags.female, u.ualign.type, 0);
 		if (u.action != ACTION_TILE_NO_ACTION && anim > 0
 			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY && !u.usteed)
 		{

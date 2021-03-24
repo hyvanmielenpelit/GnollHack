@@ -2677,7 +2677,7 @@ u_to_glyph()
     int player_role = urole.rolenum;
     int player_race = urace.racenum;
     int player_gender = (int)flags.female;
-    int player_alignment = u.ualign.type + 1; /* 0...2 */
+    int player_alignment = u.ualign.type;
     int player_glyph_level = 0;
     int player_glyph_index = player_to_glyph_index(player_role, player_race, player_gender, player_alignment, player_glyph_level);
     int player_glyph_offset = (
@@ -2714,7 +2714,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     int player_role = roleidx;
     int player_race = raceidx;
     int player_gender = genderidx;
-    int player_alignment = alignmentidx; /* 0...2 */
+    int player_alignment = alignmentidx + 1; /* 0...2 */
     int player_glyph_level = levelidx;
 
     int res = player_glyph_level +
@@ -2779,7 +2779,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_BARBARIAN && raceidx == RACE_ORC && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC)
             return TRUE;
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
             return TRUE;
@@ -2815,7 +2815,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_CAST_DIR:
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return TRUE;
-        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC)
             return TRUE;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN)
             return TRUE;
@@ -2837,7 +2837,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN)
             return TRUE;
-        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC)
             return TRUE;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
             return TRUE;
