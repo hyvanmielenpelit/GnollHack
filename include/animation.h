@@ -897,11 +897,11 @@ struct enlargement_definition {
             3 X 4
        Value of -1 indicates the tile does not exíst, a nonnegative value indicates tile number used for the position
     */
-    char position_flags[NUM_POSITIONS_IN_ENLARGEMENT];
+    unsigned char position_flags[NUM_POSITIONS_IN_ENLARGEMENT];
     enum autodraw_types position_autodraw[NUM_POSITIONS_IN_ENLARGEMENT];
 };
 
-#define ENLFLAGS_H_FLIP 0x01
+#define ENLFLAGS_DOES_NOT_CAUSE_MONSTER_SHADOW      0x01
 
 
 enum enlargement_types

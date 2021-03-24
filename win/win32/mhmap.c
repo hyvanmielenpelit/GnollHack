@@ -1858,6 +1858,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean skip_drawing = FALSE;
                     boolean full_sized_item = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM) || glyph_is_monster(glyph); /* hallucinated statue */
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !full_sized_item);
+                    boolean does_not_cause_monster_shadow = FALSE;
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
                     ntile = maybe_get_replaced_tile(ntile, i, j, data_to_replacement_info(signed_glyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags), &autodraw);
@@ -1915,6 +1916,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (enl_tile_idx >= 0)
                             {
                                 autodraw = enlargements[tile2enlargement[ntile]].position_autodraw[position_index];
+                                does_not_cause_monster_shadow = !!(enlargements[tile2enlargement[ntile]].position_flags[position_index] & ENLFLAGS_DOES_NOT_CAUSE_MONSTER_SHADOW);
                                 int addedindex = 0;
                                 if (enlargements[tile2enlargement[ntile]].number_of_animation_frames > 0)
                                 {
@@ -2109,7 +2111,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
                         }
 
-                        if (enlarg_idx >= 0 || (base_layer >= LAYER_COVER_OBJECT && base_layer <= IDX_LAYER_MONSTER_SHADOW))
+                        if ((enlarg_idx >= 0 || (base_layer >= LAYER_COVER_OBJECT && base_layer <= IDX_LAYER_MONSTER_SHADOW)) && !does_not_cause_monster_shadow)
                              draw_monster_shadow = TRUE;
 
                         /* Scale object to be of oc_tile_floor_height height */
