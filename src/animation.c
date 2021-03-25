@@ -982,6 +982,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return GNOLL_RANGER_FEMALE_FIRE_ANIMATION;
         break;
     case ACTION_TILE_CAST_NODIR:
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_LAWFUL)
+            return HUMAN_PRIEST_MALE_LAWFUL_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_LAWFUL)
+            return HUMAN_PRIEST_FEMALE_LAWFUL_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_KNIGHT_FEMALE_CAST_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -1002,6 +1006,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_HEALER_MALE_CAST_INDIR_ANIMATION;
         break;
     case ACTION_TILE_CAST_DIR:
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_LAWFUL)
+            return HUMAN_PRIEST_MALE_LAWFUL_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_LAWFUL)
+            return HUMAN_PRIEST_FEMALE_LAWFUL_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC)
             return ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
