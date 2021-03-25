@@ -2943,6 +2943,7 @@ E enum ghsound_types FDECL(get_room_ambient_sounds, (struct mkroom*));
 E enum ghsound_types NDECL(get_environment_ambient_sounds);
 E enum ghsound_types FDECL(get_monster_ambient_sound_id, (enum monster_soundset_types));
 E float FDECL(get_monster_ambient_sound_volume, (enum monster_soundset_types));
+E void FDECL(get_god_indices, (int*, int*));
 E void NDECL(play_intro_text);
 E void NDECL(stop_all_immediate_sounds);
 E void FDECL(play_voice_shopkeeper_welcome, (struct monst*, int));
@@ -2954,6 +2955,7 @@ E void FDECL(play_voice_shopkeeper_candelabrum_candles, (struct monst*, struct o
 E void FDECL(play_voice_shopkeeper_pay_before_buying, (struct monst*, int, int));
 E void FDECL(play_voice_shopkeeper_how_dare_you_damage, (struct monst*, uchar, const char*, boolean));
 E void FDECL(play_voice_monster_cuss, (struct monst*, int));
+E void FDECL(play_voice_monster_cuss_with_god_name, (struct monst*, int));
 
 
 /* ### sys.c ### */

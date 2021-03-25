@@ -942,7 +942,9 @@ register struct monst *mtmp;
     else if (is_lminion(mtmp)
                && !(mtmp->isminion && EMIN(mtmp)->renegade)) 
     {
-        com_pager(rn2(QTN_ANGELIC - 1 + (Hallucination ? 1 : 0))
+        int cuss_rnd = rn2(QTN_ANGELIC - 1 + (Hallucination ? 1 : 0));
+        play_voice_monster_cuss_with_god_name(mtmp, cuss_rnd + 1);
+        com_pager(cuss_rnd
                   + QT_ANGELIC);
     } 
     else 

@@ -896,6 +896,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Escape Trap", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Marilith Malediction", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Female Angel Malediction", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Sandestin Malediction", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Male Imp Malediction", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Female Imp Malediction", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Shopkeeper Male Welcome", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Shopkeeper Female Welcome", 1.0f },
