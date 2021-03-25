@@ -1775,7 +1775,9 @@ unsigned short trflags;
            possibly non-intuitive but useful for play balance */
         if (!Antimagic_or_resistance)
 		{
-            drain_en(-1);
+            int c = max(0, (u.uenmax * 3) / 10);
+            int a = max(2, (u.uenmax * 2) / 10);
+            drain_en(rnd(a) + c);
         } 
 		else
 		{
@@ -4967,16 +4969,18 @@ int n;
 	else 
 	{
         /* throttle further loss a bit when there's not much left to lose */
-        if (n > u.uenmax || n > u.ulevel)
-            n = rnd(n);
+        //if (n > u.uenmax || n > u.ulevel)
+        //    n = rnd(n);
 
         You_feel("your magical energy drain away%c", (n > u.uen) ? '!' : '.');
         u.uen -= n;
         if (u.uen < 0) {
+            /*
             u.ubaseenmax -= rnd(-u.uen);
 			updatemaxen();
             if (u.uenmax < 0)
                 u.uenmax = 0;
+            */
             u.uen = 0;
         }
         context.botl = 1;
