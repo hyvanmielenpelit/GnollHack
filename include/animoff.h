@@ -242,6 +242,9 @@ int animation_offsets[MAX_ANIMATIONS] = {
 	11118, /* candelabrum-lit-animation */
 	11119, /* yellow-light-flash-animation */
 	11126, /* black-light-flash-animation */
+	11133, /* brazier-lit-animation */
+	11134, /* brazier-subtype-1-lit-animation */
+	11135, /* brazier-subtype-2-lit-animation */
 };
 
 int enlargement_offsets[MAX_ENLARGEMENTS] = {
@@ -664,4 +667,7 @@ int replacement_offsets[MAX_REPLACEMENTS] = {
 	274, /* iron-piercer-replacement */
 	276, /* glass-piercer-replacement */
 	278, /* bear-trap-replacement */
+	279, /* brazier-replacement */
+	280, /* brazier-subtype-1-replacement */
+	281, /* brazier-subtype-2-replacement */
 };

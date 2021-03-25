@@ -2451,7 +2451,7 @@ d_level *lev;
 
 #define INTEREST(feat)                                                \
     ((feat).nfount || (feat).nsink || (feat).nthrone || (feat).naltar \
-     || (feat).ngrave || (feat).ntree || (feat).nshop || (feat).ntemple || (feat).nsmithy || (feat).nnpcroom)
+     || (feat).ngrave || (feat).nbrazier || (feat).nsignpost || (feat).ntree || (feat).nshop || (feat).ntemple || (feat).nsmithy || (feat).nnpcroom)
   /* || (feat).water || (feat).ice || (feat).lava */
 
 /* returns true if this level has something interesting to print out */
@@ -2691,6 +2691,16 @@ recalc_mapseen()
                 count = mptr->feat.ngrave + 1;
                 if (count <= 3)
                     mptr->feat.ngrave = count;
+                break;
+            case BRAZIER:
+                count = mptr->feat.nbrazier + 1;
+                if (count <= 3)
+                    mptr->feat.nbrazier = count;
+                break;
+            case SIGNPOST:
+                count = mptr->feat.nsignpost + 1;
+                if (count <= 3)
+                    mptr->feat.nsignpost = count;
                 break;
             case ALTAR:
                 atmp = (Is_astralevel(&u.uz)
@@ -3134,6 +3144,8 @@ boolean printdun;
         ADDNTOBUF("fountain", mptr->feat.nfount);
         ADDNTOBUF("sink", mptr->feat.nsink);
         ADDNTOBUF("grave", mptr->feat.ngrave);
+        ADDNTOBUF("brazier", mptr->feat.nbrazier);
+        ADDNTOBUF("signpost", mptr->feat.nsignpost);
         ADDNTOBUF("tree", mptr->feat.ntree);
 #if 0
         ADDTOBUF("water", mptr->feat.water);

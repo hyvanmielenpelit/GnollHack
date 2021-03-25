@@ -2260,6 +2260,12 @@ int sym;
     case S_grave:
         typ = GRAVE;
         break;
+    case S_brazier:
+        typ = BRAZIER;
+        break;
+    case S_signpost:
+        typ = SIGNPOST;
+        break;
     case S_throne:
         typ = THRONE;
         break;

@@ -900,6 +900,13 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Sandestin Malediction", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Male Imp Malediction", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Female Imp Malediction", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Wizard of Yendor/Wizard of Yendor Malediction", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Wizard of Yendor/Wizard of Yendor Ill Be Back", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Wizard of Yendor/Wizard of Yendor Destroy the Thief My Pet", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Wizard of Yendor/Wizard of Yendor Destroy the Thief My Pets", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Wizard of Yendor/Wizard of Yendor Double Trouble", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Wizard of Yendor/Wizard of Yendor So Thou Thought Thou Couldst Kill Me", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Wizard of Yendor/Wizard of Yendor So Thou Thought Thou Couldst Elude Me", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Shopkeeper Male Welcome", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Shopkeeper Female Welcome", 1.0f },

@@ -302,6 +302,14 @@ int force;
                     if (cansee(x, y))
                         pline_The("headstone topples into a chasm.");
                     goto do_pit;
+                case BRAZIER:
+                    if (cansee(x, y))
+                        pline_The("brazier falls into a chasm.");
+                    goto do_pit;
+                case SIGNPOST:
+                    if (cansee(x, y))
+                        pline_The("signpost falls into a chasm.");
+                    goto do_pit;
                 case THRONE:
                     if (cansee(x, y))
                         pline_The("throne falls into a chasm.");

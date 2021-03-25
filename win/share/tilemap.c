@@ -578,6 +578,8 @@ struct {
 {S_altar,    "altar", "altar"},
 {S_extra_boulder,    "boulder", "boulder"},
 {S_grave,    "grave", "grave"},
+{S_brazier,  "brazier", "brazier"},
+{S_signpost, "signpost", "signpost"},
 {S_throne,   "throne", "opulent throne"},
 {S_sink,     "sink", "sink"},
 {S_fountain, "fountain", "fountain"},

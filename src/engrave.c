@@ -287,7 +287,7 @@ boolean strict;
 {
     register struct engr *ep = engr_at(x, y);
 
-    if (ep && ep->engr_type != HEADSTONE && ep->engr_time <= moves) {
+    if (ep && ep->engr_type != ENGR_HEADSTONE && ep->engr_time <= moves) {
         return strict ? (fuzzymatch(ep->engr_txt, s, "", TRUE))
                       : (strstri(ep->engr_txt, s) != 0);
     }
@@ -302,7 +302,7 @@ int cnt;
     if (can_reach_floor(TRUE))
     {
         struct engr* ep;
-        if ((ep = engr_at(u.ux, u.uy)) && !(ep->engr_type == HEADSTONE || sengr_at(Gilthoniel_word, u.ux, u.uy, TRUE) || sengr_at(Morgoth_word, u.ux, u.uy, TRUE)))
+        if ((ep = engr_at(u.ux, u.uy)) && !(ep->engr_type == ENGR_HEADSTONE || ep->engr_type == ENGR_SIGNPOST || sengr_at(Gilthoniel_word, u.ux, u.uy, TRUE) || sengr_at(Morgoth_word, u.ux, u.uy, TRUE)))
             wipe_engr_at(u.ux, u.uy, cnt, FALSE);
 
     }
@@ -315,7 +315,7 @@ xchar x, y, cnt, magical;
     register struct engr *ep = engr_at(x, y);
 
     /* Headstones are indelible */
-    if (ep && ep->engr_type != HEADSTONE) {
+    if (ep && ep->engr_type != ENGR_HEADSTONE && ep->engr_type != ENGR_SIGNPOST) {
         debugpline1("asked to erode %d characters", cnt);
         if (ep->engr_type != BURN || is_ice(x, y) || (magical && !rn2(2))) {
             if (ep->engr_type != DUST && ep->engr_type != ENGR_BLOOD) {
@@ -352,11 +352,17 @@ int x, y;
             }
             break;
 		case ENGRAVE:
-        case HEADSTONE:
+        case ENGR_HEADSTONE:
             if (!Blind || can_reach_floor(TRUE)) {
                 sensed = 1;
                 pline("%s is engraved here on the %s.", Something,
                       surface(x, y));
+            }
+            break;
+        case ENGR_SIGNPOST:
+            if (!Blind || can_reach_floor(TRUE)) {
+                sensed = 1;
+                pline("%s is written here on the signpost.", Something);
             }
             break;
         case BURN:
@@ -783,7 +789,7 @@ doengrave()
             case WAN_DISJUNCTION:
             case WAN_CANCELLATION:
             case WAN_MAKE_INVISIBLE:
-                if (oep && oep->engr_type != HEADSTONE) {
+                if (oep && oep->engr_type != ENGR_HEADSTONE && oep->engr_type != ENGR_SIGNPOST) {
                     if (!Blind)
                         pline_The("engraving on the %s vanishes!",
                                   surface(u.ux, u.uy));
@@ -791,7 +797,7 @@ doengrave()
                 }
                 break;
             case WAN_TELEPORTATION:
-                if (oep && oep->engr_type != HEADSTONE) {
+                if (oep && oep->engr_type != ENGR_HEADSTONE && oep->engr_type != ENGR_SIGNPOST) {
                     play_sfx_sound(SFX_TELEPORT);
                     if (!Blind)
                         pline_The("engraving on the %s vanishes!",
@@ -934,8 +940,21 @@ doengrave()
 
     if (IS_GRAVE(levl[u.ux][u.uy].typ)) {
         if (type == ENGRAVE || type == 0) {
-            type = HEADSTONE;
+            type = ENGR_HEADSTONE;
         } else {
+            /* ensures the "cannot wipe out" case */
+            type = DUST;
+            dengr = FALSE;
+            teleengr = FALSE;
+            buf[0] = '\0';
+        }
+    }
+
+    if (IS_SIGNPOST(levl[u.ux][u.uy].typ)) {
+        if (type == ENGRAVE || type == 0) {
+            type = ENGR_SIGNPOST;
+        }
+        else {
             /* ensures the "cannot wipe out" case */
             type = DUST;
             dengr = FALSE;
@@ -966,7 +985,9 @@ doengrave()
     if (*buf) {
         make_engr_at(u.ux, u.uy, buf, moves, type);
         if (!Blind)
-            pline_The("engraving now reads: \"%s\".", buf);
+        {
+            pline_The("%s now reads: \"%s\".", type == ENGR_SIGNPOST ? "sign" : "engraving", buf);
+        }
         ptext = FALSE;
     }
     if (zapwand && (otmp->charges < 0)) {
@@ -994,7 +1015,7 @@ doengrave()
         register char c = 'n';
 
         /* Give player the choice to add to engraving. */
-        if (type == HEADSTONE) {
+        if (type == ENGR_HEADSTONE || type == ENGR_SIGNPOST) {
             /* no choice, only append */
             c = 'y';
         } else if (type == oep->engr_type
@@ -1051,10 +1072,13 @@ doengrave()
         everb = (oep && !eow ? "add to the writing in" : "write in");
         eloc = is_ice(u.ux, u.uy) ? "frost" : "dust";
         break;
-    case HEADSTONE:
+    case ENGR_HEADSTONE:
         everb = (oep && !eow ? "add to the epitaph on" : "engrave on");
         break;
-	case ENGRAVE:
+    case ENGR_SIGNPOST:
+        everb = (oep && !eow ? "add to the text on" : "engrave on");
+        break;
+    case ENGRAVE:
         everb = (oep && !eow ? "add to the engraving in" : "engrave in");
         break;
     case BURN:
@@ -1143,8 +1167,9 @@ doengrave()
         if (multi)
             nomovemsg = "You finish writing in the dust.";
         break;
-    case HEADSTONE:
-	case ENGRAVE:
+    case ENGR_HEADSTONE:
+    case ENGR_SIGNPOST:
+    case ENGRAVE:
         multi = -(len / 10);
         if (otmp->oclass == WEAPON_CLASS
             && (otmp->otyp != ATHAME || otmp->cursed)) {
@@ -1392,7 +1417,52 @@ boolean in_mklev_var;
     del_engr_at(x, y);
     if (!str)
         str = get_rnd_text(EPITAPHFILE, buf, rn2);
-    make_engr_at(x, y, str, 0L, HEADSTONE);
+    make_engr_at(x, y, str, 0L, ENGR_HEADSTONE);
+    return;
+}
+
+/* Create a signpost at the given location.
+ * The caller is responsible for newsym(x, y).
+ */
+void
+make_signpost(x, y, str, in_mklev_var)
+int x, y;
+const char* str;
+boolean in_mklev_var;
+{
+    char buf[BUFSZ];
+
+    /* Can we put a grave here? */
+    if ((levl[x][y].typ != ROOM && levl[x][y].typ != GRASS && levl[x][y].typ != GROUND && levl[x][y].typ != SIGNPOST) || t_at(x, y))
+        return;
+
+    /* Make the signpost */
+    if (in_mklev_var)
+    {
+        if (IS_FLOOR(levl[x][y].typ))
+        {
+            levl[x][y].floortyp = levl[x][y].typ;
+            levl[x][y].floorsubtyp = levl[x][y].subtyp;
+        }
+        else if (!IS_FLOOR(levl[x][y].floortyp))
+        {
+            levl[x][y].floortyp = location_type_definitions[GRAVE].initial_floor_type;
+            levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+        }
+
+        levl[x][y].typ = SIGNPOST;
+        levl[x][y].subtyp = 0;
+        levl[x][y].flags = 0;
+    }
+    else
+    {
+        create_simple_location(x, y, SIGNPOST, 0, 0, 0, levl[x][y].typ == GRAVE ? levl[x][y].floortyp : levl[x][y].typ, levl[x][y].typ == SIGNPOST ? levl[x][y].floorsubtyp : levl[x][y].subtyp, FALSE);
+    }
+
+    /* Engrave the signpost */
+    del_engr_at(x, y);
+    if (str && strcmp(str, ""))
+        make_engr_at(x, y, str, 0L, ENGR_SIGNPOST);
     return;
 }
 

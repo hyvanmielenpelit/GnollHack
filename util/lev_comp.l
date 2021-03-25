@@ -192,6 +192,8 @@ terrain		ST_RET(terrain_ID);
 REPLACE_TERRAIN	ST_RET(REPLACE_TERRAIN_ID);
 GOLD		ST_RET(GOLD_ID);
 GRAVE		ST_RET(GRAVE_ID);
+BRAZIER		ST_RET(BRAZIER_ID);
+SIGNPOST	ST_RET(SIGNPOST_ID);
 ENGRAVING	ST_RET(ENGRAVING_ID);
 MINERALIZE	ST_RET(MINERALIZE_ID);
 (NAME|name)	ST_RET(NAME_ID);
@@ -430,6 +432,12 @@ fountain_on_ground { savetoken(yytext); yylval.i=FOUNTAIN_ON_GROUND; return FLAG
 tree_on_ground { savetoken(yytext); yylval.i=TREE_ON_GROUND; return FLAG_TYPE; } /* JG */
 mapping_does_not_reveal_special { savetoken(yytext); yylval.i=MAPPING_DOES_NOT_REVEAL_SPECIAL; return FLAG_TYPE; } /* JG */
 shortsighted	{ savetoken(yytext); yylval.i=SHORTSIGHTED; return FLAG_TYPE; }
+brazier_normal { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_NORMAL; return BRAZIER_SUBTYPE; }
+brazier_subtype_1 { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_1; return BRAZIER_SUBTYPE; }
+brazier_subtype_2 { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_2; return BRAZIER_SUBTYPE; }
+signpost_normal { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_NORMAL; return SIGNPOST_SUBTYPE; }
+signpost_subtype_1 { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_1; return SIGNPOST_SUBTYPE; }
+signpost_subtype_2 { savetoken(yytext); yylval.i=BRAZIER_SUBTYPE_2; return SIGNPOST_SUBTYPE; }
 mazelevel	{ savetoken(yytext); yylval.i=MAZELEVEL; return FLAG_TYPE; }
 premapped	{ savetoken(yytext); yylval.i=PREMAPPED; return FLAG_TYPE; }
 shroud		{ savetoken(yytext); yylval.i=SHROUD; return FLAG_TYPE; }

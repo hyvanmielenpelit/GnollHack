@@ -4525,6 +4525,10 @@ int x, y;
         cmap = S_vcdbridge; /* "raised drawbridge" */
     else if (IS_GRAVE(ltyp))
         cmap = S_grave; /* "grave" */
+    else if (IS_BRAZIER(ltyp))
+        cmap = S_brazier; /* "brazier" */
+    else if (IS_SIGNPOST(ltyp))
+        cmap = S_signpost; /* "signpost" */
     else if (ltyp == TREE)
         cmap = S_tree; /* "tree" */
     else if (ltyp == ANVIL)

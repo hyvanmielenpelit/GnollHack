@@ -18,8 +18,9 @@ struct engr {
 #define BURN 3
 #define MARK 4
 #define ENGR_BLOOD 5
-#define HEADSTONE 6
-#define N_ENGRAVE 6
+#define ENGR_HEADSTONE 6
+#define ENGR_SIGNPOST 7
+#define N_ENGRAVE 7
 };
 
 #define newengr(lth) \

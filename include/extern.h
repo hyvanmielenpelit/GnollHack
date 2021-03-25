@@ -981,6 +981,7 @@ E void FDECL(engr_stats, (const char *, char *, long *, size_t *));
 E void FDECL(del_engr, (struct engr *));
 E void FDECL(rloc_engr, (struct engr *));
 E void FDECL(make_grave, (int, int, const char *, boolean));
+E void FDECL(make_signpost, (int, int, const char*, boolean));
 
 /* ### exper.c ### */
 
@@ -2956,7 +2957,8 @@ E void FDECL(play_voice_shopkeeper_pay_before_buying, (struct monst*, int, int))
 E void FDECL(play_voice_shopkeeper_how_dare_you_damage, (struct monst*, uchar, const char*, boolean));
 E void FDECL(play_voice_monster_cuss, (struct monst*, int));
 E void FDECL(play_voice_monster_cuss_with_god_name, (struct monst*, int));
-
+E void FDECL(play_voice_wizard_of_yendor_cuss, (struct monst*, int, int));
+E void FDECL(play_voice_wizard_of_yendor_simple_line, (struct monst*, enum wizard_of_yendor_simple_lines));
 
 /* ### sys.c ### */
 

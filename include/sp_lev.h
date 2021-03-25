@@ -127,6 +127,8 @@ enum opcode_defs {
     SPO_COPY,
     SPO_END_MONINVENT,
     SPO_GRAVE,
+    SPO_BRAZIER,
+    SPO_SIGNPOST,
     SPO_FRAME_PUSH,
     SPO_FRAME_POP,
     SPO_CALL,

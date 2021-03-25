@@ -123,6 +123,8 @@ STATIC_DCL void FDECL(spo_endroom, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_stair, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_ladder, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_grave, (struct sp_coder *));
+STATIC_DCL void FDECL(spo_brazier, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_signpost, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_altar, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_trap, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_gold, (struct sp_coder *));
@@ -4406,6 +4408,102 @@ struct sp_coder *coder;
 }
 
 void
+spo_signpost(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_signpost";
+    struct opvar* gcoord, * typ, * txt, *subtyp;
+    schar x, y;
+
+    if (!OV_pop_i(subtyp) || !OV_pop_i(typ) || !OV_pop_s(txt) || !OV_pop_c(gcoord))
+        return;
+
+    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
+
+    if (isok(x, y) && !t_at(x, y))
+    {
+        if (IS_FLOOR(levl[x][y].typ))
+        {
+            levl[x][y].floortyp = levl[x][y].typ;
+            levl[x][y].floorsubtyp = levl[x][y].subtyp;
+        }
+        else
+        {
+            levl[x][y].floortyp = location_type_definitions[SIGNPOST].initial_floor_type;
+            levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+
+        }
+
+        levl[x][y].typ = SIGNPOST;
+        levl[x][y].subtyp = OV_i(subtyp);
+
+        switch (OV_i(typ)) {
+        case 2:
+            make_signpost(x, y, OV_s(txt), TRUE);
+            break;
+        case 1:
+            make_signpost(x, y, NULL, TRUE);
+            break;
+        default:
+            del_engr_at(x, y);
+            break;
+        }
+    }
+
+    opvar_free(gcoord);
+    opvar_free(typ);
+    opvar_free(txt);
+    opvar_free(subtyp);
+}
+
+void
+spo_brazier(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_brazier";
+    struct opvar* gcoord, * lamplit, * subtyp;
+    schar x, y;
+
+    if (!OV_pop_i(subtyp) || !OV_pop_i(lamplit) || !OV_pop_c(gcoord))
+        return;
+
+    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
+
+    if (isok(x, y) && !t_at(x, y))
+    {
+        if (IS_FLOOR(levl[x][y].typ))
+        {
+            levl[x][y].floortyp = levl[x][y].typ;
+            levl[x][y].floorsubtyp = levl[x][y].subtyp;
+        }
+        else
+        {
+            levl[x][y].floortyp = location_type_definitions[SIGNPOST].initial_floor_type;
+            levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+
+        }
+
+        levl[x][y].typ = BRAZIER;
+        int val = OV_i(subtyp);
+        if(val >= 0)
+            levl[x][y].subtyp = val;
+        else
+            levl[x][y].subtyp = rn2(MAX_BRAZIER_SUBTYPES);
+        
+        val = OV_i(lamplit);
+        if (val >= 0)
+            levl[x][y].lamplit = val;
+        else
+            levl[x][y].lamplit = rn2(2);
+
+    }
+
+    opvar_free(gcoord);
+    opvar_free(subtyp);
+    opvar_free(lamplit);
+}
+
+void
 spo_altar(coder)
 struct sp_coder *coder;
 {
@@ -7055,6 +7153,12 @@ sp_lev *lvl;
             break;
         case SPO_GRAVE:
             spo_grave(coder);
+            break;
+        case SPO_BRAZIER:
+            spo_brazier(coder);
+            break;
+        case SPO_SIGNPOST:
+            spo_signpost(coder);
             break;
         case SPO_ALTAR:
             spo_altar(coder);

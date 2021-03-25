@@ -6555,7 +6555,7 @@ struct obj *obj; /* wand or spell */
         (void)bhitpile(obj, &youmonst, bhito, x, y, u.dz, hit_only_one, (objects[obj->otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
 
         /* subset of engraving effects; none sets `disclose' */
-        if ((e = engr_at(x, y)) != 0 && e->engr_type != HEADSTONE) {
+        if ((e = engr_at(x, y)) != 0 && e->engr_type != ENGR_HEADSTONE && e->engr_type != ENGR_SIGNPOST) {
             switch (obj->otyp) {
             case WAN_POLYMORPH:
             case SPE_POLYMORPH:

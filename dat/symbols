@@ -162,6 +162,8 @@ start: MACgraphics
 	S_tree: \xf1			# plus-or-minus
 	S_corr: \xb0
 	S_grave: \xef			# same as open door
+	S_brazier: \xef			# same as open door
+	S_signpost:    \xef			# same as open door
 	S_pool: \xe0
 finish
 
@@ -331,6 +333,8 @@ start: NHAccess
 	S_dnladder: \092
 	S_altar: \035
 	S_grave: \126
+	S_brazier: \126
+	S_signpost: \126
 	S_throne: \126
 	S_sink: \126
 	S_fountain: \126 
@@ -470,6 +474,8 @@ start: Blank
         S_gnome: \032
         S_golem: \032
         S_grave: \032
+        S_brazier: \032
+        S_signpost: \032
         S_hbeam: \032
         S_hcdbridge: \032
         S_hcdoor: \032

@@ -1327,7 +1327,7 @@ struct obj **optr;
         any.a_int = MAX_MONSTER_CLASSES + S_pool + 1;
         add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_pool].sym, 0, ATR_NONE, "water or lava", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_grave + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_grave].sym, 0, ATR_NONE, "graves", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_grave].sym, 0, ATR_NONE, "graves, braziers, and signposts", MENU_UNSELECTED);
 
 
         end_menu(tmpwin, "What do you look for?");

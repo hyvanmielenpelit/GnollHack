@@ -842,6 +842,10 @@ resurrect()
         newsym(mtmp->mx, mtmp->my);
         if (!Deaf) {
             pline("A voice booms out...");
+            play_voice_wizard_of_yendor_simple_line(mtmp, 
+                !strcmp(verb, "kill") ? WIZARD_OF_YENDOR_LINE_SO_THOU_THOUGHT_THOU_COULDST_KILL_ME : 
+                !strcmp(verb, "elude") ? WIZARD_OF_YENDOR_LINE_SO_THOU_THOUGHT_THOU_COULDST_ELUDE_ME : 
+                WIZARD_OF_YENDOR_LINE_NONE);
             verbalize("So thou thought thou couldst %s me, fool.", verb);
             if(canseemon(mtmp))
                talkeff(mtmp->mx, mtmp->my);
@@ -926,18 +930,36 @@ register struct monst *mtmp;
             pline("%s laughs fiendishly.", Monnam(mtmp));
         }
         else if (u.uhave.amulet && !rn2(SIZE(random_insult)))
+        {
+            int iroll = rn2(SIZE(random_insult));
+            play_voice_wizard_of_yendor_cuss(mtmp, 11, iroll);
             verbalize("Relinquish the amulet, %s!",
-                      random_insult[rn2(SIZE(random_insult))]);
+                random_insult[rn2(SIZE(random_insult))]);
+        }
         else if (u.uhp < 5 && !rn2(2)) /* Panic */
-            verbalize(rn2(2) ? "Even now thy life force ebbs, %s!"
-                             : "Savor thy breath, %s, it be thy last!",
-                      random_insult[rn2(SIZE(random_insult))]);
+        {
+            int proll = rn2(2);
+            int iroll = rn2(SIZE(random_insult));
+            play_voice_wizard_of_yendor_cuss(mtmp, proll + 12, iroll);
+            verbalize(proll ? "Even now thy life force ebbs, %s!"
+                : "Savor thy breath, %s, it be thy last!",
+                random_insult[iroll]);
+        }
         else if (mtmp->mhp < 5 && !rn2(2)) /* Parthian shot */
-            verbalize(rn2(2) ? "I shall return." : "I'll be back.");
+        {
+            int proll = rn2(2);
+            play_voice_wizard_of_yendor_simple_line(mtmp, proll ? WIZARD_OF_YENDOR_LINE_I_SHALL_RETURN : WIZARD_OF_YENDOR_LINE_ILL_BE_BACK);
+            verbalize(proll ? "I shall return." : "I'll be back.");
+        }
         else
+        {
+            int mroll = rn2(SIZE(random_malediction));
+            int iroll = rn2(SIZE(random_insult));
+            play_voice_wizard_of_yendor_cuss(mtmp, mroll, iroll);
             verbalize("%s %s!",
-                      random_malediction[rn2(SIZE(random_malediction))],
-                      random_insult[rn2(SIZE(random_insult))]);
+                random_malediction[mroll],
+                random_insult[iroll]);
+        }
     } 
     else if (is_lminion(mtmp)
                && !(mtmp->isminion && EMIN(mtmp)->renegade)) 

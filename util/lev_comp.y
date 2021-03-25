@@ -204,7 +204,7 @@ extern char curr_token[512];
 %token	<i> CHARGES_ID SPECIAL_QUALITY_ID SPEFLAGS_ID
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID NON_PASSDOOR_ID
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
-%token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID LOCATION_SUBTYPE_ID DOOR_SUBTYPE
+%token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID LOCATION_SUBTYPE_ID DOOR_SUBTYPE BRAZIER_SUBTYPE SIGNPOST_SUBTYPE
 %token	<i> EXIT_ID SHUFFLE_ID
 %token	<i> QUANTITY_ID BURIED_ID LOOP_ID
 %token	<i> FOR_ID TO_ID
@@ -213,7 +213,7 @@ extern char curr_token[512];
 %token	<i> FEMALE_ID WAITFORU_ID CANCELLED_ID REVIVED_ID AVENGE_ID FLEEING_ID BLINDED_ID
 %token	<i> PARALYZED_ID STUNNED_ID CONFUSED_ID SEENTRAPS_ID ALL_ID
 %token	<i> MONTYPE_ID OBJTYPE_ID TERTYPE_ID TERTYPE2_ID LEVER_EFFECT_TYPE SWITCHABLE_ID CONTINUOUSLY_USABLE_ID TARGET_ID TRAPTYPE_ID EFFECT_FLAG_ID
-%token	<i> GRAVE_ID ERODEPROOF_ID
+%token	<i> GRAVE_ID BRAZIER_ID SIGNPOST_ID ERODEPROOF_ID
 %token	<i> FUNCTION_ID
 %token	<i> MSG_OUTPUT_TYPE
 %token	<i> COMPARE_TYPE
@@ -493,6 +493,8 @@ levstatement 	: message
 		| anvil_detail
 		| npc_detail
 		| grave_detail
+		| brazier_detail
+		| signpost_detail
 		| branch_region
 		| corridor
 		| variable_define
@@ -2281,6 +2283,33 @@ grave_detail	: GRAVE_ID ':' coord_or_var ',' string_expr
 		  {
 		      add_opvars(splev, "sio",
 				 VA_PASS3((char *)0, 0, SPO_GRAVE));
+		  }
+		;
+
+brazier_detail	: BRAZIER_ID ':' coord_or_var ',' BRAZIER_SUBTYPE ',' light_state
+		  {
+		      add_opvars(splev, "iio", VA_PASS3((int)$7, (int)$5, SPO_BRAZIER));
+		  }
+		| BRAZIER_ID ':' coord_or_var
+		  {
+		      add_opvars(splev, "iio",
+				 VA_PASS3(1, 0, SPO_BRAZIER));
+		  }
+		;
+
+signpost_detail	: SIGNPOST_ID ':' coord_or_var ',' SIGNPOST_SUBTYPE ',' string_expr
+		  {
+		      add_opvars(splev, "iio", VA_PASS3(2, (int)$5, SPO_SIGNPOST));
+		  }
+		| SIGNPOST_ID ':' coord_or_var ',' SIGNPOST_SUBTYPE ',' RANDOM_TYPE
+		  {
+		      add_opvars(splev, "siio",
+				 VA_PASS4((char *)0, 1, (int)$5, SPO_SIGNPOST));
+		  }
+		| SIGNPOST_ID ':' coord_or_var
+		  {
+		      add_opvars(splev, "sio",
+				 VA_PASS4((char *)0, 0, 0, SPO_SIGNPOST));
 		  }
 		;
 

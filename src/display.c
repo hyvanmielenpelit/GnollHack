@@ -3218,6 +3218,12 @@ xchar x, y;
     case GRAVE:
         idx = S_grave;
         break;
+    case BRAZIER:
+        idx = S_brazier;
+        break;
+    case SIGNPOST:
+        idx = S_signpost;
+        break;
     case THRONE:
         idx = S_throne;
         break;
@@ -3315,6 +3321,10 @@ xchar x, y;
     /* Altars have candles */
     if (lev->typ == ALTAR)
         return 1;
+
+    /* Braziers are even bigger */
+    if (lev->typ == BRAZIER)
+        return 2;
 
     return 0;
 }
@@ -3756,6 +3766,8 @@ xchar x, y;
     case SINK:
     case ALTAR:
     case GRAVE:
+    case BRAZIER:
+    case SIGNPOST:
     case THRONE:
         idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
         break;

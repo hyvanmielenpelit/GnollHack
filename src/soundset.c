@@ -10123,4 +10123,116 @@ int cuss_id;
         play_immediate_ghsound(info);
 }
 
+void
+play_voice_wizard_of_yendor_cuss(mtmp, malediction_id, insult_id)
+struct monst* mtmp;
+int malediction_id, insult_id;
+{
+    if (!mtmp || Deaf)
+        return;
+
+    struct ghsound_immediate_info info = { 0 };
+    enum ghsound_types soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_MALEDICTION;
+    float volume = 1.0f;
+    info.ghsound = soundid;
+    info.parameter_names[0] = "MaledictionIndex";
+    info.parameter_values[0] = (float)malediction_id;
+    info.parameter_names[1] = "InsultIndex";
+    info.parameter_values[1] = (float)insult_id;
+    info.parameter_names[2] = (char*)0;
+
+    /* Maledictions start at louder level than normal */
+    volume *= 3.0;
+
+    if (isok(mtmp->mx, mtmp->my))
+    {
+        float hearing = hearing_array[mtmp->mx][mtmp->my];
+        volume = max(0.15f, max((float)context.global_minimum_volume, volume * hearing));
+    }
+    else
+        return;
+
+    info.volume = min(1.0f, volume);
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    info.dialogue_mid = mtmp->m_id;
+
+    if (info.ghsound > GHSOUND_NONE)
+        play_immediate_ghsound(info);
+}
+
+
+void
+play_voice_wizard_of_yendor_simple_line(mtmp, line_id)
+struct monst* mtmp;
+enum wizard_of_yendor_simple_lines line_id;
+{
+    if (!mtmp || Deaf)
+        return;
+
+    struct ghsound_immediate_info info = { 0 };
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+    info.parameter_names[0] = (char*)0;
+
+    switch (line_id)
+    {
+    case WIZARD_OF_YENDOR_LINE_NONE:
+        break;
+    case WIZARD_OF_YENDOR_LINE_ILL_BE_BACK:
+        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_ILL_BE_BACK;
+        break;
+    case WIZARD_OF_YENDOR_LINE_I_SHALL_RETURN:
+        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_I_SHALL_RETURN;
+        break;
+    case WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PET:
+        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_DESTROY_THE_THIEF_MY_PET;
+        break;
+    case WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PETS:
+        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_DESTROY_THE_THIEF_MY_PETS;
+        break;
+    case WIZARD_OF_YENDOR_LINE_DOUBLE_TROUBLE:
+        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_DOUBLE_TROUBLE;
+        break;
+    case WIZARD_OF_YENDOR_LINE_SO_THOU_THOUGHT_THOU_COULDST_KILL_ME:
+        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_SO_THOU_THOUGHT_THOU_COULDST_KILL_ME;
+        break;
+    case WIZARD_OF_YENDOR_LINE_SO_THOU_THOUGHT_THOU_COULDST_ELUDE_ME:
+        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_SO_THOU_THOUGHT_THOU_COULDST_ELUDE_ME;
+        break;
+    default:
+        break;
+    }
+
+    switch (line_id)
+    {
+    case 0:
+        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_ILL_BE_BACK;
+        break;
+    case 1:
+        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_I_SHALL_RETURN;
+        break;
+    default:
+        break;
+    }
+    /* Maledictions start at louder level than normal */
+    volume *= 3.0;
+
+    if (isok(mtmp->mx, mtmp->my))
+    {
+        float hearing = hearing_array[mtmp->mx][mtmp->my];
+        volume = max(0.15f, max((float)context.global_minimum_volume, volume * hearing));
+    }
+    else
+        return;
+
+    info.volume = min(1.0f, volume);
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    info.dialogue_mid = mtmp->m_id;
+
+    if (info.ghsound > GHSOUND_NONE)
+        play_immediate_ghsound(info);
+}
+
 /* soundset.c */

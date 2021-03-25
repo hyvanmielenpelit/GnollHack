@@ -4569,6 +4569,22 @@ boolean is_wiz_wish;
             return (struct obj *) &zeroobj;
         }
 
+        if (!BSTRCMPI(bp, p - 7, "brazier")) {
+            create_simple_location(x, y, BRAZIER, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            pline("%s.", IS_BRAZIER(lev->typ) ? "A brazier"
+                : "Can't place a brazier here");
+            newsym(x, y);
+            return (struct obj*)&zeroobj;
+        }
+
+        if (!BSTRCMPI(bp, p - 8, "signpost")) {
+            make_signpost(x, y, "Here's the signpost you wished for", FALSE);
+            pline("%s.", IS_SIGNPOST(lev->typ) ? "A signpost"
+                : "Can't place a signpost here");
+            newsym(x, y);
+            return (struct obj*)&zeroobj;
+        }
+
         if (!BSTRCMPI(bp, p - 4, "tree")) {
             create_simple_location(x, y, TREE, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A tree.");

@@ -489,6 +489,7 @@ int spellnum;
     case MGC_CLONE_WIZ:
         if (mtmp->iswiz && context.no_of_wizards == 1)
 		{
+            play_voice_wizard_of_yendor_simple_line(mtmp, WIZARD_OF_YENDOR_LINE_DOUBLE_TROUBLE);
             pline("Double Trouble...");
             clonewiz();
             damage = 0;
@@ -508,6 +509,9 @@ int spellnum;
             cursetxt(mtmp, TRUE);
         else if (mtmp->iswiz)
         {
+            play_voice_wizard_of_yendor_simple_line(mtmp,
+                count > 1 ? WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PETS :
+                WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PET);
             verbalize("Destroy the thief, my pet%s!", plur(count));
             if(canseemon(mtmp))
                 talkeff(mtmp->mx, mtmp->my);
@@ -540,6 +544,9 @@ int spellnum;
             cursetxt(mtmp, TRUE);
         else if (mtmp->iswiz)
         {
+            play_voice_wizard_of_yendor_simple_line(mtmp,
+                count > 1 ? WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PETS :
+                WIZARD_OF_YENDOR_LINE_DESTROY_THE_THIEF_MY_PET);
             verbalize("Destroy the thief, my pet%s!", plur(count));
             if (canseemon(mtmp))
                 talkeff(mtmp->mx, mtmp->my);
