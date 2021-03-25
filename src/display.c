@@ -3319,12 +3319,12 @@ xchar x, y;
     struct rm* lev = &levl[x][y];
 
     /* Altars have candles */
-    if (lev->typ == ALTAR)
+    if (IS_ALTAR(lev->typ))
         return 1;
 
     /* Braziers are even bigger */
-    if (lev->typ == BRAZIER)
-        return 2;
+    if (IS_BRAZIER(lev->typ))
+        return 5;
 
     return 0;
 }

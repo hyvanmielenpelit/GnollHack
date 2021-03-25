@@ -1493,6 +1493,20 @@ dokick() {
             You("kick %s.", (Blind ? something : "the anvil"));
             goto ouch;
         }
+        if (IS_BRAZIER(maploc->typ)) {
+            if (Levitation)
+                goto dumb;
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
+            You("kick %s.", (Blind ? something : "the brazier"));
+            goto ouch;
+        }
+        if (IS_SIGNPOST(maploc->typ)) {
+            if (Levitation)
+                goto dumb;
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
+            You("kick %s.", (Blind ? something : "the signpost"));
+            goto ouch;
+        }
         if (IS_FOUNTAIN(maploc->typ)) {
             if (Levitation)
                 goto dumb;

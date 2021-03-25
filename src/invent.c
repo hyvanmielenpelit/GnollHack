@@ -4527,11 +4527,13 @@ int x, y;
         cmap = S_grave; /* "grave" */
     else if (IS_BRAZIER(ltyp))
     {
-        //cmap = S_brazier; /* "brazier" */
+        cmap = S_brazier; /* "brazier" */
+        /*
         Sprintf(altbuf, "%s%s", lev->lamplit ? "lit " : "unlit ",
             defsyms[S_brazier].explanation);
 
         dfeature = altbuf;
+        */
     }
     else if (IS_SIGNPOST(ltyp))
         cmap = S_signpost; /* "signpost" */
