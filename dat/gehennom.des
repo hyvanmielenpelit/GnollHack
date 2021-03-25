@@ -709,6 +709,10 @@ OBJECT: ('`', "statue"), (18,03), montype:"ice devil", 1
 OBJECT: ('`', "statue"), (24,03), montype:"barbed devil", 1
 OBJECT: ('`', "statue"), (30,03), montype:"pit fiend", 1
 
+BRAZIER: (31,01), brazier_normal, lit
+BRAZIER: (31,03), brazier_normal, lit
+SIGNPOST: (15,02), signpost_normal,"Uninvited Visitors Not Welcome"
+
 MONSTER:'&',random
 MONSTER:'&',random
 MONSTER:'&',random {

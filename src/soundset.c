@@ -152,7 +152,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
     {
         "Wizard of Yendor",
         MONSTER_SOUNDSET_GENERIC,
-        {{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_YELP, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_WARN_CURSED, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, {GHSOUND_EVIL_LAUGHTER, 10.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},  {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_PLAYER_MALE_DEATH, 4.0f}},
+        {{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_YELP, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_WARN_CURSED, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, {GHSOUND_VOICE_WIZARD_OF_YENDOR_EVIL_LAUGHTER, 10.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},  {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_PLAYER_MALE_DEATH, 4.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
@@ -2722,6 +2722,35 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
+    }, 
+    {
+        "brazier",
+        LOCATION_SOUNDSET_GENERAL,
+        {
+            {GHSOUND_FIRE, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 10.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_LIT
     }, 
 };
 
@@ -10204,28 +10233,20 @@ enum wizard_of_yendor_simple_lines line_id;
         break;
     }
 
-    switch (line_id)
-    {
-    case 0:
-        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_ILL_BE_BACK;
-        break;
-    case 1:
-        soundid = GHSOUND_VOICE_WIZARD_OF_YENDOR_I_SHALL_RETURN;
-        break;
-    default:
-        break;
-    }
     /* Maledictions start at louder level than normal */
     volume *= 3.0;
 
     if (isok(mtmp->mx, mtmp->my))
     {
         float hearing = hearing_array[mtmp->mx][mtmp->my];
-        volume = max(0.15f, max((float)context.global_minimum_volume, volume * hearing));
+        volume = max(0.30f, max((float)context.global_minimum_volume, volume * hearing));
     }
     else
-        return;
+    {
+        volume = 0.30f;
+    }
 
+    info.ghsound = soundid;
     info.volume = min(1.0f, volume);
     info.play_group = SOUND_PLAY_GROUP_LONG;
     info.sound_type = IMMEDIATE_SOUND_DIALOGUE;

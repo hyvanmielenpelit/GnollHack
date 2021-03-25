@@ -1430,8 +1430,6 @@ int x, y;
 const char* str;
 boolean in_mklev_var;
 {
-    char buf[BUFSZ];
-
     /* Can we put a grave here? */
     if ((levl[x][y].typ != ROOM && levl[x][y].typ != GRASS && levl[x][y].typ != GROUND && levl[x][y].typ != SIGNPOST) || t_at(x, y))
         return;
@@ -1456,7 +1454,7 @@ boolean in_mklev_var;
     }
     else
     {
-        create_simple_location(x, y, SIGNPOST, 0, 0, 0, levl[x][y].typ == GRAVE ? levl[x][y].floortyp : levl[x][y].typ, levl[x][y].typ == SIGNPOST ? levl[x][y].floorsubtyp : levl[x][y].subtyp, FALSE);
+        create_simple_location(x, y, SIGNPOST, 0, 0, 0, levl[x][y].typ == SIGNPOST ? levl[x][y].floortyp : levl[x][y].typ, levl[x][y].typ == SIGNPOST ? levl[x][y].floorsubtyp : levl[x][y].subtyp, FALSE);
     }
 
     /* Engrave the signpost */
