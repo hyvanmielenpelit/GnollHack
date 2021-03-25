@@ -3108,6 +3108,16 @@ pickup_checks()
             play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("The anvil is bolted down to the floor.");
         }
+        else if (IS_BRAZIER(lev->typ))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline("The brazier is bolted down to the floor.");
+        }
+        else if (IS_SIGNPOST(lev->typ))
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline("The signpost is bolted down to the floor.");
+        }
         else if (lev->typ == STAIRS)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);

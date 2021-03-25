@@ -4680,8 +4680,20 @@ boolean picked_some;
         }
     }
 
+    char dfbuf[BUFSZ] = "";
+    if (IS_BRAZIER(levl[u.ux][u.uy].typ))
+    {
+        if(levl[u.ux][u.uy].lamplit)
+            strcpy(dfbuf, "lit ");
+        else
+            strcpy(dfbuf, "unlit ");
+    }
+
     if (dfeature)
-        Sprintf(fbuf, "There is %s here.", an(dfeature));
+    {
+        Strcat(dfbuf, dfeature);
+        Sprintf(fbuf, "There is %s here.", an(dfbuf));
+    }
 
     if (!otmp || is_lava(u.ux, u.uy)
         || (is_pool(u.ux, u.uy) && !Underwater)) {

@@ -153,7 +153,35 @@ dosit()
 	{
         You(sit_message, defsyms[S_grave].explanation);
     } 
-	else if (typ == STAIRS) 
+    else if (IS_SIGNPOST(typ))
+    {
+        You("sit in the front of the %s.", defsyms[S_signpost].explanation);
+    }
+    else if (IS_BRAZIER(typ))
+    {
+        /* must be WWalking */
+        You("sit in the %s.", defsyms[S_brazier].explanation);
+        if (levl[u.ux][u.uy].lamplit)
+        {
+            burn_away_slime();
+            if (likes_fire(youmonst.data) || Fire_immunity)
+            {
+                pline_The("fire feels warm.");
+                return 1;
+            }
+            pline_The("fire burns you!");
+            int dmg = d(3, 6);
+            play_sfx_sound(SFX_MONSTER_ON_FIRE);
+            display_u_being_hit(HIT_ON_FIRE, dmg, 0UL);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), /* lava damage */
+                "sitting in a brazier", KILLED_BY);
+        }
+        else
+        {
+            pline("That was quite uncomfortable.");
+        }
+    }
+    else if (typ == STAIRS)
 	{
         You(sit_message, "stairs");
     } 
@@ -166,7 +194,7 @@ dosit()
         /* must be WWalking */
         You(sit_message, hliquid("lava"));
         burn_away_slime();
-        if (likes_lava(youmonst.data))
+        if (likes_lava(youmonst.data) || Fire_immunity)
 		{
             pline_The("%s feels warm.", hliquid("lava"));
             return 1;
