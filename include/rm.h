@@ -178,6 +178,7 @@ enum screen_symbols {
 #define is_cmap_furniture(i) ((i) >= S_upstair && (i) <= S_fountain)
 #define is_cmap_water(i) ((i) == S_pool || (i) == S_water)
 #define is_cmap_lava(i) ((i) == S_lava)
+#define is_cmap_brazier(i) ((i) == S_brazier)
 
 /*
  * The dungeon presentation graphics code and data structures were rewritten

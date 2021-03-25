@@ -401,7 +401,8 @@ struct obj *corpse;
         return;
     }
 
- make_bones:
+make_bones:
+    program_state.in_bones = 1; /* Stays on until program termination */
     unleash_all();
     /* in case these characters are not in their home bases */
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {

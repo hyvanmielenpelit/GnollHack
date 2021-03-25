@@ -619,6 +619,12 @@ char *buf, *monbuf;
             {
                 print_lock_with_buf(eos(buf), levl[x][y].key_otyp, levl[x][y].special_quality, is_door_normally_without_lock_at(x, y));
             }
+            if (is_cmap_brazier(gl) && IS_BRAZIER(levl[x][y].typ) && cansee(x, y))
+            {
+                char buf2[BUFSIZ];
+                Sprintf(buf2, "%s%s", levl[x][y].lamplit ? "lit " : "unlit ", buf);
+                strcpy(buf, buf2);
+            }
             break;
         }
         }

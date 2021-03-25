@@ -1310,9 +1310,14 @@ mklev()
     reseed_random(rn2_on_display_rng);
 
     init_mapseen(&u.uz);
-    if (getbones())
-        return;
 
+    program_state.in_bones = 1;
+    if (getbones())
+    {
+        program_state.in_bones = 0;
+        return;
+    }
+    program_state.in_bones = 0;
     in_mklev = TRUE;
     makelevel();
     bound_digging();

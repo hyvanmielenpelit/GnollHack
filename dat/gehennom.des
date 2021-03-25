@@ -612,6 +612,10 @@ OBJECT: ('`', "statue"), (15,08), montype:"erinys", 1
 # Dispater's throne.
 THRONE:(11,06)
 
+# Some braziers
+BRAZIER:(17,05)
+BRAZIER:(17,07)
+
 # Weapon racks
 OBJECT:('(',"weapon rack"),(15,01)
 OBJECT:('(',"weapon rack"),(17,01)
