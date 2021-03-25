@@ -6362,7 +6362,7 @@ xchar x, y;
 		levl[x][y].makingsound = 0;
 	}
 
-	levl[x][y].typ = UNEXPLORED;
+	levl[x][y].typ = UNDEFINED_LOCATION;
 	levl[x][y].flags = 0;
 	levl[x][y].subtyp = 0;
 	levl[x][y].floor_doodad = 0;

@@ -2994,7 +2994,7 @@ xchar x, y;
     int multiplier = facing_right ? -1 : 1;
 
     switch (ptr->typ) {
-    case UNEXPLORED:
+    case UNDEFINED_LOCATION:
         idx = level.flags.arboreal ? S_tree : S_unexplored;
         break;
     case SCORR:
@@ -3714,7 +3714,7 @@ xchar x, y;
 
     switch (ptr->typ) 
     {
-    case UNEXPLORED:
+    case UNDEFINED_LOCATION:
     case SCORR:
     case STONE:
     case ROOM:

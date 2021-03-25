@@ -1241,7 +1241,7 @@ enum autodraw_types* autodraw_ptr;
                 || glyph_is_specific_cmap_or_its_variation(levl[x][below_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
                 || (IS_DOORJOIN(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) 
                 || levl[x][below_y].typ == DOOR 
-                || levl[x][below_y].typ == UNEXPLORED 
+                || levl[x][below_y].typ == UNDEFINED_LOCATION 
                 || (!cansee(x, y) && glyph_is_specific_cmap_or_its_variation(levl[x][below_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_stone))
                 || (levl[x][y].seenv & (SV3 | SV4 | SV5 | SV6 | SV7)) == 0)
             {
@@ -1277,7 +1277,7 @@ enum autodraw_types* autodraw_ptr;
             if (!(is_water_or_air_level && info.layer == LAYER_FLOOR) && (Underwater || !isok(x, above_y)
                 || (levl[x][y].typ == levl[x][above_y].typ && get_location_category(levl[x][y].typ, levl[x][y].subtyp) == get_location_category(levl[x][above_y].typ, levl[x][above_y].subtyp))
                 || (level.flags.hero_memory && glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored))
-                || levl[x][above_y].typ == UNEXPLORED || (IS_SOLID_FLOOR(floortype) && (IS_DOORJOIN(levl[x][above_y].typ)))))
+                || levl[x][above_y].typ == UNDEFINED_LOCATION || (IS_SOLID_FLOOR(floortype) && (IS_DOORJOIN(levl[x][above_y].typ)))))
             {
                 /* No action */
             }
@@ -1328,7 +1328,7 @@ enum autodraw_types* autodraw_ptr;
         {
             int above_y = y - 1;
             if (Underwater || !isok(x, above_y) || glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
-                || levl[x][above_y].typ == UNEXPLORED)
+                || levl[x][above_y].typ == UNDEFINED_LOCATION)
             {
                 /* No action */
             }

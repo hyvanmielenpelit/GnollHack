@@ -514,7 +514,7 @@ struct obj *corpse;
         for (y = 0; y < ROWNO; y++) {
             levl[x][y].seenv = 0;
             clear_hero_memory_at(x, y);
-            lastseentyp[x][y] = UNEXPLORED;
+            lastseentyp[x][y] = UNDEFINED_LOCATION;
         }
 
     /* Attach bones info to the current level before saving. */

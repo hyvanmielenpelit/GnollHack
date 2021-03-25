@@ -2439,7 +2439,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             break;
                                         }
 
-#define NO_WALL_END_AUTODRAW(x,y) (!isok(x, y) || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored) || (IS_DOORJOIN(levl[x][y].typ) && !IS_TREE(levl[x][y].typ)) || levl[x][y].typ == DOOR || levl[x][y].typ == UNEXPLORED /*|| (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0 */)
+#define NO_WALL_END_AUTODRAW(x,y) (!isok(x, y) || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored) || (IS_DOORJOIN(levl[x][y].typ) && !IS_TREE(levl[x][y].typ)) || levl[x][y].typ == DOOR || levl[x][y].typ == UNDEFINED_LOCATION /*|| (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0 */)
 
                                         if (NO_WALL_END_AUTODRAW(rx, ry))
                                         {

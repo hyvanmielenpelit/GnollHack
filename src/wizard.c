@@ -948,9 +948,16 @@ register struct monst *mtmp;
     else 
     {
         if (!rn2(is_minion(mtmp->data) ? 100 : 5))
+        {
+            play_voice_monster_cuss(mtmp, 0);
             pline("%s casts aspersions on your ancestry.", Monnam(mtmp));
+        }
         else
-            com_pager(rn2(QTN_DEMONIC) + QT_DEMONIC);
+        {
+            int cuss_rnd = rn2(QTN_DEMONIC);
+            play_voice_monster_cuss(mtmp, cuss_rnd + 1);
+            com_pager(cuss_rnd + QT_DEMONIC);
+        }
     }
     return res;
 }

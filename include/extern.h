@@ -2953,6 +2953,8 @@ E void FDECL(play_voice_shopkeeper_no_free_library, (struct monst*, const char*)
 E void FDECL(play_voice_shopkeeper_candelabrum_candles, (struct monst*, struct obj*));
 E void FDECL(play_voice_shopkeeper_pay_before_buying, (struct monst*, int, int));
 E void FDECL(play_voice_shopkeeper_how_dare_you_damage, (struct monst*, uchar, const char*, boolean));
+E void FDECL(play_voice_monster_cuss, (struct monst*, int));
+
 
 /* ### sys.c ### */
 

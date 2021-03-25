@@ -2181,7 +2181,7 @@ int sym;
 
     switch (sym) {
     case S_unexplored:
-        typ = UNEXPLORED;
+        typ = UNDEFINED_LOCATION;
         break;
     case S_stone:
         typ = STONE;

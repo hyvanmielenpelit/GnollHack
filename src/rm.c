@@ -44,7 +44,7 @@ NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
     {"CLOUD",           S_cloud,    0,      MAT_AIR,     LOCATION_SOUNDSET_NONE},
     {"GRASS",           S_grass,    0,      MAT_VEGGY,   LOCATION_SOUNDSET_NONE},
     {"GROUND",          S_ground,   0,      MAT_SOIL,    LOCATION_SOUNDSET_NONE},
-    {"UNEXPLORED",      S_unexplored,0,     MAT_NONE,    LOCATION_SOUNDSET_NONE}
+    {"UNDEFINED_LOCATION",      S_unexplored,0,     MAT_NONE,    LOCATION_SOUNDSET_NONE}
 };
 
 

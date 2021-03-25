@@ -247,7 +247,7 @@ enum levl_typ_types {
     GRASS = 37,
     GROUND = 38,
 
-    UNEXPLORED = 39, /* Keep this last */
+    UNDEFINED_LOCATION = 39, /* Keep this last */
     MAX_TYPE = 40,
     INVALID_TYPE = 127
 };
@@ -445,7 +445,7 @@ extern struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES
 #define IS_DOOR_OR_SDOOR(typ) ((typ) == DOOR || (typ) == SDOOR)
 #define IS_DOORJOIN(typ) (IS_ROCK(typ) || (typ) == IRONBARS)
 #define IS_TREE(typ)                                            \
-    ((typ) == TREE || (level.flags.arboreal && (typ) == UNEXPLORED))
+    ((typ) == TREE || (level.flags.arboreal && (typ) == UNDEFINED_LOCATION))
 #define ACCESSIBLE(typ) ((typ) >= DOOR) /* good position */
 #define IS_ROOM(typ) ((typ) >= ROOM)    /* ROOM, STAIRS, furniture.. */
 #define ZAP_POS(typ) ((typ) >= POOL)
@@ -465,7 +465,7 @@ extern struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES
 
 #define IS_SOLID_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND)
  /* Location types for which floortyp is zero */
-#define IS_FLOOR(typ) (IS_SOLID_FLOOR(typ) || IS_AIR(typ) || (typ) == UNEXPLORED)
+#define IS_FLOOR(typ) (IS_SOLID_FLOOR(typ) || IS_AIR(typ) || (typ) == UNDEFINED_LOCATION)
 
 /* Character maps for various dungeons */
 enum cmap_types {

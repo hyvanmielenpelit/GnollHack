@@ -1346,7 +1346,7 @@ int howmuch;
                 /* Zonk all memory of this location. */
                 levl[zx][zy].seenv = 0;
                 clear_hero_memory_at(zx, zy);
-                lastseentyp[zx][zy] = UNEXPLORED;
+                lastseentyp[zx][zy] = UNDEFINED_LOCATION;
             }
     /* forget overview data for this level */
     forget_mapseen(ledger_no(&u.uz));
