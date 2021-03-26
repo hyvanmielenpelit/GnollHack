@@ -44,11 +44,11 @@ OBJECT:('(',"coffin"),(07,05),open
 OBJECT:('(',"coffin"),$niches[0],open
 OBJECT:('(',"coffin"),$niches[1],open
 OBJECT:('(',"coffin"),$niches[2],open
-OBJECT:('(',"coffin"),$niches[3]
-CONTAINER:('(',"coffin"),$niches[4] {
+OBJECT:('(',"coffin"),$niches[3],montype:"vampire lord"
+CONTAINER:('(',"coffin"),$niches[4],montype:"vampire" {
   OBJECT:('(', "wax candle"), quantity:4d2
 }
-CONTAINER:('(',"coffin"),$niches[5] {
+CONTAINER:('(',"coffin"),$niches[5],montype:"vampire" {
   OBJECT:('(', "tallow candle"), quantity:4d2
 }
 # We have to protect the tower against outside attacks
