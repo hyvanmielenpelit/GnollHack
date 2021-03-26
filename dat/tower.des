@@ -87,15 +87,21 @@ OBJECT:('(',"coffin"),$place[2]
 OBJECT:('(',"coffin"),$place[3]
 OBJECT:('(',"coffin"),$place[4]
 
-CONTAINER:('(',"chest"),$place[5] {
+CONTAINER:('(',"coffin"),$place[5],montype:"vampire lord" {
   OBJECT:('"',"amulet of life saving")
 }
-CONTAINER:('(',"chest"),$place[6] {
+CONTAINER:('(',"coffin"),$place[6],montype:"vampire lord" {
   OBJECT:('"',"amulet of strangulation")
 }
-OBJECT:('[',"water walking boots"),$place[7]
-OBJECT:('[',"crystal plate mail"),$place[8]
-OBJECT:('+',"invisibility"),$place[9]
+CONTAINER:('(',"coffin"),$place[7],montype:"vampire" {
+  OBJECT:('[',"water walking boots")
+}
+CONTAINER:('(',"coffin"),$place[8],montype:"vampire lord" {
+  OBJECT:('[',"crystal plate mail")
+}
+CONTAINER:('(',"coffin"),$place[9],montype:"vampire mage" {
+  OBJECT:('+',"invisibility")
+}
 
 MONSTER:('d',"Cerberus"),(04,05)
 # Walls in the tower are non diggable
@@ -140,13 +146,13 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 OBJECT:('(',"coffin"),$place[0]
-TRAP:random,$place[0]
-OBJECT:('(',"lock pick"),$place[1]
-TRAP:random,$place[1]
+CONTAINER:('(',"coffin"),$place[1],montype:"vampire" {
+  OBJECT:('(',"lock pick")
+}
 OBJECT:('(',"coffin"),$place[2]
-TRAP:random,$place[2]
-OBJECT:('(',"blindfold"),$place[3]
-TRAP:random,$place[3]
+CONTAINER:('(',"coffin"),$place[3],montype:"vampire" {
+  OBJECT:('(',"blindfold")
+}
 OBJECT:('(',"coffin"),$place[4]
 OBJECT:('(',"coffin"),$place[5]
 OBJECT:('(',"coffin"),$place[6]
