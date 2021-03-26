@@ -518,7 +518,7 @@ E void FDECL(display_self_with_extra_info_choose_ascii, (unsigned long, int, boo
 E int FDECL(get_location_light_range, (xchar, xchar));
 E void NDECL(u_shieldeff);
 E void FDECL(m_shieldeff, (struct monst*));
-
+E boolean NDECL(use_extra_special_staircase);
 
 /* ### do.c ### */
 
@@ -1316,7 +1316,6 @@ E long FDECL(count_contents, (struct obj *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(carry_obj_effects, (struct obj *));
 E const char *FDECL(currency, (long));
 E void FDECL(silly_thing, (const char *, struct obj *));
-E boolean NDECL(use_extra_special_staircase);
 
 /* ### ioctl.c ### */
 
@@ -1580,7 +1579,7 @@ E int FDECL(okdoor, (XCHAR_P, XCHAR_P));
 E void FDECL(dodoor, (int, int, struct mkroom *));
 E struct trap* FDECL(mktrap, (int, int, struct mkroom *, coord *));
 E void FDECL(mkmodronportal, (int, coord*, coord*, unsigned long));
-E void FDECL(mkstairs, (XCHAR_P, XCHAR_P, CHAR_P, struct mkroom *));
+E void FDECL(mkstairs, (XCHAR_P, XCHAR_P, CHAR_P, struct mkroom *, int));
 E void NDECL(mkinvokearea);
 E void FDECL(mineralize, (int, int, int, int, BOOLEAN_P));
 E void FDECL(maybe_create_location_light_source, (xchar, xchar));

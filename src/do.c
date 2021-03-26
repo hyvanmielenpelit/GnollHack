@@ -5081,7 +5081,7 @@ dodown()
         return 1;
     }
 
-    if (on_level(&valley_level, &u.uz) && !u.uevent.gehennom_entered)
+    if (/*on_level(&valley_level, &u.uz)*/ Is_stronghold(&u.uz) && !u.uevent.gehennom_entered)
 	{
         You("are standing at the gate to Gehennom.");
         pline("Unspeakable cruelty and harm lurk down there.");
@@ -5134,7 +5134,8 @@ dodown()
 
     if (trap && Is_stronghold(&u.uz)) 
 	{
-        goto_hell(FALSE, TRUE);
+		/* next_level works for branch staircase going to Gehennom, so this is really only for the castle trapdoors but would work also for staircases */
+        goto_hell(!trap, TRUE);
     } 
 	else
 	{
@@ -5315,7 +5316,7 @@ void
 goto_level(newlevel, at_stairs, falling, portal)
 d_level *newlevel;
 boolean at_stairs, falling;
-xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destinatioN) */
+xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destination) */
 {
     int fd, l_idx;
     xchar new_ledger;

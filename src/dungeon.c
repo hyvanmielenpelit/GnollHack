@@ -1590,7 +1590,7 @@ void
 find_hell(lev)
 d_level *lev;
 {
-    lev->dnum = valley_level.dnum;
+    lev->dnum = gehennom_dnum; // valley_level.dnum;
     lev->dlevel = 1;
 }
 

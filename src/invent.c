@@ -4585,13 +4585,6 @@ int x, y;
     return explanation;
 }
 
-boolean
-use_extra_special_staircase()
-{
-    return (depth(&u.uz) == dungeons[u.uz.dnum].depth_start
-        || depth(&u.uz) == dungeons[u.uz.dnum].depth_start + dungeons[u.uz.dnum].num_dunlevs - 1);
-}
-
 /* look at what is here; if there are many objects (pile_limit or more),
    don't show them unless obj_cnt is 0 */
 int

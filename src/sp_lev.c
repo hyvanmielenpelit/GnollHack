@@ -4311,7 +4311,7 @@ struct sp_coder *coder;
     get_location_coord(&x, &y, DRY, coder->croom, OV_i(scoord));
     if ((badtrap = t_at(x, y)) != 0)
         deltrap(badtrap);
-    mkstairs(x, y, (char) OV_i(up), coder->croom);
+    mkstairs(x, y, (char) OV_i(up), coder->croom, STAIRCASE_NORMAL);
     SpLev_Map[x][y] = 1;
 
     opvar_free(scoord);
@@ -6569,7 +6569,7 @@ struct sp_coder *coder;
             xstart = (coder->no_map_padding ? 1 : 2) + ((x_maze_max - (coder->no_map_padding ? 1 : 2) - xsize) * 3 / 4);
             break;
         case RIGHT:
-            xstart = x_maze_max - xsize - 1;
+            xstart = x_maze_max - xsize;
             break;
         }
         switch ((int) valign) {

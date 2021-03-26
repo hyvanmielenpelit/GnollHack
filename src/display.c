@@ -3154,11 +3154,12 @@ xchar x, y;
         break;
     case STAIRS:
     {
+        int subtyp = ptr->subtyp;
         boolean is_branch_staircase = (sstairs.sx  && x == sstairs.sx && y == sstairs.sy);
         boolean is_extra_staircase = use_extra_special_staircase();
-        int var_idx = is_branch_staircase ? (1 + (is_extra_staircase ? SPECIAL_BRANCH_STAIRCASE : BRANCH_STAIRCASE)) : 0;
+        int subtyp_idx = is_branch_staircase ? (is_extra_staircase ? STAIRCASE_TO_DEEPER: STAIRCASE_BRANCH) : 0;
         int sym_idx = (ptr->ladder & LA_DOWN) ? S_dnstair : S_upstair;
-        if (var_idx == 0)
+        if (subtyp_idx == 0)
         {
             idx = sym_idx;
         }
@@ -3166,7 +3167,7 @@ xchar x, y;
         {
             is_variation = TRUE;
             int var_offset = defsyms[sym_idx].variation_offset;
-            idx = var_offset + var_idx - 1;
+            idx = var_offset + subtyp_idx - 1;
         }
         break;
     }
@@ -3279,6 +3280,14 @@ xchar x, y;
         return multiplier * cmap_variation_to_glyph(idx);
     else
         return multiplier * cmap_to_glyph(idx);
+}
+
+
+boolean
+use_extra_special_staircase()
+{
+    return (depth(&u.uz) == dungeons[u.uz.dnum].depth_start
+        || depth(&u.uz) == dungeons[u.uz.dnum].depth_start + dungeons[u.uz.dnum].num_dunlevs - 1);
 }
 
 int

@@ -24,7 +24,7 @@
 #define FIRST_AMULET AMULET_OF_ESP
 #define LAST_AMULET AMULET_OF_YENDOR
 #define FIRST_MISCITEM BROOCH_OF_SHIELDING
-#define LAST_MISCITEM WINGS_OF_FLYING
+#define LAST_MISCITEM BELT_OF_STORM_GIANT_STRENGTH
 
 struct valuable_data {
     long count;
@@ -41,7 +41,7 @@ static struct val_list {
     int size;
 } valuables[] = { { gems, sizeof gems / sizeof *gems },
                   { amulets, sizeof amulets / sizeof *amulets },
-				  { miscellaneousitems, sizeof miscellaneousitems / sizeof * miscellaneousitems },
+				  { miscellaneousitems, sizeof miscellaneousitems / sizeof *miscellaneousitems },
 				  { 0, 0 } };
 
 #ifndef NO_SIGNAL
@@ -1322,20 +1322,24 @@ int how;
              && !(mvitals[PM_GREEN_SLIME].mvflags & G_GENOD))
         u.ugrave_arise = PM_GREEN_SLIME;
 
-    if (how == QUIT) {
+    if (how == QUIT) 
+    {
         killer.format = NO_KILLER_PREFIX;
-        if (u.uhp < 1) {
+        if (u.uhp < 1) 
+        {
             how = DIED;
             u.umortality++; /* skipped above when how==QUIT */
             Strcpy(killer.name, "quit while already on Charon's boat");
         }
     }
+
     if (how == ESCAPED || how == PANICKED)
         killer.format = NO_KILLER_PREFIX;
 
     fixup_death(how); /* actually, fixup multi_reason */
 
-    if (how != PANICKED) {
+    if (how != PANICKED) 
+    {
         boolean silently = done_stopprint ? TRUE : FALSE;
 
         /* these affect score and/or bones, but avoid them during panic */
@@ -1344,7 +1348,8 @@ int how;
         clearpriests();
         clearsmiths();
         clearnpcs();
-    } else
+    } 
+    else
         taken = FALSE; /* lint; assert( !bones_ok ); */
 
     clearlocks();
@@ -1352,7 +1357,8 @@ int how;
     if (have_windows)
         display_nhwindow(WIN_MESSAGE, FALSE);
 
-	if (how != PANICKED) {
+	if (how != PANICKED) 
+    {
         struct obj *obj;
 
         /*
@@ -1360,7 +1366,8 @@ int how;
          * Both are optional, so do it once here instead of duplicating
          * it in both of those places.
          */
-        for (obj = invent; obj; obj = obj->nobj) {
+        for (obj = invent; obj; obj = obj->nobj) 
+        {
             discover_object(obj->otyp, TRUE, FALSE);
             obj->known = obj->bknown = obj->dknown = obj->rknown = obj->nknown = 1;
             if (Is_container(obj) || obj->otyp == STATUE)
@@ -1404,10 +1411,12 @@ int how;
     /* grave creation should be after disclosure so it doesn't have
        this grave in the current level's features for #overview */
     if (bones_ok && u.ugrave_arise == NON_PM
-        && !(mvitals[u.umonnum].mvflags & G_NOCORPSE)) {
+        && !(mvitals[u.umonnum].mvflags & G_NOCORPSE))
+    {
         int mnum = u.umonnum;
 
-        if (!Upolyd) {
+        if (!Upolyd) 
+        {
             /* Base corpse on race when not poly'd since original
              * u.umonnum is based on role, and all role monsters
              * are human.
@@ -1420,6 +1429,7 @@ int how;
         formatkiller(eos(pbuf), sizeof pbuf - strlen(pbuf), how, TRUE);
         make_grave(u.ux, u.uy, pbuf, TRUE);
     }
+
     pbuf[0] = '\0'; /* clear grave text; also lint suppression */
 
     /* calculate score, before creating bones [container gold] */
@@ -1441,7 +1451,8 @@ int how;
         nowrap_add(u.u_gamescore, tmp);
 
         /* ascension gives a score bonus iff offering to original deity */
-        if (how == ASCENDED && u.ualign.type == u.ualignbase[A_ORIGINAL]) {
+        if (how == ASCENDED && u.ualign.type == u.ualignbase[A_ORIGINAL]) 
+        {
             /* retaining original alignment: score *= 2;
                converting, then using helm-of-OA to switch back: *= 1.5 */
             tmp = (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL])
@@ -1451,7 +1462,8 @@ int how;
         }
     }
 
-    if (u.ugrave_arise >= LOW_PM && !done_stopprint) {
+    if (u.ugrave_arise >= LOW_PM && !done_stopprint) 
+    {
         /* give this feedback even if bones aren't going to be created,
            so that its presence or absence doesn't tip off the player to
            new bones or their lack; it might be a lie if makemon fails */
@@ -1463,7 +1475,8 @@ int how;
         display_nhwindow(WIN_MESSAGE, FALSE);
     }
 
-    if (bones_ok) {
+    if (bones_ok) 
+    {
         if (!wizard || paranoid_query(ParanoidBones, "Save bones?"))
             savebones(how, endtime, corpse);
         /* corpse may be invalid pointer now so
@@ -1476,10 +1489,12 @@ int how;
     done_money = umoney;
 
     /* clean up unneeded windows */
-    if (have_windows) {
+    if (have_windows) 
+    {
         wait_synch();
         free_pickinv_cache(); /* extra persistent window if perm_invent */
-        if (WIN_INVEN != WIN_ERR) {
+        if (WIN_INVEN != WIN_ERR) 
+        {
             destroy_nhwindow(WIN_INVEN),  WIN_INVEN = WIN_ERR;
             /* precaution in case any late update_inventory() calls occur */
             iflags.perm_invent = 0;
@@ -1495,22 +1510,27 @@ int how;
 
         if (how < GENOCIDED && flags.tombstone && endwin != WIN_ERR)
             outrip(endwin, how, endtime);
-    } else
+    } 
+    else
         done_stopprint = 1; /* just avoid any more output */
 
 #ifdef DUMPLOG
     /* 'how' reasons beyond genocide shouldn't show tombstone;
        for normal end of game, genocide doesn't either */
-    if (how <= GENOCIDED) {
+    if (how <= GENOCIDED) 
+    {
         dump_redirect(TRUE);
         if (iflags.in_dumplog)
             genl_outrip(0, how, endtime);
         dump_redirect(FALSE);
     }
 #endif
-    if (u.uhave.amulet) {
+    if (u.uhave.amulet) 
+    {
         Strcat(killer.name, " (with the Amulet)");
-    } else if (how == ESCAPED) {
+    }
+    else if (how == ESCAPED) 
+    {
         if (Is_astralevel(&u.uz)) /* offered Amulet to wrong deity */
             Strcat(killer.name, " (in celestial disgrace)");
         else if (carrying(FAKE_AMULET_OF_YENDOR))
@@ -1527,22 +1547,26 @@ int how;
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
     //dump_forward_putstr(endwin, 0, "", done_stopprint);
 
-	if (how == ESCAPED || how == ASCENDED) {
+	if (how == ESCAPED || how == ASCENDED) 
+    {
         struct monst *mtmp;
         struct obj *otmp;
         register struct val_list *val;
         register int i;
 
         for (val = valuables; val->list; val++)
-            for (i = 0; i < val->size; i++) {
+            for (i = 0; i < val->size; i++)
+            {
                 val->list[i].count = 0L;
             }
+
         get_valuables(invent);
 
         /* add points for collected valuables */
         for (val = valuables; val->list; val++)
             for (i = 0; i < val->size; i++)
-                if (val->list[i].count != 0L) {
+                if (val->list[i].count != 0L) 
+                {
                     tmp = val->list[i].count
                           * objects[val->list[i].typ].oc_cost;
                     nowrap_add(u.u_gamescore, tmp);
@@ -1554,16 +1578,20 @@ int how;
         viz_array[0][0] |= IN_SIGHT; /* need visibility for naming */
         mtmp = mydogs;
         Strcpy(pbuf, "You");
-        if (mtmp || Schroedingers_cat) {
-            while (mtmp) {
+        if (mtmp || Schroedingers_cat) 
+        {
+            while (mtmp) 
+            {
                 Sprintf(eos(pbuf), " and %s", mon_nam(mtmp));
                 if (is_tame(mtmp))
                     nowrap_add(u.u_gamescore, mtmp->mhp);
                 mtmp = mtmp->nmon;
             }
+
             /* [it might be more robust to create a housecat and add it to
                mydogs; it doesn't have to be placed on the map for that] */
-            if (Schroedingers_cat) {
+            if (Schroedingers_cat) 
+            {
                 int mhp, m_lev = adj_lev(&mons[PM_HOUSECAT]);
 
                 mhp = d(m_lev, 8);
@@ -1572,7 +1600,9 @@ int how;
             }
             dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
             pbuf[0] = '\0';
-        } else {
+        }
+        else 
+        {
             Strcat(pbuf, " ");
         }
         Sprintf(eos(pbuf), "%s with %ld point%s,",
@@ -1583,6 +1613,7 @@ int how;
 
         if (!done_stopprint)
             artifact_score(invent, FALSE, endwin); /* list artifacts */
+
 #ifdef DUMPLOG
         dump_redirect(TRUE);
         if (iflags.in_dumplog)
@@ -1591,15 +1622,19 @@ int how;
 #endif
 
         /* list valuables here */
-        for (val = valuables; val->list; val++) {
+        for (val = valuables; val->list; val++)
+        {
             sort_valuables(val->list, val->size);
-            for (i = 0; i < val->size && !done_stopprint; i++) {
+            for (i = 0; i < val->size && !done_stopprint; i++)
+            {
                 int typ = val->list[i].typ;
                 long count = val->list[i].count;
 
                 if (count == 0L)
                     continue;
-                if (objects[typ].oc_class != GEM_CLASS || typ <= LAST_GEM) {
+
+                if (objects[typ].oc_class != GEM_CLASS || typ <= LAST_GEM) 
+                {
                     otmp = mksobj(typ, FALSE, FALSE, FALSE);
                     discover_object(otmp->otyp, TRUE, FALSE);
                     otmp->known = 1;  /* for fake amulets */
@@ -1611,7 +1646,9 @@ int how;
                             xname(otmp), count * objects[typ].oc_cost,
                             currency(2L));
                     obfree(otmp, (struct obj *) 0);
-                } else {
+                }
+                else 
+                {
                     Sprintf(pbuf, "%8ld worthless piece%s of colored glass,",
                             count, plur(count));
                 }
@@ -1619,14 +1656,19 @@ int how;
             }
         }
 
-    } else {
+    }
+    else 
+    {
         /* did not escape or ascend */
-        if (u.uz.dnum == 0 && u.uz.dlevel <= 0) {
+        if (u.uz.dnum == 0 && u.uz.dlevel <= 0) 
+        {
             /* level teleported out of the dungeon; `how' is DIED,
                due to falling or to "arriving at heaven prematurely" */
             Sprintf(pbuf, "You %s beyond the confines of the dungeon",
                     (u.uz.dlevel < 0) ? "passed away" : ends[how]);
-        } else {
+        } 
+        else 
+        {
             /* more conventional demise */
             const char *where = dungeons[u.uz.dnum].dname;
 
@@ -1653,6 +1695,7 @@ int how;
             u.ulevel, u.uhpmax, plur(u.uhpmax), ends[how]);
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
 	dump_forward_putstr(endwin, 0, "", done_stopprint);
+
 	if (!done_stopprint)
         display_nhwindow(endwin, TRUE);
     if (endwin != WIN_ERR)
@@ -1670,7 +1713,8 @@ int how;
     if (have_windows)
         exit_nhwindows((char*)0);
 
-    if (done_stopprint) {
+    if (done_stopprint) 
+    {
         raw_print("");
         raw_print("");
     }

@@ -825,6 +825,7 @@ FLAGS: noteleport
 NAMING:"A hellish stronghold", name_revealed_seeing_monster, montype:"Yeenoghu"
 # First part
 GEOMETRY:center,center
+#12345678901234567890
 MAP
 ---------------------
 |...|...|...|...|...|
@@ -851,21 +852,22 @@ DOOR:locked,(16,08),subtype:door_obsidian,keytype:('(',"ornamental key"),special
 DOOR:locked,(08,02),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
 DOOR:locked,(12,02),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
 
-# Smithy - A flind lord with a backup type being pit fiend
-REGION:(13,09,19,10),lit,"smithy" montype:"pit fiend"
-ANVIL:(16,10),montype:"flind lord"
-
 # Non diggable walls
 NON_DIGGABLE:(00,00,20,11)
 SPECIAL_REGION:(00,00,20,11),region_special_level_seen
 
 MAZEWALK:(00,06),west
 # Entire main area
-REGION:(01,01,20,10),unlit,"ordinary"
+REGION:(00,00,20,11),unlit,"ordinary"
 # The fellow in residence
 MONSTER:('&',"Yeenoghu"),(10,06) {
   OBJECT:('(',"ornamental key"),special_quality:6
 }
+
+# Smithy - A flind lord with a backup type being pit fiend
+REGION:(13,09,19,10),unlit,"smithy" montype:"pit fiend"
+ANVIL:(16,10),montype:"flind lord"
+
 # Some random weapons and armor.
 OBJECT:'[',random
 OBJECT:'[',random

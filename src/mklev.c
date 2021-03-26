@@ -869,7 +869,7 @@ makelevel()
     /* construct stairs (up and down in different rooms if possible) */
     croom = &rooms[rn2(nroom)];
     if (!Is_botlevel(&u.uz))
-        mkstairs(somex(croom), somey(croom), 0, croom); /* down */
+        mkstairs(somex(croom), somey(croom), 0, croom, STAIRCASE_NORMAL); /* down */
     if (nroom > 1) {
         troom = croom;
         croom = &rooms[rn2(nroom - 1)];
@@ -884,7 +884,7 @@ makelevel()
             sx = somex(croom);
             sy = somey(croom);
         } while (occupied(sx, sy));
-        mkstairs(sx, sy, 1, croom); /* up */
+        mkstairs(sx, sy, 1, croom, STAIRCASE_NORMAL); /* up */
     }
 
     branchp = Is_branchlev(&u.uz);    /* possible dungeon branch */
@@ -1930,10 +1930,11 @@ unsigned long portal_flags;
 }
 
 void
-mkstairs(x, y, up, croom)
+mkstairs(x, y, up, croom, subtyp)
 xchar x, y;
 char up;
 struct mkroom *croom;
+int subtyp;
 {
     if (!x) {
         impossible("mkstairs:  bogus stair attempt at <%d,%d>", x, y);
@@ -1971,7 +1972,7 @@ struct mkroom *croom;
     }
 
     levl[x][y].typ = STAIRS;
-    levl[x][y].subtyp = 0;
+    levl[x][y].subtyp = subtyp;
     levl[x][y].ladder = up ? LA_UP : LA_DOWN;
 
     if (up)
@@ -2212,7 +2213,7 @@ mkinvokearea()
     }
 
     You("are standing at the top of a stairwell leading down!");
-    mkstairs(u.ux, u.uy, 0, (struct mkroom *) 0); /* down */
+    mkstairs(u.ux, u.uy, 0, (struct mkroom *) 0, STAIRCASE_TO_DEEPER); /* down */
     newsym(u.ux, u.uy);
     vision_full_recalc = 1; /* everything changed */
 }
