@@ -423,6 +423,12 @@ struct obj *box;
     case LARGE_BOX:
         n = box->olocked ? 5 : 3;
         break;
+    case COFFIN:
+        n = 3;
+        break;
+    case SARCOPHAGUS:
+        n = 7;
+        break;
     case SACK:
     case OILSKIN_SACK:
 	case BACKPACK:
@@ -490,6 +496,16 @@ struct obj *box;
         else if (box->otyp == WEAPON_RACK)
         {
             otmp = mkobj(WEAPON_CLASS, TRUE, TRUE);
+        }
+        else if (box->otyp == SARCOPHAGUS)
+        {
+            char item_classes[5] = { COIN_CLASS, GEM_CLASS, MISCELLANEOUS_CLASS, AMULET_CLASS, RING_CLASS };
+            otmp = mkobj(item_classes[rn2(5)], TRUE, TRUE);
+        }
+        else if (box->otyp == COFFIN)
+        {
+            char item_classes[5] = { COIN_CLASS, GEM_CLASS, MISCELLANEOUS_CLASS, AMULET_CLASS, RING_CLASS };
+            otmp = mkobj(item_classes[rn2(5)], TRUE, TRUE);
         }
         else
         {
@@ -1363,7 +1379,19 @@ int mkobj_type;
             case LARGE_BOX:
                 otmp->olocked = !!(rn2(5));
                 otmp->otrapped = !(rn2(10));
-				break;
+                break;
+            case COFFIN:
+            {
+                int cnm = monsndx(mkclass(rn2(3) ? S_VAMPIRE : S_LESSER_UNDEAD, 0));
+                otmp->corpsenm = rn2(3) ? (rn2(3) && cnm > NON_PM ? cnm : PM_BARROW_WIGHT) : NON_PM;
+                break;
+            }
+            case SARCOPHAGUS:
+            {
+                int cnm = monsndx(mkclass(rn2(3) ? S_GREATER_UNDEAD : S_LICH, 0));
+                otmp->corpsenm = !rn2(2) ? (rn2(3) && cnm > NON_PM ? cnm : (!rn2(2) || u.ulevel < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR : !rn2(2) || u.ulevel < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING)) : NON_PM;
+                break;
+            }
             case EXPENSIVE_CAMERA:
             case TINNING_KIT:
             case MAGIC_MARKER:

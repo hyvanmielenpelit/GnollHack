@@ -944,6 +944,9 @@ struct objclass {
 #define O4_CONTAINER_CONTENTS_USE_ON					0x00200000UL	/* Contents are put "on" the container rather than "in" the container  */
 #define O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS		0x00400000UL	/* Only books and scrolls fit in */
 #define O4_CONTAINER_ACCEPTS_ONLY_WEAPONS				0x00800000UL	/* Only weapon fit in */
+#define O4_CONTAINER_HAS_LID							0x01000000UL	/* Has a lid that will be opened permanently on first time (sarcophagus, coffin) */
+#define O4_CONTAINER_PEEK_INTO							0x02000000UL	/* You peek into this container */
+#define O4_CONTAINER_MAY_CONTAIN_MONSTER				0x04000000UL
 
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */

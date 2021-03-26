@@ -905,6 +905,15 @@ boolean is_golf_swing;
             return 1;
         /* else let it fall through to the next cases... */
     }
+    else if (Is_container(kickedobj) && (objects[kickedobj->otyp].oc_flags4 & O4_CONTAINER_MAY_CONTAIN_MONSTER))
+    {
+        pline("THUD!");
+        container_impact_dmg(kickedobj, x, y);
+        if (maybe_disturb_container_monster(kickedobj))
+        {
+            return 1;
+        }
+    }
 
     /* fragile objects should not be kicked */
     if (hero_breaks(kickedobj, kickedobj->ox, kickedobj->oy, FALSE))

@@ -673,4 +673,6 @@ int replacement_offsets[MAX_REPLACEMENTS] = {
 	279, /* brazier-replacement */
 	280, /* brazier-subtype-1-replacement */
 	281, /* brazier-subtype-2-replacement */
+	282, /* coffin-replacement */
+	283, /* sarcophagus-replacement */
 };

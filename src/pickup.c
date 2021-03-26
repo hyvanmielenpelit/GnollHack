@@ -1820,11 +1820,66 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
 		return 1;
 	}
 
-    if(!(objects[cobj->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE))
-        You("%s%s%s...", (!cobj->cknown || !cobj->lknown) ? "carefully " : "", (cobj->otyp == BOOKSHELF || cobj->otyp == MINE_CART) ? "peek into " : "open ",
+    boolean lidopened = FALSE;
+    if ((objects[cobj->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && !(cobj->speflags & SPEFLAGS_LID_OPENED))
+    {
+        lidopened = TRUE;
+        cobj->speflags |= SPEFLAGS_LID_OPENED;
+        play_simple_container_sound(cobj, CONTAINER_SOUND_TYPE_OPEN);
+        You("carefully push the lid of %s aside...", the(xname(cobj)));
+    }
+
+    if(!(objects[cobj->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE) && !lidopened)
+        You("%s%s%s...", (!cobj->cknown || !cobj->lknown) ? "carefully " : "", (objects[cobj->otyp].oc_flags4 & O4_CONTAINER_PEEK_INTO) ? "peek into " : "open ",
             the(xname(cobj)));
 
+    if ((objects[cobj->otyp].oc_flags4 & O4_CONTAINER_MAY_CONTAIN_MONSTER))
+    {
+        if (maybe_disturb_container_monster(cobj))
+        {
+            abort_looting = TRUE;
+            return 1;
+        }
+    }
+
     return use_container(cobjp, 0, (boolean) (cindex < ccount));
+}
+
+boolean
+maybe_disturb_container_monster(cobj)
+struct obj* cobj;
+{
+    if (!cobj)
+        return FALSE;
+
+    xchar x = 0, y = 0;
+    get_obj_location(cobj, &x, &y, 0);
+
+    if (isok(x, y) && cobj->corpsenm > NON_PM)
+    {
+        struct monst* mtmp = makemon(&mons[cobj->corpsenm], x, y, MM_ANGRY | MM_ADJACENTOK);
+        cobj->corpsenm = NON_PM; /* It's gone */
+        if (objects[cobj->otyp].oc_flags4 & O4_CONTAINER_HAS_LID)
+        {
+            cobj->speflags |= SPEFLAGS_LID_OPENED;
+            newsym(x, y);
+        }
+        if (mtmp)
+        {
+            if (iflags.using_gui_sounds)
+                delay_output_milliseconds(300);
+            play_sfx_sound(SFX_SURPRISE_ATTACK);
+            pline("Disturbed, %s rises from the coffin!", a_monnam(mtmp));
+            flush_screen(1);
+            if (iflags.using_gui_sounds)
+                delay_output_milliseconds(300);
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CREATION);
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+
 }
 
 /* loot a container on the floor or loot saddle from mon. */

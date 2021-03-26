@@ -894,6 +894,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Bear Trap Set Up", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Alarm Sounds", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Escape Trap", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Coffin/Coffin Open", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Sarcophagus/Sarcophagus Open", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Male Angel Malediction", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Female Angel Malediction", 1.0f },
