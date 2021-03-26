@@ -380,7 +380,7 @@ d_level *lev;
         break;
     case LR_DOWNSTAIR:
     case LR_UPSTAIR:
-        mkstairs(x, y, (char) rtype, (struct mkroom *) 0, STAIRCASE_BRANCH);
+        mkstairs(x, y, (char) rtype, (struct mkroom *) 0, STAIRCASE_NORMAL);
         break;
     case LR_BRANCH:
         place_branch(Is_branchlev(&u.uz), x, y);

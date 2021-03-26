@@ -1529,7 +1529,8 @@ xchar x, y; /* location */
 
         levl[x][y].ladder = sstairs.up ? LA_UP : LA_DOWN;
         levl[x][y].typ = STAIRS;
-        levl[x][y].subtyp = 0;
+        boolean make_extra_special = (((Is_stronghold(&u.uz)) && !sstairs.up) || ((u.uz.dlevel == 1 || Is_sanctum(&u.uz)) && sstairs.up));
+        levl[x][y].subtyp = make_extra_special ? STAIRCASE_TO_DEEPER : STAIRCASE_BRANCH;
 
         if (sstairs.up)
         {

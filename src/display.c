@@ -3154,10 +3154,9 @@ xchar x, y;
         break;
     case STAIRS:
     {
-        int subtyp = ptr->subtyp;
-        boolean is_branch_staircase = (sstairs.sx  && x == sstairs.sx && y == sstairs.sy);
-        boolean is_extra_staircase = use_extra_special_staircase();
-        int subtyp_idx = is_branch_staircase ? (is_extra_staircase ? STAIRCASE_TO_DEEPER: STAIRCASE_BRANCH) : 0;
+        //boolean is_branch_staircase = (sstairs.sx  && x == sstairs.sx && y == sstairs.sy);
+        //boolean is_extra_staircase = use_extra_special_staircase();
+        int subtyp_idx = ptr->subtyp; // is_branch_staircase ? (is_extra_staircase ? STAIRCASE_TO_DEEPER: STAIRCASE_BRANCH) : 0;
         int sym_idx = (ptr->ladder & LA_DOWN) ? S_dnstair : S_upstair;
         if (subtyp_idx == 0)
         {
