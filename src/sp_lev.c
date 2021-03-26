@@ -2070,7 +2070,12 @@ struct mkroom *croom;
     else if (!c)
         otmp = mkobj_at(RANDOM_CLASS, x, y, !named);
     else if (o->id != -1)
-        otmp = mksobj_at(o->id, x, y, TRUE, !named);
+    {
+        unsigned long mkflags = o->open ? MKOBJ_FLAGS_OPEN_COFFIN : 0UL;
+         mkflags |= o->corpsenm >= NON_PM ? MKOBJ_FLAGS_MONSTER_SPECIFIED : 0UL;
+        
+        otmp = mksobj_at_with_flags(o->id, x, y, TRUE, !named, mkflags);
+    }
     else {
         /*
          * The special levels are compiled with the default "text" object
@@ -2153,6 +2158,13 @@ struct mkroom *croom;
         otmp->obroken = 1;
         otmp->olocked = 0; /* obj generation may set */
     }
+    
+    if (o->open) {
+        otmp->speflags |= SPEFLAGS_LID_OPENED;
+        otmp->corpsenm = NON_PM;
+        otmp->owt = weight(otmp);
+    }
+
     if (o->trapped == 0 || o->trapped == 1)
         otmp->otrapped = o->trapped;
 	if (o->elemental_enchantment >= 0)
@@ -3690,6 +3702,7 @@ struct sp_coder *coder;
     tmpobj.invis = 0;
     tmpobj.greased = 0;
     tmpobj.broken = 0;
+    tmpobj.open = 0;
     tmpobj.coord = SP_COORD_PACK_RANDOM(0);
     tmpobj.indestructible = 0;
     tmpobj.uses_up_key = 0;
@@ -3781,6 +3794,10 @@ struct sp_coder *coder;
         case SP_O_V_BROKEN:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.broken = OV_i(parm);
+            break;
+        case SP_O_V_OPEN:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.open = OV_i(parm);
             break;
         case SP_O_V_COORD:
             if (OV_typ(parm) != SPOVAR_COORD)

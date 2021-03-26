@@ -1776,6 +1776,9 @@ object_info	: CURSE_TYPE
 		      } else if ($1 == D_BROKEN) {
 			  add_opvars(splev, "ii", VA_PASS2(1, SP_O_V_BROKEN));
 			  $$ = 0x0200;
+		      } else if ($1 == D_ISOPEN) {
+			  add_opvars(splev, "ii", VA_PASS2(1, SP_O_V_OPEN));
+			  $$ = 0x2000000;
 		      } else
 			  lc_error("DOOR state can only be locked or broken.");
 		  }

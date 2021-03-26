@@ -1859,17 +1859,22 @@ struct obj* cobj;
     {
         struct monst* mtmp = makemon(&mons[cobj->corpsenm], x, y, MM_ANGRY | MM_ADJACENTOK);
         cobj->corpsenm = NON_PM; /* It's gone */
+        cobj->owt = weight(cobj);
         if (objects[cobj->otyp].oc_flags4 & O4_CONTAINER_HAS_LID)
         {
-            cobj->speflags |= SPEFLAGS_LID_OPENED;
-            newsym(x, y);
+            if (!(cobj->speflags & SPEFLAGS_LID_OPENED))
+            {
+                play_simple_container_sound(cobj, CONTAINER_SOUND_TYPE_OPEN);
+                cobj->speflags |= SPEFLAGS_LID_OPENED;
+                newsym(x, y);
+            }
         }
         if (mtmp)
         {
             if (iflags.using_gui_sounds)
                 delay_output_milliseconds(300);
             play_sfx_sound(SFX_SURPRISE_ATTACK);
-            pline("Disturbed, %s rises from the coffin!", a_monnam(mtmp));
+            pline("Disturbed, %s rises from the %s!", a_monnam(mtmp), cxname(cobj));
             flush_screen(1);
             if (iflags.using_gui_sounds)
                 delay_output_milliseconds(300);

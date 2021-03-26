@@ -235,6 +235,19 @@ boolean init, artif;
     return otmp;
 }
 
+struct obj*
+mksobj_at_with_flags(otyp, x, y, init, artif, mkflags)
+int otyp, x, y;
+boolean init, artif;
+unsigned long mkflags;
+{
+    struct obj* otmp;
+
+    otmp = mksobj_with_flags(otyp, init, artif, 0, mkflags);
+    place_object(otmp, x, y);
+    return otmp;
+}
+
 struct obj *
 mksobj_migr_to_species(otyp, mflags2, init, artif)
 int otyp;
@@ -501,11 +514,23 @@ struct obj *box;
         {
             char item_classes[5] = { COIN_CLASS, GEM_CLASS, MISCELLANEOUS_CLASS, AMULET_CLASS, RING_CLASS };
             otmp = mkobj(item_classes[rn2(5)], TRUE, TRUE);
+            if (otmp->oclass == COIN_CLASS)
+            {
+                /* 2.5 x level's usual amount; weight adjusted below */
+                otmp->quan = (long)(rnd(level_difficulty() + 2) * rnd(75));
+                otmp->owt = weight(otmp);
+            }
         }
         else if (box->otyp == COFFIN)
         {
             char item_classes[5] = { COIN_CLASS, GEM_CLASS, MISCELLANEOUS_CLASS, AMULET_CLASS, RING_CLASS };
             otmp = mkobj(item_classes[rn2(5)], TRUE, TRUE);
+            if (otmp->oclass == COIN_CLASS)
+            {
+                /* 2.5 x level's usual amount; weight adjusted below */
+                otmp->quan = (long)(rnd(level_difficulty() + 2) * rnd(75));
+                otmp->owt = weight(otmp);
+            }
         }
         else
         {
@@ -1160,12 +1185,23 @@ static const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS, ARMOR_CL
 
 /* mksobj(): create a specific type of object */
 /* mkobj_type = 0 making contents on the floor, = 1 making box contents, = 2 wishing */
-struct obj *
+struct obj*
 mksobj(otyp, init, artif, mkobj_type)
 int otyp;
 boolean init;
 boolean artif;
 int mkobj_type;
+{
+    return mksobj_with_flags(otyp, init, artif, mkobj_type, 0UL);
+}
+
+struct obj *
+mksobj_with_flags(otyp, init, artif, mkobj_type, mkflags)
+int otyp;
+boolean init;
+boolean artif;
+int mkobj_type;
+unsigned long mkflags;
 {
     int mndx, tryct;
     struct obj *otmp;
@@ -1382,14 +1418,84 @@ int mkobj_type;
                 break;
             case COFFIN:
             {
-                int cnm = monsndx(mkclass(rn2(3) ? S_VAMPIRE : S_LESSER_UNDEAD, 0));
-                otmp->corpsenm = rn2(3) ? (rn2(3) && cnm > NON_PM ? cnm : PM_BARROW_WIGHT) : NON_PM;
+                if (!(mkflags & MKOBJ_FLAGS_OPEN_COFFIN) && !(mkflags & MKOBJ_FLAGS_MONSTER_SPECIFIED))
+                {
+                    int cnm = NON_PM;
+                        if (In_V_tower(&u.uz))
+                        {
+                            cnm = monsndx(mkclass(S_VAMPIRE, 0));
+                                otmp->corpsenm = cnm > NON_PM ? cnm : PM_VAMPIRE;
+                        }
+                        else
+                        {
+                            cnm = monsndx(mkclass(rn2(3) ? S_VAMPIRE : S_LESSER_UNDEAD, 0));
+                                otmp->corpsenm = rn2(3) ? (rn2(3) && cnm > NON_PM ? cnm : PM_BARROW_WIGHT) : NON_PM;
+                        }
+
+                    if (otmp->corpsenm == NON_PM && !rn2(2))
+                    {
+                        if (!rn2(2))
+                        {
+                            struct obj* otmp2 = mksobj(BONE, TRUE, TRUE, 1);
+                            if (otmp2)
+                            {
+                                otmp2->quan = rnd(4);
+                                otmp2->owt = weight(otmp2);
+                                (void)add_to_container(otmp, otmp2);
+                            }
+                            otmp2 = mksobj(HUMAN_SKULL, TRUE, TRUE, 1);
+                            if (otmp2)
+                                (void)add_to_container(otmp, otmp2);
+                        }
+                        else
+                        {
+                            struct obj* corpse = mksobj(CORPSE, FALSE, FALSE, 1);
+                            if (corpse)
+                            {
+                                corpse->corpsenm = !rn2(4) ? PM_HUMAN : rn2(PM_WIZARD - PM_ARCHEOLOGIST + 1) + PM_ARCHEOLOGIST;
+                                corpse->owt = weight(corpse);
+                                (void)add_to_container(otmp, corpse);
+                            }
+                        }
+                    }
+                    otmp->owt = weight(otmp);
+                }
                 break;
             }
             case SARCOPHAGUS:
             {
-                int cnm = monsndx(mkclass(rn2(3) ? S_GREATER_UNDEAD : S_LICH, 0));
-                otmp->corpsenm = !rn2(2) ? (rn2(3) && cnm > NON_PM ? cnm : (!rn2(2) || u.ulevel < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR : !rn2(2) || u.ulevel < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING)) : NON_PM;
+                if (!(mkflags & MKOBJ_FLAGS_OPEN_COFFIN) && !(mkflags & MKOBJ_FLAGS_MONSTER_SPECIFIED))
+                {
+                    int cnm = monsndx(mkclass(rn2(3) ? S_GREATER_UNDEAD : S_LICH, 0));
+                    otmp->corpsenm = !rn2(2) ? (rn2(3) && cnm > NON_PM ? cnm : (!rn2(2) || u.ulevel < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR : !rn2(2) || u.ulevel < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING)) : NON_PM;
+                    if (otmp->corpsenm == NON_PM && !rn2(2))
+                    {
+                        if (!rn2(2))
+                        {
+                            struct obj* otmp2 = mksobj(BONE, TRUE, TRUE, 1);
+                            if (otmp2)
+                            {
+                                otmp2->quan = rnd(4);
+                                otmp2->owt = weight(otmp2);
+                                (void)add_to_container(otmp, otmp2);
+                            }
+                            otmp2 = mksobj(HUMAN_SKULL, TRUE, TRUE, 1);
+                            if (otmp2)
+                                (void)add_to_container(otmp, otmp2);
+                        }
+                        else
+                        {
+                            struct obj* corpse = mksobj(CORPSE, FALSE, FALSE, 1);
+                            if (corpse)
+                            {
+                                corpse->corpsenm = !rn2(4) ? PM_HUMAN : rn2(PM_WIZARD - PM_ARCHEOLOGIST + 1) + PM_ARCHEOLOGIST;
+                                corpse->owt = weight(corpse);
+                                (void)add_to_container(otmp, corpse);
+                            }
+                        }
+                    }
+                    otmp->owt = weight(otmp);
+                }
                 break;
             }
             case EXPENSIVE_CAMERA:
@@ -2727,7 +2833,10 @@ register struct obj *obj;
         if (obj->otyp == STATUE && obj->corpsenm >= LOW_PM)
             wt = (int) obj->quan * ((int) mons[obj->corpsenm].cwt * 3 / 2);
 
-		for (contents = obj->cobj; contents; contents = contents->nobj)
+        if ((objects[obj->otyp].oc_flags4 & O4_CONTAINER_MAY_CONTAIN_MONSTER) && obj->corpsenm >= LOW_PM)
+            cwt += (int)obj->quan * ((int)mons[obj->corpsenm].cwt);
+
+        for (contents = obj->cobj; contents; contents = contents->nobj)
 		{
 			if (obj->otyp == BAG_OF_WIZARDRY
 				&& (contents->oclass == REAGENT_CLASS || contents->oclass == SPBOOK_CLASS

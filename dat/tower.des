@@ -27,9 +27,9 @@ MONSTER:('V',"Vlad the Impaler"),(06,05)
 MONSTER:'V',$niches[0]
 MONSTER:'V',$niches[1]
 MONSTER:'V',$niches[2]
-MONSTER:'V',$niches[3]
-MONSTER:'V',$niches[4]
-MONSTER:'V',$niches[5]
+#MONSTER:'V',$niches[3]
+#MONSTER:'V',$niches[4]
+#MONSTER:'V',$niches[5]
 # The doors
 DOOR:closed,(08,03)
 DOOR:closed,(10,03)
@@ -39,16 +39,16 @@ DOOR:locked,(08,07)
 DOOR:locked,(10,07)
 DOOR:closed,(03,06)
 # treasures
-OBJECT:('(',"chest"),(07,05)
+OBJECT:('(',"coffin"),(07,05),open
 
-OBJECT:('(',"chest"),$niches[0]
-OBJECT:('(',"chest"),$niches[1]
-OBJECT:('(',"chest"),$niches[2]
-OBJECT:('(',"chest"),$niches[3]
-CONTAINER:('(',"chest"),$niches[4] {
+OBJECT:('(',"coffin"),$niches[0],open
+OBJECT:('(',"coffin"),$niches[1],open
+OBJECT:('(',"coffin"),$niches[2],open
+OBJECT:('(',"coffin"),$niches[3]
+CONTAINER:('(',"coffin"),$niches[4] {
   OBJECT:('(', "wax candle"), quantity:4d2
 }
-CONTAINER:('(',"chest"),$niches[5] {
+CONTAINER:('(',"coffin"),$niches[5] {
   OBJECT:('(', "tallow candle"), quantity:4d2
 }
 # We have to protect the tower against outside attacks
@@ -80,11 +80,13 @@ LADDER:(11,05),up
 LADDER:(03,07),down
 DOOR:locked,(10,04)
 DOOR:locked,(09,07)
-MONSTER:'&',$place[0]
-MONSTER:'&',$place[1]
-MONSTER:('d',"shoosuva"),$place[2]
-MONSTER:('d',"shoosuva"),$place[3]
-MONSTER:('d',"shoosuva"),$place[4]
+
+OBJECT:('(',"coffin"),$place[0]
+OBJECT:('(',"coffin"),$place[1]
+OBJECT:('(',"coffin"),$place[2]
+OBJECT:('(',"coffin"),$place[3]
+OBJECT:('(',"coffin"),$place[4]
+
 CONTAINER:('(',"chest"),$place[5] {
   OBJECT:('"',"amulet of life saving")
 }
@@ -94,6 +96,7 @@ CONTAINER:('(',"chest"),$place[6] {
 OBJECT:('[',"water walking boots"),$place[7]
 OBJECT:('[',"crystal plate mail"),$place[8]
 OBJECT:('+',"invisibility"),$place[9]
+
 MONSTER:('d',"Cerberus"),(04,05)
 # Walls in the tower are non diggable
 NON_DIGGABLE:(00,00,14,10)
@@ -136,13 +139,16 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
-OBJECT:(')',"long sword"),$place[0]
+OBJECT:('(',"coffin"),$place[0]
 TRAP:random,$place[0]
 OBJECT:('(',"lock pick"),$place[1]
 TRAP:random,$place[1]
-OBJECT:('[',"elven cloak"),$place[2]
+OBJECT:('(',"coffin"),$place[2]
 TRAP:random,$place[2]
 OBJECT:('(',"blindfold"),$place[3]
 TRAP:random,$place[3]
+OBJECT:('(',"coffin"),$place[4]
+OBJECT:('(',"coffin"),$place[5]
+OBJECT:('(',"coffin"),$place[6]
 # Walls in the tower are non diggable
 NON_DIGGABLE:(00,00,18,12)

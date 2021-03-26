@@ -414,6 +414,11 @@ enum main_menu_command {
 #define TAMEDOG_FORCE_NON_UNIQUE	1
 #define TAMEDOG_FORCE_ALL			2
 
+
+#define MKOBJ_FLAGS_OPEN_COFFIN						0x00000001
+#define MKOBJ_FLAGS_MONSTER_SPECIFIED				0x00000002
+
+
 /* Moved from shk.c */
 #define NOTANGRY(mon) ((mon)->mpeaceful)
 #define ANGRY(mon) (!NOTANGRY(mon))

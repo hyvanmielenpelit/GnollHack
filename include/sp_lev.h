@@ -213,6 +213,7 @@ enum sp_obj_var_flags {
     SP_O_V_INDESTRUCTIBLE,
     SP_O_V_USES_UP_KEY,
     SP_O_V_NO_PICKUP,
+    SP_O_V_OPEN,
 
     SP_O_V_END
 };
@@ -463,7 +464,7 @@ typedef struct {
     int quan;
     short buried;
     short lit;
-    short eroded, locked, trapped, recharged, invis, greased, broken, indestructible, uses_up_key, no_pickup;
+    short eroded, locked, trapped, recharged, invis, greased, broken, indestructible, uses_up_key, no_pickup, open;
 	int elemental_enchantment;
     int exceptionality;
 } object;
