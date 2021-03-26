@@ -964,7 +964,13 @@ register struct monst *mtmp;
     else if (is_lminion(mtmp)
                && !(mtmp->isminion && EMIN(mtmp)->renegade)) 
     {
-        int cuss_rnd = rn2(QTN_ANGELIC - 1 + (Hallucination ? 1 : 0));
+        int cuss_rnd = 1;
+        do
+        {
+            cuss_rnd = rn2(QTN_ANGELIC - 1 + (Hallucination ? 1 : 0));
+        }
+        while (iflags.using_gui_sounds && (cuss_rnd >= 3 && cuss_rnd <= 5)); /* For the time being, remove ones using god names as difficult to implement when using voice acting */
+
         play_voice_monster_cuss_with_god_name(mtmp, cuss_rnd + 1);
         com_pager(cuss_rnd
                   + QT_ANGELIC);
