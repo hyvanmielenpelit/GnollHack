@@ -52,6 +52,7 @@ struct flag {
 	boolean pushweapon; /* When wielding, push old weapon into second slot */
     boolean rest_on_space;   /* space means rest */
     boolean safe_dog;        /* give complete protection to the dog */
+    boolean displace_peaceful;  /* displace peaceful monsters */
     boolean showexp;         /* show experience points */
 	boolean tellexp;		 /* tell experience points when received */
     boolean showmove;         /* show move on statusline */

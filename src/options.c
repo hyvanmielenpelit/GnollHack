@@ -122,6 +122,7 @@ static struct Bool_Opt {
     { "confirm", &flags.confirm, TRUE, SET_IN_GAME },
     { "dark_room", &flags.dark_room, TRUE, SET_IN_GAME },
 	{ "detailed_weights", &flags.detailed_weights, FALSE, SET_IN_GAME },
+    { "displace_peaceful", &flags.displace_peaceful, TRUE, SET_IN_GAME },
 #ifdef ANDROID
 	{"dumplog", &iflags.dumplog, FALSE, SET_IN_FILE },
 #endif

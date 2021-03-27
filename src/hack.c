@@ -1870,7 +1870,7 @@ domove_core()
         }
 
         mtmp = m_at(x, y);
-        if (mtmp && !is_safepet(mtmp)) {
+        if (mtmp && !is_safepet(mtmp) && !is_displaceable_peaceful(mtmp)) {
             /* Don't attack if you're running, and can see it */
             /* It's fine to displace pets, though */
             /* We should never get here if forcefight */
@@ -1898,7 +1898,7 @@ domove_core()
         /* don't stop travel when displacing pets; if the
            displace fails for some reason, attack() in uhitm.c
            will stop travel rather than domove */
-        if (!is_safepet(mtmp) || context.forcefight)
+        if (!(is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) || context.forcefight)
             nomul(0);
         /* only attack if we know it's there */
         /* or if we used the 'F' command to fight blindly */
@@ -1930,7 +1930,7 @@ domove_core()
         }
         if (context.forcefight || !mtmp->mundetected || sensemon(mtmp)
             || ((hides_under(mtmp->data) || mtmp->data->mlet == S_EEL)
-                && !is_safepet(mtmp))) 
+                && !is_safepet(mtmp) && !is_displaceable_peaceful(mtmp)))
         {
             /* try to attack; note that it might evade */
             /* also, we don't attack tame when _safepet_ */
@@ -2119,7 +2119,7 @@ domove_core()
      * Ceiling-hiding pets are skipped by this section of code, to
      * be caught by the normal falling-monster code.
      */
-    if (is_safepet(mtmp) && !(is_hider(mtmp->data) && mtmp->mundetected)) 
+    if ((is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) && !(is_hider(mtmp->data) && mtmp->mundetected))
 	{
         /* if trapped, there's a chance the pet goes wild */
         if (mtmp->mtrapped)
@@ -2187,7 +2187,7 @@ domove_core()
             newsym(x, y);
             newsym(u.ux0, u.uy0);
 
-            You("%s %s.", is_tame(mtmp) ? "swap places with" : "frighten",
+            You("%s %s.", is_tame(mtmp) ? "swap places with" : is_displaceable_peaceful(mtmp) ? "displace" : "frighten",
                 pnambuf);
 
             /* check for displacing it into pools and traps */
