@@ -382,6 +382,8 @@ TILESET: undead_tileset
 NAMING:"A town of the dead", name_revealed_seeing_monster, montype:"Orcus"
 GEOMETRY:right,center
 # A ghost town
+#         1         2         3         4         5
+#12345678901234567890123456789012345678901234567890
 MAP
 .|....|....|....|..............|....|........
 .|....|....|....|..............|....|........
@@ -462,6 +464,16 @@ DOOR:closed,(06,15)
 REGION:(12,09,15,10),lit,"npcroom"
 NPC:npc_geologist,(14,10)
 DOOR:closed,(13,08) 
+
+# Coffins etc.
+OBJECT:('(',"coffin"),(04,01)
+OBJECT:('(',"coffin"),(33,01)
+OBJECT:('(',"coffin"),(02,10)
+OBJECT:('(',"coffin"),(20,14)
+OBJECT:('(',"sarcophagus"),(22,06)
+OBJECT:('(',"sarcophagus"),(22,08)
+OBJECT:('(',"sarcophagus"),(26,06)
+OBJECT:('(',"sarcophagus"),(26,08)
 
 # Some traps.
 TRAP:"spiked pit", random

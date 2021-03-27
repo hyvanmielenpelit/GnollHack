@@ -4599,6 +4599,7 @@ boolean picked_some;
     char fbuf[BUFSZ];
     winid tmpwin;
     boolean skip_objects, felt_cockatrice = FALSE;
+    struct rm* lev = &levl[u.ux][u.uy];
 
     /* default pile_limit is 5; a value of 0 means "never skip"
        (and 1 effectively forces "always skip") */
@@ -4674,9 +4675,9 @@ boolean picked_some;
     }
 
     char dfbuf[BUFSZ] = "";
-    if (IS_BRAZIER(levl[u.ux][u.uy].typ))
+    if (IS_BRAZIER(lev->typ))
     {
-        if(levl[u.ux][u.uy].lamplit)
+        if(lev->lamplit)
             strcpy(dfbuf, "lit ");
         else
             strcpy(dfbuf, "unlit ");

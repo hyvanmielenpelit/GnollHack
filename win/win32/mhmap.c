@@ -3786,9 +3786,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     /* First, darkening of dark areas and areas drawn from memory */
                     if (!skip_darkening)
                     {
-                        if (i == u.ux + 1 && j == u.uy)
-                            j = j;
-
                         if (!cansee(darkening_i, darkening_j) || (data->map[darkening_i][darkening_j].layer_flags & LFLAGS_SHOWING_MEMORY))
                         {
                             if (1)
@@ -3803,7 +3800,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 }
                                 else
                                 {
-                                    if (!levl[enl_i][enl_j].waslit)
+                                    if (!levl[darkening_i][darkening_j].waslit)
                                     {
                                         if (default_tileset_definition.nonlit_darkening[current_cmap] > 0.0)
                                             multiplier *= default_tileset_definition.nonlit_darkening[current_cmap];
