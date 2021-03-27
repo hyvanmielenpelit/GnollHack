@@ -74,6 +74,7 @@ IF[50%] {
     TRAP:"fire",(69,02)
     TRAP:"fire",(70,02)
     MONSTER:'L',(64,14)
+    OBJECT:('(',"sarcophagus"),(64,14),open
 } ELSE {
     BRANCH:(64,14,64,14),(0,0,0,0)
     OBJECT:('`', "boulder"),(64,14)
@@ -81,6 +82,7 @@ IF[50%] {
     TRAP:"fire",(64,15)
     TRAP:"fire",(65,15)
     MONSTER:'L',(70,01)
+    OBJECT:('(',"sarcophagus"),(70,01),open
 }
 SIGNPOST: (63,08), signpost_normal,"Keep Out - Gate to Gehennom Closed"
 ALTAR:(70,08),noalign,altar
