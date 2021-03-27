@@ -2072,7 +2072,7 @@ struct mkroom *croom;
     else if (o->id != -1)
     {
         unsigned long mkflags = o->open ? MKOBJ_FLAGS_OPEN_COFFIN : 0UL;
-         mkflags |= o->corpsenm > NON_PM ? MKOBJ_FLAGS_MONSTER_SPECIFIED : 0UL;
+        mkflags |= o->corpsenm > NON_PM ? MKOBJ_FLAGS_MONSTER_SPECIFIED : 0UL;
         
         otmp = mksobj_at_with_flags(o->id, x, y, TRUE, !named, mkflags);
     }
@@ -2161,7 +2161,7 @@ struct mkroom *croom;
     
     if (o->open) {
         otmp->speflags |= SPEFLAGS_LID_OPENED;
-        otmp->corpsenm = NON_PM;
+        set_corpsenm(otmp, NON_PM);
         otmp->owt = weight(otmp);
     }
 

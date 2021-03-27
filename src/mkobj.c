@@ -1227,6 +1227,9 @@ unsigned long mkflags;
     otmp->special_quality = 0;
     otmp->cobj = (struct obj*)0;
 
+    if ((objects[otmp->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && (mkflags & MKOBJ_FLAGS_OPEN_COFFIN))
+        otmp->speflags |= SPEFLAGS_LID_OPENED;
+
     if (init) 
 	{
 		/* quantity */
@@ -1409,6 +1412,7 @@ unsigned long mkflags;
             case SARCOPHAGUS:
             case COFFIN:
             {
+
                 if (!(mkflags & MKOBJ_FLAGS_OPEN_COFFIN) && !(mkflags & MKOBJ_FLAGS_MONSTER_SPECIFIED))
                 {
                     int cnm = NON_PM;
