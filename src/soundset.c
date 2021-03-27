@@ -5135,6 +5135,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_ESCAPE_TRAP, 1.0f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_NOTHING_FOUND",
+        {GHSOUND_NOTHING_FOUND, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
 };
 
 
@@ -5987,8 +5992,8 @@ enum climbing_types climbingid;
     immediateinfo.parameter_names[5] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
-
-    if(soundid > GHSOUND_NONE && volume > 0.0f)
+    
+    if(soundid > GHSOUND_NONE && volume > MINIMUM_PLAYABLE_MOVEMENT_SOUND_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 

@@ -1058,7 +1058,7 @@ STATIC_OVL void
 dig_up_grave(cc)
 coord *cc;
 {
-    struct obj *otmp;
+    struct obj *otmp = (struct obj*)0;
     xchar dig_x, dig_y;
 
     if (!cc) {
@@ -1084,35 +1084,50 @@ coord *cc;
         You("have violated the sanctity of this grave!");
     }
 
-    switch (rn2(5)) {
-    case 0:
-		You("unearth some bones.");
-		(void)mk_tt_object(BONE, dig_x, dig_y);
-		(void)mk_tt_object(BONE, dig_x, dig_y);
-		if(!rn2(2))
-			(void)mk_tt_object(HUMAN_SKULL, dig_x, dig_y);
-		break;
-	case 1:
-        You("unearth a corpse.");
-        if ((otmp = mk_tt_object(CORPSE, dig_x, dig_y)) != 0)
-            otmp->age -= 100; /* this is an *OLD* corpse */
-        break;
-    case 2:
-        if (!Blind)
-            pline(Hallucination ? "Dude!  The living dead!"
-                                : "The grave's owner is very upset!");
-        (void) makemon(mkclass(S_LESSER_UNDEAD, 0), dig_x, dig_y, NO_MM_FLAGS);
-        break;
-    case 3:
-        if (!Blind)
-            pline(Hallucination ? "I want my mummy!"
-                                : "You've disturbed a tomb!");
-        (void) makemon(mkclass(S_GREATER_UNDEAD, 0), dig_x, dig_y, NO_MM_FLAGS);
-        break;
-    default:
-        /* No corpse */
-        pline_The("grave seems unused.  Strange....");
-        break;
+    int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, FALSE);
+
+    if (!itemsfound)
+    {
+        switch (rn2(5)) {
+        case 0:
+            play_sfx_sound(SFX_UNEARTHED_OBJECT_FOUND);
+            You("unearth some bones.");
+            (void)mksobj_at(BONE, dig_x, dig_y, TRUE, FALSE);
+            (void)mksobj_at(BONE, dig_x, dig_y, TRUE, FALSE);
+            if (!rn2(2))
+                (void)mksobj_at(HUMAN_SKULL, dig_x, dig_y, TRUE, FALSE);
+            break;
+        case 1:
+            play_sfx_sound(SFX_UNEARTHED_OBJECT_FOUND);
+            You("unearth a corpse.");
+            if ((otmp = mk_tt_object(CORPSE, dig_x, dig_y)) != 0)
+                otmp->age -= 100; /* this is an *OLD* corpse */
+            break;
+        case 2:
+            if (!Blind)
+            {
+                play_sfx_sound(SFX_SURPRISE_ATTACK);
+                pline(Hallucination ? "Dude!  The living dead!"
+                    : "The grave's owner is very upset!");
+            }
+            (void)makemon(mkclass(S_LESSER_UNDEAD, 0), dig_x, dig_y, NO_MM_FLAGS);
+            break;
+        case 3:
+            if (!Blind)
+            {
+                play_sfx_sound(SFX_SURPRISE_ATTACK);
+                pline(Hallucination ? "I want my mummy!"
+                    : "You've disturbed a tomb!");
+            }
+            otmp = mksobj_at_with_flags(SARCOPHAGUS, dig_x, dig_y, FALSE, FALSE, MKOBJ_FLAGS_OPEN_COFFIN);
+            (void)makemon(mkclass(S_GREATER_UNDEAD, 0), dig_x, dig_y, NO_MM_FLAGS);
+            break;
+        default:
+            /* No corpse */
+            play_sfx_sound(SFX_NOTHING_FOUND);
+            pline_The("grave seems unused.  Strange....");
+            break;
+        }
     }
     del_engr_at(dig_x, dig_y);
     create_simple_location(dig_x, dig_y, levl[dig_x][dig_y].floortyp ? levl[dig_x][dig_y].floortyp : GROUND, levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : get_initial_location_subtype(GROUND), 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, TRUE);
@@ -3130,12 +3145,31 @@ dodig()
 
 
 	char digbuf[BUFSIZ];
-	if (uwep)
-		strcpy(digbuf, yname(uwep));
+    enum object_soundset_types oss = 0;
+    if (uwep)
+    {
+        strcpy(digbuf, yname(uwep));
+        oss = objects[uwep->otyp].oc_soundset;
+
+    }
     else if (u.twoweap && uarms)
+    {
         strcpy(digbuf, yname(uarms));
+        oss = objects[uarms->otyp].oc_soundset;
+    }
     else
-		Sprintf(digbuf, "your %s", makeplural(body_part(HAND)));
+    {
+        Sprintf(digbuf, "your %s", makeplural(body_part(HAND)));
+        if (!Upolyd || u.umonnum < LOW_PM)
+        {
+            enum player_soundset_types pss = get_player_soundset();
+            oss = player_soundsets[pss].attack_soundsets[PLAYER_ATTACK_SOUNDSET_BAREHANDED];
+        }
+        else
+        {
+            oss = monster_soundsets[u.mfemale ? mons[u.umonnum].female_soundset : mons[u.umonnum].soundset].attack_soundsets[0];
+        }
+    }
 
     struct rm* lev = &levl[u.ux][u.uy];
 
@@ -3145,22 +3179,25 @@ dodig()
 		return 0;
 	}
 
-	if (IS_GRAVE(lev->typ))
-	{
-		You("dig the grave with %s.", digbuf);
+    play_occupation_immediate_sound(oss, OCCUPATION_DIGGING_GROUND, OCCUPATION_SOUND_TYPE_START);
 
-		coord cc;
-		cc.x = u.ux;
-		cc.y = u.uy;
-		dig_up_grave(&cc);
-		return 1;
-	}
+    if (IS_GRAVE(lev->typ))
+    {
+        You("dig the grave with %s.", digbuf);
+        coord cc;
+        cc.x = u.ux;
+        cc.y = u.uy;
+        dig_up_grave(&cc);
+        return 1;
+    }
 
-	/* Normal digging */
-	You("dig the ground with %s.", digbuf);
+
+    /* Normal digging */
+    You("dig the ground with %s.", digbuf);
 
 	int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, FALSE);
-	if (!itemsfound)
+
+    if (!itemsfound)
 	{
 		pline("However, you do not find anything.");
 	}

@@ -621,14 +621,90 @@ struct mkroom *sroom;
                 (void) mkgold((long) rn1(i, 10), sx, sy);
                 break;
             case MORGUE:
-                if (!rn2(5))
-                    (void) mk_tt_object(CORPSE, sx, sy);
-                if (!rn2(10)) /* lots of treasure buried with dead */
-                    (void) mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
-                                     TRUE, FALSE);
-                if (!rn2(5))
-                    make_grave(sx, sy, (char *) 0, TRUE);
+            {
+                struct obj* otmp = (struct obj*)0;
+                boolean dealloc = FALSE;
+                
+                if (!rn2(7))
+                {
+                    otmp = mksobj_at((rn2(7)) ? COFFIN : SARCOPHAGUS, sx, sy,
+                        TRUE, FALSE);
+                    if (otmp && rn2(2))
+                    {
+                        (void)bury_an_obj(otmp, &dealloc);
+                        if (dealloc)
+                            otmp = 0, dealloc = FALSE;
+
+                        if (!rn2(2))
+                            make_grave(sx, sy, (char*)0, TRUE);
+
+                    }
+                }
+                else
+                {
+                    if (!rn2(5))
+                    { 
+                        otmp = mk_tt_object(CORPSE, sx, sy);
+                        if (otmp && rn2(4))
+                        {
+                            (void)bury_an_obj(otmp, &dealloc);
+                            if (dealloc)
+                                otmp = 0, dealloc = FALSE;
+
+                            if (!rn2(3))
+                                make_grave(sx, sy, (char*)0, TRUE);
+                        }
+                    }
+                    else if (!rn2(5))
+                    {
+                        boolean bury = !!rn2(3);
+                        otmp = mksobj_at(BONE, sx, sy,
+                            TRUE, FALSE);
+                        otmp->quan = rnd(5);
+                        otmp->owt = weight(otmp);
+                        if (otmp && bury)
+                        {
+                            (void)bury_an_obj(otmp, &dealloc);
+                            if (dealloc)
+                                otmp = 0, dealloc = FALSE;
+                        }
+                        if (rn2(3))
+                        {
+                            otmp = mksobj_at(HUMAN_SKULL, sx, sy,
+                                TRUE, FALSE);
+                            if (otmp && bury)
+                            {
+                                (void)bury_an_obj(otmp, &dealloc);
+                                if (dealloc)
+                                    otmp = 0, dealloc = FALSE;
+                            }
+                        }
+                        if (bury && !rn2(4))
+                            make_grave(sx, sy, (char*)0, TRUE);
+
+                    }
+                    else
+                    {
+                        if (!rn2(5))
+                            make_grave(sx, sy, (char*)0, TRUE);
+
+                    }
+
+                    if ((otmp && !rn2(5)) || !rn2(12)) /* lots of treasure buried with dead */
+                    {
+                        otmp = mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
+                            TRUE, FALSE);
+                        if (otmp && rn2(4))
+                        {
+                            (void)bury_an_obj(otmp, &dealloc);
+                            if (dealloc)
+                                otmp = 0, dealloc = FALSE;
+                        }
+                    }
+                }
+
                 break;
+            }
             case BEEHIVE:
                 if (!rn2(3))
                     (void) mksobj_at(LUMP_OF_ROYAL_JELLY, sx, sy, TRUE,

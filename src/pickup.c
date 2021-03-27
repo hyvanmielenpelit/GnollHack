@@ -1825,8 +1825,10 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
     {
         lidopened = TRUE;
         cobj->speflags |= SPEFLAGS_LID_OPENED;
+        force_redraw_at(u.ux, u.uy);
         play_simple_container_sound(cobj, CONTAINER_SOUND_TYPE_OPEN);
         You("carefully push the lid of %s aside...", the(xname(cobj)));
+        flush_screen(1);
     }
 
     if(!(objects[cobj->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE) && !lidopened)
@@ -1855,26 +1857,47 @@ struct obj* cobj;
     xchar x = 0, y = 0;
     get_obj_location(cobj, &x, &y, 0);
 
-    if (isok(x, y) && cobj->corpsenm > NON_PM)
+    if (isok(x, y) && (objects[cobj->otyp].oc_flags4 & O4_CONTAINER_MAY_CONTAIN_MONSTER) && (has_omonst(cobj) || cobj->corpsenm > NON_PM))
     {
-        struct monst* mtmp = makemon(&mons[cobj->corpsenm], x, y, MM_ANGRY | MM_ADJACENTOK);
-        cobj->corpsenm = NON_PM; /* It's gone */
-        cobj->owt = weight(cobj);
-        if (objects[cobj->otyp].oc_flags4 & O4_CONTAINER_HAS_LID)
+        struct monst* mtmp = (struct monst*)0;
+        if (has_omonst(cobj))
         {
-            if (!(cobj->speflags & SPEFLAGS_LID_OPENED))
+            coord xy = { x, y };
+            mtmp = montraits(cobj, &xy, FALSE, NON_PM);
+            if (mtmp)
             {
-                play_simple_container_sound(cobj, CONTAINER_SOUND_TYPE_OPEN);
-                cobj->speflags |= SPEFLAGS_LID_OPENED;
-                newsym(x, y);
+                free_omonst(cobj);
+                set_corpsenm(cobj, NON_PM); /* It's gone */
             }
         }
+        
+        if(!mtmp && cobj->corpsenm >= LOW_PM)
+        {
+            mtmp = makemon(&mons[cobj->corpsenm], x, y, MM_ANGRY | MM_ADJACENTOK);
+            set_corpsenm(cobj, NON_PM); /* It's gone */
+        }
+
+        cobj->owt = weight(cobj);
+
         if (mtmp)
         {
+            boolean lid_opened = FALSE;
+            /* Monster opens the lid first */
+            if (objects[cobj->otyp].oc_flags4 & O4_CONTAINER_HAS_LID)
+            {
+                if (!(cobj->speflags & SPEFLAGS_LID_OPENED))
+                {
+                    lid_opened = TRUE;
+                    play_simple_container_sound(cobj, CONTAINER_SOUND_TYPE_OPEN);
+                    cobj->speflags |= SPEFLAGS_LID_OPENED;
+                    force_redraw_at(x, y);
+                }
+            }
+
             if (iflags.using_gui_sounds)
                 delay_output_milliseconds(300);
             play_sfx_sound(SFX_SURPRISE_ATTACK);
-            pline("Disturbed, %s rises from the %s!", a_monnam(mtmp), cxname(cobj));
+            pline("Disturbed, %s %srises from the %s!", a_monnam(mtmp), lid_opened ? "opens the lid and " : "", cxname(cobj));
             flush_screen(1);
             if (iflags.using_gui_sounds)
                 delay_output_milliseconds(300);
@@ -1882,6 +1905,7 @@ struct obj* cobj;
             return TRUE;
         }
     }
+
 
     return FALSE;
 

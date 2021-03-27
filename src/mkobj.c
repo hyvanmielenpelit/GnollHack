@@ -414,7 +414,7 @@ struct obj *box;
     register int n;
     register struct obj *otmp;
 
-    box->cobj = (struct obj *) 0;
+    //box->cobj = (struct obj *) 0; /* Box may have previous contents, such as a coffin corpse */
 
     switch (box->otyp) 
     {
@@ -510,18 +510,7 @@ struct obj *box;
         {
             otmp = mkobj(WEAPON_CLASS, TRUE, TRUE);
         }
-        else if (box->otyp == SARCOPHAGUS)
-        {
-            char item_classes[5] = { COIN_CLASS, GEM_CLASS, MISCELLANEOUS_CLASS, AMULET_CLASS, RING_CLASS };
-            otmp = mkobj(item_classes[rn2(5)], TRUE, TRUE);
-            if (otmp->oclass == COIN_CLASS)
-            {
-                /* 2.5 x level's usual amount; weight adjusted below */
-                otmp->quan = (long)(rnd(level_difficulty() + 2) * rnd(75));
-                otmp->owt = weight(otmp);
-            }
-        }
-        else if (box->otyp == COFFIN)
+        else if (box->otyp == SARCOPHAGUS || box->otyp == COFFIN)
         {
             char item_classes[5] = { COIN_CLASS, GEM_CLASS, MISCELLANEOUS_CLASS, AMULET_CLASS, RING_CLASS };
             otmp = mkobj(item_classes[rn2(5)], TRUE, TRUE);
@@ -1236,6 +1225,7 @@ unsigned long mkflags;
     otmp->lamplit = 0;
     otmp->makingsound = 0;
     otmp->special_quality = 0;
+    otmp->cobj = (struct obj*)0;
 
     if (init) 
 	{
@@ -1416,21 +1406,31 @@ unsigned long mkflags;
                 otmp->olocked = !!(rn2(5));
                 otmp->otrapped = !(rn2(10));
                 break;
+            case SARCOPHAGUS:
             case COFFIN:
             {
                 if (!(mkflags & MKOBJ_FLAGS_OPEN_COFFIN) && !(mkflags & MKOBJ_FLAGS_MONSTER_SPECIFIED))
                 {
                     int cnm = NON_PM;
+
+                    if (otmp->otyp == SARCOPHAGUS)
+                    {
+                        cnm = monsndx(mkclass(rn2(3) ? S_GREATER_UNDEAD : S_LICH, 0));
+                        set_corpsenm(otmp, !rn2(2) ? (rn2(3) && cnm > NON_PM ? cnm : (!rn2(2) || u.ulevel < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR : !rn2(2) || u.ulevel < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING)) : NON_PM);
+                    }
+                    else
+                    {
                         if (In_V_tower(&u.uz))
                         {
                             cnm = monsndx(mkclass(S_VAMPIRE, 0));
-                                otmp->corpsenm = cnm > NON_PM ? cnm : PM_VAMPIRE;
+                            set_corpsenm(otmp, cnm > NON_PM ? cnm : PM_VAMPIRE);
                         }
                         else
                         {
                             cnm = monsndx(mkclass(rn2(3) ? S_VAMPIRE : S_LESSER_UNDEAD, 0));
-                                otmp->corpsenm = rn2(3) ? (rn2(3) && cnm > NON_PM ? cnm : PM_BARROW_WIGHT) : NON_PM;
+                            set_corpsenm(otmp, rn2(3) ? (rn2(3) && cnm > NON_PM ? cnm : PM_BARROW_WIGHT) : NON_PM);
                         }
+                    }
 
                     if (otmp->corpsenm == NON_PM && !rn2(2))
                     {
@@ -1449,47 +1449,18 @@ unsigned long mkflags;
                         }
                         else
                         {
-                            struct obj* corpse = mksobj(CORPSE, FALSE, FALSE, 1);
+                            struct obj* corpse = mksobj(CORPSE, TRUE, TRUE, 1);
                             if (corpse)
                             {
-                                corpse->corpsenm = !rn2(4) ? PM_HUMAN : rn2(PM_WIZARD - PM_ARCHEOLOGIST + 1) + PM_ARCHEOLOGIST;
-                                corpse->owt = weight(corpse);
-                                (void)add_to_container(otmp, corpse);
-                            }
-                        }
-                    }
-                    otmp->owt = weight(otmp);
-                }
-                break;
-            }
-            case SARCOPHAGUS:
-            {
-                if (!(mkflags & MKOBJ_FLAGS_OPEN_COFFIN) && !(mkflags & MKOBJ_FLAGS_MONSTER_SPECIFIED))
-                {
-                    int cnm = monsndx(mkclass(rn2(3) ? S_GREATER_UNDEAD : S_LICH, 0));
-                    otmp->corpsenm = !rn2(2) ? (rn2(3) && cnm > NON_PM ? cnm : (!rn2(2) || u.ulevel < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR : !rn2(2) || u.ulevel < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING)) : NON_PM;
-                    if (otmp->corpsenm == NON_PM && !rn2(2))
-                    {
-                        if (!rn2(2))
-                        {
-                            struct obj* otmp2 = mksobj(BONE, TRUE, TRUE, 1);
-                            if (otmp2)
-                            {
-                                otmp2->quan = rnd(4);
-                                otmp2->owt = weight(otmp2);
-                                (void)add_to_container(otmp, otmp2);
-                            }
-                            otmp2 = mksobj(HUMAN_SKULL, TRUE, TRUE, 1);
-                            if (otmp2)
-                                (void)add_to_container(otmp, otmp2);
-                        }
-                        else
-                        {
-                            struct obj* corpse = mksobj(CORPSE, FALSE, FALSE, 1);
-                            if (corpse)
-                            {
-                                corpse->corpsenm = !rn2(4) ? PM_HUMAN : rn2(PM_WIZARD - PM_ARCHEOLOGIST + 1) + PM_ARCHEOLOGIST;
-                                corpse->owt = weight(corpse);
+                                if(!rn2(5))
+                                {
+                                    struct obj* corpse2 = tt_oname(corpse);
+                                    if(corpse2)
+                                        corpse = corpse2;
+                                }
+                                else
+                                    set_corpsenm(corpse, !rn2(4) ? PM_HUMAN : rn2(PM_WIZARD - PM_ARCHEOLOGIST + 1) + PM_ARCHEOLOGIST);
+
                                 (void)add_to_container(otmp, corpse);
                             }
                         }
@@ -2833,8 +2804,19 @@ register struct obj *obj;
         if (obj->otyp == STATUE && obj->corpsenm >= LOW_PM)
             wt = (int) obj->quan * ((int) mons[obj->corpsenm].cwt * 3 / 2);
 
-        if ((objects[obj->otyp].oc_flags4 & O4_CONTAINER_MAY_CONTAIN_MONSTER) && obj->corpsenm >= LOW_PM)
-            cwt += (int)obj->quan * ((int)mons[obj->corpsenm].cwt);
+        if ((objects[obj->otyp].oc_flags4 & O4_CONTAINER_MAY_CONTAIN_MONSTER))
+        {
+            struct monst* mtmp = (struct monst*)0;
+            if (has_omonst(obj))
+            {
+                mtmp = get_mtraits(obj, FALSE);
+                if(mtmp && mtmp->data)
+                    cwt += (int)obj->quan * ((int)mtmp->data->cwt);
+            }
+            
+            if(!mtmp && obj->corpsenm >= LOW_PM)
+                cwt += (int)obj->quan * ((int)mons[obj->corpsenm].cwt);
+        }
 
         for (contents = obj->cobj; contents; contents = contents->nobj)
 		{
@@ -3111,6 +3093,8 @@ register int x, y;
         /* tt_oname will return null if the scoreboard is empty */
         if ((objtype == STATUE || objtype == CORPSE) && (otmp2 = tt_oname(otmp)) != 0)
             otmp = otmp2;
+        else
+            set_corpsenm(otmp, rn2(PM_WIZARD - PM_ARCHEOLOGIST + 1) + PM_ARCHEOLOGIST);
     }
     return otmp;
 }
