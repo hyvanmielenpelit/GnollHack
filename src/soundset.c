@@ -9690,18 +9690,66 @@ boolean is_angry;
 }
 
 void
-play_voice_shopkeeper_sneaky_thing(shkp, cad_str)
+play_voice_shopkeeper_cad_line(shkp, line_id, cad_str)
 struct monst* shkp;
+enum shopkeeper_cad_lines line_id;
 const char* cad_str;
 {
-    if (!shkp || !shkp->mextra || !ESHK(shkp) || Deaf)
+    if (!shkp || !shkp->mextra || !ESHK(shkp) || Deaf || line_id == SHOPKEEPER_CAD_LINE_NONE)
         return;
 
     enum role_types yourrole = urole.rolenum;
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    int cad_id = 0;
 
     struct ghsound_immediate_info info = { 0 };
 
+    switch (line_id)
+    {
+    case SHOPKEEPER_CAD_LINE_NONE:
+        break;
+    case SHOPKEEPER_CAD_LINE_YOU_SNEAKY:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY;
+        break;
+    case SHOPKEEPER_CAD_LINE_NO_FREE_LIBRARY:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY;
+        break;
+    case SHOPKEEPER_CAD_LINE_LOT_OF_DAMAGE:
+        break;
+    default:
+        break;
+    }
+
+    if (!strcmp(cad_str, "cad"))
+    {
+        cad_id = 0;
+    }
+    else if (!strcmp(cad_str, "minx"))
+    {
+        cad_id = 1;
+    }
+    else if (!strcmp(cad_str, "fiend"))
+    {
+        cad_id = 2;
+    }
+    else if (!strcmp(cad_str, "beast"))
+    {
+        cad_id = 3;
+    }
+    else if (!strcmp(cad_str, "thing"))
+    {
+        cad_id = 4;
+    }
+
+    info.parameter_names[0] = "CadIndex";
+    info.parameter_values[0] = (float)cad_id;
+    info.parameter_names[1] = (char*)0;
+
+#if 0
     if (!strcmp(cad_str, "cad"))
     {
         info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_CAD :
@@ -9732,6 +9780,7 @@ const char* cad_str;
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_THING :
             GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_THING;
     }
+#endif
 
     float volume = SHOPKEEPER_BASE_VOLUME;
     if (isok(shkp->mx, shkp->my))
@@ -9753,6 +9802,7 @@ const char* cad_str;
 
 }
 
+#if 0
 void
 play_voice_shopkeeper_no_free_library(shkp, cad_str)
 struct monst* shkp;
@@ -9816,7 +9866,7 @@ const char* cad_str;
         play_immediate_ghsound(info);
 
 }
-
+#endif
 
 void
 play_voice_shopkeeper_candelabrum_candles(shkp, candelabrum)

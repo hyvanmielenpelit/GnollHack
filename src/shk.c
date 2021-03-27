@@ -755,7 +755,7 @@ struct obj *obj;
             if (!Deaf && !muteshk(shkp))
             {
                 const char* cad_str = cad(FALSE);
-                play_voice_shopkeeper_sneaky_thing(shkp, cad_str);
+                play_voice_shopkeeper_cad_line(shkp, SHOPKEEPER_CAD_LINE_YOU_SNEAKY, cad_str);
                 verbalize("You sneaky %s!  Get out of here with that pick!",
                     cad_str);
             }
@@ -4857,7 +4857,7 @@ boolean altusage;
         if (!Deaf && !muteshk(shkp))
         {
             if (roll)
-                play_voice_shopkeeper_no_free_library(shkp, cad_str);
+                play_voice_shopkeeper_cad_line(shkp, SHOPKEEPER_CAD_LINE_NO_FREE_LIBRARY, cad_str);
 
             play_voice_shopkeeper_simple_line(shkp, ESHK(shkp)->debit > 0L ? SHOPKEEPER_LINE_YOU_OWE_ME_SOME_ADDITIONAL_GOLD : SHOPKEEPER_LINE_YOU_OWE_ME_SOME_GOLD);
         }

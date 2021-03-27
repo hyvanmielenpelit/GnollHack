@@ -987,21 +987,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Cursing Shoplifters", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Cursing Shoplifters", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Cursing Shoplifters", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Sneaky/Sneaky Minx", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Sneaky/Sneaky Minx", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Sneaky/Sneaky Minx", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Sneaky/Sneaky Fiend", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Sneaky/Sneaky Fiend", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Sneaky/Sneaky Fiend", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Sneaky/Sneaky Cad", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Sneaky/Sneaky Cad", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Sneaky/Sneaky Cad", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Sneaky/Sneaky Beast", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Sneaky/Sneaky Beast", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Sneaky/Sneaky Beast", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Sneaky/Sneaky Thing", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Sneaky/Sneaky Thing", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Sneaky/Sneaky Thing", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Cad/Sneaky", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Cad/Sneaky", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Cad/Sneaky", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Id Hang onto That", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Id Hang onto That", 1.0f },
@@ -1230,23 +1219,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Emptying That Will Cost You Some Gold", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Usage Fee Some Gold", 1.0f },
 
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/No Free Library/Minx", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/No Free Library/Fiend", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/No Free Library/Cad", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/No Free Library/Beast", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/No Free Library/Thing", 1.0f },
-
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/No Free Library/Minx", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/No Free Library/Fiend", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/No Free Library/Cad", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/No Free Library/Beast", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/No Free Library/Thing", 1.0f },
-
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/No Free Library/Minx", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/No Free Library/Fiend", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/No Free Library/Cad", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/No Free Library/Beast", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/No Free Library/Thing", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Cad/No Free Library", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Cad/No Free Library", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Cad/No Free Library", 1.0f },
 
 };
 
