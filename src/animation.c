@@ -653,6 +653,16 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         WORM_TILE_WORM_IS_RIGHT_GOING_UP_LEFT + LONG_WORM_TYPE_ELDER * MAX_WORM_TILES + GLYPH_WORM_OFF,
         0UL
     },
+    {
+        "coffin-autodraw",
+        AUTODRAW_DRAW_COFFIN_CONTENTS,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0UL
+    },
 
 };
 

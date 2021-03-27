@@ -1415,8 +1415,13 @@ unsigned long mkflags;
 
                     if (otmp->otyp == SARCOPHAGUS)
                     {
-                        cnm = monsndx(mkclass(rn2(3) ? S_GREATER_UNDEAD : S_LICH, 0));
-                        set_corpsenm(otmp, !rn2(2) ? (rn2(3) && cnm > NON_PM ? cnm : (!rn2(2) || u.ulevel < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR : !rn2(2) || u.ulevel < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING)) : NON_PM);
+                        boolean low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_LICH].difficulty);
+                        cnm = monsndx(mkclass(rn2(3) || low_level ? S_GREATER_UNDEAD : S_LICH, 0));
+                        set_corpsenm(otmp, !rn2(2) ? ((low_level || rn2(3)) && cnm > NON_PM ? cnm :
+                            ((level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_WARRIOR].difficulty - 2 ? PM_SKELETON : 
+                                !rn2(2) || (level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR : 
+                                !rn2(2) || (level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING)) : 
+                            NON_PM);
                     }
                     else
                     {
@@ -1427,8 +1432,10 @@ unsigned long mkflags;
                         }
                         else
                         {
-                            cnm = monsndx(mkclass(rn2(3) ? S_VAMPIRE : S_LESSER_UNDEAD, 0));
-                            set_corpsenm(otmp, rn2(3) ? (rn2(3) && cnm > NON_PM ? cnm : PM_BARROW_WIGHT) : NON_PM);
+                            boolean low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_VAMPIRE].difficulty);
+                            boolean very_low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_BARROW_WIGHT].difficulty - 1);
+                            cnm = monsndx(mkclass(rn2(3) && !low_level ? S_VAMPIRE : S_LESSER_UNDEAD, 0));
+                            set_corpsenm(otmp, rn2(3) ? (rn2(3) && cnm > NON_PM ? cnm : very_low_level ? PM_HUMAN_ZOMBIE : PM_BARROW_WIGHT) : NON_PM);
                         }
                     }
 
@@ -2403,16 +2410,20 @@ int id;
 {
     long when = 0L;
 
-    if (obj->timed) {
+    if (obj->timed) 
+    {
         if (obj->otyp == EGG)
             when = stop_timer(HATCH_EGG, obj_to_any(obj));
-        else {
+        else 
+        {
             when = 0L;
             obj_stop_timers(obj); /* corpse or figurine */
         }
     }
     obj->corpsenm = id;
-    switch (obj->otyp) {
+
+    switch (obj->otyp) 
+    {
     case CORPSE:
         start_corpse_timeout(obj);
         obj->owt = weight(obj);

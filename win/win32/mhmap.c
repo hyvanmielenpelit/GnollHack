@@ -2665,6 +2665,145 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     }
                                 }
                             }
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_COFFIN_CONTENTS && otmp_round && 0) /* Deactivated for the time being */
+                            {
+                                int y_to_rack_top = 16;
+                                int rack_width = 48;
+                                int rack_start = (TILE_X - rack_width) / 2;
+                                int rack_height = TILE_Y - y_to_rack_top;
+                                int rack_item_spacing = 1;
+
+                                int cnt = 0;
+
+                                for (struct obj* contained_obj = otmp_round->cobj; contained_obj; contained_obj = contained_obj->nobj)
+                                {
+                                    if (cnt >= 12)
+                                        break;
+
+                                    int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_obj_floor_tile(contained_obj) ? 0 : TILE_Y / 2);
+                                    int dest_x = 0, dest_y = 0;
+                                    int item_width = has_obj_floor_tile(contained_obj) ? TILE_Y / 2 : OBJ_TILE_HEIGHT(contained_obj->otyp) ? OBJ_TILE_HEIGHT(contained_obj->otyp) : (objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) ? TILE_Y : TILE_Y / 2;
+                                    int item_height = (item_width * TILE_Y) / TILE_X;
+                                    int true_item_width = has_obj_floor_tile(contained_obj) && OBJ_TILE_HEIGHT(contained_obj->otyp) ? OBJ_TILE_HEIGHT(contained_obj->otyp) : item_width;
+                                    int padding = (TILE_Y / 2 - rack_width) / 2;
+                                    int vertical_padding = (TILE_X - item_height) / 2;
+
+                                    //if (contained_obj->oclass != AMULET_CLASS && contained_obj->oclass != GEM_CLASS)
+                                     //   continue;
+
+                                    if (true_item_width > rack_width)
+                                        continue;
+
+                                    int move_px = 2;
+                                    int move_idx = cnt > 0  ? (cnt - 1 % 8) + 1 : 0;
+                                    int move_amt = cnt > 0 ? (cnt - 1 / 8) + 1 : 0;
+                                    int y_move = move_idx < 4 ? -move_px * move_amt : move_idx > 5 ? move_px * move_amt : 0;
+                                    int x_move = move_idx == 1 || move_idx == 4 || move_idx == 6 ? -move_px * move_amt : move_idx == 3 || move_idx == 5 || move_idx == 8 ? move_px * move_amt : 0;
+                                    dest_y = y_to_rack_top + vertical_padding + y_move;
+                                    dest_x = rack_start + (rack_width - item_width) / 2 + x_move;
+
+                                    int source_glyph = obj_to_glyph(contained_obj, rn2);
+                                    int atile = glyph2tile[source_glyph];
+                                    int at_x = TILEBMP_X(atile);
+                                    int at_y = TILEBMP_Y(atile);
+
+                                    RECT source_rt = { 0 };
+                                    source_rt.left = at_x + src_x;
+                                    source_rt.right = source_rt.left + TILE_X;
+                                    source_rt.top = at_y + src_y;
+                                    source_rt.bottom = source_rt.top + (objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP ? TILE_Y : TILE_Y / 2);
+
+                                    int original_width = source_rt.right - source_rt.left;
+                                    int original_height = source_rt.bottom - source_rt.top;
+                                    int rotated_width = original_height;
+                                    int rotated_height = original_width;
+
+                                    HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
+
+                                    unsigned char* lpBitmapBits;
+                                    LONG width = (LONG)original_width;
+                                    LONG height = (LONG)original_height;
+
+                                    BITMAPINFO bi;
+                                    ZeroMemory(&bi, sizeof(BITMAPINFO));
+                                    bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                    bi.bmiHeader.biWidth = width;
+                                    bi.bmiHeader.biHeight = height;
+                                    bi.bmiHeader.biPlanes = 1;
+                                    bi.bmiHeader.biBitCount = 32;
+
+                                    HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
+                                    HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
+                                    StretchBlt(hDCMem, 0, 0, width, height,
+                                        data->tileDC, source_rt.left, source_rt.top, width, height, SRCCOPY);
+
+                                    HDC hDCrotate = CreateCompatibleDC(data->backBufferDC);
+
+                                    unsigned char* lpRotatedBitmapBits;
+                                    BITMAPINFO bi2;
+                                    ZeroMemory(&bi2, sizeof(BITMAPINFO));
+                                    bi2.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                    bi2.bmiHeader.biWidth = rotated_width;
+                                    bi2.bmiHeader.biHeight = rotated_height;
+                                    bi2.bmiHeader.biPlanes = 1;
+                                    bi2.bmiHeader.biBitCount = 32;
+
+                                    HBITMAP hRotateBitmap = CreateDIBSection(hDCrotate, &bi2, DIB_RGB_COLORS, (VOID**)&lpRotatedBitmapBits, NULL, 0);
+                                    HGDIOBJ oldbmp2 = SelectObject(hDCrotate, hRotateBitmap);
+
+                                    int idx, orig_idx, x, y;
+                                    long* long_lpRotatedBitmapBits = (long*)lpRotatedBitmapBits;
+                                    long* long_lpBitmapBits = (long*)lpBitmapBits;
+                                    for (x = 0; x < rotated_width; x++)
+                                    {
+                                        for (y = 0; y < rotated_height; y++)
+                                        {
+                                            idx = y * rotated_width + x;
+                                            orig_idx = x * rotated_height + y;
+
+                                            long_lpRotatedBitmapBits[idx] = long_lpBitmapBits[orig_idx];
+                                        }
+                                    }
+
+                                    RECT target_rt = { 0 };
+
+                                    if (print_first_directly_to_map)
+                                    {
+                                        target_rt.left = rect->left + dest_x;
+                                        target_rt.right = rect->left + dest_x + item_width;
+                                        target_rt.top = rect->top + dest_y;
+                                        target_rt.bottom = rect->top + dest_y + (item_width * rotated_height) / rotated_width;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            data->backBufferDC, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, hDCrotate, 0,
+                                            0, rotated_width,
+                                            rotated_height, TILE_BK_COLOR);
+                                    }
+                                    else
+                                    {
+                                        target_rt.left = dest_x;
+                                        target_rt.right = dest_x + item_width;
+                                        target_rt.top = dest_y;
+                                        target_rt.bottom = dest_y + (item_width * rotated_height) / rotated_width;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            hDCcopy, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, hDCrotate, 0,
+                                            0, rotated_width,
+                                            rotated_height, TILE_BK_COLOR);
+                                    }
+
+                                    SelectObject(hDCMem, oldbmp);
+                                    DeleteDC(hDCMem);
+                                    SelectObject(hDCrotate, oldbmp2);
+                                    DeleteDC(hDCrotate);
+                                    DeleteObject(hRotateBitmap);
+                                    DeleteObject(bitmap);
+
+                                    cnt++;
+                                }
+                            }
                             else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_WEAPON_RACK_CONTENTS && otmp_round)
                             {
                                 int y_to_rack_top = 31;
@@ -2793,7 +2932,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     DeleteObject(bitmap);
 
                                     cnt++;
-                                }
+                            }
                             }
                             else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CANDELABRUM_CANDLES && otmp_round)
                             {
