@@ -1120,6 +1120,13 @@ coord *cc;
                     : "You've disturbed a tomb!");
             }
             otmp = mksobj_at_with_flags(SARCOPHAGUS, dig_x, dig_y, FALSE, FALSE, MKOBJ_FLAGS_OPEN_COFFIN);
+            if (otmp)
+            {
+                boolean dealloc = FALSE;
+                (void)bury_an_obj(otmp, &dealloc);
+                if (dealloc)
+                    otmp = 0;
+            }
             (void)makemon(mkclass(S_GREATER_UNDEAD, 0), dig_x, dig_y, NO_MM_FLAGS);
             break;
         default:
@@ -3175,6 +3182,7 @@ dodig()
 
 	if (!(lev->typ == GRASS || lev->typ == GROUND || IS_GRAVE(lev->typ)))
 	{
+        play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
 		pline("It is too hard to dig here with %s.", digbuf);
 		return 0;
 	}
