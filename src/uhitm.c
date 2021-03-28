@@ -444,7 +444,7 @@ register struct monst *mtmp;
      * you'll usually just swap places if this is a movement command
      */
     /* Intelligent chaotic weapons (Stormbringer) want blood */
-    if ((is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) && !context.forcefight)
+    if ((is_safepet(mtmp) || is_displaceable_peaceful(mtmp) || is_stopping_peaceful(mtmp)) && !context.forcefight)
 	{
         if (1) //!uwep || !(uwep->oartifact && artifact_has_flag(uwep, AF_BLOODTHIRSTY))) 
 		{
@@ -457,6 +457,7 @@ register struct monst *mtmp;
              */
 			boolean foo = (Punished || !rn2(7) || (is_long_worm(mtmp->data) && mtmp->wormno));
             boolean inshop = FALSE;
+			boolean peacefulstop = is_stopping_peaceful(mtmp);
             char *p;
 
             /* only check for in-shop if don't already have reason to stop */
@@ -470,7 +471,7 @@ register struct monst *mtmp;
                     }
             }
 
-			if (inshop || foo || (IS_ROCK(levl[u.ux][u.uy].typ) && !passes_walls(mtmp->data))) 
+			if (inshop || foo || peacefulstop || (IS_ROCK(levl[u.ux][u.uy].typ) && !passes_walls(mtmp->data)))
 			{
                 char buf[BUFSZ];
 

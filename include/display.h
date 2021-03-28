@@ -153,10 +153,18 @@
     (mon && is_tame(mon) && canspotmon(mon) && flags.safe_dog && !Confusion \
      && !Hallucination && !Stunned)
 
+#define is_special_peaceful(mon) \
+    ((mon)->isshk || (mon)->ispriest || (mon)->isnpc || (mon)->issmith || (mon)->isgd || ((mon)->data->geno & G_UNIQ) || (mon)->mnum == urole.ldrnum)
+
 #define is_displaceable_peaceful(mon)    \
-     (mon && is_peaceful(mon) && !(mon)->isshk && !(mon)->ispriest && !(mon)->isnpc && !(mon)->issmith && !(mon)->isgd && !((mon)->data->geno & G_UNIQ) && (mon)->mnum != urole.ldrnum \
+     (mon && is_peaceful(mon) && !is_special_peaceful(mon) \
       && canspotmon(mon) && flags.displace_peaceful && !Confusion && !Hallucination && !Stunned)
-/*
+
+#define is_stopping_peaceful(mon) \
+    (mon && is_peaceful(mon) && is_special_peaceful(mon) \
+      && canspotmon(mon) && flags.displace_peaceful && !Confusion && !Hallucination && !Stunned)
+
+ /*
  * canseeself()
  * senseself()
  * canspotself()
