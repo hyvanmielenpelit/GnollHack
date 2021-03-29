@@ -421,17 +421,7 @@ max_rank_sz()
 long
 botl_score()
 {
-    long deepest = deepest_lev_reached(FALSE);
-    long utotal;
-
-    utotal = money_cnt(invent) + hidden_gold();
-    if ((utotal -= u.umoney0) < 0L)
-        utotal = 0L;
-    utotal += u.u_gamescore + (50 * (deepest - 1))
-          + (deepest > 30 ? 10000 : deepest > 20 ? 1000 * (deepest - 20) : 0);
-    if (utotal < u.u_gamescore)
-        utotal = LONG_MAX; /* wrap around */
-    return utotal;
+    return get_current_game_score();
 }
 #endif /* SCORE_ON_BOTL */
 
@@ -4159,4 +4149,34 @@ shlmenu_redo:
 
 #endif /* STATUS_HILITES */
 
+
+long
+get_current_game_score()
+{
+#if 0
+    /* Old NetHack score */
+    long deepest = deepest_lev_reached(FALSE);
+    long utotal;
+
+    utotal = money_cnt(invent) + hidden_gold();
+    if ((utotal -= u.umoney0) < 0L)
+        utotal = 0L;
+    utotal += u.u_gamescore + (50 * (deepest - 1))
+        + (deepest > 30 ? 10000 : deepest > 20 ? 1000 * (deepest - 20) : 0);
+    if (utotal < u.u_gamescore)
+        utotal = LONG_MAX; /* wrap around */
+    return utotal;
+#endif
+    long deepest = deepest_lev_reached(FALSE);
+    long utotal;
+
+    utotal = money_cnt(invent) + hidden_gold();
+    if ((utotal -= u.umoney0) < 0L)
+        utotal = 0L;
+    utotal += u.u_gamescore + (50 * (deepest - 1))
+        + (deepest > 30 ? 10000 : deepest > 20 ? 1000 * (deepest - 20) : 0);
+    if (utotal < u.u_gamescore)
+        utotal = LONG_MAX; /* wrap around */
+    return utotal;
+}
 /*botl.c*/

@@ -5076,9 +5076,9 @@ struct monst* mtmp;
 	ESHK(mtmp)->debit -= costapplyingtodebit;
 
 	if (is_peaceful(mtmp))
-		pline("\"That's a deal. Be more careful next time.\"");
+		verbalize("That's a deal. Be more careful next time.");
 	else
-		pline("\"On second thought, maybe you should hang for your crimes anyway.\"");
+		verbalize("On second thought, maybe you should hang for your crimes anyway.");
 
 	return 1;
 }
@@ -5131,9 +5131,9 @@ struct monst* mtmp;
 	newsym(mtmp->mx, mtmp->my);
 
 	if (is_peaceful(mtmp))
-		pline("\"That's a deal. Be more careful next time.\"");
+		verbalize("That's a deal. Be more careful next time.");
 	else
-		pline("\"On second thought, maybe you should hang for your crimes anyway.\"");
+		verbalize("On second thought, maybe you should hang for your crimes anyway.");
 
 	return 1;
 }
@@ -5409,9 +5409,9 @@ struct monst* mtmp;
 
 	play_sfx_sound(SFX_BUY_FROM_NPC);
 	if (is_peaceful(mtmp))
-		pline("\"That's a deal. Be more careful next time.\"");
+		verbalize("That's a deal. Be more careful next time.");
 	else
-		pline("\"On second thought, maybe you should hang for your crimes anyway.\"");
+		verbalize("On second thought, maybe you should hang for your crimes anyway.");
 
 	return 1;
 }
@@ -5541,9 +5541,9 @@ struct monst* mtmp;
 
 	play_sfx_sound(SFX_BUY_FROM_NPC);
 	if(is_peaceful(mtmp))
-		pline("\"Fine, it's alright now. Be more careful next time.\"");
+		verbalize("Fine, it's alright now. Be more careful next time.");
 	else
-		pline("\"On second thought, maybe I'll hang you anyway.\"");
+		verbalize("On second thought, maybe I'll hang you anyway.");
 
 	return 1; 
 }

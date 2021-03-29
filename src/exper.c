@@ -329,16 +329,16 @@ register int exper, gamescore;
 	long added_experience = exper == 0 ? 0 : max(1, exper + (exper * max(-9, u.uexperiencebonus)) / 10);
 	long added_gamescore = gamescore;
 	long oldexp = u.uexp,
-		oldrexp = u.u_gamescore,
+		oldscore = u.u_gamescore,
 		newexp = oldexp + added_experience,
-		rexpincr = game_score_difficulty_adjustment(4 * added_experience + added_gamescore),
-        newrexp = oldrexp + rexpincr;
+		scoreincr = game_score_difficulty_adjustment(4 * added_experience + added_gamescore),
+        newscore = oldscore + scoreincr;
 
     /* cap experience and score on wraparound */
     if (newexp < 0 && added_experience > 0)
         newexp = LONG_MAX;
-    if (newrexp < 0 && rexpincr > 0)
-        newrexp = LONG_MAX;
+    if (newscore < 0 && scoreincr > 0)
+        newscore = LONG_MAX;
 
     if (newexp != oldexp) {
         u.uexp = newexp;
@@ -350,8 +350,8 @@ register int exper, gamescore;
 
     }
     /* newrexp will always differ from oldrexp unless they're LONG_MAX */
-    if (newrexp != oldrexp) {
-        u.u_gamescore = newrexp;
+    if (newscore != oldscore) {
+        u.u_gamescore = newscore;
 #ifdef SCORE_ON_BOTL
         if (flags.showscore)
             context.botl = TRUE;

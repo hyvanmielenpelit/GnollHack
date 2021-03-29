@@ -9442,9 +9442,9 @@ enum shopkeeper_lines line_idx;
             GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_DARE_TO_RETURN;
         break;
     case SHOPKEEPER_LINE_OH_YES_YOULL_PAY:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_DARE_TO_RETURN :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_DARE_TO_RETURN :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_DARE_TO_RETURN;
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_OH_YES_YOULL_PAY :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_OH_YES_YOULL_PAY :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_OH_YES_YOULL_PAY;
         break;
     case SHOPKEEPER_LINE_DIDNT_YOU_FORGET_TO_PAY2:
         info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DIDNT_YOU_FORGET_TO_PAY2 :
@@ -9546,8 +9546,47 @@ boolean is_angry;
 
     enum role_types yourrole = urole.rolenum;
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    int pickindex = 0;
+    int howmanyindex = cnt > 1 ? 2 : 1;
 
     struct ghsound_immediate_info info = { 0 };
+    if (is_angry)
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_STUFF_OUTSIDE :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_STUFF_OUTSIDE:
+            GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_STUFF_OUTSIDE;
+    else
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE;
+
+    if (!strcmp(tool_str, "pick") || !strcmp(tool_str, "pick-axe"))
+    {
+        pickindex = 0;
+    }
+    else if (!strcmp(tool_str, "mattock"))
+    {
+        pickindex = 1;
+    }
+    else if (!strcmp(tool_str, "spade"))
+    {
+        pickindex = 2;
+    }
+    else if (!strcmp(tool_str, "digging tool"))
+    {
+        pickindex = 3;
+    }
+    else if (!strcmp(tool_str, "steed"))
+    {
+        pickindex = 4;
+    }
+
+    info.parameter_names[0] = "HowManyIndex";
+    info.parameter_values[0] = (float)howmanyindex;
+    info.parameter_names[1] = "PickIndex";
+    info.parameter_values[1] = (float)pickindex;
+    info.parameter_names[2] = (char*)0;
+
+#if 0
     if (is_angry)
     {
         if (!strcmp(tool_str, "pick") || !strcmp(tool_str, "pick-axe"))
@@ -9668,6 +9707,7 @@ boolean is_angry;
                 GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_STEED_OUTSIDE;
         }
     }
+#endif
 
     float volume = SHOPKEEPER_BASE_VOLUME;
     if (isok(shkp->mx, shkp->my))
@@ -9749,39 +9789,6 @@ const char* cad_str;
     info.parameter_values[0] = (float)cad_id;
     info.parameter_names[1] = (char*)0;
 
-#if 0
-    if (!strcmp(cad_str, "cad"))
-    {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_CAD :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_CAD :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_CAD;
-    }
-    else if (!strcmp(cad_str, "minx"))
-    {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_MINX :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_MINX :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_MINX;
-    }
-    else if (!strcmp(cad_str, "fiend"))
-    {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_FIEND :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_FIEND :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_FIEND;
-    }
-    else if (!strcmp(cad_str, "beast"))
-    {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_BEAST :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_BEAST :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_BEAST;
-    }
-    else if (!strcmp(cad_str, "thing"))
-    {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY_THING :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY_THING :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY_THING;
-    }
-#endif
-
     float volume = SHOPKEEPER_BASE_VOLUME;
     if (isok(shkp->mx, shkp->my))
     {
@@ -9802,71 +9809,6 @@ const char* cad_str;
 
 }
 
-#if 0
-void
-play_voice_shopkeeper_no_free_library(shkp, cad_str)
-struct monst* shkp;
-const char* cad_str;
-{
-    if (!shkp || !shkp->mextra || !ESHK(shkp) || Deaf)
-        return;
-
-    enum role_types yourrole = urole.rolenum;
-    boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
-
-    struct ghsound_immediate_info info = { 0 };
-
-    if (!strcmp(cad_str, "cad"))
-    {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY_CAD :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY_CAD :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY_CAD;
-    }
-    else if (!strcmp(cad_str, "minx"))
-    {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY_MINX :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY_MINX :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY_MINX;
-    }
-    else if (!strcmp(cad_str, "fiend"))
-    {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY_FIEND :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY_FIEND :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY_FIEND;
-    }
-    else if (!strcmp(cad_str, "beast"))
-    {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY_BEAST :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY_BEAST :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY_BEAST;
-    }
-    else if (!strcmp(cad_str, "thing"))
-    {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY_THING :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY_THING :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY_THING;
-    }
-
-    float volume = SHOPKEEPER_BASE_VOLUME;
-    if (isok(shkp->mx, shkp->my))
-    {
-        float hearing = hearing_array[shkp->mx][shkp->my];
-        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
-            volume = SHOPKEEPER_DISTANT_VOLUME;
-        else
-            volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
-    }
-
-    info.volume = min(1.0f, volume);
-    info.play_group = SOUND_PLAY_GROUP_LONG;
-    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
-    info.dialogue_mid = shkp->m_id;
-
-    if (info.ghsound > GHSOUND_NONE)
-        play_immediate_ghsound(info);
-
-}
-#endif
 
 void
 play_voice_shopkeeper_candelabrum_candles(shkp, candelabrum)
@@ -9879,33 +9821,14 @@ struct obj* candelabrum;
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
 
     struct ghsound_immediate_info info = { 0 };
+    int howmanymore = (7 - candelabrum->special_quality);
 
-    switch ((7 - candelabrum->special_quality))
-    {
-    case 1:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_ONE_MORE_CANDLE : flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_ONE_MORE_CANDLE : GHSOUND_VOICE_SHOPKEEPER_MALE_ONE_MORE_CANDLE;
-        break;
-    case 2:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_TWO_MORE_CANDLES : flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_TWO_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_TWO_MORE_CANDLES;
-        break;
-    case 3:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THREE_MORE_CANDLES : flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THREE_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_THREE_MORE_CANDLES;
-        break;
-    case 4:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_FOUR_MORE_CANDLES : flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_FOUR_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_FOUR_MORE_CANDLES;
-        break;
-    case 5:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_FIVE_MORE_CANDLES : flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_FIVE_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_FIVE_MORE_CANDLES;
-        break;
-    case 6:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SIX_MORE_CANDLES : flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SIX_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_SIX_MORE_CANDLES;
-        break;
-    case 7:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SEVEN_MORE_CANDLES : flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SEVEN_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_SEVEN_MORE_CANDLES;
-        break;
-    default:
-        break;
-    }
+    info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MORE_CANDLES : flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_MORE_CANDLES;
+
+    info.parameter_names[0] = "HowManyIndex";
+    info.parameter_values[0] = (float)howmanymore;
+    info.parameter_names[1] = (char*)0;
+
 
     float volume = SHOPKEEPER_BASE_VOLUME;
     if (isok(shkp->mx, shkp->my))
@@ -10042,224 +9965,71 @@ boolean is_shop;
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
 
     struct ghsound_immediate_info info = { 0 };
+    int damagetype = 0;
 
     if (style == 0)
     {
-        if (!strcmp(dmg_str, "ruin"))
+        if (is_shop)
         {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_RUIN_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_RUIN_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_RUIN_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_RUIN_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_RUIN_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_RUIN_MY_DOOR;
-            }
+            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DAMAGE_SHOP :
+                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DAMAGE_SHOP :
+                GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DAMAGE_SHOP;
         }
-        else if (!strcmp(dmg_str, "dig into"))
+        else
         {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DIG_INTO_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DIG_INTO_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DIG_INTO_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DIG_INTO_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DIG_INTO_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DIG_INTO_MY_DOOR;
-            }
-        }
-        else if (!strcmp(dmg_str, "destroy"))
-        {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DESTROY_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DESTROY_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DESTROY_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DESTROY_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DESTROY_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DESTROY_MY_DOOR;
-            }
-        }
-        else if (!strcmp(dmg_str, "break"))
-        {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_BREAK_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_BREAK_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_BREAK_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_BREAK_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_BREAK_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_BREAK_MY_DOOR;
-            }
-        }
-        else if (!strcmp(dmg_str, "damage"))
-        {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DAMAGE_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DAMAGE_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DAMAGE_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DAMAGE_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DAMAGE_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DAMAGE_MY_DOOR;
-            }
-        }
-        else if (!strcmp(dmg_str, "shatter"))
-        {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_SHATTER_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_SHATTER_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_SHATTER_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_SHATTER_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_SHATTER_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_SHATTER_MY_DOOR;
-            }
-        }
-        else if (!strcmp(dmg_str, "disintegrate"))
-        {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DISINTEGRATE_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DISINTEGRATE_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DISINTEGRATE_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DISINTEGRATE_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DISINTEGRATE_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DISINTEGRATE_MY_DOOR;
-            }
+            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DAMAGE_DOOR :
+                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DAMAGE_DOOR :
+                GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DAMAGE_DOOR;
         }
     }
     else
     {
-        if (!strcmp(dmg_str, "ruin"))
+        if (is_shop)
         {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_RUIN_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_RUIN_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_RUIN_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_RUIN_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_RUIN_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_RUIN_MY_DOOR;
-            }
+            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DAMAGE_SHOP :
+                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DAMAGE_SHOP :
+                GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DAMAGE_SHOP;
         }
-        else if (!strcmp(dmg_str, "dig into"))
+        else
         {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DIG_INTO_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DIG_INTO_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DIG_INTO_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DIG_INTO_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DIG_INTO_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DIG_INTO_MY_DOOR;
-            }
-        }
-        else if (!strcmp(dmg_str, "destroy"))
-        {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DESTROY_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DESTROY_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DESTROY_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DESTROY_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DESTROY_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DESTROY_MY_DOOR;
-            }
-        }
-        else if (!strcmp(dmg_str, "break"))
-        {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_BREAK_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_BREAK_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_BREAK_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_BREAK_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_BREAK_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_BREAK_MY_DOOR;
-            }
-        }
-        else if (!strcmp(dmg_str, "damage"))
-        {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DAMAGE_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DAMAGE_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DAMAGE_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DAMAGE_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DAMAGE_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DAMAGE_MY_DOOR;
-            }
-        }
-        else if (!strcmp(dmg_str, "shatter"))
-        {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_SHATTER_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_SHATTER_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_SHATTER_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_SHATTER_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_SHATTER_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_SHATTER_MY_DOOR;
-            }
-        }
-        else if (!strcmp(dmg_str, "disintegrate"))
-        {
-            if (is_shop)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DISINTEGRATE_MY_SHOP :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DISINTEGRATE_MY_SHOP :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DISINTEGRATE_MY_SHOP;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DISINTEGRATE_MY_DOOR :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DISINTEGRATE_MY_DOOR :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DISINTEGRATE_MY_DOOR;
-            }
+            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DAMAGE_DOOR :
+                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DAMAGE_DOOR :
+                GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DAMAGE_DOOR;
         }
     }
 
+    if (!strcmp(dmg_str, "ruin"))
+    {
+        damagetype = 0;
+    }
+    else if (!strcmp(dmg_str, "dig into"))
+    {
+        damagetype = 1;
+    }
+    else if (!strcmp(dmg_str, "destroy"))
+    {
+        damagetype = 2;
+    }
+    else if (!strcmp(dmg_str, "break"))
+    {
+        damagetype = 3;
+    }
+    else if (!strcmp(dmg_str, "damage"))
+    {
+        damagetype = 4;
+    }
+    else if (!strcmp(dmg_str, "shatter"))
+    {
+        damagetype = 5;
+    }
+    else if (!strcmp(dmg_str, "disintegrate"))
+    {
+        damagetype = 6;
+    }
+
+    info.parameter_names[0] = "DamageType";
+    info.parameter_values[0] = (float)damagetype;
+    info.parameter_names[1] = (char*)0;
 
     float volume = SHOPKEEPER_BASE_VOLUME;
     if (isok(shkp->mx, shkp->my))

@@ -2001,6 +2001,7 @@ xchar dlev;          /* if !0 send to dlev near player */
                     pline("%s is infuriated!", Monnam(shkp));
                 else
                     pline("\"%s, you are a thief!\"", plname);
+                /* should use verbalize here? */
             } else
                 You_hear("a scream, \"Thief!\"");
             hot_pursuit(shkp);
