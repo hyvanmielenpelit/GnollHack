@@ -444,6 +444,7 @@ boolean createcorpse;
                 obj->enchantment = 0;
                 obj->cursed = obj->blessed = FALSE;
             }
+
         }
 		goto default_1;
 	case PM_WHITE_UNICORN:
@@ -875,79 +876,7 @@ boolean createcorpse;
 int
 randomtruegem()
 {
-	int otyp = 0;
-
-	switch (rn2(21))
-	{
-	case 0:
-		otyp = JADE;
-		break;
-	case 1:
-		otyp = AGATE;
-		break;
-	case 2:
-		otyp = OBSIDIAN;
-		break;
-	case 3:
-		otyp = FLUORITE;
-		break;
-	case 4:
-		otyp = JASPER;
-		break;
-	case 5:
-		otyp = AMETHYST;
-		break;
-	case 6:
-		otyp = GARNET;
-		break;
-	case 7:
-		otyp = CHRYSOBERYL;
-		break;
-	case 8:
-		otyp = OPAL;
-		break;
-	case 9:
-		otyp = JET;
-		break;
-	case 10:
-		otyp = TOPAZ;
-		break;
-	case 11:
-		otyp = AQUAMARINE;
-		break;
-	case 12:
-		otyp = CITRINE;
-		break;
-	case 13:
-		otyp = TURQUOISE;
-		break;
-	case 14:
-		otyp = CITRINE;
-		break;
-	case 15:
-		otyp = EMERALD;
-		break;
-	case 16:
-		otyp = SAPPHIRE;
-		break;
-	case 17:
-		otyp = BLACK_OPAL;
-		break;
-	case 18:
-		otyp = RUBY;
-		break;
-	case 19:
-		otyp = DIAMOND;
-		break;
-	case 20:
-		otyp = JACINTH;
-		break;
-	default:
-		otyp = JADE;
-		break;
-	}
-
-	return otyp;
+    return FIRST_GEM + rn2(LAST_GEM - FIRST_GEM  + 1);
 }
 
 

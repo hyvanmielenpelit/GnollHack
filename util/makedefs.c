@@ -2828,6 +2828,15 @@ do_objs()
     int prefix = 0;
     char class = '\0';
     boolean sumerr = FALSE;
+    boolean first_gem_found = FALSE;
+    boolean last_gem_found = FALSE;
+    char first_gem_buf[BUFSZ] = "";
+    char last_gem_buf[BUFSZ] = "";
+    char first_amulet_buf[BUFSZ] = "";
+    char last_amulet_buf[BUFSZ] = "";
+    char first_misc_buf[BUFSZ] = "";
+    char last_misc_buf[BUFSZ] = "";
+    char prev_objnam_buf[BUFSZ] = "";
 
     filename[0] = '\0';
 #ifdef FILE_PREFIX
@@ -2841,8 +2850,11 @@ do_objs()
     Fprintf(ofp, "%s", Dont_Edit_Code);
     Fprintf(ofp, "#ifndef ONAMES_H\n#define ONAMES_H\n\n");
 
+    int prev_class = ILLOBJ_CLASS;
+
     for (i = 0; !i || objects[i].oc_class != ILLOBJ_CLASS; i++) {
         SpinCursor(3);
+
 
         objects[i].oc_name_idx = objects[i].oc_descr_idx = i; /* init */
         if (!(objnam = tmpdup(OBJ_NAME(objects[i]))))
@@ -2864,6 +2876,34 @@ do_objs()
                 *c -= (char) ('a' - 'A');
             else if (*c < 'A' || *c > 'Z')
                 *c = '_';
+
+        if (class == GEM_CLASS)
+        {
+            if (!first_gem_found && objects[i].oc_material != MAT_GLASS)
+            {
+                first_gem_found = TRUE;
+                strcpy(first_gem_buf, objnam);
+            }
+            if (!last_gem_found && objects[i].oc_material == MAT_GLASS && first_gem_found)
+            {
+                last_gem_found = TRUE;
+                strcpy(last_gem_buf, prev_objnam_buf);
+            }
+        }
+        if (class != prev_class)
+        {
+            if (class == AMULET_CLASS)
+                strcpy(first_amulet_buf, objnam);
+            if (prev_class == AMULET_CLASS)
+                strcpy(last_amulet_buf, prev_objnam_buf);
+
+            if (class == MISCELLANEOUS_CLASS)
+                strcpy(first_misc_buf, objnam);
+            if (prev_class == MISCELLANEOUS_CLASS)
+                strcpy(last_misc_buf, prev_objnam_buf);
+
+            prev_class = class;
+        }
 
         switch (class) {
         case WAND_CLASS:
@@ -2912,6 +2952,7 @@ do_objs()
         prefix = 0;
 
         sum += objects[i].oc_prob;
+        strcpy(prev_objnam_buf, objnam);
     }
 
     /* check last set of probabilities */
@@ -2922,7 +2963,18 @@ do_objs()
     }
 
     Fprintf(ofp, "#define\tLAST_SHUFFLED_WAND\t(GOLD_PIECE - 1)\n");
-    Fprintf(ofp, "#define\tLAST_GEM\t(JADE)\n");
+    if (strcmp(first_gem_buf, ""))
+        Fprintf(ofp, "#define\tFIRST_GEM\t(%s)\n", limit(first_gem_buf, 0));
+    if (strcmp(last_gem_buf, ""))
+        Fprintf(ofp, "#define\tLAST_GEM\t(%s)\n", limit(last_gem_buf, 0));
+    if(strcmp(first_amulet_buf, ""))
+        Fprintf(ofp, "#define\tFIRST_AMULET\t(%s)\n", limit(first_amulet_buf, 0));
+    if (strcmp(last_amulet_buf, ""))
+        Fprintf(ofp, "#define\tLAST_AMULET\t(%s)\n", limit(last_amulet_buf, 0));
+    if (strcmp(first_misc_buf, ""))
+        Fprintf(ofp, "#define\tFIRST_MISCITEM\t(%s)\n", limit(first_misc_buf, 0));
+    if (strcmp(last_misc_buf, ""))
+        Fprintf(ofp, "#define\tLAST_MISCITEM\t(%s)\n", limit(last_misc_buf, 0));
     Fprintf(ofp, "#define\tMAXSPELL\t%d\n", nspell + 1);
     Fprintf(ofp, "#define\tNUM_OBJECTS\t%d\n", i);
 

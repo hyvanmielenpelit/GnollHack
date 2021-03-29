@@ -1073,6 +1073,7 @@ register struct monst *mtmp;
     register int cnt;
     register struct obj *otmp;
     register struct permonst *ptr = mtmp->data;
+    int mndx = monsndx(ptr);
 	int n = 0;
 
     if (Is_rogue_level(&u.uz))
@@ -1092,6 +1093,40 @@ register struct monst *mtmp;
         }
         break;
     case S_DRAGON:
+        if (mndx >= PM_GRAY_DRAGON_HATCHLING && mndx <= PM_YELLOW_DRAGON_HATCHLING)
+        {
+            if (!rn2(4))
+            {
+                otmp = mkobj(GEM_CLASS, TRUE, 0);
+                (void)mpickobj(mtmp, otmp);
+            }
+        }
+        else if (mndx >= PM_GRAY_DRAGON && mndx <= PM_YELLOW_DRAGON)
+        {
+            if (!rn2(2))
+            {
+                int num = rnd(3);
+                for (int i = 0; i < num; i++)
+                {
+                    otmp = mkobj(GEM_CLASS, TRUE, 0);
+                    (void)mpickobj(mtmp, otmp);
+                }
+            }
+        }
+        else if (mndx >= PM_ANCIENT_GRAY_DRAGON && mndx <= PM_ANCIENT_YELLOW_DRAGON)
+        {
+            int num = rnd(4);
+            for (int i = 0; i < num; i++)
+            {
+                if (!rn2(2))
+                    otmp = mongets(mtmp, randomtruegem());
+                else
+                {
+                    otmp = mkobj(GEM_CLASS, TRUE, 0);
+                    (void)mpickobj(mtmp, otmp);
+                }
+            }
+        }
         break;
     case S_DOG:
         if (is_steed(mtmp->data) && !rn2(4)) /* Warg */
@@ -1109,7 +1144,7 @@ register struct monst *mtmp;
 		if (is_mercenary(ptr)) {
 			register int mac;
 
-			switch (monsndx(ptr)) {
+			switch (mndx) {
 			case PM_GUARD:
 				mac = -1;
 				if (!rn2(2))
@@ -1284,6 +1319,7 @@ register struct monst *mtmp;
 				(void)mongetsgold(mtmp, 5 + rn2(11));
 		}
 		break;
+
 	case S_NYMPH:
 		if (!rn2(2))
 			(void)mongets(mtmp, MIRROR);
