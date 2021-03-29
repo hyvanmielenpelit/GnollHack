@@ -529,15 +529,16 @@ struct obj {
 
 #define is_otyp_unique(otyp) (objects[otyp].oc_unique || (objects[otyp].oc_flags3 & O3_UNIQUE))
 #define is_otyp_nowish(otyp) (objects[otyp].oc_nowish || (objects[otyp].oc_flags3 & O3_NO_WISH))
+#define is_otyp_unburiable(otyp) ((objects[otyp].oc_flags3 & O3_UNBURIABLE))
 
 #define is_obj_unique(obj) is_otyp_unique((obj)->otyp)
 #define is_obj_nowish(obj) is_otyp_nowish((obj)->otyp)
+#define is_obj_unburiable(obj) \
+    (is_otyp_unburiable((obj)->otyp) || (obj) == uchain || ((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && is_rider(&mons[(obj)->corpsenm])))
 
 #define nonrotting_food(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_NONROTTING_FOOD) != 0)
 
-#define has_otyp_extended_polearm_reach(otyp) \
-    ((objects[(otyp)].oc_flags3 & O3_EXTENDED_POLEARM_REACH) != 0)
 #define has_otyp_double_digging_effort(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_DOUBLE_DIGGING_EFFORT) != 0)
 #define is_otyp_buried_searchable(otyp) \
@@ -555,6 +556,9 @@ struct obj {
 
 #define is_obj_normally_edible(otmp) \
 	((otmp)->oclass == FOOD_CLASS || ((otmp)->oclass == REAGENT_CLASS && (objects[(otmp)->otyp].oc_flags & O1_EDIBLE_NONFOOD) != 0))
+
+#define has_otyp_extended_polearm_reach(otyp) \
+    ((objects[(otyp)].oc_flags4 & O4_EXTENDED_POLEARM_REACH) != 0)
 
 #define has_otyp_missile_tile(otyp)                                 \
     ((objects[otyp].oc_flags4 & O4_MISSILE_TILE) != 0)

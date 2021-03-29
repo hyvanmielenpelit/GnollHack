@@ -970,8 +970,8 @@ doengrave()
     /* Identify stylus */
     if (doknown) {
         learnwand(otmp);
-        if (objects[otmp->otyp].oc_name_known)
-            more_experienced(0, 10);
+        //if (objects[otmp->otyp].oc_name_known)
+        //    more_experienced(0, 10);
     }
     if (teleengr) {
         rloc_engr(oep);

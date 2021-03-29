@@ -5626,7 +5626,7 @@ struct trap *ttmp;
 	/* gain skill for untrap */
 	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 5);
 
-    more_experienced(1, 5);
+    more_experienced(1, 0); // 5);
     newexplevel();
     return 1;
 }

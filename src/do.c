@@ -2436,7 +2436,7 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (objects[otyp].oc_flags3 & O3_EXTENDED_POLEARM_REACH)
+			if (objects[otyp].oc_flags4 & O4_EXTENDED_POLEARM_REACH)
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Extended reach", powercnt);

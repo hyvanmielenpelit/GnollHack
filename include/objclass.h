@@ -880,8 +880,8 @@ struct objclass {
 #define O3_NO_GENERATION							0x00000001UL  /* item is not generated normally */
 #define O3_NO_WISH									0x00000002UL  /* item is special, it cannot be wished for, mimics oc_nowish */
 #define O3_UNIQUE									0x00000004UL  /* the item is unique, mimics oc_unique */
+#define O3_UNBURIABLE								0x00000008UL  /* the item cannot be buried */
 
-#define O3_EXTENDED_POLEARM_REACH					0x00000008UL  /* range is max 13 instead of normal 8 */
 #define O3_DOUBLE_DIGGING_EFFORT					0x00000010UL  /* double normal digging effort */
 #define O3_BURIED_SEARCHABLE						0x00000020UL  /* if buried, can be found by explicit searching */
 #define O3_CONTENT_DESCRIPTION_SHUFFLED				0x00000040UL  /* uses (shuffled) description index instead of name index for content description */
@@ -927,7 +927,7 @@ struct objclass {
 #define O4_DRAWN_IN_FRONT		    0x00000010UL
 #define O4_ALLOWS_DIPPING_INTO		0x00000020UL
 #define O4_TETHERED_WEAPON			0x00000040UL
-/* free bit */
+#define O4_EXTENDED_POLEARM_REACH	0x00000080UL
 #define O4_CAN_HAVE_EXCEPTIONALITY	0x00000100UL
 #define O4_GENERATED_EXCEPTIONAL	0x00000200UL
 #define O4_GENERATED_ELITE			0x00000400UL

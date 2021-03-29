@@ -809,7 +809,7 @@ struct obj *otmp;
     if (otmp->dknown && !objects[otmp->otyp].oc_name_known) {
         if (!unkn) {
             makeknown(otmp->otyp);
-            more_experienced(0, 10);
+            //more_experienced(0, 10);
         } else if (!objects[otmp->otyp].oc_uname)
             docall(otmp);
     }

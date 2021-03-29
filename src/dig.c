@@ -2776,6 +2776,8 @@ boolean *dealloced;
 {
     struct obj *otmp2;
     boolean under_ice;
+    xchar x = 0, y = 0;
+    get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
 
     debugpline1("bury_an_obj: %s", xname(otmp));
     if (dealloced)
@@ -2787,18 +2789,8 @@ boolean *dealloced;
         pline_The("iron ball gets buried!");
     }
     /* after unpunish(), or might get deallocated chain */
-    otmp2 = otmp->nexthere;
-    /*
-     * obj_resists(,0,0) prevents Rider corpses from being buried.
-     * It also prevents The Amulet and invocation tools from being
-     * buried.  Since they can't be confined to bags and statues,
-     * it makes sense that they can't be buried either, even though
-     * the real reason there (direct accessibility when carried) is
-     * completely different.
-     */
-    if (otmp == uchain || obj_resists(otmp, 0, 0))
-        return otmp2;
 
+    otmp2 = otmp->nexthere;
     if (otmp->otyp == LEASH && otmp->leashmon != 0)
         o_unleash(otmp);
 
@@ -2806,6 +2798,24 @@ boolean *dealloced;
         end_burn(otmp, TRUE);
 
     obj_extract_self(otmp);
+
+    if (is_obj_unburiable(otmp)) //(otmp == uchain || obj_resists(otmp, 0, 0))
+    {
+        /*
+         * obj_resists(,0,0) prevents Rider corpses from being buried.
+         * It also prevents The Amulet and invocation tools from being
+         * buried.  Since they can't be confined to bags and statues,
+         * it makes sense that they can't be buried either, even though
+         * the real reason there (direct accessibility when carried) is
+         * completely different.
+         */
+        if(isok(x,y))
+            place_object(otmp, x, y); /* Makes sure it gets placed back */
+        else
+            place_object(otmp, u.ux, u.uy); /* Fallback */
+
+        return otmp2;
+    }
 
     under_ice = is_ice(otmp->ox, otmp->oy);
     if ((is_rock(otmp) || is_ore(otmp)) && !under_ice) {
@@ -2938,14 +2948,19 @@ long timeout UNUSED;
 {
     struct obj *obj = arg->a_obj;
 
-    while (Has_contents(obj)) {
+    while (Has_contents(obj)) 
+    {
+        struct obj* cobj_to_bury = obj->cobj;
+
         /* We don't need to place contained object on the floor
            first, but we do need to update its map coordinates. */
-        obj->cobj->ox = obj->ox, obj->cobj->oy = obj->oy;
+        cobj_to_bury->ox = obj->ox, cobj_to_bury->oy = obj->oy;
         /* Everything which can be held in a container can also be
            buried, so bury_an_obj's use of obj_extract_self insures
            that Has_contents(obj) will eventually become false. */
-        (void) bury_an_obj(obj->cobj, (boolean *) 0);
+        (void) bury_an_obj(cobj_to_bury, (boolean *) 0);
+        if (obj->cobj == cobj_to_bury)
+            break; /* Something's wrong, avoid infine loop */
     }
     obj_extract_self(obj);
     obfree(obj, (struct obj *) 0);

@@ -577,7 +577,7 @@ struct monst *oracl;
 
 	if (add_xpts) 
     {
-        more_experienced(add_xpts, u_pay / 50);
+        more_experienced(add_xpts, 0); //  u_pay / 50);
         newexplevel();
     }
     return 1;

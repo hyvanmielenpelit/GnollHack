@@ -39,7 +39,7 @@ short scrolltyp;
 {
     if (!objects[scrolltyp].oc_name_known) {
         makeknown(scrolltyp);
-        more_experienced(0, 10);
+        //more_experienced(0, 10);
         return TRUE;
     } else
         return FALSE;
