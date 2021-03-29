@@ -4,7 +4,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
-#include <math.h>
 
 #ifndef LONG_MAX
 #include <limits.h>
@@ -423,7 +422,7 @@ max_rank_sz()
 long
 botl_score()
 {
-    return get_current_game_score(FALSE);
+    return get_current_game_score();
 }
 #endif /* SCORE_ON_BOTL */
 
@@ -4151,56 +4150,4 @@ shlmenu_redo:
 
 #endif /* STATUS_HILITES */
 
-
-long
-get_current_game_score(player_ascended)
-boolean player_ascended;
-{
-#if 0
-    /* Old NetHack score */
-    long deepest = deepest_lev_reached(FALSE);
-    long utotal;
-
-    utotal = money_cnt(invent) + hidden_gold();
-    if ((utotal -= u.umoney0) < 0L)
-        utotal = 0L;
-    utotal += u.u_gamescore + (50 * (deepest - 1))
-        + (deepest > 30 ? 10000 : deepest > 20 ? 1000 * (deepest - 20) : 0);
-    if (utotal < u.u_gamescore)
-        utotal = LONG_MAX; /* wrap around */
-    return utotal;
-#endif
-    long utotal = 0;
-    long Deepest_Dungeon_Level = deepest_lev_reached(FALSE);
-    long Achievements_Score = (long)(u.uachieve.amulet + u.uachieve.ascended + u.uachieve.bell + u.uachieve.book + u.uachieve.enter_gehennom + u.uachieve.finish_sokoban +
-        u.uachieve.killed_medusa + u.uachieve.killed_yacc + u.uachieve.menorah + u.uachieve.mines_luckstone);
-
-    int ngenocided = num_genocides();
-
-    long Conduct_Score = (long)(u.uachieve.ascended) * (long)(
-          50 * (u.uconduct.food == 0) 
-        + 15 * (u.uconduct.gnostic == 0) 
-        + 60 * (u.uconduct.killer == 0) 
-        + 30 * (u.uconduct.literate == 0)
-        + 2 * (u.uconduct.polypiles == 0)
-        + 2 * (u.uconduct.polyselfs == 0) 
-        + 30 * (u.uconduct.unvegan == 0)
-        + 10 * (u.uconduct.unvegetarian == 0) 
-        + 15 * (u.uconduct.weaphit == 0) 
-        + 2 * (u.uconduct.wisharti == 0) 
-        + 10 * (u.uconduct.wishes == 0)
-        + 80 * (u.uroleplay.blind) 
-        + 60 * (u.uroleplay.nudist) 
-        + 10 * (ngenocided == 0)
-        );
-
-    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L;
-
-    double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
-    double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
-    double Difficulty_Multiplier = pow(10.0, 0.5 * (double)context.game_difficulty);
-
-    utotal = (long)(round((double)Base_Score * Ascension_Multiplier * Difficulty_Multiplier));
-    return utotal;
-}
 /*botl.c*/

@@ -245,7 +245,6 @@ E void NDECL(max_rank_sz);
 #ifdef SCORE_ON_BOTL
 E long NDECL(botl_score);
 #endif
-E long FDECL(get_current_game_score, (boolean));
 E int FDECL(describe_level, (char *));
 E void FDECL(status_initialize, (BOOLEAN_P));
 E void NDECL(status_finish);
@@ -955,7 +954,7 @@ E void FDECL(panictrace_setsignals, (BOOLEAN_P));
 #ifdef ANDROID
 void and_you_die();
 #endif
-
+E long NDECL(get_current_game_score);
 
 
 /* ### engrave.c ### */
