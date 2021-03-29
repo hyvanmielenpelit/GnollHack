@@ -4178,13 +4178,23 @@ boolean player_ascended;
     int ngenocided = num_genocides();
 
     long Conduct_Score = (long)(u.uachieve.ascended) * (long)(
-          5 * (u.uconduct.food == 0) + 2 * (u.uconduct.gnostic == 0) + 5 * (u.uconduct.killer == 0) + 3 * (u.uconduct.literate == 0) + 1 * (u.uconduct.polypiles == 0)
-        + 1 * (u.uconduct.polyselfs == 0) + 3 * (u.uconduct.unvegan == 0)
-        + 2 * (u.uconduct.unvegetarian == 0) + 2 * (u.uconduct.weaphit == 0) + 2 * (u.uconduct.wisharti == 0) + 3 * (u.uconduct.wishes == 0)
-        + 5 * (u.uroleplay.blind) + 5 * (u.uroleplay.nudist) + 2 * (ngenocided == 0)
+          50 * (u.uconduct.food == 0) 
+        + 15 * (u.uconduct.gnostic == 0) 
+        + 60 * (u.uconduct.killer == 0) 
+        + 30 * (u.uconduct.literate == 0)
+        + 2 * (u.uconduct.polypiles == 0)
+        + 2 * (u.uconduct.polyselfs == 0) 
+        + 30 * (u.uconduct.unvegan == 0)
+        + 10 * (u.uconduct.unvegetarian == 0) 
+        + 15 * (u.uconduct.weaphit == 0) 
+        + 2 * (u.uconduct.wisharti == 0) 
+        + 10 * (u.uconduct.wishes == 0)
+        + 80 * (u.uroleplay.blind) 
+        + 60 * (u.uroleplay.nudist) 
+        + 10 * (ngenocided == 0)
         );
 
-    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 5000L + Achievements_Score * 10000L + Conduct_Score * 20000L;
+    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L;
 
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
     double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
