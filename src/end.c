@@ -1238,7 +1238,7 @@ int how;
     struct obj *corpse = (struct obj *) 0;
     time_t endtime;
     long umoney;
-    long tmp;
+    //long tmp;
 
     /*
      *  The game is now over...
@@ -1427,6 +1427,9 @@ int how;
 
     /* calculate score, before creating bones [container gold] */
     {
+        umoney = money_cnt(invent);
+        umoney += hidden_gold(); /* accumulate gold from containers */
+#if 0
         int deepest = deepest_lev_reached(FALSE);
 
         umoney = money_cnt(invent);
@@ -1441,6 +1444,10 @@ int how;
         tmp += 50L * (long) (deepest - 1);
         if (deepest > 20)
             tmp += 1000L * (long) ((deepest > 30) ? 10 : deepest - 20);
+#endif
+        u.u_gamescore = get_current_game_score(how == ASCENDED);
+
+#if 0
         nowrap_add(u.u_gamescore, tmp);
 
         /* ascension gives a score bonus iff offering to original deity */
@@ -1453,6 +1460,7 @@ int how;
                       : (u.u_gamescore / 2L);
             nowrap_add(u.u_gamescore, tmp);
         }
+#endif
     }
 
     if (u.ugrave_arise >= LOW_PM && !done_stopprint) 
@@ -1543,8 +1551,10 @@ int how;
 	if (how == ESCAPED || how == ASCENDED) 
     {
         struct monst *mtmp;
-        struct obj *otmp;
-        register struct val_list *val;
+
+#if 0
+        struct obj* otmp;
+        register struct val_list* val;
         register int i;
 
         for (val = valuables; val->list; val++)
@@ -1567,6 +1577,7 @@ int how;
 
         /* count the points for artifacts */
         artifact_score(invent, TRUE, endwin);
+#endif
 
         viz_array[0][0] |= IN_SIGHT; /* need visibility for naming */
         mtmp = mydogs;
@@ -1576,8 +1587,8 @@ int how;
             while (mtmp) 
             {
                 Sprintf(eos(pbuf), " and %s", mon_nam(mtmp));
-                if (is_tame(mtmp))
-                    nowrap_add(u.u_gamescore, mtmp->mhp);
+                //if (is_tame(mtmp))
+                //    nowrap_add(u.u_gamescore, mtmp->mhp);
                 mtmp = mtmp->nmon;
             }
 
@@ -1588,7 +1599,7 @@ int how;
                 int mhp, m_lev = adj_lev(&mons[PM_HOUSECAT]);
 
                 mhp = d(m_lev, 8);
-                nowrap_add(u.u_gamescore, mhp);
+                //nowrap_add(u.u_gamescore, mhp);
                 Strcat(eos(pbuf), " and Schroedinger's cat");
             }
             dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
@@ -1604,6 +1615,7 @@ int how;
                 u.u_gamescore, plur(u.u_gamescore));
         dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
 
+#if 0
         if (!done_stopprint)
             artifact_score(invent, FALSE, endwin); /* list artifacts */
 
@@ -1648,6 +1660,7 @@ int how;
                 dump_forward_putstr(endwin, 0, pbuf, 0);
             }
         }
+#endif
 
     }
     else 

@@ -1110,7 +1110,7 @@ unsigned long *colormasks UNUSED;
     static enum statusfields gsu_fieldorder[][19] = {
         /* line one */
         { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, //BL_ALIGN,
-          BL_SCORE, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
+          BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
           BL_FLUSH, BL_FLUSH, BL_FLUSH  },
         /* line two, default order */
         { BL_LEVELDESC, // BL_GOLD,

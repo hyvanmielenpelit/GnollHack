@@ -3225,9 +3225,21 @@ register struct monst *mtmp;
     if (mtmp->data->msound == MS_NEMESIS)
         nemdead();
     if (mtmp->data == &mons[PM_MEDUSA])
+    {
+#ifdef SHOW_SCORE_ON_BOTL
+        if (flags.showscore && !u.uachieve.killed_medusa)
+            context.botl = 1;
+#endif
         u.uachieve.killed_medusa = 1;
+    }
     if (mtmp->data == &mons[PM_YACC])
+    {
+#ifdef SHOW_SCORE_ON_BOTL
+        if (flags.showscore && !u.uachieve.killed_yacc)
+            context.botl = 1;
+#endif
         u.uachieve.killed_yacc = 1;
+    }
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))
         unmap_object(mtmp->mx, mtmp->my);
     mtmp->action = 0;

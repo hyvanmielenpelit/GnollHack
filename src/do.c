@@ -5703,7 +5703,11 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
 		else
             pline("It is hot here.  You smell smoke...");
 
-        u.uachieve.enter_gehennom = 1;
+#ifdef SHOW_SCORE_ON_BOTL
+		if (flags.showscore && !u.uachieve.enter_gehennom)
+			context.botl = 1;
+#endif
+		u.uachieve.enter_gehennom = 1;
     }
 
     /* in case we've managed to bypass the Valley's stairway down */

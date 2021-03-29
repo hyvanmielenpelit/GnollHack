@@ -1089,7 +1089,7 @@ void and_status_flush()
 	register int i;
 
 	static enum statusfields fieldorder_line1[] = {
-		BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_SCORE,
+		BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_FLUSH,
 		BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
 		BL_FLUSH
 	};

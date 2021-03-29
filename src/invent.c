@@ -833,21 +833,37 @@ struct obj *obj;
         if (u.uhave.amulet)
             impossible("already have amulet?");
         u.uhave.amulet = 1;
+#ifdef SHOW_SCORE_ON_BOTL
+        if (flags.showscore && !u.uachieve.amulet)
+            context.botl = 1;
+#endif
         u.uachieve.amulet = 1;
     } else if (obj->otyp == CANDELABRUM_OF_INVOCATION) {
         if (u.uhave.menorah)
             impossible("already have candelabrum?");
         u.uhave.menorah = 1;
+#ifdef SHOW_SCORE_ON_BOTL
+        if (flags.showscore && !u.uachieve.menorah)
+            context.botl = 1;
+#endif
         u.uachieve.menorah = 1;
     } else if (obj->otyp == BELL_OF_OPENING) {
         if (u.uhave.bell)
             impossible("already have silver bell?");
         u.uhave.bell = 1;
+#ifdef SHOW_SCORE_ON_BOTL
+        if (flags.showscore && !u.uachieve.bell)
+            context.botl = 1;
+#endif
         u.uachieve.bell = 1;
     } else if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
         if (u.uhave.book)
             impossible("already have the book?");
         u.uhave.book = 1;
+#ifdef SHOW_SCORE_ON_BOTL
+        if (flags.showscore && !u.uachieve.book)
+            context.botl = 1;
+#endif
         u.uachieve.book = 1;
     } else if (obj->oartifact) {
         if (is_quest_artifact(obj)) {
@@ -859,10 +875,18 @@ struct obj *obj;
     }
 
     if (is_mines_prize(obj)) {
+#ifdef SHOW_SCORE_ON_BOTL
+        if (flags.showscore && !u.uachieve.mines_luckstone)
+            context.botl = 1;
+#endif
         u.uachieve.mines_luckstone = 1;
         obj->speflags &= ~(SPEFLAGS_MINES_PRIZE);
         obj->nomerge = 0;
     } else if (is_soko_prize(obj)) {
+#ifdef SHOW_SCORE_ON_BOTL
+        if (flags.showscore && !u.uachieve.finish_sokoban)
+            context.botl = 1;
+#endif
         u.uachieve.finish_sokoban = 1;
         obj->speflags &= ~(SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2);
         obj->nomerge = 0;

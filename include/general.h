@@ -425,5 +425,8 @@ enum main_menu_command {
 #define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
 
 
+/* Turn on score on botl everywhere */
+#define SCORE_ON_BOTL
+
 #endif /* GENERAL_H */
 
