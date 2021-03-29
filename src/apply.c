@@ -3602,7 +3602,9 @@ struct obj *tstone;
     if ((obj = getobj(choices, stonebuf, 0, "")) == 0)
         return;
 
-    if (obj == tstone && obj->quan == 1L) {
+    if (obj == tstone && obj->quan == 1L)
+    {
+        play_sfx_sound(SFX_GENERAL_THATS_SILLY);
         You_cant("rub %s on itself.", the(xname(obj)));
         return;
     }
@@ -3624,10 +3626,13 @@ struct obj *tstone;
         return;
     }
 
-    if (Blind) {
+    if (Blind) 
+    {
         pline(scritch);
         return;
-    } else if (Hallucination) {
+    } 
+    else if (Hallucination)
+    {
         pline("Oh wow, man: Fractals!");
         return;
     }
@@ -3635,22 +3640,29 @@ struct obj *tstone;
     do_scratch = FALSE;
     streak_color = 0;
 
-    switch (obj->oclass) {
+    switch (obj->oclass) 
+    {
     case GEM_CLASS: /* these have class-specific handling below */
     case RING_CLASS:
-        if (tstone->otyp != TOUCHSTONE) {
+        if (tstone->otyp != TOUCHSTONE) 
+        {
             do_scratch = TRUE;
-        } else if (obj->oclass == GEM_CLASS
+        } 
+        else if (obj->oclass == GEM_CLASS
                    && (tstone->blessed
                        || (!tstone->cursed /*&& (Role_if(PM_ARCHEOLOGIST)
                                                || Race_if(PM_GNOME))*/ ))) {
             makeknown(TOUCHSTONE);
             makeknown(obj->otyp);
             prinv((char *) 0, obj, 0L);
+            play_sfx_sound(SFX_IDENTIFY_SUCCESS);
             return;
-        } else {
+        } 
+        else
+        {
             /* either a ring or the touchstone was not effective */
-            if (objects[obj->otyp].oc_material == MAT_GLASS) {
+            if (objects[obj->otyp].oc_material == MAT_GLASS) 
+            {
                 do_scratch = TRUE;
                 break;
             }
@@ -3659,7 +3671,8 @@ struct obj *tstone;
         break; /* gem or ring */
 
     default:
-        switch (objects[obj->otyp].oc_material) {
+        switch (objects[obj->otyp].oc_material) 
+        {
         case MAT_CLOTH:
             pline("%s a little more polished now.", Tobjnam(tstone, "look"));
             return;
@@ -3698,13 +3711,22 @@ struct obj *tstone;
 
     Sprintf(stonebuf, "stone%s", plur(tstone->quan));
     if (do_scratch)
+    {
+        play_simple_object_sound(tstone, OBJECT_SOUND_TYPE_APPLY);
         You("make %s%sscratch marks on the %s.",
-            streak_color ? streak_color : (const char *) "",
+            streak_color ? streak_color : (const char*)"",
             streak_color ? " " : "", stonebuf);
+    }
     else if (streak_color)
+    {
+        play_simple_object_sound(tstone, OBJECT_SOUND_TYPE_APPLY);
         You_see("%s streaks on the %s.", streak_color, stonebuf);
+    }
     else
+    {
+        play_simple_object_sound(tstone, OBJECT_SOUND_TYPE_APPLY);
         pline(scritch);
+    }
     return;
 }
 
