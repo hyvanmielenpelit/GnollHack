@@ -4179,7 +4179,10 @@ boolean via_attack;
         adjalign(-1); /* attacking peaceful monsters is bad */
     if (couldsee(mtmp->mx, mtmp->my)) {
         if (humanoid(mtmp->data) || mtmp->isshk || mtmp->isgd)
+        {
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
             pline("%s gets angry!", Monnam(mtmp));
+        }
         else if (flags.verbose && !Deaf)
             growl(mtmp);
     }
@@ -4262,7 +4265,10 @@ boolean via_attack;
                             adjalign(-1);
                             update_game_music();
                             if (!exclaimed)
+                            {
+                                play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_GET_ANGRY);
                                 pline("%s gets angry!", Monnam(mon));
+                            }
                         }
                     }
                 } else if (mon->data->mlet == mtmp->data->mlet

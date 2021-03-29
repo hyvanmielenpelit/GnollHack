@@ -820,6 +820,7 @@ register struct monst *mtmp;
 				set_mon_property(mtmp, INVISIBILITY, 0);
 
                 /* Why?  For the same reason in real demon talk */
+                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
                 pline("%s gets angry!", Amonnam(mtmp));
                 mtmp->mpeaceful = 0;
                 newsym(mtmp->mx, mtmp->my);

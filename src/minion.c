@@ -818,6 +818,7 @@ struct monst *mtmp;
 		} 
 		else 
 		{
+			play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
 			pline("Seeing you, %s gets angry...", Amonnam(mtmp));
 			mtmp->mpeaceful = 0;
 			set_malign(mtmp);
@@ -871,6 +872,7 @@ struct monst *mtmp;
 			} 
 			else 
 			{
+				play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
 				pline("%s gets angry...", Amonnam(mtmp));
 				mtmp->mpeaceful = 0;
 				set_malign(mtmp);

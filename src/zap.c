@@ -3368,6 +3368,7 @@ int id;
                 } 
                 else 
                 {
+                    play_simple_monster_sound(shkp, MONSTER_SOUND_TYPE_GET_ANGRY);
                     pline("%s gets angry!", Monnam(shkp));
                     hot_pursuit(shkp);
                 }
