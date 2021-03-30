@@ -2000,10 +2000,22 @@ xchar dlev;          /* if !0 send to dlev near player */
                 if (angry)
                     pline("%s is infuriated!", Monnam(shkp));
                 else
-                    pline("\"%s, you are a thief!\"", plname);
+                {
+                    if (iflags.using_gui_sounds)
+                    {
+                        play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_THIEF);
+                        verbalize("You thief!");
+                    }
+                    else
+                        pline("\"%s, you are a thief!\"", plname);
+                }
                 /* should use verbalize here? */
-            } else
+            }
+            else
+            {
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THIEF);
                 You_hear("a scream, \"Thief!\"");
+            }
             hot_pursuit(shkp);
             (void) angry_guards(FALSE);
             return;

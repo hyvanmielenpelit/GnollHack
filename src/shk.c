@@ -596,7 +596,7 @@ char *enterstring;
 		{
             if (iflags.using_gui_sounds)
             {
-                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_DARE_TO_RETURN);
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_DARE_TO_RETURN_TO_MY_STORE);
                 verbalize("So, adventurer, you dare return to my store?!");
             }
             else
@@ -3097,15 +3097,29 @@ boolean peaceful, silent;
 
             You("%s!", buf); /* "You owe <shk> N zorkmids for it!" */
         }
-    } else {
+    }
+    else 
+    {
         ESHK(shkp)->robbed += value;
 
-        if (!silent) {
-            if (canseemon(shkp)) {
-                Norep("%s booms: \"%s, you are a thief!\"",
+        if (!silent)
+        {
+            if (canseemon(shkp)) 
+            {
+                if (iflags.using_gui_sounds)
+                {
+                    play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_THIEF);
+                    Norep("%s booms: \"You thief!\"", Shknam(shkp));
+                }
+                else
+                    Norep("%s booms: \"%s, you are a thief!\"",
                       Shknam(shkp), plname);
-            } else
+            }
+            else
+            {
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THIEF);
                 Norep("You hear a scream, \"Thief!\"");
+            }
         }
         hot_pursuit(shkp);
         (void) angry_guards(FALSE);
@@ -3831,6 +3845,7 @@ boolean catchup; /* restoring a level */
         /* this is suboptimal if we eventually give a "shk untraps"
            message for the only repair, but perhaps the shop repair
            incantation means that shk's untrap attempt will never fail */
+        play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_CLOSE_SESAME);
         if (canseemon(shkp))
             pline("%s whispers %s.", Shknam(shkp),
                   shk_closeby ? "an incantation" : "something");
@@ -4202,8 +4217,11 @@ register int fall;
             if (distu(shkp->mx, shkp->my) > 2)
             {
                 if (lang == 2)
+                {
+                    play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DAMN_IT);
                     pline("%s curses you in anger and frustration!",
-                          Shknam(shkp));
+                        Shknam(shkp));
+                }
                 else if (lang == 1)
                     growl(shkp);
                 rile_shk(shkp);
@@ -4461,9 +4479,9 @@ boolean cant_mollify;
         else
             play_voice_shopkeeper_cad_line(shkp, SHOPKEEPER_CAD_LINE_LOT_OF_DAMAGE, cad(FALSE));
 
-        Sprintf(qbuf, "%sYou did a lot of damage (worth %ld %s)!%s  Pay?",
-            !animal ? cad(TRUE) : "", cost_of_damage,
-            currency(cost_of_damage), !animal ? "\"" : "");
+        Sprintf(qbuf, "%sYou did a lot of damage!%s (Worth %ld %s in fact!)  Pay?",
+            !animal ? cad(TRUE) : "", !animal ? "\"" : "", cost_of_damage,
+            currency(cost_of_damage));
     }
     else
     {
@@ -4678,6 +4696,7 @@ struct monst *shkp;
     eshk = ESHK(shkp);
     if (ANGRY(shkp))
     {
+        play_voice_shopkeeper_simple_line(shkp, eshk->robbed ? SHOPKEEPER_LINE_DISLIKE_NON_PAYING_CUSTOMERS : SHOPKEEPER_LINE_DISLIKE_RUDE_CUSTOMERS);
         pline("%s %s how much %s dislikes %s customers.",
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "mentions" : "indicates",
@@ -4722,32 +4741,70 @@ struct monst *shkp;
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "says" : "indicates",
               total, currency(total));
-    } else if (eshk->debit) {
-        pline("%s %s that you owe %s %ld %s.",
-              Shknam(shkp),
-              (!Deaf && !muteshk(shkp)) ? "reminds you" : "indicates",
-              noit_mhim(shkp), eshk->debit, currency(eshk->debit));
-    } else if (eshk->credit) {
+    }
+    else if (eshk->debit) 
+    {
+        if (!Deaf && !muteshk(shkp))
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_OWE_SOME_GOLD);
+
+        if(iflags.using_gui_sounds)
+            pline("%s %s that you owe %s some gold. (%ld %s in fact!)",
+                Shknam(shkp),
+                (!Deaf && !muteshk(shkp)) ? "reminds you" : "indicates",
+                noit_mhim(shkp), eshk->debit, currency(eshk->debit));
+        else
+            pline("%s %s that you owe %s %ld %s.",
+                  Shknam(shkp),
+                  (!Deaf && !muteshk(shkp)) ? "reminds you" : "indicates",
+                  noit_mhim(shkp), eshk->debit, currency(eshk->debit));
+    }
+    else if (eshk->credit)
+    {
+        if (!Deaf && !muteshk(shkp))
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_USING_OUTSTANDING_CREDIT);
         pline("%s encourages you to use your %ld %s of credit.",
               Shknam(shkp), eshk->credit, currency(eshk->credit));
-    } else if (eshk->robbed) {
+    }
+    else if (eshk->robbed) 
+    {
+        if (!Deaf && !muteshk(shkp))
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_WAS_ROBBED);
         pline("%s %s about a recent robbery.",
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "complains" : "indicates concern");
-    } else if ((shkmoney = money_cnt(shkp->minvent)) < 50L) {
+    }
+    else if ((shkmoney = money_cnt(shkp->minvent)) < 50L) 
+    {
+        if (!Deaf && !muteshk(shkp))
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_BUSINESS_IS_BAD);
         pline("%s %s that business is bad.",
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "complains" : "indicates");
-    } else if (shkmoney > 4000) {
+    }
+    else if (shkmoney > 8000)
+    {
+        if(!Deaf && !muteshk(shkp))
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_BUSINESS_IS_GOOD);
         pline("%s %s that business is good.",
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "says" : "indicates");
-    } else if (is_izchak(shkp, FALSE)) {
+    }
+    else if (is_izchak(shkp, FALSE)) 
+    {
         if (!Deaf && !muteshk(shkp))
-            pline(Izchak_speaks[rn2(SIZE(Izchak_speaks))], shkname(shkp));
-    } else {
+        {
+            int talk_idx = rn2(SIZE(Izchak_speaks));
+            play_voice_shopkeeper_izchak_talks(shkp, talk_idx);
+            pline(Izchak_speaks[talk_idx], shkname(shkp));
+        }
+    }
+    else 
+    {
         if (!Deaf && !muteshk(shkp))
+        {
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_PROBLEM_WITH_SHOPLIFTERS);
             pline("%s talks about the problem of shoplifters.", Shknam(shkp));
+        }
     }
 }
 

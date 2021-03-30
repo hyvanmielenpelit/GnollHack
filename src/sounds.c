@@ -929,7 +929,7 @@ register struct monst *mtmp;
 				}
 				else
 				{
-					play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_YOU_DARE_TO_RETURN);
+					play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_YOU_DARE_TO_RETURN_TO_MY_STORE);
 					Sprintf(verbuf, "So, adventurer, you dare to return to my store!");
 				}
 			}
@@ -972,6 +972,7 @@ register struct monst *mtmp;
 		}
 		else
 			Sprintf(verbuf, "You rotten thief!");
+
 		verbl_msg = verbuf;
 		break;
 	case MS_MODRON:
@@ -2943,15 +2944,25 @@ struct monst* mtmp;
 		if (mtmp->mextra && mtmp->mextra->eshk)
 			eshkp = mtmp->mextra->eshk;
 
-		Sprintf(ansbuf, "My name is %s.", shkname(mtmp));
+		if (iflags.using_gui_sounds)
+		{
+			play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_IM_THE_SHOPKEEPER);
+			Sprintf(ansbuf, "I'm the shopkeeper.");
+		}
+		else
+			Sprintf(ansbuf, "My name is %s.", shkname(mtmp));
 
 		if (eshkp)
 		{
 			char shopbuf[BUFSZ] = "";
 			Sprintf(shopbuf, "this %s", shoptypename(eshkp->shoptype));
 			Sprintf(eos(ansbuf), " I run %s.", shopbuf);
+			play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_I_RUN_THIS_STORE);
 		}
 		verbalize("%s", ansbuf);
+		if (iflags.using_gui_sounds && !mtmp->u_know_mname)
+			pline("The name tag shows that %s name is %s.", mhis(mtmp), shkname(mtmp));
+
 		mtmp->u_know_mname = 1;
 	}
 	else if (mtmp->ispriest || msound == MS_PRIEST)
@@ -5051,8 +5062,11 @@ struct monst* mtmp;
 	else if (!m_speak_check(mtmp))
 		return 0;
 
-
-	Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+	play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_YOU_NEED_TO_PAY_LOT_OF_GOLD);
+	if(iflags.using_gui_sounds)
+		Sprintf(qbuf, "\"You need to pay a lot of gold in compensation.\" (%ld %s in fact!)  Agree?", reconcile_cost, currency(reconcile_cost));
+	else
+		Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
 
 	switch (ynq(qbuf)) {
 	default:
