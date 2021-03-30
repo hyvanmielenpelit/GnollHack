@@ -4453,9 +4453,25 @@ boolean cant_mollify;
 
     if (Invis)
         Your("invisibility does not fool %s!", shkname(shkp));
-    Sprintf(qbuf, "%sYou did %ld %s worth of damage!%s  Pay?",
+
+    if (iflags.using_gui_sounds)
+    {
+        if(animal)
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_DID_LOT_OF_DAMAGE); /* Actually not strictly speaking here, but maybe clearer this way */
+        else
+            play_voice_shopkeeper_cad_line(shkp, SHOPKEEPER_CAD_LINE_LOT_OF_DAMAGE, cad(FALSE));
+
+        Sprintf(qbuf, "%sYou did a lot of damage (worth %ld %s)!%s  Pay?",
             !animal ? cad(TRUE) : "", cost_of_damage,
             currency(cost_of_damage), !animal ? "\"" : "");
+    }
+    else
+    {
+        Sprintf(qbuf, "%sYou did %ld %s worth of damage!%s  Pay?",
+            !animal ? cad(TRUE) : "", cost_of_damage,
+            currency(cost_of_damage), !animal ? "\"" : "");
+    }
+
     if (yn_query(qbuf) != 'n')
     {
         cost_of_damage = check_credit(cost_of_damage, shkp);

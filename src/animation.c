@@ -996,6 +996,14 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_PRIEST_MALE_LAWFUL_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_LAWFUL)
             return HUMAN_PRIEST_FEMALE_LAWFUL_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_NEUTRAL)
+            return HUMAN_PRIEST_MALE_NEUTRAL_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_NEUTRAL)
+            return HUMAN_PRIEST_FEMALE_NEUTRAL_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC)
+            return HUMAN_PRIEST_MALE_CHAOTIC_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_CHAOTIC)
+            return HUMAN_PRIEST_FEMALE_CHAOTIC_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_KNIGHT_FEMALE_CAST_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -1020,6 +1028,14 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_PRIEST_MALE_LAWFUL_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_LAWFUL)
             return HUMAN_PRIEST_FEMALE_LAWFUL_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_NEUTRAL)
+            return HUMAN_PRIEST_MALE_NEUTRAL_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_NEUTRAL)
+            return HUMAN_PRIEST_FEMALE_NEUTRAL_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC)
+            return HUMAN_PRIEST_MALE_CHAOTIC_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE && alignmentidx == A_CHAOTIC)
+            return HUMAN_PRIEST_FEMALE_CHAOTIC_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC)
             return ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION;
         if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)

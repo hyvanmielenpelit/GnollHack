@@ -1064,6 +1064,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/That Will Cost You Some Gold", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Emptying That Will Cost You Some Gold", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Usage Fee Some Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/You Did Lot of Damage", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Oh Yes Youll Pay", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Didnt You Forget to Pay 2", 1.0f },
@@ -1076,6 +1077,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/That Will Cost You Some Gold", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Emptying That Will Cost You Some Gold", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Usage Fee Some Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/You Did Lot of Damage", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Oh Yes Youll Pay", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Didnt You Forget to Pay 2", 1.0f },
@@ -1088,11 +1090,15 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/That Will Cost You Some Gold", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Emptying That Will Cost You Some Gold", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Usage Fee Some Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/You Did Lot of Damage", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Cad/No Free Library", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Cad/No Free Library", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Cad/No Free Library", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Cad/Lot of Damage", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Cad/Lot of Damage", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Cad/Lot of Damage", 1.0f },
 };
 
 

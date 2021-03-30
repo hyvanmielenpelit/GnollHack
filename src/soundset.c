@@ -9523,6 +9523,11 @@ enum shopkeeper_lines line_idx;
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME_BACK_TO_MY_STORE_SHORT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME_BACK_TO_MY_STORE_SHORT;
         break;
+    case SHOPKEEPER_LINE_YOU_DID_LOT_OF_DAMAGE:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_DID_LOT_OF_DAMAGE_SIMPLE :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_DID_LOT_OF_DAMAGE_SIMPLE :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_DID_LOT_OF_DAMAGE_SIMPLE;
+        break;
     default:
         break;
     }
@@ -9773,6 +9778,9 @@ const char* cad_str;
             GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY;
         break;
     case SHOPKEEPER_CAD_LINE_LOT_OF_DAMAGE:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LOT_OF_DAMAGE :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LOT_OF_DAMAGE :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_LOT_OF_DAMAGE;
         break;
     default:
         break;
