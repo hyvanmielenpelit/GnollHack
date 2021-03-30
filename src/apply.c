@@ -2253,7 +2253,7 @@ boolean showmsg;
     } else if (distu(x, y) > (magic ? 6 + magic * 3 : 9)) {
         if (showmsg)
         {
-            play_sfx_sound(SFX_GENERAL_CANNOT);
+            play_sfx_sound(SFX_GENERAL_TOO_FAR);
             pline("Too far!");
         }
         return FALSE;
@@ -2267,7 +2267,7 @@ boolean showmsg;
     } else if (!cansee(x, y)) {
         if (showmsg)
         {
-            play_sfx_sound(SFX_GENERAL_CANNOT);
+            play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
             You("cannot see where to land!");
         }
         return FALSE;
@@ -2302,7 +2302,7 @@ boolean showmsg;
                 || ((traj & jHorz) != 0) == (lev->horizontal != 0))) {
             if (showmsg)
             {
-                play_sfx_sound(SFX_GENERAL_CANNOT);
+                play_sfx_sound(SFX_SOMETHING_IN_WAY);
                 You_cant("jump diagonally out of a doorway.");
             }
             return FALSE;
@@ -2312,7 +2312,7 @@ boolean showmsg;
         if (!walk_path(&uc, &tc, check_jump, (genericptr_t) &traj)) {
             if (showmsg)
             {
-                play_sfx_sound(SFX_GENERAL_CANNOT);
+                play_sfx_sound(SFX_SOMETHING_IN_WAY);
                 There("is an obstacle preventing that jump.");
             }
             return FALSE;

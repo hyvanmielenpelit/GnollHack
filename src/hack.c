@@ -188,6 +188,8 @@ moverock()
             {
                 if (Blind)
                     feel_location(sx, sy);
+
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 pline("%s won't roll diagonally on this %s.",
                       The(xname(otmp)), surface(sx, sy));
                 goto cannot_push;
@@ -986,7 +988,10 @@ int mode;
                     if (Blind)
                         feel_location(x, y);
                     if (Underwater || iflags.mention_walls)
+                    {
+                        play_sfx_sound(SFX_SOMETHING_IN_WAY);
                         You_cant("move diagonally into an intact doorway.");
+                    }
                 }
                 return FALSE;
             }
@@ -1060,7 +1065,10 @@ int mode;
     {
         /* Can't move at a diagonal out of a doorway with door. */
         if (mode == DO_MOVE && iflags.mention_walls)
+        {
+            play_sfx_sound(SFX_SOMETHING_IN_WAY);
             You_cant("move diagonally out of an intact doorway.");
+        }
         return FALSE;
     }
 
@@ -2163,6 +2171,7 @@ domove_core()
             u.ux = u.ux0, u.uy = u.uy0;
             if (u.usteed)
                 u.usteed->mx = u.ux, u.usteed->my = u.uy;
+            play_sfx_sound(SFX_SOMETHING_IN_WAY);
             You("stop.  %s can't move diagonally.", upstart(y_monnam(mtmp)));
         }
         else if (u.ux0 != x && u.uy0 != y && bad_rock(mtmp->data, x, u.uy0)
@@ -2173,6 +2182,7 @@ domove_core()
             u.ux = u.ux0, u.uy = u.uy0; /* didn't move after all */
             if (u.usteed)
                 u.usteed->mx = u.ux, u.usteed->my = u.uy;
+            play_sfx_sound(SFX_GENERAL_DOES_NOT_FIT);
             You("stop.  %s won't fit through.", upstart(y_monnam(mtmp)));
         }
         else
@@ -3183,7 +3193,7 @@ lookaround()
     /* Grid bugs stop if trying to move diagonal, even if blind.  Maybe */
     /* they polymorphed while in the middle of a long move. */
     if (NODIAG(u.umonnum) && u.dx && u.dy) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You("cannot move diagonally.");
         nomul(0);
         return;
