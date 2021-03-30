@@ -420,7 +420,7 @@ struct instance_flags {
     boolean wc_preload_tiles; /* preload tiles into memory           */
     int wc_tile_width;        /* tile width                          */
     int wc_tile_height;       /* tile height                         */
-    char *wc_tile_file;       /* name of tile file;overrides default */
+    char *wc_tile_file[MAX_TILE_SHEETS];       /* name of tile file;overrides default */
     boolean wc_inverse;       /* use inverse video for some things   */
     int wc_align_status;      /*  status win at top|bot|right|left   */
     int wc_align_message;     /* message win at top|bot|right|left   */

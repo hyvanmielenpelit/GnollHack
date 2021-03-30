@@ -51,10 +51,12 @@
 /* tile background color */
 #define TILE_BK_COLOR RGB(TILE_BK_COLOR_RED, TILE_BK_COLOR_GREEN, TILE_BK_COLOR_BLUE)
 
+#define TILE_SHEET_IDX(ntile) \
+    (min(GetNHApp()->mapTileSheets - 1, max(0, (ntile / NUM_TILES_PER_SHEET))))
 #define TILEBMP_X(ntile) \
-    ((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X)
+    (((ntile % NUM_TILES_PER_SHEET) % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X)
 #define TILEBMP_Y(ntile) \
-    ((ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y)
+    (((ntile % NUM_TILES_PER_SHEET) / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y)
 
 
 /* minimum/maximum font size (in points - 1/72 inch) */
@@ -85,14 +87,15 @@ typedef struct mswin_nhwindow_app {
     MSNHWinData windowlist[MAXWINDOWS];
 
     HICON iconTiles;
-    HBITMAP bmpTiles;
-    HBITMAP bmpMapTiles; /* custom tiles bitmap */
+    HBITMAP bmpTiles[MAX_TILE_SHEETS];
+    HBITMAP bmpMapTiles[MAX_TILE_SHEETS]; /* custom tiles bitmap */
     HBITMAP bmpRip;
     HBITMAP bmpSplash;
     HBITMAP bmpFMOD;
     int mapTile_X;       /* tile width */
     int mapTile_Y;       /* tile height */
     int mapTilesPerLine; /* number of tile per row in the bitmap */
+    int mapTileSheets;   /* number of used tile sheets */
 
     boolean bNoHScroll; /* disable cliparound for horizontal grid (map) */
     boolean bNoVScroll; /* disable cliparound for vertical grid (map) */

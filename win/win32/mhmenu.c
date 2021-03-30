@@ -1060,7 +1060,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     PNHMenuWindow data;
     TEXTMETRIC tm;
     HGDIOBJ saveFont, normalFont;
-    HDC tileDC;
+    HDC tileDC[MAX_TILE_SHEETS];
     int ntile;
     int t_x, t_y;
     int x, y;
@@ -1087,7 +1087,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     item = &data->menu.items[lpdis->itemID];
 
-    tileDC = CreateCompatibleDC(lpdis->hDC);
+    for(int i = 0; i < GetNHApp()->mapTileSheets; i++)
+        tileDC[i] = CreateCompatibleDC(lpdis->hDC);
+
     cached_font* nfont = mswin_get_font(NHW_MENU, ATR_BOLD, lpdis->hDC, FALSE);
     saveFont = SelectObject(lpdis->hDC, nfont->hFont);
 
@@ -1194,8 +1196,10 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     {
         if (!IS_MAP_ASCII(iflags.wc_map_mode))
         {
-            HGDIOBJ saveBmp;
-            saveBmp = SelectObject(tileDC, GetNHApp()->bmpMapTiles);
+            HGDIOBJ saveBmp[MAX_TILE_SHEETS];
+            for(int i = 0; i < GetNHApp()->mapTileSheets; i++)
+                saveBmp[i] = SelectObject(tileDC[i], GetNHApp()->bmpMapTiles[i]);
+
             int signed_glyph = item->glyph;
             int glyph = abs(signed_glyph);
             boolean flip_tile = FALSE;
@@ -1224,10 +1228,11 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 int enl_width = enlargements[enlargement_idx].width_in_tiles;
                 int enl_x = enl_width == 3 ? 1 : enlargements[enlargement_idx].main_tile_x_coordinate;
 
-                HDC hDCMem = CreateCompatibleDC(tileDC);
+                HDC hDCMem = CreateCompatibleDC(tileDC[0]);
 
                 int width = tileWidth * enl_width;
                 int height = tileHeight * enl_height;
+                int n_sheet_idx = TILE_SHEET_IDX(ntile);
                 t_x = TILEBMP_X(ntile) + (flip_tile ? tileWidth - 1 : 0);
                 t_y = TILEBMP_Y(ntile);
 
@@ -1247,10 +1252,10 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 /* Main tile */
                 if(flip_tile)
                     StretchBlt(hDCMem, (enl_width - 1 - enl_x) * tileWidth, tileHeight * (enl_height - 1), tileWidth, tileHeight,
-                        tileDC, t_x, t_y, -tileWidth, tileHeight, SRCCOPY);
+                        tileDC[n_sheet_idx], t_x, t_y, -tileWidth, tileHeight, SRCCOPY);
                 else
                     StretchBlt(hDCMem, enl_x * tileWidth, tileHeight * (enl_height - 1), tileWidth, tileHeight,
-                        tileDC, t_x, t_y, tileWidth, tileHeight, SRCCOPY);
+                        tileDC[n_sheet_idx], t_x, t_y, tileWidth, tileHeight, SRCCOPY);
 
                 /* Enlargement tiles */
                 for (int idx = 0; idx < NUM_POSITIONS_IN_ENLARGEMENT; idx++)
@@ -1269,6 +1274,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     {
                         int glyph = enltile + enlargement_offsets[enlargement_idx] /* enlargements[enlargement_idx].glyph_offset */ + GLYPH_ENLARGEMENT_OFF;
                         int etile = glyph2tile[glyph];
+                        int e_sheet_idx = TILE_SHEET_IDX(etile);
                         t_x = TILEBMP_X(etile) + (flip_tile ? tileWidth - 1 : 0);
                         t_y = TILEBMP_Y(etile);
                         int target_x = 0;
@@ -1294,10 +1300,10 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                         if (flip_tile)
                             StretchBlt(hDCMem, (enl_width - 1) * tileWidth - target_x, target_y, tileWidth, tileHeight,
-                                tileDC, t_x, t_y, -tileWidth, tileHeight, SRCCOPY);
+                                tileDC[e_sheet_idx], t_x, t_y, -tileWidth, tileHeight, SRCCOPY);
                         else
                             StretchBlt(hDCMem, target_x, target_y, tileWidth, tileHeight,
-                                tileDC, t_x, t_y, tileWidth, tileHeight, SRCCOPY);
+                                tileDC[e_sheet_idx], t_x, t_y, tileWidth, tileHeight, SRCCOPY);
                     }
                 }
 
@@ -1336,6 +1342,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     source_height_deducted = tileHeight / 2;
                 }
 
+                int n_sheet_idx = TILE_SHEET_IDX(ntile);
                 t_x = TILEBMP_X(ntile) + (flip_tile ? tileWidth - 1 : 0);
                 //((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X);
                 t_y = TILEBMP_Y(ntile) + source_top_added; /* Use lower part of the tile only */
@@ -1344,19 +1351,19 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
 
                 SetStretchBltMode(lpdis->hDC, COLORONCOLOR);
-                if (GetNHApp()->bmpMapTiles == GetNHApp()->bmpTiles)
+                if (GetNHApp()->bmpMapTiles[n_sheet_idx] == GetNHApp()->bmpTiles[n_sheet_idx])
                 {
                     /* using original GnollHack tiles - apply image transparently */
                     (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x + x_added, y,
                         applied_tileXScaled, tileYScaled,
-                        tileDC, t_x, t_y, multiplier * tileWidth, tileHeight - source_height_deducted, /* Use lower part of the tile only */
+                        tileDC[n_sheet_idx], t_x, t_y, multiplier * tileWidth, tileHeight - source_height_deducted, /* Use lower part of the tile only */
                         TILE_BK_COLOR);
                 }
                 else
                 {
                     /* using custom tiles - simple blt */
                     StretchBlt(lpdis->hDC, x, y, tileXScaled, tileYScaled,
-                        tileDC, t_x, t_y, multiplier* GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
+                        tileDC[n_sheet_idx], t_x, t_y, multiplier* GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
                 }
 
                 double scale_factor = (double)applied_tileXScaled / (double)tileWidth;
@@ -1395,6 +1402,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                         int source_glyph = autodraws[autodraw].source_glyph;
                         int atile = glyph2tile[source_glyph];
+                        int a_sheet_idx = TILE_SHEET_IDX(atile);
                         int at_x = TILEBMP_X(atile);
                         int at_y = TILEBMP_Y(atile);
 
@@ -1413,7 +1421,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                         (*GetNHApp()->lpfnTransparentBlt)(
                             lpdis->hDC, target_rt.left, target_rt.top,
-                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, tileDC, source_rt.left,
+                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, tileDC[a_sheet_idx], source_rt.left,
                             source_rt.top, source_rt.right - source_rt.left,
                             source_rt.bottom - source_rt.top, TILE_BK_COLOR);
 
@@ -1427,7 +1435,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                     if (fill_percentage > 0.0)
                     {
-                        HDC hDCjar = CreateCompatibleDC(tileDC);
+                        HDC hDCjar = CreateCompatibleDC(tileDC[0]);
 
                         unsigned char* lpBitmapBitsJar;
                         int jar_width = tileWidth;
@@ -1469,11 +1477,13 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                         int source_glyph = autodraws[autodraw].source_glyph;
                         int atile = glyph2tile[source_glyph];
+                        int a_sheet_idx = TILE_SHEET_IDX(atile);
                         int at_x = TILEBMP_X(atile);
                         int at_y = TILEBMP_Y(atile);
 
                         int source_glyph2 = autodraws[autodraw].source_glyph2;
                         int atile2 = glyph2tile[source_glyph2];
+                        int a2_sheet_idx = TILE_SHEET_IDX(atile2);
                         int a2t_x = TILEBMP_X(atile2);
                         int a2t_y = TILEBMP_Y(atile2);
 
@@ -1495,7 +1505,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                             (*GetNHApp()->lpfnTransparentBlt)(
                                 hDCjar, target_rt.left, target_rt.top,
-                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, tileDC, source_rt.left,
+                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, tileDC[a_sheet_idx], source_rt.left,
                                 source_rt.top, source_rt.right - source_rt.left,
                                 source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                         }
@@ -1512,7 +1522,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                             int width = source_rt.right - source_rt.left;
                             int height = source_rt.bottom - source_rt.top;
 
-                            HDC hDCtemplate = CreateCompatibleDC(tileDC);
+                            HDC hDCtemplate = CreateCompatibleDC(tileDC[0]);
 
                             unsigned char* lpBitmapBitsTemplate;
 
@@ -1527,7 +1537,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                             HBITMAP newhBmp_st = CreateDIBSection(hDCtemplate, &binfo_st, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsTemplate, NULL, 0);
                             HGDIOBJ oldbmp_st = SelectObject(hDCtemplate, newhBmp_st);
                             StretchBlt(hDCtemplate, 0, 0, width, height,
-                                tileDC, source_rt.left, source_rt.top, width, height, SRCCOPY);
+                                tileDC[a_sheet_idx], source_rt.left, source_rt.top, width, height, SRCCOPY);
 
                             /* Color */
                             unsigned long draw_color = autodraws[autodraw].parameter1;
@@ -1698,7 +1708,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                             HBITMAP newhBmp_st = CreateDIBSection(hDCsemitransparent, &binfo_st, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsSemitransparent, NULL, 0);
                             HGDIOBJ oldbmp_st = SelectObject(hDCsemitransparent, newhBmp_st);
                             StretchBlt(hDCsemitransparent, 0, 0, width, height,
-                                tileDC, source_rt.left, source_rt.top, source_rt.right - source_rt.left, source_rt.bottom - source_rt.top, SRCCOPY);
+                                tileDC[a2_sheet_idx], source_rt.left, source_rt.top, source_rt.right - source_rt.left, source_rt.bottom - source_rt.top, SRCCOPY);
 
                             /* Draw */
                             int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
@@ -1751,7 +1761,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                             (*GetNHApp()->lpfnTransparentBlt)(
                                 hDCjar, target_rt.left, target_rt.top,
-                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, tileDC, source_rt.left,
+                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, tileDC[a2_sheet_idx], source_rt.left,
                                 source_rt.top, source_rt.right - source_rt.left,
                                 source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                         }
@@ -1908,6 +1918,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                         int source_glyph = ITEM_PROPERTY_MARKS + GLYPH_UI_TILE_OFF;
                         int atile = glyph2tile[source_glyph];
+                        int a_sheet_idx = TILE_SHEET_IDX(atile);
                         int at_x = TILEBMP_X(atile);
                         int at_y = TILEBMP_Y(atile);
 
@@ -1927,14 +1938,17 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                         (*GetNHApp()->lpfnTransparentBlt)(
                             lpdis->hDC, target_rt.left, target_rt.top,
-                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, tileDC, source_rt.left,
+                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, tileDC[a_sheet_idx], source_rt.left,
                             source_rt.top, source_rt.right - source_rt.left,
                             source_rt.bottom - source_rt.top, TILE_BK_COLOR);
 
                         cnt++;
                     }
                 }
-                SelectObject(tileDC, saveBmp);
+                
+                for(int i = 0; i < GetNHApp()->mapTileSheets; i++)
+                    SelectObject(tileDC[i], saveBmp[i]);
+
                 x += tileXScaled;
             }
         } 
@@ -2070,7 +2084,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     SetTextColor(lpdis->hDC, OldFg);
     SetBkColor(lpdis->hDC, OldBg);
     SelectObject(lpdis->hDC, saveFont);
-    DeleteDC(tileDC);
+    for(int i = 0; i < GetNHApp()->mapTileSheets; i++)
+        DeleteDC(tileDC[i]);
+
     return TRUE;
 }
 /*-----------------------------------------------------------------------------*/

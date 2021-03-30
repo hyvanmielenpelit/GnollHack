@@ -85,7 +85,7 @@ typedef struct mswin_GnollHack_map_window {
     HBITMAP hBackBuffer;        /* back buffer bitmap */
     HDC backBufferDC;           /* back buffer drawing context */
 
-    HDC tileDC;                /* tile drawing context */
+    HDC tileDC[MAX_TILE_SHEETS];                /* tile drawing context */
 
     void* backBufferRenderTarget;
     void* tileRenderTarget;
@@ -965,7 +965,8 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     HDC hDC = GetDC(hWnd);
     data->backBufferDC = CreateCompatibleDC(hDC);
-    data->tileDC = CreateCompatibleDC(hDC);
+    for(int i = 0; i < GetNHApp()->mapTileSheets; i++)
+        data->tileDC[i] = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
 
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) data);
@@ -1977,6 +1978,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         int dest_width_deducted = 0;
                         int source_top_added = 0;
                         int source_height_deducted = 0;
+                        int sheet_idx = TILE_SHEET_IDX(ntile);
                         int base_t_x = TILEBMP_X(ntile);
                         int base_t_y = TILEBMP_Y(ntile);
                         t_x = base_t_x + (hflip_glyph ? tileWidth - 1 : 0);
@@ -2178,7 +2180,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             HBITMAP newhBmp_st = CreateDIBSection(hDCsemitransparent, &binfo_st, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsSemitransparent, NULL, 0);
                             HGDIOBJ oldbmp_st = SelectObject(hDCsemitransparent, newhBmp_st);
                             StretchBlt(hDCsemitransparent, 0, 0, width, height,
-                                data->tileDC, base_t_x, base_t_y, tileWidth, tileHeight, SRCCOPY);
+                                data->tileDC[sheet_idx], base_t_x, base_t_y, tileWidth, tileHeight, SRCCOPY);
 
                             /* Draw semitransparency */
                             int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
@@ -2319,7 +2321,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
-                                        data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
+                                        data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, data->tileDC[sheet_idx], t_x,
                                         t_y + source_top_added, hmultiplier * GetNHApp()->mapTile_X,
                                         vmultiplier * (GetNHApp()->mapTile_Y - source_height_deducted), TILE_BK_COLOR);
                                 }
@@ -2327,7 +2329,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         hDCcopy, dest_left_added, dest_top_added,
-                                        GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                        GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC[sheet_idx],
                                         t_x, t_y + source_top_added, hmultiplier * GetNHApp()->mapTile_X,
                                         vmultiplier * (GetNHApp()->mapTile_Y - source_height_deducted), TILE_BK_COLOR);
                                 }
@@ -2338,7 +2340,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     StretchBlt(
                                         data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
-                                        data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
+                                        data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, data->tileDC[sheet_idx], t_x,
                                         t_y + source_top_added, hmultiplier * GetNHApp()->mapTile_X,
                                         vmultiplier * (GetNHApp()->mapTile_Y - source_height_deducted), SRCCOPY);
                                 }
@@ -2367,7 +2369,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     }
 
                                     StretchBlt(hDCcopy, dest_left_added, dest_top_added,
-                                        GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                        GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC[sheet_idx],
                                         t_x, t_y + source_top_added, hmultiplier * GetNHApp()->mapTile_X,
                                         vmultiplier * (GetNHApp()->mapTile_Y - source_height_deducted), SRCCOPY);
                                 }
@@ -2378,7 +2380,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 monster_copied = TRUE;
 
                                 StretchBlt(hDCmonster, dest_left_added, dest_top_added,
-                                    GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                    GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC[sheet_idx],
                                     t_x, t_y + source_top_added, hmultiplier* GetNHApp()->mapTile_X,
                                     vmultiplier* (GetNHApp()->mapTile_Y - source_height_deducted), SRCCOPY);
                             }
@@ -2451,6 +2453,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             {
                                                 int source_glyph = autodraws[autodraw].source_glyph;
                                                 int atile = glyph2tile[source_glyph];
+                                                int a_sheet_idx = TILE_SHEET_IDX(atile);
                                                 int at_x = TILEBMP_X(atile);
                                                 int at_y = TILEBMP_Y(atile);
 
@@ -2462,6 +2465,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     {
                                                         source_glyph = autodraws[autodraw].source_glyph2; /* S_vwall */
                                                         atile = glyph2tile[source_glyph];
+                                                        a_sheet_idx = TILE_SHEET_IDX(atile);
                                                         at_x = TILEBMP_X(atile);
                                                         at_y = TILEBMP_Y(atile);
                                                     }
@@ -2483,6 +2487,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     {
                                                         source_glyph = autodraws[autodraw].source_glyph2; /* S_vwall */
                                                         atile = glyph2tile[source_glyph];
+                                                        a_sheet_idx = TILE_SHEET_IDX(atile);
                                                         at_x = TILEBMP_X(atile);
                                                         at_y = TILEBMP_Y(atile);
                                                     }
@@ -2504,6 +2509,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     {
                                                         source_glyph = autodraws[autodraw].source_glyph3; /* S_hwall */
                                                         atile = glyph2tile[source_glyph];
+                                                        a_sheet_idx = TILE_SHEET_IDX(atile);
                                                         at_x = TILEBMP_X(atile);
                                                         at_y = TILEBMP_Y(atile);
                                                     }
@@ -2525,6 +2531,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     {
                                                         source_glyph = autodraws[autodraw].source_glyph3; /* S_hwall */
                                                         atile = glyph2tile[source_glyph];
+                                                        a_sheet_idx = TILE_SHEET_IDX(atile);
                                                         at_x = TILEBMP_X(atile);
                                                         at_y = TILEBMP_Y(atile);
                                                     }
@@ -2556,7 +2563,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                                     (*GetNHApp()->lpfnTransparentBlt)(
                                                         data->backBufferDC, target_rt.left, target_rt.top,
-                                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
                                                         source_rt.top, source_rt.right - source_rt.left,
                                                         source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                                 }
@@ -2569,7 +2576,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                                     (*GetNHApp()->lpfnTransparentBlt)(
                                                         hDCcopy, target_rt.left, target_rt.top,
-                                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
                                                         source_rt.top, source_rt.right - source_rt.left,
                                                         source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                                 }
@@ -2624,6 +2631,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                         int source_glyph = autodraws[autodraw].source_glyph;
                                         int atile = glyph2tile[source_glyph];
+                                        int a_sheet_idx = TILE_SHEET_IDX(atile);
                                         int at_x = TILEBMP_X(atile);
                                         int at_y = TILEBMP_Y(atile);
 
@@ -2644,7 +2652,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                             (*GetNHApp()->lpfnTransparentBlt)(
                                                 data->backBufferDC, target_rt.left, target_rt.top,
-                                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
                                                 source_rt.top, source_rt.right - source_rt.left,
                                                 source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                         }
@@ -2657,7 +2665,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                             (*GetNHApp()->lpfnTransparentBlt)(
                                                 hDCcopy, target_rt.left, target_rt.top,
-                                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
                                                 source_rt.top, source_rt.right - source_rt.left,
                                                 source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                         }
@@ -2704,6 +2712,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     int source_glyph = obj_to_glyph(contained_obj, rn2);
                                     int atile = glyph2tile[source_glyph];
+                                    int a_sheet_idx = TILE_SHEET_IDX(atile);
                                     int at_x = TILEBMP_X(atile);
                                     int at_y = TILEBMP_Y(atile);
 
@@ -2735,7 +2744,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
                                     HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
                                     StretchBlt(hDCMem, 0, 0, width, height,
-                                        data->tileDC, source_rt.left, source_rt.top, width, height, SRCCOPY);
+                                        data->tileDC[a_sheet_idx], source_rt.left, source_rt.top, width, height, SRCCOPY);
 
                                     HDC hDCrotate = CreateCompatibleDC(data->backBufferDC);
 
@@ -2834,6 +2843,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     int source_glyph = obj_to_glyph(contained_obj, rn2);
                                     int atile = glyph2tile[source_glyph];
+                                    int a_sheet_idx = TILE_SHEET_IDX(atile);
                                     int at_x = TILEBMP_X(atile);
                                     int at_y = TILEBMP_Y(atile);
 
@@ -2865,7 +2875,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
                                     HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
                                     StretchBlt(hDCMem, 0, 0, width, height,
-                                        data->tileDC, source_rt.left, source_rt.top, width, height, SRCCOPY);
+                                        data->tileDC[a_sheet_idx], source_rt.left, source_rt.top, width, height, SRCCOPY);
 
                                     HDC hDCrotate = CreateCompatibleDC(data->backBufferDC);
 
@@ -2969,6 +2979,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     int source_glyph = autodraws[autodraw].source_glyph;
                                     int atile = glyph2tile[source_glyph];
+                                    int a_sheet_idx = TILE_SHEET_IDX(atile);
                                     int at_x = TILEBMP_X(atile);
                                     int at_y = TILEBMP_Y(atile);
 
@@ -2989,7 +3000,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             data->backBufferDC, target_rt.left, target_rt.top,
-                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
                                             source_rt.top, source_rt.right - source_rt.left,
                                             source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                     }
@@ -3002,7 +3013,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             hDCcopy, target_rt.left, target_rt.top,
-                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
                                             source_rt.top, source_rt.right - source_rt.left,
                                             source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                     }
@@ -3016,7 +3027,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 if (fill_percentage > 0.0)
                                 {
-                                    HDC hDCjar = CreateCompatibleDC(data->tileDC);
+                                    HDC hDCjar = CreateCompatibleDC(data->tileDC[0]);
 
                                     unsigned char* lpBitmapBitsJar;
                                     int jar_width = tileWidth;
@@ -3058,11 +3069,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     int source_glyph = autodraws[autodraw].source_glyph;
                                     int atile = glyph2tile[source_glyph];
+                                    int a_sheet_idx = TILE_SHEET_IDX(atile);
                                     int at_x = TILEBMP_X(atile);
                                     int at_y = TILEBMP_Y(atile);
 
                                     int source_glyph2 = autodraws[autodraw].source_glyph2;
                                     int atile2 = glyph2tile[source_glyph2];
+                                    int a2_sheet_idx = TILE_SHEET_IDX(atile);
                                     int a2t_x = TILEBMP_X(atile2);
                                     int a2t_y = TILEBMP_Y(atile2);
 
@@ -3084,7 +3097,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             hDCjar, target_rt.left, target_rt.top,
-                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
                                             source_rt.top, source_rt.right - source_rt.left,
                                             source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                     }
@@ -3101,7 +3114,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         int width = source_rt.right - source_rt.left;
                                         int height = source_rt.bottom - source_rt.top;
 
-                                        HDC hDCtemplate = CreateCompatibleDC(data->tileDC);
+                                        HDC hDCtemplate = CreateCompatibleDC(data->tileDC[0]);
 
                                         unsigned char* lpBitmapBitsTemplate;
 
@@ -3116,7 +3129,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         HBITMAP newhBmp_st = CreateDIBSection(hDCtemplate, &binfo_st, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsTemplate, NULL, 0);
                                         HGDIOBJ oldbmp_st = SelectObject(hDCtemplate, newhBmp_st);
                                         StretchBlt(hDCtemplate, 0, 0, width, height,
-                                            data->tileDC, source_rt.left, source_rt.top, width, height, SRCCOPY);
+                                            data->tileDC[a_sheet_idx], source_rt.left, source_rt.top, width, height, SRCCOPY);
 
                                         /* Color */
                                         unsigned long draw_color = autodraws[autodraw].parameter1;
@@ -3288,7 +3301,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         HBITMAP newhBmp_st = CreateDIBSection(hDCsemitransparent, &binfo_st, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsSemitransparent, NULL, 0);
                                         HGDIOBJ oldbmp_st = SelectObject(hDCsemitransparent, newhBmp_st);
                                         StretchBlt(hDCsemitransparent, 0, 0, width, height,
-                                            data->tileDC, source_rt.left, source_rt.top, source_rt.right - source_rt.left, source_rt.bottom - source_rt.top, SRCCOPY);
+                                            data->tileDC[a2_sheet_idx], source_rt.left, source_rt.top, source_rt.right - source_rt.left, source_rt.bottom - source_rt.top, SRCCOPY);
 
                                         /* Draw */
                                         int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
@@ -3341,7 +3354,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             hDCjar, target_rt.left, target_rt.top,
-                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a2_sheet_idx], source_rt.left,
                                             source_rt.top, source_rt.right - source_rt.left,
                                             source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                     }
@@ -3409,6 +3422,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     int source_glyph = autodraw_u_punished || autodraw == 0 ? ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF : autodraws[autodraw].source_glyph;
                                     int dir_idx = autodraws[autodraw].flags;
                                     int atile = glyph2tile[source_glyph];
+                                    int a_sheet_idx = TILE_SHEET_IDX(atile);
                                     int at_x = TILEBMP_X(atile);
                                     int at_y = TILEBMP_Y(atile);
                                     double scale = (double)(rect->bottom - rect->top) / (double)tileHeight;
@@ -3504,7 +3518,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                                     (*GetNHApp()->lpfnTransparentBlt)(
                                                         data->backBufferDC, target_x, target_y,
-                                                        target_width, target_height, data->tileDC, source_x + (used_hflip_link ? source_width - 1 : 0),
+                                                        target_width, target_height, data->tileDC[a_sheet_idx], source_x + (used_hflip_link ? source_width - 1 : 0),
                                                         source_y + (vflip_link ? source_height - 1 : 0), (used_hflip_link ? -1 : 1) * source_width,
                                                         (vflip_link ? -1 : 1) * source_height, TILE_BK_COLOR);
                                                 }
@@ -3611,7 +3625,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                                     (*GetNHApp()->lpfnTransparentBlt)(
                                                         data->backBufferDC, target_x, target_y,
-                                                        target_width, target_height, data->tileDC, source_x + (hflip_link ? source_width - 1 : 0),
+                                                        target_width, target_height, data->tileDC[a_sheet_idx], source_x + (hflip_link ? source_width - 1 : 0),
                                                         source_y + (vflip_link ? source_height - 1 : 0), (hflip_link ? -1 : 1)* source_width,
                                                         (vflip_link ? -1 : 1)* source_height, TILE_BK_COLOR);
 
@@ -3710,6 +3724,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         }
 
                                         int atile = glyph2tile[source_glyph];
+                                        int a_sheet_idx = TILE_SHEET_IDX(atile);
                                         int at_x = TILEBMP_X(atile);
                                         int at_y = TILEBMP_Y(atile);
 
@@ -3724,7 +3739,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             data->backBufferDC, target_x, target_y,
-                                            target_width, target_height, data->tileDC, source_x + (hflip_seg ? source_width - 1 : 0),
+                                            target_width, target_height, data->tileDC[a_sheet_idx], source_x + (hflip_seg ? source_width - 1 : 0),
                                             source_y + (vflip_seg ? source_height - 1 : 0), (hflip_seg ? -1 : 1) * source_width,
                                             (vflip_seg ? -1 : 1) * source_height, TILE_BK_COLOR);
                                     }
@@ -3873,6 +3888,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 int source_glyph = ITEM_PROPERTY_MARKS + GLYPH_UI_TILE_OFF;
                                 int atile = glyph2tile[source_glyph];
+                                int a_sheet_idx = TILE_SHEET_IDX(atile);
                                 int at_x = TILEBMP_X(atile);
                                 int at_y = TILEBMP_Y(atile);
 
@@ -3893,7 +3909,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         data->backBufferDC, target_rt.left, target_rt.top,
-                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
                                         source_rt.top, source_rt.right - source_rt.left,
                                         source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                 }
@@ -3906,7 +3922,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         hDCcopy, target_rt.left, target_rt.top,
-                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
                                         source_rt.top, source_rt.right - source_rt.left,
                                         source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                 }
@@ -4141,6 +4157,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         double scale = (double)(rect->bottom - rect->top) / (double)tileHeight;
                         int mglyph = ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
+                        int m_sheet_idx = TILE_SHEET_IDX(mtile);
                         int source_x = TILEBMP_X(mtile) + 0;
                         int source_y = TILEBMP_Y(mtile) + 64;
                         int source_width = 32;
@@ -4152,7 +4169,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, target_x, target_y,
-                            target_width, target_height, data->tileDC, source_x,
+                            target_width, target_height, data->tileDC[m_sheet_idx], source_x,
                             source_y, source_width,
                             source_height, TILE_BK_COLOR);
                     }
@@ -4179,12 +4196,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int tile_animation_idx = get_tile_animation_index_from_glyph(cglyph);
                             ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
                             ctile = maybe_get_animated_tile(ctile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
+                            int c_sheet_idx = TILE_SHEET_IDX(ctile);
                             t_x = TILEBMP_X(ctile);
                             t_y = TILEBMP_Y(ctile);
 
                             (*GetNHApp()->lpfnTransparentBlt)(
                                 data->backBufferDC, rect->left, rect->top,
-                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                                data->xBackTile, data->yBackTile, data->tileDC[c_sheet_idx], t_x,
                                 t_y, GetNHApp()->mapTile_X,
                                 GetNHApp()->mapTile_Y, TILE_BK_COLOR);
 
@@ -4200,12 +4218,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                             int mglyph = MAIN_TILE_MARK + GLYPH_UI_TILE_OFF;
                             int mtile = glyph2tile[mglyph];
+                            int m_sheet_idx = TILE_SHEET_IDX(mtile);
                             t_x = TILEBMP_X(mtile);
                             t_y = TILEBMP_Y(mtile);
 
                             (*GetNHApp()->lpfnTransparentBlt)(
                                 data->backBufferDC, rect->left, rect->top,
-                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                                data->xBackTile, data->yBackTile, data->tileDC[m_sheet_idx], t_x,
                                 t_y, GetNHApp()->mapTile_X,
                                 GetNHApp()->mapTile_Y, TILE_BK_COLOR);
 
@@ -4221,12 +4240,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                         int mglyph = U_TILE_MARK + GLYPH_UI_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
+                        int m_sheet_idx = TILE_SHEET_IDX(mtile);
                         t_x = TILEBMP_X(mtile);
                         t_y = TILEBMP_Y(mtile);
 
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top,
-                            data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                            data->xBackTile, data->yBackTile, data->tileDC[m_sheet_idx], t_x,
                             t_y, GetNHApp()->mapTile_X,
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
@@ -4280,6 +4300,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             /* Petmark and other status marks */
                             int mglyph = STATUS_MARKS + GLYPH_UI_TILE_OFF;
                             int mtile = glyph2tile[mglyph];
+                            int m_sheet_idx = TILE_SHEET_IDX(mtile);
                             int ct_x = TILEBMP_X(mtile);
                             int ct_y = TILEBMP_Y(mtile);
                             int tiles_per_row = tileWidth / ui_tile_component_array[STATUS_MARKS].width;
@@ -4423,7 +4444,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         data->backBufferDC, target_rt.left, target_rt.top,
-                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[m_sheet_idx], source_rt.left,
                                         source_rt.top, source_rt.right - source_rt.left,
                                         source_rt.bottom - source_rt.top, TILE_BK_COLOR);
 
@@ -4437,6 +4458,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             /* Conditions */
                             mglyph = CONDITION_MARKS + GLYPH_UI_TILE_OFF;
                             mtile = glyph2tile[mglyph];
+                            m_sheet_idx = TILE_SHEET_IDX(mtile);
                             ct_x = TILEBMP_X(mtile);
                             ct_y = TILEBMP_Y(mtile);
                             tiles_per_row = tileWidth / ui_tile_component_array[CONDITION_MARKS].width;
@@ -4485,14 +4507,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     /*
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         hDCcopy, unscaled_left, unscaled_top,
-                                        unscaled_right - unscaled_left, unscaled_bottom - unscaled_top, data->tileDC, source_rt.left,
+                                        unscaled_right - unscaled_left, unscaled_bottom - unscaled_top, data->tileDC[m_sheet_idx], source_rt.left,
                                         source_rt.top, source_rt.right - source_rt.left,
                                         source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                     */
 
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         data->backBufferDC, target_rt.left, target_rt.top,
-                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[m_sheet_idx], source_rt.left,
                                         source_rt.top, source_rt.right - source_rt.left,
                                         source_rt.bottom - source_rt.top, TILE_BK_COLOR);
 
@@ -4511,6 +4533,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 mglyph = (propidx - 1) / BUFFS_PER_TILE + GLYPH_BUFF_OFF;
                                 mtile = glyph2tile[mglyph];
+                                m_sheet_idx = TILE_SHEET_IDX(mtile);
                                 ct_x = TILEBMP_X(mtile);
                                 ct_y = TILEBMP_Y(mtile);
                                 tiles_per_row = tileWidth / BUFF_WIDTH;
@@ -4545,7 +4568,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 (*GetNHApp()->lpfnTransparentBlt)(
                                     data->backBufferDC, target_rt.left, target_rt.top,
-                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[m_sheet_idx], source_rt.left,
                                     source_rt.top, source_rt.right - source_rt.left,
                                     source_rt.bottom - source_rt.top, TILE_BK_COLOR);
 
@@ -4563,6 +4586,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int tile_animation_idx = get_tile_animation_index_from_glyph(mglyph);
                                 mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags), (enum auto_drawtypes*)0);
                                 mtile = maybe_get_animated_tile(mtile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
+                                m_sheet_idx = TILE_SHEET_IDX(mtile);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
                                 /* Define draw location in target */
@@ -4601,7 +4625,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 (*GetNHApp()->lpfnTransparentBlt)(
                                     data->backBufferDC, target_rt.left, target_rt.top,
-                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left + (flip_rider ? tileWidth - 1 : 0),
+                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[m_sheet_idx], source_rt.left + (flip_rider ? tileWidth - 1 : 0),
                                     source_rt.top, rhmultiplier* (source_rt.right - source_rt.left),
                                     source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                             }
@@ -4642,6 +4666,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     {
                         int mglyph = GENERAL_TILE_DEATH + GLYPH_GENERAL_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
+                        int m_sheet_idx = TILE_SHEET_IDX(mtile);
                         t_x = TILEBMP_X(mtile);
                         t_y = TILEBMP_Y(mtile);
 
@@ -4654,7 +4679,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     */
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top,
-                            data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                            data->xBackTile, data->yBackTile, data->tileDC[m_sheet_idx], t_x,
                             t_y, GetNHApp()->mapTile_X,
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
@@ -4664,19 +4689,20 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         unsigned long hit_text_num = hit_text_bits >> LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
                         int mglyph = max(0, min(MAX_HIT_TILES - 1, (int)hit_text_num)) + GLYPH_HIT_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
+                        int m_sheet_idx = TILE_SHEET_IDX(mtile);
                         t_x = TILEBMP_X(mtile);
                         t_y = TILEBMP_Y(mtile);
 
                         /*
                         (*GetNHApp()->lpfnTransparentBlt)(
                             hDCcopy, 0, 0,
-                            GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
+                            GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC[m_sheet_idx], t_x,
                             t_y, GetNHApp()->mapTile_X,
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                         */
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top,
-                            data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                            data->xBackTile, data->yBackTile, data->tileDC[m_sheet_idx], t_x,
                             t_y, GetNHApp()->mapTile_X,
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
@@ -5494,14 +5520,18 @@ onPaint(HWND hWnd)
     PNHMapWindow data = (PNHMapWindow) GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
     /* update back buffer */
-    HBITMAP savedBitmap = SelectObject(data->tileDC, GetNHApp()->bmpMapTiles);
+    HBITMAP savedBitmap[MAX_TILE_SHEETS] = { 0 };
+    
+    for(int i = 0; i < GetNHApp()->mapTileSheets; i++)
+        savedBitmap[i] = SelectObject(data->tileDC[i], GetNHApp()->bmpMapTiles[i]);
 
     for (int i = 1; i < COLNO; i++)
         for (int j = 0; j < ROWNO; j++)
             if (data->mapDirty[i][j])
                 paint(data, i, j);
 
-    SelectObject(data->tileDC, savedBitmap);
+    for (int i = 0; i < GetNHApp()->mapTileSheets; i++)
+        SelectObject(data->tileDC[i], savedBitmap[i]);
 
     PAINTSTRUCT ps;
     HDC hFrontBufferDC = BeginPaint(hWnd, &ps);

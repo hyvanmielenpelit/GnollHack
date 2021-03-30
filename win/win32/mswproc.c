@@ -2320,56 +2320,74 @@ bail(const char *mesg)
 BOOL
 initMapTiles(void)
 {
-    HBITMAP hBmp;
+    HBITMAP hBmp[MAX_TILE_SHEETS];
     BITMAP bm;
     DWORD errcode;
     int tl_num;
     SIZE map_size;
     int total_tiles_used = process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
+    int total_sheets_used = min(MAX_TILE_SHEETS, (total_tiles_used - 1) / NUM_TILES_PER_SHEET + 1);
 
     /* no file - no tile */
-    if (!(iflags.wc_tile_file && *iflags.wc_tile_file))
-        return TRUE;
+    for (int i = 0; i < total_sheets_used; i++)
+    {
+        if (!(iflags.wc_tile_file[i] && *iflags.wc_tile_file[i]))
+            return TRUE;
 
-    /* load bitmap */
-    hBmp = LoadPNGFromFile(iflags.wc_tile_file, TILE_BK_COLOR);
+        /* load bitmap */
+        hBmp[i] = LoadPNGFromFile(iflags.wc_tile_file[i], TILE_BK_COLOR);
+        if (hBmp[i] == NULL) {
+            char errmsg[BUFSZ];
 
-    if (hBmp == NULL) {
-        char errmsg[BUFSZ];
+            errcode = GetLastError();
+            Sprintf(errmsg, "Cannot load tiles %d from the file. Reverting back to default (0x%x).", i, errcode);
+            raw_print(errmsg);
+            return FALSE;
+        }
 
-        errcode = GetLastError();
-        Sprintf(errmsg, "%s (0x%x).",
-            "Cannot load tiles from the file. Reverting back to default",
-            errcode);
-        raw_print(errmsg);
-        return FALSE;
     }
 
     /* calculate tile dimensions */
-    GetObject(hBmp, sizeof(BITMAP), (LPVOID) &bm);
-    if (bm.bmWidth % iflags.wc_tile_width
-        || bm.bmHeight % iflags.wc_tile_height) {
-        DeleteObject(hBmp);
-        raw_print("Tiles bitmap does not match tile_width and tile_height "
-                  "options. Reverting back to default.");
-        return FALSE;
+    tl_num = 0;
+    for (int i = 0; i < total_sheets_used; i++)
+    {
+        GetObject(hBmp[i], sizeof(BITMAP), (LPVOID)&bm);
+        if (bm.bmWidth % iflags.wc_tile_width
+            || bm.bmHeight % iflags.wc_tile_height) 
+        {
+            for(int j = 0; j < total_sheets_used; j++)
+                DeleteObject(hBmp[j]);
+
+            char errmsg[BUFSZ];
+            Sprintf(errmsg, "Tiles bitmap %d does not match tile_width and tile_height options. Reverting back to default.", i);
+            raw_print(errmsg);
+            return FALSE;
+        }
+
+        tl_num += (bm.bmWidth / iflags.wc_tile_width)
+            * (bm.bmHeight / iflags.wc_tile_height);
     }
 
-    tl_num = (bm.bmWidth / iflags.wc_tile_width)
-             * (bm.bmHeight / iflags.wc_tile_height);
-    if (tl_num < total_tiles_used) {
-        DeleteObject(hBmp);
-        raw_print("Number of tiles in the bitmap is less than required by "
-                  "the game. Reverting back to default.");
+    if (tl_num < total_tiles_used) 
+    {
+        for (int j = 0; j < total_sheets_used; j++)
+            DeleteObject(hBmp[j]);
+
+        raw_print("Number of tiles in the bitmap(s) is less than required by the game. Reverting back to default.");
         return FALSE;
     }
 
     /* set the tile information */
-    if (GetNHApp()->bmpMapTiles != GetNHApp()->bmpTiles) {
-        DeleteObject(GetNHApp()->bmpMapTiles);
-    }
+    for (int i = 0; i < total_sheets_used; i++)
+    {
+        if (GetNHApp()->bmpMapTiles[i] != GetNHApp()->bmpTiles[i]) 
+        {
+            DeleteObject(GetNHApp()->bmpMapTiles[i]);
+        }
 
-    GetNHApp()->bmpMapTiles = hBmp;
+        GetNHApp()->bmpMapTiles[i] = hBmp[i];
+    }
+        
     GetNHApp()->mapTile_X = iflags.wc_tile_width;
     GetNHApp()->mapTile_Y = iflags.wc_tile_height;
     GetNHApp()->mapTilesPerLine = bm.bmWidth / iflags.wc_tile_width;

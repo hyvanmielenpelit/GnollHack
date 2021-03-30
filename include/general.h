@@ -428,5 +428,11 @@ enum main_menu_command {
 /* Turn on score on botl everywhere */
 #define SCORE_ON_BOTL
 
+/* Basic tile information */
+#define NUM_TILES_PER_SHEET 16224
+#define MAX_TILE_SHEETS 2
+#define MAX_TILES (MAX_TILE_SHEETS * NUM_TILES_PER_SHEET)
+
+
 #endif /* GENERAL_H */
 

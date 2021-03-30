@@ -132,14 +132,45 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         LoadAccelerators(hInstance, (LPCTSTR) IDC_NETHACKW);
     _GnollHack_app.hMainWnd = NULL;
     _GnollHack_app.hPopupWnd = NULL;
-    //_GnollHack_app.bmpTiles = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_TILES)); 
 
-    _GnollHack_app.bmpTiles = LoadPNGFromResource(hInstance, IDB_PNG_TILES, TILE_BK_COLOR);
-    if (_GnollHack_app.bmpTiles == NULL)
-	{
-		panic("cannot load tiles bitmap");
-		return 0;
-	}
+    /* Process tiledata */
+    int total_tiles = process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
+    int total_sheets = min(MAX_TILE_SHEETS, (total_tiles - 1) / NUM_TILES_PER_SHEET + 1);
+    int tiles_per_line = (int)ceil(sqrt(1.5 * ((double)total_tiles)));
+    if (tiles_per_line % 3)
+        tiles_per_line += (3 - (tiles_per_line % 3));
+
+    _GnollHack_app.mapTileSheets = total_sheets;
+
+    for (int i = 0; i < _GnollHack_app.mapTileSheets; i++)
+    {
+        int resource_idx = IDB_PNG_TILES;
+        switch (i)
+        {
+        case 1:
+#ifdef IDB_PNG_TILES_2
+            resource_idx = IDB_PNG_TILES_2;
+#endif // IDB_PNG_TILES_2
+            break;
+        case 2:
+#ifdef IDB_PNG_TILES_3
+            resource_idx = IDB_PNG_TILES_3;
+#endif // IDB_PNG_TILES_3
+            break;
+        case 3:
+#ifdef IDB_PNG_TILES_4
+            resource_idx = IDB_PNG_TILES_4;
+#endif // IDB_PNG_TILES_4
+            break;
+        }
+
+        _GnollHack_app.bmpTiles[i] = LoadPNGFromResource(hInstance, resource_idx, TILE_BK_COLOR);
+        if (_GnollHack_app.bmpTiles[i] == NULL)
+        {
+            panic("Cannot load tiles bitmap %d", i + 1);
+            return 0;
+        }
+    }
     _GnollHack_app.bmpRip = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_RIP));
 	if (_GnollHack_app.bmpRip == NULL)
 	{
@@ -160,15 +191,11 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         return 0;
     }
 
-    _GnollHack_app.bmpMapTiles = _GnollHack_app.bmpTiles;
+    for(int i = 0; i < _GnollHack_app.mapTileSheets; i++)
+        _GnollHack_app.bmpMapTiles[i] = _GnollHack_app.bmpTiles[i];
+
     _GnollHack_app.mapTile_X = TILE_X;
     _GnollHack_app.mapTile_Y = TILE_Y;
-
-    /* Process tiledata */
-    int total_tiles = process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
-    int tiles_per_line = (int)ceil(sqrt(1.5 * ((double)total_tiles)));
-    if (tiles_per_line % 3)
-        tiles_per_line += (3 - (tiles_per_line % 3));
 
     _GnollHack_app.mapTilesPerLine = tiles_per_line; // TILES_PER_LINE;
 

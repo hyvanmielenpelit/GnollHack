@@ -2132,6 +2132,7 @@ boolean tinitial, tfrom_file;
     boolean negated, duplicate;
     int i;
     const char *fullname;
+    const char* fullname2;
     boolean retval = TRUE;
 
     initial = tinitial;
@@ -3683,17 +3684,39 @@ boolean tinitial, tfrom_file;
     /* WINCAP
      * tile_file:name */
     fullname = "tile_file";
-    if (match_optname(opts, fullname, sizeof "tile_file" - 1, TRUE)) {
+    fullname2 = "tile_file_1";
+    if (match_optname(opts, fullname, sizeof "tile_file" - 1, TRUE) || match_optname(opts, fullname2, sizeof "tile_file_1" - 1, TRUE)) {
         if (duplicate)
             complain_about_duplicate(opts, 1);
         if ((op = string_for_opt(opts, FALSE)) != 0) {
-            if (iflags.wc_tile_file)
-                free(iflags.wc_tile_file);
-            iflags.wc_tile_file = dupstr(op);
+            if (iflags.wc_tile_file[0])
+                free(iflags.wc_tile_file[0]);
+            iflags.wc_tile_file[0] = dupstr(op);
         } else
             return FALSE;
         return retval;
     }
+
+    for(int i = 1; i < MAX_TILE_SHEETS; i++)
+    {
+        char fullnamebuf[BUFSZ] = "";
+        fullname = "tile_file";
+        Sprintf(fullnamebuf, "%s_%d", fullname, i + 1);
+
+        if (match_optname(opts, fullnamebuf, strlen(fullnamebuf) - 1, TRUE)) {
+            if (duplicate)
+                complain_about_duplicate(opts, 1);
+            if ((op = string_for_opt(opts, FALSE)) != 0) {
+                if (iflags.wc_tile_file[i])
+                    free(iflags.wc_tile_file[i]);
+                iflags.wc_tile_file[i] = dupstr(op);
+            }
+            else
+                return FALSE;
+            return retval;
+        }
+    }
+
     /* WINCAP
      * tile_height:nn */
     fullname = "tile_height";
@@ -6403,10 +6426,21 @@ char *buf;
             Sprintf(buf, "%d", iflags.wc2_term_rows);
         else
             Strcpy(buf, defopt);
-    } else if (!strcmp(optname, "tile_file")) {
-        Sprintf(buf, "%s",
-                iflags.wc_tile_file ? iflags.wc_tile_file : defopt);
-    } else if (!strcmp(optname, "tile_height")) {
+    } 
+    else if (!strncmp(optname, "tile_file", 9)) 
+    {
+        for (int i = 0; i < MAX_TILE_SHEETS; i++)
+        {
+            char optbuf[BUFSZ] = "";
+            Sprintf(optbuf, "%s_%d", optname, i + 1);
+            if (strcmp(optname, optbuf))
+            {
+                Sprintf(buf, "%s",
+                    iflags.wc_tile_file[i] ? iflags.wc_tile_file[i] : defopt);
+            }
+        }
+    }
+    else if (!strcmp(optname, "tile_height")) {
         if (iflags.wc_tile_height)
             Sprintf(buf, "%d", iflags.wc_tile_height);
         else

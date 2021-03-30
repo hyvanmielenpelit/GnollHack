@@ -1453,8 +1453,11 @@ freedynamicdata()
         free(iflags.wc_font_menu);
     if (iflags.wc_font_status)
         free(iflags.wc_font_status);
-    if (iflags.wc_tile_file)
-        free(iflags.wc_tile_file);
+    for (int i = 0; i < MAX_TILE_SHEETS; i++)
+    {
+        if (iflags.wc_tile_file[i])
+            free(iflags.wc_tile_file[i]);
+    }
     free_autopickup_exceptions();
 
     /* miscellaneous */

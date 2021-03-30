@@ -60,8 +60,8 @@ typedef struct sdl_ghwindow_app {
     SDL_Window* win;
     int win_width, win_height;
     int running;
-    HBITMAP bmpTiles;
-    HBITMAP bmpMapTiles;
+    HBITMAP bmpTiles[MAX_TILE_SHEETS];
+    HBITMAP bmpMapTiles[MAX_TILE_SHEETS];
     int mapTile_X;       /* tile width */
     int mapTile_Y;       /* tile height */
     int totalMapTiles;
