@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by winhack.rc
+// Used by sdlhack.rc
 //
 #define IDC_MYICON                      2
 #define IDD_WINHACK_DIALOG              102
@@ -40,6 +40,8 @@
 #define IDB_PNG_SDL_WINDOW              178
 #define IDB_PNG1                        179
 #define IDB_PNG_SDL_CURSORS             179
+#define IDB_PNG2                        180
+#define IDB_PNG_TILES_2                 180
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000
 #define IDC_CMD_MOVE_NW                 1001
@@ -162,7 +164,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        180
+#define _APS_NEXT_RESOURCE_VALUE        181
 #define _APS_NEXT_COMMAND_VALUE         32804
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110

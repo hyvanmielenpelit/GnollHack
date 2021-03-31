@@ -136,21 +136,23 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     /* Process tiledata */
     int total_tiles = process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
     int total_sheets = min(MAX_TILE_SHEETS, (total_tiles - 1) / NUM_TILES_PER_SHEET + 1);
-    int tiles_per_line = (int)ceil(sqrt(1.5 * ((double)total_tiles)));
-    if (tiles_per_line % 3)
-        tiles_per_line += (3 - (tiles_per_line % 3));
-
+    int tiles_per_line[MAX_TILE_SHEETS] = { 0 };
+    int tiles_in_sheet[MAX_TILE_SHEETS] = { 0 };
+    
     _GnollHack_app.mapTileSheets = total_sheets;
 
     for (int i = 0; i < _GnollHack_app.mapTileSheets; i++)
     {
+        tiles_in_sheet[i] = (i == total_sheets - 1 ? ((total_tiles - 1) % NUM_TILES_PER_SHEET) + 1 : NUM_TILES_PER_SHEET);
+        tiles_per_line[i] = (int)ceil(sqrt(1.5 * ((double)(tiles_in_sheet[i]))));
+        if (tiles_per_line[i] % 3)
+            tiles_per_line[i] += (3 - (tiles_per_line[i] % 3));
+
         int resource_idx = IDB_PNG_TILES;
         switch (i)
         {
         case 1:
-#ifdef IDB_PNG_TILES_2
             resource_idx = IDB_PNG_TILES_2;
-#endif // IDB_PNG_TILES_2
             break;
         case 2:
 #ifdef IDB_PNG_TILES_3
@@ -191,13 +193,14 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         return 0;
     }
 
-    for(int i = 0; i < _GnollHack_app.mapTileSheets; i++)
+    for (int i = 0; i < _GnollHack_app.mapTileSheets; i++)
+    {
         _GnollHack_app.bmpMapTiles[i] = _GnollHack_app.bmpTiles[i];
+        _GnollHack_app.mapTilesPerLine[i] = tiles_per_line[i];
+    }
 
     _GnollHack_app.mapTile_X = TILE_X;
     _GnollHack_app.mapTile_Y = TILE_Y;
-
-    _GnollHack_app.mapTilesPerLine = tiles_per_line; // TILES_PER_LINE;
 
     _GnollHack_app.bNoHScroll = FALSE;
     _GnollHack_app.bNoVScroll = FALSE;

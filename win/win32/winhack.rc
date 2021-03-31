@@ -417,6 +417,8 @@ IDB_PNG_GNHLOGO         PNG                     "gnollhack-logo-test-2.png"
 
 IDB_PNG_FMODLOGO        PNG                     "FMOD-Logo-32.png"
 
+IDB_PNG_TILES_2         PNG                     "gnollhack_64x96_transparent_32bits-2.png"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

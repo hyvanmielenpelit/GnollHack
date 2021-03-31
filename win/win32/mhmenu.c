@@ -1344,9 +1344,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                 int n_sheet_idx = TILE_SHEET_IDX(ntile);
                 t_x = TILEBMP_X(ntile) + (flip_tile ? tileWidth - 1 : 0);
-                //((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X);
                 t_y = TILEBMP_Y(ntile) + source_top_added; /* Use lower part of the tile only */
-                    //(ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y;
 
                 y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
 

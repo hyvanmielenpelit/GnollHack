@@ -48,10 +48,12 @@
 #endif
 #endif
 
+#define SDL_TILE_SHEET_IDX(ntile) \
+    (min(GetGHSdlApp()->mapTileSheets - 1, max(0, (ntile / NUM_TILES_PER_SHEET))))
 #define SDL_TILEBMP_X(ntile) \
-    ((ntile % GetGHSdlApp()->mapTilesPerLine) *  GetGHSdlApp()->mapTile_X)
+    (((ntile % NUM_TILES_PER_SHEET) % GetGHSdlApp()->mapTilesPerLine[SDL_TILE_SHEET_IDX(ntile)]) * GetGHSdlApp()->mapTile_X)
 #define SDL_TILEBMP_Y(ntile) \
-    ((ntile / GetGHSdlApp()->mapTilesPerLine) *  GetGHSdlApp()->mapTile_Y)
+    (((ntile % NUM_TILES_PER_SHEET) / GetGHSdlApp()->mapTilesPerLine[SDL_TILE_SHEET_IDX(ntile)]) * GetGHSdlApp()->mapTile_Y)
 
 
 typedef struct sdl_ghwindow_app {
@@ -65,8 +67,9 @@ typedef struct sdl_ghwindow_app {
     int mapTile_X;       /* tile width */
     int mapTile_Y;       /* tile height */
     int totalMapTiles;
-    int mapTilesPerLine; /* number of tile per row in the bitmap */
-    int mapTileLines;
+    int mapTilesPerLine[MAX_TILE_SHEETS]; /* number of tile per row in the bitmap */
+    int mapTileLines[MAX_TILE_SHEETS];
+    int mapTileSheets;
 
 } GHSdlApp, * PGHSdlApp;
 

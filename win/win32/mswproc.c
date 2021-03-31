@@ -2366,6 +2366,8 @@ initMapTiles(void)
 
         tl_num += (bm.bmWidth / iflags.wc_tile_width)
             * (bm.bmHeight / iflags.wc_tile_height);
+
+        GetNHApp()->mapTilesPerLine[i] = bm.bmWidth / iflags.wc_tile_width;
     }
 
     if (tl_num < total_tiles_used) 
@@ -2390,7 +2392,6 @@ initMapTiles(void)
         
     GetNHApp()->mapTile_X = iflags.wc_tile_width;
     GetNHApp()->mapTile_Y = iflags.wc_tile_height;
-    GetNHApp()->mapTilesPerLine = bm.bmWidth / iflags.wc_tile_width;
 
     map_size.cx = GetNHApp()->mapTile_X * COLNO;
     map_size.cy = GetNHApp()->mapTile_Y * ROWNO;
