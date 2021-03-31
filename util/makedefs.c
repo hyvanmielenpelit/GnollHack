@@ -2937,12 +2937,14 @@ do_objs()
             }
             break;
         case GEM_CLASS:
-            /* avoid trouble with stupid C preprocessors */
+#if 0
+            /* avoid trouble with stupid C preprocessors, reactivated due to other long defines elsewhere --JG */
             if (objects[i].oc_material == MAT_GLASS) {
                 Fprintf(ofp, "/* #define\t%s\t%d */\n", objnam, i);
                 prefix = -1;
                 break;
             }
+#endif
             /*FALLTHRU*/
         default:
             Fprintf(ofp, "#define\t");
