@@ -969,7 +969,8 @@ boolean verbose;
     struct monst* old_ustuck = u.ustuck;
     struct monst* old_usteed = u.usteed;
     int old_ulycn = u.ulycn;
-    
+    int old_move = get_u_move_speed(TRUE);
+
 
 	unsigned long previous_warntype_obj = context.warntype.obj;
     int oldstr = ACURR(A_STR);
@@ -1441,6 +1442,7 @@ boolean verbose;
         || (old_ustuck != u.ustuck)
         || (old_usteed != u.usteed)
         || (old_ulycn != u.ulycn)
+        || (old_move != get_u_move_speed(TRUE))
         )
         condition_change = TRUE;
 

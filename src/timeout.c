@@ -751,9 +751,45 @@ nh_timeout()
 {
     register struct prop *upp;
     struct kinfo *kptr;
-    boolean was_flying;
     int sleeptime;
     int m_idx;
+    
+    /* Conditions */
+    boolean was_flying = !!Flying;
+    boolean was_levitating = !!Levitation;
+    boolean had_hallucination = !!Hallucination;
+    boolean was_blind = !!Blind;
+    boolean was_deaf = !!Deaf;
+    boolean was_stunned = !!Stunned;
+    boolean was_confused = !!Confusion;
+    boolean was_terminally_ill = !!Sick;
+    boolean was_food_poisoned = !!FoodPoisoned;
+    boolean was_stoned = !!Stoned;
+    boolean was_strangled = !!Strangled;
+    boolean was_suffocating = (Airless_environment && !Survives_without_air);
+    boolean was_vomiting = !!Vomiting;
+    boolean was_slimed = !!Slimed;
+    boolean had_mummyrot = !!MummyRot;
+    boolean was_slowed = !!Slowed;
+    boolean was_silenced = !!Silenced;
+    boolean was_cancelled = !!Cancelled;
+    boolean was_paralyzed = !!Paralyzed;
+    boolean was_sleeping = !!Sleeping;
+    boolean was_fearful = !!Fearful;
+    int old_weight_cap = near_capacity();
+    /* Hunger status cannot change here */
+    struct monst* old_ustuck = u.ustuck;
+    struct monst* old_usteed = u.usteed;
+    int old_ulycn = u.ulycn;
+    int old_move = get_u_move_speed(TRUE);
+    int oldstr = ACURR(A_STR);
+    int olddex = ACURR(A_DEX);
+    int oldcon = ACURR(A_CON);
+    int oldint = ACURR(A_INT);
+    int oldwis = ACURR(A_WIS);
+    int oldcha = ACURR(A_CHA);
+    
+    
     int baseluck = (flags.moonphase == FULL_MOON) ? 1 : 0;
 
     if (flags.friday13)
@@ -834,7 +870,6 @@ nh_timeout()
 		for (mon = mmtmp[i]; mon; mon = mon->nmon)
 			reduce_item_cooldown(mon->minvent);
 
-    was_flying = Flying;
 	for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
 	{
 		int propnum = (int)(upp - u.uprops);
@@ -1804,7 +1839,43 @@ nh_timeout()
 	update_all_character_properties((struct obj*)0, TRUE);
 
 	run_timers();
-	context.botl = context.botlx = 1;
+
+    /* Condition change check */
+    if ((was_flying != !!Flying)
+        || (was_levitating != !!Levitation)
+        || (had_hallucination != !!Hallucination)
+        || (was_blind != !!Blind)
+        || (was_deaf != !!Deaf)
+        || (was_stunned != !!Stunned)
+        || (was_confused != !!Confusion)
+        || (was_terminally_ill != !!Sick)
+        || (was_food_poisoned != !!FoodPoisoned)
+        || (was_stoned != !!Stoned)
+        || (was_strangled != !!Strangled)
+        || (was_suffocating != (Airless_environment && !Survives_without_air))
+        || (was_vomiting != !!Vomiting)
+        || (was_slimed != !!Slimed)
+        || (had_mummyrot != !!MummyRot)
+        || (was_silenced != !!Silenced)
+        || (was_cancelled != !!Cancelled)
+        || (was_paralyzed != !!Paralyzed)
+        || (was_sleeping != !!Sleeping)
+        || (was_fearful != !!Fearful)
+        || (old_weight_cap != near_capacity())
+        || (old_ustuck != u.ustuck)
+        || (old_usteed != u.usteed)
+        || (old_ulycn != u.ulycn)
+        || (ACURR(A_STR) != oldstr)
+        || (ACURR(A_DEX) != olddex)
+        || (ACURR(A_CON) != oldcon)
+        || (ACURR(A_INT) != oldint)
+        || (ACURR(A_WIS) != oldwis)
+        || (ACURR(A_CHA) != oldcha)
+        || (old_move != get_u_move_speed(TRUE))
+        )
+        context.botl = context.botlx = 1;
+
+
 }
 
 void
