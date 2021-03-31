@@ -38,9 +38,7 @@
 #define IDR_RCDATA_FONT_DIABLO          176
 #define IDB_PNG_SDL_BUTTONS             177
 #define IDB_PNG_SDL_WINDOW              178
-#define IDB_PNG1                        179
 #define IDB_PNG_SDL_CURSORS             179
-#define IDB_PNG2                        180
 #define IDB_PNG_TILES_2                 180
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000

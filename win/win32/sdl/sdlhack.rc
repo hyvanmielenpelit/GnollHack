@@ -417,7 +417,7 @@ IDB_PNG_SDL_WINDOW      PNG                     "window_background.png"
 
 IDB_PNG_SDL_CURSORS     PNG                     "cursor_final.png"
 
-IDB_PNG_TILES_2         PNG                     "C:\\Users\\Janne\\source\\repos\\hyvanmielenpelit\\GnollHack\\win\\win32\\gnollhack_64x96_transparent_32bits-2.png"
+IDB_PNG_TILES_2         PNG                     "..\\gnollhack_64x96_transparent_32bits-2.png"
 
 
 /////////////////////////////////////////////////////////////////////////////

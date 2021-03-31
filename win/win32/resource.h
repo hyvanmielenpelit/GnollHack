@@ -33,7 +33,6 @@
 #define IDB_PNG_TILES                   166
 #define IDB_PNG_GNHLOGO                 168
 #define IDB_PNG_FMODLOGO                169
-#define IDB_PNG1                        180
 #define IDB_PNG_TILES_2                 180
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000
