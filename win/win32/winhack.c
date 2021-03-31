@@ -162,7 +162,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 #endif // IDB_PNG_TILES_3
             break;
         case 3:
-#if  defined(IDB_PNG_TILES_4)
+#if defined(IDB_PNG_TILES_4)
             resource_idx = IDB_PNG_TILES_4;
 #endif // IDB_PNG_TILES_4
             break;
