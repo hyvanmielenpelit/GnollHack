@@ -152,15 +152,17 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         switch (i)
         {
         case 1:
+#if defined(IDB_PNG_TILES_2)
             resource_idx = IDB_PNG_TILES_2;
+#endif
             break;
         case 2:
-#ifdef IDB_PNG_TILES_3
+#if defined(IDB_PNG_TILES_3)
             resource_idx = IDB_PNG_TILES_3;
 #endif // IDB_PNG_TILES_3
             break;
         case 3:
-#ifdef IDB_PNG_TILES_4
+#if  defined(IDB_PNG_TILES_4)
             resource_idx = IDB_PNG_TILES_4;
 #endif // IDB_PNG_TILES_4
             break;
