@@ -899,15 +899,13 @@ struct obj* otmp; /* object to be identified if any state change happens */
 boolean verbose;
 {
 	boolean state_change_detected = FALSE;
-	boolean was_flying = Flying;
-	boolean was_levitating = Levitation;
+    boolean condition_change = FALSE;
+    
 	boolean was_invisible = Invis;
-	boolean was_blind = Blind;
-	boolean was_wearing_blindfold = Blindfolded;
+    boolean was_wearing_blindfold = Blindfolded;
 	boolean was_blocking_blindness = Blocks_Blindness;
 	boolean saw_invisible = See_invisible;
 	boolean was_blocking_invisibility = Blocks_Invisibility;
-	boolean had_hallucination = Hallucination;
 	boolean was_telepathic = Telepat;
 	boolean was_blind_telepathic = Blind_telepat;
 	boolean had_xray_vision = XRay_vision;
@@ -943,9 +941,36 @@ boolean verbose;
     boolean was_ultra_fast = Ultra_fast;
     boolean was_super_fast = Super_fast;
     boolean was_lightning_fast = Lightning_fast;
-    boolean was_slowed = Slowed;
-	boolean was_silenced = Silenced;
-	boolean was_cancelled = Cancelled;
+
+    /* Conditions */
+    boolean was_flying = !!Flying;
+    boolean was_levitating = !!Levitation;
+    boolean had_hallucination = !!Hallucination;
+    boolean was_blind = !!Blind;
+    boolean was_deaf = !!Deaf;
+    boolean was_stunned = !!Stunned;
+    boolean was_confused = !!Confusion;
+    boolean was_terminally_ill = !!Sick;
+    boolean was_food_poisoned = !!FoodPoisoned;
+    boolean was_stoned = !!Stoned;
+    boolean was_strangled = !!Strangled;
+    boolean was_suffocating = (Airless_environment && !Survives_without_air);
+    boolean was_vomiting = !!Vomiting;
+    boolean was_slimed = !!Slimed;
+    boolean had_mummyrot = !!MummyRot;
+    boolean was_slowed = !!Slowed;
+    boolean was_silenced = !!Silenced;
+    boolean was_cancelled = !!Cancelled;
+    boolean was_paralyzed = !!Paralyzed;
+    boolean was_sleeping = !!Sleeping;
+    boolean was_fearful = !!Fearful;
+    int old_weight_cap = near_capacity();
+    /* Hunger status cannot change here */
+    struct monst* old_ustuck = u.ustuck;
+    struct monst* old_usteed = u.usteed;
+    int old_ulycn = u.ulycn;
+    
+
 	unsigned long previous_warntype_obj = context.warntype.obj;
     int oldstr = ACURR(A_STR);
     int olddex = ACURR(A_DEX);
@@ -1391,12 +1416,41 @@ boolean verbose;
     }
 
 
+    /* Condition change check */
+    if ((was_flying != !!Flying)
+        || (was_levitating != !!Levitation)
+        || (had_hallucination != !!Hallucination)
+        || (was_blind != !!Blind)
+        || (was_deaf != !!Deaf)
+        || (was_stunned != !!Stunned)
+        || (was_confused != !!Confusion)
+        || (was_terminally_ill != !!Sick)
+        || (was_food_poisoned != !!FoodPoisoned)
+        || (was_stoned != !!Stoned)
+        || (was_strangled != !!Strangled)
+        || (was_suffocating != (Airless_environment && !Survives_without_air))
+        || (was_vomiting != !!Vomiting)
+        || (was_slimed != !!Slimed)
+        || (had_mummyrot != !!MummyRot)
+        || (was_silenced != !!Silenced)
+        || (was_cancelled != !!Cancelled)
+        || (was_paralyzed != !!Paralyzed)
+        || (was_sleeping != !!Sleeping)
+        || (was_fearful != !!Fearful)
+        || (old_weight_cap != near_capacity())
+        || (old_ustuck != u.ustuck)
+        || (old_usteed != u.usteed)
+        || (old_ulycn != u.ulycn)
+        )
+        condition_change = TRUE;
+
 	if (otmp && state_change_detected)
 	{
 		makeknown(otmp->otyp);
 	}
 
-	context.botl = context.botlx = TRUE;
+    if(state_change_detected || condition_change)
+    	context.botl = context.botlx = TRUE;
 
 }
 
