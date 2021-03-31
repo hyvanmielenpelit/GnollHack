@@ -1644,6 +1644,8 @@ update_monster_timouts()
 			}
 		}
 
+        if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
+            context.botl = 1; /* Updates only if necessary */
 	}
 }
 
@@ -3060,6 +3062,9 @@ register struct monst *mtmp;
     int tmp;
 
     mtmp->mhp = 0; /* in case caller hasn't done this */
+    if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
+        context.botl = 1;
+
     lifesaved_monster(mtmp);
     if (!DEADMONSTER(mtmp))
         return;
@@ -3396,6 +3401,9 @@ struct monst *mdef;
      * making the statue....
      */
     mdef->mhp = 0; /* in case caller hasn't done this */
+    if (iflags.wc2_statuslines > 3 && is_tame(mdef))
+        context.botl = 1;
+
     lifesaved_monster(mdef);
     if (!DEADMONSTER(mdef))
         return;

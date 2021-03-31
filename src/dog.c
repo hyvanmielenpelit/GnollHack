@@ -778,6 +778,10 @@ long nmv; /* number of moves */
         mtmp->mhp = mtmp->mhpmax;
     else
         mtmp->mhp += imv;
+
+    if (imv != 0 && iflags.wc2_statuslines > 3 && is_tame(mtmp))
+        context.botl = 1;
+
 }
 
 /* called when you move to another level */

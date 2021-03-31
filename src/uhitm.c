@@ -4972,6 +4972,9 @@ double hp_d;
 			newsym(mtmp->mx, mtmp->my);
 	}
 
+	if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
+		context.botl = 1;
+
 	return mtmp->mhp;
 }
 

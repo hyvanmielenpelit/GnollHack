@@ -402,11 +402,13 @@ boolean resuming;
         }
 
 		/* Update the statusline */
-		if (context.botl || context.botlx) {
+		if (context.botl || context.botlx) 
+        {
 			bot();
 			curs_on_u();
 		}
-		else if (iflags.time_botl) {
+		else if (iflags.time_botl) 
+        {
 			timebot();
 			curs_on_u();
 		}

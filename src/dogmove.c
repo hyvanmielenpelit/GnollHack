@@ -443,8 +443,12 @@ boolean devour;
         if (!grow_up(mtmp, (struct monst *) 0))
             return 2;
     }
-    if (heal)
+    if (heal) {
         mtmp->mhp = mtmp->mhpmax;
+        if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
+            context.botl = 1;
+
+    }
     if ((eyes || heal) && is_blinded(mtmp))
         mcureblindness(mtmp, canseemon(mtmp));
     if (deadmimic)
@@ -509,6 +513,8 @@ boolean verbose;
 		}
 		if (!otmp->cursed)
             (void)set_mon_property_b(mtmp, WOUNDED_LEGS, 0, FALSE);
+        if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
+            context.botl = 1;
 
 		break;
 	}

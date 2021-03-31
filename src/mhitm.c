@@ -2103,6 +2103,8 @@ register struct obj* omonwep;
         }
     }
 
+    if (iflags.wc2_statuslines > 3 && is_tame(mdef))
+        context.botl = 1;
 
     if (DEADMONSTER(mdef)) 
 	{
