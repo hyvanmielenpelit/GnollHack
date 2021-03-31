@@ -708,12 +708,15 @@ boolean border;
                     goto startover;
                 }
             }
+#if 0
+            /* Let's show it just the normal way --JG */
             /* right justify score unless window is very wide */
             t = COLNO + (int) strlen(status_vals[BL_SCORE]);
             if (t > width)
                 t = width;
             if (w < t)
                 spacing[BL_SCORE] += (t - w);
+#endif
         }
 #endif
 
@@ -1227,14 +1230,17 @@ boolean border;
             spacing[fld] = 2; /* simple group separation (no conditionals) */
             break;
         case BL_TIME:
-            /* time will be separated from gold unless it is inactive */
+            /* time will be separated from the previous unless it is inactive */
             spacing[fld] = (time_and_score & 1) ? 2 : 0;
             break;
         case BL_SCORE:
             /* unlike hunger+cap, score is shown on separate line from time;
                needs time+score separator if time is inactive */
-            spacing[fld] = (time_and_score == 2) ? 2
-                           : (time_and_score & 1) ? 1 : 0;
+//            spacing[fld] = (time_and_score == 2) ? 2
+//                           : (time_and_score & 1) ? 1 : 0;
+
+            /* score will be separated from the previous unless it is inactive */
+            spacing[fld] = (time_and_score & 2) ? 2 : 0;
             break;
 		case BL_SKILL:
 			/* separated from characteristics unless blank */
