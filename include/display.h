@@ -157,12 +157,12 @@
     ((mon)->isshk || (mon)->ispriest || (mon)->isnpc || (mon)->issmith || (mon)->isgd || ((mon)->data->geno & G_UNIQ) || (mon)->mnum == urole.ldrnum)
 
 #define is_displaceable_peaceful(mon)    \
-     (mon && is_peaceful(mon) && !is_special_peaceful(mon) \
-      && canspotmon(mon) && flags.displace_peaceful && !Confusion && !Hallucination && !Stunned)
+     (mon && flags.displace_peaceful && is_peaceful(mon) && !is_special_peaceful(mon) && mon_can_move(mon) && !is_confused(mon) && !is_hallucinating(mon) && !is_stunned(mon) \
+      && canspotmon(mon) && !Confusion && !Hallucination && !Stunned)
 
 #define is_stopping_peaceful(mon) \
-    (mon && is_peaceful(mon) && is_special_peaceful(mon) \
-      && canspotmon(mon) && flags.displace_peaceful && !Confusion && !Hallucination && !Stunned)
+    (mon && flags.displace_peaceful && is_peaceful(mon) && (is_special_peaceful(mon) || !mon_can_move(mon) || is_confused(mon) || is_hallucinating(mon) || is_stunned(mon))  \
+      && canspotmon(mon) && !Confusion && !Hallucination && !Stunned)
 
  /*
  * canseeself()

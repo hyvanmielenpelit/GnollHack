@@ -83,7 +83,7 @@ boolean undirected;
     {
         if (!Deaf)
         {
-            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CURSE);
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_MUMBLED_CURSE);
             Norep("You hear a mumbled curse.");
         }
     }
