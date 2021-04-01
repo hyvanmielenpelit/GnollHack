@@ -1789,10 +1789,13 @@ dochat()
 		chatnum++;
 
 
-		if (mtmp->rumorsleft >= 0)
+		if (is_izchak(mtmp, TRUE) || mtmp->rumorsleft >= 0)
 		{
-			/* Who are you? */
-			strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask for further adventuring advice" : "Ask for adventuring advice");
+			if(is_izchak(mtmp, TRUE))
+				strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask what is further on his mind" : "Ask what is on his mind");
+			else
+				strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask for further adventuring advice" : "Ask for adventuring advice");
+
 			available_chat_list[chatnum].function_ptr = &do_chat_rumors;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3111,6 +3114,12 @@ struct monst* mtmp;
 	{
 		pline("%s answers: \"The wisdom of Delphi shall be conveyed to thee by consultation.\"", Monnam(mtmp));
 		mtmp->rumorsleft = -1;
+		mtmp->told_rumor = TRUE;
+		return 1;
+	}
+	else if (is_izchak(mtmp, TRUE))
+	{
+		izchak_talk(mtmp);
 		mtmp->told_rumor = TRUE;
 		return 1;
 	}

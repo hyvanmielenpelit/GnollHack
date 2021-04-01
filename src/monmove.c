@@ -2273,21 +2273,30 @@ xchar* mon_dx_ptr;
 xchar* mon_dy_ptr;
 long allowflags;
 {
-    if (!mon || !mon_dx_ptr || !mon_dy_ptr || !isok(mon->yell_x, mon->yell_y))
+    if (!mon || !mon_dx_ptr || !mon_dy_ptr)
         return FALSE;
+
+    xchar target_x = u.ux;
+    xchar target_y = u.uy;
+
+    if (isok(mon->yell_x, mon->yell_y))
+    {
+        target_x = mon->yell_x;
+        target_y = mon->yell_y;
+    }
 
     /* if travel to adjacent, reachable location, use normal movement rules */
     if ((mode == TRAVP_TRAVEL || mode == TRAVP_VALID) && mon->mcomingtou
-        && distmin(mon->mx, mon->my, mon->yell_x, mon->yell_y) == 1
-        && !(mon->mx != mon->yell_x && mon->my != mon->yell_y && NODIAG(u.umonnum))) 
+        && distmin(mon->mx, mon->my, target_x, target_y) == 1
+        && !(mon->mx != target_x && mon->my != target_y && NODIAG(u.umonnum))) 
     {
         //context.run = 0;
-        if (m_test_move(mon, mon->mx, mon->my, mon->yell_x - mon->mx, mon->yell_y - mon->my, TEST_MOVE, allowflags)) 
+        if (m_test_move(mon, mon->mx, mon->my, target_x - mon->mx, target_y - mon->my, TEST_MOVE, allowflags)) 
         {
             if (mode == TRAVP_TRAVEL) 
             {
-                *mon_dx_ptr = mon->yell_x - mon->mx;
-                *mon_dy_ptr = mon->yell_y - mon->my;
+                *mon_dx_ptr = target_x - mon->mx;
+                *mon_dy_ptr = target_y - mon->my;
                 //nomul(0);
                 //iflags.travelcc.x = iflags.travelcc.y = 0;
             }
@@ -2298,7 +2307,7 @@ long allowflags;
          //   context.run = 8;
     }
 
-    if (mon->yell_x != mon->mx || mon->yell_y != mon->my) 
+    if (target_x != mon->mx || target_y != mon->my) 
     {
         xchar travel[COLNO][ROWNO];
         xchar travelstepx[2][COLNO * ROWNO];
@@ -2317,13 +2326,13 @@ long allowflags;
         {
             tx = mon->mx;
             ty = mon->my;
-            ux = mon->yell_x;
-            uy = mon->yell_y;
+            ux = target_x;
+            uy = target_y;
         }
         else 
         {
-            tx = mon->yell_x;
-            ty = mon->yell_y;
+            tx = target_x;
+            ty = target_y;
             ux = mon->mx;
             uy = mon->my;
         }
@@ -2422,7 +2431,7 @@ long allowflags;
                                 *mon_dx_ptr = x - ux;
                                 *mon_dy_ptr = y - uy;
                                 if (mode == TRAVP_TRAVEL
-                                    && x == mon->yell_x && y == mon->yell_y) 
+                                    && x == target_x && y == target_y) 
                                 {
                                     //nomul(0);
                                     /* reset run so domove run checks work */
@@ -2498,8 +2507,8 @@ long allowflags;
             if (px == mon->mx && py == mon->my) 
             {
                 /* no guesses, just go in the general direction */
-                *mon_dx_ptr = sgn(mon->yell_x - mon->mx);
-                *mon_dy_ptr = sgn(mon->yell_y - mon->my);
+                *mon_dx_ptr = sgn(target_x - mon->mx);
+                *mon_dy_ptr = sgn(target_y - mon->my);
                 if (m_test_move(mon, mon->mx, mon->my, *mon_dx_ptr, *mon_dy_ptr, TEST_MOVE, allowflags))
                     return TRUE;
                 goto found;

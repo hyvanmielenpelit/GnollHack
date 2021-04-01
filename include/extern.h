@@ -2831,7 +2831,7 @@ E boolean FDECL(shkname_is_pname, (struct monst *));
 E boolean FDECL(is_izchak, (struct monst *, BOOLEAN_P));
 E const char* FDECL(shoptypename, (int));
 E boolean FDECL(veggy_item, (struct obj* obj, int));
-
+E void FDECL(izchak_talk, (struct monst*));
 
 /* ### sit.c ### */
 

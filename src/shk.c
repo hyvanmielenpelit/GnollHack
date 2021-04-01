@@ -4665,7 +4665,7 @@ const char *Izchak_speaks[] = {
     "%s says: 'Slow down.  Think clearly.'",
     "%s says: 'You need to take things one at a time.'",
     "%s says: 'I don't like poofy coffee... give me Columbian Supremo.'",
-    "%s says that getting the devteam's agreement on anything is difficult.",
+    "%s says that getting the DevTeam's agreement on anything is difficult.",
     "%s says that he has noticed those who serve their deity will prosper.",
     "%s says: 'Don't try to steal from me - I have friends in high places!'",
     "%s says: 'You may well need something from this shop in the future.'",
@@ -4733,7 +4733,7 @@ struct monst *shkp;
                       Shknam(shkp), body_part(ARM));
         }
     } 
-    else if (eshk->billct) 
+    else if (eshk->billct)
     {
         register long total = addupbill(shkp) + eshk->debit;
 
@@ -4789,16 +4789,7 @@ struct monst *shkp;
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "says" : "indicates");
     }
-    else if (is_izchak(shkp, FALSE)) 
-    {
-        if (!Deaf && !muteshk(shkp))
-        {
-            int talk_idx = rn2(SIZE(Izchak_speaks));
-            play_voice_shopkeeper_izchak_talks(shkp, talk_idx);
-            pline(Izchak_speaks[talk_idx], shkname(shkp));
-        }
-    }
-    else 
+    else
     {
         if (!Deaf && !muteshk(shkp))
         {
@@ -4807,6 +4798,20 @@ struct monst *shkp;
         }
     }
 }
+
+void
+izchak_talk(shkp)
+struct monst* shkp;
+{
+    if (shkp && has_eshk(shkp) && !Deaf && !muteshk(shkp))
+    {
+        int talk_idx = rn2(SIZE(Izchak_speaks));
+        play_voice_shopkeeper_izchak_talks(shkp, talk_idx);
+        pline(Izchak_speaks[talk_idx], shkname(shkp));
+    }
+
+}
+
 
 STATIC_OVL void
 kops_gone(silent)
@@ -4947,12 +4952,18 @@ boolean altusage;
         if (!Deaf && !muteshk(shkp))
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THAT_WILL_COST_YOU_SOME_GOLD);
 
-        fmt = "%s%sThat will cost you %ld %s (Yendorian Fuel Tax).";
+        if (iflags.using_gui_sounds)
+            fmt = "%s%sThat will cost you some gold. (Yendorian Fuel Tax,  %ld %s).";
+        else
+            fmt = "%s%sThat will cost you %ld %s (Yendorian Fuel Tax).";
     }
 	else if (altusage && (otmp->otyp == BAG_OF_TRICKS
                             || otmp->otyp == HORN_OF_PLENTY))
 	{
-        fmt = "%s%sEmptying that will cost you %ld %s.";
+        if (iflags.using_gui_sounds)
+            fmt = "%s%sEmptying that will cost you some gold. (%ld %s in fact!)";
+        else
+            fmt = "%s%sEmptying that will cost you %ld %s.";
         if (!rn2(3))
         {
             arg1 = "Whoa!  ";
@@ -4971,7 +4982,11 @@ boolean altusage;
     }
 	else 
 	{
-        fmt = "%s%sUsage fee, %ld %s.";
+        if(iflags.using_gui_sounds)
+            fmt = "%s%sUsage fee, some gold. (%ld %s in fact!)";
+        else
+            fmt = "%s%sUsage fee, %ld %s.";
+
         if (!rn2(3))
         {
             arg1 = "Hey!  ";

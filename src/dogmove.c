@@ -886,7 +886,6 @@ int after, udist, whappr;
         {
            mtmp->yell_x = 0;
            mtmp->yell_y = 0;
-           mtmp->mcomingtou = 0;
         }
     }
     else if (mtmp->mcomingtou)
@@ -1408,11 +1407,12 @@ int after; /* this is extra fast monster movement */
 
     boolean pathres = FALSE;
     xchar tx = 0, ty = 0;
-    if (mtmp->mcomingtou && isok(mtmp->yell_x, mtmp->yell_y))
+    if (mtmp->mcomingtou)
     {
         xchar mon_dx = 0, mon_dy = 0;
 
-        if (!(pathres = m_findtravelpath(mtmp, TRAVP_TRAVEL, &mon_dx, &mon_dy, allowflags)))
+        pathres = m_findtravelpath(mtmp, TRAVP_TRAVEL, &mon_dx, &mon_dy, allowflags);
+        if (!pathres)
             pathres = m_findtravelpath(mtmp, TRAVP_GUESS, &mon_dx, &mon_dy, allowflags);
 
         if (pathres && (mon_dx || mon_dy))
@@ -1422,6 +1422,8 @@ int after; /* this is extra fast monster movement */
             if (!isok(tx, ty))
                 pathres = FALSE;
         }
+        else
+            pathres = FALSE;
     }
 
     /* Normally dogs don't step on cursed items, but if they have no
