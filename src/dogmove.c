@@ -985,10 +985,21 @@ int after, udist, whappr;
         if (after && udist <= 4 && gx == u.ux && gy == u.uy)
             return -2;
         appr = (udist >= 9) ? 1 : is_fleeing(mtmp) ? -1 : 0;
-        if (udist > 1) {
+        if (udist > 1) 
+        {
             if (!IS_ROOM(levl[u.ux][u.uy].typ) || !rn2(4) || whappr
                 || (dog_has_minvent && rn2(edog->apport)))
+            {
                 appr = 1;
+
+                /* Activate pathing back to player randomly, for guardian angels, or if the distance is large */
+                if (!couldsee(mtmp->mx, mtmp->my) && !mtmp->mcomingtou && (!rn2(5) || !has_edog(mtmp) || distu(mtmp->mx, mtmp->my) >= 256))
+                {
+                    mtmp->mcomingtou = 20 + rn2(20);
+                    mtmp->yell_x = 0;
+                    mtmp->yell_y = 0;
+                }
+            }
         }
         /* if you have dog food it'll follow you more closely */
         if (appr == 0)
@@ -1407,7 +1418,7 @@ int after; /* this is extra fast monster movement */
 
     boolean pathres = FALSE;
     xchar tx = 0, ty = 0;
-    if (mtmp->mcomingtou)
+    if (mtmp->mcomingtou || (!has_edog && !couldsee(mtmp->mx, mtmp->my)))
     {
         xchar mon_dx = 0, mon_dy = 0;
 
@@ -1459,9 +1470,9 @@ int after; /* this is extra fast monster movement */
         if (mtmp->mleashed && distu(nx, ny) > 4)
             continue;
 
-        /* if a guardian, try to stay close by choice */
-        if (!has_edog && !mtmp->mcomingtou && (j = distu(nx, ny)) > 16 && j >= udist)
-            continue;
+        /* if a guardian, try to stay close by choice -- Now handled above by activating pathing --JG */
+//        if (!has_edog && !mtmp->mcomingtou && (j = distu(nx, ny)) > 16 && j >= udist)
+//            continue;
 
 		boolean monatres = MON_AT(nx, ny);
 		register struct monst* mtmp2 = m_at(nx, ny);
