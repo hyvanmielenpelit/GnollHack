@@ -9948,7 +9948,7 @@ struct obj* candelabrum;
     struct ghsound_immediate_info info = { 0 };
     int howmanymore = (7 - candelabrum->special_quality);
 
-    info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MORE_CANDLES : flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_MORE_CANDLES;
+    info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MORE_CANDLES : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_MORE_CANDLES;
 
     info.parameter_names[0] = "HowManyIndex";
     info.parameter_values[0] = (float)howmanymore;
@@ -9988,7 +9988,7 @@ int line_idx;
 
     struct ghsound_immediate_info info = { 0 };
 
-    info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_IZCHAK_TALKS : flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_IZCHAK_TALKS : GHSOUND_VOICE_SHOPKEEPER_MALE_IZCHAK_TALKS;
+    info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_IZCHAK_TALKS : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_IZCHAK_TALKS : GHSOUND_VOICE_SHOPKEEPER_MALE_IZCHAK_TALKS;
 
     info.parameter_names[0] = "LineIndex";
     info.parameter_values[0] = (float)line_idx;
@@ -10036,13 +10036,13 @@ int obj_quan, save_quan;
             if (save_quan > 1)
             {
                 info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE : 
-                    flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE;
             }
             else
             {
                 info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
-                    flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE;
             }
         }
@@ -10051,13 +10051,13 @@ int obj_quan, save_quan;
             if (save_quan > 1)
             {
                 info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
-                    flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE;
             }
             else
             {
                 info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
-                    flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE;
             }
         }
@@ -10069,13 +10069,13 @@ int obj_quan, save_quan;
             if (save_quan > 1)
             {
                 info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
-                    flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE;
             }
             else
             {
                 info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
-                    flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE;
             }
         }
@@ -10084,13 +10084,13 @@ int obj_quan, save_quan;
             if (save_quan > 1)
             {
                 info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
-                    flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE;
             }
             else
             {
                 info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
-                    flags.female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
+                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE;
             }
         }

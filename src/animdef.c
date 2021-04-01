@@ -5265,7 +5265,7 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         WEAPON_RACK_ENLARGEMENT_TILES,
         1, 2, 0,
         { -1, 0, -1, -1, -1 },
-        { 0, 0, 0, 0, 0 },
+        { 0, ENLFLAGS_DOES_NOT_CAUSE_MONSTER_SHADOW, 0, 0, 0 },
         { 0, AUTODRAW_WEAPON_RACK, 0, 0, 0 }
       },
       { "rock-piercer-dropping-enlargement", 0, 0,
