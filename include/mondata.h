@@ -483,6 +483,11 @@
 #define has_swimming(mon) \
 	(has_innate_or_property(mon, SWIMMING) || is_swimmer((mon)->data))
 
+#define has_passes_walls(mon) \
+	(has_innate_or_property(mon, PASSES_WALLS) || passes_walls(mon->data))
+
+#define does_pass_walls(mon) \
+	(has_passes_walls(mon))
 
 /* invisibility */
 #define has_blocks_invisibility(mon) \

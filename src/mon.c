@@ -2302,14 +2302,29 @@ struct obj *otmp;
 /* return number of acceptable neighbour positions */
 int
 mfndpos(mon, poss, info, flag)
+struct monst* mon;
+coord* poss; /* coord poss[9] */
+long* info;  /* long info[9] */
+long flag;
+{
+    xchar x = mon->mx;
+    xchar y = mon->my;
+    return mfndpos_xy(mon, x, y, poss, info, flag);
+}
+
+
+/* return number of acceptable neighbour positions */
+int
+mfndpos_xy(mon, x, y, poss, info, flag)
 struct monst *mon;
+xchar x, y;
 coord *poss; /* coord poss[9] */
 long *info;  /* long info[9] */
 long flag;
 {
     struct permonst *mdat = mon->data;
     register struct trap *ttmp;
-    xchar x, y, nx, ny;
+    xchar nx, ny;
     int cnt = 0;
     uchar ntyp;
     uchar nowtyp;
@@ -2320,8 +2335,6 @@ long flag;
     NhRegion *gas_reg;
     int gas_glyph = cmap_to_glyph(S_poisoncloud);
 
-    x = mon->mx;
-    y = mon->my;
     nowtyp = levl[x][y].typ;
 
     nodiag = NODIAG(mdat - mons);

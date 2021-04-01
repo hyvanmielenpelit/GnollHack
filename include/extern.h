@@ -1745,6 +1745,7 @@ E int FDECL(curr_mon_load, (struct monst *));
 E int FDECL(max_mon_load, (struct monst *));
 E int FDECL(can_carry, (struct monst *, struct obj *));
 E int FDECL(mfndpos, (struct monst *, coord *, long *, long));
+E int FDECL(mfndpos_xy, (struct monst*, xchar, xchar, coord*, long*, long));
 E boolean FDECL(monnear, (struct monst *, int, int));
 E boolean FDECL(mon_somewhat_near, (struct monst*, int, int));
 E void NDECL(dmonsfree);
@@ -1894,6 +1895,8 @@ E boolean FDECL(can_fog, (struct monst *));
 E boolean FDECL(should_displace,
                 (struct monst *, coord *, long *, int, XCHAR_P, XCHAR_P));
 E boolean FDECL(undesirable_disp, (struct monst *, XCHAR_P, XCHAR_P));
+E boolean FDECL(m_findtravelpath, (struct monst*, int, xchar*, xchar*, long));
+E boolean FDECL(m_test_move, (struct monst*, xchar, xchar, xchar, xchar, int, long));
 
 /* ### monst.c ### */
 

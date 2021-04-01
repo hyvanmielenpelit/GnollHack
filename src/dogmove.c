@@ -846,6 +846,9 @@ struct monst* mtmp;
     if (is_non_eater(mtmp->data))
         return FALSE;
 
+    if (EDOG(mtmp)->hungrytime > monstermoves && mtmp->mcomingtou)
+        return FALSE;
+
     return (EDOG(mtmp)->hungrytime < monstermoves + 3000); /* twice the satiated amount for the player for convenience */
 }
 
@@ -883,6 +886,7 @@ int after, udist, whappr;
         {
            mtmp->yell_x = 0;
            mtmp->yell_y = 0;
+           mtmp->mcomingtou = 0;
         }
     }
     else if (mtmp->mcomingtou)
@@ -1402,12 +1406,31 @@ int after; /* this is extra fast monster movement */
 
 	cnt = mfndpos(mtmp, poss, info, allowflags);
 
+    boolean pathres = FALSE;
+    xchar tx = 0, ty = 0;
+    if (mtmp->mcomingtou && isok(mtmp->yell_x, mtmp->yell_y))
+    {
+        xchar mon_dx = 0, mon_dy = 0;
+
+        if (!(pathres = m_findtravelpath(mtmp, TRAVP_TRAVEL, &mon_dx, &mon_dy, allowflags)))
+            pathres = m_findtravelpath(mtmp, TRAVP_GUESS, &mon_dx, &mon_dy, allowflags);
+
+        if (pathres && (mon_dx || mon_dy))
+        {
+            tx = mtmp->mx + mon_dx;
+            ty = mtmp->my + mon_dy;
+            if (!isok(tx, ty))
+                pathres = FALSE;
+        }
+    }
+
     /* Normally dogs don't step on cursed items, but if they have no
      * other choice they will.  This requires checking ahead of time
      * to see how many uncursed item squares are around.
      */
     uncursedcnt = 0;
-    for (i = 0; i < cnt; i++) {
+    for (i = 0; i < cnt; i++) 
+    {
         nx = poss[i].x;
         ny = poss[i].y;
         if (MON_AT(nx, ny) && !((info[i] & ALLOW_M) || ((info[i] & ALLOW_TM) && m_at(nx, ny) && is_tame(m_at(nx, ny))) || info[i] & ALLOW_MDISP))
@@ -1423,7 +1446,8 @@ int after; /* this is extra fast monster movement */
     chi = -1;
     nidist = GDIST(nix, niy);
 
-    for (i = 0; i < cnt; i++) {
+    for (i = 0; i < cnt; i++) 
+    {
         nx = poss[i].x;
         ny = poss[i].y;
         cursemsg[i] = FALSE;
@@ -1434,7 +1458,7 @@ int after; /* this is extra fast monster movement */
             continue;
 
         /* if a guardian, try to stay close by choice */
-        if ((!has_edog || mtmp->mcomingtou) && (j = distu(nx, ny)) > 16 && j >= udist)
+        if (!has_edog && !mtmp->mcomingtou && (j = distu(nx, ny)) > 16 && j >= udist)
             continue;
 
 		boolean monatres = MON_AT(nx, ny);
@@ -1581,6 +1605,18 @@ int after; /* this is extra fast monster movement */
                 if (nx == mtmp->mtrack[j].x && ny == mtmp->mtrack[j].y)
                     if (rn2(MTSZ * (k - j)))
                         goto nxti;
+        }
+
+
+        if (pathres)
+        {
+            if (poss[i].x == tx && poss[i].y == ty)
+            {
+                nix = nx;
+                niy = ny;
+                chi = i;
+                break;
+            }
         }
 
         j = ((ndist = GDIST(nx, ny)) - nidist) * appr;

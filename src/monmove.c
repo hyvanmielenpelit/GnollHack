@@ -16,8 +16,7 @@ STATIC_DCL void FDECL(release_hero, (struct monst *));
 STATIC_DCL void FDECL(distfleeck, (struct monst *, int *, int *, int *));
 STATIC_DCL int FDECL(m_arrival, (struct monst *));
 STATIC_DCL boolean FDECL(stuff_prevents_passage, (struct monst *));
-STATIC_DCL int FDECL(vamp_shift, (struct monst *, struct permonst *,
-                                  BOOLEAN_P));
+STATIC_DCL int FDECL(vamp_shift, (struct monst *, struct permonst *, BOOLEAN_P));
 
 /* True if mtmp died */
 boolean
@@ -2264,6 +2263,307 @@ boolean domsg;
     }
 
     return reslt;
+}
+
+boolean
+m_findtravelpath(mon, mode, mon_dx_ptr, mon_dy_ptr, allowflags)
+struct monst* mon;
+int mode;
+xchar* mon_dx_ptr;
+xchar* mon_dy_ptr;
+long allowflags;
+{
+    if (!mon || !mon_dx_ptr || !mon_dy_ptr || !isok(mon->yell_x, mon->yell_y))
+        return FALSE;
+
+    /* if travel to adjacent, reachable location, use normal movement rules */
+    if ((mode == TRAVP_TRAVEL || mode == TRAVP_VALID) && mon->mcomingtou
+        && distmin(mon->mx, mon->my, mon->yell_x, mon->yell_y) == 1
+        && !(mon->mx != mon->yell_x && mon->my != mon->yell_y && NODIAG(u.umonnum))) 
+    {
+        //context.run = 0;
+        if (m_test_move(mon, mon->mx, mon->my, mon->yell_x - mon->mx, mon->yell_y - mon->my, TEST_MOVE, allowflags)) 
+        {
+            if (mode == TRAVP_TRAVEL) 
+            {
+                *mon_dx_ptr = mon->yell_x - mon->mx;
+                *mon_dy_ptr = mon->yell_y - mon->my;
+                //nomul(0);
+                //iflags.travelcc.x = iflags.travelcc.y = 0;
+            }
+            return TRUE;
+        }
+
+        //if (mode == TRAVP_TRAVEL)
+         //   context.run = 8;
+    }
+
+    if (mon->yell_x != mon->mx || mon->yell_y != mon->my) 
+    {
+        xchar travel[COLNO][ROWNO];
+        xchar travelstepx[2][COLNO * ROWNO];
+        xchar travelstepy[2][COLNO * ROWNO];
+        xchar tx, ty, ux, uy;
+        int n = 1;      /* max offset in travelsteps */
+        int set = 0;    /* two sets current and previous */
+        int radius = 1; /* search radius */
+        int i;
+
+        /* If guessing, first find an "obvious" goal location.  The obvious
+         * goal is the position the player knows of, or might figure out
+         * (couldsee) that is closest to the target on a straight path.
+         */
+        if (mode == TRAVP_GUESS || mode == TRAVP_VALID)
+        {
+            tx = mon->mx;
+            ty = mon->my;
+            ux = mon->yell_x;
+            uy = mon->yell_y;
+        }
+        else 
+        {
+            tx = mon->yell_x;
+            ty = mon->yell_y;
+            ux = mon->mx;
+            uy = mon->my;
+        }
+
+    noguess:
+        (void)memset((genericptr_t)travel, 0, sizeof travel);
+        travelstepx[0][0] = tx;
+        travelstepy[0][0] = ty;
+
+        while (n != 0)
+        {
+            int nn = 0;
+
+            for (i = 0; i < n; i++) 
+            {
+                int dir;
+                int x = travelstepx[set][i];
+                int y = travelstepy[set][i];
+                static int ordered[] = { 0, 2, 4, 6, 1, 3, 5, 7 };
+                /* no diagonal movement for grid bugs */
+                int dirmax = NODIAG(mon->mnum) ? 4 : 8;
+                boolean alreadyrepeated = FALSE;
+
+                for (dir = 0; dir < dirmax; ++dir) 
+                {
+                    int nx = x + xdir[ordered[dir]];
+                    int ny = y + ydir[ordered[dir]];
+
+                    /*
+                     * When guessing and trying to travel as close as possible
+                     * to an unreachable target space, don't include spaces
+                     * that would never be picked as a guessed target in the
+                     * travel matrix describing hero-reachable spaces.
+                     * This stops travel from getting confused and moving
+                     * the hero back and forth in certain degenerate
+                     * configurations of sight-blocking obstacles, e.g.
+                     *
+                     *  T         1. Dig this out and carry enough to not be
+                     *   ####       able to squeeze through diagonal gaps.
+                     *   #--.---    Stand at @ and target travel at space T.
+                     *    @.....
+                     *    |.....
+                     *
+                     *  T         2. couldsee() marks spaces marked a and x
+                     *   ####       as eligible guess spaces to move the hero
+                     *   a--.---    towards.  Space a is closest to T, so it
+                     *    @xxxxx    gets chosen.  Travel system moves @ right
+                     *    |xxxxx    to travel to space a.
+                     *
+                     *  T         3. couldsee() marks spaces marked b, c and x
+                     *   ####       as eligible guess spaces to move the hero
+                     *   a--c---    towards.  Since findtravelpath() is called
+                     *    b@xxxx    repeatedly during travel, it doesn't
+                     *    |xxxxx    remember that it wanted to go to space a,
+                     *              so in comparing spaces b and c, b is
+                     *              chosen, since it seems like the closest
+                     *              eligible space to T. Travel system moves @
+                     *              left to go to space b.
+                     *
+                     *            4. Go to 2.
+                     *
+                     * By limiting the travel matrix here, space a in the
+                     * example above is never included in it, preventing
+                     * the cycle.
+                     */
+                    if (!isok(nx, ny)
+                        /* || ((mode == TRAVP_GUESS) && !couldsee(nx, ny)) */)
+                        continue;
+
+                    if ((!does_pass_walls(mon) && !can_ooze(mon)
+                        && closed_door(x, y)) || sobj_at(BOULDER, x, y)
+                        || m_test_move(mon, x, y, nx - x, ny - y, TEST_TRAP, allowflags))
+                    {
+                        /* closed doors and boulders usually
+                         * cause a delay, so prefer another path */
+                        if (travel[x][y] > radius - 3)
+                        {
+                            if (!alreadyrepeated) {
+                                travelstepx[1 - set][nn] = x;
+                                travelstepy[1 - set][nn] = y;
+                                /* don't change travel matrix! */
+                                nn++;
+                                alreadyrepeated = TRUE;
+                            }
+                            continue;
+                        }
+                    }
+                    if (m_test_move(mon, x, y, nx - x, ny - y, TEST_TRAV, allowflags)
+                        /*&& (levl[nx][ny].seenv
+                            || (!Blind && couldsee(nx, ny))) */ ) 
+                    {
+                        if (nx == ux && ny == uy) 
+                        {
+                            if (mode == TRAVP_TRAVEL || mode == TRAVP_VALID) 
+                            {
+                                *mon_dx_ptr = x - ux;
+                                *mon_dy_ptr = y - uy;
+                                if (mode == TRAVP_TRAVEL
+                                    && x == mon->yell_x && y == mon->yell_y) 
+                                {
+                                    //nomul(0);
+                                    /* reset run so domove run checks work */
+                                    //context.run = 8;
+                                    //iflags.travelcc.x = iflags.travelcc.y = 0;
+                                }
+                                return TRUE;
+                            }
+                        }
+                        else if (!travel[nx][ny]) 
+                        {
+                            travelstepx[1 - set][nn] = nx;
+                            travelstepy[1 - set][nn] = ny;
+                            travel[nx][ny] = radius;
+                            nn++;
+                        }
+                    }
+                }
+            }
+
+#ifdef DEBUG
+            if (iflags.trav_debug) 
+            {
+                /* Use of warning glyph is arbitrary. It stands out. */
+                tmp_at(DISP_ALL, warning_to_glyph(1));
+                for (i = 0; i < nn; ++i) 
+                {
+                    tmp_at(travelstepx[1 - set][i], travelstepy[1 - set][i]);
+                }
+                adjusted_delay_output();
+                tmp_at(DISP_END, 0);
+            }
+#endif /* DEBUG */
+
+            n = nn;
+            set = 1 - set;
+            radius++;
+        }
+
+        /* if guessing, find best location in travel matrix and go there */
+        if (mode == TRAVP_GUESS) 
+        {
+            int px = tx, py = ty; /* pick location */
+            int dist, nxtdist, d2, nd2;
+
+            dist = distmin(ux, uy, tx, ty);
+            d2 = dist2(ux, uy, tx, ty);
+            for (tx = 1; tx < COLNO; ++tx)
+                for (ty = 0; ty < ROWNO; ++ty)
+                    if (travel[tx][ty]) 
+                    {
+                        nxtdist = distmin(ux, uy, tx, ty);
+                        if (nxtdist == dist /*&& couldsee(tx, ty) */) 
+                        {
+                            nd2 = dist2(ux, uy, tx, ty);
+                            if (nd2 < d2) 
+                            {
+                                /* prefer non-zigzag path */
+                                px = tx;
+                                py = ty;
+                                d2 = nd2;
+                            }
+                        }
+                        else if (nxtdist < dist /*&& couldsee(tx, ty)*/) 
+                        {
+                            px = tx;
+                            py = ty;
+                            dist = nxtdist;
+                            d2 = dist2(ux, uy, tx, ty);
+                        }
+                    }
+
+            if (px == mon->mx && py == mon->my) 
+            {
+                /* no guesses, just go in the general direction */
+                *mon_dx_ptr = sgn(mon->yell_x - mon->mx);
+                *mon_dy_ptr = sgn(mon->yell_y - mon->my);
+                if (m_test_move(mon, mon->mx, mon->my, *mon_dx_ptr, *mon_dy_ptr, TEST_MOVE, allowflags))
+                    return TRUE;
+                goto found;
+            }
+#ifdef DEBUG
+            if (iflags.trav_debug)
+            {
+                /* Use of warning glyph is arbitrary. It stands out. */
+                tmp_at(DISP_ALL, warning_to_glyph(2));
+                tmp_at(px, py);
+                adjusted_delay_output();
+                tmp_at(DISP_END, 0);
+            }
+#endif /* DEBUG */
+            tx = px;
+            ty = py;
+            ux = mon->mx;
+            uy = mon->my;
+            set = 0;
+            n = radius = 1;
+            mode = TRAVP_TRAVEL;
+            goto noguess;
+        }
+        return FALSE;
+    }
+
+found:
+    *mon_dx_ptr = 0;
+    *mon_dy_ptr = 0;
+    nomul(0);
+    return FALSE;
+}
+
+boolean
+m_test_move(mon, mx, my, dx, dy, mode, allowflags)
+struct monst* mon;
+xchar mx, my, dx, dy;
+int mode;
+long allowflags;
+{
+    coord poss[9];
+    long info[9];
+    xchar test_x = mx + dx;
+    xchar test_y = my + dy;
+
+    if (!isok(test_x, test_y))
+        return FALSE;
+
+    allowflags |= ALLOW_U | ALLOW_M | ALLOW_TM; /* Monsters do not block pathing */
+
+    if (mode == TEST_TRAP)
+        allowflags |= ALLOW_TRAPS;
+
+    int cnt = mfndpos_xy(mon, mx, my, poss, info, allowflags);
+    if (!cnt)
+        return FALSE;
+
+    for (int i = 0; i < cnt; i++)
+    {
+        if (poss[i].x == test_x && poss[i].y == test_y)
+            return TRUE;
+    }
+
+    return FALSE;
 }
 
 /*monmove.c*/

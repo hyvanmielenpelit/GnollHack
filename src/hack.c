@@ -21,11 +21,6 @@ STATIC_DCL void NDECL(domove_core);
 
 #define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
 
-/* mode values for findtravelpath() */
-#define TRAVP_TRAVEL 0
-#define TRAVP_GUESS  1
-#define TRAVP_VALID  2
-
 static anything tmp_anything;
 
 anything *
@@ -1606,8 +1601,8 @@ domove_core()
 	context.hide_melee_range_warning = FALSE;
 
     if (context.travel) {
-        if (!findtravelpath(FALSE))
-            (void) findtravelpath(TRUE);
+        if (!findtravelpath(TRAVP_TRAVEL))
+            (void) findtravelpath(TRAVP_GUESS);
         context.travel1 = 0;
     }
 

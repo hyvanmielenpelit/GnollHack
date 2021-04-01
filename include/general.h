@@ -433,6 +433,11 @@ enum main_menu_command {
 #define MAX_TILE_SHEETS 2
 #define MAX_TILES (MAX_TILE_SHEETS * NUM_TILES_PER_SHEET)
 
+/* mode values for findtravelpath() and m_findtravelpath() */
+#define TRAVP_TRAVEL 0
+#define TRAVP_GUESS  1
+#define TRAVP_VALID  2
+
 
 #endif /* GENERAL_H */
 
