@@ -967,6 +967,28 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
         ELF_PRIEST_MALE_CHAOTIC_KICK_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "elf-priest-male-chaotic-cast-indir-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_CHAOTIC_CAST_INDIR_ANIMATION_TILES,
+        ELF_PRIEST_MALE_CHAOTIC_CAST_INDIR_ANIMATION_FRAMES,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 6,
+        ELF_PRIEST_MALE_CHAOTIC_CAST_INDIR_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-male-chaotic-cast-dir-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_CHAOTIC_CAST_DIR_ANIMATION_TILES,
+        ELF_PRIEST_MALE_CHAOTIC_CAST_DIR_ANIMATION_FRAMES,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        7, 9,
+        ELF_PRIEST_MALE_CHAOTIC_CAST_DIR_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "elf-priest-female-chaotic-attack-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_TILES,
         ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_FRAMES,
         1,
@@ -1009,19 +1031,6 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
         { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
         7, 9,
         ELF_PRIEST_FEMALE_CHAOTIC_CAST_DIR_ENLARGEMENT,
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-    },
-
-    /* Priest cast animations */
-    { "elf-priest-male-chaotic-cast-animation", ANIMATION_TYPE_NORMAL, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES,
-        ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES,
-        1,
-        1,
-        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
-        AUTODRAW_NONE,
-        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-        7, 9,
-        ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
 
@@ -3923,6 +3932,23 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "elf-priest-male-chaotic-cast-indir-enlargement",
+      ELF_PRIEST_MALE_CHAOTIC_CAST_INDIR_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_INDIR_ANIMATION_FRAMES,
+      5,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elf-priest-male-chaotic-cast-dir-enlargement",
+      ELF_PRIEST_MALE_CHAOTIC_CAST_DIR_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_DIR_ANIMATION_FRAMES,
+      2,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+
     { "elf-priest-female-chaotic-attack-enlargement",
       ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_TILES, ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ANIMATION_FRAMES,
       ELF_PRIEST_FEMALE_CHAOTIC_ATTACK_ENLARGEMENT_TILES,
@@ -3952,15 +3978,6 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       5,
       3, 2, 0,
       { 0, 1, 2, 3, 4 },
-      { 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0 }
-    },
-
-    { "elf-priest-male-chaotic-cast-enlargement",
-      ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES,
-      ELF_PRIEST_MALE_CHAOTIC_CAST_ENLARGEMENT_TILES,
-      3, 1, 0,
-      { -1, -1, -1, 0, 1 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
