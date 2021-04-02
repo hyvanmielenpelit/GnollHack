@@ -2278,8 +2278,7 @@ const char* headertext;
 
     /* Equivalent of an "ugly check" for gold */
     if (usegold && !strcmp(word, "eat")
-        && (!metallivorous(youmonst.data)
-            || youmonst.data == &mons[PM_RUST_MONSTER]))
+        && (!metallivorous(youmonst.data) || rust_causing_and_ironvorous(youmonst.data)))
         usegold = FALSE;
 
     if (*let == ALL_CLASSES)

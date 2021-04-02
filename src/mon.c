@@ -1832,14 +1832,18 @@ register struct monst *mtmp;
             continue;
 
         /* Don't eat indigestible/choking/inappropriate objects */
-        if ((mtmp->data == &mons[PM_RUST_MONSTER] && !is_rustprone(otmp))
+        if ((rust_causing_and_ironvorous(mtmp->data) && is_rustprone(otmp))
             || (otmp->otyp == AMULET_OF_STRANGULATION)
             || (otmp->otyp == RIN_SLOW_DIGESTION))
             continue;
+
         if (is_metallic(otmp) && !obj_resists(otmp, 5, 95)
-            && touch_artifact(otmp, mtmp)) {
-            if (mtmp->data == &mons[PM_RUST_MONSTER] && otmp->oerodeproof) {
-                if (canseemon(mtmp) && flags.verbose) {
+            && touch_artifact(otmp, mtmp)) 
+        {
+            if (rust_causing_and_ironvorous(mtmp->data) && otmp->oerodeproof) 
+            {
+                if (canseemon(mtmp) && flags.verbose) 
+                {
                     pline("%s eats %s!", Monnam(mtmp),
                           distant_name(otmp, doname));
                 }

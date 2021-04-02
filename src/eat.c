@@ -83,7 +83,7 @@ register struct obj *obj;
        allow fake amulets to be eaten either [which is already the case] */
 
     if (metallivorous(youmonst.data) && is_metallic(obj)
-        && (youmonst.data != &mons[PM_RUST_MONSTER] || is_rustprone(obj)))
+        && (!rust_causing_and_ironvorous(youmonst.data) || is_rustprone(obj)))
         return TRUE;
 
     /* Ghouls only eat non-veggy corpses or eggs (see dogfood()) */
@@ -3043,7 +3043,7 @@ struct obj *otmp;
             return 2;
     }
 
-    if (Upolyd && u.umonnum == PM_RUST_MONSTER && is_metallic(otmp)
+    if (Upolyd && rust_causing_and_ironvorous(youmonst.data) && is_metallic(otmp)
         && otmp->oerodeproof) 
     {
         Sprintf(buf, "%s disgusting to you right now.  %s", foodsmell,
@@ -3162,7 +3162,7 @@ doeat()
         return 1; /* got blasted so use a turn */
     }
 
-    if (is_metallic(otmp) && u.umonnum == PM_RUST_MONSTER
+    if (is_metallic(otmp) && rust_causing_and_ironvorous(youmonst.data)
         && otmp->oerodeproof)
     {
         otmp->rknown = TRUE;
@@ -3963,11 +3963,13 @@ int corpsecheck; /* 0, no check, 1, corpses, 2, tinnable corpses */
                 || (Flying && !Breathless))))
         goto skipfloor;
 
-    if (feeding && metallivorous(youmonst.data)) {
+    if (feeding && metallivorous(youmonst.data)) 
+    {
         struct obj *gold;
         struct trap *ttmp = t_at(u.ux, u.uy);
 
-        if (ttmp && ttmp->tseen && ttmp->ttyp == BEAR_TRAP) {
+        if (ttmp && ttmp->tseen && ttmp->ttyp == BEAR_TRAP) 
+        {
             boolean u_in_beartrap = (u.utrap && u.utraptype == TT_BEARTRAP);
 
             /* If not already stuck in the trap, perhaps there should
@@ -3975,38 +3977,48 @@ int corpsecheck; /* 0, no check, 1, corpses, 2, tinnable corpses */
                then the trap would just get eaten on the _next_ turn... */
             Sprintf(qbuf, "There is a bear trap here (%s); eat it?",
                     u_in_beartrap ? "holding you" : "armed");
-            if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y') {
+            if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y')
+            {
                 deltrap(ttmp);
                 if (u_in_beartrap)
                     reset_utrap(TRUE);
                 return mksobj(BEARTRAP, TRUE, FALSE, FALSE);
-            } else if (c == 'q') {
+            } 
+            else if (c == 'q')
+            {
                 return (struct obj *) 0;
             }
         }
 
-        if (youmonst.data != &mons[PM_RUST_MONSTER]
-            && (gold = g_at(u.ux, u.uy)) != 0) {
+        if (!rust_causing_and_ironvorous(youmonst.data)
+            && (gold = g_at(u.ux, u.uy)) != 0) 
+        {
             if (gold->quan == 1L)
                 Sprintf(qbuf, "There is 1 gold piece here; eat it?");
             else
                 Sprintf(qbuf, "There are %ld gold pieces here; eat them?",
                         gold->quan);
-            if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y') {
+
+            if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y') 
+            {
                 return gold;
-            } else if (c == 'q') {
+            } 
+            else if (c == 'q')
+            {
                 return (struct obj *) 0;
             }
         }
     }
 
     /* Is there some food (probably a heavy corpse) here on the ground? */
-    for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) {
+    for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) 
+    {
         if (corpsecheck
                 ? (otmp->otyp == CORPSE
                    && (corpsecheck == 1 || tinnable(otmp)))
                 : feeding ? (otmp->oclass != COIN_CLASS && is_edible(otmp))
-                          : otmp->oclass == FOOD_CLASS) {
+                          : otmp->oclass == FOOD_CLASS)
+        {
             char qsfx[QBUFSZ];
             boolean one = (otmp->quan == 1L);
 
@@ -4014,12 +4026,14 @@ int corpsecheck; /* 0, no check, 1, corpses, 2, tinnable corpses */
                offer) a cockatrice corpse is fatal before asking whether
                or not to use it; otherwise, 'm<dir>' followed by 'e' could
                be used to locate cockatrice corpses without touching them */
-            if (otmp->otyp == CORPSE && will_feel_cockatrice(otmp, FALSE)) {
+            if (otmp->otyp == CORPSE && will_feel_cockatrice(otmp, FALSE))
+            {
                 feel_cockatrice(otmp, FALSE);
                 /* if life-saved (or poly'd into stone golem), terminate
                    attempt to eat off floor */
                 return (struct obj *) 0;
             }
+
             /* "There is <an object> here; <verb> it?" or
                "There are <N objects> here; <verb> one?" */
             Sprintf(qbuf, "There %s ", otense(otmp, "are"));
@@ -4040,7 +4054,8 @@ skipfloor:
     otmp = getobj(feeding ? allobj : offering ? offerfodder : comestibles,
                   verb, 0, "");
     if (corpsecheck && otmp && !(offering && otmp->oclass == AMULET_CLASS))
-        if (otmp->otyp != CORPSE || (corpsecheck == 2 && !tinnable(otmp))) {
+        if (otmp->otyp != CORPSE || (corpsecheck == 2 && !tinnable(otmp)))
+        {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_cant("%s that!", verb);
             return (struct obj *) 0;

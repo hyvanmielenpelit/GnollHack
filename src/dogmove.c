@@ -379,7 +379,7 @@ boolean devour;
 #endif
 
 
-    if (mtmp->data == &mons[PM_RUST_MONSTER] && obj->oerodeproof) 
+    if (rust_causing_and_ironvorous(mtmp->data) && obj->oerodeproof) 
 	{
         /* The object's rustproofing is gone now */
         if (obj->unpaid)

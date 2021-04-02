@@ -86,7 +86,8 @@ static NEARDATA struct mflag_description m1flag_descriptions[] = {
     { M1_ANIMAL, "animal", "animals" },
     { M1_STEED, "steed", "steeds" },
     { M1_METALLIVORE, "metallivore", "metallivores" },
-	{ M1_MINDLESS, "mindless", "mindless monsters" },
+    { M1_RUST_CAUSING_IRONVORE, "rust-causing ironvore", "rust-causing ironvores" },
+    { M1_MINDLESS, "mindless", "mindless monsters" },
 	{ M1_NOEYES, "eyeless", "eyeless monsters" },
 	{ M1_NOHANDS, "handless", "handless monsters" },
 	{ M1_NONECK, "neckless", "neckless monsters" },
@@ -920,6 +921,10 @@ struct permonst *pm1, *pm2;
 
     if (is_long_worm(pm1))
         return is_long_worm(pm2); /* handles tail */
+
+    if (is_purple_worm(pm1))
+        return is_purple_worm(pm2);
+
     /* [currently there's no reason to bother matching up
         assorted bugs and blobs with their closest variants] */
     /* didn't match */

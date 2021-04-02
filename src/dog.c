@@ -1035,7 +1035,8 @@ register struct obj *obj;
             return TABU;
         }
 
-        switch (obj->otyp) {
+        switch (obj->otyp) 
+        {
         case TRIPE_RATION:
         case MEATBALL:
         case MEAT_RING:
@@ -1104,7 +1105,8 @@ register struct obj *obj;
         if (slurps_items(mptr) && is_slurpable(obj))
             return ACCFOOD;
         if (metallivorous(mptr) && is_metallic(obj)
-            && (is_rustprone(obj) || mptr != &mons[PM_RUST_MONSTER])) {
+            && (is_rustprone(obj) || !rust_causing_and_ironvorous(mptr)))
+        {
             /* Non-rustproofed ferrous based metals are preferred. */
             return (is_rustprone(obj) && !obj->oerodeproof) ? DOGFOOD
                                                             : ACCFOOD;

@@ -162,7 +162,7 @@
 #define M1_TOUCH_PETRIFIES 0x02000000UL   /* touching the corpse petrifies */
 #define M1_ROCKTHROW	0x04000000UL    /* throws boulders */
 #define M1_STEED        0x08000000UL    /* can be saddled and ridden */
-/* free bit */
+#define M1_RUST_CAUSING_IRONVORE 0x10000000UL   /* eats iron and rustable materials only; requires M1_METALLIVORE to be set as well */
 #define M1_CARNIVORE	0x20000000UL   /* eats corpses */
 #define M1_HERBIVORE	0x40000000UL   /* eats fruits */
 #define M1_OMNIVORE		0x60000000UL    /* eats both */
@@ -336,6 +336,9 @@
 #define M6_NONE                     0x00000000UL
 #define M6_NON_EATER                0x00000001UL /* Living beings like elementals */
 #define M6_CORPSE_EATER             0x00000002UL /* Overrides undead or non_eater flags for corpses, e.g., ghoul */
+#define M6_LONG_WORM                0x00000004UL /* Any sort of long worm (tailed or not, including tail) */
+#define M6_TAILED_LONG_WORM         0x00000008UL /* Multi-square long worm, a head with a tail */
+#define M6_PURPLE_WORM              0x00000010UL /* Any sort of purple worm (baby or normal) */
 
 #define M7_NONE						0x00000000UL
 #define M8_NONE						0x00000000UL
