@@ -110,9 +110,12 @@ do_statusline1()
           : encglyph(objnum_to_glyph(GOLD_PIECE)),
         min(money, 999999L));
 
+#if 0
+    /* No score shown on two-line setup --JG */
 #ifdef SCORE_ON_BOTL
     if (flags.showscore)
         Sprintf(nb = eos(nb), " S:%ld", botl_score());
+#endif
 #endif
     return newbot1;
 }
