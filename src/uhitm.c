@@ -3757,7 +3757,7 @@ register struct monst *mon;
 
 			for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 			{
-				update_u_action(ACTION_TILE_ATTACK);
+				update_u_action(mattk->action_tile ? mattk->action_tile : ACTION_TILE_ATTACK);
 				play_monster_simple_weapon_sound(&youmonst, i, weapon, OBJECT_SOUND_TYPE_SWING_MELEE);
 				u_wait_until_action();
 
@@ -3820,7 +3820,7 @@ register struct monst *mon;
 			}
 			/*FALLTHRU*/
 		case AT_SMMN:
-			update_u_action(ACTION_TILE_ATTACK);
+			update_u_action(mattk->action_tile ? mattk->action_tile : ACTION_TILE_CAST_NODIR);
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			u_wait_until_action();
 			sum[i] = damageum(mon, mattk, (struct obj*)0, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
@@ -3835,7 +3835,7 @@ register struct monst *mon;
 		case AT_TAIL:
 		case AT_TENT:
         /*weaponless:*/
-			update_u_action(ACTION_TILE_ATTACK);
+			update_u_action(mattk->action_tile ? mattk->action_tile : mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			u_wait_until_action();
 			tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0,
@@ -3944,7 +3944,7 @@ register struct monst *mon;
 
         case AT_HUGS: 
 		{
-			update_u_action(ACTION_TILE_ATTACK);
+			update_u_action(mattk->action_tile ? mattk->action_tile : ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			u_wait_until_action();
 			int specialdmg;
@@ -4048,7 +4048,7 @@ register struct monst *mon;
         }
 
         case AT_EXPL: /* automatic hit if next to */
-			update_u_action(ACTION_TILE_ATTACK);
+			update_u_action(mattk->action_tile ? mattk->action_tile : ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			u_wait_until_action();
 			dhit = -1;
@@ -4058,7 +4058,7 @@ register struct monst *mon;
 			break;
 
         case AT_ENGL:
-			update_u_action(ACTION_TILE_ATTACK);
+			update_u_action(mattk->action_tile ? mattk->action_tile : ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			u_wait_until_action();
 			tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0, &attknum, &armorpenalty);
@@ -4173,7 +4173,7 @@ boolean wep_was_destroyed;
 	damage += adjust_damage(basedmg, mon, &youmonst, ptr->mattk[i].adtyp, ADFLAGS_NONE);
 
 	enum action_tile_types action_before = mon->action;
-	update_m_action(mon, ACTION_TILE_PASSIVE_DEFENSE);
+	update_m_action(mon, ptr->mattk[i].action_tile ? ptr->mattk[i].action_tile : ACTION_TILE_PASSIVE_DEFENSE);
 	play_monster_simple_weapon_sound(mon, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 	m_wait_until_action();
 
@@ -5282,7 +5282,7 @@ unsigned long extra_flags;
 
 	//enum action_tile_types action_before = is_you ? u.action : mon->action;
 	show_extra_info(x, y, hflags, damage_shown);
-	//update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
+	//update_m_action(mon, ACTION_TILE_SPECIAL_ATTACK_3);
 	if(mon == &youmonst)
 		u_wait_until_action();
 	else

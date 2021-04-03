@@ -1783,7 +1783,7 @@ struct attack *mattk;
             if (canseemon(mtmp))
             {
                 action_taken = TRUE;
-                update_m_action(mtmp, ACTION_TILE_FIRE);
+                update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_FIRE);
             }
             play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);
             if (action_taken)
@@ -1833,7 +1833,7 @@ struct attack *mattk;
             if (canseemon(mtmp))
             {
                 action_taken = TRUE;
-                update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
+                update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
             }
             play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);
             if (action_taken)
@@ -1890,7 +1890,7 @@ struct attack* mattk;
                 if (canseemon(mtmp))
                 {
                     action_taken = TRUE;
-                    update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
+                    update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                 }
 
                 play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);

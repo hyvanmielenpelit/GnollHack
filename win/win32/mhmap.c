@@ -4683,7 +4683,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             t_y, GetNHApp()->mapTile_X,
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
-                    else if (/* glyph_is_damage_receiving_monster(monster_glyph) || glyph_is_female_damage_receiving_monster(monster_glyph) || glyph_is_damage_receiving_player(monster_glyph) ||*/ data->map[i][j].layer_flags & LFLAGS_M_BEING_HIT)
+                    else if (/* glyph_is_special_attacking3_monster(monster_glyph) || glyph_is_female_special_attacking3_monster(monster_glyph) || glyph_is_special_attacking3_player(monster_glyph) ||*/ data->map[i][j].layer_flags & LFLAGS_M_BEING_HIT)
                     {
                         unsigned long hit_text_bits = (data->map[i][j].layer_flags & LFLAGS_M_HIT_TILE_MASK);
                         unsigned long hit_text_num = hit_text_bits >> LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;

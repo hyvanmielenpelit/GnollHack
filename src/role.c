@@ -2666,8 +2666,8 @@ u_to_glyph()
                 : u.action == ACTION_TILE_SPECIAL_ATTACK ? (flags.female ? female_special_attacking_monnum_to_glyph(u.umonnum) : special_attacking_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_KICK ? (flags.female ? female_kicking_monnum_to_glyph(u.umonnum) : kicking_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_PASSIVE_DEFENSE ? (flags.female ? female_passive_defense_monnum_to_glyph(u.umonnum) : passive_defense_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_DEFEND ? (flags.female ? female_defending_monnum_to_glyph(u.umonnum) : defending_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_RECEIVE_DAMAGE ? (flags.female ? female_damage_receiving_monnum_to_glyph(u.umonnum) : damage_receiving_monnum_to_glyph(u.umonnum))
+                : u.action == ACTION_TILE_SPECIAL_ATTACK_2 ? (flags.female ? female_special_attacking2_monnum_to_glyph(u.umonnum) : special_attacking2_monnum_to_glyph(u.umonnum))
+                : u.action == ACTION_TILE_SPECIAL_ATTACK_3 ? (flags.female ? female_special_attacking3_monnum_to_glyph(u.umonnum) : special_attacking3_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_ITEM_USE ? (flags.female ? female_item_using_monnum_to_glyph(u.umonnum) : item_using_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_DOOR_USE ? (flags.female ? female_door_using_monnum_to_glyph(u.umonnum) : door_using_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_DEATH ? (flags.female ? female_dying_monnum_to_glyph(u.umonnum) : dying_monnum_to_glyph(u.umonnum))
@@ -2689,8 +2689,8 @@ u_to_glyph()
         : u.action == ACTION_TILE_SPECIAL_ATTACK ? GLYPH_PLAYER_SPECIAL_ATTACK_OFF
         : u.action == ACTION_TILE_KICK ? GLYPH_PLAYER_KICK_OFF
         : u.action == ACTION_TILE_PASSIVE_DEFENSE ? GLYPH_PLAYER_PASSIVE_DEFENSE_OFF
-        : u.action == ACTION_TILE_DEFEND ? GLYPH_PLAYER_DEFEND_OFF
-        : u.action == ACTION_TILE_RECEIVE_DAMAGE ? GLYPH_PLAYER_RECEIVE_DAMAGE_OFF
+        : u.action == ACTION_TILE_SPECIAL_ATTACK_2 ? GLYPH_PLAYER_SPECIAL_ATTACK_2_OFF
+        : u.action == ACTION_TILE_SPECIAL_ATTACK_3 ? GLYPH_PLAYER_SPECIAL_ATTACK_3_OFF
         : u.action == ACTION_TILE_ITEM_USE ? GLYPH_PLAYER_ITEM_USE_OFF
         : u.action == ACTION_TILE_DOOR_USE ? GLYPH_PLAYER_DOOR_USE_OFF
         : u.action == ACTION_TILE_DEATH ? GLYPH_PLAYER_DEATH_OFF
@@ -2864,9 +2864,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;
-    case ACTION_TILE_DEFEND:
+    case ACTION_TILE_SPECIAL_ATTACK_2:
         break;
-    case ACTION_TILE_RECEIVE_DAMAGE:
+    case ACTION_TILE_SPECIAL_ATTACK_3:
         break;
     case ACTION_TILE_ITEM_USE:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
@@ -2924,9 +2924,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;
-    case ACTION_TILE_DEFEND:
+    case ACTION_TILE_SPECIAL_ATTACK_2:
         break;
-    case ACTION_TILE_RECEIVE_DAMAGE:
+    case ACTION_TILE_SPECIAL_ATTACK_3:
         break;
     case ACTION_TILE_ITEM_USE:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN)
@@ -3055,9 +3055,9 @@ death_glyph_to_player_mon(int glyph)
 }
 
 int
-damage_receive_glyph_to_player_mon(int glyph)
+special_attack3_glyph_to_player_mon(int glyph)
 {
-    return glyph_to_player_mon(glyph - GLYPH_PLAYER_RECEIVE_DAMAGE_OFF + GLYPH_PLAYER_OFF);
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_3_OFF + GLYPH_PLAYER_OFF);
 }
 
 int
@@ -3067,9 +3067,9 @@ passive_defense_glyph_to_player_mon(int glyph)
 }
 
 int
-defend_glyph_to_player_mon(int glyph)
+special_attack2_glyph_to_player_mon(int glyph)
 {
-    return glyph_to_player_mon(glyph - GLYPH_PLAYER_DEFEND_OFF + GLYPH_PLAYER_OFF);
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_2_OFF + GLYPH_PLAYER_OFF);
 }
 
 /* role.c */

@@ -738,7 +738,7 @@ register struct monst *mtmp;
                     play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
                     first_attack = FALSE;
                 }
-                update_m_action(mtmp, mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
+                update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 if (foundyou)
@@ -772,7 +772,7 @@ register struct monst *mtmp;
                     first_attack = FALSE;
                 }
 
-                update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
+                update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 sum[i] = hitmu(mtmp, mattk, (struct obj*)0);
@@ -791,7 +791,7 @@ register struct monst *mtmp;
                     first_attack = FALSE;
                 }
 
-                update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
+                update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 sum[i] = gazemu(mtmp, mattk);
@@ -808,7 +808,7 @@ register struct monst *mtmp;
                     first_attack = FALSE;
                 }
 
-                update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
+                update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 sum[i] = explmu(mtmp, mattk, foundyou);
@@ -826,7 +826,7 @@ register struct monst *mtmp;
                 }
                 if (foundyou)
                 {
-                    update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
+                    update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                     play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                     m_wait_until_action();
                     if (u.uswallow
@@ -923,7 +923,7 @@ register struct monst *mtmp;
                     play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
                     first_attack = FALSE;
                 }
-                update_m_action(mtmp, ACTION_TILE_ATTACK);
+                update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_ATTACK);
                 if (foundyou)
 				{
                     weaponattackcount++;
@@ -4594,7 +4594,7 @@ struct attack *mattk;
         damage = max(0, oldu_mattk->damp);
 
     enum action_tile_types action_before = u.action;
-    update_u_action(ACTION_TILE_PASSIVE_DEFENSE);
+    update_u_action(oldu_mattk->action_tile ? oldu_mattk->action_tile : ACTION_TILE_PASSIVE_DEFENSE);
     play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
     u_wait_until_action();
 

@@ -98,7 +98,7 @@ uchar* tilemapflags;
     tile_section_name = "monsters";
     
     /* spsets must be in same order as enum action_tile_types */
-    const char* monster_set_name_array[MAX_ACTION_TILES + 2] = { "normal", "attack", "throw", "fire", "cast-nodir", "cast-dir", "special-attack", "kick", "passive-defense", "defend", "receive-damage", "item-use", "door-use", "death", "statue", "body" };
+    const char* monster_set_name_array[MAX_ACTION_TILES + 2] = { "normal", "attack", "throw", "fire", "cast-nodir", "cast-dir", "special-attack", "kick", "passive-defense", "special-attack-2", "special-attack-3", "item-use", "door-use", "death", "statue", "body" };
 
     for (int gender = 0; gender <= 1; gender++)
     {
@@ -1366,7 +1366,7 @@ uchar* tilemapflags;
 
     /* Player tiles */
     tile_section_name = "player";
-    const char* player_set_name_array[MAX_ACTION_TILES] = { "normal", "attack", "throw", "fire", "cast-nodir", "cast-dir", "special-attack", "kick", "passive-defense", "defend", "receive-damage", "item-use", "door-use", "death" };
+    const char* player_set_name_array[MAX_ACTION_TILES] = { "normal", "attack", "throw", "fire", "cast-nodir", "cast-dir", "special-attack", "kick", "passive-defense", "special-attack-2", "special-attack-3", "item-use", "door-use", "death" };
 
     /* Initialize glyphs first with monster tiles */
     for (enum action_tile_types spset = 0; spset < MAX_ACTION_TILES; spset++)

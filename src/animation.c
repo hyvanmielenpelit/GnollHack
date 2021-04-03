@@ -811,9 +811,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;
-    case ACTION_TILE_DEFEND:
+    case ACTION_TILE_SPECIAL_ATTACK_2:
         break;
-    case ACTION_TILE_RECEIVE_DAMAGE:
+    case ACTION_TILE_SPECIAL_ATTACK_3:
         break;
     case ACTION_TILE_ITEM_USE:
         break;
@@ -1237,9 +1237,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;
-    case ACTION_TILE_DEFEND:
+    case ACTION_TILE_SPECIAL_ATTACK_2:
         break;
-    case ACTION_TILE_RECEIVE_DAMAGE:
+    case ACTION_TILE_SPECIAL_ATTACK_3:
         break;
     case ACTION_TILE_ITEM_USE:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -2107,9 +2107,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;
-    case ACTION_TILE_DEFEND:
+    case ACTION_TILE_SPECIAL_ATTACK_2:
         break;
-    case ACTION_TILE_RECEIVE_DAMAGE:
+    case ACTION_TILE_SPECIAL_ATTACK_3:
         break;
     case ACTION_TILE_ITEM_USE:
         break;

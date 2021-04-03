@@ -91,8 +91,8 @@ unsigned long *ospecial;
         (offset = (glyph - GLYPH_PLAYER_DEATH_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_DOOR_USE_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_ITEM_USE_OFF)) >= 0
-        || (offset = (glyph - GLYPH_PLAYER_RECEIVE_DAMAGE_OFF)) >= 0
-        || (offset = (glyph - GLYPH_PLAYER_DEFEND_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_SPECIAL_ATTACK_3_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_SPECIAL_ATTACK_2_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_PASSIVE_DEFENSE_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_KICK_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_SPECIAL_ATTACK_OFF)) >= 0
@@ -397,8 +397,8 @@ unsigned long *ospecial;
     (offset = (glyph - GLYPH_FEMALE_DEATH_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_DOOR_USE_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_ITEM_USE_OFF)) >= 0
-    || (offset = (glyph - GLYPH_FEMALE_RECEIVE_DAMAGE_OFF)) >= 0
-    || (offset = (glyph - GLYPH_FEMALE_DEFEND_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_SPECIAL_ATTACK_3_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_SPECIAL_ATTACK_2_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_PASSIVE_DEFENSE_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_KICK_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_SPECIAL_ATTACK_OFF)) >= 0
@@ -417,8 +417,8 @@ unsigned long *ospecial;
     (offset = (glyph - GLYPH_DEATH_OFF)) >= 0
     || (offset = (glyph - GLYPH_DOOR_USE_OFF)) >= 0
     || (offset = (glyph - GLYPH_ITEM_USE_OFF)) >= 0
-    || (offset = (glyph - GLYPH_RECEIVE_DAMAGE_OFF)) >= 0
-    || (offset = (glyph - GLYPH_DEFEND_OFF)) >= 0
+    || (offset = (glyph - GLYPH_SPECIAL_ATTACK_3_OFF)) >= 0
+    || (offset = (glyph - GLYPH_SPECIAL_ATTACK_2_OFF)) >= 0
     || (offset = (glyph - GLYPH_PASSIVE_DEFENSE_OFF)) >= 0
     || (offset = (glyph - GLYPH_KICK_OFF)) >= 0
     || (offset = (glyph - GLYPH_SPECIAL_ATTACK_OFF)) >= 0
