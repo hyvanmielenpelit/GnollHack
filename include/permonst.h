@@ -24,8 +24,11 @@
 
 struct attack {
     uchar aatyp, adtyp;
-    int damn, damd, damp;
-	int mcadj; /* MC and saving throw adjustment*/
+    short damn, damd, damp;
+	short mcadj; /* MC and saving throw adjustment*/
+    short mlevel; /* level at which the attack is used */
+    unsigned long aflags; /* any relevant attack flags */
+    uchar action_tile; /* Action tile used for the attack */
 };
 
 struct action_info

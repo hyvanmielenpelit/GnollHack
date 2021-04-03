@@ -1014,7 +1014,7 @@ register struct monst *mtmp;
                     /*  Special demon handling code */
 					if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
-						int chance = mattk->mcadj;
+						int chance = mattk->mlevel;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s gates in some help.", Monnam(mtmp));
@@ -1105,7 +1105,7 @@ register struct monst *mtmp;
                     /*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
-						int chance = mattk->mcadj;
+						int chance = mattk->mlevel;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							(void)yeenoghu_gnoll_summon(mtmp);
@@ -1131,7 +1131,7 @@ register struct monst *mtmp;
                     /*  Special ghoul handling code */
 					if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
-						int chance = mattk->mcadj;
+						int chance = mattk->mlevel;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							(void)yeenoghu_ghoul_summon(mtmp);
@@ -1154,7 +1154,7 @@ register struct monst *mtmp;
                     /*  Special bison handling code */
 				    if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
-					    int chance = mattk->mcadj;
+					    int chance = mattk->mlevel;
 					    if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 					    {
 						    pline("%s summons some bison!", Monnam(mtmp));
@@ -1178,7 +1178,7 @@ register struct monst *mtmp;
                     /*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
-						int chance = mattk->mcadj;
+						int chance = mattk->mlevel;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s summons some undead!", Monnam(mtmp));
@@ -1204,7 +1204,7 @@ register struct monst *mtmp;
                     m_wait_until_action();
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
-						int chance = mattk->mcadj;
+						int chance = mattk->mlevel;
 						if (!is_cancelled(mtmp) && !(mvitals[PM_MINOTAUR].mvflags & G_GONE) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							struct monst* mtmp2 = makemon(&mons[PM_MINOTAUR], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
@@ -1234,7 +1234,7 @@ register struct monst *mtmp;
                     m_wait_until_action();
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
-                        int chance = mattk->mcadj;
+                        int chance = mattk->mlevel;
                         if (!is_cancelled(mtmp) && !((mvitals[PM_ANCIENT_GOLD_DRAGON].mvflags & G_GONE) && (mvitals[PM_GOLD_DRAGON].mvflags & G_GONE)) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
                             struct monst* mtmp2 = makemon(&mons[PM_ANCIENT_GOLD_DRAGON], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);

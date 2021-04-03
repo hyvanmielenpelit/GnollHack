@@ -3826,6 +3826,8 @@ register struct monst* mon;
 		char adtypebuf[BUFSZ];
 		char damagebuf[BUFSZ];
 		char specialbuf[BUFSZ];
+		char specialbuf1[BUFSZ];
+		char specialbuf2[BUFSZ];
 
 		strcpy(attypebuf, get_attack_type_text(mon->data->mattk[i].aatyp));
 		*attypebuf = highc(*attypebuf);
@@ -3857,18 +3859,31 @@ register struct monst* mon;
 		}
 		
 		strcpy(specialbuf, "");
-		if (mon->data->mattk[i].aatyp == AT_SMMN && mon->data->mattk[i].mcadj > 0)
+		strcpy(specialbuf1, "");
+		if (mon->data->mattk[i].aatyp == AT_SMMN && mon->data->mattk[i].mlevel > 0)
 		{
-			Sprintf(specialbuf, " (success %d%%)", mon->data->mattk[i].mcadj);
+			Sprintf(specialbuf1, "success %d%%", mon->data->mattk[i].mlevel);
 		}
-		else if (mon->data->mattk[i].aatyp == AT_MAGC && mon->data->mattk[i].mcadj > 0)
+		else if (mon->data->mattk[i].aatyp == AT_MAGC && mon->data->mattk[i].mlevel > 0)
 		{
-			Sprintf(specialbuf, " (as %d level caster)", mon->data->mattk[i].mcadj);
+			Sprintf(specialbuf1, "as %d level caster", mon->data->mattk[i].mlevel);
 		}
-		else if (mon->data->mattk[i].mcadj != 0)
+		
+		strcpy(specialbuf2, "");
+		if (mon->data->mattk[i].mcadj != 0)
 		{
-			Sprintf(specialbuf, " (%s%d MC %s)", mon->data->mattk[i].mcadj > 0 ? "+" : "", mon->data->mattk[i].mcadj,
+			Sprintf(specialbuf2, "%s%d MC %s", mon->data->mattk[i].mcadj > 0 ? "+" : "", mon->data->mattk[i].mcadj,
 				mon->data->mattk[i].mcadj <= 0 ? "penalty" : "bonus");
+		}
+
+		if (strcmp(specialbuf1, "") || strcmp(specialbuf2, ""))
+		{
+			if (strcmp(specialbuf1, "") && strcmp(specialbuf2, ""))
+			{
+				Sprintf(specialbuf, " (%s, %s)", specialbuf1, specialbuf2);
+			}
+			else
+				Sprintf(specialbuf, " (%s)", strcmp(specialbuf1, "") ? specialbuf1 : specialbuf2);
 		}
 
 		Sprintf(buf, " %2d - %s%s%s%s", i + 1, attypebuf, adtypebuf, damagebuf, specialbuf);
