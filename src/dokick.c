@@ -1539,7 +1539,7 @@ dokick() {
             if (rn2(4))
                 goto ouch;
             exercise(A_WIS, FALSE);
-            if (Role_if(PM_ARCHEOLOGIST) || Role_if(PM_SAMURAI)
+            if (Role_if(PM_ARCHAEOLOGIST) || Role_if(PM_SAMURAI)
                 || ((u.ualign.type == A_LAWFUL) && (u.ualign.record > -10))) {
                 adjalign(-sgn(u.ualign.type));
             }

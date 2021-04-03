@@ -289,7 +289,7 @@ make #jump be ineffective on air and water levels
 allow multiple sickness causes; vomiting only cures those involving food
 #prayer reward: give books for not-yet-known spells preference to known ones
 marker use no longer uses wishing interface, fixing several obscure bugs
-archeologists' and rogues' initial sack starts out empty
+archaeologists' and rogues' initial sack starts out empty
 candelabra "has now" 7 candles fixed.
 kicked objects would set dknown when the kick caused an injury, even though
 	safely kicked objects wouldn't

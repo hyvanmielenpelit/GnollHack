@@ -2831,7 +2831,7 @@ const struct def_skill* class_skill_max;
 	for (obj = invent; obj; obj = obj->nobj) 
 	{
 		/* don't give skill just because of carried ammo, wait until
-		   we see the relevant launcher (prevents an archeologist's
+		   we see the relevant launcher (prevents an archaeologist's
 		   touchstone from inadvertently providing skill in sling) */
 		if (is_ammo(obj))
 			continue;

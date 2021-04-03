@@ -205,7 +205,7 @@ int mndx, mode;
     switch (mndx) {
     /* Quest guardians */
     case PM_STUDENT:
-        mndx = mode ? PM_ARCHEOLOGIST : PM_HUMAN;
+        mndx = mode ? PM_ARCHAEOLOGIST : PM_HUMAN;
         break;
     case PM_CHIEFTAIN:
         mndx = mode ? PM_BARBARIAN : PM_HUMAN;
@@ -3471,7 +3471,7 @@ struct monst *mdef;
             obj->nobj = 0; /* avoid merged-> obfree-> dealloc_obj-> panic */
             (void) add_to_container(otmp, obj);
         }
-        /* Archeologists should not break unique statues */
+        /* Archaeologists should not break unique statues */
         if (mdef->data->geno & G_UNIQ)
             otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
         otmp->owt = weight(otmp);
@@ -3748,7 +3748,7 @@ cleanup:
     /* punish bad behaviour */
     if (is_human(mdat) && !is_undead(mdat) && !is_were(mdat)
         && (!always_hostile(mdat) && mtmp->malign <= 0)
-        && (mndx < PM_ARCHEOLOGIST || mndx > PM_WIZARD)
+        && (mndx < PM_ARCHAEOLOGIST || mndx > PM_WIZARD)
         && u.ualign.type != A_CHAOTIC) {
         HTelepat &= ~INTRINSIC;
 		HBlind_telepat &= ~INTRINSIC;
@@ -4736,7 +4736,7 @@ struct monst *mon;
         } 
 		else // Removed as potentially being too dangerous */ 
 		if (rn2(3)) { /* role monsters */
-            mndx = rn1(PM_WIZARD - PM_ARCHEOLOGIST + 1, PM_ARCHEOLOGIST);
+            mndx = rn1(PM_WIZARD - PM_ARCHAEOLOGIST + 1, PM_ARCHAEOLOGIST);
         } else if (!rn2(3)) { /* quest guardians */
             mndx = rn1(PM_APPRENTICE - PM_STUDENT + 1, PM_STUDENT);
             /* avoid own role's guardian */

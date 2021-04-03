@@ -904,7 +904,7 @@ X11_player_selection_dialog()
      *   | name                               |
      *   +------------------------------------+
      *   +--------+   +------------+   +---------+
-     *   | human  |   |archeologist|   |  male   |
+     *   | human  |   |archaeologist|   |  male   |
      *   |  elf   |   | barbarian  |   | female  |
      *   | dwarf  |   |  caveman   |   +---------+
      *   | gnome  |   |   healer   |   +---------+

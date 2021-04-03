@@ -8927,7 +8927,7 @@ int* titleandgodindex_ptr;
 
     switch (yourrole)
     {
-    case ROLE_ARCHEOLOGIST:
+    case ROLE_ARCHAEOLOGIST:
         if (u.ualign.type == A_LAWFUL)
         {
             *godindex_ptr = 0;
@@ -9001,7 +9001,7 @@ int* titleandgodindex_ptr;
         {
             switch (yourpantheon)
             {
-            case ROLE_ARCHEOLOGIST:
+            case ROLE_ARCHAEOLOGIST:
                 *godindex_ptr = 13;
                 *titleandgodindex_ptr = 15;
                 break;
@@ -9061,7 +9061,7 @@ int* titleandgodindex_ptr;
         {
             switch (yourpantheon)
             {
-            case ROLE_ARCHEOLOGIST:
+            case ROLE_ARCHAEOLOGIST:
                 *godindex_ptr = 0;
                 *titleandgodindex_ptr = 27;
                 break;
@@ -9121,7 +9121,7 @@ int* titleandgodindex_ptr;
         {
             switch (yourpantheon)
             {
-            case ROLE_ARCHEOLOGIST:
+            case ROLE_ARCHAEOLOGIST:
                 *godindex_ptr = 1;
                 *titleandgodindex_ptr = 39;
                 break;

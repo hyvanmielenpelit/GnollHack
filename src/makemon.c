@@ -4250,7 +4250,7 @@ register struct monst *mtmp;
             nocorpse_ndx = (mvitals[mndx].mvflags & G_NOCORPSE) != 0;
 
         if (appear == CORPSE && nocorpse_ndx)
-            mndx = rn1(PM_WIZARD - PM_ARCHEOLOGIST + 1, PM_ARCHEOLOGIST);
+            mndx = rn1(PM_WIZARD - PM_ARCHAEOLOGIST + 1, PM_ARCHAEOLOGIST);
         else if ((appear == EGG && !can_be_hatched(mndx))
                  || (appear == TIN && nocorpse_ndx))
             mndx = NON_PM; /* revert to generic egg or empty tin */

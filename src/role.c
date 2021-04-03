@@ -26,7 +26,7 @@
  */
 
 const struct Role roles[] = {
-    { { "Archeologist", 0 },
+    { { "Archaeologist", 0 },
       { { "Digger", 0 },
         { "Field Worker", 0 },
         { "Investigator", 0 },
@@ -38,11 +38,11 @@ const struct Role roles[] = {
         { "Curator", 0 } },
       "Quetzalcoatl", "Camaxtli", "Huhetotl", /* Central American */
       "Arc",
-      "the College of Archeology",
+      "the College of Archaeology",
       "the Tomb of the Toltec Kings",
       0,
 	  { "", "", "", "", ""},
-      PM_ARCHEOLOGIST,
+      PM_ARCHAEOLOGIST,
       NON_PM,
       PM_LORD_CARNARVON,
       PM_STUDENT,
@@ -2859,7 +2859,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_CAVEMAN && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
             return TRUE;
-        if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+        if (roleidx == ROLE_ARCHAEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
             return TRUE;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
@@ -2905,7 +2905,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_NO_ACTION:
         break;
     case ACTION_TILE_ATTACK:
-        if (roleidx == ROLE_ARCHEOLOGIST)
+        if (roleidx == ROLE_ARCHAEOLOGIST)
             return ACTION_ATTACK_FLAGS_PICK_AXE;
         break;
     case ACTION_TILE_THROW:

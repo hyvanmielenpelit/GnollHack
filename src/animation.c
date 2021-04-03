@@ -962,14 +962,14 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return GNOLL_CAVEMAN_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_CAVEMAN && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE)
             return GNOLL_CAVEMAN_FEMALE_ATTACK_ANIMATION;
-        if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
-            return DWARF_ARCHEOLOGIST_MALE_ATTACK_ANIMATION;
-        if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
-            return DWARF_ARCHEOLOGIST_FEMALE_ATTACK_ANIMATION;
-        if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
-            return HUMAN_ARCHEOLOGIST_MALE_ATTACK_ANIMATION;
-        if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
-            return HUMAN_ARCHEOLOGIST_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_ARCHAEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+            return DWARF_ARCHAEOLOGIST_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_ARCHAEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
+            return DWARF_ARCHAEOLOGIST_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_ARCHAEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_ARCHAEOLOGIST_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_ARCHAEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_ARCHAEOLOGIST_FEMALE_ATTACK_ANIMATION;
         break;
     case ACTION_TILE_THROW:
         break;
@@ -1226,14 +1226,14 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return GNOLL_CAVEMAN_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_CAVEMAN && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE)
             return GNOLL_CAVEMAN_FEMALE_KICK_ANIMATION;
-        if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
-            return DWARF_ARCHEOLOGIST_MALE_KICK_ANIMATION;
-        if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
-            return DWARF_ARCHEOLOGIST_FEMALE_KICK_ANIMATION;
-        if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
-            return HUMAN_ARCHEOLOGIST_MALE_KICK_ANIMATION;
-        if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
-            return HUMAN_ARCHEOLOGIST_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_ARCHAEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+            return DWARF_ARCHAEOLOGIST_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_ARCHAEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
+            return DWARF_ARCHAEOLOGIST_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_ARCHAEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_ARCHAEOLOGIST_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_ARCHAEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_ARCHAEOLOGIST_FEMALE_KICK_ANIMATION;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;

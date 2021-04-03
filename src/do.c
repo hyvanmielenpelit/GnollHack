@@ -2469,10 +2469,10 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 
-				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHEOLOGIST)
+				if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHAEOLOGIST)
 				{
 					powercnt++;
-					Sprintf(buf, " %2d - Archeologists", powercnt);
+					Sprintf(buf, " %2d - Archaeologists", powercnt);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}

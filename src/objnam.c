@@ -809,7 +809,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             char anbuf[10];
 
             Sprintf(buf, "%s%s of %s%s",
-                    (Role_if(PM_ARCHEOLOGIST) && (obj->speflags & SPEFLAGS_STATUE_HISTORIC))
+                    (Role_if(PM_ARCHAEOLOGIST) && (obj->speflags & SPEFLAGS_STATUE_HISTORIC))
                        ? "historic "
                        : "",
                     actualn,

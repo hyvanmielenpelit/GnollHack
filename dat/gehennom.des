@@ -84,8 +84,8 @@ SPECIAL_REGION:(00,00,75,19),region_special_level_seen
 # note: no priest(esse)s or monks - maybe Moloch has a *special*
 #       fate reserved for members of *those* classes.
 #
-OBJECT:('%',"corpse"),random,montype:"archeologist"
-OBJECT:('%',"corpse"),random,montype:"archeologist"
+OBJECT:('%',"corpse"),random,montype:"archaeologist"
+OBJECT:('%',"corpse"),random,montype:"archaeologist"
 OBJECT:('%',"corpse"),random,montype:"barbarian"
 OBJECT:('%',"corpse"),random,montype:"barbarian"
 OBJECT:('%',"corpse"),random,montype:"caveman"

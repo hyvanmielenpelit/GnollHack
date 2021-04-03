@@ -1470,7 +1470,7 @@ unsigned long mkflags;
                                         corpse = corpse2;
                                 }
                                 else
-                                    set_corpsenm(corpse, !rn2(4) ? PM_HUMAN : rn2(PM_WIZARD - PM_ARCHEOLOGIST + 1) + PM_ARCHEOLOGIST);
+                                    set_corpsenm(corpse, !rn2(4) ? PM_HUMAN : rn2(PM_WIZARD - PM_ARCHAEOLOGIST + 1) + PM_ARCHAEOLOGIST);
 
                                 (void)add_to_container(otmp, corpse);
                             }
@@ -3109,7 +3109,7 @@ register int x, y;
         if ((objtype == STATUE || objtype == CORPSE) && (otmp2 = tt_oname(otmp)) != 0)
             otmp = otmp2;
         else
-            set_corpsenm(otmp, rn2(PM_WIZARD - PM_ARCHEOLOGIST + 1) + PM_ARCHEOLOGIST);
+            set_corpsenm(otmp, rn2(PM_WIZARD - PM_ARCHAEOLOGIST + 1) + PM_ARCHAEOLOGIST);
     }
     return otmp;
 }

@@ -2785,7 +2785,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
                 : urole.name.m);
 
     /* title */
-    enlght_out(buf); /* "Conan the Archeologist's attributes:" */
+    enlght_out(buf); /* "Conan the Archaeologist's attributes:" */
     /* background and characteristics; ^X or end-of-game disclosure */
     if (mode & BASICENLIGHTENMENT) {
         /* role, race, alignment, deities, dungeon level, time, experience */

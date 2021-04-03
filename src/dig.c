@@ -1073,7 +1073,7 @@ coord *cc;
 
     /* Grave-robbing is frowned upon... */
     exercise(A_WIS, FALSE);
-    if (Role_if(PM_ARCHEOLOGIST)) {
+    if (Role_if(PM_ARCHAEOLOGIST)) {
         adjalign(-sgn(u.ualign.type) * 3);
         You_feel("like a despicable grave-robber!");
     } else if (Role_if(PM_SAMURAI)) {

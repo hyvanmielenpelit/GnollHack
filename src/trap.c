@@ -671,7 +671,7 @@ int *fail_reason;
     struct monst *mon = 0, *shkp;
     struct obj *item;
     coord cc;
-    boolean historic = (Role_if(PM_ARCHEOLOGIST)
+    boolean historic = (Role_if(PM_ARCHAEOLOGIST)
                         && (statue->speflags & SPEFLAGS_STATUE_HISTORIC) != 0),
             golem_xform = FALSE, use_saved_traits;
     const char *comes_to_life;

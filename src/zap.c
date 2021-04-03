@@ -9575,7 +9575,7 @@ register struct obj *obj;
         obj_extract_self(item);
         place_object(item, obj->ox, obj->oy);
     }
-    if (by_you && Role_if(PM_ARCHEOLOGIST) && (obj->speflags & SPEFLAGS_STATUE_HISTORIC))
+    if (by_you && Role_if(PM_ARCHAEOLOGIST) && (obj->speflags & SPEFLAGS_STATUE_HISTORIC))
 	{
         You_feel("guilty about damaging such a historic statue.");
         adjalign(-1);

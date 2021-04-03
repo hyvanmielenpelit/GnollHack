@@ -30,7 +30,7 @@ STATIC_DCL struct obj* FDECL(mk_obj_in_container_known, (struct obj*, int));
  *      Initial inventory for the various roles.
  */
 
-static struct trobj Archeologist[] = {
+static struct trobj Archaeologist[] = {
     /* if adventure has a name...  idea from tan@uvm-gen */
     { BULLWHIP, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
     { LEATHER_JACKET, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
@@ -1107,8 +1107,8 @@ u_init()
      * random number generators are bad enough to seriously
      * skew the results if we use rn2(2)...  --KAA
      */
-    case PM_ARCHEOLOGIST:
-        ini_inv(Archeologist);
+    case PM_ARCHAEOLOGIST:
+        ini_inv(Archaeologist);
         if (!rn2(10))
             ini_inv(Tinopener);
         else if (!rn2(4))
@@ -1467,7 +1467,7 @@ u_skills_init()
 	/*** Role-specific skill initializations ***/
 	switch (Role_switch) 
 	{
-	case PM_ARCHEOLOGIST:
+	case PM_ARCHAEOLOGIST:
 		skill_init(Skill_A_Init, Skill_A_Max);
 		break;
 	case PM_BARBARIAN:
@@ -1581,7 +1581,7 @@ int otyp;
     int this_skill = spell_skilltype(otyp);
 
     switch (Role_switch) {
-    case PM_ARCHEOLOGIST:
+    case PM_ARCHAEOLOGIST:
         skills = Skill_A_Max;
         break;
     case PM_BARBARIAN:
@@ -1849,7 +1849,7 @@ register struct trobj *trop;
 				obj->owt = weight(obj);
 			}
 		}
-		else if (Role_if(PM_ARCHEOLOGIST))
+		else if (Role_if(PM_ARCHAEOLOGIST))
 		{
 			if (otyp == BACKPACK)
 			{

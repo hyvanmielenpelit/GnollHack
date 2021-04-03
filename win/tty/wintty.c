@@ -1093,7 +1093,7 @@ reset_role_filtering()
 #undef GEND
 #undef ALGN
 
-/* add entries a-Archeologist, b-Barbarian, &c to menu being built in 'win' */
+/* add entries a-Archaeologist, b-Barbarian, &c to menu being built in 'win' */
 STATIC_OVL void
 setup_rolemenu(win, filtering, race, gend, algn)
 winid win;

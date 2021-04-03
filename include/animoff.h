@@ -205,14 +205,14 @@ int animation_offsets[MAX_ANIMATIONS] = {
 	2112, /* gnoll-caveman-male-kick-animation */
 	2121, /* gnoll-caveman-female-attack-animation */
 	2130, /* gnoll-caveman-female-kick-animation */
-	2139, /* dwarf-archeologist-male-attack-animation */
-	2149, /* dwarf-archeologist-male-kick-animation */
-	2158, /* dwarf-archeologist-female-attack-animation */
-	2168, /* dwarf-archeologist-female-kick-animation */
-	2177, /* human-archeologist-male-attack-animation */
-	2186, /* human-archeologist-male-kick-animation */
-	2195, /* human-archeologist-female-attack-animation */
-	2205, /* human-archeologist-female-kick-animation */
+	2139, /* dwarf-archaeologist-male-attack-animation */
+	2149, /* dwarf-archaeologist-male-kick-animation */
+	2158, /* dwarf-archaeologist-female-attack-animation */
+	2168, /* dwarf-archaeologist-female-kick-animation */
+	2177, /* human-archaeologist-male-attack-animation */
+	2186, /* human-archaeologist-male-kick-animation */
+	2195, /* human-archaeologist-female-attack-animation */
+	2205, /* human-archaeologist-female-kick-animation */
 	2214, /* ochre-jelly-swallow-animation */
 	2223, /* dust-vortex-swallow-animation */
 	2250, /* fog-cloud-swallow-animation */
@@ -516,14 +516,14 @@ int enlargement_offsets[MAX_ENLARGEMENTS] = {
 	6638, /* gnoll-caveman-male-kick-enlargement */
 	6656, /* gnoll-caveman-female-attack-enlargement */
 	6674, /* gnoll-caveman-female-kick-enlargement */
-	6692, /* dwarf-archeologist-male-attack-enlargement */
-	6742, /* dwarf-archeologist-male-kick-enlargement */
-	6760, /* dwarf-archeologist-female-attack-enlargement */
-	6810, /* dwarf-archeologist-female-kick-enlargement */
-	6828, /* human-archeologist-male-attack-enlargement */
-	6873, /* human-archeologist-male-kick-enlargement */
-	6891, /* human-archeologist-female-attack-enlargement */
-	6941, /* human-archeologist-female-kick-enlargement */
+	6692, /* dwarf-archaeologist-male-attack-enlargement */
+	6742, /* dwarf-archaeologist-male-kick-enlargement */
+	6760, /* dwarf-archaeologist-female-attack-enlargement */
+	6810, /* dwarf-archaeologist-female-kick-enlargement */
+	6828, /* human-archaeologist-male-attack-enlargement */
+	6873, /* human-archaeologist-male-kick-enlargement */
+	6891, /* human-archaeologist-female-attack-enlargement */
+	6941, /* human-archaeologist-female-kick-enlargement */
 	6959, /* pony-enlargement */
 	6961, /* pony-statue-enlargement */
 	6963, /* horse-enlargement */

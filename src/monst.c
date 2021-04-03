@@ -5342,7 +5342,7 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
     /*
      * character classes
      */
-    MON("archeologist", None, None, None, None, S_HUMAN, LVL(10, 12, 10, 0, 1, 3), G_NOGEN,
+    MON("archaeologist", None, None, None, None, S_HUMAN, LVL(10, 12, 10, 0, 1, 3), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_HUMANOID, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(9, 9, 9, 15, 12, 10), MR_NONE, MR2_NONE, MC_NONE,
@@ -5442,7 +5442,7 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
     /*
      * quest leaders
      */
-    MON("Lord Carnarvon", "Professor of Archeology", None, None, None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
+    MON("Lord Carnarvon", "Professor of Archaeology", None, None, None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(15, 15, 17, 18, 18, 18), 

@@ -1310,7 +1310,7 @@ gcrownu()
                     discover_artifact(ART_RHONGOMYNIAD);
                 }
             }
-            else if ((Role_if(PM_KNIGHT) || Role_if(PM_ARCHEOLOGIST)) && !grail_already_exists)
+            else if ((Role_if(PM_KNIGHT) || Role_if(PM_ARCHAEOLOGIST)) && !grail_already_exists)
             {
                 class_gift = GRAIL_OF_HEALING;
                 obj = mksobj(GRAIL_OF_HEALING, FALSE, FALSE, FALSE);
@@ -1402,7 +1402,7 @@ gcrownu()
 			{
 				; /* already got bonus above */
 			}
-            else if (Role_if(PM_ARCHEOLOGIST) && !grail_already_exists)
+            else if (Role_if(PM_ARCHAEOLOGIST) && !grail_already_exists)
             {
                 class_gift = GRAIL_OF_HEALING;
                 obj = mksobj(GRAIL_OF_HEALING, FALSE, FALSE, FALSE);

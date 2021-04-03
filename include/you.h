@@ -24,7 +24,7 @@
 
 enum role_types
 {
-    ROLE_ARCHEOLOGIST = 0,
+    ROLE_ARCHAEOLOGIST = 0,
     ROLE_BARBARIAN,
     ROLE_CAVEMAN,
     ROLE_HEALER,

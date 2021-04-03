@@ -1258,7 +1258,7 @@ register struct monst *mtmp;
                         ? "complains about unpleasant dungeon conditions."
                         : "asks you about the One Ring.";
                 break;
-            case PM_ARCHEOLOGIST:
+            case PM_ARCHAEOLOGIST:
                 pline_msg =
                 "describes a recent article in \"Spelunker Today\" magazine.";
                 break;

@@ -1085,6 +1085,8 @@ int* fem_ptr;
             { "mummy king", PM_GREATER_MUMMY_PHARAOH },
             { "mummy priest", PM_GREATER_MUMMY_PRIEST },
             { "mummy high priest", PM_GREATER_MUMMY_HIGH_PRIEST },
+            { "leocrotta", PM_LEUCROTTA },
+            { "archeologist", PM_ARCHAEOLOGIST },
             /* end of list */
             { 0, NON_PM }
         };
@@ -1379,7 +1381,7 @@ static const short grownups[][2] = {
     { PM_LIEUTENANT, PM_CAPTAIN },
     { PM_WATCHMAN, PM_WATCH_CAPTAIN },
     { PM_ALIGNED_PRIEST, PM_HIGH_PRIEST },
-    { PM_STUDENT, PM_ARCHEOLOGIST },
+    { PM_STUDENT, PM_ARCHAEOLOGIST },
     { PM_ATTENDANT, PM_HEALER },
     { PM_PAGE, PM_KNIGHT },
     { PM_ACOLYTE, PM_PRIEST },

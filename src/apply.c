@@ -3650,7 +3650,7 @@ struct obj *tstone;
         } 
         else if (obj->oclass == GEM_CLASS
                    && (tstone->blessed
-                       || (!tstone->cursed /*&& (Role_if(PM_ARCHEOLOGIST)
+                       || (!tstone->cursed /*&& (Role_if(PM_ARCHAEOLOGIST)
                                                || Race_if(PM_GNOME))*/ ))) {
             makeknown(TOUCHSTONE);
             makeknown(obj->otyp);
@@ -3937,7 +3937,7 @@ struct obj *obj;
 
     /* fake some proficiency checks */
     proficient = 0;
-    if (Role_if(PM_ARCHEOLOGIST))
+    if (Role_if(PM_ARCHAEOLOGIST))
         ++proficient;
     if (ACURR(A_DEX) < 6)
         proficient--;
@@ -5878,7 +5878,7 @@ struct obj* obj;
 			if (Levitation)
 				goto dumb;
 
-			if (Role_if(PM_ARCHEOLOGIST) || Role_if(PM_SAMURAI)
+			if (Role_if(PM_ARCHAEOLOGIST) || Role_if(PM_SAMURAI)
 				|| ((u.ualign.type == A_LAWFUL) && (u.ualign.record > -10))) 
 			{
 				adjalign(-sgn(u.ualign.type));

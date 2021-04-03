@@ -425,7 +425,7 @@ int force;
                         } else if (u.utrap && u.utraptype == TT_PIT) {
                             boolean keepfooting =
                                 ((Fumbling && !rn2(5))
-                                 || (!rnl(Role_if(PM_ARCHEOLOGIST) ? 3 : 9))
+                                 || (!rnl(Role_if(PM_ARCHAEOLOGIST) ? 3 : 9))
                                  || ((ACURR(A_DEX) > 7) && rn2(5)));
 
                             You("are jostled around violently!");

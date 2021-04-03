@@ -911,7 +911,7 @@ struct obj* uitem;
 		if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_MASK)
 		{
 			if (
-				((objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHEOLOGIST) && Role_if(PM_ARCHEOLOGIST))
+				((objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHAEOLOGIST) && Role_if(PM_ARCHAEOLOGIST))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_BARBARIAN) && Role_if(PM_BARBARIAN))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN) && Role_if(PM_CAVEMAN))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER) && Role_if(PM_HEALER))
@@ -1012,7 +1012,7 @@ struct obj* uitem;
 		if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_MASK)
 		{
 			if (
-				((objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHEOLOGIST) && monsndx(monster->data) == PM_ARCHEOLOGIST)
+				((objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHAEOLOGIST) && monsndx(monster->data) == PM_ARCHAEOLOGIST)
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_BARBARIAN) && monsndx(monster->data) == PM_BARBARIAN)
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN) && (monsndx(monster->data) == PM_CAVEMAN))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER) && (monsndx(monster->data) == PM_HEALER || (monster->data->mflags3 & M3_HEALER)))
@@ -1492,7 +1492,7 @@ int r;
         short role;
         const struct innate *abil;
     } roleabils[] = {
-        { PM_ARCHEOLOGIST, arc_abil },
+        { PM_ARCHAEOLOGIST, arc_abil },
         { PM_BARBARIAN, bar_abil },
         { PM_CAVEMAN, cav_abil },
         { PM_HEALER, hea_abil },
@@ -1517,7 +1517,7 @@ int r;
 
 	const struct innate* abil = (struct innate*)0;
 	switch (r) {
-	case PM_ARCHEOLOGIST:
+	case PM_ARCHAEOLOGIST:
 		abil = arc_abil;
 		break;
 	case PM_BARBARIAN:

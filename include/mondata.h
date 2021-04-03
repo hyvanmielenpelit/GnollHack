@@ -781,7 +781,7 @@
 
 
 #define is_mplayer(ptr) \
-    (((ptr) >= &mons[PM_ARCHEOLOGIST]) && ((ptr) <= &mons[PM_WIZARD]))
+    (((ptr) >= &mons[PM_ARCHAEOLOGIST]) && ((ptr) <= &mons[PM_WIZARD]))
 #define is_watch(ptr) \
     ((ptr) == &mons[PM_WATCHMAN] || (ptr) == &mons[PM_WATCH_CAPTAIN])
 #define is_rider(ptr)                                      \

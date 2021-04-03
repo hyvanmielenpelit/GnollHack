@@ -49,7 +49,7 @@
 #	QT_HASAMULET	91
 #
 #
-#	Archeologist
+#	Archaeologist
 #
 %Cc Arc 00001
 You are suddenly in familiar surroundings.  The buildings in the distance
