@@ -1001,6 +1001,8 @@ props_init()
 	strcpy(context.properties[TITAN_STRENGTH].prop_tile_name, "titan-strength");
 	context.properties[CRAZED].show_buff = TRUE;
 	strcpy(context.properties[CRAZED].prop_tile_name, "crazed");
+	context.properties[DISPLACED].show_buff = TRUE;
+	strcpy(context.properties[DISPLACED].prop_tile_name, "displaced");
 }
 
 void
@@ -1945,7 +1947,7 @@ register struct trobj *trop;
 
 				/* Add arrows for magic arrow */
 				otmp = mksobj(ARROW, FALSE, FALSE, TRUE);
-				otmp->quan = 2 + rnd(5);
+				otmp->quan = 10;
 				otmp->owt = weight(otmp);
 				otmp->known = 1;
 				otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;

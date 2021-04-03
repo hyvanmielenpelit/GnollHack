@@ -2867,6 +2867,8 @@ SPELL("thunderstrike",     "dark cyan", None, None, "Shoots a great ray of light
       P_ARCANE_SPELL,			 4,  3,			 0, 8, 40, A_INT, 14, 0, 20, 0, 1, RAY, RAY_LIGHTNING, 3, 16, 6, 0, 4, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_ELEC, CLR_CYAN, OBJECT_SOUNDSET_GENERIC, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 SPELL("greater frost ray",  "glacial", None, None, "Shoots a great ray of cold",
       P_ARCANE_SPELL,			 4,  6,			 0, 9, 50, A_INT, 12, 0, 20, 0, 1, RAY, RAY_COLD, 1, 20, 6, 0, 1, 10, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_COLD, CLR_WHITE, OBJECT_SOUNDSET_GENERIC, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
+SPELL("mirror image",			"nonsensical", None, None, "A displaced mirror image appears beside the caster",
+	  P_ARCANE_SPELL,		5, 3,			     0, 2, 16, A_INT, 0, 0, 100, 0, 1, NODIR, DISPLACED, 0, 0, 0, 0, 6, 10, 180, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
 SPELL("animate air",	  "wave-patterned", None, None, "Summons a permanent air elemental",
 	P_CONJURATION_SPELL,		 4,  3,			 0, 6, 100, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
@@ -3091,8 +3093,6 @@ SPELL("lightning-enchant item",	"degraded", None, None, "Lightning-enchants one 
 	P_ENCHANTMENT_SPELL,		5, 1,			 0, 3, 40, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 SPELL("death-enchant item",		"diabolical", None, None, "Death-enchants one suitable item",
 	P_ENCHANTMENT_SPELL,		3, 3,			 0, 8,160, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
-SPELL("mirror image",			"nonsensical", None, None, "A displaced mirror image appears beside the caster",
-	P_ENCHANTMENT_SPELL,		5, 3,			 0, 2, 16, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, DISPLACED, 0, 0, 0, 0, 6, 10, 180, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("mass conflict",			"odious", None, None, "Causes all monsters to attach each other on the level",
 	P_ENCHANTMENT_SPELL,		3, 3,			 0, 9,100, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, CONFLICT, 0, 0, 0, 0, 3, 10, 50, S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_WIS, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
