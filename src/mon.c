@@ -3185,7 +3185,7 @@ register struct monst *mtmp;
         return;
 
 
-    update_m_action_core(mtmp, ACTION_TILE_DEATH, 4);
+    update_m_action_core(mtmp, ACTION_TILE_DEATH, 4, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
     m_wait_until_action();
 
     /* Player is thrown from his steed when it dies */

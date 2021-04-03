@@ -2417,7 +2417,7 @@ int mdead;
     }
     if (mdead || is_cancelled(mdef))
     {
-        update_m_action_core(mdef, action_before, 1);
+        update_m_action_core(mdef, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
         return (mdead | mhit);
     }
 
@@ -2443,7 +2443,7 @@ int mdead;
                     if (mon_reflects(magr, canseemon(magr) ? buf : (char*)0))
                     {
                         play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mdef->mx, mdef->my);
-                        update_m_action_core(mdef, action_before, 1);
+                        update_m_action_core(mdef, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
                         return (mdead | mhit);
                     }
                     Strcpy(buf, Monnam(magr));
@@ -2456,7 +2456,7 @@ int mdead;
                         play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mdef->mx, mdef->my);
                         paralyze_monst(magr, basedmg, FALSE);
 					}
-                    update_m_action_core(mdef, action_before, 1);
+                    update_m_action_core(mdef, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
                     return (mdead | mhit);
                 }
             }
@@ -2467,7 +2467,7 @@ int mdead;
                     pline("%s is frozen by %s.", buf, mon_nam(mdef));
                 play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mdef->mx, mdef->my);
                 paralyze_monst(magr, basedmg, FALSE);
-                update_m_action_core(mdef, action_before, 1);
+                update_m_action_core(mdef, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
                 return (mdead | mhit);
             }
             return 1;
@@ -2572,11 +2572,11 @@ assess_dmg:
 		if (magr->mhp <= 0)
 		{
             monkilled(magr, "", (int) mddat->mattk[i].adtyp);
-            update_m_action_core(mdef, action_before, 1);
+            update_m_action_core(mdef, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
             return (mdead | mhit | MM_AGR_DIED);
 		}
 	}
-    update_m_action_core(mdef, action_before, 1);
+    update_m_action_core(mdef, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
     return (mdead | mhit);
 }
 

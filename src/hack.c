@@ -2607,21 +2607,17 @@ boolean pick;
 
     if ((mtmp = m_at(u.ux, u.uy)) && !u.uswallow) 
     {
+        boolean action_taken = FALSE;
         mtmp->mundetected = mtmp->msleeping = 0;
-        newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_SHOW_DROPPING_PIERCER);
-        flush_screen(1);
         switch (mtmp->data->mlet)
         {
         case S_PIERCER:
+            action_taken = TRUE;
+            update_m_action_core(mtmp, ACTION_TILE_SPECIAL_ATTACK, 2, NEWSYM_FLAGS_KEEP_OLD_FLAGS | NEWSYM_FLAGS_SHOW_DROPPING_PIERCER);
             play_sfx_sound(SFX_PIERCER_DROPS);
+            m_wait_until_action();
             pline("%s suddenly drops from the %s!", Amonnam(mtmp),
                   ceiling(u.ux, u.uy));
-
-            if (iflags.using_gui_tiles)
-            {
-                for(int i = 0; i < 8; i++)
-                    adjusted_delay_output();
-            }
 
             if (is_tame(mtmp)) 
             { /* jumps to greet you, not attack */
@@ -2629,6 +2625,7 @@ boolean pick;
             } 
             else if (uarmh && is_metallic(uarmh)) 
             {
+                play_sfx_sound(SFX_ROCK_HITS_HARD_HELMET);
                 pline("Its blow glances off your %s.",
                       helm_simple_name(uarmh));
             }
@@ -2641,10 +2638,17 @@ boolean pick;
             {
                 double damage;
 
+                play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
                 You("are hit by %s!",
                     x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
-				damage = adjust_damage(d(max(1, mtmp->data->mlevel - 1), 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
+                if (iflags.using_gui_sounds)
+                {
+                    delay_output_milliseconds(25);
+                    play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                }
+                damage = adjust_damage(d(max(1, mtmp->data->mlevel - 1), 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
                 mdamageu(mtmp, damage, TRUE);
+
             }
             break;
         default: /* monster surprises you. */
@@ -2663,19 +2667,21 @@ boolean pick;
             }
             else
             {
+                action_taken = TRUE;
+                update_m_action_core(mtmp, ACTION_TILE_SPECIAL_ATTACK, 2, NEWSYM_FLAGS_SHOW_DROPPING_PIERCER);
                 play_sfx_sound(SFX_SURPRISE_ATTACK);
+                m_wait_until_action();
                 pline("%s attacks you by surprise!", Amonnam(mtmp));
 
             }
-            if (iflags.using_gui_tiles)
-            {
-                for (int i = 0; i < 8; i++)
-                    adjusted_delay_output();
-            }
-
             break;
         }
+        if(action_taken)
+            m_wait_until_end();
+        update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+        newsym(mtmp->mx, mtmp->my);
         mnexto(mtmp); /* have to move the monster */
+        flush_screen(1);
     }
  spotdone:
     if (!--inspoteffects) 

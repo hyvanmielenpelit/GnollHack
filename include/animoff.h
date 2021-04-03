@@ -268,6 +268,7 @@ int animation_offsets[MAX_ANIMATIONS] = {
 	11476, /* brazier-lit-animation */
 	11477, /* brazier-subtype-1-lit-animation */
 	11478, /* brazier-subtype-2-lit-animation */
+	11479, /* rock-piercer-drop-animation */
 };
 
 int enlargement_offsets[MAX_ENLARGEMENTS] = {
@@ -603,6 +604,7 @@ int enlargement_offsets[MAX_ENLARGEMENTS] = {
 	7478, /* ogre-archmage-male-statue-enlargement */
 	7483, /* ogre-archmage-female-enlargement */
 	7488, /* ogre-archmage-female-statue-enlargement */
+	7493, /* rock-piercer-drop-enlargement */
 };
 
 int replacement_offsets[MAX_REPLACEMENTS] = {

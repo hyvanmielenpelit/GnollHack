@@ -1860,12 +1860,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean full_sized_item = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM) || glyph_is_monster(glyph); /* hallucinated statue */
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !full_sized_item);
                     boolean does_not_cause_monster_shadow = FALSE;
+                    boolean is_dropping_piercer = mtmp && (data->map[enl_i][enl_j].layer_flags & LFLAGS_M_DROPPING_PIERCER);
+
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
                     ntile = maybe_get_replaced_tile(ntile, i, j, data_to_replacement_info(signed_glyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags), &autodraw);
                     if(context.u_action_animation_counter_on && base_layer == LAYER_MONSTER && enl_i == u.ux && enl_j == u.uy)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
-                    else if (context.m_action_animation_counter_on && base_layer == LAYER_MONSTER && context.m_action_animation_x == enl_i && context.m_action_animation_y == enl_j)
+                    else if (context.m_action_animation_counter_on && ((!is_dropping_piercer && base_layer == LAYER_MONSTER) || (is_dropping_piercer && base_layer == LAYER_MISSILE)) && context.m_action_animation_x == enl_i && context.m_action_animation_y == enl_j)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (glyph_is_explosion(glyph))
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
@@ -5391,9 +5393,11 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 ntile = maybe_get_replaced_tile(ntile, x, y, data_to_replacement_info(signed_glyph, layer_idx, (struct obj*)0, m_at(x, y), data->map[x][y].layer_flags), &autodraw);
 
                 int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
+                boolean is_dropping_piercer = m_at(x, y) && (data->map[x][y].layer_flags & LFLAGS_M_DROPPING_PIERCER);
+
                 if (context.u_action_animation_counter_on && layer_idx == LAYER_MONSTER && x == u.ux && y == u.uy)
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
-                else if (context.m_action_animation_counter_on && layer_idx == LAYER_MONSTER && context.m_action_animation_x == x && context.m_action_animation_y == y)
+                else if (context.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == LAYER_MONSTER) || (is_dropping_piercer && layer_idx == LAYER_MISSILE)) && context.m_action_animation_x == x && context.m_action_animation_y == y)
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 else if (glyph_is_explosion(glyph))
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);

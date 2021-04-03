@@ -4245,7 +4245,7 @@ boolean wep_was_destroyed;
                          && polymon(PM_STONE_GOLEM))) {
 					display_u_being_hit(HIT_PETRIFIED, 0, 0UL);
 					done_in_by(mon, STONING); /* "You turn to stone..." */
-					update_m_action_core(mon, action_before, 0);
+					update_m_action_core(mon, action_before, 0, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 					return 2;
                 }
             }
@@ -4429,7 +4429,7 @@ boolean wep_was_destroyed;
             break;
         }
     }
-	update_m_action_core(mon, action_before, 1);
+	update_m_action_core(mon, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 	return (malive | mhit);
 }
 
@@ -5014,14 +5014,14 @@ void
 update_u_action(action)
 enum action_tile_types action;
 {
-	update_u_action_core(action, 3);
+	update_u_action_core(action, 3, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 }
 
 void
 update_u_action_revert(action)
 enum action_tile_types action;
 {
-	update_u_action_core(action, 0);
+	update_u_action_core(action, 0, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 	u_wait_until_action();
 }
 
@@ -5029,14 +5029,15 @@ void
 update_u_action_and_wait(action)
 enum action_tile_types action;
 {
-	update_u_action_core(action, 3);
+	update_u_action_core(action, 3, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 	u_wait_until_action();
 }
 
 void
-update_u_action_core(action, simple_wait_multiplier)
+update_u_action_core(action, simple_wait_multiplier, additional_newsym_flags)
 enum action_tile_types action;
 unsigned long simple_wait_multiplier;
+unsigned long additional_newsym_flags;
 {
 	enum action_tile_types action_before = u.action;
 	if (iflags.using_gui_tiles && action == ACTION_TILE_NO_ACTION)
@@ -5064,7 +5065,7 @@ unsigned long simple_wait_multiplier;
 		{
 			context.u_action_animation_counter = 0L;
 			context.u_action_animation_counter_on = TRUE;
-			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+			newsym_with_flags(u.ux, u.uy, additional_newsym_flags);
 			force_redraw_at(u.ux, u.uy);
 			flush_screen(1);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
@@ -5091,7 +5092,7 @@ unsigned long simple_wait_multiplier;
 		}
 		else
 		{
-			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+			newsym_with_flags(u.ux, u.uy, additional_newsym_flags);
 			flush_screen(1);
 			context.u_intervals_to_wait_until_action = DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS;
 			//adjusted_delay_output();
@@ -5111,7 +5112,7 @@ update_m_action(mtmp, action)
 struct monst* mtmp;
 enum action_tile_types action;
 {
-	update_m_action_core(mtmp, action, 2);
+	update_m_action_core(mtmp, action, 2, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 }
 
 void
@@ -5119,7 +5120,7 @@ update_m_action_revert(mtmp, action)
 struct monst* mtmp;
 enum action_tile_types action;
 {
-	update_m_action_core(mtmp, action, 0);
+	update_m_action_core(mtmp, action, 0, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 	if(mtmp == &youmonst)
 		u_wait_until_action();
 	else
@@ -5131,7 +5132,7 @@ update_m_action_and_wait(mtmp, action)
 struct monst* mtmp;
 enum action_tile_types action;
 {
-	update_m_action_core(mtmp, action, 2);
+	update_m_action_core(mtmp, action, 2, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 	if (mtmp == &youmonst)
 		u_wait_until_action();
 	else
@@ -5141,17 +5142,18 @@ enum action_tile_types action;
 
 
 void
-update_m_action_core(mtmp, action, simple_wait_multiplier)
+update_m_action_core(mtmp, action, simple_wait_multiplier, additional_newsym_flags)
 struct monst* mtmp;
 enum action_tile_types action;
 unsigned long simple_wait_multiplier;
+unsigned long additional_newsym_flags;
 {
 	if (!mtmp)
 		return;
 
 	if (mtmp == &youmonst)
 	{
-		update_u_action_core(action, simple_wait_multiplier);
+		update_u_action_core(action, simple_wait_multiplier, additional_newsym_flags);
 		return;
 	}
 
@@ -5185,7 +5187,7 @@ unsigned long simple_wait_multiplier;
 			context.m_action_animation_y = mtmp->my;
 			context.m_action_animation_counter = 0L;
 			context.m_action_animation_counter_on = TRUE;
-			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+			newsym_with_flags(mtmp->mx, mtmp->my, additional_newsym_flags);
 			force_redraw_at(mtmp->mx, mtmp->my);
 			flush_screen(1);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
@@ -5211,7 +5213,7 @@ unsigned long simple_wait_multiplier;
 		}
 		else
 		{
-			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+			newsym_with_flags(mtmp->mx, mtmp->my, additional_newsym_flags);
 			flush_screen(1);
 			if(canseemon(mtmp))
 			{

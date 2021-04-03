@@ -1890,17 +1890,28 @@ struct obj* origobj;
                         ceiling(u.ux, u.uy));
                 }
                 You("loosen a rock from the %s.", ceiling(u.ux, u.uy));
+                context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+                play_special_effect_at(SPECIAL_EFFECT_FALLING_ROCK_TRAP_FALLING_ROCK, 0, u.ux, u.uy, FALSE);
+                special_effect_wait_until_action(0);
                 play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
                 pline("It falls on your %s!", body_part(HEAD));
                 dmg = rnd((uarmh && is_metallic(uarmh)) ? 2 : 6);
                 losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "falling rock", KILLED_BY_AN);
+                if (iflags.using_gui_sounds)
+                {
+                    delay_output_milliseconds(150);
+                    play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                }
                 otmp = mksobj_at(ROCK, u.ux, u.uy, FALSE, FALSE);
                 if (otmp) {
                     (void) xname(otmp); /* set dknown, maybe bknown */
                     stackobj(otmp);
                 }
                 newsym(u.ux, u.uy);
-            } 
+                flush_screen(1);
+                special_effect_wait_until_end(0);
+                context.global_newsym_flags = 0UL;
+            }
             else 
             {
                 watch_dig((struct monst *) 0, u.ux, u.uy, TRUE);

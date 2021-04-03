@@ -3277,8 +3277,8 @@ E void FDECL(get_game_difficulty_multipliers_by_level, (double*, double*, schar)
 E void FDECL(update_u_facing, (uchar));
 E void FDECL(update_u_action, (enum action_tile_types));
 E void FDECL(update_m_action, (struct monst*, enum action_tile_types));
-E void FDECL(update_u_action_core, (enum action_tile_types, unsigned long));
-E void FDECL(update_m_action_core, (struct monst*, enum action_tile_types, unsigned long));
+E void FDECL(update_u_action_core, (enum action_tile_types, unsigned long, unsigned long));
+E void FDECL(update_m_action_core, (struct monst*, enum action_tile_types, unsigned long, unsigned long));
 E void FDECL(update_u_action_revert, (enum action_tile_types));
 E void FDECL(update_m_action_revert, (struct monst*, enum action_tile_types));
 E void FDECL(update_u_action_and_wait, (enum action_tile_types));
