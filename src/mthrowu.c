@@ -587,7 +587,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 			{
                 if (vis)
                 {
-                    play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
+                    //play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
                     pline_The("poison doesn't seem to affect %s.",
                         mon_nam(mtmp));
                 }

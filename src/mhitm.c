@@ -1894,7 +1894,7 @@ register struct obj* omonwep;
             }
             if (resists_poison(mdef)) 
             {
-                play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
+                //play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
                 if (vis && canspotmon(mdef) && canspotmon(magr))
                     pline_The("poison doesn't seem to affect %s.",
                               mon_nam(mdef));

@@ -2276,7 +2276,7 @@ boolean* obj_destroyed;
 
 		if (needpoismsg)
 		{
-			play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
+			//play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
 			pline_The("poison doesn't seem to affect %s.", mon_nam(mon));
 		}
 
@@ -2323,7 +2323,7 @@ boolean* obj_destroyed;
 				pline("%s feels its life energy draining away.", Monnam(mon));
 				break;
 			default:
-				play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
+				//play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
 				pline_The("enchantment doesn't seem to affect %s.", mon_nam(mon));
 				break;
 			}
@@ -3049,6 +3049,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             } 
 			else 
 			{
+				play_sfx_sound_at_location(SFX_MONSTER_IS_POISONED, mdef->mx, mdef->my);
 				hit_tile = HIT_POISONED;
 				if (!rn2(10))
 				{
