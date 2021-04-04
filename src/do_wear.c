@@ -1984,6 +1984,7 @@ doputon()
         return 0;
     }
     otmp = getobj(accessories, "put on", 0, "");
+
     return otmp ? accessory_or_armor_on(otmp) : 0;
 }
 

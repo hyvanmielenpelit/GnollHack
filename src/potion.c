@@ -2948,8 +2948,6 @@ dodip()
         }
     }
 
-    getobj_autoselect_obj = (struct obj*)0;
-
     /* "What do you want to dip <the object> into? [xyz or ?*] " */
     Sprintf(qbuf, "dip %s into", flags.verbose ? obuf : shortestname);
     potion = getobj(beverages, qbuf, 0, "");

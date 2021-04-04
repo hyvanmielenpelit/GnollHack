@@ -2243,9 +2243,16 @@ const char* headertext;
     if (getobj_autoselect_obj)
     {
         if (index(lets, getobj_autoselect_obj->invlet))
-            return getobj_autoselect_obj;
+        {
+            struct obj* otmp_save = getobj_autoselect_obj;
+            getobj_autoselect_obj = (struct obj*)0;
+            return otmp_save;
+        }
         else
+        {
+            getobj_autoselect_obj = (struct obj*)0;
             return (struct obj*)0;
+        }
     }
 
 #if 0
@@ -3778,18 +3785,25 @@ ddoinv()
         register const struct ext_func_tab* efp;
         int actioncount = 0;
         char class_list[BUFSZ] = "";
-        size_t longest_len = 0;
-        size_t slen = 0;
+        int longest_len = 0;
+        int longest_len_header = 0;
+        int slen = 0;
         unsigned long allflags = 0UL;
         for (int j = 0; j < NUM_CMD_SECTIONS; j++)
+        {
             allflags |= section_flags[j];
 
+            slen = (int)strlen(headings[j]);
+            if (slen > longest_len_header)
+                longest_len_header = slen;
+
+        }
         for (int i = 0; extcmdlist[i].ef_txt; i++)
         {
             if (!(extcmdlist[i].flags & allflags) || !extcmdlist[i].getobj_word)
                 continue;
 
-            slen = strlen(extcmdlist[i].ef_txt);
+            slen = (int)strlen(extcmdlist[i].ef_txt);
             if (slen > longest_len)
                 longest_len = slen;
         }
@@ -3826,10 +3840,22 @@ ddoinv()
             if (!cnt)
                 continue;
 
+            char catbuf[BUFSZ];
+            strcpy(catbuf, "");
+            if (!iflags.menu_tab_sep)
+            {
+                slen = (int)strlen(headings[j]);
+                for (int k = 0; k < max(longest_len_header, longest_len + 10) - slen; k++)
+                    Sprintf(eos(catbuf), "%s", " ");
+            }
+
+            char hbuf[BUFSZ];
+            Sprintf(hbuf, "%s%s", headings[j], catbuf);
+
             any = zeroany;
             add_menu(win, NO_GLYPH, &any,
                 0, 0, iflags.menu_headings,
-                headings[j], MENU_UNSELECTED);
+                hbuf, MENU_UNSELECTED);
 
             for (int i = 0; extcmdlist[i].ef_txt; i++)
             {
@@ -3870,9 +3896,9 @@ ddoinv()
                 else
                 {
                     strcpy(tabbuf, "");
-                    slen = strlen(efp->ef_txt);
+                    slen = (int)strlen(efp->ef_txt);
                     for (int k = 0; k < longest_len + 2 - slen; k++)
-                        Strcat(tabbuf, " ");
+                        Sprintf(eos(tabbuf), "%s", " ");
                 }
 
                 if (efp->key != '\0')
@@ -3892,7 +3918,9 @@ ddoinv()
             }
         }
 
-        Sprintf(headerbuf, "What do you want to do with the %s?", cxname(otmp));
+        char obuf[BUFSZ];
+        Strcpy(obuf, short_oname(otmp, doname, thesimpleoname, BUFSZ));
+        Sprintf(headerbuf, "What do you want to do with %s?", obuf);
         
         end_menu(win, headerbuf);
 

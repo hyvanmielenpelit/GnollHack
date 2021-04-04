@@ -2099,6 +2099,7 @@ dosacrifice()
     otmp = floorfood("sacrifice", 1);
     if (!otmp)
         return 0;
+
     /*
      * Was based on nutritional value and aging behavior (< 50 moves).
      * Sacrificing a food ration got you max luck instantly, making the
