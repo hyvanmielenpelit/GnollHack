@@ -2948,12 +2948,16 @@ dodip()
         }
     }
 
+    getobj_autoselect_obj = (struct obj*)0;
+
     /* "What do you want to dip <the object> into? [xyz or ?*] " */
     Sprintf(qbuf, "dip %s into", flags.verbose ? obuf : shortestname);
     potion = getobj(beverages, qbuf, 0, "");
     if (!potion)
         return 0;
-    if (potion == obj && potion->quan == 1L) {
+    if (potion == obj && potion->quan == 1L)
+    {
+        play_sfx_sound(SFX_GENERAL_THATS_SILLY);
         pline("That is a potion bottle, not a Klein bottle!");
         return 0;
     }
@@ -2973,7 +2977,8 @@ dodip()
             || obj->otyp == WAN_POLYMORPH || obj->otyp == SPE_POLYMORPH
             || obj == uball || obj == uskin
             || obj_resists(obj->otyp == POT_POLYMORPH ? potion : obj,
-                           5, 95)) {
+                           5, 95))
+        {
             pline1(nothing_happens);
         } 
 		else 

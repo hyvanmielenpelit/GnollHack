@@ -2494,6 +2494,7 @@ const char* headertext;
 
     if (!foo && !allowall && !allownone) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("don't have anything %sto %s.", foox ? "else " : "", word);
         return (struct obj *) 0;
     }
@@ -2528,6 +2529,7 @@ const char* headertext;
             long tmpcnt = 0;
 
             if (!allowcnt) {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 pline("No count allowed with this command.");
                 continue;
             }
@@ -3776,6 +3778,21 @@ ddoinv()
         register const struct ext_func_tab* efp;
         int actioncount = 0;
         char class_list[BUFSZ] = "";
+        size_t longest_len = 0;
+        size_t slen = 0;
+        unsigned long allflags = 0UL;
+        for (int j = 0; j < NUM_CMD_SECTIONS; j++)
+            allflags |= section_flags[j];
+
+        for (int i = 0; extcmdlist[i].ef_txt; i++)
+        {
+            if (!(extcmdlist[i].flags & allflags) || !extcmdlist[i].getobj_word)
+                continue;
+
+            slen = strlen(extcmdlist[i].ef_txt);
+            if (slen > longest_len)
+                longest_len = slen;
+        }
 
         for (int j = 0; j < NUM_CMD_SECTIONS; j++)
         {
@@ -3847,8 +3864,19 @@ ddoinv()
                 uchar altmask = 0x80;
                 uchar ctrlmask = 0x20 | 0x40;
 
+                char tabbuf[BUFSZ];
+                if(iflags.menu_tab_sep)
+                    strcpy(tabbuf, "\t");
+                else
+                {
+                    strcpy(tabbuf, "");
+                    slen = strlen(efp->ef_txt);
+                    for (int k = 0; k < longest_len + 2 - slen; k++)
+                        Strcat(tabbuf, " ");
+                }
+
                 if (efp->key != '\0')
-                    Sprintf(shortcutbuf, "  (%s%c)",
+                    Sprintf(shortcutbuf, "%s(%s%c)", tabbuf,
                         (efp->key & ctrlmask) == 0 ? "Ctrl-" : (efp->key & altmask) == altmask ? "Alt-" : "",
                         (efp->key & ctrlmask) == 0 ? efp->key | ctrlmask : (efp->key & altmask) == altmask ? efp->key & ~altmask : efp->key);
                 else
