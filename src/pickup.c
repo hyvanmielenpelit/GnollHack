@@ -3768,7 +3768,8 @@ dotip()
     cc.x = u.ux, cc.y = u.uy;
 
     /* check floor container(s) first; at most one will be accessed */
-    if ((boxes = container_at(cc.x, cc.y, TRUE)) > 0) {
+    if (!getobj_autoselect_obj && (boxes = container_at(cc.x, cc.y, TRUE)) > 0) 
+    {
         Sprintf(buf, "You can't tip %s while carrying so much.",
                 !flags.verbose ? "a container" : (boxes > 1) ? "one" : "it");
         if (!check_capacity(buf) && able_to_loot(cc.x, cc.y, FALSE)) {

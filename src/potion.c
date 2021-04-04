@@ -668,34 +668,37 @@ dodrink()
         pline("If you can't breathe air, how can you drink liquid?");
         return 0;
     }
-    /* Is there a fountain to drink from here? */
-    if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)
-        /* not as low as floor level but similar restrictions apply */
-        && can_reach_floor(FALSE)) 
-	{
-		char qbuf[BUFSZ];
-		Sprintf(qbuf, "Drink from the %s?", get_fountain_name(u.ux, u.uy));
+    if (!getobj_autoselect_obj)
+    {
+        /* Is there a fountain to drink from here? */
+        if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)
+            /* not as low as floor level but similar restrictions apply */
+            && can_reach_floor(FALSE)) 
+	    {
+		    char qbuf[BUFSZ];
+		    Sprintf(qbuf, "Drink from the %s?", get_fountain_name(u.ux, u.uy));
 
-        if (yn_query(qbuf) == 'y') 
-		{
-            drinkfountain();
-            return 1;
+            if (yn_query(qbuf) == 'y') 
+		    {
+                drinkfountain();
+                return 1;
+            }
         }
-    }
-    /* Or a kitchen sink? */
-    if (IS_SINK(levl[u.ux][u.uy].typ)
-        /* not as low as floor level but similar restrictions apply */
-        && can_reach_floor(FALSE)) {
-        if (yn_query("Drink from the sink?") == 'y') {
-            drinksink();
-            return 1;
+        /* Or a kitchen sink? */
+        if (IS_SINK(levl[u.ux][u.uy].typ)
+            /* not as low as floor level but similar restrictions apply */
+            && can_reach_floor(FALSE)) {
+            if (yn_query("Drink from the sink?") == 'y') {
+                drinksink();
+                return 1;
+            }
         }
-    }
-    /* Or are you surrounded by water? */
-    if (Underwater && !u.uswallow) {
-        if (yn_query("Drink the water around you?") == 'y') {
-            pline("Do you know what lives in this water?");
-            return 1;
+        /* Or are you surrounded by water? */
+        if (Underwater && !u.uswallow) {
+            if (yn_query("Drink the water around you?") == 'y') {
+                pline("Do you know what lives in this water?");
+                return 1;
+            }
         }
     }
 

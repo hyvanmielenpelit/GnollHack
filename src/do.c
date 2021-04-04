@@ -354,7 +354,7 @@ static NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW_NON
 int
 doitemdescriptions()
 {
-	boolean proceedtoinventory = floorexamine();
+	boolean proceedtoinventory = getobj_autoselect_obj ? TRUE : floorexamine();
 	if (!proceedtoinventory)
 		return 0;
 		

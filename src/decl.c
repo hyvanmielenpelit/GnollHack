@@ -252,6 +252,64 @@ NEARDATA const struct extended_menu_info zeroextendedmenuinfo = DUMMY;
 
 boolean disallow_keyboard_commands_in_wait_loop = FALSE;
 
+NEARDATA struct obj* getobj_autoselect_obj = (struct obj*)0;
+
+/* getobj class definitions */
+NEARDATA const char getobj_comestibles[] = { FOOD_CLASS, 0 };
+NEARDATA const char getobj_offerfodder[] = { FOOD_CLASS, AMULET_CLASS,
+                                                 0 };
+
+/* Gold must come first for getobj(). */
+NEARDATA const char getobj_allobj[] = {
+    COIN_CLASS,   WEAPON_CLASS, ARMOR_CLASS,  POTION_CLASS,
+    SCROLL_CLASS, WAND_CLASS,   RING_CLASS,   AMULET_CLASS, MISCELLANEOUS_CLASS,
+    FOOD_CLASS,   REAGENT_CLASS,  TOOL_CLASS,   GEM_CLASS,
+    ROCK_CLASS,	  BALL_CLASS,   CHAIN_CLASS,  SPBOOK_CLASS, 0
+};
+
+NEARDATA const char getobj_styluses[] = { ALL_CLASSES, ALLOW_NONE,
+                                          TOOL_CLASS,  WEAPON_CLASS,
+                                          WAND_CLASS,  GEM_CLASS,
+                                          RING_CLASS,  0 };
+
+NEARDATA const char getobj_drop_types[] = { ALLOW_COUNT, COIN_CLASS,
+                                            ALL_CLASSES, 0 };
+
+NEARDATA const char getobj_callable[] = {
+    SCROLL_CLASS, POTION_CLASS, WAND_CLASS,  RING_CLASS, AMULET_CLASS, FOOD_CLASS,
+    GEM_CLASS, SPBOOK_CLASS, ARMOR_CLASS, TOOL_CLASS, MISCELLANEOUS_CLASS, WEAPON_CLASS, 0
+};
+
+NEARDATA const char getobj_allowall[] = { ALL_CLASSES, 0 };
+
+NEARDATA const char getobj_recharge_type[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
+NEARDATA const char getobj_invoke_types[] = { ALL_CLASSES, 0 };
+NEARDATA const char getobj_clothes[] = {
+    ARMOR_CLASS, RING_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, TOOL_CLASS, FOOD_CLASS, 0
+};
+NEARDATA const char getobj_accessories[] = {
+    RING_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, TOOL_CLASS, FOOD_CLASS, ARMOR_CLASS, 0
+};
+NEARDATA const char getobj_beverages[] = { POTION_CLASS, TOOL_CLASS, 0 };
+NEARDATA const char getobj_wield_objs[] = {
+    ALL_CLASSES, ALLOW_NONE, WEAPON_CLASS, TOOL_CLASS, 0
+};
+NEARDATA const char getobj_ready_objs[] = {
+    ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, ALLOW_NONE, WEAPON_CLASS, 0
+};
+NEARDATA const char getobj_bullets[] = { /* (note: different from dothrow.c) */
+    ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, ALLOW_NONE,
+    GEM_CLASS, WEAPON_CLASS, 0
+};
+NEARDATA const char getobj_readable[] = { ALL_CLASSES, SCROLL_CLASS,
+                                          SPBOOK_CLASS, 0 };
+NEARDATA const char getobj_cuddly[] = { TOOL_CLASS, GEM_CLASS, 0 };
+
+NEARDATA const char getobj_toss_objs[] = { ALLOW_COUNT, COIN_CLASS,
+                                           ALL_CLASSES, WEAPON_CLASS, 0 };
+NEARDATA const char getobj_tippables[] = { ALL_CLASSES, TOOL_CLASS, 0 };
+NEARDATA const char getobj_zap_syms[] = { WAND_CLASS, 0 };
+
 /* originally from dog.c */
 NEARDATA char dogname[PL_PSIZ] = DUMMY;
 NEARDATA char catname[PL_PSIZ] = DUMMY;

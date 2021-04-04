@@ -6,6 +6,7 @@
 #include "hack.h"
 #include "artifact.h"
 #include "artilist.h"
+#include "func_tab.h"
 
 #ifndef C /* same as cmd.c */
 #define C(c) (0x1f & (c))
@@ -2220,11 +2221,11 @@ const char* headertext;
 {
     register struct obj *otmp;
     register char ilet = 0;
-    char buf[BUFSZ], qbuf[QBUFSZ], leftbuf[BUFSZ], rightbuf[BUFSZ];
-    char lets[BUFSZ], altlets[BUFSZ], *ap;
+    char buf[BUFSZ], qbuf[QBUFSZ]; // , leftbuf[BUFSZ], rightbuf[BUFSZ];
+    char lets[BUFSZ], altlets[BUFSZ]; //, * ap;
     boolean is_dip_into = FALSE;
-    register int foo = 0;
-    register char *bp = buf;
+    int foo = 0;
+    char *bp = buf;
     xchar allowcnt = 0; /* 0, 1 or 2 */
     boolean usegold = FALSE; /* can't use gold because its illegal */
     boolean allowall = FALSE;
@@ -2235,9 +2236,19 @@ const char* headertext;
     boolean cntgiven = FALSE;
     boolean msggiven = FALSE;
     boolean oneloop = FALSE;
-    long dummymask;
-    Loot *sortedinvent, *srtinv;
+    //long dummymask;
+    //Loot *sortedinvent, *srtinv;
 
+    construct_getobj_letters(let, word, lets, altlets, &foo, &foox, &bp, &usegold, &allowall, &allownone, &useboulder);
+    if (getobj_autoselect_obj)
+    {
+        if (index(lets, getobj_autoselect_obj->invlet))
+            return getobj_autoselect_obj;
+        else
+            return (struct obj*)0;
+    }
+
+#if 0
     if (*let == ALLOW_COUNT)
         let++, allowcnt = 1;
     if (*let == COIN_CLASS)
@@ -2472,15 +2483,21 @@ const char* headertext;
         compactify(bp);
     *ap = '\0';
 
-    if (!foo && !allowall && !allownone) {
-        You("don't have anything %sto %s.", foox ? "else " : "", word);
-        return (struct obj *) 0;
-    } else if (!strcmp(word, "write on")) { /* ugly check for magic marker */
+    if (!strcmp(word, "write on")) { /* ugly check for magic marker */
         /* we wanted all scrolls and books in altlets[], but that came with
            'allowall' which we don't want since it prevents "silly thing"
            result if anything other than scroll or spellbook is chosen */
         allowall = FALSE;
     }
+
+#endif
+
+    if (!foo && !allowall && !allownone) 
+    {
+        You("don't have anything %sto %s.", foox ? "else " : "", word);
+        return (struct obj *) 0;
+    }
+    
 
 	if (!iflags.force_invmenu && strcmp(headertext, "") != 0)
 		pline("%s", headertext);
@@ -2668,6 +2685,310 @@ const char* headertext;
     }
     return otmp;
 }
+
+void
+construct_getobj_letters(let, word, lets, altlets, foo_ptr, foox_ptr, bp_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr)
+register const char *let, *word;
+char *lets, *altlets;
+int* foo_ptr;
+xchar* foox_ptr;
+char** bp_ptr;
+boolean *usegold_ptr, *allowall_ptr, *allownone_ptr, *useboulder_ptr;
+{
+    register struct obj* otmp;
+    register char ilet = 0;
+    char buf[BUFSZ], leftbuf[BUFSZ], rightbuf[BUFSZ];
+    char *ap;
+    boolean is_dip_into = FALSE;
+    int foo = 0;
+    char* bp = buf;
+    xchar allowcnt = 0; /* 0, 1 or 2 */
+    boolean usegold = FALSE; /* can't use gold because its illegal */
+    boolean allowall = FALSE;
+    boolean allownone = FALSE;
+    boolean useboulder = FALSE;
+    xchar foox = 0;
+    long dummymask;
+    Loot* sortedinvent, * srtinv;
+
+    if (*let == ALLOW_COUNT)
+        let++, allowcnt = 1;
+    if (*let == COIN_CLASS)
+        let++, usegold = TRUE;
+
+    /* Check for "dip into" */
+    if (word)
+    {
+        size_t l = strlen(word);
+
+        size_t leftnum = 3;
+        if (l >= leftnum)
+        {
+            strncpy(leftbuf, word, leftnum);
+            leftbuf[leftnum] = '\0';
+        }
+        else
+            strcpy(leftbuf, "");
+
+        size_t rightnum = 4;
+        if (l >= rightnum)
+        {
+            strncpy(rightbuf, word + l - rightnum, rightnum);
+            rightbuf[rightnum] = '\0';
+        }
+        else
+            strcpy(rightbuf, "");
+
+        if (!strcmp(leftbuf, "dip") && !strcmp(rightbuf, "into"))
+            is_dip_into = TRUE;
+    }
+    else
+    {
+        strcpy(leftbuf, "");
+        strcpy(rightbuf, "");
+        is_dip_into = FALSE;
+    }
+
+    /* Equivalent of an "ugly check" for gold */
+    if (usegold && !strcmp(word, "eat")
+        && (!metallivorous(youmonst.data) || rust_causing_and_ironvorous(youmonst.data)))
+        usegold = FALSE;
+
+    if (*let == ALL_CLASSES)
+        let++, allowall = TRUE;
+    if (*let == ALLOW_NONE)
+        let++, allownone = TRUE;
+    /* "ugly check" for reading fortune cookies, part 1.
+     * The normal 'ugly check' keeps the object on the inventory list.
+     * We don't want to do that for shirts/cookies, so the check for
+     * them is handled a bit differently (and also requires that we set
+     * allowall in the caller).
+     */
+    if (allowall && !strcmp(word, "read"))
+        allowall = FALSE;
+
+    /* another ugly check: show boulders (not statues) */
+    if (*let == WEAPON_CLASS && !strcmp(word, "throw")
+        && throws_rocks(youmonst.data))
+        useboulder = TRUE;
+
+    if (allownone)
+        *bp++ = HANDS_SYM, * bp++ = ' '; /* '-' */
+    ap = altlets;
+
+    if (!flags.invlet_constant)
+        reassign();
+
+    /* force invent to be in invlet order before collecting candidate
+       inventory letters */
+    sortedinvent = sortloot(&invent, SORTLOOT_INVLET, FALSE,
+        (boolean FDECL((*), (OBJ_P))) 0);
+
+    for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) {
+        if (&bp[foo] == &buf[sizeof buf - 1]
+            || ap == &altlets[sizeof altlets - 1]) {
+            /* we must have a huge number of NOINVSYM items somehow */
+            impossible("getobj: inventory overflow");
+            break;
+        }
+
+        if (!*let || index(let, otmp->oclass)
+            || (usegold && otmp->invlet == GOLD_SYM)
+            || (useboulder && otmp->otyp == BOULDER)) {
+            register int otyp = otmp->otyp;
+
+            bp[foo++] = otmp->invlet;
+            /* clang-format off */
+            /* *INDENT-OFF* */
+                        /* ugly check: remove inappropriate things */
+            if (
+                (taking_off(word) /* exclude if not worn */
+                    && !(otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
+                || (putting_on(word) /* exclude if already worn */
+                    && (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
+                || (trading_items(word) /* exclude if already worn and unpaid items */
+                    && ((otmp->owornmask & (W_ARMOR | W_ACCESSORY)) || otmp->unpaid))
+#if 0 /* 3.4.1 -- include currently wielded weapon among 'wield' choices */
+                || (!strcmp(word, "wield")
+                    && (otmp->owornmask & W_WEP))
+#endif
+                || (!strcmp(word, "ready")    /* exclude when wielded... */
+                    && ((otmp == uwep || (otmp == uarms && u.twoweap))
+                        && otmp->quan == 1L)) /* ...unless more than one */
+                || ((!strcmp(word, "dip") || !strcmp(word, "grease"))
+                    && inaccessible_equipment(otmp, (const char*)0, FALSE))
+                )
+            {
+                foo--;
+                foox++;
+            }
+            /* Second ugly check; unlike the first it won't trigger an
+             * "else" in "you don't have anything else to ___".
+             */
+            else if (
+                (putting_on(word)
+                    && ((otmp->oclass == FOOD_CLASS && otmp->otyp != MEAT_RING)
+                        || (otmp->oclass == TOOL_CLASS && otyp != BLINDFOLD
+                            && otyp != TOWEL)))
+                || (!strcmp(word, "wield")
+                    && (otmp->oclass == TOOL_CLASS && !is_weptool(otmp)))
+                || (!strcmp(word, "eat") && !is_edible(otmp))
+                || (!strcmp(word, "drink") && otmp->oclass == TOOL_CLASS && !is_obj_quaffable(otmp))
+                || (!strcmp(word, "sacrifice")
+                    && (otyp != CORPSE && otyp != AMULET_OF_YENDOR
+                        && otyp != FAKE_AMULET_OF_YENDOR))
+                || (!strcmp(word, "write with")
+                    && (otmp->oclass == TOOL_CLASS
+                        && otyp != MAGIC_MARKER && otyp != TOWEL))
+                || (!strcmp(word, "tin")
+                    && (otyp != CORPSE || !tinnable(otmp)))
+                || (!strcmp(word, "rub")
+                    && ((otmp->oclass == TOOL_CLASS && otyp != OIL_LAMP
+                        && otyp != MAGIC_LAMP && otyp != BRASS_LANTERN)
+                        || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
+                || (!strcmp(word, "use or apply")
+                    /* Picks, axes, pole-weapons, bullwhips */
+                    && ((otmp->oclass == WEAPON_CLASS && !is_appliable_weapon(otmp))
+                        || (otmp->oclass == POTION_CLASS
+                            /* only applicable potion is oil, and it will only
+                               be offered as a choice when already discovered */
+                            && (otyp != POT_OIL || !otmp->dknown
+                                || !objects[POT_OIL].oc_name_known))
+                        || (otmp->oclass == FOOD_CLASS
+                            && otyp != CREAM_PIE && otyp != EUCALYPTUS_LEAF)
+                        || (otmp->oclass == MISCELLANEOUS_CLASS
+                            && !is_obj_appliable(otmp))
+                        || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
+                || (!strcmp(word, "invoke")
+                    && !otmp->oartifact
+                    && !is_otyp_unique(otyp)
+                    && !is_otyp_invokable(otyp)
+                    && (otyp != FAKE_AMULET_OF_YENDOR || otmp->known)
+                    /* note: presenting the possibility of invoking non-artifact
+                       mirrors and/or lamps is simply a cruel deception... */
+                    && (otyp != OIL_LAMP /* don't list known oil lamp */
+                        || (otmp->dknown && objects[OIL_LAMP].oc_name_known)))
+                || (!strcmp(word, "untrap with")
+                    && ((otmp->oclass == TOOL_CLASS && otyp != CAN_OF_GREASE)
+                        || (otmp->oclass == POTION_CLASS
+                            /* only applicable potion is oil, and it will only
+                               be offered as a choice when already discovered */
+                            && (otyp != POT_OIL || !otmp->dknown
+                                || !objects[POT_OIL].oc_name_known))))
+                || (!strcmp(word, "tip") && !Is_container(otmp)
+                    /* include horn of plenty if sufficiently discovered */
+                    && (otmp->otyp != HORN_OF_PLENTY || !otmp->dknown
+                        || !objects[HORN_OF_PLENTY].oc_name_known))
+                || (!strcmp(word, "detect blessedness for") && otmp->bknown)
+                || (!strcmp(word, "refill") && !is_refillable_with_oil(otmp))
+                || (!strcmp(word, "enchant") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
+                || (!strcmp(word, "protect") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
+                || (!strcmp(word, "charge") && !is_chargeable(otmp))
+                || (!strcmp(word, "fire") && (!uwep || !otmp || (otmp && uwep && !ammo_and_launcher(otmp, uwep))))
+                || (!strcmp(word, "open") && otyp != TIN)
+                || (!strcmp(word, "call") && !objtyp_is_callable(otyp))
+                || (is_dip_into && !otyp_allows_object_to_be_dipped_into_it(otyp))
+                || (!strcmp(word, "adjust") && otmp->oclass == COIN_CLASS && !usegold)
+                ) {
+                foo--;
+            }
+            /* Third ugly check:  acceptable but not listed as likely
+             * candidates in the prompt or in the inventory subset if
+             * player responds with '?'.
+             */
+            else if (
+                /* ugly check for unworn armor that can't be worn */
+                (putting_on(word) && *let == ARMOR_CLASS
+                    && !canwearobj(otmp, &dummymask, FALSE))
+                /* or armor with 'P' or 'R' or accessory with 'W' or 'T' */
+                || ((putting_on(word) || taking_off(word))
+                    && ((*let == ARMOR_CLASS) ^ (otmp->oclass == ARMOR_CLASS)))
+                /* or unsuitable items rubbed on known touchstone */
+                || (!strncmp(word, "rub on the stone", 16)
+                    && *let == GEM_CLASS && otmp->dknown
+                    && objects[otyp].oc_name_known)
+                /* suppress corpses on astral, amulets elsewhere */
+                || (!strcmp(word, "sacrifice")
+                    /* (!astral && amulet) || (astral && !amulet) */
+                    && (!Is_astralevel(&u.uz) ^ (otmp->oclass != AMULET_CLASS)))
+                /* suppress container being stashed into */
+                || (!strcmp(word, "stash") && !ck_bag(otmp))
+                /* worn armor (shirt, suit) covered by worn armor (suit, cloak)
+                   or accessory (ring) covered by cursed worn armor (gloves) */
+                || (taking_off(word)
+                    && inaccessible_equipment(otmp, (const char*)0,
+                        (boolean)(otmp->oclass == RING_CLASS)))
+                || (!strcmp(word, "write on")
+                    && (!(otyp == SCR_BLANK_PAPER || otyp == SPE_BLANK_PAPER)
+                        || !otmp->dknown || !objects[otyp].oc_name_known))
+                ) {
+                /* acceptable but not listed as likely candidate */
+                foo--;
+                allowall = TRUE;
+                *ap++ = otmp->invlet;
+            }
+            /* *INDENT-ON* */
+            /* clang-format on */
+        }
+        else {
+            /* "ugly check" for reading fortune cookies, part 2 */
+            if ((!strcmp(word, "read") && is_readable(otmp)))
+                allowall = usegold = TRUE;
+        }
+    }
+    unsortloot(&sortedinvent);
+
+    bp[foo] = 0;
+    if (foo == 0 && bp > buf && bp[-1] == ' ')
+        *--bp = 0;
+    Strcpy(lets, bp); /* necessary since we destroy buf */
+    if (foo > 5)      /* compactify string */
+        compactify(bp);
+    *ap = '\0';
+
+    if (!strcmp(word, "write on")) 
+    { /* ugly check for magic marker */
+     /* we wanted all scrolls and books in altlets[], but that came with
+        'allowall' which we don't want since it prevents "silly thing"
+        result if anything other than scroll or spellbook is chosen */
+        allowall = FALSE;
+    }
+
+    *foo_ptr = foo;
+    *foox_ptr = foox;
+    *bp_ptr = bp;
+    *usegold_ptr = usegold;
+    *allowall_ptr = allowall;
+    *allownone_ptr = allownone;
+    *useboulder_ptr = useboulder;
+}
+
+boolean
+acceptable_getobj_obj(otmp, let, word)
+struct obj* otmp;
+register const char* let;
+register const char* word;
+{
+    if (!otmp || !let || !word)
+        return FALSE;
+
+    register char ilet = otmp->invlet;
+    char buf[BUFSZ] = "";
+    char lets[BUFSZ], altlets[BUFSZ];
+    int foo = 0;
+    char* bp = buf;
+    xchar allowcnt = 0; /* 0, 1 or 2 */
+    boolean usegold = FALSE; /* can't use gold because its illegal */
+    boolean allowall = FALSE;
+    boolean allownone = FALSE;
+    boolean useboulder = FALSE;
+    xchar foox = 0;
+
+    construct_getobj_letters(let, word, lets, altlets, &foo, &foox, &bp, &usegold, &allowall, &allownone, &useboulder);
+
+    return !!index(lets, ilet);
+}
+
 
 void
 silly_thing(word, otmp)
@@ -3410,6 +3731,8 @@ long quan;       /* if non-0, print this quantity, not obj->quan */
     return li;
 }
 
+extern struct ext_func_tab extcmdlist[];
+
 /* the 'i' command */
 int
 ddoinv()
@@ -3422,14 +3745,168 @@ ddoinv()
 	if (!invlet || invlet == '\033' || invlet == '\0')
 		return 0;
 
-	for (struct obj* invobj = invent; invobj; invobj = invobj->nobj)
-		if (invobj->invlet == invlet) 
-		{
-			(void)itemdescription(invobj);
-			break;
-		}
+    if (flags.inventory_obj_cmd)
+    {
+        struct obj* otmp = 0;
+        for (struct obj* otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
+            if (otmp2->invlet == invlet)
+                otmp = otmp2;
 
-    return 0;
+        if (!otmp)
+            return 0;
+
+        int cmd_idx = 0;
+
+        menu_item* pick_list = (menu_item*)0;
+        winid win;
+        anything any;
+
+        any = zeroany;
+        win = create_nhwindow(NHW_MENU);
+        start_menu(win);
+
+#define NUM_CMD_SECTIONS 3
+
+        const char* headings[NUM_CMD_SECTIONS] = { "Information", "General Commands", "Item-Specific Commands" };
+        unsigned long section_flags[NUM_CMD_SECTIONS] = { SINGLE_OBJ_CMD_INFO, SINGLE_OBJ_CMD_GENERAL, SINGLE_OBJ_CMD_SPECIFIC };
+        char buf[BUFSIZ] = "";
+        char cmdbuf[BUFSZ] = "";
+        char shortcutbuf[BUFSZ] = "";
+        char headerbuf[BUFSZ] = "";
+        register const struct ext_func_tab* efp;
+        int actioncount = 0;
+        char class_list[BUFSZ] = "";
+
+        for (int j = 0; j < NUM_CMD_SECTIONS; j++)
+        {
+            int cnt = 0;
+            for (int i = 0; extcmdlist[i].ef_txt; i++)
+            {
+                if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
+                    continue;
+
+                strcpy(class_list, "");
+                if (extcmdlist[i].getobj_classes)
+                    strcpy(class_list, extcmdlist[i].getobj_classes);
+                else if(!strcmp(extcmdlist[i].getobj_word, "break"))
+                    setbreakclasses(class_list);
+                else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
+                    setapplyclasses(class_list);
+                else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
+                {
+                    strcpy(class_list, (uslinging()
+                        || (uswapwep
+                            && objects[uswapwep->otyp].oc_skill == P_SLING))
+                        ? getobj_bullets
+                        : getobj_ready_objs);
+                }
+
+                if (!acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word))
+                    continue;
+
+                cnt++;
+            }
+            if (!cnt)
+                continue;
+
+            any = zeroany;
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, iflags.menu_headings,
+                headings[j], MENU_UNSELECTED);
+
+            for (int i = 0; extcmdlist[i].ef_txt; i++)
+            {
+                if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
+                    continue;
+
+                strcpy(class_list, "");
+                if (extcmdlist[i].getobj_classes)
+                    strcpy(class_list, extcmdlist[i].getobj_classes);
+                else if (!strcmp(extcmdlist[i].getobj_word, "break"))
+                    setbreakclasses(class_list);
+                else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
+                    setapplyclasses(class_list);
+                else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
+                {
+                    strcpy(class_list, (uslinging()
+                        || (uswapwep
+                            && objects[uswapwep->otyp].oc_skill == P_SLING))
+                        ? getobj_bullets
+                        : getobj_ready_objs);
+                }
+
+                if (!acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word))
+                    continue;
+
+                efp = &extcmdlist[i];
+                any = zeroany;
+                any.a_int = i + 1;
+                strcpy(cmdbuf, efp->ef_txt);
+                *cmdbuf = highc(*cmdbuf);
+
+                uchar altmask = 0x80;
+                uchar ctrlmask = 0x20 | 0x40;
+
+                if (efp->key != '\0')
+                    Sprintf(shortcutbuf, "  (%s%c)",
+                        (efp->key & ctrlmask) == 0 ? "Ctrl-" : (efp->key & altmask) == altmask ? "Alt-" : "",
+                        (efp->key & ctrlmask) == 0 ? efp->key | ctrlmask : (efp->key & altmask) == altmask ? efp->key & ~altmask : efp->key);
+                else
+                    strcpy(shortcutbuf, "");
+
+                Sprintf(buf, "%s%s", cmdbuf, shortcutbuf);
+
+                add_menu(win, NO_GLYPH, &any,
+                    0, 0, ATR_NONE,
+                    buf, MENU_UNSELECTED);
+
+                actioncount++;
+            }
+        }
+
+        Sprintf(headerbuf, "What do you want to do with the %s?", cxname(otmp));
+        
+        end_menu(win, headerbuf);
+
+
+        if (actioncount <= 0)
+        {
+            You("can't take any actions with the %s.", cxname(otmp));
+            destroy_nhwindow(win);
+            return 0;
+        }
+
+        if (select_menu(win, PICK_ONE, &pick_list) > 0)
+        {
+            cmd_idx = pick_list->item.a_int;
+            free((genericptr_t)pick_list);
+        }
+        destroy_nhwindow(win);
+
+        if (cmd_idx < 1)
+            return 0;
+
+        int res = 0;
+        int selected_action = cmd_idx - 1;
+        if (extcmdlist[selected_action].ef_funct)
+        {
+            getobj_autoselect_obj = otmp;
+            res = (extcmdlist[selected_action].ef_funct)();
+            getobj_autoselect_obj = (struct obj*)0;
+        }
+
+        return res;
+    }
+    else
+    {
+        for (struct obj* invobj = invent; invobj; invobj = invobj->nobj)
+            if (invobj->invlet == invlet)
+            {
+                (void)itemdescription(invobj);
+                break;
+            }
+        return 0;
+    }
 }
 
 

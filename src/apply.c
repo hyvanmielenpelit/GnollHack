@@ -40,8 +40,6 @@ STATIC_DCL int FDECL(do_break_wand, (struct obj *));
 STATIC_DCL boolean FDECL(figurine_location_checks, (struct obj *,
                                                     coord *, BOOLEAN_P));
 STATIC_DCL void FDECL(add_class, (char *, CHAR_P));
-STATIC_DCL void FDECL(setapplyclasses, (char *));
-STATIC_DCL void FDECL(setbreakclasses, (char*));
 STATIC_PTR boolean FDECL(check_jump, (genericptr_t, int, int));
 STATIC_DCL boolean FDECL(is_valid_jump_pos, (int, int, int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(get_valid_jump_position, (int, int));
@@ -5001,7 +4999,7 @@ char class;
 static const char tools[] = { TOOL_CLASS, WEAPON_CLASS, WAND_CLASS, 0 };
 
 /* augment tools[] if various items are carried */
-STATIC_OVL void
+void
 setapplyclasses(class_list)
 char class_list[];
 {
@@ -5045,7 +5043,7 @@ char class_list[];
 }
 
 
-STATIC_OVL void
+void
 setbreakclasses(class_list)
 char* class_list;
 {

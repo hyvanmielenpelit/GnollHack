@@ -3124,7 +3124,8 @@ doeat()
         {
 			return 0;
 		}
-	} else if (u.uedibility) 
+	} 
+    else if (u.uedibility) 
     {
         int res = edibility_prompts(otmp);
 

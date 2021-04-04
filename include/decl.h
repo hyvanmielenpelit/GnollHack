@@ -227,6 +227,28 @@ E NEARDATA struct kinfo {
     char name[BUFSZ]; /* actual killer name */
 } killer;
 
+E NEARDATA struct obj* getobj_autoselect_obj;
+E NEARDATA const char getobj_comestibles[];
+E NEARDATA const char getobj_offerfodder[];
+E NEARDATA const char getobj_allobj[];
+E NEARDATA const char getobj_styluses[];
+E NEARDATA const char getobj_drop_types[];
+E NEARDATA const char getobj_callable[];
+E NEARDATA const char getobj_allowall[];
+E NEARDATA const char getobj_recharge_type[];
+E NEARDATA const char getobj_invoke_types[];
+E NEARDATA const char getobj_clothes[];
+E NEARDATA const char getobj_accessories[];
+E NEARDATA const char getobj_beverages[];
+E NEARDATA const char getobj_wield_objs[];
+E NEARDATA const char getobj_ready_objs[];
+E NEARDATA const char getobj_bullets[];
+E NEARDATA const char getobj_readable[];
+E NEARDATA const char getobj_cuddly[];
+E NEARDATA const char getobj_toss_objs[];
+E NEARDATA const char getobj_tippables[];
+E NEARDATA const char getobj_zap_syms[];
+
 E long done_money;
 E NEARDATA char plname[PL_NSIZ];
 E NEARDATA char dogname[];

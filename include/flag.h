@@ -63,7 +63,8 @@ struct flag {
     boolean partymultiline;	 /* print each party member on its own line */
     boolean metric_system;   /* use the metric system (kilograms) instead of avoirdupois pounds and ounces */
 	boolean inventory_weights_last; /* inventory weights are shown after the name of the item rather first, as normal */
-	boolean classic_statue_symbol; /* statue is shown as rock */
+    boolean inventory_obj_cmd; /* list object commands in inventory */
+    boolean classic_statue_symbol; /* statue is shown as rock */
     boolean classic_colors; /* use normal coloring scheme */
     boolean blinking_cursor_on_tiles;	/* cursor blinks on tiles */
     boolean detailed_weights; /* use ounces and grams instead of lbs and kg */

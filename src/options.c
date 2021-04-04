@@ -165,8 +165,9 @@ static struct Bool_Opt {
     { "ignintr", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
     { "implicit_uncursed", &iflags.implicit_uncursed, TRUE, SET_IN_GAME },
-	{ "inv_weight_last", &flags.inventory_weights_last, FALSE, SET_IN_GAME },
-	{ "large_font", &iflags.obsolete, FALSE, SET_IN_FILE }, /* OBSOLETE */
+    { "inventory_obj_cmd", &flags.inventory_obj_cmd, TRUE, SET_IN_GAME },
+    { "inventory_weights_last", &flags.inventory_weights_last, FALSE, SET_IN_GAME },
+    { "large_font", &iflags.obsolete, FALSE, SET_IN_FILE }, /* OBSOLETE */
     { "legacy", &flags.legacy, TRUE, DISP_IN_GAME },
     { "lit_corridor", &flags.lit_corridor, FALSE, SET_IN_GAME },
     { "lootabc", &flags.lootabc, FALSE, SET_IN_GAME },
