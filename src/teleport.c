@@ -539,6 +539,7 @@ boolean iscontrolled;
 
     if ((u.uhave.amulet || On_W_tower_level(&u.uz)) && !rn2(3)) 
 	{
+        play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
         You_feel("disoriented for a moment.");
         if (!wizard || yn_query("Override?") != 'y')
             return FALSE;
@@ -1073,7 +1074,9 @@ boolean iscontrolled;
     if (iflags.debug_fuzzer)
         goto random_levtport;
     if ((u.uhave.amulet || In_endgame(&u.uz) || In_sokoban(&u.uz))
-        && !wizard) {
+        && !wizard) 
+    {
+        play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
         You_feel("very disoriented for a moment.");
         return;
     }

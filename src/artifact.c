@@ -2459,6 +2459,7 @@ struct obj *obj;
 	}
 	else if (obj->repowerleft > 0)
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		/* the artifact is tired :-) */
 		You_feel("that %s %s ignoring you.", the(xname(obj)),
 			otense(obj, "are"));
@@ -2589,9 +2590,11 @@ struct obj *obj;
 			if (!portal_res)
 				goto nothing_special;
 
+			play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
 			break;
         }
         case ARTINVOKE_ENLIGHTENING:
+			play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
 			enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
 			break;
         case ARTINVOKE_CREATE_AMMO:
@@ -2600,7 +2603,9 @@ struct obj *obj;
 
             if (!otmp)
                 goto nothing_special;
-            otmp->blessed = obj->blessed;
+
+			play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
+			otmp->blessed = obj->blessed;
             otmp->cursed = obj->cursed;
             otmp->bknown = obj->bknown;
             if (obj->blessed) {
@@ -2724,6 +2729,7 @@ struct obj *obj;
 		}
 		case ARTINVOKE_WISHING:
 		{
+			play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
 			makewish(FALSE);
 			break;
 		}
@@ -2755,9 +2761,9 @@ struct obj *obj;
 		case ARTINVOKE_AIR_ELEMENTAL_SUMMON:
 		{
 			struct monst* mon = (struct monst*)0;
-			mon = makemon(&mons[PM_ELDER_AIR_ELEMENTAL], u.ux, u.uy, MM_NOCOUNTBIRTH);
+			mon = makemon(&mons[PM_ELDER_AIR_ELEMENTAL], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_NEUTRAL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
 			if(!mon)
-				mon = makemon(&mons[PM_AIR_ELEMENTAL], u.ux, u.uy, MM_NOCOUNTBIRTH);
+				mon = makemon(&mons[PM_AIR_ELEMENTAL], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_NEUTRAL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
 
 			if (mon)
 			{
@@ -2789,10 +2795,12 @@ struct obj *obj;
 			{
 				if (obj->charges > old_charges)
 				{
+					play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
 					pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
 				}
 				else if (obj->recharged != old_recharged)
 				{
+					play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE2);
 					pline("%s a bit more shiny.", Tobjnam(obj, "look"));
 				}
 				else
@@ -2804,10 +2812,12 @@ struct obj *obj;
 			{
 				if (obj->charges > old_charges)
 				{
+					play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
 					p_glow2(obj, NH_BLUE);
 				}
 				else if (obj->recharged != old_recharged)
 				{
+					play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE2);
 					p_glow1(obj);
 				}
 				else
@@ -2819,6 +2829,7 @@ struct obj *obj;
 		}
 		case ARTINVOKE_TIME_STOP:
 		{
+			play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
 			timestop();
 			break;
 		}
@@ -2832,6 +2843,7 @@ struct obj *obj;
 
 		if (temporary_effect)
 		{
+			play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
 			incr_itimeout(&u.uprops[oart->inv_prop].intrinsic, (art_inv_dur_dice >0 && art_inv_dur_diesize > 0 ? d(art_inv_dur_dice, art_inv_dur_diesize) : 0) + art_inv_dur_plus);
 		}
 		else
@@ -2839,7 +2851,11 @@ struct obj *obj;
 			if (!switch_on)
 			{
 				obj->repowerleft = artilist[obj->oartifact].repower_time;
+				play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
 			}
+			else
+				play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE2);
+
 			obj->invokeon = switch_on;
 		}
 
@@ -2995,10 +3011,12 @@ create_portal()
 	if (u.uhave.amulet || In_endgame(&u.uz) || In_endgame(&newlev)
 		|| newlev.dnum == u.uz.dnum || !next_to_u())
 	{
+		play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
 		You_feel("very disoriented for a moment.");
 	}
 	else 
 	{
+		play_sfx_sound(SFX_LEVEL_TELEPORT);
 		if (!Blind)
 			You("are surrounded by a shimmering sphere!");
 		else

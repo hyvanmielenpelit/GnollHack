@@ -630,7 +630,7 @@ int spellnum;
             u_shieldeff();
             if (!Stunned)
             {
-                play_sfx_sound(SFX_ACQUIRE_STUN);
+                play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
                 You_feel("momentarily disoriented.");
             }
             make_stunned(1L, FALSE);

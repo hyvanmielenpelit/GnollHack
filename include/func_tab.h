@@ -26,6 +26,7 @@ struct ext_func_tab {
     const char *f_text;
     const char* getobj_classes;
     const char* getobj_word;
+    const char* ef_txt_word;
 };
 
 extern struct ext_func_tab extcmdlist[];

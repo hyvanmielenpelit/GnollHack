@@ -2239,7 +2239,7 @@ const char* headertext;
     //long dummymask;
     //Loot *sortedinvent, *srtinv;
 
-    construct_getobj_letters(let, word, lets, altlets, &foo, &foox, &bp, &usegold, &allowall, &allownone, &useboulder);
+    construct_getobj_letters(let, word, lets, altlets, &foo, &foox, &bp, &usegold, &allowall, &allownone, &useboulder, getobj_autoselect_obj);
     if (getobj_autoselect_obj)
     {
         if (index(lets, getobj_autoselect_obj->invlet))
@@ -2696,13 +2696,14 @@ const char* headertext;
 }
 
 void
-construct_getobj_letters(let, word, lets, altlets, foo_ptr, foox_ptr, bp_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr)
+construct_getobj_letters(let, word, lets, altlets, foo_ptr, foox_ptr, bp_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr, otmp_only)
 register const char *let, *word;
 char *lets, *altlets;
 int* foo_ptr;
 xchar* foox_ptr;
 char** bp_ptr;
 boolean *usegold_ptr, *allowall_ptr, *allownone_ptr, *useboulder_ptr;
+struct obj* otmp_only;
 {
     register struct obj* otmp;
     register char ilet = 0;
@@ -2793,9 +2794,14 @@ boolean *usegold_ptr, *allowall_ptr, *allownone_ptr, *useboulder_ptr;
     sortedinvent = sortloot(&invent, SORTLOOT_INVLET, FALSE,
         (boolean FDECL((*), (OBJ_P))) 0);
 
-    for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) {
+    for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) 
+    {
+        if (otmp_only && otmp != otmp_only)
+            continue;
+
         if (&bp[foo] == &buf[sizeof buf - 1]
-            || ap == &altlets[sizeof altlets - 1]) {
+            || ap == &altlets[sizeof altlets - 1]) 
+        {
             /* we must have a huge number of NOINVSYM items somehow */
             impossible("getobj: inventory overflow");
             break;
@@ -2803,7 +2809,8 @@ boolean *usegold_ptr, *allowall_ptr, *allownone_ptr, *useboulder_ptr;
 
         if (!*let || index(let, otmp->oclass)
             || (usegold && otmp->invlet == GOLD_SYM)
-            || (useboulder && otmp->otyp == BOULDER)) {
+            || (useboulder && otmp->otyp == BOULDER))
+        {
             register int otyp = otmp->otyp;
 
             bp[foo++] = otmp->invlet;
@@ -2898,7 +2905,8 @@ boolean *usegold_ptr, *allowall_ptr, *allownone_ptr, *useboulder_ptr;
                 || (!strcmp(word, "call") && !objtyp_is_callable(otyp))
                 || (is_dip_into && !otyp_allows_object_to_be_dipped_into_it(otyp))
                 || (!strcmp(word, "adjust") && otmp->oclass == COIN_CLASS && !usegold)
-                ) {
+                ) 
+            {
                 foo--;
             }
             /* Third ugly check:  acceptable but not listed as likely
@@ -2939,11 +2947,15 @@ boolean *usegold_ptr, *allowall_ptr, *allownone_ptr, *useboulder_ptr;
             /* *INDENT-ON* */
             /* clang-format on */
         }
-        else {
+        else
+        {
             /* "ugly check" for reading fortune cookies, part 2 */
             if ((!strcmp(word, "read") && is_readable(otmp)))
                 allowall = usegold = TRUE;
         }
+
+        if (otmp_only && otmp == otmp_only)
+            break;
     }
     unsortloot(&sortedinvent);
 
@@ -2993,7 +3005,7 @@ register const char* word;
     boolean useboulder = FALSE;
     xchar foox = 0;
 
-    construct_getobj_letters(let, word, lets, altlets, &foo, &foox, &bp, &usegold, &allowall, &allownone, &useboulder);
+    construct_getobj_letters(let, word, lets, altlets, &foo, &foox, &bp, &usegold, &allowall, &allownone, &useboulder, otmp);
 
     return !!index(lets, ilet);
 }
@@ -3803,7 +3815,7 @@ ddoinv()
             if (!(extcmdlist[i].flags & allflags) || !extcmdlist[i].getobj_word)
                 continue;
 
-            slen = (int)strlen(extcmdlist[i].ef_txt);
+            slen = (int)strlen(extcmdlist[i].ef_txt_word ? extcmdlist[i].ef_txt_word : extcmdlist[i].ef_txt);
             if (slen > longest_len)
                 longest_len = slen;
         }
@@ -3884,7 +3896,11 @@ ddoinv()
                 efp = &extcmdlist[i];
                 any = zeroany;
                 any.a_int = i + 1;
-                strcpy(cmdbuf, efp->ef_txt);
+                if(efp->ef_txt_word)
+                    strcpy(cmdbuf, efp->ef_txt_word);
+                else
+                    strcpy(cmdbuf, efp->ef_txt);
+
                 *cmdbuf = highc(*cmdbuf);
 
                 uchar altmask = 0x80;
@@ -3896,7 +3912,7 @@ ddoinv()
                 else
                 {
                     strcpy(tabbuf, "");
-                    slen = (int)strlen(efp->ef_txt);
+                    slen = (int)strlen(cmdbuf);
                     for (int k = 0; k < longest_len + 2 - slen; k++)
                         Sprintf(eos(tabbuf), "%s", " ");
                 }

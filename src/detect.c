@@ -2237,9 +2237,13 @@ reveal_terrain(full, which_subset)
 int full; /* wizard|explore modes allow player to request full map */
 int which_subset; /* when not full, whether to suppress objs and/or traps */
 {
-    if ((Hallucination || Stunned || Confusion) && !full) {
+    if ((Hallucination || Stunned || Confusion) && !full) 
+    {
+        play_sfx_sound(SFX_GENERAL_NOT_IN_THE_RIGHT_CONDITION);
         You("are too disoriented for this.");
-    } else {
+    } 
+    else 
+    {
         int x, y, glyph, default_glyph;
         char buf[BUFSZ];
         /* there is a TER_MAP bit too; we always show map regardless of it */
