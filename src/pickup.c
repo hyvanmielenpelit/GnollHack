@@ -2407,7 +2407,9 @@ register struct obj *obj;
     else if (obj->otyp == AMULET_OF_YENDOR
                || obj->otyp == CANDELABRUM_OF_INVOCATION
                || obj->otyp == BELL_OF_OPENING
-               || obj->otyp == SPE_BOOK_OF_THE_DEAD)
+               || obj->otyp == SPE_BOOK_OF_THE_DEAD
+               || obj->otyp == SPE_BOOK_OF_MODRON
+        )
 	{
         /* Prohibit Amulets in containers; if you allow it, monsters can't
          * steal them.  It also becomes a pain to check to see if someone

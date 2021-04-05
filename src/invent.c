@@ -1881,7 +1881,9 @@ unsigned long newsym_flags;
     if (obj->otyp == AMULET_OF_YENDOR
         || obj->otyp == CANDELABRUM_OF_INVOCATION
         || obj->otyp == BELL_OF_OPENING
-        || obj->otyp == SPE_BOOK_OF_THE_DEAD) {
+        || obj->otyp == SPE_BOOK_OF_THE_DEAD
+        || obj->otyp == SPE_BOOK_OF_MODRON
+        ) {
         /* player might be doing something stupid, but we
          * can't guarantee that.  assume special artifacts
          * are indestructible via drawbridges, and exploding

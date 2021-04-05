@@ -4644,6 +4644,11 @@ boolean is_wiz_wish;
         case SPE_BOOK_OF_THE_DEAD:
             typ = SPE_BLANK_PAPER;
             break;
+        case SPE_BOOK_OF_MODRON:
+            typ = SPE_BLANK_PAPER;
+            isartifact = FALSE;
+            name = 0;
+            break;
         case MAGIC_LAMP:
             typ = OIL_LAMP;
             break;

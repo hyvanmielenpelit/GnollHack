@@ -859,7 +859,7 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_CREATE_GLASS_GOLEM,
-		"Five pieces of glass",
+		"Three pieces of glass",
 		STRANGE_OBJECT,
 		1,
 		{
@@ -875,14 +875,8 @@ struct materialcomponentlist matlists[] =
 				{LAST_GEM + 1, LAST_GEM + 2, LAST_GEM + 3, LAST_GEM + 4, LAST_GEM + 5, LAST_GEM + 6, LAST_GEM + 7, LAST_GEM + 8, LAST_GEM + 9, STRANGE_OBJECT},
 				NO_MATCOMP_MONSTER_ALTERNATIVES, "any piece of glass", 1, MATCOMP_NO_FLAGS
 			},
-			{
-				{LAST_GEM + 1, LAST_GEM + 2, LAST_GEM + 3, LAST_GEM + 4, LAST_GEM + 5, LAST_GEM + 6, LAST_GEM + 7, LAST_GEM + 8, LAST_GEM + 9, STRANGE_OBJECT},
-				NO_MATCOMP_MONSTER_ALTERNATIVES, "any piece of glass", 1, MATCOMP_NO_FLAGS
-			},
-			{
-				{LAST_GEM + 1, LAST_GEM + 2, LAST_GEM + 3, LAST_GEM + 4, LAST_GEM + 5, LAST_GEM + 6, LAST_GEM + 7, LAST_GEM + 8, LAST_GEM + 9, STRANGE_OBJECT},
-				NO_MATCOMP_MONSTER_ALTERNATIVES, "any piece of glass", 1, MATCOMP_NO_FLAGS
-			},
+			NO_MATCOMP,
+			NO_MATCOMP,
 			NO_MATCOMP,
 			NO_MATCOMP,
 			NO_MATCOMP,
@@ -1069,7 +1063,7 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_SUMMON_GOLD_DRAGON,
-		"Diamond, nuggets of gold ore",
+		"Diamond, nugget of gold ore",
 		STRANGE_OBJECT,
 		1,
 		{

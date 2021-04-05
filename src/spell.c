@@ -4349,8 +4349,14 @@ int spell;
 		sellobj_state(SELL_DELIBERATE);
 
 	struct obj* selcomps[MAX_MATERIALS];
+	struct obj* difcomps[MAX_MATERIALS];
+	int difcomp_req_amt[MAX_MATERIALS];
 	for (int j = 0; j < MAX_MATERIALS; j++)
+	{
 		selcomps[j] = (struct obj*)0;
+		difcomps[j] = (struct obj*)0;
+		difcomp_req_amt[j] = 0;
+	}
 
 	char spellname[BUFSZ] = "";
 	char capspellname[BUFSZ] = "";
@@ -4359,7 +4365,7 @@ int spell;
 	*capspellname = highc(*capspellname); //Make first letter capital
 
 	int matcnt = 0;
-	int lowest_multiplier = 999;
+	int difmatcnt = 0;
 
 	//Check the material components here
 	for(int j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
@@ -4432,10 +4438,34 @@ int spell;
 			return 0;
 		}
 
-		int quan_mult = mc->amount > 0 ? otmp->quan / mc->amount : 1;
+		//int quan_mult = mc->amount > 0 ? otmp->quan / mc->amount : 1;
+		boolean previous_found = FALSE;
+		for (int k = 0; k < difmatcnt; k++)
+		{
+			if (difcomps[k] == selcomps[j])
+			{
+				previous_found = TRUE;
 
-		if (!(mc->flags & MATCOMP_NOT_SPENT) && quan_mult < lowest_multiplier)
-			lowest_multiplier = quan_mult;
+				if ((mc->flags & MATCOMP_NOT_SPENT))
+					difcomp_req_amt[k] += 0;
+				else
+					difcomp_req_amt[k] += mc->amount;
+
+				break;
+			}
+
+		}
+		if (!previous_found)
+		{
+			difcomps[difmatcnt] = selcomps[j];
+
+			if ((mc->flags & MATCOMP_NOT_SPENT))
+				difcomp_req_amt[difmatcnt] = 0;
+			else
+				difcomp_req_amt[difmatcnt] = mc->amount;
+
+			difmatcnt++;
+		}
 
 		//Note: You might ask for another pick from another type (e.g., using both blessed and uncursed items), but this gets a bit too complicated
 		if (acceptable)
@@ -4453,6 +4483,17 @@ int spell;
 	boolean failure = !result || ((Confusion || Stunned) && spellev(spell) > 1 && rn2(spellev(spell)));
 	int spells_gained_per_mixing = matlists[spellmatcomp(spell)].spellsgained;
 	int selected_multiplier = 1;
+	int lowest_multiplier = 999;
+	int quan_mult = 0;
+	for (int k = 0; k < difmatcnt; k++)
+	{
+		if (difcomps[k] && difcomp_req_amt[k] > 0);
+		{
+			quan_mult = difcomps[k]->quan / difcomp_req_amt[k];
+			if (quan_mult < lowest_multiplier)
+				lowest_multiplier = quan_mult;
+		}
+	}
 
 	if (lowest_multiplier > 1)
 	{

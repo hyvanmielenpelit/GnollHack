@@ -316,10 +316,12 @@ boolean givemsg;
     if (!num) 
 	{
         if (ABASE(A_STR) < 18)
-            num = (rn2(4) ? 1 : rnd(6));
+            num = (rn2(3) ? 1 : rnd(3));
         else if (ABASE(A_STR) < STR18(85))
             num = rnd(10);
-        else
+		else if (ABASE(A_STR) < STR18(97))
+			num = (rn2(3) ? 1 : rnd(3));
+		else
             num = 1;
     }
 
