@@ -1882,7 +1882,6 @@ unsigned long newsym_flags;
         || obj->otyp == CANDELABRUM_OF_INVOCATION
         || obj->otyp == BELL_OF_OPENING
         || obj->otyp == SPE_BOOK_OF_THE_DEAD
-        || obj->otyp == SPE_BOOK_OF_MODRON
         ) {
         /* player might be doing something stupid, but we
          * can't guarantee that.  assume special artifacts

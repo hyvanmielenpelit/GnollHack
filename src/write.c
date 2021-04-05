@@ -142,6 +142,7 @@ register struct obj *pen;
     }
     paper->dknown = 1;
     if (paper->otyp != SCR_BLANK_PAPER && paper->otyp != SPE_BLANK_PAPER) {
+        play_sfx_sound(SFX_GENERAL_NOT_IN_THE_RIGHT_CONDITION);
         pline("That %s is not blank!", typeword);
         exercise(A_WIS, FALSE);
         return 1;
@@ -208,20 +209,24 @@ register struct obj *pen;
         goto found;
     }
 
+    play_sfx_sound(SFX_GENERAL_CANNOT);
     There("is no such %s!", typeword);
     return 1;
 found:
 
     if (i == SCR_BLANK_PAPER || i == SPE_BLANK_PAPER) {
+        play_sfx_sound(SFX_GENERAL_THATS_SILLY);
         You_cant("write that!");
         pline("It's obscene!");
         return 1;
     } else if (i == SPE_BOOK_OF_THE_DEAD || i == SPE_BOOK_OF_MODRON) {
+        play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
         pline("No mere dungeon adventurer could write that.");
         return 1;
     } else if (by_descr && paper->oclass == SPBOOK_CLASS
                && !objects[i].oc_name_known) {
         /* can't write unknown spellbooks by description */
+        play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
         pline("Unfortunately you don't have enough information to go on.");
         return 1;
     }
@@ -238,6 +243,7 @@ found:
     /* see if there's enough ink */
     basecost = ink_cost(new_obj);
     if (pen->charges < basecost / 2) {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         Your("marker is too dry to write that!");
         obfree(new_obj, (struct obj *) 0);
         return 1;
@@ -251,6 +257,7 @@ found:
     /* dry out marker */
     if (pen->charges < actualcost) {
         pen->charges = 0;
+        play_simple_object_sound(pen, OBJECT_SOUND_TYPE_APPLY2);
         Your("marker dries out!");
         /* scrolls disappear, spellbooks don't */
         if (paper->oclass == SPBOOK_CLASS) {
@@ -293,15 +300,22 @@ found:
         /* else if named, then only by-descr works */
         && !(by_descr && label_known(new_obj->otyp, invent))
         /* and Luck might override after both checks have failed */
-        && rnl(Role_if(PM_WIZARD) ? 5 : 15)) {
+        && rnl(Role_if(PM_WIZARD) ? 5 : 15)) 
+    {
+
+        play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
         You("%s to write that.", by_descr ? "fail" : "don't know how");
         /* scrolls disappear, spellbooks don't */
-        if (paper->oclass == SPBOOK_CLASS) {
+        if (paper->oclass == SPBOOK_CLASS) 
+        {
             You(
       "write in your best handwriting:  \"My Diary\", but it quickly fades.");
             update_inventory(); /* pen charges */
-        } else {
-            if (by_descr) {
+        }
+        else 
+        {
+            if (by_descr) 
+            {
                 Strcpy(namebuf, OBJ_DESCR(objects[new_obj->otyp]));
                 wipeout_text(namebuf, (6 + MAXULEV - u.ulevel) / 6, 0);
             } else
@@ -320,6 +334,7 @@ found:
            have passed the write-an-unknown scroll test
            above we can still fail this one, so it's doubly
            hard to write an unknown scroll while blind */
+        play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         You("fail to write the scroll correctly and it disappears.");
         useup(paper);
         obfree(new_obj, (struct obj *) 0);
@@ -330,7 +345,9 @@ found:
     useup(paper);
 
     /* success */
-    if (new_obj->oclass == SPBOOK_CLASS) {
+    play_simple_object_sound(pen, OBJECT_SOUND_TYPE_APPLY);
+    if (new_obj->oclass == SPBOOK_CLASS)
+    {
         /* acknowledge the change in the object's description... */
         pline_The("spellbook warps strangely, then turns %s.",
                   new_book_description(new_obj->otyp, namebuf));

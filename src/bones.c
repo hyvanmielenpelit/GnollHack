@@ -188,8 +188,12 @@ boolean restore;
             } else if (otmp->otyp == BELL_OF_OPENING) {
                 otmp->otyp = BELL;
                 curse(otmp);
-            } else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD || otmp->otyp == SPE_BOOK_OF_MODRON) {
+            } else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD) {
                 otmp->otyp = SPE_BLANK_PAPER;
+                curse(otmp);
+            } else if (otmp->otyp == SPE_BOOK_OF_MODRON) {
+                otmp->otyp = SPE_BLANK_PAPER;
+                otmp->oartifact = 0;
                 curse(otmp);
             }
         }

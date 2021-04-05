@@ -320,6 +320,8 @@ struct obj* book2;
 	else
 		pline("The machinations of the multiverse are a bit clearer to you now.");
 
+	play_sfx_sound(SFX_CURE_AILMENT);
+
 	(void)make_hallucinated(0L, TRUE, 0L);
 	make_stunned(0L, TRUE);
 	make_confused(0L, TRUE);
