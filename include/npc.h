@@ -26,6 +26,9 @@ enum npc_subtypes {
     MAX_NPC_SUBTYPES
 };
 
+#define DESERTED_NPC_ROOM MAX_NPC_SUBTYPES
+#define UNSPECIFIED_NPC_ROOM MAX_NPC_SUBTYPES + 1
+
 struct npc_subtype_definition {
     int mnum;
     enum npc_gehennom_types npc_gehennom_type;

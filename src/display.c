@@ -3294,7 +3294,7 @@ back_to_broken_glyph(x, y)
 xchar x, y;
 {
     int glyph = back_to_glyph(x, y);
-    boolean multiplier = glyph < 0 ? -1 : 1;
+    int multiplier = glyph < 0 ? -1 : 1;
     int absglyph = abs(glyph);
 
     if (glyph_is_cmap(absglyph))

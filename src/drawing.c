@@ -728,7 +728,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* fountain */
        { S_fountain, "fountain-of-water", "", "", TRUE,     
             { C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE) }, 
-            {FOUNTAIN_OF_WATER_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+            {FOUNTAIN_OF_WATER_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* fountain */
 

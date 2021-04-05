@@ -2607,10 +2607,10 @@ recalc_mapseen()
             }
             else if (rooms[i].rtype == NPCROOM)
             {
-                /* 0 = Undefined / many, MAX_NPC_SUBTYPES + 1 = untended /deserted */
-                uchar newtype = mtmp && has_enpc(mtmp) ? ENPC(mtmp)->npc_typ + 1 : MAX_NPC_SUBTYPES + 1;
-                if (mptr->msrooms[i].untended)
-                    mptr->feat.npcroomtype = MAX_NPC_SUBTYPES + 1;
+                /* 0 = Different types => residences, UNSPECIFIED_NPC_ROOM => residence, DESERTED_NPC_ROOM => deserted residence */
+                uchar newtype = mtmp && has_enpc(mtmp) ? ENPC(mtmp)->npc_typ + 1 : UNSPECIFIED_NPC_ROOM + 1;
+                if (!mptr->feat.nnpcroom && mptr->msrooms[i].untended)
+                    mptr->feat.npcroomtype = DESERTED_NPC_ROOM + 1;
                 else if (!mptr->feat.nnpcroom)
                     mptr->feat.npcroomtype = newtype;
                 else if (mptr->feat.npcroomtype != newtype)
@@ -3152,13 +3152,13 @@ boolean printdun;
         ADDNTOBUF("smithy", mptr->feat.nsmithy);
         if (mptr->feat.nnpcroom > 0)
         {
-            if (mptr->feat.nshop > 1 || mptr->feat.npcroomtype <= 0)
+            uchar npctype = mptr->feat.npcroomtype - 1;
+            if (mptr->feat.nshop > 1 || mptr->feat.npcroomtype <= 0 || npctype == UNSPECIFIED_NPC_ROOM)
                 ADDNTOBUF("residence", mptr->feat.nshop);
             else
             {
-                uchar npctype = mptr->feat.npcroomtype - 1;
                 Sprintf(eos(buf), "%s%s", COMMA,
-                    npctype < MAX_NPC_SUBTYPES ? an(npc_subtype_definitions[npctype].room_name) : "deserted residence");
+                    npctype < MAX_NPC_SUBTYPES ? an(npc_subtype_definitions[npctype].room_name) : npctype == DESERTED_NPC_ROOM ? "deserted residence" : "residence");
             }
         }
         ADDNTOBUF("throne", mptr->feat.nthrone);
