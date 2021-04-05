@@ -462,6 +462,8 @@ encodeachieve()
         r |= 1L << 13;
     if (u.uachieve.killed_yacc)
         r |= 1L << 14;
+    if (u.uachieve.prime_codex)
+        r |= 1L << 15;
 
     return r;
 }

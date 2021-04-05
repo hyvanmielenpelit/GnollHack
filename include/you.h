@@ -81,6 +81,7 @@ struct u_have {
     Bitfield(book, 1);     /* carrying Book     */
     Bitfield(menorah, 1);  /* carrying Candelabrum */
     Bitfield(questart, 1); /* carrying the Quest Artifact */
+    Bitfield(prime_codex, 1);  /* carrying Prime Codex */
     Bitfield(unused, 3);
 };
 
@@ -110,6 +111,7 @@ struct u_achieve {
     Bitfield(bell, 1);    /* touched Bell */
     Bitfield(book, 1);    /* touched Book */
     Bitfield(menorah, 1); /* touched Candelabrum */
+    Bitfield(prime_codex, 1); /* touched Prime Codex */
     Bitfield(enter_gehennom,
              1);           /* entered Gehennom (or Valley) by any means */
     Bitfield(ascended, 1); /* not quite the same as u.uevent.ascended */

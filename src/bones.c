@@ -327,8 +327,10 @@ struct monst *oracle;
            that's ok, next hero just won't get any welcome message,
            same as used to happen before this fixup was introduced] */
     }
-    if (ridx == o_ridx) /* if she's in her room, mark it as such */
+    if (ridx == o_ridx)
+    {/* if she's in her room, mark it as such */
         rooms[ridx].rtype = DELPHI;
+    }
     return TRUE; /* keep oracle in new bones file */
 }
 

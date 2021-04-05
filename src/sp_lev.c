@@ -2568,7 +2568,7 @@ struct mkroom* croom;
     if (!croom_is_npc_room)
         return;
 
-    int usedtyp = (a->typ >= 0 && a->typ < MAX_NPC_SUBTYPES ? a->typ : rn2(MAX_NPC_SUBTYPES));
+    uchar usedtyp = (a->typ >= 0 && a->typ < MAX_NPC_SUBTYPES ? a->typ : rn2(MAX_NPC_SUBTYPES));
     npcini(&u.uz, croom, x, y, usedtyp, a->mtype);
     level.flags.has_npc_room = TRUE;
 }

@@ -274,7 +274,7 @@ npcini(lvl, sroom, sx, sy, npctype, mtype)
 d_level* lvl;
 struct mkroom* sroom;
 int sx, sy;
-int npctype;
+uchar npctype;
 int mtype;
 {
     struct monst* npc;

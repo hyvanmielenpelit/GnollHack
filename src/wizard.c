@@ -15,8 +15,8 @@ STATIC_DCL short FDECL(which_arti, (int));
 STATIC_DCL boolean FDECL(mon_has_arti, (struct monst *, SHORT_P));
 STATIC_DCL struct monst *FDECL(other_mon_has_arti, (struct monst *, SHORT_P));
 STATIC_DCL struct obj *FDECL(on_ground, (SHORT_P));
-STATIC_DCL boolean FDECL(you_have, (int));
-STATIC_DCL unsigned long FDECL(target_on, (int, struct monst *));
+STATIC_DCL boolean FDECL(you_have_item, (unsigned long));
+STATIC_DCL unsigned long FDECL(target_on, (unsigned long, struct monst *));
 STATIC_DCL unsigned long FDECL(strategy, (struct monst *));
 
 /* adding more neutral creatures will tend to reduce the number of monsters
@@ -215,8 +215,8 @@ register short otyp;
 }
 
 STATIC_OVL boolean
-you_have(mask)
-register int mask;
+you_have_item(mask)
+register unsigned long mask;
 {
     switch (mask) {
     case M3_WANTSAMUL:
@@ -237,7 +237,7 @@ register int mask;
 
 STATIC_OVL unsigned long
 target_on(mask, mtmp)
-register int mask;
+register unsigned long mask;
 register struct monst *mtmp;
 {
     register short otyp;
@@ -249,7 +249,7 @@ register struct monst *mtmp;
 
     otyp = which_arti(mask);
     if (!mon_has_arti(mtmp, otyp)) {
-        if (you_have(mask))
+        if (you_have_item(mask))
             return STRAT(STRAT_PLAYER, u.ux, u.uy, mask);
         else if ((otmp = on_ground(otyp)))
             return STRAT(STRAT_GROUND, otmp->ox, otmp->oy, mask);

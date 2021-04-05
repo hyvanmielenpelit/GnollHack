@@ -2498,7 +2498,7 @@ void
 recalc_mapseen()
 {
     mapseen *mptr;
-    struct monst *mtmp;
+    struct monst *mtmp = (struct monst*)0;
     struct cemetery *bp, **bonesaddr;
     unsigned i, ridx;
     int x, y, ltyp, count, atmp;
@@ -2578,11 +2578,12 @@ recalc_mapseen()
      */
     for (i = 0; i < SIZE(mptr->msrooms); ++i)
     {
-        if (mptr->msrooms[i].seen) {
+        if (mptr->msrooms[i].seen) 
+        {
             if (rooms[i].rtype >= SHOPBASE) 
             {
                 if (mptr->msrooms[i].untended)
-                    mptr->feat.shoptype = SHOPBASE - 1;
+                    mptr->feat.shoptype = DESERTEDSHOP;
                 else if (!mptr->feat.nshop)
                     mptr->feat.shoptype = rooms[i].rtype;
                 else if (mptr->feat.shoptype != (unsigned) rooms[i].rtype)
@@ -2606,6 +2607,14 @@ recalc_mapseen()
             }
             else if (rooms[i].rtype == NPCROOM)
             {
+                /* 0 = Undefined / many, MAX_NPC_SUBTYPES + 1 = untended /deserted */
+                uchar newtype = mtmp && has_enpc(mtmp) ? ENPC(mtmp)->npc_typ + 1 : MAX_NPC_SUBTYPES + 1;
+                if (mptr->msrooms[i].untended)
+                    mptr->feat.npcroomtype = MAX_NPC_SUBTYPES + 1;
+                else if (!mptr->feat.nnpcroom)
+                    mptr->feat.npcroomtype = newtype;
+                else if (mptr->feat.npcroomtype != newtype)
+                    mptr->feat.npcroomtype = 0;
                 count = mptr->feat.nnpcroom + 1;
                 if (count <= 3)
                     mptr->feat.nnpcroom = count;
@@ -3119,14 +3128,17 @@ boolean printdun;
         /* List interests in an order vaguely corresponding to
          * how important they are.
          */
-        if (mptr->feat.nshop > 0) {
+        if (mptr->feat.nshop > 0) 
+        {
             if (mptr->feat.nshop > 1)
                 ADDNTOBUF("shop", mptr->feat.nshop);
             else
                 Sprintf(eos(buf), "%s%s", COMMA,
                         an(shop_string(mptr->feat.shoptype)));
         }
-        if (mptr->feat.naltar > 0) {
+
+        if (mptr->feat.naltar > 0) 
+        {
             /* Temples + non-temple altars get munged into just "altars" */
             if (mptr->feat.ntemple != mptr->feat.naltar)
                 ADDNTOBUF("altar", mptr->feat.naltar);
@@ -3138,8 +3150,17 @@ boolean printdun;
                 Sprintf(eos(buf), " to %s", align_gname(u.ualign.type));
         }
         ADDNTOBUF("smithy", mptr->feat.nsmithy);
-        ADDNTOBUF("residence", mptr->feat.nnpcroom);
-
+        if (mptr->feat.nnpcroom > 0)
+        {
+            if (mptr->feat.nshop > 1 || mptr->feat.npcroomtype <= 0)
+                ADDNTOBUF("residence", mptr->feat.nshop);
+            else
+            {
+                uchar npctype = mptr->feat.npcroomtype - 1;
+                Sprintf(eos(buf), "%s%s", COMMA,
+                    npctype < MAX_NPC_SUBTYPES ? an(npc_subtype_definitions[npctype].room_name) : "deserted residence");
+            }
+        }
         ADDNTOBUF("throne", mptr->feat.nthrone);
         ADDNTOBUF("fountain", mptr->feat.nfount);
         ADDNTOBUF("sink", mptr->feat.nsink);

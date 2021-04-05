@@ -11,7 +11,9 @@
 struct mkroom {
     schar lx, hx, ly, hy; /* usually xchar, but hx may be -1 */
     schar rtype;          /* type of room (zoo, throne, etc...) */
+//    schar rsubtype;       /* subtype of room (for NPC rooms: geologist, artificer, etc.) -- Useful, but POSTPONED */
     schar orig_rtype;     /* same as rtype, but not zeroed later */
+//    schar orig_rsubtype;  /* same as rsubtype, but not zeroed later -- Useful, but POSTPONED */
     schar rlit;           /* is the room lit ? */
     schar needfill;       /* sp_lev: does the room need filling? */
     schar needjoining;    /* sp_lev */

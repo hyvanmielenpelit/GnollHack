@@ -1641,7 +1641,7 @@ mknpcroom()
     sroom->rtype = NPCROOM;
     
     schar u_depth = depth(&u.uz);
-    int npctype = NPC_ARTIFICER;
+    uchar npctype = NPC_ARTIFICER;
 
     /* Select appropriate NPC */
     int ok_npc_cnt = 0;

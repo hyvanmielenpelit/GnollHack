@@ -828,9 +828,12 @@ void
 addinv_core1(obj)
 struct obj *obj;
 {
-    if (obj->oclass == COIN_CLASS) {
+    if (obj->oclass == COIN_CLASS) 
+    {
         context.botl = 1;
-    } else if (obj->otyp == AMULET_OF_YENDOR) {
+    } 
+    else if (obj->otyp == AMULET_OF_YENDOR) 
+    {
         if (u.uhave.amulet)
             impossible("already have amulet?");
         u.uhave.amulet = 1;
@@ -839,7 +842,9 @@ struct obj *obj;
             context.botl = 1;
 #endif
         u.uachieve.amulet = 1;
-    } else if (obj->otyp == CANDELABRUM_OF_INVOCATION) {
+    }
+    else if (obj->otyp == CANDELABRUM_OF_INVOCATION) 
+    {
         if (u.uhave.menorah)
             impossible("already have candelabrum?");
         u.uhave.menorah = 1;
@@ -848,7 +853,9 @@ struct obj *obj;
             context.botl = 1;
 #endif
         u.uachieve.menorah = 1;
-    } else if (obj->otyp == BELL_OF_OPENING) {
+    }
+    else if (obj->otyp == BELL_OF_OPENING)
+    {
         if (u.uhave.bell)
             impossible("already have silver bell?");
         u.uhave.bell = 1;
@@ -857,7 +864,9 @@ struct obj *obj;
             context.botl = 1;
 #endif
         u.uachieve.bell = 1;
-    } else if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
+    }
+    else if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
+    {
         if (u.uhave.book)
             impossible("already have the book?");
         u.uhave.book = 1;
@@ -866,12 +875,26 @@ struct obj *obj;
             context.botl = 1;
 #endif
         u.uachieve.book = 1;
-    } else if (obj->oartifact) {
-        if (is_quest_artifact(obj)) {
+    } 
+    else if (obj->oartifact) 
+    {
+        if (is_quest_artifact(obj)) 
+        {
             if (u.uhave.questart)
                 impossible("already have quest artifact?");
             u.uhave.questart = 1;
             artitouch(obj);
+        }
+        else if (obj->otyp == SPE_BOOK_OF_MODRON)
+        {
+            if (u.uhave.prime_codex)
+                impossible("already have Prime Codex?");
+            u.uhave.prime_codex = 1;
+#ifdef SHOW_SCORE_ON_BOTL
+            if (flags.showscore && !u.uachieve.prime_codex)
+                context.botl = 1;
+#endif
+            u.uachieve.prime_codex = 1;
         }
     }
 
@@ -1756,30 +1779,48 @@ void
 freeinv_core(obj)
 struct obj *obj;
 {
-    if (obj->oclass == COIN_CLASS) {
+    if (obj->oclass == COIN_CLASS) 
+    {
         context.botl = 1;
         return;
-    } else if (obj->otyp == AMULET_OF_YENDOR) {
+    } 
+    else if (obj->otyp == AMULET_OF_YENDOR) 
+    {
         if (!u.uhave.amulet)
             impossible("don't have amulet?");
         u.uhave.amulet = 0;
-    } else if (obj->otyp == CANDELABRUM_OF_INVOCATION) {
+    }
+    else if (obj->otyp == CANDELABRUM_OF_INVOCATION) 
+    {
         if (!u.uhave.menorah)
             impossible("don't have candelabrum?");
         u.uhave.menorah = 0;
-    } else if (obj->otyp == BELL_OF_OPENING) {
+    }
+    else if (obj->otyp == BELL_OF_OPENING)
+    {
         if (!u.uhave.bell)
             impossible("don't have silver bell?");
         u.uhave.bell = 0;
-    } else if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
+    } 
+    else if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
+    {
         if (!u.uhave.book)
             impossible("don't have the book?");
         u.uhave.book = 0;
-    } else if (obj->oartifact) {
-        if (is_quest_artifact(obj)) {
+    } 
+    else if (obj->oartifact) 
+    {
+        if (is_quest_artifact(obj)) 
+        {
             if (!u.uhave.questart)
                 impossible("don't have quest artifact?");
             u.uhave.questart = 0;
+        }
+        else if (obj->otyp == SPE_BOOK_OF_MODRON)
+        {
+            if (!u.uhave.prime_codex)
+                impossible("don't have Prime Codex?");
+            u.uhave.prime_codex = 0;
         }
     }
 

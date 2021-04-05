@@ -430,7 +430,7 @@ smithini(lvl, sroom, sx, sy, smithtype, mtype)
 d_level* lvl;
 struct mkroom* sroom;
 int sx, sy;
-int smithtype;
+uchar smithtype;
 int mtype;
 {
     struct monst* smith;

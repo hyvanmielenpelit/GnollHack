@@ -100,7 +100,7 @@ struct epri {
 
 /* smith extension */
 struct esmi {
-    int smith_typ;      /* type of smith */
+    uchar smith_typ;      /* type of smith */
     schar smithy_room;  /* index in rooms */
     coord anvil_pos;   /* position of anvil */
     d_level smithy_level;  /* level (& dungeon) of smithy */
@@ -113,7 +113,7 @@ struct esmi {
 
 /* Non-player character (NPC) extension */
 struct enpc {
-    int npc_typ;     /* type of NPC */
+    uchar npc_typ;     /* type of NPC */
     schar npc_room;  /* index in rooms */
     d_level npc_room_level;  /* level (& dungeon) of NPC's room */
     long intone_time,  /* used to limit verbosity  +*/

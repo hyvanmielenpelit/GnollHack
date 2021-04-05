@@ -8705,7 +8705,7 @@ get_room_music(room)
 struct mkroom* room;
 {
     enum roomtype_types rtype = room->orig_rtype;
-    enum ghsound_types res = get_level_music(&u.uz);;
+    enum ghsound_types res = get_level_music(&u.uz);
 
     if (rtype >= SHOPBASE)
     {
