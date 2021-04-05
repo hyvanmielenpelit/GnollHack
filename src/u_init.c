@@ -877,6 +877,12 @@ register char sym;
 void
 props_init()
 {
+	struct prop_color clr_black = { 0, 0, 0 };
+	struct prop_color clr_white = { 255, 255, 255 };
+	struct prop_color clr_dark_blue = { 0, 0, 180 };
+	struct prop_color clr_yellow = { 255, 255, 0 };
+	struct prop_color clr_lightning_fast_bk = { 211, 251, 255 };
+	
 	/* All these require that they maintained by extrinsic or a permanent intrinsic, otherwise they will be set to zero automatically */
 	context.properties[LAUGHING].recurring = TRUE;
 	context.properties[LAUGHING].recurring_constant = 0;
@@ -960,12 +966,18 @@ props_init()
 	context.properties[PROT_FROM_SHAPE_CHANGERS].show_buff = TRUE;
 	strcpy(context.properties[PROT_FROM_SHAPE_CHANGERS].prop_tile_name, "protection-from-shape-changers");
 	context.properties[VERY_FAST].show_buff = TRUE;
+	context.properties[VERY_FAST].text_color = clr_white;
 	strcpy(context.properties[VERY_FAST].prop_tile_name, "very-fast");
 	context.properties[ULTRA_FAST].show_buff = TRUE;
+	context.properties[ULTRA_FAST].text_color = clr_white;
 	strcpy(context.properties[ULTRA_FAST].prop_tile_name, "ultra-fast");
 	context.properties[SUPER_FAST].show_buff = TRUE;
+	context.properties[SUPER_FAST].text_color = clr_white;
 	strcpy(context.properties[SUPER_FAST].prop_tile_name, "super-fast");
 	context.properties[LIGHTNING_FAST].show_buff = TRUE;
+	context.properties[LIGHTNING_FAST].buff_text_needs_background = TRUE;
+	context.properties[LIGHTNING_FAST].text_color = clr_white;
+	context.properties[LIGHTNING_FAST].bk_color = clr_lightning_fast_bk;
 	strcpy(context.properties[LIGHTNING_FAST].prop_tile_name, "lightning-fast");
 	context.properties[RAPID_REGENERATION].show_buff = TRUE;
 	strcpy(context.properties[RAPID_REGENERATION].prop_tile_name, "rapid-regeneration");

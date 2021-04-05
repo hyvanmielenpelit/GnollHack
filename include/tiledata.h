@@ -8,6 +8,8 @@
 #define BUFFS_PER_TILE 24
 #define BUFF_WIDTH 16
 #define BUFF_HEIGHT 16
+#define BUFF_TEXT_WIDTH 6
+#define BUFF_TEXT_HEIGHT 8
 
 #ifndef TILE_X
 #define TILE_X 64

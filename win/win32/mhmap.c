@@ -66,7 +66,10 @@ typedef struct mswin_GnollHack_map_window {
     POINT map_orig;             /* map origin point */
 
     HFONT hMapFont;             /* font for ASCII mode */
-    boolean bUnicodeFont;       /* font supports unicode page 437 */
+    boolean bUnicodeFont;       /* map font supports unicode page 437 */
+
+    HFONT hBuffFont;             /* font for buffs */
+    boolean bUnicodeBuffFont;    /* buff font supports unicode page 437 */
 
     int tileWidth;              /* width of tile in pixels at 96 dpi */
     int tileHeight;             /* height of tile in pixels at 96 dpi */
@@ -210,8 +213,10 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
 
     if (1) {
         LOGFONT lgfnt;
+        LOGFONT lgbufffnt;
 
         ZeroMemory(&lgfnt, sizeof(lgfnt));
+        ZeroMemory(&lgbufffnt, sizeof(lgbufffnt));
         if (bText)
         {
             if (data->bFitToScreenMode) {
@@ -255,8 +260,16 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
             }
         }
 
+        lgbufffnt = lgfnt;
+        if (!bText)
+        {
+            lgbufffnt.lfHeight = -(BUFF_TEXT_HEIGHT);     // height of font
+            lgbufffnt.lfWidth = -(BUFF_TEXT_WIDTH);      // average character width
+        }
+
         TEXTMETRIC textMetrics;
         HFONT font = NULL;
+        HFONT bufffont = NULL;
 
         while (1) {
 
@@ -282,12 +295,23 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
             break;
         }
 
+        /* Just set buff font */
+        if (bufffont != NULL)
+            DeleteObject(bufffont);
+
+        bufffont = CreateFontIndirect(&lgbufffnt);
+
         if (data->hMapFont)
             DeleteObject(data->hMapFont);
 
         data->hMapFont = font;
-
         data->bUnicodeFont = winos_font_support_cp437(data->hMapFont);
+
+        if (data->hBuffFont)
+            DeleteObject(data->hBuffFont);
+
+        data->hBuffFont = bufffont;
+        data->bUnicodeBuffFont = winos_font_support_cp437(data->hBuffFont);
 
         // set tile size to match font metrics
         if (bText)
@@ -676,6 +700,8 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         if (data->hMapFont)
             DeleteObject(data->hMapFont);
+        if (data->hBuffFont)
+            DeleteObject(data->hBuffFont);
         if (data->hBackBuffer)
             DeleteBitmap(data->hBackBuffer);
         if (data->backBufferDC)
@@ -4530,7 +4556,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 if (!context.properties[propidx].show_buff)
                                     continue;
 
-                                if (loc_is_you ? (u.uprops[propidx].intrinsic & TIMEOUT) == 0 : (mtmp->mprops[propidx] & M_TIMEOUT) == 0)
+                                long duration = loc_is_you ? (u.uprops[propidx].intrinsic & TIMEOUT) : (long)(mtmp->mprops[propidx] & M_TIMEOUT);
+                                if (duration == 0L)
                                     continue;
 
                                 mglyph = (propidx - 1) / BUFFS_PER_TILE + GLYPH_BUFF_OFF;
@@ -4574,6 +4601,84 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     source_rt.top, source_rt.right - source_rt.left,
                                     source_rt.bottom - source_rt.top, TILE_BK_COLOR);
 
+                                if (flags.show_buff_timer)
+                                {
+                                    /* Add buff timer */
+                                    char durbuf[BUFSZ] = "";
+                                    Sprintf(durbuf, "%ld", min(999L, duration));
+                                    HGDIOBJ savefont = SelectObject(data->backBufferDC, data->hBuffFont);
+                                    COLORREF OldFg = 0;
+                                    COLORREF OldBg = 0;
+                                    COLORREF color = RGB(context.properties[propidx].text_color.r, context.properties[propidx].text_color.g, context.properties[propidx].text_color.b);
+
+                                    OldFg = SetTextColor(data->backBufferDC, color);
+                                    if(context.properties[propidx].buff_text_needs_background)
+                                        OldBg = SetBkColor(data->backBufferDC, RGB(context.properties[propidx].bk_color.r, context.properties[propidx].bk_color.g, context.properties[propidx].bk_color.b));
+
+                                    RECT text_rt = target_rt;
+                                    int diff = target_rt.right - target_rt.left - 3 * BUFF_TEXT_WIDTH; /* Fit*/
+                                    int right_diff_max = rect->right - target_rt.right;
+                                    int right_diff = max(0, min(right_diff_max, -diff / 2));
+                                    int left_diff = max(0, diff + right_diff);
+                                    text_rt.left = target_rt.left + left_diff;
+                                    text_rt.right = target_rt.right + right_diff;
+
+                                    if (context.properties[propidx].buff_text_needs_background)
+                                        SetBkMode(data->backBufferDC, OPAQUE);
+                                    else
+                                        SetBkMode(data->backBufferDC, TRANSPARENT);
+
+                                    SetTextColor(data->backBufferDC, color);
+
+                                    if (data->bUnicodeBuffFont)
+                                    {
+                                        WCHAR wbuf[BUFSZ];
+                                        winos_ascii_to_wide_str(durbuf, wbuf, SIZE(wbuf));
+                                        DrawTextW(data->backBufferDC, wbuf, strlen(durbuf), &text_rt,
+                                            DT_CENTER | DT_VCENTER | DT_NOPREFIX | DT_SINGLELINE);
+                                    }
+                                    else
+                                    {
+                                        DrawTextA(data->backBufferDC, durbuf, strlen(durbuf), &text_rt,
+                                            DT_CENTER | DT_VCENTER | DT_NOPREFIX | DT_SINGLELINE);
+                                    }
+
+                                    SetTextColor(data->backBufferDC, OldFg);
+                                    if (context.properties[propidx].buff_text_needs_background)
+                                        SetBkColor(data->backBufferDC, OldBg);
+                                    SelectObject(data->backBufferDC, savefont);
+                                    SetBkMode(data->backBufferDC, TRANSPARENT);
+
+#if 0
+                                    int small_duration_pixels = min(BUFF_HEIGHT, duration);
+                                    int medium_duration_pixels = min(BUFF_HEIGHT, (duration) / BUFF_HEIGHT);
+                                    int large_duration_pixels = min(BUFF_HEIGHT, (duration) / (BUFF_HEIGHT * BUFF_HEIGHT));
+
+                                    double fraction = duration >= BUFF_HEIGHT ? 1.0 : ((double)duration) / ((double)BUFF_HEIGHT);
+                                    int bar_idx = large_duration_pixels > 0 ? 2 : medium_duration_pixels > 0 ? 1 : 0;
+                                    int bar_pixels = bar_idx == 0 ? small_duration_pixels : bar_idx == 1 ? medium_duration_pixels : large_duration_pixels;
+
+
+                                    RECT timer_rect;
+                                    HGDIOBJ original = SelectObject(data->backBufferDC, GetStockObject(DC_PEN));
+                                    SetDCPenColor(data->backBufferDC, color);
+
+                                    int unscaled_top_timer = unscaled_top + BUFF_HEIGHT + 1;
+                                    int unscaled_bottom_timer = unscaled_top_timer;
+                                    int unscaled_left_timer = unscaled_left;
+                                    int unscaled_right_timer = unscaled_left_timer + bar_pixels;
+                                    timer_rect.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom_timer);
+                                    timer_rect.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top_timer);
+                                    timer_rect.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left_timer);
+                                    timer_rect.right = rect->left + (int)(x_scaling_factor * (double)unscaled_right_timer);
+                                    MoveToEx(data->backBufferDC, timer_rect.left, timer_rect.bottom, (LPPOINT)NULL);
+                                    LineTo(data->backBufferDC, timer_rect.right + 1, timer_rect.bottom);
+                                    //FillRect(data->backBufferDC, &timer_rect, hbr_light);
+                                    SelectObject(data->backBufferDC, original);
+#endif
+
+                                }
+
                                 condition_count++;
                             }
 
@@ -4598,8 +4703,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int unscaled_bottom = unscaled_top + ((unscaled_right - unscaled_left) * tileHeight) / tileWidth;
 
                                 /* Frame and background first */
-                                HBRUSH hbr_frame = CreateSolidBrush(RGB(100, 50, 0));
-                                HBRUSH hbr_background = CreateSolidBrush(RGB(200, 200, 200));
+                                //HBRUSH hbr_frame = CreateSolidBrush(RGB(100, 50, 0));
+                                //HBRUSH hbr_background = CreateSolidBrush(RGB(200, 200, 200));
 
                                 RECT frame_rect = { 0 };
                                 frame_rect.left = rect->left + (int)(x_scaling_factor * (double)(unscaled_left - 1));
@@ -4660,6 +4765,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         even_smaller_rect.right = even_smaller_rect.left + (int)(fraction * (double)(smaller_rect.right - (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0) - even_smaller_rect.left));
                         FillRect(data->backBufferDC, &smaller_rect, hbr_dark);
                         FillRect(data->backBufferDC, &even_smaller_rect, hbr_light);
+                        DeleteObject(hbr_dark);
+                        DeleteObject(hbr_light);
+
                     }
 
 

@@ -235,16 +235,17 @@ static struct Bool_Opt {
     { "selectsaved", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME }, /*WC*/
     { "showexp", &flags.showexp, FALSE, SET_IN_GAME },
     { "showmove", &flags.showmove, FALSE, SET_IN_GAME },
-    { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },
-    { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
-    { "show_tile_u_hp_bar", &flags.show_tile_u_hp_bar, FALSE, SET_IN_GAME },
     { "showrace", &flags.showrace, FALSE, SET_IN_GAME },
 #ifdef SCORE_ON_BOTL
     { "showscore", &flags.showscore, FALSE, SET_IN_GAME },
 #else
     { "showscore", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-	{ "show_weight_summary", &flags.show_weight_summary, TRUE, SET_IN_GAME },
+    { "show_buff_timer", &flags.show_buff_timer, FALSE, SET_IN_GAME },
+    { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },
+    { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
+    { "show_tile_u_hp_bar", &flags.show_tile_u_hp_bar, FALSE, SET_IN_GAME },
+    { "show_weight_summary", &flags.show_weight_summary, TRUE, SET_IN_GAME },
 	{ "silent", &flags.silent, TRUE, SET_IN_GAME },
     { "softkeyboard", &iflags.wc2_softkeyboard, FALSE, SET_IN_FILE }, /*WC2*/
     { "sortpack", &flags.sortpack, TRUE, SET_IN_GAME },
@@ -4579,7 +4580,7 @@ boolean tinitial, tfrom_file;
             {
 					need_redraw = TRUE;
             }
-            else if (boolopt[i].addr == &flags.show_tile_mon_hp_bar || boolopt[i].addr == &flags.show_tile_pet_hp_bar || boolopt[i].addr == &flags.show_tile_u_hp_bar) 
+            else if (boolopt[i].addr == &flags.show_tile_mon_hp_bar || boolopt[i].addr == &flags.show_tile_pet_hp_bar || boolopt[i].addr == &flags.show_tile_u_hp_bar || boolopt[i].addr == &flags.show_buff_timer)
             {
                 need_redraw = TRUE;
             }

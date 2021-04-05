@@ -267,12 +267,18 @@ struct prop {
 #define I_SPECIAL 0x20000000L /* Property is controllable */
 };
 
+struct prop_color {
+    uchar r, g, b;
+};
 struct prop_info {
     Bitfield(recurring, 1);			/* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
     Bitfield(show_buff, 1);
+    Bitfield(buff_text_needs_background, 1);
+    struct prop_color text_color;
+    struct prop_color bk_color;
 
-    int recurring_constant;
-	int recurring_random;
+    short recurring_constant;
+    short recurring_random;
 
     char prop_tile_name[40];
 };

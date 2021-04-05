@@ -56,6 +56,7 @@ struct flag {
     boolean showexp;         /* show experience points */
 	boolean tellexp;		 /* tell experience points when received */
     boolean showmove;         /* show move on statusline */
+    boolean show_buff_timer;    /* show buff timers in GUI */
     boolean search_box_traps; /* search all boxes for traps when pressing s */
     boolean underline_peaceful;	 /* underline non-tame peaceful monsters */
     boolean partylinecolor;	 /* use fixed partyline coloring */
