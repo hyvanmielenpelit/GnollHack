@@ -2059,23 +2059,27 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int used_item_height = (int)tileHeight / 2;
                                 int base_source_height_deducted = used_item_height;
                                 int base_dest_added_from_source = 0;
+                                int artidx = otmp_round ? otmp_round->oartifact : 0;
+                                boolean has_floor_tile = !otmp_round ? FALSE : artidx ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(otmp_round);
+                                int obj_height = !otmp_round ? 0 : artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(otmp_round->otyp);
+
                                 /* For all normal items, we use only lower part of the tile */
-                                if (otmp_round && has_obj_floor_tile(otmp_round) && !showing_detection && !Hallucination)
+                                if (otmp_round && has_floor_tile && !showing_detection && !Hallucination)
                                 {
                                     source_top_added = 0;
-                                    if (otmp_round && OBJ_TILE_HEIGHT(otmp_round->otyp) > 0 && OBJ_TILE_HEIGHT(otmp_round->otyp) < used_item_height && !showing_detection)
+                                    if (otmp_round && obj_height > 0 && obj_height < used_item_height && !showing_detection)
                                     {
-                                        base_dest_added_from_source = used_item_height - OBJ_TILE_HEIGHT(otmp_round->otyp);
+                                        base_dest_added_from_source = used_item_height - obj_height;
                                         base_source_top_added += base_dest_added_from_source / 2;
-                                        base_source_height_deducted += used_item_height - OBJ_TILE_HEIGHT(otmp_round->otyp);
+                                        base_source_height_deducted += used_item_height - obj_height;
                                     }
                                 }
                                 else
                                 {
                                     source_top_added = (int)tileHeight / 2;
-                                    if (otmp_round && OBJ_TILE_HEIGHT(otmp_round->otyp) > 0 && !showing_detection && !Hallucination)
+                                    if (otmp_round && obj_height > 0 && !showing_detection && !Hallucination)
                                     {
-                                        obj_scaling_factor = ((double)OBJ_TILE_HEIGHT(otmp_round->otyp)) / ((double)used_item_height);
+                                        obj_scaling_factor = ((double)obj_height) / ((double)used_item_height);
                                     }
                                 }
 
