@@ -881,6 +881,7 @@ props_init()
 	struct prop_color clr_white = { 255, 255, 255 };
 	struct prop_color clr_dark_blue = { 0, 0, 180 };
 	struct prop_color clr_yellow = { 255, 255, 0 };
+	struct prop_color clr_light_yellow = { 255, 255, 192 };
 	struct prop_color clr_lightning_fast_bk = { 211, 251, 255 };
 	
 	for(int i = 0; i <= LAST_PROP; i++)
@@ -918,7 +919,7 @@ props_init()
 	/* Buff tile definitions */
 	context.properties[FIRE_IMMUNITY].show_buff = TRUE;
 	context.properties[FIRE_IMMUNITY].buff_text_needs_background = TRUE;
-	context.properties[FIRE_IMMUNITY].buff_bk_color = clr_yellow;
+	context.properties[FIRE_IMMUNITY].buff_bk_color = clr_light_yellow;
 	context.properties[FIRE_IMMUNITY].buff_text_color = clr_black;
 	strcpy(context.properties[FIRE_IMMUNITY].prop_tile_name, "fire-immunity");
 	context.properties[COLD_IMMUNITY].show_buff = TRUE;
@@ -982,7 +983,7 @@ props_init()
 	strcpy(context.properties[SUPER_FAST].prop_tile_name, "super-fast");
 	context.properties[LIGHTNING_FAST].show_buff = TRUE;
 	context.properties[LIGHTNING_FAST].buff_text_needs_background = TRUE;
-	context.properties[LIGHTNING_FAST].buff_text_color = clr_white;
+	context.properties[LIGHTNING_FAST].buff_text_color = clr_black;
 	context.properties[LIGHTNING_FAST].buff_bk_color = clr_lightning_fast_bk;
 	strcpy(context.properties[LIGHTNING_FAST].prop_tile_name, "lightning-fast");
 	context.properties[RAPID_REGENERATION].show_buff = TRUE;

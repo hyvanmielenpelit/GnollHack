@@ -570,6 +570,7 @@ E int FDECL(monsterdescription, (struct monst*));
 E int NDECL(dotogglehpbars);
 E int NDECL(dotogglemonstertargeting);
 E int NDECL(dotoggleumark);
+E int NDECL(dotogglebufftimers);
 E void FDECL(delete_location, (xchar, xchar));
 E void FDECL(full_location_transform, (xchar, xchar, int, int, unsigned short, int, int, int, int, boolean, boolean, short, short, boolean));
 E void FDECL(create_simple_location, (xchar, xchar, int, int, unsigned short, int, int, int, boolean));

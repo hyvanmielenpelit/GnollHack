@@ -4900,6 +4900,10 @@ struct ext_func_tab extcmdlist[] = {
             dotogglehpbars, IFBURIED | AUTOCOMPLETE },
 #endif
     { C('b'), "break", "break something", dobreak, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_GENERAL, 0, 0, "break" },
+#ifdef USE_TILES
+    { M('y'), "bufftimers", "toggle tile buff timers on/off",
+            dotogglebufftimers, IFBURIED | AUTOCOMPLETE },
+#endif
     { 'c', "close", "close a door", doclose },
 	{ 'C', "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
 	{ C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_GENERAL, 0, getobj_callable, "call" },

@@ -77,6 +77,7 @@ BEGIN
         MENUITEM "Toggle &targeting\tAlt+;",    IDM_VIEW_TOGGLETARGETING
         MENUITEM SEPARATOR
         MENUITEM "Toggle hit point &bars\t Alt+b", IDM_VIEW_TOGGLEHITPOINTBARS
+        MENUITEM "Toggle b&uff timers\tAlt+y",  IDM_VIEW_TOGGLEBUFFTIMERS
     END
     POPUP "Windows &Settings"
     BEGIN

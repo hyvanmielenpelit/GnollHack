@@ -537,7 +537,7 @@ OBJECT:('?', "scare monster"),$place[0],cursed
 
 # Artificer
 REGION:(18,06,22,08),lit,"npcroom"
-DOOR:closed,(20,09)
+DOOR:locked,(20,09)
 NPC:npc_artificer, (20,07)
 
 MAZE:"soko1-2",' '
@@ -642,7 +642,7 @@ ENGRAVING:$place[0],burn,"Gilthoniel"
 
 # Artificer
 REGION:(18,05,22,07),lit,"npcroom"
-DOOR:closed,(20,08)
+DOOR:locked,(20,08)
 NPC:npc_artificer,(20,06)
 
 

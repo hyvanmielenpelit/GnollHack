@@ -1080,7 +1080,10 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_TOGGLEHITPOINTBARS:
         (void)dotogglehpbars();
         break;
-
+    case IDM_VIEW_TOGGLEBUFFTIMERS:
+        (void)dotogglebufftimers();
+        break;
+        
 
     case IDM_NHMODE: 
     {
