@@ -3514,10 +3514,12 @@ aligntyp atyp;
     /*  Assumption #2:  monsters of a given class are presented in ascending
      *                  order of strength.
      */
-    for (last = first; last < SPECIAL_PM && mons[last].mlet == class; last++) {
+    for (last = first; last < SPECIAL_PM && mons[last].mlet == class; last++)
+    {
         if (atyp != A_NONE && sgn(mons[last].maligntyp) != sgn(atyp))
             continue;
-        if (mk_gen_ok(last, G_GONE, mask)) {
+        if (mk_gen_ok(last, G_GONE, mask))
+        {
             /* consider it; don't reject a toostrong() monster if we
                don't have anything yet (num==0) or if it is the same
                (or lower) difficulty as preceding candidate (non-zero
@@ -3526,7 +3528,8 @@ aligntyp atyp;
             if (num && toostrong(last, maxmlev)
                 && mons[last].difficulty > mons[last - 1].difficulty)
                 break;
-            if ((k = (int)(mons[last].geno & G_FREQ)) > 0) {
+            if ((k = (int)(mons[last].geno & G_FREQ)) > 0)
+            {
                 /* skew towards lower value monsters at lower exp. levels
                    (this used to be done in the next loop, but that didn't
                    work well when multiple species had the same level and

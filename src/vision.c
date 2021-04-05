@@ -778,8 +778,7 @@ int control;
                 /*
                  * We see this position because it is lit.
                  */
-                if ((IS_DOOR(lev->typ) || lev->typ == SDOOR
-                     || IS_WALL(lev->typ)) && !viz_clear[row][col])
+                if ((IS_DOOR(lev->typ) || IS_WALL_OR_SDOOR(lev->typ)) && !viz_clear[row][col])
 				{
                     /*
                      * Make sure doors, walls, boulders or mimics don't show

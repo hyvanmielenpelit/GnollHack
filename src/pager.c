@@ -270,7 +270,7 @@ int x, y, glyph;
         Strcat(buf, " (buried)");
     else if (levl[x][y].typ == STONE || levl[x][y].typ == SCORR)
         Strcat(buf, " embedded in stone");
-    else if (IS_WALL(levl[x][y].typ) || levl[x][y].typ == SDOOR)
+    else if (IS_WALL_OR_SDOOR(levl[x][y].typ))
         Strcat(buf, " embedded in a wall");
     else if (closed_door(x, y))
         Strcat(buf, " embedded in a door");

@@ -444,6 +444,7 @@ extern struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES
  * Instead, use one of the macros below.
  */
 #define IS_WALL(typ) ((typ) && (typ) <= DBWALL && (typ) >= (STONE))
+#define IS_WALL_OR_SDOOR(typ) ((typ) && (IS_WALL(typ) || (typ) == SDOOR))
 #define IS_STWALL(typ) ((typ) <= DBWALL && (typ) >= (STONE)) /* STONE <= (typ) <= DBWALL */
 #define IS_ROCK(typ) ((typ) < POOL)      /* absolutely nonaccessible */
 #define IS_DOOR(typ) ((typ) == DOOR)

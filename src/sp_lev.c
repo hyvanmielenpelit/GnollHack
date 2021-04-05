@@ -1730,31 +1730,39 @@ struct mkroom *croom;
 
     if (!class)
         pm = (struct permonst *) 0;
-    else if (m->id != NON_PM) {
+    else if (m->id != NON_PM) 
+    {
         pm = &mons[m->id];
         g_mvflags = (unsigned) mvitals[monsndx(pm)].mvflags;
         if ((pm->geno & G_UNIQ) && (g_mvflags & G_EXTINCT))
             return;
         else if (g_mvflags & G_GONE)    /* genocided or extinct */
             pm = (struct permonst *) 0; /* make random monster */
-    } else {
-        pm = mkclass(class, G_NOGEN);
+    }
+    else 
+    {
+        pm = mkclass(class, 0UL); /* Removed G_NOGEN; did not seem to make a whole lot of sense here. --JG */
         /* if we can't get a specific monster type (pm == 0) then the
            class has been genocided, so settle for a random monster */
     }
+
     if (In_mines(&u.uz) && pm && your_race(pm)
         && (Race_if(PM_DWARF) || Race_if(PM_GNOME)) && rn2(3))
         pm = (struct permonst *) 0;
 
-    if (pm) {
+    if (pm) 
+    {
         int loc = pm_to_humidity(pm);
         /* If water-liking monster, first try is without DRY */
         get_location_coord(&x, &y, loc | NO_LOC_WARN, croom, m->coord);
-        if (x == -1 && y == -1) {
+        if (x == -1 && y == -1)
+        {
             loc |= DRY;
             get_location_coord(&x, &y, loc, croom, m->coord);
         }
-    } else {
+    }
+    else 
+    {
         get_location_coord(&x, &y, DRY, croom, m->coord);
     }
 
@@ -1769,7 +1777,8 @@ struct mkroom *croom;
     else
         mtmp = makemon(pm, x, y, NO_MM_FLAGS);
 
-    if (mtmp) {
+    if (mtmp)
+    {
         x = mtmp->mx, y = mtmp->my; /* sanity precaution */
         m->x = x, m->y = y;
         /* handle specific attributes for some special monsters */
@@ -1787,10 +1796,12 @@ struct mkroom *croom;
             && ((is_mimic(mtmp->data))
                 /* shapechanger (chameleons, et al, and vampires) */
                 || (mtmp->cham >= LOW_PM && m->appear == M_AP_MONSTER))
-            && !Protection_from_shape_changers) {
+            && !Protection_from_shape_changers) 
+        {
             int i;
 
-            switch (m->appear) {
+            switch (m->appear)
+            {
             case M_AP_NOTHING:
                 impossible(
                  "create_monster: mon has an appearance, \"%s\", but no type",
@@ -1801,10 +1812,14 @@ struct mkroom *croom;
                 for (i = 0; i < MAX_CMAPPED_CHARS; i++)
                     if (!strcmp(defsyms[i].explanation, m->appear_as.str))
                         break;
-                if (i == MAX_CMAPPED_CHARS) {
+
+                if (i == MAX_CMAPPED_CHARS)
+                {
                     impossible("create_monster: can't find feature \"%s\"",
                                m->appear_as.str);
-                } else {
+                }
+                else 
+                {
                     mtmp->m_ap_type = M_AP_FURNITURE;
                     mtmp->mappearance = i;
                 }
@@ -1815,26 +1830,33 @@ struct mkroom *croom;
                     if (OBJ_NAME(objects[i])
                         && !strcmp(OBJ_NAME(objects[i]), m->appear_as.str))
                         break;
-                if (i == NUM_OBJECTS) {
+                if (i == NUM_OBJECTS)
+                {
                     impossible("create_monster: can't find object \"%s\"",
                                m->appear_as.str);
-                } else {
+                } 
+                else
+                {
                     mtmp->m_ap_type = M_AP_OBJECT;
                     mtmp->mappearance = i;
                     /* try to avoid placing mimic boulder on a trap */
                     if (i == BOULDER && m->x < 0
-                        && m_bad_boulder_spot(x, y)) {
+                        && m_bad_boulder_spot(x, y))
+                    {
                         int retrylimit = 10;
 
                         remove_monster(x, y);
-                        do {
+                        do
+                        {
                             x = m->x;
                             y = m->y;
                             get_location(&x, &y, DRY, croom);
                             if (MON_AT(x, y) && enexto(&cc, x, y, pm))
                                 x = cc.x, y = cc.y;
-                        } while (m_bad_boulder_spot(x, y)
+                        }
+                        while (m_bad_boulder_spot(x, y)
                                  && --retrylimit > 0);
+
                         place_monster(mtmp, x, y);
                         /* if we didn't find a good spot
                            then mimic something else */
@@ -1844,7 +1866,8 @@ struct mkroom *croom;
                 }
                 break;
 
-            case M_AP_MONSTER: {
+            case M_AP_MONSTER:
+            {
                 int mndx;
 
                 if (!strcmpi(m->appear_as.str, "random"))
@@ -1853,7 +1876,8 @@ struct mkroom *croom;
                     mndx = name_to_mon(m->appear_as.str);
 
                 if (mndx == NON_PM || (is_vampshifter(mtmp)
-                                       && !validvamp(mtmp, &mndx, S_HUMAN))) {
+                                       && !validvamp(mtmp, &mndx, S_HUMAN)))
+                {
                     impossible("create_monster: invalid %s (\"%s\")",
                                (is_mimic(mtmp->data))
                                  ? "mimic appearance"
@@ -1863,22 +1887,29 @@ struct mkroom *croom;
                                          ? "vampire shape"
                                          : "chameleon shape",
                                m->appear_as.str);
-                } else if (&mons[mndx] == mtmp->data) {
+                } 
+                else if (&mons[mndx] == mtmp->data)
+                {
                     /* explicitly forcing a mimic to appear as itself */
                     mtmp->m_ap_type = M_AP_NOTHING;
                     mtmp->mappearance = 0;
-                } else if (is_mimic(mtmp->data)
-                           || mtmp->data == &mons[PM_WIZARD_OF_YENDOR]) {
+                } 
+                else if (is_mimic(mtmp->data)
+                           || mtmp->data == &mons[PM_WIZARD_OF_YENDOR])
+                {
                     /* this is ordinarily only used for Wizard clones
                        and hasn't been exhaustively tested for mimics */
                     mtmp->m_ap_type = M_AP_MONSTER;
                     mtmp->mappearance = mndx;
-                } else { /* chameleon or vampire */
+                }
+                else 
+                { /* chameleon or vampire */
                     struct permonst *mdat = &mons[mndx];
                     struct permonst *olddata = mtmp->data;
 
                     mgender_from_permonst(mtmp, mdat);
                     set_mon_data(mtmp, mdat);
+
                     if (emitted_light_range(olddata) != emitted_light_range(mtmp->data))
                     {
                         /* used to give light, now doesn't, or vice versa,
@@ -1890,6 +1921,7 @@ struct mkroom *croom;
                                              emitted_light_range(mtmp->data),
                                              LS_MONSTER, (genericptr_t) mtmp);
                     }
+
                     if (mon_ambient_sound(olddata) != mon_ambient_sound(mtmp->data))
                     {
                         /* used to give light, now doesn't, or vice versa,
@@ -1914,12 +1946,15 @@ struct mkroom *croom;
                 block_vision_and_hearing_at_point(x, y);
         }
 
-        if (m->peaceful >= 0) {
+        if (m->peaceful >= 0)
+        {
             mtmp->mpeaceful = m->peaceful;
             /* changed mpeaceful again; have to reset malign */
             set_malign(mtmp);
         }
-        if (m->asleep >= 0) {
+
+        if (m->asleep >= 0) 
+        {
 #ifdef UNIXPC
             /* optimizer bug strikes again */
             if (m->asleep)
@@ -1930,12 +1965,14 @@ struct mkroom *croom;
             mtmp->msleeping = m->asleep;
 #endif
         }
+
         if (m->seentraps)
             mtmp->mtrapseen = m->seentraps;
         if (m->female)
             mtmp->female = 1;
         if (m->waitforu)
             mtmp->mstrategy |= STRAT_WAITFORU;
+
         if (m->cancelled)
 		{
 			mtmp->mprops[CANCELLED] = m->cancelled;
@@ -3731,17 +3768,24 @@ struct sp_coder *coder;
                 char monclass = SP_MONST_CLASS(OV_i(parm));
                 int monid = SP_MONST_PM(OV_i(parm));
 
-                if (monid >= LOW_PM && monid < NUM_MONSTERS) {
+                if (monid >= LOW_PM && monid < NUM_MONSTERS)
+                {
                     tmpobj.corpsenm = monid;
                     break; /* we're done! */
-                } else {
+                } 
+                else 
+                {
                     struct permonst *pm = (struct permonst *) 0;
 
-                    if (def_char_to_monclass(monclass) != MAX_MONSTER_CLASSES) {
-                        pm = mkclass(def_char_to_monclass(monclass), G_NOGEN);
-                    } else {
+                    if (def_char_to_monclass(monclass) != MAX_MONSTER_CLASSES)
+                    {
+                        pm = mkclass(def_char_to_monclass(monclass), 0); /* Removed NOGEN */
+                    }
+                    else
+                    {
                         pm = rndmonst();
                     }
+
                     if (pm)
                         tmpobj.corpsenm = monsndx(pm);
                 }

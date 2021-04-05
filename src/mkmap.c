@@ -200,9 +200,8 @@ boolean anyroom;
             register int ii, jj;
             for (ii = (i == sx ? i - 1 : i); ii <= i + 1; ii++)
                 for (jj = sy - 1; jj <= sy + 1; jj++)
-                    if (isok(ii, jj) && (IS_WALL(levl[ii][jj].typ)
-                                         || IS_DOOR(levl[ii][jj].typ)
-                                         || levl[ii][jj].typ == SDOOR)) {
+                    if (isok(ii, jj) && (IS_WALL_OR_SDOOR(levl[ii][jj].typ)
+                                         || IS_DOOR(levl[ii][jj].typ))) {
                         levl[ii][jj].edge = 1;
                         if (lit)
                             levl[ii][jj].lit = lit;

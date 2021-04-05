@@ -1642,7 +1642,7 @@ wiz_show_wmodes(VOID_ARGS)
             lev = &levl[x][y];
             if (x == u.ux && y == u.uy)
                 row[x] = '@';
-            else if (IS_WALL(lev->typ) || lev->typ == SDOOR)
+            else if (IS_WALL_OR_SDOOR(lev->typ))
                 row[x] = '0' + (lev->wall_info & WM_MASK);
             else if (lev->typ == CORR)
                 row[x] = '#';

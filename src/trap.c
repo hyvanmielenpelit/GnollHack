@@ -521,7 +521,7 @@ unsigned long mkflags;
 
         if (lev->typ == STONE || lev->typ == SCORR)
             ltype = CORR, lsubtype = get_initial_location_subtype(CORR);
-        else if (IS_WALL(lev->typ) || lev->typ == SDOOR)
+        else if (IS_WALL_OR_SDOOR(lev->typ))
         {
             ltype = level.flags.is_maze_lev
                 ? ROOM

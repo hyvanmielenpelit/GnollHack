@@ -216,7 +216,7 @@ register int x, y;
 		return FOUNTAIN_IS_KNOWN(x, y) ? fountain_type_text(ftyp) : "fountain";
 	}
     else if ((IS_ROOM(lev->typ) && !Is_earthlevel(&u.uz))
-             || IS_WALL(lev->typ) || IS_DOOR(lev->typ) || lev->typ == SDOOR)
+             || IS_WALL_OR_SDOOR(lev->typ) || IS_DOOR(lev->typ))
         return "floor";
     else
         return "ground";
@@ -250,7 +250,7 @@ register int x, y;
     else if (Underwater)
         what = "water's surface";
     else if ((IS_ROOM(lev->typ) && !Is_earthlevel(&u.uz))
-             || IS_WALL(lev->typ) || IS_DOOR(lev->typ) || lev->typ == SDOOR)
+             || IS_WALL_OR_SDOOR(lev->typ) || IS_DOOR(lev->typ))
         what = "ceiling";
     else
         what = "rock cavern";

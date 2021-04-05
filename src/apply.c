@@ -127,7 +127,7 @@ boolean drink_yourself;
 			{
 				You("apply some %s on %s.", contents, mon_nam(mtmp));
 			}
-			else if(IS_WALL(levl[u.ux + u.dx][u.uy + u.dy].typ))
+			else if(IS_WALL_OR_SDOOR(levl[u.ux + u.dx][u.uy + u.dy].typ))
 			{
 				You("throw some %s on the wall.", contents);
 			}
@@ -210,7 +210,7 @@ boolean drink_yourself;
                 play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
                 You("%s some %s %s %s.", is_tame(mtmp) ? "give" : "splash", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), is_tame(mtmp) ? "to" : "on", mon_nam(mtmp));
             }
-            else if (IS_WALL(levl[u.ux + u.dx][u.uy + u.dy].typ))
+            else if (IS_WALL_OR_SDOOR(levl[u.ux + u.dx][u.uy + u.dy].typ))
             {
                 play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
                 You("pour some %s on the wall.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));

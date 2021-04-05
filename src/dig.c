@@ -166,8 +166,7 @@ xchar x, y;
                      : IS_TREE(levl[x][y].typ)
                         ? (ispick ? DIGTYP_UNDIGGABLE : DIGTYP_TREE)
                         : (ispick && IS_ROCK(levl[x][y].typ)
-                           && (!level.flags.arboreal
-                               || IS_WALL(levl[x][y].typ)))
+                           && (!level.flags.arboreal || (IS_WALL_OR_SDOOR(levl[x][y].typ))))
                            ? DIGTYP_ROCK
                            : DIGTYP_UNDIGGABLE);
 }
@@ -1349,10 +1348,12 @@ struct obj *obj;
             }
 			else if (IS_TREE(lev->typ)) 
 			{
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("need an axe or a saw to cut down a tree.");
             }
 			else if (IS_ROCK(lev->typ)) 
 			{
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("need a pick to dig rock.");
             }
 			else if (!ispick && ((sobj_at(STATUE, rx, ry) && !issaw) || sobj_at(BOULDER, rx, ry)))
@@ -1624,7 +1625,7 @@ boolean zap;
     struct rm *lev = &levl[x][y];
 
     if (in_town(x, y)
-        && (closed_door(x, y) || lev->typ == SDOOR || IS_WALL(lev->typ)
+        && (closed_door(x, y) || IS_WALL_OR_SDOOR(lev->typ)
             || IS_FOUNTAIN(lev->typ) || IS_TREE(lev->typ))) {
         if (!mtmp) {
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -2194,7 +2195,7 @@ struct obj* origobj;
             int lsubtype = 0;
             uchar lflags = 0;
 
-            if (IS_WALL(room->typ) || room->typ == SDOOR)
+            if (IS_WALL_OR_SDOOR(room->typ))
             {
                 if (*in_rooms(zx, zy, SHOPBASE)) 
                 {
