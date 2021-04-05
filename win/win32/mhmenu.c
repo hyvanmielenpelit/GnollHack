@@ -1206,7 +1206,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             if (signed_glyph < 0)
                 flip_tile = TRUE;
 
-            boolean is_full_size = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM);
+            boolean is_full_size = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM) || !glyph_is_object(glyph);
             enum autodraw_types autodraw = AUTODRAW_NONE;
             ntile = glyph2tile[glyph];
             ntile = maybe_get_replaced_tile(ntile, -1, -1,

@@ -759,7 +759,7 @@ doability(VOID_ARGS)
 	any = zeroany;
 	any.a_int = abilitynum + 1;
 
-	add_menu(win, NO_GLYPH, &any,
+	add_menu(win, u_to_glyph(), &any,
 		0, 0, ATR_NONE,
 		available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1084,7 +1084,7 @@ doability(VOID_ARGS)
         )
     {
         any = zeroany;
-        add_menu(win, NO_GLYPH, &any,
+        add_menu(win, mon_to_glyph(u.usteed, rn2_on_display_rng), &any,
             0, 0, iflags.menu_headings,
             "Use Your Steed's Abilities            ", MENU_UNSELECTED);
 
@@ -1166,7 +1166,7 @@ doability(VOID_ARGS)
                 any = zeroany;
                 any.a_int = abilitynum + 1;
 
-                add_menu(win, NO_GLYPH, &any,
+                add_menu(win, mon_to_glyph(mtmp, rn2_on_display_rng), &any,
                     0, 0, ATR_NONE,
                     available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
