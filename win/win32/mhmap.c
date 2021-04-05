@@ -4601,7 +4601,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     source_rt.top, source_rt.right - source_rt.left,
                                     source_rt.bottom - source_rt.top, TILE_BK_COLOR);
 
-                                if (flags.show_buff_timer)
+                                if (flags.show_buff_timer && (loc_is_you || is_tame(mtmp)))
                                 {
                                     /* Add buff timer */
                                     char durbuf[BUFSZ] = "";
@@ -4609,11 +4609,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     HGDIOBJ savefont = SelectObject(data->backBufferDC, data->hBuffFont);
                                     COLORREF OldFg = 0;
                                     COLORREF OldBg = 0;
-                                    COLORREF color = RGB(context.properties[propidx].text_color.r, context.properties[propidx].text_color.g, context.properties[propidx].text_color.b);
+                                    COLORREF color = RGB(context.properties[propidx].buff_text_color.r, context.properties[propidx].buff_text_color.g, context.properties[propidx].buff_text_color.b);
 
                                     OldFg = SetTextColor(data->backBufferDC, color);
                                     if(context.properties[propidx].buff_text_needs_background)
-                                        OldBg = SetBkColor(data->backBufferDC, RGB(context.properties[propidx].bk_color.r, context.properties[propidx].bk_color.g, context.properties[propidx].bk_color.b));
+                                        OldBg = SetBkColor(data->backBufferDC, RGB(context.properties[propidx].buff_bk_color.r, context.properties[propidx].buff_bk_color.g, context.properties[propidx].buff_bk_color.b));
 
                                     RECT text_rt = target_rt;
                                     int diff = target_rt.right - target_rt.left - 3 * BUFF_TEXT_WIDTH; /* Fit*/

@@ -274,8 +274,8 @@ struct prop_info {
     Bitfield(recurring, 1);			/* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
     Bitfield(show_buff, 1);
     Bitfield(buff_text_needs_background, 1);
-    struct prop_color text_color;
-    struct prop_color bk_color;
+    struct prop_color buff_text_color;
+    struct prop_color buff_bk_color;
 
     short recurring_constant;
     short recurring_random;
