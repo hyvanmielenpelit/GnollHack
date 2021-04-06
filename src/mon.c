@@ -4417,11 +4417,13 @@ register struct monst *mtmp;
     if (is_mimic(mtmp->data)) 
     {
         set_mimic_sym(mtmp);
+        newsym(mtmp->mx, mtmp->my);
         return TRUE;
     }
     else if (levl[mtmp->mx][mtmp->my].typ == ROOM || levl[mtmp->mx][mtmp->my].typ == GRASS || levl[mtmp->mx][mtmp->my].typ == GROUND)
     {
         mtmp->mundetected = 1;
+        force_redraw_at(mtmp->mx, mtmp->my);
         return TRUE;
     }
 
@@ -4459,6 +4461,9 @@ struct monst *mtmp;
         u.uundetected = undetected;
     else
         mtmp->mundetected = undetected;
+
+    force_redraw_at(x, y);
+
     return undetected;
 }
 

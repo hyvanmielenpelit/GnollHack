@@ -2863,14 +2863,14 @@ boolean ininv, dummy, silent;
                 {
                     const char* base_line_fmt[8] = 
                     { 
-                        "only a modest sum for %s splendid %s.",
-                        "only a modest sum for %s exquisite %s.",
-                        "I can offer %s impeccable %s at a very affordable price.",
-                        "I can offer %s fine %s at a very affordable price.",
-                        "%s magnificent %s is available at a special price.",
-                        "%s wonderful %s is available at a special price.",
-                        "only a modest sum for the contents of %s %s.",
-                        "only a modest sum for %s %s and its contents.",
+                        "only a modest sum for %s splendid %s.%s",
+                        "only a modest sum for %s exquisite %s.%s",
+                        "I can offer %s impeccable %s at a very affordable price.%s",
+                        "I can offer %s fine %s at a very affordable price.%s",
+                        "%s magnificent %s %s available at a special price.",
+                        "%s wonderful %s %s available at a special price.",
+                        "only a modest sum for the contents of %s %s.%s",
+                        "only a modest sum for %s %s and its contents.%s",
                     };
                     int bidx = (contentscount && !obj->unpaid) ? 6 : (contentscount && obj->unpaid) ? 7 : rn2(6);
                     char fmtbuf[BUFSZ];
@@ -2879,7 +2879,7 @@ boolean ininv, dummy, silent;
                     play_voice_shopkeeper_for_you(shkp, honidx, bidx, save_quan);
 
                     //obj->quan = 1L; /* fool xname() into giving singular */
-                    pline(fmtbuf, buf, save_quan > 1 ? "these" : "this", save_quan > 1 ? "items" : "item");
+                    pline(fmtbuf, buf, save_quan > 1 ? "these" : "this", save_quan > 1 ? "items" : "item", bidx == 4 || bidx == 5 ? (save_quan > 1 ? "are" : "is") : "");
                     /* ,
                         ltmp, currency(ltmp),
                         (save_quan > 1L) ? "per"
