@@ -132,6 +132,7 @@ extern NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TI
 #define GLYPH_TILE_FLAG_FLIP_VERTICALLY         0x02
 #define GLYPH_TILE_FLAG_FULL_SIZED_ITEM         0x04
 #define GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE  0x08
+#define GLYPH_TILE_FLAG_HALF_SIZED_NONITEM      0x10
 
 #define ZAP_INDEX_WITH_FIRST_TILE 48
 
