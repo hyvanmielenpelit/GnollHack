@@ -2848,13 +2848,14 @@ boolean ininv, dummy, silent;
                 {
                     play_voice_shopkeeper_for_you(shkp, honidx, 0, save_quan);
                     obj->quan = 1L; /* fool xname() into giving singular */
-                    pline("%s I will charge the full price for %s.\" (%ld %s %s %s%s.)", buf, save_quan > 1 ? "these items" : "this item", ltmp, currency(ltmp),
+                    pline("%s I will charge the full price for %s.\"", buf, save_quan > 1 ? "these items" : "this item");
+                        /* " (%ld %s %s %s%s.)" -- , ltmp, currency(ltmp),
                         (save_quan > 1L) ? "per"
                         : (contentscount && !obj->unpaid)
                         ? "for the contents of this"
                         : "for this",
                         xname(obj),
-                        (contentscount && obj->unpaid) ? and_its_contents : "");
+                        (contentscount && obj->unpaid) ? and_its_contents : "");*/
                     obj->quan = save_quan;
 
                 }
@@ -2873,19 +2874,20 @@ boolean ininv, dummy, silent;
                     };
                     int bidx = (contentscount && !obj->unpaid) ? 6 : (contentscount && obj->unpaid) ? 7 : rn2(6);
                     char fmtbuf[BUFSZ];
-                    Sprintf(fmtbuf, "%s %s%s", "%s", base_line_fmt[bidx], "\" (%ld %s %s %s%s.)");
+                    Sprintf(fmtbuf, "%s %s%s", "%s", base_line_fmt[bidx], "\""); // (%ld %s %s %s%s.)
 
                     play_voice_shopkeeper_for_you(shkp, honidx, bidx, save_quan);
 
                     obj->quan = 1L; /* fool xname() into giving singular */
-                    pline(fmtbuf, buf, save_quan > 1 ? "these" : "this", save_quan > 1 ? "items" : "item", 
+                    pline(fmtbuf, buf, save_quan > 1 ? "these" : "this", save_quan > 1 ? "items" : "item");
+                    /* ,
                         ltmp, currency(ltmp),
                         (save_quan > 1L) ? "per"
                         : (contentscount && !obj->unpaid)
                         ? "for the contents of this"
                         : "for this",
                         xname(obj),
-                        (contentscount && obj->unpaid) ? and_its_contents : "");
+                        (contentscount && obj->unpaid) ? and_its_contents : ""); */
                     obj->quan = save_quan;
                 }
             }
