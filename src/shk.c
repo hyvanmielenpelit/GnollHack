@@ -1191,17 +1191,22 @@ register boolean silentkops;
     eshkp->robbed = 0L;
     if (!Role_if(PM_ROGUE))
         adjalign(sgn(u.ualign.type));
-    if (!inhishop(shkp)) {
+
+    if (!inhishop(shkp))
+    {
         char shk_nam[BUFSZ];
         boolean vanished = canseemon(shkp);
 
         Strcpy(shk_nam, shkname(shkp));
-        if (on_level(&eshkp->shoplevel, &u.uz)) {
+        if (on_level(&eshkp->shoplevel, &u.uz)) 
+        {
             home_shk(shkp, FALSE);
             /* didn't disappear if shk can still be seen */
             if (canseemon(shkp))
                 vanished = FALSE;
-        } else {
+        } 
+        else
+        {
             /* if sensed, does disappear regardless whether seen */
             if (sensemon(shkp))
                 vanished = TRUE;
@@ -1214,10 +1219,14 @@ register boolean silentkops;
             /* dismiss kops on that level when shk arrives */
             eshkp->dismiss_kops = TRUE;
         }
+
         if (vanished)
             pline("Satisfied, %s suddenly disappears!", shk_nam);
-    } else if (wasmad)
+    }
+    else if (wasmad)
+    {
         pline("%s calms down.", Shknam(shkp));
+    }
 
     make_happy_shoppers(silentkops);
 }
@@ -1227,7 +1236,8 @@ void
 make_happy_shoppers(silentkops)
 boolean silentkops;
 {
-    if (!angry_shk_exists()) {
+    if (!angry_shk_exists())
+    {
         kops_gone(silentkops);
         pacify_guards();
     }
@@ -4582,6 +4592,7 @@ boolean cant_mollify;
             money2mon(shkp, cost_of_damage);
             context.botl = 1;
         }
+        play_simple_monster_sound(shkp, MONSTER_SOUND_TYPE_MOLLIFIED);
         pline("Mollified, %s accepts your restitution.", shkname(shkp));
         /* move shk back to his home loc */
         home_shk(shkp, FALSE);

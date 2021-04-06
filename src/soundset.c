@@ -9443,6 +9443,7 @@ enum shopkeeper_lines line_idx;
 
     enum role_types yourrole = urole.rolenum;
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    float special_minimum_volume = -1.0f;
 
     struct ghsound_immediate_info info = { 0 };
 
@@ -9638,6 +9639,7 @@ enum shopkeeper_lines line_idx;
         info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_CLOSE_SESAME :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_CLOSE_SESAME :
             GHSOUND_VOICE_SHOPKEEPER_MALE_CLOSE_SESAME;
+        special_minimum_volume = 0.0f;
         break;
     case SHOPKEEPER_LINE_YOU_NEED_TO_PAY_LOT_OF_GOLD:
         info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_NEED_TO_PAY_LOT_OF_GOLD :
@@ -9760,10 +9762,15 @@ enum shopkeeper_lines line_idx;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
-            volume = SHOPKEEPER_DISTANT_VOLUME;
+        if(special_minimum_volume != -1.0f)
+            volume = max(special_minimum_volume, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
         else
-            volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
+        {
+            if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
+                volume = SHOPKEEPER_DISTANT_VOLUME;
+            else
+                volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
+        }
     }
 
     info.volume = min(1.0f, volume);

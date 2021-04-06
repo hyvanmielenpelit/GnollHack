@@ -4514,7 +4514,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to bless an item?\" (%d %s)", bless_cost, currency((long)bless_cost));
+	Sprintf(qbuf, "Would you like to bless an item? (%d %s)", bless_cost, currency((long)bless_cost));
 	switch (ynq(qbuf)) {
 	default:
 	case 'q':
@@ -4530,7 +4530,7 @@ struct monst* mtmp;
 			break;
 		break;
 	case 'n':
-		Sprintf(qbuf, "\"Then would you like to curse one?\" (%d %s)",
+		Sprintf(qbuf, "Then would you like to curse one? (%d %s)",
 			curse_cost, currency((long)curse_cost));
 		if (yn_query(qbuf) != 'y')
 			return 0;
@@ -4597,7 +4597,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to have a standard healing?\" (%d %s)", extrahealing_cost, currency((long)extrahealing_cost));
+	Sprintf(qbuf, "Would you like to have a standard healing? (%d %s)", extrahealing_cost, currency((long)extrahealing_cost));
 	switch (ynq(qbuf)) {
 	default:
 	case 'n':
@@ -4646,7 +4646,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to have a full healing?\" (%d %s)", fullhealing_cost, currency((long)fullhealing_cost));
+	Sprintf(qbuf, "Would you like to have a full healing? (%d %s)", fullhealing_cost, currency((long)fullhealing_cost));
 	switch (ynq(qbuf)) {
 	default:
 	case 'n':
@@ -4695,7 +4695,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to have your sickness cured?\" (%d %s)", cure_sickness_cost, currency((long)cure_sickness_cost));
+	Sprintf(qbuf, "Would you like to have your sickness cured? (%d %s)", cure_sickness_cost, currency((long)cure_sickness_cost));
 	switch (ynq(qbuf)) {
 	default:
 	case 'n':
@@ -4751,7 +4751,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to make a major contribution for the temple?\" (%d %s)", major_cost, currency((long)major_cost));
+	Sprintf(qbuf, "Would you like to make a major contribution for the temple? (%d %s)", major_cost, currency((long)major_cost));
 	switch (ynq(qbuf)) {
 	default:
 	case 'q':
@@ -4767,7 +4767,7 @@ struct monst* mtmp;
 		break;
 		break;
 	case 'n':
-		Sprintf(qbuf, "\"Then would you like to make a minor donation instead?\" (%d %s)",
+		Sprintf(qbuf, "Then would you like to make a minor donation instead? (%d %s)",
 			minor_cost, currency((long)minor_cost));
 		if (yn_query(qbuf) != 'y')
 			return 0;
@@ -4859,7 +4859,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to see your fortune?\" (%d %s)", divination_cost, currency((long)divination_cost));
+	Sprintf(qbuf, "Would you like to see your fortune? (%d %s)", divination_cost, currency((long)divination_cost));
 	switch (ynq(qbuf)) {
 	default:
 	case 'n':
@@ -4989,7 +4989,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to identify %s?\" (%d %s)", shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description, minor_id_cost, currency((long)minor_id_cost));
+	Sprintf(qbuf, "Would you like to identify %s? (%d %s)", shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description, minor_id_cost, currency((long)minor_id_cost));
 
 	switch (ynq(qbuf)) {
 	default:
@@ -5278,7 +5278,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to identify a weapon or armor?\" (%d %s)", minor_id_cost, currency((long)minor_id_cost));
+	Sprintf(qbuf, "Would you like to identify a weapon or armor? (%d %s)", minor_id_cost, currency((long)minor_id_cost));
 
 	switch (ynq(qbuf)) {
 	default:
@@ -5331,7 +5331,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to %s?\" (%d %s)", "open a branch portal", service_cost, currency((long)service_cost));
+	Sprintf(qbuf, "Would you like to %s? (%d %s)", "open a branch portal", service_cost, currency((long)service_cost));
 	switch (ynq(qbuf))
 	{
 	default:
@@ -5611,7 +5611,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to identify gems and stones?\" (%d %s)", minor_id_cost, currency((long)minor_id_cost));
+	Sprintf(qbuf, "Would you like to identify gems and stones? (%d %s)", minor_id_cost, currency((long)minor_id_cost));
 
 	switch (ynq(qbuf)) {
 	default:
@@ -5727,7 +5727,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to identify an accessory or a charged item?\" (%d %s)", minor_id_cost, currency((long)minor_id_cost));
+	Sprintf(qbuf, "Would you like to identify an accessory or a charged item? (%d %s)", minor_id_cost, currency((long)minor_id_cost));
 
 	switch (ynq(qbuf)) {
 	default:
@@ -5782,7 +5782,7 @@ struct monst* mtmp;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to identify a gem, stone or a charged item?\" (%d %s)", minor_id_cost, currency((long)minor_id_cost));
+	Sprintf(qbuf, "Would you like to identify a gem, stone or a charged item? (%d %s)", minor_id_cost, currency((long)minor_id_cost));
 
 	switch (ynq(qbuf)) {
 	default:
@@ -6106,7 +6106,7 @@ const char* no_mood_string;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to %s?\" (%d %s)", service_verb, service_cost, currency((long)service_cost));
+	Sprintf(qbuf, "Would you like to %s? (%d %s)", service_verb, service_cost, currency((long)service_cost));
 	switch (ynq(qbuf)) 
 	{
 	default:
@@ -6170,7 +6170,7 @@ const char* no_mood_string;
 		return 0;
 	}
 
-	Sprintf(qbuf, "\"Would you like to %s?\" (%ld %s)", service_verb, service_cost, currency(service_cost));
+	Sprintf(qbuf, "Would you like to %s? (%ld %s)", service_verb, service_cost, currency(service_cost));
 	switch (ynq(qbuf))
 	{
 	default:
