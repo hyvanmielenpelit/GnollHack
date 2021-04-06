@@ -898,6 +898,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Sarcophagus/Sarcophagus Open", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Nothing Found", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Disoriented for Moment", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Marker/Write", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Marker/Dry Out", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Marker/Drop", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Marker/Pick Up", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Male/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Male/Get Angry", 1.0f },

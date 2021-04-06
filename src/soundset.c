@@ -2435,6 +2435,74 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
         OBJECT_INSTRUMENT_SOUNDSET_NONE,
         OBJECT_CONTAINER_SOUNDSET_SARCOPHAGUS
     }, 
+    {
+        "magic marker",
+        OBJECT_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f},
+
+            {GHSOUND_MAGIC_MARKER_PICK_UP, 1.0f}, /* Pick up */
+            {GHSOUND_MAGIC_MARKER_DROP, 1.0f}, /* Drop */
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {GHSOUND_MAGIC_MARKER_WRITE, 1.0f}, /* Apply */
+            {GHSOUND_MAGIC_MARKER_DRY_OUT, 1.0f}, /* Apply 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke 2 */
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_ROCK,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE,
+        OBJECT_CONTAINER_SOUNDSET_NONE
+    }, 
 };
 
 NEARDATA struct occupation_soundset_definition occupation_soundset_definitions[MAX_OCCUPATION_SOUNDSETS] =
