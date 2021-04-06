@@ -3129,18 +3129,27 @@ struct monst* mtmp;
 		
 	if (mtmp->rumorsleft == 0 || !rumor)
 	{
+		play_voice_monster_advice(mtmp, FALSE);
 		pline("%s answers: \"Unfortunately, I don't have any %s advice for you.\"", Monnam(mtmp), mtmp->told_rumor ? "further" : "useful");
 		mtmp->rumorsleft = 0;
 	}
 	else
 	{
+		play_voice_monster_advice(mtmp, TRUE);
 		if (mtmp->told_rumor)
 			pline("%s answers: \"Let me think. Maybe keep this in mind:\"", Monnam(mtmp));
 		else
 			pline("%s answers: \"Yes, here's a piece of advice for you:\"", Monnam(mtmp));
 
 		/* Tell a rumor */
-		verbalize("%s", rumor);
+		if (iflags.using_gui_sounds)
+		{
+			pline("(%s hands an advisory note over to you.) It reads:", Monnam(mtmp));
+			u.uconduct.literate++;
+		}
+		else
+			verbalize("%s", rumor);
+
 		mtmp->told_rumor = TRUE;
 	}
 

@@ -21,7 +21,7 @@ STATIC_VAR NEARDATA long int followmsg; /* last time of follow message */
 STATIC_VAR const char and_its_contents[] = " and its contents";
 STATIC_VAR const char the_contents_of[] = "the contents of ";
 
-STATIC_DCL void FDECL(append_honorific, (char *));
+STATIC_DCL int FDECL(append_honorific, (char *));
 STATIC_DCL long FDECL(addupbill, (struct monst *));
 STATIC_DCL void FDECL(pacify_shk, (struct monst *));
 STATIC_DCL struct bill_x *FDECL(onbill, (struct obj *, struct monst *,
@@ -2711,7 +2711,8 @@ boolean reset_nocharge;
     struct monst *shkp = *shkpp;
 
     /* if caller hasn't supplied a shopkeeper, look one up now */
-    if (!shkp) {
+    if (!shkp) 
+    {
         if (!roomno)
             return FALSE;
         shkp = shop_keeper(roomno);
@@ -2725,12 +2726,14 @@ boolean reset_nocharge;
         return FALSE;
     /* outer container might be marked no_charge but still have contents
        which should be charged for; clear no_charge when picking things up */
-    if (obj->no_charge) {
+    if (obj->no_charge) 
+    {
         if (!Has_contents(obj) || (contained_gold(obj) == 0L
                                    && contained_cost(obj, shkp, 0L, FALSE,
                                                      !reset_nocharge) == 0L))
             shkp = 0; /* not billable */
-        if (reset_nocharge && !shkp && obj->oclass != COIN_CLASS) {
+        if (reset_nocharge && !shkp && obj->oclass != COIN_CLASS) 
+        {
             obj->no_charge = 0;
             if (Has_contents(obj))
                 picked_container(obj); /* clear no_charge */
@@ -2752,10 +2755,13 @@ boolean ininv, dummy, silent;
     if (!billable(&shkp, obj, *u.ushops, TRUE))
         return;
 
-    if (obj->oclass == COIN_CLASS) {
+    if (obj->oclass == COIN_CLASS) 
+    {
         costly_gold(obj->ox, obj->oy, obj->quan);
         return;
-    } else if (ESHK(shkp)->billct == BILLSZ) {
+    }
+    else if (ESHK(shkp)->billct == BILLSZ) 
+    {
         if (!silent)
             You("got that for free!");
         return;
@@ -2767,12 +2773,14 @@ boolean ininv, dummy, silent;
     if (!obj->no_charge)
         ltmp = get_cost(obj, shkp);
 
-    if (obj->no_charge && !container) {
+    if (obj->no_charge && !container) 
+    {
         obj->no_charge = 0;
         return;
     }
 
-    if (container) {
+    if (container)
+    {
         cltmp = contained_cost(obj, shkp, cltmp, FALSE, FALSE);
         gltmp = contained_gold(obj);
 
@@ -2784,7 +2792,8 @@ boolean ininv, dummy, silent;
 
         ltmp += cltmp;
 
-        if (gltmp) {
+        if (gltmp) 
+        {
             costly_gold(obj->ox, obj->oy, gltmp);
             if (!ltmp)
                 return;
@@ -2793,42 +2802,111 @@ boolean ininv, dummy, silent;
         if (obj->no_charge)
             obj->no_charge = 0;
         contentscount = count_unpaid(obj->cobj);
-    } else { /* !container */
+    }
+    else
+    { /* !container */
         add_one_tobill(obj, dummy, shkp);
         contentscount = 0;
     }
 
-    if (!Deaf && !muteshk(shkp) && !silent) {
+    if (!Deaf && !muteshk(shkp) && !silent) 
+    {
         char buf[BUFSZ];
 
-        if (!ltmp) {
+        if (!ltmp)
+        {
             pline("%s has no interest in %s.", Shknam(shkp), the(xname(obj)));
             return;
         }
-        if (!ininv) {
+        if (!ininv) 
+        {
             pline("%s will cost you %ld %s%s.", The(xname(obj)), ltmp,
                   currency(ltmp), (obj->quan > 1L) ? " each" : "");
-        } else {
+        } 
+        else 
+        {
             long save_quan = obj->quan;
+            int honidx = 0;
 
             Strcpy(buf, "\"For you, ");
-            if (ANGRY(shkp)) {
+            if (ANGRY(shkp)) 
+            {
                 Strcat(buf, "scum;");
-            } else {
-                append_honorific(buf);
-                Strcat(buf, "; only");
+            } 
+            else 
+            {
+                honidx = append_honorific(buf);
+                if (iflags.using_gui_sounds)
+                    Strcat(buf, ";");
+                else
+                    Strcat(buf, "; only");
             }
-            obj->quan = 1L; /* fool xname() into giving singular */
-            pline("%s %ld %s %s %s%s.\"", buf, ltmp, currency(ltmp),
-                  (save_quan > 1L) ? "per"
-                                   : (contentscount && !obj->unpaid)
-                                       ? "for the contents of this"
-                                       : "for this",
-                  xname(obj),
-                  (contentscount && obj->unpaid) ? and_its_contents : "");
-            obj->quan = save_quan;
+
+            if (iflags.using_gui_sounds)
+            {
+                if (ANGRY(shkp))
+                {
+                    play_voice_shopkeeper_for_you(shkp, honidx, 0, save_quan);
+                    obj->quan = 1L; /* fool xname() into giving singular */
+                    pline("%s I will charge the full price for %s.\" (%ld %s %s %s%s.)", buf, save_quan > 1 ? "these items" : "this item", ltmp, currency(ltmp),
+                        (save_quan > 1L) ? "per"
+                        : (contentscount && !obj->unpaid)
+                        ? "for the contents of this"
+                        : "for this",
+                        xname(obj),
+                        (contentscount && obj->unpaid) ? and_its_contents : "");
+                    obj->quan = save_quan;
+
+                }
+                else
+                {
+                    const char* base_line_fmt[8] = 
+                    { 
+                        "only a modest sum for %s splendid %s.",
+                        "only a modest sum for %s exquisite %s.",
+                        "I can offer %s impeccable %s at a very affordable price.",
+                        "I can offer %s fine %s at a very affordable price.",
+                        "%s magnificent %s is available at a special price.",
+                        "%s wonderful %s is available at a special price.",
+                        "only a modest sum for the contents of %s %s.",
+                        "only a modest sum for %s %s and its contents.",
+                    };
+                    int bidx = (contentscount && !obj->unpaid) ? 6 : (contentscount && obj->unpaid) ? 7 : rn2(6);
+                    char fmtbuf[BUFSZ];
+                    Sprintf(fmtbuf, "%s %s%s", "%s", base_line_fmt[bidx], "\" (%ld %s %s %s%s.)");
+
+                    play_voice_shopkeeper_for_you(shkp, honidx, bidx, save_quan);
+
+                    obj->quan = 1L; /* fool xname() into giving singular */
+                    pline(fmtbuf, buf, save_quan > 1 ? "these" : "this", save_quan > 1 ? "items" : "item", 
+                        ltmp, currency(ltmp),
+                        (save_quan > 1L) ? "per"
+                        : (contentscount && !obj->unpaid)
+                        ? "for the contents of this"
+                        : "for this",
+                        xname(obj),
+                        (contentscount && obj->unpaid) ? and_its_contents : "");
+                    obj->quan = save_quan;
+                }
+            }
+            else
+            {
+                obj->quan = 1L; /* fool xname() into giving singular */
+                pline("%s %ld %s %s %s%s.\"", buf, ltmp, currency(ltmp),
+                    (save_quan > 1L) ? "per"
+                    : (contentscount && !obj->unpaid)
+                    ? "for the contents of this"
+                    : "for this",
+                    xname(obj),
+                    (contentscount && obj->unpaid) ? and_its_contents : "");
+                obj->quan = save_quan;
+
+            }
+
         }
-    } else if (!silent) {
+    } 
+    else if (!silent) 
+    {
         if (ltmp)
             pline_The("list price of %s%s%s is %ld %s%s.",
                       (contentscount && !obj->unpaid) ? the_contents_of : "",
@@ -2840,7 +2918,7 @@ boolean ininv, dummy, silent;
     }
 }
 
-void
+int
 append_honorific(buf)
 char *buf;
 {
@@ -2850,15 +2928,19 @@ char *buf;
                                            "esteemed",
                                            "most renowned and sacred" };
 
-    Strcat(buf, honored[rn2(SIZE(honored) - 1) + u.uevent.udemigod]);
-    if (is_vampire(youmonst.data))
+    int honidx = rn2(SIZE(honored) - 1) + u.uevent.udemigod;
+
+    Strcat(buf, honored[honidx]);
+    if (!iflags.using_gui_sounds && is_vampire(youmonst.data))
         Strcat(buf, (flags.female) ? " dark lady" : " dark lord");
-    else if (is_elf(youmonst.data))
+    else if (!iflags.using_gui_sounds && is_elf(youmonst.data))
         Strcat(buf, (flags.female) ? " hiril" : " hir");
     else
-        Strcat(buf, !is_human(youmonst.data) ? " creature"
+        Strcat(buf, !humanoid(youmonst.data) ? " creature"
                                              : (flags.female) ? " lady"
                                                               : " sir");
+
+    return honidx;
 }
 
 void

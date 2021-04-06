@@ -2965,10 +2965,12 @@ E void FDECL(play_voice_shopkeeper_leave_pick_outside, (struct monst*, const cha
 E void FDECL(play_voice_shopkeeper_cad_line, (struct monst*, enum shopkeeper_cad_lines, const char*));
 E void FDECL(play_voice_shopkeeper_candelabrum_candles, (struct monst*, struct obj*));
 E void FDECL(play_voice_shopkeeper_izchak_talks, (struct monst*, int));
+E void FDECL(play_voice_shopkeeper_for_you, (struct monst*, int, int, long));
 E void FDECL(play_voice_shopkeeper_pay_before_buying, (struct monst*, int, int));
 E void FDECL(play_voice_shopkeeper_how_dare_you_damage, (struct monst*, uchar, const char*, boolean));
 E void FDECL(play_voice_monster_cuss, (struct monst*, int));
 E void FDECL(play_voice_monster_cuss_with_god_name, (struct monst*, int));
+E void FDECL(play_voice_monster_advice, (struct monst*, boolean));
 E void FDECL(play_voice_wizard_of_yendor_cuss, (struct monst*, int, int));
 E void FDECL(play_voice_wizard_of_yendor_simple_line, (struct monst*, enum wizard_of_yendor_simple_lines));
 
