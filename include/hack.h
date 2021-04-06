@@ -474,6 +474,7 @@ extern short tile2enlargement[MAX_TILES];
 #define ciq(query) yn_function(query, ciqchars, 'q')
 #define bcq(query) yn_function(query, bcqchars, 'q')
 #define fnq(query) yn_function(query, fnqchars, 'q')
+#define dnq(query) yn_function(query, dnqchars, 'q')
 
 /* Macros for scatter */
 #define VIS_EFFECTS 0x01 /* display visual effects */

@@ -74,6 +74,7 @@ struct obj {
 #define SPEFLAGS_NO_PICKUP           		0x00008000UL  /* Monsters will not pick up this item */
 #define SPEFLAGS_ROYAL_COFFER         		0x00010000UL
 #define SPEFLAGS_LID_OPENED         		0x00020000UL
+#define SPEFLAGS_TRAP_FOUND                	0x00040000UL /* trap on this chest has been found (and still is there if otrapped is TRUE) */
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */

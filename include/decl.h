@@ -209,6 +209,7 @@ E const char ynNaqchars[];
 E const char ciqchars[];
 E const char bcqchars[];
 E const char fnqchars[];
+E const char dnqchars[];
 E NEARDATA long yn_number;
 
 E const char disclosure_options[];

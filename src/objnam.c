@@ -1282,7 +1282,11 @@ unsigned doname_flags;
             Strcat(prefix, "uncursed ");
     }
 
-    if (lknown && Is_box(obj)) {
+    if ((obj->speflags & SPEFLAGS_TRAP_FOUND) && obj->otrapped && Is_box(obj))
+        Strcat(prefix, "trapped ");
+
+    if (lknown && Is_box(obj)) 
+    {
         if (obj->obroken)
             /* 3.6.0 used "unlockable" here but that could be misunderstood
                to mean "capable of being unlocked" rather than the intended

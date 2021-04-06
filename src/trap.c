@@ -5978,7 +5978,7 @@ boolean force;
                 if (Is_box(otmp)) 
                 {
                     (void) safe_qbuf(qbuf, "There is ",
-                                     " here.  Check it for traps?", otmp,
+                        (otmp->speflags& SPEFLAGS_TRAP_FOUND) && otmp->otrapped ? " here.  Investigate the trap further?" : " here.  Check it for traps?", otmp,
                                      doname, ansimpleoname, "a box");
 
                     switch (ynq(qbuf)) 
@@ -6140,7 +6140,7 @@ boolean force;
                 if (Is_box(otmp))
                 {
                     (void)safe_qbuf(qbuf, "There is ",
-                        " here.  Check it for traps?", otmp,
+                        (otmp->speflags& SPEFLAGS_TRAP_FOUND) && otmp->otrapped ? " here.  Investigate the trap further?" : " here.  Check it for traps?", otmp,
                         doname, ansimpleoname, "a box");
 
                     switch (ynq(qbuf))
@@ -6180,21 +6180,32 @@ boolean force;
     boolean confused = (Confusion || Hallucination);
     int ch = 0;
 
-    play_simple_player_sound(MONSTER_SOUND_TYPE_SEARCH);
-    if (iflags.using_gui_sounds)
-        delay_output_milliseconds(10 * ANIMATION_FRAME_INTERVAL);
+    if (!(otmp->speflags & SPEFLAGS_TRAP_FOUND))
+    {
+        play_simple_player_sound(MONSTER_SOUND_TYPE_SEARCH);
+        if (iflags.using_gui_sounds)
+            delay_output_milliseconds(10 * ANIMATION_FRAME_INTERVAL);
+    }
 
     if ((otmp->otrapped
-        && (force || (!confused
+        && (force || (otmp->speflags & SPEFLAGS_TRAP_FOUND) || (!confused
             && rn2(MAXULEV + 1 - u.ulevel) < (MAXULEV / 3))))
         || (!force && confused && !rn2(3)))
     {
         play_sfx_sound(SFX_TRAP_FOUND);
-        You("find a trap on %s!", the(xname(otmp)));
+        if (otmp->speflags & SPEFLAGS_TRAP_FOUND)
+        {
+            pline("You confirm that there is an elaborately constructed trap on %s.", the(xname(otmp)));
+        }
+        else
+        {
+            You("find a trap on %s!", the(xname(otmp)));
+            otmp->speflags |= SPEFLAGS_TRAP_FOUND;
+        }
         if (!confused)
             exercise(A_WIS, TRUE);
 
-        switch (ynq("Disarm it?"))
+        switch (dnq("Disarm or neglect it?"))
         {
         case 'q':
             return 2;
