@@ -2847,7 +2847,7 @@ boolean ininv, dummy, silent;
                 if (ANGRY(shkp))
                 {
                     play_voice_shopkeeper_for_you(shkp, honidx, 0, save_quan);
-                    obj->quan = 1L; /* fool xname() into giving singular */
+                    //obj->quan = 1L; /* fool xname() into giving singular */
                     pline("%s I will charge the full price for %s.\"", buf, save_quan > 1 ? "these items" : "this item");
                         /* " (%ld %s %s %s%s.)" -- , ltmp, currency(ltmp),
                         (save_quan > 1L) ? "per"
@@ -2856,7 +2856,7 @@ boolean ininv, dummy, silent;
                         : "for this",
                         xname(obj),
                         (contentscount && obj->unpaid) ? and_its_contents : "");*/
-                    obj->quan = save_quan;
+                    //obj->quan = save_quan;
 
                 }
                 else
@@ -2878,7 +2878,7 @@ boolean ininv, dummy, silent;
 
                     play_voice_shopkeeper_for_you(shkp, honidx, bidx, save_quan);
 
-                    obj->quan = 1L; /* fool xname() into giving singular */
+                    //obj->quan = 1L; /* fool xname() into giving singular */
                     pline(fmtbuf, buf, save_quan > 1 ? "these" : "this", save_quan > 1 ? "items" : "item");
                     /* ,
                         ltmp, currency(ltmp),
@@ -2888,7 +2888,7 @@ boolean ininv, dummy, silent;
                         : "for this",
                         xname(obj),
                         (contentscount && obj->unpaid) ? and_its_contents : ""); */
-                    obj->quan = save_quan;
+                    //obj->quan = save_quan;
                 }
             }
             else
@@ -4820,6 +4820,9 @@ struct monst *shkp;
     else if (eshk->billct)
     {
         register long total = addupbill(shkp) + eshk->debit;
+
+        if(!Deaf && !muteshk(shkp))
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOUR_BILL_COMES_TO_THIS_AMOUNT);
 
         pline("%s %s that your bill comes to %ld %s.",
               Shknam(shkp),

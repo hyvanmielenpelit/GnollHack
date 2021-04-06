@@ -9669,6 +9669,21 @@ enum shopkeeper_lines line_idx;
         info.parameter_values[0] = max(0, (float)(ESHK(shkp)->shoptype - SHOPBASE));
         info.parameter_names[1] = (char*)0;
         break;
+    case SHOPKEEPER_LINE_THATS_A_DEAL:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THATS_A_DEAL :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THATS_A_DEAL :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_THATS_A_DEAL;
+        break;
+    case SHOPKEEPER_LINE_ON_SECOND_THOUGHT:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_ON_SECOND_THOUGHT :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_ON_SECOND_THOUGHT :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_ON_SECOND_THOUGHT;
+        break;
+    case SHOPKEEPER_LINE_YOUR_BILL_COMES_TO_THIS_AMOUNT:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOUR_BILL_COMES_TO_THIS_AMOUNT :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOUR_BILL_COMES_TO_THIS_AMOUNT :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_YOUR_BILL_COMES_TO_THIS_AMOUNT;
+        break;
     default:
         break;
     }

@@ -5108,9 +5108,15 @@ struct monst* mtmp;
 	ESHK(mtmp)->debit -= costapplyingtodebit;
 
 	if (is_peaceful(mtmp))
+	{
+		play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_THATS_A_DEAL);
 		verbalize("That's a deal. Be more careful next time.");
+	}
 	else
+	{
+		play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_ON_SECOND_THOUGHT);
 		verbalize("On second thought, maybe you should hang for your crimes anyway.");
+	}
 
 	return 1;
 }
