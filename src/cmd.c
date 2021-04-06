@@ -746,6 +746,7 @@ doability(VOID_ARGS)
 		
 
 	int abilitynum = 0;
+    int glyph = 0;
 
 	/* CHARACTER ABILITY INFORMATION */
 	any = zeroany;
@@ -758,8 +759,9 @@ doability(VOID_ARGS)
 
 	any = zeroany;
 	any.a_int = abilitynum + 1;
+    glyph = player_to_glyph_index(urole.rolenum, urace.racenum, flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
 
-	add_menu(win, u_to_glyph(), &any,
+	add_menu(win, glyph, &any,
 		0, 0, ATR_NONE,
 		available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -786,8 +788,9 @@ doability(VOID_ARGS)
 
         any = zeroany;
         any.a_int = abilitynum + 1;
+        glyph = flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum);
 
-        add_menu(win, NO_GLYPH, &any,
+        add_menu(win, glyph, &any,
             0, 0, ATR_NONE,
             available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1084,7 +1087,7 @@ doability(VOID_ARGS)
         )
     {
         any = zeroany;
-        add_menu(win, mon_to_glyph(u.usteed, rn2_on_display_rng), &any,
+        add_menu(win, abs(mon_to_glyph(u.usteed, rn2_on_display_rng)), &any,
             0, 0, iflags.menu_headings,
             "Use Your Steed's Abilities            ", MENU_UNSELECTED);
 
@@ -1166,7 +1169,7 @@ doability(VOID_ARGS)
                 any = zeroany;
                 any.a_int = abilitynum + 1;
 
-                add_menu(win, mon_to_glyph(mtmp, rn2_on_display_rng), &any,
+                add_menu(win, abs(mon_to_glyph(mtmp, rn2_on_display_rng)), &any,
                     0, 0, ATR_NONE,
                     available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
