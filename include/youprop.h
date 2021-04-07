@@ -404,8 +404,9 @@
 #define Invisib (Invis && !See_invisible)
 /* Note: invisibility also hides inventory and steed */
 
+#define HDisplaced u.uprops[DISPLACED].intrinsic
 #define EDisplaced u.uprops[DISPLACED].extrinsic
-#define Displaced EDisplaced
+#define Displaced (HDisplaced || EDisplaced)
 
 #define HStealth u.uprops[STEALTH].intrinsic
 #define EStealth u.uprops[STEALTH].extrinsic

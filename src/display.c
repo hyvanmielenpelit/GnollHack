@@ -837,28 +837,35 @@ struct monst *mon;
 
     if (mon_warning(mon)) 
     {
-        double difficulty_mulplier = context.game_difficulty <= -2 ? 0.707 : context.game_difficulty == -1 ? 0.841 : 
-            context.game_difficulty == 0 ? 1.0 : context.game_difficulty == 1 ? 1.189 : 1.414;
-        double ratio = ((double)mons[mon->mnum].difficulty) / ((double)(max(u.ulevel, 1)));
+        double mon_difficulty = (double)(mon->cham > NON_PM ? max(mons[mon->mnum].difficulty, mons[mon->cham].difficulty) : mons[mon->mnum].difficulty);
+        double warning_threshold[WARNCOUNT] = { 0 };
+        warning_threshold[0] = (double)u.ulevel / 2.3;
+        warning_threshold[1] = max(warning_threshold[0] + 1.0, (double)u.ulevel / 1.7);
+        warning_threshold[2] = max(warning_threshold[1] + 1.0, (double)u.ulevel / 1.3);
+        warning_threshold[4] = max((double)u.ulevel + 1.0, (double)u.ulevel * 1.3);
+        warning_threshold[5] = max(warning_threshold[4] + 1.0, max((double)u.ulevel + 2.0, (double)u.ulevel * 1.7));
+        warning_threshold[6] = max(warning_threshold[5] + 1.0, max((double)u.ulevel + 3.0, (double)u.ulevel * 2.3));
 
         tmp = 3;
-        if (ratio <= difficulty_mulplier / (2.0 * 1.682))
+        if (mon_difficulty <= warning_threshold[0])
             tmp = 0;
-        else if (ratio < difficulty_mulplier / 1.682)
+        else if (mon_difficulty <= warning_threshold[1])
             tmp = 1;
-        else if (ratio < difficulty_mulplier / 1.189)
+        else if (mon_difficulty <= warning_threshold[2])
             tmp = 2;
-        else if (ratio > difficulty_mulplier * (2.0 * 1.682))
+        else if (mon_difficulty >= warning_threshold[6])
             tmp = 6;
-        else if (ratio > difficulty_mulplier * 1.682)
+        else if (mon_difficulty >= warning_threshold[5])
             tmp = 5;
-        else if (ratio > difficulty_mulplier * 1.189)
+        else if (mon_difficulty >= warning_threshold[4])
             tmp = 4;
+
+        tmp = max(0, min(mon_difficulty, tmp));
 
         //tmp = (int) ((ratio + 0.4) / 0.4);    /* match display.h */
         wl = (tmp > WARNCOUNT - 1) ? WARNCOUNT - 1 : tmp;
-		if (wl < 1)
-			wl = 1;
+		if (wl < 0)
+			wl = 0;
     }
     return wl;
 }
