@@ -385,7 +385,7 @@ int mtype;
             /* Random gems */
             for (int i = 0; i < 24; i++)
             {
-                mongets(npc, rnd_class(DILITHIUM_CRYSTAL, LUCKSTONE - 1));
+                mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
             }
         }
     }
