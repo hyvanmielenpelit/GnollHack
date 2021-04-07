@@ -2849,8 +2849,6 @@ SPELL("circle of lightning",	"crystal-studded", None, None, "Damages the monster
       P_ARCANE_SPELL,			 4,  4,			 0, 6, 25, A_INT, 0, 1, 50, 0, 1, NODIR, NODIR_NONE, 2, 10, 6, 0, 1, 10, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_ELEC, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 SPELL("circle of frost",	"pearl-studded", None, None, "Damages the monsters around you with cold",
       P_ARCANE_SPELL,			 4,  4,			 0, 7, 30, A_INT, 0, 1, 50, 0, 1, NODIR, NODIR_NONE, 1, 12, 6, 0, 1, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_COLD, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
-SPELL("globe of invulnerability", "striped", None, "some long-forgotten arcane magic", "Makes the caster invulnerable to physical damage",
-	  P_ARCANE_SPELL,            4,  1,         60, 9,100, A_INT, 0, 0, 100, 0, 1, NODIR, INVULNERABLE, 0, 0, 0, 0, 1, 6, 4, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("anti-magic shell",   "immaculate", None, None, "Grants resistance to magic",
 	P_ARCANE_SPELL,	             4,  1,		   120, 3, 20, A_INT, 0, 0, 100, 0, 1, NODIR, ANTIMAGIC, 0, 0, 0, 0, 10, 6, 25, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("shield",       "obsidian-studded", None, None, "Gives -4 bonus to AC",
@@ -3192,6 +3190,8 @@ SPELL("disjunction",     "scintillating", None, "some long-forgotten arcane magi
 	P_ABJURATION_SPELL,	        2,  8,			 0, 10, 300, A_MAX_INT_WIS, 8, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 4, 4, 4, S1_NO_SOMATIC_COMPONENT | S1_SPELL_BYPASSES_MAGIC_RESISTANCE | S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, CLR_WHITE, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("silence",     "tree-patterned", None, None, "Prohibits the target from making noises and casting spells",
 	P_ABJURATION_SPELL,	        5,  2,			 0, 6, 50, A_MAX_INT_WIS, 12, 3, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 1, 20, 30, S1_NO_SOMATIC_COMPONENT | S1_SPELL_BYPASSES_MAGIC_RESISTANCE, S2_NONE, ALL_TARGETS, AD_NONE, CLR_WHITE, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+SPELL("globe of invulnerability", "striped", None, "some long-forgotten arcane magic", "Makes the caster invulnerable to physical damage",
+	P_ABJURATION_SPELL,         4,  1,          60, 9,100, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, INVULNERABLE, 0, 0, 0, 0, 1, 6, 4, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_NONE, O3_NONE, O4_NONE),
 
 SPELL("touch of death",   "heavy", None, "ancient Stygian magic", "Kills the target upon touch",
 	P_NECROMANCY_SPELL,		    5,  8,			 0, 8, 80, A_WIS, 1, 0, 100, -10, 1, TOUCH, RAY_DEATH, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_DRAY, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
