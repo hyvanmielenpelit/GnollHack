@@ -839,12 +839,12 @@ struct monst *mon;
     {
         double mon_difficulty = (double)(mon->cham > NON_PM ? max(mons[mon->mnum].difficulty, mons[mon->cham].difficulty) : mons[mon->mnum].difficulty);
         double warning_threshold[WARNCOUNT] = { 0 };
-        warning_threshold[0] = (double)u.ulevel / 2.3;
-        warning_threshold[1] = max(warning_threshold[0] + 1.0, (double)u.ulevel / 1.7);
-        warning_threshold[2] = max(warning_threshold[1] + 1.0, (double)u.ulevel / 1.3);
-        warning_threshold[4] = max(warning_threshold[2] + 2.0, max((double)u.ulevel + 1.0, (double)u.ulevel * 1.3));
-        warning_threshold[5] = max(warning_threshold[4] + 1.0, max((double)u.ulevel + 2.0, (double)u.ulevel * 1.7));
-        warning_threshold[6] = max(warning_threshold[5] + 1.0, max((double)u.ulevel + 3.0, (double)u.ulevel * 2.3));
+        warning_threshold[0] = max(0.0, (double)u.ulevel * 0.25);
+        warning_threshold[1] = max(warning_threshold[0] + 1.0, (double)u.ulevel * 0.50);
+        warning_threshold[2] = max(warning_threshold[1] + 1.0, (double)u.ulevel * 0.75);
+        warning_threshold[4] = max(warning_threshold[2] + 2.0, max((double)u.ulevel + 1.0, (double)u.ulevel * 1.25));
+        warning_threshold[5] = max(warning_threshold[4] + 1.0, max((double)u.ulevel + 2.0, (double)u.ulevel * 1.75));
+        warning_threshold[6] = max(warning_threshold[5] + 1.0, max((double)u.ulevel + 3.0, (double)u.ulevel * 2.25));
 
         tmp = 3;
         if (mon_difficulty <= warning_threshold[0])
