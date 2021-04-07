@@ -2621,6 +2621,7 @@ E boolean FDECL(door_blocks_vision_at, (xchar, xchar));
 E boolean FDECL(door_blocks_vision_at_ptr, (struct rm*));
 E boolean FDECL(is_door_normally_without_lock_at, (xchar, xchar));
 E boolean FDECL(is_door_normally_without_lock_at_ptr, (struct rm*));
+E void FDECL(set_initial_location_floortype, (struct rm*, boolean, boolean, boolean, boolean));
 
 /* ### rnd.c ### */
 

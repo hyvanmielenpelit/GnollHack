@@ -410,6 +410,10 @@ typedef struct {
     boolean smoothed, joined;
     xchar lit, walled;
     boolean icedpools;
+    boolean throne_on_ground;
+    boolean fountain_on_ground;
+    boolean fountain_on_grass;
+    boolean tree_on_ground;
 } lev_init;
 
 typedef struct {

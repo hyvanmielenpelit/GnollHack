@@ -671,4 +671,38 @@ struct rm* door;
 
 }
 
+void
+set_initial_location_floortype(lev, fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground)
+struct rm* lev;
+boolean fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground;
+{
+    if (!lev)
+        return;
+
+    if (lev->typ == FOUNTAIN && fountain_on_grass)
+    {
+        lev->floortyp = GRASS;
+        lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+    }
+    else if (lev->typ == FOUNTAIN && fountain_on_ground)
+    {
+        lev->floortyp = GROUND;
+        lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+    }
+    else if (lev->typ == TREE && tree_on_ground)
+    {
+        lev->floortyp = GROUND;
+        lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+    }
+    else if (lev->typ == THRONE && throne_on_ground)
+    {
+        lev->floortyp = GROUND;
+        lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+    }
+    else
+    {
+        lev->floortyp = location_type_definitions[lev->typ].initial_floor_type;
+        lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+    }
+}
 /* rm.c */

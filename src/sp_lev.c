@@ -4198,7 +4198,10 @@ struct sp_coder *coder;
     init_lev.lit = OV_i(lit);
     init_lev.walled = OV_i(walled);
     init_lev.filling = OV_i(filling);
-
+    init_lev.tree_on_ground = coder->tree_on_ground;
+    init_lev.throne_on_ground = coder->throne_on_ground;
+    init_lev.fountain_on_ground = coder->fountain_on_ground;
+    init_lev.fountain_on_grass = coder->fountain_on_grass;
     coder->lvl_is_joined = OV_i(joined);
 
     splev_initlev(&init_lev);
@@ -6691,6 +6694,8 @@ struct sp_coder *coder;
                 struct rm* lev = &levl[x][y];
                 lev->typ = mptyp;
                 lev->subtyp = get_initial_location_subtype(lev->typ);
+                set_initial_location_floortype(lev, coder->fountain_on_grass, coder->fountain_on_ground, coder->tree_on_ground, coder->throne_on_ground);
+#if 0
                 if (mptyp == FOUNTAIN && coder->fountain_on_grass)
                 {
                     lev->floortyp = GRASS;
@@ -6716,6 +6721,7 @@ struct sp_coder *coder;
                     lev->floortyp = location_type_definitions[lev->typ].initial_floor_type;
                     lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
                 }
+#endif
 
                 lev->lit = FALSE;
                 /* clear out levl: load_common_data may set them */
@@ -7855,6 +7861,7 @@ const char *name;
 give_up:
     return result;
 }
+
 
 #ifdef _MSC_VER
  #pragma warning(pop)

@@ -8,15 +8,14 @@
 #define HEIGHT (ROWNO - 1)
 #define WIDTH (COLNO - 2)
 
-STATIC_DCL void FDECL(init_map, (SCHAR_P));
-STATIC_DCL void FDECL(init_fill, (SCHAR_P, SCHAR_P));
+STATIC_DCL void FDECL(init_map, (lev_init*));
+STATIC_DCL void FDECL(init_fill, (lev_init*));
 STATIC_DCL schar FDECL(get_map, (int, int, SCHAR_P));
-STATIC_DCL void FDECL(pass_one, (SCHAR_P, SCHAR_P));
-STATIC_DCL void FDECL(pass_two, (SCHAR_P, SCHAR_P));
-STATIC_DCL void FDECL(pass_three, (SCHAR_P, SCHAR_P));
-STATIC_DCL void FDECL(join_map, (SCHAR_P, SCHAR_P));
-STATIC_DCL void FDECL(finish_map,
-                      (SCHAR_P, SCHAR_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
+STATIC_DCL void FDECL(pass_one, (lev_init*));
+STATIC_DCL void FDECL(pass_two, (lev_init*));
+STATIC_DCL void FDECL(pass_three, (lev_init*));
+STATIC_DCL void FDECL(join_map, (lev_init*));
+STATIC_DCL void FDECL(finish_map, (lev_init*));
 STATIC_DCL void FDECL(remove_room, (unsigned));
 void FDECL(mkmap, (lev_init *));
 
@@ -25,9 +24,10 @@ int min_rx, max_rx, min_ry, max_ry; /* rectangle bounds for regions */
 static int n_loc_filled;
 
 STATIC_OVL void
-init_map(bg_typ)
-schar bg_typ;
+init_map(init_lev)
+lev_init* init_lev;
 {
+    schar bg_typ = init_lev->bg;
     register int i, j;
 
     for (i = 1; i < COLNO; i++)
@@ -35,15 +35,18 @@ schar bg_typ;
         {
             levl[i][j].typ = bg_typ;
             levl[i][j].subtyp = get_initial_location_subtype(bg_typ);
+            if (!IS_FLOOR(levl[i][j].typ))
+                set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
         }
 }
 
 STATIC_OVL void
-init_fill(bg_typ, fg_typ)
-schar bg_typ, fg_typ;
+init_fill(init_lev)
+lev_init* init_lev;
 {
     register int i, j;
     long limit, count;
+    schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
 
     limit = (WIDTH * HEIGHT * 2) / 5;
     count = 0;
@@ -53,6 +56,8 @@ schar bg_typ, fg_typ;
         if (levl[i][j].typ == bg_typ) {
             levl[i][j].typ = fg_typ;
             levl[i][j].subtyp = get_initial_location_subtype(fg_typ);
+            if (!IS_FLOOR(levl[i][j].typ))
+                set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
             count++;
         }
     }
@@ -72,11 +77,12 @@ static int dirs[16] = { -1, -1 /**/, -1, 0 /**/,  -1, 1 /**/, 0, -1 /**/,
                         0,  1 /**/,  1,  -1 /**/, 1,  0 /**/, 1, 1 };
 
 STATIC_OVL void
-pass_one(bg_typ, fg_typ)
-schar bg_typ, fg_typ;
+pass_one(init_lev)
+lev_init* init_lev;
 {
     register int i, j;
     short count, dr;
+    schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
 
     for (i = 2; i <= WIDTH; i++)
         for (j = 1; j < HEIGHT; j++) {
@@ -91,6 +97,8 @@ schar bg_typ, fg_typ;
             case 2:
                 levl[i][j].typ = bg_typ;
                 levl[i][j].subtyp = get_initial_location_subtype(bg_typ);
+                if (!IS_FLOOR(levl[i][j].typ))
+                    set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
                 break;
             case 5:
             case 6:
@@ -98,6 +106,8 @@ schar bg_typ, fg_typ;
             case 8:
                 levl[i][j].typ = fg_typ;
                 levl[i][j].subtyp = get_initial_location_subtype(fg_typ);
+                if (!IS_FLOOR(levl[i][j].typ))
+                    set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
                 break;
             default:
                 break;
@@ -108,11 +118,12 @@ schar bg_typ, fg_typ;
 #define new_loc(i, j) *(new_locations + (((size_t)j) * (size_t)(WIDTH + 1)) + ((size_t)i))
 
 STATIC_OVL void
-pass_two(bg_typ, fg_typ)
-schar bg_typ, fg_typ;
+pass_two(init_lev)
+lev_init* init_lev;
 {
     register int i, j;
     short count, dr;
+    schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
 
     for (i = 2; i <= WIDTH; i++)
         for (j = 1; j < HEIGHT; j++) {
@@ -131,15 +142,18 @@ schar bg_typ, fg_typ;
         {
             levl[i][j].typ = new_loc(i, j);
             levl[i][j].subtyp = get_initial_location_subtype(levl[i][j].typ);
+            if (!IS_FLOOR(levl[i][j].typ))
+                set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
         }
 }
 
 STATIC_OVL void
-pass_three(bg_typ, fg_typ)
-schar bg_typ, fg_typ;
+pass_three(init_lev)
+lev_init* init_lev;
 {
     register int i, j;
     short count, dr;
+    schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
 
     for (i = 2; i <= WIDTH; i++)
         for (j = 1; j < HEIGHT; j++) {
@@ -158,6 +172,8 @@ schar bg_typ, fg_typ;
         {
             levl[i][j].typ = new_loc(i, j);
             levl[i][j].subtyp = get_initial_location_subtype(levl[i][j].typ);
+            if (!IS_FLOOR(levl[i][j].typ))
+                set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
         }
 }
 
@@ -285,10 +301,11 @@ wallify_entire_map()
 }
 
 STATIC_OVL void
-join_map(bg_typ, fg_typ)
-schar bg_typ, fg_typ;
+join_map(init_lev)
+lev_init* init_lev;
 {
     register struct mkroom *croom, *croom2;
+    schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
 
     register int i, j;
     int sx, sy;
@@ -321,6 +338,8 @@ schar bg_typ, fg_typ;
                                 levl[sx][sy].typ = bg_typ;
                                 levl[sx][sy].subtyp = get_initial_location_subtype(bg_typ);
                                 levl[sx][sy].roomno = NO_ROOM;
+                                if (!IS_FLOOR(levl[sx][sy].typ))
+                                    set_initial_location_floortype(&levl[sx][sy], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
                             }
                 }
             }
@@ -359,11 +378,13 @@ joinm:
 }
 
 STATIC_OVL void
-finish_map(fg_typ, bg_typ, lit, walled, icedpools)
-schar fg_typ, bg_typ;
-boolean lit, walled, icedpools;
+finish_map(init_lev)
+lev_init* init_lev;
 {
     int i, j;
+    schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
+    boolean lit = (boolean)init_lev->lit, walled = (boolean)init_lev->walled;
+    boolean icedpools = init_lev->icedpools;
 
     if (walled)
         wallify_entire_map();
@@ -468,7 +489,6 @@ void
 mkmap(init_lev)
 lev_init *init_lev;
 {
-    schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
     boolean smooth = init_lev->smoothed, join = init_lev->joined;
     xchar lit = init_lev->lit, walled = init_lev->walled;
     int i;
@@ -478,26 +498,27 @@ lev_init *init_lev;
 
     new_locations = (char *) alloc((size_t)((WIDTH + 1) * HEIGHT));
 
-    init_map(bg_typ);
-    init_fill(bg_typ, fg_typ);
+    init_map(init_lev);
+    init_fill(init_lev);
 
     for (i = 0; i < N_P1_ITER; i++)
-        pass_one(bg_typ, fg_typ);
+        pass_one(init_lev);
 
     for (i = 0; i < N_P2_ITER; i++)
-        pass_two(bg_typ, fg_typ);
+        pass_two(init_lev);
 
     if (smooth)
         for (i = 0; i < N_P3_ITER; i++)
-            pass_three(bg_typ, fg_typ);
+            pass_three(init_lev);
 
     if (join)
-        join_map(bg_typ, fg_typ);
+        join_map(init_lev);
 
-    finish_map(fg_typ, bg_typ, (boolean) lit, (boolean) walled,
-               init_lev->icedpools);
+    finish_map(init_lev);
+
     /* a walled, joined level is cavernous, not mazelike -dlc */
-    if (walled && join) {
+    if (walled && join)
+    {
         level.flags.is_maze_lev = FALSE;
         level.flags.is_cavernous_lev = TRUE;
     }
