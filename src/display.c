@@ -860,8 +860,6 @@ struct monst *mon;
         else if (mon_difficulty >= warning_threshold[4])
             tmp = 4;
 
-        tmp = max(0, min(mon_difficulty, tmp));
-
         //tmp = (int) ((ratio + 0.4) / 0.4);    /* match display.h */
         wl = (tmp > WARNCOUNT - 1) ? WARNCOUNT - 1 : tmp;
 		if (wl < 0)
