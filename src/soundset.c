@@ -6775,7 +6775,8 @@ enum monster_sound_types sound_type;
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     struct ghsound_immediate_info immediateinfo = { 0 };
-
+    enum immediate_sound_types sfxtype = IMMEDIATE_SOUND_SFX;
+    enum sound_play_groups playgroup = SOUND_PLAY_GROUP_NORMAL;
     enum monster_soundset_types mss = mon->female ? mon->data->female_soundset : mon->data->soundset;
     set_simple_monster_sound_id_and_volume(mss, sound_type, &soundid, &volume);
 
@@ -6783,6 +6784,22 @@ enum monster_sound_types sound_type;
     {
         enum player_soundset_types pss = get_player_soundset();
         set_simple_player_sound_id_and_volume(pss, sound_type, &soundid, &volume);
+    }
+
+    /* Treat potential spoken lines as queueable dialogue */
+    if ((humanoid(mon->data) || is_speaking_monster(mon->data)) && (
+        sound_type == MONSTER_SOUND_TYPE_CREATION
+        || sound_type == MONSTER_SOUND_TYPE_GET_ANGRY
+        || sound_type == MONSTER_SOUND_TYPE_MOLLIFIED
+        || sound_type == MONSTER_SOUND_TYPE_CURSE
+        || sound_type == MONSTER_SOUND_TYPE_MUMBLED_CURSE
+        || sound_type == MONSTER_SOUND_TYPE_YELL
+        || sound_type == MONSTER_SOUND_TYPE_CHAT
+        )
+       )
+    {
+        sfxtype = IMMEDIATE_SOUND_DIALOGUE;
+        playgroup = SOUND_PLAY_GROUP_LONG;
     }
 
     xchar x = isyou ? u.ux : mon->mx, y = isyou ? u.uy : mon->my;
@@ -6800,8 +6817,9 @@ enum monster_sound_types sound_type;
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
-    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
-    immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
+    immediateinfo.sound_type = sfxtype;
+    immediateinfo.play_group = playgroup;
+    immediateinfo.dialogue_mid = mon->m_id;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -9835,129 +9853,6 @@ boolean is_angry;
     info.parameter_names[1] = "PickIndex";
     info.parameter_values[1] = (float)pickindex;
     info.parameter_names[2] = (char*)0;
-
-#if 0
-    if (is_angry)
-    {
-        if (!strcmp(tool_str, "pick") || !strcmp(tool_str, "pick-axe"))
-        {
-            if (cnt > 1)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_PICK_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_PICK_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_PICK_OUTSIDE;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_PICKS_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_PICKS_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_PICKS_OUTSIDE;
-            }
-        }
-        else if (!strcmp(tool_str, "mattock"))
-        {
-            if (cnt > 1)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_MATTOCK_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_MATTOCK_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_MATTOCK_OUTSIDE;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_MATTOCKS_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_MATTOCKS_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_MATTOCKS_OUTSIDE;
-            }
-        }
-        else if (!strcmp(tool_str, "spade"))
-        {
-            if (cnt > 1)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_SPADE_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_SPADE_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_SPADE_OUTSIDE;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_SPADES_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_SPADES_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_SPADES_OUTSIDE;
-            }
-        }
-        else if (!strcmp(tool_str, "digging tool"))
-        {
-            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_DIGGING_TOOLS_OUTSIDE :
-                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_DIGGING_TOOLS_OUTSIDE :
-                GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_DIGGING_TOOLS_OUTSIDE;
-        }
-        else if (!strcmp(tool_str, "steed"))
-        {
-            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_STEED_OUTSIDE :
-                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_STEED_OUTSIDE :
-                GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_STEED_OUTSIDE;
-        }
-    }
-    else
-    {
-        if (!strcmp(tool_str, "pick") || !strcmp(tool_str, "pick-axe"))
-        {
-            if (cnt == 1)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_PICK_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_PICK_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_PICK_OUTSIDE;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_PICKS_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_PICKS_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_PICKS_OUTSIDE;
-            }
-        }
-        else if (!strcmp(tool_str, "mattock"))
-        {
-            if (cnt > 1)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_MATTOCK_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_MATTOCK_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_MATTOCK_OUTSIDE;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_MATTOCKS_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_MATTOCKS_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_MATTOCKS_OUTSIDE;
-            }
-        }
-        else if (!strcmp(tool_str, "spade"))
-        {
-            if (cnt > 1)
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_SPADE_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_SPADE_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_SPADE_OUTSIDE;
-            }
-            else
-            {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_SPADES_OUTSIDE :
-                    shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_SPADES_OUTSIDE :
-                    GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_SPADES_OUTSIDE;
-            }
-        }
-        else if (!strcmp(tool_str, "digging tool"))
-        {
-            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_DIGGING_TOOLS_OUTSIDE :
-                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_DIGGING_TOOLS_OUTSIDE :
-                GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_DIGGING_TOOLS_OUTSIDE;
-        }
-        else if (!strcmp(tool_str, "steed"))
-        {
-            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_STEED_OUTSIDE :
-                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_STEED_OUTSIDE :
-                GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_STEED_OUTSIDE;
-        }
-    }
-#endif
 
     float volume = SHOPKEEPER_BASE_VOLUME;
     if (isok(shkp->mx, shkp->my))
