@@ -842,7 +842,7 @@ struct monst *mon;
         warning_threshold[0] = (double)u.ulevel / 2.3;
         warning_threshold[1] = max(warning_threshold[0] + 1.0, (double)u.ulevel / 1.7);
         warning_threshold[2] = max(warning_threshold[1] + 1.0, (double)u.ulevel / 1.3);
-        warning_threshold[4] = max((double)u.ulevel + 1.0, (double)u.ulevel * 1.3);
+        warning_threshold[4] = max(warning_threshold[2] + 2.0, max((double)u.ulevel + 1.0, (double)u.ulevel * 1.3));
         warning_threshold[5] = max(warning_threshold[4] + 1.0, max((double)u.ulevel + 2.0, (double)u.ulevel * 1.7));
         warning_threshold[6] = max(warning_threshold[5] + 1.0, max((double)u.ulevel + 3.0, (double)u.ulevel * 2.3));
 
