@@ -586,13 +586,16 @@ struct monst *grd;
             if (x != lox && x != hix && y != loy && y != hiy)
                 continue;
 
-            if (!IS_WALL(levl[x][y].typ) && !in_fcorridor(grd, x, y)) {
-                if ((mon = m_at(x, y)) != 0 && mon != grd) {
+            if (!IS_WALL(levl[x][y].typ) && !in_fcorridor(grd, x, y))
+            {
+                if ((mon = m_at(x, y)) != 0 && mon != grd) 
+                {
                     if (is_tame(mon))
                         yelp(mon);
                     (void) rloc(mon, FALSE);
                 }
-                if ((gold = g_at(x, y)) != 0) {
+                if ((gold = g_at(x, y)) != 0) 
+                {
                     move_gold(gold, EGD(grd)->vroom);
                     movedgold = TRUE;
                 }
@@ -625,13 +628,18 @@ struct monst *grd;
 
     update_hearing_array_and_ambient_sounds();
 
-    if (movedgold || fixed) {
+    if (movedgold || fixed)
+    {
         if (in_fcorridor(grd, grd->mx, grd->my) || cansee(grd->mx, grd->my))
             pline("%s whispers an incantation.", noit_Monnam(grd));
         else
             You_hear("a distant chant.");
+
         if (movedgold)
+        {
             pline("A mysterious force moves the gold into the vault.");
+        }
+
         if (fixed)
             pline_The("damaged vault's walls are magically restored!");
     }

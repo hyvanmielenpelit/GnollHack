@@ -528,6 +528,7 @@ boolean iscontrolled;
 	{
         if (!wizard || yn_query("Teleportation is not allowed on this level. Override?") != 'y') 
         {
+            play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);
             pline("A mysterious force prevents you from teleporting!");
             return TRUE;
         }
@@ -1143,13 +1144,17 @@ boolean iscontrolled;
                     }
                 }
                 force_dest = TRUE;
-            } else if ((newlev = lev_by_name(buf)) == 0)
+            } 
+            else if ((newlev = lev_by_name(buf)) == 0)
                 newlev = atoi(buf);
-        } while (!newlev && !digit(buf[0])
+        
+        }
+        while (!newlev && !digit(buf[0])
                  && (buf[0] != '-' || !digit(buf[1])) && trycnt < 10);
 
         /* no dungeon escape via this route */
-        if (newlev == 0) {
+        if (newlev == 0) 
+        {
             if (trycnt >= 10)
                 goto random_levtport;
             if (ynq("Go to Nowhere.  Are you sure?") != 'y')
@@ -1180,7 +1185,8 @@ boolean iscontrolled;
         /* if in Knox and the requested level > 0, stay put.
          * we let negative values requests fall into the "heaven" loop.
          */
-        if (Is_knox(&u.uz) && newlev > 0 && !force_dest) {
+        if (Is_knox(&u.uz) && newlev > 0 && !force_dest)
+        {
             play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
             You1(shudder_for_moment);
             return;
@@ -1218,15 +1224,19 @@ random_levtport:
     if (u.utrap && u.utraptype == TT_BURIEDBALL)
         buried_ball_to_punishment();
 
-    if (!next_to_u() && !force_dest) {
+    if (!next_to_u() && !force_dest) 
+    {
         play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
         You1(shudder_for_moment);
         return;
     }
-    if (In_endgame(&u.uz)) { /* must already be wizard */
+
+    if (In_endgame(&u.uz)) 
+    { /* must already be wizard */
         int llimit = dunlevs_in_dungeon(&u.uz);
 
-        if (newlev >= 0 || newlev <= -llimit) {
+        if (newlev >= 0 || newlev <= -llimit) 
+        {
             You_cant("get there from here.");
             return;
         }
@@ -1234,6 +1244,8 @@ random_levtport:
         newlevel.dlevel = llimit + newlev;
         level_teleport_effect_out(u.ux, u.uy);
         schedule_goto(&newlevel, FALSE, FALSE, TRUE, 0, (char *) 0, (char *) 0);
+        if(isok(u.ux, u.uy))
+            newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
         return;
     }
 
@@ -1244,7 +1256,8 @@ random_levtport:
 
     level_teleport_effect_out(u.ux, u.uy);
 
-    if (newlev < 0 && !force_dest) {
+    if (newlev < 0 && !force_dest) 
+    {
         if (*u.ushops0) {
             /* take unpaid inventory items off of shop bills */
             in_mklev = TRUE; /* suppress map update */
@@ -1303,7 +1316,8 @@ random_levtport:
         /* [dlevel used to be set to 1, but it doesn't make sense to
             teleport out of the dungeon and float or fly down to the
             surface but then actually arrive back inside the dungeon] */
-    } else if (u.uz.dnum == main_dungeon_dnum
+    } 
+    else if (u.uz.dnum == main_dungeon_dnum
                && newlev >= dungeons[u.uz.dnum].depth_start
                                 + dunlevs_in_dungeon(&u.uz)) 
     {
@@ -1313,13 +1327,16 @@ random_levtport:
             if(!find_mapseen(&newlevel))
                 find_hell(&newlevel);
         }
-    } else {
+    }
+    else 
+    {
         /* if invocation did not yet occur, teleporting into
          * the last level of Gehennom is forbidden.
          */
         if (!wizard && Inhell && !u.uevent.invoked
             && newlev >= (dungeons[u.uz.dnum].depth_start
-                          + dunlevs_in_dungeon(&u.uz) - 1)) {
+                          + dunlevs_in_dungeon(&u.uz) - 1)) 
+        {
             newlev = dungeons[u.uz.dnum].depth_start
                      + dunlevs_in_dungeon(&u.uz) - 2;
             pline("Sorry...");
@@ -1339,6 +1356,9 @@ random_levtport:
        call it something, we can't defer until the end of the turn */
     if (u.utotype && !context.mon_moving)
         deferred_goto();
+
+    if (isok(u.ux, u.uy))
+        newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
 }
 
 void
@@ -1397,6 +1417,24 @@ int x, y;
     play_sfx_sound(SFX_LEVEL_TELEPORT);
     special_effect_wait_until_action(0);
     show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
+    force_redraw_at(x, y);
+    flush_screen(1);
+    special_effect_wait_until_end(0);
+}
+
+void
+level_teleport_effect_in(x, y)
+int x, y;
+{
+    boolean isyou = (x == u.ux && y == u.uy);
+    struct layer_info layers = layers_at(x, y);
+    show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
+    force_redraw_at(x, y);
+    flush_screen(1);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 0, x, y, isyou);
+    play_sfx_sound(SFX_LEVEL_TELEPORT);
+    special_effect_wait_until_action(0);
+    show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_MONSTER], LAYER_MONSTER);
     force_redraw_at(x, y);
     flush_screen(1);
     special_effect_wait_until_end(0);
@@ -1731,10 +1769,14 @@ boolean
 tele_restrict(mon)
 struct monst *mon;
 {
-    if (level.flags.noteleport) {
+    if (level.flags.noteleport)
+    {
         if (canseemon(mon))
+        {
+            play_sfx_sound_at_location(SFX_MYSTERIOUS_FORCE_PREVENTS, mon->mx, mon->my);
             pline("A mysterious force prevents %s from teleporting!",
-                  mon_nam(mon));
+                mon_nam(mon));
+        }
         return TRUE;
     }
     return FALSE;

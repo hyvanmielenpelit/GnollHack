@@ -5259,9 +5259,12 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_DISORIENTED_FOR_MOMENT, 1.0f},
         FALSE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_MYSTERIOUS_FORCE_PREVENTS",
+        {GHSOUND_MYSTERIOUS_FORCE_PREVENTS, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
 };
-
-
 
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

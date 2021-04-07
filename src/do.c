@@ -5344,15 +5344,18 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     struct monst *mtmp;
     char whynot[BUFSZ];
     char *annotation;
+	boolean play_arrival_teleport_effect = !!(u.utotype & 0400);
 
     if (dunlev(newlevel) > dunlevs_in_dungeon(newlevel))
         newlevel->dlevel = dunlevs_in_dungeon(newlevel);
-    if (newdungeon && In_endgame(newlevel)) { /* 1st Endgame Level !!! */
+    if (newdungeon && In_endgame(newlevel)) 
+	{ /* 1st Endgame Level !!! */
         if (!u.uhave.amulet)
             return;  /* must have the Amulet */
         if (!wizard) /* wizard ^V can bypass Earth level */
             assign_level(newlevel, &earth_level); /* (redundant) */
     }
+
     new_ledger = ledger_no(newlevel);
     if (new_ledger <= 0)
         done(ESCAPED); /* in fact < 0 is impossible */
@@ -5404,13 +5407,21 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     /* Prevent the player from going past the first quest level unless
      * (s)he has been given the go-ahead by the leader.
      */
-    if (on_level(&u.uz, &qstart_level) && !newdungeon && !ok_to_quest()) {
-        pline("A mysterious force prevents you from descending.");
-        return;
+    if (on_level(&u.uz, &qstart_level) && !newdungeon && !ok_to_quest())
+	{
+		play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);
+		pline("A mysterious force prevents you from descending.");
+		if(play_arrival_teleport_effect)
+			level_teleport_effect_in(u.ux, u.uy);
+		return;
     }
 
-    if (on_level(newlevel, &u.uz))
-        return; /* this can happen */
+	if (on_level(newlevel, &u.uz))
+	{
+		if (play_arrival_teleport_effect)
+			level_teleport_effect_in(u.ux, u.uy);
+		return; /* this can happen */
+	}
 
     /* tethered movement makes level change while trapped feasible */
     if (u.utrap && u.utraptype == TT_BURIEDBALL)
@@ -5464,14 +5475,18 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
      * to avoid dangling timers and light sources.
      */
     cant_go_back = (newdungeon && In_endgame(newlevel));
-    if (!cant_go_back) {
+    if (!cant_go_back) 
+	{
         update_mlstmv(); /* current monsters are becoming inactive */
         bufon(fd);       /* use buffered output */
     }
+
     savelev(fd, ledger_no(&u.uz),
             cant_go_back ? FREE_SAVE : (WRITE_SAVE | FREE_SAVE));
     bclose(fd);
-    if (cant_go_back) {
+
+    if (cant_go_back)
+	{
         /* discard unreachable levels; keep #0 */
         for (l_idx = maxledgerno(); l_idx > 0; --l_idx)
             delete_levelfile(l_idx);
@@ -5487,7 +5502,6 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     /* record this level transition as a potential seen branch unless using
      * some non-standard means of transportation (level teleport).
      */
-	boolean play_arrival_teleport_effect = !!(u.utotype & 0400);
 
     if ((at_stairs || falling || portal) && (u.uz.dnum != newlevel->dnum))
         recbranch_mapseen(&u.uz, newlevel);
@@ -5495,10 +5509,14 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     assign_level(&u.uz, newlevel);
     assign_level(&u.utolev, newlevel);
     u.utotype = 0;
-    if (!builds_up(&u.uz)) { /* usual case */
+
+    if (!builds_up(&u.uz))
+	{ /* usual case */
         if (dunlev(&u.uz) > dunlev_reached(&u.uz))
             dunlev_reached(&u.uz) = dunlev(&u.uz);
-    } else {
+    }
+	else 
+	{
         if (dunlev_reached(&u.uz) == 0
             || dunlev(&u.uz) < dunlev_reached(&u.uz))
             dunlev_reached(&u.uz) = dunlev(&u.uz);
@@ -5510,18 +5528,23 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     (void) memset((genericptr_t) &updest, 0, sizeof updest);
     (void) memset((genericptr_t) &dndest, 0, sizeof dndest);
 
-    if (!(level_info[new_ledger].flags & LFILE_EXISTS)) {
+    if (!(level_info[new_ledger].flags & LFILE_EXISTS)) 
+	{
         /* entering this level for first time; make it now */
-        if (level_info[new_ledger].flags & (FORGOTTEN | VISITED)) {
+        if (level_info[new_ledger].flags & (FORGOTTEN | VISITED))
+		{
             impossible("goto_level: returning to discarded level?");
             level_info[new_ledger].flags &= ~(FORGOTTEN | VISITED);
         }
         mklev();
         new = TRUE; /* made the level */
-    } else {
+    }
+	else 
+	{
         /* returning to previously visited level; reload it */
         fd = open_levelfile(new_ledger, whynot);
-        if (tricked_fileremoved(fd, whynot)) {
+        if (tricked_fileremoved(fd, whynot))
+		{
             /* we'll reach here if running in wizard mode */
             error("Cannot continue this game.");
         }
@@ -5578,7 +5601,8 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
 	}
 	else if (at_stairs && !In_endgame(&u.uz))
 	{
-        if (up) {
+        if (up) 
+		{
             if (at_ladder)
                 u_on_newpos(xdnladder, ydnladder);
             else if (newdungeon)
@@ -5594,21 +5618,29 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
                       Levitation ? "float" : Flying ? "fly" : "climb",
                       (Flying && at_ladder) ? " along" : "",
                       at_ladder ? "ladder" : "stairs");
-        } else { /* down */
+        }
+		else
+		{ /* down */
             if (at_ladder)
                 u_on_newpos(xupladder, yupladder);
             else if (newdungeon)
                 u_on_sstairs(0);
             else
                 u_on_upstairs();
-            if (!u.dz) {
+
+            if (!u.dz) 
+			{
                 ; /* stayed on same level? (no transit effects) */
-            } else if (Flying) {
+            } 
+			else if (Flying) 
+			{
                 if (flags.verbose)
                     You("fly down %s.",
                         at_ladder ? "along the ladder" : "the stairs");
-            } else if (near_capacity() > UNENCUMBERED
-                       || Punished || Fumbling) {
+            } 
+			else if (near_capacity() > UNENCUMBERED
+                       || Punished || Fumbling) 
+			{
                 You("fall down the %s.", at_ladder ? "ladder" : "stairs");
                 if (Punished) {
                     drag_down();
@@ -5623,15 +5655,20 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
                                      : "tumbling down a flight of stairs",
                            KILLED_BY);
                 selftouch("Falling, you");
-            } else { /* ordinary descent */
+            } 
+			else 
+			{ /* ordinary descent */
                 if (flags.verbose)
                     You("%s.", at_ladder ? "climb down the ladder"
                                          : "descend the stairs");
             }
         }
-    } else { /* trap door or level_tele or In_endgame */
+    }
+	else 
+	{ /* trap door or level_tele or In_endgame */
         u_on_rndspot((up ? 1 : 0) | (was_in_W_tower ? 2 : 0));
-        if (falling) {
+        if (falling) 
+		{
             if (Punished)
                 ballfall();
             selftouch("Falling, you");
@@ -5663,7 +5700,8 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     else if (Is_firelevel(&u.uz))
         fumaroles();
 
-    if (level_info[new_ledger].flags & FORGOTTEN) {
+    if (level_info[new_ledger].flags & FORGOTTEN) 
+	{
         forget_map(ALL_MAP); /* forget the map */
         forget_traps();      /* forget all traps too */
         familiar = TRUE;
@@ -5681,6 +5719,8 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
 
 	if (play_arrival_teleport_effect)
 	{
+		level_teleport_effect_in(u.ux, u.uy);
+#if 0
 		struct layer_info layers = layers_at(u.ux, u.uy);
 		show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
 		force_redraw_at(u.ux, u.uy);
@@ -5692,6 +5732,7 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
 		force_redraw_at(u.ux, u.uy);
 		flush_screen(1);
 		special_effect_wait_until_end(0);
+#endif
 	}
 
     /* special levels can have a custom arrival message */
@@ -5844,13 +5885,15 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     (void) pickup(1);
 }
 
+
 STATIC_OVL void
 final_level()
 {
     struct monst *mtmp;
 
     /* reset monster hostility relative to player */
-    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
+	{
         if (DEADMONSTER(mtmp))
             continue;
         reset_hostility(mtmp);
@@ -5913,7 +5956,8 @@ const char *pre_msg, *post_msg;
 void
 deferred_goto()
 {
-    if (!on_level(&u.uz, &u.utolev)) {
+    if (!on_level(&u.uz, &u.utolev))
+	{
         d_level dest;
         int typmask = u.utotype; /* save it; goto_level zeroes u.utotype */
 
@@ -5925,7 +5969,8 @@ deferred_goto()
         if (typmask & 0200) { /* remove portal */
             struct trap *t = t_at(u.ux, u.uy);
 
-            if (t) {
+            if (t)
+			{
                 deltrap(t);
                 newsym(u.ux, u.uy);
             }
@@ -5933,6 +5978,7 @@ deferred_goto()
         if (dfr_post_msg)
             pline1(dfr_post_msg);
     }
+
     u.utotype = 0; /* our caller keys off of this */
     if (dfr_pre_msg)
         free((genericptr_t) dfr_pre_msg), dfr_pre_msg = 0;
@@ -5963,7 +6009,8 @@ struct obj *corpse;
                                CXN_SINGULAR));
     mcarry = (where == OBJ_MINVENT) ? corpse->ocarry : 0;
 
-    if (where == OBJ_CONTAINED) {
+    if (where == OBJ_CONTAINED) 
+	{
         struct monst *mtmp2;
 
         container = corpse->ocontainer;
@@ -5975,8 +6022,10 @@ struct obj *corpse;
     }
     mtmp = revive(corpse, FALSE, -1, FALSE); /* corpse is gone if successful */
 
-    if (mtmp) {
-        switch (where) {
+    if (mtmp) 
+	{
+        switch (where) 
+		{
         case OBJ_INVENT:
             if (is_uwep)
                 pline_The("%s writhes out of your grasp!", cname);

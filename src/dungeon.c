@@ -1738,21 +1738,26 @@ const char *nam;
     mapseen *mseen;
 
     /* look at the player's custom level annotations first */
-    if ((mseen = find_mapseen_by_str(nam)) != 0) {
+    if ((mseen = find_mapseen_by_str(nam)) != 0)
+    {
         dlev = mseen->lev;
-    } else {
+    } 
+    else 
+    {
         /* no matching annotation, check whether they used a name we know */
 
         /* allow strings like "the oracle level" to find "oracle" */
         if (!strncmpi(nam, "the ", 4))
             nam += 4;
-        if ((p = strstri(nam, " level")) != 0 && p == eos((char *) nam) - 6) {
+        if ((p = strstri(nam, " level")) != 0 && p == eos((char *) nam) - 6) 
+        {
             nam = strcpy(buf, nam);
             *(eos(buf) - 6) = '\0';
         }
         /* hell is the old name, and wouldn't match; gehennom would match its
            branch, yielding the castle level instead of valley of the dead */
-        if (!strcmpi(nam, "gehennom") || !strcmpi(nam, "hell")) {
+        if (!strcmpi(nam, "gehennom") || !strcmpi(nam, "hell")) 
+        {
             if (In_V_tower(&u.uz))
                 nam = " to Vlad's tower"; /* branch to... */
             else
@@ -1763,7 +1768,8 @@ const char *nam;
             dlev = slev->dlevel;
     }
 
-    if (mseen || slev) {
+    if (mseen || slev)
+    {
         idx = ledger_no(&dlev);
         if ((dlev.dnum == u.uz.dnum
              /* within same branch, or else main dungeon <-> gehennom */
@@ -1774,23 +1780,28 @@ const char *nam;
             && (/* either wizard mode or else seen and not forgotten */
                 wizard
                 || (level_info[idx].flags & (FORGOTTEN | VISITED))
-                       == VISITED)) {
+                       == VISITED))
+        {
             lev = depth(&dlev);
         }
-    } else { /* not a specific level; try branch names */
+    } 
+    else
+    { /* not a specific level; try branch names */
         idx = find_branch(nam, (struct proto_dungeon *) 0);
         /* "<branch> to Xyzzy" */
         if (idx < 0 && (p = strstri(nam, " to ")) != 0)
             idx = find_branch(p + 4, (struct proto_dungeon *) 0);
 
-        if (idx >= 0) {
+        if (idx >= 0) 
+        {
             idxtoo = (idx >> 8) & 0x00FF;
             idx &= 0x00FF;
             if (/* either wizard mode, or else _both_ sides of branch seen */
                 wizard
                 || ((level_info[idx].flags & (FORGOTTEN | VISITED)) == VISITED
                     && (level_info[idxtoo].flags & (FORGOTTEN | VISITED))
-                           == VISITED)) {
+                           == VISITED)) 
+            {
                 if (ledger_to_dnum(idxtoo) == u.uz.dnum)
                     idx = idxtoo;
                 dlev.dnum = ledger_to_dnum(idx);
