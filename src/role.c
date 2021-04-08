@@ -2654,24 +2654,25 @@ int
 u_to_glyph()
 {
 
-    if (Upolyd)
+    if (Upolyd || (uarmo && uarmo->otyp == MUMMY_WRAPPING))
     {
+        int mnum = Upolyd ? u.umonnum : (uarmo && uarmo->otyp == MUMMY_WRAPPING) ? urace.mummynum : u.umonster;
         return (u.facing_right ? -1 : 1) * 
             (
-                u.action == ACTION_TILE_ATTACK ? (flags.female ? female_attacking_monnum_to_glyph(u.umonnum) : attacking_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_THROW ? (flags.female ? female_throwing_monnum_to_glyph(u.umonnum) : throwing_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_FIRE ? (flags.female ? female_firing_monnum_to_glyph(u.umonnum) : firing_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_CAST_NODIR ? (flags.female ? female_nodir_casting_monnum_to_glyph(u.umonnum) : nodir_casting_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_CAST_DIR ? (flags.female ? female_dir_casting_monnum_to_glyph(u.umonnum) : dir_casting_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_SPECIAL_ATTACK ? (flags.female ? female_special_attacking_monnum_to_glyph(u.umonnum) : special_attacking_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_KICK ? (flags.female ? female_kicking_monnum_to_glyph(u.umonnum) : kicking_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_PASSIVE_DEFENSE ? (flags.female ? female_passive_defense_monnum_to_glyph(u.umonnum) : passive_defense_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_SPECIAL_ATTACK_2 ? (flags.female ? female_special_attacking2_monnum_to_glyph(u.umonnum) : special_attacking2_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_SPECIAL_ATTACK_3 ? (flags.female ? female_special_attacking3_monnum_to_glyph(u.umonnum) : special_attacking3_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_ITEM_USE ? (flags.female ? female_item_using_monnum_to_glyph(u.umonnum) : item_using_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_DOOR_USE ? (flags.female ? female_door_using_monnum_to_glyph(u.umonnum) : door_using_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_DEATH ? (flags.female ? female_dying_monnum_to_glyph(u.umonnum) : dying_monnum_to_glyph(u.umonnum))
-                : ((flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum))));
+                u.action == ACTION_TILE_ATTACK ? (flags.female ? female_attacking_monnum_to_glyph(mnum) : attacking_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_THROW ? (flags.female ? female_throwing_monnum_to_glyph(mnum) : throwing_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_FIRE ? (flags.female ? female_firing_monnum_to_glyph(mnum) : firing_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_CAST_NODIR ? (flags.female ? female_nodir_casting_monnum_to_glyph(mnum) : nodir_casting_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_CAST_DIR ? (flags.female ? female_dir_casting_monnum_to_glyph(mnum) : dir_casting_monnum_to_glyph(u.umonnum))
+                : u.action == ACTION_TILE_SPECIAL_ATTACK ? (flags.female ? female_special_attacking_monnum_to_glyph(mnum) : special_attacking_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_KICK ? (flags.female ? female_kicking_monnum_to_glyph(mnum) : kicking_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_PASSIVE_DEFENSE ? (flags.female ? female_passive_defense_monnum_to_glyph(mnum) : passive_defense_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_SPECIAL_ATTACK_2 ? (flags.female ? female_special_attacking2_monnum_to_glyph(mnum) : special_attacking2_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_SPECIAL_ATTACK_3 ? (flags.female ? female_special_attacking3_monnum_to_glyph(mnum) : special_attacking3_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_ITEM_USE ? (flags.female ? female_item_using_monnum_to_glyph(mnum) : item_using_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_DOOR_USE ? (flags.female ? female_door_using_monnum_to_glyph(mnum) : door_using_monnum_to_glyph(mnum))
+                : u.action == ACTION_TILE_DEATH ? (flags.female ? female_dying_monnum_to_glyph(mnum) : dying_monnum_to_glyph(mnum))
+                : ((flags.female ? female_monnum_to_glyph(mnum) : monnum_to_glyph(mnum))));
     }
 
     int player_role = urole.rolenum;

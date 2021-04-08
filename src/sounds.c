@@ -3137,18 +3137,17 @@ struct monst* mtmp;
 	{
 		play_voice_monster_advice(mtmp, TRUE);
 		if (mtmp->told_rumor)
-			pline("%s answers: \"Let me think. Maybe keep this in mind:\"", Monnam(mtmp));
+			pline("%s answers: \"Let me think. Maybe keep this in mind%s\"", Monnam(mtmp), iflags.using_gui_sounds || Deaf ? "." : ":");
 		else
-			pline("%s answers: \"Yes, here's a piece of advice for you:\"", Monnam(mtmp));
+			pline("%s answers: \"Yes, here's a piece of advice for you%s\"", Monnam(mtmp), iflags.using_gui_sounds || Deaf ? "." : ":");
 
 		/* Tell a rumor */
-		if (iflags.using_gui_sounds)
+		if (iflags.using_gui_sounds || Deaf)
 		{
 			pline("(%s hands an advisory note over to you.) It reads:", Monnam(mtmp));
 			u.uconduct.literate++;
 		}
-		else
-			verbalize("%s", rumor);
+		verbalize("%s", rumor);
 
 		mtmp->told_rumor = TRUE;
 	}
