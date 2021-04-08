@@ -16,7 +16,8 @@ register struct obj *otmp;
     if (otmp->oclass == SPBOOK_CLASS)
         return (10 * (objects[otmp->otyp].oc_spell_level + 2));
 
-    switch (otmp->otyp) {
+    switch (otmp->otyp)
+    {
 #ifdef MAIL
     case SCR_MAIL:
         return 2;
@@ -30,8 +31,6 @@ register struct obj *otmp;
 	case SCR_FIRE:
     case SCR_EARTH:
         return 8;
-	case SCR_PROTECT_ARMOR:
-	case SCR_PROTECT_WEAPON:
 	case SCR_DESTROY_ARMOR:
     case SCR_CREATE_MONSTER:
     case SCR_PUNISHMENT:
@@ -47,6 +46,8 @@ register struct obj *otmp;
     case SCR_ENCHANT_WEAPON:
     case SCR_CHARGING:
         return 16;
+    case SCR_PROTECT_ARMOR:
+    case SCR_PROTECT_WEAPON:
     case SCR_SCARE_MONSTER:
     case SCR_STINKING_CLOUD:
     case SCR_TAMING:

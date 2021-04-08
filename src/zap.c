@@ -8411,7 +8411,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
 	if (origobj && objects[origobj->otyp].oc_aflags & S1_SPELL_EXPLOSION_EFFECT) // (type == ZT_SPELL(ZT_FIRE));
 		isexplosioneffect = TRUE;
     int soundset_id = zaptype;
-	fltxt = flash_types[(type <= -40) ? abstype : abs(type)];
+	fltxt = origobj && object_uses_spellbook_wand_flags_and_properties(origobj) && (OBJ_CONTENT_NAME(origobj->otyp) || origobj->oclass == SPBOOK_CLASS) ?
+        (OBJ_CONTENT_NAME(origobj->otyp) && strcmp(OBJ_CONTENT_NAME(origobj->otyp), "") ? OBJ_CONTENT_NAME(origobj->otyp) : OBJ_NAME(objects[origobj->otyp])) 
+        : flash_types[(type <= -40) ? abstype : abs(type)];
 
     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_CREATE, sx, sy);
     

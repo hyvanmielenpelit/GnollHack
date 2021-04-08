@@ -1048,6 +1048,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_HEALER_FEMALE_CAST_INDIR_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_HEALER_MALE_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE)
+            return GNOLL_HEALER_FEMALE_CAST_INDIR_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
+            return GNOLL_HEALER_MALE_CAST_INDIR_ANIMATION;
         break;
     case ACTION_TILE_CAST_DIR:
         if (roleidx == ROLE_PRIEST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE && alignmentidx == A_LAWFUL)
@@ -1102,6 +1106,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_HEALER_FEMALE_CAST_DIR_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_HEALER_MALE_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
+            return GNOLL_HEALER_MALE_CAST_DIR_ANIMATION;
+        if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_FEMALE)
+            return GNOLL_HEALER_FEMALE_CAST_DIR_ANIMATION;
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)

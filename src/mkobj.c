@@ -1439,7 +1439,7 @@ unsigned long mkflags;
                             boolean low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_VAMPIRE].difficulty);
                             boolean very_low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_BARROW_WIGHT].difficulty - 1);
                             cnm = monsndx(mkclass(rn2(3) && !low_level ? S_VAMPIRE : S_LESSER_UNDEAD, 0));
-                            set_corpsenm(otmp, rn2(3) ? (rn2(3) && cnm > NON_PM ? cnm : very_low_level ? PM_HUMAN_ZOMBIE : PM_BARROW_WIGHT) : NON_PM);
+                            set_corpsenm(otmp, rn2(3) ? (rn2(9) && cnm > NON_PM ? cnm : very_low_level ? PM_HUMAN_ZOMBIE : low_level ? PM_BARROW_WIGHT : PM_SKELETON_WARRIOR) : NON_PM);
                         }
                     }
 
