@@ -2545,17 +2545,25 @@ int reason; /* 0==conversion, 1==helm-of-OA on, 2==helm-of-OA off */
         /* worn helm of opposite alignment might block change */
         if (!uarmh || uarmh->otyp != HELM_OF_OPPOSITE_ALIGNMENT)
             u.ualign.type = u.ualignbase[A_CURRENT];
-        You("have a %ssense of a new direction.",
+
+		play_sfx_sound((u.ualign.type != oldalign) ? SFX_ALIGNMENT_CHANGE_CONVERSION : SFX_BLOCKED_ALIGNMENT_CHANGE);
+		You("have a %ssense of a new direction.",
             (u.ualign.type != oldalign) ? "sudden " : "");
     } else {
         /* putting on or taking off a helm of opposite alignment */
         u.ualign.type = (aligntyp) newalign;
-        if (reason == 1)
-            Your("mind oscillates %s.", Hallucination ? "wildly" : "briefly");
-        else if (reason == 2)
-            Your("mind is %s.", Hallucination
-                                    ? "much of a muchness"
-                                    : "back in sync with your body");
+		if (reason == 1)
+		{
+			play_sfx_sound(SFX_ALIGNMENT_CHANGE_HELM_ON);
+			Your("mind oscillates %s.", Hallucination ? "wildly" : "briefly");
+		}
+		else if (reason == 2)
+		{
+			play_sfx_sound(SFX_ALIGNMENT_CHANGE_HELM_OFF);
+			Your("mind is %s.", Hallucination
+				? "much of a muchness"
+				: "back in sync with your body");
+		}
     }
     if (u.ualign.type != oldalign) {
         u.ualign.record = 0; /* slate is wiped clean */
