@@ -957,7 +957,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
                lookup loop) but it is possible to know and cast a spell
                after forgetting its book due to amnesia. */
             for (sp_no = 0; sp_no < MAXSPELL; sp_no++)
-                if (spl_book[sp_no].sp_id == SPE_TELEPORT_MONSTER)
+                if (spl_book[sp_no].sp_id == SPE_TELEPORT_SELF)
                     break;
 
             /* casting isn't inhibited by being Stunned (...it ought to be) */
