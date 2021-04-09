@@ -6278,7 +6278,21 @@ int duration;
 	{
         play_sfx_sound(SFX_ACQUIRE_CANCELLATION);
         You_feel("your magic is not flowing properly.");
-		incr_itimeout(&HCancelled, duration);
+
+        /* Remove all buffs */
+        boolean was_flying = !!Flying;
+        for (int i = 1; i < MAX_PROPS; i++)
+        {
+            if ((u.uprops[i].intrinsic & TIMEOUT) && (property_definitions[i].pflags & PROPFLAGS_BUFF_CANCELLABLE))
+            {
+                u.uprops[i].intrinsic &= ~TIMEOUT;
+                property_expiry_message(i, was_flying);
+            }
+        }
+
+
+        /* Add cancellation debuff */
+        incr_itimeout(&HCancelled, duration);
 		context.botl = context.botlx = TRUE;
 
         if (Upolyd) { /* includes lycanthrope in creature form */
@@ -6304,6 +6318,11 @@ int duration;
 	{
 		boolean viseffect = increase_mon_property_b(mdef, CANCELLED, duration, TRUE);
 		break_charm(mdef, TRUE);
+        for (int i = 1; i < MAX_PROPS; i++)
+        {
+            if((mdef->mprops[i] & M_TIMEOUT) && (property_definitions[i].pflags & PROPFLAGS_BUFF_CANCELLABLE))
+                set_mon_property_verbosely(mdef, i, 0);
+        }
 
         if (viseffect && obj && obj->oclass == WAND_CLASS)
             makeknown(obj->otyp);

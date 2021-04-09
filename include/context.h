@@ -157,7 +157,6 @@ struct context_info
     int made_temple_count;
     int made_armory_box_count;
     char used_names[BUFSIZ * 32];
-	struct prop_info properties[LAST_PROP + 1]; /* here until a better place can be found */
     boolean encounter_appeared[256];
 	int shop_identify_type;
     int npc_identify_type;

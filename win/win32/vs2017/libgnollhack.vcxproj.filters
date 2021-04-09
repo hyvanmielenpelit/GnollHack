@@ -482,6 +482,9 @@
     <ClCompile Include="..\..\..\src\priest.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\prop.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\quest.c">
       <Filter>Source Files</Filter>
     </ClCompile>

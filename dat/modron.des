@@ -59,7 +59,8 @@ MONSTER:('M',"modron duodrone"),(15,06),hostile,waitforu
 MONSTER:('M',"modron monodrone"),(16,06),hostile,waitforu
 
 # Central room guard
-MONSTER:('M',"modron pentadrone"),(21,09),hostile,waitforu
+BRAZIER:(21,09)
+MONSTER:('M',"modron pentadrone"),(21,08),hostile,waitforu
 MONSTER:('M',"modron tridrone"),(13,09),hostile,waitforu
 MONSTER:('M',"modron tridrone"),(14,09),hostile,waitforu
 MONSTER:('M',"modron tridrone"),(21,07),hostile,waitforu
@@ -81,11 +82,10 @@ MONSTER:('M',"modron quadrone"),(26,14),hostile,waitforu
 MONSTER:('M',"modron quadrone"),(16,12),hostile,waitforu
 MONSTER:('M',"modron quadrone"),(16,14),hostile,waitforu
 CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:5,(21,13),no_pickup {
-        OBJECT:('?', "conflict")
-        OBJECT:('(', "jar of prodigious healing salve")
-        OBJECT:('*', "dilithium crystal"),quantity:(1d3)
-        OBJECT:('=', "free action")
-        OBJECT:('!', "paralysis"),quantity:(1d3)
+    OBJECT:random_contents
+    OBJECT:random_contents
+    [50%]:OBJECT:random_contents
+    [50%]:OBJECT:random_contents
 }
 
 # Five quintons and their pentadrone bodyguards
@@ -103,6 +103,7 @@ MONSTER:('M',"modron pentadrone"),(09,08),hostile,waitforu
 MONSTER:('M',"modron quinton"),(33,08),waitforu,hostile {
     OBJECT:('(', "skeleton key")
     OBJECT:('9', "modronite cube")
+    [50%]:OBJECT:random_contents
 }
 MONSTER:('M',"modron pentadrone"),(32,08),hostile,waitforu
 
@@ -111,8 +112,8 @@ MONSTER:('M',"modron quinton"),(11,12),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(12,11),hostile,waitforu
 CONTAINER:('(',"chest"),(08,11),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:4
-        [50%]:OBJECT:('*', "dilithium crystal")
-        [50%]:OBJECT:('?', "enchant weapon")
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
 }
 
 # 5: Treasure room chest key holder
@@ -120,9 +121,8 @@ MONSTER:('M',"modron quinton"),(31,12),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(30,11),hostile,waitforu
 CONTAINER:('(',"chest"),(34,11),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:5
-        OBJECT:('!', "full healing")
-        [50%]:OBJECT:('*', "dilithium crystal")
-        [50%]:OBJECT:('?', "enchant accessory")
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
 }
 
 
@@ -180,6 +180,10 @@ DOOR:locked,(29,10),subtype:door_magic,keytype:"magic key"
 # Middle room
 REGION:(22,09,26,11),lit,"temple" floortype:floor_marble
 ALTAR:(24,10),neutral,shrine,montype:"monk"
+BRAZIER:(20,07)
+BRAZIER:(28,07)
+BRAZIER:(20,13)
+BRAZIER:(28,13)
 
 MONSTER:('M',"modron quadrone"),(20,07),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(28,07),waitforu,hostile
@@ -197,9 +201,9 @@ MONSTER:('M',"modron quarton"),(08,06),waitforu,hostile {
 MONSTER:('M',"modron quadrone"),(09,06),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(09,07),waitforu,hostile
 CONTAINER:('(',"chest"),(06,05),no_pickup {
-        OBJECT:('(', "geometric key"),special_quality:3
-        OBJECT:('(', "horn of chaos")
-        [50%]:OBJECT:('*', "dilithium crystal")
+    OBJECT:('(', "geometric key"),special_quality:3
+    [50%]:OBJECT:random_contents
+    [50%]:OBJECT:random_contents
 }
 
 
@@ -216,8 +220,8 @@ MONSTER:('M',"modron quadrone"),(39,13),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(39,14),waitforu,hostile
 CONTAINER:('(',"chest"),(42,15),no_pickup {
     OBJECT:('9', "modronite tetrahedron")
-    OBJECT:('*', "dilithium crystal"),quantity:(1d2)
-    [50%]:OBJECT:('?', "enchant weapon"),blessed
+    [50%]:OBJECT:random_contents
+    [50%]:OBJECT:random_contents
 }
 
 
@@ -263,7 +267,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAA:::::::::::::AAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAA::::::::::---::::::::::AAAAAAAAAAAAAA
 AAAAAAAAAA::::::::::::---.---::::::::::::AAAAAAAAAA
-AAAAAAA::::::T::::::---..\..---::::::T::::::AAAAAAA
+AAAAAAA::::::T::::::---.....---::::::T::::::AAAAAAA
 AAAAA:::::::::::::---.|.....|.---:::::::::::::AAAAA
 AAAA::::::::::::---...+.....+...---::::::::::::AAAA
 AAA:::::::::::---.....---+---.....---:::::::::::AAA
@@ -271,7 +275,7 @@ AA::::T:::::-----+-----.....-----+-----:::::T::::AA
 AA::::::::---.....|...|.....|...|.....---::::::::AA
 A:::::::---.......|...+.....+...|.......---:::::::A
 A:::::---.........-----.....-----.........---:::::A
-A:::---.\.........S..|{.....{|..S.........\.---:::A
+A:::---...........S..|{.....{|..S...........---:::A
 A:-----------------+--F-----F--+-----------------:A
 AA:::::::::::::::::::::::::::::::::::::::::::::::AA
 AAAAA::::::::::::::::::-.-.-::::::::::::::::::AAAAA
@@ -290,6 +294,7 @@ TELEPORT_REGION:(19,09,21,10),(0,0,0,0),down
 MODRON_PORTAL:(20,09),level_teleporter,teleport_up,matching_portal,tetrahedral,inactive
 MODRON_PORTAL:(30,09),level_teleporter,teleport_down,matching_portal,cylindrical,inactive
 
+
 DOOR:closed,(25,07),subtype:door_modron
 DOOR:locked,(22,10),subtype:door_modron,keytype:"geometric key",special_quality:3,non_passdoor
 DOOR:closed,(19,13),subtype:door_modron,secret_door
@@ -305,29 +310,28 @@ DOOR:locked,(28,10),subtype:door_modron,keytype:"geometric key",special_quality:
 MONSTER:('M',"modron tertian"),(25,04),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(24,05),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(26,05),waitforu,hostile
+BRAZIER:(25,04)
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(25,03),no_pickup {
-        OBJECT:('8', "wings of flying")
-        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
-        OBJECT:('?', "enchant accessory"),quantity:(1d2),blessed
-        OBJECT:('!', "full healing")
         OBJECT:random_contents
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
 }
 
 MONSTER:('M',"modron tertian"),(10,12),waitforu,hostile
+BRAZIER:(08,12)
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(07,12),no_pickup {
         OBJECT:('9', "modronite monopole")
-        OBJECT:('/', "cancellation")
-        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
+        [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
 }
 MONSTER:('M',"modron tridrone"),(11,11),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(12,12),waitforu,hostile
 
 MONSTER:('M',"modron tertian"),(40,12),waitforu,hostile
+BRAZIER:(42,12)
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(43,12),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:2
-        OBJECT:('/', "identify")
-        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
+        [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
 }
 MONSTER:('M',"modron tridrone"),(39,11),waitforu,hostile
@@ -344,16 +348,18 @@ MONSTER:('M',"modron tridrone"),(25,12),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(27,12),waitforu,hostile
 
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(20,12),no_pickup {
-        OBJECT:('(', "magic marker")
-        OBJECT:('?', "enchant armor"),quantity:(1d2),blessed
-        OBJECT:('!', "greater rejuvenation"),quantity:(1d2)
+        OBJECT:random_contents
+        OBJECT:random_contents
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
 }
 
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(30,12),no_pickup {
-        OBJECT:artifact
-        OBJECT:('?', "enchant weapon"),quantity:(1d2),blessed
-        OBJECT:('?', "conflict"),quantity:(1d2)
+        OBJECT:random_contents
+        OBJECT:random_contents
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
 }
 
@@ -387,7 +393,7 @@ AAAA:::::::T:::::::T:::::::T::::-.-.-.-.-::::T:::::::T:::::::T:::::::AAAA
 AAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::AAA
 AA::---------F-------------------F-----F-------------------F---------::AA
 A:::|...........+.....+.......|.....|.....|.......+.....+...........|:::A
-A:::|..\........|-----|.......+.....|.....+.......|-----|........\..|:::A
+A:::|...........|-----|.......+.....|.....+.......|-----|...........|:::A
 A:::|...........+..|..+.......|.....|.....|.......+..|..+...........|:::A
 AA::---------F------+------------F-----F------------+------F---------::AA
 AAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::AAA
@@ -444,21 +450,23 @@ MONSTER:('M',"modron pentadrone"),(26,11),waitforu,hostile
 MONSTER:('M',"modron secundus"),(65,10),waitforu,hostile {
         OBJECT:('(', "magic key"),special_quality:1
 }
-
+BRAZIER:(62,10)
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(54,11),no_pickup {
         OBJECT:('9', "modronite sphere")
-        OBJECT:('?', "charging"),quantity:(1+(1d2)),blessed
-        OBJECT:('!', "full healing")
-        OBJECT:random_contents
+        OBJECT:class_treasure_armor
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
 }
 
 MONSTER:('M',"modron secundus"),(07,10),waitforu,hostile
+BRAZIER:(09,10)
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(18,11),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:1
-        OBJECT:artifact
-        OBJECT:('?', "conflict"),quantity:(1+(1d2)),blessed
-        OBJECT:('!', "super-heroism")
-        OBJECT:random_contents
+        OBJECT:class_treasure_weapon
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
 }
 
 DOOR:locked,(42,10),subtype:door_modron,keytype:"geometric key",special_quality:2,non_passdoor
@@ -577,14 +585,14 @@ MONSTER:('M',"Modron Primus"),(16,07),waitforu,hostile {
 # Treasures
 CONTAINER:('(',"golden chest"),locked,keytype:('(',"geometric key"),special_quality:8,(11,07),no_pickup {
         OBJECT:artifact
-        OBJECT:('*', "dilithium crystal"),quantity:(2+(2d3))
+        OBJECT:('*', "dilithium crystal")
 }
 CONTAINER:('(',"golden chest"),locked,keytype:('(',"geometric key"),special_quality:8,(21,07),no_pickup {
         OBJECT:('+', "Book of Modron"),name:"The Prime Codex"
         OBJECT:('+', "call hierarch modron")
 }
-OBJECT:class_treasure_armor,(04,07)
-OBJECT:class_treasure_weapon,(28,07)
+OBJECT:random,(04,07)
+OBJECT:random,(28,07)
 
 ¤ Unused test cases
 #LEVER:(01,01),lever_effect_create_trap,target:(02,02),switchable,continuously_usable,traptype:"modron portal",subtype:octahedral

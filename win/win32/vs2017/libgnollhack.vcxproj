@@ -313,6 +313,7 @@
     <ClCompile Include="..\..\..\src\potion.c" />
     <ClCompile Include="..\..\..\src\pray.c" />
     <ClCompile Include="..\..\..\src\priest.c" />
+    <ClCompile Include="..\..\..\src\prop.c" />
     <ClCompile Include="..\..\..\src\quest.c" />
     <ClCompile Include="..\..\..\src\questpgr.c" />
     <ClCompile Include="..\..\..\src\read.c" />

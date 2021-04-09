@@ -2469,6 +2469,9 @@ E void NDECL(clearsmiths);
 E void FDECL(restsmith, (struct monst*, BOOLEAN_P));
 E int FDECL(smith_move, (struct monst*));
 
+/* ### props.c ### */
+E void NDECL(props_init);
+
 /* ### quest.c ### */
 
 E void NDECL(onquest);
@@ -3172,6 +3175,8 @@ E int NDECL(wiz_timeout_queue);
 E void NDECL(timer_sanity_check);
 E const char* FDECL(get_property_name, (int));
 E void FDECL(make_sound_object, (ANY_P*, long));
+E void FDECL(property_expiry_message, (int, boolean));
+
 
 /* ### topten.c ### */
 
@@ -3259,7 +3264,6 @@ E int FDECL(get_shooting_trap_object, (struct trap*));
 /* ### u_init.c ### */
 
 E void NDECL(u_init);
-E void NDECL(props_init);
 E void NDECL(u_skills_init);
 
 /* ### uhitm.c ### */

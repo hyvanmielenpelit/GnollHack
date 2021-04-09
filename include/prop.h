@@ -187,9 +187,10 @@ enum prop_types {
 	UNDEAD_CONTROL    = 163,
 	CANCELLATION_RESISTANCE = 164,
 	HALF_SLOW_DIGESTION = 165,
-    LAUGHING		  = 166 //KEEP THIS LAST
+    LAUGHING		  = 166,
+    MAX_PROPS = 167
 };
-#define LAST_PROP (LAUGHING)
+#define LAST_PROP (MAX_PROPS - 1)
 
 /*** Where the properties come from ***/
 /* Definitions were moved here from obj.h and you.h */
@@ -271,17 +272,26 @@ struct prop_color {
     uchar r, g, b;
 };
 struct prop_info {
-    Bitfield(recurring, 1);			/* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
+    char prop_tile_name[60];
+
     Bitfield(show_buff, 1);
     Bitfield(buff_text_needs_background, 1);
-    struct prop_color buff_text_color;
-    struct prop_color buff_bk_color;
+    Bitfield(recurring, 1);			/* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
 
     short recurring_constant;
     short recurring_random;
 
-    char prop_tile_name[40];
+    struct prop_color buff_text_color;
+    struct prop_color buff_bk_color;
+
+    unsigned long pflags;
 };
+
+#define PROPFLAGS_NONE                  0x00000000UL
+#define PROPFLAGS_BUFF_CANCELLABLE      0x00000001UL
+
+
+extern struct prop_info property_definitions[MAX_PROPS];
 
 /*** Definitions for backwards compatibility ***/
 #define LEFT_RING W_RINGL

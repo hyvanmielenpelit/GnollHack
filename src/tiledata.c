@@ -1804,8 +1804,8 @@ uchar* tilemapflags;
             for (int j = 0; j < smalltilenum; j++)
             {
                 int propidx = i * BUFFS_PER_TILE + j + 1;
-                if(context.properties[propidx].show_buff && context.properties[propidx].prop_tile_name && strcmp(context.properties[propidx].prop_tile_name, ""))
-                    Sprintf(eos(buf), ",%s", context.properties[propidx].prop_tile_name);
+                if(property_definitions[propidx].show_buff && property_definitions[propidx].prop_tile_name && strcmp(property_definitions[propidx].prop_tile_name, ""))
+                    Sprintf(eos(buf), ",%s", property_definitions[propidx].prop_tile_name);
                 else
                     Sprintf(eos(buf), ",%s", "no_buff");
             }

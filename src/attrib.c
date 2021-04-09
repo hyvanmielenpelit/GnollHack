@@ -863,7 +863,7 @@ update_extrinsics()
 	{
 		struct prop *upp = &u.uprops[i];
 
-		if ((upp->intrinsic & TIMEOUT) > 0 && context.properties[i].recurring && !(upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
+		if ((upp->intrinsic & TIMEOUT) > 0 && property_definitions[i].recurring && !(upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
 		{
 			upp->intrinsic = 0;
 		}

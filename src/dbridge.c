@@ -1021,7 +1021,7 @@ boolean is_disintegrated;
     {
         play_sfx_sound_at_location(SFX_DRAWBRIDGE_LOUD_CRASH, x, y);
         if (cansee(x, y))
-            pline_The("drawbridge disintegrates!");
+            pline_The("drawbridge shatters!");
         else
             You_hear("a loud *CRASH*!");
 

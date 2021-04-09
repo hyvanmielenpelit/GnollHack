@@ -1678,10 +1678,10 @@ update_monster_timouts()
 		/* recurring properties */
 		for (int i = 1; i <= LAST_PROP; i++)
 		{
-			if ((mtmp->mprops[i] & M_TIMEOUT) == 0 && context.properties[i].recurring && (mtmp->mprops[i] & ~M_TIMEOUT))
+			if ((mtmp->mprops[i] & M_TIMEOUT) == 0 && property_definitions[i].recurring && (mtmp->mprops[i] & ~M_TIMEOUT))
 			{
 				increase_mon_property(mtmp, i, 
-					context.properties[i].recurring_constant + (context.properties[i].recurring_random > 0 ? rn2(context.properties[i].recurring_random + 1) : 0)
+					property_definitions[i].recurring_constant + (property_definitions[i].recurring_random > 0 ? rn2(property_definitions[i].recurring_random + 1) : 0)
 				);
 			}
 		}

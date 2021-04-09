@@ -447,7 +447,7 @@ HACKCSRC = allmain.c animation.c animdef.c alloc.c apply.c artifact.c attrib.c b
 	   mkmaze.c mkobj.c mkroom.c mon.c mondata.c monmove.c monst.c \
 	   mplayer.c mthrowu.c muse.c music.c npc.c o_init.c objects.c objnam.c \
 	   options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
-	   priest.c quest.c questpgr.c read.c rect.c region.c restore.c \
+	   priest.c prop.c quest.c questpgr.c read.c rect.c region.c restore.c \
 	   rip.c rm.c rnd.c role.c rumors.c save.c shk.c shknam.c sit.c sounds.c soundset.c \
 	   sp_lev.c spell.c steal.c steed.c sys.c teleport.c tiledata.c timeout.c \
 	   topten.c track.c trap.c u_init.c \
@@ -1063,6 +1063,7 @@ polyself.o: polyself.c $(HACK_H)
 potion.o: potion.c $(HACK_H)
 pray.o: pray.c $(HACK_H)
 priest.o: priest.c $(HACK_H) ../include/mfndpos.h
+prop.o: prop.c $(HACK_H)
 quest.o: quest.c $(HACK_H) ../include/qtext.h
 questpgr.o: questpgr.c $(HACK_H) ../include/dlb.h ../include/qtext.h
 read.o: read.c $(HACK_H)
