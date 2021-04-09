@@ -1722,13 +1722,11 @@ register struct obj* obj;
 					Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
 					Strcat(buf, plusbuf);
 				}
-				if (dicemult > 1.0)
-				{
-					char slnbuf[BUFSZ] = "";
-					skill_level_name(P_WAND, slnbuf, FALSE);
-					*slnbuf = lowc(*slnbuf);
-					Sprintf(eos(buf), " (%.fx - %s at %s)",  dicemult, slnbuf, skill_name(P_WAND, TRUE));
-				}
+
+				char slnbuf[BUFSZ] = "";
+				skill_level_name(P_WAND, slnbuf, FALSE);
+				*slnbuf = lowc(*slnbuf);
+				Sprintf(eos(buf), " (%.1fx, %s in %s)", dicemult, slnbuf, skill_name(P_WAND, TRUE));
 
 				txt = buf;
 				putstr(datawin, 0, txt);

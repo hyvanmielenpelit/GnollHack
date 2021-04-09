@@ -460,7 +460,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(54,1
 }
 
 MONSTER:('M',"modron secundus"),(07,10),waitforu,hostile
-BRAZIER:(09,10)
+BRAZIER:(10,10)
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(18,11),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:1
         OBJECT:class_treasure_weapon
