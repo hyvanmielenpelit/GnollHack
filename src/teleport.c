@@ -43,7 +43,8 @@ unsigned long gpflags;
         && (!u.usteed || mtmp != u.usteed))
         return FALSE;
 
-    if (mtmp) {
+    if (mtmp) 
+    {
         struct monst *mtmp2 = m_at(x, y);
 
         /* Be careful with long worms.  A monster may be placed back in
@@ -60,16 +61,28 @@ unsigned long gpflags;
             return FALSE;
 
         mdat = mtmp->data;
-        if (is_pool(x, y) && !ignorewater) {
+        if (is_pool(x, y) && !ignorewater) 
+        {
             if (mtmp == &youmonst)
                 return (Levitation || Flying || Wwalking || Swimming
                         || Amphibious);
             else
                 return (is_flying(mtmp) || is_levitating(mtmp) || has_swimming(mtmp)
                         || is_clinger(mdat));
-        } else if (mdat->mlet == S_EEL && rn2(13) && !ignorewater) {
+        } 
+        else if (In_modron_level(&u.uz) && IS_AIR(levl[x][y].typ))
+        {
+            if (mtmp == &youmonst)
+                return (Levitation || Flying || is_incorporeal(youmonst.data));
+            else
+                return (is_flying(mtmp) || is_levitating(mtmp) || is_incorporeal(mdat));
+        }
+        else if (mdat->mlet == S_EEL && rn2(13) && !ignorewater)
+        {
             return FALSE;
-        } else if (is_lava(x, y)) {
+        } 
+        else if (is_lava(x, y)) 
+        {
             if (mtmp == &youmonst)
                 return (Levitation || Flying
                         || (Fire_immunity && Wwalking && uarmf
@@ -84,7 +97,9 @@ unsigned long gpflags;
         if (amorphous(mdat) && closed_door(x, y))
             return TRUE;
     }
-    if (!accessible(x, y)) {
+
+    if (!accessible(x, y)) 
+    {
         if (!(is_pool(x, y) && ignorewater))
             return FALSE;
     }
@@ -236,12 +251,12 @@ teleok(x, y, trapok)
 register int x, y;
 boolean trapok;
 {
-	if (!trapok) {
+	if (!trapok) 
+    {
 		/* allow teleportation onto vibrating square, it's not a real trap */
 		struct trap* trap = t_at(x, y);
 
-		if (trap && !(trap_type_definitions[trap->ttyp].tdflags & TRAPDEF_FLAGS_TELEOK)
-            )
+		if (trap && !(trap_type_definitions[trap->ttyp].tdflags & TRAPDEF_FLAGS_TELEOK))
 			return FALSE;
 	}
 	if (!goodpos(x, y, &youmonst, 0))

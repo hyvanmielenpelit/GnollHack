@@ -2440,10 +2440,17 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
             if (nx == x && ny == y)
                 continue;
             ntyp = levl[nx][ny].typ;
+
             if (IS_ROCK(ntyp)
                 && !((flag & ALLOW_WALL) && may_passwall(nx, ny))
                 && !((IS_TREE(ntyp) ? treeok : rockok) && may_dig(nx, ny)))
                 continue;
+
+            if (IS_AIR(ntyp) && In_modron_level(&u.uz)
+                && !(is_flying(mon) || is_levitating(mon) || is_incorporeal(mon->data))
+                )
+                continue;
+
             /* KMH -- Added iron bars */
             if (ntyp == IRONBARS
                 && (!(flag & ALLOW_BARS)
@@ -2481,7 +2488,8 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                         && !m_at(nx, ny) && (nx != u.ux || ny != u.uy))))
                 continue;
             if ((is_pool(nx, ny) == wantpool || poolok)
-                && (lavaok || !is_lava(nx, ny))) {
+                && (lavaok || !is_lava(nx, ny))) 
+            {
                 int dispx, dispy;
                 boolean monseeu = (!is_blinded(mon)
                                    && (!Invis || has_see_invisible(mon)));
@@ -2490,10 +2498,13 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                 /* Displacement also displaces the Elbereth/scare monster,
                  * as long as you are visible.
                  */
-                if (Displaced && monseeu && mon->mux == nx && mon->muy == ny) {
+                if (Displaced && monseeu && mon->mux == nx && mon->muy == ny) 
+                {
                     dispx = u.ux;
                     dispy = u.uy;
-                } else {
+                }
+                else 
+                {
                     dispx = nx;
                     dispy = ny;
                 }
