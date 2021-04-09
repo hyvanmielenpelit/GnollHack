@@ -2473,7 +2473,7 @@ E void NDECL(clearsmiths);
 E void FDECL(restsmith, (struct monst*, BOOLEAN_P));
 E int FDECL(smith_move, (struct monst*));
 
-/* ### props.c ### */
+/* ### prop.c ### */
 E void NDECL(props_init);
 
 /* ### quest.c ### */
