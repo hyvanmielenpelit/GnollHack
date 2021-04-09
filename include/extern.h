@@ -3561,6 +3561,7 @@ E int FDECL(wand_skill_hit_bonus, (int));
 E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
 E int FDECL(martial_arts_multishot_percentage_chance, (int));
 E int FDECL(get_skill_critical_strike_chance, (enum p_skills, boolean));
+E int FDECL(get_wand_damage_multiplier, (boolean));
 E int FDECL(get_exceptionality_multiplier, (int));
 
 /* ### were.c ### */
@@ -3833,7 +3834,7 @@ E int FDECL(get_displayed_object_type_from_subdir_type, (int));
 E int FDECL(stone_to_flesh_obj, (struct obj*));
 E int FDECL(mon_to_zombie, (int));
 E int FDECL(mon_to_mummy, (int));
-E int FDECL(get_spell_damage, (int, struct monst*));
+E int FDECL(get_spell_damage, (int, struct monst*, struct monst*));
 E int FDECL(get_maximum_applicable_spell_damage_level, (int, struct monst*));
 
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
