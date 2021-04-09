@@ -256,7 +256,7 @@ MONSTER:('m',"giant mimic"),$place[3],m_feature "fountain"
 # The demon of the swamp
 MONSTER:('&',"Juiblex"),(25,08)
 CONTAINER:('(',"oilskin sack"),buried,(25,08) {
-   OBJECT:('$',"gold piece"),quantity:(7000+(6d1000))
+   OBJECT:('$',"gold piece"),quantity:(2000+(3d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
    OBJECT:random_contents
@@ -502,7 +502,7 @@ MONSTER:('&',"Orcus"),(33,15)
   OBJECT:('(',"ornamental key"),special_quality:4
 }
 CONTAINER:('(',"chest"),trapped,locked,(32,15),keytype:('(',"ornamental key"),special_quality:4,no_pickup {
-   OBJECT:('$',"gold piece"),quantity:(12000+(6d1000))
+   OBJECT:('$',"gold piece"),quantity:(3000+(3d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
    OBJECT:random_contents
@@ -603,7 +603,7 @@ MONSTER:('&',"Dispater"),(12,07) {
    OBJECT:('(',"ornamental key"),special_quality:3
 }
 CONTAINER:('(',"chest"),trapped,locked,(12,07),keytype:('(',"ornamental key"),special_quality:3,no_pickup {
-   OBJECT:('$',"gold piece"), quantity:(12000+(6d1000))
+   OBJECT:('$',"gold piece"), quantity:(2500+(3d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
    OBJECT:random_contents
@@ -785,7 +785,7 @@ MONSTER:('&',"Baalzebub"),(35,06) {
   OBJECT:('(',"ornamental key"),special_quality:5
 }
 CONTAINER:('(',"chest"),trapped,locked,(35,06),keytype:('(',"ornamental key"),special_quality:5,no_pickup {
-   OBJECT:('$',"gold piece"), quantity:(17000+(6d1000))
+   OBJECT:('$',"gold piece"), quantity:(3500+(3d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
    OBJECT:random_contents
