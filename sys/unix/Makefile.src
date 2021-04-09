@@ -513,7 +513,7 @@ HOBJ = $(FIRSTOBJ) allmain.o alloc.o animation.o apply.o artifact.o attrib.o bal
 	mcastu.o mhitm.o mhitu.o minion.o mklev.o mkmap.o \
 	mkmaze.o mkobj.o mkroom.o mon.o mondata.o monmove.o \
 	mplayer.o mthrowu.o muse.o music.o npc.o o_init.o objnam.o options.o \
-	pager.o pickup.o pline.o polyself.o potion.o pray.o priest.o \
+	pager.o pickup.o pline.o polyself.o potion.o pray.o priest.o prop.o \
 	quest.o questpgr.o read.o rect.o region.o restore.o rip.o rm.o rnd.o \
 	role.o rumors.o save.o shk.o shknam.o sit.o sounds.o soundset.o sp_lev.o spell.o \
 	sys.o \
