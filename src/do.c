@@ -1700,6 +1700,7 @@ register struct obj* obj;
 		{
 			if (objects[otyp].oc_spell_dmg_dice > 0 || objects[otyp].oc_spell_dmg_diesize > 0 || objects[otyp].oc_spell_dmg_plus != 0)
 			{
+				int dicemult = get_wand_damage_multiplier(FALSE);
 				boolean maindiceprinted = FALSE;
 				char plusbuf[BUFSZ];
 				Sprintf(buf, "Wand effect damage:     ");
@@ -1707,7 +1708,7 @@ register struct obj* obj;
 				if (objects[otyp].oc_spell_dmg_dice > 0 && objects[otyp].oc_spell_dmg_diesize > 0)
 				{
 					maindiceprinted = TRUE;
-					Sprintf(plusbuf, "%dd%d", objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize);
+					Sprintf(plusbuf, "%dd%d", objects[otyp].oc_spell_dmg_dice * dicemult, objects[otyp].oc_spell_dmg_diesize);
 					Strcat(buf, plusbuf);
 				}
 
@@ -1721,6 +1722,14 @@ register struct obj* obj;
 					Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
 					Strcat(buf, plusbuf);
 				}
+				if (dicemult > 1)
+				{
+					char slnbuf[BUFSZ] = "";
+					skill_level_name(P_WAND, slnbuf, FALSE);
+					*slnbuf = lowc(*slnbuf);
+					Sprintf(eos(buf), " (%dx - %s at %s)",  dicemult, slnbuf, skill_name(P_WAND, TRUE));
+				}
+
 				txt = buf;
 				putstr(datawin, 0, txt);
 
