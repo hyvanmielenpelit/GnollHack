@@ -1821,13 +1821,19 @@ struct monst *mtmp;
     struct permonst *pm = mtmp->data;
     int difficulty = mons[(monsndx(pm))].difficulty;
 
-    if (is_animal(pm) || attacktype(pm, AT_EXPL) || mindless(mtmp->data)
+    if (is_animal(pm) || attacktype(pm, AT_EXPL) || mindless(mtmp->data) || is_modron(mtmp->data)
         || pm->mlet == S_GHOST || pm->mlet == S_KOP)
         return 0;
+
+#if 0
     if (difficulty > 7 && !rn2(35))
         return WAN_DEATH;
-    switch (rn2(9 - (difficulty < 4) + 4 * (difficulty > 6))) {
-    case 0: {
+#endif
+
+    switch (rn2(9 - (difficulty < 4) + 4 * (difficulty > 6))) 
+    {
+    case 0: 
+    {
         struct obj *helmet = which_armor(mtmp, W_ARMH);
 
         if ((helmet && is_metallic(helmet)) || amorphous(pm)
