@@ -4081,8 +4081,8 @@ int spell;
 
     /* Calculate success chance */
 
-	chance = -45;
-	chance += -60 * (spellev(spell) + 1);
+	chance = -130;
+	chance += -60 * (spellev(spell) + 0);
 
     /*
      * High level spells are harder.  Easier for higher level casters.
@@ -4090,7 +4090,7 @@ int spell;
      * in that spell type.
      */
     skill = P_SKILL_LEVEL(spell_skilltype(spellid(spell)));
-	level_multiplier = skill < P_BASIC ? 5L : 5L * (long)skill;
+	level_multiplier = skill < P_BASIC ? 1L : 1L * (long)skill;
 
 	long bonus = 0L;
 	bonus += 15L * (long)statused;
