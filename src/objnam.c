@@ -1291,7 +1291,7 @@ unsigned doname_flags;
             Strcat(prefix, "uncursed ");
     }
 
-    if ((obj->speflags & SPEFLAGS_TRAP_FOUND) && obj->otrapped && Is_box(obj))
+    if ((obj->speflags & SPEFLAGS_TRAP_STATUS_KNOWN) && obj->otrapped && Is_box(obj))
         Strcat(prefix, "trapped ");
 
     if (lknown && Is_box(obj)) 

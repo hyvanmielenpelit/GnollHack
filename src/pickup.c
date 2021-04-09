@@ -1771,15 +1771,11 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
 
         cobj->lknown = 1;
 
-        if (flags.autounlock && has_box_normal_lock(cobj)
+        if (flags.autounlock
             && cobj->where == OBJ_FLOOR && cobj->ox == u.ux && cobj->oy == u.uy)
         {
             struct obj* carried_key = 0;
-            if ((carried_key = carrying(SKELETON_KEY)) != 0
-                || (carried_key = carrying(LOCK_PICK)) != 0
-                || (carried_key = carrying(CREDIT_CARD)) != 0
-                || (carried_key = carrying(MASTER_KEY)) != 0
-                )
+            if ((carried_key = carrying_fitting_unlocking_tool_for_box(cobj)) != 0)
             {
                 if (carried_key)
                 {
@@ -2990,6 +2986,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
         return 1;
     }
     obj->lknown = 1;
+    obj->speflags |= SPEFLAGS_TRAP_STATUS_KNOWN;
 
     current_container = obj; /* for use by in/out_container */
     /*

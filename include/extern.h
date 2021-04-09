@@ -1256,6 +1256,8 @@ E struct obj* FDECL(otyp_in_objchn, (int, struct obj*));
 E struct obj *FDECL(nxtobj, (struct obj *, int, BOOLEAN_P));
 E struct obj *FDECL(carrying, (int));
 E struct obj* NDECL(carrying_leashed_leash);
+E struct obj* FDECL(carrying_fitting_unlocking_tool_for_box, (struct obj*));
+E struct obj* FDECL(carrying_fitting_unlocking_tool_for_door, (struct rm*));
 E boolean NDECL(have_lizard);
 E struct obj *NDECL(u_have_novel);
 E struct obj *FDECL(o_on, (unsigned int, struct obj *));
@@ -1386,6 +1388,8 @@ E int NDECL(doclose);
 #ifdef ANDROID
 E void FDECL(lock_mouse_cursor, (boolean));
 #endif
+E boolean FDECL(key_fits_the_box_lock, (struct obj*, struct obj*));
+E boolean FDECL(key_fits_the_door_lock, (struct obj*, struct rm*));
 
 #ifdef MAC
 /* These declarations are here because the main code calls them. */

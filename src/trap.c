@@ -5978,7 +5978,7 @@ boolean force;
                 if (Is_box(otmp)) 
                 {
                     (void) safe_qbuf(qbuf, "There is ",
-                        (otmp->speflags& SPEFLAGS_TRAP_FOUND) && otmp->otrapped ? " here.  Investigate the trap further?" : " here.  Check it for traps?", otmp,
+                        (otmp->speflags& SPEFLAGS_TRAP_STATUS_KNOWN) && otmp->otrapped ? " here.  Investigate the trap further?" : " here.  Check it for traps?", otmp,
                                      doname, ansimpleoname, "a box");
 
                     switch (ynq(qbuf)) 
@@ -6137,10 +6137,10 @@ boolean force;
         if (boxcnt)
         {
             for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
-                if (Is_box(otmp))
+                if (Is_box(otmp) && !((otmp->speflags & SPEFLAGS_TRAP_STATUS_KNOWN) && !otmp->otrapped))
                 {
                     (void)safe_qbuf(qbuf, "There is ",
-                        (otmp->speflags& SPEFLAGS_TRAP_FOUND) && otmp->otrapped ? " here.  Investigate the trap further?" : " here.  Check it for traps?", otmp,
+                        (otmp->speflags& SPEFLAGS_TRAP_STATUS_KNOWN) && otmp->otrapped ? " here.  Investigate the trap further?" : " here.  Check it for traps?", otmp,
                         doname, ansimpleoname, "a box");
 
                     switch (ynq(qbuf))
@@ -6180,7 +6180,7 @@ boolean force;
     boolean confused = (Confusion || Hallucination);
     int ch = 0;
 
-    if (!(otmp->speflags & SPEFLAGS_TRAP_FOUND))
+    if (!(otmp->speflags & SPEFLAGS_TRAP_STATUS_KNOWN))
     {
         play_simple_player_sound(MONSTER_SOUND_TYPE_SEARCH);
         if (iflags.using_gui_sounds)
@@ -6188,19 +6188,19 @@ boolean force;
     }
 
     if ((otmp->otrapped
-        && (force || (otmp->speflags & SPEFLAGS_TRAP_FOUND) || (!confused
+        && (force || (otmp->speflags & SPEFLAGS_TRAP_STATUS_KNOWN) || (!confused
             && rn2(MAXULEV + 1 - u.ulevel) < (MAXULEV / 3))))
         || (!force && confused && !rn2(3)))
     {
         play_sfx_sound(SFX_TRAP_FOUND);
-        if (otmp->speflags & SPEFLAGS_TRAP_FOUND)
+        if (otmp->speflags & SPEFLAGS_TRAP_STATUS_KNOWN)
         {
             pline("You confirm that there is an elaborately constructed trap on %s.", the(xname(otmp)));
         }
         else
         {
             You("find a trap on %s!", the(xname(otmp)));
-            otmp->speflags |= SPEFLAGS_TRAP_FOUND;
+            otmp->speflags |= SPEFLAGS_TRAP_STATUS_KNOWN;
         }
         if (!confused)
             exercise(A_WIS, TRUE);
@@ -6504,6 +6504,7 @@ boolean disarm;
     if (get_obj_location(obj, &cc.x, &cc.y, 0)) /* might be carried */
         obj->ox = cc.x, obj->oy = cc.y;
 
+    otmp->speflags |= SPEFLAGS_TRAP_STATUS_KNOWN; /* You found it by triggering it! */
     otmp->otrapped = 0; /* trap is one-shot; clear flag first in case
                            chest kills you and ends up in bones file */
     play_sfx_sound(SFX_CHEST_TRAP_TRIGGER);

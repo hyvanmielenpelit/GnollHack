@@ -2014,6 +2014,37 @@ carrying_leashed_leash()
     return (struct obj*)0;
 }
 
+
+struct obj *
+carrying_fitting_unlocking_tool_for_box(box)
+struct obj* box;
+{
+    if (!box)
+        return (struct obj*)0;
+
+    register struct obj *otmp;
+
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+        if (is_unlocking_tool(otmp) && key_fits_the_box_lock(otmp, box))
+            return  otmp;
+    return (struct obj *) 0;
+}
+
+struct obj*
+carrying_fitting_unlocking_tool_for_door(door)
+struct rm* door;
+{
+    if (!door)
+        return (struct obj*)0;
+
+    register struct obj* otmp;
+
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+        if (is_unlocking_tool(otmp) && key_fits_the_door_lock(otmp, door))
+            return  otmp;
+    return (struct obj*)0;
+}
+
 /* Fictional and not-so-fictional currencies.
  * http://concord.wikia.com/wiki/List_of_Fictional_Currencies
  */

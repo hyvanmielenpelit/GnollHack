@@ -262,6 +262,46 @@ picklock(VOID_ARGS)
     return ((xlock.usedtime = 0));
 }
 
+boolean
+key_fits_the_box_lock(key, box)
+struct obj *key, *box;
+{
+    if (!key || !box)
+        return FALSE;
+
+    if (has_box_normal_lock(box)
+        && (key->otyp == SKELETON_KEY || key->otyp == CREDIT_CARD || key->otyp == LOCK_PICK))
+    {
+        return TRUE;
+    }
+    else if (box->keyotyp != key->otyp || box->special_quality != key->special_quality)
+    {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+boolean
+key_fits_the_door_lock(key, door)
+struct obj* key;
+struct rm* door;
+{
+    if (!key || !door)
+        return FALSE;
+
+    if (has_door_normal_lock_at_ptr(door)
+        && (key->otyp == SKELETON_KEY || key->otyp == CREDIT_CARD || key->otyp == LOCK_PICK))
+    {
+        return TRUE;
+    }
+    else if (door->key_otyp != key->otyp || door->special_quality != key->special_quality)
+    {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+
 void
 breakchestlock(box, destroyit)
 struct obj *box;
@@ -1006,14 +1046,10 @@ int x, y;
         {
             play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_TRY_LOCKED);
             update_u_action_revert(ACTION_TILE_NO_ACTION);
-            if (flags.autounlock && has_door_normal_lock_at_ptr(door))
+            if (flags.autounlock)
             {
                 struct obj* carried_key = 0;
-                if ((carried_key = carrying(SKELETON_KEY)) != 0
-                    || (carried_key = carrying(LOCK_PICK)) != 0
-                    || (carried_key = carrying(CREDIT_CARD)) != 0
-                    || (carried_key = carrying(MASTER_KEY)) != 0
-                    )
+                if ((carried_key = carrying_fitting_unlocking_tool_for_door(door)) != 0)
                 {
                     if (carried_key)
                     {
