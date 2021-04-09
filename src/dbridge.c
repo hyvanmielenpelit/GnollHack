@@ -291,7 +291,7 @@ boolean flag;
     if (lava)
         lev1flags |= DB_LAVA;
 
-    full_location_transform(x, y, lev1typ, 0, lev1flags, 0, 0, levl[x][y].typ, levl[x][y].subtyp, FALSE, lev1horizontal, 0, 0, FALSE);
+    full_location_transform(x, y, lev1typ, 0, lev1flags, 0, 0, levl[x][y].floortyp, levl[x][y].floorsubtyp, FALSE, lev1horizontal, 0, 0, FALSE);
     full_location_transform(x2, y2, lev2typ, 0, lev2flags, 0, 0, ROOM, get_initial_location_subtype(ROOM), FALSE, lev2horizontal, 0, 0, FALSE);
 
     return  TRUE;
@@ -980,7 +980,8 @@ boolean is_disintegrated;
     get_wall_for_db(&x2, &y2);
     lev2 = &levl[x2][y2];
     if ((lev1->drawbridgemask & DB_UNDER) == DB_MOAT
-        || (lev1->drawbridgemask & DB_UNDER) == DB_LAVA) {
+        || (lev1->drawbridgemask & DB_UNDER) == DB_LAVA) 
+    {
         struct obj *otmp2;
         boolean lava = (lev1->drawbridgemask & DB_UNDER) == DB_LAVA;
 
@@ -1000,7 +1001,8 @@ boolean is_disintegrated;
                 else if (!Deaf)
                     You_hear("a loud *SPLASH*!");
             }
-            else {
+            else 
+            {
                 if (cansee(x, y))
                     pline_The("drawbridge collapses into the %s!",
                         lava ? hliquid("lava") : "moat");
@@ -1014,14 +1016,16 @@ boolean is_disintegrated;
             obj_extract_self(otmp2);
             (void) flooreffects(otmp2, x, y, "fall");
         }
-    } else {
+    }
+    else
+    {
         play_sfx_sound_at_location(SFX_DRAWBRIDGE_LOUD_CRASH, x, y);
         if (cansee(x, y))
             pline_The("drawbridge disintegrates!");
         else
             You_hear("a loud *CRASH*!");
 
-        int trtyp = ((lev1->drawbridgemask & DB_ICE) ? ICE : ROOM);
+        int trtyp = ((lev1->drawbridgemask & DB_ICE) ? ICE : GROUND);
         int trsubtyp = get_initial_location_subtype(trtyp);
         full_location_transform(x, y, trtyp, trsubtyp, ((lev1->drawbridgemask & DB_ICE) ? ICED_MOAT : 0), 0, 0, lev1->floortyp, lev1->floorsubtyp, FALSE, FALSE, 0, 0, FALSE);
     }
@@ -1055,9 +1059,11 @@ boolean is_disintegrated;
         u.uevent.uopened_dbridge = TRUE;
 
     set_entity(x2, y2, etmp2); /* currently only automissers can be here */
-    if (etmp2->edata) {
+    if (etmp2->edata)
+    {
         e_inview = e_canseemon(etmp2);
-        if (!automiss(etmp2)) {
+        if (!automiss(etmp2)) 
+        {
             if (e_inview)
                 pline("%s blown apart by flying debris.",
                       E_phrase(etmp2, "are"));
@@ -1069,27 +1075,37 @@ boolean is_disintegrated;
         } /* nothing which is vulnerable can survive this */
     }
     set_entity(x, y, etmp1);
-    if (etmp1->edata) {
+    if (etmp1->edata)
+    {
         e_inview = e_canseemon(etmp1);
-        if (e_missed(etmp1, TRUE)) {
+        if (e_missed(etmp1, TRUE))
+        {
             debugpline1("%s spared!", E_phrase(etmp1, "are"));
             /* if there is water or lava here, fall in now */
             if (is_u(etmp1))
                 spoteffects(FALSE);
             else
                 (void) minliquid(etmp1->emon);
-        } else {
-            if (e_inview) {
+        }
+        else 
+        {
+            if (e_inview) 
+            {
                 if (!is_u(etmp1) && Hallucination)
                     pline("%s into some heavy metal!",
                           E_phrase(etmp1, "get"));
                 else
                     pline("%s hit by a huge chunk of metal!",
                           E_phrase(etmp1, "are"));
-            } else {
-                if (!Deaf && !is_u(etmp1) && !is_pool(x, y)) {
+            } 
+            else
+            {
+                if (!Deaf && !is_u(etmp1) && !is_pool(x, y)) 
+                {
                     You_hear("a crushing sound.");
-                } else {
+                }
+                else 
+                {
                     debugpline1("%s from shrapnel", E_phrase(etmp1, "die"));
                 }
             }

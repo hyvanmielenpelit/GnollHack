@@ -3962,9 +3962,12 @@ struct obj *otmp;
 register int rx, ry;
 boolean pushing;
 {
-    if (!otmp || otmp->otyp != BOULDER) {
+    if (!otmp || otmp->otyp != BOULDER) 
+	{
         impossible("Not a boulder?");
-    } else if (!Is_waterlevel(&u.uz) && is_pool_or_lava(rx, ry)) {
+    }
+	else if (!Is_waterlevel(&u.uz) && is_pool_or_lava(rx, ry)) 
+	{
         boolean lava = is_lava(rx, ry), fills_up;
         const char *what = waterbody_name(rx, ry);
         schar ltyp = levl[rx][ry].typ;
@@ -4006,9 +4009,12 @@ boolean pushing;
                 /* no splashing in this case */
             }
         }
-        if (!fills_up || !pushing) { /* splashing occurs */
-            if (!u.uinwater) {
-                if (pushing ? !Blind : cansee(rx, ry)) {
+        if (!fills_up || !pushing) 
+		{ /* splashing occurs */
+            if (!u.uinwater)
+			{
+                if (pushing ? !Blind : cansee(rx, ry)) 
+				{
                     There("is a large splash as %s %s the %s.",
                           the(xname(otmp)), fills_up ? "fills" : "falls into",
                           what);
@@ -4017,13 +4023,16 @@ boolean pushing;
                 wake_nearto(rx, ry, 40);
             }
 
-            if (fills_up && u.uinwater && distu(rx, ry) == 0) {
+            if (fills_up && u.uinwater && distu(rx, ry) == 0) 
+			{
                 u.uinwater = 0;
                 docrt();
                 vision_full_recalc = 1;
 				play_environment_ambient_sounds();
 				You("find yourself on dry land again!");
-            } else if (lava && distu(rx, ry) <= 2) {
+            }
+			else if (lava && distu(rx, ry) <= 2)
+			{
                 int dmg;
                 You("are hit by molten %s%c",
                     hliquid("lava"), Fire_immunity ? '.' : '!');
@@ -4031,7 +4040,8 @@ boolean pushing;
                 dmg = d(3, 6);
                 losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), /* lava damage */
                        "molten lava", KILLED_BY);
-            } else if (!fills_up && flags.verbose
+            }
+			else if (!fills_up && flags.verbose
                        && (pushing ? !Blind : cansee(rx, ry)))
                 pline("It sinks without a trace!");
         }

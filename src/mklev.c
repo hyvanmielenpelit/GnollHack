@@ -2291,6 +2291,7 @@ int dist;
     case 4: /* pools (aka a wide moat) */
     case 5:
         lev->typ = MOAT;
+        lev->subtyp = get_initial_location_subtype(MOAT);
         /* No kelp! */
         break;
     default:

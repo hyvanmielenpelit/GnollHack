@@ -9007,9 +9007,12 @@ const char *msg;
 
     if (!msg)
         msg = "The ice crackles and melts.";
-    if (lev->typ == DRAWBRIDGE_UP || lev->typ == DRAWBRIDGE_DOWN) {
+    if (lev->typ == DRAWBRIDGE_UP || lev->typ == DRAWBRIDGE_DOWN)
+    {
         lev->drawbridgemask &= ~DB_ICE; /* revert to DB_MOAT */
-    } else { /* lev->typ == ICE */
+    } 
+    else 
+    { /* lev->typ == ICE */
 #ifdef STUPID
         if (lev->icedpool == ICED_POOL)
             lev->typ = POOL;
@@ -9028,10 +9031,13 @@ const char *msg;
     newsym(x, y);
     if (cansee(x, y))
         Norep("%s", msg);
-    if ((otmp = sobj_at(BOULDER, x, y)) != 0) {
+    if ((otmp = sobj_at(BOULDER, x, y)) != 0) 
+    {
         if (cansee(x, y))
             pline("%s settles...", An(xname(otmp)));
-        do {
+
+        do 
+        {
             obj_extract_self(otmp); /* boulder isn't being pushed */
             if (!boulder_hits_pool(otmp, x, y, FALSE))
                 impossible("melt_ice: no pool?");
@@ -9039,6 +9045,7 @@ const char *msg;
         } while (is_pool(x, y) && (otmp = sobj_at(BOULDER, x, y)) != 0);
         newsym(x, y);
     }
+
     if (x == u.ux && y == u.uy)
         spoteffects(TRUE); /* possibly drown, notice objects */
     else if (is_pool(x, y) && (mtmp = m_at(x, y)) != 0)
@@ -9070,7 +9077,8 @@ long min_time; /* <x,y>'s old melt timeout (deleted by time we get here) */
 
     /* if we're within MAX_ICE_TIME, install a melt timer;
        otherwise, omit it to leave this ice permanent */
-    if (when <= MAX_ICE_TIME) {
+    if (when <= MAX_ICE_TIME) 
+    {
         where = ((long) x << 16) | (long) y;
         (void) start_timer((long) when, TIMER_LEVEL, MELT_ICE_AWAY,
                            long_to_any(where));
@@ -9119,10 +9127,12 @@ short exploding_wand_typ;
     boolean see_it = cansee(x, y), yourzap;
     int rangemod = 0, abstype = abs(type) % 10;
 
-    switch (abstype) {
+    switch (abstype)
+    {
     case ZT_FIRE:
         t = t_at(x, y);
-        if (t && t->ttyp == WEB) {
+        if (t && t->ttyp == WEB) 
+        {
             /* a burning web is too flimsy to notice if you can't see it */
             if (see_it)
                 Norep("A web bursts into flames!");
@@ -9130,20 +9140,28 @@ short exploding_wand_typ;
             if (see_it)
                 newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
         }
-        if (is_ice(x, y)) {
+
+        if (is_ice(x, y)) 
+        {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BURNT);
             melt_ice(x, y, (char *) 0);
-        } else if (is_pool(x, y)) {
+        } 
+        else if (is_pool(x, y))
+        {
             const char *msgtxt = "You hear hissing gas.";
 
-            if (lev->typ != POOL) { /* MOAT or DRAWBRIDGE_UP */
+            if (lev->typ != POOL)
+            { /* MOAT or DRAWBRIDGE_UP */
                 play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_LITTLE_BURNT);
                 if (see_it)
                     msgtxt = "Some water evaporates.";
-            } else {
+            } 
+            else
+            {
                 rangemod -= 3;
                 play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BURNT);
-                create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, FALSE);
+                create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : GROUND, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, FALSE);
+                /* Wand of fire leaves pits */
                 t = maketrap(x, y, PIT, NON_PM, MKTRAP_NO_FLAGS);
                 if (t)
                     t->tseen = 1;
@@ -9153,7 +9171,9 @@ short exploding_wand_typ;
             Norep("%s", msgtxt);
             if (lev->typ == ROOM)
                 newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
-        } else if (IS_FOUNTAIN(lev->typ)) {
+        }
+        else if (IS_FOUNTAIN(lev->typ))
+        {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BURNT);
             if (see_it)
                 pline("Steam billows from the fountain.");
@@ -9163,34 +9183,44 @@ short exploding_wand_typ;
         break; /* ZT_FIRE */
 
     case ZT_COLD:
-        if (is_pool(x, y) || is_lava(x, y)) {
+        if (is_pool(x, y) || is_lava(x, y)) 
+        {
             boolean lava = is_lava(x, y),
                     moat = is_moat(x, y);
 
-            if (lev->typ == WATER) {
+            if (lev->typ == WATER) 
+            {
                 /* For now, don't let WATER freeze. */
                 if (see_it)
                     pline_The("%s freezes for a moment.", hliquid("water"));
                 else
                     You_hear("a soft crackling.");
                 rangemod -= 1000; /* stop */
-            } else {
+            } 
+            else 
+            {
                 char buf[BUFSZ];
                 play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_FROZEN);
                 Strcpy(buf, waterbody_name(x, y)); /* for MOAT */
                 rangemod -= 3;
-                if (lev->typ == DRAWBRIDGE_UP) {
+                if (lev->typ == DRAWBRIDGE_UP) 
+                {
                     lev->drawbridgemask &= ~DB_UNDER; /* clear lava */
                     lev->drawbridgemask |= (lava ? DB_GROUND : DB_ICE);
-                } else {
+                } 
+                else 
+                {
                     lev->icedpool = lava ? 0
                                          : (lev->typ == POOL) ? ICED_POOL
                                                               : ICED_MOAT;
                     lev->typ = lava ? GROUND : ICE;
                     lev->subtyp = 0;
                 }
+
                 bury_objs(x, y);
-                if (see_it) {
+
+                if (see_it) 
+                {
                     if (lava)
                         Norep("The %s cools and solidifies.", hliquid("lava"));
                     else if (moat)
@@ -9201,44 +9231,58 @@ short exploding_wand_typ;
                 } else if (!lava)
                     You_hear("a crackling sound.");
 
-                if (x == u.ux && y == u.uy) {
-                    if (u.uinwater) { /* not just `if (Underwater)' */
+                if (x == u.ux && y == u.uy) 
+                {
+                    if (u.uinwater) 
+                    { /* not just `if (Underwater)' */
                         /* leave the no longer existent water */
                         u.uinwater = 0;
                         u.uundetected = 0;
                         docrt();
                         vision_full_recalc = 1;
                         play_environment_ambient_sounds();
-                    } else if (u.utrap && u.utraptype == TT_LAVA) {
-                        if (Passes_walls) {
+                    }
+                    else if (u.utrap && u.utraptype == TT_LAVA)
+                    {
+                        if (Passes_walls)
+                        {
                             You("pass through the now-solid rock.");
                             reset_utrap(TRUE);
-                        } else {
+                        }
+                        else 
+                        {
                             set_utrap(rn1(50, 20), TT_INFLOOR);
                             You("are firmly stuck in the cooling rock.");
                         }
                     }
-                } else if ((mon = m_at(x, y)) != 0) {
+                } 
+                else if ((mon = m_at(x, y)) != 0) 
+                {
                     /* probably ought to do some hefty damage to any
                        non-ice creature caught in freezing water;
                        at a minimum, eels are forced out of hiding */
-                    if (is_swimmer(mon->data) && mon->mundetected) {
+                    if (is_swimmer(mon->data) && mon->mundetected) 
+                    {
                         mon->mundetected = 0;
                         newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                     }
                 }
-                if (!lava) {
+                if (!lava)
+                {
                     start_melt_ice_timeout(x, y, 0L);
                     obj_ice_effects(x, y, TRUE);
                 }
             } /* ?WATER */
 
-        } else if (is_ice(x, y)) {
+        }
+        else if (is_ice(x, y))
+        {
             long melt_time;
 
             /* Already ice here, so just firm it up. */
             /* Now ensure that only ice that is already timed is affected */
-            if ((melt_time = spot_time_left(x, y, MELT_ICE_AWAY)) != 0L) {
+            if ((melt_time = spot_time_left(x, y, MELT_ICE_AWAY)) != 0L) 
+            {
                 spot_stop_timers(x, y, MELT_ICE_AWAY);
                 start_melt_ice_timeout(x, y, melt_time);
             }
@@ -9250,13 +9294,17 @@ short exploding_wand_typ;
         break;
 
     case ZT_ACID:
-        if (lev->typ == IRONBARS) {
-            if ((lev->wall_info & W_NONDIGGABLE) != 0) {
+        if (lev->typ == IRONBARS) 
+        {
+            if ((lev->wall_info & W_NONDIGGABLE) != 0) 
+            {
                 if (see_it)
                     Norep("The %s corrode somewhat but remain intact.",
                           defsyms[S_bars].explanation);
                 /* but nothing actually happens... */
-            } else {
+            }
+            else
+            {
                 rangemod -= 3;
                 if (see_it)
                     Norep("The %s melt.", defsyms[S_bars].explanation);
@@ -9289,7 +9337,8 @@ short exploding_wand_typ;
        want "the blast" rather than "your blast" even if hero caused it */
     yourzap = (type >= 0 && !exploding_wand_typ);
     zapverb = "blast"; /* breath attack or wand explosion */
-    if (!exploding_wand_typ) {
+    if (!exploding_wand_typ)
+    {
         if (abs(type) < ZT_SPELL(0))
             zapverb = "bolt"; /* wand zap */
         else if (abs(type) < ZT_BREATH(0))
@@ -9297,7 +9346,8 @@ short exploding_wand_typ;
     }
 
     /* secret door gets revealed, converted into regular door */
-    if (levl[x][y].typ == SDOOR) {
+    if (levl[x][y].typ == SDOOR) 
+    {
         cvt_sdoor_to_door(x, y); /* .typ = DOOR */
         /* target spot will now pass closed_door() test below
            (except on rogue level) */
@@ -9322,7 +9372,8 @@ short exploding_wand_typ;
         const char *see_txt = 0, *sense_txt = 0, *hear_txt = 0;
 
         rangemod = -1000;
-        switch (abstype) {
+        switch (abstype) 
+        {
         case ZT_FIRE:
             if (door_subtype_definitions[lev->subtyp].material == MAT_WOOD && !is_door_indestructible_at_ptr(lev))
             {
@@ -9400,7 +9451,8 @@ short exploding_wand_typ;
                 else
                     pline_The("door absorbs %s %s!", yourzap ? "your" : "the",
                               zapverb);
-            } else
+            }
+            else
                 You_feel("vibrations.");
             break;
         }
@@ -9415,7 +9467,8 @@ short exploding_wand_typ;
 
             if (new_doormask >= 0  && *in_rooms(x, y, SHOPBASE))
             {
-                if (type >= 0) {
+                if (type >= 0) 
+                {
                     add_damage(x, y, SHOP_DOOR_COST);
                     *shopdamage = TRUE;
                 } else /* caused by monster */
@@ -9508,7 +9561,8 @@ short exploding_wand_typ;
     }
 
     if (OBJ_AT(x, y) && abstype == ZT_FIRE)
-        if (burn_floor_objects(x, y, FALSE, type > 0) && couldsee(x, y)) {
+        if (burn_floor_objects(x, y, FALSE, type > 0) && couldsee(x, y)) 
+        {
             newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
             play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, x, y, FALSE);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, x, y);
@@ -9516,9 +9570,12 @@ short exploding_wand_typ;
             special_effect_wait_until_action(0);
             special_effect_wait_until_end(0);
         }
-    if ((mon = m_at(x, y)) != 0) {
+
+    if ((mon = m_at(x, y)) != 0) 
+    {
         wakeup(mon, FALSE);
-        if (type >= 0) {
+        if (type >= 0) 
+        {
             setmangry(mon, TRUE);
             if (mon->ispriest && *in_rooms(mon->mx, mon->my, TEMPLE))
                 ghod_hitsu(mon);

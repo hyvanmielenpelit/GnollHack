@@ -2274,10 +2274,12 @@ struct obj* origobj;
 
     play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_CREATE, u.ux, u.uy);
 
-    if (u.uswallow) {
+    if (u.uswallow) 
+    {
 		mtmp = u.ustuck;
 
-		if (!is_whirly(mtmp->data)) {
+		if (!is_whirly(mtmp->data)) 
+        {
 			if (is_animal(mtmp->data))
 				You("dehydrate %s %s wall!", s_suffix(mon_nam(mtmp)),
 					mbodypart(mtmp, STOMACH));
@@ -2287,7 +2289,8 @@ struct obj* origobj;
 		return;
 	} /* swallowed */
 
-	if (u.dz) {
+	if (u.dz) 
+    {
 		zx = u.ux;
 		zy = u.uy;
 		struct rm* lev = &levl[zx][zy];
@@ -2305,26 +2308,26 @@ struct obj* origobj;
                 const char* msgtxt = "You hear hissing gas.";
                 play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
 
-				if (lev->typ == DRAWBRIDGE_UP)
+                if (lev->typ == DRAWBRIDGE_UP && (lev->drawbridgemask & DB_UNDER) == DB_MOAT)
+                {
+                    lev->drawbridgemask &= ~DB_UNDER; /* clear water */
+                    lev->drawbridgemask |= DB_GROUND;
+                    if (see_it)
+                        msgtxt = "The water evaporates.";
+                }
+				else if (lev->typ == POOL || lev->typ == MOAT)  /* Wand of evaportaion is powerful enough to dry out a moat */
+				{ // Leave no pits, evaporation gives a walkable route
+                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floortyp ? levl[zx][zy].floorsubtyp : get_initial_location_subtype(GROUND), 0, FALSE);
+					if (see_it)
+						msgtxt = "The water evaporates.";
+				}
+                else
 				{
 					if (see_it)
 						msgtxt = "Some water evaporates.";
 				}
-				else
-				{ // Leave no pits, evaporation gives a walkable route
-                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floortyp ? levl[zx][zy].floorsubtyp : get_initial_location_subtype(GROUND), 0, FALSE);
-                    if (lev->typ == MOAT)
-					{
-						struct trap* t = maketrap(zx, zy, PIT, NON_PM, MKTRAP_NO_FLAGS);
-						if (t)
-							t->tseen = 1;
-					}
-					if (see_it)
-						msgtxt = "The water evaporates.";
-				}
 				Norep("%s", msgtxt);
-				if (IS_FLOOR(lev->typ))
-					newsym(zx, zy);
+				newsym(zx, zy);
 			}
 			else if (IS_FOUNTAIN(lev->typ))
 			{
@@ -2479,32 +2482,36 @@ struct obj* origobj;
 		}
 
 		/* Destroy water and fountains */
-		if (is_ice(zx, zy)) {
+		if (is_ice(zx, zy)) 
+        {
 			//melt_ice(zx, zy, (char*)0);
 		}
-		else if (is_pool(zx, zy)) {
+		else if (is_pool(zx, zy)) 
+        {
 			const char* msgtxt = "You hear hissing gas.";
             play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
             play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
 
-			if (lev->typ == DRAWBRIDGE_UP || (Is_waterlevel(&u.uz)))
+            if (lev->typ == DRAWBRIDGE_UP && (lev->drawbridgemask & DB_UNDER) == DB_MOAT)
+            {
+                digdepth -= 1;
+                lev->drawbridgemask &= ~DB_UNDER; /* clear water */
+                lev->drawbridgemask |= DB_GROUND;
+                if (see_it)
+                    msgtxt = "The water evaporates.";
+            }
+            else if (lev->typ == POOL || lev->typ == MOAT) /* Wand of evaportaion is powerful enough to dry out a moat */
+            { // Leave no pits, evaporation gives a walkable route
+				digdepth -= 1;
+                create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floortyp ? levl[zx][zy].floorsubtyp : get_initial_location_subtype(GROUND), 0, FALSE);
+				if (see_it)
+					msgtxt = "The water evaporates.";
+			}
+            else
 			{
 				digdepth -= 1;
 				if (see_it)
 					msgtxt = "Some water evaporates.";
-			}
-			else
-			{ // Leave no pits, evaporation gives a walkable route
-				digdepth -= 1;
-                create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floortyp ? levl[zx][zy].floorsubtyp : get_initial_location_subtype(GROUND), 0, FALSE);
-                if (lev->typ == MOAT)
-				{
-					struct trap* t = maketrap(zx, zy, PIT, NON_PM, MKTRAP_NO_FLAGS);
-					if (t)
-						t->tseen = 1;
-				}
-				if (see_it)
-					msgtxt = "The water evaporates.";
 			}
 			Norep("%s", msgtxt);
 			newsym(zx, zy);

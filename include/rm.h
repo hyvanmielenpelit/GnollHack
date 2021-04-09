@@ -760,20 +760,20 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 /*
  * The four directions for a DrawBridge.
  */
-#define DB_NORTH 0
-#define DB_SOUTH 1
-#define DB_EAST 2
-#define DB_WEST 3
-#define DB_DIR 3 /* mask for direction */
+#define DB_NORTH    0x0000
+#define DB_SOUTH    0x0001
+#define DB_EAST     0x0002
+#define DB_WEST     0x0003
+#define DB_DIR      0x0003 /* mask for direction */
 
 /*
  * What's under a drawbridge.
  */
-#define DB_MOAT 0
-#define DB_LAVA 4
-#define DB_ICE 8
-#define DB_GROUND 16
-#define DB_UNDER 28 /* mask for underneath */
+#define DB_MOAT     0x0000
+#define DB_LAVA     0x0004
+#define DB_ICE      0x0008
+#define DB_GROUND   0x0010
+#define DB_UNDER    (DB_MOAT | DB_LAVA | DB_ICE | DB_GROUND) // 28 /* mask for underneath */
 
 /*
  * Wall information.  Nondiggable also applies to iron bars.

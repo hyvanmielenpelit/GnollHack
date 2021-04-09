@@ -1828,7 +1828,7 @@ struct rm* mainlev, *lev;
         else
             return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
     }
-    else if (lev->typ == GROUND || (lev->typ == DRAWBRIDGE_UP && lev->flags & DB_GROUND))
+    else if (lev->typ == GROUND || (lev->typ == DRAWBRIDGE_UP && (lev->flags & DB_UNDER) == DB_GROUND))
     {
         if ((!mainlev_is_pool_ice_or_lava &&  mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
             || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
