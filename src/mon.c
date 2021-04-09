@@ -389,9 +389,12 @@ boolean createcorpse;
 		return (struct obj*)0;
 
     boolean istame = is_tame(mtmp);
+    boolean isquestmonster = In_quest(&u.uz) 
+        && (mtmp->mnum == urole.enemy1num || mtmp->mnum == urole.enemy2num || mtmp->data->mlet == urole.enemy1sym || mtmp->data->mlet == urole.enemy2sym);
 
 	/* Monsters that create death items only with the corpse */
-	switch (mndx) {
+	switch (mndx)
+    {
 	case PM_SILVER_DRAGON_HATCHLING:
 	case PM_RED_DRAGON_HATCHLING:
 	case PM_ORANGE_DRAGON_HATCHLING:
@@ -420,7 +423,7 @@ boolean createcorpse;
 	case PM_ANCIENT_YELLOW_DRAGON:
 		/* Make dragon scales.  This assumes that the order of the
 		   dragons is the same as the order of the scales. */
-        if (!istame)
+        if (!istame && !isquestmonster)
         {
             if (mndx >= PM_GRAY_DRAGON_HATCHLING && mndx <= PM_YELLOW_DRAGON_HATCHLING)
             {
@@ -455,7 +458,7 @@ boolean createcorpse;
 				pline("%s recently regrown horn crumbles to dust.",
 					s_suffix(Monnam(mtmp)));
 		}
-		else if(!istame)
+		else if(!istame && !isquestmonster)
         {
 			obj = mksobj_at(UNICORN_HORN, x, y, TRUE, FALSE);
 			if (obj && mtmp->mrevived)
@@ -464,18 +467,21 @@ boolean createcorpse;
 		goto default_1;
     case PM_LONG_WORM:
     case PM_ELDER_LONG_WORM:
-        if(!istame)
+        if(!istame && !isquestmonster)
     		(void)mksobj_at(WORM_TOOTH, x, y, TRUE, FALSE);
 		goto default_1;
 	case PM_CAVE_SPIDER:
 	case PM_GIANT_SPIDER:
 	case PM_PHASE_SPIDER:
-		if (mndx != PM_CAVE_SPIDER || !rn2(2))
-		{
-			obj = mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
-			obj->quan = (mndx == PM_PHASE_SPIDER ? rnd(3) : mndx == PM_GIANT_SPIDER ? rnd(2) : 1);
-			obj->owt = weight(obj);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (mndx != PM_CAVE_SPIDER || !rn2(2))
+            {
+                obj = mksobj_at(THREAD_OF_SPIDER_SILK, x, y, TRUE, FALSE);
+                obj->quan = (mndx == PM_PHASE_SPIDER ? rnd(3) : mndx == PM_GIANT_SPIDER ? rnd(2) : 1);
+                obj->owt = weight(obj);
+            }
+        }
 		goto default_1;
 	case PM_ROC:
 	case PM_RAVEN:
@@ -488,50 +494,53 @@ boolean createcorpse;
 	case PM_COUATL:
 	case PM_ALEAX:
 	case PM_ARCHON:
-		if ((!istame && !mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
-		{
-			obj = mksobj_at(FEATHER, x, y, TRUE, FALSE);
-			switch (mndx)
-			{
-			case PM_GARGANTUAN_COCKATRICE:
-			case PM_ROC:
-				obj->quan = rnd(3) + 1;
-				break;
-			case PM_GIANT_COCKATRICE:
-			case PM_HARPY:
-			case PM_RAVEN:
-				obj->quan = rnd(2);
-				break;
-			case PM_COCKATRICE:
-				obj->quan = 1;
-				break;
-			case PM_CHICKATRICE:
-				obj->quan = 1;
-				break;
-			case PM_COUATL:
-				obj->quan = rnd(2);
-				break;
-			case PM_ALEAX:
-				obj->quan = rnd(3);
-				break;
-			case PM_PHOENIX:
-				obj->quan = rnd(2);
-				break;
-			case PM_ARCHON:
-				obj->quan = rnd(4) + 1;
-				break;
-			default:
-				obj->quan = rnd(2);
-				break;
-			}
-			obj->owt = weight(obj);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
+            {
+                obj = mksobj_at(FEATHER, x, y, TRUE, FALSE);
+                switch (mndx)
+                {
+                case PM_GARGANTUAN_COCKATRICE:
+                case PM_ROC:
+                    obj->quan = rnd(3) + 1;
+                    break;
+                case PM_GIANT_COCKATRICE:
+                case PM_HARPY:
+                case PM_RAVEN:
+                    obj->quan = rnd(2);
+                    break;
+                case PM_COCKATRICE:
+                    obj->quan = 1;
+                    break;
+                case PM_CHICKATRICE:
+                    obj->quan = 1;
+                    break;
+                case PM_COUATL:
+                    obj->quan = rnd(2);
+                    break;
+                case PM_ALEAX:
+                    obj->quan = rnd(3);
+                    break;
+                case PM_PHOENIX:
+                    obj->quan = rnd(2);
+                    break;
+                case PM_ARCHON:
+                    obj->quan = rnd(4) + 1;
+                    break;
+                default:
+                    obj->quan = rnd(2);
+                    break;
+                }
+                obj->owt = weight(obj);
+            }
+        }
 		goto default_1;
 	case PM_BAT:
 	case PM_VAMPIRE_BAT:
 	case PM_GIANT_BAT:
 	case PM_HELL_BAT:
-		if (!istame && (mndx == PM_BAT ? !rn2(3) : mndx == PM_GIANT_BAT ? !rn2(2) : 1))
+		if (!istame && !isquestmonster && (mndx == PM_BAT ? !rn2(3) : mndx == PM_GIANT_BAT ? !rn2(2) : 1))
 		{
 			obj = mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
 			obj->quan = (mndx == PM_HELL_BAT ? rnd(4) : mndx == PM_VAMPIRE_BAT ? rnd(3) : mndx == PM_GIANT_BAT ? rnd(2) : 1);
@@ -559,7 +568,7 @@ boolean createcorpse;
 	case PM_RED_MOLD:
 	{
 		sporequan++;
-		if (!istame && !mtmp->mcloned && (!rn2(2) || mndx == PM_MUCILAGINOUS_CUBE))
+		if (!istame && !isquestmonster && !mtmp->mcloned && (!rn2(2) || mndx == PM_MUCILAGINOUS_CUBE))
 		{
 			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
 			obj->quan = sporequan > 1 ? rnd(sporequan) : 1;
@@ -599,72 +608,87 @@ boolean createcorpse;
 		break;
 	case PM_IRON_GOLEM:
 	{
-		if (!istame && !rn2(2))
-		{
-			obj = mksobj_at(NUGGET_OF_IRON_ORE, x, y, FALSE, FALSE);
-			obj->quan = (long)(rnd(2));
-			obj->owt = weight(obj);
-		}
-		if (!rn2(4))
-		{
-			int objid = NUGGET_OF_IRON_ORE;
-			switch (rn2(3))
-			{
-			case 0:
-				objid = IRON_CHAIN;
-				break;
-			case 1:
-				objid = IRON_SHOES;
-				break;
-			case 2:
-				objid = HEAVY_IRON_BALL;
-				break;
-			default:
-				break;
-			}
-			obj = mksobj_at(objid, x, y, TRUE, FALSE);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                obj = mksobj_at(NUGGET_OF_IRON_ORE, x, y, FALSE, FALSE);
+                obj->quan = (long)(rnd(2));
+                obj->owt = weight(obj);
+            }
+            if (!rn2(4))
+            {
+                int objid = NUGGET_OF_IRON_ORE;
+                switch (rn2(3))
+                {
+                case 0:
+                    objid = IRON_CHAIN;
+                    break;
+                case 1:
+                    objid = IRON_SHOES;
+                    break;
+                case 2:
+                    objid = HEAVY_IRON_BALL;
+                    break;
+                default:
+                    break;
+                }
+                obj = mksobj_at(objid, x, y, TRUE, FALSE);
+            }
+        }
 		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
 	}
 	case PM_GLASS_GOLEM:
-		if (!istame && !rn2(2))
-		{
-			num = d(1, 6);
-			while (num--)
-				obj = mksobj_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                num = d(1, 6);
+                while (num--)
+                    obj = mksobj_at((LAST_GEM + rnd(9)), x, y, TRUE, FALSE);
+            }
+        }
 		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
 	case PM_BONE_GOLEM:
-		if (!istame && !rn2(2))
-		{
-			obj = mksobj_at(BONE, x, y, FALSE, FALSE);
-			obj->quan = (long)(rnd(4));
-			obj->owt = weight(obj);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                obj = mksobj_at(BONE, x, y, FALSE, FALSE);
+                obj->quan = (long)(rnd(4));
+                obj->owt = weight(obj);
+            }
+        }
 		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
 	case PM_SILVER_GOLEM:
-		if (!istame && !rn2(2))
-		{
-			obj = mksobj_at(NUGGET_OF_SILVER_ORE, x, y, FALSE, FALSE);
-			obj->quan = (long)(rnd(2));
-			obj->owt = weight(obj);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                obj = mksobj_at(NUGGET_OF_SILVER_ORE, x, y, FALSE, FALSE);
+                obj->quan = (long)(rnd(2));
+                obj->owt = weight(obj);
+            }
+        }
 		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
 	case PM_CLAY_GOLEM:
-		if (!istame && !rn2(2))
-		{
-			obj = mksobj_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
-			obj->quan = (long)(rnd(3));
-			obj->owt = weight(obj);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                obj = mksobj_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
+                obj->quan = (long)(rnd(3));
+                obj->owt = weight(obj);
+            }
+        }
 		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
@@ -674,62 +698,71 @@ boolean createcorpse;
 		obj =
 			mkcorpstat(STATUE, (struct monst *) 0, mdat, x, y, corpstatflags);
 		*/
-		if (!istame && !rn2(2))
-		{
-			obj = mksobj_at(STONE_PEBBLE, x, y, FALSE, FALSE);
-			obj->quan = (long)(rnd(5));
-			obj->owt = weight(obj);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                obj = mksobj_at(STONE_PEBBLE, x, y, FALSE, FALSE);
+                obj->quan = (long)(rnd(5));
+                obj->owt = weight(obj);
+            }
+        }
 		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
 	case PM_WOOD_GOLEM:
-		if (!istame && !rn2(2))
-		{
-			obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
-			obj->quan = (long)(rnd(2));
-			obj->owt = weight(obj);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
+                obj->quan = (long)(rnd(2));
+                obj->owt = weight(obj);
+            }
+        }
 		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
 	case PM_LEATHER_GOLEM:
 	{
-		if (!istame && !rn2(2))
-		{
-			int objid = LEATHER_ARMOR;
-			num = d(1, 3);
-			while (num--)
-			{
-				switch (rn2(7))
-				{
-				case 0:
-					objid = LEATHER_ARMOR;
-					break;
-				case 1:
-					objid = LEATHER_BELT;
-					break;
-				case 2:
-					objid = LEATHER_BRACERS;
-					break;
-				case 3:
-					objid = LEATHER_CLOAK;
-					break;
-				case 4:
-					objid = STUDDED_LEATHER_ARMOR;
-					break;
-				case 5:
-					objid = LEATHER_GLOVES;
-					break;
-				case 6:
-					objid = LEATHER_SANDALS;
-					break;
-				default:
-					break;
-				}
-				obj = mksobj_at(objid, x, y, TRUE, FALSE);
-			}
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                int objid = LEATHER_ARMOR;
+                num = d(1, 3);
+                while (num--)
+                {
+                    switch (rn2(7))
+                    {
+                    case 0:
+                        objid = LEATHER_ARMOR;
+                        break;
+                    case 1:
+                        objid = LEATHER_BELT;
+                        break;
+                    case 2:
+                        objid = LEATHER_BRACERS;
+                        break;
+                    case 3:
+                        objid = LEATHER_CLOAK;
+                        break;
+                    case 4:
+                        objid = STUDDED_LEATHER_ARMOR;
+                        break;
+                    case 5:
+                        objid = LEATHER_GLOVES;
+                        break;
+                    case 6:
+                        objid = LEATHER_SANDALS;
+                        break;
+                    default:
+                        break;
+                    }
+                    obj = mksobj_at(objid, x, y, TRUE, FALSE);
+                }
+            }
+        }
 		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
@@ -737,39 +770,48 @@ boolean createcorpse;
 	case PM_GOLD_GOLEM:
 	{
 		/* Good luck gives more coins */
-		if (!istame && !rn2(2))
-		{
-			obj = mkgold((long)(195 - rnl(101)), x, y);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                obj = mkgold((long)(195 - rnl(101)), x, y);
+            }
+        }
 		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
 	}
 	case PM_PAPER_GOLEM:
-		if (!istame && !rn2(2))
-		{
-			num = rnd(2);
-			while (num--)
-				obj = mksobj_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                num = rnd(2);
+                while (num--)
+                    obj = mksobj_at(SCR_BLANK_PAPER, x, y, TRUE, FALSE);
+            }
+        }
 		free_mname(mtmp);
 		free_umname(mtmp);
 		break;
 	case PM_GEMSTONE_GOLEM:
-		if (!istame && !rn2(2))
-		{
-			num = rnd(3);
-			while (num--)
-			{
-				obj = mksobj_at(randomtruegem(), x, y, TRUE, FALSE);
-			}
-		}
+        if (!istame && !isquestmonster)
+        {
+            if (!rn2(2))
+            {
+                num = rnd(3);
+                while (num--)
+                {
+                    obj = mksobj_at(randomtruegem(), x, y, TRUE, FALSE);
+                }
+            }
+        }
 		break;
 		/* expired puddings will congeal into a large blob;
 	   like dragons, relies on the order remaining consistent */
 	case PM_TREANT:
 	case PM_ELDER_TREANT:
-        if (!istame)
+        if (!istame && !isquestmonster)
         {
             obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
             if (obj)
@@ -786,7 +828,7 @@ boolean createcorpse;
 		/* we have to do this here because most other places
 		   expect there to be an object coming back; not this one */
 		   /* first, make some powder */
-		if (!istame && !mtmp->mcloned && !rn2(3))
+		if (!istame && !isquestmonster && !mtmp->mcloned && !rn2(3))
 		{
 			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
 			obj->quan = rnd(3);
@@ -3194,10 +3236,12 @@ register struct monst *mtmp;
 
     mptr = mtmp->data; /* save this for m_detach() */
     /* restore chameleon, lycanthropes to true form at death */
-    if (mtmp->cham >= LOW_PM) {
+    if (mtmp->cham >= LOW_PM) 
+    {
         set_mon_data(mtmp, &mons[mtmp->cham]);
         mtmp->cham = NON_PM;
-    } else if (mtmp->data == &mons[PM_WEREJACKAL])
+    } 
+    else if (mtmp->data == &mons[PM_WEREJACKAL])
         set_mon_data(mtmp, &mons[PM_HUMAN_WEREJACKAL]);
     else if (mtmp->data == &mons[PM_WEREWOLF])
         set_mon_data(mtmp, &mons[PM_HUMAN_WEREWOLF]);
@@ -3229,9 +3273,11 @@ register struct monst *mtmp;
         mvitals[tmp].mvflags |= G_GENOD;
 #endif
 
-    if (mtmp->data->mlet == S_KOP) {
+    if (mtmp->data->mlet == S_KOP) 
+    {
         /* Dead Kops may come back. */
-        switch (rnd(5)) {
+        switch (rnd(5))
+        {
         case 1: /* returns near the stairs */
             (void) makemon(mtmp->data, xdnstair, ydnstair, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
             break;
@@ -3591,7 +3637,8 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     if (!noconduct) /* KMH, conduct */
         u.uconduct.killer++;
 
-    if (!nomsg) {
+    if (!nomsg)
+    {
         boolean namedpet = has_mname(mtmp) && !Hallucination;
 
 		/*
@@ -3621,11 +3668,11 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 			pline("%s is %s!", bp,
 				is_not_living(mtmp->data) ? "destroyed" : "killed");
 		}
-
 	}
 
     if (mtmp->mtrapped && (t = t_at(x, y)) != 0
-        && is_pit(t->ttyp)) {
+        && is_pit(t->ttyp)) 
+    {
         if (sobj_at(BOULDER, x, y))
             nocorpse = TRUE; /* Prevent corpses/treasure being created
                                 "on top" of boulder that is about to fall in.
@@ -3647,7 +3694,8 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 		shkmoney += max(0, ESHK(mtmp)->robbed + ESHK(mtmp)->debit - ESHK(mtmp)->credit);
 	}
 
-    if (wasinside && thrownobj && thrownobj != uball) {
+    if (wasinside && thrownobj && thrownobj != uball) 
+    {
         /* thrown object has killed hero's engulfer; add it to mon's
            inventory now so that it will be placed with mon's other
            stuff prior to lookhere/autopickup when hero is expelled
@@ -3673,7 +3721,8 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 		ESHK(mtmp)->debit += shkmoney;
 	}
 
-	if (!DEADMONSTER(mtmp)) { /* monster lifesaved */
+	if (!DEADMONSTER(mtmp)) 
+    { /* monster lifesaved */
         /* Cannot put the non-visible lifesaving message in
          * lifesaved_monster() since the message appears only when _you_
          * kill it (as opposed to visible lifesaving which always appears).
@@ -3689,7 +3738,8 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     mdat = mtmp->data; /* note: mondead can change mtmp->data */
     mndx = monsndx(mdat);
 
-    if (stoned) {
+    if (stoned) 
+    {
         stoned = FALSE;
         goto cleanup;
     }
@@ -3698,11 +3748,14 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
         goto cleanup;
 
 #ifdef MAIL
-    if (mdat == &mons[PM_MAIL_DAEMON]) {
+    if (mdat == &mons[PM_MAIL_DAEMON])
+    {
         stackobj(mksobj_at(SCR_MAIL, x, y, FALSE, FALSE));
     }
 #endif
-    if (accessible(x, y) || is_pool(x, y)) {
+
+    if (accessible(x, y) || is_pool(x, y)) 
+    {
         struct obj *cadaver;
         int otyp;
 
@@ -3713,28 +3766,34 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
             /* no extra item from kops--too easy to abuse */
             && mdat->mlet != S_KOP
             /* no items from cloned monsters */
-            && !mtmp->mcloned) {
+            && !mtmp->mcloned) 
+        {
             otmp = mkobj(RANDOM_CLASS, TRUE, TRUE);
             /* don't create large objects from small monsters */
             otyp = otmp->otyp;
             if (mdat->msize < MZ_HUMAN && otyp != FIGURINE
                 /* oc_big is also oc_bimanual and oc_bulky */
-                && (otmp->owt > 30 || objects[otyp].oc_big)) {
+                && (otmp->owt > 30 || objects[otyp].oc_big))
+            {
                 delobj(otmp);
-            } else if (!flooreffects(otmp, x, y, nomsg ? "" : "fall")) {
+            }
+            else if (!flooreffects(otmp, x, y, nomsg ? "" : "fall")) 
+            {
                 place_object(otmp, x, y);
                 stackobj(otmp);
             }
         }
 
         /* corpse--none if hero was inside the monster */
-        if (!wasinside) {
+        if (!wasinside) 
+        {
             cadaver = make_corpse(mtmp,
 				burycorpse ? CORPSTAT_BURIED : CORPSTAT_NONE, 
 				corpse_chance(mtmp, (struct monst*) 0, FALSE)
 			);
             if (burycorpse && cadaver && cansee(x, y) && !is_invisible(mtmp)
-                && cadaver->where == OBJ_BURIED && !nomsg) {
+                && cadaver->where == OBJ_BURIED && !nomsg)
+            {
                 pline("%s corpse ends up buried.", s_suffix(Monnam(mtmp)));
             }
         }
@@ -3749,7 +3808,8 @@ cleanup:
     if (is_human(mdat) && !is_undead(mdat) && !is_were(mdat)
         && (!always_hostile(mdat) && mtmp->malign <= 0)
         && (mndx < PM_ARCHAEOLOGIST || mndx > PM_WIZARD)
-        && u.ualign.type != A_CHAOTIC) {
+        && u.ualign.type != A_CHAOTIC) 
+    {
         HTelepat &= ~INTRINSIC;
 		HBlind_telepat &= ~INTRINSIC;
         You("murderer!");
@@ -3757,9 +3817,12 @@ cleanup:
             see_monsters(); /* Can't sense monsters any more. */
 		luck_change += -2;
 	}
+
     if ((is_peaceful(mtmp) && !rn2(2)) || is_tame(mtmp))
 		luck_change += -1;
-    if (is_unicorn(mdat) && sgn(u.ualign.type) == sgn(mdat->maligntyp)) {
+
+    if (is_unicorn(mdat) && sgn(u.ualign.type) == sgn(mdat->maligntyp)) 
+    {
         You_feel("guilty...");
 		luck_change += -5;
 	}
@@ -3772,26 +3835,35 @@ cleanup:
     newexplevel(); /* will decide if you go up */
 
     /* adjust alignment points */
-    if (mtmp->m_id == quest_status.leader_m_id) { /* REAL BAD! */
+    if (mtmp->m_id == quest_status.leader_m_id) 
+    { /* REAL BAD! */
         adjalign(-(u.ualign.record + (int) ALIGNLIM / 2));
         pline("That was %sa bad idea...",
               u.uevent.qcompleted ? "probably " : "");
-    } else if (mdat->msound == MS_NEMESIS) { /* Real good! */
+    } 
+    else if (mdat->msound == MS_NEMESIS)
+    { /* Real good! */
         adjalign((int) (ALIGNLIM / 4));
-    } else if (mdat->msound == MS_GUARDIAN) { /* Bad */
+    }
+    else if (mdat->msound == MS_GUARDIAN) 
+    { /* Bad */
         adjalign(-(int) (ALIGNLIM / 8));
         if (!Hallucination)
             pline("That was probably a bad idea...");
         else
             pline("Whoopsie-daisy!");
-    } else if (mtmp->ispriest) {
+    } 
+    else if (mtmp->ispriest) 
+    {
         adjalign((p_coaligned(mtmp)) ? -2 : 2);
         /* cancel divine protection for killing your priest */
         if (p_coaligned(mtmp))
             u.ublessed = 0;
         if (mdat->maligntyp == A_NONE)
             adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
-    } else if (is_tame(mtmp)) {
+    }
+    else if (is_tame(mtmp)) 
+    {
         adjalign(-15); /* bad!! */
         /* your god is mighty displeased... */
         if (!Hallucination)
@@ -3804,7 +3876,8 @@ cleanup:
             play_sfx_sound(SFX_STUDIO_AUDIENCE_APPLAUDS);
             You_hear("the studio audience applaud!");
         }
-    } else if (is_peaceful(mtmp))
+    }
+    else if (is_peaceful(mtmp))
         adjalign(-5);
 
     /* malign was already adjusted for u.ualign.type and randomization */

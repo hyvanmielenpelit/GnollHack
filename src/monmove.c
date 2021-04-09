@@ -125,6 +125,7 @@ struct monst* mon;
         play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_RANDOM_SOUND);
         //if (canseemon(mon))
         //    pline("%s laughs.", Monnam(mon));
+        return;
     }
 
     if (!is_speaking_monster(mon->data) || mindless(mon->data)
