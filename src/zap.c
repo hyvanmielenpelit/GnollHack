@@ -94,23 +94,7 @@ struct monst* origmonst;
 
     int skill_type = objects[otyp].oc_skill;
     enum skill_levels skill_level = origmonst == &youmonst ? P_SKILL_LEVEL(skill_type) : is_prince(origmonst->data) ? P_EXPERT : is_lord(origmonst->data) ? P_SKILLED : P_BASIC;
-    int max_level = MAXULEV;
-    if (skill_level <= P_UNSKILLED)
-    {
-        max_level = 6;
-    }
-    else if (skill_level <= P_BASIC)
-    {
-        max_level = 12;
-    }
-    else if (skill_level <= P_SKILLED)
-    {
-        max_level = 24;
-    }
-    else if (skill_level >= P_EXPERT)
-    {
-        max_level = 36;
-    }
+    int max_level =  10 * max(0, skill_level - 1);
     return max_level;
 }
 
