@@ -170,6 +170,7 @@
 #define is_iron(ptr) (((ptr)->mflags4 & M4_IRON) != 0)
 #define is_noniron_metal(ptr) (((ptr)->mflags4 & M4_METAL) != 0)
 #define is_metal(ptr) (is_iron(ptr) || is_noniron_metal(ptr))
+#define is_mon_wizard(ptr) (((ptr)->mflags3 & M3_WIZARD) != 0L)
 
 #define innate_eschew_cursed(ptr) (((ptr)->mflags5 & M5_ESCHEWS_CURSED_ITEMS) != 0)
 #define innate_eschew_blessed(ptr) (((ptr)->mflags5 & M5_ESCHEWS_BLESSED_ITEMS) != 0)

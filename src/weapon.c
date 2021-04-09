@@ -2156,13 +2156,13 @@ enhance_weapon_skill()
                     {
                         int tohitbonus = wand_skill_hit_bonus(P_SKILL_LEVEL(i));
                         //int criticalhitpct = get_skill_critical_strike_chance(i, FALSE);
-                        int dicemult = get_wand_damage_multiplier(FALSE);
+                        double dicemult = get_wand_damage_multiplier(FALSE);
                         char hbuf[BUFSZ] = "";
                         //char cbuf[BUFSZ] = "";
                         char dbuf[BUFSZ] = "";
                         Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                         //Sprintf(cbuf, "%d%%", criticalhitpct);
-                        Sprintf(dbuf, "%dx", dicemult);
+                        Sprintf(dbuf, "%.1fx", dicemult);
                         Sprintf(bonusbuf, "%5s/%s", hbuf, dbuf);
 
                         if (can_advance(i, speedy) || could_advance(i))
@@ -2170,13 +2170,13 @@ enhance_weapon_skill()
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
                             int tohitbonus2 = wand_skill_hit_bonus(nextlevel);
                             //int criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE);
-                            int dicemult2 = get_wand_damage_multiplier(TRUE);
+                            double dicemult2 = get_wand_damage_multiplier(TRUE);
                             char hbuf2[BUFSZ] = "";
                             //char cbuf2[BUFSZ] = "";
                             char dbuf2[BUFSZ] = "";
                             Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
                             //Sprintf(cbuf2, "%d%%", criticalhitpct2);
-                            Sprintf(dbuf2, "%dx", dicemult2);
+                            Sprintf(dbuf2, "%.1fx", dicemult2);
                             Sprintf(nextbonusbuf, "%5s/%s", hbuf2, dbuf2);
                         }
                     }
@@ -3019,11 +3019,11 @@ boolean nextlevel;
     return res;
 }
 
-int
+double
 get_wand_damage_multiplier(nextlevel)
 boolean nextlevel;
 {
-    return min(P_MAX_SKILL_LEVEL(P_WAND), P_SKILL_LEVEL(P_WAND) + (nextlevel ? 1 : 0));
+    return ((double)max(1, min(P_MAX_SKILL_LEVEL(P_WAND), P_SKILL_LEVEL(P_WAND) + (nextlevel ? 1 : 0)))) / 2.0;
 }
 
 int

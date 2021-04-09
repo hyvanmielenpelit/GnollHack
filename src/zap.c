@@ -124,20 +124,24 @@ struct monst* targetmonst;
         return 0;
 
     /* Skill bonus from using wand -- affects only non-tame monsters for the player */
-    int dicemult = 1;
+    double dicemult = 1.0;
     boolean same_side = (origmonst && targetmonst && ((origmonst == targetmonst) || ((origmonst == &youmonst) && is_tame(targetmonst)) || ((origmonst != &youmonst && !is_peaceful(origmonst) && !is_peaceful(targetmonst)))));
-    if (objects[otyp].oc_class == WAND_CLASS && origmonst && !same_side)
+    if (objects[otyp].oc_class == WAND_CLASS && origmonst)
     {
-        int skill_level = 0;
-        if (origmonst == &youmonst)
+        int skill_level = P_UNSKILLED;
+        if (same_side)
+        {
+            /* Use unskilled */
+        }
+        else if (origmonst == &youmonst)
             skill_level = P_SKILL_LEVEL(P_WAND);
         else
-            skill_level = P_UNSKILLED; /* No increase in wand damage for monsters to avoid unnecessary instadeaths */
+            skill_level = is_prince(origmonst->data) ? P_SKILLED : is_lord(origmonst->data) || is_mon_wizard(origmonst->data) ? P_BASIC : P_UNSKILLED; /* No increase in wand damage for monsters to avoid unnecessary instadeaths */
 
         dicemult = max(1, skill_level);
     }
 
-    int dmg = d(objects[otyp].oc_spell_dmg_dice * dicemult, objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;
+    int dmg = d(max(1, (int)((double)objects[otyp].oc_spell_dmg_dice * dicemult)), objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;
     if (has_spell_otyp_per_level_bonus(otyp) && origmonst)
     {
         int max_level = get_maximum_applicable_spell_damage_level(otyp, origmonst);
@@ -145,7 +149,7 @@ struct monst* targetmonst;
         int applied_level = min(max_level, origmonst == &youmonst ? u.ulevel : origmonst->m_lev);
         int applied_bonuses = applied_level / (int)objects[otyp].oc_spell_per_level_step;
         for(int i = 0; i < applied_bonuses; i++)
-            dmg += (d(objects[otyp].oc_spell_per_level_dice * dicemult, objects[otyp].oc_spell_per_level_diesize) + objects[otyp].oc_spell_per_level_plus);
+            dmg += (d(max(1, (int)((double)objects[otyp].oc_spell_per_level_dice * dicemult)), objects[otyp].oc_spell_per_level_diesize) + objects[otyp].oc_spell_per_level_plus);
     }
 
 
