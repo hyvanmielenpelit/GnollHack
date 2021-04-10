@@ -74,11 +74,28 @@ struct obj {
 #define SPEFLAGS_NO_PICKUP           		0x00008000UL  /* Monsters will not pick up this item */
 #define SPEFLAGS_ROYAL_COFFER         		0x00010000UL
 #define SPEFLAGS_LID_OPENED         		0x00020000UL
-#define SPEFLAGS_TRAP_STATUS_KNOWN                	0x00040000UL /* trap on this chest has been found (and still is there if otrapped is TRUE) */
+#define SPEFLAGS_TRAP_STATUS_KNOWN          0x00040000UL  /* Trap on this chest has been found (and still is there if otrapped is TRUE) */
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
     short oartifact; /* artifact array index */
+    short mythic_quality; /* magical quality for a weapon or armor giving additional powers */
+    char exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
+    char elemental_enchantment; /* cold, fire, lightning, or deathly */
+
+#define COLD_ENCHANTMENT 1
+#define FIRE_ENCHANTMENT 2
+#define LIGHTNING_ENCHANTMENT 3
+#define DEATH_ENCHANTMENT 4
+
+#define ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL 3 /* How many stackable items are enchanted. Also 1/quan is wear-off chance for non-stackable items */
+#define ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION 2 
+#define DEATH_ENCHANTMENT_QUANTITY_NORMAL 1 /* How many stackable items are enchanted. Also 1/quan is wear-off chance for non-stackable items */
+#define DEATH_ENCHANTMENT_QUANTITY_BUC_VARIATION 1 
+#define ELEMENTAL_ENCHANTMENT_BAG_WEAR_OFF_ONE_PER_CHANCE 3
+
+    char recharged; /* number of times it's been recharged */
+#define RECHARGE_LIMIT 100
 
     xchar where;        /* where the object thinks it is */
 #define OBJ_FREE 0      /* object not attached to anything */
@@ -118,24 +135,6 @@ struct obj {
     Bitfield(otrapped, 1);    /* container is trapped */
 /* or accidental tripped rolling boulder trap */
 #define opoisoned otrapped /* object (weapon) is coated with poison */
-
-    char exceptionality; /* exceptional, elite, etc. weapon */
-    char elemental_enchantment; /* cold, fire, lightning, or deathly */
-
-#define COLD_ENCHANTMENT 1
-#define FIRE_ENCHANTMENT 2
-#define LIGHTNING_ENCHANTMENT 3
-#define DEATH_ENCHANTMENT 4
-
-#define ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL 3 /* How many stackable items are enchanted. Also 1/quan is wear-off chance for non-stackable items */
-#define ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION 2 
-#define DEATH_ENCHANTMENT_QUANTITY_NORMAL 1 /* How many stackable items are enchanted. Also 1/quan is wear-off chance for non-stackable items */
-#define DEATH_ENCHANTMENT_QUANTITY_BUC_VARIATION 1 
-#define ELEMENTAL_ENCHANTMENT_BAG_WEAR_OFF_ONE_PER_CHANCE 3
-
-	char recharged; /* number of times it's been recharged */
-#define RECHARGE_LIMIT 100
-
     Bitfield(lamplit, 1);   /* a light-source -- can be lit */
     Bitfield(makingsound, 1);   /* a sound-source -- can be turned on to make noise */
     Bitfield(globby, 1);    /* combines with like types on adjacent squares */

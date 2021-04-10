@@ -1981,10 +1981,10 @@ see_monsters()
 			int new_count = 0;
 			boolean flicker_ability = FALSE;
 
-			if (((worn|| (!worn && (objects[otyp].oc_pflags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
-				&& ((!inappr && !(objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+			if (((worn|| (!worn && (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_flags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
 					|| (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
-					|| (inappr && (objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					|| (inappr && (objects[otyp].oc_flags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
 					))
 				|| (!worn && uitem->oartifact && artifact_has_flag(uitem, AF_FLICKERS_WHEN_CARRIED))
 				)

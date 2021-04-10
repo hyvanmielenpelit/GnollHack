@@ -2458,10 +2458,10 @@ int montype;
 			boolean inappr = inappropriate_character_type(uitem);
 			boolean worn = is_obj_worn(uitem);
 
-			if ((worn || (!worn && (objects[otyp].oc_pflags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
-				&& ((!inappr && !(objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+			if ((worn || (!worn && (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_flags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
 					|| (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
-					|| (inappr && (objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					|| (inappr && (objects[otyp].oc_flags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
 					)
 				)
 			{
@@ -2559,10 +2559,10 @@ int montype;
 			boolean inappr = inappropriate_character_type(uitem);
 			boolean worn = is_obj_worn(uitem);
 
-			if ((worn || (!worn && (objects[otyp].oc_pflags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
-				&& ((!inappr && !(objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+			if ((worn || (!worn && (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
+				&& ((!inappr && !(objects[otyp].oc_flags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
 					|| (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
-					|| (inappr && (objects[otyp].oc_pflags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+					|| (inappr && (objects[otyp].oc_flags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
 					)
 				)
 			{
