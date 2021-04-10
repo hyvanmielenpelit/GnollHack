@@ -122,7 +122,7 @@ struct monst* targetmonst;
         else
             skill_level = is_prince(origmonst->data) ? P_SKILLED : is_lord(origmonst->data) || is_mon_wizard(origmonst->data) ? P_BASIC : P_UNSKILLED; /* No increase in wand damage for monsters to avoid unnecessary instadeaths */
 
-        dicemult = max(1, skill_level);
+        dicemult = get_wand_damage_multiplier(skill_level, FALSE);
     }
 
     int dmg = d(max(1, (int)((double)objects[otyp].oc_spell_dmg_dice * dicemult)), objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;

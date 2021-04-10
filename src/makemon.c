@@ -1897,12 +1897,17 @@ register struct monst *mtmp;
 						(void)mongets(mtmp, GNOMISH_FELT_HAT);
 				}
 			}
-			switch (mtmp->mnum) {
+			switch (mtmp->mnum) 
+            {
 			case PM_GNOMISH_WIZARD:
 				if (!rn2(3))
 					(void)mongets(mtmp, DAGGER);
 				break;
-			}
+            case PM_GNOME_KING:
+                if (!rn2(5))
+                    (void)mongets(mtmp, rnd_offensive_item(mtmp));
+                break;
+            }
 		}
 		if (ptr == &mons[PM_GNOMISH_WIZARD])
 		{
@@ -1972,7 +1977,9 @@ register struct monst *mtmp;
 	case PM_GNOLL_KING:
 		if (!rn2(3) && !m_carrying(mtmp, CROWN_OF_RULERSHIP) && !m_carrying(mtmp, DUCAL_CROWN))
 			(void)mongets(mtmp, !rn2(25) ? CROWN_OF_RULERSHIP : DUCAL_CROWN);
-		break;
+        if (!rn2(5))
+            (void)mongets(mtmp, rnd_offensive_item(mtmp));
+        break;
 	default:
 		break;
 	}

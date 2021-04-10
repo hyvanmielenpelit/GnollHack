@@ -1700,7 +1700,7 @@ register struct obj* obj;
 		{
 			if (objects[otyp].oc_spell_dmg_dice > 0 || objects[otyp].oc_spell_dmg_diesize > 0 || objects[otyp].oc_spell_dmg_plus != 0)
 			{
-				double dicemult = get_wand_damage_multiplier(FALSE);
+				double dicemult = get_wand_damage_multiplier(P_SKILL_LEVEL(P_WAND), FALSE);
 				boolean maindiceprinted = FALSE;
 				char plusbuf[BUFSZ];
 				Sprintf(buf, "Wand effect damage:     ");

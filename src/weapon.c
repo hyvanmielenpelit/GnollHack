@@ -2156,7 +2156,7 @@ enhance_weapon_skill()
                     {
                         int tohitbonus = wand_skill_hit_bonus(P_SKILL_LEVEL(i));
                         //int criticalhitpct = get_skill_critical_strike_chance(i, FALSE);
-                        double dicemult = get_wand_damage_multiplier(FALSE);
+                        double dicemult = get_wand_damage_multiplier(P_SKILL_LEVEL(i), FALSE);
                         char hbuf[BUFSZ] = "";
                         //char cbuf[BUFSZ] = "";
                         char dbuf[BUFSZ] = "";
@@ -2170,7 +2170,7 @@ enhance_weapon_skill()
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
                             int tohitbonus2 = wand_skill_hit_bonus(nextlevel);
                             //int criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE);
-                            double dicemult2 = get_wand_damage_multiplier(TRUE);
+                            double dicemult2 = get_wand_damage_multiplier(nextlevel, TRUE);
                             char hbuf2[BUFSZ] = "";
                             //char cbuf2[BUFSZ] = "";
                             char dbuf2[BUFSZ] = "";
@@ -3020,10 +3020,37 @@ boolean nextlevel;
 }
 
 double
-get_wand_damage_multiplier(nextlevel)
+get_wand_damage_multiplier(skill_level, nextlevel)
+int skill_level;
 boolean nextlevel;
 {
-    return ((double)max(1, min(P_MAX_SKILL_LEVEL(P_WAND), P_SKILL_LEVEL(P_WAND) + (nextlevel ? 1 : 0)))) / 2.0;
+    double res = 0.5;
+
+    switch (max(P_ISRESTRICTED, min(P_GRAND_MASTER, skill_level + (nextlevel ? 1 : 0))))
+    {
+    case P_ISRESTRICTED:
+    case P_UNSKILLED:
+        res = 0.5;
+        break;
+    case P_BASIC:
+        res = 1.0;
+        break;
+    case P_SKILLED:
+        res = 1.5;
+        break;
+    case P_EXPERT:
+        res = 2.0;
+        break;
+    case P_MASTER:
+        res = 3.0;
+        break;
+    case P_GRAND_MASTER:
+        res = 4.0;
+        break;
+    default:
+        break;
+    }
+    return res;
 }
 
 int
