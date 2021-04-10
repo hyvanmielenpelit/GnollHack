@@ -3029,7 +3029,7 @@ E int FDECL(spelldescription, (int));
 E int FDECL(setspellhotkey, (int));
 E int FDECL(forgetspell, (int));
 E int FDECL(spell_skill_success_bonus, (int));
-E int FDECL(spell_skill_mana_cost_multiplier, (int));
+E double FDECL(spell_skill_mana_cost_multiplier, (int));
 E int NDECL(dospellmanagemenu);
 E int FDECL(tport_spell, (int));
 E void NDECL(losespells);

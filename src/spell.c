@@ -1121,40 +1121,48 @@ int spell;
 }
 
 double
-get_spellbook_adjusted_mana_cost(objid)
-int objid;
+get_spellbook_adjusted_mana_cost(otyp)
+int otyp;
 {
-	if (objid <= STRANGE_OBJECT || objid >= NUM_OBJECTS)
+	if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
 		return 0;
 
-	int skill = objects[objid].oc_skill;
+	int skill = objects[otyp].oc_skill;
 	int skill_level = P_SKILL_LEVEL(skill);
-	double multiplier = (double)spell_skill_mana_cost_multiplier(skill_level);
-	double energy = max(0.1, ((double)objects[objid].oc_spell_mana_cost * multiplier) / 100);
+	double multiplier = spell_skill_mana_cost_multiplier(skill_level);
+	double energy = max(0.1, ((double)objects[otyp].oc_spell_mana_cost * multiplier));
 
-	if (energy >= 100)
+	if (energy >= 100.0)
 		energy = floor(energy);
 
 	return energy;
 }
 
-int
-spell_skill_mana_cost_multiplier(slevel)
-int slevel;
+double
+spell_skill_mana_cost_multiplier(skill_level)
+int skill_level;
 {
-	int multiplier = 100;
-	switch (slevel)
+	double multiplier = 1.1;
+	switch (skill_level)
 	{
+	case P_ISRESTRICTED:
+	case P_UNSKILLED:
+		multiplier = 1.1;
+		break;
 	case P_BASIC:
-		multiplier = 85;
+		multiplier = 1.0;
 		break;
 	case P_SKILLED:
-		multiplier = 70;
+		multiplier = 0.9;
 		break;
 	case P_EXPERT:
-	case P_MASTER: /* Not possible */
-	case P_GRAND_MASTER: /* Not possible */
-		multiplier = 50;
+		multiplier = 0.8;
+		break;
+	case P_MASTER:
+		multiplier = 0.7;
+		break;
+	case P_GRAND_MASTER:
+		multiplier = 0.6;
 		break;
 	default:
 		break;

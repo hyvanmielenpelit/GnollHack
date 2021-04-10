@@ -2240,7 +2240,7 @@ enhance_weapon_skill()
                     else if (i >= P_FIRST_SPELL && i <= P_LAST_SPELL)
                     {
                         int successbonus = spell_skill_success_bonus(P_SKILL_LEVEL(i));
-                        int costdiscount = spell_skill_mana_cost_multiplier(P_SKILL_LEVEL(i)) - 100;
+                        int costdiscount = (int)((spell_skill_mana_cost_multiplier(P_SKILL_LEVEL(i)) - 1.0) * 100.0);
                         char sbuf[BUFSZ] = "";
                         char cbuf[BUFSZ] = "";
                         Sprintf(sbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
@@ -2250,7 +2250,7 @@ enhance_weapon_skill()
                         {
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
                             int successbonus2 = spell_skill_success_bonus(nextlevel);
-                            int costdiscount2 = spell_skill_mana_cost_multiplier(nextlevel) - 100;
+                            int costdiscount2 = (int)((spell_skill_mana_cost_multiplier(nextlevel) - 1.0) * 100.0);
                             char sbuf2[BUFSZ] = "";
                             char cbuf2[BUFSZ] = "";
                             Sprintf(sbuf2, "%s%d%%", successbonus2 >= 0 ? "+" : "", successbonus2);

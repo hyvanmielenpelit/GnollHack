@@ -2251,8 +2251,13 @@ register struct monst *shkp; /* if angry, impose a surcharge */
         multiplier *= 4L, divisor *= 3L;
 
 	
-    if (!shkp_is_shopkeeper && (shkp_is_priest || shkp_is_npc || shkp_is_smith)) /* Priest and npcs teach spells */
-        multiplier *= 3L, divisor *= 2L;
+    if (!shkp_is_shopkeeper && (shkp_is_priest || shkp_is_npc || shkp_is_smith))
+    {
+        if(obj->oclass == SPBOOK_CLASS)  /* Priest and npcs teach spells */
+            multiplier *= 2L, divisor *= 1L;
+        else  /* Other cases such as geologist selling gems */
+            multiplier *= 3L, divisor *= 2L;
+    }
     else if (!shkp_is_shopkeeper) /* Monsters sell cheaper */
 		multiplier *= 2L, divisor *= 3L;
 

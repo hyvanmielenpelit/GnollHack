@@ -5494,7 +5494,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
 		return 0;
 
-	int spell_otyps[5] = { 0, 0, 0, 0, 0 };
+	int spell_otyps[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	int teach_num = 0;
 	if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT)
 	{
@@ -5504,6 +5504,11 @@ struct monst* mtmp;
 	if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD)
 	{
 		spell_otyps[teach_num] = SPE_CONE_OF_COLD;
+		teach_num++;
+	}
+	if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELL_FORCE_BOLT)
+	{
+		spell_otyps[teach_num] = SPE_FORCE_BOLT;
 		teach_num++;
 	}
 	spell_otyps[teach_num] = 0;
@@ -5518,7 +5523,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->ispriest || !mtmp->mextra || !EPRI(mtmp))
 		return 0;
 
-	int spell_otyps[5] = { SPE_EXTRA_HEALING, SPE_GREATER_HEALING, 0, 0, 0 };
+	int spell_otyps[10] = { SPE_EXTRA_HEALING, SPE_GREATER_HEALING, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	return spell_teaching(mtmp, spell_otyps);
 }
@@ -6387,8 +6392,9 @@ int* spell_otyps;
 
 		any.a_int = i;
 		char let = 'a' + spell_count;
+		int glyph = obj_to_glyph(&pseudo, rn2_on_display_rng);
 
-		add_menu(win, NO_GLYPH, &any,
+		add_menu(win, glyph, &any,
 			let, 0, ATR_NONE,
 			spellbuf, MENU_UNSELECTED);
 

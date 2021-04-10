@@ -243,7 +243,15 @@ drinkfountain()
 
 	if (ftyp == FOUNTAIN_HEALING || ftyp == FOUNTAIN_POWER)
 	{
-		healup(d(6 + 6 * fountain_blessed, 6), fountain_blessed ? 1 : 0,
+		int num = d(2, 6);
+		int added_hp = num + ((rnd(6) + 5) * 5 * (Upolyd ? u.mhmax : u.uhpmax)) / 100;
+		int added_max = 0;
+		if (fountain_blessed)
+		{
+			added_hp *= 2;
+			added_max += 1;
+		}
+		healup(added_hp, added_max,
 			!!fountain_blessed, !fountain_blessed, FALSE, FALSE, FALSE);
 
 		if (ftyp == FOUNTAIN_HEALING)

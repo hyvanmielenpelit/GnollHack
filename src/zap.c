@@ -263,7 +263,7 @@ struct monst* origmonst;
     boolean reveal_invis = FALSE, learn_it = FALSE;
     boolean skilled_spell, helpful_gesture = FALSE;
     int otyp = otmp->otyp;
-    const char *zap_type_text = "spell";
+    const char *zap_type_text = otmp && OBJ_CONTENT_NAME(otmp->otyp) ? OBJ_CONTENT_NAME(otmp->otyp) : otmp && otmp->oclass == SPBOOK_CLASS ? OBJ_NAME(objects[otmp->otyp]) : "spell";
     struct obj *obj;
     boolean disguised_mimic = (is_mimic(mtmp->data)
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
