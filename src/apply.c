@@ -4822,7 +4822,8 @@ struct obj *obj;
     case WAN_OPENING:
 	case WAN_UNDEAD_TURNING:
 	case WAN_SECRET_DOOR_DETECTION:
-	case WAN_ORE_DETECTION:
+    case WAN_TRAP_DETECTION:
+    case WAN_ORE_DETECTION:
 		pline(nothing_else_happens);
         goto discard_broken_wand;
     case WAN_DEATH:

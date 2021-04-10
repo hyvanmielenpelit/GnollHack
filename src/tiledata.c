@@ -2007,6 +2007,7 @@ uchar* tilemapflags;
         short enl_anim_frames = enlargements[i].number_of_animation_frames ? enlargements[i].number_of_animation_frames : 1;
         for (int m = 0; m < enl_anim_tiles; m++)
         {
+            /* m is the animation tile number */
             short enl_anim_tile_idx = enlargements[i].number_of_animation_tiles ? m : -1;
             short base_tile = get_enlargement_base_tile(i, enl_anim_tile_idx);
             for (int j = 0; j < enlargements[i].number_of_enlargement_tiles; j++)
@@ -2060,6 +2061,9 @@ uchar* tilemapflags;
                     int anim = get_enlargement_animation(i);
                     if (anim >= 0)
                     {
+                        int addedindex = m * enlargements[i].number_of_enlargement_tiles; /* Move to the appropriate place for the animation tile */
+                        tilemaparray[j + addedindex + enlargement_offsets[i] /* enlargements[i].glyph_offset */ + GLYPH_ENLARGEMENT_OFF] = tile_count;
+#if 0
                         for (int f = 0; f < enl_anim_frames; f++)
                         {
                             if (animations[anim].frame2tile[f] == enl_anim_tile_idx)
@@ -2068,6 +2072,7 @@ uchar* tilemapflags;
                                 tilemaparray[j + addedindex + enlargement_offsets[i] /* enlargements[i].glyph_offset */ + GLYPH_ENLARGEMENT_OFF] = tile_count;
                             }
                         }
+#endif
                     }
                     else
                     {

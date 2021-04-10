@@ -4950,7 +4950,21 @@ register struct obj *obj;
         if (!Blind)
             known = TRUE;
         break;
-	case WAN_ORE_DETECTION:
+    case WAN_TRAP_DETECTION:
+        if (level.flags.nommap)
+        {
+            Your("%s spins as %s blocks the magic!", body_part(HEAD),
+                something);
+            play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+            make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
+            break;
+        }
+        if (trap_detect(otmp))
+            return; /* nothing detected */
+        You("become aware of the location of nearby traps!");
+        known = TRUE;
+        break;
+    case WAN_ORE_DETECTION:
 		if (object_detect(otmp, GEM_CLASS))
 			return; /* nothing detected */
 		known = TRUE;
@@ -5061,7 +5075,9 @@ register struct obj *obj;
 		(void)absolution_spell();
 		break;
 	}
-    if (known) {
+
+    if (known)
+    {
 //        if (!objects[obj->otyp].oc_name_known)
 //            more_experienced(0, 10);
         /* effect was observable; discover the wand type provided

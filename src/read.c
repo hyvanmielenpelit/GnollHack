@@ -2967,13 +2967,15 @@ boolean *effect_happened_ptr;
         if (cval)
             HConfusion = 1; /* to screw up map */
         do_mapping();
-        if (cval) {
+        if (cval) 
+        {
             HConfusion = 0; /* restore */
             pline("Unfortunately, you can't grasp the details.");
         }
         break;
 	case SPE_DETECT_TRAPS:
-		if (level.flags.nommap) {
+		if (level.flags.nommap) 
+        {
 			Your("%s spins as %s blocks the spell!", body_part(HEAD),
 				something);
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);

@@ -693,7 +693,8 @@ doengrave()
             /* NODIR wands */
             case WAN_LIGHT:
             case WAN_SECRET_DOOR_DETECTION:
-			case WAN_ORE_DETECTION:
+            case WAN_TRAP_DETECTION:
+            case WAN_ORE_DETECTION:
 			case WAN_CREATE_MONSTER:
             case WAN_WISHING:
 			case WAN_IDENTIFY:

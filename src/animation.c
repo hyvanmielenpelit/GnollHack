@@ -2416,7 +2416,10 @@ short enlidx, enl_anim_tile_idx;
         for (int j = 0; j < animations[i].number_of_tiles; j++)
         {
             if (animations[i].tile_enlargement == enlidx && (enl_anim_tile_idx < 0 || enl_anim_tile_idx == j))
-                return glyph2tile[get_animation_frame_with_tile(i, j) + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF];
+            {
+                int res = glyph2tile[get_animation_frame_with_tile(i, j) + animation_offsets[i] /* animations[i].glyph_offset */ + GLYPH_ANIMATION_OFF];
+                return res;
+            }
         }
     }
 
@@ -2428,7 +2431,7 @@ int
 get_animation_frame_with_tile(animidx, tileidx)
 int animidx, tileidx;
 {
-    for (int i = 0; i < TOTAL_NUM_ANIMATION_FRAMES; i++)
+    for (int i = 0; i < animations[animidx].number_of_frames; i++)
     {
         if (animations[animidx].frame2tile[i] == tileidx)
             return i;
