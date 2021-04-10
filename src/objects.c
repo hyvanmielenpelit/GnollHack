@@ -140,7 +140,7 @@ NEARDATA struct objclass objects[] =
 			   hitbon, mcadj, fixeddmgbon, launchrange, 0, 0, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount,  \
 			   wt, color, soundset,\
 			   0, 0, 0, 0, \
-			   powconfermask, permittedtargets, flags, flags2, flags3, flags4)
+			   powconfermask, permittedtargets, flags, flags2, flags3, O4_NON_MYTHIC | flags4)
 
 	/* Note: for weapons that don't do an even die of damage (ex. 2-7 or 3-18)
 	   the extra damage is added on in weapon.c, not here! */
@@ -702,14 +702,14 @@ WEAPON("runesword", "runed broadsword", /* Base item for Stormbringer */
 	AD_PHYS, 2, 4, 0, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P1_NONE, S, WEP_BROADSWORD, P_SWORD, MAT_IRON, CLR_BLACK, 16, OBJECT_SOUNDSET_SWORD,
-	O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE,
+	O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_NON_MYTHIC | O4_FLOOR_TILE,
 	PERMITTED_ALL, ALL_TARGETS),
 CHARGEDWEAPON("sword of luckiness", "bright broadsword", /* Base item for Luck Blade */
 	0, 0, 0, CHARGED_LUCK_BLADE, RECHARGING_LUCK_BLADE, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 55, 500,
 	AD_PHYS, 2, 4, 0, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
 	0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P1_CONFERS_LUCK | P1_CURSED_ITEM_YIELDS_NEGATIVE, S, WEP_BROADSWORD, P_SWORD, MAT_IRON, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
-	O1_ENCHANTMENT_AFFECTS_MC, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE,
+	O1_ENCHANTMENT_AFFECTS_MC, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_NON_MYTHIC | O4_FLOOR_TILE,
 	PERMITTED_ALL, ALL_TARGETS),
 
 /* polearms */
@@ -1071,7 +1071,7 @@ WEAPON("black blade of disintegration", "sword-shaped planar rift",
 	AD_PHYS, 2, 8, 0,  3, 8, 0, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK, A2_NONE, 100,
 	0, -8, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, P1_NONE, S, WEP_TWO_HANDED_SWORD, P_SWORD, MAT_PLANARRIFT, CLR_BLACK, 16, OBJECT_SOUNDSET_GENERIC,
-	O1_DISINTEGRATION_RESISTANT | O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE,
+	O1_DISINTEGRATION_RESISTANT | O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_NON_MYTHIC | O4_FLOOR_TILE,
 	PERMITTED_ALL, ALL_TARGETS),
 
 /* bows */
@@ -1199,28 +1199,28 @@ BOW("Galadhrim bow", "ornamental long bow",
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)
 #define HELM(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,floor_height,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, metal, c, floor_height, soundset, flags, flags2, flags3,flags4,powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, metal, c, floor_height, soundset, flags, flags2, flags3, O4_NON_MYTHIC | flags4, powconfermask)
 #define CLOAK(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, metal, c, 0, soundset, flags, flags2, flags3,flags4,powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, O4_NON_MYTHIC | flags4, powconfermask)
 #define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask) \
     ARMOR(name, desc, kn, mgc, blk, power, power2, power3, pflags, enchtype, prob, delay, wt, \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_NONE, metal, c, 0, soundset, flags, flags2, flags3,flags4,powconfermask)
 #define GLOVES(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, 24, soundset, flags, flags2, flags3,flags4 | O4_FLOOR_TILE, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, powconfermask)
 #define BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, 32, soundset, flags, flags2, flags3,flags4, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, 32, soundset, flags, flags2, flags3, O4_NON_MYTHIC | flags4, powconfermask)
 #define SHIRT(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIRT, P_NONE, metal, c, 0, soundset, flags, flags2, flags3,flags4, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIRT, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, O4_NON_MYTHIC | flags4, powconfermask)
 #define ROBE(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_ROBE, P_NONE, metal, c, height, soundset, flags, flags2, flags3,flags4, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_ROBE, P_NONE, metal, c, height, soundset, flags, flags2, flags3, O4_NON_MYTHIC | flags4, powconfermask)
 #define BRACERS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BRACERS, P_NONE, metal, c, 24, soundset, flags, flags2, flags3,flags4 | O4_FLOOR_TILE, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BRACERS, P_NONE, metal, c, 24, soundset, flags, flags2, flags3,flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, powconfermask)
 
 /* note: acbon = 10 - ac used in ARMOR, i.e., 1 gives -1 AC bonus to the player */
 #define WEAPONSHIELD(name,desc,kn,mgc,prob,wt,cost,enchtype,\
@@ -1360,7 +1360,7 @@ HELM("helm of telepathy", "visored helmet",
  */
 #define DRGN_ARMR(name,mgc,power,power2,power3,pflags,cost,ac,mc,manabon,hpbon,bonusattrs,attrbonus,splcastpen,color,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, None, 1, mgc, 1, power, power2, power3, pflags, ENCHTYPE_GENERAL_ARMOR, 0, 5, 550,  \
-          cost, ac, mc, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SUIT, P_NONE, MAT_DRAGON_HIDE, color, 0, soundset, flags, flags2, flags3,flags4, powconfermask)
+          cost, ac, mc, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SUIT, P_NONE, MAT_DRAGON_HIDE, color, 0, soundset, flags, flags2, flags3, O4_NON_MYTHIC | flags4, powconfermask)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
 DRGN_ARMR("gray dragon scale mail",    1, ANTIMAGIC, NO_POWER, NO_POWER, P1_NONE, 6000, 1, 4, 0, 0, 0, 0, 10, CLR_GRAY, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_DRAGON_ITEM | O2_MONSTER_SCALE_MAIL, O3_NONE, O4_NONE, PERMITTED_ALL),
@@ -1592,7 +1592,7 @@ WEAPONGLOVES("gauntlets of ogre power", "riding gloves",
 	AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_ENCHANTMENT, STR18(100), 2, 0,
 	0, 0, 0, P1_NONE, WHACK, MAT_IRON, CLR_BROWN, OBJECT_SOUNDSET_GENERIC,
-	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
+	O1_NONE, O2_NONE, O3_NONE, O4_NON_MYTHIC, PERMITTED_ALL, ALL_TARGETS),
 GLOVES("gauntlets of dexterity", "fencing gloves",
        0, 1,        0, 0, 0, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 8, 1, 10, 100, 9, 0, 0, 0, BONUS_TO_DEX, 0, 0, MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 WEAPONGLOVES("gauntlets of balance", "runed gloves", /* Base item for Gauntlets of Yin and Yang */
@@ -1603,7 +1603,7 @@ WEAPONGLOVES("gauntlets of balance", "runed gloves", /* Base item for Gauntlets 
 	O1_ROT_RESISTANT | O1_POLYMORPH_RESISTANT | O1_FIRE_RESISTANT,
 	O2_NONE,
 	O3_NO_WISH | O3_NO_GENERATION,
-	O4_NONE,
+	O4_NON_MYTHIC,
 	PERMITTED_ALL, ALL_TARGETS),
 
 /* without shuffled appearances */

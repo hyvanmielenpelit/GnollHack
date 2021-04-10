@@ -4045,21 +4045,21 @@ int spell;
 
 	if (!(objects[spellid(spell)].oc_spell_flags & S1_NO_SOMATIC_COMPONENT))
 	{
-		if (uarm)
+		if (uarm && !has_obj_mythic_spellcasting(uarm))
 			armor_penalty += objects[uarm->otyp].oc_spell_casting_penalty;
-		if (uarms)
+		if (uarms && !has_obj_mythic_spellcasting(uarms))
 			armor_penalty += objects[uarms->otyp].oc_spell_casting_penalty;
-		if (uarmh)
+		if (uarmh && !has_obj_mythic_spellcasting(uarmh))
 			armor_penalty += objects[uarmh->otyp].oc_spell_casting_penalty;
-		if (uarmg)
+		if (uarmg && !has_obj_mythic_spellcasting(uarmg))
 			armor_penalty += objects[uarmg->otyp].oc_spell_casting_penalty;
-		if (uarmf)
+		if (uarmf && !has_obj_mythic_spellcasting(uarmf))
 			armor_penalty += objects[uarmf->otyp].oc_spell_casting_penalty;
-		if (uarmu)
+		if (uarmu && !has_obj_mythic_spellcasting(uarmu))
 			armor_penalty += objects[uarmu->otyp].oc_spell_casting_penalty;
-		if (uarmo)
+		if (uarmo && !has_obj_mythic_spellcasting(uarmo))
 			armor_penalty += objects[uarmo->otyp].oc_spell_casting_penalty;
-		if (uarmb)
+		if (uarmb && !has_obj_mythic_spellcasting(uarmb))
 			armor_penalty += objects[uarmb->otyp].oc_spell_casting_penalty;
 		if (umisc)
 			armor_penalty += objects[umisc->otyp].oc_spell_casting_penalty;
@@ -4079,7 +4079,7 @@ int spell;
 			armor_penalty += objects[uright->otyp].oc_spell_casting_penalty;
 		if (ublindf)
 			armor_penalty += objects[ublindf->otyp].oc_spell_casting_penalty;
-		if (uwep)
+		if (uwep && !has_obj_mythic_spellcasting(uwep))
 			armor_penalty += objects[uwep->otyp].oc_spell_casting_penalty;
 	}
 

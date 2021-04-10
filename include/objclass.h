@@ -937,7 +937,7 @@ struct objclass {
 #define O4_NEVER_GENERATED_WITH_EXCEPTIONALITY			0x00004000UL
 #define O4_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00008000UL	/* deals damage when wielded like artifacts */
 #define O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE			0x00010000UL
-/* free bit */
+#define O4_NON_MYTHIC									0x00020000UL
 /* free bit */
 /* free bit */
 #define O4_CONTAINER_CONTENTS_VISIBLE					0x00100000UL	/* Can always see the contents */

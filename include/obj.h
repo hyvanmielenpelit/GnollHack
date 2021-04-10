@@ -3,6 +3,8 @@
 /*-Copyright (c) Michael Allison, 2006. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
+#include "general.h"
+
 #ifndef OBJ_H
 #define OBJ_H
 
@@ -148,7 +150,7 @@ struct obj {
     Bitfield(lknown, 1); /* locked/unlocked status is known */
 	Bitfield(nknown, 1); /* artifact's true name is known */
 	Bitfield(aknown, 1); /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
-	/* 4 free bits */
+    Bitfield(mknown, 1); /* mythic quality is known */
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
 #define leashmon corpsenm /* gets m_id of attached pet */
@@ -598,6 +600,32 @@ struct obj {
              && typ != SAPPHIRE && typ != BLACK_OPAL && typ != EMERALD \
              && typ != OPAL && typ != PEARL && typ != BLACK_PEARL)))
 
+
+/* Mythic */
+struct mythic_definition {
+    const char* name;
+    const char* mythic_suffix;
+    const char* description;
+    short probability;
+    unsigned long mythic_flags;
+};
+
+#define MYTHIC_FLAG_WEAPON_ONLY             0x00000001UL
+#define MYTHIC_FLAG_ARMOR_ONLY              0x00000002UL
+#define MYTHIC_FLAG_SHARP_WEAPON_ONLY       0x00000004UL
+#define MYTHIC_FLAG_DIRECTLY_WISHABLE       0x00000008UL
+#define MYTHIC_FLAG_NON_WISHABLE            0x00000010UL
+
+extern NEARDATA struct mythic_definition mythic_definitions[MAX_MYTHIC_QUALITIES];
+
+#define otyp_non_mythic(otyp) \
+    (objects[otyp].oc_flags4 & O4_NON_MYTHIC)
+
+#define has_obj_mythic_lightness(o) \
+    ((o)->mythic_quality == MYTHIC_LIGHTNESS)
+
+#define has_obj_mythic_spellcasting(o) \
+    ((o)->mythic_quality == MYTHIC_SPELLCASTING)
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1

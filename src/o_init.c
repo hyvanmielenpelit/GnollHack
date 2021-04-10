@@ -6,6 +6,13 @@
 #include "hack.h"
 #include "lev.h" /* save & restore info */
 
+NEARDATA struct mythic_definition mythic_definitions[MAX_MYTHIC_QUALITIES] =
+{
+    { "", "", "", 0, 0UL },
+    { "lightness", " of lightness", "", 25, MYTHIC_FLAG_DIRECTLY_WISHABLE },
+    { "spellcasting", " of spellcasting", "", 20, MYTHIC_FLAG_DIRECTLY_WISHABLE },
+};
+
 STATIC_DCL void FDECL(setgemprobs, (d_level *));
 STATIC_DCL void FDECL(shuffle, (int, int, BOOLEAN_P));
 STATIC_DCL void NDECL(shuffle_all);
@@ -829,5 +836,49 @@ rename_disco()
     destroy_nhwindow(tmpwin);
     return;
 }
+
+short
+randomize_mythic_quality(obj)
+struct obj* obj;
+{
+    if (!obj || otyp_non_mythic(obj->otyp))
+        return MYTHIC_NONE;
+
+    uchar eligible[MAX_MYTHIC_QUALITIES] = { 0 };
+
+    int cnt = 0;
+    int total_prob = 0;
+    for (int i = 1; i < MAX_MYTHIC_QUALITIES; i++)
+    {
+        eligible[i] = FALSE;
+        if (obj->oclass != WEAPON_CLASS && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY))
+            continue;
+        if (obj->oclass != ARMOR_CLASS && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
+            continue;
+        if ((obj->oclass != WEAPON_CLASS || (obj->oclass == WEAPON_CLASS && objects[obj->otyp].oc_dir < PIERCE)) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
+            continue;
+
+        eligible[i] = TRUE;
+        cnt++;
+        total_prob += (int)mythic_definitions[i].probability;
+    }
+
+    if (cnt == 0 || total_prob == 0)
+        return MYTHIC_NONE;
+
+    int roll = total_prob > 1 ? rn2(total_prob) : 0;
+
+    for (int i = 1; i < MAX_MYTHIC_QUALITIES; i++)
+    {
+        if (!eligible[i])
+            continue;
+        roll -= (int)mythic_definitions[i].probability;
+        if (roll <= 0)
+            return i;
+    }
+
+    return MYTHIC_NONE;
+}
+
 
 /*o_init.c*/

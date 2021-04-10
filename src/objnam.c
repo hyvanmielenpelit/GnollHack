@@ -543,7 +543,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 	const char *dn = artifact_description_exists ? artilist[obj->oartifact].desc : OBJ_DESCR(*ocl);
     const char *un = ocl->oc_uname;
 	boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
-    boolean known, dknown, bknown, nknown, aknown;
+    boolean known, dknown, bknown, nknown, aknown, mknown;
 	boolean makeThelower = FALSE;
 
     buf = nextobuf() + PREFIX; /* leave room for "17 -3 " */
@@ -570,7 +570,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         obj->bknown = TRUE;
 
     if (iflags.override_ID) {
-        known = dknown = bknown = nknown = aknown = TRUE;
+        known = dknown = bknown = nknown = aknown = mknown = TRUE;
         nn = 1;
     } else {
         known = obj->known;
@@ -578,7 +578,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         bknown = obj->bknown;
 		nknown = obj->nknown;
 		aknown = obj->aknown;
-	}
+        mknown = obj->mknown;
+    }
 
 	/* Artifacts get just their name */
     if (obj_is_pname(obj))
@@ -653,6 +654,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             else if (obj->exceptionality == EXCEPTIONALITY_INFERNAL)
                 Strcat(buf, "infernal ");
         }
+        if (dknown && !mknown && obj->mythic_quality)
+        {
+            Strcat(buf, "mythic ");
+        }
 
         const char* rock = is_ore(obj) ? "nugget of ore" : is_graystone(obj) ? "stone" : (ocl->oc_material == MAT_MINERAL) ? "stone" : "gem";
         boolean isgem = (obj->oclass == GEM_CLASS);
@@ -722,7 +727,12 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             break;
         }
 
-		if (!dknown)
+        if (dknown && !mknown && obj->mythic_quality)
+        {
+            Strcat(buf, "mythic ");
+        }
+
+        if (!dknown)
 			Strcat(buf, armor_class_simple_name(obj));
 		else if (nn) {
             Strcat(buf, actualn);
@@ -915,6 +925,11 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     }
     if (pluralize)
         Strcpy(buf, makeplural(buf));
+
+    if (dknown && mknown && obj->mythic_quality)
+    {
+        Strcat(buf, mythic_definitions[obj->mythic_quality].mythic_suffix);
+    }
 
     if (obj->otyp == T_SHIRT && program_state.gameover) {
         char tmpbuf[BUFSZ];
@@ -1961,7 +1976,9 @@ struct obj *otmp;
 		return TRUE;
 	if (!otmp->nknown && has_oname(otmp))
 		return TRUE;
-	/* otmp->rknown is the only item of interest if we reach here */
+    if (otmp->mythic_quality && !otmp->mknown)
+        return TRUE;
+    /* otmp->rknown is the only item of interest if we reach here */
     /*
      *  Note:  if a revision ever allows scrolls to become fireproof or
      *  rings to become shockproof, this checking will need to be revised.
@@ -3631,7 +3648,7 @@ boolean is_wiz_wish;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken;
     int halfeaten, mntmp, contents;
-    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality, key_special_quality, key_otyp, is_switchable;
+    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality, mythic_quality, key_special_quality, key_otyp, is_switchable;
     int tmp, tinv, tvariety;
     int wetness, gsize = 0;
     struct fruit *f;
@@ -3658,7 +3675,7 @@ boolean is_wiz_wish;
     boolean wiz_wishing = (wizard && is_wiz_wish);
 
     cnt = enchantment = charges = chargesfound = spesgn = typ = 0;
-    very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = exceptionality =
+    very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = exceptionality = mythic_quality =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
         locked = unlocked = broken = key_special_quality = key_otyp = is_switchable = 0;
@@ -3683,6 +3700,8 @@ boolean is_wiz_wish;
         return no_wish;
     /* save the [nearly] unmodified choice string */
     Strcpy(fruitbuf, bp);
+
+
 
     int foundkey = FALSE;
     for (;;) 
@@ -3781,6 +3800,10 @@ boolean is_wiz_wish;
         else if (!strncmpi(bp, "infernal ", l = 9))
         {
             exceptionality = EXCEPTIONALITY_INFERNAL;
+        }
+        else if (!strncmpi(bp, "mythic ", l = 7))
+        {
+            mythic_quality = -1;
         }
         else if (!strncmpi(bp, "trapped ", l = 8)) {
             trapped = 0; /* undo any previous "untrapped" */
@@ -3956,6 +3979,16 @@ boolean is_wiz_wish;
         *p = 0;
         contents = CONTAINER_SPINACH;
     }
+
+    for (int mythic_idx = 1; mythic_idx < MAX_MYTHIC_QUALITIES; mythic_idx++)
+    {
+        if ((p = strstri(bp, mythic_definitions[mythic_idx].mythic_suffix)) != 0) 
+        {
+            *p = 0;
+            mythic_quality = mythic_idx;
+        }
+    }
+
 
     /*
      * Skip over "pair of ", "pairs of", "set of" and "sets of".
@@ -4936,7 +4969,7 @@ boolean is_wiz_wish;
             otmp->otrapped = (trapped == 1);
     }
 
-	/* set elemental enchantment */
+	/* Set elemental enchantment */
 	if (elemental_enchantment) 
     {
 		if (is_elemental_enchantable(otmp))
@@ -4947,7 +4980,7 @@ boolean is_wiz_wish;
 			otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 	}
 
-    /* set exceptionality */
+    /* Set exceptionality */
     if (exceptionality)
     {
         if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
@@ -4961,6 +4994,36 @@ boolean is_wiz_wish;
                     otmp->exceptionality = exceptionality;
                 else
                     otmp->exceptionality = EXCEPTIONALITY_NORMAL;
+            }
+        }
+    }
+
+    /* Set mythic quality */
+    if (mythic_quality && !otyp_non_mythic(otmp->otyp) && otmp->oartifact == 0)
+    {
+        if (mythic_quality < 0)
+            mythic_quality = randomize_mythic_quality(otmp);
+
+        if (
+            ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY) && otmp->oclass != ARMOR_CLASS)
+            || ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY) && otmp->oclass != WEAPON_CLASS)
+            || ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY) && (otmp->oclass != WEAPON_CLASS || (otmp->oclass == WEAPON_CLASS && objects[otmp->otyp].oc_dir < PIERCE)))
+            )
+        {
+            /* Nothing */
+        }
+        else
+        {
+            if (wiz_wishing || (mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_DIRECTLY_WISHABLE))
+                otmp->mythic_quality = mythic_quality;
+            else
+            {
+                if((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
+                    otmp->mythic_quality = MYTHIC_NONE;
+                else if (!rn2(3) && Luck >= 0)
+                    otmp->mythic_quality = mythic_quality;
+                else
+                    otmp->mythic_quality = MYTHIC_NONE;
             }
         }
     }

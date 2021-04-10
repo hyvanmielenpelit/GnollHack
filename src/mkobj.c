@@ -1756,6 +1756,27 @@ unsigned long mkflags;
         }
     }
 
+    /* Mythic quality */
+    if (!otyp_non_mythic(otmp->otyp) && mkobj_type < 2 && otmp->oartifact == 0)
+    {
+        boolean makemythic = FALSE;
+        if (In_endgame(&u.uz))
+            makemythic = otmp->exceptionality ? !rn2(4) : !rn2(8);
+        else if (Inhell)
+            makemythic = otmp->exceptionality ? !rn2(5) : !rn2(10);
+        else if (depth(&u.uz) >= 20)
+            makemythic = otmp->exceptionality ? !rn2(6) : !rn2(12);
+        else if (depth(&u.uz) >= 10)
+            makemythic = otmp->exceptionality ? !rn2(8) : !rn2(16);
+        else
+            makemythic = otmp->exceptionality ? !rn2(12) : !rn2(24);
+
+        if (makemythic)
+        {
+            otmp->mythic_quality = randomize_mythic_quality(otmp);
+        }
+    }
+
     /* some things must get done (corpsenm, timers) even if init = 0 */
     switch ((otmp->oclass == POTION_CLASS && otmp->otyp != POT_OIL)
             ? POT_WATER
@@ -2807,6 +2828,9 @@ weight(obj)
 register struct obj *obj;
 {
     int wt = (int) objects[obj->otyp].oc_weight;
+
+    if (has_obj_mythic_lightness(obj))
+        wt /= 3;
 
     /* glob absorpsion means that merging globs accumulates weight while
        quantity stays 1, so update 'wt' to reflect that, unless owt is 0,

@@ -253,6 +253,13 @@ enum exceptionality_types {
 	MAX_EXCEPTIONALITY_TYPES
 };
 
+enum mythic_quality_types {
+	MYTHIC_NONE = 0,
+	MYTHIC_LIGHTNESS,
+	MYTHIC_SPELLCASTING,
+	MAX_MYTHIC_QUALITIES
+};
+
 enum special_level_naming_types {
 	SPECIAL_LEVEL_NAMING_REVEALED_NEVER = 0,
 	SPECIAL_LEVEL_NAMING_REVEALED_ON_ARRIVAL,

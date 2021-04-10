@@ -3580,7 +3580,7 @@ struct obj *otmp;
 		discover_artifact(otmp->oartifact);
 		otmp->aknown = 1;
 	}
-    otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = 1;
+    otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = otmp->mknown = 1;
 	
 	if (has_oname(otmp))
 		otmp->nknown = 1;

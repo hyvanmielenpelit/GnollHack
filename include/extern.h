@@ -2081,6 +2081,7 @@ E void FDECL(undiscover_object, (int));
 E int NDECL(dodiscovered);
 E int NDECL(doclassdisco);
 E void NDECL(rename_disco);
+E short FDECL(randomize_mythic_quality, (struct obj*));
 
 /* ### objects.c ### */
 

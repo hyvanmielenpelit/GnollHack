@@ -1787,12 +1787,23 @@ register struct obj* obj;
 		}
 	}
 
+	if (obj->mythic_quality)
+	{
+		char mythicbuf[BUFSIZ];
+		strcpy(mythicbuf, obj->mknown ? mythic_definitions[obj->mythic_quality].name : "Unknown mythic property");
+		*mythicbuf = highc(*mythicbuf);
+		Sprintf(buf, "Mythic property:        %s", mythicbuf);
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 	if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
 		(objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || objects[otyp].oc_spell_casting_penalty != 0))
 	{
-		int splcaster = objects[otyp].oc_spell_casting_penalty;
+		int splcaster = has_obj_mythic_spellcasting(obj) ? 0 : objects[otyp].oc_spell_casting_penalty;
 
-		Sprintf(buf2, "%s%d%%", splcaster < 0 ? "+" : "", -splcaster * 5);
+		Sprintf(buf2, "%s%d%%", splcaster <= 0 ? "+" : "", -splcaster * 5);
 		if (splcaster < 0)
 			Sprintf(buf, "Spell casting bonus:    %s", buf2);
 		else
