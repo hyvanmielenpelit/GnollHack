@@ -1757,16 +1757,16 @@ unsigned long mkflags;
     }
 
     /* Mythic quality */
-    if (!otyp_non_mythic(otmp->otyp) && mkobj_type < 2 && otmp->oartifact == 0)
+    if (!otyp_non_mythic(otmp->otyp) && level_difficulty() >= 3 && mkobj_type < 2 && otmp->oartifact == 0)
     {
         boolean makemythic = FALSE;
         if (In_endgame(&u.uz))
             makemythic = otmp->exceptionality ? !rn2(4) : !rn2(8);
         else if (Inhell)
             makemythic = otmp->exceptionality ? !rn2(5) : !rn2(10);
-        else if (depth(&u.uz) >= 20)
+        else if (level_difficulty() >= 20)
             makemythic = otmp->exceptionality ? !rn2(6) : !rn2(12);
-        else if (depth(&u.uz) >= 10)
+        else if (level_difficulty() >= 10)
             makemythic = otmp->exceptionality ? !rn2(8) : !rn2(16);
         else
             makemythic = otmp->exceptionality ? !rn2(12) : !rn2(24);
