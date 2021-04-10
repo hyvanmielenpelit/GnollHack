@@ -487,14 +487,14 @@ struct objclass {
 
 	long oc_cost;            /* base cost in shops */
     
-							  /* Check the AD&D rules!  The FIRST is small monster damage. */
+	/* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
 	short oc_damagetype;						/* Type of damage caused by the (magic) weapon, the same as for monster attacks */
 	short oc_wsdice, oc_wsdam, oc_wsdmgplus;	/* small monster damage, also used for spell damage */
 	short oc_wldice, oc_wldam, oc_wldmgplus;	/* large monster damage, also used for duration for spells */
-	short oc_extra_damagetype;				/* Type of extra damage caused by the (magic) weapon */
+	short oc_extra_damagetype;					/* Type of extra damage caused by the (magic) weapon */
 	short oc_wedice, oc_wedam, oc_wedmgplus;	/* extra damage used as a special effect influenced by target permissions mask */
-	unsigned long oc_aflags, oc_aflags2;	/* attack related flags, e.g. whether the attack is vorpal */
+	unsigned long oc_aflags, oc_aflags2;		/* attack related flags, e.g. whether the attack is vorpal */
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
 #define A1_NONE														0x00000000UL
