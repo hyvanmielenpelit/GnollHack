@@ -27,7 +27,7 @@
 #define SKILL_PROGRESS_INI_UNSKILLED  {0, 0, 3, 7, 13, 21, 31}
 #define SKILL_PROGRESS_INI_BASIC      {0, 0, 0, 4,  9, 16, 25}
 #define SKILL_PROGRESS_INI_SKILLED    {0, 0, 0, 0,  5, 11, 19}
-
+#define SKILL_PROGRESS_NONE           {0, 0, 0, 0,  0,  0,  0}
 
 const struct Role roles[] = {
     { { "Archaeologist", 0 },
@@ -68,41 +68,41 @@ const struct Role roles[] = {
       10,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
             SKILL_PROGRESS_INI_UNSKILLED, /* P_ARCANE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CLERIC_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_HEALING_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_DIVINATION_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_ABJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_MOVEMENT_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
     
     },
@@ -144,41 +144,41 @@ const struct Role roles[] = {
       10,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_NONE, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_NONE, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
       },
     { { "Caveman", "Cavewoman" },
       { { "Troglodyte", 0 },
@@ -218,41 +218,41 @@ const struct Role roles[] = {
       0,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_NONE, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_NONE, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_NATURE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
       },
     { { "Healer", 0 },
       { { "Rhizotomist", 0 },
@@ -291,41 +291,41 @@ const struct Role roles[] = {
       10,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CLERIC_SPELL */
             SKILL_PROGRESS_INI_SKILLED, /* P_HEALING_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_DIVINATION_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_ABJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_TRANSMUTATION_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
       },
     { { "Knight", 0 },
       { { "Gallant", 0 },
@@ -364,41 +364,41 @@ const struct Role roles[] = {
       10,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ARCANE_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_CLERIC_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_HEALING_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_DIVINATION_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_ABJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_CELESTIAL_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
       },
     { { "Monk", 0 },
       { { "Candidate", 0 },
@@ -444,41 +444,41 @@ const struct Role roles[] = {
       10,
       30,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
-            {0, 0,  0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ARCANE_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_CLERIC_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_HEALING_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_ABJURATION_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_MOVEMENT_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
       },
     { { "Priest", "Priestess" },
       { { "Aspirant", 0 },
@@ -518,41 +518,41 @@ const struct Role roles[] = {
       0,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ARCANE_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_CLERIC_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_HEALING_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_ABJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_CELESTIAL_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_NATURE_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
       },
     /* Note:  Rogue precedes Ranger so that use of `-R' on the command line
        retains its traditional meaning. */
@@ -593,41 +593,41 @@ const struct Role roles[] = {
       10,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_NONE, /* P_HEALING_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ABJURATION_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_MOVEMENT_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
       },
     { { "Ranger", 0 },
       {
@@ -681,41 +681,41 @@ const struct Role roles[] = {
       10,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CLERIC_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_HEALING_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_NATURE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
       },
     { { "Samurai", 0 },
       { { "Hatamoto", 0 },       /* Banner Knight */
@@ -754,41 +754,41 @@ const struct Role roles[] = {
       10,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_NONE, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_NONE, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
       },
     { { "Tourist", 0 },
       { { "Rambler", 0 },
@@ -827,21 +827,21 @@ const struct Role roles[] = {
       0,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
             SKILL_PROGRESS_INI_UNSKILLED, /* P_ARCANE_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_CLERIC_SPELL */
@@ -852,16 +852,16 @@ const struct Role roles[] = {
             SKILL_PROGRESS_INI_UNSKILLED, /* P_TRANSMUTATION_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_ENCHANTMENT_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_CONJURATION_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */        }
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */        }
       },
     { { "Valkyrie", 0 },
       { { "Stripling", 0 },
@@ -900,41 +900,41 @@ const struct Role roles[] = {
       0,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_NONE, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_NONE, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
       },
     { { "Wizard", 0 },
@@ -975,41 +975,41 @@ const struct Role roles[] = {
       0,
       0,
         {
-            {0, 0, 0, 0, 0, 0, 0}, /* P_NONE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_DAGGER */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_PICK_AXE */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SWORD */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BLUDGEONING_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_FLAIL */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_QUARTERSTAFF */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_POLEARM */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SPEAR */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_SLING */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_CROSSBOW */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
+            SKILL_PROGRESS_NONE, /* P_NONE */
+            SKILL_PROGRESS_NONE, /* P_DAGGER */
+            SKILL_PROGRESS_NONE, /* P_AXE */
+            SKILL_PROGRESS_NONE, /* P_PICK_AXE */
+            SKILL_PROGRESS_NONE, /* P_SWORD */
+            SKILL_PROGRESS_NONE, /* P_BLUDGEONING_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_FLAIL */
+            SKILL_PROGRESS_NONE, /* P_QUARTERSTAFF */
+            SKILL_PROGRESS_NONE, /* P_POLEARM */
+            SKILL_PROGRESS_NONE, /* P_SPEAR */
+            SKILL_PROGRESS_NONE, /* P_BOW */
+            SKILL_PROGRESS_NONE, /* P_SLING */
+            SKILL_PROGRESS_NONE, /* P_CROSSBOW */
+            SKILL_PROGRESS_NONE, /* P_THROWN_WEAPON */
+            SKILL_PROGRESS_NONE, /* P_WHIP */
 
             SKILL_PROGRESS_INI_BASIC, /* P_ARCANE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_NONE, /* P_HEALING_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_NONE, /* P_ABJURATION_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_MOVEMENT_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_TRANSMUTATION_SPELL */
             SKILL_PROGRESS_INI_BASIC, /* P_ENCHANTMENT_SPELL */
             SKILL_PROGRESS_INI_UNSKILLED, /* P_CONJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_NONE, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_NONE, /* P_NECROMANCY_SPELL */
 
-            {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_TWO_WEAPON_COMBAT */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_WAND */
-            {0, 0, 0, 0, 0, 0, 0}, /* P_RIDING */
-            {0, 0, 0, 0, 0, 0, 0}  /* P_DISARM_TRAP */
+            SKILL_PROGRESS_NONE, /* P_BARE_HANDED_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_MARTIAL_ARTS */
+            SKILL_PROGRESS_NONE, /* P_TWO_WEAPON_COMBAT */
+            SKILL_PROGRESS_NONE, /* P_WAND */
+            SKILL_PROGRESS_NONE, /* P_RIDING */
+            SKILL_PROGRESS_NONE  /* P_DISARM_TRAP */
         }
       },
     /* Array terminator */
@@ -1040,39 +1040,39 @@ struct Role urole = {
      0,
      0,
     {
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0}
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE,
+        SKILL_PROGRESS_NONE
     }
 };
 
