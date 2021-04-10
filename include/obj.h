@@ -615,11 +615,12 @@ struct mythic_definition {
 #define MYTHIC_FLAG_SHARP_WEAPON_ONLY       0x00000004UL
 #define MYTHIC_FLAG_DIRECTLY_WISHABLE       0x00000008UL
 #define MYTHIC_FLAG_NON_WISHABLE            0x00000010UL
+#define MYTHIC_FLAG_LEGENDARY_RARE          0x00000020UL
 
 extern NEARDATA struct mythic_definition mythic_definitions[MAX_MYTHIC_QUALITIES];
 
 #define otyp_non_mythic(otyp) \
-    (objects[otyp].oc_flags4 & O4_NON_MYTHIC)
+    ((objects[otyp].oc_flags4 & O4_NON_MYTHIC) || objects[otyp].oc_magic) /* Inherently (already special) magical items cannot be made mythical, this is just of normal boring objects */
 
 #define has_obj_mythic_lightness(o) \
     ((o)->mythic_quality == MYTHIC_LIGHTNESS)

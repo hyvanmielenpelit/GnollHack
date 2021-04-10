@@ -4104,7 +4104,7 @@ int spell;
 	bonus += 15L * (long)statused;
 	bonus += (long)spell_skill_success_bonus(skill);
 	bonus += level_multiplier * (long)u.ulevel;
-	bonus += 5L * (long)u.uspellcastingbonus; /* items */
+	bonus += skill == P_ISRESTRICTED ? 0 : 5L * (long)u.uspellcastingbonus; /* items */
 
 	long armor_multiplier = max(0L, 100L - 5L * armor_penalty);
 

@@ -851,11 +851,13 @@ struct obj* obj;
     for (int i = 1; i < MAX_MYTHIC_QUALITIES; i++)
     {
         eligible[i] = FALSE;
-        if (obj->oclass != WEAPON_CLASS && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY))
+        if (!is_weapon(obj) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY))
             continue;
         if (obj->oclass != ARMOR_CLASS && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
             continue;
-        if ((obj->oclass != WEAPON_CLASS || (obj->oclass == WEAPON_CLASS && objects[obj->otyp].oc_dir < PIERCE)) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
+        if ((!is_weapon(obj) || (!is_weapon(obj) && objects[obj->otyp].oc_dir < PIERCE)) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY))
+            continue;
+        if (level_difficulty() < 16 && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_LEGENDARY_RARE))
             continue;
 
         eligible[i] = TRUE;
