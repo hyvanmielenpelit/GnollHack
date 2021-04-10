@@ -483,7 +483,7 @@ E void FDECL(clear_monster_extra_info, (int, int));
 E void FDECL(clear_monster_layer_at, (int, int));
 E void FDECL(clear_monster_layer_memory_at, (int, int));
 E void FDECL(show_extra_info, (int, int, unsigned long, int));
-E void FDECL(show_missile_info, (int, int, uchar, uchar, uchar, uchar, uchar, unsigned long));
+E void FDECL(show_missile_info, (int, int, uchar, uchar, uchar, uchar, uchar, uchar, unsigned long));
 E unsigned long FDECL(get_missile_flags, (struct obj*, boolean));
 E void FDECL(show_leash_info, (int, int, xchar, xchar, xchar, xchar));
 E void FDECL(clear_layer_info, (struct layer_info*));
@@ -2081,7 +2081,7 @@ E void FDECL(undiscover_object, (int));
 E int NDECL(dodiscovered);
 E int NDECL(doclassdisco);
 E void NDECL(rename_disco);
-E short FDECL(randomize_mythic_quality, (struct obj*));
+E uchar FDECL(randomize_mythic_quality, (struct obj*, boolean));
 
 /* ### objects.c ### */
 

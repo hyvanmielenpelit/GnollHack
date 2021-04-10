@@ -5002,33 +5002,30 @@ boolean is_wiz_wish;
     if (mythic_quality && !otyp_non_mythic(otmp->otyp) && otmp->oartifact == 0)
     {
         if (mythic_quality < 0)
-            mythic_quality = randomize_mythic_quality(otmp);
+            mythic_quality = randomize_mythic_quality(otmp, TRUE);
+
+        if (
+            ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY) && otmp->oclass != ARMOR_CLASS)
+            || ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY) && !is_weapon(otmp))
+            || ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY) && (!is_weapon(otmp) || (is_weapon(otmp) && objects[otmp->otyp].oc_dir < PIERCE)))
+            )
+        {
+            /* Nothing */
+        }
         else
         {
-            if (
-                ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY) && otmp->oclass != ARMOR_CLASS)
-                || ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY) && !is_weapon(otmp))
-                || ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY) && (!is_weapon(otmp) || (is_weapon(otmp) && objects[otmp->otyp].oc_dir < PIERCE)))
-                )
-            {
-                /* Nothing */
-            }
+            if (wiz_wishing || (mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_DIRECTLY_WISHABLE))
+                otmp->mythic_quality = mythic_quality;
             else
             {
-                if (wiz_wishing || (mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_DIRECTLY_WISHABLE))
+                if((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
+                    otmp->mythic_quality = MYTHIC_NONE;
+                else if (!rn2(3) && Luck >= 0)
                     otmp->mythic_quality = mythic_quality;
                 else
-                {
-                    if((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
-                        otmp->mythic_quality = MYTHIC_NONE;
-                    else if (!rn2(3) && Luck >= 0)
-                        otmp->mythic_quality = mythic_quality;
-                    else
-                        otmp->mythic_quality = MYTHIC_NONE;
-                }
+                    otmp->mythic_quality = MYTHIC_NONE;
             }
         }
-
     }
 
     /* empty for containers rather than for tins */

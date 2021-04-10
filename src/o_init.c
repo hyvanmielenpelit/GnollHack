@@ -837,9 +837,10 @@ rename_disco()
     return;
 }
 
-short
-randomize_mythic_quality(obj)
+uchar
+randomize_mythic_quality(obj, is_wish)
 struct obj* obj;
+boolean is_wish;
 {
     if (!obj || otyp_non_mythic(obj->otyp))
         return MYTHIC_NONE;
@@ -848,9 +849,11 @@ struct obj* obj;
 
     int cnt = 0;
     int total_prob = 0;
-    for (int i = 1; i < MAX_MYTHIC_QUALITIES; i++)
+    for (uchar i = 1; i < MAX_MYTHIC_QUALITIES; i++)
     {
         eligible[i] = FALSE;
+        if (is_wish && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
+            continue;
         if (!is_weapon(obj) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY))
             continue;
         if (obj->oclass != ARMOR_CLASS && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
@@ -870,7 +873,7 @@ struct obj* obj;
 
     int roll = total_prob > 1 ? rn2(total_prob) : 0;
 
-    for (int i = 1; i < MAX_MYTHIC_QUALITIES; i++)
+    for (uchar i = 1; i < MAX_MYTHIC_QUALITIES; i++)
     {
         if (!eligible[i])
             continue;

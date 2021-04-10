@@ -1773,7 +1773,7 @@ unsigned long mkflags;
 
         if (makemythic)
         {
-            otmp->mythic_quality = randomize_mythic_quality(otmp);
+            otmp->mythic_quality = randomize_mythic_quality(otmp, FALSE);
         }
     }
 

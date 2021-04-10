@@ -81,7 +81,7 @@ struct obj {
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
     short oartifact; /* artifact array index */
-    short mythic_quality; /* magical quality for a weapon or armor giving additional powers */
+    uchar mythic_quality; /* magical quality for a weapon or armor giving additional powers */
     char exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
     char elemental_enchantment; /* cold, fire, lightning, or deathly */
 

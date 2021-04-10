@@ -1784,7 +1784,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 }
 
                 /* Item property marks */
-                if (item->object_data.opoisoned || item->object_data.elemental_enchantment > 0 || item->object_data.oeroded || item->object_data.oeroded2 || item->object_data.exceptionality > 0)
+                if (item->object_data.opoisoned || item->object_data.elemental_enchantment > 0 || item->object_data.oeroded || item->object_data.oeroded2 || item->object_data.exceptionality > 0 || item->object_data.mythic_quality > 0)
                 {
                     int y_start = 0;
                     int x_start = 0;
@@ -1802,6 +1802,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     int poisoned = (item->object_data.opoisoned);
                     int elemental_enchantment = (item->object_data.elemental_enchantment);
                     int exceptionality = (item->object_data.exceptionality);
+                    int mythic_quality = (item->object_data.mythic_quality);
                     int eroded = (item->object_data.oeroded);
                     int eroded2 = (item->object_data.oeroded2);
 
@@ -1853,6 +1854,10 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                             break;
                         case ITEM_PROPERTY_MARK_INFERNAL:
                             if (exceptionality != EXCEPTIONALITY_INFERNAL)
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_MYTHIC:
+                            if (mythic_quality == 0)
                                 continue;
                             break;
                         case ITEM_PROPERTY_MARK_CORRODED:
