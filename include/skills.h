@@ -112,7 +112,8 @@ enum skill_levels {
     P_SKILLED      = 3,
     P_EXPERT       = 4,
 	P_MASTER	   = 5,		/* Weapon skills and martial arts only */
-	P_GRAND_MASTER = 6		/* Weapon skills and martial arts  only */
+	P_GRAND_MASTER = 6,		/* Weapon skills and martial arts  only */
+    MAX_SKILL_LEVELS
 };
 
 #define is_magic_skill(skill) ((skill) >= P_ARCANE_SPELL && (skill) <= P_NECROMANCY_SPELL)

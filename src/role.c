@@ -24,6 +24,10 @@
  *
  * God names use a leading underscore to flag goddesses.
  */
+#define SKILL_PROGRESS_INI_UNSKILLED  {0, 0, 3, 7, 13, 21, 31}
+#define SKILL_PROGRESS_INI_BASIC      {0, 0, 0, 4,  9, 16, 25}
+#define SKILL_PROGRESS_INI_SKILLED    {0, 0, 0, 0,  5, 11, 19}
+
 
 const struct Role roles[] = {
     { { "Archaeologist", 0 },
@@ -80,13 +84,13 @@ const struct Role roles[] = {
             {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
             {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
 
-            {0, 0, 8,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_ARCANE_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 6,  0,  0, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0, 1,  7, 14, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 5,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_ABJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 4,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_TRANSMUTATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
@@ -236,11 +240,11 @@ const struct Role roles[] = {
             {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 6, 14,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_NATURE_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
 
             {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
@@ -304,13 +308,13 @@ const struct Role roles[] = {
             {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
 
             {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 6,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 1,  1, 10, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 1,  8,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_INI_SKILLED, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_ABJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_ENCHANTMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
@@ -377,15 +381,15 @@ const struct Role roles[] = {
             {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
 
             {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 6, 15,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 7, 16,  0, 0, 0}, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_HEALING_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 8, 17,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_ABJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 5, 14,  0, 0, 0}, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_CELESTIAL_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
 
@@ -457,11 +461,11 @@ const struct Role roles[] = {
             {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
 
             {0, 0,  0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0,  4, 17,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0,  1,  8, 16, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0,  5,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0,  1,  7, 14, 0, 0}, /* P_ABJURATION_SPELL */
-            {0, 0,  1,  6, 12, 0, 0}, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_MOVEMENT_SPELL */
             {0, 0,  0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
             {0, 0,  0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0,  0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
@@ -531,17 +535,17 @@ const struct Role roles[] = {
             {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
 
             {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 1,  6, 13, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 1,  7, 14, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0, 2, 10, 20, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 2,  9, 18, 0, 0}, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_ABJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 2,  8, 16, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 2,  8, 16, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 2,  8, 16, 0, 0}, /* P_NECROMANCY_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_CELESTIAL_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_NECROMANCY_SPELL */
 
             {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
             {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
@@ -608,10 +612,10 @@ const struct Role roles[] = {
             {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0, 6,  0,  0, 0, 0}, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
-            {0, 0, 5,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 7,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_TRANSMUTATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
@@ -695,15 +699,15 @@ const struct Role roles[] = {
 
             {0, 0, 0,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0, 9,  0,  0, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0, 7, 14,  0, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 8,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
+            {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_MOVEMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 6, 13,  0, 0, 0}, /* P_NATURE_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_NATURE_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
 
             {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
@@ -839,18 +843,18 @@ const struct Role roles[] = {
             {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
             {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
 
-            {0, 0, 13,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0, 10,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
-            {0, 0,  6,  0,  0, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0,  5, 15,  0, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0, 12,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
-            {0, 0,  4, 14, 24, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 11,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0,  7,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0,  8,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_CLERIC_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_HEALING_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_ABJURATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_CONJURATION_SPELL */
             {0, 0,  0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 14,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 15,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            {0, 0,  0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
+            {0, 0,  0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
 
             {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
             {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
@@ -987,15 +991,15 @@ const struct Role roles[] = {
             {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
             {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
 
-            {0, 0, 1,  6, 12, 0, 0}, /* P_ARCANE_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_ARCANE_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_HEALING_SPELL */
-            {0, 0, 2, 10, 20, 0, 0}, /* P_DIVINATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_DIVINATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
-            {0, 0, 2,  9, 18, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0, 1,  7, 14, 0, 0}, /* P_TRANSMUTATION_SPELL */
-            {0, 0, 1,  7, 14, 0, 0}, /* P_ENCHANTMENT_SPELL */
-            {0, 0, 2,  9, 18, 0, 0}, /* P_CONJURATION_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_MOVEMENT_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_TRANSMUTATION_SPELL */
+            SKILL_PROGRESS_INI_BASIC, /* P_ENCHANTMENT_SPELL */
+            SKILL_PROGRESS_INI_UNSKILLED, /* P_CONJURATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */

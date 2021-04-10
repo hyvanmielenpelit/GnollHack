@@ -572,9 +572,7 @@ static const struct def_skill Skill_Monk_Init[] = {
 	{ P_BARE_HANDED_COMBAT, P_GRAND_MASTER },
 	{ P_MARTIAL_ARTS, P_BASIC },
 	{ P_ABJURATION_SPELL, P_BASIC },
-	{ P_HEALING_SPELL, P_BASIC },
 	{ P_MOVEMENT_SPELL, P_BASIC },
-	{ P_CLERIC_SPELL, P_BASIC },
 	{ P_NONE, 0 }
 };
 
@@ -708,7 +706,6 @@ static const struct def_skill Skill_Ranger_Max[] = {
     { P_WHIP, P_BASIC },
     { P_HEALING_SPELL, P_BASIC },
     { P_DIVINATION_SPELL, P_SKILLED },
-	{ P_ABJURATION_SPELL, P_BASIC },
 	{ P_NATURE_SPELL, P_SKILLED },
 	{ P_RIDING, P_BASIC },
     { P_BARE_HANDED_COMBAT, P_BASIC },
@@ -776,7 +773,6 @@ static const struct def_skill Skill_T_Max[] = {
     { P_ENCHANTMENT_SPELL, P_BASIC },
 	{ P_HEALING_SPELL, P_BASIC },
 	{ P_MOVEMENT_SPELL, P_GRAND_MASTER },
-	{ P_NATURE_SPELL, P_BASIC },
 	{ P_TRANSMUTATION_SPELL, P_BASIC },
 	{ P_RIDING, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_SKILLED },
