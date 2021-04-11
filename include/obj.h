@@ -608,9 +608,15 @@ struct mythic_definition {
     const char* mythic_affix;
     const char* description;
     short probability;
+    unsigned long mythic_powers;
     unsigned long mythic_flags;
 };
 
+#define MYTHIC_POWER_NONE                   0x00000000UL
+#define MYTHIC_POWER_LIGHTNESS              0x00000001UL
+#define MYTHIC_POWER_SORCERY                0x00000002UL
+
+#define MYTHIC_FLAG_NONE                    0x00000000UL
 #define MYTHIC_FLAG_WEAPON_ONLY             0x00000001UL
 #define MYTHIC_FLAG_ARMOR_ONLY              0x00000002UL
 #define MYTHIC_FLAG_SHARP_WEAPON_ONLY       0x00000004UL
@@ -625,10 +631,10 @@ extern NEARDATA struct mythic_definition mythic_suffix_definitions[MAX_MYTHIC_SU
     ((objects[otyp].oc_flags4 & O4_NON_MYTHIC) || objects[otyp].oc_magic) /* Inherently (already special) magical items cannot be made mythical, this is just of normal boring objects */
 
 #define has_obj_mythic_lightness(o) \
-    ((o)->mythic_quality_suffix == MYTHIC_SUFFIX_LIGHTNESS)
+    ((mythic_prefix_definitions[(o)->mythic_quality_prefix].mythic_powers & MYTHIC_POWER_LIGHTNESS) || (mythic_suffix_definitions[(o)->mythic_quality_suffix].mythic_powers & MYTHIC_POWER_LIGHTNESS))
 
 #define has_obj_mythic_spellcasting(o) \
-    ((o)->mythic_quality_suffix == MYTHIC_SUFFIX_SPELLCASTING)
+    ((mythic_prefix_definitions[(o)->mythic_quality_prefix].mythic_powers & MYTHIC_POWER_SORCERY) || (mythic_suffix_definitions[(o)->mythic_quality_suffix].mythic_powers & MYTHIC_POWER_SORCERY))
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1

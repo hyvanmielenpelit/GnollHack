@@ -8,15 +8,27 @@
 
 NEARDATA struct mythic_definition mythic_prefix_definitions[MAX_MYTHIC_PREFIXES] =
 {
-    { "", "", "", 0, 0UL },
-    { "Stygian", "Stygian ", "", 25, MYTHIC_FLAG_DIRECTLY_WISHABLE },
+    { "", "", "", 0, 0UL, 0UL },
+    { 
+        "Stygian", "Stygian ", "", 25,
+        MYTHIC_POWER_NONE,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE 
+    },
 };
 
 NEARDATA struct mythic_definition mythic_suffix_definitions[MAX_MYTHIC_SUFFIXES] =
 {
-    { "", "", "", 0, 0UL },
-    { "lightness", " of lightness", "", 25, MYTHIC_FLAG_DIRECTLY_WISHABLE },
-    { "spellcasting", " of spellcasting", "", 20, MYTHIC_FLAG_DIRECTLY_WISHABLE },
+    { "", "", "", 0, 0UL, 0UL },
+    { 
+        "lightness", " of lightness", "", 25,
+        MYTHIC_POWER_LIGHTNESS, 
+        MYTHIC_FLAG_DIRECTLY_WISHABLE
+    },
+    { 
+        "sorcery", " of sorcery", "", 20, 
+        MYTHIC_POWER_SORCERY,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE
+    },
 };
 
 STATIC_DCL void FDECL(setgemprobs, (d_level *));
@@ -863,7 +875,7 @@ uchar *prefix_ptr, *suffix_ptr;
 
     uchar start = 2;
     uchar end = 2;
-    if ((level_difficulty() > 20 && !rn2(10)) || (level_difficulty() > 10 && !rn2(200)))
+    if ((level_difficulty() >= 16 && !rn2(4)) || (level_difficulty() < 16 && level_difficulty() >= 8 && !rn2(20)))
     {
         start = 1;
         end = 2;
