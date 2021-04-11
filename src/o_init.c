@@ -18,7 +18,7 @@ NEARDATA struct mythic_definition mythic_prefix_definitions[MAX_MYTHIC_PREFIXES]
 
 NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_POWERS] =
 {
-    { "Stygian", "Crafted in the hellish pits of Stygia", 0, 0, 0, 0UL },
+    { "Stygian", "Crafted in the hellish pits of Stygia", 0, 0L, 0UL, 0UL },
     /* The rest are zero */
 };
 
@@ -41,8 +41,8 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
 
 NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS] =
 {
-    { "Lightness", "Weighs one-third of normal", 0, 0, 0, 0UL },
-    { "Sorcery", "Incurs no spellcasting penalty", 0, 0, 0, 0UL },
+    { "Lightness", "Weighs one-third of normal", 0, 0L, 0UL, 0UL },
+    { "Sorcery", "Incurs no spellcasting penalty", 0, 0L, 0UL, 0UL },
     /* The rest are zero */
 };
 

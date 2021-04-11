@@ -617,7 +617,7 @@ struct mythic_power_definition {
     const char* description;
     uchar power_type;
     long parameter1;
-    long parameter2;
+    unsigned long parameter2;
     unsigned long power_flags;
 };
 
