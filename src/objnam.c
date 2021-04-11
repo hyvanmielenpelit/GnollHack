@@ -658,9 +658,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
         {
             if(!mknown)
-                Strcat(buf, "mythic ");
+                Strcat(buf, (obj->mythic_prefix && obj->mythic_suffix) ? "legendary " : "mythic ");
             else if(obj->mythic_prefix)
-                Strcat(buf, mythic_prefix_definitions[obj->mythic_prefix].mythic_affix);
+                Strcat(buf, mythic_prefix_qualities[obj->mythic_prefix].mythic_affix);
         }
 
         const char* rock = is_ore(obj) ? "nugget of ore" : is_graystone(obj) ? "stone" : (ocl->oc_material == MAT_MINERAL) ? "stone" : "gem";
@@ -734,9 +734,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
         {
             if (!mknown)
-                Strcat(buf, "mythic ");
+                Strcat(buf, (obj->mythic_prefix && obj->mythic_suffix) ? "legendary " : "mythic ");
             else if (obj->mythic_prefix)
-                Strcat(buf, mythic_prefix_definitions[obj->mythic_prefix].mythic_affix);
+                Strcat(buf, mythic_prefix_qualities[obj->mythic_prefix].mythic_affix);
         }
 
         if (!dknown)
@@ -3808,6 +3808,11 @@ boolean is_wiz_wish;
         {
             exceptionality = EXCEPTIONALITY_INFERNAL;
         }
+        else if (!strncmpi(bp, "legendary ", l = 10))
+        {
+            mythic_prefix = -2;
+            mythic_suffix = -2;
+        }
         else if (!strncmpi(bp, "mythic ", l = 7))
         {
             mythic_prefix = -1;
@@ -3882,7 +3887,7 @@ boolean is_wiz_wish;
             boolean anythingfound = FALSE;
             for (int mythic_idx = 1; mythic_idx < MAX_MYTHIC_PREFIXES; mythic_idx++)
             {
-                if (!strncmpi(bp, mythic_prefix_definitions[mythic_idx].mythic_affix, l = (int)strlen(mythic_prefix_definitions[mythic_idx].mythic_affix)))
+                if (!strncmpi(bp, mythic_prefix_qualities[mythic_idx].mythic_affix, l = (int)strlen(mythic_prefix_qualities[mythic_idx].mythic_affix)))
                 {
                     mythic_prefix = mythic_idx;
                     anythingfound = TRUE;
@@ -5024,12 +5029,14 @@ boolean is_wiz_wish;
     /* Set mythic quality */
     if (can_obj_have_mythic(otmp) && (mythic_prefix || mythic_suffix) && otmp->oartifact == 0)
     {
-        if (mythic_prefix < 0 && mythic_suffix < 0)
+        if (mythic_prefix < 0 || mythic_suffix < 0)
         {
             uchar dummy_prefix = 0, dummy_suffix = 0;
-            randomize_mythic_quality(otmp, TRUE, &dummy_prefix, &dummy_suffix);
-            mythic_prefix = (int)dummy_prefix;
-            mythic_suffix = (int)dummy_suffix;
+            randomize_mythic_quality(otmp, mythic_prefix == -2 || mythic_suffix == -2 ? 2 : 1, &dummy_prefix, &dummy_suffix);
+            if(mythic_prefix < 0)
+                mythic_prefix = (int)dummy_prefix;
+            if (mythic_suffix < 0)
+                mythic_suffix = (int)dummy_suffix;
         }
 
         if (mythic_prefix < 0)
@@ -5039,7 +5046,7 @@ boolean is_wiz_wish;
         
         for (int i = 1; i <= 2; i++)
         {
-            struct mythic_definition* mythic_definitions = (i == 1 ? mythic_prefix_definitions : mythic_suffix_qualities);
+            struct mythic_definition* mythic_definitions = (i == 1 ? mythic_prefix_qualities : mythic_suffix_qualities);
             int mythic_quality = (i == 1 ? mythic_prefix : mythic_suffix);
             uchar* otmp_mythic_quality_ptr = (i == 1 ? &otmp->mythic_prefix : &otmp->mythic_suffix);
 

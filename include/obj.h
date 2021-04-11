@@ -612,15 +612,6 @@ struct mythic_definition {
     unsigned long mythic_flags;
 };
 
-struct mythic_power_definition {
-    const char* name;
-    const char* description;
-    uchar power_type;
-    long parameter1;
-    unsigned long parameter2;
-    unsigned long power_flags;
-};
-
 #define MYTHIC_PREFIX_POWER_NONE            0x00000000UL
 #define MYTHIC_PREFIX_POWER_STYGIAN         0x00000001UL
 
@@ -637,8 +628,21 @@ struct mythic_power_definition {
 #define MYTHIC_FLAG_LEGENDARY_RARE          0x00000020UL
 
 #define MAX_MYTHIC_POWERS 32
+struct mythic_power_definition {
+    const char* name;
+    const char* description;
+    uchar power_type;
+    long parameter1;
+    unsigned long parameter2;
+    unsigned long power_flags;
+};
 
-extern NEARDATA struct mythic_definition mythic_prefix_definitions[MAX_MYTHIC_PREFIXES];
+enum mythic_power_types {
+    MYTHIC_POWER_TYPE_GENERAL = 0,
+    MYTHIC_POWER_TYPE_SLAYING,
+};
+
+extern NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES];
 extern NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES];
 extern NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_POWERS];
 extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS];

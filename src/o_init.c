@@ -6,7 +6,7 @@
 #include "hack.h"
 #include "lev.h" /* save & restore info */
 
-NEARDATA struct mythic_definition mythic_prefix_definitions[MAX_MYTHIC_PREFIXES] =
+NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
 {
     { "", "", "", 0, 0UL, 0UL },
     { 
@@ -18,7 +18,7 @@ NEARDATA struct mythic_definition mythic_prefix_definitions[MAX_MYTHIC_PREFIXES]
 
 NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_POWERS] =
 {
-    { "Stygian", "Crafted in the hellish pits of Stygia", 0, 0L, 0UL, 0UL },
+    { "Stygian", "Crafted in the hellish pits of Stygia", MYTHIC_POWER_TYPE_GENERAL, 0L, 0UL, 0UL },
     /* The rest are zero */
 };
 
@@ -41,8 +41,8 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
 
 NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS] =
 {
-    { "Lightness", "Weighs one-third of normal", 0, 0L, 0UL, 0UL },
-    { "Sorcery", "Incurs no spellcasting penalty", 0, 0L, 0UL, 0UL },
+    { "Lightness", "Weighs one-third of normal", MYTHIC_POWER_TYPE_GENERAL, 0L, 0UL, 0UL },
+    { "Sorcery", "Incurs no spellcasting penalty", MYTHIC_POWER_TYPE_GENERAL, 0L, 0UL, 0UL },
     /* The rest are zero */
 };
 
@@ -874,7 +874,7 @@ rename_disco()
 void
 randomize_mythic_quality(obj, is_wish, prefix_ptr, suffix_ptr)
 struct obj* obj;
-boolean is_wish;
+uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
 uchar *prefix_ptr, *suffix_ptr;
 {
     if (!obj || !prefix_ptr || !suffix_ptr)
@@ -891,7 +891,7 @@ uchar *prefix_ptr, *suffix_ptr;
 
     uchar start = 2;
     uchar end = 2;
-    if ((level_difficulty() >= 16 && !rn2(4)) || (level_difficulty() < 16 && level_difficulty() >= 8 && !rn2(20)))
+    if (is_wish == 2 || (is_wish == 0 && (level_difficulty() >= 16 && !rn2(4)) || (level_difficulty() < 16 && level_difficulty() >= 8 && !rn2(20))))
     {
         start = 1;
         end = 2;
@@ -912,7 +912,7 @@ uchar *prefix_ptr, *suffix_ptr;
 
     for (uchar j = start; j <= end; j++)
     {
-        struct mythic_definition* mythic_definitions = (j== 1 ? mythic_prefix_definitions : mythic_suffix_qualities);
+        struct mythic_definition* mythic_definitions = (j== 1 ? mythic_prefix_qualities : mythic_suffix_qualities);
         uchar* eligible = (j == 1 ? eligible_prefix : eligible_suffix);
         uchar max_mythic = (j == 1 ? MAX_MYTHIC_PREFIXES : MAX_MYTHIC_SUFFIXES);
         uchar* affix_ptr = (j == 1 ? prefix_ptr : suffix_ptr);

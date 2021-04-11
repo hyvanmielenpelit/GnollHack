@@ -1646,6 +1646,15 @@ register struct obj* obj;
 		wep_avg_dmg += (double)strength_damage_bonus(ACURR(A_STR));
 	}
 
+	/* Mythic status */
+	if (obj->dknown && (obj->mythic_prefix || obj->mythic_suffix))
+	{
+		Sprintf(buf, "Mythic status:          %s", (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 	int mcadj = objects[otyp].oc_mc_adjustment + (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT) ? obj->enchantment : 0;
 	if (objects[otyp].oc_mc_adjustment != 0 || mcadj != 0)
 	{
@@ -2747,25 +2756,18 @@ register struct obj* obj;
 		{
 			char mythicbuf[BUFSIZ] = "";
 
-			if (obj->mknown)
+			if (obj->mythic_prefix)
+				strcpy(mythicbuf, mythic_prefix_qualities[obj->mythic_prefix].name);
+
+			if (obj->mythic_suffix)
 			{
 				if (obj->mythic_prefix)
-					strcpy(mythicbuf, mythic_prefix_definitions[obj->mythic_prefix].name);
+					Strcat(mythicbuf, " and ");
 
-				if (obj->mythic_suffix)
-				{
-					if (obj->mythic_prefix)
-						Strcat(mythicbuf, " and ");
-
-					Strcat(mythicbuf, mythic_suffix_qualities[obj->mythic_suffix].name);
-				}
-
-				*mythicbuf = highc(*mythicbuf);
+				Strcat(mythicbuf, mythic_suffix_qualities[obj->mythic_suffix].name);
 			}
-			else
-			{
-				strcpy(mythicbuf, obj->mythic_prefix && obj->mythic_suffix ? "Two unknown mythic properties" : "Unknown mythic property");
-			}
+
+			*mythicbuf = highc(*mythicbuf);
 
 			Sprintf(buf, "Mythic powers - %s:", mythicbuf);
 			txt = buf;
@@ -2777,7 +2779,7 @@ register struct obj* obj;
 				for (int i = 0; i < MAX_MYTHIC_POWERS; i++)
 				{
 					unsigned long bit = 1 << i;
-					if ((mythic_prefix_definitions[obj->mythic_prefix].mythic_powers & bit) && mythic_prefix_powers[i].description && strcmp(mythic_prefix_powers[i].description, ""))
+					if ((mythic_prefix_qualities[obj->mythic_prefix].mythic_powers & bit) && mythic_prefix_powers[i].description && strcmp(mythic_prefix_powers[i].description, ""))
 					{
 						powercnt++;
 						Sprintf(buf, " %2d - %s", powercnt, mythic_prefix_powers[i].description);
