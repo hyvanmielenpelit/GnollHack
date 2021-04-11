@@ -1860,7 +1860,11 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                                 continue;
                             break;
                         case ITEM_PROPERTY_MARK_MYTHIC:
-                            if (mythic_prefix == 0 && mythic_suffix == 0)
+                            if ((mythic_prefix == 0 && mythic_suffix == 0) || (mythic_prefix > 0 && mythic_suffix > 0))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_LEGENDARY:
+                            if (mythic_prefix == 0 || mythic_suffix == 0)
                                 continue;
                             break;
                         case ITEM_PROPERTY_MARK_CORRODED:

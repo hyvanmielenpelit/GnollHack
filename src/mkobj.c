@@ -1760,17 +1760,18 @@ unsigned long mkflags;
     /* Mythic quality */
     if (can_obj_have_mythic(otmp) && level_difficulty() >= 3 && mkobj_type < 2 && otmp->oartifact == 0)
     {
+        boolean doublechance = !!(objects[otmp->otyp].oc_flags4 & O4_DOUBLE_MYTHIC_CHANCE);
         boolean makemythic = FALSE;
         if (In_endgame(&u.uz))
-            makemythic = otmp->exceptionality ? !rn2(4) : !rn2(8);
+            makemythic = otmp->exceptionality || otmp->oclass == ARMOR_CLASS ? !rn2(doublechance ? 2 : 4) : !rn2(doublechance ? 4 : 8);
         else if (Inhell)
-            makemythic = otmp->exceptionality ? !rn2(5) : !rn2(10);
+            makemythic = otmp->exceptionality || otmp->oclass == ARMOR_CLASS ? !rn2(doublechance ? 3 : 5) : !rn2(doublechance ? 5 : 10);
         else if (level_difficulty() >= 20)
-            makemythic = otmp->exceptionality ? !rn2(6) : !rn2(12);
+            makemythic = otmp->exceptionality || otmp->oclass == ARMOR_CLASS ? !rn2(doublechance ? 3 : 6) : !rn2(doublechance ? 6 : 12);
         else if (level_difficulty() >= 10)
-            makemythic = otmp->exceptionality ? !rn2(8) : !rn2(16);
+            makemythic = otmp->exceptionality ? !rn2(doublechance ? 4 : 8) : !rn2(doublechance ? 8 : 16);
         else
-            makemythic = otmp->exceptionality ? !rn2(12) : !rn2(24);
+            makemythic = otmp->exceptionality ? !rn2(doublechance ? 6 : 12) : !rn2(doublechance ? 12 : 24);
 
         if (makemythic)
         {

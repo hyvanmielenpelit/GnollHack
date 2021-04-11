@@ -1260,7 +1260,6 @@ register struct obj* obj;
 	}
 
 	boolean weapon_stats_shown = FALSE;
-
 	if (!uses_spell_flags && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && stats_known) || objects[obj->otyp].oc_class == GEM_CLASS))
 	{
 		weapon_stats_shown = TRUE;
@@ -1646,15 +1645,6 @@ register struct obj* obj;
 		wep_avg_dmg += (double)strength_damage_bonus(ACURR(A_STR));
 	}
 
-	/* Mythic status */
-	if (obj->dknown && (obj->mythic_prefix || obj->mythic_suffix))
-	{
-		Sprintf(buf, "Mythic status:          %s", (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
-
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
 	int mcadj = objects[otyp].oc_mc_adjustment + (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT) ? obj->enchantment : 0;
 	if (objects[otyp].oc_mc_adjustment != 0 || mcadj != 0)
 	{
@@ -1936,6 +1926,14 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
+	/* Mythic status */
+	if (obj->dknown && (obj->mythic_prefix || obj->mythic_suffix))
+	{
+		Sprintf(buf, "Mythic status:          %s", (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
+
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
 	if (obj->bknown)
 	{
 		Sprintf(buf, "Blessing status:        %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
@@ -1949,6 +1947,7 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
+
 	if (obj->elemental_enchantment)
 	{
 		Sprintf(buf, "Elemental enchantment:  %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Flaming (+4d6 fire damage)" :

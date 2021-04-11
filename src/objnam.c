@@ -641,6 +641,15 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                 Strcat(buf, " ");
             }
         }
+
+        if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
+        {
+            if (!mknown)
+                Strcat(buf, (obj->mythic_prefix && obj->mythic_suffix) ? "legendary " : "mythic ");
+            else if (obj->mythic_prefix)
+                Strcat(buf, mythic_prefix_qualities[obj->mythic_prefix].mythic_affix);
+        }
+
         if (dknown)
         {
             if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
@@ -653,14 +662,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                 Strcat(buf, "primordial ");
             else if (obj->exceptionality == EXCEPTIONALITY_INFERNAL)
                 Strcat(buf, "infernal ");
-        }
-
-        if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
-        {
-            if(!mknown)
-                Strcat(buf, (obj->mythic_prefix && obj->mythic_suffix) ? "legendary " : "mythic ");
-            else if(obj->mythic_prefix)
-                Strcat(buf, mythic_prefix_qualities[obj->mythic_prefix].mythic_affix);
         }
 
         const char* rock = is_ore(obj) ? "nugget of ore" : is_graystone(obj) ? "stone" : (ocl->oc_material == MAT_MINERAL) ? "stone" : "gem";
