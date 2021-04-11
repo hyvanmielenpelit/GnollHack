@@ -81,7 +81,8 @@ struct obj {
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
     short oartifact; /* artifact array index */
-    uchar mythic_quality; /* magical quality for a weapon or armor giving additional powers */
+    uchar mythic_quality_prefix; /* magical quality for a weapon or armor giving additional powers */
+    uchar mythic_quality_suffix;  /* magical quality for a weapon or armor giving additional powers */
     char exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
     char elemental_enchantment; /* cold, fire, lightning, or deathly */
 
@@ -604,7 +605,7 @@ struct obj {
 /* Mythic */
 struct mythic_definition {
     const char* name;
-    const char* mythic_suffix;
+    const char* mythic_affix;
     const char* description;
     short probability;
     unsigned long mythic_flags;
@@ -617,16 +618,17 @@ struct mythic_definition {
 #define MYTHIC_FLAG_NON_WISHABLE            0x00000010UL
 #define MYTHIC_FLAG_LEGENDARY_RARE          0x00000020UL
 
-extern NEARDATA struct mythic_definition mythic_definitions[MAX_MYTHIC_QUALITIES];
+extern NEARDATA struct mythic_definition mythic_prefix_definitions[MAX_MYTHIC_PREFIXES];
+extern NEARDATA struct mythic_definition mythic_suffix_definitions[MAX_MYTHIC_SUFFIXES];
 
 #define otyp_non_mythic(otyp) \
     ((objects[otyp].oc_flags4 & O4_NON_MYTHIC) || objects[otyp].oc_magic) /* Inherently (already special) magical items cannot be made mythical, this is just of normal boring objects */
 
 #define has_obj_mythic_lightness(o) \
-    ((o)->mythic_quality == MYTHIC_LIGHTNESS)
+    ((o)->mythic_quality_suffix == MYTHIC_SUFFIX_LIGHTNESS)
 
 #define has_obj_mythic_spellcasting(o) \
-    ((o)->mythic_quality == MYTHIC_SPELLCASTING)
+    ((o)->mythic_quality_suffix == MYTHIC_SUFFIX_SPELLCASTING)
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1

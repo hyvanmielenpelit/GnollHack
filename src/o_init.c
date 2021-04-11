@@ -6,7 +6,13 @@
 #include "hack.h"
 #include "lev.h" /* save & restore info */
 
-NEARDATA struct mythic_definition mythic_definitions[MAX_MYTHIC_QUALITIES] =
+NEARDATA struct mythic_definition mythic_prefix_definitions[MAX_MYTHIC_PREFIXES] =
+{
+    { "", "", "", 0, 0UL },
+    { "Stygian", "Stygian ", "", 25, MYTHIC_FLAG_DIRECTLY_WISHABLE },
+};
+
+NEARDATA struct mythic_definition mythic_suffix_definitions[MAX_MYTHIC_SUFFIXES] =
 {
     { "", "", "", 0, 0UL },
     { "lightness", " of lightness", "", 25, MYTHIC_FLAG_DIRECTLY_WISHABLE },
@@ -837,52 +843,92 @@ rename_disco()
     return;
 }
 
-uchar
-randomize_mythic_quality(obj, is_wish)
+void
+randomize_mythic_quality(obj, is_wish, prefix_ptr, suffix_ptr)
 struct obj* obj;
 boolean is_wish;
+uchar *prefix_ptr, *suffix_ptr;
 {
-    if (!obj || otyp_non_mythic(obj->otyp))
-        return MYTHIC_NONE;
+    if (!obj || !prefix_ptr || !suffix_ptr)
+        return;
 
-    uchar eligible[MAX_MYTHIC_QUALITIES] = { 0 };
+    *prefix_ptr = 0;
+    *suffix_ptr = 0;
 
-    int cnt = 0;
-    int total_prob = 0;
-    for (uchar i = 1; i < MAX_MYTHIC_QUALITIES; i++)
+    if (otyp_non_mythic(obj->otyp))
+        return;
+
+    uchar eligible_prefix[MAX_MYTHIC_PREFIXES] = { 0 };
+    uchar eligible_suffix[MAX_MYTHIC_SUFFIXES] = { 0 };
+
+    uchar start = 2;
+    uchar end = 2;
+    if ((level_difficulty() > 20 && !rn2(10)) || (level_difficulty() > 10 && !rn2(200)))
     {
-        eligible[i] = FALSE;
-        if (is_wish && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
-            continue;
-        if (!is_weapon(obj) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY))
-            continue;
-        if (obj->oclass != ARMOR_CLASS && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
-            continue;
-        if ((!is_weapon(obj) || (!is_weapon(obj) && objects[obj->otyp].oc_dir < PIERCE)) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY))
-            continue;
-        if (level_difficulty() < 16 && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_LEGENDARY_RARE))
-            continue;
-
-        eligible[i] = TRUE;
-        cnt++;
-        total_prob += (int)mythic_definitions[i].probability;
+        start = 1;
+        end = 2;
+    }
+    else
+    {
+        if (!rn2(2))
+        {
+            start = 1;
+            end = 1;
+        }
+        else
+        {
+            start = 2;
+            end = 2;
+        }
     }
 
-    if (cnt == 0 || total_prob == 0)
-        return MYTHIC_NONE;
-
-    int roll = total_prob > 1 ? rn2(total_prob) : 0;
-
-    for (uchar i = 1; i < MAX_MYTHIC_QUALITIES; i++)
+    for (uchar j = start; j <= end; j++)
     {
-        if (!eligible[i])
-            continue;
-        roll -= (int)mythic_definitions[i].probability;
-        if (roll <= 0)
-            return i;
-    }
+        struct mythic_definition* mythic_definitions = (j== 1 ? mythic_prefix_definitions : mythic_suffix_definitions);
+        uchar* eligible = (j == 1 ? eligible_prefix : eligible_suffix);
+        uchar max_mythic = (j == 1 ? MAX_MYTHIC_PREFIXES : MAX_MYTHIC_SUFFIXES);
+        uchar* affix_ptr = (j == 1 ? prefix_ptr : suffix_ptr);
 
-    return MYTHIC_NONE;
+        int cnt = 0;
+        int total_prob = 0;
+        for (uchar i = 1; i < max_mythic; i++)
+        {
+            eligible[i] = FALSE;
+            if (is_wish && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
+                continue;
+            if (!is_weapon(obj) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY))
+                continue;
+            if (obj->oclass != ARMOR_CLASS && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
+                continue;
+            if ((!is_weapon(obj) || (!is_weapon(obj) && objects[obj->otyp].oc_dir < PIERCE)) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY))
+                continue;
+            if (level_difficulty() < 16 && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_LEGENDARY_RARE))
+                continue;
+
+            eligible[i] = TRUE;
+            cnt++;
+            total_prob += (int)mythic_definitions[i].probability;
+        }
+
+        if (cnt == 0 || total_prob == 0)
+        {
+            *affix_ptr = 0;
+            continue;
+        }
+
+        int roll = total_prob > 1 ? rn2(total_prob) : 0;
+        for (uchar i = 1; i < max_mythic; i++)
+        {
+            if (!eligible[i])
+                continue;
+            roll -= (int)mythic_definitions[i].probability;
+            if (roll <= 0)
+            {
+                *affix_ptr = i;
+                break;
+            }
+        }
+    }
 }
 
 

@@ -1219,7 +1219,8 @@ unsigned long mkflags;
 	otmp->corpsenm = NON_PM;
 	otmp->elemental_enchantment = 0;
     otmp->exceptionality = 0;
-    otmp->mythic_quality = 0;
+    otmp->mythic_quality_prefix = 0;
+    otmp->mythic_quality_suffix = 0;
     otmp->cooldownleft = 0;
     otmp->repowerleft = 0;
     otmp->blessed = 0;
@@ -1773,7 +1774,7 @@ unsigned long mkflags;
 
         if (makemythic)
         {
-            otmp->mythic_quality = randomize_mythic_quality(otmp, FALSE);
+            randomize_mythic_quality(otmp, FALSE, &otmp->mythic_quality_prefix, &otmp->mythic_quality_suffix);
         }
     }
 

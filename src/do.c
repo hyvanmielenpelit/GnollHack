@@ -1787,12 +1787,30 @@ register struct obj* obj;
 		}
 	}
 
-	if (obj->mythic_quality)
+	if (obj->mythic_quality_prefix || obj->mythic_quality_suffix)
 	{
-		char mythicbuf[BUFSIZ];
-		strcpy(mythicbuf, obj->mknown ? mythic_definitions[obj->mythic_quality].name : "Unknown mythic property");
+		char mythicbuf[BUFSIZ] = "";
+
+		if (obj->mknown)
+		{
+			if (obj->mythic_quality_prefix)
+				strcpy(mythicbuf, mythic_prefix_definitions[obj->mythic_quality_prefix].name);
+
+			if (obj->mythic_quality_suffix)
+			{
+				if (obj->mythic_quality_prefix)
+					Strcat(mythicbuf, " and ");
+
+				Strcat(mythicbuf, mythic_suffix_definitions[obj->mythic_quality_suffix].name);
+			}
+		}
+		else
+		{
+			strcpy(mythicbuf, obj->mythic_quality_prefix && obj->mythic_quality_suffix ? "Two unknown mythic properties" : "Unknown mythic property");
+		}
+
 		*mythicbuf = highc(*mythicbuf);
-		Sprintf(buf, "Mythic property:        %s", mythicbuf);
+		Sprintf(buf, "Mythic properties:      %s", mythicbuf);
 
 		txt = buf;
 		putstr(datawin, 0, txt);

@@ -3784,10 +3784,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                         /* Item property marks */
                         if (((base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT) && otmp_round &&
-                            (otmp_round->opoisoned || otmp_round->elemental_enchantment > 0 || otmp_round->mythic_quality > 0 || otmp_round->oeroded || otmp_round->oeroded2 || otmp_round->exceptionality > 0))
+                            (otmp_round->opoisoned || otmp_round->elemental_enchantment > 0 || otmp_round->mythic_quality_prefix > 0 || otmp_round->mythic_quality_suffix > 0 || otmp_round->oeroded || otmp_round->oeroded2 || otmp_round->exceptionality > 0))
                             ||
                             ((base_layer == LAYER_MISSILE) &&
-                                (data->map[enl_i][enl_j].missile_poisoned || data->map[enl_i][enl_j].missile_elemental_enchantment > 0 || data->map[enl_i][enl_j].missile_eroded || data->map[enl_i][enl_j].missile_eroded2 || data->map[enl_i][enl_j].missile_exceptionality > 0 || data->map[enl_i][enl_j].missile_mythic_quality > 0))
+                                (data->map[enl_i][enl_j].missile_poisoned || data->map[enl_i][enl_j].missile_elemental_enchantment > 0 
+                                    || data->map[enl_i][enl_j].missile_eroded || data->map[enl_i][enl_j].missile_eroded2 || 
+                                    data->map[enl_i][enl_j].missile_exceptionality > 0 || data->map[enl_i][enl_j].missile_mythic_quality_prefix > 0 || data->map[enl_i][enl_j].missile_mythic_quality_suffix > 0))
                             )
                         {
                             int y_start = (base_layer == LAYER_MISSILE && !move_obj_to_middle ? tileHeight / 4 : dest_top_added - (int)(applicable_scaling_factor_y * base_source_top_added));
@@ -3801,7 +3803,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int poisoned = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_poisoned : otmp_round->opoisoned);
                             int elemental_enchantment = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_elemental_enchantment : otmp_round->elemental_enchantment);
                             int exceptionality = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_exceptionality : otmp_round->exceptionality);
-                            int mythic_quality = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_mythic_quality : otmp_round->mythic_quality);
+                            int mythic_quality_prefix = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_mythic_quality_prefix : otmp_round->mythic_quality_prefix);
+                            int mythic_quality_suffix = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_mythic_quality_suffix : otmp_round->mythic_quality_suffix);
                             int eroded = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_eroded : otmp_round->oeroded);
                             int eroded2 = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_eroded2 : otmp_round->oeroded2);
                             boolean corrodeable = (base_layer == LAYER_MISSILE ? !!(data->map[enl_i][enl_j].missile_flags & MISSILE_FLAGS_CORRODEABLE) : is_corrodeable(otmp_round));
@@ -3861,7 +3864,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         continue;
                                     break;
                                 case ITEM_PROPERTY_MARK_MYTHIC:
-                                    if (mythic_quality == 0)
+                                    if (mythic_quality_prefix == 0 && mythic_quality_suffix == 0)
                                         continue;
                                     break;
                                 case ITEM_PROPERTY_MARK_CORRODED:

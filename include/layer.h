@@ -53,7 +53,8 @@ struct layer_info {
     uchar missile_poisoned;
     uchar missile_elemental_enchantment;
     uchar missile_exceptionality;
-    uchar missile_mythic_quality;
+    uchar missile_mythic_quality_prefix;
+    uchar missile_mythic_quality_suffix;
     uchar missile_eroded;
     uchar missile_eroded2;
     unsigned long missile_flags;

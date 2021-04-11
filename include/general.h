@@ -253,11 +253,17 @@ enum exceptionality_types {
 	MAX_EXCEPTIONALITY_TYPES
 };
 
-enum mythic_quality_types {
-	MYTHIC_NONE = 0,
-	MYTHIC_LIGHTNESS,
-	MYTHIC_SPELLCASTING,
-	MAX_MYTHIC_QUALITIES
+enum mythic_prefix_types {
+	MYTHIC_PREFIX_NONE = 0,
+	MYTHIC_PREFIX_STYGIAN,
+	MAX_MYTHIC_PREFIXES
+};
+
+enum mythic_suffix_types {
+	MYTHIC_SUFFIX_NONE = 0,
+	MYTHIC_SUFFIX_LIGHTNESS,
+	MYTHIC_SUFFIX_SPELLCASTING,
+	MAX_MYTHIC_SUFFIXES
 };
 
 enum special_level_naming_types {
