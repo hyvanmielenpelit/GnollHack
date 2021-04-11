@@ -11,25 +11,41 @@ NEARDATA struct mythic_definition mythic_prefix_definitions[MAX_MYTHIC_PREFIXES]
     { "", "", "", 0, 0UL, 0UL },
     { 
         "Stygian", "Stygian ", "", 25,
-        MYTHIC_POWER_NONE,
+        MYTHIC_PREFIX_POWER_STYGIAN,
         MYTHIC_FLAG_DIRECTLY_WISHABLE 
     },
 };
 
-NEARDATA struct mythic_definition mythic_suffix_definitions[MAX_MYTHIC_SUFFIXES] =
+NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_POWERS] =
+{
+    { "Stygian", "Crafted in the hellish pits of Stygia", 0, 0, 0, 0UL },
+    /* The rest are zero */
+};
+
+
+
+NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
 {
     { "", "", "", 0, 0UL, 0UL },
     { 
         "lightness", " of lightness", "", 25,
-        MYTHIC_POWER_LIGHTNESS, 
+        MYTHIC_SUFFIX_POWER_LIGHTNESS, 
         MYTHIC_FLAG_DIRECTLY_WISHABLE
     },
     { 
         "sorcery", " of sorcery", "", 20, 
-        MYTHIC_POWER_SORCERY,
+        MYTHIC_SUFFIX_POWER_SORCERY,
         MYTHIC_FLAG_DIRECTLY_WISHABLE
     },
 };
+
+NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS] =
+{
+    { "Lightness", "Weighs one-third of normal", 0, 0, 0, 0UL },
+    { "Sorcery", "Incurs no spellcasting penalty", 0, 0, 0, 0UL },
+    /* The rest are zero */
+};
+
 
 STATIC_DCL void FDECL(setgemprobs, (d_level *));
 STATIC_DCL void FDECL(shuffle, (int, int, BOOLEAN_P));
@@ -867,7 +883,7 @@ uchar *prefix_ptr, *suffix_ptr;
     *prefix_ptr = 0;
     *suffix_ptr = 0;
 
-    if (otyp_non_mythic(obj->otyp))
+    if (!can_obj_have_mythic(obj))
         return;
 
     uchar eligible_prefix[MAX_MYTHIC_PREFIXES] = { 0 };
@@ -896,7 +912,7 @@ uchar *prefix_ptr, *suffix_ptr;
 
     for (uchar j = start; j <= end; j++)
     {
-        struct mythic_definition* mythic_definitions = (j== 1 ? mythic_prefix_definitions : mythic_suffix_definitions);
+        struct mythic_definition* mythic_definitions = (j== 1 ? mythic_prefix_definitions : mythic_suffix_qualities);
         uchar* eligible = (j == 1 ? eligible_prefix : eligible_suffix);
         uchar max_mythic = (j == 1 ? MAX_MYTHIC_PREFIXES : MAX_MYTHIC_SUFFIXES);
         uchar* affix_ptr = (j == 1 ? prefix_ptr : suffix_ptr);

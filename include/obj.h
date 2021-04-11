@@ -81,8 +81,8 @@ struct obj {
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
     short oartifact; /* artifact array index */
-    uchar mythic_quality_prefix; /* magical quality for a weapon or armor giving additional powers */
-    uchar mythic_quality_suffix;  /* magical quality for a weapon or armor giving additional powers */
+    uchar mythic_prefix; /* magical quality for a weapon or armor giving additional powers */
+    uchar mythic_suffix;  /* magical quality for a weapon or armor giving additional powers */
     char exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
     char elemental_enchantment; /* cold, fire, lightning, or deathly */
 
@@ -612,9 +612,21 @@ struct mythic_definition {
     unsigned long mythic_flags;
 };
 
-#define MYTHIC_POWER_NONE                   0x00000000UL
-#define MYTHIC_POWER_LIGHTNESS              0x00000001UL
-#define MYTHIC_POWER_SORCERY                0x00000002UL
+struct mythic_power_definition {
+    const char* name;
+    const char* description;
+    uchar power_type;
+    long parameter1;
+    long parameter2;
+    unsigned long power_flags;
+};
+
+#define MYTHIC_PREFIX_POWER_NONE            0x00000000UL
+#define MYTHIC_PREFIX_POWER_STYGIAN         0x00000001UL
+
+#define MYTHIC_SUFFIX_POWER_NONE            0x00000000UL
+#define MYTHIC_SUFFIX_POWER_LIGHTNESS       0x00000001UL
+#define MYTHIC_SUFFIX_POWER_SORCERY         0x00000002UL
 
 #define MYTHIC_FLAG_NONE                    0x00000000UL
 #define MYTHIC_FLAG_WEAPON_ONLY             0x00000001UL
@@ -624,17 +636,25 @@ struct mythic_definition {
 #define MYTHIC_FLAG_NON_WISHABLE            0x00000010UL
 #define MYTHIC_FLAG_LEGENDARY_RARE          0x00000020UL
 
+#define MAX_MYTHIC_POWERS 32
+
 extern NEARDATA struct mythic_definition mythic_prefix_definitions[MAX_MYTHIC_PREFIXES];
-extern NEARDATA struct mythic_definition mythic_suffix_definitions[MAX_MYTHIC_SUFFIXES];
+extern NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES];
+extern NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_POWERS];
+extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS];
+
 
 #define otyp_non_mythic(otyp) \
     ((objects[otyp].oc_flags4 & O4_NON_MYTHIC) || objects[otyp].oc_magic) /* Inherently (already special) magical items cannot be made mythical, this is just of normal boring objects */
 
+#define can_obj_have_mythic(o) \
+    (!otyp_non_mythic((o)->otyp) && (is_weapon(o) || (o)->oclass == ARMOR_CLASS))
+
 #define has_obj_mythic_lightness(o) \
-    ((mythic_prefix_definitions[(o)->mythic_quality_prefix].mythic_powers & MYTHIC_POWER_LIGHTNESS) || (mythic_suffix_definitions[(o)->mythic_quality_suffix].mythic_powers & MYTHIC_POWER_LIGHTNESS))
+    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_LIGHTNESS)
 
 #define has_obj_mythic_spellcasting(o) \
-    ((mythic_prefix_definitions[(o)->mythic_quality_prefix].mythic_powers & MYTHIC_POWER_SORCERY) || (mythic_suffix_definitions[(o)->mythic_quality_suffix].mythic_powers & MYTHIC_POWER_SORCERY))
+    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_SORCERY)
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1

@@ -347,7 +347,6 @@ docharacterstatistics()
 }
 
 
-
 static NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW_NONE, 0 };
 
 /* the M('x') command - Item descriptions*/
@@ -1787,35 +1786,6 @@ register struct obj* obj;
 		}
 	}
 
-	if (obj->mythic_quality_prefix || obj->mythic_quality_suffix)
-	{
-		char mythicbuf[BUFSIZ] = "";
-
-		if (obj->mknown)
-		{
-			if (obj->mythic_quality_prefix)
-				strcpy(mythicbuf, mythic_prefix_definitions[obj->mythic_quality_prefix].name);
-
-			if (obj->mythic_quality_suffix)
-			{
-				if (obj->mythic_quality_prefix)
-					Strcat(mythicbuf, " and ");
-
-				Strcat(mythicbuf, mythic_suffix_definitions[obj->mythic_quality_suffix].name);
-			}
-		}
-		else
-		{
-			strcpy(mythicbuf, obj->mythic_quality_prefix && obj->mythic_quality_suffix ? "Two unknown mythic properties" : "Unknown mythic property");
-		}
-
-		*mythicbuf = highc(*mythicbuf);
-		Sprintf(buf, "Mythic properties:      %s", mythicbuf);
-
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
 	if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
 		(objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || objects[otyp].oc_spell_casting_penalty != 0))
 	{
@@ -2769,6 +2739,70 @@ register struct obj* obj;
 				Sprintf(buf, " (None)");
 				txt = buf;
 				putstr(datawin, 0, txt);
+			}
+		}
+
+		/* Mythic power descriptions for the item. */
+		if (stats_known && obj->mknown && (obj->mythic_prefix || obj->mythic_suffix))
+		{
+			char mythicbuf[BUFSIZ] = "";
+
+			if (obj->mknown)
+			{
+				if (obj->mythic_prefix)
+					strcpy(mythicbuf, mythic_prefix_definitions[obj->mythic_prefix].name);
+
+				if (obj->mythic_suffix)
+				{
+					if (obj->mythic_prefix)
+						Strcat(mythicbuf, " and ");
+
+					Strcat(mythicbuf, mythic_suffix_qualities[obj->mythic_suffix].name);
+				}
+
+				*mythicbuf = highc(*mythicbuf);
+			}
+			else
+			{
+				strcpy(mythicbuf, obj->mythic_prefix && obj->mythic_suffix ? "Two unknown mythic properties" : "Unknown mythic property");
+			}
+
+			Sprintf(buf, "Mythic powers - %s:", mythicbuf);
+			txt = buf;
+			putstr(datawin, 0, txt);
+
+			int powercnt = 0;
+			if (obj->mythic_prefix)
+			{
+				for (int i = 0; i < MAX_MYTHIC_POWERS; i++)
+				{
+					unsigned long bit = 1 << i;
+					if ((mythic_prefix_definitions[obj->mythic_prefix].mythic_powers & bit) && mythic_prefix_powers[i].description && strcmp(mythic_prefix_powers[i].description, ""))
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - %s", powercnt, mythic_prefix_powers[i].description);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (!mythic_prefix_powers[i].description)
+						break;
+				}
+			}
+			if (obj->mythic_suffix)
+			{
+				for (int i = 0; i < MAX_MYTHIC_POWERS; i++)
+				{
+					unsigned long bit = 1 << i;
+					if ((mythic_suffix_qualities[obj->mythic_suffix].mythic_powers & bit) && mythic_suffix_powers[i].description && strcmp(mythic_suffix_powers[i].description, ""))
+					{
+						powercnt++;
+						Sprintf(buf, " %2d - %s", powercnt, mythic_suffix_powers[i].description);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+					if (!mythic_suffix_powers[i].description)
+						break;
+				}
 			}
 		}
 

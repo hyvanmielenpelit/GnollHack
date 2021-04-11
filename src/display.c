@@ -1203,8 +1203,8 @@ int damage_shown;
     int missile_poisoned = layers.missile_poisoned;
     int missile_elemental_enchantment = layers.missile_elemental_enchantment;
     int missile_exceptionality = layers.missile_exceptionality;
-    int missile_mythic_quality_prefix = layers.missile_mythic_quality_prefix;
-    int missile_mythic_quality_suffix = layers.missile_mythic_quality_suffix;
+    int missile_mythic_prefix = layers.missile_mythic_prefix;
+    int missile_mythic_suffix = layers.missile_mythic_suffix;
     int missile_eroded = layers.missile_eroded;
     int missile_eroded2 = layers.missile_eroded2;
     unsigned long missile_flags = layers.missile_flags;
@@ -1443,7 +1443,7 @@ new_sym_end_here:
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH)
     {
         show_glyph_on_layer(x, y, missile_glyph, LAYER_MISSILE);
-        show_missile_info(x, y, missile_poisoned, missile_elemental_enchantment, missile_exceptionality, missile_mythic_quality_prefix, missile_mythic_quality_suffix, missile_eroded, missile_eroded2, missile_flags);
+        show_missile_info(x, y, missile_poisoned, missile_elemental_enchantment, missile_exceptionality, missile_mythic_prefix, missile_mythic_suffix, missile_eroded, missile_eroded2, missile_flags);
     }
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH)
     {
@@ -2413,9 +2413,9 @@ int damage_displayed;
 }
 
 void
-show_missile_info(x, y, poisoned, elemental_enchantment, exceptionality, mythic_quality_prefix, mythic_quality_suffix, eroded, eroded2, missile_flags)
+show_missile_info(x, y, poisoned, elemental_enchantment, exceptionality, mythic_prefix, mythic_suffix, eroded, eroded2, missile_flags)
 int x, y;
-uchar poisoned, elemental_enchantment, exceptionality, mythic_quality_prefix, mythic_quality_suffix, eroded, eroded2;
+uchar poisoned, elemental_enchantment, exceptionality, mythic_prefix, mythic_suffix, eroded, eroded2;
 unsigned long missile_flags;
 {
     if (isok(x, y))
@@ -2423,8 +2423,8 @@ unsigned long missile_flags;
         gbuf[y][x].layers.missile_poisoned = poisoned;
         gbuf[y][x].layers.missile_elemental_enchantment = elemental_enchantment;
         gbuf[y][x].layers.missile_exceptionality = exceptionality;
-        gbuf[y][x].layers.missile_mythic_quality_prefix = mythic_quality_prefix;
-        gbuf[y][x].layers.missile_mythic_quality_suffix = mythic_quality_suffix;
+        gbuf[y][x].layers.missile_mythic_prefix = mythic_prefix;
+        gbuf[y][x].layers.missile_mythic_suffix = mythic_suffix;
         gbuf[y][x].layers.missile_eroded = eroded;
         gbuf[y][x].layers.missile_eroded2 = eroded2;
         gbuf[y][x].layers.missile_flags = missile_flags;

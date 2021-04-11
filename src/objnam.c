@@ -655,12 +655,12 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                 Strcat(buf, "infernal ");
         }
 
-        if (dknown && (obj->mythic_quality_prefix || obj->mythic_quality_suffix))
+        if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
         {
             if(!mknown)
                 Strcat(buf, "mythic ");
-            else if(obj->mythic_quality_prefix)
-                Strcat(buf, mythic_prefix_definitions[obj->mythic_quality_prefix].mythic_affix);
+            else if(obj->mythic_prefix)
+                Strcat(buf, mythic_prefix_definitions[obj->mythic_prefix].mythic_affix);
         }
 
         const char* rock = is_ore(obj) ? "nugget of ore" : is_graystone(obj) ? "stone" : (ocl->oc_material == MAT_MINERAL) ? "stone" : "gem";
@@ -731,12 +731,12 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             break;
         }
 
-        if (dknown && (obj->mythic_quality_prefix || obj->mythic_quality_suffix))
+        if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
         {
             if (!mknown)
                 Strcat(buf, "mythic ");
-            else if (obj->mythic_quality_prefix)
-                Strcat(buf, mythic_prefix_definitions[obj->mythic_quality_prefix].mythic_affix);
+            else if (obj->mythic_prefix)
+                Strcat(buf, mythic_prefix_definitions[obj->mythic_prefix].mythic_affix);
         }
 
         if (!dknown)
@@ -933,9 +933,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     if (pluralize)
         Strcpy(buf, makeplural(buf));
 
-    if (dknown && mknown && obj->mythic_quality_suffix)
+    if (dknown && mknown && obj->mythic_suffix)
     {
-        Strcat(buf, mythic_suffix_definitions[obj->mythic_quality_suffix].mythic_affix);
+        Strcat(buf, mythic_suffix_qualities[obj->mythic_suffix].mythic_affix);
     }
 
     if (obj->otyp == T_SHIRT && program_state.gameover) {
@@ -1983,7 +1983,7 @@ struct obj *otmp;
 		return TRUE;
 	if (!otmp->nknown && has_oname(otmp))
 		return TRUE;
-    if ((otmp->mythic_quality_prefix || otmp->mythic_quality_suffix) && !otmp->mknown)
+    if ((otmp->mythic_prefix || otmp->mythic_suffix) && !otmp->mknown)
         return TRUE;
     /* otmp->rknown is the only item of interest if we reach here */
     /*
@@ -3655,7 +3655,7 @@ boolean is_wiz_wish;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken;
     int halfeaten, mntmp, contents;
-    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality, mythic_quality_prefix, mythic_quality_suffix, key_special_quality, key_otyp, is_switchable;
+    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality, mythic_prefix, mythic_suffix, key_special_quality, key_otyp, is_switchable;
     int tmp, tinv, tvariety;
     int wetness, gsize = 0;
     struct fruit *f;
@@ -3682,7 +3682,7 @@ boolean is_wiz_wish;
     boolean wiz_wishing = (wizard && is_wiz_wish);
 
     cnt = enchantment = charges = chargesfound = spesgn = typ = 0;
-    very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = exceptionality = mythic_quality_prefix = mythic_quality_suffix =
+    very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = exceptionality = mythic_prefix = mythic_suffix =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
         locked = unlocked = broken = key_special_quality = key_otyp = is_switchable = 0;
@@ -3810,8 +3810,8 @@ boolean is_wiz_wish;
         }
         else if (!strncmpi(bp, "mythic ", l = 7))
         {
-            mythic_quality_prefix = -1;
-            mythic_quality_suffix = -1;
+            mythic_prefix = -1;
+            mythic_suffix = -1;
         }
         else if (!strncmpi(bp, "trapped ", l = 8)) {
             trapped = 0; /* undo any previous "untrapped" */
@@ -3884,7 +3884,7 @@ boolean is_wiz_wish;
             {
                 if (!strncmpi(bp, mythic_prefix_definitions[mythic_idx].mythic_affix, l = (int)strlen(mythic_prefix_definitions[mythic_idx].mythic_affix)))
                 {
-                    mythic_quality_prefix = mythic_idx;
+                    mythic_prefix = mythic_idx;
                     anythingfound = TRUE;
                     break;
                 }
@@ -4004,10 +4004,10 @@ boolean is_wiz_wish;
 
     for (int mythic_idx = 1; mythic_idx < MAX_MYTHIC_SUFFIXES; mythic_idx++)
     {
-        if ((p = strstri(bp, mythic_suffix_definitions[mythic_idx].mythic_affix)) != 0) 
+        if ((p = strstri(bp, mythic_suffix_qualities[mythic_idx].mythic_affix)) != 0) 
         {
             *p = 0;
-            mythic_quality_suffix = mythic_idx;
+            mythic_suffix = mythic_idx;
             break;
         }
     }
@@ -5022,26 +5022,26 @@ boolean is_wiz_wish;
     }
 
     /* Set mythic quality */
-    if ((mythic_quality_prefix || mythic_quality_suffix) && !otyp_non_mythic(otmp->otyp) && otmp->oartifact == 0)
+    if (can_obj_have_mythic(otmp) && (mythic_prefix || mythic_suffix) && otmp->oartifact == 0)
     {
-        if (mythic_quality_prefix < 0 && mythic_quality_suffix < 0)
+        if (mythic_prefix < 0 && mythic_suffix < 0)
         {
             uchar dummy_prefix = 0, dummy_suffix = 0;
             randomize_mythic_quality(otmp, TRUE, &dummy_prefix, &dummy_suffix);
-            mythic_quality_prefix = (int)dummy_prefix;
-            mythic_quality_suffix = (int)dummy_suffix;
+            mythic_prefix = (int)dummy_prefix;
+            mythic_suffix = (int)dummy_suffix;
         }
 
-        if (mythic_quality_prefix < 0)
-            mythic_quality_prefix = 0;
-        if (mythic_quality_suffix < 0)
-            mythic_quality_suffix = 0;
+        if (mythic_prefix < 0)
+            mythic_prefix = 0;
+        if (mythic_suffix < 0)
+            mythic_suffix = 0;
         
         for (int i = 1; i <= 2; i++)
         {
-            struct mythic_definition* mythic_definitions = (i == 1 ? mythic_prefix_definitions : mythic_suffix_definitions);
-            int mythic_quality = (i == 1 ? mythic_quality_prefix : mythic_quality_suffix);
-            uchar* otmp_mythic_quality_ptr = (i == 1 ? &otmp->mythic_quality_prefix : &otmp->mythic_quality_suffix);
+            struct mythic_definition* mythic_definitions = (i == 1 ? mythic_prefix_definitions : mythic_suffix_qualities);
+            int mythic_quality = (i == 1 ? mythic_prefix : mythic_suffix);
+            uchar* otmp_mythic_quality_ptr = (i == 1 ? &otmp->mythic_prefix : &otmp->mythic_suffix);
 
             if (
                 ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY) && otmp->oclass != ARMOR_CLASS)

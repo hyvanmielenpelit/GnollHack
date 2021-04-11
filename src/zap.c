@@ -7469,7 +7469,7 @@ boolean stop_at_first_hit_object;
             tmp_at(bhitpos.x, bhitpos.y);
             if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->oeroded || obj->oeroded2 || tethered_weapon))
             {                
-                show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_quality_prefix, obj->mythic_quality_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon));
+                show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon));
                 if (tethered_weapon)
                     show_leash_info(bhitpos.x, bhitpos.y, 0, 0, u.ux, u.uy);
                 flush_screen(1);

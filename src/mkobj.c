@@ -1219,8 +1219,8 @@ unsigned long mkflags;
 	otmp->corpsenm = NON_PM;
 	otmp->elemental_enchantment = 0;
     otmp->exceptionality = 0;
-    otmp->mythic_quality_prefix = 0;
-    otmp->mythic_quality_suffix = 0;
+    otmp->mythic_prefix = 0;
+    otmp->mythic_suffix = 0;
     otmp->cooldownleft = 0;
     otmp->repowerleft = 0;
     otmp->blessed = 0;
@@ -1758,7 +1758,7 @@ unsigned long mkflags;
     }
 
     /* Mythic quality */
-    if (!otyp_non_mythic(otmp->otyp) && level_difficulty() >= 3 && mkobj_type < 2 && otmp->oartifact == 0)
+    if (can_obj_have_mythic(otmp) && level_difficulty() >= 3 && mkobj_type < 2 && otmp->oartifact == 0)
     {
         boolean makemythic = FALSE;
         if (In_endgame(&u.uz))
@@ -1774,7 +1774,7 @@ unsigned long mkflags;
 
         if (makemythic)
         {
-            randomize_mythic_quality(otmp, FALSE, &otmp->mythic_quality_prefix, &otmp->mythic_quality_suffix);
+            randomize_mythic_quality(otmp, FALSE, &otmp->mythic_prefix, &otmp->mythic_suffix);
         }
     }
 
