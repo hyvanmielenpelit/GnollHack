@@ -5574,7 +5574,7 @@ register struct obj *otmp, *obj;
         return TRUE;
 
     if (obj->unpaid != otmp->unpaid || obj->enchantment != otmp->enchantment || obj->elemental_enchantment != otmp->elemental_enchantment
-        || obj->exceptionality != otmp->exceptionality
+        || obj->exceptionality != otmp->exceptionality || obj->mythic_prefix != otmp->mythic_prefix || obj->mythic_suffix != otmp->mythic_suffix
 		|| obj->charges != otmp->charges || obj->special_quality != otmp->special_quality || obj->speflags != otmp->speflags
 		|| obj->cursed != otmp->cursed || obj->blessed != otmp->blessed
         || obj->no_charge != otmp->no_charge || obj->obroken != otmp->obroken

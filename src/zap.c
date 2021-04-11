@@ -3185,8 +3185,14 @@ int id;
 		otmp->elemental_enchantment = 0; //Special enchantments do not get passed at the moment
 
     if (obj->exceptionality > 0)
-        otmp->exceptionality = 0; //Special crafting do not get passed at the moment
+        otmp->exceptionality = 0; //Special crafting does not get passed at the moment
     
+    if (obj->mythic_prefix > 0)
+        otmp->mythic_prefix = 0; //Mythic status does not get passed at the moment
+
+    if (obj->mythic_suffix > 0)
+        otmp->mythic_suffix = 0; //Mythic status does not get passed at the moment
+
     if (id == STRANGE_OBJECT && obj->otyp == CORPSE)
     {
         /* turn crocodile corpses into shoes */
@@ -7467,7 +7473,7 @@ boolean stop_at_first_hit_object;
                 newsym(x, y);
             }
             tmp_at(bhitpos.x, bhitpos.y);
-            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->oeroded || obj->oeroded2 || tethered_weapon))
+            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2 || tethered_weapon))
             {                
                 show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, tethered_weapon));
                 if (tethered_weapon)

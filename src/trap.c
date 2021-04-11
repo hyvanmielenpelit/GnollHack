@@ -1002,7 +1002,9 @@ struct trap *trap;
     otmp->owt = weight(otmp);
     otmp->opoisoned = 0;
 	otmp->elemental_enchantment = 0;
-	otmp->ox = trap->tx, otmp->oy = trap->ty;
+    otmp->mythic_prefix = 0;
+    otmp->mythic_suffix = 0;
+    otmp->ox = trap->tx, otmp->oy = trap->ty;
     return otmp;
 }
 

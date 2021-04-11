@@ -1785,8 +1785,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                 /* Item property marks */
                 if (item->object_data.opoisoned || item->object_data.elemental_enchantment > 0 || item->object_data.oeroded || item->object_data.oeroded2 
-                    || item->object_data.exceptionality > 0 
-                    || item->object_data.mythic_prefix > 0 || item->object_data.mythic_suffix > 0)
+                    || item->object_data.exceptionality > 0 || item->object_data.mythic_prefix > 0 || item->object_data.mythic_suffix > 0)
                 {
                     int y_start = 0;
                     int x_start = 0;

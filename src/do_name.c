@@ -1624,6 +1624,8 @@ struct obj *obj;
         otemp.opoisoned = 0; /* not poisoned */
 		otemp.elemental_enchantment = 0; /* not specially enchanted */
         otemp.exceptionality = 0; /* not specially crafted */
+        otemp.mythic_prefix = 0; /* not mythic */
+        otemp.mythic_suffix = 0; /* not mythic */
     }
 	else if (otemp.oclass == POTION_CLASS)
         otemp.odiluted = 0; /* not diluted */
