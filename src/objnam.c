@@ -5032,7 +5032,8 @@ boolean is_wiz_wish;
         if (mythic_prefix < 0 || mythic_suffix < 0)
         {
             uchar dummy_prefix = 0, dummy_suffix = 0;
-            randomize_mythic_quality(otmp, mythic_prefix == -2 || mythic_suffix == -2 ? 2 : 1, &dummy_prefix, &dummy_suffix);
+            boolean force_legendary = ((mythic_prefix == -2 || mythic_suffix == -2) && (wiz_wishing || (!rn2(3) && Luck >= 0)));
+            randomize_mythic_quality(otmp, force_legendary ? 2 : 1, &dummy_prefix, &dummy_suffix);
             if(mythic_prefix < 0)
                 mythic_prefix = (int)dummy_prefix;
             if (mythic_suffix < 0)
