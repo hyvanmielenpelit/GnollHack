@@ -1750,7 +1750,9 @@ unsigned short trflags;
         play_sfx_sound(SFX_MAGIC_TRAP_ACTIVATE);
         if (!rn2(30))
         {
+            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_EXPLOSION_MAGICAL);
+            special_effect_wait_until_action(0);
             deltrap(trap);
             newsym(u.ux, u.uy); /* update position */
             You("are caught in a magical explosion!");
@@ -1758,6 +1760,7 @@ unsigned short trflags;
             Your("body absorbs some of the magical energy!");
             u.uen = (u.ubaseenmax += 2);
 			updatemaxen();
+            special_effect_wait_until_end(0);
             break;
         }
         else 
@@ -4139,6 +4142,11 @@ domagictrap()
         special_effect_wait_until_end(0);
     }
     else
+    {
+        play_special_effect_at(fate == 12 ? SPECIAL_EFFECT_TRAP_FIRE : SPECIAL_EFFECT_MAGIC_TRAP_EFFECT, 0, u.ux, u.uy, FALSE);
+        play_sfx_sound(SFX_GENERIC_MAGICAL_TRAP_ACTIVATE);
+        special_effect_wait_until_action(0);
+
         switch (fate)
         {
         case 10:
@@ -4146,14 +4154,10 @@ domagictrap()
             /* sometimes nothing happens */
             break;
         case 12: /* a flash of fire */
-            play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, u.ux, u.uy, FALSE);
-            play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
-            special_effect_wait_until_action(0);
-            dofiretrap((struct obj *) 0, In_endgame(&u.uz) ? 25 : max(2, min(20, (level_difficulty() * 2) / 3)));
-            special_effect_wait_until_end(0);
+            dofiretrap((struct obj*)0, In_endgame(&u.uz) ? 25 : max(2, min(20, (level_difficulty() * 2) / 3)));
             break;
 
-        /* odd feelings */
+            /* odd feelings */
         case 13:
             //play_sfx_sound(SFX_SHIVER_RUNS_DOWN_SPINE);
             play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
@@ -4162,7 +4166,7 @@ domagictrap()
         case 14:
             play_sfx_sound(SFX_DISTANT_HOWLING);
             You_hear(Hallucination ? "the moon howling at you."
-                                   : "distant howling.");
+                : "distant howling.");
             break;
         case 15:
             play_sfx_sound(SFX_MAGIC_TRAP_WEIRD_EFFECT);
@@ -4170,15 +4174,15 @@ domagictrap()
                 You_feel(
                     "%slike the prodigal son.",
                     (flags.female || (Upolyd && is_neuter(youmonst.data)))
-                        ? "oddly "
-                        : "");
+                    ? "oddly "
+                    : "");
             else
                 You("suddenly yearn for %s.",
                     Hallucination
-                        ? "Cleveland"
-                        : (In_quest(&u.uz) || at_dgn_entrance("The Quest"))
-                              ? "your nearby homeland"
-                              : "your distant homeland");
+                    ? "Cleveland"
+                    : (In_quest(&u.uz) || at_dgn_entrance("The Quest"))
+                    ? "your nearby homeland"
+                    : "your distant homeland");
             break;
         case 16:
             play_sfx_sound(SFX_PACK_SHAKING);
@@ -4193,19 +4197,17 @@ domagictrap()
             You_feel("tired.");
             break;
 
-        /* very occasionally something nice happens. */
+            /* very occasionally something nice happens. */
         case 19: { /* tame nearby monsters */
             int i, j;
-            struct monst *mtmp;
+            struct monst* mtmp;
 
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_GAIN_ABILITY);
-            special_effect_wait_until_action(0);
-            (void) adjattrib(A_CHA, 1, FALSE);
+            (void)adjattrib(A_CHA, 1, FALSE);
             int cnt = 1;
             for (i = -1; i <= 1; i++)
             {
-                for (j = -1; j <= 1; j++) 
+                for (j = -1; j <= 1; j++)
                 {
                     if (!isok(u.ux + i, u.uy + j))
                         continue;
@@ -4216,7 +4218,7 @@ domagictrap()
                         {
                             if (canseemon(mtmp))
                             {
-                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, cnt, u.ux, u.uy, FALSE);
+                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, cnt, mtmp->mx, mtmp->my, FALSE);
                                 cnt++;
                                 play_sfx_sound(SFX_TAMING);
                                 special_effect_wait_until_action(cnt);
@@ -4227,7 +4229,7 @@ domagictrap()
                     }
                 }
             }
-            for (int idx = 0; idx < cnt; idx++)
+            for (int idx = 1; idx < cnt; idx++)
             {
                 special_effect_wait_until_end(idx);
             }
@@ -4237,23 +4239,22 @@ domagictrap()
             struct obj pseudo;
             long save_conf = HConfusion;
 
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
-            special_effect_wait_until_action(0);
-
             pseudo = zeroobj; /* neither cursed nor blessed,
                                  and zero out oextra */
             pseudo.otyp = SCR_REMOVE_CURSE;
             HConfusion = 0L;
             boolean effect_happened = 0;
-            (void) seffects(&pseudo, &effect_happened);
+            (void)seffects(&pseudo, &effect_happened);
             HConfusion = save_conf;
-            special_effect_wait_until_end(0);
             break;
         }
         default:
             break;
         }
+
+        special_effect_wait_until_end(0);
+    }
 }
 
 /* Set an item on fire.

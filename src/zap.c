@@ -110,7 +110,7 @@ struct monst* targetmonst;
     /* Skill bonus from using wand -- affects only non-tame monsters for the player */
     double dicemult = 1.0;
     boolean same_side = (origmonst && targetmonst && ((origmonst == targetmonst) || ((origmonst == &youmonst) && is_tame(targetmonst)) || ((origmonst != &youmonst && !is_peaceful(origmonst) && !is_peaceful(targetmonst)))));
-    if (objects[otyp].oc_class == WAND_CLASS && origmonst)
+    if (origmonst && (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_skill == P_WAND)))
     {
         int skill_level = P_UNSKILLED;
         if (same_side)
