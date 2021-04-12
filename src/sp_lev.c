@@ -2051,7 +2051,16 @@ struct mkroom *croom;
         else if (Role_if(PM_MONK))
             otmp = mksobj_at(!rn2(2) ? BELT_OF_FIRE_GIANT_STRENGTH : GLOVES_OF_HASTE, x, y, TRUE, !named);
         else if (Role_if(PM_PRIEST))
-            otmp = mksobj_at(u.ualign.type == A_CHAOTIC ? MACE_OF_DEATH : MACE_OF_DISRUPTION, x, y, TRUE, !named);
+        {
+            otmp = mksobj_at(MACE, x, y, TRUE, !named);
+            if (!otmp->oartifact)
+            {
+                if (u.ualign.type == A_CHAOTIC)
+                    otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
+                else
+                    otmp->mythic_suffix = MYTHIC_SUFFIX_DISRUPTION;
+            }
+        }
         else
         {
             otmp = mksobj_at(!rn2(2) ? LONG_SWORD : TWO_HANDED_SWORD, x, y, TRUE, !named);
@@ -2094,8 +2103,9 @@ struct mkroom *croom;
         }
         else
         {
-            otmp = mksobj(!rn2(10) ? SWORD_OF_UNHOLY_DESECRATION : MACE_OF_DEATH, FALSE, FALSE, FALSE);
+            otmp = mksobj(ORCISH_DAGGER, FALSE, FALSE, FALSE);
             otmp->enchantment = 2 + rnd(3);
+            otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
         }
 
         if (otmp)

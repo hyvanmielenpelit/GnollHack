@@ -1188,12 +1188,12 @@ register struct monst *mtmp;
                         }
 						else
 						{
-                            if ((!rn2(2) || !canseemon(mtmp) || (!m_carrying(mtmp, MACE_OF_DEATH) && !m_carrying(mtmp, WAN_DEATH))) && !is_silenced(mtmp) && !Deaf)
+                            if ((!rn2(2) || !canseemon(mtmp) || (!m_carrying(mtmp, MACE_OF_THE_UNDERWORLD) && !m_carrying(mtmp, WAN_DEATH))) && !is_silenced(mtmp) && !Deaf)
                             {
                                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
                                 pline("%s laughs at you!", Monnam(mtmp));
                             }
-							else if(canseemon(mtmp) && (m_carrying(mtmp, MACE_OF_DEATH) || m_carrying(mtmp, WAN_DEATH)))
+							else if(canseemon(mtmp) && (m_carrying(mtmp, MACE_OF_THE_UNDERWORLD) || m_carrying(mtmp, WAN_DEATH)))
 								pline("%s swings his wand menacingly.", Monnam(mtmp));
 						}
 					}

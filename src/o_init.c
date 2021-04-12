@@ -97,6 +97,11 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
     },
     {
+        "disruption", " of disruption", "", 10,
+        MYTHIC_SUFFIX_POWER_UNDEAD_DESTRUCTION | MYTHIC_SUFFIX_POWER_DEMON_SLAYING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY | MYTHIC_FLAG_BLUDGEONING_WEAPON_ONLY | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS
+    },
+    {
         "speed", " of speed", "", 20,
         MYTHIC_SUFFIX_POWER_SPEED,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
@@ -123,14 +128,15 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS] 
     { "Lightness", "Weighs one-third of normal", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     { "Sorcery", "Incurs no spellcasting penalty", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     { "Troll slaying", "Triple damage to trolls", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_TROLL, 0UL , 0UL },
-    { "Were slaying", "Triple damage to lycanthropes", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_WERE , 0UL },
-    { "Giant slaying", "Triple damage to giants", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_GIANT , 0UL },
-    { "Demon slaying", "Triple damage to demons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_DEMON , 0UL },
-    { "Angel slaying", "Triple damage to angels", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ANGEL , 0UL },
-    { "Ogre slaying", "Triple damage to ogres", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_OGRE, 0UL , 0UL },
-    { "Orc slaying", "Triple damage to orcs", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_ORC, M2_ORC , 0UL },
-    { "Elf slaying", "Triple damage to elves", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ELF , 0UL },
+    { "Were slaying", "Triple damage to lycanthropes", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_WERE, 0UL },
+    { "Giant slaying", "Triple damage to giants", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_GIANT, 0UL },
+    { "Demon slaying", "Triple damage to demons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_DEMON, 0UL },
+    { "Angel slaying", "Triple damage to angels", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ANGEL, 0UL },
+    { "Ogre slaying", "Triple damage to ogres", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_OGRE, 0UL, 0UL },
+    { "Orc slaying", "Triple damage to orcs", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_ORC, M2_ORC, 0UL },
+    { "Elf slaying", "Triple damage to elves", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ELF, 0UL },
     { "Dragon slaying", "Triple damage to dragons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_DRAGON, 0UL , 0UL },
+    { "Undead destruction", "Triple damage to undead", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_UNDEAD, 0UL },
     { "Speed", "Increases speed to very fast", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     { "Wounding", "Causes permanent damage", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     { "Defense", "Enchantment provides AC and MC", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
@@ -1051,13 +1057,19 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
 {
     struct mythic_definition* mythic_definitions = (affix_type == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
 
+    if (!obj)
+        return FALSE;
+    if(!can_obj_have_mythic(obj))
+        return FALSE;
     if (is_wish && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
         return FALSE;
     if (!is_weapon(obj) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY))
         return FALSE;
     if (obj->oclass != ARMOR_CLASS && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
         return FALSE;
-    if ((!is_weapon(obj) || (!is_weapon(obj) && objects[obj->otyp].oc_dir < PIERCE)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY))
+    if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == WHACK)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY))
+        return FALSE;
+    if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir > WHACK)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_BLUDGEONING_WEAPON_ONLY))
         return FALSE;
     if (obj->exceptionality == EXCEPTIONALITY_CELESTIAL && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_CELESTIAL_WEAPONS))
         return FALSE;

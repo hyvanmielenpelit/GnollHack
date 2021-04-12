@@ -1082,9 +1082,10 @@ gcrownu()
             otmp->oerodeproof = 1;
             (void)add_to_container(obj, otmp);
 
-            otmp = mksobj(MACE_OF_DISRUPTION, FALSE, FALSE, FALSE);
+            otmp = mksobj(MACE, FALSE, FALSE, FALSE);
             bless(otmp);
             otmp->enchantment = 1 + rnd(3);
+            otmp->mythic_suffix = MYTHIC_SUFFIX_DISRUPTION;
             otmp->oerodeproof = 1;
             (void)add_to_container(obj, otmp);
 
@@ -1174,9 +1175,10 @@ gcrownu()
             otmp->oerodeproof = 1;
             (void)add_to_container(obj, otmp);
 
-            otmp = mksobj(MACE_OF_DEATH, FALSE, FALSE, FALSE);
+            otmp = mksobj(MACE, FALSE, FALSE, FALSE);
             bless(otmp);
             otmp->enchantment = 1 + rnd(3);
+            otmp->mythic_prefix = MYTHIC_PREFIX_WITCH_KINGS;
             otmp->oerodeproof = 1;
             (void)add_to_container(obj, otmp);
 
