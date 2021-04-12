@@ -209,6 +209,8 @@ enum sp_obj_var_flags {
     SP_O_V_SPEFLAGS,
     SP_O_V_ELEMENTAL_ENCHANTMENT,
     SP_O_V_EXCEPTIONALITY,
+    SP_O_V_MYTHIC_PREFIX,
+    SP_O_V_MYTHIC_SUFFIX,
     SP_O_V_KEY_TYPE,
     SP_O_V_INDESTRUCTIBLE,
     SP_O_V_USES_UP_KEY,
@@ -471,6 +473,8 @@ typedef struct {
     short eroded, locked, trapped, recharged, invis, greased, broken, indestructible, uses_up_key, no_pickup, open;
 	int elemental_enchantment;
     int exceptionality;
+    int mythic_prefix;
+    int mythic_suffix;
 } object;
 
 typedef struct {

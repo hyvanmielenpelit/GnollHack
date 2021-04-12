@@ -238,6 +238,8 @@ levregion	ST_RET(LEV);
 quantity	ST_RET(QUANTITY_ID);
 elemental_enchantment	ST_RET(ELEMENTAL_ENCHANTMENT_ID);
 exceptionality	ST_RET(EXCEPTIONALITY_ID);
+mythic_prefix	ST_RET(MYTHIC_PREFIX_ID);
+mythic_suffix	ST_RET(MYTHIC_SUFFIX_ID);
 enchantment	ST_RET(ENCHANTMENT_ID);
 charges	    ST_RET(CHARGES_ID);
 special_quality	ST_RET(SPECIAL_QUALITY_ID);
@@ -379,6 +381,8 @@ elite { savetoken(yytext); yylval.i=EXCEPTIONALITY_ELITE; return EXCEPTIONALITY_
 celestial { savetoken(yytext); yylval.i=EXCEPTIONALITY_CELESTIAL; return EXCEPTIONALITY_TYPE; }
 primordial { savetoken(yytext); yylval.i=EXCEPTIONALITY_PRIMORDIAL; return EXCEPTIONALITY_TYPE; }
 infernal { savetoken(yytext); yylval.i=EXCEPTIONALITY_INFERNAL; return EXCEPTIONALITY_TYPE; }
+no_mythic_prefix { savetoken(yytext); yylval.i=MYTHIC_PREFIX_NONE; return MYTHIC_PREFIX_TYPE; }
+no_mythic_suffix { savetoken(yytext); yylval.i=MYTHIC_SUFFIX_NONE; return MYTHIC_SUFFIX_TYPE; }
 region_general { savetoken(yytext); yylval.i=REGION_GENERAL; return SPECIAL_REGION_TYPE; }
 region_special_level_seen { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_SEEN; return SPECIAL_REGION_TYPE; }
 region_special_level_true_nature_revealed { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_TRUE_NATURE_REVEALED; return SPECIAL_REGION_TYPE; }

@@ -2208,6 +2208,10 @@ struct mkroom *croom;
 		otmp->elemental_enchantment = (uchar)o->elemental_enchantment;
     if (o->exceptionality >= 0)
         otmp->exceptionality = (uchar)o->exceptionality;
+    if (o->mythic_prefix >= 0)
+        otmp->mythic_prefix = (uchar)o->mythic_prefix;
+    if (o->mythic_suffix >= 0)
+        otmp->mythic_suffix = (uchar)o->mythic_suffix;
     if (o->special_quality != -127)
         otmp->special_quality = o->special_quality;
     if(o->indestructible)
@@ -3735,6 +3739,8 @@ struct sp_coder *coder;
     tmpobj.trapped = -1;
 	tmpobj.elemental_enchantment = -1; /* random */
     tmpobj.exceptionality = -1;  /* random */
+    tmpobj.mythic_prefix = -1;  /* random */
+    tmpobj.mythic_suffix = -1;  /* random */
     tmpobj.recharged = 0;
     tmpobj.invis = 0;
     tmpobj.greased = 0;
@@ -3871,6 +3877,14 @@ struct sp_coder *coder;
         case SP_O_V_EXCEPTIONALITY:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.exceptionality = OV_i(parm);
+            break;
+        case SP_O_V_MYTHIC_PREFIX:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.mythic_prefix = OV_i(parm);
+            break;
+        case SP_O_V_MYTHIC_SUFFIX:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.mythic_suffix = OV_i(parm);
             break;
         case SP_O_V_INDESTRUCTIBLE:
             if (OV_typ(parm) == SPOVAR_INT)

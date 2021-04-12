@@ -108,6 +108,8 @@ struct artifact {
 	const char* desc;	   /* unidentified name */
 	const char* hit_desc;  /* description used in artifact_hit: e.g., massive hammer, ice-cold blade, etc. */
 	uchar exceptionality;
+	uchar mythic_prefix;
+	uchar mythic_suffix;
 	unsigned long aflags;  /* artifact flags */
 	unsigned long aflags2; /* artifact flags2 */
 	unsigned long spfx;    /* special effect from wielding/wearing */
