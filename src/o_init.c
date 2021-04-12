@@ -18,7 +18,7 @@ NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
 
 NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_POWERS] =
 {
-    { "Stygian", "Crafted in the hellish pits of Stygia", MYTHIC_POWER_TYPE_GENERAL, 0L, 0UL, 0UL },
+    { "Stygian", "Crafted in the hellish pits of Stygia", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     /* The rest are zero */
 };
 
@@ -30,22 +30,59 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
     { 
         "lightness", " of lightness", "", 25,
         MYTHIC_SUFFIX_POWER_LIGHTNESS, 
-        MYTHIC_FLAG_DIRECTLY_WISHABLE
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_ONLY
     },
     { 
         "sorcery", " of sorcery", "", 20, 
         MYTHIC_SUFFIX_POWER_SORCERY,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_ONLY
+    },
+    {
+        "troll slaying", " of troll slaying", "", 20,
+        MYTHIC_SUFFIX_POWER_TROLL_SLAYING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
+    },
+    {
+        "ogre slaying", " of ogre slaying", "", 20,
+        MYTHIC_SUFFIX_POWER_OGRE_SLAYING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
+    },
+    {
+        "demon slaying", " of demon slaying", "", 20,
+        MYTHIC_SUFFIX_POWER_DEMON_SLAYING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS
+    },
+    {
+        "dragon slaying", " of dragon slaying", "", 20,
+        MYTHIC_SUFFIX_POWER_DRAGON_SLAYING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
+    },
+    {
+        "giant slaying", " of giant slaying", "", 20,
+        MYTHIC_SUFFIX_POWER_GIANT_SLAYING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
+    },
+    {
+        "lycanthrope slaying", " of lycanthrope slaying", "", 20,
+        MYTHIC_SUFFIX_POWER_WERE_SLAYING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
     },
 };
 
 NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS] =
 {
-    { "Lightness", "Weighs one-third of normal", MYTHIC_POWER_TYPE_GENERAL, 0L, 0UL, 0UL },
-    { "Sorcery", "Incurs no spellcasting penalty", MYTHIC_POWER_TYPE_GENERAL, 0L, 0UL, 0UL },
+    { "Lightness", "Weighs one-third of normal", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Sorcery", "Incurs no spellcasting penalty", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Troll slaying", "Triple damage to trolls", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_TROLL, 0UL , 0UL },
+    { "Were slaying", "Triple damage to lycanthropes", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_WERE , 0UL },
+    { "Giant slaying", "Triple damage to giants", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_GIANT , 0UL },
+    { "Demon slaying", "Triple damage to demons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_DEMON , 0UL },
+    { "Angel slaying", "Triple damage to angels", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ANGEL , 0UL },
+    { "Ogre slaying", "Triple damage to ogres", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_OGRE, 0UL , 0UL },
+    { "Orc slaying", "Triple damage to orcs", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_ORC, M2_ORC , 0UL },
+    { "Elf slaying", "Triple damage to elves", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ELF , 0UL },
     /* The rest are zero */
 };
-
 
 STATIC_DCL void FDECL(setgemprobs, (d_level *));
 STATIC_DCL void FDECL(shuffle, (int, int, BOOLEAN_P));
@@ -278,8 +315,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
 			* lo_p = SHIRT_OF_UNCONTROLLABLE_LAUGHTER, * hi_p = T_SHIRT;
 		break;
 	case WEAPON_CLASS:
-		if (otyp >= SWORD_OF_DEFENSE && otyp <= SWORD_OF_DRAGON_SLAYING)
-			*lo_p = SWORD_OF_DEFENSE, * hi_p = SWORD_OF_DRAGON_SLAYING;
+		if (otyp >= SWORD_OF_DEFENSE && otyp <= NINE_LIVES_STEALER)
+			*lo_p = SWORD_OF_DEFENSE, * hi_p = NINE_LIVES_STEALER;
 		else if (otyp >= STAFF_OF_THE_MAGI && otyp <= STAFF_OF_WITHERING)
 			*lo_p = STAFF_OF_THE_MAGI, * hi_p = STAFF_OF_WITHERING;
 		break;
@@ -889,48 +926,40 @@ uchar *prefix_ptr, *suffix_ptr;
     uchar eligible_prefix[MAX_MYTHIC_PREFIXES] = { 0 };
     uchar eligible_suffix[MAX_MYTHIC_SUFFIXES] = { 0 };
 
-    uchar start = 2;
-    uchar end = 2;
+    uchar start = 1;
+    uchar end = 1;
     if (is_wish == 2 || (is_wish == 0 && (level_difficulty() >= 16 && !rn2(4)) || (level_difficulty() < 16 && level_difficulty() >= 8 && !rn2(20))))
     {
-        start = 1;
-        end = 2;
+        start = 0;
+        end = 1;
     }
     else
     {
         if (!rn2(2))
         {
-            start = 1;
-            end = 1;
+            start = 0;
+            end = 0;
         }
         else
         {
-            start = 2;
-            end = 2;
+            start = 1;
+            end = 1;
         }
     }
 
     for (uchar j = start; j <= end; j++)
     {
-        struct mythic_definition* mythic_definitions = (j== 1 ? mythic_prefix_qualities : mythic_suffix_qualities);
-        uchar* eligible = (j == 1 ? eligible_prefix : eligible_suffix);
-        uchar max_mythic = (j == 1 ? MAX_MYTHIC_PREFIXES : MAX_MYTHIC_SUFFIXES);
-        uchar* affix_ptr = (j == 1 ? prefix_ptr : suffix_ptr);
+        struct mythic_definition* mythic_definitions = (j == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
+        uchar* eligible = (j == 0 ? eligible_prefix : eligible_suffix);
+        uchar max_mythic = (j == 0 ? MAX_MYTHIC_PREFIXES : MAX_MYTHIC_SUFFIXES);
+        uchar* affix_ptr = (j == 0 ? prefix_ptr : suffix_ptr);
 
         int cnt = 0;
         int total_prob = 0;
         for (uchar i = 1; i < max_mythic; i++)
         {
             eligible[i] = FALSE;
-            if (is_wish && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
-                continue;
-            if (!is_weapon(obj) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY))
-                continue;
-            if (obj->oclass != ARMOR_CLASS && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
-                continue;
-            if ((!is_weapon(obj) || (!is_weapon(obj) && objects[obj->otyp].oc_dir < PIERCE)) && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY))
-                continue;
-            if (level_difficulty() < 16 && (mythic_definitions[i].mythic_flags & MYTHIC_FLAG_LEGENDARY_RARE))
+            if(!is_mythic_power_ok(j, i, obj, is_wish))
                 continue;
 
             eligible[i] = TRUE;
@@ -959,5 +988,72 @@ uchar *prefix_ptr, *suffix_ptr;
     }
 }
 
+boolean
+is_mythic_power_ok(affix_type, affix_idx, obj, is_wish)
+uchar affix_type; /* 0 = prefix, 1 = suffix  */
+uchar affix_idx;
+struct obj* obj;
+uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
+{
+    struct mythic_definition* mythic_definitions = (affix_type == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
 
+    if (is_wish && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
+        return FALSE;
+    if (!is_weapon(obj) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_WEAPON_ONLY))
+        return FALSE;
+    if (obj->oclass != ARMOR_CLASS && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
+        return FALSE;
+    if ((!is_weapon(obj) || (!is_weapon(obj) && objects[obj->otyp].oc_dir < PIERCE)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY))
+        return FALSE;
+    if (obj->exceptionality == EXCEPTIONALITY_CELESTIAL && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_CELESTIAL_WEAPONS))
+        return FALSE;
+    if (obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS))
+        return FALSE;
+    if (obj->exceptionality == EXCEPTIONALITY_INFERNAL && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_INFERNAL_WEAPONS))
+        return FALSE;
+
+    return TRUE;
+}
+
+double
+get_mythic_dmg_multiplier(otmp, mon, mattacker, use_type)
+struct obj* otmp;
+struct monst* mon;
+struct monst* mattacker;
+{
+    if (!otmp || !mon || (otmp->mythic_prefix == 0 && otmp->mythic_suffix == 0))
+        return 1.0;
+
+    double multiplier = 1.0;
+    for (uchar j = 0; j <= 1; j++)
+    {
+        struct mythic_power_definition* mythic_powers = (j == 0 ? mythic_prefix_powers : mythic_suffix_powers);
+        struct mythic_definition* mythic_definitions = (j == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
+        uchar mythic_quality = (j == 0 ? otmp->mythic_prefix : otmp->mythic_suffix);
+        if (mythic_quality == 0)
+            continue;
+
+        for (uchar i = 0; i < MAX_MYTHIC_POWERS; i++)
+        {
+            if (!mythic_powers[i].name)
+                break;
+
+            unsigned long bit = 1UL << ((unsigned long)i);
+
+            if (mythic_definitions[mythic_quality].mythic_powers & bit)
+            {
+                if (mythic_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING && (mythic_powers[i].parameter3 == mon->data->mlet || (mythic_powers[i].parameter4 & mon->data->mflags2)))
+                {
+                    double pmult = mythic_powers[i].parameter2;
+                    if (pmult > 1.0)
+                    {
+                        multiplier += pmult - 1.0;
+                    }
+                }
+            }
+        }
+    }
+
+    return multiplier;
+}
 /*o_init.c*/

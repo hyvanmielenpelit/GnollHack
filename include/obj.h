@@ -618,6 +618,15 @@ struct mythic_definition {
 #define MYTHIC_SUFFIX_POWER_NONE            0x00000000UL
 #define MYTHIC_SUFFIX_POWER_LIGHTNESS       0x00000001UL
 #define MYTHIC_SUFFIX_POWER_SORCERY         0x00000002UL
+#define MYTHIC_SUFFIX_POWER_TROLL_SLAYING   0x00000004UL
+#define MYTHIC_SUFFIX_POWER_DRAGON_SLAYING  0x00000004UL
+#define MYTHIC_SUFFIX_POWER_WERE_SLAYING    0x00000008UL
+#define MYTHIC_SUFFIX_POWER_GIANT_SLAYING   0x00000010UL
+#define MYTHIC_SUFFIX_POWER_DEMON_SLAYING   0x00000020UL
+#define MYTHIC_SUFFIX_POWER_ANGEL_SLAYING   0x00000040UL
+#define MYTHIC_SUFFIX_POWER_OGRE_SLAYING    0x00000080UL
+#define MYTHIC_SUFFIX_POWER_ORC_SLAYING     0x00000100UL
+#define MYTHIC_SUFFIX_POWER_ELF_SLAYING     0x00000200UL
 
 #define MYTHIC_FLAG_NONE                    0x00000000UL
 #define MYTHIC_FLAG_WEAPON_ONLY             0x00000001UL
@@ -625,15 +634,19 @@ struct mythic_definition {
 #define MYTHIC_FLAG_SHARP_WEAPON_ONLY       0x00000004UL
 #define MYTHIC_FLAG_DIRECTLY_WISHABLE       0x00000008UL
 #define MYTHIC_FLAG_NON_WISHABLE            0x00000010UL
-#define MYTHIC_FLAG_LEGENDARY_RARE          0x00000020UL
+#define MYTHIC_FLAG_NO_CELESTIAL_WEAPONS    0x00000020UL
+#define MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS   0x00000040UL
+#define MYTHIC_FLAG_NO_INFERNAL_WEAPONS     0x00000080UL
 
 #define MAX_MYTHIC_POWERS 32
 struct mythic_power_definition {
     const char* name;
     const char* description;
     uchar power_type;
-    long parameter1;
-    unsigned long parameter2;
+    long parameter1;                /* E.g., damage multiplier */
+    double parameter2;              /* E.g., damage multiplier */
+    char parameter3;                /* E.g., monster or item class */
+    unsigned long parameter4;       /* E.g., M2_ flag */
     unsigned long power_flags;
 };
 

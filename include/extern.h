@@ -2082,6 +2082,9 @@ E int NDECL(dodiscovered);
 E int NDECL(doclassdisco);
 E void NDECL(rename_disco);
 E void FDECL(randomize_mythic_quality, (struct obj*, uchar, uchar*, uchar*));
+E boolean FDECL(is_mythic_power_ok, (uchar, uchar, struct obj*, uchar));
+E double FDECL(get_mythic_dmg_multiplier, (struct obj*, struct monst*, struct monst*));
+
 
 /* ### objects.c ### */
 

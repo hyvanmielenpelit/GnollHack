@@ -492,18 +492,19 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
 		else
 		{ 
             int exceptionality_rounds = get_exceptionality_multiplier(otmp->exceptionality);
-
+            double mythic_multiplier = get_mythic_dmg_multiplier(otmp, mon, mattacker);
+            int tmp2 = 0;
             for (int exp_round = 0; exp_round < exceptionality_rounds; exp_round++)
             {
                 if (bigmonst(ptr)) {
                     if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
-                        tmp += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
-                    tmp += objects[otyp].oc_wldmgplus;
+                        tmp2 += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
+                    tmp2 += objects[otyp].oc_wldmgplus;
                 }
                 else {
                     if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
-                        tmp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
-                    tmp += objects[otyp].oc_wsdmgplus;
+                        tmp2 += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
+                    tmp2 += objects[otyp].oc_wsdmgplus;
                 }
             }
 
@@ -516,9 +517,14 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
 #endif
 
 			if (mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
-				tmp += abs(applicable_enchantment);
+                tmp2 += abs(applicable_enchantment);
 			else
-				tmp += applicable_enchantment;
+                tmp2 += applicable_enchantment;
+
+            if (tmp2 < 0)
+                tmp2 = 0;
+
+            tmp += (int)((double)tmp2 * mythic_multiplier);
 		}
         /* negative enchantment mustn't produce negative damage */
         if (tmp < 0)
@@ -1089,8 +1095,8 @@ static const NEARDATA short hwep[] =
 	BLACK_BLADE_OF_DISINTEGRATION, GLASS_SWORD, VORPAL_SWORD, BATTLE_AXE_OF_CLEAVING, SWORD_OF_SHARPNESS, MORGUL_BLADE,
     TSURUGI, RUNESWORD,  RUNED_FLAIL, MACE_OF_GREATER_DISRUPTION, MACE_OF_DEATH, SWORD_OF_LIFE_STEALING, 
     SCIMITAR_OF_SPEED, SWORD_OF_DEFENSE, SWORD_OF_WOUNDING,
-	SWORD_OF_DRAGON_SLAYING, SWORD_OF_GIANT_SLAYING, SWORD_OF_TROLL_SLAYING, MACE_OF_DISRUPTION, 
-	SWORD_OF_HOLY_VENGEANCE, SWORD_OF_UNHOLY_DESECRATION,  ELVEN_RUNEDAGGER, MORNING_STAR_OF_TROLL_SLAYING,
+	MACE_OF_DISRUPTION, 
+	SWORD_OF_HOLY_VENGEANCE, SWORD_OF_UNHOLY_DESECRATION,  ELVEN_RUNEDAGGER,
 	CORPSE, /* cockatrice corpse */
 	TRIPLE_HEADED_FLAIL, BROADSWORD, SILVER_LONG_SWORD, SILVER_SABER, JAGGED_TOOTHED_CLUB, BARDICHE,
 	ANCUS, DOUBLE_HEADED_FLAIL,
