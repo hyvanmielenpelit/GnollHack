@@ -892,7 +892,7 @@ int otyp, exceptionality;
     struct obj *otmp;
 
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
-        if (otmp->otyp == otyp && (exceptionality < 0 || otmp->exceptionality == exceptionality)
+        if (otmp->otyp == otyp && (exceptionality < 0 || otmp->exceptionality == (uchar)exceptionality)
             /* never select non-cockatrice corpses */
             && !((otyp == CORPSE || otyp == EGG)
                  && !touch_petrifies(&mons[otmp->corpsenm]))
@@ -992,7 +992,7 @@ register struct monst *mtmp;
             /* shooting gems from slings; this goes just before the darts */
             /* (shooting rocks is already handled via the rwep[] ordering) */
             if (rwep[i] == DART && !likes_gems(mtmp->data)
-                && (otmp2 = m_carrying(mtmp, SLING)) != 0 && otmp2->exceptionality == exc && !inappropriate_exceptionality(mtmp, otmp2)) { /* propellor */
+                && (otmp2 = m_carrying(mtmp, SLING)) != 0 && otmp2->exceptionality == (uchar)exc && !inappropriate_exceptionality(mtmp, otmp2)) { /* propellor */
                 for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
                     if (otmp->oclass == GEM_CLASS
                         && (!(objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) || !otmp->cursed))
@@ -1060,7 +1060,7 @@ register struct monst *mtmp;
                 }
                 else
                     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
-                        if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && !otmp->cursed && otmp->exceptionality == exc && !inappropriate_exceptionality(mtmp, otmp))
+                        if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && !otmp->cursed && otmp->exceptionality == (uchar)exc && !inappropriate_exceptionality(mtmp, otmp))
                             return otmp;
                     }
             }
@@ -3055,7 +3055,7 @@ boolean nextlevel;
 
 int
 get_exceptionality_multiplier(exceptionality)
-int exceptionality;
+uchar exceptionality;
 {
     if (exceptionality <= EXCEPTIONALITY_NORMAL || exceptionality >= MAX_EXCEPTIONALITY_TYPES)
         return 1;

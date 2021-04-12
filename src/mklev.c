@@ -1101,7 +1101,7 @@ makelevel()
 			struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
 			stash->olocked = FALSE;
 			stash->otrapped = FALSE;
-            stash->speflags |= SPEFLAGS_TRAP_STATUS_KNOWN;
+            stash->tknown = 1;
             char namebuf[BUFSZ];
 			Sprintf(namebuf, "%s stash", s_suffix(plname));
 			stash = uoname(stash, namebuf);

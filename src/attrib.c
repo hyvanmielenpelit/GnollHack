@@ -510,10 +510,10 @@ int poison_strength;   /* d6 per level damage*/
 
 /* called when an attack with elemental enchantment has hit the hero (used to be in mon.c) */
 void
-extra_enchantment_damage(reason, sptype, pkiller, lifesavedalready)
+extra_enchantment_damage(reason, elemental_enchantment, pkiller, lifesavedalready)
 const char* reason,    /* controls what messages we display */
 * pkiller;   /* for score+log file if fatal */
-int sptype;
+uchar elemental_enchantment;
 boolean lifesavedalready;
 {
 	int i, kprefix = KILLED_BY_AN;
@@ -538,7 +538,7 @@ boolean lifesavedalready;
 	}
 
 	//Effects
-	if(sptype == COLD_ENCHANTMENT)
+	if(elemental_enchantment == COLD_ENCHANTMENT)
 	{
 		pline("%s%s %s ice-cold!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
@@ -555,7 +555,7 @@ boolean lifesavedalready;
 		damage = adjust_damage(d(12, 6), (struct monst*)0, &youmonst, AD_COLD, ADFLAGS_NONE);
 		losehp(damage, pkiller, kprefix);
 	}
-	else if (sptype == FIRE_ENCHANTMENT)
+	else if (elemental_enchantment == FIRE_ENCHANTMENT)
 	{
 		pline("%s%s %s burning hot!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
@@ -572,7 +572,7 @@ boolean lifesavedalready;
 		damage = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE);
 		losehp(damage, pkiller, kprefix);
 	}
-	else if (sptype == LIGHTNING_ENCHANTMENT)
+	else if (elemental_enchantment == LIGHTNING_ENCHANTMENT)
 	{
 		pline("%s%s %s you with lightning!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
@@ -589,7 +589,7 @@ boolean lifesavedalready;
 		damage = adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE);
 		losehp(damage, pkiller, kprefix);
 	}
-	else if (sptype == DEATH_ENCHANTMENT)
+	else if (elemental_enchantment == DEATH_ENCHANTMENT)
 	{
 		pline("%s%s %s imbued by death magic!",
 			isupper((uchar)* reason) ? "" : "The ", reason,

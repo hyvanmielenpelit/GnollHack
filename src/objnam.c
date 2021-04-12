@@ -543,7 +543,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 	const char *dn = artifact_description_exists ? artilist[obj->oartifact].desc : OBJ_DESCR(*ocl);
     const char *un = ocl->oc_uname;
 	boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
-    boolean known, dknown, bknown, nknown, aknown, mknown;
+    boolean known, dknown, bknown, nknown, aknown, mknown, tknown;
 	boolean makeThelower = FALSE;
 
     buf = nextobuf() + PREFIX; /* leave room for "17 -3 " */
@@ -570,7 +570,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         obj->bknown = TRUE;
 
     if (iflags.override_ID) {
-        known = dknown = bknown = nknown = aknown = mknown = TRUE;
+        known = dknown = bknown = nknown = aknown = mknown = tknown = TRUE;
         nn = 1;
     } else {
         known = obj->known;
@@ -579,6 +579,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 		nknown = obj->nknown;
 		aknown = obj->aknown;
         mknown = obj->mknown;
+        tknown = obj->tknown;
     }
 
 	/* Artifacts get just their name */
@@ -1200,7 +1201,7 @@ unsigned doname_flags;
 			weightfirst = (doname_flags & DONAME_WITH_WEIGHT_FIRST) != 0,
 			weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
 			loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0;
-	boolean known, dknown, cknown, bknown, lknown;
+	boolean known, dknown, cknown, bknown, lknown, tknown;
     int omndx = obj->corpsenm, isenchanted = 0;
     char prefix[PREFIX];
     char tmpbuf[PREFIX + 1]; /* for when we have to add something at
@@ -1209,13 +1210,14 @@ unsigned doname_flags;
     register char *bp = xname(obj);
 
     if (iflags.override_ID) {
-        known = dknown = cknown = bknown = lknown = TRUE;
+        known = dknown = cknown = bknown = lknown = tknown = TRUE;
     } else {
         known = obj->known;
         dknown = obj->dknown;
         cknown = obj->cknown;
         bknown = obj->bknown;
         lknown = obj->lknown;
+        tknown = obj->tknown;
     }
 
     /* When using xname, we want "poisoned arrow", and when using
@@ -1314,7 +1316,7 @@ unsigned doname_flags;
             Strcat(prefix, "uncursed ");
     }
 
-    if ((obj->speflags & SPEFLAGS_TRAP_STATUS_KNOWN) && obj->otrapped && Is_box(obj))
+    if (tknown && obj->otrapped && Is_box(obj))
         Strcat(prefix, "trapped ");
 
     if (lknown && Is_box(obj)) 
@@ -1976,7 +1978,7 @@ struct obj *otmp;
         || !objects[otmp->otyp].oc_name_known)
         return TRUE;
     if ((!otmp->cknown && (Is_container(otmp) || otmp->otyp == STATUE))
-        || (!otmp->lknown && Is_box(otmp)))
+        || (!otmp->lknown && Is_box(otmp)) || (!otmp->tknown && Is_box(otmp)))
         return TRUE;
     if (otmp->oartifact && undiscovered_artifact(otmp->oartifact))
         return TRUE;
@@ -5003,7 +5005,7 @@ boolean is_wiz_wish;
     {
 		if (is_elemental_enchantable(otmp))
 			if(Luck >= 0)
-				otmp->elemental_enchantment = elemental_enchantment;
+				otmp->elemental_enchantment = (uchar)elemental_enchantment;
 
         if(otmp->elemental_enchantment == DEATH_ENCHANTMENT && !is_death_enchantable(otmp))
 			otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
@@ -5015,12 +5017,12 @@ boolean is_wiz_wish;
         if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
         {
             if(wiz_wishing || exceptionality <= EXCEPTIONALITY_ELITE)
-                otmp->exceptionality = exceptionality;
+                otmp->exceptionality = (uchar)exceptionality;
             else
             {
                 /* Celestial / Primordial / Infernal */
                 if (rn2(3) && Luck >= 0)
-                    otmp->exceptionality = exceptionality;
+                    otmp->exceptionality = (uchar)exceptionality;
                 else
                     otmp->exceptionality = EXCEPTIONALITY_NORMAL;
             }
@@ -5063,13 +5065,13 @@ boolean is_wiz_wish;
             else
             {
                 if (wiz_wishing || (mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_DIRECTLY_WISHABLE))
-                    *otmp_mythic_quality_ptr = mythic_quality;
+                    *otmp_mythic_quality_ptr = (uchar)mythic_quality;
                 else
                 {
                     if ((mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
                         *otmp_mythic_quality_ptr = 0;
                     else if (!rn2(3) && Luck >= 0)
-                        *otmp_mythic_quality_ptr = mythic_quality;
+                        *otmp_mythic_quality_ptr = (uchar)mythic_quality;
                     else
                         *otmp_mythic_quality_ptr = 0;
                 }

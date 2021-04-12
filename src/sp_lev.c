@@ -2205,9 +2205,9 @@ struct mkroom *croom;
     if (o->trapped == 0 || o->trapped == 1)
         otmp->otrapped = o->trapped;
 	if (o->elemental_enchantment >= 0)
-		otmp->elemental_enchantment = o->elemental_enchantment;
+		otmp->elemental_enchantment = (uchar)o->elemental_enchantment;
     if (o->exceptionality >= 0)
-        otmp->exceptionality = o->exceptionality;
+        otmp->exceptionality = (uchar)o->exceptionality;
     if (o->special_quality != -127)
         otmp->special_quality = o->special_quality;
     if(o->indestructible)

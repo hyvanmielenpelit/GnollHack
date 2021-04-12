@@ -3801,12 +3801,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int src_y = 0;
                             int cnt = 0;
                             int poisoned = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_poisoned : otmp_round->opoisoned);
-                            int elemental_enchantment = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_elemental_enchantment : otmp_round->elemental_enchantment);
-                            int exceptionality = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_exceptionality : otmp_round->exceptionality);
-                            int mythic_prefix = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_mythic_prefix : otmp_round->mythic_prefix);
-                            int mythic_suffix = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_mythic_suffix : otmp_round->mythic_suffix);
-                            int eroded = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_eroded : otmp_round->oeroded);
-                            int eroded2 = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_eroded2 : otmp_round->oeroded2);
+                            uchar elemental_enchantment = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_elemental_enchantment : otmp_round->elemental_enchantment);
+                            uchar exceptionality = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_exceptionality : otmp_round->exceptionality);
+                            uchar mythic_prefix = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_mythic_prefix : otmp_round->mythic_prefix);
+                            uchar mythic_suffix = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_mythic_suffix : otmp_round->mythic_suffix);
+                            uchar eroded = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_eroded : (uchar)otmp_round->oeroded);
+                            uchar eroded2 = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_eroded2 : (uchar)otmp_round->oeroded2);
                             boolean corrodeable = (base_layer == LAYER_MISSILE ? !!(data->map[enl_i][enl_j].missile_flags & MISSILE_FLAGS_CORRODEABLE) : is_corrodeable(otmp_round));
                             boolean rottable = (base_layer == LAYER_MISSILE ? !!(data->map[enl_i][enl_j].missile_flags & MISSILE_FLAGS_ROTTABLE) : is_rottable(otmp_round));
                             boolean flammable = (base_layer == LAYER_MISSILE ? !!(data->map[enl_i][enl_j].missile_flags & MISSILE_FLAGS_FLAMMABLE) : is_flammable(otmp_round));

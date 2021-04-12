@@ -11,8 +11,8 @@ struct trobj {
 	char trclass;
 	Bitfield(trquan, 6);
 	Bitfield(trbless, 2);
-	int elemental_enchantment;
-	int exceptionality;
+	uchar elemental_enchantment;
+	uchar exceptionality;
 };
 
 STATIC_DCL void FDECL(ini_inv, (struct trobj *));
@@ -1877,7 +1877,7 @@ register struct trobj *trop;
             
 			if (Is_container(obj) || obj->otyp == STATUE) 
 			{
-                obj->cknown = obj->lknown = 1;
+                obj->cknown = obj->lknown = obj->tknown = 1;
                 obj->otrapped = 0;
             }
 

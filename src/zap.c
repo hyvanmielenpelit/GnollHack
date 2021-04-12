@@ -1417,7 +1417,7 @@ struct monst *mtmp;
     {
         monsterdescription(mtmp);
         //display_monster_information(mtmp);
-        display_monster_inventory(mtmp);
+        display_monster_inventory(mtmp, TRUE);
     }
 }
 
@@ -1429,7 +1429,7 @@ struct obj* obj;
     obj->dknown = 1;
     if (Is_container(obj) || obj->otyp == STATUE)
     {
-        obj->cknown = obj->lknown = 1;
+        obj->cknown = obj->lknown = obj->tknown = 1;
         if (!obj->cobj)
         {
             pline("%s empty.", Tobjnam(obj, "are"));
@@ -1819,16 +1819,20 @@ struct monst* mtmp;
 
 
 void
-display_monster_inventory(mtmp)
+display_monster_inventory(mtmp, probing)
 struct monst* mtmp;
+boolean probing;
 {
 	struct obj* otmp;
 
-	if (mtmp->minvent) {
-		for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+	if (mtmp->minvent) 
+    {
+		for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) 
+        {
 			otmp->dknown = 1; /* treat as "seen" */
-			if (Is_container(otmp) || otmp->otyp == STATUE) {
-				otmp->lknown = 1;
+			if (probing && (Is_container(otmp) || otmp->otyp == STATUE)) 
+            {
+				otmp->lknown = otmp->tknown = 1;
 				if (!SchroedingersBox(otmp))
 					otmp->cknown = 1;
 			}
@@ -1836,7 +1840,8 @@ struct monst* mtmp;
 		(void)display_minventory(mtmp, MINV_ALL | MINV_NOLET | PICK_NONE,
 			(char*)0);
 	}
-	else {
+	else 
+    {
 		pline("%s is not carrying anything%s.", noit_Monnam(mtmp),
 			(u.uswallow && mtmp == u.ustuck) ? " besides you" : "");
 	}
@@ -5995,7 +6000,7 @@ boolean ordinary;
             otmp->dknown = 1;
             if (Is_container(otmp) || otmp->otyp == STATUE) 
             {
-                otmp->lknown = 1;
+                otmp->lknown = otmp->tknown = 1;
                 if (!SchroedingersBox(otmp))
                     otmp->cknown = 1;
             }

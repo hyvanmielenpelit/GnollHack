@@ -2986,7 +2986,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
         return 1;
     }
     obj->lknown = 1;
-    obj->speflags |= SPEFLAGS_TRAP_STATUS_KNOWN;
+    obj->tknown = 1;
 
     current_container = obj; /* for use by in/out_container */
     /*

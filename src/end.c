@@ -1363,9 +1363,9 @@ int how;
         for (obj = invent; obj; obj = obj->nobj) 
         {
             discover_object(obj->otyp, TRUE, FALSE);
-            obj->known = obj->bknown = obj->dknown = obj->rknown = obj->nknown = 1;
+            obj->known = obj->bknown = obj->dknown = obj->rknown = obj->nknown = obj->aknown = obj->mknown = 1;
             if (Is_container(obj) || obj->otyp == STATUE)
-                obj->cknown = obj->lknown = 1;
+                obj->cknown = obj->lknown = obj->tknown = 1;
             /* we resolve Schroedinger's cat now in case of both
                disclosure and dumplog, where the 50:50 chance for
                live cat has to be the same both times */
@@ -1788,9 +1788,9 @@ int show_weights;
                         if (identified) {
                             discover_object(obj->otyp, TRUE, FALSE);
                             obj->known = obj->bknown = obj->dknown
-                                = obj->rknown = obj->nknown = 1;
+                                = obj->rknown = obj->nknown = obj->aknown = obj->mknown = 1;
                             if (Is_container(obj) || obj->otyp == STATUE)
-                                obj->cknown = obj->lknown = 1;
+                                obj->cknown = obj->lknown = obj->tknown = 1;
                         }
 						count++;
 

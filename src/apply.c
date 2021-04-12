@@ -3532,7 +3532,7 @@ struct obj*
 elemental_enchant_quan(otmp, quan, enchantmenttype)
 struct obj* otmp;
 int quan;
-int enchantmenttype;
+uchar enchantmenttype;
 {
 	boolean objsplitted = FALSE;
 

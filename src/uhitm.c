@@ -1735,7 +1735,7 @@ boolean* obj_destroyed;
 			break;
 		case FIRE_ENCHANTMENT:
 			if (is_mon_immune_to_fire(mon))
-				needenchantmsg = -obj->elemental_enchantment;
+				needenchantmsg = -1 * ((int)obj->elemental_enchantment);
 			else
 			{
 				needenchantmsg = obj->elemental_enchantment;
@@ -1751,7 +1751,7 @@ boolean* obj_destroyed;
 			break;
 		case LIGHTNING_ENCHANTMENT:
 			if (is_mon_immune_to_elec(mon))
-				needenchantmsg = -obj->elemental_enchantment;
+				needenchantmsg = -1 * ((int)obj->elemental_enchantment);
 			else
 			{
 				needenchantmsg = obj->elemental_enchantment;
@@ -1769,7 +1769,7 @@ boolean* obj_destroyed;
 		case DEATH_ENCHANTMENT:
 			if (resists_death(mon))
 			{
-				needenchantmsg = -obj->elemental_enchantment;
+				needenchantmsg = -1 * ((int)obj->elemental_enchantment);
 			}
 			else
 			{

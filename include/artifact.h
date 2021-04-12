@@ -107,7 +107,7 @@ struct artifact {
 	const char *name;
 	const char* desc;	   /* unidentified name */
 	const char* hit_desc;  /* description used in artifact_hit: e.g., massive hammer, ice-cold blade, etc. */
-	enum exceptionality_types exceptionality;
+	uchar exceptionality;
 	unsigned long aflags;  /* artifact flags */
 	unsigned long aflags2; /* artifact flags2 */
 	unsigned long spfx;    /* special effect from wielding/wearing */

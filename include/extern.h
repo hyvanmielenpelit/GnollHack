@@ -90,7 +90,7 @@ E int FDECL(unfixable_trouble_count, (BOOLEAN_P));
 E int FDECL(uthitm, (struct monst*, struct obj*, struct monst*));
 E int FDECL(uthito, (struct obj*, struct obj*, struct monst*));
 E int FDECL(endlessarrows, (struct obj*, int, int));
-E struct obj* FDECL(elemental_enchant_quan, (struct obj*, int, int));
+E struct obj* FDECL(elemental_enchant_quan, (struct obj*, int, uchar));
 E void FDECL(use_magic_whistle, (struct obj*));
 E int FDECL(count_other_containers, (struct obj*, struct obj*, struct obj**, boolean));
 E struct obj* FDECL(select_other_container, (struct obj*, struct obj*, boolean));
@@ -173,7 +173,7 @@ E void FDECL(gainstr, (struct obj *, int, BOOLEAN_P));
 E void FDECL(losestr, (int));
 E void FDECL(poisontell, (int, BOOLEAN_P));
 E void FDECL(poisoned, (const char *, int, const char *, int, BOOLEAN_P, int));
-E void FDECL(extra_enchantment_damage, (const char*, int, const char*, boolean));
+E void FDECL(extra_enchantment_damage, (const char*, uchar, const char*, boolean));
 E void FDECL(change_luck, (SCHAR_P, BOOLEAN_P));
 E int FDECL(stone_luck, (BOOLEAN_P));
 E boolean FDECL(object_uses_spellbook_wand_flags_and_properties, (struct obj*));
@@ -1490,7 +1490,7 @@ E int FDECL(bagotricks, (struct obj *, BOOLEAN_P, int *));
 E boolean FDECL(propagate, (int, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(usmellmon, (struct permonst *));
 E boolean FDECL(wrong_elem_type, (struct permonst*));
-E void FDECL(m_initthrow, (struct monst*, int, int, int, boolean, int, int));
+E void FDECL(m_initthrow, (struct monst*, int, int, int, boolean, uchar, uchar));
 E boolean FDECL(randomize_monster_gender, (struct permonst*));
 E void NDECL(makemon_animation_wait_until_end);
 
@@ -3571,7 +3571,7 @@ E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
 E int FDECL(martial_arts_multishot_percentage_chance, (int));
 E int FDECL(get_skill_critical_strike_chance, (enum p_skills, boolean));
 E double FDECL(get_wand_damage_multiplier, (int, boolean));
-E int FDECL(get_exceptionality_multiplier, (int));
+E int FDECL(get_exceptionality_multiplier, (uchar));
 
 /* ### were.c ### */
 
@@ -3770,7 +3770,7 @@ E int FDECL(probe_object, (struct obj*));
 E void FDECL(display_monster_information, (struct monst*));
 E void FDECL(print_monster_intrinsics, (winid win, struct monst*));
 E void FDECL(print_monster_statistics, (winid win, struct monst*));
-E void FDECL(display_monster_inventory, (struct monst*));
+E void FDECL(display_monster_inventory, (struct monst*, boolean));
 E boolean FDECL(get_obj_location, (struct obj *, xchar *, xchar *, int));
 E boolean FDECL(get_mon_location, (struct monst *, xchar *, xchar *, int));
 E boolean FDECL(get_region_location, (struct nhregion*, xchar*, xchar*, int));

@@ -3586,7 +3586,7 @@ struct obj *otmp;
 		otmp->nknown = 1;
 
     if (Is_container(otmp) || otmp->otyp == STATUE)
-        otmp->cknown = otmp->lknown = 1;
+        otmp->cknown = otmp->lknown = otmp->tknown = 1;
     if (otmp->otyp == EGG && otmp->corpsenm != NON_PM)
         learn_egg_type(otmp->corpsenm);
 }

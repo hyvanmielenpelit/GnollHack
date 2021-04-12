@@ -3307,7 +3307,7 @@ struct monst* mtmp;
 	if (!mtmp)
 		return 0;
 
-	display_monster_inventory(mtmp);
+	display_monster_inventory(mtmp, FALSE);
 	return 0;
 }
 

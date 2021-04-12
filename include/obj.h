@@ -76,15 +76,14 @@ struct obj {
 #define SPEFLAGS_NO_PICKUP           		0x00008000UL  /* Monsters will not pick up this item */
 #define SPEFLAGS_ROYAL_COFFER         		0x00010000UL
 #define SPEFLAGS_LID_OPENED         		0x00020000UL
-#define SPEFLAGS_TRAP_STATUS_KNOWN          0x00040000UL  /* Trap on this chest has been found (and still is there if otrapped is TRUE) */
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
     short oartifact; /* artifact array index */
     uchar mythic_prefix; /* magical quality for a weapon or armor giving additional powers */
     uchar mythic_suffix;  /* magical quality for a weapon or armor giving additional powers */
-    char exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
-    char elemental_enchantment; /* cold, fire, lightning, or deathly */
+    uchar exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
+    uchar elemental_enchantment; /* cold, fire, lightning, or deathly */
 
 #define COLD_ENCHANTMENT 1
 #define FIRE_ENCHANTMENT 2
@@ -149,7 +148,8 @@ struct obj {
     Bitfield(bypass, 1); /* mark this as an object to be skipped by bhito() */
     Bitfield(cknown, 1); /* contents of container assumed to be known */
     Bitfield(lknown, 1); /* locked/unlocked status is known */
-	Bitfield(nknown, 1); /* artifact's true name is known */
+    Bitfield(tknown, 1); /* trapped status of a container is known */
+    Bitfield(nknown, 1); /* artifact's true name is known */
 	Bitfield(aknown, 1); /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
     Bitfield(mknown, 1); /* mythic quality is known */
 

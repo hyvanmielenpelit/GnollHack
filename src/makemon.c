@@ -156,7 +156,7 @@ m_initthrow(mtmp, otyp, oquan_const, oquan_rnd, poisoned, elemental_enchantment,
 struct monst *mtmp;
 int otyp, oquan_const, oquan_rnd;
 boolean poisoned;
-int elemental_enchantment, exceptionality;
+uchar elemental_enchantment, exceptionality;
 {
     register struct obj *otmp;
 
