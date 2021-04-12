@@ -25,17 +25,17 @@ NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
         MYTHIC_FLAG_DIRECTLY_WISHABLE
     },
     {
-        "Vampiric", "vampiric ", "", 20,
+        "vampiric", "vampiric ", "", 20,
         MYTHIC_PREFIX_POWER_LIFE_DRAINING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
     },
     {
-        "Radiant", "radiant ", "", 20,
+        "radiant", "radiant ", "", 20,
         MYTHIC_PREFIX_POWER_SHINES_LIGHT,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
     },
     {
-        "Witch-King's", "Witch-King's ", "", 3,
+        "witch-king's", "witch-king's ", "", 3,
         MYTHIC_PREFIX_POWER_LEVEL_DRAIN | MYTHIC_PREFIX_POWER_MANA_GAIN_25 | MYTHIC_PREFIX_POWER_HP_GAIN_25,
         MYTHIC_FLAG_WEAPON_ONLY
     },
@@ -45,8 +45,8 @@ NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_POWERS] 
 {
     { "Level drain", "Causes level drain", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     { "Mana gain 25%", "Increases maximum mana by 25%", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
-    { "Hit point gain 25%", "Increases maximum hit point by 25%", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
-    { "Life draining", "Heals hit points equal to damage dealt", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Hit point gain 25%", "Increases maximum hit points by 25%", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Life draining", "Heals 1d10 hit points on hit", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     { "Shines light", "Shines magical light", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     /* The rest are zero */
 };
@@ -77,7 +77,7 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
     },
     {
-        "demon slaying", " of demon slaying", "", 20,
+        "demon slaying", " of demon slaying", "", 15,
         MYTHIC_SUFFIX_POWER_DEMON_SLAYING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS
     },
@@ -99,17 +99,17 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
     {
         "disruption", " of disruption", "", 10,
         MYTHIC_SUFFIX_POWER_UNDEAD_DESTRUCTION | MYTHIC_SUFFIX_POWER_DEMON_SLAYING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY | MYTHIC_FLAG_BLUDGEONING_WEAPON_ONLY | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY | MYTHIC_FLAG_BLUDGEONING_WEAPONS_ONLY | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS
     },
     {
-        "speed", " of speed", "", 20,
+        "speed", " of speed", "", 15,
         MYTHIC_SUFFIX_POWER_SPEED,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
     },
     {
         "wounding", " of wounding", "", 20,
         MYTHIC_SUFFIX_POWER_WOUNDING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY | MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS
     },
     {
         "defense", " of defense", "", 20,
@@ -117,9 +117,14 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
     },
     {
-        "sharpness", " of sharpness", "", 10,
+        "sharpness", " of sharpness", "", 5,
         MYTHIC_SUFFIX_POWER_SHARPNESS,
-        MYTHIC_FLAG_WEAPON_ONLY
+        MYTHIC_FLAG_WEAPON_ONLY | MYTHIC_FLAG_SLASHING_WEAPONS_ONLY
+    },
+    {
+        "reach", " of reach", "", 20,
+        MYTHIC_SUFFIX_POWER_DEFENSE,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY | MYTHIC_FLAG_POLEARM_LANCE_SPEAR_ONLY
     },
 };
 
@@ -138,7 +143,7 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS] 
     { "Dragon slaying", "Triple damage to dragons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_DRAGON, 0UL , 0UL },
     { "Undead destruction", "Triple damage to undead", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_UNDEAD, 0UL },
     { "Speed", "Increases speed to very fast", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
-    { "Wounding", "Causes permanent damage", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Wounding", "Causes 1d4 permanent damage", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     { "Defense", "Enchantment provides AC and MC", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     { "Sharpness", "Has 15% chance of dealing damage equal to 15% of max HP", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     /* The rest are zero */
@@ -1067,15 +1072,19 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
         return FALSE;
     if (obj->oclass != ARMOR_CLASS && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_ARMOR_ONLY))
         return FALSE;
-    if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == WHACK)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_SHARP_WEAPON_ONLY))
+    if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == WHACK)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS))
         return FALSE;
-    if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir > WHACK)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_BLUDGEONING_WEAPON_ONLY))
+    if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == PIERCE)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_PIERCING_WEAPONS))
+        return FALSE;
+    if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == SLASH)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_SLASHING_WEAPONS))
         return FALSE;
     if (obj->exceptionality == EXCEPTIONALITY_CELESTIAL && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_CELESTIAL_WEAPONS))
         return FALSE;
     if (obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS))
         return FALSE;
     if (obj->exceptionality == EXCEPTIONALITY_INFERNAL && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_INFERNAL_WEAPONS))
+        return FALSE;
+    if (!(is_pole(obj) || is_lance(obj) || is_spear(obj)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_POLEARM_LANCE_SPEAR_ONLY))
         return FALSE;
 
     return TRUE;

@@ -919,7 +919,7 @@ static NEARDATA const int rwep[] = {
     /* BOOMERANG, */ CREAM_PIE
 };
 
-static NEARDATA const int pwep[] = { POLEARM_OF_REACH,  HALBERD,  BARDICHE, SPETUM,
+static NEARDATA const int pwep[] = { HALBERD,  BARDICHE, SPETUM,
                                      BILL_GUISARME, VOULGE,   RANSEUR,
                                      GUISARME,      GLAIVE,   LUCERN_HAMMER,
                                      BEC_DE_CORBIN, FAUCHARD, PARTISAN,

@@ -356,8 +356,7 @@ register struct monst *mtmp;
             break;
         case PM_HELL_BOVINE:
         {
-            int bovine_weapons[15] = { HALBERD, HALBERD, POLEARM_OF_REACH, 
-                ANCUS,
+            int bovine_weapons[] = { HALBERD, HALBERD, ANCUS,
                 RANSEUR, SPETUM, GLAIVE, BARDICHE, VOULGE, FAUCHARD, GUISARME,
                 BILL_GUISARME, LUCERN_HAMMER, BEC_DE_CORBIN };
 

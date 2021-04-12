@@ -4309,13 +4309,13 @@ int* max_range;
 	if (is_pole(obj))
 	{
 		*min_range = POLEARM_MIN_DISTANCE;
-		*max_range = (has_otyp_extended_polearm_reach(obj->otyp) ? POLEARM_EXTENDED_MAX_DISTANCE : POLEARM_NORMAL_MAX_DISTANCE);
+		*max_range = (has_otyp_extended_polearm_reach(obj->otyp) || has_obj_mythic_reach(obj) ? POLEARM_EXTENDED_MAX_DISTANCE : POLEARM_NORMAL_MAX_DISTANCE);
 
 	}
 	else if (is_spear(obj))
 	{
 		*min_range = SPEAR_MIN_DISTANCE;
-		if (has_otyp_extended_polearm_reach(obj->otyp))
+		if (has_otyp_extended_polearm_reach(obj->otyp) || has_obj_mythic_reach(obj))
 		{
 			*max_range = POLEARM_EXTENDED_MAX_DISTANCE;
 		}
@@ -4347,7 +4347,7 @@ int* max_range;
 	else if (is_lance(obj))
 	{
 		*min_range = LANCE_MIN_DISTANCE;
-		if (has_otyp_extended_polearm_reach(obj->otyp))
+		if (has_otyp_extended_polearm_reach(obj->otyp) || has_obj_mythic_reach(obj))
 		{
 			*max_range = POLEARM_EXTENDED_MAX_DISTANCE;
 		}
