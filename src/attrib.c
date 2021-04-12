@@ -811,6 +811,10 @@ update_extrinsics()
 				))
 				u.uprops[objects[otyp].oc_oprop3].extrinsic |= bit;//W_CARRIED;
 
+			/* Mythic */
+			if(has_obj_mythic_speed(uitem) && bit != W_CARRIED)
+				u.uprops[VERY_FAST].extrinsic |= bit;
+
 #if 0
 			int p = 0;
 			/* Properties blocked by item */
@@ -835,6 +839,8 @@ update_extrinsics()
 				u.uprops[artilist[uitem->oartifact].inv_prop].extrinsic |= W_ARTIFACT_INVOKED;
 			}
 		}
+
+
 	}
 
 	/* Check environment */
@@ -1923,13 +1929,14 @@ struct monst* mon;
 	for (uitem = is_you ? invent : mon->minvent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
+		boolean worn = is_you ? is_obj_worn(uitem) :
+			((mon->worn_item_flags & uitem->owornmask) != 0
+				&& (!is_weapon(uitem) || !is_shield(uitem) || ((is_weapon(uitem) || is_shield(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON))));
+
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
 			&& objects[otyp].oc_hp_bonus != 0)
 		{
 			boolean inappr = inappropriate_monster_character_type(mon, uitem);
-			boolean worn = is_you ? is_obj_worn(uitem) :
-				((mon->worn_item_flags & uitem->owornmask) != 0 
-				&& (!is_weapon(uitem) || !is_shield(uitem) || ((is_weapon(uitem) || is_shield(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON))));
 
 			if ((worn || (!worn && (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_WHEN_CARRIED)))
 				&& ((!inappr && !(objects[otyp].oc_pflags & (P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
@@ -1947,6 +1954,12 @@ struct monst* mon;
 					adj += multiplier * objects[otyp].oc_hp_bonus;
 			}
 		}
+
+		if (has_obj_mythic_hp_gain_25(uitem) && worn)
+		{
+			adj += 1 * (25 * (basehp + baseadj)) / 100;
+		}
+
 	}
 
 	return adj;

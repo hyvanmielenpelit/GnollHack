@@ -469,7 +469,7 @@ WEAPON("battle-axe of cleaving", "runed double-headed axe",
 
 /* swords */
 WEAPON("short sword", None,
-    1, 0, 0, 0, 16, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 45,  10,
+    1, 0, 0, 0, 30, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 45,  10,
 	AD_PHYS, 1, 6, 0, 1,  8, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P1_NONE, P, WEP_SHORT_SWORD, P_SWORD, MAT_IRON, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
@@ -497,17 +497,10 @@ WEAPON("dwarvish short sword", "broad short sword",
 	O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_FLOOR_TILE,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("scimitar", "curved sword",
-	0, 0, 0, 0, 10, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 15,
+	0, 0, 0, 0, 12, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 15,
 	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P1_NONE, S, WEP_SCIMITAR, P_SWORD, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_SWORD,
-	O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE,
-	PERMITTED_ALL, ALL_TARGETS),
-WEAPON("scimitar of speed", "runed curved sword",
-	0, 0, 1, 0, 5, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 300,
-	AD_PHYS, 1, 8, 0, 1, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-	VERY_FAST, NO_POWER, NO_POWER, P1_NONE, S, WEP_SCIMITAR, P_SWORD, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_SWORD,
 	O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("silver saber", None,
@@ -517,7 +510,7 @@ WEAPON("silver saber", None,
 	0, 0, 0, P1_NONE, S, WEP_SABER, P_SWORD, MAT_SILVER, HI_SILVER, 24, OBJECT_SOUNDSET_SWORD,
 	O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, PERMITTED_ALL, ALL_TARGETS),
 WEAPON("broadsword", None,
-	1, 0, 0, 0, 10, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 10,
+	1, 0, 0, 0, 13, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 10,
 	AD_PHYS, 2, 4, 0, 1, 6, 1, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P1_NONE, S, WEP_BROADSWORD, P_SWORD, MAT_IRON, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
@@ -544,7 +537,7 @@ WEAPON("silver long sword", None,
 	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_SILVER, HI_SILVER, 16, OBJECT_SOUNDSET_SWORD,
 	O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE,
 	PERMITTED_ALL, ALL_TARGETS),
-WEAPON("sword of holy vengeance", "radiant long sword",
+WEAPON("sword of holy vengeance", "shining long sword",
 	0, 0, 1, 0, 2, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 1000,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS, A2_NONE, 0,
 	0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0,
@@ -564,40 +557,6 @@ WEAPON("sword of unholy desecration", "black long sword",
 	O3_TARGET_PERMISSION_IS_M2_FLAG | O3_PERMTTED_TARGET_LAWFUL | O3_PERMTTED_TARGET_NEUTRAL,
 	O4_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS | O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE | O4_FLOOR_TILE,
 	PERMITTED_ALIGNMENT_CHAOTIC, M2_ANGEL),
-WEAPON("sword of defense", "runed long sword",  // STARTMARKER FOR MAGIC SWORDS WITH SHUFFLED APPREARANCES
-	0, 0, 1, 0, 5, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 150,
-	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
-	0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, P1_NONE, S,WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
-	O1_IS_ARMOR_WHEN_WIELDED, O2_NONE, O3_NONE, O4_FLOOR_TILE,
-	PERMITTED_ALL, ALL_TARGETS),
-WEAPON("sword of sharpness", "ornamental long sword",
-	0, 0, 1, 0, 3, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 750,
-	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 1, A1_SHARPNESS, A2_NONE, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_METAL, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
-	O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE,
-	PERMITTED_ALL, ALL_TARGETS),
-WEAPON("vorpal sword", "immaculate long sword",
-	0, 0, 1, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 1500,
-	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 1, A1_VORPAL, A2_NONE, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_METAL, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
-	O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE,
-	PERMITTED_ALL, ALL_TARGETS),
-WEAPON("sword of wounding", "exquisite long sword",
-	0, 0, 1, 0, 4, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 250,
-	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 1, A1_WOUNDING, A2_NONE, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
-	O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE,
-	PERMITTED_ALL, ALL_TARGETS),
-WEAPON("sword of life stealing", "gold-hilted long sword",
-	0, 0, 1, 0, 4, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 500,
-	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_LIFE_LEECH | A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA | A1_LEVEL_DRAIN | A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES | A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL, A2_NONE, 2,
-	0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, P1_NONE, S, WEP_LONG_SWORD, P_SWORD, MAT_IRON, HI_GOLD, 16, OBJECT_SOUNDSET_SWORD,
-	O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT, O2_NONE, O3_NONE, O4_FLOOR_TILE, PERMITTED_ALL, ALL_TARGETS),
 CHARGEDWEAPON("nine lives stealer", "black-hilted long sword",
 	0, 0, 1, CHARGED_1D8_1, RECHARGING_NINE_LIVES_STEALER, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 60, 1350,
 	AD_PHYS, 1, 8, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_CRITICAL_STRIKE | A1_CRITICAL_STRIKE_IS_DEADLY | A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_MAGIC_RESISTANCE_PROTECTS, A2_REQUIRES_AND_EXPENDS_A_CHARGE, 100,
@@ -612,7 +571,7 @@ WEAPON("glass sword", None,
 	O1_NONE, O2_GENERATED_DEATH_OR_COLD_ENCHANTED, O3_NO_GENERATION, O4_NEVER_GENERATED_WITH_EXCEPTIONALITY | O4_FLOOR_TILE,
 	PERMITTED_ALL, ALL_TARGETS),
 WEAPON("two-handed sword", None,
-	1, 0, 0, 1, 20, MULTIGEN_SINGLE, ENCHTYPE_TWO_HANDED_MELEE_WEAPON, 120, 50,
+	1, 0, 0, 1, 22, MULTIGEN_SINGLE, ENCHTYPE_TWO_HANDED_MELEE_WEAPON, 120, 50,
 	AD_PHYS, 2, 6, 0, 3, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P1_NONE, S, WEP_TWO_HANDED_SWORD, P_SWORD, MAT_IRON, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
@@ -1127,25 +1086,25 @@ BOW("Galadhrim bow", "ornamental long bow",
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, metal, c, floor_height, soundset, flags, flags2, flags3, flags4, powconfermask)
 #define CLOAK(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, powconfermask)
 #define SHIELD(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask) \
     ARMOR(name, desc, kn, mgc, blk, power, power2, power3, pflags, enchtype, prob, delay, wt, \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_NONE, metal, c, 0, soundset, flags, flags2, flags3,flags4,powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIELD, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4,powconfermask)
 #define GLOVES(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_FLOOR_TILE, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, powconfermask)
 #define BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, 32, soundset, flags, flags2, flags3, flags4, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, 32, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, powconfermask)
 #define SHIRT(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIRT, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIRT, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, powconfermask)
 #define ROBE(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_ROBE, P_NONE, metal, c, height, soundset, flags, flags2, flags3, flags4, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_ROBE, P_NONE, metal, c, height, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, powconfermask)
 #define BRACERS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BRACERS, P_NONE, metal, c, 24, soundset, flags, flags2, flags3,flags4 | O4_FLOOR_TILE, powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BRACERS, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, powconfermask)
 
 /* note: acbon = 10 - ac used in ARMOR, i.e., 1 gives -1 AC bonus to the player */
 #define WEAPONSHIELD(name,desc,kn,mgc,prob,wt,cost,enchtype,\
@@ -1174,7 +1133,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
 		   wt, color, soundset, \
 		   0, 0, 0, 0, \
-		   powconfermask,permittedtargets, flags, flags2, flags3, flags4)
+		   powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_NON_MYTHIC)
 
 #define WEAPONGLOVES(name,desc,kn,mgc,delay,prob,wt,cost,enchtype,\
 			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
@@ -1188,7 +1147,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
 		   wt, color, soundset,\
 		   0, 0, 0, 0, \
-		   powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_FLOOR_TILE)
+		   powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE)
 
 
 /* helmets */

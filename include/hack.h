@@ -602,7 +602,7 @@ enum bodypart_types {
 #endif
 #define plur(x) (((x) == 1) ? "" : "s")
 
-#define ARM_AC_BONUS(obj, ptr) (((obj)->oclass == ARMOR_CLASS || (obj)->oclass == MISCELLANEOUS_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)) ?                    \
+#define ARM_AC_BONUS(obj, ptr) (((obj)->oclass == ARMOR_CLASS || (obj)->oclass == MISCELLANEOUS_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)) ?                    \
     (objects[(obj)->otyp].oc_armor_class + (objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC ? 0 : (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment))) \
      - (objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_AC ? 0 : min((int) greatest_erosion(obj), objects[(obj)->otyp].oc_armor_class))) : 0)
 

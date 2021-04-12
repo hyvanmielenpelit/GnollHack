@@ -1561,7 +1561,7 @@ struct monst *mon;
 		/* omit W_SWAPWEP+W_QUIVER; W_ARTIFACT_CARRIED+W_ARTIFACT_INVOKED handled by protects() */
 		wearmask = (W_ARMOR & ~W_ARMS) | W_ACCESSORY;
 
-		if (is_shield(o) || is_weapon(o) || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+		if (is_shield(o) || is_weapon(o) || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(o))
 			wearmask |= (W_WEP | W_ARMS);
 
 		item_mc_bonus = 0;
@@ -1577,7 +1577,7 @@ struct monst *mon;
 			else
 				item_mc_bonus += max(0, objects[o->otyp].oc_magic_cancellation - greatest_erosion(o) / 3);
 
-			if (o->oclass == ARMOR_CLASS || o->oclass == MISCELLANEOUS_CLASS || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || (objects[o->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
+			if (o->oclass == ARMOR_CLASS || o->oclass == MISCELLANEOUS_CLASS || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(o) || (objects[o->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
 				item_mc_bonus += o->enchantment / 3;
 		}
 
@@ -3072,63 +3072,85 @@ register struct obj* omonwep;
     int crit_strike_die_roll_threshold = crit_strike_probability / 5;
 
 	/* Wounding */
-	if (mattk->aatyp == AT_WEAP && omonwep && !uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
-		&& (
-		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& (
-			((objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= crit_strike_die_roll_threshold)
-				||
-				(!(objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < crit_strike_probability))
-			)
-			||
-			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& 1)
-			)
-		)
-	{
-		if (objects[omonwep->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-			extradmg = (int)ceil(damage);
+    if (mattk->aatyp == AT_WEAP && omonwep && !uses_spell_flags)
+    {
+        if (
+            (
+                (objects[omonwep->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
+                && (
+                    ((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+                        && (
+                            ((objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+                                && dieroll <= crit_strike_die_roll_threshold)
+                            ||
+                            (!(objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+                                && critstrikeroll < crit_strike_probability))
+                        )
+                    ||
+                    (!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+                        && 1)
+                    )
+              )
+           )
+        {
+            if (objects[omonwep->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+                extradmg = (int)ceil(damage);
 
-		permdmg2 = extradmg;
+            permdmg2 += extradmg;
 
-		if (extradmg > 0)
-		{
-			pline("%s's %s %s you deeply!", Monnam(mtmp), cxname(omonwep), otense (omonwep, "cut"));
-		}
-	}
+        }
+
+        if (has_obj_mythic_wounding(omonwep))
+            permdmg2 += mythic_wounding_amount();
+
+        if (permdmg2 > 0)
+        {
+            pline("%s's %s %s you deeply!", Monnam(mtmp), cxname(omonwep), otense(omonwep, "cut"));
+        }
+    }
 
 	/* Life leech */
-	if (mattk->aatyp == AT_WEAP && omonwep && !uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
-		&& (
-		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& (
-			((objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= crit_strike_die_roll_threshold)
-				||
-				(!(objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < crit_strike_probability))
-			)
-			||
-			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& 1)
-			)
-		)
-	{
-		if (objects[omonwep->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-			extradmg = (int)ceil(damage);
+    if (mattk->aatyp == AT_WEAP && omonwep)
+    {
+        int life_leech = 0;
+        if (!uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
+            && (
+                ((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+                    && (
+                        ((objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+                            && dieroll <= crit_strike_die_roll_threshold)
+                        ||
+                        (!(objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+                            && critstrikeroll < crit_strike_probability))
+                    )
+                ||
+                (!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+                    && 1)
+                )
+            )
+        {
+            if (objects[omonwep->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+                extradmg = (int)ceil(damage);
 
-		mtmp->mhp += extradmg;
-		if (mtmp->mhp > mtmp->mhpmax)
-			mtmp->mhp = mtmp->mhpmax;
+            life_leech += extradmg;
+        }
 
-		if (extradmg > 0)
-		{
-            play_sfx_sound(SFX_LIFE_LEECH);
-            pline("%s's %s %s your life energy!", Monnam(mtmp), cxname(omonwep), otense(omonwep, "leech"));
-		}
-	}
+        if (has_obj_mythic_life_draining(omonwep))
+            life_leech += mythic_life_draining_amount();
+
+        if (life_leech > 0)
+        {
+            mtmp->mhp += extradmg;
+            if (mtmp->mhp > mtmp->mhpmax)
+                mtmp->mhp = mtmp->mhpmax;
+
+            if (extradmg > 0)
+            {
+                play_sfx_sound(SFX_LIFE_LEECH);
+                pline("%s's %s %s your life energy!", Monnam(mtmp), cxname(omonwep), otense(omonwep, "leech"));
+            }
+        }
+    }
 
 	int oldumort = u.umortality;
 

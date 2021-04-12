@@ -1106,7 +1106,7 @@ boolean* obj_destroyed;
 	}
 	else 
 	{
-		if (!((artifact_light(obj) || obj_shines_magical_light(obj)) && obj->lamplit))
+		if (!((artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)) && obj->lamplit))
 			Strcpy(saved_oname, cxname(obj));
 		else
 			Strcpy(saved_oname, bare_artifactname(obj));
@@ -1270,7 +1270,7 @@ boolean* obj_destroyed;
 					silverobj = TRUE;
 				}
 
-				if ((artifact_light(obj) || obj_shines_magical_light(obj)) && obj->lamplit
+				if ((artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)) && obj->lamplit
 					&& mon_hates_light(mon))
 					lightobj = TRUE;
 
@@ -2083,88 +2083,112 @@ boolean* obj_destroyed;
 	int crit_strike_die_roll_threshold = crit_strike_probability / 5;
 
 	/* Wounding */
-	if (obj && !uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst)
-		&& !is_rider(mon->data)
-		&& (
-		((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& (
-			((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= crit_strike_die_roll_threshold)
-				||
-				(!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < crit_strike_probability))
-			)
-			||
-			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& 1)
-			)
-		)
+	if (obj && !uses_spell_flags && !is_rider(mon->data))
 	{
-		int extradmg = (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE));
-		if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-			extradmg = (int)ceil(damage);
-
-		mon->mbasehpmax -= extradmg;
-		update_mon_maxhp(mon);
-
-		if (mon->mhp > mon->mhpmax)
-			mon->mhp = mon->mhpmax;
-
-		if (DEADMONSTER(mon))
+		int extradmg = 0;
+		if (
+			(
+				(objects[obj->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst)
+				&& (
+					((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+						&& (
+							((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+								&& dieroll <= crit_strike_die_roll_threshold)
+							||
+							(!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+								&& critstrikeroll < crit_strike_probability))
+						)
+					||
+					(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+						&& 1)
+					)
+			  )
+		   )
 		{
-			destroyed = TRUE;
+			if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+				extradmg += (int)ceil(damage);
+			else
+				extradmg += (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE));
 		}
+
+		if (has_obj_mythic_wounding(obj))
+			extradmg += mythic_wounding_amount();
+
 		if (extradmg > 0)
 		{
-			char* whom = mon_nam(mon);
-			if (canspotmon(mon)) 
+			mon->mbasehpmax -= extradmg;
+			update_mon_maxhp(mon);
+
+			if (mon->mhp > mon->mhpmax)
+				mon->mhp = mon->mhpmax;
+
+			if (DEADMONSTER(mon))
 			{
-					pline("%s deeply into %s!", Yobjnam2(obj,"cut"), whom);
+				destroyed = TRUE;
+			}
+
+			char* whom = mon_nam(mon);
+			if (canspotmon(mon))
+			{
+				pline("%s deeply into %s!", Yobjnam2(obj, "cut"), whom);
 			}
 		}
 	}
 
 	/* Life leech */
-	if (obj && !uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data)
-		&& !is_not_living(mon->data)
-		&& (
-		((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& (
-			((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= crit_strike_die_roll_threshold)
-				||
-				(!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < crit_strike_probability))
-			)
-			||
-			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& 1)
-			)
-		)
+	if (obj)
 	{
-		int extradmg = (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE));
-		if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-			extradmg = (int)ceil(damage);
+		int extradmg = 0;
+		if (
+			(!uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data)
+				&& !is_not_living(mon->data)
+				&& (
+					((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+						&& (
+							((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+								&& dieroll <= crit_strike_die_roll_threshold)
+							||
+							(!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+								&& critstrikeroll < crit_strike_probability))
+						)
+					||
+					(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+						&& 1)
+					)
+				)
+			)
+		{
+			if (objects[obj->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+				extradmg += (int)ceil(damage);
+			else
+				extradmg += (int)ceil(adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, ADFLAGS_NONE));
+		}
 
-		if (Upolyd)
-		{
-			u.mh += extradmg;
-			if (u.mh > u.mhmax)
-				u.mh = u.mhmax;
-		}
-		else
-		{
-			u.uhp += extradmg;
-			if (u.uhp > u.uhpmax)
-				u.uhp = u.uhpmax;
-		}
+		if (has_obj_mythic_life_draining(obj))
+			extradmg += mythic_life_draining_amount();
 
 		if (extradmg > 0)
 		{
-			char* whom = mon_nam(mon);
-			if (canspotmon(mon)) 
+			if (Upolyd)
 			{
-				pline("%s the life energy from %s to you!", Yobjnam2(obj, "leech"), whom);
+				u.mh += extradmg;
+				if (u.mh > u.mhmax)
+					u.mh = u.mhmax;
+			}
+			else
+			{
+				u.uhp += extradmg;
+				if (u.uhp > u.uhpmax)
+					u.uhp = u.uhpmax;
+			}
+
+			if (extradmg > 0)
+			{
+				char* whom = mon_nam(mon);
+				if (canspotmon(mon))
+				{
+					pline("%s the life energy from %s to you!", Yobjnam2(obj, "leech"), whom);
+				}
 			}
 		}
 	}

@@ -2009,73 +2009,98 @@ register struct obj* omonwep;
     int crit_strike_die_roll_threshold = crit_strike_probability / 5;
 
 	/* Wounding */
-	if (mweapon && !uses_spell_flags && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_WOUNDING) &&
-		eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data)
-		&& (
-		((objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& (
-			((objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= crit_strike_die_roll_threshold)
-				||
-				(!(objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < crit_strike_probability))
-			)
-			||
-			(!(objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& 1)
-			)
-		)
-	{
-		int extradmg = extratmp;
-		if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-			extradmg = (int)ceil(damage);
+    if (mweapon && !uses_spell_flags && !isdisintegrated && !is_rider(mdef->data))
+    {
+        int extradmg = 0;
+        if(
+            (
+                (objects[mweapon->otyp].oc_aflags & A1_WOUNDING) &&
+		        eligible_for_extra_damage(mweapon, mdef, magr) 
+		        && (
+		        ((objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			        && (
+			        ((objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+				        && dieroll <= crit_strike_die_roll_threshold)
+				        ||
+				        (!(objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					        && critstrikeroll < crit_strike_probability))
+			        )
+			        ||
+			        (!(objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+				        && 1)
+			        )
+               )
+		    )
+	    {
+		    if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+			    extradmg += (int)ceil(damage);
+            else
+                extradmg += extratmp;
+        }
 
-		mdef->mbasehpmax -= extradmg;
+        if (has_obj_mythic_wounding(mweapon))
+            extradmg += mythic_wounding_amount();
 
-		if (extradmg > 0)
-		{
-			if (canspotmon(mdef) && canspotmon(magr))
-			{
-				pline("%s's %s %s deeply into %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "cut"), mon_nam(mdef));
-			}
-		}
-	}
+        if (extradmg > 0)
+        {
+            mdef->mbasehpmax -= extradmg;
+
+            if (extradmg > 0)
+            {
+                if (canspotmon(mdef) && canspotmon(magr))
+                {
+                    pline("%s's %s %s deeply into %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "cut"), mon_nam(mdef));
+                }
+            }
+        }
+    }
 
 	/* Life leech */
-	if (mweapon && !uses_spell_flags && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr)
-		&& !is_rider(mdef->data) && !is_not_living(mdef->data)
-		&& (
-		((objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-			&& (
-			((objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= crit_strike_die_roll_threshold)
-				||
-				(!(objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < crit_strike_probability))
-			)
-			||
-			(!(objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& 1)
-			)
-		)
-	{
-		int extradmg = extratmp;
-		if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
-			extradmg = (int)ceil(damage);
+    if (mweapon && !isdisintegrated && !is_rider(mdef->data) && !is_not_living(mdef->data))
+    {
+        int extradmg = 0;
+        if (!uses_spell_flags && (objects[mweapon->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr)
 
-		magr->mhp += extradmg;
-		if (magr->mhp > magr->mhpmax)
-			magr->mhp = magr->mhpmax;
+            && (
+                ((objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+                    && (
+                        ((objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+                            && dieroll <= crit_strike_die_roll_threshold)
+                        ||
+                        (!(objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+                            && critstrikeroll < crit_strike_probability))
+                    )
+                ||
+                (!(objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+                    && 1)
+                )
+            )
+        {
+            if (objects[mweapon->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
+                extradmg += (int)ceil(damage);
+            else
+                extradmg += extratmp;
+        }
 
-		if (extradmg > 0)
-		{
-			if (canspotmon(mdef) && canspotmon(magr))
-			{
-                play_sfx_sound_at_location(SFX_LIFE_LEECH, mdef->mx, mdef->my);
-                pline("%s's %s %s life energy from %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "leech"), mon_nam(mdef));
-			}
-		}
-	}
+        if (has_obj_mythic_life_draining(mweapon))
+            extradmg += mythic_life_draining_amount();
+
+        if (extradmg > 0)
+        {
+            magr->mhp += extradmg;
+            if (magr->mhp > magr->mhpmax)
+                magr->mhp = magr->mhpmax;
+
+            if (extradmg > 0)
+            {
+                if (canspotmon(mdef) && canspotmon(magr))
+                {
+                    play_sfx_sound_at_location(SFX_LIFE_LEECH, mdef->mx, mdef->my);
+                    pline("%s's %s %s life energy from %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "leech"), mon_nam(mdef));
+                }
+            }
+        }
+    }
 
 
 	//Reduce HP

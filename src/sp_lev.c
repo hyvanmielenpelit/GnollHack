@@ -2053,7 +2053,16 @@ struct mkroom *croom;
         else if (Role_if(PM_PRIEST))
             otmp = mksobj_at(u.ualign.type == A_CHAOTIC ? MACE_OF_DEATH : MACE_OF_DISRUPTION, x, y, TRUE, !named);
         else
-            otmp = mksobj_at(!rn2(2) ? SWORD_OF_LIFE_STEALING : SWORD_OF_SHARPNESS, x, y, TRUE, !named);
+        {
+            otmp = mksobj_at(!rn2(2) ? LONG_SWORD : TWO_HANDED_SWORD, x, y, TRUE, !named);
+            if (!otmp->oartifact)
+            {
+                if (!rn2(2))
+                    otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                else
+                    otmp->mythic_suffix = MYTHIC_SUFFIX_SHARPNESS;
+            }
+        }
     }
     else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_ARTIFACT)
     {
@@ -2085,7 +2094,7 @@ struct mkroom *croom;
         }
         else
         {
-            otmp = mksobj(!rn2(10) ? SWORD_OF_UNHOLY_DESECRATION : !rn2(2) ? SWORD_OF_WOUNDING : MACE_OF_DEATH, FALSE, FALSE, FALSE);
+            otmp = mksobj(!rn2(10) ? SWORD_OF_UNHOLY_DESECRATION : MACE_OF_DEATH, FALSE, FALSE, FALSE);
             otmp->enchantment = 2 + rnd(3);
         }
 

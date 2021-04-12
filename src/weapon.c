@@ -579,7 +579,7 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
             bonus += rnd(4);
         if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mon))
             bonus += rnd(20);
-        if ((artifact_light(otmp) || obj_shines_magical_light(otmp)) && otmp->lamplit && mon_hates_light(mon))
+        if ((artifact_light(otmp) || obj_shines_magical_light(otmp) || has_obj_mythic_magical_light(otmp)) && otmp->lamplit && mon_hates_light(mon))
             bonus += rnd(8);
 
         /* if the weapon is going to get a double damage bonus, adjust
@@ -1092,9 +1092,8 @@ struct obj *obj;
 /* Weapons in order of preference */
 static const NEARDATA short hwep[] = 
 {
-	BLACK_BLADE_OF_DISINTEGRATION, GLASS_SWORD, VORPAL_SWORD, BATTLE_AXE_OF_CLEAVING, SWORD_OF_SHARPNESS, MORGUL_BLADE,
-    TSURUGI, RUNESWORD,  RUNED_FLAIL, MACE_OF_GREATER_DISRUPTION, MACE_OF_DEATH, SWORD_OF_LIFE_STEALING, 
-    SCIMITAR_OF_SPEED, SWORD_OF_DEFENSE, SWORD_OF_WOUNDING,
+	BLACK_BLADE_OF_DISINTEGRATION, GLASS_SWORD, BATTLE_AXE_OF_CLEAVING, MORGUL_BLADE,
+    TSURUGI, RUNESWORD,  RUNED_FLAIL, MACE_OF_GREATER_DISRUPTION, MACE_OF_DEATH, 
 	MACE_OF_DISRUPTION, 
 	SWORD_OF_HOLY_VENGEANCE, SWORD_OF_UNHOLY_DESECRATION,  ELVEN_RUNEDAGGER,
 	CORPSE, /* cockatrice corpse */
@@ -1374,7 +1373,7 @@ boolean verbose_fail;
                 obj->bknown = 1;
             }
         }
-        if (obj && (artifact_light(obj) || (obj_shines_magical_light(obj) && !inappropriate_monster_character_type(mon, obj))) && !obj->lamplit) {
+        if (obj && (artifact_light(obj) || has_obj_mythic_magical_light(obj) || (obj_shines_magical_light(obj) && !inappropriate_monster_character_type(mon, obj))) && !obj->lamplit) {
             begin_burn(obj, FALSE);
             if (canseemon(mon))
                 pline("%s %s in %s %s!", Tobjnam(obj, "shine"),
@@ -2916,7 +2915,7 @@ register struct obj *obj;
     if (!mon || !obj)
         return;
 
-    if ((artifact_light(obj) || obj_shines_magical_light(obj)) && obj->lamplit) {
+    if ((artifact_light(obj) || has_obj_mythic_magical_light(obj) || obj_shines_magical_light(obj)) && obj->lamplit) {
         end_burn(obj, FALSE);
         if (canseemon(mon))
             pline("%s in %s %s %s shining.", The(xname(obj)),

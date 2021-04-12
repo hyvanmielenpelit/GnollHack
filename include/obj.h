@@ -613,7 +613,11 @@ struct mythic_definition {
 };
 
 #define MYTHIC_PREFIX_POWER_NONE            0x00000000UL
-#define MYTHIC_PREFIX_POWER_STYGIAN         0x00000001UL
+#define MYTHIC_PREFIX_POWER_LEVEL_DRAIN     0x00000001UL
+#define MYTHIC_PREFIX_POWER_MANA_GAIN_25    0x00000002UL
+#define MYTHIC_PREFIX_POWER_HP_GAIN_25      0x00000004UL
+#define MYTHIC_PREFIX_POWER_LIFE_DRAINING   0x00000008UL
+#define MYTHIC_PREFIX_POWER_SHINES_LIGHT    0x00000010UL
 
 #define MYTHIC_SUFFIX_POWER_NONE            0x00000000UL
 #define MYTHIC_SUFFIX_POWER_LIGHTNESS       0x00000001UL
@@ -627,6 +631,10 @@ struct mythic_definition {
 #define MYTHIC_SUFFIX_POWER_ORC_SLAYING     0x00000100UL
 #define MYTHIC_SUFFIX_POWER_ELF_SLAYING     0x00000200UL
 #define MYTHIC_SUFFIX_POWER_DRAGON_SLAYING  0x00000400UL
+#define MYTHIC_SUFFIX_POWER_SPEED           0x00000800UL
+#define MYTHIC_SUFFIX_POWER_WOUNDING        0x00001000UL
+#define MYTHIC_SUFFIX_POWER_DEFENSE         0x00002000UL
+#define MYTHIC_SUFFIX_POWER_SHARPNESS       0x00004000UL
 
 #define MYTHIC_FLAG_NONE                    0x00000000UL
 #define MYTHIC_FLAG_WEAPON_ONLY             0x00000001UL
@@ -672,6 +680,36 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_P
 
 #define has_obj_mythic_spellcasting(o) \
     (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_SORCERY)
+
+#define has_obj_mythic_level_drain(o) \
+    (mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_LEVEL_DRAIN)
+
+#define has_obj_mythic_mana_gain_25(o) \
+    (mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_MANA_GAIN_25)
+
+#define has_obj_mythic_hp_gain_25(o) \
+    (mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_HP_GAIN_25)
+
+#define has_obj_mythic_speed(o) \
+    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_SPEED)
+
+#define has_obj_mythic_wounding(o) \
+    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_WOUNDING)
+#define mythic_wounding_amount() d(1, 4)
+
+#define has_obj_mythic_defense(o) \
+    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_DEFENSE)
+
+#define has_obj_mythic_sharpness(o) \
+    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_SHARPNESS)
+
+#define has_obj_mythic_life_draining(o) \
+    (mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_LIFE_DRAINING)
+#define mythic_life_draining_amount() d(1, 10)
+
+#define has_obj_mythic_magical_light(o) \
+    (mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_SHINES_LIGHT)
+
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1

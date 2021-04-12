@@ -10,15 +10,44 @@ NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
 {
     { "", "", "", 0, 0UL, 0UL },
     { 
-        "Stygian", "Stygian ", "", 25,
-        MYTHIC_PREFIX_POWER_STYGIAN,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE 
+        "Stygian", "Stygian ", "", 15,
+        MYTHIC_PREFIX_POWER_LEVEL_DRAIN,
+        MYTHIC_FLAG_WEAPON_ONLY
+    },
+    {
+        "Hyperborean", "Hyperborean ", "", 25,
+        MYTHIC_PREFIX_POWER_MANA_GAIN_25,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE
+    },
+    {
+        "Asgardian", "Asgardian ", "", 25,
+        MYTHIC_PREFIX_POWER_HP_GAIN_25,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE
+    },
+    {
+        "Vampiric", "vampiric ", "", 20,
+        MYTHIC_PREFIX_POWER_LIFE_DRAINING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
+    },
+    {
+        "Radiant", "radiant ", "", 20,
+        MYTHIC_PREFIX_POWER_SHINES_LIGHT,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
+    },
+    {
+        "Witch-King's", "Witch-King's ", "", 3,
+        MYTHIC_PREFIX_POWER_LEVEL_DRAIN | MYTHIC_PREFIX_POWER_MANA_GAIN_25 | MYTHIC_PREFIX_POWER_HP_GAIN_25,
+        MYTHIC_FLAG_WEAPON_ONLY
     },
 };
 
 NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_POWERS] =
 {
-    { "Stygian", "Crafted in the hellish pits of Stygia", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Level drain", "Causes level drain", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Mana gain 25%", "Increases maximum mana by 25%", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Hit point gain 25%", "Increases maximum hit point by 25%", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Life draining", "Heals hit points equal to damage dealt", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Shines light", "Shines magical light", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     /* The rest are zero */
 };
 
@@ -67,6 +96,26 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
         MYTHIC_SUFFIX_POWER_WERE_SLAYING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
     },
+    {
+        "speed", " of speed", "", 20,
+        MYTHIC_SUFFIX_POWER_SPEED,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
+    },
+    {
+        "wounding", " of wounding", "", 20,
+        MYTHIC_SUFFIX_POWER_WOUNDING,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
+    },
+    {
+        "defense", " of defense", "", 20,
+        MYTHIC_SUFFIX_POWER_DEFENSE,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY
+    },
+    {
+        "sharpness", " of sharpness", "", 10,
+        MYTHIC_SUFFIX_POWER_SHARPNESS,
+        MYTHIC_FLAG_WEAPON_ONLY
+    },
 };
 
 NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS] =
@@ -82,6 +131,10 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS] 
     { "Orc slaying", "Triple damage to orcs", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_ORC, M2_ORC , 0UL },
     { "Elf slaying", "Triple damage to elves", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ELF , 0UL },
     { "Dragon slaying", "Triple damage to dragons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_DRAGON, 0UL , 0UL },
+    { "Speed", "Increases speed to very fast", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Wounding", "Causes permanent damage", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Defense", "Enchantment provides AC and MC", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Sharpness", "Has 15% chance of dealing damage equal to 15% of max HP", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     /* The rest are zero */
 };
 
@@ -316,8 +369,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
 			* lo_p = SHIRT_OF_UNCONTROLLABLE_LAUGHTER, * hi_p = T_SHIRT;
 		break;
 	case WEAPON_CLASS:
-		if (otyp >= SWORD_OF_DEFENSE && otyp <= NINE_LIVES_STEALER)
-			*lo_p = SWORD_OF_DEFENSE, * hi_p = NINE_LIVES_STEALER;
+		if (otyp >= SWORD_OF_HOLY_VENGEANCE && otyp <= NINE_LIVES_STEALER)
+			*lo_p = SWORD_OF_HOLY_VENGEANCE, * hi_p = NINE_LIVES_STEALER;
 		else if (otyp >= STAFF_OF_THE_MAGI && otyp <= STAFF_OF_WITHERING)
 			*lo_p = STAFF_OF_THE_MAGI, * hi_p = STAFF_OF_WITHERING;
 		break;
@@ -408,7 +461,7 @@ shuffle_all()
     };
     /* armor sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {
-        HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, SWORD_OF_DEFENSE, STAFF_OF_THE_MAGI, LEATHER_BAG,
+        HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, SWORD_OF_HOLY_VENGEANCE, STAFF_OF_THE_MAGI, LEATHER_BAG,
 		TALLOW_CANDLE, OIL_LAMP, TIN_WHISTLE, WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP, LEATHER_DRUM, JAR_OF_EXTRA_HEALING_SALVE
     };
 	static short shuffle_types_with_material[] = {

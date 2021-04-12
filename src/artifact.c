@@ -1905,9 +1905,10 @@ short* adtyp_ptr; /* return value is the type of damage caused */
 			}
 		}
 	}
-	else if ((objects[otmp->otyp].oc_aflags & A1_SVB_MASK) == A1_SHARPNESS)
+	else if ((objects[otmp->otyp].oc_aflags & A1_SVB_MASK) == A1_SHARPNESS || has_obj_mythic_sharpness(otmp))
 	{
-		if (
+		if (has_obj_mythic_sharpness(otmp) ||
+			(
 			((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
 			&& ((objects[otmp->otyp].oc_aflags & A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			&& (
@@ -1923,6 +1924,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
 				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 					&& dieroll <= SHARPNESS_DIE_ROLL_CHANCE)
 				)
+			)
 			)
 		{
 			if (!youdefend) 
@@ -2076,73 +2078,77 @@ short* adtyp_ptr; /* return value is the type of damage caused */
 	}
 
 
-	if (objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN) 
+	if ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN) || has_obj_mythic_level_drain(otmp))
 	{
 		if (!is_rider(mdef->data) && !is_undead(mdef->data) //Demons are affected
-			&& !(youdefend ? Drain_resistance : resists_drli(mdef))
-			&& !((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
-			&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
-			&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
-			&& (
-			((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-				&& (
-				((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& dieroll <= crit_strike_die_roll_threshold)
-					||
-					(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-						&& criticalstrikeroll < crit_strike_probability))
-				)
-				||
-				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-					&& 1)
-				)
-			&& ((objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) || !check_magic_cancellation_success(mdef,
-				objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT  ? -otmp->enchantment : 0)))
-			)
+			&& !(youdefend ? Drain_resistance : resists_drli(mdef)))
 		{
-			/* some non-living creatures (golems, vortices) are
-			   vulnerable to life drain effects */
-			const char* life = is_not_living(mdef->data) ? "animating force" : "life energy";
-
-			if (!youdefend) 
+			if(has_obj_mythic_level_drain(otmp) ||
+				(!((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
+					&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
+					&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
+					&& (
+						((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+							&& (
+								((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+									&& dieroll <= crit_strike_die_roll_threshold)
+								||
+								(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+									&& criticalstrikeroll < crit_strike_probability))
+							)
+						||
+						(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+							&& 1)
+						)
+					&& ((objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) || !check_magic_cancellation_success(mdef,
+						objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT ? -otmp->enchantment : 0)))
+					)
+				)
 			{
-				if (vis)
-				{
-					pline("%s draws the %s from %s!",
-						The(distant_name(otmp, xname)), life,
-						mon_nam(mdef));
-				}
+				/* some non-living creatures (golems, vortices) are
+				   vulnerable to life drain effects */
+				const char* life = is_not_living(mdef->data) ? "animating force" : "life energy";
 
-				if (mdef->m_lev == 0) 
+				if (!youdefend)
 				{
-					lethaldamage = TRUE;
+					if (vis)
+					{
+						pline("%s draws the %s from %s!",
+							The(distant_name(otmp, xname)), life,
+							mon_nam(mdef));
+					}
+
+					if (mdef->m_lev == 0)
+					{
+						lethaldamage = TRUE;
+					}
+					else
+					{
+						*adtyp_ptr = AD_DRLI;
+						int drain = monbasehp_per_lvl(mdef);
+						int drain2 = (int)monhpadj_per_lvl(mdef);
+						totaldamagedone += drain + drain2;
+						mdef->mbasehpmax -= drain;
+						mdef->mhpmax -= (drain + drain2);
+						if (mdef->mhpmax < 1)
+							mdef->mhpmax = 1, lethaldamage = TRUE;
+						mdef->m_lev--;
+						if (!lethaldamage)
+							update_mon_maxhp(mdef);
+						/* non-artifact level drain does not heal */
+					}
 				}
-				else 
-				{
-					*adtyp_ptr = AD_DRLI;
-					int drain = monbasehp_per_lvl(mdef);
-					int drain2 = (int)monhpadj_per_lvl(mdef);
-					totaldamagedone += drain + drain2;
-					mdef->mbasehpmax -= drain;
-					mdef->mhpmax -= (drain + drain2);
-					if (mdef->mhpmax < 1)
-						mdef->mhpmax = 1, lethaldamage = TRUE;
-					mdef->m_lev--;
-					if(!lethaldamage)
-						update_mon_maxhp(mdef);
-					/* non-artifact level drain does not heal */
-				}
-			}
-			else 
-			{ /* youdefend */
-				if (Blind)
-					You_feel("an %s drain your %s!",
-						"object",
-						life);
 				else
-					pline("%s drains your %s!", The(distant_name(otmp, xname)),
-						life);
-				losexp("life drainage");
+				{ /* youdefend */
+					if (Blind)
+						You_feel("an %s drain your %s!",
+							"object",
+							life);
+					else
+						pline("%s drains your %s!", The(distant_name(otmp, xname)),
+							life);
+					losexp("life drainage");
+				}
 			}
 		}
 	}

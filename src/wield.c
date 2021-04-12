@@ -124,7 +124,7 @@ boolean verbose;
 	if (obj && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
 		obj->known = 1;
 
-    if (uwep == obj && olduwep && (artifact_light(olduwep) || obj_shines_magical_light(olduwep)) && olduwep->lamplit) {
+    if (uwep == obj && olduwep && (artifact_light(olduwep) || has_obj_mythic_magical_light(olduwep) || obj_shines_magical_light(olduwep)) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
         if (!Blind && verbose)
             pline("%s shining.", Tobjnam(olduwep, "stop"));
@@ -287,7 +287,7 @@ long mask;
         /* KMH -- Talking artifacts are finally implemented */
         arti_speak(wep);
 
-        if (wep && (artifact_light(wep) || (obj_shines_magical_light(wep) && !inappropriate_monster_character_type(&youmonst, wep))) && !wep->lamplit)
+        if (wep && (artifact_light(wep) || has_obj_mythic_magical_light(wep) || (obj_shines_magical_light(wep) && !inappropriate_monster_character_type(&youmonst, wep))) && !wep->lamplit)
 		{
             begin_burn(wep, FALSE);
             if (!Blind)
@@ -1611,7 +1611,7 @@ void
 uwepgone()
 {
     if (uwep) {
-        if ((artifact_light(uwep) || obj_shines_magical_light(uwep)) && uwep->lamplit) {
+        if ((artifact_light(uwep) || has_obj_mythic_magical_light(uwep) || obj_shines_magical_light(uwep)) && uwep->lamplit) {
             end_burn(uwep, FALSE);
             if (!Blind)
                 pline("%s shining.", Tobjnam(uwep, "stop"));
@@ -1626,7 +1626,7 @@ void
 uwep2gone()
 {
 	if (uarms) {
-		if ((artifact_light(uarms) || obj_shines_magical_light(uarms)) && uarms->lamplit) {
+		if ((artifact_light(uarms) || has_obj_mythic_magical_light(uarms) || obj_shines_magical_light(uarms)) && uarms->lamplit) {
 			end_burn(uarms, FALSE);
 			if (!Blind)
 				pline("%s shining.", Tobjnam(uarms, "stop"));

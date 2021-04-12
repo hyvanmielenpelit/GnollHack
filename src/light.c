@@ -680,6 +680,7 @@ struct obj *obj;
                                     || ignitable(obj)
                                     || artifact_light(obj)
                                 	|| obj_shines_magical_light(obj)
+                                    || has_obj_mythic_magical_light(obj)
 		));
 }
 
@@ -804,7 +805,7 @@ struct obj *obj;
      */
 
     /* sanity check [simplifies usage by bless()/curse()/&c] */
-    if (!obj->lamplit || !(artifact_light(obj) || obj_shines_magical_light(obj)))
+    if (!obj->lamplit || !(artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)))
         return 0;
 
     /* cursed radius of 1 is not noticeable for an item that's

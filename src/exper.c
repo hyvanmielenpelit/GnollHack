@@ -139,11 +139,11 @@ enmaxadjustment()
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
 		otyp = uitem->otyp;
-		if (!object_uses_spellbook_wand_flags_and_properties(uitem)
+        boolean worn = is_obj_worn(uitem);
+        if (!object_uses_spellbook_wand_flags_and_properties(uitem)
 			&& objects[otyp].oc_mana_bonus != 0)
 		{
 			boolean inappr = inappropriate_character_type(uitem);
-			boolean worn = is_obj_worn(uitem);
 
 			if ((worn || (!worn && (objects[otyp].oc_pflags & P1_MANA_BONUS_APPLIES_WHEN_CARRIED)))
 				&& ((!inappr && !(objects[otyp].oc_pflags & (P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
@@ -161,6 +161,11 @@ enmaxadjustment()
 					adj += multiplier * objects[otyp].oc_mana_bonus;
 			}
 		}
+        
+        if (has_obj_mythic_mana_gain_25(uitem) && worn)
+        {
+            adj += 1 * (25 * (baseen + baseadj)) / 100;
+        }
 	}
 
 

@@ -822,7 +822,9 @@ register struct monst *mtmp;
 		if (ptr == &mons[PM_NAZGUL])
         {
 			(void)mongets(mtmp, MORGUL_BLADE);
-			(void)mongets(mtmp, SWORD_OF_LIFE_STEALING);
+			struct obj* otmp = mongets(mtmp, LONG_SWORD);
+            if (otmp)
+                otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
 		}
 		break;
     case S_LESSER_UNDEAD:
