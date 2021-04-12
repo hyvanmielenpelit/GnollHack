@@ -1888,12 +1888,20 @@ struct obj **optr;
         else if (!otmp->lamplit && obj->lamplit)
             pline("%s out.", (obj->quan > 1L) ? "They go" : "It goes");
 
-        if (obj->unpaid)
+        if (obj->unpaid && costly_spot(u.ux, u.uy))
+        {
+            char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+            struct monst* shkp = shop_keeper(*o_shop);   
+            if (shkp)
+            {
+                play_voice_shopkeeper_simple_line(shkp, otmp->lamplit ? ((obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT) :
+                    ((obj->quan > 1L) ? SHOPKEEPER_LINE_USE_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_USE_IT_BOUGHT_IT));
+            }
             verbalize("You %s %s, you bought %s!",
-                      otmp->lamplit ? "burn" : "use",
-                      (obj->quan > 1L) ? "them" : "it",
-                      (obj->quan > 1L) ? "them" : "it");
-
+                otmp->lamplit ? "burn" : "use",
+                (obj->quan > 1L) ? "them" : "it",
+                (obj->quan > 1L) ? "them" : "it");
+        }
         if (obj->quan < 7L && otmp->special_quality == 7)
             pline("%s now has seven%s candles attached.", The(xname(otmp)),
                   otmp->lamplit ? " lit" : "");
@@ -2064,9 +2072,16 @@ struct obj *obj;
             pline("%s flame%s %s%s", s_suffix(Yname2(obj)), plur(obj->quan),
                   otense(obj, "burn"), Blind ? "." : " brightly!");
             if (obj->unpaid && costly_spot(u.ux, u.uy)
-                && (obj->age == 30L * (long) objects[obj->otyp].oc_cost || obj->otyp == MAGIC_CANDLE)) {
+                && (obj->age == 30L * (long) objects[obj->otyp].oc_cost || obj->otyp == MAGIC_CANDLE)) 
+            {
                 const char *ithem = (obj->quan > 1L) ? "them" : "it";
 
+                char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+                struct monst* shkp = shop_keeper(*o_shop);
+                if (shkp)
+                {
+                    play_voice_shopkeeper_simple_line(shkp, (obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT);
+                }
                 verbalize("You burn %s, you bought %s!", ithem, ithem);
                 bill_dummy_object(obj);
             }

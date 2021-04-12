@@ -4785,6 +4785,7 @@ struct monst *shkp;
            not actually a shk, which could happen if someone
            wishes for a shopkeeper statue and then animates it.
            (Note: shkname() would be "" in a case like this.) */
+        play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_SEEN_UNTENDED_SHOPS);
         pline("%s asks whether you've seen any untended shops recently.",
               Monnam(shkp));
         /* [Perhaps we ought to check whether this conversation
@@ -5086,7 +5087,7 @@ boolean altusage;
 	else 
 	{
         if(iflags.using_gui_sounds)
-            fmt = "%s%sUsage fee, some gold. (%ld %s in fact!)";
+            fmt = "%s%sThat incurs a usage fee. (%ld %s in fact!)";
         else
             fmt = "%s%sUsage fee, %ld %s.";
 
@@ -5104,7 +5105,7 @@ boolean altusage;
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_AHEM);
         }
 
-        if (!Deaf && !muteshk(shkp))
+        if (!Deaf && !muteshk(shkp) && iflags.using_gui_sounds)
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_USAGE_FEE_SOME_GOLD);
     }
 

@@ -919,6 +919,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Advice", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Monster/Wizard of Yendor/Death", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Male Angel Malediction", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Female Angel Malediction", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Maledictions/Marilith Malediction", 1.0f },
@@ -1144,6 +1146,11 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Thats a Deal", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/On Second Thought", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Your Bill Comes To This Amount", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Burn It Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Burn Them Bought Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Use It Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Use Them Bought Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Seen Untended Shops", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Cad/Lot of Damage", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Close Sesame", 1.0f },
@@ -1172,6 +1179,11 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Thats a Deal", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/On Second Thought", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Your Bill Comes To This Amount", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Burn It Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Burn Them Bought Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Use It Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Use Them Bought Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Seen Untended Shops", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Cad/Lot of Damage", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Close Sesame", 1.0f },
@@ -1200,6 +1212,11 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Thats a Deal", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/On Second Thought", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Your Bill Comes To This Amount", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Burn It Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Burn Them Bought Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Use It Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Use Them Bought Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Seen Untended Shops", 1.0f },
 
 };
 
