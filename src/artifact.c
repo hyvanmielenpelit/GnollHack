@@ -302,6 +302,8 @@ boolean mod;
 				if (otmp->oartifact)
 				{
 					otmp->exceptionality = artilist[otmp->oartifact].exceptionality;
+					otmp->mythic_prefix = artilist[otmp->oartifact].mythic_prefix;
+					otmp->mythic_suffix = artilist[otmp->oartifact].mythic_suffix;
 
 					if (artilist[otmp->oartifact].aflags & AF_FAMOUS)
 						otmp->nknown = TRUE;
