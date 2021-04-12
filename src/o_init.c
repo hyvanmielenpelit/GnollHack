@@ -81,6 +81,7 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS] 
     { "Ogre slaying", "Triple damage to ogres", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_OGRE, 0UL , 0UL },
     { "Orc slaying", "Triple damage to orcs", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_ORC, M2_ORC , 0UL },
     { "Elf slaying", "Triple damage to elves", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ELF , 0UL },
+    { "Dragon slaying", "Triple damage to dragons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_DRAGON, 0UL , 0UL },
     /* The rest are zero */
 };
 
