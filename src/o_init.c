@@ -123,7 +123,7 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
     },
     {
         "reach", " of reach", "", 20,
-        MYTHIC_SUFFIX_POWER_DEFENSE,
+        MYTHIC_SUFFIX_POWER_REACH,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_ONLY | MYTHIC_FLAG_POLEARM_LANCE_SPEAR_ONLY
     },
 };
@@ -146,6 +146,7 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_POWERS] 
     { "Wounding", "Causes 1d4 permanent damage", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     { "Defense", "Enchantment provides AC and MC", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     { "Sharpness", "Has 15% chance of dealing damage equal to 15% of max HP", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
+    { "Reach", "Has extended range", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, 0UL },
     /* The rest are zero */
 };
 
