@@ -2775,10 +2775,10 @@ register struct obj* obj;
 			int powercnt = 0;
 			if (obj->mythic_prefix)
 			{
-				for (int i = 0; i < MAX_MYTHIC_POWERS; i++)
+				for (int i = 0; i < MAX_MYTHIC_PREFIX_POWERS; i++)
 				{
-					unsigned long bit = 1 << i;
-					if ((mythic_prefix_qualities[obj->mythic_prefix].mythic_powers & bit) && mythic_prefix_powers[i].description && strcmp(mythic_prefix_powers[i].description, ""))
+					unsigned long bit = 1UL << (unsigned long)i;
+					if (mythic_prefix_powers[i].description && (mythic_prefix_qualities[obj->mythic_prefix].mythic_powers & bit) && mythic_power_applies_to_obj(obj, mythic_prefix_powers[i].power_flags) && strcmp(mythic_prefix_powers[i].description, ""))
 					{
 						powercnt++;
 						Sprintf(buf, " %2d - %s", powercnt, mythic_prefix_powers[i].description);
@@ -2791,10 +2791,10 @@ register struct obj* obj;
 			}
 			if (obj->mythic_suffix)
 			{
-				for (int i = 0; i < MAX_MYTHIC_POWERS; i++)
+				for (int i = 0; i < MAX_MYTHIC_SUFFIX_POWERS; i++)
 				{
-					unsigned long bit = 1 << i;
-					if ((mythic_suffix_qualities[obj->mythic_suffix].mythic_powers & bit) && mythic_suffix_powers[i].description && strcmp(mythic_suffix_powers[i].description, ""))
+					unsigned long bit = 1UL << (unsigned long)i;
+					if (mythic_suffix_powers[i].description && (mythic_suffix_qualities[obj->mythic_suffix].mythic_powers & bit) && mythic_power_applies_to_obj(obj, mythic_suffix_powers[i].power_flags) && strcmp(mythic_suffix_powers[i].description, ""))
 					{
 						powercnt++;
 						Sprintf(buf, " %2d - %s", powercnt, mythic_suffix_powers[i].description);
