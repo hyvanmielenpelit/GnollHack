@@ -1863,7 +1863,7 @@ register struct monst *mtmp;
 			boolean gothat = FALSE;
 			if (!rn2(2))
 			{
-				(void)mongets(mtmp, ptr == &mons[PM_GNOME_KING] && rn2(17) ? DUCAL_CROWN : SILK_TOP_HAT);
+				(void)mongets(mtmp, ptr == &mons[PM_GNOME_KING] && rn2(17) ? ROYAL_CROWN : SILK_TOP_HAT);
 				gothat = TRUE;
 			}
 			if (!gothat || !rn2(2))
@@ -1891,7 +1891,7 @@ register struct monst *mtmp;
 				if (!rn2(8))
 				{
                     if(ptr == &mons[PM_GNOME_KING] && rn2(17))
-                        (void)mongets(mtmp, DUCAL_CROWN);
+                        (void)mongets(mtmp, ROYAL_CROWN);
                     else if (!rn2(20))
 						(void)mongets(mtmp, DUNCE_CAP);
 					else
@@ -1976,8 +1976,8 @@ register struct monst *mtmp;
 	case PM_DWARF_KING:
 	case PM_ELVENKING:
 	case PM_GNOLL_KING:
-		if (!rn2(3) && !m_carrying(mtmp, CROWN_OF_RULERSHIP) && !m_carrying(mtmp, DUCAL_CROWN))
-			(void)mongets(mtmp, !rn2(25) ? CROWN_OF_RULERSHIP : DUCAL_CROWN);
+		if (!rn2(3) && !m_carrying(mtmp, CROWN_OF_RULERSHIP) && !m_carrying(mtmp, ROYAL_CROWN))
+			(void)mongets(mtmp, !rn2(25) ? CROWN_OF_RULERSHIP : ROYAL_CROWN);
         if (!rn2(5))
             (void)mongets(mtmp, rnd_offensive_item(mtmp));
         break;

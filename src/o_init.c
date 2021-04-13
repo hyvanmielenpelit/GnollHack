@@ -368,8 +368,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
     case ARMOR_CLASS:
         if (otyp >= HELMET && otyp <= HELM_OF_TELEPATHY)
             *lo_p = HELMET, *hi_p = HELM_OF_TELEPATHY;
-		else if (otyp >= DUCAL_CROWN && otyp <= CROWN_OF_RULERSHIP)
-			*lo_p = DUCAL_CROWN, * hi_p = CROWN_OF_RULERSHIP;
+		else if (otyp >= ROYAL_CROWN && otyp <= CROWN_OF_RULERSHIP)
+			*lo_p = ROYAL_CROWN, * hi_p = CROWN_OF_RULERSHIP;
 		else if (otyp >= CORNUTHAUM && otyp <= GNOMISH_FELT_HAT)
 			*lo_p = CORNUTHAUM, * hi_p = GNOMISH_FELT_HAT;
 		else if (otyp >= LEATHER_GLOVES && otyp <= GAUNTLETS_OF_DEXTERITY)
@@ -483,7 +483,7 @@ shuffle_all()
     };
 	static short shuffle_types_with_material[] = {
 		 WAN_LIGHT, ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION, 
-		 LENSES, GOGGLES_OF_NIGHT, LEATHER_BELT, DUCAL_CROWN, CORNUTHAUM, CHAMPIGNON, 
+		 LENSES, GOGGLES_OF_NIGHT, LEATHER_BELT, ROYAL_CROWN, CORNUTHAUM, CHAMPIGNON, 
 		 RIN_ADORNMENT
 	};
 	int first, last, idx;
