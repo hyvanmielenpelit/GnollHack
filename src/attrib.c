@@ -814,7 +814,11 @@ update_extrinsics()
 			/* Mythic */
 			if(has_obj_mythic_speed(uitem) && bit != W_CARRIED)
 				u.uprops[VERY_FAST].extrinsic |= bit;
-
+			if (has_obj_mythic_death_resistance(uitem) && bit != W_CARRIED)
+				u.uprops[DEATH_RESISTANCE].extrinsic |= bit;
+			if (has_obj_mythic_drain_resistance(uitem) && bit != W_CARRIED)
+				u.uprops[DRAIN_RESISTANCE].extrinsic |= bit;
+			
 #if 0
 			int p = 0;
 			/* Properties blocked by item */
