@@ -5042,6 +5042,16 @@ boolean is_wiz_wish;
             if (mythic_suffix < 0)
                 mythic_suffix = (int)dummy_suffix;
         }
+        else
+        {
+            if (mythic_prefix && mythic_suffix && !(wiz_wishing || (!rn2(3) && Luck >= 0)))
+            {
+                if (!rn2(2))
+                    mythic_prefix = 0;
+                else
+                    mythic_suffix = 0;
+            }
+        }
 
         if (mythic_prefix < 0)
             mythic_prefix = 0;
