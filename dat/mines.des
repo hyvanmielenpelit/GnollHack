@@ -268,6 +268,7 @@ LEVEL: "minetn-2"
 ROOM: "ordinary" , lit, (3,3), (center,center), (31,15) floormaintype:location_ground {
 FOUNTAIN: (17, 5),fountain_healing
 FOUNTAIN: (13, 8),fountain_water
+SIGNPOST: (15, 6),signpost_normal,"Stay out of the fountains!"
 
 [75%]: SUBROOM: "ordinary", random, (2,0), (2,2) floortype:floor_parquet {
   ROOMDOOR: false, closed, west, random
@@ -495,6 +496,8 @@ LEVEL: "minetn-4"
 ROOM: "ordinary",lit,(3,3),(center,center),(30,15) floormaintype:location_ground {
 FOUNTAIN:(08,07),fountain_healing
 FOUNTAIN:(18,07),fountain_water
+SIGNPOST:(06,07),signpost_normal,"Stay out of the fountain!"
+SIGNPOST:(20,07),signpost_normal,"Stay out of the fountain!"
 
 SUBROOM:"book shop",lit,(4,2),(3,3) {
   ROOMDOOR: false,closed,south,random
@@ -591,6 +594,8 @@ RANDOM_CORRIDORS
 MAZE: "minetn-5",' '
 FLAGS: fountain_on_ground,tree_on_ground
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 -----         ---------                                                    
 |:::---  ------:::::::--    -------                       ---------------  
@@ -646,6 +651,7 @@ STAIR:(46,03),down
 FOUNTAIN:(50,09),fountain_healing
 FOUNTAIN:(10,15),fountain_water
 FOUNTAIN:(66,18),fountain_mana
+SIGNPOST:(07,04),signpost_normal,"Welcome to Mine Town"
 
 REGION:(00,00,74,20),unlit,"ordinary"
 REGION:(09,13,11,17),lit,"ordinary"
@@ -733,6 +739,8 @@ MAZE: "minetn-6",' '
 FLAGS: inaccessibles,fountain_on_ground,tree_on_ground
 INIT_MAP:mines,':','-',true,true,lit,true
 GEOMETRY:center,top
+#         1         2         3         
+#123456789012345678901234567890123456789
 MAP
 :-----::::::::::::::::----------------:-
 :|...|::::::::::::::::|...|..|...|...|::
@@ -819,6 +827,7 @@ LEVEL: "minetn-7"
 ROOM: "ordinary" , lit, (3,3), (center,center), (30,15) floormaintype:location_ground {
 FOUNTAIN: (12, 07),fountain_healing
 FOUNTAIN: (11, 13),fountain_water
+SIGNPOST: (09, 08), signpost_normal, "Stay out of the fountains!"
 
 SUBROOM: "npcroom", random, (2,2), (4,2) {
   ROOMDOOR: false, closed, south, random
