@@ -365,6 +365,7 @@ boolean allow_drag, keep_effect_glyphs;
     vision_full_recalc = 1;
     nomul(0);
     vision_recalc(0); /* vision before effects */
+    update_hearing_array(0);
     /* if terrain type changes, levitation or flying might become blocked
        or unblocked; might issue message, so do this after map+vision has
        been updated for new location instead of right after u_on_newpos() */

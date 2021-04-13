@@ -5794,6 +5794,9 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     docrt();        /* does a full vision recalc */
     flush_screen(-1);
 
+	/* Hearing */
+	update_hearing_array(0);
+
     /*
      *  Move all plines beyond the screen reset.
      */
