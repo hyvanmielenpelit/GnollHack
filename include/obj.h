@@ -637,6 +637,7 @@ struct mythic_definition {
 #define MYTHIC_SUFFIX_POWER_DEFENSE         0x00004000UL
 #define MYTHIC_SUFFIX_POWER_SHARPNESS       0x00008000UL
 #define MYTHIC_SUFFIX_POWER_REACH           0x00010000UL
+#define MYTHIC_SUFFIX_POWER_LUCK            0x00020000UL
 
 #define MYTHIC_FLAG_NONE                    0x00000000UL
 #define MYTHIC_FLAG_WEAPON_ONLY             0x00000001UL
@@ -680,49 +681,51 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_P
 
 
 #define otyp_non_mythic(otyp) \
-    ((objects[otyp].oc_flags4 & O4_NON_MYTHIC) || objects[otyp].oc_magic) /* Inherently (already special) magical items cannot be made mythical, this is just of normal boring objects */
+    ((objects[otyp].oc_flags4 & O4_NON_MYTHIC) != 0 || objects[otyp].oc_magic) /* Inherently (already special) magical items cannot be made mythical, this is just of normal boring objects */
 
 #define can_obj_have_mythic(o) \
     (!otyp_non_mythic((o)->otyp) && (is_weapon(o) || (o)->oclass == ARMOR_CLASS))
 
 #define has_obj_mythic_lightness(o) \
-    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_LIGHTNESS)
+    ((mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_LIGHTNESS) != 0)
 
 #define has_obj_mythic_spellcasting(o) \
-    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_SORCERY)
+    ((mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_SORCERY) != 0)
 
 #define has_obj_mythic_level_drain(o) \
-    (mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_LEVEL_DRAIN)
+    ((mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_LEVEL_DRAIN) != 0)
 
 #define has_obj_mythic_mana_gain_25(o) \
-    (mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_MANA_GAIN_25)
+    ((mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_MANA_GAIN_25) != 0)
 
 #define has_obj_mythic_hp_gain_25(o) \
-    (mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_HP_GAIN_25)
+    ((mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_HP_GAIN_25) != 0)
 
 #define has_obj_mythic_speed(o) \
-    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_SPEED)
+    ((mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_SPEED) != 0)
 
 #define has_obj_mythic_wounding(o) \
-    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_WOUNDING)
+    ((mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_WOUNDING) != 0)
 #define mythic_wounding_amount() d(1, 4)
 
 #define has_obj_mythic_defense(o) \
-    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_DEFENSE)
+    ((mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_DEFENSE) != 0)
 
 #define has_obj_mythic_sharpness(o) \
-    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_SHARPNESS)
+    ((mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_SHARPNESS) != 0)
 
 #define has_obj_mythic_life_draining(o) \
-    (mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_LIFE_DRAINING)
+    ((mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_LIFE_DRAINING) != 0)
 #define mythic_life_draining_amount() d(1, 10)
 
 #define has_obj_mythic_magical_light(o) \
-    (mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_SHINES_LIGHT)
+    ((mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & MYTHIC_PREFIX_POWER_SHINES_LIGHT) != 0)
 
 #define has_obj_mythic_reach(o) \
-    (mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_REACH)
+    ((mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_REACH) != 0)
 
+#define has_obj_mythic_luck(o) \
+    ((mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & MYTHIC_SUFFIX_POWER_LUCK) != 0)
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1

@@ -1946,15 +1946,15 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 #define TOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
    GENERAL_TOOL(name,desc,contentname,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask)
 
-#define GENERAL_SPELLTOOL(name,desc,contentname,contentdesc,itemdesc, stand_anim, enl, repl, subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,height,soundset,flags,flags2,flags3, flags4) \
+#define GENERAL_SPELLTOOL(name,desc,contentname,contentdesc,itemdesc, stand_anim, enl, repl, subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown, skill, mat,color,height,soundset,flags,flags2,flags3, flags4) \
     OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, height, stand_anim, enl, repl),                                           \
-           BITS(kn, mrg, charged ? 1 : 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, dir, subtype, P_WAND, mat), \
+           BITS(kn, mrg, charged ? 1 : 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, dir, subtype, skill, mat), \
            0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   wt, color, soundset, dirsubtype, 0, cooldown, 0, PERMITTED_ALL, ALL_TARGETS, O1_WAND_LIKE_TOOL | flags, flags2, flags3, flags4)
-#define SPELLTOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,height,soundset,flags,flags2,flags3, flags4) \
-	GENERAL_SPELLTOOL(name,desc,contentname,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,height,soundset,flags,flags2,flags3, flags4)
+#define SPELLTOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown, skill, mat,color,height,soundset,flags,flags2,flags3, flags4) \
+	GENERAL_SPELLTOOL(name,desc,contentname,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown, skill, mat,color,height,soundset,flags,flags2,flags3, flags4)
 /*
 OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, 0, 0, 0),                                           \
            BITS(kn, mrg, charged ? 1 : 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, dir, subtype, P_NONE, mat), \
@@ -2134,9 +2134,9 @@ TOOL("brass horn",       None, None, None, None, TOOLTYPE_HORN, 1, 0, 0, ENCHTYP
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 TOOL("tooled horn",       "arched horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_1D15_15, RECHARGING_MUSICAL_INSTRUMENT, 5, 18, 15, 0, 0, 0, 0, 0, 0, //STARTMARKER FOR SHUFFLED HORNS
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-SPELLTOOL("frost horn",   "spiral horn", "blast of frost", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_COLD, AD_COLD, 12, 6, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
-SPELLTOOL("fire horn",    "curved horn", "blast of fire", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_FIRE, AD_FIRE, 12, 6, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
-SPELLTOOL("horn of chaos", "polished horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D4_4, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, NODIR, NODIR_NONE, AD_NONE, 0, 0, 0, 1, 10, 70, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+SPELLTOOL("frost horn",   "spiral horn", "blast of frost", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_COLD, AD_COLD, 12, 6, 0, 0, 0, 0, 0, P_WAND, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
+SPELLTOOL("fire horn",    "curved horn", "blast of fire", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_FIRE, AD_FIRE, 12, 6, 0, 0, 0, 0, 0, P_WAND, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
+SPELLTOOL("horn of chaos", "polished horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D4_4, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, NODIR, NODIR_NONE, AD_NONE, 0, 0, 0, 1, 10, 70, 0, P_WAND, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 TOOL("horn of plenty",    "twisted horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_BAG_OF_TRICKS, RECHARGING_TOOL_SPECIAL_MAGICAL, 3, 18, 50, 300, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),//ENDMARKER FOR HORNS
         /* horn, but not an instrument */
@@ -2155,31 +2155,32 @@ TOOL("drum of earthquake","antiquated drum", None, None, None, TOOLTYPE_DRUM, 0,
 GENERAL_SPELLTOOL("jar of extra healing salve", "glass jar", "healing salve", "yellow ointment", "Heals a target for 12d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_YELLOW_REPLACEMENT,
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL, //STARTMARKER for jars and salves and shuffled jars
 	20, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 12, 6, 0, 0, 0, 0, 0,
-	MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC, 
+	P_WAND, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO),
 GENERAL_SPELLTOOL("jar of greater healing salve", "crystal jar", "healing salve", "purple ointment", "Heals a target for 24d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_PURPLE_REPLACEMENT,
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL,
 	10, 15, 300, TOUCH, TOUCH_NONE, AD_HEAL, 24, 6, 0, 0, 0, 0, 0,
-	MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC, 
+	P_NONE, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO),
 GENERAL_SPELLTOOL("jar of medicinal salve", "crystalline jar", "medicinal salve", "white ointment", "Cures a target from sickness", NO_ANIMATION, NO_ENLARGEMENT, JAR_WHITE_REPLACEMENT,
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_6, RECHARGING_TOOL_GENERAL,
 	20, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 0, 0, 0, 0, 0,
-	MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC, 
+	P_NONE, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO),
 GENERAL_SPELLTOOL("jar of prodigious healing salve", "transparent jar", "healing salve", "violet ointment", "Heals a target for 48d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_VIOLET_REPLACEMENT,
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL,  //ENDMARKER for salves and shuffled jars
 	5, 15, 500, TOUCH, TOUCH_NONE, AD_HEAL, 48, 6, 0, 0, 0, 0, 0,
-	MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC, 
+	P_NONE, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO), // Endmarker for jars
 GENERAL_SPELLTOOL("jar of basilisk blood", "ornamental jar", "basilisk blood", "crimson liquid", "Cures a target from petrification", NO_ANIMATION, NO_ENLARGEMENT, JAR_CRIMSON_REPLACEMENT,
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D4_4, RECHARGING_TOOL_GENERAL,
 	15, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 0, 0, 0, 0, 0,
-	MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC, 
+	P_NONE, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_READABLE | O3_QUAFFABLE, O4_ALLOWS_DIPPING_INTO),
 SPELLTOOL("grail of healing", "wooden grail", "sacred wine", "red liquid", "Heals a target for 1000 hit points and 500 mana", 
 	TOOLTYPE_GRAIL, 0, 0, 1, CHARGED_HOLY_GRAIL, RECHARGING_HOLY_GRAIL,  //Base item for Holy Grail
-	0, 15, 1000, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 1000, 0, 0, 0, 0, MAT_WOOD, CLR_BROWN, 0, OBJECT_SOUNDSET_GENERIC,
+	0, 15, 1000, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 1000, 0, 0, 0, 0, 
+	P_NONE, MAT_WOOD, CLR_BROWN, 0, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION | O3_QUAFFABLE, O4_ALLOWS_DIPPING_INTO),
 
 /* tools useful as weapons */
@@ -2835,11 +2836,11 @@ SPELL("heavenly army",	  "angelic", None, "some aeon-old prayer", "Summons 2d4 a
 	P_CELESTIAL_SPELL,					2,  5,		   300,12, 300, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 8, 8, 888, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("sunlight beam",   "sun-patterned", None, None, "Causes damage to demons and undead",
 	P_CELESTIAL_SPELL,				    4,  4,	         0,  3, 10, A_WIS, 18, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_FLASHED_LIGHT, 2, 10, 6, 0, 1, 10, 0, S1_NO_SOMATIC_COMPONENT | S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, M2_DEMON | M2_UNDEAD, AD_CLRC, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_TARGET_PERMISSION_IS_M2_FLAG, O4_NONE),
-SPELL("ray of radiance",   "celestial", None, None, "Causes damage to demons and undead",
+SPELL("ray of radiance",   "seraphic", None, None, "Causes damage to demons and undead",
 	P_CELESTIAL_SPELL,				    4,  4,	         0,  7, 30, A_WIS, 18, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_FLASHED_LIGHT, 1, 24, 6, 0, 2, 6, 0, S1_NO_SOMATIC_COMPONENT | S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, M2_DEMON | M2_UNDEAD, AD_CLRC, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_TARGET_PERMISSION_IS_M2_FLAG, O4_NONE),
 SPELL("circle of sunlight",	"glimmering", None, None, "Damages undead monsters and demons around you with celestial light",
 	P_CELESTIAL_SPELL,			 4,  4,			 0, 4, 15, A_WIS, 0, 1, 50, 0, 1, NODIR, NODIR_NONE, 1, 12, 6, 0, 1, 6, 0, S1_NO_SOMATIC_COMPONENT | S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, M2_UNDEAD | M2_DEMON, AD_CLRC, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_TARGET_PERMISSION_IS_M2_FLAG, O4_NONE),
-SPELL("circle of radiance",	"radiant", None, None, "Damages undead monsters and demons around you with celestial light",
+SPELL("circle of radiance",	"empyrean", None, None, "Damages undead monsters and demons around you with celestial light",
 	P_CELESTIAL_SPELL,			 3,  4,			 0, 8, 40, A_WIS, 0, 1, 50, 0, 1, NODIR, NODIR_NONE, 3, 32, 6, 0, 8, 6, 0, S1_NO_SOMATIC_COMPONENT | S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, M2_UNDEAD | M2_DEMON, AD_CLRC, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_TARGET_PERMISSION_IS_M2_FLAG, O4_NONE),
 SPELL("heavenly touch",    "soft", None, None, "Causes the target undead or demon to suffer celestial damage",
 	P_CELESTIAL_SPELL,			 4,  4,			 0, 2, 8, A_WIS, 1, 0, 20, 0, 1, TOUCH, TOUCH_NONE, 3, 16, 6, 0, 4, 6, 0, S1_NO_SOMATIC_COMPONENT | S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, M2_UNDEAD | M2_DEMON, AD_CLRC, CLR_RED, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_TARGET_PERMISSION_IS_M2_FLAG, O4_NONE),

@@ -413,11 +413,11 @@ struct obj *uitem;
 		return FALSE;
 
 	int otyp = uitem->otyp;
-	if (!(objects[otyp].oc_pflags & (P1_CONFERS_LUCK | P1_CONFERS_UNLUCK)))
+	if (!(objects[otyp].oc_pflags & (P1_CONFERS_LUCK | P1_CONFERS_UNLUCK)) && !has_obj_mythic_luck(uitem))
 		return FALSE;
 
 	boolean inappr = inappropriate_character_type(uitem);
-	boolean luck = (
+	boolean luck = has_obj_mythic_luck(uitem) || (
 		((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && !((objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY) && inappr))
 		|| (
 				(objects[otyp].oc_pflags & P1_CONFERS_UNLUCK) && 
@@ -463,11 +463,11 @@ struct obj* uitem;
 		return FALSE;
 
 	int otyp = uitem->otyp;
-	if (!(objects[otyp].oc_pflags & (P1_CONFERS_LUCK | P1_CONFERS_UNLUCK)))
+	if (!(objects[otyp].oc_pflags & (P1_CONFERS_LUCK | P1_CONFERS_UNLUCK)) && !has_obj_mythic_luck(uitem))
 		return FALSE;
 
 	boolean inappr = inappropriate_character_type(uitem);
-	boolean luck = (
+	boolean luck = has_obj_mythic_luck(uitem) || (
 		((objects[otyp].oc_pflags & P1_CONFERS_LUCK) && !((objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY) && inappr))
 		|| (
 				(objects[otyp].oc_pflags & P1_CONFERS_UNLUCK) &&
