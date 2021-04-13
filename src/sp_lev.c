@@ -4261,7 +4261,7 @@ struct sp_coder *coder;
         return;
 
     get_location_coord(&x, &y, DRY, coder->croom, OV_i(ecoord));
-    make_engr_at(x, y, OV_s(txt), 0L, OV_i(etyp));
+    make_engr_at(x, y, OV_s(txt), 0L, OV_i(etyp), ENGR_FLAGS_NONE);
 
     opvar_free(etyp);
     opvar_free(txt);

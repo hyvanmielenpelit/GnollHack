@@ -843,7 +843,7 @@ struct mkroom *sroom;
                                 box->owt = weight(box);
                             }
                         }
-                        make_engr_at(mm.x, mm.y, Inhell ? Morgoth_word : Gilthoniel_word, 0L, ENGRAVE);
+                        make_engr_at(mm.x, mm.y, Inhell ? Morgoth_word : Gilthoniel_word, 0L, ENGRAVE, ENGR_FLAGS_NONE);
                         context.made_armory_box_count++;
                     }
                     break;

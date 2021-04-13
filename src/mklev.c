@@ -554,7 +554,7 @@ int trap_type;
                         if (trap_engravings[trap_type]) {
                             make_engr_at(xx, yy - dy,
                                          trap_engravings[trap_type], 0L,
-                                         DUST);
+                                         DUST, ENGR_FLAGS_NONE);
                             wipe_engr_at(xx, yy - dy, 5,
                                          FALSE); /* age it a little */
                         }
@@ -1095,7 +1095,7 @@ makelevel()
 				));
 
 			/* First, write Gilthoniel underneath */
-			make_engr_at(x, y, Gilthoniel_word, 0L, ENGRAVE);
+			make_engr_at(x, y, Gilthoniel_word, 0L, ENGRAVE, ENGR_FLAGS_NONE);
 
 			/* Stash has now some random contents */
 			struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
@@ -1174,7 +1174,7 @@ makelevel()
                 } while (levl[x][y].typ != ROOM && !rn2(40));
                 if (!(IS_POOL(levl[x][y].typ)
                       || IS_FURNITURE(levl[x][y].typ)))
-                    make_engr_at(x, y, mesg, 0L, MARK);
+                    make_engr_at(x, y, mesg, 0L, MARK, ENGR_FLAGS_NONE);
             }
         }
 

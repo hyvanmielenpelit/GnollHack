@@ -302,7 +302,7 @@ int cnt;
     if (can_reach_floor(TRUE))
     {
         struct engr* ep;
-        if ((ep = engr_at(u.ux, u.uy)) && !(ep->engr_type == ENGR_HEADSTONE || ep->engr_type == ENGR_SIGNPOST || sengr_at(Gilthoniel_word, u.ux, u.uy, TRUE) || sengr_at(Morgoth_word, u.ux, u.uy, TRUE)))
+        if ((ep = engr_at(u.ux, u.uy)) && !(ep->engr_type == ENGR_HEADSTONE || ep->engr_type == ENGR_SIGNPOST || (ep->engr_flags & ENGR_FLAGS_NON_SMUDGING) || sengr_at(Gilthoniel_word, u.ux, u.uy, TRUE) || sengr_at(Morgoth_word, u.ux, u.uy, TRUE)))
             wipe_engr_at(u.ux, u.uy, cnt, FALSE);
 
     }
@@ -315,7 +315,7 @@ xchar x, y, cnt, magical;
     register struct engr *ep = engr_at(x, y);
 
     /* Headstones are indelible */
-    if (ep && ep->engr_type != ENGR_HEADSTONE && ep->engr_type != ENGR_SIGNPOST) {
+    if (ep && ep->engr_type != ENGR_HEADSTONE && ep->engr_type != ENGR_SIGNPOST && !(ep->engr_flags & ENGR_FLAGS_NON_SMUDGING)) {
         debugpline1("asked to erode %d characters", cnt);
         if (ep->engr_type != BURN || is_ice(x, y) || (magical && !rn2(2))) {
             if (ep->engr_type != DUST && ep->engr_type != ENGR_BLOOD) {
@@ -409,11 +409,12 @@ int x, y;
 }
 
 void
-make_engr_at(x, y, s, e_time, e_type)
+make_engr_at(x, y, s, e_time, e_type, e_flags)
 int x, y;
 const char *s;
 long e_time;
 xchar e_type;
+unsigned short e_flags;
 {
     struct engr *ep;
     unsigned smem = strlen(s) + 1;
@@ -433,6 +434,7 @@ xchar e_type;
         exercise(A_WIS, TRUE);
     ep->engr_time = e_time;
     ep->engr_type = e_type > 0 ? e_type : rnd(N_ENGRAVE - 1);
+    ep->engr_flags = e_flags;
     ep->engr_lth = smem;
 }
 
@@ -984,7 +986,7 @@ doengrave()
     }
     /* Something has changed the engraving here */
     if (*buf) {
-        make_engr_at(u.ux, u.uy, buf, moves, type);
+        make_engr_at(u.ux, u.uy, buf, moves, type, ENGR_FLAGS_NONE);
         if (!Blind)
         {
             pline_The("%s now reads: \"%s\".", type == ENGR_SIGNPOST ? "sign" : "engraving", buf);
@@ -1244,7 +1246,7 @@ doengrave()
     (void) strncat(buf, ebuf, BUFSZ - (int) strlen(buf) - 1);
 
     /* Put the engraving onto the map */
-    make_engr_at(u.ux, u.uy, buf, moves - multi, type);
+    make_engr_at(u.ux, u.uy, buf, moves - multi, type, ENGR_FLAGS_NONE);
 
     if (post_engr_text[0])
         pline("%s", post_engr_text);
@@ -1418,7 +1420,7 @@ boolean in_mklev_var;
     del_engr_at(x, y);
     if (!str)
         str = get_rnd_text(EPITAPHFILE, buf, rn2);
-    make_engr_at(x, y, str, 0L, ENGR_HEADSTONE);
+    make_engr_at(x, y, str, 0L, ENGR_HEADSTONE, ENGR_FLAGS_NONE);
     return;
 }
 
@@ -1461,7 +1463,7 @@ boolean in_mklev_var;
     /* Engrave the signpost */
     del_engr_at(x, y);
     if (str && strcmp(str, ""))
-        make_engr_at(x, y, str, 0L, ENGR_SIGNPOST);
+        make_engr_at(x, y, str, 0L, ENGR_SIGNPOST, ENGR_FLAGS_NONE);
     return;
 }
 

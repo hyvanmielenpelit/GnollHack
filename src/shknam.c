@@ -939,7 +939,8 @@ boolean deserted;
     if (levl[sx][sy].doormask & D_TRAPPED)
         levl[sx][sy].doormask = deserted ? D_ISOPEN : D_LOCKED; /* Deletes trapped */
 
-    if ((levl[sx][sy].doormask & D_MASK) == D_LOCKED) {
+    if ((levl[sx][sy].doormask & D_MASK) == D_LOCKED) 
+    {
         register int m = sx, n = sy;
 
         if (inside_shop(sx + 1, sy))
@@ -951,7 +952,13 @@ boolean deserted;
         else if (inside_shop(sx, sy - 1))
             n++;
         Sprintf(buf, "Closed for inventory");
-        make_engr_at(m, n, buf, 0L, DUST);
+        if (isok(m, n) && IS_FLOOR(levl[m][n].typ))
+        {
+            create_simple_location(m, n, SIGNPOST, 0, 0, 0, levl[m][n].typ, levl[m][n].subtyp, FALSE);
+            make_engr_at(m, n, buf, 0L, ENGR_SIGNPOST, ENGR_FLAGS_NONE);
+        }
+        else
+            make_engr_at(m, n, buf, 0L, DUST, ENGR_FLAGS_NON_SMUDGING);
     }
 
     if (deserted || (context.tribute.enabled && !context.tribute.bookstock)) {

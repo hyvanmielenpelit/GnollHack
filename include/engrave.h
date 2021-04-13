@@ -21,7 +21,11 @@ struct engr {
 #define ENGR_HEADSTONE 6
 #define ENGR_SIGNPOST 7
 #define N_ENGRAVE 7
+    unsigned short engr_flags;
 };
+
+#define ENGR_FLAGS_NONE             0x0000
+#define ENGR_FLAGS_NON_SMUDGING     0x0001
 
 #define newengr(lth) \
     (struct engr *) alloc((size_t)(lth) + sizeof(struct engr))

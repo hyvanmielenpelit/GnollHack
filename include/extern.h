@@ -973,7 +973,7 @@ E int FDECL(sengr_at, (const char *, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E void FDECL(u_wipe_engr, (int));
 E void FDECL(wipe_engr_at, (XCHAR_P, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E void FDECL(read_engr_at, (int, int));
-E void FDECL(make_engr_at, (int, int, const char *, long, XCHAR_P));
+E void FDECL(make_engr_at, (int, int, const char *, long, XCHAR_P, unsigned short));
 E void FDECL(del_engr_at, (int, int));
 E int NDECL(freehand);
 E int NDECL(doengrave);
