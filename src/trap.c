@@ -1772,7 +1772,7 @@ unsigned short trflags;
 
     case ANTI_MAGIC_TRAP:
         seetrap(trap);
-        play_special_effect_at(SPECIAL_EFFECT_ANTIMAGIC_TRAP_LIGHT_FLASH, 0, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_ANTIMAGIC_TRAP_EFFECT, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_ANTI_MAGIC_TRAP_ACTIVATE);
         special_effect_wait_until_action(0);
         /* hero without magic resistance loses spell energy,
@@ -3328,7 +3328,7 @@ register struct monst *mtmp;
             break;
         case ANTI_MAGIC_TRAP:
             newsym(mtmp->mx, mtmp->my);
-            play_special_effect_at(SPECIAL_EFFECT_ANTIMAGIC_TRAP_LIGHT_FLASH, 0, mtmp->mx, mtmp->my, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_ANTIMAGIC_TRAP_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_ANTI_MAGIC_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
             special_effect_wait_until_action(0);
             /* similar to hero's case, more or less */

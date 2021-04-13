@@ -305,10 +305,11 @@ register int show;
 {
     register int x = trap->tx, y = trap->ty;
     register int glyph = trap_to_glyph(trap, newsym_rn2);
+    register int cmap_idx = trap_to_defsym(trap->ttyp);
     struct monst* mtmp = m_at(x, y);
     boolean utrapped = (x == u.ux && y == u.uy && u.utrap > 0);
     boolean mtrapped = (mtmp && mtmp->mtrapped);
-    boolean trapped_draw_in_front = ((utrapped || mtrapped) && (trap->ttyp == WEB || trap->ttyp == BEAR_TRAP));
+    boolean trapped_draw_in_front = (trap->ttyp == STATUE_TRAP || ((utrapped || mtrapped) && (trap->ttyp == WEB || trap->ttyp == BEAR_TRAP)));
 
     if (level.flags.hero_memory)
     {
