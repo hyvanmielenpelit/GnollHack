@@ -459,13 +459,6 @@ WEAPON("battle-axe", "double-headed axe",       /* "double-bitted"? */
 	0, 0, 0, P1_NONE, S, WEP_TWO_HANDED_AXE, P_AXE, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_AXE,
 	O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE,
 	PERMITTED_ALL, ALL_TARGETS),
-WEAPON("battle-axe of cleaving", "runed double-headed axe",    
-    0, 0, 1, 1, 0, MULTIGEN_SINGLE, ENCHTYPE_TWO_HANDED_MELEE_WEAPON, 100, 4000,
-	AD_PHYS, 2, 8, 0, 2, 8, 0, AD_PHYS, 0, 0, 0, A1_BISECT, A2_NONE, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, P1_NONE, S, WEP_TWO_HANDED_AXE, P_AXE, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_AXE,
-	O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE,
-	PERMITTED_ALL, ALL_TARGETS),
 
 /* swords */
 WEAPON("short sword", None,

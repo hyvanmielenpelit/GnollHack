@@ -2109,7 +2109,7 @@ dochat()
 
 			chatnum++;
 		}
-		if(m_carrying(mtmp, AXE) || ((m_carrying(mtmp, BATTLE_AXE) || m_carrying(mtmp, BATTLE_AXE_OF_CLEAVING)) && !which_armor(mtmp, W_ARMS)))
+		if(m_carrying(mtmp, AXE) || ((m_carrying(mtmp, BATTLE_AXE)) && !which_armor(mtmp, W_ARMS)))
 		{
 			Sprintf(available_chat_list[chatnum].name, "Ask to wield an axe");
 			available_chat_list[chatnum].function_ptr = &do_chat_pet_dowield_axe;

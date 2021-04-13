@@ -47,6 +47,9 @@ struct tileset_definition {
 
 extern NEARDATA struct tileset_definition default_tileset_definition;
 
+#define MAX_UI_TILE_COMPONENTS 32
+#define MAX_UI_TILE_16_x_16_COMPONENTS 24
+#define MAX_UI_TILE_8_x_24_COMPONENTS 32
 
 struct ui_component_definition {
     const char* name;
@@ -56,7 +59,7 @@ struct ui_component_definition {
     int number;
     uchar width;
     uchar height;
-    const char* component_names[24];
+    const char* component_names[MAX_UI_TILE_COMPONENTS];
 };
 
 enum game_ui_tile_types

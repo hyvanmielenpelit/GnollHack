@@ -1092,7 +1092,7 @@ struct obj *obj;
 /* Weapons in order of preference */
 static const NEARDATA short hwep[] = 
 {
-	BLACK_BLADE_OF_DISINTEGRATION, GLASS_SWORD, BATTLE_AXE_OF_CLEAVING, MORGUL_BLADE,
+	BLACK_BLADE_OF_DISINTEGRATION, GLASS_SWORD, MORGUL_BLADE,
     TSURUGI, RUNESWORD,  RUNED_FLAIL, MACE_OF_GREATER_DISRUPTION,
 	SWORD_OF_HOLY_VENGEANCE, SWORD_OF_UNHOLY_DESECRATION,  ELVEN_RUNEDAGGER,
 	CORPSE, /* cockatrice corpse */
@@ -1291,8 +1291,6 @@ boolean verbose_fail;
     case NEED_AXE:
         /* currently, only 2 types of axe */
         obj = m_carrying(mon, BATTLE_AXE);
-		if (!obj)
-			obj = m_carrying(mon, BATTLE_AXE_OF_CLEAVING);
 		if (!obj || which_armor(mon, W_ARMS))
             obj = m_carrying(mon, AXE);
         break;
