@@ -4005,7 +4005,7 @@ boolean has_effects;
     if (has_effects && isok(mtmp->mx, mtmp->my) && canspotmon(mtmp))
     {
         spef1ok = TRUE;
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_LEVEL_TELEPORT_OUT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         special_effect_wait_until_action(0);
         show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);

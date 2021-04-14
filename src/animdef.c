@@ -138,7 +138,18 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       TELEPORT_TRAP_STAND_ANIMATION_FRAMES,
       1,
       2,
-      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_IGNORE,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      -1, -1,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "level-teleport-trap-stand-animation", ANIMATION_TYPE_NORMAL, LEVEL_TELEPORT_TRAP_STAND_ANIMATION_TILES,
+      LEVEL_TELEPORT_TRAP_STAND_ANIMATION_FRAMES,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_IGNORE,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       -1, -1,
@@ -2783,7 +2794,8 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "teleport-in-animation", ANIMATION_TYPE_NORMAL, TELEPORT_IN_ANIMATION_TILES,
+    /* Teleport in */
+    { "teleport-in-out-animation", ANIMATION_TYPE_NORMAL, TELEPORT_IN_ANIMATION_TILES,
       TELEPORT_IN_ANIMATION_FRAMES,
       1,
       2,
@@ -2794,7 +2806,8 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "teleport-out-animation", ANIMATION_TYPE_NORMAL, TELEPORT_OUT_ANIMATION_TILES,
+    /* Teleport out */
+    { "teleport-in-out-animation", ANIMATION_TYPE_NORMAL, TELEPORT_OUT_ANIMATION_TILES,
       TELEPORT_OUT_ANIMATION_FRAMES,
       1,
       2,
@@ -2802,6 +2815,30 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       1, 4,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    /* Level teleport in */
+    { "level-teleport-in-out-animation", ANIMATION_TYPE_NORMAL, LEVEL_TELEPORT_IN_ANIMATION_TILES,
+      LEVEL_TELEPORT_IN_ANIMATION_FRAMES,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      1, 5,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    /* Level teleport out */
+    { "level-teleport-in-out-animation", ANIMATION_TYPE_NORMAL, LEVEL_TELEPORT_OUT_ANIMATION_TILES,
+      LEVEL_TELEPORT_OUT_ANIMATION_FRAMES,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      1, 5,
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },

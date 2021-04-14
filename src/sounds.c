@@ -580,7 +580,7 @@ dosounds()
 			if (DEADMONSTER(mtmp))
 				continue;
 			if (mtmp->isnpc && in_his_npc_room(mtmp)
-				/* priest must be active */
+				/* npc must be active */
 				&& mon_can_move(mtmp)
 				/* hero must be outside this temple */
 				&& npc_room_occupied(u.urooms) != ENPC(mtmp)->npc_room)
@@ -959,7 +959,7 @@ register struct monst *mtmp;
 		if (is_peaceful(mtmp))
 			Sprintf(verbuf, "Welcome to my smithy, adventurer!");
 		else
-			Sprintf(verbuf, "You rotten thief!");
+			Sprintf(verbuf, "Begone, you rotten vandal!");
 		verbl_msg = verbuf;
 		break;
 	case MS_NPC: /* pitch, pay, total */
@@ -971,7 +971,7 @@ register struct monst *mtmp;
 				Sprintf(verbuf, "Welcome to my residence, adventurer!");
 		}
 		else
-			Sprintf(verbuf, "You rotten thief!");
+			Sprintf(verbuf, "Begone, you rotten vandal!");
 
 		verbl_msg = verbuf;
 		break;

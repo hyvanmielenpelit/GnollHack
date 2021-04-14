@@ -1176,7 +1176,7 @@ boolean iscontrolled;
             if (ynq("Go to Nowhere.  Are you sure?") != 'y')
                 return;
 
-            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, u.ux, u.uy, TRUE);
+            play_special_effect_at(SPECIAL_EFFECT_LEVEL_TELEPORT_OUT, 0, u.ux, u.uy, TRUE);
             play_sfx_sound(SFX_LEVEL_TELEPORT);
             special_effect_wait_until_action(0);
             You("%s in agony as your body begins to warp...",
@@ -1429,7 +1429,7 @@ int x, y;
 {
     boolean isyou = (x == u.ux && y == u.uy);
 
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, x, y, isyou);
+    play_special_effect_at(SPECIAL_EFFECT_LEVEL_TELEPORT_OUT, 0, x, y, isyou);
     play_sfx_sound(SFX_LEVEL_TELEPORT);
     special_effect_wait_until_action(0);
     show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
@@ -1447,7 +1447,7 @@ int x, y;
     show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
     force_redraw_at(x, y);
     flush_screen(1);
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 0, x, y, isyou);
+    play_special_effect_at(SPECIAL_EFFECT_LEVEL_TELEPORT_IN, 0, x, y, isyou);
     play_sfx_sound(SFX_LEVEL_TELEPORT);
     special_effect_wait_until_action(0);
     show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_MONSTER], LAYER_MONSTER);
