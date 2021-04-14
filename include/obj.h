@@ -694,6 +694,9 @@ enum mythic_power_types {
 #define MYTHIC_POWER_FLAG_NONE        0x00000000 /* Works for all */
 #define MYTHIC_POWER_FLAG_WEAPON_ONLY 0x00000001 /* Works only for weapons */
 #define MYTHIC_POWER_FLAG_ARMOR_ONLY  0x00000002 /* Works only for armors */
+#define MYTHIC_POWER_FLAG_SUIT_ONLY   0x00000004 /* Works only for body armors (suits) */
+#define MYTHIC_POWER_FLAG_HELMET_ONLY 0x00000008 /* Works only for helmets */
+#define MYTHIC_POWER_FLAG_SHIELD_ONLY 0x00000010 /* Works only for shields */
 
 
 enum mythic_prefix_power_types {
@@ -772,7 +775,10 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
     (!otyp_non_mythic((o)->otyp) && (is_weapon(o) || (o)->oclass == ARMOR_CLASS))
 
 #define mythic_power_applies_to_obj(o, pwrflags) \
-    (!(!is_weapon(o) && ((pwrflags) & MYTHIC_POWER_FLAG_WEAPON_ONLY) != 0) && !((o)->oclass != ARMOR_CLASS && ((pwrflags) & MYTHIC_POWER_FLAG_ARMOR_ONLY) != 0) )
+    (!(!is_weapon(o) && ((pwrflags) & MYTHIC_POWER_FLAG_WEAPON_ONLY) != 0) && !((o)->oclass != ARMOR_CLASS && ((pwrflags) & MYTHIC_POWER_FLAG_ARMOR_ONLY) != 0) && \
+     !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_SUIT) && ((pwrflags) & MYTHIC_POWER_FLAG_SUIT_ONLY) != 0) && \
+     !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_HELM) && ((pwrflags) & MYTHIC_POWER_FLAG_HELMET_ONLY) != 0) && \
+     !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_SHIELD) && ((pwrflags) & MYTHIC_POWER_FLAG_SHIELD_ONLY) != 0) )
 
 #define has_obj_mythic_prefix_power(o, pwrindex) \
     ((mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & (1UL << (pwrindex))) != 0 && mythic_power_applies_to_obj(o, mythic_prefix_powers[(pwrindex)].power_flags))
