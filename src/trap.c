@@ -1812,7 +1812,7 @@ unsigned short trflags;
         char verbbuf[BUFSZ];
 
         seetrap(trap);
-        play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_LIGHT_FLASH, 0, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_EFFECT, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_POLYMORPH_ACTIVATE);
         special_effect_wait_until_action(0);
         context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
@@ -3452,7 +3452,7 @@ register struct monst *mtmp;
         }
         case POLY_TRAP:
             newsym(mtmp->mx, mtmp->my);
-            play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_LIGHT_FLASH, 0, mtmp->mx, mtmp->my, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_POLYMORPH_ACTIVATE, mtmp->mx, mtmp->my);
             special_effect_wait_until_action(0);
 
