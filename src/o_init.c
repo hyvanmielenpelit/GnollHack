@@ -1007,7 +1007,7 @@ uchar *prefix_ptr, *suffix_ptr;
     }
     else
     {
-        if (!rn2(2))
+        if (rn2(MAX_MYTHIC_PREFIXES + MAX_MYTHIC_SUFFIXES) < MAX_MYTHIC_PREFIXES)
         {
             start = 0;
             end = 0;
