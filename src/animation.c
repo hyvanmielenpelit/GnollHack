@@ -1989,7 +1989,7 @@ int tile_animation_idx;
 enum animation_play_types play_type;
 long interval_counter;
 int *frame_idx_ptr, *main_tile_idx_ptr;
-boolean* mapAnimated;
+char* mapAnimated;
 enum autodraw_types* autodraw_ptr;
 {
 #ifdef USE_TILES
@@ -2009,7 +2009,10 @@ enum autodraw_types* autodraw_ptr;
             return ntile;
 
         if (mapAnimated)
-            *mapAnimated = TRUE;
+        {
+            if(!(*mapAnimated) || *mapAnimated > animations[animation_idx].intervals_between_frames)
+                *mapAnimated = max(1, animations[animation_idx].intervals_between_frames);
+        }
 
         schar main_tile_frame_position = -1; /* ignore */
         if (animations[animation_idx].main_tile_use_style == ANIMATION_MAIN_TILE_USE_FIRST)

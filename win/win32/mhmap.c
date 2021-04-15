@@ -49,7 +49,7 @@ typedef struct mswin_GnollHack_map_window {
     HWND hWnd;                  /* window */
 
     struct layer_info map[COLNO][ROWNO];    /* glyph map */
-    boolean mapAnimated[COLNO][ROWNO];      /* animation flag for map */
+    char mapAnimated[COLNO][ROWNO];      /* animation flag for map */
     boolean mapDirty[COLNO][ROWNO];         /* dirty flag for map */
     short printedObjectTile[COLNO][ROWNO][MAX_SHOWN_OBJECTS];       /* To check if there are any enlargements */
     short printedCoverObjectTile[COLNO][ROWNO][MAX_SHOWN_OBJECTS];  /* To check if there are any enlargements */
@@ -764,8 +764,11 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
 
         for (int x = 1; x < COLNO; x++)
-            for (int y = 0; y < ROWNO; y++) {
-                if(data->mapAnimated[x][y])
+            for (int y = 0; y < ROWNO; y++) 
+            {
+                if(data->mapAnimated[x][y] == 1 
+                    || (data->mapAnimated[x][y] > 1 && (context.general_animation_counter % ((long)data->mapAnimated[x][y])) == 0L)
+                  )
                     dirty(data, x, y, FALSE);
             }
 
@@ -1386,7 +1389,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     int tile_animation_index = get_tile_animation_index_from_glyph(main_glyph);
                                     enum autodraw_types autodraw = AUTODRAW_NONE;
                                     int main_tile = glyph2tile[main_glyph];
-                                    boolean mapAnimatedDummy = FALSE;
+                                    char mapAnimatedDummy = FALSE;
                                     int anim_frame_idx_dummy = 0, main_tile_idx_dummy = 0;
                                     main_tile = maybe_get_replaced_tile(main_tile, adj_x, adj_y, data_to_replacement_info(signed_main_glyph, base_layer, 0, worm, data->map[adj_x][adj_y].layer_flags), &autodraw);
 
@@ -5507,7 +5510,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
             }
             else
             {
-                boolean mapanimateddummy = 0;
+                char mapanimateddummy = 0;
                 enum autodraw_types autodraw = AUTODRAW_NONE;
                 int anim_frame_idx = -1, main_tile_idx = -1;
                 int signed_glyph = data->map[x][y].layer_glyphs[layer_idx];
