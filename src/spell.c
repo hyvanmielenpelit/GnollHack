@@ -2184,16 +2184,6 @@ boolean atme;
 	case SPE_PORTAL:
 		if (objects[otyp].oc_dir != NODIR)
 		{
-            if (otyp == SPE_MINOR_HEALING || otyp == SPE_HEALING || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_PRODIGIOUS_HEALING || otyp == SPE_FULL_HEALING
-				|| otyp == SPE_REPLENISH_UNDEATH || otyp == SPE_GREATER_UNDEATH_REPLENISHMENT
-				)
-			{
-                /* healing and extra healing are actually potion effects,
-                   but they've been extended to take a direction like wands */
-				if (role_skill >= P_SKILLED)
-                    pseudo->blessed = 1;
-            }
-
             if (atme) 
 			{
 				u.dx = u.dy = u.dz = 0;
@@ -2274,10 +2264,6 @@ boolean atme;
 	case SPE_ENCHANT_WEAPON:
 	case SPE_PROTECT_ARMOR:
 	case SPE_PROTECT_WEAPON:
-		/* high skill yields effect equivalent to blessed scroll */
-        if (role_skill >= P_SKILLED)
-            pseudo->blessed = 1;
-    /*FALLTHRU*/
     case SPE_SPHERE_OF_CHARMING:
 	case SPE_SPHERE_OF_DOMINATION:
 	case SPE_MASS_CHARM:
@@ -2301,10 +2287,6 @@ boolean atme;
     case SPE_DETECT_MONSTERS:
     case SPE_LEVITATION:
     case SPE_RESTORE_ABILITY:
-        /* high skill yields effect equivalent to blessed potion */
-        if (role_skill >= P_SKILLED)
-            pseudo->blessed = 1;
-    /*FALLTHRU*/
     case SPE_INVISIBILITY:
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
