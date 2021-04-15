@@ -1254,8 +1254,11 @@ int how;
     /* render vision subsystem inoperative */
     iflags.vision_inited = 0;
     
-    struct stop_all_info sainfo = { 0 };
-    stop_all_sounds(sainfo);
+    if (stop_all_sounds)
+    {
+        struct stop_all_info sainfo = { 0 };
+        stop_all_sounds(sainfo);
+    }
     update_game_music();
 
     /* might have been killed while using a disposable item, so make sure
