@@ -1279,8 +1279,7 @@ struct obj *obj;
         if (vis)
             pline("%s confuses itself!", Monnam(mtmp));
 		nonadditive_increase_mon_property(mtmp, CONFUSION, 10 + rnd(10));
-    } else if (monable && (mlet == S_NYMPH || mtmp->data == &mons[PM_SUCCUBUS]
-                           || mtmp->data == &mons[PM_INCUBUS])) {
+    } else if (monable && (mlet == S_NYMPH || mtmp->data == &mons[PM_INCUBUS])) {
         if (vis) {
             char buf[BUFSZ]; /* "She" or "He" */
 

@@ -952,6 +952,7 @@ struct permonst *ptr;
 struct alt_spl {
     const char *name;
     short pm_val;
+    uchar gender; //0 = both, 1 = male only, 2 = female only
 };
 
 /* figure out what type of monster a user-supplied string is specifying */
@@ -1013,88 +1014,94 @@ int* fem_ptr;
     {
         static const struct alt_spl names[] = {
             /* Alternate spellings */
-            { "grey dragon", PM_GRAY_DRAGON },
-            { "grey dragon hatchling", PM_GRAY_DRAGON_HATCHLING },
-			{ "baby gray dragon", PM_GRAY_DRAGON_HATCHLING },
-			{ "baby grey dragon", PM_GRAY_DRAGON_HATCHLING },
-			{ "baby silver dragon", PM_SILVER_DRAGON_HATCHLING },
-			{ "baby red dragon", PM_RED_DRAGON_HATCHLING },
-			{ "baby white dragon", PM_WHITE_DRAGON_HATCHLING },
-			{ "baby black dragon", PM_BLACK_DRAGON_HATCHLING },
-			{ "baby blue dragon", PM_BLUE_DRAGON_HATCHLING },
-			{ "baby green dragon", PM_GREEN_DRAGON_HATCHLING },
-			{ "baby yellow dragon", PM_YELLOW_DRAGON_HATCHLING },
-			{ "grey unicorn", PM_GRAY_UNICORN },
-            { "grey ooze", PM_GRAY_OOZE },
-            { "gray-elf", PM_GREY_ELF },
-            { "mindflayer", PM_TENTACLED_ONE },
-            { "master mindflayer", PM_ELDER_TENTACLED_ONE },
-            { "mind flayer", PM_TENTACLED_ONE },
-            { "master mind flayer", PM_ELDER_TENTACLED_ONE },
-            { "umber hulk", PM_UNDERWORLD_HULK },
+            { "grey dragon", PM_GRAY_DRAGON, 0 },
+            { "grey dragon hatchling", PM_GRAY_DRAGON_HATCHLING, 0 },
+			{ "baby gray dragon", PM_GRAY_DRAGON_HATCHLING, 0 },
+			{ "baby grey dragon", PM_GRAY_DRAGON_HATCHLING, 0 },
+			{ "baby silver dragon", PM_SILVER_DRAGON_HATCHLING, 0 },
+			{ "baby red dragon", PM_RED_DRAGON_HATCHLING, 0 },
+			{ "baby white dragon", PM_WHITE_DRAGON_HATCHLING, 0 },
+			{ "baby black dragon", PM_BLACK_DRAGON_HATCHLING, 0 },
+			{ "baby blue dragon", PM_BLUE_DRAGON_HATCHLING, 0 },
+			{ "baby green dragon", PM_GREEN_DRAGON_HATCHLING, 0 },
+			{ "baby yellow dragon", PM_YELLOW_DRAGON_HATCHLING, 0 },
+			{ "grey unicorn", PM_GRAY_UNICORN, 0 },
+            { "grey ooze", PM_GRAY_OOZE, 0 },
+            { "gray-elf", PM_GREY_ELF, 0 },
+            { "mindflayer", PM_TENTACLED_ONE, 0 },
+            { "master mindflayer", PM_ELDER_TENTACLED_ONE, 0 },
+            { "mind flayer", PM_TENTACLED_ONE, 0 },
+            { "master mind flayer", PM_ELDER_TENTACLED_ONE, 0 },
+            { "umber hulk", PM_UNDERWORLD_HULK, 0 },
             /* More alternates; priest and priestess are separate monster
                types but that isn't the case for {aligned,high} priests */
-            { "aligned priestess", PM_ALIGNED_PRIEST },
-            { "high priestess", PM_HIGH_PRIEST },
+            { "aligned priestess", PM_ALIGNED_PRIEST, 2 },
+            { "high priestess", PM_HIGH_PRIEST, 2 },
             /* Inappropriate singularization by -ves check above */
-            { "master of thief", PM_MASTER_OF_THIEVES },
+            { "master of thief", PM_MASTER_OF_THIEVES, 0 },
             /* Potential misspellings where we want to avoid falling back
                to the rank title prefix (input has been singularized) */
-            { "master thief", PM_MASTER_OF_THIEVES },
-            { "master of assassin", PM_MASTER_ASSASSIN },
+            { "master thief", PM_MASTER_OF_THIEVES, 0 },
+            { "master of assassin", PM_MASTER_ASSASSIN, 0 },
             /* Outdated names */
-            { "invisible stalker", PM_STALKER },
-            { "high-elf", PM_ELVENKING }, /* PM_HIGH_ELF is obsolete */
+            { "invisible stalker", PM_STALKER, 0 },
+            { "high-elf", PM_ELVENKING, 0 }, /* PM_HIGH_ELF is obsolete */
             /* other misspellings or incorrect words */
-            { "wood-elf", PM_WOODLAND_ELF },
-            { "wood elf", PM_WOODLAND_ELF },
-            { "woodland nymph", PM_WOOD_NYMPH },
-            { "halfling", PM_HOBBIT },    /* potential guess for polyself */
-            { "genie", PM_DJINNI }, /* potential guess for ^G/#wizgenesis */
+            { "wood-elf", PM_WOODLAND_ELF, 0 },
+            { "wood elf", PM_WOODLAND_ELF, 0 },
+            { "woodland nymph", PM_WOOD_NYMPH, 0 },
+            { "halfling", PM_HOBBIT, 0 },    /* potential guess for polyself */
+            { "genie", PM_DJINNI, 0 }, /* potential guess for ^G/#wizgenesis */
             /* Hyphenated names -- it would be nice to handle these via
                fuzzymatch() but it isn't able to ignore trailing stuff */
-            { "ki rin", PM_KI_RIN },
-            { "uruk hai", PM_URUK_HAI },
-            { "orc captain", PM_ORC_CAPTAIN },
-            { "woodland elf", PM_WOODLAND_ELF },
-            { "green elf", PM_GREEN_ELF },
-            { "grey elf", PM_GREY_ELF },
-            { "gray elf", PM_GREY_ELF },
-            { "elf lord", PM_ELF_LORD },
-            { "olog hai", PM_OLOG_HAI },
-            { "arch lich", PM_ARCH_LICH },
-			{ "archlich", PM_ARCH_LICH },
+            { "ki rin", PM_KI_RIN, 0 },
+            { "uruk hai", PM_URUK_HAI, 0 },
+            { "orc captain", PM_ORC_CAPTAIN, 0 },
+            { "woodland elf", PM_WOODLAND_ELF, 0 },
+            { "green elf", PM_GREEN_ELF, 0 },
+            { "grey elf", PM_GREY_ELF, 0 },
+            { "gray elf", PM_GREY_ELF, 0 },
+            { "elf lord", PM_ELF_LORD, 0 },
+            { "olog hai", PM_OLOG_HAI, 0 },
+            { "arch lich", PM_ARCH_LICH, 0 },
+			{ "archlich", PM_ARCH_LICH, 0 },
 			/* Some irregular plurals */
-            { "incubi", PM_INCUBUS },
-            { "succubi", PM_SUCCUBUS },
-            { "violet fungi", PM_VIOLET_FUNGUS },
-            { "homunculi", PM_HOMUNCULUS },
-            { "baluchitheria", PM_BALUCHITHERIUM },
-            { "lurkers above", PM_LURKER_ABOVE },
-            { "cavemen", PM_CAVEMAN },
-            { "cavewomen", PM_CAVEMAN },
-            { "cavepersons", PM_CAVEMAN },
-            { "cavepeople", PM_CAVEMAN },
-            { "watchmen", PM_WATCHMAN },
-            { "watchwomen", PM_WATCHMAN },
-            { "watchpersons", PM_WATCHMAN },
-            { "djinn", PM_DJINNI },
-            { "mumakil", PM_MUMAK },
-            { "erinyes", PM_ERINYS },
-            { "mummy pharaoh", PM_GREATER_MUMMY_PHARAOH },
-            { "mummy king", PM_GREATER_MUMMY_PHARAOH },
-            { "mummy priest", PM_GREATER_MUMMY_PRIEST },
-            { "mummy high priest", PM_GREATER_MUMMY_HIGH_PRIEST },
-            { "leocrotta", PM_LEUCROTTA },
-            { "archeologist", PM_ARCHAEOLOGIST },
+            { "incubi", PM_INCUBUS, 1 },
+            { "succubi", PM_INCUBUS, 2 },
+            { "violet fungi", PM_VIOLET_FUNGUS, 0 },
+            { "homunculi", PM_HOMUNCULUS, 0 },
+            { "baluchitheria", PM_BALUCHITHERIUM, 0 },
+            { "lurkers above", PM_LURKER_ABOVE, 0 },
+            { "cavemen", PM_CAVEMAN, 1 },
+            { "cavewomen", PM_CAVEMAN, 2 },
+            { "cavepersons", PM_CAVEMAN, 0 },
+            { "cavepeople", PM_CAVEMAN, 0 },
+            { "watchmen", PM_WATCHMAN, 1 },
+            { "watchwomen", PM_WATCHMAN, 2 },
+            { "watchpersons", PM_WATCHMAN, 0 },
+            { "djinn", PM_DJINNI, 0 },
+            { "mumakil", PM_MUMAK, 0 },
+            { "erinyes", PM_ERINYS, 0 },
+            { "mummy pharaoh", PM_GREATER_MUMMY_PHARAOH, 0 },
+            { "mummy king", PM_GREATER_MUMMY_PHARAOH, 0 },
+            { "mummy priest", PM_GREATER_MUMMY_PRIEST, 0 },
+            { "mummy high priest", PM_GREATER_MUMMY_HIGH_PRIEST, 0 },
+            { "leocrotta", PM_LEUCROTTA, 0 },
+            { "archeologist", PM_ARCHAEOLOGIST, 0 },
             /* end of list */
             { 0, NON_PM }
         };
         register const struct alt_spl *namep;
 
         for (namep = names; namep->name; namep++)
-            if (!strncmpi(str, namep->name, (int) strlen(namep->name)))
+            if (!strncmpi(str, namep->name, (int)strlen(namep->name)))
+            {
+                if(namep->gender == 1 && fem_ptr)
+                    *fem_ptr = 0;
+                if (namep->gender == 2 && fem_ptr)
+                    *fem_ptr = 1;
                 return namep->pm_val;
+            }
     }
 
     boolean found = FALSE;
@@ -1175,14 +1182,14 @@ int *mndx_p;
     static NEARDATA const struct alt_spl truematch[] = {
         /* "long worm" won't match "worm" class but would accidentally match
            "long worm tail" class before the comparison with monster types */
-        { "long worm", PM_LONG_WORM },
+        { "long worm", PM_LONG_WORM, 0 },
         /* matches wrong--or at least suboptimal--class */
-        { "demon", -S_DEMON }, /* hits "imp or minor demon" */
+        { "demon", -S_DEMON, 0 }, /* hits "imp or minor demon" */
         /* matches specific monster (overly restrictive) */
-        { "devil", -S_DEMON }, /* always "horned devil" */
+        { "devil", -S_DEMON, 0 }, /* always "horned devil" */
         /* some plausible guesses which need help */
-        { "bug", -S_XAN },  /* would match bugbear... */
-        { "fish", -S_EEL }, /* wouldn't match anything */
+        { "bug", -S_XAN, 0 },  /* would match bugbear... */
+        { "fish", -S_EEL, 0 }, /* wouldn't match anything */
         /* end of list */
         { 0, NON_PM }
     };

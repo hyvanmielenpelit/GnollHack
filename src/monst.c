@@ -4782,20 +4782,14 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
     A(ATTK(AT_CLAW, AD_PHYS, 1, 3, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 1, 3, 0, 0, 0, 0UL, 0), \
       ATTK(AT_BITE, AD_DRLI, 2, 6, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK)
 
-    MON("succubus", None, "seductive female demon", None, None, S_DEMON, LVL(6, 12, 0, 0, 70, -9), (G_NOCORPSE | 1),
+    /* Succubus is now a female form of incubus */
+    MON("incubus", None, "seductive demon", "succubus", "foocubus", S_DEMON, LVL(6, 12, 0, 0, 70, -9), (G_NOCORPSE | 1),
         SEDUCTION_ATTACKS_YES, SIZ(WT_HUMAN, 400, MS_SEDUCE, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(15, 15, 15, 16, 13, 18),
         MR_POISON, MR2_FIRE_RESISTANCE, MC_POISONOUS_CORPSE, M1_HUMANOID | M1_FLY,
-        M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_FEMALE,
+        M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
-		M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-		7, CLR_GRAY, MONSTER_SOUNDSET_DEMONESS, MONSTER_SOUNDSET_DEMONESS),
-    MON("incubus", None, "seductive male demon", None, None, S_DEMON, LVL(6, 12, 0, 0, 70, -9), (G_NOCORPSE | 1),
-        SEDUCTION_ATTACKS_YES, SIZ(WT_HUMAN, 400, MS_SEDUCE, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(15, 15, 15, 16, 13, 18),
-        MR_POISON, MR2_FIRE_RESISTANCE, MC_POISONOUS_CORPSE, M1_HUMANOID | M1_FLY,
-        M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_MALE,
-        M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
-		M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-		7, CLR_GRAY, MONSTER_SOUNDSET_DEMON, MONSTER_SOUNDSET_DEMON),
+		M4_NONE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE, 
+		7, CLR_GRAY, MONSTER_SOUNDSET_DEMON, MONSTER_SOUNDSET_DEMONESS),
     /* Used by AD&D for a type of demon, originally one of the Furies
        and spelled this way */
     MON("water demon", None, "lesser species of demon", "water demoness", "water demon", S_DEMON, LVL(8, 12, -4, 0, 30, -7),

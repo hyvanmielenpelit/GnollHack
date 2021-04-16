@@ -1626,9 +1626,10 @@ dokick() {
         }
         if (IS_SINK(maploc->typ)) {
             int gend = poly_gender();
-            short washerndx = (gend == 1 || (gend == 2 && rn2(2)))
-                                  ? PM_INCUBUS
-                                  : PM_SUCCUBUS;
+            short washerndx = PM_INCUBUS;
+            boolean washerfemale = (gend == 1 || (gend == 2 && rn2(2)))
+                ? 0
+                : 1;
 
             if (Levitation)
                 goto dumb;
@@ -1662,7 +1663,7 @@ dokick() {
                        && !(mvitals[washerndx].mvflags & G_GONE)) {
                 /* can't resist... */
                 pline("%s returns!", (Blind ? Something : "The dish washer"));
-                if (makemon(&mons[washerndx], x, y, NO_MM_FLAGS))
+                if (makemon(&mons[washerndx], x, y, washerfemale ? MM_FEMALE : NO_MM_FLAGS))
                     newsym(x, y);
                 maploc->looted |= S_LDWASHER;
                 exercise(A_DEX, TRUE);

@@ -4200,7 +4200,7 @@ struct attack *mattk; /* non-Null: current attack; Null: general capability */
         return 0;
 
     if ((pagr->mlet != S_NYMPH
-         && pagr != &mons[PM_INCUBUS] && pagr != &mons[PM_SUCCUBUS])
+         && pagr != &mons[PM_INCUBUS])
         || (adtyp != AD_SEDU && adtyp != AD_SSEX))
         return 0;
 
@@ -4213,7 +4213,7 @@ doseduce(mon)
 struct monst *mon;
 {
     struct obj *ring, *nring;
-    boolean fem = (mon->data == &mons[PM_SUCCUBUS]); /* otherwise incubus */
+    boolean fem = mon->female; // (mon->data == &mons[PM_SUCCUBUS]); /* otherwise incubus */
     boolean seewho, naked; /* True iff no armor */
     int attr_tot, tried_gloves = 0;
     char qbuf[QBUFSZ], Who[QBUFSZ];

@@ -138,7 +138,7 @@ int val;
 
     for (x = 0; x < NATTK; x++) {
         mons[PM_INCUBUS].mattk[x] = setval[x];
-        mons[PM_SUCCUBUS].mattk[x] = setval[x];
+        //mons[PM_SUCCUBUS].mattk[x] = setval[x];
     }
 #else
     nhUse(val);

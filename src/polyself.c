@@ -300,11 +300,13 @@ change_sex()
     u.umonster = urole.monsternum;
     if (!already_polyd) {
         u.umonnum = u.umonster;
+#if 0
     } else if (u.umonnum == PM_SUCCUBUS || u.umonnum == PM_INCUBUS) {
         flags.female = !flags.female;
         /* change monster type to match new sex */
         u.umonnum = (u.umonnum == PM_SUCCUBUS) ? PM_INCUBUS : PM_SUCCUBUS;
         set_uasmon();
+#endif
     }
 }
 
@@ -2431,7 +2433,7 @@ int part;
     if ((part == HAND || part == HANDED)
         && (humanoid(mptr) && attacktype(mptr, AT_CLAW)
             && !index(not_claws, mptr->mlet) && mptr != &mons[PM_STONE_GOLEM]
-            && mptr != &mons[PM_INCUBUS] && mptr != &mons[PM_SUCCUBUS]))
+            && mptr != &mons[PM_INCUBUS]))
         return (part == HAND) ? "claw" : "clawed";
     if ((mptr == &mons[PM_MUMAK] || mptr == &mons[PM_MASTODON])
         && part == NOSE)

@@ -433,8 +433,8 @@ MONSTER:('s',"giant spider"),random
 MONSTER:'s',random
 MONSTER:'s',random
 # ladies of the evening
-MONSTER:('&',"succubus"),(02,08)
-MONSTER:('&',"succubus"),(08,08)
+MONSTER:('&',"incubus"),(02,08)
+MONSTER:('&',"incubus"),(08,08)
 MONSTER:('&',"incubus"),(02,14)
 MONSTER:('&',"incubus"),(08,14)
 MONSTER:('&',"incubus"),(02,17)

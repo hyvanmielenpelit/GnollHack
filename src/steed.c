@@ -85,7 +85,7 @@ struct obj *otmp;
             instapetrify(kbuf);
         }
     }
-    if (ptr == &mons[PM_INCUBUS] || ptr == &mons[PM_SUCCUBUS]) {
+    if (ptr == &mons[PM_INCUBUS]) {
         pline("Shame on you!");
         exercise(A_WIS, FALSE);
         return 1;
