@@ -1001,7 +1001,19 @@ uchar *prefix_ptr, *suffix_ptr;
 
     uchar start = 1;
     uchar end = 1;
-    if (is_wish == 2 || (is_wish == 0 && (level_difficulty() >= 16 && !rn2(4)) || (level_difficulty() < 16 && level_difficulty() >= 8 && !rn2(20))))
+    xchar levdif = level_difficulty();
+    if (is_wish == 2 || 
+        (is_wish == 0 && 
+         (
+             (levdif < 16 && levdif >= 8 && !rn2(40))
+          || (levdif < depth(&medusa_level) && levdif >= 16 && !rn2(10))
+          || (levdif < depth(&stronghold_level) && levdif >= depth(&medusa_level) && !rn2(7))
+          || (Inhell && !rn2(5))
+          || (In_endgame(&u.uz) && !rn2(3))
+          || (levdif > depth(&stronghold_level) && !In_endgame(&u.uz) && !Inhell && !rn2(6))
+         )
+        )
+       )
     {
         start = 0;
         end = 1;
