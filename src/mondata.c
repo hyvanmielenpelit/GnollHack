@@ -1068,6 +1068,7 @@ int* fem_ptr;
 			/* Some irregular plurals */
             { "incubi", PM_INCUBUS, 1 },
             { "succubi", PM_INCUBUS, 2 },
+            { "foocubi", PM_INCUBUS, 0 },
             { "violet fungi", PM_VIOLET_FUNGUS, 0 },
             { "homunculi", PM_HOMUNCULUS, 0 },
             { "baluchitheria", PM_BALUCHITHERIUM, 0 },
