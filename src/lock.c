@@ -696,7 +696,7 @@ boolean is_auto;
             && M_AP_TYPE(mtmp) != M_AP_OBJECT) 
         {
             if (picktyp == CREDIT_CARD
-                && (mtmp->isshk || mtmp->data == &mons[PM_ORACLE]))
+                && (mtmp->isshk))
                 verbalize("No checks, no credit, no problem.");
             else
                 pline("I don't think %s would appreciate that.",
