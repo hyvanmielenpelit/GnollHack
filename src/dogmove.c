@@ -1483,7 +1483,7 @@ int after; /* this is extra fast monster movement */
             int mstatus;
 
             if (
-                (!mon_disregards_own_health(mtmp) && (int) mtmp2->m_lev >= (int) mtmp->m_lev + 2)
+                (!mon_disregards_own_health(mtmp) && mtmp2->data->difficulty >= mtmp->data->difficulty + DISREGARD_HEALTH_LEVEL_DIFFERENCE_THRESHOLD)
                     || (
                         (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
                         && !is_blinded(mtmp) && haseyes(mtmp->data) && !is_blinded(mtmp2)

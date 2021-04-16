@@ -428,6 +428,8 @@ enum main_menu_command {
 #define TRAVP_GUESS  1
 #define TRAVP_VALID  2
 
+/* Other */
+#define DISREGARD_HEALTH_LEVEL_DIFFERENCE_THRESHOLD 10
 
 #endif /* GENERAL_H */
 
