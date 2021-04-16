@@ -1007,10 +1007,10 @@ uchar *prefix_ptr, *suffix_ptr;
          (
              (levdif < 16 && levdif >= 8 && !rn2(40))
           || (levdif < depth(&medusa_level) && levdif >= 16 && !rn2(10))
-          || (levdif < depth(&stronghold_level) && levdif >= depth(&medusa_level) && !rn2(7))
-          || (Inhell && !rn2(5))
+          || (levdif < depth(&stronghold_level) && levdif >= depth(&medusa_level) && !rn2(5))
+          || (Inhell && !rn2(4))
           || (In_endgame(&u.uz) && !rn2(3))
-          || (levdif > depth(&stronghold_level) && !In_endgame(&u.uz) && !Inhell && !rn2(6))
+          || (levdif > depth(&stronghold_level) && !In_endgame(&u.uz) && !Inhell && !rn2(4))
          )
         )
        )
