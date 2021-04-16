@@ -6070,9 +6070,13 @@ boolean force;
                 play_sfx_sound(SFX_DISARM_TRAP_FAIL);
                 You("set it off!");
                 b_trapped(get_short_door_name_at(x, y), FINGER, x, y);
-                levl[x][y].doormask &= ~D_MASK;
-                levl[x][y].doormask |= D_NODOOR;
-                unblock_vision_and_hearing_at_point(x, y);
+                levl[x][y].doormask &= ~D_TRAPPED;
+                if (is_door_destroyed_by_booby_trap_at(x, y))
+                {
+                    levl[x][y].doormask &= ~D_MASK;
+                    levl[x][y].doormask |= D_NODOOR;
+                    unblock_vision_and_hearing_at_point(x, y);
+                }
                 newsym(x, y);
                 /* (probably ought to charge for this damage...) */
                 if (*in_rooms(x, y, SHOPBASE))

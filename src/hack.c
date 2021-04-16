@@ -443,6 +443,7 @@ xchar x, y;
     struct rm *lev = &levl[x][y];
     struct obj *boulder = sobj_at(BOULDER, x, y);
     const char *digtxt = (char *) 0, *dmgtxt = (char *) 0;
+    boolean no_unblock = FALSE;
 
     if (context.digging.down) /* not continuing previous dig (w/ pick-axe) */
         (void) memset((genericptr_t) &context.digging, 0,
@@ -580,11 +581,19 @@ xchar x, y;
     {
         if (lev->doormask & D_TRAPPED) 
         {
-            lev->doormask &= ~D_MASK;
-            lev->doormask |= D_NODOOR;
             b_trapped("secret door", 0, x, y);
+            lev->doormask &= ~D_TRAPPED;
+            if (is_door_destroyed_by_booby_trap_at_ptr(lev))
+            {
+                lev->doormask &= ~D_MASK;
+                lev->doormask |= D_NODOOR;
+            }
+            else
+            {
+                no_unblock = TRUE;
+            }
         }
-        else 
+        else if (is_door_destroyed_by_monsters_at_ptr(lev))
         {
             digtxt = "chew through the secret door.";
             lev->doormask &= ~D_MASK;
@@ -595,18 +604,35 @@ xchar x, y;
     } 
     else if (IS_DOOR(lev->typ)) 
     {
-        if (*in_rooms(x, y, SHOPBASE)) 
+        if (is_door_destroyed_by_monsters_at_ptr(lev))
         {
-            add_damage(x, y, SHOP_DOOR_COST);
-            dmgtxt = "break";
+            if (*in_rooms(x, y, SHOPBASE))
+            {
+                add_damage(x, y, SHOP_DOOR_COST);
+                dmgtxt = "break";
+            }
         }
+        else
+        {
+            no_unblock = TRUE;
+        }
+
         if (lev->doormask & D_TRAPPED) 
         {
-            lev->doormask &= ~D_MASK;
-            lev->doormask |= D_NODOOR;
             b_trapped(get_door_name_at_ptr(lev), 0, x, y);
-        } 
-        else 
+            lev->doormask &= ~D_TRAPPED;
+            if (is_door_destroyed_by_booby_trap_at_ptr(lev))
+            {
+                lev->doormask &= ~D_MASK;
+                lev->doormask |= D_NODOOR;
+                no_unblock = FALSE;
+            }
+            else
+            {
+                no_unblock = TRUE;
+            }
+        }
+        else if(!no_unblock)
         {
             digtxt = "chew through the door.";
             lev->doormask &= ~D_MASK;
@@ -620,7 +646,9 @@ xchar x, y;
         lev->typ = CORR;
     }
 
-    unblock_vision_and_hearing_at_point(x, y); /* vision */
+    if(!no_unblock)
+        unblock_vision_and_hearing_at_point(x, y); /* vision */
+
     newsym(x, y);
     if (digtxt)
         You1(digtxt); /* after newsym */

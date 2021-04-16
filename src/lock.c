@@ -219,8 +219,13 @@ picklock(VOID_ARGS)
         if (xlock.door->doormask & D_TRAPPED)
         {
             b_trapped(get_door_name_at_ptr(xlock.door), FINGER, u.ux + u.dx, u.uy + u.dy);
-            xlock.door->doormask |= D_NODOOR;
-            unblock_vision_and_hearing_at_point(u.ux + u.dx, u.uy + u.dy);
+            xlock.door->doormask &= ~D_TRAPPED;
+            if (is_door_destroyed_by_booby_trap_at_ptr(xlock.door))
+            {
+                xlock.door->doormask &= ~D_MASK;
+                xlock.door->doormask |= D_NODOOR;
+                unblock_vision_and_hearing_at_point(u.ux + u.dx, u.uy + u.dy);
+            }
             if (*in_rooms(u.ux + u.dx, u.uy + u.dy, SHOPBASE))
                 add_damage(u.ux + u.dx, u.uy + u.dy, SHOP_DOOR_COST);
             newsym(u.ux + u.dx, u.uy + u.dy);
@@ -1082,10 +1087,19 @@ int x, y;
         if (door->doormask & D_TRAPPED) 
         {
             b_trapped(door_name, FINGER, cc.x, cc.y);
-            door->doormask &= ~D_MASK;
-            door->doormask |= D_NODOOR;
-            if (*in_rooms(cc.x, cc.y, SHOPBASE))
-                add_damage(cc.x, cc.y, SHOP_DOOR_COST);
+            door->doormask &= ~D_TRAPPED;
+            if (is_door_destroyed_by_booby_trap_at_ptr(door))
+            {
+                door->doormask &= ~D_MASK;
+                door->doormask |= D_NODOOR;
+                if (*in_rooms(cc.x, cc.y, SHOPBASE))
+                    add_damage(cc.x, cc.y, SHOP_DOOR_COST);
+            }
+            else
+            {
+                door->doormask &= ~D_MASK;
+                door->doormask |= D_ISOPEN;
+            }
         } 
         else
         {

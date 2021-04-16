@@ -1389,9 +1389,13 @@ dokick() {
                 exercise(A_DEX, TRUE);
                 if (maploc->doormask & D_TRAPPED)
                 {
-                    maploc->doormask &= ~D_MASK;
-                    maploc->doormask |= D_NODOOR;
                     b_trapped(get_door_name_at_ptr(maploc), FOOT, x, y);
+                    maploc->doormask &= ~D_TRAPPED;
+                    if (is_door_destroyed_by_booby_trap_at_ptr(maploc))
+                    {
+                        maploc->doormask &= ~D_MASK;
+                        maploc->doormask |= D_NODOOR;
+                    }
                 }
                 else if ((maploc->doormask & D_MASK) != D_NODOOR && (maploc->doormask & D_MASK) != D_PORTCULLIS
                     && !(maploc->doormask & D_LOCKED))
@@ -1763,6 +1767,7 @@ dokick() {
                 You("kick the %s.", get_door_name_at(x, y));
             exercise(A_STR, FALSE);
             b_trapped(get_door_name_at_ptr(maploc), FOOT, x, y);
+            maploc->doormask &= ~D_TRAPPED;
 
             if (!is_door_indestructible_at_ptr(maploc))
             {
