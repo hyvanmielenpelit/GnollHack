@@ -817,8 +817,8 @@ aligntyp resp_god;
     case 2:
     case 3:
         godvoice(resp_god, (char *) 0);
-        /* should use verbalize here? */
-        pline("\"Thou %s, %s.\"",
+
+        verbalize("Thou %s, %s.",
               (ugod_is_angry() && resp_god == u.ualign.type)
                   ? "hast strayed from the path"
                   : "art arrogant",
@@ -847,8 +847,7 @@ aligntyp resp_god;
                   (on_altar() && (a_align(u.ux, u.uy) != resp_god))
                       ? "scorn"
                       : "call upon");
-        /* should use verbalize here? */
-        pline("\"Then die, %s!\"",
+        verbalize("Then die, %s!",
               youmonst.data->mlet == S_HUMAN ? "mortal" : "creature");
         summon_minion(resp_god, FALSE);
         break;

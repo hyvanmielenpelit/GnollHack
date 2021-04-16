@@ -2008,7 +2008,7 @@ xchar dlev;          /* if !0 send to dlev near player */
                         verbalize("You thief!");
                     }
                     else
-                        pline("\"%s, you are a thief!\"", plname);
+                        verbalize("%s, you are a thief!", plname);
                 }
                 /* should use verbalize here? */
             }
