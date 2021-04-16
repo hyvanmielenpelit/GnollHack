@@ -69,7 +69,7 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
     },
     {
         "troll slaying", " of troll slaying", "", 20,
-        MYTHIC_SUFFIX_POWER_TROLL_SLAYING,
+        MYTHIC_SUFFIX_POWER_TROLL_SLAYING | MYTHIC_SUFFIX_POWER_INDEX_TROLL_REVIVAL_PREVENTION,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
@@ -139,6 +139,7 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
     { "Lightness", "Weighs one-third of normal", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Sorcery", "Incurs no spellcasting penalty", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Troll slaying", "Triple damage to trolls", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_TROLL, 0UL , MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Troll revival prevention", "Prevents revival of trolls", MYTHIC_POWER_TYPE_PREVENTS_REVIVAL, 0L, 0.0, S_TROLL, 0UL , MYTHIC_POWER_FLAG_NONE },
     { "Were slaying", "Triple damage to lycanthropes", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_WERE, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Giant slaying", "Triple damage to giants", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_GIANT, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Demon slaying", "Triple damage to demons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_DEMON, MYTHIC_POWER_FLAG_WEAPON_ONLY },
@@ -1007,7 +1008,35 @@ uchar *prefix_ptr, *suffix_ptr;
     }
     else
     {
-        if (rn2(MAX_MYTHIC_PREFIXES + MAX_MYTHIC_SUFFIXES) < MAX_MYTHIC_PREFIXES)
+        int ok_cnt[2] = { 0, 0 };
+        for (int j = 0; j <= 1; j++)
+        {
+            uchar max_mythic = (j == 0 ? MAX_MYTHIC_PREFIXES : MAX_MYTHIC_SUFFIXES);
+            for (uchar i = 1; i < max_mythic; i++)
+            {
+                if (!is_mythic_affix_ok(j, i, obj, is_wish))
+                    continue;
+
+                ok_cnt[j]++;
+            }
+        }
+
+        if (ok_cnt[0] == 0 && ok_cnt[1] == 0)
+        {
+            start = 0;
+            end = 1;
+        }
+        else if (ok_cnt[0] == 0)
+        {
+            start = 1;
+            end = 1;
+        }
+        else if (ok_cnt[1] == 0)
+        {
+            start = 0;
+            end = 0;
+        }
+        else if (rn2(ok_cnt[0] + ok_cnt[1]) < ok_cnt[0])
         {
             start = 0;
             end = 0;
@@ -1031,7 +1060,7 @@ uchar *prefix_ptr, *suffix_ptr;
         for (uchar i = 1; i < max_mythic; i++)
         {
             eligible[i] = FALSE;
-            if(!is_mythic_power_ok(j, i, obj, is_wish))
+            if(!is_mythic_affix_ok(j, i, obj, is_wish))
                 continue;
 
             eligible[i] = TRUE;
@@ -1061,7 +1090,7 @@ uchar *prefix_ptr, *suffix_ptr;
 }
 
 boolean
-is_mythic_power_ok(affix_type, affix_idx, obj, is_wish)
+is_mythic_affix_ok(affix_type, affix_idx, obj, is_wish)
 uchar affix_type; /* 0 = prefix, 1 = suffix  */
 uchar affix_idx;
 struct obj* obj;

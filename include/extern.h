@@ -1271,7 +1271,7 @@ E boolean FDECL(is_worn_correctly, (struct obj*));
 E struct obj *FDECL(g_at, (int, int));
 E boolean FDECL(splittable, (struct obj *));
 E struct obj *FDECL(getobj, (const char *, const char *, int, const char*));
-void FDECL(construct_getobj_letters, (const char*, const char*, char*, char*, size_t, size_t, int*, xchar*, char**, boolean*, boolean*, boolean*, boolean*, struct obj*));
+void FDECL(construct_getobj_letters, (const char*, const char*, char*, char*, size_t, size_t, int*, xchar*, char**, xchar*, boolean*, boolean*, boolean*, boolean*, struct obj*));
 
 E boolean FDECL(acceptable_getobj_obj, (struct obj*, const char*, const char*));
 E int FDECL(ggetobj, (const char *, int (*)(OBJ_P), int,
@@ -2082,7 +2082,7 @@ E int NDECL(dodiscovered);
 E int NDECL(doclassdisco);
 E void NDECL(rename_disco);
 E void FDECL(randomize_mythic_quality, (struct obj*, uchar, uchar*, uchar*));
-E boolean FDECL(is_mythic_power_ok, (uchar, uchar, struct obj*, uchar));
+E boolean FDECL(is_mythic_affix_ok, (uchar, uchar, struct obj*, uchar));
 E double FDECL(get_mythic_dmg_multiplier, (struct obj*, struct monst*, struct monst*));
 
 

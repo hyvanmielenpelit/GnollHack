@@ -2509,6 +2509,12 @@ int montype;
 			}
 
 		}
+
+        /* Mythic */
+        if (has_obj_mythic_troll_revival_prevention(uitem) && mons[montype].mlet == S_TROLL)
+        {
+            return TRUE;
+        }
 	}
 
 	return FALSE;

@@ -5064,7 +5064,7 @@ boolean is_wiz_wish;
             int mythic_quality = (i == 0 ? mythic_prefix : mythic_suffix);
             uchar* otmp_mythic_quality_ptr = (i == 0 ? &otmp->mythic_prefix : &otmp->mythic_suffix);
 
-            if (is_mythic_power_ok(i, (uchar)mythic_quality, otmp, wiz_wishing ? 0 : 1))
+            if (is_mythic_affix_ok(i, (uchar)mythic_quality, otmp, wiz_wishing ? 0 : 1))
             {
                 if (wiz_wishing || (mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_DIRECTLY_WISHABLE))
                     *otmp_mythic_quality_ptr = (uchar)mythic_quality;

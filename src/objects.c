@@ -2648,6 +2648,8 @@ SPELL("stone to flesh",   "thick", None, None, "Turns a statue back to a living 
 	P_TRANSMUTATION_SPELL,      5,  1,           0, 3, 20, A_MAX_INT_WIS, 1, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("titan strength",	"titanic", None, None, "Raises the caster's strength to 25",
 	P_TRANSMUTATION_SPELL,		4, 1,			 0, 5, 40, A_INT, 0, 0, 100, 0, 1, NODIR, TITAN_STRENGTH, 0, 0, 0, 0, 10, 6, 250, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+SPELL("disintegrate",	  "stained", None, None, "Shoots a disintegration ray",
+	P_TRANSMUTATION_SPELL,			 4, 12,			 0, 10,150, A_INT, 8, 0, 100, 0, 1, RAY, RAY_DISINTEGRATION, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, ALL_TARGETS, AD_DISN, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 
 
 SPELL("magic missile",   "vellum", None, None, "Shoots a ray of magic missiles",
@@ -2684,16 +2686,6 @@ SPELL("thunderstorm",	  "strange", "thunderstorm", None, "Conjures a storm of li
       P_ARCANE_SPELL,			 4,  10,		 0, 7, 30, A_INT, 18, 0, 50, 0, 1, RAY, RAY_LIGHTNING, 2, 12, 6, 0, 1, 6, 0, S1_SPELL_EXPLOSION_EFFECT | S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_ELEC, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 SPELL("magic storm",	  "scintillating", "storm of magic", None, "Conjures a storm of arcane energy",
       P_ARCANE_SPELL,			 4,  5,		     0, 8, 40, A_INT, 18, 0, 50, 0, 1, RAY, RAY_MAGIC_MISSILE, 3, 16, 6, 0, 2, 6, 0, S1_SPELL_EXPLOSION_EFFECT | S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_MAGM, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
-SPELL("disintegrate",	  "stained", None, None, "Shoots a disintegration ray",
-      P_ARCANE_SPELL,			 4, 12,			 0, 10,150, A_INT, 8, 0, 100, 0, 1, RAY, RAY_DISINTEGRATION, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, ALL_TARGETS, AD_DISN, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
-SPELL("power word kill",   "preposterous", None, "some long-forgotten arcane magic", "Kills the target",
-    P_ARCANE_SPELL,				 2,  5,		   500,12, 300, A_INT, 6, 0, 10, -12, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_DRAY, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
-SPELL("power word stun",   "ludicrous", None, None, "Stuns the target",//Note monsters do not have a stun timer
-    P_ARCANE_SPELL,				 4,  5,		   250, 6, 50, A_INT,10, 0, 5, -4, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, ALL_TARGETS, AD_STUN, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
-SPELL("power word blind",   "anomalous", None, None, "Blinds the target", //Note monsters have a blindness timer
-    P_ARCANE_SPELL,				 4,  5,		   250, 8, 80, A_INT, 8, 0, 5, -8, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 5, 10, 50, S1_NONE, S2_NONE, ALL_TARGETS, AD_BLND, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
-SPELL("sphere of annihilation",	"jet-studded", None, "some long-forgotten arcane magic", "Disintegrates everything around you",
-      P_ARCANE_SPELL,			 3, 12,			50, 12,300, A_INT, 0, 5, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_DISN, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 SPELL("circle of magic",	"agate-studded", None, None, "Damages the monsters around you with magic",
       P_ARCANE_SPELL,			 4,  4,			 0, 4, 15, A_INT, 0, 1, 50, 0, 1, NODIR, NODIR_NONE, 4, 6, 6, 0, 1, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_MAGM, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("circle of fire",	"sapphire-studded", None, None, "Damages the monsters around you with fire",
@@ -2702,8 +2694,6 @@ SPELL("circle of lightning",	"crystal-studded", None, None, "Damages the monster
       P_ARCANE_SPELL,			 4,  4,			 0, 6, 25, A_INT, 0, 1, 50, 0, 1, NODIR, NODIR_NONE, 4, 10, 6, 0, 1, 10, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_ELEC, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 SPELL("circle of frost",	"pearl-studded", None, None, "Damages the monsters around you with cold",
       P_ARCANE_SPELL,			 4,  4,			 0, 7, 30, A_INT, 0, 1, 50, 0, 1, NODIR, NODIR_NONE, 2, 12, 6, 0, 1, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_COLD, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
-SPELL("shield",       "obsidian-studded", None, None, "Gives -4 bonus to AC",
-	P_ARCANE_SPELL,			     4,  3,		     0, 1, 12, A_INT, 0, 0, 100, 0, 1, NODIR, MAGICAL_SHIELDING, 0, 0, 0, 0, 2, 10, 130, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("incinerate",    "ashen", None, None, "Causes the target to suffer fire damage",
       P_ARCANE_SPELL,			 4,  4,			 0, 6, 25, A_INT, 1, 0, 20, 0, 1, TOUCH, TOUCH_NONE, 3, 16, 6, 0, 2, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_FIRE, CLR_BLACK, OBJECT_SOUNDSET_GENERIC, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 SPELL("electrocute",   "cyan-hued", None, None, "Causes the target to be jolted with electricity",
@@ -2716,8 +2706,6 @@ SPELL("thunderstrike",     "dark cyan", None, None, "Shoots a great ray of light
       P_ARCANE_SPELL,			 4,  3,			 0, 8, 40, A_INT, 14, 0, 20, 0, 1, RAY, RAY_LIGHTNING, 3, 16, 6, 0, 2, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_ELEC, CLR_CYAN, OBJECT_SOUNDSET_GENERIC, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 SPELL("greater frost ray",  "glacial", None, None, "Shoots a great ray of cold",
       P_ARCANE_SPELL,			 4,  6,			 0, 9, 50, A_INT, 12, 0, 20, 0, 1, RAY, RAY_COLD, 2, 20, 6, 0, 1, 10, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_COLD, CLR_WHITE, OBJECT_SOUNDSET_GENERIC, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
-SPELL("mirror image",			"nonsensical", None, None, "A displaced mirror image appears beside the caster",
-	  P_ARCANE_SPELL,		5, 3,			     0, 2, 16, A_INT, 0, 0, 100, 0, 1, NODIR, DISPLACED, 0, 0, 0, 0, 6, 10, 180, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
 SPELL("animate air",	  "wave-patterned", None, None, "Summons a permanent air elemental",
 	P_CONJURATION_SPELL,		 4,  3,			 0, 6, 100, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
@@ -2757,6 +2745,8 @@ SPELL("mage armor",		   "ornamental", None, None, "Summons a wizard-friendly mag
 	P_CONJURATION_SPELL,	     4,  1,		     0, 1, 12, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 4, 20, 200, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, CLR_BLACK, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("call hierarch modron",  "spherical", None, "some aeon-old prayer", "Summons a permanent hierarch modron",
 	P_CONJURATION_SPELL,		 0,  5,		     0,10,300, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NO_GENERATION, O4_NONE),
+SPELL("sphere of annihilation",	"jet-studded", None, "some long-forgotten arcane magic", "Disintegrates everything around you",
+	P_CONJURATION_SPELL,			 3, 12,			50, 12,300, A_INT, 0, 5, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_DISN, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 
 SPELL("commune",	  "beige", None, None, "Gives hints about your praying and luck status",
 	P_CLERIC_SPELL,				 4,  1,		     0, -1, 4, A_WIS, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_BROWN, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
@@ -2944,6 +2934,14 @@ SPELL("death-enchant item",		"diabolical", None, None, "Death-enchants one suita
 	P_ENCHANTMENT_SPELL,		3, 3,			 0, 8,160, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("mass conflict",			"odious", None, None, "Causes all monsters to attach each other on the level",
 	P_ENCHANTMENT_SPELL,		3, 3,			 0, 9,100, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, CONFLICT, 0, 0, 0, 0, 3, 10, 50, S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_WIS, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+SPELL("power word kill",   "preposterous", None, "some long-forgotten arcane magic", "Kills the target",
+	P_ENCHANTMENT_SPELL,		2,  5,		   500,12, 300, A_MAX_INT_CHA, 6, 0, 10, -12, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_DRAY, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+SPELL("power word stun",   "ludicrous", None, None, "Stuns the target",//Note monsters do not have a stun timer
+	P_ENCHANTMENT_SPELL,		4,  5,		   250, 6, 50, A_MAX_INT_CHA,10, 0, 5, -4, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, ALL_TARGETS, AD_STUN, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+SPELL("power word blind",   "anomalous", None, None, "Blinds the target", //Note monsters have a blindness timer
+	P_ENCHANTMENT_SPELL,		4,  5,		   250, 8, 80, A_MAX_INT_CHA, 8, 0, 5, -8, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 5, 10, 50, S1_NONE, S2_NONE, ALL_TARGETS, AD_BLND, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+SPELL("mirror image",			"nonsensical", None, None, "A displaced mirror image appears beside the caster",
+	P_ENCHANTMENT_SPELL,		5, 3,			 0, 2, 16, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, DISPLACED, 0, 0, 0, 0, 6, 10, 180, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
 SPELL("cure sickness",   "indigo", None, None, "Cures sickness, terminal illness, and sliming",
       P_HEALING_SPELL,			5,  3,			 0, 3, 20, A_WIS, 5, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_HEAL, CLR_BLUE, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
@@ -3001,6 +2999,8 @@ SPELL("water walking",			"circle-patterned", None, None, "Makes the caster able 
 SPELL("time stop",		   "ancient", None, "some long-forgotten arcane magic", "Stops the flow of time, except for the caster",
 	P_MOVEMENT_SPELL,			2, 10,			15, 9,100, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 1, 4, 3, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
+SPELL("shield",       "obsidian-studded", None, None, "Gives -4 bonus to AC",
+	P_ABJURATION_SPELL,			4,  3,		     0, 1, 12, A_INT, 0, 0, 100, 0, 1, NODIR, MAGICAL_SHIELDING, 0, 0, 0, 0, 2, 10, 130, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("reflection", "polished silver", None, None, "Grants reflection, which protects from rays",
 	  P_ABJURATION_SPELL,	    5,  1,		   120, 3, 20, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, REFLECTING, 0, 0, 0, 0, 10, 6, 25, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_SILVER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("protection from fire", "smoky", None, None, "Grants immunity to fire attacks",
@@ -3042,9 +3042,9 @@ SPELL("disjunction",     "scintillating", None, "some long-forgotten arcane magi
 SPELL("silence",     "tree-patterned", None, None, "Prohibits the target from making noises and casting spells",
 	P_ABJURATION_SPELL,	        5,  2,			 0, 6, 50, A_MAX_INT_WIS, 12, 3, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 1, 20, 30, S1_NO_SOMATIC_COMPONENT | S1_SPELL_BYPASSES_MAGIC_RESISTANCE, S2_NONE, ALL_TARGETS, AD_NONE, CLR_WHITE, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("globe of invulnerability", "striped", None, "some long-forgotten arcane magic", "Makes the caster invulnerable to physical damage",
-	P_ABJURATION_SPELL,         4,  1,          60, 9,100, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, INVULNERABLE, 0, 0, 0, 0, 1, 6, 4, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_NONE, O3_NONE, O4_NONE),
+	P_ABJURATION_SPELL,         4,  1,          60, 9,100, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, INVULNERABLE, 0, 0, 0, 0, 1, 6, 4, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("anti-magic shell",   "immaculate", None, None, "Grants resistance to magic",
-	P_ABJURATION_SPELL,	             4,  1,		   120, 3, 20, A_INT, 0, 0, 100, 0, 1, NODIR, ANTIMAGIC, 0, 0, 0, 0, 10, 6, 25, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+	P_ABJURATION_SPELL,	        4,  1,		   120, 3, 20, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, ANTIMAGIC, 0, 0, 0, 0, 10, 6, 25, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
 SPELL("touch of death",   "heavy", None, "ancient Stygian magic", "Kills the target upon touch",
 	P_NECROMANCY_SPELL,		    5,  8,			 0, 8, 80, A_WIS, 1, 0, 100, -10, 1, TOUCH, RAY_DEATH, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_DRAY, HI_PAPER, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),

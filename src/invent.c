@@ -2312,7 +2312,7 @@ const char* headertext;
     //long dummymask;
     //Loot *sortedinvent, *srtinv;
 
-    construct_getobj_letters(let, word, lets, altlets, sizeof lets, sizeof altlets, &foo, &foox, &bp, &usegold, &allowall, &allownone, &useboulder, getobj_autoselect_obj);
+    construct_getobj_letters(let, word, lets, altlets, sizeof lets, sizeof altlets, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, getobj_autoselect_obj);
     if (getobj_autoselect_obj)
     {
         if (index(lets, getobj_autoselect_obj->invlet))
@@ -2769,12 +2769,12 @@ const char* headertext;
 }
 
 void
-construct_getobj_letters(let, word, lets, altlets, lets_size, altlets_size, foo_ptr, foox_ptr, bp_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr, otmp_only)
+construct_getobj_letters(let, word, lets, altlets, lets_size, altlets_size, foo_ptr, foox_ptr, bp_ptr, allowcnt_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr, otmp_only)
 register const char *let, *word;
 char *lets, *altlets;
 size_t lets_size, altlets_size;
 int* foo_ptr;
-xchar* foox_ptr;
+xchar *foox_ptr, *allowcnt_ptr;
 char** bp_ptr;
 boolean *usegold_ptr, *allowall_ptr, *allownone_ptr, *useboulder_ptr;
 struct obj* otmp_only;
@@ -3052,6 +3052,7 @@ struct obj* otmp_only;
     *foo_ptr = foo;
     *foox_ptr = foox;
     *bp_ptr = bp;
+    *allowcnt_ptr = allowcnt;
     *usegold_ptr = usegold;
     *allowall_ptr = allowall;
     *allownone_ptr = allownone;
@@ -3079,7 +3080,7 @@ register const char* word;
     boolean useboulder = FALSE;
     xchar foox = 0;
 
-    construct_getobj_letters(let, word, lets, altlets, sizeof lets, sizeof altlets, &foo, &foox, &bp, &usegold, &allowall, &allownone, &useboulder, otmp);
+    construct_getobj_letters(let, word, lets, altlets, sizeof lets, sizeof altlets, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, otmp);
 
     return !!index(lets, ilet);
 }

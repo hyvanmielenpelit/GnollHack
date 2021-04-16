@@ -1239,7 +1239,7 @@ boolean skip_lvl_checks;
 	/* note: gold can now generate any type of minerals, but not gold coins*/
     /* basic level-related probabilities */
     if (goldprob < 0)
-        goldprob = 30 + depth(&u.uz) / 2; //1.5x from original
+        goldprob = 15 + depth(&u.uz) / 4;
     if (gemprob < 0)
         gemprob = goldprob / 4;
 	
