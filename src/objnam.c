@@ -4014,8 +4014,13 @@ boolean is_wiz_wish;
     {
         if ((p = strstri(bp, mythic_suffix_qualities[mythic_idx].mythic_affix)) != 0) 
         {
-            *p = 0;
-            mythic_suffix = mythic_idx;
+            char ringbuf[BUFSZ];
+            Sprintf(ringbuf, "ring%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            if (!(p == bp + 4 && !strcmp(p - 4, ringbuf))) /* Do not accept rings */
+            {
+                *p = 0;
+                mythic_suffix = mythic_idx;
+            }
             break;
         }
     }

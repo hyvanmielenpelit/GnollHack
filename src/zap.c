@@ -2562,7 +2562,7 @@ int montype;
 
                 unsigned long mythic_power_bit = 1UL << ((unsigned long)i);
 
-                if (mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit)
+                if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(uitem, mythic_powers[i].power_flags))
                 {
                     if (mythic_powers[i].power_type == MYTHIC_POWER_TYPE_PREVENTS_REVIVAL && (mythic_powers[i].parameter3 == mons[montype].mlet || (mythic_powers[i].parameter4 & mons[montype].mflags2)))
                     {

@@ -132,6 +132,26 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
         MYTHIC_SUFFIX_POWER_LUCK,
         MYTHIC_FLAG_DIRECTLY_WISHABLE
     },
+    {
+        "free action", " of free action", "", 15,
+        MYTHIC_SUFFIX_POWER_FREE_ACTION,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE
+    },
+    {
+        "fire resistance", " of fire resistance", "", 20,
+        MYTHIC_SUFFIX_POWER_FIRE_RESISTANCE,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE
+    },
+    {
+        "cold resistance", " of cold resistance", "", 20,
+        MYTHIC_SUFFIX_POWER_COLD_RESISTANCE,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE
+    },
+    {
+        "shock resistance", " of shock resistance", "", 20,
+        MYTHIC_SUFFIX_POWER_SHOCK_RESISTANCE,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE
+    },
 };
 
 NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_POWERS] =
@@ -155,6 +175,10 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
     { "Sharpness", "Has 15% chance of dealing damage equal to 15% of max HP", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Reach", "Has extended range", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Luck", "Confers luck", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
+    { "Free action", "Free action", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, FREE_ACTION, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
+    { "Fire resistance", "75% fire resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, IMPROVED_FIRE_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
+    { "Cold resistance", "75% cold resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, IMPROVED_COLD_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
+    { "Shock resistance", "75% shock resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, IMPROVED_SHOCK_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
 };
 
 STATIC_DCL void FDECL(setgemprobs, (d_level *));
@@ -1169,7 +1193,7 @@ struct monst* mattacker;
 
             unsigned long mythic_power_bit = 1UL << ((unsigned long)i);
 
-            if (mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit)
+            if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(otmp, mythic_powers[i].power_flags))
             {
                 if (mythic_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING && (mythic_powers[i].parameter3 == mon->data->mlet || (mythic_powers[i].parameter4 & mon->data->mflags2)))
                 {
