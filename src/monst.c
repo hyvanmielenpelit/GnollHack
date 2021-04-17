@@ -923,7 +923,7 @@ NEARDATA struct permonst mons[] = {
 		M2_DEMON | M2_STALK,
         M3_INFRAVISIBLE | M3_INFRAVISION, M4_NONE, M5_HATES_SILVER, M6_NONE, M7_NONE, M8_NONE,
 		2, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("imp", None, "small devilish familiar", None, None, S_IMP, LVL(3, 12, 2, 7, 20, -7), (G_GENO | G_GENDER_ONE_EIGTH | 1),
+    MON("imp", None, "small devilish familiar", None, None, S_IMP, LVL(3, 12, 2, 7, 20, -7), (G_GENO | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 1, 4, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(20, 10, MS_CUSS, MZ_TINY, 1, 0, MAT_FLESH), STATS(5, 15, 12, 10, 9, 13), MR_REGENERATION, MR2_NONE, MC_NONE, M1_NONE, M2_DEMON | M2_WANDER | M2_STALK,
