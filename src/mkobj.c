@@ -2986,14 +2986,20 @@ unsigned corpstatflags;
     
     if (objtype != CORPSE && objtype != STATUE)
         impossible("making corpstat type %d", objtype);
-    if (x == 0 && y == 0) { /* special case - random placement */
+
+    if (x == 0 && y == 0) 
+    { /* special case - random placement */
         otmp = mksobj(objtype, init, FALSE, FALSE);
         if (otmp)
             (void) rloco(otmp);
-    } else
+    }
+    else
         otmp = mksobj_at(objtype, x, y, init, FALSE);
-    if (otmp) {
-        if (mtmp) {
+
+    if (otmp) 
+    {
+        if (mtmp) 
+        {
             struct obj *otmp2;
 
             if (!ptr)
@@ -3005,13 +3011,15 @@ unsigned corpstatflags;
         }
         /* use the corpse or statue produced by mksobj() as-is
            unless `ptr' is non-null */
-        if (ptr) {
+        if (ptr) 
+        {
             int old_corpsenm = otmp->corpsenm;
 
             otmp->corpsenm = monsndx(ptr);
             otmp->owt = weight(otmp);
             if (otmp->otyp == CORPSE && (special_corpse(old_corpsenm)
-                                         || special_corpse(otmp->corpsenm))) {
+                                         || special_corpse(otmp->corpsenm))) 
+            {
                 obj_stop_timers(otmp);
                 start_corpse_timeout(otmp);
             }
@@ -3073,7 +3081,8 @@ struct monst *mtmp;
         forget_npc_entry(mtmp); /* ENPC() */
     if (!has_omonst(obj))
         newomonst(obj);
-    if (has_omonst(obj)) {
+    if (has_omonst(obj)) 
+    {
         struct monst *mtmp2 = OMONST(obj);
 
         *mtmp2 = *mtmp;

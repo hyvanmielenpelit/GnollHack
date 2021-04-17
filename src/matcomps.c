@@ -2651,7 +2651,7 @@ struct materialcomponentlist matlists[] =
 	},
 
 	{ SPE_ELECTROCUTE,
-	"2 copper ores, turquise",
+	"2 copper ores, turquoise",
 	STRANGE_OBJECT,
 	65,
 		{

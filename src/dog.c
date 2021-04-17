@@ -1314,20 +1314,26 @@ boolean was_dead;
     edog = !mtmp->isminion ? EDOG(mtmp) : 0;
 
     /* if monster was starving when it died, undo that now */
-    if (edog && edog->mhpmax_penalty) {
+    if (edog && edog->mhpmax_penalty) 
+    {
         edog->mhpmax_penalty = 0;
 		update_mon_maxhp(mtmp);
     }
 
-    if (edog && (edog->killed_by_u == 1 || edog->abuse > 2)) {
+    if (edog && (edog->killed_by_u == 1 || edog->abuse > 2)) 
+    {
         mtmp->mpeaceful = mtmp->mtame = 0;
 		if (!mtmp->mtame)
 			mtmp->ispartymember = 0;
+
 		if (edog->abuse >= 0 && edog->abuse < 10)
             if (!rn2(edog->abuse + 1))
                 mtmp->mpeaceful = 1;
-        if (!quietly && cansee(mtmp->mx, mtmp->my)) {
-            if (haseyes(youmonst.data)) {
+
+        if (!quietly && cansee(mtmp->mx, mtmp->my)) 
+        {
+            if (haseyes(youmonst.data)) 
+            {
                 if (haseyes(mtmp->data))
                     pline("%s %s to look you in the %s.", Monnam(mtmp),
                           is_peaceful(mtmp) ? "seems unable" : "refuses",
@@ -1336,7 +1342,9 @@ boolean was_dead;
                     pline("%s avoids your gaze.", Monnam(mtmp));
             }
         }
-    } else {
+    }
+    else
+    {
         /* chance it goes wild anyway - Pet Sematary */
 		if(mtmp->mtame)
 	        mtmp->mtame = rn2(mtmp->mtame + 1);
@@ -1344,7 +1352,8 @@ boolean was_dead;
             mtmp->mpeaceful = rn2(2);
     }
 
-    if (!mtmp->mtame) {
+    if (!mtmp->mtame)
+    {
         if (!quietly && canspotmon(mtmp))
             pline("%s %s.", Monnam(mtmp),
                   is_peaceful(mtmp) ? "is no longer tame" : "has become feral");
@@ -1355,7 +1364,9 @@ boolean was_dead;
             m_unleash(mtmp, TRUE);
         if (mtmp == u.usteed)
             dismount_steed(DISMOUNT_THROWN);
-    } else if (edog) {
+    }
+    else if (edog)
+    {
         /* it's still a pet; start a clean pet-slate now */
         edog->revivals++;
         edog->killed_by_u = 0;
@@ -1363,7 +1374,8 @@ boolean was_dead;
         edog->ogoal.x = edog->ogoal.y = -1;
         if (was_dead || edog->hungrytime < monstermoves + 500L)
             edog->hungrytime = monstermoves + 500L;
-        if (was_dead) {
+        if (was_dead)
+        {
             edog->droptime = 0L;
             edog->dropdist = 10000;
             edog->whistletime = 0L;

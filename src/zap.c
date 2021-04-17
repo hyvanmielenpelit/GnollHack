@@ -1989,7 +1989,9 @@ int mnum_override; /* Use this mnum instead */
 
     if (has_omonst(obj))
         mtmp2 = get_mtraits(obj, TRUE);
-    if (mtmp2) {
+
+    if (mtmp2) 
+    {
         /* save_mtraits() validated mtmp2->mnum */
         mtmp2->data = &mons[mnum_override >= LOW_PM ? mnum_override : mtmp2->mnum];
         if (mtmp2->mhpmax <= 0 && !is_rider(mtmp2->data))
@@ -2061,7 +2063,9 @@ int mnum_override; /* Use this mnum instead */
         mtmp2->mprops[BLINDED] = 0;
 		mtmp2->mprops[STUNNED] = 0;
 		mtmp2->mprops[CONFUSION] = 0;
-		if (mtmp2->isshk) {
+
+		if (mtmp2->isshk) 
+        {
             neweshk(mtmp);
             *ESHK(mtmp) = *ESHK(mtmp2);
             if (ESHK(mtmp2)->bill_p != 0
@@ -2077,6 +2081,7 @@ int mnum_override; /* Use this mnum instead */
 		/* heal the monster */
 		if (mtmp->mbasehpmax > mtmp2->mbasehpmax&& is_rider(mtmp2->data))
 			mtmp2->mbasehpmax = mtmp->mbasehpmax;
+
 		update_mon_maxhp(mtmp);
 		update_mon_maxhp(mtmp2);
 		mtmp2->mhp = mtmp2->mhpmax;
@@ -2147,17 +2152,22 @@ boolean replaceundead;
     boolean one_of;
     int montype, container_nesting = 0;
 
-    if (corpse->otyp != CORPSE) {
+    if (corpse->otyp != CORPSE) 
+    {
         impossible("Attempting to revive %s?", xname(corpse));
         return (struct monst *) 0;
     }
 
     x = y = 0;
-    if (corpse->where != OBJ_CONTAINED) {
+
+    if (corpse->where != OBJ_CONTAINED)
+    {
         /* only for invent, minvent, or floor */
         container = 0;
         (void) get_obj_location(corpse, &x, &y, 0);
-    } else {
+    }
+    else 
+    {
         /* deal with corpses in [possibly nested] containers */
         struct monst *carrier;
         int holder = OBJ_FREE;
@@ -2165,7 +2175,8 @@ boolean replaceundead;
         container = corpse->ocontainer;
         carrier =
             get_container_location(container, &holder, &container_nesting);
-        switch (holder) {
+        switch (holder) 
+        {
         case OBJ_MINVENT:
             x = carrier->mx, y = carrier->my;
             break;
@@ -2179,6 +2190,7 @@ boolean replaceundead;
             break; /* x,y are 0 */
         }
     }
+    
     if (!x || !y
         /* Rules for revival from containers:
          *  - the container cannot be locked
@@ -2230,7 +2242,8 @@ boolean replaceundead;
     /* [should probably handle recorporealization first; if corpse and
        ghost are at same location, revived creature shouldn't be bumped
        to an adjacent spot by ghost which joins with it] */
-    if (MON_AT(x, y)) {
+    if (MON_AT(x, y)) 
+    {
         if (enexto(&xy, x, y, mptr))
             x = xy.x, y = xy.y;
     }
@@ -2244,11 +2257,13 @@ boolean replaceundead;
         return (struct monst *) 0;
     }
 
-    if (cant_revive(&montype, TRUE, corpse)) {
+    if (cant_revive(&montype, TRUE, corpse)) 
+    {
         /* make a zombie or doppelganger instead */
         /* note: montype has changed; mptr keeps old value for newcham() */
         mtmp = makemon(&mons[montype], x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
-        if (mtmp) {
+        if (mtmp)
+        {
             /* skip ghost handling */
             if (has_omid(corpse))
                 free_omid(corpse);
@@ -2257,29 +2272,37 @@ boolean replaceundead;
             if (mtmp->cham == PM_DOPPELGANGER) {
                 /* change shape to match the corpse */
                 (void) newcham(mtmp, mptr, FALSE, FALSE);
-            } else if (mtmp->data->mlet == S_LESSER_UNDEAD) {
+            } else if (mtmp->data->mlet == S_LESSER_UNDEAD) 
+            {
                 mtmp->mhp = mtmp->mhpmax = 100;
 				mtmp->mprops[VERY_FAST] |= M_INTRINSIC_ACQUIRED;
             }
         }
-    } else if (has_omonst(corpse)) {
+    } 
+    else if (has_omonst(corpse))
+    {
         /* use saved traits */
         xy.x = x, xy.y = y;
         mtmp = montraits(corpse, &xy, FALSE, animateintomon >= 0 || replaceundead ? montype : -1);
         if (mtmp && mtmp->mtame && !mtmp->isminion && !mtmp->isfaithful)
             wary_dog(mtmp, TRUE);
-    } else {
+    }
+    else 
+    {
         /* make a new monster */
         mtmp = makemon(mptr, x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
     }
+
     if (!mtmp)
         return (struct monst *) 0;
 
     /* hiders shouldn't already be re-hidden when they revive */
-    if (mtmp->mundetected) {
+    if (mtmp->mundetected) 
+    {
         mtmp->mundetected = 0;
         newsym(mtmp->mx, mtmp->my);
     }
+
     if (M_AP_TYPE(mtmp))
         seemimic(mtmp);
 
@@ -2288,7 +2311,8 @@ boolean replaceundead;
         corpse = splitobj(corpse, 1L);
 
     /* if this is caused by the hero there might be a shop charge */
-    if (by_hero) {
+    if (by_hero)
+    {
         struct monst *shkp = 0;
 
         x = corpse->ox, y = corpse->oy;
@@ -2296,7 +2320,8 @@ boolean replaceundead;
             && (carried(corpse) ? corpse->unpaid : !corpse->no_charge))
             shkp = shop_keeper(*in_rooms(x, y, SHOPBASE));
 
-        if (cansee(x, y)) {
+        if (cansee(x, y))
+        {
             char buf[BUFSZ];
 
             Strcpy(buf, one_of ? "one of " : "");
@@ -2311,11 +2336,14 @@ boolean replaceundead;
             if (one_of) /* could be simplified to ''corpse->quan = 1L;'' */
                 corpse->quan--;
             pline("%s glows iridescently.", upstart(buf));
-        } else if (shkp) {
+        } 
+        else if (shkp)
+        {
             /* need some prior description of the corpse since
                stolen_value() will refer to the object as "it" */
             pline("A corpse is resuscitated.");
         }
+
         /* don't charge for shopkeeper's own corpse if we just revived him */
         if (shkp && mtmp != shkp)
             (void) stolen_value(corpse, x, y, is_peaceful(shkp),
@@ -2326,7 +2354,8 @@ boolean replaceundead;
     }
 
     /* handle recorporealization of an active ghost */
-    if (has_omid(corpse)) {
+    if (has_omid(corpse))
+    {
         unsigned m_id;
         struct monst *ghost;
         struct obj *otmp;
@@ -2334,22 +2363,27 @@ boolean replaceundead;
         (void) memcpy((genericptr_t) &m_id, (genericptr_t) OMID(corpse),
                       sizeof m_id);
         ghost = find_mid(m_id, FM_FMON);
-        if (ghost && ghost->data == &mons[PM_GHOST]) {
+        if (ghost && ghost->data == &mons[PM_GHOST]) 
+        {
             if (canseemon(ghost))
                 pline("%s is suddenly drawn into its former body!",
                       Monnam(ghost));
             /* transfer the ghost's inventory along with it */
-            while ((otmp = ghost->minvent) != 0) {
+            while ((otmp = ghost->minvent) != 0) 
+            {
                 obj_extract_self(otmp);
                 add_to_minv(mtmp, otmp);
             }
+
             /* tame the revived monster if its ghost was tame */
-            if (ghost->mtame && !mtmp->mtame) {
+            if (ghost->mtame && !mtmp->mtame)
+            {
                 if (tamedog(mtmp, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE)) {
                     /* ghost's edog data is ignored */
                     mtmp->mtame = ghost->mtame;
                 }
             }
+
             /* was ghost, now alive, it's all very confusing */
 			mtmp->mprops[CONFUSION] |= M_INTRINSIC_ACQUIRED;
 			/* separate ghost monster no longer exists */
