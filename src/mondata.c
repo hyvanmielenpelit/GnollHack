@@ -925,6 +925,9 @@ struct permonst *pm1, *pm2;
     if (is_purple_worm(pm1))
         return is_purple_worm(pm2);
 
+    if (is_cockatrice(pm1))
+        return is_cockatrice(pm2);
+
     /* [currently there's no reason to bother matching up
         assorted bugs and blobs with their closest variants] */
     /* didn't match */

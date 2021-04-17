@@ -186,7 +186,7 @@
 #define M2_MODRON		0x00000400UL		/* is a modron */
 #define M2_MIMIC 		0x00000800UL        /* is a mimic */
 #define M2_ELEMENTAL 	0x00001000UL        /* is an elemental being */
-/* free bit */
+#define M2_COCKATRICE 	0x00002000UL        /* is a cockatrice */
 #define M2_MINION		0x00004000UL       /* is a minion of a deity */
 #define M2_GIANT		0x00008000UL        /* is a giant */
 #define M2_SHAPESHIFTER 0x00010000UL /* is a shapeshifting species */

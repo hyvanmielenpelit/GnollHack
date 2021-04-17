@@ -1112,7 +1112,10 @@ randomore()
 
 	for (int i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
 	{
-		totalprob += max(1, objects[i].oc_prob);
+        if (Inhell)
+            totalprob += 1;
+        else
+    		totalprob += max(1, objects[i].oc_prob);
 	}
 
 	int roll = rn2(totalprob);
@@ -1121,7 +1124,11 @@ randomore()
 
 	for (int i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
 	{
-		probcount += max(1, objects[i].oc_prob);
+        if (Inhell)
+            probcount += 1;
+        else
+            probcount += max(1, objects[i].oc_prob);
+
 		if (probcount > roll)
 		{
 			oreid = i;

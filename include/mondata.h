@@ -82,6 +82,7 @@
 #define is_tentacled_one(ptr) (((ptr)->mflags2 & M2_TENTACLED_ONE) != 0)
 #define is_mimic(ptr) (((ptr)->mflags2 & M2_MIMIC) != 0)
 #define is_elemental(ptr) (((ptr)->mflags2 & M2_ELEMENTAL) != 0)
+#define is_cockatrice(ptr) (((ptr)->mflags2 & M2_COCKATRICE) != 0L)
 #define is_male(ptr) (((ptr)->mflags2 & M2_MALE) != 0L)
 #define is_female(ptr) (((ptr)->mflags2 & M2_FEMALE) != 0L)
 #define is_neuter(ptr) (((ptr)->mflags2 & M2_NEUTER) != 0L)

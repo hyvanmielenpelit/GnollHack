@@ -496,12 +496,14 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
             int tmp2 = 0;
             for (int exp_round = 0; exp_round < exceptionality_rounds; exp_round++)
             {
-                if (bigmonst(ptr)) {
+                if (bigmonst(ptr)) 
+                {
                     if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
                         tmp2 += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
                     tmp2 += objects[otyp].oc_wldmgplus;
                 }
-                else {
+                else 
+                {
                     if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
                         tmp2 += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
                     tmp2 += objects[otyp].oc_wsdmgplus;
@@ -555,10 +557,12 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
         tmp = 0;
 
     /* "very heavy iron ball"; weight increase is in increments */
-    if (otyp == HEAVY_IRON_BALL && tmp > 0) {
+    if (otyp == HEAVY_IRON_BALL && tmp > 0) 
+    {
         int wt = (int) objects[HEAVY_IRON_BALL].oc_weight;
 
-        if ((int) otmp->owt > wt) {
+        if ((int) otmp->owt > wt) 
+        {
             wt = ((int) otmp->owt - wt) / IRON_BALL_W_INCR;
             tmp += rnd(4 * wt);
             if (tmp > 25)
@@ -568,7 +572,8 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
 
     /* Put weapon vs. monster type damage bonuses in below: */
     if (Is_weapon || Is_worn_gauntlets || otmp->oclass == GEM_CLASS || otmp->oclass == BALL_CLASS
-        || otmp->oclass == CHAIN_CLASS || otmp->oclass == ROCK_CLASS) {
+        || otmp->oclass == CHAIN_CLASS || otmp->oclass == ROCK_CLASS)
+    {
         int bonus = 0;
 
         if (otmp->blessed && mon_hates_blessed(mon))
@@ -590,7 +595,8 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
         tmp += bonus;
     }
 
-    if (tmp > 0) {
+    if (tmp > 0) 
+    {
         /* It's debatable whether a rusted blunt instrument
            should do less damage than a pristine one, since
            it will hit with essentially the same impact, but

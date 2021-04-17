@@ -140,17 +140,22 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
     {
         "fire resistance", " of fire resistance", "", 20,
         MYTHIC_SUFFIX_POWER_FIRE_RESISTANCE,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
     {
         "cold resistance", " of cold resistance", "", 20,
         MYTHIC_SUFFIX_POWER_COLD_RESISTANCE,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
     {
         "shock resistance", " of shock resistance", "", 20,
         MYTHIC_SUFFIX_POWER_SHOCK_RESISTANCE,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
+    },
+    {
+        "cockatrice slaying", " of cockatrice slaying", "", 20,
+        MYTHIC_SUFFIX_POWER_COCKATRICE_SLAYING | MYTHIC_SUFFIX_POWER_STONE_RESISTANCE,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
 };
 
@@ -175,10 +180,12 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
     { "Sharpness", "Has 15% chance of dealing damage equal to 15% of max HP", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Reach", "Has extended range", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Luck", "Confers luck", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
-    { "Free action", "Free action", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, FREE_ACTION, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
-    { "Fire resistance", "75% fire resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, IMPROVED_FIRE_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
-    { "Cold resistance", "75% cold resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, IMPROVED_COLD_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
-    { "Shock resistance", "75% shock resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, IMPROVED_SHOCK_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
+    { "Free action", "Free action", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, FREE_ACTION, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
+    { "Fire resistance", "75% fire resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, IMPROVED_FIRE_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
+    { "Cold resistance", "75% cold resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, IMPROVED_COLD_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
+    { "Shock resistance", "75% shock resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, IMPROVED_SHOCK_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
+    { "Cockatrice slaying", "Triple damage to cockatrices", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_COCKATRICE, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Stone resistance", "Petrification resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, STONE_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
 };
 
 STATIC_DCL void FDECL(setgemprobs, (d_level *));
