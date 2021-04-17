@@ -1368,7 +1368,7 @@ struct obj *obj;
                     pline("Sparks fly as you whack the %s.%s",
 						sobj_at(STATUE, rx, ry) ? "statue" : "boulder",
 						vibrate ? " The axe-handle vibrates violently!" : "");
-                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SPARKS_FLY);
+                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
                     if (vibrate)
 						losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "axing a hard object",
 							KILLED_BY);
@@ -1380,7 +1380,7 @@ struct obj *obj;
                     play_object_hit_sound(obj, HIT_SURFACE_SOURCE_OBJECT, obj_to_any(sobj_at(STATUE, rx, ry)), 0, HMON_MELEE);
                     pline("Sparks fly as you cut the %s, but nothing much else happens.",
 						sobj_at(STATUE, rx, ry) ? "statue" : "boulder");
-                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SPARKS_FLY);
+                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
                 }
             }
 			else if (u.utrap && u.utraptype == TT_PIT && trap

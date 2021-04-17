@@ -4976,14 +4976,22 @@ register struct obj *obj;
             make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
             break;
         }
-        if (trap_detect(otmp))
+        if (trap_detect(obj))
+        {
+            if (objects[WAN_TRAP_DETECTION].oc_name_known)
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
             return; /* nothing detected */
+        }
         You("become aware of the location of nearby traps!");
         known = TRUE;
         break;
     case WAN_ORE_DETECTION:
-		if (object_detect(otmp, GEM_CLASS))
-			return; /* nothing detected */
+        if (object_detect(obj, GEM_CLASS))
+        {
+            if (objects[WAN_ORE_DETECTION].oc_name_known)
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
+            return; /* nothing detected */
+        }
 		known = TRUE;
 		break;
 	case WAN_CREATE_MONSTER:

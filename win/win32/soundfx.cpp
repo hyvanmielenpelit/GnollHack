@@ -903,11 +903,18 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Armor/Helm of Opposite Alignment/Alignment Change Conversion", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Armor/Helm of Opposite Alignment/Alignment Change Helm On", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Armor/Helm of Opposite Alignment/Alignment Change Helm Off", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Too Much to Comprehend", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Marker/Write", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Marker/Dry Out", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Marker/Drop", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Marker/Pick Up", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Crystal Ball/Use Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Crystal Ball/Use Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Crystal Ball/Use Hallucinated", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Crystal Ball/Use Fail Hallucinated", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Crystal Ball/Select Symbol", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Male/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Male/Get Angry", 1.0f },

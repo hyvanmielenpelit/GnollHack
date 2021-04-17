@@ -476,6 +476,8 @@ outgoldmap:
         ter_typ |= TER_MON; /* so autodescribe will recognize hero */
     }
     show_detection_everywhere();
+    if (sobj)
+        play_simple_object_sound(sobj, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
 
     You_feel("very greedy, and sense gold!");
     exercise(A_WIS, TRUE);
@@ -606,6 +608,8 @@ register struct obj *sobj;
         } else
             You("sense %s.", what);
         exercise(A_WIS, TRUE);
+        if (sobj)
+            play_simple_object_sound(sobj, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
 
         browse_map(ter_typ, "food");
 
@@ -809,6 +813,8 @@ int class;            /* an object class, 0 for all */
     }
     show_detection_everywhere();
     You("detect the %s of %s.", ct ? "presence" : "absence", stuff);
+    if (detector)
+        play_simple_object_sound(detector, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
 
     if (!ct)
         display_nhwindow(WIN_MAP, TRUE);
@@ -894,6 +900,8 @@ int mclass;                /* monster class, 0 for all */
         You("sense the presence of monsters.");
         if (woken)
             pline("Monsters sense the presence of you.");
+        if (otmp)
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
 
         if ((otmp && otmp->blessed) && !unconstrained) {
             /* persistent detection--just show updated map */
@@ -995,12 +1003,12 @@ int how; /* 1 for misleading map feedback */
  */
 int
 trap_detect(sobj)
-struct obj *sobj; /* null if crystal ball, *scroll if gold detection scroll */
+struct obj *sobj; /* detecting object */
 {
     register struct trap *ttmp;
     struct monst *mon;
     int door, glyph, tr, ter_typ = TER_DETECT | TER_TRP | TER_OBJ;
-    int cursed_src = sobj && sobj->cursed;
+    int cursed_src = sobj && sobj->oclass == SCROLL_CLASS && sobj->cursed; /* Other items are not affected by curse, since it would be too obvious */
     boolean found = FALSE;
     coord cc;
 
@@ -1095,6 +1103,8 @@ outtrapmap:
     }
     show_detection_everywhere();
     You_feel("%s.", cursed_src ? "very greedy" : "entrapped");
+    if (sobj)
+        play_simple_object_sound(sobj, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
 
     browse_map(ter_typ, "trap of interest");
 
@@ -1177,15 +1187,24 @@ void
 use_crystal_ball(optr)
 struct obj **optr;
 {
+    if (!optr)
+        return;
+
     char ch;
     int oops;
     struct obj *obj = *optr;
 
+    if (!obj)
+        return;
+
     if (Blind)
     {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         pline("Too bad you can't see %s.", the(xname(obj)));
         return;
     }
+
+    obj->cooldownleft = objects[obj->otyp].oc_item_cooldown;
 
     oops = (rnd(20) > ACURR(A_INT) || obj->cursed);
     if (oops && (obj->charges > 0)) 
@@ -1193,6 +1212,7 @@ struct obj **optr;
         switch (rnd(4)) //obj->oartifact ? 4 : 5))
         {
         case 1:
+            play_sfx_sound(SFX_TOO_MUCH_TO_COMPREHEND);
             pline("%s too much to comprehend!", Tobjnam(obj, "are"));
             break;
         case 2:
@@ -1227,12 +1247,16 @@ struct obj **optr;
                 (HHallucination & TIMEOUT) + (long) rnd(100), FALSE, 0L);
             break;
         case 5:
+            play_sfx_sound(SFX_EXPLOSION_FIERY);
+            play_special_effect_at(SPECIAL_EFFECT_SMALL_FIERY_EXPLOSION, 0, u.ux, u.uy, FALSE);
+            special_effect_wait_until_action(0);
             pline("%s!", Tobjnam(obj, "explode"));
             useup(obj);
             *optr = obj = 0; /* it's gone */
             /* physical damage cause by the shards and force */
             losehp(adjust_damage(rnd(30), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "exploding crystal ball",
                    KILLED_BY_AN);
+            special_effect_wait_until_end(0);
             break;
         }
         if (obj)
@@ -1242,13 +1266,15 @@ struct obj **optr;
 
     if (Hallucination) 
     {
-        if (!obj->charges) 
+        if (!obj->charges)
         {
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
             pline("All you see is funky %s haze.", hcolor((char *) 0));
         } 
         else 
         {
-            switch (rnd(6)) 
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
+            switch (rnd(6))
             {
             case 1:
                 You("grok some groovy globs of incandescent lava.");
@@ -1279,8 +1305,10 @@ struct obj **optr;
 
     /* read a single character */
     if (flags.verbose)
+    {
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_ZAP);
         You("may look for an object or monster symbol.");
-
+    }
     if (iflags.using_gui_tiles)
     {
         winid tmpwin;
@@ -1375,7 +1403,7 @@ struct obj **optr;
 
     if (obj->charges <= 0)
     {
-        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
         pline_The("vision is unclear.");
     } 
     else
@@ -1393,19 +1421,20 @@ struct obj **optr;
             ch = DEF_MIMIC;
 
         if ((class = def_char_to_objclass(ch)) != MAX_OBJECT_CLASSES)
-            ret = object_detect((struct obj *) 0, class);
+            ret = object_detect(/* (struct obj *) 0*/ obj, class);
         else if ((class = def_char_to_monclass(ch)) != MAX_MONSTER_CLASSES)
-            ret = monster_detect((struct obj *) 0, class);
+            ret = monster_detect(/* (struct obj *) 0*/ obj, class);
         else if (iflags.bouldersym && (ch == iflags.bouldersym))
-            ret = object_detect((struct obj *) 0, ROCK_CLASS);
+            ret = object_detect(/* (struct obj *) 0*/ obj, ROCK_CLASS);
         else
             switch (ch) 
             {
             case '^':
-                ret = trap_detect((struct obj *) 0);
+                ret = trap_detect(/* (struct obj *) 0*/ obj);
                 break;
             default:
                 i = rn2(SIZE(level_detects));
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
                 You_see("%s, %s.", level_detects[i].what,
                         level_distance(level_detects[i].where));
                 ret = 0;
@@ -1415,9 +1444,15 @@ struct obj **optr;
         if (ret)
         {
             if (!rn2(100)) /* make them nervous */
+            {
+                play_sfx_sound(SFX_SURPRISE_ATTACK);
                 You_see("the Wizard of Yendor gazing out at you.");
+            }
             else
+            {
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
                 pline_The("vision is unclear.");
+            }
         }
     }
     return;

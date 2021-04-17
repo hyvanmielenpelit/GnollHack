@@ -1178,13 +1178,21 @@ struct obj *otmp;
             break;
         }
         if (monster_detect(otmp, 0))
+        {
+            if(otmp->otyp == SPE_DETECT_MONSTERS || objects[POT_MONSTER_DETECTION].oc_name_known)
+                play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
             return 1; /* nothing detected */
+        }
         exercise(A_WIS, TRUE);
         break;
     case POT_OBJECT_DETECTION:
     case SPE_DETECT_TREASURE:
         if (object_detect(otmp, 0))
+        {
+            if(otmp->otyp == SPE_DETECT_TREASURE || objects[POT_OBJECT_DETECTION].oc_name_known)
+                play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
             return 1; /* nothing detected */
+        }
         exercise(A_WIS, TRUE);
         break;
     case POT_SICKNESS:
@@ -1849,6 +1857,9 @@ const char *txt;
         pline1(txt);
 
     if (!obj) /* e.g., crystal ball finds no traps */
+        return;
+
+    if (obj->oclass != SCROLL_CLASS && obj->oclass != POTION_CLASS) /* Use up only potions and scrolls */
         return;
 
     if (obj->dknown && !objects[obj->otyp].oc_name_known

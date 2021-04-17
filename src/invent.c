@@ -1920,10 +1920,12 @@ int x, y;
 {
     register struct obj* otmp;
 
+#if 0
     /* Memory objects first */
     for (otmp = level.locations[x][y].hero_memory_layers.memory_objchn; otmp; otmp = otmp->nexthere)
         if (otmp->otyp == otyp)
             return otmp;
+#endif
 
     /* Then actual */
     for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)

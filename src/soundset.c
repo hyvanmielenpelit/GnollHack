@@ -1581,17 +1581,17 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_GENERIC_ZAP, 1.0f},
 
             {GHSOUND_WAND_BREAK, 1.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f}, /* Burnt */
+            {MAX_GHSOUNDS, 0.0f}, /* Frozen */
+            {MAX_GHSOUNDS, 0.0f}, /* Electrocuted */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rusts */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Burns */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Corrodes */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rots */
+            {GHSOUND_CRYSTAL_BALL_USE_SUCCESS, 1.0f}, /* General effect */
+            {GHSOUND_CRYSTAL_BALL_USE_FAIL, 1.0f}, /* General effect 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Push */
+            {MAX_GHSOUNDS, 0.0f}, /* Bump into */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -1698,36 +1698,36 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
 
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f}, /* Pick up */
+            {MAX_GHSOUNDS, 1.0f}, /* Drop */
+            {MAX_GHSOUNDS, 1.0f}, /* Drop after throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Wear */
+            {MAX_GHSOUNDS, 0.0f}, /* Take off */
+            {MAX_GHSOUNDS, 0.0f}, /* Wield */
+            {MAX_GHSOUNDS, 0.0f}, /* Unwield */
+            {MAX_GHSOUNDS, 0.0f}, /* Quiver */
+            {MAX_GHSOUNDS, 0.0f}, /* Unquiver */
+            {MAX_GHSOUNDS, 1.0f}, /* Apply */
+            {MAX_GHSOUNDS, 1.0f}, /* Apply 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke 2 */
+            {MAX_GHSOUNDS, 1.0f}, /* Quaff */
+            {MAX_GHSOUNDS, 0.0f}, /* Read */
+            {MAX_GHSOUNDS, 0.0f}, /* Engrave */
+            {MAX_GHSOUNDS, 1.0f}, /* Zap */
 
-            {GHSOUND_POTION_BREAK, 1.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
+            {GHSOUND_POTION_BREAK, 1.0f}, /* Break */
+            {MAX_GHSOUNDS, 0.0f}, /* Burnt */
+            {MAX_GHSOUNDS, 0.0f}, /* Frozen */
+            {MAX_GHSOUNDS, 0.0f}, /* Electrocuted */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rusts */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Burns */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Corrodes */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rots */
+            {GHSOUND_CRYSTAL_BALL_USE_SUCCESS, 1.0f}, /* General effect */
+            {GHSOUND_CRYSTAL_BALL_USE_FAIL, 1.0f}, /* General effect 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Push */
+            {MAX_GHSOUNDS, 0.0f}, /* Bump into */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -2439,48 +2439,252 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
         "magic marker",
         OBJECT_SOUNDSET_GENERIC,
         {
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 1.0f},
+            {MAX_GHSOUNDS, 0.0f}, /* Ambient */
+            {MAX_GHSOUNDS, 1.0f}, /* Melee Swing */
+            {MAX_GHSOUNDS, 1.0f}, /* Melee Hit */
+            {MAX_GHSOUNDS, 1.0f}, /* Throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Fire */
+            {MAX_GHSOUNDS, 1.0f}, /* Ranged Hit */
 
             {GHSOUND_MAGIC_MARKER_PICK_UP, 1.0f}, /* Pick up */
             {GHSOUND_MAGIC_MARKER_DROP, 1.0f}, /* Drop */
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 1.0f}, /* Drop after throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Wear */
+            {MAX_GHSOUNDS, 0.0f}, /* Take off */
+            {MAX_GHSOUNDS, 0.0f}, /* Wield */
+            {MAX_GHSOUNDS, 0.0f}, /* Unwield */
+            {MAX_GHSOUNDS, 0.0f}, /* Quiver */
+            {MAX_GHSOUNDS, 0.0f}, /* Unquiver */
             {GHSOUND_MAGIC_MARKER_WRITE, 1.0f}, /* Apply */
             {GHSOUND_MAGIC_MARKER_DRY_OUT, 1.0f}, /* Apply 2 */
             {MAX_GHSOUNDS, 0.0f}, /* Invoke */
             {MAX_GHSOUNDS, 0.0f}, /* Invoke 2 */
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f}, /* Quaff */
+            {MAX_GHSOUNDS, 0.0f}, /* Read */
+            {MAX_GHSOUNDS, 0.0f}, /* Engrave */
+            {MAX_GHSOUNDS, 0.0f}, /* Zap */
 
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 1.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f}, /* Break */
+            {MAX_GHSOUNDS, 0.0f}, /* Burnt */
+            {MAX_GHSOUNDS, 0.0f}, /* Frozen */
+            {MAX_GHSOUNDS, 0.0f}, /* Electrocuted */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rusts */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Burns */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Corrodes */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rots */
+            {MAX_GHSOUNDS, 1.0f}, /* General effect */
+            {MAX_GHSOUNDS, 1.0f}, /* General effect 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Push */
+            {MAX_GHSOUNDS, 0.0f}, /* Bump into */
 
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f},
-            {MAX_GHSOUNDS, 0.0f}
+            {MAX_GHSOUNDS, 0.0f}, /* Walk */
+            {MAX_GHSOUNDS, 0.0f}, /* Fly */
+            {MAX_GHSOUNDS, 0.0f}, /* Levitation */
+            {MAX_GHSOUNDS, 0.0f}  /* Swim */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_ROCK,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE,
+        OBJECT_CONTAINER_SOUNDSET_NONE
+    }, 
+    {
+        "crystal ball",
+        OBJECT_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* Ambient */
+            {MAX_GHSOUNDS, 1.0f}, /* Melee Swing */
+            {MAX_GHSOUNDS, 1.0f}, /* Melee Hit */
+            {MAX_GHSOUNDS, 1.0f}, /* Throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Fire */
+            {MAX_GHSOUNDS, 1.0f}, /* Ranged Hit */
+
+            {MAX_GHSOUNDS, 1.0f}, /* Pick up */
+            {MAX_GHSOUNDS, 1.0f}, /* Drop */
+            {MAX_GHSOUNDS, 1.0f}, /* Drop after throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Wear */
+            {MAX_GHSOUNDS, 0.0f}, /* Take off */
+            {MAX_GHSOUNDS, 0.0f}, /* Wield */
+            {MAX_GHSOUNDS, 0.0f}, /* Unwield */
+            {MAX_GHSOUNDS, 0.0f}, /* Quiver */
+            {MAX_GHSOUNDS, 0.0f}, /* Unquiver */
+            {GHSOUND_CRYSTAL_BALL_USE_HALLUCINATED, 1.0f}, /* Apply */
+            {GHSOUND_CRYSTAL_BALL_USE_FAIL_HALLUCINATED, 1.0f}, /* Apply 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Quaff */
+            {MAX_GHSOUNDS, 0.0f}, /* Read */
+            {MAX_GHSOUNDS, 0.0f}, /* Engrave */
+            {GHSOUND_CRYSTAL_BALL_SELECT_SYMBOL, 1.0f}, /* Zap */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Break */
+            {MAX_GHSOUNDS, 0.0f}, /* Burnt */
+            {MAX_GHSOUNDS, 0.0f}, /* Frozen */
+            {MAX_GHSOUNDS, 0.0f}, /* Electrocuted */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rusts */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Burns */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Corrodes */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rots */
+            {GHSOUND_CRYSTAL_BALL_USE_SUCCESS, 1.0f}, /* General effect */
+            {GHSOUND_CRYSTAL_BALL_USE_FAIL, 1.0f}, /* General effect 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Push */
+            {MAX_GHSOUNDS, 0.0f}, /* Bump into */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Walk */
+            {MAX_GHSOUNDS, 0.0f}, /* Fly */
+            {MAX_GHSOUNDS, 0.0f}, /* Levitation */
+            {MAX_GHSOUNDS, 0.0f}  /* Swim */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_ROCK,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE,
+        OBJECT_CONTAINER_SOUNDSET_NONE
+    },
+    {
+        "scroll",
+        OBJECT_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* Ambient */
+            {MAX_GHSOUNDS, 1.0f}, /* Melee Swing */
+            {MAX_GHSOUNDS, 1.0f}, /* Melee Hit */
+            {MAX_GHSOUNDS, 1.0f}, /* Throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Fire */
+            {MAX_GHSOUNDS, 1.0f}, /* Ranged Hit */
+
+            {MAX_GHSOUNDS, 1.0f}, /* Pick up */
+            {MAX_GHSOUNDS, 1.0f}, /* Drop */
+            {MAX_GHSOUNDS, 1.0f}, /* Drop after throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Wear */
+            {MAX_GHSOUNDS, 0.0f}, /* Take off */
+            {MAX_GHSOUNDS, 0.0f}, /* Wield */
+            {MAX_GHSOUNDS, 0.0f}, /* Unwield */
+            {MAX_GHSOUNDS, 0.0f}, /* Quiver */
+            {MAX_GHSOUNDS, 0.0f}, /* Unquiver */
+            {GHSOUND_CRYSTAL_BALL_USE_SUCCESS, 1.0f}, /* Apply */
+            {GHSOUND_CRYSTAL_BALL_USE_FAIL, 1.0f}, /* Apply 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke 2 */
+            {MAX_GHSOUNDS, 1.0f}, /* Quaff */
+            {MAX_GHSOUNDS, 0.0f}, /* Read */
+            {MAX_GHSOUNDS, 0.0f}, /* Engrave */
+            {MAX_GHSOUNDS, 1.0f}, /* Zap */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Break */
+            {MAX_GHSOUNDS, 0.0f}, /* Burnt */
+            {MAX_GHSOUNDS, 0.0f}, /* Frozen */
+            {MAX_GHSOUNDS, 0.0f}, /* Electrocuted */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rusts */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Burns */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Corrodes */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rots */
+            {GHSOUND_CRYSTAL_BALL_USE_SUCCESS, 1.0f}, /* General effect */
+            {GHSOUND_CRYSTAL_BALL_USE_FAIL, 1.0f}, /* General effect 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Push */
+            {MAX_GHSOUNDS, 0.0f}, /* Bump into */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Walk */
+            {MAX_GHSOUNDS, 0.0f}, /* Fly */
+            {MAX_GHSOUNDS, 0.0f}, /* Levitation */
+            {MAX_GHSOUNDS, 0.0f}  /* Swim */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_ROCK,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE,
+        OBJECT_CONTAINER_SOUNDSET_NONE
+    },
+    {
+        "spellbook",
+        OBJECT_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* Ambient */
+            {MAX_GHSOUNDS, 1.0f}, /* Melee Swing */
+            {MAX_GHSOUNDS, 1.0f}, /* Melee Hit */
+            {MAX_GHSOUNDS, 1.0f}, /* Throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Fire */
+            {MAX_GHSOUNDS, 1.0f}, /* Ranged Hit */
+
+            {MAX_GHSOUNDS, 1.0f}, /* Pick up */
+            {MAX_GHSOUNDS, 1.0f}, /* Drop */
+            {MAX_GHSOUNDS, 1.0f}, /* Drop after throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Wear */
+            {MAX_GHSOUNDS, 0.0f}, /* Take off */
+            {MAX_GHSOUNDS, 0.0f}, /* Wield */
+            {MAX_GHSOUNDS, 0.0f}, /* Unwield */
+            {MAX_GHSOUNDS, 0.0f}, /* Quiver */
+            {MAX_GHSOUNDS, 0.0f}, /* Unquiver */
+            {MAX_GHSOUNDS, 1.0f}, /* Apply */
+            {MAX_GHSOUNDS, 1.0f}, /* Apply 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Quaff */
+            {MAX_GHSOUNDS, 0.0f}, /* Read */
+            {MAX_GHSOUNDS, 0.0f}, /* Engrave */
+            {MAX_GHSOUNDS, 0.0f}, /* Zap */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Break */
+            {MAX_GHSOUNDS, 0.0f}, /* Burnt */
+            {MAX_GHSOUNDS, 0.0f}, /* Frozen */
+            {MAX_GHSOUNDS, 0.0f}, /* Electrocuted */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rusts */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Burns */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Corrodes */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rots */
+            {GHSOUND_CRYSTAL_BALL_USE_SUCCESS, 1.0f}, /* General effect */
+            {GHSOUND_CRYSTAL_BALL_USE_FAIL, 1.0f}, /* General effect 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Push */
+            {MAX_GHSOUNDS, 0.0f}, /* Bump into */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Walk */
+            {MAX_GHSOUNDS, 0.0f}, /* Fly */
+            {MAX_GHSOUNDS, 0.0f}, /* Levitation */
+            {MAX_GHSOUNDS, 0.0f}  /* Swim */
         },
         SOUNDSOURCE_AMBIENT_GENERAL,
         {
@@ -5282,6 +5486,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_ALIGNMENT_CHANGE_HELM_OFF",
         {GHSOUND_ALIGNMENT_CHANGE_HELM_OFF, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_TOO_MUCH_TO_COMPREHEND",
+        {GHSOUND_TOO_MUCH_TO_COMPREHEND, 1.0f},
         FALSE, SOUND_PLAY_GROUP_LONG
     },
 };

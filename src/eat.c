@@ -1690,7 +1690,7 @@ const char *mesg;
             if (!Hallucination)
                 tin->dknown = tin->known = 1;
             tin = costly_tin(COST_OPEN);
-            play_simple_object_sound(tin, OBJECT_SOUND_TYPE_DISCARD);
+            play_simple_object_sound(tin, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
             goto use_up_tin;
         }
 
@@ -1737,7 +1737,7 @@ const char *mesg;
             if (flags.verbose)
                 You("discard the open tin.");
             tin = costly_tin(COST_OPEN);
-            play_simple_object_sound(tin, OBJECT_SOUND_TYPE_DISCARD);
+            play_simple_object_sound(tin, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
             goto use_up_tin;
         }
 

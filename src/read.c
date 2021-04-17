@@ -2569,7 +2569,11 @@ boolean *effect_happened_ptr;
         break;
     case SCR_GOLD_DETECTION:
         if ((confused || scursed) ? trap_detect(sobj) : gold_detect(sobj))
+        {
+            if(objects[SCR_GOLD_DETECTION].oc_name_known)
+                play_simple_object_sound(sobj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
             sobj = 0; /* failure: strange_feeling() -> useup() */
+        }
         break;
     case SCR_FOOD_DETECTION:
     case SPE_DETECT_FOOD:
@@ -2984,7 +2988,9 @@ boolean *effect_happened_ptr;
 		}
 		if(trap_detect(sobj) == 0) //Something was detected
 			You("become aware of the location of nearby traps!");
-		break;
+        else
+            play_simple_object_sound(sobj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
+        break;
 	case SCR_AMNESIA:
         known = TRUE;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
