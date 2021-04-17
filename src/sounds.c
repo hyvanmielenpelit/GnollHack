@@ -2143,7 +2143,6 @@ dochat()
 
 	/* Peaceful monster with sellable items */
 	if (is_peaceful(mtmp) && !(is_tame(mtmp) && !mtmp->ispartymember)
-		&& !mtmp->isshk 
 		&& !mtmp->isgd
 		&& !mtmp->ispriest
 		&& !is_watch(mtmp->data)
@@ -3144,7 +3143,7 @@ struct monst* mtmp;
 		/* Tell a rumor */
 		if (iflags.using_gui_sounds || Deaf)
 		{
-			pline("(%s hands an advisory note over to you.) It reads:", Monnam(mtmp));
+			pline("(%s hands a note over to you.)  It reads:", Monnam(mtmp));
 			u.uconduct.literate++;
 		}
 		verbalize("%s", rumor);
@@ -4437,13 +4436,17 @@ struct monst* mtmp;
 	if (!otmp || !mtmp)
 		return FALSE;
 
-	if (!otmp->owornmask
+	if (!otmp->owornmask 
 		&& otmp->oclass != COIN_CLASS
-		&& otmp->oclass != WEAPON_CLASS /* monsters do not currently sell their weapons */
-		&& otmp->oclass != ROCK_CLASS /* or giants their boulders */
-		&& !(is_pick(otmp) && needspick(mtmp->data)) /* or dwarves their picks */
-		&& !((mtmp->data->geno & G_UNIQ)) /* or unique monsters */
-		&& !(is_dwarvish_obj(otmp) && is_dwarf(mtmp->data)) /* or dwarves any other of their items */
+		&& ((otmp->speflags & SPEFLAGS_GRABBED_FROM_YOU) ||
+			   (otmp->oclass != WEAPON_CLASS /* monsters do not currently sell their weapons */
+			&& otmp->oclass != ROCK_CLASS /* or giants their boulders */
+			&& !(is_pick(otmp) && needspick(mtmp->data)) /* or dwarves their picks */
+			&& !((mtmp->data->geno & G_UNIQ)) /* or unique monsters */
+			&& !(is_dwarvish_obj(otmp) && is_dwarf(mtmp->data)) /* or dwarves any other of their items */
+			&& !mtmp->isshk
+			   )
+		   )
 		&& !(
 			(otmp->cursed && (objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED))
 			|| (otmp->otyp == AMULET_OF_YENDOR && (mtmp->data->mflags3 & M3_WANTSAMUL))

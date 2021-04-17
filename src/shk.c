@@ -4362,6 +4362,7 @@ register int fall;
             setnotworn(obj);
             freeinv(obj);
             subfrombill(obj, shkp);
+            obj->speflags |= SPEFLAGS_GRABBED_FROM_YOU;
             (void) add_to_minv(shkp, obj); /* may free obj */
         }
     }

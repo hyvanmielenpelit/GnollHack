@@ -676,7 +676,7 @@ enum game_cursor_types cursor_style;
     char mMoOdDxX[13];
     int result = 0;
     int cx, cy, i, c;
-    int sidx, tx, ty;
+    int sidx, tx = 0, ty = 0;
     boolean msg_given = TRUE; /* clear message window by default */
     boolean show_goal_msg = FALSE;
     boolean hilite_state = FALSE;
@@ -704,8 +704,8 @@ enum game_cursor_types cursor_style;
 
 		msg_given = TRUE;
     }
-    cx = ccp->x;
-    cy = ccp->y;
+    cx = tx = ccp->x;
+    cy = ty = ccp->y;
 #if defined(CLIPPING) && !defined(ANDROID)
     cliparound(cx, cy);
 #endif
@@ -714,20 +714,26 @@ enum game_cursor_types cursor_style;
 #if defined(MAC) || defined(ANDROID)
     lock_mouse_cursor(TRUE);
 #endif
-    for (;;) {
+
+    for (;;) 
+    {
         flags.force_paint_at_cursor = TRUE;
-        if (show_goal_msg) {
+        if (show_goal_msg) 
+        {
             pline("Move cursor to %s:", goal);
             curs(WIN_MAP, cx, cy);
             flush_screen(0);
             show_goal_msg = FALSE;
-        } else if (iflags.autodescribe && !msg_given && !hilite_state) {
+        }
+        else if (iflags.autodescribe && !msg_given && !hilite_state)
+        {
             auto_describe(cx, cy);
         }
 
         c = nh_poskey(&tx, &ty, &sidx);
 
-        if (hilite_state) {
+        if (hilite_state) 
+        {
             (*getpos_hilitefunc)(2);
             hilite_state = FALSE;
             curs(WIN_MAP, cx, cy);
@@ -737,13 +743,15 @@ enum game_cursor_types cursor_style;
         if (iflags.autodescribe)
             msg_given = FALSE;
 
-        if (c == Cmd.spkeys[NHKF_ESC]) {
+        if (c == Cmd.spkeys[NHKF_ESC]) 
+        {
             cx = cy = -10;
             msg_given = TRUE; /* force clear */
             result = -1;
             break;
         }
-        if (c == 0) {
+        if (c == 0) 
+        {
             if (!isok(tx, ty))
                 continue;
             /* a mouse click event, just assign and return */
@@ -751,22 +759,28 @@ enum game_cursor_types cursor_style;
             cy = ty;
             break;
         }
-        if ((cp = index(pick_chars, c)) != 0) {
+        if ((cp = index(pick_chars, c)) != 0) 
+        {
             /* '.' => 0, ',' => 1, ';' => 2, ':' => 3 */
             result = pick_chars_def[(int) (cp - pick_chars)].ret;
             break;
         }
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < 8; i++) 
+        {
             int dx, dy;
 
-            if (Cmd.dirchars[i] == c) {
+            if (Cmd.dirchars[i] == c) 
+            {
                 /* a normal movement letter or digit */
                 dx = xdir[i];
                 dy = ydir[i];
-            } else if (Cmd.alphadirchars[i] == lowc((char) c)
-                       || (Cmd.num_pad && Cmd.dirchars[i] == (c & 0177))) {
+            } 
+            else if (Cmd.alphadirchars[i] == lowc((char) c)
+                       || (Cmd.num_pad && Cmd.dirchars[i] == (c & 0177))) 
+            {
                 /* a shifted movement letter or Meta-digit */
-                if (iflags.getloc_moveskip) {
+                if (iflags.getloc_moveskip)
+                {
                     /* skip same glyphs */
                     int glyph = glyph_at(cx, cy);
 
@@ -776,29 +790,40 @@ enum game_cursor_types cursor_style;
                            && glyph == glyph_at(cx + dx, cy + dy)
                            && isok(cx + dx + xdir[i], cy + dy + ydir[i])
                            && glyph == glyph_at(cx + dx + xdir[i],
-                                                cy + dy + ydir[i])) {
+                                                cy + dy + ydir[i]))
+                    {
                         dx += xdir[i];
                         dy += ydir[i];
                     }
-                } else {
+                }
+                else
+                {
                     dx = 8 * xdir[i];
                     dy = 8 * ydir[i];
                 }
-            } else
+            }
+            else
                 continue;
 
             /* truncate at map edge; diagonal moves complicate this... */
-            if (cx + dx < 1) {
+            if (cx + dx < 1)
+            {
                 dy -= sgn(dy) * (1 - (cx + dx));
                 dx = 1 - cx; /* so that (cx+dx == 1) */
-            } else if (cx + dx > COLNO - 1) {
+            }
+            else if (cx + dx > COLNO - 1) 
+            {
                 dy += sgn(dy) * ((COLNO - 1) - (cx + dx));
                 dx = (COLNO - 1) - cx;
             }
-            if (cy + dy < 0) {
+
+            if (cy + dy < 0) 
+            {
                 dx -= sgn(dx) * (0 - (cy + dy));
                 dy = 0 - cy; /* so that (cy+dy == 0) */
-            } else if (cy + dy > ROWNO - 1) {
+            }
+            else if (cy + dy > ROWNO - 1) 
+            {
                 dx += sgn(dx) * ((ROWNO - 1) - (cy + dy));
                 dy = (ROWNO - 1) - cy;
             }
@@ -807,7 +832,8 @@ enum game_cursor_types cursor_style;
             goto nxtc;
         }
 
-        if (c == Cmd.spkeys[NHKF_GETPOS_HELP] || redraw_cmd(c)) {
+        if (c == Cmd.spkeys[NHKF_GETPOS_HELP] || redraw_cmd(c)) 
+        {
             if (c == Cmd.spkeys[NHKF_GETPOS_HELP])
                 getpos_help(force, goal);
             else /* ^R */
@@ -815,15 +841,20 @@ enum game_cursor_types cursor_style;
             /* update message window to reflect that we're still targetting */
             show_goal_msg = TRUE;
             msg_given = TRUE;
-        } else if (c == Cmd.spkeys[NHKF_GETPOS_SHOWVALID]
-                   && getpos_hilitefunc) {
-            if (!hilite_state) {
+        }
+        else if (c == Cmd.spkeys[NHKF_GETPOS_SHOWVALID]
+                   && getpos_hilitefunc) 
+        {
+            if (!hilite_state) 
+            {
                 (*getpos_hilitefunc)(0);
                 (*getpos_hilitefunc)(1);
                 hilite_state = TRUE;
             }
             goto nxtc;
-        } else if (c == Cmd.spkeys[NHKF_GETPOS_AUTODESC]) {
+        } 
+        else if (c == Cmd.spkeys[NHKF_GETPOS_AUTODESC]) 
+        {
             iflags.autodescribe = !iflags.autodescribe;
             pline("Automatic description %sis %s.",
                   flags.verbose ? "of features under cursor " : "",
@@ -832,7 +863,9 @@ enum game_cursor_types cursor_style;
                 show_goal_msg = TRUE;
             msg_given = TRUE;
             goto nxtc;
-        } else if (c == Cmd.spkeys[NHKF_GETPOS_LIMITVIEW]) {
+        } 
+        else if (c == Cmd.spkeys[NHKF_GETPOS_LIMITVIEW])
+        {
             static const char *const view_filters[NUM_GFILTER] = {
                 "Not limiting targets",
                 "Limiting targets to those in sight",
@@ -850,7 +883,9 @@ enum game_cursor_types cursor_style;
             pline("%s.", view_filters[iflags.getloc_filter]);
             msg_given = TRUE;
             goto nxtc;
-        } else if (c == Cmd.spkeys[NHKF_GETPOS_MENU]) {
+        } 
+        else if (c == Cmd.spkeys[NHKF_GETPOS_MENU]) 
+        {
             iflags.getloc_usemenu = !iflags.getloc_usemenu;
             pline("%s a menu to show possible targets%s.",
                   iflags.getloc_usemenu ? "Using" : "Not using",
@@ -858,7 +893,9 @@ enum game_cursor_types cursor_style;
                       ? " for 'm|M', 'o|O', 'd|D', and 'x|X'" : "");
             msg_given = TRUE;
             goto nxtc;
-        } else if (c == Cmd.spkeys[NHKF_GETPOS_SELF]) {
+        }
+        else if (c == Cmd.spkeys[NHKF_GETPOS_SELF]) 
+        {
             /* reset 'm&M', 'o&O', &c; otherwise, there's no way for player
                to achieve that except by manually cycling through all spots */
             for (i = 0; i < NUM_GLOCS; i++)
@@ -866,40 +903,51 @@ enum game_cursor_types cursor_style;
             cx = u.ux;
             cy = u.uy;
             goto nxtc;
-        } else if (c == Cmd.spkeys[NHKF_GETPOS_MOVESKIP]) {
+        } 
+        else if (c == Cmd.spkeys[NHKF_GETPOS_MOVESKIP]) 
+        {
             iflags.getloc_moveskip = !iflags.getloc_moveskip;
             pline("%skipping over similar terrain when fastmoving the cursor.",
                   iflags.getloc_moveskip ? "S" : "Not s");
-        } else if ((cp = index(mMoOdDxX, c)) != 0) { /* 'm|M', 'o|O', &c */
+        } 
+        else if ((cp = index(mMoOdDxX, c)) != 0) { /* 'm|M', 'o|O', &c */
             /* nearest or farthest monster or object or door or unexplored */
             int gtmp = (int) (cp - mMoOdDxX), /* 0..7 */
                 gloc = gtmp >> 1;             /* 0..3 */
 
-            if (iflags.getloc_usemenu) {
+            if (iflags.getloc_usemenu)
+            {
                 coord tmpcrd;
 
-                if (getpos_menu(&tmpcrd, gloc)) {
+                if (getpos_menu(&tmpcrd, gloc)) 
+                {
                     cx = tmpcrd.x;
                     cy = tmpcrd.y;
                 }
                 goto nxtc;
             }
 
-            if (!garr[gloc]) {
+            if (!garr[gloc]) 
+            {
                 gather_locs(&garr[gloc], &gcount[gloc], gloc);
                 gidx[gloc] = 0; /* garr[][0] is hero's spot */
             }
             if (!(gtmp & 1)) {  /* c=='m' || c=='o' || c=='d' || c=='x') */
                 gidx[gloc] = (gidx[gloc] + 1) % gcount[gloc];
-            } else {            /* c=='M' || c=='O' || c=='D' || c=='X') */
+            }
+            else 
+            {            /* c=='M' || c=='O' || c=='D' || c=='X') */
                 if (--gidx[gloc] < 0)
                     gidx[gloc] = gcount[gloc] - 1;
             }
             cx = garr[gloc][gidx[gloc]].x;
             cy = garr[gloc][gidx[gloc]].y;
             goto nxtc;
-        } else {
-            if (!index(quitchars, c)) {
+        }
+        else
+        {
+            if (!index(quitchars, c)) 
+            {
                 char matching[MAX_CMAPPED_CHARS];
                 int pass, lo_x, lo_y, hi_x, hi_y, k = 0;
 
@@ -919,16 +967,20 @@ enum game_cursor_types cursor_style;
                     if (c == defsyms[sidx].sym || c == (int) showsyms[sidx])
                         matching[sidx] = (char) ++k;
                 }
-                if (k) {
-                    for (pass = 0; pass <= 1; pass++) {
+                if (k) 
+                {
+                    for (pass = 0; pass <= 1; pass++) 
+                    {
                         /* pass 0: just past current pos to lower right;
                            pass 1: upper left corner to current pos */
                         lo_y = (pass == 0) ? cy : 0;
                         hi_y = (pass == 0) ? ROWNO - 1 : cy;
-                        for (ty = lo_y; ty <= hi_y; ty++) {
+                        for (ty = lo_y; ty <= hi_y; ty++) 
+                        {
                             lo_x = (pass == 0 && ty == lo_y) ? cx + 1 : 1;
                             hi_x = (pass == 1 && ty == hi_y) ? cx : COLNO - 1;
-                            for (tx = lo_x; tx <= hi_x; tx++) {
+                            for (tx = lo_x; tx <= hi_x; tx++) 
+                            {
                                 /* first, look at what is currently visible
                                    (might be monster) */
                                 k = glyph_at(tx, ty);
@@ -940,7 +992,8 @@ enum game_cursor_types cursor_style;
                                 if (level.flags.hero_memory
                                     /* !terrainmode: don't move to remembered
                                        trap or object if not currently shown */
-                                    && !iflags.terrainmode) {
+                                    && !iflags.terrainmode) 
+                                {
                                     k = levl[tx][ty].hero_memory_layers.glyph;
                                     if (glyph_is_cmap_or_cmap_variation(k)
                                         && matching[generic_glyph_to_cmap(k)])
@@ -948,7 +1001,8 @@ enum game_cursor_types cursor_style;
                                 }
                                 /* last, try actual terrain here (shouldn't
                                    we be using lastseentyp[][] instead?) */
-                                if (levl[tx][ty].seenv) {
+                                if (levl[tx][ty].seenv)
+                                {
                                     k = back_to_glyph(tx, ty);
                                     if (glyph_is_cmap_or_cmap_variation(k)
                                         && matching[generic_glyph_to_cmap(k)])
@@ -957,7 +1011,8 @@ enum game_cursor_types cursor_style;
                                 continue;
                             foundc:
                                 cx = tx, cy = ty;
-                                if (msg_given) {
+                                if (msg_given)
+                                {
                                     clear_nhwindow(WIN_MESSAGE);
                                     msg_given = FALSE;
                                 }
@@ -968,7 +1023,9 @@ enum game_cursor_types cursor_style;
                     pline("Can't find dungeon feature '%c'.", c);
                     msg_given = TRUE;
                     goto nxtc;
-                } else {
+                } 
+                else
+                {
                     char note[QBUFSZ];
 
                     if (!force)

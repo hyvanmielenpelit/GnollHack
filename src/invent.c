@@ -898,7 +898,8 @@ struct obj *obj;
         }
     }
 
-    if (is_mines_prize(obj)) {
+    if (is_mines_prize(obj))
+    {
 #ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.mines_luckstone)
             context.botl = 1;
@@ -906,7 +907,9 @@ struct obj *obj;
         u.uachieve.mines_luckstone = 1;
         obj->speflags &= ~(SPEFLAGS_MINES_PRIZE);
         obj->nomerge = 0;
-    } else if (is_soko_prize(obj)) {
+    }
+    else if (is_soko_prize(obj)) 
+    {
 #ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.finish_sokoban)
             context.botl = 1;
@@ -1532,6 +1535,7 @@ struct obj *obj;
         picked_container(obj); /* clear no_charge */
     obj_was_thrown = obj->was_thrown;
     obj->was_thrown = 0;       /* not meaningful for invent */
+    obj->speflags &= ~SPEFLAGS_GRABBED_FROM_YOU; /* You got it back! */
 
     addinv_core1(obj);
 
