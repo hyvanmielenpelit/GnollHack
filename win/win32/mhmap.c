@@ -763,14 +763,19 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
 
-        for (int x = 1; x < COLNO; x++)
-            for (int y = 0; y < ROWNO; y++) 
-            {
-                if(data->mapAnimated[x][y] == 1 
-                    || (data->mapAnimated[x][y] > 1 && (context.general_animation_counter % ((long)data->mapAnimated[x][y])) == 0L)
-                  )
-                    dirty(data, x, y, FALSE);
-            }
+        /* Dirty all animated tiles, unless hanging up */
+        if (!iflags.animation_hangup)
+        {
+            iflags.animation_hangup = 1;
+            for (int x = 1; x < COLNO; x++)
+                for (int y = 0; y < ROWNO; y++)
+                {
+                    if (data->mapAnimated[x][y] == 1
+                        || (data->mapAnimated[x][y] > 1 && (context.general_animation_counter % ((long)data->mapAnimated[x][y])) == 0L)
+                        )
+                        dirty(data, x, y, FALSE);
+                }
+        }
 
         boolean asciimode = (data->bAsciiMode || Is_rogue_level(&u.uz));
         if ((asciimode && !win32_cursorblink)
@@ -789,7 +794,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             else
                 context.general_animation_counter++;
 
-            if (flags.blinking_cursor_on_tiles && context.general_animation_counter % CURSOR_BLINK_IN_INTERVALS == 0)
+            if (flags.blinking_cursor_on_tiles && context.general_animation_counter % CURSOR_BLINK_IN_INTERVALS == 0 && !iflags.animation_hangup)
             {
                 if (flags.force_paint_at_cursor)
                 {

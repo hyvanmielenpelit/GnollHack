@@ -6141,6 +6141,9 @@ enum climbing_types climbingid;
     if (!isok(ox, oy))
         return;
 
+    if (!isyou && distu(ox, oy) > MINIMUM_PLAYABLE_MOVEMENT_SOUND_DISTANCE * MINIMUM_PLAYABLE_MOVEMENT_SOUND_DISTANCE)
+        return;
+
     boolean is_underwater = isyou ? Underwater : is_swimmer(mtmp->data) && is_pool(ox, oy);
     struct ghsound_immediate_info immediateinfo = { 0 };
 

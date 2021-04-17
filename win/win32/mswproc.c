@@ -282,6 +282,7 @@ void
 mswin_player_selection(void)
 {
     logDebug("mswin_player_selection()\n");
+    iflags.animation_hangup = 0;
 
     if (iflags.wc_player_selection == VIA_DIALOG) {
         /* pick player type randomly (use pre-selected
@@ -2242,7 +2243,7 @@ mswin_wait_loop(int milliseconds)
 
     do 
     {
-        if (GetMessage(&msg, NULL, 0, 0) != 0) 
+        if (GetMessage(&msg, NULL, 0, 0) != 0)
         {
             if (GetNHApp()->regGnollHackMode || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable, &msg)) 
             {
@@ -2263,6 +2264,7 @@ mswin_wait_loop(int milliseconds)
         current_largeint.HighPart = current_filetime.dwHighDateTime;
 
         timepassed = current_largeint.QuadPart - start_largeint.QuadPart;
+        iflags.animation_hangup = 0;
     } while (timepassed < threshold);
 
     disallow_keyboard_commands_in_wait_loop = FALSE;
@@ -2299,6 +2301,7 @@ mswin_wait_loop_intervals(int intervals)
         }
 
         counter_after = context.general_animation_counter;
+        iflags.animation_hangup = 0;
 
     } while (counter_after - counter_before < intervals && counter_after >= counter_before);
 
@@ -2453,6 +2456,7 @@ mswin_popup_display(HWND hWnd, int *done_indicator)
             nhassert(iflags.debug_fuzzer);
             PostMessage(hWnd, WM_MSNH_COMMAND, MSNH_MSG_RANDOM_INPUT, 0);
         }
+        iflags.animation_hangup = 0;
     }
 }
 

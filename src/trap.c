@@ -5432,7 +5432,7 @@ struct trap *ttmp;
     newsym(u.ux + u.dx, u.uy + u.dy);
 
 	/* gain skill for untrap */
-	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0: 5);
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0: 10);
 
     return 1;
 }
@@ -5458,34 +5458,34 @@ struct trap* ttmp;
 	switch (ttmp->ttyp)
 	{
 	case POLY_TRAP:
-		skillgained = 16;
+		skillgained = 32;
 		break;
 	case MAGIC_TRAP:
-		skillgained = 14;
+		skillgained = 28;
 		break;
 	case LEVEL_TELEP:
-		skillgained = 13;
+		skillgained = 26;
 		break;
 	case ANTI_MAGIC_TRAP:
-		skillgained = 12;
+		skillgained = 24;
 		break;
 	case TELEP_TRAP:
-		skillgained = 11;
+		skillgained = 22;
 		break;
 	case SLP_GAS_TRAP:
-		skillgained = 10;
+		skillgained = 20;
 		break;
 	case RUST_TRAP:
-		skillgained = 9;
+		skillgained = 18;
 		break;
 	case FIRE_TRAP:
-		skillgained = 8;
+		skillgained = 16;
 		break;
 	case ROLLING_BOULDER_TRAP:
-		skillgained = 7;
+		skillgained = 14;
 		break;
 	case ROCKTRAP:
-		skillgained = 6;
+		skillgained = 12;
 		break;
 	default:
 		break;
@@ -5570,7 +5570,7 @@ struct trap *ttmp;
     cnv_trap_obj(LAND_MINE, 1, ttmp, FALSE);
 
 	/* gain skill for untrap */
-	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 7);
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 14);
 
     return 1;
 }
@@ -5627,7 +5627,7 @@ struct trap *ttmp;
     newsym(u.ux + u.dx, u.uy + u.dy);
 
 	/* gain skill for untrap */
-	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 5);
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 10);
 
     more_experienced(1, 0); // 5);
     newexplevel();
@@ -5653,7 +5653,7 @@ int otyp;
     cnv_trap_obj(otyp, 50 - rnl(50), ttmp, FALSE);
 
 	/* gain skill for untrap */
-	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 5);
+	use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 10);
 
     return 1;
 }
@@ -6087,6 +6087,7 @@ boolean force;
                 play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
                 You("disarm it!");
                 levl[x][y].doormask &= ~D_TRAPPED;
+                use_skill(P_DISARM_TRAP, 10);
             }
         } 
         else
@@ -6240,6 +6241,7 @@ boolean force;
                 play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
                 You("disarm it!");
                 otmp->otrapped = 0;
+                use_skill(P_DISARM_TRAP, 10);
             }
         }
         else

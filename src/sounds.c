@@ -4500,7 +4500,7 @@ struct monst* mtmp;
 	long umoney = money_cnt(invent);
 	int u_pay, 
 		bless_cost = max(1, (int)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
-		curse_cost = max(1, (int)((100 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+		curse_cost = max(1, (int)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	int priest_action = 0;
 	char qbuf[QBUFSZ];
 

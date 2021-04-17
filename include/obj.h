@@ -690,6 +690,7 @@ enum mythic_power_types {
     MYTHIC_POWER_TYPE_GENERAL = 0,
     MYTHIC_POWER_TYPE_SLAYING,
     MYTHIC_POWER_TYPE_PREVENTS_REVIVAL,
+    MYTHIC_POWER_TYPE_CONFERS_PROPERTY,
 };
 
 #define MYTHIC_POWER_FLAG_NONE        0x00000000 /* Works for all */
@@ -794,7 +795,6 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 #define has_obj_mythic_level_drain(o)       has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_LEVEL_DRAIN)
 #define has_obj_mythic_mana_gain_25(o)      has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_MANA_GAIN_25)
 #define has_obj_mythic_hp_gain_25(o)        has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_HP_GAIN_25)
-#define has_obj_mythic_speed(o)             has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_SPEED)
 #define has_obj_mythic_wounding(o)          has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_WOUNDING)
 #define mythic_wounding_amount()            d(1, 4)
 #define has_obj_mythic_defense(o)           has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_DEFENSE)
@@ -804,8 +804,6 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 #define has_obj_mythic_magical_light(o)     has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_SHINES_LIGHT)
 #define has_obj_mythic_reach(o)             has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_REACH)
 #define has_obj_mythic_luck(o)              has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_LUCK)
-#define has_obj_mythic_death_resistance(o)  (has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_ARMOR_DEATH_RESISTANCE))
-#define has_obj_mythic_drain_resistance(o)  (has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_ARMOR_DRAIN_RESISTANCE))
 #define has_obj_mythic_troll_revival_prevention(o)     has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_TROLL_REVIVAL_PREVENTION)
 
 /* Flags for get_obj_location(). */

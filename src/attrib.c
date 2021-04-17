@@ -812,13 +812,35 @@ update_extrinsics()
 				u.uprops[objects[otyp].oc_oprop3].extrinsic |= bit;//W_CARRIED;
 
 			/* Mythic */
-			if(has_obj_mythic_speed(uitem) && bit != W_CARRIED)
-				u.uprops[VERY_FAST].extrinsic |= bit;
-			if (has_obj_mythic_death_resistance(uitem) && bit != W_CARRIED)
-				u.uprops[DEATH_RESISTANCE].extrinsic |= bit;
-			if (has_obj_mythic_drain_resistance(uitem) && bit != W_CARRIED)
-				u.uprops[DRAIN_RESISTANCE].extrinsic |= bit;
-			
+			if (bit != W_CARRIED)
+			{
+				for (uchar j = 0; j <= 1; j++)
+				{
+					uchar mythic_quality = (j == 0 ? uitem->mythic_prefix : uitem->mythic_suffix);
+					if (mythic_quality == 0)
+						continue;
+
+					struct mythic_power_definition* mythic_powers = (j == 0 ? mythic_prefix_powers : mythic_suffix_powers);
+					struct mythic_definition* mythic_definitions = (j == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
+					uchar max_mythic_powers = (j == 0 ? MAX_MYTHIC_PREFIX_POWERS : MAX_MYTHIC_SUFFIX_POWERS);
+
+					for (uchar i = 0; i < max_mythic_powers; i++)
+					{
+						if (!mythic_powers[i].name)
+							break;
+
+						unsigned long mythic_power_bit = 1UL << ((unsigned long)i);
+
+						if (mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit)
+						{
+							if (mythic_powers[i].power_type == MYTHIC_POWER_TYPE_CONFERS_PROPERTY)
+							{
+								u.uprops[mythic_powers[i].parameter1].extrinsic |= bit;
+							}
+						}
+					}
+				}
+			}
 #if 0
 			int p = 0;
 			/* Properties blocked by item */
