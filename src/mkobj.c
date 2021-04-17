@@ -1915,7 +1915,7 @@ int charge_init_index;
 		charge = rnd(20);
 		break;
 	case CHARGED_CRYSTAL_BALL:
-		charge = rnd(5);
+		charge = 2 + rnd(5);
 		break;
 	case CHARGED_CAN_OF_GREASE:
 		charge = rnd(25);
@@ -2025,7 +2025,7 @@ int charge_init_index;
 		charge = 20;
 		break;
 	case CHARGED_CRYSTAL_BALL:
-		charge = 5;
+		charge = 7;
 		break;
 	case CHARGED_CAN_OF_GREASE:
 		charge = 25;
