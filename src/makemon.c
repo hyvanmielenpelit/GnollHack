@@ -1348,7 +1348,7 @@ register struct monst *mtmp;
 			//Reagents
 			n = rnd(5);
 			for (int i = 0; i < n; i++)
-				(void)mongets(mtmp, randomreagent(TRUE, FALSE));
+				(void)mongets(mtmp, randomreagent(TRUE, 0));
 
 			//Spellbooks
 			n = rnd(3); // 1...3
@@ -1914,7 +1914,7 @@ register struct monst *mtmp;
 		{
 			n = rnd(3);
 			for (int i = 0; i < n; i++)
-				(void)mongets(mtmp, randomreagent(TRUE, 0));
+				(void)mongets(mtmp, randomreagent(TRUE, 2));
 
             if (!rn2(2))
                 (void)mongets(mtmp, GINSENG_ROOT);

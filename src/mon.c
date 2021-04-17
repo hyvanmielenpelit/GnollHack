@@ -917,7 +917,7 @@ boolean createcorpse;
 int
 randomtruegem()
 {
-    return FIRST_GEM + rn2(LAST_GEM - FIRST_GEM  + 1);
+    return rnd_class(FIRST_GEM, LAST_GEM);
 }
 
 
@@ -928,179 +928,38 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = wizard (no priest specific rea
 {
 	int otyp = 0;
 
-	if (!rn2(2) && alsotruegems)
+	if (alsotruegems && !rn2(3))
 		return randomtruegem();
-	else
-	{
-		if (Inhell && !rn2(4))
-			return PINCH_OF_SULFUROUS_ASH;
 
-		if(reagentstyle == 0)
-		{
-			switch (rn2(16))
-			{
-			case 0:
-				otyp = CLUMP_OF_BAT_GUANO;
-				break;
-			case 1:
-				otyp = THREAD_OF_SPIDER_SILK;
-				break;
-			case 2:
-				otyp = GINSENG_ROOT;
-				break;
-			case 3:
-				otyp = MANDRAKE_ROOT;
-				break;
-			case 4:
-				otyp = SPRIG_OF_WOLFSBANE;
-				break;
-			case 5:
-				otyp = THREAD_OF_SPIDER_SILK;
-				break;
-			case 6:
-				otyp = CLOVE_OF_GARLIC;
-				break;
-			case 7:
-				otyp = PINCH_OF_SULFUROUS_ASH;
-				break;
-			case 8:
-				otyp = BONE;
-				break;
-			case 9:
-				otyp = PIECE_OF_WOOD;
-				break;
-			case 10:
-				otyp = HEAP_OF_SPORAL_POWDER;
-				break;
-			case 11:
-				otyp = FEATHER;
-				break;
-			case 12:
-				otyp = BONE;
-				break;
-			case 13:
-				otyp = HUMAN_SKULL;
-				break;
-			case 14:
-				otyp = NUGGET_OF_IRON_ORE;
-				break;
-			case 15:
-				otyp = NUGGET_OF_COPPER_ORE;
-				break;
-			default:
-				otyp = CLOVE_OF_GARLIC;
-				break;
-			}
-		}
-		else if (reagentstyle == 1)
-		{
-			/* priest */
-			if (reagentstyle == 0)
-			{
-				switch (rn2(14))
-				{
-				case 0:
-					otyp = CLUMP_OF_BAT_GUANO;
-					break;
-				case 1:
-					otyp = THREAD_OF_SPIDER_SILK;
-					break;
-				case 2:
-					otyp = GINSENG_ROOT;
-					break;
-				case 3:
-					otyp = MANDRAKE_ROOT;
-					break;
-				case 4:
-					otyp = SPRIG_OF_WOLFSBANE;
-					break;
-				case 5:
-					otyp = THREAD_OF_SPIDER_SILK;
-					break;
-				case 6:
-					otyp = CLOVE_OF_GARLIC;
-					break;
-				case 7:
-					otyp = PINCH_OF_SULFUROUS_ASH;
-					break;
-				case 8:
-					otyp = BONE;
-					break;
-				case 9:
-					otyp = PIECE_OF_WOOD;
-					break;
-				case 10:
-					otyp = HEAP_OF_SPORAL_POWDER;
-					break;
-				case 11:
-					otyp = FEATHER;
-					break;
-				case 12:
-					otyp = BONE;
-					break;
-				case 13:
-					otyp = HUMAN_SKULL;
-					break;
-				default:
-					otyp = CLOVE_OF_GARLIC;
-					break;
-				}
-			}
-		}
-		else if (reagentstyle == 2)
-		{
-			/* wizard */
-			switch (rn2(14))
-			{
-			case 0:
-				otyp = CLUMP_OF_BAT_GUANO;
-				break;
-			case 1:
-				otyp = THREAD_OF_SPIDER_SILK;
-				break;
-			case 2:
-				otyp = NUGGET_OF_IRON_ORE;
-				break;
-			case 3:
-				otyp = MANDRAKE_ROOT;
-				break;
-			case 4:
-				otyp = NUGGET_OF_COPPER_ORE;
-				break;
-			case 5:
-				otyp = THREAD_OF_SPIDER_SILK;
-				break;
-			case 6:
-				otyp = MAGIC_MUSHROOM;
-				break;
-			case 7:
-				otyp = PINCH_OF_SULFUROUS_ASH;
-				break;
-			case 8:
-				otyp = BONE;
-				break;
-			case 9:
-				otyp = PIECE_OF_WOOD;
-				break;
-			case 10:
-				otyp = HEAP_OF_SPORAL_POWDER;
-				break;
-			case 11:
-				otyp = FEATHER;
-				break;
-			case 12:
-				otyp = BONE;
-				break;
-			case 13:
-				otyp = HUMAN_SKULL;
-				break;
-			default:
-				otyp = PINCH_OF_SULFUROUS_ASH;
-				break;
-			}
-		}
-		return otyp;
-	}
+    if (Inhell && !rn2(9))
+        return PINCH_OF_SULFUROUS_ASH;
+
+    if (reagentstyle == 0)
+    {
+        if ((Inhell && !rn2(3)) || (!Inhell && !rn2(5)))
+            return randomore();
+
+        if ((Inhell && !rn2(6)) || (!Inhell && !rn2(9)))
+            return rnd_class(DEATH_CAP, MAGIC_MUSHROOM);
+
+        otyp = rnd_class(THREAD_OF_SPIDER_SILK, FEATHER);
+    }
+    else if (reagentstyle == 1)
+    {
+        if ((Inhell && !rn2(4)) || (!Inhell && !rn2(6)))
+            return rnd_class(DEATH_CAP, MAGIC_MUSHROOM);
+
+        otyp = rnd_class(THREAD_OF_SPIDER_SILK, FEATHER);
+    }
+    else if (reagentstyle == 2)
+    {
+        if ((Inhell && !rn2(2)) || (!Inhell && !rn2(3)))
+            return randomore();
+
+        otyp = rnd_class(THREAD_OF_SPIDER_SILK, FEATHER);
+
+    }
+    return otyp;
 }
 
 

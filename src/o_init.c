@@ -157,6 +157,11 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
         MYTHIC_SUFFIX_POWER_COCKATRICE_SLAYING | MYTHIC_SUFFIX_POWER_STONE_RESISTANCE,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
+    {
+        "eyes", " of the eyes", "", 20,
+        MYTHIC_SUFFIX_POWER_SEARCHING | MYTHIC_SUFFIX_POWER_SEE_INVISIBLE,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
+    },
 };
 
 NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_POWERS] =
@@ -186,6 +191,8 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
     { "Shock resistance", "75% shock resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, IMPROVED_SHOCK_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Cockatrice slaying", "Triple damage to cockatrices", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_COCKATRICE, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Stone resistance", "Petrification resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, STONE_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
+    { "Searching", "Searching", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEARCHING, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
+    { "See invisible", "See invisible", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEE_INVISIBLE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
 };
 
 STATIC_DCL void FDECL(setgemprobs, (d_level *));
@@ -1150,6 +1157,12 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
     if (!is_weapon(obj) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_WEAPON_REQUIRED))
         return FALSE;
     if (obj->oclass != ARMOR_CLASS && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_ARMOR_REQUIRED))
+        return FALSE;
+    if ((obj->oclass != ARMOR_CLASS || objects[obj->otyp].oc_armor_category != ARM_HELM) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_HELMET_REQUIRED))
+        return FALSE;
+    if ((obj->oclass != ARMOR_CLASS || objects[obj->otyp].oc_armor_category != ARM_SHIELD) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_SHIELD_REQUIRED))
+        return FALSE;
+    if ((obj->oclass != ARMOR_CLASS || objects[obj->otyp].oc_armor_category != ARM_SUIT) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_SUIT_REQUIRED))
         return FALSE;
     if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == WHACK)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS))
         return FALSE;
