@@ -1339,7 +1339,7 @@ struct obj **optr;
 
         /* Cmap, which sometimes do not work */
         any.a_int = MAX_MONSTER_CLASSES + S_arrow_trap + 1;
-        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_arrow_trap].sym, 0, ATR_NONE, "traps", MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_arrow_trap].sym, 0, ATR_NONE, "traps and portals", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_throne + 1;
         add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_throne].sym, 0, ATR_NONE, "thrones", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_altar + 1;
