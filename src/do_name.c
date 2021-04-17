@@ -690,15 +690,19 @@ enum game_cursor_types cursor_style;
 
     for (i = 0; i < SIZE(pick_chars_def); i++)
         pick_chars[i] = Cmd.spkeys[pick_chars_def[i].nhkf];
+
     pick_chars[SIZE(pick_chars_def)] = '\0';
 
     for (i = 0; i < SIZE(mMoOdDxX_def); i++)
         mMoOdDxX[i] = Cmd.spkeys[mMoOdDxX_def[i]];
+
     mMoOdDxX[SIZE(mMoOdDxX_def)] = '\0';
 
     if (!goal)
         goal = "desired location";
-    if (flags.verbose) {
+
+    if (flags.verbose) 
+    {
         pline("(For instructions type a '%s')",
               visctrl(Cmd.spkeys[NHKF_GETPOS_HELP]));
 
@@ -873,8 +877,10 @@ enum game_cursor_types cursor_style;
             };
 
             iflags.getloc_filter = (iflags.getloc_filter + 1) % NUM_GFILTER;
-            for (i = 0; i < NUM_GLOCS; i++) {
-                if (garr[i]) {
+            for (i = 0; i < NUM_GLOCS; i++) 
+            {
+                if (garr[i]) 
+                {
                     free((genericptr_t) garr[i]);
                     garr[i] = NULL;
                 }
@@ -910,7 +916,8 @@ enum game_cursor_types cursor_style;
             pline("%skipping over similar terrain when fastmoving the cursor.",
                   iflags.getloc_moveskip ? "S" : "Not s");
         } 
-        else if ((cp = index(mMoOdDxX, c)) != 0) { /* 'm|M', 'o|O', &c */
+        else if ((cp = index(mMoOdDxX, c)) != 0) 
+        { /* 'm|M', 'o|O', &c */
             /* nearest or farthest monster or object or door or unexplored */
             int gtmp = (int) (cp - mMoOdDxX), /* 0..7 */
                 gloc = gtmp >> 1;             /* 0..3 */
@@ -932,7 +939,8 @@ enum game_cursor_types cursor_style;
                 gather_locs(&garr[gloc], &gcount[gloc], gloc);
                 gidx[gloc] = 0; /* garr[][0] is hero's spot */
             }
-            if (!(gtmp & 1)) {  /* c=='m' || c=='o' || c=='d' || c=='x') */
+            if (!(gtmp & 1))
+            {  /* c=='m' || c=='o' || c=='d' || c=='x') */
                 gidx[gloc] = (gidx[gloc] + 1) % gcount[gloc];
             }
             else 
