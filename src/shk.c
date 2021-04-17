@@ -3629,23 +3629,41 @@ boolean shk_buying;
     }
     else
     {
+        double mult = 1.0;
+        long add_cost = 0L;
         if (shk_buying)
         {
             if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
-                tmp = (tmp * 3) / 2;
+                mult = 1.5, add_cost += 15;
             else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
-                tmp *= 2;
+                mult = 2.0, add_cost += 25;
             else if (obj->exceptionality > EXCEPTIONALITY_ELITE)
-                tmp *= 3;
+                mult = 3.0, add_cost += 40;
+
+            if(obj->mythic_prefix)
+                mult += 0.5, add_cost += 50;
+
+            if (obj->mythic_suffix)
+                mult += 0.5, add_cost += 50;
+
+            tmp = (long)((double)tmp * mult) + add_cost;
         }
         else
         {
             if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
-                tmp *= 2;
+                mult = 2.0, add_cost += 50;
             else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
-                tmp *= 4;
+                mult = 4.0, add_cost += 100;
             else if (obj->exceptionality > EXCEPTIONALITY_ELITE)
-                tmp *= 8;
+                mult = 6.0, add_cost += 150;
+
+            if (obj->mythic_prefix)
+                mult += 1.0, add_cost += 200;
+
+            if (obj->mythic_suffix)
+                mult += 1.0, add_cost += 200;
+
+            tmp = (long)((double)tmp * mult) + add_cost;
         }
     }
 

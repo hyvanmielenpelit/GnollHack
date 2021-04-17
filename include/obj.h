@@ -799,7 +799,7 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 
 
 #define otyp_non_mythic(otyp) \
-    ((objects[otyp].oc_flags4 & O4_NON_MYTHIC) != 0 || objects[otyp].oc_magic) /* Inherently (already special) magical items cannot be made mythical, this is just of normal boring objects */
+    ((objects[otyp].oc_flags4 & O4_NON_MYTHIC) != 0 || objects[otyp].oc_magic) /* Inherently (already special) magical items cannot be made mythical, this is just for normal boring objects */
 
 #define can_obj_have_mythic(o) \
     (!otyp_non_mythic((o)->otyp) && (is_weapon(o) || (o)->oclass == ARMOR_CLASS))
