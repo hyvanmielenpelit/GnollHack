@@ -116,6 +116,7 @@ static NEARDATA struct mflag_description m2flag_descriptions[] = {
 	{ M2_MODRON, "modron", "modrons" },
     { M2_MIMIC, "mimic", "mimics" },
     { M2_ELEMENTAL, "elemental", "elementals" },
+    { M2_COCKATRICE, "cockatrice", "cockatrices" },
     { M2_ORC, "orc", "orcs" },
 	{ M2_SHAPESHIFTER, "shapeshifter", "shapeshifters" },
 	{ M2_UNDEAD, "undead", "undead" },
