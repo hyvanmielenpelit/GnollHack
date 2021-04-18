@@ -1469,14 +1469,18 @@ mswin_nh_poskey(int *x, int *y, int *mod)
     while ((event = mswin_input_pop()) == NULL)
         mswin_main_loop();
 
-    if (event->type == NHEVENT_MOUSE) {
-	if (iflags.wc_mouse_support) {
+    if (event->type == NHEVENT_MOUSE) 
+    {
+	    if (iflags.wc_mouse_support)
+        {
             *mod = event->ms.mod;
             *x = event->ms.x;
             *y = event->ms.y;
         }
         key = 0;
-    } else {
+    } 
+    else 
+    {
         key = event->kbd.ch;
     }
     return (key);

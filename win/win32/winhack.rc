@@ -106,18 +106,20 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About ...",                  IDM_ABOUT
-        MENUITEM "&Long description of the game", IDM_HELP_LONG
-        MENUITEM "List of &commands",           IDM_HELP_COMMANDS
-        MENUITEM "&History of GnollHack",       IDM_HELP_HISTORY
-        MENUITEM "&Info on a character",        IDM_HELP_INFO_CHAR
-        MENUITEM "Info on what a given &key does", IDM_HELP_INFO_KEY
-        MENUITEM "List of game &options",       IDM_HELP_OPTIONS
-        MENUITEM "Longer list of game o&ptions", IDM_HELP_OPTIONS_LONG
-        MENUITEM "List of e&xtended commands",  IDM_HELP_EXTCMD
-        MENUITEM "The &GnollHack license",      IDM_HELP_LICENSE
-        MENUITEM "GnollHack for &Windows help", IDM_HELP_PORTHELP
         MENUITEM "C&redits",                    IDM_HELP_CREDITS
+        MENUITEM SEPARATOR
+        MENUITEM "&Long Description of Game",   IDM_HELP_LONG
+        MENUITEM "List of &Commands",           IDM_HELP_COMMANDS
+        MENUITEM "&History of GnollHack",       IDM_HELP_HISTORY
+        MENUITEM "&Information on Character",   IDM_HELP_INFO_CHAR
+        MENUITEM "Information on Given &Key",   IDM_HELP_INFO_KEY
+        MENUITEM "List of Game &Options",       IDM_HELP_OPTIONS
+        MENUITEM "Longer List of Game O&ptions", IDM_HELP_OPTIONS_LONG
+        MENUITEM "List of E&xtended Commands",  IDM_HELP_EXTCMD
+        MENUITEM "&GnollHack License",          IDM_HELP_LICENSE
+        MENUITEM "GnollHack for &Windows",      IDM_HELP_PORTHELP
+        MENUITEM SEPARATOR
+        MENUITEM "&About GnollHack",            IDM_ABOUT
     END
 END
 
