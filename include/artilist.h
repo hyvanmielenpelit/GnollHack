@@ -101,15 +101,12 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 	  NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
     /*
-     *      Grimtooth glows in warning when elves are present, but its
-     *      damage bonus applies to all targets rather than just elves
-     *      (handled in the base weapon).
-	 *		Added +1d5/+1d20 bonus against elves to improve the artifact, still does 3d3 to all targets from the base weapon --JG
+     *      Grimtooth glows in warning when elves are present.
      */
     A("Grimtooth", "runed crude dagger", None, ORNAMENTAL_ORCISH_DAGGER, ORCISH_DAGGER,
-	  EXCEPTIONALITY_EXCEPTIONAL, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_NONE,
+	  EXCEPTIONALITY_EXCEPTIONAL, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_ELF_SLAYING,
 	  (AF_RESTR | AF_DFLAG2 | AF_FLICKERS), AF2_NAME_IS_PROPER_NAME, SPFX_ELF_WARNING, SPFX_NONE, M2_ELF,
-	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, PM_ORC, 500L,
+	  1, 5, 0, PHYS(1, 10), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, PM_ORC, 500L,
 	  CLR_RED, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
     /*
      *      Orcrist and Sting have same alignment as elves.
@@ -119,16 +116,16 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      Sting and Orcrist will warn of M2_ORC monsters.
      */
     A("Orcrist", "runed broadsword", None, ELVEN_BROADSWORD, ELVEN_BROADSWORD, 
-	  EXCEPTIONALITY_EXCEPTIONAL, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_NONE,
+	  EXCEPTIONALITY_EXCEPTIONAL, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_ORC_SLAYING,
 	  (AF_DFLAG2 | AF_FLICKERS), AF2_NAME_IS_PROPER_NAME, SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
-	  1, 5, 0, PHYS(ARTDMG_TRIPLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
 	  A_CHAOTIC, NON_PM, PM_ELF, 2000L,
       CLR_BRIGHT_BLUE, NO_COLOR, 0, OBJECT_SOUNDSET_NONE), /* bright blue is actually light blue */
 
     A("Sting", "runed dagger", None, ELVEN_RUNEDAGGER, ELVEN_DAGGER, 
 		 EXCEPTIONALITY_EXCEPTIONAL, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_NONE,
 		 (AF_DFLAG2 | AF_FLICKERS), AF2_MISSILE_TILE | AF2_NAME_IS_PROPER_NAME, SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
-		 1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
+		 1, 5, 0, PHYS(1, 10), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
     /*
      *      Magicbane is a bit different!  Its magic fanfare
      *      unbalances victims in addition to doing some damage.
@@ -283,7 +280,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		1, 5, 0, PHYSI(1, 5, 5), SICK_RESISTANCE, NO_POWER, ARTINVOKE_AIR_ELEMENTAL_SUMMON, 6, 6, 200, 50, 500, A_LAWFUL, PM_SAMURAI, NON_PM, 3000L,
 		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
-	A("The Mace of Saint Cuthbert", "wooden mace", None, CUTHBERT_MACE, CUTHBERT_MACE,
+	A("The Mace of Saint Cuthbert", "wooden mace", None, HEAVENLY_OAK_MACE, HEAVENLY_OAK_MACE,
 		EXCEPTIONALITY_CELESTIAL, MYTHIC_PREFIX_HALLOWED, MYTHIC_SUFFIX_DISRUPTION, 
 		AF_RESTR | AF_ANGERS_DEMONS | AF_DFLAG2, AF2_NONE, SPFX_DEMON_WARNING | SPFX_UNDEAD_WARNING, SPFX_NONE, M2_DEMON | M2_UNDEAD,
 		1, 5, 5, PHYSI(1, 20, 5), FREE_ACTION, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 2000L,
