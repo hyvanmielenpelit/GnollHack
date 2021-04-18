@@ -36,23 +36,24 @@ register struct obj *otmp;
     case SCR_PUNISHMENT:
         return 10;
 	case SCR_CONFUSE_MONSTER:
-    case SCR_CONFLICT:
+    case SCR_STINKING_CLOUD:
         return 12;
 	case SCR_ENCHANT_ACCESSORY:
 	case SCR_IDENTIFY:
+    case SCR_TELEPORTATION:
         return 14;
-    case SCR_ENCHANT_ARMOR:
     case SCR_REMOVE_CURSE:
+    case SCR_ENCHANT_ARMOR:
     case SCR_ENCHANT_WEAPON:
-    case SCR_CHARGING:
         return 16;
     case SCR_PROTECT_ARMOR:
     case SCR_PROTECT_WEAPON:
     case SCR_SCARE_MONSTER:
-    case SCR_STINKING_CLOUD:
     case SCR_TAMING:
-    case SCR_TELEPORTATION:
+    case SCR_CONFLICT:
         return 20;
+    case SCR_CHARGING:
+        return 24;
     case SCR_GENOCIDE:
         return 30;
     case SCR_BLANK_PAPER:
