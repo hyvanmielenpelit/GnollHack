@@ -36,7 +36,7 @@ mswin_nh_input_init(void)
 int
 mswin_have_input()
 {
-    iflags.animation_hangup = 0;
+    program_state.animation_hangup = 0;
     return
 #ifdef SAFERHANGUP
         /* we always have input (ESC) if hangup was requested */

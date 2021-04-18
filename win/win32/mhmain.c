@@ -919,12 +919,76 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
     case IDM_SAVE:
         if (iflags.debug_fuzzer)
             break;
-        if (!program_state.gameover && !program_state.done_hup)
+        if (!program_state.gameover && !program_state.done_hup && !program_state.animation_hangup)
             dosave();
         else
             MessageBeep(0);
         break;
+    case IDM_COMMAND_INVENTORY:
+    case IDM_COMMAND_ABILITIES:
+    case IDM_COMMAND_SKILLS:
+    case IDM_COMMAND_SPELLS:
+    case IDM_COMMAND_COMMANDS:
+    case IDM_COMMAND_PICKUP:
+    case IDM_COMMAND_LOOKHERE:
+    case IDM_COMMAND_SEARCH:
+    case IDM_COMMAND_WAIT:
+    case IDM_SETTINGS_OPTIONS:
+        if (iflags.debug_fuzzer)
+            break;
+        if (!program_state.gameover && !program_state.done_hup && !program_state.animation_hangup)
+        {
+            uchar search_char = 0;
+            int (*search_func)(VOID_ARGS) = 0;
 
+            switch (wmId)
+            {
+            case IDM_COMMAND_INVENTORY:
+                search_func = ddoinv;
+                break;
+            case IDM_COMMAND_ABILITIES:
+                search_func = doability;
+                break;
+            case IDM_COMMAND_SKILLS:
+                search_func = enhance_weapon_skill;
+                break;
+            case IDM_COMMAND_SPELLS:
+                search_func = dospellmainmenu;
+                break;
+            case IDM_COMMAND_COMMANDS:
+                search_func = docommandmenu;
+                break;
+            case IDM_COMMAND_PICKUP:
+                search_func = dopickup;
+                break;
+            case IDM_COMMAND_LOOKHERE:
+                search_func = dolook;
+                break;
+            case IDM_COMMAND_SEARCH:
+                search_func = dosearch;
+                break;
+            case IDM_COMMAND_WAIT:
+                search_func = donull;
+                break;
+            case IDM_SETTINGS_OPTIONS:
+                search_func = doset;
+                break;
+            }
+
+            if (search_func)
+                search_char = cmd_from_func(search_func);
+
+            if (search_char)
+            {
+                NHEVENT_KBD(search_char);
+            }
+            else
+                MessageBeep(0);
+        }
+        else
+            MessageBeep(0);
+
+        break;
     case IDM_MAP_TILES:
     case IDM_MAP_ASCII4X6:
     case IDM_MAP_ASCII6X8:

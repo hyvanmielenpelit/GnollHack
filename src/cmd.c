@@ -193,7 +193,6 @@ STATIC_PTR int NDECL(wiz_rumor_check);
 STATIC_PTR int NDECL(doattributes);
 STATIC_PTR int NDECL(dopolyformstatistics);
 STATIC_DCL int FDECL(doviewpetstatistics, (struct monst*));
-STATIC_PTR int NDECL(docommandmenu);
 
 STATIC_DCL void FDECL(enlght_out, (const char *));
 STATIC_DCL void FDECL(enlght_line, (const char *, const char *, const char *,
@@ -4567,7 +4566,7 @@ doattributes(VOID_ARGS)
 }
 
 /* M('c') command */
-STATIC_PTR int
+int
 docommandmenu(VOID_ARGS)
 {
 	winid menuwin;
@@ -4597,7 +4596,7 @@ docommandmenu(VOID_ARGS)
 
 
 /* '+' command */
-STATIC_PTR int
+int
 dospellmainmenu(VOID_ARGS)
 {
 	winid menuwin;
@@ -5155,6 +5154,20 @@ uchar key;
     if (Cmd.commands[key] && Cmd.commands[key]->ef_txt)
         return Cmd.commands[key]->ef_desc;
     return (char *) 0;
+}
+
+char
+cmd_from_txt(command)
+const char* command;
+{
+    if (!command)
+        return '\0';
+
+    for (int i = 0; i < 256; ++i)
+        if (Cmd.commands[i] && Cmd.commands[i]->ef_txt && !strcmp(Cmd.commands[i]->ef_txt, command))
+            return (char) i;
+
+    return '\0';
 }
 
 boolean

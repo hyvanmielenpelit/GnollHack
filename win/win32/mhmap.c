@@ -764,9 +764,9 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
 
         /* Dirty all animated tiles, unless hanging up */
-        if (!iflags.animation_hangup)
+        if (!program_state.animation_hangup)
         {
-            iflags.animation_hangup = 1;
+            program_state.animation_hangup = 1;
             for (int x = 1; x < COLNO; x++)
                 for (int y = 0; y < ROWNO; y++)
                 {
@@ -794,7 +794,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             else
                 context.general_animation_counter++;
 
-            if (flags.blinking_cursor_on_tiles && context.general_animation_counter % CURSOR_BLINK_IN_INTERVALS == 0 && !iflags.animation_hangup)
+            if (flags.blinking_cursor_on_tiles && context.general_animation_counter % CURSOR_BLINK_IN_INTERVALS == 0 && !program_state.animation_hangup)
             {
                 if (flags.force_paint_at_cursor)
                 {

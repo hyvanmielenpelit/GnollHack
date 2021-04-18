@@ -183,6 +183,7 @@ E NEARDATA struct sinfo {
                             * -- no more screen output */
     int preserve_locks;    /* don't remove level files prior to exit */
 #endif
+    boolean animation_hangup;  /* animation may be hanging up the game; skip drawing animations */
     int something_worth_saving; /* in case of panic */
     int panicking;              /* `panic' is in progress */
     int exiting;                /* an exit handler is executing */

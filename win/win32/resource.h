@@ -172,6 +172,27 @@
 #define IDM_VIEW_ZOOMIN                 32826
 #define ID_VIEW_TOGGLEBUFFTIMERS        32827
 #define IDM_VIEW_TOGGLEBUFFTIMERS       32828
+#define ID_COMMANDS_INVENTORY           32829
+#define ID_COMMANDS_ABILITIES           32830
+#define ID_COMMANDS_SPELLS              32831
+#define ID_COMMANDS_SKILLS              32832
+#define ID_COMMANDS_COMMANDS            32833
+#define ID_COMMAND_PICKUP               32834
+#define ID_COMMAND_LOOKHERE             32835
+#define ID_COMMAND_SEARCH               32836
+#define ID_COMMAND_WAIT                 32837
+#define ID_FILE_OPTIONS                 32838
+#define ID_SETTINGS_OPTIONS             32839
+#define IDM_COMMAND_INVENTORY           32840
+#define IDM_COMMAND_ABILITIES           32841
+#define IDM_COMMAND_SKILLS              32842
+#define IDM_COMMAND_SPELLS              32843
+#define IDM_COMMAND_COMMANDS            32844
+#define IDM_COMMAND_PICKUP              32845
+#define IDM_COMMAND_LOOKHERE            32846
+#define IDM_COMMAND_SEARCH              32847
+#define IDM_COMMAND_WAIT                32848
+#define IDM_SETTINGS_OPTIONS            32849
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -179,7 +200,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        181
-#define _APS_NEXT_COMMAND_VALUE         32829
+#define _APS_NEXT_COMMAND_VALUE         32850
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

@@ -44,9 +44,9 @@ IDC_NETHACKW MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Save and Exit",              IDM_SAVE
+        MENUITEM "&Save and Exit\tAlt+s",       IDM_SAVE
         MENUITEM SEPARATOR
-        MENUITEM "&Quit",                       IDM_EXIT
+        MENUITEM "&Quit\tAlt+q",                IDM_EXIT
     END
     POPUP "&Map"
     BEGIN
@@ -66,20 +66,34 @@ BEGIN
         MENUITEM "&Copy To Clipboard (ASCII)",  IDM_SETTING_SCREEN_TO_CLIPBOARD
         MENUITEM "&Save to File (ASCII)",       IDM_SETTING_SCREEN_TO_FILE
     END
+    POPUP "&Command"
+    BEGIN
+        MENUITEM "&Inventory\ti",               IDM_COMMAND_INVENTORY
+        MENUITEM SEPARATOR
+        MENUITEM "&Abilities\tA",               IDM_COMMAND_ABILITIES
+        MENUITEM "&Skills\tS",                  IDM_COMMAND_SKILLS
+        MENUITEM "Sp&ells\t+",                  IDM_COMMAND_SPELLS
+        MENUITEM "&Commands\tAlt+c",            IDM_COMMAND_COMMANDS
+        MENUITEM SEPARATOR
+        MENUITEM "&Pick Up\t,",                 IDM_COMMAND_PICKUP
+        MENUITEM "&Look Here\t:",               IDM_COMMAND_LOOKHERE
+        MENUITEM "Searc&h\ts",                  IDM_COMMAND_SEARCH
+        MENUITEM "&Wait\t.",                    IDM_COMMAND_WAIT
+    END
     POPUP "&View"
     BEGIN
-        MENUITEM "Zoom &in\t Alt++",            IDM_VIEW_ZOOMIN
-        MENUITEM "Zoom &out\tAlt+-",            IDM_VIEW_ZOOMOUT
-        MENUITEM "&Normal zoom\tAlt+.",         IDM_VIEW_NORMALZOOM
-        MENUITEM "&Minimap zoom\tAlt+,",        IDM_VIEW_MINIMAPZOOM
+        MENUITEM "Zoom &In\t Alt++",            IDM_VIEW_ZOOMIN
+        MENUITEM "Zoom &Out\tAlt+-",            IDM_VIEW_ZOOMOUT
+        MENUITEM "&Normal Zoom\tAlt+.",         IDM_VIEW_NORMALZOOM
+        MENUITEM "&Minimap Zoom\tAlt+,",        IDM_VIEW_MINIMAPZOOM
         MENUITEM SEPARATOR
-        MENUITEM "Toggle &player mark\tAlt+:",  IDM_VIEW_TOGGLEUMARK
-        MENUITEM "Toggle &targeting\tAlt+;",    IDM_VIEW_TOGGLETARGETING
+        MENUITEM "Toggle &Player Mark\tAlt+:",  IDM_VIEW_TOGGLEUMARK
+        MENUITEM "Toggle &Targeting\tAlt+;",    IDM_VIEW_TOGGLETARGETING
         MENUITEM SEPARATOR
-        MENUITEM "Toggle hit point &bars\t Alt+b", IDM_VIEW_TOGGLEHITPOINTBARS
-        MENUITEM "Toggle b&uff timers\tAlt+y",  IDM_VIEW_TOGGLEBUFFTIMERS
+        MENUITEM "Toggle Hit Point &Bars\t Alt+b", IDM_VIEW_TOGGLEHITPOINTBARS
+        MENUITEM "Toggle B&uff Timers\tAlt+y",  IDM_VIEW_TOGGLEBUFFTIMERS
     END
-    POPUP "Windows &Settings"
+    POPUP "&Settings"
     BEGIN
         MENUITEM "GnollHack Mode",              IDM_NHMODE
         MENUITEM SEPARATOR
@@ -87,6 +101,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Auto &Arrange Windows",       IDM_SETTING_AUTOLAYOUT
         MENUITEM "&Lock Windows",               IDM_SETTING_LOCKWINDOWS
+        MENUITEM SEPARATOR
+        MENUITEM "&Options\tO",                 IDM_SETTINGS_OPTIONS
     END
     POPUP "&Help"
     BEGIN

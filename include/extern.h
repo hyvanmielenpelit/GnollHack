@@ -274,7 +274,10 @@ E int NDECL(rnd_extcmd_idx);
 E int NDECL(doconduct);
 E int NDECL(domonability);
 E int NDECL(doability);
+E int NDECL(dospellmainmenu);
+E int NDECL(docommandmenu);
 E char FDECL(cmd_from_func, (int NDECL((*))));
+E char FDECL(cmd_from_txt, (const char*));
 E boolean FDECL(redraw_cmd, (CHAR_P));
 #ifdef USE_TRAMPOLI
 E int NDECL(doextcmd);

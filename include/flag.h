@@ -284,7 +284,6 @@ struct instance_flags {
     boolean defer_plname;  /* X11 hack: askname() might not set plname */
     boolean herecmd_menu;  /* use menu when mouseclick on yourself */
     boolean invis_goldsym; /* gold symbol is ' '? */
-    boolean animation_hangup;  /* animation may be hanging up the game; skip drawing animations */
     int failing_untrap;    /* move_into_trap() -> spoteffects() -> dotrap() */
     int in_lava_effects;   /* hack for Boots_off() */
     int last_msg;          /* indicator of last message player saw */
