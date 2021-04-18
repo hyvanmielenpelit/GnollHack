@@ -3640,11 +3640,11 @@ boolean shk_buying;
             else if (obj->exceptionality > EXCEPTIONALITY_ELITE)
                 mult = 3.0, add_cost += 40;
 
-            if(obj->mythic_prefix)
-                mult += 0.5, add_cost += 50;
+            if (obj->mythic_prefix)
+                mult += (mythic_prefix_qualities[obj->mythic_prefix].price_multiplier - 1.0) / 2.0, add_cost += mythic_prefix_qualities[obj->mythic_prefix].price_addition / 4L;
 
             if (obj->mythic_suffix)
-                mult += 0.5, add_cost += 50;
+                mult += (mythic_suffix_qualities[obj->mythic_suffix].price_multiplier - 1.0) / 2.0, add_cost += mythic_suffix_qualities[obj->mythic_suffix].price_addition / 4L;
 
             tmp = (long)((double)tmp * mult) + add_cost;
         }
@@ -3658,10 +3658,10 @@ boolean shk_buying;
                 mult = 6.0, add_cost += 150;
 
             if (obj->mythic_prefix)
-                mult += 1.0, add_cost += 200;
+                mult += (mythic_prefix_qualities[obj->mythic_prefix].price_multiplier - 1.0), add_cost += mythic_prefix_qualities[obj->mythic_prefix].price_addition;
 
             if (obj->mythic_suffix)
-                mult += 1.0, add_cost += 200;
+                mult += (mythic_suffix_qualities[obj->mythic_suffix].price_multiplier - 1.0), add_cost += mythic_suffix_qualities[obj->mythic_suffix].price_addition;
 
             tmp = (long)((double)tmp * mult) + add_cost;
         }

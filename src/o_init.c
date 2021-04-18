@@ -6,46 +6,49 @@
 #include "hack.h"
 #include "lev.h" /* save & restore info */
 
+#define MYTHIC_STANDARD_PRICE_MULTIPLIER 2.0
+#define MYTHIC_STANDARD_PRICE_ADDITION 200L
+
 NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
 {
-    { "", "", "", 0, 0UL, 0UL },
+    { "", "", "", 0, 1.0, 0L, 0UL, 0UL },
     { 
-        "Stygian", "Stygian ", "", 15,
+        "Stygian", "Stygian ", "", 15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_LEVEL_DRAIN | MYTHIC_PREFIX_POWER_ARMOR_DEATH_RESISTANCE | MYTHIC_PREFIX_POWER_ARMOR_DRAIN_RESISTANCE,
         MYTHIC_FLAG_NONE
     },
     {
-        "Hyperborean", "Hyperborean ", "", 25,
+        "Hyperborean", "Hyperborean ", "", 25, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_MANA_GAIN_25,
         MYTHIC_FLAG_DIRECTLY_WISHABLE
     },
     {
-        "Asgardian", "Asgardian ", "", 25,
+        "Asgardian", "Asgardian ", "", 25, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_HP_GAIN_25,
         MYTHIC_FLAG_DIRECTLY_WISHABLE
     },
     {
-        "Atlantean", "Atlantean ", "", 25,
+        "Atlantean", "Atlantean ", "", 25, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_MANA_REGENERATION,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
     {
-        "Elysian", "Elysian ", "", 25,
+        "Elysian", "Elysian ", "", 25, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_REGENERATION,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
     {
-        "vampiric", "vampiric ", "", 20,
+        "vampiric", "vampiric ", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_LIFE_DRAINING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "radiant", "radiant ", "", 20,
+        "radiant", "radiant ", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_SHINES_LIGHT,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "witch-king's", "witch-king's ", "", 3,
+        "witch-king's", "witch-king's ", "", 3, MYTHIC_STANDARD_PRICE_MULTIPLIER + 0.5, MYTHIC_STANDARD_PRICE_ADDITION * 4L,
         MYTHIC_PREFIX_POWER_LEVEL_DRAIN | MYTHIC_PREFIX_POWER_MANA_GAIN_25 | MYTHIC_PREFIX_POWER_HP_GAIN_25,
         MYTHIC_FLAG_NONE
     },
@@ -68,114 +71,114 @@ NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_PREFIX_P
 
 NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
 {
-    { "", "", "", 0, 0UL, 0UL },
+    { "", "", "", 0, 1.0, 0L, 0UL, 0UL },
     { 
-        "lightness", " of lightness", "", 25,
+        "lightness", " of lightness", "", 25, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_LIGHTNESS, 
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
     { 
-        "sorcery", " of sorcery", "", 20, 
+        "sorcery", " of sorcery", "", 20,  MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_SORCERY,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
     {
-        "troll slaying", " of troll slaying", "", 20,
+        "troll slaying", " of troll slaying", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_TROLL_SLAYING | MYTHIC_SUFFIX_POWER_TROLL_REVIVAL_PREVENTION,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "ogre slaying", " of ogre slaying", "", 20,
+        "ogre slaying", " of ogre slaying", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_OGRE_SLAYING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "demon slaying", " of demon slaying", "", 15,
+        "demon slaying", " of demon slaying", "", 15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_DEMON_SLAYING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS
     },
     {
-        "dragon slaying", " of dragon slaying", "", 20,
+        "dragon slaying", " of dragon slaying", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_DRAGON_SLAYING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "giant slaying", " of giant slaying", "", 20,
+        "giant slaying", " of giant slaying", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_GIANT_SLAYING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "lycanthrope slaying", " of lycanthrope slaying", "", 20,
+        "lycanthrope slaying", " of lycanthrope slaying", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_WERE_SLAYING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "disruption", " of disruption", "", 10,
+        "disruption", " of disruption", "", 10, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_UNDEAD_DESTRUCTION,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_BLUDGEONING_WEAPONS_ONLY | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS
     },
     {
-        "speed", " of speed", "", 15,
+        "speed", " of speed", "", 15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_SPEED,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "wounding", " of wounding", "", 20,
+        "wounding", " of wounding", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_WOUNDING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS
     },
     {
-        "defense", " of defense", "", 20,
+        "defense", " of defense", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_DEFENSE,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "sharpness", " of sharpness", "", 5,
+        "sharpness", " of sharpness", "", 5, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_SHARPNESS,
         MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_SLASHING_WEAPONS_ONLY
     },
     {
-        "reach", " of reach", "", 30,
+        "reach", " of reach", "", 30, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_REACH,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_POLEARM_LANCE_SPEAR_ONLY
     },
     {
-        "providence", " of providence", "", 20,
+        "providence", " of providence", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_LUCK,
         MYTHIC_FLAG_DIRECTLY_WISHABLE
     },
     {
-        "free action", " of free action", "", 15,
+        "free action", " of free action", "", 15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_FREE_ACTION,
         MYTHIC_FLAG_DIRECTLY_WISHABLE
     },
     {
-        "fire resistance", " of fire resistance", "", 20,
+        "fire resistance", " of fire resistance", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_FIRE_RESISTANCE,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
     {
-        "cold resistance", " of cold resistance", "", 20,
+        "cold resistance", " of cold resistance", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_COLD_RESISTANCE,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
     {
-        "shock resistance", " of shock resistance", "", 20,
+        "shock resistance", " of shock resistance", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_SHOCK_RESISTANCE,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
     {
-        "cockatrice slaying", " of cockatrice slaying", "", 20,
+        "cockatrice slaying", " of cockatrice slaying", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_COCKATRICE_SLAYING | MYTHIC_SUFFIX_POWER_STONE_RESISTANCE,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "eyes", " of the eyes", "", 20,
+        "eyes", " of the eyes", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_SEARCHING | MYTHIC_SUFFIX_POWER_SEE_INVISIBLE,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
     {
-        "elements", " of the elements", "", 2,
+        "elements", " of the elements", "", 2, MYTHIC_STANDARD_PRICE_MULTIPLIER + 0.5, MYTHIC_STANDARD_PRICE_ADDITION * 6L,
         MYTHIC_SUFFIX_POWER_FIRE_RESISTANCE | MYTHIC_SUFFIX_POWER_COLD_RESISTANCE | MYTHIC_SUFFIX_POWER_SHOCK_RESISTANCE,
         MYTHIC_FLAG_ARMOR_REQUIRED
     },

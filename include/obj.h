@@ -620,6 +620,8 @@ struct mythic_definition {
     const char* mythic_affix;
     const char* description;
     short probability;
+    double price_multiplier;
+    long price_addition;
     unsigned long mythic_powers;
     unsigned long mythic_flags;
 };
