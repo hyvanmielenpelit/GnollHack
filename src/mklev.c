@@ -943,8 +943,9 @@ makelevel()
             res = mkroom(SHOPBASE);
 
         if (!res && u_depth > 8 && u_depth < depth(&medusa_level) &&
-            ((context.made_temple_count == 0 && (!rn2(7) || u_depth > depth(&oracle_level) + 4))) 
+             ((context.made_temple_count == 0 && (!rn2(7) || u_depth > depth(&oracle_level) + 4)) 
               || (context.made_temple_count > 0 && !rn2(17))
+             )
             )
             res = mkroom(TEMPLE);
         if (!res && u_depth > 1 && !rn2(7))

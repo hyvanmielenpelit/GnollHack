@@ -1214,7 +1214,7 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
 }
 
 double
-get_mythic_dmg_multiplier(otmp, mon, mattacker, use_type)
+get_mythic_dmg_multiplier(otmp, mon, mattacker)
 struct obj* otmp;
 struct monst* mon;
 struct monst* mattacker;
