@@ -174,6 +174,11 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
         MYTHIC_SUFFIX_POWER_SEARCHING | MYTHIC_SUFFIX_POWER_SEE_INVISIBLE,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
+    {
+        "elements", " of the elements", "", 2,
+        MYTHIC_SUFFIX_POWER_FIRE_RESISTANCE | MYTHIC_SUFFIX_POWER_COLD_RESISTANCE | MYTHIC_SUFFIX_POWER_SHOCK_RESISTANCE,
+        MYTHIC_FLAG_ARMOR_REQUIRED
+    },
 };
 
 NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_POWERS] =
