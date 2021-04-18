@@ -25,6 +25,16 @@ NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
         MYTHIC_FLAG_DIRECTLY_WISHABLE
     },
     {
+        "Atlantean", "Atlantean ", "", 25,
+        MYTHIC_PREFIX_POWER_MANA_REGENERATION,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
+    },
+    {
+        "Elysian", "Elysian ", "", 25,
+        MYTHIC_PREFIX_POWER_REGENERATION,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
+    },
+    {
         "vampiric", "vampiric ", "", 20,
         MYTHIC_PREFIX_POWER_LIFE_DRAINING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
@@ -50,6 +60,8 @@ NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_PREFIX_P
     { "Shines light", "Shines magical light", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Armor death resistance", "Death resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, DEATH_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
     { "Armor drain resistance", "Drain resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, DRAIN_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
+    { "Regeneration", "Regeneration", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, REGENERATION, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
+    { "Energy regeneration", "Energy regeneration", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, ENERGY_REGENERATION, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
 };
 
 
