@@ -1333,6 +1333,11 @@ unsigned doname_flags;
         else
             Strcat(prefix, "unlocked ");
     }
+    else if (Is_container_with_lid(obj))
+    {
+        if(obj->speflags & SPEFLAGS_LID_OPENED)
+            Strcat(prefix, "open ");
+    }
 
     if (Is_box(obj))
     {
@@ -3656,7 +3661,7 @@ boolean is_wiz_wish;
     int cnt, enchantment, spesgn, typ, very, rechrg;
 	int charges, chargesfound;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
-    int eroded, eroded2, erodeproof, locked, unlocked, broken;
+    int eroded, eroded2, erodeproof, locked, unlocked, broken, open;
     int halfeaten, mntmp, contents;
     int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality, mythic_prefix, mythic_suffix, key_special_quality, key_otyp, is_switchable;
     int tmp, tinv, tvariety;
@@ -3688,7 +3693,7 @@ boolean is_wiz_wish;
     very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = exceptionality = mythic_prefix = mythic_suffix =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
-        locked = unlocked = broken = key_special_quality = key_otyp = is_switchable = 0;
+        locked = unlocked = open = broken = key_special_quality = key_otyp = is_switchable = 0;
     tvariety = RANDOM_TIN;
     mntmp = NON_PM;
 #define CONTAINER_UNDEFINED 0
@@ -3832,6 +3837,8 @@ boolean is_wiz_wish;
             locked = 1, unlocked = broken = 0;
         } else if (!strncmpi(bp, "unlocked ", l = 9)) {
             unlocked = 1, locked = broken = 0;
+        } else if (!strncmpi(bp, "open ", l = 5)) {
+            open = unlocked = 1, locked = broken = 0;
         } else if (!strncmpi(bp, "broken ", l = 7)) {
             broken = 1, locked = unlocked = 0;
         } else if (!strncmpi(bp, "greased ", l = 8)) {
@@ -4749,7 +4756,11 @@ boolean is_wiz_wish;
     /*
      * Create the object, then fine-tune it.
      */
-    otmp = typ ? mksobj(typ, TRUE, FALSE, 2) : mkobj(oclass, FALSE, 2);
+    unsigned long mkflags = 0UL;
+    if (open && typ > 0 && Is_otyp_container_with_lid(typ))
+        mkflags |= MKOBJ_FLAGS_OPEN_COFFIN;
+
+    otmp = typ ? mksobj_with_flags(typ, TRUE, FALSE, 2, mkflags) : mkobj(oclass, FALSE, 2);
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
     if (islit && (typ == OIL_LAMP || typ == MAGIC_LAMP || typ == BRASS_LANTERN
