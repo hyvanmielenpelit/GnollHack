@@ -2988,6 +2988,8 @@ E void FDECL(play_voice_monster_cuss_with_god_name, (struct monst*, int));
 E void FDECL(play_voice_monster_advice, (struct monst*, boolean));
 E void FDECL(play_voice_wizard_of_yendor_cuss, (struct monst*, int, int));
 E void FDECL(play_voice_wizard_of_yendor_simple_line, (struct monst*, enum wizard_of_yendor_simple_lines));
+E void FDECL(play_voice_monster_standard_dialogue_line, (struct monst*, enum monster_standard_dialogue_lines));
+E void FDECL(play_voice_monster_special_dialogue_line, (struct monst*, int));
 
 /* ### sys.c ### */
 

@@ -1041,12 +1041,15 @@ boolean fromspell;
 
     Hear_again(); /* attempt to cure any deafness now (divine
                      message will be heard even if that fails) */
-    if (!fromspell && Conflict) {
+    if (!fromspell && Conflict) 
+	{
         pline("A voice booms:");
         verbalize("Thy desire for conflict shall be fulfilled!");
         /* send in some hostile angels instead */
         lose_guardian_angel((struct monst *) 0);
-    } else if (fromspell || u.ualign.record > 8) { /* fervent */
+    }
+	else if (fromspell || u.ualign.record > 8) 
+	{ /* fervent */
         pline("A voice whispers:");
         verbalize("Thou hast been worthy of me!");
         mm.x = u.ux;

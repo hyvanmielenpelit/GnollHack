@@ -5044,7 +5044,7 @@ struct obj *otmp;
 boolean altusage;
 {
     struct monst *shkp;
-    const char *fmt, *arg1, *arg2;
+    const char *fmt, *arg1, *arg2, *pricedesc;
     char buf[BUFSZ];
     long tmp;
 
@@ -5056,7 +5056,7 @@ boolean altusage;
     if ((tmp = cost_per_charge(shkp, otmp, altusage)) == 0L)
         return;
 
-    arg1 = arg2 = "";
+    arg1 = arg2 = pricedesc = "";
     if (otmp->oclass == SPBOOK_CLASS) 
 	{
         boolean roll = rn2(2);
@@ -5090,7 +5090,10 @@ boolean altusage;
                             || otmp->otyp == HORN_OF_PLENTY))
 	{
         if (iflags.using_gui_sounds)
-            fmt = "%s%sEmptying that will cost you some gold. (%ld %s in fact!)";
+        {
+            fmt = "%s%sEmptying that will cost you some gold.";
+            pricedesc = "(% ld% s in fact!)";
+        }
         else
             fmt = "%s%sEmptying that will cost you %ld %s.";
         if (!rn2(3))
@@ -5111,8 +5114,11 @@ boolean altusage;
     }
 	else 
 	{
-        if(iflags.using_gui_sounds)
-            fmt = "%s%sThat incurs a usage fee. (%ld %s in fact!)";
+        if (iflags.using_gui_sounds)
+        {
+            fmt = "%s%sThat incurs a usage fee.";
+            pricedesc = "(%ld %s in fact!)";
+        }
         else
             fmt = "%s%sUsage fee, %ld %s.";
 
@@ -5136,7 +5142,13 @@ boolean altusage;
 
     if (!Deaf && !muteshk(shkp)) 
 	{
-        verbalize(fmt, arg1, arg2, tmp, currency(tmp));
+        char fmtbuf[BUFSZ] = "";
+        char pricebuf[BUFSZ] = "";
+        if(pricedesc && *pricedesc)
+            Sprintf(pricebuf, " %s", pricedesc);
+        Sprintf(fmtbuf, "\"%s\"%s", fmt, pricebuf);
+        pline(fmtbuf, arg1, arg2, tmp, currency(tmp));
+        //verbalize(fmt, arg1, arg2, tmp, currency(tmp));
         exercise(A_WIS, TRUE); /* you just got info */
     }
     ESHK(shkp)->debit += tmp;

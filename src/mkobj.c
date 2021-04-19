@@ -1148,17 +1148,33 @@ int alter_type;
     case OBJ_INVENT:
         if (set_bknown)
             obj->bknown = 1;
-        verbalize("You %s %s %s, you pay for %s!",
-                  alteration_verbs[alter_type], those, simpleonames(obj),
-                  them);
+        if (iflags.using_gui_sounds)
+        {
+            objroom = *in_rooms(ox, oy, SHOPBASE);
+            if (billable(&shkp, obj, objroom, FALSE) && shkp)
+            {
+                play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);
+                verbalize("You alter %s, you pay for %s!", those, them);
+            }
+        }
+        else
+            verbalize("You %s %s %s, you pay for %s!",
+                      alteration_verbs[alter_type], those, simpleonames(obj),
+                      them);
         bill_dummy_object(obj);
         break;
     case OBJ_FLOOR:
         if (set_bknown)
             obj->bknown = 1;
-        if (costly_spot(u.ux, u.uy) && objroom == *u.ushops) {
-            verbalize("You %s %s, you pay for %s!",
-                      alteration_verbs[alter_type], those, them);
+        if (costly_spot(u.ux, u.uy) && objroom == *u.ushops) 
+        {
+            objroom = *in_rooms(ox, oy, SHOPBASE);
+            if (billable(&shkp, obj, objroom, FALSE) && shkp)
+            {
+                play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);
+                verbalize("You %s %s, you pay for %s!",
+                    iflags.using_gui_sounds ? "alter" : alteration_verbs[alter_type], those, them);
+            }
             bill_dummy_object(obj);
         } else {
             (void) stolen_value(obj, ox, oy, FALSE, FALSE);

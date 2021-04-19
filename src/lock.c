@@ -702,7 +702,10 @@ boolean is_auto;
         {
             if (picktyp == CREDIT_CARD
                 && (mtmp->isshk))
+            {
+                play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_NO_CHECKS_NO_CREDIT_NO_PROBLEM);
                 verbalize("No checks, no credit, no problem.");
+            }
             else
                 pline("I don't think %s would appreciate that.",
                     mon_nam(mtmp));

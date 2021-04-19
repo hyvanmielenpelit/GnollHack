@@ -1999,8 +1999,22 @@ struct obj *obj;
         if (carried(obj) && obj->unpaid && costly_spot(u.ux, u.uy)) {
             /* if it catches while you have it, then it's your tough luck */
             check_unpaid(obj);
-            verbalize("That's in addition to the cost of %s %s, of course.",
-                      yname(obj), obj->quan == 1L ? "itself" : "themselves");
+            if (iflags.using_gui_sounds)
+            {
+                char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+                struct monst* shkp = 0;
+                if (billable(&shkp, obj, *o_shop, FALSE) && shkp)
+                {
+                    play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_ITEM_ITSELF : SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_ITEMS_THEMSELVES);
+                    verbalize("That's in addition to the cost of %s %s, of course.",
+                        obj->quan == 1L ? "the item" : "the items", obj->quan == 1L ? "itself" : "themselves");
+                }
+            }
+            else
+            {
+                verbalize("That's in addition to the cost of %s %s, of course.",
+                    yname(obj), obj->quan == 1L ? "itself" : "themselves");
+            }
             bill_dummy_object(obj);
         }
         begin_burn(obj, FALSE);
@@ -2131,7 +2145,13 @@ struct obj **optr;
          * for an item, but (Yendorian Fuel) Taxes are inevitable...
          */
         check_unpaid(obj);
-        verbalize("That's in addition to the cost of the potion, of course.");
+        char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+        struct monst* shkp = 0;
+        if (billable(&shkp, obj, *o_shop, FALSE) && shkp)
+        {
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_POTION);
+            verbalize("That's in addition to the cost of the potion, of course.");
+        }
         bill_dummy_object(obj);
     }
     makeknown(obj->otyp);
@@ -2644,7 +2664,15 @@ struct obj *obj;
         set_tin_variety(can, HOMEMADE_TIN);
         if (carried(corpse)) {
             if (corpse->unpaid)
-                verbalize(you_buy_it);
+            {
+                char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+                struct monst* shkp = 0;
+                if (billable(&shkp, obj, *o_shop, FALSE) && shkp)
+                {
+                    play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_TIN_IT_YOU_BOUGHT_IT);
+                    verbalize(you_buy_it);
+                }
+            }
             useup(corpse);
         } else {
             if (costly_spot(corpse->ox, corpse->oy) && !corpse->no_charge)

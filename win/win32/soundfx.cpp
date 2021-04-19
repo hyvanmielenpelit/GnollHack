@@ -926,6 +926,11 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Advice", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Monster/Angel/Male/Death", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Angel/Male/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Angel/Female/Death", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Angel/Female/Special Dialogue", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Monster/Imp/Male/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Imp/Female/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Demon/Male/Death", 1.0f },
@@ -1162,6 +1167,13 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Use It Bought It", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Use Them Bought Them", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Seen Untended Shops", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/You Tin It You Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/In Addition to Cost of Item Itself", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/In Addition to Cost of Items Themselves", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/In Addition to Cost of Potion", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/No Checks No Credit No Problem", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/You Alter That You Pay for It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/You Alter Those You Pay for Them", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Cad/Lot of Damage", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Close Sesame", 1.0f },
@@ -1195,6 +1207,13 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Use It Bought It", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Use Them Bought Them", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Seen Untended Shops", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/You Tin It You Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/In Addition to Cost of Item Itself", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/In Addition to Cost of Items Themselves", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/In Addition to Cost of Potion", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/No Checks No Credit No Problem", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/You Alter That You Pay for It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/You Alter Those You Pay for Them", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Cad/Lot of Damage", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Close Sesame", 1.0f },
@@ -1228,6 +1247,13 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Use It Bought It", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Use Them Bought Them", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Seen Untended Shops", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/You Tin It You Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/In Addition to Cost of Item Itself", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/In Addition to Cost of Items Themselves", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/In Addition to Cost of Potion", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/No Checks No Credit No Problem", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/You Alter That You Pay for It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/You Alter Those You Pay for Them", 1.0f },
 
 };
 
