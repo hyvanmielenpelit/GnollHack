@@ -2758,7 +2758,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     /* All spell casters have cast indir and cast dir tiles*/
     if (action == ACTION_TILE_CAST_NODIR || action == ACTION_TILE_CAST_DIR)
     {
-        if(roleidx == ROLE_WIZARD || roleidx == ROLE_PRIEST || roleidx == ROLE_HEALER)
+        if(roleidx == ROLE_WIZARD || roleidx == ROLE_PRIEST || roleidx == ROLE_HEALER || roleidx == ROLE_MONK)
             return TRUE;
     }
 
