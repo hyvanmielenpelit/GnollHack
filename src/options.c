@@ -535,6 +535,7 @@ static boolean need_redraw; /* for doset() */
 static boolean need_set_sound_volume; /* for doset() */
 static boolean need_update_inventory; /* for doset() */
 static boolean need_set_animation_timer;
+static boolean need_update_space_binding;
 
 #if defined(TOS) && defined(TEXTCOLOR)
 extern boolean colors_changed;  /* in tos.c */
@@ -960,6 +961,10 @@ initoptions_finish()
     if (iflags.bouldersym)
         update_bouldersym();
     reglyph_darkroom();
+
+    /* wait_on_space */
+    if (flags.rest_on_space)
+        (void)bind_key(' ', "wait");
 
 #ifdef STATUS_HILITES
     /*
@@ -4588,6 +4593,10 @@ boolean tinitial, tfrom_file;
             {
                 need_update_inventory = TRUE;
             }
+            else if (boolopt[i].addr == &flags.rest_on_space)
+            {
+                need_update_space_binding = TRUE;
+            }
             else if (boolopt[i].addr == &flags.lit_corridor
                        || boolopt[i].addr == &flags.dark_room)
             {
@@ -5105,6 +5114,7 @@ doset() /* changing options via menu by Per Liboriussen */
     need_set_sound_volume = FALSE;
     need_update_inventory = FALSE;
     need_set_animation_timer = FALSE;
+    need_update_space_binding = FALSE;
 
     if ((pick_cnt = select_menu(tmpwin, PICK_ANY, &pick_list)) > 0) {
         /*
@@ -5200,6 +5210,13 @@ doset() /* changing options via menu by Per Liboriussen */
     if (need_set_animation_timer)
     {
         set_animation_timer(flags.animation_frame_interval_in_milliseconds <= 0 ? ANIMATION_FRAME_INTERVAL : flags.animation_frame_interval_in_milliseconds);
+    }
+    if (need_update_space_binding)
+    {
+        if (flags.rest_on_space)
+            (void)bind_key(' ', "wait");
+        else
+            (void)bind_key(' ', "nothing");
     }
 
     return 0;

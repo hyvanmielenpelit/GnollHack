@@ -939,6 +939,7 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         if (!program_state.gameover && !program_state.done_hup && !program_state.animation_hangup)
         {
             uchar search_char = 0;
+            const char* search_text = 0;
             int (*search_func)(VOID_ARGS) = 0;
 
             switch (wmId)
@@ -968,7 +969,7 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 search_func = dosearch;
                 break;
             case IDM_COMMAND_WAIT:
-                search_func = donull;
+                search_text = "wait";
                 break;
             case IDM_SETTINGS_OPTIONS:
                 search_func = doset;
@@ -977,6 +978,8 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
             if (search_func)
                 search_char = cmd_from_func(search_func);
+            else if(search_text)
+                search_char = cmd_from_txt(search_text);
 
             if (search_char)
             {

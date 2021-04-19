@@ -5243,9 +5243,6 @@ commands_init()
     (void) bind_key(M('4'), "targeting");
     (void) bind_key(M('*'), "targeting");
 #endif
-
-    /* wait_on_space */
-    (void) bind_key(' ',    "wait");
 }
 
 int
@@ -6512,7 +6509,7 @@ register char *cmd;
         /* don't report "unknown command" for change of heart... */
         bad_command = FALSE;
     }
-	else if (*cmd == ' ' || *cmd == 13) // && !flags.rest_on_space)
+	else if ((*cmd == ' ' && !flags.rest_on_space) || *cmd == 13) // )
 	{
 		bad_command = FALSE;//TRUE; /* skip cmdlist[] loop */
 
@@ -7459,7 +7456,7 @@ parse()
     else
     {
         last_multi = multi;
-        if (foo != ' ' && foo != 13)
+        if (!(foo == ' ' && !flags.rest_on_space) && foo != 13)
         {
             savech(0); /* reset input queue */
             savech((char)foo);
