@@ -4205,10 +4205,10 @@ struct monst* mtmp;
 		if (is_peaceful(mtmp) && buy_count > 0) 
 		{
 			play_sfx_sound(SFX_BUY_FROM_NPC);
-			if (!Deaf && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10)))
+			if (!Deaf && !mtmp->isshk && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10)))
 				verbalize("Use your purchase well!");
-			else if (!Deaf && is_speaking_monster(mtmp->data))
-				verbalize("Thank you for the purchase!");
+			else if (!Deaf && (is_speaking_monster(mtmp->data) || (mtmp->isshk && !muteshk(mtmp))))
+				verbalize("Thank you for your purchase!");
 			else
 				pline("%s nods appreciatively at you for the purchase!", Monnam(mtmp));
 		}

@@ -1105,14 +1105,16 @@ int alter_type;
     const char *those, *them;
     struct monst *shkp = 0;
 
-    if (alter_type < 0 || alter_type >= SIZE(alteration_verbs)) {
+    if (alter_type < 0 || alter_type >= SIZE(alteration_verbs))
+    {
         impossible("invalid alteration type (%d)", alter_type);
         alter_type = 0;
     }
 
     ox = oy = 0;    /* lint suppression */
     objroom = '\0'; /* ditto */
-    if (carried(obj) || obj->where == OBJ_FREE) {
+    if (carried(obj) || obj->where == OBJ_FREE)
+    {
         /* OBJ_FREE catches obj_no_longer_held()'s transformation
            of crysknife back into worm tooth; the object has been
            removed from inventory but not necessarily placed at
@@ -1120,7 +1122,9 @@ int alter_type;
            if this item is owned by a shop */
         if (!obj->unpaid)
             return;
-    } else {
+    }
+    else 
+    {
         /* this get_obj_location shouldn't fail, but if it does,
            use hero's location */
         if (!get_obj_location(obj, &ox, &oy, CONTAINED_TOO))
@@ -1143,7 +1147,8 @@ int alter_type;
        from `I x' after bill_dummy_object() be more specific for this item */
     set_bknown = (alter_type == COST_UNCURS || alter_type == COST_UNBLSS);
 
-    switch (obj->where) {
+    switch (obj->where) 
+    {
     case OBJ_FREE: /* obj_no_longer_held() */
     case OBJ_INVENT:
         if (set_bknown)
@@ -1176,7 +1181,9 @@ int alter_type;
                     iflags.using_gui_sounds ? "alter" : alteration_verbs[alter_type], those, them);
             }
             bill_dummy_object(obj);
-        } else {
+        } 
+        else 
+        {
             (void) stolen_value(obj, ox, oy, FALSE, FALSE);
         }
         break;
