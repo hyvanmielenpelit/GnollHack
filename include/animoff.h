@@ -292,9 +292,9 @@ int animation_offsets[MAX_ANIMATIONS] = {
 	11232, /* yellow-light-flash-animation */
 	11239, /* black-light-flash-animation */
 	11246, /* brazier-lit-animation */
-	11247, /* brazier-subtype-1-lit-animation */
-	11248, /* brazier-subtype-2-lit-animation */
-	11249, /* rock-piercer-drop-animation */
+	11251, /* brazier-subtype-1-lit-animation */
+	11256, /* brazier-subtype-2-lit-animation */
+	11261, /* rock-piercer-drop-animation */
 };
 
 int enlargement_offsets[MAX_ENLARGEMENTS] = {
