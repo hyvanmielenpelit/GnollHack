@@ -4126,7 +4126,7 @@ struct monst* mtmp;
 			else
 				strcpy(itembuf, "items");
 
-			play_monster_item_trading_dialogue_line(mtmp, sellable_item_count == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_MAY_I_INTEREST_YOU_IN_FOLLOWING_ITEM : MONSTER_ITEM_TRADING_LINE_TRADING_MAY_I_INTEREST_YOU_IN_FOLLOWING_ITEMS);
+			play_monster_item_trading_line(mtmp, sellable_item_count == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_MAY_I_INTEREST_YOU_IN_FOLLOWING_ITEM : MONSTER_ITEM_TRADING_LINE_TRADING_MAY_I_INTEREST_YOU_IN_FOLLOWING_ITEMS);
 			verbalize("Hello, adventurer! May I interest you in the following %s?", itembuf);
 		}
 		else
@@ -4234,7 +4234,7 @@ struct monst* mtmp;
 				verbalize("Use your purchase well!");
 			else if (!Deaf && (is_speaking_monster(mtmp->data) || (mtmp->isshk && !muteshk(mtmp))))
 			{
-				play_monster_item_trading_dialogue_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_THANK_YOU_FOR_YOUR_PURCHASE);
+				play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_THANK_YOU_FOR_YOUR_PURCHASE);
 				verbalize("Thank you for your purchase!");
 			}
 			else

@@ -10884,7 +10884,7 @@ enum monster_standard_dialogue_lines line_id;
 }
 
 void
-play_monster_item_trading_dialogue_line(mtmp, line_id)
+play_monster_item_trading_line(mtmp, line_id)
 struct monst* mtmp;
 enum monster_item_trading_lines line_id;
 {
