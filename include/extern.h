@@ -2550,6 +2550,7 @@ E void FDECL(read_the_one_ring, (struct obj*));
 E void FDECL(strip_charges, (struct obj*, boolean));
 E void FDECL(p_glow1, (struct obj*));
 E void FDECL(p_glow2, (struct obj*, const char*));
+E void FDECL(dragon_scales_to_scale_mail, (struct obj*, boolean));
 
 /* ### rect.c ### */
 

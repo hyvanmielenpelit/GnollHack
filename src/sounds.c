@@ -59,6 +59,7 @@ STATIC_DCL int FDECL(do_chat_smith_repair_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_refill_lantern, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_forge_dragon_scale_mail, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
@@ -81,6 +82,7 @@ STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
+STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
 STATIC_DCL int FDECL(learn_spell_func, (struct monst*));
 STATIC_DCL int FDECL(spell_teaching, (struct monst*, int*));
 
@@ -2622,6 +2624,19 @@ dochat()
 
 			Sprintf(available_chat_list[chatnum].name, "Protect a weapon");
 			available_chat_list[chatnum].function_ptr = &do_chat_smith_protect_weapon;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
+			Sprintf(available_chat_list[chatnum].name, "Forge dragon scales into a scale mail");
+			available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_dragon_scale_mail;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
 			any = zeroany;
@@ -5266,6 +5281,17 @@ struct monst* mtmp;
 }
 
 STATIC_OVL int
+do_chat_smith_forge_dragon_scale_mail(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
+		return 0;
+
+	int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail");
+}
+
+STATIC_OVL int
 do_chat_smith_identify(mtmp)
 struct monst* mtmp;
 {
@@ -6342,6 +6368,34 @@ struct monst* mtmp;
 	otmp->age = 1500L;
 	otmp->special_quality = 1;
 	update_inventory();
+
+	verbalize("Thank you for using my services.");
+	return 1;
+}
+
+STATIC_OVL int
+forge_dragon_scale_mail_func(mtmp)
+struct monst* mtmp;
+{
+	const char refill_lantern_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
+	struct obj* otmp = getobj(refill_lantern_objects, "forge into a dragon scale mail", 0, "");
+
+	if (!otmp)
+		return 0;
+
+	pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+
+	/* Check if the selection is appropriate */
+	if (otmp && !is_dragon_scales(otmp))
+	{
+		play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+		verbalize("Sorry, this is not an item that I can forge into a dragon scale mail.");
+		return 0;
+	}
+
+	pline("%s starts working on %s.", Monnam(mtmp), yname(otmp));
+
+	dragon_scales_to_scale_mail(otmp, FALSE);
 
 	verbalize("Thank you for using my services.");
 	return 1;

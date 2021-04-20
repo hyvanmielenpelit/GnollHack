@@ -1808,27 +1808,7 @@ boolean *effect_happened_ptr;
 
 		if (s >= 0 && is_dragon_scales(otmp)) 
         {
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
-            play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_SUCCESS);
-            special_effect_wait_until_action(0);
-            /* dragon scales get turned into dragon scale mail */
-			pline("%s merges and hardens!", Yname2(otmp));
-			setworn((struct obj*) 0, W_ARM);
-			/* assumes same order */
-			otmp->otyp += GRAY_DRAGON_SCALE_MAIL - GRAY_DRAGON_SCALES;
-			if (sblessed) 
-            {
-				otmp->enchantment++;
-				if (!otmp->blessed)
-					bless(otmp);
-			}
-			else if (otmp->cursed)
-				uncurse(otmp);
-			otmp->known = 1;
-			setworn(otmp, W_ARM);
-			if (otmp->unpaid)
-				alter_cost(otmp, 0L); /* shop bill */
-            special_effect_wait_until_end(0);
+            dragon_scales_to_scale_mail(otmp, sblessed);
             break;
 		}
 
@@ -4260,4 +4240,45 @@ create_particular()
     return FALSE;
 }
 
+void
+dragon_scales_to_scale_mail(otmp, sblessed)
+struct obj* otmp;
+boolean sblessed;
+{
+    if (!otmp || !is_dragon_scales(otmp))
+        return;
+
+    xchar ox = u.ux, oy = u.uy;
+    boolean worn = !!otmp->owornmask;
+    get_obj_location(otmp, &ox, &oy, 0);
+    play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, ox, oy, FALSE);
+    play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_SUCCESS);
+    special_effect_wait_until_action(0);
+
+    /* dragon scales get turned into dragon scale mail */
+    pline("%s merges and hardens!", Yname2(otmp));
+
+    if(worn)
+        setworn((struct obj*)0, W_ARM);
+    
+    /* assumes same order */
+    otmp->otyp += GRAY_DRAGON_SCALE_MAIL - GRAY_DRAGON_SCALES;
+    if (sblessed)
+    {
+        otmp->enchantment++;
+        if (!otmp->blessed)
+            bless(otmp);
+    }
+    else if (otmp->cursed)
+        uncurse(otmp);
+    otmp->known = 1;
+    
+    if (worn)
+        setworn(otmp, W_ARM);
+    
+    if (otmp->unpaid)
+        alter_cost(otmp, 0L); /* shop bill */
+
+    special_effect_wait_until_end(0);
+}
 /*read.c*/

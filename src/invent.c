@@ -2976,6 +2976,7 @@ struct obj* otmp_only;
                     && (otmp->otyp != HORN_OF_PLENTY || !otmp->dknown
                         || !objects[HORN_OF_PLENTY].oc_name_known))
                 || (!strcmp(word, "detect blessedness for") && otmp->bknown)
+                || (!strcmp(word, "forge into a dragon scale mail") && !is_dragon_scales(otmp))
                 || (!strcmp(word, "refill") && !is_refillable_with_oil(otmp))
                 || (!strcmp(word, "enchant") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
                 || (!strcmp(word, "protect") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
