@@ -148,29 +148,6 @@ enum dismount_types {
 #define SELL_DELIBERATE (1)
 #define SELL_DONTSELL (2)
 
-/* alteration types--keep in synch with costly_alteration(mkobj.c) */
-enum cost_alteration_types {
-    COST_CANCEL  =  0, /* standard cancellation */
-    COST_DRAIN   =  1, /* drain life upon an object */
-    COST_UNCHRG  =  2, /* cursed charging */
-    COST_UNBLSS  =  3, /* unbless (devalues holy water) */
-    COST_UNCURS  =  4, /* uncurse (devalues unholy water) */
-    COST_DECHNT  =  5, /* disenchant weapons or armor */
-    COST_DEGRD   =  6, /* removal of rustproofing, dulling via engraving */
-    COST_DILUTE  =  7, /* potion dilution */
-    COST_ERASE   =  8, /* scroll or spellbook blanking */
-    COST_BURN    =  9, /* dipped into flaming oil */
-    COST_NUTRLZ  = 10, /* neutralized via unicorn horn */
-    COST_DSTROY  = 11, /* wand breaking (bill first, useup later) */
-    COST_SPLAT   = 12, /* cream pie to own face (ditto) */
-    COST_BITE    = 13, /* start eating food */
-    COST_OPEN    = 14, /* open tin */
-    COST_BRKLCK  = 15, /* break box/chest's lock */
-    COST_RUST    = 16, /* rust damage */
-    COST_ROT     = 17, /* rotting attack */
-    COST_CORRODE = 18 /* acid damage */
-};
-
 /* bitmask flags for corpse_xname();
    PFX_THE takes precedence over ARTICLE, NO_PFX takes precedence over both */
 #define CXN_NORMAL 0    /* no special handling */

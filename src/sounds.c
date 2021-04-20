@@ -4112,7 +4112,7 @@ struct monst* mtmp;
 	}
 	else
 	{
-		if (!Deaf && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) ))
+		if (!Deaf && !mtmp->isshk && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) ))
 		{
 			verbalize("%sI'm willing to trade the following items.", is_undead(mtmp->data) || is_demon(mtmp->data) ? "Greetings, mortal. " : "");
 			verbalize("But be quick, my patience is limited.");
@@ -4122,10 +4122,11 @@ struct monst* mtmp;
 			char itembuf[BUFSZ];
 			struct obj* otmp;
 			if (sellable_item_count == 1 && (otmp = get_first_sellable_item(mtmp)) != 0)
-				strcpy(itembuf, cxname(otmp));
+				strcpy(itembuf, iflags.using_gui_sounds ? "item" : cxname(otmp));
 			else
 				strcpy(itembuf, "items");
 
+			play_monster_item_trading_dialogue_line(mtmp, sellable_item_count == 1 ? MONSTER_ITEM_TRADING_LINE_TRADING_MAY_I_INTEREST_YOU_IN_FOLLOWING_ITEM : MONSTER_ITEM_TRADING_LINE_TRADING_MAY_I_INTEREST_YOU_IN_FOLLOWING_ITEMS);
 			verbalize("Hello, adventurer! May I interest you in the following %s?", itembuf);
 		}
 		else
@@ -4232,7 +4233,10 @@ struct monst* mtmp;
 			if (!Deaf && !mtmp->isshk && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10)))
 				verbalize("Use your purchase well!");
 			else if (!Deaf && (is_speaking_monster(mtmp->data) || (mtmp->isshk && !muteshk(mtmp))))
+			{
+				play_monster_item_trading_dialogue_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_THANK_YOU_FOR_YOUR_PURCHASE);
 				verbalize("Thank you for your purchase!");
+			}
 			else
 				pline("%s nods appreciatively at you for the purchase!", Monnam(mtmp));
 		}

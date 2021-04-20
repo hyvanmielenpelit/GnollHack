@@ -920,16 +920,22 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Male/Get Angry", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Male/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Male/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Male/Item Trading", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Get Angry", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Item Trading", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Undead/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Undead/Get Angry", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Undead/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Undead/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Undead/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Undead/Item Trading", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Monster/Angel/Male/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Angel/Male/Special Dialogue", 1.0f },
@@ -1179,6 +1185,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/No Checks No Credit No Problem", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/You Alter That You Pay for It", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/You Alter Those You Pay for Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Costly Alteration/Alter Pay", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Cad/Lot of Damage", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Close Sesame", 1.0f },
@@ -1219,6 +1226,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/No Checks No Credit No Problem", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/You Alter That You Pay for It", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/You Alter Those You Pay for Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Costly Alteration/Alter Pay", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Cad/Lot of Damage", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Close Sesame", 1.0f },
@@ -1259,6 +1267,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/No Checks No Credit No Problem", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/You Alter That You Pay for It", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/You Alter Those You Pay for Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Costly Alteration/Alter Pay", 1.0f },
 
 };
 

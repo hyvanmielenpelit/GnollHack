@@ -1158,8 +1158,9 @@ int alter_type;
             objroom = *in_rooms(ox, oy, SHOPBASE);
             if (billable(&shkp, obj, objroom, FALSE) && shkp)
             {
-                play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);
-                verbalize("You alter %s, you pay for %s!", those, them);
+                //play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);
+                play_voice_shopkeeper_costly_alteration(shkp, obj, alter_type);
+                verbalize("You %s %s, you pay for %s!", alteration_verbs[alter_type], those, them);
             }
         }
         else
@@ -1176,9 +1177,10 @@ int alter_type;
             objroom = *in_rooms(ox, oy, SHOPBASE);
             if (billable(&shkp, obj, objroom, FALSE) && shkp)
             {
-                play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);
+                //play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);
+                play_voice_shopkeeper_costly_alteration(shkp, obj, alter_type);
                 verbalize("You %s %s, you pay for %s!",
-                    iflags.using_gui_sounds ? "alter" : alteration_verbs[alter_type], those, them);
+                    alteration_verbs[alter_type], those, them);
             }
             bill_dummy_object(obj);
         } 
