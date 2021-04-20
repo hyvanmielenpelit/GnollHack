@@ -2993,6 +2993,7 @@ E void FDECL(play_voice_monster_standard_dialogue_line, (struct monst*, enum mon
 E void FDECL(play_voice_monster_special_dialogue_line, (struct monst*, int));
 E void FDECL(play_voice_monster_standard_sound, (struct monst*, enum monster_standard_sounds));
 E void FDECL(play_voice_monster_special_sound, (struct monst*, int));
+E enum monster_soundset_types FDECL(get_monster_soundset, (struct monst*));
 
 /* ### sys.c ### */
 

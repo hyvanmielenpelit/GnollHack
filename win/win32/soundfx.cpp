@@ -926,6 +926,11 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Female/Advice", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Undead/Death", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Undead/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Undead/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Undead/Advice", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Monster/Angel/Male/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Angel/Male/Special Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Angel/Female/Death", 1.0f },

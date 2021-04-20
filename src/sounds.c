@@ -876,6 +876,15 @@ register struct monst *mtmp;
 	if (is_silenced(mtmp))
 		msound = MS_SILENT;
 
+	if (mtmp->isshk)
+		msound = MS_SELL;
+	else if (mtmp->issmith)
+		msound = MS_SMITH;
+	else if (mtmp->isnpc)
+		msound = MS_NPC;
+	else if (mtmp->ispriest)
+		msound = MS_PRIEST;
+
 	play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CHAT);
 
     switch (msound) {

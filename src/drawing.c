@@ -458,9 +458,9 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
            {LEVEL_TELEPORT_TRAP_STAND_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },    /* trap */
-       { '^', "magic portal", "",        LAYER_TRAP, FALSE,    0, 0,     
+       { '^', "magic portal", "",        LAYER_TRAP, TRUE,    0, 0,     
            { C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA) }, 
-           {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+           {MAGIC_PORTAL_STAND_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} }, /* trap */
        { '"', "web", "remains of a web", LAYER_TRAP, TRUE,    0, 0,     

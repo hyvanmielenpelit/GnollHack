@@ -254,6 +254,13 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
+    {
+        "Shopkeeper Undead",
+        MONSTER_SOUNDSET_SHOPKEEPER_MALE,
+        {{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_SHOPKEEPER_UNDEAD_GET_ANGRY, 1.0f}, {GHSOUND_SHOPKEEPER_UNDEAD_MOLLIFIED, 1.0f}, {GHSOUND_SHOPKEEPER_UNDEAD_ADVICE, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 1.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_FLOUNDER_FEMALE, 1.0f}, {GHSOUND_GENERIC_TRIP_FEMALE, 1.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 10.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 1.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_SHOPKEEPER_UNDEAD_DEATH, 5.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
+    },
 };
 
 
@@ -6156,7 +6163,7 @@ enum climbing_types climbingid;
     float volume = 1.0f, base_volume = isyou || mtmp == u.usteed ? 1.0f : 0.25f;
     float weight = max(0.0f, min(10000.0f, (float)mtmp->data->cwt));
 
-    enum monster_soundset_types mss = isfemale ? mtmp->data->female_soundset : mtmp->data->soundset;
+    enum monster_soundset_types mss = get_monster_soundset(mtmp);
     enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[BAREFOOTED_ATTACK_NUMBER];
     enum object_sound_types sound_type = OBJECT_SOUND_TYPE_WALK;
 
@@ -7012,7 +7019,7 @@ enum monster_sound_types sound_type;
     struct ghsound_immediate_info immediateinfo = { 0 };
     enum immediate_sound_types sfxtype = IMMEDIATE_SOUND_SFX;
     enum sound_play_groups playgroup = SOUND_PLAY_GROUP_NORMAL;
-    enum monster_soundset_types mss = mon->female ? mon->data->female_soundset : mon->data->soundset;
+    enum monster_soundset_types mss = get_monster_soundset(mon);
     set_simple_monster_sound_id_and_volume(mss, sound_type, &soundid, &volume);
 
     if (!Upolyd && isyou)
@@ -7104,7 +7111,7 @@ enum object_sound_types sound_type;
         }
         else
         {
-            enum monster_soundset_types mss = magr->female ? magr->data->female_soundset : magr->data->soundset;
+            enum monster_soundset_types mss = get_monster_soundset(magr);
             enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[attack_number];
             set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
         }
@@ -7164,7 +7171,7 @@ enum object_sound_types sound_type;
     }
     else
     {
-        enum monster_soundset_types mss = mtmp->female ? mtmp->data->female_soundset : mtmp->data->soundset;
+        enum monster_soundset_types mss = get_monster_soundset(mtmp);
         enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[attack_number];
         set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
     }
@@ -7369,9 +7376,6 @@ xchar x, y;
     if (Deaf)
         return;
 
-    boolean you_attack = (magr == &youmonst);
-    boolean isfemale = you_attack ? (Upolyd ? u.mfemale : flags.female) : magr->female;
-
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     enum object_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUND_TYPE_HIT_MELEE : OBJECT_SOUND_TYPE_HIT_THROW);
@@ -7396,7 +7400,7 @@ xchar x, y;
     }
     else
     {
-        enum monster_soundset_types mss = isfemale ? magr->data->female_soundset : magr->data->soundset;
+        enum monster_soundset_types mss = get_monster_soundset(magr);
         enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[attack_number];
         soundid = object_soundsets[oss].sounds[sound_type].ghsound;
         volume = object_soundsets[oss].sounds[sound_type].volume;
@@ -10576,7 +10580,7 @@ int cuss_id;
     struct ghsound_immediate_info info = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
-    enum monster_soundset_types mss = mtmp->female ? mtmp->data->female_soundset : mtmp->data->soundset;
+    enum monster_soundset_types mss = get_monster_soundset(mtmp);
     set_simple_monster_sound_id_and_volume(mss, MONSTER_SOUND_TYPE_MALEDICTION, &soundid, &volume);
     info.ghsound = soundid;
     info.parameter_names[0] = "MaledictionIndex";
@@ -10620,7 +10624,7 @@ int cuss_id;
     struct ghsound_immediate_info info = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
-    enum monster_soundset_types mss = mtmp->female ? mtmp->data->female_soundset : mtmp->data->soundset;
+    enum monster_soundset_types mss = get_monster_soundset(mtmp);
     set_simple_monster_sound_id_and_volume(mss, MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME, &soundid, &volume);
     info.ghsound = soundid;
     info.parameter_names[0] = "MaledictionIndex";
@@ -10660,7 +10664,7 @@ boolean has_advice;
     struct ghsound_immediate_info info = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
-    enum monster_soundset_types mss = mtmp->female ? mtmp->data->female_soundset : mtmp->data->soundset;
+    enum monster_soundset_types mss = get_monster_soundset(mtmp);
     set_simple_monster_sound_id_and_volume(mss, MONSTER_SOUND_TYPE_ADVICE, &soundid, &volume);
     info.ghsound = soundid;
     info.parameter_names[0] = "LineIndex";
@@ -10805,7 +10809,7 @@ double minimum_volume;
     struct ghsound_immediate_info info = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
-    enum monster_soundset_types mss = mtmp->female ? mtmp->data->female_soundset : mtmp->data->soundset;
+    enum monster_soundset_types mss = get_monster_soundset(mtmp);
     set_simple_monster_sound_id_and_volume(mss, sound_id, &soundid, &volume);
     info.ghsound = soundid;
     info.parameter_names[0] = "LineIndex";
@@ -10860,6 +10864,22 @@ struct monst* mtmp;
 int line_id;
 {
     play_voice_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_SPECIAL_SOUND, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f);
+}
+
+enum monster_soundset_types
+get_monster_soundset(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return MONSTER_SOUNDSET_NONE;
+
+    boolean isyou = (mtmp == &youmonst);
+    boolean isfemale = isyou ? (Upolyd ? u.mfemale : flags.female) : mtmp->female;
+
+    if (mtmp->isshk)
+        return is_undead(mtmp->data) ? MONSTER_SOUNDSET_SHOPKEEPER_UNDEAD : isfemale ? MONSTER_SOUNDSET_SHOPKEEPER_FEMALE : MONSTER_SOUNDSET_SHOPKEEPER_MALE;
+    else
+        return isfemale ? mtmp->data->female_soundset : mtmp->data->soundset;
 }
 
 /* soundset.c */
