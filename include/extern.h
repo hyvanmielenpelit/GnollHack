@@ -101,6 +101,10 @@ E int NDECL(floorapply);
 E int FDECL(use_lever, (struct trap*));
 E void FDECL(setapplyclasses, (char*));
 E void FDECL(setbreakclasses, (char*));
+E void FDECL(use_candelabrum, (struct obj*));
+E void FDECL(use_candle, (struct obj**));
+E void FDECL(use_lamp, (struct obj*));
+E void FDECL(light_cocktail, (struct obj**));
 
 /* ### artifact.c ### */
 
@@ -2113,6 +2117,8 @@ E boolean FDECL(the_unique_obj, (struct obj *));
 E boolean FDECL(the_unique_pm, (struct permonst *));
 E boolean FDECL(erosion_matters, (struct obj *));
 E char *FDECL(doname, (struct obj *));
+E char* FDECL(doname_in_text, (struct obj*));
+E char* FDECL(doname_in_text_with_price_and_weight_last, (struct obj*));
 E char *FDECL(doname_with_price, (struct obj *));
 E char *FDECL(doname_vague_quan, (struct obj *));
 E char* FDECL(doname_with_weight_first_true, (struct obj*));

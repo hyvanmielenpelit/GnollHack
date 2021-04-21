@@ -17,10 +17,6 @@ STATIC_DCL int FDECL(use_leash, (struct obj *));
 STATIC_DCL int FDECL(use_mirror, (struct obj *));
 STATIC_DCL int FDECL(use_holysymbol, (struct obj*));
 STATIC_DCL void FDECL(use_bell, (struct obj **));
-STATIC_DCL void FDECL(use_candelabrum, (struct obj *));
-STATIC_DCL void FDECL(use_candle, (struct obj **));
-STATIC_DCL void FDECL(use_lamp, (struct obj *));
-STATIC_DCL void FDECL(light_cocktail, (struct obj **));
 STATIC_PTR void FDECL(display_jump_positions, (int));
 STATIC_DCL void FDECL(use_tinning_kit, (struct obj *));
 STATIC_DCL void FDECL(use_figurine, (struct obj **));
@@ -1716,7 +1712,7 @@ struct obj **optr;
         wake_nearby();
 }
 
-STATIC_OVL void
+void
 use_candelabrum(obj)
 register struct obj *obj;
 {
@@ -1782,7 +1778,7 @@ register struct obj *obj;
     begin_burn(obj, FALSE);
 }
 
-STATIC_OVL void
+void
 use_candle(optr)
 struct obj **optr;
 {
@@ -1977,7 +1973,7 @@ struct obj *obj;
 {
     xchar x, y;
 
-    if (!obj->lamplit && (obj->otyp == MAGIC_LAMP || ignitable(obj)))
+    if (!obj->lamplit && is_obj_ignitable(obj))
 	{
 		if (obj->otyp == MAGIC_LAMP && obj->special_quality == 0)
 			return FALSE;
@@ -2023,7 +2019,7 @@ struct obj *obj;
     return FALSE;
 }
 
-STATIC_OVL void
+void
 use_lamp(obj)
 struct obj *obj;
 {
@@ -2103,7 +2099,7 @@ struct obj *obj;
     }
 }
 
-STATIC_OVL void
+void
 light_cocktail(optr)
 struct obj **optr;
 {
@@ -2111,12 +2107,15 @@ struct obj **optr;
     char buf[BUFSZ];
     boolean split1off;
 
-    if (u.uswallow) {
+    if (u.uswallow) 
+    {
         You(no_elbow_room);
         return;
     }
 
-    if (obj->lamplit) {
+    if (obj->lamplit) 
+    {        
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         You("snuff the lit potion.");
         end_burn(obj, TRUE);
         /*
@@ -2124,8 +2123,11 @@ struct obj **optr;
          * age of the potions.  Not exactly the best solution,
          * but its easy.
          */
-        freeinv(obj);
-        *optr = addinv(obj);
+        if (carried(obj))
+        {
+            freeinv(obj);
+            *optr = addinv(obj);
+        }
         return;
     } else if (Underwater) {
         play_sfx_sound(GHSOUND_GENERAL_CANNOT);
@@ -2137,6 +2139,7 @@ struct obj **optr;
     if (split1off)
         obj = splitobj(obj, 1L);
 
+    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
     You("light %spotion.%s", shk_your(buf, obj),
         Blind ? "" : "  It gives off a dim light.");
 
@@ -2157,7 +2160,8 @@ struct obj **optr;
     makeknown(obj->otyp);
 
     begin_burn(obj, FALSE); /* after shop billing */
-    if (split1off) {
+    if (split1off && carried(obj)) 
+    {
         obj_extract_self(obj); /* free from inv */
         obj->nomerge = 1;
         obj = hold_another_object(obj, "You drop %s!", doname(obj),

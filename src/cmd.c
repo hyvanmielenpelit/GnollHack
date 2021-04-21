@@ -7873,6 +7873,67 @@ dolight(VOID_ARGS)
             }
         }
     }
+    else if(OBJ_AT(u.ux, u.uy))
+    {
+        struct obj* otmp;
+        char qbuf[QBUFSZ];
+        char c;
+        boolean res = TRUE;
+        int cnt = 0;
+
+        for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
+            if (is_obj_ignitable(otmp))
+                cnt++;
+
+        if (cnt > 0)
+        {
+            c = 'y';
+            if (cnt > 1)
+            {
+                Sprintf(qbuf, "There are several ignitable objects here. Do you want to light them up or snuff them out?");
+                c = yn_function(qbuf, ynqchars, 'n');
+            }
+
+            if (c == 'q')
+                return  FALSE;
+            else if (c == 'y')
+            {
+                for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
+                {
+                    if (is_obj_ignitable(otmp))
+                    {
+                        char qsfx[QBUFSZ];
+                        boolean one = (otmp->quan == 1L);
+                        boolean snuffout = (otmp->lamplit);
+
+                        /* "There is <an object> here; <verb> it?" or
+                            "There are <N objects> here; <verb> one?" */
+
+                        Sprintf(qbuf, "There %s ", otense(otmp, "are"));
+                        Sprintf(qsfx, " here; %s %s %s?", snuffout ? "snuff" : "light", one ? "it" : "them", snuffout ? "out" : "up");
+
+                        (void)safe_qbuf(qbuf, qbuf, qsfx, otmp, doname_in_text, ansimpleoname,
+                            one ? something : (const char*)"things");
+
+                        if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y')
+                        {
+                            if (is_candle(otmp))
+                                use_candle(&otmp);
+                            else if (otmp->otyp == CANDELABRUM_OF_INVOCATION)
+                                use_candelabrum(otmp);
+                            else if (otmp->otyp == POT_OIL)
+                                light_cocktail(&otmp);
+                            else
+                                use_lamp(otmp);
+                            return TRUE;
+                        }
+                        else if (c == 'q')
+                            return FALSE;
+                    }
+                }
+            }
+        }
+    }
 
 
     /* Light in a direction */

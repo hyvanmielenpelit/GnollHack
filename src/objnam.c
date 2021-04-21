@@ -1181,11 +1181,12 @@ struct obj *obj;
     return FALSE;
 }
 
-#define DONAME_WITH_PRICE 1
-#define DONAME_VAGUE_QUAN 2
-#define DONAME_WITH_WEIGHT_FIRST 4
-#define DONAME_WITH_WEIGHT_LAST 8
-#define DONAME_LOADSTONE_CORRECTLY 16
+#define DONAME_WITH_PRICE 0x0001
+#define DONAME_VAGUE_QUAN 0x0002
+#define DONAME_WITH_WEIGHT_FIRST 0x0004
+#define DONAME_WITH_WEIGHT_LAST 0x0008
+#define DONAME_LOADSTONE_CORRECTLY 0x0010
+#define DONAME_LIT_IN_FRONT  0x0020
 
 STATIC_OVL char *
 doname_base(obj, doname_flags)
@@ -1200,8 +1201,9 @@ unsigned doname_flags;
             vague_quan = (doname_flags & DONAME_VAGUE_QUAN) != 0,
 			weightfirst = (doname_flags & DONAME_WITH_WEIGHT_FIRST) != 0,
 			weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
-			loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0;
-	boolean known, dknown, cknown, bknown, lknown, tknown;
+			loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0,
+            lit_in_front = (doname_flags & DONAME_LIT_IN_FRONT) != 0;
+    boolean known, dknown, cknown, bknown, lknown, tknown;
     int omndx = obj->corpsenm, isenchanted = 0;
     char prefix[PREFIX];
     char tmpbuf[PREFIX + 1]; /* for when we have to add something at
@@ -1548,8 +1550,17 @@ weapon_here:
                 Strcpy(tmpbuf, "no");
             else
                 Sprintf(tmpbuf, "%d", obj->special_quality);
-            Sprintf(eos(bp), " (%s candle%s%s)", tmpbuf, plur(obj->special_quality),
-                    !obj->lamplit ? " attached" : ", lit");
+            if (lit_in_front)
+            {
+                if(obj->lamplit)
+                    Strcat(prefix, "lit ");
+
+                Sprintf(eos(bp), " with %s candle%s%s", tmpbuf, plur(obj->special_quality),
+                    " attached");
+            }
+            else
+                Sprintf(eos(bp), " (%s candle%s%s)", tmpbuf, plur(obj->special_quality),
+                        !obj->lamplit ? " attached" : ", lit");
             break;
         } 
 		else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
@@ -1561,7 +1572,12 @@ weapon_here:
 				)
                 Strcat(prefix, "partly used ");
             if (obj->lamplit)
-                Strcat(bp, " (lit)");
+            {
+                if(lit_in_front)
+                    Strcat(prefix, "lit ");
+                else
+                    Strcat(bp, " (lit)");
+            }
             break;
         }
 //        if (objects[obj->otyp].oc_charged)
@@ -1572,7 +1588,12 @@ weapon_here:
         break;
     case POTION_CLASS:
         if (obj->otyp == POT_OIL && obj->lamplit)
-            Strcat(bp, " (lit)");
+        {
+            if (lit_in_front)
+                Strcat(prefix, "lit ");
+            else
+                Strcat(bp, " (lit)");
+        }
         break;
     case RING_CLASS:
  ring:
@@ -1874,6 +1895,13 @@ struct obj *obj;
     return doname_base(obj, 0U);
 }
 
+char*
+doname_in_text(obj)
+struct obj* obj;
+{
+    return doname_base(obj, DONAME_LIT_IN_FRONT);
+}
+
 /* Name of object including price. */
 char *
 doname_with_price(obj)
@@ -1889,6 +1917,14 @@ struct obj* obj;
 boolean loadstonecorrectly;
 {
 	return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+}
+
+/* Name of object including price. */
+char*
+doname_in_text_with_price_and_weight_last(obj)
+struct obj* obj;
+{
+    return doname_base(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 /* Name of object including price. */

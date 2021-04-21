@@ -1714,8 +1714,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f}, /* Unwield */
             {MAX_GHSOUNDS, 0.0f}, /* Quiver */
             {MAX_GHSOUNDS, 0.0f}, /* Unquiver */
-            {MAX_GHSOUNDS, 1.0f}, /* Apply */
-            {MAX_GHSOUNDS, 1.0f}, /* Apply 2 */
+            {GHSOUND_CANDLE_LIGHT_UP, 1.0f},
+            {GHSOUND_CANDLE_SNUFF_OUT, 1.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Invoke */
             {MAX_GHSOUNDS, 0.0f}, /* Invoke 2 */
             {MAX_GHSOUNDS, 1.0f}, /* Quaff */

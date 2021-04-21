@@ -676,8 +676,7 @@ boolean
 obj_is_burning(obj)
 struct obj *obj;
 {
-    return (boolean) (obj->lamplit && (obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE
-                                    || ignitable(obj)
+    return (boolean) (obj->lamplit && (is_obj_ignitable(obj)
                                     || artifact_light(obj)
                                 	|| obj_shines_magical_light(obj)
                                     || has_obj_mythic_magical_light(obj)

@@ -489,9 +489,14 @@ struct obj {
 /* age field of this is relative age rather than absolute */
 #define age_is_relative(otmp)                                       \
     ((objects[(otmp)->otyp].oc_flags3 & O3_RELATIVE_AGE) != 0)
+
 /* object can be ignited */
-#define ignitable(otmp)                                             \
-    ((objects[(otmp)->otyp].oc_flags3 & O3_IGNITABLE) != 0)
+#define is_otyp_ignitable(otyp)                                             \
+    ((objects[(otyp)].oc_flags3 & O3_IGNITABLE) != 0)
+
+#define is_obj_ignitable(otmp)                                             \
+    (is_otyp_ignitable((otmp)->otyp))
+
 /* object can be refilled with oil */
 #define is_refillable_with_oil(otmp)                                             \
     ((objects[(otmp)->otyp].oc_flags3 & O3_REFILLABLE_WITH_OIL) != 0)
