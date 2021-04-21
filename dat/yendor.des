@@ -6,7 +6,7 @@
 # The top (real) wizard level.
 # Keeping the Moat for old-time's sake
 MAZE:"wizard1",' '
-FLAGS:noteleport,hardfloor
+FLAGS:noteleport,hardfloor,corrmaze
 GEOMETRY:center,center
 MAP
 ----------------------------.
@@ -92,7 +92,7 @@ OBJECT:'+',random
 
 # The middle wizard level.
 MAZE:"wizard2",' '
-FLAGS:noteleport,hardfloor
+FLAGS:noteleport,hardfloor,corrmaze
 GEOMETRY:center,center
 MAP
 ----------------------------.
@@ -146,7 +146,7 @@ OBJECT:'"',(04,06)
 # The bottom wizard level.
 # Memorialize the fakewiz setup.
 MAZE:"wizard3",' '
-FLAGS:noteleport,hardfloor
+FLAGS:noteleport,hardfloor,corrmaze
 GEOMETRY:center,center
 MAP
 ----------------------------.
@@ -223,6 +223,7 @@ OBJECT:'"',(11,07)
 # There are two of these, and we need to
 # distinguish between them for the portal.
 MAZE:"fakewiz1",' '
+FLAGS:corrmaze
 GEOMETRY:center,center
 MAP
 .........
@@ -252,6 +253,7 @@ TRAP:"board",(05,04)
 
 
 MAZE:"fakewiz2",' '
+FLAGS:corrmaze
 GEOMETRY:center,center
 MAP
 .........

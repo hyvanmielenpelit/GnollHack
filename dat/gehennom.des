@@ -561,7 +561,7 @@ MONSTER:random,random
 #
 ########################
 MAZE:"dispater",' '
-FLAGS: noteleport
+FLAGS: noteleport,corrmaze
 NAMING:"A hellish castle", name_revealed_seeing_monster, montype:"Dispater"
 # First part
 GEOMETRY:half-left,center
@@ -833,7 +833,7 @@ MONSTER:'V',random
 #
 ########################
 MAZE:"yeenoghu",' '
-FLAGS: noteleport
+FLAGS: noteleport,corrmaze
 NAMING:"A hellish stronghold", name_revealed_seeing_monster, montype:"Yeenoghu"
 # First part
 GEOMETRY:center,center
