@@ -720,12 +720,13 @@ enum mythic_power_types {
     MYTHIC_POWER_TYPE_CONFERS_PROPERTY,
 };
 
-#define MYTHIC_POWER_FLAG_NONE        0x00000000 /* Works for all */
-#define MYTHIC_POWER_FLAG_WEAPON_ONLY 0x00000001 /* Works only for weapons */
-#define MYTHIC_POWER_FLAG_ARMOR_ONLY  0x00000002 /* Works only for armors */
-#define MYTHIC_POWER_FLAG_SUIT_ONLY   0x00000004 /* Works only for body armors (suits) */
-#define MYTHIC_POWER_FLAG_HELMET_ONLY 0x00000008 /* Works only for helmets */
-#define MYTHIC_POWER_FLAG_SHIELD_ONLY 0x00000010 /* Works only for shields */
+#define MYTHIC_POWER_FLAG_NONE                  0x00000000 /* Works for all */
+#define MYTHIC_POWER_FLAG_WEAPON_ONLY           0x00000001 /* Works only for weapons */
+#define MYTHIC_POWER_FLAG_ARMOR_ONLY            0x00000002 /* Works only for armors */
+#define MYTHIC_POWER_FLAG_SUIT_ONLY             0x00000004 /* Works only for body armors (suits) */
+#define MYTHIC_POWER_FLAG_HELMET_ONLY           0x00000008 /* Works only for helmets */
+#define MYTHIC_POWER_FLAG_SHIELD_ONLY           0x00000010 /* Works only for shields */
+#define MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS    0x00000020 /* Works also against shapeshifted monsters of the type */
 
 
 enum mythic_prefix_power_types {

@@ -206,16 +206,16 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
     { "Sorcery", "Incurs no spellcasting penalty", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Troll slaying", "Triple damage to trolls", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_TROLL, 0UL , MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Troll revival prevention", "Prevents revival of trolls", MYTHIC_POWER_TYPE_PREVENTS_REVIVAL, 0L, 0.0, S_TROLL, 0UL , MYTHIC_POWER_FLAG_NONE },
-    { "Were slaying", "Triple damage to lycanthropes", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_WERE, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Were slaying", "Triple damage to lycanthropes", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_WERE, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
     { "Lycanthropy resistance", "Lycanthropy resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, LYCANTHROPY_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Giant slaying", "Triple damage to giants", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_GIANT, MYTHIC_POWER_FLAG_WEAPON_ONLY },
-    { "Demon slaying", "Triple damage to demons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_DEMON, MYTHIC_POWER_FLAG_WEAPON_ONLY },
-    { "Angel slaying", "Triple damage to angels", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ANGEL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Demon slaying", "Triple damage to demons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_DEMON, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
+    { "Angel slaying", "Triple damage to angels", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ANGEL, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
     { "Ogre slaying", "Triple damage to ogres", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_OGRE, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Orc slaying", "Triple damage to orcs", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_ORC, M2_ORC, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Elf slaying", "Triple damage to elves", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ELF, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Dragon slaying", "Triple damage to dragons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_DRAGON, 0UL , MYTHIC_POWER_FLAG_WEAPON_ONLY },
-    { "Undead destruction", "Triple damage to undead", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_UNDEAD, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Undead destruction", "Triple damage to undead", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_UNDEAD, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
     { "Speed", "Increases speed to very fast", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, VERY_FAST, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Wounding", "Causes 1d4 permanent damage", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Defense", "Enchantment provides AC and MC", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
@@ -1252,7 +1252,12 @@ struct monst* mattacker;
 
             if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(otmp, mythic_powers[i].power_flags))
             {
-                if (mythic_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING && (mythic_powers[i].parameter3 == mon->data->mlet || (mythic_powers[i].parameter4 & mon->data->mflags2)))
+                if (mythic_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING && 
+                    (mythic_powers[i].parameter3 == mon->data->mlet 
+                        || (mythic_powers[i].parameter4 & mon->data->mflags2) 
+                        || ((mythic_powers[i].power_flags & MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS) && mon->cham && ((mythic_powers[i].parameter3 == mons[mon->cham].mlet || (mythic_powers[i].parameter4 & mons[mon->cham].mflags2))))
+                    )
+                   )
                 {
                     double pmult = mythic_powers[i].parameter2;
                     if (pmult > 1.0)

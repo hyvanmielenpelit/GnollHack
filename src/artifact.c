@@ -554,6 +554,9 @@ struct obj *obj;
     arti = get_artifact(obj);
     if (arti && (arti->aflags & AF_DFLAG2) && (arti->mtype & M2_UNDEAD))
         return TRUE;
+	if (obj->mythic_suffix && has_obj_mythic_suffix_power(obj, MYTHIC_SUFFIX_POWER_INDEX_UNDEAD_DESTRUCTION))
+		return TRUE;
+
     /* [if there was anything with special bonus against noncorporeals,
        it would be effective too] */
     /* otherwise, harmless to shades */
