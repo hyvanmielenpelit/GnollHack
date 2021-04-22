@@ -1008,14 +1008,9 @@ TRAP: "fire", random
 TRAP: "fire", random
 TRAP: "fire", random
 TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
+
+MINERALIZE
+
 
 ########################
 #
@@ -1217,15 +1212,6 @@ TRAP: "fire", random
 TRAP: "fire", random
 TRAP: "fire", random
 TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
-TRAP: "fire", random
+
+MINERALIZE
+
