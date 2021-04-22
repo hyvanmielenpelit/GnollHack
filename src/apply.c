@@ -1886,8 +1886,8 @@ struct obj **optr;
         if (obj->unpaid && costly_spot(u.ux, u.uy))
         {
             char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
-            struct monst* shkp = shop_keeper(*o_shop);   
-            if (shkp)
+            struct monst* shkp = shop_keeper(*o_shop);
+            if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
             {
                 play_voice_shopkeeper_simple_line(shkp, otmp->lamplit ? ((obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT) :
                     ((obj->quan > 1L) ? SHOPKEEPER_LINE_USE_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_USE_IT_BOUGHT_IT));
@@ -1998,8 +1998,8 @@ struct obj *obj;
             if (iflags.using_gui_sounds)
             {
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
-                struct monst* shkp = 0;
-                if (billable(&shkp, obj, *o_shop, FALSE) && shkp)
+                struct monst* shkp = shop_keeper(*o_shop);
+                if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
                 {
                     play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_ITEM_ITSELF : SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_ITEMS_THEMSELVES);
                     verbalize("That's in addition to the cost of %s %s, of course.",
@@ -2087,7 +2087,7 @@ struct obj *obj;
 
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
                 struct monst* shkp = shop_keeper(*o_shop);
-                if (shkp)
+                if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
                 {
                     play_voice_shopkeeper_simple_line(shkp, (obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT);
                 }
@@ -2149,8 +2149,8 @@ struct obj **optr;
          */
         check_unpaid(obj);
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
-        struct monst* shkp = 0;
-        if (billable(&shkp, obj, *o_shop, FALSE) && shkp)
+        struct monst* shkp = shop_keeper(*o_shop);
+        if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_POTION);
             verbalize("That's in addition to the cost of the potion, of course.");
@@ -2670,8 +2670,8 @@ struct obj *obj;
             if (corpse->unpaid)
             {
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
-                struct monst* shkp = 0;
-                if (billable(&shkp, obj, *o_shop, FALSE) && shkp)
+                struct monst* shkp = shop_keeper(*o_shop);
+                if (shkp && inhishop(shkp) && is_obj_on_shk_bill(corpse, shkp))
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_TIN_IT_YOU_BOUGHT_IT);
                     verbalize(you_buy_it);

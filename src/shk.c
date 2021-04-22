@@ -5422,6 +5422,14 @@ boolean eating;
     return shkp ? (chastised ? 2 : 1) : 0;
 }
 
+boolean
+is_obj_on_shk_bill(obj, shkp)
+struct obj* obj;
+struct monst* shkp;
+{
+    return !!onbill(obj, shkp, FALSE);
+}
+
 #ifdef __SASC
 void
 sasc_bug(struct obj *op, unsigned x)

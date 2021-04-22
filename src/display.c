@@ -4612,6 +4612,9 @@ void
 m_shieldeff(mon)
 struct monst* mon;
 {
+    if (!mon || !cansee(mon->mx, mon->my)) /* Blanket check that shield effect is no played for nothing */
+        return;
+
     enum action_tile_types action_before = mon->action;
     //update_m_action_and_wait(mon, ACTION_TILE_PASSIVE_DEFENSE);
     shieldeff(mon->mx, mon->my);

@@ -1905,7 +1905,8 @@ int in_sight;
                     migrate_typ = MIGR_PORTAL;
                 assign_level(&tolevel, &trap->dst);
             }
-            level_teleport_effect_out(mtmp->mx, mtmp->my);
+            if(cansee(mtmp->mx, mtmp->my))
+                level_teleport_effect_out(mtmp->mx, mtmp->my);
         }
         else if (tt == LEVEL_TELEP || tt == NO_TRAP)
         {
@@ -1943,7 +1944,8 @@ int in_sight;
                 }
                 get_level(&tolevel, nlev);
             }
-            level_teleport_effect_out(mtmp->mx, mtmp->my);
+            if (cansee(mtmp->mx, mtmp->my))
+                level_teleport_effect_out(mtmp->mx, mtmp->my);
         }
         else
         {

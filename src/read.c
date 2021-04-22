@@ -440,8 +440,23 @@ doread()
         }
     }
     boolean effect_happened = 0;
-    if (!seffects(scroll, &effect_happened)) {
-        if (!objects[scroll->otyp].oc_name_known) {
+    boolean gone = FALSE;
+    boolean billable_scroll = FALSE;
+    struct monst* shkp = 0;
+    if (scroll->unpaid && costly_spot(u.ux, u.uy))
+    {
+        char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+        shkp = shop_keeper(*o_shop);
+        if (shkp && inhishop(shkp) && is_obj_on_shk_bill(scroll, shkp))
+        {
+            billable_scroll = TRUE;
+        }
+    }
+
+    if (!(gone = seffects(scroll, &effect_happened))) 
+    {
+        if (!objects[scroll->otyp].oc_name_known)
+        {
             if (known)
                 learnscroll(scroll);
             else if (!objects[scroll->otyp].oc_uname)
@@ -449,8 +464,15 @@ doread()
         }
         scroll->in_use = FALSE;
         if (scroll->otyp != SCR_BLANK_PAPER)
+        {
             useup(scroll);
+            gone = TRUE;
+        }
     }
+
+    if(gone && billable_scroll && shkp)
+        play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
+
     return 1;
 }
 

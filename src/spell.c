@@ -349,6 +349,19 @@ learn(VOID_ARGS)
     boolean costly = TRUE;
     struct obj *book = context.spbook.book;
 	boolean learnsuccess = FALSE;
+	boolean gone = FALSE;
+	struct monst* shkp = 0;
+	boolean billable_book = FALSE;
+
+	if (book->unpaid && costly_spot(u.ux, u.uy))
+	{
+		char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+        shkp = shop_keeper(*o_shop);
+        if (shkp && inhishop(shkp) && is_obj_on_shk_bill(book, shkp))
+		{
+			billable_book = TRUE;
+		}
+	}
 
     /* JDS: lenses give 50% faster reading; 33% smaller read time */
     if (context.spbook.delay && Enhanced_vision && rn2(2))
@@ -392,7 +405,6 @@ learn(VOID_ARGS)
 	boolean reading_result = context.spbook.reading_result;
 	if (reading_result == READING_RESULT_FAIL)
 	{
-		boolean gone = FALSE;
 
 		if (book->cursed)
 			gone = cursed_book(book);
@@ -424,15 +436,17 @@ learn(VOID_ARGS)
 		}
 		else
 			book->in_use = FALSE;
-		return 0;
+
+		goto check_added_to_your_bill_here;
 	}
 	else if (reading_result == READING_RESULT_CONFUSED)
 	{
-		if (!confused_book(book))
+		gone = confused_book(book);
+		if (!gone)
 		{
 			book->in_use = FALSE;
 		}
-		return 0;
+		goto check_added_to_your_bill_here;
 	}
 
 
@@ -513,13 +527,16 @@ learn(VOID_ARGS)
         makeknown((int) booktype);
     }
 
-    if (book->cursed) { /* maybe a demon cursed it */
-        if (cursed_book(book)) {
+    if (book->cursed) 
+	{ /* maybe a demon cursed it */
+        if (cursed_book(book)) 
+		{
             useup(book);
+			gone = TRUE;
             context.spbook.book = 0;
             context.spbook.o_id = 0;
-            return 0;
-        }
+			goto check_added_to_your_bill_here;
+		}
     }
     if (costly)
         check_unpaid(book);
@@ -529,11 +546,18 @@ learn(VOID_ARGS)
 		play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
 		pline_The("spellbook crumbles to dust.");
 		useup(book);
+		gone = TRUE;
 	}
 
 	context.spbook.book = 0;
     context.spbook.o_id = 0;
-    return 0;
+
+check_added_to_your_bill_here:
+	if (gone && billable_book && shkp)
+		play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
+
+	return 0;
+
 }
 
 int

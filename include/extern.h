@@ -2843,7 +2843,7 @@ E char *FDECL(Shk_Your, (char *, struct obj *));
 E long FDECL(get_cost, (struct obj*, struct monst*));
 E int FDECL(shk_chastise_pet, (struct monst* mtmp, struct obj*, boolean));
 E long FDECL(set_cost, (struct obj*, struct monst*));
-
+E boolean FDECL(is_obj_on_shk_bill, (struct obj*, struct monst*));
 
 /* ### shknam.c ### */
 

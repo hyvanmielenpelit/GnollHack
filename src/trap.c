@@ -2690,10 +2690,12 @@ register struct monst *mtmp;
 	else
 	{
         register int tt = trap->ttyp;
-        boolean in_sight, tear_web, see_it,
+        boolean in_sight, tear_web, see_it, can_see_trap,
             inescapable = force_mintrap || ((tt == HOLE || tt == PIT)
                                             && Sokoban && !trap->madeby_u);
         const char *fallverb;
+
+        can_see_trap = cansee(trap->tx, trap->ty);
 
         /* true when called from dotrap, inescapable is not an option */
         if (mtmp == u.usteed)
@@ -2766,7 +2768,7 @@ register struct monst *mtmp;
                 trapkilled = TRUE;
             break;
         case ROCKTRAP:
-            if (in_sight)
+            if (can_see_trap)
             {
                 newsym(trap->tx, trap->ty);
                 play_special_effect_at(SPECIAL_EFFECT_FALLING_ROCK_TRAP_TRAP_DOOR, 0, trap->tx, trap->ty, FALSE);
@@ -2775,7 +2777,7 @@ register struct monst *mtmp;
 
             play_sfx_sound_at_location(SFX_FALLING_ROCK_TRAP_TRIGGER, mtmp->mx, mtmp->my);
             
-            if (in_sight)
+            if (can_see_trap)
                 special_effect_wait_until_action(0);
             
             if (trap->once && trap->tseen && !rn2(15)) 
@@ -2789,7 +2791,7 @@ register struct monst *mtmp;
                 }
                 deltrap(trap);
                 newsym(mtmp->mx, mtmp->my);
-                if (in_sight && see_it)
+                if (can_see_trap && see_it)
                     special_effect_wait_until_end(0);
                 context.global_newsym_flags = 0UL;
                 break;
@@ -2800,26 +2802,26 @@ register struct monst *mtmp;
             if (in_sight)
                 seetrap(trap);
 
-            if (in_sight && otmp)
+            if (can_see_trap && otmp)
                 play_special_effect_at(SPECIAL_EFFECT_FALLING_ROCK_TRAP_FALLING_ROCK, 1, trap->tx, trap->ty, FALSE);
 
-            if (in_sight && otmp)
+            if (can_see_trap && otmp)
                 special_effect_wait_until_action(1);
 
             if (thitm(0, mtmp, otmp, d(2, 6), FALSE))
                 trapkilled = TRUE;
 
-            if (iflags.using_gui_sounds && !trapkilled)
+            if (iflags.using_gui_sounds && can_see_trap && in_sight && see_it && !trapkilled)
             {
                 delay_output_milliseconds(100);
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_YELP);
             }
 
-            if (in_sight && otmp)
+            if (can_see_trap && otmp)
             {
                 special_effect_wait_until_end(1);
             }
-            if (in_sight)
+            if (can_see_trap)
             {
                 context.global_newsym_flags = 0UL;
                 special_effect_wait_until_end(0);
@@ -2856,7 +2858,7 @@ register struct monst *mtmp;
                 && !is_whirly(mptr) && !unsolid(mptr))
             {
                 mtmp->mtrapped = 1;
-                if (in_sight) 
+                if (in_sight && can_see_trap)
                 {
                     newsym(trap->tx, trap->ty);
                     context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
@@ -2919,7 +2921,7 @@ register struct monst *mtmp;
             }
             break;
         case SLP_GAS_TRAP:
-            if (in_sight || see_it)
+            if (can_see_trap)
             {
                 seetrap(trap);
                 newsym(trap->tx, trap->ty);
@@ -2947,7 +2949,7 @@ register struct monst *mtmp;
                     pline("%s is enveloped in a cloud of gas!", Monnam(mtmp));
             }
 
-            if (in_sight || see_it)
+            if (can_see_trap)
             {
                 special_effect_wait_until_end(0);
             }
@@ -2955,7 +2957,7 @@ register struct monst *mtmp;
         case RUST_TRAP:
         {
             struct obj *target;
-            if (in_sight || see_it)
+            if (can_see_trap)
             {
                 seetrap(trap);
                 newsym(mtmp->mx, mtmp->my);
@@ -2963,7 +2965,7 @@ register struct monst *mtmp;
             }
             play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
             play_sfx_sound_at_location(SFX_GUSH_OF_WATER_HITS, mtmp->mx, mtmp->my);
-            if (in_sight || see_it)
+            if (can_see_trap)
                 special_effect_wait_until_action(0);
 
             switch (rn2(5)) 
@@ -3027,13 +3029,13 @@ register struct monst *mtmp;
                 (void) split_mon(mtmp, (struct monst *) 0);
             }
 
-            if (in_sight || see_it)
+            if (can_see_trap)
                 special_effect_wait_until_end(0);
             break;
         } /* RUST_TRAP */
         case FIRE_TRAP:
         mfiretrap:
-            if (in_sight || see_it)
+            if (can_see_trap)
             {
                 newsym(mtmp->mx, mtmp->my);
                 play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, mtmp->mx, mtmp->my, FALSE);
@@ -3047,19 +3049,19 @@ register struct monst *mtmp;
                 play_sfx_sound_at_location(SFX_TOWER_OF_FLAME_ERUPTS, mtmp->mx, mtmp->my);
             }
 
-            if (in_sight)
+            if (in_sight && can_see_trap)
                 pline("A %s erupts from the %s under %s!", tower_of_flame,
                       surface(mtmp->mx, mtmp->my), mon_nam(mtmp));
-            else if (see_it) /* evidently `mtmp' is invisible */
+            else if (see_it && can_see_trap) /* evidently `mtmp' is invisible */
                 You_see("a %s erupt from the %s!", tower_of_flame,
                         surface(mtmp->mx, mtmp->my));
 
-            if (in_sight || see_it)
+            if ((in_sight || see_it) && can_see_trap)
                 seetrap(trap);
 
             if (is_mon_immune_to_fire(mtmp)) 
             {
-                if (in_sight)
+                if (in_sight && can_see_trap)
                 {
                     m_shieldeff(mtmp);
                     pline("%s is uninjured.", Monnam(mtmp));
@@ -3124,10 +3126,10 @@ register struct monst *mtmp;
             if (is_ice(mtmp->mx, mtmp->my))
                 melt_ice(mtmp->mx, mtmp->my, (char *) 0);
 
-            if (see_it && t_at(mtmp->mx, mtmp->my))
+            if (see_it && can_see_trap && t_at(mtmp->mx, mtmp->my))
                 seetrap(trap);
 
-            if(in_sight || see_it)
+            if((in_sight || see_it) && can_see_trap)
                 special_effect_wait_until_end(0);
 
             break;
@@ -3319,25 +3321,31 @@ register struct monst *mtmp;
                 goto mfiretrap;
             else
             {
-                newsym(mtmp->mx, mtmp->my);
-                play_special_effect_at(SPECIAL_EFFECT_MAGIC_TRAP_LIGHT_FLASH, 0, mtmp->mx, mtmp->my, FALSE);
-                play_sfx_sound_at_location(SFX_MAGIC_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
-                special_effect_wait_until_action(0);
-                special_effect_wait_until_end(0);
+                if (can_see_trap)
+                {
+                    newsym(mtmp->mx, mtmp->my);
+                    play_special_effect_at(SPECIAL_EFFECT_MAGIC_TRAP_LIGHT_FLASH, 0, mtmp->mx, mtmp->my, FALSE);
+                    play_sfx_sound_at_location(SFX_MAGIC_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+                    special_effect_wait_until_action(0);
+                    special_effect_wait_until_end(0);
+                }
             }
             break;
         case ANTI_MAGIC_TRAP:
-            newsym(mtmp->mx, mtmp->my);
-            play_special_effect_at(SPECIAL_EFFECT_ANTIMAGIC_TRAP_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
-            play_sfx_sound_at_location(SFX_ANTI_MAGIC_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
-            special_effect_wait_until_action(0);
+            if (can_see_trap)
+            {
+                newsym(mtmp->mx, mtmp->my);
+                play_special_effect_at(SPECIAL_EFFECT_ANTIMAGIC_TRAP_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                play_sfx_sound_at_location(SFX_ANTI_MAGIC_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+                special_effect_wait_until_action(0);
+            }
             /* similar to hero's case, more or less */
             if (!resists_magic(mtmp)) { /* lose spell energy */
                 if (!is_cancelled(mtmp) && (attacktype(mptr, AT_MAGC)
                                     || attacktype(mptr, AT_BREA))) 
                 {
                     mtmp->mspec_used += d(2, 20);
-                    if (in_sight)
+                    if (in_sight && can_see_trap)
                     {
                         seetrap(trap);
                         pline("%s seems lethargic.", Monnam(mtmp));
@@ -3370,7 +3378,8 @@ register struct monst *mtmp;
                 if (see_it)
                     newsym(trap->tx, trap->ty);
             }
-            special_effect_wait_until_end(0);
+            if(can_see_trap)
+                special_effect_wait_until_end(0);
             break;
         case LANDMINE:
         {
@@ -3404,7 +3413,7 @@ register struct monst *mtmp;
                       a_your[trap->madeby_u]);
             }
 
-            if (in_sight)
+            if (in_sight && can_see_trap)
             {
                 flush_screen(1);
                 play_special_effect_at(SPECIAL_EFFECT_LAND_MINE_EXPLOSION, 0, trap->tx, trap->ty, FALSE);
@@ -3417,7 +3426,7 @@ register struct monst *mtmp;
             else
                 play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.25);
 
-            if (!in_sight && !Deaf)
+            if ((!in_sight || !can_see_trap) && !Deaf)
                 pline("Kaablamm!  You hear an explosion in the distance!");
 
             blow_up_landmine(trap);
@@ -3451,10 +3460,13 @@ register struct monst *mtmp;
             break;
         }
         case POLY_TRAP:
-            newsym(mtmp->mx, mtmp->my);
-            play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
-            play_sfx_sound_at_location(SFX_POLYMORPH_ACTIVATE, mtmp->mx, mtmp->my);
-            special_effect_wait_until_action(0);
+            if (can_see_trap)
+            {
+                newsym(mtmp->mx, mtmp->my);
+                play_special_effect_at(SPECIAL_EFFECT_POLYMORPH_TRAP_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                play_sfx_sound_at_location(SFX_POLYMORPH_ACTIVATE, mtmp->mx, mtmp->my);
+                special_effect_wait_until_action(0);
+            }
 
             if (resists_magic(mtmp)) 
             {
@@ -3473,7 +3485,8 @@ register struct monst *mtmp;
                 if (in_sight)
                     seetrap(trap);
             }
-            special_effect_wait_until_end(0);
+            if(can_see_trap)
+                special_effect_wait_until_end(0);
             break;
         case ROLLING_BOULDER_TRAP:
             if (!(is_flying(mtmp) || is_levitating(mtmp))) 

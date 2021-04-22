@@ -1185,6 +1185,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/No Checks No Credit No Problem", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/You Alter That You Pay for It", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/You Alter Those You Pay for Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Ill Add That to Your Bill", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/Costly Alteration/Alter Pay", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Cad/Lot of Damage", 1.0f },
@@ -1226,6 +1227,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/No Checks No Credit No Problem", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/You Alter That You Pay for It", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/You Alter Those You Pay for Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Ill Add That to Your Bill", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/Costly Alteration/Alter Pay", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Cad/Lot of Damage", 1.0f },
@@ -1267,6 +1269,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/No Checks No Credit No Problem", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/You Alter That You Pay for It", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/You Alter Those You Pay for Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Ill Add That to Your Bill", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Costly Alteration/Alter Pay", 1.0f },
 
 };

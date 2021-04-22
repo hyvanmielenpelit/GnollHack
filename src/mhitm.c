@@ -1408,9 +1408,11 @@ register struct obj* omonwep;
         if (is_mon_immune_to_fire(mdef))
         {
             if (vis && canseemon(mdef))
+            {
                 pline_The("fire doesn't seem to burn %s!", mon_nam(mdef));
-            play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
-            m_shieldeff(mdef);
+                play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
+                m_shieldeff(mdef);
+            }
             golemeffects(mdef, AD_FIRE, damage);
 			damage = 0;
         }
@@ -1430,9 +1432,11 @@ register struct obj* omonwep;
         if (is_mon_immune_to_cold(mdef))
         {
             if (vis && canseemon(mdef))
+            {
                 pline_The("frost doesn't seem to chill %s!", mon_nam(mdef));
-            play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
-            m_shieldeff(mdef);
+                play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
+                m_shieldeff(mdef);
+            }
             golemeffects(mdef, AD_COLD, damage);
 			damage = 0;
         }
@@ -1455,9 +1459,11 @@ register struct obj* omonwep;
 		if (is_mon_immune_to_elec(mdef)) 
 		{
             if (vis && canseemon(mdef))
+            {
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
-            play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
-            m_shieldeff(mdef);
+                play_sfx_sound_at_location(SFX_GENERAL_UNHARMED, mdef->mx, mdef->my);
+                m_shieldeff(mdef);
+            }
             golemeffects(mdef, AD_ELEC, damage);
             damage = 0;
         }
@@ -2260,8 +2266,7 @@ int amt, saving_throw_adjustment, tellstyle;
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
             pline("%s is unaffected!", Monnam(mon));
         }
-			
-		m_shieldeff(mon);
+    	m_shieldeff(mon);
 	}
 	else if(saving_throw_adjustment > -100 && check_ability_resistance_success(mon, A_WIS, saving_throw_adjustment)) // check_magic_resistance_and_inflict_damage(mon, otmp, FALSE, 0, 0, tellstyle))
 	{
@@ -2271,7 +2276,7 @@ int amt, saving_throw_adjustment, tellstyle;
             pline("%s is unaffected!", Monnam(mon));
         }
 
-		m_shieldeff(mon);
+        m_shieldeff(mon);
 	}
 	else
 	{

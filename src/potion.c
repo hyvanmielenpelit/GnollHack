@@ -761,6 +761,20 @@ dodrink()
         u_wait_until_action();
     }
 
+    struct monst* shkp = 0;
+    boolean billable_potion = FALSE;
+    boolean gone = FALSE;
+
+    if (otmp->unpaid && costly_spot(u.ux, u.uy))
+    {
+        char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+        shkp = shop_keeper(*o_shop);
+        if (shkp && inhishop(shkp) && is_obj_on_shk_bill(otmp, shkp))
+        {
+            billable_potion = TRUE;
+        }
+    }
+
     potion_descr = OBJ_DESCR(objects[otmp->otyp]);
     if (potion_descr) {
         if (!strcmp(potion_descr, "milky")
@@ -768,17 +782,20 @@ dodrink()
             && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_GHOST].born))) {
             ghost_from_bottle();
             useup(otmp);
+            gone = TRUE;
             if (action_taken)
                 update_u_action_revert(ACTION_TILE_NO_ACTION);
-            return 1;
+            goto check_add_to_bill_here;
+
         } else if (!strcmp(potion_descr, "smoky")
                    && !(mvitals[PM_DJINNI].mvflags & G_GONE)
                    && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_DJINNI].born))) {
             djinni_from_bottle(otmp);
             useup(otmp);
+            gone = TRUE;
             if (action_taken)
                 update_u_action_revert(ACTION_TILE_NO_ACTION);
-            return 1;
+            goto check_add_to_bill_here;
         }
     }
 
@@ -789,6 +806,11 @@ dodrink()
         update_u_action_revert(ACTION_TILE_NO_ACTION);
     }
     return res;
+
+check_add_to_bill_here:
+    if (gone && billable_potion && shkp)
+        play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
+    return 1;
 }
 
 int
@@ -796,27 +818,59 @@ dopotion(otmp)
 struct obj *otmp;
 {
     int retval;
+    struct monst* shkp = 0;
+    boolean billable_potion = FALSE;
+    boolean gone = FALSE;
+
+    if (otmp->unpaid && costly_spot(u.ux, u.uy))
+    {
+        char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+        shkp = shop_keeper(*o_shop);
+        if (shkp && inhishop(shkp) && is_obj_on_shk_bill(otmp, shkp))
+        {
+            billable_potion = TRUE;
+        }
+    }
 
     play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_QUAFF);
 
     otmp->in_use = TRUE;
     nothing = unkn = 0;
     if ((retval = peffects(otmp)) >= 0)
-        return retval;
+    {
+        if (retval == 1)
+        {
+            gone = TRUE;
+            goto check_billable_potion_here;
+        }
+        else
+            return retval;
+    }
 
-    if (nothing) {
+    if (nothing)
+    {
         unkn++;
         You("have a %s feeling for a moment, then it passes.",
             Hallucination ? "normal" : "peculiar");
     }
-    if (otmp->dknown && !objects[otmp->otyp].oc_name_known) {
-        if (!unkn) {
+
+    if (otmp->dknown && !objects[otmp->otyp].oc_name_known)
+    {
+        if (!unkn) 
+        {
             makeknown(otmp->otyp);
             //more_experienced(0, 10);
-        } else if (!objects[otmp->otyp].oc_uname)
+        }
+        else if (!objects[otmp->otyp].oc_uname)
             docall(otmp);
     }
+
     useup(otmp);
+    gone = TRUE;
+
+check_billable_potion_here:
+    if (gone && billable_potion && shkp)
+        play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
     return 1;
 }
 
@@ -1865,6 +1919,17 @@ const char *txt;
     if (obj->dknown && !objects[obj->otyp].oc_name_known
         && !objects[obj->otyp].oc_uname)
         docall(obj);
+
+    if (obj->unpaid && costly_spot(u.ux, u.uy))
+    {
+        char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+        struct monst* shkp = 0;
+        shkp = shop_keeper(*o_shop);
+        if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
+        {
+            play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
+        }
+    }
 
     useup(obj);
 }
