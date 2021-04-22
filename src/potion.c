@@ -3305,7 +3305,7 @@ dodip()
         if (obj->lamplit || potion->lamplit) 
         {
             useup(potion);
-            explode(u.ux, u.uy, 11, (struct monst*)0, 6, 6, 0, obj->otyp, 0, EXPL_FIERY);
+            explode(u.ux, u.uy, 11, &youmonst, 6, 6, 0, obj->otyp, 0, EXPL_FIERY);
             exercise(A_WIS, FALSE);
             return 1;
         }

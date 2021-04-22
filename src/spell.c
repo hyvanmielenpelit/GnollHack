@@ -4619,7 +4619,7 @@ int spell;
 			//One more damage
 			Your("concoction explodes in a large ball of fire!");
 			losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
-			explode(u.ux, u.uy, RAY_FIRE, (struct monst*)0, 0, 0, 1, 0, 0, EXPL_FIERY);
+			explode(u.ux, u.uy, RAY_FIRE, &youmonst, 0, 0, 1, 0, 0, EXPL_FIERY);
 		}
 		else
 		{

@@ -5873,9 +5873,17 @@ unsigned long newsym_flags;
         otmp = splitobj(obj, numused);
     else
         otmp = obj;
-    if (costly_spot(otmp->ox, otmp->oy)) {
+    if (costly_spot(otmp->ox, otmp->oy)) 
+    {
         if (index(u.urooms, *in_rooms(otmp->ox, otmp->oy, 0)))
+        {
+            char* o_shop = in_rooms(otmp->ox, otmp->oy, SHOPBASE);
+            struct monst* shkp = shop_keeper(*o_shop);
+            if (shkp && inhishop(shkp))
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
+
             addtobill(otmp, FALSE, FALSE, FALSE);
+        }
         else
             (void) stolen_value(otmp, otmp->ox, otmp->oy, FALSE, FALSE);
     }

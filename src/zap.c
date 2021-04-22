@@ -8273,11 +8273,13 @@ boolean u_caused;
     char buf1[BUFSZ], buf2[BUFSZ];
     int cnt = 0;
 
-    for (obj = level.objects[x][y]; obj; obj = obj2) {
+    for (obj = level.objects[x][y]; obj; obj = obj2) 
+    {
         obj2 = obj->nexthere;
         if (obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS
             || (obj->oclass == FOOD_CLASS
-                && obj->otyp == GLOB_OF_GREEN_SLIME)) {
+                && obj->otyp == GLOB_OF_GREEN_SLIME))
+        {
             if (oresist_fire(obj) || obj_resists(obj, 2, 100))
                 continue;
             scrquan = obj->quan; /* number present */
@@ -8285,9 +8287,12 @@ boolean u_caused;
             for (i = scrquan; i > 0L; i--)
                 if (!rn2(3))
                     delquan++;
-            if (delquan) {
+
+            if (delquan) 
+            {
                 /* save name before potential delobj() */
-                if (give_feedback) {
+                if (give_feedback) 
+                {
                     obj->quan = 1L;
                     Strcpy(buf1, (x == u.ux && y == u.uy)
                                      ? xname(obj)
@@ -8306,7 +8311,8 @@ boolean u_caused;
                 else
                     delobj_with_flags(obj, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                 cnt += delquan;
-                if (give_feedback) {
+                if (give_feedback)
+                {
                     if (delquan > 1L)
                         pline("%ld %s burn.", delquan, buf2);
                     else

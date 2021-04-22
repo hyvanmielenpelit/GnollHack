@@ -51,6 +51,7 @@ int expltype;
     short exploding_wand_typ = objtype;
     struct obj* otmp = (struct obj*)0;
     struct obj tempobj = { 0 };
+
     if (objtype > STRANGE_OBJECT)
     {
         tempobj.otyp = objtype;
