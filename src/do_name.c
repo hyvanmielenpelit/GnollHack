@@ -675,8 +675,8 @@ enum game_cursor_types cursor_style;
     char pick_chars[6];
     char mMoOdDxX[13];
     int result = 0;
-    int cx, cy, i, c;
-    int sidx, tx = 0, ty = 0;
+    int cx = 0, cy = 0, i, c;
+    int sidx = 0, tx = 0, ty = 0;
     boolean msg_given = TRUE; /* clear message window by default */
     boolean show_goal_msg = FALSE;
     boolean hilite_state = FALSE;
@@ -708,8 +708,11 @@ enum game_cursor_types cursor_style;
 
 		msg_given = TRUE;
     }
-    cx = tx = ccp->x;
-    cy = ty = ccp->y;
+    cx = ccp->x;
+    cy = ccp->y;
+    tx = ccp->x;
+    ty = ccp->y;
+
 #if defined(CLIPPING) && !defined(ANDROID)
     cliparound(cx, cy);
 #endif
@@ -1062,6 +1065,8 @@ enum game_cursor_types cursor_style;
         cliparound(cx, cy);
 #endif
         curs(WIN_MAP, cx, cy);
+        if (cx != u.ux || cy != u.uy)
+            cx = cx;
         flush_screen(0);
     }
 #if defined(MAC) || defined(ANDROID)

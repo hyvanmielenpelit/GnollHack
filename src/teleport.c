@@ -536,7 +536,7 @@ struct obj *scroll;
 boolean iswizcmd;
 boolean iscontrolled;
 {
-    coord cc;
+    coord cc = { 0 };
     boolean result = FALSE; /* don't learn scroll */
 
     /* Disable teleportation in stronghold && Vlad's Tower */
