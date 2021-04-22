@@ -353,7 +353,7 @@ int expltype;
 
         if (any_shield && flags.sparkle) 
         { /* simulate shield effect */
-            int rounds = flags.shield_effect_length > 0 && flags.shield_effect_length < SHIELD_COUNT ? flags.shield_effect_length : SHIELD_COUNT;
+            int rounds = flags.shield_effect_length > 0 && flags.shield_effect_length <= SHIELD_COUNT ? flags.shield_effect_length : GNH_DEF_SHIELD_COUNT;
             for (k = 0; k < rounds; k++)
             {
                 for (i = 0; i < 3; i++)

@@ -1487,7 +1487,7 @@ xchar x, y;
     if (!flags.sparkle)
         return;
     if (cansee(x, y)) { /* Don't see anything if can't see the location */
-        int rounds = flags.shield_effect_length > 0 && flags.shield_effect_length < SHIELD_COUNT ? flags.shield_effect_length : SHIELD_COUNT;
+        int rounds = flags.shield_effect_length > 0 && flags.shield_effect_length <= SHIELD_COUNT ? flags.shield_effect_length : GNH_DEF_SHIELD_COUNT;
         for (i = 0; i < rounds; i++)
         {
             show_glyph(x, y, cmap_to_glyph(shield_static[i]));
@@ -1509,7 +1509,7 @@ xchar x, y;
 		return;
 	if (cansee(x, y)) { /* Don't see anything if can't see the location */
 		boolean showmon = FALSE;
-        int rounds = flags.talk_effect_length > 0 && flags.talk_effect_length < TALK_COUNT ? flags.talk_effect_length : TALK_COUNT;
+        int rounds = flags.talk_effect_length > 0 && flags.talk_effect_length <= TALK_COUNT ? flags.talk_effect_length : GNH_DEF_TALK_COUNT;
 		for (i = 0; i < rounds; i++) {
 			if (showmon)
 				newsym(x, y); /* restore the old information */

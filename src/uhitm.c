@@ -2840,7 +2840,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         }
         break;
     case AD_FIRE:
-        if (negated)
+        if (0 /*negated*/)
 		{
             damage = 0;
             break;
@@ -2877,7 +2877,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
         break;
     case AD_COLD:
-        if (negated)
+        if (0 /*negated*/)
 		{
             damage = 0;
             break;
@@ -2899,7 +2899,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_COLD), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
         break;
     case AD_ELEC:
-        if (negated) 
+        if (0 /*negated*/) 
 		{
             damage = 0;
             break;

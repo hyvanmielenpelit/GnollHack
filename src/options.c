@@ -4014,7 +4014,7 @@ boolean tinitial, tfrom_file;
         if (negated)
         {
             bad_negation(fullname, TRUE);
-            itmp = SHIELD_COUNT;
+            itmp = GNH_DEF_SHIELD_COUNT;
             retval = FALSE;
         }
         else if (op)
@@ -4043,7 +4043,7 @@ boolean tinitial, tfrom_file;
         if (negated)
         {
             bad_negation(fullname, TRUE);
-            itmp = TALK_COUNT;
+            itmp = GNH_DEF_TALK_COUNT;
             retval = FALSE;
         }
         else if (op)
@@ -6317,12 +6317,12 @@ char *buf;
         if (flags.shield_effect_length)
             Sprintf(buf, "%d", flags.shield_effect_length);
         else
-            Sprintf(buf, "%s, %d", defopt, SHIELD_COUNT);
+            Sprintf(buf, "%s, %d", defopt, GNH_DEF_SHIELD_COUNT);
     } else if (!strcmp(optname, "talk_effect_length")) {
         if (flags.talk_effect_length)
             Sprintf(buf, "%d", flags.talk_effect_length);
         else
-            Sprintf(buf, "%s, %d", defopt, TALK_COUNT);
+            Sprintf(buf, "%s, %d", defopt, GNH_DEF_TALK_COUNT);
     } else if (!strcmp(optname, "race")) {
         Sprintf(buf, "%s", rolestring(flags.initrace, races, noun));
     } else if (!strcmp(optname, "roguesymset")) {

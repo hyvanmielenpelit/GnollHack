@@ -5929,7 +5929,13 @@ boolean force;
                     stumble_onto_mimic(mtmp);
                     return 1;
                 }
-                if (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_DISARMABLE)
+
+                boolean trap_to_help_out = is_pit(ttmp->ttyp);
+                if (mtmp && !here && trap_to_help_out)
+                {
+                    return help_monster_out(mtmp, ttmp);
+                }
+                else if (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_DISARMABLE)
                 {
                     play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
                     You("cannot disarm %s.", an(trap_type_definitions[ttmp->ttyp].name));

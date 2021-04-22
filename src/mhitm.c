@@ -1384,7 +1384,7 @@ register struct obj* omonwep;
         }
         break;
     case AD_FIRE:
-        if (cancelled)
+        if (0 /*cancelled*/)
         {
 			damage = 0;
             break;
@@ -1420,7 +1420,7 @@ register struct obj* omonwep;
         damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_FIRE), magr, mdef, AD_FIRE, ADFLAGS_NONE);
         break;
     case AD_COLD:
-        if (cancelled) 
+        if (0 /*cancelled*/) 
         {
 			damage = 0;
             break;
@@ -1443,7 +1443,7 @@ register struct obj* omonwep;
 		damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_COLD), magr, mdef, AD_COLD, ADFLAGS_NONE);
         break;
     case AD_ELEC:
-        if (cancelled) 
+        if (0 /*cancelled*/) 
 		{
             damage = 0;
             break;
