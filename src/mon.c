@@ -542,23 +542,19 @@ boolean createcorpse;
 		if (!istame && !isquestmonster && (mndx == PM_BAT ? !rn2(3) : mndx == PM_GIANT_BAT ? !rn2(2) : 1))
 		{
 			obj = mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
-			obj->quan = (mndx == PM_HELL_BAT ? rnd(4) : mndx == PM_VAMPIRE_BAT ? rnd(3) : mndx == PM_GIANT_BAT ? rnd(2) : 1);
+			obj->quan = (mndx == PM_HELL_BAT ? rnd(2) : mndx == PM_VAMPIRE_BAT ? 1 : mndx == PM_GIANT_BAT ? 1 : 1);
 			obj->owt = weight(obj);
 		}
 		goto default_1;
 	case PM_MUCILAGINOUS_CUBE:
-	case PM_OCHRE_JELLY:
-		sporequan++;
+        sporequan++;
         /* FALLTHRU */
+    case PM_OCHRE_JELLY:
     case PM_SPOTTED_JELLY:
 	case PM_BLUE_JELLY:
-		sporequan++;
-        /* FALLTHRU */
     case PM_SHRIEKER:
 	case PM_VIOLET_FUNGUS:
 	case PM_GELATINOUS_CUBE:
-		sporequan++;
-        /* FALLTHRU */
     case PM_ACID_BLOB:
 	case PM_QUIVERING_BLOB:
 	case PM_BROWN_MOLD:
@@ -567,7 +563,7 @@ boolean createcorpse;
 	case PM_RED_MOLD:
 	{
 		sporequan++;
-		if (!istame && !isquestmonster && !mtmp->mcloned && (!rn2(2) || mndx == PM_MUCILAGINOUS_CUBE))
+		if (!istame && !isquestmonster && !mtmp->mcloned && (!rn2(3) || mndx == PM_MUCILAGINOUS_CUBE))
 		{
 			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
 			obj->quan = sporequan > 1 ? rnd(sporequan) : 1;
@@ -830,7 +826,7 @@ boolean createcorpse;
 		if (!istame && !isquestmonster && !mtmp->mcloned && !rn2(3))
 		{
 			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
-			obj->quan = rnd(3);
+			obj->quan = 1;
 			obj->owt = weight(obj);
 		}
 

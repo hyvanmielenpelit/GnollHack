@@ -890,7 +890,7 @@ struct monst *mtmp;
 		case AD_WERE:
 			return !(yours ? Lycanthropy_resistance : resists_lycanthropy(mtmp));
 		case AD_MAGM:
-			return !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, FALSE, 0, 0, NOTELL);
+			return !check_magic_resistance_and_inflict_damage(mtmp, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL);
 		case AD_STUN:
             return !(yours ? Stun_resistance : resists_stun(mtmp));
         case AD_DRST:
@@ -1763,7 +1763,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
 			(void)destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
 	}
 
-	if (!check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) && (objects[otmp->otyp].oc_damagetype == AD_MAGM || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_MAGM)))
+	if (!check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL) && (objects[otmp->otyp].oc_damagetype == AD_MAGM || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_MAGM)))
 	{
 		if (realizes_damage)
 			pline("A hail of magic missiles strikes from %s hits %s!", the(xname(otmp)), hittee);
@@ -2087,7 +2087,7 @@ short* adtyp_ptr; /* return value is the type of damage caused */
 			&& !(youdefend ? Drain_resistance : resists_drli(mdef)))
 		{
 			if(has_obj_mythic_level_drain(otmp) ||
-				(!((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
+				(!((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL) : 0)
 					&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_TARGETS) || eligible_for_extra_damage(otmp, mdef, magr))
 					&& ((objects[otmp->otyp].oc_aflags & A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 					&& (
@@ -2183,20 +2183,20 @@ short* adtyp_ptr; /* return value is the type of damage caused */
 				if (
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE
 					&& ((objects[otmp->otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_immunity : is_mon_immune_to_fire(mdef)))
-						|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
+						|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL) : 0)
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_immunity : is_mon_immune_to_cold(mdef)))
 						|| (objects[otmp->otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_immunity : is_mon_immune_to_elec(mdef)))))
 					||
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
 						&& ((youdefend ? Death_resistance : resists_death(mdef))
-							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
+							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL) : 0)
 							|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
 								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT ? -otmp->enchantment : 0)))
 							))
 					||
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK
 						&& ((youdefend ? (Disint_resistance || Invulnerable) : resists_disint(mdef))
-							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
+							|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, (struct monst*)0, FALSE, 0, 0, NOTELL) : 0)
 							|| (!(objects[otmp->otyp].oc_aflags & A1_BYPASSES_MC) && check_magic_cancellation_success(mdef,
 								objects[otmp->otyp].oc_mc_adjustment + (objects[otmp->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT ? -otmp->enchantment : 0)))
 							))

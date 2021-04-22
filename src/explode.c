@@ -553,7 +553,7 @@ int expltype;
                      */
                     double mdam = ddam;
 
-                    if (check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, FALSE)) 
+                    if (check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, FALSE, 0, 0, FALSE)) 
                     {
                         /* inside_engulfer: <i+x-1,j+y-1> == <u.ux,u.uy> */
                         play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);

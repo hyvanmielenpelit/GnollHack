@@ -2079,7 +2079,7 @@ struct obj *otmp;
         steedhit = TRUE;
         break;
     case POLY_TRAP:
-        if (!resists_magic(steed) && !check_magic_resistance_and_inflict_damage(steed, (struct obj*) 0, FALSE, 0, 0, NOTELL)) {
+        if (!resists_magic(steed) && !check_magic_resistance_and_inflict_damage(steed, (struct obj*) 0, (struct monst*)0, FALSE, 0, 0, NOTELL)) {
             (void) newcham(steed, (struct permonst *) 0, FALSE, FALSE);
             if (!can_saddle(steed) || !can_ride(steed))
                 dismount_steed(DISMOUNT_POLY);
@@ -3473,7 +3473,7 @@ register struct monst *mtmp;
                 play_sfx_sound_at_location(SFX_POLYMORPH_FAIL, mtmp->mx, mtmp->my);
                 m_shieldeff(mtmp);
             } 
-            else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, FALSE, 0, 0, NOTELL))
+            else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, (struct monst*)0, FALSE, 0, 0, NOTELL))
             {
                 if (newcham(mtmp, (struct permonst*)0, FALSE, FALSE))
                 {

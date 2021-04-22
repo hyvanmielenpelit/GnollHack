@@ -302,7 +302,7 @@ struct monst* origmonst;
 			/* resist deals the damage and displays the damage dealt */
             play_sfx_sound_at_location(SFX_MAGIC_ARROW_HIT, mtmp->mx, mtmp->my);
             hit_with_hit_tile(zap_type_text, mtmp, exclam(dmg), -1, "", HIT_GENERAL, FALSE);
-			(void) inflict_spell_damage(mtmp, otmp, dmg, AD_MAGM, TELL);
+			(void) inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_MAGM, TELL);
         } 
 		else
             miss(zap_type_text, mtmp);
@@ -326,7 +326,7 @@ struct monst* origmonst;
         play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
         Your("touch jolts %s with electricity!", mon_nam(mtmp));
         display_m_being_hit(mtmp, HIT_ELECTROCUTED, dmg, 0UL, FALSE);
-		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_ELEC, TELL);
+		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_ELEC, TELL);
 		learn_it = TRUE;
 		break;
     case SPE_HEAVENLY_TOUCH:
@@ -347,7 +347,7 @@ struct monst* origmonst;
         play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC);
         Your("%s sears %s!", OBJ_NAME(objects[otyp]), mon_nam(mtmp));
         display_m_being_hit(mtmp, HIT_GENERAL, dmg, 0UL, FALSE);
-        (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL);
+        (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_CLRC, TELL);
         learn_it = TRUE;
         break;
     case SPE_BURNING_HANDS:
@@ -368,7 +368,7 @@ struct monst* origmonst;
         play_sfx_sound(SFX_MONSTER_ON_FIRE);
         Your("fiery touch burns %s!", mon_nam(mtmp));
         display_m_being_hit(mtmp, HIT_ON_FIRE, dmg, 0UL, FALSE);
-        (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_FIRE, TELL);
+        (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_FIRE, TELL);
 		learn_it = TRUE;
 		break;
 	case SPE_FREEZING_TOUCH:
@@ -389,7 +389,7 @@ struct monst* origmonst;
         play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
         Your("freezing touch sears %s!", mon_nam(mtmp));
         display_m_being_hit(mtmp, HIT_FROZEN, dmg, 0UL, FALSE);
-        (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL);
+        (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_COLD, TELL);
 		learn_it = TRUE;
 		break;
     case SPE_RAY_OF_RADIANCE:
@@ -405,7 +405,7 @@ struct monst* origmonst;
             play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC);
             pline("The %s sears %s!", OBJ_NAME(objects[otyp]),  mon_nam(mtmp));
             display_m_being_hit(mtmp, HIT_GENERAL, dmg, 0UL, FALSE);
-            (void)inflict_spell_damage(mtmp, otmp, dmg, AD_CLRC, TELL);
+            (void)inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_CLRC, TELL);
             learn_it = TRUE;
         }
         else
@@ -548,7 +548,7 @@ struct monst* origmonst;
             pline("%s is unaffected.", Monnam(mtmp));
         }
 #if 0
-		else if (check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
+		else if (check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, FALSE, 0, 0, TELL))
 		{
 			/* nothing else */
 		}
@@ -760,7 +760,7 @@ struct monst* origmonst;
             context.bypasses = TRUE; /* for make_corpse() */
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
-            (void)inflict_spell_damage(mtmp, otmp, dmg, AD_CLRC, TELL);
+            (void)inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_CLRC, TELL);
             if (!DEADMONSTER(mtmp))
                 monflee(mtmp, duration, FALSE, TRUE);
             special_effect_wait_until_end(0);
@@ -795,7 +795,7 @@ struct monst* origmonst;
 			context.bypasses = TRUE; /* for make_corpse() */
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
-            if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE))
+            if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE))
 			{
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, duration, FALSE, TRUE);
@@ -814,7 +814,7 @@ struct monst* origmonst;
 			context.bypasses = TRUE; /* for make_corpse() */
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(0);
-            if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE))
+            if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE))
 			{
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, duration, FALSE, TRUE);
@@ -854,7 +854,7 @@ struct monst* origmonst;
             play_sfx_sound_at_location(SFX_POLYMORPH_FAIL, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
         }
-		else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, NOTELL))
+		else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, FALSE, 0, 0, NOTELL))
 		{
             boolean polyspot = (otyp != POT_POLYMORPH),
                     give_msg = (!Hallucination
@@ -1239,7 +1239,7 @@ cure_petrification_here:
 		else if (mtmp->data == &mons[PM_PESTILENCE])
 		{ /* Pestilence */
             /* Pestilence will always resist; damage is half of 3d{4,8,12} */
-            (void) check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE,
+            (void) check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE,
                           d(3, otyp == SPE_FULL_HEALING ? 12 : otyp == SPE_EXTRA_HEALING ? 8 : 4), AD_CLRC, TELL);
         }
         else
@@ -1342,7 +1342,7 @@ cure_petrification_here:
         {
             m_shieldeff(mtmp);
         }
-        else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp))
+        else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp))
         {
             double damage = adjust_damage(dmg, origmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);
             double bdamage = adjust_damage(basedmg, origmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);
@@ -4816,7 +4816,7 @@ register struct obj *obj;
 					setmangry(mon, FALSE);
 
 				/* No other saving throw */
-				//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mon, (struct obj*)0,  u.ulevel, 0, 0, NOTELL);
+				//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, origmonst,  u.ulevel, 0, 0, NOTELL);
 
 				if (resists_disint(mon))
 				{
@@ -4852,7 +4852,7 @@ register struct obj *obj;
 
                     if (!DEADMONSTER(mon) && mon != u.usteed)
                     {
-                        (void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, TRUE, dmg, AD_CLRC, canspotmon(mon) ? TELL : NOTELL);
+                        (void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, &youmonst, TRUE, dmg, AD_CLRC, canspotmon(mon) ? TELL : NOTELL);
                     }
                 }
             }
@@ -4884,7 +4884,7 @@ register struct obj *obj;
 				}
 				else if (!DEADMONSTER(mon) && mon != u.usteed)
 				{
-					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, TRUE, dmg, AD_FIRE, canspotmon(mon) ? TELL : NOTELL);
+					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, &youmonst, TRUE, dmg, AD_FIRE, canspotmon(mon) ? TELL : NOTELL);
 				}
 			}
 		}
@@ -4915,7 +4915,7 @@ register struct obj *obj;
 				}
 				else if (!DEADMONSTER(mon) && mon != u.usteed)
 				{
-					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, TRUE, dmg, AD_COLD, canspotmon(mon) ? TELL : NOTELL);
+					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, &youmonst, TRUE, dmg, AD_COLD, canspotmon(mon) ? TELL : NOTELL);
 				}
 			}
 		}
@@ -4946,7 +4946,7 @@ register struct obj *obj;
 				}
 				else if (!DEADMONSTER(mon) && mon != u.usteed)
 				{
-					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, TRUE, dmg, AD_ELEC, canspotmon(mon) ? TELL : NOTELL);
+					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, &youmonst, TRUE, dmg, AD_ELEC, canspotmon(mon) ? TELL : NOTELL);
 				}
 			}
 		}
@@ -4977,7 +4977,7 @@ register struct obj *obj;
 				}
 				else if (!DEADMONSTER(mon) && mon != u.usteed)
 				{
-					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, FALSE, dmg, AD_MAGM, canspotmon(mon) ? TELL : NOTELL);
+					(void)check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, &youmonst, FALSE, dmg, AD_MAGM, canspotmon(mon) ? TELL : NOTELL);
 				}
 			}
 		}
@@ -4992,7 +4992,7 @@ register struct obj *obj;
 			if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
 			{
 				if (!DEADMONSTER(mon) && mon != u.usteed && mon != &youmonst
-					&& !check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, FALSE, 0, 0, canspotmon(mon) ? TELL : NOTELL))
+					&& !check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, &youmonst, FALSE, 0, 0, canspotmon(mon) ? TELL : NOTELL))
 				{
 					(void)u_teleport_mon(mon, TRUE);
 
@@ -6339,7 +6339,7 @@ int duration;
     static const char your[] = "your"; /* should be extern */
 
     if (youdefend ? (!youattack && Antimagic_or_resistance)
-                  : check_magic_resistance_and_inflict_damage(mdef, obj, FALSE, 0, 0, NOTELL))
+                  : check_magic_resistance_and_inflict_damage(mdef, obj, youattack ? &youmonst : (struct monst*)0, FALSE, 0, 0, NOTELL))
         return FALSE; /* resisted cancellation */
 
     if (self_cancel)
@@ -6472,7 +6472,7 @@ int duration;
 	{
 		if (objects[obj->otyp].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 			; //OK;
-		else if (check_magic_resistance_and_inflict_damage(mdef, obj, FALSE, 0, 0, TELL))
+		else if (check_magic_resistance_and_inflict_damage(mdef, obj, youattack ? &youmonst : (struct monst*)0, FALSE, 0, 0, TELL))
 			return FALSE;
 
 		pline("A dim shimmer surrounds %s.", mon_nam(mdef));
@@ -10162,9 +10162,10 @@ int osym, dmgtyp;
 }
 
 boolean
-check_magic_resistance_and_inflict_damage(mtmp, otmp, resisting_halves_damage, dmg, adtyp, tell)
+check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, resisting_halves_damage, dmg, adtyp, tell)
 struct monst *mtmp;
 struct obj* otmp;
+struct monst* origmonst;
 boolean resisting_halves_damage;
 int dmg, adtyp, tell;
 {
@@ -10273,7 +10274,7 @@ int dmg, adtyp, tell;
 	if (dmg == 0 && tell == NOTELL)
 		return resisted;
 
-	double damage = dmg == 0 ? 0 : adjust_damage(dmg, (struct monst*)0, mtmp, adtyp, ADFLAGS_SPELL_DAMAGE);
+	double damage = dmg == 0 ? 0 : adjust_damage(dmg, origmonst, mtmp, adtyp, ADFLAGS_SPELL_DAMAGE);
 
 	if (resisted)
 	{
@@ -10343,14 +10344,15 @@ int dmg, adtyp, tell;
 }
 
 boolean
-inflict_spell_damage(mtmp, otmp, dmg, adtyp, tell)
+inflict_spell_damage(mtmp, otmp, origmonst, dmg, adtyp, tell)
 struct monst* mtmp;
 struct obj* otmp;
+struct monst* origmonst;
 int dmg, adtyp, tell;
 {
     boolean is_you = (mtmp == &youmonst);
 
-    double damage = dmg == 0 ? 0 : adjust_damage(dmg, (struct monst*)0, mtmp, adtyp, ADFLAGS_SPELL_DAMAGE);
+    double damage = dmg == 0 ? 0 : adjust_damage(dmg, origmonst, mtmp, adtyp, ADFLAGS_SPELL_DAMAGE);
 
     if (damage > 0)
     {
