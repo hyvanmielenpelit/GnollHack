@@ -1883,11 +1883,11 @@ struct obj **optr;
         else if (!otmp->lamplit && obj->lamplit)
             pline("%s out.", (obj->quan > 1L) ? "They go" : "It goes");
 
-        if (obj->unpaid && costly_spot(u.ux, u.uy))
+        if ((obj->unpaid || obj->where == OBJ_FLOOR) && costly_spot(u.ux, u.uy))
         {
             char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
             struct monst* shkp = shop_keeper(*o_shop);
-            if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
+            if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
             {
                 play_voice_shopkeeper_simple_line(shkp, otmp->lamplit ? ((obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT) :
                     ((obj->quan > 1L) ? SHOPKEEPER_LINE_USE_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_USE_IT_BOUGHT_IT));
@@ -2080,14 +2080,14 @@ struct obj *obj;
 		{ /* candle(s) */
             pline("%s flame%s %s%s", s_suffix(Yname2(obj)), plur(obj->quan),
                   otense(obj, "burn"), Blind ? "." : " brightly!");
-            if (obj->unpaid && costly_spot(u.ux, u.uy)
+            if ((obj->unpaid || obj->where == OBJ_FLOOR) && costly_spot(u.ux, u.uy)
                 && (obj->age == 30L * (long) objects[obj->otyp].oc_cost || obj->otyp == MAGIC_CANDLE)) 
             {
                 const char *ithem = (obj->quan > 1L) ? "them" : "it";
 
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
                 struct monst* shkp = shop_keeper(*o_shop);
-                if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
+                if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
                 {
                     play_voice_shopkeeper_simple_line(shkp, (obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT);
                 }
@@ -2143,14 +2143,14 @@ struct obj **optr;
     You("light %spotion.%s", shk_your(buf, obj),
         Blind ? "" : "  It gives off a dim light.");
 
-    if (obj->unpaid && costly_spot(u.ux, u.uy)) {
+    if ((obj->unpaid || obj->where == OBJ_FLOOR) && costly_spot(u.ux, u.uy)) {
         /* Normally, we shouldn't both partially and fully charge
          * for an item, but (Yendorian Fuel) Taxes are inevitable...
          */
         check_unpaid(obj);
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         struct monst* shkp = shop_keeper(*o_shop);
-        if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
+        if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_IN_ADDITION_TO_COST_OF_POTION);
             verbalize("That's in addition to the cost of the potion, of course.");
@@ -2666,7 +2666,8 @@ struct obj *obj;
         can->known = 1;
         /* Mark tinned tins. No spinach allowed... */
         set_tin_variety(can, HOMEMADE_TIN);
-        if (carried(corpse)) {
+        if (carried(corpse)) 
+        {
             if (corpse->unpaid)
             {
                 char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
