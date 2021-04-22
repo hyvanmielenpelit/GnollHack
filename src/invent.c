@@ -5879,7 +5879,7 @@ unsigned long newsym_flags;
         {
             char* o_shop = in_rooms(otmp->ox, otmp->oy, SHOPBASE);
             struct monst* shkp = shop_keeper(*o_shop);
-            if (shkp && inhishop(shkp))
+            if (shkp && inhishop(shkp) && !Deaf && !muteshk(shkp))
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
 
             addtobill(otmp, FALSE, FALSE, FALSE);

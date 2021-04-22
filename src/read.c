@@ -470,7 +470,7 @@ doread()
         }
     }
 
-    if(gone && billable_scroll && shkp)
+    if(gone && billable_scroll && shkp && !Deaf && !muteshk(shkp))
         play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
 
     return 1;

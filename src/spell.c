@@ -553,7 +553,7 @@ learn(VOID_ARGS)
     context.spbook.o_id = 0;
 
 check_added_to_your_bill_here:
-	if (gone && billable_book && shkp)
+	if (gone && billable_book && shkp && !Deaf && !muteshk(shkp))
 		play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
 
 	return 0;

@@ -808,7 +808,7 @@ dodrink()
     return res;
 
 check_add_to_bill_here:
-    if (gone && billable_potion && shkp)
+    if (gone && billable_potion && shkp && !Deaf && !muteshk(shkp))
         play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
     return 1;
 }
@@ -869,7 +869,7 @@ struct obj *otmp;
     gone = TRUE;
 
 check_billable_potion_here:
-    if (gone && billable_potion && shkp)
+    if (gone && billable_potion && shkp && !Deaf && !muteshk(shkp))
         play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
     return 1;
 }
@@ -1925,7 +1925,7 @@ const char *txt;
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         struct monst* shkp = 0;
         shkp = shop_keeper(*o_shop);
-        if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp))
+        if (shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp) && !Deaf && !muteshk(shkp))
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
         }
