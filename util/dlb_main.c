@@ -262,7 +262,7 @@ char **argv;
 
         close_library(&lib);
         xexit(EXIT_SUCCESS);
-
+        break;
     case 'x': { /* extract archive contents */
         int f;
         size_t n;
@@ -272,6 +272,7 @@ char **argv;
         if (!open_library(library_file, &lib)) {
             printf("Can't open dlb file\n");
             xexit(EXIT_FAILURE);
+            break;
         }
 
         for (i = 0; i < lib.nentries; i++) {
@@ -304,7 +305,7 @@ char **argv;
             /* read chunks from library and write them out */
             total_read = 0;
             do {
-                remainder = lib.dir[i].fsize - total_read;
+                remainder = (size_t)lib.dir[i].fsize - total_read;
                 if (remainder >= (long) sizeof(buf))
                     r = sizeof(buf) - 1;
                 else
@@ -323,7 +324,7 @@ char **argv;
                 }
 
                 total_read += n;
-            } while (total_read != lib.dir[i].fsize);
+            } while (total_read != (size_t)lib.dir[i].fsize);
 
             (void) close(f);
 
@@ -333,6 +334,7 @@ char **argv;
 
         close_library(&lib);
         xexit(EXIT_SUCCESS);
+        break;
     }
 
     case 'c': /* create archive */
@@ -399,7 +401,7 @@ char **argv;
             ld[i].foffset = flen;
 
             slen += strlen(ld[i].fname); /* don't add null (yet) */
-            flen += ld[i].fsize;
+            flen += (size_t)ld[i].fsize;
             close(fd);
         }
 
@@ -420,6 +422,7 @@ char **argv;
         write_dlb_directory(out, nfiles, ld, slen, dir_size, flen);
 
         flen = 0L;
+        int rint = 0;
         /* write each file */
         for (i = 0; i < nfiles; i++) {
             fd = open(ld[i].fname, O_RDONLY | O_BINARY, 0);
@@ -431,22 +434,22 @@ char **argv;
                 printf("%s\n", ld[i].fname);
 
             fsiz = 0L;
-            while ((r = read(fd, buf, (unsigned int)sizeof buf)) != 0) {
-                if (r == -1) {
+            while ((rint = read(fd, buf, (unsigned int)sizeof buf)) != 0) {
+                if (rint <= -1) {
                     printf("Read Error in '%s'\n", ld[i].fname);
                     xexit(EXIT_FAILURE);
                 }
-                if (write(out, buf, r) != r) {
+                if (write(out, buf, (unsigned int)rint) != rint) {
                     printf("Write Error in '%s'\n", ld[i].fname);
                     xexit(EXIT_FAILURE);
                 }
-                fsiz += r;
+                fsiz += (size_t)rint;
             }
             (void) close(fd);
-            if (fsiz != ld[i].fsize)
+            if (fsiz != (size_t)ld[i].fsize)
                 rewrite_directory = TRUE;
             /* in case directory rewrite is needed */
-            ld[i].fsize = fsiz;
+            ld[i].fsize = (long)fsiz;
             ld[i].foffset = flen;
             flen += fsiz;
         }
@@ -464,6 +467,7 @@ char **argv;
 
         (void) close(out);
         xexit(EXIT_SUCCESS);
+        break;
     }
     }
 #endif /* DLBLIB */
