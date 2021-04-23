@@ -1,4 +1,4 @@
-/* GnollHack 4.0	pager.c	$NHDT-Date: 1555627307 2019/04/18 22:41:47 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.151 $ */
+/* GnollHack 4.0    pager.c    $NHDT-Date: 1555627307 2019/04/18 22:41:47 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.151 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -294,10 +294,10 @@ int x, y;
               ? coyotename(mtmp, monnambuf)
               : distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
 
-	strcpy(headbuf, "");
+    strcpy(headbuf, "");
 
-	if ((mtmp->data->heads > 3 && !(mtmp->data->geno & G_UNIQ) && !is_mname_proper_name(mtmp->data)) || (mtmp->data->heads > 1 && mtmp->heads_left != mtmp->data->heads))
-		Sprintf(headbuf, "%d-headed ", mtmp->heads_left);
+    if ((mtmp->data->heads > 3 && !(mtmp->data->geno & G_UNIQ) && !is_mname_proper_name(mtmp->data)) || (mtmp->data->heads > 1 && mtmp->heads_left != mtmp->data->heads))
+        Sprintf(headbuf, "%d-headed ", mtmp->heads_left);
 
     strcpy(tmpbuf, "");
     Sprintf(tmpbuf, "%s%s%s",
@@ -342,17 +342,17 @@ int x, y;
     if (mtmp->mundetected || M_AP_TYPE(mtmp))
         mhidden_description(mtmp, FALSE, eos(buf));
 
-	if (is_tame(mtmp))
-	{
-		Sprintf(eos(buf), ", %d/%d HP", mtmp->mhp, mtmp->mhpmax);
-		if (has_edog(mtmp))
-		{
+    if (is_tame(mtmp))
+    {
+        Sprintf(eos(buf), ", %d/%d HP", mtmp->mhp, mtmp->mhpmax);
+        if (has_edog(mtmp))
+        {
             if (monstermoves >= EDOG(mtmp)->hungrytime + 500)
                 Sprintf(eos(buf), ", starving");
             else if (monstermoves >= EDOG(mtmp)->hungrytime)
-				    Sprintf(eos(buf), ", hungry");
-		}
-	}
+                    Sprintf(eos(buf), ", hungry");
+        }
+    }
     if (monbuf) {
         unsigned how_seen = howmonseen(mtmp);
 
@@ -630,19 +630,19 @@ char *buf, *monbuf;
         }
     }
 
-	char exbuf[BUFSIZ];
-	strcpy(exbuf, buf);
-	int article = strstri(exbuf, " of a room")? 2 :
+    char exbuf[BUFSIZ];
+    strcpy(exbuf, buf);
+    int article = strstri(exbuf, " of a room")? 2 :
         (!noarticle && pm && (pm->geno & G_UNIQ)) ? (is_mname_proper_name(pm) ? 0 : 2) : /* for unique monsters have no article if the name is a proper name, otherwise they have the */
-		!(noarticle == TRUE
-			|| strcmp(exbuf, "air") == 0
-			|| strcmp(exbuf, "land") == 0
-			|| strcmp(exbuf, "water") == 0);
+        !(noarticle == TRUE
+            || strcmp(exbuf, "air") == 0
+            || strcmp(exbuf, "land") == 0
+            || strcmp(exbuf, "water") == 0);
 
-	Strcpy(buf, article == 2 ? the(exbuf)
-		: article == 1 ? an(exbuf) : exbuf);
-	
-	return (pm && !Hallucination) ? pm : (struct permonst *) 0;
+    Strcpy(buf, article == 2 ? the(exbuf)
+        : article == 1 ? an(exbuf) : exbuf);
+    
+    return (pm && !Hallucination) ? pm : (struct permonst *) 0;
 }
 
 /*
@@ -1116,9 +1116,9 @@ struct permonst **for_supplement;
             if (alt_i++ == 2)
                 i = 0; /* undo loop increment */
             
-			x_str = i == S_fountain ? get_fountain_name(cc.x, cc.y) : defsyms[i].explanation;
+            x_str = i == S_fountain ? get_fountain_name(cc.x, cc.y) : defsyms[i].explanation;
             
-			if (submerged && !strcmp(x_str, defsyms[0].explanation))
+            if (submerged && !strcmp(x_str, defsyms[0].explanation))
                 x_str = "land"; /* replace "dark part of a room" */
             /* alt_i is now 3 or more and no longer of interest */
         }
@@ -1150,7 +1150,7 @@ struct permonst **for_supplement;
                             : article == 1 ? an(x_str) : x_str);
                 }
                 *firstmatch = article == 2 ? the(x_str)
-					: article == 1 ? an(x_str) : x_str;
+                    : article == 1 ? an(x_str) : x_str;
                 found++;
             } 
             else if (!(hit_trap && is_cmap_trap(i))
@@ -1463,7 +1463,7 @@ coord *click_cc;
         /* Finally, print out our explanation. */
         if (found) {
             /* use putmixed() because there may be an encoded glyph present */
-			putmixed(WIN_MESSAGE, 0, out_str);
+            putmixed(WIN_MESSAGE, 0, out_str);
 #ifdef DUMPLOG
             {
                 char dmpbuf[BUFSZ];

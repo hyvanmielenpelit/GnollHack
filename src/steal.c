@@ -1,4 +1,4 @@
-/* GnollHack 4.0	steal.c	$NHDT-Date: 1554580626 2019/04/06 19:57:06 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.72 $ */
+/* GnollHack 4.0    steal.c    $NHDT-Date: 1554580626 2019/04/06 19:57:06 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.72 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -21,15 +21,15 @@ register struct obj *otmp;
                             ? "shield"
                             : (otmp == uarmg)
                                   ? "gloves"
-								: (otmp == uarmb)
-									  ? "bracers"
+                                : (otmp == uarmb)
+                                      ? "bracers"
                                   : (otmp == uarmc)
                                         ? cloak_simple_name(otmp)
-									  : (otmp == uarmo)
-											? robe_simple_name(otmp)
-											: (otmp == uarmh)
-												  ? helm_simple_name(otmp)
-												  : suit_simple_name(otmp));
+                                      : (otmp == uarmo)
+                                            ? robe_simple_name(otmp)
+                                            : (otmp == uarmh)
+                                                  ? helm_simple_name(otmp)
+                                                  : suit_simple_name(otmp));
 }
 
 /* proportional subset of gold; return value actually fits in an int */
@@ -83,9 +83,9 @@ findobjecttype(chain, otyp)
 register struct obj* chain;
 int otyp;
 {
-	while (chain && chain->otyp != otyp)
-		chain = chain->nobj;
-	return chain;
+    while (chain && chain->otyp != otyp)
+        chain = chain->nobj;
+    return chain;
 }
 
 /*
@@ -220,21 +220,21 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
             (void) Armor_off();
         else if (obj == uarmc)
             (void) Cloak_off();
-		else if (obj == uarmo)
-			(void) Robe_off();
-		else if (obj == uarmf)
+        else if (obj == uarmo)
+            (void) Robe_off();
+        else if (obj == uarmf)
             (void) Boots_off();
         else if (obj == uarmg)
             (void) Gloves_off();
-		else if (obj == uarmb)
-			(void) Bracers_off();
-		else if (obj == uarmh)
+        else if (obj == uarmb)
+            (void) Bracers_off();
+        else if (obj == uarmh)
             (void) Helmet_off();
         else if (obj == uarms && is_shield(obj))
             (void) Shield_off();
-		else if (obj == uarms && is_weapon(obj))
-			uwep2gone();
-		else if (obj == uarmu)
+        else if (obj == uarms && is_weapon(obj))
+            uwep2gone();
+        else if (obj == uarmu)
             (void) Shirt_off();
         /* catchall -- should never happen, except for uarms with non-shields & non-weapons */
         else
@@ -250,13 +250,13 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
     } else if (obj->owornmask & W_WEAPON) {
         if (obj == uwep)
             uwepgone();
-		if (obj == uarms)
-			uwep2gone();
-		if (obj == uswapwep)
+        if (obj == uarms)
+            uwep2gone();
+        if (obj == uswapwep)
             uswapwepgone();
-		if (obj == uswapwep2)
-			uswapwep2gone();
-		if (obj == uquiver)
+        if (obj == uswapwep2)
+            uswapwep2gone();
+        if (obj == uquiver)
             uqwepgone();
     }
 
@@ -351,9 +351,9 @@ retry:
     /* can't steal shirt while wearing cloak, robe or suit */
     else if (otmp == uarmu && uarmc)
         otmp = uarmc;
-	else if (otmp == uarmu && uarmo)
-		otmp = uarmo;
-	else if (otmp == uarmu && uarm)
+    else if (otmp == uarmu && uarmo)
+        otmp = uarmo;
+    else if (otmp == uarmu && uarm)
         otmp = uarm;
 
 gotobj:
@@ -414,8 +414,8 @@ gotobj:
         switch (otmp->oclass) {
         case TOOL_CLASS:
         case AMULET_CLASS:
-		case MISCELLANEOUS_CLASS:
-		case RING_CLASS:
+        case MISCELLANEOUS_CLASS:
+        case RING_CLASS:
         case FOOD_CLASS: /* meat ring */
             remove_worn_item(otmp, TRUE);
             break;
@@ -501,9 +501,9 @@ gotobj:
     (void) mpickobj(mtmp, otmp); /* may free otmp */
 
     if (could_petrify && !(mtmp->worn_item_flags & W_ARMG))
-	{
-		start_delayed_petrification(mtmp, FALSE);
-	}
+    {
+        start_delayed_petrification(mtmp, FALSE);
+    }
     return (multi < 0) ? 0 : 1;
 }
 
@@ -618,21 +618,21 @@ struct monst *mtmp;
            quest artifact suit, shirt, gloves, or rings */
         if ((otmp == uarm || otmp == uarmo || otmp == uarmu) && uarmc)
             remove_worn_item(uarmc, FALSE);
-		if ((otmp == uarm || otmp == uarmu) && uarmo)
-			remove_worn_item(uarmo, FALSE);
-		if (otmp == uarmu && uarm)
+        if ((otmp == uarm || otmp == uarmu) && uarmo)
+            remove_worn_item(uarmo, FALSE);
+        if (otmp == uarmu && uarm)
             remove_worn_item(uarm, FALSE);
         if ((otmp == uarmg || ((otmp == uright || otmp == uleft) && uarmg))
             && uwep) {
             /* gloves are about to be unworn; unwield weapon first */
             remove_worn_item(uwep, FALSE);
         }
-		if ((otmp == uarmg || ((otmp == uright || otmp == uleft) && uarmg))
-			&& uarms) {
-			/* gloves are about to be unworn; unwield shields & left hand weapon */
-			remove_worn_item(uarms, FALSE);
-		}
-		if ((otmp == uright || otmp == uleft) && uarmg)
+        if ((otmp == uarmg || ((otmp == uright || otmp == uleft) && uarmg))
+            && uarms) {
+            /* gloves are about to be unworn; unwield shields & left hand weapon */
+            remove_worn_item(uarms, FALSE);
+        }
+        if ((otmp == uright || otmp == uleft) && uarmg)
             /* calls Gloves_off() to handle wielded cockatrice corpse */
             remove_worn_item(uarmg, FALSE);
 
@@ -746,12 +746,12 @@ boolean verbosely;
     }
     /* do this last, after placing obj on floor; removing steed's saddle
        throws rider, possibly inflicting fatal damage and producing bones */
-	if (update_mon)
-	{
-		update_all_mon_statistics(mon, TRUE);
-		if (mon == u.usteed && obj->otyp == SADDLE)
-			dismount_steed(DISMOUNT_FELL);
-	}
+    if (update_mon)
+    {
+        update_all_mon_statistics(mon, TRUE);
+        if (mon == u.usteed && obj->otyp == SADDLE)
+            dismount_steed(DISMOUNT_FELL);
+    }
 }
 
 /* some monsters bypass the normal rules for moving between levels or
@@ -814,63 +814,63 @@ boolean is_mon_dead;
         obfree(otmp, (struct obj *) 0);
     } /* isgd && has gold */
 
-	while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) 
+    while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) 
     {
         obj_extract_self(otmp);
-		if (((mtmp->issummoned || mtmp->ispartymember) && (!is_mon_dead || otmp->oclass == COIN_CLASS)) 
+        if (((mtmp->issummoned || mtmp->ispartymember) && (!is_mon_dead || otmp->oclass == COIN_CLASS)) 
             /* When leaving without dying, summoned and joined monsters take their possessions with them, except central artifacts 
              * Just their money mysteriously disappears when they die normally, to prevent hiring monsters always with the same money
              */
-			&& otmp->otyp != AMULET_OF_YENDOR
+            && otmp->otyp != AMULET_OF_YENDOR
             && otmp->otyp != FAKE_AMULET_OF_YENDOR
             && otmp->otyp != CANDELABRUM_OF_INVOCATION
-			&& otmp->otyp != SPE_BOOK_OF_THE_DEAD
-			&& !is_quest_artifact(otmp)
-			)
-		{
+            && otmp->otyp != SPE_BOOK_OF_THE_DEAD
+            && !is_quest_artifact(otmp)
+            )
+        {
             omx = mtmp->mx;
             omy = mtmp->my;
-			boolean update_mon = FALSE;
+            boolean update_mon = FALSE;
 
-			if (otmp->owornmask)
+            if (otmp->owornmask)
             {
-				/* perform worn item handling if the monster is still alive */
-				if (!DEADMONSTER(mtmp)) 
+                /* perform worn item handling if the monster is still alive */
+                if (!DEADMONSTER(mtmp)) 
                 {
-					mtmp->worn_item_flags &= ~otmp->owornmask;
-					update_mon = TRUE;
+                    mtmp->worn_item_flags &= ~otmp->owornmask;
+                    update_mon = TRUE;
 
-					/* don't charge for an owned saddle on dead steed (provided
-					   that the hero is within the same shop at the time) */
-				}
-				else if (is_tame(mtmp) && (otmp->owornmask & W_SADDLE) != 0L
-					&& !otmp->unpaid && costly_spot(omx, omy)
-					/* being at costly_spot guarantees lev->roomno is not 0 */
-					&& index(in_rooms(u.ux, u.uy, SHOPBASE),
-						levl[omx][omy].roomno))
+                    /* don't charge for an owned saddle on dead steed (provided
+                       that the hero is within the same shop at the time) */
+                }
+                else if (is_tame(mtmp) && (otmp->owornmask & W_SADDLE) != 0L
+                    && !otmp->unpaid && costly_spot(omx, omy)
+                    /* being at costly_spot guarantees lev->roomno is not 0 */
+                    && index(in_rooms(u.ux, u.uy, SHOPBASE),
+                        levl[omx][omy].roomno))
                 {
-					otmp->no_charge = 1;
-				}
-				/* this should be done even if the monster has died */
-				if (otmp->owornmask & W_WEP)
-					setmnotwielded(mtmp, otmp);
-				otmp->owornmask = 0L;
-			}
+                    otmp->no_charge = 1;
+                }
+                /* this should be done even if the monster has died */
+                if (otmp->owornmask & W_WEP)
+                    setmnotwielded(mtmp, otmp);
+                otmp->owornmask = 0L;
+            }
 
-			/* do this last, after placing obj on floor; removing steed's saddle
-			   throws rider, possibly inflicting fatal damage and producing bones */
-			if (update_mon)
-			{
-				update_all_mon_statistics(mtmp, TRUE);
-				if (mtmp == u.usteed && otmp->otyp == SADDLE)
-					dismount_steed(DISMOUNT_FELL);
-			}
+            /* do this last, after placing obj on floor; removing steed's saddle
+               throws rider, possibly inflicting fatal damage and producing bones */
+            if (update_mon)
+            {
+                update_all_mon_statistics(mtmp, TRUE);
+                if (mtmp == u.usteed && otmp->otyp == SADDLE)
+                    dismount_steed(DISMOUNT_FELL);
+            }
 
-			obfree(otmp, (struct obj*) 0); //Delete the item
-		}
-		else
-			mdrop_obj(mtmp, otmp, is_pet && flags.verbose);
-	}
+            obfree(otmp, (struct obj*) 0); //Delete the item
+        }
+        else
+            mdrop_obj(mtmp, otmp, is_pet && flags.verbose);
+    }
 
     if (show && cansee(omx, omy))
         newsym(omx, omy);
@@ -882,17 +882,17 @@ void
 mdrop_droppable_objs(mtmp)
 struct monst* mtmp;
 {
-	struct obj* otmp;
-	int omx = mtmp->mx, omy = mtmp->my;
+    struct obj* otmp;
+    int omx = mtmp->mx, omy = mtmp->my;
 
-	while ((otmp = droppables(mtmp)) != 0)
-	{
-		obj_extract_self(otmp);
-		mdrop_obj(mtmp, otmp, flags.verbose);
-	}
+    while ((otmp = droppables(mtmp)) != 0)
+    {
+        obj_extract_self(otmp);
+        mdrop_obj(mtmp, otmp, flags.verbose);
+    }
 
-	if (cansee(omx, omy))
-		newsym(omx, omy);
+    if (cansee(omx, omy))
+        newsym(omx, omy);
 }
 
 /*steal.c*/

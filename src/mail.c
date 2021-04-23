@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mail.c	$NHDT-Date: 1545597424 2018/12/23 20:37:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.39 $ */
+/* GnollHack 4.0    mail.c    $NHDT-Date: 1545597424 2018/12/23 20:37:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.39 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */

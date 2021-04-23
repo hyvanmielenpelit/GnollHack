@@ -1,4 +1,4 @@
-/* GnollHack 4.0	obj.h	$NHDT-Date: 1508827590 2017/10/24 06:46:30 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.60 $ */
+/* GnollHack 4.0    obj.h    $NHDT-Date: 1508827590 2017/10/24 06:46:30 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.60 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -18,13 +18,13 @@ union vptrs {
 };
 
 /****
- ***	oextra -- collection of all object extensions
- **	(see the note at the bottom of this file before adding oextra fields)
+ ***    oextra -- collection of all object extensions
+ **    (see the note at the bottom of this file before adding oextra fields)
  */
 struct oextra {
     char *oname;          /* ptr to name of object */
-	char* uoname;          /* ptr to name of object */
-	struct monst *omonst; /* ptr to attached monst struct */
+    char* uoname;          /* ptr to name of object */
+    struct monst *omonst; /* ptr to attached monst struct */
     unsigned *omid;       /* ptr to m_id */
     long *olong;          /* ptr to misc long (temporary gold object) */
     char *omailcmd;       /* response_cmd for mail deliver */
@@ -45,7 +45,7 @@ struct obj {
     long quan; /* number of items */
 
     short enchantment; /* Always set to zero by cancellation
-			      quality of weapon, weptool, armor or ring (+ or -);
+                  quality of weapon, weptool, armor or ring (+ or -);
                   OBSOLETE (moved to charges): number of charges for wand or charged tool ( >= -1 );
                   OBSOLETE (moved to special_quality): number of candles attached to candelabrum;
                   OBSOLETE (moved to special_quality and speflags): marks your eggs, tin variety and spinach tins;
@@ -54,29 +54,29 @@ struct obj {
                   OBSOLETE (moved to special_quality): special for uball and amulet;
                   OBSOLETE (moved to special_quality): scroll of mail (normal==0, bones or wishing==1, written==2);
                   OBSOLETE (moved to speflags): historic and gender for statues */
-	short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
-	short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
-	unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
+    short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
+    short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
+    unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
 
-#define SPEFLAGS_YOURS						0x00000001UL
-#define SPEFLAGS_FEMALE				        0x00000002UL
-#define SPEFLAGS_MALE				        0x00000004UL
-#define SPEFLAGS_FACING_RIGHT				0x00000008UL
-#define SPEFLAGS_SCHROEDINGERS_BOX			0x00000010UL
-#define SPEFLAGS_STATUE_HISTORIC			0x00000020UL
-#define SPEFLAGS_CORPSE_ON_ICE				0x00000040UL
-#define SPEFLAGS_DETECTED   				0x00000080UL
-#define SPEFLAGS_SERVICED_SPELL     		0x00000100UL
-#define SPEFLAGS_MINES_PRIZE     		    0x00000200UL
-#define SPEFLAGS_SOKO_PRIZE1     		    0x00000400UL
-#define SPEFLAGS_SOKO_PRIZE2     		    0x00000800UL
-#define SPEFLAGS_FROM_SINK     		        0x00001000UL
-#define SPEFLAGS_INDESTRUCTIBLE     		0x00002000UL
-#define SPEFLAGS_USES_UP_KEY         		0x00004000UL
-#define SPEFLAGS_NO_PICKUP           		0x00008000UL  /* Monsters will not pick up this item */
-#define SPEFLAGS_ROYAL_COFFER         		0x00010000UL
-#define SPEFLAGS_LID_OPENED         		0x00020000UL
-#define SPEFLAGS_GRABBED_FROM_YOU      		0x00040000UL
+#define SPEFLAGS_YOURS                        0x00000001UL
+#define SPEFLAGS_FEMALE                        0x00000002UL
+#define SPEFLAGS_MALE                        0x00000004UL
+#define SPEFLAGS_FACING_RIGHT                0x00000008UL
+#define SPEFLAGS_SCHROEDINGERS_BOX            0x00000010UL
+#define SPEFLAGS_STATUE_HISTORIC            0x00000020UL
+#define SPEFLAGS_CORPSE_ON_ICE                0x00000040UL
+#define SPEFLAGS_DETECTED                   0x00000080UL
+#define SPEFLAGS_SERVICED_SPELL             0x00000100UL
+#define SPEFLAGS_MINES_PRIZE                 0x00000200UL
+#define SPEFLAGS_SOKO_PRIZE1                 0x00000400UL
+#define SPEFLAGS_SOKO_PRIZE2                 0x00000800UL
+#define SPEFLAGS_FROM_SINK                     0x00001000UL
+#define SPEFLAGS_INDESTRUCTIBLE             0x00002000UL
+#define SPEFLAGS_USES_UP_KEY                 0x00004000UL
+#define SPEFLAGS_NO_PICKUP                   0x00008000UL  /* Monsters will not pick up this item */
+#define SPEFLAGS_ROYAL_COFFER                 0x00010000UL
+#define SPEFLAGS_LID_OPENED                 0x00020000UL
+#define SPEFLAGS_GRABBED_FROM_YOU              0x00040000UL
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
@@ -151,7 +151,7 @@ struct obj {
     Bitfield(lknown, 1); /* locked/unlocked status is known */
     Bitfield(tknown, 1); /* trapped status of a container is known */
     Bitfield(nknown, 1); /* artifact's true name is known */
-	Bitfield(aknown, 1); /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
+    Bitfield(aknown, 1); /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
     Bitfield(mknown, 1); /* mythic quality is known */
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
@@ -163,15 +163,15 @@ struct obj {
     unsigned oeaten;        /* nutrition left in food, if partly eaten */
     long age;               /* creation date */
     long owornmask;
-	short cooldownleft;	   /* item cooldown left before it can be used again*/
-    short repowerleft;	   /* artifact cooldown left before its invoke ability can be used again*/
+    short cooldownleft;       /* item cooldown left before it can be used again*/
+    short repowerleft;       /* artifact cooldown left before its invoke ability can be used again*/
     short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
-	boolean invokeon;      /* the object's / artifact's invoked ability is on */
+    boolean invokeon;      /* the object's / artifact's invoked ability is on */
     unsigned o_id_memory;  /* This is a memory object of this o_id */
     unsigned m_id_memory;  /* This is a memory object of this mimic m_id */
 
     int glyph;
-	struct oextra *oextra; /* pointer to oextra struct */
+    struct oextra *oextra; /* pointer to oextra struct */
 };
 
 #define newobj() (struct obj *) alloc(sizeof(struct obj))
@@ -186,7 +186,7 @@ struct obj {
                : 0)
 
 /***
- **	oextra referencing and testing macros
+ **    oextra referencing and testing macros
  */
 
 #define ONAME(o) ((o)->oextra->oname)
@@ -205,15 +205,15 @@ struct obj {
 
 /* Weapons and weapon-tools */
 /* KMH -- now based on skill categories.  Formerly:
- *	#define is_sword(otmp)	(otmp->oclass == WEAPON_CLASS && \
- *			 objects[otmp->otyp].oc_wepcat == WEP_SWORD)
- *	#define is_blade(otmp)	(otmp->oclass == WEAPON_CLASS && \
- *			 (objects[otmp->otyp].oc_wepcat == WEP_BLADE || \
- *			  objects[otmp->otyp].oc_wepcat == WEP_SWORD))
- *	#define is_weptool(o)	((o)->oclass == TOOL_CLASS && \
- *			 objects[(o)->otyp].oc_weptool)
- *	#define is_multigen(otyp) (otyp <= SHURIKEN)
- *	#define is_poisonable(otyp) (otyp <= BEC_DE_CORBIN)
+ *    #define is_sword(otmp)    (otmp->oclass == WEAPON_CLASS && \
+ *             objects[otmp->otyp].oc_wepcat == WEP_SWORD)
+ *    #define is_blade(otmp)    (otmp->oclass == WEAPON_CLASS && \
+ *             (objects[otmp->otyp].oc_wepcat == WEP_BLADE || \
+ *              objects[otmp->otyp].oc_wepcat == WEP_SWORD))
+ *    #define is_weptool(o)    ((o)->oclass == TOOL_CLASS && \
+ *             objects[(o)->otyp].oc_weptool)
+ *    #define is_multigen(otyp) (otyp <= SHURIKEN)
+ *    #define is_poisonable(otyp) (otyp <= BEC_DE_CORBIN)
  */
 #define is_otyp_appliable(otyp) ((objects[(otyp)].oc_flags3 & O3_APPLIABLE) != 0)
 #define is_otyp_invokable(otyp) ((objects[(otyp)].oc_flags3 & O3_INVOKABLE) != 0)
@@ -267,15 +267,15 @@ struct obj {
         /* towel is not a weptool:  enchantment isn't an enchantment, cursed towel
            doesn't weld to hand, and twoweapon won't work with one */
 #define is_weapon(o) \
-	((o)->oclass == WEAPON_CLASS || is_weptool(o) || (objects[(o)->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+    ((o)->oclass == WEAPON_CLASS || is_weptool(o) || (objects[(o)->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
 #define is_amulet(o) \
-	((o)->oclass == AMULET_CLASS)
+    ((o)->oclass == AMULET_CLASS)
 #define is_wet_towel(o) ((o)->otyp == TOWEL && (o)->special_quality > 0)
 #define bimanual(otmp)                                            \
     (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
      && objects[(otmp)->otyp].oc_bimanual)
 #define is_multigen(otmp)                           \
-	(objects[(otmp)->otyp].oc_multigen_type > MULTIGEN_SINGLE)
+    (objects[(otmp)->otyp].oc_multigen_type > MULTIGEN_SINGLE)
 
 #define is_poisonable(otmp) \
     ((is_weapon(otmp) && !is_launcher(otmp) && objects[(otmp)->otyp].oc_dir > WHACK) || objects[(otmp)->otyp].oc_flags3 & O3_POISONABLE)
@@ -289,39 +289,39 @@ struct obj {
 #define any_quest_artifact(o) ((o)->oartifact >= ART_ORB_OF_DETECTION)
 
 #define is_otyp_enchantable(otyp)     \
-	(objects[(otyp)].oc_enchantable > ENCHTYPE_NO_ENCHANTMENT)
+    (objects[(otyp)].oc_enchantable > ENCHTYPE_NO_ENCHANTMENT)
 
 #define is_obj_enchantable(o) is_otyp_enchantable((o)->otyp) 
 
 #define is_otyp_elemental_enchantable(otyp)     \
-	(objects[(otyp)].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
+    (objects[(otyp)].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
 
 /* Unusual definition to account for weapons appropriately */
-#define is_elemental_enchantable(o)	 ((is_weapon(o) && !is_launcher(o)) || is_otyp_elemental_enchantable((o)->otyp))
+#define is_elemental_enchantable(o)     ((is_weapon(o) && !is_launcher(o)) || is_otyp_elemental_enchantable((o)->otyp))
 
 #define is_otyp_material_death_enchantable(otyp)     \
-	(material_definitions[objects[otyp].oc_material].death_enchantable != 0)
+    (material_definitions[objects[otyp].oc_material].death_enchantable != 0)
 
 #define is_death_enchantable(o)  (is_elemental_enchantable(o) && is_otyp_material_death_enchantable((o)->otyp))
 
 #define can_otyp_have_exceptionality(otyp)     \
-	(objects[(otyp)].oc_flags4 & O4_CAN_HAVE_EXCEPTIONALITY)
+    (objects[(otyp)].oc_flags4 & O4_CAN_HAVE_EXCEPTIONALITY)
 
 /* Unusual definition to account for weapons appropriately */
-#define can_have_exceptionality(o)	 (is_weapon(o) || can_otyp_have_exceptionality((o)->otyp))
+#define can_have_exceptionality(o)     (is_weapon(o) || can_otyp_have_exceptionality((o)->otyp))
 
 #define otyp_allows_specially_dipping_into(otyp) (objects[(otyp)].oc_flags4 & O4_ALLOWS_DIPPING_INTO)
 #define otyp_allows_object_to_be_dipped_into_it(otyp) (objects[(otyp)].oc_class == POTION_CLASS || otyp_allows_specially_dipping_into(otyp))
 #define obj_allows_object_to_be_dipped_into_it(o) otyp_allows_object_to_be_dipped_into_it((o)->otyp)
 
 #define is_cursed_magic_item(otmp)                                            \
-	(objects[(otmp)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM)
+    (objects[(otmp)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM)
 
 #define is_obj_generated_cursed(otmp)                                            \
-	(objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_CURSED)
+    (objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_CURSED)
 
 #define is_obj_generated_blessed(otmp)                                            \
-	(objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_BLESSED)
+    (objects[(otmp)->otyp].oc_flags2 & O2_GENERATED_BLESSED)
 
 #define oresist_disintegration(otmp)                                       \
     (objects[(otmp)->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT || is_obj_indestructible(otmp) \
@@ -382,9 +382,9 @@ struct obj {
 #define is_dwarvish_armor(otmp)               \
     ((otmp)->oclass == ARMOR_CLASS && is_dwarvish_obj(otmp))
 #define is_gnollish_armor(otmp) \
-	((otmp)->oclass == ARMOR_CLASS && is_gnollish_obj(otmp))
+    ((otmp)->oclass == ARMOR_CLASS && is_gnollish_obj(otmp))
 #define is_gnomish_armor(otmp) \
-	((otmp)->oclass == ARMOR_CLASS && is_gnomish_obj(otmp))
+    ((otmp)->oclass == ARMOR_CLASS && is_gnomish_obj(otmp))
 
 /* Eggs and other food */
 #define MAX_EGG_HATCH_TIME 200 /* longest an egg can remain unhatched */
@@ -411,18 +411,18 @@ struct obj {
 #define Is_proper_container(o) (Is_container(o) && !Is_noncontainer(o))
 #define Is_box(o) ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_BOX) != 0)
 #define Is_mbag(o) \
-	((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG) != 0)
+    ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_MAGIC_BAG) != 0)
 #define Is_weight_changing_bag(o) \
-	((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG) != 0)
+    ((objects[(o)->otyp].oc_flags2 & O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG) != 0)
 #define SchroedingersBox(o) ((o)->otyp == LARGE_BOX && ((o)->speflags & SPEFLAGS_SCHROEDINGERS_BOX) != 0)
 
 /* dragon gear */
 #define is_dragon_scales(obj) \
-	(is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALES))
+    (is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALES))
 #define is_dragon_mail(obj)  \
-	(is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
+    (is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
 #define is_dragon_scale_armor(obj) \
-	(is_dragon_scales(obj) || is_dragon_mail(obj))
+    (is_dragon_scales(obj) || is_dragon_mail(obj))
 #define Dragon_scales_to_pm(obj) \
     &mons[PM_GRAY_DRAGON + (obj)->otyp - GRAY_DRAGON_SCALES]
 #define Dragon_mail_to_pm(obj) \
@@ -430,7 +430,7 @@ struct obj {
 #define Dragon_to_scales(pm) (GRAY_DRAGON_SCALES + (pm - mons))
 
 #define is_dragon_armor(obj) \
-	(obj->oclass == ARMOR_CLASS && is_dragon_obj(obj))
+    (obj->oclass == ARMOR_CLASS && is_dragon_obj(obj))
 #define is_dragon_obj(obj) ((objects[(obj)->otyp].oc_flags2 & O2_DRAGON_ITEM) != 0)
 
 /* Elven gear */
@@ -462,9 +462,9 @@ struct obj {
 
 /* Light sources */
 #define is_otyp_candle(otyp) \
-	((objects[(otyp)].oc_flags2 & O2_CANDLE) != 0)
+    ((objects[(otyp)].oc_flags2 & O2_CANDLE) != 0)
 #define is_candle(otmp) \
-	is_otyp_candle((otmp)->otyp)
+    is_otyp_candle((otmp)->otyp)
 #define otyp_shines_magical_light(otyp)                                             \
     ((objects[(otyp)].oc_flags2 & O2_SHINES_MAGICAL_LIGHT) != 0)
 #define obj_shines_magical_light(otmp)     \
@@ -476,7 +476,7 @@ struct obj {
 
 /* Wand-like tools */
 #define is_wand_like_tool(otmp) \
-	((objects[(otmp)->otyp].oc_flags & O1_WAND_LIKE_TOOL) != 0)
+    ((objects[(otmp)->otyp].oc_flags & O1_WAND_LIKE_TOOL) != 0)
 
 /* Other tools */
 #define is_saw(otmp)                                              \
@@ -541,8 +541,8 @@ struct obj {
      || ((o)->oartifact == ART_EYES_OF_THE_OVERWORLD && (o)->nknown && (o)->known))
 
 #define pair_of(o) ((o->oclass == MISCELLANEOUS_CLASS && \
-	(objects[(o)->otyp].oc_subtyp == MISC_EYEGLASSES || objects[(o)->otyp].oc_subtyp == MISC_EARRINGS || objects[(o)->otyp].oc_subtyp == MISC_PANTS || objects[(o)->otyp].oc_subtyp == MISC_WINGS || objects[(o)->otyp].oc_subtyp == MISC_EXTRA_ARMS)) \
-	 || is_gloves(o) || is_boots(o) || is_bracers(o))
+    (objects[(o)->otyp].oc_subtyp == MISC_EYEGLASSES || objects[(o)->otyp].oc_subtyp == MISC_EARRINGS || objects[(o)->otyp].oc_subtyp == MISC_PANTS || objects[(o)->otyp].oc_subtyp == MISC_WINGS || objects[(o)->otyp].oc_subtyp == MISC_EXTRA_ARMS)) \
+     || is_gloves(o) || is_boots(o) || is_bracers(o))
 
 #define is_otyp_unique(otyp) (objects[otyp].oc_unique || (objects[otyp].oc_flags3 & O3_UNIQUE))
 #define is_otyp_nowish(otyp) (objects[otyp].oc_nowish || (objects[otyp].oc_flags3 & O3_NO_WISH))
@@ -572,7 +572,7 @@ struct obj {
     is_otyp_quaffable((obj)->otyp)
 
 #define is_obj_normally_edible(otmp) \
-	((otmp)->oclass == FOOD_CLASS || ((otmp)->oclass == REAGENT_CLASS && (objects[(otmp)->otyp].oc_flags & O1_EDIBLE_NONFOOD) != 0))
+    ((otmp)->oclass == FOOD_CLASS || ((otmp)->oclass == REAGENT_CLASS && (objects[(otmp)->otyp].oc_flags & O1_EDIBLE_NONFOOD) != 0))
 
 #define has_otyp_extended_polearm_reach(otyp) \
     ((objects[(otyp)].oc_flags4 & O4_EXTENDED_POLEARM_REACH) != 0)
@@ -890,43 +890,43 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 /*
  *  Notes for adding new oextra structures:
  *
- *	 1. Add the structure definition and any required macros in an
+ *     1. Add the structure definition and any required macros in an
  *          appropriate header file that precedes this one.
- *	 2. Add a pointer to your new struct to oextra struct in this file.
- *	 3. Add a referencing macro to this file after the newobj macro above
- *	    (see ONAME, OMONST, OMIN, OLONG, or OMAILCMD for examples).
- *	 4. Add a testing macro after the set of referencing macros
- *	    (see has_oname(), has_omonst(), has_omin(), has_olong(),
- *	    has_omailcmd() for examples).
- *	 5. Create newXX(otmp) function and possibly free_XX(otmp) function
- *	    in an appropriate new or existing source file and add a prototype
- *	    for it to include/extern.h.  The majority of these are currently
- *	    located in mkobj.c for convenience.
+ *     2. Add a pointer to your new struct to oextra struct in this file.
+ *     3. Add a referencing macro to this file after the newobj macro above
+ *        (see ONAME, OMONST, OMIN, OLONG, or OMAILCMD for examples).
+ *     4. Add a testing macro after the set of referencing macros
+ *        (see has_oname(), has_omonst(), has_omin(), has_olong(),
+ *        has_omailcmd() for examples).
+ *     5. Create newXX(otmp) function and possibly free_XX(otmp) function
+ *        in an appropriate new or existing source file and add a prototype
+ *        for it to include/extern.h.  The majority of these are currently
+ *        located in mkobj.c for convenience.
  *
- *		void FDECL(newXX, (struct obj *));
- *	        void FDECL(free_XX, (struct obj *));
+ *        void FDECL(newXX, (struct obj *));
+ *            void FDECL(free_XX, (struct obj *));
  *
- *	          void
- *	          newxx(otmp)
- *	          struct obj *otmp;
- *	          {
- *	              if (!otmp->oextra) otmp->oextra = newoextra();
- *	              if (!XX(otmp)) {
- *	                  XX(otmp) = (struct XX *)alloc(sizeof(struct xx));
- *	                  (void) memset((genericptr_t) XX(otmp),
- *	                             0, sizeof(struct xx));
- *	              }
- *	          }
+ *              void
+ *              newxx(otmp)
+ *              struct obj *otmp;
+ *              {
+ *                  if (!otmp->oextra) otmp->oextra = newoextra();
+ *                  if (!XX(otmp)) {
+ *                      XX(otmp) = (struct XX *)alloc(sizeof(struct xx));
+ *                      (void) memset((genericptr_t) XX(otmp),
+ *                                 0, sizeof(struct xx));
+ *                  }
+ *              }
  *
- *	 6. Adjust size_obj() in src/cmd.c appropriately.
- *	 7. Adjust dealloc_oextra() in src/mkobj.c to clean up
- *	    properly during obj deallocation.
- *	 8. Adjust copy_oextra() in src/mkobj.c to make duplicate
- *	    copies of your struct or data onto another obj struct.
- *	 9. Adjust restobj() in src/restore.c to deal with your
- *	    struct or data during a restore.
- *	10. Adjust saveobj() in src/save.c to deal with your
- *	    struct or data during a save.
+ *     6. Adjust size_obj() in src/cmd.c appropriately.
+ *     7. Adjust dealloc_oextra() in src/mkobj.c to clean up
+ *        properly during obj deallocation.
+ *     8. Adjust copy_oextra() in src/mkobj.c to make duplicate
+ *        copies of your struct or data onto another obj struct.
+ *     9. Adjust restobj() in src/restore.c to deal with your
+ *        struct or data during a restore.
+ *    10. Adjust saveobj() in src/save.c to deal with your
+ *        struct or data during a save.
  */
 
 #endif /* OBJ_H */

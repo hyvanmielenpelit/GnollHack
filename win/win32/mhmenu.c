@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mhmenu.c	$NHDT-Date: 1432512811 2015/05/25 00:13:31 $  $NHDT-Branch: master $:$NHDT-Revision: 1.48 $ */
+/* GnollHack 4.0    mhmenu.c    $NHDT-Date: 1432512811 2015/05/25 00:13:31 $  $NHDT-Branch: master $:$NHDT-Revision: 1.48 $ */
 /* Copyright (c) Alex Kompel, 2002                                */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -113,7 +113,7 @@ mswin_init_menu_window(int type)
                        GetNHApp()->hMainWnd, MenuWndProc);
     if (!ret) {
         panic("Cannot create menu window");
-		return (HWND)0;
+        return (HWND)0;
     }
 
     /* move it in the predefined position */
@@ -231,11 +231,11 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
 
                 selected =
                     (MENU_ITEM_P *) malloc(ret_val * sizeof(MENU_ITEM_P));
-				if (!selected)
-				{
-					panic("out of memory");
-					return 0;
-				}
+                if (!selected)
+                {
+                    panic("out of memory");
+                    return 0;
+                }
 
                 sel_ind = 0;
                 for (i = 0; i < data->menu.size; i++) {
@@ -573,17 +573,17 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             text_size = strlen(msg_data->text) + 4;
             data->text.text =
                 (TCHAR *) malloc(text_size * sizeof(data->text.text[0]));
-			if (!data->text.text)
-				return;
+            if (!data->text.text)
+                return;
             ZeroMemory(data->text.text,
                        text_size * sizeof(data->text.text[0]));
         } else {
             text_size = _tcslen(data->text.text) + strlen(msg_data->text) + 4;
             data->text.text = (TCHAR *) realloc(
                 data->text.text, text_size * sizeof(data->text.text[0]));
-			if (!data->text.text)
-				return;
-		}
+            if (!data->text.text)
+                return;
+        }
         if (!data->text.text)
             break;
 
@@ -591,11 +591,11 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         _tcscat(data->text.text, TEXT("\r\n"));
 
         text_view = GetDlgItem(hWnd, IDC_MENU_TEXT);
-		if (!text_view)
-		{
-			panic("cannot get text view window");
-			return;
-		}
+        if (!text_view)
+        {
+            panic("cannot get text view window");
+            return;
+        }
         SetWindowText(text_view, data->text.text);
 
         /* calculate dimensions of the added line of text */
@@ -647,11 +647,11 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             data->menu.allocated += 10;
             data->menu.items = (PNHMenuItem) realloc(
                 data->menu.items, data->menu.allocated * sizeof(NHMenuItem));
-			if (!data->menu.items)
-				return;
+            if (!data->menu.items)
+                return;
         }
-		if (!data->menu.items)
-			return;
+        if (!data->menu.items)
+            return;
 
         new_item = data->menu.size;
         ZeroMemory(&data->menu.items[new_item],
@@ -664,7 +664,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         data->menu.items[new_item].attr = msg_data->attr;
         strncpy(data->menu.items[new_item].str, msg_data->str,
                 NHMENU_STR_SIZE);
-	/* prevent & being interpreted as a mnemonic start */
+    /* prevent & being interpreted as a mnemonic start */
         strNsubst(data->menu.items[new_item].str, "&", "&&", 0);
         data->menu.items[new_item].presel = msg_data->presel;
 
@@ -749,10 +749,10 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         }
     } break;
 
-	case MSNH_MSG_RANDOM_INPUT: {
+    case MSNH_MSG_RANDOM_INPUT: {
         PostMessage(GetMenuControl(hWnd),
             WM_MSNH_COMMAND, MSNH_MSG_RANDOM_INPUT, 0);
-	} break;
+    } break;
 
     }
 }
@@ -903,7 +903,7 @@ SetMenuListType(HWND hWnd, int how)
         break;
     default:
         panic("how should be one of PICK_NONE, PICK_ONE or PICK_ANY");
-		return;
+        return;
     };
 
     if (strlen(data->menu.prompt) == 0) {
@@ -915,11 +915,11 @@ SetMenuListType(HWND hWnd, int how)
     control = CreateWindow(WC_LISTVIEW, NULL, dwStyles, rt.left, rt.top,
                            rt.right - rt.left, rt.bottom - rt.top, hWnd,
                            (HMENU) IDC_MENU_LIST, GetNHApp()->hApp, NULL);
-	if (!control)
-	{
-		panic("cannot create menu control");
-		return;
-	}
+    if (!control)
+    {
+        panic("cannot create menu control");
+        return;
+    }
 
     /* install the hook for the control window procedure */
     wndProcListViewOrig = (WNDPROC) GetWindowLongPtr(control, GWLP_WNDPROC);
@@ -972,7 +972,7 @@ SetMenuListType(HWND hWnd, int how)
                                   (LPARAM) buf);
         if (ListView_InsertItem(control, &lvitem) == -1) {
             panic("cannot insert menu item");
-			return;
+            return;
         }
     }
     if (data->is_active)
@@ -989,10 +989,10 @@ GetMenuControl(HWND hWnd)
 
     data = (PNHMenuWindow) GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
-	/* We may continue getting window messages after a window's WM_DESTROY is
-	   called.  We need to handle the case that USERDATA has been freed. */
-	if (data == NULL)
-		return NULL;
+    /* We may continue getting window messages after a window's WM_DESTROY is
+       called.  We need to handle the case that USERDATA has been freed. */
+    if (data == NULL)
+        return NULL;
 
     if (data->type == MENU_TYPE_TEXT) {
         return GetDlgItem(hWnd, IDC_MENU_TEXT);

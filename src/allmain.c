@@ -1,4 +1,4 @@
-/* GnollHack 4.0	allmain.c	$NHDT-Date: 1555552624 2019/04/18 01:57:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.100 $ */
+/* GnollHack 4.0    allmain.c    $NHDT-Date: 1555552624 2019/04/18 01:57:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.100 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -36,8 +36,8 @@ boolean resuming;
 
     /* Note:  these initializers don't do anything except guarantee that
             we're linked properly.
-	   Necessary initializers are called just before move loop in windmain.c and newgame -- JG			
-	*/
+       Necessary initializers are called just before move loop in windmain.c and newgame -- JG            
+    */
     decl_init();
     monst_init();
     objects_init();
@@ -55,24 +55,24 @@ boolean resuming;
     /* side-effects from the real world */
     flags.moonphase = phase_of_the_moon();
     if (flags.moonphase == FULL_MOON)
-	{
+    {
         You("are lucky!  Full moon tonight.");
         change_luck(1, FALSE);
     }
-	else if (flags.moonphase == NEW_MOON) 
-	{
+    else if (flags.moonphase == NEW_MOON) 
+    {
         pline("Be careful!  New moon tonight.");
     }
 
     flags.friday13 = friday_13th();
     if (flags.friday13) 
-	{
+    {
         pline("Watch out!  Bad things can happen on Friday the 13th.");
         change_luck(-1, FALSE);
     }
 
     if (!resuming)
-	{ /* new game */
+    { /* new game */
         boolean oldverbose = flags.verbose;
         flags.verbose = FALSE;
         context.rndencode = rnd(9000);
@@ -84,14 +84,14 @@ boolean resuming;
     update_inventory(); /* for perm_invent */
 
     if (resuming) 
-	{ /* restoring old game */
+    { /* restoring old game */
         read_engr_at(u.ux, u.uy); /* subset of pickup() */
     }
 
     (void) encumber_msg(); /* in case they auto-picked up something */
 
     if (defer_see_monsters)
-	{
+    {
         defer_see_monsters = FALSE;
         see_monsters();
     }
@@ -101,10 +101,10 @@ boolean resuming;
     youmonst.movement = NORMAL_SPEED; /* give the hero some movement points */
     context.move = 0;
 
-	/* Main move loop */
+    /* Main move loop */
     program_state.in_moveloop = 1;
     for (;;)
-	{
+    {
 #ifdef SAFERHANGUP
         if (program_state.done_hup)
             end_of_input();
@@ -115,30 +115,30 @@ boolean resuming;
 #endif
 
         if (context.move) 
-		{
+        {
             /* actual time passed */
             youmonst.movement -= NORMAL_SPEED;
 
-			/* Loop for increasing youmonst.movement towards the action threshold of NORMAL_SPEED */
-			do
-			{ /* hero can't move this turn loop */
+            /* Loop for increasing youmonst.movement towards the action threshold of NORMAL_SPEED */
+            do
+            { /* hero can't move this turn loop */
                 wtcap = encumber_msg();
-				context.hungry_message_displayed = FALSE;
+                context.hungry_message_displayed = FALSE;
 
-				/* Loop for moving monsters*/
+                /* Loop for moving monsters*/
                 context.mon_moving = TRUE;
                 do 
-				{
+                {
                     monscanmove = movemon();
                     if (youmonst.movement >= NORMAL_SPEED)
                         break; /* it's now your turn */
                 } 
-				while (monscanmove);
+                while (monscanmove);
                 context.mon_moving = FALSE;
 
-				/* Increase your movement */
+                /* Increase your movement */
                 if (!monscanmove && youmonst.movement < NORMAL_SPEED)
-				{
+                {
                     /* both hero and monsters are out of steam this round */
                     struct monst *mtmp;
 
@@ -154,12 +154,12 @@ boolean resuming;
                     /* occasionally add another monster; since this takes
                        place after movement has been allotted, the new
                        monster effectively loses its first turn */
-					if (!rn2(u.uevent.udemigod ? 25
-						: (depth(&u.uz) > depth(&stronghold_level)) ? 50
-						: 70))
-					{
-						create_monster_or_encounter();
-					}
+                    if (!rn2(u.uevent.udemigod ? 25
+                        : (depth(&u.uz) > depth(&stronghold_level)) ? 50
+                        : 70))
+                    {
+                        create_monster_or_encounter();
+                    }
 
                     moveamt = get_u_move_speed(FALSE);
 
@@ -168,10 +168,10 @@ boolean resuming;
                         youmonst.movement = 0;
                     settrack();
 
-					monstermoves++;
+                    monstermoves++;
                     moves++;
-					context.hungry_message_displayed = FALSE;
-					context.mon_talking = FALSE;
+                    context.hungry_message_displayed = FALSE;
+                    context.mon_talking = FALSE;
 
                     /********************************/
                     /* once-per-turn things go here */
@@ -196,31 +196,31 @@ boolean resuming;
                      * recalculated.
                      */
                     if (u.uinvulnerable)
-					{
+                    {
                         /* for the moment at least, you're in tiptop shape */
                         wtcap = UNENCUMBERED;
                     } 
-					else if ((!Upolyd ? (u.uhp < u.uhpmax)
+                    else if ((!Upolyd ? (u.uhp < u.uhpmax)
                                        : (u.mh < u.mhmax))
                                           || youmonst.data->mlet == S_EEL || MummyRot) 
-					{
-						/* regenerate hit points */
-						regenerate_hp();
+                    {
+                        /* regenerate hit points */
+                        regenerate_hp();
                     }
 
                     /* moving around while encumbered is hard work */
                     if (wtcap > MOD_ENCUMBER && u.umoved) 
-					{
+                    {
                         if (!(wtcap < EXT_ENCUMBER ? moves % 30
                                                    : moves % 10)) 
-						{
+                        {
                             if (Upolyd && u.mh > 1)
-							{
+                            {
                                 u.mh--;
                                 context.botl = TRUE;
                             }
-							else if (!Upolyd && u.uhp > 1) 
-							{
+                            else if (!Upolyd && u.uhp > 1) 
+                            {
                                 u.uhp--;
                                 context.botl = TRUE;
                             } else {
@@ -231,14 +231,14 @@ boolean resuming;
                         }
                     }
 
-					/* regenerate mana */
-					regenerate_mana();
+                    /* regenerate mana */
+                    regenerate_mana();
 
 
                     if (!u.uinvulnerable) 
-					{
+                    {
                         if (Teleportation && !rn2(85))
-						{
+                        {
                             xchar old_ux = u.ux, old_uy = u.uy;
 
                             tele();
@@ -263,7 +263,7 @@ boolean resuming;
                             change = 2;
 
                         if (change && !Unchanging) 
-						{
+                        {
                             if (multi >= 0) {
                                 stop_occupation();
                                 if (change == 1)
@@ -275,26 +275,26 @@ boolean resuming;
                         }
                     }
 
-					if (smells_buried_searchable(&mons[Upolyd ? u.umonnum : urace.monsternum]) && multi >= 0)
-					{
-						int buriedsearchablefound = FALSE;
-						struct obj* otmp2;
-						for (struct obj* otmp = level.buriedobjlist; otmp; otmp = otmp2)
-						{
-							otmp2 = otmp->nobj;
-							if (otmp->ox == u.ux && otmp->oy == u.uy && is_otyp_buried_searchable(otmp->otyp))
-							{
-								buriedsearchablefound = TRUE;
-								break;
-							}
-						}
-						if (buriedsearchablefound)
-						{
-							You("smell something buried underground.");
-							(void)unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
-						}
-					}
-					if (Searching && multi >= 0)
+                    if (smells_buried_searchable(&mons[Upolyd ? u.umonnum : urace.monsternum]) && multi >= 0)
+                    {
+                        int buriedsearchablefound = FALSE;
+                        struct obj* otmp2;
+                        for (struct obj* otmp = level.buriedobjlist; otmp; otmp = otmp2)
+                        {
+                            otmp2 = otmp->nobj;
+                            if (otmp->ox == u.ux && otmp->oy == u.uy && is_otyp_buried_searchable(otmp->otyp))
+                            {
+                                buriedsearchablefound = TRUE;
+                                break;
+                            }
+                        }
+                        if (buriedsearchablefound)
+                        {
+                            You("smell something buried underground.");
+                            (void)unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
+                        }
+                    }
+                    if (Searching && multi >= 0)
                         (void) dosearch0(1);
                     if (Warning || Any_warning)
                         warnreveal();
@@ -303,7 +303,7 @@ boolean resuming;
                     do_storms();
                     gethungry();
                     //age_spells();
-					//exerchk();  /* exercise system has been deactivated -- JG */
+                    //exerchk();  /* exercise system has been deactivated -- JG */
                     invault();
                     if (u.uhave.amulet)
                         amulet();
@@ -331,9 +331,9 @@ boolean resuming;
 
                     /* when immobile, count is in turns */
                     if (multi < 0 && !Sleeping && !Paralyzed_or_immobile) /* Let Sleeping and Paralyzed expire first, and then multi */
-					{
+                    {
                         if (++multi == 0)
-						{ /* finished yet? */
+                        { /* finished yet? */
                             unmul((char *) 0);
                             /* if unmul caused a level change, take it now */
                             if (u.utotype)
@@ -344,8 +344,8 @@ boolean resuming;
             } while (youmonst.movement < NORMAL_SPEED); /* hero can't move */
 
 
-			/* Now the hero can take finally move or take an action, unless the action is prevented by sleeping, paralysis, or being occupied */
-			/* These are equivalent to the next ones below outside the if clause */
+            /* Now the hero can take finally move or take an action, unless the action is prevented by sleeping, paralysis, or being occupied */
+            /* These are equivalent to the next ones below outside the if clause */
 
             /******************************************/
             /* once-per-hero-took-time things go here */
@@ -373,11 +373,11 @@ boolean resuming;
         /****************************************/
 
         clear_splitobjs();
-		update_all_character_properties((struct obj*)0, TRUE);
+        update_all_character_properties((struct obj*)0, TRUE);
 
-		/* Redraw screen */
-		if (!context.mv || Blind)
-		{
+        /* Redraw screen */
+        if (!context.mv || Blind)
+        {
             /* redo monsters if hallu or wearing a helm of telepathy */
             if (Hallucination) { /* update screen randomly */
                 see_monsters();
@@ -401,27 +401,27 @@ boolean resuming;
                 update_hearing_array_and_ambient_sounds(); /* hearing! */
         }
 
-		/* Update the statusline */
-		if (context.botl || context.botlx) 
+        /* Update the statusline */
+        if (context.botl || context.botlx) 
         {
-			bot();
-			curs_on_u();
-		}
-		else if (iflags.time_botl) 
+            bot();
+            curs_on_u();
+        }
+        else if (iflags.time_botl) 
         {
-			timebot();
-			curs_on_u();
-		}
+            timebot();
+            curs_on_u();
+        }
 
-		context.move = 1;
+        context.move = 1;
 
         if (multi >= 0 && occupation && !Sleeping && !Paralyzed_or_immobile) /* No occupation when sleeping or paralyzed */
-		{
+        {
 #if defined(MICRO) || defined(WIN32)
             abort_lev = 0;
 
             if (kbhit())
-			{
+            {
                 if ((ch = pgetchar()) == ABORT)
                     abort_lev++;
                 else
@@ -446,7 +446,7 @@ boolean resuming;
                 abort_lev ||
 #endif
                 monster_nearby()) 
-			{
+            {
                 stop_occupation();
                 reset_eat();
             }
@@ -467,42 +467,42 @@ boolean resuming;
 
         u.umoved = FALSE;
 
-		if (!Sleeping && !Paralyzed_or_immobile)
-		{
-			if (multi > 0) 
-			{
-				lookaround();
+        if (!Sleeping && !Paralyzed_or_immobile)
+        {
+            if (multi > 0) 
+            {
+                lookaround();
 
-				if (!multi) 
-				{
-					/* lookaround may clear multi */
-					context.move = 0;
-					if (flags.time)
-						context.botl = TRUE;
-					continue;
-				}
+                if (!multi) 
+                {
+                    /* lookaround may clear multi */
+                    context.move = 0;
+                    if (flags.time)
+                        context.botl = TRUE;
+                    continue;
+                }
 
-				if (context.mv) 
-				{
-					if (multi < COLNO && !--multi)
-						context.travel = context.travel1 = context.mv =
-						context.run = 0;
-					domove();
-				}
-				else 
-				{
-					--multi;
-					rhack(save_cm);
-				}
-			}
-			else if (multi == 0)
-			{
-#ifdef MAIL
-				ckmailstatus();
-#endif
-				rhack((char*)0);
+                if (context.mv) 
+                {
+                    if (multi < COLNO && !--multi)
+                        context.travel = context.travel1 = context.mv =
+                        context.run = 0;
+                    domove();
+                }
+                else 
+                {
+                    --multi;
+                    rhack(save_cm);
+                }
             }
-		}
+            else if (multi == 0)
+            {
+#ifdef MAIL
+                ckmailstatus();
+#endif
+                rhack((char*)0);
+            }
+        }
 
         if (u.utotype)       /* change dungeon level */
             deferred_goto(); /* after rhack() */
@@ -519,7 +519,7 @@ boolean resuming;
         /* when running in non-tport mode, this gets done through domove() */
         if ((!context.run || flags.runmode == RUN_TPORT)
             && (multi && (!context.travel ? !(multi % 7) : !(moves % 7L))))
-		{
+        {
             if (flags.time && context.run)
                 context.botl = TRUE;
             /* [should this be flush_screen() instead?] */
@@ -536,25 +536,25 @@ create_monster_or_encounter()
     /* Special ringwraith appearance for the One Ring */
     boolean ringwraith_appeared = maybe_create_ringwraith();
 
-	if (!ringwraith_appeared)
-	{
-		if (u.uz.dnum == modron_dnum)
-		{
-			(void)makemon(mkclass(S_MODRON, 0), 0, 0, NO_MM_FLAGS);
-		}
+    if (!ringwraith_appeared)
+    {
+        if (u.uz.dnum == modron_dnum)
+        {
+            (void)makemon(mkclass(S_MODRON, 0), 0, 0, NO_MM_FLAGS);
+        }
         else if (u.uz.dnum == bovine_dnum)
         {
             (void)makemon(&mons[!rn2(2) ? PM_HELL_BOVINE : PM_BISON], 0, 0, NO_MM_FLAGS);
         }
         else if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !In_sokoban(&u.uz) && !In_V_tower(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
-		{
-			randomize_encounter(0, 0);
-		}
-		else
-		{
-			(void)makemon((struct permonst*) 0, 0, 0, NO_MM_FLAGS);
-		}
-	}
+        {
+            randomize_encounter(0, 0);
+        }
+        else
+        {
+            (void)makemon((struct permonst*) 0, 0, 0, NO_MM_FLAGS);
+        }
+    }
 }
 
 
@@ -702,61 +702,61 @@ regenerate_hp()
     }
 
     if (Upolyd)
-	{
-		if (u.mh < 1) { /* shouldn't happen... */
-			rehumanize();
-		}
+    {
+        if (u.mh < 1) { /* shouldn't happen... */
+            rehumanize();
+        }
         else if (youmonst.data->mlet == S_EEL && !is_pool(u.ux, u.uy) && !Is_waterlevel(&u.uz))
-		{
-			/* eel out of water loses hp, similar to monster eels;
-			   as hp gets lower, rate of further loss slows down */
-			if (!Regeneration && rn2(u.mh) > rn2(8) && (!Half_physical_damage || (Half_physical_damage && !rn2(2))))
-				u.mh--;
-		}
-		else if (relevant_hpmax > 0 && (u.mh < relevant_hpmax || MummyRot))
-		{
-			u.mh += fixedhpperround;
-			u.mh_fraction += fractional_hp;
-			if (u.mh_fraction >= 10000 || u.mh_fraction < 0)
-			{
-				added_hp = (u.mh_fraction / 10000) + (u.mh_fraction < 0 ? -1 : 0);
-				u.mh += added_hp;
-				u.mh_fraction -= 10000 * added_hp;
-			}
+        {
+            /* eel out of water loses hp, similar to monster eels;
+               as hp gets lower, rate of further loss slows down */
+            if (!Regeneration && rn2(u.mh) > rn2(8) && (!Half_physical_damage || (Half_physical_damage && !rn2(2))))
+                u.mh--;
+        }
+        else if (relevant_hpmax > 0 && (u.mh < relevant_hpmax || MummyRot))
+        {
+            u.mh += fixedhpperround;
+            u.mh_fraction += fractional_hp;
+            if (u.mh_fraction >= 10000 || u.mh_fraction < 0)
+            {
+                added_hp = (u.mh_fraction / 10000) + (u.mh_fraction < 0 ? -1 : 0);
+                u.mh += added_hp;
+                u.mh_fraction -= 10000 * added_hp;
+            }
 
             if (u.mh >= relevant_hpmax)
-			{
-				u.mh = relevant_hpmax;
-				u.mh_fraction = 0;
-			}
-			context.botl = TRUE;
-			if (u.mh == relevant_hpmax)
-				interrupt_multi("You are in full health.");
-		}
-	}
-	else
-	{
+            {
+                u.mh = relevant_hpmax;
+                u.mh_fraction = 0;
+            }
+            context.botl = TRUE;
+            if (u.mh == relevant_hpmax)
+                interrupt_multi("You are in full health.");
+        }
+    }
+    else
+    {
         if (relevant_hpmax > 0 && (u.uhp < relevant_hpmax || MummyRot))
-		{
-			u.uhp += fixedhpperround;
-			u.uhp_fraction += fractional_hp;
-			if (u.uhp_fraction >= 10000 || u.uhp_fraction < 0)
-			{
-				added_hp = (u.uhp_fraction / 10000) + (u.uhp_fraction < 0 ? -1 : 0);
-				u.uhp += added_hp;
-				u.uhp_fraction -= 10000 * added_hp;
-			}
+        {
+            u.uhp += fixedhpperround;
+            u.uhp_fraction += fractional_hp;
+            if (u.uhp_fraction >= 10000 || u.uhp_fraction < 0)
+            {
+                added_hp = (u.uhp_fraction / 10000) + (u.uhp_fraction < 0 ? -1 : 0);
+                u.uhp += added_hp;
+                u.uhp_fraction -= 10000 * added_hp;
+            }
 
-			if (u.uhp >= relevant_hpmax)
-			{
-				u.uhp = relevant_hpmax;
-				u.uhp_fraction = 0;
-			}
-			context.botl = TRUE;
-			if (u.uhp == relevant_hpmax)
-				interrupt_multi("You are in full health.");
-		}
-	}
+            if (u.uhp >= relevant_hpmax)
+            {
+                u.uhp = relevant_hpmax;
+                u.uhp_fraction = 0;
+            }
+            context.botl = TRUE;
+            if (u.uhp == relevant_hpmax)
+                interrupt_multi("You are in full health.");
+        }
+    }
 
     if (MummyRot && !Sick_resistance && (Upolyd ? u.mh : u.uhp) <= 4 && added_hp <= -1)
     {
@@ -822,9 +822,9 @@ regenerate_hp()
     }
 
 #if 0
-	int heal = 0;
-	boolean reached_full = FALSE,
-		encumbrance_ok = (wtcap < MOD_ENCUMBER || !u.umoved);
+    int heal = 0;
+    boolean reached_full = FALSE,
+        encumbrance_ok = (wtcap < MOD_ENCUMBER || !u.umoved);
 
 
     if (Upolyd) {
@@ -894,45 +894,45 @@ STATIC_OVL void
 regenerate_mana()
 {
 
-	/* regenerate mana */
-	int roundstofull =
+    /* regenerate mana */
+    int roundstofull =
         Rapidest_energy_regeneration ? max(1, min(u.uenmax / 8, 40)) :
         Rapider_energy_regeneration ? max(1, min(u.uenmax / 4, 80)) :
         Rapid_energy_regeneration ? max(1, min(u.uenmax / 2, 160)) :
         Energy_regeneration ? max(1, min(u.uenmax, 320)) :
         640;
-	int fixedmanaperround = u.uenmax / roundstofull;
-	int fractional_mana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
+    int fixedmanaperround = u.uenmax / roundstofull;
+    int fractional_mana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
 
-	/*
-	&& ((wtcap < MOD_ENCUMBER
-		&& (!(moves % ((MAXULEV + 8 - u.ulevel)
-			* (Role_if(PM_WIZARD) ? 3 : 4)
-			/ 6)))) || Energy_regeneration)
-		u.uen += rn1(
-			(int) (max(ACURR(A_WIS), ACURR(A_INT))) / 15 + 1, 1);
-	*/
+    /*
+    && ((wtcap < MOD_ENCUMBER
+        && (!(moves % ((MAXULEV + 8 - u.ulevel)
+            * (Role_if(PM_WIZARD) ? 3 : 4)
+            / 6)))) || Energy_regeneration)
+        u.uen += rn1(
+            (int) (max(ACURR(A_WIS), ACURR(A_INT))) / 15 + 1, 1);
+    */
 
-	if (u.uenmax > 0 && u.uen < u.uenmax)
-	{
-		u.uen += fixedmanaperround;
-		u.uen_fraction += fractional_mana;
-		if (u.uen_fraction >= 10000)
-		{
-			int added_mana = (u.uen_fraction / 10000);
-			u.uen += added_mana;
-			u.uen_fraction -= 10000 * added_mana;
-		}
+    if (u.uenmax > 0 && u.uen < u.uenmax)
+    {
+        u.uen += fixedmanaperround;
+        u.uen_fraction += fractional_mana;
+        if (u.uen_fraction >= 10000)
+        {
+            int added_mana = (u.uen_fraction / 10000);
+            u.uen += added_mana;
+            u.uen_fraction -= 10000 * added_mana;
+        }
 
-		if (u.uen >= u.uenmax)
-		{
-			u.uen = u.uenmax;
-			u.uen_fraction = 0;
-		}
-		context.botl = TRUE;
-		if (u.uen == u.uenmax)
-			interrupt_multi("You feel full of energy.");
-	}
+        if (u.uen >= u.uenmax)
+        {
+            u.uen = u.uenmax;
+            u.uen_fraction = 0;
+        }
+        context.botl = TRUE;
+        if (u.uen == u.uenmax)
+            interrupt_multi("You feel full of energy.");
+    }
 
 }
 
@@ -996,28 +996,28 @@ const char*
 get_game_difficulty_text(dif_level)
 int dif_level;
 {
-	
-	switch (dif_level)
-	{
-	case -4:
-		return "very easy";
-	case -3:
-		return  "easy";
-	case -2:
-		return  "medium";
-	case -1:
-		return "hard";
-	case 0:
-		return "expert";
+    
+    switch (dif_level)
+    {
+    case -4:
+        return "very easy";
+    case -3:
+        return  "easy";
+    case -2:
+        return  "medium";
+    case -1:
+        return "hard";
+    case 0:
+        return "expert";
     case 1:
         return "master";
     case 2:
         return "grand master";
     default:
-		return "unknown";
-	}
+        return "unknown";
+    }
 
-	return "unknown";
+    return "unknown";
 }
 
 const char*
@@ -1052,27 +1052,27 @@ int dif_level;
 void 
 choose_game_difficulty()
 {
-	winid menuwin;
-	menu_item* selected = (menu_item*)0;
-	int n = 0;
+    winid menuwin;
+    menu_item* selected = (menu_item*)0;
+    int n = 0;
 
-	menuwin = create_nhwindow(NHW_MENU);
-	start_menu(menuwin);
-	anything any = zeroany;
+    menuwin = create_nhwindow(NHW_MENU);
+    start_menu(menuwin);
+    anything any = zeroany;
 
-	for(int i = MIN_DIFFICULTY_LEVEL; i <= MAX_DIFFICULTY_LEVEL; i++)
-	{
-		any = zeroany;
-		any.a_int = i - MIN_DIFFICULTY_LEVEL + 1;
-		char diffchar = i - MIN_DIFFICULTY_LEVEL + 'a';
-		char buf[BUFSZ] = "", buf2[BUFSZ] = "";
-		const char* leveltext;
+    for(int i = MIN_DIFFICULTY_LEVEL; i <= MAX_DIFFICULTY_LEVEL; i++)
+    {
+        any = zeroany;
+        any.a_int = i - MIN_DIFFICULTY_LEVEL + 1;
+        char diffchar = i - MIN_DIFFICULTY_LEVEL + 'a';
+        char buf[BUFSZ] = "", buf2[BUFSZ] = "";
+        const char* leveltext;
         double m_dmg_mult = 0, m_hp_mult = 0;
         get_game_difficulty_multipliers_by_level(&m_dmg_mult, &m_hp_mult, (schar)i);
         int combat_damage_percentage = (int)(m_dmg_mult * m_hp_mult * 100.0);
-		
-		leveltext = get_game_difficulty_text(i);
-		strcpy(buf, leveltext);
+        
+        leveltext = get_game_difficulty_text(i);
+        strcpy(buf, leveltext);
         *buf = highc(*buf);
 
         if(iflags.menu_tab_sep)
@@ -1080,21 +1080,21 @@ choose_game_difficulty()
         else
             Sprintf(buf2, "%s (%d%% combat)", buf, combat_damage_percentage);
 
-		add_menu(menuwin, NO_GLYPH, &any, diffchar, 0, ATR_NONE,
-			buf2, MENU_UNSELECTED);
-	}
+        add_menu(menuwin, NO_GLYPH, &any, diffchar, 0, ATR_NONE,
+            buf2, MENU_UNSELECTED);
+    }
 
-	end_menu(menuwin, "Pick a level for game difficulty");
-	n = select_menu(menuwin, PICK_ONE, &selected);
-	if (n > 0)
-	{
-		context.game_difficulty = selected->item.a_int + MIN_DIFFICULTY_LEVEL - 1;
-		free((genericptr_t)selected);
-	}
-	else
-		context.game_difficulty = MIN_DIFFICULTY_LEVEL;
+    end_menu(menuwin, "Pick a level for game difficulty");
+    n = select_menu(menuwin, PICK_ONE, &selected);
+    if (n > 0)
+    {
+        context.game_difficulty = selected->item.a_int + MIN_DIFFICULTY_LEVEL - 1;
+        free((genericptr_t)selected);
+    }
+    else
+        context.game_difficulty = MIN_DIFFICULTY_LEVEL;
 
-	destroy_nhwindow(menuwin);
+    destroy_nhwindow(menuwin);
 }
 
 
@@ -1114,7 +1114,7 @@ newgame()
     context.next_attrib_check = 600L; /* arbitrary first setting */
     context.tribute.enabled = TRUE;   /* turn on 3.6 tributes    */
     context.tribute.tributesz = sizeof(struct tribute_info);
-	strcpy(context.used_names, "|");
+    strcpy(context.used_names, "|");
 
     init_rm();
     init_fountains();
@@ -1152,7 +1152,7 @@ newgame()
     load_qtlist();          /* load up the quest text info */
     /* quest_init();  --  Now part of role_init() */
 
-	encounter_init();		/* initialize encounters and force linkage */
+    encounter_init();        /* initialize encounters and force linkage */
 
     mklev();
     u_on_upstairs();

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	were.c	$NHDT-Date: 1550524568 2019/02/18 21:16:08 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.23 $ */
+/* GnollHack 4.0    were.c    $NHDT-Date: 1550524568 2019/02/18 21:16:08 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.23 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -9,8 +9,8 @@ void
 were_change(mon)
 register struct monst *mon;
 {
-	if (!mon)
-		return;
+    if (!mon)
+        return;
 
     if (!is_were(mon->data))
         return;
@@ -87,8 +87,8 @@ int pm;
         return PM_WERERAT;
     case PM_WEREJACKAL:
     case PM_JACKAL:
-	case PM_FOX:
-	case PM_COYOTE:
+    case PM_FOX:
+    case PM_COYOTE:
         return PM_WEREJACKAL;
     case PM_WEREWOLF:
     case PM_WOLF:
@@ -108,8 +108,8 @@ void
 new_were(mon)
 register struct monst *mon;
 {
-	if (!mon)
-		return;
+    if (!mon)
+        return;
 
     register int pm;
 
@@ -125,14 +125,14 @@ register struct monst *mon;
 
     set_mon_data(mon, &mons[pm]);
     if (!mon_can_move(mon)) 
-	{
+    {
         /* transformation wakens and/or revitalizes */
         mon->msleeping = 0;
         mon->mfrozen = 0; /* not asleep or paralyzed */
         mon->mcanmove = 1;
-		mon->mprops[SLEEPING] = 0;
-		mon->mprops[PARALYZED] = 0;
-	}
+        mon->mprops[SLEEPING] = 0;
+        mon->mprops[PARALYZED] = 0;
+    }
     /* regenerate by 1/4 of the lost hit points */
     mon->mhp += (mon->mhpmax - mon->mhp) / 4;
     newsym(mon->mx, mon->my);
@@ -167,7 +167,7 @@ char *genbuf;
             break;
         case PM_WEREJACKAL:
         case PM_HUMAN_WEREJACKAL:
-			typ = rn2(7) ? PM_JACKAL : PM_COYOTE;
+            typ = rn2(7) ? PM_JACKAL : PM_COYOTE;
             if (genbuf)
                 Strcpy(genbuf, "jackal");
             break;

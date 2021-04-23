@@ -1,4 +1,4 @@
-/* GnollHack 4.0	bones.c	$NHDT-Date: 1557092711 2019/05/05 21:45:11 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.75 $ */
+/* GnollHack 4.0    bones.c    $NHDT-Date: 1557092711 2019/05/05 21:45:11 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.75 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985,1993. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -71,29 +71,29 @@ boolean restore;
         }
 
         if (restore) {
-			if (has_uoname(otmp))
-			{
-				sanitize_name(UONAME(otmp));
-			}
-			/* artifact bookkeeping needs to be done during
+            if (has_uoname(otmp))
+            {
+                sanitize_name(UONAME(otmp));
+            }
+            /* artifact bookkeeping needs to be done during
                restore; other fixups are done while saving */
-			if (otmp->oartifact)
-			{
+            if (otmp->oartifact)
+            {
                 if (exist_artifact(otmp->otyp, safe_oname(otmp))
                     || is_quest_artifact(otmp)) 
-				{
+                {
                     /* prevent duplicate--revert to ordinary obj */
                     otmp->oartifact = 0;
                     if (has_oname(otmp))
                         free_oname(otmp);
                 } 
-				else
-				{
+                else
+                {
                     artifact_exists(otmp, safe_oname(otmp), TRUE);
                 }
             }
-			else if (has_oname(otmp)) 
-			{
+            else if (has_oname(otmp)) 
+            {
                 sanitize_name(ONAME(otmp));
             }
         } else { /* saving */
@@ -122,8 +122,8 @@ boolean restore;
                some manner; then we could just check the flag
                here and keep "real" names (dead pets, &c) while
                discarding player notes attached to statues.] */
-			free_uoname(otmp);
-			if (has_oname(otmp)
+            free_uoname(otmp);
+            if (has_oname(otmp)
                 && !(otmp->oartifact || otmp->otyp == STATUE
                      || otmp->otyp == SPE_NOVEL
                      || (otmp->otyp == CORPSE
@@ -240,13 +240,13 @@ int x, y;
 {
     struct obj *otmp;
 
-	/* Mark all player-specified fruits in inventory good */
-	mark_all_fruits_good(invent);
+    /* Mark all player-specified fruits in inventory good */
+    mark_all_fruits_good(invent);
 
     u.twoweap = 0; /* ensure curse() won't cause swapwep to drop twice */
     while ((otmp = invent) != 0) 
-	{
-		obj_extract_self(otmp);
+    {
+        obj_extract_self(otmp);
         /* when turning into green slime, all gear remains held;
            other types "arise from the dead" do aren't holding
            equipment during their brief interval as a corpse */
@@ -276,16 +276,16 @@ void
 mark_all_fruits_good(objchn)
 struct obj* objchn;
 {
-	if (!objchn)
-		return;
-	
-	for (struct obj* otmp = objchn; otmp; otmp = otmp->nobj)
-	{
-		if (otmp->otyp == SLIME_MOLD)
-			goodfruit(otmp->special_quality);
-		else if (Is_proper_container(otmp) && otmp->cobj)
-			mark_all_fruits_good(otmp->cobj);
-	}
+    if (!objchn)
+        return;
+    
+    for (struct obj* otmp = objchn; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->otyp == SLIME_MOLD)
+            goodfruit(otmp->special_quality);
+        else if (Is_proper_container(otmp) && otmp->cobj)
+            mark_all_fruits_good(otmp->cobj);
+    }
 
 }
 
@@ -444,7 +444,7 @@ make_bones:
 
         /* embed your possessions in your statue */
         otmp = mk_named_object(STATUE, &mons[u.umonnum], u.ux, u.uy, plname);
-		otmp->nknown = 1;
+        otmp->nknown = 1;
 
         drop_upon_death((struct monst *) 0, otmp, u.ux, u.uy);
         if (!otmp)
@@ -458,7 +458,7 @@ make_bones:
          */
         in_mklev = TRUE;
         mtmp = makemon(&mons[PM_GHOST], u.ux, u.uy, MM_NONAME);
-		mtmp->u_know_mname = 1;
+        mtmp->u_know_mname = 1;
         in_mklev = FALSE;
         if (!mtmp)
             return;
@@ -476,7 +476,7 @@ make_bones:
             return;
         }
         mtmp = christen_monst(mtmp, plname);
-		mtmp->u_know_mname = 1;
+        mtmp->u_know_mname = 1;
         newsym(u.ux, u.uy);
         /* ["Your body rises from the dead as an <mname>..." used
            to be given here, but it has been moved to done() so that
@@ -491,21 +491,21 @@ make_bones:
     if (mtmp) {
         mtmp->m_lev = (u.ulevel ? u.ulevel : 1);
         mtmp->mbasehpmax = u.ubasehpmax;
-		update_mon_maxhp(mtmp);
-		mtmp->mhp = mtmp->mhpmax;
-		mtmp->female = flags.female;
-		mtmp->heads_left = mtmp->data->heads;
-		mtmp->msleeping = 1;
+        update_mon_maxhp(mtmp);
+        mtmp->mhp = mtmp->mhpmax;
+        mtmp->female = flags.female;
+        mtmp->heads_left = mtmp->data->heads;
+        mtmp->msleeping = 1;
     }
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         resetobjs(mtmp->minvent, FALSE);
         /* do not zero out m_ids for bones levels any more */
         mtmp->mlstmv = 0L;
-		if (mtmp->mtame)
-		{
-			mtmp->mtame = mtmp->mpeaceful = 0;
-			mtmp->ispartymember = FALSE;
-		}
+        if (mtmp->mtame)
+        {
+            mtmp->mtame = mtmp->mpeaceful = 0;
+            mtmp->ispartymember = FALSE;
+        }
     }
     for (ttmp = ftrap; ttmp; ttmp = ttmp->ntrap) {
         ttmp->madeby_u = 0;
@@ -536,11 +536,11 @@ make_bones:
        gender and alignment reflect final values rather than what the
        character started out as, same as topten and logfile entries */
 #ifdef ANDROID
-	Sprintf(newbones->who, "%s-%.3s-%.3s-%.3s-%.3s", wizard ? "wizard" : plname, urole.filecode,
+    Sprintf(newbones->who, "%s-%.3s-%.3s-%.3s-%.3s", wizard ? "wizard" : plname, urole.filecode,
 #else
-	Sprintf(newbones->who, "%s-%.3s-%.3s-%.3s-%.3s", plname, urole.filecode,
+    Sprintf(newbones->who, "%s-%.3s-%.3s-%.3s-%.3s", plname, urole.filecode,
 #endif
-		urace.filecode, genders[flags.female].filecode,
+        urace.filecode, genders[flags.female].filecode,
             aligns[1 - u.ualign.type].filecode);
     formatkiller(newbones->how, sizeof newbones->how, how, TRUE);
     Strcpy(newbones->when, yyyymmddhhmmss(when));
@@ -681,9 +681,9 @@ getbones()
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
                 if (has_mname(mtmp))
                     sanitize_name(MNAME(mtmp));
-				if (has_umname(mtmp))
-					sanitize_name(UMNAME(mtmp));
-				if (mtmp->mbasehpmax == DEFUNCT_MONSTER) {
+                if (has_umname(mtmp))
+                    sanitize_name(UMNAME(mtmp));
+                if (mtmp->mbasehpmax == DEFUNCT_MONSTER) {
                     if (wizard) {
                         debugpline1("Removing defunct monster %s from bones.",
                                     mon_monster_name(mtmp));

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	hack.c	$NHDT-Date: 1551137618 2019/02/25 23:33:38 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.208 $ */
+/* GnollHack 4.0    hack.c    $NHDT-Date: 1551137618 2019/02/25 23:33:38 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.208 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -402,9 +402,9 @@ moverock()
                     pline("However, you %s%s.",
                           (willpickup && canpickup) ? "easily pick it up"
                                                     : "push it aside",
-						 (!willpickup && canpickup) ? ", as you could easily even lift it" : "");
+                         (!willpickup && canpickup) ? ", as you could easily even lift it" : "");
 
-					sokoban_guilt();
+                    sokoban_guilt();
                     break;
                 }
                 break;
@@ -1626,7 +1626,7 @@ domove_core()
     int bc_control = 0;                 /* control for ball&chain */
     boolean cause_delay = FALSE;        /* dragging ball will skip a move */
 
-	context.hide_melee_range_warning = FALSE;
+    context.hide_melee_range_warning = FALSE;
 
     if (context.travel) {
         if (!findtravelpath(TRAVP_TRAVEL))
@@ -1655,15 +1655,15 @@ domove_core()
         return;
     }
     if (u.uswallow) 
-	{
+    {
         update_u_facing(TRUE);
         u.dx = u.dy = 0;
         u.ux = x = u.ustuck->mx;
         u.uy = y = u.ustuck->my;
         mtmp = u.ustuck;
     } 
-	else
-	{
+    else
+    {
         if ((Is_airlevel(&u.uz) 
             || (u.uz.dnum == modron_dnum && (levl[u.ux][u.uy].typ == AIR || levl[u.ux][u.uy].typ == CLOUD) && rn2(4) && !Levitation && !Flying && !is_incorporeal(youmonst.data)))
            ) 
@@ -1688,7 +1688,7 @@ domove_core()
         /* check slippery ice */
         on_ice = !Levitation && is_ice(u.ux, u.uy);
         if (on_ice)
-		{
+        {
             static int skates = 0;
 
             if (!skates)
@@ -1696,11 +1696,11 @@ domove_core()
             if ((uarmf && uarmf->otyp == skates) || is_mon_immune_to_cold(&youmonst)
                 || Flying || is_floater(youmonst.data)
                 || is_clinger(youmonst.data) || is_whirly(youmonst.data)) 
-			{
+            {
                 on_ice = FALSE;
             } 
-			else if (!rn2(Cold_immunity ? 3 : 2)) 
-			{
+            else if (!rn2(Cold_immunity ? 3 : 2)) 
+            {
                 HFumbling |= FROM_ACQUIRED;
                 HFumbling &= ~TIMEOUT;
                 HFumbling += 1; /* slip on next move */
@@ -1712,13 +1712,13 @@ domove_core()
         x = u.ux + u.dx;
         y = u.uy + u.dy;
         if (Stunned || (Confusion && !rn2(5))) 
-		{
+        {
             register int tries = 0;
 
             do
-			{
+            {
                 if (tries++ > 50) 
-				{
+                {
                     nomul(0);
                     return;
                 }
@@ -1726,14 +1726,14 @@ domove_core()
                 x = u.ux + u.dx;
                 y = u.uy + u.dy;
             } 
-			while (!isok(x, y) || bad_rock(youmonst.data, x, y));
+            while (!isok(x, y) || bad_rock(youmonst.data, x, y));
         }
         /* turbulence might alter your actual destination */
         if (u.uinwater) 
-		{
+        {
             water_friction();
             if (!u.dx && !u.dy) 
-			{
+            {
                 nomul(0);
                 return;
             }
@@ -1743,7 +1743,7 @@ domove_core()
             /* are we trying to move out of water while carrying too much? */
             if (isok(x, y) && !is_pool(x, y) && !Is_waterlevel(&u.uz)
                 && wtcap > (Swimming ? MOD_ENCUMBER : SLT_ENCUMBER))
-			{
+            {
                 /* when escaping from drowning you need to be unencumbered
                    in order to crawl out of water, but when not drowning,
                    doing so while encumbered is feasible; if in an aquatic
@@ -1758,22 +1758,22 @@ domove_core()
         update_u_facing(TRUE);
 
         if (!isok(x, y))
-		{
+        {
             nomul(0);
             return;
         }
         if (((trap = t_at(x, y)) && trap->tseen)
             || (Blind && !Levitation && !Flying && !is_clinger(youmonst.data)
                 /* && is_pool_or_lava(x, y) */ 
-				&& levl[x][y].seenv))
-		{
+                && levl[x][y].seenv))
+        {
             if (context.run) 
-			{
+            {
 
                 if (iflags.mention_walls) 
-				{
+                {
                     if (trap && trap->tseen)
-					{
+                    {
                         //int tt = what_trap(trap->ttyp, rn2_on_display_rng);
                         You("stop in front of %s.",
                             an(get_trap_explanation(trap)));
@@ -1789,67 +1789,67 @@ domove_core()
                 nomul(0);
         }
 
-		if(levl[x][y].seenv && !Stunned && !Confusion && !Hallucination && !m_at(x, y))
-		{
-			if (is_pool_or_lava(x, y))
-			{
-				if (
-					(is_pool(x, y) && 
-						(Wwalking 
-							|| Amphibious 
-							|| Breathless
-							|| Swimming
-							|| Flying 
-							|| Levitation
-							|| is_swimmer(youmonst.data)
-							|| is_flyer(youmonst.data)
-							|| is_floater(youmonst.data)
-						)
-					)
-					|| 
-					(is_lava(x, y) && 
-						(Levitation 
-							|| Flying
-							|| likes_lava(youmonst.data)
-							|| is_flyer(youmonst.data)
-						)
-					)
-				)
-				{
-					/* Survives, so no question*/
-				}
-				else
-				{
-					/* If blind, you still get the question */
+        if(levl[x][y].seenv && !Stunned && !Confusion && !Hallucination && !m_at(x, y))
+        {
+            if (is_pool_or_lava(x, y))
+            {
+                if (
+                    (is_pool(x, y) && 
+                        (Wwalking 
+                            || Amphibious 
+                            || Breathless
+                            || Swimming
+                            || Flying 
+                            || Levitation
+                            || is_swimmer(youmonst.data)
+                            || is_flyer(youmonst.data)
+                            || is_floater(youmonst.data)
+                        )
+                    )
+                    || 
+                    (is_lava(x, y) && 
+                        (Levitation 
+                            || Flying
+                            || likes_lava(youmonst.data)
+                            || is_flyer(youmonst.data)
+                        )
+                    )
+                )
+                {
+                    /* Survives, so no question*/
+                }
+                else
+                {
+                    /* If blind, you still get the question */
 
-					char ynqbuf[BUFSZ] = "";
-					Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? "pool" : is_lava(x, y) ? "lava" : "location");
+                    char ynqbuf[BUFSZ] = "";
+                    Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? "pool" : is_lava(x, y) ? "lava" : "location");
 
-					char ans = ynq(ynqbuf);
-					if (ans != 'y')
-					{
+                    char ans = ynq(ynqbuf);
+                    if (ans != 'y')
+                    {
                         nomul(0);
                         return;
-					}
-				}
-			}
-			else if(trap && trap->tseen && !(trap_type_definitions[trap->ttyp].tdflags & TRAPDEF_FLAGS_NO_STEP_CONFIRMATION)
+                    }
+                }
+            }
+            else if(trap && trap->tseen && !(trap_type_definitions[trap->ttyp].tdflags & TRAPDEF_FLAGS_NO_STEP_CONFIRMATION)
                 && !((is_hole(trap->ttyp) || is_pit(trap->ttyp) || trap->ttyp == BEAR_TRAP || trap->ttyp == SQKY_BOARD) && (Flying || Levitation) && !Sokoban)
                 && !(trap->ttyp == PIT && has_pitwalk(youmonst.data))
                 )
-			{
-				char ynqbuf[BUFSZ] = "";
-				Sprintf(ynqbuf, "There is %s. Step into it?", an(get_trap_explanation(trap)));
+            {
+                char ynqbuf[BUFSZ] = "";
+                Sprintf(ynqbuf, "There is %s. Step into it?", an(get_trap_explanation(trap)));
 
-				char ans = ynq(ynqbuf);
-				if (ans != 'y')
-				{
+                char ans = ynq(ynqbuf);
+                if (ans != 'y')
+                {
                     nomul(0);
                     context.move = FALSE;
                     return;
-				}
-			}
-		}
+                }
+            }
+        }
 
         if (u.ustuck && (x != u.ustuck->mx || y != u.ustuck->my)) {
             if (distu(u.ustuck->mx, u.ustuck->my) > 2) {
@@ -1884,7 +1884,7 @@ domove_core()
                     break;
                 case 3:
                     if (!mon_can_move(u.ustuck)) 
-					{
+                    {
                         /* it's free to move on next turn */
                         u.ustuck->mfrozen = 1;
                         u.ustuck->msleeping = 0;
@@ -2154,12 +2154,12 @@ domove_core()
      * be caught by the normal falling-monster code.
      */
     if ((is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) && !(is_hider(mtmp->data) && mtmp->mundetected))
-	{
+    {
         /* if trapped, there's a chance the pet goes wild */
         if (mtmp->mtrapped)
         {
             if (!rn2(mtmp->mtame)) 
-			{
+            {
                 mtmp->mtame = mtmp->mpeaceful = mtmp->msleeping = 0;
                 if (mtmp->mleashed)
                     m_unleash(mtmp, TRUE);
@@ -2418,9 +2418,9 @@ switch_terrain()
         /* called from spoteffects(), stop levitating but skip float_down() */
         if (Levitation)
             You_cant("levitate in here.");
-		HBlocks_Levitation |= FROM_ACQUIRED;
+        HBlocks_Levitation |= FROM_ACQUIRED;
     } else if (HBlocks_Levitation) {
-		HBlocks_Levitation &= ~FROM_ACQUIRED;
+        HBlocks_Levitation &= ~FROM_ACQUIRED;
         /* we're probably levitating now; if not, we must be chained
            to a buried iron ball so get float_up() feedback for that */
         if (Levitation || HBlocks_Levitation)
@@ -2432,7 +2432,7 @@ switch_terrain()
             You_cant("fly in here.");
         HBlocks_Flying |= FROM_ACQUIRED;
     } else if (Blocks_Flying) {
-		HBlocks_Flying &= ~FROM_ACQUIRED;
+        HBlocks_Flying &= ~FROM_ACQUIRED;
         float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
         /* [minor bug: we don't know whether this is beginning flight or
            resuming it; that could be tracked so that this message could
@@ -2440,8 +2440,8 @@ switch_terrain()
         if (Flying)
             You("start flying.");
     }
-	if ((!Levitation ^ was_levitating) || (!Flying ^ was_flying))
-		context.botl = context.botlx = TRUE; /* update Lev/Fly status condition */
+    if ((!Levitation ^ was_levitating) || (!Flying ^ was_flying))
+        context.botl = context.botlx = TRUE; /* update Lev/Fly status condition */
 }
 
 /* extracted from spoteffects; called by spoteffects to check for entering or
@@ -2930,19 +2930,19 @@ register boolean newlev;
         case BEEHIVE:
             You("enter a giant beehive!");
             break;
-		case GARDEN:
-			You("enter a lovely underground garden!");
-			break;
-		case DESERTEDSHOP:
-			You("enter a shop that has been deserted a long time ago!");
-			break;
-		case LIBRARY:
-			You("enter a library!");
-			break;
-		case DRAGONLAIR:
-			You("enter a dragon lair!");
-			break;
-		case COCKNEST:
+        case GARDEN:
+            You("enter a lovely underground garden!");
+            break;
+        case DESERTEDSHOP:
+            You("enter a shop that has been deserted a long time ago!");
+            break;
+        case LIBRARY:
+            You("enter a library!");
+            break;
+        case DRAGONLAIR:
+            You("enter a dragon lair!");
+            break;
+        case COCKNEST:
             You("enter a disgusting nest!");
             break;
         case ANTHOLE:
@@ -3033,19 +3033,19 @@ register boolean newlev;
                 case BEEHIVE:
                     level.flags.has_beehive = 0;
                     break;
-				case LIBRARY:
-					level.flags.has_library = 0;
-					break;
-				case DRAGONLAIR:
-					level.flags.has_dragonlair = 0;
-					break;
-				case GARDEN:
-					level.flags.has_garden = 0;
-					break;
-				case DESERTEDSHOP:
-					level.flags.has_desertedshop = 0;
-					break;
-				}
+                case LIBRARY:
+                    level.flags.has_library = 0;
+                    break;
+                case DRAGONLAIR:
+                    level.flags.has_dragonlair = 0;
+                    break;
+                case GARDEN:
+                    level.flags.has_garden = 0;
+                    break;
+                case DESERTEDSHOP:
+                    level.flags.has_desertedshop = 0;
+                    break;
+                }
             }
             if (rt == COURT || rt == SWAMP || rt == MORGUE || rt == ZOO)
                 for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -3520,12 +3520,12 @@ double n;
 register const char *knam;
 boolean k_format;
 {
-	if (Invulnerable) //Note you must set damage to zero so it does not get displayed to the player
-		return;
+    if (Invulnerable) //Note you must set damage to zero so it does not get displayed to the player
+        return;
 
     if (Upolyd) 
-	{
-		deduct_player_hp(n);
+    {
+        deduct_player_hp(n);
         if (u.mh < 1)
             rehumanize();
         else if (n > 0 && u.mh * 10 < u.mhmax && Unchanging)
@@ -3533,21 +3533,21 @@ boolean k_format;
         return;
     }
 
-	deduct_player_hp(n);
+    deduct_player_hp(n);
 
-	if(n > 0)
+    if(n > 0)
         context.travel = context.travel1 = context.mv = context.run = 0;
 
     if (u.uhp < 1) 
-	{
+    {
         killer.format = k_format;
         if (killer.name != knam) /* the thing that killed you */
             Strcpy(killer.name, knam ? knam : "");
         You("die...");
         done(DIED);
     } 
-	else if (n > 0 && u.uhp * 10 < u.uhpmax) 
-	{
+    else if (n > 0 && u.uhp * 10 < u.uhpmax) 
+    {
         maybe_wail();
     }
 }
@@ -3567,41 +3567,41 @@ weight_cap()
     }
     /* levitation is blocked by being trapped in the floor, but it still
        functions enough in that situation to enhance carrying capacity */
-	HBlocks_Levitation &= ~I_SPECIAL;
+    HBlocks_Levitation &= ~I_SPECIAL;
 
-	//3.5 lbs for each point of STR and CON + 3 lbs
+    //3.5 lbs for each point of STR and CON + 3 lbs
     carrcap = ((long)(3.5 * 16)) * (ACURRSTR + ACURR(A_CON)) + 48;
 
-	//Add more carrying capacity for strong heroes
-	if (ACURR(A_STR) >= STR18(1))
-	{
-		//Bonus 4 ounces per percentile strength
-		carrcap += (long)(4 * (min(ACURR(A_STR), STR18(100)) - 18));
-	}
+    //Add more carrying capacity for strong heroes
+    if (ACURR(A_STR) >= STR18(1))
+    {
+        //Bonus 4 ounces per percentile strength
+        carrcap += (long)(4 * (min(ACURR(A_STR), STR18(100)) - 18));
+    }
 
-	if (ACURR(A_STR) >= STR18(100)) //Used to be STR18(1), but anything below 18/00 is now random
-	{
-		//7 lbs per bonus since CON cannot increase in the same way
-		carrcap += ((long)(7 * 16)) * (strength_damage_bonus(ACURR(A_STR))- strength_damage_bonus(18));
-		carrcap += ((long)(7 * 16)) * (strength_tohit_bonus(ACURR(A_STR)) - strength_tohit_bonus(18));
-	}
+    if (ACURR(A_STR) >= STR18(100)) //Used to be STR18(1), but anything below 18/00 is now random
+    {
+        //7 lbs per bonus since CON cannot increase in the same way
+        carrcap += ((long)(7 * 16)) * (strength_damage_bonus(ACURR(A_STR))- strength_damage_bonus(18));
+        carrcap += ((long)(7 * 16)) * (strength_tohit_bonus(ACURR(A_STR)) - strength_tohit_bonus(18));
+    }
 
-//	if (Upolyd) {
+//    if (Upolyd) {
         /* consistent with can_carry() in mon.c */
         if (youmonst.data->mlet == S_NYMPH)
             carrcap = MAX_CARR_CAP;
-		else if (youmonst.data->msize == MZ_TINY)
-			carrcap = carrcap / 10;
-		else if (youmonst.data->msize == MZ_SMALL)
-			carrcap = carrcap / 2;
-		else if (youmonst.data->msize == MZ_LARGE)
-			carrcap = (long)(carrcap * 2);
-		else if (youmonst.data->msize == MZ_HUGE)
-			carrcap = (long)(carrcap * 5);
-		else if (youmonst.data->msize == MZ_GIGANTIC)
-			carrcap = (long)(carrcap * 10);
+        else if (youmonst.data->msize == MZ_TINY)
+            carrcap = carrcap / 10;
+        else if (youmonst.data->msize == MZ_SMALL)
+            carrcap = carrcap / 2;
+        else if (youmonst.data->msize == MZ_LARGE)
+            carrcap = (long)(carrcap * 2);
+        else if (youmonst.data->msize == MZ_HUGE)
+            carrcap = (long)(carrcap * 5);
+        else if (youmonst.data->msize == MZ_GIGANTIC)
+            carrcap = (long)(carrcap * 10);
 
-/*		else if (!youmonst.data->cwt)
+/*        else if (!youmonst.data->cwt)
             carrcap = (carrcap * (long) youmonst.data->msize) / MZ_HUMAN;
         else if (!strongmonst(youmonst.data)
                  || (strongmonst(youmonst.data)
@@ -3611,8 +3611,8 @@ weight_cap()
 
     if (Levitation || Is_airlevel(&u.uz) /* pugh@cornell */
         || (u.usteed && strongmonst(u.usteed->data))) {
-		if(carrcap < MAX_CARR_CAP)
-			carrcap = MAX_CARR_CAP;
+        if(carrcap < MAX_CARR_CAP)
+            carrcap = MAX_CARR_CAP;
     } else {
         if (!Flying) {
             if (EWounded_legs & LEFT_SIDE)
@@ -3622,17 +3622,17 @@ weight_cap()
         }
     }
 
-	//Strict limits
-	/*
-	if (carrcap > MAX_CARR_CAP * 5)
-		carrcap = MAX_CARR_CAP * 5;
-	if (carrcap < 0)
-		carrcap = 0;
-	*/
+    //Strict limits
+    /*
+    if (carrcap > MAX_CARR_CAP * 5)
+        carrcap = MAX_CARR_CAP * 5;
+    if (carrcap < 0)
+        carrcap = 0;
+    */
 
     if (ELevitation != save_ELev || HBlocks_Levitation != save_BLev) {
         ELevitation = save_ELev;
-		HBlocks_Levitation = save_BLev;
+        HBlocks_Levitation = save_BLev;
         float_vs_flight();
     }
 

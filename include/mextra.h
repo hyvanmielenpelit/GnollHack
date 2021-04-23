@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mextra.h	$NHDT-Date: 1547428759 2019/01/14 01:19:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.22 $ */
+/* GnollHack 4.0    mextra.h    $NHDT-Date: 1547428759 2019/01/14 01:19:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.22 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -191,8 +191,8 @@ struct edog {
     int abuse;                /* track abuses to this pet */
     int revivals;             /* count pet deaths */
     int mhpmax_penalty;       /* while starving, points reduced */
-	int chastised;			  /* has a shopkeeper told the dog off; this is duration while the pet remembers being chastised */
-	Bitfield(killed_by_u, 1); /* you attempted to kill him */
+    int chastised;              /* has a shopkeeper told the dog off; this is duration while the pet remembers being chastised */
+    Bitfield(killed_by_u, 1); /* you attempted to kill him */
 };
 
 /***
@@ -200,8 +200,8 @@ struct edog {
  */
 struct mextra {
     char *mname;
-	char *umname;
-	struct egd *egd;
+    char *umname;
+    struct egd *egd;
     struct epri *epri;
     struct esmi *esmi;
     struct enpc *enpc;

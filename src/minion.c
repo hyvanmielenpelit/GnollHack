@@ -1,4 +1,4 @@
-/* GnollHack 4.0	minion.c	$NHDT-Date: 1544998886 2018/12/16 22:21:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.40 $ */
+/* GnollHack 4.0    minion.c    $NHDT-Date: 1544998886 2018/12/16 22:21:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.40 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2008. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -13,7 +13,7 @@ struct monst *mtmp;
     if (!mtmp->mextra)
         mtmp->mextra = newmextra();
     if (!EMIN(mtmp))
-	{
+    {
         EMIN(mtmp) = (struct emin *) alloc(sizeof(struct emin));
         (void) memset((genericptr_t) EMIN(mtmp), 0, sizeof(struct emin));
     }
@@ -24,7 +24,7 @@ free_emin(mtmp)
 struct monst *mtmp;
 {
     if (mtmp->mextra && EMIN(mtmp)) 
-	{
+    {
         free((genericptr_t) EMIN(mtmp));
         EMIN(mtmp) = (struct emin *) 0;
     }
@@ -58,14 +58,14 @@ struct monst *mon;
     int dtype = NON_PM, cnt = 0, result = 0, census;
     aligntyp atyp;
     struct monst *mtmp;
-	unsigned long mmanimtype = 0UL;
+    unsigned long mmanimtype = 0UL;
 
     if (mon) 
-	{
+    {
         ptr = mon->data;
 
         if (item_prevents_summoning(mon->mnum)) 
-		{
+        {
             if (canseemon(mon))
                 pline("%s looks puzzled for a moment.", Monnam(mon));
             return 0;
@@ -77,68 +77,68 @@ struct monst *mon;
                                                    ? A_NONE
                                                    : sgn(ptr->maligntyp);
     }
-	else 
-	{
+    else 
+    {
         ptr = &mons[PM_WIZARD_OF_YENDOR];
         atyp = (ptr->maligntyp == A_NONE) ? A_NONE : sgn(ptr->maligntyp);
     }
 
-	if (ptr == &mons[PM_FLIND_LORD])
-	{
-		mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
+    if (ptr == &mons[PM_FLIND_LORD])
+    {
+        mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
 
-		dtype = (!rn2(80)) ? PM_YEENOGHU : (!rn2(40)) ? monsndx(ptr) : (!rn2(4)) ? ndemon(atyp) : PM_FLIND;
-		if (dtype == PM_YEENOGHU && (mvitals[PM_YEENOGHU].mvflags & G_GONE))
-			dtype = monsndx(ptr);
-		if (dtype == PM_FLIND && (mvitals[PM_FLIND].mvflags & G_GONE))
-			dtype = ndemon(atyp);
-		cnt = 1;
-	}
-	else if (ptr == &mons[PM_YACC])
-	{
-		mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
+        dtype = (!rn2(80)) ? PM_YEENOGHU : (!rn2(40)) ? monsndx(ptr) : (!rn2(4)) ? ndemon(atyp) : PM_FLIND;
+        if (dtype == PM_YEENOGHU && (mvitals[PM_YEENOGHU].mvflags & G_GONE))
+            dtype = monsndx(ptr);
+        if (dtype == PM_FLIND && (mvitals[PM_FLIND].mvflags & G_GONE))
+            dtype = ndemon(atyp);
+        cnt = 1;
+    }
+    else if (ptr == &mons[PM_YACC])
+    {
+        mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
 
-		dtype = PM_HELL_BOVINE;
-		cnt = !rn2(2) ? 2 : 1;
-	}
-	else if (is_dprince(ptr) || (ptr == &mons[PM_WIZARD_OF_YENDOR]))
-	{
-		mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
-		
-		dtype = (!rn2(20)) ? dlord(atyp) : ndemon(atyp); //(!rn2(50)) ? dprince(atyp) : 
+        dtype = PM_HELL_BOVINE;
+        cnt = !rn2(2) ? 2 : 1;
+    }
+    else if (is_dprince(ptr) || (ptr == &mons[PM_WIZARD_OF_YENDOR]))
+    {
+        mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
+        
+        dtype = (!rn2(20)) ? dlord(atyp) : ndemon(atyp); //(!rn2(50)) ? dprince(atyp) : 
         cnt = (!rn2(3) && is_ndemon(&mons[dtype])) ? rnd(2) + 1 : 1;
     }
-	else if (is_dlord(ptr))
-	{
-		mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
-		
-		dtype = (!rn2(80)) ? dprince(atyp) : (!rn2(40)) ? dlord(atyp)
+    else if (is_dlord(ptr))
+    {
+        mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
+        
+        dtype = (!rn2(80)) ? dprince(atyp) : (!rn2(40)) ? dlord(atyp)
                                                         : ndemon(atyp);
         cnt = (!rn2(4) && is_ndemon(&mons[dtype])) ? 2 : 1;
     } 
-	else if (is_ndemon(ptr)) 
-	{
-		mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
-		dtype = (!rn2(80)) ? dlord(atyp) : (!rn2(6)) ? ndemon(atyp)
+    else if (is_ndemon(ptr)) 
+    {
+        mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
+        dtype = (!rn2(80)) ? dlord(atyp) : (!rn2(6)) ? ndemon(atyp)
                                                      : monsndx(ptr);
         cnt = 1;
     }
-	else if (is_lminion(mon))
-	{
-		mmanimtype = MM_LAWFUL_SUMMON_ANIMATION;
-		dtype = (is_lord(ptr) && !rn2(40))
+    else if (is_lminion(mon))
+    {
+        mmanimtype = MM_LAWFUL_SUMMON_ANIMATION;
+        dtype = (is_lord(ptr) && !rn2(40))
                     ? llord()
                     : (is_lord(ptr) || !rn2(6)) ? lminion() : monsndx(ptr);
         cnt = (!rn2(4) && !is_lord(&mons[dtype])) ? 2 : 1;
     }
-	else if (ptr == &mons[PM_ANGEL])
-	{
-		mmanimtype = MM_LAWFUL_SUMMON_ANIMATION;
+    else if (ptr == &mons[PM_ANGEL])
+    {
+        mmanimtype = MM_LAWFUL_SUMMON_ANIMATION;
         /* non-lawful angels can also summon */
         if (!rn2(6))
-		{
+        {
             switch (atyp)
-			{ /* see summon_minion */
+            { /* see summon_minion */
             case A_NEUTRAL:
                 dtype = PM_AIR_ELEMENTAL + rn2(4);
                 break;
@@ -148,8 +148,8 @@ struct monst *mon;
                 break;
             }
         }
-		else 
-		{
+        else 
+        {
             dtype = PM_ANGEL;
         }
         cnt = (!rn2(4) && !is_lord(&mons[dtype])) ? 2 : 1;
@@ -166,7 +166,7 @@ struct monst *mon;
      * could get this far with an extinct dtype), try another.
      */
     if (mvitals[dtype].mvflags & G_GONE)
-	{
+    {
         dtype = ndemon(atyp);
         if (dtype == NON_PM)
             return 0;
@@ -176,20 +176,20 @@ struct monst *mon;
        count of non-null makemon() result is not sufficient */
     census = monster_census(FALSE);
 
-	context.makemon_spef_idx = 0;
-	while (cnt > 0)
-	{
+    context.makemon_spef_idx = 0;
+    while (cnt > 0)
+    {
         mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | mmanimtype | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
         if (mtmp) 
-		{
-			context.makemon_spef_idx++;
-			mtmp->mdemonsummon_used = 30;
-			mtmp->mspecialsummon_used = 30;
-			mtmp->mspecialsummon2_used = 30;
-			result++;
+        {
+            context.makemon_spef_idx++;
+            mtmp->mdemonsummon_used = 30;
+            mtmp->mspecialsummon_used = 30;
+            mtmp->mspecialsummon2_used = 30;
+            result++;
             /* an angel's alignment should match the summoner */
             if (dtype == PM_ANGEL)
-			{
+            {
                 mtmp->isminion = 1;
                 EMIN(mtmp)->min_align = atyp;
                 /* renegade if same alignment but not peaceful
@@ -197,18 +197,18 @@ struct monst *mon;
                 EMIN(mtmp)->renegade =
                     (atyp != u.ualign.type) ^ !is_peaceful(mtmp);
             }
-			play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp->mx, mtmp->my);
-			if(canseemon(mtmp))
-			{ 
-				if (is_demon(ptr))
-					pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
-				else
-					pline("%s appears!", Amonnam(mtmp));
-			}
-		}
+            play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp->mx, mtmp->my);
+            if(canseemon(mtmp))
+            { 
+                if (is_demon(ptr))
+                    pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
+                else
+                    pline("%s appears!", Amonnam(mtmp));
+            }
+        }
         cnt--;
     }
-	makemon_animation_wait_until_end();
+    makemon_animation_wait_until_end();
 
     /* how many monsters exist now compared to before? */
     if (result)
@@ -223,104 +223,104 @@ int
 yeenoghu_gnoll_summon(summoner)
 struct monst* summoner;
 {
-	pline("%s summons some gnolls!", Monnam(summoner));
+    pline("%s summons some gnolls!", Monnam(summoner));
 
-	int dtype = NON_PM, cnt = 0, result = 0, census;
-	struct monst* mtmp = (struct monst*) 0;
+    int dtype = NON_PM, cnt = 0, result = 0, census;
+    struct monst* mtmp = (struct monst*) 0;
 
-	cnt = d(1, 3);
+    cnt = d(1, 3);
 
-	/* some candidates can generate a group of monsters, so simple
-	   count of non-null makemon() result is not sufficient */
-	census = monster_census(FALSE);
+    /* some candidates can generate a group of monsters, so simple
+       count of non-null makemon() result is not sufficient */
+    census = monster_census(FALSE);
 
-	int canseemonnumber = 0;
-	struct monst* mtmp2 = (struct monst *) 0;
-	context.makemon_spef_idx = 0;
+    int canseemonnumber = 0;
+    struct monst* mtmp2 = (struct monst *) 0;
+    context.makemon_spef_idx = 0;
 
-	while (cnt > 0)
-	{
-		int roll = rn2(15);
-		dtype = NON_PM;
+    while (cnt > 0)
+    {
+        int roll = rn2(15);
+        dtype = NON_PM;
 
-		switch (roll)
-		{
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-			dtype = PM_GNOLL;
-			break;
-		case 5:
-		case 6:
-		case 7:
-		case 8:
-			dtype = PM_GNOLL_LORD;
-			break;
-		case 9:
-		case 10:
-		case 11:
-			dtype = PM_GNOLL_KING;
-			break;
-		case 12:
-		case 13:
-			dtype = PM_FLIND;
-			break;
-		case 14:
-			dtype = PM_FLIND_LORD;
-			break;
-		default:
-			break;
+        switch (roll)
+        {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+            dtype = PM_GNOLL;
+            break;
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+            dtype = PM_GNOLL_LORD;
+            break;
+        case 9:
+        case 10:
+        case 11:
+            dtype = PM_GNOLL_KING;
+            break;
+        case 12:
+        case 13:
+            dtype = PM_FLIND;
+            break;
+        case 14:
+            dtype = PM_FLIND_LORD;
+            break;
+        default:
+            break;
 
-		}
+        }
 
-		if (dtype == NON_PM || mvitals[dtype].mvflags & G_GONE)
-		{
-			cnt--;
-			continue;
-		}
+        if (dtype == NON_PM || mvitals[dtype].mvflags & G_GONE)
+        {
+            cnt--;
+            continue;
+        }
 
-		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
-		if (mtmp) 
-		{
-			context.makemon_spef_idx++;
-			result++;
-			mtmp->mdemonsummon_used = 30;
-			mtmp->mspecialsummon_used = 30;
-			mtmp->mspecialsummon2_used = 30;
-			if (canseemon(mtmp))
-			{
-				canseemonnumber++;
-				mtmp2 = mtmp;
-			}
-		}
+        mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
+        if (mtmp) 
+        {
+            context.makemon_spef_idx++;
+            result++;
+            mtmp->mdemonsummon_used = 30;
+            mtmp->mspecialsummon_used = 30;
+            mtmp->mspecialsummon2_used = 30;
+            if (canseemon(mtmp))
+            {
+                canseemonnumber++;
+                mtmp2 = mtmp;
+            }
+        }
 
-		cnt--;
-	}
-	makemon_animation_wait_until_end();
+        cnt--;
+    }
+    makemon_animation_wait_until_end();
 
-	char numberword[BUFSZ] = "Some";
-	if(canseemonnumber >= 3)
-		strcpy(numberword, "Several");
+    char numberword[BUFSZ] = "Some";
+    if(canseemonnumber >= 3)
+        strcpy(numberword, "Several");
 
-	if (result > 0 && canseemonnumber > 0) {
-		if (result == 1 && mtmp)
-			pline("%s appears out of nowhere!", Amonnam(mtmp));
-		else
-		{
-			if (canseemonnumber == 1 && mtmp2)
-				pline("%s appears out of nowhere!", Amonnam(mtmp2));
-			else
-				pline("%s gnolls appear out of nowhere!", numberword);
-		}
-	}
+    if (result > 0 && canseemonnumber > 0) {
+        if (result == 1 && mtmp)
+            pline("%s appears out of nowhere!", Amonnam(mtmp));
+        else
+        {
+            if (canseemonnumber == 1 && mtmp2)
+                pline("%s appears out of nowhere!", Amonnam(mtmp2));
+            else
+                pline("%s gnolls appear out of nowhere!", numberword);
+        }
+    }
 
-	/* how many monsters exist now compared to before? */
-	if (result)
-		result = monster_census(FALSE) - census;
+    /* how many monsters exist now compared to before? */
+    if (result)
+        result = monster_census(FALSE) - census;
 
-	return result;
+    return result;
 }
 
 /* Yeenoghu summons ghouls */
@@ -328,317 +328,317 @@ int
 yeenoghu_ghoul_summon(summoner)
 struct monst* summoner;
 {
-	pline("%s summons some undead assistance!", Monnam(summoner));
+    pline("%s summons some undead assistance!", Monnam(summoner));
 
-	int dtype = NON_PM, cnt = 0, result = 0, census;
-	struct monst* mtmp = (struct monst*) 0;
+    int dtype = NON_PM, cnt = 0, result = 0, census;
+    struct monst* mtmp = (struct monst*) 0;
 
-	cnt = d(1, 3);
+    cnt = d(1, 3);
 
-	/* some candidates can generate a group of monsters, so simple
-	   count of non-null makemon() result is not sufficient */
-	census = monster_census(FALSE);
+    /* some candidates can generate a group of monsters, so simple
+       count of non-null makemon() result is not sufficient */
+    census = monster_census(FALSE);
 
-	int canseemonnumber = 0;
-	struct monst* mtmp2 = (struct monst*) 0;
-	int ghoul_cnt = 0;
-	int ghast_cnt = 0;
-	int thoul_cnt = 0;
+    int canseemonnumber = 0;
+    struct monst* mtmp2 = (struct monst*) 0;
+    int ghoul_cnt = 0;
+    int ghast_cnt = 0;
+    int thoul_cnt = 0;
 
-	context.makemon_spef_idx = 0;
-	while (cnt > 0)
-	{
-		dtype = !rn2(8) ? PM_THOUL : !rn2(2) ? PM_GHOUL : PM_GHAST;
+    context.makemon_spef_idx = 0;
+    while (cnt > 0)
+    {
+        dtype = !rn2(8) ? PM_THOUL : !rn2(2) ? PM_GHOUL : PM_GHAST;
 
-		if (mvitals[dtype].mvflags & G_GONE)
-		{
-			cnt--;
-			break;
-		}
+        if (mvitals[dtype].mvflags & G_GONE)
+        {
+            cnt--;
+            break;
+        }
 
-		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
-		if (mtmp) 
-		{
-			context.makemon_spef_idx++;
-			result++;
-			mtmp->mdemonsummon_used = 30;
-			mtmp->mspecialsummon_used = 30;
-			mtmp->mspecialsummon2_used = 30;
+        mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
+        if (mtmp) 
+        {
+            context.makemon_spef_idx++;
+            result++;
+            mtmp->mdemonsummon_used = 30;
+            mtmp->mspecialsummon_used = 30;
+            mtmp->mspecialsummon2_used = 30;
 
-			if (dtype == PM_GHOUL)
-				ghoul_cnt++;
-			else if (dtype == PM_GHAST)
-				ghoul_cnt++;
-			else
-				thoul_cnt++;
+            if (dtype == PM_GHOUL)
+                ghoul_cnt++;
+            else if (dtype == PM_GHAST)
+                ghoul_cnt++;
+            else
+                thoul_cnt++;
 
-			if (canseemon(mtmp))
-			{
-				canseemonnumber++;
-				mtmp2 = mtmp;
-			}
-		}
-		cnt--;
-	}
-	makemon_animation_wait_until_end();
+            if (canseemon(mtmp))
+            {
+                canseemonnumber++;
+                mtmp2 = mtmp;
+            }
+        }
+        cnt--;
+    }
+    makemon_animation_wait_until_end();
 
-	char numberword[BUFSZ] = "Some";
-	if (canseemonnumber >= 3)
-		strcpy(numberword, "Several");
+    char numberword[BUFSZ] = "Some";
+    if (canseemonnumber >= 3)
+        strcpy(numberword, "Several");
 
-	if (result > 0 && canseemonnumber > 0)
-	{
-		if (result == 1 && mtmp)
-			pline("%s crawls out of nowhere!", Amonnam(mtmp));
-		else
-		{
-			if (canseemonnumber == 1 && mtmp2)
-				pline("%s crawls out of nowhere!", Amonnam(mtmp2));
-			else
-				pline("%s %s crawl out of nowhere!", numberword, thoul_cnt > 0 ? (ghast_cnt == 0 && ghoul_cnt == 0 ? "thouls" : "ghoul-like undead") : ghast_cnt == 0 ? "ghouls" : ghoul_cnt == 0 ? "ghasts" : "ghouls and ghasts");
-		}
-	}
+    if (result > 0 && canseemonnumber > 0)
+    {
+        if (result == 1 && mtmp)
+            pline("%s crawls out of nowhere!", Amonnam(mtmp));
+        else
+        {
+            if (canseemonnumber == 1 && mtmp2)
+                pline("%s crawls out of nowhere!", Amonnam(mtmp2));
+            else
+                pline("%s %s crawl out of nowhere!", numberword, thoul_cnt > 0 ? (ghast_cnt == 0 && ghoul_cnt == 0 ? "thouls" : "ghoul-like undead") : ghast_cnt == 0 ? "ghouls" : ghoul_cnt == 0 ? "ghasts" : "ghouls and ghasts");
+        }
+    }
 
-	/* how many monsters exist now compared to before? */
-	if (result)
-		result = monster_census(FALSE) - census;
+    /* how many monsters exist now compared to before? */
+    if (result)
+        result = monster_census(FALSE) - census;
 
-	return result;
+    return result;
 }
 
 /* Yacc summons bison */
 int
 yacc_bison_summon()
 {
-	int dtype = NON_PM, cnt = 0, result = 0, census;
-	struct monst* mtmp = (struct monst*) 0;
+    int dtype = NON_PM, cnt = 0, result = 0, census;
+    struct monst* mtmp = (struct monst*) 0;
 
-	cnt = d(1, 3);
+    cnt = d(1, 3);
 
-	/* some candidates can generate a group of monsters, so simple
-	   count of non-null makemon() result is not sufficient */
-	census = monster_census(FALSE);
+    /* some candidates can generate a group of monsters, so simple
+       count of non-null makemon() result is not sufficient */
+    census = monster_census(FALSE);
 
-	int canseemonnumber = 0;
-	struct monst* mtmp2 = (struct monst*) 0;
+    int canseemonnumber = 0;
+    struct monst* mtmp2 = (struct monst*) 0;
 
-	context.makemon_spef_idx = 0;
-	while (cnt > 0)
-	{
-		dtype = PM_BISON;
+    context.makemon_spef_idx = 0;
+    while (cnt > 0)
+    {
+        dtype = PM_BISON;
 
-		if (mvitals[dtype].mvflags & G_GONE)
-		{
-			cnt--;
-			break;
-		}
+        if (mvitals[dtype].mvflags & G_GONE)
+        {
+            cnt--;
+            break;
+        }
 
-		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
-		if (mtmp)
-		{
-			context.makemon_spef_idx++;
-			result++;
-			mtmp->mdemonsummon_used = 30;
-			mtmp->mspecialsummon_used = 30;
-			mtmp->mspecialsummon2_used = 30;
-			if (canseemon(mtmp))
-			{
-				canseemonnumber++;
-				mtmp2 = mtmp;
-			}
-		}
-		cnt--;
-	}
-	makemon_animation_wait_until_end();
+        mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
+        if (mtmp)
+        {
+            context.makemon_spef_idx++;
+            result++;
+            mtmp->mdemonsummon_used = 30;
+            mtmp->mspecialsummon_used = 30;
+            mtmp->mspecialsummon2_used = 30;
+            if (canseemon(mtmp))
+            {
+                canseemonnumber++;
+                mtmp2 = mtmp;
+            }
+        }
+        cnt--;
+    }
+    makemon_animation_wait_until_end();
 
-	char numberword[BUFSZ] = "Some";
-	if (canseemonnumber >= 3)
-		strcpy(numberword, "Several");
+    char numberword[BUFSZ] = "Some";
+    if (canseemonnumber >= 3)
+        strcpy(numberword, "Several");
 
-	if (result > 0 && canseemonnumber > 0)
-	{
-		if (result == 1 && mtmp)
-		{
-			play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp->mx, mtmp->my);
-			pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
-		}
-		else
-		{
-			if (canseemonnumber == 1 && mtmp2)
-			{
-				play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp2->mx, mtmp2->my);
-				pline("%s appears in a cloud of smoke!", Amonnam(mtmp2));
-			}
-			else
-			{
-				play_sfx_sound(SFX_SUMMON_DEMON);
-				pline("%s bison appear in a cloud of smoke!", numberword);
-			}
-		}
-	}
+    if (result > 0 && canseemonnumber > 0)
+    {
+        if (result == 1 && mtmp)
+        {
+            play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp->mx, mtmp->my);
+            pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
+        }
+        else
+        {
+            if (canseemonnumber == 1 && mtmp2)
+            {
+                play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp2->mx, mtmp2->my);
+                pline("%s appears in a cloud of smoke!", Amonnam(mtmp2));
+            }
+            else
+            {
+                play_sfx_sound(SFX_SUMMON_DEMON);
+                pline("%s bison appear in a cloud of smoke!", numberword);
+            }
+        }
+    }
 
-	/* how many monsters exist now compared to before? */
-	if (result)
-		result = monster_census(FALSE) - census;
+    /* how many monsters exist now compared to before? */
+    if (result)
+        result = monster_census(FALSE) - census;
 
-	return result;
+    return result;
 }
 
 /* Orcus summons undead */
 int
 orcus_undead_summon()
 {
-	int dtype = NON_PM, cnt = 0, result = 0, census;
-	struct monst* mtmp = (struct monst*) 0;
+    int dtype = NON_PM, cnt = 0, result = 0, census;
+    struct monst* mtmp = (struct monst*) 0;
 
-	cnt = d(2, 3);
+    cnt = d(2, 3);
 
-	/* some candidates can generate a group of monsters, so simple
-	   count of non-null makemon() result is not sufficient */
-	census = monster_census(FALSE);
+    /* some candidates can generate a group of monsters, so simple
+       count of non-null makemon() result is not sufficient */
+    census = monster_census(FALSE);
 
-	int canseemonnumber = 0;
-	struct monst* mtmp2 = (struct monst*) 0;
+    int canseemonnumber = 0;
+    struct monst* mtmp2 = (struct monst*) 0;
 
-	context.makemon_spef_idx = 0;
-	while (cnt > 0) {
-		int roll = rn2(28);
-		dtype = NON_PM;
+    context.makemon_spef_idx = 0;
+    while (cnt > 0) {
+        int roll = rn2(28);
+        dtype = NON_PM;
 
-		switch (roll)
-		{
-		case 0:
-		case 1:
-			dtype = PM_GNOME_ZOMBIE;
-			break;
-		case 2:
-			dtype = PM_ELF_ZOMBIE;
-			break;
-		case 3:
-			dtype = PM_ORC_ZOMBIE;
-			break;
-		case 4:
-			dtype = PM_HUMAN_ZOMBIE;
-			break;
-		case 5:
-			dtype = PM_GNOME_MUMMY;
-			break;
-		case 6:
-			dtype = PM_ELF_MUMMY;
-			break;
-		case 7:
-			dtype = PM_ORC_MUMMY;
-			break;
-		case 8:
-			dtype = PM_HUMAN_MUMMY;
-			break;
-		case 9:
-			dtype = PM_GIANT_MUMMY;
-			break;
-		case 10:
-			dtype = PM_ETTIN_MUMMY;
-			break;
-		case 11:
-			dtype = PM_VAMPIRE;
-			break;
-		case 12:
-			dtype = PM_VAMPIRE_MAGE;
-			break;
-		case 13:
-			dtype = PM_VAMPIRE_LORD;
-			break;
-		case 14:
-			dtype = PM_WRAITH;
-			break;
-		case 15:
-			dtype = PM_LICH;
-			break;
-		case 16:
-			dtype = PM_DEMILICH;
-			break;
-		case 17:
-			dtype = PM_GIANT_ZOMBIE;
-			break;
-		case 18:
-			dtype = PM_DWARF_ZOMBIE;
-			break;
-		case 19:
-			dtype = PM_DWARF_MUMMY;
-			break;
-		case 20:
-			dtype = PM_SPECTRE;
-			break;
-		case 21:
-			dtype = PM_KING_WRAITH;
-			break;
-		case 22:
-			dtype = PM_SKELETON_WARRIOR;
-			break;
-		case 23:
-			dtype = PM_SKELETON_LORD;
-			break;
-		case 24:
-			dtype = PM_SKELETON_KING;
-			break;
-		case 25:
-			dtype = PM_GREATER_MUMMY;
-			break;
-		case 26:
-			dtype = PM_GREATER_MUMMY_PRIEST;
-			break;
-		case 27:
-			dtype = PM_GREATER_MUMMY_PHARAOH;
-			break;
-		default:
-			break;
-		}
+        switch (roll)
+        {
+        case 0:
+        case 1:
+            dtype = PM_GNOME_ZOMBIE;
+            break;
+        case 2:
+            dtype = PM_ELF_ZOMBIE;
+            break;
+        case 3:
+            dtype = PM_ORC_ZOMBIE;
+            break;
+        case 4:
+            dtype = PM_HUMAN_ZOMBIE;
+            break;
+        case 5:
+            dtype = PM_GNOME_MUMMY;
+            break;
+        case 6:
+            dtype = PM_ELF_MUMMY;
+            break;
+        case 7:
+            dtype = PM_ORC_MUMMY;
+            break;
+        case 8:
+            dtype = PM_HUMAN_MUMMY;
+            break;
+        case 9:
+            dtype = PM_GIANT_MUMMY;
+            break;
+        case 10:
+            dtype = PM_ETTIN_MUMMY;
+            break;
+        case 11:
+            dtype = PM_VAMPIRE;
+            break;
+        case 12:
+            dtype = PM_VAMPIRE_MAGE;
+            break;
+        case 13:
+            dtype = PM_VAMPIRE_LORD;
+            break;
+        case 14:
+            dtype = PM_WRAITH;
+            break;
+        case 15:
+            dtype = PM_LICH;
+            break;
+        case 16:
+            dtype = PM_DEMILICH;
+            break;
+        case 17:
+            dtype = PM_GIANT_ZOMBIE;
+            break;
+        case 18:
+            dtype = PM_DWARF_ZOMBIE;
+            break;
+        case 19:
+            dtype = PM_DWARF_MUMMY;
+            break;
+        case 20:
+            dtype = PM_SPECTRE;
+            break;
+        case 21:
+            dtype = PM_KING_WRAITH;
+            break;
+        case 22:
+            dtype = PM_SKELETON_WARRIOR;
+            break;
+        case 23:
+            dtype = PM_SKELETON_LORD;
+            break;
+        case 24:
+            dtype = PM_SKELETON_KING;
+            break;
+        case 25:
+            dtype = PM_GREATER_MUMMY;
+            break;
+        case 26:
+            dtype = PM_GREATER_MUMMY_PRIEST;
+            break;
+        case 27:
+            dtype = PM_GREATER_MUMMY_PHARAOH;
+            break;
+        default:
+            break;
+        }
 
-		if (dtype == NON_PM || mvitals[dtype].mvflags & G_GONE)
-		{
-			cnt--;
-			continue;
-		}
+        if (dtype == NON_PM || mvitals[dtype].mvflags & G_GONE)
+        {
+            cnt--;
+            continue;
+        }
 
-		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
-		if (mtmp) 
-		{
-			context.makemon_spef_idx++;
-			result++;
-			mtmp->mdemonsummon_used = 30;
-			mtmp->mspecialsummon_used = 30;
-			mtmp->mspecialsummon2_used = 30;
-			if (canseemon(mtmp))
-			{
-				canseemonnumber++;
-				mtmp2 = mtmp;
-			}
-		}
+        mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
+        if (mtmp) 
+        {
+            context.makemon_spef_idx++;
+            result++;
+            mtmp->mdemonsummon_used = 30;
+            mtmp->mspecialsummon_used = 30;
+            mtmp->mspecialsummon2_used = 30;
+            if (canseemon(mtmp))
+            {
+                canseemonnumber++;
+                mtmp2 = mtmp;
+            }
+        }
 
-		cnt--;
-	}
-	makemon_animation_wait_until_end();
+        cnt--;
+    }
+    makemon_animation_wait_until_end();
 
-	char numberword[BUFSZ] = "Some";
-	if (canseemonnumber >= 3)
-		strcpy(numberword, "Several");
+    char numberword[BUFSZ] = "Some";
+    if (canseemonnumber >= 3)
+        strcpy(numberword, "Several");
 
-	if (result > 0 && canseemonnumber > 0) {
-		if (result == 1 && mtmp)
-			pline("%s appears out of nowhere!", Amonnam(mtmp));
-		else
-		{
-			if (canseemonnumber == 1 && mtmp2)
-				pline("%s appears out of nowhere!", Amonnam(mtmp2));
-			else
-				pline("%s undead appear out of nowhere!", numberword);
-		}
-	}
+    if (result > 0 && canseemonnumber > 0) {
+        if (result == 1 && mtmp)
+            pline("%s appears out of nowhere!", Amonnam(mtmp));
+        else
+        {
+            if (canseemonnumber == 1 && mtmp2)
+                pline("%s appears out of nowhere!", Amonnam(mtmp2));
+            else
+                pline("%s undead appear out of nowhere!", numberword);
+        }
+    }
 
-	/* how many monsters exist now compared to before? */
-	if (result)
-		result = monster_census(FALSE) - census;
+    /* how many monsters exist now compared to before? */
+    if (result)
+        result = monster_census(FALSE) - census;
 
-	return result;
+    return result;
 }
 
 
@@ -653,7 +653,7 @@ boolean talk;
     int mnum;
 
     switch ((int) alignment)
-	{
+    {
     case A_LAWFUL:
         mnum = lminion();
         break;
@@ -671,41 +671,41 @@ boolean talk;
     }
 
     if (mnum == NON_PM) 
-	{
+    {
         mon = 0;
     }
-	else if (mnum == PM_ANGEL) 
-	{
+    else if (mnum == PM_ANGEL) 
+    {
         mon = makemon(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
         if (mon)
-		{
+        {
             mon->isminion = 1;
             EMIN(mon)->min_align = alignment;
             EMIN(mon)->renegade = FALSE;
         }
     }
-	else if (mnum != PM_SHOPKEEPER && mnum != PM_SMITH && mnum != PM_GUARD
+    else if (mnum != PM_SHOPKEEPER && mnum != PM_SMITH && mnum != PM_GUARD
                && mnum != PM_ALIGNED_PRIEST && mnum != PM_HIGH_PRIEST) 
-	{
+    {
         /* This was mons[mnum].pxlth == 0 but is this restriction
            appropriate or necessary now that the structures are separate? */
         mon = makemon(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
         if (mon)
-		{
+        {
             mon->isminion = 1;
             EMIN(mon)->min_align = alignment;
             EMIN(mon)->renegade = FALSE;
         }
     }
-	else
-	{
+    else
+    {
         mon = makemon(&mons[mnum], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
     }
 
     if (mon) 
-	{
+    {
         if (talk)
-		{
+        {
             pline_The("voice of %s booms:", align_gname(alignment));
             verbalize("Thou shalt pay for thine indiscretion!");
             if (!Blind)
@@ -726,16 +726,16 @@ struct monst *mtmp;
 {
     long cash, demand, offer;
 
-	if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_ANGERS_DEMONS))
-		|| (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))
-		) 
-	{
+    if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_ANGERS_DEMONS))
+        || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))
+        ) 
+    {
         pline("%s looks very angry.", Amonnam(mtmp));
         mtmp->mpeaceful = mtmp->mtame = 0;
-		if (!mtmp->mtame)
-			mtmp->ispartymember = FALSE;
+        if (!mtmp->mtame)
+            mtmp->ispartymember = FALSE;
 
-		set_malign(mtmp);
+        set_malign(mtmp);
         newsym(mtmp->mx, mtmp->my);
         return 0;
     }
@@ -752,12 +752,12 @@ struct monst *mtmp;
 
     /* Slight advantage given. */
     if (is_dprince(mtmp->data) && is_invisible(mtmp))
-	{
+    {
         boolean wasunseen = !canspotmon(mtmp);
 
-		set_mon_property(mtmp, INVISIBILITY, 0);
+        set_mon_property(mtmp, INVISIBILITY, 0);
 
-		if (wasunseen && canspotmon(mtmp)) {
+        if (wasunseen && canspotmon(mtmp)) {
             pline("%s appears before you.", Amonnam(mtmp));
             mtmp->mstrategy &= ~STRAT_APPEARMSG;
         }
@@ -766,122 +766,122 @@ struct monst *mtmp;
     if (youmonst.data->mlet == S_DEMON) { /* Won't blackmail their own. */
         pline("%s says, \"Good hunting, %s.\"", Amonnam(mtmp),
               flags.female ? "Sister" : "Brother");
-		if (!tele_restrict(mtmp))
-		{
-			(void)rloc2(mtmp, TRUE, TRUE);
-		}
+        if (!tele_restrict(mtmp))
+        {
+            (void)rloc2(mtmp, TRUE, TRUE);
+        }
         return 1;
-	}
-	else if (mtmp->data == &mons[PM_YEENOGHU] && maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
-	{
-		if (canspotmon(mtmp))
-			pline("%s, the Demon Lord of Gnolls, stands towering before you.", Amonnam(mtmp));
-		else
-			pline("You hear the thundering voice of %s, the Demon Lord of Gnolls.", Amonnam(mtmp));
+    }
+    else if (mtmp->data == &mons[PM_YEENOGHU] && maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+    {
+        if (canspotmon(mtmp))
+            pline("%s, the Demon Lord of Gnolls, stands towering before you.", Amonnam(mtmp));
+        else
+            pline("You hear the thundering voice of %s, the Demon Lord of Gnolls.", Amonnam(mtmp));
 
-		pline("%s speaks.", Amonnam(mtmp));
+        pline("%s speaks.", Amonnam(mtmp));
 
-		if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !(2-rnl(3)))) || (u.ualign.type == A_NEUTRAL && !rnl(3))
-			|| ((uwep && uwep->oartifact == ART_HOWLING_FLAIL) || (uarms && uarms->oartifact == ART_HOWLING_FLAIL)))
-		{
-			verbalize("You have pleased me, my minion. I will grant one wish!");
-			/* give a wish and discard the monster (mtmp set to null) */
-			mongrantswish(&mtmp);
-			//mongrantswish removes the monster (calls mongone)
-			play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-			play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
-			pline("The demon lord laughs, then vanishes.");
-			return 1;
-		}
-		if (u.ualign.type != A_LAWFUL)
-		{
-			verbalize("You have not pleased me! Prove your allegiance to the Abyss, and you shall be rewarded.");
-			play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-			pline("%s scowls at you, then vanishes.", Amonnam(mtmp));
-		}
-		else
-		{
-			verbalize("Your ways displease me. Follow the path of the Abyss, and you shall be rewarded.");
-			play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-			pline("%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
-		}
-	}
-	else if (mtmp->data == &mons[PM_DEMOGORGON] || mtmp->data == &mons[PM_YEENOGHU] || mtmp->data == &mons[PM_JUIBLEX] || mtmp->data == &mons[PM_ORCUS])
-	{
-		//Demon lords and princes get angry for all but devout (and some random less devout) chaotic characters
-		if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !rnl(4))))
-		{
-			play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-			play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
-			pline("%s laughs menacingly, then vanishes.",
-				Amonnam(mtmp));
-		} 
-		else 
-		{
-			play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
-			pline("Seeing you, %s gets angry...", Amonnam(mtmp));
-			mtmp->mpeaceful = 0;
-			set_malign(mtmp);
-			newsym(mtmp->mx, mtmp->my);
-			update_game_music();
-			return 0;
-		}
-	}
-	else //An Arch-Devil demands payment
-	{
-		cash = money_cnt(invent);
-		demand =
-			(cash * (rnd(80) + 20 * Athome))
-			/ (100 * (1 + (sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))));
+        if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !(2-rnl(3)))) || (u.ualign.type == A_NEUTRAL && !rnl(3))
+            || ((uwep && uwep->oartifact == ART_HOWLING_FLAIL) || (uarms && uarms->oartifact == ART_HOWLING_FLAIL)))
+        {
+            verbalize("You have pleased me, my minion. I will grant one wish!");
+            /* give a wish and discard the monster (mtmp set to null) */
+            mongrantswish(&mtmp);
+            //mongrantswish removes the monster (calls mongone)
+            play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
+            pline("The demon lord laughs, then vanishes.");
+            return 1;
+        }
+        if (u.ualign.type != A_LAWFUL)
+        {
+            verbalize("You have not pleased me! Prove your allegiance to the Abyss, and you shall be rewarded.");
+            play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
+            pline("%s scowls at you, then vanishes.", Amonnam(mtmp));
+        }
+        else
+        {
+            verbalize("Your ways displease me. Follow the path of the Abyss, and you shall be rewarded.");
+            play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
+            pline("%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
+        }
+    }
+    else if (mtmp->data == &mons[PM_DEMOGORGON] || mtmp->data == &mons[PM_YEENOGHU] || mtmp->data == &mons[PM_JUIBLEX] || mtmp->data == &mons[PM_ORCUS])
+    {
+        //Demon lords and princes get angry for all but devout (and some random less devout) chaotic characters
+        if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !rnl(4))))
+        {
+            play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
+            pline("%s laughs menacingly, then vanishes.",
+                Amonnam(mtmp));
+        } 
+        else 
+        {
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
+            pline("Seeing you, %s gets angry...", Amonnam(mtmp));
+            mtmp->mpeaceful = 0;
+            set_malign(mtmp);
+            newsym(mtmp->mx, mtmp->my);
+            update_game_music();
+            return 0;
+        }
+    }
+    else //An Arch-Devil demands payment
+    {
+        cash = money_cnt(invent);
+        demand =
+            (cash * (rnd(80) + 20 * Athome))
+            / (100 * (1 + (sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))));
 
-		if (!demand || multi < 0) { /* you have no gold or can't move */
-			mtmp->mpeaceful = 0;
-			set_malign(mtmp);
-			newsym(mtmp->mx, mtmp->my);
-			return 0;
-		}
-		else 
-		{
-			/* make sure that the demand is unmeetable if the monster
-			   has the Amulet, preventing monster from being satisfied
-			   and removed from the game (along with said Amulet...) */
-			if (mon_has_amulet(mtmp))
-				demand = cash + (long) rn1(1000, 40);
+        if (!demand || multi < 0) { /* you have no gold or can't move */
+            mtmp->mpeaceful = 0;
+            set_malign(mtmp);
+            newsym(mtmp->mx, mtmp->my);
+            return 0;
+        }
+        else 
+        {
+            /* make sure that the demand is unmeetable if the monster
+               has the Amulet, preventing monster from being satisfied
+               and removed from the game (along with said Amulet...) */
+            if (mon_has_amulet(mtmp))
+                demand = cash + (long) rn1(1000, 40);
 
-			if (canspotmon(mtmp))
-				pline("%s stands towering before you.", Amonnam(mtmp));
-			else
-				pline("You hear the thundering voice of %s.", Amonnam(mtmp));
+            if (canspotmon(mtmp))
+                pline("%s stands towering before you.", Amonnam(mtmp));
+            else
+                pline("You hear the thundering voice of %s.", Amonnam(mtmp));
 
-			verbalize("For your life, we, %s, demand a gift of %ld %s.", Amonnam(mtmp), demand,
-				  currency(demand));
+            verbalize("For your life, we, %s, demand a gift of %ld %s.", Amonnam(mtmp), demand,
+                  currency(demand));
 
-			if ((offer = bribe(mtmp)) >= demand) 
-			{
-				play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-				play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
-				pline("%s vanishes, laughing about cowardly mortals.",
-					  Amonnam(mtmp));
-			} 
-			else if (offer > 0L
-					   && (long) rnd(5 * ACURR(A_CHA)) > (demand - offer)) 
-			{
-				play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-				pline("%s scowls at you menacingly, then vanishes.",
-					  Amonnam(mtmp));
-			} 
-			else 
-			{
-				play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
-				pline("%s gets angry...", Amonnam(mtmp));
-				mtmp->mpeaceful = 0;
-				set_malign(mtmp);
-				newsym(mtmp->mx, mtmp->my);
-				update_game_music();
-				return 0;
-			}
-		}
-	}
+            if ((offer = bribe(mtmp)) >= demand) 
+            {
+                play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
+                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
+                pline("%s vanishes, laughing about cowardly mortals.",
+                      Amonnam(mtmp));
+            } 
+            else if (offer > 0L
+                       && (long) rnd(5 * ACURR(A_CHA)) > (demand - offer)) 
+            {
+                play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
+                pline("%s scowls at you menacingly, then vanishes.",
+                      Amonnam(mtmp));
+            } 
+            else 
+            {
+                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
+                pline("%s gets angry...", Amonnam(mtmp));
+                mtmp->mpeaceful = 0;
+                set_malign(mtmp);
+                newsym(mtmp->mx, mtmp->my);
+                update_game_music();
+                return 0;
+            }
+        }
+    }
     mongone(mtmp);
     return 1;
 }
@@ -1006,16 +1006,16 @@ struct monst *mon; /* if null, angel hasn't been created yet */
 
     if (mon) {
         if (canspotmon(mon)) 
-		{
+        {
             if (!Deaf) 
-			{
+            {
                 pline("%s rebukes you, saying:", Monnam(mon));
                 verbalize("Since you desire conflict, have some more!");
             } 
-			else 
-			{
-				play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
-				pline("%s vanishes!", Monnam(mon));
+            else 
+            {
+                play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
+                pline("%s vanishes!", Monnam(mon));
             }
         }
         mongone(mon);
@@ -1042,14 +1042,14 @@ boolean fromspell;
     Hear_again(); /* attempt to cure any deafness now (divine
                      message will be heard even if that fails) */
     if (!fromspell && Conflict) 
-	{
+    {
         pline("A voice booms:");
         verbalize("Thy desire for conflict shall be fulfilled!");
         /* send in some hostile angels instead */
         lose_guardian_angel((struct monst *) 0);
     }
-	else if (fromspell || u.ualign.record > 8) 
-	{ /* fervent */
+    else if (fromspell || u.ualign.record > 8) 
+    { /* fervent */
         pline("A voice whispers:");
         verbalize("Thou hast been worthy of me!");
         mm.x = u.ux;
@@ -1067,20 +1067,20 @@ boolean fromspell;
              * call tamedog().
              */
             mtmp->mtame = 10;
-			newsym(mtmp->mx, mtmp->my);
+            newsym(mtmp->mx, mtmp->my);
             /* make him strong enough vs. endgame foes */
             mtmp->m_lev = rn1(8, 15);
             mtmp->mbasehpmax =
                 d((int) mtmp->m_lev, 10) + 30 + rnd(30);
-			update_mon_maxhp(mtmp);
-			mtmp->mhp = mtmp->mhpmax;
+            update_mon_maxhp(mtmp);
+            mtmp->mhp = mtmp->mhpmax;
             if ((otmp = select_hwep(mtmp)) == 0) {
                 otmp = mksobj(SILVER_SABER, FALSE, FALSE, FALSE);
-				if (mpickobj(mtmp, otmp))
-				{
-					panic("merged weapon?");
-					return;
-				}
+                if (mpickobj(mtmp, otmp))
+                {
+                    panic("merged weapon?");
+                    return;
+                }
             }
             bless(otmp);
             if (otmp->enchantment < 4)

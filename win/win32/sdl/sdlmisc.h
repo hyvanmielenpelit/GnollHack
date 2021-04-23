@@ -1,5 +1,5 @@
-/* GnollHack 4.0	sdlmisc.h */
-/* Copyright (c) Janne Gustafsson, 2021.				  */
+/* GnollHack 4.0    sdlmisc.h */
+/* Copyright (c) Janne Gustafsson, 2021.                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef SDLMISC_H

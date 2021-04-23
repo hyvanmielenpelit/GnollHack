@@ -1,4 +1,4 @@
-/* GnollHack 4.0	detect.c	$NHDT-Date: 1544437284 2018/12/10 10:21:24 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.91 $ */
+/* GnollHack 4.0    detect.c    $NHDT-Date: 1544437284 2018/12/10 10:21:24 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.91 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -884,13 +884,13 @@ int mclass;                /* monster class, 0 for all */
 
             if (otmp && otmp->cursed
                 && !mon_can_move(mtmp))
-			{
+            {
                 mtmp->msleeping = mtmp->mfrozen = mtmp->mstaying = 0;
                 mtmp->mcanmove = 1;
-				mtmp->mwantstomove = 1;
-				mtmp->mprops[SLEEPING] = 0;
-				mtmp->mprops[PARALYZED] = 0;
-				woken = TRUE;
+                mtmp->mwantstomove = 1;
+                mtmp->mprops[SLEEPING] = 0;
+                mtmp->mprops[PARALYZED] = 0;
+                woken = TRUE;
             }
         }
         show_detection_everywhere();
@@ -1125,17 +1125,17 @@ d_level *where;
     register schar ll = depth(&u.uz) - depth(where);
     register boolean indun = (u.uz.dnum == where->dnum);
 
-	static const char far_away[] = "far away";
-	static const char far_below[] = "far below";
-	static const char away_below_you[] = "away below you";
-	static const char below_you[] = "below you";
-	static const char in_the_distance[] = "in the distance";
-	static const char just_below[] = "just below";
-	static const char far_above[] = "far above";
-	static const char away_above_you[] = "away above you";
-	static const char above_you[] = "above you";
-	static const char just_above[] = "just above";
-	static const char near_you[] = "near you";
+    static const char far_away[] = "far away";
+    static const char far_below[] = "far below";
+    static const char away_below_you[] = "away below you";
+    static const char below_you[] = "below you";
+    static const char in_the_distance[] = "in the distance";
+    static const char just_below[] = "just below";
+    static const char far_above[] = "far above";
+    static const char away_above_you[] = "away above you";
+    static const char above_you[] = "above you";
+    static const char just_above[] = "just above";
+    static const char near_you[] = "near you";
 
     if (ll < 0) {
         if (ll < (-8 - rn2(3)))
@@ -1223,7 +1223,7 @@ struct obj **optr;
             break;
         case 3:
             if (!resists_blnd(&youmonst)) 
-			{
+            {
                 pline("%s your vision!", Tobjnam(obj, "damage"));
                 if(!Blinded)
                     play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
@@ -1980,90 +1980,90 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
         if (flags.search_box_traps && aflag == 0 && check_all_box_traps(FALSE) == 1)
             return 1;
 
-		int fund = 0;
+        int fund = 0;
         if (Enhanced_vision && !Blind)
             fund += 2; /* JDS: lenses help searching */
-		if (Searching)
-			fund += 1; /* JG: searching helps a little in finding hidden doors */
-		fund += (Luck + 1) / 2; /* Luck moved here to be more consistent */
+        if (Searching)
+            fund += 1; /* JG: searching helps a little in finding hidden doors */
+        fund += (Luck + 1) / 2; /* Luck moved here to be more consistent */
 
-		if (fund > 5)
+        if (fund > 5)
             fund = 5;
-		else if (fund < -10)
-			fund = -10;
+        else if (fund < -10)
+            fund = -10;
 
-		int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
+        int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
 
-		if (!itemsfound)
-		{
-			for (x = u.ux - 1; x <= u.ux + 1; x++)
-			{
-				for (y = u.uy - 1; y <= u.uy + 1; y++) 
-				{
-					if (!isok(x, y))
-						continue;
-					if (x == u.ux && y == u.uy)
-						continue;
+        if (!itemsfound)
+        {
+            for (x = u.ux - 1; x <= u.ux + 1; x++)
+            {
+                for (y = u.uy - 1; y <= u.uy + 1; y++) 
+                {
+                    if (!isok(x, y))
+                        continue;
+                    if (x == u.ux && y == u.uy)
+                        continue;
 
-					if (Blind && !aflag)
-						feel_location(x, y);
+                    if (Blind && !aflag)
+                        feel_location(x, y);
 
-					if (levl[x][y].typ == SDOOR)
-					{
-						if (rn2(7 - fund))
-							continue;
-						cvt_sdoor_to_door(x, y); /* .typ = DOOR */
-						exercise(A_WIS, TRUE);
-						nomul(0);
-						feel_location(x, y); /* make sure it shows up */
+                    if (levl[x][y].typ == SDOOR)
+                    {
+                        if (rn2(7 - fund))
+                            continue;
+                        cvt_sdoor_to_door(x, y); /* .typ = DOOR */
+                        exercise(A_WIS, TRUE);
+                        nomul(0);
+                        feel_location(x, y); /* make sure it shows up */
                         play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
                         You("find a hidden door.");
-					} 
-					else if (levl[x][y].typ == SCORR) 
-					{
-						if (rn2(7 - fund))
-							continue;
-						levl[x][y].typ = CORR;
-						unblock_vision_and_hearing_at_point(x, y); /* vision */
-						exercise(A_WIS, TRUE);
-						nomul(0);
-						feel_newsym(x, y); /* make sure it shows up */
+                    } 
+                    else if (levl[x][y].typ == SCORR) 
+                    {
+                        if (rn2(7 - fund))
+                            continue;
+                        levl[x][y].typ = CORR;
+                        unblock_vision_and_hearing_at_point(x, y); /* vision */
+                        exercise(A_WIS, TRUE);
+                        nomul(0);
+                        feel_newsym(x, y); /* make sure it shows up */
                         play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
                         You("find a hidden passage.");
-					}
-					else
-					{
-						/* Be careful not to find anything in an SCORR or SDOOR */
-						if ((mtmp = m_at(x, y)) != 0 && !aflag) 
-						{
-							int mfres = mfind0(mtmp, 0);
+                    }
+                    else
+                    {
+                        /* Be careful not to find anything in an SCORR or SDOOR */
+                        if ((mtmp = m_at(x, y)) != 0 && !aflag) 
+                        {
+                            int mfres = mfind0(mtmp, 0);
 
-							if (mfres == -1)
-								continue;
-							else if (mfres > 0)
-								return mfres;
-						}
+                            if (mfres == -1)
+                                continue;
+                            else if (mfres > 0)
+                                return mfres;
+                        }
 
-						/* see if an invisible monster has moved--if Blind,
-						 * feel_location() already did it
-						 */
-						if (!aflag && !mtmp && !Blind)
-							(void) unmap_invisible(x, y);
+                        /* see if an invisible monster has moved--if Blind,
+                         * feel_location() already did it
+                         */
+                        if (!aflag && !mtmp && !Blind)
+                            (void) unmap_invisible(x, y);
 
-						if ((trap = t_at(x, y)) && !trap->tseen && !rnl(8)) {
-							nomul(0);
-							if (trap->ttyp == STATUE_TRAP) {
-								if (activate_statue_trap(trap, x, y, FALSE))
-									exercise(A_WIS, TRUE);
-								return 1;
-							} else {
-								find_trap(trap);
-							}
-						}
-					}
-				}
-			}
-		}
+                        if ((trap = t_at(x, y)) && !trap->tseen && !rnl(8)) {
+                            nomul(0);
+                            if (trap->ttyp == STATUE_TRAP) {
+                                if (activate_statue_trap(trap, x, y, FALSE))
+                                    exercise(A_WIS, TRUE);
+                                return 1;
+                            } else {
+                                find_trap(trap);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     return 1;
 }

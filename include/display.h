@@ -1,4 +1,4 @@
-/* GnollHack 4.0	display.h	$NHDT-Date: 1546212620 2018/12/30 23:30:20 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.29 $ */
+/* GnollHack 4.0    display.h    $NHDT-Date: 1546212620 2018/12/30 23:30:20 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.29 $ */
 /* Copyright (c) Dean Luick, with acknowledgements to Kevin Darcy */
 /* and Dave Cohrs, 1990.                                          */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -62,21 +62,21 @@
 
 #define mon_warning(mon)                                                 \
     ((Warning || \
-		(Undead_warning && mon->data->mflags2 & M2_UNDEAD) \
-		|| (Demon_warning && mon->data->mflags2 & M2_DEMON) \
-		|| (Orc_warning && mon->data->mflags2 & M2_ORC) \
-		|| (Troll_warning && mon->data->mlet == S_TROLL) \
-		|| (Giant_warning && mon->data->mflags2 & M2_GIANT) \
-		|| (Dragon_warning && mon->data->mlet == S_DRAGON) \
-		|| (Elf_warning && mon->data->mflags2 & M2_ELF) \
-		|| (Dwarf_warning && mon->data->mflags2 & M2_DWARF) \
-		|| (Gnoll_warning && mon->data->mflags2 & M2_GNOLL) \
-		|| (Gnome_warning && mon->data->mflags2 & M2_GNOME) \
-		|| (Human_warning && mon->data->mflags2 & M2_HUMAN) \
-		|| (Lycanthrope_warning && mon->data->mflags2 & M2_WERE) \
-		|| (Angel_warning && mon->data->mflags2 & M2_ANGEL) \
-		|| (Ogre_warning && mon->data->mlet == S_OGRE) \
-	) && !is_peaceful((mon)) && (distu((mon)->mx, (mon)->my) < 100))
+        (Undead_warning && mon->data->mflags2 & M2_UNDEAD) \
+        || (Demon_warning && mon->data->mflags2 & M2_DEMON) \
+        || (Orc_warning && mon->data->mflags2 & M2_ORC) \
+        || (Troll_warning && mon->data->mlet == S_TROLL) \
+        || (Giant_warning && mon->data->mflags2 & M2_GIANT) \
+        || (Dragon_warning && mon->data->mlet == S_DRAGON) \
+        || (Elf_warning && mon->data->mflags2 & M2_ELF) \
+        || (Dwarf_warning && mon->data->mflags2 & M2_DWARF) \
+        || (Gnoll_warning && mon->data->mflags2 & M2_GNOLL) \
+        || (Gnome_warning && mon->data->mflags2 & M2_GNOME) \
+        || (Human_warning && mon->data->mflags2 & M2_HUMAN) \
+        || (Lycanthrope_warning && mon->data->mflags2 & M2_WERE) \
+        || (Angel_warning && mon->data->mflags2 & M2_ANGEL) \
+        || (Ogre_warning && mon->data->mlet == S_OGRE) \
+    ) && !is_peaceful((mon)) && (distu((mon)->mx, (mon)->my) < 100))
 
 /*     && (((int) ((mon)->m_lev / 4)) >= context.warnlevel)) */
 
@@ -506,7 +506,7 @@
                         ? cmap_to_glyph(S_extra_boulder) \
                             : ((obj)->oartifact > 0) \
                                 ? ((int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_OFF) \
-						            :  ((int)(obj)->otyp + GLYPH_OBJ_OFF))
+                                    :  ((int)(obj)->otyp + GLYPH_OBJ_OFF))
 
 #define obj_to_missile_glyph(obj, dir_index, rng)                                          \
     ((dir_index) < 0 || (dir_index) >= NUM_MISSILE_DIRS ? NO_GLYPH \
@@ -520,7 +520,7 @@
                         ? cmap_to_glyph(S_extra_boulder) \
                             : ((obj)->oartifact > 0) \
                                 ? ((int)((obj)->oartifact - 1) * NUM_MISSILE_DIRS + (dir_index) + GLYPH_ARTIFACT_MISSILE_OFF) \
-						            :  ((int)(obj)->otyp * NUM_MISSILE_DIRS + (dir_index) + GLYPH_OBJ_MISSILE_OFF)) )
+                                    :  ((int)(obj)->otyp * NUM_MISSILE_DIRS + (dir_index) + GLYPH_OBJ_MISSILE_OFF)) )
 
 
 #define explosion_to_glyph(expltype, idx) \
@@ -928,11 +928,11 @@
                ? STATUE                          \
          : glyph_is_cmap_boulder(glyph) \
                ? BOULDER                          \
-			 : glyph_is_artifact(glyph)                \
-				   ? artifact_to_obj(glyph_to_artifact(glyph))   \
-				   : glyph_is_normal_object(glyph)   \
-						 ? ((abs(glyph)) - GLYPH_OBJ_OFF) \
-						 : STRANGE_OBJECT)
+             : glyph_is_artifact(glyph)                \
+                   ? artifact_to_obj(glyph_to_artifact(glyph))   \
+                   : glyph_is_normal_object(glyph)   \
+                         ? ((abs(glyph)) - GLYPH_OBJ_OFF) \
+                         : STRANGE_OBJECT)
 
 
 /*

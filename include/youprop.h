@@ -1,5 +1,5 @@
-/* GnollHack 4.0	youprop.h	$NHDT-Date: 1433291407 2015/06/03 00:30:07 $  $NHDT-Branch: master $:$NHDT-Revision: 1.23 $ */
-/* Copyright (c) 1989 Mike Threepoint				  */
+/* GnollHack 4.0    youprop.h    $NHDT-Date: 1433291407 2015/06/03 00:30:07 $  $NHDT-Branch: master $:$NHDT-Revision: 1.23 $ */
+/* Copyright (c) 1989 Mike Threepoint                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef YOUPROP_H
@@ -374,9 +374,9 @@
 #define Angel_warning (HAngel_warning || EAngel_warning)
 
 #define Any_warning (Undead_warning || Demon_warning || Orc_warning || Troll_warning \
-					|| Giant_warning || Dragon_warning || Elf_warning || Dwarf_warning \
-					|| Gnoll_warning || Human_warning || Lycanthrope_warning || Angel_warning \
-					|| Ogre_warning || Gnome_warning)
+                    || Giant_warning || Dragon_warning || Elf_warning || Dwarf_warning \
+                    || Gnoll_warning || Human_warning || Lycanthrope_warning || Angel_warning \
+                    || Ogre_warning || Gnome_warning)
 
 
 #define HSearching u.uprops[SEARCHING].intrinsic

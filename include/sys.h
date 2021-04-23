@@ -1,4 +1,4 @@
-/* GnollHack 4.0	sys.h	$NHDT-Date: 1449296291 2015/12/05 06:18:11 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.27 $ */
+/* GnollHack 4.0    sys.h    $NHDT-Date: 1449296291 2015/12/05 06:18:11 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.27 $ */
 /* Copyright (c) Kenneth Lorber, Kensington, Maryland, 2008. */
 /* GnollHack may be freely redistributed.  See license for details. */
 

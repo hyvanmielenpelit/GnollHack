@@ -1,4 +1,4 @@
-/* GnollHack 4.0	light.c	$NHDT-Date: 1446191876 2015/10/30 07:57:56 $  $NHDT-Branch: master $:$NHDT-Revision: 1.28 $ */
+/* GnollHack 4.0    light.c    $NHDT-Date: 1446191876 2015/10/30 07:57:56 $  $NHDT-Branch: master $:$NHDT-Revision: 1.28 $ */
 /* Copyright (c) Dean Luick, 1994                                       */
 /* GnollHack may be freely redistributed.  See license for details.       */
 
@@ -60,7 +60,7 @@ int range, type;
 anything *id;
 {
     light_source *ls;
-	int absrange = abs(range);
+    int absrange = abs(range);
 
     if (absrange > MAX_RADIUS || absrange < 1) {
         impossible("new_light_source:  illegal range %d", range);
@@ -235,26 +235,26 @@ struct monst*
 find_mid_ew(nid) //everywhere
 unsigned nid;
 {
-	struct monst* mtmp;
+    struct monst* mtmp;
 
-	if (!nid)
-		return &youmonst;
+    if (!nid)
+        return &youmonst;
 
-	mtmp = find_mid(nid, FM_FMON);
-	if (mtmp)
-		return mtmp;
-	else
-		mtmp = find_mid(nid, FM_MIGRATE);
+    mtmp = find_mid(nid, FM_FMON);
+    if (mtmp)
+        return mtmp;
+    else
+        mtmp = find_mid(nid, FM_MIGRATE);
 
-	if (mtmp)
-		return mtmp;
-	else
-		mtmp = find_mid(nid, FM_MYDOGS);
+    if (mtmp)
+        return mtmp;
+    else
+        mtmp = find_mid(nid, FM_MYDOGS);
 
-	if (mtmp)
-		return mtmp;
-	else
-		return (struct monst*) 0;
+    if (mtmp)
+        return mtmp;
+    else
+        return (struct monst*) 0;
 }
 
 
@@ -294,12 +294,12 @@ int fd, mode, range;
         count = maybe_write_ls(fd, range, FALSE);
         bwrite(fd, (genericptr_t) &count, sizeof count);
         actual = maybe_write_ls(fd, range, TRUE);
-		if (actual != count)
-		{
-			panic("counted %d light sources, wrote %d! [range=%d]", count,
-				actual, range);
-			return;
-		}
+        if (actual != count)
+        {
+            panic("counted %d light sources, wrote %d! [range=%d]", count,
+                actual, range);
+            return;
+        }
     }
 
     if (release_data(mode)) {
@@ -486,35 +486,35 @@ light_sources_sanity_check()
     unsigned int auint = 0;
 
     for (ls = light_base; ls; ls = ls->next)
-	{
-		if (!ls->id.a_monst)
-		{
-			panic("insane light source: no id!");
-			return;
-		}
-        if (ls->type == LS_OBJECT)
-		{
-            otmp = (struct obj *) ls->id.a_obj;
-			if(otmp)
-	            auint = otmp->o_id;
-
-			if (find_oid(auint) != otmp)
-			{
-				panic("insane light source: can't find obj #%u!", auint);
-				return;
-			}
+    {
+        if (!ls->id.a_monst)
+        {
+            panic("insane light source: no id!");
+            return;
         }
-		else if (ls->type == LS_MONSTER) 
-		{
-			mtmp = (struct monst *) ls->id.a_monst;
-			if(mtmp)
-	            auint = mtmp->m_id;
+        if (ls->type == LS_OBJECT)
+        {
+            otmp = (struct obj *) ls->id.a_obj;
+            if(otmp)
+                auint = otmp->o_id;
 
-			if (find_mid(auint, FM_EVERYWHERE) != mtmp)
-			{
-				panic("insane light source: can't find mon #%u!", auint);
-				return;
-			}
+            if (find_oid(auint) != otmp)
+            {
+                panic("insane light source: can't find obj #%u!", auint);
+                return;
+            }
+        }
+        else if (ls->type == LS_MONSTER) 
+        {
+            mtmp = (struct monst *) ls->id.a_monst;
+            if(mtmp)
+                auint = mtmp->m_id;
+
+            if (find_mid(auint, FM_EVERYWHERE) != mtmp)
+            {
+                panic("insane light source: can't find mon #%u!", auint);
+                return;
+            }
         }
         else if (ls->type == LS_LOCATION)
         {
@@ -526,9 +526,9 @@ light_sources_sanity_check()
             }
         }
         else
-		{
+        {
             panic("insane light source: bad ls type %d", ls->type);
-			return;
+            return;
         }
     }
 }
@@ -678,9 +678,9 @@ struct obj *obj;
 {
     return (boolean) (obj->lamplit && (is_obj_ignitable(obj)
                                     || artifact_light(obj)
-                                	|| obj_shines_magical_light(obj)
+                                    || obj_shines_magical_light(obj)
                                     || has_obj_mythic_magical_light(obj)
-		));
+        ));
 }
 
 /* copy the light source(s) attached to src, and attach it/them to dest */

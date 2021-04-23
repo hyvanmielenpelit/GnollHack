@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mplayer.c	$NHDT-Date: 1550524564 2019/02/18 21:16:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.26 $ */
+/* GnollHack 4.0    mplayer.c    $NHDT-Date: 1550524564 2019/02/18 21:16:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.26 $ */
 /*      Copyright (c) Izchak Miller, 1992.                        */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -142,10 +142,10 @@ register boolean special;
 
         mtmp->m_lev = (special ? rn1(16, 15) : rnd(16));
         
-		mtmp->mhpmax = d((int) mtmp->m_lev, 10)
+        mtmp->mhpmax = d((int) mtmp->m_lev, 10)
                                    + (special ? (30 + rnd(30)) : 30);
-		update_mon_maxhp(mtmp);
-		mtmp->mhp = mtmp->mhpmax;
+        update_mon_maxhp(mtmp);
+        mtmp->mhp = mtmp->mhpmax;
 
         if (special) {
             get_mplname(mtmp, nam);
@@ -246,17 +246,17 @@ register boolean special;
                 armor = rnd_class(PLATE_MAIL, CHAIN_MAIL);
             break;
         case PM_WIZARD:
-			armor = rn2(2) ? ROBE
-				: ROBE_OF_PROTECTION;
-			if (rn2(4))
+            armor = rn2(2) ? ROBE
+                : ROBE_OF_PROTECTION;
+            if (rn2(4))
                 weapon = rn2(2) ? QUARTERSTAFF : ATHAME;
             if (rn2(2)) {
                 cloak = CLOAK_OF_MAGIC_RESISTANCE;
             }
-			if (!rn2(3)) {
-				cloak = BRACERS_OF_DEFENSE;
-			}
-			if (!rn2(3))
+            if (!rn2(3)) {
+                cloak = BRACERS_OF_DEFENSE;
+            }
+            if (!rn2(3))
                 helm = HELM_OF_BRILLIANCE;
             shield = STRANGE_OBJECT;
             break;

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	windmain.c	$NHDT-Date: 1543465755 2018/11/29 04:29:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.101 $ */
+/* GnollHack 4.0    windmain.c    $NHDT-Date: 1543465755 2018/11/29 04:29:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.101 $ */
 /* Copyright (c) Derek S. Ray, 2015. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -130,9 +130,9 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     if (getcwd(orgdir, sizeof orgdir) == (char *) 0)
         error("GnollHack: current directory path too long");
     dir = nh_getenv("GNOLLHACKDIR");
-	if (dir == (char*)0)
-		dir = nh_getenv("NETHACKDIR");
-	if (dir == (char *) 0)
+    if (dir == (char*)0)
+        dir = nh_getenv("NETHACKDIR");
+    if (dir == (char *) 0)
         dir = nh_getenv("HACKDIR");
 #ifdef GNOLLHACK_SERVER
     if (dir == (char *) 0)
@@ -144,11 +144,11 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 
 #ifdef _MSC_VER
     if (IsDebuggerPresent())
-	{
+    {
         static char exepath[_MAX_PATH];
         /* check if we're running under the debugger so we can get to the right folder anyway */
         if (dir != (char *)0)
-		{
+        {
             char *top = (char *)0;
 
             if (strlen(dir) < (_MAX_PATH - 1))
@@ -156,13 +156,13 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
             top = strstr(exepath, "\\build\\.\\Debug");
             if (!top) top = strstr(exepath, "\\build\\.\\Release");
             if (top) 
-			{
+            {
                 *top = '\0';
                 if (strlen(exepath) < (_MAX_PATH - (strlen("\\binary\\") + 1)))
-				{
+                {
                     Strcat(exepath, "\\binary\\");
                     if (strlen(exepath) < (PATHLEN - 1))
-					{
+                    {
                         dir = exepath;
                     }
                 }
@@ -171,7 +171,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     }
 #endif
     if (dir != (char *)0) 
-	{
+    {
         int prefcnt;
         int fd;
         boolean have_syscf = FALSE;
@@ -186,12 +186,12 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         /* sysconf should be searched for in this location */
         envp = nh_getenv("COMMONPROGRAMFILES");
         if (envp)
-		{
+        {
             if ((sptr = index(envp, ';')) != 0)
                 *sptr = '\0';
 
             if (strlen(envp) > 0)
-			{
+            {
                 fqn_prefix[SYSCONFPREFIX] =
                     (char *) alloc(strlen(envp) + 10);
                 Strcpy(fqn_prefix[SYSCONFPREFIX], envp);
@@ -208,14 +208,14 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         /* Is there a SYSCF_FILE there? */
         fd = open(fqname(SYSCF_FILE, SYSCONFPREFIX, 0), O_RDONLY);
         if (fd >= 0)
-		{
+        {
             /* readable */
             close(fd);
             have_syscf = TRUE;
         }
 
         if (!have_syscf) 
-		{
+        {
             /* No SYSCF_FILE where there should be one, and
                without an installer, a user may not be able
                to place one there. So, let's try somewhere else... */
@@ -224,7 +224,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
             /* Is there a SYSCF_FILE there? */
             fd = open(fqname(SYSCF_FILE, SYSCONFPREFIX, 0), O_RDONLY);
             if (fd >= 0) 
-			{
+            {
                 /* readable */
                 close(fd);
                 have_syscf = TRUE;
@@ -235,12 +235,12 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
          * overridden */
         envp = nh_getenv("USERPROFILE");
         if (envp)
-		{
+        {
             if ((sptr = index(envp, ';')) != 0)
                 *sptr = '\0';
 
             if (strlen(envp) > 0)
-			{
+            {
                 fqn_prefix[CONFIGPREFIX] =
                     (char *) alloc(strlen(envp) + 2);
                 Strcpy(fqn_prefix[CONFIGPREFIX], envp);
@@ -249,7 +249,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         }
     }
     if (GUILaunched || IsDebuggerPresent())
-	{
+    {
         getreturn_enabled = TRUE;
     }
 
@@ -259,7 +259,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     initoptions();                  
 
     if (!validate_prefix_locations(failbuf))
-	{
+    {
         raw_printf("Some invalid directory locations were specified:\n\t%s\n",
                    failbuf);
         gnollhack_exit(EXIT_FAILURE);
@@ -280,7 +280,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
 
     windowtype = default_window_sys;
     if (!iflags.windowtype_locked)
-	{
+    {
 #if defined(TTY_GRAPHICS)
         Strcpy(default_window_sys, "tty");
 #else
@@ -294,7 +294,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     choose_windows(windowtype);
 
     if (!dlb_init()) 
-	{
+    {
         pline(
             "%s\n%s\n%s\n%s\n\nGnollHack was unable to open the required file "
             "\"%s\".%s",
@@ -325,7 +325,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     /* ASKS THE NAME HERE IF NOT SET YET */
     plnamesuffix();
 
-	set_playmode(); /* sets plname to "wizard" for wizard mode */
+    set_playmode(); /* sets plname to "wizard" for wizard mode */
     /* until the getlock code is resolved, override askname()'s
        setting of renameallowed; when False, player_selection()
        won't resent renaming as an option */
@@ -344,11 +344,11 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      */
     fd = create_levelfile(0, (char *) 0);
     if (fd < 0) 
-	{
+    {
         raw_print("Cannot create lock file");
     }
-	else 
-	{
+    else 
+    {
         hackpid = GetCurrentProcessId();
         (void)write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
         nhclose(fd);
@@ -366,10 +366,10 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      */
 attempt_restore:
     if ((fd = restore_saved_game()) >= 0)
-	{
+    {
 #ifdef NEWS
         if (iflags.news)
-		{
+        {
             display_file(NEWS, FALSE);
             iflags.news = FALSE;
         }
@@ -377,16 +377,16 @@ attempt_restore:
         pline("Restoring save file...");
         mark_synch(); /* flush output */
         if (dorecover(fd))
-		{
+        {
             resuming = TRUE; /* not starting new game */
             if (discover)
                 You("are in non-scoring discovery mode.");
             if (discover || wizard) 
-			{
+            {
                 if (yn_query("Do you want to keep the save file?") == 'n')
                     (void) delete_savefile();
                 else 
-				{
+                {
                     nh_compress(fqname(SAVEF, SAVEPREFIX, 0));
                 }
             }
@@ -394,43 +394,43 @@ attempt_restore:
     }
 
     if (!resuming) 
-	{
+    {
         /* new game:  start by choosing role, race, etc;
            player might change the hero's name while doing that,
            in which case we try to restore under the new name
            and skip selection this time if that didn't succeed */
         if (!iflags.renameinprogress) 
-		{
-			/* CHOOSE PLAYER ROLE AND RACE */
-			player_selection();
+        {
+            /* CHOOSE PLAYER ROLE AND RACE */
+            player_selection();
             if (program_state.exiting)
                 return program_state.exit_status;
             if (iflags.renameinprogress) 
-			{
+            {
             /* player has renamed the hero while selecting role;
             discard current lock file and create another for
             the new character name */
                 goto attempt_restore;
             }
         }
-		/* CHOOSE DIFFICULTY */
-		choose_game_difficulty();
+        /* CHOOSE DIFFICULTY */
+        choose_game_difficulty();
 
-		/* NEW GAME STARTS HERE */
+        /* NEW GAME STARTS HERE */
         newgame();
         if (discover)
             You("are in non-scoring discovery mode.");
     }
-	else
-	{
-		/* Call initializations that are part of newgame here when resuming a saved game */
-		encounter_init();
-		/* matcomps do not need to be initialized, because they have been saved as part of objects array */
-	}
+    else
+    {
+        /* Call initializations that are part of newgame here when resuming a saved game */
+        encounter_init();
+        /* matcomps do not need to be initialized, because they have been saved as part of objects array */
+    }
 
-	//	iflags.debug_fuzzer = TRUE;
+    //    iflags.debug_fuzzer = TRUE;
 
-	moveloop(resuming);
+    moveloop(resuming);
     //gnollhack_exit(EXIT_SUCCESS);
     /*NOTREACHED*/
     return EXIT_SUCCESS;
@@ -453,11 +453,11 @@ char *argv[];
         if (argcheck(argc, argv, ARG_DEBUG) == 1) {
             argc--;
             argv++;
-	    }
-	    if (argcheck(argc, argv, ARG_WINDOWS) == 1) {
-	        argc--;
-	        argv++;
-	    }
+        }
+        if (argcheck(argc, argv, ARG_WINDOWS) == 1) {
+            argc--;
+            argv++;
+        }
         if (argc > 1 && !strncmp(argv[1], "-d", 2) && argv[1][2] != 'e') {
             /* avoid matching "-dec" for DECgraphics; since the man page
              * says -d directory, hope nobody's using -desomething_else
@@ -702,9 +702,9 @@ fakeconsole(void)
             /* Bool rval; */
             AllocConsole();
             AttachConsole(GetCurrentProcessId());
-            /* 	rval = SetStdHandle(STD_OUTPUT_HANDLE, hWrite); */
-			(void)freopen("CON", "w", stdout);
-			(void)freopen("CON", "r", stdin);
+            /*     rval = SetStdHandle(STD_OUTPUT_HANDLE, hWrite); */
+            (void)freopen("CON", "w", stdout);
+            (void)freopen("CON", "r", stdin);
         }
         has_fakeconsole = TRUE;
     }
@@ -925,7 +925,7 @@ getlock()
             if (ci == 'y' || ci == 'n' || ci == 'Y' || ci == 'N') {
                 ct = 1;
                 c = ci;
-				break;
+                break;
             }
         }
     }
@@ -960,7 +960,7 @@ getlock()
 #if defined(CHDIR) && !defined(NOCWD_ASSUMPTIONS)
         chdirx(orgdir, 0);
 #endif
-	 /* Not sure what was the logic of this message --JG */
+     /* Not sure what was the logic of this message --JG */
      //   Sprintf(oops, "%s", "Cannot start a new game.");
      //   raw_print(oops);
     }

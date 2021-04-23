@@ -1,5 +1,5 @@
-/* GnollHack 4.0	sdlnuklear.h */
-/* Copyright (c) Janne Gustafsson, 2021.				  */
+/* GnollHack 4.0    sdlnuklear.h */
+/* Copyright (c) Janne Gustafsson, 2021.                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "general.h"

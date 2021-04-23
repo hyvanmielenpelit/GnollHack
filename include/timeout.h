@@ -1,5 +1,5 @@
-/* GnollHack 4.0	timeout.h	$NHDT-Date: 1432512775 2015/05/25 00:12:55 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
-/* Copyright 1994, Dean Luick					  */
+/* GnollHack 4.0    timeout.h    $NHDT-Date: 1432512775 2015/05/25 00:12:55 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* Copyright 1994, Dean Luick                      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef TIMEOUT_H
@@ -33,9 +33,9 @@ enum timeout_types {
     HATCH_EGG,
     FIG_TRANSFORM,
     MELT_ICE_AWAY,
-	ITEM_UNSUMMON,
-	MONSTER_UNSUMMON,
-	TIME_RESTART,
+    ITEM_UNSUMMON,
+    MONSTER_UNSUMMON,
+    TIME_RESTART,
 
     NUM_TIME_FUNCS
 };

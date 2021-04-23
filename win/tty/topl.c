@@ -1,4 +1,4 @@
-/* GnollHack 4.0	topl.c	$NHDT-Date: 1549333449 2019/02/05 02:24:09 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.44 $ */
+/* GnollHack 4.0    topl.c    $NHDT-Date: 1549333449 2019/02/05 02:24:09 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.44 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -295,11 +295,11 @@ char c;
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
 
-	if (cw == (struct WinDesc*) 0)
-	{
-		panic("Putsym window MESSAGE nonexistant");
-		return;
-	}
+    if (cw == (struct WinDesc*) 0)
+    {
+        panic("Putsym window MESSAGE nonexistant");
+        return;
+    }
 
     switch (c) {
     case '\b':

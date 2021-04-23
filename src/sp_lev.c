@@ -1,4 +1,4 @@
-/* GnollHack 4.0	sp_lev.c	$NHDT-Date: 1553787633 2019/03/28 15:40:33 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.111 $ */
+/* GnollHack 4.0    sp_lev.c    $NHDT-Date: 1553787633 2019/03/28 15:40:33 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.111 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -313,18 +313,18 @@ struct opvar *v;
     if (!st || !v)
         return;
 
-	if (!st->stackdata)
-	{
-		panic("splev_stack_push: no stackdata allocated?");
-		return;
-	}
+    if (!st->stackdata)
+    {
+        panic("splev_stack_push: no stackdata allocated?");
+        return;
+    }
     if (st->depth >= st->depth_alloc) 
-	{
+    {
         struct opvar **tmp = (struct opvar **) alloc(
            ((size_t)st->depth_alloc + SPLEV_STACK_RESERVE) * sizeof (struct opvar *));
 
         (void) memcpy(tmp, st->stackdata,
-			(size_t)st->depth_alloc * sizeof(struct opvar *));
+            (size_t)st->depth_alloc * sizeof(struct opvar *));
         Free(st->stackdata);
         st->stackdata = tmp;
         st->depth_alloc += SPLEV_STACK_RESERVE;
@@ -338,25 +338,25 @@ struct opvar *
 splev_stack_pop(st)
 struct splevstack *st;
 {
-	struct opvar *ret = NULL;
+    struct opvar *ret = NULL;
 
     if (!st)
         return ret;
 
     if (!st->stackdata)
-	{
+    {
         panic("splev_stack_pop: no stackdata allocated?");
-		return (struct opvar *)0;
-	}
+        return (struct opvar *)0;
+    }
 
     if (st->depth)
-	{
+    {
         st->depth--;
         ret = st->stackdata[st->depth];
         st->stackdata[st->depth] = NULL;
         return ret;
     }
-	else
+    else
         impossible("splev_stack_pop: empty stack?");
     return ret;
 }
@@ -371,14 +371,14 @@ struct splevstack *st;
     if (!st)
         return NULL;
     
-	if (!st->stackdata)
-	{
+    if (!st->stackdata)
+    {
         panic("splev_stack_reverse: no stackdata allocated?");
-		return (struct splevstack*)0;
-	}
+        return (struct splevstack*)0;
+    }
 
-	for (i = 0; i < (st->depth / 2); i++) 
-	{
+    for (i = 0; i < (st->depth / 2); i++) 
+    {
         tmp = st->stackdata[i];
         st->stackdata[i] = st->stackdata[st->depth - i - 1];
         st->stackdata[st->depth - i - 1] = tmp;
@@ -500,10 +500,10 @@ struct opvar *ov;
     struct opvar *tmpov;
 
     if (!ov)
-	{
-		panic("no opvar to clone");
-		return (struct opvar *)0;
-	}
+    {
+        panic("no opvar to clone");
+        return (struct opvar *)0;
+    }
 
     tmpov = (struct opvar *) alloc(sizeof(struct opvar));
     tmpov->spovartyp = ov->spovartyp;
@@ -547,16 +547,16 @@ struct opvar *ov;
             if ((tmp->svtyp & SPOVAR_ARRAY)) {
                 array_idx = opvar_var_conversion(coder,
                                                splev_stack_pop(coder->stack));
-				if (!array_idx || OV_typ(array_idx) != SPOVAR_INT)
-				{
-					panic("array idx not an int");
-					return (struct opvar*)0;
-				}
-				if (tmp->array_len < 1)
-				{
-					panic("array len < 1");
-					return (struct opvar*)0;
-				}
+                if (!array_idx || OV_typ(array_idx) != SPOVAR_INT)
+                {
+                    panic("array idx not an int");
+                    return (struct opvar*)0;
+                }
+                if (tmp->array_len < 1)
+                {
+                    panic("array len < 1");
+                    return (struct opvar*)0;
+                }
                 OV_i(array_idx) = (OV_i(array_idx) % tmp->array_len);
                 tmpov = opvar_clone(tmp->data.arrayvalues[OV_i(array_idx)]);
                 opvar_free(array_idx);
@@ -599,13 +599,13 @@ xchar typ;
         struct opvar *tmp = splev_stack_pop(coder->stack);
         struct opvar *ret = NULL;
 
-		if (!tmp)
-		{
-			panic("no value type %i in stack.", typ);
-			return (struct opvar*)0;
-		}
+        if (!tmp)
+        {
+            panic("no value type %i in stack.", typ);
+            return (struct opvar*)0;
+        }
         if (tmp->spovartyp == SPOVAR_VARIABLE)
-		{
+        {
             ret = opvar_var_conversion(coder, tmp);
             opvar_free(tmp);
             tmp = ret;
@@ -1100,20 +1100,20 @@ struct mkroom *croom;
     coord c;
 
     if (*x < 0 && *y < 0) 
-	{
+    {
         if (somexy(croom, &c))
-		{
+        {
             *x = c.x;
             *y = c.y;
-		}
-		else
-		{
-			panic("get_room_loc : can't find a place!");
-			return;
-		}
+        }
+        else
+        {
+            panic("get_room_loc : can't find a place!");
+            return;
+        }
     } 
-	else
-	{
+    else
+    {
         if (*x < 0)
             *x = rn2(croom->hx - croom->lx + 1);
         if (*y < 0)
@@ -1143,11 +1143,11 @@ packed_coord pos;
             get_room_loc(&try_x, &try_y, croom);
         } while (levl[try_x][try_y].typ != ROOM && levl[try_x][try_y].typ != GRASS && levl[try_x][try_y].typ != GROUND && ++trycnt <= 100);
 
-		if (trycnt > 100)
-		{
-			panic("get_free_room_loc:  can't find a place!");
-			return;
-		}
+        if (trycnt > 100)
+        {
+            panic("get_free_room_loc:  can't find a place!");
+            return;
+        }
     }
     *x = try_x, *y = try_y;
 }
@@ -1523,7 +1523,7 @@ struct mkroom *broom;
         default:
             x = y = 0;
             panic("create_door: No wall for door!");
-			return;
+            return;
             goto outdirloop;
         }
     outdirloop:
@@ -1782,11 +1782,11 @@ struct mkroom *croom;
         x = mtmp->mx, y = mtmp->my; /* sanity precaution */
         m->x = x, m->y = y;
         /* handle specific attributes for some special monsters */
-		if (m->name.str)
-		{
-			mtmp = christen_monst(mtmp, m->name.str);
-			mtmp->u_know_mname = 1; /* On special levels you know all generated monsters -- maybe should be specified later */
-		}
+        if (m->name.str)
+        {
+            mtmp = christen_monst(mtmp, m->name.str);
+            mtmp->u_know_mname = 1; /* On special levels you know all generated monsters -- maybe should be specified later */
+        }
         /*
          * This doesn't complain if an attempt is made to give a
          * non-mimic/non-shapechanger an appearance or to give a
@@ -1974,32 +1974,32 @@ struct mkroom *croom;
             mtmp->mstrategy |= STRAT_WAITFORU;
 
         if (m->cancelled)
-		{
-			mtmp->mprops[CANCELLED] = m->cancelled;
-		}
-		if (m->revived)
+        {
+            mtmp->mprops[CANCELLED] = m->cancelled;
+        }
+        if (m->revived)
             mtmp->mrevived = 1;
         if (m->avenge)
             mtmp->mavenge = 1;
         if (m->stunned)
-			mtmp->mprops[STUNNED] |= M_INTRINSIC_ACQUIRED;
-		if (m->confused)
-			mtmp->mprops[CONFUSION] |= M_INTRINSIC_ACQUIRED;
+            mtmp->mprops[STUNNED] |= M_INTRINSIC_ACQUIRED;
+        if (m->confused)
+            mtmp->mprops[CONFUSION] |= M_INTRINSIC_ACQUIRED;
         if (m->invis) 
-		{
-			mtmp->mprops[INVISIBILITY] |= M_INTRINSIC_ACQUIRED;
+        {
+            mtmp->mprops[INVISIBILITY] |= M_INTRINSIC_ACQUIRED;
         }
         if (m->blinded) 
-		{
-			mtmp->mprops[BLINDED] |= (m->blinded & M_TIMEOUT);
+        {
+            mtmp->mprops[BLINDED] |= (m->blinded & M_TIMEOUT);
         }
         if (m->paralyzed)
-		{
-			mtmp->mprops[PARALYZED] |= (m->paralyzed & M_TIMEOUT);
+        {
+            mtmp->mprops[PARALYZED] |= (m->paralyzed & M_TIMEOUT);
         }
         if (m->fleeing) 
-		{
-			/* Assume non-magical fleeing */
+        {
+            /* Assume non-magical fleeing */
             mtmp->mflee = 1;
             mtmp->mflee_timer = m->fleeing;
         }
@@ -2139,11 +2139,11 @@ struct mkroom *croom;
          */
         char oclass = (char) def_char_to_objclass(c);
 
-		if (oclass == MAX_OBJECT_CLASSES)
-		{
-			panic("create_object:  unexpected object class '%c'", c);
-			return;
-		}
+        if (oclass == MAX_OBJECT_CLASSES)
+        {
+            panic("create_object:  unexpected object class '%c'", c);
+            return;
+        }
         /* KMH -- Create piles of gold properly */
         if (oclass == COIN_CLASS)
             otmp = mkgold(0L, x, y);
@@ -2155,21 +2155,21 @@ struct mkroom *croom;
     if (o->speflags > 0)
         otmp->speflags = o->speflags;
 
-	if (o->enchantment != -127) /* That means NOT RANDOM! */
-	{
-		if(otmp->oclass == WAND_CLASS || objects[otmp->otyp].oc_charged)
-			otmp->charges = (schar)o->enchantment;
-		else if (otmp->otyp == TIN || otmp->otyp == MAGIC_LAMP || otmp->otyp == MAGIC_CANDLE || otmp->otyp == TOWEL || otmp->otyp == CANDELABRUM_OF_INVOCATION || otmp->oclass == SCROLL_CLASS)
-			otmp->special_quality = (schar)o->enchantment;
-		else if (otmp->otyp == CHEST && o->enchantment)
-			otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX;
-		else if (otmp->otyp == STATUE && o->enchantment)
-			otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
-		else if (otmp->otyp == EGG && o->enchantment)
-			otmp->speflags |= SPEFLAGS_YOURS;
-		else
-			otmp->enchantment = (schar)o->enchantment;
-	}
+    if (o->enchantment != -127) /* That means NOT RANDOM! */
+    {
+        if(otmp->oclass == WAND_CLASS || objects[otmp->otyp].oc_charged)
+            otmp->charges = (schar)o->enchantment;
+        else if (otmp->otyp == TIN || otmp->otyp == MAGIC_LAMP || otmp->otyp == MAGIC_CANDLE || otmp->otyp == TOWEL || otmp->otyp == CANDELABRUM_OF_INVOCATION || otmp->oclass == SCROLL_CLASS)
+            otmp->special_quality = (schar)o->enchantment;
+        else if (otmp->otyp == CHEST && o->enchantment)
+            otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX;
+        else if (otmp->otyp == STATUE && o->enchantment)
+            otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
+        else if (otmp->otyp == EGG && o->enchantment)
+            otmp->speflags |= SPEFLAGS_YOURS;
+        else
+            otmp->enchantment = (schar)o->enchantment;
+    }
     switch (o->curse_state) {
     case 1:
         bless(otmp);
@@ -2223,8 +2223,8 @@ struct mkroom *croom;
 
     if (o->trapped == 0 || o->trapped == 1)
         otmp->otrapped = o->trapped;
-	if (o->elemental_enchantment >= 0)
-		otmp->elemental_enchantment = (uchar)o->elemental_enchantment;
+    if (o->elemental_enchantment >= 0)
+        otmp->elemental_enchantment = (uchar)o->elemental_enchantment;
     if (o->exceptionality >= 0)
         otmp->exceptionality = (uchar)o->exceptionality;
     if (o->mythic_prefix >= 0)
@@ -2748,7 +2748,7 @@ int cnt;
     default:
         dx = dy = xx = yy = 0;
         panic("search_door: Bad wall!");
-		return FALSE;
+        return FALSE;
         break;
     }
     while (xx <= croom->hx + 1 && yy <= croom->hy + 1) {
@@ -2908,11 +2908,11 @@ fix_stair_rooms()
                 break;
             }
         }
-		if (i == nroom)
-		{
-			panic("Couldn't find dnstair room in fix_stair_rooms!");
-			return;
-		}
+        if (i == nroom)
+        {
+            panic("Couldn't find dnstair room in fix_stair_rooms!");
+            return;
+        }
     }
     if (xupstair
         && !((upstairs_room->lx <= xupstair && xupstair <= upstairs_room->hx)
@@ -2926,11 +2926,11 @@ fix_stair_rooms()
                 break;
             }
         }
-		if (i == nroom)
-		{
-			panic("Couldn't find upstair room in fix_stair_rooms!");
-			return;
-		}
+        if (i == nroom)
+        {
+            panic("Couldn't find upstair room in fix_stair_rooms!");
+            return;
+        }
     }
 }
 
@@ -3022,8 +3022,8 @@ boolean prefilled;
         case COURT:
         case ZOO:
         case BEEHIVE:
-		case LIBRARY:
-		case ANTHOLE:
+        case LIBRARY:
+        case ANTHOLE:
         case COCKNEST:
         case LEPREHALL:
         case MORGUE:
@@ -3031,7 +3031,7 @@ boolean prefilled;
         case ARMORY:
             fill_zoo(croom);
             break;
-		}
+        }
     }
     switch (croom->rtype) {
     case VAULT:
@@ -3049,10 +3049,10 @@ boolean prefilled;
     case BEEHIVE:
         level.flags.has_beehive = TRUE;
         break;
-	case LIBRARY:
-		level.flags.has_library = TRUE;
-		break;
-	case BARRACKS:
+    case LIBRARY:
+        level.flags.has_library = TRUE;
+        break;
+    case BARRACKS:
         level.flags.has_barracks = TRUE;
         break;
     case ARMORY:
@@ -3286,11 +3286,11 @@ sp_lev *lvl;
 
         opdat = NULL;
 
-		if (opcode < SPO_NULL || opcode >= MAX_SP_OPCODES)
-		{
-			panic("sp_level_loader: impossible opcode %i.", opcode);
-			return FALSE;
-		}
+        if (opcode < SPO_NULL || opcode >= MAX_SP_OPCODES)
+        {
+            panic("sp_level_loader: impossible opcode %i.", opcode);
+            return FALSE;
+        }
 
         if (opcode == SPO_PUSH) {
             size_t nsize;
@@ -3496,25 +3496,25 @@ struct sp_coder *coder;
     static const char nhFunc[] = "spo_return";
     struct opvar *params;
 
-	if (!coder->frame || !coder->frame->next)
-	{
-		panic("return: no frame.");
-		return;
-	}
+    if (!coder->frame || !coder->frame->next)
+    {
+        panic("return: no frame.");
+        return;
+    }
     if (!OV_pop_i(params))
         return;
     if (OV_i(params) < 0)
         return;
 
     while (OV_i(params)-- > 0) 
-	{
+    {
         splev_stack_push(coder->frame->next->stack,
                          splev_stack_pop(coder->stack));
     }
 
     /* pop the frame */
     if (coder->frame->next) 
-	{
+    {
         struct sp_frame *tmpframe = coder->frame->next;
         frame_del(coder->frame);
         coder->frame = tmpframe;
@@ -3568,10 +3568,10 @@ struct sp_coder *coder;
     if (old_n)
         levmsg[old_n - 1] = '\n';
     
-	if (lev_message)
+    if (lev_message)
         (void) memcpy((genericptr_t) levmsg, (genericptr_t) lev_message, old_n - 1);
     
-	(void) memcpy((genericptr_t) &levmsg[old_n], msg, n);
+    (void) memcpy((genericptr_t) &levmsg[old_n], msg, n);
     levmsg[old_n + n] = '\0';
     Free(lev_message);
     lev_message = levmsg;
@@ -3616,7 +3616,7 @@ struct sp_coder *coder;
 
     while ((nparams++ < (SP_M_V_END + 1)) && varparam && (OV_typ(varparam) == SPOVAR_INT)
            && (OV_i(varparam) >= 0) && (OV_i(varparam) < SP_M_V_END)) 
-	{
+    {
         struct opvar *parm = NULL;
 
         OV_pop(parm);
@@ -3709,13 +3709,13 @@ struct sp_coder *coder;
 
     if (!OV_pop_c(mcoord)) {
         panic("no monster coord?");
-		return;
-	}
+        return;
+    }
 
     if (!OV_pop_typ(id, SPOVAR_MONST)) {
         panic("no mon type");
-		return;
-	}
+        return;
+    }
 
     tmpmons.id = SP_MONST_PM(OV_i(id));
     tmpmons.class = SP_MONST_CLASS(OV_i(id));
@@ -3756,7 +3756,7 @@ struct sp_coder *coder;
     tmpobj.eroded = 0;
     tmpobj.locked = 0;
     tmpobj.trapped = -1;
-	tmpobj.elemental_enchantment = -1; /* random */
+    tmpobj.elemental_enchantment = -1; /* random */
     tmpobj.exceptionality = -1;  /* random */
     tmpobj.mythic_prefix = -1;  /* random */
     tmpobj.mythic_suffix = -1;  /* random */
@@ -3778,12 +3778,12 @@ struct sp_coder *coder;
 
     while ((nparams++ < (SP_O_V_END + 1)) && varparam && (OV_typ(varparam) == SPOVAR_INT)
            && (OV_i(varparam) >= 0) && (OV_i(varparam) < SP_O_V_END)) 
-	{
+    {
         struct opvar *parm;
 
         OV_pop(parm);
         switch (OV_i(varparam)) 
-		{
+        {
         case SP_O_V_NAME:
             if ((OV_typ(parm) == SPOVAR_STRING) && !tmpobj.name.str)
                 tmpobj.name.str = dupstr(OV_s(parm));
@@ -3946,10 +3946,10 @@ struct sp_coder *coder;
     }
 
     if (!OV_pop_typ(id, SPOVAR_OBJ))
-	{
+    {
         panic("no obj type");
-		return;
-	}
+        return;
+    }
 
     tmpobj.id = SP_OBJ_TYP(OV_i(id));
     tmpobj.class = SP_OBJ_CLASS(OV_i(id));
@@ -4296,7 +4296,7 @@ struct sp_coder *coder;
 
     if (coder->n_subroom > MAX_NESTED_ROOMS) {
         panic("Too deeply nested rooms?!");
-		return;
+        return;
     } else {
         struct opvar *rflags, *h, *w, *yalign, *xalign, *y, *x, *rlit,
             *chance, *rtype, *floortype, *floormaintype, *mtype;
@@ -5378,17 +5378,17 @@ genericptr_t arg;
     terr = *(terrain *) arg;
     SET_TYPLIT(x, y, terr.ter, terr.tlit);
 
-	
-	if (x >= COLNO)
-		x = COLNO - 1;
-	if (x < 0)
-		x = 0;
-	if (y >= ROWNO)
-		y = ROWNO - 1;
-	if (y < 0)
-		y = 0;
+    
+    if (x >= COLNO)
+        x = COLNO - 1;
+    if (x < 0)
+        x = 0;
+    if (y >= ROWNO)
+        y = ROWNO - 1;
+    if (y < 0)
+        y = 0;
 
-	/* handle doors and secret doors */
+    /* handle doors and secret doors */
     if (levl[x][y].typ == SDOOR || IS_DOOR(levl[x][y].typ)) {
         if (levl[x][y].typ == SDOOR)
             levl[x][y].doormask = D_CLOSED;
@@ -5910,8 +5910,8 @@ struct opvar *ov;
     static const char nhFunc[] = "generate_way_out_method";
     const int escapeitems[] = { PICK_AXE,
                                 DWARVISH_MATTOCK,
-								SPADE_OF_COLOSSAL_EXCAVATION,
-								WAN_DIGGING,
+                                SPADE_OF_COLOSSAL_EXCAVATION,
+                                WAN_DIGGING,
                                 WAN_TELEPORTATION,
                                 SCR_TELEPORTATION,
                                 RIN_TELEPORTATION };
@@ -6900,11 +6900,11 @@ struct sp_coder *coder;
     OV_pop_s(vname);
     OV_pop_i(arraylen);
 
-	if (!vname || !arraylen)
-	{
-		panic("no values for SPO_VAR_INIT");
-		return;
-	}
+    if (!vname || !arraylen)
+    {
+        panic("no values for SPO_VAR_INIT");
+        return;
+    }
 
     tmpvar = opvar_var_defined(coder, OV_s(vname));
 
@@ -6935,11 +6935,11 @@ struct sp_coder *coder;
         } else {
             /* redefined single value */
             OV_pop(vvalue);
-			if (tmpvar->svtyp != vvalue->spovartyp)
-			{
-				panic("redefining variable as different type");
-				return;
-			}
+            if (tmpvar->svtyp != vvalue->spovartyp)
+            {
+                panic("redefining variable as different type");
+                return;
+            }
             opvar_free(tmpvar->data.value);
             tmpvar->data.value = vvalue;
             tmpvar->array_len = 0;
@@ -6956,11 +6956,11 @@ struct sp_coder *coder;
         copy_variable:
             OV_pop(vvalue);
             tmp2 = opvar_var_defined(coder, OV_s(vvalue));
-			if (!tmp2)
-			{
-				panic("no copyable var");
-				return;
-			}
+            if (!tmp2)
+            {
+                panic("no copyable var");
+                return;
+            }
             tmpvar->svtyp = tmp2->svtyp;
             tmpvar->array_len = tmp2->array_len;
             if (tmpvar->array_len) {
@@ -6984,23 +6984,23 @@ struct sp_coder *coder;
                 (struct opvar **) alloc(sizeof(struct opvar *) * (size_t)idx);
             while (idx-- > 0) {
                 OV_pop(vvalue);
-				if (!vvalue)
-				{
-					panic("no value for arrayvariable");
-					return;
-				}
+                if (!vvalue)
+                {
+                    panic("no value for arrayvariable");
+                    return;
+                }
                 tmpvar->data.arrayvalues[idx] = vvalue;
             }
             tmpvar->svtyp = SPOVAR_ARRAY;
         } else {
             /* new single value */
             OV_pop(vvalue);
-			if (!vvalue)
-			{
-				panic("no value for variable");
-				return;
-			}
-			tmpvar->svtyp = OV_typ(vvalue);
+            if (!vvalue)
+            {
+                panic("no value for variable");
+                return;
+            }
+            tmpvar->svtyp = OV_typ(vvalue);
             tmpvar->data.value = vvalue;
             tmpvar->array_len = 0;
         }
@@ -7876,9 +7876,9 @@ const char *name;
     if (!fd)
         return FALSE;
     
-	Fread((genericptr_t) &vers_info, sizeof vers_info, 1, fd);
+    Fread((genericptr_t) &vers_info, sizeof vers_info, 1, fd);
     
-	if (!check_version(&vers_info, name, TRUE)) {
+    if (!check_version(&vers_info, name, TRUE)) {
         (void) dlb_fclose(fd);
         goto give_up;
     }

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	cmd.c	$NHDT-Date: 1557088405 2019/05/05 20:33:25 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.333 $ */
+/* GnollHack 4.0    cmd.c    $NHDT-Date: 1557088405 2019/05/05 20:33:25 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.333 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -405,7 +405,7 @@ doextlist(VOID_ARGS)
     char buf[BUFSZ], searchbuf[BUFSZ], promptbuf[QBUFSZ];
     winid menuwin;
     anything any;
-	menu_item* selected = (menu_item*)0;
+    menu_item* selected = (menu_item*)0;
     int n, pass;
     int menumode = 0, menushown[2], onelist = 0;
     boolean redisplay = TRUE, search = FALSE;
@@ -527,9 +527,9 @@ doextlist(VOID_ARGS)
         end_menu(menuwin, (char *) 0);
         n = select_menu(menuwin, PICK_ONE, &selected);
         if (n > 0 && selected)
-		{
+        {
             switch (selected[0].item.a_int) 
-			{
+            {
             case 1: /* 'a': toggle show/hide non-autocomplete */
                 menumode = 1 - menumode;  /* toggle 0 -> 1, 1 -> 0 */
                 redisplay = TRUE;
@@ -733,51 +733,51 @@ static struct available_ability available_ability_list[MAXABILITYNUM] = { {"", 0
 int
 doability(VOID_ARGS)
 {
-	int i = '\0';
+    int i = '\0';
 
-	menu_item* pick_list = (menu_item*)0;
-	winid win;
-	anything any;
+    menu_item* pick_list = (menu_item*)0;
+    winid win;
+    anything any;
 
-	any = zeroany;
-	win = create_nhwindow(NHW_MENU);
-	start_menu(win);
-		
+    any = zeroany;
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win);
+        
 
-	int abilitynum = 0;
+    int abilitynum = 0;
     int glyph = 0;
 
-	/* CHARACTER ABILITY INFORMATION */
-	any = zeroany;
-	add_menu(win, NO_GLYPH, &any,
-		0, 0, iflags.menu_headings,
-		"View Character Abilities              ", MENU_UNSELECTED);
+    /* CHARACTER ABILITY INFORMATION */
+    any = zeroany;
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, iflags.menu_headings,
+        "View Character Abilities              ", MENU_UNSELECTED);
 
-	strcpy(available_ability_list[abilitynum].name, "Statistics [you]");
-	available_ability_list[abilitynum].function_ptr = &docharacterstatistics;
+    strcpy(available_ability_list[abilitynum].name, "Statistics [you]");
+    available_ability_list[abilitynum].function_ptr = &docharacterstatistics;
 
-	any = zeroany;
-	any.a_int = abilitynum + 1;
+    any = zeroany;
+    any.a_int = abilitynum + 1;
     glyph = player_to_glyph_index(urole.rolenum, urace.racenum, flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
 
-	add_menu(win, glyph, &any,
-		0, 0, ATR_NONE,
-		available_ability_list[abilitynum].name, MENU_UNSELECTED);
+    add_menu(win, glyph, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-	abilitynum++;
+    abilitynum++;
 
 
-	strcpy(available_ability_list[abilitynum].name, "Attributes [attributes]");
-	available_ability_list[abilitynum].function_ptr = &doattributes;
+    strcpy(available_ability_list[abilitynum].name, "Attributes [attributes]");
+    available_ability_list[abilitynum].function_ptr = &doattributes;
 
-	any = zeroany;
+    any = zeroany;
     any.a_int = abilitynum + 1;
 
-	add_menu(win, NO_GLYPH, &any,
-		0, 0, ATR_NONE,
-		available_ability_list[abilitynum].name, MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-	abilitynum++;
+    abilitynum++;
 
     if (Upolyd)
     {
@@ -796,288 +796,288 @@ doability(VOID_ARGS)
         abilitynum++;
     }
 
-	/* SKILL-BASED ABILITIES */
-	any = zeroany;
-	add_menu(win, NO_GLYPH, &any,
-		0, 0, iflags.menu_headings,
-		"Use Skill-Based Abilities             ", MENU_UNSELECTED);
+    /* SKILL-BASED ABILITIES */
+    any = zeroany;
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, iflags.menu_headings,
+        "Use Skill-Based Abilities             ", MENU_UNSELECTED);
 
-	/* Ride */
-	strcpy(available_ability_list[abilitynum].name, "Ride");
-	available_ability_list[abilitynum].function_ptr = &doride;
+    /* Ride */
+    strcpy(available_ability_list[abilitynum].name, "Ride");
+    available_ability_list[abilitynum].function_ptr = &doride;
     available_ability_list[abilitynum].target_mtmp = 0;
 
-	any = zeroany;
+    any = zeroany;
     any.a_int = abilitynum + 1;
 
-	add_menu(win, NO_GLYPH, &any,
-		0, 0, ATR_NONE,
-		available_ability_list[abilitynum].name, MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-	abilitynum++;
+    abilitynum++;
 
-	/* Untrap */
-	strcpy(available_ability_list[abilitynum].name, "Untrap");
-	available_ability_list[abilitynum].function_ptr = &dountrap;
+    /* Untrap */
+    strcpy(available_ability_list[abilitynum].name, "Untrap");
+    available_ability_list[abilitynum].function_ptr = &dountrap;
     available_ability_list[abilitynum].target_mtmp = 0;
 
-	any = zeroany;
+    any = zeroany;
     any.a_int = abilitynum + 1;
 
-	add_menu(win, NO_GLYPH, &any,
-		0, 0, ATR_NONE,
-		available_ability_list[abilitynum].name, MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-	abilitynum++;
+    abilitynum++;
 
 
-	/* Monster abilities */
-	if (can_breathe(youmonst.data)
-		|| attacktype(youmonst.data, AT_SPIT) 
-		|| youmonst.data->mlet == S_NYMPH 
-		|| attacktype(youmonst.data, AT_GAZE) 
-		|| is_were(youmonst.data)
-		|| webmaker(youmonst.data)
-		|| is_hider(youmonst.data)
-		|| is_tentacled_one(youmonst.data)
-		|| u.umonnum == PM_GREMLIN
-		|| is_unicorn(youmonst.data)
-		|| youmonst.data->msound == MS_SHRIEK
-		|| youmonst.data->mlet == S_VAMPIRE
-		|| lays_eggs(youmonst.data)
-		)
-	{
-		any = zeroany;
-		add_menu(win, NO_GLYPH, &any,
-			0, 0, iflags.menu_headings,
-			"Use Monster Abilities                 ", MENU_UNSELECTED);
-		    
-		if (can_breathe(youmonst.data))
-		{
-			strcpy(available_ability_list[abilitynum].name, "Use breath weapon");
-			available_ability_list[abilitynum].function_ptr = &dobreathe;
+    /* Monster abilities */
+    if (can_breathe(youmonst.data)
+        || attacktype(youmonst.data, AT_SPIT) 
+        || youmonst.data->mlet == S_NYMPH 
+        || attacktype(youmonst.data, AT_GAZE) 
+        || is_were(youmonst.data)
+        || webmaker(youmonst.data)
+        || is_hider(youmonst.data)
+        || is_tentacled_one(youmonst.data)
+        || u.umonnum == PM_GREMLIN
+        || is_unicorn(youmonst.data)
+        || youmonst.data->msound == MS_SHRIEK
+        || youmonst.data->mlet == S_VAMPIRE
+        || lays_eggs(youmonst.data)
+        )
+    {
+        any = zeroany;
+        add_menu(win, NO_GLYPH, &any,
+            0, 0, iflags.menu_headings,
+            "Use Monster Abilities                 ", MENU_UNSELECTED);
+            
+        if (can_breathe(youmonst.data))
+        {
+            strcpy(available_ability_list[abilitynum].name, "Use breath weapon");
+            available_ability_list[abilitynum].function_ptr = &dobreathe;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (attacktype(youmonst.data, AT_SPIT))
-		{
-			strcpy(available_ability_list[abilitynum].name, "Spit");
-			available_ability_list[abilitynum].function_ptr = &dospit;
+        if (attacktype(youmonst.data, AT_SPIT))
+        {
+            strcpy(available_ability_list[abilitynum].name, "Spit");
+            available_ability_list[abilitynum].function_ptr = &dospit;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (youmonst.data->mlet == S_NYMPH)
-		{
-			strcpy(available_ability_list[abilitynum].name, "Remove chained items");
-			available_ability_list[abilitynum].function_ptr = &doremove;
+        if (youmonst.data->mlet == S_NYMPH)
+        {
+            strcpy(available_ability_list[abilitynum].name, "Remove chained items");
+            available_ability_list[abilitynum].function_ptr = &doremove;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (attacktype(youmonst.data, AT_GAZE))
-		{
-			char gazebuf[BUFSIZ];
-			Sprintf(gazebuf, "Gaze%s", youmonst.data->mlet == S_EYE ? " with central eye" : "");
-			strcpy(available_ability_list[abilitynum].name, gazebuf);
-			available_ability_list[abilitynum].function_ptr = &dogaze;
+        if (attacktype(youmonst.data, AT_GAZE))
+        {
+            char gazebuf[BUFSIZ];
+            Sprintf(gazebuf, "Gaze%s", youmonst.data->mlet == S_EYE ? " with central eye" : "");
+            strcpy(available_ability_list[abilitynum].name, gazebuf);
+            available_ability_list[abilitynum].function_ptr = &dogaze;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (attacktype(youmonst.data, AT_EYES))
-		{
-			strcpy(available_ability_list[abilitynum].name, "Gaze with one or more eyestalks");
-			available_ability_list[abilitynum].function_ptr = &doeyestalk;
+        if (attacktype(youmonst.data, AT_EYES))
+        {
+            strcpy(available_ability_list[abilitynum].name, "Gaze with one or more eyestalks");
+            available_ability_list[abilitynum].function_ptr = &doeyestalk;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (is_were(youmonst.data))
-		{
-			strcpy(available_ability_list[abilitynum].name, "Summon monsters");
-			available_ability_list[abilitynum].function_ptr = &dosummon;
+        if (is_were(youmonst.data))
+        {
+            strcpy(available_ability_list[abilitynum].name, "Summon monsters");
+            available_ability_list[abilitynum].function_ptr = &dosummon;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (webmaker(youmonst.data))
-		{
-			strcpy(available_ability_list[abilitynum].name, "Spin web");
-			available_ability_list[abilitynum].function_ptr = &dospinweb;
+        if (webmaker(youmonst.data))
+        {
+            strcpy(available_ability_list[abilitynum].name, "Spin web");
+            available_ability_list[abilitynum].function_ptr = &dospinweb;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (is_hider(youmonst.data))
-		{
-			strcpy(available_ability_list[abilitynum].name, "Hide");
-			available_ability_list[abilitynum].function_ptr = &dohide;
+        if (is_hider(youmonst.data))
+        {
+            strcpy(available_ability_list[abilitynum].name, "Hide");
+            available_ability_list[abilitynum].function_ptr = &dohide;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (is_tentacled_one(youmonst.data))
-		{
-			strcpy(available_ability_list[abilitynum].name, "Project a mind blast");
-			available_ability_list[abilitynum].function_ptr = &domindblast;
+        if (is_tentacled_one(youmonst.data))
+        {
+            strcpy(available_ability_list[abilitynum].name, "Project a mind blast");
+            available_ability_list[abilitynum].function_ptr = &domindblast;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (u.umonnum == PM_GREMLIN)
-		{
-			strcpy(available_ability_list[abilitynum].name, "Dry a fountain");
-			available_ability_list[abilitynum].function_ptr = &dodryfountain;
+        if (u.umonnum == PM_GREMLIN)
+        {
+            strcpy(available_ability_list[abilitynum].name, "Dry a fountain");
+            available_ability_list[abilitynum].function_ptr = &dodryfountain;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (is_unicorn(youmonst.data))
-		{
-			strcpy(available_ability_list[abilitynum].name, "Use your horn");
-			available_ability_list[abilitynum].function_ptr = &douseunicornhorn;
+        if (is_unicorn(youmonst.data))
+        {
+            strcpy(available_ability_list[abilitynum].name, "Use your horn");
+            available_ability_list[abilitynum].function_ptr = &douseunicornhorn;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (youmonst.data->msound == MS_SHRIEK)
-		{
-			strcpy(available_ability_list[abilitynum].name, "Shriek");
-			available_ability_list[abilitynum].function_ptr = &doshriek;
+        if (youmonst.data->msound == MS_SHRIEK)
+        {
+            strcpy(available_ability_list[abilitynum].name, "Shriek");
+            available_ability_list[abilitynum].function_ptr = &doshriek;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (youmonst.data->mlet == S_VAMPIRE)
-		{
-			strcpy(available_ability_list[abilitynum].name, "Assume another form");
-			available_ability_list[abilitynum].function_ptr = &dopoly;
+        if (youmonst.data->mlet == S_VAMPIRE)
+        {
+            strcpy(available_ability_list[abilitynum].name, "Assume another form");
+            available_ability_list[abilitynum].function_ptr = &dopoly;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
+            abilitynum++;
+        }
 
-		if (lays_eggs(youmonst.data) && flags.female)
-		{
-			Sprintf(available_ability_list[abilitynum].name, "%s an egg", eggs_in_water(youmonst.data) ? "Spawn" : "Lay");
-			available_ability_list[abilitynum].function_ptr = &dolayegg;
+        if (lays_eggs(youmonst.data) && flags.female)
+        {
+            Sprintf(available_ability_list[abilitynum].name, "%s an egg", eggs_in_water(youmonst.data) ? "Spawn" : "Lay");
+            available_ability_list[abilitynum].function_ptr = &dolayegg;
             available_ability_list[abilitynum].target_mtmp = 0;
 
-			any = zeroany;
+            any = zeroany;
             any.a_int = abilitynum + 1;
 
-			add_menu(win, NO_GLYPH, &any,
-				0, 0, ATR_NONE,
-				available_ability_list[abilitynum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
-			abilitynum++;
-		}
-	}
+            abilitynum++;
+        }
+    }
 
 
     /* Your steed's abilities */
@@ -1180,27 +1180,27 @@ doability(VOID_ARGS)
         }
     }
 
-	end_menu(win, "What do you want to do?");
+    end_menu(win, "What do you want to do?");
 
 
-	if (abilitynum <= 0)
-	{
-		You("don't have any special abilities.");
-		destroy_nhwindow(win);
-		return 0;
-	}
+    if (abilitynum <= 0)
+    {
+        You("don't have any special abilities.");
+        destroy_nhwindow(win);
+        return 0;
+    }
 
-	if (select_menu(win, PICK_ONE, &pick_list) > 0) 
-	{
-		i = pick_list->item.a_int;
-		free((genericptr_t)pick_list);
-	}
-	destroy_nhwindow(win);
+    if (select_menu(win, PICK_ONE, &pick_list) > 0) 
+    {
+        i = pick_list->item.a_int;
+        free((genericptr_t)pick_list);
+    }
+    destroy_nhwindow(win);
 
-	if (i == '\0' || i > abilitynum || i < 1)
-		return 0;
+    if (i == '\0' || i > abilitynum || i < 1)
+        return 0;
 
-	int res = 0;
+    int res = 0;
     int j = i - 1;
     if (available_ability_list[j].function_mtmp_ptr && available_ability_list[j].target_mtmp)
         res = (available_ability_list[j].function_mtmp_ptr)(available_ability_list[j].target_mtmp);
@@ -1210,7 +1210,7 @@ doability(VOID_ARGS)
 #undef MAXNAMELENGTH
 #undef MAXABILITYNUM
 
-	return res;
+    return res;
 }
 
 /* #monster command - use special monster ability while polymorphed */
@@ -1281,7 +1281,7 @@ enter_explore_mode(VOID_ARGS)
             clear_nhwindow(WIN_MESSAGE);
             You("are now in non-scoring explore mode.");
             discover = TRUE;
-			context.botl = context.botlx = 1;
+            context.botl = context.botlx = 1;
         } else {
             clear_nhwindow(WIN_MESSAGE);
             pline("Resuming normal game.");
@@ -1746,13 +1746,13 @@ wiz_map_levltyp(VOID_ARGS)
             Strcat(dsc, " armory");
         if (level.flags.has_beehive)
             Strcat(dsc, " hive");
-		if (level.flags.has_garden)
-			Strcat(dsc, " garden");
-		if (level.flags.has_library)
-			Strcat(dsc, " library");
-		if (level.flags.has_dragonlair)
-			Strcat(dsc, " dragonlair");
-		if (level.flags.has_swamp)
+        if (level.flags.has_garden)
+            Strcat(dsc, " garden");
+        if (level.flags.has_library)
+            Strcat(dsc, " library");
+        if (level.flags.has_dragonlair)
+            Strcat(dsc, " dragonlair");
+        if (level.flags.has_swamp)
             Strcat(dsc, " swamp");
         /* level flags */
         if (level.flags.noteleport)
@@ -1790,7 +1790,7 @@ wiz_map_levltyp(VOID_ARGS)
             Strcat(dsc, " sokoban");
         else if (u.uz.dnum == quest_dnum)
             Strcat(dsc, " quest");
-		else if (Is_knox(&u.uz))
+        else if (Is_knox(&u.uz))
             Strcat(dsc, " ludios");
         else if (u.uz.dnum == gehennom_dnum)
             Strcat(dsc, " gehennom");
@@ -1823,147 +1823,147 @@ wiz_map_levltyp(VOID_ARGS)
 STATIC_PTR int
 wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 {
-	if (wizard) 
-	{
-		pline("Starting writing monsters.csv...");
-		const char* fq_save = "monsters.csv";
-		int fd;
+    if (wizard) 
+    {
+        pline("Starting writing monsters.csv...");
+        const char* fq_save = "monsters.csv";
+        int fd;
 
-		(void)remove(fq_save);
+        (void)remove(fq_save);
 
 #ifdef MAC
-		fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
 #else
-		fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
 #endif
-		char buf[BUFSIZ];
+        char buf[BUFSIZ];
 
-		Sprintf(buf, "Name,Level,Move,AC,MC,MR,Alignment,GenoFlags,");
-		(void)write(fd, buf, strlen(buf));
-		for (int j = 0; j < NATTK; j++)
-		{
-			Sprintf(buf, "Attack%d,Type,DmgType,DiceNum,DieSize,DmgPlus,MCAdj,", j+1);
-			(void)write(fd, buf, strlen(buf));
+        Sprintf(buf, "Name,Level,Move,AC,MC,MR,Alignment,GenoFlags,");
+        (void)write(fd, buf, strlen(buf));
+        for (int j = 0; j < NATTK; j++)
+        {
+            Sprintf(buf, "Attack%d,Type,DmgType,DiceNum,DieSize,DmgPlus,MCAdj,", j+1);
+            (void)write(fd, buf, strlen(buf));
 
-		}
+        }
 
-		Sprintf(buf, ",CorpseWeight,Nutrition,SoundType,Size,STR,DEX,CON,INT,WIS,CHA,");
-		(void)write(fd, buf, strlen(buf));
+        Sprintf(buf, ",CorpseWeight,Nutrition,SoundType,Size,STR,DEX,CON,INT,WIS,CHA,");
+        (void)write(fd, buf, strlen(buf));
 
-		Sprintf(buf, "MResists,");
-		(void)write(fd, buf, strlen(buf));
-		for (int j = 0; j < 32; j++)
-		{
-			Sprintf(buf, "%d,", j+1);
-			(void)write(fd, buf, strlen(buf));
-		}
-		Sprintf(buf, "MConveys,");
-		(void)write(fd, buf, strlen(buf));
-		for (int j = 0; j < 32; j++)
-		{
-			Sprintf(buf, "%d,", j + 1);
-			(void)write(fd, buf, strlen(buf));
-		}
-		Sprintf(buf, "MFlags1,");
-		(void)write(fd, buf, strlen(buf));
-		for (int j = 0; j < 32; j++)
-		{
-			Sprintf(buf, "%d,", j + 1);
-			(void)write(fd, buf, strlen(buf));
-		}
-		Sprintf(buf, "MFlags2,");
-		(void)write(fd, buf, strlen(buf));
-		for (int j = 0; j < 32; j++)
-		{
-			Sprintf(buf, "%d,", j + 1);
-			(void)write(fd, buf, strlen(buf));
-		}
-		Sprintf(buf, "MFlags3,");
-		(void)write(fd, buf, strlen(buf));
-		for (int j = 0; j < 32; j++)
-		{
-			Sprintf(buf, "%d,", j + 1);
-			(void)write(fd, buf, strlen(buf));
-		}
-		Sprintf(buf, ",Difficulty,Color,");
-		(void)write(fd, buf, strlen(buf));
+        Sprintf(buf, "MResists,");
+        (void)write(fd, buf, strlen(buf));
+        for (int j = 0; j < 32; j++)
+        {
+            Sprintf(buf, "%d,", j+1);
+            (void)write(fd, buf, strlen(buf));
+        }
+        Sprintf(buf, "MConveys,");
+        (void)write(fd, buf, strlen(buf));
+        for (int j = 0; j < 32; j++)
+        {
+            Sprintf(buf, "%d,", j + 1);
+            (void)write(fd, buf, strlen(buf));
+        }
+        Sprintf(buf, "MFlags1,");
+        (void)write(fd, buf, strlen(buf));
+        for (int j = 0; j < 32; j++)
+        {
+            Sprintf(buf, "%d,", j + 1);
+            (void)write(fd, buf, strlen(buf));
+        }
+        Sprintf(buf, "MFlags2,");
+        (void)write(fd, buf, strlen(buf));
+        for (int j = 0; j < 32; j++)
+        {
+            Sprintf(buf, "%d,", j + 1);
+            (void)write(fd, buf, strlen(buf));
+        }
+        Sprintf(buf, "MFlags3,");
+        (void)write(fd, buf, strlen(buf));
+        for (int j = 0; j < 32; j++)
+        {
+            Sprintf(buf, "%d,", j + 1);
+            (void)write(fd, buf, strlen(buf));
+        }
+        Sprintf(buf, ",Difficulty,Color,");
+        (void)write(fd, buf, strlen(buf));
 
-		Sprintf(buf, ",STR-ToHit-Bonus,STR-DmgBonus,DEX-ToHit-Bonus,DEX-AC-Bonus,CON-HP-Bonus\n");
-		(void)write(fd, buf, strlen(buf));
+        Sprintf(buf, ",STR-ToHit-Bonus,STR-DmgBonus,DEX-ToHit-Bonus,DEX-AC-Bonus,CON-HP-Bonus\n");
+        (void)write(fd, buf, strlen(buf));
 
 
-		for (int i = LOW_PM; i < NUM_MONSTERS; i++)
-		{
-			Sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%lu,",
-				mons[i].mname, 
-				(int)mons[i].mlevel, (int)mons[i].mmove, 
-				(int)mons[i].ac, (int)mons[i].mc, (int)mons[i].mr, 
-				(int)mons[i].maligntyp, mons[i].geno);
-			(void)write(fd, buf, strlen(buf));
-			for (int j = 0; j < NATTK; j++)
-			{
-				Sprintf(buf, ",%d,%d,%d,%d,%d,%d,", 
-					mons[i].mattk[j].aatyp, mons[i].mattk[j].adtyp, 
-					mons[i].mattk[j].damn, mons[i].mattk[j].damd, mons[i].mattk[j].damp, 
-					mons[i].mattk[j].mcadj);
-				(void)write(fd, buf, strlen(buf));
-			}
+        for (int i = LOW_PM; i < NUM_MONSTERS; i++)
+        {
+            Sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%lu,",
+                mons[i].mname, 
+                (int)mons[i].mlevel, (int)mons[i].mmove, 
+                (int)mons[i].ac, (int)mons[i].mc, (int)mons[i].mr, 
+                (int)mons[i].maligntyp, mons[i].geno);
+            (void)write(fd, buf, strlen(buf));
+            for (int j = 0; j < NATTK; j++)
+            {
+                Sprintf(buf, ",%d,%d,%d,%d,%d,%d,", 
+                    mons[i].mattk[j].aatyp, mons[i].mattk[j].adtyp, 
+                    mons[i].mattk[j].damn, mons[i].mattk[j].damd, mons[i].mattk[j].damp, 
+                    mons[i].mattk[j].mcadj);
+                (void)write(fd, buf, strlen(buf));
+            }
 
-			Sprintf(buf, ",%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,", 
-				mons[i].cwt, mons[i].cnutrit, mons[i].msound, mons[i].msize, 
-				mons[i].str, mons[i].dex, mons[i].con, mons[i].intl, mons[i].wis, mons[i].cha);
-			(void)write(fd, buf, strlen(buf));
+            Sprintf(buf, ",%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,", 
+                mons[i].cwt, mons[i].cnutrit, mons[i].msound, mons[i].msize, 
+                mons[i].str, mons[i].dex, mons[i].con, mons[i].intl, mons[i].wis, mons[i].cha);
+            (void)write(fd, buf, strlen(buf));
 
-			Sprintf(buf, ",");
-			(void)write(fd, buf, strlen(buf));
-			for (int j = 0; j < 32; j++)
-			{
-				Sprintf(buf, "%d,", (mons[i].mresists & (1L << j)) ? 1 : 0);
-				(void)write(fd, buf, strlen(buf));
-			}
-			Sprintf(buf, ",");
-			(void)write(fd, buf, strlen(buf));
-			for (int j = 0; j < 32; j++)
-			{
-				Sprintf(buf, "%d,", (mons[i].mconveys & (1L << j)) ? 1 : 0);
-				(void)write(fd, buf, strlen(buf));
-			}
-			Sprintf(buf, ",");
-			(void)write(fd, buf, strlen(buf));
-			for (int j = 0; j < 32; j++)
-			{
-				Sprintf(buf, "%d,", (mons[i].mflags1 & (1L << j)) ? 1 : 0);
-				(void)write(fd, buf, strlen(buf));
-			}
-			Sprintf(buf, ",");
-			(void)write(fd, buf, strlen(buf));
-			for (int j = 0; j < 32; j++)
-			{
-				Sprintf(buf, "%d,", (mons[i].mflags2 & (1L << j)) ? 1 : 0);
-				(void)write(fd, buf, strlen(buf));
-			}
-			Sprintf(buf, ",");
-			(void)write(fd, buf, strlen(buf));
-			for (int j = 0; j < 32; j++)
-			{
-				Sprintf(buf, "%d,", (mons[i].mflags3 & (1L << j)) ? 1 : 0);
-				(void)write(fd, buf, strlen(buf));
-			}
-			Sprintf(buf, ",%d,%d,",
-				mons[i].difficulty, mons[i].mcolor);
-			(void)write(fd, buf, strlen(buf));
-			Sprintf(buf, ",%d,%d,%d,%d,%0.1f\n",
-				strength_tohit_bonus(mons[i].str), strength_damage_bonus(mons[i].str), dexterity_tohit_bonus(mons[i].dex), dexterity_ac_bonus(mons[i].dex),constitution_hp_bonus(mons[i].con));
-			(void)write(fd, buf, strlen(buf));
+            Sprintf(buf, ",");
+            (void)write(fd, buf, strlen(buf));
+            for (int j = 0; j < 32; j++)
+            {
+                Sprintf(buf, "%d,", (mons[i].mresists & (1L << j)) ? 1 : 0);
+                (void)write(fd, buf, strlen(buf));
+            }
+            Sprintf(buf, ",");
+            (void)write(fd, buf, strlen(buf));
+            for (int j = 0; j < 32; j++)
+            {
+                Sprintf(buf, "%d,", (mons[i].mconveys & (1L << j)) ? 1 : 0);
+                (void)write(fd, buf, strlen(buf));
+            }
+            Sprintf(buf, ",");
+            (void)write(fd, buf, strlen(buf));
+            for (int j = 0; j < 32; j++)
+            {
+                Sprintf(buf, "%d,", (mons[i].mflags1 & (1L << j)) ? 1 : 0);
+                (void)write(fd, buf, strlen(buf));
+            }
+            Sprintf(buf, ",");
+            (void)write(fd, buf, strlen(buf));
+            for (int j = 0; j < 32; j++)
+            {
+                Sprintf(buf, "%d,", (mons[i].mflags2 & (1L << j)) ? 1 : 0);
+                (void)write(fd, buf, strlen(buf));
+            }
+            Sprintf(buf, ",");
+            (void)write(fd, buf, strlen(buf));
+            for (int j = 0; j < 32; j++)
+            {
+                Sprintf(buf, "%d,", (mons[i].mflags3 & (1L << j)) ? 1 : 0);
+                (void)write(fd, buf, strlen(buf));
+            }
+            Sprintf(buf, ",%d,%d,",
+                mons[i].difficulty, mons[i].mcolor);
+            (void)write(fd, buf, strlen(buf));
+            Sprintf(buf, ",%d,%d,%d,%d,%0.1f\n",
+                strength_tohit_bonus(mons[i].str), strength_damage_bonus(mons[i].str), dexterity_tohit_bonus(mons[i].dex), dexterity_ac_bonus(mons[i].dex),constitution_hp_bonus(mons[i].con));
+            (void)write(fd, buf, strlen(buf));
 
-		}
-		(void)close(fd);
+        }
+        (void)close(fd);
 
-		pline("Done!");
-	}
-	else
-		pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_monsters)));
-	return 0;
+        pline("Done!");
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_monsters)));
+    return 0;
 }
 
 
@@ -2364,8 +2364,8 @@ wiz_intrinsic(VOID_ARGS)
         extern const struct propname {
             int prop_num;
             const char *prop_name;
-			const char* prop_noun;
-		} propertynames[]; /* timeout.c */
+            const char* prop_noun;
+        } propertynames[]; /* timeout.c */
         static const char wizintrinsic[] = "#wizintrinsic";
         static const char fmt[] = "You are%s %s.";
         winid win;
@@ -2412,7 +2412,7 @@ wiz_intrinsic(VOID_ARGS)
             newtimeout = oldtimeout + (long) amt;
             switch (p) {
             case SICK:
-			case FOOD_POISONED:
+            case FOOD_POISONED:
             case MUMMY_ROT:
             case SLIMED:
             case STONED:
@@ -2440,9 +2440,9 @@ wiz_intrinsic(VOID_ARGS)
             case SICK:
                 make_sick(newtimeout, wizintrinsic, TRUE);
                 break;
-			case FOOD_POISONED:
-				make_food_poisoned(newtimeout, wizintrinsic, TRUE);
-				break;
+            case FOOD_POISONED:
+                make_food_poisoned(newtimeout, wizintrinsic, TRUE);
+                break;
             case MUMMY_ROT:
                 make_mummy_rotted(newtimeout, wizintrinsic, TRUE);
                 break;
@@ -2689,10 +2689,10 @@ int final;
     case HALF_PHYSICAL_DAMAGE:
         category_name = "physical";
         break;
-	case HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS:
-		category_name = "physical";
-		break;
-	case HALF_SPELL_DAMAGE:
+    case HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS:
+        category_name = "physical";
+        break;
+    case HALF_SPELL_DAMAGE:
         category_name = "spell";
         break;
     default:
@@ -2727,12 +2727,12 @@ int propindx; /* index of a property which can be conveyed by worn item */
        handle artifacts and we deliberately ignore wielded items */
 
     for (o = invent; o; o = o->nobj) 
-	{
-		if (!object_stats_known(o))
-			continue;
+    {
+        if (!object_stats_known(o))
+            continue;
 
-		if (item_is_giving_power(o, propindx))
-			return TRUE;
+        if (item_is_giving_power(o, propindx))
+            return TRUE;
     }
     return FALSE;
 }
@@ -2741,12 +2741,12 @@ boolean
 object_stats_known(obj)
 struct obj* obj;
 {
-	if (!obj)
-		return FALSE;
+    if (!obj)
+        return FALSE;
 
-	boolean statsknown = ((!obj->oartifact && objects[obj->otyp].oc_name_known) || (obj->oartifact && obj->aknown && obj->nknown));
-	boolean dknown = obj->dknown;
-	return (statsknown && dknown);
+    boolean statsknown = ((!obj->oartifact && objects[obj->otyp].oc_name_known) || (obj->oartifact && obj->aknown && obj->nknown));
+    boolean dknown = obj->dknown;
+    return (statsknown && dknown);
 }
 
 
@@ -3004,7 +3004,7 @@ int final;
         }
         you_have(buf, "");
     }
-	
+    
 
 #ifdef SCORE_ON_BOTL
     if (flags.showscore) {
@@ -3070,10 +3070,10 @@ int final;
     Sprintf(buf, "%d", u.uac);
     enl_msg("Your armor class ", "is ", "was ", buf, "");
 
-	Sprintf(buf, "%d (%d%% chance)", u.umc, magic_negation_percentage(u.umc));
-	enl_msg("Your magic cancellation ", "is ", "was ", buf, "");
+    Sprintf(buf, "%d (%d%% chance)", u.umc, magic_negation_percentage(u.umc));
+    enl_msg("Your magic cancellation ", "is ", "was ", buf, "");
 
-	/* gold; similar to doprgold(#seegold) but without shop billing info;
+    /* gold; similar to doprgold(#seegold) but without shop billing info;
        same amount as shown on status line which ignores container contents */
     {
         static const char Your_wallet[] = "Your wallet ";
@@ -3108,16 +3108,16 @@ int final;
         Strcpy(buf, "off");
     enl_msg("Autopickup ", "is ", "was ", buf, "");
 
-	const char* game_dif_text = get_game_difficulty_text(context.game_difficulty);
-	strcpy(buf, game_dif_text);
-	double monster_damage_mult = 1;
-	double monster_hp_mult = 1;
-	get_game_difficulty_multipliers(&monster_damage_mult, &monster_hp_mult);
-	int pct_monster_dmg_mult = (int)(monster_damage_mult * 100);
-	int pct_player_dmg_mult = (int)((1 / monster_hp_mult) * 100);
-	char difficultybuf[BUFSIZ];
-	Sprintf(difficultybuf, " (%d%% monster damage, %d%% player damage)", pct_monster_dmg_mult, pct_player_dmg_mult);
-	enl_msg("Your game difficulty ", "is ", "was ", buf, difficultybuf);
+    const char* game_dif_text = get_game_difficulty_text(context.game_difficulty);
+    strcpy(buf, game_dif_text);
+    double monster_damage_mult = 1;
+    double monster_hp_mult = 1;
+    get_game_difficulty_multipliers(&monster_damage_mult, &monster_hp_mult);
+    int pct_monster_dmg_mult = (int)(monster_damage_mult * 100);
+    int pct_player_dmg_mult = (int)((1 / monster_hp_mult) * 100);
+    char difficultybuf[BUFSIZ];
+    Sprintf(difficultybuf, " (%d%% monster damage, %d%% player damage)", pct_monster_dmg_mult, pct_player_dmg_mult);
+    enl_msg("Your game difficulty ", "is ", "was ", buf, difficultybuf);
 
 
 }
@@ -3168,8 +3168,8 @@ int mode, final, attrindx;
             hide_innate_value = TRUE;
     }
 
-	if (AFIXMIN(attrindx) > 0 || AFIXMAX(attrindx) > 0)
-		hide_innate_value = TRUE;
+    if (AFIXMIN(attrindx) > 0 || AFIXMAX(attrindx) > 0)
+        hide_innate_value = TRUE;
 
     /* note: final disclosure includes MAGICENLIGHTENTMENT */
     if ((mode & MAGICENLIGHTENMENT) && !Upolyd)
@@ -3216,47 +3216,47 @@ int mode, final, attrindx;
             Strcat(valubuf, ")");
     }
 
-	if (attrindx == A_STR)
-	{
-		int currstr = ACURR(A_STR);
-		int tohitbonus_constant = (currstr < STR18(100) ? strength_tohit_bonus(min(18, currstr)) : strength_tohit_bonus(currstr));
-		int tohitbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 1 : 0);
-		int dmgbonus_constant = (currstr < STR18(100) ? strength_damage_bonus(min(18, currstr)) : strength_damage_bonus(currstr));
-		int dmgbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 2 : 0);
-		//int random_chance = ((currstr > 18 && currstr < STR18(100)) ? currstr - 18 : 0);
-		char tohitbuf[BUFSIZ];
-		char dmgbuf[BUFSIZ];
+    if (attrindx == A_STR)
+    {
+        int currstr = ACURR(A_STR);
+        int tohitbonus_constant = (currstr < STR18(100) ? strength_tohit_bonus(min(18, currstr)) : strength_tohit_bonus(currstr));
+        int tohitbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 1 : 0);
+        int dmgbonus_constant = (currstr < STR18(100) ? strength_damage_bonus(min(18, currstr)) : strength_damage_bonus(currstr));
+        int dmgbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 2 : 0);
+        //int random_chance = ((currstr > 18 && currstr < STR18(100)) ? currstr - 18 : 0);
+        char tohitbuf[BUFSIZ];
+        char dmgbuf[BUFSIZ];
 
-		Sprintf(tohitbuf, "-%d", tohitbonus_constant + tohitbonus_random);
-		Sprintf(dmgbuf, "-%d", dmgbonus_constant + dmgbonus_random);
+        Sprintf(tohitbuf, "-%d", tohitbonus_constant + tohitbonus_random);
+        Sprintf(dmgbuf, "-%d", dmgbonus_constant + dmgbonus_random);
 
-		Sprintf(eos(valubuf), ": %s%d%s to-hit %s and %s%d%s damage %s", 
-			tohitbonus_constant >= 0 ? "+" : "",
-			tohitbonus_constant,
-			tohitbonus_random ? tohitbuf : "",
-			tohitbonus_constant >= 0 ? "bonus" : "penalty",
-			dmgbonus_constant >= 0 ? "+" : "",
-			dmgbonus_constant,
-			dmgbonus_random ? dmgbuf : "",
-			dmgbonus_constant >= 0 ? "bonus" : "penalty"
-			);
-	}
-	else if (attrindx == A_DEX)
-	{
-		int tohitbonus = dexterity_tohit_bonus(ACURR(A_DEX));
-		int acbonus = -dexterity_ac_bonus(ACURR(A_DEX));
+        Sprintf(eos(valubuf), ": %s%d%s to-hit %s and %s%d%s damage %s", 
+            tohitbonus_constant >= 0 ? "+" : "",
+            tohitbonus_constant,
+            tohitbonus_random ? tohitbuf : "",
+            tohitbonus_constant >= 0 ? "bonus" : "penalty",
+            dmgbonus_constant >= 0 ? "+" : "",
+            dmgbonus_constant,
+            dmgbonus_random ? dmgbuf : "",
+            dmgbonus_constant >= 0 ? "bonus" : "penalty"
+            );
+    }
+    else if (attrindx == A_DEX)
+    {
+        int tohitbonus = dexterity_tohit_bonus(ACURR(A_DEX));
+        int acbonus = -dexterity_ac_bonus(ACURR(A_DEX));
 
-		Sprintf(eos(valubuf), ": %s%d to-hit %s and %s%d AC %s",
-			tohitbonus >= 0 ? "+" : "", tohitbonus, tohitbonus >= 0 ? "bonus" : "penalty",
-			acbonus >= 0 ? "+" : "", acbonus, acbonus <= 0 ? "bonus" : "penalty");
-	}
-	else if (attrindx == A_CON)
-	{
-		double hpbonus = constitution_hp_bonus(ACURR(A_CON));
+        Sprintf(eos(valubuf), ": %s%d to-hit %s and %s%d AC %s",
+            tohitbonus >= 0 ? "+" : "", tohitbonus, tohitbonus >= 0 ? "bonus" : "penalty",
+            acbonus >= 0 ? "+" : "", acbonus, acbonus <= 0 ? "bonus" : "penalty");
+    }
+    else if (attrindx == A_CON)
+    {
+        double hpbonus = constitution_hp_bonus(ACURR(A_CON));
 
-		Sprintf(eos(valubuf), ": %s%0.1f HP %s per level",
-			hpbonus >= 0 ? "+" : "", hpbonus, hpbonus >= 0 ? "bonus" : "penalty");
-	}
+        Sprintf(eos(valubuf), ": %s%0.1f HP %s per level",
+            hpbonus >= 0 ? "+" : "", hpbonus, hpbonus >= 0 ? "bonus" : "penalty");
+    }
 
     enl_msg(subjbuf, "is ", "was ", valubuf, "");
 }
@@ -3278,7 +3278,7 @@ int final;
                            && !strcmp(killer.name, "riding accident")));
     const char *steedname = (!Riding ? (char *) 0
                       : x_monnam(u.usteed, is_tame(u.usteed) ? ARTICLE_YOUR : ARTICLE_THE, (char *) 0,
-						(SUPPRESS_SADDLE | SUPPRESS_HALLUCINATION), FALSE));
+                        (SUPPRESS_SADDLE | SUPPRESS_HALLUCINATION), FALSE));
 
     /*\
      * Status (many are abbreviated on bottom line; others are or
@@ -3314,7 +3314,7 @@ int final;
         enl_msg(youtoo, are, were, "flying", !(magic || is_innate(FLYING) || cause_known(FLYING)) ? "" : from_what(FLYING));
     }
 
-	if (Underwater) {
+    if (Underwater) {
         you_are("underwater", "");
     } else if (u.uinwater) {
         you_are(Swimming ? "swimming" : "in water", !(magic || is_innate(SWIMMING) || cause_known(SWIMMING)) ? "" : from_what(SWIMMING));
@@ -3341,22 +3341,22 @@ int final;
         you_are(buf, !(magic || cause_known(STRANGLED)) ? "" : from_what(STRANGLED));
     }
 
-	if (u.uburied)
-	{
-		you_are("buried", "");
-	}
-	if (Airless_environment)
-	{
-		Strcpy(buf, "in an airless environment");
-			if (wizard)
-				Sprintf(eos(buf), " (%ld)", (HAirless_environment & TIMEOUT));
-			you_are(buf, from_what(AIRLESS_ENVIRONMENT));
-	}
+    if (u.uburied)
+    {
+        you_are("buried", "");
+    }
+    if (Airless_environment)
+    {
+        Strcpy(buf, "in an airless environment");
+            if (wizard)
+                Sprintf(eos(buf), " (%ld)", (HAirless_environment & TIMEOUT));
+            you_are(buf, from_what(AIRLESS_ENVIRONMENT));
+    }
 
-	if (Sick) 
+    if (Sick) 
         you_are("terminally sick from illness", "");
-	if (FoodPoisoned)
-		you_are("terminally sick from food poisoning", "");
+    if (FoodPoisoned)
+        you_are("terminally sick from food poisoning", "");
     if (MummyRot)
         you_are("sick from mummy rot", "");
     if (Vomiting)
@@ -3460,15 +3460,15 @@ int final;
         if (magic || cause_known(FUMBLING))
             enl_msg(You_, "fumble", "fumbled", "", from_what(FUMBLING));
     }
-	if (Laughing) {
-		if (magic || cause_known(LAUGHING))
-			enl_msg(You_, "laugh uncontrollably", "laughed uncontrollably", "", from_what(LAUGHING));
-	}
-	if (OddIdeas) {
-		if (magic || cause_known(ODD_IDEAS))
-			enl_msg(You_, "get visionary ideas", "got visionary ideas", "", from_what(ODD_IDEAS));
-	}
-	if (Sleepy) {
+    if (Laughing) {
+        if (magic || cause_known(LAUGHING))
+            enl_msg(You_, "laugh uncontrollably", "laughed uncontrollably", "", from_what(LAUGHING));
+    }
+    if (OddIdeas) {
+        if (magic || cause_known(ODD_IDEAS))
+            enl_msg(You_, "get visionary ideas", "got visionary ideas", "", from_what(ODD_IDEAS));
+    }
+    if (Sleepy) {
         if (magic || cause_known(SLEEPY)) {
             Strcpy(buf, from_what(SLEEPY));
             if (wizard)
@@ -3559,9 +3559,9 @@ int final;
      * TODO?  Maybe merge wielding line and skill line into one sentence.
      */
     if ((wtype = uwep_skill_type()) != P_NONE) 
-	{
-		if (wtype == P_MARTIAL_ARTS)
-			wtype = P_BARE_HANDED_COMBAT; /* Martial arts is separately below */
+    {
+        if (wtype == P_MARTIAL_ARTS)
+            wtype = P_BARE_HANDED_COMBAT; /* Martial arts is separately below */
 
         char sklvlbuf[20];
         int sklvl = P_SKILL_LEVEL(wtype);
@@ -3574,13 +3574,13 @@ int final;
         /* "you have no/basic/expert/master/grand-master skill with <skill>"
            or "you are unskilled/skilled in <skill>" */
 
-		int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
-		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
+        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
+        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
 
         Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
                 hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >=0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
 
-		if (can_advance(wtype, FALSE))
+        if (can_advance(wtype, FALSE))
             Sprintf(eos(buf), " and %s that",
                     !final ? "can enhance" : "could have enhanced");
         if (hav)
@@ -3589,80 +3589,80 @@ int final;
             you_are(buf, "");
     }
 
-	if (!uwep && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
-	{
-		wtype = P_MARTIAL_ARTS;
-		char sklvlbuf[20];
-		int sklvl = P_SKILL_LEVEL(wtype);
-		boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
+    if (!uwep && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
+    {
+        wtype = P_MARTIAL_ARTS;
+        char sklvlbuf[20];
+        int sklvl = P_SKILL_LEVEL(wtype);
+        boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
 
-		if (sklvl == P_ISRESTRICTED)
-			Strcpy(sklvlbuf, "no");
-		else
-			(void)lcase(skill_level_name(wtype, sklvlbuf, FALSE));
-		/* "you have no/basic/expert/master/grand-master skill with <skill>"
-		   or "you are unskilled/skilled in <skill>" */
+        if (sklvl == P_ISRESTRICTED)
+            Strcpy(sklvlbuf, "no");
+        else
+            (void)lcase(skill_level_name(wtype, sklvlbuf, FALSE));
+        /* "you have no/basic/expert/master/grand-master skill with <skill>"
+           or "you are unskilled/skilled in <skill>" */
 
-		int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
-		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
+        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
+        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
 
-		Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
-			hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
+        Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
+            hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
 
-		if (can_advance(wtype, FALSE))
-			Sprintf(eos(buf), " and %s that",
-				!final ? "can enhance" : "could have enhanced");
-		if (hav)
-			you_have(buf, "");
-		else
-			you_are(buf, "");
-	}
+        if (can_advance(wtype, FALSE))
+            Sprintf(eos(buf), " and %s that",
+                !final ? "can enhance" : "could have enhanced");
+        if (hav)
+            you_have(buf, "");
+        else
+            you_are(buf, "");
+    }
 
-	if (!uwep)
-	{
-		if (martial_bonus())
-			wtype = P_MARTIAL_ARTS;
-		else
-			wtype = P_BARE_HANDED_COMBAT;
+    if (!uwep)
+    {
+        if (martial_bonus())
+            wtype = P_MARTIAL_ARTS;
+        else
+            wtype = P_BARE_HANDED_COMBAT;
 
-		char mbuf[BUFSZ];
-		strcpy(mbuf, "");
-		if (martial_bonus())
-		{
-			int multihitchance = martial_arts_multishot_percentage_chance(P_SKILL_LEVEL(wtype));
-			Sprintf(mbuf, ", %d%% double-hit chance", multihitchance); // due to% s", multihitchance, skill_name(wtype, TRUE));
-		}
-		Sprintf(buf, "fighting weaponless (%s%s)", martial_bonus() ? "full strength bonus" : "half strength damage bonus", mbuf);
-		you_are(buf, "");
-	}
+        char mbuf[BUFSZ];
+        strcpy(mbuf, "");
+        if (martial_bonus())
+        {
+            int multihitchance = martial_arts_multishot_percentage_chance(P_SKILL_LEVEL(wtype));
+            Sprintf(mbuf, ", %d%% double-hit chance", multihitchance); // due to% s", multihitchance, skill_name(wtype, TRUE));
+        }
+        Sprintf(buf, "fighting weaponless (%s%s)", martial_bonus() ? "full strength bonus" : "half strength damage bonus", mbuf);
+        you_are(buf, "");
+    }
 
-	if (u.twoweap) {
-		wtype = P_TWO_WEAPON_COMBAT;
-		char sklvlbuf[20];
-		int sklvl = P_SKILL_LEVEL(wtype);
-		boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
+    if (u.twoweap) {
+        wtype = P_TWO_WEAPON_COMBAT;
+        char sklvlbuf[20];
+        int sklvl = P_SKILL_LEVEL(wtype);
+        boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
 
-		if (sklvl == P_ISRESTRICTED)
-			Strcpy(sklvlbuf, "no");
-		else
-			(void)lcase(skill_level_name(wtype, sklvlbuf, FALSE));
-		/* "you have no/basic/expert/master/grand-master skill with <skill>"
-		   or "you are unskilled/skilled in <skill>" */
+        if (sklvl == P_ISRESTRICTED)
+            Strcpy(sklvlbuf, "no");
+        else
+            (void)lcase(skill_level_name(wtype, sklvlbuf, FALSE));
+        /* "you have no/basic/expert/master/grand-master skill with <skill>"
+           or "you are unskilled/skilled in <skill>" */
 
-		int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
-		int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
+        int hitbonus = weapon_skill_hit_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
+        int dmgbonus = weapon_skill_dmg_bonus(uwep, wtype, FALSE); /* Gives only pure skill bonuses */
 
-		Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
-			hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
+        Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
+            hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
 
-		if (can_advance(wtype, FALSE))
-			Sprintf(eos(buf), " and %s that",
-				!final ? "can enhance" : "could have enhanced");
-		if (hav)
-			you_have(buf, "");
-		else
-			you_are(buf, "");
-	}
+        if (can_advance(wtype, FALSE))
+            Sprintf(eos(buf), " and %s that",
+                !final ? "can enhance" : "could have enhanced");
+        if (hav)
+            you_have(buf, "");
+        else
+            you_are(buf, "");
+    }
 
     /* report 'nudity' */
     if (!uarm && !uarmu && !uarmc && !uarms && !uarmg && !uarmf && !uarmh && !uarmo && !uarmb) {
@@ -3784,21 +3784,21 @@ int final;
 
     if (Sleep_resistance)
         you_are("sleep resistant", from_what(SLEEP_RESISTANCE));
-	if (Disint_resistance)
+    if (Disint_resistance)
         you_are("disintegration resistant", from_what(DISINTEGRATION_RESISTANCE));
-	if (Death_resistance)
-		you_are("immune to death attacks", from_what(DEATH_RESISTANCE));
-	if (Charm_resistance)
-		you_are("immune to charming", from_what(CHARM_RESISTANCE));
-	if (Fear_resistance)
-		you_are("immune to fear", from_what(FEAR_RESISTANCE));
-	if (Mind_shielding)
-		you_are("mind-shielded", from_what(MIND_SHIELDING));
-	if (Lycanthropy_resistance)
-		you_are("immune to lycanthropy", from_what(LYCANTHROPY_RESISTANCE));
-	if (Curse_resistance)
-		you_are("protected from curses", from_what(CURSE_RESISTANCE));
-	if (Poison_resistance)
+    if (Death_resistance)
+        you_are("immune to death attacks", from_what(DEATH_RESISTANCE));
+    if (Charm_resistance)
+        you_are("immune to charming", from_what(CHARM_RESISTANCE));
+    if (Fear_resistance)
+        you_are("immune to fear", from_what(FEAR_RESISTANCE));
+    if (Mind_shielding)
+        you_are("mind-shielded", from_what(MIND_SHIELDING));
+    if (Lycanthropy_resistance)
+        you_are("immune to lycanthropy", from_what(LYCANTHROPY_RESISTANCE));
+    if (Curse_resistance)
+        you_are("protected from curses", from_what(CURSE_RESISTANCE));
+    if (Poison_resistance)
         you_are("poison resistant", from_what(POISON_RESISTANCE));
 
     if (Acid_immunity)
@@ -3824,11 +3824,11 @@ int final;
         you_are("immune to sickness", from_what(SICK_RESISTANCE));
     if (Stone_resistance)
         you_are("petrification resistant", from_what(STONE_RESISTANCE));
-	if (Stun_resistance)
-		you_are("stun resistant", from_what(STUN_RESISTANCE));
-	if (Bisection_resistance)
-		you_cannot("be bisected", from_what(BISECTION_RESISTANCE));
-	if (Halluc_resistance)
+    if (Stun_resistance)
+        you_are("stun resistant", from_what(STUN_RESISTANCE));
+    if (Bisection_resistance)
+        you_cannot("be bisected", from_what(BISECTION_RESISTANCE));
+    if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",
                 from_what(HALLUC_RES));
     if (u.uedibility || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
@@ -3843,23 +3843,23 @@ int final;
             enl_msg(You_, "will see", "would have seen",
                     " invisible when not blind", from_what(SEE_INVISIBLE));
     }
-	if (Enhanced_vision)
-		you_have("enhanced vision", from_what(ENHANCED_VISION));
-	if (Eye_protection)
-		you_are("protected from eye damage", from_what(EYE_PROTECTION));
-	if (Blocks_Blindness)
-		you_are("protected against blindness", from_what(BLOCKS_BLINDNESS));
-	if (Flash_resistance)
-		you_are("protected from bright light", from_what(FLASH_RESISTANCE));
-	if (Brain_protection)
-		you_are("protected from brain damage", from_what(BRAIN_PROTECTION));
-	if (Unblind_telepat)
+    if (Enhanced_vision)
+        you_have("enhanced vision", from_what(ENHANCED_VISION));
+    if (Eye_protection)
+        you_are("protected from eye damage", from_what(EYE_PROTECTION));
+    if (Blocks_Blindness)
+        you_are("protected against blindness", from_what(BLOCKS_BLINDNESS));
+    if (Flash_resistance)
+        you_are("protected from bright light", from_what(FLASH_RESISTANCE));
+    if (Brain_protection)
+        you_are("protected from brain damage", from_what(BRAIN_PROTECTION));
+    if (Unblind_telepat)
         you_are("telepathic", from_what(TELEPAT));
-	if (Blind_telepat)
-		you_are("telepathic when blind", from_what(BLIND_TELEPATHY));
-	if (XRay_vision)
-		you_have("X-ray vision", from_what(XRAY_VISION));
-	if (Warning)
+    if (Blind_telepat)
+        you_are("telepathic when blind", from_what(BLIND_TELEPATHY));
+    if (XRay_vision)
+        you_have("X-ray vision", from_what(XRAY_VISION));
+    if (Warning)
         you_are("warned", from_what(WARNING));
     if (Warn_of_mon && context.warntype.obj) {
         Sprintf(buf, "aware of the presence of %s",
@@ -3894,45 +3894,45 @@ int final;
     }
     if (Undead_warning)
         you_are("warned of undead", from_what(WARN_UNDEAD));
-	if (Demon_warning)
-		you_are("warned of demons", from_what(WARN_DEMON));
-	if (Orc_warning)
-		you_are("warned of orcs", from_what(WARN_ORC));
-	if (Troll_warning)
-		you_are("warned of trolls", from_what(WARN_TROLL));
-	if (Giant_warning)
-		you_are("warned of giants", from_what(WARN_GIANT));
-	if (Dragon_warning)
-		you_are("warned of dragons", from_what(WARN_DRAGON));
-	if (Elf_warning)
-		you_are("warned of elves", from_what(WARN_ELF));
-	if (Dwarf_warning)
-		you_are("warned of dwarves", from_what(WARN_DWARF));
-	if (Gnoll_warning)
-		you_are("warned of gnolls", from_what(WARN_GNOLL));
-	if (Gnome_warning)
-		you_are("warned of gnomes", from_what(WARN_GNOME));
-	if (Ogre_warning)
-		you_are("warned of ogres", from_what(WARN_OGRE));
-	if (Human_warning)
-		you_are("warned of human beings", from_what(WARN_HUMAN));
-	if (Lycanthrope_warning)
-		you_are("warned of lycanthropes", from_what(WARN_LYCANTHROPE));
-	if (Angel_warning)
-		you_are("warned of angels", from_what(WARN_ANGEL));
-	if (Searching)
+    if (Demon_warning)
+        you_are("warned of demons", from_what(WARN_DEMON));
+    if (Orc_warning)
+        you_are("warned of orcs", from_what(WARN_ORC));
+    if (Troll_warning)
+        you_are("warned of trolls", from_what(WARN_TROLL));
+    if (Giant_warning)
+        you_are("warned of giants", from_what(WARN_GIANT));
+    if (Dragon_warning)
+        you_are("warned of dragons", from_what(WARN_DRAGON));
+    if (Elf_warning)
+        you_are("warned of elves", from_what(WARN_ELF));
+    if (Dwarf_warning)
+        you_are("warned of dwarves", from_what(WARN_DWARF));
+    if (Gnoll_warning)
+        you_are("warned of gnolls", from_what(WARN_GNOLL));
+    if (Gnome_warning)
+        you_are("warned of gnomes", from_what(WARN_GNOME));
+    if (Ogre_warning)
+        you_are("warned of ogres", from_what(WARN_OGRE));
+    if (Human_warning)
+        you_are("warned of human beings", from_what(WARN_HUMAN));
+    if (Lycanthrope_warning)
+        you_are("warned of lycanthropes", from_what(WARN_LYCANTHROPE));
+    if (Angel_warning)
+        you_are("warned of angels", from_what(WARN_ANGEL));
+    if (Searching)
         you_have("automatic searching", from_what(SEARCHING));
     if (Clairvoyant)
         you_are("clairvoyant", from_what(CLAIRVOYANT));
-	if (Blocks_Clairvoyance)
-		you_are("blocking clairvoyance", from_what(BLOCKS_CLAIRVOYANCE));
-	if (Infravision)
+    if (Blocks_Clairvoyance)
+        you_are("blocking clairvoyance", from_what(BLOCKS_CLAIRVOYANCE));
+    if (Infravision)
         you_have("infravision", from_what(INFRAVISION));
     if (Detect_monsters)
         you_are("sensing the presence of monsters", "");
-	if (Enhanced_untrap)
-		you_have("enhanced untrapping", from_what(ENHANCED_UNTRAP));
-	if (u.umconf)
+    if (Enhanced_untrap)
+        you_have("enhanced untrapping", from_what(ENHANCED_UNTRAP));
+    if (u.umconf)
         you_are("going to confuse monsters", "");
 
     /*** Appearance and behavior ***/
@@ -3952,9 +3952,9 @@ int final;
     }
     if (Invisib)
         you_are("invisible", from_what(INVISIBILITY));
-	if (Blocks_Invisibility)
-		you_are("blocking invisibility ", from_what(BLOCKS_INVISIBILITY));
-	else if (Invis)
+    if (Blocks_Invisibility)
+        you_are("blocking invisibility ", from_what(BLOCKS_INVISIBILITY));
+    else if (Invis)
         you_are("invisible to others", from_what(INVISIBILITY));
     /* ordinarily "visible" is redundant; this is a special case for
        the situation when invisibility would be an expected attribute */
@@ -3962,9 +3962,9 @@ int final;
         you_are("displaced", from_what(DISPLACED));
     if (Stealth)
         you_are("stealthy", from_what(STEALTH));
-	if (Magical_kicking)
-		you_can("kick magically", from_what(MAGICAL_KICKING));
-	if (Aggravate_monster)
+    if (Magical_kicking)
+        you_can("kick magically", from_what(MAGICAL_KICKING));
+    if (Aggravate_monster)
         enl_msg("You aggravate", "", "d", " monsters",
                 from_what(AGGRAVATE_MONSTER));
     if (Conflict)
@@ -3993,9 +3993,9 @@ int final;
             enl_msg(You_, "would levitate", "would have levitated", buf, "");
         }
     }
-	if (Levitation_control)
-		you_have("levitation control", from_what(LEVITATION_CONTROL));
-	/* actively flying handled earlier as a status condition */
+    if (Levitation_control)
+        you_have("levitation control", from_what(LEVITATION_CONTROL));
+    /* actively flying handled earlier as a status condition */
     if (Blocks_Flying) { /* flight is blocked */
         if (HFlying || EFlying) {
             enl_msg(You_, "would fly", "would have flown",
@@ -4092,7 +4092,7 @@ int final;
             enl_msg("You regenerate", "", "d", " mana", from_what(ENERGY_REGENERATION));
     }
 
-	if (Slow_digestion)
+    if (Slow_digestion)
         you_have("slower digestion", from_what(SLOW_DIGESTION));
     if (Half_slow_digestion)
     {
@@ -4120,28 +4120,28 @@ int final;
         enl_msg("You leech", "", "d", " life in melee", from_what(MELEE_LIFE_LEECH));
 
 
-	if (u.ublessed > 0)
-	{
-		char protbuf[BUFSZ];
-		Sprintf(protbuf, "endowed with divine protection (-%d to AC and +%d to MC)", u.ublessed, u.ublessed / 3);
-		you_are(protbuf, "");
-	}
-	if (Role_if(PM_MONK) && (u.ulevel / 2) >= 1 && !Upolyd && !uarm && !uarms && !uwep)
-	{
-		char protbuf[BUFSZ];
-		Sprintf(protbuf, "innate protection (-%d to AC and +%d to MC)", u.ulevel / 2, u.ulevel / 6);
-		you_have(protbuf, "");
-	}
-	if (Magical_protection)
-		you_have("magical protection (-3 to AC and +1 to MC)", from_what(MAGICAL_PROTECTION));
-	if (Magical_shielding)
-		you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));
-	if (Magical_barkskin)
-		you_have("magical barkskin (+7 to MC)", from_what(MAGICAL_BARKSKIN));
-	if (Magical_stoneskin)
-		you_have("magical stoneskin (-10 to AC)", from_what(MAGICAL_STONESKIN));
-	if (Titan_strength)
-		you_are("magically as strong as a titan", from_what(TITAN_STRENGTH));
+    if (u.ublessed > 0)
+    {
+        char protbuf[BUFSZ];
+        Sprintf(protbuf, "endowed with divine protection (-%d to AC and +%d to MC)", u.ublessed, u.ublessed / 3);
+        you_are(protbuf, "");
+    }
+    if (Role_if(PM_MONK) && (u.ulevel / 2) >= 1 && !Upolyd && !uarm && !uarms && !uwep)
+    {
+        char protbuf[BUFSZ];
+        Sprintf(protbuf, "innate protection (-%d to AC and +%d to MC)", u.ulevel / 2, u.ulevel / 6);
+        you_have(protbuf, "");
+    }
+    if (Magical_protection)
+        you_have("magical protection (-3 to AC and +1 to MC)", from_what(MAGICAL_PROTECTION));
+    if (Magical_shielding)
+        you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));
+    if (Magical_barkskin)
+        you_have("magical barkskin (+7 to MC)", from_what(MAGICAL_BARKSKIN));
+    if (Magical_stoneskin)
+        you_have("magical stoneskin (-10 to AC)", from_what(MAGICAL_STONESKIN));
+    if (Titan_strength)
+        you_are("magically as strong as a titan", from_what(TITAN_STRENGTH));
     if (Divine_dexterity)
         you_have("your dexterity magically increased to equivalent that of a demigod", from_what(DIVINE_DEXTERITY));
     if (Divine_endurance)
@@ -4153,25 +4153,25 @@ int final;
     if (Divine_charisma)
         you_have("your charisma magically increased to equivalent that of a demigod", from_what(DIVINE_CHARISMA));
 
-	if (Half_physical_damage)
+    if (Half_physical_damage)
         enlght_halfdmg(HALF_PHYSICAL_DAMAGE, final);
-	if (Half_physical_damage_against_undead_and_demons)
-		enlght_halfdmg(HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, final);
-	if (Half_spell_damage)
+    if (Half_physical_damage_against_undead_and_demons)
+        enlght_halfdmg(HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, final);
+    if (Half_spell_damage)
         enlght_halfdmg(HALF_SPELL_DAMAGE, final);
-	if (Fire_vulnerability)
-		you_are("vulnerable to fire", from_what(FIRE_VULNERABILITY));
-	if (Cold_vulnerability)
-		you_are("vulnerable to cold", from_what(COLD_VULNERABILITY));
-	if (Elec_vulnerability)
-		you_are("vulnerable to electricity", from_what(SHOCK_VULNERABILITY));
-	if (Magic_damage_vulnerability)
-		you_are("vulnerable to magical damage", from_what(MAGIC_MISSILE_VULNERABILITY));
-	if (Double_physical_damage)
-		you_are("receiving double physical damage", from_what(DOUBLE_PHYSICAL_DAMAGE));
-	if (Double_spell_damage)
-		you_are("receiving double spell damage", from_what(DOUBLE_SPELL_DAMAGE));
-	/* polymorph and other shape change */
+    if (Fire_vulnerability)
+        you_are("vulnerable to fire", from_what(FIRE_VULNERABILITY));
+    if (Cold_vulnerability)
+        you_are("vulnerable to cold", from_what(COLD_VULNERABILITY));
+    if (Elec_vulnerability)
+        you_are("vulnerable to electricity", from_what(SHOCK_VULNERABILITY));
+    if (Magic_damage_vulnerability)
+        you_are("vulnerable to magical damage", from_what(MAGIC_MISSILE_VULNERABILITY));
+    if (Double_physical_damage)
+        you_are("receiving double physical damage", from_what(DOUBLE_PHYSICAL_DAMAGE));
+    if (Double_spell_damage)
+        you_are("receiving double spell damage", from_what(DOUBLE_SPELL_DAMAGE));
+    /* polymorph and other shape change */
     if (Protection_from_shape_changers)
         you_are("protected from shape changers",
                 from_what(PROT_FROM_SHAPE_CHANGERS));
@@ -4252,26 +4252,26 @@ int final;
             you_are("very fast", from_what(VERY_FAST));
     }
     if (Fast)
-	{
-		if (Very_fast || Ultra_fast || Super_fast || Lightning_fast)
-			you_have("latent fastness", from_what(FAST));
-		else
-			you_are("fast", from_what(FAST));
-	}
-	if (Slowed)
-		you_are("slowed", from_what(SLOWED));
+    {
+        if (Very_fast || Ultra_fast || Super_fast || Lightning_fast)
+            you_have("latent fastness", from_what(FAST));
+        else
+            you_are("fast", from_what(FAST));
+    }
+    if (Slowed)
+        you_are("slowed", from_what(SLOWED));
     if (Silenced)
-		you_are("silenced", from_what(SILENCED));
-	if (Paralyzed)
-		you_are("paralyzed", from_what(PARALYZED));
+        you_are("silenced", from_what(SILENCED));
+    if (Paralyzed)
+        you_are("paralyzed", from_what(PARALYZED));
     if (Undead_immobility)
         you_are("magically held immobile when undead", from_what(UNDEAD_IMMOBILITY));
     if (Fearful)
-		you_are("magically frightened", from_what(FEARFUL));
-	if (Sleeping)
-		you_are("in a magically induced sleep", from_what(SLEEPING));
-	if (Cancelled)
-		you_are("cancelled", from_what(CANCELLED));
+        you_are("magically frightened", from_what(FEARFUL));
+    if (Sleeping)
+        you_are("in a magically induced sleep", from_what(SLEEPING));
+    if (Cancelled)
+        you_are("cancelled", from_what(CANCELLED));
     if (Cancellation_resistance)
     {
         if(Cancelled)
@@ -4280,21 +4280,21 @@ int final;
             you_cannot("be cancelled", from_what(CANCELLATION_RESISTANCE));
     }
     if (Summon_forbidden)
-		you_have("summoning forbidden", from_what(SUMMON_FORBIDDEN));
+        you_have("summoning forbidden", from_what(SUMMON_FORBIDDEN));
     if (Crazed)
         you_are("crazed", from_what(CRAZED));
 
-	if (No_magic_resistance)
-		you_have("no magic resistance", from_what(NO_MAGIC_RESISTANCE));
-	else if (One_fourth_magic_resistance)
-		you_have("25% of normal magic resistance", from_what(ONE_FOURTH_MAGIC_RESISTANCE));
-	else if (Half_magic_resistance)
-		you_have("half normal magic resistance", from_what(HALVED_MAGIC_RESISTANCE));
-	else if (Three_fourths_magic_resistance)
-		you_have("75% of normal magic resistance", from_what(THREE_FOURTHS_MAGIC_RESISTANCE));
+    if (No_magic_resistance)
+        you_have("no magic resistance", from_what(NO_MAGIC_RESISTANCE));
+    else if (One_fourth_magic_resistance)
+        you_have("25% of normal magic resistance", from_what(ONE_FOURTH_MAGIC_RESISTANCE));
+    else if (Half_magic_resistance)
+        you_have("half normal magic resistance", from_what(HALVED_MAGIC_RESISTANCE));
+    else if (Three_fourths_magic_resistance)
+        you_have("75% of normal magic resistance", from_what(THREE_FOURTHS_MAGIC_RESISTANCE));
 
-	if (Charmed)
-		you_are("charmed", from_what(CHARMED));
+    if (Charmed)
+        you_are("charmed", from_what(CHARMED));
     if (Undead_control)
     {
         if(is_undead(youmonst.data))
@@ -4303,7 +4303,7 @@ int final;
             you_are("latently under undead control", from_what(UNDEAD_CONTROL));
     }
 
-	if (Reflecting)
+    if (Reflecting)
         you_have("reflection", from_what(REFLECTING));
     if (Free_action)
         you_have("free action", from_what(FREE_ACTION));
@@ -4356,11 +4356,11 @@ int final;
             if (wizard)
                 Sprintf(eos(buf), " (%d)", u.uprayer_timeout);
 
-			if(can_pray(FALSE))
-	            you_can(buf, "");
-			else
-				you_cannot(buf, "");
-		}
+            if(can_pray(FALSE))
+                you_can(buf, "");
+            else
+                you_cannot(buf, "");
+        }
     }
 
 #ifdef DEBUG
@@ -4569,28 +4569,28 @@ doattributes(VOID_ARGS)
 int
 docommandmenu(VOID_ARGS)
 {
-	winid menuwin;
-	menu_item* selected = (menu_item*)0;
-	int n = 0;
+    winid menuwin;
+    menu_item* selected = (menu_item*)0;
+    int n = 0;
 
-	menuwin = create_nhwindow(NHW_MENU);
-	start_menu(menuwin);
+    menuwin = create_nhwindow(NHW_MENU);
+    start_menu(menuwin);
 
-	add_command_menu_items(menuwin, INCMDMENU);
+    add_command_menu_items(menuwin, INCMDMENU);
 
-	end_menu(menuwin, "Choose an action:");
-	n = select_menu(menuwin, PICK_ONE, &selected);
-	if (n > 0)
-	{
-		if (selected->item.a_nfunc)
-		{
-			(void)(selected->item.a_nfunc)();
-		}
-		free((genericptr_t)selected);
-	}
+    end_menu(menuwin, "Choose an action:");
+    n = select_menu(menuwin, PICK_ONE, &selected);
+    if (n > 0)
+    {
+        if (selected->item.a_nfunc)
+        {
+            (void)(selected->item.a_nfunc)();
+        }
+        free((genericptr_t)selected);
+    }
 
-	destroy_nhwindow(menuwin);
-	return 0;
+    destroy_nhwindow(menuwin);
+    return 0;
 
 }
 
@@ -4599,28 +4599,28 @@ docommandmenu(VOID_ARGS)
 int
 dospellmainmenu(VOID_ARGS)
 {
-	winid menuwin;
-	menu_item* selected = (menu_item*)0;
-	int n = 0;
+    winid menuwin;
+    menu_item* selected = (menu_item*)0;
+    int n = 0;
 
-	menuwin = create_nhwindow(NHW_MENU);
-	start_menu(menuwin);
+    menuwin = create_nhwindow(NHW_MENU);
+    start_menu(menuwin);
 
-	add_command_menu_items(menuwin, INSPELLMENU);
+    add_command_menu_items(menuwin, INSPELLMENU);
 
-	end_menu(menuwin, "Choose a command for spells:");
-	n = select_menu(menuwin, PICK_ONE, &selected);
-	if (n > 0)
-	{
-		if (selected->item.a_nfunc)
-		{
-			(void)(selected->item.a_nfunc)();
-		}
-		free((genericptr_t)selected);
-	}
+    end_menu(menuwin, "Choose a command for spells:");
+    n = select_menu(menuwin, PICK_ONE, &selected);
+    if (n > 0)
+    {
+        if (selected->item.a_nfunc)
+        {
+            (void)(selected->item.a_nfunc)();
+        }
+        free((genericptr_t)selected);
+    }
 
-	destroy_nhwindow(menuwin);
-	return 0;
+    destroy_nhwindow(menuwin);
+    return 0;
 }
 
 STATIC_OVL
@@ -4629,76 +4629,76 @@ add_command_menu_items(menuwin, cmdflag)
 winid menuwin;
 int cmdflag;
 {
-	register const struct ext_func_tab* efp;
-	int n = 0;
-	size_t maxcommandlength = 0;
-	size_t maxdesclength = 0;
+    register const struct ext_func_tab* efp;
+    int n = 0;
+    size_t maxcommandlength = 0;
+    size_t maxdesclength = 0;
 
-	for (efp = extcmdlist; efp->ef_txt; efp++)
-	{
-		if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & cmdflag) == 0)
-			continue;
+    for (efp = extcmdlist; efp->ef_txt; efp++)
+    {
+        if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & cmdflag) == 0)
+            continue;
 
-		if (strlen(efp->ef_txt) > maxcommandlength)
-			maxcommandlength = strlen(efp->ef_txt);
+        if (strlen(efp->ef_txt) > maxcommandlength)
+            maxcommandlength = strlen(efp->ef_txt);
 
-		if (strlen(efp->ef_desc) > maxdesclength)
-			maxdesclength = strlen(efp->ef_desc);
-	}
+        if (strlen(efp->ef_desc) > maxdesclength)
+            maxdesclength = strlen(efp->ef_desc);
+    }
 
-	anything any;
+    anything any;
 
-	for (efp = extcmdlist; efp->ef_txt; efp++)
-	{
-		any = zeroany;
-		char shortcutbuf[BUFSZ] = "";
-		char descbuf[BUFSZ] = "";
-		char cmdbuf[BUFSZ] = "";
-		char buf[BUFSZ] = "";
+    for (efp = extcmdlist; efp->ef_txt; efp++)
+    {
+        any = zeroany;
+        char shortcutbuf[BUFSZ] = "";
+        char descbuf[BUFSZ] = "";
+        char cmdbuf[BUFSZ] = "";
+        char buf[BUFSZ] = "";
 
         int cmdchar = 'a' + n;
-		size_t cmdlen = 0;
+        size_t cmdlen = 0;
 
-		any.a_nfunc = efp->ef_funct;
+        any.a_nfunc = efp->ef_funct;
 
-		strcpy(cmdbuf, efp->ef_txt);
-		cmdlen = strlen(cmdbuf);
-		if (cmdlen < maxcommandlength)
-		{
-			for (size_t i = 0; i < (maxcommandlength - cmdlen); i++)
-				Sprintf(eos(cmdbuf), " ");
-		}
+        strcpy(cmdbuf, efp->ef_txt);
+        cmdlen = strlen(cmdbuf);
+        if (cmdlen < maxcommandlength)
+        {
+            for (size_t i = 0; i < (maxcommandlength - cmdlen); i++)
+                Sprintf(eos(cmdbuf), " ");
+        }
 
-		if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & cmdflag) == 0)
-			continue;
+        if ((efp->flags & CMD_NOT_AVAILABLE) != 0 || (efp->flags & cmdflag) == 0)
+            continue;
 
-		strcpy(descbuf, efp->ef_desc);
-		*descbuf = highc(*descbuf);
+        strcpy(descbuf, efp->ef_desc);
+        *descbuf = highc(*descbuf);
 
-		size_t desclen = 0;
-		desclen = strlen(descbuf);
-		if (desclen < maxdesclength)
-		{
-			for (size_t i = 0; i < (maxdesclength - desclen); i++)
-				Sprintf(eos(descbuf), " ");
-		}
+        size_t desclen = 0;
+        desclen = strlen(descbuf);
+        if (desclen < maxdesclength)
+        {
+            for (size_t i = 0; i < (maxdesclength - desclen); i++)
+                Sprintf(eos(descbuf), " ");
+        }
 
-		uchar altmask = 0x80;
-		uchar ctrlmask = 0x20 | 0x40;
+        uchar altmask = 0x80;
+        uchar ctrlmask = 0x20 | 0x40;
 
-		if (efp->key != '\0')
-			Sprintf(shortcutbuf, "  (%s%c)",
-			(efp->key & ctrlmask) == 0 ? "Ctrl-" : (efp->key & altmask) == altmask ? "Alt-" : "",
-				(efp->key & ctrlmask) == 0 ? efp->key | ctrlmask : (efp->key & altmask) == altmask ? efp->key & ~altmask : efp->key);
-		else
-			strcpy(shortcutbuf, "");
+        if (efp->key != '\0')
+            Sprintf(shortcutbuf, "  (%s%c)",
+            (efp->key & ctrlmask) == 0 ? "Ctrl-" : (efp->key & altmask) == altmask ? "Alt-" : "",
+                (efp->key & ctrlmask) == 0 ? efp->key | ctrlmask : (efp->key & altmask) == altmask ? efp->key & ~altmask : efp->key);
+        else
+            strcpy(shortcutbuf, "");
 
-		Sprintf(buf, "%s  %s%s", cmdbuf, descbuf, shortcutbuf);
+        Sprintf(buf, "%s  %s%s", cmdbuf, descbuf, shortcutbuf);
 
-		add_menu(menuwin, NO_GLYPH, &any, cmdchar, 0, ATR_NONE,
-			buf, MENU_UNSELECTED);
-		n++;
-	}
+        add_menu(menuwin, NO_GLYPH, &any, cmdchar, 0, ATR_NONE,
+            buf, MENU_UNSELECTED);
+        n++;
+    }
 }
 
 
@@ -4891,11 +4891,11 @@ struct ext_func_tab extcmdlist[] = {
             donamelevel, IFBURIED | AUTOCOMPLETE },
     { 'a', "apply", "apply (use) a tool (pick-axe, key, lamp...)",
             doapply, SINGLE_OBJ_CMD_SPECIFIC, 0, 0, "use or apply" },
-	{ 'A', "ability", "view and use skills and abilities",
-			doability, IFBURIED | AUTOCOMPLETE },
-	{ '\0', "attributes", "show your attributes",
-			doattributes, IFBURIED | AUTOCOMPLETE },
-	{ '@', "autopickup", "toggle the pickup option on/off",
+    { 'A', "ability", "view and use skills and abilities",
+            doability, IFBURIED | AUTOCOMPLETE },
+    { '\0', "attributes", "show your attributes",
+            doattributes, IFBURIED | AUTOCOMPLETE },
+    { '@', "autopickup", "toggle the pickup option on/off",
             dotogglepickup, IFBURIED },
 #ifdef USE_TILES
     { M('b'), "bars", "toggle tile hit point bars on/off",
@@ -4907,35 +4907,35 @@ struct ext_func_tab extcmdlist[] = {
             dotogglebufftimers, IFBURIED | AUTOCOMPLETE },
 #endif
     { 'c', "close", "close a door", doclose },
-	{ 'C', "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
-	{ C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_GENERAL, 0, getobj_callable, "call" },
-	{ M('c'), "commands", "list of additional actions",
-			docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
-	{ '\0' /*M('c')*/, "conduct", "list voluntary challenges you have maintained",
+    { 'C', "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
+    { C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_GENERAL, 0, getobj_callable, "call" },
+    { M('c'), "commands", "list of additional actions",
+            docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
+    { '\0' /*M('c')*/, "conduct", "list voluntary challenges you have maintained",
             doconduct, IFBURIED | AUTOCOMPLETE | INCMDMENU },
-	{ C('g'), "dig", "dig the ground", dodig, INCMDMENU },
-	{ M('d'), "dip", "dip an object into something", dodip, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_GENERAL, 0, getobj_allowall, "dip" },
-	{ '>', "down", "go down a staircase", dodown },
+    { C('g'), "dig", "dig the ground", dodig, INCMDMENU },
+    { M('d'), "dip", "dip an object into something", dodip, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_GENERAL, 0, getobj_allowall, "dip" },
+    { '>', "down", "go down a staircase", dodown },
     { 'd', "drop", "drop an item", dodrop, SINGLE_OBJ_CMD_GENERAL, 0, getobj_drop_types, "drop"},
     { 'D', "droptype", "drop specific item types", doddrop },
     { 'e', "eat", "eat something", doeat, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_comestibles, "eat" },
     { 'E', "engrave", "engrave writing on the floor", doengrave, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_styluses, "write with" },
     { '\0', "enhance", "advance or check weapon and spell skills",
             enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
-	{ M('e'), "exploremode", "enter explore (discovery) mode",
+    { M('e'), "exploremode", "enter explore (discovery) mode",
             enter_explore_mode, IFBURIED },
     { 'f', "fire", "fire ammunition from quiver", dofire, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_allowall, "fire" },
-	{ M('f'), "force", "force a lock", doforce, AUTOCOMPLETE | INCMDMENU },
+    { M('f'), "force", "force a lock", doforce, AUTOCOMPLETE | INCMDMENU },
     { ';', "glance", "show what type of thing a map symbol corresponds to",
             doquickwhatis, IFBURIED | GENERALCMD },
     { M('g'), "genocided", "list genocided monsters",
             dogenocidedmonsters, IFBURIED | INCMDMENU },
     { M('h'), "handedness", "toggle swap weapon handedness",
-			doswaphandedness, IFBURIED | AUTOCOMPLETE | INCMDMENU },
-	{ '?', "help", "give a help message", dohelp, IFBURIED | GENERALCMD },
+            doswaphandedness, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+    { '?', "help", "give a help message", dohelp, IFBURIED | GENERALCMD },
     { '\0', "herecmdmenu", "show menu of commands you can do here",
             doherecmdmenu, IFBURIED },
-	{ 'i', "inventory", "show your inventory", ddoinv, IFBURIED },
+    { 'i', "inventory", "show your inventory", ddoinv, IFBURIED },
     { 'I', "inventtype", "inventory specific item types",
             dotypeinv, IFBURIED },
     { M('i'), "invoke", "invoke an object's special powers",
@@ -4952,8 +4952,8 @@ struct ext_func_tab extcmdlist[] = {
             wiz_level_change, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { C('l'), "light", "light or snuff out something around you", dolight, AUTOCOMPLETE | INCMDMENU },
     { ':', "look", "look at what is here", dolook, IFBURIED },
-	{ 'L', "lookat", "show what type of thing a symbol corresponds to",
-			dowhatis, IFBURIED | GENERALCMD },
+    { 'L', "lookat", "show what type of thing a symbol corresponds to",
+            dowhatis, IFBURIED | GENERALCMD },
     { M('l'), "loot", "loot a box on the floor", doloot, AUTOCOMPLETE },
 #ifdef DEBUG_MIGRATING_MONS
     { '\0', "migratemons", "migrate N random monsters",
@@ -4961,7 +4961,7 @@ struct ext_func_tab extcmdlist[] = {
 #endif
     { '\0', "monster", "use monster ability or skill",
             doability, IFBURIED | AUTOCOMPLETE },
-	{ 'N', "name", "name a monster or an object",
+    { 'N', "name", "name a monster or an object",
             docallcmd, IFBURIED | AUTOCOMPLETE },
     { M('o'), "offer", "offer a sacrifice to the gods",
             dosacrifice, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_offerfodder, "sacrifice" },
@@ -4993,10 +4993,10 @@ struct ext_func_tab extcmdlist[] = {
     { M('r'), "rub", "rub a lamp or a stone", dorub, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_cuddly, "rub" },
     { 's', "search", "search for traps and secret doors",
             dosearch, IFBURIED, "searching" },
-	{ 'S', "skill", "view and advance skills",
-			enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
+    { 'S', "skill", "view and advance skills",
+            enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
     { M('s'), "save", "save the game and exit", dosave, IFBURIED | AUTOCOMPLETE | GENERALCMD },
-	{ '*', "seeall", "show all equipment in use", doprinuse, IFBURIED },
+    { '*', "seeall", "show all equipment in use", doprinuse, IFBURIED },
     { AMULET_SYM, "seeamulet", "show the amulet currently worn",
             dopramulet, IFBURIED },
     { ARMOR_SYM, "seearmor", "show the armor currently worn",
@@ -5029,7 +5029,7 @@ struct ext_func_tab extcmdlist[] = {
 #endif /* SUSPEND */
     },
 
-	{ 'T', "takeoff", "take off one piece of armor", dotakeoff, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_clothes, "take off", "take off" },
+    { 'T', "takeoff", "take off one piece of armor", dotakeoff, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_clothes, "take off", "take off" },
     { M('t')/*'A'*/, "takeoffall", "remove all armor", doddoremarm },
 #ifdef USE_TILES
     { M(';'), "targeting", "toggle tile targeting graphics on/off",
@@ -5053,15 +5053,15 @@ struct ext_func_tab extcmdlist[] = {
             dotwoweapon, AUTOCOMPLETE | INCMDMENU },
     { M('u'), "untrap", "untrap something", dountrap, AUTOCOMPLETE },
     { '<', "up", "go up a staircase", doup },
-	{ '\0', "vanquished", "list vanquished monsters",
+    { '\0', "vanquished", "list vanquished monsters",
             dovanquished, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('v'), "version",
             "list compile time options for this version of GnollHack",
             doextversion, IFBURIED | AUTOCOMPLETE | GENERALCMD },
     { 'v', "versionshort", "show version", doversion, IFBURIED | GENERALCMD },
-	{ 'V', "history", "show long version and game history",
-			dohistory, IFBURIED | GENERALCMD },
-	{ '\0', "vision", "show vision array",
+    { 'V', "history", "show long version and game history",
+            dohistory, IFBURIED | GENERALCMD },
+    { '\0', "vision", "show vision array",
             wiz_show_vision, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '.', "wait", "rest one move while doing nothing",
             donull, IFBURIED, "waiting" },
@@ -5069,22 +5069,22 @@ struct ext_func_tab extcmdlist[] = {
     { '&', "whatdoes", "tell what a command does", dowhatdoes, IFBURIED },
     { '/', "whatis", "show what type of thing a symbol corresponds to",
             dowhatis, IFBURIED | GENERALCMD },
-	{ 'w', "wield", "wield (put in use) a weapon", dowield, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_wield_objs, "wield" },
+    { 'w', "wield", "wield (put in use) a weapon", dowield, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_wield_objs, "wield" },
     { M('w'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE | INCMDMENU },
-	{ 'x', "swap", "swap wielded and secondary weapons", doswapweapon_right_or_both, INCMDMENU },
-	{ M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_INFO, 0, getobj_allobj, "examine" },
-	{ '\0', "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
+    { 'x', "swap", "swap wielded and secondary weapons", doswapweapon_right_or_both, INCMDMENU },
+    { M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_INFO, 0, getobj_allobj, "examine" },
+    { '\0', "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
     { C('y'), "yell", "yell for your companions",
             doyell, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { 'z', "zap", "zap a wand", dozap, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_zap_syms, "zap" },
-	{ 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
-	{ 'X', "mix", "prepare a spell from material components",
-			domix, AUTOCOMPLETE | INSPELLMENU },
-	{ M('z'), "viewspell", "view spells", dospellview, IFBURIED | AUTOCOMPLETE | INSPELLMENU },
+    { 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
+    { 'X', "mix", "prepare a spell from material components",
+            domix, AUTOCOMPLETE | INSPELLMENU },
+    { M('z'), "viewspell", "view spells", dospellview, IFBURIED | AUTOCOMPLETE | INSPELLMENU },
     { '\0', "managespell", "manage spells",
             dospellmanage, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { '\0', "reorderspells", "sort and reorder known spells",
-			dovspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
+            dovspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
 #ifdef USE_TILES
     { M('.'), "zoomnormal", "revert to normal zoom level",
             dozoomnormal, IFBURIED | AUTOCOMPLETE },
@@ -5120,8 +5120,8 @@ struct ext_func_tab extcmdlist[] = {
             wiz_map, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsavemon", "save monsters into a file",
             wiz_save_monsters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-	{ '\0', "wizsaveenc", "save encounters into a file",
-			wiz_save_encounters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizsaveenc", "save encounters into a file",
+            wiz_save_encounters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsavetiledata", "save tile data into a file",
             wiz_save_tiledata, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizcounttiles", "count the number of tiles",
@@ -5131,8 +5131,8 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "wizsavequesttexts", "save quest texts into a file",
             wiz_save_quest_texts, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizcrown", "make the god crown you",
-			wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-	{ '\0', "wizrumorcheck", "verify rumor boundaries",
+            wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizrumorcheck", "verify rumor boundaries",
             wiz_rumor_check, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsmell", "smell monster",
             wiz_smell, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
@@ -5237,7 +5237,7 @@ commands_init()
     /* alt keys: */
     (void) bind_key(M('O'), "overview");
     (void) bind_key(M('1'), "handedness");
-	(void) bind_key(M('2'), "twoweapon");
+    (void) bind_key(M('2'), "twoweapon");
 #ifdef USE_TILES
     (void) bind_key(M('3'), "bars");
     (void) bind_key(M('4'), "targeting");
@@ -5435,9 +5435,9 @@ struct obj *otmp;
         sz += sizeof (struct oextra);
         if (ONAME(otmp))
             sz += strlen(ONAME(otmp)) + 1;
-		if (UONAME(otmp))
-			sz += strlen(UONAME(otmp)) + 1;
-		if (OMONST(otmp))
+        if (UONAME(otmp))
+            sz += strlen(UONAME(otmp)) + 1;
+        if (OMONST(otmp))
             sz += size_monst(OMONST(otmp), FALSE);
         if (OMID(otmp))
             sz += sizeof (unsigned);
@@ -5457,8 +5457,8 @@ size_t *total_size;
 boolean top;
 boolean recurse;
 {
-	long count;
-	size_t size;
+    long count;
+    size_t size;
     struct obj *obj;
 
     for (count = size = 0, obj = chain; obj; obj = obj->nobj) {
@@ -5483,8 +5483,8 @@ long *total_count;
 size_t *total_size;
 {
     char buf[BUFSZ];
-	long count = 0L;
-	size_t size = 0;
+    long count = 0L;
+    size_t size = 0;
 
     count_obj(chain, &count, &size, TRUE, FALSE);
 
@@ -5505,8 +5505,8 @@ long *total_count;
 size_t *total_size;
 {
     char buf[BUFSZ];
-	long count = 0;
-	size_t size = 0;
+    long count = 0;
+    size_t size = 0;
     struct monst *mon;
 
     for (mon = chain; mon; mon = mon->nmon)
@@ -5528,8 +5528,8 @@ long *total_count;
 size_t *total_size;
 {
     char buf[BUFSZ];
-	long count = 0;
-	size_t size = 0;
+    long count = 0;
+    size_t size = 0;
     struct monst *mon;
 
     count_obj(invent, &count, &size, FALSE, TRUE);
@@ -5565,9 +5565,9 @@ boolean incl_wsegs;
         sz += sizeof (struct mextra);
         if (MNAME(mtmp))
             sz += strlen(MNAME(mtmp)) + 1;
-		if (UMNAME(mtmp))
-			sz += strlen(UMNAME(mtmp)) + 1;
-		if (EGD(mtmp))
+        if (UMNAME(mtmp))
+            sz += strlen(UMNAME(mtmp)) + 1;
+        if (EGD(mtmp))
             sz += sizeof (struct egd);
         if (EPRI(mtmp))
             sz += sizeof (struct epri);
@@ -5596,8 +5596,8 @@ long *total_count;
 size_t *total_size;
 {
     char buf[BUFSZ];
-	long count = 0L;
-	size_t size = 0;
+    long count = 0L;
+    size_t size = 0;
     struct monst *mon;
     /* mon->wormno means something different for migrating_mons and mydogs */
     boolean incl_wsegs = !strcmpi(src, "fmon");
@@ -5621,8 +5621,8 @@ long *total_count;
 size_t *total_size;
 {
     char buf[BUFSZ], hdrbuf[QBUFSZ];
-	long count = 0L;
-	size_t size = 0;
+    long count = 0L;
+    size_t size = 0;
     int idx;
     struct trap *tt;
     struct damage *sd; /* shop damage */
@@ -5642,16 +5642,16 @@ size_t *total_size;
     Sprintf(buf, template, hdrbuf, count, size);
     putstr(win, 0, buf);
 
-	count = 0L;
-	size = 0;
-	engr_stats("engravings, size %ld+text", hdrbuf, &count, &size);
+    count = 0L;
+    size = 0;
+    engr_stats("engravings, size %ld+text", hdrbuf, &count, &size);
     *total_count += count;
     *total_size += size;
     Sprintf(buf, template, hdrbuf, count, size);
     putstr(win, 0, buf);
 
     count = 0L;
-	size = 0;
+    size = 0;
     light_stats("light sources, size %ld", hdrbuf, &count, &size);
     if (count || size) {
         *total_count += count;
@@ -5670,9 +5670,9 @@ size_t *total_size;
         putstr(win, 0, buf);
     }
 
-	count = 0L;
-	size = 0;
-	timer_stats("timers, size %ld", hdrbuf, &count, &size);
+    count = 0L;
+    size = 0;
+    timer_stats("timers, size %ld", hdrbuf, &count, &size);
     if (count || size) {
         *total_count += count;
         *total_size += size;
@@ -5680,9 +5680,9 @@ size_t *total_size;
         putstr(win, 0, buf);
     }
 
-	count = 0L;
-	size = 0;
-	for (sd = level.damagelist; sd; sd = sd->next) {
+    count = 0L;
+    size = 0;
+    for (sd = level.damagelist; sd; sd = sd->next) {
         ++count;
         size += sizeof *sd;
     }
@@ -5695,9 +5695,9 @@ size_t *total_size;
         putstr(win, 0, buf);
     }
 
-	count = 0L;
-	size = 0;
-	region_stats("regions, size %ld+%ld*rect+N", hdrbuf, &count, &size);
+    count = 0L;
+    size = 0;
+    region_stats("regions, size %ld+%ld*rect+N", hdrbuf, &count, &size);
     if (count || size) {
         *total_count += count;
         *total_size += size;
@@ -5705,9 +5705,9 @@ size_t *total_size;
         putstr(win, 0, buf);
     }
 
-	count = 0L;
-	size = 0;
-	for (k = killer.next; k; k = k->next) {
+    count = 0L;
+    size = 0;
+    for (k = killer.next; k; k = k->next) {
         ++count;
         size += sizeof *k;
     }
@@ -5720,9 +5720,9 @@ size_t *total_size;
         putstr(win, 0, buf);
     }
 
-	count = 0L;
-	size = 0;
-	for (bi = level.bonesinfo; bi; bi = bi->next) {
+    count = 0L;
+    size = 0;
+    for (bi = level.bonesinfo; bi; bi = bi->next) {
         ++count;
         size += (long) sizeof *bi;
     }
@@ -5735,9 +5735,9 @@ size_t *total_size;
         putstr(win, 0, buf);
     }
 
-	count = 0L;
-	size = 0;
-	for (idx = 0; idx < NUM_OBJECTS; ++idx)
+    count = 0L;
+    size = 0;
+    for (idx = 0; idx < NUM_OBJECTS; ++idx)
         if (objects[idx].oc_uname) {
             ++count;
             size += strlen(objects[idx].oc_uname) + 1;
@@ -5760,9 +5760,9 @@ wiz_show_stats()
     char buf[BUFSZ];
     winid win;
     long total_obj_count, total_mon_count, total_ovr_count, total_misc_count;
-	size_t total_obj_size, total_mon_size, total_ovr_size, total_misc_size;
-	
-	win = create_nhwindow(NHW_TEXT);
+    size_t total_obj_size, total_mon_size, total_ovr_size, total_misc_size;
+    
+    win = create_nhwindow(NHW_TEXT);
     putstr(win, 0, "Current memory statistics:");
 
     total_obj_count = total_obj_size = 0L;
@@ -6319,9 +6319,9 @@ register char *cmd;
     }
     if (*cmd == Cmd.spkeys[NHKF_ESC]) {
 #ifdef ANDROID
-		quit_possible();
+        quit_possible();
 #endif
-		context.move = FALSE;
+        context.move = FALSE;
         return;
     }
     if ((*cmd == DOAGAIN || *cmd == Cmd.spkeys[NHKF_DOAGAIN] || *cmd == Cmd.spkeys[NHKF_DOAGAIN2]) && !in_doagain && saveq[0]) {
@@ -6343,23 +6343,23 @@ register char *cmd;
     context.travel = context.travel1 = 0;
     spkey = ch2spkeys(*cmd, NHKF_RUN, NHKF_CLICKLOOK);
 
-	if (flags.prefer_fast_move)
-	{
-		switch (spkey) {
-		case NHKF_RUSH:
-			spkey = NHKF_RUN;
-			break;
-		case NHKF_RUN:
-			spkey = NHKF_RUSH;
-			break;
-		case NHKF_NOPICKUP:
-			spkey = NHKF_RUN_NOPICKUP;
-			break;
-		case NHKF_RUN_NOPICKUP:
-			spkey = NHKF_NOPICKUP;
-			break;
-		}
-	}
+    if (flags.prefer_fast_move)
+    {
+        switch (spkey) {
+        case NHKF_RUSH:
+            spkey = NHKF_RUN;
+            break;
+        case NHKF_RUN:
+            spkey = NHKF_RUSH;
+            break;
+        case NHKF_NOPICKUP:
+            spkey = NHKF_RUN_NOPICKUP;
+            break;
+        case NHKF_RUN_NOPICKUP:
+            spkey = NHKF_NOPICKUP;
+            break;
+        }
+    }
 
     switch (spkey) {
     case NHKF_RUSH:
@@ -6509,14 +6509,14 @@ register char *cmd;
         /* don't report "unknown command" for change of heart... */
         bad_command = FALSE;
     }
-	else if ((*cmd == ' ' && !flags.rest_on_space) || *cmd == 13) // )
-	{
-		bad_command = FALSE;//TRUE; /* skip cmdlist[] loop */
+    else if ((*cmd == ' ' && !flags.rest_on_space) || *cmd == 13) // )
+    {
+        bad_command = FALSE;//TRUE; /* skip cmdlist[] loop */
 
     /* handle all other commands */
     } 
-	else
-	{
+    else
+    {
         register const struct ext_func_tab *tlist;
         int res = 0, NDECL((*func));
 
@@ -6540,12 +6540,12 @@ register char *cmd;
                 /* we discard 'const' because some compilers seem to have
                    trouble with the pointer passed to set_occupation() */
                 func = ((struct ext_func_tab *) tlist)->ef_funct;
-				if (func)
-				{
-					if (tlist->f_text && !occupation && multi)
-						set_occupation(func, tlist->f_text, 0, 0, 0, multi);
-					res = (*func)(); /* perform the command */
-				}
+                if (func)
+                {
+                    if (tlist->f_text && !occupation && multi)
+                        set_occupation(func, tlist->f_text, 0, 0, 0, multi);
+                    res = (*func)(); /* perform the command */
+                }
             }
             if (!res)
             {
@@ -6559,7 +6559,7 @@ register char *cmd;
     }
 
     if (bad_command)
-	{
+    {
         char expcmd[20]; /* we expect 'cmd' to point to 1 or 2 chars */
         char c, c1 = cmd[1];
 
@@ -6945,7 +6945,7 @@ int dir;
         "southeast", "south",     "southwest", "down",      "up",
     };
 
-	static NEARDATA const char invalidname[] = "invalid";
+    static NEARDATA const char invalidname[] = "invalid";
 
     if (dir < 0 || dir >= SIZE(dirnames))
         return invalidname;
@@ -7125,17 +7125,17 @@ boolean doit;
     start_menu(win);
 
     if (IS_FOUNTAIN(typ) || IS_SINK(typ)) 
-	{
+    {
         //int ftyp = levl[u.ux][u.uy].subtyp; // (levl[u.ux][u.uy].fountainmask & FOUNTAIN_TYPE_MASK);
         Sprintf(buf, "Drink from the %s", IS_FOUNTAIN(typ) ? get_fountain_name(u.ux, u.uy) : defsyms[S_sink].explanation);
         add_herecmd_menuitem(win, dodrink, buf);
     }
-	if (IS_FOUNTAIN(typ))
-	{
+    if (IS_FOUNTAIN(typ))
+    {
         //int ftyp = levl[u.ux][u.uy].subtyp; //  (levl[u.ux][u.uy].fountainmask& FOUNTAIN_TYPE_MASK);
-		Sprintf(buf, "Dip something into the %s", get_fountain_name(u.ux, u.uy));
-		add_herecmd_menuitem(win, dodip, buf);
-	}
+        Sprintf(buf, "Dip something into the %s", get_fountain_name(u.ux, u.uy));
+        add_herecmd_menuitem(win, dodip, buf);
+    }
     if (IS_THRONE(typ))
         add_herecmd_menuitem(win, dosit,
                              "Sit on the throne");

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	encounter.h	 */
+/* GnollHack 4.0    encounter.h     */
 /* Copyright (c) Janne Gustafsson 2019. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -13,12 +13,12 @@
 #define MAX_ENCOUNTER_MONSTERS 25
 
 struct monsteritemdef {
-	short otyp;
-	short oartifact;
-	int spe_constant;
-	int spe_random;
-	long iflags;
-	int probability;
+    short otyp;
+    short oartifact;
+    int spe_constant;
+    int spe_random;
+    long iflags;
+    int probability;
 };
 
 #define MI_BLESSED 0x00000001L
@@ -30,18 +30,18 @@ struct monsteritemdef {
 #define MI_ALLOW_ARTIFACTS 0x00000040L
 
 struct monsterrandomizeditem {
-	struct monsteritemdef random_monster_items[MAX_MONSTER_RANDOM_ITEM_ALTERNATIVES];
+    struct monsteritemdef random_monster_items[MAX_MONSTER_RANDOM_ITEM_ALTERNATIVES];
 };
 
 
 struct encountermonsterdef {
-	int permonstid;
-	int generatednumber_constant;
-	int generatednumber_random;
-	int namelistid;
-	long mflags;
-	double probability;
-	struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
+    int permonstid;
+    int generatednumber_constant;
+    int generatednumber_random;
+    int namelistid;
+    long mflags;
+    double probability;
+    struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
 };
 
 #define EM_IGNORE_APPEARANCE_FLAGS 0x00000001L
@@ -53,13 +53,13 @@ struct encountermonsterdef {
 
 
 struct randomizedencountermonsterdef {
-	struct encountermonsterdef random_encounter_monsters[MAX_RANDOM_MONSTER_ALTERNATIVES];
+    struct encountermonsterdef random_encounter_monsters[MAX_RANDOM_MONSTER_ALTERNATIVES];
 };
 
 struct encounterdef {
-	struct randomizedencountermonsterdef encounter_monster_types[MAX_ENCOUNTER_MONSTER_TYPES];
-	double probability;
-	long eflags;
+    struct randomizedencountermonsterdef encounter_monster_types[MAX_ENCOUNTER_MONSTER_TYPES];
+    double probability;
+    long eflags;
 };
 
 #define ED_NOHELL 0x00000001L
@@ -72,22 +72,22 @@ struct encounterdef {
 
 
 struct encounter_monster {
-	int permonstid;
-	struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
-	int namelistid;
-	long mflags;
+    int permonstid;
+    struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
+    int namelistid;
+    long mflags;
 };
 
 #define MAX_ENCOUNTER_ATTACKING_MONSTERS 8
 struct encounter {
-	struct encounter_monster encounter_monsters[MAX_ENCOUNTER_MONSTERS];
-	int difficulty_min;
-	int difficulty_point_estimate[MAX_ENCOUNTER_ATTACKING_MONSTERS + 1];
-	int difficulty_max;
-	double probability;
-	boolean insearch;
-	int encounterdefid;
-	long eflags;
+    struct encounter_monster encounter_monsters[MAX_ENCOUNTER_MONSTERS];
+    int difficulty_min;
+    int difficulty_point_estimate[MAX_ENCOUNTER_ATTACKING_MONSTERS + 1];
+    int difficulty_max;
+    double probability;
+    boolean insearch;
+    int encounterdefid;
+    long eflags;
 };
 
 #endif /* ENCOUNTER_H */

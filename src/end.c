@@ -1,4 +1,4 @@
-/* GnollHack 4.0	end.c	$NHDT-Date: 1557094801 2019/05/05 22:20:01 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.170 $ */
+/* GnollHack 4.0    end.c    $NHDT-Date: 1557094801 2019/05/05 22:20:01 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.170 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -28,15 +28,15 @@ struct valuable_data {
 static struct valuable_data
     gems[LAST_GEM + 1 - FIRST_GEM + 1], /* 1 extra for glass */
     amulets[LAST_AMULET + 1 - FIRST_AMULET],
-	miscellaneousitems[LAST_MISCITEM + 1 - FIRST_MISCITEM];
+    miscellaneousitems[LAST_MISCITEM + 1 - FIRST_MISCITEM];
 
 static struct val_list {
     struct valuable_data *list;
     int size;
 } valuables[] = { { gems, sizeof gems / sizeof *gems },
                   { amulets, sizeof amulets / sizeof *amulets },
-				  { miscellaneousitems, sizeof miscellaneousitems / sizeof *miscellaneousitems },
-				  { 0, 0 } };
+                  { miscellaneousitems, sizeof miscellaneousitems / sizeof *miscellaneousitems },
+                  { 0, 0 } };
 
 #ifndef NO_SIGNAL
 STATIC_PTR void FDECL(done_intr, (int));
@@ -443,7 +443,7 @@ int how;
     }
     if (is_invisible(mtmp))
         Strcat(buf, "invisible ");
-	if (distorted)
+    if (distorted)
         Strcat(buf, "hallucinogen-distorted ");
 
     if (imitator) {
@@ -892,17 +892,17 @@ int how;
     if ((Sick & TIMEOUT) == 1L) {
         make_sick(0L, (char *) 0, FALSE);
     }
-	if ((FoodPoisoned & TIMEOUT) == 1L) {
-		make_food_poisoned(0L, (char*)0, FALSE);
-	}
-	if ((Confusion & TIMEOUT) == 1L) {
-		make_confused(0L, FALSE);
-	}
-	if ((Stunned & TIMEOUT) == 1L) {
-		make_stunned(0L, FALSE);
-	}
+    if ((FoodPoisoned & TIMEOUT) == 1L) {
+        make_food_poisoned(0L, (char*)0, FALSE);
+    }
+    if ((Confusion & TIMEOUT) == 1L) {
+        make_confused(0L, FALSE);
+    }
+    if ((Stunned & TIMEOUT) == 1L) {
+        make_stunned(0L, FALSE);
+    }
 
-	nomovemsg = "You survived that attempt on your life.";
+    nomovemsg = "You survived that attempt on your life.";
     context.move = 0;
     if (multi > 0)
         multi = 0;
@@ -910,12 +910,12 @@ int how;
         multi = -1;
     if (u.utrap && u.utraptype == TT_LAVA)
         reset_utrap(FALSE);
-	context.botl = context.botlx = TRUE;
-	u.ugrave_arise = NON_PM;
+    context.botl = context.botlx = TRUE;
+    u.ugrave_arise = NON_PM;
     HUnchanging = 0L;
-	HSleeping = 0L;
-	HParalyzed = 0L;
-	curs_on_u();
+    HSleeping = 0L;
+    HParalyzed = 0L;
+    curs_on_u();
     if (!context.mon_moving)
         endmultishot(FALSE);
     if (u.uswallow) {
@@ -954,16 +954,16 @@ struct obj *list; /* inventory or container contents */
                 amulets[i].typ = obj->otyp;
             } else
                 amulets[i].count += obj->quan; /* always adds one */
-		}
-		else if (obj->oclass == MISCELLANEOUS_CLASS) {
-			i = obj->otyp - FIRST_MISCITEM;
-			if (!miscellaneousitems[i].count) {
-				miscellaneousitems[i].count = obj->quan;
-				miscellaneousitems[i].typ = obj->otyp;
-			}
-			else
-				miscellaneousitems[i].count += obj->quan; /* always adds one */
-		} else if (obj->oclass == GEM_CLASS && obj->otyp < LUCKSTONE) {
+        }
+        else if (obj->oclass == MISCELLANEOUS_CLASS) {
+            i = obj->otyp - FIRST_MISCITEM;
+            if (!miscellaneousitems[i].count) {
+                miscellaneousitems[i].count = obj->quan;
+                miscellaneousitems[i].typ = obj->otyp;
+            }
+            else
+                miscellaneousitems[i].count += obj->quan; /* always adds one */
+        } else if (obj->oclass == GEM_CLASS && obj->otyp < LUCKSTONE) {
             i = min(obj->otyp, LAST_GEM + 1) - FIRST_GEM;
             if (!gems[i].count) {
                 gems[i].count = obj->quan;
@@ -1101,12 +1101,12 @@ int how;
     }
 
 #ifdef ANDROID
-	if (how != TRICKED && how != QUIT && how != PANICKED && how != ESCAPED) {
-		and_you_die();
-	}
+    if (how != TRICKED && how != QUIT && how != PANICKED && how != ESCAPED) {
+        and_you_die();
+    }
 #endif
 
-	if (iflags.debug_fuzzer)
+    if (iflags.debug_fuzzer)
     {
         if (!(program_state.panicking || how == PANICKED)) 
         {
@@ -1162,27 +1162,27 @@ int how;
     {
         play_sfx_sound(SFX_LIFE_SAVED);
         pline("But wait...");
-		if (HLifesaved)
-		{
-			You("feel the invisible hand of %s around you.", u_gname());
-			if (how == CHOKING)
-				You("vomit ...");
-			You_feel("much better!");
-			u.uprops[LIFESAVED].intrinsic = u.uprops[LIFESAVED].intrinsic & ~TIMEOUT; //Set timeout to 0
-		}
-		else
-		{
-			if(uamul && uamul->otyp == AMULET_OF_LIFE_SAVING)
-			{
-				makeknown(AMULET_OF_LIFE_SAVING);
-				Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
-				if (how == CHOKING)
-					You("vomit ...");
-				You_feel("much better!");
-				pline_The("medallion crumbles to dust!");
-				if (uamul)
-					useup(uamul);
-			}
+        if (HLifesaved)
+        {
+            You("feel the invisible hand of %s around you.", u_gname());
+            if (how == CHOKING)
+                You("vomit ...");
+            You_feel("much better!");
+            u.uprops[LIFESAVED].intrinsic = u.uprops[LIFESAVED].intrinsic & ~TIMEOUT; //Set timeout to 0
+        }
+        else
+        {
+            if(uamul && uamul->otyp == AMULET_OF_LIFE_SAVING)
+            {
+                makeknown(AMULET_OF_LIFE_SAVING);
+                Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
+                if (how == CHOKING)
+                    You("vomit ...");
+                You_feel("much better!");
+                pline_The("medallion crumbles to dust!");
+                if (uamul)
+                    useup(uamul);
+            }
             else
             {
                 struct obj* lifesaver = what_gives(LIFESAVED);
@@ -1197,7 +1197,7 @@ int how;
                         useup(lifesaver);
                 }
             }
-		}
+        }
         (void) adjattrib(A_CON, -1, TRUE);
         savelife(how);
         if (how == GENOCIDED) {
@@ -1279,10 +1279,10 @@ int how;
 
     dump_open_log(endtime);
 
-	You("were playing on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
-		wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : "");
+    You("were playing on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
+        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : "");
 
-	/* Sometimes you die on the first move.  Life's not fair.
+    /* Sometimes you die on the first move.  Life's not fair.
      * On those rare occasions you get hosed immediately, go out
      * smiling... :-)  -3.
      */
@@ -1354,7 +1354,7 @@ int how;
     if (have_windows)
         display_nhwindow(WIN_MESSAGE, FALSE);
 
-	if (how != PANICKED) 
+    if (how != PANICKED) 
     {
         struct obj *obj;
 
@@ -1373,9 +1373,9 @@ int how;
                disclosure and dumplog, where the 50:50 chance for
                live cat has to be the same both times */
             if (SchroedingersBox(obj))
-			{
+            {
                 if (!Schroedingers_cat)
-				{
+                {
                     /* tell observe_quantum_cat() not to create a cat; if it
                        chooses live cat in this situation, it will leave the
                        SchroedingersBox flag set (for container_contents()) */
@@ -1383,8 +1383,8 @@ int how;
                     if (SchroedingersBox(obj))
                         Schroedingers_cat = TRUE;
                 } 
-				else
-					obj->speflags &= ~SPEFLAGS_SCHROEDINGERS_BOX; /* ordinary box with cat corpse in it */
+                else
+                    obj->speflags &= ~SPEFLAGS_SCHROEDINGERS_BOX; /* ordinary box with cat corpse in it */
             }
         }
 
@@ -1421,7 +1421,7 @@ int how;
             mnum = urace.monsternum;
         }
         corpse = mk_named_object(CORPSE, &mons[mnum], u.ux, u.uy, plname);
-		corpse->nknown = 1;
+        corpse->nknown = 1;
         Sprintf(pbuf, "%s, ", plname);
         formatkiller(eos(pbuf), sizeof pbuf - strlen(pbuf), how, TRUE);
         make_grave(u.ux, u.uy, pbuf, TRUE);
@@ -1552,7 +1552,7 @@ int how;
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
     //dump_forward_putstr(endwin, 0, "", done_stopprint);
 
-	if (how == ESCAPED || how == ASCENDED) 
+    if (how == ESCAPED || how == ASCENDED) 
     {
         struct monst *mtmp;
 
@@ -1697,16 +1697,16 @@ int how;
     Sprintf(pbuf, "and %ld piece%s of gold, after %ld move%s.", umoney,
             plur(umoney), moves, plur(moves));
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
-	Sprintf(pbuf, "You played on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
-		wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : "");
-	dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
-	Sprintf(pbuf,
+    Sprintf(pbuf, "You played on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
+        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : "");
+    dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
+    Sprintf(pbuf,
             "You were level %d with a maximum of %d hit point%s when you %s.",
             u.ulevel, u.uhpmax, plur(u.uhpmax), ends[how]);
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
-	dump_forward_putstr(endwin, 0, "", done_stopprint);
+    dump_forward_putstr(endwin, 0, "", done_stopprint);
 
-	if (!done_stopprint)
+    if (!done_stopprint)
         display_nhwindow(endwin, TRUE);
     if (endwin != WIN_ERR)
         destroy_nhwindow(endwin);
@@ -1740,17 +1740,17 @@ int show_weights;
     register struct obj *box, *obj;
     char buf[BUFSZ];
     boolean cat, dumping = iflags.in_dumplog;
-	int count = 0;
-	int totalweight = 0;
-	boolean loadstonecorrectly = FALSE;
+    int count = 0;
+    int totalweight = 0;
+    boolean loadstonecorrectly = FALSE;
 
-	if (show_weights == 1) // Inventory
-		loadstonecorrectly = TRUE;
-	else if (show_weights == 2) { // Pick up
-		loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
-	}
-	else if (show_weights == 3) // Drop
-		loadstonecorrectly = TRUE;
+    if (show_weights == 1) // Inventory
+        loadstonecorrectly = TRUE;
+    else if (show_weights == 2) { // Pick up
+        loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
+    }
+    else if (show_weights == 3) // Drop
+        loadstonecorrectly = TRUE;
 
 
 
@@ -1786,7 +1786,7 @@ int show_weights;
                                  | (flags.sortpack ? SORTLOOT_PACK : 0));
                     sortedcobj = sortloot(&box->cobj, sortflags, FALSE,
                                           (boolean FDECL((*), (OBJ_P))) 0);
-					totalweight = 0;
+                    totalweight = 0;
                     for (srtc = sortedcobj; ((obj = srtc->obj) != 0); ++srtc) {
                         if (identified) {
                             discover_object(obj->otyp, TRUE, FALSE);
@@ -1795,22 +1795,22 @@ int show_weights;
                             if (Is_container(obj) || obj->otyp == STATUE)
                                 obj->cknown = obj->lknown = obj->tknown = 1;
                         }
-						count++;
+                        count++;
 
-						/* total sum here */
-						if (obj->otyp == LOADSTONE && !loadstonecorrectly)
-							totalweight += objects[LUCKSTONE].oc_weight;
-						else
-							totalweight += obj->owt;
-	
-						Sprintf(&buf[2], "%2d - %s", count, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(obj, loadstonecorrectly) : doname_with_price_and_weight_first(obj, loadstonecorrectly)) : doname_with_price(obj));
-						//Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
+                        /* total sum here */
+                        if (obj->otyp == LOADSTONE && !loadstonecorrectly)
+                            totalweight += objects[LUCKSTONE].oc_weight;
+                        else
+                            totalweight += obj->owt;
+    
+                        Sprintf(&buf[2], "%2d - %s", count, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(obj, loadstonecorrectly) : doname_with_price_and_weight_first(obj, loadstonecorrectly)) : doname_with_price(obj));
+                        //Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
                         putstr(tmpwin, 0, buf);
                     }
-					if(flags.show_weight_summary)
-						add_weight_summary_putstr(tmpwin, totalweight, show_weights);
+                    if(flags.show_weight_summary)
+                        add_weight_summary_putstr(tmpwin, totalweight, show_weights);
 
-					unsortloot(&sortedcobj);
+                    unsortloot(&sortedcobj);
                 } else if (cat) {
                     Strcpy(&buf[2], "Schroedinger's cat!");
                     putstr(tmpwin, 0, buf);
@@ -2022,8 +2022,8 @@ dovanquished()
 int
 dokilledmonsters()
 {
-	list_vanquished('b', FALSE);
-	return 0;
+    list_vanquished('b', FALSE);
+    return 0;
 }
 
 /* #genocided command */
@@ -2427,7 +2427,7 @@ build_english_list(in)
 char *in;
 {
     char *out, *p = in;
-	size_t len = strlen(p), words = (size_t)wordcount(p);
+    size_t len = strlen(p), words = (size_t)wordcount(p);
 
     /* +3: " or " - " "; +(words - 1): (N-1)*(", " - " ") */
     if (words > 1)

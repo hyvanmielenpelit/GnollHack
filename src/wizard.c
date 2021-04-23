@@ -1,4 +1,4 @@
-/* GnollHack 4.0	wizard.c	$NHDT-Date: 1539804905 2018/10/17 19:35:05 $  $NHDT-Branch: keni-makedefsm $:$NHDT-Revision: 1.53 $ */
+/* GnollHack 4.0    wizard.c    $NHDT-Date: 1539804905 2018/10/17 19:35:05 $  $NHDT-Branch: keni-makedefsm $:$NHDT-Revision: 1.53 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2016. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -28,20 +28,20 @@ STATIC_DCL unsigned long FDECL(strategy, (struct monst *));
    their chaotic counterparts */
 static NEARDATA const int nasties[] = {
     /* neutral */
-	PM_GARGANTUAN_COCKATRICE, PM_GIANT_COCKATRICE, PM_MINOTAUR,
+    PM_GARGANTUAN_COCKATRICE, PM_GIANT_COCKATRICE, PM_MINOTAUR,
     PM_OWLBEAR_PATRIARCH, PM_OWLBEAR_MATRIARCH, PM_PURPLE_WORM, 
     PM_LERNAEAN_HYDRA, PM_ROC, PM_NEO_OTYUGH, PM_MASTODON, PM_GORGON,
-	PM_MUCILAGINOUS_CUBE, PM_GIANT_ANACONDA, PM_JABBERWOCK, PM_ELDER_TREANT,
+    PM_MUCILAGINOUS_CUBE, PM_GIANT_ANACONDA, PM_JABBERWOCK, PM_ELDER_TREANT,
     PM_SILVER_GOLEM, PM_SKELETON_KING, PM_GREEN_SLIME,
     /* chaotic */
-	PM_ANCIENT_BLACK_DRAGON, PM_ANCIENT_RED_DRAGON,
+    PM_ANCIENT_BLACK_DRAGON, PM_ANCIENT_RED_DRAGON,
     PM_BLACK_DRAGON, PM_RED_DRAGON, PM_VAMPIRE_LORD, PM_VAMPIRE_MAGE, PM_KING_WRAITH,
     PM_ELDER_TENTACLED_ONE, PM_DISENCHANTER, PM_WINGED_GARGOYLE, PM_FLIND_LORD,
     PM_STORM_GIANT, PM_OLOG_HAI, PM_ELDER_DRACOLICH, PM_DRACOLICH,
     PM_OGRE_KING, PM_DEATH_FLAYER, PM_GAZER, PM_ELDER_GAZER, PM_DEATH_GAZER,
     /* lawful */
-	PM_ANCIENT_SILVER_DRAGON, PM_ANCIENT_ORANGE_DRAGON, PM_ANCIENT_GREEN_DRAGON,
-	PM_ANCIENT_YELLOW_DRAGON, PM_SILVER_DRAGON, PM_ORANGE_DRAGON, PM_GREEN_DRAGON,
+    PM_ANCIENT_SILVER_DRAGON, PM_ANCIENT_ORANGE_DRAGON, PM_ANCIENT_GREEN_DRAGON,
+    PM_ANCIENT_YELLOW_DRAGON, PM_SILVER_DRAGON, PM_ORANGE_DRAGON, PM_GREEN_DRAGON,
     PM_YELLOW_DRAGON, PM_GUARDIAN_NAGA, PM_FIRE_GIANT, PM_PHOENIX,
     PM_ALEAX, PM_COUATL, PM_HORNED_DEVIL, PM_BARBED_DEVIL,
     /* (titans, ki-rin, and golden nagas are suitably nasty, but
@@ -269,7 +269,7 @@ register struct monst *mtmp;
 {
     unsigned long strat, dstrat;
 
-	/* Covetous has been deactivated -- JG */
+    /* Covetous has been deactivated -- JG */
     if (mtmp->mnum != PM_WIZARD_OF_YENDOR // !is_covetous(mtmp->data)
         /* perhaps a shopkeeper has been polymorphed into a master
            lich; we don't want it teleporting to the stairs to heal
@@ -373,23 +373,23 @@ register struct monst *mtmp;
         (mtmp->mstrategy & (STRAT_WAITMASK | STRAT_APPEARMSG)) | strat;
 
     switch (strat)
-	{
+    {
     case STRAT_HEAL: /* hide and recover */
         /* if wounded, hole up on or near the stairs (to block them) */
         choose_stairs(&sx, &sy);
         mtmp->mavenge = 1; /* covetous monsters attack while fleeing */
         if (In_W_tower(mtmp->mx, mtmp->my, &u.uz)
             || (mtmp->iswiz && !sx && !mon_has_amulet(mtmp)))
-		{
+        {
             if (!rn2(3 + mtmp->mhp / 10))
             {
                 (void)rloc2(mtmp, TRUE, TRUE);
             }
         }
-		else if (sx && (mtmp->mx != sx || mtmp->my != sy))
-		{
+        else if (sx && (mtmp->mx != sx || mtmp->my != sy))
+        {
             if (!mnearto(mtmp, sx, sy, TRUE, TRUE))
-			{
+            {
                 m_into_limbo(mtmp, TRUE);
                 return 0;
             }
@@ -398,9 +398,9 @@ register struct monst *mtmp;
         /* if you're not around, cast healing spells */
         if (distu(mtmp->mx, mtmp->my) > (U_NOT_NEARBY_RANGE * U_NOT_NEARBY_RANGE) && !mtmp->mclericspell_used)
             if (mtmp->mhp <= mtmp->mhpmax - 8)
-			{
+            {
                 mtmp->mclericspell_used = 1 + rnd(3);
-				mtmp->mhp += rnd(8);
+                mtmp->mhp += rnd(8);
                 return 1;
             }
         /*FALLTHRU*/
@@ -421,19 +421,19 @@ register struct monst *mtmp;
             return 0;
         }
         if ((u.ux == tx && u.uy == ty) || where == STRAT_PLAYER)
-		{
+        {
             /* player is standing on it (or has it) */
             mnexto2(mtmp, TRUE);
             return 0;
         }
         if (where == STRAT_GROUND) {
             if (!MON_AT(tx, ty) || (mtmp->mx == tx && mtmp->my == ty)) 
-			{
+            {
                 /* teleport to it and pick it up */
                 rloc_to(mtmp, tx, ty); /* clean old pos */
 
                 if ((otmp = on_ground(which_arti(targ))) != 0)
-				{
+                {
                     if (cansee(mtmp->mx, mtmp->my))
                         pline("%s picks up %s.", Monnam(mtmp),
                               (distu(mtmp->mx, mtmp->my) <= 5)
@@ -445,16 +445,16 @@ register struct monst *mtmp;
                 } else
                     return 0;
             } 
-			else
-			{
+            else
+            {
                 /* a monster is standing on it - cause some trouble */
                 if (!rn2(5))
                     mnexto2(mtmp, TRUE);
                 return 0;
             }
         } 
-		else 
-		{ /* a monster has it - 'port beside it. */
+        else 
+        { /* a monster has it - 'port beside it. */
             if (!mnearto(mtmp, tx, ty, FALSE, TRUE))
                 m_into_limbo(mtmp, TRUE);
             return 0;
@@ -531,30 +531,30 @@ int
 pick_nasty(summoner_level)
 int summoner_level;
 {
-	int res = NON_PM;
-	int roguetrycnt = 0;
+    int res = NON_PM;
+    int roguetrycnt = 0;
 
-	do
-	{
-		for(int tryct = 0; tryct < 50 && (res == NON_PM || (res >= NON_PM && mons[res].difficulty > (9 * summoner_level + 1) / 10)); tryct++)
-		{
-			res = nasties[rn2(SIZE(nasties))];
-		}
+    do
+    {
+        for(int tryct = 0; tryct < 50 && (res == NON_PM || (res >= NON_PM && mons[res].difficulty > (9 * summoner_level + 1) / 10)); tryct++)
+        {
+            res = nasties[rn2(SIZE(nasties))];
+        }
 
-		if(res == NON_PM)
-		{
-			struct permonst* pm = rndmonst();
+        if(res == NON_PM)
+        {
+            struct permonst* pm = rndmonst();
 
-			if(pm)
-				res = monsndx(pm);
-		}
-		roguetrycnt++;
-	} while ((!Is_rogue_level(&u.uz) && res == NON_PM && roguetrycnt <= 5)
-		|| (Is_rogue_level(&u.uz) && (res == NON_PM || !('A' <= mons[res].mlet && mons[res].mlet <= 'Z')) && roguetrycnt <= 5));
+            if(pm)
+                res = monsndx(pm);
+        }
+        roguetrycnt++;
+    } while ((!Is_rogue_level(&u.uz) && res == NON_PM && roguetrycnt <= 5)
+        || (Is_rogue_level(&u.uz) && (res == NON_PM || !('A' <= mons[res].mlet && mons[res].mlet <= 'Z')) && roguetrycnt <= 5));
 
-	/* Finally, if nothing, just pick something from the nasties list */
-	if (res == NON_PM)
-		res = nasties[rn2(SIZE(nasties))];
+    /* Finally, if nothing, just pick something from the nasties list */
+    if (res == NON_PM)
+        res = nasties[rn2(SIZE(nasties))];
 
     return res;
 }
@@ -576,8 +576,8 @@ struct monst *summoner;
     coord bypos;
     int count, census, summon_num, makeindex, s_cls, m_cls;
 
-	if (!summoner || is_cancelled(summoner) || has_summon_forbidden(summoner))
-		return 0;
+    if (!summoner || is_cancelled(summoner) || has_summon_forbidden(summoner))
+        return 0;
 
     /* some candidates may be created in groups, so simple count
        of non-null makemon() return is inadequate */
@@ -593,30 +593,30 @@ struct monst *summoner;
     {
         count = 0;
         s_cls = summoner ? summoner->data->mlet : 0;
-		/*
-		if (summoner)
-		{
-			if(summoner == &youmonst)
-				tmp = max(1, (int)u.ulevel / 8);
-			else
-				tmp = max(1, (int)summoner->m_lev / 8);
-		}
-		else
-			tmp = max(1, u.ulevel / 3);
-			*/
-		if (summoner)
-		{
-			if (summoner != &youmonst && (summoner->iswiz || summoner->m_lev >= 50))
+        /*
+        if (summoner)
+        {
+            if(summoner == &youmonst)
+                tmp = max(1, (int)u.ulevel / 8);
+            else
+                tmp = max(1, (int)summoner->m_lev / 8);
+        }
+        else
+            tmp = max(1, u.ulevel / 3);
+            */
+        if (summoner)
+        {
+            if (summoner != &youmonst && (summoner->iswiz || summoner->m_lev >= 50))
                 summon_num = rnd(3) + 1;
             else if (summoner != &youmonst && summoner->m_lev >= 30)
                 summon_num = 1 + rnd(2);
             else
                 summon_num = rnd(3);
-		}
-		else
+        }
+        else
             summon_num = rnd(3) + 1;
 
-		/* if we don't have a casting monster, nasties appear around hero,
+        /* if we don't have a casting monster, nasties appear around hero,
            otherwise they'll appear around spot summoner thinks she's at */
         bypos.x = u.ux;
         bypos.y = u.uy;
@@ -818,13 +818,13 @@ resurrect()
                 if (mtmp->mfrozen == 1) /* would unfreeze on next move */
                     mtmp->mfrozen = 0, mtmp->mcanmove = 1;
 
-				for(int i = 1; i <= LAST_PROP; i++)
-					mtmp->mprops[i] = 0;
+                for(int i = 1; i <= LAST_PROP; i++)
+                    mtmp->mprops[i] = 0;
 
-				update_all_mon_statistics(mtmp, FALSE);
+                update_all_mon_statistics(mtmp, FALSE);
 
                 if (mon_can_move(mtmp))
-				{
+                {
                     *mmtmp = mtmp->nmon;
                     mon_arrive(mtmp, TRUE);
                     /* note: there might be a second Wizard; if so,

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	options.c	$NHDT-Date: 1554591224 2019/04/06 22:53:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.363 $ */
+/* GnollHack 4.0    options.c    $NHDT-Date: 1554591224 2019/04/06 22:53:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.363 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2008. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -85,12 +85,12 @@ static struct Bool_Opt {
     { "autodescribe", &iflags.autodescribe, TRUE, SET_IN_GAME },
     { "autodig", &flags.autodig, FALSE, SET_IN_GAME },
 #ifdef ANDROID
-	{"autokick", &flags.autokick, TRUE, SET_IN_GAME},
+    {"autokick", &flags.autokick, TRUE, SET_IN_GAME},
 #endif
-	{ "autoopen", &flags.autoopen, TRUE, SET_IN_GAME },
+    { "autoopen", &flags.autoopen, TRUE, SET_IN_GAME },
     { "autopickup", &flags.pickup, FALSE, SET_IN_GAME },
     { "autoquiver", &flags.autoquiver, FALSE, SET_IN_GAME },
-	{ "autostatuslines", &iflags.wc2_autostatuslines, FALSE, SET_IN_FILE },
+    { "autostatuslines", &iflags.wc2_autostatuslines, FALSE, SET_IN_FILE },
     { "autounlock", &flags.autounlock, TRUE, SET_IN_GAME },
 #if defined(MICRO) && !defined(AMIGA)
     { "BIOS", &iflags.BIOS, FALSE, SET_IN_FILE },
@@ -110,7 +110,7 @@ static struct Bool_Opt {
 #else
     { "checkspace", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-	{ "classic_statue_symbol", &flags.classic_statue_symbol, FALSE, SET_IN_GAME },
+    { "classic_statue_symbol", &flags.classic_statue_symbol, FALSE, SET_IN_GAME },
     { "classic_colors", &flags.classic_colors, FALSE, SET_IN_GAME },
     { "clicklook", &iflags.clicklook, FALSE, SET_IN_GAME },
     { "cmdassist", &iflags.cmdassist, TRUE, SET_IN_GAME },
@@ -121,16 +121,16 @@ static struct Bool_Opt {
 #endif
     { "confirm", &flags.confirm, TRUE, SET_IN_GAME },
     { "dark_room", &flags.dark_room, TRUE, SET_IN_GAME },
-	{ "detailed_weights", &flags.detailed_weights, FALSE, SET_IN_GAME },
+    { "detailed_weights", &flags.detailed_weights, FALSE, SET_IN_GAME },
     { "displace_peaceful", &flags.displace_peaceful, TRUE, SET_IN_GAME },
 #ifdef ANDROID
-	{"dumplog", &iflags.dumplog, FALSE, SET_IN_FILE },
+    {"dumplog", &iflags.dumplog, FALSE, SET_IN_FILE },
 #endif
-	{ "eight_bit_tty", &iflags.wc_eight_bit_input, FALSE, SET_IN_GAME }, /*WC*/
+    { "eight_bit_tty", &iflags.wc_eight_bit_input, FALSE, SET_IN_GAME }, /*WC*/
 #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS) || defined(X11_GRAPHICS)
     { "extmenu", &iflags.extmenu, FALSE, SET_IN_GAME },
 #elif defined(ANDROID)
-	{ "extmenu", &iflags.extmenu, TRUE, SET_IN_GAME },
+    { "extmenu", &iflags.extmenu, TRUE, SET_IN_GAME },
 #else
     { "extmenu", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
@@ -147,9 +147,9 @@ static struct Bool_Opt {
     { "flush", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
 #ifdef ANDROID
-	{ "force_invmenu", &iflags.force_invmenu, TRUE, SET_IN_GAME },
+    { "force_invmenu", &iflags.force_invmenu, TRUE, SET_IN_GAME },
 #else
-	{ "force_invmenu", &iflags.force_invmenu, FALSE, SET_IN_GAME },
+    { "force_invmenu", &iflags.force_invmenu, FALSE, SET_IN_GAME },
 #endif
     { "fullscreen", &iflags.wc2_fullscreen, FALSE, SET_IN_FILE }, /*WC2*/
     { "goldX", &iflags.goldX, FALSE, SET_IN_GAME },
@@ -178,9 +178,9 @@ static struct Bool_Opt {
 #endif
     { "mention_walls", &iflags.mention_walls, FALSE, SET_IN_GAME },
 #ifdef ANDROID
-	{ "menucolors", &iflags.use_menu_color, TRUE, SET_IN_GAME },
+    { "menucolors", &iflags.use_menu_color, TRUE, SET_IN_GAME },
 #else
-	{ "menucolors", &iflags.use_menu_color, FALSE, SET_IN_GAME },
+    { "menucolors", &iflags.use_menu_color, FALSE, SET_IN_GAME },
 #endif
     /* for menu debugging only*/
     { "menu_tab_sep", &iflags.menu_tab_sep, FALSE, SET_IN_WIZGAME },
@@ -190,8 +190,8 @@ static struct Bool_Opt {
 #else
     { "menu_overlay", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-	{ "metric_system", &flags.metric_system, FALSE, SET_IN_GAME },
-	{ "monpolycontrol", &iflags.mon_polycontrol, FALSE, SET_IN_WIZGAME },
+    { "metric_system", &flags.metric_system, FALSE, SET_IN_GAME },
+    { "monpolycontrol", &iflags.mon_polycontrol, FALSE, SET_IN_WIZGAME },
 #ifdef NEWS
     { "news", &iflags.news, TRUE, DISP_IN_GAME },
 #else
@@ -211,7 +211,7 @@ static struct Bool_Opt {
     { "perm_invent", &iflags.perm_invent, FALSE, SET_IN_GAME },
     { "pickup_thrown", &flags.pickup_thrown, TRUE, SET_IN_GAME },
     { "popup_dialog", &iflags.wc_popup_dialog, FALSE, SET_IN_GAME },   /*WC*/
-	{ "prefer_fast_move", &flags.prefer_fast_move, FALSE, SET_IN_GAME },
+    { "prefer_fast_move", &flags.prefer_fast_move, FALSE, SET_IN_GAME },
     { "preload_tiles", &iflags.wc_preload_tiles, TRUE, DISP_IN_GAME }, /*WC*/
     { "pushweapon", &flags.pushweapon, FALSE, SET_IN_GAME },
 #if defined(MICRO) && !defined(AMIGA)
@@ -246,16 +246,16 @@ static struct Bool_Opt {
     { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
     { "show_tile_u_hp_bar", &flags.show_tile_u_hp_bar, FALSE, SET_IN_GAME },
     { "show_weight_summary", &flags.show_weight_summary, TRUE, SET_IN_GAME },
-	{ "silent", &flags.silent, TRUE, SET_IN_GAME },
+    { "silent", &flags.silent, TRUE, SET_IN_GAME },
     { "softkeyboard", &iflags.wc2_softkeyboard, FALSE, SET_IN_FILE }, /*WC2*/
     { "sortpack", &flags.sortpack, TRUE, SET_IN_GAME },
     { "sparkle", &flags.sparkle, TRUE, SET_IN_GAME },
     { "splash_screen", &iflags.wc_splash_screen, TRUE, DISP_IN_GAME }, /*WC*/
     { "standout", &flags.standout, FALSE, SET_IN_GAME },
     { "status_updates", &iflags.status_updates, TRUE, DISP_IN_GAME },
-	{ "swap_rhand_only", &flags.swap_rhand_only, FALSE, SET_IN_GAME },
-	{ "tellexp", &flags.tellexp, TRUE, SET_IN_GAME },
-	{ "tiled_map", &iflags.wc_tiled_map, PREFER_TILED, DISP_IN_GAME }, /*WC*/
+    { "swap_rhand_only", &flags.swap_rhand_only, FALSE, SET_IN_GAME },
+    { "tellexp", &flags.tellexp, TRUE, SET_IN_GAME },
+    { "tiled_map", &iflags.wc_tiled_map, PREFER_TILED, DISP_IN_GAME }, /*WC*/
     { "time", &flags.time, FALSE, SET_IN_GAME },
 #ifdef TIMED_DELAY
     { "timed_delay", &flags.nap, TRUE, SET_IN_GAME },
@@ -283,10 +283,10 @@ static struct Bool_Opt {
 #endif
     { "whatis_menu", &iflags.getloc_usemenu, FALSE, SET_IN_GAME },
     { "whatis_moveskip", &iflags.getloc_moveskip, FALSE, SET_IN_GAME },
-	{ "wiz_alwaysenc", &flags.wiz_alwaysenc, FALSE, SET_IN_WIZGAME },
-	{ "wiz_mstatusline", &flags.wiz_mstatusline, FALSE, SET_IN_WIZGAME },
-	{ "wizweight", &iflags.wizweight, FALSE, SET_IN_WIZGAME },
-	{ "wraptext", &iflags.wc2_wraptext, FALSE, SET_IN_GAME }, /*WC2*/
+    { "wiz_alwaysenc", &flags.wiz_alwaysenc, FALSE, SET_IN_WIZGAME },
+    { "wiz_mstatusline", &flags.wiz_mstatusline, FALSE, SET_IN_WIZGAME },
+    { "wizweight", &iflags.wizweight, FALSE, SET_IN_WIZGAME },
+    { "wraptext", &iflags.wc2_wraptext, FALSE, SET_IN_GAME }, /*WC2*/
 #ifdef ZEROCOMP
     { "zerocomp", &iflags.zerocomp,
 #if defined(COMPRESS) || defined(ZLIB_COMP)
@@ -419,9 +419,9 @@ static struct Comp_Opt {
 #endif
     { "race", "your starting race (e.g., Human, Elf)", PL_CSIZ,
       DISP_IN_GAME },
-	{ "ramname", "the name of your (first) ram (e.g., ramname:Silver)",
-	  PL_PSIZ, DISP_IN_GAME },
-	{ "role", "your starting role (e.g., Barbarian, Valkyrie)", PL_CSIZ,
+    { "ramname", "the name of your (first) ram (e.g., ramname:Silver)",
+      PL_PSIZ, DISP_IN_GAME },
+    { "role", "your starting role (e.g., Barbarian, Valkyrie)", PL_CSIZ,
       DISP_IN_GAME },
     { "runmode", "display frequency when `running' or `travelling'",
       sizeof "teleport", SET_IN_GAME },
@@ -1495,14 +1495,14 @@ char *str;
             c = colornames[i].color;
             break;
         }
-	if (i == SIZE(colornames) && digit(*str))
+    if (i == SIZE(colornames) && digit(*str))
         c = atoi(str);
 
-	if (c < 0 || c >= CLR_MAX) {
-		config_error_add("Unknown color '%.60s'", str);
-		c = CLR_MAX; /* "none of the above" */
-	}    
-	return c;
+    if (c < 0 || c >= CLR_MAX) {
+        config_error_add("Unknown color '%.60s'", str);
+        c = CLR_MAX; /* "none of the above" */
+    }    
+    return c;
 }
 
 STATIC_OVL const char *
@@ -1832,14 +1832,14 @@ char *str;
     char msgtype[11];
 
     if (sscanf(str, "%10s \"%255[^\"]\"", msgtype, pattern) == 2) 
-	{
-		msgtype[10] = '\0';
+    {
+        msgtype[10] = '\0';
         int typ = -1;
         int i;
 
         for (i = 0; i < SIZE(msgtype_names); i++)
             if (!strncmpi(msgtype_names[i].name, msgtype, strlen(msgtype))) 
-			{
+            {
                 typ = msgtype_names[i].msgtyp;
                 break;
             }
@@ -1850,8 +1850,8 @@ char *str;
             config_error_add("Unknown message type '%s'", msgtype);
 
     } 
-	else 
-	{
+    else 
+    {
         config_error_add("Malformed MSGTYPE");
     }
     return FALSE;
@@ -1926,8 +1926,8 @@ char *tmpstr; /* never Null but could be empty */
     char str[BUFSIZ];
 
     //Sprintf(str, "%s", tmpstr);
-	(void)strncpy(str, tmpstr, (sizeof str) - 1);
-	str[(sizeof str) - 1] = '\0';
+    (void)strncpy(str, tmpstr, (sizeof str) - 1);
+    str[(sizeof str) - 1] = '\0';
 
     if ((cs = index(str, '=')) == 0) {
         config_error_add("Malformed MENUCOLOR");
@@ -1986,34 +1986,34 @@ int
 get_menu_coloring_index(str)
 const char* str;
 {
-	int indx = 0;
-	struct menucoloring* tmpmc;
+    int indx = 0;
+    struct menucoloring* tmpmc;
 
-	if (iflags.use_menu_color)
-		for (tmpmc = menu_colorings; tmpmc; tmpmc = tmpmc->next)
-		{
-			if (regex_match(str, tmpmc->match))
+    if (iflags.use_menu_color)
+        for (tmpmc = menu_colorings; tmpmc; tmpmc = tmpmc->next)
+        {
+            if (regex_match(str, tmpmc->match))
             {
-				return indx;
-			}
-			indx++;
-		}
+                return indx;
+            }
+            indx++;
+        }
 
-	//Nothing found
-	return -1;
+    //Nothing found
+    return -1;
 }
 
 boolean
 free_menu_coloring_str(str)
 const char* str;
 {
-	int i = get_menu_coloring_index(str);
-	if (i >= 0)
-	{
-		free_one_menu_coloring(i);
-		return TRUE;
-	}
-	return FALSE;
+    int i = get_menu_coloring_index(str);
+    if (i >= 0)
+    {
+        free_one_menu_coloring(i);
+        return TRUE;
+    }
+    return FALSE;
 }
 
 
@@ -2361,22 +2361,22 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
-	fullname = "ramname";
-	if (match_optname(opts, fullname, 5, TRUE)) {
-		if (duplicate)
-			complain_about_duplicate(opts, 1);
-		if (negated) {
-			bad_negation(fullname, FALSE);
-			return FALSE;
-		}
-		else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
-			nmcpy(ramname, op, PL_PSIZ);
-		}
-		else
-			return FALSE;
-		sanitize_name(ramname);
-		return retval;
-	}
+    fullname = "ramname";
+    if (match_optname(opts, fullname, 5, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
+            nmcpy(ramname, op, PL_PSIZ);
+        }
+        else
+            return FALSE;
+        sanitize_name(ramname);
+        return retval;
+    }
 
     fullname = "luggagename";
     if (match_optname(opts, fullname, 5, TRUE)) {
@@ -4580,10 +4580,10 @@ boolean tinitial, tfrom_file;
                     if (iflags.perm_invent)
                         need_redraw = TRUE;
                 }
-			} 
+            } 
             else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors)
             {
-					need_redraw = TRUE;
+                    need_redraw = TRUE;
             }
             else if (boolopt[i].addr == &flags.show_tile_mon_hp_bar || boolopt[i].addr == &flags.show_tile_pet_hp_bar || boolopt[i].addr == &flags.show_tile_u_hp_bar || boolopt[i].addr == &flags.show_buff_timer)
             {
@@ -5132,30 +5132,30 @@ doset() /* changing options via menu by Per Liboriussen */
                                         fromfile);
 #ifdef STATUS_HILITES
             } 
-			else if (opt_indx == OPT_OTHER_STATHILITE)
-			{
+            else if (opt_indx == OPT_OTHER_STATHILITE)
+            {
                 if (!status_hilite_menu())
-				{
+                {
                     pline("Bad status hilite(s) specified.");
                 } 
-				else 
-				{
+                else 
+                {
                     if (wc2_supported("hilite_status"))
                         preference_update("hilite_status");
                 }
 #endif
             } 
-			else if (opt_indx == OPT_OTHER_MENUCOLOR) 
-			{
+            else if (opt_indx == OPT_OTHER_MENUCOLOR) 
+            {
                     (void) special_handling("menu_colors", setinitial,
                                             fromfile);
             } 
-			else if (opt_indx == OPT_OTHER_MSGTYPE) 
-			{
+            else if (opt_indx == OPT_OTHER_MSGTYPE) 
+            {
                     (void) special_handling("msgtype", setinitial, fromfile);
             } 
-			else if (opt_indx < boolcount && opt_indx >= 0)
-			{
+            else if (opt_indx < boolcount && opt_indx >= 0)
+            {
                 /* boolean option */
                 Sprintf(buf, "%s%s", *boolopt[opt_indx].addr ? "!" : "",
                         boolopt[opt_indx].name);
@@ -5167,22 +5167,22 @@ doset() /* changing options via menu by Per Liboriussen */
                 /* compound option */
                 opt_indx -= boolcount;
 
-				if (opt_indx >= 0)
-				{
-					if (!special_handling(compopt[opt_indx].name, setinitial,
-						fromfile)) {
-						Sprintf(buf, "Set %s to what?", compopt[opt_indx].name);
-						getlin(buf, buf2);
-						if (buf2[0] == '\033')
-							continue;
-						Sprintf(buf, "%s:%s", compopt[opt_indx].name, buf2);
-						/* pass the buck */
-						(void)parseoptions(buf, setinitial, fromfile);
-					}
-					if (wc_supported(compopt[opt_indx].name)
-						|| wc2_supported(compopt[opt_indx].name))
-						preference_update(compopt[opt_indx].name);
-				}
+                if (opt_indx >= 0)
+                {
+                    if (!special_handling(compopt[opt_indx].name, setinitial,
+                        fromfile)) {
+                        Sprintf(buf, "Set %s to what?", compopt[opt_indx].name);
+                        getlin(buf, buf2);
+                        if (buf2[0] == '\033')
+                            continue;
+                        Sprintf(buf, "%s:%s", compopt[opt_indx].name, buf2);
+                        /* pass the buck */
+                        (void)parseoptions(buf, setinitial, fromfile);
+                    }
+                    if (wc_supported(compopt[opt_indx].name)
+                        || wc2_supported(compopt[opt_indx].name))
+                        preference_update(compopt[opt_indx].name);
+                }
             }
         }
         free((genericptr_t) pick_list), pick_list = (menu_item *) 0;
@@ -6170,8 +6170,8 @@ char *buf;
         Sprintf(buf, "%s", rolestring(flags.initgend, genders, adj));
     else if (!strcmp(optname, "horsename"))
         Sprintf(buf, "%s", horsename[0] ? horsename : none);
-	else if (!strcmp(optname, "ramname"))
-		Sprintf(buf, "%s", ramname[0] ? ramname : none);
+    else if (!strcmp(optname, "ramname"))
+        Sprintf(buf, "%s", ramname[0] ? ramname : none);
     else if (!strcmp(optname, "luggagename"))
         Sprintf(buf, "%s", luggagename[0] ? luggagename : none);
     else if (!strcmp(optname, "wolfname"))
@@ -6785,7 +6785,7 @@ const char *strval; /* up to 4*BUFSZ-1 long; only first few chars matter */
         } else {
             char *p;
 
-			/* +1: skip opening single quote */
+            /* +1: skip opening single quote */
             (void) strncpy(tmp, strval + 1, sizeof tmp - 1);
             tmp[sizeof tmp - 1] = '\0';
             if ((p = rindex(tmp, '\'')) != 0) {
@@ -7006,8 +7006,8 @@ struct fruit *replace_fruit;
             goto nonew;
         }
     }
-	else
-	{
+    else
+    {
         /* not user_supplied, so assumed to be from bones (or orc gang) */
         copynchars(altname, str, PL_FSIZ - 1);
         sanitize_name(altname);

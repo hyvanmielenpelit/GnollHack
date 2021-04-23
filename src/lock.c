@@ -1,4 +1,4 @@
-/* GnollHack 4.0	lock.c	$NHDT-Date: 1548978605 2019/01/31 23:50:05 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.84 $ */
+/* GnollHack 4.0    lock.c    $NHDT-Date: 1548978605 2019/01/31 23:50:05 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.84 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -802,20 +802,20 @@ boolean is_auto;
 boolean
 can_try_force()
 {
-	if (u.uswallow) {
-		return FALSE;
-	}
+    if (u.uswallow) {
+        return FALSE;
+    }
 
-	if (!uwep /* proper type test */
-		|| ((uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
-			? (objects[uwep->otyp].oc_skill < P_DAGGER
-				|| objects[uwep->otyp].oc_skill == P_FLAIL
-				|| objects[uwep->otyp].oc_skill > P_SPEAR)
-			: uwep->oclass != ROCK_CLASS)) {
-		return FALSE;
-	}
+    if (!uwep /* proper type test */
+        || ((uwep->oclass == WEAPON_CLASS || is_weptool(uwep))
+            ? (objects[uwep->otyp].oc_skill < P_DAGGER
+                || objects[uwep->otyp].oc_skill == P_FLAIL
+                || objects[uwep->otyp].oc_skill > P_SPEAR)
+            : uwep->oclass != ROCK_CLASS)) {
+        return FALSE;
+    }
 
-	return can_reach_floor(TRUE);
+    return can_reach_floor(TRUE);
 }
 #endif
 
@@ -1010,7 +1010,7 @@ int x, y;
     if (!(door->doormask & D_CLOSED)) 
     {
         const char *mesg;
-		boolean locked = FALSE;
+        boolean locked = FALSE;
         char lbuf[BUFSZ];
         strcpy(lbuf, "");
         enum sfx_sound_types sfx = SFX_ILLEGAL;
@@ -1039,16 +1039,16 @@ int x, y;
             update_u_action(ACTION_TILE_DOOR_USE);
             u_wait_until_action();
             locked = TRUE;
-			break;
+            break;
         }
         if(sfx != SFX_ILLEGAL)
             play_sfx_sound(sfx);
 
         pline("This %s%s%s.", door_name, mesg, lbuf);
 #ifdef ANDROID
-		if (locked && flags.autokick) {
-			autokick();
-		}
+        if (locked && flags.autokick) {
+            autokick();
+        }
 #endif
         if (locked)
         {

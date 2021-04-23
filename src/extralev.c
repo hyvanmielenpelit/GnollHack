@@ -1,4 +1,4 @@
-/* GnollHack 4.0	extralev.c	$NHDT-Date: 1446975468 2015/11/08 09:37:48 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 4.0    extralev.c    $NHDT-Date: 1446975468 2015/11/08 09:37:48 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
 /*      Copyright 1988, 1989 by Ken Arromdee                      */
 /* GnollHack may be freely redistributed.  See license for details. */
 

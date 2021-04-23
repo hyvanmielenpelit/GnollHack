@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mkroom.h	$NHDT-Date: 1432512780 2015/05/25 00:13:00 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $ */
+/* GnollHack 4.0    mkroom.h    $NHDT-Date: 1432512780 2015/05/25 00:13:00 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2016. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -29,8 +29,8 @@ struct mkroom {
 struct shclass {
     const char *name; /* name of the shop type */
     char symb;        /* this identifies the shop type */
-	const char* identified_item_description; /* name of the shop type */
-	int prob;         /* the shop type probability in % */
+    const char* identified_item_description; /* name of the shop type */
+    int prob;         /* the shop type probability in % */
     schar shdist;     /* object placement type */
 #define D_SCATTER 0   /* normal placement */
 #define D_SHOP 1      /* shop-like placement */
@@ -62,10 +62,10 @@ enum roomtype_types {
     SWAMP,      /* contains pools */
     VAULT,      /* contains piles of gold */
     BEEHIVE,    /* contains killer bees and royal jelly */
-	DRAGONLAIR, /* contains one or more dragons */
-	LIBRARY,    /* contains bookshelves with scrolls and spellbooks and magic-using monsters such as liches */
-	GARDEN,     /* contains, trees, garden gnomes, herbs, and some possibly angry humanoids etc. */
-	MORGUE,     /* contains corpses, undead and ghosts */
+    DRAGONLAIR, /* contains one or more dragons */
+    LIBRARY,    /* contains bookshelves with scrolls and spellbooks and magic-using monsters such as liches */
+    GARDEN,     /* contains, trees, garden gnomes, herbs, and some possibly angry humanoids etc. */
+    MORGUE,     /* contains corpses, undead and ghosts */
     BARRACKS,   /* contains soldiers and their gear */
     ARMORY,     /* contains weapons and armors and some guards */
     ZOO,        /* floor covered with treasure and monsters */
@@ -77,17 +77,17 @@ enum roomtype_types {
     SMITHY,     /* contains an anvil and a smith */
     NPCROOM,    /* contains a non-player character */
     DESERTEDSHOP,   /* a deserted shop */
-	SHOPBASE,   /* everything above this is a shop */
+    SHOPBASE,   /* everything above this is a shop */
     ARMORSHOP,  /* specific shop defines for level compiler */
     SCROLLSHOP,
     POTIONSHOP,
     WEAPONSHOP,
     FOODSHOP,
     RINGSHOP,
-	WANDSHOP,
+    WANDSHOP,
     TOOLSHOP,
     BOOKSHOP,
-	REAGENTSHOP,
+    REAGENTSHOP,
     MODRONSHOP,
     FODDERSHOP, /* health food store */
     CANDLESHOP

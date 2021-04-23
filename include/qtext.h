@@ -1,5 +1,5 @@
-/* GnollHack 4.0	qtext.h	$NHDT-Date: 1505170347 2017/09/11 22:52:27 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.18 $ */
-/* Copyright (c) Mike Stephenson 1991.				  */
+/* GnollHack 4.0    qtext.h    $NHDT-Date: 1505170347 2017/09/11 22:52:27 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.18 $ */
+/* Copyright (c) Mike Stephenson 1991.                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef QTEXT_H
@@ -58,8 +58,8 @@ struct qtlists {
 };
 
 /*
- *	Quest message defines.	Used in quest.c to trigger off "realistic"
- *	dialogue to the player.
+ *    Quest message defines.    Used in quest.c to trigger off "realistic"
+ *    dialogue to the player.
  */
 #define QT_FIRSTTIME 1
 #define QT_NEXTTIME 2
@@ -102,7 +102,7 @@ struct qtlists {
 #define QT_HASAMULET 91
 
 /*
- *	Message defines for common text used in maledictions.
+ *    Message defines for common text used in maledictions.
  */
 #define COMMON_ID "-" /* Common message id value */
 

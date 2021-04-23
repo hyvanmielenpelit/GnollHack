@@ -1,5 +1,5 @@
-/* GnollHack 4.0	prop.h	$NHDT-Date: 1547514641 2019/01/15 01:10:41 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.20 $ */
-/* Copyright (c) 1989 Mike Threepoint				  */
+/* GnollHack 4.0    prop.h    $NHDT-Date: 1547514641 2019/01/15 01:10:41 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.20 $ */
+/* Copyright (c) 1989 Mike Threepoint                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef PROP_H
@@ -88,106 +88,106 @@ enum prop_types {
     FREE_ACTION       = 65,
     FIXED_ABIL        = 66,
     LIFESAVED         = 67,
-	/* New */
-	DEATH_RESISTANCE  = 68,
-	LYCANTHROPY_RESISTANCE = 69,
-	CURSE_RESISTANCE  = 70,
-	BLIND_TELEPATHY	  = 71,
-	ENHANCED_VISION   = 72,
-	FLASH_RESISTANCE  = 73,
-	EYE_PROTECTION	  = 74,
-	BRAIN_PROTECTION  = 75,
-	WARN_DEMON		  = 76,
-	WARN_ORC		  = 77,
-	WARN_TROLL		  = 78,
-	WARN_GIANT		  = 79,
-	WARN_DRAGON		  = 80,
-	WARN_ELF		  = 81,
-	WARN_DWARF		  = 82,
-	WARN_GNOLL		  = 83,
-	WARN_HUMAN		  = 84,
-	WARN_LYCANTHROPE  = 85,
-	WARN_ANGEL		  = 86,
-	WARN_OGRE		  = 87,
-	WARN_GNOME		  = 88,
-	CHARM_RESISTANCE  = 89,
-	MIND_SHIELDING	  = 90,
-	ODD_IDEAS		  = 91,
-	AIRLESS_ENVIRONMENT = 92,
-	MAGICAL_KICKING   = 93,
-	BLOCKS_INVISIBILITY = 94,
-	BLOCKS_BLINDNESS  = 95,
-	BLOCKS_CLAIRVOYANCE = 96,
-	HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS = 97,
-	MAGICAL_SHIELDING = 98,
-	MAGICAL_BARKSKIN  = 99,
-	MAGICAL_STONESKIN = 100,
-	XRAY_VISION		  = 101,
-	VERY_FAST		  = 102,
-	SLOWED			  = 103,
-	CANCELLED		  = 104,
-	HALVED_MAGIC_RESISTANCE = 105,
-	NO_MAGIC_RESISTANCE = 106,
-	CHARMED			  = 107,
-	PARALYZED		  = 108,
-	FEARFUL			  = 109,
-	FEAR_RESISTANCE	  = 110,
-	SLEEPING		  = 111,
-	SUMMON_FORBIDDEN  = 112,
-	SILENCED		  = 113,
+    /* New */
+    DEATH_RESISTANCE  = 68,
+    LYCANTHROPY_RESISTANCE = 69,
+    CURSE_RESISTANCE  = 70,
+    BLIND_TELEPATHY      = 71,
+    ENHANCED_VISION   = 72,
+    FLASH_RESISTANCE  = 73,
+    EYE_PROTECTION      = 74,
+    BRAIN_PROTECTION  = 75,
+    WARN_DEMON          = 76,
+    WARN_ORC          = 77,
+    WARN_TROLL          = 78,
+    WARN_GIANT          = 79,
+    WARN_DRAGON          = 80,
+    WARN_ELF          = 81,
+    WARN_DWARF          = 82,
+    WARN_GNOLL          = 83,
+    WARN_HUMAN          = 84,
+    WARN_LYCANTHROPE  = 85,
+    WARN_ANGEL          = 86,
+    WARN_OGRE          = 87,
+    WARN_GNOME          = 88,
+    CHARM_RESISTANCE  = 89,
+    MIND_SHIELDING      = 90,
+    ODD_IDEAS          = 91,
+    AIRLESS_ENVIRONMENT = 92,
+    MAGICAL_KICKING   = 93,
+    BLOCKS_INVISIBILITY = 94,
+    BLOCKS_BLINDNESS  = 95,
+    BLOCKS_CLAIRVOYANCE = 96,
+    HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS = 97,
+    MAGICAL_SHIELDING = 98,
+    MAGICAL_BARKSKIN  = 99,
+    MAGICAL_STONESKIN = 100,
+    XRAY_VISION          = 101,
+    VERY_FAST          = 102,
+    SLOWED              = 103,
+    CANCELLED          = 104,
+    HALVED_MAGIC_RESISTANCE = 105,
+    NO_MAGIC_RESISTANCE = 106,
+    CHARMED              = 107,
+    PARALYZED          = 108,
+    FEARFUL              = 109,
+    FEAR_RESISTANCE      = 110,
+    SLEEPING          = 111,
+    SUMMON_FORBIDDEN  = 112,
+    SILENCED          = 113,
     LEVITATION_CONTROL= 114,
-	FIRE_VULNERABILITY = 115,
-	COLD_VULNERABILITY = 116,
-	SHOCK_VULNERABILITY = 117,
-	MAGIC_MISSILE_VULNERABILITY = 118,
-	DOUBLE_PHYSICAL_DAMAGE = 119,
-	DOUBLE_SPELL_DAMAGE = 120,
-	ENHANCED_UNTRAP	  = 121,
-	BLOCKS_LEVITATION = 122,
-	BLOCKS_FLYING     = 123,
-	ONE_FOURTH_MAGIC_RESISTANCE = 124,
-	THREE_FOURTHS_MAGIC_RESISTANCE = 125,
-	BLINDFOLDED       = 126,
-	TITAN_STRENGTH    = 127,
-	MAGIC_MISSILE_IMMUNITY = 128,
-	STUN_RESISTANCE   = 129,
+    FIRE_VULNERABILITY = 115,
+    COLD_VULNERABILITY = 116,
+    SHOCK_VULNERABILITY = 117,
+    MAGIC_MISSILE_VULNERABILITY = 118,
+    DOUBLE_PHYSICAL_DAMAGE = 119,
+    DOUBLE_SPELL_DAMAGE = 120,
+    ENHANCED_UNTRAP      = 121,
+    BLOCKS_LEVITATION = 122,
+    BLOCKS_FLYING     = 123,
+    ONE_FOURTH_MAGIC_RESISTANCE = 124,
+    THREE_FOURTHS_MAGIC_RESISTANCE = 125,
+    BLINDFOLDED       = 126,
+    TITAN_STRENGTH    = 127,
+    MAGIC_MISSILE_IMMUNITY = 128,
+    STUN_RESISTANCE   = 129,
     FOOD_POISONED     = 130,
-	BISECTION_RESISTANCE = 131,
-	DIVINE_ENDURANCE  = 132,
-	DIVINE_INTELLECT  = 133,
-	DIVINE_WISDOM     = 134,
-	DIVINE_DEXTERITY  = 135,
-	DIVINE_CHARISMA   = 136,
+    BISECTION_RESISTANCE = 131,
+    DIVINE_ENDURANCE  = 132,
+    DIVINE_INTELLECT  = 133,
+    DIVINE_WISDOM     = 134,
+    DIVINE_DEXTERITY  = 135,
+    DIVINE_CHARISMA   = 136,
     MUMMY_ROT         = 137,
     FIRE_RESISTANCE   = 138,
     COLD_RESISTANCE   = 139,
     SHOCK_RESISTANCE  = 140,
     MAGIC_MISSILE_RESISTANCE = 141,
     ACID_RESISTANCE   = 142,
-	ULTRA_FAST		  = 143,
-	SUPER_FAST		  = 144,
-	LIGHTNING_FAST	  = 145,
-	HEROISM	          = 146,
-	SUPER_HEROISM	  = 147,
-	RAPID_REGENERATION = 148,
-	RAPIDER_REGENERATION = 149,
-	RAPIDEST_REGENERATION = 150,
-	RAPID_ENERGY_REGENERATION = 151,
-	RAPIDER_ENERGY_REGENERATION = 152,
-	RAPIDEST_ENERGY_REGENERATION = 153,
-	MELEE_LIFE_LEECH  = 154,
-	CRAZED            = 155,
-	DIVINE_REGENERATION = 156,
+    ULTRA_FAST          = 143,
+    SUPER_FAST          = 144,
+    LIGHTNING_FAST      = 145,
+    HEROISM              = 146,
+    SUPER_HEROISM      = 147,
+    RAPID_REGENERATION = 148,
+    RAPIDER_REGENERATION = 149,
+    RAPIDEST_REGENERATION = 150,
+    RAPID_ENERGY_REGENERATION = 151,
+    RAPIDER_ENERGY_REGENERATION = 152,
+    RAPIDEST_ENERGY_REGENERATION = 153,
+    MELEE_LIFE_LEECH  = 154,
+    CRAZED            = 155,
+    DIVINE_REGENERATION = 156,
     IMPROVED_FIRE_RESISTANCE = 157,
     IMPROVED_COLD_RESISTANCE = 158,
     IMPROVED_SHOCK_RESISTANCE = 159,
     IMPROVED_MAGIC_MISSILE_RESISTANCE = 160,
     IMPROVED_ACID_RESISTANCE = 161,
     UNDEAD_IMMOBILITY = 162,
-	UNDEAD_CONTROL    = 163,
-	CANCELLATION_RESISTANCE = 164,
-	HALF_SLOW_DIGESTION = 165,
-    LAUGHING		  = 166,
+    UNDEAD_CONTROL    = 163,
+    CANCELLATION_RESISTANCE = 164,
+    HALF_SLOW_DIGESTION = 165,
+    LAUGHING          = 166,
     MAX_PROPS = 167
 };
 #define LAST_PROP (MAX_PROPS - 1)
@@ -212,14 +212,14 @@ struct prop {
 
 
 /* Weapons */
-#define W_WEP		0x00000200L     /* Wielded weapon in the primary hand */
-#define W_WEP2		W_ARMS			/* Wielded weapon in the secondary hand (uses the same hand as W_ARMS) */
-#define W_QUIVER	0x00000800L		/* Quiver for (f)iring ammo */
-#define W_SWAPWEP	0x00001000L		/* Alternate weapon in the primary hand */
-#define W_SWAPWEP2	0x00002000L		/* Alternate weapon/shield in the secondary hand */
+#define W_WEP        0x00000200L     /* Wielded weapon in the primary hand */
+#define W_WEP2        W_ARMS            /* Wielded weapon in the secondary hand (uses the same hand as W_ARMS) */
+#define W_QUIVER    0x00000800L        /* Quiver for (f)iring ammo */
+#define W_SWAPWEP    0x00001000L        /* Alternate weapon in the primary hand */
+#define W_SWAPWEP2    0x00002000L        /* Alternate weapon/shield in the secondary hand */
 
-#define W_ENVIRONMENT 0x00004000L	/* Caused by environment, e.g., suffocation due to no air */
-#define W_STUCK		0x00008000L		/* A monster in u.ustuck had grabbed you and is e.g. constricting you */
+#define W_ENVIRONMENT 0x00004000L    /* Caused by environment, e.g., suffocation due to no air */
+#define W_STUCK        0x00008000L        /* A monster in u.ustuck had grabbed you and is e.g. constricting you */
 
 #define W_WIELDED_WEAPON (W_WEP | W_WEP2)
 #define W_SWAP_WEAPON (W_SWAPWEP | W_SWAPWEP2)
@@ -238,12 +238,12 @@ struct prop {
 #define W_BALL 0x00200000L   /* Punishment ball */
 #define W_CHAIN 0x00400000L  /* Punishment chain */
 
-	/* new accessories*/
-#define W_MISC  0x00800000L	  /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+    /* new accessories*/
+#define W_MISC  0x00800000L      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
 #define W_MISC2 0x01000000L   /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
 #define W_MISC3 0x02000000L   /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
-#define W_MISC4 0x04000000L	  /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
-#define W_MISC5 0x08000000L	  /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+#define W_MISC4 0x04000000L      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+#define W_MISC5 0x08000000L      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
 
 #define W_MISCITEMS (W_MISC  | W_MISC2 | W_MISC3 | W_MISC4 | W_MISC5)
 #define W_ACCESSORY (W_RING | W_AMUL | W_MISCITEMS | W_BLINDFOLD)
@@ -276,7 +276,7 @@ struct prop_info {
 
     Bitfield(show_buff, 1);
     Bitfield(buff_text_needs_background, 1);
-    Bitfield(recurring, 1);			/* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
+    Bitfield(recurring, 1);            /* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
 
     short recurring_constant;
     short recurring_random;

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	teleport.c	$NHDT-Date: 1553885439 2019/03/29 18:50:39 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.86 $ */
+/* GnollHack 4.0    teleport.c    $NHDT-Date: 1553885439 2019/03/29 18:50:39 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.86 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -251,15 +251,15 @@ teleok(x, y, trapok)
 register int x, y;
 boolean trapok;
 {
-	if (!trapok) 
+    if (!trapok) 
     {
-		/* allow teleportation onto vibrating square, it's not a real trap */
-		struct trap* trap = t_at(x, y);
+        /* allow teleportation onto vibrating square, it's not a real trap */
+        struct trap* trap = t_at(x, y);
 
-		if (trap && !(trap_type_definitions[trap->ttyp].tdflags & TRAPDEF_FLAGS_TELEOK))
-			return FALSE;
-	}
-	if (!goodpos(x, y, &youmonst, 0))
+        if (trap && !(trap_type_definitions[trap->ttyp].tdflags & TRAPDEF_FLAGS_TELEOK))
+            return FALSE;
+    }
+    if (!goodpos(x, y, &youmonst, 0))
         return FALSE;
     if (!tele_jump_ok(u.ux, u.uy, x, y, TRUE))
         return FALSE;
@@ -515,14 +515,14 @@ tele()
 void
 controlled_teleportation()
 {
-	(void)scrolltele((struct obj*) 0, FALSE, TRUE);
+    (void)scrolltele((struct obj*) 0, FALSE, TRUE);
 }
 
 /* teleport the hero via some method other than scroll of teleport */
 void
 wiztele()
 {
-	(void)scrolltele((struct obj*) 0, TRUE, TRUE);
+    (void)scrolltele((struct obj*) 0, TRUE, TRUE);
 }
 
 
@@ -541,7 +541,7 @@ boolean iscontrolled;
 
     /* Disable teleportation in stronghold && Vlad's Tower */
     if (level.flags.noteleport) 
-	{
+    {
         if (!wizard || yn_query("Teleportation is not allowed on this level. Override?") != 'y') 
         {
             play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);
@@ -555,7 +555,7 @@ boolean iscontrolled;
         make_blinded(0L, FALSE);
 
     if ((u.uhave.amulet || On_W_tower_level(&u.uz)) && !rn2(3)) 
-	{
+    {
         play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
         You_feel("disoriented for a moment.");
         if (!wizard || yn_query("Override?") != 'y')
@@ -563,13 +563,13 @@ boolean iscontrolled;
     }
 
     if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (iswizcmd || yn_query("Enforce teleport control?") == 'y')))
-	{
+    {
         if (unconscious() && !iscontrolled && !iswizcmd)
-		{
+        {
             pline("Being unconscious, you cannot control your teleport.");
         }
-		else 
-		{
+        else 
+        {
             char whobuf[BUFSZ];
 
             Strcpy(whobuf, "you");
@@ -583,7 +583,7 @@ boolean iscontrolled;
             /* possible extensions: introduce a small error if
                magic power is low; allow transfer to solid rock */
             if (teleok(cc.x, cc.y, FALSE)) 
-			{
+            {
                 /* for scroll, discover it regardless of destination */
                 if (scroll)
                     learnscroll(scroll);
@@ -595,8 +595,8 @@ boolean iscontrolled;
             result = TRUE;
         }
     } 
-	else if (scroll && scroll->blessed)
-	{
+    else if (scroll && scroll->blessed)
+    {
         /* (this used to be handled in seffects()) */
         if (yn_query("Do you wish to teleport?") == 'n')
             return TRUE;
@@ -618,8 +618,8 @@ modronportaltele(ttmp, mtmp)
 struct trap* ttmp;
 struct monst* mtmp;
 {
-	if (!ttmp || !mtmp)
-		return FALSE;
+    if (!ttmp || !mtmp)
+        return FALSE;
 
     boolean isyou = (mtmp == &youmonst);
     const char* portal_color = 
@@ -643,12 +643,12 @@ struct monst* mtmp;
     struct obj* otmp = (struct obj*)0;
 
     if (isyou)
-		otmp = carrying(portal_object);
-	else
-		otmp = m_carrying(mtmp, portal_object);
+        otmp = carrying(portal_object);
+    else
+        otmp = m_carrying(mtmp, portal_object);
 
-	if (!otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
-	{
+    if (!otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
+    {
         if (isyou)
         {
             play_sfx_sound(SFX_MODRON_GLIMMER_SURROUNDS);
@@ -661,9 +661,9 @@ struct monst* mtmp;
                 pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
         }
         return FALSE;
-	}
+    }
 
-	/* Now do the teleport */
+    /* Now do the teleport */
     if (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORTER)
     {
         d_level destination = { 0 };
@@ -718,7 +718,7 @@ struct monst* mtmp;
     }
     else
     {
-	    int x = ttmp->launch.x, y = ttmp->launch.y;
+        int x = ttmp->launch.x, y = ttmp->launch.y;
         int tcnt = 0;
         if (!isok(x, y))
         {
@@ -728,30 +728,30 @@ struct monst* mtmp;
         }
         int nux = x, nuy = y;
         if(isyou ? !teleok(x, y, FALSE) : !rloc_pos_ok(x, y, mtmp))
-	    {
-		    do {
-			    if (tcnt < 50)
-			    {
-				    nux = x - 1 + rn2(3);
-				    nuy = y - 1 + rn2(3);
-			    }
-			    else
-			    {
-				    nux = x - 2 + rn2(5);
-				    nuy = y - 2 + rn2(5);
-			    }
-		    } while ((isyou ? !teleok(x, y, (tcnt >= 200)) : !rloc_pos_ok(x, y, mtmp)) && ++tcnt <= 400);
-	    }
+        {
+            do {
+                if (tcnt < 50)
+                {
+                    nux = x - 1 + rn2(3);
+                    nuy = y - 1 + rn2(3);
+                }
+                else
+                {
+                    nux = x - 2 + rn2(5);
+                    nuy = y - 2 + rn2(5);
+                }
+            } while ((isyou ? !teleok(x, y, (tcnt >= 200)) : !rloc_pos_ok(x, y, mtmp)) && ++tcnt <= 400);
+        }
 
-	    if (tcnt <= 400)
-	    {
-		    if (isyou || mtmp == u.usteed)
-		    {
+        if (tcnt <= 400)
+        {
+            if (isyou || mtmp == u.usteed)
+            {
                 play_sfx_sound(SFX_MODRON_TELEPORT_SUCCESS);
                 if(otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
-    			    pline("%s light envelops %s!", portal_color, yname(otmp));
-			    pline("You feel your essence unsolidifying...");
-			    pline("You reemerge at a new location!");
+                    pline("%s light envelops %s!", portal_color, yname(otmp));
+                pline("You feel your essence unsolidifying...");
+                pline("You reemerge at a new location!");
                 teleds_with_effects(nux, nuy, TRUE, TRUE);
                 if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
                 {
@@ -763,9 +763,9 @@ struct monst* mtmp;
                     ttmp->tflags |= TRAPFLAGS_ACTIVATED;
                     ttmp->activation_count++;
                 }
-		    }
-		    else
-		    {
+            }
+            else
+            {
                 char colorbuf[BUFSZ];
                 strcpy(colorbuf, portal_color);
                 *colorbuf = lowc(*colorbuf);
@@ -780,10 +780,10 @@ struct monst* mtmp;
                     ttmp->activation_count++;
                 }
             }
-		    return TRUE;
-	    }
+            return TRUE;
+        }
         else
-	    {
+        {
             if (isyou)
             {
                 play_sfx_sound(SFX_MODRON_GLIMMER_SURROUNDS);
@@ -795,10 +795,10 @@ struct monst* mtmp;
                 if(canseemon(mtmp))
                     pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
             }
-		    return FALSE;
-	    }
+            return FALSE;
+        }
     }
-	return FALSE;
+    return FALSE;
 }
 
 
@@ -1055,10 +1055,10 @@ boolean break_the_rules; /* True: wizard mode ^T */
 
     if (next_to_u()) 
     {
-		if (trap && trap_once)
-			vault_tele();
-		else if (break_the_rules)
-			wiztele();
+        if (trap && trap_once)
+            vault_tele();
+        else if (break_the_rules)
+            wiztele();
         else
             tele();
         (void) next_to_u();
@@ -1086,7 +1086,7 @@ boolean iscontrolled;
     const char *escape_by_flying = 0; /* when surviving dest of -N */
     char buf[BUFSZ];
     boolean force_dest = FALSE;
-	int tcnt = 0;
+    int tcnt = 0;
 
     if (iflags.debug_fuzzer)
         goto random_levtport;
@@ -1098,7 +1098,7 @@ boolean iscontrolled;
         return;
     }
     if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (teletype == 1 || yn_query("Enforce teleport control?") == 'y'))) 
-	{
+    {
         char qbuf[BUFSZ];
         int trycnt = 0;
 
@@ -1218,19 +1218,19 @@ boolean iscontrolled;
         if (In_quest(&u.uz) && newlev > 0)
             newlev = newlev + dungeons[u.uz.dnum].depth_start - 1;
     } 
-	else
-	{ /* involuntary level tele */
+    else
+    { /* involuntary level tele */
 random_levtport:
-		tcnt = 0;
-		do
-		{
-			tcnt++;
-			newlev = random_teleport_level();
+        tcnt = 0;
+        do
+        {
+            tcnt++;
+            newlev = random_teleport_level();
 
-		} while (newlev == depth(&u.uz) && tcnt < (teletype == 0 ? 1 : 10));
+        } while (newlev == depth(&u.uz) && tcnt < (teletype == 0 ? 1 : 10));
 
         if (newlev == depth(&u.uz))
-		{
+        {
             play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
             You1(shudder_for_moment);
             return;

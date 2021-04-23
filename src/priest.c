@@ -1,4 +1,4 @@
-/* GnollHack 4.0	priest.c	$NHDT-Date: 1545131519 2018/12/18 11:11:59 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.45 $ */
+/* GnollHack 4.0    priest.c    $NHDT-Date: 1545131519 2018/12/18 11:11:59 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.45 $ */
 /* Copyright (c) Izchak Miller, Steve Linhart, 1989.              */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -97,14 +97,14 @@ register xchar omx, omy, gx, gy;
         allowflags = ALLOW_SSM | ALLOW_SANCT;
     if (passes_walls(mtmp->data))
         allowflags |= (ALLOW_ROCK | ALLOW_WALL);
-	if (has_pitwalk(mtmp->data))
-		allowflags |= ALLOW_PITS;
-	if (throws_rocks(mtmp->data))
+    if (has_pitwalk(mtmp->data))
+        allowflags |= ALLOW_PITS;
+    if (throws_rocks(mtmp->data))
         allowflags |= ALLOW_ROCK;
     if (tunnels(mtmp->data))
         allowflags |= ALLOW_DIG;
     if (can_operate_objects(mtmp->data))
-	{
+    {
         allowflags |= OPENDOOR;
         if (monhaskey(mtmp, TRUE))
             allowflags |= UNLOCKDOOR;
@@ -536,7 +536,7 @@ char *pname; /* caller-supplied output buffer */
         Strcat(pname, "the ");
     if (is_invisible(mon))
         Strcat(pname, "invisible ");
-	if (mon->isminion && EMIN(mon)->renegade)
+    if (mon->isminion && EMIN(mon)->renegade)
         Strcat(pname, "renegade ");
 
     if (mon->ispriest || aligned_priest) { /* high_priest implies ispriest */
@@ -987,33 +987,33 @@ register struct monst *priest;
                    && (u.ublessed == 0
                        || (u.ublessed < 12
                            && (u.ublessed < 8 || !rn2(u.ublessed)))))
-		{
+        {
             verbalize("Thy devotion has been rewarded.");
             if (u.ublessed == 0)
                 u.ublessed = rnd(3);
             else
                 u.ublessed++;
         }
-		else
-		{
+        else
+        {
             verbalize("Thy selfless generosity is deeply appreciated.");
             if (money_cnt(invent) < (offer * 2L) && coaligned)
-			{
+            {
                 if (strayed && (moves - u.ucleansed) > 5000L) 
-				{
+                {
                     u.ualign.record = 0; /* cleanse thee */
                     u.ucleansed = moves;
                 } 
-				else 
-				{
+                else 
+                {
                     adjalign(2);
                 }
             }
         }
     }
-	find_ac();
-	find_mc();
-	context.botl = 1;
+    find_ac();
+    find_mc();
+    context.botl = 1;
 }
 
 struct monst *
@@ -1062,9 +1062,9 @@ register struct monst *roamer;
 
     if (EMIN(roamer)->min_align != u.ualign.type) {
         roamer->mpeaceful = roamer->mtame = 0;
-		if (!roamer->mtame)
-			roamer->ispartymember = FALSE;
-		set_malign(roamer);
+        if (!roamer->mtame)
+            roamer->ispartymember = FALSE;
+        set_malign(roamer);
     }
     newsym(roamer->mx, roamer->my);
 }
@@ -1109,34 +1109,34 @@ struct monst *priest;
     troom = &rooms[roomno - ROOMOFFSET];
 
     if ((u.ux == x && u.uy == y) || !linedup(u.ux, u.uy, x, y, 1, FALSE, FALSE, FALSE, 0, FALSE, M_SHOOT_RANGE))
-	{
+    {
         if (IS_DOOR(levl[u.ux][u.uy].typ))
-		{
+        {
             if (u.ux == troom->lx - 1) 
-			{
+            {
                 x = troom->hx;
                 y = u.uy;
             } 
-			else if (u.ux == troom->hx + 1) 
-			{
+            else if (u.ux == troom->hx + 1) 
+            {
                 x = troom->lx;
                 y = u.uy;
             }
-			else if (u.uy == troom->ly - 1)
-			{
+            else if (u.uy == troom->ly - 1)
+            {
                 x = u.ux;
                 y = troom->hy;
             }
-			else if (u.uy == troom->hy + 1) 
-			{
+            else if (u.uy == troom->hy + 1) 
+            {
                 x = u.ux;
                 y = troom->ly;
             }
         }
-		else
-		{
+        else
+        {
             switch (rn2(4))
-			{
+            {
             case 0:
                 x = u.ux;
                 y = troom->ly;
@@ -1203,17 +1203,17 @@ angry_priest()
                 != eprip->shralign)) {
             if (!EMIN(priest))
                 newemin(priest);
-			if (EMIN(priest))
-			{
-				priest->ispriest = 0; /* now a roaming minion */
-				priest->isminion = 1;
-				EMIN(priest)->min_align = eprip->shralign;
-				EMIN(priest)->renegade = FALSE;
-				/* discard priest's memory of his former shrine;
-				   if we ever implement the re-conversion mentioned
-				   above, this will need to be removed */
-				free_epri(priest);
-			}
+            if (EMIN(priest))
+            {
+                priest->ispriest = 0; /* now a roaming minion */
+                priest->isminion = 1;
+                EMIN(priest)->min_align = eprip->shralign;
+                EMIN(priest)->renegade = FALSE;
+                /* discard priest's memory of his former shrine;
+                   if we ever implement the re-conversion mentioned
+                   above, this will need to be removed */
+                free_epri(priest);
+            }
         }
     }
 }
@@ -1351,7 +1351,7 @@ mstatusline(mtmp)
 struct monst *mtmp;
 {
     char buf[BUFSZ];
-	print_mstatusline(buf, mtmp, ARTICLE_THE, FALSE);
+    print_mstatusline(buf, mtmp, ARTICLE_THE, FALSE);
     pline("Status of %s", buf);
 }
 
@@ -1363,104 +1363,104 @@ struct monst* mtmp;
 int monsternamearticle;
 boolean showheads;
 {
-	aligntyp alignment = mon_aligntyp(mtmp);
-	char info[BUFSZ], monnambuf[BUFSZ];
+    aligntyp alignment = mon_aligntyp(mtmp);
+    char info[BUFSZ], monnambuf[BUFSZ];
 
-	info[0] = 0;
-	if (showheads && mtmp->data->heads > 1)
-	{
-		Sprintf(eos(info), "  Heads %d(%d)", mtmp->heads_left, mtmp->data->heads);
-	}
-
-	if (is_long_worm_with_tail(mtmp->data)) 
+    info[0] = 0;
+    if (showheads && mtmp->data->heads > 1)
     {
-		int segndx, nsegs = count_wsegs(mtmp);
+        Sprintf(eos(info), "  Heads %d(%d)", mtmp->heads_left, mtmp->data->heads);
+    }
 
-		/* the worm code internals don't consider the head of be one of
-		   the worm's segments, but we count it as such when presenting
-		   worm feedback to the player */
-		if (!nsegs) {
-			Strcat(info, ", single segment");
-		}
-		else {
-			++nsegs; /* include head in the segment count */
-			segndx = wseg_at(mtmp, bhitpos.x, bhitpos.y);
-			Sprintf(eos(info), ", %d%s of %d segments",
-				segndx, ordin(segndx), nsegs);
-		}
-	}
-	if (mtmp->cham >= LOW_PM && mtmp->data != &mons[mtmp->cham])
-		/* don't reveal the innate form (chameleon, vampire, &c),
-		   just expose the fact that this current form isn't it */
-		Strcat(info, ", shapechanger");
+    if (is_long_worm_with_tail(mtmp->data)) 
+    {
+        int segndx, nsegs = count_wsegs(mtmp);
 
-	if (is_tame(mtmp) && (carnivorous(mtmp->data) || herbivorous(mtmp->data)) && !mtmp->isminion && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime)
-	{
-		struct edog* edog = EDOG(mtmp);
+        /* the worm code internals don't consider the head of be one of
+           the worm's segments, but we count it as such when presenting
+           worm feedback to the player */
+        if (!nsegs) {
+            Strcat(info, ", single segment");
+        }
+        else {
+            ++nsegs; /* include head in the segment count */
+            segndx = wseg_at(mtmp, bhitpos.x, bhitpos.y);
+            Sprintf(eos(info), ", %d%s of %d segments",
+                segndx, ordin(segndx), nsegs);
+        }
+    }
+    if (mtmp->cham >= LOW_PM && mtmp->data != &mons[mtmp->cham])
+        /* don't reveal the innate form (chameleon, vampire, &c),
+           just expose the fact that this current form isn't it */
+        Strcat(info, ", shapechanger");
 
-		if (monstermoves >= edog->hungrytime + 500)
-			Sprintf(eos(info), ", %s from hunger", monstermoves >= edog->hungrytime + 650 ? "crazed" : "confused");
-		else
-			Sprintf(eos(info), ", %shungry", monstermoves >= edog->hungrytime + 400 ? "extremely " : monstermoves >= edog->hungrytime + 200 ? "very " : "");
-	}
+    if (is_tame(mtmp) && (carnivorous(mtmp->data) || herbivorous(mtmp->data)) && !mtmp->isminion && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime)
+    {
+        struct edog* edog = EDOG(mtmp);
 
-	if (is_tame(mtmp))
-	{
-		if (wizard && flags.wiz_mstatusline)
-		{
-			Sprintf(eos(info), " (%d", is_tame(mtmp));
-			if (!mtmp->isminion)
-				Sprintf(eos(info), "; hungry %ld; apport %d",
-					EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
-			Strcat(info, ")");
-		}
-	}
+        if (monstermoves >= edog->hungrytime + 500)
+            Sprintf(eos(info), ", %s from hunger", monstermoves >= edog->hungrytime + 650 ? "crazed" : "confused");
+        else
+            Sprintf(eos(info), ", %shungry", monstermoves >= edog->hungrytime + 400 ? "extremely " : monstermoves >= edog->hungrytime + 200 ? "very " : "");
+    }
 
-	/* pets eating mimic corpses mimic while eating, so this comes first */
-	if (mtmp->meating)
-		Strcat(info, ", eating");
-	/* a stethoscope exposes mimic before getting here so this
-	   won't be relevant for it, but wand of probing doesn't */
-	if (mtmp->mundetected || mtmp->m_ap_type)
-		mhidden_description(mtmp, TRUE, eos(info));
-	if (is_cancelled(mtmp))
-		Strcat(info, ", cancelled");
-	if (is_silenced(mtmp))
-		Strcat(info, ", silenced");
-	if (has_no_magic_resistance(mtmp))
-		Strcat(info, ", no magic resistance");
-	else if (has_half_magic_resistance(mtmp))
-		Strcat(info, ", halved magic resistance");
-	if (has_summon_forbidden(mtmp))
-		Strcat(info, ", unable to summon");
-	if (is_confused(mtmp))
-		Strcat(info, ", confused");
-	if (is_blinded(mtmp))
-		Strcat(info, ", blind");
-	if (is_sick(mtmp))
-		Strcat(info, ", terminally ill");
-	if (is_stoning(mtmp))
-		Strcat(info, ", solidifying");
-	if (is_turning_into_slime(mtmp))
-		Strcat(info, ", becoming slimy");
-	if (is_being_strangled(mtmp))
-		Strcat(info, ", being strangled");
-	if (is_paralyzed(mtmp))
-		Strcat(info, ", paralyzed");
-	if (is_stunned(mtmp))
-		Strcat(info, ", stunned");
-	if (is_sleeping(mtmp))
-		Strcat(info, ", asleep");
-	if (mtmp->mfrozen || !mtmp->mcanmove)
-		Strcat(info, ", can't move");
-	else if (mtmp->mstrategy & STRAT_WAITMASK)
-		Strcat(info, ", meditating");
-	if (is_fleeing(mtmp))
-		Strcat(info, ", scared");
-	if (mtmp->mtrapped)
-		Strcat(info, ", trapped");
-	if (is_slow(mtmp))
-		Strcat(info, ", slow");
+    if (is_tame(mtmp))
+    {
+        if (wizard && flags.wiz_mstatusline)
+        {
+            Sprintf(eos(info), " (%d", is_tame(mtmp));
+            if (!mtmp->isminion)
+                Sprintf(eos(info), "; hungry %ld; apport %d",
+                    EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
+            Strcat(info, ")");
+        }
+    }
+
+    /* pets eating mimic corpses mimic while eating, so this comes first */
+    if (mtmp->meating)
+        Strcat(info, ", eating");
+    /* a stethoscope exposes mimic before getting here so this
+       won't be relevant for it, but wand of probing doesn't */
+    if (mtmp->mundetected || mtmp->m_ap_type)
+        mhidden_description(mtmp, TRUE, eos(info));
+    if (is_cancelled(mtmp))
+        Strcat(info, ", cancelled");
+    if (is_silenced(mtmp))
+        Strcat(info, ", silenced");
+    if (has_no_magic_resistance(mtmp))
+        Strcat(info, ", no magic resistance");
+    else if (has_half_magic_resistance(mtmp))
+        Strcat(info, ", halved magic resistance");
+    if (has_summon_forbidden(mtmp))
+        Strcat(info, ", unable to summon");
+    if (is_confused(mtmp))
+        Strcat(info, ", confused");
+    if (is_blinded(mtmp))
+        Strcat(info, ", blind");
+    if (is_sick(mtmp))
+        Strcat(info, ", terminally ill");
+    if (is_stoning(mtmp))
+        Strcat(info, ", solidifying");
+    if (is_turning_into_slime(mtmp))
+        Strcat(info, ", becoming slimy");
+    if (is_being_strangled(mtmp))
+        Strcat(info, ", being strangled");
+    if (is_paralyzed(mtmp))
+        Strcat(info, ", paralyzed");
+    if (is_stunned(mtmp))
+        Strcat(info, ", stunned");
+    if (is_sleeping(mtmp))
+        Strcat(info, ", asleep");
+    if (mtmp->mfrozen || !mtmp->mcanmove)
+        Strcat(info, ", can't move");
+    else if (mtmp->mstrategy & STRAT_WAITMASK)
+        Strcat(info, ", meditating");
+    if (is_fleeing(mtmp))
+        Strcat(info, ", scared");
+    if (mtmp->mtrapped)
+        Strcat(info, ", trapped");
+    if (is_slow(mtmp))
+        Strcat(info, ", slow");
     else if (is_lightning_fast(mtmp))
         Strcat(info, ", lightning fast");
     else if (is_super_fast(mtmp))
@@ -1468,33 +1468,33 @@ boolean showheads;
     else if (is_ultra_fast(mtmp))
         Strcat(info, ", ultra fast");
     else if (is_very_fast(mtmp))
-		Strcat(info, ", very fast");
-	else if (is_fast(mtmp))
-		Strcat(info, ", fast");
-	if (is_invisible(mtmp))
-		Strcat(info, ", invisible");
-	if (mtmp == u.ustuck)
-		Strcat(info, sticks(youmonst.data) ? ", held by you"
-			: !u.uswallow ? ", holding you"
-			: attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_DGST)
-			? ", digesting you"
-			: is_animal(u.ustuck->data) ? ", swallowing you"
-			: ", engulfing you");
-	if (mtmp == u.usteed)
-		Strcat(info, ", carrying you");
+        Strcat(info, ", very fast");
+    else if (is_fast(mtmp))
+        Strcat(info, ", fast");
+    if (is_invisible(mtmp))
+        Strcat(info, ", invisible");
+    if (mtmp == u.ustuck)
+        Strcat(info, sticks(youmonst.data) ? ", held by you"
+            : !u.uswallow ? ", holding you"
+            : attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_DGST)
+            ? ", digesting you"
+            : is_animal(u.ustuck->data) ? ", swallowing you"
+            : ", engulfing you");
+    if (mtmp == u.usteed)
+        Strcat(info, ", carrying you");
 
-	/* avoid "Status of the invisible newt ..., invisible" */
-	/* and unlike a normal mon_nam, use "saddled" even if it has a name */
-	char adjbuf[BUFSZ], alignbuf[BUFSZ];
-	Sprintf(adjbuf, "level %d%s", mtmp->data->difficulty, is_tame(mtmp) ? " tame" : is_peaceful(mtmp) ? " peaceful" : "");
-	strcpy(alignbuf, align_str(alignment));
-	*alignbuf = highc(*alignbuf);
+    /* avoid "Status of the invisible newt ..., invisible" */
+    /* and unlike a normal mon_nam, use "saddled" even if it has a name */
+    char adjbuf[BUFSZ], alignbuf[BUFSZ];
+    Sprintf(adjbuf, "level %d%s", mtmp->data->difficulty, is_tame(mtmp) ? " tame" : is_peaceful(mtmp) ? " peaceful" : "");
+    strcpy(alignbuf, align_str(alignment));
+    *alignbuf = highc(*alignbuf);
 
-	Strcpy(monnambuf, x_monnam(mtmp, monsternamearticle, adjbuf,
-		(SUPPRESS_IT | SUPPRESS_INVISIBLE), FALSE));
+    Strcpy(monnambuf, x_monnam(mtmp, monsternamearticle, adjbuf,
+        (SUPPRESS_IT | SUPPRESS_INVISIBLE), FALSE));
 
-	Sprintf(buf, "%s, HP:%d(%d) AC:%d %s%s", monnambuf,
-		mtmp->mhp, mtmp->mhpmax, find_mac(mtmp), alignbuf, info);
+    Sprintf(buf, "%s, HP:%d(%d) AC:%d %s%s", monnambuf,
+        mtmp->mhp, mtmp->mhpmax, find_mac(mtmp), alignbuf, info);
 }
 
 /* stethoscope or probing applied to hero -- one-line feedback */
@@ -1505,10 +1505,10 @@ ustatusline()
 
     info[0] = '\0';
 
-	if (youmonst.data->heads > 1)
-	{
-		Sprintf(eos(info), "  %d(%d) heads", youmonst.heads_left, youmonst.data->heads);
-	}
+    if (youmonst.data->heads > 1)
+    {
+        Sprintf(eos(info), "  %d(%d) heads", youmonst.heads_left, youmonst.data->heads);
+    }
 
     if (Sick || FoodPoisoned) {
         Strcat(info, ", dying from");
@@ -1537,17 +1537,17 @@ ustatusline()
         Strcat(info, ", nauseated"); /* !"nauseous" */
     if (Confusion)
         Strcat(info, ", confused");
-	if (Fearful)
-		Strcat(info, ", fearful");
-	if (Cancelled)
-		Strcat(info, ", cancelled");
-	if (Silenced)
-		Strcat(info, ", silenced");
-	if (Paralyzed_or_immobile)
-		Strcat(info, ", paralyzed");
-	if (Sleeping)
-		Strcat(info, ", sleeping");
-	if (Blind) {
+    if (Fearful)
+        Strcat(info, ", fearful");
+    if (Cancelled)
+        Strcat(info, ", cancelled");
+    if (Silenced)
+        Strcat(info, ", silenced");
+    if (Paralyzed_or_immobile)
+        Strcat(info, ", paralyzed");
+    if (Sleeping)
+        Strcat(info, ", sleeping");
+    if (Blind) {
         Strcat(info, ", blind");
         if (u.ucreamed) {
             if ((long) u.ucreamed < Blinded || Blindfolded

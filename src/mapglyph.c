@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mapglyph.c	$NHDT-Date: 1552945095 2019/03/18 21:38:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.48 $ */
+/* GnollHack 4.0    mapglyph.c    $NHDT-Date: 1552945095 2019/03/18 21:38:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.48 $ */
 /* Copyright (c) David Cohrs, 1991                                */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -114,44 +114,44 @@ unsigned long *ospecial;
             color = HI_DOMESTIC;
 #endif
     }
-	else if ((offset = (glyph - GLYPH_ARTIFACT_MISSILE_OFF)) >= 0 
+    else if ((offset = (glyph - GLYPH_ARTIFACT_MISSILE_OFF)) >= 0 
         || (offset = (glyph - GLYPH_ARTIFACT_OFF)) >= 0
         )
     { /* an artifact */
-		int objoffset = artilist[offset].otyp;				
-		if (artilist[offset].maskotyp != STRANGE_OBJECT)
-		{
-			/* We always use maskotyp for base case if there is one, since the item is specified to look like one */
-			objoffset = artilist[offset].maskotyp;
-		}
-		/* Select the right symbol */
-		idx = objects[objoffset].oc_class + SYM_OFF_O;
-
-		if (has_rogue_color && iflags.use_color)
+        int objoffset = artilist[offset].otyp;                
+        if (artilist[offset].maskotyp != STRANGE_OBJECT)
         {
-			switch (objects[objoffset].oc_class)
+            /* We always use maskotyp for base case if there is one, since the item is specified to look like one */
+            objoffset = artilist[offset].maskotyp;
+        }
+        /* Select the right symbol */
+        idx = objects[objoffset].oc_class + SYM_OFF_O;
+
+        if (has_rogue_color && iflags.use_color)
+        {
+            switch (objects[objoffset].oc_class)
             {
-			case COIN_CLASS:
-				color = CLR_YELLOW;
-				break;
-			case FOOD_CLASS:
-				color = CLR_RED;
-				break;
-			default:
-				color = CLR_BRIGHT_BLUE;
-				break;
-			}
-		}
-		else
-		{
-			if(artilist[offset].ocolor == NO_COLOR)
-				obj_color(objoffset);
-			else
-				artifact_color(offset);
-		}
-		if (objoffset != BOULDER && is_objpile(x, y))
-			special |= MG_OBJPILE;
-	}
+            case COIN_CLASS:
+                color = CLR_YELLOW;
+                break;
+            case FOOD_CLASS:
+                color = CLR_RED;
+                break;
+            default:
+                color = CLR_BRIGHT_BLUE;
+                break;
+            }
+        }
+        else
+        {
+            if(artilist[offset].ocolor == NO_COLOR)
+                obj_color(objoffset);
+            else
+                artifact_color(offset);
+        }
+        if (objoffset != BOULDER && is_objpile(x, y))
+            special |= MG_OBJPILE;
+    }
     else if ((offset = (glyph - GLYPH_FEMALE_BODY_OFF)) >= 0)
     { /* a corpse */
         idx = objects[CORPSE].oc_class + SYM_OFF_O;
@@ -196,19 +196,19 @@ unsigned long *ospecial;
     }
     else if ((offset = (glyph - GLYPH_STATUE_OFF)) >= 0)
     { /* a statue */
-		if (flags.classic_statue_symbol)
-		{
-			idx = ROCK_CLASS + SYM_OFF_O;
-		}
-		else
-		{
-			idx = mons[offset].mlet + SYM_OFF_M;
-		}
-		if (has_rogue_color)
-			color = CLR_RED;
-		else
-			obj_color(STATUE);
-		special |= MG_STATUE;
+        if (flags.classic_statue_symbol)
+        {
+            idx = ROCK_CLASS + SYM_OFF_O;
+        }
+        else
+        {
+            idx = mons[offset].mlet + SYM_OFF_M;
+        }
+        if (has_rogue_color)
+            color = CLR_RED;
+        else
+            obj_color(STATUE);
+        special |= MG_STATUE;
         if (is_objpile(x,y))
             special |= MG_OBJPILE;
     }

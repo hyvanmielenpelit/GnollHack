@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mhmap.c	$NHDT-Date: 1435002695 2015/06/22 19:51:35 $  $NHDT-Branch: master $:$NHDT-Revision: 1.56 $ */
+/* GnollHack 4.0    mhmap.c    $NHDT-Date: 1435002695 2015/06/22 19:51:35 $  $NHDT-Branch: master $:$NHDT-Revision: 1.56 $ */
 /* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -153,7 +153,7 @@ mswin_init_map_window()
         NULL);                /* window-creation data */
     if (!hWnd) {
         panic("Cannot create map window");
-		return (HWND)0;
+        return (HWND)0;
     }
 
     /* Set window caption */
@@ -573,7 +573,7 @@ register_map_window_class()
 
     if (!RegisterClass(&wcex)) {
         panic("cannot register Map window class");
-		return;
+        return;
     }
 }
 
@@ -932,9 +932,9 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         }
     } break;
 
-	case MSNH_MSG_RANDOM_INPUT:
-		nhassert(0); // unexpected
-		break;
+    case MSNH_MSG_RANDOM_INPUT:
+        nhassert(0); // unexpected
+        break;
 
     case MSNH_MSG_STRETCH_MAP:
     {
@@ -979,11 +979,11 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     /* set window data */
     data = (PNHMapWindow) malloc(sizeof(NHMapWindow));
-	if (!data)
-	{
-		panic("out of memory");
-		return;
-	}
+    if (!data)
+    {
+        panic("out of memory");
+        return;
+    }
     ZeroMemory(data, sizeof(NHMapWindow));
 
     data->hWnd = hWnd;

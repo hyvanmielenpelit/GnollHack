@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mcastu.c	$NHDT-Date: 1436753517 2015/07/13 02:11:57 $  $NHDT-Branch: master $:$NHDT-Revision: 1.44 $ */
+/* GnollHack 4.0    mcastu.c    $NHDT-Date: 1436753517 2015/07/13 02:11:57 $  $NHDT-Branch: master $:$NHDT-Revision: 1.44 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -36,7 +36,7 @@ enum mcast_cleric_spells {
     CLC_LIGHTNING,
     CLC_FIRE_PILLAR,
     CLC_GEYSER,
-	CLC_DEATH_TOUCH,
+    CLC_DEATH_TOUCH,
     MAX_CLERIC_SPELLS
 };
 
@@ -130,11 +130,11 @@ int spellval;
         return MGC_SUMMON_MONS;
     case 8:
     case 7:
-		return MGC_DESTRY_ARMR;
-	case 6:
+        return MGC_DESTRY_ARMR;
+    case 6:
     case 5:
-		return MGC_WEAKEN_YOU;
-	case 4:
+        return MGC_WEAKEN_YOU;
+    case 4:
     case 3:
         return MGC_STUN_YOU;
     case 2:
@@ -158,14 +158,14 @@ int spellnum;
         spellnum = rn2(spellnum);
 
     switch (spellnum) {
-	case 18:
-	case 17:
-		if (Death_resistance || Hallucination)
-			return CLC_OPEN_WOUNDS;
-		/*FALLTHRU*/
-	case 16:
-		return CLC_DEATH_TOUCH;
-	case 15:
+    case 18:
+    case 17:
+        if (Death_resistance || Hallucination)
+            return CLC_OPEN_WOUNDS;
+        /*FALLTHRU*/
+    case 16:
+        return CLC_DEATH_TOUCH;
+    case 15:
     case 14:
         if (rn2(3))
             return CLC_OPEN_WOUNDS;
@@ -210,18 +210,18 @@ register struct attack *mattk;
 boolean thinks_it_foundyou;
 boolean foundyou;
 {
-	double damage;
+    double damage;
     int ret;
     int spellnum = 0;
-	int  ml = 0;
-	
-	//Assumes that attack type is AT_MAGC when this function is called
-	if(mattk->mlevel > 0)
-		ml = mattk->mcadj;
-	else
-		ml = mtmp->m_lev;
+    int  ml = 0;
+    
+    //Assumes that attack type is AT_MAGC when this function is called
+    if(mattk->mlevel > 0)
+        ml = mattk->mcadj;
+    else
+        ml = mtmp->m_lev;
 
-	/* Three cases:
+    /* Three cases:
      * -- monster is attacking you.  Search for a useful spell.
      * -- monster thinks it's attacking you.  Search for a useful spell,
      *    without checking for undirected.  If the spell found is directed,
@@ -315,15 +315,15 @@ boolean foundyou;
     }
 
     nomul(0);
-	/*Spellnum + 1 is used as spell level 1...ml; chance of fail is 50% for ml and 0% for ml /2,
-	  interpolated linearly*/
-	int	failchance = 0;
-	int sl = spellnum + 1;
-	if (sl > ml / 2 && ml > 0) { // fail only if spell level is high enough
-		failchance = (50 * (sl - ml / 2)) / (ml - ml / 2);
-	}
-	if (ml == 0)
-		failchance = 100;
+    /*Spellnum + 1 is used as spell level 1...ml; chance of fail is 50% for ml and 0% for ml /2,
+      interpolated linearly*/
+    int    failchance = 0;
+    int sl = spellnum + 1;
+    if (sl > ml / 2 && ml > 0) { // fail only if spell level is high enough
+        failchance = (50 * (sl - ml / 2)) / (ml - ml / 2);
+    }
+    if (ml == 0)
+        failchance = 100;
 
     if (rn2(100) < failchance) {//(rn2(ml * 10) < (is_confused(mtmp) ? 100 : 20)) { /* fumbled attack */
         if (canseemon(mtmp) && !Deaf)
@@ -352,10 +352,10 @@ boolean foundyou;
      * of the monster casting the spell.
      */
     if (!foundyou)
-	{
+    {
         damage = 0;
         if (mattk->adtyp != AD_SPEL && mattk->adtyp != AD_CLRC) 
-		{
+        {
             impossible(
               "%s casting non-hand-to-hand version of hand-to-hand spell %d?",
                        Monnam(mtmp), mattk->adtyp);
@@ -400,10 +400,10 @@ boolean foundyou;
             damage = adjust_damage(d((int) mtmp->m_lev / 2 + 1, 6), mtmp, &youmonst, mattk->adtyp, ADFLAGS_SPELL_DAMAGE);
         break;
     case AD_SPEL: /* wizard spell */
-		cast_wizard_spell(mtmp, damage, spellnum);
-		damage = 0; /* done by the spell casting functions */
-		break;
-	case AD_CLRC: /* clerical spell */
+        cast_wizard_spell(mtmp, damage, spellnum);
+        damage = 0; /* done by the spell casting functions */
+        break;
+    case AD_CLRC: /* clerical spell */
         cast_cleric_spell(mtmp, damage, spellnum);
         damage = 0; /* done by the spell casting functions */
         break;
@@ -421,14 +421,14 @@ struct monst *mtmp;
 double damage;
 {
     if (mtmp->mhp < mtmp->mhpmax)
-	{
+    {
         if (canseemon(mtmp))
             pline("%s looks better.", Monnam(mtmp));
         /* note: player healing does 6d4; this used to do 1d8 */
-		deduct_monster_hp(mtmp, -damage);
+        deduct_monster_hp(mtmp, -damage);
         //if ((mtmp->mhp += d(3, 6)) > mtmp->mhpmax)
         //    mtmp->mhp = mtmp->mhpmax;
-		damage = 0;
+        damage = 0;
     }
     return damage;
 }
@@ -455,30 +455,30 @@ int spellnum;
     }
 
     switch (spellnum) 
-	{
+    {
     case MGC_DEATH_TOUCH:
         pline("Oh no, %s's using the touch of death!", mhe(mtmp));
-		//boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
+        //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
 
         if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
-		{ //Invulnerability does not protect against death attacks
+        { //Invulnerability does not protect against death attacks
             You("seem no deader than before.");
         }
-		else if (!check_magic_cancellation_success(&youmonst, -4)) //(rn2(mtmp->m_lev) > 12) //!Antimagic && !magic_resistance_success && 
-		{
+        else if (!check_magic_cancellation_success(&youmonst, -4)) //(rn2(mtmp->m_lev) > 12) //!Antimagic && !magic_resistance_success && 
+        {
             if (Hallucination) 
-			{
+            {
                 You("have an out of body experience.");
             }
-			else
-			{
+            else
+            {
                 killer.format = KILLED_BY_AN;
                 Strcpy(killer.name, "touch of death");
                 done(DIED);
             }
         } 
-		else 
-		{
+        else 
+        {
             play_sfx_sound(SFX_LUCKILY_ITS_TOUCH_DID_NOT_WORK);
             //if (Antimagic || magic_resistance_success)
             //    u_shieldeff();
@@ -488,7 +488,7 @@ int spellnum;
         break;
     case MGC_CLONE_WIZ:
         if (mtmp->iswiz && context.no_of_wizards == 1)
-		{
+        {
             play_voice_wizard_of_yendor_simple_line(mtmp, WIZARD_OF_YENDOR_LINE_DOUBLE_TROUBLE);
             pline("Double Trouble...");
             clonewiz();
@@ -580,14 +580,14 @@ int spellnum;
         damage = 0;
         break;
     case MGC_DESTRY_ARMR:
-		if (Antimagic_or_resistance) {
-			u_shieldeff();
-			pline("A field of force surrounds you!");
-		}
-		else if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY) {
+        if (Antimagic_or_resistance) {
+            u_shieldeff();
+            pline("A field of force surrounds you!");
+        }
+        else if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY) {
             u_shieldeff();
             pline("Your cloak neutralizes the destructive energies of the spell!");
-			makeknown(uarmc->otyp);
+            makeknown(uarmc->otyp);
         } else if (!destroy_arm(some_armor(&youmonst))) {
             Your("skin itches.");
         }
@@ -598,15 +598,15 @@ int spellnum;
             u_shieldeff();
             You_feel("momentarily weakened.");
         }
-		else 
-		{
+        else 
+        {
             You("suddenly feel weaker!");
-			int strloss = mtmp->m_lev - 6;
+            int strloss = mtmp->m_lev - 6;
             if (Half_spell_damage)
-				strloss = (strloss + 1) / 2;
-			if (Invulnerable)
-				strloss = 0;
-			losestr(rnd(strloss));
+                strloss = (strloss + 1) / 2;
+            if (Invulnerable)
+                strloss = 0;
+            losestr(rnd(strloss));
             if (u.uhp < 1)
                 done_in_by(mtmp, DIED);
         }
@@ -614,11 +614,11 @@ int spellnum;
         break;
     case MGC_DISAPPEAR: /* makes self invisible */
         if (!is_invisible(mtmp) && !has_blocks_invisibility(mtmp))
-		{
+        {
             if (canseemon(mtmp))
                 pline("%s suddenly %s!", Monnam(mtmp),
                       !See_invisible ? "disappears" : "becomes transparent");
-			increase_mon_property(mtmp, INVISIBILITY, d(2, 10) + 80);
+            increase_mon_property(mtmp, INVISIBILITY, d(2, 10) + 80);
             if (cansee(mtmp->mx, mtmp->my) && !canspotmon(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
             damage = 0;
@@ -638,7 +638,7 @@ int spellnum;
             You(Stunned ? "struggle to keep your balance." : "reel...");
             int stun_duration = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
             if (Half_spell_damage)
-				stun_duration = (stun_duration + 1) / 2;
+                stun_duration = (stun_duration + 1) / 2;
             if (!Stunned)
                 play_sfx_sound(SFX_ACQUIRE_STUN);
             make_stunned((HStun & TIMEOUT) + (long)stun_duration, FALSE);
@@ -647,7 +647,7 @@ int spellnum;
         break;
     case MGC_HASTE_SELF:
         (void)increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
-		damage = 0;
+        damage = 0;
         break;
     case MGC_CURE_SELF:
         damage = m_cure_self(mtmp, damage);
@@ -656,7 +656,7 @@ int spellnum;
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
         if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable)
-		{
+        {
             u_shieldeff();
             damage = damage / 2;
         }
@@ -686,8 +686,8 @@ struct monst *mtmp;
 double damage;
 int spellnum;
 {
-	if (!mtmp)
-		return;
+    if (!mtmp)
+        return;
 
     if (damage == 0 && !is_undirected_spell(AD_CLRC, spellnum)) {
         impossible("cast directed cleric spell (%d) with damage=0?", spellnum);
@@ -695,35 +695,35 @@ int spellnum;
     }
 
     switch (spellnum) 
-	{
-	case CLC_DEATH_TOUCH:
-		pline("Oh no, %s's using the touch of death!", mhe(mtmp));
+    {
+    case CLC_DEATH_TOUCH:
+        pline("Oh no, %s's using the touch of death!", mhe(mtmp));
 
-		if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
-		{
-			You("seem no deader than before.");
-		}
-		else if (!check_magic_cancellation_success(&youmonst, -4))
-		{
-			if (Hallucination)
-			{
-				You("have an out of body experience.");
-			}
-			else
-			{
-				killer.format = KILLED_BY_AN;
-				Strcpy(killer.name, "touch of death");
-				done(DIED);
-			}
-		}
-		else
-		{
+        if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
+        {
+            You("seem no deader than before.");
+        }
+        else if (!check_magic_cancellation_success(&youmonst, -4))
+        {
+            if (Hallucination)
+            {
+                You("have an out of body experience.");
+            }
+            else
+            {
+                killer.format = KILLED_BY_AN;
+                Strcpy(killer.name, "touch of death");
+                done(DIED);
+            }
+        }
+        else
+        {
             play_sfx_sound(SFX_LUCKILY_ITS_TOUCH_DID_NOT_WORK);
             pline("Lucky for you, it didn't work!");
-		}
-		damage = 0;
-		break;
-	case CLC_GEYSER:
+        }
+        damage = 0;
+        break;
+    case CLC_GEYSER:
         /* this is physical damage (force not heat),
          * not magical damage or fire damage
          */
@@ -733,7 +733,7 @@ int spellnum;
     case CLC_FIRE_PILLAR:
         pline("A pillar of fire strikes all around you!");
         if (Fire_immunity) 
-		{
+        {
             u_shieldeff();
             damage = 0;
         } else
@@ -803,9 +803,9 @@ int spellnum;
                 context.makemon_spef_idx++;
                 success = TRUE;
                 mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
-				if (!mtmp2->mtame)
-					mtmp2->ispartymember = FALSE;
-				set_malign(mtmp2);
+                if (!mtmp2->mtame)
+                    mtmp2->ispartymember = FALSE;
+                set_malign(mtmp2);
                 difficulty += mtmp2->data->difficulty;
                 summon_quan++;
             }
@@ -888,8 +888,8 @@ int spellnum;
             //nomul(-1);
             //multi_reason = "paralyzed by a monster";
         }
-		else 
-		{
+        else 
+        {
             if (!Paralyzed)
             {
                 play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
@@ -897,7 +897,7 @@ int spellnum;
             }
             int duration = 4 + (int) mtmp->m_lev;
             if (Half_spell_damage)
-				duration = (duration + 1) / 2;
+                duration = (duration + 1) / 2;
 //            nomul(-duration);
 //            multi_reason = "paralyzed by a monster";
             incr_itimeout(&HParalyzed, duration);
@@ -912,9 +912,9 @@ int spellnum;
         } else {
             boolean oldprop = !!Confusion;
 
-			int duration = (int) mtmp->m_lev;
+            int duration = (int) mtmp->m_lev;
             if (Half_spell_damage)
-				duration = (duration + 1) / 2;
+                duration = (duration + 1) / 2;
             if (!Confusion)
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, duration), TRUE);
@@ -930,7 +930,7 @@ int spellnum;
         break;
     case CLC_OPEN_WOUNDS:
         if (Antimagic_or_resistance)
-		{
+        {
             u_shieldeff();
             damage = damage / 2;
         }
@@ -1069,7 +1069,7 @@ int spellnum;
     boolean mcouldseeu = couldsee(mtmp->mx, mtmp->my);
 
     if (adtyp == AD_SPEL) 
-	{
+    {
         /* aggravate monsters, etc. won't be cast by peaceful monsters */
         if (is_ultimate_spell(adtyp, spellnum) && mtmp->mmageultimate_used > 0)
             return TRUE;
@@ -1119,7 +1119,7 @@ int spellnum;
             return TRUE;
 
         if ((Curse_resistance || Antimagic) && spellnum == MGC_CURSE_ITEMS)
-			return TRUE;
+            return TRUE;
 
         if (Antimagic && (spellnum == MGC_WEAKEN_YOU || spellnum == MGC_STUN_YOU || spellnum == MGC_DESTRY_ARMR))
             return TRUE;
@@ -1129,7 +1129,7 @@ int spellnum;
 
         /* aggravation (global wakeup) when everyone is already active */
         if (spellnum == MGC_AGGRAVATION) 
-		{
+        {
             /* if nothing needs to be awakened then this spell is useless
                but caster might not realize that [chance to pick it then
                must be very small otherwise caller's many retry attempts
@@ -1138,8 +1138,8 @@ int spellnum;
                 return rn2(100) ? TRUE : FALSE;
         }
     } 
-	else if (adtyp == AD_CLRC) 
-	{
+    else if (adtyp == AD_CLRC) 
+    {
         if (is_ultimate_spell(adtyp, spellnum) && mtmp->mclericultimate_used > 0)
             return TRUE;
         if (is_intermediate_spell(adtyp, spellnum) && mtmp->mclericintermediate_used > 0)
@@ -1161,11 +1161,11 @@ int spellnum;
         /* blindness spell on blinded player */
         if (Blinded && spellnum == CLC_BLIND_YOU)
             return TRUE;
-		if (mtmp->mnum != PM_HIGH_PRIEST && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
-			&& spellnum == CLC_DEATH_TOUCH)
-			return TRUE;
+        if (mtmp->mnum != PM_HIGH_PRIEST && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
+            && spellnum == CLC_DEATH_TOUCH)
+            return TRUE;
 
-	}
+    }
     return FALSE;
 }
 
@@ -1176,11 +1176,11 @@ buzzmu(mtmp, mattk)
 register struct monst *mtmp;
 register struct attack *mattk;
 {
-	//Sanity check
-	if (!mtmp || !mattk)
-		return 0;
+    //Sanity check
+    if (!mtmp || !mattk)
+        return 0;
 
-	/* Do not waste magic on reflecting targets */
+    /* Do not waste magic on reflecting targets */
     if (Reflecting && rn2(5))
         return 0;
 
@@ -1226,14 +1226,14 @@ register struct attack *mattk;
     }
 
     if (appr_spec_ptr && !(*appr_spec_ptr) && lined_up(mtmp, TRUE, adtyp, TRUE, M_RAY_RANGE) && rn2(3))
-	{
+    {
         nomul(0);
         if (adtyp && adtyp <= AD_STON)
-		{ /* no cf unsigned >0 */
+        { /* no cf unsigned >0 */
             if (canseemon(mtmp))
                 pline("%s casts \'%s\' at you!", Monnam(mtmp),
                       flash_types[ad_to_typ(adtyp)]);
-			buzz(-ad_to_typ(adtyp), (struct obj*)0, mtmp, damn, damd, damp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby));
+            buzz(-ad_to_typ(adtyp), (struct obj*)0, mtmp, damn, damd, damp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby));
             *appr_spec_ptr = is_ultimate ? d(2, 8) + 100 : d(2, 4) + 10;
         }
         else

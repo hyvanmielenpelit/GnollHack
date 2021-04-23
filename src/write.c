@@ -1,4 +1,4 @@
-/* GnollHack 4.0	write.c	$NHDT-Date: 1450261366 2015/12/16 10:22:46 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.17 $ */
+/* GnollHack 4.0    write.c    $NHDT-Date: 1450261366 2015/12/16 10:22:46 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.17 $ */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
@@ -27,19 +27,19 @@ register struct obj *otmp;
     case SCR_FOOD_DETECTION:
     case SCR_MAGIC_MAPPING:
     case SCR_AMNESIA:
-	case SCR_RETRAINING:
-	case SCR_FIRE:
+    case SCR_RETRAINING:
+    case SCR_FIRE:
     case SCR_EARTH:
         return 8;
-	case SCR_DESTROY_ARMOR:
+    case SCR_DESTROY_ARMOR:
     case SCR_CREATE_MONSTER:
     case SCR_PUNISHMENT:
         return 10;
-	case SCR_CONFUSE_MONSTER:
+    case SCR_CONFUSE_MONSTER:
     case SCR_STINKING_CLOUD:
         return 12;
-	case SCR_ENCHANT_ACCESSORY:
-	case SCR_IDENTIFY:
+    case SCR_ENCHANT_ACCESSORY:
+    case SCR_IDENTIFY:
     case SCR_TELEPORTATION:
         return 14;
     case SCR_REMOVE_CURSE:

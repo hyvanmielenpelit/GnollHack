@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mklev.c	$NHDT-Date: 1550800390 2019/02/22 01:53:10 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
+/* GnollHack 4.0    mklev.c    $NHDT-Date: 1550800390 2019/02/22 01:53:10 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Alex Smith, 2017. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -424,35 +424,35 @@ uchar dmask;
     levl[x][y].typ = type;
     levl[x][y].subtyp = 0;
     if (type == DOOR) {
-		if (dmask != 0)
-		{
-			levl[x][y].doormask = dmask;
-		}
-		else
-		{
-			if (!rn2(3)) { /* is it a locked door, closed, or a doorway? */
-				if (!rn2(5))
-					levl[x][y].doormask = D_ISOPEN;
-				else if (!rn2(6))
-					levl[x][y].doormask = D_LOCKED;
-				else
-					levl[x][y].doormask = D_CLOSED;
+        if (dmask != 0)
+        {
+            levl[x][y].doormask = dmask;
+        }
+        else
+        {
+            if (!rn2(3)) { /* is it a locked door, closed, or a doorway? */
+                if (!rn2(5))
+                    levl[x][y].doormask = D_ISOPEN;
+                else if (!rn2(6))
+                    levl[x][y].doormask = D_LOCKED;
+                else
+                    levl[x][y].doormask = D_CLOSED;
 
-				if (levl[x][y].doormask != D_ISOPEN && !shdoor
-					&& level_difficulty() >= 5 && !rn2(25))
-					levl[x][y].doormask |= D_TRAPPED;
-			}
-			else {
+                if (levl[x][y].doormask != D_ISOPEN && !shdoor
+                    && level_difficulty() >= 5 && !rn2(25))
+                    levl[x][y].doormask |= D_TRAPPED;
+            }
+            else {
 #ifdef STUPID
-				if (shdoor)
-					levl[x][y].doormask = D_ISOPEN;
-				else
-					levl[x][y].doormask = D_NODOOR;
+                if (shdoor)
+                    levl[x][y].doormask = D_ISOPEN;
+                else
+                    levl[x][y].doormask = D_NODOOR;
 #else
-				levl[x][y].doormask = (shdoor ? D_ISOPEN : D_NODOOR);
+                levl[x][y].doormask = (shdoor ? D_ISOPEN : D_NODOOR);
 #endif
-			}
-		}
+            }
+        }
 
         /* also done in roguecorr(); doing it here first prevents
            making mimics in place of trapped doors on rogue level */
@@ -466,7 +466,7 @@ uchar dmask;
                 && !((mvitals[PM_SMALL_MIMIC].mvflags & G_GONE)
                      && (mvitals[PM_LARGE_MIMIC].mvflags & G_GONE)
                      && (mvitals[PM_GIANT_MIMIC].mvflags & G_GONE)
-	 				 && (mvitals[PM_CHAOS_MIMIC].mvflags & G_GONE))) {
+                      && (mvitals[PM_CHAOS_MIMIC].mvflags & G_GONE))) {
                 /* make a mimic instead */
                 levl[x][y].doormask = D_NODOOR;
                 mtmp = makemon(mkclass(S_MIMIC, 0), x, y, NO_MM_FLAGS);
@@ -565,74 +565,74 @@ int trap_type;
                 rm->typ = CORR;
                 rm->subtyp = get_initial_location_subtype(rm->typ);
                 if (rn2(7))
-				{
-					int u_depth = depth(&u.uz);
-					if (u_depth >= 3 && u_depth <= 6 && !context.made_orc_and_a_pie && !rn2(3))
-					{
-						dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
-						struct monst* mon = makemon(&mons[PM_ORC], xx, yy + dy, MM_MAX_HP | MM_WAITFORU);
-						if (mon)
-						{
-							context.made_orc_and_a_pie = TRUE;
-							if (!m_carrying(mon, ORCISH_CHAIN_MAIL))
-								(void)mongets(mon, ORCISH_CHAIN_MAIL);
-							if (!m_carrying(mon, ORCISH_HELM))
+                {
+                    int u_depth = depth(&u.uz);
+                    if (u_depth >= 3 && u_depth <= 6 && !context.made_orc_and_a_pie && !rn2(3))
+                    {
+                        dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
+                        struct monst* mon = makemon(&mons[PM_ORC], xx, yy + dy, MM_MAX_HP | MM_WAITFORU);
+                        if (mon)
+                        {
+                            context.made_orc_and_a_pie = TRUE;
+                            if (!m_carrying(mon, ORCISH_CHAIN_MAIL))
+                                (void)mongets(mon, ORCISH_CHAIN_MAIL);
+                            if (!m_carrying(mon, ORCISH_HELM))
                                 (void)mongets(mon, ORCISH_HELM);
-							if (!m_carrying(mon, ORCISH_CLOAK))
+                            if (!m_carrying(mon, ORCISH_CLOAK))
                                 (void)mongets(mon, ORCISH_CLOAK);
-							if (!m_carrying(mon, ORCISH_DAGGER))
+                            if (!m_carrying(mon, ORCISH_DAGGER))
                                 (void)mongets(mon, ORCISH_DAGGER);
-							if (!m_carrying(mon, ORCISH_SHIELD))
+                            if (!m_carrying(mon, ORCISH_SHIELD))
                                 (void)mongets(mon, ORCISH_SHIELD);
-							if (!m_carrying(mon, ORCISH_SHORT_SWORD))
+                            if (!m_carrying(mon, ORCISH_SHORT_SWORD))
                                 (void)mongets(mon, ORCISH_SHORT_SWORD);
-							m_dowear(mon, TRUE);
-							struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
-							struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);
-							add_to_container(box, pie);
-						}
-					}
-					else if (u_depth >= 9 && u_depth <= 14 && !context.made_orc_and_a_pie2 && !rn2(5))
-					{
-						dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
-						struct monst* mon = makemon(&mons[PM_ORC_CAPTAIN], xx, yy + dy, MM_MAX_HP);
-						if (mon)
-						{
-							context.made_orc_and_a_pie2 = TRUE;
-							if (!m_carrying(mon, ORCISH_CHAIN_MAIL))
-								mongets(mon, ORCISH_CHAIN_MAIL);
-							if(!m_carrying(mon,ORCISH_HELM)) 
-								mongets(mon, ORCISH_HELM);
-							if (!m_carrying(mon, ORCISH_CLOAK))
-								mongets(mon, ORCISH_CLOAK);
-							if (!m_carrying(mon, ORCISH_DAGGER))
-								mongets(mon, ORCISH_DAGGER);
-							if (!m_carrying(mon, ORCISH_SHIELD))
-								mongets(mon, ORCISH_SHIELD);
-							if (!m_carrying(mon, ORCISH_SHORT_SWORD))
-								mongets(mon, ORCISH_SHORT_SWORD);
-							if (!m_carrying(mon, ORCISH_SHORT_BOW))
-								mongets(mon, ORCISH_SHORT_BOW);
-							if (!m_carrying(mon, ORCISH_ARROW))
-								m_initthrow(mon, ORCISH_ARROW, 10, 12, TRUE, 0, 0);
+                            m_dowear(mon, TRUE);
+                            struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
+                            struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);
+                            add_to_container(box, pie);
+                        }
+                    }
+                    else if (u_depth >= 9 && u_depth <= 14 && !context.made_orc_and_a_pie2 && !rn2(5))
+                    {
+                        dosdoor(xx, yy, aroom, DOOR, D_LOCKED);
+                        struct monst* mon = makemon(&mons[PM_ORC_CAPTAIN], xx, yy + dy, MM_MAX_HP);
+                        if (mon)
+                        {
+                            context.made_orc_and_a_pie2 = TRUE;
+                            if (!m_carrying(mon, ORCISH_CHAIN_MAIL))
+                                mongets(mon, ORCISH_CHAIN_MAIL);
+                            if(!m_carrying(mon,ORCISH_HELM)) 
+                                mongets(mon, ORCISH_HELM);
+                            if (!m_carrying(mon, ORCISH_CLOAK))
+                                mongets(mon, ORCISH_CLOAK);
+                            if (!m_carrying(mon, ORCISH_DAGGER))
+                                mongets(mon, ORCISH_DAGGER);
+                            if (!m_carrying(mon, ORCISH_SHIELD))
+                                mongets(mon, ORCISH_SHIELD);
+                            if (!m_carrying(mon, ORCISH_SHORT_SWORD))
+                                mongets(mon, ORCISH_SHORT_SWORD);
+                            if (!m_carrying(mon, ORCISH_SHORT_BOW))
+                                mongets(mon, ORCISH_SHORT_BOW);
+                            if (!m_carrying(mon, ORCISH_ARROW))
+                                m_initthrow(mon, ORCISH_ARROW, 10, 12, TRUE, 0, 0);
 
-							m_dowear(mon, TRUE);
-							mongets(mon, CREAM_PIE);
-							struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
-							struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);
-							pie->quan = 4 + rnd(8);
-							pie->owt = weight(pie);
-							add_to_container(box, pie);
-							struct obj* pot = mksobj(POT_GAIN_ABILITY, FALSE, FALSE, FALSE);
-							bless(pot);
-							add_to_container(box, pot);
-							box->owt = weight(box);
-						}
-					}
-					else
-						dosdoor(xx, yy, aroom, rn2(5) ? SDOOR : DOOR, 0);
+                            m_dowear(mon, TRUE);
+                            mongets(mon, CREAM_PIE);
+                            struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
+                            struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);
+                            pie->quan = 4 + rnd(8);
+                            pie->owt = weight(pie);
+                            add_to_container(box, pie);
+                            struct obj* pot = mksobj(POT_GAIN_ABILITY, FALSE, FALSE, FALSE);
+                            bless(pot);
+                            add_to_container(box, pot);
+                            box->owt = weight(box);
+                        }
+                    }
+                    else
+                        dosdoor(xx, yy, aroom, rn2(5) ? SDOOR : DOOR, 0);
 
-				}
+                }
                 else
                 {
                     /* inaccessible niches occasionally have iron bars */
@@ -734,10 +734,10 @@ clear_level_structures()
     level.flags.has_court = 0;
     level.flags.has_morgue = level.flags.graveyard = 0;
     level.flags.has_beehive = 0;
-	level.flags.has_library = 0;
-	level.flags.has_dragonlair = 0;
-	level.flags.has_garden = 0;
-	level.flags.has_barracks = 0;
+    level.flags.has_library = 0;
+    level.flags.has_dragonlair = 0;
+    level.flags.has_garden = 0;
+    level.flags.has_barracks = 0;
     level.flags.has_armory = 0;
     level.flags.has_temple = 0;
     level.flags.has_smithy = 0;
@@ -877,7 +877,7 @@ makelevel()
             croom++;
     }
 
-	/* Level 1 up stairs is a special stair case, sstairs*/
+    /* Level 1 up stairs is a special stair case, sstairs*/
     if (u.uz.dlevel != 1) {
         xchar sx, sy;
         do {
@@ -925,14 +925,14 @@ makelevel()
     {
         register int u_depth = depth(&u.uz);
 
-		int res = 0;
+        int res = 0;
 
-		if (wizard && nh_getenv("SHOPTYPE"))
-			res = mkroom(SHOPBASE);
+        if (wizard && nh_getenv("SHOPTYPE"))
+            res = mkroom(SHOPBASE);
 
-		if (!res && u_depth > depth(&oracle_level) + 3 && u_depth > 10 && u_depth <= 20 && u_depth <= min(depth(&medusa_level), depth(&oracle_level) + 4) && !context.made_deserted_shop
-			&& (nroom >= room_threshold && (rn2(3) || (u_depth < depth(&medusa_level) && (u_depth >= depth(&oracle_level) + 6 || u_depth >= 15)))))
-			res = mkroom(DESERTEDSHOP);
+        if (!res && u_depth > depth(&oracle_level) + 3 && u_depth > 10 && u_depth <= 20 && u_depth <= min(depth(&medusa_level), depth(&oracle_level) + 4) && !context.made_deserted_shop
+            && (nroom >= room_threshold && (rn2(3) || (u_depth < depth(&medusa_level) && (u_depth >= depth(&oracle_level) + 6 || u_depth >= 15)))))
+            res = mkroom(DESERTEDSHOP);
 
         boolean shopok = (context.made_shop_count == 0 ? 1 :
             context.made_shop_count == 1 ? (rn2(3) != 0) : 
@@ -953,34 +953,34 @@ makelevel()
         if (!res && u_depth >= min_npc_appearance_depth() && !rn2(7))
             res = mkroom(NPCROOM);
         if (!res && u_depth > 4 && u_depth < 15 && !rn2(8)
-			&& !(mvitals[PM_LEPRECHAUN].mvflags & G_GONE))
-			res = mkroom(LEPREHALL);
-		if (!res && u_depth > 5 && u_depth < 16 && !rn2(6))
-			res = mkroom(ZOO);
-		if (!res && u_depth > 6 && u_depth < 21 && !rn2(6))
-			res = mkroom(COURT);
-		if (!res && u_depth > 7 && !rn2(7))
-			res = mkroom(LIBRARY);
+            && !(mvitals[PM_LEPRECHAUN].mvflags & G_GONE))
+            res = mkroom(LEPREHALL);
+        if (!res && u_depth > 5 && u_depth < 16 && !rn2(6))
+            res = mkroom(ZOO);
+        if (!res && u_depth > 6 && u_depth < 21 && !rn2(6))
+            res = mkroom(COURT);
+        if (!res && u_depth > 7 && !rn2(7))
+            res = mkroom(LIBRARY);
         if (!res && u_depth > 9 && u_depth < 20 && !rn2(6)
-			&& !(mvitals[PM_KILLER_BEE].mvflags & G_GONE))
-			res = mkroom(BEEHIVE);
-		if (!res && u_depth > 10 && u_depth < 21 && !rn2(8) && antholemon())
-			res = mkroom(ANTHOLE);
-		if (!res && u_depth > 11 && !rn2(6))
-			res = mkroom(MORGUE);
-		if (!res && u_depth > 14 && !rn2(6)
-			&& !(mvitals[PM_SOLDIER].mvflags & G_GONE))
-			res = mkroom(BARRACKS);
-		if (!res && u_depth > 15 && !rn2(6))
-			res = mkroom(SWAMP);
-		if (!res && u_depth > 16 && !rn2(8)
-			&& !(mvitals[PM_COCKATRICE].mvflags & G_GONE))
-			res = mkroom(COCKNEST);
-		if (!res && u_depth > 20 && !rn2(5))
-			res = mkroom(DRAGONLAIR);
+            && !(mvitals[PM_KILLER_BEE].mvflags & G_GONE))
+            res = mkroom(BEEHIVE);
+        if (!res && u_depth > 10 && u_depth < 21 && !rn2(8) && antholemon())
+            res = mkroom(ANTHOLE);
+        if (!res && u_depth > 11 && !rn2(6))
+            res = mkroom(MORGUE);
+        if (!res && u_depth > 14 && !rn2(6)
+            && !(mvitals[PM_SOLDIER].mvflags & G_GONE))
+            res = mkroom(BARRACKS);
+        if (!res && u_depth > 15 && !rn2(6))
+            res = mkroom(SWAMP);
+        if (!res && u_depth > 16 && !rn2(8)
+            && !(mvitals[PM_COCKATRICE].mvflags & G_GONE))
+            res = mkroom(COCKNEST);
+        if (!res && u_depth > 20 && !rn2(5))
+            res = mkroom(DRAGONLAIR);
 
-		if (u_depth >= 2 && u_depth < depth(&medusa_level) && !rn2(6))
-			(void)mkroom(GARDEN);
+        if (u_depth >= 2 && u_depth < depth(&medusa_level) && !rn2(6))
+            (void)mkroom(GARDEN);
 
         boolean armoryok = (context.made_armory_box_count < 5 ? !rn2(2) : !rn2(6));
         if (u_depth >= 4 && u_depth < depth(&medusa_level) && armoryok)
@@ -993,16 +993,16 @@ makelevel()
     place_branch(branchp, 0, 0);
 
     /* for each room: put things inside */
-	register int altarsplaced = 0;
-	register int chance = 60;
-	register int u_depth = depth(&u.uz);
+    register int altarsplaced = 0;
+    register int chance = 60;
+    register int u_depth = depth(&u.uz);
 
-	/* Put items and other stuff in the rooms */
-	for (croom = rooms; croom->hx > 0; croom++) {
+    /* Put items and other stuff in the rooms */
+    for (croom = rooms; croom->hx > 0; croom++) {
         if (croom->rtype != OROOM)
             continue;
 
-		boolean startingroom = (u_depth == 1 && inside_room(croom, sstairs.sx, sstairs.sy));
+        boolean startingroom = (u_depth == 1 && inside_room(croom, sstairs.sx, sstairs.sy));
 
         /* put a sleeping monster inside */
         /* Note: monster may be on the stairs. This cannot be
@@ -1014,52 +1014,52 @@ makelevel()
         {
             x = somex(croom);
             y = somey(croom);
-			if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !In_sokoban(&u.uz) && !In_V_tower(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
-			{
-				randomize_encounter(x, y);
-			}
-			else
-			{
-				tmonst = makemon((struct permonst *) 0, x, y, MM_NOGRP);
-				if (tmonst && !occupied(x, y))
-				{
-					if (tmonst->data == &mons[PM_GIANT_SPIDER] || (tmonst->data == &mons[PM_PHASE_SPIDER] && !rn2(2)))
-						(void)maketrap(x, y, WEB, NON_PM, MKTRAP_NO_FLAGS);
-					else if (tmonst->data == &mons[PM_OTYUGH] || tmonst->data == &mons[PM_NEO_OTYUGH])
-					{
-						/* Otyugh lair */
-						(void)maketrap(x, y, PIT, NON_PM, MKTRAP_NO_FLAGS);
-						int itemnum = rnd(3) + 2;
-						for(int i = 0; i < itemnum;i++)
-						{
-							int itemtype = CLUMP_OF_BAT_GUANO;
-							switch (rn2(5))
-							{
-							case 0:
-							case 1:
-								itemtype = CLUMP_OF_BAT_GUANO;
-								break;
-							case 2:
-							case 3:
-								itemtype = BONE;
-								break;
-							case 4:
-								itemtype = HUMAN_SKULL;
-								break;
-							default:
-								break;
-							}
-							(void)mksobj_at(itemtype, x, y, FALSE, FALSE);
-						}
+            if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !In_sokoban(&u.uz) && !In_V_tower(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
+            {
+                randomize_encounter(x, y);
+            }
+            else
+            {
+                tmonst = makemon((struct permonst *) 0, x, y, MM_NOGRP);
+                if (tmonst && !occupied(x, y))
+                {
+                    if (tmonst->data == &mons[PM_GIANT_SPIDER] || (tmonst->data == &mons[PM_PHASE_SPIDER] && !rn2(2)))
+                        (void)maketrap(x, y, WEB, NON_PM, MKTRAP_NO_FLAGS);
+                    else if (tmonst->data == &mons[PM_OTYUGH] || tmonst->data == &mons[PM_NEO_OTYUGH])
+                    {
+                        /* Otyugh lair */
+                        (void)maketrap(x, y, PIT, NON_PM, MKTRAP_NO_FLAGS);
+                        int itemnum = rnd(3) + 2;
+                        for(int i = 0; i < itemnum;i++)
+                        {
+                            int itemtype = CLUMP_OF_BAT_GUANO;
+                            switch (rn2(5))
+                            {
+                            case 0:
+                            case 1:
+                                itemtype = CLUMP_OF_BAT_GUANO;
+                                break;
+                            case 2:
+                            case 3:
+                                itemtype = BONE;
+                                break;
+                            case 4:
+                                itemtype = HUMAN_SKULL;
+                                break;
+                            default:
+                                break;
+                            }
+                            (void)mksobj_at(itemtype, x, y, FALSE, FALSE);
+                        }
 
-						int itemnum2 = rn2(3) + (tmonst->data == &mons[PM_NEO_OTYUGH]) ? 1 : 0;
-						for (int i = 0; i < itemnum2; i++)
-						{
+                        int itemnum2 = rn2(3) + (tmonst->data == &mons[PM_NEO_OTYUGH]) ? 1 : 0;
+                        for (int i = 0; i < itemnum2; i++)
+                        {
                             (void)mkobj_at(RANDOM_CLASS, x, y, TRUE);
-						}
-					}
-				}
-			}
+                        }
+                    }
+                }
+            }
         }
         /* put traps and mimics inside */
         x = 8 - (level_difficulty() / 6);
@@ -1076,72 +1076,72 @@ makelevel()
         if (!rn2(60))
             mksink(croom);
 
-		chance = 45;
+        chance = 45;
 
-		if (startingroom || (!rn2(chance) && altarsplaced == 0 && u_depth > 3))
-		{
-			mkaltar(croom, startingroom);
-			altarsplaced++;
-		}
+        if (startingroom || (!rn2(chance) && altarsplaced == 0 && u_depth > 3))
+        {
+            mkaltar(croom, startingroom);
+            altarsplaced++;
+        }
 
-		if(startingroom)
-		{
-			/* Make stash */
-			tryct = 0;
-			do {
-				x = somex(croom);
-				y = somey(croom);
-			} while (tryct <= 20 && (occupied(x, y) || !(IS_ROOM(levl[x][y].typ) || IS_POOL(levl[x][y].typ))
-				|| IS_FURNITURE(levl[x][y].typ) || IS_ALTAR(levl[x][y].typ) || (x == sstairs.sx && y == sstairs.sy)
-				));
+        if(startingroom)
+        {
+            /* Make stash */
+            tryct = 0;
+            do {
+                x = somex(croom);
+                y = somey(croom);
+            } while (tryct <= 20 && (occupied(x, y) || !(IS_ROOM(levl[x][y].typ) || IS_POOL(levl[x][y].typ))
+                || IS_FURNITURE(levl[x][y].typ) || IS_ALTAR(levl[x][y].typ) || (x == sstairs.sx && y == sstairs.sy)
+                ));
 
-			/* First, write Gilthoniel underneath */
-			make_engr_at(x, y, Gilthoniel_word, 0L, ENGRAVE, ENGR_FLAGS_NONE);
+            /* First, write Gilthoniel underneath */
+            make_engr_at(x, y, Gilthoniel_word, 0L, ENGRAVE, ENGR_FLAGS_NONE);
 
-			/* Stash has now some random contents */
-			struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
-			stash->olocked = FALSE;
-			stash->otrapped = FALSE;
+            /* Stash has now some random contents */
+            struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
+            stash->olocked = FALSE;
+            stash->otrapped = FALSE;
             stash->tknown = 1;
             char namebuf[BUFSZ];
-			Sprintf(namebuf, "%s stash", s_suffix(plname));
-			stash = uoname(stash, namebuf);
+            Sprintf(namebuf, "%s stash", s_suffix(plname));
+            stash = uoname(stash, namebuf);
 
-			/* Stash has now some random contents */
-			struct obj* otmp = (struct obj*)0;
+            /* Stash has now some random contents */
+            struct obj* otmp = (struct obj*)0;
 
-			/* 2-3 items in stash */
-			int itemnum = 2 + (!rn2(4) ? 1 : 0);
-			for (int icnt = 0; icnt < itemnum; icnt++)
-			{
-				otmp = mkobj(RANDOM_CLASS, FALSE, TRUE);
-				otmp->bknown = 1;
-				(void)add_to_container(stash, otmp);
-			}
+            /* 2-3 items in stash */
+            int itemnum = 2 + (!rn2(4) ? 1 : 0);
+            for (int icnt = 0; icnt < itemnum; icnt++)
+            {
+                otmp = mkobj(RANDOM_CLASS, FALSE, TRUE);
+                otmp->bknown = 1;
+                (void)add_to_container(stash, otmp);
+            }
 
 #if 0
-			if (!carrying(AXE) && !carrying(BATTLE_AXE))
-			{
-				otmp = mksobj(AXE, FALSE, FALSE, FALSE);
-				uncurse(otmp);
-				otmp->bknown = 1;
-				(void)add_to_container(stash, otmp);
-			}
-			else
-			{
-				otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
-				otmp->quan = rnd(200);
-				otmp->owt = weight(otmp);
-				otmp->bknown = 1;
-				(void)add_to_container(stash, otmp);
-			}
+            if (!carrying(AXE) && !carrying(BATTLE_AXE))
+            {
+                otmp = mksobj(AXE, FALSE, FALSE, FALSE);
+                uncurse(otmp);
+                otmp->bknown = 1;
+                (void)add_to_container(stash, otmp);
+            }
+            else
+            {
+                otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
+                otmp->quan = rnd(200);
+                otmp->owt = weight(otmp);
+                otmp->bknown = 1;
+                (void)add_to_container(stash, otmp);
+            }
 
-			otmp = mkobj(FOOD_CLASS, FALSE, FALSE);
-			otmp->bknown = 1;
-			(void)add_to_container(stash, otmp);
+            otmp = mkobj(FOOD_CLASS, FALSE, FALSE);
+            otmp->bknown = 1;
+            (void)add_to_container(stash, otmp);
 #endif
 
-		}
+        }
 
         x = 80 - (depth(&u.uz) * 2);
         if (x < 2)
@@ -1237,14 +1237,14 @@ boolean skip_lvl_checks;
                 && (!In_mines(&u.uz) || sp->flags.town))))
         return;
 
-	/* note: gold can now generate any type of minerals, but not gold coins*/
+    /* note: gold can now generate any type of minerals, but not gold coins*/
     /* basic level-related probabilities */
     if (goldprob < 0)
         goldprob = 15 + depth(&u.uz) / 4;
     if (gemprob < 0)
         gemprob = goldprob / 4;
-	
-	/* mines have ***MORE*** goodies - otherwise why mine? */
+    
+    /* mines have ***MORE*** goodies - otherwise why mine? */
     if (!skip_lvl_checks) {
         if (In_mines(&u.uz)) {
             goldprob *= 2;
@@ -1277,7 +1277,7 @@ boolean skip_lvl_checks;
                 if (rn2(1000) < goldprob) {
                     if ((otmp = mksobj(randomore(), FALSE, FALSE, FALSE)) != 0) {
                         otmp->ox = x, otmp->oy = y;
-						otmp->quan = 1L; //+ rnd(goldprob * 3);
+                        otmp->quan = 1L; //+ rnd(goldprob * 3);
                         otmp->owt = weight(otmp);
                         /* if (!rn2(3)) //Note: It would be too difficult to find without object detection
                             add_to_buried(otmp);
@@ -1837,10 +1837,10 @@ coord *tm;
                (less useful to use, and encourage pets to avoid the trap) */
             if (otmp) {
                 otmp->blessed = 0;
-				if(objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
-					otmp->cursed = 0;
-				else
-					otmp->cursed = 1;
+                if(objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
+                    otmp->cursed = 0;
+                else
+                    otmp->cursed = 1;
                 otmp->owt = weight(otmp);
                 place_object(otmp, m.x, m.y);
             }
@@ -1848,59 +1848,59 @@ coord *tm;
             /* 20% chance of placing an additional item, recursively */
         } while (!rn2(5));
 
-		if (!rn2(4))
-		{
-			if(!rn2(2))
-			{
-				(void)mksobj_at(HUMAN_SKULL, m.x, m.y, FALSE, FALSE);
-			}
-			struct obj* bones = mksobj_at(BONE, m.x, m.y, FALSE, FALSE);
-			bones->quan = rnd(4);
-			bones->owt = weight(bones);
-		}
-		else
-		{
-			/* Place a corpse. */
-			switch (rn2(15)) {
-			case 0:
-				/* elf corpses are the rarest as they're the most useful */
-				victim_mnum = PM_ELF;
-				/* elven adventurers get sleep resistance early; so don't
-				   generate elf corpses on sleeping gas traps unless a)
-				   we're on dlvl 2 (1 is impossible) and b) we pass a coin
-				   flip */
-				if (kind == SLP_GAS_TRAP && !(lvl <= 2 && rn2(2)))
-					victim_mnum = PM_HUMAN;
-				break;
-			case 1: case 2:
-				victim_mnum = PM_DWARF;
-				break;
-			case 3: case 4: case 5:
-				victim_mnum = PM_ORC;
-				break;
-			case 6: case 7: case 8: case 9:
-				/* more common as they could have come from the Mines */
-				victim_mnum = PM_GNOME;
-				/* 10% chance of a candle too */
-				if (!rn2(10)) {
-					otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE,
-								  TRUE, FALSE, FALSE);
-					curse(otmp);
-					otmp->quan = 1;
-					otmp->owt = weight(otmp);
-					place_object(otmp, m.x, m.y);
-				}
-				break;
-			default:
-				/* the most common race */
-				victim_mnum = PM_HUMAN;
-				break;
-			}
-			otmp = mkcorpstat(CORPSE, NULL, &mons[victim_mnum], m.x, m.y,
-							  CORPSTAT_INIT);
-			if (otmp)
-				otmp->age -= 51; /* died too long ago to eat */
-		}
+        if (!rn2(4))
+        {
+            if(!rn2(2))
+            {
+                (void)mksobj_at(HUMAN_SKULL, m.x, m.y, FALSE, FALSE);
+            }
+            struct obj* bones = mksobj_at(BONE, m.x, m.y, FALSE, FALSE);
+            bones->quan = rnd(4);
+            bones->owt = weight(bones);
+        }
+        else
+        {
+            /* Place a corpse. */
+            switch (rn2(15)) {
+            case 0:
+                /* elf corpses are the rarest as they're the most useful */
+                victim_mnum = PM_ELF;
+                /* elven adventurers get sleep resistance early; so don't
+                   generate elf corpses on sleeping gas traps unless a)
+                   we're on dlvl 2 (1 is impossible) and b) we pass a coin
+                   flip */
+                if (kind == SLP_GAS_TRAP && !(lvl <= 2 && rn2(2)))
+                    victim_mnum = PM_HUMAN;
+                break;
+            case 1: case 2:
+                victim_mnum = PM_DWARF;
+                break;
+            case 3: case 4: case 5:
+                victim_mnum = PM_ORC;
+                break;
+            case 6: case 7: case 8: case 9:
+                /* more common as they could have come from the Mines */
+                victim_mnum = PM_GNOME;
+                /* 10% chance of a candle too */
+                if (!rn2(10)) {
+                    otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE,
+                                  TRUE, FALSE, FALSE);
+                    curse(otmp);
+                    otmp->quan = 1;
+                    otmp->owt = weight(otmp);
+                    place_object(otmp, m.x, m.y);
+                }
+                break;
+            default:
+                /* the most common race */
+                victim_mnum = PM_HUMAN;
+                break;
+            }
+            otmp = mkcorpstat(CORPSE, NULL, &mons[victim_mnum], m.x, m.y,
+                              CORPSTAT_INIT);
+            if (otmp)
+                otmp->age -= 51; /* died too long ago to eat */
+        }
     }
     return t;
 }
@@ -2027,7 +2027,7 @@ struct mkroom *croom;
     levl[m.x][m.y].subtyp = 1 + rn2(MAX_FOUNTAIN_SUBTYPES - 1); /* No natural fountains normally */
     levl[m.x][m.y].fountainmask = 0;
 //    levl[m.x][m.y].fountainmask &= ~FOUNTAIN_TYPE_MASK;
-//	levl[m.x][m.y].fountainmask |= rn2(6);
+//    levl[m.x][m.y].fountainmask |= rn2(6);
 
     /* Is it a "blessed" fountain? (affects drinking from fountain) */
     if (!rn2(7))
@@ -2100,11 +2100,11 @@ boolean match_player_alignment;
     levl[m.x][m.y].typ = ALTAR;
     levl[m.x][m.y].subtyp = 0;
 
-	/* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
-	if (match_player_alignment)
-		al = u.ualign.type;
-	else
-	    al = rn2((int) A_LAWFUL + 2) - 1;
+    /* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
+    if (match_player_alignment)
+        al = u.ualign.type;
+    else
+        al = rn2((int) A_LAWFUL + 2) - 1;
 
     levl[m.x][m.y].altarmask = Align2amask(al);
 }

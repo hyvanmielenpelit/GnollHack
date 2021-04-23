@@ -1,4 +1,4 @@
-/* GnollHack 4.0	dbridge.c	$NHDT-Date: 1503355815 2017/08/21 22:50:15 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.39 $ */
+/* GnollHack 4.0    dbridge.c    $NHDT-Date: 1503355815 2017/08/21 22:50:15 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.39 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet              */
 /* GnollHack may be freely redistributed.  See license for details. */
 

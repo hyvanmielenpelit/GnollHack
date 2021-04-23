@@ -1,5 +1,5 @@
-/* GnollHack 4.0	winprocs.h	$NHDT-Date: 1553204011 2019/03/21 21:33:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.47 $ */
-/* Copyright (c) David Cohrs, 1992				  */
+/* GnollHack 4.0    winprocs.h    $NHDT-Date: 1553204011 2019/03/21 21:33:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.47 $ */
+/* Copyright (c) David Cohrs, 1992                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef WINPROCS_H
@@ -335,9 +335,9 @@ struct wc_Opt {
 
 #ifdef WINCHAIN
 /* Setup phases for window chain elements.
-        void *  rv = X_procs_chain(int,	int, void *, void *, void *);
-                Xprivate*	   ALLOC n	0	0	0
-                -		   INIT	 n   self    next    nextdata
+        void *  rv = X_procs_chain(int,    int, void *, void *, void *);
+                Xprivate*       ALLOC n    0    0    0
+                -           INIT     n   self    next    nextdata
    where:
         Xprivate* is anything window chain entry type X wants back
         n is the link count (starting with 1)

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	windows.c	$NHDT-Date: 1526933747 2018/05/21 20:15:47 $  $NHDT-Branch: GnollHack-3.6.2 $:$NHDT-Revision: 1.48 $ */
+/* GnollHack 4.0    windows.c    $NHDT-Date: 1526933747 2018/05/21 20:15:47 $  $NHDT-Branch: GnollHack-3.6.2 $:$NHDT-Revision: 1.48 $ */
 /* Copyright (c) D. Cohrs, 1993. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -152,7 +152,7 @@ static struct win_choices {
     { &nuklear_procs, 0 CHAINR(0) },
 #endif
 #ifdef ANDROID_GRAPHICS
-	{ &and_procs, 0 CHAINR(0) },
+    { &and_procs, 0 CHAINR(0) },
 #endif
 #ifdef WINCHAIN
     { &chainin_procs, chainin_procs_init, chainin_procs_chain },
@@ -390,7 +390,7 @@ choose_windows(s)
 const char *s;
 {
     int i;
-	char* tmps = 0;
+    char* tmps = 0;
 
     for (i = 0; winchoices[i].procs; i++) {
         if ('+' == winchoices[i].procs->name[0])
@@ -418,20 +418,20 @@ const char *s;
     if (!winchoices[0].procs) {
         raw_printf("No window types supported?");
         nh_terminate(EXIT_FAILURE);
-		return;
+        return;
     }
 
-	/* 50: arbitrary, no real window_type names are anywhere near that long;
+    /* 50: arbitrary, no real window_type names are anywhere near that long;
    used to prevent potential raw_printf() overflow if user supplies a
    very long string (on the order of 1200 chars) on the command line
    (config file options can't get that big; they're truncated at 1023) */
 #define WINDOW_TYPE_MAXLEN 50
-	if (strlen(s) >= WINDOW_TYPE_MAXLEN) {
-		tmps = (char*)alloc(WINDOW_TYPE_MAXLEN);
-		(void)strncpy(tmps, s, WINDOW_TYPE_MAXLEN - 1);
-		tmps[WINDOW_TYPE_MAXLEN - 1] = '\0';
-		s = tmps;
-	}
+    if (strlen(s) >= WINDOW_TYPE_MAXLEN) {
+        tmps = (char*)alloc(WINDOW_TYPE_MAXLEN);
+        (void)strncpy(tmps, s, WINDOW_TYPE_MAXLEN - 1);
+        tmps[WINDOW_TYPE_MAXLEN - 1] = '\0';
+        s = tmps;
+    }
 #undef WINDOW_TYPE_MAXLEN
 
     if (!winchoices[1].procs) {
@@ -456,8 +456,8 @@ const char *s;
                          s, buf);
     }
 
-	if (tmps)
-		free((genericptr_t)tmps) /*, tmps = 0*/;
+    if (tmps)
+        free((genericptr_t)tmps) /*, tmps = 0*/;
 
     if (windowprocs.win_raw_print == def_raw_print
             || WINDOWPORT("safe-startup"))
@@ -1117,22 +1117,22 @@ unsigned long *colormasks UNUSED;
           BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
           BL_MOVE, BL_XP, BL_EXP, BL_HD,
           BL_TIME,
-		  BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
+          BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_FLUSH },
         /* move time to the end */
         { BL_LEVELDESC, //BL_GOLD,
           BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
           BL_MOVE, BL_XP, BL_EXP, BL_HD,
-		  BL_2WEP, BL_SKILL,BL_HUNGER, BL_CAP, BL_CONDITION,
+          BL_2WEP, BL_SKILL,BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_TIME, BL_FLUSH },
         /* move experience and time to the end */
         { BL_LEVELDESC, // BL_GOLD,
           BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
-		  BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
+          BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_MOVE, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH },
         /* move level description plus gold and experience and time to end */
         { BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
-		  BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
+          BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_LEVELDESC, //BL_GOLD,
           BL_MOVE, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH },
     };
@@ -1158,9 +1158,9 @@ unsigned long *colormasks UNUSED;
                 Strcpy(nb = eos(nb), " Slime");
             if (cond & BL_MASK_STRNGL)
                 Strcpy(nb = eos(nb), " Strngl");
-			if (cond & BL_MASK_SUFFOC)
-				Strcpy(nb = eos(nb), " Suffoc");
-			if (cond & BL_MASK_FOODPOIS)
+            if (cond & BL_MASK_SUFFOC)
+                Strcpy(nb = eos(nb), " Suffoc");
+            if (cond & BL_MASK_FOODPOIS)
                 Strcpy(nb = eos(nb), " FoodPois");
             if (cond & BL_MASK_TERMILL)
                 Strcpy(nb = eos(nb), " TermIll");
@@ -1169,12 +1169,12 @@ unsigned long *colormasks UNUSED;
             if (cond & BL_MASK_LYCANTHROPY)
                 Strcpy(nb = eos(nb), " Lyca");
             if (cond & BL_MASK_PARALYZED)
-				Strcpy(nb = eos(nb), " Paral");
-			if (cond & BL_MASK_FEARFUL)
-				Strcpy(nb = eos(nb), " Fear");
-			if (cond & BL_MASK_SLEEPING)
-				Strcpy(nb = eos(nb), " Sleep");
-			if (cond & BL_MASK_BLIND)
+                Strcpy(nb = eos(nb), " Paral");
+            if (cond & BL_MASK_FEARFUL)
+                Strcpy(nb = eos(nb), " Fear");
+            if (cond & BL_MASK_SLEEPING)
+                Strcpy(nb = eos(nb), " Sleep");
+            if (cond & BL_MASK_BLIND)
                 Strcpy(nb = eos(nb), " Blind");
             if (cond & BL_MASK_DEAF)
                 Strcpy(nb = eos(nb), " Deaf");
@@ -1184,13 +1184,13 @@ unsigned long *colormasks UNUSED;
                 Strcpy(nb = eos(nb), " Conf");
             if (cond & BL_MASK_HALLU)
                 Strcpy(nb = eos(nb), " Hallu");
-			if (cond & BL_MASK_SLOWED)
-				Strcpy(nb = eos(nb), " Slow");
-			if (cond & BL_MASK_SILENCED)
-				Strcpy(nb = eos(nb), " Silent");
-			if (cond & BL_MASK_CANCELLED)
-				Strcpy(nb = eos(nb), " Cancl");
-			if (cond & BL_MASK_LEV)
+            if (cond & BL_MASK_SLOWED)
+                Strcpy(nb = eos(nb), " Slow");
+            if (cond & BL_MASK_SILENCED)
+                Strcpy(nb = eos(nb), " Silent");
+            if (cond & BL_MASK_CANCELLED)
+                Strcpy(nb = eos(nb), " Cancl");
+            if (cond & BL_MASK_LEV)
                 Strcpy(nb = eos(nb), " Lev");
             if (cond & BL_MASK_FLY)
                 Strcpy(nb = eos(nb), " Fly");
@@ -1224,7 +1224,7 @@ unsigned long *colormasks UNUSED;
     }
     /* if '$' is encoded, buffer length of \GXXXXNNNN is 9 greater than
        single char; we want to subtract that 9 when checking display length */
-	lndelta = 0; // (status_activefields[BL_GOLD]
+    lndelta = 0; // (status_activefields[BL_GOLD]
                //&& strstr(status_vals[BL_GOLD], "\\G")) ? 9 : 0;
     /* basic bot2 formats groups of second line fields into five buffers,
        then decides how to order those buffers based on comparing lengths
@@ -1268,19 +1268,19 @@ unsigned long *colormasks UNUSED;
                     if (strcmp(val, " "))
                         Strcpy(nb = eos(nb), " ");
                     break;
-				case BL_SKILL:
-					/* skill==" " - keep it, end up with " ";
-					   skill!=" " - insert space and get "  skill" */
-					if (strcmp(val, " "))
-						Strcpy(nb = eos(nb), " ");
-					break;
-				case BL_2WEP:
-					/* skill==" " - keep it, end up with " ";
-					   skill!=" " - insert space and get "  skill" */
-					if (strcmp(val, " "))
-						++val;
-					break;
-				case BL_CAP:
+                case BL_SKILL:
+                    /* skill==" " - keep it, end up with " ";
+                       skill!=" " - insert space and get "  skill" */
+                    if (strcmp(val, " "))
+                        Strcpy(nb = eos(nb), " ");
+                    break;
+                case BL_2WEP:
+                    /* skill==" " - keep it, end up with " ";
+                       skill!=" " - insert space and get "  skill" */
+                    if (strcmp(val, " "))
+                        ++val;
+                    break;
+                case BL_CAP:
                     /* cap==" " - suppress it, retain "  hunger" or " ";
                        cap!=" " - use it, get "  hunger cap" or "  cap" */
                     if (!strcmp(val, " "))
@@ -1415,18 +1415,18 @@ time_t now;
         return;
     fname = dump_fmtstr(sysopt.dumplogfile, buf);
 #elif defined(ANDROID)
-	if (iflags.dumplog)
-	{
-		char buf_[BUFSZ];
-		dump_fmtstr(DUMPLOG_FILE, buf_);
-		and_get_dumplog_dir(buf);
-		if (strlen(buf_) + strlen(buf) < BUFSZ - 1)
-			fname = strcat(buf, buf_);
-		else
-			fname = strcpy(buf, buf_);
-	}
-	else
-		fname = 0;
+    if (iflags.dumplog)
+    {
+        char buf_[BUFSZ];
+        dump_fmtstr(DUMPLOG_FILE, buf_);
+        and_get_dumplog_dir(buf);
+        if (strlen(buf_) + strlen(buf) < BUFSZ - 1)
+            fname = strcat(buf, buf_);
+        else
+            fname = strcpy(buf, buf_);
+    }
+    else
+        fname = 0;
 #else
     fname = dump_fmtstr(DUMPLOG_FILE, buf);
 #endif

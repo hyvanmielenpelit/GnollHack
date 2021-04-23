@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mfndpos.h	$NHDT-Date: 1432512776 2015/05/25 00:12:56 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 4.0    mfndpos.h    $NHDT-Date: 1432512776 2015/05/25 00:12:56 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2005. */
 /* GnollHack may be freely redistributed.  See license for details. */

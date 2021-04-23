@@ -18,16 +18,16 @@ STATIC_DCL void FDECL(set_hearing_array, (int, int, double, int));
 
 NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS] =
 {
-	{
-		"",
+    {
+        "",
         PLAYER_SOUNDSET_NONE,
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f},{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f}}
     },
-	{
-		"Generic Male",
+    {
+        "Generic Male",
         PLAYER_SOUNDSET_NONE,
         {
             {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_PUSH_EFFORT, 1.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},
@@ -40,8 +40,8 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},  {GHSOUND_NONE, 0.0f},  {GHSOUND_GENERIC_PLAYER_MALE_PRAY, 1.0f}}
     },
-	{
-		"Generic Female",
+    {
+        "Generic Female",
         PLAYER_SOUNDSET_GENERAL,
         {
             {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_PUSH_EFFORT_FEMALE, 1.0f}, {MAX_GHSOUNDS, 0.0f},  {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},
@@ -59,15 +59,15 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
 
 NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS] =
 {
-	{
-		"",
+    {
+        "",
         MONSTER_SOUNDSET_NONE,
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f},{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE}
     },
-	{
-		"Generic",
+    {
+        "Generic",
         MONSTER_SOUNDSET_NONE,
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_GENERAL_SWALLOW_AMBIENT, 1.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_YELP, 1.0f}, {GHSOUND_GENERIC_GROWL, 1.0f}, {GHSOUND_GENERIC_WHIMPER, 1.0f}, {GHSOUND_GENERIC_WARN_CURSED, 1.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_FLOUNDER_MALE, 1.0f}, {GHSOUND_GENERIC_TRIP_MALE, 1.0f}, {GHSOUND_GENERIC_SLIP_MALE, 1.0f}, {GHSOUND_GENERIC_STUMBLE_MALE, 1.0f}, {GHSOUND_GENERIC_BUMP_INTO, 1.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, {GHSOUND_GENERIC_LAUGHTER, 10.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_BEAR_HOWL_IN_ANGER, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GENERIC_YELL_MALE, 1.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_MONSTER_DEATH_GENERIC, 5.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
@@ -88,21 +88,21 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
     {
-		"Goblin",
+        "Goblin",
         MONSTER_SOUNDSET_GENERIC,
         {{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, {GHSOUND_GENERIC_LAUGHTER, 10.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},  {GHSOUND_GOBLIN_DEATH, 2.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
-	{
-		"Dragon",
+    {
+        "Dragon",
         MONSTER_SOUNDSET_GENERIC,
         {{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, {GHSOUND_DEMONIC_LAUGHTER, 10.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},  {MAX_GHSOUNDS, 0.0f}, {GHSOUND_MONSTER_DEATH_GENERIC, 5.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_GENERIC, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
-	{
-		"Dracolich",
+    {
+        "Dracolich",
         MONSTER_SOUNDSET_GENERIC,
         {{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},{MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},  {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {GHSOUND_GENERIC_CAST, 1.0f}, {GHSOUND_GENERIC_PRAY, 1.0f}, {GHSOUND_DEMONIC_LAUGHTER, 10.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f}, {MAX_GHSOUNDS, 0.0f},  {GHSOUND_MONSTER_DEATH_GENERIC, 5.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
@@ -6136,13 +6136,13 @@ play_movement_sound(mtmp, climbingid)
 struct monst* mtmp;
 enum climbing_types climbingid;
 {
-	if (!mtmp)
-		return;
+    if (!mtmp)
+        return;
 
     if (Deaf)
         return;
 
-	boolean isyou = (mtmp == &youmonst);
+    boolean isyou = (mtmp == &youmonst);
     boolean isfemale = isyou ? (Upolyd ? u.mfemale : flags.female) : mtmp->female;
     xchar ox = isyou ? u.ux : mtmp->mx, oy = isyou ? u.uy : mtmp->my;
     if (!isok(ox, oy))
@@ -6155,11 +6155,11 @@ enum climbing_types climbingid;
     struct ghsound_immediate_info immediateinfo = { 0 };
 
     /* Parameters */
-	enum floor_surface_types floorid = get_floor_surface_type(ox, oy, is_underwater); /* Set the appropriate floor here */
+    enum floor_surface_types floorid = get_floor_surface_type(ox, oy, is_underwater); /* Set the appropriate floor here */
     enum floor_treading_types treadingid = FLOOR_TREADING_TYPE_NORMAL;
     enum location_passing_types passingid = LOCATION_PASSING_TYPE_NORMAL;
 
-	enum ghsound_types soundid = GHSOUND_NONE;
+    enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f, base_volume = isyou || mtmp == u.usteed ? 1.0f : 0.25f;
     float weight = max(0.0f, min(10000.0f, (float)mtmp->data->cwt));
 
@@ -6168,7 +6168,7 @@ enum climbing_types climbingid;
     enum object_sound_types sound_type = OBJECT_SOUND_TYPE_WALK;
 
     if (isyou)
-	{ 
+    { 
         if (!isok(u.ux, u.uy))
             return;
 
@@ -6247,9 +6247,9 @@ enum climbing_types climbingid;
 //            soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
 //            volume = object_soundsets[oss_boots].sounds[sound_type].volume;
         }
-	}
-	else
-	{
+    }
+    else
+    {
         if (!isok(mtmp->mx, mtmp->my))
             return;
 
@@ -6337,7 +6337,7 @@ enum climbing_types climbingid;
             return;
         else
             volume *= hearing_array[mtmp->mx][mtmp->my];
-	}
+    }
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, base_volume * volume));
@@ -7811,13 +7811,13 @@ get_player_soundset()
     if(Upolyd ? u.mfemale : flags.female)
         return PLAYER_SOUNDSET_FEMALE;
     else
-    	return PLAYER_SOUNDSET_GENERAL;
+        return PLAYER_SOUNDSET_GENERAL;
 }
 
 void
 dosetsoundvolume()
 {
-	adjust_ghsound_general_volumes();
+    adjust_ghsound_general_volumes();
 }
 
 static float prev_hearing_array[COLNO][ROWNO];
@@ -7826,182 +7826,182 @@ void
 update_hearing_array(mode)
 int mode; /* 0 = normal, 1 = clear */
 {
-	/* Clear array*/
-	memset(hearing_array, 0, sizeof(hearing_array));
+    /* Clear array*/
+    memset(hearing_array, 0, sizeof(hearing_array));
     memset(prev_hearing_array, 0, sizeof(prev_hearing_array));
 
-	/* Can't hear anything */
-	if (Deaf || mode == 1)
-		return;
+    /* Can't hear anything */
+    if (Deaf || mode == 1)
+        return;
 
-	int hear_distance = get_max_hearing_distance();
+    int hear_distance = get_max_hearing_distance();
 
-	/* Fill the array */
-	hearing_array[u.ux][u.uy] = prev_hearing_array[u.ux][u.uy] = 1.0f;
+    /* Fill the array */
+    hearing_array[u.ux][u.uy] = prev_hearing_array[u.ux][u.uy] = 1.0f;
 
-	for (int r = 1; r <= hear_distance; r++)
-	{
-		int x_min = u.ux - r;
-		int x_max = u.ux + r;
-		int x_min_adjusted = max(1, x_min);
-		int x_max_adjusted = min(COLNO - 1, x_max);
+    for (int r = 1; r <= hear_distance; r++)
+    {
+        int x_min = u.ux - r;
+        int x_max = u.ux + r;
+        int x_min_adjusted = max(1, x_min);
+        int x_max_adjusted = min(COLNO - 1, x_max);
 
-		int y_min = u.uy - r;
-		int y_max = u.uy + r;
-		int y_min_adjusted = max(0, y_min);
-		int y_max_adjusted = min(ROWNO - 1, y_max);
+        int y_min = u.uy - r;
+        int y_max = u.uy + r;
+        int y_min_adjusted = max(0, y_min);
+        int y_max_adjusted = min(ROWNO - 1, y_max);
 
-		boolean horizontal_min_done = FALSE;
-		boolean horizontal_max_done = FALSE;
+        boolean horizontal_min_done = FALSE;
+        boolean horizontal_max_done = FALSE;
 
-		/* 1. Horizontal lines, left to right */
-		for (int i = 0; i <= 1; i++)
-		{
-			if (i == 0)
-			{
-				if(y_min_adjusted != y_min)
-					continue;
+        /* 1. Horizontal lines, left to right */
+        for (int i = 0; i <= 1; i++)
+        {
+            if (i == 0)
+            {
+                if(y_min_adjusted != y_min)
+                    continue;
 
-				horizontal_min_done = TRUE;
-			}
-			else if (i == 1)
-			{
-				if(y_max_adjusted != y_max)
-					continue;
+                horizontal_min_done = TRUE;
+            }
+            else if (i == 1)
+            {
+                if(y_max_adjusted != y_max)
+                    continue;
 
-				horizontal_max_done = TRUE;
-			}
+                horizontal_max_done = TRUE;
+            }
 
-			int y = (i == 0 ? y_min_adjusted : y_max_adjusted);
+            int y = (i == 0 ? y_min_adjusted : y_max_adjusted);
 
-			
-			for (int x = x_min_adjusted; x <= x_max_adjusted; x++)
-			{
-				float prev_hearing = 0.0f;
-				int prev_y = (i == 0) ? y + 1 : y - 1;
+            
+            for (int x = x_min_adjusted; x <= x_max_adjusted; x++)
+            {
+                float prev_hearing = 0.0f;
+                int prev_y = (i == 0) ? y + 1 : y - 1;
 
-				if (r == 1)
-				{
-					prev_hearing = 1.0f;
-				}
-				else if (prev_y > y_max_adjusted || prev_y < y_min_adjusted)
-				{
-					//Nothing
-				}
-				else
-				{
-					float maximum = 0.0f;
+                if (r == 1)
+                {
+                    prev_hearing = 1.0f;
+                }
+                else if (prev_y > y_max_adjusted || prev_y < y_min_adjusted)
+                {
+                    //Nothing
+                }
+                else
+                {
+                    float maximum = 0.0f;
 
-					/* Take maximum from above or below from the previous round */
-					for (int prev_x = max(x_min_adjusted + 1, x - 1); prev_x <= min(x_max_adjusted - 1, x + 1); prev_x++)
-					{
-						maximum = max(maximum, prev_hearing_array[prev_x][prev_y]);
-					}
-	
-					/* Take also previous from the same line */
-					if(x > x_min_adjusted)
-						maximum = max(maximum, prev_hearing_array[x - 1][y]);
+                    /* Take maximum from above or below from the previous round */
+                    for (int prev_x = max(x_min_adjusted + 1, x - 1); prev_x <= min(x_max_adjusted - 1, x + 1); prev_x++)
+                    {
+                        maximum = max(maximum, prev_hearing_array[prev_x][prev_y]);
+                    }
+    
+                    /* Take also previous from the same line */
+                    if(x > x_min_adjusted)
+                        maximum = max(maximum, prev_hearing_array[x - 1][y]);
 
-					prev_hearing = maximum;
-				}
+                    prev_hearing = maximum;
+                }
 
-				if (prev_hearing == 0.0f)
-				{
-					continue;
-					/* Current hearing is 0, too */
-				}
-				else
-				{
-					set_hearing_array(x, y, prev_hearing, r);
-				}
-			}
-		}
+                if (prev_hearing == 0.0f)
+                {
+                    continue;
+                    /* Current hearing is 0, too */
+                }
+                else
+                {
+                    set_hearing_array(x, y, prev_hearing, r);
+                }
+            }
+        }
 
-		/* Vertical lines, top to bottom */
-		for (int i = 0; i <= 1; i++)
-		{
-			if (i == 0 && x_min_adjusted != x_min)
-				continue;
-			if (i == 1 && x_max_adjusted != x_max)
-				continue;
+        /* Vertical lines, top to bottom */
+        for (int i = 0; i <= 1; i++)
+        {
+            if (i == 0 && x_min_adjusted != x_min)
+                continue;
+            if (i == 1 && x_max_adjusted != x_max)
+                continue;
 
-			int x = (i == 0 ? x_min_adjusted : x_max_adjusted);
-			int upper_y_limit = y_max_adjusted - (horizontal_max_done ? 1 : 0);
+            int x = (i == 0 ? x_min_adjusted : x_max_adjusted);
+            int upper_y_limit = y_max_adjusted - (horizontal_max_done ? 1 : 0);
 
-			for (int y = y_min_adjusted + (horizontal_min_done ? 1 : 0); y <= upper_y_limit; y++)
-			{
-				float prev_hearing = 0.0f;
-				int prev_x = (i == 0) ? x + 1 : x - 1;
+            for (int y = y_min_adjusted + (horizontal_min_done ? 1 : 0); y <= upper_y_limit; y++)
+            {
+                float prev_hearing = 0.0f;
+                int prev_x = (i == 0) ? x + 1 : x - 1;
 
-				if (r == 1)
-				{
-					prev_hearing = 1.0f;
-				}
-				else if (prev_x > x_max_adjusted || prev_x < x_min_adjusted)
-				{
-					//Nothing
-				}
-				else
-				{
-					float maximum = 0.0f;
-					for (int prev_y = max(y_min_adjusted + 1, y - 1); prev_y <= min(y_max_adjusted - 1, y + 1); prev_y++)
-					{
-						maximum = max(maximum, prev_hearing_array[prev_x][prev_y]);
-					}
+                if (r == 1)
+                {
+                    prev_hearing = 1.0f;
+                }
+                else if (prev_x > x_max_adjusted || prev_x < x_min_adjusted)
+                {
+                    //Nothing
+                }
+                else
+                {
+                    float maximum = 0.0f;
+                    for (int prev_y = max(y_min_adjusted + 1, y - 1); prev_y <= min(y_max_adjusted - 1, y + 1); prev_y++)
+                    {
+                        maximum = max(maximum, prev_hearing_array[prev_x][prev_y]);
+                    }
 
-					/* Take also previous from the same line */
-					if (y > y_min_adjusted)
-						maximum = max(maximum, prev_hearing_array[x][y - 1]);
+                    /* Take also previous from the same line */
+                    if (y > y_min_adjusted)
+                        maximum = max(maximum, prev_hearing_array[x][y - 1]);
 
-					prev_hearing = maximum;
-				}
+                    prev_hearing = maximum;
+                }
 
-				if (prev_hearing == 0.0f)
-				{
-					continue;
-					/* Current hearing is 0, too */
-				}
-				else
-				{
-					set_hearing_array(x, y, prev_hearing, r);
-				}
-			}
-		}
+                if (prev_hearing == 0.0f)
+                {
+                    continue;
+                    /* Current hearing is 0, too */
+                }
+                else
+                {
+                    set_hearing_array(x, y, prev_hearing, r);
+                }
+            }
+        }
 
-		/* Vertical lines, bottom to top */
-		for (int i = 0; i <= 1; i++)
-		{
-			if (i == 0 && x_max_adjusted != x_max)
-				continue;
-			if (i == 1 && x_min_adjusted != x_min)
-				continue;
+        /* Vertical lines, bottom to top */
+        for (int i = 0; i <= 1; i++)
+        {
+            if (i == 0 && x_max_adjusted != x_max)
+                continue;
+            if (i == 1 && x_min_adjusted != x_min)
+                continue;
 
-			int x = (i == 0 ? x_max_adjusted : x_min_adjusted);
+            int x = (i == 0 ? x_max_adjusted : x_min_adjusted);
 
-			for (int y = y_max_adjusted - 1 ; y >= y_min_adjusted; y--)
-			{
-				if(prev_hearing_array[x][y + 1] > 0.0f)
-					set_hearing_array(x, y, prev_hearing_array[x][y + 1], r);
-			}
-		}
+            for (int y = y_max_adjusted - 1 ; y >= y_min_adjusted; y--)
+            {
+                if(prev_hearing_array[x][y + 1] > 0.0f)
+                    set_hearing_array(x, y, prev_hearing_array[x][y + 1], r);
+            }
+        }
 
-		/* Horizontal lines, right to left */
-		for (int i = 0; i <= 1; i++)
-		{
-			if (i == 0 && y_max_adjusted != y_max)
-				continue;
-			if (i == 1 && y_min_adjusted != y_min)
-				continue;
+        /* Horizontal lines, right to left */
+        for (int i = 0; i <= 1; i++)
+        {
+            if (i == 0 && y_max_adjusted != y_max)
+                continue;
+            if (i == 1 && y_min_adjusted != y_min)
+                continue;
 
-			int y = (i == 0 ? y_max_adjusted : y_min_adjusted);
+            int y = (i == 0 ? y_max_adjusted : y_min_adjusted);
 
-			for (int x = x_max_adjusted - 1; x >= x_min_adjusted; x--)
-			{
-				if (prev_hearing_array[x + 1][y] > 0.0f)
-					set_hearing_array(x, y, prev_hearing_array[x + 1][y], r);
-			}
-		}
-	}
+            for (int x = x_max_adjusted - 1; x >= x_min_adjusted; x--)
+            {
+                if (prev_hearing_array[x + 1][y] > 0.0f)
+                    set_hearing_array(x, y, prev_hearing_array[x + 1][y], r);
+            }
+        }
+    }
 
 }
 
@@ -8033,10 +8033,10 @@ int radius;
         multiplier = curr_factor / prev_factor;
     }
 
-	struct monst* mtmp = m_at(x, y);
-	if ((IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ))
+    struct monst* mtmp = m_at(x, y);
+    if ((IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ))
         || (mtmp && is_lightblocker_mappear(mtmp)))
-	{
+    {
         if (1 /*mtmp*/)
         {
             /* Make sure that monsters walking through in walls etc. produce a sound when hit etc. */
@@ -8047,22 +8047,22 @@ int radius;
             if (new_hearing > hearing_array[x][y])
                 hearing_array[x][y] = new_hearing;
         }
-	}
-	else if (IS_DOOR(levl[x][y].typ) && ((levl[x][y].doormask & D_MASK) != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN | D_PORTCULLIS)) == 0))
-	{
+    }
+    else if (IS_DOOR(levl[x][y].typ) && ((levl[x][y].doormask & D_MASK) != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN | D_PORTCULLIS)) == 0))
+    {
         float new_prev_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing) / (10.0f)));
         float new_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing)));
         if (new_prev_hearing > prev_hearing_array[x][y])
             prev_hearing_array[x][y] = new_prev_hearing;
         if(new_hearing > hearing_array[x][y])
-			hearing_array[x][y] = new_hearing;
-	}
-	else
-	{
-		float new_prev_hearing = (float)max(0.0f, min(1.0f, multiplier * (float)prev_hearing));
+            hearing_array[x][y] = new_hearing;
+    }
+    else
+    {
+        float new_prev_hearing = (float)max(0.0f, min(1.0f, multiplier * (float)prev_hearing));
         float new_hearing = (float)max(0.0f, min(1.0f, multiplier * (float)prev_hearing));
         if (new_prev_hearing > prev_hearing_array[x][y])
-			prev_hearing_array[x][y] = new_prev_hearing;
+            prev_hearing_array[x][y] = new_prev_hearing;
         if (new_hearing > hearing_array[x][y])
             hearing_array[x][y] = new_hearing;
     }
@@ -8152,8 +8152,8 @@ update_ambient_sounds()
 void
 update_hearing_array_and_ambient_sounds()
 {
-	update_hearing_array(0);
-	update_ambient_sounds();
+    update_hearing_array(0);
+    update_ambient_sounds();
 }
 
 void
@@ -8165,32 +8165,32 @@ clear_hearing_array_and_ambient_sounds()
 
 int get_max_hearing_distance()
 {
-	return (u.uswallow ? 1 : Underwater ? 2 : MAX_HEARING_DISTANCE);
+    return (u.uswallow ? 1 : Underwater ? 2 : MAX_HEARING_DISTANCE);
 }
 
 void
 update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(px, py)
 int px, py;
 {
-	int max_hear_dist = get_max_hearing_distance();
-	if (abs(u.ux - px) <= max_hear_dist && abs(u.uy - py) <= max_hear_dist)
-		update_hearing_array_and_ambient_sounds();
+    int max_hear_dist = get_max_hearing_distance();
+    if (abs(u.ux - px) <= max_hear_dist && abs(u.uy - py) <= max_hear_dist)
+        update_hearing_array_and_ambient_sounds();
 }
 
 void
 unblock_vision_and_hearing_at_point(x, y)
 int x, y;
 {
-	unblock_point(x, y);
-	update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(x, y);
+    unblock_point(x, y);
+    update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(x, y);
 }
 
 void
 block_vision_and_hearing_at_point(x, y)
 int x, y;
 {
-	block_point(x, y);
-	update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(x, y);
+    block_point(x, y);
+    update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(x, y);
 }
 
 

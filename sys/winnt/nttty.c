@@ -1,13 +1,13 @@
-/* GnollHack 4.0	nttty.c	$NHDT-Date: 1554215932 2019/04/02 14:38:52 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.99 $ */
+/* GnollHack 4.0    nttty.c    $NHDT-Date: 1554215932 2019/04/02 14:38:52 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.99 $ */
 /* Copyright (c) GnollHack PC Development Team 1993    */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 /* tty.c - (Windows NT) version */
 
 /*
- * Initial Creation 				M. Allison	1993/01/31
- * Switch to low level console output routines	M. Allison	2003/10/01
- * Restrict cursor movement until input pending	M. Lehotay	2003/10/02
+ * Initial Creation                 M. Allison    1993/01/31
+ * Switch to low level console output routines    M. Allison    2003/10/01
+ * Restrict cursor movement until input pending    M. Lehotay    2003/10/02
  * Call Unicode version of output API on NT     R. Chason   2005/10/28
  * Use of back buffer to improve performance    B. House    2018/05/06
  *
@@ -376,7 +376,7 @@ CtrlHandler(ctrltype)
 DWORD ctrltype;
 {
     switch (ctrltype) {
-    /*	case CTRL_C_EVENT: */
+    /*    case CTRL_C_EVENT: */
     case CTRL_BREAK_EVENT:
         clear_screen();
     case CTRL_CLOSE_EVENT:
@@ -761,24 +761,24 @@ int intervals;
 
 #ifdef TEXTCOLOR
 /*
- * CLR_BLACK		0
- * CLR_RED		1
- * CLR_GREEN		2
- * CLR_BROWN		3	low-intensity yellow
- * CLR_BLUE		4
- * CLR_MAGENTA 		5
- * CLR_CYAN		6
- * CLR_GRAY		7	low-intensity white
- * NO_COLOR		8
- * CLR_ORANGE		9
- * CLR_BRIGHT_GREEN	10
- * CLR_YELLOW		11
- * CLR_BRIGHT_BLUE	12
- * CLR_BRIGHT_MAGENTA  	13
- * CLR_BRIGHT_CYAN	14
- * CLR_WHITE		15
- * CLR_MAX		16
- * BRIGHT		8
+ * CLR_BLACK        0
+ * CLR_RED        1
+ * CLR_GREEN        2
+ * CLR_BROWN        3    low-intensity yellow
+ * CLR_BLUE        4
+ * CLR_MAGENTA         5
+ * CLR_CYAN        6
+ * CLR_GRAY        7    low-intensity white
+ * NO_COLOR        8
+ * CLR_ORANGE        9
+ * CLR_BRIGHT_GREEN    10
+ * CLR_YELLOW        11
+ * CLR_BRIGHT_BLUE    12
+ * CLR_BRIGHT_MAGENTA      13
+ * CLR_BRIGHT_CYAN    14
+ * CLR_WHITE        15
+ * CLR_MAX        16
+ * BRIGHT        8
  */
 
 static void
@@ -1251,8 +1251,8 @@ alternative_palette(op)
 char *op;
 {
     /*
-     *	palette:color-R-G-B
-     *	OPTIONS=palette:green-4-3-1, palette:0-0-0-0
+     *    palette:color-R-G-B
+     *    OPTIONS=palette:green-4-3-1, palette:0-0-0-0
      */
     int fieldcnt, color_number, rgb, red, green, blue;
     char *fields[4], *cp;
@@ -1329,26 +1329,26 @@ char *op;
  *  This uses an undocumented method to set console attributes
  *  at runtime including console palette
  *
- * 	VOID WINAPI SetConsolePalette(COLORREF palette[16])
+ *     VOID WINAPI SetConsolePalette(COLORREF palette[16])
  *
  *  Author: James Brown at www.catch22.net
  *
  *  Set palette of current console.
  *  Palette should be of the form:
  *
- * 	COLORREF DefaultColors[CLR_MAX] =
- * 	{
- *		0x00000000, 0x00800000, 0x00008000, 0x00808000,
- *		0x00000080, 0x00800080, 0x00008080, 0x00c0c0c0,
- *		0x00808080, 0x00ff0000, 0x0000ff00, 0x00ffff00,
- *		0x000000ff, 0x00ff00ff,	0x0000ffff, 0x00ffffff
- *	 };
+ *     COLORREF DefaultColors[CLR_MAX] =
+ *     {
+ *        0x00000000, 0x00800000, 0x00008000, 0x00808000,
+ *        0x00000080, 0x00800080, 0x00008080, 0x00c0c0c0,
+ *        0x00808080, 0x00ff0000, 0x0000ff00, 0x00ffff00,
+ *        0x000000ff, 0x00ff00ff,    0x0000ffff, 0x00ffffff
+ *     };
  */
 
 #pragma pack(push, 1)
 
 /*
- *	Structure to send console via WM_SETCONSOLEINFO
+ *    Structure to send console via WM_SETCONSOLEINFO
  */
 typedef struct _CONSOLE_INFO {
     ULONG Length;
@@ -1459,7 +1459,7 @@ SetConsoleInfo(HWND hwndConsole, CONSOLE_INFO *pci)
     HANDLE hThread;
 
     /*
-     *	Open the process which "owns" the console
+     *    Open the process which "owns" the console
      */
     GetWindowThreadProcessId(hwndConsole, &dwConsoleOwnerPid);
     hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwConsoleOwnerPid);
@@ -1473,7 +1473,7 @@ SetConsoleInfo(HWND hwndConsole, CONSOLE_INFO *pci)
                                  pci->Length, 0);
 
     /*
-     *	Copy our console structure into the section-object
+     *    Copy our console structure into the section-object
      */
     ptrView = MapViewOfFile(hSection, FILE_MAP_WRITE | FILE_MAP_READ, 0, 0,
                             pci->Length);
@@ -1481,7 +1481,7 @@ SetConsoleInfo(HWND hwndConsole, CONSOLE_INFO *pci)
     UnmapViewOfFile(ptrView);
 
     /*
-     *	Map the memory into owner process
+     *    Map the memory into owner process
      */
     DuplicateHandle(GetCurrentProcess(), hSection, hProcess, &hDupSection, 0,
                     FALSE, DUPLICATE_SAME_ACCESS);

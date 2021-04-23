@@ -1,5 +1,5 @@
-/* GnollHack 4.0	mhinput.c	$NHDT-Date: 1432512810 2015/05/25 00:13:30 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/* GnollHack 4.0    mhinput.c    $NHDT-Date: 1432512810 2015/05/25 00:13:30 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
+/* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include <assert.h>

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mkroom.c	$NHDT-Date: 1446887530 2015/11/07 09:12:10 $  $NHDT-Branch: master $:$NHDT-Revision: 1.24 $ */
+/* GnollHack 4.0    mkroom.c    $NHDT-Date: 1446887530 2015/11/07 09:12:10 $  $NHDT-Branch: master $:$NHDT-Revision: 1.24 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -60,22 +60,22 @@ int roomtype;
             return mkzoo(COURT);
             break;
         case ZOO:
-			return mkzoo(ZOO);
+            return mkzoo(ZOO);
             break;
         case BEEHIVE:
-			return mkzoo(BEEHIVE);
+            return mkzoo(BEEHIVE);
             break;
-		case LIBRARY:
-			return mkzoo(LIBRARY);
-			break;
-		case DRAGONLAIR:
-			mkdragonlair();
-			break;
-		case MORGUE:
-			return mkzoo(MORGUE);
+        case LIBRARY:
+            return mkzoo(LIBRARY);
+            break;
+        case DRAGONLAIR:
+            mkdragonlair();
+            break;
+        case MORGUE:
+            return mkzoo(MORGUE);
             break;
         case BARRACKS:
-			return mkzoo(BARRACKS);
+            return mkzoo(BARRACKS);
             break;
         case ARMORY:
             return mkzoo(ARMORY);
@@ -83,11 +83,11 @@ int roomtype;
         case SWAMP:
             return mkswamp();
             break;
-		case GARDEN:
-			return mkgarden();
-			break;
-		case TEMPLE:
-			return mktemple();
+        case GARDEN:
+            return mkgarden();
+            break;
+        case TEMPLE:
+            return mktemple();
             break;
         case SMITHY:
             return mksmithy();
@@ -96,22 +96,22 @@ int roomtype;
             return mknpcroom();
             break;
         case LEPREHALL:
-			return mkzoo(LEPREHALL);
+            return mkzoo(LEPREHALL);
             break;
         case COCKNEST:
-			return mkzoo(COCKNEST);
+            return mkzoo(COCKNEST);
             break;
         case ANTHOLE:
-			return mkzoo(ANTHOLE);
+            return mkzoo(ANTHOLE);
             break;
-		case DESERTEDSHOP:
-			return mkdesertedshop();
-			break;
-		default:
+        case DESERTEDSHOP:
+            return mkdesertedshop();
+            break;
+        default:
             impossible("Tried to make a room of type %d.", roomtype);
-			return 0;
+            return 0;
         }
-	return 0;
+    return 0;
 }
 
 STATIC_OVL int
@@ -130,49 +130,49 @@ mkshop()
                 return mkzoo(ZOO);
             }
             if (*ep == 'm' || *ep == 'M') {
-				return mkzoo(MORGUE);
-			}
+                return mkzoo(MORGUE);
+            }
             if (*ep == 'b' || *ep == 'B') {
-				return mkzoo(BEEHIVE);
-			}
-			if (*ep == 'k' || *ep == 'K') { // Kirjasto is library in Finnish -- JG
-				return mkzoo(LIBRARY);
-			}
-			if (*ep == 'd' || *ep == 'D') {
-				return mkdragonlair();
-				return 1;
-			}
-			if (*ep == 't' || *ep == 'T' || *ep == '\\') {
-				return mkzoo(COURT);
-			}
+                return mkzoo(BEEHIVE);
+            }
+            if (*ep == 'k' || *ep == 'K') { // Kirjasto is library in Finnish -- JG
+                return mkzoo(LIBRARY);
+            }
+            if (*ep == 'd' || *ep == 'D') {
+                return mkdragonlair();
+                return 1;
+            }
+            if (*ep == 't' || *ep == 'T' || *ep == '\\') {
+                return mkzoo(COURT);
+            }
             if (*ep == 's' || *ep == 'S') {
-				return mkzoo(BARRACKS);
-			}
+                return mkzoo(BARRACKS);
+            }
             if (*ep == 'r' || *ep == 'R') {
                 return mkzoo(ARMORY);
             }
             if (*ep == 'a' || *ep == 'A') {
-				return mkzoo(ANTHOLE);
-			}
+                return mkzoo(ANTHOLE);
+            }
             if (*ep == 'c' || *ep == 'C') {
-				return mkzoo(COCKNEST);
-			}
+                return mkzoo(COCKNEST);
+            }
             if (*ep == 'l' || *ep == 'L') {
-				return mkzoo(LEPREHALL);
-			}
+                return mkzoo(LEPREHALL);
+            }
             if (*ep == '_') {
-				return mktemple();
-			}
+                return mktemple();
+            }
             if (*ep == '}') {
-				return mkswamp();
-			}
-			if (*ep == 'g' || *ep == 'G') { // Garden gnomes
-				return mkgarden();
-			}
-			if (*ep == 'p' || *ep == 'P') { // shoP
-				return mkdesertedshop();
-			}
-			for (i = 0; shtypes[i].name; i++)
+                return mkswamp();
+            }
+            if (*ep == 'g' || *ep == 'G') { // Garden gnomes
+                return mkgarden();
+            }
+            if (*ep == 'p' || *ep == 'P') { // shoP
+                return mkdesertedshop();
+            }
+            for (i = 0; shtypes[i].name; i++)
                 if (*ep == def_oc_syms[(int) shtypes[i].symb].sym)
                     goto gottype;
             if (*ep == 'g' || *ep == 'G')
@@ -245,8 +245,8 @@ gottype:
 
     /* stock the room with a shopkeeper and artifacts */
     stock_room(i, sroom, FALSE);
-	context.made_shop_count++;
-	return 1;
+    context.made_shop_count++;
+    return 1;
 }
 
 
@@ -254,53 +254,53 @@ gottype:
 STATIC_OVL int
 mkdesertedshop()
 {
-	register struct mkroom* sroom;
-	int i = -1;
-	char* ep = (char*)0; /* (init == lint suppression) */
+    register struct mkroom* sroom;
+    int i = -1;
+    char* ep = (char*)0; /* (init == lint suppression) */
 
-	for (sroom = &rooms[0];; sroom++) {
-		if (sroom->hx < 0)
-			return 0;
-		if (sroom - rooms >= nroom) {
-			pline("rooms not closed by -1?");
-			return 0;
-		}
-		if (sroom->rtype != OROOM)
-			continue;
-		if (has_dnstairs(sroom) || has_upstairs(sroom))
-			continue;
-		if ((wizard && ep && sroom->doorct != 0) || sroom->doorct == 1)
-			break;
-	}
+    for (sroom = &rooms[0];; sroom++) {
+        if (sroom->hx < 0)
+            return 0;
+        if (sroom - rooms >= nroom) {
+            pline("rooms not closed by -1?");
+            return 0;
+        }
+        if (sroom->rtype != OROOM)
+            continue;
+        if (has_dnstairs(sroom) || has_upstairs(sroom))
+            continue;
+        if ((wizard && ep && sroom->doorct != 0) || sroom->doorct == 1)
+            break;
+    }
 
-	/* Lights are off, scary */
-	if (sroom->rlit) {
-		int x, y;
+    /* Lights are off, scary */
+    if (sroom->rlit) {
+        int x, y;
 
-		for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
-			for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-				levl[x][y].lit = 0;
-		sroom->rlit = 0;
-	}
-			
+        for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+            for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+                levl[x][y].lit = 0;
+        sroom->rlit = 0;
+    }
+            
 
-	if (i < 0) { /* shoptype not yet determined */
-		register int j;
+    if (i < 0) { /* shoptype not yet determined */
+        register int j;
 
-		/* pick a shop type at random */
-		for (j = rnd(100), i = 0; (j -= shtypes[i].prob) > 0; i++)
-			continue;
+        /* pick a shop type at random */
+        for (j = rnd(100), i = 0; (j -= shtypes[i].prob) > 0; i++)
+            continue;
 
-		/* big rooms cannot be wand or book shops,
-			* - so make them general stores
-			*/
-		if (isbig(sroom) && (shtypes[i].symb == WAND_CLASS
-			|| shtypes[i].symb == SPBOOK_CLASS))
-			i = 0;
-	}
+        /* big rooms cannot be wand or book shops,
+            * - so make them general stores
+            */
+        if (isbig(sroom) && (shtypes[i].symb == WAND_CLASS
+            || shtypes[i].symb == SPBOOK_CLASS))
+            i = 0;
+    }
 
-	/* Change temporarily to so mimics look correct */
-	sroom->rtype = SHOPBASE + i;
+    /* Change temporarily to so mimics look correct */
+    sroom->rtype = SHOPBASE + i;
 
     /* Change floor */
     int x, y;
@@ -312,17 +312,17 @@ mkdesertedshop()
             else if (levl[x][y].floortyp == ROOM)
                 levl[x][y].floorsubtyp = get_location_subtype_by_category(ROOM, category);
 
-	/* set room bits before stocking the shop */
-	topologize(sroom);
+    /* set room bits before stocking the shop */
+    topologize(sroom);
 
-	/* stock the room with a shopkeeper and artifacts */
-	stock_room(i, sroom, TRUE);
+    /* stock the room with a shopkeeper and artifacts */
+    stock_room(i, sroom, TRUE);
 
-	context.made_deserted_shop = 1;
+    context.made_deserted_shop = 1;
 
-	/* Change back to get the right message */
-	sroom->rtype = DESERTEDSHOP;
-	return 1;
+    /* Change back to get the right message */
+    sroom->rtype = DESERTEDSHOP;
+    return 1;
 }
 
 /* pick an unused room, preferably with only one door */
@@ -360,9 +360,9 @@ int type;
     if ((sroom = pick_room(FALSE)) != 0) {
         sroom->rtype = type;
         fill_zoo(sroom);
-		return 1;
+        return 1;
     }
-	return 0;
+    return 0;
 }
 
 void
@@ -372,8 +372,8 @@ int x,y;
     int i = rnd(level_difficulty());
     int pm = (i > 12) ? PM_OGRE_KING
         : (i > 6) ? PM_ELVENKING
-		: (i > 4) ? PM_GNOLL_KING
-		: (i > 2) ? PM_DWARF_KING
+        : (i > 4) ? PM_GNOLL_KING
+        : (i > 2) ? PM_DWARF_KING
         : PM_GNOME_KING;
     struct monst *mon = makemon(&mons[pm], x, y, MM_WAITFORU);
 
@@ -395,11 +395,11 @@ struct mkroom *sroom;
     int sh, tx = 0, ty = 0, goldlim = 0, type = sroom->rtype;
     int rmno = (int) ((sroom - rooms) + ROOMOFFSET);
     coord mm;
-	int librarytype = 0;
+    int librarytype = 0;
 
-	register int roll = rn2(4);
-	int hd = level_difficulty();
-	struct permonst* mainlibrarymonst = 0;
+    register int roll = rn2(4);
+    int hd = level_difficulty();
+    struct permonst* mainlibrarymonst = 0;
     boolean special_item_created = FALSE;
     int special_item_chance = 0;
     struct obj* firstbox = 0;;
@@ -443,70 +443,70 @@ struct mkroom *sroom;
     throne_placed:
         mk_zoo_thronemon(tx, ty);
         break;
-	case LIBRARY:
+    case LIBRARY:
         mon_one_in_chance = 2;
-		if (hd <= 9)
-		{
-			if (roll <= 1)
-				librarytype = 0; //Gnomish wizards
-			else
-				librarytype = 1; //Gnoll wardens
-		}
-		else if (hd <= 12)
-		{
-			if (roll == 0)
-				librarytype = 0; //Gnomish wizards
-			else if (roll == 1)
-				librarytype = 1; //Gnoll wardens
-			else
-				librarytype = 2; //Liches
-		}
-		else
-		{
-			if (roll <= 2)
-				librarytype = 2; //Liches
-			else
-				librarytype = 3; //Tentacled ones
-		}
+        if (hd <= 9)
+        {
+            if (roll <= 1)
+                librarytype = 0; //Gnomish wizards
+            else
+                librarytype = 1; //Gnoll wardens
+        }
+        else if (hd <= 12)
+        {
+            if (roll == 0)
+                librarytype = 0; //Gnomish wizards
+            else if (roll == 1)
+                librarytype = 1; //Gnoll wardens
+            else
+                librarytype = 2; //Liches
+        }
+        else
+        {
+            if (roll <= 2)
+                librarytype = 2; //Liches
+            else
+                librarytype = 3; //Tentacled ones
+        }
 
-		if (librarytype == 0) // Gnomes
-		{
-			mainlibrarymonst = &mons[PM_GNOMISH_WIZARD];
-		}
-		else if (librarytype == 1) // Gnolls
-		{
-			mainlibrarymonst = &mons[PM_GNOLL_SUPREME_WARDEN];
-		}
-		else if (librarytype == 2) // Liches
-		{
-			if (Inhell || In_endgame(&u.uz)) {
-				mainlibrarymonst = !rn2(4) ? &mons[PM_ARCH_LICH] : &mons[PM_MASTER_LICH];
-			}
-			else
-			{
-				if (hd >= 25)
-					mainlibrarymonst = &mons[PM_MASTER_LICH];
-				if (hd >= 13)
-					mainlibrarymonst = &mons[PM_DEMILICH];
-				else
-					mainlibrarymonst = &mons[PM_LICH];
-			}
-		}
-		else if (librarytype == 3) // Tentacled ones
-		{
-			if ((hd >= 25 || Inhell || In_endgame(&u.uz)) && !rn2(3)) {
-				mainlibrarymonst = &mons[PM_ELDER_TENTACLED_ONE];
-			}
-			else
-				mainlibrarymonst = &mons[PM_TENTACLED_ONE];
-		}
-		else
-			mainlibrarymonst = &mons[PM_GNOMISH_WIZARD];
-		//Note in library we place only a monster in one in every 2 squares
+        if (librarytype == 0) // Gnomes
+        {
+            mainlibrarymonst = &mons[PM_GNOMISH_WIZARD];
+        }
+        else if (librarytype == 1) // Gnolls
+        {
+            mainlibrarymonst = &mons[PM_GNOLL_SUPREME_WARDEN];
+        }
+        else if (librarytype == 2) // Liches
+        {
+            if (Inhell || In_endgame(&u.uz)) {
+                mainlibrarymonst = !rn2(4) ? &mons[PM_ARCH_LICH] : &mons[PM_MASTER_LICH];
+            }
+            else
+            {
+                if (hd >= 25)
+                    mainlibrarymonst = &mons[PM_MASTER_LICH];
+                if (hd >= 13)
+                    mainlibrarymonst = &mons[PM_DEMILICH];
+                else
+                    mainlibrarymonst = &mons[PM_LICH];
+            }
+        }
+        else if (librarytype == 3) // Tentacled ones
+        {
+            if ((hd >= 25 || Inhell || In_endgame(&u.uz)) && !rn2(3)) {
+                mainlibrarymonst = &mons[PM_ELDER_TENTACLED_ONE];
+            }
+            else
+                mainlibrarymonst = &mons[PM_TENTACLED_ONE];
+        }
+        else
+            mainlibrarymonst = &mons[PM_GNOMISH_WIZARD];
+        //Note in library we place only a monster in one in every 2 squares
 
-		/* FALLTHRU: Here we place the mainlibrarymonst */
-	case COCKNEST:
-	case BEEHIVE:
+        /* FALLTHRU: Here we place the mainlibrarymonst */
+    case COCKNEST:
+    case BEEHIVE:
         tx = sroom->lx + (sroom->hx - sroom->lx + 1) / 2;
         ty = sroom->ly + (sroom->hy - sroom->ly + 1) / 2;
         if (sroom->irregular) {
@@ -518,7 +518,7 @@ struct mkroom *sroom;
             }
         }
         break;
-	case ZOO:
+    case ZOO:
     case LEPREHALL:
         goldlim = 500 * level_difficulty();
         break;
@@ -560,13 +560,13 @@ struct mkroom *sroom;
             if (type == COURT && IS_THRONE(levl[sx][sy].typ))
                 continue;
 
-			if (mon_one_in_chance > 1 && rn2(mon_one_in_chance))
-			{
-				mon = (struct monst*) 0; //No monster
-			}
-			else
-			{
-				mon = makemon((type == COURT)
+            if (mon_one_in_chance > 1 && rn2(mon_one_in_chance))
+            {
+                mon = (struct monst*) 0; //No monster
+            }
+            else
+            {
+                mon = makemon((type == COURT)
                            ? courtmon()
                            : (type == BARRACKS)
                               ? squadmon()
@@ -575,9 +575,9 @@ struct mkroom *sroom;
                               : (type == MORGUE)
                                  ? morguemon()
                               : (type == LIBRARY)
-								? (sx == tx && sy == ty
-									? mainlibrarymonst
-									: librarymon(librarytype))
+                                ? (sx == tx && sy == ty
+                                    ? mainlibrarymonst
+                                    : librarymon(librarytype))
                                  : (type == BEEHIVE)
                                      ? (sx == tx && sy == ty
                                          ? &mons[PM_QUEEN_BEE]
@@ -585,20 +585,20 @@ struct mkroom *sroom;
                                      : (type == LEPREHALL)
                                          ? &mons[PM_LEPRECHAUN]
                                          : (type == COCKNEST)
-											? (sx == tx && sy == ty
-												? (hd >= 24 ? &mons[PM_GARGANTUAN_COCKATRICE] : &mons[PM_GIANT_COCKATRICE])
-												: (hd >= 24 && !rn2(4) ? &mons[PM_GIANT_COCKATRICE] : &mons[PM_COCKATRICE]))
+                                            ? (sx == tx && sy == ty
+                                                ? (hd >= 24 ? &mons[PM_GARGANTUAN_COCKATRICE] : &mons[PM_GIANT_COCKATRICE])
+                                                : (hd >= 24 && !rn2(4) ? &mons[PM_GIANT_COCKATRICE] : &mons[PM_COCKATRICE]))
                                              : (type == ANTHOLE)
                                                  ? antholemon()
                                                  : (struct permonst *) 0,
                           sx, sy, MM_WAITFORU);
-			}
+            }
 
-			if (mon)
-			{
+            if (mon)
+            {
                 //mon->msleeping = 1;
                 if (type == COURT && is_peaceful(mon))
-				{
+                {
                     mon->mpeaceful = 0;
                     set_malign(mon);
                 }
@@ -710,13 +710,13 @@ struct mkroom *sroom;
                     (void) mksobj_at(LUMP_OF_ROYAL_JELLY, sx, sy, TRUE,
                                      FALSE);
                 break;
-			case LIBRARY:
-				if (!rn2(4)) //Bookshelves are fuller at higher difficulty
-					(void)mksobj_at(BOOKSHELF, sx, sy, TRUE, FALSE);
-				else if(!rn2(level_difficulty() >= 12 ? 3 : 4))
-					(void)mkobj_at(!rn2(4) ? SPBOOK_CLASS : SCROLL_CLASS, sx, sy, FALSE);
-				break;
-			case BARRACKS:
+            case LIBRARY:
+                if (!rn2(4)) //Bookshelves are fuller at higher difficulty
+                    (void)mksobj_at(BOOKSHELF, sx, sy, TRUE, FALSE);
+                else if(!rn2(level_difficulty() >= 12 ? 3 : 4))
+                    (void)mkobj_at(!rn2(4) ? SPBOOK_CLASS : SCROLL_CLASS, sx, sy, FALSE);
+                break;
+            case BARRACKS:
                 if (!rn2(20)) /* the payroll and some loot */
                     (void) mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
                                      TRUE, FALSE);
@@ -892,10 +892,10 @@ struct mkroom *sroom;
     case BEEHIVE:
         level.flags.has_beehive = 1;
         break;
-	case LIBRARY:
-		level.flags.has_library = 1;
-		break;
-	}
+    case LIBRARY:
+        level.flags.has_library = 1;
+        break;
+    }
 
 }
 
@@ -935,24 +935,24 @@ morguemon()
 {
     register int i = rn2(100), hd = rn2(level_difficulty());
 
-	if (hd > 15 && i < 3)
-		return &mons[PM_KING_WRAITH];
-	else if (hd > 10 && i < 10) 
-	{
+    if (hd > 15 && i < 3)
+        return &mons[PM_KING_WRAITH];
+    else if (hd > 10 && i < 10) 
+    {
         if (Inhell || In_endgame(&u.uz)) {
             return mkclass(S_DEMON, 0);
         } 
-		else 
-		{
-			if(!rn2(2))
-				return &mons[PM_SPECTRE];
-			else
-			{
-				int ndemon_res = ndemon(A_NONE);
-				if (ndemon_res != NON_PM)
-					return &mons[ndemon_res];
-				/* else do what? As is, it will drop to ghost/wraith/zombie */
-			}
+        else 
+        {
+            if(!rn2(2))
+                return &mons[PM_SPECTRE];
+            else
+            {
+                int ndemon_res = ndemon(A_NONE);
+                if (ndemon_res != NON_PM)
+                    return &mons[ndemon_res];
+                /* else do what? As is, it will drop to ghost/wraith/zombie */
+            }
         }
     }
 
@@ -962,7 +962,7 @@ morguemon()
     return ((i < 20) ? &mons[PM_GHOST]
                      : (i < 30) ? &mons[PM_WRAITH]
                      : (i < 55) ? mkclass(S_GREATER_UNDEAD, 0)
-						: mkclass(S_LESSER_UNDEAD, 0));
+                        : mkclass(S_LESSER_UNDEAD, 0));
 }
 
 
@@ -970,50 +970,50 @@ STATIC_OVL struct permonst*
 librarymon(type)
 int type;
 {
-	int hd = level_difficulty();
-	register int i = rn2(100);
+    int hd = level_difficulty();
+    register int i = rn2(100);
 
-	if(type == 0) // Gnomes
-	{
-		return &mons[PM_GNOMISH_WIZARD];
-	}
-	else if (type == 1) // Gnolls
-	{
-		return &mons[PM_GNOLL_WARDEN];
-	}
-	else if (type == 2) // Liches
-	{
-		if (i <= 5) // Another main 
-		{
-			if ((Inhell || In_endgame(&u.uz)) && !rn2(4))
-				return &mons[PM_MASTER_LICH];
-			else if((hd >= 13 || Inhell || In_endgame(&u.uz)))
-				return &mons[PM_DEMILICH];
-			else
-				return &mons[PM_LICH];
-		}
-		else if(i <= (hd >= 17 ? 40 : hd >= 13 ? 30 : 20))
-		{
-			if (Inhell || In_endgame(&u.uz))
-				return (!rn2(2) ? &mons[PM_DEMILICH] : &mons[PM_LICH]);
-			else
-				return &mons[PM_LICH];
-		}
-		else if (i <= 65)
-			return &mons[PM_QUASIT];
-		else if (i <= 100)
-			return &mons[PM_IMP];
-	}
-	else if (type == 3) // Tentacled ones
-	{
-		if ((Inhell || In_endgame(&u.uz)) && !rn2(4)) {
-			return &mons[PM_ELDER_TENTACLED_ONE];
-		}
-		else
-			return &mons[PM_TENTACLED_ONE];
-	}
+    if(type == 0) // Gnomes
+    {
+        return &mons[PM_GNOMISH_WIZARD];
+    }
+    else if (type == 1) // Gnolls
+    {
+        return &mons[PM_GNOLL_WARDEN];
+    }
+    else if (type == 2) // Liches
+    {
+        if (i <= 5) // Another main 
+        {
+            if ((Inhell || In_endgame(&u.uz)) && !rn2(4))
+                return &mons[PM_MASTER_LICH];
+            else if((hd >= 13 || Inhell || In_endgame(&u.uz)))
+                return &mons[PM_DEMILICH];
+            else
+                return &mons[PM_LICH];
+        }
+        else if(i <= (hd >= 17 ? 40 : hd >= 13 ? 30 : 20))
+        {
+            if (Inhell || In_endgame(&u.uz))
+                return (!rn2(2) ? &mons[PM_DEMILICH] : &mons[PM_LICH]);
+            else
+                return &mons[PM_LICH];
+        }
+        else if (i <= 65)
+            return &mons[PM_QUASIT];
+        else if (i <= 100)
+            return &mons[PM_IMP];
+    }
+    else if (type == 3) // Tentacled ones
+    {
+        if ((Inhell || In_endgame(&u.uz)) && !rn2(4)) {
+            return &mons[PM_ELDER_TENTACLED_ONE];
+        }
+        else
+            return &mons[PM_TENTACLED_ONE];
+    }
 
-	return (struct permonst*) 0;
+    return (struct permonst*) 0;
 }
 
 
@@ -1027,9 +1027,9 @@ antholemon()
     indx += level_difficulty();
     /* Same monsters within a level, different ones between levels */
     do 
-	{
+    {
         switch ((indx + trycnt) % 3) 
-		{
+        {
         case 0:
             mtyp = PM_SOLDIER_ANT;
             break;
@@ -1052,7 +1052,7 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
 {
     register struct mkroom *sroom;
     register int sx, sy, i, eelct = 0;
-	int swampnumber = 0;
+    int swampnumber = 0;
 
     for (i = 0; i < 5; i++) { /* turn up to 5 rooms swampy */
         sroom = &rooms[rn2(nroom)];
@@ -1116,205 +1116,205 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
 
 
         level.flags.has_swamp = 1;
-		swampnumber++;
+        swampnumber++;
     }
-	return swampnumber;
+    return swampnumber;
 }
 
 
 STATIC_OVL int
 mkgarden() 
 {
-	register struct mkroom* sroom = (struct mkroom*)0;
-	register int sx, sy, i;
+    register struct mkroom* sroom = (struct mkroom*)0;
+    register int sx, sy, i;
 
-	for (i = 0; i < nroom; i++) { /* turn up to 1 rooms gardenlike */
-		sroom = &rooms[rn2(nroom)];
-		if (sroom->hx < 0 || sroom->rtype != OROOM || has_upstairs(sroom)
-			|| has_dnstairs(sroom))
-			continue;
-		else
-			break;
-	}
+    for (i = 0; i < nroom; i++) { /* turn up to 1 rooms gardenlike */
+        sroom = &rooms[rn2(nroom)];
+        if (sroom->hx < 0 || sroom->rtype != OROOM || has_upstairs(sroom)
+            || has_dnstairs(sroom))
+            continue;
+        else
+            break;
+    }
 
-	if (!sroom)
-		return 0;
+    if (!sroom)
+        return 0;
 
-	/* satisfied; make a garden */
-	sroom->rtype = GARDEN;
-	for (sx = sroom->lx; sx <= sroom->hx; sx++)
-	{
-		for (sy = sroom->ly; sy <= sroom->hy; sy++)
-		{
-			if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy)
-				&& !nexttodoor(sx, sy) && !nexttotree(sx, sy) && !rn2(3))
-			{
-				levl[sx][sy].typ = TREE;
+    /* satisfied; make a garden */
+    sroom->rtype = GARDEN;
+    for (sx = sroom->lx; sx <= sroom->hx; sx++)
+    {
+        for (sy = sroom->ly; sy <= sroom->hy; sy++)
+        {
+            if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy)
+                && !nexttodoor(sx, sy) && !nexttotree(sx, sy) && !rn2(3))
+            {
+                levl[sx][sy].typ = TREE;
                 levl[sx][sy].floortyp = GRASS;
                 levl[sx][sy].floorsubtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
             }
-			else
-			{
-				levl[sx][sy].typ = GRASS;
+            else
+            {
+                levl[sx][sy].typ = GRASS;
                 levl[sx][sy].subtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
                 /* Buried items */
-				if (!rn2(5))
-				{
-					int itemtype = MANDRAKE_ROOT;
-					int quan = 1;
+                if (!rn2(5))
+                {
+                    int itemtype = MANDRAKE_ROOT;
+                    int quan = 1;
 
-					switch (rn2(3))
-					{
-					case 0:
-						itemtype = MANDRAKE_ROOT;
-						quan = 1 + !rn2(5) ? 1 : 0;
-						break;
-					case 1:
-						itemtype = GINSENG_ROOT;
-						quan = 1 + !rn2(3) ? 1 : 0 + !rn2(5) ? 1 : 0;
-						break;
-					case 2:
-						itemtype = CARROT;
-						quan = rnd(3);
-						break;
-					default:
-						break;
-					}
-					struct obj* otmp = mksobj(itemtype, TRUE, FALSE, FALSE);
-					if (otmp)
-					{
-						otmp->quan = quan;
-						otmp->owt = weight(otmp);
-						otmp->ox = sx;
-						otmp->oy = sy;
-						add_to_buried(otmp);
-					}
-				}
+                    switch (rn2(3))
+                    {
+                    case 0:
+                        itemtype = MANDRAKE_ROOT;
+                        quan = 1 + !rn2(5) ? 1 : 0;
+                        break;
+                    case 1:
+                        itemtype = GINSENG_ROOT;
+                        quan = 1 + !rn2(3) ? 1 : 0 + !rn2(5) ? 1 : 0;
+                        break;
+                    case 2:
+                        itemtype = CARROT;
+                        quan = rnd(3);
+                        break;
+                    default:
+                        break;
+                    }
+                    struct obj* otmp = mksobj(itemtype, TRUE, FALSE, FALSE);
+                    if (otmp)
+                    {
+                        otmp->quan = quan;
+                        otmp->owt = weight(otmp);
+                        otmp->ox = sx;
+                        otmp->oy = sy;
+                        add_to_buried(otmp);
+                    }
+                }
 
-				/* Non-buried items */
-				if (!rn2(4))
-				{
-					int itemtype = SPRIG_OF_WOLFSBANE;
-					int quan = 1;
+                /* Non-buried items */
+                if (!rn2(4))
+                {
+                    int itemtype = SPRIG_OF_WOLFSBANE;
+                    int quan = 1;
 
-					switch (rn2(26))
-					{
-					case 0:
-						itemtype = CLOVE_OF_GARLIC;
-						quan = rnd(2);
-						break;
-					case 1:
-						itemtype = SPRIG_OF_WOLFSBANE;
-						quan = rnd(3);
-						break;
-					case 2:
-						itemtype = rn2(3) ? CHAMPIGNON : HANDFUL_OF_SPINACH_LEAVES;
-						quan = 1;
-						break;
-					case 3:
-						itemtype = rn2(4) ? PENNY_BUN : AVOCADO;
-						quan = 1;
-						break;
-					case 4:
-						itemtype = APPLE;
-						quan = rnd(5);
-						break;
-					case 5:
-						itemtype = PEAR;
-						quan = rnd(5);
-						break;
-					case 6:
-						itemtype = MELON;
-						quan = rnd(2);
-						break;
-					case 7:
-						itemtype = CHAMPIGNON;
-						quan = rnd(2);
-						break;
-					case 8:
-						itemtype = PENNY_BUN;
-						quan = rnd(2);
-						break;
-					case 9:
-						itemtype = CHANTERELLE;
-						quan = rnd(2);
-						break;
-					case 10:
-						itemtype = DEATH_CAP;
-						quan = rnd(2);
-						break;
-					case 11:
-						itemtype = FLY_AGARIC;
-						quan = rnd(2);
-						break;
-					case 12:
-						itemtype = MAGIC_MUSHROOM;
-						quan = rnd(2);
-						break;
-					case 13:
-						itemtype = HEALING_MUSHROOM;
-						quan = rnd(2);
-						break;
-					case 14:
-						itemtype = MANA_MUSHROOM;
-						quan = rnd(2);
-						break;
-					case 15:
-						itemtype = CHANTERELLE;
-						quan = 1;
-						break;
+                    switch (rn2(26))
+                    {
+                    case 0:
+                        itemtype = CLOVE_OF_GARLIC;
+                        quan = rnd(2);
+                        break;
+                    case 1:
+                        itemtype = SPRIG_OF_WOLFSBANE;
+                        quan = rnd(3);
+                        break;
+                    case 2:
+                        itemtype = rn2(3) ? CHAMPIGNON : HANDFUL_OF_SPINACH_LEAVES;
+                        quan = 1;
+                        break;
+                    case 3:
+                        itemtype = rn2(4) ? PENNY_BUN : AVOCADO;
+                        quan = 1;
+                        break;
+                    case 4:
+                        itemtype = APPLE;
+                        quan = rnd(5);
+                        break;
+                    case 5:
+                        itemtype = PEAR;
+                        quan = rnd(5);
+                        break;
+                    case 6:
+                        itemtype = MELON;
+                        quan = rnd(2);
+                        break;
+                    case 7:
+                        itemtype = CHAMPIGNON;
+                        quan = rnd(2);
+                        break;
+                    case 8:
+                        itemtype = PENNY_BUN;
+                        quan = rnd(2);
+                        break;
+                    case 9:
+                        itemtype = CHANTERELLE;
+                        quan = rnd(2);
+                        break;
+                    case 10:
+                        itemtype = DEATH_CAP;
+                        quan = rnd(2);
+                        break;
+                    case 11:
+                        itemtype = FLY_AGARIC;
+                        quan = rnd(2);
+                        break;
+                    case 12:
+                        itemtype = MAGIC_MUSHROOM;
+                        quan = rnd(2);
+                        break;
+                    case 13:
+                        itemtype = HEALING_MUSHROOM;
+                        quan = rnd(2);
+                        break;
+                    case 14:
+                        itemtype = MANA_MUSHROOM;
+                        quan = rnd(2);
+                        break;
+                    case 15:
+                        itemtype = CHANTERELLE;
+                        quan = 1;
+                        break;
                     case 16:
                         itemtype = PANTHER_CAP;
                         quan = 1;
                         break;
                     case 17:
-						itemtype = rn2(4) ? APPLE : BANANA;
-						quan = 1;
-						break;
-					case 18:
-						itemtype = rn2(4) ? PEAR : POMEGRANATE;
-						quan = 1;
-						break;
-					case 19:
-					case 20:
-						itemtype = CLOUDBERRY;
-						quan = rnd(2);
-						break;
-					case 21:
-					case 22:
-						itemtype = FIG;
-						quan = rnd(2);
-						break;
-					case 23:
-					case 24:
-						itemtype = DRAGON_FRUIT;
-						quan = rnd(2);
-						break;
+                        itemtype = rn2(4) ? APPLE : BANANA;
+                        quan = 1;
+                        break;
+                    case 18:
+                        itemtype = rn2(4) ? PEAR : POMEGRANATE;
+                        quan = 1;
+                        break;
+                    case 19:
+                    case 20:
+                        itemtype = CLOUDBERRY;
+                        quan = rnd(2);
+                        break;
+                    case 21:
+                    case 22:
+                        itemtype = FIG;
+                        quan = rnd(2);
+                        break;
+                    case 23:
+                    case 24:
+                        itemtype = DRAGON_FRUIT;
+                        quan = rnd(2);
+                        break;
                     case 25: /* second time */
                         itemtype = HEALING_MUSHROOM;
                         quan = rnd(2);
                         break;
                     default:
-						break;
-					}
-					struct obj* otmp = mksobj_at(itemtype, sx, sy, TRUE, FALSE);
-					if (otmp)
-					{
-						otmp->quan = quan;
-						otmp->owt = weight(otmp);
-					}
-				}
+                        break;
+                    }
+                    struct obj* otmp = mksobj_at(itemtype, sx, sy, TRUE, FALSE);
+                    if (otmp)
+                    {
+                        otmp->quan = quan;
+                        otmp->owt = weight(otmp);
+                    }
+                }
 
-				if (!rn2(8))
-				{
-					// Garden gnome as statue (with a conical hat)
-					maketrap(sx, sy, STATUE_TRAP, !rn2(15) && level_difficulty() > 4 ? PM_GNOME_KING : !rn2(5) && level_difficulty() > 2 ? PM_GNOME_LORD : PM_GNOME, MKTRAPFLAG_GARDEN_GNOME_ITEMS);
-				}
-				else if (!rn2(8))
-				{
-					/* Random ogre at high levels */
-					struct permonst* pm = level_difficulty() >= mons[PM_OGRE_OVERLORD].difficulty ? mkclass(S_OGRE, 0) : (struct permonst*)0;
-					
+                if (!rn2(8))
+                {
+                    // Garden gnome as statue (with a conical hat)
+                    maketrap(sx, sy, STATUE_TRAP, !rn2(15) && level_difficulty() > 4 ? PM_GNOME_KING : !rn2(5) && level_difficulty() > 2 ? PM_GNOME_LORD : PM_GNOME, MKTRAPFLAG_GARDEN_GNOME_ITEMS);
+                }
+                else if (!rn2(8))
+                {
+                    /* Random ogre at high levels */
+                    struct permonst* pm = level_difficulty() >= mons[PM_OGRE_OVERLORD].difficulty ? mkclass(S_OGRE, 0) : (struct permonst*)0;
+                    
                     /* Otherwise, hobgoblins, bugbears or normal ogres + some bosses */
                     (void)makemon(!pm ? (&mons[
                          level_difficulty() >= mons[PM_OGRE_LORD].difficulty && !rn2(4) ? PM_OGRE_LORD :
@@ -1322,150 +1322,150 @@ mkgarden()
                         (level_difficulty() >= mons[PM_BUGBEAR].difficulty && !rn2(4)) || level_difficulty() >= 7 ? PM_BUGBEAR :
                         PM_HOBGOBLIN]) : pm, sx, sy, MM_ASLEEP);
 
-				}
-			}
+                }
+            }
 
-		}
-	}
-	level.flags.has_garden = 1;
-	return 1;
+        }
+    }
+    level.flags.has_garden = 1;
+    return 1;
 }
 
 STATIC_OVL int
 mkdragonlair()
 {
-	register struct mkroom* sroom = (struct mkroom*)0;
-	register int sx, sy, i;
+    register struct mkroom* sroom = (struct mkroom*)0;
+    register int sx, sy, i;
 
-	for (i = 0; i < nroom; i++) { /* turn up to 1 rooms into a dragon lair */
-		sroom = &rooms[rn2(nroom)];
-		if (sroom->hx < 0 || sroom->rtype != OROOM || has_upstairs(sroom)
-			|| has_dnstairs(sroom))
-			continue;
-		else
-			break;
-	}
+    for (i = 0; i < nroom; i++) { /* turn up to 1 rooms into a dragon lair */
+        sroom = &rooms[rn2(nroom)];
+        if (sroom->hx < 0 || sroom->rtype != OROOM || has_upstairs(sroom)
+            || has_dnstairs(sroom))
+            continue;
+        else
+            break;
+    }
 
-	if (!sroom)
-		return 0;
+    if (!sroom)
+        return 0;
 
-	/* satisfied; make a dragon lair */
-	sroom->rtype = DRAGONLAIR;
+    /* satisfied; make a dragon lair */
+    sroom->rtype = DRAGONLAIR;
 
-	coord c = { 0 };
-	int dragons[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	int maxdragons = min(10, max(2, (sroom->hx - sroom->lx + 1) * (sroom->hy - sroom->ly + 1)));
-	int dragonindex = 0;
+    coord c = { 0 };
+    int dragons[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    int maxdragons = min(10, max(2, (sroom->hx - sroom->lx + 1) * (sroom->hy - sroom->ly + 1)));
+    int dragonindex = 0;
 
-	if (!rn2(3))
-	{
-		dragons[0] = PM_ANCIENT_GRAY_DRAGON + rn2(9);
-		dragonindex++;
-	}
-	else
-	{
-		int dragontype = rn2(9);
-		int adults = min(maxdragons, rnd(2));
-		int hatchlings = min(maxdragons - adults, 1 + rnd(4));
-		for (i = 1; i <= adults; i++)
-		{
-			dragons[dragonindex] = PM_GRAY_DRAGON + dragontype;
-			dragonindex++;
-		}
-		for (i = 1; i <= hatchlings; i++)
-		{
-			dragons[dragonindex] = PM_GRAY_DRAGON_HATCHLING + dragontype;
-			dragonindex++;
-		}
-	}
-	for (i = 0; i < dragonindex; i++)
-	{
-		int trycnt = 0;
-		sx = 0;
-		sy = 0;
-		for(trycnt = 0; trycnt < 100; trycnt++)
-		{
-			boolean success = somexy(sroom, &c);
-			if (!success)
-				continue;
+    if (!rn2(3))
+    {
+        dragons[0] = PM_ANCIENT_GRAY_DRAGON + rn2(9);
+        dragonindex++;
+    }
+    else
+    {
+        int dragontype = rn2(9);
+        int adults = min(maxdragons, rnd(2));
+        int hatchlings = min(maxdragons - adults, 1 + rnd(4));
+        for (i = 1; i <= adults; i++)
+        {
+            dragons[dragonindex] = PM_GRAY_DRAGON + dragontype;
+            dragonindex++;
+        }
+        for (i = 1; i <= hatchlings; i++)
+        {
+            dragons[dragonindex] = PM_GRAY_DRAGON_HATCHLING + dragontype;
+            dragonindex++;
+        }
+    }
+    for (i = 0; i < dragonindex; i++)
+    {
+        int trycnt = 0;
+        sx = 0;
+        sy = 0;
+        for(trycnt = 0; trycnt < 100; trycnt++)
+        {
+            boolean success = somexy(sroom, &c);
+            if (!success)
+                continue;
 
-			sx = c.x;
-			sy = c.y;
-			
-			if (trycnt < 50 && !MON_AT(sx, sy) && !t_at(sx, sy))
-				break;
-			else if (!MON_AT(sx, sy))
-				break;
-		}
-		if (trycnt < 100)
-		{
-			if(dragons[i] > 0)
-			{
-				(void)makemon(&mons[dragons[i]], sx, sy, !rn2(2) ? MM_ASLEEP | MM_WAITFORU : MM_WAITFORU);
-			}
+            sx = c.x;
+            sy = c.y;
+            
+            if (trycnt < 50 && !MON_AT(sx, sy) && !t_at(sx, sy))
+                break;
+            else if (!MON_AT(sx, sy))
+                break;
+        }
+        if (trycnt < 100)
+        {
+            if(dragons[i] > 0)
+            {
+                (void)makemon(&mons[dragons[i]], sx, sy, !rn2(2) ? MM_ASLEEP | MM_WAITFORU : MM_WAITFORU);
+            }
 
-			struct obj* otmp = mksobj_at(GOLD_PIECE, sx, sy, FALSE, FALSE);
-			if (otmp)
-			{
-				if(dragons[i] >= PM_GRAY_DRAGON_HATCHLING && dragons[i] <= PM_YELLOW_DRAGON_HATCHLING)
-					otmp->quan = 100 + rn2(201);
-				else if (dragons[i] >= PM_GRAY_DRAGON && dragons[i] <= PM_YELLOW_DRAGON)
-					otmp->quan = 1000 + rn2(2001);
-				else if (dragons[i] >= PM_ANCIENT_GRAY_DRAGON && dragons[i] <= PM_ANCIENT_YELLOW_DRAGON)
-					otmp->quan = 3000 + rn2(4001);
-				otmp->owt = weight(otmp);
-			}
-			if (dragons[i] >= PM_ANCIENT_GRAY_DRAGON && dragons[i] <= PM_ANCIENT_YELLOW_DRAGON)
-			{
-				/* Ancient dragons have 5-10 true gems */
-				int gemcnt = 5 + rn2(6);
-				for (int j = 0; j < gemcnt; j++)
-				{
+            struct obj* otmp = mksobj_at(GOLD_PIECE, sx, sy, FALSE, FALSE);
+            if (otmp)
+            {
+                if(dragons[i] >= PM_GRAY_DRAGON_HATCHLING && dragons[i] <= PM_YELLOW_DRAGON_HATCHLING)
+                    otmp->quan = 100 + rn2(201);
+                else if (dragons[i] >= PM_GRAY_DRAGON && dragons[i] <= PM_YELLOW_DRAGON)
+                    otmp->quan = 1000 + rn2(2001);
+                else if (dragons[i] >= PM_ANCIENT_GRAY_DRAGON && dragons[i] <= PM_ANCIENT_YELLOW_DRAGON)
+                    otmp->quan = 3000 + rn2(4001);
+                otmp->owt = weight(otmp);
+            }
+            if (dragons[i] >= PM_ANCIENT_GRAY_DRAGON && dragons[i] <= PM_ANCIENT_YELLOW_DRAGON)
+            {
+                /* Ancient dragons have 5-10 true gems */
+                int gemcnt = 5 + rn2(6);
+                for (int j = 0; j < gemcnt; j++)
+                {
                     (void)mksobj_at(randomtruegem(), sx, sy, FALSE, FALSE);
-				}
+                }
 
-				/* Ancient dragons have 1-6 other items */
-				int itemcnt = rnd(6);
-				for (int j = 0; j < itemcnt; j++)
-				{
+                /* Ancient dragons have 1-6 other items */
+                int itemcnt = rnd(6);
+                for (int j = 0; j < itemcnt; j++)
+                {
                     (void)mkobj_at(0, sx, sy, FALSE);
-				}
+                }
 
-			}
-			else if (dragons[i] >= PM_GRAY_DRAGON && dragons[i] <= PM_YELLOW_DRAGON)
-			{
-				/* Adult dragons have 0-5 gems */
-				int gemcnt = rn2(6);
-				for (int j = 0; j < gemcnt; j++)
-				{
+            }
+            else if (dragons[i] >= PM_GRAY_DRAGON && dragons[i] <= PM_YELLOW_DRAGON)
+            {
+                /* Adult dragons have 0-5 gems */
+                int gemcnt = rn2(6);
+                for (int j = 0; j < gemcnt; j++)
+                {
                     (void)mkobj_at(GEM_CLASS, sx, sy, FALSE);
-				}
+                }
 
-				/* Adult dragons have 0-3 other items */
-				int itemcnt = rn2(4);
-				for (int j = 0; j < itemcnt; j++)
-				{
+                /* Adult dragons have 0-3 other items */
+                int itemcnt = rn2(4);
+                for (int j = 0; j < itemcnt; j++)
+                {
                     (void)mkobj_at(0, sx, sy, FALSE);
-				}
-			}
-			else if (dragons[i] >= PM_GRAY_DRAGON_HATCHLING && dragons[i] <= PM_YELLOW_DRAGON_HATCHLING)
-			{
-				/* Hatchlings dragons have 0-2 gems */
-				int gemcnt = rn2(3);
-				for (int j = 0; j < gemcnt; j++)
-				{
+                }
+            }
+            else if (dragons[i] >= PM_GRAY_DRAGON_HATCHLING && dragons[i] <= PM_YELLOW_DRAGON_HATCHLING)
+            {
+                /* Hatchlings dragons have 0-2 gems */
+                int gemcnt = rn2(3);
+                for (int j = 0; j < gemcnt; j++)
+                {
                     (void)mkobj_at(GEM_CLASS, sx, sy, FALSE);
-				}
+                }
 
-				/* Adult dragons have 0-1 other items */
-				int itemcnt = rn2(2);
-				for (int j = 0; j < itemcnt; j++)
-				{
+                /* Adult dragons have 0-1 other items */
+                int itemcnt = rn2(2);
+                for (int j = 0; j < itemcnt; j++)
+                {
                     (void)mkobj_at(0, sx, sy, FALSE);
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
 
     int roomsize = (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly);
@@ -1475,33 +1475,33 @@ mkdragonlair()
     int itemoneinchance = max(4, roomsize / 3);
 
     for (sx = sroom->lx; sx <= sroom->hx; sx++)
-	{
-		for (sy = sroom->ly; sy <= sroom->hy; sy++)
-		{
-			if(rn2(6))
-			{
-				struct obj* otmp = mksobj_at(GOLD_PIECE, sx, sy, TRUE, FALSE);
-				if (otmp)
-				{
-					otmp->quan = 1 + rn2(2 * goldpersquare);
-					otmp->owt = weight(otmp);
-				}
-			}
+    {
+        for (sy = sroom->ly; sy <= sroom->hy; sy++)
+        {
+            if(rn2(6))
+            {
+                struct obj* otmp = mksobj_at(GOLD_PIECE, sx, sy, TRUE, FALSE);
+                if (otmp)
+                {
+                    otmp->quan = 1 + rn2(2 * goldpersquare);
+                    otmp->owt = weight(otmp);
+                }
+            }
 
-			if(!rn2(gemoneinchance))
-			{
+            if(!rn2(gemoneinchance))
+            {
                 (void)mkobj_at(GEM_CLASS, sx, sy, FALSE);
-			}
+            }
 
-			if (!rn2(itemoneinchance))
-			{
+            if (!rn2(itemoneinchance))
+            {
                 (void)mkobj_at(RANDOM_CLASS, sx, sy, FALSE);
-			}
-		}
-	}
+            }
+        }
+    }
 
-	level.flags.has_dragonlair = 1;
-	return 1;
+    level.flags.has_dragonlair = 1;
+    return 1;
 }
 
 STATIC_OVL coord *
@@ -1590,7 +1590,7 @@ mktemple()
     lev->altarmask |= AM_SHRINE;
     level.flags.has_temple = 1;
     context.made_temple_count++;
-	return 1;
+    return 1;
 }
 
 STATIC_OVL int
@@ -1749,18 +1749,18 @@ boolean
 nexttotree(sx, sy)
 register int sx, sy;
 {
-	register int dx, dy;
-	register struct rm* lev;
+    register int dx, dy;
+    register struct rm* lev;
 
-	for (dx = -1; dx <= 1; dx++)
-		for (dy = -1; dy <= 1; dy++) {
-			if (!isok(sx + dx, sy + dy))
-				continue;
-			lev = &levl[sx + dx][sy + dy];
-			if (lev->typ == TREE)
-				return TRUE;
-		}
-	return FALSE;
+    for (dx = -1; dx <= 1; dx++)
+        for (dy = -1; dy <= 1; dy++) {
+            if (!isok(sx + dx, sy + dy))
+                continue;
+            lev = &levl[sx + dx][sy + dy];
+            if (lev->typ == TREE)
+                return TRUE;
+        }
+    return FALSE;
 }
 
 boolean
@@ -1811,11 +1811,11 @@ xchar x, y;
 struct mkroom* which_room(x, y)
 xchar x, y;
 {
-	struct mkroom* sroom = (struct mkroom*)0;
+    struct mkroom* sroom = (struct mkroom*)0;
     struct mkroom* irregular_room = (struct mkroom*)0;
 
-	for (int i = 0; i < nroom; i++) { /* turn up to 1 rooms gardenlike */
-		sroom = &rooms[i];
+    for (int i = 0; i < nroom; i++) { /* turn up to 1 rooms gardenlike */
+        sroom = &rooms[i];
         if (inside_room(sroom, x, y))
         {
             if (sroom->irregular)
@@ -1834,7 +1834,7 @@ xchar x, y;
             }
         }
     }
-	return irregular_room;
+    return irregular_room;
 }
 
 struct mkroom* which_room_by_list(room_list_ptr, list_length, x, y)

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	permonst.h	$NHDT-Date: 1539804913 2018/10/17 19:35:13 $  $NHDT-Branch: keni-makedefsm $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 4.0    permonst.h    $NHDT-Date: 1539804913 2018/10/17 19:35:13 $  $NHDT-Branch: keni-makedefsm $:$NHDT-Revision: 1.12 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Kenneth Lorber, Kensington, Maryland, 2015. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -10,22 +10,22 @@
 #include "general.h"
 #include "soundset.h"
 
-/*	This structure covers all attack forms.
- *	aatyp is the gross attack type (eg. claw, bite, breath, ...)
- *	adtyp is the damage type (eg. physical, fire, cold, spell, ...)
- *	damn is the number of hit dice of damage from the attack.
- *	damd is the number of sides on each die.
+/*    This structure covers all attack forms.
+ *    aatyp is the gross attack type (eg. claw, bite, breath, ...)
+ *    adtyp is the damage type (eg. physical, fire, cold, spell, ...)
+ *    damn is the number of hit dice of damage from the attack.
+ *    damd is the number of sides on each die.
  *
- *	Some attacks can do no points of damage.  Additionally, some can
- *	have special effects *and* do damage as well.  If damn and damd
- *	are set, they may have a special meaning.  For example, if set
- *	for a blinding attack, they determine the amount of time blinded.
+ *    Some attacks can do no points of damage.  Additionally, some can
+ *    have special effects *and* do damage as well.  If damn and damd
+ *    are set, they may have a special meaning.  For example, if set
+ *    for a blinding attack, they determine the amount of time blinded.
  */
 
 struct attack {
     uchar aatyp, adtyp;
     short damn, damd, damp;
-	short mcadj; /* MC and saving throw adjustment*/
+    short mcadj; /* MC and saving throw adjustment*/
     short mlevel; /* level at which the attack is used */
     unsigned long aflags; /* any relevant attack flags */
     uchar action_tile; /* Action tile used for the attack */
@@ -39,7 +39,7 @@ struct action_info
     short swallow;
 };
 
-/*	Weight of some bodies
+/*    Weight of some bodies
  */
 
 #define WT_HUMAN 1450
@@ -64,8 +64,8 @@ struct permonst {
     schar mlevel,               /* base monster level */
         mmove,                  /* move speed */
         ac,                     /* (base) armor class */
-		mc,                     /* (base) magic cancellation (against magical and supernatural touch attacks) */
-		mr;                     /* (base) magic resistance (against all other magic) */
+        mc,                     /* (base) magic cancellation (against magical and supernatural touch attacks) */
+        mr;                     /* (base) magic resistance (against all other magic) */
     aligntyp maligntyp;         /* basic monster alignment */
     unsigned long geno;         /* creation/geno mask value */
     struct attack mattk[NATTK]; /* attacks matrix */
@@ -73,21 +73,21 @@ struct permonst {
         cnutrit;                /* its nutritional value */
     uchar msound;               /* noise it makes (6 bits) */
     uchar msize;                /* physical size (3 bits) */
-	uchar heads;				/* number of heads */
-	int lightrange;				/* range of emitted light, if any */
+    uchar heads;                /* number of heads */
+    int lightrange;                /* range of emitted light, if any */
     uchar natural_armor_material_type; /* one of the obj_material_types */
-	int str,					/* strength */
-		dex,					/* dexterity */
-		con,					/* constitution */
-		intl,					/* intelligence */
-		wis,					/* wisdom */
-		cha;                    /* charisma */
-	unsigned long mresists;             /* resistances */
+    int str,                    /* strength */
+        dex,                    /* dexterity */
+        con,                    /* constitution */
+        intl,                    /* intelligence */
+        wis,                    /* wisdom */
+        cha;                    /* charisma */
+    unsigned long mresists;             /* resistances */
     unsigned long mresists2;             /* more resistances */
     unsigned long mconveys;             /* conveyed by eating */
     unsigned long mflags1,      /* boolean bitflags */
         mflags2, mflags3, mflags4, mflags5, mflags6, mflags7, mflags8;       /* more boolean bitflags, if added, remember to update NUM_MFLAGS above */
-    int difficulty;		/* toughness (formerly from  makedefs -m) */
+    int difficulty;        /* toughness (formerly from  makedefs -m) */
 #ifdef TEXTCOLOR
     uchar mcolor; /* color to use */
 #endif

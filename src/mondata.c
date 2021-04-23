@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mondata.c	$NHDT-Date: 1550525093 2019/02/18 21:24:53 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.72 $ */
+/* GnollHack 4.0    mondata.c    $NHDT-Date: 1550525093 2019/02/18 21:24:53 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.72 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -12,50 +12,50 @@
  */
 
 struct ability_conversion_table {
-	int prop;
-	unsigned long innate;
+    int prop;
+    unsigned long innate;
     unsigned long innate2;
     unsigned long conveyed;
-	int adtype;
+    int adtype;
 };
 
 
 static NEARDATA struct ability_conversion_table prop2innate[] = {
-	{ FIRE_IMMUNITY, MR_FIRE, MR2_NONE, MC_NONE, AD_FIRE },
-	{ COLD_IMMUNITY, MR_COLD, MR2_NONE, MC_NONE, AD_COLD },
-	{ SLEEP_RESISTANCE, MR_SLEEP, MR2_NONE, MC_SLEEP, AD_SLEE },
-	{ DISINTEGRATION_RESISTANCE, MR_DISINT, MR2_NONE, MC_DISINT, AD_DISN },
-	{ SHOCK_IMMUNITY, MR_ELEC, MR2_NONE, MC_NONE, AD_ELEC },
-	{ POISON_RESISTANCE, MR_POISON, MR2_NONE, MC_POISON, AD_DRST },
-	{ ACID_IMMUNITY, MR_ACID, MR2_NONE, MC_ACID, AD_ACID  },
-	{ STONE_RESISTANCE, MR_STONE, MR2_NONE, MC_STONE, AD_STON  },
-	{ DEATH_RESISTANCE, MR_DEATH, MR2_NONE, MC_DEATH, AD_DETH },
-	{ LYCANTHROPY_RESISTANCE, MR_LYCANTHROPY, MR2_NONE, MC_NONE, AD_WERE },
-	{ MAGIC_MISSILE_IMMUNITY, MR_MAGIC_MISSILE, MR2_NONE, MC_NONE, AD_MAGM },
-	{ STUN_RESISTANCE, MR_STUN, MR2_NONE, MC_NONE, AD_STUN },
-	{ ANTIMAGIC, MR_MAGIC, MR2_NONE, MC_NONE, -1  },
-	{ CHARM_RESISTANCE, MR_CHARM, MR2_NONE, MC_CHARM, AD_SSEX },
-	{ CHARM_RESISTANCE, MR_CHARM, MR2_NONE, MC_CHARM, AD_SEDU }, /* Doubles for AD_SEDU*/
-	{ HALLUC_RES, MR_NONE, MR2_NONE, MC_NONE, AD_HALU },
-	{ FEAR_RESISTANCE, MR_FEAR, MR2_NONE, MC_FEAR, -1 },
-	{ SICK_RESISTANCE, MR_SICK, MR2_NONE, MC_SICK, AD_DISE },
+    { FIRE_IMMUNITY, MR_FIRE, MR2_NONE, MC_NONE, AD_FIRE },
+    { COLD_IMMUNITY, MR_COLD, MR2_NONE, MC_NONE, AD_COLD },
+    { SLEEP_RESISTANCE, MR_SLEEP, MR2_NONE, MC_SLEEP, AD_SLEE },
+    { DISINTEGRATION_RESISTANCE, MR_DISINT, MR2_NONE, MC_DISINT, AD_DISN },
+    { SHOCK_IMMUNITY, MR_ELEC, MR2_NONE, MC_NONE, AD_ELEC },
+    { POISON_RESISTANCE, MR_POISON, MR2_NONE, MC_POISON, AD_DRST },
+    { ACID_IMMUNITY, MR_ACID, MR2_NONE, MC_ACID, AD_ACID  },
+    { STONE_RESISTANCE, MR_STONE, MR2_NONE, MC_STONE, AD_STON  },
+    { DEATH_RESISTANCE, MR_DEATH, MR2_NONE, MC_DEATH, AD_DETH },
+    { LYCANTHROPY_RESISTANCE, MR_LYCANTHROPY, MR2_NONE, MC_NONE, AD_WERE },
+    { MAGIC_MISSILE_IMMUNITY, MR_MAGIC_MISSILE, MR2_NONE, MC_NONE, AD_MAGM },
+    { STUN_RESISTANCE, MR_STUN, MR2_NONE, MC_NONE, AD_STUN },
+    { ANTIMAGIC, MR_MAGIC, MR2_NONE, MC_NONE, -1  },
+    { CHARM_RESISTANCE, MR_CHARM, MR2_NONE, MC_CHARM, AD_SSEX },
+    { CHARM_RESISTANCE, MR_CHARM, MR2_NONE, MC_CHARM, AD_SEDU }, /* Doubles for AD_SEDU*/
+    { HALLUC_RES, MR_NONE, MR2_NONE, MC_NONE, AD_HALU },
+    { FEAR_RESISTANCE, MR_FEAR, MR2_NONE, MC_FEAR, -1 },
+    { SICK_RESISTANCE, MR_SICK, MR2_NONE, MC_SICK, AD_DISE },
     { SICK_RESISTANCE, MR_SICK, MR2_NONE, MC_SICK, AD_ROTS }, /* Doubles for AD_ROTS */
     { DRAIN_RESISTANCE, MR_DRAIN, MR2_NONE, MC_DRAIN, AD_DRLI },
-	{ FLASH_RESISTANCE, MR_FLASH, MR2_NONE, MC_NONE, AD_BLND },
-	{ REFLECTING, MR_REFLECTING, MR2_NONE, MC_NONE, -1 },
-	{ INVISIBILITY, MR_INVISIBLE, MR2_NONE, MC_NONE, -1 },
-	{ SEE_INVISIBLE, MR_SEE_INVISIBLE, MR2_NONE, MC_NONE, -1 },
-	{ REGENERATION, MR_REGENERATION, MR2_NONE, MC_NONE, -1 },
-	{ TELEPORT, MR_TELEPORT, MR2_NONE, MC_TELEPORT, -1 },
-	{ TELEPORT_CONTROL, MR_TELEPORT_CONTROL, MR2_NONE, MC_TELEPORT_CONTROL, -1 },
-	{ BLIND_TELEPATHY, MR_BLIND_TELEPATHY, MR2_NONE, MC_BLIND_TELEPATHY, -1 },
-	{ TELEPAT, MR_TELEPATHY, MR2_NONE, MC_TELEPATHY, -1 },
-	{ FREE_ACTION, MR_FREE_ACTION, MR2_NONE, MC_FREE_ACTION, AD_PLYS },
-	{ LEVITATION_CONTROL, MR_LEVITATION_CONTROL, MR2_NONE, MC_NONE, -1 },
-	{ FIRE_VULNERABILITY, MR_FIRE_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
-	{ COLD_VULNERABILITY, MR_COLD_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
-	{ SHOCK_VULNERABILITY, MR_SHOCK_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
-	{ MAGIC_MISSILE_VULNERABILITY, MR_MAGIC_MISSILE_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
+    { FLASH_RESISTANCE, MR_FLASH, MR2_NONE, MC_NONE, AD_BLND },
+    { REFLECTING, MR_REFLECTING, MR2_NONE, MC_NONE, -1 },
+    { INVISIBILITY, MR_INVISIBLE, MR2_NONE, MC_NONE, -1 },
+    { SEE_INVISIBLE, MR_SEE_INVISIBLE, MR2_NONE, MC_NONE, -1 },
+    { REGENERATION, MR_REGENERATION, MR2_NONE, MC_NONE, -1 },
+    { TELEPORT, MR_TELEPORT, MR2_NONE, MC_TELEPORT, -1 },
+    { TELEPORT_CONTROL, MR_TELEPORT_CONTROL, MR2_NONE, MC_TELEPORT_CONTROL, -1 },
+    { BLIND_TELEPATHY, MR_BLIND_TELEPATHY, MR2_NONE, MC_BLIND_TELEPATHY, -1 },
+    { TELEPAT, MR_TELEPATHY, MR2_NONE, MC_TELEPATHY, -1 },
+    { FREE_ACTION, MR_FREE_ACTION, MR2_NONE, MC_FREE_ACTION, AD_PLYS },
+    { LEVITATION_CONTROL, MR_LEVITATION_CONTROL, MR2_NONE, MC_NONE, -1 },
+    { FIRE_VULNERABILITY, MR_FIRE_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
+    { COLD_VULNERABILITY, MR_COLD_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
+    { SHOCK_VULNERABILITY, MR_SHOCK_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
+    { MAGIC_MISSILE_VULNERABILITY, MR_MAGIC_MISSILE_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
     { FIRE_RESISTANCE, MR_NONE, MR2_FIRE_RESISTANCE, MC_FIRE, -1 },
     { COLD_RESISTANCE, MR_NONE, MR2_COLD_RESISTANCE, MC_COLD, -1 },
     { SHOCK_RESISTANCE, MR_NONE, MR2_SHOCK_RESISTANCE, MC_ELEC, -1 },
@@ -65,87 +65,87 @@ static NEARDATA struct ability_conversion_table prop2innate[] = {
 };
 
 struct mflag_description {
-	unsigned long mflag_bit;
-	const char* singular_adjective;
-	const char* plural_noun;
+    unsigned long mflag_bit;
+    const char* singular_adjective;
+    const char* plural_noun;
 };
 
 static NEARDATA struct mflag_description m1flag_descriptions[] = {
-	{ M1_AMORPHOUS, "amorphous", "amorphous monsters" },
-	{ M1_AMPHIBIOUS, "amphibious", "amphibious monsters" },
-	{ M1_BREATHLESS, "breathless", "breathless monsters" },
-	{ M1_CARNIVORE, "carnivore", "carnivores" },
-	{ M1_CLING, "clinging", "clingers" },
-	{ M1_CONCEAL, "concealing", "concealed monster" },
-	{ M1_FLY, "flying", "flying monsters" },
-	{ M1_FLOATER, "floater", "floating monsters" },
-	{ M1_TELEKINETIC_OPERATOR, "telekinetically operating", "telekinetically operating monsters" },
-	{ M1_HERBIVORE, "herbivore", "herbivores" },
-	{ M1_HIDE, "hiding", "hidden monster" },
-	{ M1_HUMANOID, "humanoid", "humanoids" },
+    { M1_AMORPHOUS, "amorphous", "amorphous monsters" },
+    { M1_AMPHIBIOUS, "amphibious", "amphibious monsters" },
+    { M1_BREATHLESS, "breathless", "breathless monsters" },
+    { M1_CARNIVORE, "carnivore", "carnivores" },
+    { M1_CLING, "clinging", "clingers" },
+    { M1_CONCEAL, "concealing", "concealed monster" },
+    { M1_FLY, "flying", "flying monsters" },
+    { M1_FLOATER, "floater", "floating monsters" },
+    { M1_TELEKINETIC_OPERATOR, "telekinetically operating", "telekinetically operating monsters" },
+    { M1_HERBIVORE, "herbivore", "herbivores" },
+    { M1_HIDE, "hiding", "hidden monster" },
+    { M1_HUMANOID, "humanoid", "humanoids" },
     { M1_ANIMAL, "animal", "animals" },
     { M1_STEED, "steed", "steeds" },
     { M1_METALLIVORE, "metallivore", "metallivores" },
     { M1_RUST_CAUSING_IRONVORE, "rust-causing ironvore", "rust-causing ironvores" },
     { M1_MINDLESS, "mindless", "mindless monsters" },
-	{ M1_NOEYES, "eyeless", "eyeless monsters" },
-	{ M1_NOHANDS, "handless", "handless monsters" },
-	{ M1_NONECK, "neckless", "neckless monsters" },
-	{ M1_NOLIMBS, "limbless", "limbless monsters" },
-	{ M1_OMNIVORE, "omnivore", "omnivores" },
-	{ M1_OVIPAROUS, "oviparious", "oviparious monsters" },
-	{ M1_SLITHY, "slithy", "slithing monsters" },
-	{ M1_SWIM, "swimming", "swimming monsters" },
-	{ M1_THICK_HIDE, "thick hide", "thick-hided monsters" },
-//	{ M1_TUNNEL, "tunneling", "tunneling monsters" },
-	{ M1_UNSOLID, "unsolid", "unsolid monsters" },
-	{ M1_WALLWALK, "passes through walls", "monsters that can pass through walls" },
-	{ 0 , "", "" }
+    { M1_NOEYES, "eyeless", "eyeless monsters" },
+    { M1_NOHANDS, "handless", "handless monsters" },
+    { M1_NONECK, "neckless", "neckless monsters" },
+    { M1_NOLIMBS, "limbless", "limbless monsters" },
+    { M1_OMNIVORE, "omnivore", "omnivores" },
+    { M1_OVIPAROUS, "oviparious", "oviparious monsters" },
+    { M1_SLITHY, "slithy", "slithing monsters" },
+    { M1_SWIM, "swimming", "swimming monsters" },
+    { M1_THICK_HIDE, "thick hide", "thick-hided monsters" },
+//    { M1_TUNNEL, "tunneling", "tunneling monsters" },
+    { M1_UNSOLID, "unsolid", "unsolid monsters" },
+    { M1_WALLWALK, "passes through walls", "monsters that can pass through walls" },
+    { 0 , "", "" }
 };
 
 static NEARDATA struct mflag_description m2flag_descriptions[] = {
-	{ M2_DEMON, "demon", "demons" },
+    { M2_DEMON, "demon", "demons" },
     { M2_ANGEL, "angelic being", "angelic beings" },
     { M2_DWARF, "dwarf", "dwarves" },
-	{ M2_ELF, "elf", "elves" },
-	{ M2_GIANT, "giant", "giants" },
-	{ M2_GNOLL, "gnoll", "gnolls" },
-	{ M2_GNOME, "gnome", "gnomes" },
-	{ M2_HUMAN, "human", "human beings" },
-	{ M2_TENTACLED_ONE, "tentacled one", "tentacled ones" },
-	{ M2_MODRON, "modron", "modrons" },
+    { M2_ELF, "elf", "elves" },
+    { M2_GIANT, "giant", "giants" },
+    { M2_GNOLL, "gnoll", "gnolls" },
+    { M2_GNOME, "gnome", "gnomes" },
+    { M2_HUMAN, "human", "human beings" },
+    { M2_TENTACLED_ONE, "tentacled one", "tentacled ones" },
+    { M2_MODRON, "modron", "modrons" },
     { M2_MIMIC, "mimic", "mimics" },
     { M2_ELEMENTAL, "elemental", "elementals" },
     { M2_COCKATRICE, "cockatrice", "cockatrices" },
     { M2_ORC, "orc", "orcs" },
-	{ M2_SHAPESHIFTER, "shapeshifter", "shapeshifters" },
-	{ M2_UNDEAD, "undead", "undead" },
-	{ M2_WERE, "lycanthrope", "lycanthropes" },
-	{ 0 , "", "" }
+    { M2_SHAPESHIFTER, "shapeshifter", "shapeshifters" },
+    { M2_UNDEAD, "undead", "undead" },
+    { M2_WERE, "lycanthrope", "lycanthropes" },
+    { 0 , "", "" }
 };
 
 static NEARDATA struct mflag_description m3flag_descriptions[] = {
-	{ M3_CONSTRICTOR, "constrictor", "constrictors" },
-	{ M3_INFRAVISION, "infravision", "monsters with infravision" },
-	{ M3_KNIGHT, "knight", "knights" },
-	{ M3_HEALER, "healer", "healers" },
-	{ M3_INCORPOREAL, "incorporeal", "incorporeal monsters" },
-	{ M3_NONLIVING, "nonliving", "nonliving monster" },
-	{ M3_PRIEST, "priest", "priests" },
-	{ M3_REGENERATES_LOST_BODY_PARTS, "regenerates lost body parts", "monsters that regenerate lost body parts" },
-	{ M3_REVIVES_FROM_DEAD, "revives from dead", "monsters that revive from dead" },
-	{ M3_SPEAKING, "speaking", "speaking monsters" },
-	{ 0 , "", "" }
+    { M3_CONSTRICTOR, "constrictor", "constrictors" },
+    { M3_INFRAVISION, "infravision", "monsters with infravision" },
+    { M3_KNIGHT, "knight", "knights" },
+    { M3_HEALER, "healer", "healers" },
+    { M3_INCORPOREAL, "incorporeal", "incorporeal monsters" },
+    { M3_NONLIVING, "nonliving", "nonliving monster" },
+    { M3_PRIEST, "priest", "priests" },
+    { M3_REGENERATES_LOST_BODY_PARTS, "regenerates lost body parts", "monsters that regenerate lost body parts" },
+    { M3_REVIVES_FROM_DEAD, "revives from dead", "monsters that revive from dead" },
+    { M3_SPEAKING, "speaking", "speaking monsters" },
+    { 0 , "", "" }
 };
 
 static NEARDATA struct mflag_description m4flag_descriptions[] = {
-	{ M4_PITWALK, "pitwalking", "pitwalkers" },
-	{ M4_SLURPS_ITEMS, "item-engulfing", "item-engulfing monsters" },
-	{ M4_STONY, "stony", "monsters made of stone" },
-	{ M4_WOODEN, "wooden", "monsters made of wood" },
-	{ M4_FLAMING, "flaming", "flaming monsters" },
-	{ M4_FLAMING, "whirly", "whirly monsters" },
-	{ M4_BAT, "bat", "bats" },
+    { M4_PITWALK, "pitwalking", "pitwalkers" },
+    { M4_SLURPS_ITEMS, "item-engulfing", "item-engulfing monsters" },
+    { M4_STONY, "stony", "monsters made of stone" },
+    { M4_WOODEN, "wooden", "monsters made of wood" },
+    { M4_FLAMING, "flaming", "flaming monsters" },
+    { M4_FLAMING, "whirly", "whirly monsters" },
+    { M4_BAT, "bat", "bats" },
     { M4_BEAR, "bear or bear-like monster", "bears or bear-like monsters" },
     { M4_BIRD, "bird or bird-like monster", "birds or bird-like monsters" },
     { M4_VORPAL_VULNERABILITY, "vorpal vulnerable", "monsters vulnerable to vorpal weapons" },
@@ -183,14 +183,14 @@ unsigned long mflag_bit;
 boolean plural;
 unsigned char mindex;
 {
-	struct mflag_description* mtable = m1flag_descriptions;
+    struct mflag_description* mtable = m1flag_descriptions;
 
-	if (mindex == 2)
-		mtable = m2flag_descriptions;
-	else if (mindex == 3)
-		mtable = m3flag_descriptions;
-	else if (mindex == 4)
-		mtable = m4flag_descriptions;
+    if (mindex == 2)
+        mtable = m2flag_descriptions;
+    else if (mindex == 3)
+        mtable = m3flag_descriptions;
+    else if (mindex == 4)
+        mtable = m4flag_descriptions;
     else if (mindex == 5)
         mtable = m5flag_descriptions;
     else if (mindex == 6)
@@ -200,13 +200,13 @@ unsigned char mindex;
     else if (mindex == 8)
         mtable = m8flag_descriptions;
 
-	for (int i = 0; mtable[i].mflag_bit != 0 ; i++)
-	{
-		if (mtable[i].mflag_bit == mflag_bit)
-			return plural ? mtable[i].plural_noun : mtable[i].singular_adjective;
-	}
+    for (int i = 0; mtable[i].mflag_bit != 0 ; i++)
+    {
+        if (mtable[i].mflag_bit == mflag_bit)
+            return plural ? mtable[i].plural_noun : mtable[i].singular_adjective;
+    }
 
-	return empty_string;
+    return empty_string;
 }
 
 
@@ -214,24 +214,24 @@ unsigned long
 prop_to_conveyed(prop_index)
 int prop_index;
 {
-	for (int i = 0; i < SIZE(prop2innate); i++)
-	{
-		if (prop2innate[i].prop == prop_index)
-			return prop2innate[i].conveyed;
-	}
-	return 0;
+    for (int i = 0; i < SIZE(prop2innate); i++)
+    {
+        if (prop2innate[i].prop == prop_index)
+            return prop2innate[i].conveyed;
+    }
+    return 0;
 }
 
 int
 conveyed_to_prop(conveyed_bit)
 unsigned long conveyed_bit;
 {
-	for (int i = 0; i < SIZE(prop2innate); i++)
-	{
-		if (prop2innate[i].conveyed == conveyed_bit)
-			return prop2innate[i].prop;
-	}
-	return 0;
+    for (int i = 0; i < SIZE(prop2innate); i++)
+    {
+        if (prop2innate[i].conveyed == conveyed_bit)
+            return prop2innate[i].prop;
+    }
+    return 0;
 }
 
 
@@ -240,12 +240,12 @@ unsigned long
 prop_to_innate(prop_index)
 int prop_index;
 {
-	for (int i = 0; i < SIZE(prop2innate); i++)
-	{
-		if (prop2innate[i].prop == prop_index)
-			return prop2innate[i].innate;
-	}
-	return 0;
+    for (int i = 0; i < SIZE(prop2innate); i++)
+    {
+        if (prop2innate[i].prop == prop_index)
+            return prop2innate[i].innate;
+    }
+    return 0;
 }
 
 unsigned long
@@ -265,12 +265,12 @@ int
 innate_to_prop(innate_bit)
 unsigned long innate_bit;
 {
-	for (int i = 0; i < SIZE(prop2innate); i++)
-	{
-		if (prop2innate[i].innate == innate_bit)
-			return prop2innate[i].prop;
-	}
-	return 0;
+    for (int i = 0; i < SIZE(prop2innate); i++)
+    {
+        if (prop2innate[i].innate == innate_bit)
+            return prop2innate[i].prop;
+    }
+    return 0;
 }
 
 int
@@ -296,7 +296,7 @@ struct permonst *ptr;
 
     mon->data = ptr;
     mon->mnum = (short) monsndx(ptr);
-	mon->heads_left = mon->data->heads;
+    mon->heads_left = mon->data->heads;
 
     if (mon->movement) { /* used to adjust poly'd hero as well as monsters */
         new_speed = ptr->mmove;
@@ -395,8 +395,8 @@ struct obj *obj; /* aatyp == AT_WEAP, AT_SPIT */
     case AT_BOOM:
     case AT_GAZE:
     case AT_MAGC:
-	case AT_EYES: /* assumed to be lightning */
-	case AT_BREA: /* assumed to be lightning */
+    case AT_EYES: /* assumed to be lightning */
+    case AT_BREA: /* assumed to be lightning */
         /* light-based attacks may be cancelled or resisted */
         if (magr && is_cancelled(magr))
             return FALSE;
@@ -625,8 +625,8 @@ can_chant(mtmp)
 struct monst *mtmp;
 {
     if ((mtmp == &youmonst && (Strangled || Silenced))
-		|| is_silenced(mtmp) || is_being_strangled(mtmp)
-		|| is_silent(mtmp->data) || (!has_head(mtmp->data) && !is_speaking_monster(mtmp->data))
+        || is_silenced(mtmp) || is_being_strangled(mtmp)
+        || is_silent(mtmp->data) || (!has_head(mtmp->data) && !is_speaking_monster(mtmp->data))
         || mtmp->data->msound == MS_BUZZ || mtmp->data->msound == MS_BURBLE)
         return FALSE;
     return TRUE;
@@ -670,10 +670,10 @@ boolean
 can_track(ptr)
 register struct permonst *ptr;
 {
-	/* All monsters can track Excalibur */
+    /* All monsters can track Excalibur */
     if ((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_MONSTERS_CAN_TRACK_ARTIFACT)) 
-		|| (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_MONSTERS_CAN_TRACK_ARTIFACT))
-		)
+        || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_MONSTERS_CAN_TRACK_ARTIFACT))
+        )
         return TRUE;
     else
         return (boolean) haseyes(ptr);
@@ -810,7 +810,7 @@ register struct monst *mdef, *magr;
                 || (adtyp == AD_COLD && !is_mon_immune_to_cold(magr))
                 || (adtyp == AD_FIRE && !is_mon_immune_to_fire(magr))
                 || (adtyp == AD_ELEC && !is_mon_immune_to_elec(magr))
-				|| adtyp == AD_PHYS) {
+                || adtyp == AD_PHYS) {
                 dmg = max(0, (mdef->data->mattk[i].damn > 0 ? mdef->data->mattk[i].damn : mdef->data->mlevel / 2 + 2) * (mdef->data->mattk[i].damd > 0 ? mdef->data->mattk[i].damd : 6) + mdef->data->mattk[i].damp);
             } else
                 dmg = 0;
@@ -839,9 +839,9 @@ struct permonst *pm1, *pm2;
         return is_dwarf(pm2);
     if (is_gnoll(pm1))
         return is_gnoll(pm2);
-	if (is_gnome(pm1))
-		return is_gnome(pm2);
-	if (is_orc(pm1))
+    if (is_gnome(pm1))
+        return is_gnome(pm2);
+    if (is_orc(pm1))
         return is_orc(pm2);
     /* other creatures are less precise */
     if (is_giant(pm1))
@@ -944,7 +944,7 @@ struct permonst *ptr;
 
     i = (int) (ptr - &mons[0]);
     if (i < LOW_PM || i >= NUM_MONSTERS) 
-	{
+    {
         panic("monsndx - could not index monster (%s)",
               fmt_ptr((genericptr_t) ptr));
         return NON_PM; /* will not get here */
@@ -1020,16 +1020,16 @@ int* fem_ptr;
             /* Alternate spellings */
             { "grey dragon", PM_GRAY_DRAGON, 0 },
             { "grey dragon hatchling", PM_GRAY_DRAGON_HATCHLING, 0 },
-			{ "baby gray dragon", PM_GRAY_DRAGON_HATCHLING, 0 },
-			{ "baby grey dragon", PM_GRAY_DRAGON_HATCHLING, 0 },
-			{ "baby silver dragon", PM_SILVER_DRAGON_HATCHLING, 0 },
-			{ "baby red dragon", PM_RED_DRAGON_HATCHLING, 0 },
-			{ "baby white dragon", PM_WHITE_DRAGON_HATCHLING, 0 },
-			{ "baby black dragon", PM_BLACK_DRAGON_HATCHLING, 0 },
-			{ "baby blue dragon", PM_BLUE_DRAGON_HATCHLING, 0 },
-			{ "baby green dragon", PM_GREEN_DRAGON_HATCHLING, 0 },
-			{ "baby yellow dragon", PM_YELLOW_DRAGON_HATCHLING, 0 },
-			{ "grey unicorn", PM_GRAY_UNICORN, 0 },
+            { "baby gray dragon", PM_GRAY_DRAGON_HATCHLING, 0 },
+            { "baby grey dragon", PM_GRAY_DRAGON_HATCHLING, 0 },
+            { "baby silver dragon", PM_SILVER_DRAGON_HATCHLING, 0 },
+            { "baby red dragon", PM_RED_DRAGON_HATCHLING, 0 },
+            { "baby white dragon", PM_WHITE_DRAGON_HATCHLING, 0 },
+            { "baby black dragon", PM_BLACK_DRAGON_HATCHLING, 0 },
+            { "baby blue dragon", PM_BLUE_DRAGON_HATCHLING, 0 },
+            { "baby green dragon", PM_GREEN_DRAGON_HATCHLING, 0 },
+            { "baby yellow dragon", PM_YELLOW_DRAGON_HATCHLING, 0 },
+            { "grey unicorn", PM_GRAY_UNICORN, 0 },
             { "grey ooze", PM_GRAY_OOZE, 0 },
             { "gray-elf", PM_GREY_ELF, 0 },
             { "mindflayer", PM_TENTACLED_ONE, 0 },
@@ -1068,8 +1068,8 @@ int* fem_ptr;
             { "elf lord", PM_ELF_LORD, 0 },
             { "olog hai", PM_OLOG_HAI, 0 },
             { "arch lich", PM_ARCH_LICH, 0 },
-			{ "archlich", PM_ARCH_LICH, 0 },
-			/* Some irregular plurals */
+            { "archlich", PM_ARCH_LICH, 0 },
+            /* Some irregular plurals */
             { "incubi", PM_INCUBUS, 1 },
             { "succubi", PM_INCUBUS, 2 },
             { "foocubi", PM_INCUBUS, 0 },
@@ -1310,9 +1310,9 @@ struct monst *mtmp;
 
 static const short grownups[][2] = {
     { PM_CHICKATRICE, PM_COCKATRICE },
-	{ PM_COCKATRICE, PM_GIANT_COCKATRICE },
-	{ PM_GIANT_COCKATRICE, PM_GARGANTUAN_COCKATRICE },
-	{ PM_LITTLE_DOG, PM_DOG },
+    { PM_COCKATRICE, PM_GIANT_COCKATRICE },
+    { PM_GIANT_COCKATRICE, PM_GARGANTUAN_COCKATRICE },
+    { PM_LITTLE_DOG, PM_DOG },
     { PM_DOG, PM_LARGE_DOG },
     { PM_DIREWOLF_CUB, PM_DIREWOLF },
     { PM_DIREWOLF, PM_LARGE_DIREWOLF },
@@ -1322,8 +1322,8 @@ static const short grownups[][2] = {
     { PM_HOUSECAT, PM_LARGE_CAT },
     { PM_PONY, PM_HORSE },
     { PM_HORSE, PM_WARHORSE },
-	{ PM_RAM, PM_LARGE_RAM },
-	{ PM_LARGE_RAM, PM_WARRAM },
+    { PM_RAM, PM_LARGE_RAM },
+    { PM_LARGE_RAM, PM_WARRAM },
     { PM_SMALL_LUGGAGE, PM_MEDIUM_LUGGAGE },
     { PM_MEDIUM_LUGGAGE, PM_LARGE_LUGGAGE },
     { PM_LARGE_LUGGAGE, PM_GIANT_LUGGAGE },
@@ -1333,22 +1333,22 @@ static const short grownups[][2] = {
     { PM_GNOME_LORD, PM_GNOME_KING },
     { PM_DWARF, PM_DWARF_LORD },
     { PM_DWARF_LORD, PM_DWARF_KING },
-	{ PM_GNOLL, PM_GNOLL_LORD },
-	{ PM_GNOLL_LORD, PM_GNOLL_KING },
+    { PM_GNOLL, PM_GNOLL_LORD },
+    { PM_GNOLL_LORD, PM_GNOLL_KING },
     { PM_GNOLL_WARDEN, PM_GNOLL_SUPREME_WARDEN },
     { PM_FLIND, PM_FLIND_LORD },
-	{ PM_TENTACLED_ONE, PM_ELDER_TENTACLED_ONE },
+    { PM_TENTACLED_ONE, PM_ELDER_TENTACLED_ONE },
     { PM_ORC, PM_ORC_CAPTAIN },
     { PM_HILL_ORC, PM_ORC_CAPTAIN },
     { PM_MORDOR_ORC, PM_ORC_CAPTAIN },
     { PM_URUK_HAI, PM_ORC_CAPTAIN },
     { PM_SEWER_RAT, PM_GIANT_RAT },
     { PM_CAVE_SPIDER, PM_GIANT_SPIDER },
-	{ PM_GIANT_SPIDER, PM_PHASE_SPIDER },
-	{ PM_OGRE, PM_OGRE_LORD },
+    { PM_GIANT_SPIDER, PM_PHASE_SPIDER },
+    { PM_OGRE, PM_OGRE_LORD },
     { PM_OGRE_LORD, PM_OGRE_OVERLORD },
-	{ PM_OGRE_OVERLORD, PM_OGRE_KING },
-	{ PM_ELF, PM_ELF_LORD },
+    { PM_OGRE_OVERLORD, PM_OGRE_KING },
+    { PM_ELF, PM_ELF_LORD },
     { PM_WOODLAND_ELF, PM_ELF_LORD },
     { PM_GREEN_ELF, PM_ELF_LORD },
     { PM_GREY_ELF, PM_ELF_LORD },
@@ -1367,24 +1367,24 @@ static const short grownups[][2] = {
     { PM_BLUE_DRAGON_HATCHLING, PM_BLUE_DRAGON },
     { PM_GREEN_DRAGON_HATCHLING, PM_GREEN_DRAGON },
     { PM_YELLOW_DRAGON_HATCHLING, PM_YELLOW_DRAGON },
-//	{ PM_GRAY_DRAGON, PM_ANCIENT_GRAY_DRAGON },
-//	{ PM_SILVER_DRAGON, PM_ANCIENT_SILVER_DRAGON },
-//	{ PM_RED_DRAGON, PM_ANCIENT_RED_DRAGON },
-//	{ PM_WHITE_DRAGON, PM_ANCIENT_WHITE_DRAGON },
-//	{ PM_ORANGE_DRAGON, PM_ANCIENT_ORANGE_DRAGON },
-//	{ PM_BLACK_DRAGON, PM_ANCIENT_BLACK_DRAGON },
-//	{ PM_BLUE_DRAGON, PM_ANCIENT_BLUE_DRAGON },
-//	{ PM_GREEN_DRAGON, PM_ANCIENT_GREEN_DRAGON },
-//	{ PM_YELLOW_DRAGON, PM_ANCIENT_YELLOW_DRAGON },
-//	{ PM_DRACOLICH, PM_ELDER_DRACOLICH },
-	{ PM_RED_NAGA_HATCHLING, PM_RED_NAGA },
+//    { PM_GRAY_DRAGON, PM_ANCIENT_GRAY_DRAGON },
+//    { PM_SILVER_DRAGON, PM_ANCIENT_SILVER_DRAGON },
+//    { PM_RED_DRAGON, PM_ANCIENT_RED_DRAGON },
+//    { PM_WHITE_DRAGON, PM_ANCIENT_WHITE_DRAGON },
+//    { PM_ORANGE_DRAGON, PM_ANCIENT_ORANGE_DRAGON },
+//    { PM_BLACK_DRAGON, PM_ANCIENT_BLACK_DRAGON },
+//    { PM_BLUE_DRAGON, PM_ANCIENT_BLUE_DRAGON },
+//    { PM_GREEN_DRAGON, PM_ANCIENT_GREEN_DRAGON },
+//    { PM_YELLOW_DRAGON, PM_ANCIENT_YELLOW_DRAGON },
+//    { PM_DRACOLICH, PM_ELDER_DRACOLICH },
+    { PM_RED_NAGA_HATCHLING, PM_RED_NAGA },
     { PM_BLACK_NAGA_HATCHLING, PM_BLACK_NAGA },
     { PM_GOLDEN_NAGA_HATCHLING, PM_GOLDEN_NAGA },
     { PM_GUARDIAN_NAGA_HATCHLING, PM_GUARDIAN_NAGA },
     { PM_SMALL_MIMIC, PM_LARGE_MIMIC },
     { PM_LARGE_MIMIC, PM_GIANT_MIMIC },
-	{ PM_GIANT_MIMIC, PM_CHAOS_MIMIC },
-	{ PM_BABY_LONG_WORM, PM_LONG_WORM },
+    { PM_GIANT_MIMIC, PM_CHAOS_MIMIC },
+    { PM_BABY_LONG_WORM, PM_LONG_WORM },
     { PM_LONG_WORM, PM_ELDER_LONG_WORM },
     { PM_BABY_PURPLE_WORM, PM_PURPLE_WORM },
     { PM_BABY_CROCODILE, PM_CROCODILE },

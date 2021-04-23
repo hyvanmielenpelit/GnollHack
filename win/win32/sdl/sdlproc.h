@@ -1,4 +1,4 @@
-/* GnollHack 4.0	wsdlproc.h	$NHDT-Date: 1434804346 2015/06/20 12:45:46 $  $NHDT-Branch: win32-x64-working $:$NHDT-Revision: 1.41 $ */
+/* GnollHack 4.0    wsdlproc.h    $NHDT-Date: 1434804346 2015/06/20 12:45:46 $  $NHDT-Branch: win32-x64-working $:$NHDT-Revision: 1.41 $ */
 /* Copyright (C) 2001 by Alex Kompel */
 /* GnollHack may be freely redistributed.  See license for details. */
 

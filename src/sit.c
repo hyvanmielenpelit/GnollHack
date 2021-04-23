@@ -1,4 +1,4 @@
-/* GnollHack 4.0	sit.c	$NHDT-Date: 1544442714 2018/12/10 11:51:54 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
+/* GnollHack 4.0    sit.c    $NHDT-Date: 1544442714 2018/12/10 11:51:54 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -118,15 +118,15 @@ dosit()
             dotrap(trap, VIASITTING);
         }
     }
-	else if ((Underwater || Is_waterlevel(&u.uz)))
-	{
+    else if ((Underwater || Is_waterlevel(&u.uz)))
+    {
         if (Is_waterlevel(&u.uz))
             There("are no cushions floating nearby.");
         else
             You("sit down on the muddy bottom.");
     } 
-	else if (is_pool(u.ux, u.uy))
-	{
+    else if (is_pool(u.ux, u.uy))
+    {
     in_water:
         You("sit in the %s.", hliquid("water"));
         if (!rn2(10) && uarm)
@@ -134,13 +134,13 @@ dosit()
         if (!rn2(10) && uarmf && uarmf->otyp != WATER_WALKING_BOOTS)
             (void) water_damage(uarm, "armor", TRUE);
     } 
-	else if (IS_SINK(typ))
-	{
+    else if (IS_SINK(typ))
+    {
         You(sit_message, defsyms[S_sink].explanation);
         Your("%s gets wet.", humanoid(youmonst.data) ? "rump" : "underside");
     } 
-	else if (IS_ALTAR(typ)) 
-	{
+    else if (IS_ALTAR(typ)) 
+    {
         You(sit_message, defsyms[S_altar].explanation);
         altar_wrath(u.ux, u.uy);
     }
@@ -150,7 +150,7 @@ dosit()
         pline("The anvil feels cold.");
     }
     else if (IS_GRAVE(typ))
-	{
+    {
         You(sit_message, defsyms[S_grave].explanation);
     } 
     else if (IS_SIGNPOST(typ))
@@ -182,20 +182,20 @@ dosit()
         }
     }
     else if (typ == STAIRS)
-	{
+    {
         You(sit_message, "stairs");
     } 
-	else if (typ == LADDER) 
-	{
+    else if (typ == LADDER) 
+    {
         You(sit_message, "ladder");
     }
-	else if (is_lava(u.ux, u.uy))
-	{
+    else if (is_lava(u.ux, u.uy))
+    {
         /* must be WWalking */
         You(sit_message, hliquid("lava"));
         burn_away_slime();
         if (likes_lava(youmonst.data) || Fire_immunity)
-		{
+        {
             pline_The("%s feels warm.", hliquid("lava"));
             return 1;
         }
@@ -203,23 +203,23 @@ dosit()
         losehp(adjust_damage(d(10, 10), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), /* lava damage */
                "sitting on lava", KILLED_BY);
     } 
-	else if (is_ice(u.ux, u.uy))
-	{
+    else if (is_ice(u.ux, u.uy))
+    {
         You(sit_message, defsyms[S_ice].explanation);
         if (!Cold_immunity)
             pline_The("ice feels cold.");
     } 
-	else if (typ == DRAWBRIDGE_DOWN) 
-	{
+    else if (typ == DRAWBRIDGE_DOWN) 
+    {
         You(sit_message, "drawbridge");
     } 
-	else if (IS_THRONE(typ))
-	{
+    else if (IS_THRONE(typ))
+    {
         You(sit_message, defsyms[S_throne].explanation);
         if (rnd(6) > 4) 
-		{
+        {
             switch (rnd(13)) 
-			{
+            {
             case 1:
                 play_sfx_sound(SFX_LOSE_ABILITY);
                 (void) adjattrib(rn2(A_MAX), -rn1(4, 3), FALSE);
@@ -247,12 +247,12 @@ dosit()
                 }
                 if (u.uhp >= (u.uhpmax - 5))
                     u.ubasehpmax += 4;
-				updatemaxhp();
+                updatemaxhp();
                 u.uhp = u.uhpmax;
                 u.ucreamed = 0;
                 make_blinded(0L, TRUE);
                 make_sick(0L, (char *) 0, FALSE);
-				make_food_poisoned(0L, (char*)0, FALSE);
+                make_food_poisoned(0L, (char*)0, FALSE);
                 make_mummy_rotted(0L, (char*)0, FALSE);
                 heal_legs(0);
                 context.botl = context.botlx = 1;
@@ -262,11 +262,11 @@ dosit()
                 break;
             case 6:
                 if (u.uluck + rn2(5) < 0) 
-				{
+                {
                     //You_feel("your luck is changing.");
                     change_luck(1, TRUE);
                 } 
-				else
+                else
                     makewish(FALSE);
                 break;
             case 7:
@@ -307,12 +307,12 @@ dosit()
                     make_blinded(Blinded + rn1(100, 250), TRUE);
                     change_luck((Luck > 1) ? -rnd(2) : -1, TRUE);
                 } 
-				else
+                else
                     rndcurse();
                 break;
             case 10:
                 if (Luck < 0 || (HSee_invisible & INTRINSIC)) 
-				{
+                {
                     if (level.flags.nommap) {
                         pline("A terrible drone fills your head!");
                         play_sfx_sound(SFX_ACQUIRE_CONFUSION);
@@ -322,8 +322,8 @@ dosit()
                         do_mapping();
                     }
                 }
-				else 
-				{
+                else 
+                {
                     Your("vision becomes clear.");
                     HSee_invisible |= FROM_ACQUIRED;
                     newsym(u.ux, u.uy);
@@ -331,12 +331,12 @@ dosit()
                 break;
             case 11:
                 if (Luck < 0)
-				{
+                {
                     You_feel("threatened.");
                     aggravate();
                 } 
                 else
-				{
+                {
                     play_sfx_sound(SFX_WRENCHING_SENSATION);
                     You_feel("a wrenching sensation.");
                     tele(); /* teleport him */
@@ -345,9 +345,9 @@ dosit()
             case 12:
                 You("are granted an insight!");
                 if (invent)
-				{
+                {
                     /* rn2(5) agrees w/seffects() */
-					(void)identify_pack(rn2(5), FALSE);
+                    (void)identify_pack(rn2(5), FALSE);
                 }
                 break;
             case 13:
@@ -369,15 +369,15 @@ dosit()
         }
 
         if (!rn2(3) && IS_THRONE(levl[u.ux][u.uy].typ))
-		{
+        {
             play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
             /* may have teleported */
             create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, 0, 0, TRUE);
             pline_The("throne vanishes in a puff of logic.");
         }
     } 
-	else
-	{
+    else
+    {
         pline("Having fun sitting on the %s?", surface(u.ux, u.uy));
     }
     return 1;
@@ -391,7 +391,7 @@ rndcurse()
     int cnt, onum;
     struct obj *otmp;
     static const char mal_aura[] = "feel a malignant aura surround %s.";
-	boolean antimagicsuccess = Antimagic_or_resistance;
+    boolean antimagicsuccess = Antimagic_or_resistance;
 
     if (((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_MAGIC_ABSORBING)) || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_MAGIC_ABSORBING))) && rn2(20)) 
     {
@@ -399,16 +399,16 @@ rndcurse()
         You(mal_aura, "the magic-absorbing blade");
         return;
     }
-	
-	if (Curse_resistance)
-	{
+    
+    if (Curse_resistance)
+    {
         play_sfx_sound(SFX_MALIGNANT_AURA_RESISTED);
         You_feel("a malignant aura around you, but it quickly dissipates.");
-		return;
-	}
+        return;
+    }
 
     if (antimagicsuccess)
-	{
+    {
         play_sfx_sound(SFX_MALIGNANT_AURA_SURROUNDS);
         u_shieldeff();
         You(mal_aura, "you");
@@ -506,22 +506,22 @@ attrcurse()
         /*FALLTHRU*/
     case 4:
         if (HBlind_telepat & INTRINSIC) {
-			HBlind_telepat &= ~INTRINSIC;
+            HBlind_telepat &= ~INTRINSIC;
             if (Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters))
                 see_monsters(); /* Can't sense mons anymore! */
             Your("senses fail!");
             break;
         }
         /*FALLTHRU*/
-	case 5:
-		if (HTelepat & INTRINSIC) {
-			HTelepat &= ~INTRINSIC;
-			see_monsters(); /* Can't sense mons anymore! */
-			Your("senses fail!");
-			break;
-		}
-		/*FALLTHRU*/
-	case 6:
+    case 5:
+        if (HTelepat & INTRINSIC) {
+            HTelepat &= ~INTRINSIC;
+            see_monsters(); /* Can't sense mons anymore! */
+            Your("senses fail!");
+            break;
+        }
+        /*FALLTHRU*/
+    case 6:
         if (HCold_immunity & INTRINSIC) {
             HCold_immunity &= ~INTRINSIC;
             You_feel("cooler.");

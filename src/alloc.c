@@ -1,4 +1,4 @@
-/* GnollHack 4.0	alloc.c	$NHDT-Date: 1454376505 2016/02/02 01:28:25 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.16 $ */
+/* GnollHack 4.0    alloc.c    $NHDT-Date: 1454376505 2016/02/02 01:28:25 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.16 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -45,11 +45,11 @@ register size_t lth;
 
     ptr = malloc(lth);
 #ifndef MONITOR_HEAP
-	if (!ptr)
-	{
-		panic("Memory allocation failure; cannot get %zu bytes", lth);
-		return (long*)0;
-	}
+    if (!ptr)
+    {
+        panic("Memory allocation failure; cannot get %zu bytes", lth);
+        return (long*)0;
+    }
 #endif
     return (long *) ptr;
 #endif

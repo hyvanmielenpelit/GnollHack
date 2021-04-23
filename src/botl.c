@@ -1,4 +1,4 @@
-/* GnollHack 4.0	botl.c	$NHDT-Date: 1557094795 2019/05/05 22:19:55 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.145 $ */
+/* GnollHack 4.0    botl.c    $NHDT-Date: 1557094795 2019/05/05 22:19:55 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.145 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -24,20 +24,20 @@ char*
 get_strength_string(st)
 int st;
 {
-	static char buf[32];
+    static char buf[32];
 
-	if (st > 18) {
-		if (st > STR18(100))
-			Sprintf(buf, "%2d", st - 100);
-		else if (st < STR18(100))
-			Sprintf(buf, "18/%02d", st - 18);
-		else
-			Sprintf(buf, "18/**");
-	}
-	else
-		Sprintf(buf, "%-1d", st);
+    if (st > 18) {
+        if (st > STR18(100))
+            Sprintf(buf, "%2d", st - 100);
+        else if (st < STR18(100))
+            Sprintf(buf, "18/%02d", st - 18);
+        else
+            Sprintf(buf, "18/**");
+    }
+    else
+        Sprintf(buf, "%-1d", st);
 
-	return buf;
+    return buf;
 }
 
 
@@ -45,7 +45,7 @@ char *
 get_strength_str()
 {
     int st = ACURR(A_STR);
-	return get_strength_string(st);
+    return get_strength_string(st);
 }
 
 void
@@ -143,8 +143,8 @@ do_statusline2()
 
     /* dungeon location */
     (void) describe_level(dloc); /* includes at least one trailing space */
-	dln = strlen(dloc);
-	dx = 0;
+    dln = strlen(dloc);
+    dx = 0;
 
     /* health and armor class (has trailing space for AC 0..9) */
     hp = Upolyd ? u.mh : u.uhp;
@@ -179,11 +179,11 @@ do_statusline2()
         tmmv[0] = '\0';
     tln = strlen(tmmv);
 
-	/* can advance skills */
-	Sprintf(skll, "%s", u.canadvanceskill ? "Skill" : ""); // can_advance_any_skill()
-	sln = strlen(skll);
+    /* can advance skills */
+    Sprintf(skll, "%s", u.canadvanceskill ? "Skill" : ""); // can_advance_any_skill()
+    sln = strlen(skll);
 
-	/* status conditions; worst ones first */
+    /* status conditions; worst ones first */
     cond[0] = '\0'; /* once non-empty, cond will have a leading space */
     nb = cond;
     /*
@@ -200,22 +200,22 @@ do_statusline2()
         Strcpy(nb = eos(nb), " Slime");
     if (Strangled)
         Strcpy(nb = eos(nb), " Strngl");
-	if (Slowed)
-		Strcpy(nb = eos(nb), " Slow");
-	if (Silenced)
-		Strcpy(nb = eos(nb), " Silent");
-	if (Paralyzed_or_immobile)
-		Strcpy(nb = eos(nb), " Paral");
-	if (Fearful)
-		Strcpy(nb = eos(nb), " Fear");
-	if (Sleeping)
-		Strcpy(nb = eos(nb), " Sleep");
-	if (Cancelled)
-		Strcpy(nb = eos(nb), " Cancl");
-	if (Sick) 
+    if (Slowed)
+        Strcpy(nb = eos(nb), " Slow");
+    if (Silenced)
+        Strcpy(nb = eos(nb), " Silent");
+    if (Paralyzed_or_immobile)
+        Strcpy(nb = eos(nb), " Paral");
+    if (Fearful)
+        Strcpy(nb = eos(nb), " Fear");
+    if (Sleeping)
+        Strcpy(nb = eos(nb), " Sleep");
+    if (Cancelled)
+        Strcpy(nb = eos(nb), " Cancl");
+    if (Sick) 
         Strcpy(nb = eos(nb), " TermIll");
-	if (FoodPoisoned)
-		Strcpy(nb = eos(nb), " FoodPois");
+    if (FoodPoisoned)
+        Strcpy(nb = eos(nb), " FoodPois");
     if (MummyRot)
         Strcpy(nb = eos(nb), " Rot");
     if (u.ulycn >= LOW_PM)
@@ -256,28 +256,28 @@ do_statusline2()
      * interface supports that.
      */
     if ((dln - dx) + 1 + hln + 1 + xln + 1 + mln + 1 + tln + 1 + sln + 1 + cln <= COLNO) 
-	{
+    {
         Sprintf(newbot2, "%s %s %s %s %s %s %s", dloc, hlth, expr, move, tmmv, skll, cond);
     }
-	else
-	{
+    else
+    {
         if (dln + 1 + hln + 1 + xln + 1 + mln + 1 + tln + 1 + cln + 1 > MAXCO)
-		{
+        {
             panic("bot2: second status line exceeds MAXCO (%u > %d)",
                   (dln + 1 + hln + 1 + xln + 1 + mln + 1 + tln + 1 + cln + 1), MAXCO);
-			strcpy(newbot2, "");
+            strcpy(newbot2, "");
             return newbot2;
         }
-		else if ((dln - dx) + 1 + hln + 1 + xln + 1 + cln <= COLNO) 
-		{
+        else if ((dln - dx) + 1 + hln + 1 + xln + 1 + cln <= COLNO) 
+        {
             Sprintf(newbot2, "%s %s %s %s %s", dloc, hlth, expr, cond, tmmv);
         } 
-		else if ((dln - dx) + 1 + hln + 1 + cln <= COLNO) 
-		{
+        else if ((dln - dx) + 1 + hln + 1 + cln <= COLNO) 
+        {
             Sprintf(newbot2, "%s %s %s %s %s", dloc, hlth, cond, expr, tmmv);
         }
-		else 
-		{
+        else 
+        {
             Sprintf(newbot2, "%s %s %s %s %s", hlth, cond, dloc, expr, tmmv);
         }
         /* only two or three consecutive spaces available to squeeze out */
@@ -344,7 +344,7 @@ boolean female;
     register const struct Role *role;
     register int i;
 
-	static NEARDATA const char player_name[] = "Player";
+    static NEARDATA const char player_name[] = "Player";
 
     /* Find the role */
     for (role = roles; role->name.m; role++)
@@ -435,12 +435,12 @@ describe_level(buf)
 char *buf;
 {
     int ret = 1;
-	char modebuf[BUFSZ];
+    char modebuf[BUFSZ];
     const char* difsym = get_game_difficulty_symbol(context.game_difficulty);
 
-	Sprintf(modebuf, "%s%s%s", wizard ? "W" : discover ? "X" : "",
+    Sprintf(modebuf, "%s%s%s", wizard ? "W" : discover ? "X" : "",
         difsym,
-		(wizard || discover || strcmp(difsym, "")) ? " " : "");
+        (wizard || discover || strcmp(difsym, "")) ? " " : "");
 
     /* TODO:    Add in dungeon name */
     if (Is_knox(&u.uz)) {
@@ -449,8 +449,8 @@ char *buf;
         Sprintf(buf, "%sHome %d ", modebuf, dunlev(&u.uz));
     } else if (In_endgame(&u.uz)) {
         /* [3.6.2: this used to be "Astral Plane" or generic "End Game"] */
-		char buf2[BUFSZ];
-		(void) endgamelevelname(buf2, depth(&u.uz));
+        char buf2[BUFSZ];
+        (void) endgamelevelname(buf2, depth(&u.uz));
         (void) strsubst(buf2, "Plane of ", ""); /* just keep <element> */
         Sprintf(buf, "%s%s ", modebuf, buf2);
     } else {
@@ -572,18 +572,18 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("intelligence", " In:%s", ANY_INT, 10, BL_IN),
     INIT_BLSTAT("wisdom", " Wi:%s", ANY_INT, 10, BL_WI),
     INIT_BLSTAT("charisma", " Ch:%s", ANY_INT, 10, BL_CH),
-	INIT_BLSTAT("gold", " %s", ANY_LONG, 30, BL_GOLD),
-	//    INIT_BLSTAT("alignment", " %s", ANY_STR, 40, BL_ALIGN),
+    INIT_BLSTAT("gold", " %s", ANY_LONG, 30, BL_GOLD),
+    //    INIT_BLSTAT("alignment", " %s", ANY_STR, 40, BL_ALIGN),
     INIT_BLSTAT("score", " S:%s", ANY_LONG, 30, BL_SCORE),
     INIT_BLSTAT("carrying-capacity", " %s", ANY_INT, 20, BL_CAP),
     INIT_BLSTATP("power", " MP:%s", ANY_INT, 10, BL_ENEMAX, BL_ENE),
     INIT_BLSTATM("power-max", "(%s)", ANY_INT, 10, BL_ENE, BL_ENEMAX),
     INIT_BLSTAT("experience-level", " XL:%s", ANY_INT, 10, BL_XP),
-	INIT_BLSTAT("two-weapon-fighting", " %s", ANY_INT, 10, BL_2WEP),
-	INIT_BLSTAT("skill-availability", " %s", ANY_INT, 10, BL_SKILL),
-	INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
-	INIT_BLSTAT("magic-cancellation-level", " MC:%s", ANY_INT, 10, BL_MC_LVL),
-	INIT_BLSTAT("magic-cancellation-percentage", "/%s%%", ANY_INT, 10, BL_MC_PCT),
+    INIT_BLSTAT("two-weapon-fighting", " %s", ANY_INT, 10, BL_2WEP),
+    INIT_BLSTAT("skill-availability", " %s", ANY_INT, 10, BL_SKILL),
+    INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
+    INIT_BLSTAT("magic-cancellation-level", " MC:%s", ANY_INT, 10, BL_MC_LVL),
+    INIT_BLSTAT("magic-cancellation-percentage", "/%s%%", ANY_INT, 10, BL_MC_PCT),
     INIT_BLSTAT("move", " MS:%s", ANY_LONG, 10, BL_MOVE),
     INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
     INIT_BLSTAT("time", " T:%s", ANY_LONG, 20, BL_TIME),
@@ -631,11 +631,11 @@ bot_via_windowport()
     int i, idx, cap;
     long money;
 
-	if (!blinit)
-	{
-		panic("bot before init.");
-		return;
-	}
+    if (!blinit)
+    {
+        panic("bot before init.");
+        return;
+    }
     /* toggle from previous iteration */
     idx = 1 - now_or_before_idx; /* 0 -> 1, 1 -> 0 */
     now_or_before_idx = idx;
@@ -686,13 +686,13 @@ bot_via_windowport()
     blstats[idx][BL_CH].a.a_int = ACURR(A_CHA);
 
     /* Alignment */
-	/* // Note: Moved to character description page 
+    /* // Note: Moved to character description page 
     Strcpy(blstats[idx][BL_ALIGN].val, (u.ualign.type == A_CHAOTIC)
                                           ? "Chaotic"
                                           : (u.ualign.type == A_NEUTRAL)
                                                ? "Neutral"
                                                : "Lawful");
-	*/
+    */
     /* Score */
     blstats[idx][BL_SCORE].a.a_long =
 #ifdef SCORE_ON_BOTL
@@ -731,13 +731,13 @@ bot_via_windowport()
      * The currency prefix is encoded as ten character \GXXXXNNNN
      * sequence.
      */
-	
+    
     Sprintf(blstats[idx][BL_GOLD].val, "%s:%ld",
             (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
               : encglyph(objnum_to_glyph(GOLD_PIECE)),
             blstats[idx][BL_GOLD].a.a_long);
     valset[BL_GOLD] = TRUE; // indicate val already set
-	
+    
 
     /* Power (magical energy) */
     blstats[idx][BL_ENE].a.a_int = min(u.uen, 9999);
@@ -746,28 +746,28 @@ bot_via_windowport()
     /* Armor class */
     blstats[idx][BL_AC].a.a_int = u.uac;
 
-	/* Magic cancellation level and percentage */
-	blstats[idx][BL_MC_LVL].a.a_int = u.umc;
-	blstats[idx][BL_MC_PCT].a.a_int = magic_negation_percentage(u.umc);
+    /* Magic cancellation level and percentage */
+    blstats[idx][BL_MC_LVL].a.a_int = u.umc;
+    blstats[idx][BL_MC_PCT].a.a_int = magic_negation_percentage(u.umc);
 
-	/* Monster level (if Upolyd) */
+    /* Monster level (if Upolyd) */
     blstats[idx][BL_HD].a.a_int = Upolyd ? (int) mons[u.umonnum].mlevel : 0;
 
     /* Experience */
     blstats[idx][BL_XP].a.a_int = u.ulevel;
     blstats[idx][BL_EXP].a.a_long = u.uexp;
 
-	/* Two-weapon indicator */
-	blstats[idx][BL_2WEP].a.a_int = (int)u.twoweap;
-	Strcpy(blstats[idx][BL_2WEP].val,
-		(u.twoweap == TRUE) ? "2Weap" : "");
-	valset[BL_2WEP] = TRUE;
+    /* Two-weapon indicator */
+    blstats[idx][BL_2WEP].a.a_int = (int)u.twoweap;
+    Strcpy(blstats[idx][BL_2WEP].val,
+        (u.twoweap == TRUE) ? "2Weap" : "");
+    valset[BL_2WEP] = TRUE;
 
-	/* Skills */
-	blstats[idx][BL_SKILL].a.a_int = (int)u.canadvanceskill;
-	Strcpy(blstats[idx][BL_SKILL].val,
-		(u.canadvanceskill == TRUE) ? "Skill" : "");
-	valset[BL_SKILL] = TRUE;
+    /* Skills */
+    blstats[idx][BL_SKILL].a.a_int = (int)u.canadvanceskill;
+    Strcpy(blstats[idx][BL_SKILL].val,
+        (u.canadvanceskill == TRUE) ? "Skill" : "");
+    valset[BL_SKILL] = TRUE;
 
     /* Move speed */
     blstats[idx][BL_MOVE].a.a_long = (long)get_u_move_speed(TRUE);
@@ -794,7 +794,7 @@ bot_via_windowport()
 
     /* Conditions */
     blstats[idx][BL_CONDITION].a.a_ulong = get_u_condition_bits();
-	valset[BL_CONDITION] = TRUE;
+    valset[BL_CONDITION] = TRUE;
 
     /* Partyline */
     char partybuf[BUFSIZ];
@@ -1145,7 +1145,7 @@ boolean *valsetlist;
     chg = update_all ? 0 : compare_blstats(prev, curr);
 
 #ifndef ANDROID
-	/* Temporary? hack: moveloop()'s prolog for a new game sets
+    /* Temporary? hack: moveloop()'s prolog for a new game sets
      * context.rndencode after the status window has been init'd,
      * so $:0 has already been encoded and cached by the window
      * port.  Without this hack, gold's \G sequence won't be
@@ -1163,7 +1163,7 @@ boolean *valsetlist;
      * Setting 'chg = 2' is enough to render the field properly, but
      * not to honor an initial highlight, so force 'update_all = TRUE'.
      */
-	
+    
     if (fld == BL_GOLD
         && (context.rndencode != oldrndencode
             || showsyms[COIN_CLASS + SYM_OFF_O] != oldgoldsym)) {
@@ -1192,7 +1192,7 @@ boolean *valsetlist;
          *  if hitpointbar is On, in order for that to be re-rendered.
          */
     if (update_all || chg || reset) 
-	{
+    {
         idxmax = curr->idxmax;
         idxcurr = curr->idxcurr;
         pc = 0;
@@ -1304,10 +1304,10 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
         (*windowprocs.win_status_init)();
         blinit = TRUE;
     }
-	else if (!blinit) 
-	{
+    else if (!blinit) 
+    {
         panic("status 'reassess' before init");
-		return;
+        return;
     }
     for (i = 0; i < MAXBLSTATS; ++i) {
         fld = initblstats[i].fld;
@@ -1412,16 +1412,16 @@ STATIC_OVL int
 compare_blstats(bl1, bl2)
 struct istat_s *bl1, *bl2;
 {
-	if (!bl1 || !bl2)
-		return 0;
+    if (!bl1 || !bl2)
+        return 0;
 
     int anytype, result = 0;
 
     if (!bl1 || !bl2)
-	{
+    {
         panic("compare_blstat: bad istat pointer %s, %s",
               fmt_ptr((genericptr_t) bl1), fmt_ptr((genericptr_t) bl2));
-		return 0;
+        return 0;
     }
 
     anytype = bl1->anytype;
@@ -1431,7 +1431,7 @@ struct istat_s *bl1, *bl2;
         panic("compare_blstat: invalid pointer %s, %s",
               fmt_ptr((genericptr_t) bl1->a.a_void),
               fmt_ptr((genericptr_t) bl2->a.a_void));
-		return 0;
+        return 0;
     }
 
     switch (anytype) {
@@ -1441,8 +1441,8 @@ struct istat_s *bl1, *bl2;
                      : (bl1->a.a_int > bl2->a.a_int) ? -1 : 0;
         break;
     case ANY_IPTR:
-		if (!bl1->a.a_iptr || !bl2->a.a_iptr)
-			return 0;
+        if (!bl1->a.a_iptr || !bl2->a.a_iptr)
+            return 0;
 
         result = (*bl1->a.a_iptr < *bl2->a.a_iptr)
                      ? 1
@@ -1454,9 +1454,9 @@ struct istat_s *bl1, *bl2;
                      : (bl1->a.a_long > bl2->a.a_long) ? -1 : 0;
         break;
     case ANY_LPTR:
-		if (!bl1->a.a_lptr || !bl2->a.a_lptr)
-			return 0;
-		result = (*bl1->a.a_lptr < *bl2->a.a_lptr)
+        if (!bl1->a.a_lptr || !bl2->a.a_lptr)
+            return 0;
+        result = (*bl1->a.a_lptr < *bl2->a.a_lptr)
                      ? 1
                      : (*bl1->a.a_lptr > *bl2->a.a_lptr) ? -1 : 0;
         break;
@@ -1466,9 +1466,9 @@ struct istat_s *bl1, *bl2;
                      : (bl1->a.a_uint > bl2->a.a_uint) ? -1 : 0;
         break;
     case ANY_UPTR:
-		if (!bl1->a.a_uptr || !bl2->a.a_uptr)
-			return 0;
-		result = (*bl1->a.a_uptr < *bl2->a.a_uptr)
+        if (!bl1->a.a_uptr || !bl2->a.a_uptr)
+            return 0;
+        result = (*bl1->a.a_uptr < *bl2->a.a_uptr)
                      ? 1
                      : (*bl1->a.a_uptr > *bl2->a.a_uptr) ? -1 : 0;
         break;
@@ -1478,10 +1478,10 @@ struct istat_s *bl1, *bl2;
                      : (bl1->a.a_ulong > bl2->a.a_ulong) ? -1 : 0;
         break;
     case ANY_ULPTR:
-		if (!bl1->a.a_ulptr || !bl2->a.a_ulptr)
-			return 0;
+        if (!bl1->a.a_ulptr || !bl2->a.a_ulptr)
+            return 0;
 
-		result = (*bl1->a.a_ulptr < *bl2->a.a_ulptr)
+        result = (*bl1->a.a_ulptr < *bl2->a.a_ulptr)
                      ? 1
                      : (*bl1->a.a_ulptr > *bl2->a.a_ulptr) ? -1 : 0;
         break;
@@ -1724,9 +1724,9 @@ static struct fieldid_t {
     { "xl",       BL_XP },
     { "xplvl",    BL_XP },
     { "ac",       BL_AC },
-	{ "mc-lvl",   BL_MC_LVL },
-	{ "mc-pct",   BL_MC_PCT },
-	{ "hit-dice", BL_HD },
+    { "mc-lvl",   BL_MC_LVL },
+    { "mc-pct",   BL_MC_PCT },
+    { "hit-dice", BL_HD },
     { "move-speed", BL_MOVE },
     { "movement-speed", BL_MOVE },
     { "speed",    BL_MOVE },
@@ -2340,10 +2340,10 @@ boolean from_configfile;
     static const char *hutxt[] = { "Satiated", "", "Hungry", "Weak",
                                    "Fainting", "Fainted", "Starved" };
 
-	static const char* sktxt[] = { "", "Skill" };
-	static const char* twoweaptxt[] = { "", "2Weap" };
+    static const char* sktxt[] = { "", "Skill" };
+    static const char* twoweaptxt[] = { "", "2Weap" };
 
-	/* Examples:
+    /* Examples:
         3.6.1:
       OPTION=hilite_status: hitpoints/<10%/red
       OPTION=hilite_status: hitpoints/<10%/red/<5%/purple/1/red+blink+inverse
@@ -2426,20 +2426,20 @@ boolean from_configfile;
                                          SATIATED, STARVED + 1, &kidx)) {
             txt = hu_stat[kidx];   /* store hu_stat[] val, not hutxt[] */
             txtval = TRUE;
-		}
-		else if (fld == BL_SKILL
-			&& is_fld_arrayvalues(s[sidx], sktxt,
-				0, 1 + 1, &kidx)) {
-			txt = sktxt[kidx];   /* store sktxt in any case */
-			txtval = TRUE;
-		}
-		else if (fld == BL_2WEP
-			&& is_fld_arrayvalues(s[sidx], twoweaptxt,
-				0, 1 + 1, &kidx)) {
-			txt = twoweaptxt[kidx];   /* store sktxt in any case */
-			txtval = TRUE;
-		}
-		else if (!strcmpi(s[sidx], "changed")) {
+        }
+        else if (fld == BL_SKILL
+            && is_fld_arrayvalues(s[sidx], sktxt,
+                0, 1 + 1, &kidx)) {
+            txt = sktxt[kidx];   /* store sktxt in any case */
+            txtval = TRUE;
+        }
+        else if (fld == BL_2WEP
+            && is_fld_arrayvalues(s[sidx], twoweaptxt,
+                0, 1 + 1, &kidx)) {
+            txt = twoweaptxt[kidx];   /* store sktxt in any case */
+            txtval = TRUE;
+        }
+        else if (!strcmpi(s[sidx], "changed")) {
             changed = TRUE;
         } else if (is_ltgt_percentnumber(s[sidx])) {
             const char *op;
@@ -2628,8 +2628,8 @@ const struct condmap valid_conditions[] = {
     { "stone",    BL_MASK_STONE },
     { "slime",    BL_MASK_SLIME },
     { "strngl",   BL_MASK_STRNGL },
-	{ "suffoc",   BL_MASK_SUFFOC },
-	{ "foodPois", BL_MASK_FOODPOIS },
+    { "suffoc",   BL_MASK_SUFFOC },
+    { "foodPois", BL_MASK_FOODPOIS },
     { "termIll",  BL_MASK_TERMILL },
     { "blind",    BL_MASK_BLIND },
     { "deaf",     BL_MASK_DEAF },
@@ -2639,12 +2639,12 @@ const struct condmap valid_conditions[] = {
     { "lev",      BL_MASK_LEV },
     { "fly",      BL_MASK_FLY },
     { "ride",     BL_MASK_RIDE },
-	{ "slow",     BL_MASK_SLOWED },
-	{ "paral",    BL_MASK_PARALYZED },
-	{ "fear",     BL_MASK_FEARFUL },
-	{ "sleep",    BL_MASK_SLEEPING },
-	{ "cancl",    BL_MASK_CANCELLED },
-	{ "silent",   BL_MASK_SILENCED },
+    { "slow",     BL_MASK_SLOWED },
+    { "paral",    BL_MASK_PARALYZED },
+    { "fear",     BL_MASK_FEARFUL },
+    { "sleep",    BL_MASK_SLEEPING },
+    { "cancl",    BL_MASK_CANCELLED },
+    { "silent",   BL_MASK_SILENCED },
     { "rot",      BL_MASK_ROT },
     { "lyca",     BL_MASK_LYCANTHROPY },
 };
@@ -2653,20 +2653,20 @@ const struct condmap valid_conditions[] = {
 
 const struct condmap condition_aliases[] = {
     { "strangled",      BL_MASK_STRNGL },
-	{ "suffocation",    BL_MASK_SUFFOC },
-	{ "all",            BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
+    { "suffocation",    BL_MASK_SUFFOC },
+    { "all",            BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL
                         | BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN
                         | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SUFFOC
                         | BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE | BL_MASK_SLOWED 
-						| BL_MASK_PARALYZED | BL_MASK_FEARFUL | BL_MASK_SLEEPING 
-						| BL_MASK_CANCELLED | BL_MASK_SILENCED | BL_MASK_GRAB | BL_MASK_ROT | BL_MASK_LYCANTHROPY },
+                        | BL_MASK_PARALYZED | BL_MASK_FEARFUL | BL_MASK_SLEEPING 
+                        | BL_MASK_CANCELLED | BL_MASK_SILENCED | BL_MASK_GRAB | BL_MASK_ROT | BL_MASK_LYCANTHROPY },
     { "major_troubles", BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL | BL_MASK_ROT | BL_MASK_LYCANTHROPY },
     { "minor_troubles", BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN
                         | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SLOWED 
-						| BL_MASK_PARALYZED | BL_MASK_FEARFUL | BL_MASK_SLEEPING 
-						| BL_MASK_CANCELLED | BL_MASK_SILENCED },
+                        | BL_MASK_PARALYZED | BL_MASK_FEARFUL | BL_MASK_SLEEPING 
+                        | BL_MASK_CANCELLED | BL_MASK_SILENCED },
     { "movement",       BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE }
 };
 
@@ -3689,9 +3689,9 @@ choose_value:
                 (fld == BL_CAP
           //       || fld == BL_ALIGN
                  || fld == BL_HUNGER
-				|| fld == BL_SKILL
-					|| fld == BL_2WEP
-					|| fld == BL_TITLE) ? "Choose" : "Enter",
+                || fld == BL_SKILL
+                    || fld == BL_2WEP
+                    || fld == BL_TITLE) ? "Choose" : "Enter",
                 initblstats[fld].fldname);
         if (fld == BL_CAP) {
             int rv = query_arrayvalue(qry_buf,
@@ -3726,32 +3726,32 @@ choose_value:
 
             hilite.rel = TXT_VALUE;
             Strcpy(hilite.textmatch, hutxt[rv]);
-		}
-		else if (fld == BL_SKILL) {
-			static const char* sktxt[] = { (char*)0, "Skill" };
-			int rv = query_arrayvalue(qry_buf,
-				sktxt,
-				0, 1 + 1);
+        }
+        else if (fld == BL_SKILL) {
+            static const char* sktxt[] = { (char*)0, "Skill" };
+            int rv = query_arrayvalue(qry_buf,
+                sktxt,
+                0, 1 + 1);
 
-			if (rv < 0)
-				goto choose_behavior;
+            if (rv < 0)
+                goto choose_behavior;
 
-			hilite.rel = TXT_VALUE;
-			Strcpy(hilite.textmatch, sktxt[rv]);
-		}
-		else if (fld == BL_2WEP) {
-			static const char* twoweaptxt[] = { (char*)0, "2Weap" };
-			int rv = query_arrayvalue(qry_buf,
-				twoweaptxt,
-				0, 1 + 1);
+            hilite.rel = TXT_VALUE;
+            Strcpy(hilite.textmatch, sktxt[rv]);
+        }
+        else if (fld == BL_2WEP) {
+            static const char* twoweaptxt[] = { (char*)0, "2Weap" };
+            int rv = query_arrayvalue(qry_buf,
+                twoweaptxt,
+                0, 1 + 1);
 
-			if (rv < 0)
-				goto choose_behavior;
+            if (rv < 0)
+                goto choose_behavior;
 
-			hilite.rel = TXT_VALUE;
-			Strcpy(hilite.textmatch, twoweaptxt[rv]);
-		} 
-		else if (fld == BL_TITLE) {
+            hilite.rel = TXT_VALUE;
+            Strcpy(hilite.textmatch, twoweaptxt[rv]);
+        } 
+        else if (fld == BL_TITLE) {
             const char *rolelist[3 * 9 + 1];
             char mbuf[MAXVALWIDTH], fbuf[MAXVALWIDTH], obuf[MAXVALWIDTH];
             int i, j, rv;

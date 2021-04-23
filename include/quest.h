@@ -1,5 +1,5 @@
-/* GnollHack 4.0	quest.h	$NHDT-Date: 1432512779 2015/05/25 00:12:59 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
-/* Copyright (c) Mike Stephenson 1991.				  */
+/* GnollHack 4.0    quest.h    $NHDT-Date: 1432512779 2015/05/25 00:12:59 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* Copyright (c) Mike Stephenson 1991.                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef QUEST_H

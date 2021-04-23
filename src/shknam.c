@@ -1,4 +1,4 @@
-/* GnollHack 4.0	shknam.c	$NHDT-Date: 1454485432 2016/02/03 07:43:52 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.41 $ */
+/* GnollHack 4.0    shknam.c    $NHDT-Date: 1454485432 2016/02/03 07:43:52 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.41 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -173,11 +173,11 @@ static const char *const shkgeneral[] = {
 };
 
 static const char* const shkreagents[] = {
-	/* AD&D mages and others */
-	"Merlin",    "Mordenkainen", "Leomund",   "Rary",
-	"Bigby",     "Otiluke",  "Tenser", "Elminster",
-	"Bucknard",  "Drawmij",  "Nystul", "Otto",
-	"Gandalf",   "Saruman",     0
+    /* AD&D mages and others */
+    "Merlin",    "Mordenkainen", "Leomund",   "Rary",
+    "Bigby",     "Otiluke",  "Tenser", "Elminster",
+    "Bucknard",  "Drawmij",  "Nystul", "Otto",
+    "Gandalf",   "Saruman",     0
 };
 
 static const char* const shkmodron[] = {
@@ -219,63 +219,63 @@ static const char *const shkhealthfoods[] = {
 const struct shclass shtypes[] = {
     { "general store",
       RANDOM_CLASS,
-	  "an item",
+      "an item",
       39,
       D_SHOP,
       { { 100, RANDOM_CLASS },
         { 0, 0 },
         { 0, 0 },
         { 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
         { 0, 0 } },
       shkgeneral },
     { "used armor dealership",
       ARMOR_CLASS,
-	  "a piece of armor or weapon",
-	  14,
+      "a piece of armor or weapon",
+      14,
       D_SHOP,
       { { 90, ARMOR_CLASS },
         { 10, WEAPON_CLASS },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
         { 0, 0 },
         { 0, 0 },
         { 0, 0 } },
       shkarmors },
     { "second-hand bookstore",
       SCROLL_CLASS,
-	  "a scroll or spellbook",
-	  10,
+      "a scroll or spellbook",
+      10,
       D_SHOP,
       { { 90, SCROLL_CLASS },
         { 10, SPBOOK_CLASS },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
         { 0, 0 },
         { 0, 0 },
         { 0, 0 } },
       shkbooks },
     { "liquor emporium",
       POTION_CLASS,
-	  "a potion",
-	  10,
+      "a potion",
+      10,
       D_SHOP,
       { { 100, POTION_CLASS },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
         { 0, 0 },
         { 0, 0 },
         { 0, 0 },
@@ -283,24 +283,24 @@ const struct shclass shtypes[] = {
       shkliquors },
     { "antique weapons outlet",
       WEAPON_CLASS,
-	  "a weapon or piece of armor",
-	  5,
+      "a weapon or piece of armor",
+      5,
       D_SHOP,
       { { 90, WEAPON_CLASS },
         { 10, ARMOR_CLASS },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
         { 0, 0 },
         { 0, 0 },
         { 0, 0 } },
       shkweapons },
     { "delicatessen",
       FOOD_CLASS,
-	  "a food item or potion",
-	  5,
+      "a food item or potion",
+      5,
       D_SHOP,
       { { 80, FOOD_CLASS },
         { 2, POTION_CLASS },
@@ -308,91 +308,91 @@ const struct shclass shtypes[] = {
         { 4, -POT_BOOZE },
         { 5, -POT_WATER },
         { 3, -ICE_BOX },
-		{ 2, -BAG_OF_THE_GLUTTON },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 } },
+        { 2, -BAG_OF_THE_GLUTTON },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 } },
       shkfoods },
     { "jewelers",
       RING_CLASS,
-	  "a ring, gem, or amulet",
-	  3,
+      "a ring, gem, or amulet",
+      3,
       D_SHOP,
       { { 85, RING_CLASS },
         { 10, GEM_CLASS },
         { 5, AMULET_CLASS },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
         { 0, 0 },
         { 0, 0 } },
       shkrings },
     { "quality apparel and accessories",
       WAND_CLASS,
-	  "a wand or apparel",
-	  3,
+      "a wand or apparel",
+      3,
       D_SHOP,
       { { 90, WAND_CLASS },
         { 5, -LEATHER_GLOVES },
         { 5, -ELVEN_CLOAK },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 } },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 } },
       shkwands },
     { "hardware store",
       TOOL_CLASS,
-	  "a tool",
-	  3,
+      "a tool",
+      3,
       D_SHOP,
       { { 100, TOOL_CLASS },
         { 0, 0 },
         { 0, 0 },
         { 0, 0 },
         { 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 } },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 } },
       shktools },
-	{ "rare books",
+    { "rare books",
       SPBOOK_CLASS,
-	  "a spellbook or scroll",
-	  3,
+      "a spellbook or scroll",
+      3,
       D_SHOP,
       { { 90, SPBOOK_CLASS },
         { 10, SCROLL_CLASS },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
         { 0, 0 },
         { 0, 0 },
         { 0, 0 } },
       shkbooks },
-	{ "quality reagents and components",
-		REAGENT_CLASS,
-	    "a reagent or gem",
-		3,
-		D_SHOP,
-		{ { 50, REAGENT_CLASS },
-		  { 40, GEM_CLASS },
-		  { 1, -BONE_DAGGER },
-		  { 2, -HOLY_SYMBOL },
-		  { 3, -MAGIC_MUSHROOM },
-		  { 2, -PANTHER_CAP },
-		  { 2, -DEATH_CAP },
-		  { 0, 0 },
-		  { 0, 0 },
-		  { 0, 0 } },
-		shkreagents },
+    { "quality reagents and components",
+        REAGENT_CLASS,
+        "a reagent or gem",
+        3,
+        D_SHOP,
+        { { 50, REAGENT_CLASS },
+          { 40, GEM_CLASS },
+          { 1, -BONE_DAGGER },
+          { 2, -HOLY_SYMBOL },
+          { 3, -MAGIC_MUSHROOM },
+          { 2, -PANTHER_CAP },
+          { 2, -DEATH_CAP },
+          { 0, 0 },
+          { 0, 0 },
+          { 0, 0 } },
+        shkreagents },
     { "exquisite concoctions and recipes",
         ILLOBJ_CLASS,
         "a potion or scroll",
@@ -411,19 +411,19 @@ const struct shclass shtypes[] = {
         shkmodron },
     { "health food store",
       FOOD_CLASS,
-	  "a health food item",
-	  2,
+      "a health food item",
+      2,
       D_SHOP,
       { { 67, VEGETARIAN_CLASS },
         { 19, -POT_FRUIT_JUICE },
         { 4, -POT_HEALING },
         { 3, -POT_FULL_HEALING },
         { 2, -SCR_FOOD_DETECTION },
-		{ 1, -LUMP_OF_ROYAL_JELLY  },
-		{ 3, -POT_GREATER_HEALING  },
-		{ 1, -BAG_OF_THE_GLUTTON },
-		{ 0, 0 },
-		{ 0, 0 } },
+        { 1, -LUMP_OF_ROYAL_JELLY  },
+        { 3, -POT_GREATER_HEALING  },
+        { 1, -BAG_OF_THE_GLUTTON },
+        { 0, 0 },
+        { 0, 0 } },
       shkhealthfoods },
     /* Shops below this point are "unique".  That is they must all have a
      * probability of zero.  They are only created via the special level
@@ -431,8 +431,8 @@ const struct shclass shtypes[] = {
      */
     { "lighting store",
       TOOL_CLASS,
-	  "a lighting item",
-	  0,
+      "a lighting item",
+      0,
       D_SHOP,
       { { 30, -WAX_CANDLE },
         { 45, -TALLOW_CANDLE },
@@ -440,15 +440,15 @@ const struct shclass shtypes[] = {
         { 9, -OIL_LAMP },
         { 3, -MAGIC_LAMP },
         { 5, -POT_OIL },
-		{ 3, -MAGIC_CANDLE },
-		{ 0, 0 },
-		{ 0, 0 },
-		{ 0, 0 } },
-		  shklight },
-		  /* sentinel */
+        { 3, -MAGIC_CANDLE },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 } },
+          shklight },
+          /* sentinel */
     { (char *) 0,
       0,
-	  (char*)0,
+      (char*)0,
       0,
       0,
       { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } },
@@ -527,11 +527,11 @@ shkveg()
             maxprob += objects[i].oc_prob;
         }
     }
-	if (maxprob < 1)
-	{
-		panic("shkveg no veggy objects");
-		return 0;
-	}
+    if (maxprob < 1)
+    {
+        panic("shkveg no veggy objects");
+        return 0;
+    }
     prob = rnd(maxprob);
 
     j = 0;
@@ -570,40 +570,40 @@ boolean deserted;
     struct permonst *ptr;
     int atype;
 
-	if (deserted && mkspecl)
-	{
-		if (!MON_AT(sx, sy) && !t_at(sx, sy)
-			&& (mtmp = makemon(&mons[PM_GARGANTUAN_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
-			/* note: makemon will set the mimic symbol to a shop item */
-			if (rn2(10) >= depth(&u.uz)) {
-				mtmp->m_ap_type = M_AP_OBJECT;
-				mtmp->mappearance = STRANGE_OBJECT;
-			}
-			(void)mongets(mtmp, WAN_IDENTIFY);
-		}
-		else
-		{
-			(void)mksobj_at(WAN_IDENTIFY, sx, sy, TRUE, FALSE);
-		}
-		return;
-	}
-	else
-	{
-		/* 3.6 tribute */
-		if (mkspecl && (!strcmp(shp->name, "rare books")
-						|| !strcmp(shp->name, "second-hand bookstore"))) {
-			struct obj *novel = mksobj_at(SPE_NOVEL, sx, sy, FALSE, FALSE);
+    if (deserted && mkspecl)
+    {
+        if (!MON_AT(sx, sy) && !t_at(sx, sy)
+            && (mtmp = makemon(&mons[PM_GARGANTUAN_MIMIC], sx, sy, NO_MM_FLAGS)) != 0) {
+            /* note: makemon will set the mimic symbol to a shop item */
+            if (rn2(10) >= depth(&u.uz)) {
+                mtmp->m_ap_type = M_AP_OBJECT;
+                mtmp->mappearance = STRANGE_OBJECT;
+            }
+            (void)mongets(mtmp, WAN_IDENTIFY);
+        }
+        else
+        {
+            (void)mksobj_at(WAN_IDENTIFY, sx, sy, TRUE, FALSE);
+        }
+        return;
+    }
+    else
+    {
+        /* 3.6 tribute */
+        if (mkspecl && (!strcmp(shp->name, "rare books")
+                        || !strcmp(shp->name, "second-hand bookstore"))) {
+            struct obj *novel = mksobj_at(SPE_NOVEL, sx, sy, FALSE, FALSE);
 
-			if (novel)
-				context.tribute.bookstock = TRUE;
-			return;
-		}
-	}
+            if (novel)
+                context.tribute.bookstock = TRUE;
+            return;
+        }
+    }
     if ((!deserted && rn2(100) < min(10, depth(&u.uz)) && !MON_AT(sx, sy) && !t_at(sx, sy)
         && (ptr = mkclass(S_MIMIC, 0)) != 0
         && (mtmp = makemon(ptr, sx, sy, NO_MM_FLAGS)) != 0) || (deserted && !rn2(4) && !MON_AT(sx, sy)
-			&& (ptr = mkclass(S_MIMIC, 0)) != 0
-			&& (mtmp = makemon(ptr, sx, sy, NO_MM_FLAGS)) != 0)) {
+            && (ptr = mkclass(S_MIMIC, 0)) != 0
+            && (mtmp = makemon(ptr, sx, sy, NO_MM_FLAGS)) != 0)) {
         /* note: makemon will set the mimic symbol to a shop item */
         if (rn2(10) >= depth(&u.uz)) {
             mtmp->m_ap_type = M_AP_OBJECT;
@@ -917,17 +917,17 @@ boolean deserted;
     const struct shclass *shp = &shtypes[shp_indx];
 
     /* first, try to place a shopkeeper in the room */
-	if(!deserted)
-	{
-		if ((sh = shkinit(shp, sroom)) < 0)
-			return;
-	}
+    if(!deserted)
+    {
+        if ((sh = shkinit(shp, sroom)) < 0)
+            return;
+    }
 
-	/* make sure no doorways without doors, and no trapped doors, in shops */
+    /* make sure no doorways without doors, and no trapped doors, in shops */
     sx = doors[sroom->fdoor].x;
     sy = doors[sroom->fdoor].y;
     if ((levl[sx][sy].doormask & D_MASK) == D_NODOOR && (!deserted || !rn2(2)))
-	{
+    {
         levl[sx][sy].doormask &= ~D_MASK;
         levl[sx][sy].doormask |= D_ISOPEN;
         newsym(sx, sy);
@@ -994,10 +994,10 @@ boolean deserted;
      * monsters will sit on top of objects and not the other way around.
      */
 
-	if(deserted)
-		level.flags.has_desertedshop = TRUE;
-	else
-		level.flags.has_shop = TRUE;
+    if(deserted)
+        level.flags.has_desertedshop = TRUE;
+    else
+        level.flags.has_shop = TRUE;
 }
 
 /* does shkp's shop stock this item type? */
@@ -1014,11 +1014,11 @@ struct obj *obj;
     for (i = 0; i < SIZE(shtypes[0].iprobs) && shp->iprobs[i].iprob; i++) {
         /* pseudo-class needs special handling */
         if (shp->iprobs[i].itype == VEGETARIAN_CLASS)
-		{
+        {
             if (veggy_item(obj, 0))
                 return TRUE;
         }
-		else if ((shp->iprobs[i].itype < 0)
+        else if ((shp->iprobs[i].itype < 0)
                        ? shp->iprobs[i].itype == -obj->otyp
                        : shp->iprobs[i].itype == obj->oclass)
             return TRUE;
@@ -1047,8 +1047,8 @@ char *
 Shknam(mtmp)
 struct monst *mtmp;
 {
-	char* nam;
-	nam = shkname(mtmp);
+    char* nam;
+    nam = shkname(mtmp);
 
     /* 'nam[]' is almost certainly already capitalized, but be sure */
     *nam = highc(*nam);
@@ -1062,22 +1062,22 @@ char *
 shkname(mtmp)
 struct monst *mtmp;
 {
-	static char nam[BUFSZ] = "shopkeeper";
+    static char nam[BUFSZ] = "shopkeeper";
 
     unsigned save_isshk = mtmp->isshk;
 
     mtmp->isshk = 0; /* don't want mon_nam() calling shkname() */
-	if (mtmp->data)
-		strcpy(nam, noit_mon_nam(mtmp));
-	/* get a modifiable name buffer along with fallback result */
+    if (mtmp->data)
+        strcpy(nam, noit_mon_nam(mtmp));
+    /* get a modifiable name buffer along with fallback result */
     mtmp->isshk = save_isshk;
 
     if (!mtmp->isshk) {
-		impossible("shkname: \"%s\" is not a shopkeeper.", nam);
+        impossible("shkname: \"%s\" is not a shopkeeper.", nam);
     } else if (!has_eshk(mtmp)) {
-		panic("shkname: shopkeeper \"%s\" lacks 'eshk' data.", nam);
+        panic("shkname: shopkeeper \"%s\" lacks 'eshk' data.", nam);
         strcpy(nam, "");
-		return nam;
+        return nam;
     } else {
         const char *shknm = ESHK(mtmp)->shknam;
 
@@ -1112,8 +1112,8 @@ const char*
 shoptypename(shoptype)
 int shoptype;
 {
-	const char* shopname = shtypes[shoptype - SHOPBASE].name;
-	return shopname;
+    const char* shopname = shtypes[shoptype - SHOPBASE].name;
+    return shopname;
 }
 
 boolean

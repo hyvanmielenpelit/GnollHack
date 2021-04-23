@@ -1,5 +1,5 @@
-/* NetHack 0.1	recover.c	$NHDT-Date: 1550103078 2019/02/14 00:11:18 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.19 $ */
-/*	Copyright (c) Janet Walz, 1992.				  */
+/* NetHack 0.1    recover.c    $NHDT-Date: 1550103078 2019/02/14 00:11:18 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.19 $ */
+/*    Copyright (c) Janet Walz, 1992.                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 /*
@@ -203,9 +203,9 @@ int ifd, ofd;
 
     do {
         nfrom = read(ifd, buf, BUFSIZ);
-		unsigned unfrom = (unsigned)nfrom;
-		if (unfrom > BUFSIZ)
-			unfrom = BUFSIZ;
+        unsigned unfrom = (unsigned)nfrom;
+        if (unfrom > BUFSIZ)
+            unfrom = BUFSIZ;
         nto = write(ofd, buf, unfrom);
         if (nto != nfrom) {
             Fprintf(stderr, "file copy failed!\n");
@@ -219,8 +219,8 @@ restore_savefile(basename)
 char *basename;
 {
     int gfd, lfd, sfd;
-	int res = 0, lev, savelev, hpid;
-	int pltmpsiz = PL_NSIZ;
+    int res = 0, lev, savelev, hpid;
+    int pltmpsiz = PL_NSIZ;
     xchar levc;
     struct version_info version_data;
     struct savefile_info sfi;

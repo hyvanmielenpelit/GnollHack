@@ -66,7 +66,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_yeenoghu_level;  /* unused */
     d_level d_tarrasque_level; /* unused */
     d_level d_portal_level;    /* only in goto_level() [do.c] */
-	d_level d_sanctum_level;
+    d_level d_sanctum_level;
     d_level d_earth_level;
     d_level d_water_level;
     d_level d_fire_level;
@@ -75,10 +75,10 @@ E struct dgn_topology { /* special dungeon levels for speed */
     xchar d_main_dungeon_dnum, d_gehennom_dnum, d_endgame_dnum;
     xchar d_tower_dnum;
     xchar d_sokoban_dnum;
-	xchar d_mines_dnum, d_quest_dnum;
-	d_level d_qstart_level, d_qlocate_level, d_nemesis_level;
+    xchar d_mines_dnum, d_quest_dnum;
+    d_level d_qstart_level, d_qlocate_level, d_nemesis_level;
     d_level d_knox_level;
-	d_level d_quinton_modron_level;
+    d_level d_quinton_modron_level;
     d_level d_quarton_modron_level;
     d_level d_tertian_modron_level;
     d_level d_secundus_modron_level;
@@ -305,10 +305,10 @@ E uchar monsyms[MAX_MONSTER_CLASSES];                      /* current class symb
 #include "obj.h"
 E NEARDATA struct obj *invent, *uarm, *uarmc, *uarmh, *uarms, *uarmg, *uarmf,
     *uarmu, /* under-wear, so to speak */
-	*uarmo, /* over-wear, so to speak */
-	*uarmb, /* bracers */
-	*umisc, *umisc2, *umisc3, *umisc4, *umisc5, /* miscellaneous */
-	*uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, *uswapwep2, *uquiver;
+    *uarmo, /* over-wear, so to speak */
+    *uarmb, /* bracers */
+    *umisc, *umisc2, *umisc3, *umisc4, *umisc5, /* miscellaneous */
+    *uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, *uswapwep2, *uquiver;
 
 #define uwep2 uarms
 

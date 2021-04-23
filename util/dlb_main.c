@@ -1,4 +1,4 @@
-/* GnollHack 4.0	dlb_main.c	$NHDT-Date: 1432512785 2015/05/25 00:13:05 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0    dlb_main.c    $NHDT-Date: 1432512785 2015/05/25 00:13:05 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1993. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -67,14 +67,14 @@ static char origdir[255] = "";
  *
  * dlb COMMANDoptions arg... files...
  * commands:
- *  dlb x	extract all files
- *  dlb c	build the archive
- *  dlb t	list the archive
+ *  dlb x    extract all files
+ *  dlb c    build the archive
+ *  dlb t    list the archive
  * options:
- *  v		verbose
- *  f file	specify archive file (default DLBFILE)
- *  I file	specify file for list of files (default LIBLISTFILE)
- *  C dir	chdir to dir (used ONCE, not like tar's -C)
+ *  v        verbose
+ *  f file    specify archive file (default DLBFILE)
+ *  I file    specify file for list of files (default LIBLISTFILE)
+ *  C dir    chdir to dir (used ONCE, not like tar's -C)
  */
 
 static void
@@ -158,8 +158,8 @@ char **argv;
 {
 #ifdef DLB
 #ifdef DLBLIB
-	int i;
-	size_t r;
+    int i;
+    size_t r;
     int ap = 2;                            /* argument pointer */
     int cp;                                /* command pointer */
     int iseen = 0, fseen = 0, verbose = 0; /* flags */
@@ -264,8 +264,8 @@ char **argv;
         xexit(EXIT_SUCCESS);
 
     case 'x': { /* extract archive contents */
-		int f;
-		size_t n;
+        int f;
+        size_t n;
         size_t remainder, total_read;
         char buf[BUFSIZ];
 
@@ -317,7 +317,7 @@ char **argv;
                 }
 
                 if (write(f, buf, (int)n) != (int)n) 
-				{
+                {
                     printf("Write Error in '%s'\n", lib.dir[i].fname);
                     xexit(EXIT_FAILURE);
                 }
@@ -522,7 +522,7 @@ size_t slen, dir_size, flen;
     for (i = 0; i < nfiles; i++) {
         sprintf(buf, ENTRY_FORMAT, ENC_NORMAL, /* encoding */
                 ld[i].fname,                   /* name */
-			(long)(ld[i].foffset + dir_size));     /* offset */
+            (long)(ld[i].foffset + dir_size));     /* offset */
         Write(out, buf, strlen(buf));
     }
 }

@@ -1,5 +1,5 @@
-/* GnollHack 4.0	trampoli.h	$NHDT-Date: 1433806581 2015/06/08 23:36:21 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
-/* Copyright (c) 1989, by Norm Meluch and Stephen Spackman	  */
+/* GnollHack 4.0    trampoli.h    $NHDT-Date: 1433806581 2015/06/08 23:36:21 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
+/* Copyright (c) 1989, by Norm Meluch and Stephen Spackman      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef TRAMPOLI_H

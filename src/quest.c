@@ -1,4 +1,4 @@
-/* GnollHack 4.0	quest.c	$NHDT-Date: 1505170343 2017/09/11 22:52:23 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.21 $ */
+/* GnollHack 4.0    quest.c    $NHDT-Date: 1505170343 2017/09/11 22:52:23 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.21 $ */
 /*      Copyright 1991, M. Stephenson             */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -121,10 +121,10 @@ struct obj *obj;
         /* in case we haven't seen the item yet (ie, currently blinded),
            this quest message describes it by name so mark it as seen */
         obj->dknown = 1;
-		/* Quest artifacts become identified by the artifact message */
-		obj->aknown = 1;
-		obj->nknown = 1;
-		/* only give this message once */
+        /* Quest artifacts become identified by the artifact message */
+        obj->aknown = 1;
+        obj->nknown = 1;
+        /* only give this message once */
         Qstat(touched_artifact) = TRUE;
         qt_pager(QT_GOTIT);
         exercise(A_WIS, TRUE);
@@ -429,8 +429,8 @@ STATIC_OVL boolean
 prisoner_speaks(mtmp)
 struct monst *mtmp;
 {
-	if (!mtmp)
-		return FALSE;
+    if (!mtmp)
+        return FALSE;
 
     if (mtmp->data == &mons[PM_PRISONER]
         && (mtmp->mstrategy & STRAT_WAITMASK)) {

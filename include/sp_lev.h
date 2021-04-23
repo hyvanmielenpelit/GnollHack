@@ -1,5 +1,5 @@
-/* GnollHack 4.0	sp_lev.h	$NHDT-Date: 1544930819 2018/12/16 03:26:59 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.25 $ */
-/* Copyright (c) 1989 by Jean-Christophe Collet			  */
+/* GnollHack 4.0    sp_lev.h    $NHDT-Date: 1544930819 2018/12/16 03:26:59 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.25 $ */
+/* Copyright (c) 1989 by Jean-Christophe Collet              */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef SP_LEV_H
@@ -461,17 +461,17 @@ typedef struct {
     Str_or_Len name;
     int corpsenm;
     short id, enchantment;
-	short charges;
-	int special_quality;
-	unsigned long speflags;
-	packed_coord coord;
+    short charges;
+    int special_quality;
+    unsigned long speflags;
+    packed_coord coord;
     xchar x, y, class, containment;
     schar curse_state;
     int quan;
     short buried;
     short lit;
     short eroded, locked, trapped, recharged, invis, greased, broken, indestructible, uses_up_key, no_pickup, open;
-	int elemental_enchantment;
+    int elemental_enchantment;
     int exceptionality;
     int mythic_prefix;
     int mythic_suffix;

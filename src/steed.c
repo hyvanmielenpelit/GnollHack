@@ -1,4 +1,4 @@
-/* GnollHack 4.0	steed.c	$NHDT-Date: 1545441042 2018/12/22 01:10:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.62 $ */
+/* GnollHack 4.0    steed.c    $NHDT-Date: 1545441042 2018/12/22 01:10:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.62 $ */
 /* Copyright (c) Kevin Hugo, 1998-1999. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -339,13 +339,13 @@ boolean force;      /* Quietly force this animal */
         return (FALSE);
     }
 
-	/* Reduce tameness */
-	if (!force && mtmp->mtame > 0 && !Role_if(PM_KNIGHT) && P_SKILL_LEVEL(P_RIDING) < P_EXPERT &&
-		!rn2(
-			P_SKILL_LEVEL(P_RIDING) < P_BASIC ? 10 : 
-			P_SKILL_LEVEL(P_RIDING) == P_BASIC ? 20 : 50 /* P_SKILLED */
-		)) /* must be tame at this point*/
-		mtmp->mtame--; /* reduce tameness if not knight */
+    /* Reduce tameness */
+    if (!force && mtmp->mtame > 0 && !Role_if(PM_KNIGHT) && P_SKILL_LEVEL(P_RIDING) < P_EXPERT &&
+        !rn2(
+            P_SKILL_LEVEL(P_RIDING) < P_BASIC ? 10 : 
+            P_SKILL_LEVEL(P_RIDING) == P_BASIC ? 20 : 50 /* P_SKILLED */
+        )) /* must be tame at this point*/
+        mtmp->mtame--; /* reduce tameness if not knight */
 
     if (!force && !Role_if(PM_KNIGHT) && !is_tame(mtmp)) 
     {
@@ -419,12 +419,12 @@ boolean force;      /* Quietly force this animal */
             You("and %s take flight together.", mon_nam(mtmp));
     }
     /* setuwep handles polearms differently when you're mounted */
-	update_unweapon();
-	/*
+    update_unweapon();
+    /*
     if (uwep && is_pole(uwep))
         unweapon = FALSE;
     */
-	u.usteed = mtmp;
+    u.usteed = mtmp;
     remove_monster(mtmp->mx, mtmp->my);
     teleds(mtmp->mx, mtmp->my, TRUE, FALSE);
     context.botl = context.botlx = TRUE;
@@ -608,8 +608,8 @@ int reason; /* Player was thrown off etc. */
         if (!has_mname(mtmp)) {
 //            pline("You've been through the dungeon on %s with no name.",
 //                  an(mtmp->data->mname));
-			You("dismount %s.", mon_nam(mtmp));
-			if (Hallucination)
+            You("dismount %s.", mon_nam(mtmp));
+            if (Hallucination)
                 pline("It felt good to get out of the rain.");
         } else
             You("dismount %s.", mon_nam(mtmp));
@@ -756,12 +756,12 @@ int reason; /* Player was thrown off etc. */
     } else
         context.botl = context.botlx = TRUE;
     /* polearms behave differently when not mounted */
-	update_unweapon();
-	/*
+    update_unweapon();
+    /*
     if (uwep && is_pole(uwep))
         unweapon = TRUE;
     */
-	return;
+    return;
 }
 
 /* when attempting to saddle or mount a sleeping steed, try to wake it up

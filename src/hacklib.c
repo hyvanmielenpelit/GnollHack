@@ -1,4 +1,4 @@
-/* GnollHack 4.0	hacklib.c	$NHDT-Date: 1552639487 2019/03/15 08:44:47 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.67 $ */
+/* GnollHack 4.0    hacklib.c    $NHDT-Date: 1552639487 2019/03/15 08:44:47 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.67 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2007. */
 /* Copyright (c) Robert Patrick Rankin, 1991                      */
@@ -574,11 +574,11 @@ int y;
     int r, m;
     int divsgn = 1;
 
-	if (y == 0)
-	{
-		panic("division by zero in rounddiv");
-		return 0;
-	}
+    if (y == 0)
+    {
+        panic("division by zero in rounddiv");
+        return 0;
+    }
     else if (y < 0) {
         divsgn = -divsgn;
         y = -y;
@@ -1158,8 +1158,8 @@ strbuf_append(strbuf, str)
 strbuf_t *strbuf;
 const char *str;
 {
-	if (!strbuf || !strbuf->str)
-		return;
+    if (!strbuf || !strbuf->str)
+        return;
 
     size_t len = strlen(str) + 1;
 
@@ -1175,14 +1175,14 @@ strbuf_t *strbuf;
 size_t len;
 {
     if (strbuf->str == NULL) 
-	{
+    {
         strbuf->str = strbuf->buf;
         strbuf->str[0] = '\0';
         strbuf->len = sizeof strbuf->buf;
     }
 
     if (len > strbuf->len) 
-	{
+    {
         char *oldbuf = strbuf->str;
 
         strbuf->len = len + sizeof strbuf->buf;

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	dungeon.c	$NHDT-Date: 1554341477 2019/04/04 01:31:17 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.92 $ */
+/* GnollHack 4.0    dungeon.c    $NHDT-Date: 1554341477 2019/04/04 01:31:17 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.92 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -108,7 +108,7 @@ dumpit()
                 x->flags.maze_like ? " maze_like" : "",
                 x->flags.hellish ? " hellish" : "",
                 x->flags.town ? " town" : "");
-		(void)getchar();
+        (void)getchar();
     }
     fprintf(stderr, "\nBranches:\n");
     for (br = branches; br; br = br->next) {
@@ -125,9 +125,9 @@ dumpit()
                 br->end1.dnum, br->end1.dlevel, br->end2.dnum,
                 br->end2.dlevel, br->end1_up ? "end1 up" : "end1 down");
     }
-	(void)getchar();
+    (void)getchar();
     fprintf(stderr, "\nDone\n");
-	(void)getchar();
+    (void)getchar();
 }
 #endif
 
@@ -215,12 +215,12 @@ int fd;
     }
 
     mread(fd, (genericptr_t) &count, sizeof(count));
-	if (count >= MAXLINFO)
-	{
-		panic("level information count larger (%d) than allocated size",
-			count);
-		return;
-	}
+    if (count >= MAXLINFO)
+    {
+        panic("level information count larger (%d) than allocated size",
+            count);
+        return;
+    }
     mread(fd, (genericptr_t) level_info,
           (size_t) count * sizeof(struct linfo));
     mread(fd, (genericptr_t) &inv_pos, sizeof inv_pos);
@@ -292,11 +292,11 @@ struct proto_dungeon *pd;
         for (i = 0; i < pd->n_brs; i++)
             if (!strcmp(pd->tmpbranch[i].name, s))
                 break;
-		if (i == pd->n_brs)
-		{
-			panic("find_branch: can't find %s", s);
-			return 0;
-		}
+        if (i == pd->n_brs)
+        {
+            panic("find_branch: can't find %s", s);
+            return 0;
+        }
     } else {
         /* support for level tport by name */
         branch *br;
@@ -360,11 +360,11 @@ int *adjusted_base;
 
     if (chain >= 0) { /* relative to a special level */
         s_level *levtmp = pd->final_lev[chain];
-		if (!levtmp)
-		{
-			panic("level_range: empty chain level!");
-			return 0;
-		}
+        if (!levtmp)
+        {
+            panic("level_range: empty chain level!");
+            return 0;
+        }
         base += levtmp->dlevel.dlevel;
     } else { /* absolute in the dungeon */
         /* from end of dungeon */
@@ -372,11 +372,11 @@ int *adjusted_base;
             base = (lmax + base + 1);
     }
 
-	if (base < 1 || base > lmax)
-	{
-		panic("level_range: base value out of range");
-		return 0;
-	}
+    if (base < 1 || base > lmax)
+    {
+        panic("level_range: base value out of range");
+        return 0;
+    }
     *adjusted_base = base;
 
     if (randc == -1) { /* from base to end of dungeon */
@@ -452,13 +452,13 @@ boolean extract_first;
             if (curr == new_branch)
                 break;
 
-		if (!curr)
-		{
-			panic("insert_branch: not found");
-			return;
-		}
+        if (!curr)
+        {
+            panic("insert_branch: not found");
+            return;
+        }
 
-		if (prev)
+        if (prev)
             prev->next = curr->next;
         else
             branches = curr->next;
@@ -704,10 +704,10 @@ struct level_map {
                   { "castle", &stronghold_level },
                   { "earth", &earth_level },
                   { "fakewiz1", &portal_level },
-				  { "fire", &fire_level },
+                  { "fire", &fire_level },
                   { "juiblex", &juiblex_level },
                   { "knox", &knox_level },
-				  { "medusa", &medusa_level },
+                  { "medusa", &medusa_level },
                   { "minotaur", &minotaur_level },
                   { "modron1", &quinton_modron_level },
                   { "modron2", &quarton_modron_level },
@@ -731,7 +731,7 @@ struct level_map {
                   { X_START, &qstart_level },
                   { X_LOCATE, &qlocate_level },
                   { X_GOAL, &nemesis_level },
-				  { "", (d_level *) 0 } };
+                  { "", (d_level *) 0 } };
 
 /* initialize the "dungeon" structs */
 void
@@ -781,22 +781,22 @@ init_dungeons()
      */
     if (iflags.window_inited)
         clear_nhwindow(WIN_MAP);
-	if (!check_version(&vers_info, DUNGEON_FILE, TRUE))
-	{
-		panic("Dungeon description not valid.");
-		return;
-	}
+    if (!check_version(&vers_info, DUNGEON_FILE, TRUE))
+    {
+        panic("Dungeon description not valid.");
+        return;
+    }
     /*
      * Read in each dungeon and transfer the results to the internal
      * dungeon arrays.
      */
     sp_levchn = (s_level *) 0;
     Fread((genericptr_t) &n_dgns, sizeof(int), 1, dgn_file);
-	if (n_dgns >= MAXDUNGEON)
-	{
-		panic("init_dungeons: too many dungeons");
-		return;
-	}
+    if (n_dgns >= MAXDUNGEON)
+    {
+        panic("init_dungeons: too many dungeons");
+        return;
+    }
 
     for (i = 0; i < n_dgns; i++)
     {
@@ -915,12 +915,12 @@ init_dungeons()
 
         pd.start = pd.n_levs; /* save starting point */
         pd.n_levs += pd.tmpdungeon[i].levels;
-		if (pd.n_levs > LEV_LIMIT)
-		{
-			panic("init_dungeon: too many special levels");
-			return;
-		}
-		/*
+        if (pd.n_levs > LEV_LIMIT)
+        {
+            panic("init_dungeon: too many special levels");
+            return;
+        }
+        /*
          * Read in the prototype special levels.  Don't add generated
          * special levels until they are all placed.
          */
@@ -934,11 +934,11 @@ init_dungeons()
          * routine will attempt all possible combinations before giving
          * up.
          */
-		if (!place_level(pd.start, &pd))
-		{
-			panic("init_dungeon:  couldn't place levels");
-			return;
-		}
+        if (!place_level(pd.start, &pd))
+        {
+            panic("init_dungeon:  couldn't place levels");
+            return;
+        }
 #ifdef DDEBUG
         fprintf(stderr, "--- end of dungeon %d ---\n", i);
         fflush(stderr);
@@ -949,11 +949,11 @@ init_dungeons()
                 add_level(pd.final_lev[pd.start]);
 
         pd.n_brs += pd.tmpdungeon[i].branches;
-		if (pd.n_brs > BRANCH_LIMIT)
-		{
-			panic("init_dungeon: too many branches");
-			return;
-		}
+        if (pd.n_brs > BRANCH_LIMIT)
+        {
+            panic("init_dungeon: too many branches");
+            return;
+        }
 
         for (; cb < pd.n_brs; cb++)
             Fread((genericptr_t) &pd.tmpbranch[cb], sizeof(struct tmpbranch),
@@ -1007,7 +1007,7 @@ init_dungeons()
     sokoban_dnum = dname_to_dnum("Sokoban");
     mines_dnum = dname_to_dnum("The Gnomish Mines");
     tower_dnum = dname_to_dnum("Vlad's Tower");
-	modron_dnum = dname_to_dnum("Plane of the Modron");
+    modron_dnum = dname_to_dnum("Plane of the Modron");
     bovine_dnum = dname_to_dnum("Hellish Pastures");
     endgame_dnum = dname_to_dnum("The Elemental Planes");
     
@@ -1443,11 +1443,11 @@ xchar dgn;
                 for (br = branches; br; br = br->next)
                     if (br->end2.dnum == dgn)
                         break;
-				if (!br)
-				{
-					panic("get_level: can't find parent dungeon");
-					return;
-				}
+                if (!br)
+                {
+                    panic("get_level: can't find parent dungeon");
+                    return;
+                }
                 dgn = br->end1.dnum;
             } while (levnum < dungeons[dgn].depth_start);
         }
@@ -1481,7 +1481,7 @@ boolean
 In_modron_level(lev)
 d_level* lev;
 {
-	return (boolean)(lev->dnum == modron_dnum);
+    return (boolean)(lev->dnum == modron_dnum);
 }
 
 /* are you in the bovine level? */
@@ -1666,15 +1666,15 @@ level_difficulty()
 
     /* Maximum level limited to depth of sanctum level */
     if (In_endgame(&u.uz))
-	{
+    {
         res = deepest_lev_reached(FALSE);  //2 * depth(&sanctum_level); //ulevel removed, depth doubled from before
     } 
-	else if (u.uhave.amulet) 
-	{
+    else if (u.uhave.amulet) 
+    {
         res = deepest_lev_reached(FALSE); // 2 * deepest_lev_reached(FALSE) - depth(&u.uz);
     } 
-	else
-	{
+    else
+    {
         res = depth(&u.uz);
         /* depth() is the number of elevation units (levels) below
            the theoretical surface; in a builds-up branch, that value
@@ -1887,13 +1887,13 @@ STATIC_OVL const char *
 br_string(type)
 int type;
 {
-	static const char Portal[] = "Portal";
-	static const char Connection[] = "Connection";
-	static const char One_way_stair[] = "One way stair";
-	static const char Stair[] = "Stair";
-	static const char _Unknown[] = " (unknown)";
+    static const char Portal[] = "Portal";
+    static const char Connection[] = "Connection";
+    static const char One_way_stair[] = "One way stair";
+    static const char Stair[] = "Stair";
+    static const char _Unknown[] = " (unknown)";
 
-	switch (type) {
+    switch (type) {
     case BR_PORTAL:
         return Portal;
     case BR_NO_END1:
@@ -2355,13 +2355,13 @@ size_t* total_size;
 {
     char buf[BUFSZ], hdrbuf[QBUFSZ];
     long ocount, bcount, acount;
-	size_t osize, bsize, asize;
-	struct cemetery *ce;
+    size_t osize, bsize, asize;
+    struct cemetery *ce;
     mapseen *mptr = find_mapseen(&u.uz);
 
     ocount = bcount = acount = 0L;
-	osize = bsize = asize = 0;
-	for (mptr = mapseenchn; mptr; mptr = mptr->next) {
+    osize = bsize = asize = 0;
+    for (mptr = mapseenchn; mptr; mptr = mptr->next) {
         ++ocount;
         osize += sizeof *mptr;
         for (ce = mptr->final_resting_place; ce; ce = ce->next) {
@@ -3004,9 +3004,9 @@ int rtype;
     case BOOKSHOP:
         str = "bookstore";
         break;
-	case REAGENTSHOP:
-		str = "reagent shop";
-		break;
+    case REAGENTSHOP:
+        str = "reagent shop";
+        break;
     case MODRONSHOP:
         str = "alien shop";
         break;

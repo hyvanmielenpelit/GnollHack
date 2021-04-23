@@ -1,4 +1,4 @@
-/* GnollHack 4.0	display.c	$NHDT-Date: 1556835736 2019/05/02 22:22:16 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.101 $ */
+/* GnollHack 4.0    display.c    $NHDT-Date: 1556835736 2019/05/02 22:22:16 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.101 $ */
 /* Copyright (c) Dean Luick, with acknowledgements to Kevin Darcy */
 /* and Dave Cohrs, 1990.                                          */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -172,9 +172,9 @@ int
 artifact_to_obj(artifactid)
 int artifactid;
 {
-	if (artifactid <= 0 || artifactid > NUM_ARTIFACTS || artifactid == NO_GLYPH)
-		return STRANGE_OBJECT;
-	return (int)artilist[artifactid].otyp;
+    if (artifactid <= 0 || artifactid > NUM_ARTIFACTS || artifactid == NO_GLYPH)
+        return STRANGE_OBJECT;
+    return (int)artilist[artifactid].otyp;
 
 }
 /*
@@ -863,8 +863,8 @@ struct monst *mon;
 
         //tmp = (int) ((ratio + 0.4) / 0.4);    /* match display.h */
         wl = (tmp > WARNCOUNT - 1) ? WARNCOUNT - 1 : tmp;
-		if (wl < 0)
-			wl = 0;
+        if (wl < 0)
+            wl = 0;
     }
     return wl;
 }
@@ -1503,25 +1503,25 @@ void
 talkeff(x, y)
 xchar x, y;
 {
-	register int i;
+    register int i;
 
-	if (!flags.sparkle)
-		return;
-	if (cansee(x, y)) { /* Don't see anything if can't see the location */
-		boolean showmon = FALSE;
+    if (!flags.sparkle)
+        return;
+    if (cansee(x, y)) { /* Don't see anything if can't see the location */
+        boolean showmon = FALSE;
         int rounds = flags.talk_effect_length > 0 && flags.talk_effect_length <= TALK_COUNT ? flags.talk_effect_length : GNH_DEF_TALK_COUNT;
-		for (i = 0; i < rounds; i++) {
-			if (showmon)
-				newsym(x, y); /* restore the old information */
-			else
-				show_glyph(x, y, cmap_to_glyph(S_talkeffect));
-			flush_screen(1); /* make sure the glyph shows up */
+        for (i = 0; i < rounds; i++) {
+            if (showmon)
+                newsym(x, y); /* restore the old information */
+            else
+                show_glyph(x, y, cmap_to_glyph(S_talkeffect));
+            flush_screen(1); /* make sure the glyph shows up */
             adjusted_delay_output();
             adjusted_delay_output();
-			showmon = !showmon;
-		}
-		newsym(x, y); /* restore the old information */
-	}
+            showmon = !showmon;
+        }
+        newsym(x, y); /* restore the old information */
+    }
 }
 
 
@@ -1615,11 +1615,11 @@ int x, y;
         break;
     }
 
-	if (!tglyph)
-	{
-		panic("tmp_at: tglyph not initialized");
-		return;
-	}
+    if (!tglyph)
+    {
+        panic("tmp_at: tglyph not initialized");
+        return;
+    }
 
     switch (x) {
     case DISP_CHANGE:
@@ -1910,20 +1910,20 @@ see_monsters()
 {
     register struct monst *mon;
     int new_warn_obj_cnt = 0;
-	int new_demon_warn_obj_cnt = 0;
-	int new_undead_warn_obj_cnt = 0;
-	int new_orc_warn_obj_cnt = 0;
-	int new_troll_warn_obj_cnt = 0;
-	int new_giant_warn_obj_cnt = 0;
-	int new_dragon_warn_obj_cnt = 0;
-	int new_elf_warn_obj_cnt = 0;
-	int new_dwarf_warn_obj_cnt = 0;
-	int new_gnoll_warn_obj_cnt = 0;
-	int new_gnome_warn_obj_cnt = 0;
-	int new_ogre_warn_obj_cnt = 0;
-	int new_human_warn_obj_cnt = 0;
-	int new_were_warn_obj_cnt = 0;
-	int new_angel_warn_obj_cnt = 0;
+    int new_demon_warn_obj_cnt = 0;
+    int new_undead_warn_obj_cnt = 0;
+    int new_orc_warn_obj_cnt = 0;
+    int new_troll_warn_obj_cnt = 0;
+    int new_giant_warn_obj_cnt = 0;
+    int new_dragon_warn_obj_cnt = 0;
+    int new_elf_warn_obj_cnt = 0;
+    int new_dwarf_warn_obj_cnt = 0;
+    int new_gnoll_warn_obj_cnt = 0;
+    int new_gnome_warn_obj_cnt = 0;
+    int new_ogre_warn_obj_cnt = 0;
+    int new_human_warn_obj_cnt = 0;
+    int new_were_warn_obj_cnt = 0;
+    int new_angel_warn_obj_cnt = 0;
 
     if (defer_see_monsters)
         return;
@@ -1935,123 +1935,123 @@ see_monsters()
         if (mon->wormno)
             see_wsegs(mon);
 
-		/* Note: The warning weapons flicker even for peaceful monsters */
+        /* Note: The warning weapons flicker even for peaceful monsters */
         if (Warn_of_mon && (context.warntype.obj & mon->data->mflags2) != 0L)
             new_warn_obj_cnt++;
-		if (Demon_warning && (mon->data->mflags2 & M2_DEMON) != 0L)
-			new_demon_warn_obj_cnt++;
-		if (Undead_warning && (mon->data->mflags2 & M2_UNDEAD) != 0L)
-			new_undead_warn_obj_cnt++;
-		if (Orc_warning && (mon->data->mflags2 & M2_ORC) != 0L)
-			new_orc_warn_obj_cnt++;
-		if (Troll_warning && (mon->data->mlet == S_TROLL))
-			new_troll_warn_obj_cnt++;
-		if (Giant_warning && (mon->data->mflags2 & M2_GIANT) != 0L)
-			new_giant_warn_obj_cnt++;
-		if (Dragon_warning && (mon->data->mlet == S_DRAGON))
-			new_dragon_warn_obj_cnt++;
-		if (Elf_warning && (mon->data->mflags2 & M2_ELF) != 0L)
-			new_elf_warn_obj_cnt++;
-		if (Dwarf_warning && (mon->data->mflags2 & M2_DWARF) != 0L)
-			new_dwarf_warn_obj_cnt++;
-		if (Gnoll_warning && (mon->data->mflags2 & M2_GNOLL) != 0L)
-			new_gnoll_warn_obj_cnt++;
-		if (Gnome_warning && (mon->data->mflags2 & M2_GNOME) != 0L)
-			new_gnome_warn_obj_cnt++;
-		if (Ogre_warning && (mon->data->mlet == S_OGRE))
-			new_ogre_warn_obj_cnt++;
-		if (Human_warning && (mon->data->mflags2 & M2_HUMAN) != 0L)
-			new_human_warn_obj_cnt++;
-		if (Lycanthrope_warning && (mon->data->mflags2 & M2_WERE) != 0L)
-			new_were_warn_obj_cnt++;
-		if (Angel_warning && (mon->data->mflags2 & M2_ANGEL) != 0L)
-			new_angel_warn_obj_cnt++;
-	}
+        if (Demon_warning && (mon->data->mflags2 & M2_DEMON) != 0L)
+            new_demon_warn_obj_cnt++;
+        if (Undead_warning && (mon->data->mflags2 & M2_UNDEAD) != 0L)
+            new_undead_warn_obj_cnt++;
+        if (Orc_warning && (mon->data->mflags2 & M2_ORC) != 0L)
+            new_orc_warn_obj_cnt++;
+        if (Troll_warning && (mon->data->mlet == S_TROLL))
+            new_troll_warn_obj_cnt++;
+        if (Giant_warning && (mon->data->mflags2 & M2_GIANT) != 0L)
+            new_giant_warn_obj_cnt++;
+        if (Dragon_warning && (mon->data->mlet == S_DRAGON))
+            new_dragon_warn_obj_cnt++;
+        if (Elf_warning && (mon->data->mflags2 & M2_ELF) != 0L)
+            new_elf_warn_obj_cnt++;
+        if (Dwarf_warning && (mon->data->mflags2 & M2_DWARF) != 0L)
+            new_dwarf_warn_obj_cnt++;
+        if (Gnoll_warning && (mon->data->mflags2 & M2_GNOLL) != 0L)
+            new_gnoll_warn_obj_cnt++;
+        if (Gnome_warning && (mon->data->mflags2 & M2_GNOME) != 0L)
+            new_gnome_warn_obj_cnt++;
+        if (Ogre_warning && (mon->data->mlet == S_OGRE))
+            new_ogre_warn_obj_cnt++;
+        if (Human_warning && (mon->data->mflags2 & M2_HUMAN) != 0L)
+            new_human_warn_obj_cnt++;
+        if (Lycanthrope_warning && (mon->data->mflags2 & M2_WERE) != 0L)
+            new_were_warn_obj_cnt++;
+        if (Angel_warning && (mon->data->mflags2 & M2_ANGEL) != 0L)
+            new_angel_warn_obj_cnt++;
+    }
 
 
     /*
      * Make Sting and other similar objects glow blue or stop glowing if required.
      */
-	struct obj* uitem;
- 	for (uitem = invent; uitem; uitem = uitem->nobj)
-	{
-		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
-		{
-			int otyp = uitem->otyp;
-			boolean inappr = inappropriate_character_type(uitem);
-			boolean worn = is_obj_worn(uitem);
-			int old_count = uitem->detectioncount;
-			int new_count = 0;
-			boolean flicker_ability = FALSE;
+    struct obj* uitem;
+     for (uitem = invent; uitem; uitem = uitem->nobj)
+    {
+        if (!object_uses_spellbook_wand_flags_and_properties(uitem))
+        {
+            int otyp = uitem->otyp;
+            boolean inappr = inappropriate_character_type(uitem);
+            boolean worn = is_obj_worn(uitem);
+            int old_count = uitem->detectioncount;
+            int new_count = 0;
+            boolean flicker_ability = FALSE;
 
-			if (((worn|| (!worn && (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
-				&& ((!inappr && !(objects[otyp].oc_flags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
-					|| (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
-					|| (inappr && (objects[otyp].oc_flags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
-					))
-				|| (!worn && uitem->oartifact && artifact_has_flag(uitem, AF_FLICKERS_WHEN_CARRIED))
-				)
-			{
-				if (((objects[otyp].oc_flags & O1_FLICKERS_WHEN_MONSTERS_DETECTED) || (uitem->oartifact && (artifact_has_flag(uitem, AF_FLICKERS) || artifact_has_flag(uitem, AF_FLICKERS_WHEN_CARRIED))) )
-					&& item_has_specific_monster_warning(uitem))
-				{
-					flicker_ability = TRUE;
+            if (((worn|| (!worn && (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_WHEN_CARRIED)))
+                && ((!inappr && !(objects[otyp].oc_flags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+                    || (objects[otyp].oc_flags & O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS)
+                    || (inappr && (objects[otyp].oc_flags & (O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
+                    ))
+                || (!worn && uitem->oartifact && artifact_has_flag(uitem, AF_FLICKERS_WHEN_CARRIED))
+                )
+            {
+                if (((objects[otyp].oc_flags & O1_FLICKERS_WHEN_MONSTERS_DETECTED) || (uitem->oartifact && (artifact_has_flag(uitem, AF_FLICKERS) || artifact_has_flag(uitem, AF_FLICKERS_WHEN_CARRIED))) )
+                    && item_has_specific_monster_warning(uitem))
+                {
+                    flicker_ability = TRUE;
 
-					if (item_is_giving_power(uitem, WARN_OF_MON))
-						new_count += new_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_OF_MON))
+                        new_count += new_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_ORC))
-						new_count += new_orc_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_ORC))
+                        new_count += new_orc_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_DEMON))
-						new_count += new_demon_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_DEMON))
+                        new_count += new_demon_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_UNDEAD))
-						new_count += new_undead_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_UNDEAD))
+                        new_count += new_undead_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_TROLL))
-						new_count += new_troll_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_TROLL))
+                        new_count += new_troll_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_GIANT))
-						new_count += new_giant_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_GIANT))
+                        new_count += new_giant_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_DRAGON))
-						new_count += new_dragon_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_DRAGON))
+                        new_count += new_dragon_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_ELF))
-						new_count += new_elf_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_ELF))
+                        new_count += new_elf_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_DWARF))
-						new_count += new_dwarf_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_DWARF))
+                        new_count += new_dwarf_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_GNOLL))
-						new_count += new_gnoll_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_GNOLL))
+                        new_count += new_gnoll_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_GNOME))
-						new_count += new_gnome_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_GNOME))
+                        new_count += new_gnome_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_OGRE))
-						new_count += new_ogre_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_OGRE))
+                        new_count += new_ogre_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_HUMAN))
-						new_count += new_human_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_HUMAN))
+                        new_count += new_human_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_LYCANTHROPE))
-						new_count += new_were_warn_obj_cnt;
+                    if (item_is_giving_power(uitem, WARN_LYCANTHROPE))
+                        new_count += new_were_warn_obj_cnt;
 
-					if (item_is_giving_power(uitem, WARN_ANGEL))
-						new_count += new_angel_warn_obj_cnt;
-				}
-			}
-			if (flicker_ability)
-			{
-				if (new_count != old_count)
-					Sting_effects(uitem, new_count);
+                    if (item_is_giving_power(uitem, WARN_ANGEL))
+                        new_count += new_angel_warn_obj_cnt;
+                }
+            }
+            if (flicker_ability)
+            {
+                if (new_count != old_count)
+                    Sting_effects(uitem, new_count);
 
-				uitem->detectioncount = new_count;
-			}
-		}
-	}
+                uitem->detectioncount = new_count;
+            }
+        }
+    }
 
 
 
@@ -2750,31 +2750,31 @@ int x, y, glyph;
             text = "player character";
             offset = glyph - GLYPH_PLAYER_OFF;
         } else if (glyph >= GLYPH_ARTIFACT_MISSILE_OFF
-			&& glyph < GLYPH_PLAYER_OFF) { /* an artifact as missile */
-			text = "artifact missile";
-			offset = glyph - GLYPH_ARTIFACT_MISSILE_OFF;
+            && glyph < GLYPH_PLAYER_OFF) { /* an artifact as missile */
+            text = "artifact missile";
+            offset = glyph - GLYPH_ARTIFACT_MISSILE_OFF;
         } else if (glyph >= GLYPH_ARTIFACT_OFF
-			&& glyph < GLYPH_ARTIFACT_MISSILE_OFF) { /* an artifact */
-			text = "artifact";
-			offset = glyph - GLYPH_ARTIFACT_OFF;
+            && glyph < GLYPH_ARTIFACT_MISSILE_OFF) { /* an artifact */
+            text = "artifact";
+            offset = glyph - GLYPH_ARTIFACT_OFF;
         } else if (glyph >= GLYPH_FEMALE_BODY_OFF) { /* female corpse */
             text = "female corpse";
             offset = glyph - GLYPH_FEMALE_BODY_OFF;
         } else if (glyph >= GLYPH_BODY_OFF) { /* a corpse */
             text = "corpse";
             offset = glyph - GLYPH_BODY_OFF;
-		} else if (glyph >= GLYPH_FEMALE_STATUE_OFF
-			&& glyph < GLYPH_BODY_OFF) { /* a female statue */
-			text = "female statue";
-			offset = glyph - GLYPH_FEMALE_STATUE_OFF;
-		} else if (glyph >= GLYPH_STATUE_OFF
-			&& glyph < GLYPH_FEMALE_STATUE_OFF) { /* a statue */
-			text = "statue";
-			offset = glyph - GLYPH_STATUE_OFF;
+        } else if (glyph >= GLYPH_FEMALE_STATUE_OFF
+            && glyph < GLYPH_BODY_OFF) { /* a female statue */
+            text = "female statue";
+            offset = glyph - GLYPH_FEMALE_STATUE_OFF;
+        } else if (glyph >= GLYPH_STATUE_OFF
+            && glyph < GLYPH_FEMALE_STATUE_OFF) { /* a statue */
+            text = "statue";
+            offset = glyph - GLYPH_STATUE_OFF;
         } else if (glyph >= GLYPH_WORM_OFF && glyph  < GLYPH_STATUE_OFF) { /* worm */
             text = "worm";
             offset = glyph - GLYPH_WORM_OFF;
-		} else if (glyph >= GLYPH_WARNING_OFF
+        } else if (glyph >= GLYPH_WARNING_OFF
             && glyph < GLYPH_WORM_OFF) { /* a warning */
             text = "warning";
             offset = glyph - GLYPH_WARNING_OFF;
@@ -3034,7 +3034,7 @@ xchar x, y;
         }
 
         break;
-	case GRASS:
+    case GRASS:
         idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
         if (ptr->subtyp > 0)
         {

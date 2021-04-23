@@ -1,4 +1,4 @@
-/* GnollHack 4.0	o_init.c	$NHDT-Date: 1545383615 2018/12/21 09:13:35 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.25 $ */
+/* GnollHack 4.0    o_init.c    $NHDT-Date: 1545383615 2018/12/21 09:13:35 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.25 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -362,20 +362,20 @@ init_objects()
         bases[i] = 0;
     
     for (i = 0; i < NUM_OBJECTS; i++)
-	{
-		/* initialize object descriptions */
-		objects[i].oc_name_idx = objects[i].oc_descr_idx = i;
-	}
-	
-	/* initialize object material components, if many pointing to the same spell, the last index remains */
-	matcomps_init();
+    {
+        /* initialize object descriptions */
+        objects[i].oc_name_idx = objects[i].oc_descr_idx = i;
+    }
+    
+    /* initialize object material components, if many pointing to the same spell, the last index remains */
+    matcomps_init();
 
-	for (int j = 0; matlists[j].spellsgained > 0; j++)
-	{
-		objects[matlists[j].spell_objectid].oc_material_components = j;
-	}
+    for (int j = 0; matlists[j].spellsgained > 0; j++)
+    {
+        objects[matlists[j].spell_objectid].oc_material_components = j;
+    }
 
-	/* init base; if probs given check that they add up to 1000,
+    /* init base; if probs given check that they add up to 1000,
        otherwise compute probs */
     first = 0;
     while (first < NUM_OBJECTS) {
@@ -445,72 +445,72 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
     case ARMOR_CLASS:
         if (otyp >= HELMET && otyp <= HELM_OF_TELEPATHY)
             *lo_p = HELMET, *hi_p = HELM_OF_TELEPATHY;
-		else if (otyp >= ROYAL_CROWN && otyp <= CROWN_OF_RULERSHIP)
-			*lo_p = ROYAL_CROWN, * hi_p = CROWN_OF_RULERSHIP;
-		else if (otyp >= CORNUTHAUM && otyp <= GNOMISH_FELT_HAT)
-			*lo_p = CORNUTHAUM, * hi_p = GNOMISH_FELT_HAT;
-		else if (otyp >= LEATHER_GLOVES && otyp <= GAUNTLETS_OF_DEXTERITY)
+        else if (otyp >= ROYAL_CROWN && otyp <= CROWN_OF_RULERSHIP)
+            *lo_p = ROYAL_CROWN, * hi_p = CROWN_OF_RULERSHIP;
+        else if (otyp >= CORNUTHAUM && otyp <= GNOMISH_FELT_HAT)
+            *lo_p = CORNUTHAUM, * hi_p = GNOMISH_FELT_HAT;
+        else if (otyp >= LEATHER_GLOVES && otyp <= GAUNTLETS_OF_DEXTERITY)
             *lo_p = LEATHER_GLOVES, *hi_p = GAUNTLETS_OF_DEXTERITY;
         else if (otyp >= CLOAK_OF_PROTECTION && otyp <= CLOAK_OF_DISPLACEMENT)
             *lo_p = CLOAK_OF_PROTECTION, *hi_p = CLOAK_OF_DISPLACEMENT;
         else if (otyp >= SPEED_BOOTS && otyp <= LEVITATION_BOOTS)
             *lo_p = SPEED_BOOTS, *hi_p = LEVITATION_BOOTS;
-		else if (otyp >= ROBE && otyp <= ROBE_OF_STARRY_WISDOM)
-			* lo_p = ROBE, * hi_p = ROBE_OF_STARRY_WISDOM;
-		else if (otyp >= LEATHER_BRACERS && otyp <= BRACERS_AGAINST_MAGIC_MISSILES)
-			* lo_p = LEATHER_BRACERS, * hi_p = BRACERS_AGAINST_MAGIC_MISSILES;
-		else if (otyp >= SHIRT_OF_UNCONTROLLABLE_LAUGHTER && otyp <= T_SHIRT)
-			* lo_p = SHIRT_OF_UNCONTROLLABLE_LAUGHTER, * hi_p = T_SHIRT;
-		break;
-	case WEAPON_CLASS:
-		if (otyp >= SWORD_OF_UNHOLY_DESECRATION && otyp <= NINE_LIVES_STEALER)
-			*lo_p = SWORD_OF_UNHOLY_DESECRATION, * hi_p = NINE_LIVES_STEALER;
-		else if (otyp >= STAFF_OF_THE_MAGI && otyp <= STAFF_OF_WITHERING)
-			*lo_p = STAFF_OF_THE_MAGI, * hi_p = STAFF_OF_WITHERING;
-		break;
-	case TOOL_CLASS:
-		if (otyp >= LEATHER_BAG && otyp <= BAG_OF_TRICKS)
-			*lo_p = LEATHER_BAG, * hi_p = BAG_OF_TRICKS;
-		if (otyp >= TALLOW_CANDLE && otyp <= MAGIC_CANDLE)
-			*lo_p = TALLOW_CANDLE, * hi_p = MAGIC_CANDLE;
-		if (otyp >= OIL_LAMP && otyp <= MAGIC_LAMP)
-			*lo_p = OIL_LAMP, * hi_p = MAGIC_LAMP;
-		if (otyp >= TIN_WHISTLE && otyp <= MAGIC_WHISTLE)
-			*lo_p = TIN_WHISTLE, * hi_p = MAGIC_WHISTLE;
-		if (otyp >= WOODEN_FLUTE && otyp <= MAGIC_FLUTE)
-			*lo_p = WOODEN_FLUTE, * hi_p = MAGIC_FLUTE;
-		if (otyp >= WOODEN_HARP && otyp <= MAGIC_HARP)
-			*lo_p = WOODEN_HARP, * hi_p = MAGIC_HARP;
-		if (otyp >= LEATHER_DRUM && otyp <= DRUM_OF_EARTHQUAKE)
-			*lo_p = LEATHER_DRUM, * hi_p = DRUM_OF_EARTHQUAKE;
-		if (otyp >= JAR_OF_EXTRA_HEALING_SALVE && otyp <= JAR_OF_PRODIGIOUS_HEALING_SALVE)
-			*lo_p = JAR_OF_EXTRA_HEALING_SALVE, * hi_p = JAR_OF_PRODIGIOUS_HEALING_SALVE;
-		if (otyp >= TOOLED_HORN && otyp <= HORN_OF_PLENTY)
-			*lo_p = TOOLED_HORN, * hi_p = HORN_OF_PLENTY;
-		break;
-	case MISCELLANEOUS_CLASS:
-		if (otyp >= IOUN_STONE_OF_PROTECTION && otyp <= IOUN_STONE_OF_SUSTENANCE)
-			*lo_p = IOUN_STONE_OF_PROTECTION, * hi_p = IOUN_STONE_OF_SUSTENANCE;
-		else if (otyp >= LEATHER_BELT && otyp <= BELT_OF_STORM_GIANT_STRENGTH)
-			*lo_p = LEATHER_BELT, * hi_p = BELT_OF_STORM_GIANT_STRENGTH;
-		else if (otyp >= NOSE_RING_OF_BULL_STRENGTH && otyp <= NOSE_RING_OF_CEREBRAL_SAFEGUARDING)
-			*lo_p = NOSE_RING_OF_BULL_STRENGTH, * hi_p = NOSE_RING_OF_CEREBRAL_SAFEGUARDING;
-		else if (otyp >= LENSES && otyp <= EYEGLASSES_OF_SEE_INVISIBLE)
-			*lo_p = LENSES, * hi_p = EYEGLASSES_OF_SEE_INVISIBLE;
-		else if (otyp >= GOGGLES_OF_NIGHT && otyp <= GOGGLES_OF_EYE_PROTECTION)
-			*lo_p = GOGGLES_OF_NIGHT, * hi_p = GOGGLES_OF_EYE_PROTECTION;
-		break;
-	case FOOD_CLASS:
-		if (otyp >= CHAMPIGNON && otyp <= MAGIC_MUSHROOM)
-			*lo_p = CHAMPIGNON, * hi_p = MAGIC_MUSHROOM;
-		break;
-	case POTION_CLASS:
+        else if (otyp >= ROBE && otyp <= ROBE_OF_STARRY_WISDOM)
+            * lo_p = ROBE, * hi_p = ROBE_OF_STARRY_WISDOM;
+        else if (otyp >= LEATHER_BRACERS && otyp <= BRACERS_AGAINST_MAGIC_MISSILES)
+            * lo_p = LEATHER_BRACERS, * hi_p = BRACERS_AGAINST_MAGIC_MISSILES;
+        else if (otyp >= SHIRT_OF_UNCONTROLLABLE_LAUGHTER && otyp <= T_SHIRT)
+            * lo_p = SHIRT_OF_UNCONTROLLABLE_LAUGHTER, * hi_p = T_SHIRT;
+        break;
+    case WEAPON_CLASS:
+        if (otyp >= SWORD_OF_UNHOLY_DESECRATION && otyp <= NINE_LIVES_STEALER)
+            *lo_p = SWORD_OF_UNHOLY_DESECRATION, * hi_p = NINE_LIVES_STEALER;
+        else if (otyp >= STAFF_OF_THE_MAGI && otyp <= STAFF_OF_WITHERING)
+            *lo_p = STAFF_OF_THE_MAGI, * hi_p = STAFF_OF_WITHERING;
+        break;
+    case TOOL_CLASS:
+        if (otyp >= LEATHER_BAG && otyp <= BAG_OF_TRICKS)
+            *lo_p = LEATHER_BAG, * hi_p = BAG_OF_TRICKS;
+        if (otyp >= TALLOW_CANDLE && otyp <= MAGIC_CANDLE)
+            *lo_p = TALLOW_CANDLE, * hi_p = MAGIC_CANDLE;
+        if (otyp >= OIL_LAMP && otyp <= MAGIC_LAMP)
+            *lo_p = OIL_LAMP, * hi_p = MAGIC_LAMP;
+        if (otyp >= TIN_WHISTLE && otyp <= MAGIC_WHISTLE)
+            *lo_p = TIN_WHISTLE, * hi_p = MAGIC_WHISTLE;
+        if (otyp >= WOODEN_FLUTE && otyp <= MAGIC_FLUTE)
+            *lo_p = WOODEN_FLUTE, * hi_p = MAGIC_FLUTE;
+        if (otyp >= WOODEN_HARP && otyp <= MAGIC_HARP)
+            *lo_p = WOODEN_HARP, * hi_p = MAGIC_HARP;
+        if (otyp >= LEATHER_DRUM && otyp <= DRUM_OF_EARTHQUAKE)
+            *lo_p = LEATHER_DRUM, * hi_p = DRUM_OF_EARTHQUAKE;
+        if (otyp >= JAR_OF_EXTRA_HEALING_SALVE && otyp <= JAR_OF_PRODIGIOUS_HEALING_SALVE)
+            *lo_p = JAR_OF_EXTRA_HEALING_SALVE, * hi_p = JAR_OF_PRODIGIOUS_HEALING_SALVE;
+        if (otyp >= TOOLED_HORN && otyp <= HORN_OF_PLENTY)
+            *lo_p = TOOLED_HORN, * hi_p = HORN_OF_PLENTY;
+        break;
+    case MISCELLANEOUS_CLASS:
+        if (otyp >= IOUN_STONE_OF_PROTECTION && otyp <= IOUN_STONE_OF_SUSTENANCE)
+            *lo_p = IOUN_STONE_OF_PROTECTION, * hi_p = IOUN_STONE_OF_SUSTENANCE;
+        else if (otyp >= LEATHER_BELT && otyp <= BELT_OF_STORM_GIANT_STRENGTH)
+            *lo_p = LEATHER_BELT, * hi_p = BELT_OF_STORM_GIANT_STRENGTH;
+        else if (otyp >= NOSE_RING_OF_BULL_STRENGTH && otyp <= NOSE_RING_OF_CEREBRAL_SAFEGUARDING)
+            *lo_p = NOSE_RING_OF_BULL_STRENGTH, * hi_p = NOSE_RING_OF_CEREBRAL_SAFEGUARDING;
+        else if (otyp >= LENSES && otyp <= EYEGLASSES_OF_SEE_INVISIBLE)
+            *lo_p = LENSES, * hi_p = EYEGLASSES_OF_SEE_INVISIBLE;
+        else if (otyp >= GOGGLES_OF_NIGHT && otyp <= GOGGLES_OF_EYE_PROTECTION)
+            *lo_p = GOGGLES_OF_NIGHT, * hi_p = GOGGLES_OF_EYE_PROTECTION;
+        break;
+    case FOOD_CLASS:
+        if (otyp >= CHAMPIGNON && otyp <= MAGIC_MUSHROOM)
+            *lo_p = CHAMPIGNON, * hi_p = MAGIC_MUSHROOM;
+        break;
+    case POTION_CLASS:
         /* potion of water has the only fixed description */
         *lo_p = bases[POTION_CLASS];
         *hi_p = POT_WATER - 1;
         break;
     case AMULET_CLASS:
-	case SCROLL_CLASS:
+    case SCROLL_CLASS:
     case SPBOOK_CLASS:
         /* exclude non-magic types and also unique ones */
         *lo_p = bases[ocls];
@@ -519,23 +519,23 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
                 break;
         *hi_p = i - 1;
         break;
-	case RING_CLASS:
-		if (otyp >= RIN_ADORNMENT && otyp <= RIN_PROTECTION_FROM_SHAPE_CHANGERS)
-			*lo_p = RIN_ADORNMENT, * hi_p = RIN_PROTECTION_FROM_SHAPE_CHANGERS;
-		break;
+    case RING_CLASS:
+        if (otyp >= RIN_ADORNMENT && otyp <= RIN_PROTECTION_FROM_SHAPE_CHANGERS)
+            *lo_p = RIN_ADORNMENT, * hi_p = RIN_PROTECTION_FROM_SHAPE_CHANGERS;
+        break;
     case WAND_CLASS:
         if (otyp >= WAN_LIGHT && otyp <= LAST_SHUFFLED_WAND)
             *lo_p = WAN_LIGHT, * hi_p = LAST_SHUFFLED_WAND;
         break;
     case REAGENT_CLASS:
-	case VENOM_CLASS:
+    case VENOM_CLASS:
         /* entire class */
         *lo_p = bases[ocls];
         for (i = *lo_p; objects[i].oc_class == ocls; i++)
             continue;
         *hi_p = i - 1;
         break;
-	}
+    }
 
     /* artifact checking might ask about item which isn't part of any range
        but fell within the classes that do have ranges specified above */
@@ -556,14 +556,14 @@ shuffle_all()
     /* armor sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {
         HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, SWORD_OF_HOLY_VENGEANCE, STAFF_OF_THE_MAGI, LEATHER_BAG,
-		TALLOW_CANDLE, OIL_LAMP, TIN_WHISTLE, WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP, LEATHER_DRUM, JAR_OF_EXTRA_HEALING_SALVE
+        TALLOW_CANDLE, OIL_LAMP, TIN_WHISTLE, WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP, LEATHER_DRUM, JAR_OF_EXTRA_HEALING_SALVE
     };
-	static short shuffle_types_with_material[] = {
-		 WAN_LIGHT, ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION, 
-		 LENSES, GOGGLES_OF_NIGHT, LEATHER_BELT, ROYAL_CROWN, CORNUTHAUM, CHAMPIGNON, 
-		 RIN_ADORNMENT
-	};
-	int first, last, idx;
+    static short shuffle_types_with_material[] = {
+         WAN_LIGHT, ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION, 
+         LENSES, GOGGLES_OF_NIGHT, LEATHER_BELT, ROYAL_CROWN, CORNUTHAUM, CHAMPIGNON, 
+         RIN_ADORNMENT
+    };
+    int first, last, idx;
 
     /* do whole classes (amulets, &c) */
     for (idx = 0; idx < SIZE(shuffle_classes); idx++) {
@@ -575,12 +575,12 @@ shuffle_all()
         obj_shuffle_range(shuffle_types[idx], &first, &last);
         shuffle(first, last, FALSE);
     }
-	/* do type ranges with materials */
-	for (idx = 0; idx < SIZE(shuffle_types_with_material); idx++) {
-		obj_shuffle_range(shuffle_types_with_material[idx], &first, &last);
-		shuffle(first, last, TRUE);
-	}
-	return;
+    /* do type ranges with materials */
+    for (idx = 0; idx < SIZE(shuffle_types_with_material); idx++) {
+        obj_shuffle_range(shuffle_types_with_material[idx], &first, &last);
+        shuffle(first, last, TRUE);
+    }
+    return;
 }
 
 /* find the object index for snow boots; used [once] by slippery ice code */
@@ -621,8 +621,8 @@ int fd, mode;
     /* as long as we use only one version of Hack we
        need not save oc_name and oc_descr, but we must save
        oc_uname for all objects */
-	for (i = 0; i < NUM_OBJECTS; i++)
-	{
+    for (i = 0; i < NUM_OBJECTS; i++)
+    {
         if (objects[i].oc_uname) {
             if (perform_bwrite(mode)) {
                 len = strlen(objects[i].oc_uname) + 1;
@@ -634,7 +634,7 @@ int fd, mode;
                 objects[i].oc_uname = 0;
             }
         }
-	}
+    }
 }
 
 void
@@ -647,14 +647,14 @@ register int fd;
     mread(fd, (genericptr_t) bases, sizeof bases);
     mread(fd, (genericptr_t) disco, sizeof disco);
     mread(fd, (genericptr_t) objects, sizeof(struct objclass) * NUM_OBJECTS);
-	for (i = 0; i < NUM_OBJECTS; i++)
-	{
+    for (i = 0; i < NUM_OBJECTS; i++)
+    {
         if (objects[i].oc_uname) {
             mread(fd, (genericptr_t) &len, sizeof len);
             objects[i].oc_uname = (char *) alloc(len);
             mread(fd, (genericptr_t) objects[i].oc_uname, len);
         }
-	}
+    }
 #ifdef USE_TILES
     shuffle_tiles();
 #endif

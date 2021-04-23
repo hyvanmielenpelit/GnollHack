@@ -1,4 +1,4 @@
-/* GnollHack 4.0	trap.h	$NHDT-Date: 1547255912 2019/01/12 01:18:32 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.17 $ */
+/* GnollHack 4.0    trap.h    $NHDT-Date: 1547255912 2019/01/12 01:18:32 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.17 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2016. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -113,7 +113,7 @@ enum trap_types {
     MAGIC_TRAP   = 20,
     ANTI_MAGIC_TRAP = 21,
     POLY_TRAP    = 22,
-	MODRON_PORTAL = 23,
+    MODRON_PORTAL = 23,
     LEVER = 24,
     VIBRATING_SQUARE = 25,
 
@@ -145,8 +145,8 @@ extern struct trap_type_definition trap_type_definitions[TRAPNUM];
 #define is_pit(ttyp) ((ttyp) == PIT || (ttyp) == SPIKED_PIT)
 #define is_hole(ttyp)  ((ttyp) == HOLE || (ttyp) == TRAPDOOR)
 
-#define MKTRAP_NO_FLAGS					0x00000000UL
-#define MKTRAPFLAG_GARDEN_GNOME_ITEMS	0x00000001UL
+#define MKTRAP_NO_FLAGS                    0x00000000UL
+#define MKTRAPFLAG_GARDEN_GNOME_ITEMS    0x00000001UL
 
 
 #endif /* TRAP_H */

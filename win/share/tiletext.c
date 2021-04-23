@@ -1,4 +1,4 @@
-/* GnollHack 4.0	tiletext.c	$NHDT-Date: 1524689272 2018/04/25 20:47:52 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.16 $ */
+/* GnollHack 4.0    tiletext.c    $NHDT-Date: 1524689272 2018/04/25 20:47:52 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.16 $ */
 /*      Copyright (c) 2016 by Pasi Kallinen                       */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -116,8 +116,8 @@ pixel (*pixels)[TILE_X];
     if (fscanf(txtfile, "# %s %d (%[^)])", ttype, &i, buf) <= 0)
         return FALSE;
 
-	buf[BUFSZ - 1] = '\0';
-	ttype[BUFSZ - 1] = '\0';
+    buf[BUFSZ - 1] = '\0';
+    ttype[BUFSZ - 1] = '\0';
 
     ph = strcmp(ttype, "placeholder") == 0;
 

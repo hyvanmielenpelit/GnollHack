@@ -1,4 +1,4 @@
-/* GnollHack 4.0	skills.h	$NHDT-Date: 1547255911 2019/01/12 01:18:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.15 $ */
+/* GnollHack 4.0    skills.h    $NHDT-Date: 1547255911 2019/01/12 01:18:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.15 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985-1999. */
 /*-Copyright (c) Pasi Kallinen, 2017. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -23,27 +23,27 @@ enum p_skills {
  */
  /*
     P_KNIFE              =  2,
-	P_SHORT_SWORD        =  5,
-	P_BROAD_SWORD        =  6,
-	P_LONG_SWORD         =  7,
-	P_TWO_HANDED_SWORD   =  8,
-	P_SCIMITAR           =  9,
-	P_SABER              = 10,
-	P_MACE               = 12,
-	P_MORNING_STAR       = 13,
-	P_HAMMER			 = 15,
-	P_TRIDENT            = 19,
-	P_LANCE              = 20,
-	P_DART               = 24,
-	P_SHURIKEN			 = 25,
-	P_BOOMERANG			 = 26,
-	P_UNICORN_HORN       = 28,
-	*/
+    P_SHORT_SWORD        =  5,
+    P_BROAD_SWORD        =  6,
+    P_LONG_SWORD         =  7,
+    P_TWO_HANDED_SWORD   =  8,
+    P_SCIMITAR           =  9,
+    P_SABER              = 10,
+    P_MACE               = 12,
+    P_MORNING_STAR       = 13,
+    P_HAMMER             = 15,
+    P_TRIDENT            = 19,
+    P_LANCE              = 20,
+    P_DART               = 24,
+    P_SHURIKEN             = 25,
+    P_BOOMERANG             = 26,
+    P_UNICORN_HORN       = 28,
+    */
 
     P_DAGGER             =  1,
     P_AXE                =  2,
     P_PICK_AXE           =  3,
-    P_SWORD				 =  4,
+    P_SWORD                 =  4,
     P_BLUDGEONING_WEAPON =  5, /* Heavy-shafted bludgeon */
     P_FLAIL              =  6, /* Two pieces hinged or chained together */
     P_QUARTERSTAFF       =  7, /* Long-shafted bludgeon */
@@ -57,29 +57,29 @@ enum p_skills {
 
     /* Spell Skills added by Larry Stewart-Zerba */
     P_ARCANE_SPELL       = 15,
-	P_CLERIC_SPELL		 = 16,
-	P_HEALING_SPELL      = 17,
+    P_CLERIC_SPELL         = 16,
+    P_HEALING_SPELL      = 17,
     P_DIVINATION_SPELL   = 18,
-	P_ABJURATION_SPELL	 = 19,
+    P_ABJURATION_SPELL     = 19,
     P_MOVEMENT_SPELL     = 20,
     P_TRANSMUTATION_SPELL= 21,
-	P_ENCHANTMENT_SPELL  = 22,
-	P_CONJURATION_SPELL  = 23,
+    P_ENCHANTMENT_SPELL  = 22,
+    P_CONJURATION_SPELL  = 23,
     P_CELESTIAL_SPELL    = 24,
     P_NATURE_SPELL       = 25,
-    P_NECROMANCY_SPELL	 = 26,
+    P_NECROMANCY_SPELL     = 26,
 
     /* Other types of combat */
     P_BARE_HANDED_COMBAT = 27, /* actually weaponless; gloves are ok */
-	P_MARTIAL_ARTS		 = 28, /* actually weaponless; gloves are ok */
-	P_TWO_WEAPON_COMBAT  = 29, /* pair of weapons, one in each hand */
-	P_WAND               = 30, /* shooting rays with wands */
+    P_MARTIAL_ARTS         = 28, /* actually weaponless; gloves are ok */
+    P_TWO_WEAPON_COMBAT  = 29, /* pair of weapons, one in each hand */
+    P_WAND               = 30, /* shooting rays with wands */
 
-	/* Non-combat skills */
-	P_RIDING			 = 31,	/* how well you control your steed */
-	P_DISARM_TRAP		 = 32,	/* disarming traps */
-	
-	P_NUM_SKILLS         = 33
+    /* Non-combat skills */
+    P_RIDING             = 31,    /* how well you control your steed */
+    P_DISARM_TRAP         = 32,    /* disarming traps */
+    
+    P_NUM_SKILLS         = 33
 };
 
 //#define P_MARTIAL_ARTS P_BARE_HANDED_COMBAT /* Role distinguishes */
@@ -111,8 +111,8 @@ enum skill_levels {
     P_BASIC        = 2,
     P_SKILLED      = 3,
     P_EXPERT       = 4,
-	P_MASTER	   = 5,		/* Weapon skills and martial arts only */
-	P_GRAND_MASTER = 6,		/* Weapon skills and martial arts  only */
+    P_MASTER       = 5,        /* Weapon skills and martial arts only */
+    P_GRAND_MASTER = 6,        /* Weapon skills and martial arts  only */
     MAX_SKILL_LEVELS
 };
 

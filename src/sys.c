@@ -1,4 +1,4 @@
-/* GnollHack 4.0	sys.c	$NHDT-Date: 1547118632 2019/01/10 11:10:32 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.43 $ */
+/* GnollHack 4.0    sys.c    $NHDT-Date: 1547118632 2019/01/10 11:10:32 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.43 $ */
 /* Copyright (c) Kenneth Lorber, Kensington, Maryland, 2008. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -56,11 +56,11 @@ sys_early_init()
         sysopt.entrymax = 10;
     if (POINTSMIN < 1)
         sysopt.pointsmin = 1;
-	if (PERS_IS_UID != 0 && PERS_IS_UID != 1)
-	{
-		panic("config error: PERS_IS_UID must be either 0 or 1");
-		return;
-	}
+    if (PERS_IS_UID != 0 && PERS_IS_UID != 1)
+    {
+        panic("config error: PERS_IS_UID must be either 0 or 1");
+        return;
+    }
 #ifdef PANICTRACE
     /* panic options */
     sysopt.gdbpath = dupstr(GDBPATH);

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	objnam.c	$NHDT-Date: 1551138256 2019/02/25 23:44:16 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.235 $ */
+/* GnollHack 4.0    objnam.c    $NHDT-Date: 1551138256 2019/02/25 23:44:16 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.235 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -519,32 +519,32 @@ xname_flags(obj, cxn_flags)
 register struct obj *obj;
 unsigned cxn_flags; /* bitmask of CXN_xxx values */
 {
-	register char* buf;
+    register char* buf;
 
-	if (!obj)
-	{
-		buf = nextobuf();
-		strcpy(buf, empty_string);
-		return buf;
-	}
+    if (!obj)
+    {
+        buf = nextobuf();
+        strcpy(buf, empty_string);
+        return buf;
+    }
 
-	boolean artifact_description_exists = obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "");
-	/* Note: maskotyp is relevant here when artifact description does not exist */
+    boolean artifact_description_exists = obj->oartifact && artilist[obj->oartifact].desc && strcmp(artilist[obj->oartifact].desc, "");
+    /* Note: maskotyp is relevant here when artifact description does not exist */
     register int typ = ((obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT) ? artilist[obj->oartifact].maskotyp : obj->otyp);
     register struct objclass *ocl = &objects[typ];
-	/* Note: when its description exists, an artifact always uses the unknown name format instead of oc_name_known;
-	 * if the artifact is known, then it jumps to "the Artifact" format */
-	/* Note: artifact uses nknown and aknown to determine if it is in the format of "the Artifact"; this is in obj_is_pname function */
-	int nn = artifact_description_exists ? 0 : ocl->oc_name_known;
-	int omndx = obj->corpsenm;
-	/* Note: this is applied for artifacts only when their own description does not exist */
+    /* Note: when its description exists, an artifact always uses the unknown name format instead of oc_name_known;
+     * if the artifact is known, then it jumps to "the Artifact" format */
+    /* Note: artifact uses nknown and aknown to determine if it is in the format of "the Artifact"; this is in obj_is_pname function */
+    int nn = artifact_description_exists ? 0 : ocl->oc_name_known;
+    int omndx = obj->corpsenm;
+    /* Note: this is applied for artifacts only when their own description does not exist */
     const char *actualn = OBJ_NAME(*ocl);
-	/* Note: use artifact description for artifacts instead */
-	const char *dn = artifact_description_exists ? artilist[obj->oartifact].desc : OBJ_DESCR(*ocl);
+    /* Note: use artifact description for artifacts instead */
+    const char *dn = artifact_description_exists ? artilist[obj->oartifact].desc : OBJ_DESCR(*ocl);
     const char *un = ocl->oc_uname;
-	boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
+    boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
     boolean known, dknown, bknown, nknown, aknown, mknown, tknown;
-	boolean makeThelower = FALSE;
+    boolean makeThelower = FALSE;
 
     buf = nextobuf() + PREFIX; /* leave room for "17 -3 " */
 
@@ -576,13 +576,13 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         known = obj->known;
         dknown = obj->dknown;
         bknown = obj->bknown;
-		nknown = obj->nknown;
-		aknown = obj->aknown;
+        nknown = obj->nknown;
+        aknown = obj->aknown;
         mknown = obj->mknown;
         tknown = obj->tknown;
     }
 
-	/* Artifacts get just their name */
+    /* Artifacts get just their name */
     if (obj_is_pname(obj))
         goto nameit;
 
@@ -603,11 +603,11 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     case WEAPON_CLASS:
         if (is_poisonable(obj) && obj->opoisoned && dknown)
             Strcpy(buf, "poisoned ");
-		/*FALLTHRU*/
+        /*FALLTHRU*/
     case VENOM_CLASS:
-	case REAGENT_CLASS:
-	case MISCELLANEOUS_CLASS:
-	case TOOL_CLASS:
+    case REAGENT_CLASS:
+    case MISCELLANEOUS_CLASS:
+    case TOOL_CLASS:
     case GEM_CLASS:
     {
         if (dknown)
@@ -742,23 +742,23 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
 
         if (!dknown)
-			Strcat(buf, armor_class_simple_name(obj));
-		else if (nn) {
+            Strcat(buf, armor_class_simple_name(obj));
+        else if (nn) {
             Strcat(buf, actualn);
         } else if (un) {
-			Strcat(buf, dn);
+            Strcat(buf, dn);
 #if 0
-			if (is_boots(obj))
+            if (is_boots(obj))
                 Strcat(buf, "boots");
             else if (is_gloves(obj))
                 Strcat(buf, "gloves");
             else if (is_cloak(obj))
                 Strcpy(buf, "cloak");
-			else if (is_robe(obj))
-				Strcpy(buf, "robe");
-			else if (is_bracers(obj))
-				Strcpy(buf, "bracers");
-			else if (is_helmet(obj))
+            else if (is_robe(obj))
+                Strcpy(buf, "robe");
+            else if (is_bracers(obj))
+                Strcpy(buf, "bracers");
+            else if (is_helmet(obj))
                 Strcpy(buf, "helmet");
             else if (is_shield(obj))
                 Strcpy(buf, "shield");
@@ -802,17 +802,17 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             break;
         }
 
-		if (!dknown)
-			Strcat(buf, food_type_names[objects[obj->otyp].oc_subtyp]);
-		else if (nn)
-			Strcat(buf, actualn);
-		else if (un) {
-			Strcat(buf, dn);
-			Strcat(buf, " called ");
-			Strcat(buf, un);
-		}
-		else
-			Strcat(buf, dn);
+        if (!dknown)
+            Strcat(buf, food_type_names[objects[obj->otyp].oc_subtyp]);
+        else if (nn)
+            Strcat(buf, actualn);
+        else if (un) {
+            Strcat(buf, dn);
+            Strcat(buf, " called ");
+            Strcat(buf, un);
+        }
+        else
+            Strcat(buf, dn);
 
 
         //Strcpy(buf, actualn);
@@ -946,29 +946,29 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         Sprintf(eos(buf), " with text \"%s\"", tshirt_text(obj, tmpbuf));
     }
 
-	char anamebuf[BUFSZ] = "";
-	if (has_oname(obj) && nknown && dknown) {
+    char anamebuf[BUFSZ] = "";
+    if (has_oname(obj) && nknown && dknown) {
         Strcat(buf, " named ");
         makeThelower = TRUE;
     nameit:
         strcpy(anamebuf, ONAME(obj));
-		if (makeThelower && !strncmpi(anamebuf, "The ", 4))
-			*anamebuf = lowc(*anamebuf);
+        if (makeThelower && !strncmpi(anamebuf, "The ", 4))
+            *anamebuf = lowc(*anamebuf);
         Strcat(buf, anamebuf);
     }
-	else if (has_uoname(obj))
-	{
-		if(obj->otyp == CORPSE)
-			Strcat(buf, " known as "); /* corpses are not labeled */
-		else
-			Strcat(buf, " labeled ");
-		Strcat(buf, UONAME(obj));
-	}
+    else if (has_uoname(obj))
+    {
+        if(obj->otyp == CORPSE)
+            Strcat(buf, " known as "); /* corpses are not labeled */
+        else
+            Strcat(buf, " labeled ");
+        Strcat(buf, UONAME(obj));
+    }
     if (!strncmpi(buf, "the ", 4))
         buf += 4;
 
-	/* Corpse names from OMONST */
-	if (obj->oextra && OMONST(obj)) 
+    /* Corpse names from OMONST */
+    if (obj->oextra && OMONST(obj)) 
     {
         if (OMONST(obj)->isshk && OMONST(obj)->mextra && ESHK(OMONST(obj)) && OMONST(obj)->u_know_mname)
         {
@@ -976,16 +976,16 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Strcat(buf, shkname(OMONST(obj)));
         }
         else if(has_mname(OMONST(obj)) && OMONST(obj)->u_know_mname)
-		{
-			Strcat(buf, " that was named ");
-			Strcat(buf, MNAME(OMONST(obj)));
-		}
-		else if (has_umname(OMONST(obj)))
-		{
-			Strcat(buf, " that you called ");
-			Strcat(buf, UMNAME(OMONST(obj)));
-		}
-	}
+        {
+            Strcat(buf, " that was named ");
+            Strcat(buf, MNAME(OMONST(obj)));
+        }
+        else if (has_umname(OMONST(obj)))
+        {
+            Strcat(buf, " that you called ");
+            Strcat(buf, UMNAME(OMONST(obj)));
+        }
+    }
 
     return buf;
 }
@@ -1199,9 +1199,9 @@ unsigned doname_flags;
     boolean ispoisoned = FALSE,
             with_price = (doname_flags & DONAME_WITH_PRICE) != 0,
             vague_quan = (doname_flags & DONAME_VAGUE_QUAN) != 0,
-			weightfirst = (doname_flags & DONAME_WITH_WEIGHT_FIRST) != 0,
-			weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
-			loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0,
+            weightfirst = (doname_flags & DONAME_WITH_WEIGHT_FIRST) != 0,
+            weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
+            loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0,
             lit_in_front = (doname_flags & DONAME_LIT_IN_FRONT) != 0;
     boolean known, dknown, cknown, bknown, lknown, tknown;
     int omndx = obj->corpsenm, isenchanted = 0;
@@ -1233,21 +1233,21 @@ unsigned doname_flags;
         ispoisoned = TRUE;
     }
 
-	if (!strncmp(bp, "freezing ", 9) && obj->elemental_enchantment == COLD_ENCHANTMENT) {
-		bp += 9;
-		isenchanted = obj->elemental_enchantment;
-	} else if (!strncmp(bp, "flaming ", 8) && obj->elemental_enchantment == FIRE_ENCHANTMENT) {
-		bp += 8;
-		isenchanted = obj->elemental_enchantment;
-	}
-	else if (!strncmp(bp, "electrified ", 12) && obj->elemental_enchantment == LIGHTNING_ENCHANTMENT) {
-		bp += 12;
-		isenchanted = obj->elemental_enchantment;
-	}
-	else if (!strncmp(bp, "death-magical ", 14) && obj->elemental_enchantment == DEATH_ENCHANTMENT) {
-		bp += 14;
-		isenchanted = obj->elemental_enchantment;
-	}
+    if (!strncmp(bp, "freezing ", 9) && obj->elemental_enchantment == COLD_ENCHANTMENT) {
+        bp += 9;
+        isenchanted = obj->elemental_enchantment;
+    } else if (!strncmp(bp, "flaming ", 8) && obj->elemental_enchantment == FIRE_ENCHANTMENT) {
+        bp += 8;
+        isenchanted = obj->elemental_enchantment;
+    }
+    else if (!strncmp(bp, "electrified ", 12) && obj->elemental_enchantment == LIGHTNING_ENCHANTMENT) {
+        bp += 12;
+        isenchanted = obj->elemental_enchantment;
+    }
+    else if (!strncmp(bp, "death-magical ", 14) && obj->elemental_enchantment == DEATH_ENCHANTMENT) {
+        bp += 14;
+        isenchanted = obj->elemental_enchantment;
+    }
 
     if (obj->quan != 1L) {
         if (dknown || !vague_quan)
@@ -1268,7 +1268,7 @@ unsigned doname_flags;
 
     /* "empty" goes at the beginning, but item count goes at the end */
     if ((obj->oclass == TOOL_CLASS && (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN || objects[obj->otyp].oc_subtyp == TOOLTYPE_GRAIL) && obj->charges == 0 && !known)
-		|| (cknown
+        || (cknown
         /* bag of tricks: include "empty" prefix if it's known to
            be empty but its precise number of charges isn't known
            (when that is known, suffix of "(n:0)" will be appended,
@@ -1306,7 +1306,7 @@ unsigned doname_flags;
                  || ((!known || !objects[obj->otyp].oc_enchantable
                       || obj->oclass == ARMOR_CLASS
                       || obj->oclass == RING_CLASS
-					  || obj->oclass == MISCELLANEOUS_CLASS
+                      || obj->oclass == MISCELLANEOUS_CLASS
                      )
 #ifdef MAIL
                      && obj->otyp != SCR_MAIL
@@ -1314,7 +1314,7 @@ unsigned doname_flags;
                      && obj->otyp != FAKE_AMULET_OF_YENDOR
                      && obj->otyp != AMULET_OF_YENDOR
                      //&& !Role_if(PM_PRIEST)
-					 ))
+                     ))
             Strcat(prefix, "uncursed ");
     }
 
@@ -1349,18 +1349,18 @@ unsigned doname_flags;
     if (obj->greased)
         Strcat(prefix, "greased ");
 
-	/* contents for unknown jars and cans */
-	if (obj->oclass == TOOL_CLASS 
-		&& (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN || objects[obj->otyp].oc_subtyp == TOOLTYPE_GRAIL)
-		&& OBJ_CONTENT_DESC(obj->otyp)
-		&& objects[obj->otyp].oc_name_known == 0 && !known && obj->charges > 0)
-	{
+    /* contents for unknown jars and cans */
+    if (obj->oclass == TOOL_CLASS 
+        && (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN || objects[obj->otyp].oc_subtyp == TOOLTYPE_GRAIL)
+        && OBJ_CONTENT_DESC(obj->otyp)
+        && objects[obj->otyp].oc_name_known == 0 && !known && obj->charges > 0)
+    {
         int lim = get_obj_max_charge(obj);
         const char* fullness = obj->charges > (int)(0.5 * (double)lim) ? "" :
             obj->charges > 1 ? "some " :
             obj->charges > 0 ? "little " : "no ";
-		Sprintf(eos(bp), " containing %s%s", fullness, OBJ_CONTENT_DESC(obj->otyp));
-	}
+        Sprintf(eos(bp), " containing %s%s", fullness, OBJ_CONTENT_DESC(obj->otyp));
+    }
 
 
     if (cknown && Has_contents(obj)) {
@@ -1373,80 +1373,80 @@ unsigned doname_flags;
                 plur(itemcount));
     }
 
-	/* charges */
-	if (objects[obj->otyp].oc_charged && known)
-		Sprintf(eos(bp), " (%d:%d)", (int)obj->recharged, (int)obj->charges);
+    /* charges */
+    if (objects[obj->otyp].oc_charged && known)
+        Sprintf(eos(bp), " (%d:%d)", (int)obj->recharged, (int)obj->charges);
 
-	/* post and prefixes */
+    /* post and prefixes */
     switch (is_weptool(obj) ? WEAPON_CLASS : obj->oclass) {
     case AMULET_CLASS:
         if (obj->owornmask & W_AMUL)
             Strcat(bp, " (being worn)");
-		break;
-	case MISCELLANEOUS_CLASS:
-		if (obj->owornmask & W_MISCITEMS)
-		{
-			if(strcmp(misc_type_worn_texts[objects[obj->otyp].oc_subtyp], "") == 0)
-				Strcat(bp, " (being worn)");
-			else
-			{
-				char replacetxt[BUFSZ] = "";
-				strcpy(replacetxt, misc_type_worn_texts[objects[obj->otyp].oc_subtyp]);
+        break;
+    case MISCELLANEOUS_CLASS:
+        if (obj->owornmask & W_MISCITEMS)
+        {
+            if(strcmp(misc_type_worn_texts[objects[obj->otyp].oc_subtyp], "") == 0)
+                Strcat(bp, " (being worn)");
+            else
+            {
+                char replacetxt[BUFSZ] = "";
+                strcpy(replacetxt, misc_type_worn_texts[objects[obj->otyp].oc_subtyp]);
 
-				/* special replacement for some types */
-				if(objects[obj->otyp].oc_subtyp == MISC_IOUN_STONE)
-					Sprintf(replacetxt, "orbiting %s", body_part(HEAD));
-				if (objects[obj->otyp].oc_subtyp == MISC_NOSERING)
-					Sprintf(replacetxt, "on %s", body_part(NOSE));
+                /* special replacement for some types */
+                if(objects[obj->otyp].oc_subtyp == MISC_IOUN_STONE)
+                    Sprintf(replacetxt, "orbiting %s", body_part(HEAD));
+                if (objects[obj->otyp].oc_subtyp == MISC_NOSERING)
+                    Sprintf(replacetxt, "on %s", body_part(NOSE));
 
-				Strcat(bp, " (");
-				Strcat(bp, replacetxt);
-				Strcat(bp, ")");
-			}
-		}
-		if (known && objects[obj->otyp].oc_enchantable) 
-		{
-			Strcat(prefix, sitoa(obj->enchantment));
-			Strcat(prefix, " ");
-		}
-		break;
-	case ARMOR_CLASS:
-		if (obj->owornmask & W_ARMS)
-		{
-			if(is_shield(obj))
-			{
-				if (u.twoweap)
-				{
-					if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
-						Sprintf(eos(bp), " (being worn; weapon in left %s)", body_part(HAND));
-					else
-						Sprintf(eos(bp), " (being worn; wielded in left %s)", body_part(HAND));
-				}
-				else
-				{
-					Strcat(bp, " (being worn)");
-				}
-			}
-			else
-			{
-				if (u.twoweap)
-				{
-					if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
-						Sprintf(eos(bp), " (weapon in left %s)", body_part(HAND));
-					else
-						Sprintf(eos(bp), " (wielded in left %s)", body_part(HAND));
-				}
-				else
-				{
-					if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
-						Sprintf(eos(bp), " (unused weapon in another %s)", body_part(HAND));
-					else
-						Sprintf(eos(bp), " (wielded in another %s)", body_part(HAND));
-				}
-			}
-		}
+                Strcat(bp, " (");
+                Strcat(bp, replacetxt);
+                Strcat(bp, ")");
+            }
+        }
+        if (known && objects[obj->otyp].oc_enchantable) 
+        {
+            Strcat(prefix, sitoa(obj->enchantment));
+            Strcat(prefix, " ");
+        }
+        break;
+    case ARMOR_CLASS:
+        if (obj->owornmask & W_ARMS)
+        {
+            if(is_shield(obj))
+            {
+                if (u.twoweap)
+                {
+                    if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+                        Sprintf(eos(bp), " (being worn; weapon in left %s)", body_part(HAND));
+                    else
+                        Sprintf(eos(bp), " (being worn; wielded in left %s)", body_part(HAND));
+                }
+                else
+                {
+                    Strcat(bp, " (being worn)");
+                }
+            }
+            else
+            {
+                if (u.twoweap)
+                {
+                    if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+                        Sprintf(eos(bp), " (weapon in left %s)", body_part(HAND));
+                    else
+                        Sprintf(eos(bp), " (wielded in left %s)", body_part(HAND));
+                }
+                else
+                {
+                    if ((objects[obj->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+                        Sprintf(eos(bp), " (unused weapon in another %s)", body_part(HAND));
+                    else
+                        Sprintf(eos(bp), " (wielded in another %s)", body_part(HAND));
+                }
+            }
+        }
         else if (obj->owornmask & W_ARMOR)
-		{
+        {
             Strcat(bp, (obj == uskin) ? " (embedded in your skin"
                        /* in case of perm_invent update while Wear/Takeoff
                           is in progress; check doffing() before donning()
@@ -1454,53 +1454,53 @@ unsigned doname_flags;
                        : doffing(obj) ? " (being doffed"
                          : donning(obj) ? " (being donned"
                            : " (being worn");
-			if (uarm && uarmo && (obj == uarm || obj == uarmo))
-			{
-				boolean ac_tied = (context.suit_yielding_ac_bonus && context.robe_yielding_ac_bonus);
-				boolean mc_tied = (context.suit_yielding_mc_bonus && context.robe_yielding_mc_bonus);
+            if (uarm && uarmo && (obj == uarm || obj == uarmo))
+            {
+                boolean ac_tied = (context.suit_yielding_ac_bonus && context.robe_yielding_ac_bonus);
+                boolean mc_tied = (context.suit_yielding_mc_bonus && context.robe_yielding_mc_bonus);
 
-				if(ac_tied && mc_tied)
-					Strcat(bp, "; tied");
-				else if ((obj == uarm && (!context.suit_yielding_ac_bonus || ac_tied) && (!context.suit_yielding_mc_bonus || mc_tied))
-					|| (obj == uarmo && (!context.robe_yielding_ac_bonus || ac_tied) && (!context.robe_yielding_mc_bonus || mc_tied)))
-					Strcat(bp, "; inferior");
-				else if ((obj == uarm && (!context.robe_yielding_ac_bonus || ac_tied) && (!context.robe_yielding_mc_bonus || mc_tied))
-					|| (obj == uarmo && (!context.suit_yielding_ac_bonus || ac_tied) && (!context.suit_yielding_mc_bonus || mc_tied)))
-					Strcat(bp, "");
-				else if((obj == uarm && context.suit_yielding_ac_bonus && !ac_tied)
-					|| (obj == uarmo && context.robe_yielding_ac_bonus && !ac_tied))
-					Strcat(bp, "; better AC");
-				else if ((obj == uarm && context.suit_yielding_mc_bonus && !mc_tied)
-					|| (obj == uarmo && context.robe_yielding_mc_bonus && !mc_tied))
-					Strcat(bp, "; better MC");
-			}
-			Strcat(bp, ")");
-		}
+                if(ac_tied && mc_tied)
+                    Strcat(bp, "; tied");
+                else if ((obj == uarm && (!context.suit_yielding_ac_bonus || ac_tied) && (!context.suit_yielding_mc_bonus || mc_tied))
+                    || (obj == uarmo && (!context.robe_yielding_ac_bonus || ac_tied) && (!context.robe_yielding_mc_bonus || mc_tied)))
+                    Strcat(bp, "; inferior");
+                else if ((obj == uarm && (!context.robe_yielding_ac_bonus || ac_tied) && (!context.robe_yielding_mc_bonus || mc_tied))
+                    || (obj == uarmo && (!context.suit_yielding_ac_bonus || ac_tied) && (!context.suit_yielding_mc_bonus || mc_tied)))
+                    Strcat(bp, "");
+                else if((obj == uarm && context.suit_yielding_ac_bonus && !ac_tied)
+                    || (obj == uarmo && context.robe_yielding_ac_bonus && !ac_tied))
+                    Strcat(bp, "; better AC");
+                else if ((obj == uarm && context.suit_yielding_mc_bonus && !mc_tied)
+                    || (obj == uarmo && context.robe_yielding_mc_bonus && !mc_tied))
+                    Strcat(bp, "; better MC");
+            }
+            Strcat(bp, ")");
+        }
         /*FALLTHRU*/
     case WEAPON_CLASS:
 weapon_here:
         if (ispoisoned)
             Strcat(prefix, "poisoned ");
-		if (isenchanted)
-		{
-			switch (isenchanted)
-			{
-			case COLD_ENCHANTMENT:
-				Strcat(prefix, "freezing ");
-				break;
-			case FIRE_ENCHANTMENT:
-				Strcat(prefix, "flaming ");
-				break;
-			case LIGHTNING_ENCHANTMENT:
-				Strcat(prefix, "electrified ");
-				break;
-			case DEATH_ENCHANTMENT:
-				Strcat(prefix, "death-magical ");
-				break;
-			default:
-				break;
-			}
-		}
+        if (isenchanted)
+        {
+            switch (isenchanted)
+            {
+            case COLD_ENCHANTMENT:
+                Strcat(prefix, "freezing ");
+                break;
+            case FIRE_ENCHANTMENT:
+                Strcat(prefix, "flaming ");
+                break;
+            case LIGHTNING_ENCHANTMENT:
+                Strcat(prefix, "electrified ");
+                break;
+            case DEATH_ENCHANTMENT:
+                Strcat(prefix, "death-magical ");
+                break;
+            default:
+                break;
+            }
+        }
         add_erosion_words(obj, prefix);
         if (known) {
             Strcat(prefix, sitoa(obj->enchantment));
@@ -1508,26 +1508,26 @@ weapon_here:
         }
         break;
     case TOOL_CLASS:
-		if (isenchanted)
-		{
-			switch (isenchanted)
-			{
-			case COLD_ENCHANTMENT:
-				Strcat(prefix, "freezing ");
-				break;
-			case FIRE_ENCHANTMENT:
-				Strcat(prefix, "flaming ");
-				break;
-			case LIGHTNING_ENCHANTMENT:
-				Strcat(prefix, "electrified ");
-				break;
-			case DEATH_ENCHANTMENT:
-				Strcat(prefix, "death-magical ");
-				break;
-			default:
-				break;
-			}
-		}
+        if (isenchanted)
+        {
+            switch (isenchanted)
+            {
+            case COLD_ENCHANTMENT:
+                Strcat(prefix, "freezing ");
+                break;
+            case FIRE_ENCHANTMENT:
+                Strcat(prefix, "flaming ");
+                break;
+            case LIGHTNING_ENCHANTMENT:
+                Strcat(prefix, "electrified ");
+                break;
+            case DEATH_ENCHANTMENT:
+                Strcat(prefix, "death-magical ");
+                break;
+            default:
+                break;
+            }
+        }
         if (obj->owornmask & (W_BLINDFOLD | W_SADDLE)) { /* blindfold */
             Strcat(bp, " (being worn)");
             break;
@@ -1545,7 +1545,7 @@ weapon_here:
             break;
         }
         if (obj->otyp == CANDELABRUM_OF_INVOCATION) 
-		{
+        {
             if (!obj->special_quality)
                 Strcpy(tmpbuf, "no");
             else
@@ -1563,13 +1563,13 @@ weapon_here:
                         !obj->lamplit ? " attached" : ", lit");
             break;
         } 
-		else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
+        else if (obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
                    || obj->otyp == BRASS_LANTERN || is_candle(obj)) 
-		{
+        {
             if ((is_candle(obj) && obj->otyp != MAGIC_CANDLE
                 && obj->age < 30L * objects[obj->otyp].oc_cost)
-				|| (obj->otyp == MAGIC_CANDLE && obj->special_quality < 2)
-				)
+                || (obj->otyp == MAGIC_CANDLE && obj->special_quality < 2)
+                )
                 Strcat(prefix, "partly used ");
             if (obj->lamplit)
             {
@@ -1652,20 +1652,20 @@ weapon_here:
         break;
     }
 
-	const char* hand_s = body_part(HAND);
-	const char* hands_s = makeplural(hand_s);
-	if ((obj->owornmask & W_WEP) && !mrg_to_wielded) {
+    const char* hand_s = body_part(HAND);
+    const char* hands_s = makeplural(hand_s);
+    if ((obj->owornmask & W_WEP) && !mrg_to_wielded) {
         if (obj->quan != 1L || !is_weapon(obj))
-		{
-			if (u.twoweap)
-			{
-				if(bimanual(obj))
-					Sprintf(eos(bp), " (wielded in %s)", hands_s);
-				else
-					Sprintf(eos(bp), " (wielded in right %s)", hand_s);
-			}
-			else
-	            Strcat(bp, " (wielded)");
+        {
+            if (u.twoweap)
+            {
+                if(bimanual(obj))
+                    Sprintf(eos(bp), " (wielded in %s)", hands_s);
+                else
+                    Sprintf(eos(bp), " (wielded in right %s)", hand_s);
+            }
+            else
+                Strcat(bp, " (wielded)");
         } else {
 
             Sprintf(eos(bp), " (%sweapon in %s%s)",
@@ -1674,47 +1674,47 @@ weapon_here:
         }
     }
 
-	if ((obj->owornmask & W_WEP2) && obj->oclass != ARMOR_CLASS && !mrg_to_wielded) {
-		if (obj->quan != 1L || !is_weapon(obj))
-		{
-			if (u.twoweap)
-				if (bimanual(obj))
-					Sprintf(eos(bp), " (wielded in %s)", hands_s);
-				else
-					Sprintf(eos(bp), " (wielded in left %s)", hand_s);
-			else
-				Strcat(bp, " (also wielded)");
-		}
-		else {
-			/* note: Sting's glow message, if added, will insert text
-			   in front of "(weapon in hand)"'s closing paren */
-			Sprintf(eos(bp), " (%s%sweapon in %s%s)",
-				(!u.twoweap ? "unused " : ""),
-				(is_obj_tethered_weapon(obj, obj->owornmask) ? "tethered " : ""),
-				(!bimanual(obj) ? (u.twoweap ? "left " : "another ") : ""), 
-				(bimanual(obj) ? hands_s : hand_s)
-			);
-		}
-	}
+    if ((obj->owornmask & W_WEP2) && obj->oclass != ARMOR_CLASS && !mrg_to_wielded) {
+        if (obj->quan != 1L || !is_weapon(obj))
+        {
+            if (u.twoweap)
+                if (bimanual(obj))
+                    Sprintf(eos(bp), " (wielded in %s)", hands_s);
+                else
+                    Sprintf(eos(bp), " (wielded in left %s)", hand_s);
+            else
+                Strcat(bp, " (also wielded)");
+        }
+        else {
+            /* note: Sting's glow message, if added, will insert text
+               in front of "(weapon in hand)"'s closing paren */
+            Sprintf(eos(bp), " (%s%sweapon in %s%s)",
+                (!u.twoweap ? "unused " : ""),
+                (is_obj_tethered_weapon(obj, obj->owornmask) ? "tethered " : ""),
+                (!bimanual(obj) ? (u.twoweap ? "left " : "another ") : ""), 
+                (bimanual(obj) ? hands_s : hand_s)
+            );
+        }
+    }
 
     if (obj->owornmask & W_SWAPWEP) {
         if (u.twoweap && !bimanual(obj))
-			Sprintf(eos(bp), " (readied as alternate right %s weapon)", hand_s);
-		else
+            Sprintf(eos(bp), " (readied as alternate right %s weapon)", hand_s);
+        else
             Strcat(bp, " (readied as alternate weapon)");
     }
-	if (obj->owornmask & W_SWAPWEP2) {
-		if (is_shield(obj))
-			Strcat(bp, " (readied as shield)");
-		else
-		{
-			if (u.twoweap && !bimanual(obj))
-				Sprintf(eos(bp), " (readied as alternate left %s weapon)", hand_s);
-			else
-				Strcat(bp, " (readied as another alternate weapon)");
-		}
-	}
-	if (obj->owornmask & W_QUIVER) {
+    if (obj->owornmask & W_SWAPWEP2) {
+        if (is_shield(obj))
+            Strcat(bp, " (readied as shield)");
+        else
+        {
+            if (u.twoweap && !bimanual(obj))
+                Sprintf(eos(bp), " (readied as alternate left %s weapon)", hand_s);
+            else
+                Strcat(bp, " (readied as another alternate weapon)");
+        }
+    }
+    if (obj->owornmask & W_QUIVER) {
         switch (obj->oclass) {
         case WEAPON_CLASS:
             if (is_ammo(obj)) {
@@ -1734,9 +1734,9 @@ weapon_here:
             }
         /* Small things and ammo not for a bow */
         case RING_CLASS:
-		case REAGENT_CLASS:
-		case AMULET_CLASS:
-		case WAND_CLASS:
+        case REAGENT_CLASS:
+        case AMULET_CLASS:
+        case WAND_CLASS:
         case COIN_CLASS:
         case GEM_CLASS:
             Strcat(bp, " (in quiver pouch)");
@@ -1779,9 +1779,9 @@ weapon_here:
     /* show weight for items (debug tourist info)
      * aum is stolen from Crawl's "Arbitrary Unit of Measure" */
 
-	bp = strprepend(bp, prefix);
+    bp = strprepend(bp, prefix);
 
-	/* Mark if invoke, repower, cooling down */
+    /* Mark if invoke, repower, cooling down */
     if (obj->invokeon > 0 || obj->repowerleft > 0 || obj->cooldownleft > 0)
     {
         boolean addcomma = FALSE;
@@ -1810,82 +1810,82 @@ weapon_here:
         Strcat(bp, ")");
     }
 
-	/* Mark if glowing when detected something */
-	if (obj->detectioncount > 0)
-	{
-		char colorbuf[BUFSZ] = "red";
-		if (obj->oartifact)
-			strcpy(colorbuf, glow_color(obj->oartifact));
+    /* Mark if glowing when detected something */
+    if (obj->detectioncount > 0)
+    {
+        char colorbuf[BUFSZ] = "red";
+        if (obj->oartifact)
+            strcpy(colorbuf, glow_color(obj->oartifact));
 
-		if (!obj->oartifact || strcmp(colorbuf, "no color") == 0)
-		{
-			if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLACK)
-				strcpy(colorbuf, "black");
-			else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_WHITE)
-				strcpy(colorbuf, "white");
-			else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLUE)
-				strcpy(colorbuf, "blue");
-			else
-				strcpy(colorbuf, "red");
-		}
-		if (!Blind)
-			Sprintf(eos(bp), " (%s %s)",
-				glow_verb(obj->detectioncount, TRUE),
-				colorbuf);
-	}
+        if (!obj->oartifact || strcmp(colorbuf, "no color") == 0)
+        {
+            if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLACK)
+                strcpy(colorbuf, "black");
+            else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_WHITE)
+                strcpy(colorbuf, "white");
+            else if ((objects[obj->otyp].oc_flags2 & O2_FLICKER_COLOR_MASK) == O2_FLICKER_COLOR_BLUE)
+                strcpy(colorbuf, "blue");
+            else
+                strcpy(colorbuf, "red");
+        }
+        if (!Blind)
+            Sprintf(eos(bp), " (%s %s)",
+                glow_verb(obj->detectioncount, TRUE),
+                colorbuf);
+    }
 
-	/* Mark if glowing when detected something */
-	if (is_obj_special_praying_item(obj) && obj->where == OBJ_INVENT && obj->blessed && can_pray(FALSE))
-	{
-		if (!Blind)
-			Sprintf(eos(bp), " (%s)", "shimmering");
-	}
+    /* Mark if glowing when detected something */
+    if (is_obj_special_praying_item(obj) && obj->where == OBJ_INVENT && obj->blessed && can_pray(FALSE))
+    {
+        if (!Blind)
+            Sprintf(eos(bp), " (%s)", "shimmering");
+    }
 
-	//Weights
+    //Weights
 
-	//double objweight = 0;
-	int objweight_oz = 0;
-	if (!loadstonecorrectly && obj->otyp == LOADSTONE)
-		objweight_oz = objects[LUCKSTONE].oc_weight;  
-	else
-		objweight_oz = obj->owt; 
+    //double objweight = 0;
+    int objweight_oz = 0;
+    if (!loadstonecorrectly && obj->otyp == LOADSTONE)
+        objweight_oz = objects[LUCKSTONE].oc_weight;  
+    else
+        objweight_oz = obj->owt; 
 
-	//objweight = ((double)objweight_oz) / 16;  //ounces to lbs
+    //objweight = ((double)objweight_oz) / 16;  //ounces to lbs
 
-	if ((wizard && iflags.wizweight) || weightfirst) 
-	{
-		char weightbuf[BUFSZ];
-		printweight(weightbuf, objweight_oz, TRUE, TRUE);
-		char buf[BUFSZ];
-		Sprintf(buf, "%s - %s", weightbuf, bp);
+    if ((wizard && iflags.wizweight) || weightfirst) 
+    {
+        char weightbuf[BUFSZ];
+        printweight(weightbuf, objweight_oz, TRUE, TRUE);
+        char buf[BUFSZ];
+        Sprintf(buf, "%s - %s", weightbuf, bp);
 #if 0
-		if (objweight >= 1000)
-			Sprintf(buf, "%3.0f cwt - %s", objweight / 100, bp);
-		else if (objweight >= 10)
-			Sprintf(buf, "%3.0f lbs - %s", objweight, bp);
-		else
-			Sprintf(buf, "%1.1f %s - %s", objweight, objweight == 1 ? "lb " : "lbs", bp);
+        if (objweight >= 1000)
+            Sprintf(buf, "%3.0f cwt - %s", objweight / 100, bp);
+        else if (objweight >= 10)
+            Sprintf(buf, "%3.0f lbs - %s", objweight, bp);
+        else
+            Sprintf(buf, "%1.1f %s - %s", objweight, objweight == 1 ? "lb " : "lbs", bp);
 #endif
-		strcpy(bp, buf);
+        strcpy(bp, buf);
 
-	}
-	
-	if (weightlast)
-	{
-		char weightbuf[BUFSZ];
-		printweight(weightbuf, objweight_oz, FALSE, FALSE);
-		char buf[BUFSZ];
-		Sprintf(buf, "%s (%s)", bp, weightbuf);
+    }
+    
+    if (weightlast)
+    {
+        char weightbuf[BUFSZ];
+        printweight(weightbuf, objweight_oz, FALSE, FALSE);
+        char buf[BUFSZ];
+        Sprintf(buf, "%s (%s)", bp, weightbuf);
 #if 0
-		if (objweight >= 10)// || ((int)(objweight / 10)) * 10 == (int)objweight)
-			Sprintf(buf, "%s (%3.0f %s)", bp, (int)objweight, objweight == 1 ? "lb" : "lbs");
-		else
-			Sprintf(buf, "%s (%.1f %s)", bp, objweight, objweight == 1 ? "lb" : "lbs");
+        if (objweight >= 10)// || ((int)(objweight / 10)) * 10 == (int)objweight)
+            Sprintf(buf, "%s (%3.0f %s)", bp, (int)objweight, objweight == 1 ? "lb" : "lbs");
+        else
+            Sprintf(buf, "%s (%.1f %s)", bp, objweight, objweight == 1 ? "lb" : "lbs");
 #endif
-		strcpy(bp, buf);
-	}
+        strcpy(bp, buf);
+    }
 
-	return bp;
+    return bp;
 }
 
 char *
@@ -1916,7 +1916,7 @@ doname_with_price_and_weight_last(obj,  loadstonecorrectly)
 struct obj* obj;
 boolean loadstonecorrectly;
 {
-	return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 /* Name of object including price. */
@@ -1933,7 +1933,7 @@ doname_with_price_and_weight_first(obj, loadstonecorrectly)
 struct obj* obj;
 boolean loadstonecorrectly;
 {
-	return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 /* "some" instead of precise quantity if obj->dknown not set */
@@ -1962,21 +1962,21 @@ struct obj* obj;
 boolean loadstonecorrectly;
 
 {
-	return doname_base(obj, DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_base(obj, DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 char*
 doname_with_weight_first_true(obj)
 struct obj* obj;
 {
-	return doname_base(obj, DONAME_WITH_WEIGHT_FIRST | DONAME_LOADSTONE_CORRECTLY);
+    return doname_base(obj, DONAME_WITH_WEIGHT_FIRST | DONAME_LOADSTONE_CORRECTLY);
 }
 
 char*
 doname_with_weight_last_true(obj)
 struct obj* obj;
 {
-	return doname_base(obj, DONAME_WITH_WEIGHT_LAST | DONAME_LOADSTONE_CORRECTLY);
+    return doname_base(obj, DONAME_WITH_WEIGHT_LAST | DONAME_LOADSTONE_CORRECTLY);
 }
 
 
@@ -1986,7 +1986,7 @@ doname_with_weight_last(obj, loadstonecorrectly)
 struct obj* obj;
 boolean loadstonecorrectly;
 {
-	return doname_base(obj, DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_base(obj, DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 
@@ -1999,8 +1999,8 @@ struct obj *otmp;
     if (otmp->oclass == COIN_CLASS)
         return FALSE; /* always fully ID'd */
 
-	if (context.shop_identify_type > 0 && !is_shop_item_type(otmp, context.shop_identify_type - 1))
-		return FALSE;
+    if (context.shop_identify_type > 0 && !is_shop_item_type(otmp, context.shop_identify_type - 1))
+        return FALSE;
 
     /* Smith */
     if (context.npc_identify_type == -1 && !(is_weapon(otmp) || otmp->oclass == ARMOR_CLASS))
@@ -2023,10 +2023,10 @@ struct obj *otmp;
         return TRUE;
     if (otmp->oartifact && undiscovered_artifact(otmp->oartifact))
         return TRUE;
-	if (otmp->oartifact && !otmp->aknown)
-		return TRUE;
-	if (!otmp->nknown && has_oname(otmp))
-		return TRUE;
+    if (otmp->oartifact && !otmp->aknown)
+        return TRUE;
+    if (!otmp->nknown && has_oname(otmp))
+        return TRUE;
     if ((otmp->mythic_prefix || otmp->mythic_suffix) && !otmp->mknown)
         return TRUE;
     /* otmp->rknown is the only item of interest if we reach here */
@@ -2186,12 +2186,12 @@ struct obj *obj;
     unsigned save_ocknown;
     char *buf, *save_ocuname, *save_uoname = (char *) 0;
 
-	if (!obj)
-	{
-		buf = nextobuf();
-		strcpy(buf, empty_string);
-		return buf;
-	}
+    if (!obj)
+    {
+        buf = nextobuf();
+        strcpy(buf, empty_string);
+        return buf;
+    }
 
     /* bypass object twiddling for artifacts */
     if (obj->oartifact)
@@ -2221,7 +2221,7 @@ struct obj *obj;
     if (save_uoname)
         UONAME(obj) = (char *) 0;
 
-	/* temporarily identify the type of object */
+    /* temporarily identify the type of object */
     save_ocknown = objects[obj->otyp].oc_name_known;
     objects[obj->otyp].oc_name_known = 1;
     save_ocuname = objects[obj->otyp].oc_uname;
@@ -2685,7 +2685,7 @@ static const char wrpsym[] = { WAND_CLASS,   RING_CLASS,   POTION_CLASS,
                                SCROLL_CLASS, GEM_CLASS,    AMULET_CLASS,
                                SPBOOK_CLASS, SPBOOK_CLASS, WEAPON_CLASS,
                                ARMOR_CLASS,  TOOL_CLASS, REAGENT_CLASS, MISCELLANEOUS_CLASS, MISCELLANEOUS_CLASS,
-							   FOOD_CLASS,   FOOD_CLASS };
+                               FOOD_CLASS,   FOOD_CLASS };
 
 /* return form of the verb (input plural) if xname(otmp) were the subject */
 char *
@@ -2854,7 +2854,7 @@ static const char *const as_is[] = {
     /* makesingular() leaves these plural due to how they're used */
     "boots",   "shoes",     "gloves",    "lenses", "goggles", "glasses", "eye glasses", "scales",
     "eyes",    "gauntlets", "iron bars", "bracers", "wings", "earrings",
-	"pants",   "trousers",  "trunks",
+    "pants",   "trousers",  "trunks",
     /* both singular and plural are spelled the same */
     "bison",   "deer",      "elk",       "fish",      "fowl",
     "tuna",    "yaki",      "-hai",      "krill",     "manes",
@@ -3290,8 +3290,8 @@ boolean to_plural;            /* true => makeplural, false => makesingular */
         "tegu", "vela", "da", "hy", "lu", "no", "nu", "ra", "ru", "se", "vi",
         "ya", "o", "a",
     };
-	int i;
-	size_t al;
+    int i;
+    size_t al;
     const char *endstr, *spot;
 
     if (!basestr || strlen(basestr) < 4)
@@ -3427,37 +3427,37 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "shield", ARMOR_CLASS, SMALL_SHIELD, SHIELD_OF_REFLECTION },
     { "hat", ARMOR_CLASS, FEDORA, DUNCE_CAP },
     { "helm", ARMOR_CLASS, ELVEN_LEATHER_HELM, HELM_OF_TELEPATHY },
-	{ "crown", ARMOR_CLASS, ROYAL_CROWN, CROWN_OF_RULERSHIP },
-	{ "conical hat", ARMOR_CLASS, CORNUTHAUM, GNOMISH_FELT_HAT },
-	{ "gloves", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
+    { "crown", ARMOR_CLASS, ROYAL_CROWN, CROWN_OF_RULERSHIP },
+    { "conical hat", ARMOR_CLASS, CORNUTHAUM, GNOMISH_FELT_HAT },
+    { "gloves", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
     { "gauntlets", ARMOR_CLASS, LEATHER_GLOVES, GAUNTLETS_OF_DEXTERITY },
     { "boots", ARMOR_CLASS, LOW_BOOTS, LEVITATION_BOOTS },
     { "shoes", ARMOR_CLASS, LOW_BOOTS, IRON_SHOES },
     { "cloak", ARMOR_CLASS, ELVEN_CLOAK, CLOAK_OF_DISPLACEMENT },
     { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, T_SHIRT },
-	{ "robe", ARMOR_CLASS, ROBE, MUMMY_WRAPPING },
-	{ "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_REFLECTION },
-	{ "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES, YELLOW_DRAGON_SCALES },
+    { "robe", ARMOR_CLASS, ROBE, MUMMY_WRAPPING },
+    { "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_REFLECTION },
+    { "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES, YELLOW_DRAGON_SCALES },
     { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL, YELLOW_DRAGON_SCALE_MAIL },
     { "sword", WEAPON_CLASS, SHORT_SWORD, KATANA },
     { "staff", WEAPON_CLASS, QUARTERSTAFF, STAFF_OF_WITHERING },
     { "venom", VENOM_CLASS, BLINDING_VENOM, ACID_VENOM },
-	{ "reagent", REAGENT_CLASS, THREAD_OF_SPIDER_SILK, FEATHER },
-	{ "miscellaneous item", MISCELLANEOUS_CLASS, BROOCH_OF_SHIELDING, WINGS_OF_FLYING },
-	{ "belt", MISCELLANEOUS_CLASS, LEATHER_BELT, BELT_OF_STORM_GIANT_STRENGTH },
-	{ "nose ring", MISCELLANEOUS_CLASS, NOSE_RING_OF_BULL_STRENGTH, NOSE_RING_OF_CEREBRAL_SAFEGUARDING },
-	{ "ioun stone", MISCELLANEOUS_CLASS, IOUN_STONE_OF_PROTECTION, IOUN_STONE_OF_SUSTENANCE },
-	{ "eyeglasses", MISCELLANEOUS_CLASS, LENSES, SUNGLASSES },
-	{ "goggles", MISCELLANEOUS_CLASS, GOGGLES_OF_NIGHT, GOGGLES_OF_EYE_PROTECTION },
-	{ "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
+    { "reagent", REAGENT_CLASS, THREAD_OF_SPIDER_SILK, FEATHER },
+    { "miscellaneous item", MISCELLANEOUS_CLASS, BROOCH_OF_SHIELDING, WINGS_OF_FLYING },
+    { "belt", MISCELLANEOUS_CLASS, LEATHER_BELT, BELT_OF_STORM_GIANT_STRENGTH },
+    { "nose ring", MISCELLANEOUS_CLASS, NOSE_RING_OF_BULL_STRENGTH, NOSE_RING_OF_CEREBRAL_SAFEGUARDING },
+    { "ioun stone", MISCELLANEOUS_CLASS, IOUN_STONE_OF_PROTECTION, IOUN_STONE_OF_SUSTENANCE },
+    { "eyeglasses", MISCELLANEOUS_CLASS, LENSES, SUNGLASSES },
+    { "goggles", MISCELLANEOUS_CLASS, GOGGLES_OF_NIGHT, GOGGLES_OF_EYE_PROTECTION },
+    { "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
     { "grey stone", GEM_CLASS, LUCKSTONE, FLINT },
-	{ "mushroom", FOOD_CLASS, CHAMPIGNON, MAGIC_MUSHROOM },
-	{ "whistle", TOOL_CLASS, TIN_WHISTLE, MAGIC_WHISTLE },
-	{ "flute", TOOL_CLASS, WOODEN_FLUTE, MAGIC_FLUTE },
-	{ "harp", TOOL_CLASS, WOODEN_HARP, MAGIC_HARP },
-	{ "drum", TOOL_CLASS, LEATHER_DRUM, DRUM_OF_EARTHQUAKE },
-	{ "jar", TOOL_CLASS, JAR_OF_EXTRA_HEALING_SALVE, JAR_OF_BASILISK_BLOOD },
-	{ "salve", TOOL_CLASS, JAR_OF_EXTRA_HEALING_SALVE, JAR_OF_PRODIGIOUS_HEALING_SALVE },
+    { "mushroom", FOOD_CLASS, CHAMPIGNON, MAGIC_MUSHROOM },
+    { "whistle", TOOL_CLASS, TIN_WHISTLE, MAGIC_WHISTLE },
+    { "flute", TOOL_CLASS, WOODEN_FLUTE, MAGIC_FLUTE },
+    { "harp", TOOL_CLASS, WOODEN_HARP, MAGIC_HARP },
+    { "drum", TOOL_CLASS, LEATHER_DRUM, DRUM_OF_EARTHQUAKE },
+    { "jar", TOOL_CLASS, JAR_OF_EXTRA_HEALING_SALVE, JAR_OF_BASILISK_BLOOD },
+    { "salve", TOOL_CLASS, JAR_OF_EXTRA_HEALING_SALVE, JAR_OF_PRODIGIOUS_HEALING_SALVE },
 };
 
 /* alternate spellings; if the difference is only the presence or
@@ -3472,36 +3472,36 @@ static const struct alt_spellings {
     { "whip", BULLWHIP },
     { "saber", SILVER_SABER },
     { "silver sabre", SILVER_SABER },
-	{ "double flail", DOUBLE_HEADED_FLAIL },
-	{ "two-headed flail", DOUBLE_HEADED_FLAIL },
-	{ "two headed flail", DOUBLE_HEADED_FLAIL },
-	{ "double headed flail", DOUBLE_HEADED_FLAIL },
-	{ "triple flail", TRIPLE_HEADED_FLAIL },
-	{ "three-headed flail", TRIPLE_HEADED_FLAIL },
-	{ "three headed flail", TRIPLE_HEADED_FLAIL },
-	{ "triple headed flail", TRIPLE_HEADED_FLAIL },
-	{ "quiver of endless arrows", QUIVER_OF_INFINITE_ARROWS },
-	{ "pouch of infinite bolts", POUCH_OF_ENDLESS_BOLTS },
-	{ "spellbook of call demogorgon", SPE_CALL_DEMOGORGON },
-	{ "spellbook of summon demogorgon", SPE_CALL_DEMOGORGON },
-	{ "spellbook of summon Demogorgon", SPE_CALL_DEMOGORGON },
-	{ "spellbook of yendorian great summoning", SPE_GREAT_YENDORIAN_SUMMONING },
+    { "double flail", DOUBLE_HEADED_FLAIL },
+    { "two-headed flail", DOUBLE_HEADED_FLAIL },
+    { "two headed flail", DOUBLE_HEADED_FLAIL },
+    { "double headed flail", DOUBLE_HEADED_FLAIL },
+    { "triple flail", TRIPLE_HEADED_FLAIL },
+    { "three-headed flail", TRIPLE_HEADED_FLAIL },
+    { "three headed flail", TRIPLE_HEADED_FLAIL },
+    { "triple headed flail", TRIPLE_HEADED_FLAIL },
+    { "quiver of endless arrows", QUIVER_OF_INFINITE_ARROWS },
+    { "pouch of infinite bolts", POUCH_OF_ENDLESS_BOLTS },
+    { "spellbook of call demogorgon", SPE_CALL_DEMOGORGON },
+    { "spellbook of summon demogorgon", SPE_CALL_DEMOGORGON },
+    { "spellbook of summon Demogorgon", SPE_CALL_DEMOGORGON },
+    { "spellbook of yendorian great summoning", SPE_GREAT_YENDORIAN_SUMMONING },
     { "potion of super heroism", POT_SUPER_HEROISM },
     { "potion of superheroism", POT_SUPER_HEROISM },
     { "smooth shield", SHIELD_OF_REFLECTION },
-	{ "gauntlets of power", GAUNTLETS_OF_OGRE_POWER },
-	{ "grey dragon scale mail", GRAY_DRAGON_SCALE_MAIL },
+    { "gauntlets of power", GAUNTLETS_OF_OGRE_POWER },
+    { "grey dragon scale mail", GRAY_DRAGON_SCALE_MAIL },
     { "grey dragon scales", GRAY_DRAGON_SCALES },
-	{ "iron ball", HEAVY_IRON_BALL },
+    { "iron ball", HEAVY_IRON_BALL },
     { "lantern", BRASS_LANTERN },
     { "mattock", DWARVISH_MATTOCK },
-	{ "longbow", LONG_BOW },
-	{ "composite longbow", COMPOSITE_LONG_BOW },
-	{ "elven longbow", ELVEN_LONG_BOW },
+    { "longbow", LONG_BOW },
+    { "composite longbow", COMPOSITE_LONG_BOW },
+    { "elven longbow", ELVEN_LONG_BOW },
     { "elven bow", ELVEN_LONG_BOW },
     { "shortbow", SHORT_BOW },
-	{ "composite shortbow", COMPOSITE_SHORT_BOW },
-	{ "orcish shortbow", ORCISH_SHORT_BOW },
+    { "composite shortbow", COMPOSITE_SHORT_BOW },
+    { "orcish shortbow", ORCISH_SHORT_BOW },
     { "orcish bow", ORCISH_SHORT_BOW },
     { "amulet of poison resistance", AMULET_VERSUS_POISON },
     { "potion of sleep", POT_SLEEPING },
@@ -3509,14 +3509,14 @@ static const struct alt_spellings {
     { "potion of greater mana", POT_GREATER_ENERGY },
     { "potion of full mana", POT_FULL_ENERGY },
     { "stone", STONE_PEBBLE },
-	{ "clay", CLAY_PEBBLE },
-	{ "lead sling bullet", LEADEN_SLING_BULLET },
-	{ "lead sling-bullet", LEADEN_SLING_BULLET },
-	{ "leaden sling bullet", LEADEN_SLING_BULLET },
-	{ "iron sling bullet", IRON_SLING_BULLET },
-	{ "silver sling bullet", SILVER_SLING_BULLET },
-	{ "sling-bullet", LEADEN_SLING_BULLET },
-	{ "sling bullet", LEADEN_SLING_BULLET },
+    { "clay", CLAY_PEBBLE },
+    { "lead sling bullet", LEADEN_SLING_BULLET },
+    { "lead sling-bullet", LEADEN_SLING_BULLET },
+    { "leaden sling bullet", LEADEN_SLING_BULLET },
+    { "iron sling bullet", IRON_SLING_BULLET },
+    { "silver sling bullet", SILVER_SLING_BULLET },
+    { "sling-bullet", LEADEN_SLING_BULLET },
+    { "sling bullet", LEADEN_SLING_BULLET },
     { "sling bullet", LEADEN_SLING_BULLET },
     { "quarrel", CROSSBOW_BOLT },
     { "bone crossbow bolt", BONE_QUARREL },
@@ -3537,22 +3537,22 @@ static const struct alt_spellings {
     { "grappling iron", GRAPPLING_HOOK },
     { "grapnel", GRAPPLING_HOOK },
     { "grapple", GRAPPLING_HOOK },
-	{ "spider silk", THREAD_OF_SPIDER_SILK },
-	{ "silk", THREAD_OF_SPIDER_SILK },
-	{ "bat guano", CLUMP_OF_BAT_GUANO },
-	{ "guano", CLUMP_OF_BAT_GUANO },
-	{ "spore", HEAP_OF_SPORAL_POWDER },
-	{ "fungal spore", HEAP_OF_SPORAL_POWDER },
-	{ "sporal powder", HEAP_OF_SPORAL_POWDER },
-	{ "powder", HEAP_OF_SPORAL_POWDER },
-	{ "wood", PIECE_OF_WOOD },
-	{ "skull", HUMAN_SKULL },
-	{ "ginseng", GINSENG_ROOT },
-	{ "mandrake", MANDRAKE_ROOT },
-	{ "wolfsbane", SPRIG_OF_WOLFSBANE },
-	{ "garlic", CLOVE_OF_GARLIC },
-	{ "sulfurous ash", PINCH_OF_SULFUROUS_ASH },
-	{ "sulphurous ash", PINCH_OF_SULFUROUS_ASH },
+    { "spider silk", THREAD_OF_SPIDER_SILK },
+    { "silk", THREAD_OF_SPIDER_SILK },
+    { "bat guano", CLUMP_OF_BAT_GUANO },
+    { "guano", CLUMP_OF_BAT_GUANO },
+    { "spore", HEAP_OF_SPORAL_POWDER },
+    { "fungal spore", HEAP_OF_SPORAL_POWDER },
+    { "sporal powder", HEAP_OF_SPORAL_POWDER },
+    { "powder", HEAP_OF_SPORAL_POWDER },
+    { "wood", PIECE_OF_WOOD },
+    { "skull", HUMAN_SKULL },
+    { "ginseng", GINSENG_ROOT },
+    { "mandrake", MANDRAKE_ROOT },
+    { "wolfsbane", SPRIG_OF_WOLFSBANE },
+    { "garlic", CLOVE_OF_GARLIC },
+    { "sulfurous ash", PINCH_OF_SULFUROUS_ASH },
+    { "sulphurous ash", PINCH_OF_SULFUROUS_ASH },
     { "iron ore", NUGGET_OF_IRON_ORE },
     { "copper ore", NUGGET_OF_COPPER_ORE },
     { "silver ore", NUGGET_OF_SILVER_ORE },
@@ -3564,14 +3564,14 @@ static const struct alt_spellings {
     { "mithril ore", NUGGET_OF_MITHRIL_ORE },
     { "adamantium ore", NUGGET_OF_ADAMANTIUM_ORE },
     { "ash", PINCH_OF_SULFUROUS_ASH },
-	{ "spinach", HANDFUL_OF_SPINACH_LEAVES },
-	{ "ring of death resistance", RIN_PROTECTION_FROM_UNDEATH },
+    { "spinach", HANDFUL_OF_SPINACH_LEAVES },
+    { "ring of death resistance", RIN_PROTECTION_FROM_UNDEATH },
     { "ring of drain resistance", RIN_PROTECTION_FROM_UNDEATH },
     { "ring of protection from death", RIN_PROTECTION_FROM_UNDEATH },
     { "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
-	{ "belt of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
-	{ "girdle of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
-	/* if we ever add other sizes, move this to o_ranges[] with "bag" */
+    { "belt of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
+    { "girdle of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
+    /* if we ever add other sizes, move this to o_ranges[] with "bag" */
     { "box", LARGE_BOX },
     /* normally we wouldn't have to worry about unnecessary <space>, but
        " stone" will get stripped off, preventing a wishymatch; that actually
@@ -3582,7 +3582,7 @@ static const struct alt_spellings {
     { "flintstone", FLINT },
     { "salve", JAR_OF_EXTRA_HEALING_SALVE },
     { "healing salve", JAR_OF_EXTRA_HEALING_SALVE },
-	{ "extra healing salve", JAR_OF_EXTRA_HEALING_SALVE },
+    { "extra healing salve", JAR_OF_EXTRA_HEALING_SALVE },
     { "greater healing salve", JAR_OF_GREATER_HEALING_SALVE },
     { "prodigious healing salve", JAR_OF_PRODIGIOUS_HEALING_SALVE },
     { "medicinal salve", JAR_OF_MEDICINAL_SALVE },
@@ -3695,7 +3695,7 @@ boolean is_wiz_wish;
     register int i;
     register struct obj *otmp;
     int cnt, enchantment, spesgn, typ, very, rechrg;
-	int charges, chargesfound;
+    int charges, chargesfound;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken, open;
     int halfeaten, mntmp, contents;
@@ -3722,7 +3722,7 @@ boolean is_wiz_wish;
     char oclass;
     char *un, *dn, *actualn, *origbp = bp;
     const char *name = 0;
-	boolean isartifact = FALSE;
+    boolean isartifact = FALSE;
     boolean wiz_wishing = (wizard && is_wiz_wish);
 
     cnt = enchantment = charges = chargesfound = spesgn = typ = 0;
@@ -3815,23 +3815,23 @@ boolean is_wiz_wish;
         } else if (!strncmpi(bp, "poisoned ", l = 9)) {
             ispoisoned = 1;
             /* "trapped" recognized but not honored outside wizard mode */
-		}
-		else if (!strncmpi(bp, "freezing ", l = 9))
-		{
-			elemental_enchantment = COLD_ENCHANTMENT;
-		}
-		else if (!strncmpi(bp, "flaming ", l = 8))
-		{
-			elemental_enchantment = FIRE_ENCHANTMENT;
-		}
-		else if (!strncmpi(bp, "electrified ", l = 12))
-		{
-			elemental_enchantment = LIGHTNING_ENCHANTMENT;
-		}
-		else if (!strncmpi(bp, "death-magical ", l = 14))
-		{
-			elemental_enchantment = DEATH_ENCHANTMENT;
-		}
+        }
+        else if (!strncmpi(bp, "freezing ", l = 9))
+        {
+            elemental_enchantment = COLD_ENCHANTMENT;
+        }
+        else if (!strncmpi(bp, "flaming ", l = 8))
+        {
+            elemental_enchantment = FIRE_ENCHANTMENT;
+        }
+        else if (!strncmpi(bp, "electrified ", l = 12))
+        {
+            elemental_enchantment = LIGHTNING_ENCHANTMENT;
+        }
+        else if (!strncmpi(bp, "death-magical ", l = 14))
+        {
+            elemental_enchantment = DEATH_ENCHANTMENT;
+        }
         else if (!strncmpi(bp, "exceptional ", l = 12))
         {
             exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
@@ -3967,18 +3967,18 @@ boolean is_wiz_wish;
             islit = 1;
             p += 4 - 1; /* point at ')' */
         } else {
-			charges = atoi(p);
+            charges = atoi(p);
             while (digit(*p))
                 p++;
             if (*p == ':') {
                 p++;
                 rechrg = charges;
-				charges = atoi(p);
+                charges = atoi(p);
                 while (digit(*p))
                     p++;
             }
             if (*p != ')') {
-				charges = rechrg = 0;
+                charges = rechrg = 0;
                 /* mis-matched parentheses; rest of string will be ignored
                  * [probably we should restore everything back to '('
                  * instead since it might be part of "named ..."]
@@ -4010,10 +4010,10 @@ boolean is_wiz_wish;
     if (enchantment > SCHAR_LIM)
         enchantment = SCHAR_LIM;
 
-	if (charges > SCHAR_LIM)
-		charges = SCHAR_LIM;
+    if (charges > SCHAR_LIM)
+        charges = SCHAR_LIM;
 
-	if (rechrg < 0 || rechrg > RECHARGE_LIMIT)
+    if (rechrg < 0 || rechrg > RECHARGE_LIMIT)
         rechrg = RECHARGE_LIMIT;
 
     /* now we have the actual name, as delivered by xname, say
@@ -4130,18 +4130,18 @@ boolean is_wiz_wish;
          * (avoid "wand/finger of death" confusion).
          */
         if (!strstri(bp, " guano") // rule out bat guano
-			&& !strstri(bp, "wand ") && !strstri(bp, "spellbook ") && !strstri(bp, "bracers ")
-			&& !strstri(bp, "sword ") && !strstri(bp, "dagger ") && !strstri(bp, "arrow ") && !strstri(bp, "arrows ")
-			&& !strstri(bp, "axe ") && !strstri(bp, "bolt ") && !strstri(bp, "quarrel ") && !strstri(bp, "sling-bullet ")
+            && !strstri(bp, "wand ") && !strstri(bp, "spellbook ") && !strstri(bp, "bracers ")
+            && !strstri(bp, "sword ") && !strstri(bp, "dagger ") && !strstri(bp, "arrow ") && !strstri(bp, "arrows ")
+            && !strstri(bp, "axe ") && !strstri(bp, "bolt ") && !strstri(bp, "quarrel ") && !strstri(bp, "sling-bullet ")
             && !strstri(bp, "bolts ") && !strstri(bp, "quarrels ") && !strstri(bp, "sling-bullets ")
-			&& !strstri(bp, "mace ") && !strstri(bp, "flail ") && !strstri(bp, "hammer ") && !strstri(bp, "morning star ")
-			&& !strstri(bp, "staff ") && !strstri(bp, "bow ") && !strstri(bp, "crossbow ")
-			&& !strstri(bp, "robe ") && !strstri(bp, "cloak ") && !strstri(bp, "gloves ")
-			&& !strstri(bp, "gauntlets ") && !strstri(bp, "belt ") && !strstri(bp, "girdle ")
-			&& !strstri(bp, "boots ") && !strstri(bp, "ring ")
-			&& !strstri(bp, "potion ") && !strstri(bp, "scroll ")
-			&& !strstri(bp, "potions ") && !strstri(bp, "scrolls ")
-			&& !strstri(bp, "finger ")) {
+            && !strstri(bp, "mace ") && !strstri(bp, "flail ") && !strstri(bp, "hammer ") && !strstri(bp, "morning star ")
+            && !strstri(bp, "staff ") && !strstri(bp, "bow ") && !strstri(bp, "crossbow ")
+            && !strstri(bp, "robe ") && !strstri(bp, "cloak ") && !strstri(bp, "gloves ")
+            && !strstri(bp, "gauntlets ") && !strstri(bp, "belt ") && !strstri(bp, "girdle ")
+            && !strstri(bp, "boots ") && !strstri(bp, "ring ")
+            && !strstri(bp, "potion ") && !strstri(bp, "scroll ")
+            && !strstri(bp, "potions ") && !strstri(bp, "scrolls ")
+            && !strstri(bp, "finger ")) {
             if ((p = strstri(bp, "tin of ")) != 0) {
                 if (!strcmpi(p + 7, "spinach")) {
                     contents = CONTAINER_SPINACH;
@@ -4161,12 +4161,12 @@ boolean is_wiz_wish;
     /* Find corpse type w/o "of" (red dragon scale mail, yeti corpse) */
     if (strncmpi(bp, "samurai sword", 13)  /* not the "samurai" monster! */
         && strncmpi(bp, "wizard lock", 11) /* not the "wizard" monster! */
-		&& strncmpi(bp, "bat guano", 9) /* not the "bat" monster! */
-		&& strncmpi(bp, "ninja-to", 8)     /* not the "ninja" rank */
+        && strncmpi(bp, "bat guano", 9) /* not the "bat" monster! */
+        && strncmpi(bp, "ninja-to", 8)     /* not the "ninja" rank */
         && strncmpi(bp, "master key", 10)  /* not the "master" rank */
-		&& strncmpi(bp, "death cap", 9)  /* not the "death" monster */
-		&& strncmpi(bp, "magenta", 7))   /* not the "mage" rank */
-	{
+        && strncmpi(bp, "death cap", 9)  /* not the "death" monster */
+        && strncmpi(bp, "magenta", 7))   /* not the "mage" rank */
+    {
         if (mntmp < LOW_PM && strlen(bp) > 2
             && (mntmp = name_to_mon(bp)) >= LOW_PM) {
             int mntmptoo, mntmplen; /* double check for rank title */
@@ -4288,10 +4288,10 @@ boolean is_wiz_wish;
         && strncmpi(bp, "detect food", 11)
         && strncmpi(bp, "food detection", 14)
         && strncmpi(bp, "ring mail", 9)
-		&& strncmpi(bp, "staff of withering", 18)
-		&& strncmpi(bp, "one ring", 8)
-		&& strncmpi(bp, "wand of orcus", 13)
-		&& strncmpi(bp, "studded leather armor", 21)
+        && strncmpi(bp, "staff of withering", 18)
+        && strncmpi(bp, "one ring", 8)
+        && strncmpi(bp, "wand of orcus", 13)
+        && strncmpi(bp, "studded leather armor", 21)
         && strncmpi(bp, "leather armor", 13)
         && strncmpi(bp, "tooled horn", 11)
         && strncmpi(bp, "food ration", 11)
@@ -4304,14 +4304,14 @@ boolean is_wiz_wish;
         && strncmpi(bp, "ring of conflict", 16)
         && strncmpi(bp, "meat ring", 9))
         for (i = 0; i < (int) (sizeof wrpsym); i++)
-		{
+        {
             register int j = strlen(wrp[i]);
 
             if (!strncmpi(bp, wrp[i], j))
-			{
+            {
                 oclass = wrpsym[i];
                 if (oclass != AMULET_CLASS) 
-				{
+                {
                     bp += j;
                     if (!strncmpi(bp, " of ", 4))
                         actualn = bp + 4;
@@ -4320,9 +4320,9 @@ boolean is_wiz_wish;
                     actualn = bp;
                 goto srch;
             }
-			
-			if (!strncmpi("ring", wrp[i], j) && strncmpi(bp, "enchant ring", 12))
-				continue;
+            
+            if (!strncmpi("ring", wrp[i], j) && strncmpi(bp, "enchant ring", 12))
+                continue;
 
             if (!BSTRCMPI(bp, p - j, wrp[i])) {
                 oclass = wrpsym[i];
@@ -4444,11 +4444,11 @@ boolean is_wiz_wish;
         }
     }
 
-	if (wiz_wishing && actualn && wishymatch(actualn, OBJ_NAME(objects[AMULET_OF_YENDOR]), TRUE))
-	{
-		typ = AMULET_OF_YENDOR;
-		goto typfnd;
-	}
+    if (wiz_wishing && actualn && wishymatch(actualn, OBJ_NAME(objects[AMULET_OF_YENDOR]), TRUE))
+    {
+        typ = AMULET_OF_YENDOR;
+        goto typfnd;
+    }
 
     if (((typ = rnd_otyp_by_namedesc(actualn, oclass, 1)) != STRANGE_OBJECT)
         || ((typ = rnd_otyp_by_namedesc(dn, oclass, 1)) != STRANGE_OBJECT)
@@ -4559,7 +4559,7 @@ boolean is_wiz_wish;
         name = artifact_name(actualn, &objtyp);
         if (name) {
             typ = objtyp;
-			isartifact = TRUE;
+            isartifact = TRUE;
             goto typfnd;
         }
     }
@@ -4619,17 +4619,17 @@ boolean is_wiz_wish;
                 lsubtype = FOUNTAIN_HEALING;
             if (!strncmpi(bp, "mana ", 5))
                 lsubtype = FOUNTAIN_MANA;
-			if (!strncmpi(bp, "power ", 6))
+            if (!strncmpi(bp, "power ", 6))
                 lsubtype = FOUNTAIN_POWER;
-			if (!strncmpi(bp, "water ", 6))
+            if (!strncmpi(bp, "water ", 6))
                 lsubtype = FOUNTAIN_WATER;
-			if (!strncmpi(bp, "poison ", 7))
+            if (!strncmpi(bp, "poison ", 7))
                 lsubtype = FOUNTAIN_POISON;
             
             full_location_transform(x, y, FOUNTAIN, lsubtype, lflags, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : get_initial_location_subtype(ROOM), FALSE, lhorizontal, 0, 0, FALSE);
 
             int ftyp = lev->subtyp; // (lev->fountainmask & FOUNTAIN_TYPE_MASK);
-			pline("A %s.", ftyp == FOUNTAIN_MAGIC && lev->blessedftn ? "enchanted fountain" : fountain_type_text(ftyp));
+            pline("A %s.", ftyp == FOUNTAIN_MAGIC && lev->blessedftn ? "enchanted fountain" : fountain_type_text(ftyp));
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }
@@ -4748,20 +4748,20 @@ boolean is_wiz_wish;
 
     /* handle some objects that are only allowed in wizard mode */
     if (typ && (!wiz_wishing || (wiz_wishing && (
-		   typ == AMULET_OF_YENDOR 
-		|| typ == CANDELABRUM_OF_INVOCATION
-		|| typ == BELL_OF_OPENING
-		|| typ == SPE_BOOK_OF_THE_DEAD
-		|| typ == MAGIC_LAMP
-		|| (!isartifact && is_otyp_nowish(typ))
-		|| (isartifact && (artilist[get_artifact_id(typ, name)].aflags & AF_NO_WISH))
-		)
-		&& yn_query("That item is nonwishable. Force it anyway?") != 'y'))) {
+           typ == AMULET_OF_YENDOR 
+        || typ == CANDELABRUM_OF_INVOCATION
+        || typ == BELL_OF_OPENING
+        || typ == SPE_BOOK_OF_THE_DEAD
+        || typ == MAGIC_LAMP
+        || (!isartifact && is_otyp_nowish(typ))
+        || (isartifact && (artilist[get_artifact_id(typ, name)].aflags & AF_NO_WISH))
+        )
+        && yn_query("That item is nonwishable. Force it anyway?") != 'y'))) {
         switch (typ) {
         case AMULET_OF_YENDOR:
             typ = FAKE_AMULET_OF_YENDOR;
             break;
-		case CANDELABRUM_OF_INVOCATION:
+        case CANDELABRUM_OF_INVOCATION:
             typ = rnd_class(TALLOW_CANDLE, WAX_CANDLE);
             break;
         case BELL_OF_OPENING:
@@ -4783,9 +4783,9 @@ boolean is_wiz_wish;
             if (is_otyp_nowish(typ) && !isartifact)
                 return (struct obj *) 0;
 
-			if (isartifact && (artilist[get_artifact_id(typ, name)].aflags & AF_NO_WISH))
-				return (struct obj*) 0;
-			break;
+            if (isartifact && (artilist[get_artifact_id(typ, name)].aflags & AF_NO_WISH))
+                return (struct obj*) 0;
+            break;
         }
     }
 
@@ -4801,7 +4801,7 @@ boolean is_wiz_wish;
 
     if (islit && (typ == OIL_LAMP || typ == MAGIC_LAMP || typ == BRASS_LANTERN
                   || is_candle(otmp) || typ == POT_OIL)) 
-	{
+    {
         place_object(otmp, u.ux, u.uy); /* make it viable light source */
         begin_burn(otmp, FALSE);
         obj_extract_self(otmp); /* now release it for caller's use */
@@ -4814,31 +4814,31 @@ boolean is_wiz_wish;
                               || is_rock(otmp) || is_missile(otmp)))))
         otmp->quan = (long) cnt;
 
-	if (oclass == GEM_CLASS && !wiz_wishing)
-		otmp->quan = 1;
+    if (oclass == GEM_CLASS && !wiz_wishing)
+        otmp->quan = 1;
 
 
-	/* set enchantment */
+    /* set enchantment */
     if (spesgn == 0) {
         enchantment = otmp->enchantment;
     }
-	else if (wiz_wishing)
-	{
+    else if (wiz_wishing)
+    {
         ; /* no alteration to enchantment */
     }
-	else if (oclass == ARMOR_CLASS || oclass == WEAPON_CLASS
+    else if (oclass == ARMOR_CLASS || oclass == WEAPON_CLASS
                || is_weptool(otmp)
                || (oclass == RING_CLASS && objects[typ].oc_enchantable)
-			   || objects[typ].oc_enchantable
-		) 
-	{
+               || objects[typ].oc_enchantable
+        ) 
+    {
         if (enchantment > get_obj_init_enchantment(otmp) && enchantment > otmp->enchantment)
             enchantment = 0;
         if (enchantment > get_obj_max_enchantment(otmp) / 3 && Luck < 0)
             spesgn = -1;
     }
-	else 
-	{
+    else 
+    {
 #if 0
         if (oclass == WAND_CLASS) {
             if (enchantment > 1 && spesgn == -1)
@@ -4847,54 +4847,54 @@ boolean is_wiz_wish;
             if (enchantment > 0 && spesgn == -1)
                 enchantment = 0;
         }
-		if (enchantment > otmp->enchantment)
-			enchantment = otmp->enchantment;
+        if (enchantment > otmp->enchantment)
+            enchantment = otmp->enchantment;
 #endif
-		if (enchantment > 0 && spesgn == -1)
-			enchantment = 0;
-		if (enchantment > otmp->enchantment)
-			enchantment = otmp->enchantment;
-	}
+        if (enchantment > 0 && spesgn == -1)
+            enchantment = 0;
+        if (enchantment > otmp->enchantment)
+            enchantment = otmp->enchantment;
+    }
 
     if (spesgn == -1)
         enchantment = -enchantment;
 
-	if (!objects[typ].oc_enchantable)
-		enchantment = 0;
+    if (!objects[typ].oc_enchantable)
+        enchantment = 0;
 
-	otmp->enchantment = enchantment;
-
-
-	/* set charges */
-	if (!objects[typ].oc_charged)
-		charges = 0;
-	else if (!chargesfound)
-		charges = otmp->charges;
-	else if (wiz_wishing)
-	{
-		; /* no alteration to charges */
-	}
-	else if (oclass == WAND_CLASS
-		|| objects[typ].oc_charged
-		)
-	{
-		int maxcharges = get_obj_max_charge(otmp);
-		if (charges > maxcharges)
-			charges = maxcharges;
-
-		if (charges < 0)
-			charges = 0;
-
-		if (typ == WAN_WISHING && !wiz_wishing)
-		{
-			charges = (rn2(10) ? -1 : 0);
-		}
-	}
-		
-	otmp->charges = charges;
+    otmp->enchantment = enchantment;
 
 
-	/* set special_quality */
+    /* set charges */
+    if (!objects[typ].oc_charged)
+        charges = 0;
+    else if (!chargesfound)
+        charges = otmp->charges;
+    else if (wiz_wishing)
+    {
+        ; /* no alteration to charges */
+    }
+    else if (oclass == WAND_CLASS
+        || objects[typ].oc_charged
+        )
+    {
+        int maxcharges = get_obj_max_charge(otmp);
+        if (charges > maxcharges)
+            charges = maxcharges;
+
+        if (charges < 0)
+            charges = 0;
+
+        if (typ == WAN_WISHING && !wiz_wishing)
+        {
+            charges = (rn2(10) ? -1 : 0);
+        }
+    }
+        
+    otmp->charges = charges;
+
+
+    /* set special_quality */
     if (is_otyp_key(typ) && typ == key_otyp)
     {
         otmp->special_quality = key_special_quality;
@@ -4934,12 +4934,12 @@ boolean is_wiz_wish;
         break;
 #endif
     default:
-		break;
-	}
+        break;
+    }
 
-	/* set speflags */
-	if (oclass == VENOM_CLASS)
-		otmp->speflags |= SPEFLAGS_YOURS;
+    /* set speflags */
+    if (oclass == VENOM_CLASS)
+        otmp->speflags |= SPEFLAGS_YOURS;
 
 
     /* set otmp->corpsenm or dragon scale [mail] */
@@ -4985,13 +4985,13 @@ boolean is_wiz_wish;
             otmp->corpsenm = mntmp;
             if (Has_contents(otmp) && verysmall(&mons[mntmp]))
                 delete_contents(otmp); /* no spellbook */
-			
-			if(ishistoric)
-	            otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
-			else
-				otmp->speflags &= ~SPEFLAGS_STATUE_HISTORIC;
+            
+            if(ishistoric)
+                otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
+            else
+                otmp->speflags &= ~SPEFLAGS_STATUE_HISTORIC;
 
-			break;
+            break;
         case SCALE_MAIL:
             /* Dragon mail - depends on the order of objects & dragons. */
             if (mntmp >= PM_GRAY_DRAGON && mntmp <= PM_YELLOW_DRAGON)
@@ -5053,16 +5053,16 @@ boolean is_wiz_wish;
             otmp->otrapped = (trapped == 1);
     }
 
-	/* Set elemental enchantment */
-	if (elemental_enchantment) 
+    /* Set elemental enchantment */
+    if (elemental_enchantment) 
     {
-		if (is_elemental_enchantable(otmp))
-			if(Luck >= 0)
-				otmp->elemental_enchantment = (uchar)elemental_enchantment;
+        if (is_elemental_enchantable(otmp))
+            if(Luck >= 0)
+                otmp->elemental_enchantment = (uchar)elemental_enchantment;
 
         if(otmp->elemental_enchantment == DEATH_ENCHANTMENT && !is_death_enchantable(otmp))
-			otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
-	}
+            otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
+    }
 
     /* Set exceptionality */
     if (exceptionality)
@@ -5184,26 +5184,26 @@ boolean is_wiz_wish;
             if (novelname)
                 name = novelname;
         }
-		if(name == aname)
-		{
-			otmp = oname(otmp, name);
-			/* name==aname => wished for artifact (otmp->oartifact => got it) */
-			if (otmp->oartifact) {
-				otmp->quan = 1L;
-				u.uconduct.wisharti++; /* KMH, conduct */
-			}
-		}
-		else
-		{
-			otmp = uoname(otmp, name);
-		}
+        if(name == aname)
+        {
+            otmp = oname(otmp, name);
+            /* name==aname => wished for artifact (otmp->oartifact => got it) */
+            if (otmp->oartifact) {
+                otmp->quan = 1L;
+                u.uconduct.wisharti++; /* KMH, conduct */
+            }
+        }
+        else
+        {
+            otmp = uoname(otmp, name);
+        }
     }
 
     /* more wishing abuse: don't allow wishing for certain artifacts */
     /* and make them pay; charge them for the wish anyway! */
     if ((is_quest_artifact(otmp)
          || (otmp->oartifact && rn2(nartifact_exist()) > 1)) && !wiz_wishing)
-	{
+    {
         artifact_exists(otmp, safe_oname(otmp), FALSE);
         obfree(otmp, (struct obj *) 0);
         otmp = (struct obj *) &zeroobj;
@@ -5307,17 +5307,17 @@ const char*
 robe_simple_name(robe)
 struct obj* robe;
 {
-	if (robe) {
-		switch (robe->otyp) {
-		case ROBE: //special types here
-			return "robe";
-		case MUMMY_WRAPPING:
-			return "wrapping";
-		default:
-			break;
-		}
-	}
-	return "robe";
+    if (robe) {
+        switch (robe->otyp) {
+        case ROBE: //special types here
+            return "robe";
+        case MUMMY_WRAPPING:
+            return "wrapping";
+        default:
+            break;
+        }
+    }
+    return "robe";
 }
 
 const char*
@@ -5327,7 +5327,7 @@ struct obj* miscitem;
     if (!miscitem)
         return "invalid miscellaneous item";
 
-	return "miscellaneous item";
+    return "miscellaneous item";
 }
 
 
@@ -5335,21 +5335,21 @@ const char*
 armor_class_simple_name(item)
 struct obj* item;
 {
-	if (!item)
-		return "armor";
+    if (!item)
+        return "armor";
 
-	if (is_suit(item))
-		return suit_simple_name(item);
-	else if (is_robe(item))
-		return robe_simple_name(item);
-	else if (is_cloak(item))
-		return cloak_simple_name(item);
-	else if (is_helmet(item))
-		return helm_simple_name(item);
-	else if(objects[item->otyp].oc_subtyp >= 0 && objects[item->otyp].oc_subtyp < MAX_ARMOR_TYPES)
-		return armor_type_names[objects[item->otyp].oc_subtyp];
-	else
-		return "armor";
+    if (is_suit(item))
+        return suit_simple_name(item);
+    else if (is_robe(item))
+        return robe_simple_name(item);
+    else if (is_cloak(item))
+        return cloak_simple_name(item);
+    else if (is_helmet(item))
+        return helm_simple_name(item);
+    else if(objects[item->otyp].oc_subtyp >= 0 && objects[item->otyp].oc_subtyp < MAX_ARMOR_TYPES)
+        return armor_type_names[objects[item->otyp].oc_subtyp];
+    else
+        return "armor";
 
 }
 
@@ -5401,8 +5401,8 @@ struct obj *obj;
 char *FDECL((*func), (OBJ_P)), *FDECL((*altfunc), (OBJ_P));
 const char *lastR;
 {
-	if (!qbuf)
-		return qbuf;
+    if (!qbuf)
+        return qbuf;
 
     char *bufp;
     /* convert size_t (or int for ancient systems) to ordinary unsigned */
@@ -5427,18 +5427,18 @@ const char *lastR;
     /* the output buffer might be the same as the prefix if caller
        has already partially filled it */
     if (qbuf == qprefix) 
-	{
+    {
         /* prefix is already in the buffer */
-		qbuf[lenlimit] = '\0';
+        qbuf[lenlimit] = '\0';
     } 
-	else if (qprefix) 
-	{
+    else if (qprefix) 
+    {
         /* put prefix into the buffer */
         (void) strncpy(qbuf, qprefix, lenlimit);
-		qbuf[lenlimit] = '\0';
+        qbuf[lenlimit] = '\0';
     }
-	else 
-	{
+    else 
+    {
         /* no prefix; output buffer starts out empty */
         qbuf[0] = '\0';
     }
@@ -5447,23 +5447,23 @@ const char *lastR;
     len = strlen(qbuf);
 
     if (len + len_lastR + len_qsfx > lenlimit)
-	{
+    {
         /* too long; skip formatting, last resort output is truncated */
         if (len < lenlimit) 
-		{
+        {
             (void) strncpy(&qbuf[len], lastR, lenlimit - len);
-			qbuf[lenlimit] = '\0';
+            qbuf[lenlimit] = '\0';
             len = strlen(qbuf);
             if (qsuffix && len < lenlimit)
-			{
+            {
                 (void) strncpy(&qbuf[len], qsuffix, lenlimit - len);
-				qbuf[lenlimit] = '\0';
-				/* len = (unsigned) strlen(qbuf); */
+                qbuf[lenlimit] = '\0';
+                /* len = (unsigned) strlen(qbuf); */
             }
         }
     } 
-	else 
-	{
+    else 
+    {
         /* suffix and last resort are guaranteed to fit */
         len += len_qsfx; /* include the pending suffix */
         /* format the object */

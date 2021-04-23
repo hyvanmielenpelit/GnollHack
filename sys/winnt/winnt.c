@@ -1,4 +1,4 @@
-/* GnollHack 4.0	winnt.c	$NHDT-Date: 1524321419 2018/04/21 14:36:59 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.30 $ */
+/* GnollHack 4.0    winnt.c    $NHDT-Date: 1524321419 2018/04/21 14:36:59 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.30 $ */
 /* Copyright (c) GnollHack PC Development Team 1993, 1994 */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -151,7 +151,7 @@ char *str;
     char drive;
     if ((ptr = index(str, ':')) != (char *) 0) {
         drive = toupper((uchar) *(ptr - 1));
-		(void)_chdrive((drive - 'A') + 1);
+        (void)_chdrive((drive - 'A') + 1);
     }
 }
 
@@ -217,7 +217,7 @@ int *lan_username_size;
 char *getxxx()
 {
 char     szFullPath[MAX_PATH] = "";
-HMODULE  hInst = NULL;  	/* NULL gets the filename of this module */
+HMODULE  hInst = NULL;      /* NULL gets the filename of this module */
 
 GetModuleFileName(hInst, szFullPath, sizeof(szFullPath));
 return &szFullPath[0];
@@ -368,8 +368,8 @@ char *buf;
     char *tmp = buf;
     HGLOBAL hglbCopy; 
     WCHAR *w, w2[2];
-	size_t cc;
-	size_t rc, abytes;
+    size_t cc;
+    size_t rc, abytes;
     LPWSTR lpwstrCopy;
     HANDLE hresult;
 
@@ -411,8 +411,8 @@ char *buf;
     lpwstrCopy = (LPWSTR)GlobalLock(hglbCopy);
     /* Housekeeping need: +GlobalUnlock(hglbCopy), GlobalFree(hglbCopy),
                             CloseClipboard(), free(w) */
-	if (!lpwstrCopy)
-		return;
+    if (!lpwstrCopy)
+        return;
 
     memcpy(lpwstrCopy, w, abytes);
     GlobalUnlock(hglbCopy);
@@ -569,8 +569,8 @@ const char *str;
    initializing the window port */
 void GnollHack_enter_winnt()
 {
-	if (WINDOWPORT("tty"))
-		GnollHack_enter_nttty();
+    if (WINDOWPORT("tty"))
+        GnollHack_enter_nttty();
 }
 
 /* CP437 to Unicode mapping according to the Unicode Consortium */
@@ -682,7 +682,7 @@ const char *window_opt;
 }
 
 /*
- * Add a backslash to any name not ending in /, \ or :	 There must
+ * Add a backslash to any name not ending in /, \ or :     There must
  * be room for the \
  */
 void

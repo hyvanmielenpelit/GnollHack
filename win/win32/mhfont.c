@@ -1,5 +1,5 @@
-/* GnollHack 4.0	mhfont.c	$NHDT-Date: 1432512812 2015/05/25 00:13:32 $  $NHDT-Branch: master $:$NHDT-Revision: 1.23 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/* GnollHack 4.0    mhfont.c    $NHDT-Date: 1432512812 2015/05/25 00:13:32 $  $NHDT-Branch: master $:$NHDT-Revision: 1.23 $ */
+/* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 /* font management and such */
@@ -200,11 +200,11 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
 
     /* add font to the table */
     if (font_index == font_table_size) {
-		if (font_table_size >= MAXFONTS)
-		{
-			panic("font table overflow!");
-			return (cached_font*)0;
-		}
+        if (font_table_size >= MAXFONTS)
+        {
+            panic("font table overflow!");
+            return (cached_font*)0;
+        }
         font_table_size++;
     } else {
         DeleteObject(font_table[font_index].hFont);

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mkmaze.c	$NHDT-Date: 1555022325 2019/04/11 22:38:45 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.68 $ */
+/* GnollHack 4.0    mkmaze.c    $NHDT-Date: 1555022325 2019/04/11 22:38:45 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.68 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -135,11 +135,11 @@ int x1, y1, x2, y2;
     struct rm *lev;
 
     /* sanity check on incoming variables */
-	if (x1 < 0 || x2 >= COLNO || x1 > x2 || y1 < 0 || y2 >= ROWNO || y1 > y2)
-	{
-		panic("wall_cleanup: bad bounds (%d,%d) to (%d,%d)", x1, y1, x2, y2);
-		return;
-	}
+    if (x1 < 0 || x2 >= COLNO || x1 > x2 || y1 < 0 || y2 >= ROWNO || y1 > y2)
+    {
+        panic("wall_cleanup: bad bounds (%d,%d) to (%d,%d)", x1, y1, x2, y2);
+        return;
+    }
     /* change walls surrounded by rock to rock. */
     for (x = x1; x <= x2; x++)
         for (y = y1; y <= y2; y++) {
@@ -187,11 +187,11 @@ int x1, y1, x2, y2;
                                      VWALL, TLWALL,   TRWALL,   CROSSWALL };
 
     /* sanity check on incoming variables */
-	if (x1 < 0 || x2 >= COLNO || x1 > x2 || y1 < 0 || y2 >= ROWNO || y1 > y2)
-	{
-		panic("wall_extends: bad bounds (%d,%d) to (%d,%d)", x1, y1, x2, y2);
-		return;
-	}
+    if (x1 < 0 || x2 >= COLNO || x1 > x2 || y1 < 0 || y2 >= ROWNO || y1 > y2)
+    {
+        panic("wall_extends: bad bounds (%d,%d) to (%d,%d)", x1, y1, x2, y2);
+        return;
+    }
 
     /* set the correct wall type. */
     for (x = x1; x <= x2; x++)
@@ -750,7 +750,7 @@ void
 stolen_booty(VOID_ARGS)
 {
     char *gang, gang_name[BUFSZ];
-	char lootlabel[BUFSIZ] = "";
+    char lootlabel[BUFSIZ] = "";
     struct monst *mtmp;
     int cnt, i, otyp;
 
@@ -768,8 +768,8 @@ stolen_booty(VOID_ARGS)
      */
 
     gang = rndorcname(gang_name);
-	*gang = highc(*gang);
-	Sprintf(lootlabel, "loot of %s", gang);
+    *gang = highc(*gang);
+    Sprintf(lootlabel, "loot of %s", gang);
 
     /* create the stuff that the gang took */
     cnt = rnd(4);
@@ -796,8 +796,8 @@ stolen_booty(VOID_ARGS)
     mtmp = makemon(&mons[PM_ORC_CAPTAIN], 0, 0, MM_NONAME);
     if (mtmp) {
         mtmp = christen_monst(mtmp, gang);
-		mtmp->u_know_mname = TRUE; /* Not realistic, but let's do it */
-		mtmp->mpeaceful = 0;
+        mtmp->u_know_mname = TRUE; /* Not realistic, but let's do it */
+        mtmp->mpeaceful = 0;
         shiny_orc_stuff(mtmp);
         migrate_orc(mtmp, ORC_LEADER);
     }
@@ -816,11 +816,11 @@ stolen_booty(VOID_ARGS)
              * Don't christen the orc captain as a subordinate
              * member of the main orc horde.
              */
-			if (mtmp->data != &mons[PM_ORC_CAPTAIN])
-			{
-				mtmp = christen_orc(mtmp, gang, "");
-				mtmp->u_know_mname = TRUE; /* Not realistic, but let's do it */
-			}
+            if (mtmp->data != &mons[PM_ORC_CAPTAIN])
+            {
+                mtmp = christen_orc(mtmp, gang, "");
+                mtmp->u_know_mname = TRUE; /* Not realistic, but let's do it */
+            }
         }
     }
     /* Lastly, ensure there's several more orcs from the gang along the way.
@@ -1514,12 +1514,12 @@ movebubbles()
          * locations.
          */
         for (b = up ? bbubbles : ebubbles; b; b = up ? b->next : b->prev) 
-		{
-			if (b->cons)
-			{
-				panic("movebubbles: cons != null");
-				return;
-			}
+        {
+            if (b->cons)
+            {
+                panic("movebubbles: cons != null");
+                return;
+            }
             for (i = 0, x = b->x; i < (int) b->bm[0]; i++, x++)
                 for (j = 0, y = b->y; j < (int) b->bm[1]; j++, y++)
                     if (b->bm[j + 2] & (1 << i)) {
@@ -1708,28 +1708,28 @@ int fd;
     mread(fd, (genericptr_t) &xmax, sizeof(int));
     mread(fd, (genericptr_t) &ymax, sizeof(int));
     for (i = 0; i < n; i++) 
-	{
+    {
         btmp = b;
         b = (struct bubble *) alloc(sizeof(struct bubble));
-		if(b)
-		{
-			mread(fd, (genericptr_t) b, sizeof(struct bubble));
-			if (bbubbles && btmp) 
-			{
-				btmp->next = b;
-				b->prev = btmp;
-			}
-			else
-			{
-				bbubbles = b;
-				b->prev = (struct bubble *) 0;
-			}
-			mv_bubble(b, 0, 0, TRUE);
-		}
+        if(b)
+        {
+            mread(fd, (genericptr_t) b, sizeof(struct bubble));
+            if (bbubbles && btmp) 
+            {
+                btmp->next = b;
+                b->prev = btmp;
+            }
+            else
+            {
+                bbubbles = b;
+                b->prev = (struct bubble *) 0;
+            }
+            mv_bubble(b, 0, 0, TRUE);
+        }
     }
     ebubbles = b;
-	if(b)
-	    b->next = (struct bubble *) 0;
+    if(b)
+        b->next = (struct bubble *) 0;
     was_waterlevel = TRUE;
 }
 
@@ -1852,7 +1852,7 @@ int x, y, n;
     }
     if (bmask[n][1] > MAX_BMASK) {
         panic("bmask size is larger than MAX_BMASK");
-		return;
+        return;
     }
     b = (struct bubble *) alloc(sizeof(struct bubble));
     if ((x + (int) bmask[n][0] - 1) > bxmax)

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	nh340key.c	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 4.0    nh340key.c    $NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
 /* Copyright (c) GnollHack PC Development Team 2003                      */
 /* GnollHack may be freely redistributed.  See license for details.      */
 
@@ -271,8 +271,8 @@ coord *cc;
                                  & RIGHTBUTTON)
                             *mod = CLICK_2;
 #if 0 /* middle button */
-				    else if (ir->Event.MouseEvent.dwButtonState & MIDBUTTON)
-			      		*mod = CLICK_3;
+                    else if (ir->Event.MouseEvent.dwButtonState & MIDBUTTON)
+                          *mod = CLICK_3;
 #endif
                         return 0;
                     }

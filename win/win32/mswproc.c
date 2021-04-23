@@ -1,5 +1,5 @@
-/* GnollHack 4.0	mswproc.c	$NHDT-Date: 1545705822 2018/12/25 02:43:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.130 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/* GnollHack 4.0    mswproc.c    $NHDT-Date: 1545705822 2018/12/25 02:43:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.130 $ */
+/* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 /*
@@ -182,7 +182,7 @@ mswin_init_nhwindows(int *argc, char **argv)
     GetNHApp()->hMainWnd = mswin_init_main_window();
     if (!GetNHApp()->hMainWnd) {
         panic("Cannot create main window");
-		return;
+        return;
     }
 
     /* Set menu check mark for interface mode */
@@ -789,11 +789,11 @@ mswin_create_nhwindow(int type)
         if (GetNHApp()->windowlist[i].win == NULL
             && !GetNHApp()->windowlist[i].dead)
             break;
-	if (i == MAXWINDOWS)
-	{
-		panic("ERROR:  No windows available...\n");
-		return 0;
-	}
+    if (i == MAXWINDOWS)
+    {
+        panic("ERROR:  No windows available...\n");
+        return 0;
+    }
 
     switch (type) {
     case NHW_MAP: {
@@ -1320,10 +1320,10 @@ print_glyph(window, x, y, layers)
                    integers at the interface, mapped to whatever the window-
                    port wants (symbol, font, color, attributes, ...there's
                    a 1-1 map between glyphs and distinct things on the map).
-		-- bkglyph is a background glyph for potential use by some
-		   graphical or tiled environments to allow the depiction
-		   to fall against a background consistent with the grid 
-		   around x,y.
+        -- bkglyph is a background glyph for potential use by some
+           graphical or tiled environments to allow the depiction
+           to fall against a background consistent with the grid 
+           around x,y.
                    
 */
 void
@@ -1471,7 +1471,7 @@ mswin_nh_poskey(int *x, int *y, int *mod)
 
     if (event->type == NHEVENT_MOUSE) 
     {
-	    if (iflags.wc_mouse_support)
+        if (iflags.wc_mouse_support)
         {
             *mod = event->ms.mod;
             *x = event->ms.x;
@@ -2143,8 +2143,8 @@ mswin_getmsghistory(BOOLEAN_P init)
         text = (PMSNHMsgGetText) malloc(sizeof(MSNHMsgGetText)
                                         + TEXT_BUFFER_SIZE);
 
-		if (!text)
-			return (char*)0;
+        if (!text)
+            return (char*)0;
 
         text->max_size =
             TEXT_BUFFER_SIZE
@@ -2570,22 +2570,22 @@ mswin_read_reg()
     char keystring[MAX_PATH];
     int i;
     COLORREF default_mapcolors[CLR_MAX] = {
-	RGB(0x55, 0x55, 0x55), /* CLR_BLACK */
-	RGB(0xFF, 0x00, 0x00), /* CLR_RED */
-	RGB(0x00, 0x80, 0x00), /* CLR_GREEN */
-	RGB(0xA5, 0x2A, 0x2A), /* CLR_BROWN */
-	RGB(0x00, 0x00, 0xFF), /* CLR_BLUE */
-	RGB(0xFF, 0x00, 0xFF), /* CLR_MAGENTA */
-	RGB(0x00, 0xFF, 0xFF), /* CLR_CYAN */
-	RGB(0xC0, 0xC0, 0xC0), /* CLR_GRAY */
-	RGB(0xFF, 0xFF, 0xFF), /* NO_COLOR */
-	RGB(0xFF, 0xA5, 0x00), /* CLR_ORANGE */
-	RGB(0x00, 0xFF, 0x00), /* CLR_BRIGHT_GREEN */
-	RGB(0xFF, 0xFF, 0x00), /* CLR_YELLOW */
-	RGB(0x00, 0xC0, 0xFF), /* CLR_BRIGHT_BLUE */
-	RGB(0xFF, 0x80, 0xFF), /* CLR_BRIGHT_MAGENTA */
-	RGB(0x80, 0xFF, 0xFF), /* CLR_BRIGHT_CYAN */
-	RGB(0xFF, 0xFF, 0xFF)  /* CLR_WHITE */
+    RGB(0x55, 0x55, 0x55), /* CLR_BLACK */
+    RGB(0xFF, 0x00, 0x00), /* CLR_RED */
+    RGB(0x00, 0x80, 0x00), /* CLR_GREEN */
+    RGB(0xA5, 0x2A, 0x2A), /* CLR_BROWN */
+    RGB(0x00, 0x00, 0xFF), /* CLR_BLUE */
+    RGB(0xFF, 0x00, 0xFF), /* CLR_MAGENTA */
+    RGB(0x00, 0xFF, 0xFF), /* CLR_CYAN */
+    RGB(0xC0, 0xC0, 0xC0), /* CLR_GRAY */
+    RGB(0xFF, 0xFF, 0xFF), /* NO_COLOR */
+    RGB(0xFF, 0xA5, 0x00), /* CLR_ORANGE */
+    RGB(0x00, 0xFF, 0x00), /* CLR_BRIGHT_GREEN */
+    RGB(0xFF, 0xFF, 0x00), /* CLR_YELLOW */
+    RGB(0x00, 0xC0, 0xFF), /* CLR_BRIGHT_BLUE */
+    RGB(0xFF, 0x80, 0xFF), /* CLR_BRIGHT_MAGENTA */
+    RGB(0x80, 0xFF, 0xFF), /* CLR_BRIGHT_CYAN */
+    RGB(0xFF, 0xFF, 0xFF)  /* CLR_WHITE */
     };
 
     sprintf(keystring, "%s\\%s\\%s\\%s", CATEGORYKEY, COMPANYKEY, PRODUCTKEY,
@@ -2913,14 +2913,14 @@ mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
             }
         }
     }
-	if (max_brush >= TOTAL_BRUSHES)
-	{
-		panic("Too many colors!");
-		return;
-	}
+    if (max_brush >= TOTAL_BRUSHES)
+    {
+        panic("Too many colors!");
+        return;
+    }
     *brushptr = CreateSolidBrush(*colorptr);
     brush_table[max_brush] = *brushptr;
-	max_brush++;
+    max_brush++;
 }
 
 void
@@ -3012,8 +3012,8 @@ static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
     { BL_MASK_STONE, "Stone" },
     { BL_MASK_SLIME, "Slime" },
     { BL_MASK_STRNGL, "Strngl" },
-	{ BL_MASK_SUFFOC, "Suffoc" },
-	{ BL_MASK_FOODPOIS, "FoodPois" },
+    { BL_MASK_SUFFOC, "Suffoc" },
+    { BL_MASK_FOODPOIS, "FoodPois" },
     { BL_MASK_TERMILL, "TermIll" },
     { BL_MASK_BLIND, "Blind" },
     { BL_MASK_DEAF, "Deaf" },
@@ -3023,12 +3023,12 @@ static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
     { BL_MASK_LEV, "Lev" },
     { BL_MASK_FLY, "Fly" },
     { BL_MASK_RIDE, "Ride" },
-	{ BL_MASK_SLOWED, "Slow" },
-	{ BL_MASK_PARALYZED, "Paral" },
-	{ BL_MASK_FEARFUL, "Fear" },
-	{ BL_MASK_SLEEPING, "Sleep" },
-	{ BL_MASK_CANCELLED, "Cancl" },
-	{ BL_MASK_SILENCED, "Silent" },
+    { BL_MASK_SLOWED, "Slow" },
+    { BL_MASK_PARALYZED, "Paral" },
+    { BL_MASK_FEARFUL, "Fear" },
+    { BL_MASK_SLEEPING, "Sleep" },
+    { BL_MASK_CANCELLED, "Cancl" },
+    { BL_MASK_SILENCED, "Silent" },
     { BL_MASK_GRAB, "Grab" },
     { BL_MASK_ROT, "Rot" },
     { BL_MASK_LYCANTHROPY, "Lyca" },
@@ -3220,14 +3220,14 @@ status_update(int fldindex, genericptr_t ptr, int chg, int percent, int color, u
                    BL_ALIGN, BL_SCORE, BL_CAP, BL_GOLD, BL_ENE, BL_ENEMAX,
                    BL_XP, BL_AC, BL_HD, BL_TIME, BL_HUNGER, BL_HP, BL_HPMAX,
                    BL_LEVELDESC, BL_EXP, BL_CONDITION
-		-- fldindex could also be BL_FLUSH, which is not really
-		   a field index, but is a special trigger to tell the 
-		   windowport that it should output all changes received
+        -- fldindex could also be BL_FLUSH, which is not really
+           a field index, but is a special trigger to tell the 
+           windowport that it should output all changes received
                    to this point. It marks the end of a bot() cycle.
-		-- fldindex could also be BL_RESET, which is not really
-		   a field index, but is a special advisory to to tell the 
-		   windowport that it should redisplay all its status fields,
-		   even if no changes have been presented to it.
+        -- fldindex could also be BL_RESET, which is not really
+           a field index, but is a special advisory to to tell the 
+           windowport that it should redisplay all its status fields,
+           even if no changes have been presented to it.
                 -- ptr is usually a "char *", unless fldindex is BL_CONDITION.
                    If fldindex is BL_CONDITION, then ptr is a long value with
                    any or none of the following bits set (from botl.h):
@@ -3303,7 +3303,7 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
                     status_string->str = NULL;
             }
         } break;
-			
+            
         case BL_GOLD: {
             char buf[BUFSZ];
             char *p;

@@ -1,5 +1,5 @@
-/* GnollHack 4.0	mhsplash.c	$NHDT-Date: 1449751714 2015/12/10 12:48:34 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.27 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/* GnollHack 4.0    mhsplash.c    $NHDT-Date: 1449751714 2015/12/10 12:48:34 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.27 $ */
+/* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "win10.h"
@@ -128,11 +128,11 @@ mswin_display_splash_window(BOOL show_ver)
 
     HWND hWnd = CreateDialog(GetNHApp()->hApp, MAKEINTRESOURCE(IDD_SPLASH),
                         GetNHApp()->hMainWnd, NHSplashWndProc);
-	if (!hWnd)
-	{
-		panic("Cannot create Splash window");
-		return;
-	}
+    if (!hWnd)
+    {
+        panic("Cannot create Splash window");
+        return;
+    }
 
     struct ghsound_music_info info = { 0 };
     info.ghsound = GHSOUND_MUSIC_SPLASH;

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	rumors.c	$NHDT-Date: 1545132266 2018/12/18 11:24:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.34 $ */
+/* GnollHack 4.0    rumors.c    $NHDT-Date: 1545132266 2018/12/18 11:24:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.34 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -367,10 +367,10 @@ int mechanism;
     case BY_PAPER:
         pline("It reads:");
         break;
-	case BY_SPELL:
-		pline("You sense a magical message in your mind:");
-		break;
-	}
+    case BY_SPELL:
+        pline("You sense a magical message in your mind:");
+        break;
+    }
     pline1(line);
 }
 
@@ -464,9 +464,9 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
                    special
                      ? "The Oracle scornfully takes all your money and says:"
                      : "The Oracle meditates for a moment and then intones:");
-		else if (oraclesstyle == 2)
-			putstr(tmpwin, 0, "You sense a magical message in your mind:");
-		else
+        else if (oraclesstyle == 2)
+            putstr(tmpwin, 0, "You sense a magical message in your mind:");
+        else
             putstr(tmpwin, 0, "The message reads:");
         putstr(tmpwin, 0, "");
 
@@ -490,13 +490,13 @@ doconsult(oracl)
 struct monst *oracl;
 {
     long umoney;
-	int u_pay, minor_cost = max(1, (int)(25.0 * service_cost_charisma_adjustment(ACURR(A_CHA)))), major_cost = max(1, (int)((double)(250 + 25 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-	//int unid_cnt = count_unidentified(invent);
-	int oracleaction = 0;
-	int add_xpts;
+    int u_pay, minor_cost = max(1, (int)(25.0 * service_cost_charisma_adjustment(ACURR(A_CHA)))), major_cost = max(1, (int)((double)(250 + 25 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    //int unid_cnt = count_unidentified(invent);
+    int oracleaction = 0;
+    int add_xpts;
     char qbuf[QBUFSZ];
 
-	multi = 0;
+    multi = 0;
     umoney = money_cnt(invent);
 
     if (!oracl)
@@ -515,67 +515,67 @@ struct monst *oracl;
         return 0;
     }
 
-	Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%d %s)",
-		minor_cost, currency((long)minor_cost));
-	switch (ynq(qbuf)) 
+    Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%d %s)",
+        minor_cost, currency((long)minor_cost));
+    switch (ynq(qbuf)) 
     {
-	default:
-	case 'q':
-		return 0;
-	case 'y':
-		if (umoney < (long)minor_cost) 
+    default:
+    case 'q':
+        return 0;
+    case 'y':
+        if (umoney < (long)minor_cost) 
         {
-			You("don't even have enough money for that!");
-			return 0;
-		}
+            You("don't even have enough money for that!");
+            return 0;
+        }
 
-		u_pay = minor_cost;
-		oracleaction = 1;
-		break;
-	case 'n':
-		if (umoney <= (long)minor_cost /* don't even ask */
-			|| (oracle_cnt == 1 || oracle_flg < 0))
-			return 0;
-		Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%d %s)",
-			major_cost, currency((long)major_cost));
-		if (yn_query(qbuf) != 'y')
-			return 0;
-		u_pay = (umoney < (long)major_cost) ? (int)umoney : major_cost;
-		oracleaction = 2;
-		break;
-	}
+        u_pay = minor_cost;
+        oracleaction = 1;
+        break;
+    case 'n':
+        if (umoney <= (long)minor_cost /* don't even ask */
+            || (oracle_cnt == 1 || oracle_flg < 0))
+            return 0;
+        Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%d %s)",
+            major_cost, currency((long)major_cost));
+        if (yn_query(qbuf) != 'y')
+            return 0;
+        u_pay = (umoney < (long)major_cost) ? (int)umoney : major_cost;
+        oracleaction = 2;
+        break;
+    }
 
     money2mon(oracl, (long) u_pay);
     context.botl = 1;
     add_xpts = 0; /* first oracle of each type gives experience points */
 
-	boolean cheapskate;
+    boolean cheapskate;
 
-	switch (oracleaction) 
+    switch (oracleaction) 
     {
-	case 1:
-		outrumor(1, BY_ORACLE);
-		if (!u.uevent.minor_oracle)
-			add_xpts = u_pay / (u.uevent.major_oracle ? 25 : 10);
-		/* 5 pts if very 1st, or 2 pts if major already done */
-		u.uevent.minor_oracle = TRUE;
-		break;
-	case 2:
-		cheapskate = u_pay < major_cost;
+    case 1:
+        outrumor(1, BY_ORACLE);
+        if (!u.uevent.minor_oracle)
+            add_xpts = u_pay / (u.uevent.major_oracle ? 25 : 10);
+        /* 5 pts if very 1st, or 2 pts if major already done */
+        u.uevent.minor_oracle = TRUE;
+        break;
+    case 2:
+        cheapskate = u_pay < major_cost;
 
-		outoracle(cheapskate, 1);
-		if (!cheapskate && !u.uevent.major_oracle)
-			add_xpts = u_pay / (u.uevent.minor_oracle ? 25 : 10);
+        outoracle(cheapskate, 1);
+        if (!cheapskate && !u.uevent.major_oracle)
+            add_xpts = u_pay / (u.uevent.minor_oracle ? 25 : 10);
 
-		/* ~100 pts if very 1st, ~40 pts if minor already done */
-		u.uevent.major_oracle = TRUE;
-		exercise(A_WIS, !cheapskate);
-		break;
-	default:
-		break;
-	}
+        /* ~100 pts if very 1st, ~40 pts if minor already done */
+        u.uevent.major_oracle = TRUE;
+        exercise(A_WIS, !cheapskate);
+        break;
+    default:
+        break;
+    }
 
-	if (add_xpts) 
+    if (add_xpts) 
     {
         more_experienced(add_xpts, 0); //  u_pay / 50);
         newexplevel();
@@ -587,53 +587,53 @@ int
 do_oracle_identify(oracl)
 struct monst* oracl;
 {
-	long umoney;
-	int u_pay;
-	int minor_id_cost = max(1, (int)((double)(150 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))) ; // 175 + 15 * u.ulevel;
-	char qbuf[QBUFSZ];
+    long umoney;
+    int u_pay;
+    int minor_id_cost = max(1, (int)((double)(150 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))) ; // 175 + 15 * u.ulevel;
+    char qbuf[QBUFSZ];
 
-	multi = 0;
-	umoney = money_cnt(invent);
+    multi = 0;
+    umoney = money_cnt(invent);
 
 
-	if (!oracl) 
+    if (!oracl) 
     {
-		There("is no one here to identify items.");
-		return 0;
-	}
-	else if (!is_peaceful(oracl)) 
+        There("is no one here to identify items.");
+        return 0;
+    }
+    else if (!is_peaceful(oracl)) 
     {
-		pline("%s is in no mood for identification.", Monnam(oracl));
-		return 0;
-	}
-	else if (!umoney) 
+        pline("%s is in no mood for identification.", Monnam(oracl));
+        return 0;
+    }
+    else if (!umoney) 
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
         You("have no money.");
-		return 0;
-	}
+        return 0;
+    }
 
-	Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
-		minor_id_cost, currency((long)minor_id_cost));
+    Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
+        minor_id_cost, currency((long)minor_id_cost));
 
-	switch (ynq(qbuf)) 
+    switch (ynq(qbuf)) 
     {
-	default:
-	case 'n':
-	case 'q':
-		return 0;
-	case 'y':
-		if (umoney < (long)minor_id_cost) 
+    default:
+    case 'n':
+    case 'q':
+        return 0;
+    case 'y':
+        if (umoney < (long)minor_id_cost) 
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You("don't have enough money for that!");
-			return 0;
-		}
-		u_pay = minor_id_cost;
-		break;
-	}
+            return 0;
+        }
+        u_pay = minor_id_cost;
+        break;
+    }
 
-	int res = identify_pack(1, FALSE);
+    int res = identify_pack(1, FALSE);
 
     if (res)
     {
@@ -641,59 +641,59 @@ struct monst* oracl;
         context.botl = 1;
     }
 
-	return 1;
+    return 1;
 }
 
 int
 do_oracle_enlightenment(oracl)
 struct monst* oracl;
 {
-	long umoney;
-	int u_pay, enl_cost = max(1, (int)((double)(objects[POT_ENLIGHTENMENT].oc_cost + 5L * (long)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-	char qbuf[QBUFSZ];
+    long umoney;
+    int u_pay, enl_cost = max(1, (int)((double)(objects[POT_ENLIGHTENMENT].oc_cost + 5L * (long)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    char qbuf[QBUFSZ];
 
-	multi = 0;
-	umoney = money_cnt(invent);
+    multi = 0;
+    umoney = money_cnt(invent);
 
-	if (!oracl)
+    if (!oracl)
     {
-		There("is no one here to enlighten you.");
-		return 0;
-	}
-	else if (!is_peaceful(oracl)) 
+        There("is no one here to enlighten you.");
+        return 0;
+    }
+    else if (!is_peaceful(oracl)) 
     {
-		pline("%s is in no mood for enlightenment.", Monnam(oracl));
-		return 0;
-	}
-	else if (!umoney)
+        pline("%s is in no mood for enlightenment.", Monnam(oracl));
+        return 0;
+    }
+    else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
         You("have no money.");
-		return 0;
-	}
+        return 0;
+    }
 
-	Sprintf(qbuf, "\"Dost thou desire to enlighten yourself?\" (%d %s)",
-		enl_cost, currency((long)enl_cost));
-	if (yn_query(qbuf) != 'y')
-		return 0;
+    Sprintf(qbuf, "\"Dost thou desire to enlighten yourself?\" (%d %s)",
+        enl_cost, currency((long)enl_cost));
+    if (yn_query(qbuf) != 'y')
+        return 0;
 
-	if (umoney < (long)enl_cost)
+    if (umoney < (long)enl_cost)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
         You("don't have enough money for that!");
-		return 0;
-	}
-	u_pay = enl_cost;
+        return 0;
+    }
+    u_pay = enl_cost;
 
-	money2mon(oracl, (long)u_pay);
-	context.botl = 1;
+    money2mon(oracl, (long)u_pay);
+    context.botl = 1;
 
-	/* enlightenment */
-	You_feel("self-knowledgeable...");
-	display_nhwindow(WIN_MESSAGE, FALSE);
-	enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
+    /* enlightenment */
+    You_feel("self-knowledgeable...");
+    display_nhwindow(WIN_MESSAGE, FALSE);
+    enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
 
-	return 1;
+    return 1;
 }
 
 

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	ntsound.c	$NHDT-Date: 1432512794 2015/05/25 00:13:14 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
+/* GnollHack 4.0    ntsound.c    $NHDT-Date: 1432512794 2015/05/25 00:13:14 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
 /*   Copyright (c) GnollHack PC Development Team 1993                 */
 /*   GnollHack may be freely redistributed.  See license for details. */
 /*                                                                  */

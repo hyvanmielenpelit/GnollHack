@@ -1,4 +1,4 @@
-/* GnollHack 4.0	drawing.c	$NHDT-Date: 1546656404 2019/01/05 02:46:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
+/* GnollHack 4.0    drawing.c    $NHDT-Date: 1546656404 2019/01/05 02:46:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.59 $ */
 /* Copyright (c) GnollHack Development Team 1992.                   */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -55,8 +55,8 @@ const struct class_sym def_oc_syms[MAX_OBJECT_CLASSES] = {
     { BALL_SYM, "iron balls", "iron ball" },
     { CHAIN_SYM, "chains", "iron chain" },
     { VENOM_SYM, "venoms", "splash of venom" },
-	{ REAGENT_SYM, "reagents", "reagent" },
-	{ MISCELLANEOUS_SYM, "miscellaneous items", "miscellaneous item" }
+    { REAGENT_SYM, "reagents", "reagent" },
+    { MISCELLANEOUS_SYM, "miscellaneous items", "miscellaneous item" }
 };
 
 /* Default monster class symbols.  See monsym.h. */
@@ -117,11 +117,11 @@ const struct class_sym def_monsyms[MAX_MONSTER_CLASSES] = {
     { DEF_HUMAN, "humans and elves", "human or elf" },
     { DEF_GHOST, "ghosts", "ghost" },
     { DEF_GOLEM, "golems", "golem" },
-	{ DEF_DEMON, "major demons and devils", "major demon or devil" },
+    { DEF_DEMON, "major demons and devils", "major demon or devil" },
     { DEF_EEL, "sea monsters", "sea monster" },
     { DEF_LIZARD, "lizards", "lizard" },
-	{ DEF_TREANT, "treants", "treant" },
-	{ DEF_WORM_TAIL, "long worm tails", "long worm tail" },
+    { DEF_TREANT, "treants", "treant" },
+    { DEF_WORM_TAIL, "long worm tails", "long worm tail" },
     { DEF_MIMIC_DEF, "mimics", "mimic" },
 };
 
@@ -283,7 +283,7 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
             { C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN),/*5*/ C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), /*10*/ C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GRASS_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-            {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },		 /* grass */
+            {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },         /* grass */
 /*+1*/ { ',', "grass in dark",  "",      LAYER_FLOOR, FALSE,       0, 0,
             { C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), /*5*/ C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), /*10*/ C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GRASS_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -293,7 +293,7 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
             { C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),/*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) }, 
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GROUND_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-            {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },		 /* grass */
+            {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },         /* grass */
 /*+1*/ { ',', "ground in dark",  "",     LAYER_FLOOR, FALSE,       0, 0,
             { C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), /*5*/ C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), /*10*/ C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GROUND_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -1550,7 +1550,7 @@ struct symparse loadsyms[] = {
     { SYM_PCHAR, S_bars, "S_bars" },
     { SYM_PCHAR, S_tree, "S_tree" },
     { SYM_PCHAR, S_room, "S_room" },
-	{ SYM_PCHAR, S_darkroom, "S_darkroom" },
+    { SYM_PCHAR, S_darkroom, "S_darkroom" },
     { SYM_PCHAR, S_grass, "S_grass" },
     { SYM_PCHAR, S_darkgrass, "S_darkgrass" },
     { SYM_PCHAR, S_ground, "S_ground" },
@@ -1650,8 +1650,8 @@ struct symparse loadsyms[] = {
     { SYM_OC, ARMOR_CLASS + SYM_OFF_O, "S_armour" },
     { SYM_OC, RING_CLASS + SYM_OFF_O, "S_ring" },
     { SYM_OC, AMULET_CLASS + SYM_OFF_O, "S_amulet" },
-	{ SYM_OC, MISCELLANEOUS_CLASS + SYM_OFF_O, "S_miscellaneous" },
-	{ SYM_OC, TOOL_CLASS + SYM_OFF_O, "S_tool" },
+    { SYM_OC, MISCELLANEOUS_CLASS + SYM_OFF_O, "S_miscellaneous" },
+    { SYM_OC, TOOL_CLASS + SYM_OFF_O, "S_tool" },
     { SYM_OC, FOOD_CLASS + SYM_OFF_O, "S_food" },
     { SYM_OC, POTION_CLASS + SYM_OFF_O, "S_potion" },
     { SYM_OC, SCROLL_CLASS + SYM_OFF_O, "S_scroll" },
@@ -1663,8 +1663,8 @@ struct symparse loadsyms[] = {
     { SYM_OC, BALL_CLASS + SYM_OFF_O, "S_ball" },
     { SYM_OC, CHAIN_CLASS + SYM_OFF_O, "S_chain" },
     { SYM_OC, VENOM_CLASS + SYM_OFF_O, "S_venom" },
-	{ SYM_OC, REAGENT_CLASS + SYM_OFF_O, "S_reagent" },
-	{ SYM_MON, S_ANT + SYM_OFF_M, "S_ant" },
+    { SYM_OC, REAGENT_CLASS + SYM_OFF_O, "S_reagent" },
+    { SYM_MON, S_ANT + SYM_OFF_M, "S_ant" },
     { SYM_MON, S_BLOB + SYM_OFF_M, "S_blob" },
     { SYM_MON, S_COCKATRICE + SYM_OFF_M, "S_cockatrice" },
     { SYM_MON, S_DOG + SYM_OFF_M, "S_dog" },

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	region.c	$NHDT-Date: 1543455828 2018/11/29 01:43:48 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.43 $ */
+/* GnollHack 4.0    region.c    $NHDT-Date: 1543455828 2018/11/29 01:43:48 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.43 $ */
 /* Copyright (c) 1996 by Jean-Christophe Collet  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -1037,33 +1037,33 @@ genericptr_t p2;
     dam = (int)((double)dam * expiration_adjustment);
 
     if (p2 == (genericptr_t) 0) 
-	{ /* This means *YOU* Bozo! */
+    { /* This means *YOU* Bozo! */
         if (u.uinvulnerable || is_not_living(youmonst.data) || Breathless
             || Underwater)
             return FALSE;
         
-		if (!Blind) 
-		{
+        if (!Blind) 
+        {
             Your("%s sting.", makeplural(body_part(EYE)));
             make_blinded(1L, FALSE);
         }
 
         if (!Poison_resistance && dam > 0) 
-		{
+        {
             pline("%s is burning your %s!", Something,
                   makeplural(body_part(LUNG)));
             You("cough and spit blood!");
             losehp(adjust_damage(dam, (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "gas cloud", KILLED_BY_AN);
             return FALSE;
         } 
-		else 
-		{
+        else 
+        {
             You("cough!");
             return FALSE;
         }
     } 
-	else 
-	{ /* A monster is inside the cloud */
+    else 
+    { /* A monster is inside the cloud */
         mtmp = (struct monst *) p2;
 
         /* Non living and non breathing monsters are not concerned;
@@ -1080,31 +1080,31 @@ genericptr_t p2;
                but is_not_living() and has_innate_breathless() tests also catch that) */
             && !(attacktype_fordmg(mtmp->data, AT_BREA, AD_DRST)
                  || attacktype_fordmg(mtmp->data, AT_BREA, AD_RBRE) || attacktype_fordmg(mtmp->data, AT_BREA, AD_RBGD)))
-		{
+        {
             if (cansee(mtmp->mx, mtmp->my))
                 pline("%s coughs!", Monnam(mtmp));
             if (heros_fault(reg))
                 setmangry(mtmp, TRUE);
 
             if (haseyes(mtmp->data) && !is_blinded(mtmp))
-			{
-				nonadditive_increase_mon_property(mtmp, BLINDED, 5 + rnd(5));
+            {
+                nonadditive_increase_mon_property(mtmp, BLINDED, 5 + rnd(5));
             }
 
             if (resists_poison(mtmp))
                 return FALSE;
 
-			deduct_monster_hp(mtmp, adjust_damage(dam, (struct monst*)0, mtmp, AD_DRST, ADFLAGS_NONE));
+            deduct_monster_hp(mtmp, adjust_damage(dam, (struct monst*)0, mtmp, AD_DRST, ADFLAGS_NONE));
 
-			if (DEADMONSTER(mtmp)) 
-			{
+            if (DEADMONSTER(mtmp)) 
+            {
                 if (heros_fault(reg))
                     killed(mtmp);
                 else
                     monkilled(mtmp, "gas cloud", AD_DRST);
 
                 if (DEADMONSTER(mtmp)) 
-				{ /* not lifesaved */
+                { /* not lifesaved */
                     return TRUE;
                 }
             }

@@ -185,18 +185,18 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     }
 
     _GnollHack_app.bmpRip = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_RIP));
-	if (_GnollHack_app.bmpRip == NULL)
-	{
-		panic("cannot load rip bitmap");
-		return 0;
-	}
+    if (_GnollHack_app.bmpRip == NULL)
+    {
+        panic("cannot load rip bitmap");
+        return 0;
+    }
    // _GnollHack_app.bmpSplash = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_SPLASH));
     _GnollHack_app.bmpSplash = LoadPNGFromResource(hInstance, IDB_PNG_GNHLOGO, TILE_BK_COLOR);
     if (_GnollHack_app.bmpSplash == NULL)
-	{
-		panic("cannot load splash bitmap");
-		return 0;
-	}
+    {
+        panic("cannot load splash bitmap");
+        return 0;
+    }
     _GnollHack_app.bmpFMOD = LoadPNGFromResource(hInstance, IDB_PNG_FMODLOGO, TILE_BK_COLOR);
     if (_GnollHack_app.bmpFMOD == NULL)
     {
@@ -249,7 +249,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                 "For further information, refer to the installation notes at",
                 INSTALL_NOTES);
         panic(buf);
-		return 0;
+        return 0;
     }
     if (major < MIN_COMCTLMAJOR
         || (major == MIN_COMCTLMAJOR && minor < MIN_COMCTLMINOR)) {
@@ -260,8 +260,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                 "For further information, refer to the installation notes at",
                 INSTALL_NOTES);
         panic(buf);
-		return 0;
-	}
+        return 0;
+    }
     ZeroMemory(&InitCtrls, sizeof(InitCtrls));
     InitCtrls.dwSize = sizeof(InitCtrls);
     InitCtrls.dwICC = ICC_LISTVIEW_CLASSES;

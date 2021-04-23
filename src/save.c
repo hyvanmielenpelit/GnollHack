@@ -1,4 +1,4 @@
-/* GnollHack 4.0	save.c	$NHDT-Date: 1554591225 2019/04/06 22:53:45 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.117 $ */
+/* GnollHack 4.0    save.c    $NHDT-Date: 1554591225 2019/04/06 22:53:45 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.117 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -129,7 +129,7 @@ dosave0()
 
 #ifndef ANDROID
 #if defined(UNIX) || defined(VMS)
-	sethanguphandler((void FDECL((*), (int))) SIG_IGN);
+    sethanguphandler((void FDECL((*), (int))) SIG_IGN);
 #endif
 #endif
 #ifndef NO_SIGNAL
@@ -142,7 +142,7 @@ dosave0()
 #endif
 
 #ifndef ANDROID
-	HUP if (iflags.window_inited)
+    HUP if (iflags.window_inited)
     {
         nh_uncompress(fq_save);
         fd = open_savefile();
@@ -494,11 +494,11 @@ int mode;
     if (iflags.purge_monsters)
         dmonsfree();
 
-	if (fd < 0)
-	{
-		panic("Save on bad file!"); /* impossible */
-		return;
-	}
+    if (fd < 0)
+    {
+        panic("Save on bad file!"); /* impossible */
+        return;
+    }
 #ifdef MFLOPPY
     count_only = (mode & COUNT_SAVE);
 #endif
@@ -999,13 +999,13 @@ struct obj *otmp;
         if (buflen > 0)
             bwrite(fd, (genericptr_t) ONAME(otmp), buflen);
 
-		if (UONAME(otmp))
-			buflen = strlen(UONAME(otmp)) + 1;
-		else
-			buflen = 0;
-		bwrite(fd, (genericptr_t)&buflen, sizeof buflen);
-		if (buflen > 0)
-			bwrite(fd, (genericptr_t)UONAME(otmp), buflen);
+        if (UONAME(otmp))
+            buflen = strlen(UONAME(otmp)) + 1;
+        else
+            buflen = 0;
+        bwrite(fd, (genericptr_t)&buflen, sizeof buflen);
+        if (buflen > 0)
+            bwrite(fd, (genericptr_t)UONAME(otmp), buflen);
 
         /* defer to savemon() for this one */
         if (OMONST(otmp))
@@ -1046,7 +1046,7 @@ register struct obj *otmp;
 {
     register struct obj *otmp2;
     //int minusone = -1;
-	size_t zero = 0;
+    size_t zero = 0;
 
     while (otmp) {
         otmp2 = otmp->nobj;
@@ -1098,7 +1098,7 @@ struct monst *mtmp;
     bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
     bwrite(fd, (genericptr_t) mtmp, buflen);
     if (mtmp->mextra) 
-	{
+    {
         if (MNAME(mtmp))
             buflen = strlen(MNAME(mtmp)) + 1;
         else
@@ -1107,15 +1107,15 @@ struct monst *mtmp;
         if (buflen > 0)
             bwrite(fd, (genericptr_t) MNAME(mtmp), buflen);
 
-		if (UMNAME(mtmp))
-			buflen = strlen(UMNAME(mtmp)) + 1;
-		else
-			buflen = 0;
-		bwrite(fd, (genericptr_t)&buflen, sizeof buflen);
-		if (buflen > 0)
-			bwrite(fd, (genericptr_t)UMNAME(mtmp), buflen);
-		
-		if (EGD(mtmp))
+        if (UMNAME(mtmp))
+            buflen = strlen(UMNAME(mtmp)) + 1;
+        else
+            buflen = 0;
+        bwrite(fd, (genericptr_t)&buflen, sizeof buflen);
+        if (buflen > 0)
+            bwrite(fd, (genericptr_t)UMNAME(mtmp), buflen);
+        
+        if (EGD(mtmp))
             buflen = sizeof(struct egd);
         else
             buflen = 0;
@@ -1184,7 +1184,7 @@ register struct monst *mtmp;
 {
     register struct monst *mtmp2;
     //int minusone = -1;
-	size_t zero = 0;
+    size_t zero = 0;
 
     while (mtmp) {
         mtmp2 = mtmp->nmon;
@@ -1245,7 +1245,7 @@ void
 savefruitchn(fd, mode)
 int fd, mode;
 {
-	static struct fruit zerofruit = { 0 };
+    static struct fruit zerofruit = { 0 };
     register struct fruit *f2, *f1;
 
     f1 = ffruit;
@@ -1282,8 +1282,8 @@ save_msghistory(fd, mode)
 int fd, mode;
 {
     char *msg;
-	int msgcount = 0;
-	int msglen = 0;
+    int msgcount = 0;
+    int msglen = 0;
     int minusone = -1;
     boolean init = TRUE;
 

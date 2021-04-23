@@ -1,4 +1,4 @@
-/* GnollHack 4.0	vault.c	$NHDT-Date: 1549921171 2019/02/11 21:39:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.62 $ */
+/* GnollHack 4.0    vault.c    $NHDT-Date: 1549921171 2019/02/11 21:39:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.62 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -1024,11 +1024,11 @@ register struct monst *grd;
 
     if ((nx != gx || ny != gy) || (grd->mx != gx || grd->my != gy)) {
         fcp = &(egrd->fakecorr[egrd->fcend]);
-		if (egrd->fcend++ == FCSIZ)
-		{
-			panic("fakecorr overflow");
-			return 0;
-		}
+        if (egrd->fcend++ == FCSIZ)
+        {
+            panic("fakecorr overflow");
+            return 0;
+        }
         fcp->fx = nx;
         fcp->fy = ny;
         fcp->ftyp = typ;

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	engrave.c	$NHDT-Date: 1456304550 2016/02/24 09:02:30 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.61 $ */
+/* GnollHack 4.0    engrave.c    $NHDT-Date: 1456304550 2016/02/24 09:02:30 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.61 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -210,11 +210,11 @@ register int x, y;
         return "anvil";
     else if (IS_GRAVE(levl[x][y].typ))
         return "headstone";
-	else if (IS_FOUNTAIN(levl[x][y].typ))
-	{
+    else if (IS_FOUNTAIN(levl[x][y].typ))
+    {
         int ftyp = levl[x][y].subtyp; //  (levl[x][y].fountainmask& FOUNTAIN_TYPE_MASK);
-		return FOUNTAIN_IS_KNOWN(x, y) ? fountain_type_text(ftyp) : "fountain";
-	}
+        return FOUNTAIN_IS_KNOWN(x, y) ? fountain_type_text(ftyp) : "fountain";
+    }
     else if ((IS_ROOM(lev->typ) && !Is_earthlevel(&u.uz))
              || IS_WALL_OR_SDOOR(lev->typ) || IS_DOOR(lev->typ))
         return "floor";
@@ -351,7 +351,7 @@ int x, y;
                       is_ice(x, y) ? "frost" : "dust");
             }
             break;
-		case ENGRAVE:
+        case ENGRAVE:
         case ENGR_HEADSTONE:
             if (!Blind || can_reach_floor(TRUE)) {
                 sensed = 1;
@@ -631,8 +631,8 @@ doengrave()
     switch (otmp->oclass) {
     default:
     case AMULET_CLASS:
-	case MISCELLANEOUS_CLASS:
-	case CHAIN_CLASS:
+    case MISCELLANEOUS_CLASS:
+    case CHAIN_CLASS:
     case POTION_CLASS:
     case COIN_CLASS:
         break;
@@ -659,8 +659,8 @@ doengrave()
         ptext = FALSE;
         break;
     /* Objects too silly to engrave with */
-	case REAGENT_CLASS:
-	case FOOD_CLASS:
+    case REAGENT_CLASS:
+    case FOOD_CLASS:
     case SCROLL_CLASS:
     case SPBOOK_CLASS:
         pline("%s would get %s.", Yname2(otmp),
@@ -697,10 +697,10 @@ doengrave()
             case WAN_SECRET_DOOR_DETECTION:
             case WAN_TRAP_DETECTION:
             case WAN_ORE_DETECTION:
-			case WAN_CREATE_MONSTER:
+            case WAN_CREATE_MONSTER:
             case WAN_WISHING:
-			case WAN_IDENTIFY:
-			case WAN_ENLIGHTENMENT:
+            case WAN_IDENTIFY:
+            case WAN_ENLIGHTENMENT:
                 zapnodir(otmp);
                 break;
             /* IMMEDIATE wands */
@@ -742,11 +742,11 @@ doengrave()
                 break;
             case WAN_NOTHING:
             case WAN_UNDEAD_TURNING:
-			case WAN_OPENING:
+            case WAN_OPENING:
             case WAN_LOCKING:
             case WAN_PROBING:
-			case WAN_EVAPORATION:
-				break;
+            case WAN_EVAPORATION:
+                break;
             /* RAY wands */
             case WAN_MAGIC_MISSILE:
                 ptext = TRUE;
@@ -764,25 +764,25 @@ doengrave()
                             surface(u.ux, u.uy));
                 }
                 break;
-			case WAN_DISINTEGRATION:
-				if (!Blind) {
-					Sprintf(post_engr_text, "The bugs on the %s vanish!",
-						surface(u.ux, u.uy));
-				}
-				break;
-			case WAN_PETRIFICATION:
-				if (!Blind) {
-					Sprintf(post_engr_text, "The bugs on the %s turn into grains of sand!",
-						surface(u.ux, u.uy));
-				}
-				break;
-			case WAN_RESURRECTION:
-				if (!Blind) {
-					Sprintf(post_engr_text, "Suddenly, it seems that there are more bugs on the %s than before!",
-						surface(u.ux, u.uy));
-				}
-				break;
-			case WAN_COLD:
+            case WAN_DISINTEGRATION:
+                if (!Blind) {
+                    Sprintf(post_engr_text, "The bugs on the %s vanish!",
+                        surface(u.ux, u.uy));
+                }
+                break;
+            case WAN_PETRIFICATION:
+                if (!Blind) {
+                    Sprintf(post_engr_text, "The bugs on the %s turn into grains of sand!",
+                        surface(u.ux, u.uy));
+                }
+                break;
+            case WAN_RESURRECTION:
+                if (!Blind) {
+                    Sprintf(post_engr_text, "Suddenly, it seems that there are more bugs on the %s than before!",
+                        surface(u.ux, u.uy));
+                }
+                break;
+            case WAN_COLD:
                 if (!Blind)
                     Strcpy(post_engr_text,
                            "A few ice cubes drop from the wand.");
@@ -1330,8 +1330,8 @@ size_t* size;
     struct engr *ep;
 
     Sprintf(hdrbuf, hdrfmt, sizeof (struct engr));
-	*count = 0L;
-	*size = 0;
+    *count = 0L;
+    *size = 0;
     for (ep = head_engr; ep; ep = ep->nxt_engr) {
         ++*count;
         *size += sizeof *ep + ep->engr_lth;

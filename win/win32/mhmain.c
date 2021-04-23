@@ -1,5 +1,5 @@
-/* GnollHack 4.0	mhmain.c	$NHDT-Date: 1432512811 2015/05/25 00:13:31 $  $NHDT-Branch: master $:$NHDT-Revision: 1.62 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/* GnollHack 4.0    mhmain.c    $NHDT-Date: 1432512811 2015/05/25 00:13:31 $  $NHDT-Branch: master $:$NHDT-Revision: 1.62 $ */
+/* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "winMS.h"
@@ -63,10 +63,10 @@ mswin_init_main_window()
                      );
 
     if (!ret)
-	{
+    {
         panic("Cannot create main window");
-		return (HWND)0;
-	}
+        return (HWND)0;
+    }
 
     if (GetNHApp()->regMainMinX != CW_USEDEFAULT) {
         wp.length = sizeof(wp);
@@ -216,11 +216,11 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_CREATE:
         /* set window data */
         data = (PNHMainWindow) malloc(sizeof(NHMainWindow));
-		if (!data)
-		{
-			panic("out of memory");
-			return (LRESULT)0;
-		}
+        if (!data)
+        {
+            panic("out of memory");
+            return (LRESULT)0;
+        }
         ZeroMemory(data, sizeof(NHMainWindow));
         data->mapAcsiiModeSave = MAP_MODE_ASCII12x16;
         context.general_animation_counter = 0L;
@@ -830,59 +830,59 @@ mswin_layout_main_window(HWND changed_child)
 }
 
 VOID CALLBACK FuzzTimerProc(
-	_In_ HWND     hwnd,
-	_In_ UINT     uMsg,
-	_In_ UINT_PTR idEvent,
-	_In_ DWORD    dwTime
-	)
+    _In_ HWND     hwnd,
+    _In_ UINT     uMsg,
+    _In_ UINT_PTR idEvent,
+    _In_ DWORD    dwTime
+    )
 {
-	INPUT input[16];
-	int i_pos = 0;
-	int c = randomkey();
-	SHORT k = VkKeyScanA(c);
-	BOOL gen_alt = (rn2(50) == 0) && isalpha(c);
+    INPUT input[16];
+    int i_pos = 0;
+    int c = randomkey();
+    SHORT k = VkKeyScanA(c);
+    BOOL gen_alt = (rn2(50) == 0) && isalpha(c);
 
-	if (!iflags.debug_fuzzer) {
-		KillTimer(hwnd, IDT_FUZZ_TIMER);
-		return;
-	}
+    if (!iflags.debug_fuzzer) {
+        KillTimer(hwnd, IDT_FUZZ_TIMER);
+        return;
+    }
 
-	if (!GetFocus())
+    if (!GetFocus())
             return;
 
-	ZeroMemory(input, sizeof(input));
-	if (gen_alt) {
-		input[i_pos].type = INPUT_KEYBOARD;
-		input[i_pos].ki.dwFlags = KEYEVENTF_SCANCODE;
-		input[i_pos].ki.wScan = MapVirtualKey(VK_MENU, 0);
-		i_pos++;
-	}
+    ZeroMemory(input, sizeof(input));
+    if (gen_alt) {
+        input[i_pos].type = INPUT_KEYBOARD;
+        input[i_pos].ki.dwFlags = KEYEVENTF_SCANCODE;
+        input[i_pos].ki.wScan = MapVirtualKey(VK_MENU, 0);
+        i_pos++;
+    }
 
-	if (HIBYTE(k) & 1) {
-		input[i_pos].type = INPUT_KEYBOARD;
-		input[i_pos].ki.dwFlags = KEYEVENTF_SCANCODE;
-		input[i_pos].ki.wScan = MapVirtualKey(VK_LSHIFT, 0);
-		i_pos++;
-	}
+    if (HIBYTE(k) & 1) {
+        input[i_pos].type = INPUT_KEYBOARD;
+        input[i_pos].ki.dwFlags = KEYEVENTF_SCANCODE;
+        input[i_pos].ki.wScan = MapVirtualKey(VK_LSHIFT, 0);
+        i_pos++;
+    }
 
-	input[i_pos].type = INPUT_KEYBOARD;
-	input[i_pos].ki.dwFlags = KEYEVENTF_SCANCODE;
-	input[i_pos].ki.wScan = MapVirtualKey(LOBYTE(k), 0);
-	i_pos++;
+    input[i_pos].type = INPUT_KEYBOARD;
+    input[i_pos].ki.dwFlags = KEYEVENTF_SCANCODE;
+    input[i_pos].ki.wScan = MapVirtualKey(LOBYTE(k), 0);
+    i_pos++;
 
-	if (HIBYTE(k) & 1) {
-		input[i_pos].type = INPUT_KEYBOARD;
-		input[i_pos].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
-		input[i_pos].ki.wScan = MapVirtualKey(VK_LSHIFT, 0);
-		i_pos++;
-	}
-	if (gen_alt) {
-		input[i_pos].type = INPUT_KEYBOARD;
-		input[i_pos].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
-		input[i_pos].ki.wScan = MapVirtualKey(VK_MENU, 0);
-		i_pos++;
-	}
-	SendInput(i_pos, input, sizeof(input[0]));
+    if (HIBYTE(k) & 1) {
+        input[i_pos].type = INPUT_KEYBOARD;
+        input[i_pos].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+        input[i_pos].ki.wScan = MapVirtualKey(VK_LSHIFT, 0);
+        i_pos++;
+    }
+    if (gen_alt) {
+        input[i_pos].type = INPUT_KEYBOARD;
+        input[i_pos].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+        input[i_pos].ki.wScan = MapVirtualKey(VK_MENU, 0);
+        i_pos++;
+    }
+    SendInput(i_pos, input, sizeof(input[0]));
 }
 
 LRESULT
@@ -1045,11 +1045,11 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         }
 
         p_copy = (char *) GlobalLock(hglbCopy);
-		if (p_copy)
-		{
-			strncpy(p_copy, p, len);
-			p_copy[len] = 0; // null character
-		}
+        if (p_copy)
+        {
+            strncpy(p_copy, p, len);
+            p_copy[len] = 0; // null character
+        }
         GlobalUnlock(hglbCopy);
 
         SetClipboardData(SYMHANDLING(H_IBM) ? CF_OEMTEXT : CF_TEXT, hglbCopy);
@@ -1072,7 +1072,7 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             break;
 
         ZeroMemory(filename, sizeof(filename));
-		filename[1023] = '\0';
+        filename[1023] = '\0';
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = sizeof(OPENFILENAME);
         ofn.hwndOwner = hWnd;
@@ -1114,11 +1114,11 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
         tlen = strlen(text);
         wtext = (wchar_t *) malloc(tlen * sizeof(wchar_t));
-		if (!wtext)
-		{
-			panic("out of memory");
-			return (LRESULT)0;
-		}
+        if (!wtext)
+        {
+            panic("out of memory");
+            return (LRESULT)0;
+        }
         MultiByteToWideChar(NH_CODEPAGE, 0, text, -1, wtext, tlen);
         fwrite(wtext, tlen * sizeof(wchar_t), 1, pFile);
         fclose(pFile);
@@ -1440,8 +1440,8 @@ nh_compose_ascii_screenshot()
     text =
         (PMSNHMsgGetText) malloc(sizeof(MSNHMsgGetText) + TEXT_BUFFER_SIZE);
 
-	if (!text)
-		return "";
+    if (!text)
+        return "";
 
     text->max_size =
         TEXT_BUFFER_SIZE

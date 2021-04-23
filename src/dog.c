@@ -1,4 +1,4 @@
-/* GnollHack 4.0	dog.c	$NHDT-Date: 1554580624 2019/04/06 19:57:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.85 $ */
+/* GnollHack 4.0    dog.c    $NHDT-Date: 1554580624 2019/04/06 19:57:04 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.85 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -28,7 +28,7 @@ struct monst *mtmp;
         EDOG(mtmp) = (struct edog *) 0;
     }
     mtmp->mtame = 0;
-	mtmp->ispartymember = 0;
+    mtmp->ispartymember = 0;
 }
 
 void
@@ -36,13 +36,13 @@ initedog(mtmp, set_tameness)
 register struct monst *mtmp;
 boolean set_tameness;
 {
-	if (set_tameness)
-	{
-		mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
-		mtmp->mpeaceful = 1;
-	}
-	mtmp->ispartymember = 0;
-	mtmp->mavenge = 0;
+    if (set_tameness)
+    {
+        mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
+        mtmp->mpeaceful = 1;
+    }
+    mtmp->ispartymember = 0;
+    mtmp->mavenge = 0;
     set_malign(mtmp); /* recalc alignment now that it's tamed */
     mtmp->mleashed = 0;
     mtmp->meating = 0;
@@ -62,13 +62,13 @@ boolean set_tameness;
 STATIC_OVL int
 pet_type()
 {
-	if (urole.petnum != NON_PM)
-	{
-		if (urole.petnum == PM_PONY && urace.monsternum == PM_DWARF)
-			return PM_RAM;
-		else
-			return  urole.petnum;
-	}
+    if (urole.petnum != NON_PM)
+    {
+        if (urole.petnum == PM_PONY && urace.monsternum == PM_DWARF)
+            return PM_RAM;
+        else
+            return  urole.petnum;
+    }
     else if (preferred_pet == 'c')
         return  PM_KITTEN;
     else if (preferred_pet == 'd')
@@ -160,15 +160,15 @@ boolean quietly;
         }
         /* if figurine has been named, give same name to the monster */
         if (has_oname(otmp))
-		{
+        {
             mtmp = christen_monst(mtmp, ONAME(otmp));
-			if(otmp->nknown)
-				mtmp->u_know_mname = 1;
-		}
-		if (has_uoname(otmp))
-		{
-			mtmp = u_name_monst(mtmp, UONAME(otmp));
-		}
+            if(otmp->nknown)
+                mtmp->u_know_mname = 1;
+        }
+        if (has_uoname(otmp))
+        {
+            mtmp = u_name_monst(mtmp, UONAME(otmp));
+        }
     }
     set_malign(mtmp); /* more alignment changes */
     newsym(mtmp->mx, mtmp->my);
@@ -187,8 +187,8 @@ makedog()
     register struct monst *mtmp;
     register struct obj *otmp;
     const char *petname;
-	const char* petname_female = "";
-	int pettype;
+    const char* petname_female = "";
+    int pettype;
     static int petname_used = 0;
 
     if (preferred_pet == 'n')
@@ -199,8 +199,8 @@ makedog()
         petname = dogname;
     else if (pettype == PM_PONY)
         petname = horsename;
-	else if (pettype == PM_RAM)
-		petname = ramname;
+    else if (pettype == PM_RAM)
+        petname = ramname;
     else if (pettype == PM_SMALL_LUGGAGE)
         petname = luggagename;
     else if (pettype == PM_DIREWOLF_CUB)
@@ -212,38 +212,38 @@ makedog()
     if (!*petname && pettype == PM_LITTLE_DOG)
     {
         /* All of these names were for dogs. */
-		petname_female = rn2(2) ? "Fifi" : "Lassie";
+        petname_female = rn2(2) ? "Fifi" : "Lassie";
 
-		if (Race_if(PM_GNOLL))
-		{
-			if(!rn2(2))						/* Warcraft III: Dwarf Campaign Chapter 3 -- JG */
-				petname = "Spot";
-			else
-				petname = "Rover";
-		}
-		else
-		{
-			if (Role_if(PM_CAVEMAN))
-				petname = "Slasher";		/* The Warrior */
-			if (Role_if(PM_SAMURAI))
-				petname = "Hachiko";		/* Shibuya Station */
-			if (Role_if(PM_BARBARIAN))
-				petname = "Idefix";			/* Obelix */
-			if (Role_if(PM_TOURIST))
-			{
-				petname = "Pepe";			/* Tribute to a male Welsh springer spaniel -- JG */
-				petname_female = "Luna";	/* Tribute to a female Finnish Lapphund -- JG */
-			}
-			if (Role_if(PM_RANGER))
-				petname = "Sirius";			/* Orion's dog */
-		}
-	}
+        if (Race_if(PM_GNOLL))
+        {
+            if(!rn2(2))                        /* Warcraft III: Dwarf Campaign Chapter 3 -- JG */
+                petname = "Spot";
+            else
+                petname = "Rover";
+        }
+        else
+        {
+            if (Role_if(PM_CAVEMAN))
+                petname = "Slasher";        /* The Warrior */
+            if (Role_if(PM_SAMURAI))
+                petname = "Hachiko";        /* Shibuya Station */
+            if (Role_if(PM_BARBARIAN))
+                petname = "Idefix";            /* Obelix */
+            if (Role_if(PM_TOURIST))
+            {
+                petname = "Pepe";            /* Tribute to a male Welsh springer spaniel -- JG */
+                petname_female = "Luna";    /* Tribute to a female Finnish Lapphund -- JG */
+            }
+            if (Role_if(PM_RANGER))
+                petname = "Sirius";            /* Orion's dog */
+        }
+    }
     else if(!*petname && pettype == PM_DIREWOLF_CUB) 
     {
         if (Role_if(PM_VALKYRIE))
         {
-            petname = "Ghost";		        /* Game of Thrones */
-            petname_female = "Nymeria";		/* Game of Thrones */
+            petname = "Ghost";                /* Game of Thrones */
+            petname_female = "Nymeria";        /* Game of Thrones */
         }
     }
 
@@ -258,7 +258,7 @@ makedog()
         mtmp->isfaithful = 1; /* Hachiko is well-known for its faithfulness -- JG */
     }
 
-	context.startingpet_mid = mtmp->m_id;
+    context.startingpet_mid = mtmp->m_id;
 
     /* Horses and rams already wear a saddle */
     if ((pettype == PM_PONY || pettype == PM_RAM ) && !!(otmp = mksobj(SADDLE, TRUE, FALSE, FALSE)))
@@ -267,15 +267,15 @@ makedog()
         put_saddle_on_mon(otmp, mtmp);
     }
 
-	if (!petname_used++)
-	{
-		if (*petname_female && mtmp->female)
-			mtmp = christen_monst(mtmp, petname_female);
-		else if (*petname)
-			mtmp = christen_monst(mtmp, petname);
+    if (!petname_used++)
+    {
+        if (*petname_female && mtmp->female)
+            mtmp = christen_monst(mtmp, petname_female);
+        else if (*petname)
+            mtmp = christen_monst(mtmp, petname);
 
-		mtmp->u_know_mname = 1;
-	}
+        mtmp->u_know_mname = 1;
+    }
     initedog(mtmp, TRUE);
     return  mtmp;
 }
@@ -369,11 +369,11 @@ losedogs()
                         mtmp0->nmon = mtmp->nmon;
                         break;
                     }
-				if (!mtmp0)
-				{
-					panic("losedogs: can't find migrating mon");
-					return;
-				}
+                if (!mtmp0)
+                {
+                    panic("losedogs: can't find migrating mon");
+                    return;
+                }
             }
             mon_arrive(mtmp, FALSE);
         }
@@ -621,10 +621,10 @@ long nmv; /* number of moves */
     /* set to 1 and allow final decrement in movemon() */
     if (is_blinded(mtmp)) 
     {
-		if (imv >= (int)is_blinded(mtmp))
-			set_mon_property(mtmp, BLINDED, 0);
-		else
-			increase_mon_property(mtmp, BLINDED, -imv);
+        if (imv >= (int)is_blinded(mtmp))
+            set_mon_property(mtmp, BLINDED, 0);
+        else
+            increase_mon_property(mtmp, BLINDED, -imv);
     }
 
     if (mtmp->mfrozen)
@@ -635,21 +635,21 @@ long nmv; /* number of moves */
             mtmp->mfrozen -= imv;
     }
 
-	if (mtmp->mstaying) 
+    if (mtmp->mstaying) 
     {
-		if (imv >= (int)mtmp->mstaying)
-			mtmp->mstaying = 1;
-		else
-			mtmp->mstaying -= imv;
-	}
+        if (imv >= (int)mtmp->mstaying)
+            mtmp->mstaying = 1;
+        else
+            mtmp->mstaying -= imv;
+    }
 
-	if (mtmp->mcarrying) 
+    if (mtmp->mcarrying) 
     {
-		if (imv >= (int)mtmp->mcarrying)
-			mtmp->mcarrying = 1;
-		else
-			mtmp->mcarrying -= imv;
-	}
+        if (imv >= (int)mtmp->mcarrying)
+            mtmp->mcarrying = 1;
+        else
+            mtmp->mcarrying -= imv;
+    }
 
     if (mtmp->mcomingtou) 
     {
@@ -743,8 +743,8 @@ long nmv; /* number of moves */
         else
             mtmp->mtame = mtmp->mpeaceful = 0; /* hostile! */
 
-		if (!mtmp->mtame)
-			mtmp->ispartymember = FALSE;
+        if (!mtmp->mtame)
+            mtmp->ispartymember = FALSE;
     }
 
     /* check to see if it would have died as a pet; if so, go wild instead
@@ -759,9 +759,9 @@ long nmv; /* number of moves */
             || (monstermoves > edog->hungrytime + 750))
             mtmp->mtame = mtmp->mpeaceful = 0;
 
-		if(!mtmp->mtame)
-			mtmp->ispartymember = 0;
-	}
+        if(!mtmp->mtame)
+            mtmp->ispartymember = 0;
+    }
 
     if (!mtmp->mtame && mtmp->mleashed) 
     {
@@ -809,15 +809,15 @@ boolean pets_only; /* true for ascension or final escape */
             mtmp->meating = 0;
             mtmp->msleeping = 0;
             mtmp->mfrozen = 0;
-			mtmp->mstaying = 0;
-			mtmp->mcarrying = 0;
+            mtmp->mstaying = 0;
+            mtmp->mcarrying = 0;
             mtmp->mcomingtou = 0;
             mtmp->yell_x = 0;
             mtmp->yell_y = 0;
             mtmp->mcanmove = 1;
-			mtmp->mwantstomove = 1;
-			mtmp->mwantstodrop = 1;
-		}
+            mtmp->mwantstomove = 1;
+            mtmp->mwantstodrop = 1;
+        }
         if ((((monnear(mtmp, u.ux, u.uy) || (is_tame(mtmp) && mon_somewhat_near(mtmp, u.ux, u.uy))) && levl_follower(mtmp))
              /* the wiz will level t-port from anywhere to chase
                 the amulet; if you don't have it, will chase you
@@ -940,9 +940,9 @@ coord *cc;   /* optional destination coordinates */
 
     if (mtmp->mleashed) {
         mtmp->mtame--;
-		if (!mtmp->mtame)
-			mtmp->ispartymember = 0;
-		m_unleash(mtmp, TRUE);
+        if (!mtmp->mtame)
+            mtmp->ispartymember = 0;
+        m_unleash(mtmp, TRUE);
     }
     relmon(mtmp, &migrating_mons); /* move it from map to migrating_mons */
 
@@ -980,15 +980,15 @@ register struct obj *obj;
     if (is_quest_artifact(obj) || obj_resists(obj, 0, 95))
         return obj->cursed ? TABU : APPORT;
 
-	if (is_non_eater(mptr))
-		return TABU;
+    if (is_non_eater(mptr))
+        return TABU;
 
     if (is_corpse_eater(mptr) && obj->otyp != CORPSE)
         return TABU;
 
     switch (obj->oclass) 
-	{
-	case FOOD_CLASS:
+    {
+    case FOOD_CLASS:
         if (obj->otyp == CORPSE || obj->otyp == TIN || obj->otyp == EGG)
             fptr = &mons[obj->corpsenm];
 
@@ -999,14 +999,14 @@ register struct obj *obj;
             && !resists_ston(mon))
             return POISON;
 
-		if ((obj->otyp == CORPSE || obj->otyp == EGG) &&
-			(polyfodder(obj) || obj->corpsenm == PM_GREEN_SLIME || (obj->corpsenm >= LOW_PM && is_mimic(&mons[obj->corpsenm]))))
-			return POISON;
+        if ((obj->otyp == CORPSE || obj->otyp == EGG) &&
+            (polyfodder(obj) || obj->corpsenm == PM_GREEN_SLIME || (obj->corpsenm >= LOW_PM && is_mimic(&mons[obj->corpsenm]))))
+            return POISON;
 
-		if (objects[obj->otyp].oc_edible_subtype > EDIBLETYPE_NORMAL)
-			return POISON;
+        if (objects[obj->otyp].oc_edible_subtype > EDIBLETYPE_NORMAL)
+            return POISON;
 
-		if (!carni && !herbi)
+        if (!carni && !herbi)
             return obj->cursed ? UNDEF : APPORT;
 
         /* a starving pet will eat almost anything */
@@ -1092,10 +1092,10 @@ register struct obj *obj;
             return (obj->otyp > SLIME_MOLD) ? (carni ? ACCFOOD : MANFOOD)
                                             : (herbi ? ACCFOOD : MANFOOD);
         }
-	case REAGENT_CLASS:
-	{
-		/*FALLTHRU*/
-	}
+    case REAGENT_CLASS:
+    {
+        /*FALLTHRU*/
+    }
     default:
         if (obj->otyp == AMULET_OF_STRANGULATION
             || obj->otyp == RIN_SLOW_DIGESTION)
@@ -1141,14 +1141,14 @@ boolean thrown;
         || (mtmp->data->mflags3 & M3_WANTSARTI))
         return FALSE;
 
-	boolean was_tame = is_tame(mtmp);
-	boolean has_edog = has_edog(mtmp);
+    boolean was_tame = is_tame(mtmp);
+    boolean has_edog = has_edog(mtmp);
 
-	if (!charm_type)
-	{
-		/* worst case, at least it'll be peaceful. */
-		mtmp->mpeaceful = 1;
-		set_malign(mtmp);
+    if (!charm_type)
+    {
+        /* worst case, at least it'll be peaceful. */
+        mtmp->mpeaceful = 1;
+        set_malign(mtmp);
         newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
     }
 
@@ -1162,7 +1162,7 @@ boolean thrown;
 
     /* make grabber let go now, whether it becomes tame or not */
     if (mtmp == u.ustuck)
-	{
+    {
         if (u.uswallow)
             expels(mtmp, mtmp->data, TRUE);
         else if (!(Upolyd && sticks(youmonst.data)))
@@ -1171,28 +1171,28 @@ boolean thrown;
 
     /* feeding it treats makes it tamer */
     if (mtmp->mtame && obj && mtmp->mextra && EDOG(mtmp))
-	{
+    {
         int tasty;
 
         if (!thrown || (mon_can_move(mtmp) && !is_confused(mtmp) && !mtmp->meating
             && (((tasty = dogfood(mtmp, obj)) == DOGFOOD && dog_wants_to_eat(mtmp))
                 || (tasty <= ACCFOOD && EDOG(mtmp)->hungrytime <= monstermoves)))) 
-		{
+        {
             /* pet will "catch" and eat this thrown food */
-			if(verbose && thrown)
-			{
-				if (canseemon(mtmp))
-				{
-					boolean big_corpse =
-						(obj->otyp == CORPSE && obj->corpsenm >= LOW_PM
-						 && mons[obj->corpsenm].msize > mtmp->data->msize);
+            if(verbose && thrown)
+            {
+                if (canseemon(mtmp))
+                {
+                    boolean big_corpse =
+                        (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM
+                         && mons[obj->corpsenm].msize > mtmp->data->msize);
 
-					pline("%s catches %s%s", Monnam(mtmp), the(xname(obj)),
-						  !big_corpse ? "." : ", or vice versa!");
-				}
-				else if (cansee(mtmp->mx, mtmp->my))
-					pline("%s.", Tobjnam(obj, "stop"));
-			}
+                    pline("%s catches %s%s", Monnam(mtmp), the(xname(obj)),
+                          !big_corpse ? "." : ", or vice versa!");
+                }
+                else if (cansee(mtmp->mx, mtmp->my))
+                    pline("%s.", Tobjnam(obj, "stop"));
+            }
             /* dog_eat expects a floor object */
             place_object(obj, mtmp->mx, mtmp->my);
 
@@ -1202,7 +1202,7 @@ boolean thrown;
                food and also implies that the object has been deleted */
             return TRUE;
         }
-		else
+        else
             return FALSE;
     }
 
@@ -1210,44 +1210,44 @@ boolean thrown;
         /* monsters with conflicting structures cannot be tamed */
         || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc /* shopkeepers, guards, and priests cannot be forced to be tame for now -- JG */
         || (!forcetaming && 
-			(mtmp->isminion /* minions cannot be tamed, not sure why this is --JG */
-			|| is_covetous(mtmp->data)
-			|| is_human(mtmp->data)
-			|| (is_demon(mtmp->data) && !is_demon(youmonst.data))
-			|| (obj && dogfood(mtmp, obj) >= MANFOOD)
-			)
-		   )
-	   )
+            (mtmp->isminion /* minions cannot be tamed, not sure why this is --JG */
+            || is_covetous(mtmp->data)
+            || is_human(mtmp->data)
+            || (is_demon(mtmp->data) && !is_demon(youmonst.data))
+            || (obj && dogfood(mtmp, obj) >= MANFOOD)
+            )
+           )
+       )
         return FALSE;
 
     if (mtmp->m_id == quest_status.leader_m_id)
         return FALSE;
 
     /* add the pet extension */
-	if(!has_edog)
-	{
-	    newedog(mtmp);
-		initedog(mtmp, !charm_type);
-	}
-	else if (!charm_type)
-	{
-		mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
-		mtmp->mpeaceful = 1;
+    if(!has_edog)
+    {
+        newedog(mtmp);
+        initedog(mtmp, !charm_type);
+    }
+    else if (!charm_type)
+    {
+        mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
+        mtmp->mpeaceful = 1;
 
-	}
+    }
 
-	if (charm_type == 1)
-	{
+    if (charm_type == 1)
+    {
         (void)set_mon_property_b(mtmp, CHARMED, !duration ? -1 : duration, verbose);
-	}
+    }
     else if (charm_type == 2)
     {
         (void)set_mon_property_b(mtmp, UNDEAD_CONTROL, !duration ? -1 : duration, verbose);
     }
     else if(is_tame(mtmp) && !was_tame)
-	{
-		newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
-	}
+    {
+        newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+    }
 
     if (obj) { /* thrown food */
         if (!thrown)
@@ -1263,7 +1263,7 @@ boolean thrown;
 
     newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
     if (attacktype(mtmp->data, AT_WEAP))
-	{
+    {
         mtmp->weapon_strategy = NEED_HTH_WEAPON;
         (void) mon_wield_item(mtmp, FALSE);
     }
@@ -1275,11 +1275,11 @@ break_charm(mtmp, verbose)
 struct monst* mtmp;
 boolean verbose;
 {
-	/* break charm */
-	if (has_charmed(mtmp))
-	{
+    /* break charm */
+    if (has_charmed(mtmp))
+    {
         if(verbose)
-    		(void)set_mon_property_verbosely(mtmp, CHARMED, -3);
+            (void)set_mon_property_verbosely(mtmp, CHARMED, -3);
         else
             (void)set_mon_property(mtmp, CHARMED, -3);
     }
@@ -1317,16 +1317,16 @@ boolean was_dead;
     if (edog && edog->mhpmax_penalty) 
     {
         edog->mhpmax_penalty = 0;
-		update_mon_maxhp(mtmp);
+        update_mon_maxhp(mtmp);
     }
 
     if (edog && (edog->killed_by_u == 1 || edog->abuse > 2)) 
     {
         mtmp->mpeaceful = mtmp->mtame = 0;
-		if (!mtmp->mtame)
-			mtmp->ispartymember = 0;
+        if (!mtmp->mtame)
+            mtmp->ispartymember = 0;
 
-		if (edog->abuse >= 0 && edog->abuse < 10)
+        if (edog->abuse >= 0 && edog->abuse < 10)
             if (!rn2(edog->abuse + 1))
                 mtmp->mpeaceful = 1;
 
@@ -1346,8 +1346,8 @@ boolean was_dead;
     else
     {
         /* chance it goes wild anyway - Pet Sematary */
-		if(mtmp->mtame)
-	        mtmp->mtame = rn2(mtmp->mtame + 1);
+        if(mtmp->mtame)
+            mtmp->mtame = rn2(mtmp->mtame + 1);
         if (!mtmp->mtame)
             mtmp->mpeaceful = rn2(2);
     }
@@ -1396,10 +1396,10 @@ struct monst *mtmp;
     else
         mtmp->mtame--;
 
-	if (!mtmp->mtame)
-		mtmp->ispartymember = FALSE;
-	
-	if (mtmp->mtame && !mtmp->isminion)
+    if (!mtmp->mtame)
+        mtmp->ispartymember = FALSE;
+    
+    if (mtmp->mtame && !mtmp->isminion)
         EDOG(mtmp)->abuse++;
 
     if (!mtmp->mtame && mtmp->mleashed)

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	dig.c	$NHDT-Date: 1547421446 2019/01/13 23:17:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.117 $ */
+/* GnollHack 4.0    dig.c    $NHDT-Date: 1547421446 2019/01/13 23:17:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.117 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -152,8 +152,8 @@ xchar x, y;
     if (!otmp)
         return DIGTYP_UNDIGGABLE;
     ispick = is_pick(otmp);
-	isaxe = is_axe(otmp);
-	issaw = is_saw(otmp);
+    isaxe = is_axe(otmp);
+    issaw = is_saw(otmp);
     if (!ispick && !isaxe && !issaw)
         return DIGTYP_UNDIGGABLE;
 
@@ -192,8 +192,8 @@ int x, y;
     struct trap *ttmp = t_at(x, y);
     const char *verb =
         (madeby == BY_YOU && uwep && is_axe(uwep)) ? "chop" : 
-		(madeby == BY_YOU && uwep && is_saw(uwep)) ? "cut" :
-		"dig in";
+        (madeby == BY_YOU && uwep && is_saw(uwep)) ? "cut" :
+        "dig in";
 
     if (On_stairs(x, y))
     {
@@ -275,9 +275,9 @@ dig(VOID_ARGS)
     boolean use_left = uarms && (is_pick(uarms) || is_axe(uarms) || is_saw(uarms));
     struct obj* wep = (use_right ? uwep : use_left ? uarms : (struct obj*)0);
     register boolean ispick = wep && is_pick(wep);
-	register boolean isaxe = wep && is_axe(wep);
-	register boolean issaw = wep && is_saw(wep);
-	const char *verb = (!wep || is_pick(wep)) ? "dig into" : isaxe ? "chop through" : issaw ? "cut into" : "dig into";
+    register boolean isaxe = wep && is_axe(wep);
+    register boolean issaw = wep && is_saw(wep);
+    const char *verb = (!wep || is_pick(wep)) ? "dig into" : isaxe ? "chop through" : issaw ? "cut into" : "dig into";
 
     lev = &levl[dpx][dpy];
     /* perhaps a nymph stole your pick-axe while you were busy digging */
@@ -340,9 +340,9 @@ dig(VOID_ARGS)
                   the(xname(wep)));
             break;
         default:
-			if(issaw)
-				Your("fail to position your saw properly.");
-			else
+            if(issaw)
+                Your("fail to position your saw properly.");
+            else
             Your("swing misses its mark.");
             break;
         }
@@ -352,13 +352,13 @@ dig(VOID_ARGS)
     context.digging.effort +=
         10 + rn2(5) + u_strdex_to_hit_bonus() + wep->enchantment - greatest_erosion(wep) + u.ubasedaminc + u.udaminc;
     
-	if (Race_if(PM_DWARF))
+    if (Race_if(PM_DWARF))
         context.digging.effort *= 2;
-	if (has_otyp_double_digging_effort(wep->otyp))
-		context.digging.effort *= 2;
+    if (has_otyp_double_digging_effort(wep->otyp))
+        context.digging.effort *= 2;
 
-	if (context.digging.down) 
-	{
+    if (context.digging.down) 
+    {
         struct trap *ttmp = t_at(dpx, dpy);
 
         if (context.digging.effort > 250 || (ttmp && ttmp->ttyp == HOLE)) {
@@ -467,36 +467,36 @@ dig(VOID_ARGS)
             {
                 play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You cut down the tree.";
-				struct mkroom* r = which_room(dpx, dpy);
+                struct mkroom* r = which_room(dpx, dpy);
                 create_simple_location(dpx, dpy, lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM, lev->floorsubtyp ? lev->floorsubtyp : r && r->orig_rtype == GARDEN ? get_initial_location_subtype(GRASS) : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(dpx, dpy), 0, 0, FALSE);
 
-				/* Wood */
-				struct obj* otmp_wood = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
+                /* Wood */
+                struct obj* otmp_wood = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
                 otmp_wood->quan = d(1, 3);
                 otmp_wood->owt = weight(otmp_wood);
 
-				/* Possibly some fruits */
-				if (!rn2(3))
-				{
-					struct obj* otmp = rnd_treefruit_at(dpx, dpy);
-					if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT 
-						|| objects[otmp->otyp].oc_edible_effect == EDIBLEFX_APPLE
-						))
-					{
-						otmp->quan = rnd(16) + 4;
-						otmp->owt = weight(otmp);
-					}
-					else if (otmp && objects[otmp->otyp].oc_edible_effect == EDIBLEFX_CURE_SICKNESS)
-					{
-						otmp->quan = rnd(8) + 2;
-						otmp->owt = weight(otmp);
-					}
-					else
-					{
-						otmp->quan = rnd(2);
-						otmp->owt = weight(otmp);
-					}
-				}
+                /* Possibly some fruits */
+                if (!rn2(3))
+                {
+                    struct obj* otmp = rnd_treefruit_at(dpx, dpy);
+                    if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT 
+                        || objects[otmp->otyp].oc_edible_effect == EDIBLEFX_APPLE
+                        ))
+                    {
+                        otmp->quan = rnd(16) + 4;
+                        otmp->owt = weight(otmp);
+                    }
+                    else if (otmp && objects[otmp->otyp].oc_edible_effect == EDIBLEFX_CURE_SICKNESS)
+                    {
+                        otmp->quan = rnd(8) + 2;
+                        otmp->owt = weight(otmp);
+                    }
+                    else
+                    {
+                        otmp->quan = rnd(2);
+                        otmp->owt = weight(otmp);
+                    }
+                }
             }
             else 
             {
@@ -606,16 +606,16 @@ dig(VOID_ARGS)
         context.digging.level.dlevel = -1;
         return 0;
     } 
-	else 
-	{ /* not enough effort has been spent yet */
+    else 
+    { /* not enough effort has been spent yet */
         static const char *const d_target[6] = { "",        "rock", "statue",
                                                  "boulder", "door", "tree" };
         int dig_target = dig_typ(wep, dpx, dpy);
 
         if (IS_WALL(lev->typ) || dig_target == DIGTYP_DOOR) 
-		{
+        {
             if (*in_rooms(dpx, dpy, SHOPBASE)) 
-			{
+            {
                 pline("This %s seems too hard to %s.",
                       IS_DOOR(lev->typ) ? "door" : "wall", verb);
                 return 0;
@@ -625,7 +625,7 @@ dig(VOID_ARGS)
             return 0; /* statue or boulder got taken */
 
         if (!did_dig_msg) 
-		{
+        {
             You("%s the %s with all your might.", issaw ? "cut" : "hit", d_target[dig_target]);
             did_dig_msg = TRUE;
         }
@@ -1145,17 +1145,17 @@ int
 use_pick_axe(obj)
 struct obj *obj;
 {
-	if (!obj)
-		return 0;
+    if (!obj)
+        return 0;
 
     const char *sdp, *verb;
     char *dsp, dirsyms[12], qbuf[BUFSZ];
     boolean ispick, isaxe, issaw;
     int rx, ry, downok, res = 0;
 
-	ispick = is_pick(obj);
-	isaxe = is_axe(obj);
-	issaw = is_saw(obj);
+    ispick = is_pick(obj);
+    isaxe = is_axe(obj);
+    issaw = is_saw(obj);
 
     /* Check tool */
     if (!(obj == uwep || (u.twoweap && obj == uarms))) 
@@ -1165,7 +1165,7 @@ struct obj *obj;
         else
             res = 1;
     }
-	verb = ispick ? "dig" : isaxe ? "chop" : issaw ? "cut" : "dig";
+    verb = ispick ? "dig" : isaxe ? "chop" : issaw ? "cut" : "dig";
 
     if (u.utrap && u.utraptype == TT_WEB) {
         pline("%s you can't %s while entangled in a web.",
@@ -1175,28 +1175,28 @@ struct obj *obj;
         return res;
     }
 
-	/*
-	if (isshovel)
-	{
-		if(!can_reach_floor(FALSE))
-		{
-			pline("You cannot reach the floor.");
-			return res;
-		}
-		else if (!(levl[u.ux][u.uy].typ == GRASS || IS_GRAVE(levl[u.ux][u.uy].typ)))
-		{
-			pline("It is too hard to dig here with a shovel.");
-			return res;
-		}
-		else
-		{
-			u.dx = 0;
-			u.dy = 0;
-			u.dz = 1;
-			return use_pick_axe2(obj);
-		}
-	}
-	*/
+    /*
+    if (isshovel)
+    {
+        if(!can_reach_floor(FALSE))
+        {
+            pline("You cannot reach the floor.");
+            return res;
+        }
+        else if (!(levl[u.ux][u.uy].typ == GRASS || IS_GRAVE(levl[u.ux][u.uy].typ)))
+        {
+            pline("It is too hard to dig here with a shovel.");
+            return res;
+        }
+        else
+        {
+            u.dx = 0;
+            u.dy = 0;
+            u.dz = 1;
+            return use_pick_axe2(obj);
+        }
+    }
+    */
     /* construct list of directions to show player for likely choices */
     downok = !!can_reach_floor(FALSE);
     dsp = dirsyms;
@@ -1247,23 +1247,23 @@ struct obj *obj;
     struct trap *trap, *trap_with_u;
     int dig_target;
     boolean ispick = is_pick(obj);
-	boolean isaxe = is_axe(obj);
-	boolean issaw = is_saw(obj);
-	const char *verbing = ispick ? "digging" : isaxe ? "chopping" : "cutting";
+    boolean isaxe = is_axe(obj);
+    boolean issaw = is_saw(obj);
+    const char *verbing = ispick ? "digging" : isaxe ? "chopping" : "cutting";
     boolean resume = FALSE;
     boolean action_taken = FALSE;
 
     if (u.uswallow && attack(u.ustuck))
-	{
+    {
         ; /* return 1 */
     } 
-	else if (Underwater)
-	{
+    else if (Underwater)
+    {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         pline("Turbulence torpedoes your %s attempts.", verbing);
     } 
-	else if (u.dz < 0) 
-	{
+    else if (u.dz < 0) 
+    {
         if (Levitation)
         {
             play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_LEVERAGE);
@@ -1275,8 +1275,8 @@ struct obj *obj;
             You_cant("reach the %s.", ceiling(u.ux, u.uy));
         }
     } 
-	else if (!u.dx && !u.dy && !u.dz)
-	{
+    else if (!u.dx && !u.dy && !u.dz)
+    {
         char buf[BUFSZ];
         int dam;
 
@@ -1297,14 +1297,14 @@ struct obj *obj;
         context.botl = 1;
         return 1;
     }
-	else if (u.dz == 0)
-	{
+    else if (u.dz == 0)
+    {
         if (Stunned || (Confusion && !rn2(5)))
             confdir();
         rx = u.ux + u.dx;
         ry = u.uy + u.dy;
         if (!isok(rx, ry))
-		{
+        {
             if (u_action_flags(ACTION_TILE_ATTACK) & ACTION_ATTACK_FLAGS_PICK_AXE)
             {
                 update_u_action(ACTION_TILE_ATTACK);
@@ -1323,14 +1323,14 @@ struct obj *obj;
             return 1;
         dig_target = dig_typ(obj, rx, ry);
         if (dig_target == DIGTYP_UNDIGGABLE) 
-		{
+        {
             /* ACCESSIBLE or POOL */
             trap = t_at(rx, ry);
             if (trap && trap->ttyp == WEB)
-			{
+            {
                 play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
                 if (!trap->tseen)
-				{
+                {
                     seetrap(trap);
                     There("is a spider web there!");
                 }
@@ -1341,53 +1341,53 @@ struct obj *obj;
                 multi_reason = "stuck in a spider web";
                 nomovemsg = "You pull free.";
             } 
-			else if (lev->typ == IRONBARS) 
-			{
+            else if (lev->typ == IRONBARS) 
+            {
                 play_object_hit_sound(obj, HIT_SURFACE_SOURCE_LOCATION, xy_to_any( rx, ry), 0, HMON_MELEE);
                 pline("Clang!");
                 wake_nearby();
             }
-			else if (IS_TREE(lev->typ)) 
-			{
+            else if (IS_TREE(lev->typ)) 
+            {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("need an axe or a saw to cut down a tree.");
             }
-			else if (IS_ROCK(lev->typ)) 
-			{
+            else if (IS_ROCK(lev->typ)) 
+            {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("need a pick to dig rock.");
             }
-			else if (!ispick && ((sobj_at(STATUE, rx, ry) && !issaw) || sobj_at(BOULDER, rx, ry)))
-			{
+            else if (!ispick && ((sobj_at(STATUE, rx, ry) && !issaw) || sobj_at(BOULDER, rx, ry)))
+            {
                 if (isaxe)
-				{
+                {
                     update_u_action(ACTION_TILE_ATTACK);
 
                     boolean vibrate = !rn2(3);
                     play_object_hit_sound(obj, HIT_SURFACE_SOURCE_OBJECT, obj_to_any(sobj_at(STATUE, rx, ry)), vibrate ? 2 : 0, HMON_MELEE);
                     pline("Sparks fly as you whack the %s.%s",
-						sobj_at(STATUE, rx, ry) ? "statue" : "boulder",
-						vibrate ? " The axe-handle vibrates violently!" : "");
+                        sobj_at(STATUE, rx, ry) ? "statue" : "boulder",
+                        vibrate ? " The axe-handle vibrates violently!" : "");
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
                     if (vibrate)
-						losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "axing a hard object",
-							KILLED_BY);
+                        losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "axing a hard object",
+                            KILLED_BY);
 
                     update_u_action_revert(ACTION_TILE_NO_ACTION);
                 }
-				else if(issaw)
-				{
+                else if(issaw)
+                {
                     play_object_hit_sound(obj, HIT_SURFACE_SOURCE_OBJECT, obj_to_any(sobj_at(STATUE, rx, ry)), 0, HMON_MELEE);
                     pline("Sparks fly as you cut the %s, but nothing much else happens.",
-						sobj_at(STATUE, rx, ry) ? "statue" : "boulder");
+                        sobj_at(STATUE, rx, ry) ? "statue" : "boulder");
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
                 }
             }
-			else if (u.utrap && u.utraptype == TT_PIT && trap
+            else if (u.utrap && u.utraptype == TT_PIT && trap
                        && (trap_with_u = t_at(u.ux, u.uy))
                        && is_pit(trap->ttyp)
                        && !conjoined_pits(trap, trap_with_u, FALSE)) 
-			{
+            {
                 int idx;
                 if (u_action_flags(ACTION_TILE_ATTACK) & ACTION_ATTACK_FLAGS_PICK_AXE)
                 {
@@ -1397,7 +1397,7 @@ struct obj *obj;
                 play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, issaw ? OCCUPATION_CUTTING_TREE : OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
 
                 for (idx = 0; idx < 8; idx++) 
-				{
+                {
                     if (xdir[idx] == u.dx && ydir[idx] == u.dy)
                         break;
                 }
@@ -1413,9 +1413,9 @@ struct obj *obj;
                 if (action_taken)
                     update_u_action_revert(ACTION_TILE_NO_ACTION);
             } 
-			else if (u.utrap && u.utraptype == TT_PIT
+            else if (u.utrap && u.utraptype == TT_PIT
                        && (trap_with_u = t_at(u.ux, u.uy)) != 0)
-			{
+            {
                 if (u_action_flags(ACTION_TILE_ATTACK) & ACTION_ATTACK_FLAGS_PICK_AXE)
                 {
                     update_u_action(ACTION_TILE_ATTACK);
@@ -1428,8 +1428,8 @@ struct obj *obj;
                 if (action_taken)
                     update_u_action_revert(ACTION_TILE_NO_ACTION);
             }
-			else 
-			{
+            else 
+            {
                 if (u_action_flags(ACTION_TILE_ATTACK) & ACTION_ATTACK_FLAGS_PICK_AXE)
                 {
                     update_u_action(ACTION_TILE_ATTACK);
@@ -1441,21 +1441,21 @@ struct obj *obj;
                     update_u_action_revert(ACTION_TILE_NO_ACTION);
             }
         }
-		else 
-		{
+        else 
+        {
             static const char *const d_action[6] = { "swinging", 
-													 "digging",
+                                                     "digging",
                                                      "chipping the statue",
                                                      "hitting the boulder",
                                                      "chopping at the door",
                                                      "cutting the tree" };
 
-			static const char* const d_action_saw[6] = { "positioning the saw",
-										 "cutting",
-										 "cutting the statue",
-										 "cutting the boulder",
-										 "cutting at the door",
-										 "cutting the tree" };
+            static const char* const d_action_saw[6] = { "positioning the saw",
+                                         "cutting",
+                                         "cutting the statue",
+                                         "cutting the boulder",
+                                         "cutting at the door",
+                                         "cutting the tree" };
 
             static const int /*enum object_occupation_types*/ d_action_soundset[6] = { OCCUPATION_SWINGING,
                                          OCCUPATION_DIGGING_ROCK,
@@ -1497,15 +1497,15 @@ struct obj *obj;
                         update_u_action_revert(ACTION_TILE_NO_ACTION);
                 }
             }
-			else 
-			{
+            else 
+            {
                 if (u_action_flags(ACTION_TILE_ATTACK) & ACTION_ATTACK_FLAGS_PICK_AXE)
                 {
                     update_u_action(ACTION_TILE_ATTACK);
                     action_taken = TRUE;
                 }
                 You("%s %s.", context.digging.chew ? "begin" : "continue",
-					issaw ? d_action_saw[dig_target] : d_action[dig_target]);
+                    issaw ? d_action_saw[dig_target] : d_action[dig_target]);
                 context.digging.chew = FALSE;
                 if (action_taken)
                     update_u_action_revert(ACTION_TILE_NO_ACTION);
@@ -1515,8 +1515,8 @@ struct obj *obj;
                 context.digging.chew ? OCCUPATION_SOUND_TYPE_START : OCCUPATION_SOUND_TYPE_RESUME, 0);
         }
     } 
-	else if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) 
-	{
+    else if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) 
+    {
         /* it must be air -- water checked above */
         You("swing %s through thin air.", yobjnam(obj, (char *) 0));
         if (u_action_flags(ACTION_TILE_ATTACK) & ACTION_ATTACK_FLAGS_PICK_AXE)
@@ -1752,28 +1752,28 @@ register struct monst *mtmp;
         create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, lflags, back_to_broken_glyph(mtmp->mx, mtmp->my), !IS_FLOOR(ltype) ? here->floortyp : 0, !IS_FLOOR(ltype) ? here->floorsubtyp : 0, FALSE);
     }
     else if (IS_TREE(here->typ))
-	{
-		struct mkroom* r = which_room(mtmp->mx, mtmp->my);
+    {
+        struct mkroom* r = which_room(mtmp->mx, mtmp->my);
         int ltype = 0;
         int lsubtype = 0;
         if(here->floortyp)
             ltype = here->floortyp, lsubtype = here->floorsubtyp;
         else if (r && r->orig_rtype == GARDEN)
             ltype = GRASS, lsubtype = get_initial_location_subtype(GRASS);
-		else
+        else
             ltype = ROOM, lsubtype = get_initial_location_subtype(ROOM);
 
         create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, 0, back_to_broken_glyph(mtmp->mx, mtmp->my), 0, 0, FALSE);
 
         if (pile && pile < 5)
-		{
-			struct obj* otmp = rnd_treefruit_at(mtmp->mx, mtmp->my);
-			if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT || objects[otmp->otyp].oc_edible_effect == EDIBLEFX_APPLE))
-			{
-				otmp->quan = rnd(16) + 4;
-				otmp->owt = weight(otmp);
-			}
-		}
+        {
+            struct obj* otmp = rnd_treefruit_at(mtmp->mx, mtmp->my);
+            if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT || objects[otmp->otyp].oc_edible_effect == EDIBLEFX_APPLE))
+            {
+                otmp->quan = rnd(16) + 4;
+                otmp->owt = weight(otmp);
+            }
+        }
     }
     else
     {
@@ -2270,40 +2270,40 @@ void
 zap_evaporation(origobj)
 struct obj* origobj;
 {
-	struct monst* mtmp;
-	int zx, zy, lzx, lzy, digdepth;
+    struct monst* mtmp;
+    int zx, zy, lzx, lzy, digdepth;
 
     play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_CREATE, u.ux, u.uy);
 
     if (u.uswallow) 
     {
-		mtmp = u.ustuck;
+        mtmp = u.ustuck;
 
-		if (!is_whirly(mtmp->data)) 
+        if (!is_whirly(mtmp->data)) 
         {
-			if (is_animal(mtmp->data))
-				You("dehydrate %s %s wall!", s_suffix(mon_nam(mtmp)),
-					mbodypart(mtmp, STOMACH));
-			mtmp->mhp = 1; /* almost dead */
-			expels(mtmp, mtmp->data, !is_animal(mtmp->data));
-		}
-		return;
-	} /* swallowed */
+            if (is_animal(mtmp->data))
+                You("dehydrate %s %s wall!", s_suffix(mon_nam(mtmp)),
+                    mbodypart(mtmp, STOMACH));
+            mtmp->mhp = 1; /* almost dead */
+            expels(mtmp, mtmp->data, !is_animal(mtmp->data));
+        }
+        return;
+    } /* swallowed */
 
-	if (u.dz) 
+    if (u.dz) 
     {
-		zx = u.ux;
-		zy = u.uy;
-		struct rm* lev = &levl[zx][zy];
-		boolean see_it = cansee(zx, zy);
+        zx = u.ux;
+        zy = u.uy;
+        struct rm* lev = &levl[zx][zy];
+        boolean see_it = cansee(zx, zy);
 
-		if (Is_waterlevel(&u.uz) || u.dz < 0)
-		{
+        if (Is_waterlevel(&u.uz) || u.dz < 0)
+        {
             pline("Nothing happens.");
-		}
-		else
-		{
-			if (is_pool(zx, zy)) 
+        }
+        else
+        {
+            if (is_pool(zx, zy)) 
             {
                 play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
                 const char* msgtxt = "You hear hissing gas.";
@@ -2316,35 +2316,35 @@ struct obj* origobj;
                     if (see_it)
                         msgtxt = "The water evaporates.";
                 }
-				else if (lev->typ == POOL || lev->typ == MOAT)  /* Wand of evaportaion is powerful enough to dry out a moat */
-				{ // Leave no pits, evaporation gives a walkable route
+                else if (lev->typ == POOL || lev->typ == MOAT)  /* Wand of evaportaion is powerful enough to dry out a moat */
+                { // Leave no pits, evaporation gives a walkable route
                     create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floortyp ? levl[zx][zy].floorsubtyp : get_initial_location_subtype(GROUND), 0, FALSE);
-					if (see_it)
-						msgtxt = "The water evaporates.";
-				}
+                    if (see_it)
+                        msgtxt = "The water evaporates.";
+                }
                 else
-				{
-					if (see_it)
-						msgtxt = "Some water evaporates.";
-				}
-				Norep("%s", msgtxt);
-				newsym(zx, zy);
-			}
-			else if (IS_FOUNTAIN(lev->typ))
-			{
+                {
+                    if (see_it)
+                        msgtxt = "Some water evaporates.";
+                }
+                Norep("%s", msgtxt);
+                newsym(zx, zy);
+            }
+            else if (IS_FOUNTAIN(lev->typ))
+            {
                 play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
                 play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_DRY_UP);
                 /* replace the fountain with ordinary floor */
                 create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floortyp ? lev->floorsubtyp : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
                 newsym(zx, zy);
                 if (see_it)
-					pline_The("fountain dries up!");
-				/* The location is seen if the hero/monster is invisible
-				   or felt if the hero is blind. */
-			}
-		}
-		return;
-	} /* up or down */
+                    pline_The("fountain dries up!");
+                /* The location is seen if the hero/monster is invisible
+                   or felt if the hero is blind. */
+            }
+        }
+        return;
+    } /* up or down */
 
     int framenum = 1;
     int anim_intervals = 0;
@@ -2372,7 +2372,7 @@ struct obj* origobj;
     lzx = u.ux;
     lzy = u.uy;
     zx = u.ux + u.dx;
-	zy = u.uy + u.dy;
+    zy = u.uy + u.dy;
 
     start_ambient_ray_sound_at_location(ZAP_SPECIAL_EVAPORATION, zx, zy);
     tmp_at(DISP_BEAM_DIG, zapdir_to_glyph(u.dx, u.dy, ZAP_SPECIAL_EVAPORATION)); // cmap_to_glyph(S_digbeam) + dir_to_beam_index(u.dx, u.dy));
@@ -2380,9 +2380,9 @@ struct obj* origobj;
     digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
     context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH;
     while (--digdepth >= 0)
-	{
-		if (!isok(zx, zy))
-			break;
+    {
+        if (!isok(zx, zy))
+            break;
 
         if (playing_anim)
         {
@@ -2451,45 +2451,45 @@ struct obj* origobj;
             adjusted_delay_output(); /* wait a little */
         }
 
-		struct rm* lev = &levl[zx][zy];
-		boolean see_it = cansee(zx, zy);
+        struct rm* lev = &levl[zx][zy];
+        boolean see_it = cansee(zx, zy);
 
-		/* Kill water elementals */
-		mtmp = m_at(zx, zy);
-		if (mtmp)
-		{
-			if (is_watery(mtmp->data))
-			{
+        /* Kill water elementals */
+        mtmp = m_at(zx, zy);
+        if (mtmp)
+        {
+            if (is_watery(mtmp->data))
+            {
                 play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_MONSTER, zx, zy);
                 mtmp->mhp = 0;
-				if (DEADMONSTER(mtmp))
-					killed(mtmp);
-			}
-		}
+                if (DEADMONSTER(mtmp))
+                    killed(mtmp);
+            }
+        }
 
-		/* Destroy potions */
-		struct obj* otmp, * otmp2;
-		for (otmp = level.objects[zx][zy]; otmp; otmp = otmp2) {
-			otmp2 = otmp->nexthere;
-			if(otmp->oclass == POTION_CLASS)
-			{
+        /* Destroy potions */
+        struct obj* otmp, * otmp2;
+        for (otmp = level.objects[zx][zy]; otmp; otmp = otmp2) {
+            otmp2 = otmp->nexthere;
+            if(otmp->oclass == POTION_CLASS)
+            {
                 play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_OBJECT, zx, zy);
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 if(see_it)
-					pline("%s!", Tobjnam(otmp, "evaporate"));
+                    pline("%s!", Tobjnam(otmp, "evaporate"));
 
-				delobj(otmp);
-			}
-		}
+                delobj(otmp);
+            }
+        }
 
-		/* Destroy water and fountains */
-		if (is_ice(zx, zy)) 
+        /* Destroy water and fountains */
+        if (is_ice(zx, zy)) 
         {
-			//melt_ice(zx, zy, (char*)0);
-		}
-		else if (is_pool(zx, zy)) 
+            //melt_ice(zx, zy, (char*)0);
+        }
+        else if (is_pool(zx, zy)) 
         {
-			const char* msgtxt = "You hear hissing gas.";
+            const char* msgtxt = "You hear hissing gas.";
             play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
             play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
 
@@ -2503,47 +2503,47 @@ struct obj* origobj;
             }
             else if (lev->typ == POOL || lev->typ == MOAT) /* Wand of evaportaion is powerful enough to dry out a moat */
             { // Leave no pits, evaporation gives a walkable route
-				digdepth -= 1;
+                digdepth -= 1;
                 create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floortyp ? levl[zx][zy].floorsubtyp : get_initial_location_subtype(GROUND), 0, FALSE);
-				if (see_it)
-					msgtxt = "The water evaporates.";
-			}
+                if (see_it)
+                    msgtxt = "The water evaporates.";
+            }
             else
-			{
-				digdepth -= 1;
-				if (see_it)
-					msgtxt = "Some water evaporates.";
-			}
-			Norep("%s", msgtxt);
-			newsym(zx, zy);
-		}
-		else if (IS_FOUNTAIN(lev->typ))
-		{
-			/* replace the fountain with ordinary floor */
+            {
+                digdepth -= 1;
+                if (see_it)
+                    msgtxt = "Some water evaporates.";
+            }
+            Norep("%s", msgtxt);
+            newsym(zx, zy);
+        }
+        else if (IS_FOUNTAIN(lev->typ))
+        {
+            /* replace the fountain with ordinary floor */
             play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
             play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_DRY_UP);
             create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floortyp ? lev->floorsubtyp : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
             newsym(zx, zy);
             if (see_it)
-				pline_The("fountain dries up!");
-			/* The location is seen if the hero/monster is invisible
-			   or felt if the hero is blind. */
-			digdepth -= 1;
-		}
+                pline_The("fountain dries up!");
+            /* The location is seen if the hero/monster is invisible
+               or felt if the hero is blind. */
+            digdepth -= 1;
+        }
 
-		if (IS_ROCK(lev->typ))
-		{
+        if (IS_ROCK(lev->typ))
+        {
             play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
             if (!IS_TREE(lev->typ) || lev->typ == SDOOR){
-				break;
-			}
-		}
+                break;
+            }
+        }
         flush_screen(1);
         lzx = zx;
         lzy = zy;
         zx += u.dx;
-		zy += u.dy;
-	}                    /* while */
+        zy += u.dy;
+    }                    /* while */
     if (context.zap_aggregate_intervals_to_wait_until_end > 0)
     {
         delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_end);
@@ -2554,7 +2554,7 @@ struct obj* origobj;
     stop_ambient_ray_sound(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM);
     play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_DESTROY, zx, zy);
 
-	return;
+    return;
 }
 
 /*
@@ -2911,31 +2911,31 @@ boolean verbose, buriedsearchableonly;
 {
     struct obj *otmp, *otmp2, *bball;
     coord cc;
-	int cnt = 0;
-	boolean is_you = (mtmp == &youmonst);
+    int cnt = 0;
+    boolean is_you = (mtmp == &youmonst);
 
     debugpline2("unearth_objs: at <%d,%d>", x, y);
     cc.x = x;
     cc.y = y;
     bball = buried_ball(&cc);
     for (otmp = level.buriedobjlist; otmp; otmp = otmp2) 
-	{
+    {
         otmp2 = otmp->nobj;
         if (otmp->ox == x && otmp->oy == y && (!buriedsearchableonly || (buriedsearchableonly && is_otyp_buried_searchable(otmp->otyp))))
-		{
-			cnt++;
+        {
+            cnt++;
             if (verbose)
             {
                 play_sfx_sound_at_location(SFX_UNEARTHED_OBJECT_FOUND, x, y);
                 pline("%s %s %s%s.", is_you ? "You" : Monnam(mtmp), is_you ? "find" : "finds", doname(otmp), buriedsearchableonly ? " buried close to the surface of the ground" : "");
             }
-			if (bball && otmp == bball
+            if (bball && otmp == bball
                 && u.utrap && u.utraptype == TT_BURIEDBALL) 
-			{
-				buried_ball_to_punishment();
+            {
+                buried_ball_to_punishment();
             }
-			else
-			{
+            else
+            {
                 obj_extract_self(otmp);
                 if (otmp->timed)
                     (void) stop_timer(ROT_ORGANIC, obj_to_any(otmp));
@@ -2945,10 +2945,10 @@ boolean verbose, buriedsearchableonly;
             }
         }
     }
-	if(!buriedsearchableonly)
-	    del_engr_at(x, y);
+    if(!buriedsearchableonly)
+        del_engr_at(x, y);
     newsym(x, y);
-	return cnt;
+    return cnt;
 }
 
 /*
@@ -3012,22 +3012,22 @@ long timeout;
         if (obj == uwep) {
             uwepgone(); /* now bare handed */
             stop_occupation();
-		}
-		else if (obj == uarms) {
-			uwep2gone();
-			stop_occupation();
-		}
-		else if (obj == uswapwep)
-		{
-			uswapwepgone();
-			stop_occupation();
-		}
-		else if (obj == uswapwep2)
-		{
+        }
+        else if (obj == uarms) {
+            uwep2gone();
+            stop_occupation();
+        }
+        else if (obj == uswapwep)
+        {
+            uswapwepgone();
+            stop_occupation();
+        }
+        else if (obj == uswapwep2)
+        {
             uswapwep2gone();
             stop_occupation();
-		}
-		else if (obj == uquiver) {
+        }
+        else if (obj == uquiver) {
             uqwepgone();
             stop_occupation();
         }
@@ -3170,13 +3170,13 @@ wiz_debug_cmd_bury()
 int
 dodig()
 {
-	if (uwep && (uwep->otyp == PICK_AXE || uwep->otyp == DWARVISH_MATTOCK || uwep->otyp == SPADE_OF_COLOSSAL_EXCAVATION))
-	{
-		u.dx = u.dy = 0;
-		u.dz = 1;
-		int res = use_pick_axe2(uwep);
-		return res;
-	}
+    if (uwep && (uwep->otyp == PICK_AXE || uwep->otyp == DWARVISH_MATTOCK || uwep->otyp == SPADE_OF_COLOSSAL_EXCAVATION))
+    {
+        u.dx = u.dy = 0;
+        u.dz = 1;
+        int res = use_pick_axe2(uwep);
+        return res;
+    }
     else if (u.twoweap && uarms && (uarms->otyp == PICK_AXE || uarms->otyp == DWARVISH_MATTOCK || uarms->otyp == SPADE_OF_COLOSSAL_EXCAVATION))
     {
         u.dx = u.dy = 0;
@@ -3186,7 +3186,7 @@ dodig()
     }
 
 
-	char digbuf[BUFSIZ];
+    char digbuf[BUFSIZ];
     enum object_soundset_types oss = 0;
     if (uwep)
     {
@@ -3215,12 +3215,12 @@ dodig()
 
     struct rm* lev = &levl[u.ux][u.uy];
 
-	if (!(lev->typ == GRASS || lev->typ == GROUND || IS_GRAVE(lev->typ)))
-	{
+    if (!(lev->typ == GRASS || lev->typ == GROUND || IS_GRAVE(lev->typ)))
+    {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
-		pline("It is too hard to dig here with %s.", digbuf);
-		return 0;
-	}
+        pline("It is too hard to dig here with %s.", digbuf);
+        return 0;
+    }
 
     play_occupation_immediate_sound(oss, OCCUPATION_DIGGING_GROUND, OCCUPATION_SOUND_TYPE_START);
 
@@ -3238,13 +3238,13 @@ dodig()
     /* Normal digging */
     You("dig the ground with %s.", digbuf);
 
-	int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, FALSE);
+    int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, FALSE);
 
     if (!itemsfound)
-	{
-		pline("However, you do not find anything.");
-	}
-	return 1;
+    {
+        pline("However, you do not find anything.");
+    }
+    return 1;
 }
 
 

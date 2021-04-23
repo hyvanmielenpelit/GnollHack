@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mkobj.c	$NHDT-Date: 1548978605 2019/01/31 23:50:05 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.142 $ */
+/* GnollHack 4.0    mkobj.c    $NHDT-Date: 1548978605 2019/01/31 23:50:05 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.142 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -36,9 +36,9 @@ static const struct icp mkobjprobs[] = { { 12, WEAPON_CLASS },
                                          { 11, SPBOOK_CLASS },
                                          { 2, WAND_CLASS },
                                          { 5, RING_CLASS },
-										 { 6, REAGENT_CLASS },
-										 { 5, MISCELLANEOUS_CLASS },
-										 { 2, AMULET_CLASS } };
+                                         { 6, REAGENT_CLASS },
+                                         { 5, MISCELLANEOUS_CLASS },
+                                         { 2, AMULET_CLASS } };
 
 static const struct icp boxiprobs[] = { { 12, GEM_CLASS },
                                         { 12, FOOD_CLASS },
@@ -48,9 +48,9 @@ static const struct icp boxiprobs[] = { { 12, GEM_CLASS },
                                         { 10, COIN_CLASS },
                                         { 12, WAND_CLASS },
                                         { 6, RING_CLASS },
-										{ 4, REAGENT_CLASS },
-   									    { 6, MISCELLANEOUS_CLASS },
-										{ 2, AMULET_CLASS } };
+                                        { 4, REAGENT_CLASS },
+                                           { 6, MISCELLANEOUS_CLASS },
+                                        { 2, AMULET_CLASS } };
 
 static const struct icp rogueprobs[] = { { 12, WEAPON_CLASS },
                                          { 12, ARMOR_CLASS },
@@ -67,11 +67,11 @@ static const struct icp hellprobs[] = { { 15, WEAPON_CLASS },
                                         { 8, GEM_CLASS },
                                         { 1, POTION_CLASS },
                                         { 1, SCROLL_CLASS },
-										{ 8, REAGENT_CLASS },
-										{ 8, WAND_CLASS },
+                                        { 8, REAGENT_CLASS },
+                                        { 8, WAND_CLASS },
                                         { 8, RING_CLASS },
-										{ 8, MISCELLANEOUS_CLASS },
-										{ 4, AMULET_CLASS } };
+                                        { 8, MISCELLANEOUS_CLASS },
+                                        { 4, AMULET_CLASS } };
 
 struct oextra *
 newoextra()
@@ -80,8 +80,8 @@ newoextra()
 
     oextra = (struct oextra *) alloc(sizeof (struct oextra));
     oextra->oname = 0;
-	oextra->uoname = 0;
-	oextra->omonst = 0;
+    oextra->uoname = 0;
+    oextra->omonst = 0;
     oextra->omid = 0;
     oextra->olong = 0;
     oextra->omailcmd = 0;
@@ -97,9 +97,9 @@ struct obj *o;
     if (x) {
         if (x->oname)
             free((genericptr_t) x->oname);
-		if (x->uoname)
-			free((genericptr_t)x->uoname);
-		if (x->omonst)
+        if (x->uoname)
+            free((genericptr_t)x->uoname);
+        if (x->omonst)
             free_omonst(o);     /* 'o' rather than 'x' */
         if (x->omid)
             free((genericptr_t) x->omid);
@@ -304,107 +304,107 @@ int
 random_objectid_from_class(oclass)
 char oclass;
 {
-	int i = 0;
+    int i = 0;
 
-	int randomizationclass = rn2(4);
+    int randomizationclass = rn2(4);
 
-	for (int tryct = 0; tryct < 50; tryct++)
-	{
-		boolean unacceptable = FALSE;
-		boolean breakforloop = TRUE;
+    for (int tryct = 0; tryct < 50; tryct++)
+    {
+        boolean unacceptable = FALSE;
+        boolean breakforloop = TRUE;
 
-		int prob = rnd(1000);
-		i = bases[(int)oclass];
-		while ((prob -= objects[i].oc_prob) > 0)
-			i++;
+        int prob = rnd(1000);
+        i = bases[(int)oclass];
+        while ((prob -= objects[i].oc_prob) > 0)
+            i++;
 
-		if (objects[i].oc_class != oclass || !OBJ_NAME(objects[i]))
-		{
-			panic("probtype error, oclass=%d i=%d", (int)oclass, i);
-			return STRANGE_OBJECT;
-		}
+        if (objects[i].oc_class != oclass || !OBJ_NAME(objects[i]))
+        {
+            panic("probtype error, oclass=%d i=%d", (int)oclass, i);
+            return STRANGE_OBJECT;
+        }
 
-		if (objects[i].oc_flags3 & O3_NO_GENERATION)
-		{
-			i = 0;
-			continue; /* new try */
-		}
+        if (objects[i].oc_flags3 & O3_NO_GENERATION)
+        {
+            i = 0;
+            continue; /* new try */
+        }
 
-		/* Special code generating more relevant spellbooks */
-		if (oclass == SPBOOK_CLASS && randomizationclass < 3)
-		{
-			switch (randomizationclass)
-			{
-			case 0: /* Disregard spell books of too low and high level, stat, and school */
-				if (P_SKILL_LEVEL(objects[i].oc_skill) < P_BASIC)
-					unacceptable = TRUE;
-				/* FALLTHRU */
-			case 1: /* Disregard spell books of too low and high level and stat */
-				if ((Role_if(PM_WIZARD) && !(objects[i].oc_spell_attribute == A_INT
-					|| objects[i].oc_spell_attribute == A_MAX_INT_WIS
-					|| objects[i].oc_spell_attribute == A_MAX_INT_CHA
-					|| objects[i].oc_spell_attribute == A_MAX_INT_WIS_CHA
-					|| objects[i].oc_spell_attribute == A_AVG_INT_WIS
-					|| objects[i].oc_spell_attribute == A_AVG_INT_CHA
-					|| objects[i].oc_spell_attribute == A_AVG_INT_WIS_CHA
-					))
-					|| (Role_if(PM_PRIEST) && !(objects[i].oc_spell_attribute == A_WIS
-						|| objects[i].oc_spell_attribute == A_MAX_INT_WIS
-						|| objects[i].oc_spell_attribute == A_MAX_WIS_CHA
-						|| objects[i].oc_spell_attribute == A_MAX_INT_WIS_CHA
-						|| objects[i].oc_spell_attribute == A_AVG_INT_WIS
-						|| objects[i].oc_spell_attribute == A_AVG_WIS_CHA
-						|| objects[i].oc_spell_attribute == A_AVG_INT_WIS_CHA
-						))
-					)
-					unacceptable = TRUE;
-				/* FALLTHRU */
-			case 2: /* Disregard spell books of too low and high level */
-				if (objects[i].oc_spell_level > max(3, (u.ulevel + 1) / 2 + 2)		/* Level 1 ->  3, Level 5 ->  5, Level 11 ->  8, Level 19 -> 12*/
-					|| objects[i].oc_spell_level < min(6, (u.ulevel + 1) / 2 - 4) /* Level 1 -> -3, Level 5 -> -1, Level 11 ->  2, Level 19 -> 6 */
-					)
-					unacceptable = TRUE;
-				break;
-			default:
-				break;
-			}
+        /* Special code generating more relevant spellbooks */
+        if (oclass == SPBOOK_CLASS && randomizationclass < 3)
+        {
+            switch (randomizationclass)
+            {
+            case 0: /* Disregard spell books of too low and high level, stat, and school */
+                if (P_SKILL_LEVEL(objects[i].oc_skill) < P_BASIC)
+                    unacceptable = TRUE;
+                /* FALLTHRU */
+            case 1: /* Disregard spell books of too low and high level and stat */
+                if ((Role_if(PM_WIZARD) && !(objects[i].oc_spell_attribute == A_INT
+                    || objects[i].oc_spell_attribute == A_MAX_INT_WIS
+                    || objects[i].oc_spell_attribute == A_MAX_INT_CHA
+                    || objects[i].oc_spell_attribute == A_MAX_INT_WIS_CHA
+                    || objects[i].oc_spell_attribute == A_AVG_INT_WIS
+                    || objects[i].oc_spell_attribute == A_AVG_INT_CHA
+                    || objects[i].oc_spell_attribute == A_AVG_INT_WIS_CHA
+                    ))
+                    || (Role_if(PM_PRIEST) && !(objects[i].oc_spell_attribute == A_WIS
+                        || objects[i].oc_spell_attribute == A_MAX_INT_WIS
+                        || objects[i].oc_spell_attribute == A_MAX_WIS_CHA
+                        || objects[i].oc_spell_attribute == A_MAX_INT_WIS_CHA
+                        || objects[i].oc_spell_attribute == A_AVG_INT_WIS
+                        || objects[i].oc_spell_attribute == A_AVG_WIS_CHA
+                        || objects[i].oc_spell_attribute == A_AVG_INT_WIS_CHA
+                        ))
+                    )
+                    unacceptable = TRUE;
+                /* FALLTHRU */
+            case 2: /* Disregard spell books of too low and high level */
+                if (objects[i].oc_spell_level > max(3, (u.ulevel + 1) / 2 + 2)        /* Level 1 ->  3, Level 5 ->  5, Level 11 ->  8, Level 19 -> 12*/
+                    || objects[i].oc_spell_level < min(6, (u.ulevel + 1) / 2 - 4) /* Level 1 -> -3, Level 5 -> -1, Level 11 ->  2, Level 19 -> 6 */
+                    )
+                    unacceptable = TRUE;
+                break;
+            default:
+                break;
+            }
 
 
-			if (!unacceptable)
-			{
-				boolean alreadyknown = FALSE;
+            if (!unacceptable)
+            {
+                boolean alreadyknown = FALSE;
 
-				for (int j = 0; i < MAXSPELL && spellid(j) != NO_SPELL; j++)
-				{
-					if (spellid(j) == i)
-					{
-						alreadyknown = TRUE;
-					}
-				}
+                for (int j = 0; i < MAXSPELL && spellid(j) != NO_SPELL; j++)
+                {
+                    if (spellid(j) == i)
+                    {
+                        alreadyknown = TRUE;
+                    }
+                }
 
-				if (alreadyknown)
-				{
-					switch (rn2(3))
-					{
-					case 0: /* pick another item from the same randomization class */
-						breakforloop = FALSE;
-						break;
-					case 1: /* pick another item from new randomized randomization class */
-						randomizationclass = rn2(4);
-						breakforloop = FALSE;
-						break;
-					case 2: /* we make a spellbook for a spell that the player already knows */
-						breakforloop = TRUE;
-						break;
-					}
-				}
-			}
-		}
-		if (breakforloop)
-			break; /* stop the for loop and make the item */
-	}
+                if (alreadyknown)
+                {
+                    switch (rn2(3))
+                    {
+                    case 0: /* pick another item from the same randomization class */
+                        breakforloop = FALSE;
+                        break;
+                    case 1: /* pick another item from new randomized randomization class */
+                        randomizationclass = rn2(4);
+                        breakforloop = FALSE;
+                        break;
+                    case 2: /* we make a spellbook for a spell that the player already knows */
+                        breakforloop = TRUE;
+                        break;
+                    }
+                }
+            }
+        }
+        if (breakforloop)
+            break; /* stop the for loop and make the item */
+    }
 
-	return i;
+    return i;
 }
 
 STATIC_OVL void
@@ -421,9 +421,9 @@ struct obj *box;
     case ICE_BOX:
         n = 20;
         break;
-	case BOOKSHELF:
-		n = (level_difficulty() >= 13) ? 7 : (level_difficulty() >= 10) ? 5 : 3;
-		break;
+    case BOOKSHELF:
+        n = (level_difficulty() >= 13) ? 7 : (level_difficulty() >= 10) ? 5 : 3;
+        break;
     case MINE_CART:
         n = !rn2(3) ? 0 : 8; /* At least one third of the mine carts are empty */
         break;
@@ -444,12 +444,12 @@ struct obj *box;
         break;
     case SACK:
     case OILSKIN_SACK:
-	case BACKPACK:
-	case LEATHER_BAG:
-	case ORIENTAL_SILK_SACK:
-	case EXPENSIVE_HANDBAG:
-	case BAG_OF_WIZARDRY:
-	case BAG_OF_TREASURE_HAULING:
+    case BACKPACK:
+    case LEATHER_BAG:
+    case ORIENTAL_SILK_SACK:
+    case EXPENSIVE_HANDBAG:
+    case BAG_OF_WIZARDRY:
+    case BAG_OF_TREASURE_HAULING:
     case BAG_OF_THE_GLUTTON:
         /* initial inventory: sack starts out empty */
         if (moves <= 1 && !in_mklev) {
@@ -457,11 +457,11 @@ struct obj *box;
             break;
         }
         /*FALLTHRU*/
-	case QUIVER_OF_INFINITE_ARROWS:
-	case POUCH_OF_ENDLESS_BOLTS:
+    case QUIVER_OF_INFINITE_ARROWS:
+    case POUCH_OF_ENDLESS_BOLTS:
     case BAG_OF_INFINITE_SLING_BULLETS:
-	case BAG_OF_HOLDING:
-		n = 1;
+    case BAG_OF_HOLDING:
+        n = 1;
         break;
     default:
         n = 0;
@@ -470,26 +470,26 @@ struct obj *box;
 
     for (n = rn2(n + 1); n > 0; n--) 
     {
-		if (box->otyp == ICE_BOX) 
+        if (box->otyp == ICE_BOX) 
         {
-			if (!(otmp = mksobj(CORPSE, TRUE, TRUE, TRUE)))
-				continue;
-			/* Note: setting age to 0 is correct.  Age has a different
-			 * from usual meaning for objects stored in ice boxes. -KAA
-			 */
-			otmp->age = 0L;
-			if (otmp->timed) 
+            if (!(otmp = mksobj(CORPSE, TRUE, TRUE, TRUE)))
+                continue;
+            /* Note: setting age to 0 is correct.  Age has a different
+             * from usual meaning for objects stored in ice boxes. -KAA
+             */
+            otmp->age = 0L;
+            if (otmp->timed) 
             {
-				(void)stop_timer(ROT_CORPSE, obj_to_any(otmp));
-				(void)stop_timer(REVIVE_MON, obj_to_any(otmp));
-			}
-		}
+                (void)stop_timer(ROT_CORPSE, obj_to_any(otmp));
+                (void)stop_timer(REVIVE_MON, obj_to_any(otmp));
+            }
+        }
         else if (box->otyp == BOOKSHELF) 
         {
-			if (rn2(3))
-				otmp = mkobj(SCROLL_CLASS, FALSE, TRUE);
-			else
-				otmp = mkobj(SPBOOK_CLASS, FALSE, TRUE);
+            if (rn2(3))
+                otmp = mkobj(SCROLL_CLASS, FALSE, TRUE);
+            else
+                otmp = mkobj(SPBOOK_CLASS, FALSE, TRUE);
         } 
         else if (box->otyp == MINE_CART)
         {
@@ -553,10 +553,10 @@ struct obj *box;
                 {
                     otmp->otyp = SACK;
                     otmp->enchantment = 0;
-					otmp->special_quality = 0;
-					otmp->charges = 0;
-					otmp->speflags = 0;
-					otmp->owt = weight(otmp);
+                    otmp->special_quality = 0;
+                    otmp->charges = 0;
+                    otmp->speflags = 0;
+                    otmp->owt = weight(otmp);
                 } 
                 else
                     while (otmp->otyp == WAN_CANCELLATION || otmp->otyp == WAN_DISJUNCTION)
@@ -603,19 +603,19 @@ struct obj *obj2, *obj1;
         obj2->oextra = newoextra();
     if (has_oname(obj1))
         oname(obj2, ONAME(obj1));
-	if (has_uoname(obj1))
-		uoname(obj2, UONAME(obj1));
-	if (has_omonst(obj1))
-	{
+    if (has_uoname(obj1))
+        uoname(obj2, UONAME(obj1));
+    if (has_omonst(obj1))
+    {
         if (!OMONST(obj2))
             newomonst(obj2);
-		if (OMONST(obj2))
-		{
-			(void)memcpy((genericptr_t)OMONST(obj2),
-				(genericptr_t)OMONST(obj1), sizeof(struct monst));
-			OMONST(obj2)->mextra = (struct mextra*) 0;
-			OMONST(obj2)->nmon = (struct monst*) 0;
-		}
+        if (OMONST(obj2))
+        {
+            (void)memcpy((genericptr_t)OMONST(obj2),
+                (genericptr_t)OMONST(obj1), sizeof(struct monst));
+            OMONST(obj2)->mextra = (struct mextra*) 0;
+            OMONST(obj2)->nmon = (struct monst*) 0;
+        }
 #if 0
         OMONST(obj2)->m_id = context.ident++;
         if (OMONST(obj2)->m_id) /* ident overflowed */
@@ -625,18 +625,18 @@ struct obj *obj2, *obj1;
             copy_mextra(OMONST(obj2), OMONST(obj1));
     }
     if (has_omid(obj1)) 
-	{
+    {
         if (!OMID(obj2))
             newomid(obj2);
-		if(OMID(obj2))
-			(void) memcpy((genericptr_t) OMID(obj2), (genericptr_t) OMID(obj1),
+        if(OMID(obj2))
+            (void) memcpy((genericptr_t) OMID(obj2), (genericptr_t) OMID(obj1),
                       sizeof (unsigned));
     }
     if (has_olong(obj1)) {
         if (!OLONG(obj2))
             newolong(obj2);
-		if(OLONG(obj2))
-	        (void) memcpy((genericptr_t) OLONG(obj2), (genericptr_t) OLONG(obj1),
+        if(OLONG(obj2))
+            (void) memcpy((genericptr_t) OLONG(obj2), (genericptr_t) OLONG(obj1),
                       sizeof (long));
     }
     if (has_omailcmd(obj1)) {
@@ -657,11 +657,11 @@ long num;
 {
     struct obj *otmp;
 
-	if (obj->cobj || num <= 0L || obj->quan <= num)
-	{
-		panic("splitobj"); /* can't split containers */
-		return (struct obj*)0;
-	}
+    if (obj->cobj || num <= 0L || obj->quan <= num)
+    {
+        panic("splitobj"); /* can't split containers */
+        return (struct obj*)0;
+    }
     otmp = newobj();
     *otmp = *obj; /* copies whole structure */
     otmp->oextra = (struct oextra *) 0;
@@ -1242,8 +1242,8 @@ unsigned long mkflags;
     otmp->lknown = 0;
     otmp->tknown = 0;
     otmp->cknown = (objects[otmp->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE) ? 1 : 0;
-	otmp->corpsenm = NON_PM;
-	otmp->elemental_enchantment = 0;
+    otmp->corpsenm = NON_PM;
+    otmp->elemental_enchantment = 0;
     otmp->exceptionality = 0;
     otmp->mythic_prefix = 0;
     otmp->mythic_suffix = 0;
@@ -1259,20 +1259,20 @@ unsigned long mkflags;
         otmp->speflags |= SPEFLAGS_LID_OPENED;
 
     if (init) 
-	{
-		/* quantity */
-		if(objects[otmp->otyp].oc_merge && !is_obj_unique(otmp))
-			otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);
+    {
+        /* quantity */
+        if(objects[otmp->otyp].oc_merge && !is_obj_unique(otmp))
+            otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);
 
-		/* charges if any */
-		if (objects[otmp->otyp].oc_charged)
-			otmp->charges = get_obj_init_charge(otmp);
+        /* charges if any */
+        if (objects[otmp->otyp].oc_charged)
+            otmp->charges = get_obj_init_charge(otmp);
 
-		switch (let) {
+        switch (let) {
         case WEAPON_CLASS:
-			otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);// is_multigen(otmp) ? (long) rn1(6, 6) : 1L;
+            otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);// is_multigen(otmp) ? (long) rn1(6, 6) : 1L;
             if (!rn2(11) && !is_cursed_magic_item(otmp))
-			{
+            {
                 otmp->enchantment = rne(3);
                 otmp->blessed = rn2(2);
             } 
@@ -1286,34 +1286,34 @@ unsigned long mkflags;
 
             if (mkobj_type != 2 && is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED))
                 otmp->opoisoned = 1;
-			else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type != 2 && (is_multigen(otmp) ? !rn2(40) : !rn2(160)))))
-			{
-				if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type != 2 && !rn2(10))))
-				{
-					otmp->elemental_enchantment = DEATH_ENCHANTMENT;
-					if (is_multigen(otmp))
-					{
-						otmp->quan = rnd(2);
-					}
-				}
-				else
-				{
-					otmp->elemental_enchantment = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) ? COLD_ENCHANTMENT :
+            else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type != 2 && (is_multigen(otmp) ? !rn2(40) : !rn2(160)))))
+            {
+                if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type != 2 && !rn2(10))))
+                {
+                    otmp->elemental_enchantment = DEATH_ENCHANTMENT;
+                    if (is_multigen(otmp))
+                    {
+                        otmp->quan = rnd(2);
+                    }
+                }
+                else
+                {
+                    otmp->elemental_enchantment = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) ? COLD_ENCHANTMENT :
                         level_difficulty() > 11 ? (!rn2(7) ? COLD_ENCHANTMENT : !rn2(3) ? LIGHTNING_ENCHANTMENT  : FIRE_ENCHANTMENT) :
                         (!rn2(3) ? LIGHTNING_ENCHANTMENT : FIRE_ENCHANTMENT);
 
                     if (is_multigen(otmp))
-					{
+                    {
                         otmp->quan = (otmp->quan + 1) / 2;
                     }
-				}
-			}
+                }
+            }
 
-			if (artif && !rn2(20))
+            if (artif && !rn2(20))
                 otmp = mk_artifact(otmp, (aligntyp) A_NONE, MKARTIFACT_FLAGS_NONE);
 
-			break;
-		case FOOD_CLASS:
+            break;
+        case FOOD_CLASS:
             otmp->oeaten = 0;
             switch (otmp->otyp) 
             {
@@ -1391,10 +1391,10 @@ unsigned long mkflags;
             break;
         case GEM_CLASS:
             otmp->corpsenm = 0; /* LOADSTONE hack */
-			if (is_rock(otmp))
+            if (is_rock(otmp))
                 otmp->quan = (long) rn1(6, 6);
-			else if (otmp->otyp == FLINT)
-				otmp->quan = (long)rnd(30);
+            else if (otmp->otyp == FLINT)
+                otmp->quan = (long)rnd(30);
             else if (is_ore(otmp) && Inhell)
                 otmp->quan = (long)rnd(6);
             else if (otmp->otyp != LUCKSTONE && !rn2(6))
@@ -1408,31 +1408,31 @@ unsigned long mkflags;
             {
             case TALLOW_CANDLE:
             case WAX_CANDLE:
-				otmp->special_quality = 1;
+                otmp->special_quality = 1;
                 otmp->age = 30L * /* 600 or 300 */
                             objects[otmp->otyp].oc_cost;
                 otmp->lamplit = 0;
                 otmp->quan = 1L + (long) (rn2(2) ? rn2(7) : 0);
                 blessorcurse(otmp, 5);
                 break;
-			case BRASS_LANTERN:
+            case BRASS_LANTERN:
             case OIL_LAMP:
                 otmp->special_quality = 1;
                 otmp->age = (long) rn1(500, 1000);
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 5);
                 break;
-			case MAGIC_CANDLE:
+            case MAGIC_CANDLE:
                 otmp->special_quality = 2;
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 2);
                 break;
-			case MAGIC_LAMP:
-				otmp->special_quality = 1;
-				otmp->lamplit = 0;
-				blessorcurse(otmp, 2);
-				break;
-			case CHEST:
+            case MAGIC_LAMP:
+                otmp->special_quality = 1;
+                otmp->lamplit = 0;
+                blessorcurse(otmp, 2);
+                break;
+            case CHEST:
             case LARGE_BOX:
                 otmp->olocked = !!(rn2(5));
                 otmp->otrapped = !(rn2(10));
@@ -1511,18 +1511,18 @@ unsigned long mkflags;
             case EXPENSIVE_CAMERA:
             case TINNING_KIT:
             case MAGIC_MARKER:
-			case HORN_OF_PLENTY:
-			case BAG_OF_TRICKS:
-			case BELL_OF_OPENING:
-			case MAGIC_FLUTE:
-			case MAGIC_HARP:
-			case FROST_HORN:
-			case FIRE_HORN:
+            case HORN_OF_PLENTY:
+            case BAG_OF_TRICKS:
+            case BELL_OF_OPENING:
+            case MAGIC_FLUTE:
+            case MAGIC_HARP:
+            case FROST_HORN:
+            case FIRE_HORN:
             case HORN_OF_CHAOS:
             case UNICORN_HORN:
-			case DRUM_OF_EARTHQUAKE:
+            case DRUM_OF_EARTHQUAKE:
                 break;
-			case CAN_OF_GREASE:
+            case CAN_OF_GREASE:
                 otmp->charges = get_obj_init_charge(otmp);
                 blessorcurse(otmp, 10);
                 break;
@@ -1543,7 +1543,7 @@ unsigned long mkflags;
             if (Is_proper_container(otmp))
                 mkbox_cnts(otmp);
 
-			break;
+            break;
         case AMULET_CLASS:
             if (otmp->otyp == AMULET_OF_YENDOR)
                 context.made_amulet = TRUE;
@@ -1555,8 +1555,8 @@ unsigned long mkflags;
                 blessorcurse(otmp, 10);
 
             break;
-		case REAGENT_CLASS:
-		case VENOM_CLASS:
+        case REAGENT_CLASS:
+        case VENOM_CLASS:
         case CHAIN_CLASS:
         case BALL_CLASS:
             break;
@@ -1602,23 +1602,23 @@ unsigned long mkflags;
             }
             break;
         case WAND_CLASS:
-			if (mkobj_type == 0)
-			{
-				if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION || otmp->otyp == WAN_PETRIFICATION)
-					otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
+            if (mkobj_type == 0)
+            {
+                if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION || otmp->otyp == WAN_PETRIFICATION)
+                    otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
 
-			}
-			if (mkobj_type == 0 && (In_mines(&u.uz) || level_difficulty() < 10))
-			{
-				if (otmp->otyp == WAN_COLD || otmp->otyp == WAN_FIRE || otmp->otyp == WAN_LIGHTNING)
-					otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
+            }
+            if (mkobj_type == 0 && (In_mines(&u.uz) || level_difficulty() < 10))
+            {
+                if (otmp->otyp == WAN_COLD || otmp->otyp == WAN_FIRE || otmp->otyp == WAN_LIGHTNING)
+                    otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
 
-			}
-			if (mkobj_type <= 1 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5))
-			{
-				if (otmp->otyp == WAN_WISHING)
-					otmp->otyp = WAN_POLYMORPH;
-			}
+            }
+            if (mkobj_type <= 1 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5))
+            {
+                if (otmp->otyp == WAN_WISHING)
+                    otmp->otyp = WAN_POLYMORPH;
+            }
             otmp->charges = get_obj_init_charge(otmp);
             blessorcurse(otmp, 17);
             otmp->recharged = 0; /* used to control recharging */
@@ -1629,28 +1629,28 @@ unsigned long mkflags;
                 || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_DOUBLE || objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_POWER
                 || objects[otmp->otyp].oc_enchantable == ENCHTYPE_MISCELLANEOUS_NORMAL
                 )
-			{
-				int addition = 0;
-				if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_NORMAL || objects[otmp->otyp].oc_enchantable == ENCHTYPE_MISCELLANEOUS_NORMAL)
-					addition += rnd(2) + (!rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3);
-				else if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_1_7)
-					addition += rnd(3) + (!rn2(3) ? 0 : !rn2(3) ? 1 : !rn2(3) ? 2 : !rn2(3) ? 3 : 4);
-				else if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_DOUBLE)
-					addition += rnd(4) + (!rn2(4) ? 0 : !rn2(4) ? 1 : !rn2(4) ? 2 : !rn2(4) ? 3 : !rn2(4) ? 4 : !rn2(4) ? 5 : 6);
-				else
-					addition += rnd(2);
+            {
+                int addition = 0;
+                if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_NORMAL || objects[otmp->otyp].oc_enchantable == ENCHTYPE_MISCELLANEOUS_NORMAL)
+                    addition += rnd(2) + (!rn2(2) ? 0 : !rn2(2) ? 1 : !rn2(2) ? 2 : 3);
+                else if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_1_7)
+                    addition += rnd(3) + (!rn2(3) ? 0 : !rn2(3) ? 1 : !rn2(3) ? 2 : !rn2(3) ? 3 : 4);
+                else if (objects[otmp->otyp].oc_enchantable == ENCHTYPE_RING_DOUBLE)
+                    addition += rnd(4) + (!rn2(4) ? 0 : !rn2(4) ? 1 : !rn2(4) ? 2 : !rn2(4) ? 3 : !rn2(4) ? 4 : !rn2(4) ? 5 : 6);
+                else
+                    addition += rnd(2);
 
-				if ((is_cursed_magic_item(otmp) || !rn2(11)))
-					curse(otmp);
-				else
-					blessorcurse(otmp, 3);
+                if ((is_cursed_magic_item(otmp) || !rn2(11)))
+                    curse(otmp);
+                else
+                    blessorcurse(otmp, 3);
 
                 if (rn2(10)) 
                 {
-					if (rn2(10) && bcsign(otmp))
-						otmp->enchantment = bcsign(otmp) * addition; // rne(3);
-					else
-						otmp->enchantment = rn2(2) ? addition : -addition; //rne(3) : -rne(3);
+                    if (rn2(10) && bcsign(otmp))
+                        otmp->enchantment = bcsign(otmp) * addition; // rne(3);
+                    else
+                        otmp->enchantment = rn2(2) ? addition : -addition; //rne(3) : -rne(3);
                 }
                 /* make useless +0 rings much less common */
                 if (otmp->enchantment == 0)
@@ -1659,20 +1659,20 @@ unsigned long mkflags;
                 if (otmp->enchantment < 0 && rn2(5))
                     curse(otmp);
             }
-			else if (objects[otmp->otyp].oc_enchantable)
-			{
-				int addition = get_obj_init_enchantment(otmp);
-				blessorcurse(otmp, 3);
-				otmp->enchantment = bcsign(otmp) * addition;
-				/* negative rings are usually cursed */
-				if (otmp->enchantment < 0 && rn2(5))
-					curse(otmp);
-			}
-			else if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(9))) {
+            else if (objects[otmp->otyp].oc_enchantable)
+            {
+                int addition = get_obj_init_enchantment(otmp);
+                blessorcurse(otmp, 3);
+                otmp->enchantment = bcsign(otmp) * addition;
+                /* negative rings are usually cursed */
+                if (otmp->enchantment < 0 && rn2(5))
+                    curse(otmp);
+            }
+            else if (rn2(10) && (is_cursed_magic_item(otmp) || !rn2(9))) {
                 curse(otmp);
             }
             break;
-		case ROCK_CLASS:
+        case ROCK_CLASS:
             switch (otmp->otyp) {
             case STATUE:
                 /* possibly overridden by mkcorpstat() */
@@ -1704,15 +1704,15 @@ unsigned long mkflags;
         }
     }
 
-	/* Blessed or cursed */
-	if (is_obj_generated_blessed(otmp))
-	{
-		otmp->cursed = 0;
-		otmp->enchantment = abs(otmp->enchantment);
-		otmp->blessed = 1;
-	}
-	else if (is_obj_generated_cursed(otmp))
-		curse(otmp);
+    /* Blessed or cursed */
+    if (is_obj_generated_blessed(otmp))
+    {
+        otmp->cursed = 0;
+        otmp->enchantment = abs(otmp->enchantment);
+        otmp->blessed = 1;
+    }
+    else if (is_obj_generated_cursed(otmp))
+        curse(otmp);
 
     /* Exceptionality */
     if (can_have_exceptionality(otmp) && !(objects[otmp->otyp].oc_flags4 & O4_NEVER_GENERATED_WITH_EXCEPTIONALITY) && mkobj_type < 2 && otmp->oartifact == 0)
@@ -1809,7 +1809,7 @@ unsigned long mkflags;
     switch ((otmp->oclass == POTION_CLASS && otmp->otyp != POT_OIL)
             ? POT_WATER
             : otmp->otyp) {
-	case CORPSE:
+    case CORPSE:
         if (otmp->corpsenm == NON_PM) {
             otmp->corpsenm = undead_to_corpse(rndmonnum());
             if (mvitals[otmp->corpsenm].mvflags & (G_NOCORPSE | G_GONE))
@@ -1853,125 +1853,125 @@ int
 get_obj_init_charge(otmp)
 struct obj* otmp;
 {
-	if (!otmp)
-		return 0;
+    if (!otmp)
+        return 0;
 
-	int init_charge = get_init_charge(objects[otmp->otyp].oc_charged);
+    int init_charge = get_init_charge(objects[otmp->otyp].oc_charged);
 
-	/* Possible extra modifications here */
+    /* Possible extra modifications here */
 
-	return init_charge;
+    return init_charge;
 }
 
 int
 get_obj_max_charge(otmp)
 struct obj* otmp;
 {
-	if (!otmp)
-		return 0;
+    if (!otmp)
+        return 0;
 
-	int init_charge = get_max_charge(objects[otmp->otyp].oc_charged);
+    int init_charge = get_max_charge(objects[otmp->otyp].oc_charged);
 
-	/* Possible extra modifications here */
+    /* Possible extra modifications here */
 
-	return init_charge;
+    return init_charge;
 }
 
 int
 get_init_charge(charge_init_index)
 int charge_init_index;
 {
-	int charge = 1;
+    int charge = 1;
 
-	switch (charge_init_index)
-	{
-	case CHARGED_NOT_CHARGED:
-		charge = 0;
-		break;
-	case CHARGED_GENERAL:
-		charge = rne(3);
-		break;
-	case CHARGED_ALWAYS_1:
-		charge = 1;
-		break;
-	case CHARGED_ALWAYS_2:
-		charge = 2;
-		break;
-	case CHARGED_ALWAYS_3:
-		charge = 3;
-		break;
-	case CHARGED_ALWAYS_4:
-		charge = 4;
-		break;
-	case CHARGED_ALWAYS_5:
-		charge = 5;
-		break;
-	case CHARGED_ALWAYS_6:
-		charge = 6;
-		break;
-	case CHARGED_ALWAYS_7:
-		charge = 7;
-		break;
-	case CHARGED_ALWAYS_8:
-		charge = 8;
-		break;
-	case CHARGED_ALWAYS_9:
-		charge = 9;
-		break;
-	case CHARGED_1D8_1:
-		charge = rnd(8) + 1;
-		break;
-	case CHARGED_WAND_NORMAL_NODIR:
-		charge = rn1(5, 11);
-		break;
-	case CHARGED_WAND_NORMAL_DIR:
-		charge = rn1(5, 4);
-		break;
-	case CHARGED_WAND_WISHING:
-		charge = rnd(3);
-		break;
-	case CHARGED_HORN_NORMAL:
-		charge = rn1(5, 4);
-		break;
+    switch (charge_init_index)
+    {
+    case CHARGED_NOT_CHARGED:
+        charge = 0;
+        break;
+    case CHARGED_GENERAL:
+        charge = rne(3);
+        break;
+    case CHARGED_ALWAYS_1:
+        charge = 1;
+        break;
+    case CHARGED_ALWAYS_2:
+        charge = 2;
+        break;
+    case CHARGED_ALWAYS_3:
+        charge = 3;
+        break;
+    case CHARGED_ALWAYS_4:
+        charge = 4;
+        break;
+    case CHARGED_ALWAYS_5:
+        charge = 5;
+        break;
+    case CHARGED_ALWAYS_6:
+        charge = 6;
+        break;
+    case CHARGED_ALWAYS_7:
+        charge = 7;
+        break;
+    case CHARGED_ALWAYS_8:
+        charge = 8;
+        break;
+    case CHARGED_ALWAYS_9:
+        charge = 9;
+        break;
+    case CHARGED_1D8_1:
+        charge = rnd(8) + 1;
+        break;
+    case CHARGED_WAND_NORMAL_NODIR:
+        charge = rn1(5, 11);
+        break;
+    case CHARGED_WAND_NORMAL_DIR:
+        charge = rn1(5, 4);
+        break;
+    case CHARGED_WAND_WISHING:
+        charge = rnd(3);
+        break;
+    case CHARGED_HORN_NORMAL:
+        charge = rn1(5, 4);
+        break;
     case CHARGED_UNICORN_HORN:
         charge = 6 + rnd(3);
         break;
     case CHARGED_BAG_OF_TRICKS:
-		charge = rnd(20);
-		break;
-	case CHARGED_CRYSTAL_BALL:
-		charge = 2 + rnd(5);
-		break;
-	case CHARGED_CAN_OF_GREASE:
-		charge = rnd(25);
-		break;
-	case CHARGED_MAGIC_MARKER:
-		charge = rn1(70, 30);
-		break;
-	case CHARGED_LUCK_BLADE:
-		charge = 2;
-		break;
-	case CHARGED_1D6_6:
-		charge = rnd(6) + 6;
-		break;
-	case CHARGED_2D6_8:
-		charge = d(2, 6) + 8;
-		break;
-	case CHARGED_1D15_15:
-		charge = rnd(15) + 15;
-		break;
-	case CHARGED_1D30_30:
-		charge = rnd(30) + 30;
-		break;
-	case CHARGED_1D45_45:
-		charge = rnd(45) + 45;
-		break;
-	case CHARGED_1D75_75:
-		charge = rnd(75) + 75;
-		break;
-	case CHARGED_1D6_3:
-		charge = rnd(6) + 3;
-		break;
+        charge = rnd(20);
+        break;
+    case CHARGED_CRYSTAL_BALL:
+        charge = 2 + rnd(5);
+        break;
+    case CHARGED_CAN_OF_GREASE:
+        charge = rnd(25);
+        break;
+    case CHARGED_MAGIC_MARKER:
+        charge = rn1(70, 30);
+        break;
+    case CHARGED_LUCK_BLADE:
+        charge = 2;
+        break;
+    case CHARGED_1D6_6:
+        charge = rnd(6) + 6;
+        break;
+    case CHARGED_2D6_8:
+        charge = d(2, 6) + 8;
+        break;
+    case CHARGED_1D15_15:
+        charge = rnd(15) + 15;
+        break;
+    case CHARGED_1D30_30:
+        charge = rnd(30) + 30;
+        break;
+    case CHARGED_1D45_45:
+        charge = rnd(45) + 45;
+        break;
+    case CHARGED_1D75_75:
+        charge = rnd(75) + 75;
+        break;
+    case CHARGED_1D6_3:
+        charge = rnd(6) + 3;
+        break;
     case CHARGED_1D4_4:
         charge = rnd(4) + 3;
         break;
@@ -1983,7 +1983,7 @@ int charge_init_index;
         break;
     }
 
-	return charge;
+    return charge;
 }
 
 
@@ -1991,97 +1991,97 @@ int
 get_max_charge(charge_init_index)
 int charge_init_index;
 {
-	int charge = 1;
+    int charge = 1;
 
-	switch (charge_init_index)
-	{
-	case CHARGED_NOT_CHARGED:
-		charge = 0;
-		break;
-	case CHARGED_GENERAL:
-		charge = 5;
-		break;
-	case CHARGED_ALWAYS_1:
-		charge = 1;
-		break;
-	case CHARGED_ALWAYS_2:
-		charge = 2;
-		break;
-	case CHARGED_ALWAYS_3:
-		charge = 3;
-		break;
-	case CHARGED_ALWAYS_4:
-		charge = 4;
-		break;
-	case CHARGED_ALWAYS_5:
-		charge = 5;
-		break;
-	case CHARGED_ALWAYS_6:
-		charge = 6;
-		break;
-	case CHARGED_ALWAYS_7:
-		charge = 7;
-		break;
-	case CHARGED_ALWAYS_8:
-		charge = 8;
-		break;
-	case CHARGED_ALWAYS_9:
-		charge = 9;
-		break;
-	case CHARGED_1D8_1:
-		charge = 9;
-		break;
-	case CHARGED_WAND_NORMAL_NODIR:
-		charge = 15;
-		break;
-	case CHARGED_WAND_NORMAL_DIR:
-		charge = 8;
-		break;
-	case CHARGED_WAND_WISHING:
-		charge = 3;
-		break;
-	case CHARGED_HORN_NORMAL:
-		charge = 10;
-		break;
+    switch (charge_init_index)
+    {
+    case CHARGED_NOT_CHARGED:
+        charge = 0;
+        break;
+    case CHARGED_GENERAL:
+        charge = 5;
+        break;
+    case CHARGED_ALWAYS_1:
+        charge = 1;
+        break;
+    case CHARGED_ALWAYS_2:
+        charge = 2;
+        break;
+    case CHARGED_ALWAYS_3:
+        charge = 3;
+        break;
+    case CHARGED_ALWAYS_4:
+        charge = 4;
+        break;
+    case CHARGED_ALWAYS_5:
+        charge = 5;
+        break;
+    case CHARGED_ALWAYS_6:
+        charge = 6;
+        break;
+    case CHARGED_ALWAYS_7:
+        charge = 7;
+        break;
+    case CHARGED_ALWAYS_8:
+        charge = 8;
+        break;
+    case CHARGED_ALWAYS_9:
+        charge = 9;
+        break;
+    case CHARGED_1D8_1:
+        charge = 9;
+        break;
+    case CHARGED_WAND_NORMAL_NODIR:
+        charge = 15;
+        break;
+    case CHARGED_WAND_NORMAL_DIR:
+        charge = 8;
+        break;
+    case CHARGED_WAND_WISHING:
+        charge = 3;
+        break;
+    case CHARGED_HORN_NORMAL:
+        charge = 10;
+        break;
     case CHARGED_UNICORN_HORN:
         charge = 9;
         break;
     case CHARGED_BAG_OF_TRICKS:
-		charge = 20;
-		break;
-	case CHARGED_CRYSTAL_BALL:
-		charge = 7;
-		break;
-	case CHARGED_CAN_OF_GREASE:
-		charge = 25;
-		break;
-	case CHARGED_MAGIC_MARKER:
-		charge = 100;
-		break;
-	case CHARGED_LUCK_BLADE:
-		charge = 2;
-		break;
-	case CHARGED_1D6_6:
-		charge = 12;
-		break;
-	case CHARGED_2D6_8:
-		charge = 20;
-		break;
-	case CHARGED_1D15_15:
-		charge = 30;
-		break;
-	case CHARGED_1D30_30:
-		charge = 60;
-		break;
-	case CHARGED_1D45_45:
-		charge = 90;
-		break;
-	case CHARGED_1D75_75:
-		charge = 150;
-		break;
-	case CHARGED_1D6_3:
-		charge = 9;
-		break;
+        charge = 20;
+        break;
+    case CHARGED_CRYSTAL_BALL:
+        charge = 7;
+        break;
+    case CHARGED_CAN_OF_GREASE:
+        charge = 25;
+        break;
+    case CHARGED_MAGIC_MARKER:
+        charge = 100;
+        break;
+    case CHARGED_LUCK_BLADE:
+        charge = 2;
+        break;
+    case CHARGED_1D6_6:
+        charge = 12;
+        break;
+    case CHARGED_2D6_8:
+        charge = 20;
+        break;
+    case CHARGED_1D15_15:
+        charge = 30;
+        break;
+    case CHARGED_1D30_30:
+        charge = 60;
+        break;
+    case CHARGED_1D45_45:
+        charge = 90;
+        break;
+    case CHARGED_1D75_75:
+        charge = 150;
+        break;
+    case CHARGED_1D6_3:
+        charge = 9;
+        break;
     case CHARGED_1D4_4:
         charge = 8;
         break;
@@ -2093,7 +2093,7 @@ int charge_init_index;
         break;
     }
 
-	return charge;
+    return charge;
 }
 
 const char* recharge_texts[MAX_RECHARGING_TYPES] =
@@ -2133,46 +2133,46 @@ int
 get_obj_init_enchantment(otmp)
 struct obj* otmp;
 {
-	if (!otmp)
-		return 0;
+    if (!otmp)
+        return 0;
 
-	int init_spe = get_init_enchantment(objects[otmp->otyp].oc_enchantable);
+    int init_spe = get_init_enchantment(objects[otmp->otyp].oc_enchantable);
 
-	/* Possible extra modifications here */
+    /* Possible extra modifications here */
 
-	return init_spe;
+    return init_spe;
 }
 
 int
 get_obj_max_enchantment(otmp)
 struct obj* otmp;
 {
-	if (!otmp)
-		return 0;
+    if (!otmp)
+        return 0;
 
-	int max_spe = get_max_enchantment(objects[otmp->otyp].oc_enchantable);
+    int max_spe = get_max_enchantment(objects[otmp->otyp].oc_enchantable);
 
-	/* Extra modifications */
+    /* Extra modifications */
     if ((objects[otmp->otyp].oc_enchantable == ENCHTYPE_GENERAL_WEAPON || objects[otmp->otyp].oc_enchantable == ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0) && is_weapon(otmp) && bimanual(otmp) && !is_launcher(otmp))
         max_spe *= 2;
 
-	return max_spe;
+    return max_spe;
 }
 
 int
 get_init_enchantment(spe_type_index)
 int spe_type_index;
 {
-	int initspe = 1;
+    int initspe = 1;
 
-	switch (spe_type_index)
-	{
-	case ENCHTYPE_NO_ENCHANTMENT:
-		initspe = 0;
-		break;
-	case ENCHTYPE_GENERAL_WEAPON:
-		initspe = Inhell ? rne(6) : rne(3);
-		break;
+    switch (spe_type_index)
+    {
+    case ENCHTYPE_NO_ENCHANTMENT:
+        initspe = 0;
+        break;
+    case ENCHTYPE_GENERAL_WEAPON:
+        initspe = Inhell ? rne(6) : rne(3);
+        break;
     case ENCHTYPE_GENERAL_ARMOR:
         initspe = Inhell ? rne(4) : rne(3);
         break;
@@ -2191,35 +2191,35 @@ int spe_type_index;
         initspe = Inhell ? rne(9) : rne(5);
         break;
     case ENCHTYPE_ALWAYS_1:
-		initspe = 1;
-		break;
-	case ENCHTYPE_ALWAYS_2:
-		initspe = 2;
-		break;
-	case ENCHTYPE_ALWAYS_3:
-		initspe = 3;
-		break;
-	case ENCHTYPE_ALWAYS_4:
-		initspe = 4;
-		break;
-	case ENCHTYPE_ALWAYS_5:
-		initspe = 5;
-		break;
-	case ENCHTYPE_RING_NORMAL:
-		initspe = rnd(5);
-		break;
-	case ENCHTYPE_RING_1_7:
-		initspe = rnd(7);
-		break;
-	case ENCHTYPE_RING_DOUBLE:
-		initspe = rnd(10);
-		break;
-	case ENCHTYPE_MISCELLANEOUS_NORMAL:
-		initspe = rnd(5);
-		break;
-	case ENCHTYPE_RING_POWER:
-		initspe = rnd(3);
-		break;
+        initspe = 1;
+        break;
+    case ENCHTYPE_ALWAYS_2:
+        initspe = 2;
+        break;
+    case ENCHTYPE_ALWAYS_3:
+        initspe = 3;
+        break;
+    case ENCHTYPE_ALWAYS_4:
+        initspe = 4;
+        break;
+    case ENCHTYPE_ALWAYS_5:
+        initspe = 5;
+        break;
+    case ENCHTYPE_RING_NORMAL:
+        initspe = rnd(5);
+        break;
+    case ENCHTYPE_RING_1_7:
+        initspe = rnd(7);
+        break;
+    case ENCHTYPE_RING_DOUBLE:
+        initspe = rnd(10);
+        break;
+    case ENCHTYPE_MISCELLANEOUS_NORMAL:
+        initspe = rnd(5);
+        break;
+    case ENCHTYPE_RING_POWER:
+        initspe = rnd(3);
+        break;
     case ENCHTYPE_PROJECTILE:
         initspe = Inhell ? rne(4) : rne(3);
         break;
@@ -2240,7 +2240,7 @@ int spe_type_index;
         break;
     }
 
-	return initspe;
+    return initspe;
 }
 
 
@@ -2248,17 +2248,17 @@ int
 get_max_enchantment(spe_type_index)
 int spe_type_index;
 {
-	int maxspe = 1;
+    int maxspe = 1;
 
-	switch (spe_type_index)
-	{
-	case ENCHTYPE_NO_ENCHANTMENT:
-		maxspe = 0;
-		break;
-	case ENCHTYPE_GENERAL_WEAPON:
+    switch (spe_type_index)
+    {
+    case ENCHTYPE_NO_ENCHANTMENT:
+        maxspe = 0;
+        break;
+    case ENCHTYPE_GENERAL_WEAPON:
     case ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0:
         maxspe = 10;
-		break;
+        break;
     case ENCHTYPE_GENERAL_ARMOR:
     case ENCHTYPE_GENERAL_ARMOR_ALWAYS_START_0:
         maxspe = 3;
@@ -2273,32 +2273,32 @@ int spe_type_index;
         maxspe = 9;
         break;
     case ENCHTYPE_ALWAYS_1:
-		maxspe = 1;
-		break;
-	case ENCHTYPE_ALWAYS_2:
-		maxspe = 2;
-		break;
-	case ENCHTYPE_ALWAYS_3:
-		maxspe = 3;
-		break;
-	case ENCHTYPE_ALWAYS_4:
-		maxspe = 4;
-		break;
-	case ENCHTYPE_ALWAYS_5:
-		maxspe = 5;
-		break;
-	case ENCHTYPE_RING_NORMAL:
-		maxspe = 6;
-		break;
-	case ENCHTYPE_RING_1_7:
-		maxspe = 9;
-		break;
-	case ENCHTYPE_RING_DOUBLE:
-		maxspe = 12;
-		break;
-	case ENCHTYPE_MISCELLANEOUS_NORMAL:
-		maxspe = 7;
-		break;
+        maxspe = 1;
+        break;
+    case ENCHTYPE_ALWAYS_2:
+        maxspe = 2;
+        break;
+    case ENCHTYPE_ALWAYS_3:
+        maxspe = 3;
+        break;
+    case ENCHTYPE_ALWAYS_4:
+        maxspe = 4;
+        break;
+    case ENCHTYPE_ALWAYS_5:
+        maxspe = 5;
+        break;
+    case ENCHTYPE_RING_NORMAL:
+        maxspe = 6;
+        break;
+    case ENCHTYPE_RING_1_7:
+        maxspe = 9;
+        break;
+    case ENCHTYPE_RING_DOUBLE:
+        maxspe = 12;
+        break;
+    case ENCHTYPE_MISCELLANEOUS_NORMAL:
+        maxspe = 7;
+        break;
     case ENCHTYPE_PROJECTILE:
         maxspe = 5;
         break;
@@ -2322,120 +2322,120 @@ int spe_type_index;
         break;
     }
 
-	return maxspe;
+    return maxspe;
 }
 
 int 
 get_multigen_quan(multigen_index)
 int multigen_index;
 {
-	int quan = 1;
+    int quan = 1;
 
-	switch (multigen_index)
-	{
-	case MULTIGEN_SINGLE:
-		quan = 1;
-		break;
-	case MULTIGEN_1D2:
-		quan = rnd(2);
-		break;
-	case MULTIGEN_1D3:
-		quan = rnd(3);
-		break;
-	case MULTIGEN_1D4:
-		quan = rnd(4);
-		break;
-	case MULTIGEN_1D6:
-		quan = rnd(6);
-		break;
-	case MULTIGEN_1D8:
-		quan = rnd(8);
-		break;
-	case MULTIGEN_1D10:
-		quan = rnd(10);
-		break;
-	case MULTIGEN_2D6:
-		quan = d(2, 6);
-		break;
-	case MULTIGEN_3D6:
-		quan = d(3, 6);
-		break;
-	case MULTIGEN_4D6:
-		quan = d(4, 6);
-		break;
-	case MULTIGEN_5D6:
-		quan = d(5, 6);
-		break;
-	case MULTIGEN_6D6:
-		quan = d(6, 6);
-		break;
-	case MULTIGEN_1D6_1:
-		quan = rnd(6) + 1;
-		break;
-	case MULTIGEN_1D6_2:
-		quan = rnd(6) + 2;
-		break;
-	case MULTIGEN_1D6_3:
-		quan = rnd(6) + 3;
-		break;
-	case MULTIGEN_1D6_4:
-		quan = rnd(6) + 4;
-		break;
-	case MULTIGEN_1D6_5:
-		quan = rnd(6) + 5;
-		break;
-	case MULTIGEN_1D6_6:
-		quan = rnd(6) + 6;
-		break;
-	case MULTIGEN_2D6_1:
-		quan = d(2, 6) + 1;
-		break;
-	case MULTIGEN_2D6_2:
-		quan = d(2, 6) + 2;
-		break;
-	case MULTIGEN_2D6_3:
-		quan = d(2, 6) + 3;
-		break;
-	case MULTIGEN_2D6_4:
-		quan = d(2, 6) + 4;
-		break;
-	case MULTIGEN_2D6_5:
-		quan = d(2, 6) + 5;
-		break;
-	case MULTIGEN_2D6_6:
-		quan = d(2, 6) + 6;
-		break;
-	case MULTIGEN_1D2_1:
-		quan = rnd(2) + 1;
-		break;
-	case MULTIGEN_1D3_1:
-		quan = rnd(3) + 1;
-		break;
-	case MULTIGEN_1D4_1:
-		quan = rnd(4) + 1;
-		break;
-	case MULTIGEN_1D2_2:
-		quan = rnd(2) + 2;
-		break;
-	case MULTIGEN_1D3_2:
-		quan = rnd(3) + 2;
-		break;
-	case MULTIGEN_1D3_3:
-		quan = rnd(3) + 3;
-		break;
-	case MULTIGEN_1D4_2:
-		quan = rnd(4) + 2;
-		break;
-	case MULTIGEN_1D4_3:
-		quan = rnd(4) + 3;
-		break;
-	case MULTIGEN_1D4_4:
-		quan = rnd(4) + 4;
-		break;
-	default:
-		break;
-	}
-	return quan;
+    switch (multigen_index)
+    {
+    case MULTIGEN_SINGLE:
+        quan = 1;
+        break;
+    case MULTIGEN_1D2:
+        quan = rnd(2);
+        break;
+    case MULTIGEN_1D3:
+        quan = rnd(3);
+        break;
+    case MULTIGEN_1D4:
+        quan = rnd(4);
+        break;
+    case MULTIGEN_1D6:
+        quan = rnd(6);
+        break;
+    case MULTIGEN_1D8:
+        quan = rnd(8);
+        break;
+    case MULTIGEN_1D10:
+        quan = rnd(10);
+        break;
+    case MULTIGEN_2D6:
+        quan = d(2, 6);
+        break;
+    case MULTIGEN_3D6:
+        quan = d(3, 6);
+        break;
+    case MULTIGEN_4D6:
+        quan = d(4, 6);
+        break;
+    case MULTIGEN_5D6:
+        quan = d(5, 6);
+        break;
+    case MULTIGEN_6D6:
+        quan = d(6, 6);
+        break;
+    case MULTIGEN_1D6_1:
+        quan = rnd(6) + 1;
+        break;
+    case MULTIGEN_1D6_2:
+        quan = rnd(6) + 2;
+        break;
+    case MULTIGEN_1D6_3:
+        quan = rnd(6) + 3;
+        break;
+    case MULTIGEN_1D6_4:
+        quan = rnd(6) + 4;
+        break;
+    case MULTIGEN_1D6_5:
+        quan = rnd(6) + 5;
+        break;
+    case MULTIGEN_1D6_6:
+        quan = rnd(6) + 6;
+        break;
+    case MULTIGEN_2D6_1:
+        quan = d(2, 6) + 1;
+        break;
+    case MULTIGEN_2D6_2:
+        quan = d(2, 6) + 2;
+        break;
+    case MULTIGEN_2D6_3:
+        quan = d(2, 6) + 3;
+        break;
+    case MULTIGEN_2D6_4:
+        quan = d(2, 6) + 4;
+        break;
+    case MULTIGEN_2D6_5:
+        quan = d(2, 6) + 5;
+        break;
+    case MULTIGEN_2D6_6:
+        quan = d(2, 6) + 6;
+        break;
+    case MULTIGEN_1D2_1:
+        quan = rnd(2) + 1;
+        break;
+    case MULTIGEN_1D3_1:
+        quan = rnd(3) + 1;
+        break;
+    case MULTIGEN_1D4_1:
+        quan = rnd(4) + 1;
+        break;
+    case MULTIGEN_1D2_2:
+        quan = rnd(2) + 2;
+        break;
+    case MULTIGEN_1D3_2:
+        quan = rnd(3) + 2;
+        break;
+    case MULTIGEN_1D3_3:
+        quan = rnd(3) + 3;
+        break;
+    case MULTIGEN_1D4_2:
+        quan = rnd(4) + 2;
+        break;
+    case MULTIGEN_1D4_3:
+        quan = rnd(4) + 3;
+        break;
+    case MULTIGEN_1D4_4:
+        quan = rnd(4) + 4;
+        break;
+    default:
+        break;
+    }
+    return quan;
 }
 /*
  * Several areas of the code made direct reassignments
@@ -2520,31 +2520,31 @@ struct obj *body;
 
     /* lizards and lichen don't rot */
     if (!nonrotting_corpse(body->corpsenm))
-	{ 
-		action = ROT_CORPSE;             /* default action: rot away */
-		rot_adjust = in_mklev ? 25 : 10; /* give some variation */
-		corpse_age = monstermoves - body->age;
-		if (corpse_age > ROT_AGE)
-			when = rot_adjust;
-		else
-			when = ROT_AGE - corpse_age;
-		when += (long)(rnz(rot_adjust) - rot_adjust);
-	}
+    { 
+        action = ROT_CORPSE;             /* default action: rot away */
+        rot_adjust = in_mklev ? 25 : 10; /* give some variation */
+        corpse_age = monstermoves - body->age;
+        if (corpse_age > ROT_AGE)
+            when = rot_adjust;
+        else
+            when = ROT_AGE - corpse_age;
+        when += (long)(rnz(rot_adjust) - rot_adjust);
+    }
 
-	if (is_reviver(&mons[body->corpsenm]))
-	{
-		if (is_rider(&mons[body->corpsenm]))
+    if (is_reviver(&mons[body->corpsenm]))
+    {
+        if (is_rider(&mons[body->corpsenm]))
         {
-			/*
-			 * Riders always revive.  They have a 1/3 chance per turn
-			 * of reviving after 12 turns.  Always revive by 500.
-			 */
-			action = REVIVE_MON;
-			for (when = 12L; when < 500L; when++)
-				if (!rn2(3))
-					break;
+            /*
+             * Riders always revive.  They have a 1/3 chance per turn
+             * of reviving after 12 turns.  Always revive by 500.
+             */
+            action = REVIVE_MON;
+            for (when = 12L; when < 500L; when++)
+                if (!rn2(3))
+                    break;
 
-		}
+        }
         else if (mons[body->corpsenm].geno & G_UNIQ)
         {
             /*
@@ -2557,47 +2557,47 @@ struct obj *body;
 
         }
         else if (body->corpsenm == PM_PHOENIX && !body->norevive)
-		{
-			/*
-			 * Phoenixes always revive.  They have a 1/4 chance per turn
-			 * of reviving after 20 turns.  Always revive by 500.
-			 */
-			action = REVIVE_MON;
-			for (when = 25L; when < 500L; when++)
-				if (!rn2(PHOENIX_REVIVE_CHANCE))
-					break;
+        {
+            /*
+             * Phoenixes always revive.  They have a 1/4 chance per turn
+             * of reviving after 20 turns.  Always revive by 500.
+             */
+            action = REVIVE_MON;
+            for (when = 25L; when < 500L; when++)
+                if (!rn2(PHOENIX_REVIVE_CHANCE))
+                    break;
 
-		}
-		else if (mons[body->corpsenm].mlet == S_TROLL && !body->norevive) 
-		{
-			long age;
-			for (age = 2; age <= TAINT_AGE; age++)
-				if (!rn2(TROLL_REVIVE_CHANCE)) 
-				{ /* troll revives */
-					action = REVIVE_MON;
-					when = age;
-					break;
-				}
-		}
-		else if(!body->norevive)
-		{
-			/* Base case here for all other monsters */
-			long age;
-			for (age = 2; age <= TAINT_AGE; age++)
-				if (!rn2(GENERAL_REVIVE_CHANCE))
-				{ /* monster revives */
-					action = REVIVE_MON;
-					when = age;
-					break;
-				}
-		}
-	}
+        }
+        else if (mons[body->corpsenm].mlet == S_TROLL && !body->norevive) 
+        {
+            long age;
+            for (age = 2; age <= TAINT_AGE; age++)
+                if (!rn2(TROLL_REVIVE_CHANCE)) 
+                { /* troll revives */
+                    action = REVIVE_MON;
+                    when = age;
+                    break;
+                }
+        }
+        else if(!body->norevive)
+        {
+            /* Base case here for all other monsters */
+            long age;
+            for (age = 2; age <= TAINT_AGE; age++)
+                if (!rn2(GENERAL_REVIVE_CHANCE))
+                { /* monster revives */
+                    action = REVIVE_MON;
+                    when = age;
+                    break;
+                }
+        }
+    }
 
     if (body->norevive)
         body->norevive = 0;
 
-	if(action > -1 && when > 0)
-	    (void) start_timer(when, TIMER_OBJECT, action, obj_to_any(body));
+    if(action > -1 && when > 0)
+        (void) start_timer(when, TIMER_OBJECT, action, obj_to_any(body));
 
 }
 
@@ -2682,10 +2682,10 @@ void
 bless(otmp)
 register struct obj *otmp;
 {
-	if (!otmp)
-		return;
+    if (!otmp)
+        return;
 
-	int old_light = 0;
+    int old_light = 0;
     double old_volume = 0;
 
     if (otmp->oclass == COIN_CLASS)
@@ -2713,8 +2713,8 @@ void
 unbless(otmp)
 register struct obj *otmp;
 {
-	if (!otmp)
-		return;
+    if (!otmp)
+        return;
 
     int old_light = 0;
     double old_volume = 0;
@@ -2738,10 +2738,10 @@ void
 curse(otmp)
 register struct obj *otmp;
 {
-	if (!otmp)
-		return;
+    if (!otmp)
+        return;
 
-	unsigned already_cursed;
+    unsigned already_cursed;
     int old_light = 0;
     double old_volume = 0;
 
@@ -2753,34 +2753,34 @@ register struct obj *otmp;
         old_volume = obj_ambient_sound_volume(otmp);
     already_cursed = otmp->cursed;
     otmp->blessed = 0;
-	if(objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
-		otmp->cursed = 0;
-	else
-		otmp->cursed = 1;
+    if(objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
+        otmp->cursed = 0;
+    else
+        otmp->cursed = 1;
     /* welded two-handed weapon interferes with some armor removal */
-	if (otmp->cursed)
-	{
-		if (otmp == uwep && bimanual(uwep))
-			reset_remarm();
-		/* some cursed items need immediate updating */
-		if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp))) {
-			updateabon();
-		}
-		else if (Is_weight_changing_bag(otmp)) {
-			otmp->owt = weight(otmp);
-		}
-		else if (otmp->otyp == FIGURINE) {
-			if (otmp->corpsenm != NON_PM && !dead_species(otmp->corpsenm, TRUE)
-				&& (carried(otmp) || mcarried(otmp)))
-				attach_fig_transform_timeout(otmp);
-		}
-		else if (otmp->oclass == SPBOOK_CLASS) {
-			/* if book hero is reading becomes cursed, interrupt */
-			if (!already_cursed)
-				book_cursed(otmp);
-		}
-		if (otmp->lamplit)
-			maybe_adjust_light(otmp, old_light);
+    if (otmp->cursed)
+    {
+        if (otmp == uwep && bimanual(uwep))
+            reset_remarm();
+        /* some cursed items need immediate updating */
+        if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp))) {
+            updateabon();
+        }
+        else if (Is_weight_changing_bag(otmp)) {
+            otmp->owt = weight(otmp);
+        }
+        else if (otmp->otyp == FIGURINE) {
+            if (otmp->corpsenm != NON_PM && !dead_species(otmp->corpsenm, TRUE)
+                && (carried(otmp) || mcarried(otmp)))
+                attach_fig_transform_timeout(otmp);
+        }
+        else if (otmp->oclass == SPBOOK_CLASS) {
+            /* if book hero is reading becomes cursed, interrupt */
+            if (!already_cursed)
+                book_cursed(otmp);
+        }
+        if (otmp->lamplit)
+            maybe_adjust_light(otmp, old_light);
         if (otmp->makingsound)
             maybe_adjust_sound_volume(otmp, old_volume);
     }
@@ -2791,8 +2791,8 @@ void
 uncurse(otmp)
 register struct obj *otmp;
 {
-	if (!otmp)
-		return;
+    if (!otmp)
+        return;
 
     int old_light = 0;
     double old_volume = 0;
@@ -2820,8 +2820,8 @@ blessorcurse(otmp, chance)
 register struct obj *otmp;
 register int chance;
 {
-	if (!otmp)
-		return;
+    if (!otmp)
+        return;
 
     if (otmp->blessed || otmp->cursed)
         return;
@@ -2887,35 +2887,35 @@ register struct obj *obj;
         }
 
         for (contents = obj->cobj; contents; contents = contents->nobj)
-		{
-			if (obj->otyp == BAG_OF_WIZARDRY
-				&& (contents->oclass == REAGENT_CLASS || contents->oclass == SPBOOK_CLASS
-					|| contents->oclass == WAND_CLASS || contents->oclass == SCROLL_CLASS
-					|| objects[contents->otyp].oc_flags & O1_NONE
-					))
-				cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 15) / 16)
-				: ((weight(contents) + 7) / 8);
-			else if (obj->otyp == BAG_OF_TREASURE_HAULING
-				&& (contents->oclass == COIN_CLASS || contents->oclass == GEM_CLASS
-					|| contents->oclass == RING_CLASS || contents->oclass == AMULET_CLASS
-					|| contents->oclass == MISCELLANEOUS_CLASS
-					|| objects[contents->otyp].oc_material == MAT_SILVER
-					|| objects[contents->otyp].oc_material == MAT_GOLD
-					|| objects[contents->otyp].oc_material == MAT_PLATINUM
-					|| objects[contents->otyp].oc_material == MAT_MITHRIL
-					|| objects[contents->otyp].oc_material == MAT_ADAMANTIUM
-					|| objects[contents->otyp].oc_material == MAT_GEMSTONE
-					))
-				cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 63) / 64)
-				: ((weight(contents) + 31) / 32);
+        {
+            if (obj->otyp == BAG_OF_WIZARDRY
+                && (contents->oclass == REAGENT_CLASS || contents->oclass == SPBOOK_CLASS
+                    || contents->oclass == WAND_CLASS || contents->oclass == SCROLL_CLASS
+                    || objects[contents->otyp].oc_flags & O1_NONE
+                    ))
+                cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 15) / 16)
+                : ((weight(contents) + 7) / 8);
+            else if (obj->otyp == BAG_OF_TREASURE_HAULING
+                && (contents->oclass == COIN_CLASS || contents->oclass == GEM_CLASS
+                    || contents->oclass == RING_CLASS || contents->oclass == AMULET_CLASS
+                    || contents->oclass == MISCELLANEOUS_CLASS
+                    || objects[contents->otyp].oc_material == MAT_SILVER
+                    || objects[contents->otyp].oc_material == MAT_GOLD
+                    || objects[contents->otyp].oc_material == MAT_PLATINUM
+                    || objects[contents->otyp].oc_material == MAT_MITHRIL
+                    || objects[contents->otyp].oc_material == MAT_ADAMANTIUM
+                    || objects[contents->otyp].oc_material == MAT_GEMSTONE
+                    ))
+                cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 63) / 64)
+                : ((weight(contents) + 31) / 32);
             else if (obj->otyp == BAG_OF_THE_GLUTTON
                 && (contents->oclass == POTION_CLASS || is_obj_normally_edible(contents)
                     ))
                 cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 19) / 20)
                 : ((weight(contents) + 9) / 10);
             else
-				cwt += weight(contents);
-		}
+                cwt += weight(contents);
+        }
         /*
          *  The weight of bags of holding is calculated as the weight
          *  of the bag plus the weight of the bag's contents modified
@@ -2934,7 +2934,7 @@ register struct obj *obj;
             cwt = obj->cursed ? (cwt * 2) : obj->blessed ? ((cwt + 3) / 4)
                                                          : ((cwt + 1) / 2);
 
-		return wt + cwt;
+        return wt + cwt;
     }
     if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM) {
         long long_wt = obj->quan * (long) mons[obj->corpsenm].cwt;
@@ -3220,8 +3220,8 @@ register struct obj *otmp;
 {
     int otyp = otmp->otyp;
 
-	if (objects[otyp].oc_flags & O1_ROT_RESISTANT)
-		return FALSE;
+    if (objects[otyp].oc_flags & O1_ROT_RESISTANT)
+        return FALSE;
 
     return (boolean)material_definitions[objects[otyp].oc_material].rottable;// <= MAT_WOOD && objects[otyp].oc_material != MAT_LIQUID);
 }
@@ -3239,11 +3239,11 @@ int x, y;
 {
     register struct obj *otmp2 = level.objects[x][y];
 
-	if (otmp->where != OBJ_FREE)
-	{
-		panic("place_object: obj not free");
-		return;
-	}
+    if (otmp->where != OBJ_FREE)
+    {
+        panic("place_object: obj not free");
+        return;
+    }
 
     obj_no_longer_held(otmp);
     /* (could bypass this vision update if there is already a boulder here) */
@@ -3461,11 +3461,11 @@ register struct obj *otmp;
     xchar x = otmp->ox;
     xchar y = otmp->oy;
 
-	if (otmp->where != OBJ_FLOOR)
-	{
-		panic("remove_object: obj not on floor");
-		return;
-	}
+    if (otmp->where != OBJ_FLOOR)
+    {
+        panic("remove_object: obj not on floor");
+        return;
+    }
     extract_nexthere(otmp, &level.objects[x][y]);
     extract_nobj(otmp, &fobj);
     /* update vision iff this was the only boulder at its spot */
@@ -3487,19 +3487,19 @@ struct monst *mtmp;
         /* this has now become very similar to m_useupall()... */
         obj_extract_self(otmp);
         if (otmp->owornmask) 
-		{
+        {
             if (keeping_mon) 
-			{
+            {
                 if (otmp == mwep)
                     mwepgone(mtmp), mwep = 0;
                 mtmp->worn_item_flags &= ~otmp->owornmask;
-				otmp->owornmask = 0L;
+                otmp->owornmask = 0L;
                 update_all_mon_statistics(mtmp, TRUE);
-				if (mtmp == u.usteed && otmp->otyp == SADDLE)
-					dismount_steed(DISMOUNT_FELL);
+                if (mtmp == u.usteed && otmp->otyp == SADDLE)
+                    dismount_steed(DISMOUNT_FELL);
             }
-			otmp->owornmask = 0L; /* obfree() expects this */
-		}
+            otmp->owornmask = 0L; /* obfree() expects this */
+        }
         obfree(otmp, (struct obj *) 0); /* dealloc_obj() isn't sufficient */
     }
 }
@@ -3577,11 +3577,11 @@ struct obj *obj, **head_ptr;
             break;
         }
     }
-	if (!curr)
-	{
-		panic("extract_nobj: object lost");
-		return;
-	}
+    if (!curr)
+    {
+        panic("extract_nobj: object lost");
+        return;
+    }
     obj->where = OBJ_FREE;
     obj->nobj = (struct obj *) 0;
 }
@@ -3608,11 +3608,11 @@ struct obj *obj, **head_ptr;
             break;
         }
     }
-	if (!curr)
-	{
-		panic("extract_nexthere: object lost");
-		return;
-	}
+    if (!curr)
+    {
+        panic("extract_nexthere: object lost");
+        return;
+    }
     obj->nexthere = (struct obj *) 0;
 }
 
@@ -3628,11 +3628,11 @@ struct obj *obj;
 {
     struct obj *otmp;
 
-	if (obj->where != OBJ_FREE)
-	{
-		panic("add_to_minv: obj not free");
-		return 0;
-	}
+    if (obj->where != OBJ_FREE)
+    {
+        panic("add_to_minv: obj not free");
+        return 0;
+    }
     /* merge if possible */
     for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
         if (merged(&otmp, &obj))
@@ -3655,11 +3655,11 @@ struct obj *container, *obj;
 {
     struct obj *otmp;
 
-	if (obj->where != OBJ_FREE)
-	{
-		panic("add_to_container: obj not free");
-		return (struct obj*)0;
-	}
+    if (obj->where != OBJ_FREE)
+    {
+        panic("add_to_container: obj not free");
+        return (struct obj*)0;
+    }
     if (container->where != OBJ_INVENT && container->where != OBJ_MINVENT)
         obj_no_longer_held(obj);
 
@@ -3679,11 +3679,11 @@ void
 add_to_migration(obj)
 struct obj *obj;
 {
-	if (obj->where != OBJ_FREE)
-	{
-		panic("add_to_migration: obj not free");
-		return;
-	}
+    if (obj->where != OBJ_FREE)
+    {
+        panic("add_to_migration: obj not free");
+        return;
+    }
 
     /* lock picking context becomes stale if it's for this object */
     if (Is_container(obj))
@@ -3699,10 +3699,10 @@ add_to_buried(obj)
 struct obj *obj;
 {
     if (obj->where != OBJ_FREE)
-	{
-		panic("add_to_buried: obj not free");
-		return;
-	}
+    {
+        panic("add_to_buried: obj not free");
+        return;
+    }
 
     obj->where = OBJ_BURIED;
     obj->nobj = level.buriedobjlist;
@@ -3775,32 +3775,32 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
     int objcount = 0;
 
     if (!horn || horn->otyp != HORN_OF_PLENTY)
-	{
+    {
         impossible("bad horn o' plenty");
     } 
-	else if (horn->charges < 1)
-	{
+    else if (horn->charges < 1)
+    {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline1(nothing_happens);
     }
-	else 
-	{
+    else 
+    {
         struct obj *obj;
         const char *what;
 
         consume_obj_charge(horn, !tipping);
         if (!rn2(13)) 
-		{
+        {
             obj = mkobj(POTION_CLASS, FALSE, FALSE);
             if (objects[obj->otyp].oc_magic)
                 do 
-				{
+                {
                     obj->otyp = rnd_class(POT_BOOZE, POT_WATER);
                 } while (obj->otyp == POT_SICKNESS || obj->otyp == POT_POISON || obj->otyp == POT_URINE);
             what = (obj->quan > 1L) ? "Some potions" : "A potion";
         }
-		else 
-		{
+        else 
+        {
             obj = mkobj(FOOD_CLASS, FALSE, FALSE);
             if (obj->otyp == FOOD_RATION && !rn2(7))
                 obj->otyp = LUMP_OF_ROYAL_JELLY;
@@ -3819,7 +3819,7 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
            being included in its formatted name during next message */
         iflags.suppress_price++;
         if (!tipping) 
-		{
+        {
             obj = hold_another_object(obj,
                                       u.uswallow
                                         ? "Oops!  %s out of your reach!"
@@ -3832,15 +3832,15 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
                                       The(aobjnam(obj, "slip")), (char *) 0);
             nhUse(obj);
         } 
-		else
-		{
+        else
+        {
             /* assumes this is taking place at hero's location */
             if (!can_reach_floor(TRUE))
-			{
+            {
                 hitfloor(obj, TRUE); /* does altar check, message, drop */
             }
-			else 
-			{
+            else 
+            {
                 if (IS_ALTAR(levl[u.ux][u.uy].typ))
                     doaltarobj(obj); /* does its own drop message */
                 else
@@ -4076,11 +4076,11 @@ const char *mesg;
 
     for (obj = container->cobj; obj; obj = obj->nobj) {
         /* catch direct cycle to avoid unbounded recursion */
-		if (obj == container)
-		{
-			panic("failed sanity check: container holds itself");
-			return;
-		}
+        if (obj == container)
+        {
+            panic("failed sanity check: container holds itself");
+            return;
+        }
         if (obj->where != OBJ_CONTAINED)
             insane_object(obj, "%s obj %s %s: %s", mesg, (struct monst *) 0);
         else if (obj->ocontainer != container)
@@ -4093,11 +4093,11 @@ const char *mesg;
             /* catch most likely indirect cycle; we won't notice if
                parent is present when something comes before it, or
                notice more deeply embedded cycles (grandparent, &c) */
-			if (obj->cobj == container)
-			{
-				panic("failed sanity check: container holds its parent");
-				return;
-			}
+            if (obj->cobj == container)
+            {
+                panic("failed sanity check: container holds its parent");
+                return;
+            }
             /* change "contained... sanity" to "nested contained... sanity"
                and "nested contained..." to "nested nested contained..." */
             Strcpy(nestedmesg, "nested ");
@@ -4119,7 +4119,7 @@ struct obj *obj;
     static unsigned long wearbits[] = {
         W_ARM,    W_ARMC,   W_ARMH,    W_ARMS,     W_ARMG, W_ARMF,  W_ARMU,  W_ARMO,      W_ARMB,
         W_WEP,    W_QUIVER, W_SWAPWEP, W_SWAPWEP2, W_AMUL, W_RINGL, W_RINGR, W_BLINDFOLD,
-		W_MISC,   W_MISC2,  W_MISC3,   W_MISC4,    W_MISC5,
+        W_MISC,   W_MISC2,  W_MISC3,   W_MISC4,    W_MISC5,
         W_SADDLE, W_BALL,   W_CHAIN,   0
         /* [W_ARTIFACT_CARRIED,W_ARTIFACT_INVOKED are property bits for items which aren't worn] */
     };
@@ -4181,52 +4181,52 @@ struct obj *obj;
             if (obj != uarmc)
                 what = "cloak";
             break;
-		case W_ARMO:
-			if (obj != uarmo)
-				what = "robe";
-			break;
-		case W_ARMH:
+        case W_ARMO:
+            if (obj != uarmo)
+                what = "robe";
+            break;
+        case W_ARMH:
             if (obj != uarmh)
                 what = "helm";
             break;
         case W_ARMS:
-			if (obj != uarms)
-			{
-				if(is_shield(obj))
-					what = "shield";
-				else
-					what = u.twoweap ? "left hand weapon" : "secondary weapon";
-			}
+            if (obj != uarms)
+            {
+                if(is_shield(obj))
+                    what = "shield";
+                else
+                    what = u.twoweap ? "left hand weapon" : "secondary weapon";
+            }
             break;
         case W_ARMG:
             if (obj != uarmg)
                 what = "gloves";
             break;
-		case W_ARMB:
-			if (obj != uarmb)
-				what = "bracers";
-			break;
-		case W_MISC:
-			if (obj != umisc)
-				what = "miscellaneous item";
-			break;
-		case W_MISC2:
-			if (obj != umisc2)
-				what = "secondary miscellaneous item";
-			break;
-		case W_MISC3:
-			if (obj != umisc3)
-				what = "tertiary miscellaneous item";
-			break;
-		case W_MISC4:
-			if (obj != umisc4)
-				what = "quaternary miscellaneous item";
-			break;
-		case W_MISC5:
-			if (obj != umisc5)
-				what = "quinary miscellaneous item";
-			break;
-		case W_ARMF:
+        case W_ARMB:
+            if (obj != uarmb)
+                what = "bracers";
+            break;
+        case W_MISC:
+            if (obj != umisc)
+                what = "miscellaneous item";
+            break;
+        case W_MISC2:
+            if (obj != umisc2)
+                what = "secondary miscellaneous item";
+            break;
+        case W_MISC3:
+            if (obj != umisc3)
+                what = "tertiary miscellaneous item";
+            break;
+        case W_MISC4:
+            if (obj != umisc4)
+                what = "quaternary miscellaneous item";
+            break;
+        case W_MISC5:
+            if (obj != umisc5)
+                what = "quinary miscellaneous item";
+            break;
+        case W_ARMF:
             if (obj != uarmf)
                 what = "boots";
             break;
@@ -4238,7 +4238,7 @@ struct obj *obj;
             if (obj != uwep)
                 what = u.twoweap ? "right hand weapon" : "primary weapon";
             break;
-		case W_QUIVER:
+        case W_QUIVER:
             if (obj != uquiver)
                 what = "quiver";
             break;
@@ -4246,11 +4246,11 @@ struct obj *obj;
             if (obj != uswapwep)
                 what = u.twoweap ? "right hand alternate weapon" : "alternate weapon";
             break;
-		case W_SWAPWEP2:
-			if (obj != uswapwep2)
-				what = u.twoweap ? "left hand alternate weapon" : "another alternate weapon";
-			break;
-		case W_AMUL:
+        case W_SWAPWEP2:
+            if (obj != uswapwep2)
+                what = u.twoweap ? "left hand alternate weapon" : "another alternate weapon";
+            break;
+        case W_AMUL:
             if (obj != uamul)
                 what = "amulet";
             break;

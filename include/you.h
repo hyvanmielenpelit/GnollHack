@@ -1,4 +1,4 @@
-/* GnollHack 4.0	you.h	$NHDT-Date: 1547514642 2019/01/15 01:10:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.35 $ */
+/* GnollHack 4.0    you.h    $NHDT-Date: 1547514642 2019/01/15 01:10:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.35 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2016. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -239,7 +239,7 @@ struct Race {
     struct RoleName individual; /* individual as a noun ("man", "elf") */
     short racenum; /* increasing id number of the race */
 
-	const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various race advantages and disadvantages */
+    const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various race advantages and disadvantages */
 
     /*** Indices of important monsters and objects ***/
     short monsternum, /* PM_ as monster */
@@ -413,35 +413,35 @@ struct you {
 #define A_ORIGINAL 1
 #define A_CURRENT  0
     aligntyp ualignbase[CONVERT]; /* for ualign conversion record */
-	schar uluck;
-	long moreluck;        /* luck and luck bonus */
-	boolean luck_does_not_timeout, unluck_does_not_timeout;
+    schar uluck;
+    long moreluck;        /* luck and luck bonus */
+    boolean luck_does_not_timeout, unluck_does_not_timeout;
 #define LUCKADD    3  /* value of u.moreluck when carrying luck stone;
-						 + when blessed or uncursed, - when cursed */
+                         + when blessed or uncursed, - when cursed */
 #define Luck (u.uluck + u.moreluck > 0 ? LUCKADD : u.moreluck < 0 ? -LUCKADD : 0)
 #define LUCKMAX   10  /* maximum value of u.ulUck */
 #define LUCKMIN (-10) /* minimum value of u.uluck */
-	schar ubasehitinc;		/* permanent intrinsic values not affected by items or anything else */
-	schar ubasedaminc;
-	schar ubaseacbonus;
-	schar uhitinc;			/* variable extrinsic values affected by items and spells */
+    schar ubasehitinc;        /* permanent intrinsic values not affected by items or anything else */
+    schar ubasedaminc;
+    schar ubaseacbonus;
+    schar uhitinc;            /* variable extrinsic values affected by items and spells */
     schar udaminc;
-	schar uacbonus;
-	schar umcbonus;
-	schar uspellcastingbonus;
-	schar uexperiencebonus;
+    schar uacbonus;
+    schar umcbonus;
+    schar uspellcastingbonus;
+    schar uexperiencebonus;
     schar uarcherybonus;
-    schar uac;				 /* current armor class */
-	schar umc;				 /* current magic cancellation */
+    schar uac;                 /* current armor class */
+    schar umc;                 /* current magic cancellation */
     int uhp, uhpmax, ubasehpmax;         /* hit points, aka health */
     int uen, uenmax, ubaseenmax;         /* magical energy - M. Stephenson */
     xchar uhpinc[MAXULEV],   /* increases to uhpmax for each level gain */
           ueninc[MAXULEV];   /* increases to uenmax for each level gain */
-	int uhp_fraction, uen_fraction, mh_fraction;
+    int uhp_fraction, uen_fraction, mh_fraction;
     int ugangr;              /* if the gods are angry at you */
     int ugifts;              /* number of artifacts bestowed */
-	int ublessed;			 /* amount of permanent divine protection bestowed upon you */
-	int uprayer_timeout;     /* duration from #pray */
+    int ublessed;             /* amount of permanent divine protection bestowed upon you */
+    int uprayer_timeout;     /* duration from #pray */
     long umoney0;
     long uspare1;
     long uexp, u_gamescore;
@@ -455,12 +455,12 @@ struct you {
     int umortality;          /* how many times you died */
     int ugrave_arise;    /* you die and become something aside from a ghost */
     int weapon_slots;        /* unused skill slots */
-	int max_weapon_slots;        /* max skill slots */
-	int skills_advanced;     /* # of advances made so far */
+    int max_weapon_slots;        /* max skill slots */
+    int skills_advanced;     /* # of advances made so far */
     xchar skill_record[P_SKILL_LIMIT]; /* skill advancements */
     struct skills weapon_skills[P_NUM_SKILLS];
     boolean twoweap;         /* KMH -- Using two-weapon combat */
-	boolean canadvanceskill; /* Can advance skill */
+    boolean canadvanceskill; /* Can advance skill */
     int carrying_capacity_level;
 
     /* Data influencing what is shown in tiles */

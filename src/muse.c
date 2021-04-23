@@ -1,4 +1,4 @@
-/* GnollHack 4.0	muse.c	$NHDT-Date: 1547025167 2019/01/09 09:12:47 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.92 $ */
+/* GnollHack 4.0    muse.c    $NHDT-Date: 1547025167 2019/01/09 09:12:47 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.92 $ */
 /*      Copyright (C) 1990 by Ken Arromdee                         */
 /* GnollHack may be freely redistributed.  See license for details.  */
 
@@ -154,10 +154,10 @@ struct obj *obj;
                         ? "nearby" : "in the distance");
         }
         m_useup(mon, obj);
-		deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, AD_MAGM, ADFLAGS_NONE));
+        deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, AD_MAGM, ADFLAGS_NONE));
         //mon->mhp -= dam;
         if (DEADMONSTER(mon))
-		{
+        {
             monkilled(mon, "", AD_RBRE);
             return 1;
         }
@@ -173,8 +173,8 @@ struct monst *mtmp;
 struct obj *otmp;
 boolean self;
 {
-	if (!mtmp || !otmp)
-		return;
+    if (!mtmp || !otmp)
+        return;
 
     context.global_minimum_volume = 0.15f;
     play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_ZAP);
@@ -200,8 +200,8 @@ mreadmsg(mtmp, otmp)
 struct monst *mtmp;
 struct obj *otmp;
 {
-	if (!mtmp || !otmp)
-		return;
+    if (!mtmp || !otmp)
+        return;
 
     boolean vismon = canseemon(mtmp);
     char onambuf[BUFSZ];
@@ -297,12 +297,12 @@ struct monst *mtmp;
         m.has_defense = MUSE_POT_FULL_HEALING;
         return TRUE;
     }
-	if ((obj = m_carrying(mtmp, POT_GREATER_HEALING)) != 0) {
-		m.defensive = obj;
-		m.has_defense = MUSE_POT_GREATER_HEALING;
-		return TRUE;
-	}
-	if ((obj = m_carrying(mtmp, POT_EXTRA_HEALING)) != 0) {
+    if ((obj = m_carrying(mtmp, POT_GREATER_HEALING)) != 0) {
+        m.defensive = obj;
+        m.has_defense = MUSE_POT_GREATER_HEALING;
+        return TRUE;
+    }
+    if ((obj = m_carrying(mtmp, POT_EXTRA_HEALING)) != 0) {
         m.defensive = obj;
         m.has_defense = MUSE_POT_EXTRA_HEALING;
         return TRUE;
@@ -342,15 +342,15 @@ struct monst *mtmp;
      * silly trying to use the same cursed horn round after round
      */
     if (is_confused(mtmp) || is_stunned(mtmp) || is_blinded(mtmp))
-	{
+    {
         if (!is_unicorn(mtmp->data) && can_operate_objects(mtmp->data)) 
-		{
+        {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
                 if (obj->otyp == UNICORN_HORN && !obj->cursed)
                     break;
         }
         if (obj || is_unicorn(mtmp->data)) 
-		{
+        {
             m.defensive = obj;
             m.has_defense = MUSE_UNICORN_HORN;
             return TRUE;
@@ -358,35 +358,35 @@ struct monst *mtmp;
     }
 
     if (has_stoned(mtmp)) 
-	{
+    {
         struct obj *liztin = 0;
 
         for (obj = mtmp->minvent; obj; obj = obj->nobj)
-		{
+        {
             if (obj->otyp == CORPSE && obj->corpsenm == PM_LIZARD)
-			{
+            {
                 m.defensive = obj;
                 m.has_defense = MUSE_LIZARD_CORPSE;
                 return TRUE;
             } 
-			else if (obj->otyp == TIN && obj->corpsenm == PM_LIZARD) 
-			{
+            else if (obj->otyp == TIN && obj->corpsenm == PM_LIZARD) 
+            {
                 liztin = obj;
             }
         }
 
-		for (obj = mtmp->minvent; obj; obj = obj->nobj)
-		{
-			if (obj->otyp == DRAGON_FRUIT)
-			{
-				m.defensive = obj;
-				m.has_defense = MUSE_DRAGON_FRUIT;
-				return TRUE;
-			}
-		}
-		/* confused or stunned monster might not be able to open tin */
+        for (obj = mtmp->minvent; obj; obj = obj->nobj)
+        {
+            if (obj->otyp == DRAGON_FRUIT)
+            {
+                m.defensive = obj;
+                m.has_defense = MUSE_DRAGON_FRUIT;
+                return TRUE;
+            }
+        }
+        /* confused or stunned monster might not be able to open tin */
         if (liztin && mcould_eat_tin(mtmp) && rn2(3))
-		{
+        {
             m.defensive = liztin;
             /* tin and corpse ultimately end up being handled the same */
             m.has_defense = MUSE_LIZARD_CORPSE;
@@ -404,7 +404,7 @@ struct monst *mtmp;
      */
     if (is_blinded(mtmp) && can_operate_objects(mtmp->data)
         && mtmp->data != &mons[PM_PESTILENCE]) 
-	{
+    {
         if (m_use_healing(mtmp))
             return TRUE;
     }
@@ -415,9 +415,9 @@ struct monst *mtmp;
         return FALSE;
 
     if (is_peaceful(mtmp))
-	{
+    {
         if (can_operate_objects(mtmp->data)) 
-		{
+        {
             if (m_use_healing(mtmp))
                 return TRUE;
         }
@@ -425,44 +425,44 @@ struct monst *mtmp;
     }
 
     if (stuck || immobile) 
-	{
+    {
         ; /* fleeing by stairs or traps is not possible */
     }
-	else if (levl[x][y].typ == STAIRS) 
-	{
+    else if (levl[x][y].typ == STAIRS) 
+    {
         if (x == xdnstair && y == ydnstair)
-		{
+        {
             if (!is_floater(mtmp->data))
                 m.has_defense = MUSE_DOWNSTAIRS;
         } else if (x == xupstair && y == yupstair) 
-		{
+        {
             m.has_defense = MUSE_UPSTAIRS;
         } 
-		else if (sstairs.sx && x == sstairs.sx && y == sstairs.sy) 
-		{
+        else if (sstairs.sx && x == sstairs.sx && y == sstairs.sy) 
+        {
             if (sstairs.up || !is_floater(mtmp->data))
                 m.has_defense = MUSE_SSTAIRS;
         }
     }
-	else if (levl[x][y].typ == LADDER) 
-	{
+    else if (levl[x][y].typ == LADDER) 
+    {
         if (x == xupladder && y == yupladder)
-		{
+        {
             m.has_defense = MUSE_UP_LADDER;
         }
-		else if (x == xdnladder && y == ydnladder) 
-		{
+        else if (x == xdnladder && y == ydnladder) 
+        {
             if (!is_floater(mtmp->data))
                 m.has_defense = MUSE_DN_LADDER;
         } 
-		else if (sstairs.sx && x == sstairs.sx && y == sstairs.sy)
-		{
+        else if (sstairs.sx && x == sstairs.sx && y == sstairs.sy)
+        {
             if (sstairs.up || !is_floater(mtmp->data))
                 m.has_defense = MUSE_SSTAIRS;
         }
     } 
-	else 
-	{
+    else 
+    {
         /* Note: trap doors take precedence over teleport traps. */
         int xx, yy, i, locs[10][2];
         boolean ignore_boulders = (verysmall(mtmp->data)
@@ -478,13 +478,13 @@ struct monst *mtmp;
         for (xx = x - 1; xx <= x + 1; xx++)
             for (yy = y - 1; yy <= y + 1; yy++)
                 if (isok(xx, yy) && (xx != x || yy != y)) 
-				{
+                {
                     locs[i][0] = xx, locs[i][1] = yy;
                     ++i;
                 }
         /* look for a suitable trap among the viable spots */
         for (i = 0; i < 10; ++i)
-		{
+        {
             xx = locs[i][0], yy = locs[i][1];
             if (!xx)
                 break; /* we've run out of spots */
@@ -510,8 +510,8 @@ struct monst *mtmp;
                 m.has_defense = MUSE_TRAPDOOR;
                 break; /* no need to look at any other spots */
             }
-			else if (t->ttyp == TELEP_TRAP) 
-			{
+            else if (t->ttyp == TELEP_TRAP) 
+            {
                 trapx = xx;
                 trapy = yy;
                 m.has_defense = MUSE_TELEPORT_TRAP;
@@ -523,7 +523,7 @@ struct monst *mtmp;
         goto botm;
 
     if (is_mercenary(mtmp->data) && (obj = m_carrying(mtmp, BUGLE)) != 0)
-	{
+    {
         int xx, yy;
         struct monst *mon;
 
@@ -532,15 +532,15 @@ struct monst *mtmp;
          * remembers soldiers nearby...
          */
         for (xx = x - 3; xx <= x + 3; xx++) 
-		{
+        {
             for (yy = y - 3; yy <= y + 3; yy++)
-			{
+            {
                 if (!isok(xx, yy) || (xx == x && yy == y))
                     continue;
                 if ((mon = m_at(xx, yy)) != 0 && is_mercenary(mon->data)
                     && mon->data != &mons[PM_GUARD]
                     && !mon_can_move(mon))
-				{
+                {
                     m.defensive = obj;
                     m.has_defense = MUSE_BUGLE;
                     goto toot; /* double break */
@@ -565,7 +565,7 @@ struct monst *mtmp;
     /* selection could be improved by collecting all possibilities
        into an array and then picking one at random */
     for (obj = mtmp->minvent; obj; obj = obj->nobj) 
-	{
+    {
         /* don't always use the same selection pattern */
         if (m.has_defense && !rn2(3))
             break;
@@ -584,14 +584,14 @@ struct monst *mtmp;
             && !(is_ice(x, y) || is_pool(x, y) || is_lava(x, y) || IS_AIR(levl[x][y].typ))
             && !(mtmp->data == &mons[PM_VLAD_THE_IMPALER]
                  && In_V_tower(&u.uz)))
-		{
+        {
             m.defensive = obj;
             m.has_defense = MUSE_WAN_DIGGING;
         }
         nomore(MUSE_WAN_TELEPORTATION_SELF);
         nomore(MUSE_WAN_TELEPORTATION);
         if (obj->otyp == WAN_TELEPORTATION && obj->charges > 0 && !level.flags.noteleport)
-		{
+        {
             /* use the TELEP_TRAP bit to determine if they know
              * about noteleport on this level or not.  Avoids
              * ineffective re-use of teleportation.  This does
@@ -600,7 +600,7 @@ struct monst *mtmp;
              */
             if (!level.flags.noteleport
                 || !(mtmp->mtrapseen & (1 << (TELEP_TRAP - 1)))) 
-			{
+            {
                 m.defensive = obj;
                 m.has_defense = (mon_has_amulet(mtmp))
                                     ? MUSE_WAN_TELEPORTATION
@@ -612,67 +612,67 @@ struct monst *mtmp;
             && haseyes(mtmp->data) && !level.flags.noteleport
             && (!obj->cursed || (!(mtmp->isshk && inhishop(mtmp))
                                  && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc)))
-		{
+        {
             /* see WAN_TELEPORTATION case above */
             if (!level.flags.noteleport
                 || !(mtmp->mtrapseen & (1 << (TELEP_TRAP - 1)))) 
-			{
+            {
                 m.defensive = obj;
                 m.has_defense = MUSE_SCR_TELEPORTATION;
             }
         }
 
         if (mtmp->data != &mons[PM_PESTILENCE])
-		{
+        {
             nomore(MUSE_POT_FULL_HEALING);
             if (obj->otyp == POT_FULL_HEALING) 
-			{
+            {
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_FULL_HEALING;
             }
-			nomore(MUSE_POT_GREATER_HEALING);
-			if (obj->otyp == POT_GREATER_HEALING) 
-			{
-				m.defensive = obj;
-				m.has_defense = MUSE_POT_GREATER_HEALING;
-			}
-			nomore(MUSE_POT_EXTRA_HEALING);
+            nomore(MUSE_POT_GREATER_HEALING);
+            if (obj->otyp == POT_GREATER_HEALING) 
+            {
+                m.defensive = obj;
+                m.has_defense = MUSE_POT_GREATER_HEALING;
+            }
+            nomore(MUSE_POT_EXTRA_HEALING);
             if (obj->otyp == POT_EXTRA_HEALING) 
-			{
+            {
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_EXTRA_HEALING;
             }
             nomore(MUSE_WAN_CREATE_MONSTER);
             if (obj->otyp == WAN_CREATE_MONSTER && obj->charges > 0)
-			{
+            {
                 m.defensive = obj;
                 m.has_defense = MUSE_WAN_CREATE_MONSTER;
             }
             nomore(MUSE_POT_HEALING);
             if (obj->otyp == POT_HEALING) 
-			{
+            {
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_HEALING;
             }
         }
-		else
-		{ /* Pestilence */
+        else
+        { /* Pestilence */
             nomore(MUSE_POT_FULL_HEALING);
             if (obj->otyp == POT_SICKNESS) 
-			{
+            {
                 m.defensive = obj;
                 m.has_defense = MUSE_POT_FULL_HEALING;
             }
             nomore(MUSE_WAN_CREATE_MONSTER);
             if (obj->otyp == WAN_CREATE_MONSTER && obj->charges > 0)
-			{
+            {
                 m.defensive = obj;
                 m.has_defense = MUSE_WAN_CREATE_MONSTER;
             }
         }
         nomore(MUSE_SCR_CREATE_MONSTER);
         if (obj->otyp == SCR_CREATE_MONSTER)
-		{
+        {
             m.defensive = obj;
             m.has_defense = MUSE_SCR_CREATE_MONSTER;
         }
@@ -690,8 +690,8 @@ int
 use_defensive(mtmp)
 struct monst *mtmp;
 {
-	if (!mtmp)
-		return 0;
+    if (!mtmp)
+        return 0;
 
     int i, fleetim, how = 0;
     struct obj *otmp = m.defensive;
@@ -724,9 +724,9 @@ struct monst *mtmp;
         if (is_blinded(mtmp)) {
             mcureblindness(mtmp, vismon);
         } else if (is_confused(mtmp) || is_stunned(mtmp)) {
-			mtmp->mprops[CONFUSION] = 0;
-			mtmp->mprops[STUNNED] = 0;
-			if (vismon)
+            mtmp->mprops[CONFUSION] = 0;
+            mtmp->mprops[STUNNED] = 0;
+            if (vismon)
                 pline("%s seems steadier now.", Monnam(mtmp));
         } else
             impossible("No need for unicorn horn?");
@@ -743,8 +743,8 @@ struct monst *mtmp;
         if ((mtmp->isshk && inhishop(mtmp)) || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc)
             return 2;
         m_flee(mtmp);
-		if (!otmp)
-			return 2;
+        if (!otmp)
+            return 2;
         mzapmsg(mtmp, otmp, TRUE);
         otmp->charges--;
         how = WAN_TELEPORTATION;
@@ -769,8 +769,8 @@ struct monst *mtmp;
         return 2;
     case MUSE_WAN_TELEPORTATION:
         zap_oseen = oseen;
-		if (!otmp)
-			return 2;
+        if (!otmp)
+            return 2;
         mzapmsg(mtmp, otmp, FALSE);
         otmp->charges--;
         m_using = TRUE;
@@ -781,8 +781,8 @@ struct monst *mtmp;
         m_using = FALSE;
         return 2;
     case MUSE_SCR_TELEPORTATION: {
-		if (!otmp)
-			return 2;
+        if (!otmp)
+            return 2;
 
         int obj_is_cursed = otmp->cursed;
 
@@ -821,8 +821,8 @@ struct monst *mtmp;
     case MUSE_WAN_DIGGING: {
         struct trap *ttmp;
         m_flee(mtmp);
-		if (!otmp)
-			return 2;
+        if (!otmp)
+            return 2;
         mzapmsg(mtmp, otmp, FALSE);
         otmp->charges--;
         if (oseen)
@@ -860,9 +860,9 @@ struct monst *mtmp;
         return 2;
     }
     case MUSE_WAN_CREATE_MONSTER: {
-		if (!otmp)
-			return 2;
-		coord cc;
+        if (!otmp)
+            return 2;
+        coord cc;
         /* pm: 0 => random, eel => aquatic, croc => amphibious */
         struct permonst *pm =
             !is_pool(mtmp->mx, mtmp->my)
@@ -880,9 +880,9 @@ struct monst *mtmp;
         return 2;
     }
     case MUSE_SCR_CREATE_MONSTER: {
-		if (!otmp)
-			return 2;
-		coord cc;
+        if (!otmp)
+            return 2;
+        coord cc;
         struct permonst *pm = 0, *fish = 0;
         int cnt = 1;
         struct monst *mon;
@@ -1066,14 +1066,14 @@ struct monst *mtmp;
 
         goto mon_tele;
     case MUSE_POT_HEALING:
-		if (!otmp)
-			return 2;
-		mquaffmsg(mtmp, otmp);
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
         i = d(6 + 2 * bcsign(otmp), 4);
         mtmp->mhp += i;
-		if (mtmp->mhp > mtmp->mhpmax)
-			mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 1 : 0));
-		if (!otmp->cursed && is_blinded(mtmp))
+        if (mtmp->mhp > mtmp->mhpmax)
+            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 1 : 0));
+        if (!otmp->cursed && is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
         if (vismon)
             pline("%s looks better.", Monnam(mtmp));
@@ -1082,9 +1082,9 @@ struct monst *mtmp;
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_POT_EXTRA_HEALING:
-		if (!otmp)
-			return 2;
-		mquaffmsg(mtmp, otmp);
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
         i = d(6 + 2 * bcsign(otmp), 8);
         mtmp->mhp += i;
         if (mtmp->mhp > mtmp->mhpmax)
@@ -1097,26 +1097,26 @@ struct monst *mtmp;
             makeknown(POT_EXTRA_HEALING);
         m_useup(mtmp, otmp);
         return 2;
-	case MUSE_POT_GREATER_HEALING:
-		if (!otmp)
-			return 2;
-		mquaffmsg(mtmp, otmp);
-		i = d(10 + 2 * bcsign(otmp), 8) + 8;
-		mtmp->mhp += i;
-		if (mtmp->mhp > mtmp->mhpmax)
-			mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 3 : 0));
-		if (is_blinded(mtmp))
-			mcureblindness(mtmp, vismon);
-		if (vismon)
-			pline("%s looks much, much better.", Monnam(mtmp));
-		if (oseen)
-			makeknown(POT_GREATER_HEALING);
-		m_useup(mtmp, otmp);
-		return 2;
-	case MUSE_POT_FULL_HEALING:
-		if (!otmp)
-			return 2;
-		mquaffmsg(mtmp, otmp);
+    case MUSE_POT_GREATER_HEALING:
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
+        i = d(10 + 2 * bcsign(otmp), 8) + 8;
+        mtmp->mhp += i;
+        if (mtmp->mhp > mtmp->mhpmax)
+            mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 3 : 0));
+        if (is_blinded(mtmp))
+            mcureblindness(mtmp, vismon);
+        if (vismon)
+            pline("%s looks much, much better.", Monnam(mtmp));
+        if (oseen)
+            makeknown(POT_GREATER_HEALING);
+        m_useup(mtmp, otmp);
+        return 2;
+    case MUSE_POT_FULL_HEALING:
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
         if (otmp->otyp == POT_SICKNESS)
             unbless(otmp); /* Pestilence */
         mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 8 : 4));
@@ -1128,11 +1128,11 @@ struct monst *mtmp;
             makeknown(otmp->otyp);
         m_useup(mtmp, otmp);
         return 2;
-	case MUSE_DRAGON_FRUIT:
-	case MUSE_LIZARD_CORPSE:
-		if (!otmp)
-			return 2;
-		/* not actually called for its unstoning effect */
+    case MUSE_DRAGON_FRUIT:
+    case MUSE_LIZARD_CORPSE:
+        if (!otmp)
+            return 2;
+        /* not actually called for its unstoning effect */
         mon_consume_unstone(mtmp, otmp, FALSE, FALSE);
         return 2;
     case 0:
@@ -1225,28 +1225,28 @@ find_offensive(mtmp)
 struct monst *mtmp;
 {
     register struct obj *obj;
-	boolean extremely_high_level_skip = (mtmp->data->difficulty > 60);
-	boolean very_high_level_skip = (mtmp->data->difficulty > 30 && mtmp->data->difficulty <= 60);
-	boolean high_level_skip = (mtmp->data->difficulty > 20 && mtmp->data->difficulty <= 30);
-	boolean medium_level_skip = (mtmp->data->difficulty > 15 && mtmp->data->difficulty <= 20);
-	boolean low_level_skip = (mtmp->data->difficulty > 10 && mtmp->data->difficulty <= 15);
-	boolean very_low_level_skip = (mtmp->data->difficulty > 5 && mtmp->data->difficulty <= 10);
-	boolean reflection_skip = (Reflecting && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
-	boolean antimagic_skip = (Antimagic && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
-	boolean magic_missile_resistant_skip = (Magic_missile_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
-	boolean sleep_resistant_skip = (Sleep_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
-	boolean death_resistant_skip = (Death_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
-	boolean disintegration_resistant_skip = (Disint_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
-	boolean petrification_resistant_skip = Stoned || (Stone_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
-	boolean fire_resistant_skip = (Fire_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
-	boolean cold_resistant_skip = (Cold_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
-	boolean shock_resistant_skip = (Shock_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+    boolean extremely_high_level_skip = (mtmp->data->difficulty > 60);
+    boolean very_high_level_skip = (mtmp->data->difficulty > 30 && mtmp->data->difficulty <= 60);
+    boolean high_level_skip = (mtmp->data->difficulty > 20 && mtmp->data->difficulty <= 30);
+    boolean medium_level_skip = (mtmp->data->difficulty > 15 && mtmp->data->difficulty <= 20);
+    boolean low_level_skip = (mtmp->data->difficulty > 10 && mtmp->data->difficulty <= 15);
+    boolean very_low_level_skip = (mtmp->data->difficulty > 5 && mtmp->data->difficulty <= 10);
+    boolean reflection_skip = (Reflecting && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
+    boolean antimagic_skip = (Antimagic && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
+    boolean magic_missile_resistant_skip = (Magic_missile_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
+    boolean sleep_resistant_skip = (Sleep_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+    boolean death_resistant_skip = (Death_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+    boolean disintegration_resistant_skip = (Disint_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+    boolean petrification_resistant_skip = Stoned || (Stone_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+    boolean fire_resistant_skip = (Fire_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+    boolean cold_resistant_skip = (Cold_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+    boolean shock_resistant_skip = (Shock_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 
-	boolean level_skip_weak_wand = (very_low_level_skip && rn2(2)) || (low_level_skip && rn2(4)) || (medium_level_skip && rn2(8)) || high_level_skip || very_high_level_skip || extremely_high_level_skip;
-	boolean level_skip_normal_wand = (very_low_level_skip && !rn2(3)) || (low_level_skip && rn2(2)) || (medium_level_skip && rn2(4)) || (high_level_skip && rn2(8)) || very_high_level_skip || extremely_high_level_skip;
-	boolean level_skip_powerful_wand = (very_low_level_skip && !rn2(9)) || (low_level_skip && !rn2(6)) || (medium_level_skip && !rn2(3)) || (high_level_skip && rn2(2)) || (very_high_level_skip && rn2(3)) || (extremely_high_level_skip && rn2(4));
+    boolean level_skip_weak_wand = (very_low_level_skip && rn2(2)) || (low_level_skip && rn2(4)) || (medium_level_skip && rn2(8)) || high_level_skip || very_high_level_skip || extremely_high_level_skip;
+    boolean level_skip_normal_wand = (very_low_level_skip && !rn2(3)) || (low_level_skip && rn2(2)) || (medium_level_skip && rn2(4)) || (high_level_skip && rn2(8)) || very_high_level_skip || extremely_high_level_skip;
+    boolean level_skip_powerful_wand = (very_low_level_skip && !rn2(9)) || (low_level_skip && !rn2(6)) || (medium_level_skip && !rn2(3)) || (high_level_skip && rn2(2)) || (very_high_level_skip && rn2(3)) || (extremely_high_level_skip && rn2(4));
 
-	struct obj *helmet = which_armor(mtmp, W_ARMH);
+    struct obj *helmet = which_armor(mtmp, W_ARMH);
 
     m.offensive = (struct obj *) 0;
     m.has_offense = 0;
@@ -1269,75 +1269,75 @@ struct monst *mtmp;
     /* this picks the last viable item rather than prioritizing choices */
     for (obj = mtmp->minvent; obj; obj = obj->nobj) {
         if (!reflection_skip) 
-		{
+        {
             nomore(MUSE_WAN_DEATH);
             if (obj->otyp == WAN_DEATH && obj->charges > 0 && !death_resistant_skip && !level_skip_powerful_wand
-				&& lined_up(mtmp, TRUE, AD_DRAY, TRUE, M_RAY_RANGE)) 
-			{
+                && lined_up(mtmp, TRUE, AD_DRAY, TRUE, M_RAY_RANGE)) 
+            {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_DEATH;
             }
-			nomore(MUSE_WAN_DISINTEGRATION);
-			if (obj->otyp == WAN_DISINTEGRATION && obj->charges > 0 && !disintegration_resistant_skip && ((!uarm && !uarms && !level_skip_powerful_wand) || ((uarm || uarms) && !level_skip_normal_wand))
-				&& lined_up(mtmp, TRUE, AD_DISN, TRUE, M_RAY_RANGE))
-			{
-				m.offensive = obj;
-				m.has_offense = MUSE_WAN_DISINTEGRATION;
-			}
-			nomore(MUSE_WAN_PETRIFICATION);
-			if (obj->otyp == WAN_PETRIFICATION && obj->charges > 0 && !petrification_resistant_skip && !level_skip_powerful_wand
-				&& lined_up(mtmp, TRUE, AD_STON, TRUE, M_RAY_RANGE))
-			{
-				m.offensive = obj;
-				m.has_offense = MUSE_WAN_PETRIFICATION;
-			}
-			nomore(MUSE_WAN_SLEEP);
+            nomore(MUSE_WAN_DISINTEGRATION);
+            if (obj->otyp == WAN_DISINTEGRATION && obj->charges > 0 && !disintegration_resistant_skip && ((!uarm && !uarms && !level_skip_powerful_wand) || ((uarm || uarms) && !level_skip_normal_wand))
+                && lined_up(mtmp, TRUE, AD_DISN, TRUE, M_RAY_RANGE))
+            {
+                m.offensive = obj;
+                m.has_offense = MUSE_WAN_DISINTEGRATION;
+            }
+            nomore(MUSE_WAN_PETRIFICATION);
+            if (obj->otyp == WAN_PETRIFICATION && obj->charges > 0 && !petrification_resistant_skip && !level_skip_powerful_wand
+                && lined_up(mtmp, TRUE, AD_STON, TRUE, M_RAY_RANGE))
+            {
+                m.offensive = obj;
+                m.has_offense = MUSE_WAN_PETRIFICATION;
+            }
+            nomore(MUSE_WAN_SLEEP);
             if (obj->otyp == WAN_SLEEP && obj->charges > 0 && multi >= 0 && !sleep_resistant_skip && !antimagic_skip && !level_skip_normal_wand &&
-				lined_up(mtmp, TRUE, AD_SLEE, TRUE, M_RAY_RANGE))
-			{
+                lined_up(mtmp, TRUE, AD_SLEE, TRUE, M_RAY_RANGE))
+            {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_SLEEP;
             }
             nomore(MUSE_WAN_FIRE);
             if (obj->otyp == WAN_FIRE && obj->charges > 0 && !fire_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_FIRE, TRUE, M_RAY_RANGE))
-			{
+            {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_FIRE;
             }
             nomore(MUSE_FIRE_HORN);
             if (obj->otyp == FIRE_HORN && obj->charges > 0 && can_blow(mtmp) && !fire_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_FIRE, TRUE, M_RAY_RANGE))
-			{
+            {
                 m.offensive = obj;
                 m.has_offense = MUSE_FIRE_HORN;
             }
             nomore(MUSE_WAN_COLD);
             if (obj->otyp == WAN_COLD && obj->charges > 0 && !cold_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_COLD, TRUE, M_RAY_RANGE))
-			{
+            {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_COLD;
             }
             nomore(MUSE_FROST_HORN);
             if (obj->otyp == FROST_HORN && obj->charges > 0 && can_blow(mtmp) && !cold_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_COLD, TRUE, M_RAY_RANGE))
-			{
+            {
                 m.offensive = obj;
                 m.has_offense = MUSE_FROST_HORN;
             }
             nomore(MUSE_WAN_LIGHTNING);
             if (obj->otyp == WAN_LIGHTNING && obj->charges > 0 && !shock_resistant_skip && !level_skip_normal_wand && lined_up(mtmp, TRUE, AD_ELEC, TRUE, M_RAY_RANGE))
-			{
+            {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_LIGHTNING;
             }
             nomore(MUSE_WAN_MAGIC_MISSILE);
             if (obj->otyp == WAN_MAGIC_MISSILE && obj->charges > 0 && !magic_missile_resistant_skip && !antimagic_skip && !level_skip_weak_wand && lined_up(mtmp, TRUE, AD_MAGM, TRUE, M_RAY_RANGE))
-			{
+            {
                 m.offensive = obj;
                 m.has_offense = MUSE_WAN_MAGIC_MISSILE;
             }
         }
         nomore(MUSE_WAN_STRIKING);
         if (obj->otyp == WAN_STRIKING && obj->charges > 0 && !magic_missile_resistant_skip && !level_skip_weak_wand && lined_up(mtmp, TRUE, AD_MAGM, FALSE, M_RAY_RANGE))
-		{
+        {
             m.offensive = obj;
             m.has_offense = MUSE_WAN_STRIKING;
         }
@@ -1359,51 +1359,51 @@ struct monst *mtmp;
             m.has_offense = MUSE_WAN_TELEPORTATION;
         }
 #endif
-		if (!level_skip_weak_wand && lined_up(mtmp, TRUE, AD_PHYS, FALSE, M_GENERIC_RANGED_ATTACK_RANGE))
-		{
-			nomore(MUSE_POT_PARALYSIS);
-			if (obj->otyp == POT_PARALYSIS && multi >= 0) {
-				m.offensive = obj;
-				m.has_offense = MUSE_POT_PARALYSIS;
-			}
-			nomore(MUSE_POT_BLINDNESS);
-			if (obj->otyp == POT_BLINDNESS && !attacktype(mtmp->data, AT_GAZE)) {
-				m.offensive = obj;
-				m.has_offense = MUSE_POT_BLINDNESS;
-			}
-			nomore(MUSE_POT_CONFUSION);
-			if (obj->otyp == POT_CONFUSION) {
-				m.offensive = obj;
-				m.has_offense = MUSE_POT_CONFUSION;
-			}
-			nomore(MUSE_POT_SLEEPING);
-			if (obj->otyp == POT_SLEEPING) {
-				m.offensive = obj;
-				m.has_offense = MUSE_POT_SLEEPING;
-			}
-			nomore(MUSE_POT_ACID);
-			if (obj->otyp == POT_ACID) {
-				m.offensive = obj;
-				m.has_offense = MUSE_POT_ACID;
-			}
-			/* we can safely put this scroll here since the locations that
-			 * are in a 1 square radius are a subset of the locations that
-			 * are in wand or throwing range (in other words, always lined_up())
-			 */
-			nomore(MUSE_SCR_EARTH);
-			if (obj->otyp == SCR_EARTH
-				&& ((helmet && is_metallic(helmet)) || is_confused(mtmp)
-					|| amorphous(mtmp->data) || passes_walls(mtmp->data)
-					|| is_incorporeal(mtmp->data) || unsolid(mtmp->data)
-					|| !rn2(10))
-				&& dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
-				&& !is_blinded(mtmp) && haseyes(mtmp->data)
-				&& !Is_rogue_level(&u.uz)
-				&& (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) {
-				m.offensive = obj;
-				m.has_offense = MUSE_SCR_EARTH;
-			}
-		}
+        if (!level_skip_weak_wand && lined_up(mtmp, TRUE, AD_PHYS, FALSE, M_GENERIC_RANGED_ATTACK_RANGE))
+        {
+            nomore(MUSE_POT_PARALYSIS);
+            if (obj->otyp == POT_PARALYSIS && multi >= 0) {
+                m.offensive = obj;
+                m.has_offense = MUSE_POT_PARALYSIS;
+            }
+            nomore(MUSE_POT_BLINDNESS);
+            if (obj->otyp == POT_BLINDNESS && !attacktype(mtmp->data, AT_GAZE)) {
+                m.offensive = obj;
+                m.has_offense = MUSE_POT_BLINDNESS;
+            }
+            nomore(MUSE_POT_CONFUSION);
+            if (obj->otyp == POT_CONFUSION) {
+                m.offensive = obj;
+                m.has_offense = MUSE_POT_CONFUSION;
+            }
+            nomore(MUSE_POT_SLEEPING);
+            if (obj->otyp == POT_SLEEPING) {
+                m.offensive = obj;
+                m.has_offense = MUSE_POT_SLEEPING;
+            }
+            nomore(MUSE_POT_ACID);
+            if (obj->otyp == POT_ACID) {
+                m.offensive = obj;
+                m.has_offense = MUSE_POT_ACID;
+            }
+            /* we can safely put this scroll here since the locations that
+             * are in a 1 square radius are a subset of the locations that
+             * are in wand or throwing range (in other words, always lined_up())
+             */
+            nomore(MUSE_SCR_EARTH);
+            if (obj->otyp == SCR_EARTH
+                && ((helmet && is_metallic(helmet)) || is_confused(mtmp)
+                    || amorphous(mtmp->data) || passes_walls(mtmp->data)
+                    || is_incorporeal(mtmp->data) || unsolid(mtmp->data)
+                    || !rn2(10))
+                && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
+                && !is_blinded(mtmp) && haseyes(mtmp->data)
+                && !Is_rogue_level(&u.uz)
+                && (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) {
+                m.offensive = obj;
+                m.has_offense = MUSE_SCR_EARTH;
+            }
+        }
 #if 0
         nomore(MUSE_SCR_FIRE);
         if (obj->otyp == SCR_FIRE && is_mon_immune_to_fire(mtmp)
@@ -1434,51 +1434,51 @@ register struct monst* origmonst;
     }
 
     if (mtmp != &youmonst)
-	{
+    {
         mtmp->msleeping = 0;
         if (mtmp->m_ap_type)
             seemimic(mtmp);
     }
 
     switch (otmp->otyp) 
-	{
+    {
     case WAN_STRIKING:
         reveal_invis = TRUE;
         if (mtmp == &youmonst)
-		{
+        {
             if (zap_oseen)
                 makeknown(WAN_STRIKING);
             if (Magic_missile_immunity || Invulnerable) 
-			{
+            {
                 u_shieldeff();
                 pline("Boing!");
             } 
-			else if (rnd(20) < 10 + u.uac)
-			{
+            else if (rnd(20) < 10 + u.uac)
+            {
                 pline_The("wand hits you!");
                 losehp(adjust_damage(d(2, 12), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE), "wand", KILLED_BY_AN);
             }
-			else
+            else
                 pline_The("wand misses you.");
 
             stop_occupation();
             nomul(0);
         } 
-		else if (is_mon_immune_to_magic_missile(mtmp) || has_invulnerable(mtmp))
-		{
+        else if (is_mon_immune_to_magic_missile(mtmp) || has_invulnerable(mtmp))
+        {
             m_shieldeff(mtmp);
             pline("Boing!");
         } 
-		else if (rnd(20) < 10 + find_mac(mtmp)) 
-		{
+        else if (rnd(20) < 10 + find_mac(mtmp)) 
+        {
             tmp = d(2, 12);
             hit("wand", mtmp, exclam(tmp), 0, ""); //Do not tell the damage here, since resist will
             (void) inflict_spell_damage(mtmp, otmp, origmonst, tmp, AD_MAGM, TELL);
             if (cansee(mtmp->mx, mtmp->my) && zap_oseen)
                 makeknown(WAN_STRIKING);
         } 
-		else 
-		{
+        else 
+        {
             miss("wand", mtmp);
             if (cansee(mtmp->mx, mtmp->my) && zap_oseen)
                 makeknown(WAN_STRIKING);
@@ -1507,14 +1507,14 @@ register struct monst* origmonst;
     case SPE_DISJUNCTION:
         (void) cancel_monst(mtmp, otmp, FALSE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
         break;
-	case SPE_LOWER_MAGIC_RESISTANCE:
-	case SPE_DIMINISH_MAGIC_RESISTANCE:
-	case SPE_ABOLISH_MAGIC_RESISTANCE:
-	case SPE_NEGATE_MAGIC_RESISTANCE:
-	case SPE_FORBID_SUMMONING:
-		(void)add_temporary_property(mtmp, otmp, FALSE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
-		break;
-	}
+    case SPE_LOWER_MAGIC_RESISTANCE:
+    case SPE_DIMINISH_MAGIC_RESISTANCE:
+    case SPE_ABOLISH_MAGIC_RESISTANCE:
+    case SPE_NEGATE_MAGIC_RESISTANCE:
+    case SPE_FORBID_SUMMONING:
+        (void)add_temporary_property(mtmp, otmp, FALSE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
+        break;
+    }
     if (reveal_invis) {
         if (!DEADMONSTER(mtmp) && cansee(bhitpos.x, bhitpos.y)
             && !canspotmon(mtmp))
@@ -1624,13 +1624,13 @@ int
 use_offensive(mtmp)
 struct monst *mtmp;
 {
-	if (!mtmp)
-		return 0;
+    if (!mtmp)
+        return 0;
 
     int i;
     struct obj *otmp = m.offensive;
     boolean oseen;
-	int raytype = 0;
+    int raytype = 0;
 
     /* offensive potions are not drunk, they're thrown */
     if (otmp->oclass != POTION_CLASS && (i = precheck(mtmp, otmp)) != 0)
@@ -1639,15 +1639,15 @@ struct monst *mtmp;
 
     switch (m.has_offense) {
     case MUSE_WAN_DEATH:
-	case MUSE_WAN_DISINTEGRATION:
-	case MUSE_WAN_PETRIFICATION:
-	case MUSE_WAN_SLEEP:
+    case MUSE_WAN_DISINTEGRATION:
+    case MUSE_WAN_PETRIFICATION:
+    case MUSE_WAN_SLEEP:
     case MUSE_WAN_FIRE:
     case MUSE_WAN_COLD:
     case MUSE_WAN_LIGHTNING:
     case MUSE_WAN_MAGIC_MISSILE:
-		if (!otmp)
-			return 2;
+        if (!otmp)
+            return 2;
 
         mzapmsg(mtmp, otmp, FALSE);
         otmp->charges--;
@@ -1655,7 +1655,7 @@ struct monst *mtmp;
             makeknown(otmp->otyp);
         m_using = TRUE;
 
-		raytype = -40 - objects[otmp->otyp].oc_dir_subtype; //-40...-48;
+        raytype = -40 - objects[otmp->otyp].oc_dir_subtype; //-40...-48;
 
         buzz(raytype, otmp, mtmp, 0, 0, 0, mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
@@ -1663,8 +1663,8 @@ struct monst *mtmp;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
     case MUSE_FIRE_HORN:
     case MUSE_FROST_HORN:
-		if (!otmp)
-			return 2;
+        if (!otmp)
+            return 2;
 
         if (oseen) {
             makeknown(otmp->otyp);
@@ -1681,8 +1681,8 @@ struct monst *mtmp;
     case MUSE_WAN_TELEPORTATION:
     case MUSE_WAN_STRIKING:
         zap_oseen = oseen;
-		if (!otmp)
-			return 2;
+        if (!otmp)
+            return 2;
         mzapmsg(mtmp, otmp, FALSE);
         otmp->charges--;
         m_using = TRUE;
@@ -1690,9 +1690,9 @@ struct monst *mtmp;
         m_using = FALSE;
         return 2;
     case MUSE_SCR_EARTH: {
-		if (!otmp)
-			return 2;
-		/* TODO: handle steeds */
+        if (!otmp)
+            return 2;
+        /* TODO: handle steeds */
         register int x, y;
         /* don't use monster fields after killing it */
         boolean confused = (is_confused(mtmp) ? TRUE : FALSE);
@@ -1789,9 +1789,9 @@ struct monst *mtmp;
     case MUSE_POT_CONFUSION:
     case MUSE_POT_SLEEPING:
     case MUSE_POT_ACID:
-		if (!otmp)
-			return 2;
-		/* Note: this setting of dknown doesn't suffice.  A monster
+        if (!otmp)
+            return 2;
+        /* Note: this setting of dknown doesn't suffice.  A monster
          * which is out of sight might throw and it hits something _in_
          * sight, a problem not existing with wands because wand rays
          * are not objects.  Also set dknown in mthrowu.c.
@@ -2039,8 +2039,8 @@ int
 use_misc(mtmp)
 struct monst *mtmp;
 {
-	if (!mtmp)
-		return 0;
+    if (!mtmp)
+        return 0;
 
     int i;
     struct obj *otmp = m.misc;
@@ -2055,9 +2055,9 @@ struct monst *mtmp;
 
     switch (m.has_misc) {
     case MUSE_POT_GAIN_LEVEL:
-		if (!otmp)
-			return 2;
-		mquaffmsg(mtmp, otmp);
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
         if (otmp->cursed) {
             if (Can_rise_up(mtmp->mx, mtmp->my, &u.uz)) {
                 register int tolev = depth(&u.uz) - 1;
@@ -2101,17 +2101,17 @@ struct monst *mtmp;
         return 2;
     case MUSE_WAN_MAKE_INVISIBLE:
     case MUSE_POT_INVISIBILITY:
-		if (!otmp)
-			return 2;
-		if (otmp->otyp == WAN_MAKE_INVISIBLE) {
+        if (!otmp)
+            return 2;
+        if (otmp->otyp == WAN_MAKE_INVISIBLE) {
             mzapmsg(mtmp, otmp, TRUE);
             otmp->charges--;
         } else
             mquaffmsg(mtmp, otmp);
         /* format monster's name before altering its visibility */
         Strcpy(nambuf, mon_nam(mtmp));
-		increase_mon_property(mtmp, INVISIBILITY, otmp->otyp == WAN_MAKE_INVISIBLE ? 100 + rn2(50): d(10, 10) + 400);
-		if (vismon && is_invisible(mtmp)) { /* was seen, now invisible */
+        increase_mon_property(mtmp, INVISIBILITY, otmp->otyp == WAN_MAKE_INVISIBLE ? 100 + rn2(50): d(10, 10) + 400);
+        if (vismon && is_invisible(mtmp)) { /* was seen, now invisible */
             if (canspotmon(mtmp)) {
                 pline("%s body takes on a %s transparency.",
                       upstart(s_suffix(nambuf)),
@@ -2131,18 +2131,18 @@ struct monst *mtmp;
         }
         return 2;
     case MUSE_WAN_SPEED_MONSTER:
-		if (!otmp)
-			return 2;
-		mzapmsg(mtmp, otmp, TRUE);
+        if (!otmp)
+            return 2;
+        mzapmsg(mtmp, otmp, TRUE);
         otmp->charges--;
         (void)increase_mon_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
-		return 2;
+        return 2;
     case MUSE_POT_SPEED:
-		if (!otmp)
-			return 2;
-		mquaffmsg(mtmp, otmp);
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
         (void)increase_mon_property_verbosely(mtmp, ULTRA_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
-		m_useup(mtmp, otmp);
+        m_useup(mtmp, otmp);
         return 2;
     case MUSE_POT_GREATER_SPEED:
         if (!otmp)
@@ -2159,9 +2159,9 @@ struct monst *mtmp;
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_WAN_POLYMORPH:
-		if (!otmp)
-			return 2;
-		mzapmsg(mtmp, otmp, TRUE);
+        if (!otmp)
+            return 2;
+        mzapmsg(mtmp, otmp, TRUE);
         otmp->charges--;
         if(newcham(mtmp, muse_newcham_mon(mtmp), TRUE, FALSE))
             play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
@@ -2170,9 +2170,9 @@ struct monst *mtmp;
             makeknown(WAN_POLYMORPH);
         return 2;
     case MUSE_POT_POLYMORPH:
-		if (!otmp)
-			return 2;
-		mquaffmsg(mtmp, otmp);
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
         if (vismon)
             pline("%s suddenly mutates!", Monnam(mtmp));
         if (newcham(mtmp, muse_newcham_mon(mtmp), FALSE, FALSE))
@@ -2362,7 +2362,7 @@ struct obj *obj;
         return !has_very_fast(mon);
 
     switch (obj->oclass) 
-	{
+    {
     case WAND_CLASS:
         if (obj->charges <= 0)
             return FALSE;
@@ -2395,14 +2395,14 @@ struct obj *obj;
             return TRUE;
         break;
     case RING_CLASS:
-		if ((mon->worn_item_flags & W_RING) == W_RING)
-			return FALSE;
-		if (!is_cursed_magic_item(obj))
-			return TRUE;
-		break;
-	case MISCELLANEOUS_CLASS:
-		break;
-	case TOOL_CLASS:
+        if ((mon->worn_item_flags & W_RING) == W_RING)
+            return FALSE;
+        if (!is_cursed_magic_item(obj))
+            return TRUE;
+        break;
+    case MISCELLANEOUS_CLASS:
+        break;
+    case TOOL_CLASS:
         if (typ == PICK_AXE)
             return (boolean) needspick(mon->data);
         if (typ == UNICORN_HORN)
@@ -2435,67 +2435,67 @@ mon_reflects(mon, str)
 struct monst *mon;
 const char *str;
 {
-	if (!mon)
-		return FALSE;
+    if (!mon)
+        return FALSE;
 
-	if (!is_reflecting(mon))
-		return FALSE;
+    if (!is_reflecting(mon))
+        return FALSE;
 
-	if (!(mon->mprops[REFLECTING] & M_EXTRINSIC))
-	{
-		if (str)
-			pline(str, s_suffix(mon_nam(mon)), mon->data->mlet == S_DRAGON ? "scales" : mon->data->mlet == S_TREANT ? "bark" : "body");
+    if (!(mon->mprops[REFLECTING] & M_EXTRINSIC))
+    {
+        if (str)
+            pline(str, s_suffix(mon_nam(mon)), mon->data->mlet == S_DRAGON ? "scales" : mon->data->mlet == S_TREANT ? "bark" : "body");
 
-		return TRUE;
-	}
+        return TRUE;
+    }
 
-	struct obj* orefl = what_gives_monster(mon, REFLECTING);
-	if(orefl)
-	{
-		if (is_shield(orefl)) 
-		{
-			if (str) 
-			{
-				pline(str, s_suffix(mon_nam(mon)), "shield");
-				makeknown(orefl->otyp);
-			}
-			return TRUE;
-		}
-		else if (is_weapon(orefl))
-		{
-			if (str)
-			{
-				pline(str, s_suffix(mon_nam(mon)), "weapon");
-				makeknown(orefl->otyp);
-			}
-			return TRUE;
-		} 
-		else if (is_amulet(orefl)) 
-		{
-			if (str) 
-			{
-				pline(str, s_suffix(mon_nam(mon)), "amulet");
-				makeknown(orefl->otyp);
-			}
-			return TRUE;
-		}
-		else if (is_suit(orefl)) 
-		{
-			if (str)
-			{
-				pline(str, s_suffix(mon_nam(mon)), "armor");
-				makeknown(orefl->otyp);
-			}
-			return TRUE;
-		}
-		else
-		{
-			if (str)
-				pline(str, s_suffix(mon_nam(mon)), "item");
+    struct obj* orefl = what_gives_monster(mon, REFLECTING);
+    if(orefl)
+    {
+        if (is_shield(orefl)) 
+        {
+            if (str) 
+            {
+                pline(str, s_suffix(mon_nam(mon)), "shield");
+                makeknown(orefl->otyp);
+            }
+            return TRUE;
+        }
+        else if (is_weapon(orefl))
+        {
+            if (str)
+            {
+                pline(str, s_suffix(mon_nam(mon)), "weapon");
+                makeknown(orefl->otyp);
+            }
+            return TRUE;
+        } 
+        else if (is_amulet(orefl)) 
+        {
+            if (str) 
+            {
+                pline(str, s_suffix(mon_nam(mon)), "amulet");
+                makeknown(orefl->otyp);
+            }
+            return TRUE;
+        }
+        else if (is_suit(orefl)) 
+        {
+            if (str)
+            {
+                pline(str, s_suffix(mon_nam(mon)), "armor");
+                makeknown(orefl->otyp);
+            }
+            return TRUE;
+        }
+        else
+        {
+            if (str)
+                pline(str, s_suffix(mon_nam(mon)), "item");
 
-			return TRUE;
-		}
-	}
+            return TRUE;
+        }
+    }
     return FALSE;
 }
 
@@ -2504,16 +2504,16 @@ what_gives_monster(mon, prop_index)
 struct monst* mon;
 int prop_index;
 {
-	if (!mon)
-		return (struct obj*)0;
+    if (!mon)
+        return (struct obj*)0;
 
-	for (struct obj* otmp = (mon == &youmonst ? invent : mon->minvent); otmp; otmp = otmp->nobj)
-	{
-		if(item_is_giving_monster_power(mon, otmp, prop_index))
-			return otmp;
-	}
+    for (struct obj* otmp = (mon == &youmonst ? invent : mon->minvent); otmp; otmp = otmp->nobj)
+    {
+        if(item_is_giving_monster_power(mon, otmp, prop_index))
+            return otmp;
+    }
 
-	return (struct obj*)0;
+    return (struct obj*)0;
 }
 
 boolean
@@ -2525,57 +2525,57 @@ const char *fmt, *str;
     {
         if (fmt && str)
         {
-			if (uarms)
-			{
-				if(is_shield(uarms))
-				{
-					if (u.twoweap)
-						pline(fmt, str, "left hand shield");
-					else
-						pline(fmt, str, "shield");
-					makeknown(uarms->otyp);
-				}
-				else if(is_weapon(uarms))
-				{
-					pline(fmt, str, "left hand weapon");
-				}
-				else
-				{
-					pline(fmt, str, "left hand item");
-				}
-			}
+            if (uarms)
+            {
+                if(is_shield(uarms))
+                {
+                    if (u.twoweap)
+                        pline(fmt, str, "left hand shield");
+                    else
+                        pline(fmt, str, "shield");
+                    makeknown(uarms->otyp);
+                }
+                else if(is_weapon(uarms))
+                {
+                    pline(fmt, str, "left hand weapon");
+                }
+                else
+                {
+                    pline(fmt, str, "left hand item");
+                }
+            }
         }
         return TRUE;
     }
     else if (EReflecting & W_WEP) 
     {
         /* Due to wielded artifact weapon */
-		if (fmt && str)
-		{
-			if (uwep)
-			{
-				if (is_shield(uwep))
-				{
-					pline(fmt, str, "right hand shield");
-					makeknown(uwep->otyp);
-				}
-				else if (is_weapon(uwep))
-				{
-					if(u.twoweap)
-						pline(fmt, str, "right hand weapon");
-					else
-						pline(fmt, str, "weapon");
-				}
-				else
-				{
-					if (u.twoweap)
-						pline(fmt, str, "right hand item");
-					else
-						pline(fmt, str, "wielded item");
-				}
-			}
+        if (fmt && str)
+        {
+            if (uwep)
+            {
+                if (is_shield(uwep))
+                {
+                    pline(fmt, str, "right hand shield");
+                    makeknown(uwep->otyp);
+                }
+                else if (is_weapon(uwep))
+                {
+                    if(u.twoweap)
+                        pline(fmt, str, "right hand weapon");
+                    else
+                        pline(fmt, str, "weapon");
+                }
+                else
+                {
+                    if (u.twoweap)
+                        pline(fmt, str, "right hand item");
+                    else
+                        pline(fmt, str, "wielded item");
+                }
+            }
 
-		}
+        }
         return TRUE;
     }
     else if (EReflecting & W_AMUL)
@@ -2588,29 +2588,29 @@ const char *fmt, *str;
         }
         return TRUE;
     }
-	else if (EReflecting & W_ARMC)
+    else if (EReflecting & W_ARMC)
     {
-		if (fmt && str)
-			pline(fmt, str, "cloak");
+        if (fmt && str)
+            pline(fmt, str, "cloak");
         if (uarmc)
             makeknown(uarmc->otyp);
         return TRUE;
-	}
-	else if (EReflecting & W_ARMO)
+    }
+    else if (EReflecting & W_ARMO)
     {
-		if (fmt && str)
-			pline(fmt, str, "robe");
+        if (fmt && str)
+            pline(fmt, str, "robe");
         if (uarmo)
             makeknown(uarmo->otyp);
         return TRUE;
-	}
-	else if (EReflecting & W_ARM) 
+    }
+    else if (EReflecting & W_ARM) 
     {
         if (fmt && str)
             pline(fmt, str, uskin ? "luster" : "armor");
         return TRUE;
-	}
-	else if (EReflecting & W_ARMB) 
+    }
+    else if (EReflecting & W_ARMB) 
     {
         if (fmt && str)
         {
@@ -2618,51 +2618,51 @@ const char *fmt, *str;
             if(uarmb)
                 makeknown(uarmb->otyp);
         }
-		return TRUE;
-	}
-	else if (is_reflecting(&youmonst))
+        return TRUE;
+    }
+    else if (is_reflecting(&youmonst))
     {  //youmonst.data == &mons[PM_SILVER_DRAGON]) {
         if (fmt && str)
             pline(fmt, str, "scales");
         return TRUE;
     }
-	else if (HReflecting & TIMEOUT)
+    else if (HReflecting & TIMEOUT)
     { //Spell
-		if (fmt && str)
-			pline(fmt, str, "protective spell");
-		return TRUE;
-	}
-	else if ((EReflecting & W_MISC) && umisc)
+        if (fmt && str)
+            pline(fmt, str, "protective spell");
+        return TRUE;
+    }
+    else if ((EReflecting & W_MISC) && umisc)
     {
-		if (fmt && str)
-			pline(fmt, str, xname(umisc));
-		return TRUE;
-	}
-	else if ((EReflecting & W_MISC2) && umisc2) 
+        if (fmt && str)
+            pline(fmt, str, xname(umisc));
+        return TRUE;
+    }
+    else if ((EReflecting & W_MISC2) && umisc2) 
     {
-		if (fmt && str)
-			pline(fmt, str, xname(umisc2));
-		return TRUE;
-	}
-	else if (EReflecting & W_MISC3 && umisc3) 
+        if (fmt && str)
+            pline(fmt, str, xname(umisc2));
+        return TRUE;
+    }
+    else if (EReflecting & W_MISC3 && umisc3) 
     {
-		if (fmt && str)
-			pline(fmt, str, xname(umisc3));
-		return TRUE;
-	}
-	else if (EReflecting & W_MISC4 && umisc4) 
+        if (fmt && str)
+            pline(fmt, str, xname(umisc3));
+        return TRUE;
+    }
+    else if (EReflecting & W_MISC4 && umisc4) 
     {
-		if (fmt && str)
-			pline(fmt, str, xname(umisc4));
-		return TRUE;
-	}
-	else if (EReflecting & W_MISC5 && umisc5) 
+        if (fmt && str)
+            pline(fmt, str, xname(umisc4));
+        return TRUE;
+    }
+    else if (EReflecting & W_MISC5 && umisc5) 
     {
-		if (fmt && str)
-			pline(fmt, str, xname(umisc5));
-		return TRUE;
-	}
-	else if (EReflecting & W_CARRIED)
+        if (fmt && str)
+            pline(fmt, str, xname(umisc5));
+        return TRUE;
+    }
+    else if (EReflecting & W_CARRIED)
     {
         struct obj* selobj = (struct obj*)0;
         for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
@@ -2673,11 +2673,11 @@ const char *fmt, *str;
                 break;
             }
         }
-		if (fmt && str)
-			pline(fmt, str, selobj ? xname(selobj) :"item-induced force field");
-		return TRUE;
-	}
-	else if (EReflecting & W_ARTIFACT_CARRIED)
+        if (fmt && str)
+            pline(fmt, str, selobj ? xname(selobj) :"item-induced force field");
+        return TRUE;
+    }
+    else if (EReflecting & W_ARTIFACT_CARRIED)
     {
         struct obj* selobj = (struct obj*)0;
         for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
@@ -2689,28 +2689,28 @@ const char *fmt, *str;
             }
         }
         if (fmt && str)
-		    pline(fmt, str, selobj ? xname(selobj) : "artifact");
-	    return TRUE;
-	}
-	else if (EReflecting & W_ARTIFACT_INVOKED)
+            pline(fmt, str, selobj ? xname(selobj) : "artifact");
+        return TRUE;
+    }
+    else if (EReflecting & W_ARTIFACT_INVOKED)
     {
-	    if (fmt && str)
-		    pline(fmt, str, "artifact-invoked force field");
-	    return TRUE;
-	}
-	else if (EReflecting) 
+        if (fmt && str)
+            pline(fmt, str, "artifact-invoked force field");
+        return TRUE;
+    }
+    else if (EReflecting) 
     {
-		if (fmt && str)
-			pline(fmt, str, "item");
-		return TRUE;
-	}
-	else if (HReflecting) 
+        if (fmt && str)
+            pline(fmt, str, "item");
+        return TRUE;
+    }
+    else if (HReflecting) 
     {
-		if (fmt && str)
-			pline(fmt, str, "body");
-		return TRUE;
-	}
-	return FALSE;
+        if (fmt && str)
+            pline(fmt, str, "body");
+        return TRUE;
+    }
+    return FALSE;
 }
 
 /* cure mon's blindness (use_defensive, dog_eat, meatobj) */
@@ -2720,7 +2720,7 @@ struct monst *mon;
 boolean verbos;
 {
     if (is_blinded(mon)) 
-	{
+    {
         mon->mprops[BLINDED] = 0;
         if (verbos && haseyes(mon->data))
             pline("%s can see again.", Monnam(mon));
@@ -2764,7 +2764,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
             acid = obj->otyp == POT_ACID
                    || (food && has_acidic_corpse(&mons[obj->corpsenm])),
             lizard = food && obj->corpsenm == PM_LIZARD;
-	boolean dragonfruit = (obj->otyp == DRAGON_FRUIT);
+    boolean dragonfruit = (obj->otyp == DRAGON_FRUIT);
     int nutrit = food || dragonfruit ? dog_nutrition(mon, obj) : 0; /* also sets meating */
 
     if (vis) {
@@ -2786,8 +2786,8 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
     /* obj is now gone */
 
     if (acid && !tinned && !is_mon_immune_to_acid(mon)) 
-	{
-		deduct_monster_hp(mon, adjust_damage(rnd(15), (struct monst*)0, mon, AD_ACID, ADFLAGS_NONE));
+    {
+        deduct_monster_hp(mon, adjust_damage(rnd(15), (struct monst*)0, mon, AD_ACID, ADFLAGS_NONE));
         if (vis)
             pline("%s has a very bad case of stomach acid.", Monnam(mon));
         if (DEADMONSTER(mon)) {
@@ -2810,9 +2810,9 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
             pline("%s seems limber!", Monnam(mon));
     }
     if (lizard && (is_confused(mon) || is_stunned(mon))) {
-		mon->mprops[CONFUSION]  = 0;
-		mon->mprops[STUNNED] = 0;
-		if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
+        mon->mprops[CONFUSION]  = 0;
+        mon->mprops[STUNNED] = 0;
+        if (vis && !is_bat(mon->data) && mon->data != &mons[PM_STALKER])
             pline("%s seems steadier now.", Monnam(mon));
     }
     if (mon->mtame && !mon->isminion && nutrit > 0) {
@@ -2821,12 +2821,12 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
         if (edog->hungrytime < monstermoves)
             edog->hungrytime = monstermoves;
         edog->hungrytime += nutrit;
-		mon->mprops[CONFUSION] &= ~M_INTRINSIC_ACQUIRED;
+        mon->mprops[CONFUSION] &= ~M_INTRINSIC_ACQUIRED;
     }
     /* use up monster's next move */
-	mon->mprops[STONED] &= ~M_TIMEOUT;
-	increase_mon_property(mon, STONE_RESISTANCE, 13);
-	mon->movement -= NORMAL_SPEED;
+    mon->mprops[STONED] &= ~M_TIMEOUT;
+    increase_mon_property(mon, STONE_RESISTANCE, 13);
+    mon->movement -= NORMAL_SPEED;
     mon->mlstmv = monstermoves;
 }
 
@@ -2839,9 +2839,9 @@ boolean tinok;
 {
     if (obj->otyp == POT_ACID)
         return TRUE;
-	if (obj->otyp == DRAGON_FRUIT)
-		return TRUE;
-	if (obj->otyp != CORPSE && (obj->otyp != TIN || !tinok))
+    if (obj->otyp == DRAGON_FRUIT)
+        return TRUE;
+    if (obj->otyp != CORPSE && (obj->otyp != TIN || !tinok))
         return FALSE;
     /* corpse, or tin that mon can open */
     return (boolean) (obj->corpsenm == PM_LIZARD
@@ -2964,14 +2964,14 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
 {               /* [by_you not honored if 'mon' triggers fire trap]. */
     struct obj *odummyp;
     uchar zhitm_out_flags = 0;
-	int otyp = obj->otyp;
-	double damage = 0;
+    int otyp = obj->otyp;
+    double damage = 0;
     boolean vis = canseemon(mon), res = TRUE;
 
-	if (!mon)
-		return FALSE;
-	
-	if (vis)
+    if (!mon)
+        return FALSE;
+    
+    if (vis)
         pline("%s starts turning %s.", Monnam(mon),
               green_mon(mon) ? "into ooze" : hcolor(NH_GREEN));
     /* -4 => sliming, causes quiet loss of enhanced speed */
@@ -3013,7 +3013,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         if (!rn2(3))
             mon->mspec_used = rn1(10, 5);
         /* -21 => monster's fire breath; 1 => # of damage dice */
-		damage = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, mon, 1, 8, 0, &odummyp, &zhitm_out_flags);
+        damage = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, mon, 1, 8, 0, &odummyp, &zhitm_out_flags);
     }
     else if (otyp == SCR_FIRE) 
     {
@@ -3082,9 +3082,9 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         if (otyp != STRANGE_OBJECT)
             makeknown(otyp);
     }
-	
-	mon->mprops[SLIMED] &= ~M_TIMEOUT;
-	/* use up monster's next move */
+    
+    mon->mprops[SLIMED] &= ~M_TIMEOUT;
+    /* use up monster's next move */
     mon->movement -= NORMAL_SPEED;
     mon->mlstmv = monstermoves;
     return res;
@@ -3132,8 +3132,8 @@ struct monst *mon;
     case PM_JUIBLEX:
     case PM_LEPRECHAUN:
     case PM_LICHEN:
-	case PM_TREANT:
-	case PM_LIZARD:
+    case PM_TREANT:
+    case PM_LIZARD:
     case PM_WOOD_NYMPH:
         return TRUE;
     default:

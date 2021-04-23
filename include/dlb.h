@@ -1,4 +1,4 @@
-/* GnollHack 4.0	dlb.h	$NHDT-Date: 1432512780 2015/05/25 00:13:00 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0    dlb.h    $NHDT-Date: 1432512780 2015/05/25 00:13:00 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1993. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -49,9 +49,9 @@ typedef struct dlb_handle {
     FILE *fp; /* pointer to an external file, use if non-null */
 #ifdef DLBLIB
     library *lib; /* pointer to library structure */
-	long start;   /* offset of start of file */
-	long size;    /* size of file */
-	long mark;    /* current file marker */
+    long start;   /* offset of start of file */
+    long size;    /* size of file */
+    long mark;    /* current file marker */
 #endif
 #ifdef DLBRSRC
     int fd; /* HandleFile file descriptor */

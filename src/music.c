@@ -1,4 +1,4 @@
-/* GnollHack 4.0	music.c	$NHDT-Date: 1544442713 2018/12/10 11:51:53 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.57 $ */
+/* GnollHack 4.0    music.c    $NHDT-Date: 1544442713 2018/12/10 11:51:53 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.57 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -77,7 +77,7 @@ int distance;
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
             else if (distm < distance / 3
                      && !check_ability_resistance_success(mtmp, A_WIS, 0)
-					 && !resists_fear(mtmp)
+                     && !resists_fear(mtmp)
                      /* some monsters are immune */
                      && onscary(0, 0, mtmp))
                 monflee(mtmp, 0, FALSE, TRUE);
@@ -219,20 +219,20 @@ int distance, saving_throw_adjustment;
     struct monst *mtmp, *mtmp2;
 
     if (u.uswallow)
-	{
+    {
         if (!check_ability_resistance_success(u.ustuck, A_WIS, saving_throw_adjustment))
             (void) tamedog(u.ustuck, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, TRUE, 200 + rnd(100), TRUE, FALSE);
     }
-	else
-	{
+    else
+    {
         for (mtmp = fmon; mtmp; mtmp = mtmp2) 
-		{
+        {
             mtmp2 = mtmp->nmon;
             if (DEADMONSTER(mtmp))
                 continue;
 
             if (distu(mtmp->mx, mtmp->my) <= distance) 
-			{
+            {
                 if (!check_ability_resistance_success(mtmp, A_WIS, saving_throw_adjustment))
                     (void) tamedog(mtmp, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, TRUE, 200 + rnd(100), TRUE, FALSE);
             }
@@ -373,16 +373,16 @@ int force;
                                 within a pit from jostling too */
                             mselftouch(mtmp, "Falling, ", TRUE);
                             if (!DEADMONSTER(mtmp)) 
-							{
-								deduct_monster_hp(mtmp, adjust_damage(rnd(m_already_trapped ? 4 : 6), (struct monst*)0, mtmp, AD_PHYS, ADFLAGS_NONE));
+                            {
+                                deduct_monster_hp(mtmp, adjust_damage(rnd(m_already_trapped ? 4 : 6), (struct monst*)0, mtmp, AD_PHYS, ADFLAGS_NONE));
                                 if (DEADMONSTER(mtmp)) 
-								{
+                                {
                                     if (!cansee(x, y)) 
-									{
+                                    {
                                         pline("It is destroyed!");
                                     }
-									else 
-									{
+                                    else 
+                                    {
                                         You("destroy %s!",
                                             mtmp->mtame
                                               ? x_monnam(mtmp, ARTICLE_THE,
@@ -494,7 +494,7 @@ struct obj *instr;
     if (!instr)
         return 0;
 
-	double damage = 0;
+    double damage = 0;
     int mode, do_spec = !(Stunned || Confusion);
     struct obj itmp;
     boolean mundane = FALSE;
@@ -638,16 +638,16 @@ struct obj *instr;
         break;
     }
     case BRASS_HORN: /* Just make noise and wake nearby monsters */
-		You("produce a loud, deep sound.");
-		wake_nearby();
-		break;
-	case TOOLED_HORN: /* Awaken or scare monsters */
-		consume_obj_charge(instr, TRUE);
-		You("produce a frightful, grave sound.");
-		awaken_monsters(u.ulevel * 30);
-		exercise(A_WIS, FALSE);
-		makeknown(instr->otyp);
-		break;
+        You("produce a loud, deep sound.");
+        wake_nearby();
+        break;
+    case TOOLED_HORN: /* Awaken or scare monsters */
+        consume_obj_charge(instr, TRUE);
+        You("produce a frightful, grave sound.");
+        awaken_monsters(u.ulevel * 30);
+        exercise(A_WIS, FALSE);
+        makeknown(instr->otyp);
+        break;
     case BUGLE: /* Awaken & attract soldiers */
         You("extract a loud noise from %s.", yname(instr));
         awaken_soldiers(&youmonst);
@@ -994,8 +994,8 @@ char *buf;
         case MAGIC_FLUTE:
             (void) write(fd, ">ol", 1); /* up one octave & lock */
             break;
-		case BRASS_HORN:
-		case TOOLED_HORN:
+        case BRASS_HORN:
+        case TOOLED_HORN:
         case FROST_HORN:
         case FIRE_HORN:
             (void) write(fd, "<<ol", 2); /* drop two octaves & lock */
@@ -1064,8 +1064,8 @@ char *buf;
     case MAGIC_FLUTE:
         playstring(">ol", 1); /* up one octave & lock */
         break;
-	case BRASS_HORN:
-	case TOOLED_HORN:
+    case BRASS_HORN:
+    case TOOLED_HORN:
     case FROST_HORN:
     case FIRE_HORN:
         playstring("<<ol", 2); /* drop two octaves & lock */

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	files.c	$NHDT-Date: 1546144856 2018/12/30 04:40:56 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.249 $ */
+/* GnollHack 4.0    files.c    $NHDT-Date: 1546144856 2018/12/30 04:40:56 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.249 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -651,11 +651,11 @@ int lev, oflag;
         if (lftrack.oflag == oflag) {
             fd = lftrack.fd;
             reslt = lseek(fd, 0L, SEEK_SET);
-			if (reslt == -1L)
-			{
-				panic("open_levelfile_exclusively: lseek failed %d", errno);
-				return 0;
-			}
+            if (reslt == -1L)
+            {
+                panic("open_levelfile_exclusively: lseek failed %d", errno);
+                return 0;
+            }
             lftrack.GnollHack_thinks_it_is_open = TRUE;
         } else {
             really_close();
@@ -1142,43 +1142,43 @@ const char *filename;
 int filter_running(entry)
 const struct dirent* entry;
 {
-	return *entry->d_name && entry->d_name[strlen(entry->d_name) - 1] == '0';
+    return *entry->d_name && entry->d_name[strlen(entry->d_name) - 1] == '0';
 }
 char*
 plname_from_running(filename)
 const char* filename;
 {
-	int fd;
-	char* result = 0;
-	int savelev, hpid, pltmpsiz;
-	struct version_info version_data;
-	char savename[SAVESIZE];
-	struct savefile_info sfi;
-	char tmpplbuf[PL_NSIZ];
+    int fd;
+    char* result = 0;
+    int savelev, hpid, pltmpsiz;
+    struct version_info version_data;
+    char savename[SAVESIZE];
+    struct savefile_info sfi;
+    char tmpplbuf[PL_NSIZ];
 
-	/* level 0 file contains:
-	 *  pid of creating process (ignored here)
-	 *  level number for current level of save file
-	 *  name of save file nethack would have created
-	 *  savefile info
-	 *  player name
-	 *  and game state
-	 */
-	if ((fd = open(filename, O_RDONLY | O_BINARY, 0)) >= 0) {
-		if (read(fd, (genericptr_t)&hpid, sizeof hpid) == sizeof hpid
-			&& read(fd, (genericptr_t)&savelev, sizeof(savelev)) == sizeof savelev
-			&& read(fd, (genericptr_t)savename, sizeof savename) == sizeof savename
-			&& read(fd, (genericptr_t)&version_data, sizeof version_data) == sizeof version_data
-			&& read(fd, (genericptr_t)&sfi, sizeof sfi) == sizeof sfi
-			&& read(fd, (genericptr_t)&pltmpsiz, sizeof pltmpsiz) == sizeof pltmpsiz
-			&& pltmpsiz > 0 && pltmpsiz <= PL_NSIZ
-			&& read(fd, (genericptr_t)&tmpplbuf, pltmpsiz) == pltmpsiz) {
-			result = dupstr(tmpplbuf);
-		}
-		close(fd);
-	}
+    /* level 0 file contains:
+     *  pid of creating process (ignored here)
+     *  level number for current level of save file
+     *  name of save file nethack would have created
+     *  savefile info
+     *  player name
+     *  and game state
+     */
+    if ((fd = open(filename, O_RDONLY | O_BINARY, 0)) >= 0) {
+        if (read(fd, (genericptr_t)&hpid, sizeof hpid) == sizeof hpid
+            && read(fd, (genericptr_t)&savelev, sizeof(savelev)) == sizeof savelev
+            && read(fd, (genericptr_t)savename, sizeof savename) == sizeof savename
+            && read(fd, (genericptr_t)&version_data, sizeof version_data) == sizeof version_data
+            && read(fd, (genericptr_t)&sfi, sizeof sfi) == sizeof sfi
+            && read(fd, (genericptr_t)&pltmpsiz, sizeof pltmpsiz) == sizeof pltmpsiz
+            && pltmpsiz > 0 && pltmpsiz <= PL_NSIZ
+            && read(fd, (genericptr_t)&tmpplbuf, pltmpsiz) == pltmpsiz) {
+            result = dupstr(tmpplbuf);
+        }
+        close(fd);
+    }
 
-	return result;
+    return result;
 }
 #endif
 #endif /* defined(SELECTSAVED) */
@@ -1264,41 +1264,41 @@ get_saved_games()
     }
 #endif
 #ifdef ANDROID
-	int myuid = getuid();
-	struct dirent** namelist;
-	struct dirent** namelist2;
-	int n1 = scandir("save", &namelist, 0, 0);
-	int n2 = scandir(".", &namelist2, filter_running, 0);
-	if (n1 < 0) n1 = 0;
-	if (n2 < 0) n2 = 0;
-	int i, uid;
-	char name[64]; /* more than PL_NSIZ */
-	if (n1 > 0 || n2 > 0) {
-		result = (char**)alloc((n1 + n2 + 1) * sizeof(char*)); /* at most */
-		(void)memset((genericptr_t)result, 0, (n1 + n2 + 1) * sizeof(char*));
-	}
-	for (i = 0; i < n1; i++) {
-		if (sscanf(namelist[i]->d_name, "%d%63s", &uid, name) == 2) {
-			if (uid == myuid) {
-				char filename[BUFSZ];
-				char* r;
-				Sprintf(filename, "save/%d%s", uid, name);
-				r = plname_from_file(filename);
-				if (r)
-					result[j++] = r;
-			}
-		}
-	}
-	for (i = 0; i < n2; i++) {
-		if (sscanf(namelist2[i]->d_name, "%d%63[^.].0", &uid, name) == 2) {
-			if (uid == myuid) {
-				char* r;
-				r = plname_from_running(namelist2[i]->d_name);
-				if (r)
-					result[j++] = r;
-			}
-		}
-	}
+    int myuid = getuid();
+    struct dirent** namelist;
+    struct dirent** namelist2;
+    int n1 = scandir("save", &namelist, 0, 0);
+    int n2 = scandir(".", &namelist2, filter_running, 0);
+    if (n1 < 0) n1 = 0;
+    if (n2 < 0) n2 = 0;
+    int i, uid;
+    char name[64]; /* more than PL_NSIZ */
+    if (n1 > 0 || n2 > 0) {
+        result = (char**)alloc((n1 + n2 + 1) * sizeof(char*)); /* at most */
+        (void)memset((genericptr_t)result, 0, (n1 + n2 + 1) * sizeof(char*));
+    }
+    for (i = 0; i < n1; i++) {
+        if (sscanf(namelist[i]->d_name, "%d%63s", &uid, name) == 2) {
+            if (uid == myuid) {
+                char filename[BUFSZ];
+                char* r;
+                Sprintf(filename, "save/%d%s", uid, name);
+                r = plname_from_file(filename);
+                if (r)
+                    result[j++] = r;
+            }
+        }
+    }
+    for (i = 0; i < n2; i++) {
+        if (sscanf(namelist2[i]->d_name, "%d%63[^.].0", &uid, name) == 2) {
+            if (uid == myuid) {
+                char* r;
+                r = plname_from_running(namelist2[i]->d_name);
+                if (r)
+                    result[j++] = r;
+            }
+        }
+    }
 #endif
 #ifdef VMS
     Strcpy(plname, "*");
@@ -1323,7 +1323,7 @@ free_saved_games(saved)
 char **saved;
 {
     if (saved) 
-	{
+    {
         int i = 0;
 
         while (saved[i])
@@ -2366,15 +2366,15 @@ char *origbuf;
     boolean retval = TRUE;
     int src = iflags.parse_config_file_src;
 
-	while (*origbuf == ' ' || *origbuf == '\t') /* skip leading whitespace */
-		++origbuf;                   /* (caller probably already did this) */
-	(void)strncpy(buf, origbuf, sizeof buf - 1);
-	buf[sizeof buf - 1] = '\0'; /* strncpy not guaranteed to NULL terminate */
+    while (*origbuf == ' ' || *origbuf == '\t') /* skip leading whitespace */
+        ++origbuf;                   /* (caller probably already did this) */
+    (void)strncpy(buf, origbuf, sizeof buf - 1);
+    buf[sizeof buf - 1] = '\0'; /* strncpy not guaranteed to NULL terminate */
 
     /* convert any tab to space, condense consecutive spaces into one,
        remove leading and trailing spaces (exception: if there is nothing
        but spaces, one of them will be kept even though it leads/trails) */
-	mungspaces(buf);
+    mungspaces(buf);
 
     /* find the '=' or ':' */
     bufp = find_optparam(buf);
@@ -3241,10 +3241,10 @@ char *buf;
 {
     struct obj *otmp;
 
-	if (strlen(buf) >= INBUF_SIZ)
-		buf[INBUF_SIZ - 1] = '\0';
+    if (strlen(buf) >= INBUF_SIZ)
+        buf[INBUF_SIZ - 1] = '\0';
 
-	otmp = readobjnam(buf, (struct obj*) 0, TRUE);
+    otmp = readobjnam(buf, (struct obj*) 0, TRUE);
 
     if (otmp) {
         if (otmp != &zeroobj)
@@ -3381,18 +3381,18 @@ boolean FDECL((*proc), (char *));
 */
 
                     //len = strlen(ep) + 1; /* +1: final '\0' */
-					//if (buf)
-					//	len += strlen(buf) + 1; /* +1: space */
+                    //if (buf)
+                    //    len += strlen(buf) + 1; /* +1: space */
                     char tmpbuf[INBUF_SIZ]; // = (char*)alloc(sizeof inbuf);
-					*tmpbuf = '\0';
-					if (strcmp(buf, ""))
+                    *tmpbuf = '\0';
+                    if (strcmp(buf, ""))
                     {
-						Strcat(strcpy(tmpbuf, buf), " ");
-					}
+                        Strcat(strcpy(tmpbuf, buf), " ");
+                    }
                     strcpy(buf, strcat(tmpbuf, ep));
                     //free(tmpbuf);
-					if (strlen(buf) >= sizeof inbuf)
-						buf[sizeof inbuf - 1] = '\0';
+                    if (strlen(buf) >= sizeof inbuf)
+                        buf[sizeof inbuf - 1] = '\0';
                 }
 
                 if (morelines || (ignoreline && !oldline))
@@ -3428,7 +3428,7 @@ boolean FDECL((*proc), (char *));
                     if (section)
                     {
                         strcpy(config_section_chosen, section); // = dupstr(section);
-					} 
+                    } 
                     else
                     {
                         config_error_add("No config section to choose");
@@ -3527,8 +3527,8 @@ int which_set;
     struct symparse *symp = (struct symparse *) 0;
     char *bufp, *commentp, *altp;
 
-	if (strlen(buf) >= INBUF_SIZ)
-		buf[INBUF_SIZ - 1] = '\0';
+    if (strlen(buf) >= INBUF_SIZ)
+        buf[INBUF_SIZ - 1] = '\0';
 
     /* convert each instance of whitespace (tabs, consecutive spaces)
        into a single space; leading and trailing spaces are stripped */
@@ -3908,8 +3908,8 @@ boolean
 recover_savefile()
 {
     int gfd, lfd, sfd;
-	int lev, savelev, hpid;
-	int pltmpsiz;
+    int lev, savelev, hpid;
+    int pltmpsiz;
     xchar levc;
     struct version_info version_data;
     int processed[256];
@@ -4087,11 +4087,11 @@ recover_savefile()
     }
 
 #ifdef ANDROID
-	/* if the new savefile isn't compressed
-	 * it will be overwritten when the old
-	 * savefile is restored in restore_saved_game()
-	 */
-	nh_compress(fqname(SAVEF, SAVEPREFIX, 0));
+    /* if the new savefile isn't compressed
+     * it will be overwritten when the old
+     * savefile is restored in restore_saved_game()
+     */
+    nh_compress(fqname(SAVEF, SAVEPREFIX, 0));
 #endif
 
     return TRUE;

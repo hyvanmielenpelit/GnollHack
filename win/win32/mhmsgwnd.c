@@ -1,5 +1,5 @@
-/* GnollHack 4.0	mhmsgwnd.c	$NHDT-Date: 1432512812 2015/05/25 00:13:32 $  $NHDT-Branch: master $:$NHDT-Revision: 1.32 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/* GnollHack 4.0    mhmsgwnd.c    $NHDT-Date: 1432512812 2015/05/25 00:13:32 $  $NHDT-Branch: master $:$NHDT-Revision: 1.32 $ */
+/* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "winMS.h"
@@ -104,11 +104,11 @@ mswin_init_message_window()
         GetNHApp()->hApp,     /* handle to application instance */
         NULL);                /* window-creation data */
 
-	if (!ret)
-	{
-		panic("Cannot create message window");
-		return (HWND)0;
-	}
+    if (!ret)
+    {
+        panic("Cannot create message window");
+        return (HWND)0;
+    }
     /* Set window caption */
     SetWindowText(ret, "Messages");
 
@@ -430,9 +430,9 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             }
     } break;
 
-	case MSNH_MSG_RANDOM_INPUT:
-		nhassert(0); // unexpected
-		break;
+    case MSNH_MSG_RANDOM_INPUT:
+        nhassert(0); // unexpected
+        break;
 
     } /* switch( wParam ) */
 }
@@ -661,7 +661,7 @@ onPaint(HWND hWnd)
             strcpy(tmptext, data->window_text[i].text);
             strip_newline(tmptext);
             NH_A2W(tmptext, wbuf, sizeof(wbuf));
-			wbuf[MAXWINDOWTEXT + 1] = '\0';
+            wbuf[MAXWINDOWTEXT + 1] = '\0';
             wlen = _tcslen(wbuf);
             setMsgTextColor(hdc, i < (MSG_LINES - data->lines_last_turn));
 #ifdef MSG_WRAP_TEXT
@@ -739,11 +739,11 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     /* set window data */
     data = (PNHMessageWindow) malloc(sizeof(NHMessageWindow));
-	if (!data)
-	{
-		panic("out of memory");
-		return;
-	}
+    if (!data)
+    {
+        panic("out of memory");
+        return;
+    }
     ZeroMemory(data, sizeof(NHMessageWindow));
     data->max_text = MAXWINDOWTEXT;
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) data);

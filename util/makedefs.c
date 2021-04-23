@@ -332,7 +332,7 @@ char *options;
         case 'O':
             do_objs();
             break;
-		case 'd':
+        case 'd':
         case 'D':
             do_data();
             break;
@@ -1041,8 +1041,8 @@ do_rumors()
 
     /* get ready to transfer the contents of temp file to output file */
     line = malloc(BUFSZ + MAXFNAMELEN);
-	if (!line)
-		return;
+    if (!line)
+        return;
 
     Sprintf(line, "rewind of \"%s\"", tempfile);
     if (rewind(tfp) != 0) {
@@ -1484,7 +1484,7 @@ char *githash, *gitbranch;
                 Strcpy(githash, strval);
                 havehash = TRUE;
             }
-	}
+    }
         free(line);
     }
     Fclose(gifp);
@@ -1761,7 +1761,7 @@ static struct win_info window_opts[] = {
     { "BeOS", "BeOS InterfaceKit" },
 #endif
 #ifdef ANDROID_GRAPHICS
-	{ "and", "Android" },
+    { "and", "Android" },
 #endif    
     { 0, 0 }
 };
@@ -2024,8 +2024,8 @@ do_data()
 
     /* update the first record of the output file; prepare error msg 1st */
     line = malloc(BUFSZ + MAXFNAMELEN);
-	if (!line)
-		return;
+    if (!line)
+        return;
 
     Sprintf(line, "rewind of \"%s\"", filename);
     ok = (rewind(ofp) == 0);
@@ -3028,7 +3028,7 @@ FILE *fd;
     static const int inc = 256;
     int len = inc;
     char *c = malloc(len), *ret;
-	char* c2;
+    char* c2;
 
     for (;;) {
         ret = fgets(c + len - inc, inc, fd);
@@ -3042,14 +3042,14 @@ FILE *fd;
         }
         len += inc;
         c2 = realloc(c, len);
-		if (!c2 && c)
-		{
-			free(c);
-			c = c2;
-			break;
-		}
-		else
-			c = c2;
+        if (!c2 && c)
+        {
+            free(c);
+            c = c2;
+            break;
+        }
+        else
+            c = c2;
     }
     return c;
 }

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	dokick.c	$NHDT-Date: 1551920353 2019/03/07 00:59:13 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.131 $ */
+/* GnollHack 4.0    dokick.c    $NHDT-Date: 1551920353 2019/03/07 00:59:13 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.131 $ */
 /* Copyright (c) Izchak Miller, Mike Stephenson, Steve Linhart, 1989. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -34,69 +34,69 @@ struct monst *mon;
 boolean clumsy;
 {
     int mdx, mdy;
-	int dmg = 0; // (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 15;
-	int specialdmg;
+    int dmg = 0; // (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 15;
+    int specialdmg;
     boolean trapkilled = FALSE;
-	boolean martial_arts_applies = martial_bonus() && (Magical_kicking || !(uarmf && is_metallic(uarmf)));
-	boolean jumpkicking = !!Jumping;
-	boolean effortlessly = FALSE;
+    boolean martial_arts_applies = martial_bonus() && (Magical_kicking || !(uarmf && is_metallic(uarmf)));
+    boolean jumpkicking = !!Jumping;
+    boolean effortlessly = FALSE;
 
-	if (!martial_arts_applies && martial_bonus())
-	{
-		if(!context.bootkickmsgdisplayed)
-		{
-			Your("boots are hindering the elegance of your kick.");
-			context.bootkickmsgdisplayed = TRUE;
-		}
-	}
-	else
-	{
-		if (context.bootkickmsgdisplayed)
-		{
-			effortlessly = TRUE;
-			context.bootkickmsgdisplayed = FALSE;
-		}
-	}
+    if (!martial_arts_applies && martial_bonus())
+    {
+        if(!context.bootkickmsgdisplayed)
+        {
+            Your("boots are hindering the elegance of your kick.");
+            context.bootkickmsgdisplayed = TRUE;
+        }
+    }
+    else
+    {
+        if (context.bootkickmsgdisplayed)
+        {
+            effortlessly = TRUE;
+            context.bootkickmsgdisplayed = FALSE;
+        }
+    }
 
-	int basedmg = 0;
-	int strdmg = 0;
-	int extratenths = Magical_kicking ? 2 : 0;
-	if (martial_arts_applies)
-	{
-		basedmg = rnd(8) + 3;
-		strdmg = ((10 + extratenths) * u_str_dmg_bonus()) / 10;
-		switch (P_SKILL_LEVEL(P_MARTIAL_ARTS))
-		{
-		case P_BASIC:
-			basedmg = d(2, 4) + 3;
-			break;
-		case P_SKILLED:
-			basedmg = d(2, 5) + 3;
-			break;
-		case P_EXPERT:
-			basedmg = d(2, 6) + 3;
-			break;
-		case P_MASTER:
-			basedmg = d(2, 7) + 3;
-			break;
-		case P_GRAND_MASTER:
-			basedmg = d(2, 8) + 3;
-			break;
-		default:
-			break;
-		}
-	}
-	else
-	{
-		basedmg = rnd(3);
-		strdmg = ((5 + extratenths) * u_str_dmg_bonus()) / 10;
-	}
-	dmg += basedmg + strdmg;
+    int basedmg = 0;
+    int strdmg = 0;
+    int extratenths = Magical_kicking ? 2 : 0;
+    if (martial_arts_applies)
+    {
+        basedmg = rnd(8) + 3;
+        strdmg = ((10 + extratenths) * u_str_dmg_bonus()) / 10;
+        switch (P_SKILL_LEVEL(P_MARTIAL_ARTS))
+        {
+        case P_BASIC:
+            basedmg = d(2, 4) + 3;
+            break;
+        case P_SKILLED:
+            basedmg = d(2, 5) + 3;
+            break;
+        case P_EXPERT:
+            basedmg = d(2, 6) + 3;
+            break;
+        case P_MASTER:
+            basedmg = d(2, 7) + 3;
+            break;
+        case P_GRAND_MASTER:
+            basedmg = d(2, 8) + 3;
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        basedmg = rnd(3);
+        strdmg = ((5 + extratenths) * u_str_dmg_bonus()) / 10;
+    }
+    dmg += basedmg + strdmg;
 
-	if (uarmf)
-		dmg += weapon_dmg_value(uarmf, mon, &youmonst, 0);
-	
-	dmg += weapon_skill_dmg_bonus(uarmf, P_MARTIAL_ARTS, FALSE);
+    if (uarmf)
+        dmg += weapon_dmg_value(uarmf, mon, &youmonst, 0);
+    
+    dmg += weapon_skill_dmg_bonus(uarmf, P_MARTIAL_ARTS, FALSE);
 
     /* excessive wt affects dex, so it affects dmg */
     if (clumsy)
@@ -110,9 +110,9 @@ boolean clumsy;
     if (is_shade(mon->data))
         dmg = 0;
 
-	long silverhit = 0;
+    long silverhit = 0;
     specialdmg = special_dmgval(&youmonst, mon, W_ARMF, &silverhit);
-	dmg += specialdmg;
+    dmg += specialdmg;
 
     if (is_shade(mon->data) && !specialdmg) {
         pline_The("%s.", kick_passes_thru);
@@ -121,98 +121,98 @@ boolean clumsy;
         return;
     }
 
-	dmg += u.ubasedaminc + u.udaminc; /* add ring(s) of increase damage */
+    dmg += u.ubasedaminc + u.udaminc; /* add ring(s) of increase damage */
 
 
-	boolean kicksuccessful = FALSE;
+    boolean kicksuccessful = FALSE;
 
-	if (!hugemonst(mon->data) && mon != u.ustuck && !mon->mtrapped)
-	{
-		if (Magical_kicking)
-		{
-			if (!rn2(2))
-				kicksuccessful = TRUE;
-		}
-		else if (martial_bonus())
-		{
-			int skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS);
-			if (!rn2(7 - skilllevel))
-				kicksuccessful = TRUE;
-		}
-	}
-
-
-	if (kicksuccessful)
-		dmg += basedmg / 2;
+    if (!hugemonst(mon->data) && mon != u.ustuck && !mon->mtrapped)
+    {
+        if (Magical_kicking)
+        {
+            if (!rn2(2))
+                kicksuccessful = TRUE;
+        }
+        else if (martial_bonus())
+        {
+            int skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS);
+            if (!rn2(7 - skilllevel))
+                kicksuccessful = TRUE;
+        }
+    }
 
 
-	char kickstylebuf[BUFSIZ] = "";
-	if (jumpkicking)
-		strcpy(kickstylebuf, !rn2(2) ? "jump-" : "fly-");
-	else if(martial_arts_applies)
-	{
-		switch (rn2(10))
-		{
-		case 0:
-			strcpy(kickstylebuf, "jump-");
-			break;
-		case 1:
-			strcpy(kickstylebuf, "fly-");
-			break;
-		case 2:
-			strcpy(kickstylebuf, "axe-");
-			break;
-		case 3:
-			strcpy(kickstylebuf, "hook-");
-			break;
-		case 4:
-			strcpy(kickstylebuf, "front-");
-			break;
-		case 5:
-			strcpy(kickstylebuf, "back-");
-			break;
-		case 6:
-			strcpy(kickstylebuf, "twist-");
-			break;
-		case 7:
-			strcpy(kickstylebuf, "spin-");
-			break;
-		case 8:
-			strcpy(kickstylebuf, "side-");
-			break;
-		case 9:
-			strcpy(kickstylebuf, "");
-			break;
-		default:
-			break;
-		}
-	}
+    if (kicksuccessful)
+        dmg += basedmg / 2;
 
-	char effbuf[BUFSIZ] = "";
-	if(effortlessly)
-		strcpy(effbuf, "effortlessly ");
 
-	if (dmg > 0)
-	{
-		You("%s%skick %s for %d damage.", effbuf, kickstylebuf, mon_nam(mon), dmg);
-	}
-	else
-	{
-		You("%s%skick %s for no damage.", effbuf, kickstylebuf, mon_nam(mon));
-	}
+    char kickstylebuf[BUFSIZ] = "";
+    if (jumpkicking)
+        strcpy(kickstylebuf, !rn2(2) ? "jump-" : "fly-");
+    else if(martial_arts_applies)
+    {
+        switch (rn2(10))
+        {
+        case 0:
+            strcpy(kickstylebuf, "jump-");
+            break;
+        case 1:
+            strcpy(kickstylebuf, "fly-");
+            break;
+        case 2:
+            strcpy(kickstylebuf, "axe-");
+            break;
+        case 3:
+            strcpy(kickstylebuf, "hook-");
+            break;
+        case 4:
+            strcpy(kickstylebuf, "front-");
+            break;
+        case 5:
+            strcpy(kickstylebuf, "back-");
+            break;
+        case 6:
+            strcpy(kickstylebuf, "twist-");
+            break;
+        case 7:
+            strcpy(kickstylebuf, "spin-");
+            break;
+        case 8:
+            strcpy(kickstylebuf, "side-");
+            break;
+        case 9:
+            strcpy(kickstylebuf, "");
+            break;
+        default:
+            break;
+        }
+    }
+
+    char effbuf[BUFSIZ] = "";
+    if(effortlessly)
+        strcpy(effbuf, "effortlessly ");
+
+    if (dmg > 0)
+    {
+        You("%s%skick %s for %d damage.", effbuf, kickstylebuf, mon_nam(mon), dmg);
+    }
+    else
+    {
+        You("%s%skick %s for no damage.", effbuf, kickstylebuf, mon_nam(mon));
+    }
     display_m_being_hit(mon, HIT_GENERAL, dmg, 0UL, TRUE);
 
-	if (silverhit)
-		pline("Your silver boots sear %s flesh!", s_suffix(mon_nam(mon)));
+    if (silverhit)
+        pline("Your silver boots sear %s flesh!", s_suffix(mon_nam(mon)));
 
-	if (M_AP_TYPE(mon))
+    if (M_AP_TYPE(mon))
         seemimic(mon);
 
     check_caitiff(mon);
 
     /* squeeze some guilt feelings... */
     if (mon->mtame)
-	{
+    {
         abuse_dog(mon);
         if (is_tame(mon))
             monflee(mon, (dmg ? rnd(dmg) : 1), FALSE, FALSE);
@@ -226,46 +226,46 @@ boolean clumsy;
 
     play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), BAREFOOTED_ATTACK_NUMBER, uarmf, damage, HMON_MELEE);
 
-	boolean hurtles = FALSE;
-	boolean reels = FALSE;
+    boolean hurtles = FALSE;
+    boolean reels = FALSE;
 
-	if (kicksuccessful && !DEADMONSTER(mon))
-	{
-		int skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS) + Jumping ? 1 : 0;
-		if (verysmall(mon->data) || mon->data->msize == MZ_SMALL)
-			hurtles = TRUE;
-		else if (!bigmonst(mon->data))
-		{
-			if ((skilllevel == P_BASIC && (rn2(2) || Magical_kicking)) || skilllevel >= P_SKILLED)
-				hurtles = TRUE;
-			else
-				reels = TRUE;
-		}
-		else if (!hugemonst(mon->data))
-		{
-			if (skilllevel >= P_MASTER)
-				hurtles = TRUE;
-			else if(skilllevel >= P_EXPERT && (rn2(2) || Magical_kicking))
-				hurtles = TRUE;
-			else if (skilllevel == P_SKILLED && Magical_kicking && rn2(2))
-				hurtles = TRUE;
-			else if (skilllevel >= P_SKILLED)
-				reels = TRUE;
-		}
-	}
+    if (kicksuccessful && !DEADMONSTER(mon))
+    {
+        int skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS) + Jumping ? 1 : 0;
+        if (verysmall(mon->data) || mon->data->msize == MZ_SMALL)
+            hurtles = TRUE;
+        else if (!bigmonst(mon->data))
+        {
+            if ((skilllevel == P_BASIC && (rn2(2) || Magical_kicking)) || skilllevel >= P_SKILLED)
+                hurtles = TRUE;
+            else
+                reels = TRUE;
+        }
+        else if (!hugemonst(mon->data))
+        {
+            if (skilllevel >= P_MASTER)
+                hurtles = TRUE;
+            else if(skilllevel >= P_EXPERT && (rn2(2) || Magical_kicking))
+                hurtles = TRUE;
+            else if (skilllevel == P_SKILLED && Magical_kicking && rn2(2))
+                hurtles = TRUE;
+            else if (skilllevel >= P_SKILLED)
+                reels = TRUE;
+        }
+    }
 
-	if(hurtles)
-	{
-		pline("%s hurtles backwards from the force of your kick!", Monnam(mon));
-		mhurtle(mon, u.dx, u.dy, 1);
-	}
-	else if (reels) 
-	{
+    if(hurtles)
+    {
+        pline("%s hurtles backwards from the force of your kick!", Monnam(mon));
+        mhurtle(mon, u.dx, u.dy, 1);
+    }
+    else if (reels) 
+    {
         /* see if the monster has a place to move into */
         mdx = mon->mx + u.dx;
         mdy = mon->my + u.dy;
         if (goodpos(mdx, mdy, mon, 0)) 
-		{
+        {
             pline("%s reels from the blow.", Monnam(mon));
             if (m_in_out_region(mon, mdx, mdy)) {
                 remove_monster(mon->mx, mon->my);
@@ -330,7 +330,7 @@ xchar x, y;
        hidden doesn't affect chance to hit so neither does this reveal) */
     if (mon->mundetected
         || (M_AP_TYPE(mon) && M_AP_TYPE(mon) != M_AP_MONSTER)) 
-	{
+    {
         if (M_AP_TYPE(mon))
             seemimic(mon);
         mon->mundetected = 0;
@@ -349,14 +349,14 @@ xchar x, y;
      * If you have >1 kick attack, you get all of them.
      */
     if (Upolyd && attacktype(youmonst.data, AT_KICK)) 
-	{
+    {
         struct attack *uattk;
         int sum, kickdieroll, armorpenalty, specialdmg,
             attknum = 0,
             tmp = find_roll_to_hit(mon, AT_KICK, uarmf, &attknum, &armorpenalty);
 
         for (int i = 0; i < NATTK; i++)
-		{
+        {
             /* first of two kicks might have provoked counterattack
                that has incapacitated the hero (ie, floating eye) */
             if (multi < 0)
@@ -402,101 +402,101 @@ xchar x, y;
         return;
     }
 
-	int multistrike = 1;
-	int multistrikernd = 0;
+    int multistrike = 1;
+    int multistrikernd = 0;
 
-	get_multishot_stats(&youmonst, (struct obj*)0, (struct obj*)0, FALSE, &multistrike, &multistrikernd);
+    get_multishot_stats(&youmonst, (struct obj*)0, (struct obj*)0, FALSE, &multistrike, &multistrikernd);
 
-	if (multistrikernd > 0)
-		multistrike += rn2(multistrikernd + 1);
+    if (multistrikernd > 0)
+        multistrike += rn2(multistrikernd + 1);
 
-	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
-	{
+    for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
+    {
         update_u_action(ACTION_TILE_KICK);
         play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
         u_wait_until_action();
 
         char strikebuf[BUFSIZ] = "";
-		Sprintf(strikebuf, "You attack");
+        Sprintf(strikebuf, "You attack");
 
-		if (strikeindex > 0)
-			pline("%s %s!", strikebuf, strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
+        if (strikeindex > 0)
+            pline("%s %s!", strikebuf, strikeindex == 1 ? "a second time" : strikeindex == 2 ? "a third time" : "once more");
 
 
-		int armorpenalty = 0, attknum = 0;
-		int tmp = find_roll_to_hit(mon, AT_KICK, uarmf, &attknum, &armorpenalty);
-		int weight_penalty = -calc_capacity(0);
-		int base_penalty = -2;
-		tmp += weight_penalty + base_penalty;
+        int armorpenalty = 0, attknum = 0;
+        int tmp = find_roll_to_hit(mon, AT_KICK, uarmf, &attknum, &armorpenalty);
+        int weight_penalty = -calc_capacity(0);
+        int base_penalty = -2;
+        tmp += weight_penalty + base_penalty;
 
-		if (Fumbling)
-			clumsy = TRUE;
-		else if (uarm && objects[uarm->otyp].oc_bulky && ACURR(A_DEX) < rnd(25))
-			clumsy = TRUE;
+        if (Fumbling)
+            clumsy = TRUE;
+        else if (uarm && objects[uarm->otyp].oc_bulky && ACURR(A_DEX) < rnd(25))
+            clumsy = TRUE;
 
-		if (clumsy)
-			tmp -= 4;
+        if (clumsy)
+            tmp -= 4;
 
-		int dieroll = rnd(20);
-		boolean mhit = !!(tmp > dieroll || u.uswallow);
+        int dieroll = rnd(20);
+        boolean mhit = !!(tmp > dieroll || u.uswallow);
 
-		if (mhit)
-		{
-			/* check if mon catches your kick */
-			if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
-				&& !is_blinded(mon) && !mon->mtrapped && !thick_skinned(mon->data)
-				&& mon->data->mlet != S_EEL && haseyes(mon->data)
-				&& !is_stunned(mon) && !is_confused(mon) && mon_can_move(mon)
-				&& mon->data->mmove >= 12)
-			{
-				if (!nohands(mon->data) && !rn2(martial() ? 5 : 3))
-				{
-					You("try to kick %s.", mon_nam(mon));
-					pline("However, %s blocks your %skick.", mon_nam(mon),
-						clumsy ? "clumsy " : "");
-					(void)passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
+        if (mhit)
+        {
+            /* check if mon catches your kick */
+            if (!rn2(clumsy ? 3 : 4) && (clumsy || !bigmonst(mon->data))
+                && !is_blinded(mon) && !mon->mtrapped && !thick_skinned(mon->data)
+                && mon->data->mlet != S_EEL && haseyes(mon->data)
+                && !is_stunned(mon) && !is_confused(mon) && mon_can_move(mon)
+                && mon->data->mmove >= 12)
+            {
+                if (!nohands(mon->data) && !rn2(martial() ? 5 : 3))
+                {
+                    You("try to kick %s.", mon_nam(mon));
+                    pline("However, %s blocks your %skick.", mon_nam(mon),
+                        clumsy ? "clumsy " : "");
+                    (void)passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
                     update_u_action_revert(ACTION_TILE_NO_ACTION);
                     return;
-				}
-				else
-				{
-					maybe_mnexto(mon);
-					if (mon->mx != x || mon->my != y)
-					{
-						You("kick %s.", mon_nam(mon));
-						(void)unmap_invisible(x, y);
-						pline("%s %s, %s evading your %skick.", Monnam(mon),
-							(!level.flags.noteleport && has_teleportation(mon))
-							? "teleports"
-							: is_levitating(mon)
-							? "floats"
-							: is_flying(mon) ? "swoops"
-							: (nolimbs(mon->data)
-								|| slithy(mon->data))
-							? "slides"
-							: "jumps",
-							clumsy ? "easily" : "nimbly", clumsy ? "clumsy " : "");
-						(void)passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
+                }
+                else
+                {
+                    maybe_mnexto(mon);
+                    if (mon->mx != x || mon->my != y)
+                    {
+                        You("kick %s.", mon_nam(mon));
+                        (void)unmap_invisible(x, y);
+                        pline("%s %s, %s evading your %skick.", Monnam(mon),
+                            (!level.flags.noteleport && has_teleportation(mon))
+                            ? "teleports"
+                            : is_levitating(mon)
+                            ? "floats"
+                            : is_flying(mon) ? "swoops"
+                            : (nolimbs(mon->data)
+                                || slithy(mon->data))
+                            ? "slides"
+                            : "jumps",
+                            clumsy ? "easily" : "nimbly", clumsy ? "clumsy " : "");
+                        (void)passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
                         update_u_action_revert(ACTION_TILE_NO_ACTION);
-						return;
-					}
-				}
-			}
+                        return;
+                    }
+                }
+            }
 
-			/* now, do the damage */
-			kickdmg(mon, clumsy);
-		}
-		else
-		{
-			Your("kick misses %s.", mon_nam(mon));
-		}
+            /* now, do the damage */
+            kickdmg(mon, clumsy);
+        }
+        else
+        {
+            Your("kick misses %s.", mon_nam(mon));
+        }
 
         update_u_action_revert(ACTION_TILE_NO_ACTION);
         
         if (!mon || DEADMONSTER(mon) || m_at(x, y) != mon)
-			break;
+            break;
 
-	}
+    }
 }
 
 /*
@@ -515,10 +515,10 @@ uchar* hitres_ptr;
         && !mtmp->isgd && !is_mercenary(mtmp->data)) {
         wakeup(mtmp, TRUE);
     } else if (!mon_can_move(mtmp))
-	{
+    {
         /* too light to do real damage */
         if (canseemon(mtmp))
-		{
+        {
             pline_The("%s harmlessly %s %s.", xname(gold),
                       otense(gold, "hit"), mon_nam(mtmp));
             msg_given = TRUE;
@@ -659,14 +659,14 @@ xchar x, y; /* coordinates where object was before the impact, not after */
             play_sfx_sound_at_location(SFX_MUFFLED_CRACKING, x, y);
         }
         if (result) {
-			You_hear("a muffled %s.", result);
-			
-			if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
+            You_hear("a muffled %s.", result);
+            
+            if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
                 change_luck(-2, TRUE);
-			else if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
-				change_luck(-1, TRUE);
-			/* eggs laid by you.  penalty is -1 per egg, max 5,
-			 * but it's always exactly 1 that breaks */
+            else if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
+                change_luck(-1, TRUE);
+            /* eggs laid by you.  penalty is -1 per egg, max 5,
+             * but it's always exactly 1 that breaks */
 
             if (costly) {
                 if (frominv && !otmp->unpaid)
@@ -728,8 +728,8 @@ boolean is_golf_swing;
     struct trap *trap;
     char bhitroom;
     boolean costly, isgold, slide = FALSE;
-	const char* verb = is_golf_swing ? "swing at" : "kick";
-	const char* noun = is_golf_swing ? "swing" : "kick";
+    const char* verb = is_golf_swing ? "swing at" : "kick";
+    const char* noun = is_golf_swing ? "swing" : "kick";
 
     /* kickedobj should always be set due to conditions of call */
     if (!kickedobj || kickedobj->otyp == BOULDER || kickedobj == uball
@@ -738,13 +738,13 @@ boolean is_golf_swing;
 
     if ((trap = t_at(x, y)) != 0) {
         if ((is_pit(trap->ttyp) && !Passes_walls) || trap->ttyp == WEB) 
-		{
+        {
             if (!trap->tseen)
                 find_trap(trap);
             You_cant("%s %s that's in a %s!", 
-				verb,
-				something,
-				Hallucination ? "tizzy" : (trap->ttyp == WEB) ? "web" : "pit");
+                verb,
+                something,
+                Hallucination ? "tizzy" : (trap->ttyp == WEB) ? "web" : "pit");
             return 1;
         }
         if (trap->ttyp == STATUE_TRAP) {
@@ -760,38 +760,38 @@ boolean is_golf_swing;
 
     if (!uarmf && kickedobj->otyp == CORPSE
         && touch_petrifies(&mons[kickedobj->corpsenm]) && !Stone_resistance) 
-	{
-		if (is_golf_swing)
-		{
-			pline("Thump!");
-			return 1;
-		}
-		else
-		{
-			You("kick %s with your bare %s.",
-				corpse_xname(kickedobj, (const char*)0, CXN_PFX_THE),
-				makeplural(body_part(FOOT)));
-			if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM)) {
-				; /* hero has been transformed but kick continues */
-			}
-			else {
-				/* normalize body shape here; foot, not body_part(FOOT) */
-				Sprintf(killer.name, "kicking %s barefoot",
-					killer_xname(kickedobj));
-				instapetrify(killer.name);
-			}
-		}
+    {
+        if (is_golf_swing)
+        {
+            pline("Thump!");
+            return 1;
+        }
+        else
+        {
+            You("kick %s with your bare %s.",
+                corpse_xname(kickedobj, (const char*)0, CXN_PFX_THE),
+                makeplural(body_part(FOOT)));
+            if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM)) {
+                ; /* hero has been transformed but kick continues */
+            }
+            else {
+                /* normalize body shape here; foot, not body_part(FOOT) */
+                Sprintf(killer.name, "kicking %s barefoot",
+                    killer_xname(kickedobj));
+                instapetrify(killer.name);
+            }
+        }
     }
 
     isgold = (kickedobj->oclass == COIN_CLASS);
 
-	int k_owt = (int) kickedobj->owt;
+    int k_owt = (int) kickedobj->owt;
 
     /* for non-gold stack, 1 item will be split off below (unless an
         early return occurs, so we aren't moving the split to here);
         calculate the range for that 1 rather than for the whole stack */
     if (kickedobj->quan > 1L && !isgold)
-	{
+    {
         long save_quan = kickedobj->quan;
 
         kickedobj->quan = 1L;
@@ -863,12 +863,12 @@ boolean is_golf_swing;
 
     /* a box gets a chance of breaking open here */
     if (Is_box(kickedobj)) 
-	{
-		if (is_golf_swing)
-		{
-			pline("Thump!");
-			return 1;
-		}
+    {
+        if (is_golf_swing)
+        {
+            pline("Thump!");
+            return 1;
+        }
 
         boolean otrp = kickedobj->otrapped;
 
@@ -1054,28 +1054,28 @@ const char *kickobjnam;
 void
 autokick()
 {
-	if (nolimbs(youmonst.data) || slithy(youmonst.data))
-		return;
-	if (verysmall(youmonst.data))
-		return;
-	if (u.usteed)
-		return;
-	if (Wounded_legs)
-		return;
-	if (near_capacity() > SLT_ENCUMBER)
-		return;
-	if (youmonst.data->mlet == S_LIZARD)
-		return;
-	if (u.utrap)
-		return;
+    if (nolimbs(youmonst.data) || slithy(youmonst.data))
+        return;
+    if (verysmall(youmonst.data))
+        return;
+    if (u.usteed)
+        return;
+    if (Wounded_legs)
+        return;
+    if (near_capacity() > SLT_ENCUMBER)
+        return;
+    if (youmonst.data->mlet == S_LIZARD)
+        return;
+    if (u.utrap)
+        return;
 
-	if (yn_query("Kick it open?") == 'y')
-		dokick_indir(TRUE);
+    if (yn_query("Kick it open?") == 'y')
+        dokick_indir(TRUE);
 }
 
 int
 dokick() {
-	return dokick_indir(FALSE);
+    return dokick_indir(FALSE);
 }
 
 int
@@ -1095,32 +1095,32 @@ dokick() {
 
     kickobjnam[0] = '\0';
     if (nolimbs(youmonst.data) || slithy(youmonst.data)) 
-	{
+    {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You("have no legs to kick with.");
         no_kick = TRUE;
     }
-	else if (verysmall(youmonst.data))
-	{
+    else if (verysmall(youmonst.data))
+    {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You("are too small to do any kicking.");
         no_kick = TRUE;
     } 
-	else if (u.usteed) 
-	{
+    else if (u.usteed) 
+    {
         if (yn_function("Kick your steed?", ynchars, 'y') == 'y')
-		{
+        {
             You("kick %s.", mon_nam(u.usteed));
             kick_steed();
             return 1;
         } 
-		else 
-		{
+        else 
+        {
             return 0;
         }
     } 
-	else if (Wounded_legs) 
-	{
+    else if (Wounded_legs) 
+    {
         /* note: jump() has similar code */
         long wl = (EWounded_legs & BOTH_SIDES);
         const char *bp = body_part(LEG);
@@ -1133,29 +1133,29 @@ dokick() {
              bp, (wl == BOTH_SIDES) ? "are" : "is");
         no_kick = TRUE;
     } 
-	else if (near_capacity() > SLT_ENCUMBER)
-	{
+    else if (near_capacity() > SLT_ENCUMBER)
+    {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         Your("load is too heavy to balance yourself for a kick.");
         no_kick = TRUE;
     }
-	else if (youmonst.data->mlet == S_LIZARD) 
-	{
+    else if (youmonst.data->mlet == S_LIZARD) 
+    {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         Your("legs cannot kick effectively.");
         no_kick = TRUE;
     } 
-	else if (u.uinwater && !rn2(2)) 
-	{
+    else if (u.uinwater && !rn2(2)) 
+    {
         //play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
         Your("slow motion kick doesn't hit anything.");
         no_kick = TRUE;
     }
-	else if (u.utrap)
-	{
+    else if (u.utrap)
+    {
         no_kick = TRUE;
         switch (u.utraptype)
-		{
+        {
         case TT_PIT:
             if (!Passes_walls)
             {
@@ -1176,7 +1176,7 @@ dokick() {
     }
 
     if (no_kick) 
-	{
+    {
         /* ignore direction typed before player notices kick failed */
         display_nhwindow(WIN_MESSAGE, TRUE); /* --More-- */
         return 0;
@@ -1184,10 +1184,10 @@ dokick() {
 
     if (
 #ifdef ANDROID
-		!has_dir &&
+        !has_dir &&
 #endif
-		!getdir((char *) 0)
-		)
+        !getdir((char *) 0)
+        )
         return 0;
     if (!u.dx && !u.dy)
         return 0;
@@ -1200,25 +1200,25 @@ dokick() {
     bhitpos.y = y;
 
     /* KMH -- Kicking boots always succeed */
-	/* JG  -- Martial artists always succeed */
-	if (Magical_kicking)
+    /* JG  -- Martial artists always succeed */
+    if (Magical_kicking)
         avrg_attrib = 99;
-	else if (martial_bonus())
-		avrg_attrib = 99;
-	else
+    else if (martial_bonus())
+        avrg_attrib = 99;
+    else
         avrg_attrib = (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3;
 
     if (u.uswallow) 
-	{
+    {
         switch (rn2(3)) 
-		{
+        {
         case 0:
             play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
             You_cant("move your %s!", body_part(LEG));
             break;
         case 1:
             if (is_animal(u.ustuck->data))
-			{
+            {
                 play_sfx_sound(SFX_BURP);
                 pline("%s burps loudly.", Monnam(u.ustuck));
                 break;
@@ -1235,8 +1235,8 @@ dokick() {
         update_u_action_revert(ACTION_TILE_NO_ACTION);
         return 1;
     } 
-	else if (u.utrap && u.utraptype == TT_PIT) 
-	{
+    else if (u.utrap && u.utraptype == TT_PIT) 
+    {
         /* must be Passes_walls */
         struct trap* t = t_at(u.ux, u.uy);
         update_u_action(ACTION_TILE_KICK);
@@ -1249,7 +1249,7 @@ dokick() {
         return 1;
     }
     if (Levitation) 
-	{
+    {
         int xx, yy;
 
         xx = u.ux - u.dx;
@@ -1261,7 +1261,7 @@ dokick() {
         if (isok(xx, yy) && !IS_ROCK(levl[xx][yy].typ)
             && !IS_DOOR(levl[xx][yy].typ)
             && (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) 
-		{
+        {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You("have nothing to brace yourself against.");
             return 0;
@@ -1274,7 +1274,7 @@ dokick() {
        hero passes out due to encumbrance with low hp; context.move
        will be 1 unless player declines to kick peaceful monster */
     if (mtmp)
-	{
+    {
         oldglyph = glyph_at(x, y);
         if (!maybe_kick_monster(mtmp, x, y))
         {
@@ -1286,7 +1286,7 @@ dokick() {
     u_wipe_engr(2);
 
     if (!isok(x, y)) 
-	{
+    {
         maploc = &nowhere;
         goto ouch;
     }
@@ -1306,7 +1306,7 @@ dokick() {
      */
 
     if (mtmp)
-	{
+    {
         /* save mtmp->data (for recoil) in case mtmp gets killed */
         struct permonst *mdat = mtmp->data;
 
@@ -1359,10 +1359,10 @@ dokick() {
 
     if (OBJ_AT(x, y) && (!Levitation || Is_airlevel(&u.uz)
                          || Is_waterlevel(&u.uz) || sobj_at(BOULDER, x, y))) 
-	{
+    {
         play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_OBJECT, obj_to_any(level.objects[x][y]), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
         if (kick_object(x, y, kickobjnam, FALSE))
-		{
+        {
             if (Is_airlevel(&u.uz))
                 hurtle(-u.dx, -u.dy, 1, TRUE); /* assume it's light */
 
@@ -1579,11 +1579,11 @@ dokick() {
                 && (treefruit = rnd_treefruit_at(x, y))) {
                 long nfruit = 8L - rnl(7), nfall;
                 short frtype = treefruit->otyp;
-				if (treefruit && (objects[treefruit->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT || objects[treefruit->otyp].oc_edible_effect == EDIBLEFX_APPLE))
-				{
-					treefruit->quan = nfruit;
-					treefruit->owt = weight(treefruit);
-				}
+                if (treefruit && (objects[treefruit->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT || objects[treefruit->otyp].oc_edible_effect == EDIBLEFX_APPLE))
+                {
+                    treefruit->quan = nfruit;
+                    treefruit->owt = weight(treefruit);
+                }
 
                 if (is_plural(treefruit))
                     pline("Some %s fall from the tree!", xname(treefruit));
@@ -1790,9 +1790,9 @@ dokick() {
             maploc->doormask &= ~D_MASK;
             maploc->doormask |= D_NODOOR;
 
-			struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
-			otmp->quan = 1;
-			otmp->owt = weight(otmp);
+            struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
+            otmp->quan = 1;
+            otmp->owt = weight(otmp);
 
         } 
         else
@@ -2124,15 +2124,15 @@ boolean shop_floor_obj;
         {
             play_sfx_sound_at_location(SFX_MUFFLED_CRASH, x, y);
             result = "crash";
-			You_hear("a muffled %s.", result);
-			if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
+            You_hear("a muffled %s.", result);
+            if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
                 change_luck(-2, TRUE);
         } else {
             /* penalty for breaking eggs laid by you */
             play_sfx_sound_at_location(SFX_MUFFLED_SPLAT, x, y);
             result = "splat";
-			You_hear("a muffled %s.", result);
-			if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
+            You_hear("a muffled %s.", result);
+            if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
                 change_luck((schar) -min(otmp->quan, 5L), TRUE);
         }
         obj_extract_self(otmp);

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	context.h	$NHDT-Date: 1455907260 2016/02/19 18:41:00 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.30 $ */
+/* GnollHack 4.0    context.h    $NHDT-Date: 1455907260 2016/02/19 18:41:00 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.30 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -53,7 +53,7 @@ struct book_info {
     struct obj *book; /* last/current book being xscribed */
     unsigned o_id;    /* o_id of book in save file */
     schar delay;      /* moves left for this spell */
-	uchar reading_result;
+    uchar reading_result;
 };
 
 #define READING_RESULT_SUCCESS 0
@@ -131,7 +131,7 @@ struct context_info
     boolean game_started;
     schar game_difficulty;
 
-	unsigned ident;         /* social security number for each monster */
+    unsigned ident;         /* social security number for each monster */
     unsigned no_of_wizards; /* 0, 1 or 2 (wizard and his shadow) */
     unsigned run;           /* 0: h (etc), 1: H (etc), 2: fh (etc) */
                             /* 3: FH, 4: ff+, 5: ff-, 6: FF+, 7: FF- */
@@ -148,40 +148,40 @@ struct context_info
     boolean forcefight;
     boolean nopick; /* do not pickup objects (as when running) */
     boolean made_amulet;
-	boolean made_deserted_shop;
-	boolean made_orc_and_a_pie;
-	boolean made_orc_and_a_pie2;
-	boolean made_witch_king;
-	boolean spellpray;	/* is praying initiated by the prayer spell */
-	int made_shop_count;
+    boolean made_deserted_shop;
+    boolean made_orc_and_a_pie;
+    boolean made_orc_and_a_pie2;
+    boolean made_witch_king;
+    boolean spellpray;    /* is praying initiated by the prayer spell */
+    int made_shop_count;
     int made_temple_count;
     int made_armory_box_count;
     char used_names[BUFSIZ * 32];
     boolean encounter_appeared[256];
-	int shop_identify_type;
+    int shop_identify_type;
     int npc_identify_type;
     boolean mon_moving; /* monsters' turn to move */
-	boolean mon_talking; /* a monster is talking this turn */
-	boolean hungry_message_displayed;
+    boolean mon_talking; /* a monster is talking this turn */
+    boolean hungry_message_displayed;
     boolean move;
     boolean mv;
     boolean bypasses;    /* bypass flag is set on at least one fobj */
     boolean botl;        /* partially redo status line */
     boolean botlx;       /* print an entirely new bottom line */
     boolean door_opened; /* set to true if door was opened during test_move */
-	boolean time_stopped; /* time has been stopped */
-	boolean multishot_target_killed;
-	boolean hide_melee_range_warning;
-	boolean suit_yielding_ac_bonus;
-	boolean suit_yielding_mc_bonus;
-	boolean robe_yielding_ac_bonus;
-	boolean robe_yielding_mc_bonus;
-	int oddideacnt;
+    boolean time_stopped; /* time has been stopped */
+    boolean multishot_target_killed;
+    boolean hide_melee_range_warning;
+    boolean suit_yielding_ac_bonus;
+    boolean suit_yielding_mc_bonus;
+    boolean robe_yielding_ac_bonus;
+    boolean robe_yielding_mc_bonus;
+    int oddideacnt;
     int mummyrot_advancement;
     int bhitcount;
-	boolean bootkickmsgdisplayed;
-	boolean glovehitmsgdisplayed;
-	struct dig_info digging;
+    boolean bootkickmsgdisplayed;
+    boolean glovehitmsgdisplayed;
+    struct dig_info digging;
     struct victual_info victual;
     struct tin_info tin;
     struct book_info spbook;

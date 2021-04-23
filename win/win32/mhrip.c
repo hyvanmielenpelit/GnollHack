@@ -1,5 +1,5 @@
-/* GnollHack 4.0	mhrip.c	$NHDT-Date: 1432512812 2015/05/25 00:13:32 $  $NHDT-Branch: master $:$NHDT-Revision: 1.19 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/* GnollHack 4.0    mhrip.c    $NHDT-Date: 1432512812 2015/05/25 00:13:32 $  $NHDT-Branch: master $:$NHDT-Revision: 1.19 $ */
+/* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "win10.h"
@@ -42,23 +42,23 @@ static void onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam);
 HWND
 mswin_init_RIP_window()
 {
-	HWND ret;
-	PNHRIPWindow data;
+    HWND ret;
+    PNHRIPWindow data;
 
-	ret = CreateDialog(GetNHApp()->hApp, MAKEINTRESOURCE(IDD_NHRIP),
-		GetNHApp()->hMainWnd, NHRIPWndProc);
-	if (!ret)
-	{
-		panic("Cannot create rip window");
-		return (HWND)0;
-	}
+    ret = CreateDialog(GetNHApp()->hApp, MAKEINTRESOURCE(IDD_NHRIP),
+        GetNHApp()->hMainWnd, NHRIPWndProc);
+    if (!ret)
+    {
+        panic("Cannot create rip window");
+        return (HWND)0;
+    }
 
-	data = (PNHRIPWindow)malloc(sizeof(NHRIPWindow));
-	if (!data)
-	{
-		panic("out of memory");
-		return (HWND)0;
-	}
+    data = (PNHRIPWindow)malloc(sizeof(NHRIPWindow));
+    if (!data)
+    {
+        panic("out of memory");
+        return (HWND)0;
+    }
     ZeroMemory(data, sizeof(NHRIPWindow));
     SetWindowLongPtr(ret, GWLP_USERDATA, (LONG_PTR) data);
     return ret;
@@ -268,8 +268,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             text_size = strlen(msg_data->text) + 4;
             data->window_text =
                 (TCHAR *) malloc(text_size * sizeof(data->window_text[0]));
-			if (!data->window_text)
-				return;
+            if (!data->window_text)
+                return;
 
             ZeroMemory(data->window_text,
                        text_size * sizeof(data->window_text[0]));
@@ -292,9 +292,9 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         break;
     }
 
-	case MSNH_MSG_RANDOM_INPUT:
-		nhassert(0); // unexpected
-		break;
+    case MSNH_MSG_RANDOM_INPUT:
+        nhassert(0); // unexpected
+        break;
 
     }
 }

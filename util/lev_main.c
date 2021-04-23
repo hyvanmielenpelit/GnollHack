@@ -1,4 +1,4 @@
-/* GnollHack 4.0	lev_main.c	$NHDT-Date: 1543371692 2018/11/28 02:21:32 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.56 $ */
+/* GnollHack 4.0    lev_main.c    $NHDT-Date: 1543371692 2018/11/28 02:21:32 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.56 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -187,10 +187,10 @@ static struct {
     { "swamp", SWAMP },
     { "vault", VAULT },
     { "beehive", BEEHIVE },
-	{ "dragon lair", DRAGONLAIR },
-	{ "library", LIBRARY },
-	{ "garden", GARDEN },
-	{ "morgue", MORGUE },
+    { "dragon lair", DRAGONLAIR },
+    { "library", LIBRARY },
+    { "garden", GARDEN },
+    { "morgue", MORGUE },
     { "barracks", BARRACKS },
     { "armory", ARMORY },
     { "zoo", ZOO },
@@ -212,7 +212,7 @@ static struct {
     { "wand shop", WANDSHOP },
     { "tool shop", TOOLSHOP },
     { "book shop", BOOKSHOP },
-	{ "reagent shop", REAGENTSHOP },
+    { "reagent shop", REAGENTSHOP },
     { "modron shop", MODRONSHOP },
     { "health food shop", FODDERSHOP },
     { "candle shop", CANDLESHOP },
@@ -262,7 +262,7 @@ char **argv;
         ":dat:endgame.des", ":dat:gehennom.des", ":dat:knox.des",    ":dat:main.des",
         ":dat:medusa.des",  ":dat:modron.des",  ":dat:mines.des",    ":dat:oracle.des",
         ":dat:sokoban.des", ":dat:tower.des",    ":dat:yendor.des",
-		":dat:modron.des",  ":dat:bovine.des"
+        ":dat:modron.des",  ":dat:bovine.des"
     };
 
     argc = SIZE(mac_argv);
@@ -273,7 +273,7 @@ char **argv;
      */
     monst_init();
     objects_init();
-	decl_init();
+    decl_init();
     /* this one does something... */
     init_obj_classes();
 
@@ -1388,7 +1388,7 @@ scan_map(map, sp)
 char *map;
 sp_lev *sp;
 {
-	size_t i, len;
+    size_t i, len;
     register char *s1, *s2;
     size_t max_len = 0;
     size_t max_hig = 0;
@@ -1433,7 +1433,7 @@ sp_lev *sp;
         for (i = 0; i < len; i++)
             if ((tmpmap[max_hig][i] = what_map_char(map[i]))
                 == INVALID_TYPE)
-			{
+            {
                 lc_warning(
                 "Invalid character '%ld' @ (%ld, %ld) - replacing with stone",
                            VA_PASS3((long) map[i], (long) max_hig, (long) i));
@@ -1508,11 +1508,11 @@ sp_lev *maze;
 
         Write(fd, &(tmpo.opcode), sizeof(tmpo.opcode));
 
-		if (tmpo.opcode < SPO_NULL || tmpo.opcode >= MAX_SP_OPCODES)
-		{
-			panic("write_maze: unknown opcode (%d).", tmpo.opcode);
-			return FALSE;
-		}
+        if (tmpo.opcode < SPO_NULL || tmpo.opcode >= MAX_SP_OPCODES)
+        {
+            panic("write_maze: unknown opcode (%d).", tmpo.opcode);
+            return FALSE;
+        }
 
         if (tmpo.opcode == SPO_PUSH) {
             genericptr_t opdat = tmpo.opdat;
@@ -1546,14 +1546,14 @@ sp_lev *maze;
                 default:
                     panic("write_maze: unknown data type (%d).",
                           ov->spovartyp);
-					return FALSE;
+                    return FALSE;
                 }
             }
-			else
-			{
-				panic("write_maze: PUSH with no data.");
-				return FALSE;
-			}
+            else
+            {
+                panic("write_maze: PUSH with no data.");
+                return FALSE;
+            }
         } else {
             /* sanity check */
             genericptr_t opdat = tmpo.opdat;
@@ -1581,8 +1581,8 @@ write_level_file(filename, lvl)
 char *filename;
 sp_lev *lvl;
 {
-	if (!lvl)
-		return FALSE;
+    if (!lvl)
+        return FALSE;
 
     int fout;
     char lbuf[60];
@@ -1602,11 +1602,11 @@ sp_lev *lvl;
     if (fout < 0)
         return FALSE;
 
-	if (!lvl)
-	{
-		panic("write_level_file");
-		return FALSE;
-	}
+    if (!lvl)
+    {
+        panic("write_level_file");
+        return FALSE;
+    }
 
     if (be_verbose)
         fprintf(stdout, "File: '%s', opcodes: %ld\n", lbuf, lvl->n_opcodes);

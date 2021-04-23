@@ -1,4 +1,4 @@
-/* GnollHack 4.0	restore.c	$NHDT-Date: 1555201698 2019/04/14 00:28:18 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.129 $ */
+/* GnollHack 4.0    restore.c    $NHDT-Date: 1555201698 2019/04/14 00:28:18 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.129 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -177,10 +177,10 @@ register int fd;
     sp_levchn = (s_level *) 0;
     mread(fd, (genericptr_t) &cnt, sizeof(int));
     for (; cnt > 0; cnt--) 
-	{
+    {
         tmplev = (s_level *) alloc(sizeof(s_level));
-		if (!tmplev)
-			return;
+        if (!tmplev)
+            return;
         mread(fd, (genericptr_t) tmplev, sizeof(s_level));
         if (!sp_levchn)
             sp_levchn = tmplev;
@@ -259,13 +259,13 @@ struct obj *otmp;
             new_oname(otmp, buflen);
             mread(fd, (genericptr_t) ONAME(otmp), buflen);
         }
-		/* uoname - object's user-specified name */
-		mread(fd, (genericptr_t)&buflen, sizeof(buflen));
-		if (buflen > 0) { /* includes terminating '\0' */
-			new_uoname(otmp, buflen);
-			mread(fd, (genericptr_t)UONAME(otmp), buflen);
-		}
-		/* omonst - corpse or statue might retain full monster details */
+        /* uoname - object's user-specified name */
+        mread(fd, (genericptr_t)&buflen, sizeof(buflen));
+        if (buflen > 0) { /* includes terminating '\0' */
+            new_uoname(otmp, buflen);
+            mread(fd, (genericptr_t)UONAME(otmp), buflen);
+        }
+        /* omonst - corpse or statue might retain full monster details */
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
         if (buflen > 0) {
             newomonst(otmp);
@@ -312,8 +312,8 @@ boolean ghostly, frozen;
             break;
 
         otmp = newobj();
-		if (!otmp)
-			return (struct obj*)0;
+        if (!otmp)
+            return (struct obj*)0;
 
         restobj(fd, otmp);
         if (!first)
@@ -337,7 +337,7 @@ boolean ghostly, frozen;
 
         /* get contents of a container or statue */
         if (Has_contents(otmp)) 
-		{
+        {
             struct obj *otmp3;
 
             otmp->cobj = restobjchn(fd, ghostly, Is_IceBox(otmp));
@@ -345,8 +345,8 @@ boolean ghostly, frozen;
             for (otmp3 = otmp->cobj; otmp3; otmp3 = otmp3->nobj)
                 otmp3->ocontainer = otmp;
         } 
-		else if (SchroedingersBox(otmp)) 
-		{
+        else if (SchroedingersBox(otmp)) 
+        {
             struct obj *catcorpse;
 
             /*
@@ -361,7 +361,7 @@ boolean ghostly, frozen;
              * will take the Has_contents() code path above.]
              */
             if ((catcorpse = mksobj(CORPSE, TRUE, FALSE, FALSE)) != 0) {
-				otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX;  //otmp->enchantment = 1; /* flag for special SchroedingersBox */
+                otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX;  //otmp->enchantment = 1; /* flag for special SchroedingersBox */
                 set_corpsenm(catcorpse, PM_HOUSECAT);
                 (void) stop_timer(ROT_CORPSE, obj_to_any(catcorpse));
                 add_to_container(otmp, catcorpse);
@@ -411,13 +411,13 @@ struct monst *mtmp;
             new_mname(mtmp, buflen);
             mread(fd, (genericptr_t) MNAME(mtmp), buflen);
         }
-		/* umname - monster's uname */
-		mread(fd, (genericptr_t)&buflen, sizeof(buflen));
-		if (buflen > 0) { /* includes terminating '\0' */
-			new_umname(mtmp, buflen);
-			mread(fd, (genericptr_t)UMNAME(mtmp), buflen);
-		}
-		/* egd - vault guard */
+        /* umname - monster's uname */
+        mread(fd, (genericptr_t)&buflen, sizeof(buflen));
+        if (buflen > 0) { /* includes terminating '\0' */
+            new_umname(mtmp, buflen);
+            mread(fd, (genericptr_t)UMNAME(mtmp), buflen);
+        }
+        /* egd - vault guard */
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
         if (buflen > 0) {
             newegd(mtmp);
@@ -480,8 +480,8 @@ boolean ghostly;
             break;
 
         mtmp = newmonst();
-		if (!mtmp)
-			return (struct monst*) 0;
+        if (!mtmp)
+            return (struct monst*) 0;
 
         restmon(fd, mtmp);
         if (!first)
@@ -499,7 +499,7 @@ boolean ghostly;
             int mndx = monsndx(mtmp->data);
             if (propagate(mndx, TRUE, ghostly) == 0) {
                 /* cookie to trigger purge in getbones() */
-				mtmp->mbasehpmax = DEFUNCT_MONSTER;
+                mtmp->mbasehpmax = DEFUNCT_MONSTER;
             }
         }
         if (mtmp->minvent) {
@@ -553,7 +553,7 @@ int fd;
 
     flist = 0;
     while (fnext = newfruit(), mread(fd, (genericptr_t) fnext, sizeof *fnext), fnext->fid != 0)
-	{
+    {
         fnext->nextf = flist;
         flist = fnext;
     }
@@ -568,7 +568,7 @@ register struct fruit *flist;
     register struct fruit *fnext;
 
     while (flist) 
-	{
+    {
         fnext = flist->nextf;
         dealloc_fruit(flist);
         flist = fnext;
@@ -612,7 +612,7 @@ unsigned int *stuckid, *steedid;
 #ifdef SYSFLAGS
     struct sysflag newgamesysflags;
 #endif
-	struct context_info *newgamecontext = (struct context_info*)malloc(sizeof(struct context_info));; /* all 0, but has some pointers */
+    struct context_info *newgamecontext = (struct context_info*)malloc(sizeof(struct context_info));; /* all 0, but has some pointers */
     struct obj *otmp, *tmp_bc;
     char timebuf[15];
     unsigned long uid;
@@ -711,10 +711,10 @@ unsigned int *stuckid, *steedid;
         sysflags = newgamesysflags;
 #endif
         context = *newgamecontext;
-		free(newgamecontext);
+        free(newgamecontext);
         return FALSE;
     }
-	free(newgamecontext);
+    free(newgamecontext);
 
     /* in case hangup save occurred in midst of level change */
     assign_level(&u.uz0, &u.uz);
@@ -761,10 +761,10 @@ unsigned int *stuckid, *steedid;
     uwep = 0;      /* clear it and have setuwep() reinit */
     setuwepquietly(otmp, W_WEP); /* (don't need any null check here) */
 
-	/*
-	if (!uwep || uwep->otyp == PICK_AXE || uwep->otyp == GRAPPLING_HOOK)
-		unweapon = TRUE;
-	*/
+    /*
+    if (!uwep || uwep->otyp == PICK_AXE || uwep->otyp == GRAPPLING_HOOK)
+        unweapon = TRUE;
+    */
 
     restore_dungeon(fd);
     restlevchn(fd);
@@ -809,22 +809,22 @@ unsigned int stuckid, steedid;
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
             if (mtmp->m_id == stuckid)
                 break;
-		if (!mtmp)
-		{
-			panic("Cannot find the monster ustuck.");
-			return;
-		}
+        if (!mtmp)
+        {
+            panic("Cannot find the monster ustuck.");
+            return;
+        }
         u.ustuck = mtmp;
     }
     if (steedid) {
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
             if (mtmp->m_id == steedid)
                 break;
-		if (!mtmp)
-		{
-			panic("Cannot find the monster usteed.");
-			return;
-		}
+        if (!mtmp)
+        {
+            panic("Cannot find the monster usteed.");
+            return;
+        }
         u.usteed = mtmp;
         remove_monster(mtmp->mx, mtmp->my);
     }
@@ -847,7 +847,7 @@ xchar ltmp;
         /* BUG: should suppress any attempt to write a panic
            save file if file creation is now failing... */
         panic("restlevelfile: %s", whynot);
-		return 0;
+        return 0;
     }
 #ifdef MFLOPPY
     if (!savelev(nfd, ltmp, COUNT_SAVE)) {
@@ -1273,11 +1273,11 @@ boolean ghostly;
                 for (trap = ftrap; trap; trap = trap->ntrap)
                     if (trap->ttyp == MAGIC_PORTAL)
                         break;
-				if (!trap)
-				{
-					panic("getlev: need portal but none found");
-					return;
-				}
+                if (!trap)
+                {
+                    panic("getlev: need portal but none found");
+                    return;
+                }
                 assign_level(&trap->dst, &ltmp);
                 break;
             }
@@ -1325,11 +1325,11 @@ register int fd;
         mread(fd, (genericptr_t) &msgsize, sizeof(msgsize));
         if (msgsize == -1)
             break;
-		if (msgsize > (BUFSZ - 1))
-		{
-			panic("restore_msghistory: msg too big (%d)", msgsize);
-			return;
-		}
+        if (msgsize > (BUFSZ - 1))
+        {
+            panic("restore_msghistory: msg too big (%d)", msgsize);
+            return;
+        }
         mread(fd, (genericptr_t) msg, msgsize);
         msg[msgsize] = '\0';
         putmsghistory(msg, TRUE);
@@ -1426,8 +1426,8 @@ boolean ghostly;
 
             mtmp->m_id = 0;
             mtmp->mpeaceful = mtmp->mtame = 0; /* pet's owner died! */
-			mtmp->ispartymember = FALSE;
-		}
+            mtmp->ispartymember = FALSE;
+        }
         if (ghostly && has_omid(otmp)) {
             (void) memcpy((genericptr_t) &oldid, (genericptr_t) OMID(otmp),
                           sizeof(oldid));
@@ -1750,7 +1750,7 @@ register size_t len;
                 error("Error restoring old game.");
             }
             panic("Error reading level file.");
-			return;
+            return;
         }
     }
 }

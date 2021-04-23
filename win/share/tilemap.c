@@ -1,4 +1,4 @@
-/* GnollHack 4.0	tilemap.c	$NHDT-Date: 1542501042 2018/11/18 00:30:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.35 $ */
+/* GnollHack 4.0    tilemap.c    $NHDT-Date: 1542501042 2018/11/18 00:30:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.35 $ */
 /*      Copyright (c) 2016 by Michael Allison                     */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -113,7 +113,7 @@ int set, entry;
     */
     monst_init();
     objects_init();
-	(void) def_char_to_objclass(']');
+    (void) def_char_to_objclass(']');
 
     condnum = tilenum = 0;
 

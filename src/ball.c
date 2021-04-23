@@ -1,4 +1,4 @@
-/* GnollHack 4.0	ball.c	$NHDT-Date: 1557088406 2019/05/05 20:33:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.36 $ */
+/* GnollHack 4.0    ball.c    $NHDT-Date: 1557088406 2019/05/05 20:33:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.36 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) David Cohrs, 2006. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -20,13 +20,13 @@ boolean showmsg;
             pline("Startled, you drop the iron ball.");
         if (uwep == uball)
             setuwep((struct obj *) 0, W_WEP);
-		if (uarms == uball)
-			setuwep((struct obj*) 0, W_WEP2);
-		if (uswapwep == uball)
+        if (uarms == uball)
+            setuwep((struct obj*) 0, W_WEP2);
+        if (uswapwep == uball)
             setuswapwep((struct obj *) 0, W_SWAPWEP);
-		if (uswapwep2 == uball)
-			setuswapwep((struct obj*) 0, W_SWAPWEP2);
-		if (uquiver == uball)
+        if (uswapwep2 == uball)
+            setuswapwep((struct obj*) 0, W_SWAPWEP2);
+        if (uquiver == uball)
             setuqwep((struct obj *) 0);
         /* [this used to test 'if (uwep != uball)' but that always passes
            after the setuwep() above] */
@@ -654,14 +654,14 @@ boolean allow_drag;
                 tmp = -2 + Luck + find_mac(victim);
                 tmp += omon_adj(victim, uball, TRUE);
 
-				boolean uball_destroyed = FALSE;
+                boolean uball_destroyed = FALSE;
                 if (tmp >= dieroll)
                     (void) hmon(victim, uball, HMON_DRAGGED, dieroll, &uball_destroyed);
                 else
                     miss(xname(uball), victim);
 
-				if (uball_destroyed)
-					uball = 0;
+                if (uball_destroyed)
+                    uball = 0;
 
             } /* now check again in case mon died */
             if (!m_at(uchain->ox, uchain->oy)) {

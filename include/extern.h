@@ -1,5 +1,5 @@
-/* GnollHack 4.0	extern.h	$NHDT-Date: 1557088399 2019/05/05 20:33:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.703 $ */
-/* Copyright (c) Steve Creps, 1988.				  */
+/* GnollHack 4.0    extern.h    $NHDT-Date: 1557088399 2019/05/05 20:33:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.703 $ */
+/* Copyright (c) Steve Creps, 1988.                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef EXTERN_H
@@ -3817,7 +3817,7 @@ E boolean FDECL(flashburn, (long));
 E boolean FDECL(cancel_monst, (struct monst *, struct obj *, BOOLEAN_P,
                                BOOLEAN_P, BOOLEAN_P, int));
 E boolean FDECL(add_temporary_property, (struct monst*, struct obj*, BOOLEAN_P,
-	BOOLEAN_P, BOOLEAN_P, int));
+    BOOLEAN_P, BOOLEAN_P, int));
 E void NDECL(zapsetup);
 E void NDECL(zapwrapup);
 E void FDECL(weffects, (struct obj *));

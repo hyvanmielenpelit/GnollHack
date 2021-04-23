@@ -1,15 +1,15 @@
-/* GnollHack 4.0	nhlan.c	$NHDT-Date: 1432512786 2015/05/25 00:13:06 $  $NHDT-Branch: master $:$NHDT-Revision: 1.9 $ */
+/* GnollHack 4.0    nhlan.c    $NHDT-Date: 1432512786 2015/05/25 00:13:06 $  $NHDT-Branch: master $:$NHDT-Revision: 1.9 $ */
 /* Copyright (c) Michael Allison, 1997                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * Currently shared by the following ports:
- *	WIN32
+ *    WIN32
  *
  * The code in here is used to take advantage of added features
  * that might be available in a Local Area Network environment.
  *
- * 	Network Username of player
+ *     Network Username of player
  */
 
 #include "hack.h"

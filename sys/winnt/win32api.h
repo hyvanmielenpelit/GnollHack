@@ -1,4 +1,4 @@
-/* NetHack 0.1	win32api.h	$NHDT-Date: 1432516197 2015/05/25 01:09:57 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
+/* NetHack 0.1    win32api.h    $NHDT-Date: 1432516197 2015/05/25 01:09:57 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
 /* Copyright (c) GnollHack PC Development Team 1996                 */
 /* GnollHack may be freely redistributed.  See license for details. */
 

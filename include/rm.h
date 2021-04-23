@@ -1,4 +1,4 @@
-/* GnollHack 4.0	rm.h	$NHDT-Date: 1547255911 2019/01/12 01:18:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.60 $ */
+/* GnollHack 4.0    rm.h    $NHDT-Date: 1547255911 2019/01/12 01:18:31 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.60 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2017. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -45,7 +45,7 @@ enum screen_symbols {
     S_bars      = 22, /* KMH -- iron bars */
     S_tree      = 23, /* KMH */
     S_room      = 24,
-	S_darkroom  = 25,
+    S_darkroom  = 25,
     S_grass     = 26,
     S_darkgrass = 27,
     S_ground    = 28,
@@ -100,7 +100,7 @@ enum screen_symbols {
     S_magic_trap           = 61+13,
     S_anti_magic_trap      = 62+13,
     S_polymorph_trap       = 63+13,
-	S_modron_portal	       = 64+13,
+    S_modron_portal           = 64+13,
     S_lever                = 65+13,
     S_vibrating_square     = 66+13, /* for display rather than any trap effect */
 
@@ -183,7 +183,7 @@ enum screen_symbols {
 /*
  * The dungeon presentation graphics code and data structures were rewritten
  * and generalized for GnollHack's release 2 by Eric S. Raymond (eric@snark)
- * building on Don G. Kneller's MS-DOS implementation.	See drawing.c for
+ * building on Don G. Kneller's MS-DOS implementation.    See drawing.c for
  * the code that permits the user to set the contents of the symbol structure.
  *
  * The door representation was changed by Ari
@@ -824,7 +824,7 @@ struct rm {
     short special_quality;     /* For doors, the special quality of the key that unlocks the door */
 
     uchar seenv;             /* seen vector */
-    unsigned short flags;			 /* extra information for typ */
+    unsigned short flags;             /* extra information for typ */
     Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
     Bitfield(lit, 1);        /* speed hack for lit rooms */
     Bitfield(waslit, 1);     /* remember if a location was lit */
@@ -1005,9 +1005,9 @@ struct levelflags {
     Bitfield(has_smithy, 1);
     Bitfield(has_npc_room, 1);
     Bitfield(has_library, 1);
-	Bitfield(has_dragonlair, 1);
-	Bitfield(has_garden, 1);
-	Bitfield(has_desertedshop, 1);
+    Bitfield(has_dragonlair, 1);
+    Bitfield(has_garden, 1);
+    Bitfield(has_desertedshop, 1);
 
     Bitfield(has_swamp, 1);
     Bitfield(noteleport, 1);

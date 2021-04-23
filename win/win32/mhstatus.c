@@ -1,5 +1,5 @@
-/* GnollHack 4.0	mhstatus.c	$NHDT-Date: 1536411224 2018/09/08 12:53:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.29 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/* GnollHack 4.0    mhstatus.c    $NHDT-Date: 1536411224 2018/09/08 12:53:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.29 $ */
+/* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include <assert.h>
@@ -116,22 +116,22 @@ mswin_init_status_window()
                        width,   /* window width */
                        height,  /* window height */
                        GetNHApp()->hMainWnd, NULL, GetNHApp()->hApp, NULL);
-	if (!ret)
-	{
-		panic("Cannot create status window");
-		return (HWND)0;
-	}
+    if (!ret)
+    {
+        panic("Cannot create status window");
+        return (HWND)0;
+    }
 
     /* Set window caption */
     SetWindowText(ret, "Status");
 
     /* create window data */
     data = (PNHStatusWindow) malloc(sizeof(NHStatusWindow));
-	if (!data)
-	{
-		panic("out of memory");
-		return (HWND)0;
-	}
+    if (!data)
+    {
+        panic("out of memory");
+        return (HWND)0;
+    }
 
     ZeroMemory(data, sizeof(NHStatusWindow));
     SetWindowLongPtr(ret, GWLP_USERDATA, (LONG_PTR) data);
@@ -230,9 +230,9 @@ StatusWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         } break;
 
-		case MSNH_MSG_RANDOM_INPUT:
-			nhassert(0); // unexpected
-			break;
+        case MSNH_MSG_RANDOM_INPUT:
+            nhassert(0); // unexpected
+            break;
 
         } /* end switch( wParam ) { */
     } break;

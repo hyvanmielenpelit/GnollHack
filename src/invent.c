@@ -1,4 +1,4 @@
-/* GnollHack 4.0	invent.c	$NHDT-Date: 1555196229 2019/04/13 22:57:09 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.253 $ */
+/* GnollHack 4.0    invent.c    $NHDT-Date: 1555196229 2019/04/13 22:57:09 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.253 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Derek S. Ray, 2015. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -104,9 +104,9 @@ struct obj *obj;
             armcat[ARM_SHIELD] = 4; /* [1] */
             armcat[ARM_CLOAK]  = 5; /* [5] */
             armcat[ARM_SHIRT]  = 6; /* [6] */
-			armcat[ARM_ROBE]   = 7; /* [7] */
-			armcat[ARM_BRACERS]= 8; /* [8] */
-			armcat[ARM_SUIT]   = 9; /* [0] */
+            armcat[ARM_ROBE]   = 7; /* [7] */
+            armcat[ARM_BRACERS]= 8; /* [8] */
+            armcat[ARM_SUIT]   = 9; /* [0] */
             armcat[9]          = 10; /* sanity protection */
         }
         k = objects[otyp].oc_armor_category;
@@ -238,13 +238,13 @@ struct obj *obj;
     saveo.odiluted = obj->odiluted;
     saveo.blessed = obj->blessed, saveo.cursed = obj->cursed;
     saveo.enchantment = obj->enchantment;
-	saveo.special_quality = obj->special_quality;
-	saveo.charges = obj->charges;
-	saveo.speflags = obj->speflags;
-	saveo.owt = obj->owt;
+    saveo.special_quality = obj->special_quality;
+    saveo.charges = obj->charges;
+    saveo.speflags = obj->speflags;
+    saveo.owt = obj->owt;
     //save_oname = has_oname(obj) ? ONAME(obj) : 0;
-	save_uoname = has_uoname(obj) ? UONAME(obj) : 0;
-	save_debug = flags.debug;
+    save_uoname = has_uoname(obj) ? UONAME(obj) : 0;
+    save_debug = flags.debug;
     /* suppress "diluted" for potions and "holy/unholy" for water;
        sortloot() will deal with them using other criteria than name */
     if (obj->oclass == POTION_CLASS) {
@@ -264,10 +264,10 @@ struct obj *obj;
     /* suppress user-assigned name */
     //if (save_oname && !obj->oartifact)
     //    ONAME(obj) = 0;
-	if (save_uoname)
-		UONAME(obj) = 0;
+    if (save_uoname)
+        UONAME(obj) = 0;
 
-	/* avoid wizard mode formatting variations */
+    /* avoid wizard mode formatting variations */
     if (wizard) { /* flags.debug */
         /* paranoia:  before toggling off wizard mode, guard against a
            panic in xname() producing a normal mode panic save file */
@@ -308,8 +308,8 @@ struct obj *obj;
     }
     //if (save_oname && !obj->oartifact)
     //    ONAME(obj) = save_oname;
-	if (save_uoname)
-		UONAME(obj) = save_uoname;
+    if (save_uoname)
+        UONAME(obj) = save_uoname;
 
     return res;
 }
@@ -747,11 +747,11 @@ struct obj **potmp, **pobj;
         /* and puddings!!!1!!one! */
         else if (!Is_pudding(otmp))
             otmp->owt += obj->owt;
-		if (!has_uoname(otmp) && has_uoname(obj))
-			otmp = *potmp = uoname(otmp, UONAME(obj));
-		if (!has_oname(otmp) && has_oname(obj))
+        if (!has_uoname(otmp) && has_uoname(obj))
+            otmp = *potmp = uoname(otmp, UONAME(obj));
+        if (!has_oname(otmp) && has_oname(obj))
             otmp = *potmp = oname(otmp, ONAME(obj));
-		obj_extract_self(obj);
+        obj_extract_self(obj);
 
         /* really should merge the timeouts */
         if (obj->lamplit)
@@ -925,46 +925,46 @@ update_all_character_properties(otmp, verbose)
 struct obj* otmp; /* object to be identified if any state change happens */
 boolean verbose;
 {
-	boolean state_change_detected = FALSE;
+    boolean state_change_detected = FALSE;
     boolean condition_change = FALSE;
     
-	boolean was_invisible = Invis;
+    boolean was_invisible = Invis;
     boolean was_wearing_blindfold = Blindfolded;
-	boolean was_blocking_blindness = Blocks_Blindness;
-	boolean saw_invisible = See_invisible;
-	boolean was_blocking_invisibility = Blocks_Invisibility;
-	boolean was_telepathic = Telepat;
-	boolean was_blind_telepathic = Blind_telepat;
-	boolean had_xray_vision = XRay_vision;
-	boolean had_magical_breathing = Magical_breathing;
-	boolean had_warning = Warning;
-	boolean had_warning_of_mon = Warning;
-	boolean had_orc_warning = Orc_warning;
-	boolean had_elf_warning = Elf_warning;
-	boolean had_dwarf_warning = Dwarf_warning;
-	boolean had_gnome_warning = Gnome_warning;
-	boolean had_human_warning = Human_warning;
-	boolean had_demon_warning = Demon_warning;
-	boolean had_angel_warning = Angel_warning;
-	boolean had_ogre_warning = Ogre_warning;
-	boolean had_gnoll_warning = Gnoll_warning;
-	boolean had_giant_warning = Giant_warning;
-	boolean had_dragon_warning = Dragon_warning;
-	boolean had_undead_warning = Undead_warning;
-	boolean had_troll_warning = Troll_warning;
-	boolean had_lycanthrope_warning = Lycanthrope_warning;
-	boolean had_protection = Magical_protection;
-	boolean had_magical_shielding= Magical_shielding;
-	boolean had_magical_barkskin = Magical_barkskin;
-	boolean had_magical_stoneskin = Magical_stoneskin;
-	boolean had_titan_strength = Titan_strength;
+    boolean was_blocking_blindness = Blocks_Blindness;
+    boolean saw_invisible = See_invisible;
+    boolean was_blocking_invisibility = Blocks_Invisibility;
+    boolean was_telepathic = Telepat;
+    boolean was_blind_telepathic = Blind_telepat;
+    boolean had_xray_vision = XRay_vision;
+    boolean had_magical_breathing = Magical_breathing;
+    boolean had_warning = Warning;
+    boolean had_warning_of_mon = Warning;
+    boolean had_orc_warning = Orc_warning;
+    boolean had_elf_warning = Elf_warning;
+    boolean had_dwarf_warning = Dwarf_warning;
+    boolean had_gnome_warning = Gnome_warning;
+    boolean had_human_warning = Human_warning;
+    boolean had_demon_warning = Demon_warning;
+    boolean had_angel_warning = Angel_warning;
+    boolean had_ogre_warning = Ogre_warning;
+    boolean had_gnoll_warning = Gnoll_warning;
+    boolean had_giant_warning = Giant_warning;
+    boolean had_dragon_warning = Dragon_warning;
+    boolean had_undead_warning = Undead_warning;
+    boolean had_troll_warning = Troll_warning;
+    boolean had_lycanthrope_warning = Lycanthrope_warning;
+    boolean had_protection = Magical_protection;
+    boolean had_magical_shielding= Magical_shielding;
+    boolean had_magical_barkskin = Magical_barkskin;
+    boolean had_magical_stoneskin = Magical_stoneskin;
+    boolean had_titan_strength = Titan_strength;
     boolean had_divine_endurance = Divine_endurance;
     boolean had_divine_dexterity = Divine_dexterity;
     boolean had_divine_intellect = Divine_intellect;
     boolean had_divine_wisdom = Divine_wisdom;
     boolean had_divine_charisma = Divine_charisma;
     boolean was_fast = Fast;
-	boolean was_very_fast = Very_fast;
+    boolean was_very_fast = Very_fast;
     boolean was_ultra_fast = Ultra_fast;
     boolean was_super_fast = Super_fast;
     boolean was_lightning_fast = Lightning_fast;
@@ -999,7 +999,7 @@ boolean verbose;
     int old_move = get_u_move_speed(TRUE);
 
 
-	unsigned long previous_warntype_obj = context.warntype.obj;
+    unsigned long previous_warntype_obj = context.warntype.obj;
     int oldstr = ACURR(A_STR);
     int olddex = ACURR(A_DEX);
     int oldcon = ACURR(A_CON);
@@ -1007,268 +1007,268 @@ boolean verbose;
     int oldwis = ACURR(A_WIS);
     int oldcha = ACURR(A_CHA);
 
-	update_extrinsics();
-	updateabon();
-	updatemaxen();
-	updatemaxhp();
+    update_extrinsics();
+    updateabon();
+    updatemaxen();
+    updatemaxhp();
 
-	if (!verbose) /* None of the ancillary effects happen either */
-		return;
+    if (!verbose) /* None of the ancillary effects happen either */
+        return;
 
-	/* PROPERTY STATE TRANSITIONS */
-	/* Levitation and flying */
-	if ((was_flying || was_levitating) && !Flying && !Levitation)
-	{
-		state_change_detected = TRUE;
-		if(was_levitating)
-			float_down(0, 0);
-		else
-			pline("You stop flying%s.", !Is_airlevel(&u.uz) ? " and land down" : "");
-	}
-	else if (!(was_flying || was_levitating) && (Levitation || Flying))
-	{
-		float_vs_flight();
-		state_change_detected = TRUE;
-		if (Levitation)
-		{
-			float_up();
-			spoteffects(FALSE);
-		}
-		else
-		{
-			You("start flying.");
-		}
-	}
+    /* PROPERTY STATE TRANSITIONS */
+    /* Levitation and flying */
+    if ((was_flying || was_levitating) && !Flying && !Levitation)
+    {
+        state_change_detected = TRUE;
+        if(was_levitating)
+            float_down(0, 0);
+        else
+            pline("You stop flying%s.", !Is_airlevel(&u.uz) ? " and land down" : "");
+    }
+    else if (!(was_flying || was_levitating) && (Levitation || Flying))
+    {
+        float_vs_flight();
+        state_change_detected = TRUE;
+        if (Levitation)
+        {
+            float_up();
+            spoteffects(FALSE);
+        }
+        else
+        {
+            You("start flying.");
+        }
+    }
 
-	/* Blindness */
-	if (Blind && !was_blind)
-	{
-		if (Hallucination && had_hallucination)
-			pline("Oh, bummer!  Everything is dark!  Help!");
-		else
-		{
-			if (Blindfolded && !was_wearing_blindfold)
-				You_cant("see any more.");
-			else if (!Blocks_Blindness || was_blocking_blindness)
-				You_cant("see anything now!");
-			else
-				pline("A cloud of darkness falls upon you.");
-		}
+    /* Blindness */
+    if (Blind && !was_blind)
+    {
+        if (Hallucination && had_hallucination)
+            pline("Oh, bummer!  Everything is dark!  Help!");
+        else
+        {
+            if (Blindfolded && !was_wearing_blindfold)
+                You_cant("see any more.");
+            else if (!Blocks_Blindness || was_blocking_blindness)
+                You_cant("see anything now!");
+            else
+                pline("A cloud of darkness falls upon you.");
+        }
 
-		if (Punished)
-			set_bc(0);
+        if (Punished)
+            set_bc(0);
 
-		toggle_blindness();
-	}
-	else if (!Blind && was_blind && !gulp_blnd_check())
-	{
-		if (Hallucination && had_hallucination)
-		{
-			if (u.uroleplay.blind) {
-				pline("For the first time in your life, you can see, and oh wow, it is all so cosmic for sure!");
-				u.uroleplay.blind = FALSE;
-			}
-			else
-				pline("Far out!  Everything is all cosmic again!");
-		}
-		else
-		{
-			if (u.uroleplay.blind) {
-				/* this can only happen by putting on the Eyes of the Overworld;
-				   that shouldn't actually produce a permanent cure, but we
-				   can't let the "blind from birth" conduct remain intact */
-				pline("For the first time in your life, you can see!");
-				u.uroleplay.blind = FALSE;
-			}
-			else
-			{
-				if (!Blindfolded && was_wearing_blindfold)
-					You("can see again.");
-				else if (Blocks_Blindness || !was_blocking_blindness)
-					You("can see!");
-				else
-					You("can see again.");
-			}
-		}
+        toggle_blindness();
+    }
+    else if (!Blind && was_blind && !gulp_blnd_check())
+    {
+        if (Hallucination && had_hallucination)
+        {
+            if (u.uroleplay.blind) {
+                pline("For the first time in your life, you can see, and oh wow, it is all so cosmic for sure!");
+                u.uroleplay.blind = FALSE;
+            }
+            else
+                pline("Far out!  Everything is all cosmic again!");
+        }
+        else
+        {
+            if (u.uroleplay.blind) {
+                /* this can only happen by putting on the Eyes of the Overworld;
+                   that shouldn't actually produce a permanent cure, but we
+                   can't let the "blind from birth" conduct remain intact */
+                pline("For the first time in your life, you can see!");
+                u.uroleplay.blind = FALSE;
+            }
+            else
+            {
+                if (!Blindfolded && was_wearing_blindfold)
+                    You("can see again.");
+                else if (Blocks_Blindness || !was_blocking_blindness)
+                    You("can see!");
+                else
+                    You("can see again.");
+            }
+        }
 
-		if (Punished)
-			set_bc(0);
+        if (Punished)
+            set_bc(0);
 
-		toggle_blindness();
-	}
+        toggle_blindness();
+    }
 
-	/* Hallucination */
-	if (Hallucination && !had_hallucination)
-	{
-		state_change_detected = TRUE;
-		pline("Oh wow! Everything %s so cosmic!", (!Blind) ? "looks" : "feels");
-	}
-	else if (!Hallucination && had_hallucination)
-	{
-		state_change_detected = TRUE;
-		eatmupdate();
-		if (u.uswallow) {
-			swallowed(0); /* redraw swallow display */
-		}
-		else {
-			/* The see_* routines should be called *before* the pline. */
-			see_monsters();
-			see_objects();
-			see_traps();
-		}
+    /* Hallucination */
+    if (Hallucination && !had_hallucination)
+    {
+        state_change_detected = TRUE;
+        pline("Oh wow! Everything %s so cosmic!", (!Blind) ? "looks" : "feels");
+    }
+    else if (!Hallucination && had_hallucination)
+    {
+        state_change_detected = TRUE;
+        eatmupdate();
+        if (u.uswallow) {
+            swallowed(0); /* redraw swallow display */
+        }
+        else {
+            /* The see_* routines should be called *before* the pline. */
+            see_monsters();
+            see_objects();
+            see_traps();
+        }
 
-		update_inventory();
-		context.botl = context.botlx = TRUE;
-		pline("Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
-	}
+        update_inventory();
+        context.botl = context.botlx = TRUE;
+        pline("Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
+    }
 
 
-	/* Invisibility */
-	if (!Blind)
-	{
-		if (See_invisible && !saw_invisible)
-		{
-			/* can now see invisible monsters */
-			set_mimic_blocking(); /* do special mimic handling */
-			see_monsters();
+    /* Invisibility */
+    if (!Blind)
+    {
+        if (See_invisible && !saw_invisible)
+        {
+            /* can now see invisible monsters */
+            set_mimic_blocking(); /* do special mimic handling */
+            see_monsters();
 
-			if (Invis)
-			{
-				state_change_detected = TRUE;
-				if (was_invisible)
-				{
-					newsym(u.ux, u.uy);
-					pline("Suddenly you are transparent, but there!");
-				}
-				else
-				{
-					/* No change in symbol */
-					self_invis_message();
-				}
-			}
-		}
-		else if (!See_invisible && saw_invisible)
-		{
-			set_mimic_blocking(); /* do special mimic handling */
-			see_monsters();
+            if (Invis)
+            {
+                state_change_detected = TRUE;
+                if (was_invisible)
+                {
+                    newsym(u.ux, u.uy);
+                    pline("Suddenly you are transparent, but there!");
+                }
+                else
+                {
+                    /* No change in symbol */
+                    self_invis_message();
+                }
+            }
+        }
+        else if (!See_invisible && saw_invisible)
+        {
+            set_mimic_blocking(); /* do special mimic handling */
+            see_monsters();
 
-			if (Invis)
-			{
-				state_change_detected = TRUE;
-				newsym(u.ux, u.uy);
-				pline("Suddenly you cannot see yourself.");
-			}
-		}
-		else if (Blocks_Invisibility && !was_blocking_invisibility && !Invis && was_invisible)
-		{
-			state_change_detected = TRUE;
-			newsym(u.ux, u.uy);
-			You("can %s!", See_invisible ? "no longer see through yourself"
-				: "see yourself");
-		}
-		else if (!Blocks_Invisibility && was_blocking_invisibility && Invis && !was_invisible)
-		{
-			state_change_detected = TRUE;
-			newsym(u.ux, u.uy);
-			You("can %s.", See_invisible ? "see through yourself"
-				: "no longer see yourself");
-		}
-		else if (Invis && !was_invisible)
-		{
-			state_change_detected = TRUE;
-			newsym(u.ux, u.uy);
-			self_invis_message();
-		}
-		else if (!Invis && was_invisible)
-		{
-			state_change_detected = TRUE;
-			newsym(u.ux, u.uy);
-			Your("body seems to unfade%s.",
-				See_invisible ? " completely" : "..");
-		}
-	}
+            if (Invis)
+            {
+                state_change_detected = TRUE;
+                newsym(u.ux, u.uy);
+                pline("Suddenly you cannot see yourself.");
+            }
+        }
+        else if (Blocks_Invisibility && !was_blocking_invisibility && !Invis && was_invisible)
+        {
+            state_change_detected = TRUE;
+            newsym(u.ux, u.uy);
+            You("can %s!", See_invisible ? "no longer see through yourself"
+                : "see yourself");
+        }
+        else if (!Blocks_Invisibility && was_blocking_invisibility && Invis && !was_invisible)
+        {
+            state_change_detected = TRUE;
+            newsym(u.ux, u.uy);
+            You("can %s.", See_invisible ? "see through yourself"
+                : "no longer see yourself");
+        }
+        else if (Invis && !was_invisible)
+        {
+            state_change_detected = TRUE;
+            newsym(u.ux, u.uy);
+            self_invis_message();
+        }
+        else if (!Invis && was_invisible)
+        {
+            state_change_detected = TRUE;
+            newsym(u.ux, u.uy);
+            Your("body seems to unfade%s.",
+                See_invisible ? " completely" : "..");
+        }
+    }
 
-	/* Telepathy, warning and blindness */
-	if ((Telepat && !was_telepathic)
-		|| (!Telepat && was_telepathic)
-		|| (Blind_telepat && !was_blind_telepathic)
-		|| (!Blind_telepat && was_blind_telepathic)
-		|| (Warning && !had_warning)
-		|| (!Warning && had_warning)
-		|| (Warn_of_mon && (!had_warning_of_mon || context.warntype.obj != previous_warntype_obj))
-		|| (!Warn_of_mon && had_warning_of_mon)
-		|| (Orc_warning && !had_orc_warning)
-		|| (!Orc_warning && had_orc_warning)
-		|| (Elf_warning && !had_elf_warning)
-		|| (!Elf_warning && had_elf_warning)
-		|| (Dwarf_warning && !had_dwarf_warning)
-		|| (!Dwarf_warning && had_dwarf_warning)
-		|| (Gnome_warning && !had_gnome_warning)
-		|| (!Gnome_warning && had_gnome_warning)
+    /* Telepathy, warning and blindness */
+    if ((Telepat && !was_telepathic)
+        || (!Telepat && was_telepathic)
+        || (Blind_telepat && !was_blind_telepathic)
+        || (!Blind_telepat && was_blind_telepathic)
+        || (Warning && !had_warning)
+        || (!Warning && had_warning)
+        || (Warn_of_mon && (!had_warning_of_mon || context.warntype.obj != previous_warntype_obj))
+        || (!Warn_of_mon && had_warning_of_mon)
+        || (Orc_warning && !had_orc_warning)
+        || (!Orc_warning && had_orc_warning)
+        || (Elf_warning && !had_elf_warning)
+        || (!Elf_warning && had_elf_warning)
+        || (Dwarf_warning && !had_dwarf_warning)
+        || (!Dwarf_warning && had_dwarf_warning)
+        || (Gnome_warning && !had_gnome_warning)
+        || (!Gnome_warning && had_gnome_warning)
         || (Human_warning && !had_human_warning)
         || (!Human_warning && had_human_warning)
         || (Demon_warning && !had_demon_warning)
-		|| (!Demon_warning && had_demon_warning)
-		|| (Angel_warning && !had_angel_warning)
-		|| (!Angel_warning && had_angel_warning)
-		|| (Ogre_warning && !had_ogre_warning)
-		|| (!Ogre_warning && had_ogre_warning)
-		|| (Gnoll_warning && !had_gnoll_warning)
-		|| (!Gnoll_warning && had_gnoll_warning)
-		|| (Giant_warning && !had_giant_warning)
-		|| (!Giant_warning && had_giant_warning)
-		|| (Dragon_warning && !had_dragon_warning)
-		|| (!Dragon_warning && had_dragon_warning)
-		|| (Undead_warning && !had_undead_warning)
-		|| (!Undead_warning && had_undead_warning)
-		|| (Lycanthrope_warning && !had_lycanthrope_warning)
-		|| (!Lycanthrope_warning && had_lycanthrope_warning)
-		|| (Troll_warning && !had_troll_warning)
-		|| (!Troll_warning && had_troll_warning)
-		|| (Blind && !was_blind)
-		|| (!Blind && was_blind)
-		)
-	{
-		see_monsters();
-	}
+        || (!Demon_warning && had_demon_warning)
+        || (Angel_warning && !had_angel_warning)
+        || (!Angel_warning && had_angel_warning)
+        || (Ogre_warning && !had_ogre_warning)
+        || (!Ogre_warning && had_ogre_warning)
+        || (Gnoll_warning && !had_gnoll_warning)
+        || (!Gnoll_warning && had_gnoll_warning)
+        || (Giant_warning && !had_giant_warning)
+        || (!Giant_warning && had_giant_warning)
+        || (Dragon_warning && !had_dragon_warning)
+        || (!Dragon_warning && had_dragon_warning)
+        || (Undead_warning && !had_undead_warning)
+        || (!Undead_warning && had_undead_warning)
+        || (Lycanthrope_warning && !had_lycanthrope_warning)
+        || (!Lycanthrope_warning && had_lycanthrope_warning)
+        || (Troll_warning && !had_troll_warning)
+        || (!Troll_warning && had_troll_warning)
+        || (Blind && !was_blind)
+        || (!Blind && was_blind)
+        )
+    {
+        see_monsters();
+    }
 
-	/* X-ray vision */
-	if ((XRay_vision && !had_xray_vision)
-		|| (!XRay_vision && had_xray_vision)
-		)
-	{
-		vision_full_recalc = 1;
-		see_monsters();
-	}
+    /* X-ray vision */
+    if ((XRay_vision && !had_xray_vision)
+        || (!XRay_vision && had_xray_vision)
+        )
+    {
+        vision_full_recalc = 1;
+        see_monsters();
+    }
 
-	/* Magical breathing*/
-	if(!Magical_breathing || had_magical_breathing)
-	{
-		if (Underwater) 
-		{
-			if (!has_innate_breathless(youmonst.data) && !amphibious(youmonst.data) && !Swimming) 
-			{
-				state_change_detected = TRUE;
-				You("suddenly inhale an unhealthy amount of %s!",
-					hliquid("water"));
-				(void)drown();
-			}
-		}
-	}
+    /* Magical breathing*/
+    if(!Magical_breathing || had_magical_breathing)
+    {
+        if (Underwater) 
+        {
+            if (!has_innate_breathless(youmonst.data) && !amphibious(youmonst.data) && !Swimming) 
+            {
+                state_change_detected = TRUE;
+                You("suddenly inhale an unhealthy amount of %s!",
+                    hliquid("water"));
+                (void)drown();
+            }
+        }
+    }
 
 
-	/* Speed */
-	if ((!was_slowed && Slowed) 
+    /* Speed */
+    if ((!was_slowed && Slowed) 
         || (was_lightning_fast && !Lightning_fast)
         || (was_super_fast && !was_lightning_fast && !Super_fast && !Lightning_fast)
         || (was_ultra_fast && !was_super_fast && !was_lightning_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
         || (was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast && !Very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
         || (was_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast && !Fast && !Very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
         )
-	{
-		state_change_detected = TRUE;
-		You_feel("yourself slow down%s.", Fast ? " a bit" : "");
-	}
+    {
+        state_change_detected = TRUE;
+        You_feel("yourself slow down%s.", Fast ? " a bit" : "");
+    }
     else if (Lightning_fast && !was_lightning_fast)
     {
         state_change_detected = TRUE;
@@ -1285,98 +1285,98 @@ boolean verbose;
         You_feel("yourself speed up%s.", was_fast || was_very_fast ? " a bit more" : "");
     }
     else if (Very_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
-	{
-		state_change_detected = TRUE;
-		You_feel("yourself speed up%s.", was_fast ? " a bit more" : "");
-	}
-	else if (Fast && !was_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
-	{
-		state_change_detected = TRUE;
-		You_feel("yourself speed up.");
-	}
+    {
+        state_change_detected = TRUE;
+        You_feel("yourself speed up%s.", was_fast ? " a bit more" : "");
+    }
+    else if (Fast && !was_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
+    {
+        state_change_detected = TRUE;
+        You_feel("yourself speed up.");
+    }
 
 
-	/* Silenced */
-	if (Silenced && !was_silenced)
-	{
-		state_change_detected = TRUE;
-		Your("voice disappears!");
-	}
-	else if (!Silenced && was_silenced)
-	{
-		state_change_detected = TRUE;
-		Your("voice returns!");
-	}
+    /* Silenced */
+    if (Silenced && !was_silenced)
+    {
+        state_change_detected = TRUE;
+        Your("voice disappears!");
+    }
+    else if (!Silenced && was_silenced)
+    {
+        state_change_detected = TRUE;
+        Your("voice returns!");
+    }
 
-	/* Cancellation */
-	if (Cancelled && !was_cancelled)
-	{
-		state_change_detected = TRUE;
-		Your("voice disappears!");
-	}
-	else if (!Cancelled && was_cancelled)
-	{
-		state_change_detected = TRUE;
-		Your("voice returns!");
-	}
+    /* Cancellation */
+    if (Cancelled && !was_cancelled)
+    {
+        state_change_detected = TRUE;
+        Your("voice disappears!");
+    }
+    else if (!Cancelled && was_cancelled)
+    {
+        state_change_detected = TRUE;
+        Your("voice returns!");
+    }
 
-	/* Some spell powers */
-	if (Magical_protection && !had_protection)
-	{
-		state_change_detected = TRUE;
-		You("feel protected!");
-	}
-	else if (!Magical_protection && had_protection)
-	{
-		state_change_detected = TRUE;
-		You("feel unprotected!");
-	}
+    /* Some spell powers */
+    if (Magical_protection && !had_protection)
+    {
+        state_change_detected = TRUE;
+        You("feel protected!");
+    }
+    else if (!Magical_protection && had_protection)
+    {
+        state_change_detected = TRUE;
+        You("feel unprotected!");
+    }
 
-	if (Magical_shielding && !had_magical_shielding)
-	{
-		state_change_detected = TRUE;
-		You("feel shielded!");
-	}
-	else if (!Magical_shielding && had_magical_shielding)
-	{
-		state_change_detected = TRUE;
-		You("feel unshielded!");
-	}
+    if (Magical_shielding && !had_magical_shielding)
+    {
+        state_change_detected = TRUE;
+        You("feel shielded!");
+    }
+    else if (!Magical_shielding && had_magical_shielding)
+    {
+        state_change_detected = TRUE;
+        You("feel unshielded!");
+    }
 
-	if (Magical_barkskin && !had_magical_barkskin)
-	{
-		state_change_detected = TRUE;
-		Your("skin thickens into bark!");
-	}
-	else if (!Magical_barkskin && had_magical_barkskin)
-	{
-		state_change_detected = TRUE;
-		Your("skin softens!");
-	}
+    if (Magical_barkskin && !had_magical_barkskin)
+    {
+        state_change_detected = TRUE;
+        Your("skin thickens into bark!");
+    }
+    else if (!Magical_barkskin && had_magical_barkskin)
+    {
+        state_change_detected = TRUE;
+        Your("skin softens!");
+    }
 
-	if (Magical_stoneskin && !had_magical_stoneskin)
-	{
-		state_change_detected = TRUE;
-		Your("skin thickens into bark!");
-	}
-	else if (!Magical_stoneskin && had_magical_stoneskin)
-	{
-		state_change_detected = TRUE;
-		Your("skin unstones!");
-	}
+    if (Magical_stoneskin && !had_magical_stoneskin)
+    {
+        state_change_detected = TRUE;
+        Your("skin thickens into bark!");
+    }
+    else if (!Magical_stoneskin && had_magical_stoneskin)
+    {
+        state_change_detected = TRUE;
+        Your("skin unstones!");
+    }
 
-	if (Titan_strength && !had_titan_strength)
-	{
+    if (Titan_strength && !had_titan_strength)
+    {
         if(ACURR(A_STR) != oldstr)
-    		state_change_detected = TRUE;
-		//You("feel as strong as a titan!");
-	}
-	else if (!Titan_strength && had_titan_strength)
-	{
+            state_change_detected = TRUE;
+        //You("feel as strong as a titan!");
+    }
+    else if (!Titan_strength && had_titan_strength)
+    {
         if (ACURR(A_STR) != oldstr)
             state_change_detected = TRUE;
-		//You("feel less strong than before.");
-	}
+        //You("feel less strong than before.");
+    }
 
     if (Divine_endurance && !had_divine_endurance)
     {
@@ -1473,13 +1473,13 @@ boolean verbose;
         )
         condition_change = TRUE;
 
-	if (otmp && state_change_detected)
-	{
-		makeknown(otmp->otyp);
-	}
+    if (otmp && state_change_detected)
+    {
+        makeknown(otmp->otyp);
+    }
 
     if(state_change_detected || condition_change)
-    	context.botl = context.botlx = TRUE;
+        context.botl = context.botlx = TRUE;
 
 }
 
@@ -1496,7 +1496,7 @@ void
 addinv_core2(obj)
 struct obj *obj;
 {
-	update_all_character_properties(obj, TRUE);
+    update_all_character_properties(obj, TRUE);
 }
 
 /*
@@ -1511,23 +1511,23 @@ struct obj *obj;
     int saved_otyp = (int) obj->otyp; /* for panic */
     boolean obj_was_thrown;
 
-	int oldmanamax = u.uenmax;
-	int oldhpmax = u.uhpmax;
-	int oldstr = ACURR(A_STR);
-	int olddex = ACURR(A_DEX);
-	int oldcon = ACURR(A_CON);
-	int oldint = ACURR(A_INT);
-	int oldwis = ACURR(A_WIS);
-	int oldcha = ACURR(A_CHA);
-	int oldac = u.uac;
-	int oldmc = u.umc;
+    int oldmanamax = u.uenmax;
+    int oldhpmax = u.uhpmax;
+    int oldstr = ACURR(A_STR);
+    int olddex = ACURR(A_DEX);
+    int oldcon = ACURR(A_CON);
+    int oldint = ACURR(A_INT);
+    int oldwis = ACURR(A_WIS);
+    int oldcha = ACURR(A_CHA);
+    int oldac = u.uac;
+    int oldmc = u.umc;
 
 
-	if (obj->where != OBJ_FREE)
-	{
-		panic("addinv: obj not free");
-		return (struct obj*)0;
-	}
+    if (obj->where != OBJ_FREE)
+    {
+        panic("addinv: obj not free");
+        return (struct obj*)0;
+    }
     /* normally addtobill() clears no_charge when items in a shop are
        picked up, but won't do so if the shop has become untended */
     obj->no_charge = 0; /* should not be set in hero's invent */
@@ -1544,22 +1544,22 @@ struct obj *obj;
        extra to quivered stack is more useful than to wielded one */
     if (uquiver && merged(&uquiver, &obj)) {
         obj = uquiver;
-		if (!obj)
-		{
-			panic("addinv: null obj after quiver merge otyp=%d", saved_otyp);
-			return (struct obj*)0;
-		}
+        if (!obj)
+        {
+            panic("addinv: null obj after quiver merge otyp=%d", saved_otyp);
+            return (struct obj*)0;
+        }
         goto added;
     }
     /* merge if possible; find end of chain in the process */
     for (prev = 0, otmp = invent; otmp; prev = otmp, otmp = otmp->nobj)
         if (merged(&otmp, &obj)) {
             obj = otmp;
-			if (!obj)
-			{
-				panic("addinv: null obj after merge otyp=%d", saved_otyp);
-				return (struct obj*)0;
-			}
+            if (!obj)
+            {
+                panic("addinv: null obj after merge otyp=%d", saved_otyp);
+                return (struct obj*)0;
+            }
             goto added;
         }
     /* didn't merge, so insert into chain */
@@ -1589,29 +1589,29 @@ struct obj *obj;
     carry_obj_effects(obj); /* carrying affects the obj */
 
 
-	if ((
-		u.uenmax != oldmanamax
-		|| u.uhpmax != oldhpmax
-		|| ACURR(A_STR) != oldstr
-		|| ACURR(A_DEX) != olddex
-		|| ACURR(A_CON) != oldcon
-		|| ACURR(A_INT) != oldint
-		|| ACURR(A_WIS) != oldwis
-		|| ACURR(A_CHA) != oldcha
-		|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
-		|| (obj->oclass != ARMOR_CLASS && obj->oclass != WEAPON_CLASS && u.umc != oldmc)
-		)) // this should identify all objects giving hp or mana or stats or ac
-	{
-		if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
-			learnring(obj, TRUE);
-		else
-			makeknown(obj->otyp);
-	}
-	else if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
-	{
-		/* Nonobservable ring */
-		learnring(obj, FALSE);
-	}
+    if ((
+        u.uenmax != oldmanamax
+        || u.uhpmax != oldhpmax
+        || ACURR(A_STR) != oldstr
+        || ACURR(A_DEX) != olddex
+        || ACURR(A_CON) != oldcon
+        || ACURR(A_INT) != oldint
+        || ACURR(A_WIS) != oldwis
+        || ACURR(A_CHA) != oldcha
+        || (obj->oclass != ARMOR_CLASS && u.uac != oldac)
+        || (obj->oclass != ARMOR_CLASS && obj->oclass != WEAPON_CLASS && u.umc != oldmc)
+        )) // this should identify all objects giving hp or mana or stats or ac
+    {
+        if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
+            learnring(obj, TRUE);
+        else
+            makeknown(obj->otyp);
+    }
+    else if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
+    {
+        /* Nonobservable ring */
+        learnring(obj, FALSE);
+    }
 
 
 
@@ -1828,13 +1828,13 @@ struct obj *obj;
         }
     }
 
-	if (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) {
-		curse(obj);
-	}
+    if (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) {
+        curse(obj);
+    }
 
-	update_all_character_properties(obj, TRUE);
+    update_all_character_properties(obj, TRUE);
 
-	if (obj->otyp == FIGURINE && obj->timed) {
+    if (obj->otyp == FIGURINE && obj->timed) {
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(obj));
     }
 }
@@ -2170,18 +2170,18 @@ reduce_item_cooldown(objchn)
 register struct obj *objchn;
 {
     while (objchn) {
-		//Reduce cooldown timer
-		if (objchn->cooldownleft > 0)
-			objchn->cooldownleft--;
+        //Reduce cooldown timer
+        if (objchn->cooldownleft > 0)
+            objchn->cooldownleft--;
 
         if (objchn->repowerleft > 0)
             objchn->repowerleft--;
         
         //If has contents, then reduce the cooldown of the contents, too
-		if (Has_contents(objchn))
-			reduce_item_cooldown(objchn->cobj);
-		
-		objchn = objchn->nobj;
+        if (Has_contents(objchn))
+            reduce_item_cooldown(objchn->cobj);
+        
+        objchn = objchn->nobj;
     }
 }
 
@@ -2280,7 +2280,7 @@ STATIC_OVL boolean
 trading_items(action)
 const char* action;
 {
-	return !strcmp(action, "buy") || !strcmp(action, "trade");
+    return !strcmp(action, "buy") || !strcmp(action, "trade");
 }
 
 
@@ -2391,7 +2391,7 @@ const char* headertext;
     if (allowall && !strcmp(word, "read"))
         allowall = FALSE;
 
-	/* another ugly check: show boulders (not statues) */
+    /* another ugly check: show boulders (not statues) */
     if (*let == WEAPON_CLASS && !strcmp(word, "throw")
         && throws_rocks(youmonst.data))
         useboulder = TRUE;
@@ -2470,7 +2470,7 @@ const char* headertext;
                  && ((otmp->oclass == TOOL_CLASS && otyp != OIL_LAMP
                       && otyp != MAGIC_LAMP && otyp != BRASS_LANTERN)
                      || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
-				|| (!strcmp(word, "use or apply")
+                || (!strcmp(word, "use or apply")
                  /* Picks, axes, pole-weapons, bullwhips */
                  && ((otmp->oclass == WEAPON_CLASS && !is_appliable_weapon(otmp))
                      || (otmp->oclass == POTION_CLASS
@@ -2486,13 +2486,13 @@ const char* headertext;
              || (!strcmp(word, "invoke")
                  && !otmp->oartifact
                  && !is_otyp_unique(otyp)
-				 && !is_otyp_invokable(otyp)
-				 && (otyp != FAKE_AMULET_OF_YENDOR || otmp->known)
+                 && !is_otyp_invokable(otyp)
+                 && (otyp != FAKE_AMULET_OF_YENDOR || otmp->known)
                  /* note: presenting the possibility of invoking non-artifact
                     mirrors and/or lamps is simply a cruel deception... */
                  && (otyp != OIL_LAMP /* don't list known oil lamp */
                      || (otmp->dknown && objects[OIL_LAMP].oc_name_known)))
-				|| (!strcmp(word, "untrap with")
+                || (!strcmp(word, "untrap with")
                  && ((otmp->oclass == TOOL_CLASS && otyp != CAN_OF_GREASE)
                      || (otmp->oclass == POTION_CLASS
                          /* only applicable potion is oil, and it will only
@@ -2503,12 +2503,12 @@ const char* headertext;
                  /* include horn of plenty if sufficiently discovered */
                  && (otmp->otyp != HORN_OF_PLENTY || !otmp->dknown
                      || !objects[HORN_OF_PLENTY].oc_name_known))
- 			 || (!strcmp(word, "detect blessedness for") && otmp->bknown)
- 			 || (!strcmp(word, "refill") && !is_refillable_with_oil(otmp))
- 			 || (!strcmp(word, "enchant") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
- 			 || (!strcmp(word, "protect") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
-			 || (!strcmp(word, "charge") && !is_chargeable(otmp))
- 			 || (!strcmp(word, "fire") && (!uwep || !otmp || (otmp && uwep && !ammo_and_launcher(otmp, uwep))))
+              || (!strcmp(word, "detect blessedness for") && otmp->bknown)
+              || (!strcmp(word, "refill") && !is_refillable_with_oil(otmp))
+              || (!strcmp(word, "enchant") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
+              || (!strcmp(word, "protect") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
+             || (!strcmp(word, "charge") && !is_chargeable(otmp))
+              || (!strcmp(word, "fire") && (!uwep || !otmp || (otmp && uwep && !ammo_and_launcher(otmp, uwep))))
              || (!strcmp(word, "open") && otyp != TIN)
              || (!strcmp(word, "call") && !objtyp_is_callable(otyp))
              || (is_dip_into && !otyp_allows_object_to_be_dipped_into_it(otyp))
@@ -2586,13 +2586,13 @@ const char* headertext;
     }
     
 
-	if (!iflags.force_invmenu && strcmp(headertext, "") != 0)
-		pline("%s", headertext);
+    if (!iflags.force_invmenu && strcmp(headertext, "") != 0)
+        pline("%s", headertext);
 
-	for (;;) {
+    for (;;) {
         cnt = 0;
         cntgiven = FALSE;
-		Sprintf(qbuf, "What do you want to %s?", word);
+        Sprintf(qbuf, "What do you want to %s?", word);
         if (in_doagain)
             ilet = readchar();
         else if (iflags.force_invmenu) {
@@ -2609,7 +2609,7 @@ const char* headertext;
             else
                 Sprintf(eos(qbuf), " [%s or ?*]", buf);
 
-			ilet = yn_function(qbuf, (char *) 0, '\0');
+            ilet = yn_function(qbuf, (char *) 0, '\0');
         }
         if (digit(ilet)) {
             long tmpcnt = 0;
@@ -2754,7 +2754,7 @@ const char* headertext;
     }
     if (!allowall && let && !index(let, otmp->oclass)
         && !(usegold && otmp->oclass == COIN_CLASS)
-		&& !(!strcmp(word, "read") && (objects[otmp->otyp].oc_flags3 & O3_READABLE))
+        && !(!strcmp(word, "read") && (objects[otmp->otyp].oc_flags3 & O3_READABLE))
         ) {
         silly_thing(word, otmp);
         return (struct obj *) 0;
@@ -3164,41 +3164,41 @@ boolean
 is_worn_correctly(otmp)
 struct obj* otmp;
 {
-	if (otmp->owornmask == 0)
-		return FALSE;
+    if (otmp->owornmask == 0)
+        return FALSE;
 
-	if (is_suit(otmp) && (otmp->owornmask & W_ARM) != 0)
-		return TRUE;
-	if (is_boots(otmp) && (otmp->owornmask & W_ARMF) != 0)
-		return TRUE;
-	if (is_helmet(otmp) && (otmp->owornmask & W_ARMH) != 0)
-		return TRUE;
-	if (is_shirt(otmp) && (otmp->owornmask & W_ARMU) != 0)
-		return TRUE;
-	if (is_robe(otmp) && (otmp->owornmask & W_ARMO) != 0)
-		return TRUE;
-	if (is_cloak(otmp) && (otmp->owornmask & W_ARMC) != 0)
-		return TRUE;
-	if (is_gloves(otmp) && (otmp->owornmask & W_ARMG) != 0)
-		return TRUE;
-	if (is_bracers(otmp) && (otmp->owornmask & W_ARMB) != 0)
-		return TRUE;
-	if (is_shield(otmp) && (otmp->owornmask & (W_ARMS | W_WEP)) != 0)
-		return TRUE;
-	if (is_weapon(otmp) && (otmp->owornmask & (W_ARMS | W_WEP)) != 0)
-		return TRUE;
-	if (is_amulet(otmp) && (otmp->owornmask & W_AMUL) != 0)
-		return TRUE;
-	if (otmp->oclass == RING_CLASS && (otmp->owornmask & W_RING) != 0)
-		return TRUE;
-	if (otmp->oclass == MISCELLANEOUS_CLASS && (otmp->owornmask & W_MISCITEMS) != 0)
-		return TRUE;
-	if (otmp->otyp == SADDLE && (otmp->owornmask & W_SADDLE) != 0)
-		return TRUE;
-	if ((otmp->otyp == BLINDFOLD || otmp->otyp == TOWEL) && (otmp->owornmask & W_BLINDFOLD) != 0)
-		return TRUE;
+    if (is_suit(otmp) && (otmp->owornmask & W_ARM) != 0)
+        return TRUE;
+    if (is_boots(otmp) && (otmp->owornmask & W_ARMF) != 0)
+        return TRUE;
+    if (is_helmet(otmp) && (otmp->owornmask & W_ARMH) != 0)
+        return TRUE;
+    if (is_shirt(otmp) && (otmp->owornmask & W_ARMU) != 0)
+        return TRUE;
+    if (is_robe(otmp) && (otmp->owornmask & W_ARMO) != 0)
+        return TRUE;
+    if (is_cloak(otmp) && (otmp->owornmask & W_ARMC) != 0)
+        return TRUE;
+    if (is_gloves(otmp) && (otmp->owornmask & W_ARMG) != 0)
+        return TRUE;
+    if (is_bracers(otmp) && (otmp->owornmask & W_ARMB) != 0)
+        return TRUE;
+    if (is_shield(otmp) && (otmp->owornmask & (W_ARMS | W_WEP)) != 0)
+        return TRUE;
+    if (is_weapon(otmp) && (otmp->owornmask & (W_ARMS | W_WEP)) != 0)
+        return TRUE;
+    if (is_amulet(otmp) && (otmp->owornmask & W_AMUL) != 0)
+        return TRUE;
+    if (otmp->oclass == RING_CLASS && (otmp->owornmask & W_RING) != 0)
+        return TRUE;
+    if (otmp->oclass == MISCELLANEOUS_CLASS && (otmp->owornmask & W_MISCITEMS) != 0)
+        return TRUE;
+    if (otmp->otyp == SADDLE && (otmp->owornmask & W_SADDLE) != 0)
+        return TRUE;
+    if ((otmp->otyp == BLINDFOLD || otmp->otyp == TOWEL) && (otmp->owornmask & W_BLINDFOLD) != 0)
+        return TRUE;
 
-	return FALSE;
+    return FALSE;
 }
 
 
@@ -3321,13 +3321,13 @@ int show_weights;
            [any duplicate entries in extra_removeables[] won't matter] */
         if (uwep)
             (void) strkitten(extra_removeables, uwep->oclass);
-		if (uarms)
-			(void)strkitten(extra_removeables, uarms->oclass);
-		if (uswapwep)
+        if (uarms)
+            (void)strkitten(extra_removeables, uarms->oclass);
+        if (uswapwep)
             (void) strkitten(extra_removeables, uswapwep->oclass);
-		if (uswapwep2)
-			(void)strkitten(extra_removeables, uswapwep2->oclass);
-		if (uquiver)
+        if (uswapwep2)
+            (void)strkitten(extra_removeables, uswapwep2->oclass);
+        if (uquiver)
             (void) strkitten(extra_removeables, uquiver->oclass);
     }
 
@@ -3584,15 +3584,15 @@ fully_identify_obj(otmp)
 struct obj *otmp;
 {
     makeknown(otmp->otyp);
-	if (otmp->oartifact)
-	{
-		discover_artifact(otmp->oartifact);
-		otmp->aknown = 1;
-	}
+    if (otmp->oartifact)
+    {
+        discover_artifact(otmp->oartifact);
+        otmp->aknown = 1;
+    }
     otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = otmp->mknown = 1;
-	
-	if (has_oname(otmp))
-		otmp->nknown = 1;
+    
+    if (has_oname(otmp))
+        otmp->nknown = 1;
 
     if (Is_container(otmp) || otmp->otyp == STATUE)
         otmp->cknown = otmp->lknown = otmp->tknown = 1;
@@ -3615,7 +3615,7 @@ STATIC_OVL int
 menu_identify(id_limit)
 int id_limit;
 {
-	int original_id_limit = id_limit;
+    int original_id_limit = id_limit;
     menu_item *pick_list;
     int n, i, first = 1, tryct = 5;
     char buf[BUFSZ];
@@ -3623,16 +3623,16 @@ int id_limit;
     /* assumptions:  id_limit > 0 and at least one unID'd item is present */
 
     while (id_limit) 
-	{
+    {
         Sprintf(buf, "What would you like to identify%s?",
-			original_id_limit <= 1 ? "" : first ? " first" : " next");
+            original_id_limit <= 1 ? "" : first ? " first" : " next");
 
         n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
                                          | USE_INVLET | INVORDER_SORT),
                           &pick_list, PICK_ANY, not_fully_identified, 0);
 
         if (n > 0)
-		{
+        {
             play_sfx_sound(SFX_IDENTIFY_SUCCESS);
             if (n > id_limit)
                 n = id_limit;
@@ -3642,21 +3642,21 @@ int id_limit;
             mark_synch(); /* Before we loop to pop open another menu */
             first = 0;
         } 
-		else if (n == -2)
-		{ /* player used ESC to quit menu */
+        else if (n == -2)
+        { /* player used ESC to quit menu */
             break;
         } 
-		else if (n == -1)
-		{ /* no eligible items found */
+        else if (n == -1)
+        { /* no eligible items found */
             pline("That was all.");
             break;
         }
-		else if (!--tryct) { /* stop re-prompting */
+        else if (!--tryct) { /* stop re-prompting */
             pline1(thats_enough_tries);
             break;
         } 
-		else
-		{ /* try again */
+        else
+        { /* try again */
             pline("Choose an item; use ESC to decline.");
         }
     }
@@ -3688,32 +3688,32 @@ boolean learning_id; /* true if we just read unknown identify scroll */
     int res = 0;
 
     if (!unid_cnt)
-	{
+    {
         You("have already identified all %sof your possessions.",
             learning_id ? "the rest " : "");
     } 
-	else if (!id_limit || id_limit >= unid_cnt)
-	{
+    else if (!id_limit || id_limit >= unid_cnt)
+    {
         play_sfx_sound(SFX_IDENTIFY_SUCCESS);
         /* identify everything */
         /* TODO:  use fully_identify_obj and cornline/menu/whatever here */
         for (obj = invent; obj; obj = obj->nobj) 
-		{
+        {
             if (not_fully_identified(obj)) 
-			{
+            {
                 res += identify(obj);
                 if (unid_cnt == 1)
                     break;
             }
         }
     } 
-	else 
-	{
+    else 
+    {
         /* identify up to `id_limit' items */
         n = 0;
         if (flags.menu_style == MENU_TRADITIONAL)
             do
-			{
+            {
                 n = ggetobj("identify", identify, id_limit, FALSE,
                             (unsigned *) 0, 0);
                 if (n < 0)
@@ -3807,7 +3807,7 @@ long quan;       /* if non-0, print this quantity, not obj->quan */
         obj->quan = quan;
     }
 
-	
+    
     /*
      * If let is:
      *  -  Then obj == null and 'txt' refers to hands or fingers.
@@ -3818,15 +3818,15 @@ long quan;       /* if non-0, print this quantity, not obj->quan */
         /* if dot is true, we're doing Iu, otherwise Ix */
         Sprintf(li,
 
-					(iflags.menu_tab_sep ? "%c - %s\t%6ld %s"
+                    (iflags.menu_tab_sep ? "%c - %s\t%6ld %s"
                                     : "%c - %-45s %6ld %s"),
-			(dot && use_invlet ? obj->invlet : let),
-			(txt ? txt : doname(obj)), cost, currency(cost));
+            (dot && use_invlet ? obj->invlet : let),
+            (txt ? txt : doname(obj)), cost, currency(cost));
     } else {
         /* ordinary inventory display or pickup message */
         Sprintf(li, 
-			"%c - %s%s", (use_invlet ? obj->invlet : let),
-			(txt ? txt : doname(obj)), (dot ? "." : ""));
+            "%c - %s%s", (use_invlet ? obj->invlet : let),
+            (txt ? txt : doname(obj)), (dot ? "." : ""));
     }
     if (savequan)
         obj->quan = savequan;
@@ -3842,11 +3842,11 @@ ddoinv()
 {
     //(void) display_inventory((char *) 0, FALSE, 1);
 
-	char invlet;
+    char invlet;
 
-	invlet = display_inventory_with_header((const char*)0, TRUE, 1);
-	if (!invlet || invlet == '\033' || invlet == '\0')
-		return 0;
+    invlet = display_inventory_with_header((const char*)0, TRUE, 1);
+    if (!invlet || invlet == '\033' || invlet == '\0')
+        return 0;
 
     if (flags.inventory_obj_cmd)
     {
@@ -4141,17 +4141,17 @@ boolean addinventoryheader;
     unsigned sortflags;
     Loot *sortedinvent, *srtinv;
     boolean wizid = FALSE;
-	int wtcount = 0;
+    int wtcount = 0;
 
-	boolean loadstonecorrectly = FALSE;
+    boolean loadstonecorrectly = FALSE;
 
-	if(show_weights == 1) // Inventory
-		loadstonecorrectly = TRUE;
-	else if (show_weights == 2) { // Pick up
-		loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
-	}
-	else if (show_weights == 3) // Drop
-		loadstonecorrectly = TRUE;
+    if(show_weights == 1) // Inventory
+        loadstonecorrectly = TRUE;
+    else if (show_weights == 2) { // Pick up
+        loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
+    }
+    else if (show_weights == 3) // Drop
+        loadstonecorrectly = TRUE;
 
     if (lets && !*lets)
         lets = 0; /* simplify tests: (lets) instead of (lets && *lets) */
@@ -4275,10 +4275,10 @@ boolean addinventoryheader;
 
    if(strcmp(headertext, "") != 0)
    {
-	   add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
-		   headertext, MENU_UNSELECTED);
-	   add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
-		   "", MENU_UNSELECTED);
+       add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
+           headertext, MENU_UNSELECTED);
+       add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
+           "", MENU_UNSELECTED);
    }
 nextclass:
     classcount = 0;
@@ -4302,16 +4302,16 @@ nextclass:
             else
                 any.a_char = ilet;
 
-			/*calculate weight sum here*/
-			if(otmp->otyp == LOADSTONE && !loadstonecorrectly)
-				wtcount += objects[LUCKSTONE].oc_weight;
-			else
-				wtcount += otmp->owt;
+            /*calculate weight sum here*/
+            if(otmp->otyp == LOADSTONE && !loadstonecorrectly)
+                wtcount += objects[LUCKSTONE].oc_weight;
+            else
+                wtcount += otmp->owt;
 
-			char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
+            char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
 
-			add_extended_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any, obj_to_extended_menu_info(otmp), ilet,
-				applied_class_accelerator,
+            add_extended_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any, obj_to_extended_menu_info(otmp), ilet,
+                applied_class_accelerator,
                      ATR_NONE, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED);
         }
     }
@@ -4342,11 +4342,11 @@ nextclass:
                  not_carrying_anything, MENU_UNSELECTED);
         want_reply = FALSE;
     }
-	else
-	{
-		if (flags.show_weight_summary)
-			add_weight_summary(win, wtcount, show_weights);
-	}
+    else
+    {
+        if (flags.show_weight_summary)
+            add_weight_summary(win, wtcount, show_weights);
+    }
 
     if (addinventoryheader)
     {
@@ -4376,7 +4376,7 @@ nextclass:
             for (i = 0; i < n; ++i) {
                 otmp = selected[i].item.a_obj;
                 if (otmp == &wizid_fakeobj) {
-					(void)identify_pack(0, FALSE);
+                    (void)identify_pack(0, FALSE);
                 } else {
                     if (not_fully_identified(otmp))
                         (void) identify(otmp);
@@ -4400,133 +4400,133 @@ winid win;
 int total_ounce_weight;
 int show_weights;
 {
-	if (show_weights > 0)
-	{
-		anything any = zeroany;
-		add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
-			"Weight Summary", MENU_UNSELECTED);
+    if (show_weights > 0)
+    {
+        anything any = zeroany;
+        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+            "Weight Summary", MENU_UNSELECTED);
 
-		char wtbuf[BUFSZ];
-		char carrybuf[BUFSZ];
-		char totalbuf[BUFSZ];
+        char wtbuf[BUFSZ];
+        char carrybuf[BUFSZ];
+        char totalbuf[BUFSZ];
 
-		int iw, wc, yourweight, yourenclevel, curlevelminweight = 0, curlevelmaxweight = 0;
-		//		double curlevelminweight_lbs = 0, curlevelmaxweight_lbs = 0;
+        int iw, wc, yourweight, yourenclevel, curlevelminweight = 0, curlevelmaxweight = 0;
+        //        double curlevelminweight_lbs = 0, curlevelmaxweight_lbs = 0;
 
-		iw = inv_weight();
-		wc = weight_cap();
-		yourenclevel = near_capacity();
-		curlevelminweight = enclevelminimumweight(yourenclevel);
-		curlevelmaxweight = enclevelmaximumweight(yourenclevel);
+        iw = inv_weight();
+        wc = weight_cap();
+        yourenclevel = near_capacity();
+        curlevelminweight = enclevelminimumweight(yourenclevel);
+        curlevelmaxweight = enclevelmaximumweight(yourenclevel);
 
-		char curlevelminbuf[BUFSZ] = "";
-		printweight(curlevelminbuf, curlevelminweight, FALSE, FALSE);
+        char curlevelminbuf[BUFSZ] = "";
+        printweight(curlevelminbuf, curlevelminweight, FALSE, FALSE);
 
-		char curlevelmaxbuf[BUFSZ] = "";
-		printweight(curlevelmaxbuf, curlevelmaxweight, FALSE, FALSE);
+        char curlevelmaxbuf[BUFSZ] = "";
+        printweight(curlevelmaxbuf, curlevelmaxweight, FALSE, FALSE);
 
-		//		curlevelminweight_lbs = ((double)curlevelminweight) / 16; //ounces to lbs
-		//		curlevelmaxweight_lbs = ((double)curlevelmaxweight) / 16; //ounces to lbs
-		yourweight = iw + wc;
+        //        curlevelminweight_lbs = ((double)curlevelminweight) / 16; //ounces to lbs
+        //        curlevelmaxweight_lbs = ((double)curlevelmaxweight) / 16; //ounces to lbs
+        yourweight = iw + wc;
 
-		//		double carryingweight = ((double)yourweight) / 16; //ounces to lbs
-		//		double burdnedweightlimit = ((double)wc) / 16; //ounces to lbs
+        //        double carryingweight = ((double)yourweight) / 16; //ounces to lbs
+        //        double burdnedweightlimit = ((double)wc) / 16; //ounces to lbs
 
-		char carryingbuf[BUFSZ] = "";
-		printweight(carryingbuf, yourweight, FALSE, FALSE);
+        char carryingbuf[BUFSZ] = "";
+        printweight(carryingbuf, yourweight, FALSE, FALSE);
 
-		//		double totalweight = ((double)total_ounce_weight) / 16; //ounces to lbs
+        //        double totalweight = ((double)total_ounce_weight) / 16; //ounces to lbs
 
-		const char* burdentype[] = { "unencumbered", "burdened",
-											 "stressed",     "strained",
-											 "overtaxed",    "overloaded" };
+        const char* burdentype[] = { "unencumbered", "burdened",
+                                             "stressed",     "strained",
+                                             "overtaxed",    "overloaded" };
 
-		const char* verb = burdentype[yourenclevel];
+        const char* verb = burdentype[yourenclevel];
 
-		// Inventory show_weights = 1
-		// Pick up show_weights = 2
-		// Drop show_weights = 3
-		// Inventory show_weights, but no You are-line = 4
-		// Pick up show_weights, but no You are-line = 5
-		// Drop show_weights, but no You are-line = 6
+        // Inventory show_weights = 1
+        // Pick up show_weights = 2
+        // Drop show_weights = 3
+        // Inventory show_weights, but no You are-line = 4
+        // Pick up show_weights, but no You are-line = 5
+        // Drop show_weights, but no You are-line = 6
 
         boolean tiles_being_used = FALSE;
 #if 0
         tiles_being_used = TRUE;
 #endif
 
-		if (total_ounce_weight > 0)
-		{
-			char weightbuf[BUFSZ];
-			printweight(weightbuf, total_ounce_weight, !flags.inventory_weights_last, FALSE);
-			if (flags.inventory_weights_last || tiles_being_used)
-				Sprintf(wtbuf, "%s of total weight.", weightbuf);
-			else
-				Sprintf(wtbuf, "  = %s of total weight", weightbuf);
+        if (total_ounce_weight > 0)
+        {
+            char weightbuf[BUFSZ];
+            printweight(weightbuf, total_ounce_weight, !flags.inventory_weights_last, FALSE);
+            if (flags.inventory_weights_last || tiles_being_used)
+                Sprintf(wtbuf, "%s of total weight.", weightbuf);
+            else
+                Sprintf(wtbuf, "  = %s of total weight", weightbuf);
 
             add_menu(win, NO_GLYPH, &any, 0, 0, 0, wtbuf, MENU_UNSELECTED);
-		}
+        }
 
-		if (show_weights > 0 && show_weights <= 3)
-		{
-			//Back end of printout
-			if (yourenclevel == UNENCUMBERED)
-				Sprintf(wtbuf, "%s until %s.", verb, curlevelmaxbuf); //(int)curlevelmaxweight_lbs, (int)curlevelmaxweight_lbs == 1 ? "lb" : "lbs");
-			else if (yourenclevel == OVERLOADED)
-				Sprintf(wtbuf, "%s with at least %s.", verb, curlevelminbuf); // (int)curlevelminweight_lbs, (int)curlevelminweight_lbs == 1 ? "lb" : "lbs");
-			else
-				Sprintf(wtbuf, "%s between %s and %s.", verb, curlevelminbuf, curlevelmaxbuf); // (int)curlevelminweight_lbs, (int)curlevelmaxweight_lbs, ((int)curlevelminweight_lbs == 1 && (int)curlevelmaxweight_lbs == 1) ? "lb" : "lbs");
+        if (show_weights > 0 && show_weights <= 3)
+        {
+            //Back end of printout
+            if (yourenclevel == UNENCUMBERED)
+                Sprintf(wtbuf, "%s until %s.", verb, curlevelmaxbuf); //(int)curlevelmaxweight_lbs, (int)curlevelmaxweight_lbs == 1 ? "lb" : "lbs");
+            else if (yourenclevel == OVERLOADED)
+                Sprintf(wtbuf, "%s with at least %s.", verb, curlevelminbuf); // (int)curlevelminweight_lbs, (int)curlevelminweight_lbs == 1 ? "lb" : "lbs");
+            else
+                Sprintf(wtbuf, "%s between %s and %s.", verb, curlevelminbuf, curlevelmaxbuf); // (int)curlevelminweight_lbs, (int)curlevelmaxweight_lbs, ((int)curlevelminweight_lbs == 1 && (int)curlevelmaxweight_lbs == 1) ? "lb" : "lbs");
 
 
-			//Front end of printout
-			if (show_weights == 1 || (show_weights == 2 && total_ounce_weight == yourweight))
-			{
-				Sprintf(carrybuf, "%s", "You are ");
-			}
-			else
-			{
-				Sprintf(carrybuf, "You are carrying %s and ", carryingbuf);
+            //Front end of printout
+            if (show_weights == 1 || (show_weights == 2 && total_ounce_weight == yourweight))
+            {
+                Sprintf(carrybuf, "%s", "You are ");
+            }
+            else
+            {
+                Sprintf(carrybuf, "You are carrying %s and ", carryingbuf);
 #if 0
-				if (carryingweight >= 10)
-					Sprintf(carrybuf, "You are carrying %d %s and ", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs");
-				else
-					Sprintf(carrybuf, "You are carrying %1.1f %s and ", carryingweight, carryingweight == 1 ? "lb" : "lbs");
+                if (carryingweight >= 10)
+                    Sprintf(carrybuf, "You are carrying %d %s and ", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs");
+                else
+                    Sprintf(carrybuf, "You are carrying %1.1f %s and ", carryingweight, carryingweight == 1 ? "lb" : "lbs");
 #endif
-			}
+            }
 
-			Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
-			add_menu(win, NO_GLYPH, &any, 0, 0, 0, totalbuf, MENU_UNSELECTED);
-		}
-	}
+            Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
+            add_menu(win, NO_GLYPH, &any, 0, 0, 0, totalbuf, MENU_UNSELECTED);
+        }
+    }
 }
 
 int
 enclevelminimumweight(enclevel)
 enum encumbrance_types enclevel;
 {
-	int weight;
-	int wt = weight_cap();
+    int weight;
+    int wt = weight_cap();
 
-	if (enclevel == UNENCUMBERED)
-		weight = 0;
-	else
-		weight = wt + (enclevel - 1) * wt / 2;
-	return weight;
+    if (enclevel == UNENCUMBERED)
+        weight = 0;
+    else
+        weight = wt + (enclevel - 1) * wt / 2;
+    return weight;
 }
 
 int
 enclevelmaximumweight(enclevel)
 enum encumbrance_types enclevel;
 {
-	int weight;
-	int wt = weight_cap();
+    int weight;
+    int wt = weight_cap();
 
-	if (enclevel == OVERLOADED)
-		weight = 1000000;
-	else
-		weight = (wt + enclevel * wt / 2 ) - 1;
+    if (enclevel == OVERLOADED)
+        weight = 1000000;
+    else
+        weight = (wt + enclevel * wt / 2 ) - 1;
 
-	return weight;
+    return weight;
 }
 
 void
@@ -4535,95 +4535,95 @@ winid win;
 int total_ounce_weight;
 int show_weights;
 {
-	if (show_weights > 0)
-	{
-		char buf[BUFSZ];
-		char wtbuf[BUFSZ];
-		char carrybuf[BUFSZ];
-		char totalbuf[BUFSZ];
+    if (show_weights > 0)
+    {
+        char buf[BUFSZ];
+        char wtbuf[BUFSZ];
+        char carrybuf[BUFSZ];
+        char totalbuf[BUFSZ];
 
-		int iw, wc, yourweight, yourenclevel, curlevelminweight = 0, curlevelmaxweight = 0;
-//		double curlevelminweight_lbs = 0, curlevelmaxweight_lbs = 0;
-		iw = inv_weight();
-		wc = weight_cap();
-		yourenclevel = near_capacity();
-		curlevelminweight = enclevelminimumweight(yourenclevel);
-		curlevelmaxweight = enclevelmaximumweight(yourenclevel);
-//		curlevelminweight_lbs = ((double)curlevelminweight) / 16; //ounces to lbs
-//		curlevelmaxweight_lbs = ((double)curlevelmaxweight) / 16; //ounces to lbs
+        int iw, wc, yourweight, yourenclevel, curlevelminweight = 0, curlevelmaxweight = 0;
+//        double curlevelminweight_lbs = 0, curlevelmaxweight_lbs = 0;
+        iw = inv_weight();
+        wc = weight_cap();
+        yourenclevel = near_capacity();
+        curlevelminweight = enclevelminimumweight(yourenclevel);
+        curlevelmaxweight = enclevelmaximumweight(yourenclevel);
+//        curlevelminweight_lbs = ((double)curlevelminweight) / 16; //ounces to lbs
+//        curlevelmaxweight_lbs = ((double)curlevelmaxweight) / 16; //ounces to lbs
 
-		char curlevelminbuf[BUFSZ] = "";
-		printweight(curlevelminbuf, curlevelminweight, FALSE, FALSE);
+        char curlevelminbuf[BUFSZ] = "";
+        printweight(curlevelminbuf, curlevelminweight, FALSE, FALSE);
 
-		char curlevelmaxbuf[BUFSZ] = "";
-		printweight(curlevelmaxbuf, curlevelmaxweight, FALSE, FALSE);
+        char curlevelmaxbuf[BUFSZ] = "";
+        printweight(curlevelmaxbuf, curlevelmaxweight, FALSE, FALSE);
 
-		yourweight = iw + wc;
+        yourweight = iw + wc;
 
-		const char* burdentype[] = { "unencumbered", "burdened",
-											 "stressed",     "strained",
-											 "overtaxed",    "overloaded" };
+        const char* burdentype[] = { "unencumbered", "burdened",
+                                             "stressed",     "strained",
+                                             "overtaxed",    "overloaded" };
 
-		const char* verb = burdentype[yourenclevel];
+        const char* verb = burdentype[yourenclevel];
 
-		// Inventory show_weights = 1
-		// Pick up show_weights = 2
-		// Drop show_weights = 3
-		// Inventory show_weights, but no You are-line = 4
-		// Pick up show_weights, but no You are-line = 5
-		// Drop show_weights, but no You are-line = 6
+        // Inventory show_weights = 1
+        // Pick up show_weights = 2
+        // Drop show_weights = 3
+        // Inventory show_weights, but no You are-line = 4
+        // Pick up show_weights, but no You are-line = 5
+        // Drop show_weights, but no You are-line = 6
 
 
-		//NOTE: Nested container listing should not be used with show_weights on
-//		double carryingweight = ((double)yourweight) / 16; // ounces to lbs
-		char carryingweightbuf[BUFSZ] = "";
-		printweight(carryingweightbuf, yourweight, !flags.inventory_weights_last, FALSE);
-		//		double unburdenedweight = ((double)(weight_cap())) / 16; // ounces to lbs
-//		double totalweight = ((double)total_ounce_weight) / 16; // ounces to lbs
-		char totalweightbuf[BUFSZ] = "";
-		printweight(totalweightbuf, total_ounce_weight, FALSE, FALSE);
+        //NOTE: Nested container listing should not be used with show_weights on
+//        double carryingweight = ((double)yourweight) / 16; // ounces to lbs
+        char carryingweightbuf[BUFSZ] = "";
+        printweight(carryingweightbuf, yourweight, !flags.inventory_weights_last, FALSE);
+        //        double unburdenedweight = ((double)(weight_cap())) / 16; // ounces to lbs
+//        double totalweight = ((double)total_ounce_weight) / 16; // ounces to lbs
+        char totalweightbuf[BUFSZ] = "";
+        printweight(totalweightbuf, total_ounce_weight, FALSE, FALSE);
 
-		if (flags.inventory_weights_last)
-			Sprintf(buf, "You have %s of total weight.", totalweightbuf);
-		else
-			Sprintf(buf, "   = %s of total weight", totalweightbuf);
+        if (flags.inventory_weights_last)
+            Sprintf(buf, "You have %s of total weight.", totalweightbuf);
+        else
+            Sprintf(buf, "   = %s of total weight", totalweightbuf);
 
 #if 0
-		if (totalweight >= 1000)
-			Sprintf(buf, "   = %3.0f %s of total weight", totalweight / 1000, "cwt");
-		else if (totalweight >= 10)
-			Sprintf(buf, "   = %3.0f %s of total weight", totalweight, totalweight == 1 ? "lb" : "lbs");
-		else
-			Sprintf(buf, "   = %1.1f %s of total weight", totalweight, totalweight == 1 ? "lb" : "lbs");
+        if (totalweight >= 1000)
+            Sprintf(buf, "   = %3.0f %s of total weight", totalweight / 1000, "cwt");
+        else if (totalweight >= 10)
+            Sprintf(buf, "   = %3.0f %s of total weight", totalweight, totalweight == 1 ? "lb" : "lbs");
+        else
+            Sprintf(buf, "   = %1.1f %s of total weight", totalweight, totalweight == 1 ? "lb" : "lbs");
 #endif
 
-		putstr(win, 0, buf);
+        putstr(win, 0, buf);
 
 
-		if (show_weights > 0 && show_weights <= 3)
-		{
-			//Back end of printout
-			if (yourenclevel == UNENCUMBERED)
-				Sprintf(wtbuf, "%s until %s.", verb, curlevelmaxbuf); // (int)curlevelmaxweight_lbs, (int)curlevelmaxweight_lbs == 1 ? "lb" : "lbs");
-			else if (yourenclevel == OVERLOADED)
-				Sprintf(wtbuf, "%s with at least %s.", verb, curlevelminbuf); // (int)curlevelminweight_lbs, (int)curlevelminweight_lbs == 1 ? "lb" : "lbs");
-			else
-				Sprintf(wtbuf, "%s between %s and %s.", verb, curlevelminbuf, curlevelmaxbuf); // , ((int)curlevelminweight_lbs == 1 && (int)curlevelmaxweight_lbs == 1) ? "lb" : "lbs");
+        if (show_weights > 0 && show_weights <= 3)
+        {
+            //Back end of printout
+            if (yourenclevel == UNENCUMBERED)
+                Sprintf(wtbuf, "%s until %s.", verb, curlevelmaxbuf); // (int)curlevelmaxweight_lbs, (int)curlevelmaxweight_lbs == 1 ? "lb" : "lbs");
+            else if (yourenclevel == OVERLOADED)
+                Sprintf(wtbuf, "%s with at least %s.", verb, curlevelminbuf); // (int)curlevelminweight_lbs, (int)curlevelminweight_lbs == 1 ? "lb" : "lbs");
+            else
+                Sprintf(wtbuf, "%s between %s and %s.", verb, curlevelminbuf, curlevelmaxbuf); // , ((int)curlevelminweight_lbs == 1 && (int)curlevelmaxweight_lbs == 1) ? "lb" : "lbs");
 
 
-			Sprintf(carrybuf, "You are carrying %s and ", carryingweightbuf); // , (int)carryingweight == 1 ? "lb" : "lbs");
+            Sprintf(carrybuf, "You are carrying %s and ", carryingweightbuf); // , (int)carryingweight == 1 ? "lb" : "lbs");
 #if 0
-			if (carryingweight >= 10)
-				Sprintf(carrybuf, "You are carrying %d %s and ", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs");
-			else
-				Sprintf(carrybuf, "You are carrying %1.1f %s and ", carryingweight, carryingweight == 1 ? "lb" : "lbs");
+            if (carryingweight >= 10)
+                Sprintf(carrybuf, "You are carrying %d %s and ", (int)carryingweight, (int)carryingweight == 1 ? "lb" : "lbs");
+            else
+                Sprintf(carrybuf, "You are carrying %1.1f %s and ", carryingweight, carryingweight == 1 ? "lb" : "lbs");
 #endif
 
-			Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
+            Sprintf(totalbuf, "%s%s", carrybuf, wtbuf);
 
-			putstr(win, 0, totalbuf);
-		}
-	}
+            putstr(win, 0, totalbuf);
+        }
+    }
 }
 /*
  * If lets == NULL or "", list all objects in the inventory.  Otherwise,
@@ -5189,8 +5189,8 @@ int x, y;
         if (is_drawbridge_wall(x, y) >= 0)
             dfeature = "open drawbridge portcullis", cmap = -1;
     }
-	else if (IS_FOUNTAIN(ltyp))
-		dfeature = get_fountain_name(x, y); //cmap = S_fountain; /* "fountain" */
+    else if (IS_FOUNTAIN(ltyp))
+        dfeature = get_fountain_name(x, y); //cmap = S_fountain; /* "fountain" */
     else if (IS_THRONE(ltyp))
         cmap = S_throne; /* "opulent throne" */
     else if (is_lava(x, y))
@@ -5419,17 +5419,17 @@ boolean picked_some;
         else
             There("are %s%s objects here.",
 #ifdef ANDROID
-			(obj_cnt == 2) ? "two" : (
+            (obj_cnt == 2) ? "two" : (
 #endif
-				(obj_cnt < 5)
+                (obj_cnt < 5)
                       ? "a few"
                       : (obj_cnt < 10)
                           ? "several"
                           : "many"
 #ifdef ANDROID
-				)
+                )
 #endif
-				,
+                ,
                   picked_some ? " more" : "");
         for (; otmp; otmp = otmp->nexthere)
             if (otmp->otyp == CORPSE && will_feel_cockatrice(otmp, FALSE)) {
@@ -5457,9 +5457,9 @@ boolean picked_some;
             feel_cockatrice(otmp, FALSE);
     } else {
         char buf[BUFSZ];
-		char buf2[BUFSZ];
-		int count = 0;
-		int totalweight = 0;
+        char buf2[BUFSZ];
+        int count = 0;
+        int totalweight = 0;
 
         display_nhwindow(WIN_MESSAGE, FALSE);
         tmpwin = create_nhwindow(NHW_MENU);
@@ -5471,7 +5471,7 @@ boolean picked_some;
                 picked_some ? "Other things" : "Things",
                 Blind ? "you feel" : "are");
         putstr(tmpwin, 0, buf);
-		totalweight = 0;
+        totalweight = 0;
         for (; otmp; otmp = otmp->nexthere) {
             if (otmp->otyp == CORPSE && will_feel_cockatrice(otmp, FALSE)) {
                 felt_cockatrice = TRUE;
@@ -5479,17 +5479,17 @@ boolean picked_some;
                 putstr(tmpwin, 0, buf);
                 break;
             }
-			count++;
-			if(otmp->otyp == LOADSTONE && !objects[LOADSTONE].oc_name_known)
-				totalweight += objects[LUCKSTONE].oc_weight;
-			else
-				totalweight += otmp->owt;
-			Sprintf(buf2, "%2d - %s", count, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known))); //Looking at what is on the ground
+            count++;
+            if(otmp->otyp == LOADSTONE && !objects[LOADSTONE].oc_name_known)
+                totalweight += objects[LUCKSTONE].oc_weight;
+            else
+                totalweight += otmp->owt;
+            Sprintf(buf2, "%2d - %s", count, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known))); //Looking at what is on the ground
             putstr(tmpwin, 0, buf2);
         }
 
-		if (flags.show_weight_summary)
-			add_weight_summary_putstr(tmpwin, totalweight, 1);
+        if (flags.show_weight_summary)
+            add_weight_summary_putstr(tmpwin, totalweight, 1);
 
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);
@@ -5584,8 +5584,8 @@ register struct obj *otmp, *obj;
 
     if (obj->unpaid != otmp->unpaid || obj->enchantment != otmp->enchantment || obj->elemental_enchantment != otmp->elemental_enchantment
         || obj->exceptionality != otmp->exceptionality || obj->mythic_prefix != otmp->mythic_prefix || obj->mythic_suffix != otmp->mythic_suffix
-		|| obj->charges != otmp->charges || obj->special_quality != otmp->special_quality || obj->speflags != otmp->speflags
-		|| obj->cursed != otmp->cursed || obj->blessed != otmp->blessed
+        || obj->charges != otmp->charges || obj->special_quality != otmp->special_quality || obj->speflags != otmp->speflags
+        || obj->cursed != otmp->cursed || obj->blessed != otmp->blessed
         || obj->no_charge != otmp->no_charge || obj->obroken != otmp->obroken
         || obj->otrapped != otmp->otrapped || obj->lamplit != otmp->lamplit
         || obj->bypass != otmp->bypass)
@@ -5645,16 +5645,16 @@ register struct obj *otmp, *obj;
             && strncmp(ONAME(obj), ONAME(otmp), objnamelth)))
         return FALSE;
 
-	/* if they have user-specified names, make sure they're the same */
-	objnamelth = strlen(safe_uoname(obj));
-	otmpnamelth = strlen(safe_uoname(otmp));
-	if ((objnamelth != otmpnamelth
-		&& ((objnamelth && otmpnamelth) || obj->otyp == CORPSE))
-		|| (objnamelth && otmpnamelth
-			&& strncmp(UONAME(obj), UONAME(otmp), objnamelth)))
-		return FALSE;
+    /* if they have user-specified names, make sure they're the same */
+    objnamelth = strlen(safe_uoname(obj));
+    otmpnamelth = strlen(safe_uoname(otmp));
+    if ((objnamelth != otmpnamelth
+        && ((objnamelth && otmpnamelth) || obj->otyp == CORPSE))
+        || (objnamelth && otmpnamelth
+            && strncmp(UONAME(obj), UONAME(otmp), objnamelth)))
+        return FALSE;
 
-	/* for the moment, any additional information is incompatible */
+    /* for the moment, any additional information is incompatible */
     if (has_omonst(obj) || has_omid(obj) || has_olong(obj) || has_omonst(otmp)
         || has_omid(otmp) || has_olong(otmp))
         return FALSE;
@@ -5689,13 +5689,13 @@ int
 doprwep()
 {
     if ((!u.twoweap && !uwep) || (u.twoweap && !uwep && !uarms))
-	{
+    {
         You("are empty %s.", body_part(HANDED));
     }
-	else
-	{
-		if(uwep)
-	        prinv((char *) 0, uwep, 0L);
+    else
+    {
+        if(uwep)
+            prinv((char *) 0, uwep, 0L);
         if (u.twoweap && uarms)
             prinv((char *) 0, uarms, 0L);
     }
@@ -5745,17 +5745,17 @@ doprarm()
             lets[ct++] = obj_to_let(uarmu);
         if (uarm)
             lets[ct++] = obj_to_let(uarm);
-		if (uarmo)
-			lets[ct++] = obj_to_let(uarmo);
-		if (uarmc)
+        if (uarmo)
+            lets[ct++] = obj_to_let(uarmo);
+        if (uarmc)
             lets[ct++] = obj_to_let(uarmc);
         if (uarmh)
             lets[ct++] = obj_to_let(uarmh);
         if (uarms)
             lets[ct++] = obj_to_let(uarms);
-		if (uarmb)
-			lets[ct++] = obj_to_let(uarmb);
-		if (uarmg)
+        if (uarmb)
+            lets[ct++] = obj_to_let(uarmb);
+        if (uarmg)
             lets[ct++] = obj_to_let(uarmg);
         if (uarmf)
             lets[ct++] = obj_to_let(uarmf);
@@ -5955,7 +5955,7 @@ const char*
 get_class_name(oclass)
 char oclass;
 {
-	return names[(int)oclass];
+    return names[(int)oclass];
 }
 
 
@@ -6185,7 +6185,7 @@ doorganize() /* inventory organizer by Del Lamb */
         /* it's tempting to pull this outside the loop, but merged() could
            free ONAME(obj) [via obfree()] and replace it with ONAME(otmp) */
         objname = has_oname(obj) ? ONAME(obj) : (char *) 0;
-		uobjname = has_uoname(obj) ? UONAME(obj) : (char*)0;
+        uobjname = has_uoname(obj) ? UONAME(obj) : (char*)0;
 
         if (collect) {
             /* Collecting: #adjust an inventory stack into its same slot;
@@ -6195,9 +6195,9 @@ doorganize() /* inventory organizer by Del Lamb */
                the 'from' stack (obj) with a name and candidate (otmp)
                without one, not unnamed 'from' with named candidate. */
             otmpname = has_oname(otmp) ? ONAME(otmp) : (char *) 0;
-			uotmpname = has_uoname(otmp) ? UONAME(otmp) : (char*)0;
-			if ((!otmpname || (objname && !strcmp(objname, otmpname)))
-				&& (!uotmpname || (uobjname && !strcmp(uobjname, uotmpname)))
+            uotmpname = has_uoname(otmp) ? UONAME(otmp) : (char*)0;
+            if ((!otmpname || (objname && !strcmp(objname, otmpname)))
+                && (!uotmpname || (uobjname && !strcmp(uobjname, uotmpname)))
                 && merged(&otmp, &obj)) {
                 adj_type = "Merging:";
                 obj = otmp;

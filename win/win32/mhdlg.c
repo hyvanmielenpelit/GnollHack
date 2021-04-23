@@ -1,5 +1,5 @@
-/* GnollHack 4.0	mhdlg.c	$NHDT-Date: 1544695946 2018/12/13 10:12:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.30 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/* GnollHack 4.0    mhdlg.c    $NHDT-Date: 1544695946 2018/12/13 10:12:26 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.30 $ */
+/* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 /* various dialog boxes are defined here */
@@ -148,7 +148,7 @@ GetlinDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SendDlgItemMessage(hWnd, IDC_GETLIN_EDIT, WM_GETTEXT,
                                (WPARAM) sizeof(wbuf), (LPARAM) wbuf);
             NH_W2A(wbuf, data->result, data->result_size);
-			wbuf[BUFSZ - 1] = '\0';
+            wbuf[BUFSZ - 1] = '\0';
         /* Fall through. */
 
         /* cancel button was pressed */
@@ -540,7 +540,7 @@ plselInitDialog(HWND hWnd)
             lvitem.pszText = NH_A2W(roles[i].name.m, wbuf, BUFSZ);
         if (ListView_InsertItem(data->control_role, &lvitem) == -1) {
             panic("cannot insert menu item");
-			return;
+            return;
         }
         data->role_count++;
     }
@@ -560,7 +560,7 @@ plselInitDialog(HWND hWnd)
         lvitem.pszText = NH_A2W(races[i].noun, wbuf, BUFSZ);
         if (ListView_InsertItem(data->control_race, &lvitem) == -1) {
             panic("cannot insert menu item");
-			return;
+            return;
         }
         data->race_count++;
     }

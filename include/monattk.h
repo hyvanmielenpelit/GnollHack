@@ -1,12 +1,12 @@
-/* GnollHack 4.0	monattk.h	$NHDT-Date: 1432512775 2015/05/25 00:12:55 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
+/* GnollHack 4.0    monattk.h    $NHDT-Date: 1432512775 2015/05/25 00:12:55 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
 /* GnollHack may be freely redistributed.  See license for details. */
 /* Copyright 1988, M. Stephenson */
 
 #ifndef MONATTK_H
 #define MONATTK_H
 
-/*	Add new attack types below - ordering affects experience (exper.c).
- *	Attacks > AT_BUTT are worth extra experience.
+/*    Add new attack types below - ordering affects experience (exper.c).
+ *    Attacks > AT_BUTT are worth extra experience.
  */
 #define AT_ANY (-1) /* fake attack; dmgtype_fromattack wildcard */
 #define AT_NONE 0   /* no attack, passive moved to 252 */
@@ -33,10 +33,10 @@
 #define AT_WEAP 254 /* uses weapon */
 #define AT_MAGC 255 /* uses magic spell(s) */
 
-/*	Add new damage types below.
+/*    Add new damage types below.
  *
- *	Note that 1-10 correspond to the types of attack used in buzz().
- *	Please don't disturb the order unless you rewrite the buzz() code.
+ *    Note that 1-10 correspond to the types of attack used in buzz().
+ *    Please don't disturb the order unless you rewrite the buzz() code.
  */
 #define AD_NONE (-1)   /* None */
 #define AD_ANY (-1) /* fake damage; attacktype_fordmg wildcard */

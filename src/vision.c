@@ -1,4 +1,4 @@
-/* GnollHack 4.0	vision.c	$NHDT-Date: 1448013598 2015/11/20 09:59:58 $  $NHDT-Branch: master $:$NHDT-Revision: 1.27 $ */
+/* GnollHack 4.0    vision.c    $NHDT-Date: 1448013598 2015/11/20 09:59:58 $  $NHDT-Branch: master $:$NHDT-Revision: 1.27 $ */
 /* Copyright (c) Dean Luick, with acknowledgements to Dave Cohrs, 1990. */
 /* GnollHack may be freely redistributed.  See license for details.       */
 
@@ -537,12 +537,12 @@ int control;
 
     /* You see nothing, nothing can see you --- if swallowed or refreshing. */
     if (u.uswallow || control == 2) 
-	{
+    {
         /* do nothing -- get_unused_cs() nulls out the new work area */
         ;
     } 
-	else if (Blind) 
-	{
+    else if (Blind) 
+    {
         /*
          * Calculate the could_see array even when blind so that monsters
          * can see you, even if you can't see them.  Note that the current
@@ -566,7 +566,7 @@ int control;
         viz_array = next_array;
 
         for (row = 0; row < ROWNO; row++)
-		{
+        {
             old_row = temp_array[row];
 
             /* Find the min and max positions on the row. */
@@ -581,16 +581,16 @@ int control;
         /* skip the normal update loop */
         goto skip;
     }
-	else if (Is_rogue_level(&u.uz))
-	{
+    else if (Is_rogue_level(&u.uz))
+    {
         rogue_vision(next_array, next_rmin, next_rmax);
     }
-	else 
-	{
+    else 
+    {
         int has_night_vision = 1; /* hero has night vision */
 
         if (Underwater && !Is_waterlevel(&u.uz)) 
-		{
+        {
             /*
              * The hero is under water.  Only see surrounding locations if
              * they are also underwater.  This overrides night vision but
@@ -610,8 +610,8 @@ int control;
 
         /* if in a pit, just update for immediate locations */
         } 
-		else if (u.utrap && u.utraptype == TT_PIT)
-		{
+        else if (u.utrap && u.utraptype == TT_PIT)
+        {
             for (row = u.uy - 1; row <= u.uy + 1; row++) {
                 if (row < 0)
                     continue;
@@ -626,7 +626,7 @@ int control;
                     next_row[col] = IN_SIGHT | COULD_SEE;
             }
         } 
-		else
+        else
             view_from(u.uy, u.ux, next_array, next_rmin, next_rmax, 0,
                       (void FDECL((*), (int, int, genericptr_t))) 0,
                       (genericptr_t) 0);
@@ -635,9 +635,9 @@ int control;
          * Set the IN_SIGHT bit for xray and night vision.
          */
         if (u.xray_range >= 0) 
-		{
+        {
             if (u.xray_range)
-			{
+            {
                 ranges = circle_ptr(u.xray_range);
 
                 for (row = u.uy - u.xray_range; row <= u.uy + u.xray_range;
@@ -653,7 +653,7 @@ int control;
                     stop = min(COLNO - 1, u.ux + ranges[dy]);
 
                     for (col = start; col <= stop; col++) 
-					{
+                    {
                         char old_row_val = next_row[col];
                         next_row[col] |= IN_SIGHT;
                         oldseenv = levl[col][row].seenv;
@@ -668,8 +668,8 @@ int control;
                 }
 
             }
-			else 
-			{ /* range is 0 */
+            else 
+            { /* range is 0 */
                 next_array[u.uy][u.ux] |= IN_SIGHT;
                 levl[u.ux][u.uy].seenv = SVALL;
                 next_rmin[u.uy] = min(u.ux, next_rmin[u.uy]);
@@ -678,21 +678,21 @@ int control;
         }
 
         if (has_night_vision && u.xray_range < u.nv_range)
-		{
+        {
             if (!u.nv_range) 
-			{ /* range is 0 */
+            { /* range is 0 */
                 next_array[u.uy][u.ux] |= IN_SIGHT;
                 levl[u.ux][u.uy].seenv = SVALL;
                 next_rmin[u.uy] = min(u.ux, next_rmin[u.uy]);
                 next_rmax[u.uy] = max(u.ux, next_rmax[u.uy]);
             } 
-			else if (u.nv_range > 0)
-			{
+            else if (u.nv_range > 0)
+            {
                 ranges = circle_ptr(u.nv_range);
 
                 for (row = u.uy - u.nv_range; row <= u.uy + u.nv_range;
                      row++) 
-				{
+                {
                     if (row < 0)
                         continue;
                     if (row >= ROWNO)
@@ -742,7 +742,7 @@ int control;
      */
     colbump[u.ux] = colbump[u.ux + 1] = 1;
     for (row = 0; row < ROWNO; row++) 
-	{
+    {
         dy = u.uy - row;
         dy = sign(dy);
         next_row = next_array[row];
@@ -757,9 +757,9 @@ int control;
 
         for (col = start; col <= stop;
              lev += ROWNO, sv += (int) colbump[++col]) 
-		{
+        {
             if (next_row[col] & IN_SIGHT) 
-			{
+            {
                 /*
                  * We see this position because of night- or xray-vision.
                  */
@@ -772,14 +772,14 @@ int control;
                     newsym(col, row);
 
             } 
-			else if ((next_row[col] & COULD_SEE)
+            else if ((next_row[col] & COULD_SEE)
                      && (lev->lit || (next_row[col] & TEMP_LIT)) && !(next_row[col] & TEMP_MAGICAL_DARKNESS) ) 
-			{
+            {
                 /*
                  * We see this position because it is lit.
                  */
                 if ((IS_DOOR(lev->typ) || IS_WALL_OR_SDOOR(lev->typ)) && !viz_clear[row][col])
-				{
+                {
                     /*
                      * Make sure doors, walls, boulders or mimics don't show
                      * up
@@ -791,7 +791,7 @@ int control;
                     dx = sign(dx);
                     flev = &(levl[col + dx][row + dy]);
                     if ((flev->lit || (next_array[row + dy][col + dx] & TEMP_LIT)) && !(next_array[row + dy][col + dx] & TEMP_MAGICAL_DARKNESS))
-					{
+                    {
                         next_row[col] |= IN_SIGHT; /* we see it */
 
                         oldseenv = lev->seenv;
@@ -803,12 +803,12 @@ int control;
                             || oldseenv != lev->seenv)
                             newsym(col, row);
                     } 
-					else
+                    else
                         goto not_in_sight; /* we don't see it */
 
                 } 
-				else 
-				{
+                else 
+                {
                     next_row[col] |= IN_SIGHT; /* we see it */
 
                     oldseenv = lev->seenv;
@@ -819,8 +819,8 @@ int control;
                         newsym(col, row);
                 }
             } 
-			else if ((next_row[col] & COULD_SEE) && lev->waslit)
-			{
+            else if ((next_row[col] & COULD_SEE) && lev->waslit)
+            {
                 /*
                  * If we make it here, the hero _could see_ the location,
                  * but doesn't see it (location is not lit).
@@ -845,8 +845,8 @@ int control;
              *   infrared monster there.
              */
             }
-			else 
-			{
+            else 
+            {
             not_in_sight:
                 if ((old_row[col] & IN_SIGHT)
                     || ((next_row[col] & COULD_SEE)
@@ -2390,7 +2390,7 @@ char *limits;   /* points at range limit for current row, or NULL */
         lim_max = COLNO - 1;
 
     while (left <= right_mark && left <= lim_max) {
-	    right_edge = right_ptrs[row][left];
+        right_edge = right_ptrs[row][left];
         if (right_edge > lim_max)
             right_edge = lim_max;
 
@@ -2723,11 +2723,11 @@ genericptr_t arg;
     }
 
     if (range) {
-		if (range > MAX_RADIUS || range < 1)
-		{
-			panic("view_from called with range %d", range);
-			return;
-		}
+        if (range > MAX_RADIUS || range < 1)
+        {
+            panic("view_from called with range %d", range);
+            return;
+        }
         limits = circle_ptr(range) + 1; /* start at next row */
         if (left < scol - range)
             left = scol - range;
@@ -2806,11 +2806,11 @@ genericptr_t arg;
         override_vision =
             (Is_waterlevel(&u.uz) || Is_airlevel(&u.uz)) && detecting(func);
 
-		if (range > MAX_RADIUS || range < 1)
-		{
-			panic("do_clear_area:  illegal range %d", range);
-			return;
-		}
+        if (range > MAX_RADIUS || range < 1)
+        {
+            panic("do_clear_area:  illegal range %d", range);
+            return;
+        }
 
         if (vision_full_recalc)
             vision_recalc(0); /* recalc vision if dirty */

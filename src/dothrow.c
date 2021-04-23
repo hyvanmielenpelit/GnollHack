@@ -1,4 +1,4 @@
-/* GnollHack 4.0	dothrow.c	$NHDT-Date: 1556201496 2019/04/25 14:11:36 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.160 $ */
+/* GnollHack 4.0    dothrow.c    $NHDT-Date: 1556201496 2019/04/25 14:11:36 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.160 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -77,7 +77,7 @@ boolean firing;
     }
     if (//(obj->oartifact == ART_MJOLLNIR && ACURR(A_STR) < STR18(100)) //STR19(25)
         (obj->otyp == BOULDER && !(throws_rocks(youmonst.data))))  // || (int)obj->owt <= enclevelmaximumweight(UNENCUMBERED))))
-	{
+    {
         pline("It's too heavy.");
         return 1;
     }
@@ -108,7 +108,7 @@ boolean firing;
      * (potential volley of up to N missiles; default for N is 1)
      */
     multishot = 1;
-	int multishotrndextra = 0;
+    int multishotrndextra = 0;
     //skill = objects[obj->otyp].oc_skill;
     if (obj->quan > 1L /* no point checking if there's only 1 */
         /* ammo requires corresponding launcher be wielded */
@@ -116,7 +116,7 @@ boolean firing;
                          /* otherwise any stackable (non-ammo) weapon */
                          : (obj->oclass == WEAPON_CLASS && !is_launcher(obj)))
         && !(Confusion || Stunned)) 
-	{
+    {
 #if 0
         /* some roles don't get a volley bonus until becoming expert */
         weakmultishot = (Role_if(PM_WIZARD) || Role_if(PM_PRIEST)
@@ -125,50 +125,50 @@ boolean firing;
                          /* poor dexterity also inhibits multishot */
                          || Fumbling || ACURR(A_DEX) <= 6);
         /* Bonus if the player is proficient in this weapon... */
-		/*
+        /*
         switch (P_SKILL_LEVEL(weapon_skill_type(obj))) {
         case P_EXPERT:
-			if (!weakmultishot)
-				multishot++;
-			break;
+            if (!weakmultishot)
+                multishot++;
+            break;
         case P_SKILLED:
-			if (!weakmultishot)
-				multishotrndextra++;
-			break;
+            if (!weakmultishot)
+                multishotrndextra++;
+            break;
         default:
             break;
         }
-		*/
+        */
 #endif
 
-		get_multishot_stats(&youmonst, obj, uwep, TRUE, &multishot, &multishotrndextra);
+        get_multishot_stats(&youmonst, obj, uwep, TRUE, &multishot, &multishotrndextra);
 
 #if 0
-		struct obj* otmpmulti = (struct obj*)0;
-		if(obj && is_ammo(obj) && uwep && matching_launcher(obj, uwep))
-			otmpmulti = uwep;
-		else if(obj)
-			otmpmulti = obj;
+        struct obj* otmpmulti = (struct obj*)0;
+        if(obj && is_ammo(obj) && uwep && matching_launcher(obj, uwep))
+            otmpmulti = uwep;
+        else if(obj)
+            otmpmulti = obj;
 
-		if (otmpmulti && objects[otmpmulti->otyp].oc_multishot_style > 1)
-		{
-			int skilllevel = P_SKILL_LEVEL(weapon_skill_type(otmpmulti));
-			boolean multishotok = TRUE;
+        if (otmpmulti && objects[otmpmulti->otyp].oc_multishot_style > 1)
+        {
+            int skilllevel = P_SKILL_LEVEL(weapon_skill_type(otmpmulti));
+            boolean multishotok = TRUE;
 
-			/*
-			if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL && skilllevel < P_EXPERT)
-				multishotok = FALSE;
-			else if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL && skilllevel < P_SKILLED)
-				multishotok = FALSE;
-			else if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_BASIC_SKILL && skilllevel < P_BASIC)
-				multishotok = FALSE;
-			*/
+            /*
+            if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_EXPERT_SKILL && skilllevel < P_EXPERT)
+                multishotok = FALSE;
+            else if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_SKILLED_SKILL && skilllevel < P_SKILLED)
+                multishotok = FALSE;
+            else if ((objects[otmpmulti->otyp].oc_flags3 & O3_MULTISHOT_REQUIRES_SKILL_MASK) == O3_MULTISHOT_REQUIRES_BASIC_SKILL && skilllevel < P_BASIC)
+                multishotok = FALSE;
+            */
 
-			if (multishotok)
-			{
-				multishot = objects[otmpmulti->otyp].oc_multishot_style;
-			}
-		}
+            if (multishotok)
+            {
+                multishot = objects[otmpmulti->otyp].oc_multishot_style;
+            }
+        }
 #endif
 
 
@@ -184,7 +184,7 @@ boolean firing;
             break; /* No bonus */
         }
         /* ...or using their race's special bow; no bonus for spears */
-		/*
+        /*
         if (!weakmultishot)
             switch (Race_switch) {
             case PM_ELF:
@@ -198,40 +198,40 @@ boolean firing;
                     multishot++;
                 break;
             case PM_GNOLL:
-				if (obj->otyp == CROSSBOW_BOLT && uwep
-					&& uwep->otyp == CROSSBOW)
-					multishot++;
-				break;
+                if (obj->otyp == CROSSBOW_BOLT && uwep
+                    && uwep->otyp == CROSSBOW)
+                    multishot++;
+                break;
             case PM_HUMAN:
             case PM_DWARF:
             default:
                 break; 
             }
-		*/
+        */
         /* crossbows are slow to load and probably shouldn't allow multiple
            shots at all, but that would result in players never using them;
            instead, high strength is necessary to load and shoot quickly */
 
-		/*
-		if (multishot > 1)
-		{
-			if (
-				(obj && uwep && ammo_and_launcher(obj, uwep)
-				&& (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str))
-					|| (obj && throwing_weapon(obj) && objects[obj->otyp].oc_multishot_str > 0 && ACURR(A_STR) < objects[obj->otyp].oc_multishot_str)
-					)
-			{
-				multishot = 1;
-				multishotrndextra = 0;
-			}
-		}
-		*/
+        /*
+        if (multishot > 1)
+        {
+            if (
+                (obj && uwep && ammo_and_launcher(obj, uwep)
+                && (ACURR(A_STR) < objects[uwep->otyp].oc_multishot_str))
+                    || (obj && throwing_weapon(obj) && objects[obj->otyp].oc_multishot_str > 0 && ACURR(A_STR) < objects[obj->otyp].oc_multishot_str)
+                    )
+            {
+                multishot = 1;
+                multishotrndextra = 0;
+            }
+        }
+        */
 #endif
 
-		if(multishotrndextra > 0)
-	        multishot += rn2(multishotrndextra + 1); //add random amount;
+        if(multishotrndextra > 0)
+            multishot += rn2(multishotrndextra + 1); //add random amount;
         
-		if ((long) multishot > obj->quan)
+        if ((long) multishot > obj->quan)
             multishot = (int) obj->quan;
         if (shotlimit > 0 && multishot > shotlimit)
             multishot = shotlimit;
@@ -251,7 +251,7 @@ boolean firing;
     m_shot.o = obj->otyp;
     m_shot.n = multishot;
     for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++) 
-	{
+    {
         update_u_action(obj && uwep && ammo_and_launcher(obj, uwep) ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
         if (firing && uwep && obj && ammo_and_launcher(obj, uwep))
             play_monster_simple_weapon_sound(&youmonst, 0, uwep, OBJECT_SOUND_TYPE_FIRE);
@@ -273,10 +273,10 @@ boolean firing;
         throwit(otmp, wep_mask);
         update_u_action_revert(ACTION_TILE_NO_ACTION);
         if (context.multishot_target_killed == TRUE)
-		{
-			context.multishot_target_killed = FALSE;
-			break;
-		}
+        {
+            context.multishot_target_killed = FALSE;
+            break;
+        }
     }
     m_shot.n = m_shot.i = 0;
     m_shot.o = STRANGE_OBJECT;
@@ -294,375 +294,375 @@ boolean thrown;
 int* output_multishot_constant;
 int* output_multishot_rnd;
 {
-	if (!output_multishot_constant || !output_multishot_rnd)
-		return;
+    if (!output_multishot_constant || !output_multishot_rnd)
+        return;
 
-	*output_multishot_constant = 1;
-	*output_multishot_rnd = 0;
+    *output_multishot_constant = 1;
+    *output_multishot_rnd = 0;
 
-	if (!magr)
-		return;
+    if (!magr)
+        return;
 
-	if (!otmp || otmp == uarmg)
-	{
-		int skilllevel = 0;
-		/* martial arts */
-		if (magr == &youmonst)
-		{
-			skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS);
-		}
-		else
-		{
-			switch (magr->mnum)
-			{
-			case PM_MONK:
-				skilllevel = P_SKILLED;
-				break;
-			case PM_NINJA:
-			case PM_ROSHI:
-			case PM_ABBOT:
-				skilllevel = P_EXPERT;
-				break;
-			case PM_GRAND_MASTER:
-			case PM_MASTER_KAEN:
-				skilllevel = P_GRAND_MASTER;
-				break;
-			default:
-				break;
-			}
-		}
+    if (!otmp || otmp == uarmg)
+    {
+        int skilllevel = 0;
+        /* martial arts */
+        if (magr == &youmonst)
+        {
+            skilllevel = P_SKILL_LEVEL(P_MARTIAL_ARTS);
+        }
+        else
+        {
+            switch (magr->mnum)
+            {
+            case PM_MONK:
+                skilllevel = P_SKILLED;
+                break;
+            case PM_NINJA:
+            case PM_ROSHI:
+            case PM_ABBOT:
+                skilllevel = P_EXPERT;
+                break;
+            case PM_GRAND_MASTER:
+            case PM_MASTER_KAEN:
+                skilllevel = P_GRAND_MASTER;
+                break;
+            default:
+                break;
+            }
+        }
 
-		*output_multishot_constant = 1;
-		if (rn2(100) < martial_arts_multishot_percentage_chance(skilllevel))
-			(*output_multishot_constant)++;
+        *output_multishot_constant = 1;
+        if (rn2(100) < martial_arts_multishot_percentage_chance(skilllevel))
+            (*output_multishot_constant)++;
 
-		return;
-	}
+        return;
+    }
 
-	boolean isammo = is_ammo(otmp);
-	boolean matching = FALSE;
-	int skilllevel = 0;
-	int used_multishotstyle = 0; 
-	/*
-	   1 = ammo with launcher (use launcher multishot stats for launching only),
-	   2 = thrown (use thrown object's multishot stats for thrown only),
-	   3 = melee (use weapon's multishot stats for melee only)
-	*/
-	/* E.g., if you hit in melee with a repeating crossbow, it does not give you multiple strikes */
-	struct obj* otmpmulti = (struct obj*)0;
-	otmpmulti = otmp; /* Unless launcher will be used */
+    boolean isammo = is_ammo(otmp);
+    boolean matching = FALSE;
+    int skilllevel = 0;
+    int used_multishotstyle = 0; 
+    /*
+       1 = ammo with launcher (use launcher multishot stats for launching only),
+       2 = thrown (use thrown object's multishot stats for thrown only),
+       3 = melee (use weapon's multishot stats for melee only)
+    */
+    /* E.g., if you hit in melee with a repeating crossbow, it does not give you multiple strikes */
+    struct obj* otmpmulti = (struct obj*)0;
+    otmpmulti = otmp; /* Unless launcher will be used */
 
-	/* Check if launcher stats should be used */
-	if (isammo && weapon)
-	{
-		matching = matching_launcher(otmp, weapon);
-		if (matching)
-			otmpmulti = weapon;
-	}
+    /* Check if launcher stats should be used */
+    if (isammo && weapon)
+    {
+        matching = matching_launcher(otmp, weapon);
+        if (matching)
+            otmpmulti = weapon;
+    }
 
-	/* Find skill level */
-	if (magr == &youmonst)
-	{
-		skilllevel = P_SKILL_LEVEL(weapon_skill_type(otmpmulti));
-	}
-	else
-	{
-		if (is_prince(magr->data))
-			skilllevel = P_EXPERT;
-		else if (is_lord(magr->data))
-			skilllevel = P_SKILLED;
-		else
-			skilllevel = P_BASIC;
-	}
-
-
-	/* choose multishot style */
-	if (matching && thrown)
-		used_multishotstyle = 1;
-	else if(!matching && thrown)
-		used_multishotstyle = 2;
-	else
-		used_multishotstyle = 3;
+    /* Find skill level */
+    if (magr == &youmonst)
+    {
+        skilllevel = P_SKILL_LEVEL(weapon_skill_type(otmpmulti));
+    }
+    else
+    {
+        if (is_prince(magr->data))
+            skilllevel = P_EXPERT;
+        else if (is_lord(magr->data))
+            skilllevel = P_SKILLED;
+        else
+            skilllevel = P_BASIC;
+    }
 
 
-	int multishotstyle = objects[otmpmulti->otyp].oc_multishot_style;
+    /* choose multishot style */
+    if (matching && thrown)
+        used_multishotstyle = 1;
+    else if(!matching && thrown)
+        used_multishotstyle = 2;
+    else
+        used_multishotstyle = 3;
 
-	if(used_multishotstyle == 1)
-	{
-		/* ammo and laucher */
-		switch (multishotstyle)
-		{
-		case MULTISHOT_LAUNCHER_1D2_NOSKILL:
-			*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_LAUNCHER_1D2_BASIC:
-			if(skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
+
+    int multishotstyle = objects[otmpmulti->otyp].oc_multishot_style;
+
+    if(used_multishotstyle == 1)
+    {
+        /* ammo and laucher */
+        switch (multishotstyle)
+        {
+        case MULTISHOT_LAUNCHER_1D2_NOSKILL:
+            *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_LAUNCHER_1D2_BASIC:
+            if(skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
             break;
         case MULTISHOT_LAUNCHER_1D2_SKILLED:
-			if (skilllevel >= P_SKILLED)
-				*output_multishot_rnd = 1;
+            if (skilllevel >= P_SKILLED)
+                *output_multishot_rnd = 1;
             break;
         case MULTISHOT_LAUNCHER_1D2_EXPERT:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_LAUNCHER_2_NOSKILL:
-			*output_multishot_constant = 2;
-			break;
-		case MULTISHOT_LAUNCHER_2_BASIC:
-			if (skilllevel >= P_BASIC)
-				*output_multishot_constant = 2;
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_LAUNCHER_2_NOSKILL:
+            *output_multishot_constant = 2;
+            break;
+        case MULTISHOT_LAUNCHER_2_BASIC:
+            if (skilllevel >= P_BASIC)
+                *output_multishot_constant = 2;
             break;
         case MULTISHOT_LAUNCHER_2_SKILLED:
-			if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
+            if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
             break;
-		case MULTISHOT_LAUNCHER_2_EXPERT:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 2;
-			break;
-		case MULTISHOT_LAUNCHER_1D2_1_NOSKILL:
-			*output_multishot_constant = 2;
-			*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_LAUNCHER_3_NOSKILL:
-			*output_multishot_constant = 3;
-			break; 
-		case MULTISHOT_LAUNCHER_1D3_NOSKILL:
-			*output_multishot_rnd = 2;
-			break;
-		case MULTISHOT_LAUNCHER_2_SKILLED_1D2_BASIC:
-			if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_LAUNCHER_1D2_1_EXPERT_2_SKILLED_1D2_BASIC:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 2, * output_multishot_rnd = 1;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
-			break; 
-		case MULTISHOT_LAUNCHER_3_EXPERT_2_SKILLED_1D2_BASIC:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 3;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_LAUNCHER_4_EXPERT_3_SKILLED_2_BASIC:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 4;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 3;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_constant = 2;
-			break;
-		case MULTISHOT_LAUNCHER_2_EXPERT_1D2_SKILLED:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_LAUNCHER_3_EXPERT_2_SKILLED:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 3;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			break;
-		default:
-			break;
-		}
+        case MULTISHOT_LAUNCHER_2_EXPERT:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 2;
+            break;
+        case MULTISHOT_LAUNCHER_1D2_1_NOSKILL:
+            *output_multishot_constant = 2;
+            *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_LAUNCHER_3_NOSKILL:
+            *output_multishot_constant = 3;
+            break; 
+        case MULTISHOT_LAUNCHER_1D3_NOSKILL:
+            *output_multishot_rnd = 2;
+            break;
+        case MULTISHOT_LAUNCHER_2_SKILLED_1D2_BASIC:
+            if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_LAUNCHER_1D2_1_EXPERT_2_SKILLED_1D2_BASIC:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 2, * output_multishot_rnd = 1;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
+            break; 
+        case MULTISHOT_LAUNCHER_3_EXPERT_2_SKILLED_1D2_BASIC:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 3;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_LAUNCHER_4_EXPERT_3_SKILLED_2_BASIC:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 4;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 3;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_constant = 2;
+            break;
+        case MULTISHOT_LAUNCHER_2_EXPERT_1D2_SKILLED:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_LAUNCHER_3_EXPERT_2_SKILLED:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 3;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            break;
+        default:
+            break;
+        }
 
-	}
-	else if (used_multishotstyle == 2)
-	{
-		/* thrown weapons */
-		switch (multishotstyle)
-		{
-		case MULTISHOT_THROWN_1D2_NOSKILL:
-			*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_THROWN_1D2_BASIC:
-			if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
+    }
+    else if (used_multishotstyle == 2)
+    {
+        /* thrown weapons */
+        switch (multishotstyle)
+        {
+        case MULTISHOT_THROWN_1D2_NOSKILL:
+            *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_THROWN_1D2_BASIC:
+            if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
             break;
         case MULTISHOT_THROWN_1D2_SKILLED:
-			if (skilllevel >= P_SKILLED)
-				*output_multishot_rnd = 1;
+            if (skilllevel >= P_SKILLED)
+                *output_multishot_rnd = 1;
             break;
         case MULTISHOT_THROWN_1D2_EXPERT:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_THROWN_2_NOSKILL:
-			*output_multishot_constant = 2;
-			break;
-		case MULTISHOT_THROWN_2_BASIC:
-			if (skilllevel >= P_BASIC)
-				*output_multishot_constant = 2;
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_THROWN_2_NOSKILL:
+            *output_multishot_constant = 2;
+            break;
+        case MULTISHOT_THROWN_2_BASIC:
+            if (skilllevel >= P_BASIC)
+                *output_multishot_constant = 2;
             break;
         case MULTISHOT_THROWN_2_SKILLED:
-			if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
+            if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
             break;
         case MULTISHOT_THROWN_2_EXPERT:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 2;
-			break;
-		case MULTISHOT_THROWN_1D2_1_NOSKILL:
-			*output_multishot_constant = 2;
-			*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_THROWN_3_NOSKILL:
-			*output_multishot_constant = 3;
-			break;
-		case MULTISHOT_THROWN_1D3_NOSKILL:
-			*output_multishot_rnd = 2;
-			break;
-		case MULTISHOT_THROWN_2_SKILLED_1D2_BASIC:
-			if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_THROWN_1D2_1_EXPERT_2_SKILLED_1D2_BASIC:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 2, * output_multishot_rnd = 1;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_THROWN_3_EXPERT_2_SKILLED_1D2_BASIC:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 3;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_THROWN_4_EXPERT_3_SKILLED_2_BASIC:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 4;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 3;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_constant = 2;
-			break;
-		case MULTISHOT_THROWN_2_EXPERT_1D2_SKILLED:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_THROWN_3_EXPERT_2_SKILLED:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 3;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			break;
-		default:
-			break;
-		}
-	}
-	else if (used_multishotstyle == 3)
-	{
-		/* melee weapons */
-		switch (multishotstyle)
-		{
-		case MULTISHOT_MELEE_1D2_NOSKILL:
-			*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_MELEE_1D2_BASIC:
-			if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 2;
+            break;
+        case MULTISHOT_THROWN_1D2_1_NOSKILL:
+            *output_multishot_constant = 2;
+            *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_THROWN_3_NOSKILL:
+            *output_multishot_constant = 3;
+            break;
+        case MULTISHOT_THROWN_1D3_NOSKILL:
+            *output_multishot_rnd = 2;
+            break;
+        case MULTISHOT_THROWN_2_SKILLED_1D2_BASIC:
+            if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_THROWN_1D2_1_EXPERT_2_SKILLED_1D2_BASIC:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 2, * output_multishot_rnd = 1;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_THROWN_3_EXPERT_2_SKILLED_1D2_BASIC:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 3;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_THROWN_4_EXPERT_3_SKILLED_2_BASIC:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 4;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 3;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_constant = 2;
+            break;
+        case MULTISHOT_THROWN_2_EXPERT_1D2_SKILLED:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_THROWN_3_EXPERT_2_SKILLED:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 3;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            break;
+        default:
+            break;
+        }
+    }
+    else if (used_multishotstyle == 3)
+    {
+        /* melee weapons */
+        switch (multishotstyle)
+        {
+        case MULTISHOT_MELEE_1D2_NOSKILL:
+            *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_MELEE_1D2_BASIC:
+            if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
             break;
         case MULTISHOT_MELEE_1D2_SKILLED:
-			if (skilllevel >= P_SKILLED)
-				*output_multishot_rnd = 1;
+            if (skilllevel >= P_SKILLED)
+                *output_multishot_rnd = 1;
             break;
         case MULTISHOT_MELEE_1D2_EXPERT:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_MELEE_2_NOSKILL:
-			*output_multishot_constant = 2;
-			break;
-		case MULTISHOT_MELEE_2_BASIC:
-			if (skilllevel >= P_BASIC)
-				*output_multishot_constant = 2;
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_MELEE_2_NOSKILL:
+            *output_multishot_constant = 2;
+            break;
+        case MULTISHOT_MELEE_2_BASIC:
+            if (skilllevel >= P_BASIC)
+                *output_multishot_constant = 2;
             break;
         case MULTISHOT_MELEE_2_SKILLED:
-			if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
+            if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
             break;
         case MULTISHOT_MELEE_2_EXPERT:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 2;
-			break;
-		case MULTISHOT_MELEE_1D2_1_NOSKILL:
-			*output_multishot_constant = 2;
-			*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_MELEE_3_NOSKILL:
-			*output_multishot_constant = 3;
-			break;
-		case MULTISHOT_MELEE_1D3_NOSKILL:
-			*output_multishot_rnd = 2;
-			break;
-		case MULTISHOT_MELEE_2_SKILLED_1D2_BASIC:
-			if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_MELEE_1D2_1_EXPERT_2_SKILLED_1D2_BASIC:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 2, * output_multishot_rnd = 1;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_MELEE_3_EXPERT_2_SKILLED_1D2_BASIC:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 3;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_MELEE_4_EXPERT_3_SKILLED_2_BASIC:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 4;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 3;
-			else if (skilllevel >= P_BASIC)
-				*output_multishot_constant = 2;
-			break;
-		case MULTISHOT_MELEE_2_EXPERT_1D2_SKILLED:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 2;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_rnd = 1;
-			break;
-		case MULTISHOT_MELEE_3_EXPERT_2_SKILLED:
-			if (skilllevel >= P_EXPERT)
-				*output_multishot_constant = 3;
-			else if (skilllevel >= P_SKILLED)
-				*output_multishot_constant = 2;
-			break;
-		default:
-			break;
-		}
-	}
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 2;
+            break;
+        case MULTISHOT_MELEE_1D2_1_NOSKILL:
+            *output_multishot_constant = 2;
+            *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_MELEE_3_NOSKILL:
+            *output_multishot_constant = 3;
+            break;
+        case MULTISHOT_MELEE_1D3_NOSKILL:
+            *output_multishot_rnd = 2;
+            break;
+        case MULTISHOT_MELEE_2_SKILLED_1D2_BASIC:
+            if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_MELEE_1D2_1_EXPERT_2_SKILLED_1D2_BASIC:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 2, * output_multishot_rnd = 1;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_MELEE_3_EXPERT_2_SKILLED_1D2_BASIC:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 3;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_MELEE_4_EXPERT_3_SKILLED_2_BASIC:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 4;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 3;
+            else if (skilllevel >= P_BASIC)
+                *output_multishot_constant = 2;
+            break;
+        case MULTISHOT_MELEE_2_EXPERT_1D2_SKILLED:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 2;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_rnd = 1;
+            break;
+        case MULTISHOT_MELEE_3_EXPERT_2_SKILLED:
+            if (skilllevel >= P_EXPERT)
+                *output_multishot_constant = 3;
+            else if (skilllevel >= P_SKILLED)
+                *output_multishot_constant = 2;
+            break;
+        default:
+            break;
+        }
+    }
 
-	return;
+    return;
 }
 
 
@@ -820,14 +820,14 @@ dofire()
      * and alt-wielded item is excluded because switching slots
      * would end two-weapon combat even if throw gets aborted.]
      */
-	if (!uwep || !is_launcher(uwep))
-	{
+    if (!uwep || !is_launcher(uwep))
+    {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-		You("are not wielding a ranged weapon that fires ammunition.");
-		return 0;
-	}
+        You("are not wielding a ranged weapon that fires ammunition.");
+        return 0;
+    }
 
-	if (!ok_to_throw(&shotlimit))
+    if (!ok_to_throw(&shotlimit))
         return 0;
 
     if ((obj = uquiver) == 0) 
@@ -1394,7 +1394,7 @@ int dx, dy, range;
 
     /* At the very least, debilitate the monster */
     mon->movement = 0;
-	increase_mon_property(mon, STUNNED, 5 + rnd(10));
+    increase_mon_property(mon, STUNNED, 5 + rnd(10));
 
     /* Is the monster stuck or too heavy to push?
      * (very large monsters have too much inertia, even floaters and flyers)
@@ -1549,48 +1549,48 @@ boolean hitsroof;
     { /* neither potion nor other breaking object */
         boolean less_damage = uarmh && is_metallic(uarmh), artimsg = FALSE;
         int basedmg = is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst, 1);
-		double damage = adjust_damage(basedmg, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
+        double damage = adjust_damage(basedmg, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
 
         if (obj->oartifact)
             /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
             artimsg = artifact_hit((struct monst *) 0, &youmonst, obj, &damage, rn1(18, 2));
 
         if (damage == 0) { /* probably wasn't a weapon; base damage on weight */
-			damage = adjust_damage(obj->owt / 100, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
+            damage = adjust_damage(obj->owt / 100, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
             if (damage < 1)
-				damage = 1;
+                damage = 1;
             else if (damage > 6)
                 damage = 6;
             if (is_shade(youmonst.data)
                 && objects[obj->otyp].oc_material != MAT_SILVER)
-				damage = 0;
+                damage = 0;
         }
         if (damage > 1 && less_damage)
-			damage = 1;
+            damage = 1;
         if (damage > 0)
-			damage += adjust_damage(u.ubasedaminc + u.udaminc, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
+            damage += adjust_damage(u.ubasedaminc + u.udaminc, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
         if (damage < 0)
-			damage = 0; /* beware negative rings of increase damage */
+            damage = 0; /* beware negative rings of increase damage */
 
         if (uarmh)
-		{
+        {
             if (less_damage && damage < (Upolyd ? u.mh : u.uhp))
-			{
+            {
                 if (!artimsg)
                     pline("Fortunately, you are wearing a hard helmet.");
                 /* helmet definitely protects you when it blocks petrification
                  */
             }
-			else if (!petrifier) 
-			{
+            else if (!petrifier) 
+            {
                 if (flags.verbose)
                     Your("%s does not protect you.", helm_simple_name(uarmh));
             }
         } 
-		else if (petrifier && !Stone_resistance
+        else if (petrifier && !Stone_resistance
                    && !(poly_when_stoned(youmonst.data)
                         && polymon(PM_STONE_GOLEM)))
-		{
+        {
  petrify:
             killer.format = KILLED_BY;
             Strcpy(killer.name, "elementary physics"); /* "what goes up..." */
@@ -1622,7 +1622,7 @@ boolean
 nonmelee_throwing_weapon(obj)
 struct obj* obj;
 {
-	return (boolean)(is_missile(obj) || (objects[obj->otyp].oc_flags & O1_THROWN_WEAPON_ONLY));
+    return (boolean)(is_missile(obj) || (objects[obj->otyp].oc_flags & O1_THROWN_WEAPON_ONLY));
 }
 
 
@@ -1720,21 +1720,21 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             && (((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED) && 1)  && !inappropriate_character_type(obj))
                 || tethered_weapon)
             && !impaired)
-		{
-			if(wep_mask & W_WIELDED_WEAPON)
-				pline("%s the %s and returns to your %s!", Tobjnam(obj, "hit"),
-					  ceiling(u.ux, u.uy), body_part(HAND));
-			else
-				pline("%s the %s and returns to you!", Tobjnam(obj, "hit"),
-					ceiling(u.ux, u.uy));
+        {
+            if(wep_mask & W_WIELDED_WEAPON)
+                pline("%s the %s and returns to your %s!", Tobjnam(obj, "hit"),
+                      ceiling(u.ux, u.uy), body_part(HAND));
+            else
+                pline("%s the %s and returns to you!", Tobjnam(obj, "hit"),
+                    ceiling(u.ux, u.uy));
 
             obj = addinv(obj);
             (void) encumber_msg();
             if (obj->owornmask & W_QUIVER) /* in case addinv() autoquivered */
                 setuqwep((struct obj *) 0);
             if(wep_mask)
-				setuwep(obj, wep_mask);
-		}
+                setuwep(obj, wep_mask);
+        }
         else if (u.dz < 0) 
         {
             (void) toss_up(obj, rn2(5) && !Underwater);
@@ -1775,20 +1775,20 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
     }
     else 
     {
-		/* urange your moving in a weightless levitation situation */
-		if (is_ammo(obj) && uwep && ammo_and_launcher(obj, uwep))
-			range = weapon_range(obj, uwep);
-		else
-			range = weapon_range(obj, (struct obj*)0);
+        /* urange your moving in a weightless levitation situation */
+        if (is_ammo(obj) && uwep && ammo_and_launcher(obj, uwep))
+            range = weapon_range(obj, uwep);
+        else
+            range = weapon_range(obj, (struct obj*)0);
 
-		urange = 0;
+        urange = 0;
         if (Is_airlevel(&u.uz) || Levitation) 
         {
             /* action, reaction... */
-			if(youmonst.data->cwt)
-	            urange = min(MAXIMUM_RECOIL_DISTANCE, range * obj->owt / youmonst.data->cwt);
-			else
-				urange = min(MAXIMUM_RECOIL_DISTANCE, range * obj->owt / (16 * 2 * 80)); //about 160 lbs = about 80 kg
+            if(youmonst.data->cwt)
+                urange = min(MAXIMUM_RECOIL_DISTANCE, range * obj->owt / youmonst.data->cwt);
+            else
+                urange = min(MAXIMUM_RECOIL_DISTANCE, range * obj->owt / (16 * 2 * 80)); //about 160 lbs = about 80 kg
 
             if (urange < 1)
                 urange = 1;
@@ -1836,8 +1836,8 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         notonhead = (bhitpos.x != mon->mx || bhitpos.y != mon->my);
         obj_gone = thitmonst(mon, obj, FALSE, &hitres);
 
-		if (mon && DEADMONSTER(mon))
-			context.multishot_target_killed = TRUE;
+        if (mon && DEADMONSTER(mon))
+            context.multishot_target_killed = TRUE;
 
         /* Monster may have been tamed; this frees old mon */
         mon = m_at(bhitpos.x, bhitpos.y);
@@ -1892,56 +1892,56 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
                     sho_obj_return_to_u(obj); /* display its flight */
 
                 if (!impaired) // && rn2(100))
-				{
-					/* if uwep, more things need to be done than otherwise */
-					if(wep_mask & W_WIELDED_WEAPON) // (objects[obj->otyp].oc_flags& O1_CAN_BE_THROWN_ONLY_IF_WIELDED) ||
-					{
-						pline("%s to your %s!", Tobjnam(obj, "return"), body_part(HAND));
-						obj = addinv(obj);
-						(void) encumber_msg();
-						/* addinv autoquivers an aklys if quiver is empty;
-						   if obj is quivered, remove it before wielding */
-						if (obj->owornmask & W_QUIVER)
-							setuqwep((struct obj *) 0);
-						setuwep(obj, wep_mask);
-					}
-					else
-					{
-						pline("%s to you!", Tobjnam(obj, "return"));
-						obj = addinv(obj);
-						(void)encumber_msg();
-						/* addinv autoquivers an aklys if quiver is empty;
-						   if obj is quivered, remove it before wielding */
-						if ((obj->owornmask & W_QUIVER) && !(wep_mask & W_QUIVER))
-							setuqwep((struct obj*) 0);
+                {
+                    /* if uwep, more things need to be done than otherwise */
+                    if(wep_mask & W_WIELDED_WEAPON) // (objects[obj->otyp].oc_flags& O1_CAN_BE_THROWN_ONLY_IF_WIELDED) ||
+                    {
+                        pline("%s to your %s!", Tobjnam(obj, "return"), body_part(HAND));
+                        obj = addinv(obj);
+                        (void) encumber_msg();
+                        /* addinv autoquivers an aklys if quiver is empty;
+                           if obj is quivered, remove it before wielding */
+                        if (obj->owornmask & W_QUIVER)
+                            setuqwep((struct obj *) 0);
+                        setuwep(obj, wep_mask);
+                    }
+                    else
+                    {
+                        pline("%s to you!", Tobjnam(obj, "return"));
+                        obj = addinv(obj);
+                        (void)encumber_msg();
+                        /* addinv autoquivers an aklys if quiver is empty;
+                           if obj is quivered, remove it before wielding */
+                        if ((obj->owornmask & W_QUIVER) && !(wep_mask & W_QUIVER))
+                            setuqwep((struct obj*) 0);
 
-						/* Wields if necessary */
-						if ((wep_mask & W_SWAPWEP))
-							setuswapwep(obj, W_SWAPWEP);
-						else if ((wep_mask & W_SWAPWEP2))
-							setuswapwep(obj, W_SWAPWEP2);
-						else if ((wep_mask & W_WEP))
-							setuwep(obj, W_WEP);
-						else if ((wep_mask & W_WEP2))
-							setuwep(obj, W_WEP2);
-					}
+                        /* Wields if necessary */
+                        if ((wep_mask & W_SWAPWEP))
+                            setuswapwep(obj, W_SWAPWEP);
+                        else if ((wep_mask & W_SWAPWEP2))
+                            setuswapwep(obj, W_SWAPWEP2);
+                        else if ((wep_mask & W_WEP))
+                            setuwep(obj, W_WEP);
+                        else if ((wep_mask & W_WEP2))
+                            setuwep(obj, W_WEP2);
+                    }
                     if (cansee(bhitpos.x, bhitpos.y))
                         newsym(bhitpos.x, bhitpos.y);
                 }
-				else 
-				{
+                else 
+                {
                     double dmg = adjust_damage(rn2(2), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
 
                     if (!dmg) 
-					{
+                    {
                         pline(Blind ? "%s lands %s your %s."
                                     : "%s back to you, landing %s your %s.",
                               Blind ? Something : Tobjnam(obj, "return"),
                               Levitation ? "beneath" : "at",
                               makeplural(body_part(FOOT)));
                     }
-					else 
-					{
+                    else 
+                    {
                         dmg += adjust_damage(rnd(3), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
                         pline(Blind ? "%s your %s!"
                                     : "%s back toward you, hitting your %s!",
@@ -1953,7 +1953,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
                                KILLED_BY);
                     }
                     if (ship_object(obj, u.ux, u.uy, FALSE))
-					{
+                    {
                         thrownobj = (struct obj *) 0;
                         return;
                     }
@@ -2132,8 +2132,8 @@ struct obj *obj; /* thrownobj or kickedobj or uwep */
 boolean is_golf;
 uchar* hitres_ptr;
 {
-	if (!mon || !obj)
-		return 0;
+    if (!mon || !obj)
+        return 0;
 
     register int tmp;     /* Base chance to hit */
     register int disttmp; /* distance modifier */
@@ -2167,81 +2167,81 @@ uchar* hitres_ptr;
      * Polearms get a distance penalty even when wielded; it's
      * hard to hit at a distance.
      */
-	int mindistance = distmin(u.ux, u.uy, mon->mx, mon->my);
+    int mindistance = distmin(u.ux, u.uy, mon->mx, mon->my);
     disttmp = 2 - mindistance / 3;
     if (disttmp < -4)
         disttmp = -4;
     tmp += disttmp;
 
-	//Bows and thrown weapons have point black penalty
-	//OTHER BONUSES FROM BOW ARE GIVEN BELOW, THIS IS FOR POINT BLACK RANGE ONLY
-	if (hmode == HMON_THROWN && obj && mon && mindistance <= 1)
-	{
-		if (uwep && ammo_and_launcher(obj, uwep))
-		{
-				switch (objects[uwep->otyp].oc_skill) 
-				{
-				case P_BOW:
-					tmp -= BOW_TO_HIT_MELEE_PENALTY;
-					break;
-				case P_CROSSBOW:
-					tmp -= (BOW_TO_HIT_MELEE_PENALTY * 8) / 10;
-					break;
-				default:
-					tmp -= BOW_TO_HIT_MELEE_PENALTY;
-					break;
-				}
-				if(!context.hide_melee_range_warning)
-					You("find it very hard to hit with %s at melee range.", an(cxname(uwep)));
+    //Bows and thrown weapons have point black penalty
+    //OTHER BONUSES FROM BOW ARE GIVEN BELOW, THIS IS FOR POINT BLACK RANGE ONLY
+    if (hmode == HMON_THROWN && obj && mon && mindistance <= 1)
+    {
+        if (uwep && ammo_and_launcher(obj, uwep))
+        {
+                switch (objects[uwep->otyp].oc_skill) 
+                {
+                case P_BOW:
+                    tmp -= BOW_TO_HIT_MELEE_PENALTY;
+                    break;
+                case P_CROSSBOW:
+                    tmp -= (BOW_TO_HIT_MELEE_PENALTY * 8) / 10;
+                    break;
+                default:
+                    tmp -= BOW_TO_HIT_MELEE_PENALTY;
+                    break;
+                }
+                if(!context.hide_melee_range_warning)
+                    You("find it very hard to hit with %s at melee range.", an(cxname(uwep)));
 
-				context.hide_melee_range_warning = TRUE;
-		}
-		else
-		{
-			tmp -= THROWN_WEAPON_TO_HIT_MELEE_PENALTY;
-			if (!context.hide_melee_range_warning && !is_obj_normally_edible(obj))
-				You("find it very hard to hit by throwing %s at melee range.", an(cxname(obj)));
+                context.hide_melee_range_warning = TRUE;
+        }
+        else
+        {
+            tmp -= THROWN_WEAPON_TO_HIT_MELEE_PENALTY;
+            if (!context.hide_melee_range_warning && !is_obj_normally_edible(obj))
+                You("find it very hard to hit by throwing %s at melee range.", an(cxname(obj)));
 
-			context.hide_melee_range_warning = TRUE;
-		}
-	}
+            context.hide_melee_range_warning = TRUE;
+        }
+    }
 
-	/* Archery bonus */
-	if (hmode == HMON_THROWN && obj && uwep && ammo_and_launcher(obj, uwep) && u.uarcherybonus != 0)
-	{
-		tmp += u.uarcherybonus;
-	}
+    /* Archery bonus */
+    if (hmode == HMON_THROWN && obj && uwep && ammo_and_launcher(obj, uwep) && u.uarcherybonus != 0)
+    {
+        tmp += u.uarcherybonus;
+    }
 
-	//Bonus from weapon_to_hit_value(obj) and other if monster is still etc.
+    //Bonus from weapon_to_hit_value(obj) and other if monster is still etc.
     tmp += omon_adj(mon, obj, TRUE);
 
-	//Elfs get a bonus
+    //Elfs get a bonus
     if (is_orc(mon->data)
         && maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF)))
         tmp++;
 
-	//Guaranteed hit
+    //Guaranteed hit
     if (guaranteed_hit) 
-	{
+    {
         tmp += 1000; /* Guaranteed hit */
     }
 
     if (obj->oclass == GEM_CLASS && is_unicorn(mon->data)) 
-	{
+    {
         if (!mon_can_move(mon))
-		{
+        {
             tmiss(obj, mon, FALSE);
             return 0;
         } 
-		else if (is_tame(mon)) 
-		{
+        else if (is_tame(mon)) 
+        {
             pline("%s catches and drops %s.", Monnam(mon), the(xname(obj)));
             if (hitres_ptr)
                 *hitres_ptr = 0;
             return 0;
         } 
-		else 
-		{
+        else 
+        {
             pline("%s catches %s.", Monnam(mon), the(xname(obj)));
             if (hitres_ptr)
                 *hitres_ptr = 2;
@@ -2253,19 +2253,19 @@ uchar* hitres_ptr;
        at leader... (kicked artifact is ok too; HMON_APPLIED could
        occur if quest artifact polearm or grapnel ever gets added) */
     if (hmode != HMON_APPLIED && quest_arti_hits_leader(obj, mon)) 
-	{
+    {
         /* AIS: changes to wakeup() means that it's now less inappropriate here
            than it used to be, but the manual version works just as well */
         mon->msleeping = 0;
         mon->mstrategy &= ~STRAT_WAITMASK;
 
         if (mon_can_move(mon)) 
-		{
+        {
             if (hitres_ptr)
                 *hitres_ptr = 2;
             pline("%s catches %s.", Monnam(mon), the(xname(obj)));
             if (is_peaceful(mon))
-			{
+            {
                 boolean next2u = monnear(mon, u.ux, u.uy);
 
                 finish_quest(obj); /* acknowledge quest completion */
@@ -2276,8 +2276,8 @@ uchar* hitres_ptr;
                 obj = addinv(obj); /* back into your inventory */
                 (void) encumber_msg();
             } 
-			else 
-			{
+            else 
+            {
                 /* angry leader caught it and isn't returning it */
                 if (*u.ushops || obj->unpaid) /* not very likely... */
                     check_shop_obj(obj, mon->mx, mon->my, FALSE);
@@ -2290,24 +2290,24 @@ uchar* hitres_ptr;
 
     dieroll = rnd(20);
 
-	boolean is_golf_swing_with_stone = (hmode == HMON_GOLF && (obj->oclass == GEM_CLASS || objects[obj->otyp].oc_skill == -P_SLING));
+    boolean is_golf_swing_with_stone = (hmode == HMON_GOLF && (obj->oclass == GEM_CLASS || objects[obj->otyp].oc_skill == -P_SLING));
 
     if (obj->oclass == WEAPON_CLASS || is_weptool(obj) || obj->oclass == GEM_CLASS) 
-	{
+    {
         if (hmode == HMON_KICKED)
-		{
+        {
             /* throwing adjustments and weapon skill bonus don't apply */
             tmp -= (is_ammo(obj) ? 5 : 3);
         } 
-		else if (is_ammo(obj) || is_golf_swing_with_stone)
-		{
+        else if (is_ammo(obj) || is_golf_swing_with_stone)
+        {
             if (!ammo_and_launcher(obj, uwep) && !is_golf_swing_with_stone)
-			{
+            {
                 tmp -= 4;
             } 
-			else if (uwep)
-			{
-				tmp += weapon_to_hit_value(uwep, mon, &youmonst, 2);	//tmp += uwep->enchantment - greatest_erosion(uwep);
+            else if (uwep)
+            {
+                tmp += weapon_to_hit_value(uwep, mon, &youmonst, 2);    //tmp += uwep->enchantment - greatest_erosion(uwep);
                 nonpolytmp += weapon_skill_hit_bonus(uwep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE); //Players get skill bonuses
 //                if (uwep->oartifact)
 //                    tmp += spec_abon(uwep, mon);
@@ -2319,7 +2319,7 @@ uchar* hitres_ptr;
                 if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
                     && (!Upolyd || your_race(youmonst.data))
                     && objects[uwep->otyp].oc_skill == P_BOW) 
-				{
+                {
                     tmp++;
                     if (Race_if(PM_ELF) && uwep->otyp == ELVEN_LONG_BOW)
                         tmp++;
@@ -2328,8 +2328,8 @@ uchar* hitres_ptr;
                 }
             }
         } 
-		else 
-		{ /* thrown non-ammo or applied polearm/grapnel */
+        else 
+        { /* thrown non-ammo or applied polearm/grapnel */
             if (throwing_weapon(obj)) /* meant to be thrown */
                 tmp += 2;
             else if (obj == thrownobj) /* not meant to be thrown */
@@ -2343,7 +2343,7 @@ uchar* hitres_ptr;
         tmp += maybe_polyd(max(polytmp, nonpolytmp), nonpolytmp);
 
         if (tmp >= dieroll) 
-		{
+        {
             boolean wasthrown = (thrownobj != 0),
                     /* remember weapon attribute; hmon() might destroy obj */
                     chopper = is_axe(obj);
@@ -2358,15 +2358,15 @@ uchar* hitres_ptr;
             //DAMAGE IS DONE HERE
             boolean obj_destroyed = FALSE;
             if (hmon(mon, obj, hmode, dieroll, &obj_destroyed)) 
-			{ /* mon still alive */
+            { /* mon still alive */
                 if (mon->wormno)
                     cutworm(mon, bhitpos.x, bhitpos.y, chopper);
             }
-			if (obj_destroyed)
-			{
-				obj = 0;
-				return 1;
-			}
+            if (obj_destroyed)
+            {
+                obj = 0;
+                return 1;
+            }
             exercise(A_DEX, TRUE);
             /* if hero was swallowed and projectile killed the engulfer,
                'obj' got added to engulfer's inventory and then dropped,
@@ -2381,7 +2381,7 @@ uchar* hitres_ptr;
             if (objects[otyp].oc_skill < P_NONE
                 && objects[otyp].oc_skill >= -P_THROWN_WEAPON
                 && !objects[otyp].oc_magic) 
-			{
+            {
                 /* we were breaking 2/3 of everything unconditionally.
                  * we still don't want anything to survive unconditionally,
                  * but we need ammo to stay around longer on average.
@@ -2398,7 +2398,7 @@ uchar* hitres_ptr;
                     broken = 0;
 
                 if (broken) 
-				{
+                {
                     if (*u.ushops || obj->unpaid)
                         check_shop_obj(obj, bhitpos.x, bhitpos.y, TRUE);
                     obfree(obj, (struct obj *) 0);
@@ -2407,65 +2407,65 @@ uchar* hitres_ptr;
             }
             passive_obj(mon, obj, (struct attack *) 0);
         } 
-		else
-		{
+        else
+        {
             tmiss(obj, mon, TRUE);
             if (hmode == HMON_APPLIED)
                 wakeup(mon, TRUE);
         }
 
     } 
-	else if (otyp == HEAVY_IRON_BALL) 
-	{
+    else if (otyp == HEAVY_IRON_BALL) 
+    {
         exercise(A_STR, TRUE);
         if (tmp >= dieroll)
-		{
+        {
             int was_swallowed = guaranteed_hit;
 
             if (hitres_ptr)
                 *hitres_ptr = 1;
 
             exercise(A_DEX, TRUE);
-			boolean obj_destroyed = FALSE;
-			boolean malive = hmon(mon, obj, hmode, dieroll, &obj_destroyed);
-			if (obj_destroyed)
-				obj = 0;
-			if (!malive)
-			{ /* mon killed */
+            boolean obj_destroyed = FALSE;
+            boolean malive = hmon(mon, obj, hmode, dieroll, &obj_destroyed);
+            if (obj_destroyed)
+                obj = 0;
+            if (!malive)
+            { /* mon killed */
 
                 if (was_swallowed && !u.uswallow && obj == uball)
                     return 1; /* already did placebc() */
             }
 
         } 
-		else 
-		{
+        else 
+        {
             tmiss(obj, mon, TRUE);
         }
 
     } else if (otyp == BOULDER) 
-	{
+    {
         exercise(A_STR, TRUE);
         if (tmp >= dieroll) 
-		{
+        {
             if (hitres_ptr)
                 *hitres_ptr = 1;
 
             exercise(A_DEX, TRUE);
-			boolean obj_destroyed = FALSE;
-			(void) hmon(mon, obj, hmode, dieroll, &obj_destroyed);
-			if (obj_destroyed)
-				obj = 0;
+            boolean obj_destroyed = FALSE;
+            (void) hmon(mon, obj, hmode, dieroll, &obj_destroyed);
+            if (obj_destroyed)
+                obj = 0;
         }
-		else 
-		{
+        else 
+        {
             tmiss(obj, mon, TRUE);
         }
 
     } 
-	else if ((otyp == EGG || otyp == CREAM_PIE || otyp == BLINDING_VENOM || otyp == ACID_VENOM)
+    else if ((otyp == EGG || otyp == CREAM_PIE || otyp == BLINDING_VENOM || otyp == ACID_VENOM)
                && (guaranteed_hit || ACURR(A_DEX) > rnd(25)))
-	{
+    {
         if (hitres_ptr)
             *hitres_ptr = 1;
     
@@ -2474,8 +2474,8 @@ uchar* hitres_ptr;
         return 1; /* hmon used it up */
 
     } 
-	else if (obj->oclass == POTION_CLASS && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) 
-	{
+    else if (obj->oclass == POTION_CLASS && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) 
+    {
         if (hitres_ptr)
             *hitres_ptr = 1;
     
@@ -2483,38 +2483,38 @@ uchar* hitres_ptr;
         return 1;
 
     } 
-	else if (befriend_with_obj(mon->data, obj)
+    else if (befriend_with_obj(mon->data, obj)
                || (is_tame(mon) && dogfood(mon, obj) <= ACCFOOD)) 
-	{
+    {
         if (tamedog(mon, obj, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, TRUE))
-		{
+        {
             if (hitres_ptr)
                 *hitres_ptr = 2;
             return 1; /* obj is gone */
         } 
-		else 
-		{
+        else 
+        {
             tmiss(obj, mon, FALSE);
             mon->msleeping = 0;
             mon->mstrategy &= ~STRAT_WAITMASK;
         }
     } 
-	else if (guaranteed_hit) 
-	{
+    else if (guaranteed_hit) 
+    {
         /* this assumes that guaranteed_hit is due to swallowing */
         if (hitres_ptr)
             *hitres_ptr = 1;
         wakeup(mon, TRUE);
         if (obj->otyp == CORPSE && touch_petrifies(&mons[obj->corpsenm])) 
-		{
+        {
             if (is_animal(u.ustuck->data)) 
-			{
-				int existing_stoning = get_mon_property(u.ustuck, STONED);
+            {
+                int existing_stoning = get_mon_property(u.ustuck, STONED);
                 (void)set_mon_property_verbosely(u.ustuck, STONED, max(1, min(existing_stoning - 1, 5)));
-				//minstapetrify(u.ustuck, TRUE);
+                //minstapetrify(u.ustuck, TRUE);
                 /* Don't leave a cockatrice corpse available in a statue */
                 if (!u.uswallow) 
-				{
+                {
                     delobj(obj);
                     return 1;
                 }
@@ -2524,8 +2524,8 @@ uchar* hitres_ptr;
               s_suffix(mon_nam(mon)),
               is_animal(u.ustuck->data) ? "entrails" : "currents");
     } 
-	else 
-	{
+    else 
+    {
         tmiss(obj, mon, TRUE);
     }
 
@@ -2541,7 +2541,7 @@ register struct obj *obj;
     boolean is_buddy = sgn(mon->data->maligntyp) == sgn(u.ualign.type);
     boolean is_gem = objects[obj->otyp].oc_material == MAT_GEMSTONE;
     int ret = 0;
-	int luck_change = 0;
+    int luck_change = 0;
     static NEARDATA const char nogood[] = " is not interested in your junk.";
     static NEARDATA const char acceptgift[] = " accepts your gift.";
     static NEARDATA const char maybeluck[] = " hesitatingly";
@@ -2557,10 +2557,10 @@ register struct obj *obj;
         if (is_gem) {
             if (is_buddy) {
                 Strcat(buf, addluck);
-				luck_change += 5;
+                luck_change += 5;
             } else {
                 Strcat(buf, maybeluck);
-				luck_change += rn2(7) - 3;
+                luck_change += rn2(7) - 3;
             }
         } else {
             Strcat(buf, nogood);
@@ -2571,10 +2571,10 @@ register struct obj *obj;
         if (is_gem) {
             if (is_buddy) {
                 Strcat(buf, addluck);
-				luck_change += 2;
+                luck_change += 2;
             } else {
                 Strcat(buf, maybeluck);
-				luck_change += rn2(3) - 1;
+                luck_change += rn2(3) - 1;
             }
         } else {
             Strcat(buf, nogood);
@@ -2585,10 +2585,10 @@ register struct obj *obj;
         if (is_gem) {
             if (is_buddy) {
                 Strcat(buf, addluck);
-				luck_change += 1;
+                luck_change += 1;
             } else {
                 Strcat(buf, maybeluck);
-				luck_change += rn2(3) - 1;
+                luck_change += rn2(3) - 1;
             }
         } else {
             Strcat(buf, noluck);
@@ -2604,7 +2604,7 @@ register struct obj *obj;
     if (!Blind)
         pline1(buf);
 
-	change_luck(luck_change, TRUE);
+    change_luck(luck_change, TRUE);
 
     if (!tele_restrict(mon))
     {
@@ -2713,8 +2713,8 @@ boolean from_invent;
 
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case MIRROR:
-	case MAGIC_MIRROR:
-		if (hero_caused)
+    case MAGIC_MIRROR:
+        if (hero_caused)
             change_luck(-2, TRUE);
         break;
     case POT_WATER:      /* really, all potions */
@@ -2835,15 +2835,15 @@ boolean in_view;
         /*FALLTHRU*/
     case CRYSTAL_PLATE_MAIL:
     case LENSES:
-	case SUNGLASSES:
-	case MIRROR:
-	case MAGIC_MIRROR:
-	case CRYSTAL_BALL:
-	case EXPENSIVE_WATCH:
-	case EXPENSIVE_CAMERA:
+    case SUNGLASSES:
+    case MIRROR:
+    case MAGIC_MIRROR:
+    case CRYSTAL_BALL:
+    case EXPENSIVE_WATCH:
+    case EXPENSIVE_CAMERA:
         to_pieces = " into a thousand pieces";
     /*FALLTHRU*/
-	case POT_WATER: /* really, all potions */
+    case POT_WATER: /* really, all potions */
         if (!in_view)
             You_hear("%s shatter!", something);
         else

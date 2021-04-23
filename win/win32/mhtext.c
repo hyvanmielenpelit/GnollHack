@@ -1,5 +1,5 @@
-/* GnollHack 4.0	mhtext.c	$NHDT-Date: 1432512813 2015/05/25 00:13:33 $  $NHDT-Branch: master $:$NHDT-Revision: 1.25 $ */
-/* Copyright (C) 2001 by Alex Kompel 	 */
+/* GnollHack 4.0    mhtext.c    $NHDT-Date: 1432512813 2015/05/25 00:13:33 $  $NHDT-Branch: master $:$NHDT-Revision: 1.25 $ */
+/* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "winMS.h"
@@ -39,11 +39,11 @@ mswin_init_text_window()
     /* create text widnow object */
     ret = CreateDialog(GetNHApp()->hApp, MAKEINTRESOURCE(IDD_NHTEXT),
                        GetNHApp()->hMainWnd, NHTextWndProc);
-	if (!ret)
-	{
-		panic("Cannot create text window");
-		return (HWND)0;
-	}
+    if (!ret)
+    {
+        panic("Cannot create text window");
+        return (HWND)0;
+    }
 
     /* move it in the predefined position */
     if (!GetNHApp()->bAutoLayout) {
@@ -85,10 +85,10 @@ NHTextWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_INITDIALOG: {
         data = (PNHTextWindow)malloc(sizeof(NHTextWindow));
         if (!data)
-		{
+        {
             panic("out of memory");
-			return (INT_PTR)0;
-		}
+            return (INT_PTR)0;
+        }
 
         ZeroMemory(data, sizeof(NHTextWindow));
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)data);
@@ -100,8 +100,8 @@ NHTextWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         
         if (!control) {
             panic("cannot get text view window");
-			return (INT_PTR)0;
-		}
+            return (INT_PTR)0;
+        }
 
         SendMessage(control, WM_SETFONT, (WPARAM) font->hFont, 0);
         ReleaseDC(control, hdc);
@@ -206,9 +206,9 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             text_size = strlen(msg_data->text) + 4;
             data->window_text =
                 (TCHAR *) malloc(text_size * sizeof(data->window_text[0]));
-			if (!data->window_text)
-				return;
-			ZeroMemory(data->window_text,
+            if (!data->window_text)
+                return;
+            ZeroMemory(data->window_text,
                        text_size * sizeof(data->window_text[0]));
         } else {
             text_size =
@@ -224,11 +224,11 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         break;
     }
 
-	case MSNH_MSG_RANDOM_INPUT: {
+    case MSNH_MSG_RANDOM_INPUT: {
         PostMessage(GetDlgItem(hWnd, IDC_TEXT_CONTROL), 
             WM_MSNH_COMMAND, MSNH_MSG_RANDOM_INPUT, 0);
-	}
-	break;
+    }
+    break;
 
     }
 }

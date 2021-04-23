@@ -1,4 +1,4 @@
-/* GnollHack 4.0	color.h	$NHDT-Date: 1432512776 2015/05/25 00:12:56 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $ */
+/* GnollHack 4.0    color.h    $NHDT-Date: 1432512776 2015/05/25 00:12:56 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $ */
 /* Copyright (c) Steve Linhart, Eric Raymond, 1989. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -8,7 +8,7 @@
 /*
  * The color scheme used is tailored for an IBM PC.  It consists of the
  * standard 8 colors, followed by their bright counterparts.  There are
- * exceptions, these are listed below.	Bright black doesn't mean very
+ * exceptions, these are listed below.    Bright black doesn't mean very
  * much, so it is used as the "default" foreground color of the screen.
  */
 #define CLR_BLACK 0

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	dlb.c	$NHDT-Date: 1446975464 2015/11/08 09:37:44 $  $NHDT-Branch: master $:$NHDT-Revision: 1.15 $ */
+/* GnollHack 4.0    dlb.c    $NHDT-Date: 1446975464 2015/11/08 09:37:44 $  $NHDT-Branch: master $:$NHDT-Revision: 1.15 $ */
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1993. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -129,8 +129,8 @@ library *lp; /* library pointer to fill in */
 {
     int i;
     char *sp;
-	long liboffset;
-	long totalsize;
+    long liboffset;
+    long totalsize;
 
     if (fscanf(lp->fdata, "%ld %ld %ld %ld %ld\n", &lp->rev, &lp->nentries,
                &lp->strsize, &liboffset, &totalsize) != 5)
@@ -272,7 +272,7 @@ dlb *dp;
 const char *name;
 const char *mode UNUSED;
 {
-	long start, size;
+    long start, size;
     library *lp;
 
     /* look up file in directory */
@@ -302,7 +302,7 @@ char *buf;
 long size, quan;
 dlb *dp;
 {
-	long pos, nread, nbytes;
+    long pos, nread, nbytes;
 
     /* make sure we don't read into the next file */
     if ((dp->size - dp->mark) < (size * quan))

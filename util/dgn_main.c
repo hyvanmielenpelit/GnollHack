@@ -1,6 +1,6 @@
-/* GnollHack 4.0	dgn_main.c	$NHDT-Date: 1432512785 2015/05/25 00:13:05 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
-/*	Copyright (c) 1989 by Jean-Christophe Collet	*/
-/*	Copyright (c) 1990 by M. Stephenson		*/
+/* GnollHack 4.0    dgn_main.c    $NHDT-Date: 1432512785 2015/05/25 00:13:05 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
+/*    Copyright (c) 1989 by Jean-Christophe Collet    */
+/*    Copyright (c) 1990 by M. Stephenson        */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 /*
@@ -183,7 +183,7 @@ const char *s;
 int
 yywrap()
 {
-    SpinCursor(3); /*	Don't know if this is a good place to put it ?
+    SpinCursor(3); /*    Don't know if this is a good place to put it ?
                                             Is it called for our grammar ?
                       Often enough ?
                                             Too often ? -- h+ */

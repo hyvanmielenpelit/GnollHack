@@ -807,11 +807,11 @@ dll_create_nhwindow(int type)
         if (GetNHApp()->windowlist[i].win == NULL
             && !GetNHApp()->windowlist[i].dead)
             break;
-	if (i == MAXWINDOWS)
-	{
-		panic("ERROR:  No windows available...\n");
-		return 0;
-	}
+    if (i == MAXWINDOWS)
+    {
+        panic("ERROR:  No windows available...\n");
+        return 0;
+    }
 
     switch (type) {
     case NHW_MAP: {
@@ -1339,10 +1339,10 @@ print_glyph(window, x, y, layers)
                    integers at the interface, mapped to whatever the window-
                    port wants (symbol, font, color, attributes, ...there's
                    a 1-1 map between glyphs and distinct things on the map).
-		-- bkglyph is a background glyph for potential use by some
-		   graphical or tiled environments to allow the depiction
-		   to fall against a background consistent with the grid 
-		   around x,y.
+        -- bkglyph is a background glyph for potential use by some
+           graphical or tiled environments to allow the depiction
+           to fall against a background consistent with the grid 
+           around x,y.
                    
 */
 void
@@ -1505,7 +1505,7 @@ dll_nh_poskey(int *x, int *y, int *mod)
         dll_main_loop();
 
     if (event->type == NHEVENT_MOUSE) {
-	if (iflags.wc_mouse_support) {
+    if (iflags.wc_mouse_support) {
             *mod = event->ms.mod;
             *x = event->ms.x;
             *y = event->ms.y;
@@ -2167,8 +2167,8 @@ dll_getmsghistory(BOOLEAN_P init)
         text = (PMSNHMsgGetText) malloc(sizeof(MSNHMsgGetText)
                                         + TEXT_BUFFER_SIZE);
 
-		if (!text)
-			return (char*)0;
+        if (!text)
+            return (char*)0;
 
         text->max_size =
             TEXT_BUFFER_SIZE
@@ -2329,8 +2329,8 @@ static dll_condition_field _condition_fields[BL_MASK_BITS] = {
     { BL_MASK_STONE, "Stone" },
     { BL_MASK_SLIME, "Slime" },
     { BL_MASK_STRNGL, "Strngl" },
-	{ BL_MASK_SUFFOC, "Suffoc" },
-	{ BL_MASK_FOODPOIS, "FoodPois" },
+    { BL_MASK_SUFFOC, "Suffoc" },
+    { BL_MASK_FOODPOIS, "FoodPois" },
     { BL_MASK_TERMILL, "TermIll" },
     { BL_MASK_BLIND, "Blind" },
     { BL_MASK_DEAF, "Deaf" },
@@ -2340,12 +2340,12 @@ static dll_condition_field _condition_fields[BL_MASK_BITS] = {
     { BL_MASK_LEV, "Lev" },
     { BL_MASK_FLY, "Fly" },
     { BL_MASK_RIDE, "Ride" },
-	{ BL_MASK_SLOWED, "Slow" },
-	{ BL_MASK_PARALYZED, "Paral" },
-	{ BL_MASK_FEARFUL, "Fear" },
-	{ BL_MASK_SLEEPING, "Sleep" },
-	{ BL_MASK_CANCELLED, "Cancl" },
-	{ BL_MASK_SILENCED, "Silent" },
+    { BL_MASK_SLOWED, "Slow" },
+    { BL_MASK_PARALYZED, "Paral" },
+    { BL_MASK_FEARFUL, "Fear" },
+    { BL_MASK_SLEEPING, "Sleep" },
+    { BL_MASK_CANCELLED, "Cancl" },
+    { BL_MASK_SILENCED, "Silent" },
     { BL_MASK_GRAB, "Grab" },
     { BL_MASK_ROT, "Rot" },
     { BL_MASK_LYCANTHROPY, "Lyca" },
@@ -2515,14 +2515,14 @@ status_update(int fldindex, genericptr_t ptr, int chg, int percent, int color, u
                    BL_ALIGN, BL_SCORE, BL_CAP, BL_GOLD, BL_ENE, BL_ENEMAX,
                    BL_XP, BL_AC, BL_HD, BL_TIME, BL_HUNGER, BL_HP, BL_HPMAX,
                    BL_LEVELDESC, BL_EXP, BL_CONDITION
-		-- fldindex could also be BL_FLUSH, which is not really
-		   a field index, but is a special trigger to tell the 
-		   windowport that it should output all changes received
+        -- fldindex could also be BL_FLUSH, which is not really
+           a field index, but is a special trigger to tell the 
+           windowport that it should output all changes received
                    to this point. It marks the end of a bot() cycle.
-		-- fldindex could also be BL_RESET, which is not really
-		   a field index, but is a special advisory to to tell the 
-		   windowport that it should redisplay all its status fields,
-		   even if no changes have been presented to it.
+        -- fldindex could also be BL_RESET, which is not really
+           a field index, but is a special advisory to to tell the 
+           windowport that it should redisplay all its status fields,
+           even if no changes have been presented to it.
                 -- ptr is usually a "char *", unless fldindex is BL_CONDITION.
                    If fldindex is BL_CONDITION, then ptr is a long value with
                    any or none of the following bits set (from botl.h):
@@ -2600,7 +2600,7 @@ dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, un
                     status_string->str = NULL;
             }
         } break;
-			
+            
         case BL_GOLD: {
             char buf[BUFSZ];
             char *p;

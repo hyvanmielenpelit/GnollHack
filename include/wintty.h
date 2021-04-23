@@ -1,5 +1,5 @@
-/* GnollHack 4.0	wintty.h	$NHDT-Date: 1553858470 2019/03/29 11:21:10 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.33 $ */
-/* Copyright (c) David Cohrs, 1991,1992				  */
+/* GnollHack 4.0    wintty.h    $NHDT-Date: 1553858470 2019/03/29 11:21:10 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.33 $ */
+/* Copyright (c) David Cohrs, 1991,1992                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "layer.h"
@@ -123,7 +123,7 @@ E void NDECL(tty_shutdown);
  * be smart and use the prototype, or some such strangeness.  So we have to
  * define UNWIDENDED_PROTOTYPES (in tradstdc.h), which makes CHAR_P below a
  * char.  But the tputs termcap call was compiled as if xputc's argument
- * actually would be expanded.	So here, we have to make an exception. */
+ * actually would be expanded.    So here, we have to make an exception. */
 E void FDECL(xputc, (int));
 #else
 E void FDECL(xputc, (CHAR_P));

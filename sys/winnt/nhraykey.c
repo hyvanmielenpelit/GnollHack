@@ -1,4 +1,4 @@
-/* GnollHack 4.0	nhraykey.c	$NHDT-Date: 1457207047 2016/03/05 19:44:07 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.16 $ */
+/* GnollHack 4.0    nhraykey.c    $NHDT-Date: 1457207047 2016/03/05 19:44:07 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.16 $ */
 /* Copyright (c) GnollHack PC Development Team 2003                      */
 /* GnollHack may be freely redistributed.  See license for details.      */
 
@@ -531,19 +531,19 @@ coord *cc;
                             else if (ir->Event.MouseEvent.dwButtonState
                                      & RIGHTBUTTON)
                                 *mod = CLICK_2;
-#if 0 /* middle button */			       
-				else if (ir->Event.MouseEvent.dwButtonState & MIDBUTTON)
-			      		*mod = CLICK_3;
+#if 0 /* middle button */                   
+                else if (ir->Event.MouseEvent.dwButtonState & MIDBUTTON)
+                          *mod = CLICK_3;
 #endif
                             return 0;
                         }
                     }
 #if 0
-			/* We ignore these types of console events */
-		        else if (ir->EventType == FOCUS_EVENT) {
-		        }
-		        else if (ir->EventType == MENU_EVENT) {
-		        }
+            /* We ignore these types of console events */
+                else if (ir->EventType == FOCUS_EVENT) {
+                }
+                else if (ir->EventType == MENU_EVENT) {
+                }
 #endif
                 }
             } else

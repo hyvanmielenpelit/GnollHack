@@ -1,4 +1,4 @@
-/* GnollHack 4.0	do_name.c	$NHDT-Date: 1555627306 2019/04/18 22:41:46 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.145 $ */
+/* GnollHack 4.0    do_name.c    $NHDT-Date: 1555627306 2019/04/18 22:41:46 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.145 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -411,7 +411,7 @@ int x, y, gloc;
                      || generic_glyph_to_cmap(glyph) == S_hoportcullis
                      || generic_glyph_to_cmap(glyph) == S_voportcullis
                      || generic_glyph_to_cmap(glyph) == S_room
-					 || generic_glyph_to_cmap(glyph) == S_darkroom
+                     || generic_glyph_to_cmap(glyph) == S_darkroom
                      || generic_glyph_to_cmap(glyph) == S_grass
                      || generic_glyph_to_cmap(glyph) == S_darkgrass
                      || generic_glyph_to_cmap(glyph) == S_ground
@@ -706,7 +706,7 @@ enum game_cursor_types cursor_style;
         pline("(For instructions type a '%s')",
               visctrl(Cmd.spkeys[NHKF_GETPOS_HELP]));
 
-		msg_given = TRUE;
+        msg_given = TRUE;
     }
     cx = ccp->x;
     cy = ccp->y;
@@ -967,7 +967,7 @@ enum game_cursor_types cursor_style;
                     if (IS_DOOR(sidx) || IS_WALL(sidx)
                         || sidx == SDOOR || sidx == SCORR
                         || generic_glyph_to_cmap(k) == S_room
-						|| generic_glyph_to_cmap(k) == S_darkroom
+                        || generic_glyph_to_cmap(k) == S_darkroom
                         || generic_glyph_to_cmap(k) == S_grass
                         || generic_glyph_to_cmap(k) == S_darkgrass
                         || generic_glyph_to_cmap(k) == S_ground
@@ -1126,20 +1126,20 @@ new_umname(mon, lth)
 struct monst* mon;
 int lth; /* desired length (caller handles adding 1 for terminator) */
 {
-	if (lth) 
-	{
-		/* allocate mextra if necessary; otherwise get rid of old name */
-		if (!mon->mextra)
-			mon->mextra = newmextra();
-		else
-			free_umname(mon); /* already has mextra, might also have name */
-		UMNAME(mon) = (char*)alloc((size_t)lth);
-	}
-	else {
-		/* zero length: the new name is empty; get rid of the old name */
-		if (has_umname(mon))
-			free_umname(mon);
-	}
+    if (lth) 
+    {
+        /* allocate mextra if necessary; otherwise get rid of old name */
+        if (!mon->mextra)
+            mon->mextra = newmextra();
+        else
+            free_umname(mon); /* already has mextra, might also have name */
+        UMNAME(mon) = (char*)alloc((size_t)lth);
+    }
+    else {
+        /* zero length: the new name is empty; get rid of the old name */
+        if (has_umname(mon))
+            free_umname(mon);
+    }
 }
 
 /* release a monster's uname; retains mextra even if all fields are now null */
@@ -1147,10 +1147,10 @@ void
 free_umname(mon)
 struct monst* mon;
 {
-	if (has_umname(mon)) {
-		free((genericptr_t)UMNAME(mon));
-		UMNAME(mon) = (char*)0;
-	}
+    if (has_umname(mon)) {
+        free((genericptr_t)UMNAME(mon));
+        UMNAME(mon) = (char*)0;
+    }
 }
 
 /* allocate space for an object's name; removes old name if there is one */
@@ -1205,19 +1205,19 @@ new_uoname(obj, lth)
 struct obj* obj;
 int lth; /* desired length (caller handles adding 1 for terminator) */
 {
-	if (lth) {
-		/* allocate oextra if necessary; otherwise get rid of old name */
-		if (!obj->oextra)
-			obj->oextra = newoextra();
-		else
-			free_uoname(obj); /* already has oextra, might also have name */
-		UONAME(obj) = (char*)alloc((size_t)lth);
-	}
-	else {
-		/* zero length: the new name is empty; get rid of the old name */
-		if (has_uoname(obj))
-			free_uoname(obj);
-	}
+    if (lth) {
+        /* allocate oextra if necessary; otherwise get rid of old name */
+        if (!obj->oextra)
+            obj->oextra = newoextra();
+        else
+            free_uoname(obj); /* already has oextra, might also have name */
+        UONAME(obj) = (char*)alloc((size_t)lth);
+    }
+    else {
+        /* zero length: the new name is empty; get rid of the old name */
+        if (has_uoname(obj))
+            free_uoname(obj);
+    }
 }
 
 /* release an object's name; retains oextra even if all fields are now null */
@@ -1225,10 +1225,10 @@ void
 free_uoname(obj)
 struct obj* obj;
 {
-	if (has_uoname(obj)) {
-		free((genericptr_t)UONAME(obj));
-		UONAME(obj) = (char*)0;
-	}
+    if (has_uoname(obj)) {
+        free((genericptr_t)UONAME(obj));
+        UONAME(obj) = (char*)0;
+    }
 }
 
 /*  safe_oname() always returns a valid pointer to
@@ -1240,9 +1240,9 @@ const char*
 safe_uoname(obj)
 struct obj* obj;
 {
-	if (has_uoname(obj))
-		return UONAME(obj);
-	return empty_string;
+    if (has_uoname(obj))
+        return UONAME(obj);
+    return empty_string;
 }
 
 
@@ -1274,20 +1274,20 @@ u_name_monst(mtmp, name)
 struct monst* mtmp;
 const char* name;
 {
-	int lth;
-	char buf[PL_PSIZ];
+    int lth;
+    char buf[PL_PSIZ];
 
-	/* dogname & catname are PL_PSIZ arrays; object names have same limit */
-	lth = (name && *name) ? ((int)strlen(name) + 1) : 0;
-	if (lth > PL_PSIZ) {
-		lth = PL_PSIZ;
-		name = strncpy(buf, name, PL_PSIZ - 1);
-		buf[PL_PSIZ - 1] = '\0';
-	}
-	new_umname(mtmp, lth); /* removes old name if one is present */
-	if (lth)
-		Strcpy(UMNAME(mtmp), name);
-	return mtmp;
+    /* dogname & catname are PL_PSIZ arrays; object names have same limit */
+    lth = (name && *name) ? ((int)strlen(name) + 1) : 0;
+    if (lth > PL_PSIZ) {
+        lth = PL_PSIZ;
+        name = strncpy(buf, name, PL_PSIZ - 1);
+        buf[PL_PSIZ - 1] = '\0';
+    }
+    new_umname(mtmp, lth); /* removes old name if one is present */
+    if (lth)
+        Strcpy(UMNAME(mtmp), name);
+    return mtmp;
 }
 
 /* check whether user-supplied name matches or nearly matches an unnameable
@@ -1384,32 +1384,32 @@ do_mname()
     } else if (mtmp->isshk
                && !(Deaf || !mon_can_move(mtmp)
                     || mtmp->data->msound <= MS_ANIMAL)) {
-		if (!alreadynamed(mtmp, monnambuf, buf))
-		{
-			mtmp->u_know_mname = 1;
-			verbalize("I'm %s, not %s.", shkname(mtmp), buf);
-		}
+        if (!alreadynamed(mtmp, monnambuf, buf))
+        {
+            mtmp->u_know_mname = 1;
+            verbalize("I'm %s, not %s.", shkname(mtmp), buf);
+        }
     } else if (mtmp->ispriest || mtmp->isminion || mtmp->isshk || mtmp->issmith || mtmp->isnpc) {
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s will not accept the name %s.", upstart(monnambuf), buf);
     }
-	else if(!has_mname(mtmp) && is_peaceful(mtmp) && is_animal(mtmp->data))
-	{
-		/* Peaceful animals can be christened, others do not accept your naming */
-		(void)christen_monst(mtmp, buf);
-		mtmp->u_know_mname = 1;
-	}
-	else if (has_mname(mtmp))
-	{
-		if(!mtmp->u_know_mname)
-			(void)u_name_monst(mtmp, buf);
-		else
-			pline("%s will not accept the name %s.", upstart(monnambuf), buf);
-	}
-	else
-	{
-		(void)u_name_monst(mtmp, buf);
-	}
+    else if(!has_mname(mtmp) && is_peaceful(mtmp) && is_animal(mtmp->data))
+    {
+        /* Peaceful animals can be christened, others do not accept your naming */
+        (void)christen_monst(mtmp, buf);
+        mtmp->u_know_mname = 1;
+    }
+    else if (has_mname(mtmp))
+    {
+        if(!mtmp->u_know_mname)
+            (void)u_name_monst(mtmp, buf);
+        else
+            pline("%s will not accept the name %s.", upstart(monnambuf), buf);
+    }
+    else
+    {
+        (void)u_name_monst(mtmp, buf);
+    }
 }
 
 STATIC_VAR int via_naming = 0;
@@ -1424,8 +1424,8 @@ void
 do_uoname(obj)
 register struct obj *obj;
 {
-	char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
-	//char *bufp, buf[BUFSZ] = DUMMY, bufcpy[BUFSZ], qbuf[QBUFSZ];
+    char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
+    //char *bufp, buf[BUFSZ] = DUMMY, bufcpy[BUFSZ], qbuf[QBUFSZ];
     //short objtyp;
 
     /* Do this now because there's no point in even asking for a name */
@@ -1434,12 +1434,12 @@ register struct obj *obj;
         return;
     }
 
-	if (has_oname(obj) && obj->nknown) {
-		pline("%s already has a true name.", Yname2(obj));
-		return;
-	}
+    if (has_oname(obj) && obj->nknown) {
+        pline("%s already has a true name.", Yname2(obj));
+        return;
+    }
 
-	Sprintf(qbuf, "What do you want to name %s ",
+    Sprintf(qbuf, "What do you want to name %s ",
             is_plural(obj) ? "these" : "this");
     (void) safe_qbuf(qbuf, qbuf, "?", obj, xname, simpleonames, "item");
     getlin(qbuf, buf);
@@ -1543,22 +1543,22 @@ uoname(obj, name)
 struct obj* obj;
 const char* name;
 {
-	int lth;
-	char buf[PL_PSIZ];
+    int lth;
+    char buf[PL_PSIZ];
 
-	lth = *name ? (int)(strlen(name) + 1) : 0;
-	if (lth > PL_PSIZ) {
-		lth = PL_PSIZ;
-		name = strncpy(buf, name, PL_PSIZ - 1);
-		buf[PL_PSIZ - 1] = '\0';
-	}
-	new_uoname(obj, lth); /* removes old name if one is present */
-	if (lth)
-		Strcpy(UONAME(obj), name);
+    lth = *name ? (int)(strlen(name) + 1) : 0;
+    if (lth > PL_PSIZ) {
+        lth = PL_PSIZ;
+        name = strncpy(buf, name, PL_PSIZ - 1);
+        buf[PL_PSIZ - 1] = '\0';
+    }
+    new_uoname(obj, lth); /* removes old name if one is present */
+    if (lth)
+        Strcpy(UONAME(obj), name);
 
-	if (carried(obj))
-		update_inventory();
-	return obj;
+    if (carried(obj))
+        update_inventory();
+    return obj;
 }
 
 static NEARDATA const char callable[] = {
@@ -1690,14 +1690,14 @@ struct obj *obj;
        by xname(); most of these fixups aren't really needed because the
        relevant type of object isn't callable so won't reach this far */
     if (otemp.oclass == WEAPON_CLASS)
-	{
+    {
         otemp.opoisoned = 0; /* not poisoned */
-		otemp.elemental_enchantment = 0; /* not specially enchanted */
+        otemp.elemental_enchantment = 0; /* not specially enchanted */
         otemp.exceptionality = 0; /* not specially crafted */
         otemp.mythic_prefix = 0; /* not mythic */
         otemp.mythic_suffix = 0; /* not mythic */
     }
-	else if (otemp.oclass == POTION_CLASS)
+    else if (otemp.oclass == POTION_CLASS)
         otemp.odiluted = 0; /* not diluted */
     else if (otemp.otyp == TOWEL || otemp.otyp == STATUE)
         otemp.special_quality = 0; /* not wet or historic */
@@ -1730,20 +1730,20 @@ struct obj *obj;
     else
         (void) safe_qbuf(qbuf, "Call ", ":", obj,
                          docall_xname, simpleonames, "thing");
-	/* pointer to old name */
-	str1 = &(objects[obj->otyp].oc_uname);
-	buf[0] = '\0';
+    /* pointer to old name */
+    str1 = &(objects[obj->otyp].oc_uname);
+    buf[0] = '\0';
 #ifdef EDIT_GETLIN
-	/* if there's an existing name, make it be the default answer */
-	if (*str1)
-		Strcpy(buf, *str1);
+    /* if there's an existing name, make it be the default answer */
+    if (*str1)
+        Strcpy(buf, *str1);
 #endif
 #ifdef ANDROID
-	if (1) /* was showlog but that was always TRUE */
-		and_getlin_log(qbuf, buf);
-	else
+    if (1) /* was showlog but that was always TRUE */
+        and_getlin_log(qbuf, buf);
+    else
 #endif
-		getlin(qbuf, buf);
+        getlin(qbuf, buf);
     if (!*buf || *buf == '\033')
         return;
 
@@ -1911,7 +1911,7 @@ boolean called;
     const char* pm_name = mon_monster_name(mtmp); // mdat->mname;
     boolean do_hallu, do_invis, do_it, do_saddle, do_name;
     boolean name_at_start = FALSE, has_adjectives = FALSE;
-	/* note: uname is always at end */
+    /* note: uname is always at end */
     char *bp;
 
     /* Remove gcc warning */
@@ -1952,10 +1952,10 @@ boolean called;
         if (!do_hallu)
             EHalluc_resistance = 1L;
         if (!do_invis)
-			mtmp->mprops[INVISIBILITY] = 0;
+            mtmp->mprops[INVISIBILITY] = 0;
         name = priestname(mtmp, priestnambuf);
         EHalluc_resistance = save_prop;
-		mtmp->mprops[INVISIBILITY] = save_invis;
+        mtmp->mprops[INVISIBILITY] = save_invis;
         if (article == ARTICLE_NONE && !strncmp(name, "the ", 4))
             name += 4;
         return strcpy(buf, name);
@@ -1971,9 +1971,9 @@ boolean called;
      * none of this applies.
      */
     if (mtmp->isshk && !do_hallu) 
-	{
+    {
         if (adjective && article == ARTICLE_THE) 
-		{
+        {
             /* pathological case: "the angry Asidonhopo the blue dragon"
                sounds silly */
             Strcpy(buf, "the ");
@@ -2007,55 +2007,55 @@ boolean called;
     /* Put the actual monster name or type into the buffer now */
     /* Be sure to remember whether the buffer starts with a name */
     if (do_hallu) 
-	{
+    {
         char rnamecode;
         char *rname = rndmonnam(&rnamecode);
 
         Strcat(buf, rname);
         name_at_start = bogon_is_pname(rnamecode);
     }
-	else if (do_name && has_mname(mtmp) && mtmp->u_know_mname)
-	{
-		char *name = MNAME(mtmp);
+    else if (do_name && has_mname(mtmp) && mtmp->u_know_mname)
+    {
+        char *name = MNAME(mtmp);
 
-		if (mdat == &mons[PM_GHOST])
-		{
-			Sprintf(eos(buf), "%s ghost", s_suffix(name));
-			name_at_start = TRUE;
-		} 
-		else if (is_mplayer(mdat) && (bp = strstri(name, " the ")) != 0) 
-		{
-			/* <name> the <adjective> <invisible> <saddled> <rank> */
-			char pbuf[BUFSZ];
+        if (mdat == &mons[PM_GHOST])
+        {
+            Sprintf(eos(buf), "%s ghost", s_suffix(name));
+            name_at_start = TRUE;
+        } 
+        else if (is_mplayer(mdat) && (bp = strstri(name, " the ")) != 0) 
+        {
+            /* <name> the <adjective> <invisible> <saddled> <rank> */
+            char pbuf[BUFSZ];
 
-			Strcpy(pbuf, name);
-			pbuf[bp - name + 5] = '\0'; /* adjectives right after " the " */
-			if (has_adjectives)
-				Strcat(pbuf, buf);
-			Strcat(pbuf, bp + 5); /* append the rest of the name */
-			Strcpy(buf, pbuf);
-			article = ARTICLE_NONE;
-			name_at_start = TRUE;
-		} 
-		else 
-		{
-			char tmpbuf[BUFSIZ];
-			strcpy(tmpbuf, buf);
-			if (!is_tame(mtmp))
-			{
-				if ((bp = strstri(name, " the ")) != 0)
-					Sprintf(buf, "%s%s %s", tmpbuf, pm_name, name);
-				else
-					Sprintf(buf, "%s%s the %s", tmpbuf, name, pm_name);
-			}
-			else
-				Sprintf(buf, "%s%s", tmpbuf, name);
+            Strcpy(pbuf, name);
+            pbuf[bp - name + 5] = '\0'; /* adjectives right after " the " */
+            if (has_adjectives)
+                Strcat(pbuf, buf);
+            Strcat(pbuf, bp + 5); /* append the rest of the name */
+            Strcpy(buf, pbuf);
+            article = ARTICLE_NONE;
+            name_at_start = TRUE;
+        } 
+        else 
+        {
+            char tmpbuf[BUFSIZ];
+            strcpy(tmpbuf, buf);
+            if (!is_tame(mtmp))
+            {
+                if ((bp = strstri(name, " the ")) != 0)
+                    Sprintf(buf, "%s%s %s", tmpbuf, pm_name, name);
+                else
+                    Sprintf(buf, "%s%s the %s", tmpbuf, name, pm_name);
+            }
+            else
+                Sprintf(buf, "%s%s", tmpbuf, name);
 
-			name_at_start = TRUE;
-		}
-	} 
-	else if (is_mplayer(mdat) && !In_endgame(&u.uz)) 
-	{
+            name_at_start = TRUE;
+        }
+    } 
+    else if (is_mplayer(mdat) && !In_endgame(&u.uz)) 
+    {
         char pbuf[BUFSZ];
 
         Strcpy(pbuf, rank_of((int) mtmp->m_lev, monsndx(mdat),
@@ -2063,20 +2063,20 @@ boolean called;
         Strcat(buf, lcase(pbuf));
         name_at_start = FALSE;
     } 
-	else 
-	{
+    else 
+    {
         Strcat(buf, pm_name);
         name_at_start = (boolean) is_mname_proper_name(mdat);
     }
 
-	/* Append umname if has one -- called is now obsolete */
-	if (!(has_mname(mtmp) && mtmp->u_know_mname) &&/*called &&*/ has_umname(mtmp))
-	{
-		char* umname = UMNAME(mtmp);
-		Sprintf(eos(buf), " known as %s", umname);
-	}
+    /* Append umname if has one -- called is now obsolete */
+    if (!(has_mname(mtmp) && mtmp->u_know_mname) &&/*called &&*/ has_umname(mtmp))
+    {
+        char* umname = UMNAME(mtmp);
+        Sprintf(eos(buf), " known as %s", umname);
+    }
 
-	/* Write article or your in start */
+    /* Write article or your in start */
     if (name_at_start && (article == ARTICLE_YOUR || !has_adjectives)) {
         if (mdat == &mons[PM_WIZARD_OF_YENDOR])
             article = ARTICLE_THE;
@@ -2199,7 +2199,7 @@ char*
 Ymonnam(mtmp)
 struct monst* mtmp;
 {
-	return upstart(y_monnam(mtmp));
+    return upstart(y_monnam(mtmp));
 }
 
 char *
@@ -2444,108 +2444,108 @@ char*
 randomize_dwarf_name(s)
 char* s;
 {
-	static const char* start[] = { "th", "m", "d", "thr", "g",
-		"d", "t", "l", "b", "", "n", "f", "fr", "gr", "aggr" };
-	static const char* v[] = { "a", "e", "i", "o", "u", "u", "eo", "y" };
-	static const char* middle_vowel_end[] = { "l", "r", "g", "n" };
-	static const char* mv[] = { "a", "e", "i", "o", "u" };
-	static const char* middle_novowel_end[] = { "rog", "rg" };
-	static const char* end_previous_vowel[] = { "din", "ddin", "rdin", "rin", "in", "mli", "lin", "nin", "sek", "rek", "rim", "im" , "r", "ri", "gas", "m", "dis", "di" };
-	static const char* end_previous_novowel[] = { "din", "rin", "in", "lin", "rim", "im", "ri", "as", "dis" };
+    static const char* start[] = { "th", "m", "d", "thr", "g",
+        "d", "t", "l", "b", "", "n", "f", "fr", "gr", "aggr" };
+    static const char* v[] = { "a", "e", "i", "o", "u", "u", "eo", "y" };
+    static const char* middle_vowel_end[] = { "l", "r", "g", "n" };
+    static const char* mv[] = { "a", "e", "i", "o", "u" };
+    static const char* middle_novowel_end[] = { "rog", "rg" };
+    static const char* end_previous_vowel[] = { "din", "ddin", "rdin", "rin", "in", "mli", "lin", "nin", "sek", "rek", "rim", "im" , "r", "ri", "gas", "m", "dis", "di" };
+    static const char* end_previous_novowel[] = { "din", "rin", "in", "lin", "rim", "im", "ri", "as", "dis" };
 
-	if (s) {
-		strcpy(s, "");
-		if (!rn2(4))
-		{
-			/* with middle syllable */
-			/* with no vowel end*/
-			if(!rn2(3))
-				Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-					middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
-			else
-				Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-					middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
-		}
-		else
-			Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-				end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
-	}
-	return s;
+    if (s) {
+        strcpy(s, "");
+        if (!rn2(4))
+        {
+            /* with middle syllable */
+            /* with no vowel end*/
+            if(!rn2(3))
+                Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                    middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
+            else
+                Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                    middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+        }
+        else
+            Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+    }
+    return s;
 }
 
 char*
 randomize_elf_name(s)
 char* s;
 {
-	static const char* start[] = { "", "", "", "g", "gal", "b", "c", "cel",
-		"d", "l", "b", "n", "f", "f", "gl", "gw" };
-	static const char* v[] = { "a", "e", "i", "o", "ae", "ea", "eo" };
-	static const char* middle_vowel_end[] = { "l", "m", "g", "n", "br", "dr", "lemm", "ld", "lr", "r", "ng", "lg" };
-	static const char* mv[] = { "a", "e", "i", "o" };
-	static const char* middle_novowel_end[] = { "lad", "len", "m", "r", "l", "ren", "n", "galm", "galn", "ngr", "ng", "nr", "in", "th", "dhr", "gl", 
-		"ht", "bl", "thr", "rd", "mr", "nd", "nn" };
-	static const char* end_previous_vowel[] = { "riel", "rie", "drie", "driel", "dras", "dros", "drod", "dras", "ros", "rod", 
-		"nael", "dhel", "n", "d", "r", "wen", "brian", "bor", "mbrian", "mbor", "rdan", "nor", "ron", 
-		"lin", "dil", "hil", "dhil", "rdhil", "kil", "re", "we", "nd", "l", "lye", "dhon", "thil", "dor", "l-galad", "ndor", "las", "dir", "dreth",
-		"phin", "lodh" };
-	static const char* end_previous_novowel[] = { "iel", "ie", "as", "os", "od", "ael", "an", "on", "arfin", "olfin", "ion", "ien", "or",
-		"in", "un", "ellas", "anel", "odel", "uil" };
+    static const char* start[] = { "", "", "", "g", "gal", "b", "c", "cel",
+        "d", "l", "b", "n", "f", "f", "gl", "gw" };
+    static const char* v[] = { "a", "e", "i", "o", "ae", "ea", "eo" };
+    static const char* middle_vowel_end[] = { "l", "m", "g", "n", "br", "dr", "lemm", "ld", "lr", "r", "ng", "lg" };
+    static const char* mv[] = { "a", "e", "i", "o" };
+    static const char* middle_novowel_end[] = { "lad", "len", "m", "r", "l", "ren", "n", "galm", "galn", "ngr", "ng", "nr", "in", "th", "dhr", "gl", 
+        "ht", "bl", "thr", "rd", "mr", "nd", "nn" };
+    static const char* end_previous_vowel[] = { "riel", "rie", "drie", "driel", "dras", "dros", "drod", "dras", "ros", "rod", 
+        "nael", "dhel", "n", "d", "r", "wen", "brian", "bor", "mbrian", "mbor", "rdan", "nor", "ron", 
+        "lin", "dil", "hil", "dhil", "rdhil", "kil", "re", "we", "nd", "l", "lye", "dhon", "thil", "dor", "l-galad", "ndor", "las", "dir", "dreth",
+        "phin", "lodh" };
+    static const char* end_previous_novowel[] = { "iel", "ie", "as", "os", "od", "ael", "an", "on", "arfin", "olfin", "ion", "ien", "or",
+        "in", "un", "ellas", "anel", "odel", "uil" };
 
-	if (s) {
-		strcpy(s, "");
-		if (rn2(3))
-		{
-			/* with middle syllable */
-			/* with no vowel end*/
-			if (!rn2(2))
-				Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-					middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
-			else
-				Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-					middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
-		}
-		else
-			Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-				end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
-	}
-	return s;
+    if (s) {
+        strcpy(s, "");
+        if (rn2(3))
+        {
+            /* with middle syllable */
+            /* with no vowel end*/
+            if (!rn2(2))
+                Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                    middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
+            else
+                Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                    middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+        }
+        else
+            Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+    }
+    return s;
 }
 
 char*
 randomize_gnome_name(s)
 char* s;
 {
-	static const char* start[] = { "", "", "", "g", "h", "b", "p",
-		"d", "l", "br", "n", "f", "sh", "w", "r", "z", "t", "fr", "gl", "v", "wr", "sch", "gn" };
-	static const char* v[] = { "a", "e", "i", "o", "u", "u", "y", "ee", "oo", "uu" };
-	static const char* middle_vowel_end[] = { "l", "lg", "m", "n", "lst", "lv", "dd", "mpn", "r", "ld", "rk", "nk", "rl", "d", "v", "rr", "pp", "shl" };
-	static const char* mv[] = { "a", "e", "i", "o", "u", "y" };
-	static const char* middle_novowel_end[] = { "m", "r", "l", "n" "ss", "s", "ll", 
-		"mbl", "rn", "bl", "thr", "rd", "mr", "nd", "nn", "mp", "p", "rg", "pp", "lb", "shl", "rb", "lfr", "nk" };
-	static const char* end_previous_vowel[] = { "cc", "ck", "x", "b", "n", "m", "ll", "nock", "wick", "wock", "mil",
-		"k", "nn", "nottin", "mottin", "noodle", "lla", "ddo", "mip", "bell" };
-	static const char* end_previous_novowel[] = { "a", "e", "o", "i", "y", "ey", "in", "yn", "en", 
-		"oodle" "ottin", "owick", "owock", "iwick", "iwock", "wick", "wock", "ell", "ag", "ed" };
+    static const char* start[] = { "", "", "", "g", "h", "b", "p",
+        "d", "l", "br", "n", "f", "sh", "w", "r", "z", "t", "fr", "gl", "v", "wr", "sch", "gn" };
+    static const char* v[] = { "a", "e", "i", "o", "u", "u", "y", "ee", "oo", "uu" };
+    static const char* middle_vowel_end[] = { "l", "lg", "m", "n", "lst", "lv", "dd", "mpn", "r", "ld", "rk", "nk", "rl", "d", "v", "rr", "pp", "shl" };
+    static const char* mv[] = { "a", "e", "i", "o", "u", "y" };
+    static const char* middle_novowel_end[] = { "m", "r", "l", "n" "ss", "s", "ll", 
+        "mbl", "rn", "bl", "thr", "rd", "mr", "nd", "nn", "mp", "p", "rg", "pp", "lb", "shl", "rb", "lfr", "nk" };
+    static const char* end_previous_vowel[] = { "cc", "ck", "x", "b", "n", "m", "ll", "nock", "wick", "wock", "mil",
+        "k", "nn", "nottin", "mottin", "noodle", "lla", "ddo", "mip", "bell" };
+    static const char* end_previous_novowel[] = { "a", "e", "o", "i", "y", "ey", "in", "yn", "en", 
+        "oodle" "ottin", "owick", "owock", "iwick", "iwock", "wick", "wock", "ell", "ag", "ed" };
 
-	if (s) 
-	{
-		strcpy(s, "");
-		if (!rn2(3))
-		{
-			/* with middle syllable */
-			/* with no vowel end*/
-			if (!rn2(2))
-				Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-					middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
-			else
-				Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-					middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
-		}
-		else
-			Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-				end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
-	}
-	return s;
+    if (s) 
+    {
+        strcpy(s, "");
+        if (!rn2(3))
+        {
+            /* with middle syllable */
+            /* with no vowel end*/
+            if (!rn2(2))
+                Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                    middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
+            else
+                Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                    middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+        }
+        else
+            Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+    }
+    return s;
 }
 
 
@@ -2553,38 +2553,38 @@ char*
 randomize_hobbit_name(s)
 char* s;
 {
-	static const char* start[] = { "", "b", "bl", "s", "br",
-		"d", "dr", "f", "fl", "fr", "g", "gr", "h", "l", "m", "p", "pr", "s", "t" };
-	static const char* v[] = { "a", "e", "i", "o", "u" };
-	static const char* middle_vowel_end[] = { "g", "l", "lg", "m", "n", "st", "ld" };
-	static const char* mv[] = { "a", "e", "i", "o", "u", "y", "ia" };
-	static const char* middle_novowel_end[] = { "g", "d" "m", "lb", "lgr", "nd", "ng", "cc", "n", "lc", "l", "lm"
-		"sc", "ff", "th", "rr", "rtl", "nt", "lv", "pp", "rt", "nch" };
-	static const char* end_previous_vowel[] = { "b", "c", "nd", "rd", "nta", "ca", "ll", "lac", "lbo", "do", "lba", "ll", "lla", 
-		"mwise", "bert", "bart",  "mbert", "mbart", "bald",
-		"fast", "mfast", "mfred", "grim", "brand", "gard", "fons", "bson", "mson", "mac", "doc", "dic", "mas", "gilda", "lot", "mrose" };
-	static const char* end_previous_novowel[] = { "a", "e", "o", "o", "i", "y", "ida", "ard", "anta", "old", "ald"
-		"obert", "ibert", "obart", "ibart", "an", "ibald",  "ibald" };
+    static const char* start[] = { "", "b", "bl", "s", "br",
+        "d", "dr", "f", "fl", "fr", "g", "gr", "h", "l", "m", "p", "pr", "s", "t" };
+    static const char* v[] = { "a", "e", "i", "o", "u" };
+    static const char* middle_vowel_end[] = { "g", "l", "lg", "m", "n", "st", "ld" };
+    static const char* mv[] = { "a", "e", "i", "o", "u", "y", "ia" };
+    static const char* middle_novowel_end[] = { "g", "d" "m", "lb", "lgr", "nd", "ng", "cc", "n", "lc", "l", "lm"
+        "sc", "ff", "th", "rr", "rtl", "nt", "lv", "pp", "rt", "nch" };
+    static const char* end_previous_vowel[] = { "b", "c", "nd", "rd", "nta", "ca", "ll", "lac", "lbo", "do", "lba", "ll", "lla", 
+        "mwise", "bert", "bart",  "mbert", "mbart", "bald",
+        "fast", "mfast", "mfred", "grim", "brand", "gard", "fons", "bson", "mson", "mac", "doc", "dic", "mas", "gilda", "lot", "mrose" };
+    static const char* end_previous_novowel[] = { "a", "e", "o", "o", "i", "y", "ida", "ard", "anta", "old", "ald"
+        "obert", "ibert", "obart", "ibart", "an", "ibald",  "ibald" };
 
-	if (s)
-	{
-		strcpy(s, "");
-		if (rn2(3))
-		{
-			/* with middle syllable */
-			/* with no vowel end*/
-			if (rn2(4))
-				Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-					middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
-			else
-				Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-					middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
-		}
-		else
-			Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-				end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
-	}
-	return s;
+    if (s)
+    {
+        strcpy(s, "");
+        if (rn2(3))
+        {
+            /* with middle syllable */
+            /* with no vowel end*/
+            if (rn2(4))
+                Sprintf(s, "%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                    middle_novowel_end[rn2(SIZE(middle_novowel_end))], end_previous_novowel[rn2(SIZE(end_previous_novowel))]);
+            else
+                Sprintf(s, "%s%s%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                    middle_vowel_end[rn2(SIZE(middle_vowel_end))], mv[rn2(SIZE(mv))], end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+        }
+        else
+            Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                end_previous_vowel[rn2(SIZE(end_previous_vowel))]);
+    }
+    return s;
 }
 
 char*
@@ -2608,31 +2608,31 @@ char*
 randomize_gnoll_name(s)
 char* s;
 {
-	static const char* start[] = { "bh", "gh", "gn", "ghn", "gr" "th", "dh", "dr", "dhr", "br", "bhr", "rr", "rh" };
-	static const char* v[] = { "a", "e", "o", "u", "y"  };
-	static const char* end[] = { "rk", "rp", "rl", "wl", "rnok", "rr", "rrg", "rror", "ryc", "ryn", "rryn", "rn", "gnol", "garr"  };
+    static const char* start[] = { "bh", "gh", "gn", "ghn", "gr" "th", "dh", "dr", "dhr", "br", "bhr", "rr", "rh" };
+    static const char* v[] = { "a", "e", "o", "u", "y"  };
+    static const char* end[] = { "rk", "rp", "rl", "wl", "rnok", "rr", "rrg", "rror", "ryc", "ryn", "rryn", "rn", "gnol", "garr"  };
 
-	if (s)
-	{
-		strcpy(s, "");
-			Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
-				end[rn2(SIZE(end))]);
-	}
-	return s;
+    if (s)
+    {
+        strcpy(s, "");
+            Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+                end[rn2(SIZE(end))]);
+    }
+    return s;
 }
 
 char*
 randomize_flind_name(s)
 char* s;
 {
-	if (s)
-	{
-		strcpy(s, "");
-		char ns[BUFSIZ];
-		(void)randomize_gnoll_name(ns);
-		Sprintf(s, "yee%s", ns);
-	}
-	return s;
+    if (s)
+    {
+        strcpy(s, "");
+        char ns[BUFSIZ];
+        (void)randomize_gnoll_name(ns);
+        Sprintf(s, "yee%s", ns);
+    }
+    return s;
 }
 
 
@@ -2640,302 +2640,302 @@ char*
 randomize_male_human_name(s)
 char* s;
 {
-	static const char* names[] = { 
-		"Ackley",
-		"Acton",
-		"Adger",
-		"Aiken",
-		"Alcott",
-		"Alder",
-		"Aldrich",
-		"Alfred",
-		"Allard",
-		"Allston",
-		"Alton",
-		"Alvertos",
-		"Alvin",
-		"Arledge",
-		"Arley",
-		"Arlo",
-		"Arundel",
-		"Ashley",
-		"Athelstan",
-		"Averill",
-		"Awarnach",
-		"Ballard",
-		"Bancroft",
-		"Barclay",
-		"Barnett",
-		"Beacher",
-		"Beardsley",
-		"Bede",
-		"Beldon",
-		"Birch",
-		"Blake",
-		"Booth",
-		"Borden",
-		"Bradley",
-		"Brandon",
-		"Brent",
-		"Brigham",
-		"Brinley",
-		"Brock",
-		"Bromley",
-		"Brook",
-		"Buckley",
-		"Burgess",
-		"Burne",
-		"Burt",
-		"Buster",
-		"Cade",
-		"Calder",
-		"Caldwell",
-		"Calhoun",
-		"Calvert",
-		"Cameron",
-		"Carden",
-		"Carleton",
-		"Carlyle",
-		"Carter",
-		"Carvell",
-		"Catcher",
-		"Cedric",
-		"Chad",
-		"Channing",
-		"Charles",
-		"Chevy",
-		"Chilton",
-		"Claiborne",
-		"Clark",
-		"Clifford",
-		"Colbert",
-		"Colborn",
-		"Colter",
-		"Courtland",
-		"Crawford",
-		"Creighton",
-		"Cromwell",
-		"Currier",
-		"Dale",
-		"Darren",
-		"Darwin",
-		"Dayton",
-		"Dean",
-		"Digby",
-		"Donald",
-		"Dorset",
-		"Douglas",
-		"Dover",
-		"Doyle",
-		"Dudley",
-		"Duncan",
-		"Durward",
-		"Dustin",
-		"Dwight",
-		"Earl",
-		"Edgar",
-		"Edmund",
-		"Edsel",
-		"Edward",
-		"Edwin",
-		"Egerton",
-		"Elder",
-		"Eldon",
-		"Eldridge",
-		"Elmer",
-		"Elton",
-		"Emerson",
-		"Erskine",
-		"Esmond",
-		"Fairfax",
-		"Farley",
-		"Farrell",
-		"Fielding",
-		"Ford",
-		"Fuller",
-		"Fulton",
-		"Gilford",
-		"Goldman",
-		"Gordon",
-		"Gower",
-		"Gray",
-		"Hadden",
-		"Hadley",
-		"Hagley",
-		"Halbert",
-		"Haley",
-		"Hall",
-		"Hallam",
-		"Halsey",
-		"Hamilton",
-		"Hardy",
-		"Harlan",
-		"Harmon",
-		"Harry",
-		"Hawk",
-		"Hawthorne",
-		"Hayden",
-		"Hayes",
-		"Haywood",
-		"Hedley",
-		"Hendrick",
-		"Henley",
-		"Herbert",
-		"Hilton",
-		"Holden",
-		"Hollis",
-		"Horton",
-		"Hudson",
-		"Humphrey",
-		"Hunt",
-		"Hutton",
-		"Hyatt",
-		"Irving",
-		"Ives",
-		"Kenelm",
-		"Kenley",
-		"Kent",
-		"Kenton",
-		"Keyon",
-		"Kinsey",
-		"Landon",
-		"Lang",
-		"Lawson",
-		"Layton",
-		"Leland",
-		"Lind",
-		"Litton",
-		"Llewellyn",
-		"Lyndon",
-		"Lyre",
-		"Maitland",
-		"Manley",
-		"Manning",
-		"Marden",
-		"Marlow",
-		"Marsden",
-		"Mather",
-		"Mead",
-		"Millard",
-		"Miller",
-		"Milton",
-		"Morven",
-		"Nash",
-		"Nedes",
-		"Nelson",
-		"Newell",
-		"Newman",
-		"North",
-		"Nyle",
-		"Oakley",
-		"Ogden",
-		"Olin",
-		"Orman",
-		"Osbert",
-		"Osmond",
-		"Oswald",
-		"Oswin",
-		"Palmer",
-		"Parker",
-		"Parr",
-		"Payton",
-		"Pell",
-		"Penley",
-		"Penn",
-		"Pierson",
-		"Preston",
-		"Putnam",
-		"Rabbit",
-		"Radcliff",
-		"Raleigh",
-		"Ralph",
-		"Ramsey",
-		"Ransford",
-		"Ransley",
-		"Ransom",
-		"Raven",
-		"Ravinger",
-		"Rawlins",
-		"Rayburn",
-		"Raymond",
-		"Read",
-		"Redford",
-		"Reginald",
-		"Remington",
-		"Ridley",
-		"Rishley",
-		"Robert",
-		"Rochester",
-		"Rodman",
-		"Rodney",
-		"Rowan",
-		"Rudyard",
-		"Rutherford",
-		"Rylan",
-		"Sandon",
-		"Sanford",
-		"Scott",
-		"Seabert",
-		"Seward",
-		"Shaw",
-		"Shelley",
-		"Shepherd",
-		"Sherlock",
-		"Sherman",
-		"Sherwood",
-		"Shipley",
-		"Siddel",
-		"Snowden",
-		"Spencer",
-		"Spike",
-		"Stanley",
-		"Stokley",
-		"Stroud",
-		"Studs",
-		"Tanner",
-		"Tate",
-		"Terrel",
-		"Thane",
-		"Thatcher",
-		"Thorne",
-		"Thorpe",
-		"Thurlow",
-		"Tomkin",
-		"Tostig",
-		"Townsend",
-		"Tranter",
-		"Trent",
-		"Tripp",
-		"Truman",
-		"Tye",
-		"Tyne",
-		"Wakefield",
-		"Wallace",
-		"Walton",
-		"Waverly",
-		"Wayland",
-		"Wayne",
-		"Wetherby",
-		"Whitfield",
-		"Wilfred",
-		"Winifred",
-		"Winslow",
-		"Winston",
-		"Winthrop",
-		"Woodrow",
-		"Wright",
-		"Wyatt",
-		"Wylie",
-		"Wyndam",
-		"York"
-	};
+    static const char* names[] = { 
+        "Ackley",
+        "Acton",
+        "Adger",
+        "Aiken",
+        "Alcott",
+        "Alder",
+        "Aldrich",
+        "Alfred",
+        "Allard",
+        "Allston",
+        "Alton",
+        "Alvertos",
+        "Alvin",
+        "Arledge",
+        "Arley",
+        "Arlo",
+        "Arundel",
+        "Ashley",
+        "Athelstan",
+        "Averill",
+        "Awarnach",
+        "Ballard",
+        "Bancroft",
+        "Barclay",
+        "Barnett",
+        "Beacher",
+        "Beardsley",
+        "Bede",
+        "Beldon",
+        "Birch",
+        "Blake",
+        "Booth",
+        "Borden",
+        "Bradley",
+        "Brandon",
+        "Brent",
+        "Brigham",
+        "Brinley",
+        "Brock",
+        "Bromley",
+        "Brook",
+        "Buckley",
+        "Burgess",
+        "Burne",
+        "Burt",
+        "Buster",
+        "Cade",
+        "Calder",
+        "Caldwell",
+        "Calhoun",
+        "Calvert",
+        "Cameron",
+        "Carden",
+        "Carleton",
+        "Carlyle",
+        "Carter",
+        "Carvell",
+        "Catcher",
+        "Cedric",
+        "Chad",
+        "Channing",
+        "Charles",
+        "Chevy",
+        "Chilton",
+        "Claiborne",
+        "Clark",
+        "Clifford",
+        "Colbert",
+        "Colborn",
+        "Colter",
+        "Courtland",
+        "Crawford",
+        "Creighton",
+        "Cromwell",
+        "Currier",
+        "Dale",
+        "Darren",
+        "Darwin",
+        "Dayton",
+        "Dean",
+        "Digby",
+        "Donald",
+        "Dorset",
+        "Douglas",
+        "Dover",
+        "Doyle",
+        "Dudley",
+        "Duncan",
+        "Durward",
+        "Dustin",
+        "Dwight",
+        "Earl",
+        "Edgar",
+        "Edmund",
+        "Edsel",
+        "Edward",
+        "Edwin",
+        "Egerton",
+        "Elder",
+        "Eldon",
+        "Eldridge",
+        "Elmer",
+        "Elton",
+        "Emerson",
+        "Erskine",
+        "Esmond",
+        "Fairfax",
+        "Farley",
+        "Farrell",
+        "Fielding",
+        "Ford",
+        "Fuller",
+        "Fulton",
+        "Gilford",
+        "Goldman",
+        "Gordon",
+        "Gower",
+        "Gray",
+        "Hadden",
+        "Hadley",
+        "Hagley",
+        "Halbert",
+        "Haley",
+        "Hall",
+        "Hallam",
+        "Halsey",
+        "Hamilton",
+        "Hardy",
+        "Harlan",
+        "Harmon",
+        "Harry",
+        "Hawk",
+        "Hawthorne",
+        "Hayden",
+        "Hayes",
+        "Haywood",
+        "Hedley",
+        "Hendrick",
+        "Henley",
+        "Herbert",
+        "Hilton",
+        "Holden",
+        "Hollis",
+        "Horton",
+        "Hudson",
+        "Humphrey",
+        "Hunt",
+        "Hutton",
+        "Hyatt",
+        "Irving",
+        "Ives",
+        "Kenelm",
+        "Kenley",
+        "Kent",
+        "Kenton",
+        "Keyon",
+        "Kinsey",
+        "Landon",
+        "Lang",
+        "Lawson",
+        "Layton",
+        "Leland",
+        "Lind",
+        "Litton",
+        "Llewellyn",
+        "Lyndon",
+        "Lyre",
+        "Maitland",
+        "Manley",
+        "Manning",
+        "Marden",
+        "Marlow",
+        "Marsden",
+        "Mather",
+        "Mead",
+        "Millard",
+        "Miller",
+        "Milton",
+        "Morven",
+        "Nash",
+        "Nedes",
+        "Nelson",
+        "Newell",
+        "Newman",
+        "North",
+        "Nyle",
+        "Oakley",
+        "Ogden",
+        "Olin",
+        "Orman",
+        "Osbert",
+        "Osmond",
+        "Oswald",
+        "Oswin",
+        "Palmer",
+        "Parker",
+        "Parr",
+        "Payton",
+        "Pell",
+        "Penley",
+        "Penn",
+        "Pierson",
+        "Preston",
+        "Putnam",
+        "Rabbit",
+        "Radcliff",
+        "Raleigh",
+        "Ralph",
+        "Ramsey",
+        "Ransford",
+        "Ransley",
+        "Ransom",
+        "Raven",
+        "Ravinger",
+        "Rawlins",
+        "Rayburn",
+        "Raymond",
+        "Read",
+        "Redford",
+        "Reginald",
+        "Remington",
+        "Ridley",
+        "Rishley",
+        "Robert",
+        "Rochester",
+        "Rodman",
+        "Rodney",
+        "Rowan",
+        "Rudyard",
+        "Rutherford",
+        "Rylan",
+        "Sandon",
+        "Sanford",
+        "Scott",
+        "Seabert",
+        "Seward",
+        "Shaw",
+        "Shelley",
+        "Shepherd",
+        "Sherlock",
+        "Sherman",
+        "Sherwood",
+        "Shipley",
+        "Siddel",
+        "Snowden",
+        "Spencer",
+        "Spike",
+        "Stanley",
+        "Stokley",
+        "Stroud",
+        "Studs",
+        "Tanner",
+        "Tate",
+        "Terrel",
+        "Thane",
+        "Thatcher",
+        "Thorne",
+        "Thorpe",
+        "Thurlow",
+        "Tomkin",
+        "Tostig",
+        "Townsend",
+        "Tranter",
+        "Trent",
+        "Tripp",
+        "Truman",
+        "Tye",
+        "Tyne",
+        "Wakefield",
+        "Wallace",
+        "Walton",
+        "Waverly",
+        "Wayland",
+        "Wayne",
+        "Wetherby",
+        "Whitfield",
+        "Wilfred",
+        "Winifred",
+        "Winslow",
+        "Winston",
+        "Winthrop",
+        "Woodrow",
+        "Wright",
+        "Wyatt",
+        "Wylie",
+        "Wyndam",
+        "York"
+    };
 
-	if (s)
-	{
-		strcpy(s, "");
-		Sprintf(s, "%s", names[rn2(SIZE(names))]);
-	}
-	return s;
+    if (s)
+    {
+        strcpy(s, "");
+        Sprintf(s, "%s", names[rn2(SIZE(names))]);
+    }
+    return s;
 }
 
 
@@ -2943,392 +2943,392 @@ char*
 randomize_female_human_name(s)
 char* s;
 {
-	static const char* names[] = {
-		"Abby",
-		"Abigail",
-		"Ada",
-		"Addison",
-		"Adelaide",
-		"Adele",
-		"Agatha",
-		"Agnes",
-		"Alaina",
-		"Alanna",
-		"Alberta",
-		"Albina",
-		"Alexandria",
-		"Alice",
-		"Alicia",
-		"Alisha",
-		"Alison",
-		"Alma",
-		"Alvina",
-		"Amanda",
-		"Amber",
-		"Amelia",
-		"Amy",
-		"Ana",
-		"Andrea",
-		"Andy",
-		"Angel",
-		"Angela",
-		"Angie",
-		"Anna",
-		"Annabelle",
-		"Annabeth",
-		"Anne",
-		"Annie",
-		"Antonia",
-		"April",
-		"Arabella",
-		"Arda",
-		"Ashley",
-		"Astrid",
-		"Aubrey",
-		"Audrey",
-		"Autumn",
-		"Averil",
-		"Avis",
-		"Aviva",
-		"Barbara",
-		"Beatrice",
-		"Becki",
-		"Belinda",
-		"Bella",
-		"Berenice",
-		"Bertha",
-		"Blanche",
-		"Brenda",
-		"Bridget",
-		"Bronwen",
-		"Bronwyn",
-		"Bryony",
-		"Carlene",
-		"Carlie",
-		"Carmelita",
-		"Carol",
-		"Carol Ann",
-		"Carol Anne",
-		"Carole",
-		"Caroline",
-		"Carolyn",
-		"Cassandra",
-		"Cathleen",
-		"Cathy",
-		"Cecilia",
-		"Cecily",
-		"Celestia",
-		"Celia",
-		"Celinda",
-		"Charisse",
-		"Charity",
-		"Charla",
-		"Charlene",
-		"Charlotte",
-		"Charlyne",
-		"Charmaine",
-		"Chelsea",
-		"Cheryl",
-		"Chloe",
-		"Christabel",
-		"Christina",
-		"Christine",
-		"Cindy",
-		"Claire",
-		"Clara",
-		"Clare",
-		"Claribel",
-		"Clarissa",
-		"Claudia",
-		"Clementine",
-		"Colette",
-		"Colleen",
-		"Cordelia",
-		"Crystal",
-		"Cynthia",
-		"Danielle",
-		"Daphne",
-		"Darlene",
-		"Davina",
-		"Dawn",
-		"Deanna",
-		"Deanne",
-		"Deborah",
-		"Delia",
-		"Denise",
-		"Devon",
-		"Dora",
-		"Doreen",
-		"Dorothy",
-		"Drew",
-		"Drusilla",
-		"Dulcie",
-		"Edith",
-		"Edna",
-		"Edwina",
-		"Eleanor",
-		"Elizabeth",
-		"Ella",
-		"Ellen",
-		"Ellie",
-		"Emily",
-		"Emma",
-		"Enid",
-		"Erika",
-		"Erin",
-		"Estelle",
-		"Esther",
-		"Esty",
-		"Ethel",
-		"Ethelreda",
-		"Eudora",
-		"Eva",
-		"Eve",
-		"Evelyn",
-		"Faith",
-		"Felicity",
-		"Fleur",
-		"Flora",
-		"Florence",
-		"Francie",
-		"Frida",
-		"Gail",
-		"Gemma",
-		"Genevieve",
-		"Georgia",
-		"Georgiana",
-		"Gertie",
-		"Gertrude",
-		"Gia",
-		"Giselle",
-		"Glenda",
-		"Grace",
-		"Gwenda",
-		"Gwendolen",
-		"Gwendoline",
-		"Gwendolyn",
-		"Gwyneth",
-		"Hannah",
-		"Harriet",
-		"Heather",
-		"Heidi",
-		"Helen",
-		"Helena",
-		"Helene",
-		"Henrietta",
-		"Hester",
-		"Hilary",
-		"Hilda",
-		"Hodierna",
-		"Holly",
-		"Honor",
-		"Hope",
-		"Ida",
-		"Imelda",
-		"Imogen",
-		"Iona",
-		"Irene",
-		"Iris",
-		"Isabella",
-		"Isla",
-		"Ivy",
-		"Jacqueline",
-		"Jasmine",
-		"Jennifer",
-		"Joan",
-		"Joanna",
-		"Joanne",
-		"Joelle",
-		"Josephine",
-		"Judith",
-		"Julia",
-		"Julianne",
-		"Julie",
-		"Karen",
-		"Karina",
-		"Karlene",
-		"Karolyn",
-		"Kathleen",
-		"Kaylee",
-		"Kierra",
-		"Lana",
-		"Lanna",
-		"Lara",
-		"Laura",
-		"Lauren",
-		"Lauretta",
-		"Leah",
-		"Leanne",
-		"Leila",
-		"Leisha",
-		"Lena",
-		"Lenna",
-		"Leonora",
-		"Leslie",
-		"Lettice",
-		"Liana",
-		"Lila",
-		"Lilla",
-		"Lillian",
-		"Lily",
-		"Linda",
-		"Lindsay",
-		"Lisa",
-		"Liza",
-		"Lois",
-		"Lorelei",
-		"Loretta",
-		"Lorinda",
-		"Lorna",
-		"Lorraine",
-		"Louella",
-		"Louisa",
-		"Louise",
-		"Lucia",
-		"Lucinda",
-		"Lucy",
-		"Lynnette",
-		"Lysette",
-		"Mabel",
-		"Madelaine",
-		"Madge",
-		"Maggie",
-		"Mandy",
-		"Marcia",
-		"Marcie",
-		"Margaret",
-		"Mariah",
-		"Marian",
-		"Marianne",
-		"Marie",
-		"Marilyn",
-		"Marina",
-		"Marissa",
-		"Marjorie",
-		"Marsha",
-		"Marta",
-		"Mary",
-		"Matilda",
-		"Maud",
-		"Maude",
-		"Maureen",
-		"Mavis",
-		"May",
-		"Maya",
-		"Mayola",
-		"Medea",
-		"Megan",
-		"Melissa",
-		"Merle",
-		"Michelle",
-		"Mildred",
-		"Millicent",
-		"Minna",
-		"Minnie",
-		"Miranda",
-		"Moira",
-		"Morgan",
-		"Myra",
-		"Myrna",
-		"Myrtle",
-		"Nadine",
-		"Naila",
-		"Nancy",
-		"Narcissa",
-		"Natalie",
-		"Nena",
-		"Nettie",
-		"Nia",
-		"Nicola",
-		"Nicole",
-		"Nina",
-		"Nora",
-		"Odette",
-		"Olivia",
-		"Opal",
-		"Patrice",
-		"Paula",
-		"Paulina",
-		"Pearl",
-		"Penelope",
-		"Persis",
-		"Philippa",
-		"Priscilla",
-		"Rachel",
-		"Reba",
-		"Rhiannon",
-		"Rhoda",
-		"Rhonda",
-		"Richeldis",
-		"Rita",
-		"Roberta",
-		"Rosamund",
-		"Rose",
-		"Rosemary",
-		"Ruth",
-		"Sabrina",
-		"Salma",
-		"Samantha",
-		"Sandra",
-		"Sarah",
-		"Serena",
-		"Shania",
-		"Shannon",
-		"Sharla",
-		"Sharleen",
-		"Sharlene",
-		"Sharon",
-		"Shawna",
-		"Sheryl",
-		"Sibyl",
-		"Simone",
-		"Sophia",
-		"Sophie",
-		"Stella",
-		"Susan",
-		"Susanna",
-		"Susanne",
-		"Suzanne",
-		"Sylvia",
-		"Talitha",
-		"Tara",
-		"Teresa",
-		"Thelma",
-		"Thomasina",
-		"Thurza",
-		"Tiffany",
-		"Tina",
-		"Tracy",
-		"Trisha",
-		"Tyra",
-		"Urith",
-		"Valerie",
-		"Vanessa",
-		"Venetia",
-		"Vera",
-		"Victoria",
-		"Vilma",
-		"Viola",
-		"Virginia",
-		"Wanda",
-		"Wendy",
-		"Whitney",
-		"Wilma",
-		"Winifred",
-		"Winnie",
-		"Winnifred",
-		"Yasmin",
-		"Yvette",
-		"Yvonne"
-	};
+    static const char* names[] = {
+        "Abby",
+        "Abigail",
+        "Ada",
+        "Addison",
+        "Adelaide",
+        "Adele",
+        "Agatha",
+        "Agnes",
+        "Alaina",
+        "Alanna",
+        "Alberta",
+        "Albina",
+        "Alexandria",
+        "Alice",
+        "Alicia",
+        "Alisha",
+        "Alison",
+        "Alma",
+        "Alvina",
+        "Amanda",
+        "Amber",
+        "Amelia",
+        "Amy",
+        "Ana",
+        "Andrea",
+        "Andy",
+        "Angel",
+        "Angela",
+        "Angie",
+        "Anna",
+        "Annabelle",
+        "Annabeth",
+        "Anne",
+        "Annie",
+        "Antonia",
+        "April",
+        "Arabella",
+        "Arda",
+        "Ashley",
+        "Astrid",
+        "Aubrey",
+        "Audrey",
+        "Autumn",
+        "Averil",
+        "Avis",
+        "Aviva",
+        "Barbara",
+        "Beatrice",
+        "Becki",
+        "Belinda",
+        "Bella",
+        "Berenice",
+        "Bertha",
+        "Blanche",
+        "Brenda",
+        "Bridget",
+        "Bronwen",
+        "Bronwyn",
+        "Bryony",
+        "Carlene",
+        "Carlie",
+        "Carmelita",
+        "Carol",
+        "Carol Ann",
+        "Carol Anne",
+        "Carole",
+        "Caroline",
+        "Carolyn",
+        "Cassandra",
+        "Cathleen",
+        "Cathy",
+        "Cecilia",
+        "Cecily",
+        "Celestia",
+        "Celia",
+        "Celinda",
+        "Charisse",
+        "Charity",
+        "Charla",
+        "Charlene",
+        "Charlotte",
+        "Charlyne",
+        "Charmaine",
+        "Chelsea",
+        "Cheryl",
+        "Chloe",
+        "Christabel",
+        "Christina",
+        "Christine",
+        "Cindy",
+        "Claire",
+        "Clara",
+        "Clare",
+        "Claribel",
+        "Clarissa",
+        "Claudia",
+        "Clementine",
+        "Colette",
+        "Colleen",
+        "Cordelia",
+        "Crystal",
+        "Cynthia",
+        "Danielle",
+        "Daphne",
+        "Darlene",
+        "Davina",
+        "Dawn",
+        "Deanna",
+        "Deanne",
+        "Deborah",
+        "Delia",
+        "Denise",
+        "Devon",
+        "Dora",
+        "Doreen",
+        "Dorothy",
+        "Drew",
+        "Drusilla",
+        "Dulcie",
+        "Edith",
+        "Edna",
+        "Edwina",
+        "Eleanor",
+        "Elizabeth",
+        "Ella",
+        "Ellen",
+        "Ellie",
+        "Emily",
+        "Emma",
+        "Enid",
+        "Erika",
+        "Erin",
+        "Estelle",
+        "Esther",
+        "Esty",
+        "Ethel",
+        "Ethelreda",
+        "Eudora",
+        "Eva",
+        "Eve",
+        "Evelyn",
+        "Faith",
+        "Felicity",
+        "Fleur",
+        "Flora",
+        "Florence",
+        "Francie",
+        "Frida",
+        "Gail",
+        "Gemma",
+        "Genevieve",
+        "Georgia",
+        "Georgiana",
+        "Gertie",
+        "Gertrude",
+        "Gia",
+        "Giselle",
+        "Glenda",
+        "Grace",
+        "Gwenda",
+        "Gwendolen",
+        "Gwendoline",
+        "Gwendolyn",
+        "Gwyneth",
+        "Hannah",
+        "Harriet",
+        "Heather",
+        "Heidi",
+        "Helen",
+        "Helena",
+        "Helene",
+        "Henrietta",
+        "Hester",
+        "Hilary",
+        "Hilda",
+        "Hodierna",
+        "Holly",
+        "Honor",
+        "Hope",
+        "Ida",
+        "Imelda",
+        "Imogen",
+        "Iona",
+        "Irene",
+        "Iris",
+        "Isabella",
+        "Isla",
+        "Ivy",
+        "Jacqueline",
+        "Jasmine",
+        "Jennifer",
+        "Joan",
+        "Joanna",
+        "Joanne",
+        "Joelle",
+        "Josephine",
+        "Judith",
+        "Julia",
+        "Julianne",
+        "Julie",
+        "Karen",
+        "Karina",
+        "Karlene",
+        "Karolyn",
+        "Kathleen",
+        "Kaylee",
+        "Kierra",
+        "Lana",
+        "Lanna",
+        "Lara",
+        "Laura",
+        "Lauren",
+        "Lauretta",
+        "Leah",
+        "Leanne",
+        "Leila",
+        "Leisha",
+        "Lena",
+        "Lenna",
+        "Leonora",
+        "Leslie",
+        "Lettice",
+        "Liana",
+        "Lila",
+        "Lilla",
+        "Lillian",
+        "Lily",
+        "Linda",
+        "Lindsay",
+        "Lisa",
+        "Liza",
+        "Lois",
+        "Lorelei",
+        "Loretta",
+        "Lorinda",
+        "Lorna",
+        "Lorraine",
+        "Louella",
+        "Louisa",
+        "Louise",
+        "Lucia",
+        "Lucinda",
+        "Lucy",
+        "Lynnette",
+        "Lysette",
+        "Mabel",
+        "Madelaine",
+        "Madge",
+        "Maggie",
+        "Mandy",
+        "Marcia",
+        "Marcie",
+        "Margaret",
+        "Mariah",
+        "Marian",
+        "Marianne",
+        "Marie",
+        "Marilyn",
+        "Marina",
+        "Marissa",
+        "Marjorie",
+        "Marsha",
+        "Marta",
+        "Mary",
+        "Matilda",
+        "Maud",
+        "Maude",
+        "Maureen",
+        "Mavis",
+        "May",
+        "Maya",
+        "Mayola",
+        "Medea",
+        "Megan",
+        "Melissa",
+        "Merle",
+        "Michelle",
+        "Mildred",
+        "Millicent",
+        "Minna",
+        "Minnie",
+        "Miranda",
+        "Moira",
+        "Morgan",
+        "Myra",
+        "Myrna",
+        "Myrtle",
+        "Nadine",
+        "Naila",
+        "Nancy",
+        "Narcissa",
+        "Natalie",
+        "Nena",
+        "Nettie",
+        "Nia",
+        "Nicola",
+        "Nicole",
+        "Nina",
+        "Nora",
+        "Odette",
+        "Olivia",
+        "Opal",
+        "Patrice",
+        "Paula",
+        "Paulina",
+        "Pearl",
+        "Penelope",
+        "Persis",
+        "Philippa",
+        "Priscilla",
+        "Rachel",
+        "Reba",
+        "Rhiannon",
+        "Rhoda",
+        "Rhonda",
+        "Richeldis",
+        "Rita",
+        "Roberta",
+        "Rosamund",
+        "Rose",
+        "Rosemary",
+        "Ruth",
+        "Sabrina",
+        "Salma",
+        "Samantha",
+        "Sandra",
+        "Sarah",
+        "Serena",
+        "Shania",
+        "Shannon",
+        "Sharla",
+        "Sharleen",
+        "Sharlene",
+        "Sharon",
+        "Shawna",
+        "Sheryl",
+        "Sibyl",
+        "Simone",
+        "Sophia",
+        "Sophie",
+        "Stella",
+        "Susan",
+        "Susanna",
+        "Susanne",
+        "Suzanne",
+        "Sylvia",
+        "Talitha",
+        "Tara",
+        "Teresa",
+        "Thelma",
+        "Thomasina",
+        "Thurza",
+        "Tiffany",
+        "Tina",
+        "Tracy",
+        "Trisha",
+        "Tyra",
+        "Urith",
+        "Valerie",
+        "Vanessa",
+        "Venetia",
+        "Vera",
+        "Victoria",
+        "Vilma",
+        "Viola",
+        "Virginia",
+        "Wanda",
+        "Wendy",
+        "Whitney",
+        "Wilma",
+        "Winifred",
+        "Winnie",
+        "Winnifred",
+        "Yasmin",
+        "Yvette",
+        "Yvonne"
+    };
 
 
-	if (s)
-	{
-		strcpy(s, "");
-		Sprintf(s, "%s", names[rn2(SIZE(names))]);
-	}
-	return s;
+    if (s)
+    {
+        strcpy(s, "");
+        Sprintf(s, "%s", names[rn2(SIZE(names))]);
+    }
+    return s;
 }
 
 char*

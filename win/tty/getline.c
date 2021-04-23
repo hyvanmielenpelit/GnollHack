@@ -1,4 +1,4 @@
-/* GnollHack 4.0	getline.c	$NHDT-Date: 1543830347 2018/12/03 09:45:47 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.37 $ */
+/* GnollHack 4.0    getline.c    $NHDT-Date: 1543830347 2018/12/03 09:45:47 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.37 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -249,8 +249,8 @@ register const char *s; /* chars allowed besides return */
  * Return TRUE if we've extended the string at base.  Otherwise return FALSE.
  * Assumptions:
  *
- *	+ we don't change the characters that are already in base
- *	+ base has enough room to hold our string
+ *    + we don't change the characters that are already in base
+ *    + base has enough room to hold our string
  */
 STATIC_OVL boolean
 ext_cmd_getlin_hook(base)

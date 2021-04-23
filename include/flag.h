@@ -1,4 +1,4 @@
-/* GnollHack 4.0	flag.h	$NHDT-Date: 1554155745 2019/04/01 21:55:45 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.150 $ */
+/* GnollHack 4.0    flag.h    $NHDT-Date: 1554155745 2019/04/01 21:55:45 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.150 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -21,7 +21,7 @@ struct flag {
     boolean autoquiver; /* Automatically fill quiver */
     boolean autoopen;   /* open doors by walking into them */
 #ifdef ANDROID
-	boolean  autokick;	/* Automatically kick doors and force locks */
+    boolean  autokick;    /* Automatically kick doors and force locks */
 #endif
     boolean autounlock;   /* unlock doors and boxes whenever you find them being locked */
     boolean beginner;
@@ -48,26 +48,26 @@ struct flag {
     boolean p__obsolete;     /* [3.6.2: perm_invent moved to iflags] */
     boolean pickup;          /* whether you pickup or move and look */
     boolean pickup_thrown;   /* auto-pickup items you threw */
-	boolean prefer_fast_move;/* g and G are swapped, and likewise for m and M */
-	boolean pushweapon; /* When wielding, push old weapon into second slot */
+    boolean prefer_fast_move;/* g and G are swapped, and likewise for m and M */
+    boolean pushweapon; /* When wielding, push old weapon into second slot */
     boolean rest_on_space;   /* space means rest */
     boolean safe_dog;        /* give complete protection to the dog */
     boolean displace_peaceful;  /* displace peaceful monsters */
     boolean showexp;         /* show experience points */
-	boolean tellexp;		 /* tell experience points when received */
+    boolean tellexp;         /* tell experience points when received */
     boolean showmove;         /* show move on statusline */
     boolean show_buff_timer;    /* show buff timers in GUI */
     boolean search_box_traps; /* search all boxes for traps when pressing s */
-    boolean underline_peaceful;	 /* underline non-tame peaceful monsters */
-    boolean partylinecolor;	 /* use fixed partyline coloring */
-    boolean partydetails;	 /* print additional info like AC and MC for all party members */
-    boolean partymultiline;	 /* print each party member on its own line */
+    boolean underline_peaceful;     /* underline non-tame peaceful monsters */
+    boolean partylinecolor;     /* use fixed partyline coloring */
+    boolean partydetails;     /* print additional info like AC and MC for all party members */
+    boolean partymultiline;     /* print each party member on its own line */
     boolean metric_system;   /* use the metric system (kilograms) instead of avoirdupois pounds and ounces */
-	boolean inventory_weights_last; /* inventory weights are shown after the name of the item rather first, as normal */
+    boolean inventory_weights_last; /* inventory weights are shown after the name of the item rather first, as normal */
     boolean inventory_obj_cmd; /* list object commands in inventory */
     boolean classic_statue_symbol; /* statue is shown as rock */
     boolean classic_colors; /* use normal coloring scheme */
-    boolean blinking_cursor_on_tiles;	/* cursor blinks on tiles */
+    boolean blinking_cursor_on_tiles;    /* cursor blinks on tiles */
     boolean detailed_weights; /* use ounces and grams instead of lbs and kg */
     boolean show_cursor_on_u; /* force show cursor on you even with tiles */
     boolean force_paint_at_cursor; /* force paint at cursor (normally, because the cursor appears on you) */
@@ -128,13 +128,13 @@ struct flag {
     int sound_volume_ui;        /* user set preference for user interface sound volume 1...100 */
     boolean sparkle;         /* show "resisting" special FX (Scott Bigham) */
     boolean standout;        /* use standout for --More-- */
-	boolean	swap_rhand_only; /* swap only right hand */
+    boolean    swap_rhand_only; /* swap only right hand */
     boolean time;            /* display elapsed 'time' */
     boolean tombstone;       /* print tombstone */
     boolean verbose;         /* max battle info */
-	boolean wiz_mstatusline; /* extra information on monsters */
-	boolean wiz_alwaysenc;   /* creates always an encounter */
-	int end_top, end_around; /* describe desired score list */
+    boolean wiz_mstatusline; /* extra information on monsters */
+    boolean wiz_alwaysenc;   /* creates always an encounter */
+    int end_top, end_around; /* describe desired score list */
     unsigned moonphase;
     unsigned long suppress_alert;
 #define NEW_MOON 0
@@ -463,10 +463,10 @@ struct instance_flags {
     boolean wc2_guicolor;       /* allow colours in gui (outside map) */
     boolean wc2_autostatuslines;  /* automatically adjust the number of status lines */
     int wc_mouse_support;       /* allow mouse support */
-    int wc2_term_cols;		/* terminal width, in characters */
-    int wc2_term_rows;		/* terminal height, in characters */
+    int wc2_term_cols;        /* terminal width, in characters */
+    int wc2_term_rows;        /* terminal height, in characters */
     int wc2_statuslines;        /* default = 2, curses can handle 3 */
-    int wc2_windowborders;	/* display borders on GnollHack windows */
+    int wc2_windowborders;    /* display borders on GnollHack windows */
     int wc2_petattr;            /* text attributes for pet */
     char* wc2_master_bank_file; /* name of custom master bank file, overrides default */
     char* wc2_master_strings_bank_file; /* name of custom master strings bank file, overrides default */
@@ -489,9 +489,9 @@ struct instance_flags {
     short soko_prize_type1;     /* bag of holding or    */
     short soko_prize_type2;     /* amulet of reflection */
 #ifdef ANDROID
-	boolean dumplog; /* enable/disable dump logs */
+    boolean dumplog; /* enable/disable dump logs */
 #endif
-	struct debug_flags debug;
+    struct debug_flags debug;
     boolean windowtype_locked;  /* windowtype can't change from configfile */
     boolean windowtype_deferred; /* pick a windowport and store it in
                                     chosen_windowport[], but do not switch to

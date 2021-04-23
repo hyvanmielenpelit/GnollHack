@@ -1,4 +1,4 @@
-/* GnollHack 4.0	wintty.c	$NHDT-Date: 1557088734 2019/05/05 20:38:54 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.203 $ */
+/* GnollHack 4.0    wintty.c    $NHDT-Date: 1557088734 2019/05/05 20:38:54 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.203 $ */
 /* Copyright (c) David Cohrs, 1991                                */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -238,8 +238,8 @@ static const char default_menu_cmds[] = {
     MENU_FIRST_PAGE,    MENU_LAST_PAGE,   MENU_NEXT_PAGE,
     MENU_PREVIOUS_PAGE, MENU_SELECT_ALL,  MENU_UNSELECT_ALL,
     MENU_INVERT_ALL,    MENU_SELECT_PAGE, MENU_UNSELECT_PAGE,
-    MENU_INVERT_PAGE,   MENU_SEARCH,	  MENU_START_COUNT,
-	0 /* null terminator */
+    MENU_INVERT_PAGE,   MENU_SEARCH,      MENU_START_COUNT,
+    0 /* null terminator */
 };
 
 #ifdef TTY_TILES_ESCCODES
@@ -1618,11 +1618,11 @@ winid window;
     register struct WinDesc *cw = 0;
 
     HUPSKIP();
-	if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0)
-	{
-		panic(winpanicstr, window);
-		return;
-	}
+    if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0)
+    {
+        panic(winpanicstr, window);
+        return;
+    }
 
     ttyDisplay->lastwin = window;
 
@@ -1916,11 +1916,11 @@ struct WinDesc *cw;
 
         if (!page_start) {
             /* new page to be displayed */
-			if (curr_page < 0 || (cw->npages > 0 && curr_page >= cw->npages))
-			{
-				panic("bad menu screen page #%d", curr_page);
-				return;
-			}
+            if (curr_page < 0 || (cw->npages > 0 && curr_page >= cw->npages))
+            {
+                panic("bad menu screen page #%d", curr_page);
+                return;
+            }
             /* clear screen */
             if (!cw->offx) { /* if not corner, do clearscreen */
                 if (cw->offy) {
@@ -2013,16 +2013,16 @@ struct WinDesc *cw;
                     cl_end();
                 }
             }
-			
-			char altgoldbuf[2] = "";
-			altgoldbuf[0] = GOLD_SYM_ALTERNATE;
+            
+            char altgoldbuf[2] = "";
+            altgoldbuf[0] = GOLD_SYM_ALTERNATE;
 
             /* set extra chars.. */
             Strcat(resp, default_menu_cmds);
             Strcat(resp, " ");                  /* next page or end */
             Strcat(resp, "0123456789\033\n\r"); /* counts, quit */
-			Strcat(resp, altgoldbuf);			/* alternative gold symbol */
-			Strcat(resp, gacc);                 /* group accelerators */
+            Strcat(resp, altgoldbuf);            /* alternative gold symbol */
+            Strcat(resp, gacc);                 /* group accelerators */
             Strcat(resp, mapped_menu_cmds);
 
             if (cw->npages > 1)
@@ -2051,15 +2051,15 @@ struct WinDesc *cw;
         else
             morc = map_menu_cmd(morc);
 
-		/* Replace alternate gold symbol with gold symbol to ensure exactly the same behavior */
-		if (morc == GOLD_SYM_ALTERNATE)
-			morc = GOLD_SYM;
+        /* Replace alternate gold symbol with gold symbol to ensure exactly the same behavior */
+        if (morc == GOLD_SYM_ALTERNATE)
+            morc = GOLD_SYM;
 
         switch (morc) {
         case '0':
-		case '8':
-		case '9':
-			/* special case: '0' is also the default ball class */
+        case '8':
+        case '9':
+            /* special case: '0' is also the default ball class */
             if (!counting && index(gacc, morc))
                 goto group_accel;
             /* fall through to count the zero */
@@ -2088,11 +2088,11 @@ struct WinDesc *cw;
                 reset_count = FALSE;
             }
             break;
-		case MENU_START_COUNT: /* start counting explicitly */
-			counting = TRUE;
-			reset_count = FALSE;
-			break;
-		case '\033': /* cancel - from counting or loop */
+        case MENU_START_COUNT: /* start counting explicitly */
+            counting = TRUE;
+            reset_count = FALSE;
+            break;
+        case '\033': /* cancel - from counting or loop */
             if (!counting) {
                 /* deselect everything */
                 for (curr = cw->mlist; curr; curr = curr->next) {
@@ -2329,11 +2329,11 @@ boolean blocking; /* with ttys, all windows are blocking */
     short s_maxcol;
 
     HUPSKIP();
-	if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0)
-	{
-		panic(winpanicstr, window);
-		return;
-	}
+    if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0)
+    {
+        panic(winpanicstr, window);
+        return;
+    }
 
     if (cw->flags & WIN_CANCELLED)
         return;
@@ -2427,10 +2427,10 @@ winid window;
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
-	{
-		panic(winpanicstr, window);
-		return;
-	}
+    {
+        panic(winpanicstr, window);
+        return;
+    }
 
     print_vt_code2(AVTC_SELECT_WINDOW, window);
 
@@ -2475,10 +2475,10 @@ winid window;
     register struct WinDesc *cw = 0;
 
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
-	{
-		panic(winpanicstr, window);
-		return;
-	}
+    {
+        panic(winpanicstr, window);
+        return;
+    }
 
     if (cw->active)
         tty_dismiss_nhwindow(window);
@@ -2504,12 +2504,12 @@ register int x, y; /* not xchar: perhaps xchar is unsigned and
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
-	{
-		panic(winpanicstr, window);
-		return;
-	}
-	
-	ttyDisplay->lastwin = window;
+    {
+        panic(winpanicstr, window);
+        return;
+    }
+    
+    ttyDisplay->lastwin = window;
 
     print_vt_code2(AVTC_SELECT_WINDOW, window);
 
@@ -2607,10 +2607,10 @@ char ch;
 
     HUPSKIP();
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
-	{
-		panic(winpanicstr, window);
-		return;
-	}
+    {
+        panic(winpanicstr, window);
+        return;
+    }
 
     print_vt_code2(AVTC_SELECT_WINDOW, window);
 
@@ -2971,10 +2971,10 @@ boolean preselected;        /* item is marked as selected */
     if (window == WIN_ERR
         || (cw = wins[window]) == (struct WinDesc *) 0
         || cw->type != NHW_MENU)
-	{
-		panic(winpanicstr, window);
-		return;
-	}
+    {
+        panic(winpanicstr, window);
+        return;
+    }
 
     cw->nitems++;
     if (identifier->a_void) {
@@ -3053,12 +3053,12 @@ const char *prompt; /* prompt to for menu */
     int lmax, n;
     char menu_ch;
 
-	if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0
-		|| cw->type != NHW_MENU)
-	{
-		panic(winpanicstr, window);
-		return;
-	}
+    if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc*) 0
+        || cw->type != NHW_MENU)
+    {
+        panic(winpanicstr, window);
+        return;
+    }
     /* Reverse the list so that items are in correct order. */
     cw->mlist = reverse(cw->mlist);
 
@@ -3159,10 +3159,10 @@ menu_item **menu_list;
 
     if (window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0
         || cw->type != NHW_MENU)
-	{
-		panic(winpanicstr, window);
-		return 0;
-	}
+    {
+        panic(winpanicstr, window);
+        return 0;
+    }
 
     *menu_list = (menu_item *) 0;
     cw->how = (short) how;
@@ -3759,8 +3759,8 @@ static struct condition_t {
     { BL_MASK_STONE,    { "Stone",    "Ston",  "Sto" } },
     { BL_MASK_SLIME,    { "Slime",    "Slim",  "Slm" } },
     { BL_MASK_STRNGL,   { "Strngl",   "Stngl", "Str" } },
-	{ BL_MASK_SUFFOC,   { "Suffoc",   "Suff",  "Suf" } },
-	{ BL_MASK_FOODPOIS, { "FoodPois", "Fpois", "Poi" } },
+    { BL_MASK_SUFFOC,   { "Suffoc",   "Suff",  "Suf" } },
+    { BL_MASK_FOODPOIS, { "FoodPois", "Fpois", "Poi" } },
     { BL_MASK_TERMILL,  { "TermIll" , "Ill",   "Ill" } },
     { BL_MASK_BLIND,    { "Blind",    "Blnd",  "Bl"  } },
     { BL_MASK_DEAF,     { "Deaf",     "Def",   "Df"  } },
@@ -3770,12 +3770,12 @@ static struct condition_t {
     { BL_MASK_LEV,      { "Lev",      "Lev",   "Lv"  } },
     { BL_MASK_FLY,      { "Fly",      "Fly",   "Fl"  } },
     { BL_MASK_RIDE,     { "Ride",     "Rid",   "Rd"  } },
-	{ BL_MASK_SLOWED,   { "Slow",     "Slo",   "Sl"  } },
-	{ BL_MASK_PARALYZED,{ "Paral",    "Par",   "Pa"  } },
-	{ BL_MASK_FEARFUL,  { "Fear",     "Fea",   "Fe"  } },
-	{ BL_MASK_SLEEPING, { "Sleep",    "Slp",   "Sl"  } },
-	{ BL_MASK_CANCELLED,{ "Cancl",    "Cnl",   "Cl"  } },
-	{ BL_MASK_SILENCED, { "Silent",   "Sil",   "Si"  } },
+    { BL_MASK_SLOWED,   { "Slow",     "Slo",   "Sl"  } },
+    { BL_MASK_PARALYZED,{ "Paral",    "Par",   "Pa"  } },
+    { BL_MASK_FEARFUL,  { "Fear",     "Fea",   "Fe"  } },
+    { BL_MASK_SLEEPING, { "Sleep",    "Slp",   "Sl"  } },
+    { BL_MASK_CANCELLED,{ "Cancl",    "Cnl",   "Cl"  } },
+    { BL_MASK_SILENCED, { "Silent",   "Sil",   "Si"  } },
     { BL_MASK_ROT,      { "Rot",      "Rot",   "Rt"  } },
     { BL_MASK_LYCANTHROPY,{ "Lyca",   "Lyc",   "Ly"  } },
 };
@@ -4065,7 +4065,7 @@ unsigned long *colormasks;
     long *condptr = (long *) ptr;
     char *text = (char *) ptr;
     char *lastchar, *p;  
-	char goldbuf[40] = "";
+    char goldbuf[40] = "";
     const char *fmt;
     boolean reset_state = NO_RESET;
 
@@ -4153,11 +4153,11 @@ unsigned long *colormasks;
     case BL_LEVELDESC:
         dlvl_shrinklvl = 0; /* caller is passing full length string */
         /*FALLTHRU*/
-	case BL_2WEP:
-		/*FALLTHRU*/
-	case BL_SKILL:
-		/*FALLTHRU*/
-	case BL_HUNGER:
+    case BL_2WEP:
+        /*FALLTHRU*/
+    case BL_SKILL:
+        /*FALLTHRU*/
+    case BL_HUNGER:
         /* The core sends trailing blanks for some fields.
            Let's suppress the trailing blanks */
         if (tty_status[NOW][fldidx].lth > 0) {
@@ -4365,12 +4365,12 @@ int x, y;
     int i, n, ncols, nrows, lth = 0;
     struct WinDesc *cw = 0;
 
-	if (WIN_STATUS == WIN_ERR
-		|| (cw = wins[WIN_STATUS]) == (struct WinDesc*) 0)
-	{
-		panic("tty_putstatusfield: Invalid WinDesc\n");
-		return;
-	}
+    if (WIN_STATUS == WIN_ERR
+        || (cw = wins[WIN_STATUS]) == (struct WinDesc*) 0)
+    {
+        panic("tty_putstatusfield: Invalid WinDesc\n");
+        return;
+    }
 
     ncols = cw->cols;
     nrows = cw->maxrow;
@@ -4438,13 +4438,13 @@ int lvl;
     /* try changing Dlvl: to Dl: */
     char buf[BUFSZ];
     char *levval = index(status_vals[BL_LEVELDESC], ':');
-	char modebuf[BUFSZ];
-	if (wizard)
-		strcpy(modebuf, (lvl == 0) ? "W " : "W");
-	else if (discover)
-		strcpy(modebuf, (lvl == 0) ? "E " : "E");
-	else
-		strcpy(modebuf, "");
+    char modebuf[BUFSZ];
+    if (wizard)
+        strcpy(modebuf, (lvl == 0) ? "W " : "W");
+    else if (discover)
+        strcpy(modebuf, (lvl == 0) ? "E " : "E");
+    else
+        strcpy(modebuf, "");
 
     if (levval) {
         dlvl_shrinklvl = lvl;

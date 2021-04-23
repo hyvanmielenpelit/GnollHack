@@ -1,4 +1,4 @@
-/* GnollHack 4.0	shk.c	$NHDT-Date: 1555201699 2019/04/14 00:28:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.159 $ */
+/* GnollHack 4.0    shk.c    $NHDT-Date: 1555201699 2019/04/14 00:28:19 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.159 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -592,8 +592,8 @@ char *enterstring;
     rt = rooms[*enterstring - ROOMOFFSET].rtype;
 
     if (ANGRY(shkp)) {
-		if (!Deaf && !muteshk(shkp))
-		{
+        if (!Deaf && !muteshk(shkp))
+        {
             if (iflags.using_gui_sounds)
             {
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_YOU_DARE_TO_RETURN_TO_MY_STORE);
@@ -604,7 +604,7 @@ char *enterstring;
                 verbalize("So, %s, you dare return to %s %s?!", plname,
                     s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
             }
-		}
+        }
         else
             pline("%s seems %s over your return to %s %s!",
                   Shknam(shkp), angrytexts[rn2(SIZE(angrytexts))],
@@ -617,8 +617,8 @@ char *enterstring;
             pline("%s is combing through %s inventory list.",
                   Shknam(shkp), noit_mhis(shkp));
     } else {
-		if (!Deaf && !muteshk(shkp))
-		{
+        if (!Deaf && !muteshk(shkp))
+        {
             if (iflags.using_gui_sounds)
             {
                 play_voice_shopkeeper_welcome(shkp, rt);
@@ -635,10 +635,10 @@ char *enterstring;
                     s_suffix(shkname(shkp)), shtypes[rt - SHOPBASE].name);
             }
             eshkp->visitct++;
-		}
+        }
         else
             You("enter %s %s%s!",
-				shkp->u_know_mname ? s_suffix(shkname(shkp)) : "the",
+                shkp->u_know_mname ? s_suffix(shkname(shkp)) : "the",
                 shtypes[rt - SHOPBASE].name,
                 eshkp->visitct++ ? " again" : "");
     }
@@ -649,39 +649,39 @@ char *enterstring;
         const char *tool;
         struct obj *pick = carrying(PICK_AXE),
                    *mattock = carrying(DWARVISH_MATTOCK),
-				   *spade = carrying(SPADE_OF_COLOSSAL_EXCAVATION);
+                   *spade = carrying(SPADE_OF_COLOSSAL_EXCAVATION);
 
         if (pick || mattock || spade) 
-		{
+        {
             (void)dochug(shkp); /* shk blocks first, then speaks */
             
             int typecnt = (pick ? 1 : 0) + (mattock ? 1 : 0) + (spade ? 1 : 0);
             cnt = 1;
             if (typecnt > 1) 
-			{ /* carrying both types */
+            { /* carrying both types */
                 tool = "digging tool";
                 cnt = typecnt; /* `more than 1' is all that matters */
             }
-			else if (pick)
-			{
+            else if (pick)
+            {
                 tool = "pick-axe";
                 /* hack: `pick' already points somewhere into inventory */
                 while ((pick = pick->nobj) != 0)
                     if (pick->otyp == PICK_AXE)
                         ++cnt;
             }
-			else if (mattock)
-			{
-				tool = "mattock";
-				while ((mattock = mattock->nobj) != 0)
-					if (mattock->otyp == DWARVISH_MATTOCK)
-						++cnt;
-				/* [ALI] Shopkeeper identifies mattock(s) */
-				if (!Blind)
-					makeknown(DWARVISH_MATTOCK);
-			}
-			else 
-			{ /* assert(mattock != 0) */
+            else if (mattock)
+            {
+                tool = "mattock";
+                while ((mattock = mattock->nobj) != 0)
+                    if (mattock->otyp == DWARVISH_MATTOCK)
+                        ++cnt;
+                /* [ALI] Shopkeeper identifies mattock(s) */
+                if (!Blind)
+                    makeknown(DWARVISH_MATTOCK);
+            }
+            else 
+            { /* assert(mattock != 0) */
                 tool = "spade";
                 while ((spade = spade->nobj) != 0)
                     if (spade->otyp == SPADE_OF_COLOSSAL_EXCAVATION)
@@ -727,7 +727,7 @@ char *enterstring;
             should_block =
                 (Fast && (sobj_at(PICK_AXE, u.ux, u.uy)
                           || sobj_at(DWARVISH_MATTOCK, u.ux, u.uy) 
-						  || sobj_at(SPADE_OF_COLOSSAL_EXCAVATION, u.ux, u.uy)));
+                          || sobj_at(SPADE_OF_COLOSSAL_EXCAVATION, u.ux, u.uy)));
         }
         if (should_block)
             (void) dochug(shkp); /* shk gets extra move */
@@ -1170,9 +1170,9 @@ boolean verbosely;
         shkp->msleeping = 0;
         shkp->mfrozen = 0;
         shkp->mcanmove = 1;
-		shkp->mprops[SLEEPING] = 0;
-		shkp->mprops[PARALYZED] = 0;
-	}
+        shkp->mprops[SLEEPING] = 0;
+        shkp->mprops[PARALYZED] = 0;
+    }
 }
 
 void
@@ -1180,8 +1180,8 @@ make_happy_shk(shkp, silentkops)
 register struct monst *shkp;
 register boolean silentkops;
 {
-	if (!shkp)
-		return;
+    if (!shkp)
+        return;
 
     boolean wasmad = ANGRY(shkp);
     struct eshk *eshkp = ESHK(shkp);
@@ -1479,22 +1479,22 @@ dopay()
              * door broken, attacked, etc. */
             pline("%s is after your hide, not your money!", Shknam(shkp));
 
-			if (!umoney)
-			{
-				pline(no_money, stashed_gold ? " seem to" : "");
-				return 1;
-			}
-			
-			(void)ask_shk_reconciliation(shkp);
+            if (!umoney)
+            {
+                pline(no_money, stashed_gold ? " seem to" : "");
+                return 1;
+            }
+            
+            (void)ask_shk_reconciliation(shkp);
 #if 0
-			if (umoney < 1000L) {
-				if (!umoney)
-					pline(no_money, stashed_gold ? " seem to" : "");
-				else
-					pline(not_enough_money, noit_mhim(shkp));
-				return 1;
-			}
-			You("try to appease %s by giving %s 1000 gold pieces.",
+            if (umoney < 1000L) {
+                if (!umoney)
+                    pline(no_money, stashed_gold ? " seem to" : "");
+                else
+                    pline(not_enough_money, noit_mhim(shkp));
+                return 1;
+            }
+            You("try to appease %s by giving %s 1000 gold pieces.",
                 canspotmon(shkp)
                     ? x_monnam(shkp, ARTICLE_THE, "angry", 0, FALSE)
                     : shkname(shkp),
@@ -1904,14 +1904,14 @@ boolean silently;
     long umoney;
     struct eshk *eshkp = ESHK(shkp);
     boolean take = FALSE, taken = FALSE;
-	unsigned short save_minvis = shkp->mprops[INVISIBILITY];
+    unsigned short save_minvis = shkp->mprops[INVISIBILITY];
     int roomno = *u.ushops;
     char takes[BUFSZ];
 
     /* not strictly consistent; affects messages and prevents next player
        (if bones are saved) from blundering into or being ambused by an
        invisible shopkeeper */
-	shkp->mprops[INVISIBILITY] = 0;
+    shkp->mprops[INVISIBILITY] = 0;
     /* The simplifying principle is that first-come
        already took everything you had. */
     if (numsk > 1) {
@@ -1994,7 +1994,7 @@ boolean silently;
             home_shk(shkp, FALSE);
     }
  clear:
-	shkp->mprops[INVISIBILITY] = save_minvis;
+    shkp->mprops[INVISIBILITY] = save_minvis;
     setpaid(shkp);
     return taken;
 }
@@ -2165,7 +2165,7 @@ register struct monst *shkp; /* if angry, impose a surcharge */
             adjustments (unID'd, dunce/tourist, charisma) are made */
         multiplier = 1L, divisor = 1L;
 
-	boolean shkp_is_shopkeeper = (shkp && shkp->isshk && shkp->mextra && ESHK(shkp));
+    boolean shkp_is_shopkeeper = (shkp && shkp->isshk && shkp->mextra && ESHK(shkp));
     boolean shkp_is_priest = (shkp && shkp->ispriest && shkp->mextra && EPRI(shkp));
     boolean shkp_is_smith = (shkp && shkp->issmith && shkp->mextra && ESMI(shkp));
     boolean shkp_is_npc = (shkp && shkp->isnpc && shkp->mextra && ENPC(shkp));
@@ -2175,10 +2175,10 @@ register struct monst *shkp; /* if angry, impose a surcharge */
     /* shopkeeper may notice if the player isn't very knowledgeable -
        especially when gem prices are concerned */
     if (!obj->dknown || (!obj->oartifact && !objects[obj->otyp].oc_name_known) || (obj->oartifact && !obj->nknown))
-	{
+    {
         if (obj->oclass == GEM_CLASS
             && objects[obj->otyp].oc_material == MAT_GLASS) 
-		{
+        {
             int i;
             /* get a value that's 'random' from game to game, but the
                same within the same game */
@@ -2221,8 +2221,8 @@ register struct monst *shkp; /* if angry, impose a surcharge */
             }
             tmp = objects[i].oc_cost;
         }
-		else if (oid_price_adjustment(obj, obj->o_id) > 0) 
-		{
+        else if (oid_price_adjustment(obj, obj->o_id) > 0) 
+        {
             /* unid'd, arbitrarily impose surcharge: tmp *= 4/3 */
             multiplier *= 4L;
             divisor *= 3L;
@@ -2250,7 +2250,7 @@ register struct monst *shkp; /* if angry, impose a surcharge */
     else if (ACURR(A_CHA) <= 10)
         multiplier *= 4L, divisor *= 3L;
 
-	
+    
     if (!shkp_is_shopkeeper && (shkp_is_priest || shkp_is_npc || shkp_is_smith))
     {
         if(obj->oclass == SPBOOK_CLASS)  /* Priest and npcs teach spells */
@@ -2259,9 +2259,9 @@ register struct monst *shkp; /* if angry, impose a surcharge */
             multiplier *= 3L, divisor *= 2L;
     }
     else if (!shkp_is_shopkeeper) /* Monsters sell cheaper */
-		multiplier *= 2L, divisor *= 3L;
+        multiplier *= 2L, divisor *= 3L;
 
-	/* tmp = (tmp * multiplier) / divisor [with roundoff tweak] */
+    /* tmp = (tmp * multiplier) / divisor [with roundoff tweak] */
     tmp *= multiplier;
     if (divisor > 1L) {
         /* tmp = (((tmp * 10) / divisor) + 5) / 10 */
@@ -2643,12 +2643,12 @@ STATIC_OVL void
 add_to_billobjs(obj)
 struct obj *obj;
 {
-	if (obj->where != OBJ_FREE)
-	{
-		panic("add_to_billobjs: obj not free");
-		return;
-	}
-	if (obj->timed)
+    if (obj->where != OBJ_FREE)
+    {
+        panic("add_to_billobjs: obj not free");
+        return;
+    }
+    if (obj->timed)
         obj_stop_timers(obj);
 
     obj->nobj = billobjs;
@@ -3935,8 +3935,8 @@ struct damage *tmp_dam;
 int *once;
 boolean catchup; /* restoring a level */
 {
-	if (!shkp)
-		return 0;
+    if (!shkp)
+        return 0;
 
     xchar x, y;
     xchar litter[9];
@@ -4206,7 +4206,7 @@ struct monst *shkp;
                     (carrying(PICK_AXE) || carrying(DWARVISH_MATTOCK) || carrying(SPADE_OF_COLOSSAL_EXCAVATION)
                      || (Fast && (sobj_at(PICK_AXE, u.ux, u.uy)
                                   || sobj_at(DWARVISH_MATTOCK, u.ux, u.uy) || sobj_at(SPADE_OF_COLOSSAL_EXCAVATION, u.ux, u.uy)
-						 )));
+                         )));
                 if (satdoor && badinv)
                     return 0;
                 avoid = !badinv;
@@ -4978,7 +4978,7 @@ boolean altusage; /* some items have an "alternate" use with different cost */
      * more expensive than buying it outright.
      */
     if (otmp->otyp == MAGIC_LAMP)
-	{ /* 1 */
+    { /* 1 */
         /* normal use (ie, as light source) of a magic lamp never
            degrades its value, but not charging anything would make
            identification too easy; charge an amount comparable to
@@ -4989,45 +4989,45 @@ boolean altusage; /* some items have an "alternate" use with different cost */
         else
             tmp += tmp / 3L;                 /* djinni is being released */
     } 
-	else if (otmp->otyp == MAGIC_MARKER)
-	{ /* 70 - 100 */
+    else if (otmp->otyp == MAGIC_MARKER)
+    { /* 70 - 100 */
         /* No way to determine in advance how many charges will be
          * wasted.  So, arbitrarily, one half of the price per use.
          */
         tmp /= 2L;
     }
-	else if (otmp->otyp == BAG_OF_TRICKS /* 1 - 20 */
+    else if (otmp->otyp == BAG_OF_TRICKS /* 1 - 20 */
                || otmp->otyp == HORN_OF_PLENTY)
-	{
+    {
         /* altusage: emptying of all the contents at once */
         if (!altusage)
             tmp /= 5L;
     } 
-	else if (otmp->otyp == CRYSTAL_BALL               /* 1 - 5 */
+    else if (otmp->otyp == CRYSTAL_BALL               /* 1 - 5 */
                || (otmp->otyp >= MAGIC_FLUTE
                    && otmp->otyp <= DRUM_OF_EARTHQUAKE) /* 5 - 9 */
                || otmp->oclass == WAND_CLASS)
-	{         /* 3 - 11 */
+    {         /* 3 - 11 */
         if (otmp->charges > 1)
             tmp /= 4L;
     }
-	else if (otmp->otyp == OIL_LAMP                /* 1 - 10 */
-		|| otmp->otyp == BRASS_LANTERN)
-	{         /* 3 - 11 */
-		if (otmp->special_quality > 1)
-			tmp /= 4L;
-	}
-	else if (otmp->oclass == SPBOOK_CLASS)
-	{
+    else if (otmp->otyp == OIL_LAMP                /* 1 - 10 */
+        || otmp->otyp == BRASS_LANTERN)
+    {         /* 3 - 11 */
+        if (otmp->special_quality > 1)
+            tmp /= 4L;
+    }
+    else if (otmp->oclass == SPBOOK_CLASS)
+    {
         tmp -= tmp / 5L;
     } 
-	else if (otmp->otyp == CAN_OF_GREASE || otmp->otyp == TINNING_KIT
+    else if (otmp->otyp == CAN_OF_GREASE || otmp->otyp == TINNING_KIT
                || otmp->otyp == EXPENSIVE_CAMERA) 
-	{
+    {
         tmp /= 10L;
     } 
-	else if (otmp->otyp == POT_OIL) 
-	{
+    else if (otmp->otyp == POT_OIL) 
+    {
         tmp /= 5L;
     }
     return tmp;
@@ -5058,7 +5058,7 @@ boolean altusage;
 
     arg1 = arg2 = pricedesc = "";
     if (otmp->oclass == SPBOOK_CLASS) 
-	{
+    {
         boolean roll = rn2(2);
         const char* cad_str = cad(FALSE);
         
@@ -5075,8 +5075,8 @@ boolean altusage;
         arg1 = roll ? buf : "";
         arg2 = ESHK(shkp)->debit > 0L ? " an additional" : "";
     } 
-	else if (otmp->otyp == POT_OIL) 
-	{
+    else if (otmp->otyp == POT_OIL) 
+    {
 
         if (!Deaf && !muteshk(shkp))
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_THAT_WILL_COST_YOU_SOME_GOLD);
@@ -5086,9 +5086,9 @@ boolean altusage;
         else
             fmt = "%s%sThat will cost you %ld %s (Yendorian Fuel Tax).";
     }
-	else if (altusage && (otmp->otyp == BAG_OF_TRICKS
+    else if (altusage && (otmp->otyp == BAG_OF_TRICKS
                             || otmp->otyp == HORN_OF_PLENTY))
-	{
+    {
         if (iflags.using_gui_sounds)
         {
             fmt = "%s%sEmptying that will cost you some gold.";
@@ -5112,8 +5112,8 @@ boolean altusage;
         if (!Deaf && !muteshk(shkp))
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD);
     }
-	else 
-	{
+    else 
+    {
         if (iflags.using_gui_sounds)
         {
             fmt = "%s%sThat incurs a usage fee.";
@@ -5141,7 +5141,7 @@ boolean altusage;
     }
 
     if (!Deaf && !muteshk(shkp)) 
-	{
+    {
         char fmtbuf[BUFSZ] = "";
         char pricebuf[BUFSZ] = "";
         if(pricedesc && *pricedesc)

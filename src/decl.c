@@ -1,4 +1,4 @@
-/* GnollHack 4.0	decl.c	$NHDT-Date: 1547025164 2019/01/09 09:12:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.141 $ */
+/* GnollHack 4.0    decl.c    $NHDT-Date: 1547025164 2019/01/09 09:12:44 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.141 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2009. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -158,17 +158,17 @@ NEARDATA struct obj
     *invent = (struct obj *) 0,
     *uwep = (struct obj *) 0, *uarm = (struct obj *) 0,
     *uswapwep = (struct obj *) 0,
-	*uswapwep2 = (struct obj*) 0,
-	*uquiver = (struct obj *) 0,       /* quiver */
+    *uswapwep2 = (struct obj*) 0,
+    *uquiver = (struct obj *) 0,       /* quiver */
     *uarmu = (struct obj *) 0,     /* under-wear, so to speak */
     *uarmo = (struct obj *) 0,     /* over-wear, so to speak */
-	*uarmb = (struct obj*) 0,     /* bracers */
-	*uskin = (struct obj *) 0, /* dragon armor, if a dragon */
+    *uarmb = (struct obj*) 0,     /* bracers */
+    *uskin = (struct obj *) 0, /* dragon armor, if a dragon */
     *uarmc = (struct obj *) 0, *uarmh = (struct obj *) 0,
     *uarms = (struct obj *) 0, *uarmg = (struct obj *) 0,
     *uarmf = (struct obj *) 0, *uamul = (struct obj *) 0,
-	*umisc = (struct obj*) 0, *umisc2 = (struct obj*) 0, *umisc3 = (struct obj*) 0, *umisc4 = (struct obj*) 0, *umisc5 = (struct obj*) 0,     /* miscellaneous */
-	*uright = (struct obj *) 0, *uleft = (struct obj *) 0,
+    *umisc = (struct obj*) 0, *umisc2 = (struct obj*) 0, *umisc3 = (struct obj*) 0, *umisc4 = (struct obj*) 0, *umisc5 = (struct obj*) 0,     /* miscellaneous */
+    *uright = (struct obj *) 0, *uleft = (struct obj *) 0,
     *ublindf = (struct obj *) 0, *uchain = (struct obj *) 0,
     *uball = (struct obj *) 0;
 /* some objects need special handling during destruction or placement */
@@ -265,7 +265,7 @@ NEARDATA const char getobj_allobj[] = {
     COIN_CLASS,   WEAPON_CLASS, ARMOR_CLASS,  POTION_CLASS,
     SCROLL_CLASS, WAND_CLASS,   RING_CLASS,   AMULET_CLASS, MISCELLANEOUS_CLASS,
     FOOD_CLASS,   REAGENT_CLASS,  TOOL_CLASS,   GEM_CLASS,
-    ROCK_CLASS,	  BALL_CLASS,   CHAIN_CLASS,  SPBOOK_CLASS, 0
+    ROCK_CLASS,      BALL_CLASS,   CHAIN_CLASS,  SPBOOK_CLASS, 0
 };
 
 NEARDATA const char getobj_styluses[] = { ALL_CLASSES, ALLOW_NONE,

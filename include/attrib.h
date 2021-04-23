@@ -1,8 +1,8 @@
-/* GnollHack 4.0	attrib.h	$NHDT-Date: 1432512779 2015/05/25 00:12:59 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
-/* Copyright 1988, Mike Stephenson				  */
+/* GnollHack 4.0    attrib.h    $NHDT-Date: 1432512779 2015/05/25 00:12:59 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
+/* Copyright 1988, Mike Stephenson                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
-/*	attrib.h - Header file for character class processing. */
+/*    attrib.h - Header file for character class processing. */
 
 #ifndef ATTRIB_H
 #define ATTRIB_H
@@ -73,10 +73,10 @@ struct attribs {
 #define ATTRMIN(x) (Upolyd ? monster_attribute_minimum(youmonst.data, x) : urace.attrmin[x])
 
 struct innate {
-	schar ulevel;
-	int propid;
-	//long *ability;
-	const char* gainstr, * losestr;
+    schar ulevel;
+    int propid;
+    //long *ability;
+    const char* gainstr, * losestr;
 };
 
 #endif /* ATTRIB_H */

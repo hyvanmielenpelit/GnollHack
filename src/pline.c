@@ -1,4 +1,4 @@
-/* GnollHack 4.0	pline.c	$NHDT-Date: 1549327495 2019/02/05 00:44:55 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.73 $ */
+/* GnollHack 4.0    pline.c    $NHDT-Date: 1549327495 2019/02/05 00:44:55 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.73 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -7,8 +7,8 @@
 #include "hack.h"
 
 #define BIGBUFSZ (5 * BUFSZ) /* big enough to format a 4*BUFSZ string (from
-							  * config file parsing) with modest decoration;
-							  * result will then be truncated to BUFSZ-1 */
+                              * config file parsing) with modest decoration;
+                              * result will then be truncated to BUFSZ-1 */
 
 static unsigned pline_flags = 0;
 static char prevmsg[BUFSZ];
@@ -449,7 +449,7 @@ void raw_printf
 VA_DECL(const char *, line)
 #endif
 {
-	char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
+    char pbuf[BIGBUFSZ]; /* will be chopped down to BUFSZ-1 if longer */
     /* Do NOT use VA_START and VA_END in here... see above */
 
     if (index(line, '%')) {
@@ -479,21 +479,21 @@ VA_DECL(const char *, s)
 
     VA_START(s);
     VA_INIT(s, const char *);
-	if (program_state.in_impossible)
-	{
-		panic("impossible called impossible");
-		return;
-	}
+    if (program_state.in_impossible)
+    {
+        panic("impossible called impossible");
+        return;
+    }
 
     program_state.in_impossible = 1;
     Vsprintf(pbuf, s, VA_ARGS);
     pbuf[BUFSZ - 1] = '\0'; /* sanity */
     paniclog("impossible", pbuf);
-	if (iflags.debug_fuzzer)
-	{
-		panic("%s", pbuf);
-		return;
-	}
+    if (iflags.debug_fuzzer)
+    {
+        panic("%s", pbuf);
+        return;
+    }
     pline("%s", VA_PASS1(pbuf));
     /* reuse pbuf[] */
     Strcpy(pbuf, "Program in disorder!");

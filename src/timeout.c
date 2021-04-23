@@ -1,4 +1,4 @@
-/* GnollHack 4.0	timeout.c	$NHDT-Date: 1545182148 2018/12/19 01:15:48 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.89 $ */
+/* GnollHack 4.0    timeout.c    $NHDT-Date: 1545182148 2018/12/19 01:15:48 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.89 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -27,142 +27,142 @@ STATIC_DCL void NDECL(mummy_rot_dialogue);
 /* used by wizard mode #timeout and #wizintrinsic; order by 'interest'
    for timeout countdown, where most won't occur in normal play */
 const struct propname {
-	int prop_num;
-	const char* prop_name;
-	const char* prop_noun;
+    int prop_num;
+    const char* prop_name;
+    const char* prop_noun;
 } propertynames[] = {
-	{ INVULNERABLE, "invulnerable", "invulnerability" },
-	{ STONED, "petrifying", "petrification" },
-	{ SLIMED, "becoming slime", "transformation into slime" },
-	{ STRANGLED, "being strangled", "strangulation" },
-	{ SICK, "fatally sick", "fatal sickness" },
-	{ STUNNED, "stunned", "stunning" },
-	{ CONFUSION, "confused", "confusion" },
-	{ HALLUC, "hallucinating", "hallucination" },
-	{ BLINDED, "blinded", "blindness" },
-	{ DEAF, "deafened", "deafness" },
-	{ VOMITING, "vomiting", "vomiting" },
-	{ GLIB, "slippery fingers", "slippery fingers" },
-	{ WOUNDED_LEGS, "wounded legs", "wounded legs" },
-	{ SLEEPY, "sleepy", "sleepiness" },
-	{ TELEPORT, "teleporting", "teleportation" },
-	{ POLYMORPH, "polymorphing", "polymorph" },
-	{ LEVITATION, "levitating", "levitation" },
-	{ FAST, "fast", "fast speed" },
-	{ CLAIRVOYANT, "clairvoyant", "clairvoyance" },
-	{ DETECT_MONSTERS, "detecting monsters", "monster detection" },
-	{ SEE_INVISIBLE, "seeing invisible", "see invisible" },
-	{ INVISIBILITY, "invisible", "invisibility" },
-	/* properties beyond here don't have timed values during normal play,
-	   so there's not much point in trying to order them sensibly;
-	   they're either on or off based on equipment, role, actions, &c */
-	{ FIRE_IMMUNITY, "fully resistant to fire", "full fire resistance" },
-	{ COLD_IMMUNITY, "fully resistant to cold", "full cold resistance" },
-	{ SLEEP_RESISTANCE, "resistant to sleep", "sleep resistance" },
-	{ DISINTEGRATION_RESISTANCE, "resistant to disintegration", "disintegration resistance" },
-	{ SHOCK_IMMUNITY, "fully resistant to shock", "full shock resistance" },
-	{ POISON_RESISTANCE, "resistant to poison", "poison resistance" },
-	{ ACID_IMMUNITY, "fully resistant to acid", "full acid resistance" },
-	{ STONE_RESISTANCE, "resistant to stoning", "stoning resistance" },
-	{ DRAIN_RESISTANCE, "resistant to drain", "drain resistance" },
-	{ SICK_RESISTANCE, "resistant to sickness", "sickness resistance" },
-	{ ANTIMAGIC, "resistant to magic", "magic resistance" },
-	{ HALLUC_RES, "resistant to hallucination", "hallucination resistance" },
-	{ FUMBLING, "fumbling", "fumbling" },
-	{ HUNGER, "voraciously hungry", "voracious hunger" },
-	{ TELEPAT, "telepathic", "telepathy" },
-	{ WARNING, "warned", "warning" },
-	{ WARN_OF_MON, "warned of monster type or class", "warning of monster type or class" },
-	{ WARN_UNDEAD, "warned of undead", "warning of undead" },
-	{ SEARCHING, "searching", "searching" },
-	{ INFRAVISION, "having infravision", "infravision" },
-	{ ADORNED, "adorned", "adornment" },
-	{ DISPLACED, "displaced", "displacement" },
-	{ STEALTH, "stealthy", "stealth" },
-	{ AGGRAVATE_MONSTER, "monster aggravation", "monster aggravation" },
-	{ CONFLICT, "causing conflict", "conflict" },
-	{ JUMPING, "jumping", "jumping" },
-	{ TELEPORT_CONTROL, " controlling teleportation", "teleport control" },
-	{ FLYING, "flying", "flying" },
-	{ WATER_WALKING, "water walking", "water walking" },
-	{ SWIMMING, "swimming", "swimming" },
-	{ MAGICAL_BREATHING, "magical breathing", "magical breathing" },
-	{ PASSES_WALLS, "passing thru walls", "pass thru walls" },
-	{ SLOW_DIGESTION, "digesting slowly", "slow digestion" },
-	{ HALF_SPELL_DAMAGE, "receiving half spell damage", "half spell damage" },
-	{ HALF_PHYSICAL_DAMAGE, "receiving half physical damage", "half physical damage" },
-	{ REGENERATION, "regenerating", "regeneration" },
-	{ ENERGY_REGENERATION, "regenerating mana", "mana regeneration" },
-	{ MAGICAL_PROTECTION, "magically protected", "magical protection" },
-	{ PROT_FROM_SHAPE_CHANGERS, "protected from shape changers", "protection from shape changers" },
-	{ POLYMORPH_CONTROL, "controlling polymorphing", "polymorph control" },
-	{ UNCHANGING, "unchanging", "unchange" },
-	{ REFLECTING, "reflecting", "reflection" },
-	{ FREE_ACTION, "having free action", "free action" },
-	{ FIXED_ABIL, "having fixed abilities", "fixed abilities" },
-	{ LIFESAVED, "life will be saved", "life saving" },
-	{ DEATH_RESISTANCE, "resistant to death", "death resistance" },
-	{ LYCANTHROPY_RESISTANCE, "resistant to lycanthropy", "lycanthropy resistance" },
-	{ CURSE_RESISTANCE, "resistant to curses", "curse resistance" },
-	{ BLIND_TELEPATHY, "telepathic when blind", "blind telepathy" },
-	{ ENHANCED_VISION, "enhanced vision", "enhanced vision" },
-	{ FLASH_RESISTANCE, "resistant to flashes", "flash resistance" },
-	{ EYE_PROTECTION, "protected from eye damage", "protection from eye damage" },
-	{ BRAIN_PROTECTION, "protected from brain damage", "protection from brain damage" },
-	{ WARN_DEMON, "warned of demons", "warning of demons" },
-	{ WARN_ORC, "warned of orcs", "warning of orcs" },
-	{ WARN_TROLL, "warned of trolls", "warning of trolls" },
-	{ WARN_GIANT, "warned of giants", "warning of giants" },
-	{ WARN_DRAGON, "warned of dragons", "warning of dragons" },
-	{ WARN_ELF, "warned of elves", "warning of elves" },
-	{ WARN_DWARF, "warned of dwarves", "warning of dwarves" },
-	{ WARN_GNOLL, "warned of gnolls", "warning of gnolls" },
-	{ WARN_HUMAN, "warned of human beings", "warning of human beings" },
-	{ WARN_LYCANTHROPE, "warned of lycanthropes", "warning of lycanthropes" },
-	{ WARN_ANGEL, "warned of angels", "warning of angels" },
-	{ WARN_OGRE, "warned of ogres", "warning of ogres" },
-	{ WARN_OGRE, "warned of gnomes", "warning of gnomes" },
-	{ CHARM_RESISTANCE, "resistant to charm", "charm resistance" },
-	{ MIND_SHIELDING, "mind shielded", "mind shielding" },
-	{ ODD_IDEAS, "having visionary ideas", "visionary ideas" },
-	{ MAGICAL_KICKING, "kicking magically", "magical kicking" },
-	{ BLOCKS_INVISIBILITY, "blocking invisibility", "blocks invisibility" },
-	{ BLOCKS_BLINDNESS, "blocking blindness", "blocks blindness"  },
-	{ BLOCKS_CLAIRVOYANCE, "blocking clairvoyance", "blocks clairvoyance" },
-	{ MAGICAL_SHIELDING, "magically shielded", "magical shielding" },
-	{ MAGICAL_BARKSKIN, "magically barkskinned", "magical barkskin" },
-	{ MAGICAL_STONESKIN, "magically stoneskinned", "magical stoneskin" },
-	{ XRAY_VISION, "having X-ray vision", "X-ray vision" },
-	{ VERY_FAST, "very fast", "very fast speed" },
-	{ SLOWED, "slowed", "slow speed" },
-	{ CANCELLED, "cancelled", "cancellation" },
-	{ HALVED_MAGIC_RESISTANCE, "having halved magic resistance", "halved magic resistance" },
-	{ NO_MAGIC_RESISTANCE, "lacking magic resistance", "no magic resistance" },
-	{ CHARMED, "charmed", "charm" },
-	{ PARALYZED, "paralyzed", "paralysis" },
-	{ FEARFUL, "unnaturally frightened", "magically induced fear" },
-	{ FEAR_RESISTANCE, "resistant to fear", "fear resistance" },
-	{ SLEEPING, "sleeping unnaturally deeply", "magically induced sleep" },
-	{ SUMMON_FORBIDDEN, "having summoning forbidden", "summoning forbidden" },
-	{ SILENCED, "silenced", "silence" },
-	{ LEVITATION_CONTROL, "controlling levitation", "levitation control" },
-	{ FIRE_VULNERABILITY, "vulnerable to fire", "fire vulnerability" },
-	{ COLD_VULNERABILITY, "vulnerable to cold", "cold vulnerability" },
-	{ SHOCK_VULNERABILITY, "vulnerable to electricity", "electricity vulnerability" },
-	{ MAGIC_MISSILE_VULNERABILITY, "vulnerable to magic damage", "magic damage vulnerability" },
-	{ DOUBLE_PHYSICAL_DAMAGE, "receiving double physical damage", "double physical damage" },
-	{ DOUBLE_SPELL_DAMAGE, "receiving double spell damage", "double spell damage" },
-	{ ENHANCED_UNTRAP, "enhanced in untrapping", "enhanced untrapping" },
-	{ BLOCKS_LEVITATION, "blocking levitation", "blocks levitation" },
-	{ BLOCKS_FLYING, "blocking flying", "blocks flying" },
-	{ ONE_FOURTH_MAGIC_RESISTANCE, "having 25% of normal magic resistance", "25% of normal magic resistance" },
-	{ THREE_FOURTHS_MAGIC_RESISTANCE, "having 75% of normal magic resistance", "75% of normal magic resistance" },
-	{ BLINDFOLDED, "blindfolded", "blindness due to a blindfold" },
-	{ TITAN_STRENGTH, "as strong as a titan", "strength equivalent of a titan" },
+    { INVULNERABLE, "invulnerable", "invulnerability" },
+    { STONED, "petrifying", "petrification" },
+    { SLIMED, "becoming slime", "transformation into slime" },
+    { STRANGLED, "being strangled", "strangulation" },
+    { SICK, "fatally sick", "fatal sickness" },
+    { STUNNED, "stunned", "stunning" },
+    { CONFUSION, "confused", "confusion" },
+    { HALLUC, "hallucinating", "hallucination" },
+    { BLINDED, "blinded", "blindness" },
+    { DEAF, "deafened", "deafness" },
+    { VOMITING, "vomiting", "vomiting" },
+    { GLIB, "slippery fingers", "slippery fingers" },
+    { WOUNDED_LEGS, "wounded legs", "wounded legs" },
+    { SLEEPY, "sleepy", "sleepiness" },
+    { TELEPORT, "teleporting", "teleportation" },
+    { POLYMORPH, "polymorphing", "polymorph" },
+    { LEVITATION, "levitating", "levitation" },
+    { FAST, "fast", "fast speed" },
+    { CLAIRVOYANT, "clairvoyant", "clairvoyance" },
+    { DETECT_MONSTERS, "detecting monsters", "monster detection" },
+    { SEE_INVISIBLE, "seeing invisible", "see invisible" },
+    { INVISIBILITY, "invisible", "invisibility" },
+    /* properties beyond here don't have timed values during normal play,
+       so there's not much point in trying to order them sensibly;
+       they're either on or off based on equipment, role, actions, &c */
+    { FIRE_IMMUNITY, "fully resistant to fire", "full fire resistance" },
+    { COLD_IMMUNITY, "fully resistant to cold", "full cold resistance" },
+    { SLEEP_RESISTANCE, "resistant to sleep", "sleep resistance" },
+    { DISINTEGRATION_RESISTANCE, "resistant to disintegration", "disintegration resistance" },
+    { SHOCK_IMMUNITY, "fully resistant to shock", "full shock resistance" },
+    { POISON_RESISTANCE, "resistant to poison", "poison resistance" },
+    { ACID_IMMUNITY, "fully resistant to acid", "full acid resistance" },
+    { STONE_RESISTANCE, "resistant to stoning", "stoning resistance" },
+    { DRAIN_RESISTANCE, "resistant to drain", "drain resistance" },
+    { SICK_RESISTANCE, "resistant to sickness", "sickness resistance" },
+    { ANTIMAGIC, "resistant to magic", "magic resistance" },
+    { HALLUC_RES, "resistant to hallucination", "hallucination resistance" },
+    { FUMBLING, "fumbling", "fumbling" },
+    { HUNGER, "voraciously hungry", "voracious hunger" },
+    { TELEPAT, "telepathic", "telepathy" },
+    { WARNING, "warned", "warning" },
+    { WARN_OF_MON, "warned of monster type or class", "warning of monster type or class" },
+    { WARN_UNDEAD, "warned of undead", "warning of undead" },
+    { SEARCHING, "searching", "searching" },
+    { INFRAVISION, "having infravision", "infravision" },
+    { ADORNED, "adorned", "adornment" },
+    { DISPLACED, "displaced", "displacement" },
+    { STEALTH, "stealthy", "stealth" },
+    { AGGRAVATE_MONSTER, "monster aggravation", "monster aggravation" },
+    { CONFLICT, "causing conflict", "conflict" },
+    { JUMPING, "jumping", "jumping" },
+    { TELEPORT_CONTROL, " controlling teleportation", "teleport control" },
+    { FLYING, "flying", "flying" },
+    { WATER_WALKING, "water walking", "water walking" },
+    { SWIMMING, "swimming", "swimming" },
+    { MAGICAL_BREATHING, "magical breathing", "magical breathing" },
+    { PASSES_WALLS, "passing thru walls", "pass thru walls" },
+    { SLOW_DIGESTION, "digesting slowly", "slow digestion" },
+    { HALF_SPELL_DAMAGE, "receiving half spell damage", "half spell damage" },
+    { HALF_PHYSICAL_DAMAGE, "receiving half physical damage", "half physical damage" },
+    { REGENERATION, "regenerating", "regeneration" },
+    { ENERGY_REGENERATION, "regenerating mana", "mana regeneration" },
+    { MAGICAL_PROTECTION, "magically protected", "magical protection" },
+    { PROT_FROM_SHAPE_CHANGERS, "protected from shape changers", "protection from shape changers" },
+    { POLYMORPH_CONTROL, "controlling polymorphing", "polymorph control" },
+    { UNCHANGING, "unchanging", "unchange" },
+    { REFLECTING, "reflecting", "reflection" },
+    { FREE_ACTION, "having free action", "free action" },
+    { FIXED_ABIL, "having fixed abilities", "fixed abilities" },
+    { LIFESAVED, "life will be saved", "life saving" },
+    { DEATH_RESISTANCE, "resistant to death", "death resistance" },
+    { LYCANTHROPY_RESISTANCE, "resistant to lycanthropy", "lycanthropy resistance" },
+    { CURSE_RESISTANCE, "resistant to curses", "curse resistance" },
+    { BLIND_TELEPATHY, "telepathic when blind", "blind telepathy" },
+    { ENHANCED_VISION, "enhanced vision", "enhanced vision" },
+    { FLASH_RESISTANCE, "resistant to flashes", "flash resistance" },
+    { EYE_PROTECTION, "protected from eye damage", "protection from eye damage" },
+    { BRAIN_PROTECTION, "protected from brain damage", "protection from brain damage" },
+    { WARN_DEMON, "warned of demons", "warning of demons" },
+    { WARN_ORC, "warned of orcs", "warning of orcs" },
+    { WARN_TROLL, "warned of trolls", "warning of trolls" },
+    { WARN_GIANT, "warned of giants", "warning of giants" },
+    { WARN_DRAGON, "warned of dragons", "warning of dragons" },
+    { WARN_ELF, "warned of elves", "warning of elves" },
+    { WARN_DWARF, "warned of dwarves", "warning of dwarves" },
+    { WARN_GNOLL, "warned of gnolls", "warning of gnolls" },
+    { WARN_HUMAN, "warned of human beings", "warning of human beings" },
+    { WARN_LYCANTHROPE, "warned of lycanthropes", "warning of lycanthropes" },
+    { WARN_ANGEL, "warned of angels", "warning of angels" },
+    { WARN_OGRE, "warned of ogres", "warning of ogres" },
+    { WARN_OGRE, "warned of gnomes", "warning of gnomes" },
+    { CHARM_RESISTANCE, "resistant to charm", "charm resistance" },
+    { MIND_SHIELDING, "mind shielded", "mind shielding" },
+    { ODD_IDEAS, "having visionary ideas", "visionary ideas" },
+    { MAGICAL_KICKING, "kicking magically", "magical kicking" },
+    { BLOCKS_INVISIBILITY, "blocking invisibility", "blocks invisibility" },
+    { BLOCKS_BLINDNESS, "blocking blindness", "blocks blindness"  },
+    { BLOCKS_CLAIRVOYANCE, "blocking clairvoyance", "blocks clairvoyance" },
+    { MAGICAL_SHIELDING, "magically shielded", "magical shielding" },
+    { MAGICAL_BARKSKIN, "magically barkskinned", "magical barkskin" },
+    { MAGICAL_STONESKIN, "magically stoneskinned", "magical stoneskin" },
+    { XRAY_VISION, "having X-ray vision", "X-ray vision" },
+    { VERY_FAST, "very fast", "very fast speed" },
+    { SLOWED, "slowed", "slow speed" },
+    { CANCELLED, "cancelled", "cancellation" },
+    { HALVED_MAGIC_RESISTANCE, "having halved magic resistance", "halved magic resistance" },
+    { NO_MAGIC_RESISTANCE, "lacking magic resistance", "no magic resistance" },
+    { CHARMED, "charmed", "charm" },
+    { PARALYZED, "paralyzed", "paralysis" },
+    { FEARFUL, "unnaturally frightened", "magically induced fear" },
+    { FEAR_RESISTANCE, "resistant to fear", "fear resistance" },
+    { SLEEPING, "sleeping unnaturally deeply", "magically induced sleep" },
+    { SUMMON_FORBIDDEN, "having summoning forbidden", "summoning forbidden" },
+    { SILENCED, "silenced", "silence" },
+    { LEVITATION_CONTROL, "controlling levitation", "levitation control" },
+    { FIRE_VULNERABILITY, "vulnerable to fire", "fire vulnerability" },
+    { COLD_VULNERABILITY, "vulnerable to cold", "cold vulnerability" },
+    { SHOCK_VULNERABILITY, "vulnerable to electricity", "electricity vulnerability" },
+    { MAGIC_MISSILE_VULNERABILITY, "vulnerable to magic damage", "magic damage vulnerability" },
+    { DOUBLE_PHYSICAL_DAMAGE, "receiving double physical damage", "double physical damage" },
+    { DOUBLE_SPELL_DAMAGE, "receiving double spell damage", "double spell damage" },
+    { ENHANCED_UNTRAP, "enhanced in untrapping", "enhanced untrapping" },
+    { BLOCKS_LEVITATION, "blocking levitation", "blocks levitation" },
+    { BLOCKS_FLYING, "blocking flying", "blocks flying" },
+    { ONE_FOURTH_MAGIC_RESISTANCE, "having 25% of normal magic resistance", "25% of normal magic resistance" },
+    { THREE_FOURTHS_MAGIC_RESISTANCE, "having 75% of normal magic resistance", "75% of normal magic resistance" },
+    { BLINDFOLDED, "blindfolded", "blindness due to a blindfold" },
+    { TITAN_STRENGTH, "as strong as a titan", "strength equivalent of a titan" },
     { MAGIC_MISSILE_IMMUNITY, "fully resistant to magic missiles", "full magic missile resistance" },
-	{ STUN_RESISTANCE, "stun resistant", "stun resistance" },
-	{ FOOD_POISONED, "fatally food poisoned", "fatal food poisoning" },
-	{ BISECTION_RESISTANCE, "protected from bisection", "protection from bisection" },
+    { STUN_RESISTANCE, "stun resistant", "stun resistance" },
+    { FOOD_POISONED, "fatally food poisoned", "fatal food poisoning" },
+    { BISECTION_RESISTANCE, "protected from bisection", "protection from bisection" },
     { DIVINE_ENDURANCE, "having as high constitution as a demigod", "constitution equivalent of a demigod" },
     { DIVINE_DEXTERITY, "having as high dexterity as a demigod", "dexterity equivalent of a demigod" },
     { DIVINE_INTELLECT, "having as high intelligence as a demigod", "intelligence equivalent of a demigod" },
@@ -198,109 +198,109 @@ const struct propname {
     { CANCELLATION_RESISTANCE, "resistant to cancellation", "cancellation resistance" },
     { HALF_SLOW_DIGESTION, "digesting half slower than normal", "half slower digestion" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
-	{  0, 0 },
+    {  0, 0 },
 };
 
 
 static boolean alternate_sick_text = FALSE;
 
 static NEARDATA const char* const sick_texts[] = {
-	"You are starting to feel badly feverish.",        /* 8 */
-	"Your fever is rising very high.",    /* 7 */
-	"You are feeling extremely feverish.",          /* 6 */
-	"Your condition is starting to deteriorate badly.",       /* 5 */
-	"You feel your condition is becoming critical.",      /* 4 */
-	"You are feeling really deathly sick.", /* 3 */
-	"You feel you are at death's door.",        /* 2 */
-	"The sickness is fatal."			/* 1 */
+    "You are starting to feel badly feverish.",        /* 8 */
+    "Your fever is rising very high.",    /* 7 */
+    "You are feeling extremely feverish.",          /* 6 */
+    "Your condition is starting to deteriorate badly.",       /* 5 */
+    "You feel your condition is becoming critical.",      /* 4 */
+    "You are feeling really deathly sick.", /* 3 */
+    "You feel you are at death's door.",        /* 2 */
+    "The sickness is fatal."            /* 1 */
 };
 
 STATIC_OVL void
 sick_dialogue()
 {
-	if (!is_living(youmonst.data))
-		return;
+    if (!is_living(youmonst.data))
+        return;
 
-	register long i = (Sick & TIMEOUT);
+    register long i = (Sick & TIMEOUT);
 
-	if (i > 0L && i <= SIZE(sick_texts)) {
-		char buf[BUFSZ];
+    if (i > 0L && i <= SIZE(sick_texts)) {
+        char buf[BUFSZ];
 
-		Strcpy(buf, sick_texts[SIZE(sick_texts) - i]);
-		pline1(buf);
-	}
-	else if (has_head(youmonst.data) && !rn2(3))
-	{
-		if(!rn2(2))
-			You("cough%s.", (alternate_sick_text ? " roughly" : ""));
-		else
-			You("have a %sbout of coughing.", (alternate_sick_text ? "severe " : "terrible "));
+        Strcpy(buf, sick_texts[SIZE(sick_texts) - i]);
+        pline1(buf);
+    }
+    else if (has_head(youmonst.data) && !rn2(3))
+    {
+        if(!rn2(2))
+            You("cough%s.", (alternate_sick_text ? " roughly" : ""));
+        else
+            You("have a %sbout of coughing.", (alternate_sick_text ? "severe " : "terrible "));
 
-		alternate_sick_text = !alternate_sick_text;
-		if (multi > 0)
-			nomul(0);
-	}
+        alternate_sick_text = !alternate_sick_text;
+        if (multi > 0)
+            nomul(0);
+    }
 
-	if (i <= 8)
-	{
-		set_itimeout(&HConfusion, max((HConfusion & TIMEOUT), i + 1));
-	}
+    if (i <= 8)
+    {
+        set_itimeout(&HConfusion, max((HConfusion & TIMEOUT), i + 1));
+    }
 
-	if (i <= 4)
-	{
-		set_itimeout(&HStun, max((HStun & TIMEOUT), i + 1));
-	}
+    if (i <= 4)
+    {
+        set_itimeout(&HStun, max((HStun & TIMEOUT), i + 1));
+    }
 
 }
 
 
 static NEARDATA const char* const food_poisoned_texts[] = {
-	"You are feeling very feverish.",        /* 8 */
-	"Your stomach is hurting terribly.",    /* 7 */
-	"You are feeling extremely feverish.",          /* 6 */
-	"You are experiencing massive stomach pains.",       /* 5 */
-	"You feel your condition is becoming critical.",      /* 4 */
-	"You are feeling really deathly sick.", /* 3 */
-	"You feel you are at death's door.",        /* 2 */
-	"The food poisoning is fatal."			/* 1 */
+    "You are feeling very feverish.",        /* 8 */
+    "Your stomach is hurting terribly.",    /* 7 */
+    "You are feeling extremely feverish.",          /* 6 */
+    "You are experiencing massive stomach pains.",       /* 5 */
+    "You feel your condition is becoming critical.",      /* 4 */
+    "You are feeling really deathly sick.", /* 3 */
+    "You feel you are at death's door.",        /* 2 */
+    "The food poisoning is fatal."            /* 1 */
 };
 
 STATIC_OVL void
 food_poisoned_dialogue()
 {
-	if (!is_living(youmonst.data))
-		return;
+    if (!is_living(youmonst.data))
+        return;
 
-	register long i = (FoodPoisoned & TIMEOUT);
+    register long i = (FoodPoisoned & TIMEOUT);
 
-	if (i > 0L && i <= SIZE(food_poisoned_texts)) {
-		char buf[BUFSZ];
+    if (i > 0L && i <= SIZE(food_poisoned_texts)) {
+        char buf[BUFSZ];
 
-		Strcpy(buf, food_poisoned_texts[SIZE(food_poisoned_texts) - i]);
-		pline1(buf);
-	}
-	else if (!rn2(3))
-	{
-		if (!rn2(2))
-			Your("stomach hurts%s.", (alternate_sick_text ? " badly" : ""));
-		else
-			You("experience a %sbout of stomach cramps.", (alternate_sick_text ? "severe " : "terrible "));
+        Strcpy(buf, food_poisoned_texts[SIZE(food_poisoned_texts) - i]);
+        pline1(buf);
+    }
+    else if (!rn2(3))
+    {
+        if (!rn2(2))
+            Your("stomach hurts%s.", (alternate_sick_text ? " badly" : ""));
+        else
+            You("experience a %sbout of stomach cramps.", (alternate_sick_text ? "severe " : "terrible "));
 
-		alternate_sick_text = !alternate_sick_text;
+        alternate_sick_text = !alternate_sick_text;
 
-		if (multi > 0)
-			nomul(0);
-	}
+        if (multi > 0)
+            nomul(0);
+    }
 
-	if (i <= 8)
-	{
-		set_itimeout(&HConfusion, max((HConfusion & TIMEOUT), i + 1));
-	}
+    if (i <= 8)
+    {
+        set_itimeout(&HConfusion, max((HConfusion & TIMEOUT), i + 1));
+    }
 
-	if (i <= 4)
-	{
-		set_itimeout(&HStun, max((HStun & TIMEOUT), i + 1));
-	}
+    if (i <= 4)
+    {
+        set_itimeout(&HStun, max((HStun & TIMEOUT), i + 1));
+    }
 
 }
 
@@ -820,10 +820,10 @@ nh_timeout()
         vomiting_dialogue();
     if (Strangled)
         choke_dialogue();
-	if (Sick)
-		sick_dialogue();
-	if (FoodPoisoned)
-		food_poisoned_dialogue();
+    if (Sick)
+        sick_dialogue();
+    if (FoodPoisoned)
+        food_poisoned_dialogue();
     if (HLevitation & TIMEOUT)
         levitation_dialogue();
     if (HPasses_walls & TIMEOUT)
@@ -844,62 +844,62 @@ nh_timeout()
             pline("%s stops galloping.", Monnam(u.usteed));
     }
 
-	//Reduce spell cooldown timers
-	for (int sp_no = 0; sp_no < MAXSPELL; ++sp_no)
-		if (spl_book[sp_no].sp_id == NO_SPELL)
-			break;
-		else if (spl_book[sp_no].sp_cooldownleft > 0)
-			spl_book[sp_no].sp_cooldownleft--;
+    //Reduce spell cooldown timers
+    for (int sp_no = 0; sp_no < MAXSPELL; ++sp_no)
+        if (spl_book[sp_no].sp_id == NO_SPELL)
+            break;
+        else if (spl_book[sp_no].sp_cooldownleft > 0)
+            spl_book[sp_no].sp_cooldownleft--;
 
 
-	//Reduce item cooldown timers
-	struct monst* mon, * mmtmp[3];
-	int i;
+    //Reduce item cooldown timers
+    struct monst* mon, * mmtmp[3];
+    int i;
 
-	/* first go through various obj lists directly */
-	reduce_item_cooldown(invent);
-	reduce_item_cooldown(fobj);
-	reduce_item_cooldown(level.buriedobjlist);
-	reduce_item_cooldown(migrating_objs);
+    /* first go through various obj lists directly */
+    reduce_item_cooldown(invent);
+    reduce_item_cooldown(fobj);
+    reduce_item_cooldown(level.buriedobjlist);
+    reduce_item_cooldown(migrating_objs);
 
-	/* second go through monster inventories */
-	mmtmp[0] = fmon;
-	mmtmp[1] = migrating_mons;
-	mmtmp[2] = mydogs; /* for use during level changes */
-	for (i = 0; i < 3; i++)
-		for (mon = mmtmp[i]; mon; mon = mon->nmon)
-			reduce_item_cooldown(mon->minvent);
+    /* second go through monster inventories */
+    mmtmp[0] = fmon;
+    mmtmp[1] = migrating_mons;
+    mmtmp[2] = mydogs; /* for use during level changes */
+    for (i = 0; i < 3; i++)
+        for (mon = mmtmp[i]; mon; mon = mon->nmon)
+            reduce_item_cooldown(mon->minvent);
 
-	for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
-	{
-		int propnum = (int)(upp - u.uprops);
-		int extratime = 0;
-		if ((upp->intrinsic & TIMEOUT) && !(--upp->intrinsic & TIMEOUT))
-		{
-			kptr = find_delayed_killer(propnum);
-			switch (propnum) {
-			case STONED:
-				if (kptr && kptr->name[0]) {
-					killer.format = kptr->format;
-					Strcpy(killer.name, kptr->name);
-				}
-				else {
-					killer.format = NO_KILLER_PREFIX;
-					Strcpy(killer.name, "killed by petrification");
-				}
-				dealloc_killer(kptr);
-				/* (unlike sliming, you aren't changing form here) */
+    for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
+    {
+        int propnum = (int)(upp - u.uprops);
+        int extratime = 0;
+        if ((upp->intrinsic & TIMEOUT) && !(--upp->intrinsic & TIMEOUT))
+        {
+            kptr = find_delayed_killer(propnum);
+            switch (propnum) {
+            case STONED:
+                if (kptr && kptr->name[0]) {
+                    killer.format = kptr->format;
+                    Strcpy(killer.name, kptr->name);
+                }
+                else {
+                    killer.format = NO_KILLER_PREFIX;
+                    Strcpy(killer.name, "killed by petrification");
+                }
+                dealloc_killer(kptr);
+                /* (unlike sliming, you aren't changing form here) */
                 play_sfx_sound(SFX_PETRIFY);
                 done(STONING);
-				break;
-			case SLIMED:
-				slimed_to_death(kptr); /* done(TURNED_SLIME) */
-				break;
-			case VOMITING:
-				make_vomiting(0L, TRUE);
-				break;
-			case SICK:
-			case FOOD_POISONED:
+                break;
+            case SLIMED:
+                slimed_to_death(kptr); /* done(TURNED_SLIME) */
+                break;
+            case VOMITING:
+                make_vomiting(0L, TRUE);
+                break;
+            case SICK:
+            case FOOD_POISONED:
                 You("die from your illness.");
 
                 if (kptr && kptr->name[0])
@@ -948,37 +948,37 @@ nh_timeout()
                 else
                 {
                     You("die from your illness.");
-				
-				    if (kptr && kptr->name[0]) 
-				    {
-					    killer.format = kptr->format;
-					    Strcpy(killer.name, kptr->name);
-				    }
-				    else 
-				    {
-					    killer.format = KILLED_BY_AN;
-					    killer.name[0] = 0; /* take the default */
-				    }
-				    dealloc_killer(kptr);
+                
+                    if (kptr && kptr->name[0]) 
+                    {
+                        killer.format = kptr->format;
+                        Strcpy(killer.name, kptr->name);
+                    }
+                    else 
+                    {
+                        killer.format = KILLED_BY_AN;
+                        killer.name[0] = 0; /* take the default */
+                    }
+                    dealloc_killer(kptr);
 
-				    if ((m_idx = name_to_mon(killer.name)) >= LOW_PM) 
-				    {
-					    if (is_mname_proper_name(&mons[m_idx])) 
-					    {
-						    killer.format = KILLED_BY;
-					    }
-					    else if (mons[m_idx].geno & G_UNIQ) 
-					    {
-						    Strcpy(killer.name, the(killer.name));
-						    killer.format = KILLED_BY;
-					    }
-				    }
-				    done(POISONING);
+                    if ((m_idx = name_to_mon(killer.name)) >= LOW_PM) 
+                    {
+                        if (is_mname_proper_name(&mons[m_idx])) 
+                        {
+                            killer.format = KILLED_BY;
+                        }
+                        else if (mons[m_idx].geno & G_UNIQ) 
+                        {
+                            Strcpy(killer.name, the(killer.name));
+                            killer.format = KILLED_BY;
+                        }
+                    }
+                    done(POISONING);
                     /* Life saved */
                     make_mummy_rotted(0L, (char*)0, FALSE);
                 }
 
-				break;
+                break;
             case SLEEPY:
                 if (unconscious() || Sleep_resistance) {
                     //incr_itimeout(&HSleepy, rnd(100));
@@ -992,70 +992,70 @@ nh_timeout()
                 }
                 break;
             case STRANGLED:
-				killer.format = KILLED_BY;
-				Strcpy(killer.name,
-					(u.uburied) ? "suffocation" : "strangulation");
-				done(DIED);
-				/* must be declining to die in explore|wizard mode;
-				   treat like being cured of strangulation by prayer */
-				if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
+                killer.format = KILLED_BY;
+                Strcpy(killer.name,
+                    (u.uburied) ? "suffocation" : "strangulation");
+                done(DIED);
+                /* must be declining to die in explore|wizard mode;
+                   treat like being cured of strangulation by prayer */
+                if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
                     play_sfx_sound(SFX_ITEM_VANISHES);
                     Your("amulet vanishes!");
-					useup(uamul);
-				}
-				break;
-			case AIRLESS_ENVIRONMENT:
-			{
-				boolean drowned_by_monster = u.ustuck && is_pool(u.ustuck->mx, u.ustuck->my) && !Swimming && !Amphibious;
-				if (Survives_without_air)
-					;
-				else
-				{
-					You("%s.", Underwater || drowned_by_monster ? "drown" : "suffocate");
-					killer.format = KILLED_BY;
-					Strcpy(killer.name, Underwater || drowned_by_monster ? "drowning" : "suffocation");
-					done(Underwater || drowned_by_monster ? DROWNING : DIED);
-				}
-				break;
-			}
+                    useup(uamul);
+                }
+                break;
+            case AIRLESS_ENVIRONMENT:
+            {
+                boolean drowned_by_monster = u.ustuck && is_pool(u.ustuck->mx, u.ustuck->my) && !Swimming && !Amphibious;
+                if (Survives_without_air)
+                    ;
+                else
+                {
+                    You("%s.", Underwater || drowned_by_monster ? "drown" : "suffocate");
+                    killer.format = KILLED_BY;
+                    Strcpy(killer.name, Underwater || drowned_by_monster ? "drowning" : "suffocation");
+                    done(Underwater || drowned_by_monster ? DROWNING : DIED);
+                }
+                break;
+            }
             case FUMBLING:
-				/* call this only when a move took place.  */
-				/* otherwise handle fumbling msgs locally. */
-				if (u.umoved && !Levitation) {
-					slip_or_trip();
-					nomul(-2);
-					multi_reason = "fumbling";
-					nomovemsg = "";
-					/* The more you are carrying the more likely you
-					 * are to make noise when you fumble.  Adjustments
-					 * to this number must be thoroughly play tested.
-					 */
-					if ((inv_weight() > -500)) {
-						You("make a lot of noise!");
-						wake_nearby();
-					}
-				}
-				/* from outside means slippery ice; don't reset
-				   counter if that's the only fumble reason */
-				HFumbling &= ~FROM_ACQUIRED;
-				//if (Fumbling)
-				//	incr_itimeout(&HFumbling, rnd(20));
-				break;
-			case LAUGHING:
-				laugh_uncontrollably();
-				nomul(-1);
-				multi_reason = "laughing";
-				wake_nearby();
-				//if (Laughing)
-				//	incr_itimeout(&HLaughing, rnd(20));
-				break;
-			case ODD_IDEAS:
-				get_odd_idea();
-				nomul(0);
-				multi_reason = "getting visionary ideas";
-				//if (OddIdeas)
-				//	incr_itimeout(&HOddIdeas, 150 + rnd(100));
-				break;
+                /* call this only when a move took place.  */
+                /* otherwise handle fumbling msgs locally. */
+                if (u.umoved && !Levitation) {
+                    slip_or_trip();
+                    nomul(-2);
+                    multi_reason = "fumbling";
+                    nomovemsg = "";
+                    /* The more you are carrying the more likely you
+                     * are to make noise when you fumble.  Adjustments
+                     * to this number must be thoroughly play tested.
+                     */
+                    if ((inv_weight() > -500)) {
+                        You("make a lot of noise!");
+                        wake_nearby();
+                    }
+                }
+                /* from outside means slippery ice; don't reset
+                   counter if that's the only fumble reason */
+                HFumbling &= ~FROM_ACQUIRED;
+                //if (Fumbling)
+                //    incr_itimeout(&HFumbling, rnd(20));
+                break;
+            case LAUGHING:
+                laugh_uncontrollably();
+                nomul(-1);
+                multi_reason = "laughing";
+                wake_nearby();
+                //if (Laughing)
+                //    incr_itimeout(&HLaughing, rnd(20));
+                break;
+            case ODD_IDEAS:
+                get_odd_idea();
+                nomul(0);
+                multi_reason = "getting visionary ideas";
+                //if (OddIdeas)
+                //    incr_itimeout(&HOddIdeas, 150 + rnd(100));
+                break;
             case CONFUSION:
                 /* So make_confused works properly */
                 set_itimeout(&HConfusion, 1L);
@@ -1095,20 +1095,20 @@ nh_timeout()
             default:
                 property_expiry_message(propnum, was_flying);
             }
-		}
-		else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3) && !(upp->intrinsic & ~TIMEOUT) && !(upp->extrinsic))
-		{
-			/* Early warning */
-			switch (propnum) {
-			case FAST:
-				if (!Lightning_fast && !Super_fast && !Ultra_fast && !Very_fast)
-					You("are starting to feel less quick than before.");
-				break;
-			case VERY_FAST:
+        }
+        else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3) && !(upp->intrinsic & ~TIMEOUT) && !(upp->extrinsic))
+        {
+            /* Early warning */
+            switch (propnum) {
+            case FAST:
+                if (!Lightning_fast && !Super_fast && !Ultra_fast && !Very_fast)
+                    You("are starting to feel less quick than before.");
+                break;
+            case VERY_FAST:
                 if (!Lightning_fast && !Super_fast && !Ultra_fast)
                     You("are starting to feel%s less quick than before.",
-					Fast ? " a bit" : "");
-				break;
+                    Fast ? " a bit" : "");
+                break;
             case ULTRA_FAST:
                 if (!Lightning_fast && !Super_fast)
                     You("are starting to feel%s less quick than before.",
@@ -1125,8 +1125,8 @@ nh_timeout()
                         Super_fast || Ultra_fast || Very_fast || Fast ? " a bit" : "");
                 break;
             case SLOWED:
-				You_feel("you are starting to speed up.");
-				break;
+                You_feel("you are starting to speed up.");
+                break;
             case HEROISM:
                 if (!Super_heroism && !Heroism)
                     You("are starting to feel less heroic than before.");
@@ -1176,37 +1176,37 @@ nh_timeout()
                 You("are starting to feel more sane than before.");
                 break;
             case SILENCED:
-				You_feel("your is starting to return.");
-				break;
-			case INVISIBILITY:
-				You("are starting to feel more visible.");
-				break;
-			case SEE_INVISIBLE:
-				Your("vision of invisible monsters is becoming less clear.");
-				break;
-			case LEVITATION:
-				You("are starting to feel less buoyant.");
-				break;
-			case FLYING:
-				/* timed Flying is via #wizintrinsic only */
-				You("are starting to feel less aerial.");
-				break;
-			case PASSES_WALLS:
-				pline("You're starting to get back to your %s self again.",
-					!Upolyd ? "normal" : "unusual");
-				break;
-			case REFLECTING:
-				Your("skin is starting to feel less reflecting than before.");
-				break;
-			case FIRE_IMMUNITY:
-				Your("skin is starting to feel more prone to burning than before.");
-				break;
-			case COLD_IMMUNITY:
-				Your("skin is starting to feel more prone to frostbites than before.");
-				break;
-			case SHOCK_IMMUNITY:
-				Your("skin is starting to feel more prone to electricity than before.");
-				break;
+                You_feel("your is starting to return.");
+                break;
+            case INVISIBILITY:
+                You("are starting to feel more visible.");
+                break;
+            case SEE_INVISIBLE:
+                Your("vision of invisible monsters is becoming less clear.");
+                break;
+            case LEVITATION:
+                You("are starting to feel less buoyant.");
+                break;
+            case FLYING:
+                /* timed Flying is via #wizintrinsic only */
+                You("are starting to feel less aerial.");
+                break;
+            case PASSES_WALLS:
+                pline("You're starting to get back to your %s self again.",
+                    !Upolyd ? "normal" : "unusual");
+                break;
+            case REFLECTING:
+                Your("skin is starting to feel less reflecting than before.");
+                break;
+            case FIRE_IMMUNITY:
+                Your("skin is starting to feel more prone to burning than before.");
+                break;
+            case COLD_IMMUNITY:
+                Your("skin is starting to feel more prone to frostbites than before.");
+                break;
+            case SHOCK_IMMUNITY:
+                Your("skin is starting to feel more prone to electricity than before.");
+                break;
             case IMPROVED_FIRE_RESISTANCE:
                 if (!Fire_immunity)
                     Your("skin is starting to feel more prone to burning than before.");
@@ -1232,14 +1232,14 @@ nh_timeout()
                     Your("skin is starting to feel more prone to electricity than before.");
                 break;
             case DISINTEGRATION_RESISTANCE:
-				Your("body is starting to feel less firm than before.");
-				break;
-			case POISON_RESISTANCE:
-				You("are starting to feel less healthy than before.");
-				break;
-			case ACID_IMMUNITY:
-				Your("skin is starting to feel more prone to acid than before.");
-				break;
+                Your("body is starting to feel less firm than before.");
+                break;
+            case POISON_RESISTANCE:
+                You("are starting to feel less healthy than before.");
+                break;
+            case ACID_IMMUNITY:
+                Your("skin is starting to feel more prone to acid than before.");
+                break;
             case IMPROVED_ACID_RESISTANCE:
                 if (!Acid_immunity)
                     Your("skin is starting to feel more prone to acid than before.");
@@ -1249,23 +1249,23 @@ nh_timeout()
                     Your("skin is starting to feel more prone to acid than before.");
                 break;
             case STONE_RESISTANCE:
-				You("are starting to feel a bit less limber than before.");
-				break;
-			case DRAIN_RESISTANCE:
-				You("are starting to feel more suspectible to draining than before.");
-				break;
-			case SICK_RESISTANCE:
-				You("are starting to feel more bothered by bugs.");
-				break;
-			case INVULNERABLE:
-				Your("skin is starting to feel more prone to damage than before.");
-				break;
-			case ANTIMAGIC:
-				You("are starting to feel less protected from magic.");
-				break;
-			case MAGIC_MISSILE_IMMUNITY:
-				You("are starting to feel less protected from magic missiles.");
-				break;
+                You("are starting to feel a bit less limber than before.");
+                break;
+            case DRAIN_RESISTANCE:
+                You("are starting to feel more suspectible to draining than before.");
+                break;
+            case SICK_RESISTANCE:
+                You("are starting to feel more bothered by bugs.");
+                break;
+            case INVULNERABLE:
+                Your("skin is starting to feel more prone to damage than before.");
+                break;
+            case ANTIMAGIC:
+                You("are starting to feel less protected from magic.");
+                break;
+            case MAGIC_MISSILE_IMMUNITY:
+                You("are starting to feel less protected from magic missiles.");
+                break;
             case IMPROVED_MAGIC_MISSILE_RESISTANCE:
                 if (!Magic_missile_immunity)
                     You("are starting to feel less protected from magic missiles.");
@@ -1275,112 +1275,112 @@ nh_timeout()
                     You("are starting to feel less protected from magic missiles.");
                 break;
             case CANCELLED:
-				You("feel your magic is starting to flow more normally.");
-				break;
+                You("feel your magic is starting to flow more normally.");
+                break;
             case CANCELLATION_RESISTANCE:
                 /* Nothing intentionally */
                 break;
             case THREE_FOURTHS_MAGIC_RESISTANCE:
-				if (!Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
-					You("feel your magic resistance is starting to work more properly.");
-				break;
-			case HALVED_MAGIC_RESISTANCE:
-				if (!One_fourth_magic_resistance && !No_magic_resistance)
-					You("feel your magic resistance is starting to work more properly.");
-				break;
-			case ONE_FOURTH_MAGIC_RESISTANCE:
-				if (!No_magic_resistance)
-					You("feel your magic resistance is starting to work more properly.");
-				break;
-			case NO_MAGIC_RESISTANCE:
-				You("feel your magic resistance is starting to work more properly.");
-				break;
-			case PARALYZED:
+                if (!Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
+                    You("feel your magic resistance is starting to work more properly.");
+                break;
+            case HALVED_MAGIC_RESISTANCE:
+                if (!One_fourth_magic_resistance && !No_magic_resistance)
+                    You("feel your magic resistance is starting to work more properly.");
+                break;
+            case ONE_FOURTH_MAGIC_RESISTANCE:
+                if (!No_magic_resistance)
+                    You("feel your magic resistance is starting to work more properly.");
+                break;
+            case NO_MAGIC_RESISTANCE:
+                You("feel your magic resistance is starting to work more properly.");
+                break;
+            case PARALYZED:
                 if(!(Undead_immobility && is_undead(youmonst.data)))
-    				Your("limbs are starting move a bit.");
-				break;
+                    Your("limbs are starting move a bit.");
+                break;
             case UNDEAD_IMMOBILITY:
                 if (!(Undead_immobility && is_undead(youmonst.data)))
                     Your("limbs are starting move a bit.");
                 break;
             case FEARFUL:
-				You("are starting to regain your composure.");
-				break;
-			case SLEEPING:
-				You("are starting to wake up.");
-				break;
-			case SUMMON_FORBIDDEN:
-				You("feel summoning is starting to work a bit more properly again.");
-				break;
-			case CHARMED:
-				Your("own motivations are starting to make a bit more sense to you.");
-				break;
+                You("are starting to regain your composure.");
+                break;
+            case SLEEPING:
+                You("are starting to wake up.");
+                break;
+            case SUMMON_FORBIDDEN:
+                You("feel summoning is starting to work a bit more properly again.");
+                break;
+            case CHARMED:
+                Your("own motivations are starting to make a bit more sense to you.");
+                break;
             case UNDEAD_CONTROL:
                 You("are starting to be more in control of your own actions.");
                 break;
             case DEATH_RESISTANCE:
-				Your("soul's silver cord is starting to feel thinner than before.");
-				break;
-			case CHARM_RESISTANCE:
-				You("are starting to feel less certain of your own motivations.");
-				break;
-			case FEAR_RESISTANCE:
-				You("are starting to feel less courageous.");
-				break;
-			case MIND_SHIELDING:
-				You("are starting to feel less protected from mental detection.");
-				break;
-			case LYCANTHROPY_RESISTANCE:
-				You("are starting to feel less protected from lycanthropy.");
-				break;
-			case CURSE_RESISTANCE:
-				You("are starting to feel less protected from curses.");
-				break;
-			case LIFESAVED:
-				You("are starting to feel more mortal than before.");
-				break;
-			case DETECT_MONSTERS:
-				You("are starting to feel less sensitive to the presence of monsters than before.");
-				break;
-			case BLIND_TELEPATHY:
-				You("are starting to feel less telepathic when blind than before.");
-				break;
-			case TELEPAT:
-				You("are starting to feel less telepathic than before.");
-				break;
-			case XRAY_VISION:
-				Your("vision through the walls is starting to get blurred.");
-				break;
-			case WATER_WALKING:
-				You("are starting to feel less able to walk on water than before.");
-				break;
-			case MAGICAL_BREATHING:
-				You("are starting to feel less able to breathe in water than before.");
-				break;
-			case DISPLACED:
-				Your("mirror image is starting to vanish.");
-				break;
-			case CONFLICT:
-				Your("neighborhood is starting to feel less quarrelsome than before.");
-				break;
-			case MAGICAL_PROTECTION:
-				You("are starting to feel less protected than before.");
-				break;
-			case MAGICAL_SHIELDING:
-				You("are starting to feel less shielded than before.");
-				break;
-			case MAGICAL_BARKSKIN:
-				Your("skin is starting to feel less bark-like than before.");
-				break;
-			case MAGICAL_STONESKIN:
-				Your("skin is starting to feel less stone-like than before.");
-				break;
-			case BISECTION_RESISTANCE:
-				Your("skin is starting to feel less steel-like than before.");
-				break;
-			case TITAN_STRENGTH:
-				You("are starting to feel less strong than before.");
-				break;
+                Your("soul's silver cord is starting to feel thinner than before.");
+                break;
+            case CHARM_RESISTANCE:
+                You("are starting to feel less certain of your own motivations.");
+                break;
+            case FEAR_RESISTANCE:
+                You("are starting to feel less courageous.");
+                break;
+            case MIND_SHIELDING:
+                You("are starting to feel less protected from mental detection.");
+                break;
+            case LYCANTHROPY_RESISTANCE:
+                You("are starting to feel less protected from lycanthropy.");
+                break;
+            case CURSE_RESISTANCE:
+                You("are starting to feel less protected from curses.");
+                break;
+            case LIFESAVED:
+                You("are starting to feel more mortal than before.");
+                break;
+            case DETECT_MONSTERS:
+                You("are starting to feel less sensitive to the presence of monsters than before.");
+                break;
+            case BLIND_TELEPATHY:
+                You("are starting to feel less telepathic when blind than before.");
+                break;
+            case TELEPAT:
+                You("are starting to feel less telepathic than before.");
+                break;
+            case XRAY_VISION:
+                Your("vision through the walls is starting to get blurred.");
+                break;
+            case WATER_WALKING:
+                You("are starting to feel less able to walk on water than before.");
+                break;
+            case MAGICAL_BREATHING:
+                You("are starting to feel less able to breathe in water than before.");
+                break;
+            case DISPLACED:
+                Your("mirror image is starting to vanish.");
+                break;
+            case CONFLICT:
+                Your("neighborhood is starting to feel less quarrelsome than before.");
+                break;
+            case MAGICAL_PROTECTION:
+                You("are starting to feel less protected than before.");
+                break;
+            case MAGICAL_SHIELDING:
+                You("are starting to feel less shielded than before.");
+                break;
+            case MAGICAL_BARKSKIN:
+                Your("skin is starting to feel less bark-like than before.");
+                break;
+            case MAGICAL_STONESKIN:
+                Your("skin is starting to feel less stone-like than before.");
+                break;
+            case BISECTION_RESISTANCE:
+                Your("skin is starting to feel less steel-like than before.");
+                break;
+            case TITAN_STRENGTH:
+                You("are starting to feel less strong than before.");
+                break;
             case DIVINE_ENDURANCE:
                 Your("endurance is starting to feel worse than before.");
                 break;
@@ -1397,34 +1397,34 @@ nh_timeout()
                 You("are starting to feel less charming than before.");
                 break;
             }
-		}
-		else if ((upp->intrinsic & TIMEOUT) > 0)
-		{
-			// Continuous warning
-			switch (propnum) {
-			case STRANGLED:
-				You("are being strangled!");
-				break;
-			case AIRLESS_ENVIRONMENT:
-				if (!Survives_without_air)
-					You("cannot breathe!");
-				else
-					upp->intrinsic &= ~TIMEOUT; /* You can breathe, so clear the suffocation timeout -- It will be set to the full time value below */
-				break;
-			}
-		}
+        }
+        else if ((upp->intrinsic & TIMEOUT) > 0)
+        {
+            // Continuous warning
+            switch (propnum) {
+            case STRANGLED:
+                You("are being strangled!");
+                break;
+            case AIRLESS_ENVIRONMENT:
+                if (!Survives_without_air)
+                    You("cannot breathe!");
+                else
+                    upp->intrinsic &= ~TIMEOUT; /* You can breathe, so clear the suffocation timeout -- It will be set to the full time value below */
+                break;
+            }
+        }
 
-		/* Finally, add time to recurring intrinsics */
-		if ((upp->intrinsic & TIMEOUT) == 0 && property_definitions[propnum].recurring && (upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
-		{
-			incr_itimeout(&upp->intrinsic, extratime + property_definitions[propnum].recurring_constant + (property_definitions[propnum].recurring_random > 0 ? rn2(property_definitions[propnum].recurring_random + 1) : 0));
-		}
-	}
+        /* Finally, add time to recurring intrinsics */
+        if ((upp->intrinsic & TIMEOUT) == 0 && property_definitions[propnum].recurring && (upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
+        {
+            incr_itimeout(&upp->intrinsic, extratime + property_definitions[propnum].recurring_constant + (property_definitions[propnum].recurring_random > 0 ? rn2(property_definitions[propnum].recurring_random + 1) : 0));
+        }
+    }
 
-	/* Needs to be called if e.g. amulet of strangulation vanished */
-	update_all_character_properties((struct obj*)0, TRUE);
+    /* Needs to be called if e.g. amulet of strangulation vanished */
+    update_all_character_properties((struct obj*)0, TRUE);
 
-	run_timers();
+    run_timers();
 
     /* Condition change check */
     if ((was_flying != !!Flying)
@@ -1470,8 +1470,8 @@ int how_long;
 boolean wakeup_msg;
 {
     stop_occupation();
-	incr_itimeout(&HSleeping, abs(how_long));
-	context.botl = context.botlx = 1;
+    incr_itimeout(&HSleeping, abs(how_long));
+    context.botl = context.botlx = 1;
 
     if (wakeup_msg)
     {
@@ -1837,56 +1837,56 @@ STATIC_OVL void
 laugh_uncontrollably()
 {
     play_simple_player_sound(MONSTER_SOUND_TYPE_LAUGHTER);
-	switch (rn2(4)) {
-		case 1:
-			You("start laughing uncontrollably.");
-			break;
-		case 2:
-			You("suddenly almost laugh your head off.");
-			break;
-		case 3:
-			You("remember something funny and laugh out loudly.");
-			break;
-		default:
-			You("giggle at some funny thoughts.");
-			break;
-		}
+    switch (rn2(4)) {
+        case 1:
+            You("start laughing uncontrollably.");
+            break;
+        case 2:
+            You("suddenly almost laugh your head off.");
+            break;
+        case 3:
+            You("remember something funny and laugh out loudly.");
+            break;
+        default:
+            You("giggle at some funny thoughts.");
+            break;
+        }
 }
 
 /* give a fumble message */
 STATIC_OVL void
 get_odd_idea()
 {
-	context.oddideacnt++;
-	switch (context.oddideacnt)
-	{
-	case 1:
-		You("are suddenly sure that the government is controlled by...");
-		pline("...squid-faced, brain-sucking aliens from inside the hollow earth.");
-		break;
-	case 2:
-		You("suddenly feel as if strange beings shaped like... ");
-		pline("...platonic solids are trying to contact you telepathically.");
-		break;
-	case 3:
-		You("suddenly feel that the radiation inside the dungeon is getting stronger.");
-		break;
-	case 4:
-		You("are suddenly even more conviced that the government is controlled by...");
-		pline("...squid-faced, brain-sucking aliens from inside the hollow earth.");
-		break;
-	case 5:
-		You("suddenly feel like strange beings shaped like...");
-		pline("...platonic solids are trying to contact you telepathically again.");
-		break;
-	case 6:
-		You("are suddenly feel that the radiation inside the dungeon is getting even stronger.");
-		context.oddideacnt = 3;
-		break;
-	default:
-		You("suddenly feel somewhat paranoid.");
-		break;
-	}
+    context.oddideacnt++;
+    switch (context.oddideacnt)
+    {
+    case 1:
+        You("are suddenly sure that the government is controlled by...");
+        pline("...squid-faced, brain-sucking aliens from inside the hollow earth.");
+        break;
+    case 2:
+        You("suddenly feel as if strange beings shaped like... ");
+        pline("...platonic solids are trying to contact you telepathically.");
+        break;
+    case 3:
+        You("suddenly feel that the radiation inside the dungeon is getting stronger.");
+        break;
+    case 4:
+        You("are suddenly even more conviced that the government is controlled by...");
+        pline("...squid-faced, brain-sucking aliens from inside the hollow earth.");
+        break;
+    case 5:
+        You("suddenly feel like strange beings shaped like...");
+        pline("...platonic solids are trying to contact you telepathically again.");
+        break;
+    case 6:
+        You("are suddenly feel that the radiation inside the dungeon is getting even stronger.");
+        context.oddideacnt = 3;
+        break;
+    default:
+        You("suddenly feel somewhat paranoid.");
+        break;
+    }
 }
 
 /* Print a lamp flicker message with tailer. */
@@ -2254,18 +2254,18 @@ boolean already_lit;
         return;
 
     switch (obj->otyp) {
-	case MAGIC_LAMP:
+    case MAGIC_LAMP:
         obj->lamplit = 1;
         do_timer = FALSE;
         break;
-	case MAGIC_CANDLE:
-		obj->lamplit = 1;
-		if (obj->special_quality == 2)
-			obj->special_quality = 1;
+    case MAGIC_CANDLE:
+        obj->lamplit = 1;
+        if (obj->special_quality == 2)
+            obj->special_quality = 1;
 
-		do_timer = FALSE;
-		break;
-	case POT_OIL:
+        do_timer = FALSE;
+        break;
+    case POT_OIL:
         turns = obj->age;
         if (obj->odiluted)
             turns = (3L * turns + 2L) / 4L;
@@ -2398,98 +2398,98 @@ unsummon_item(arg, timeout)
 anything* arg;
 long timeout;
 {
-	xchar x = 0, y = 0;
-	struct obj* obj = arg->a_obj;
-	boolean on_floor = obj->where == OBJ_FLOOR,
-		in_invent = obj->where == OBJ_INVENT,
-		canseeunsummon = FALSE,
-		iswielded = FALSE;
-	char whosebuf[BUFSZ] = "";
+    xchar x = 0, y = 0;
+    struct obj* obj = arg->a_obj;
+    boolean on_floor = obj->where == OBJ_FLOOR,
+        in_invent = obj->where == OBJ_INVENT,
+        canseeunsummon = FALSE,
+        iswielded = FALSE;
+    char whosebuf[BUFSZ] = "";
 
-	if (!obj)
-		return;
+    if (!obj)
+        return;
 
     if (timeout)
     {
         /* Do nothing */
     }
 
-	if (on_floor) {
-		x = obj->ox;
-		y = obj->oy;
-		if(cansee(x,y))
-		{
-			canseeunsummon = TRUE;
-			iswielded = FALSE;
-			strcpy(whosebuf, "The ");
-		}
-	}
-	else if (in_invent) {
-		if (obj->owornmask)
-			remove_worn_item(obj, TRUE);
+    if (on_floor) {
+        x = obj->ox;
+        y = obj->oy;
+        if(cansee(x,y))
+        {
+            canseeunsummon = TRUE;
+            iswielded = FALSE;
+            strcpy(whosebuf, "The ");
+        }
+    }
+    else if (in_invent) {
+        if (obj->owornmask)
+            remove_worn_item(obj, TRUE);
 
-		strcpy(whosebuf, "Your ");
-		canseeunsummon = TRUE;
-	}
-	else if (obj->where == OBJ_MINVENT && obj->owornmask) {
-		if (obj == MON_WEP(obj->ocarry))
-		{
-			setmnotwielded(obj->ocarry, obj);
-		}
-		else
-		{
-			
-		}
-		if (obj->ocarry && canseemon(obj->ocarry))
-		{
-			canseeunsummon = TRUE;
-			strcpy(whosebuf, s_suffix(Monnam(obj->ocarry)));
-			strcat(whosebuf, " ");
-			iswielded = FALSE; //Do not show this for monsters
-		}
-	}
-	else if (obj->where == OBJ_MIGRATING) {
-		/* clear destination flag so that obfree()'s check for
-		   freeing a worn object doesn't get a false hit */
-		obj->owornmask = 0L;
-		canseeunsummon = FALSE;
-	}
+        strcpy(whosebuf, "Your ");
+        canseeunsummon = TRUE;
+    }
+    else if (obj->where == OBJ_MINVENT && obj->owornmask) {
+        if (obj == MON_WEP(obj->ocarry))
+        {
+            setmnotwielded(obj->ocarry, obj);
+        }
+        else
+        {
+            
+        }
+        if (obj->ocarry && canseemon(obj->ocarry))
+        {
+            canseeunsummon = TRUE;
+            strcpy(whosebuf, s_suffix(Monnam(obj->ocarry)));
+            strcat(whosebuf, " ");
+            iswielded = FALSE; //Do not show this for monsters
+        }
+    }
+    else if (obj->where == OBJ_MIGRATING) {
+        /* clear destination flag so that obfree()'s check for
+           freeing a worn object doesn't get a false hit */
+        obj->owornmask = 0L;
+        canseeunsummon = FALSE;
+    }
 
-	if (flags.verbose && canseeunsummon) {
-		char* bbname = xname(obj);
+    if (flags.verbose && canseeunsummon) {
+        char* bbname = xname(obj);
 
-		pline("%s%s%s %s in a puff of smoke%c", whosebuf, iswielded ? "wielded " : "", bbname,
-			otense(obj, "vanish"), iswielded ? '!' : '.');
-	}
+        pline("%s%s%s %s in a puff of smoke%c", whosebuf, iswielded ? "wielded " : "", bbname,
+            otense(obj, "vanish"), iswielded ? '!' : '.');
+    }
 
 
-	//Destroy item
-	if (carried(obj)) {
-		useupall(obj);
-	}
-	else {
-		/* clear migrating obj's destination code
-		   so obfree won't think this item is worn */
-		obj_extract_self(obj);
-		obfree(obj, (struct obj*) 0);
-	}
-	obj = (struct obj*) 0;
+    //Destroy item
+    if (carried(obj)) {
+        useupall(obj);
+    }
+    else {
+        /* clear migrating obj's destination code
+           so obfree won't think this item is worn */
+        obj_extract_self(obj);
+        obfree(obj, (struct obj*) 0);
+    }
+    obj = (struct obj*) 0;
 
-	//Additional floor considerations
-	if (on_floor) {
-		struct monst* mtmp = m_at(x, y);
+    //Additional floor considerations
+    if (on_floor) {
+        struct monst* mtmp = m_at(x, y);
 
-		/* a hiding monster may be exposed */
-		if (mtmp && !OBJ_AT(x, y) && mtmp->mundetected
-			&& hides_under(mtmp->data)) {
-			mtmp->mundetected = 0;
-		}
-		else if (x == u.ux && y == u.uy && u.uundetected && hides_under(youmonst.data))
-			(void)hideunder(&youmonst);
-		newsym(x, y);
-	}
-	else if (in_invent)
-		update_inventory();
+        /* a hiding monster may be exposed */
+        if (mtmp && !OBJ_AT(x, y) && mtmp->mundetected
+            && hides_under(mtmp->data)) {
+            mtmp->mundetected = 0;
+        }
+        else if (x == u.ux && y == u.uy && u.uundetected && hides_under(youmonst.data))
+            (void)hideunder(&youmonst);
+        newsym(x, y);
+    }
+    else if (in_invent)
+        update_inventory();
 
 }
 
@@ -2500,9 +2500,9 @@ void
 begin_existence(obj)
 struct obj* obj;
 {
-	if (start_timer(obj->age, TIMER_OBJECT, ITEM_UNSUMMON, obj_to_any(obj))) {
-		obj->age = 0; //Not strictly necessary
-	}
+    if (start_timer(obj->age, TIMER_OBJECT, ITEM_UNSUMMON, obj_to_any(obj))) {
+        obj->age = 0; //Not strictly necessary
+    }
 }
 
 //Monster summons here
@@ -2515,10 +2515,10 @@ unsummon_monster(arg, timeout)
 anything* arg;
 long timeout;
 {
-	struct monst* mon = arg->a_monst;
+    struct monst* mon = arg->a_monst;
 
-	if (!mon || (mon && DEADMONSTER(mon)))
-		return;
+    if (!mon || (mon && DEADMONSTER(mon)))
+        return;
 
     if (timeout)
     {
@@ -2528,25 +2528,25 @@ long timeout;
 
     play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
     if (canseemon(mon)) {
-		pline("%s vanishes in a puff of smoke!", Monnam(mon));
-	}
+        pline("%s vanishes in a puff of smoke!", Monnam(mon));
+    }
 
-	//Note: assume that the monster drops all its items
+    //Note: assume that the monster drops all its items
 
-	struct permonst* mptr;
+    struct permonst* mptr;
 
-	mon->mhp = 0;
+    mon->mhp = 0;
 
-	/* Player is thrown from his steed when it unsummons */
-	if (mon == u.usteed)
-		dismount_steed(DISMOUNT_GENERIC);
+    /* Player is thrown from his steed when it unsummons */
+    if (mon == u.usteed)
+        dismount_steed(DISMOUNT_GENERIC);
 
-	mptr = mon->data;
+    mptr = mon->data;
 
-	if (glyph_is_invisible(levl[mon->mx][mon->my].hero_memory_layers.glyph))
-		unmap_object(mon->mx, mon->my);
+    if (glyph_is_invisible(levl[mon->mx][mon->my].hero_memory_layers.glyph))
+        unmap_object(mon->mx, mon->my);
 
-	m_detach(mon, mptr, FALSE);
+    m_detach(mon, mptr, FALSE);
 
 }
 
@@ -2558,9 +2558,9 @@ void
 begin_summontimer(mon)
 struct monst* mon;
 {
-	if (start_timer(mon->summonduration, TIMER_MONSTER, MONSTER_UNSUMMON, monst_to_any(mon))) {
-		mon->summonduration = 0; //Not strictly necessary
-	}
+    if (start_timer(mon->summonduration, TIMER_MONSTER, MONSTER_UNSUMMON, monst_to_any(mon))) {
+        mon->summonduration = 0; //Not strictly necessary
+    }
 }
 
 
@@ -2572,11 +2572,11 @@ void
 begin_timestoptimer(duration)
 long duration;
 {
-	anything any = zeroany;
-	if (start_timer(duration, TIMER_GLOBAL, TIME_RESTART, &any))
-	{
-		//Success
-	}
+    anything any = zeroany;
+    if (start_timer(duration, TIMER_GLOBAL, TIME_RESTART, &any))
+    {
+        //Success
+    }
 }
 
 
@@ -2590,8 +2590,8 @@ long timeout;
         /* Do nothing */
     }
 
-	context.time_stopped = FALSE;
-	pline("The flow of time seems faster again.");
+    context.time_stopped = FALSE;
+    pline("The flow of time seems faster again.");
 }
 
 
@@ -2743,9 +2743,9 @@ static const ttable timeout_funcs[NUM_TIME_FUNCS] = {
     TTAB(hatch_egg, (timeout_proc) 0, "hatch_egg"),
     TTAB(fig_transform, (timeout_proc) 0, "fig_transform"),
     TTAB(melt_ice_away, (timeout_proc) 0, "melt_ice_away"),
-	TTAB(unsummon_item, (timeout_proc)0, "unsummon_item"),
-	TTAB(unsummon_monster, (timeout_proc)0, "unsummon_monster"),
-	TTAB(restart_time, (timeout_proc)0, "restart_time")
+    TTAB(unsummon_item, (timeout_proc)0, "unsummon_item"),
+    TTAB(unsummon_monster, (timeout_proc)0, "unsummon_monster"),
+    TTAB(restart_time, (timeout_proc)0, "restart_time")
 };
 #undef TTAB
 
@@ -2866,25 +2866,25 @@ timer_sanity_check()
     timer_element *curr;
 
     /* this should be much more complete */
-	for (curr = timer_base; curr; curr = curr->next)
-	{
-		if (curr->kind == TIMER_OBJECT) {
-			struct obj* obj = curr->arg.a_obj;
+    for (curr = timer_base; curr; curr = curr->next)
+    {
+        if (curr->kind == TIMER_OBJECT) {
+            struct obj* obj = curr->arg.a_obj;
 
-			if (obj->timed == 0) {
-				impossible("timer sanity: untimed obj %s, timer %ld",
-					fmt_ptr((genericptr_t)obj), curr->tid);
-			}
-		}
-		else if (curr->kind == TIMER_MONSTER) {
-			struct monst* mon = curr->arg.a_monst;
+            if (obj->timed == 0) {
+                impossible("timer sanity: untimed obj %s, timer %ld",
+                    fmt_ptr((genericptr_t)obj), curr->tid);
+            }
+        }
+        else if (curr->kind == TIMER_MONSTER) {
+            struct monst* mon = curr->arg.a_monst;
 
-			if (mon->timed == 0) {
-				impossible("timer sanity: untimed mon %s, timer %ld",
-					fmt_ptr((genericptr_t)mon), curr->tid);
-			}
-		}
-	}
+            if (mon->timed == 0) {
+                impossible("timer sanity: untimed mon %s, timer %ld",
+                    fmt_ptr((genericptr_t)mon), curr->tid);
+            }
+        }
+    }
 }
 
 /*
@@ -2906,15 +2906,15 @@ run_timers()
         timer_base = curr->next;
 
         if (curr->kind == TIMER_OBJECT)
-		{
-			(curr->arg.a_obj)->timed--;
-		}
-		else if (curr->kind == TIMER_MONSTER)
-		{
-			(curr->arg.a_monst)->timed--;
-		}
+        {
+            (curr->arg.a_obj)->timed--;
+        }
+        else if (curr->kind == TIMER_MONSTER)
+        {
+            (curr->arg.a_monst)->timed--;
+        }
 
-		(*timeout_funcs[curr->func_index].f)(&curr->arg, curr->timeout);
+        (*timeout_funcs[curr->func_index].f)(&curr->arg, curr->timeout);
         free((genericptr_t) curr);
     }
 }
@@ -2929,34 +2929,34 @@ short kind;
 short func_index;
 anything *arg;
 {
-	timer_element* gnu;
+    timer_element* gnu;
 
-	if (func_index < 0 || func_index >= NUM_TIME_FUNCS)
-	{
-		panic("start_timer");
-		return FALSE;
-	}
+    if (func_index < 0 || func_index >= NUM_TIME_FUNCS)
+    {
+        panic("start_timer");
+        return FALSE;
+    }
 
-	gnu = (timer_element*)alloc(sizeof(timer_element));
-	(void)memset((genericptr_t)gnu, 0, sizeof(timer_element));
-	gnu->next = 0;
-	gnu->tid = timer_id++;
-	gnu->timeout = monstermoves + when;
-	gnu->kind = kind;
-	gnu->needs_fixup = 0;
-	gnu->func_index = func_index;
-	gnu->arg = *arg;
-	insert_timer(gnu);
+    gnu = (timer_element*)alloc(sizeof(timer_element));
+    (void)memset((genericptr_t)gnu, 0, sizeof(timer_element));
+    gnu->next = 0;
+    gnu->tid = timer_id++;
+    gnu->timeout = monstermoves + when;
+    gnu->kind = kind;
+    gnu->needs_fixup = 0;
+    gnu->func_index = func_index;
+    gnu->arg = *arg;
+    insert_timer(gnu);
 
-	if (kind == TIMER_OBJECT) /* increment monster's timed count */
-	{
-		(arg->a_obj)->timed++;
-	}
-	else if (kind == TIMER_MONSTER) /* increment monster's timed count */
-	{
-		(arg->a_monst)->timed++;
-	}
-	/* should check for duplicates and fail if any */
+    if (kind == TIMER_OBJECT) /* increment monster's timed count */
+    {
+        (arg->a_obj)->timed++;
+    }
+    else if (kind == TIMER_MONSTER) /* increment monster's timed count */
+    {
+        (arg->a_monst)->timed++;
+    }
+    /* should check for duplicates and fail if any */
     return TRUE;
 }
 
@@ -2977,12 +2977,12 @@ anything *arg;
     if (doomed) {
         timeout = doomed->timeout;
         if (doomed->kind == TIMER_OBJECT) {
-			(arg->a_obj)->timed--;
-		}
-		else if (doomed->kind == TIMER_MONSTER) {
-			(arg->a_monst)->timed--;
-		}
-		if (timeout_funcs[doomed->func_index].cleanup)
+            (arg->a_obj)->timed--;
+        }
+        else if (doomed->kind == TIMER_MONSTER) {
+            (arg->a_monst)->timed--;
+        }
+        if (timeout_funcs[doomed->func_index].cleanup)
             (*timeout_funcs[doomed->func_index].cleanup)(arg, timeout);
         free((genericptr_t) doomed);
         return (timeout - monstermoves);
@@ -3019,12 +3019,12 @@ struct obj *src, *dest;
 
     for (count = 0, curr = timer_base; curr; curr = curr->next) {
         if (curr->kind == TIMER_OBJECT && curr->arg.a_obj == src) {
-			curr->arg.a_obj = dest;
+            curr->arg.a_obj = dest;
             dest->timed++;
             count++;
         }
-	}
-	if (count != src->timed)
+    }
+    if (count != src->timed)
         panic("obj_move_timers");
     src->timed = 0;
 }
@@ -3036,19 +3036,19 @@ void
 mon_move_timers(src, dest)
 struct monst* src, * dest;
 {
-	int count;
-	timer_element* curr;
+    int count;
+    timer_element* curr;
 
-	for (count = 0, curr = timer_base; curr; curr = curr->next) {
-		if (curr->kind == TIMER_MONSTER && curr->arg.a_monst == src) {
-			curr->arg.a_monst = dest;
-			dest->timed++;
-			count++;
-		}
-	}
-	if (count != src->timed)
-		panic("mon_move_timers");
-	src->timed = 0;
+    for (count = 0, curr = timer_base; curr; curr = curr->next) {
+        if (curr->kind == TIMER_MONSTER && curr->arg.a_monst == src) {
+            curr->arg.a_monst = dest;
+            dest->timed++;
+            count++;
+        }
+    }
+    if (count != src->timed)
+        panic("mon_move_timers");
+    src->timed = 0;
 }
 
 /*
@@ -3076,15 +3076,15 @@ void
 mon_split_timers(src, dest)
 struct monst* src, * dest;
 {
-	timer_element* curr, * next_timer = 0;
+    timer_element* curr, * next_timer = 0;
 
-	for (curr = timer_base; curr; curr = next_timer) {
-		next_timer = curr->next; /* things may be inserted */
-		if (curr->kind == TIMER_MONSTER && curr->arg.a_monst == src) {
-			(void)start_timer(curr->timeout - monstermoves, TIMER_MONSTER,
-				curr->func_index, monst_to_any(dest));
-		}
-	}
+    for (curr = timer_base; curr; curr = next_timer) {
+        next_timer = curr->next; /* things may be inserted */
+        if (curr->kind == TIMER_MONSTER && curr->arg.a_monst == src) {
+            (void)start_timer(curr->timeout - monstermoves, TIMER_MONSTER,
+                curr->func_index, monst_to_any(dest));
+        }
+    }
 }
 
 /*
@@ -3123,25 +3123,25 @@ void
 mon_stop_timers(mon)
 struct monst* mon;
 {
-	timer_element* curr, * prev, * next_timer = 0;
+    timer_element* curr, * prev, * next_timer = 0;
 
-	for (prev = 0, curr = timer_base; curr; curr = next_timer) {
-		next_timer = curr->next;
-		if (curr->kind == TIMER_MONSTER && curr->arg.a_monst == mon) {
-			if (prev)
-				prev->next = curr->next;
-			else
-				timer_base = curr->next;
-			if (timeout_funcs[curr->func_index].cleanup)
-				(*timeout_funcs[curr->func_index].cleanup)(&curr->arg,
-					curr->timeout);
-			free((genericptr_t)curr);
-		}
-		else {
-			prev = curr;
-		}
-	}
-	mon->timed = 0;
+    for (prev = 0, curr = timer_base; curr; curr = next_timer) {
+        next_timer = curr->next;
+        if (curr->kind == TIMER_MONSTER && curr->arg.a_monst == mon) {
+            if (prev)
+                prev->next = curr->next;
+            else
+                timer_base = curr->next;
+            if (timeout_funcs[curr->func_index].cleanup)
+                (*timeout_funcs[curr->func_index].cleanup)(&curr->arg,
+                    curr->timeout);
+            free((genericptr_t)curr);
+        }
+        else {
+            prev = curr;
+        }
+    }
+    mon->timed = 0;
 }
 
 
@@ -3166,9 +3166,9 @@ mon_has_timer(mon, timer_type)
 struct monst* mon;
 short timer_type;
 {
-	long timeout = peek_timer(timer_type, monst_to_any(mon));
+    long timeout = peek_timer(timer_type, monst_to_any(mon));
 
-	return (boolean)(timeout != 0L);
+    return (boolean)(timeout != 0L);
 }
 
 /*
@@ -3527,44 +3527,44 @@ boolean ghostly;
         if (curr->needs_fixup) {
             if (curr->kind == TIMER_OBJECT) {
                 if (ghostly) {
-					if (!lookup_id_mapping(curr->arg.a_uint, &nid))
-					{
-						panic("relink_timers 1");
-						return;
-					}
+                    if (!lookup_id_mapping(curr->arg.a_uint, &nid))
+                    {
+                        panic("relink_timers 1");
+                        return;
+                    }
                 } else
                     nid = curr->arg.a_uint;
                 curr->arg.a_obj = find_oid(nid);
-				if (!curr->arg.a_obj)
-				{
-					panic("cant find o_id %d", nid);
-					return;
-				}
+                if (!curr->arg.a_obj)
+                {
+                    panic("cant find o_id %d", nid);
+                    return;
+                }
                 curr->needs_fixup = 0;
             } else if (curr->kind == TIMER_MONSTER) {
-//				panic("relink_timers: no monster timer implemented");
-				if (ghostly) {
-					if (!lookup_id_mapping(curr->arg.a_uint, &nid))
-					{
-						panic("relink_timers 1");
-						return;
-					}
-				}
-				else
-					nid = curr->arg.a_uint;
-				curr->arg.a_monst = find_mid_ew(nid);
-				if (!curr->arg.a_monst)
-				{
-					panic("cant find m_id %d", nid);
-					return;
-				}
-				curr->needs_fixup = 0;
-			}
-			else
-			{
-				panic("relink_timers 2");
-				return;
-			}
+//                panic("relink_timers: no monster timer implemented");
+                if (ghostly) {
+                    if (!lookup_id_mapping(curr->arg.a_uint, &nid))
+                    {
+                        panic("relink_timers 1");
+                        return;
+                    }
+                }
+                else
+                    nid = curr->arg.a_uint;
+                curr->arg.a_monst = find_mid_ew(nid);
+                if (!curr->arg.a_monst)
+                {
+                    panic("cant find m_id %d", nid);
+                    return;
+                }
+                curr->needs_fixup = 0;
+            }
+            else
+            {
+                panic("relink_timers 2");
+                return;
+            }
         }
     }
 }
@@ -3572,15 +3572,15 @@ boolean ghostly;
 const char* get_property_name(prop_index)
 int prop_index;
 {
-	for (int idx = 0; propertynames[idx].prop_num; idx++)
-	{
-		if (propertynames[idx].prop_num == prop_index)
-		{
-			return propertynames[idx].prop_noun;
-		}
-	}
+    for (int idx = 0; propertynames[idx].prop_num; idx++)
+    {
+        if (propertynames[idx].prop_num == prop_index)
+        {
+            return propertynames[idx].prop_noun;
+        }
+    }
 
-	return "";
+    return "";
 }
 
 

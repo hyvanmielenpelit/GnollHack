@@ -1,4 +1,4 @@
-/* GnollHack 4.0	worm.c	$NHDT-Date: 1543892216 2018/12/04 02:56:56 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.28 $ */
+/* GnollHack 4.0    worm.c    $NHDT-Date: 1543892216 2018/12/04 02:56:56 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.28 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2009. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -229,10 +229,10 @@ struct monst *worm;
         if (worm->mhp > MHPMAX)
             worm->mhp = MHPMAX;
         if (worm->mhp > worm->mhpmax)
-		{
+        {
             worm->mbasehpmax = worm->mhp - worm->mhpmax;
-			update_mon_maxhp(worm);
-		}
+            update_mon_maxhp(worm);
+        }
     } else
         /* The worm doesn't grow, so the last segment goes away. */
         shrink_worm(wnum);
@@ -251,9 +251,9 @@ register struct monst *worm;
 {
     shrink_worm((int) worm->wormno); /* shrink */
 
-	double shrinkage = adjust_damage(3, (struct monst*)0, worm, AD_ADJU, ADFLAGS_NONE);
-	if (worm->mhp > (int)ceil(shrinkage))
-		deduct_monster_hp(worm, shrinkage); //worm->mhp -= 3; /* mhpmax not changed ! */
+    double shrinkage = adjust_damage(3, (struct monst*)0, worm, AD_ADJU, ADFLAGS_NONE);
+    if (worm->mhp > (int)ceil(shrinkage))
+        deduct_monster_hp(worm, shrinkage); //worm->mhp -= 3; /* mhpmax not changed ! */
     else
         worm->mhp = 1;
 }
@@ -410,11 +410,11 @@ boolean cuttier; /* hit is by wielded blade or axe or by thrown axe */
     /* Calculate the lower-level mhp; use <N>d8 for long worms.
        Can't use newmonhp() here because it would reset m_lev. */
     new_worm->mbasehpmax= d((int) new_worm->m_lev, 8);
-	update_mon_maxhp(new_worm);
-	new_worm->mhp = new_worm->mhpmax;
+    update_mon_maxhp(new_worm);
+    new_worm->mhp = new_worm->mhpmax;
     worm->mbasehpmax = d((int) worm->m_lev, 8); /* new maxHP for old worm */
-	update_mon_maxhp(worm);
-	if (worm->mhpmax < worm->mhp)
+    update_mon_maxhp(worm);
+    if (worm->mhpmax < worm->mhp)
         worm->mhp = worm->mhpmax;
 
     wtails[new_wnum] = new_tail; /* We've got all the info right now */
@@ -599,32 +599,32 @@ struct monst *worm;
 {
     struct wseg *curr;
 
-	if (!worm)
-	{
-		panic("no worm!");
-		return;
-	}
+    if (!worm)
+    {
+        panic("no worm!");
+        return;
+    }
 
-	if (!worm->wormno)
-	{
-		panic("not a worm?!");
-		return;
-	}
+    if (!worm->wormno)
+    {
+        panic("not a worm?!");
+        return;
+    }
 
     curr = wtails[worm->wormno];
 
     while (curr != wheads[worm->wormno]) {
         if (curr->wx) {
-			if (!isok(curr->wx, curr->wy))
-			{
-				panic("worm seg not isok");
-				return;
-			}
-			if (level.monsters[curr->wx][curr->wy] != worm)
-			{
-				panic("worm not at seg location");
-				return;
-			}
+            if (!isok(curr->wx, curr->wy))
+            {
+                panic("worm seg not isok");
+                return;
+            }
+            if (level.monsters[curr->wx][curr->wy] != worm)
+            {
+                panic("worm not at seg location");
+                return;
+            }
         }
         curr = curr->nseg;
     }

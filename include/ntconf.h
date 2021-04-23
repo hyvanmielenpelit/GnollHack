@@ -1,11 +1,11 @@
-/* GnollHack 4.0	ntconf.h	$NHDT-Date: 1447424077 2015/11/13 14:14:37 $  $NHDT-Branch: master $:$NHDT-Revision: 1.48 $ */
+/* GnollHack 4.0    ntconf.h    $NHDT-Date: 1447424077 2015/11/13 14:14:37 $  $NHDT-Branch: master $:$NHDT-Revision: 1.48 $ */
 /* Copyright (c) GnollHack PC Development Team 1993, 1994.  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef NTCONF_H
 #define NTCONF_H
 
-/* #define SHELL */	/* nt use of pcsys routines caused a hang */
+/* #define SHELL */    /* nt use of pcsys routines caused a hang */
 
 #define TEXTCOLOR /* Color text */
 
@@ -202,7 +202,7 @@ extern void NDECL(getlock);
 
 #ifndef M
 #define M(c) ((char) (0x80 | (c)))
-/* #define M(c)		((c) - 128) */
+/* #define M(c)        ((c) - 128) */
 #endif
 
 #ifndef C

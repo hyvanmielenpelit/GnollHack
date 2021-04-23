@@ -1,5 +1,5 @@
-/* GnollHack 4.0	win10.c	$NHDT-Date: 1432512810 2015/05/25 00:13:30 $  $NHDT-Branch: master $:$NHDT-Revision: 1.15 $ */
-/* Copyright (C) 2018 by Bart House 	 */
+/* GnollHack 4.0    win10.c    $NHDT-Date: 1432512810 2015/05/25 00:13:30 $  $NHDT-Branch: master $:$NHDT-Revision: 1.15 $ */
+/* Copyright (C) 2018 by Bart House      */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifdef _MSC_VER
@@ -17,31 +17,31 @@ void win10_init()
     {
         HINSTANCE hUser32 = LoadLibraryA("user32.dll");
 
-		if (hUser32 == NULL)
-		{
-			panic("Unable to load user32.dll");
-			return;
-		}
+        if (hUser32 == NULL)
+        {
+            panic("Unable to load user32.dll");
+            return;
+        }
 
         gWin10.GetThreadDpiAwarenessContext = (GetThreadDpiAwarenessContextProc) GetProcAddress(hUser32, "GetThreadDpiAwarenessContext");
-		if (gWin10.GetThreadDpiAwarenessContext == NULL)
-		{
-			panic("Unable to get address of GetThreadDpiAwarenessContext()");
-			return;
-		}
+        if (gWin10.GetThreadDpiAwarenessContext == NULL)
+        {
+            panic("Unable to get address of GetThreadDpiAwarenessContext()");
+            return;
+        }
         gWin10.AreDpiAwarenessContextsEqual = (AreDpiAwarenessContextsEqualProc) GetProcAddress(hUser32, "AreDpiAwarenessContextsEqual");
         if (gWin10.AreDpiAwarenessContextsEqual == NULL)
-		{
+        {
             panic("Unable to get address of AreDpiAwarenessContextsEqual");
-			return;
-		}
+            return;
+        }
 
         gWin10.GetDpiForWindow = (GetDpiForWindowProc) GetProcAddress(hUser32, "GetDpiForWindow");
         if (gWin10.GetDpiForWindow == NULL)
-		{
+        {
             panic("Unable to get address of GetDpiForWindow");
-			return;
-		}
+            return;
+        }
 
         FreeLibrary(hUser32);
 
@@ -49,13 +49,13 @@ void win10_init()
     }
 #ifndef DLL_GRAPHICS
     if (gWin10.Valid) {
-		if (!gWin10.AreDpiAwarenessContextsEqual(
-			gWin10.GetThreadDpiAwarenessContext(),
-			DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
-		{
-			panic("Unexpected DpiAwareness state");
-			return;
-		}
+        if (!gWin10.AreDpiAwarenessContextsEqual(
+            gWin10.GetThreadDpiAwarenessContext(),
+            DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
+        {
+            panic("Unexpected DpiAwareness state");
+            return;
+        }
     }
 #endif
 }

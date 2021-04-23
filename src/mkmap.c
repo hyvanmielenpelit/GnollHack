@@ -1,4 +1,4 @@
-/* GnollHack 4.0	mkmap.c	$NHDT-Date: 1432512767 2015/05/25 00:12:47 $  $NHDT-Branch: master $:$NHDT-Revision: 1.16 $ */
+/* GnollHack 4.0    mkmap.c    $NHDT-Date: 1432512767 2015/05/25 00:12:47 $  $NHDT-Branch: master $:$NHDT-Revision: 1.16 $ */
 /* Copyright (c) J. C. Collet, M. Stephenson and D. Cohrs, 1992   */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -278,11 +278,11 @@ wallify_entire_map()
     for (x = 1; x < COLNO; x++)
         for (y = 0; y < ROWNO; y++)
             if (levl[x][y].typ == STONE) 
-			{
+            {
                 for (yy = y - 1; yy <= y + 1; yy++)
                     for (xx = x - 1; xx <= x + 1; xx++)
                         if (isok(xx, yy) && (IS_ROOM(levl[xx][yy].typ) || levl[xx][yy].typ == CORR))
-						{
+                        {
                             if (yy != y)
                                 levl[x][y].typ = HWALL;
                             else

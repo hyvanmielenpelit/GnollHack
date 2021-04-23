@@ -1,4 +1,4 @@
-/* GnollHack 4.0	tradstdc.h	$NHDT-Date: 1555361295 2019/04/15 20:48:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.36 $ */
+/* GnollHack 4.0    tradstdc.h    $NHDT-Date: 1555361295 2019/04/15 20:48:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.36 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2006. */
 /* GnollHack may be freely redistributed.  See license for details. */

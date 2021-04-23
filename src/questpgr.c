@@ -1,4 +1,4 @@
-/* GnollHack 4.0	questpgr.c	$NHDT-Date: 1505172128 2017/09/11 23:22:08 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.38 $ */
+/* GnollHack 4.0    questpgr.c    $NHDT-Date: 1505172128 2017/09/11 23:22:08 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.38 $ */
 /*      Copyright 1991, M. Stephenson                             */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -106,11 +106,11 @@ load_qtlist()
     long qt_offsets[N_HDR];
 
     msg_file = dlb_fopen(QTEXT_FILE, RDBMODE);
-	if (!msg_file)
-	{
-		panic("CANNOT OPEN QUEST TEXT FILE %s.", QTEXT_FILE);
-		return;
-	}
+    if (!msg_file)
+    {
+        panic("CANNOT OPEN QUEST TEXT FILE %s.", QTEXT_FILE);
+        return;
+    }
 
     /*
      * Read in the number of classes, then the ID's & offsets for
@@ -512,11 +512,11 @@ char *in_line, *out_line;
             break;
         }
     }
-	if (cc > & out_line[BUFSZ - 1])
-	{
-		panic("convert_line: overflow");
-		return;
-	}
+    if (cc > & out_line[BUFSZ - 1])
+    {
+        panic("convert_line: overflow");
+        return;
+    }
     *cc = 0;
     return;
 }

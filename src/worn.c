@@ -1,4 +1,4 @@
-/* GnollHack 4.0	worn.c	$NHDT-Date: 1550524569 2019/02/18 21:16:09 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.56 $ */
+/* GnollHack 4.0    worn.c    $NHDT-Date: 1550524569 2019/02/18 21:16:09 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.56 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -19,26 +19,26 @@ const struct worn {
     struct obj **w_obj;
 } worn[] = { { W_ARM, &uarm },
              { W_ARMC, &uarmc },
-			 { W_ARMO, &uarmo },
-			 { W_ARMH, &uarmh },
+             { W_ARMO, &uarmo },
+             { W_ARMH, &uarmh },
              { W_ARMS, &uarms },
-			 { W_ARMB, &uarmb },
-			 { W_ARMG, &uarmg },
+             { W_ARMB, &uarmb },
+             { W_ARMG, &uarmg },
              { W_ARMF, &uarmf },
              { W_ARMU, &uarmu },
              { W_RINGL, &uleft },
              { W_RINGR, &uright },
              { W_WEP, &uwep },
-			 { W_SWAPWEP, &uswapwep },
-			 { W_SWAPWEP2, &uswapwep2 },
-			 { W_QUIVER, &uquiver },
+             { W_SWAPWEP, &uswapwep },
+             { W_SWAPWEP2, &uswapwep2 },
+             { W_QUIVER, &uquiver },
              { W_AMUL, &uamul },
-			 { W_MISC, &umisc },
-			 { W_MISC2, &umisc2 },
-			 { W_MISC3, &umisc3 },
-			 { W_MISC4, &umisc4 },
-			 { W_MISC5, &umisc5 },
-			 { W_BLINDFOLD, &ublindf },
+             { W_MISC, &umisc },
+             { W_MISC2, &umisc2 },
+             { W_MISC3, &umisc3 },
+             { W_MISC4, &umisc4 },
+             { W_MISC5, &umisc5 },
+             { W_BLINDFOLD, &ublindf },
              { W_BALL, &uball },
              { W_CHAIN, &uchain },
              { 0, 0 }
@@ -49,7 +49,7 @@ setworn(obj, mask)
 register struct obj* obj;
 long mask;
 {
-	setworncore(obj, mask, TRUE);
+    setworncore(obj, mask, TRUE);
 }
 
 /* Does not update stats */
@@ -58,7 +58,7 @@ setwornquietly(obj, mask)
 register struct obj* obj;
 long mask;
 {
-	setworncore(obj, mask, FALSE);
+    setworncore(obj, mask, FALSE);
 }
 
 
@@ -73,73 +73,73 @@ long mask;
 boolean verbose_and_update_stats;
 {
     register const struct worn *wp;
-	register struct obj* oobj = (struct obj*)0;
+    register struct obj* oobj = (struct obj*)0;
 //    register int p;
 
-	int oldmanamax = u.uenmax;
-	int oldhpmax = u.uhpmax;
-	int oldstr = ACURR(A_STR);
-	int olddex = ACURR(A_DEX);
-	int oldcon = ACURR(A_CON);
-	int oldint = ACURR(A_INT);
-	int oldwis = ACURR(A_WIS);
-	int oldcha = ACURR(A_CHA);
-	int oldac = u.uac;
-	int oldmc = u.umc;
+    int oldmanamax = u.uenmax;
+    int oldhpmax = u.uhpmax;
+    int oldstr = ACURR(A_STR);
+    int olddex = ACURR(A_DEX);
+    int oldcon = ACURR(A_CON);
+    int oldint = ACURR(A_INT);
+    int oldwis = ACURR(A_WIS);
+    int oldcha = ACURR(A_CHA);
+    int oldac = u.uac;
+    int oldmc = u.umc;
 
     if ((mask & (W_ARM | I_SPECIAL)) == (W_ARM | I_SPECIAL))
-	{
+    {
         /* restoring saved game; no properties are conferred via skin */
         uskin = obj;
         /* assert( !uarm ); */
     } 
-	else
-	{
+    else
+    {
         if ((mask & W_ARMOR))
             u.uroleplay.nudist = FALSE;
         for (wp = worn; wp->w_mask; wp++)
-		{
+        {
             if (wp->w_mask & mask) 
-			{
+            {
                 oobj = *(wp->w_obj);
                 if (oobj && !(oobj->owornmask & wp->w_mask))
                     impossible("Setworn: mask = %ld.", wp->w_mask);
 
-				/* If old object remove wornmask */
+                /* If old object remove wornmask */
                 if (oobj) 
-				{
+                {
                     oobj->owornmask &= ~wp->w_mask;
 
-					/* leave as "x = x <op> y", here and below, for broken
-					 * compilers */
+                    /* leave as "x = x <op> y", here and below, for broken
+                     * compilers */
 
-					/*
+                    /*
                     if (wp->w_mask & ~(W_SWAPWEP | W_QUIVER)) {
-						struct objclass* peritem = &objects[oobj->otyp];
+                        struct objclass* peritem = &objects[oobj->otyp];
                         p = objects[oobj->otyp].oc_oprop;
                         u.uprops[p].extrinsic =
                             u.uprops[p].extrinsic & ~wp->w_mask;
-						p = objects[oobj->otyp].oc_oprop2;
-						u.uprops[p].extrinsic =
-							u.uprops[p].extrinsic & ~wp->w_mask;
-						p = objects[oobj->otyp].oc_oprop3;
-						u.uprops[p].extrinsic =
-							u.uprops[p].extrinsic & ~wp->w_mask;
-						if ((p = w_blocks(oobj, mask)) != 0)
+                        p = objects[oobj->otyp].oc_oprop2;
+                        u.uprops[p].extrinsic =
+                            u.uprops[p].extrinsic & ~wp->w_mask;
+                        p = objects[oobj->otyp].oc_oprop3;
+                        u.uprops[p].extrinsic =
+                            u.uprops[p].extrinsic & ~wp->w_mask;
+                        if ((p = w_blocks(oobj, mask)) != 0)
                             u.uprops[p].blocked &= ~wp->w_mask;
                         if (oobj->oartifact)
                             set_artifact_intrinsic(oobj, 0, mask);
                     }
-					*/
+                    */
                     /* in case wearing or removal is in progress or removal
                        is pending (via 'A' command for multiple items) */
                     cancel_doff(oobj, wp->w_mask);
                 }
 
-				/* Set new object worn */
+                /* Set new object worn */
                 *(wp->w_obj) = obj;
                 if (obj) 
-				{
+                {
                     obj->owornmask |= wp->w_mask;
 
 
@@ -148,124 +148,124 @@ boolean verbose_and_update_stats;
                      * Allow weapon-tools, too.
                      * wp_mask should be same as mask at this point.
                      */
-					/*
+                    /*
                     if (wp->w_mask & ~(W_SWAPWEP | W_QUIVER)) {
                         if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
                             || mask != W_WEP) {
-							struct objclass* peritem = &objects[obj->otyp];
-							p = objects[obj->otyp].oc_oprop;
+                            struct objclass* peritem = &objects[obj->otyp];
+                            p = objects[obj->otyp].oc_oprop;
                             u.uprops[p].extrinsic =
                                 u.uprops[p].extrinsic | wp->w_mask;
-							p = objects[obj->otyp].oc_oprop2;
-							u.uprops[p].extrinsic =
-								u.uprops[p].extrinsic | wp->w_mask;
-							p = objects[obj->otyp].oc_oprop3;
-							u.uprops[p].extrinsic =
-								u.uprops[p].extrinsic | wp->w_mask;
-							if ((p = w_blocks(obj, mask)) != 0)
+                            p = objects[obj->otyp].oc_oprop2;
+                            u.uprops[p].extrinsic =
+                                u.uprops[p].extrinsic | wp->w_mask;
+                            p = objects[obj->otyp].oc_oprop3;
+                            u.uprops[p].extrinsic =
+                                u.uprops[p].extrinsic | wp->w_mask;
+                            if ((p = w_blocks(obj, mask)) != 0)
                                 u.uprops[p].blocked |= wp->w_mask;
                         }
                         if (obj->oartifact)
                             set_artifact_intrinsic(obj, 1, mask);
-						
+                        
                     }
-					*/
+                    */
                 }
             }
-		}
+        }
     }
 
-	if (!verbose_and_update_stats)
-		return;
+    if (!verbose_and_update_stats)
+        return;
 
-	/* No need to go further if verbose_and_update_stats == FALSE, as we are in newgame or restoring a saved game */
+    /* No need to go further if verbose_and_update_stats == FALSE, as we are in newgame or restoring a saved game */
 
 
-	boolean needbecomecursedmsg = FALSE;
-	/* curse first */
-	if (obj && (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN) && !obj->cursed && (mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)))
-	{
-		needbecomecursedmsg = TRUE;
-		curse(obj);
-	}
+    boolean needbecomecursedmsg = FALSE;
+    /* curse first */
+    if (obj && (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN) && !obj->cursed && (mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)))
+    {
+        needbecomecursedmsg = TRUE;
+        curse(obj);
+    }
 
-	/* Readying a weapon to quiver or swap weapon slot does not trigger artifact name discovery -- JG */
-	if ((mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)) && obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED)))
-	{
-		if(verbose_and_update_stats)
-			pline("As you %s %s, you become aware that %s named %s!", 
-			(mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)), 
-				(pair_of(obj) || obj->quan > 1) ? "they are" : "it is",
-				bare_artifactname(obj));
-		obj->nknown = TRUE;
-	}
+    /* Readying a weapon to quiver or swap weapon slot does not trigger artifact name discovery -- JG */
+    if ((mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)) && obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED)))
+    {
+        if(verbose_and_update_stats)
+            pline("As you %s %s, you become aware that %s named %s!", 
+            (mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)), 
+                (pair_of(obj) || obj->quan > 1) ? "they are" : "it is",
+                bare_artifactname(obj));
+        obj->nknown = TRUE;
+    }
 
-	update_all_character_properties(obj, verbose_and_update_stats);
+    update_all_character_properties(obj, verbose_and_update_stats);
 
-	/* Note that this does not work for weapons if there is an old weapon, since we do not know whether the change was caused by the old or the new weapon */
-	if ((obj && !oobj) || (oobj && !obj))
-	{
-		if ((
-			u.uenmax != oldmanamax
-			|| u.uhpmax != oldhpmax
-			|| ACURR(A_STR) != oldstr
-			|| ACURR(A_DEX) != olddex
-			|| ACURR(A_CON) != oldcon
-			|| ACURR(A_INT) != oldint
-			|| ACURR(A_WIS) != oldwis
-			|| ACURR(A_CHA) != oldcha
-			|| (obj && obj->oclass != ARMOR_CLASS && u.uac != oldac)
-			|| (obj && obj->oclass != ARMOR_CLASS && obj->oclass != WEAPON_CLASS && u.umc != oldmc)
-			|| (!obj && oobj && oobj->oclass != ARMOR_CLASS && u.uac != oldac)
-			|| (!obj && oobj && oobj->oclass != ARMOR_CLASS && oobj->oclass != WEAPON_CLASS && u.umc != oldmc)
-			)) // this should identify all objects giving hp or mana or stats or non-armors giving ac or mc
-		{
-			if (obj)
-			{
-				if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
-					learnring(obj, TRUE);
-				else
-					makeknown(obj->otyp);
-			}
-			else if (oobj)
-			{
-				if (oobj->oclass == RING_CLASS || oobj->oclass == MISCELLANEOUS_CLASS) //Observable ring
-					learnring(oobj, TRUE);
-				else
-					makeknown(oobj->otyp);
-			}
-		}
-		else
-		{
-			if (obj)
-			{
-				if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
-				{
-					//Nonobservable ring
-					learnring(obj, FALSE);
-				}
-			}
-			else if (oobj)
-			{
-				if (oobj->oclass == RING_CLASS || oobj->oclass == MISCELLANEOUS_CLASS)
-				{
-					//Nonobservable ring
-					learnring(oobj, FALSE);
-				}
-			}
-		}
-		context.botl = context.botlx = 1;
-		if (needbecomecursedmsg)
-		{
-			if (Blind)
-				pline("%s for a moment.", Tobjnam(obj, "vibrate"));
-			else
-				pline("%s %s for a moment.", Tobjnam(obj, "glow"),
-					hcolor(NH_BLACK));
-		}
-	}
+    /* Note that this does not work for weapons if there is an old weapon, since we do not know whether the change was caused by the old or the new weapon */
+    if ((obj && !oobj) || (oobj && !obj))
+    {
+        if ((
+            u.uenmax != oldmanamax
+            || u.uhpmax != oldhpmax
+            || ACURR(A_STR) != oldstr
+            || ACURR(A_DEX) != olddex
+            || ACURR(A_CON) != oldcon
+            || ACURR(A_INT) != oldint
+            || ACURR(A_WIS) != oldwis
+            || ACURR(A_CHA) != oldcha
+            || (obj && obj->oclass != ARMOR_CLASS && u.uac != oldac)
+            || (obj && obj->oclass != ARMOR_CLASS && obj->oclass != WEAPON_CLASS && u.umc != oldmc)
+            || (!obj && oobj && oobj->oclass != ARMOR_CLASS && u.uac != oldac)
+            || (!obj && oobj && oobj->oclass != ARMOR_CLASS && oobj->oclass != WEAPON_CLASS && u.umc != oldmc)
+            )) // this should identify all objects giving hp or mana or stats or non-armors giving ac or mc
+        {
+            if (obj)
+            {
+                if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
+                    learnring(obj, TRUE);
+                else
+                    makeknown(obj->otyp);
+            }
+            else if (oobj)
+            {
+                if (oobj->oclass == RING_CLASS || oobj->oclass == MISCELLANEOUS_CLASS) //Observable ring
+                    learnring(oobj, TRUE);
+                else
+                    makeknown(oobj->otyp);
+            }
+        }
+        else
+        {
+            if (obj)
+            {
+                if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
+                {
+                    //Nonobservable ring
+                    learnring(obj, FALSE);
+                }
+            }
+            else if (oobj)
+            {
+                if (oobj->oclass == RING_CLASS || oobj->oclass == MISCELLANEOUS_CLASS)
+                {
+                    //Nonobservable ring
+                    learnring(oobj, FALSE);
+                }
+            }
+        }
+        context.botl = context.botlx = 1;
+        if (needbecomecursedmsg)
+        {
+            if (Blind)
+                pline("%s for a moment.", Tobjnam(obj, "vibrate"));
+            else
+                pline("%s %s for a moment.", Tobjnam(obj, "glow"),
+                    hcolor(NH_BLACK));
+        }
+    }
 
-	update_inventory();
+    update_inventory();
 }
 
 
@@ -273,14 +273,14 @@ void
 setnotworn(obj)
 register struct obj* obj;
 {
-	setnotworncore(obj, TRUE);
+    setnotworncore(obj, TRUE);
 }
 
 void
 setnotwornquietly(obj)
 register struct obj* obj;
 {
-	setnotworncore(obj, FALSE);
+    setnotworncore(obj, FALSE);
 }
 
 /* called e.g. when obj is destroyed */
@@ -296,79 +296,79 @@ boolean verbose;
     if (!obj)
         return;
 
-	int oldmanamax = u.uenmax;
-	int oldhpmax = u.uhpmax;
-	int oldstr = ACURR(A_STR);
-	int olddex = ACURR(A_DEX);
-	int oldcon = ACURR(A_CON);
-	int oldint = ACURR(A_INT);
-	int oldwis = ACURR(A_WIS);
-	int oldcha = ACURR(A_CHA);
-	int oldac = u.uac;
-	int oldmc = u.umc;
+    int oldmanamax = u.uenmax;
+    int oldhpmax = u.uhpmax;
+    int oldstr = ACURR(A_STR);
+    int olddex = ACURR(A_DEX);
+    int oldcon = ACURR(A_CON);
+    int oldint = ACURR(A_INT);
+    int oldwis = ACURR(A_WIS);
+    int oldcha = ACURR(A_CHA);
+    int oldac = u.uac;
+    int oldmc = u.umc;
 
-	for (wp = worn; wp->w_mask; wp++)
-	{
-		if (obj == *(wp->w_obj)) {
-			/* in case wearing or removal is in progress or removal
-			   is pending (via 'A' command for multiple items) */
-			cancel_doff(obj, wp->w_mask);
+    for (wp = worn; wp->w_mask; wp++)
+    {
+        if (obj == *(wp->w_obj)) {
+            /* in case wearing or removal is in progress or removal
+               is pending (via 'A' command for multiple items) */
+            cancel_doff(obj, wp->w_mask);
 
-			*(wp->w_obj) = 0;
-			/*
-			p = objects[obj->otyp].oc_oprop;
-			u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
+            *(wp->w_obj) = 0;
+            /*
+            p = objects[obj->otyp].oc_oprop;
+            u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
 
-			p = objects[obj->otyp].oc_oprop2;
-			u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
+            p = objects[obj->otyp].oc_oprop2;
+            u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
 
-			p = objects[obj->otyp].oc_oprop3;
-			u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
-			*/
+            p = objects[obj->otyp].oc_oprop3;
+            u.uprops[p].extrinsic = u.uprops[p].extrinsic & ~wp->w_mask;
+            */
 
-			obj->owornmask &= ~wp->w_mask;
+            obj->owornmask &= ~wp->w_mask;
 
-			/*
-			if (obj->oartifact)
-				set_artifact_intrinsic(obj, 0, wp->w_mask);
-			if ((p = w_blocks(obj, wp->w_mask)) != 0)
-				u.uprops[p].blocked &= ~wp->w_mask;
-			*/
-		}
-	}
+            /*
+            if (obj->oartifact)
+                set_artifact_intrinsic(obj, 0, wp->w_mask);
+            if ((p = w_blocks(obj, wp->w_mask)) != 0)
+                u.uprops[p].blocked &= ~wp->w_mask;
+            */
+        }
+    }
 
-	update_all_character_properties(obj, verbose);
+    update_all_character_properties(obj, verbose);
 
-	//int curstr = ACURR(A_STR);
+    //int curstr = ACURR(A_STR);
 
-	if (obj)
-	{
-		if ((
-			u.uenmax != oldmanamax
-			|| u.uhpmax != oldhpmax
-			|| ACURR(A_STR) != oldstr
-			|| ACURR(A_DEX) != olddex
-			|| ACURR(A_CON) != oldcon
-			|| ACURR(A_INT) != oldint
-			|| ACURR(A_WIS) != oldwis
-			|| ACURR(A_CHA) != oldcha
-			|| (obj->oclass != ARMOR_CLASS && u.uac != oldac)
-			|| (obj->oclass != ARMOR_CLASS && obj->oclass != WEAPON_CLASS && u.umc != oldmc)
-			)) // this should identify all objects giving hp or mana or stats or ac
-		{
-			if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
-				learnring(obj, TRUE);
-			else
-				makeknown(obj->otyp);
-		}
-		else if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
-		{
-			//Nonobservable ring
-			learnring(obj, FALSE);
-		}
-		context.botl = context.botlx = 1;
-	}
-	update_inventory();
+    if (obj)
+    {
+        if ((
+            u.uenmax != oldmanamax
+            || u.uhpmax != oldhpmax
+            || ACURR(A_STR) != oldstr
+            || ACURR(A_DEX) != olddex
+            || ACURR(A_CON) != oldcon
+            || ACURR(A_INT) != oldint
+            || ACURR(A_WIS) != oldwis
+            || ACURR(A_CHA) != oldcha
+            || (obj->oclass != ARMOR_CLASS && u.uac != oldac)
+            || (obj->oclass != ARMOR_CLASS && obj->oclass != WEAPON_CLASS && u.umc != oldmc)
+            )) // this should identify all objects giving hp or mana or stats or ac
+        {
+            if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) //Observable ring
+                learnring(obj, TRUE);
+            else
+                makeknown(obj->otyp);
+        }
+        else if (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS)
+        {
+            //Nonobservable ring
+            learnring(obj, FALSE);
+        }
+        context.botl = context.botlx = 1;
+    }
+    update_inventory();
 }
 
 /* return item worn in slot indiciated by wornmask; needed by poly_obj() */
@@ -398,10 +398,10 @@ struct obj *obj;
     case AMULET_CLASS:
         res = W_AMUL; /* WORN_AMUL */
         break;
-	case MISCELLANEOUS_CLASS:
-		res = W_MISCITEMS;
-		break;
-	case RING_CLASS:
+    case MISCELLANEOUS_CLASS:
+        res = W_MISCITEMS;
+        break;
+    case RING_CLASS:
         res = W_RINGL | W_RINGR; /* W_RING, BOTH_SIDES */
         break;
     case ARMOR_CLASS:
@@ -427,21 +427,21 @@ struct obj *obj;
         case ARM_SHIRT:
             res = W_ARMU;
             break; /* WORN_SHIRT */
-		case ARM_ROBE:
-			res = W_ARMO;
-			break; /* WORN_ROBE */
-		case ARM_BRACERS:
-			res = W_ARMB;
-			break; /* BRACERS */
-		}
+        case ARM_ROBE:
+            res = W_ARMO;
+            break; /* WORN_ROBE */
+        case ARM_BRACERS:
+            res = W_ARMB;
+            break; /* BRACERS */
+        }
         break;
     case WEAPON_CLASS:
         res = W_WEP | W_SWAPWEP;
         if (objects[otyp].oc_merge)
             res |= W_QUIVER;
-		if (u.twoweap)
-			res |= W_WEP2 | W_SWAPWEP2;
-		break;
+        if (u.twoweap)
+            res |= W_WEP2 | W_SWAPWEP2;
+        break;
     case TOOL_CLASS:
         if (otyp == BLINDFOLD || otyp == TOWEL)
             res = W_BLINDFOLD; /* WORN_BLINDF */
@@ -475,7 +475,7 @@ struct monst* mon;
 int prop_index;
 int amount;
 {
-	set_mon_property(mon, prop_index, max(get_mon_property(mon, prop_index), amount));
+    set_mon_property(mon, prop_index, max(get_mon_property(mon, prop_index), amount));
 }
 
 boolean
@@ -484,7 +484,7 @@ struct monst* mtmp;
 int prop_index;
 int amount;
 {
-	return set_mon_property_verbosely(mtmp, prop_index, max(get_mon_property(mtmp, prop_index), amount));
+    return set_mon_property_verbosely(mtmp, prop_index, max(get_mon_property(mtmp, prop_index), amount));
 }
 
 boolean
@@ -494,13 +494,13 @@ int prop_index;
 int duration;
 boolean verbose;
 {
-	if (verbose)
-		return nonadditive_increase_mon_property_verbosely(mtmp, prop_index, duration);
-	else
-	{
-		nonadditive_increase_mon_property(mtmp, prop_index, duration);
-		return FALSE;
-	}
+    if (verbose)
+        return nonadditive_increase_mon_property_verbosely(mtmp, prop_index, duration);
+    else
+    {
+        nonadditive_increase_mon_property(mtmp, prop_index, duration);
+        return FALSE;
+    }
 }
 
 
@@ -510,54 +510,54 @@ struct monst* mtmp;
 int prop_index;
 int duration;
 {
-	int maxvalue = (int)M_TIMEOUT;
-	unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
+    int maxvalue = (int)M_TIMEOUT;
+    unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
 
-	set_mon_property(mtmp, prop_index, value);
+    set_mon_property(mtmp, prop_index, value);
 
 #if 0
-	if (!mon)
-		return;
+    if (!mon)
+        return;
 
-	if (prop_index < 1 || prop_index > LAST_PROP)
-		return;
+    if (prop_index < 1 || prop_index > LAST_PROP)
+        return;
 
-	if (!amount)
-		return;
+    if (!amount)
+        return;
 
-	if (mon == &youmonst)
-	{
-		incr_itimeout(&u.uprops[prop_index].intrinsic, amount);
-		return;
-	}
+    if (mon == &youmonst)
+    {
+        incr_itimeout(&u.uprops[prop_index].intrinsic, amount);
+        return;
+    }
 
-	if (amount > GH_SHRT_MAX)
-		amount = GH_SHRT_MAX;
+    if (amount > GH_SHRT_MAX)
+        amount = GH_SHRT_MAX;
 
-	if (amount < GH_SHRT_MIN)
-		amount = GH_SHRT_MIN;
+    if (amount < GH_SHRT_MIN)
+        amount = GH_SHRT_MIN;
 
-	unsigned short absvalue = (unsigned short)abs(amount);
-	if (absvalue > M_TIMEOUT)
-		absvalue = M_TIMEOUT;
+    unsigned short absvalue = (unsigned short)abs(amount);
+    if (absvalue > M_TIMEOUT)
+        absvalue = M_TIMEOUT;
 
-	unsigned short currentvalue = mon->mprops[prop_index] & M_TIMEOUT;
-	unsigned short otherflags = mon->mprops[prop_index] & ~M_TIMEOUT;
+    unsigned short currentvalue = mon->mprops[prop_index] & M_TIMEOUT;
+    unsigned short otherflags = mon->mprops[prop_index] & ~M_TIMEOUT;
 
-	if(amount > 0)
-	{
-		if (currentvalue + absvalue > M_TIMEOUT)
-			mon->mprops[prop_index] = M_TIMEOUT | otherflags;
-		else
-			mon->mprops[prop_index] = currentvalue + absvalue | otherflags;
-	}
-	else if (amount < 0)
-	{
-		if (currentvalue < absvalue)
-			mon->mprops[prop_index] = 0 | otherflags;
-		else
-			mon->mprops[prop_index] = currentvalue - absvalue | otherflags;
-	}
+    if(amount > 0)
+    {
+        if (currentvalue + absvalue > M_TIMEOUT)
+            mon->mprops[prop_index] = M_TIMEOUT | otherflags;
+        else
+            mon->mprops[prop_index] = currentvalue + absvalue | otherflags;
+    }
+    else if (amount < 0)
+    {
+        if (currentvalue < absvalue)
+            mon->mprops[prop_index] = 0 | otherflags;
+        else
+            mon->mprops[prop_index] = currentvalue - absvalue | otherflags;
+    }
 #endif
 }
 
@@ -567,10 +567,10 @@ struct monst* mtmp;
 int prop_index;
 int duration;
 {
-	int maxvalue = (int)M_TIMEOUT;
-	unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
+    int maxvalue = (int)M_TIMEOUT;
+    unsigned short value = (unsigned short)max(0, min(maxvalue, (get_mon_property(mtmp, prop_index) + duration)));
 
-	return set_mon_property_verbosely(mtmp, prop_index, value);
+    return set_mon_property_verbosely(mtmp, prop_index, value);
 }
 
 boolean
@@ -580,13 +580,13 @@ int prop_index;
 int duration;
 boolean verbose;
 {
-	if (verbose)
-		return increase_mon_property_verbosely(mtmp, prop_index, duration);
-	else
-	{
-		increase_mon_property(mtmp, prop_index, duration);
-		return 0;
-	}
+    if (verbose)
+        return increase_mon_property_verbosely(mtmp, prop_index, duration);
+    else
+    {
+        increase_mon_property(mtmp, prop_index, duration);
+        return 0;
+    }
 }
 
 
@@ -597,23 +597,23 @@ struct monst* mon;
 int prop_index;
 unsigned short amount;
 {
-	if (!mon)
-		return;
+    if (!mon)
+        return;
 
-	if (prop_index < 1 || prop_index > LAST_PROP)
-		return;
+    if (prop_index < 1 || prop_index > LAST_PROP)
+        return;
 
-	if (mon == &youmonst)
-	{
-		set_itimeout(&u.uprops[prop_index].intrinsic, amount);
-		return;
-	}
+    if (mon == &youmonst)
+    {
+        set_itimeout(&u.uprops[prop_index].intrinsic, amount);
+        return;
+    }
 
-	if (amount > M_TIMEOUT)
-		amount = M_TIMEOUT;
+    if (amount > M_TIMEOUT)
+        amount = M_TIMEOUT;
 
-	unsigned short otherflags = mon->mprops[prop_index] & ~M_TIMEOUT;
-	mon->mprops[prop_index] = amount | otherflags;
+    unsigned short otherflags = mon->mprops[prop_index] & ~M_TIMEOUT;
+    mon->mprops[prop_index] = amount | otherflags;
 }
 
 
@@ -624,13 +624,13 @@ int prop_index;
 int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
 boolean verbose;
 {
-	if (verbose)
-		return set_mon_property_verbosely(mtmp, prop_index, value);
-	else
-	{
-		set_mon_property(mtmp, prop_index, value);
-		return FALSE;
-	}
+    if (verbose)
+        return set_mon_property_verbosely(mtmp, prop_index, value);
+    else
+    {
+        set_mon_property(mtmp, prop_index, value);
+        return FALSE;
+    }
 }
 
 void
@@ -640,36 +640,36 @@ int prop_index;
 int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
 {
 
-	if (!mtmp)
-		return;
+    if (!mtmp)
+        return;
 
-	if (prop_index < 1 || prop_index > LAST_PROP)
-		return;
+    if (prop_index < 1 || prop_index > LAST_PROP)
+        return;
 
-	boolean was_tame = is_tame(mtmp);
+    boolean was_tame = is_tame(mtmp);
 
-	if (value >= 0)
-		set_mon_temporary_property(mtmp, prop_index, min((unsigned short)M_TIMEOUT, (unsigned short)value));
-	else if (value == -1)
-		mtmp->mprops[prop_index] |= M_INTRINSIC_ACQUIRED;
-	else if (value == -2)
-		mtmp->mprops[prop_index] &= ~M_INTRINSIC_ACQUIRED;
-	else if (value == -3)
-	{
-		mtmp->mprops[prop_index] &= ~M_INTRINSIC_ACQUIRED;
-		set_mon_temporary_property(mtmp, prop_index, 0);
-	}
+    if (value >= 0)
+        set_mon_temporary_property(mtmp, prop_index, min((unsigned short)M_TIMEOUT, (unsigned short)value));
+    else if (value == -1)
+        mtmp->mprops[prop_index] |= M_INTRINSIC_ACQUIRED;
+    else if (value == -2)
+        mtmp->mprops[prop_index] &= ~M_INTRINSIC_ACQUIRED;
+    else if (value == -3)
+    {
+        mtmp->mprops[prop_index] &= ~M_INTRINSIC_ACQUIRED;
+        set_mon_temporary_property(mtmp, prop_index, 0);
+    }
 
-	/* Adjustments */
-	if (was_tame && !is_tame(mtmp))
-	{
-		newsym(mtmp->mx, mtmp->my);
+    /* Adjustments */
+    if (was_tame && !is_tame(mtmp))
+    {
+        newsym(mtmp->mx, mtmp->my);
 
-	}
-	else if (is_tame(mtmp) && !was_tame)
-	{
-		newsym(mtmp->mx, mtmp->my);
-	}
+    }
+    else if (is_tame(mtmp) && !was_tame)
+    {
+        newsym(mtmp->mx, mtmp->my);
+    }
 
 }
 
@@ -678,19 +678,19 @@ get_mon_property(mon, prop_index)
 struct monst* mon;
 int prop_index;
 {
-	if (!mon)
-		return 0;
+    if (!mon)
+        return 0;
 
-	if (prop_index < 1 || prop_index > LAST_PROP)
-		return 0;
+    if (prop_index < 1 || prop_index > LAST_PROP)
+        return 0;
 
-	if (mon == &youmonst)
-	{
-		return (u.uprops[prop_index].intrinsic & TIMEOUT);
-	}
+    if (mon == &youmonst)
+    {
+        return (u.uprops[prop_index].intrinsic & TIMEOUT);
+    }
 
-	unsigned short amount = mon->mprops[prop_index] & M_TIMEOUT;
-	return (int)amount;
+    unsigned short amount = mon->mprops[prop_index] & M_TIMEOUT;
+    return (int)amount;
 }
 
 #if 0
@@ -779,7 +779,7 @@ struct monst* mtmp;
 int prop_index;
 int value; /* -1 sets the intrinsic and -2 clears it; -3 clears both temporary and permanent instrinsic */
 {
-	return verbose_wrapper(VERBOSE_FUNCTION_SET_MON_PROPERTY, mtmp, prop_index, value, FALSE);
+    return verbose_wrapper(VERBOSE_FUNCTION_SET_MON_PROPERTY, mtmp, prop_index, value, FALSE);
 }
 
 /* return TRUE if a visible effect (something was printed in pline) */
@@ -791,426 +791,426 @@ int prop_index;
 int value;
 boolean silently;
 {
-	boolean res = FALSE;
+    boolean res = FALSE;
 
-	/* works for fast, very fast, and slowed */
-	char savedname[BUFSIZ] = "";
-	strcpy(savedname, mon_nam(mtmp));
+    /* works for fast, very fast, and slowed */
+    char savedname[BUFSIZ] = "";
+    strcpy(savedname, mon_nam(mtmp));
 
-	char SavedName[BUFSIZ] = "";
-	strcpy(SavedName, Monnam(mtmp));
+    char SavedName[BUFSIZ] = "";
+    strcpy(SavedName, Monnam(mtmp));
 
-	boolean could_spot_mon = canspotmon(mtmp);
-	boolean was_invisible = is_invisible(mtmp);
-	boolean was_stoning = is_stoning(mtmp);
-	boolean was_turning_into_slime = is_turning_into_slime(mtmp);
-	boolean was_strangled = is_being_strangled(mtmp);
-	boolean was_suffocating = is_suffocating(mtmp);
-	boolean was_fast = is_fast(mtmp);
-	boolean was_very_fast = is_very_fast(mtmp);
-	boolean was_ultra_fast = is_ultra_fast(mtmp);
-	boolean was_super_fast = is_super_fast(mtmp);
-	boolean was_lightning_fast = is_lightning_fast(mtmp);
-	boolean was_slow = is_slow(mtmp);
-	boolean was_sleeping = is_sleeping(mtmp);
-	boolean was_paralyzed = is_paralyzed(mtmp);
-	boolean was_blinded = is_blinded(mtmp);
-	boolean was_stunned = is_stunned(mtmp);
-	boolean was_confused = is_confused(mtmp);
-	boolean was_hallucinating = is_hallucinating(mtmp);
-	boolean was_levitating = is_levitating(mtmp);
-	boolean was_flying = is_flying(mtmp);
-	boolean was_sick = is_sick(mtmp);
-	boolean was_mummy_rotted = is_mummy_rotted(mtmp);
-	boolean was_fearful = is_fearful(mtmp);
-	boolean was_fleeing = is_fleeing(mtmp);
-	boolean was_charmed = is_charmed(mtmp);
-	boolean was_tame = is_tame(mtmp);
-	boolean was_peaceful = is_peaceful(mtmp);
-	boolean was_silenced = is_silenced(mtmp);
-	boolean was_cancelled = is_cancelled(mtmp);
-	boolean was_crazed = is_crazed(mtmp);
-	boolean was_heroic = is_heroic(mtmp);
-	boolean was_super_heroic = is_super_heroic(mtmp);
-
-
-	switch (function_choice)
-	{
-	case VERBOSE_FUNCTION_UPDATE_MON_STATISTICS:
-		update_all_mon_statistics_core(mtmp, silently);
-		break;
-	case VERBOSE_FUNCTION_SET_MON_PROPERTY:
-		set_mon_property(mtmp, prop_index, value);
-		break;
-	default:
-		break;
-	}
-
-	if (silently)
-		return FALSE;
-
-	if (canspotmon(mtmp))
-	{
-
-		if (!could_spot_mon)
-		{
-			res = TRUE;
-			pline("Suddenly, you can see %s!", mon_nam(mtmp));
-		}
-		else
-		{
-			/* Most such messages here */
-			if (is_invisible(mtmp) && !was_invisible && knowninvisible(mtmp))
-			{
-				res = TRUE;
-				pline("%s turns transparent!", SavedName);
-			}
-			else if (!is_invisible(mtmp) && was_invisible)
-			{
-				res = TRUE;
-				pline("%s body loses its transparency!", s_suffix(Monnam(mtmp)));
-			}
-		}
-
-		/* Stoned */
-		if (is_stoning(mtmp) && !was_stoning)
-		{
-			res = TRUE;
-			pline("%s starts turning into stone!", Monnam(mtmp));
-		}
-		else if (!is_stoning(mtmp) && was_stoning)
-		{
-			res = TRUE;
-			pline("%s stops turning into stone.", Monnam(mtmp));
-		}
-
-		/* Slimed */
-		if (is_turning_into_slime(mtmp) && !was_turning_into_slime)
-		{
-			res = TRUE;
-			pline("%s is turning into green slime!", Monnam(mtmp));
-		}
-		else if (!is_turning_into_slime(mtmp) && was_turning_into_slime)
-		{
-			res = TRUE;
-			pline("%s is not turning into green slime anymore.", Monnam(mtmp));
-		}
-
-		/* Speed */
-		if (
-			(!is_slow(mtmp) && was_slow)
-			)
-		{
-			res = TRUE;
-			pline("%s is moving %sfaster.", Monnam(mtmp), 
-				is_fast(mtmp) || is_very_fast(mtmp) || is_ultra_fast(mtmp) || is_super_fast(mtmp) || is_lightning_fast(mtmp) ? "much " : "");
-		}
-		else if (
-			(is_fast(mtmp) && !was_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
-			|| (is_very_fast(mtmp) && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
-			|| (is_ultra_fast(mtmp) && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
-			|| (is_super_fast(mtmp) && !was_super_fast && !was_lightning_fast)
-			|| (is_lightning_fast(mtmp) && !was_lightning_fast)
-			)
-		{
-			res = TRUE;
-			pline("%s is moving faster.", Monnam(mtmp));
-		}
-		else if (
-			(!is_fast(mtmp) && !is_very_fast(mtmp) && !is_ultra_fast(mtmp) && !is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_fast || was_very_fast || was_ultra_fast || was_super_fast || was_lightning_fast))
-			|| (!is_very_fast(mtmp) && !is_ultra_fast(mtmp) && !is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_very_fast || was_ultra_fast || was_super_fast || was_lightning_fast))
-			|| (!is_ultra_fast(mtmp) && !is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_ultra_fast || was_super_fast || was_lightning_fast))
-			|| (!is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_super_fast || was_lightning_fast))
-			|| (!is_lightning_fast(mtmp) && (was_lightning_fast))
-			)
-		{
-			res = TRUE;
-			pline("%s is moving slower.", Monnam(mtmp));
-		}
-		else if (is_slow(mtmp) && !was_slow)
-		{
-			res = TRUE;
-			if ((prop_index == STONED || prop_index == SLIMED) && value > 0)
-				pline("%s is slowing down!", Monnam(mtmp));
-			else if (prop_index == SLOWED && value > 0)
-				pline("%s slows down%s.", Monnam(mtmp), was_fast || was_very_fast ? " a lot" : "");
-			else
-				pline("%s is moving %sslower.", Monnam(mtmp), was_fast || was_very_fast ? "much " : "");
-		}
-
-		/* Silenced */
-		if (is_silenced(mtmp) && !was_silenced)
-		{
-			res = TRUE;
-			pline("%s voice disappears.", s_suffix(Monnam(mtmp)));
-		}
-		else if (!is_silenced(mtmp) && was_silenced)
-		{
-			res = TRUE;
-			pline("%s voice returns.", s_suffix(Monnam(mtmp)));
-		}
-
-		/* Cancellation */
-		if (is_cancelled(mtmp) && !was_cancelled)
-		{
-			res = TRUE;
-			pline("%s magic seems to stop flowing properly.", s_suffix(Monnam(mtmp)));
-		}
-		else if (!is_cancelled(mtmp) && was_cancelled)
-		{
-			res = TRUE;
-			pline("%s magic seems to start flowing properly.", s_suffix(Monnam(mtmp)));
-		}
-
-		/* Crazedness */
-		if (is_crazed(mtmp) && !was_crazed)
-		{
-			res = TRUE;
-			pline("%s looks crazed.", Monnam(mtmp));
-		}
-		else if (!is_crazed(mtmp) && was_crazed)
-		{
-			res = TRUE;
-			pline("%s looks more sane.", Monnam(mtmp));
-		}
-
-		/* Heroism */
-		if (is_super_heroic(mtmp) && !was_super_heroic)
-		{
-			res = TRUE;
-			pline("%s looks super-heroic.", Monnam(mtmp));
-		}
-		else if (!is_super_heroic(mtmp) && was_super_heroic)
-		{
-			res = TRUE;
-			pline("%s looks less super-heroic than before.", Monnam(mtmp));
-		}
-		else if (!is_heroic(mtmp) && !is_super_heroic(mtmp) && was_heroic)
-		{
-			res = TRUE;
-			pline("%s looks less heroic than before.", Monnam(mtmp));
-		}
-		else if (is_heroic(mtmp) && !was_heroic && !was_super_heroic && !is_super_heroic(mtmp))
-		{
-			res = TRUE;
-			pline("%s looks heroic.", Monnam(mtmp));
-		}
-
-		/* Sleeping */
-		if (is_sleeping(mtmp) && !was_sleeping)
-		{
-			res = TRUE;
-			pline("%s falls asleep.", Monnam(mtmp));
-		}
-		else if (!is_sleeping(mtmp) && was_sleeping)
-		{
-			res = TRUE;
-			pline("%s wakes up.", Monnam(mtmp));
-		}
-
-		/* Paralysis */
-		if (is_paralyzed(mtmp) && !was_paralyzed)
-		{
-			res = TRUE;
-			pline("%s is paralyzed!", Monnam(mtmp));
-		}
-		else if (!is_paralyzed(mtmp) && was_paralyzed)
-		{
-			res = TRUE;
-			if (mon_can_move(mtmp))
-				pline("%s can move again!", Monnam(mtmp));
-			else
-				pline("%s is no longer paralyzed!", Monnam(mtmp));
-		}
-
-		/* Blindness */
-		if (is_blinded(mtmp) && !was_blinded)
-		{
-			res = TRUE;
-			pline("%s is blinded!", Monnam(mtmp));
-		}
-		else if (!has_blinded(mtmp) && was_blinded)
-		{
-			res = TRUE;
-			pline("%s can see again!", Monnam(mtmp));
-		}
-
-		/* Stunned */
-		if (is_sleeping(mtmp) && !was_sleeping)
-		{
-			res = TRUE;
-			pline("%s falls asleep.", Monnam(mtmp));
-		}
-		else if (!is_sleeping(mtmp) && was_sleeping)
-		{
-			res = TRUE;
-			pline("%s wakes up.", Monnam(mtmp));
-		}
-
-		/* Confusion */
-		if (is_confused(mtmp) && !was_confused)
-		{
-			res = TRUE;
-			pline("%s is confused!", Monnam(mtmp));
-		}
-		else if (!is_confused(mtmp) && was_confused)
-		{
-			res = TRUE;
-			pline("%s looks less confused.", Monnam(mtmp));
-		}
-
-		/* Hallucination */
-		if (is_hallucinating(mtmp) && !was_hallucinating)
-		{
-			res = TRUE;
-			pline("%s looks seriously confused!", Monnam(mtmp));
-		}
-		else if (!is_hallucinating(mtmp) && was_hallucinating)
-		{
-			res = TRUE;
-			pline("%s looks more straight-minded.", Monnam(mtmp));
-		}
+    boolean could_spot_mon = canspotmon(mtmp);
+    boolean was_invisible = is_invisible(mtmp);
+    boolean was_stoning = is_stoning(mtmp);
+    boolean was_turning_into_slime = is_turning_into_slime(mtmp);
+    boolean was_strangled = is_being_strangled(mtmp);
+    boolean was_suffocating = is_suffocating(mtmp);
+    boolean was_fast = is_fast(mtmp);
+    boolean was_very_fast = is_very_fast(mtmp);
+    boolean was_ultra_fast = is_ultra_fast(mtmp);
+    boolean was_super_fast = is_super_fast(mtmp);
+    boolean was_lightning_fast = is_lightning_fast(mtmp);
+    boolean was_slow = is_slow(mtmp);
+    boolean was_sleeping = is_sleeping(mtmp);
+    boolean was_paralyzed = is_paralyzed(mtmp);
+    boolean was_blinded = is_blinded(mtmp);
+    boolean was_stunned = is_stunned(mtmp);
+    boolean was_confused = is_confused(mtmp);
+    boolean was_hallucinating = is_hallucinating(mtmp);
+    boolean was_levitating = is_levitating(mtmp);
+    boolean was_flying = is_flying(mtmp);
+    boolean was_sick = is_sick(mtmp);
+    boolean was_mummy_rotted = is_mummy_rotted(mtmp);
+    boolean was_fearful = is_fearful(mtmp);
+    boolean was_fleeing = is_fleeing(mtmp);
+    boolean was_charmed = is_charmed(mtmp);
+    boolean was_tame = is_tame(mtmp);
+    boolean was_peaceful = is_peaceful(mtmp);
+    boolean was_silenced = is_silenced(mtmp);
+    boolean was_cancelled = is_cancelled(mtmp);
+    boolean was_crazed = is_crazed(mtmp);
+    boolean was_heroic = is_heroic(mtmp);
+    boolean was_super_heroic = is_super_heroic(mtmp);
 
 
-		/* Fearful*/
-		if (is_fleeing(mtmp) && !was_fleeing)
-		{
-			if (M_AP_TYPE(mtmp) != M_AP_FURNITURE && M_AP_TYPE(mtmp) != M_AP_OBJECT)
-			{
-				res = TRUE;
-				if (!mon_can_move(mtmp) || !mtmp->data->mmove)
-					pline("%s looks frightened.", Monnam(mtmp));
-				else
-					pline("%s %sturns to flee.", Monnam(mtmp), is_fearful(mtmp) ? "looks frightened and " : "");
-			}
-		}
-		else if (is_fearful(mtmp) && !was_fearful && was_fleeing)
-		{
-			res = TRUE;
-			pline("%s looks even more frightened than before.", Monnam(mtmp));
-		}
-		else if (!is_fleeing(mtmp) && was_fleeing)
-		{
-			res = TRUE;
-			pline("%s %sstops fleeing.", Monnam(mtmp), !is_fearful(mtmp) && was_fearful ? "looks less frightened and " : "");
-		}
+    switch (function_choice)
+    {
+    case VERBOSE_FUNCTION_UPDATE_MON_STATISTICS:
+        update_all_mon_statistics_core(mtmp, silently);
+        break;
+    case VERBOSE_FUNCTION_SET_MON_PROPERTY:
+        set_mon_property(mtmp, prop_index, value);
+        break;
+    default:
+        break;
+    }
+
+    if (silently)
+        return FALSE;
+
+    if (canspotmon(mtmp))
+    {
+
+        if (!could_spot_mon)
+        {
+            res = TRUE;
+            pline("Suddenly, you can see %s!", mon_nam(mtmp));
+        }
+        else
+        {
+            /* Most such messages here */
+            if (is_invisible(mtmp) && !was_invisible && knowninvisible(mtmp))
+            {
+                res = TRUE;
+                pline("%s turns transparent!", SavedName);
+            }
+            else if (!is_invisible(mtmp) && was_invisible)
+            {
+                res = TRUE;
+                pline("%s body loses its transparency!", s_suffix(Monnam(mtmp)));
+            }
+        }
+
+        /* Stoned */
+        if (is_stoning(mtmp) && !was_stoning)
+        {
+            res = TRUE;
+            pline("%s starts turning into stone!", Monnam(mtmp));
+        }
+        else if (!is_stoning(mtmp) && was_stoning)
+        {
+            res = TRUE;
+            pline("%s stops turning into stone.", Monnam(mtmp));
+        }
+
+        /* Slimed */
+        if (is_turning_into_slime(mtmp) && !was_turning_into_slime)
+        {
+            res = TRUE;
+            pline("%s is turning into green slime!", Monnam(mtmp));
+        }
+        else if (!is_turning_into_slime(mtmp) && was_turning_into_slime)
+        {
+            res = TRUE;
+            pline("%s is not turning into green slime anymore.", Monnam(mtmp));
+        }
+
+        /* Speed */
+        if (
+            (!is_slow(mtmp) && was_slow)
+            )
+        {
+            res = TRUE;
+            pline("%s is moving %sfaster.", Monnam(mtmp), 
+                is_fast(mtmp) || is_very_fast(mtmp) || is_ultra_fast(mtmp) || is_super_fast(mtmp) || is_lightning_fast(mtmp) ? "much " : "");
+        }
+        else if (
+            (is_fast(mtmp) && !was_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
+            || (is_very_fast(mtmp) && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
+            || (is_ultra_fast(mtmp) && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
+            || (is_super_fast(mtmp) && !was_super_fast && !was_lightning_fast)
+            || (is_lightning_fast(mtmp) && !was_lightning_fast)
+            )
+        {
+            res = TRUE;
+            pline("%s is moving faster.", Monnam(mtmp));
+        }
+        else if (
+            (!is_fast(mtmp) && !is_very_fast(mtmp) && !is_ultra_fast(mtmp) && !is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_fast || was_very_fast || was_ultra_fast || was_super_fast || was_lightning_fast))
+            || (!is_very_fast(mtmp) && !is_ultra_fast(mtmp) && !is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_very_fast || was_ultra_fast || was_super_fast || was_lightning_fast))
+            || (!is_ultra_fast(mtmp) && !is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_ultra_fast || was_super_fast || was_lightning_fast))
+            || (!is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_super_fast || was_lightning_fast))
+            || (!is_lightning_fast(mtmp) && (was_lightning_fast))
+            )
+        {
+            res = TRUE;
+            pline("%s is moving slower.", Monnam(mtmp));
+        }
+        else if (is_slow(mtmp) && !was_slow)
+        {
+            res = TRUE;
+            if ((prop_index == STONED || prop_index == SLIMED) && value > 0)
+                pline("%s is slowing down!", Monnam(mtmp));
+            else if (prop_index == SLOWED && value > 0)
+                pline("%s slows down%s.", Monnam(mtmp), was_fast || was_very_fast ? " a lot" : "");
+            else
+                pline("%s is moving %sslower.", Monnam(mtmp), was_fast || was_very_fast ? "much " : "");
+        }
+
+        /* Silenced */
+        if (is_silenced(mtmp) && !was_silenced)
+        {
+            res = TRUE;
+            pline("%s voice disappears.", s_suffix(Monnam(mtmp)));
+        }
+        else if (!is_silenced(mtmp) && was_silenced)
+        {
+            res = TRUE;
+            pline("%s voice returns.", s_suffix(Monnam(mtmp)));
+        }
+
+        /* Cancellation */
+        if (is_cancelled(mtmp) && !was_cancelled)
+        {
+            res = TRUE;
+            pline("%s magic seems to stop flowing properly.", s_suffix(Monnam(mtmp)));
+        }
+        else if (!is_cancelled(mtmp) && was_cancelled)
+        {
+            res = TRUE;
+            pline("%s magic seems to start flowing properly.", s_suffix(Monnam(mtmp)));
+        }
+
+        /* Crazedness */
+        if (is_crazed(mtmp) && !was_crazed)
+        {
+            res = TRUE;
+            pline("%s looks crazed.", Monnam(mtmp));
+        }
+        else if (!is_crazed(mtmp) && was_crazed)
+        {
+            res = TRUE;
+            pline("%s looks more sane.", Monnam(mtmp));
+        }
+
+        /* Heroism */
+        if (is_super_heroic(mtmp) && !was_super_heroic)
+        {
+            res = TRUE;
+            pline("%s looks super-heroic.", Monnam(mtmp));
+        }
+        else if (!is_super_heroic(mtmp) && was_super_heroic)
+        {
+            res = TRUE;
+            pline("%s looks less super-heroic than before.", Monnam(mtmp));
+        }
+        else if (!is_heroic(mtmp) && !is_super_heroic(mtmp) && was_heroic)
+        {
+            res = TRUE;
+            pline("%s looks less heroic than before.", Monnam(mtmp));
+        }
+        else if (is_heroic(mtmp) && !was_heroic && !was_super_heroic && !is_super_heroic(mtmp))
+        {
+            res = TRUE;
+            pline("%s looks heroic.", Monnam(mtmp));
+        }
+
+        /* Sleeping */
+        if (is_sleeping(mtmp) && !was_sleeping)
+        {
+            res = TRUE;
+            pline("%s falls asleep.", Monnam(mtmp));
+        }
+        else if (!is_sleeping(mtmp) && was_sleeping)
+        {
+            res = TRUE;
+            pline("%s wakes up.", Monnam(mtmp));
+        }
+
+        /* Paralysis */
+        if (is_paralyzed(mtmp) && !was_paralyzed)
+        {
+            res = TRUE;
+            pline("%s is paralyzed!", Monnam(mtmp));
+        }
+        else if (!is_paralyzed(mtmp) && was_paralyzed)
+        {
+            res = TRUE;
+            if (mon_can_move(mtmp))
+                pline("%s can move again!", Monnam(mtmp));
+            else
+                pline("%s is no longer paralyzed!", Monnam(mtmp));
+        }
+
+        /* Blindness */
+        if (is_blinded(mtmp) && !was_blinded)
+        {
+            res = TRUE;
+            pline("%s is blinded!", Monnam(mtmp));
+        }
+        else if (!has_blinded(mtmp) && was_blinded)
+        {
+            res = TRUE;
+            pline("%s can see again!", Monnam(mtmp));
+        }
+
+        /* Stunned */
+        if (is_sleeping(mtmp) && !was_sleeping)
+        {
+            res = TRUE;
+            pline("%s falls asleep.", Monnam(mtmp));
+        }
+        else if (!is_sleeping(mtmp) && was_sleeping)
+        {
+            res = TRUE;
+            pline("%s wakes up.", Monnam(mtmp));
+        }
+
+        /* Confusion */
+        if (is_confused(mtmp) && !was_confused)
+        {
+            res = TRUE;
+            pline("%s is confused!", Monnam(mtmp));
+        }
+        else if (!is_confused(mtmp) && was_confused)
+        {
+            res = TRUE;
+            pline("%s looks less confused.", Monnam(mtmp));
+        }
+
+        /* Hallucination */
+        if (is_hallucinating(mtmp) && !was_hallucinating)
+        {
+            res = TRUE;
+            pline("%s looks seriously confused!", Monnam(mtmp));
+        }
+        else if (!is_hallucinating(mtmp) && was_hallucinating)
+        {
+            res = TRUE;
+            pline("%s looks more straight-minded.", Monnam(mtmp));
+        }
 
 
-		/* Charm */
-		if (is_charmed(mtmp) && !was_charmed)
-		{
-			res = TRUE;
-			pline("%s is charmed!", Monnam(mtmp));
-			if (is_tame(mtmp) && !was_tame)
-				pline("%s looks friendly.", Monnam(mtmp));
-			else
-				pline("%s looks %s for a while.", Monnam(mtmp), is_tame(mtmp) ? "a little perplexed" :
-					is_peaceful(mtmp) ? "a little uncomfortable" : "uncomfortable");
-		}
-		if (!is_charmed(mtmp) && was_charmed)
-		{
-			res = TRUE;
-			if (is_tame(mtmp))
-				pline("%s looks perplexed for a while.", Monnam(mtmp));
-			else
-				pline("%s looks more in control of %sself.", Monnam(mtmp), mhim(mtmp));
+        /* Fearful*/
+        if (is_fleeing(mtmp) && !was_fleeing)
+        {
+            if (M_AP_TYPE(mtmp) != M_AP_FURNITURE && M_AP_TYPE(mtmp) != M_AP_OBJECT)
+            {
+                res = TRUE;
+                if (!mon_can_move(mtmp) || !mtmp->data->mmove)
+                    pline("%s looks frightened.", Monnam(mtmp));
+                else
+                    pline("%s %sturns to flee.", Monnam(mtmp), is_fearful(mtmp) ? "looks frightened and " : "");
+            }
+        }
+        else if (is_fearful(mtmp) && !was_fearful && was_fleeing)
+        {
+            res = TRUE;
+            pline("%s looks even more frightened than before.", Monnam(mtmp));
+        }
+        else if (!is_fleeing(mtmp) && was_fleeing)
+        {
+            res = TRUE;
+            pline("%s %sstops fleeing.", Monnam(mtmp), !is_fearful(mtmp) && was_fearful ? "looks less frightened and " : "");
+        }
 
-			if (!is_peaceful(mtmp) && was_peaceful)
-				pline("%s turns hostile!", Monnam(mtmp));
-		}
+
+        /* Charm */
+        if (is_charmed(mtmp) && !was_charmed)
+        {
+            res = TRUE;
+            pline("%s is charmed!", Monnam(mtmp));
+            if (is_tame(mtmp) && !was_tame)
+                pline("%s looks friendly.", Monnam(mtmp));
+            else
+                pline("%s looks %s for a while.", Monnam(mtmp), is_tame(mtmp) ? "a little perplexed" :
+                    is_peaceful(mtmp) ? "a little uncomfortable" : "uncomfortable");
+        }
+        if (!is_charmed(mtmp) && was_charmed)
+        {
+            res = TRUE;
+            if (is_tame(mtmp))
+                pline("%s looks perplexed for a while.", Monnam(mtmp));
+            else
+                pline("%s looks more in control of %sself.", Monnam(mtmp), mhim(mtmp));
+
+            if (!is_peaceful(mtmp) && was_peaceful)
+                pline("%s turns hostile!", Monnam(mtmp));
+        }
 
 
-		/* Levitation */
-		if (is_levitating(mtmp) && !was_levitating)
-		{
-			res = TRUE;
-			pline("%s starts levitating.", Monnam(mtmp));
-		}
-		else if (!is_levitating(mtmp) && was_levitating)
-		{
-			res = TRUE;
-			pline("%s stops levitating.", Monnam(mtmp));
-		}
+        /* Levitation */
+        if (is_levitating(mtmp) && !was_levitating)
+        {
+            res = TRUE;
+            pline("%s starts levitating.", Monnam(mtmp));
+        }
+        else if (!is_levitating(mtmp) && was_levitating)
+        {
+            res = TRUE;
+            pline("%s stops levitating.", Monnam(mtmp));
+        }
 
-		/* Levitation */
-		if (is_flying(mtmp) && !was_flying)
-		{
-			res = TRUE;
-			pline("%s starts flying.", Monnam(mtmp));
-		}
-		else if (!is_flying(mtmp) && was_flying)
-		{
-			res = TRUE;
-			pline("%s stops flying.", Monnam(mtmp));
-		}
+        /* Levitation */
+        if (is_flying(mtmp) && !was_flying)
+        {
+            res = TRUE;
+            pline("%s starts flying.", Monnam(mtmp));
+        }
+        else if (!is_flying(mtmp) && was_flying)
+        {
+            res = TRUE;
+            pline("%s stops flying.", Monnam(mtmp));
+        }
 
-		if (is_being_strangled(mtmp) && !was_strangled)
-		{
-			res = TRUE;
-			pline("%s is being strangled to death!", Monnam(mtmp));
-		}
-		else if (!is_being_strangled(mtmp) && was_strangled)
-		{
-			res = TRUE;
-			pline("%s stops being strangled.", Monnam(mtmp));
-		}
+        if (is_being_strangled(mtmp) && !was_strangled)
+        {
+            res = TRUE;
+            pline("%s is being strangled to death!", Monnam(mtmp));
+        }
+        else if (!is_being_strangled(mtmp) && was_strangled)
+        {
+            res = TRUE;
+            pline("%s stops being strangled.", Monnam(mtmp));
+        }
 
-		if (is_suffocating(mtmp) && !was_suffocating)
-		{
-			res = TRUE;
-			pline("%s is suffocating!", Monnam(mtmp));
-		}
-		else if (!is_suffocating(mtmp) && was_suffocating)
-		{
-			res = TRUE;
-			pline("%s stops being suffocated.", Monnam(mtmp));
-		}
+        if (is_suffocating(mtmp) && !was_suffocating)
+        {
+            res = TRUE;
+            pline("%s is suffocating!", Monnam(mtmp));
+        }
+        else if (!is_suffocating(mtmp) && was_suffocating)
+        {
+            res = TRUE;
+            pline("%s stops being suffocated.", Monnam(mtmp));
+        }
 
-		if (is_sick(mtmp) && !was_sick)
-		{
-			res = TRUE;
-			pline("%s looks terminally ill!", Monnam(mtmp));
-		}
-		else if (!is_sick(mtmp) && was_sick)
-		{
-			res = TRUE;
-			pline("%s is cured from %s terminal illness.", Monnam(mtmp), mhis(mtmp));
-		}
+        if (is_sick(mtmp) && !was_sick)
+        {
+            res = TRUE;
+            pline("%s looks terminally ill!", Monnam(mtmp));
+        }
+        else if (!is_sick(mtmp) && was_sick)
+        {
+            res = TRUE;
+            pline("%s is cured from %s terminal illness.", Monnam(mtmp), mhis(mtmp));
+        }
 
-		if (is_mummy_rotted(mtmp) && !was_mummy_rotted)
-		{
-			res = TRUE;
-			pline("%s looks severely ill!", Monnam(mtmp));
-		}
-		else if (!is_mummy_rotted(mtmp) && was_mummy_rotted)
-		{
-			res = TRUE;
-			pline("%s is cured from %s rot-causing illness.", Monnam(mtmp), mhis(mtmp));
-		}
+        if (is_mummy_rotted(mtmp) && !was_mummy_rotted)
+        {
+            res = TRUE;
+            pline("%s looks severely ill!", Monnam(mtmp));
+        }
+        else if (!is_mummy_rotted(mtmp) && was_mummy_rotted)
+        {
+            res = TRUE;
+            pline("%s is cured from %s rot-causing illness.", Monnam(mtmp), mhis(mtmp));
+        }
 
-		/* Cancelled */
-		/* Half magic resistance */
-		/* No magic resistance */
-		/* Summoning is forbidden */
-		/* Deaf */
-		/* Sick */
-		/* Vomiting */
-		/* Glib */
+        /* Cancelled */
+        /* Half magic resistance */
+        /* No magic resistance */
+        /* Summoning is forbidden */
+        /* Deaf */
+        /* Sick */
+        /* Vomiting */
+        /* Glib */
 
-	}
-	else if (could_spot_mon)
-	{
-		res = TRUE;
-		pline("Suddenly, you cannot see %s anymore!", savedname);
-	}
+    }
+    else if (could_spot_mon)
+    {
+        res = TRUE;
+        pline("Suddenly, you cannot see %s anymore!", savedname);
+    }
 
-	if (res)
-	{
-		newsym(mtmp->mx, mtmp->my);
-		flush_screen(1); /* Make sure you see the change immediately */
-	}
+    if (res)
+    {
+        newsym(mtmp->mx, mtmp->my);
+        flush_screen(1); /* Make sure you see the change immediately */
+    }
 
-	return res;
+    return res;
 }
 
 
@@ -1219,10 +1219,10 @@ update_all_mon_statistics_core(mon, silently)
 struct monst* mon;
 boolean silently;
 {
-	update_mon_extrinsics(mon, silently);
-	update_mon_abon(mon);
-	/* monster do not currently have mana */
-	update_mon_maxhp(mon);
+    update_mon_extrinsics(mon, silently);
+    update_mon_abon(mon);
+    /* monster do not currently have mana */
+    update_mon_maxhp(mon);
 }
 
 void
@@ -1231,66 +1231,66 @@ struct monst* mon;
 boolean silently;
 {
 
-	(void)verbose_wrapper(VERBOSE_FUNCTION_UPDATE_MON_STATISTICS, mon, 0, 0, silently);
+    (void)verbose_wrapper(VERBOSE_FUNCTION_UPDATE_MON_STATISTICS, mon, 0, 0, silently);
 
 #if 0
-	/* save properties */
-	char savedname[BUFSIZ] = "";
-	strcpy(savedname, mon_nam(mon));
+    /* save properties */
+    char savedname[BUFSIZ] = "";
+    strcpy(savedname, mon_nam(mon));
 
-	boolean was_levitating = is_levitating(mon);
-	boolean was_flying = is_flying(mon);
-	boolean was_invisible = is_invisible(mon);
-	boolean could_see = canspotmon(mon);
-
-
-	update_mon_extrinsics(mon, silently);
-	update_mon_abon(mon);
-	/* monster do not currently have mana */
-	update_mon_maxhp(mon);
+    boolean was_levitating = is_levitating(mon);
+    boolean was_flying = is_flying(mon);
+    boolean was_invisible = is_invisible(mon);
+    boolean could_see = canspotmon(mon);
 
 
-	/* Messages for extrinsic phase transition */
-	if (!silently)
-	{
-		if (canspotmon(mon))
-		{
-			if (!could_see)
-			{
-				pline("Suddenly, you can see %s!", mon_nam(mon));
-			}
-			else
-			{
-				/* Most such messages here */
-				if (is_invisible(mon) && !was_invisible && knowninvisible(mon))
-				{
-					pline("%s turns transparent!", Monnam(mon));
-				}
-				else if (!is_invisible(mon) && was_invisible)
-				{
-					pline("%s body loses its transparency!", s_suffix(Monnam(mon)));
-				}
-			}
+    update_mon_extrinsics(mon, silently);
+    update_mon_abon(mon);
+    /* monster do not currently have mana */
+    update_mon_maxhp(mon);
 
-			if (is_flying(mon) && !was_levitating && !was_flying)
-			{
-				pline("%s starts flying!", Monnam(mon));
 
-			}
-			else if (is_levitating(mon) && !was_levitating && !was_flying)
-			{
-				pline("%s starts levitating!", Monnam(mon));
-			}
-			else if (!is_levitating(mon) && !is_flying(mon) && (was_levitating || was_flying))
-			{
-				pline("%s lands down.", Monnam(mon));
-			}
-		}
-		else if (could_see)
-		{
-			pline("Suddenly, you cannot see %s anymore!", savedname);
-		}
-	}
+    /* Messages for extrinsic phase transition */
+    if (!silently)
+    {
+        if (canspotmon(mon))
+        {
+            if (!could_see)
+            {
+                pline("Suddenly, you can see %s!", mon_nam(mon));
+            }
+            else
+            {
+                /* Most such messages here */
+                if (is_invisible(mon) && !was_invisible && knowninvisible(mon))
+                {
+                    pline("%s turns transparent!", Monnam(mon));
+                }
+                else if (!is_invisible(mon) && was_invisible)
+                {
+                    pline("%s body loses its transparency!", s_suffix(Monnam(mon)));
+                }
+            }
+
+            if (is_flying(mon) && !was_levitating && !was_flying)
+            {
+                pline("%s starts flying!", Monnam(mon));
+
+            }
+            else if (is_levitating(mon) && !was_levitating && !was_flying)
+            {
+                pline("%s starts levitating!", Monnam(mon));
+            }
+            else if (!is_levitating(mon) && !is_flying(mon) && (was_levitating || was_flying))
+            {
+                pline("%s lands down.", Monnam(mon));
+            }
+        }
+        else if (could_see)
+        {
+            pline("Suddenly, you cannot see %s anymore!", savedname);
+        }
+    }
 #endif
 }
 
@@ -1302,292 +1302,292 @@ struct monst *mon;
 boolean silently;
 {
 
-	if (!mon)
-		return;
+    if (!mon)
+        return;
 
     int unseen = 0;
     struct obj *otmp = (struct obj*)0;
-	boolean was_tame = is_tame(mon);
+    boolean was_tame = is_tame(mon);
 
-	/* clear mon extrinsics */
-	for (int i = 1; i <= LAST_PROP; i++)
-	{
-		mon->mprops[i] &= ~M_EXTRINSIC;
-	}
+    /* clear mon extrinsics */
+    for (int i = 1; i <= LAST_PROP; i++)
+    {
+        mon->mprops[i] &= ~M_EXTRINSIC;
+    }
 
-	/* add them all back*/
-	for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
-	{
-		for (int i = 1; i <= 7; i++)
-		{
-			if (i > 3 && !otmp->oartifact)
-				break;
+    /* add them all back*/
+    for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
+    {
+        for (int i = 1; i <= 7; i++)
+        {
+            if (i > 3 && !otmp->oartifact)
+                break;
 
-			int otyp = otmp->otyp;
-			uchar which = 0;
-			boolean inappr = inappropriate_monster_character_type(mon, otmp);
-			boolean yields_power = FALSE;
-			boolean wornrequired = TRUE;
+            int otyp = otmp->otyp;
+            uchar which = 0;
+            boolean inappr = inappropriate_monster_character_type(mon, otmp);
+            boolean yields_power = FALSE;
+            boolean wornrequired = TRUE;
 
-			switch (i)
-			{
-			case 1:
-				which = objects[otyp].oc_oprop;
-				if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
-					yields_power = TRUE;
-				else if (inappr && (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-					yields_power = TRUE;
-				else if (!inappr && !(objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-					yields_power = TRUE;
+            switch (i)
+            {
+            case 1:
+                which = objects[otyp].oc_oprop;
+                if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
+                    yields_power = TRUE;
+                else if (inappr && (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+                    yields_power = TRUE;
+                else if (!inappr && !(objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+                    yields_power = TRUE;
 
-				if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
-					wornrequired = FALSE;
-				break;
-			case 2:
-				which = objects[otyp].oc_oprop2;
-				if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
-					yields_power = TRUE;
-				else if (inappr && (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-					yields_power = TRUE;
-				else if (!inappr && !(objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-					yields_power = TRUE;
+                if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
+                    wornrequired = FALSE;
+                break;
+            case 2:
+                which = objects[otyp].oc_oprop2;
+                if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
+                    yields_power = TRUE;
+                else if (inappr && (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+                    yields_power = TRUE;
+                else if (!inappr && !(objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+                    yields_power = TRUE;
 
-				if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)
-					wornrequired = FALSE;
-				break;
-			case 3:
-				which = objects[otyp].oc_oprop3;
-				if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
-					yields_power = TRUE;
-				else if (inappr && (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-					yields_power = TRUE;
-				else if (!inappr && !(objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
-					yields_power = TRUE;
+                if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)
+                    wornrequired = FALSE;
+                break;
+            case 3:
+                which = objects[otyp].oc_oprop3;
+                if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
+                    yields_power = TRUE;
+                else if (inappr && (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+                    yields_power = TRUE;
+                else if (!inappr && !(objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY))
+                    yields_power = TRUE;
 
-				if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)
-					wornrequired = FALSE;
-				break;
-			case 4:
-				which = artilist[otmp->oartifact].carried_prop;
-				wornrequired = FALSE;
-				yields_power = TRUE;
-				break;
-			case 5:
-				which = artilist[otmp->oartifact].worn_prop;
-				wornrequired = TRUE;
-				yields_power = TRUE;
-				break;
-			case 6:
-				which = otmp->invokeon && artilist[otmp->oartifact].inv_prop > 0 ? artilist[otmp->oartifact].inv_prop : 0;
-				wornrequired = FALSE;
-				yields_power = TRUE;
-				break;
-			default:
-				if (i >= 7 && i <= 38)
-				{
-					wornrequired = TRUE;
-					yields_power = TRUE;
+                if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)
+                    wornrequired = FALSE;
+                break;
+            case 4:
+                which = artilist[otmp->oartifact].carried_prop;
+                wornrequired = FALSE;
+                yields_power = TRUE;
+                break;
+            case 5:
+                which = artilist[otmp->oartifact].worn_prop;
+                wornrequired = TRUE;
+                yields_power = TRUE;
+                break;
+            case 6:
+                which = otmp->invokeon && artilist[otmp->oartifact].inv_prop > 0 ? artilist[otmp->oartifact].inv_prop : 0;
+                wornrequired = FALSE;
+                yields_power = TRUE;
+                break;
+            default:
+                if (i >= 7 && i <= 38)
+                {
+                    wornrequired = TRUE;
+                    yields_power = TRUE;
 
-					int bitnum = i - 6;
-					unsigned long bit = 0x00000001UL;
-					if (bitnum > 1)
-						bit = bit << bitnum;
+                    int bitnum = i - 6;
+                    unsigned long bit = 0x00000001UL;
+                    if (bitnum > 1)
+                        bit = bit << bitnum;
 
-					int propnum = spfx_to_prop(bit);
-					if (artilist[otmp->oartifact].spfx & bit)
-						which = propnum;
-				}
-				else if (i >= 39 && i <= 70)
-				{
-					wornrequired = FALSE;
-					yields_power = TRUE;
+                    int propnum = spfx_to_prop(bit);
+                    if (artilist[otmp->oartifact].spfx & bit)
+                        which = propnum;
+                }
+                else if (i >= 39 && i <= 70)
+                {
+                    wornrequired = FALSE;
+                    yields_power = TRUE;
 
-					int bitnum = i - 38;
-					unsigned long bit = 0x00000001UL;
-					if (bitnum > 1)
-						bit = bit << bitnum;
+                    int bitnum = i - 38;
+                    unsigned long bit = 0x00000001UL;
+                    if (bitnum > 1)
+                        bit = bit << bitnum;
 
-					int propnum = spfx_to_prop(bit);
-					if (artilist[otmp->oartifact].cspfx & bit)
-						which = propnum;
-				}
-				break;
-			}
+                    int propnum = spfx_to_prop(bit);
+                    if (artilist[otmp->oartifact].cspfx & bit)
+                        which = propnum;
+                }
+                break;
+            }
 
-			if (yields_power && (!wornrequired || (wornrequired && otmp->owornmask)))
-			{
-				/* OK */
-			}
-			else
-			{
-				continue;
-			}
+            if (yields_power && (!wornrequired || (wornrequired && otmp->owornmask)))
+            {
+                /* OK */
+            }
+            else
+            {
+                continue;
+            }
 
-			unseen = !canseemon(mon);
+            unseen = !canseemon(mon);
 
-			mon->mprops[which] |= M_EXTRINSIC;
+            mon->mprops[which] |= M_EXTRINSIC;
 
 #if 0
-			if (1) //(on)
-			{
-				switch (which)
-				{
-				case INVISIBILITY:
-					mon->minvis = !mon->invis_blkd;
-					break;
-				case FAST:
-				{
-					boolean save_in_mklev = in_mklev;
-					if (silently)
-						in_mklev = TRUE;
-					mon_adjust_speed(mon, 0, otmp);
-					in_mklev = save_in_mklev;
-					break;
-				}
-				/* properties handled elsewhere */
-				case CLAIRVOYANT:
-				case BLOCKS_CLAIRVOYANCE:
-				case STEALTH:
-				case MAGICAL_KICKING:
-				case DETECT_MONSTERS:
-				case BLIND_TELEPATHY:
-				case TELEPAT:
-				case XRAY_VISION:
-					break;
-					/* properties which should have an effect but aren't implemented */
-				case LEVITATION:
-				case WATER_WALKING:
-					break;
-					/* properties which maybe should have an effect but don't */
-				case DISPLACED:
-				case FUMBLING:
-				case ODD_IDEAS:
-				case LAUGHING:
-				case JUMPING:
-				case MAGICAL_PROTECTION:
-					break;
-				case BLOCKS_INVISIBILITY:
-					mon->invis_blkd = 1;
-					mon->minvis = 0;
-					break;
-				default:
-					if (which <= 8)
-					{ /* 1 thru 8 correspond to MR_xxx mask values */
-						/* FIRE,COLD,SLEEP,DISINT,SHOCK,POISON,ACID,STONE */
-						mask = (1 << (which - 1));
-						mon->mextrinsics |= (unsigned long)mask;
-					}
-					else if (which == CHARM_RESISTANCE)
-					{
-						mon->mextrinsics |= MR_CHARM;
-					}
-					else if (which == DEATH_RESISTANCE)
-					{
-						mon->mextrinsics |= MR_DEATH;
-					}
-					else if (which == LYCANTHROPY_RESISTANCE)
-					{
-						mon->mextrinsics |= MR_LYCANTHROPY;
-					}
-					else if (which == ANTIMAGIC)
-					{
-						mon->mextrinsics |= MR_MAGIC;
-					}
-					else if (which == REFLECTING)
-					{
-						mon->mextrinsics |= MR_REFLECTING;
-					}
-					else if (which == DRAIN_RESISTANCE)
-					{
-						mon->mextrinsics |= MR_DRAIN;
-					}
-					else if (which == FLASH_RESISTANCE)
-					{
-						mon->mextrinsics |= MR_FLASH;
-					}
-					break;
-				}
-			}
+            if (1) //(on)
+            {
+                switch (which)
+                {
+                case INVISIBILITY:
+                    mon->minvis = !mon->invis_blkd;
+                    break;
+                case FAST:
+                {
+                    boolean save_in_mklev = in_mklev;
+                    if (silently)
+                        in_mklev = TRUE;
+                    mon_adjust_speed(mon, 0, otmp);
+                    in_mklev = save_in_mklev;
+                    break;
+                }
+                /* properties handled elsewhere */
+                case CLAIRVOYANT:
+                case BLOCKS_CLAIRVOYANCE:
+                case STEALTH:
+                case MAGICAL_KICKING:
+                case DETECT_MONSTERS:
+                case BLIND_TELEPATHY:
+                case TELEPAT:
+                case XRAY_VISION:
+                    break;
+                    /* properties which should have an effect but aren't implemented */
+                case LEVITATION:
+                case WATER_WALKING:
+                    break;
+                    /* properties which maybe should have an effect but don't */
+                case DISPLACED:
+                case FUMBLING:
+                case ODD_IDEAS:
+                case LAUGHING:
+                case JUMPING:
+                case MAGICAL_PROTECTION:
+                    break;
+                case BLOCKS_INVISIBILITY:
+                    mon->invis_blkd = 1;
+                    mon->minvis = 0;
+                    break;
+                default:
+                    if (which <= 8)
+                    { /* 1 thru 8 correspond to MR_xxx mask values */
+                        /* FIRE,COLD,SLEEP,DISINT,SHOCK,POISON,ACID,STONE */
+                        mask = (1 << (which - 1));
+                        mon->mextrinsics |= (unsigned long)mask;
+                    }
+                    else if (which == CHARM_RESISTANCE)
+                    {
+                        mon->mextrinsics |= MR_CHARM;
+                    }
+                    else if (which == DEATH_RESISTANCE)
+                    {
+                        mon->mextrinsics |= MR_DEATH;
+                    }
+                    else if (which == LYCANTHROPY_RESISTANCE)
+                    {
+                        mon->mextrinsics |= MR_LYCANTHROPY;
+                    }
+                    else if (which == ANTIMAGIC)
+                    {
+                        mon->mextrinsics |= MR_MAGIC;
+                    }
+                    else if (which == REFLECTING)
+                    {
+                        mon->mextrinsics |= MR_REFLECTING;
+                    }
+                    else if (which == DRAIN_RESISTANCE)
+                    {
+                        mon->mextrinsics |= MR_DRAIN;
+                    }
+                    else if (which == FLASH_RESISTANCE)
+                    {
+                        mon->mextrinsics |= MR_FLASH;
+                    }
+                    break;
+                }
+            }
 #endif
 
 #if 0
-			else
-			{ /* off */
-				switch (which)
-				{
-				case INVISIBILITY:
-					mon->minvis = mon->perminvis;
-					break;
-				case FAST:
-				{
-					boolean save_in_mklev = in_mklev;
-					if (silently)
-						in_mklev = TRUE;
-					mon_adjust_speed(mon, 0, obj);
-					in_mklev = save_in_mklev;
-					break;
-				}
-				case FIRE_IMMUNITY:
-				case COLD_IMMUNITY:
-				case SLEEP_RESISTANCE:
-				case DISINTEGRATION_RESISTANCE:
-				case DEATH_RESISTANCE:
-				case CHARM_RESISTANCE:
-				case MIND_SHIELDING:
-				case SHOCK_IMMUNITY:
-				case POISON_RESISTANCE:
-				case ACID_IMMUNITY:
-				case STONE_RESISTANCE:
-					mask = (uchar)(1 << (which - 1));
-					/* update monster's extrinsics (for worn objects only;
-					   'obj' itself might still be worn or already unworn) */
-					for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
-						if (otmp != obj
-							&& otmp->owornmask
-							&& (objects[otmp->otyp].oc_oprop == which || objects[otmp->otyp].oc_oprop2 == which || objects[otmp->otyp].oc_oprop3 == which))
-							break;
-					if (!otmp)
-						mon->mextrinsics &= ~((unsigned short)mask);
-					break;
-				default:
-					break;
-				}
-			}
-		maybe_blocks:
-			/* obj->owornmask has been cleared by this point, so we can't use it.
-			   However, since monsters don't wield armor, we don't have to guard
-			   against that and can get away with a blanket worn-mask value. */
-			switch (w_blocks(obj, ~0L))
-			{
-			case INVISIBILITY:
-				mon->invis_blkd = on ? 1 : 0;
-				mon->minvis = on ? 0 : mon->perminvis;
-				break;
-			default:
-				break;
-			}
+            else
+            { /* off */
+                switch (which)
+                {
+                case INVISIBILITY:
+                    mon->minvis = mon->perminvis;
+                    break;
+                case FAST:
+                {
+                    boolean save_in_mklev = in_mklev;
+                    if (silently)
+                        in_mklev = TRUE;
+                    mon_adjust_speed(mon, 0, obj);
+                    in_mklev = save_in_mklev;
+                    break;
+                }
+                case FIRE_IMMUNITY:
+                case COLD_IMMUNITY:
+                case SLEEP_RESISTANCE:
+                case DISINTEGRATION_RESISTANCE:
+                case DEATH_RESISTANCE:
+                case CHARM_RESISTANCE:
+                case MIND_SHIELDING:
+                case SHOCK_IMMUNITY:
+                case POISON_RESISTANCE:
+                case ACID_IMMUNITY:
+                case STONE_RESISTANCE:
+                    mask = (uchar)(1 << (which - 1));
+                    /* update monster's extrinsics (for worn objects only;
+                       'obj' itself might still be worn or already unworn) */
+                    for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
+                        if (otmp != obj
+                            && otmp->owornmask
+                            && (objects[otmp->otyp].oc_oprop == which || objects[otmp->otyp].oc_oprop2 == which || objects[otmp->otyp].oc_oprop3 == which))
+                            break;
+                    if (!otmp)
+                        mon->mextrinsics &= ~((unsigned short)mask);
+                    break;
+                default:
+                    break;
+                }
+            }
+        maybe_blocks:
+            /* obj->owornmask has been cleared by this point, so we can't use it.
+               However, since monsters don't wield armor, we don't have to guard
+               against that and can get away with a blanket worn-mask value. */
+            switch (w_blocks(obj, ~0L))
+            {
+            case INVISIBILITY:
+                mon->invis_blkd = on ? 1 : 0;
+                mon->minvis = on ? 0 : mon->perminvis;
+                break;
+            default:
+                break;
+            }
 
 #endif
-		}
-	}
+        }
+    }
 
-	if (mon->wormno)
-		see_wsegs(mon); /* and any tail too */
+    if (mon->wormno)
+        see_wsegs(mon); /* and any tail too */
 
     /* if couldn't see it but now can, or vice versa, update display */
     if (!silently && (unseen ^ !canseemon(mon)))
         newsym(mon->mx, mon->my);
 
-	/* Adjustments */
-	if (was_tame && !is_tame(mon))
-	{
-		newsym(mon->mx, mon->my);
+    /* Adjustments */
+    if (was_tame && !is_tame(mon))
+    {
+        newsym(mon->mx, mon->my);
 
-	}
-	else if (is_tame(mon) && !was_tame)
-	{
-		newsym(mon->mx, mon->my);
-	}
+    }
+    else if (is_tame(mon) && !was_tame)
+    {
+        newsym(mon->mx, mon->my);
+    }
 
 
 }
@@ -1599,38 +1599,38 @@ register struct monst *mon;
 {
     register struct obj *obj;
     int natural_ac_base = mon->data->ac;
-	int natural_ac = natural_ac_base;
-	int armor_bonus = 0;
-	int armor_ac = 10;
-	int mac = 0;
-	long mwflags = mon->worn_item_flags;
+    int natural_ac = natural_ac_base;
+    int armor_bonus = 0;
+    int armor_ac = 10;
+    int mac = 0;
+    long mwflags = mon->worn_item_flags;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags)
-			armor_bonus += ARM_AC_BONUS(obj, mon->data);
+            armor_bonus += ARM_AC_BONUS(obj, mon->data);
         /* since ARM_AC_BONUS is positive, subtracting it increases AC */
     }
 
-	natural_ac -= armor_bonus / 3;
-	armor_ac -= (armor_bonus + ((10 - natural_ac_base) / 3));
+    natural_ac -= armor_bonus / 3;
+    armor_ac -= (armor_bonus + ((10 - natural_ac_base) / 3));
 
-	if (natural_ac <= armor_ac)
-		mac = natural_ac;
-	else
-		mac = armor_ac;
+    if (natural_ac <= armor_ac)
+        mac = natural_ac;
+    else
+        mac = armor_ac;
 
-	//DEX bonus for monsters, reduce the number from AC; not add!
-	if(mon_can_move(mon))
-		mac -= dexterity_ac_bonus(m_acurr(mon, A_DEX));
+    //DEX bonus for monsters, reduce the number from AC; not add!
+    if(mon_can_move(mon))
+        mac -= dexterity_ac_bonus(m_acurr(mon, A_DEX));
 
-	mac -= mon->macbonus;
+    mac -= mon->macbonus;
 
-	if (mon->mprops[MAGICAL_STONESKIN])
-		mac -= 10;
-	else if (mon->mprops[MAGICAL_SHIELDING])
-		mac -= 4;
-	else if (mon->mprops[MAGICAL_PROTECTION])
-		mac -= 3;
+    if (mon->mprops[MAGICAL_STONESKIN])
+        mac -= 10;
+    else if (mon->mprops[MAGICAL_SHIELDING])
+        mac -= 4;
+    else if (mon->mprops[MAGICAL_PROTECTION])
+        mac -= 3;
 
     return mac;
 }
@@ -1667,8 +1667,8 @@ boolean creation;
     if (!can_operate_objects(mon->data) || is_animal(mon->data))
         return;
 
-	if (mon->mfrozen)
-		return;
+    if (mon->mfrozen)
+        return;
 
     /* give mummies a chance to wear their wrappings
      * and let skeletons wear their initial armor */
@@ -1677,147 +1677,147 @@ boolean creation;
                           || mon->data->mlet == S_LESSER_UNDEAD)))
         return;
 
-	boolean wears_shirt = FALSE;
-	boolean wears_suit = FALSE;
-	boolean wears_robe = FALSE;
-	boolean wears_cloak = FALSE;
-	boolean wears_gloves = FALSE;
-	boolean wears_helmet = FALSE;
-	boolean wears_bracers = FALSE;
-	boolean wears_boots = FALSE;
-	boolean wears_shield = FALSE;
-	boolean wears_amulet = FALSE;
-	boolean wears_ringr = FALSE;
-	boolean wears_ringl = FALSE;
-	boolean wears_misc1 = FALSE;
+    boolean wears_shirt = FALSE;
+    boolean wears_suit = FALSE;
+    boolean wears_robe = FALSE;
+    boolean wears_cloak = FALSE;
+    boolean wears_gloves = FALSE;
+    boolean wears_helmet = FALSE;
+    boolean wears_bracers = FALSE;
+    boolean wears_boots = FALSE;
+    boolean wears_shield = FALSE;
+    boolean wears_amulet = FALSE;
+    boolean wears_ringr = FALSE;
+    boolean wears_ringl = FALSE;
+    boolean wears_misc1 = FALSE;
 
-	struct obj* old_shirt = which_armor(mon, W_ARMU);
-	struct obj* old_suit = which_armor(mon, W_ARM);
-	struct obj* old_robe = which_armor(mon, W_ARMO);
-	struct obj* old_cloak = which_armor(mon, W_ARMC);
-	struct obj* old_gloves = which_armor(mon, W_ARMG);
-	struct obj* old_helmet = which_armor(mon, W_ARMH);
-	struct obj* old_bracers = which_armor(mon, W_ARMB);
-	struct obj* old_boots = which_armor(mon, W_ARMF);
-	struct obj* old_shield = which_armor(mon, W_ARMS);
-	struct obj* old_amulet = which_armor(mon, W_AMUL);
-	struct obj* old_ringr = which_armor(mon, W_RINGR);
-	struct obj* old_ringl = which_armor(mon, W_RINGL);
-	struct obj* old_misc1 = which_armor(mon, W_MISC);
+    struct obj* old_shirt = which_armor(mon, W_ARMU);
+    struct obj* old_suit = which_armor(mon, W_ARM);
+    struct obj* old_robe = which_armor(mon, W_ARMO);
+    struct obj* old_cloak = which_armor(mon, W_ARMC);
+    struct obj* old_gloves = which_armor(mon, W_ARMG);
+    struct obj* old_helmet = which_armor(mon, W_ARMH);
+    struct obj* old_bracers = which_armor(mon, W_ARMB);
+    struct obj* old_boots = which_armor(mon, W_ARMF);
+    struct obj* old_shield = which_armor(mon, W_ARMS);
+    struct obj* old_amulet = which_armor(mon, W_AMUL);
+    struct obj* old_ringr = which_armor(mon, W_RINGR);
+    struct obj* old_ringl = which_armor(mon, W_RINGL);
+    struct obj* old_misc1 = which_armor(mon, W_MISC);
 
-	int old_shirt_delay = old_shirt ? objects[old_shirt->otyp].oc_delay : 0;
-	int old_suit_delay = old_suit ? objects[old_suit->otyp].oc_delay : 0;
-	int old_robe_delay = old_robe ? objects[old_robe->otyp].oc_delay : 0;
-	int old_cloak_delay = old_cloak ? objects[old_cloak->otyp].oc_delay : 0;
-	int old_gloves_delay = old_gloves ? objects[old_gloves->otyp].oc_delay : 0;
-	int old_helmet_delay = old_helmet ? objects[old_helmet->otyp].oc_delay : 0;
-	int old_bracers_delay = old_bracers ? objects[old_bracers->otyp].oc_delay : 0;
-	int old_boots_delay = old_boots ? objects[old_boots->otyp].oc_delay : 0;
-	int old_shield_delay = old_shield ? objects[old_shield->otyp].oc_delay : 0;
-	int old_amulet_delay = old_amulet ? objects[old_amulet->otyp].oc_delay : 0;
-	int old_ringr_delay = old_ringr ? objects[old_ringr->otyp].oc_delay : 0;
-	int old_ringl_delay = old_ringl ? objects[old_ringl->otyp].oc_delay : 0;
-	int old_misc1_delay = old_misc1 ? objects[old_misc1->otyp].oc_delay : 0;
+    int old_shirt_delay = old_shirt ? objects[old_shirt->otyp].oc_delay : 0;
+    int old_suit_delay = old_suit ? objects[old_suit->otyp].oc_delay : 0;
+    int old_robe_delay = old_robe ? objects[old_robe->otyp].oc_delay : 0;
+    int old_cloak_delay = old_cloak ? objects[old_cloak->otyp].oc_delay : 0;
+    int old_gloves_delay = old_gloves ? objects[old_gloves->otyp].oc_delay : 0;
+    int old_helmet_delay = old_helmet ? objects[old_helmet->otyp].oc_delay : 0;
+    int old_bracers_delay = old_bracers ? objects[old_bracers->otyp].oc_delay : 0;
+    int old_boots_delay = old_boots ? objects[old_boots->otyp].oc_delay : 0;
+    int old_shield_delay = old_shield ? objects[old_shield->otyp].oc_delay : 0;
+    int old_amulet_delay = old_amulet ? objects[old_amulet->otyp].oc_delay : 0;
+    int old_ringr_delay = old_ringr ? objects[old_ringr->otyp].oc_delay : 0;
+    int old_ringl_delay = old_ringl ? objects[old_ringl->otyp].oc_delay : 0;
+    int old_misc1_delay = old_misc1 ? objects[old_misc1->otyp].oc_delay : 0;
 
-	/* Main armor */
-	if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && old_cloak->cursed) || (old_robe && old_robe->cursed) || (old_suit && old_suit->cursed))) )
-	{
-		wears_shirt = m_dowear_type(mon, W_ARMU, creation, FALSE);
-	}
+    /* Main armor */
+    if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && old_cloak->cursed) || (old_robe && old_robe->cursed) || (old_suit && old_suit->cursed))) )
+    {
+        wears_shirt = m_dowear_type(mon, W_ARMU, creation, FALSE);
+    }
 
-	if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && old_cloak->cursed) || (old_robe && old_robe->cursed))) )
-		wears_suit = m_dowear_type(mon, W_ARM, creation, FALSE);
-	else
-		wears_suit = m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
+    if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !((old_cloak && old_cloak->cursed) || (old_robe && old_robe->cursed))) )
+        wears_suit = m_dowear_type(mon, W_ARM, creation, FALSE);
+    else
+        wears_suit = m_dowear_type(mon, W_ARM, creation, RACE_EXCEPTION);
 
-	if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !(old_cloak && old_cloak->cursed)))
-	{
-		wears_robe = m_dowear_type(mon, W_ARMO, creation, FALSE);
-	}
+    if (!cantweararm(mon->data) && (cursed_items_are_positive_mon(mon) || !(old_cloak && old_cloak->cursed)))
+    {
+        wears_robe = m_dowear_type(mon, W_ARMO, creation, FALSE);
+    }
 
-	if (!cantweararm(mon->data) || mon->data->msize == MZ_SMALL)
-	{
-		wears_robe = m_dowear_type(mon, W_ARMC, creation, FALSE);
-	}
+    if (!cantweararm(mon->data) || mon->data->msize == MZ_SMALL)
+    {
+        wears_robe = m_dowear_type(mon, W_ARMC, creation, FALSE);
+    }
 
-	/* Other armor types */
-	if (has_place_to_put_helmet_on(mon->data))
-		wears_helmet = m_dowear_type(mon, W_ARMH, creation, FALSE);
+    /* Other armor types */
+    if (has_place_to_put_helmet_on(mon->data))
+        wears_helmet = m_dowear_type(mon, W_ARMH, creation, FALSE);
     if (!nohands(mon->data) && (!MON_WEP(mon) || !bimanual(MON_WEP(mon))))
-		wears_shield = m_dowear_type(mon, W_ARMS, creation, FALSE);
-	if (!nohands(mon->data) && !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)))
-		wears_gloves = m_dowear_type(mon, W_ARMG, creation, FALSE);
+        wears_shield = m_dowear_type(mon, W_ARMS, creation, FALSE);
+    if (!nohands(mon->data) && !(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)))
+        wears_gloves = m_dowear_type(mon, W_ARMG, creation, FALSE);
     if (!nolimbs(mon->data) && !slithy(mon->data) && mon->data->mlet != S_CENTAUR)
         wears_boots = m_dowear_type(mon, W_ARMF, creation, FALSE);
-	if (!nolimbs(mon->data))
-		wears_bracers = m_dowear_type(mon, W_ARMB, creation, FALSE);
+    if (!nolimbs(mon->data))
+        wears_bracers = m_dowear_type(mon, W_ARMB, creation, FALSE);
 
 
-	/* Accessories */
-	if (has_neck(mon->data))
-		wears_amulet = m_dowear_type(mon, W_AMUL, creation, FALSE);
-	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || (!(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed))))
-		wears_ringr = m_dowear_type(mon, W_RINGR, creation, FALSE);
-	if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || (!(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed))))
-		wears_ringl = m_dowear_type(mon, W_RINGL, creation, FALSE);
-	if (!nolimbs(mon->data))
-		wears_misc1 = m_dowear_type(mon, W_MISC, creation, FALSE);
+    /* Accessories */
+    if (has_neck(mon->data))
+        wears_amulet = m_dowear_type(mon, W_AMUL, creation, FALSE);
+    if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || (!(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed))))
+        wears_ringr = m_dowear_type(mon, W_RINGR, creation, FALSE);
+    if (!nohands(mon->data) && (cursed_items_are_positive_mon(mon) || (!(MON_WEP(mon) && mwelded(MON_WEP(mon), mon)) && !(old_gloves && old_gloves->cursed))))
+        wears_ringl = m_dowear_type(mon, W_RINGL, creation, FALSE);
+    if (!nolimbs(mon->data))
+        wears_misc1 = m_dowear_type(mon, W_MISC, creation, FALSE);
 
-	update_all_mon_statistics(mon, creation);
+    update_all_mon_statistics(mon, creation);
 
-	struct obj* new_shirt = which_armor(mon, W_ARMU);
-	struct obj* new_suit = which_armor(mon, W_ARM);
-	struct obj* new_robe = which_armor(mon, W_ARMO);
-	struct obj* new_cloak = which_armor(mon, W_ARMC);
-	struct obj* new_gloves = which_armor(mon, W_ARMG);
-	struct obj* new_helmet = which_armor(mon, W_ARMH);
-	struct obj* new_bracers = which_armor(mon, W_ARMB);
-	struct obj* new_boots = which_armor(mon, W_ARMF);
-	struct obj* new_shield = which_armor(mon, W_ARMS);
-	struct obj* new_amulet = which_armor(mon, W_AMUL);
-	struct obj* new_ringr = which_armor(mon, W_RINGR);
-	struct obj* new_ringl = which_armor(mon, W_RINGL);
-	struct obj* new_misc1 = which_armor(mon, W_MISC);
+    struct obj* new_shirt = which_armor(mon, W_ARMU);
+    struct obj* new_suit = which_armor(mon, W_ARM);
+    struct obj* new_robe = which_armor(mon, W_ARMO);
+    struct obj* new_cloak = which_armor(mon, W_ARMC);
+    struct obj* new_gloves = which_armor(mon, W_ARMG);
+    struct obj* new_helmet = which_armor(mon, W_ARMH);
+    struct obj* new_bracers = which_armor(mon, W_ARMB);
+    struct obj* new_boots = which_armor(mon, W_ARMF);
+    struct obj* new_shield = which_armor(mon, W_ARMS);
+    struct obj* new_amulet = which_armor(mon, W_AMUL);
+    struct obj* new_ringr = which_armor(mon, W_RINGR);
+    struct obj* new_ringl = which_armor(mon, W_RINGL);
+    struct obj* new_misc1 = which_armor(mon, W_MISC);
 
-	int new_shirt_delay = new_shirt ? objects[new_shirt->otyp].oc_delay : 0;
-	int new_suit_delay = new_suit ? objects[new_suit->otyp].oc_delay : 0;
-	int new_robe_delay = new_robe ? objects[new_robe->otyp].oc_delay : 0;
-	int new_cloak_delay = new_cloak ? objects[new_cloak->otyp].oc_delay : 0;
-	int new_gloves_delay = new_gloves ? objects[new_gloves->otyp].oc_delay : 0;
-	int new_helmet_delay = new_helmet ? objects[new_helmet->otyp].oc_delay : 0;
-	int new_bracers_delay = new_bracers ? objects[new_bracers->otyp].oc_delay : 0;
-	int new_boots_delay = new_boots ? objects[new_boots->otyp].oc_delay : 0;
-	int new_shield_delay = new_shield ? objects[new_shield->otyp].oc_delay : 0;
-	int new_amulet_delay = new_amulet ? objects[new_amulet->otyp].oc_delay : 0;
-	int new_ringr_delay = new_ringr ? objects[new_ringr->otyp].oc_delay : 0;
-	int new_ringl_delay = new_ringl ? objects[new_ringl->otyp].oc_delay : 0;
-	int new_misc1_delay = new_misc1 ? objects[new_misc1->otyp].oc_delay : 0;
+    int new_shirt_delay = new_shirt ? objects[new_shirt->otyp].oc_delay : 0;
+    int new_suit_delay = new_suit ? objects[new_suit->otyp].oc_delay : 0;
+    int new_robe_delay = new_robe ? objects[new_robe->otyp].oc_delay : 0;
+    int new_cloak_delay = new_cloak ? objects[new_cloak->otyp].oc_delay : 0;
+    int new_gloves_delay = new_gloves ? objects[new_gloves->otyp].oc_delay : 0;
+    int new_helmet_delay = new_helmet ? objects[new_helmet->otyp].oc_delay : 0;
+    int new_bracers_delay = new_bracers ? objects[new_bracers->otyp].oc_delay : 0;
+    int new_boots_delay = new_boots ? objects[new_boots->otyp].oc_delay : 0;
+    int new_shield_delay = new_shield ? objects[new_shield->otyp].oc_delay : 0;
+    int new_amulet_delay = new_amulet ? objects[new_amulet->otyp].oc_delay : 0;
+    int new_ringr_delay = new_ringr ? objects[new_ringr->otyp].oc_delay : 0;
+    int new_ringl_delay = new_ringl ? objects[new_ringl->otyp].oc_delay : 0;
+    int new_misc1_delay = new_misc1 ? objects[new_misc1->otyp].oc_delay : 0;
 
-	boolean takes_off_old_suit = wears_shirt || wears_suit;
-	boolean takes_off_old_robe = wears_shirt || wears_suit || wears_robe;
-	boolean takes_off_old_cloak = wears_shirt || wears_suit || wears_robe || wears_cloak;
+    boolean takes_off_old_suit = wears_shirt || wears_suit;
+    boolean takes_off_old_robe = wears_shirt || wears_suit || wears_robe;
+    boolean takes_off_old_cloak = wears_shirt || wears_suit || wears_robe || wears_cloak;
 
-	int totaldelay = 0;
-	totaldelay += takes_off_old_cloak ? old_cloak_delay : 0;
-	totaldelay += takes_off_old_robe ? old_robe_delay : 0;
-	totaldelay += takes_off_old_suit ? old_suit_delay : 0;
-	totaldelay += wears_shirt ? old_shirt_delay + new_shirt_delay : 0;
-	totaldelay += wears_suit ? new_suit_delay : 0;
-	totaldelay += wears_robe ? new_robe_delay : 0;
-	totaldelay += wears_cloak ? new_cloak_delay : 0;
-	totaldelay += wears_gloves ? old_gloves_delay + new_gloves_delay : 0;
-	totaldelay += wears_helmet ? old_helmet_delay + new_helmet_delay : 0;
-	totaldelay += wears_bracers ? old_bracers_delay + new_bracers_delay : 0;
-	totaldelay += wears_boots ? old_boots_delay + new_boots_delay : 0;
-	totaldelay += wears_shield ? old_shield_delay + new_shield_delay : 0;
-	totaldelay += wears_amulet ? old_amulet_delay + new_amulet_delay : 0;
-	totaldelay += wears_ringl ? old_ringl_delay + new_ringl_delay : 0;
-	totaldelay += wears_ringr ? old_ringr_delay + new_ringr_delay : 0;
-	totaldelay += wears_misc1 ? old_misc1_delay + new_misc1_delay : 0;
+    int totaldelay = 0;
+    totaldelay += takes_off_old_cloak ? old_cloak_delay : 0;
+    totaldelay += takes_off_old_robe ? old_robe_delay : 0;
+    totaldelay += takes_off_old_suit ? old_suit_delay : 0;
+    totaldelay += wears_shirt ? old_shirt_delay + new_shirt_delay : 0;
+    totaldelay += wears_suit ? new_suit_delay : 0;
+    totaldelay += wears_robe ? new_robe_delay : 0;
+    totaldelay += wears_cloak ? new_cloak_delay : 0;
+    totaldelay += wears_gloves ? old_gloves_delay + new_gloves_delay : 0;
+    totaldelay += wears_helmet ? old_helmet_delay + new_helmet_delay : 0;
+    totaldelay += wears_bracers ? old_bracers_delay + new_bracers_delay : 0;
+    totaldelay += wears_boots ? old_boots_delay + new_boots_delay : 0;
+    totaldelay += wears_shield ? old_shield_delay + new_shield_delay : 0;
+    totaldelay += wears_amulet ? old_amulet_delay + new_amulet_delay : 0;
+    totaldelay += wears_ringl ? old_ringl_delay + new_ringl_delay : 0;
+    totaldelay += wears_ringr ? old_ringr_delay + new_ringr_delay : 0;
+    totaldelay += wears_misc1 ? old_misc1_delay + new_misc1_delay : 0;
 
-	mon->mfrozen = totaldelay;
-	if (mon->mfrozen)
-		mon->mcanmove = 0;
+    mon->mfrozen = totaldelay;
+    if (mon->mfrozen)
+        mon->mcanmove = 0;
 
 }
 
@@ -1845,17 +1845,17 @@ boolean racialexception;
         return 0;
     if (old && flag == W_AMUL)
         return 0; /* no such thing as better amulets */
-	if (old && flag == W_RINGL)
-		return 0; /* no such thing as better rings */
-	if (old && flag == W_RINGR)
-		return 0; /* no such thing as better rings */
-	if (old && flag == W_MISC)
-		return 0; /* no such thing as better misc items */
-	best = old;
+    if (old && flag == W_RINGL)
+        return 0; /* no such thing as better rings */
+    if (old && flag == W_RINGR)
+        return 0; /* no such thing as better rings */
+    if (old && flag == W_MISC)
+        return 0; /* no such thing as better misc items */
+    best = old;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         switch (flag) 
-		{
+        {
         case W_AMUL:
             if (obj->oclass != AMULET_CLASS
                 || (obj->otyp != AMULET_OF_LIFE_SAVING
@@ -1863,20 +1863,20 @@ boolean racialexception;
                 continue;
             best = obj;
             goto outer_break; /* no such thing as better amulets */
-		case W_RINGR:
-		case W_RINGL:
-			if (obj->oclass != RING_CLASS || (is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
-				continue;
-			best = obj;
-			goto outer_break; /* no such thing as better rings */
-		case W_MISC:
-			if (obj->oclass != MISCELLANEOUS_CLASS || (is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
-				continue;
-			if (objects[obj->otyp].oc_subtyp != MISC_BELT && !likes_magic(mon->data) && !(mon->mnum == PM_MINOTAUR && objects[obj->otyp].oc_subtyp == MISC_NOSERING))
-				continue;
-			best = obj;
-			goto outer_break; /* no such thing as better misc items */
-		case W_ARMU:
+        case W_RINGR:
+        case W_RINGL:
+            if (obj->oclass != RING_CLASS || (is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
+                continue;
+            best = obj;
+            goto outer_break; /* no such thing as better rings */
+        case W_MISC:
+            if (obj->oclass != MISCELLANEOUS_CLASS || (is_priest(mon->data) && obj->cursed) || is_cursed_magic_item(obj) || (obj->owornmask && obj->owornmask != flag))
+                continue;
+            if (objects[obj->otyp].oc_subtyp != MISC_BELT && !likes_magic(mon->data) && !(mon->mnum == PM_MINOTAUR && objects[obj->otyp].oc_subtyp == MISC_NOSERING))
+                continue;
+            best = obj;
+            goto outer_break; /* no such thing as better misc items */
+        case W_ARMU:
             if (!is_shirt(obj))
                 continue;
             break;
@@ -1909,15 +1909,15 @@ boolean racialexception;
             if (!is_boots(obj))
                 continue;
             break;
-		case W_ARMB:
-			if (!is_bracers(obj))
-				continue;
-			break;
-		case W_ARMO:
-			if (!is_robe(obj))
-				continue;
-			break;
-		case W_ARM:
+        case W_ARMB:
+            if (!is_bracers(obj))
+                continue;
+            break;
+        case W_ARMO:
+            if (!is_robe(obj))
+                continue;
+            break;
+        case W_ARM:
             if (!is_suit(obj))
                 continue;
             if (racialexception && (racial_exception(mon, obj) < 1))
@@ -1944,19 +1944,19 @@ outer_break:
     /* same auto-cursing behavior as for hero */
     autocurse = ((objects[best->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN)  && !best->cursed);
 
-	/* Take old off */
-	if (old)
-	{/* do this first to avoid "(being worn)" */
-		old->owornmask = 0L;
-		/* intrinsics are updated below */
-		if (mon == u.usteed && old->otyp == SADDLE)
-			dismount_steed(DISMOUNT_FELL);
-	}
+    /* Take old off */
+    if (old)
+    {/* do this first to avoid "(being worn)" */
+        old->owornmask = 0L;
+        /* intrinsics are updated below */
+        if (mon == u.usteed && old->otyp == SADDLE)
+            dismount_steed(DISMOUNT_FELL);
+    }
 
     if (!creation) 
-	{
+    {
         if (canseemon(mon)) 
-		{
+        {
             char buf[BUFSZ];
 
             if (old)
@@ -1972,8 +1972,8 @@ outer_break:
         } /* can see it */
     }
 
-	/* Put new on */
-	mon->worn_item_flags |= flag;
+    /* Put new on */
+    mon->worn_item_flags |= flag;
     best->owornmask |= flag;
     if (autocurse)
         curse(best);
@@ -1987,7 +1987,7 @@ outer_break:
              Amonnam(mon)); */
     }
 
-	return 1;
+    return 1;
 }
 #undef RACE_EXCEPTION
 
@@ -2003,15 +2003,15 @@ long flag;
             return uarm;
         case W_ARMC:
             return uarmc;
-		case W_ARMO:
-			return uarmo;
-		case W_ARMH:
+        case W_ARMO:
+            return uarmo;
+        case W_ARMH:
             return uarmh;
-		case W_ARMS:
-			return ((uarms && is_shield(uarms)) ? uarms : (struct obj*)0);
-		case W_ARMB:
-			return uarmb;
-		case W_ARMG:
+        case W_ARMS:
+            return ((uarms && is_shield(uarms)) ? uarms : (struct obj*)0);
+        case W_ARMB:
+            return uarmb;
+        case W_ARMG:
             return uarmg;
         case W_ARMF:
             return uarmf;
@@ -2039,14 +2039,14 @@ struct monst *mon;
 struct obj *obj;
 {
     mon->worn_item_flags &= ~obj->owornmask;
-	if (obj->owornmask)
-	{
-		obj->owornmask = 0L;
-		update_all_mon_statistics(mon, FALSE);
-		if (mon == u.usteed && obj->otyp == SADDLE)
-			dismount_steed(DISMOUNT_FELL);
+    if (obj->owornmask)
+    {
+        obj->owornmask = 0L;
+        update_all_mon_statistics(mon, FALSE);
+        if (mon == u.usteed && obj->otyp == SADDLE)
+            dismount_steed(DISMOUNT_FELL);
 
-	}
+    }
 
     obj_extract_self(obj);
     place_object(obj, mon->mx, mon->my);
@@ -2355,19 +2355,19 @@ struct obj *obj;
     /* currently only does speed boots, but might be expanded if monsters
      * get to use more armor abilities
      */
-	if (obj) 
-	{
-		if ((objects[obj->otyp].oc_oprop == LIGHTNING_FAST || objects[obj->otyp].oc_oprop2 == LIGHTNING_FAST || objects[obj->otyp].oc_oprop3 == LIGHTNING_FAST)
-			&& !(mon->mprops[LIGHTNING_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
-			return 50;
-		if ((objects[obj->otyp].oc_oprop == SUPER_FAST || objects[obj->otyp].oc_oprop2 == SUPER_FAST || objects[obj->otyp].oc_oprop3 == SUPER_FAST)
-			&& !(mon->mprops[SUPER_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
-			return 40;
-		if ((objects[obj->otyp].oc_oprop == ULTRA_FAST || objects[obj->otyp].oc_oprop2 == ULTRA_FAST || objects[obj->otyp].oc_oprop3 == ULTRA_FAST)
-			&& !(mon->mprops[ULTRA_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
-			return 30;
-		if ((objects[obj->otyp].oc_oprop == VERY_FAST || objects[obj->otyp].oc_oprop2 == VERY_FAST || objects[obj->otyp].oc_oprop3 == VERY_FAST)
-			&& !(mon->mprops[VERY_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
+    if (obj) 
+    {
+        if ((objects[obj->otyp].oc_oprop == LIGHTNING_FAST || objects[obj->otyp].oc_oprop2 == LIGHTNING_FAST || objects[obj->otyp].oc_oprop3 == LIGHTNING_FAST)
+            && !(mon->mprops[LIGHTNING_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
+            return 50;
+        if ((objects[obj->otyp].oc_oprop == SUPER_FAST || objects[obj->otyp].oc_oprop2 == SUPER_FAST || objects[obj->otyp].oc_oprop3 == SUPER_FAST)
+            && !(mon->mprops[SUPER_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
+            return 40;
+        if ((objects[obj->otyp].oc_oprop == ULTRA_FAST || objects[obj->otyp].oc_oprop2 == ULTRA_FAST || objects[obj->otyp].oc_oprop3 == ULTRA_FAST)
+            && !(mon->mprops[ULTRA_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
+            return 30;
+        if ((objects[obj->otyp].oc_oprop == VERY_FAST || objects[obj->otyp].oc_oprop2 == VERY_FAST || objects[obj->otyp].oc_oprop3 == VERY_FAST)
+            && !(mon->mprops[VERY_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
             return 20;
     }
     return 0;
@@ -2403,17 +2403,17 @@ struct obj *obj;
 int
 count_unworn_items(struct obj* inv)
 {
-	if (!inv)
-		return 0;
+    if (!inv)
+        return 0;
 
-	int cnt = 0;
-	for (struct obj* otmp = inv; otmp; otmp = otmp->nobj)
-	{
-		if (otmp->owornmask == 0UL)
-		{
-			cnt++;
-		}
-	}
-	return cnt;
+    int cnt = 0;
+    for (struct obj* otmp = inv; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->owornmask == 0UL)
+        {
+            cnt++;
+        }
+    }
+    return cnt;
 }
 /*worn.c*/

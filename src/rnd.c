@@ -1,4 +1,4 @@
-/* GnollHack 4.0	rnd.c	$NHDT-Date: 1524689470 2018/04/25 20:51:10 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.18 $ */
+/* GnollHack 4.0    rnd.c    $NHDT-Date: 1524689470 2018/04/25 20:51:10 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.18 $ */
 /*      Copyright (c) 2004 by Robert Patrick Rankin               */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -45,11 +45,11 @@ int FDECL((*fn), (int));
     unsigned i;
     int rngindx = whichrng(fn);
 
-	if (rngindx < 0)
-	{
-		panic("Bad rng function passed to init_isaac64().");
-		return;
-	}
+    if (rngindx < 0)
+    {
+        panic("Bad rng function passed to init_isaac64().");
+        return;
+    }
 
     for (i = 0; i < sizeof seed; i++) {
         new_rng_state[i] = (unsigned char) (seed & 0xFF);

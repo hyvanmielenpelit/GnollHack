@@ -1,4 +1,4 @@
-/* GnollHack 4.0	explode.c	$NHDT-Date: 1545182146 2018/12/19 01:15:46 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.60 $ */
+/* GnollHack 4.0    explode.c    $NHDT-Date: 1545182146 2018/12/19 01:15:46 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.60 $ */
 /*      Copyright (C) 1990 by Ken Arromdee */
 /* GnollHack may be freely redistributed.  See license for details. */
 
@@ -34,10 +34,10 @@ int objtype;
 char olet;
 int expltype;
 {
-	int i, j, k;
+    int i, j, k;
     boolean starting = 1;
     boolean visible, any_shield;
-	boolean instadeath = FALSE;
+    boolean instadeath = FALSE;
     int uhurt = 0; /* 0=unhurt, 1=items damaged, 2=you and items damaged */
     const char *str = (const char *) 0;
     double idamres = 0, idamnonres= 0;
@@ -102,14 +102,14 @@ int expltype;
                         || strstri(str, "s' explosion")));
         adtyp = AD_PHYS;
     } 
-	else
-	{
+    else
+    {
         switch (abs(type) % 10)
-		{
+        {
         case 0:
-		case 3:
-		case 9:
-			str = "magical blast";
+        case 3:
+        case 9:
+            str = "magical blast";
             adtyp = AD_MAGM;
             break;
         case 1:
@@ -125,8 +125,8 @@ int expltype;
         case 4:
             str = "disintegration field";
             adtyp = AD_DISN;
-			instadeath = TRUE;
-			break;
+            instadeath = TRUE;
+            break;
         case 5:
             str = "ball of lightning";
             adtyp = AD_ELEC;
@@ -139,12 +139,12 @@ int expltype;
             str = "splash of acid";
             adtyp = AD_ACID;
             break;
-		case 8:
-			str = "death field";
-			adtyp = AD_DRAY;
-			instadeath = TRUE;
-			break;
-		default:
+        case 8:
+            str = "death field";
+            adtyp = AD_DRAY;
+            instadeath = TRUE;
+            break;
+        default:
             impossible("explosion base type %d?", type);
             return;
         }
@@ -159,26 +159,26 @@ int expltype;
             if(objects[objtype].oc_damagetype != AD_NONE)
                 adtyp = (uchar)objects[objtype].oc_damagetype;
         }
-	}
+    }
     int damui = objtype > 0 ? get_spell_damage(objtype, origmonst, &youmonst) : max(0, d(dmg_n, dmg_d) + dmg_p);
-	double damu = adjust_damage(damui, origmonst, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
-	if (olet == WAND_CLASS)
-	{
-		switch (Role_switch)
-		{
-		case PM_PRIEST:
-		case PM_MONK:
-		case PM_WIZARD:
-			damu /= 5;
-			break;
-		case PM_HEALER:
-		case PM_KNIGHT:
-			damu /= 2;
-			break;
-		default:
-			break;
-		}
-	}
+    double damu = adjust_damage(damui, origmonst, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
+    if (olet == WAND_CLASS)
+    {
+        switch (Role_switch)
+        {
+        case PM_PRIEST:
+        case PM_MONK:
+        case PM_WIZARD:
+            damu /= 5;
+            break;
+        case PM_HEALER:
+        case PM_KNIGHT:
+            damu /= 2;
+            break;
+        default:
+            break;
+        }
+    }
     any_shield = visible = FALSE;
     for (i = 0; i < 3; i++)
         for (j = 0; j < 3; j++) 
@@ -212,13 +212,13 @@ int expltype;
                 case AD_ELEC:
                     explmask[i][j] = !!Shock_immunity;
                     break;
-				case AD_DRAY:
-					explmask[i][j] = !!Death_resistance;
-					break;
-				case AD_WERE:
-					explmask[i][j] = !!Lycanthropy_resistance;
-					break;
-				case AD_DRST:
+                case AD_DRAY:
+                    explmask[i][j] = !!Death_resistance;
+                    break;
+                case AD_WERE:
+                    explmask[i][j] = !!Lycanthropy_resistance;
+                    break;
+                case AD_DRST:
                     explmask[i][j] = !!Poison_resistance;
                     break;
                 case AD_ACID:
@@ -258,10 +258,10 @@ int expltype;
                     case AD_DISN:
                         explmask[i][j] |= resists_disint(mtmp);
                         break;
-					case AD_DRAY:
-						explmask[i][j] |= resists_death(mtmp);
-						break;
-					case AD_ELEC:
+                    case AD_DRAY:
+                        explmask[i][j] |= resists_death(mtmp);
+                        break;
+                    case AD_ELEC:
                         explmask[i][j] |= is_mon_immune_to_elec(mtmp);
                         break;
                     case AD_DRST:
@@ -468,10 +468,10 @@ int expltype;
                         case AD_DISN:
                             adj = "perforated";
                             break;
-						case AD_DRAY:
-							adj = "irradiated by pure energy";
-							break;
-						case AD_ELEC:
+                        case AD_DRAY:
+                            adj = "irradiated by pure energy";
+                            break;
+                        case AD_ELEC:
                             adj = "shocked";
                             break;
                         case AD_DRST:
@@ -502,10 +502,10 @@ int expltype;
                         case AD_DISN:
                             adj = "perforated";
                             break;
-						case AD_DRAY:
-							adj = "overwhelmed by pure energy";
-							break;
-						case AD_ELEC:
+                        case AD_DRAY:
+                            adj = "overwhelmed by pure energy";
+                            break;
+                        case AD_ELEC:
                             adj = "shocked";
                             break;
                         case AD_DRST:
@@ -541,12 +541,12 @@ int expltype;
                 double ddam = adjust_damage(ddami, (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
 
                 if (explmask[i][j] == 1) 
-				{
+                {
                     golemeffects(mtmp, (int) adtyp, ddam + idamres);
-					deduct_monster_hp(mtmp, idamnonres);
+                    deduct_monster_hp(mtmp, idamnonres);
                 } 
-				else
-				{
+                else
+                {
                     /* call resist with 0 and do damage manually so 1) we can
                      * get out the message before doing the damage, and 2) we
                      * can call mondied, not killed, if it's not your blast
@@ -560,13 +560,13 @@ int expltype;
                         if (cansee(i + x - 1, j + y - 1) || inside_engulfer)
                             pline("%s resists the %s!", Monnam(mtmp), str);
                         mdam = ddam/2;
-						if(instadeath)
-						{
-							instadeath = FALSE;
-							mdam = 0;
-						}
-					}
-					else
+                        if(instadeath)
+                        {
+                            instadeath = FALSE;
+                            mdam = 0;
+                        }
+                    }
+                    else
                     /* if grabber is reaching into hero's spot and
                        hero's spot is within explosion radius, grabber
                        gets hit by double damage */
@@ -582,33 +582,33 @@ int expltype;
                     else if (is_mon_immune_to_fire(mtmp) && adtyp == AD_COLD)
                         mdam *= 2;
 #endif
-					if (instadeath)
-						mtmp->mhp = 0;
-					else
-					{
+                    if (instadeath)
+                        mtmp->mhp = 0;
+                    else
+                    {
                         int hp_before = mtmp->mhp;
-						deduct_monster_hp(mtmp, mdam + idamres + idamnonres);
+                        deduct_monster_hp(mtmp, mdam + idamres + idamnonres);
                         int hp_after = mtmp->mhp;
                         int damage_dealt = hp_before - hp_after;
                         if (damage_dealt > 0 && canseemon(mtmp))
                             pline("%s sustains %d damage!", Monnam(mtmp), damage_dealt);
 
                         //mtmp->mhp -= mdam;
-						//mtmp->mhp -= (idamres + idamnonres);
-					}
+                        //mtmp->mhp -= (idamres + idamnonres);
+                    }
                 }
                 if (DEADMONSTER(mtmp))
-				{
+                {
                     int xkflg = ((adtyp == AD_FIRE
                                   && completelyburns(mtmp->data))
                                  ? XKILL_NOCORPSE : 0);
 
                     if (!context.mon_moving)
-					{
+                    {
                         xkilled(mtmp, XKILL_GIVEMSG | xkflg);
                     } 
-					else if (mdef && mtmp == mdef) 
-					{
+                    else if (mdef && mtmp == mdef) 
+                    {
                         /* 'mdef' killed self trying to cure being turned
                          * into slime due to some action by the player.
                          * Hero gets the credit (experience) and most of
@@ -624,15 +624,15 @@ int expltype;
                                                                 : "killed");
                         xkilled(mtmp, XKILL_NOMSG | XKILL_NOCONDUCT | xkflg);
                     } 
-					else 
-					{
+                    else 
+                    {
                         if (xkflg)
                             adtyp = AD_RBRE; /* no corpse */
                         monkilled(mtmp, "", (int) adtyp);
                     }
                 }
-				else if (!context.mon_moving) 
-				{
+                else if (!context.mon_moving) 
+                {
                     /* all affected monsters, even if mdef is set */
                     setmangry(mtmp, TRUE);
                 }
@@ -640,19 +640,19 @@ int expltype;
 
     /* Do your injury last */
     if (uhurt) 
-	{
+    {
         /* give message for any monster-induced explosion
            or player-induced one other than scroll of fire */
         if (flags.verbose && (type < 0 || olet != SCROLL_CLASS)) 
-		{
+        {
             if (do_hallu) 
-			{ /* (see explanation above) */
+            { /* (see explanation above) */
                 do 
-				{
+                {
                     Sprintf(hallu_buf, "%s explosion",
                             s_suffix(rndmonnam((char *) 0)));
                 } 
-				while (*hallu_buf != lowc(*hallu_buf));
+                while (*hallu_buf != lowc(*hallu_buf));
 
                 str = hallu_buf;
             }
@@ -663,9 +663,9 @@ int expltype;
         if (adtyp == AD_FIRE)
             burn_away_slime();
         if (Invulnerable)
-		{
+        {
             damu = 0;
-			instadeath = FALSE;
+            instadeath = FALSE;
             You("are unharmed!");
         }
         if (adtyp == AD_FIRE)
@@ -678,7 +678,7 @@ int expltype;
 
         ugolemeffects((int) adtyp, damu);
         if (uhurt == 2 && damu) 
-		{
+        {
             /* if poly'd hero is grabbing another victim, hero takes
                double damage (note: don't rely on u.ustuck here because
                that victim might have been killed when hit by the blast) */
@@ -686,16 +686,16 @@ int expltype;
             if (grabbing && dist2((int) grabxy.x, (int) grabxy.y, x, y) <= 2)
                 damu *= 2;
 
-			if (instadeath)
-			{
-				if (Upolyd)
-					damu = (double)u.mh + 1;
-				else
-					damu = (double)u.uhp + 1;
-			}
+            if (instadeath)
+            {
+                if (Upolyd)
+                    damu = (double)u.mh + 1;
+                else
+                    damu = (double)u.uhp + 1;
+            }
 
             int hp_before = Upolyd ? u.mh : u.uhp;
-			deduct_player_hp(damu);
+            deduct_player_hp(damu);
             int hp_after = Upolyd ? u.mh : u.uhp;
             int damage_dealt = hp_before - hp_after;
             if (damage_dealt > 0)
@@ -703,29 +703,29 @@ int expltype;
         }
 
         if (u.uhp <= 0 || (Upolyd && u.mh <= 0)) 
-		{
+        {
             if (Upolyd) 
-			{
+            {
                 rehumanize();
             }
-			else
-			{
+            else
+            {
                 if (olet == MON_EXPLODE) 
-				{
+                {
                     if (generic) /* explosion was unseen; str=="explosion", */
                         ;        /* killer.name=="gas spore's explosion"    */
                     else if (str != killer.name && str != hallu_buf)
                         Strcpy(killer.name, str);
                     killer.format = KILLED_BY_AN;
                 } 
-				else if (type >= 0 && olet != SCROLL_CLASS) 
-				{
+                else if (type >= 0 && olet != SCROLL_CLASS) 
+                {
                     killer.format = NO_KILLER_PREFIX;
                     Sprintf(killer.name, "caught %sself in %s own %s", uhim(),
                             uhis(), str);
                 } 
-				else 
-				{
+                else 
+                {
                     killer.format = (!strcmpi(str, "tower of flame")
                                      || !strcmpi(str, "fireball"))
                                         ? KILLED_BY_AN
@@ -748,7 +748,7 @@ int expltype;
     }
 
     if (shopdamage) 
-	{
+    {
         pay_for_damage((adtyp == AD_FIRE) ? "burn away"
                           : (adtyp == AD_COLD) ? "shatter"
                              : (adtyp == AD_DISN) ? "disintegrate"

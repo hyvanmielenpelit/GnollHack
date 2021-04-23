@@ -1,4 +1,4 @@
-/* GnollHack 4.0	role.c	$NHDT-Date: 1547086250 2019/01/10 02:10:50 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.56 $ */
+/* GnollHack 4.0    role.c    $NHDT-Date: 1547086250 2019/01/10 02:10:50 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.56 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985-1999. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -45,7 +45,7 @@ const struct Role roles[] = {
       "the College of Archaeology",
       "the Tomb of the Toltec Kings",
       0,
-	  { "", "", "", "", ""},
+      { "", "", "", "", ""},
       PM_ARCHAEOLOGIST,
       NON_PM,
       PM_LORD_CARNARVON,
@@ -122,7 +122,7 @@ const struct Role roles[] = {
       "the Duali Oasis",
       1,
       { "", "", "", "", ""},
-	  PM_BARBARIAN,
+      PM_BARBARIAN,
       NON_PM,
       PM_PELIAS,
       PM_CHIEFTAIN,
@@ -196,7 +196,7 @@ const struct Role roles[] = {
       "the Dragon's Lair",
       2,
       { "Can practice cannibalism", "", "", "", ""},
-	  PM_CAVEMAN,
+      PM_CAVEMAN,
       PM_LITTLE_DOG,
       PM_SHAMAN_KARNOV,
       PM_NEANDERTHAL,
@@ -270,7 +270,7 @@ const struct Role roles[] = {
       "the Temple of Coeus",
       3,
       { "", "", "", "", ""},
-	  PM_HEALER,
+      PM_HEALER,
       NON_PM,
       PM_HIPPOCRATES,
       PM_ATTENDANT,
@@ -343,7 +343,7 @@ const struct Role roles[] = {
       "the Isle of Glass",
       4,
       { "Alignment penalty if attacks disadvantaged monsters", "", "", "", ""},
-	  PM_KNIGHT,
+      PM_KNIGHT,
       PM_PONY,
       PM_KING_ARTHUR,
       PM_PAGE,
@@ -422,7 +422,7 @@ const struct Role roles[] = {
           "-30 to-hit penalty when wearing a suit",
           ""
       },
-	  PM_MONK,
+      PM_MONK,
       NON_PM,
       PM_GRAND_MASTER,
       PM_ABBOT,
@@ -496,7 +496,7 @@ const struct Role roles[] = {
       "the Temple of Nalzok",
       6,
       { "Sees the beatitude of all objects", "Can pray twice as often as normal", "", "", ""},
-	  PM_PRIEST,
+      PM_PRIEST,
       NON_PM,
       PM_ARCH_PRIEST,
       PM_ACOLYTE,
@@ -572,7 +572,7 @@ const struct Role roles[] = {
       "the Assassins' Guild Hall",
       7,
       { "Can backstab fleeing monsters", "", "", "", ""},
-	  PM_ROGUE,
+      PM_ROGUE,
       NON_PM,
       PM_MASTER_OF_THIEVES,
       PM_THUG,
@@ -659,7 +659,7 @@ const struct Role roles[] = {
       "the cave of the wumpus",
       8,
       { "", "", "", "", ""},
-	  PM_RANGER,
+      PM_RANGER,
       PM_LITTLE_DOG /* Orion & canis major */,
       PM_ORION,
       PM_HUNTER,
@@ -733,7 +733,7 @@ const struct Role roles[] = {
       "the Shogun's Castle",
       9,
       { "Starts with a faithful dog", "", "", "", ""},
-	  PM_SAMURAI,
+      PM_SAMURAI,
       PM_LITTLE_DOG,
       PM_LORD_SATO,
       PM_ROSHI,
@@ -806,7 +806,7 @@ const struct Role roles[] = {
       "the Thieves' Guild Hall",
       10,
       { "Worse prices in shops below level 15", "", "", "", ""},
-	  PM_TOURIST,
+      PM_TOURIST,
       PM_SMALL_LUGGAGE,
       PM_TWOFLOWER,
       PM_GUIDE,
@@ -823,7 +823,7 @@ const struct Role roles[] = {
       /* Init   Lower  Higher */
       { 12, 0, 0, 6, 0, 1 }, /* Hit points */
       { 1, 3, 0, 4, 0, 4 }, /* Energy */
-	  MAXULEV,
+      MAXULEV,
       0,
       0,
         {
@@ -879,7 +879,7 @@ const struct Role roles[] = {
       "the cave of Surtur",
       11,
       { "", "", "", "", ""},
-	  PM_VALKYRIE,
+      PM_VALKYRIE,
       PM_DIREWOLF_CUB,
       PM_NORN,
       PM_WARRIOR,
@@ -953,7 +953,7 @@ const struct Role roles[] = {
       "the Tower of Darkness",
       NUM_ROLES - 1,
       { "", "", "", "", ""},
-	  PM_WIZARD,
+      PM_WIZARD,
       PM_KITTEN,
       PM_NEFERET_THE_GREEN,
       PM_APPRENTICE,
@@ -1027,8 +1027,8 @@ struct Role urole = {
     "L", "N", "C",
     "Xxx", "home", "locate",
     0,
-	{ "", "", "", "", ""},
-	NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM,
+    { "", "", "", "", ""},
+    NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM,
     0, 0, 0, 0,
     /* Str Int Wis Dex Con Cha */
     { 7, 7, 7, 7, 7, 7 },
@@ -1086,8 +1086,8 @@ const struct Race races[] = {
         "Hum",
         { "man", "woman" },
         0,
-	    { "", "", "", "", ""},
-		PM_HUMAN,
+        { "", "", "", "", ""},
+        PM_HUMAN,
         PM_HUMAN_MUMMY,
         PM_HUMAN_ZOMBIE,
         MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
@@ -1109,8 +1109,8 @@ const struct Race races[] = {
         "Elf",
         { 0, 0 },
         1,
-	    { "Increased nutrition from lembas wafer", "", "", "", ""},
-		PM_ELF,
+        { "Increased nutrition from lembas wafer", "", "", "", ""},
+        PM_ELF,
         PM_ELF_MUMMY,
         PM_ELF_ZOMBIE,
         MH_ELF | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC,
@@ -1131,8 +1131,8 @@ const struct Race races[] = {
         "Dwa",
         { 0, 0 },
         2,
-	    { "Double digging speed", "Increased nutrition from cram ration", "", "", ""},
-		PM_DWARF,
+        { "Double digging speed", "Increased nutrition from cram ration", "", "", ""},
+        PM_DWARF,
         PM_DWARF_MUMMY,
         PM_DWARF_ZOMBIE,
         MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL,
@@ -1153,8 +1153,8 @@ const struct Race races[] = {
         "Gnl",
         { 0, 0 },
         3,
-		{ "Smells rotten food", "Smells underground roots", "Triple nutrition from tripe ration", "", ""},
-		PM_GNOLL,
+        { "Smells rotten food", "Smells underground roots", "Triple nutrition from tripe ration", "", ""},
+        PM_GNOLL,
         PM_GNOLL_MUMMY,
         PM_GNOLL_ZOMBIE,
         MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
@@ -1175,8 +1175,8 @@ const struct Race races[] = {
         "Orc",
         { 0, 0 },
         NUM_RACES - 1,
-		{ "Can practice cannibalism", "Reduced nutrition from lembas wafer", "", "", ""},
-		PM_ORC,
+        { "Can practice cannibalism", "Reduced nutrition from lembas wafer", "", "", ""},
+        PM_ORC,
         PM_ORC_MUMMY,
         PM_ORC_ZOMBIE,
         MH_ORC | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC,
@@ -1190,7 +1190,7 @@ const struct Race races[] = {
         { 3, 0, 0, 3, 1, 0 }, /* Hit points */
         { 1, 1, 1, 1, 1, 1 }  /* Energy 1d2*/
     },
-			/* Array terminator */
+            /* Array terminator */
     { 0, 0, 0, 0 }
 };
 
@@ -1204,8 +1204,8 @@ struct Race urace = {
     "Xxx",
     { 0, 0 },
     0,
-	{ "", "", "", "", ""},
-	NON_PM,
+    { "", "", "", "", ""},
+    NON_PM,
     NON_PM,
     NON_PM,
     0,
@@ -1952,14 +1952,14 @@ int buflen, rolenum, racenum, gendnum, alignnum;
     char buf[BUFSZ];
     static char err_ret[] = " character's";
     boolean donefirst = FALSE;
-	int maxroles = sizeof(roles) / sizeof(roles[0]);
-	int maxraces = sizeof(races) / sizeof(races[0]);
+    int maxroles = sizeof(roles) / sizeof(roles[0]);
+    int maxraces = sizeof(races) / sizeof(races[0]);
 
-	if (rolenum >= maxroles)
-		rolenum = maxroles - 1;
+    if (rolenum >= maxroles)
+        rolenum = maxroles - 1;
 
-	if (racenum >= maxraces)
-		racenum = maxraces - 1;
+    if (racenum >= maxraces)
+        racenum = maxraces - 1;
 
     if (!suppliedbuf || buflen < 1)
         return err_ret;
@@ -2252,7 +2252,7 @@ winid where;
     g = flags.initgend;
     a = flags.initalign;
     if (r >= 0) 
-	{
+    {
         allowmask = roles[r].allow;
         if ((allowmask & ROLE_RACEMASK) == MH_HUMAN)
             c = 0; /* races[human] */

@@ -1,4 +1,4 @@
-/* GnollHack 4.0	monst.h	$NHDT-Date: 1550524559 2019/02/18 21:15:59 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.28 $ */
+/* GnollHack 4.0    monst.h    $NHDT-Date: 1550524559 2019/02/18 21:15:59 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.28 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2016. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -44,7 +44,7 @@ enum wpn_chk_flags {
  * PICK_NONE, PICK_ONE, PICK_ANY (wintype.h)  0, 1, 2
  * MINV_NOLET  If set, don't display inventory letters on monster's inventory.
  * MINV_ALL    If set, display all items in monster's inventory, otherwise
- *	       just display wielded weapons and worn items.
+ *           just display wielded weapons and worn items.
  */
 #define MINV_PICKMASK 0x03 /* 1|2 */
 #define MINV_NOLET    0x04
@@ -82,41 +82,41 @@ struct monst {
 #define MTSZ 4
     coord mtrack[MTSZ];   /* monster track */
 
-	struct attribs 
-		acurr,			/* monster's current attributes (eg. str)*/
-		abonus,			/* monster's bonus attributes (eg. str) */
-		afixmin,		/* monster's fixed min attributes (eg. str), set by an item */
-		afixmax,		/* monster's fixed max attributes (eg. str), set by an item */
-        amin,			/* monster's min attributes (eg. str) */
-        amax,			/* monster's max attributes (eg. str) */
-		atemp,			/* used for temporary loss/gain */
-		atime;			/* used for loss/gain countdown */
+    struct attribs 
+        acurr,            /* monster's current attributes (eg. str)*/
+        abonus,            /* monster's bonus attributes (eg. str) */
+        afixmin,        /* monster's fixed min attributes (eg. str), set by an item */
+        afixmax,        /* monster's fixed max attributes (eg. str), set by an item */
+        amin,            /* monster's min attributes (eg. str) */
+        amax,            /* monster's max attributes (eg. str) */
+        atemp,            /* used for temporary loss/gain */
+        atime;            /* used for loss/gain countdown */
 
-	schar mdaminc;
-	schar mhitinc;
-	schar macbonus;
-	schar mmcbonus;
+    schar mdaminc;
+    schar mhitinc;
+    schar macbonus;
+    schar mmcbonus;
 
-	int mhp, mbasehpmax, mhpmax;
-	int mhp_fraction;
+    int mhp, mbasehpmax, mhpmax;
+    int mhp_fraction;
 
-	int men, mbaseenmax, menmax;
-	int men_fraction;
+    int men, mbaseenmax, menmax;
+    int men_fraction;
 
-	uchar heads_left;
-	
-	unsigned mappearance; /* for undetected mimics and the wiz */
+    uchar heads_left;
+    
+    unsigned mappearance; /* for undetected mimics and the wiz */
     uchar m_ap_type;      /* what mappearance is describing, m_ap_types */
 
     schar mtame;                /* level of tameness, implies peaceful */
 
-	unsigned short mprops[LAST_PROP + 1]; /* simplified props structure for monsters, taking 1/6 u.uprops memory space but doing about the same thing anyway --JG */
+    unsigned short mprops[LAST_PROP + 1]; /* simplified props structure for monsters, taking 1/6 u.uprops memory space but doing about the same thing anyway --JG */
 
-#define M_TIMEOUT				0x3fff	/* timeout mask for temporary property */
-#define M_INTRINSIC_ACQUIRED	0x4000  /* permanent intrisic acquired e.g. by eating monster corpses */
-#define M_EXTRINSIC				0x8000  /* extrinsic from items or environment, updated frequently by clearing and checking a new value */
+#define M_TIMEOUT                0x3fff    /* timeout mask for temporary property */
+#define M_INTRINSIC_ACQUIRED    0x4000  /* permanent intrisic acquired e.g. by eating monster corpses */
+#define M_EXTRINSIC                0x8000  /* extrinsic from items or environment, updated frequently by clearing and checking a new value */
 
-	unsigned short mspec_used;             /* monster's general special ability and spell attack timeout */
+    unsigned short mspec_used;             /* monster's general special ability and spell attack timeout */
     unsigned short mmagespell_used;        /* monster's mage-style normal ability or low-powered spell timeout */
     unsigned short mmageintermediate_used; /* monster's mage-style intermediate ability or medium-powered mage spell timeout */
     unsigned short mmageultimate_used;     /* monster's mage-style ultimate ability or high-powered mage spell timeout */
@@ -131,11 +131,11 @@ struct monst {
     xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
     int notalktimer;
     short rumorsleft;       /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
-    uchar action;		/* the monster is currently in the midst of one of its attacks or actions */
+    uchar action;        /* the monster is currently in the midst of one of its attacks or actions */
 
     short mflee_timer;  /* timeout for mflee */
     short mfrozen;
-    short mstaying;	/* commanded to stay in place, similar to frozen, but commanded */
+    short mstaying;    /* commanded to stay in place, similar to frozen, but commanded */
     short mcarrying;
 
     /* Bitfield flags -- Keep all bitfields in a row */
@@ -145,10 +145,10 @@ struct monst {
     Bitfield(mwantstomove, 1);  /* mon wants to move, not staying in place */
     Bitfield(mwantstodrop, 1);
 
-    Bitfield(female, 1);		/* is female */
-	Bitfield(mburied, 1);		/* has been buried */
-    Bitfield(mundetected, 1);	/* not seen in present hiding place;
-								 * implies one of M1_CONCEAL or M1_HIDE,
+    Bitfield(female, 1);        /* is female */
+    Bitfield(mburied, 1);        /* has been buried */
+    Bitfield(mundetected, 1);    /* not seen in present hiding place;
+                                 * implies one of M1_CONCEAL or M1_HIDE,
                                * but not mimic (that is, snake, spider,
                                * trapper, piercer, eel)
                                */
@@ -164,20 +164,20 @@ struct monst {
     Bitfield(ispriest, 1);  /* is an aligned priest or high priest */
     Bitfield(issmith, 1);   /* is a smith */
     Bitfield(isnpc, 1);   /* is a non-player character */
-    Bitfield(issummoned, 1);					/* is a summoned monster */
-	Bitfield(disregards_enemy_strength, 1);		/* the monster attacks too strong enemies */
-	Bitfield(disregards_own_health, 1);			/* the monster attacks even when its health is low */
-	Bitfield(hasbloodlust, 1);					/* attacks also peaceful */
-	Bitfield(ispacifist, 1);					/* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
-	Bitfield(isfaithful, 1);					/* being separate from the owner does not reduce tameness */
-    Bitfield(isprotector, 1);					/* attacks hostiles if itself is being peaceful */
-    Bitfield(ispartymember, 1);					/* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
-	Bitfield(talkstate, 3);						/* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
-	Bitfield(leaves_no_corpse, 1);				/* this particular monster does not leave a corpse */
-	Bitfield(delayed_killer_by_you, 1);			/* is petrification or other delayed killer initiated by you */
-	Bitfield(u_know_mname, 1);                  /* you know the monster's name */
-    Bitfield(told_rumor, 1);			        /* the monster had told the player at least one rumor */
-    Bitfield(facing_right, 1);			        /* the monster is facing right */
+    Bitfield(issummoned, 1);                    /* is a summoned monster */
+    Bitfield(disregards_enemy_strength, 1);        /* the monster attacks too strong enemies */
+    Bitfield(disregards_own_health, 1);            /* the monster attacks even when its health is low */
+    Bitfield(hasbloodlust, 1);                    /* attacks also peaceful */
+    Bitfield(ispacifist, 1);                    /* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
+    Bitfield(isfaithful, 1);                    /* being separate from the owner does not reduce tameness */
+    Bitfield(isprotector, 1);                    /* attacks hostiles if itself is being peaceful */
+    Bitfield(ispartymember, 1);                    /* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
+    Bitfield(talkstate, 3);                        /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
+    Bitfield(leaves_no_corpse, 1);                /* this particular monster does not leave a corpse */
+    Bitfield(delayed_killer_by_you, 1);            /* is petrification or other delayed killer initiated by you */
+    Bitfield(u_know_mname, 1);                  /* you know the monster's name */
+    Bitfield(told_rumor, 1);                    /* the monster had told the player at least one rumor */
+    Bitfield(facing_right, 1);                    /* the monster is facing right */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */
@@ -219,12 +219,12 @@ struct monst {
     xchar weapon_strategy;    /* flag for whether to try switching weapons */
 
     int meating;           /* monster is eating timeout */
-	long summonduration;   /* duration for summoned units */
-	long extra_encounter_xp; /* extra experience yielded by this monster due to encounter difficulty */
+    long summonduration;   /* duration for summoned units */
+    long extra_encounter_xp; /* extra experience yielded by this monster due to encounter difficulty */
     int glyph;
 
-	xchar timed;		   /* # of fuses (timers) attached to this monst */
-	struct mextra *mextra; /* point to mextra struct */
+    xchar timed;           /* # of fuses (timers) attached to this monst */
+    struct mextra *mextra; /* point to mextra struct */
 };
 
 #define newmonst() (struct monst *) alloc(sizeof (struct monst))
@@ -243,7 +243,7 @@ struct monst {
   || (mon)->mspecialsummon_used || (mon)->mspecialsummon2_used)
 
 #define cursed_items_are_positive_mon(mon) \
-	(cursed_items_are_positive((mon)->data) || ((mon)->cham >= LOW_PM && cursed_items_are_positive(&mons[(mon)->cham])))
+    (cursed_items_are_positive((mon)->data) || ((mon)->cham >= LOW_PM && cursed_items_are_positive(&mons[(mon)->cham])))
 
 
 /* mimic appearances that block vision/light */
