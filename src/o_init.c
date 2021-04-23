@@ -1229,12 +1229,10 @@ double
 get_mythic_dmg_multiplier(otmp, mon, mattacker)
 struct obj* otmp;
 struct monst* mon;
-struct monst* mattacker;
+struct monst* mattacker UNUSED;
 {
     if (!otmp || !mon || (otmp->mythic_prefix == 0 && otmp->mythic_suffix == 0))
         return 1.0;
-
-    GH_UNREFERENCED_PARAMETER(mattacker);
 
     double multiplier = 1.0;
     for (uchar j = 0; j <= 1; j++)

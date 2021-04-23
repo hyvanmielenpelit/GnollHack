@@ -1058,11 +1058,11 @@ double encprob;
     encounter_list[*active_encounter_index_ptr].eflags = encounter_definitions[encounter_definition_index].eflags;
     encounter_list[*active_encounter_index_ptr].encounterdefid = encounter_definition_index;
 
-    int orig_encounter_index = 0;
+    //int orig_encounter_index = 0;
     int orig_monster_index = 0;
     struct encounter base_encounter = { 0 };
 
-    orig_encounter_index = *active_encounter_index_ptr;
+    //orig_encounter_index = *active_encounter_index_ptr;
     base_encounter = encounter_list[*(active_encounter_index_ptr)];
     orig_monster_index = *active_encounter_monster_index_ptr;
 

@@ -2895,7 +2895,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 unsigned long
 get_player_action_flags(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
 enum action_tile_types action;
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+int roleidx, raceidx, genderidx UNUSED, alignmentidx UNUSED, levelidx;
 {
     /* There's always a stand tile */
     if (action == ACTION_TILE_NO_ACTION)
@@ -2903,9 +2903,6 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
     if (levelidx > 0)
         return ACTION_ITEM_USE_FLAGS_NONE;
-
-    GH_UNREFERENCED_PARAMETER(genderidx);
-    GH_UNREFERENCED_PARAMETER(alignmentidx);
 
     /* Real cases */
     switch (action)

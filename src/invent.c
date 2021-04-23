@@ -2776,7 +2776,8 @@ const char* headertext;
 void
 construct_getobj_letters(let, word, lets, altlets, lets_size, altlets_size, foo_ptr, foox_ptr, bp_ptr, allowcnt_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr, otmp_only)
 register const char *let, *word;
-char *lets, *altlets;
+char* lets UNUSED;
+char* altlets;
 size_t lets_size, altlets_size;
 int* foo_ptr;
 xchar *foox_ptr, *allowcnt_ptr;
@@ -2798,8 +2799,6 @@ struct obj* otmp_only;
     xchar foox = 0;
     long dummymask;
     Loot* sortedinvent, * srtinv;
-
-    GH_UNREFERENCED_PARAMETER(lets_size);
 
     if (*let == ALLOW_COUNT)
         let++, allowcnt = 1;

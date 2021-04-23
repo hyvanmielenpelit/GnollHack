@@ -233,9 +233,8 @@ genl_stretch_window(VOID_ARGS)
 
 void
 genl_set_animation_timer(interval)
-unsigned int interval;
+unsigned int interval UNUSED;
 {
-    GH_UNREFERENCED_PARAMETER(interval);
     return;
 }
 
@@ -256,65 +255,57 @@ struct special_view_info info;
 
 void
 genl_stop_all_sounds(info)
-struct stop_all_info ;
+struct stop_all_info info UNUSED;
 {
-    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
 void
 genl_play_immediate_ghsound(info)
-struct ghsound_immediate_info info;
+struct ghsound_immediate_info info UNUSED;
 {
-    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
 void
 genl_play_ghsound_occupation_ambient(info)
-struct ghsound_occupation_ambient_info info;
+struct ghsound_occupation_ambient_info info UNUSED;
 {
-    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
 void
 genl_play_ghsound_effect_ambient(info)
-struct ghsound_effect_ambient_info info;
+struct ghsound_effect_ambient_info info UNUSED;
 {
-    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
 void
 genl_set_effect_ambient_volume(info)
-struct effect_ambient_volume_info info;
+struct effect_ambient_volume_info info UNUSED;
 {
-    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
 void
 genl_play_ghsound_music(info)
-struct ghsound_music_info info;
+struct ghsound_music_info info UNUSED;
 {
-    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
 void
 genl_play_ghsound_level_ambient(info)
-struct ghsound_level_ambient_info info;
+struct ghsound_level_ambient_info info UNUSED;
 {
-    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
 void
 genl_play_ghsound_environment_ambient(info)
-struct ghsound_environment_ambient_info info;
+struct ghsound_environment_ambient_info info UNUSED;
 {
-    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
@@ -325,23 +316,20 @@ genl_adjust_ghsound_general_volumes(VOID_ARGS)
 }
 
 void
-genl_add_ambient_ghsound(struct soundsource_t* soundsource)
+genl_add_ambient_ghsound(struct soundsource_t* soundsource UNUSED)
 {
-    GH_UNREFERENCED_PARAMETER(soundsource);
     return;
 }
 
 void
-genl_delete_ambient_ghsound(struct soundsource_t* soundsource)
+genl_delete_ambient_ghsound(struct soundsource_t* soundsource UNUSED)
 {
-    GH_UNREFERENCED_PARAMETER(soundsource);
     return;
 }
 
 void
-genl_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
+genl_set_ambient_ghsound_volume(struct soundsource_t* soundsource UNUSED)
 {
-    GH_UNREFERENCED_PARAMETER(soundsource);
     return;
 }
 

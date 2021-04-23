@@ -1859,7 +1859,6 @@ int status;
         dlb_cleanup();
     }
 
-#ifdef VMS
     /*
      *  This is liable to draw a warning if compiled with gcc, but it's
      *  more important to flag panic() -> really_done() -> nh_terminate()
@@ -1867,17 +1866,17 @@ int status;
      */
     /* don't call exit() if already executing within an exit handler;
        that would cancel any other pending user-mode handlers */
-    if (program_state.exiting)
-        return;
+#ifdef VMS
+    if (!program_state.exiting)
 #endif
-    program_state.exiting = 1;
-    program_state.exit_status = status;
-    if (exit_hack)
-        exit_hack(status);
-    else
-        gnollhack_exit(status);
-
-    return;
+    {
+        program_state.exiting = 1;
+        program_state.exit_status = status;
+        if (exit_hack)
+            exit_hack(status);
+        else
+            gnollhack_exit(status);
+    }
 }
 
 enum vanq_order_modes {
