@@ -3844,4 +3844,13 @@ is_artifact_applicable_as_axe(struct obj* obj)
     return (obj && obj->oartifact && (artilist[obj->oartifact].aflags2 & AF2_APPLICABLE_AS_AXE) != 0);
 }
 
+int
+artifact_to_obj(artifactid)
+int artifactid;
+{
+    if (artifactid <= 0 || artifactid > NUM_ARTIFACTS || artifactid == NO_GLYPH)
+        return STRANGE_OBJECT;
+    return (int)artilist[artifactid].otyp;
+
+}
 /*artifact.c*/

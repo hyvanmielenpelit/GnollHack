@@ -168,6 +168,7 @@ E boolean FDECL(is_immune, (struct monst*, int));
 E int NDECL(create_portal);
 E const char* FDECL(get_artifact_invoke_name, (int));
 E boolean FDECL(is_artifact_applicable_as_axe, (struct obj*));
+E int FDECL(artifact_to_obj, (int));
 
 /* ### attrib.c ### */
 
@@ -520,7 +521,6 @@ E struct layer_info FDECL(layers_at, (XCHAR_P, XCHAR_P));
 E void NDECL(set_wall_state);
 E void FDECL(unset_seenv, (struct rm *, int, int, int, int));
 E int FDECL(warning_of, (struct monst *));
-E int FDECL(artifact_to_obj, (int));
 E int NDECL(get_current_cmap_type_index);
 E int FDECL(get_missile_index, (int, int));
 E void FDECL(display_self_with_extra_info_choose_ascii, (unsigned long, int, boolean));

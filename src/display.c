@@ -123,7 +123,6 @@
  */
 #include "hack.h"
 #include "artifact.h"
-#include "artilist.h"
 
 STATIC_DCL void FDECL(display_monster,
                       (XCHAR_P, XCHAR_P, struct monst *, int, XCHAR_P, boolean));
@@ -168,15 +167,6 @@ static gbuf_entry nul_gbuf = { 0, nul_layerinfo };
 
 //{ base_cmap_to_glyph(S_unexplored), NO_GLYPH, { NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH }, 0UL, (genericptr_t)0, 0}
 
-int
-artifact_to_obj(artifactid)
-int artifactid;
-{
-    if (artifactid <= 0 || artifactid > NUM_ARTIFACTS || artifactid == NO_GLYPH)
-        return STRANGE_OBJECT;
-    return (int)artilist[artifactid].otyp;
-
-}
 /*
  * magic_map_background()
  *
