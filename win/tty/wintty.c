@@ -222,7 +222,9 @@ STATIC_DCL boolean FDECL(check_fields, (BOOLEAN_P, int *));
 STATIC_DCL void NDECL(render_status);
 STATIC_DCL void FDECL(tty_putstatusfield, (const char *, int, int));
 STATIC_DCL boolean NDECL(check_windowdata);
+#if 0
 STATIC_DCL int NDECL(condition_size);
+#endif
 STATIC_DCL int FDECL(make_things_fit, (BOOLEAN_P));
 STATIC_DCL void FDECL(shrink_enc, (int));
 STATIC_DCL void FDECL(shrink_dlvl, (int));
@@ -4401,6 +4403,7 @@ int x, y;
     }
 }
 
+#if 0
 /* caller must set cond_shrinklvl (0..2) before calling us */
 STATIC_OVL int
 condition_size()
@@ -4419,6 +4422,7 @@ condition_size()
     tty_status[NOW][BL_CONDITION].lth = lth;
     return lth;
 }
+#endif
 
 STATIC_OVL void
 shrink_enc(lvl)

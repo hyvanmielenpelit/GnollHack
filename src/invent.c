@@ -2776,9 +2776,8 @@ const char* headertext;
 void
 construct_getobj_letters(let, word, lets, altlets, lets_size, altlets_size, foo_ptr, foox_ptr, bp_ptr, allowcnt_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr, otmp_only)
 register const char *let, *word;
-char* lets UNUSED;
-char* altlets;
-size_t lets_size, altlets_size;
+char* lets, *altlets;
+size_t lets_size UNUSED, altlets_size;
 int* foo_ptr;
 xchar *foox_ptr, *allowcnt_ptr;
 char** bp_ptr;

@@ -6448,14 +6448,14 @@ char *buf;
     } 
     else if (!strncmp(optname, "tile_file", 9)) 
     {
-        for (int i = 0; i < MAX_TILE_SHEETS; i++)
+        for (int tile_sheet_idx = 0; tile_sheet_idx < MAX_TILE_SHEETS; tile_sheet_idx++)
         {
             char optbuf[BUFSZ] = "";
-            Sprintf(optbuf, "%s_%d", optname, i + 1);
+            Sprintf(optbuf, "%s_%d", optname, tile_sheet_idx + 1);
             if (strcmp(optname, optbuf))
             {
                 Sprintf(buf, "%s",
-                    iflags.wc_tile_file[i] ? iflags.wc_tile_file[i] : defopt);
+                    iflags.wc_tile_file[tile_sheet_idx] ? iflags.wc_tile_file[tile_sheet_idx] : defopt);
             }
         }
     }

@@ -44,9 +44,9 @@ STATIC_DCL int FDECL(attribute_value_for_spellbook, (int));
 STATIC_DCL char *FDECL(spellretention, (int, char *));
 STATIC_DCL int FDECL(throwspell, (int));
 STATIC_DCL void FDECL(spell_backfire, (int));
+STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
 #endif
 STATIC_DCL const char *FDECL(spelltypemnemonic, (int));
-STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
 STATIC_DCL int FDECL(domaterialcomponentsmenu, (int));
 STATIC_DCL void FDECL(add_spell_cast_menu_item, (winid, int, int, int, char*, int*, BOOLEAN_P));
 STATIC_DCL void FDECL(add_spell_cast_menu_heading, (winid, int, BOOLEAN_P));
@@ -2747,6 +2747,7 @@ deduct_mana_cost(double dmana)
     }
 }
 
+#if 0
 /*ARGSUSED*/
 STATIC_OVL boolean
 spell_aim_step(arg, x, y)
@@ -2761,7 +2762,6 @@ int x, y;
     return TRUE;
 }
 
-#if 0
 /* Choose location where spell takes effect. */
 STATIC_OVL int
 throwspell(otyp)
