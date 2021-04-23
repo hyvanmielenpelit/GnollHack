@@ -758,7 +758,7 @@ boolean border;
                 if (number_of_lines >= 3) {
                     /* remember hunger's position */
                     getyx(win, conddummy, condstart);
-                    conddummy = condummy; /* Remove unused warning */
+                    conddummy = conddummy; /* Remove unused warning */
                     /* if hunger won't be shown, figure out where cap
                        will be; if cap won't be shown either, use where
                        conditions would go if they were on this line */
@@ -778,6 +778,7 @@ boolean border;
                    could only do that after all extra spaces are gone */
                 if (!xtra) {
                      getyx(win, ey, ex);
+                     ey = ey; /* Remove unsused warning */
                      t = (int) strlen(text);
                      if (ex + t > width - (border ? 0 : 1)) {
                          text = strcpy(ebuf, text);
