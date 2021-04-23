@@ -2004,7 +2004,7 @@ uchar* tilemapflags;
     for (int i = 1; i < MAX_ENLARGEMENTS; i++)  /* enlargement number, starts at 1 */
     {
         short enl_anim_tiles = enlargements[i].number_of_animation_tiles ? enlargements[i].number_of_animation_tiles : 1;
-        short enl_anim_frames = enlargements[i].number_of_animation_frames ? enlargements[i].number_of_animation_frames : 1;
+        //short enl_anim_frames = enlargements[i].number_of_animation_frames ? enlargements[i].number_of_animation_frames : 1;
         for (int m = 0; m < enl_anim_tiles; m++)
         {
             /* m is the animation tile number */

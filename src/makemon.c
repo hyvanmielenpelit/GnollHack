@@ -821,7 +821,7 @@ register struct monst *mtmp;
         if (ptr == &mons[PM_NAZGUL])
         {
             (void)mongets(mtmp, MORGUL_BLADE);
-            struct obj* otmp = mongets(mtmp, LONG_SWORD);
+            otmp = mongets(mtmp, LONG_SWORD);
             if (otmp)
                 otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
         }
@@ -2252,7 +2252,6 @@ double
 monhpadj_per_lvl(mon)
 struct monst* mon;
 {
-    struct permonst* ptr = mon->data;
     double hp = constitution_hp_bonus(m_acurr(mon, A_CON)); /* default is d8 */
     
     if (!mon->m_lev) {

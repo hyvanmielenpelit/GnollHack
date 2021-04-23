@@ -20,8 +20,10 @@
 
 typedef void FDECL((*select_iter_func), (int, int, genericptr));
 typedef void FDECL((*select_iter_func2), (int, int, genericptr, genericptr));
+#if 0 /* UNUSED */
 typedef void FDECL((*select_iter_func3), (int, int, genericptr, genericptr, genericptr));
 typedef void FDECL((*select_iter_func4), (int, int, genericptr, genericptr, genericptr, genericptr));
+#endif
 typedef void FDECL((*select_iter_func5), (int, int, genericptr, genericptr, genericptr, genericptr, genericptr));
 
 extern void FDECL(mkmap, (lev_init *));
@@ -157,10 +159,12 @@ STATIC_DCL void FDECL(selection_iterate, (struct opvar *, select_iter_func,
                                           genericptr_t));
 STATIC_DCL void FDECL(selection_iterate2, (struct opvar*, select_iter_func2,
     genericptr_t, genericptr_t));
+#if 0 /* UNUSED */
 STATIC_DCL void FDECL(selection_iterate3, (struct opvar*, select_iter_func3,
     genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(selection_iterate4, (struct opvar*, select_iter_func4,
     genericptr_t, genericptr_t, genericptr_t, genericptr_t));
+#endif
 STATIC_DCL void FDECL(selection_iterate5, (struct opvar*, select_iter_func5,
     genericptr_t, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_ter, (int, int, genericptr_t));
@@ -2628,7 +2632,7 @@ struct mkroom* croom;
     if (!croom_is_npc_room)
         return;
 
-    uchar usedtyp = (a->typ >= 0 && a->typ < MAX_NPC_SUBTYPES ? a->typ : rn2(MAX_NPC_SUBTYPES));
+    uchar usedtyp = (a->typ < MAX_NPC_SUBTYPES ? a->typ : rn2(MAX_NPC_SUBTYPES));
     npcini(&u.uz, croom, x, y, usedtyp, a->mtype);
     level.flags.has_npc_room = TRUE;
 }
@@ -5323,6 +5327,7 @@ genericptr_t arg, arg2;
                 (*func)(x, y, arg, arg2);
 }
 
+#if 0 /* UNUSED */
 void
 selection_iterate3(ov, func, arg, arg2, arg3)
 struct opvar* ov;
@@ -5352,6 +5357,7 @@ genericptr_t arg, arg2, arg3, arg4;
             if (selection_getpoint(x, y, ov))
                 (*func)(x, y, arg, arg2, arg3, arg4);
 }
+#endif
 
 void
 selection_iterate5(ov, func, arg, arg2, arg3, arg4, arg5)

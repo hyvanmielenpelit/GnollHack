@@ -3570,7 +3570,7 @@ struct monst* mtmp;
             int tasty = dogfood(mtmp, otmp);
             boolean foodmakesfriendly = (!is_tame(mtmp) && befriend_with_obj(mtmp->data, otmp) && tasty <= ACCFOOD);
             boolean takesfood = (!is_tame(mtmp) && tasty <= (carnivorous(mtmp->data) ? MANFOOD : ACCFOOD));
-            boolean willeat = (is_tame(mtmp) && (tasty < (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD)) || foodmakesfriendly || takesfood);
+            boolean willeat = ((is_tame(mtmp) && (tasty < (objects[otmp->otyp].oc_material == MAT_VEGGY ? APPORT : MANFOOD))) || foodmakesfriendly || takesfood);
 
             if (cnt < otmp->quan)
             {
@@ -4158,7 +4158,7 @@ struct monst* mtmp;
                 if(quan == 1)
                     Sprintf(ibuf, "%s", an(cxname_singular(item_to_buy)));
                 else
-                    Sprintf(ibuf, "%d %s", quan, cxname(item_to_buy));
+                    Sprintf(ibuf, "%ld %s", quan, cxname(item_to_buy));
 
                 if(itemized)
                 {

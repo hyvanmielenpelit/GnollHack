@@ -503,10 +503,10 @@ struct mkroom *sroom;
         else
             mainlibrarymonst = &mons[PM_GNOMISH_WIZARD];
         //Note in library we place only a monster in one in every 2 squares
-
-        /* FALLTHRU: Here we place the mainlibrarymonst */
+        goto place_main_monst_here; /* Prevent fall thru warning */
     case COCKNEST:
     case BEEHIVE:
+place_main_monst_here:
         tx = sroom->lx + (sroom->hx - sroom->lx + 1) / 2;
         ty = sroom->ly + (sroom->hy - sroom->ly + 1) / 2;
         if (sroom->irregular) {

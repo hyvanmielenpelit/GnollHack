@@ -3857,7 +3857,7 @@ const char *reason; /* explanation */
         if (lfile) {
 #ifdef PANICLOG_FMT2
             (void) fprintf(lfile, "%ld %s: %s %s\n",
-                           ubirthday, (plname ? plname : "(none)"),
+                           ubirthday, (strcmp(plname, "") ? plname : "(none)"),
                            type, reason);
 #else
             char buf[BUFSZ];

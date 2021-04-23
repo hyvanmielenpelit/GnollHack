@@ -93,7 +93,7 @@ struct monst* origmonst;
         return 0;
 
     int skill_type = objects[otyp].oc_skill;
-    enum skill_levels skill_level = origmonst == &youmonst ? P_SKILL_LEVEL(skill_type) : is_prince(origmonst->data) ? P_EXPERT : is_lord(origmonst->data) ? P_SKILLED : P_BASIC;
+    int skill_level = (int)(origmonst == &youmonst ? P_SKILL_LEVEL(skill_type) : is_prince(origmonst->data) ? P_EXPERT : is_lord(origmonst->data) ? P_SKILLED : P_BASIC);
     int max_level =  10 * max(0, skill_level - 1);
     return max_level;
 }
@@ -340,7 +340,7 @@ struct monst* origmonst;
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
-            pline("%s is unaffected by your !", Monnam(mtmp), OBJ_NAME(objects[otyp]));
+            pline("%s is unaffected by your %s!", Monnam(mtmp), OBJ_NAME(objects[otyp]));
             break;
         }
         /* resist deals the damage and displays the damage dealt */
@@ -5450,7 +5450,7 @@ boolean ordinary;
     case SPE_DEATHSPELL:
     {
         int expl_type = objects[obj->otyp].oc_damagetype == AD_FIRE ? EXPL_FIERY : objects[obj->otyp].oc_damagetype == AD_COLD ? EXPL_FROSTY : EXPL_MAGICAL;
-        You("conjure % on top of yourself!", OBJ_CONTENT_NAME(obj->otyp) ? an(OBJ_CONTENT_NAME(obj->otyp)) : an(OBJ_NAME(objects[obj->otyp])));
+        You("conjure %s on top of yourself!", OBJ_CONTENT_NAME(obj->otyp) ? an(OBJ_CONTENT_NAME(obj->otyp)) : an(OBJ_NAME(objects[obj->otyp])));
         explode(u.ux, u.uy, objects[obj->otyp].oc_dir_subtype, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, expl_type);
         break;
     }
@@ -6759,7 +6759,8 @@ struct obj *obj;
         return;
 
     int otyp = obj->otyp;
-    boolean disclose = FALSE, was_unkn = !objects[otyp].oc_name_known;
+    boolean disclose = FALSE;
+    //boolean was_unkn = !objects[otyp].oc_name_known;
 
     exercise(A_WIS, TRUE);
     if (u.usteed && (objects[otyp].oc_dir != NODIR) && !u.dx && !u.dy
@@ -7755,7 +7756,7 @@ uchar* out_flags_ptr;
     if (out_flags_ptr)
         *out_flags_ptr = 0;
 
-    boolean allow_critical_strike = FALSE;
+    //boolean allow_critical_strike = FALSE;
     switch (abstype)
     {
     case ZT_MAGIC_MISSILE:
@@ -7766,7 +7767,7 @@ uchar* out_flags_ptr;
             damage = 0;
             break;
         }
-        allow_critical_strike = TRUE;
+        //allow_critical_strike = TRUE;
         /*
         tmp = d(nd, 6);
         if (spellcaster)
@@ -7781,7 +7782,7 @@ uchar* out_flags_ptr;
             damage = 0;
             break;
         }
-        allow_critical_strike = TRUE;
+        //allow_critical_strike = TRUE;
         /*
         tmp = d(nd, 6);
         if (is_mon_immune_to_cold(mon))
@@ -7808,7 +7809,7 @@ uchar* out_flags_ptr;
             damage = 0;
             break;
         }
-        allow_critical_strike = TRUE;
+        //allow_critical_strike = TRUE;
         /*
         tmp = d(nd, 6);
         if (is_mon_immune_to_fire(mon))
@@ -7821,7 +7822,7 @@ uchar* out_flags_ptr;
         break;
     case ZT_SLEEP:
         damage = 0;
-        allow_critical_strike = TRUE;
+        //allow_critical_strike = TRUE;
         /* moved after critical strike */
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
@@ -7903,7 +7904,7 @@ uchar* out_flags_ptr;
             damage = 0;
             /* can still blind the monster */
         }
-        allow_critical_strike = TRUE;
+        //allow_critical_strike = TRUE;
         /*
         tmp = d(nd, 6);
         if (spellcaster)
@@ -7930,7 +7931,7 @@ uchar* out_flags_ptr;
             damage = 0;
             break;
         }
-        allow_critical_strike = TRUE;
+        //allow_critical_strike = TRUE;
         //tmp = d(nd, 6);
         break;
     case ZT_ACID:
@@ -7941,7 +7942,7 @@ uchar* out_flags_ptr;
             damage = 0;
             break;
         }
-        allow_critical_strike = TRUE;
+        //allow_critical_strike = TRUE;
         //tmp = d(nd, 6);
         if (!rn2(6))
             acid_damage(MON_WEP(mon));
@@ -10608,6 +10609,7 @@ unsigned long scflags;
         mon->disregards_own_health = disregardhealth;
         mon->hasbloodlust = bloodlust;
         mon->ispacifist = pacifist;
+        mon->isprotector = protector;
 
         if(!mon->isfaithful)
             mon->isfaithful = faithful;
@@ -10710,7 +10712,7 @@ int spl_otyp;
 
 void
 summonbahamut(spl_otyp)
-int spl_otyp;
+int spl_otyp UNUSED;
 {
     struct monst* mon = (struct monst*) 0;
     int monindex = PM_BAHAMUT;

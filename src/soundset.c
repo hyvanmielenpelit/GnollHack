@@ -6143,7 +6143,6 @@ enum climbing_types climbingid;
         return;
 
     boolean isyou = (mtmp == &youmonst);
-    boolean isfemale = isyou ? (Upolyd ? u.mfemale : flags.female) : mtmp->female;
     xchar ox = isyou ? u.ux : mtmp->mx, oy = isyou ? u.uy : mtmp->my;
     if (!isok(ox, oy))
         return;
@@ -10090,7 +10089,6 @@ boolean is_angry;
     if (!shkp || !shkp->mextra || !ESHK(shkp) || Deaf)
         return;
 
-    enum role_types yourrole = urole.rolenum;
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
     int pickindex = 0;
     int howmanyindex = cnt > 1 ? 2 : 1;
@@ -10161,7 +10159,6 @@ const char* cad_str;
     if (!shkp || !shkp->mextra || !ESHK(shkp) || Deaf || line_id == SHOPKEEPER_CAD_LINE_NONE)
         return;
 
-    enum role_types yourrole = urole.rolenum;
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
     int cad_id = 0;
 

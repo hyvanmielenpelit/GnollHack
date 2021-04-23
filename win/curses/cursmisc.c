@@ -40,13 +40,19 @@ static int parse_escape_sequence(void);
 int
 curses_read_char()
 {
-    int ch, tmpch;
+    int ch;
+    
+#if defined(ALT_0) && defined(ALT_9)
+    int tmpch;
+#endif
 
     /* cancel message suppression; all messages have had a chance to be read */
     curses_got_input();
 
     ch = getch();
+#if defined(ALT_0) && defined(ALT_9)
     tmpch = ch;
+#endif
     ch = curses_convert_keys(ch);
 
     if (ch == 0) {

@@ -6,8 +6,6 @@
 #include "hack.h"
 #include "lev.h"
 #include "func_tab.h"
-#include "artifact.h"
-#include "artilist.h"
 #include <math.h>
 
 /* Macros for meta and ctrl modifiers:
@@ -7878,7 +7876,6 @@ dolight(VOID_ARGS)
         struct obj* otmp;
         char qbuf[QBUFSZ];
         char c;
-        boolean res = TRUE;
         int cnt = 0;
 
         for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)

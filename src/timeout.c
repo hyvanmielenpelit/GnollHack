@@ -770,7 +770,6 @@ nh_timeout()
     boolean was_vomiting = !!Vomiting;
     boolean was_slimed = !!Slimed;
     boolean had_mummyrot = !!MummyRot;
-    boolean was_slowed = !!Slowed;
     boolean was_silenced = !!Silenced;
     boolean was_cancelled = !!Cancelled;
     boolean was_paralyzed = !!Paralyzed;

@@ -524,6 +524,7 @@ curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct e
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
+    GH_UNREFERENCED_PARAMETER(info);
     curses_add_menu(wid, glyph, identifier,
         accelerator, group_accel, attr,
         str, presel);

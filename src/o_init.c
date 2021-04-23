@@ -232,7 +232,7 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
     { "See invisible", "See invisible", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEE_INVISIBLE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
 };
 
-STATIC_DCL void FDECL(setgemprobs, (d_level *));
+//STATIC_DCL void FDECL(setgemprobs, (d_level *));
 STATIC_DCL void FDECL(shuffle, (int, int, BOOLEAN_P));
 STATIC_DCL void NDECL(shuffle_all);
 STATIC_DCL boolean FDECL(interesting_to_discover, (int));
@@ -275,6 +275,7 @@ shuffle_tiles()
 }
 #endif /* USE_TILES */
 
+#if 0
 STATIC_OVL void
 setgemprobs(dlev)
 d_level *dlev;
@@ -300,6 +301,7 @@ d_level *dlev;
     for (j = first; j <= LAST_GEM; j++)
         objects[j].oc_prob = (171 + j - first) / (LAST_GEM + 1 - first);
 }
+#endif
 
 /* shuffle descriptions on objects o_low to o_high */
 STATIC_OVL void
@@ -1231,6 +1233,8 @@ struct monst* mattacker;
 {
     if (!otmp || !mon || (otmp->mythic_prefix == 0 && otmp->mythic_suffix == 0))
         return 1.0;
+
+    GH_UNREFERENCED_PARAMETER(mattacker);
 
     double multiplier = 1.0;
     for (uchar j = 0; j <= 1; j++)

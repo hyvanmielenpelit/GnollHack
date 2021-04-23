@@ -17,7 +17,9 @@ struct trobj {
 
 STATIC_DCL void FDECL(ini_inv, (struct trobj *));
 STATIC_DCL void FDECL(knows_object, (int));
+#if 0
 STATIC_DCL void FDECL(knows_class, (CHAR_P));
+#endif
 STATIC_DCL boolean FDECL(restricted_spell_discipline, (int));
 STATIC_DCL void NDECL(add_school_specific_spellbooks);
 STATIC_DCL struct obj* FDECL(mk_obj_in_container_known, (struct obj*, int));
@@ -247,8 +249,6 @@ static struct trobj WizardAlternate[] =
  *      Optional extra inventory items.
  */
 
-static struct trobj ExpensiveHandbag[] = { { EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, 0, 0, 0 },
-                                    { 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj Tinopener[] = { { TIN_OPENER, 0, TOOL_CLASS, 1, 0, 0, 0 },
                                     { 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj Magicmarker[] = { { MAGIC_MARKER, UNDEF_SPE, TOOL_CLASS,
@@ -264,8 +264,6 @@ static struct trobj Xtra_food[] = { { UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 2, 0, 0,
                                     { 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj Leash[] = { { LEASH, 0, TOOL_CLASS, 1, 0, 0, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0 } };
-static struct trobj Towel[] = { { TOWEL, 0, TOOL_CLASS, 1, 0, 0, 0 },
-                                { 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj Wishing[] = { { WAN_WISHING, 3, WAND_CLASS, 1, 0, 0, 0 },
                                   { 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj OreDetection[] = { { WAN_ORE_DETECTION, UNDEF_SPE, WAND_CLASS, 1, 0, 0, 0 },
@@ -276,9 +274,11 @@ static struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0, 0, 0 },
 static struct trobj DeathQuarrel[] = { { BONE_QUARREL, 0, WEAPON_CLASS,
                                         1, 0, DEATH_ENCHANTMENT, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0 } };
+#if 0
 static struct trobj LightningQuarrel[] = { { GNOLLISH_QUARREL, 0, WEAPON_CLASS,
                                         2, 0, LIGHTNING_ENCHANTMENT, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0 } };
+#endif
 static struct trobj LightningArrow[] = { { ARROW, 0, WEAPON_CLASS,
                                         2, 0, LIGHTNING_ENCHANTMENT, 0 },
                                 { 0, 0, 0, 0, 0, 0, 0 } };
@@ -861,6 +861,7 @@ register int obj;
     objects[obj].oc_pre_discovered = 1; /* not a "discovery" */
 }
 
+#if 0
 /* Know ordinary (non-magical) objects of a certain class,
  * like all gems except the loadstone and luckstone.
  */
@@ -873,6 +874,7 @@ register char sym;
         if (objects[ct].oc_class == sym && !objects[ct].oc_magic)
             knows_object(ct);
 }
+#endif
 
 void
 u_init()

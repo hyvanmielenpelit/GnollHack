@@ -5,7 +5,6 @@
 
 #include "hack.h"
 #include "artifact.h"
-#include "artilist.h"
 
 /*
  *      These routines provide basic data for any type of monster.

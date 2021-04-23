@@ -815,7 +815,6 @@ boolean silently;
     boolean was_sleeping = is_sleeping(mtmp);
     boolean was_paralyzed = is_paralyzed(mtmp);
     boolean was_blinded = is_blinded(mtmp);
-    boolean was_stunned = is_stunned(mtmp);
     boolean was_confused = is_confused(mtmp);
     boolean was_hallucinating = is_hallucinating(mtmp);
     boolean was_levitating = is_levitating(mtmp);

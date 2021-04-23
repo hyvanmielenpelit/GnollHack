@@ -19,7 +19,7 @@ STATIC_DCL void FDECL(sanity_check_single_mon, (struct monst *, BOOLEAN_P,
 STATIC_DCL boolean FDECL(restrap, (struct monst *));
 STATIC_DCL long FDECL(mm_aggression, (struct monst *, struct monst *));
 STATIC_DCL long FDECL(mm_displacement, (struct monst *, struct monst *));
-STATIC_DCL int NDECL(pick_animal);
+//STATIC_DCL int NDECL(pick_animal);
 STATIC_DCL void FDECL(kill_eggs, (struct obj *));
 STATIC_DCL int FDECL(pickvampshape, (struct monst *));
 STATIC_DCL boolean FDECL(isspecmon, (struct monst *));
@@ -1257,14 +1257,6 @@ update_monster_timouts()
                                         || (u.uswallow && mtmp == u.ustuck))
                                           ? SHIFT_MSG : 0);
         were_change(mtmp);
-
-        boolean was_paralyzed = is_paralyzed(mtmp);
-        boolean was_sleeping = is_sleeping(mtmp);
-        boolean was_charmed = is_charmed(mtmp);
-        boolean was_peaceful = is_peaceful(mtmp);
-        boolean was_tame = is_tame(mtmp);
-        boolean was_fearful = is_fearful(mtmp);
-        boolean was_fleeing = is_fleeing(mtmp);
 
         /* gradually time out temporary problems */
         for (int i = 1; i <= LAST_PROP; i++)
@@ -4550,6 +4542,7 @@ boolean construct;
     }
 }
 
+#if 0
 STATIC_OVL int
 pick_animal()
 {
@@ -4569,6 +4562,7 @@ pick_animal()
     }
     return res;
 }
+#endif
 
 void
 decide_to_shapeshift(mon, shiftflags)

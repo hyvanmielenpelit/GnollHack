@@ -411,7 +411,7 @@ boolean border;
         blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
         blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
     },
-    eightlineorder[8][19] = { /* moves align to line 2, leveldesc+ to 3 */
+    eightlineorder[8][20] = { /* moves align to line 2, leveldesc+ to 3 */
         { BL_TITLE,
         /*xspace*/ BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH,
         /*xspace*/ BL_GOLD,
@@ -504,18 +504,21 @@ boolean border;
     curs_stat_conds(0, &x, &y, cbuf, &asis, FALSE);
     clen = (int) strlen(cbuf);
 
-	skill_and_2wep = 0;
-	if (*status_vals[BL_SKILL])
-		skill_and_2wep |= 1;
-	if (*status_vals[BL_2WEP])
-		skill_and_2wep |= 2;
+    skill_and_2wep = 0;
+    if (*status_vals[BL_SKILL])
+        skill_and_2wep |= 1;
+    if (*status_vals[BL_2WEP])
+        skill_and_2wep |= 2;
 
-	cap_and_hunger = 0;
-	if (*status_vals[BL_HUNGER])
+    cap_and_hunger = 0;
+
+    if (*status_vals[BL_HUNGER])
         cap_and_hunger |= 1;
+
     if (*status_vals[BL_CAP])
         cap_and_hunger |= 2;
-	exp_points = (flags.showexp ? 1 : 0);
+
+    exp_points = (flags.showexp ? 1 : 0);
     /* don't bother conditionalizing this; always 0 for !SCORE_ON_BOTL */
     sho_score = (status_activefields[BL_SCORE] != 0);
 
@@ -1648,11 +1651,13 @@ curs_vert_status_vals(int win_width)
                 lbl = (!strcmp(text, "1") || !strcmp(text, "0")) ? "hit-die"
                       : "hit-dice";
                 break;
-            /*case BL_ALIGN:
-                /* don't want sprintf(": %s") below inserting second space * /
+#if 0
+            case BL_ALIGN:
+                /* don't want sprintf(": %s") below inserting second space */
                 if (*text == ' ')
                     ++text;
-                break; */
+                break;
+#endif
             case BL_HP:
             case BL_ENE:
                 /* pad HP and En so that they're right aligned */

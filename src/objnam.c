@@ -5111,13 +5111,13 @@ boolean is_wiz_wish;
         if (mythic_suffix < 0)
             mythic_suffix = 0;
         
-        for (uchar i = 0; i <= 1; i++)
+        for (uchar affix_idx = 0; affix_idx <= 1; affix_idx++)
         {
-            struct mythic_definition* mythic_definitions = (i == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
-            int mythic_quality = (i == 0 ? mythic_prefix : mythic_suffix);
-            uchar* otmp_mythic_quality_ptr = (i == 0 ? &otmp->mythic_prefix : &otmp->mythic_suffix);
+            struct mythic_definition* mythic_definitions = (affix_idx == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
+            int mythic_quality = (affix_idx == 0 ? mythic_prefix : mythic_suffix);
+            uchar* otmp_mythic_quality_ptr = (affix_idx == 0 ? &otmp->mythic_prefix : &otmp->mythic_suffix);
 
-            if (is_mythic_affix_ok(i, (uchar)mythic_quality, otmp, wiz_wishing ? 0 : 1))
+            if (is_mythic_affix_ok(affix_idx, (uchar)mythic_quality, otmp, wiz_wishing ? 0 : 1))
             {
                 if (wiz_wishing || (mythic_definitions[mythic_quality].mythic_flags & MYTHIC_FLAG_DIRECTLY_WISHABLE))
                     *otmp_mythic_quality_ptr = (uchar)mythic_quality;

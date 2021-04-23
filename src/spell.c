@@ -40,9 +40,11 @@ STATIC_DCL boolean NDECL(spellsortmenu);
 STATIC_DCL boolean FDECL(dospellmenu, (const char *, int, int *));
 STATIC_DCL int FDECL(percent_success, (int));
 STATIC_DCL int FDECL(attribute_value_for_spellbook, (int));
+#if 0
 STATIC_DCL char *FDECL(spellretention, (int, char *));
 STATIC_DCL int FDECL(throwspell, (int));
 STATIC_DCL void FDECL(spell_backfire, (int));
+#endif
 STATIC_DCL const char *FDECL(spelltypemnemonic, (int));
 STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
 STATIC_DCL int FDECL(domaterialcomponentsmenu, (int));
@@ -593,7 +595,7 @@ register struct obj *spellbook;
         else if (objects[booktype].oc_spell_level == 0)
             Sprintf(lvlbuf, "major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
         else if (objects[booktype].oc_spell_level > 0)
-            Sprintf(lvlbuf, "level %d %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
+            Sprintf(lvlbuf, "level %ld %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
 
         if (!confused && !hallucinated)
         {
@@ -1087,6 +1089,7 @@ int booktype;
     return objects[booktype].oc_skill;
 }
 
+#if 0
 /* attempting to cast a forgotten spell will cause disorientation */
 STATIC_OVL void
 spell_backfire(spell)
@@ -1131,6 +1134,7 @@ int spell;
     }
     return;
 }
+#endif
 
 double
 get_spell_mana_cost(spell)
@@ -1237,7 +1241,7 @@ int spell;
     else if (objects[booktype].oc_spell_level == 0)
         Sprintf(buf, "Major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
     else if (objects[booktype].oc_spell_level > 0)
-        Sprintf(buf, "Level %d %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
+        Sprintf(buf, "Level %ld %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
 
     txt = buf;
     putstr(datawin, 0, txt);
@@ -1334,7 +1338,7 @@ int spell;
     /* Cooldown */
     if (objects[booktype].oc_spell_cooldown > 0)
     {
-        Sprintf(buf2, "%d round%s", objects[booktype].oc_spell_cooldown, objects[booktype].oc_spell_cooldown == 1 ? "" : "s");
+        Sprintf(buf2, "%ld round%s", objects[booktype].oc_spell_cooldown, objects[booktype].oc_spell_cooldown == 1 ? "" : "s");
     }
     else
     {
@@ -1392,7 +1396,7 @@ int spell;
     /* Range */
     if (objects[booktype].oc_spell_range > 0)
     {
-        Sprintf(buf, "Range:            %d'", objects[booktype].oc_spell_range * 5);
+        Sprintf(buf, "Range:            %ld'", objects[booktype].oc_spell_range * 5L);
         txt = buf;
         putstr(datawin, 0, txt);
     }
@@ -1400,7 +1404,7 @@ int spell;
     /* Radius */
     if (objects[booktype].oc_spell_radius > 0)
     {
-        Sprintf(buf, "Radius:           %d'", objects[booktype].oc_spell_radius * 5);
+        Sprintf(buf, "Radius:           %ld'", objects[booktype].oc_spell_radius * 5L);
         txt = buf;
         putstr(datawin, 0, txt);
     }
@@ -1474,7 +1478,7 @@ int spell;
             if(objects[booktype].oc_spell_per_level_step == 1)
                 Sprintf(eos(buf), " per caster level");
             else
-                Sprintf(eos(buf), " per %d caster levels", objects[booktype].oc_spell_per_level_step);
+                Sprintf(eos(buf), " per %ld caster levels", objects[booktype].oc_spell_per_level_step);
 
             txt = buf;
             putstr(datawin, 0, txt);
@@ -1690,7 +1694,7 @@ int spell;
     }
 
     /* Skill chance */
-    Sprintf(buf, "Train chance:     %d%%", objects[booktype].oc_spell_skill_chance);
+    Sprintf(buf, "Train chance:     %ld%%", objects[booktype].oc_spell_skill_chance);
     txt = buf;
     putstr(datawin, 0, txt);
 
@@ -2757,6 +2761,7 @@ int x, y;
     return TRUE;
 }
 
+#if 0
 /* Choose location where spell takes effect. */
 STATIC_OVL int
 throwspell(otyp)
@@ -2812,6 +2817,7 @@ int otyp;
     u.dy = cc.y;
     return 1;
 }
+#endif
 
 /* add/hide/remove/unhide teleport-away on behalf of dotelecmd() to give
    more control to behavior of ^T when used in wizard mode */
@@ -4206,6 +4212,7 @@ int objectid;
 
 }
 
+#if 0
 STATIC_OVL char *
 spellretention(idx, outbuf)
 int idx;
@@ -4251,7 +4258,7 @@ char *outbuf;
     }
     return outbuf;
 }
-
+#endif
 
 boolean
 already_learnt_spell_type(otyp)
@@ -4503,7 +4510,7 @@ int spell;
     int quan_mult = 0;
     for (int k = 0; k < difmatcnt; k++)
     {
-        if (difcomps[k] && difcomp_req_amt[k] > 0);
+        if (difcomps[k] && difcomp_req_amt[k] > 0)
         {
             quan_mult = difcomps[k]->quan / difcomp_req_amt[k];
             if (quan_mult < lowest_multiplier)

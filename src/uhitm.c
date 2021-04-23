@@ -5303,7 +5303,7 @@ unsigned long extra_flags;
     if (!iflags.using_gui_tiles || hit_symbol_shown >= MAX_HIT_TILES || hit_symbol_shown < 0)
         return;
 
-    boolean is_you = (x == u.ux && y == u.uy);
+    //boolean is_you = (x == u.ux && y == u.uy);
     unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_GENERAL)) << LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
     unsigned long hflags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
 

@@ -2904,6 +2904,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     if (levelidx > 0)
         return ACTION_ITEM_USE_FLAGS_NONE;
 
+    GH_UNREFERENCED_PARAMETER(genderidx);
+    GH_UNREFERENCED_PARAMETER(alignmentidx);
+
     /* Real cases */
     switch (action)
     {

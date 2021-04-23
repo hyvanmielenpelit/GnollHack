@@ -1673,7 +1673,7 @@ register struct obj* obj;
 
     if (affectsac)
     {
-        Sprintf(buf2, "%d", 10 - objects[otyp].oc_armor_class);
+        Sprintf(buf2, "%ld", 10L - objects[otyp].oc_armor_class);
         Sprintf(buf, "Base armor class:       %s", buf2);
         txt = buf;
         putstr(datawin, 0, txt);
@@ -1762,13 +1762,13 @@ register struct obj* obj;
             }
             if (objects[otyp].oc_spell_range > 0)
             {
-                Sprintf(buf, "Wand effect range:      %d'", objects[otyp].oc_spell_range * 5);
+                Sprintf(buf, "Wand effect range:      %ld'", objects[otyp].oc_spell_range * 5L);
                 txt = buf;
                 putstr(datawin, 0, txt);
             }
             if (objects[otyp].oc_spell_radius > 0)
             {
-                Sprintf(buf, "Wand effect radius:     %d'", objects[otyp].oc_spell_radius * 5);
+                Sprintf(buf, "Wand effect radius:     %ld'", objects[otyp].oc_spell_radius * 5L);
                 txt = buf;
                 putstr(datawin, 0, txt);
             }

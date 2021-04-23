@@ -2302,7 +2302,6 @@ const char* headertext;
     register char ilet = 0;
     char buf[BUFSZ], qbuf[QBUFSZ]; // , leftbuf[BUFSZ], rightbuf[BUFSZ];
     char lets[BUFSZ], altlets[BUFSZ]; //, * ap;
-    boolean is_dip_into = FALSE;
     int foo = 0;
     char *bp = buf;
     xchar allowcnt = 0; /* 0, 1 or 2 */
@@ -2786,7 +2785,6 @@ boolean *usegold_ptr, *allowall_ptr, *allownone_ptr, *useboulder_ptr;
 struct obj* otmp_only;
 {
     register struct obj* otmp;
-    register char ilet = 0;
     char buf[BUFSZ], leftbuf[BUFSZ], rightbuf[BUFSZ];
     char *ap;
     boolean is_dip_into = FALSE;
@@ -2800,6 +2798,8 @@ struct obj* otmp_only;
     xchar foox = 0;
     long dummymask;
     Loot* sortedinvent, * srtinv;
+
+    GH_UNREFERENCED_PARAMETER(lets_size);
 
     if (*let == ALLOW_COUNT)
         let++, allowcnt = 1;
@@ -3712,10 +3712,11 @@ boolean learning_id; /* true if we just read unknown identify scroll */
         /* identify up to `id_limit' items */
         n = 0;
         if (flags.menu_style == MENU_TRADITIONAL)
+        {
             do
             {
                 n = ggetobj("identify", identify, id_limit, FALSE,
-                            (unsigned *) 0, 0);
+                    (unsigned*)0, 0);
                 if (n < 0)
                     break; /* quit or no eligible items */
                 else
@@ -3725,9 +3726,10 @@ boolean learning_id; /* true if we just read unknown identify scroll */
                 }
 
             } while ((id_limit -= n) > 0);
+        }
 
-            if (n == 0 || n < -1)
-                res += menu_identify(id_limit);
+        if (n == 0 || n < -1)
+            res += menu_identify(id_limit);
     }
     update_inventory();
     return res;

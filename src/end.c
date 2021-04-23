@@ -20,6 +20,7 @@
 /* add b to long a, convert wraparound to max value */
 #define nowrap_add(a, b) (a = ((a + game_score_difficulty_adjustment(b)) < 0 ? LONG_MAX : (a + game_score_difficulty_adjustment(b))))
 
+#if 0
 struct valuable_data {
     long count;
     int typ;
@@ -37,6 +38,7 @@ static struct val_list {
                   { amulets, sizeof amulets / sizeof *amulets },
                   { miscellaneousitems, sizeof miscellaneousitems / sizeof *miscellaneousitems },
                   { 0, 0 } };
+#endif
 
 #ifndef NO_SIGNAL
 STATIC_PTR void FDECL(done_intr, (int));
@@ -45,9 +47,11 @@ static void FDECL(done_hangup, (int));
 #endif
 #endif
 STATIC_DCL void FDECL(disclose, (int, BOOLEAN_P));
+#if 0
 STATIC_DCL void FDECL(get_valuables, (struct obj *));
 STATIC_DCL void FDECL(sort_valuables, (struct valuable_data *, int));
 STATIC_DCL void FDECL(artifact_score, (struct obj *, BOOLEAN_P, winid));
+#endif
 STATIC_DCL void FDECL(really_done, (int)) NORETURN;
 STATIC_DCL void FDECL(savelife, (int));
 STATIC_PTR int FDECL(CFDECLSPEC vanqsort_cmp, (const genericptr,
@@ -930,6 +934,7 @@ int how;
     }
 }
 
+#if 0
 /*
  * Get valuables from the given list.  Revised code: the list always remains
  * intact.
@@ -1001,6 +1006,7 @@ int size; /* max value is less than 20 */
     }
     return;
 }
+#endif
 
 #if 0
 /*
@@ -1033,6 +1039,8 @@ int what;
 }
 #endif
 
+
+#if 0
 /* called twice; first to calculate total, then to list relevant items */
 STATIC_OVL void
 artifact_score(list, counting, endwin)
@@ -1069,6 +1077,7 @@ winid endwin;
             artifact_score(otmp->cobj, counting, endwin);
     }
 }
+#endif
 
 /* Be careful not to call panic from here! */
 void
@@ -1600,9 +1609,8 @@ int how;
                mydogs; it doesn't have to be placed on the map for that] */
             if (Schroedingers_cat) 
             {
-                int mhp, m_lev = adj_lev(&mons[PM_HOUSECAT]);
-
-                mhp = d(m_lev, 8);
+                //int mhp, m_lev = adj_lev(&mons[PM_HOUSECAT]);
+                //mhp = d(m_lev, 8);
                 //nowrap_add(u.u_gamescore, mhp);
                 Strcat(eos(pbuf), " and Schroedinger's cat");
             }
@@ -1868,6 +1876,8 @@ int status;
         exit_hack(status);
     else
         gnollhack_exit(status);
+
+    return;
 }
 
 enum vanq_order_modes {

@@ -465,6 +465,7 @@ curses_choose_character()
     char pbuf[QBUFSZ];
     char choice[QBUFSZ];
     char tmpchoice[QBUFSZ];
+    char choice2[QBUFSZ];
 
     prompt = build_plselection_prompt(pbuf, QBUFSZ, flags.initrole,
                                       flags.initrace, flags.initgend,
@@ -504,7 +505,8 @@ curses_choose_character()
         tmpchoice[count] = toupper(tmpchoice[count]);
     }
 
-    sprintf(choice, "%s%s", choice, tmpchoice);
+    strcpy(choice2, choice);
+    sprintf(choice, "%s%s", choice2, tmpchoice);
 
     /* prevent an unnecessary prompt */
     rigid_role_checks();

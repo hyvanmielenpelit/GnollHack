@@ -235,6 +235,7 @@ void
 genl_set_animation_timer(interval)
 unsigned int interval;
 {
+    GH_UNREFERENCED_PARAMETER(interval);
     return;
 }
 
@@ -255,8 +256,9 @@ struct special_view_info info;
 
 void
 genl_stop_all_sounds(info)
-struct stop_all_info info;
+struct stop_all_info ;
 {
+    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
@@ -264,6 +266,7 @@ void
 genl_play_immediate_ghsound(info)
 struct ghsound_immediate_info info;
 {
+    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
@@ -271,6 +274,7 @@ void
 genl_play_ghsound_occupation_ambient(info)
 struct ghsound_occupation_ambient_info info;
 {
+    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
@@ -278,6 +282,7 @@ void
 genl_play_ghsound_effect_ambient(info)
 struct ghsound_effect_ambient_info info;
 {
+    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
@@ -285,6 +290,7 @@ void
 genl_set_effect_ambient_volume(info)
 struct effect_ambient_volume_info info;
 {
+    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
@@ -292,6 +298,7 @@ void
 genl_play_ghsound_music(info)
 struct ghsound_music_info info;
 {
+    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
@@ -299,6 +306,7 @@ void
 genl_play_ghsound_level_ambient(info)
 struct ghsound_level_ambient_info info;
 {
+    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
@@ -306,6 +314,7 @@ void
 genl_play_ghsound_environment_ambient(info)
 struct ghsound_environment_ambient_info info;
 {
+    GH_UNREFERENCED_PARAMETER(info);
     return;
 }
 
@@ -318,18 +327,21 @@ genl_adjust_ghsound_general_volumes(VOID_ARGS)
 void
 genl_add_ambient_ghsound(struct soundsource_t* soundsource)
 {
+    GH_UNREFERENCED_PARAMETER(soundsource);
     return;
 }
 
 void
 genl_delete_ambient_ghsound(struct soundsource_t* soundsource)
 {
+    GH_UNREFERENCED_PARAMETER(soundsource);
     return;
 }
 
 void
 genl_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 {
+    GH_UNREFERENCED_PARAMETER(soundsource);
     return;
 }
 
@@ -874,7 +886,7 @@ hup_add_extended_menu(window, glyph, identifier, info, sel, grpsel, attr, txt, p
 winid window UNUSED;
 int glyph UNUSED, attr UNUSED;
 const anything* identifier UNUSED;
-struct extended_menu_info info;
+struct extended_menu_info info UNUSED;
 char sel UNUSED, grpsel UNUSED;
 const char* txt UNUSED;
 boolean preselected UNUSED;
@@ -1537,7 +1549,7 @@ dump_add_extended_menu(win, glyph, identifier, info, ch, gch, attr, str, presele
 winid win UNUSED;
 int glyph;
 const anything* identifier UNUSED;
-struct extended_menu_info info;
+struct extended_menu_info info UNUSED;
 char ch;
 char gch UNUSED;
 int attr UNUSED;

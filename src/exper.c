@@ -8,7 +8,7 @@
 #include <limits.h>
 #endif
 
-STATIC_DCL int FDECL(enermod, (int));
+//STATIC_DCL int FDECL(enermod, (int));
 
 long
 newuexp(lev)
@@ -74,6 +74,7 @@ int lev;
     */
 }
 
+#if 0
 STATIC_OVL int
 enermod(en)
 int en;
@@ -92,6 +93,7 @@ int en;
         return en;
     }
 }
+#endif
 
 /* calculate spell power/energy points for new level */
 int

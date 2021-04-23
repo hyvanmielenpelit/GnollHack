@@ -5,15 +5,19 @@
 
 #include "hack.h"
 
-static NEARDATA const char see_yourself[] = "see yourself";
-static NEARDATA const char unknown_type[] = "Unknown type of %s (%d)";
 static NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
                            c_shirt[] = "shirt", c_robe[] = "robe",
                            c_bracers[] = "bracers", c_cloak[] = "cloak",
                            c_gloves[] = "gloves", c_boots[] = "boots",
-                           c_helmet[] = "helmet", c_shield[] = "shield",
+                           c_shield[] = "shield",
                            c_weapon[] = "weapon", c_sword[] = "sword",
                            c_axe[] = "axe", c_that_[] = "that";
+
+#if 0
+static NEARDATA const char see_yourself[] = "see yourself";
+static NEARDATA const char unknown_type[] = "Unknown type of %s (%d)";
+static NEARDATA const char c_helmet[] = "helmet";
+#endif
 
 static NEARDATA const long takeoff_order[] = {
     WORN_BLINDF,  W_WEP,      WORN_SHIELD, WORN_GLOVES, LEFT_RING,
@@ -46,7 +50,9 @@ STATIC_DCL void FDECL(count_worn_stuff, (struct obj **, BOOLEAN_P));
 STATIC_PTR int FDECL(armor_or_accessory_off, (struct obj *));
 STATIC_PTR int FDECL(accessory_or_armor_on, (struct obj *));
 STATIC_DCL void FDECL(already_wearing, (const char *));
+#if 0
 STATIC_DCL void FDECL(already_wearing2, (const char *, const char *));
+#endif
 STATIC_DCL void FDECL(item_change_sex_and_useup, (struct obj*));
 
 
@@ -1454,6 +1460,7 @@ const char *cc;
     You("are already wearing %s%c", cc, (cc == c_that_) ? '!' : '.');
 }
 
+#if 0
 STATIC_OVL void
 already_wearing2(cc1, cc2)
 const char *cc1, *cc2;
@@ -1461,6 +1468,7 @@ const char *cc1, *cc2;
     play_sfx_sound(SFX_GENERAL_CANNOT);
     You_cant("wear %s because you're wearing %s there already.", cc1, cc2);
 }
+#endif
 
 /*
  * canwearobj checks to see whether the player can wear a piece of armor

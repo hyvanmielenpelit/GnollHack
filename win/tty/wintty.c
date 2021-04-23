@@ -3010,7 +3010,7 @@ tty_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, str, prese
 winid window;               /* window to use, must be of type NHW_MENU */
 int glyph UNUSED;           /* glyph to display with item (not used) */
 const anything* identifier; /* what to return if selected */
-struct extended_menu_info info;
+struct extended_menu_info info UNUSED;
 char ch;                    /* keyboard accelerator (0 = pick our own) */
 char gch;                   /* group accelerator (0 = no group) */
 int attr;                   /* attribute for string (like tty_putstr()) */
@@ -4192,8 +4192,9 @@ STATIC_OVL int
 make_things_fit(force_update)
 boolean force_update;
 {
-    int trycnt, fitting = -1, condsz, requirement;
+    int trycnt, fitting = -1, requirement;
     int rowsz[10], num_rows, condrow, otheroptions = 0;
+    //int condsz;
 
     num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines >= MAX_STATUS_LINES) ? MAX_STATUS_LINES : iflags.wc2_statuslines;
     condrow = num_rows - 1; /* always last row, 1 for 0..1 or 2 for 0..2 */
@@ -4202,7 +4203,7 @@ boolean force_update;
         shrink_enc(0);
     if (dlvl_shrinklvl > 0)
         shrink_dlvl(0);
-    condsz = condition_size();
+    //condsz = condition_size();
     for (trycnt = 0; trycnt < 6 && fitting == -1; ++trycnt) {
         /* FIXME: this remeasures each line every time even though it
            is only attempting to shrink one of them and the other one
@@ -4220,7 +4221,7 @@ boolean force_update;
         if (trycnt < 2) {
             if (cond_shrinklvl < trycnt + 1) {
                 cond_shrinklvl = trycnt + 1;
-                condsz = condition_size();
+                //condsz = condition_size();
             }
             continue;
         }

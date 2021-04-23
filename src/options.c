@@ -3704,19 +3704,19 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
-    for(int i = 1; i < MAX_TILE_SHEETS; i++)
+    for(int tile_sheet_idx = 1; tile_sheet_idx < MAX_TILE_SHEETS; tile_sheet_idx++)
     {
         char fullnamebuf[BUFSZ] = "";
         fullname = "tile_file";
-        Sprintf(fullnamebuf, "%s_%d", fullname, i + 1);
+        Sprintf(fullnamebuf, "%s_%d", fullname, tile_sheet_idx + 1);
 
         if (match_optname(opts, fullnamebuf, strlen(fullnamebuf) - 1, TRUE)) {
             if (duplicate)
                 complain_about_duplicate(opts, 1);
             if ((op = string_for_opt(opts, FALSE)) != 0) {
-                if (iflags.wc_tile_file[i])
-                    free(iflags.wc_tile_file[i]);
-                iflags.wc_tile_file[i] = dupstr(op);
+                if (iflags.wc_tile_file[tile_sheet_idx])
+                    free(iflags.wc_tile_file[tile_sheet_idx]);
+                iflags.wc_tile_file[tile_sheet_idx] = dupstr(op);
             }
             else
                 return FALSE;

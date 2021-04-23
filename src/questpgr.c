@@ -846,7 +846,9 @@ int fd;
     for (int j = 0; j < NUM_ROLES; j++)
     {
         const char* role_filecode = roles[j].filecode;
+#if 0 /* UNUSED but available */
         const char* race_filecode = races[j].filecode;
+#endif
         for (i = 0; i < n_classes; i++)
         {
             if (!strncmp(COMMON_ID, qt_classes[i], LEN_HDR))

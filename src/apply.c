@@ -4520,7 +4520,7 @@ struct obj *obj;
     context.polearm.hitmon = (struct monst *) 0;
     /* Attack the monster there */
     bhitpos = cc;
-    boolean hitres = 0;
+    uchar hitres = 0;
     if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != (struct monst *) 0) 
     {
         if (attack_checks(mtmp, uwep))

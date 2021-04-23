@@ -305,7 +305,7 @@ register int show;
 {
     register int x = trap->tx, y = trap->ty;
     register int glyph = trap_to_glyph(trap, newsym_rn2);
-    register int cmap_idx = trap_to_defsym(trap->ttyp);
+
     struct monst* mtmp = m_at(x, y);
     boolean utrapped = (x == u.ux && y == u.uy && u.utrap > 0);
     boolean mtrapped = (mtmp && mtmp->mtrapped);
@@ -4602,7 +4602,7 @@ boolean exclude_ascii;
 void
 u_shieldeff()
 {
-    enum action_tile_types action_before = u.action;
+    //enum action_tile_types action_before = u.action;
     //update_u_action_and_wait(ACTION_TILE_PASSIVE_DEFENSE);
     shieldeff(u.ux, u.uy);
     //update_u_action_revert(action_before);
@@ -4615,7 +4615,7 @@ struct monst* mon;
     if (!mon || !cansee(mon->mx, mon->my)) /* Blanket check that shield effect is no played for nothing */
         return;
 
-    enum action_tile_types action_before = mon->action;
+    //enum action_tile_types action_before = mon->action;
     //update_m_action_and_wait(mon, ACTION_TILE_PASSIVE_DEFENSE);
     shieldeff(mon->mx, mon->my);
     //update_m_action_revert(mon, action_before);

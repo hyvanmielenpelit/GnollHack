@@ -1445,10 +1445,6 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_BOTTOM_TILE:
         {
             int below_y = y + 1;
-            int ux = u.ux, uy = u.uy;
-            boolean cs = cansee(x, y);
-            int cmaps = cmap_to_glyph(S_stone);
-            int gl = levl[x][below_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR];
             if (!isok(x, below_y) 
                 || glyph_is_specific_cmap_or_its_variation(levl[x][below_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
                 || (IS_DOORJOIN(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) 
@@ -2411,7 +2407,7 @@ short animidx;
         for (int j = 0; j < replacements[i].number_of_tiles; j++)
         {
             if (replacements[i].tile_animation[j] == animidx)
-                return glyph2tile[j + replacement_offsets[i] /* replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[j + replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
         }
     }
 
