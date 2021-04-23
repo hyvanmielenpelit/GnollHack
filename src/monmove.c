@@ -431,6 +431,7 @@ boolean digest_meal;
         {
             if (canseemon(mon))
             {
+                play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_DEATH);
                 pline("%s dies of %s mummy rot!", Monnam(mon), mhis(mon));
             }
             mon->mhp = 0;
