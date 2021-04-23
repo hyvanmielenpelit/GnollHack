@@ -362,7 +362,7 @@ curses_str_remainder(const char *str, int width, int line_num)
     int strsize = strlen(str) + 1;
 #if __STDC_VERSION__ >= 199901L
     char substr[strsize];
-    char curstr[strsize];
+    //char curstr[strsize];
     char tmpstr[strsize];
 
     strcpy(substr, str);
@@ -371,7 +371,7 @@ curses_str_remainder(const char *str, int width, int line_num)
 #define BUFSZ 256
 #endif
     char substr[BUFSZ * 2];
-    char curstr[BUFSZ * 2];
+    //char curstr[BUFSZ * 2];
     char tmpstr[BUFSZ * 2];
 
     if (strsize > (BUFSZ * 2) - 1) {
@@ -399,10 +399,12 @@ curses_str_remainder(const char *str, int width, int line_num)
         if (last_space == 0) {  /* No spaces found */
             last_space = count - 1;
         }
+#if 0 /* Does not do anything */
         for (count = 0; count < last_space; count++) {
             curstr[count] = substr[count];
         }
         curstr[count] = '\0';
+#endif
         if (substr[count] == '\0') {
             break;
         }

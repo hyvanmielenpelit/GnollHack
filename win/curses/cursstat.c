@@ -224,6 +224,8 @@ draw_status()
 
         /* actual y (and x) */
         getmaxyx(win, ay, ax);
+        ax = ax; /* Remove unused warning */
+
         if (border)
             ay -= 2;
 
@@ -756,6 +758,7 @@ boolean border;
                 if (number_of_lines >= 3) {
                     /* remember hunger's position */
                     getyx(win, conddummy, condstart);
+                    conddummy = condummy; /* Remove unused warning */
                     /* if hunger won't be shown, figure out where cap
                        will be; if cap won't be shown either, use where
                        conditions would go if they were on this line */
