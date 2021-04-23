@@ -1868,7 +1868,7 @@ NEARDATA struct permonst mons[] = {
         M1_BREATHLESS | M1_MINDLESS | M1_HUMANOID,
         M2_UNDEAD | M2_GNOME | M2_STALK | M2_HOSTILE, 
         M3_INFRAVISION, 
-        M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
+        M4_NONE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
         1, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("orc zombie", None, "mindless undead orc", None, None, S_LESSER_UNDEAD, LVL(2, 6, 9, 0, 0, -3),
     (G_GENO | G_SGROUP | G_NOCORPSE | 1),
