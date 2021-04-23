@@ -4,7 +4,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
-#include "artifact.h"
 #include <math.h>
 
 STATIC_DCL boolean FDECL(known_hitum, (struct monst *, struct obj *, int *,

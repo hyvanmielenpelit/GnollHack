@@ -4,8 +4,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
-#include "artifact.h"
-
 #include <ctype.h>
 
 /* this assumes that a human quest leader or nemesis is an archetype

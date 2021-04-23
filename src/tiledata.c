@@ -3,8 +3,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
-#include "artifact.h"
-#include "artilist.h"
 
 STATIC_DCL void FDECL(set_base_tileset_cmap, (int*, int, int));
 STATIC_DCL void FDECL(set_base_tileset_cmap_variation, (int*, int, int));

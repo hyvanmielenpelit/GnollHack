@@ -9,7 +9,6 @@
  */
 
 #include "hack.h"
-#include "artifact.h"
 
 extern boolean known; /* from read.c */
 

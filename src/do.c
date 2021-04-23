@@ -6,8 +6,6 @@
 /* Contains code for 'd', 'D' (drop), '>', '<' (up, down) */
 
 #include "hack.h"
-#include "artifact.h"
-#include "artilist.h"
 #include "lev.h"
 #include <math.h>
 

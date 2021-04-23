@@ -4,8 +4,6 @@
 
 #include "hack.h"
 #include "lev.h" /* for checking save modes */
-#include "artifact.h"
-#include "artilist.h"
 
  /* flags */
 #define SSF_SHOW 0x1        /* display the sound source */

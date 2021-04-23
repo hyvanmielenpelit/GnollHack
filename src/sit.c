@@ -4,8 +4,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
-#include "artifact.h"
-
 
 /* take away the hero's money */
 void

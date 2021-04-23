@@ -7,8 +7,6 @@
 #include "wintty.h" /* for prototype of has_color() only */
 #endif
 #include "color.h"
-#include "artifact.h"
-#include "artilist.h"
 #define HI_DOMESTIC CLR_WHITE /* monst.c */
 
 #if !defined(TTY_GRAPHICS)

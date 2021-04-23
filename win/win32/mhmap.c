@@ -15,8 +15,6 @@
 #include "color.h"
 #include "patchlevel.h"
 #include "layer.h"
-#include "artifact.h"
-#include "artilist.h"
 #include "general.h"
 #include <math.h>
 

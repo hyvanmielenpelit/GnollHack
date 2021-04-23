@@ -4,8 +4,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
-#include "artifact.h"
-#include "artilist.h"
 #include <math.h>
 
 /* Disintegration rays have special treatment; corpses are never left.

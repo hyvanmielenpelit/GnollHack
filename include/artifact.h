@@ -165,6 +165,6 @@ enum invoke_prop_types {
 #define NUM_ARTINVOKES (ARTINVOKE_TIME_STOP - ARTINVOKE_TAMING + 1)
 
 extern const char* artifact_invoke_names[NUM_ARTINVOKES];
-
+extern NEARDATA struct artifact artilist[];
 
 #endif /* ARTIFACT_H */

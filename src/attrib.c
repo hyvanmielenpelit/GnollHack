@@ -5,8 +5,6 @@
 /*  attribute modification routines. */
 
 #include "hack.h"
-#include "artifact.h"
-#include "artilist.h"
 #include <ctype.h>
 
 /* part of the output on gain or loss of attribute */

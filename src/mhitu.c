@@ -4,7 +4,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
-#include "artifact.h"
 #include <math.h>
 
 STATIC_VAR NEARDATA struct obj *mon_currwep = (struct obj *) 0;

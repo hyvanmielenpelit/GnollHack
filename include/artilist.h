@@ -11,7 +11,7 @@
 
 #define A(nam, desc, hit_desc, typ, masktyp, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset) nam
 
-static const char *artifact_names[] = {
+const char *artifact_names[] = {
 #else
 /* in artifact.c, set up the actual artifact list structure */
 
@@ -45,13 +45,9 @@ static const char *artifact_names[] = {
 #define     STUN(a,b)        {0,AD_STUN,a,b,0,0,0,0UL,0}         /* magical attack */
 /* clang-format on */
 
-#define ARTDMG_DOUBLE_DAMAGE -1
-#define ARTDMG_TRIPLE_DAMAGE -2
-#define ARTDMG_QUADRUPLE_DAMAGE -3
-
 #define None (const char *)0
 
-STATIC_OVL NEARDATA struct artifact artilist[] = {
+NEARDATA struct artifact artilist[] = {
 #endif /* MAKEDEFS_C */
 
     /* Artifact cost rationale:

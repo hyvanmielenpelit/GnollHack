@@ -4,7 +4,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
-#include "artifact.h"
 #include <math.h>
 
 extern const char *const destroy_strings[][3]; /* from zap.c */

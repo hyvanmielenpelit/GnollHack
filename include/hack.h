@@ -265,6 +265,7 @@ extern int replacement_offsets[MAX_REPLACEMENTS];
 #include "region.h"
 #include "soundset.h"
 #include "matcomps.h" /* before extern.h */
+#include "artifact.h"
 
 /* Symbol offsets */
 #define SYM_OFF_P (0)

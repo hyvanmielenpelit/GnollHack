@@ -4,7 +4,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
-#include "artifact.h"
 
 /*
  *      These routines provide basic data for any type of monster.

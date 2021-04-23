@@ -4,9 +4,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
-#include "artifact.h"
-#include "artilist.h"
-
 
 /* NOTE: the order of these exactly corresponds to the
    order of oc_material values #define'd in objclass.h. */
