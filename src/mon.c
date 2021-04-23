@@ -1382,6 +1382,7 @@ update_monster_timouts()
                         {
                             if (canseemon(mtmp))
                             {
+                                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
                                 pline("%s dies of %s terminal illness!", Monnam(mtmp), mhis(mtmp));
                             }
                             mtmp->mhp = 0;
@@ -1397,6 +1398,7 @@ update_monster_timouts()
                         {
                             if (canseemon(mtmp))
                             {
+                                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
                                 pline("%s dies of %s food poisoning!", Monnam(mtmp), mhis(mtmp));
                             }
                             mtmp->mhp = 0;
@@ -1412,6 +1414,7 @@ update_monster_timouts()
                         {
                             if (canseemon(mtmp))
                             {
+                                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
                                 pline("%s dies of %s mummy rot!", Monnam(mtmp), mhis(mtmp));
                             }
                             mtmp->mhp = 0;
