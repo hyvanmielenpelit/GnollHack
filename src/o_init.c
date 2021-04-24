@@ -1221,7 +1221,7 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
         return FALSE;
     if (obj->oclass == ARMOR_CLASS && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_ARMOR))
         return FALSE;
-    if ((!is_weapon(obj) || (is_weapon(obj) && (is_missile(obj) || is_ammo(obj)))) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_THROWN_OR_AMMO))
+    if ((is_missile(obj) || is_ammo(obj)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_THROWN_OR_AMMO))
         return FALSE;
 
     return TRUE;
