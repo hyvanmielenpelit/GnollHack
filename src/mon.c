@@ -680,7 +680,7 @@ boolean createcorpse;
             if (!rn2(2))
             {
                 obj = mksobj_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
-                obj->quan = (long)(rnd(3));
+                obj->quan = (long)(d(2, 6));
                 obj->owt = weight(obj);
             }
         }

@@ -259,15 +259,16 @@ struct obj {
 #define matching_launcher(a, l) \
     ((l) && objects[(a)->otyp].oc_skill == -objects[(l)->otyp].oc_skill)
 #define ammo_and_launcher(a, l) (is_ammo(a) && matching_launcher(a, l))
-#define is_missile(otmp)                                          \
-    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
-     && (objects[(otmp)->otyp].oc_flags & O1_THROWN_WEAPON_ONLY))
+#define is_thrown_weapon_only(o) ((objects[(o)->otyp].oc_flags & O1_THROWN_WEAPON_ONLY) != 0)
 #define is_weptool(o) \
     ((o)->oclass == TOOL_CLASS && objects[(o)->otyp].oc_skill != P_NONE)
         /* towel is not a weptool:  enchantment isn't an enchantment, cursed towel
            doesn't weld to hand, and twoweapon won't work with one */
 #define is_weapon(o) \
-    ((o)->oclass == WEAPON_CLASS || is_weptool(o) || (objects[(o)->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED))
+    ((o)->oclass == WEAPON_CLASS || is_weptool(o) || (objects[(o)->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED) != 0)
+#define is_missile(o)                                          \
+    (((o)->oclass == WEAPON_CLASS || is_weptool(o)) && is_thrown_weapon_only(o))
+
 #define is_amulet(o) \
     ((o)->oclass == AMULET_CLASS)
 #define is_wet_towel(o) ((o)->otyp == TOWEL && (o)->special_quality > 0)
@@ -635,23 +636,24 @@ struct mythic_definition {
     unsigned long mythic_flags;
 };
 
-#define MYTHIC_FLAG_NONE                    0x00000000UL
-#define MYTHIC_FLAG_WEAPON_REQUIRED         0x00000001UL /* Must be a weapon */
-#define MYTHIC_FLAG_ARMOR_REQUIRED          0x00000002UL /* Must be an armor */
-#define MYTHIC_FLAG_NO_PIERCING_WEAPONS     0x00000004UL
-#define MYTHIC_FLAG_NO_SLASHING_WEAPONS     0x00000008UL
-#define MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS  0x00000010UL
-#define MYTHIC_FLAG_DIRECTLY_WISHABLE       0x00000020UL
-#define MYTHIC_FLAG_NON_WISHABLE            0x00000040UL
-#define MYTHIC_FLAG_NO_CELESTIAL_WEAPONS    0x00000080UL
-#define MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS   0x00000100UL
-#define MYTHIC_FLAG_NO_INFERNAL_WEAPONS     0x00000200UL
-#define MYTHIC_FLAG_POLEARM_LANCE_SPEAR_ONLY 0x00000400UL
-#define MYTHIC_FLAG_NO_WEAPON               0x00000800UL /* Must not be a weapon */
-#define MYTHIC_FLAG_NO_ARMOR                0x00001000UL /* Must not be an armor, e.g. a weapon shield (spiked shield) will not do */
-#define MYTHIC_FLAG_HELMET_REQUIRED         0x00002000UL /* Must be a helmet */
-#define MYTHIC_FLAG_SHIELD_REQUIRED         0x00004000UL /* Must be a shield */
-#define MYTHIC_FLAG_SUIT_REQUIRED           0x00008000UL /* Must be a suit */
+#define MYTHIC_FLAG_NONE                        0x00000000UL
+#define MYTHIC_FLAG_WEAPON_REQUIRED             0x00000001UL /* Must be a weapon */
+#define MYTHIC_FLAG_ARMOR_REQUIRED              0x00000002UL /* Must be an armor */
+#define MYTHIC_FLAG_NO_PIERCING_WEAPONS         0x00000004UL
+#define MYTHIC_FLAG_NO_SLASHING_WEAPONS         0x00000008UL
+#define MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS      0x00000010UL
+#define MYTHIC_FLAG_DIRECTLY_WISHABLE           0x00000020UL
+#define MYTHIC_FLAG_NON_WISHABLE                0x00000040UL
+#define MYTHIC_FLAG_NO_CELESTIAL_WEAPONS        0x00000080UL
+#define MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS       0x00000100UL
+#define MYTHIC_FLAG_NO_INFERNAL_WEAPONS         0x00000200UL
+#define MYTHIC_FLAG_POLEARM_LANCE_SPEAR_ONLY    0x00000400UL
+#define MYTHIC_FLAG_NO_WEAPON                   0x00000800UL /* Must not be a weapon */
+#define MYTHIC_FLAG_NO_ARMOR                    0x00001000UL /* Must not be an armor, e.g. a weapon shield (spiked shield) will not do */
+#define MYTHIC_FLAG_HELMET_REQUIRED             0x00002000UL /* Must be a helmet */
+#define MYTHIC_FLAG_SHIELD_REQUIRED             0x00004000UL /* Must be a shield */
+#define MYTHIC_FLAG_SUIT_REQUIRED               0x00008000UL /* Must be a suit */
+#define MYTHIC_FLAG_NO_THROWN_OR_AMMO           0x00010000UL
 
 #define MYTHIC_FLAG_SLASHING_WEAPONS_ONLY    (MYTHIC_FLAG_NO_PIERCING_WEAPONS | MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS)
 #define MYTHIC_FLAG_PIERCING_WEAPONS_ONLY    (MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS | MYTHIC_FLAG_NO_SLASHING_WEAPONS)
@@ -727,6 +729,7 @@ enum mythic_power_types {
 #define MYTHIC_POWER_FLAG_HELMET_ONLY           0x00000008 /* Works only for helmets */
 #define MYTHIC_POWER_FLAG_SHIELD_ONLY           0x00000010 /* Works only for shields */
 #define MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS    0x00000020 /* Works also against shapeshifted monsters of the type */
+#define MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO     0x00000040 /* No thrown weapons or ammo for this power */
 
 
 enum mythic_prefix_power_types {
@@ -831,7 +834,9 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
     (!otyp_non_mythic((o)->otyp) && (is_weapon(o) || (o)->oclass == ARMOR_CLASS))
 
 #define mythic_power_applies_to_obj(o, pwrflags) \
-    (!(!is_weapon(o) && ((pwrflags) & MYTHIC_POWER_FLAG_WEAPON_ONLY) != 0) && !((o)->oclass != ARMOR_CLASS && ((pwrflags) & MYTHIC_POWER_FLAG_ARMOR_ONLY) != 0) && \
+    (!(!is_weapon(o) && ((pwrflags) & MYTHIC_POWER_FLAG_WEAPON_ONLY) != 0) && \
+     !((o)->oclass != ARMOR_CLASS && ((pwrflags) & MYTHIC_POWER_FLAG_ARMOR_ONLY) != 0) && \
+     !((is_missile(o) || is_ammo(o)) && ((pwrflags) & MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO) != 0) && \
      !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_SUIT) && ((pwrflags) & MYTHIC_POWER_FLAG_SUIT_ONLY) != 0) && \
      !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_HELM) && ((pwrflags) & MYTHIC_POWER_FLAG_HELMET_ONLY) != 0) && \
      !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_SHIELD) && ((pwrflags) & MYTHIC_POWER_FLAG_SHIELD_ONLY) != 0) )
