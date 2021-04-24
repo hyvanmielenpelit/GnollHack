@@ -1728,7 +1728,7 @@ AMULET("amulet of mana",                "convex",  70,    NO_POWER, NO_POWER, NO
 AMULET("demon blood talisman",       "tetrahedral",  25,    NO_POWER, NO_POWER, NO_POWER, P1_MANA_PERCENTAGE_BONUS, 100, 0, 0, 0, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL), //doubles mana capacity
 AMULET("periapt of vitality",            "linear",  70,    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 25, 0, 0, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 AMULET("amulet of magical breathing", "octagonal", 70,  MAGICAL_BREATHING, 0, 0, P1_NONE, 0, 0, 0, 0, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-AMULET("amulet of seeing",            "cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, PERMITTED_ALL), /* Base item for the Eye of Aethiopica */
+AMULET("amulet of seeing",            "cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, PERMITTED_ALL), /* Obsolete */
 /* fixed descriptions; description duplication is deliberate;
  * fake one must come before real one because selection for
  * description shuffling stops when a non-magic amulet is encountered
