@@ -316,7 +316,7 @@ boolean createcorpse;
     int oneinchance = 0;
     int basemonsterindex = 0;
     int sporequan = 0;
-    boolean additionalash = 0;
+    boolean ashquan = 0;
     boolean istame = is_tame(mtmp);
     boolean isquestmonster = In_quest(&u.uz)
         && (mtmp->mnum == urole.enemy1num || mtmp->mnum == urole.enemy2num || mtmp->data->mlet == urole.enemy1sym || mtmp->data->mlet == urole.enemy2sym);
@@ -349,13 +349,11 @@ boolean createcorpse;
             }
             break;
         case PM_ANCIENT_RED_DRAGON:
-            additionalash++;
-            /* FALLTHRU */
         case PM_RED_DRAGON:
         case PM_HELL_BAT:
         case PM_ELDER_FIRE_ELEMENTAL:
         case PM_PHOENIX:
-            additionalash++;
+            ashquan++;
             /* FALLTHRU */
         case PM_PYROHYDRA:
         case PM_RED_NAGA:
@@ -365,18 +363,17 @@ boolean createcorpse;
         case PM_PYROLISK:
         case PM_FIRE_GIANT:
         case PM_HELL_HOUND:
-            additionalash++;
-            /* FALLTHRU */
         case PM_FIRE_ANT:
         case PM_RED_NAGA_HATCHLING:
         case PM_RED_DRAGON_HATCHLING:
         case PM_RED_MOLD:
         case PM_HELL_HOUND_PUP:
+            ashquan++;
             if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
             {
                 obj = mksobj_at(PINCH_OF_SULFUROUS_ASH, x, y, TRUE, FALSE);
-                if (additionalash > 1)
-                    obj->quan = rnd(2 + additionalash);
+                if (ashquan > 1)
+                    obj->quan = rnd(ashquan);
                 else
                     obj->quan = 1;
                 obj->owt = weight(obj);
