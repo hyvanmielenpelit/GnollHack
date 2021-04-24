@@ -2859,7 +2859,7 @@ SPELL("arrow of Diana",      "bow-patterned", None, None, "Shoots a magical arro
 SPELL("summon elder treant", "leaf-patterned", None, None, "Summons a permanent elder treant",
     P_NATURE_SPELL,            2,  5,               0, 7,120, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("gaze of petrification",   "garnet-studded", None, None, "Petrifies the target instantly",
-    P_NATURE_SPELL,            4,  5,               0,10,150, A_MAX_WIS_CHA, 10, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_STON, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+    P_NATURE_SPELL,            4,  5,               0,11,200, A_MAX_WIS_CHA, 10, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_STON, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("summon phoenix",      "bird-patterned", None, None, "Summons a permanent phoenix",
     P_NATURE_SPELL,                    3,  5,       0, 7,120, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
@@ -2997,7 +2997,7 @@ SPELL("jumping",          "thin", None, None, "Enables the caster to jump",
 SPELL("water walking",            "circle-patterned", None, None, "Makes the caster able to walk on water",
     P_MOVEMENT_SPELL,            5, 3,             0, 3,20, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, WATER_WALKING, 0, 0, 0, 0, 10, 6, 25, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("time stop",           "ancient", None, "an ancient movement spell", "Stops the flow of time, except for the caster",
-    P_MOVEMENT_SPELL,            2, 10,            15, 9,100, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 1, 4, 3, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+    P_MOVEMENT_SPELL,            2, 10,            15,10,150, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 1, 4, 3, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
 SPELL("shield",       "obsidian-studded", None, None, "Gives -4 bonus to AC",
     P_ABJURATION_SPELL,            4,  3,             0, 0, 4, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, MAGICAL_SHIELDING, 0, 0, 0, 0, 2, 10, 130, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
