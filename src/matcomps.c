@@ -2269,13 +2269,13 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_ANIMATE_FIRE,
-    "2 pinches of sulfurous ash",
+    "4 pinches of sulfurous ash",
     STRANGE_OBJECT,
     1,
         {
             {
                 {PINCH_OF_SULFUROUS_ASH, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
-                NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 2, MATCOMP_NO_FLAGS
+                NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 4, MATCOMP_NO_FLAGS
             },
             NO_MATCOMP,
             NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
@@ -2328,7 +2328,7 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_GREATER_ANIMATE_FIRE,
-    "Ruby, 2 pinches of sulfurous ash",
+    "Ruby, 4 pinches of sulfurous ash",
     STRANGE_OBJECT,
     2,
         {
@@ -2338,7 +2338,7 @@ struct materialcomponentlist matlists[] =
             },
             {
                 {PINCH_OF_SULFUROUS_ASH, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
-                NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 2, MATCOMP_NO_FLAGS
+                NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 4, MATCOMP_NO_FLAGS
             },
             NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
         }
