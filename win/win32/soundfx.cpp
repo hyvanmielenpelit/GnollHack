@@ -2062,7 +2062,7 @@ extern "C"
         return FMOD_OK;
     }
    
-
+#if 0
     boolean fmod_stop_all_immediate_sounds()
     {
         FMOD_RESULT result;
@@ -2102,16 +2102,11 @@ extern "C"
 
         return !update_failed && !result;
     }
-
+#endif
 
     boolean
     fmod_play_immediate_sound(struct ghsound_immediate_info info)
     {
-        if (info.stop_sounds)
-        {
-            return fmod_stop_all_immediate_sounds();
-        }
-
         FMOD_RESULT result;
 
         enum sound_play_groups play_group = info.play_group;
@@ -2564,102 +2559,127 @@ extern "C"
     boolean
     fmod_stop_all_sounds(struct stop_all_info info)
     {
+        if (info.stop_flags == 0)
+            info.stop_flags = STOP_SOUNDS_FLAGS_ALL;
 
         FMOD_RESULT result;
-        if (info.stop_flags & 1)
+        boolean res = TRUE;
+        if (info.stop_flags & STOP_SOUNDS_FLAGS_MUSIC)
         {
             for (int i = 0; i <= 1; i++)
             {
                 if (musicInstances[i].eventInstance)
                 {
                     if ((result = musicInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
-                        return FALSE;
+                        res = FALSE;
                     if ((result = musicInstances[i].eventInstance->release()) != FMOD_OK)
-                        return FALSE;
+                        res = FALSE;
                     musicInstances[i].eventInstance = 0;
                 }
             }
         }
 
-        for (int i = 0; i <= 1; i++)
+        if (info.stop_flags & STOP_SOUNDS_FLAGS_LEVEL_AMBIENT)
         {
-            if (levelAmbientInstances[i].eventInstance)
+            for (int i = 0; i <= 1; i++)
             {
-                if (levelAmbientInstances[i].normalVolume > 0.0f && (result = levelAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
-                    return FALSE;
-                if ((result = levelAmbientInstances[i].eventInstance->release()) != FMOD_OK)
-                    return FALSE;
-                levelAmbientInstances[i].eventInstance = 0;
+                if (levelAmbientInstances[i].eventInstance)
+                {
+                    if (levelAmbientInstances[i].normalVolume > 0.0f && (result = levelAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
+                        res = FALSE;
+                    if ((result = levelAmbientInstances[i].eventInstance->release()) != FMOD_OK)
+                        res = FALSE;
+                    levelAmbientInstances[i].eventInstance = 0;
+                }
             }
         }
 
-        for (int i = 0; i <= 1; i++)
+        if (info.stop_flags & STOP_SOUNDS_FLAGS_ENVIRONMENT_AMBIENT)
         {
-            if (environmentAmbientInstances[i].eventInstance)
+            for (int i = 0; i <= 1; i++)
             {
-                if (environmentAmbientInstances[i].normalVolume > 0.0f && (result = environmentAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
-                    return FALSE;
-                if ((result = environmentAmbientInstances[i].eventInstance->release()) != FMOD_OK)
-                    return FALSE;
-                environmentAmbientInstances[i].eventInstance = 0;
+                if (environmentAmbientInstances[i].eventInstance)
+                {
+                    if (environmentAmbientInstances[i].normalVolume > 0.0f && (result = environmentAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
+                        res = FALSE;
+                    if ((result = environmentAmbientInstances[i].eventInstance->release()) != FMOD_OK)
+                        res = FALSE;
+                    environmentAmbientInstances[i].eventInstance = 0;
+                }
             }
         }
 
-        for (int i = 0; i <= 1; i++)
+        if (info.stop_flags & STOP_SOUNDS_FLAGS_OCCUPATION_AMBIENT)
         {
-            if (occupationAmbientInstances[i].eventInstance)
+            for (int i = 0; i <= 1; i++)
             {
-                if (occupationAmbientInstances[i].normalVolume > 0.0f && (result = occupationAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
-                    return FALSE;
-                if ((result = occupationAmbientInstances[i].eventInstance->release()) != FMOD_OK)
-                    return FALSE;
-                occupationAmbientInstances[i].eventInstance = 0;
+                if (occupationAmbientInstances[i].eventInstance)
+                {
+                    if (occupationAmbientInstances[i].normalVolume > 0.0f && (result = occupationAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
+                        res = FALSE;
+                    if ((result = occupationAmbientInstances[i].eventInstance->release()) != FMOD_OK)
+                        res = FALSE;
+                    occupationAmbientInstances[i].eventInstance = 0;
+                }
             }
         }
-        for (int i = 0; i <= 1; i++)
+
+        if (info.stop_flags & STOP_SOUNDS_FLAGS_EFFECT_AMBIENT)
         {
-            if (effectAmbientInstances[i].eventInstance)
+            for (int i = 0; i <= 1; i++)
             {
-                if (effectAmbientInstances[i].normalVolume > 0.0f && (result = effectAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
-                    return FALSE;
-                if ((result = effectAmbientInstances[i].eventInstance->release()) != FMOD_OK)
-                    return FALSE;
-                effectAmbientInstances[i].eventInstance = 0;
+                if (effectAmbientInstances[i].eventInstance)
+                {
+                    if (effectAmbientInstances[i].normalVolume > 0.0f && (result = effectAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
+                        res = FALSE;
+                    if ((result = effectAmbientInstances[i].eventInstance->release()) != FMOD_OK)
+                        res = FALSE;
+                    effectAmbientInstances[i].eventInstance = 0;
+                }
             }
         }
-        if (info.stop_flags & 2)
+
+        if (info.stop_flags & STOP_SOUNDS_FLAGS_IMMEDIATE_NORMAL)
         {
             for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)
             {
                 if (immediateSoundInstances[i].eventInstance)
                 {
                     if (immediateSoundInstances[i].normalVolume > 0.0f && (result = immediateSoundInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
-                        return FALSE;
+                        res = FALSE;
                     if ((result = immediateSoundInstances[i].eventInstance->release()) != FMOD_OK)
-                        return FALSE;
+                        res = FALSE;
                     immediateSoundInstances[i].eventInstance = 0;
                 }
             }
+        }
+
+        if (info.stop_flags & STOP_SOUNDS_FLAGS_IMMEDIATE_LONG)
+        {
             for (int i = 0; i < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; i++)
             {
                 if (longImmediateSoundInstances[i].eventInstance)
                 {
                     if (longImmediateSoundInstances[i].normalVolume > 0.0f && (result = longImmediateSoundInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
-                        return FALSE;
+                        res = FALSE;
                     if ((result = longImmediateSoundInstances[i].eventInstance->release()) != FMOD_OK)
-                        return FALSE;
+                        res = FALSE;
                     longImmediateSoundInstances[i].eventInstance = 0;
                 }
             }
+
         }
 
-        /* These we just set volume to zero, since they are linked with sound_sources */
-        for (GNHSoundInstance* curr = ambient_base; curr; curr = curr->next_instance)
+        if (info.stop_flags & STOP_SOUNDS_FLAGS_SOUND_SOURCES)
         {
-            if (curr->eventInstance)
+            /* These we just set volume to zero, since they are linked with sound_sources */
+            for (GNHSoundInstance* curr = ambient_base; curr; curr = curr->next_instance)
             {
-                if (curr->normalVolume > 0.0f)
-                    fmod_set_ambient_ghsound_volume((void*)curr, 0.0f);
+                if (curr->eventInstance)
+                {
+                    if (curr->normalVolume > 0.0f)
+                        (void)fmod_set_ambient_ghsound_volume((void*)curr, 0.0f);
+                }
             }
         }
 
@@ -2667,7 +2687,7 @@ extern "C"
         if (result != FMOD_OK)
             return FALSE;
 
-        return TRUE;
+        return res;
     }
 
 }

@@ -23,6 +23,8 @@ extern int FDECL(fmod_adjust_ghsound_general_volumes, (float, float, float, floa
 extern int FDECL(fmod_add_ambient_ghsound, (enum ghsound_types, float, void**));
 extern int FDECL(fmod_delete_ambient_ghsound, (void*));
 extern int FDECL(fmod_set_ambient_ghsound_volume, (void*, float));
+#if 0
 extern boolean NDECL(fmod_stop_all_immediate_sounds);
+#endif
 
 #endif /* SOUNDFX_H */

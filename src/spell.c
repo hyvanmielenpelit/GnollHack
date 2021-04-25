@@ -4116,11 +4116,13 @@ int spell;
     bonus += 15L * (long)statused;
     bonus += (long)spell_skill_success_bonus(skill);
     bonus += level_multiplier * (long)u.ulevel;
-    bonus += skill == P_ISRESTRICTED ? 0 : 5L * (long)u.uspellcastingbonus; /* items */
+    bonus += (skill == P_ISRESTRICTED ? 0L : 5L * (long)u.uspellcastingbonus); /* items */
 
-    long armor_multiplier = max(0L, 100L - 5L * armor_penalty);
+//    long armor_multiplier = max(0L, 100L - 5L * armor_penalty);
+//    chance += (int)((bonus * armor_multiplier) / 100L);
 
-    chance += (int)((bonus * armor_multiplier) / 100L);
+    chance += (int)bonus;
+    chance -= (int)(ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER * armor_penalty);
 
 //    if (difficulty > 0) {
         /* Player is too low level or unskilled. */

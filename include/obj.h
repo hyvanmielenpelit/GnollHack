@@ -58,24 +58,24 @@ struct obj {
     short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
     unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
 
-#define SPEFLAGS_YOURS                        0x00000001UL
+#define SPEFLAGS_YOURS                         0x00000001UL
 #define SPEFLAGS_FEMALE                        0x00000002UL
-#define SPEFLAGS_MALE                        0x00000004UL
-#define SPEFLAGS_FACING_RIGHT                0x00000008UL
-#define SPEFLAGS_SCHROEDINGERS_BOX            0x00000010UL
-#define SPEFLAGS_STATUE_HISTORIC            0x00000020UL
-#define SPEFLAGS_CORPSE_ON_ICE                0x00000040UL
-#define SPEFLAGS_DETECTED                   0x00000080UL
-#define SPEFLAGS_SERVICED_SPELL             0x00000100UL
-#define SPEFLAGS_MINES_PRIZE                 0x00000200UL
-#define SPEFLAGS_SOKO_PRIZE1                 0x00000400UL
-#define SPEFLAGS_SOKO_PRIZE2                 0x00000800UL
+#define SPEFLAGS_MALE                          0x00000004UL
+#define SPEFLAGS_FACING_RIGHT                  0x00000008UL
+#define SPEFLAGS_SCHROEDINGERS_BOX             0x00000010UL
+#define SPEFLAGS_STATUE_HISTORIC               0x00000020UL
+#define SPEFLAGS_CORPSE_ON_ICE                 0x00000040UL
+#define SPEFLAGS_DETECTED                      0x00000080UL
+#define SPEFLAGS_SERVICED_SPELL                0x00000100UL
+#define SPEFLAGS_MINES_PRIZE                   0x00000200UL
+#define SPEFLAGS_SOKO_PRIZE1                   0x00000400UL
+#define SPEFLAGS_SOKO_PRIZE2                   0x00000800UL
 #define SPEFLAGS_FROM_SINK                     0x00001000UL
-#define SPEFLAGS_INDESTRUCTIBLE             0x00002000UL
-#define SPEFLAGS_USES_UP_KEY                 0x00004000UL
-#define SPEFLAGS_NO_PICKUP                   0x00008000UL  /* Monsters will not pick up this item */
-#define SPEFLAGS_ROYAL_COFFER                 0x00010000UL
-#define SPEFLAGS_LID_OPENED                 0x00020000UL
+#define SPEFLAGS_INDESTRUCTIBLE                0x00002000UL
+#define SPEFLAGS_USES_UP_KEY                   0x00004000UL
+#define SPEFLAGS_NO_PICKUP                     0x00008000UL  /* Monsters will not pick up this item */
+#define SPEFLAGS_ROYAL_COFFER                  0x00010000UL
+#define SPEFLAGS_LID_OPENED                    0x00020000UL
 #define SPEFLAGS_GRABBED_FROM_YOU              0x00040000UL
 
     char oclass;    /* object class */

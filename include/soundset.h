@@ -1661,7 +1661,6 @@ struct ghsound_immediate_info {
     enum immediate_sound_types sound_type;
     enum sound_play_groups play_group;
     unsigned int dialogue_mid; /* Monster who's speaking, if any */
-    boolean stop_sounds;
 };
 
 struct ghsound_music_info {

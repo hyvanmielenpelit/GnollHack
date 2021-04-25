@@ -1786,9 +1786,9 @@ register struct obj* obj;
     if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
         (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || objects[otyp].oc_spell_casting_penalty != 0))
     {
-        int splcaster = has_obj_mythic_spellcasting(obj) ? 0 : objects[otyp].oc_spell_casting_penalty;
+        long splcaster = has_obj_mythic_spellcasting(obj) ? 0L : objects[otyp].oc_spell_casting_penalty;
 
-        Sprintf(buf2, "%s%d%%", splcaster <= 0 ? "+" : "", -splcaster * 5);
+        Sprintf(buf2, "%s%ld%%", splcaster <= 0 ? "+" : "", -splcaster * ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
         if (splcaster < 0)
             Sprintf(buf, "Spell casting bonus:    %s", buf2);
         else

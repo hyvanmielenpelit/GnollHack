@@ -497,72 +497,72 @@ struct objclass {
     unsigned long oc_aflags, oc_aflags2;        /* attack related flags, e.g. whether the attack is vorpal */
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
-#define A1_NONE                                                        0x00000000UL
-#define A1_CRITICAL_STRIKE                                            0x00000001UL  /* extra damage is caused only by chance determined by oc_critical_strike_percentage */
-#define A1_CRITICAL_STRIKE_IS_DEADLY                                0x00000002UL  
+#define A1_NONE                                                      0x00000000UL
+#define A1_CRITICAL_STRIKE                                           0x00000001UL  /* extra damage is caused only by chance determined by oc_critical_strike_percentage */
+#define A1_CRITICAL_STRIKE_IS_DEADLY                                 0x00000002UL  
         /* successful critical strike causes lethal damage. If this flag is on, critical strike is considered not to be connected with extra damage; rather, it is treated similarly to vorpal attack */
 #define A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK                    0x00000004UL  /* lethal damage is death magic */
-#define A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK            0x00000008UL  /* lethal damage is disintegration */
+#define A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK           0x00000008UL  /* lethal damage is disintegration */
 #define A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
         /* lethal damage is of extra damage type; note that normal critical strike always follows extra_damagetype */
 #define A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
 #define A1_DEADLY_CRITICAL_STRIKE_ONE_FOURTH_MAX_HP_DAMAGE_TO_UNIQUE_MONSTERS 0x00000010UL  /* Unique monsters suffer damage equal to 25% of their hit points instead of being slain */
-#define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS                        0x00000020UL  
+#define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS                       0x00000020UL  
 #define A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS                    0x00000040UL  
-#define A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES    0x00000080UL  /* All other special types use critical strike probability instead of being certain or using their own standard probability */
-#define A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL                    0x00000100UL  /* The number specified by oc_critical_strike_percentage is a die roll on d20 (X or less, e.g., 1 = 5% chance or 2 = 10% chance on any attack regardless of actual hit chance) */
+#define A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES   0x00000080UL  /* All other special types use critical strike probability instead of being certain or using their own standard probability */
+#define A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL                  0x00000100UL  /* The number specified by oc_critical_strike_percentage is a die roll on d20 (X or less, e.g., 1 = 5% chance or 2 = 10% chance on any attack regardless of actual hit chance) */
 
-#define A1_WOUNDING                                                    0x00000200UL  /* extra damage caused is permanent damage */
-#define A1_WOUNDING_DISRESPECTS_TARGETS                                0x00000400UL  
-#define A1_WOUNDING_DISRESPECTS_CHARACTERS                            0x00000800UL  
+#define A1_WOUNDING                                                  0x00000200UL  /* extra damage caused is permanent damage */
+#define A1_WOUNDING_DISRESPECTS_TARGETS                              0x00000400UL  
+#define A1_WOUNDING_DISRESPECTS_CHARACTERS                           0x00000800UL  
 
 #define A1_LIFE_LEECH                                                0x00001000UL  /* heals hit points equal to the extra damage caused */
 #define A1_LIFE_LEECH_DISRESPECTS_TARGETS                            0x00002000UL  
-#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS                        0x00004000UL  
+#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS                         0x00004000UL  
 
-#define A1_SHARPNESS                                                0x00008000UL    /* 3/20 chance of the monster losing 15% of maximum hit points */
+#define A1_SHARPNESS                                                 0x00008000UL    /* 3/20 chance of the monster losing 15% of maximum hit points */
 #define A1_VORPAL                                                    0x00010000UL    /* 1/20 chance of the monster being beheaded */
 #define A1_BISECT (A1_SHARPNESS | A1_VORPAL)                                        /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
 #define A1_SVB_MASK (A1_SHARPNESS | A1_VORPAL)
-#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS                            0x00020000UL
+#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS                           0x00020000UL
 #define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS                        0x00040000UL
 
-#define A1_LEVEL_DRAIN                                                0x00080000UL  /* drains a level from monsters */
-#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS                            0x00100000UL  
+#define A1_LEVEL_DRAIN                                               0x00080000UL  /* drains a level from monsters */
+#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS                           0x00100000UL  
 #define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS                        0x00200000UL  
 /* free bit */
 /* free bit */
 
 /* General */
-#define A1_MAGIC_RESISTANCE_PROTECTS                                0x01000000UL
-#define A1_BYPASSES_MC                                                0x02000000UL    /* No MC check */  
-#define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS                            0x04000000UL  
-#define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS                        0x08000000UL  
-#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA                            0x10000000UL /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
-#define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS                    0x20000000UL
-#define A1_ITEM_VANISHES_ON_HIT                                        0x40000000UL
+#define A1_MAGIC_RESISTANCE_PROTECTS                                 0x01000000UL
+#define A1_BYPASSES_MC                                               0x02000000UL    /* No MC check */  
+#define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS                          0x04000000UL  
+#define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS                       0x08000000UL  
+#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA                          0x10000000UL /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
+#define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS                  0x20000000UL
+#define A1_ITEM_VANISHES_ON_HIT                                      0x40000000UL
 #define A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET                    0x80000000UL
 
 
 /* More attack flags */
-#define A2_NONE                                                        0x00000000UL
-#define A2_HITS_ADJACENT_SQUARES                                    0x00000001UL  /* like Cleaver */
-#define A2_REQUIRES_AND_EXPENDS_A_CHARGE                            0x00000002UL  /* Nine lives stealer */
+#define A2_NONE                                                      0x00000000UL
+#define A2_HITS_ADJACENT_SQUARES                                     0x00000001UL  /* like Cleaver */
+#define A2_REQUIRES_AND_EXPENDS_A_CHARGE                             0x00000002UL  /* Nine lives stealer */
 
 
 #define oc_spell_flags oc_aflags
 #define oc_spell_flags2 oc_aflags2
 
 /* Spell flags for spells, scrolls, potions, spell-like tools, and wands */
-#define S1_NONE                                    0x00000000UL
+#define S1_NONE                                  0x00000000UL
 #define S1_SPELL_EXPLOSION_EFFECT                0x00000001UL
-#define S1_SPELL_BYPASSES_MAGIC_RESISTANCE        0x00000002UL
+#define S1_SPELL_BYPASSES_MAGIC_RESISTANCE       0x00000002UL
 #define S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY    0x00000004UL
-#define S1_SPELL_IS_NONREVERSIBLE_PERMANENT        0x00000008UL
-#define S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT        0x00000010UL
-#define S1_NO_SOMATIC_COMPONENT                    0x00000020UL
-#define S1_NO_VERBAL_COMPONENT                    0x00000040UL
-#define S1_DOES_NOT_TAKE_A_TURN                    0x00000080UL
+#define S1_SPELL_IS_NONREVERSIBLE_PERMANENT      0x00000008UL
+#define S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT       0x00000010UL
+#define S1_NO_SOMATIC_COMPONENT                  0x00000020UL
+#define S1_NO_VERBAL_COMPONENT                   0x00000040UL
+#define S1_DOES_NOT_TAKE_A_TURN                  0x00000080UL
 #define S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE 0x00000100UL
 #define S1_LDMG_IS_PER_LEVEL_DMG_INCREASE        0x00000200UL
 
@@ -577,11 +577,11 @@ struct objclass {
 #define S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_INT                    0x00008000UL
 #define S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_WIS                    0x00010000UL
 #define S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_CHA                    0x00020000UL
-#define S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_MAGIC_CANCELLATION        0x00040000UL
+#define S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_MAGIC_CANCELLATION     0x00040000UL
 
 #define S1_FLAGS_EFFECT_USES_SAVING_THROW_MASK        0x000FF000UL
 
-#define S2_NONE                                    0x00000000UL
+#define S2_NONE                                       0x00000000UL
 
     short oc_hitbonus;                        /* weapons: "to hit" bonus */
     short oc_mc_adjustment;                    /* weapons: adjustment to any MC checks; spells and wands: MC adjustment */
@@ -792,123 +792,123 @@ struct objclass {
 
 
 /* Item resistances -- General: cannot be overriden */
-#define O1_NONE                                0x00000000UL 
+#define O1_NONE                              0x00000000UL 
 #define O1_INDESTRUCTIBLE                    0x00000001UL 
-#define O1_DISINTEGRATION_RESISTANT            0x00000002UL 
+#define O1_DISINTEGRATION_RESISTANT          0x00000002UL 
 #define O1_FIRE_RESISTANT                    0x00000004UL 
 #define O1_COLD_RESISTANT                    0x00000008UL 
-#define O1_LIGHTNING_RESISTANT                0x00000010UL
-#define O1_POLYMORPH_RESISTANT                0x00000020UL
+#define O1_LIGHTNING_RESISTANT               0x00000010UL
+#define O1_POLYMORPH_RESISTANT               0x00000020UL
 #define O1_RUST_RESISTANT                    0x00000040UL
-#define O1_CORROSION_RESISTANT                0x00000080UL
-#define O1_ROT_RESISTANT                    0x00000100UL
+#define O1_CORROSION_RESISTANT               0x00000080UL
+#define O1_ROT_RESISTANT                     0x00000100UL
 
 #define O1_ENCHANTMENT_AFFECTS_MC            0x00000200UL            /* +X of the item influences also its MC */
 #define O1_EROSION_DOES_NOT_AFFECT_MC        0x00000400UL            /* erosion level does not affect the item's MC */
 #define O1_ENCHANTMENT_DOES_NOT_AFFECT_AC    0x00000800UL            /* +X of the item does not affect its AC bonus */
 #define O1_EROSION_DOES_NOT_AFFECT_AC        0x00001000UL            /* erosion level does not affect the item's MC */
-#define O1_IS_ARMOR_WHEN_WIELDED            0x00002000UL            /* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
+#define O1_IS_ARMOR_WHEN_WIELDED             0x00002000UL            /* acts as an armor when wielded giving AC using oc_armor_class, which must be specified */
 #define O1_IS_WEAPON_WHEN_WIELDED            0x00004000UL            /* acts as a weapon when wielded (or worn in shield slot in two-weapon fighting) using damage statistics */
 #define O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT 0x00008000UL            /* +X of the item influences also its MC adjustment (i.e., saving throw penalty for attacks) */
 
 #define O1_EDIBLE_NONFOOD                    0x00010000UL
 
 #define O1_BECOMES_CURSED_WHEN_WORN                            0x00020000UL
-#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED        0x00040000UL
-#define O1_CANNOT_BE_DROPPED_IF_CURSED                        0x00080000UL
+#define O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED           0x00040000UL
+#define O1_CANNOT_BE_DROPPED_IF_CURSED                         0x00080000UL
 
-#define O1_FLICKERS_WHEN_MONSTERS_DETECTED                    0x00100000UL
+#define O1_FLICKERS_WHEN_MONSTERS_DETECTED                     0x00100000UL
 #define O1_OFLAG_POWERS_APPLY_TO_ALL_CHARACTERS                0x00200000UL
-#define O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY    0x00400000UL
-#define O1_OFLAG_POWERS_APPLY_WHEN_CARRIED                    0x00800000UL
+#define O1_OFLAG_POWERS_APPLY_TO_INAPPROPRIATE_CHARACTERS_ONLY 0x00400000UL
+#define O1_OFLAG_POWERS_APPLY_WHEN_CARRIED                     0x00800000UL
 
 #define O1_THROWN_WEAPON_ONLY                0x01000000UL            /* says "Thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value, gets penalties in melee combat */
-#define O1_MELEE_AND_THROWN_WEAPON            0x02000000UL            /* says "Melee and thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
-#define O1_WEIGHT_DOES_NOT_REDUCE_RANGE        0x04000000UL            /* the object magically flies when thrown, ignoring its weight */
+#define O1_MELEE_AND_THROWN_WEAPON           0x02000000UL            /* says "Melee and thrown weapon" instead of "Melee weapon", default range is larger, can use throwrange data value */
+#define O1_WEIGHT_DOES_NOT_REDUCE_RANGE      0x04000000UL            /* the object magically flies when thrown, ignoring its weight */
 #define O1_RETURNS_TO_HAND_AFTER_THROWING    0x08000000UL            /* the object returns to the owner's hand after throwing */
-#define O1_CAN_BE_THROWN_ONLY_IF_WIELDED    0x10000000UL            /* has to be wielded to be thrown, e.g., Mjollnir */
+#define O1_CAN_BE_THROWN_ONLY_IF_WIELDED     0x10000000UL            /* has to be wielded to be thrown, e.g., Mjollnir */
 #define O1_WAND_LIKE_TOOL                    0x20000000UL            /* apply is the same as zap, uses spellbook/wand paramters and flags instead of normal flags */
-#define O1_NON_SPELL_SPELLBOOK                0x40000000UL            /* uses non-spellbook flags and other non-spellbook stats */
-#define O1_NOT_CURSEABLE                    0x80000000UL
+#define O1_NON_SPELL_SPELLBOOK               0x40000000UL            /* uses non-spellbook flags and other non-spellbook stats */
+#define O1_NOT_CURSEABLE                     0x80000000UL
 
 
 /* Flags 2 */
 #define O2_NONE                    0x00000000UL
-#define O2_ELVEN_ITEM            0x00000001UL
+#define O2_ELVEN_ITEM              0x00000001UL
 #define O2_DWARVEN_ITEM            0x00000002UL
-#define O2_ORCISH_ITEM            0x00000004UL
-#define O2_GNOLLISH_ITEM        0x00000008UL
-#define O2_DRAGON_ITEM            0x00000010UL
-#define O2_DEMON_ITEM            0x00000020UL
+#define O2_ORCISH_ITEM             0x00000004UL
+#define O2_GNOLLISH_ITEM           0x00000008UL
+#define O2_DRAGON_ITEM             0x00000010UL
+#define O2_DEMON_ITEM              0x00000020UL
 #define O2_ANGELIC_ITEM            0x00000040UL
-#define O2_MODRON_ITEM            0x00000080UL
+#define O2_MODRON_ITEM             0x00000080UL
 #define O2_GNOMISH_ITEM            0x00000100UL
     /* free bit */
 
-#define O2_CONTAINER            0x00000400UL    
-#define O2_CONTAINER_BOX        0x00000800UL    
+#define O2_CONTAINER              0x00000400UL    
+#define O2_CONTAINER_BOX          0x00000800UL    
 #define O2_CONTAINER_MAGIC_BAG    0x00001000UL    
 #define O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG 0x00002000UL
 #define O2_CONTAINER_NONCONTAINER 0x00004000UL    
 
-#define O2_MONSTER_SCALES        0x00008000UL    
-#define O2_MONSTER_SCALE_MAIL    0x00010000UL
-#define O2_CANDLE                0x00020000UL    
-#define O2_SHINES_MAGICAL_LIGHT 0x00040000UL    
+#define O2_MONSTER_SCALES         0x00008000UL    
+#define O2_MONSTER_SCALE_MAIL     0x00010000UL
+#define O2_CANDLE                 0x00020000UL    
+#define O2_SHINES_MAGICAL_LIGHT   0x00040000UL    
 #define O2_FLICKER_COLOR_RED    O2_NONE    
 #define O2_FLICKER_COLOR_WHITE    0x00080000UL    
-#define O2_FLICKER_COLOR_BLUE    0x00100000UL    
+#define O2_FLICKER_COLOR_BLUE     0x00100000UL    
 #define O2_FLICKER_COLOR_BLACK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)    
 #define O2_FLICKER_COLOR_MASK (O2_FLICKER_COLOR_WHITE | O2_FLICKER_COLOR_BLUE)    
 
-#define O2_GRAYSTONE            0x00200000UL    
-#define O2_ROCK                    0x00400000UL    
+#define O2_GRAYSTONE              0x00200000UL    
+#define O2_ROCK                   0x00400000UL    
 #define O2_ORE                    0x00800000UL    
-#define O2_FLIMSY                0x01000000UL
+#define O2_FLIMSY                 0x01000000UL
 
-#define O2_SPECIAL_PRAYING_ITEM 0x02000000UL
+#define O2_SPECIAL_PRAYING_ITEM   0x02000000UL
 #define O2_KEY                    0x04000000UL
 #define O2_CREDIT_CARD            0x08000000UL
 
 #define O2_GENERATED_DEATH_OR_COLD_ENCHANTED 0x10000000UL            /* if deathenchantable item, then death, otherwise lightning*/
-#define O2_GENERATED_BLESSED    0x20000000UL                            /* Always generated blessed */                                    
-#define O2_GENERATED_CURSED        0x40000000UL                            /* Always generated cursed */                                
-#define O2_CURSED_MAGIC_ITEM    0x80000000UL                            /* The effect of the item is negative; typically 90% chance of being cursed */                                    
+#define O2_GENERATED_BLESSED      0x20000000UL                            /* Always generated blessed */                                    
+#define O2_GENERATED_CURSED       0x40000000UL                            /* Always generated cursed */                                
+#define O2_CURSED_MAGIC_ITEM      0x80000000UL                            /* The effect of the item is negative; typically 90% chance of being cursed */                                    
 
 /* Flags 3 */
 #define O3_NONE                                        0x00000000UL
-#define O3_NO_GENERATION                            0x00000001UL  /* item is not generated normally */
-#define O3_NO_WISH                                    0x00000002UL  /* item is special, it cannot be wished for, mimics oc_nowish */
-#define O3_UNIQUE                                    0x00000004UL  /* the item is unique, mimics oc_unique */
-#define O3_UNBURIABLE                                0x00000008UL  /* the item cannot be buried */
+#define O3_NO_GENERATION                               0x00000001UL  /* item is not generated normally */
+#define O3_NO_WISH                                     0x00000002UL  /* item is special, it cannot be wished for, mimics oc_nowish */
+#define O3_UNIQUE                                      0x00000004UL  /* the item is unique, mimics oc_unique */
+#define O3_UNBURIABLE                                  0x00000008UL  /* the item cannot be buried */
 
-#define O3_DOUBLE_DIGGING_EFFORT                    0x00000010UL  /* double normal digging effort */
-#define O3_BURIED_SEARCHABLE                        0x00000020UL  /* if buried, can be found by explicit searching */
+#define O3_DOUBLE_DIGGING_EFFORT                       0x00000010UL  /* double normal digging effort */
+#define O3_BURIED_SEARCHABLE                           0x00000020UL  /* if buried, can be found by explicit searching */
 #define O3_CONTENT_DESCRIPTION_SHUFFLED                0x00000040UL  /* uses (shuffled) description index instead of name index for content description */
-#define O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS            0x00000080UL  /* consumes nutrition every 20 rounds when worn. WORKS ONLY FOR MISCELLANEOUS MAGIC ITEMS */
-#define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH    0x00000100UL 
+#define O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS          0x00000080UL  /* consumes nutrition every 20 rounds when worn. WORKS ONLY FOR MISCELLANEOUS MAGIC ITEMS */
+#define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH 0x00000100UL 
 
-#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS    0x00000200UL  /* wielding or wearing prohibits the revival of permitted targets */
-#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS    0x00000400UL  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
+#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS       0x00000200UL  /* wielding or wearing prohibits the revival of permitted targets */
+#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS     0x00000400UL  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
 
-#define O3_NO_PICKUP                                0x00000800UL  /* monsters do not pick up this item type */
+#define O3_NO_PICKUP                                   0x00000800UL  /* monsters do not pick up this item type */
 
-#define O3_INVOKABLE                                0x00001000UL    /* can be invoked using invoke command */
-#define O3_APPLIABLE                                0x00002000UL    /* can be applied as a tool */
-#define O3_WIELDABLE                                0x00004000UL    /* can be wielded in a weapon slot */
+#define O3_INVOKABLE                                   0x00001000UL    /* can be invoked using invoke command */
+#define O3_APPLIABLE                                   0x00002000UL    /* can be applied as a tool */
+#define O3_WIELDABLE                                   0x00004000UL    /* can be wielded in a weapon slot */
 #define O3_READABLE                                    0x00008000UL    /* can be read */                                
-#define O3_IGNITABLE                                0x00010000UL    
+#define O3_IGNITABLE                                   0x00010000UL    
 #define O3_RELATIVE_AGE                                0x00020000UL    
-#define O3_REFILLABLE_WITH_OIL                        0x00040000UL    
-#define O3_ELEMENTAL_ENCHANTABLE                    0x00080000UL
-#define O3_EATING_IDENTIFIES                        0x00100000UL    
-#define O3_NONROTTING_FOOD                            0x00200000UL
-#define O3_POISONABLE                                0x00400000UL
-#define O3_QUAFFABLE                                0x00800000UL    /* can be drunk */            
+#define O3_REFILLABLE_WITH_OIL                         0x00040000UL    
+#define O3_ELEMENTAL_ENCHANTABLE                       0x00080000UL
+#define O3_EATING_IDENTIFIES                           0x00100000UL    
+#define O3_NONROTTING_FOOD                             0x00200000UL
+#define O3_POISONABLE                                  0x00400000UL
+#define O3_QUAFFABLE                                   0x00800000UL    /* can be drunk */            
 
-#define O3_PERMTTED_TARGET_LAWFUL                    0x01000000UL
-#define O3_PERMTTED_TARGET_NEUTRAL                    0x02000000UL
-#define O3_PERMTTED_TARGET_CHAOTIC                    0x04000000UL
+#define O3_PERMTTED_TARGET_LAWFUL                      0x01000000UL
+#define O3_PERMTTED_TARGET_NEUTRAL                     0x02000000UL
+#define O3_PERMTTED_TARGET_CHAOTIC                     0x04000000UL
 
 #define O3_TARGET_PERMISSION_IS_M1_FLAG                0x08000000UL /* Note: if no flag, then default is a monster symbol */
 #define O3_TARGET_PERMISSION_IS_M2_FLAG                0x10000000UL
@@ -921,72 +921,72 @@ struct objclass {
 /* Flags 4 */
 #define O4_NONE                        0x00000000UL
 #define O4_MISSILE_TILE                0x00000001UL
-#define O4_SINGLE_MISSILE_TILE        0x00000002UL
-#define O4_FLOOR_TILE                0x00000004UL
-#define O4_FULL_SIZED_BITMAP        0x00000008UL
-#define O4_DRAWN_IN_FRONT            0x00000010UL
-#define O4_ALLOWS_DIPPING_INTO        0x00000020UL
-#define O4_TETHERED_WEAPON            0x00000040UL
-#define O4_EXTENDED_POLEARM_REACH    0x00000080UL
-#define O4_CAN_HAVE_EXCEPTIONALITY    0x00000100UL
-#define O4_GENERATED_EXCEPTIONAL    0x00000200UL
-#define O4_GENERATED_ELITE            0x00000400UL
-#define O4_GENERATED_CELESTIAL        0x00000800UL
-#define O4_GENERATED_PRIMORDIAL     0x00001000UL
-#define O4_GENERATED_INFERNAL        0x00002000UL
-#define O4_NEVER_GENERATED_WITH_EXCEPTIONALITY            0x00004000UL
+#define O4_SINGLE_MISSILE_TILE         0x00000002UL
+#define O4_FLOOR_TILE                  0x00000004UL
+#define O4_FULL_SIZED_BITMAP           0x00000008UL
+#define O4_DRAWN_IN_FRONT              0x00000010UL
+#define O4_ALLOWS_DIPPING_INTO         0x00000020UL
+#define O4_TETHERED_WEAPON             0x00000040UL
+#define O4_EXTENDED_POLEARM_REACH      0x00000080UL
+#define O4_CAN_HAVE_EXCEPTIONALITY     0x00000100UL
+#define O4_GENERATED_EXCEPTIONAL       0x00000200UL
+#define O4_GENERATED_ELITE             0x00000400UL
+#define O4_GENERATED_CELESTIAL         0x00000800UL
+#define O4_GENERATED_PRIMORDIAL        0x00001000UL
+#define O4_GENERATED_INFERNAL          0x00002000UL
+#define O4_NEVER_GENERATED_WITH_EXCEPTIONALITY             0x00004000UL
 #define O4_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS        0x00008000UL    /* deals damage when wielded like artifacts */
 #define O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE            0x00010000UL
-#define O4_NON_MYTHIC                                    0x00020000UL
+#define O4_NON_MYTHIC                                      0x00020000UL
 #define O4_DOUBLE_MYTHIC_CHANCE                            0x00040000UL
 /* free bit */
-#define O4_CONTAINER_CONTENTS_VISIBLE                    0x00100000UL    /* Can always see the contents */
-#define O4_CONTAINER_CONTENTS_USE_ON                    0x00200000UL    /* Contents are put "on" the container rather than "in" the container  */
+#define O4_CONTAINER_CONTENTS_VISIBLE                      0x00100000UL    /* Can always see the contents */
+#define O4_CONTAINER_CONTENTS_USE_ON                       0x00200000UL    /* Contents are put "on" the container rather than "in" the container  */
 #define O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS        0x00400000UL    /* Only books and scrolls fit in */
-#define O4_CONTAINER_ACCEPTS_ONLY_WEAPONS                0x00800000UL    /* Only weapon fit in */
-#define O4_CONTAINER_HAS_LID                            0x01000000UL    /* Has a lid that will be opened permanently on first time (sarcophagus, coffin) */
-#define O4_CONTAINER_PEEK_INTO                            0x02000000UL    /* You peek into this container */
-#define O4_CONTAINER_MAY_CONTAIN_MONSTER                0x04000000UL
+#define O4_CONTAINER_ACCEPTS_ONLY_WEAPONS                  0x00800000UL    /* Only weapon fit in */
+#define O4_CONTAINER_HAS_LID                               0x01000000UL    /* Has a lid that will be opened permanently on first time (sarcophagus, coffin) */
+#define O4_CONTAINER_PEEK_INTO                             0x02000000UL    /* You peek into this container */
+#define O4_CONTAINER_MAY_CONTAIN_MONSTER                   0x04000000UL
 
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
-#define PERMITTED_ALL                0x00000000UL
+#define PERMITTED_ALL                 0x00000000UL
 
-#define PERMITTED_RACE_HUMAN        0x00000001UL
+#define PERMITTED_RACE_HUMAN          0x00000001UL
 #define PERMITTED_RACE_ELF            0x00000002UL
-#define PERMITTED_RACE_DWARF        0x00000004UL
-#define PERMITTED_RACE_GNOLL        0x00000008UL
-#define PERMITTED_RACE_GNOME        0x80000010UL
+#define PERMITTED_RACE_DWARF          0x00000004UL
+#define PERMITTED_RACE_GNOLL          0x00000008UL
+#define PERMITTED_RACE_GNOME          0x80000010UL
 #define PERMITTED_RACE_ORC            0x00000020UL
 
 #define PERMITTED_RACE_MASK (PERMITTED_RACE_HUMAN | PERMITTED_RACE_ELF | PERMITTED_RACE_DWARF | PERMITTED_RACE_GNOLL | PERMITTED_RACE_GNOME | PERMITTED_RACE_ORC)
 
 
 #define PERMITTED_ROLE_ARCHAEOLOGIST    0x00000040UL
-#define PERMITTED_ROLE_BARBARIAN    0x00000080UL
-#define PERMITTED_ROLE_CAVEMAN        0x00000100UL
-#define PERMITTED_ROLE_HEALER        0x00000200UL
-#define PERMITTED_ROLE_KNIGHT        0x00000400UL
-#define PERMITTED_ROLE_MONK            0x00000800UL
-#define PERMITTED_ROLE_PRIEST        0x00001000UL
-#define PERMITTED_ROLE_ROGUE        0x00002000UL
-#define PERMITTED_ROLE_RANGER        0x00004000UL
-#define PERMITTED_ROLE_SAMURAI        0x00008000UL
-#define PERMITTED_ROLE_TOURIST        0x00010000UL
-#define PERMITTED_ROLE_VALKYRIE        0x00020000UL
-#define PERMITTED_ROLE_WIZARD        0x00040000UL
+#define PERMITTED_ROLE_BARBARIAN        0x00000080UL
+#define PERMITTED_ROLE_CAVEMAN          0x00000100UL
+#define PERMITTED_ROLE_HEALER           0x00000200UL
+#define PERMITTED_ROLE_KNIGHT           0x00000400UL
+#define PERMITTED_ROLE_MONK             0x00000800UL
+#define PERMITTED_ROLE_PRIEST           0x00001000UL
+#define PERMITTED_ROLE_ROGUE            0x00002000UL
+#define PERMITTED_ROLE_RANGER           0x00004000UL
+#define PERMITTED_ROLE_SAMURAI          0x00008000UL
+#define PERMITTED_ROLE_TOURIST          0x00010000UL
+#define PERMITTED_ROLE_VALKYRIE         0x00020000UL
+#define PERMITTED_ROLE_WIZARD           0x00040000UL
 
 #define PERMITTED_ROLE_MASK (PERMITTED_ROLE_ARCHAEOLOGIST | PERMITTED_ROLE_BARBARIAN | PERMITTED_ROLE_CAVEMAN | PERMITTED_ROLE_HEALER | PERMITTED_ROLE_KNIGHT | \
     PERMITTED_ROLE_MONK | PERMITTED_ROLE_PRIEST | PERMITTED_ROLE_ROGUE | PERMITTED_ROLE_RANGER | PERMITTED_ROLE_SAMURAI | PERMITTED_ROLE_TOURIST | \
     PERMITTED_ROLE_VALKYRIE | PERMITTED_ROLE_WIZARD)
 
-#define PERMITTED_ALIGNMENT_LAWFUL    0x00080000UL
+#define PERMITTED_ALIGNMENT_LAWFUL     0x00080000UL
 #define PERMITTED_ALIGNMENT_NEUTRAL    0x00100000UL
 #define PERMITTED_ALIGNMENT_CHAOTIC    0x00200000UL
 
 #define PERMITTED_ALIGNMENT_MASK (PERMITTED_ALIGNMENT_LAWFUL | PERMITTED_ALIGNMENT_NEUTRAL | PERMITTED_ALIGNMENT_CHAOTIC)
 
-#define PERMITTED_GENDER_MALE        0x00400000UL
+#define PERMITTED_GENDER_MALE          0x00400000UL
 #define PERMITTED_GENDER_FEMALE        0x00800000UL
 
 #define PERMITTED_GENDER_MASK (PERMITTED_GENDER_MALE | PERMITTED_GENDER_FEMALE)
@@ -994,7 +994,7 @@ struct objclass {
 #define PERMITTED_CHARACTER_MASK (PERMITTED_RACE_MASK | PERMITTED_ROLE_MASK | PERMITTED_ALIGNMENT_MASK | PERMITTED_GENDER_MASK)
 
 /* Permitted target mask */
-#define ALL_TARGETS                0x00000000UL
+#define ALL_TARGETS                    0x00000000UL
 
 };
 

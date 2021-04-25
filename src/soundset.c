@@ -9628,12 +9628,18 @@ play_intro_text()
 void
 stop_all_immediate_sounds()
 {
+#if 0
     struct ghsound_immediate_info info = { 0 };
     info.ghsound = GHSOUND_NONE;
     info.volume = 0.0f;
     info.stop_sounds = TRUE;
 
     play_immediate_ghsound(info);
+#endif
+
+    struct stop_all_info info = { 0 };
+    info.stop_flags = STOP_SOUNDS_FLAGS_IMMEDIATE_ALL;
+    stop_all_sounds(info);
 }
 
 void
