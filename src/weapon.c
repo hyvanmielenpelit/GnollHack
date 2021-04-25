@@ -492,6 +492,9 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
         else
         { 
             int exceptionality_rounds = get_exceptionality_multiplier(otmp->exceptionality);
+            if (has_obj_mythic_triple_base_damage(otmp))
+                exceptionality_rounds += 2;
+
             double mythic_multiplier = get_mythic_dmg_multiplier(otmp, mon, mattacker);
             int tmp2 = 0;
             for (int exp_round = 0; exp_round < exceptionality_rounds; exp_round++)

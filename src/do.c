@@ -1396,6 +1396,10 @@ register struct obj* obj;
             putstr(datawin, 0, txt);
         }
 
+        /* Add mythic base damage now here if mknown */
+        if (has_obj_mythic_triple_base_damage(obj) && obj->mknown)
+            exceptionality_multiplier += 2;
+
         boolean printmaindmgtype = FALSE;
 
         /* Damage - Small */

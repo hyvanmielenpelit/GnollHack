@@ -2153,8 +2153,8 @@ struct obj* otmp;
     int max_spe = get_max_enchantment(objects[otmp->otyp].oc_enchantable);
 
     /* Extra modifications */
-    if ((objects[otmp->otyp].oc_enchantable == ENCHTYPE_GENERAL_WEAPON || objects[otmp->otyp].oc_enchantable == ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0) && is_weapon(otmp) && bimanual(otmp) && !is_launcher(otmp))
-        max_spe *= 2;
+    if (has_obj_mythic_added_enchantability(otmp))
+        max_spe = (max_spe * 3) / 2;
 
     return max_spe;
 }
