@@ -1504,6 +1504,14 @@ unsigned long mkflags;
                             }
                         }
                     }
+
+                    if (otmp->otyp == SARCOPHAGUS && otmp->corpsenm == NON_PM && !rn2(3))
+                    {
+                        struct obj* otmp2 = mksobj(MUMMY_WRAPPING, TRUE, TRUE, 1);
+                        if (otmp2)
+                            (void)add_to_container(otmp, otmp2);
+                    }
+
                     otmp->owt = weight(otmp);
                 }
                 break;

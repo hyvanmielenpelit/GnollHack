@@ -1718,7 +1718,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             /* Mjollnir must we wielded to be thrown--caller verifies this;
                aklys must we wielded as primary to return when thrown */
             && (((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED) && 1)  && !inappropriate_character_type(obj))
-                || tethered_weapon)
+                || tethered_weapon || has_obj_mythic_return_to_hand(obj))
             && !impaired)
         {
             if(wep_mask & W_WIELDED_WEAPON)
@@ -1883,7 +1883,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         /* Mjollnir must we wielded to be thrown--caller verifies this;
            aklys must we wielded as primary to return when thrown */
         if (// (obj->oartifact == ART_MJOLLNIR && Role_if(PM_VALKYRIE))
-            tethered_weapon || ((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !inappropriate_character_type(obj))) 
+            tethered_weapon || has_obj_mythic_return_to_hand(obj) || ((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !inappropriate_character_type(obj)))
         {
 //            if (rn2(100)) {
                 if (tethered_weapon)

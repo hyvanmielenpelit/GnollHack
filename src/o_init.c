@@ -186,7 +186,7 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
-        "eyes", " of the eyes", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
+        "eyes", " of eyes", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_SEARCHING | MYTHIC_SUFFIX_POWER_SEE_INVISIBLE,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED
     },
@@ -204,6 +204,11 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
         "elf slaying", " of elf slaying", "", 5, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_ELF_SLAYING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
+    },
+    {
+        "returning", " of returning", "", 5, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
+        MYTHIC_SUFFIX_POWER_RETURN_TO_HAND_AFTER_THROW,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_THROWN_WEAPON_ONLY | MYTHIC_FLAG_NO_RETURNING_WEAPONS
     },
 };
 
@@ -237,6 +242,7 @@ NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SUFFIX_P
     { "Stone resistance", "Petrification resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, STONE_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Searching", "Searching", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEARCHING, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "See invisible", "See invisible", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEE_INVISIBLE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
+    { "Returns to hand", "Returns to hand after throwing", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_THROWN_WEAPONS_ONLY },
 };
 
 //STATIC_DCL void FDECL(setgemprobs, (d_level *));
@@ -1198,37 +1204,41 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
         return FALSE;
     if(!can_obj_have_mythic(obj))
         return FALSE;
-    if (is_wish && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NON_WISHABLE))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NON_WISHABLE) && is_wish)
         return FALSE;
-    if (!is_weapon(obj) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_WEAPON_REQUIRED))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_WEAPON_REQUIRED) && !is_weapon(obj))
         return FALSE;
-    if (obj->oclass != ARMOR_CLASS && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_ARMOR_REQUIRED))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_ARMOR_REQUIRED) && obj->oclass != ARMOR_CLASS)
         return FALSE;
-    if ((obj->oclass != ARMOR_CLASS || objects[obj->otyp].oc_armor_category != ARM_HELM) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_HELMET_REQUIRED))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_HELMET_REQUIRED) && (obj->oclass != ARMOR_CLASS || objects[obj->otyp].oc_armor_category != ARM_HELM))
         return FALSE;
-    if ((obj->oclass != ARMOR_CLASS || objects[obj->otyp].oc_armor_category != ARM_SHIELD) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_SHIELD_REQUIRED))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_SHIELD_REQUIRED) && (obj->oclass != ARMOR_CLASS || objects[obj->otyp].oc_armor_category != ARM_SHIELD))
         return FALSE;
-    if ((obj->oclass != ARMOR_CLASS || objects[obj->otyp].oc_armor_category != ARM_SUIT) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_SUIT_REQUIRED))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_SUIT_REQUIRED) && (obj->oclass != ARMOR_CLASS || objects[obj->otyp].oc_armor_category != ARM_SUIT))
         return FALSE;
-    if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == WHACK)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS) && (!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == WHACK)))
         return FALSE;
-    if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == PIERCE)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_PIERCING_WEAPONS))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_PIERCING_WEAPONS) && (!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == PIERCE)))
         return FALSE;
-    if ((!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == SLASH)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_SLASHING_WEAPONS))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_SLASHING_WEAPONS) && (!is_weapon(obj) || (is_weapon(obj) && objects[obj->otyp].oc_dir == SLASH)))
         return FALSE;
-    if (obj->exceptionality == EXCEPTIONALITY_CELESTIAL && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_CELESTIAL_WEAPONS))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_CELESTIAL_WEAPONS) && obj->exceptionality == EXCEPTIONALITY_CELESTIAL)
         return FALSE;
-    if (obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS) && obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
         return FALSE;
-    if (obj->exceptionality == EXCEPTIONALITY_INFERNAL && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_INFERNAL_WEAPONS))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_INFERNAL_WEAPONS) && obj->exceptionality == EXCEPTIONALITY_INFERNAL)
         return FALSE;
-    if (!(is_pole(obj) || is_lance(obj) || is_spear(obj)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_POLEARM_LANCE_SPEAR_ONLY))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_POLEARM_LANCE_SPEAR_ONLY) && !(is_pole(obj) || is_lance(obj) || is_spear(obj)))
         return FALSE;
-    if (is_weapon(obj) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_WEAPON))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_WEAPON) && is_weapon(obj))
         return FALSE;
-    if (obj->oclass == ARMOR_CLASS && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_ARMOR))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_ARMOR) && obj->oclass == ARMOR_CLASS)
         return FALSE;
-    if ((is_missile(obj) || is_ammo(obj)) && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_THROWN_OR_AMMO))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_THROWN_OR_AMMO) && (is_missile(obj) || is_ammo(obj)))
+        return FALSE;
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_THROWN_WEAPON_ONLY) && !is_missile(obj))
+        return FALSE;
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_RETURNING_WEAPONS) && ((objects[(obj)->otyp].oc_flags4 & O4_TETHERED_WEAPON) != 0 || (objects[(obj)->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) != 0))
         return FALSE;
 
     return TRUE;

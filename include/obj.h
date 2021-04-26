@@ -654,6 +654,8 @@ struct mythic_definition {
 #define MYTHIC_FLAG_SHIELD_REQUIRED             0x00004000UL /* Must be a shield */
 #define MYTHIC_FLAG_SUIT_REQUIRED               0x00008000UL /* Must be a suit */
 #define MYTHIC_FLAG_NO_THROWN_OR_AMMO           0x00010000UL
+#define MYTHIC_FLAG_THROWN_WEAPON_ONLY          0x00020000UL
+#define MYTHIC_FLAG_NO_RETURNING_WEAPONS        0x00040000UL
 
 #define MYTHIC_FLAG_SLASHING_WEAPONS_ONLY    (MYTHIC_FLAG_NO_PIERCING_WEAPONS | MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS)
 #define MYTHIC_FLAG_PIERCING_WEAPONS_ONLY    (MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS | MYTHIC_FLAG_NO_SLASHING_WEAPONS)
@@ -701,6 +703,7 @@ enum mythic_suffix_types {
     MYTHIC_SUFFIX_ELEMENTAL_PROTECTION,
     MYTHIC_SUFFIX_ORC_SLAYING,
     MYTHIC_SUFFIX_ELF_SLAYING,
+    MYTHIC_SUFFIX_RETURNING,
     MAX_MYTHIC_SUFFIXES
 };
 
@@ -731,6 +734,7 @@ enum mythic_power_types {
 #define MYTHIC_POWER_FLAG_SHIELD_ONLY           0x00000010 /* Works only for shields */
 #define MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS    0x00000020 /* Works also against shapeshifted monsters of the type */
 #define MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO     0x00000040 /* No thrown weapons or ammo for this power */
+#define MYTHIC_POWER_FLAG_THROWN_WEAPONS_ONLY   0x00000080 /* Works only for thrown weapons */
 
 
 enum mythic_prefix_power_types {
@@ -792,6 +796,7 @@ enum mythic_suffix_power_types {
     MYTHIC_SUFFIX_POWER_INDEX_STONE_RESISTANCE,
     MYTHIC_SUFFIX_POWER_INDEX_SEARCHING,
     MYTHIC_SUFFIX_POWER_INDEX_SEE_INVISIBLE,
+    MYTHIC_SUFFIX_POWER_INDEX_RETURN_TO_HAND_AFTER_THROW,
     MAX_MYTHIC_SUFFIX_POWERS
 };
 
@@ -824,6 +829,7 @@ enum mythic_suffix_power_types {
 #define MYTHIC_SUFFIX_POWER_STONE_RESISTANCE            (1UL << MYTHIC_SUFFIX_POWER_INDEX_STONE_RESISTANCE)
 #define MYTHIC_SUFFIX_POWER_SEARCHING                   (1UL << MYTHIC_SUFFIX_POWER_INDEX_SEARCHING)
 #define MYTHIC_SUFFIX_POWER_SEE_INVISIBLE               (1UL << MYTHIC_SUFFIX_POWER_INDEX_SEE_INVISIBLE)
+#define MYTHIC_SUFFIX_POWER_RETURN_TO_HAND_AFTER_THROW  (1UL << MYTHIC_SUFFIX_POWER_INDEX_RETURN_TO_HAND_AFTER_THROW)
 
 
 extern NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES];
@@ -842,6 +848,7 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
     (!(!is_weapon(o) && ((pwrflags) & MYTHIC_POWER_FLAG_WEAPON_ONLY) != 0) && \
      !((o)->oclass != ARMOR_CLASS && ((pwrflags) & MYTHIC_POWER_FLAG_ARMOR_ONLY) != 0) && \
      !((is_missile(o) || is_ammo(o)) && ((pwrflags) & MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO) != 0) && \
+     !(!is_missile(o) && ((pwrflags) & MYTHIC_POWER_FLAG_THROWN_WEAPONS_ONLY) != 0) && \
      !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_SUIT) && ((pwrflags) & MYTHIC_POWER_FLAG_SUIT_ONLY) != 0) && \
      !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_HELM) && ((pwrflags) & MYTHIC_POWER_FLAG_HELMET_ONLY) != 0) && \
      !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_SHIELD) && ((pwrflags) & MYTHIC_POWER_FLAG_SHIELD_ONLY) != 0) )
@@ -868,6 +875,7 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 #define has_obj_mythic_luck(o)                  has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_LUCK)
 #define has_obj_mythic_triple_base_damage(o)    has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_TRIPLE_BASE_DAMAGE)
 #define has_obj_mythic_added_enchantability(o)  has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_ADDED_ENCHANTABILITY)
+#define has_obj_mythic_return_to_hand(o)        has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_RETURN_TO_HAND_AFTER_THROW)
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1
