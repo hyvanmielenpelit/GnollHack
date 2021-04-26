@@ -196,6 +196,7 @@ char *mswin_getmsghistory(BOOLEAN_P init);
 void mswin_putmsghistory(const char *msg, BOOLEAN_P);
 
 void mswin_status_init(void);
+void mswin_statuslines_init(void);
 void mswin_status_finish(void);
 void mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
                               boolean enable);

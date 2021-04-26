@@ -261,7 +261,7 @@ extern
 #define WC2_RESET_STATUS  0x0100UL /* 09 call status_update(BL_RESET) to
                                    *    indicate 'draw everything'      */
 #define WC2_TERM_SIZE     0x0200UL /* 10 support setting terminal size   */
-#define WC2_STATUSLINES   0x0400UL /* 11 switch between 2 or 3 lines of status */
+#define WC2_STATUSLINES   0x0400UL /* 11 switch between 2 and 8 lines of status */
 #define WC2_WINDOWBORDERS 0x0800UL /* 12 display borders on nh windows   */
 #define WC2_PETATTR       0x1000UL /* 13 attributes for hilite_pet       */
 #define WC2_GUICOLOR      0x2000UL /* 14 display colours outside map win */

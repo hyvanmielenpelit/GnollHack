@@ -457,7 +457,7 @@ static struct Comp_Opt {
 #endif
     },
     { "statuslines",
-#ifdef CURSES_GRAPHICS
+#if defined(CURSES_GRAPHICS) || defined(MSWIN_GRAPHICS) || defined(NUKLEAR_GRAPHICS) || defined(DLL_GRAPHICS)
       "2 to 8 lines for horizonal (bottom or top) status display",
       20, SET_IN_GAME
 #else

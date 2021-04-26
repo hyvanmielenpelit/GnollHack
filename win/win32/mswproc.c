@@ -92,7 +92,7 @@ struct window_procs mswin_procs = {
 #ifdef STATUS_HILITES
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
-    WC2_PREFERRED_SCREEN_SCALE, mswin_init_nhwindows, mswin_player_selection, mswin_askname,
+    WC2_STATUSLINES | WC2_PREFERRED_SCREEN_SCALE, mswin_init_nhwindows, mswin_player_selection, mswin_askname,
     mswin_get_nh_event, mswin_exit_nhwindows, mswin_suspend_nhwindows,
     mswin_resume_nhwindows, mswin_create_nhwindow, mswin_clear_nhwindow,
     mswin_display_nhwindow, mswin_destroy_nhwindow, mswin_curs, mswin_putstr,
@@ -2130,6 +2130,12 @@ mswin_preference_update(const char *pref)
         return;
     }
 
+    if (stricmp(pref, "statuslines") == 0) {
+        mswin_statuslines_init();
+        mswin_layout_main_window(NULL);
+        return;
+    }
+
 }
 
 #define TEXT_BUFFER_SIZE 4096
@@ -3079,13 +3085,31 @@ mswin_status_init(void)
         status_string->str = NULL;
     }
 
-    for (int lineIndex = 0; lineIndex < iflags.wc2_statuslines /* SIZE(_status_lines.lines)*/; lineIndex++) {
-        mswin_status_line * line = &_status_lines.lines[lineIndex];
+    mswin_statuslines_init();
 
-        mswin_status_fields * status_fields = &line->status_fields;
+    for (int i = 0; i < MAXBLSTATS; ++i) {
+#ifdef STATUS_HILITES
+        _status_hilites[i].thresholdtype = 0;
+        _status_hilites[i].behavior = BL_TH_NONE;
+        _status_hilites[i].under = BL_HILITE_NONE;
+        _status_hilites[i].over = BL_HILITE_NONE;
+#endif /* STATUS_HILITES */
+    }
+    /* Use a window for the genl version; backward port compatibility */
+    WIN_STATUS = create_nhwindow(NHW_STATUS);
+    display_nhwindow(WIN_STATUS, FALSE);
+}
+
+void
+mswin_statuslines_init(void)
+{
+    for (int lineIndex = 0; lineIndex < iflags.wc2_statuslines /* SIZE(_status_lines.lines)*/; lineIndex++) {
+        mswin_status_line* line = &_status_lines.lines[lineIndex];
+
+        mswin_status_fields* status_fields = &line->status_fields;
         status_fields->count = 0;
 
-        mswin_status_strings * status_strings = &line->status_strings;
+        mswin_status_strings* status_strings = &line->status_strings;
         status_strings->count = 0;
 
         for (int i = 0; i < fieldcounts[lineIndex]; i++) {
@@ -3108,19 +3132,6 @@ mswin_status_init(void)
             }
         }
     }
-
-
-    for (int i = 0; i < MAXBLSTATS; ++i) {
-#ifdef STATUS_HILITES
-        _status_hilites[i].thresholdtype = 0;
-        _status_hilites[i].behavior = BL_TH_NONE;
-        _status_hilites[i].under = BL_HILITE_NONE;
-        _status_hilites[i].over = BL_HILITE_NONE;
-#endif /* STATUS_HILITES */
-    }
-    /* Use a window for the genl version; backward port compatibility */
-    WIN_STATUS = create_nhwindow(NHW_STATUS);
-    display_nhwindow(WIN_STATUS, FALSE);
 }
 
 /*
