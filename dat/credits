@@ -6,17 +6,19 @@
 Game Design:     Tommi Gustafsson, Janne Gustafsson 
 Programming:     Janne Gustafsson (GnollHack, GnollHackW)
                  Tommi Gustafsson (Tileset Compiler, Dgamelaunch mod)  
-Tile Graphics:   Riikka Laakkonen (Players, monsters, dungeon features)
-                 Anu Kogger (Dungeon tilesets)
-                 Markus Turunen (Animations)
-                 Janne Rajamäki (Additional dungeon tilesets and graphics)
-                 Janne Gustafsson (Various UI and item graphics)
-Contributors:    Mikko Kangas (Graphics management)
-                 Elina Palmroos (Various audio files)
-                 Olli Lounela (Improved TTY Player)
+Tile Graphics:   Riikka Laakkonen (Players, monsters, various graphics)
+                 Markus Turunen (Animations, traps, various graphics)
+                 Anu Kogger (Tilesets for base dungeon and undead areas)
+                 Janne Rajamäki (Gehennom tilesets, various graphics)
                  Jenni Berg (Additional monster graphics)
+                 Milo Uusitalo (Additional monster and item graphics)
+                 Janne Gustafsson (Additional graphics)
+Contributors:    Tommi Gustafsson (Voice acting project management)
+                 Mikko Kangas (Graphics project management)
+                 Olli Lounela (Improved TTY Player)
                  Krista Rusanen (Voice actor management)
-Playtesting:     Tommi Gustafsson, Mikko Kangas
+                 Jessika Suvanto (Voice file editing)
+Playtesting:     Tommi Gustafsson
 
 
                            EXTERNAL SOFTWARE

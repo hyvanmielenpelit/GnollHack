@@ -7225,6 +7225,9 @@ boolean stop_at_first_hit_object;
     {
         int x, y;
 
+        if(isok(bhitpos.x, bhitpos.y))
+            show_missile_info(bhitpos.x, bhitpos.y, 0, 0, 0, 0, 0, 0, 0, 0UL); /* Clear missile info out in the previous location */
+
         bhitpos.x += ddx;
         bhitpos.y += ddy;
         x = bhitpos.x;

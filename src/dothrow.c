@@ -1644,6 +1644,7 @@ struct obj *obj;
                 flush_screen(1);
             }
             adjusted_delay_output();
+            show_missile_info(x, y, 0, 0, 0, 0, 0, 0, 0, 0UL); /* Clear missile info out */
             x -= u.dx;
             y -= u.dy;
         }
@@ -1871,7 +1872,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             thrownobj = addinv(thrownobj);
             (void) encumber_msg();
             /* in case addinv() autoquivered */
-            if (thrownobj->owornmask & W_QUIVER)
+            if (thrownobj && thrownobj->owornmask & W_QUIVER)
                 setuqwep((struct obj *) 0);
             setuwep(thrownobj, W_WEP);
         } 
@@ -1892,7 +1893,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         {
 //            if (rn2(100)) {
                 if (tethered_weapon)
-                    tmp_at(DISP_END, BACKTRACK);
+                    tmp_at_with_obj(DISP_END, BACKTRACK, obj);
                 else
                     sho_obj_return_to_u(obj); /* display its flight */
 

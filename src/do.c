@@ -1387,7 +1387,7 @@ register struct obj* obj;
                 obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial (quadruple base damage)" :
                 obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial (quadruple base damage)" :
                 obj->exceptionality == EXCEPTIONALITY_INFERNAL ? "Infernal (quadruple base damage)" :
-                "Unknown qualilty"
+                "Unknown quality"
             );
 
             exceptionality_multiplier = get_exceptionality_multiplier(obj->exceptionality);

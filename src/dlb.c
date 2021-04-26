@@ -360,6 +360,7 @@ dlb *dp;
 {
     int i;
     char *bp, c = 0;
+    unsigned char ubuf[2] = { 0, 0 };
 
     if (len <= 0)
         return buf; /* sanity check */
@@ -373,6 +374,28 @@ dlb *dp;
          i++, bp++) {
         if (dlb_fread(bp, 1, 1, dp) <= 0)
             break; /* EOF or error */
+        if (*bp == -61)
+        {
+            /* Read unicode */
+            if (dlb_fread(ubuf, 1, 1, dp) <= 0)
+                break; /* EOF or error */
+
+            if (0xA5 == ubuf[0])
+                *bp = 'å';
+            else if (0xA4 == ubuf[0])
+                *bp = 'ä';
+            else if (0xB6 == ubuf[0])
+                *bp = 'ö';
+            else if (0x85 == ubuf[0])
+                *bp = 'Å';
+            else if (0x84 == ubuf[0])
+                *bp = 'Ä';
+            else if (0x96 == ubuf[0])
+                *bp = 'Ö';
+            else
+                *bp = '?';
+        }
+
         c = *bp;
     }
     *bp = '\0';

@@ -466,6 +466,7 @@ E void FDECL(force_redraw_at, (int, int));
 E void FDECL(shieldeff, (XCHAR_P, XCHAR_P));
 E void FDECL(talkeff, (XCHAR_P, XCHAR_P));
 E void FDECL(tmp_at, (int, int));
+E void FDECL(tmp_at_with_obj, (int, int, struct obj*));
 E void FDECL(swallowed, (int));
 E void FDECL(under_ground, (int));
 E void FDECL(under_water, (int));

@@ -1565,6 +1565,14 @@ void
 tmp_at(x, y)
 int x, y;
 {
+    tmp_at_with_obj(x, y, (struct obj*)0);
+}
+
+void
+tmp_at_with_obj(x, y, obj)
+int x, y;
+struct obj* obj;
+{
     static struct tmp_glyph *tglyph = (struct tmp_glyph *) 0;
     struct tmp_glyph *tmp;
 
@@ -1633,8 +1641,14 @@ int x, y;
                     newsym(tglyph->saved[i].x, tglyph->saved[i].y);
                     show_glyph_on_layer_and_ascii(tglyph->saved[i - 1].x,
                                tglyph->saved[i - 1].y, tglyph->glyph, LAYER_MISSILE);
+                    if(obj)
+                        show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE)); /* Clear missile info out in the previous location */
+
                     flush_screen(1);   /* make sure it shows up */
                     adjusted_delay_output();
+
+                    if (obj)
+                        show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, 0, 0, 0, 0, 0, 0, 0, 0UL);
                 }
                 tglyph->sidx = 1;
             }
