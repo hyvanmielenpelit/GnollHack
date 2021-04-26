@@ -2726,11 +2726,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     if (cnt >= 12)
                                         break;
 
-                                    int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_obj_floor_tile(contained_obj) ? 0 : TILE_Y / 2);
+                                    int artidx = contained_obj ? contained_obj->oartifact : 0;
+                                    boolean has_floor_tile = !contained_obj ? FALSE : artidx ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(contained_obj);
+                                    int obj_height = artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(contained_obj->otyp);
+                                    int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_floor_tile ? 0 : TILE_Y / 2);
                                     int dest_x = 0, dest_y = 0;
-                                    int item_width = has_obj_floor_tile(contained_obj) ? TILE_Y / 2 : OBJ_TILE_HEIGHT(contained_obj->otyp) ? OBJ_TILE_HEIGHT(contained_obj->otyp) : (objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) ? TILE_Y : TILE_Y / 2;
-                                    int item_height = (item_width * TILE_Y) / TILE_X;
-                                    int true_item_width = has_obj_floor_tile(contained_obj) && OBJ_TILE_HEIGHT(contained_obj->otyp) ? OBJ_TILE_HEIGHT(contained_obj->otyp) : item_width;
+                                    int item_width = has_floor_tile ? TILE_Y / 2 : obj_height ? obj_height : TILE_Y / 2;
+                                    int item_height = has_floor_tile ? TILE_X : (item_width * TILE_X) / (TILE_Y / 2);
+                                    int true_item_width = has_floor_tile && obj_height ? obj_height : item_width;
                                     int padding = (TILE_Y / 2 - rack_width) / 2;
                                     int vertical_padding = (TILE_X - item_height) / 2;
 
@@ -2863,10 +2866,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 for (struct obj* contained_obj = otmp_round->cobj; contained_obj; contained_obj = contained_obj->nobj)
                                 {
-                                    int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_obj_floor_tile(contained_obj) ? 0 : TILE_Y / 2);
+                                    int artidx = contained_obj ? contained_obj->oartifact : 0;
+                                    boolean has_floor_tile = !contained_obj ? FALSE : artidx ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(contained_obj);
+                                    int obj_height = artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(contained_obj->otyp);
+                                    int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_floor_tile ? 0 : TILE_Y / 2);
                                     int dest_x = 0, dest_y = 0;
-                                    int item_width = has_obj_floor_tile(contained_obj) ? TILE_Y / 2 : OBJ_TILE_HEIGHT(contained_obj->otyp) ? OBJ_TILE_HEIGHT(contained_obj->otyp) : TILE_Y / 2;
-                                    int item_height = (item_width * TILE_Y) / TILE_X;
+                                    int item_width = has_floor_tile ? TILE_Y / 2 : obj_height ? obj_height : TILE_Y / 2;
+                                    int item_height = has_floor_tile ? TILE_X : (item_width * TILE_X) / (TILE_Y / 2);
                                     int padding = (TILE_Y / 2 - item_width) / 2;
                                     int vertical_padding = (TILE_X - item_height) / 2;
                                     if (contained_obj->oclass != WEAPON_CLASS)
