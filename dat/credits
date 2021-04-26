@@ -3,9 +3,9 @@
 
                               DEVELOPMENT
 
-Game Design:     Tommi Gustafsson, Janne Gustafsson 
+Game Design:     Tommi Gustafsson, Janne Gustafsson
 Programming:     Janne Gustafsson (GnollHack, GnollHackW)
-                 Tommi Gustafsson (Tileset Compiler, Dgamelaunch mod)  
+                 Tommi Gustafsson (Tileset Compiler, Dgamelaunch mod)
 Tile Graphics:   Riikka Laakkonen (Players, monsters, various graphics)
                  Markus Turunen (Animations, traps, various graphics)
                  Anu Kogger (Tilesets for base dungeon and undead areas)
@@ -13,9 +13,8 @@ Tile Graphics:   Riikka Laakkonen (Players, monsters, various graphics)
                  Jenni Berg (Additional monster graphics)
                  Milo Uusitalo (Additional monster and item graphics)
                  Janne Gustafsson (Additional graphics)
-Contributors:    Tommi Gustafsson (Voice acting project management)
-                 Mikko Kangas (Graphics project management)
-                 Olli Lounela (Improved TTY Player)
+                 Mikko Kangas (Project management)
+Voice Acting:    Tommi Gustafsson (Project management)
                  Krista Rusanen (Voice actor management)
                  Jessika Suvanto (Voice file editing)
 Playtesting:     Tommi Gustafsson
@@ -37,8 +36,14 @@ Zapsplat
 Eric Matyas, soundimage.org
 
 
-                            SOUND EFFECTS
+                             SOUND EFFECTS
 
 Zapsplat
 Eric Matyas, soundimage.org
 Hyena laughter, CC Attribution
+
+
+                             VOICE ACTORS
+
+[Specify]
+
