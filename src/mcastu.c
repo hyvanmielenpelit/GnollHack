@@ -330,8 +330,12 @@ boolean foundyou;
     if (rn2(100) < failchance) {//(rn2(ml * 10) < (is_confused(mtmp) ? 100 : 20)) { /* fumbled attack */
         if (canseemon(mtmp) && !Deaf)
         {
-            play_sfx_sound_at_location(SFX_AIR_CRACKLES, mtmp->mx, mtmp->my);
             pline_The("air crackles around %s.", mon_nam(mtmp));
+            if (iflags.using_gui_sounds)
+            {
+                delay_output_milliseconds(200);
+                play_sfx_sound_at_location(SFX_AIR_CRACKLES, mtmp->mx, mtmp->my);
+            }
         }
 
         update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
@@ -376,8 +380,12 @@ boolean foundyou;
 
     switch (mattk->adtyp) {
     case AD_FIRE:
-        play_sfx_sound(SFX_MONSTER_ON_FIRE);
         pline("You're enveloped in flames.");
+        if (iflags.using_gui_sounds)
+        {
+            delay_output_milliseconds(200);
+            play_sfx_sound(SFX_MONSTER_ON_FIRE);
+        }
         if (Fire_immunity || Invulnerable) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
@@ -387,8 +395,12 @@ boolean foundyou;
         burn_away_slime();
         break;
     case AD_COLD:
-        play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
         pline("You're covered in frost.");
+        if (iflags.using_gui_sounds)
+        {
+            delay_output_milliseconds(200);
+            play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
+        }
         if (Cold_immunity || Invulnerable) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
@@ -397,8 +409,12 @@ boolean foundyou;
         }
         break;
     case AD_MAGM:
-        play_sfx_sound(SFX_HAIL_OF_MAGIC_MISSILES_HITS);
         You("are hit by a shower of missiles!");
+        if (iflags.using_gui_sounds)
+        {
+            delay_output_milliseconds(200);
+            play_sfx_sound(SFX_HAIL_OF_MAGIC_MISSILES_HITS);
+        }
         if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
             play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
@@ -578,6 +594,7 @@ int spellnum;
         break;
     }
     case MGC_AGGRAVATION:
+        play_sfx_sound(SFX_AGGRAVATE_MONSTER);
         You_feel("that monsters are aware of your presence.");
         aggravate();
         damage = 0;
@@ -589,25 +606,30 @@ int spellnum;
         break;
     case MGC_DESTRY_ARMR:
         if (Antimagic_or_resistance) {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             pline("A field of force surrounds you!");
         }
         else if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY) {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             pline("Your cloak neutralizes the destructive energies of the spell!");
             makeknown(uarmc->otyp);
         } else if (!destroy_arm(some_armor(&youmonst))) {
+            play_sfx_sound(SFX_HANDS_ITCH);
             Your("skin itches.");
         }
         damage = 0;
         break;
     case MGC_WEAKEN_YOU: /* drain strength */
         if (Antimagic_or_resistance) {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             You_feel("momentarily weakened.");
         }
         else 
         {
+            play_sfx_sound(SFX_LOSE_ABILITY);
             You("suddenly feel weaker!");
             int strloss = mtmp->m_lev - 6;
             if (Half_spell_damage)
@@ -654,11 +676,19 @@ int spellnum;
         damage = 0;
         break;
     case MGC_HASTE_SELF:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        play_sfx_sound_at_location(SFX_ACQUIRE_HASTE, mtmp->mx, mtmp->my);
         (void)increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
         damage = 0;
+        special_effect_wait_until_end(0);
         break;
     case MGC_CURE_SELF:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
         damage = m_cure_self(mtmp, damage);
+        special_effect_wait_until_end(0);
         break;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
@@ -670,13 +700,25 @@ int spellnum;
             damage = damage / 2;
         }
         if (damage <= 5)
+        {
+            play_player_ouch_sound(MONSTER_OUCH_SOUND_SLIGHT_HEADACHE);
             You("get a slight %sache.", body_part(HEAD));
+        }
         else if (damage <= 10)
+        {
+            play_player_ouch_sound(MONSTER_OUCH_SOUND_MODERATE_HEADACHE);
             Your("brain is on fire!");
+        }
         else if (damage <= 20)
+        {
+            play_player_ouch_sound(MONSTER_OUCH_SOUND_PAINFUL_HEADACHE);
             Your("%s suddenly aches painfully!", body_part(HEAD));
+        }
         else
+        {
+            play_player_ouch_sound(MONSTER_OUCH_SOUND_VERY_PAINFUL_HEADACHE);
             Your("%s suddenly aches very painfully!", body_part(HEAD));
+        }
         break;
     default:
         impossible("mcastu: invalid magic spell (%d)", spellnum);

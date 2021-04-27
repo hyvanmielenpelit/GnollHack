@@ -871,6 +871,7 @@ intervene()
         rndcurse();
         break;
     case 3:
+        play_sfx_sound(SFX_AGGRAVATE_MONSTER);
         aggravate();
         break;
     case 4:

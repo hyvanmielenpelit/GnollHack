@@ -2206,6 +2206,7 @@ douseunicornhorn()
 int
 doshriek()
 {
+    play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CHAT);
     You("shriek.");
     if (u.uburied)
         pline("Unfortunately sound does not carry well through rock.");

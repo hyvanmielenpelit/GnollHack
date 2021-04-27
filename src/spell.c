@@ -92,6 +92,7 @@ struct obj *bp;
         break;
     case 1:
         You_feel("threatened.");
+        play_sfx_sound(SFX_AGGRAVATE_MONSTER);
         aggravate();
         break;
     case 2:

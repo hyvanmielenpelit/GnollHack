@@ -2534,7 +2534,7 @@ int magic; /* 0=Physical, otherwise skill level */
             {
                 long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
 
-                play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
                 You("rip yourself free of the bear trap!  Ouch!");
                 losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "jumping out of a bear trap",
                        KILLED_BY);

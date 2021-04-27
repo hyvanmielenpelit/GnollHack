@@ -1236,7 +1236,7 @@ unsigned short trflags;
                         if (iflags.using_gui_sounds)
                         {
                             delay_output_milliseconds(150);
-                            play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                            play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
                         }
                     }
                 }
@@ -1248,7 +1248,7 @@ unsigned short trflags;
                     //delay_output_milliseconds(150);
                     play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
                     delay_output_milliseconds(150);
-                    play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                    play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
                 }
             }
             if (!Blind)
@@ -6689,7 +6689,7 @@ boolean disarm;
             if (iflags.using_gui_sounds)
             {
                 delay_output_milliseconds(100);
-                play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
             }
             display_u_being_hit(HIT_POISONED, 0, 0UL);
             poisoned("needle", A_CON, "poisoned needle", 0, FALSE, 2);

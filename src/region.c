@@ -935,7 +935,7 @@ genericptr_t p2;
     struct monst *mtmp;
 
     if (p2 == (genericptr_t) 0) { /* That means the player */
-        play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+        play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
         if (!Blind)
             You("bump into %s.  Ouch!",
                 Hallucination ? "an invisible tree"

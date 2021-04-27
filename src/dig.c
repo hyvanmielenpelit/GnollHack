@@ -328,7 +328,7 @@ dig(VOID_ARGS)
                           otense(wep, "hit"), mon_nam(u.usteed));
                 else
                 {
-                    play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                    play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
                     pline("Ouch!  %s and %s you!", Yobjnam2(wep, "bounce"),
                         otense(wep, "hit"));
                 }
@@ -1902,7 +1902,7 @@ struct obj* origobj;
                 if (iflags.using_gui_sounds)
                 {
                     delay_output_milliseconds(150);
-                    play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                    play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
                 }
                 otmp = mksobj_at(ROCK, u.ux, u.uy, FALSE, FALSE);
                 if (otmp) {

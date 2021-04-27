@@ -1094,6 +1094,7 @@ struct obj *otmp;
         if (otmp->cursed)
         {
             pline("For some reason, you feel your presence is known.");
+            play_sfx_sound(SFX_AGGRAVATE_MONSTER);
             aggravate();
         }
         break;

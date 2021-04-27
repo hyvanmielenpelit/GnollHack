@@ -984,7 +984,7 @@ int mode;
                                 play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BUMP_INTO);
                                 if (iflags.using_gui_sounds)
                                     delay_output_milliseconds(2 * ANIMATION_FRAME_INTERVAL);
-                                play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                                play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
                                 pline("Ouch!  You bump into a door.");
                                 exercise(A_DEX, FALSE);
                             }
@@ -2675,7 +2675,7 @@ boolean pick;
                 if (iflags.using_gui_sounds)
                 {
                     delay_output_milliseconds(25);
-                    play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
+                    play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
                 }
                 damage = adjust_damage(d(max(1, mtmp->data->mlevel - 1), 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
                 mdamageu(mtmp, damage, TRUE);

@@ -4097,6 +4097,7 @@ struct monst *mtmp;
     if (mtmp->data->msound == MS_SHRIEK) 
     {
         if (!Deaf) {
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CHAT);
             pline("%s shrieks.", Monnam(mtmp));
             stop_occupation();
         }

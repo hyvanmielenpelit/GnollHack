@@ -5503,8 +5503,12 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_AIR_CRACKLES, 1.0f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_AGGRAVATE_MONSTER",
+        {GHSOUND_AGGRAVATE_MONSTER, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
 };
-
 
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
@@ -6938,8 +6942,16 @@ enum monster_sound_types sound_type;
     float volume = 1.0f;
     struct ghsound_immediate_info immediateinfo = { 0 };
 
-    enum player_soundset_types pss = get_player_soundset();
-    set_simple_player_sound_id_and_volume(pss, sound_type, &soundid, &volume);
+    if (Upolyd)
+    {
+        enum monster_soundset_types mss = get_monster_soundset(&youmonst);
+        set_simple_monster_sound_id_and_volume(mss, sound_type, &soundid, &volume);
+    }
+    else
+    {
+        enum player_soundset_types pss = get_player_soundset();
+        set_simple_player_sound_id_and_volume(pss, sound_type, &soundid, &volume);
+    }
 
     xchar x = u.ux, y = u.uy;
 
@@ -6963,6 +6975,70 @@ enum monster_sound_types sound_type;
         play_immediate_ghsound(immediateinfo);
 
 }
+
+void
+play_player_line_indexed_sound(sound_type, line_id, play_group, sfx_sound_type)
+enum monster_sound_types sound_type;
+int line_id;
+enum sound_play_groups play_group;
+enum immediate_sound_types sfx_sound_type;
+{
+    /* Do not use for hit sounds */
+
+    if (Deaf)
+        return;
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+    struct ghsound_immediate_info immediateinfo = { 0 };
+
+    if (Upolyd)
+    {
+        enum monster_soundset_types mss = get_monster_soundset(&youmonst);
+        set_simple_monster_sound_id_and_volume(mss, sound_type, &soundid, &volume);
+    }
+    else
+    {
+        enum player_soundset_types pss = get_player_soundset();
+        set_simple_player_sound_id_and_volume(pss, sound_type, &soundid, &volume);
+    }
+
+    immediateinfo.ghsound = soundid;
+    immediateinfo.parameter_names[0] = "LineIndex";
+    immediateinfo.parameter_values[0] = (float)line_id;
+    immediateinfo.parameter_names[1] = (char*)0;
+
+    xchar x = u.ux, y = u.uy;
+    if (isok(x, y))
+    {
+        float hearing = hearing_array[x][y];
+        if (hearing == 0.0f && context.global_minimum_volume == 0.0f)
+            return;
+        else
+            volume *= hearing_array[x][y];
+    }
+    else
+        return;
+
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
+    immediateinfo.sound_type = sfx_sound_type;
+    immediateinfo.play_group = play_group;
+    immediateinfo.dialogue_mid = youmonst.m_id;
+
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+
+}
+
+
+void
+play_player_ouch_sound(line_id)
+enum monster_ouch_sounds line_id;
+{
+    play_player_line_indexed_sound(MONSTER_SOUND_TYPE_OUCH, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX);
+}
+
 
 void
 play_simple_player_voice(sound_type)
@@ -10922,6 +10998,15 @@ struct monst* mtmp;
 int line_id;
 {
     play_voice_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_SPECIAL_SOUND, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f);
+}
+
+
+void
+play_monster_ouch_sound(mtmp, line_id)
+struct monst* mtmp;
+enum monster_ouch_sounds line_id;
+{
+    play_voice_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_OUCH, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f);
 }
 
 enum monster_soundset_types

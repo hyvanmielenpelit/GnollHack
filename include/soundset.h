@@ -778,6 +778,7 @@ enum ghsound_types {
     GHSOUND_ALIGNMENT_CHANGE_HELM_OFF,
     GHSOUND_TOO_MUCH_TO_COMPREHEND,
     GHSOUND_AIR_CRACKLES,
+    GHSOUND_AGGRAVATE_MONSTER,
 
     GHSOUND_MAGIC_MARKER_WRITE,
     GHSOUND_MAGIC_MARKER_DRY_OUT,
@@ -1641,6 +1642,7 @@ enum sfx_sound_types {
     SFX_ALIGNMENT_CHANGE_HELM_OFF,
     SFX_TOO_MUCH_TO_COMPREHEND,
     SFX_AIR_CRACKLES,
+    SFX_AGGRAVATE_MONSTER,
     MAX_SFX_SOUND_TYPES
 };
 
@@ -2340,6 +2342,17 @@ enum monster_item_trading_lines
     MONSTER_ITEM_TRADING_LINE_17,
     MONSTER_ITEM_TRADING_LINE_TRADING_THANK_YOU_FOR_YOUR_PURCHASE,
 };
+
+enum monster_ouch_sounds
+{
+    MONSTER_OUCH_SOUND_OUCH = 0,
+    MONSTER_OUCH_SOUND_SLIGHT_HEADACHE,         /* Slight headache */
+    MONSTER_OUCH_SOUND_MODERATE_HEADACHE,       /* Head is on fire */
+    MONSTER_OUCH_SOUND_PAINFUL_HEADACHE,        /* Aches painfully */
+    MONSTER_OUCH_SOUND_VERY_PAINFUL_HEADACHE,   /* Aches very painfully */
+    MONSTER_OUCH_SOUND_SCREAM_IN_TERROR,
+};
+
 /* Order enums for some special lines, just as a note */
 
 
