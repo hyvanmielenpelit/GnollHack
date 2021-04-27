@@ -2131,7 +2131,7 @@ mswin_preference_update(const char *pref)
     }
 
     if (stricmp(pref, "statuslines") == 0) {
-        mswin_status_init();
+        mswin_statuslines_init();
         mswin_layout_main_window(NULL);
         return;
     }
