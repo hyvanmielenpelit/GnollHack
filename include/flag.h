@@ -465,7 +465,7 @@ struct instance_flags {
     int wc_mouse_support;       /* allow mouse support */
     int wc2_term_cols;        /* terminal width, in characters */
     int wc2_term_rows;        /* terminal height, in characters */
-    int wc2_statuslines;        /* default = 2, curses can handle 3 */
+    int wc2_statuslines;        /* default = 2, can handle up to 8 */
     int wc2_windowborders;    /* display borders on GnollHack windows */
     int wc2_petattr;            /* text attributes for pet */
     char* wc2_master_bank_file; /* name of custom master bank file, overrides default */

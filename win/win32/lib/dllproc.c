@@ -2409,7 +2409,7 @@ dll_status_init(void)
         dll_status_strings * status_strings = &line->status_strings;
         status_strings->count = 0;
 
-        for (int i = 0; i < fieldcounts[lineIndex]; i++) {
+        for (int i = 0; i < iflags.wc2_statuslines == 2 ? fieldcounts_2statuslines[lineIndex] : fieldcounts[lineIndex]; i++) {
             int field_index = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines[lineIndex][i] : fieldorders[lineIndex][i];
             nhassert(field_index <= SIZE(_status_fields));
 

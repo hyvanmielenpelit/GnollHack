@@ -17,8 +17,8 @@ static const int fieldorder2[] = { BL_LEVELDESC, BL_HP,   BL_HPMAX,
                              BL_ENE,       BL_ENEMAX,    BL_AC,  BL_MC_LVL, BL_MC_PCT,    BL_MOVE,  BL_XP,
                              BL_EXP,       BL_HD,        BL_TIME, BL_SCORE, BL_FLUSH };
 static const int fieldorder2_2statuslines[] = { BL_LEVELDESC, BL_HP,   BL_HPMAX,
-                             BL_ENE,       BL_ENEMAX,    BL_AC,  BL_MC_LVL, BL_MC_PCT,    BL_MOVE,  BL_XP,
-                             BL_EXP,       BL_HD,        BL_TIME,  BL_FLUSH };
+                             BL_ENE,       BL_ENEMAX,    BL_AC,    BL_MC_LVL, BL_MC_PCT,    BL_MOVE,   BL_XP,
+                             BL_EXP,       BL_HD,        BL_TIME,  BL_2WEP,   BL_SKILL,     BL_HUNGER, BL_CAP,  BL_CONDITION, BL_FLUSH };
 static const int fieldorder3[] = { BL_2WEP, BL_SKILL,     BL_HUNGER,
                              BL_CAP,       BL_CONDITION, BL_FLUSH };
 static const int fieldorder4[] = { BL_PARTYSTATS, BL_FLUSH };
@@ -28,12 +28,14 @@ static const int fieldorder7[] = { BL_PARTYSTATS4, BL_FLUSH };
 static const int fieldorder8[] = { BL_PARTYSTATS5, BL_FLUSH };
 
 static const int* fieldorders_2statuslines[NHSW_LINES + 1] = { fieldorder1, fieldorder2_2statuslines, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+static const int fieldcounts_2statuslines[NHSW_LINES] = {
+    SIZE(fieldorder1) - 1, SIZE(fieldorder2_2statuslines) - 1, 0, 0, 0, 0, 0, 0
+};
 static const int *fieldorders[NHSW_LINES + 1] = { fieldorder1, fieldorder2, fieldorder3, fieldorder4, fieldorder5, fieldorder6, fieldorder7, fieldorder8, NULL };
 static const int fieldcounts[NHSW_LINES] = { 
     SIZE(fieldorder1) - 1, SIZE(fieldorder2) - 1, SIZE(fieldorder3) - 1 , SIZE(fieldorder4) - 1,
     SIZE(fieldorder5) - 1, SIZE(fieldorder6) - 1, SIZE(fieldorder7) - 1 , SIZE(fieldorder8) - 1
 };
-
 #define MSWIN_MAX_LINE1_STRINGS (SIZE(fieldorder1) - 1)
 #define MSWIN_MAX_LINE2_STRINGS (SIZE(fieldorder2) - 1)
 #define MSWIN_MAX_LINE2_2STATUSLINES_STRINGS (SIZE(fieldorder2_2statuslines) - 1 + BL_MASK_BITS)

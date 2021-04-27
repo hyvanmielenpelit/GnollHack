@@ -536,6 +536,7 @@ static boolean need_set_sound_volume; /* for doset() */
 static boolean need_update_inventory; /* for doset() */
 static boolean need_set_animation_timer;
 static boolean need_update_space_binding;
+static boolean need_status_initialize;
 
 #if defined(TOS) && defined(TEXTCOLOR)
 extern boolean colors_changed;  /* in tos.c */
@@ -3971,7 +3972,10 @@ boolean tinitial, tfrom_file;
         } else {
             iflags.wc2_statuslines = itmp;
             if (!initial)
+            {
+                need_status_initialize = TRUE;
                 need_redraw = TRUE;
+            }
         }
         return retval;
     }
@@ -4638,7 +4642,7 @@ boolean tinitial, tfrom_file;
 #endif
                 need_redraw = TRUE;
             } 
-            else if (boolopt[i].addr == &iflags.wc2_hitpointbar) 
+            else if (boolopt[i].addr == &iflags.wc2_hitpointbar)
             {
                 if (VIA_WINDOWPORT())
                 {
@@ -5115,6 +5119,7 @@ doset() /* changing options via menu by Per Liboriussen */
     need_update_inventory = FALSE;
     need_set_animation_timer = FALSE;
     need_update_space_binding = FALSE;
+    need_status_initialize = FALSE;
 
     if ((pick_cnt = select_menu(tmpwin, PICK_ANY, &pick_list)) > 0) {
         /*
@@ -5190,6 +5195,15 @@ doset() /* changing options via menu by Per Liboriussen */
 
     destroy_nhwindow(tmpwin);
     
+    if (need_status_initialize)
+    {
+        if (VIA_WINDOWPORT())
+        {
+            status_initialize(REASSESS_ONLY);
+            need_redraw = TRUE;
+        }
+    }
+
     if (need_redraw)
     {
         check_gold_symbol();
