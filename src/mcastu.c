@@ -269,7 +269,9 @@ boolean foundyou;
     boolean is_ultimate = FALSE;
     boolean is_intermediate = FALSE;
 
-    update_m_action_and_wait(mtmp, nodirspell ? ACTION_TILE_CAST_NODIR : ACTION_TILE_CAST_DIR);
+    update_m_action(mtmp, nodirspell ? ACTION_TILE_CAST_NODIR : ACTION_TILE_CAST_DIR);
+    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CAST);
+    m_wait_until_action();
 
     if (mattk->adtyp == AD_SPEL)
     {
@@ -327,7 +329,10 @@ boolean foundyou;
 
     if (rn2(100) < failchance) {//(rn2(ml * 10) < (is_confused(mtmp) ? 100 : 20)) { /* fumbled attack */
         if (canseemon(mtmp) && !Deaf)
+        {
+            play_sfx_sound_at_location(SFX_AIR_CRACKLES, mtmp->mx, mtmp->my);
             pline_The("air crackles around %s.", mon_nam(mtmp));
+        }
 
         update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
         return (0);
@@ -371,6 +376,7 @@ boolean foundyou;
 
     switch (mattk->adtyp) {
     case AD_FIRE:
+        play_sfx_sound(SFX_MONSTER_ON_FIRE);
         pline("You're enveloped in flames.");
         if (Fire_immunity || Invulnerable) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
@@ -381,6 +387,7 @@ boolean foundyou;
         burn_away_slime();
         break;
     case AD_COLD:
+        play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
         pline("You're covered in frost.");
         if (Cold_immunity || Invulnerable) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
@@ -390,6 +397,7 @@ boolean foundyou;
         }
         break;
     case AD_MAGM:
+        play_sfx_sound(SFX_HAIL_OF_MAGIC_MISSILES_HITS);
         You("are hit by a shower of missiles!");
         if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
             play_sfx_sound(SFX_GENERAL_REFLECTS);
@@ -657,6 +665,7 @@ int spellnum;
            made the spell virtually harmless to players with magic res. */
         if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable)
         {
+            play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
             damage = damage / 2;
         }

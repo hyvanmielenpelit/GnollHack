@@ -904,6 +904,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Armor/Helm of Opposite Alignment/Alignment Change Helm On", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Armor/Helm of Opposite Alignment/Alignment Change Helm Off", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Too Much to Comprehend", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Air Crackles", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Marker/Write", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Magic Marker/Dry Out", 1.0f },
