@@ -4862,6 +4862,7 @@ register struct obj *obj;
     {
         int radius = objects[obj->otyp].oc_spell_radius;
         play_explosion_animation_at(u.ux, u.uy, EXPL_CIRCLE_OF_FIRE);
+        play_sfx_sound(SFX_TOWER_OF_FLAME_ERUPTS);
         explosion_wait_until_action();
         for (struct monst* mon = fmon; mon; mon = mon->nmon)
         {
