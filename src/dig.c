@@ -3209,7 +3209,7 @@ dodig()
         }
         else
         {
-            oss = monster_soundsets[u.mfemale ? mons[u.umonnum].female_soundset : mons[u.umonnum].soundset].attack_soundsets[0];
+            oss = monster_soundsets[flags.female ? mons[u.umonnum].female_soundset : mons[u.umonnum].soundset].attack_soundsets[0];
         }
     }
 

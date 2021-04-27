@@ -911,8 +911,8 @@ struct obj* uitem;
         if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_MASK)
         {
             if (
-                   ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE) && (Upolyd ? u.mfemale : flags.female))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE) && !(Upolyd ? u.mfemale : flags.female))
+                   ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE) && flags.female)
+                || ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE) && !flags.female)
                 )
             {
                 // Ok

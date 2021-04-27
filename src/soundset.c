@@ -7887,7 +7887,7 @@ int x, y;
 enum player_soundset_types
 get_player_soundset()
 {
-    if(Upolyd ? u.mfemale : flags.female)
+    if(flags.female)
         return PLAYER_SOUNDSET_FEMALE;
     else
         return PLAYER_SOUNDSET_GENERAL;
@@ -10039,7 +10039,7 @@ enum shopkeeper_lines line_idx;
             GHSOUND_VOICE_SHOPKEEPER_MALE_WAS_ROBBED;
         break;
     case SHOPKEEPER_LINE_OWE_SOME_GOLD:
-        if(Upolyd ? u.mfemale : flags.female)
+        if(flags.female)
             info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MADAM_OWE_SOME_GOLD :
                 shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_MADAM_OWE_SOME_GOLD :
                 GHSOUND_VOICE_SHOPKEEPER_MALE_MADAM_OWE_SOME_GOLD;
@@ -11017,7 +11017,7 @@ struct monst* mtmp;
         return MONSTER_SOUNDSET_NONE;
 
     boolean isyou = (mtmp == &youmonst);
-    boolean isfemale = isyou ? (Upolyd ? u.mfemale : flags.female) : mtmp->female;
+    boolean isfemale = isyou ? flags.female : mtmp->female;
 
     if (mtmp->isshk)
         return is_undead(mtmp->data) ? MONSTER_SOUNDSET_SHOPKEEPER_UNDEAD : isfemale ? MONSTER_SOUNDSET_SHOPKEEPER_FEMALE : MONSTER_SOUNDSET_SHOPKEEPER_MALE;
