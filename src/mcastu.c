@@ -296,7 +296,9 @@ boolean foundyou;
     if (is_cancelled(mtmp) || is_silenced(mtmp) || *appr_spec_ptr > 0 || !ml)
     {
         cursetxt(mtmp, nodirspell);
+        m_wait_until_end();
         update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+        m_wait_until_end();
         return (0);
     }
 
@@ -312,7 +314,9 @@ boolean foundyou;
               canseemon(mtmp) ? Monnam(mtmp) : "Something",
               levl[mtmp->mux][mtmp->muy].typ == WATER ? "empty water"
                                                       : "thin air");
+        m_wait_until_end();
         update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+        m_wait_until_end();
         return (0);
     }
 
@@ -338,7 +342,9 @@ boolean foundyou;
             }
         }
 
+        m_wait_until_end();
         update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+        m_wait_until_end();
         return (0);
     }
     if (canspotmon(mtmp) || !is_undirected_spell(mattk->adtyp, spellnum))
@@ -369,7 +375,9 @@ boolean foundyou;
               "%s casting non-hand-to-hand version of hand-to-hand spell %d?",
                        Monnam(mtmp), mattk->adtyp);
 
+            m_wait_until_end();
             update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+            m_wait_until_end();
             return (0);
         }
     } 
@@ -435,7 +443,9 @@ boolean foundyou;
     if (damage > 0)
         mdamageu(mtmp, damage, TRUE);
 
+    m_wait_until_end();
     update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+    m_wait_until_end();
     return (ret);
 }
 
