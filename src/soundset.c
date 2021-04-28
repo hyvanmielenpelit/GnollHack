@@ -5508,6 +5508,31 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_AGGRAVATE_MONSTER, 1.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
+    {
+        "GHSOUND_CIRCLE_OF_FIRE",
+        {GHSOUND_CIRCLE_OF_FIRE, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_CIRCLE_OF_FROST",
+        {GHSOUND_CIRCLE_OF_FROST, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_CIRCLE_OF_LIGHTNING",
+        {GHSOUND_CIRCLE_OF_LIGHTNING, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_CIRCLE_OF_MAGIC",
+        {GHSOUND_CIRCLE_OF_MAGIC, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_CIRCLE_OF_RADIANCE",
+        {GHSOUND_CIRCLE_OF_RADIANCE, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
 };
 
 

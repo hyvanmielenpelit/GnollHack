@@ -4838,6 +4838,9 @@ register struct obj *obj;
     case SPE_CIRCLE_OF_RADIANCE:
     {
         int radius = objects[obj->otyp].oc_spell_radius;
+        play_explosion_animation_at(u.ux, u.uy, EXPL_CIRCLE_OF_MAGIC);
+        play_sfx_sound(SFX_CIRCLE_OF_RADIANCE);
+        explosion_wait_until_action();
         for (struct monst* mon = fmon; mon; mon = mon->nmon)
         {
             if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
@@ -4855,14 +4858,14 @@ register struct obj *obj;
                 }
             }
         }
-
+        explosion_wait_until_end();
         break;
     }
     case SPE_CIRCLE_OF_FIRE:
     {
         int radius = objects[obj->otyp].oc_spell_radius;
         play_explosion_animation_at(u.ux, u.uy, EXPL_CIRCLE_OF_FIRE);
-        play_sfx_sound(SFX_TOWER_OF_FLAME_ERUPTS);
+        play_sfx_sound(SFX_CIRCLE_OF_FIRE);
         explosion_wait_until_action();
         for (struct monst* mon = fmon; mon; mon = mon->nmon)
         {
@@ -4894,6 +4897,7 @@ register struct obj *obj;
     {
         int radius = objects[obj->otyp].oc_spell_radius;
         play_explosion_animation_at(u.ux, u.uy, EXPL_CIRCLE_OF_FROST);
+        play_sfx_sound(SFX_CIRCLE_OF_FROST);
         explosion_wait_until_action();
         for (struct monst* mon = fmon; mon; mon = mon->nmon)
         {
@@ -4925,6 +4929,7 @@ register struct obj *obj;
     {
         int radius = objects[obj->otyp].oc_spell_radius;
         play_explosion_animation_at(u.ux, u.uy, EXPL_CIRCLE_OF_LIGHTNING);
+        play_sfx_sound(SFX_CIRCLE_OF_LIGHTNING);
         explosion_wait_until_action();
         for (struct monst* mon = fmon; mon; mon = mon->nmon)
         {
@@ -4956,6 +4961,7 @@ register struct obj *obj;
     {
         int radius = objects[obj->otyp].oc_spell_radius;
         play_explosion_animation_at(u.ux, u.uy, EXPL_CIRCLE_OF_MAGIC);
+        play_sfx_sound(SFX_CIRCLE_OF_MAGIC);
         explosion_wait_until_action();
         for (struct monst* mon = fmon; mon; mon = mon->nmon)
         {
