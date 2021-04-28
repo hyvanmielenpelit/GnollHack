@@ -77,6 +77,7 @@ struct obj {
 #define SPEFLAGS_ROYAL_COFFER                  0x00010000UL
 #define SPEFLAGS_LID_OPENED                    0x00020000UL
 #define SPEFLAGS_GRABBED_FROM_YOU              0x00040000UL
+#define SPEFLAGS_ADDED_TO_YOUR_BILL            0x00080000UL
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */

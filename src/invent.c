@@ -5877,9 +5877,11 @@ unsigned long newsym_flags;
         {
             char* o_shop = in_rooms(otmp->ox, otmp->oy, SHOPBASE);
             struct monst* shkp = shop_keeper(*o_shop);
-            if (shkp && inhishop(shkp) && !Deaf && !muteshk(shkp))
+            if (shkp && inhishop(shkp) && !Deaf && !muteshk(shkp) && !(otmp->speflags & SPEFLAGS_ADDED_TO_YOUR_BILL))
+            {
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
-
+                otmp->speflags |= SPEFLAGS_ADDED_TO_YOUR_BILL;
+            }
             addtobill(otmp, FALSE, FALSE, FALSE);
         }
         else

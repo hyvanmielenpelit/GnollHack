@@ -479,9 +479,30 @@ boolean message;
         food_after_effect(piece);
 
     if (carried(piece))
+    {
+        if (!(piece->speflags & SPEFLAGS_ADDED_TO_YOUR_BILL) && piece->unpaid && costly_spot(u.ux, u.uy))
+        {
+            struct monst* shkp = 0;
+            boolean billable_food = FALSE;
+            char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+            shkp = shop_keeper(*o_shop);
+            if (shkp && inhishop(shkp) && is_obj_on_shk_bill(piece, shkp))
+            {
+                billable_food = TRUE;
+            }
+            if (billable_food && shkp && !Deaf && !muteshk(shkp))
+            {
+                play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL);
+                piece->speflags |= SPEFLAGS_ADDED_TO_YOUR_BILL;
+            }
+        }
         useup(piece);
+    }
     else
+    {
+        /* useupf handles shopkeeper */
         useupf(piece, 1L);
+    }
     context.victual.piece = (struct obj *) 0;
     context.victual.o_id = 0;
     context.victual.fullwarn = context.victual.eating = context.victual.doreset = FALSE;

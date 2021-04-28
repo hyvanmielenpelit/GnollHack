@@ -1153,20 +1153,26 @@ int alter_type;
     case OBJ_INVENT:
         if (set_bknown)
             obj->bknown = 1;
+        boolean didtalk = FALSE;
         if (iflags.using_gui_sounds)
         {
-            objroom = *in_rooms(ox, oy, SHOPBASE);
-            if (billable(&shkp, obj, objroom, FALSE) && shkp)
+            char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+            shkp = shop_keeper(*o_shop);
+            if (obj->unpaid && shkp && inhishop(shkp) && is_obj_on_shk_bill(obj, shkp) && costly_spot(u.ux, u.uy))
             {
                 //play_voice_shopkeeper_simple_line(shkp, obj->quan == 1L ? SHOPKEEPER_LINE_YOU_ALTER_THAT_YOU_PAY_FOR_IT : SHOPKEEPER_LINE_YOU_ALTER_THOSE_YOU_PAY_FOR_THEM);
                 play_voice_shopkeeper_costly_alteration(shkp, obj, alter_type);
                 verbalize("You %s %s, you pay for %s!", alteration_verbs[alter_type], those, them);
+                didtalk = TRUE;
             }
         }
-        else
+
+        if(!didtalk)
             verbalize("You %s %s %s, you pay for %s!",
                       alteration_verbs[alter_type], those, simpleonames(obj),
                       them);
+
+        obj->speflags |= SPEFLAGS_ADDED_TO_YOUR_BILL;
         bill_dummy_object(obj);
         break;
     case OBJ_FLOOR:
@@ -1181,6 +1187,7 @@ int alter_type;
                 play_voice_shopkeeper_costly_alteration(shkp, obj, alter_type);
                 verbalize("You %s %s, you pay for %s!",
                     alteration_verbs[alter_type], those, them);
+                obj->speflags |= SPEFLAGS_ADDED_TO_YOUR_BILL;
             }
             bill_dummy_object(obj);
         } 
