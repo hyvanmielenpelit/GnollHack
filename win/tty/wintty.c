@@ -4596,8 +4596,6 @@ render_status(VOID_ARGS)
                 continue;
             x = tty_status[NOW][idx].x - removedspaces;
             text = status_vals[idx];
-            if (idx == BL_CONDITION)
-                idx = idx;
             tlth = (int) tty_status[NOW][idx].lth;
             if (x <= 1 && *text == ' ')
             {
