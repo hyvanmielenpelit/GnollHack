@@ -3103,7 +3103,9 @@ mswin_status_init(void)
 void
 mswin_statuslines_init(void)
 {
-    for (int lineIndex = 0; lineIndex < iflags.wc2_statuslines /* SIZE(_status_lines.lines)*/; lineIndex++) {
+    int lineIndex;
+    for (lineIndex = 0; lineIndex < SIZE(_status_lines.lines); lineIndex++)
+    {
         mswin_status_line* line = &_status_lines.lines[lineIndex];
 
         mswin_status_fields* status_fields = &line->status_fields;
@@ -3113,7 +3115,8 @@ mswin_statuslines_init(void)
         status_strings->count = 0;
 
         int fc = iflags.wc2_statuslines == 2 ? fieldcounts_2statuslines[lineIndex] : fieldcounts[lineIndex];
-        for (int i = 0; i < fc; i++) {
+        for (int i = 0; i < fc; i++) 
+        {
             int field_index = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines[lineIndex][i] : fieldorders[lineIndex][i];
             nhassert(field_index <= SIZE(_status_fields));
 

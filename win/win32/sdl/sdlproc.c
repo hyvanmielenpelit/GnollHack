@@ -3094,7 +3094,7 @@ sdl_status_init(void)
         status_string->str = NULL;
     }
 
-    for (int lineIndex = 0; lineIndex < iflags.wc2_statuslines /* SIZE(_status_lines.lines)*/; lineIndex++) {
+    for (int lineIndex = 0; lineIndex < SIZE(_status_lines.lines); lineIndex++) {
         mswin_status_line * line = &_status_lines.lines[lineIndex];
 
         mswin_status_fields * status_fields = &line->status_fields;

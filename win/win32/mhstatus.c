@@ -199,16 +199,24 @@ StatusWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             InvalidateRect(hWnd, NULL, TRUE);
         } break;
 
-        case MSNH_MSG_GETTEXT: {
+        case MSNH_MSG_GETTEXT: 
+        {
             PMSNHMsgGetText msg_data = (PMSNHMsgGetText) lParam;
             msg_data->buffer[0] = '\0';
             size_t space_remaining = msg_data->max_size;
 
-            for (int line = 0; line < iflags.wc2_statuslines; line++) {
-                mswin_status_line *status_line = data->status_lines[line].lines;
-                for (int i = 0; i < status_line->status_strings.count; i++) {
+            for (int line = 0; line < iflags.wc2_statuslines; line++) 
+            {
+                mswin_status_lines* status_lines = data->status_lines;
+                mswin_status_line *status_line = &status_lines->lines[line];
+                for (int i = 0; i < status_line->status_strings.count; i++) 
+                {
                     mswin_status_string * status_string = status_line->status_strings.status_strings[i];
-                    if (status_string->space_in_front) {
+                    if (!status_string || status_string->str == NULL || status_string->str[0] == '\0')
+                        continue;
+
+                    if (status_string->space_in_front)
+                    {
                         strncat(msg_data->buffer, " ", space_remaining);
                         space_remaining = msg_data->max_size - strlen(msg_data->buffer);
                     }
@@ -330,7 +338,7 @@ onWMPaint(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 int fntatr = ATR_NONE;
                 COLORREF nFg, nBg;
 
-                if (status_string->str == NULL || status_string->str[0] == '\0')
+                if (!status_string || status_string->str == NULL || status_string->str[0] == '\0')
                     continue;
 
                 clr = status_string->color;
