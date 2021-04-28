@@ -947,6 +947,7 @@ struct objclass {
 #define O4_CONTAINER_HAS_LID                               0x01000000UL    /* Has a lid that will be opened permanently on first time (sarcophagus, coffin) */
 #define O4_CONTAINER_PEEK_INTO                             0x02000000UL    /* You peek into this container */
 #define O4_CONTAINER_MAY_CONTAIN_MONSTER                   0x04000000UL
+#define O4_WEAPON_TOOL                                     0x08000000UL
 
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */

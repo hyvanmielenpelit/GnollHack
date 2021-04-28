@@ -261,7 +261,7 @@ struct obj {
 #define ammo_and_launcher(a, l) (is_ammo(a) && matching_launcher(a, l))
 #define is_thrown_weapon_only(o) ((objects[(o)->otyp].oc_flags & O1_THROWN_WEAPON_ONLY) != 0)
 #define is_weptool(o) \
-    ((o)->oclass == TOOL_CLASS && objects[(o)->otyp].oc_skill != P_NONE)
+    ((o)->oclass == TOOL_CLASS && (objects[(o)->otyp].oc_flags4 & O4_WEAPON_TOOL) != 0)
         /* towel is not a weptool:  enchantment isn't an enchantment, cursed towel
            doesn't weld to hand, and twoweapon won't work with one */
 #define is_weapon(o) \

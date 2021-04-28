@@ -1962,7 +1962,7 @@ OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, 0, 0, 0),            
            0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
            dmgtype, sdice, sdiesize, sdmgplus, ldice, ldiesize, ldmgplus, edmgtype, edice, ediesize, edmgplus, aflags, aflags2, critpct, \
            hitbon, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-           wt, clr, soundset, 0, 0, cooldown, 0, powconfermask, permittedtargets, flags, flags2, flags3, flags4)
+           wt, clr, soundset, 0, 0, cooldown, 0, powconfermask, permittedtargets, flags, flags2, flags3, O4_WEAPON_TOOL | flags4)
 
 /* containers */
 CONTAINER("large box",       None, None, TOOLTYPE_BOX, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
@@ -2194,20 +2194,12 @@ WEPTOOL("grappling hook", "iron hook", None,
     0, 0, 0,  4, 30,  50,
     AD_PHYS, 1, 2, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, WHACK, 0, TOOLTYPE_HOOK, P_THROWN_WEAPON, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_NON_MYTHIC, PERMITTED_ALL, ALL_TARGETS),
-#if 0
-WEPTOOL("unicorn horn", None, None,
-    1, 1, 1,  0, 20, 100, 
-    1, 12, 0, 1, 12, 0, A1_NONE, A2_NONE, 0, 
-    PIERCE, 0, TOOLTYPE_HORN, P_SPEAR, 100, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
-        /* 3.4.1: unicorn horn left classified as "magic" */
-#endif
 OBJECT(OBJ("unicorn horn", None, None, None, None, 0, 0, 0, 0),
        BITS(1, 0, 1, 0, 1, ENCHTYPE_GENERAL_WEAPON, CHARGED_HORN_NORMAL, RECHARGING_UNICORN_HORN, 0, 0, 0, 0, 0, TOOLTYPE_HORN, P_SPEAR, MAT_BONE),
        NO_POWER, NO_POWER, NO_POWER, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 20, 100,
        AD_PHYS, 1, 12, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-       100, CLR_WHITE, OBJECT_SOUNDSET_GENERIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NON_MYTHIC),
+       100, CLR_WHITE, OBJECT_SOUNDSET_GENERIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_WEAPON_TOOL | O4_NON_MYTHIC),
 
 /* two unique tools;
  * not artifacts, despite the comment which used to be here
