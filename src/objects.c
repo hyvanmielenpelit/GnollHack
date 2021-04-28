@@ -2141,7 +2141,7 @@ TOOL("drum of earthquake","antiquated drum", None, None, None, TOOLTYPE_DRUM, 0,
 GENERAL_SPELLTOOL("jar of extra healing salve", "glass jar", "healing salve", "yellow ointment", "Heals a target for 12d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_YELLOW_REPLACEMENT,
     TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL, //STARTMARKER for jars and salves and shuffled jars
     20, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 12, 6, 0, 0, 0, 0, 0,
-    P_WAND, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
+    P_NONE, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO),
 GENERAL_SPELLTOOL("jar of greater healing salve", "crystal jar", "healing salve", "purple ointment", "Heals a target for 24d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_PURPLE_REPLACEMENT,
     TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL,
