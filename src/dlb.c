@@ -374,7 +374,7 @@ dlb *dp;
          i++, bp++) {
         if (dlb_fread(bp, 1, 1, dp) <= 0)
             break; /* EOF or error */
-        if (*bp == -61)
+        if (*bp == -61 || *bp == 195)
         {
             /* Read unicode */
             if (dlb_fread((char*)ubuf, 1, 1, dp) <= 0)
