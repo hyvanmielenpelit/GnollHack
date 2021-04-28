@@ -708,10 +708,10 @@ enum game_cursor_types cursor_style;
 
         msg_given = TRUE;
     }
-    cx = ccp->x;
-    cy = ccp->y;
-    tx = ccp->x;
-    ty = ccp->y;
+    cx = (int)ccp->x;
+    cy = (int)ccp->y;
+    tx = (int)ccp->x;
+    ty = (int)ccp->y;
 
 #if defined(CLIPPING) && !defined(ANDROID)
     cliparound(cx, cy);
@@ -909,8 +909,8 @@ enum game_cursor_types cursor_style;
                to achieve that except by manually cycling through all spots */
             for (i = 0; i < NUM_GLOCS; i++)
                 gidx[i] = 0;
-            cx = u.ux;
-            cy = u.uy;
+            cx = (int)u.ux;
+            cy = (int)u.uy;
             goto nxtc;
         } 
         else if (c == Cmd.spkeys[NHKF_GETPOS_MOVESKIP]) 
@@ -931,8 +931,8 @@ enum game_cursor_types cursor_style;
 
                 if (getpos_menu(&tmpcrd, gloc)) 
                 {
-                    cx = tmpcrd.x;
-                    cy = tmpcrd.y;
+                    cx = (int)tmpcrd.x;
+                    cy = (int)tmpcrd.y;
                 }
                 goto nxtc;
             }
@@ -951,8 +951,8 @@ enum game_cursor_types cursor_style;
                 if (--gidx[gloc] < 0)
                     gidx[gloc] = gcount[gloc] - 1;
             }
-            cx = garr[gloc][gidx[gloc]].x;
-            cy = garr[gloc][gidx[gloc]].y;
+            cx = (int)garr[gloc][gidx[gloc]].x;
+            cy = (int)garr[gloc][gidx[gloc]].y;
             goto nxtc;
         }
         else
@@ -1065,8 +1065,6 @@ enum game_cursor_types cursor_style;
         cliparound(cx, cy);
 #endif
         curs(WIN_MAP, cx, cy);
-        if (cx != u.ux || cy != u.uy)
-            cx = cx;
         flush_screen(0);
     }
 #if defined(MAC) || defined(ANDROID)
@@ -1074,8 +1072,8 @@ enum game_cursor_types cursor_style;
 #endif
     if (msg_given)
         clear_nhwindow(WIN_MESSAGE);
-    ccp->x = cx;
-    ccp->y = cy;
+    ccp->x = (xchar)cx;
+    ccp->y = (xchar)cy;
     for (i = 0; i < NUM_GLOCS; i++)
         if (garr[i])
             free((genericptr_t) garr[i]);
