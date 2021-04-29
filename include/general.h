@@ -72,11 +72,15 @@ enum explosion_types {
     EXPL_MAGICAL,
     EXPL_FIERY,
     EXPL_FROSTY,
-    /* Various large effects here */
+    /* Additional real explosions here (to be used with explode) */
+    EXPL_SCROLL_OF_FIRE,
+    /* Various large effects here (to be used with play_explosion_animation) */
     EXPL_CIRCLE_OF_FIRE,
     EXPL_CIRCLE_OF_FROST,
     EXPL_CIRCLE_OF_LIGHTNING,
     EXPL_CIRCLE_OF_MAGIC,
+    EXPL_CIRCLE_OF_RADIANCE,
+    EXPL_SCROLL_OF_EARTH,
     MAX_EXPLOSIONS
 };
 

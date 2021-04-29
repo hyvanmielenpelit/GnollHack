@@ -3088,9 +3088,9 @@ boolean *effect_happened_ptr;
         }
 
         if (increased_damage)
-            explode(cc.x, cc.y, 11, &youmonst, 5, 6, 10, otyp, SCROLL_CLASS, EXPL_FIERY);
+            explode(cc.x, cc.y, 11, &youmonst, 5, 6, 10, otyp, SCROLL_CLASS, EXPL_SCROLL_OF_FIRE);
         else
-            explode(cc.x, cc.y, 11, &youmonst, 1, 2, (4 * sbcsign + 2) / 3, otyp, SCROLL_CLASS, EXPL_FIERY);
+            explode(cc.x, cc.y, 11, &youmonst, 1, 2, (4 * sbcsign + 2) / 3, otyp, SCROLL_CLASS, EXPL_SCROLL_OF_FIRE);
 
         break;
     }
