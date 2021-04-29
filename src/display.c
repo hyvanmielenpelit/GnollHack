@@ -1406,25 +1406,27 @@ int damage_shown;
             add_glyph_buffer_layer_flags(x, y, lev->hero_memory_layers.layer_flags);
 
             /* Monster layer */
-            if ((mon = m_at(x, y)) != 0 && 
-                ((see_it = (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon)
-                 || (see_with_infrared(mon) && mon_visible(mon)))) != 0 || Detect_monsters)
-               ) 
+            mon = m_at(x, y);
+            if (mon)
             {
-                /* Seen or sensed monsters are printed every time.
-                   This also gets rid of any invisibility glyph. */
-                display_monster(x, y, mon, see_it ? 0 : DETECTED,
-                                is_worm_tail(mon) ? TRUE : FALSE, FALSE);
+                see_it = (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon) || (see_with_infrared(mon) && mon_visible(mon)));
+                if (see_it || Detect_monsters)
+                {
+                    /* Seen or sensed monsters are printed every time.
+                       This also gets rid of any invisibility glyph. */
+                    display_monster(x, y, mon, see_it ? 0 : DETECTED,
+                        is_worm_tail(mon) ? TRUE : FALSE, FALSE);
 
-                check_special_level_naming_by_mon(mon);
-            }
-            else if (mon && mon_warning(mon) && !is_worm_tail(mon)) 
-            {
-                display_warning(mon);
-            }
-            else if (mon && is_worm_tail(mon))
-            {
-                add_glyph_buffer_layer_flags(x, y, LFLAGS_M_WORM_TAIL);
+                    check_special_level_naming_by_mon(mon);
+                }
+                else if (mon_warning(mon) && !is_worm_tail(mon))
+                {
+                    display_warning(mon);
+                }
+                else if (is_worm_tail(mon))
+                {
+                    add_glyph_buffer_layer_flags(x, y, LFLAGS_M_WORM_TAIL);
+                }
             }
         }
     }

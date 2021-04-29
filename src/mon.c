@@ -4238,7 +4238,7 @@ boolean via_attack;
                         }
                         /* shopkeepers and temple priests might gasp in
                            surprise, but they won't become angry here */
-                        if (mon->isshk || mon->ispriest || mon->ispriest)
+                        if (mon->isshk || mon->ispriest || mon->issmith || mon->isnpc)
                             continue;
 
                         if (mon->data->mlevel < rn2(10)) {
@@ -5644,7 +5644,7 @@ struct monst* mon;
 const char* corpse_common_name(corpse)
 struct obj* corpse;
 {
-    if (!corpse || !(corpse->otyp == CORPSE && corpse->otyp == STATUE && corpse->otyp == EGG))
+    if (!corpse || !(corpse->otyp == CORPSE || corpse->otyp == STATUE || corpse->otyp == EGG))
         return "";
 
     struct monst* mtmp = get_mtraits(corpse, FALSE);

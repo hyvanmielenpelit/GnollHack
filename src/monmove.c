@@ -1027,8 +1027,10 @@ register struct monst *mtmp;
     if (mon_can_move(mtmp) && nearby)
     {
         boolean spoke = quest_talk(mtmp);
-        if (0 && spoke && canseemon(mtmp)) // Deactivated for the time being, as probably does not look good.
+#if 0
+        if (spoke && canseemon(mtmp)) // Deactivated for the time being, as probably does not look good.
             talkeff(mtmp->mx, mtmp->my);
+#endif
     }
 
     /* extra emotional attack for vile monsters */

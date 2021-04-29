@@ -8531,7 +8531,7 @@ register int dx, dy;
 boolean say; /* Announce out of sight hit/miss events if true */
 {
     int range, abstype = abs(type) % NUM_ZAP;
-    register xchar lsx, lsy;
+    register xchar lsx = 0, lsy = 0;
     struct monst *mon;
     coord save_bhitpos;
     boolean shopdamage = FALSE;

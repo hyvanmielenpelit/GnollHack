@@ -2233,9 +2233,13 @@ int style;
         otmp = (struct obj *) 0;
     } else {
         singleobj = splitobj(otmp, 1L);
-        obj_extract_self(singleobj);
+        if(singleobj)
+            obj_extract_self(singleobj);
     }
     newsym(x1, y1);
+
+    if (!singleobj)
+        return 0;
 
     /* in case you're using a pick-axe to chop the boulder that's being
        launched (perhaps a monster triggered it), destroy context so that
