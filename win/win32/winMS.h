@@ -39,6 +39,7 @@
 #include "mhwingdi.h"
 #include "lev.h"
 
+
 /* Create an array to keep track of the various windows */
 
 #ifndef MAXWINDOWS

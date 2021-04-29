@@ -70,9 +70,9 @@
 /* Line 189 of yacc.c  */
 #line 1 "dgn_comp.y"
 
-/* GnollHack 4.0  dgn_comp.y    $NHDT-Date: 1432512785 2015/05/25 00:13:05 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
-/*    Copyright (c) 1989 by Jean-Christophe Collet */
-/*    Copyright (c) 1990 by M. Stephenson                  */
+/* GnollHack 4.0  dgn_comp.y	$NHDT-Date: 1432512785 2015/05/25 00:13:05 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
+/*	Copyright (c) 1989 by Jean-Christophe Collet */
+/*	Copyright (c) 1990 by M. Stephenson				  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 /*
@@ -90,7 +90,7 @@
  */
 
 #ifdef _AIX
- #pragma alloca        /* keep leading space! */
+ #pragma alloca		/* keep leading space! */
 #endif
 
 #include "config.h"
@@ -111,16 +111,16 @@ void NDECL(init_branch);
 void NDECL(init_level);
 void NDECL(output_dgn);
 
-#define Free(ptr)        free((genericptr_t)ptr)
+#define Free(ptr)		free((genericptr_t)ptr)
 
 #ifdef AMIGA
-# undef    printf
-#ifndef    LATTICE
+# undef	printf
+#ifndef	LATTICE
 # define    memset(addr,val,len)    setmem(addr,len,val)
 #endif
 #endif
 
-#define ERR        (-1)
+#define ERR		(-1)
 
 static struct couple couple;
 static struct tmpdungeon tmpdungeon[MAXDUNGEON];
@@ -131,7 +131,7 @@ static int in_dungeon = 0, n_dgns = -1, n_levs = -1, n_brs = -1;
 
 extern int fatal_error;
 extern const char *fname;
-extern FILE *yyin, *yyout;    /* from dgn_lex.c */
+extern FILE *yyin, *yyout;	/* from dgn_lex.c */
 
 
 
@@ -198,8 +198,8 @@ typedef union YYSTYPE
 /* Line 214 of yacc.c  */
 #line 68 "dgn_comp.y"
 
-    int    i;
-    char*    str;
+	int	i;
+	char*	str;
 
 
 
@@ -348,7 +348,7 @@ YYID (yyi)
 #  endif
 #  if (defined __cplusplus && ! defined _STDLIB_H \
        && ! ((defined YYMALLOC || defined malloc) \
-         && (defined YYFREE || defined free)))
+	     && (defined YYFREE || defined free)))
 #   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
 #   ifndef _STDLIB_H
 #    define _STDLIB_H 1
@@ -374,7 +374,7 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
-     || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
+	 || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
@@ -399,13 +399,13 @@ union yyalloc
 #   define YYCOPY(To, From, Count) \
       __builtin_memcpy (To, From, (Count) * sizeof (*(From)))
 #  else
-#   define YYCOPY(To, From, Count)        \
-      do                    \
-    {                    \
-      YYSIZE_T yyi;                \
-      for (yyi = 0; yyi < (Count); yyi++)    \
-        (To)[yyi] = (From)[yyi];        \
-    }                    \
+#   define YYCOPY(To, From, Count)		\
+      do					\
+	{					\
+	  YYSIZE_T yyi;				\
+	  for (yyi = 0; yyi < (Count); yyi++)	\
+	    (To)[yyi] = (From)[yyi];		\
+	}					\
       while (YYID (0))
 #  endif
 # endif
@@ -415,15 +415,15 @@ union yyalloc
    elements in the stack, and YYPTR gives the new location of the
    stack.  Advance YYPTR to a properly aligned location for the next
    stack.  */
-# define YYSTACK_RELOCATE(Stack_alloc, Stack)                \
-    do                                    \
-      {                                    \
-    YYSIZE_T yynewbytes;                        \
-    YYCOPY (&yyptr->Stack_alloc, Stack, yysize);            \
-    Stack = &yyptr->Stack_alloc;                    \
-    yynewbytes = yystacksize * sizeof (*Stack) + YYSTACK_GAP_MAXIMUM; \
-    yyptr += yynewbytes / sizeof (*yyptr);                \
-      }                                    \
+# define YYSTACK_RELOCATE(Stack_alloc, Stack)				\
+    do									\
+      {									\
+	YYSIZE_T yynewbytes;						\
+	YYCOPY (&yyptr->Stack_alloc, Stack, yysize);			\
+	Stack = &yyptr->Stack_alloc;					\
+	yynewbytes = yystacksize * sizeof (*Stack) + YYSTACK_GAP_MAXIMUM; \
+	yyptr += yynewbytes / sizeof (*yyptr);				\
+      }									\
     while (YYID (0))
 
 #endif
@@ -446,7 +446,7 @@ union yyalloc
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   280
 
-#define YYTRANSLATE(YYX)                        \
+#define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
 /* YYTRANSLATE[YYLEX] -- Bison symbol number corresponding to YYLEX.  */
@@ -691,44 +691,44 @@ static const yytype_uint8 yystos[] =
       57,    57,    31,    31,     3,     3,     3,     3
 };
 
-#define yyerrok        (yyerrstatus = 0)
-#define yyclearin    (yychar = YYEMPTY)
-#define YYEMPTY        (-2)
-#define YYEOF        0
+#define yyerrok		(yyerrstatus = 0)
+#define yyclearin	(yychar = YYEMPTY)
+#define YYEMPTY		(-2)
+#define YYEOF		0
 
-#define YYACCEPT    goto yyacceptlab
-#define YYABORT        goto yyabortlab
-#define YYERROR        goto yyerrorlab
+#define YYACCEPT	goto yyacceptlab
+#define YYABORT		goto yyabortlab
+#define YYERROR		goto yyerrorlab
 
 
 /* Like YYERROR except do call yyerror.  This remains here temporarily
    to ease the transition to the new meaning of YYERROR, for GCC.
    Once GCC version 2 has supplanted version 1, this can go.  */
 
-#define YYFAIL        goto yyerrlab
+#define YYFAIL		goto yyerrlab
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
-#define YYBACKUP(Token, Value)                    \
-do                                \
-  if (yychar == YYEMPTY && yylen == 1)                \
-    {                                \
-      yychar = (Token);                        \
-      yylval = (Value);                        \
-      yytoken = YYTRANSLATE (yychar);                \
-      YYPOPSTACK (1);                        \
-      goto yybackup;                        \
-    }                                \
-  else                                \
-    {                                \
+#define YYBACKUP(Token, Value)					\
+do								\
+  if (yychar == YYEMPTY && yylen == 1)				\
+    {								\
+      yychar = (Token);						\
+      yylval = (Value);						\
+      yytoken = YYTRANSLATE (yychar);				\
+      YYPOPSTACK (1);						\
+      goto yybackup;						\
+    }								\
+  else								\
+    {								\
       yyerror (YY_("syntax error: cannot back up")); \
-      YYERROR;                            \
-    }                                \
+      YYERROR;							\
+    }								\
 while (YYID (0))
 
 
-#define YYTERROR    1
-#define YYERRCODE    256
+#define YYTERROR	1
+#define YYERRCODE	256
 
 
 /* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
@@ -737,22 +737,22 @@ while (YYID (0))
 
 #define YYRHSLOC(Rhs, K) ((Rhs)[K])
 #ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)                \
-    do                                    \
+# define YYLLOC_DEFAULT(Current, Rhs, N)				\
+    do									\
       if (YYID (N))                                                    \
-    {                                \
-      (Current).first_line   = YYRHSLOC (Rhs, 1).first_line;    \
-      (Current).first_column = YYRHSLOC (Rhs, 1).first_column;    \
-      (Current).last_line    = YYRHSLOC (Rhs, N).last_line;        \
-      (Current).last_column  = YYRHSLOC (Rhs, N).last_column;    \
-    }                                \
-      else                                \
-    {                                \
-      (Current).first_line   = (Current).last_line   =        \
-        YYRHSLOC (Rhs, 0).last_line;                \
-      (Current).first_column = (Current).last_column =        \
-        YYRHSLOC (Rhs, 0).last_column;                \
-    }                                \
+	{								\
+	  (Current).first_line   = YYRHSLOC (Rhs, 1).first_line;	\
+	  (Current).first_column = YYRHSLOC (Rhs, 1).first_column;	\
+	  (Current).last_line    = YYRHSLOC (Rhs, N).last_line;		\
+	  (Current).last_column  = YYRHSLOC (Rhs, N).last_column;	\
+	}								\
+      else								\
+	{								\
+	  (Current).first_line   = (Current).last_line   =		\
+	    YYRHSLOC (Rhs, 0).last_line;				\
+	  (Current).first_column = (Current).last_column =		\
+	    YYRHSLOC (Rhs, 0).last_column;				\
+	}								\
     while (YYID (0))
 #endif
 
@@ -763,10 +763,10 @@ while (YYID (0))
 
 #ifndef YY_LOCATION_PRINT
 # if YYLTYPE_IS_TRIVIAL
-#  define YY_LOCATION_PRINT(File, Loc)            \
-     fprintf (File, "%d.%d-%d.%d",            \
-          (Loc).first_line, (Loc).first_column,    \
-          (Loc).last_line,  (Loc).last_column)
+#  define YY_LOCATION_PRINT(File, Loc)			\
+     fprintf (File, "%d.%d-%d.%d",			\
+	      (Loc).first_line, (Loc).first_column,	\
+	      (Loc).last_line,  (Loc).last_column)
 # else
 #  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
 # endif
@@ -789,21 +789,21 @@ while (YYID (0))
 #  define YYFPRINTF fprintf
 # endif
 
-# define YYDPRINTF(Args)            \
-do {                        \
-  if (yydebug)                    \
-    YYFPRINTF Args;                \
+# define YYDPRINTF(Args)			\
+do {						\
+  if (yydebug)					\
+    YYFPRINTF Args;				\
 } while (YYID (0))
 
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)              \
-do {                                      \
-  if (yydebug)                                  \
-    {                                      \
-      YYFPRINTF (stderr, "%s ", Title);                      \
-      yy_symbol_print (stderr,                          \
-          Type, Value); \
-      YYFPRINTF (stderr, "\n");                          \
-    }                                      \
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location)			  \
+do {									  \
+  if (yydebug)								  \
+    {									  \
+      YYFPRINTF (stderr, "%s ", Title);					  \
+      yy_symbol_print (stderr,						  \
+		  Type, Value); \
+      YYFPRINTF (stderr, "\n");						  \
+    }									  \
 } while (YYID (0))
 
 
@@ -835,7 +835,7 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep)
   switch (yytype)
     {
       default:
-    break;
+	break;
     }
 }
 
@@ -890,10 +890,10 @@ yy_stack_print (yybottom, yytop)
   YYFPRINTF (stderr, "\n");
 }
 
-# define YY_STACK_PRINT(Bottom, Top)                \
-do {                                \
-  if (yydebug)                            \
-    yy_stack_print ((Bottom), (Top));                \
+# define YY_STACK_PRINT(Bottom, Top)				\
+do {								\
+  if (yydebug)							\
+    yy_stack_print ((Bottom), (Top));				\
 } while (YYID (0))
 
 
@@ -916,21 +916,21 @@ yy_reduce_print (yyvsp, yyrule)
   int yyi;
   unsigned long int yylno = yyrline[yyrule];
   YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
-         yyrule - 1, yylno);
+	     yyrule - 1, yylno);
   /* The symbols being reduced.  */
   for (yyi = 0; yyi < yynrhs; yyi++)
     {
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr, yyrhs[yyprhs[yyrule] + yyi],
-               &(yyvsp[(yyi + 1) - (yynrhs)])
-                              );
+		       &(yyvsp[(yyi + 1) - (yynrhs)])
+		       		       );
       YYFPRINTF (stderr, "\n");
     }
 }
 
-# define YY_REDUCE_PRINT(Rule)        \
-do {                    \
-  if (yydebug)                \
+# define YY_REDUCE_PRINT(Rule)		\
+do {					\
+  if (yydebug)				\
     yy_reduce_print (yyvsp, Rule); \
 } while (YYID (0))
 
@@ -946,7 +946,7 @@ int yydebug;
 
 
 /* YYINITDEPTH -- initial size of the parser's stacks.  */
-#ifndef    YYINITDEPTH
+#ifndef	YYINITDEPTH
 # define YYINITDEPTH 200
 #endif
 
@@ -1033,27 +1033,27 @@ yytnamerr (char *yyres, const char *yystr)
       char const *yyp = yystr;
 
       for (;;)
-    switch (*++yyp)
-      {
-      case '\'':
-      case ',':
-        goto do_not_strip_quotes;
+	switch (*++yyp)
+	  {
+	  case '\'':
+	  case ',':
+	    goto do_not_strip_quotes;
 
-      case '\\':
-        if (*++yyp != '\\')
-          goto do_not_strip_quotes;
-        /* Fall through.  */
-      default:
-        if (yyres)
-          yyres[yyn] = *yyp;
-        yyn++;
-        break;
+	  case '\\':
+	    if (*++yyp != '\\')
+	      goto do_not_strip_quotes;
+	    /* Fall through.  */
+	  default:
+	    if (yyres)
+	      yyres[yyn] = *yyp;
+	    yyn++;
+	    break;
 
-      case '"':
-        if (yyres)
-          yyres[yyn] = '\0';
-        return yyn;
-      }
+	  case '"':
+	    if (yyres)
+	      yyres[yyn] = '\0';
+	    return yyn;
+	  }
     do_not_strip_quotes: ;
     }
 
@@ -1091,7 +1091,7 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
 
 # if 0
       /* This is so xgettext sees the translatable formats that are
-     constructed on the fly.  */
+	 constructed on the fly.  */
       YY_("syntax error, unexpected %s");
       YY_("syntax error, unexpected %s, expecting %s");
       YY_("syntax error, unexpected %s, expecting %s or %s");
@@ -1104,13 +1104,13 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
       static char const yyexpecting[] = ", expecting %s";
       static char const yyor[] = " or %s";
       char yyformat[sizeof yyunexpected
-            + sizeof yyexpecting - 1
-            + ((YYERROR_VERBOSE_ARGS_MAXIMUM - 2)
-               * (sizeof yyor - 1))];
+		    + sizeof yyexpecting - 1
+		    + ((YYERROR_VERBOSE_ARGS_MAXIMUM - 2)
+		       * (sizeof yyor - 1))];
       char const *yyprefix = yyexpecting;
 
       /* Start YYX at -YYN if negative to avoid negative indexes in
-     YYCHECK.  */
+	 YYCHECK.  */
       int yyxbegin = yyn < 0 ? -yyn : 0;
 
       /* Stay within bounds of both yycheck and yytname.  */
@@ -1122,22 +1122,22 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
       yyfmt = yystpcpy (yyformat, yyunexpected);
 
       for (yyx = yyxbegin; yyx < yyxend; ++yyx)
-    if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR)
-      {
-        if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
-          {
-        yycount = 1;
-        yysize = yysize0;
-        yyformat[sizeof yyunexpected - 1] = '\0';
-        break;
-          }
-        yyarg[yycount++] = yytname[yyx];
-        yysize1 = yysize + yytnamerr (0, yytname[yyx]);
-        yysize_overflow |= (yysize1 < yysize);
-        yysize = yysize1;
-        yyfmt = yystpcpy (yyfmt, yyprefix);
-        yyprefix = yyor;
-      }
+	if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR)
+	  {
+	    if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
+	      {
+		yycount = 1;
+		yysize = yysize0;
+		yyformat[sizeof yyunexpected - 1] = '\0';
+		break;
+	      }
+	    yyarg[yycount++] = yytname[yyx];
+	    yysize1 = yysize + yytnamerr (0, yytname[yyx]);
+	    yysize_overflow |= (yysize1 < yysize);
+	    yysize = yysize1;
+	    yyfmt = yystpcpy (yyfmt, yyprefix);
+	    yyprefix = yyor;
+	  }
 
       yyf = YY_(yyformat);
       yysize1 = yysize + yystrlen (yyf);
@@ -1145,29 +1145,29 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
       yysize = yysize1;
 
       if (yysize_overflow)
-    return YYSIZE_MAXIMUM;
+	return YYSIZE_MAXIMUM;
 
       if (yyresult)
-    {
-      /* Avoid sprintf, as that infringes on the user's name space.
-         Don't have undefined behavior even if the translation
-         produced a string with the wrong number of "%s"s.  */
-      char *yyp = yyresult;
-      int yyi = 0;
-      while ((*yyp = *yyf) != '\0')
-        {
-          if (*yyp == '%' && yyf[1] == 's' && yyi < yycount)
-        {
-          yyp += yytnamerr (yyp, yyarg[yyi++]);
-          yyf += 2;
-        }
-          else
-        {
-          yyp++;
-          yyf++;
-        }
-        }
-    }
+	{
+	  /* Avoid sprintf, as that infringes on the user's name space.
+	     Don't have undefined behavior even if the translation
+	     produced a string with the wrong number of "%s"s.  */
+	  char *yyp = yyresult;
+	  int yyi = 0;
+	  while ((*yyp = *yyf) != '\0')
+	    {
+	      if (*yyp == '%' && yyf[1] == 's' && yyi < yycount)
+		{
+		  yyp += yytnamerr (yyp, yyarg[yyi++]);
+		  yyf += 2;
+		}
+	      else
+		{
+		  yyp++;
+		  yyf++;
+		}
+	    }
+	}
       return yysize;
     }
 }
@@ -1201,7 +1201,7 @@ yydestruct (yymsg, yytype, yyvaluep)
     {
 
       default:
-    break;
+	break;
     }
 }
 
@@ -1343,23 +1343,23 @@ yyparse ()
 
 #ifdef yyoverflow
       {
-    /* Give user a chance to reallocate the stack.  Use copies of
-       these so that the &'s don't force the real ones into
-       memory.  */
-    YYSTYPE *yyvs1 = yyvs;
-    yytype_int16 *yyss1 = yyss;
+	/* Give user a chance to reallocate the stack.  Use copies of
+	   these so that the &'s don't force the real ones into
+	   memory.  */
+	YYSTYPE *yyvs1 = yyvs;
+	yytype_int16 *yyss1 = yyss;
 
-    /* Each stack pointer address is followed by the size of the
-       data in use in that stack, in bytes.  This used to be a
-       conditional around just the two extra args, but that might
-       be undefined if yyoverflow is a macro.  */
-    yyoverflow (YY_("memory exhausted"),
-            &yyss1, yysize * sizeof (*yyssp),
-            &yyvs1, yysize * sizeof (*yyvsp),
-            &yystacksize);
+	/* Each stack pointer address is followed by the size of the
+	   data in use in that stack, in bytes.  This used to be a
+	   conditional around just the two extra args, but that might
+	   be undefined if yyoverflow is a macro.  */
+	yyoverflow (YY_("memory exhausted"),
+		    &yyss1, yysize * sizeof (*yyssp),
+		    &yyvs1, yysize * sizeof (*yyvsp),
+		    &yystacksize);
 
-    yyss = yyss1;
-    yyvs = yyvs1;
+	yyss = yyss1;
+	yyvs = yyvs1;
       }
 #else /* no yyoverflow */
 # ifndef YYSTACK_RELOCATE
@@ -1367,22 +1367,22 @@ yyparse ()
 # else
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
-    goto yyexhaustedlab;
+	goto yyexhaustedlab;
       yystacksize *= 2;
       if (YYMAXDEPTH < yystacksize)
-    yystacksize = YYMAXDEPTH;
+	yystacksize = YYMAXDEPTH;
 
       {
-    yytype_int16 *yyss1 = yyss;
-    union yyalloc *yyptr =
-      (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
-    if (! yyptr)
-      goto yyexhaustedlab;
-    YYSTACK_RELOCATE (yyss_alloc, yyss);
-    YYSTACK_RELOCATE (yyvs_alloc, yyvs);
+	yytype_int16 *yyss1 = yyss;
+	union yyalloc *yyptr =
+	  (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
+	if (! yyptr)
+	  goto yyexhaustedlab;
+	YYSTACK_RELOCATE (yyss_alloc, yyss);
+	YYSTACK_RELOCATE (yyvs_alloc, yyvs);
 #  undef YYSTACK_RELOCATE
-    if (yyss1 != yyssa)
-      YYSTACK_FREE (yyss1);
+	if (yyss1 != yyssa)
+	  YYSTACK_FREE (yyss1);
       }
 # endif
 #endif /* no yyoverflow */
@@ -1391,10 +1391,10 @@ yyparse ()
       yyvsp = yyvs + yysize - 1;
 
       YYDPRINTF ((stderr, "Stack size increased to %lu\n",
-          (unsigned long int) yystacksize));
+		  (unsigned long int) yystacksize));
 
       if (yyss + yystacksize - 1 <= yyssp)
-    YYABORT;
+	YYABORT;
     }
 
   YYDPRINTF ((stderr, "Entering state %d\n", yystate));
@@ -1446,7 +1446,7 @@ yybackup:
   if (yyn <= 0)
     {
       if (yyn == 0 || yyn == YYTABLE_NINF)
-    goto yyerrlab;
+	goto yyerrlab;
       yyn = -yyn;
       goto yyreduce;
     }
@@ -1504,8 +1504,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 84 "dgn_comp.y"
     {
-            output_dgn();
-          ;}
+			output_dgn();
+		  ;}
     break;
 
   case 10:
@@ -1513,14 +1513,14 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 100 "dgn_comp.y"
     {
-            init_dungeon();
-            Strcpy(tmpdungeon[n_dgns].name, (yyvsp[(3) - (6)].str));
-            tmpdungeon[n_dgns].boneschar = (char)(yyvsp[(4) - (6)].i);
-            tmpdungeon[n_dgns].lev.base = couple.base;
-            tmpdungeon[n_dgns].lev.rand = couple.rand;
-            tmpdungeon[n_dgns].chance = (yyvsp[(6) - (6)].i);
-            Free((yyvsp[(3) - (6)].str));
-          ;}
+			init_dungeon();
+			Strcpy(tmpdungeon[n_dgns].name, (yyvsp[(3) - (6)].str));
+			tmpdungeon[n_dgns].boneschar = (char)(yyvsp[(4) - (6)].i);
+			tmpdungeon[n_dgns].lev.base = couple.base;
+			tmpdungeon[n_dgns].lev.rand = couple.rand;
+			tmpdungeon[n_dgns].chance = (yyvsp[(6) - (6)].i);
+			Free((yyvsp[(3) - (6)].str));
+		  ;}
     break;
 
   case 11:
@@ -1528,8 +1528,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 112 "dgn_comp.y"
     {
-            (yyval.i) = 0;
-          ;}
+			(yyval.i) = 0;
+		  ;}
     break;
 
   case 12:
@@ -1537,8 +1537,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 116 "dgn_comp.y"
     {
-            (yyval.i) = (yyvsp[(1) - (1)].i);
-          ;}
+			(yyval.i) = (yyvsp[(1) - (1)].i);
+		  ;}
     break;
 
   case 16:
@@ -1546,8 +1546,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 127 "dgn_comp.y"
     {
-            tmpdungeon[n_dgns].entry_lev = (yyvsp[(3) - (3)].i);
-          ;}
+			tmpdungeon[n_dgns].entry_lev = (yyvsp[(3) - (3)].i);
+		  ;}
     break;
 
   case 18:
@@ -1555,11 +1555,11 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 136 "dgn_comp.y"
     {
-            if((yyvsp[(3) - (3)].i) <= TOWN || (yyvsp[(3) - (3)].i) >= D_ALIGN_CHAOTIC)
-                yyerror("Illegal description - ignoring!");
-            else
-                tmpdungeon[n_dgns].flags |= (yyvsp[(3) - (3)].i) ;
-          ;}
+			if((yyvsp[(3) - (3)].i) <= TOWN || (yyvsp[(3) - (3)].i) >= D_ALIGN_CHAOTIC)
+			    yyerror("Illegal description - ignoring!");
+			else
+			    tmpdungeon[n_dgns].flags |= (yyvsp[(3) - (3)].i) ;
+		  ;}
     break;
 
   case 19:
@@ -1567,11 +1567,11 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 143 "dgn_comp.y"
     {
-            if((yyvsp[(3) - (3)].i) && (yyvsp[(3) - (3)].i) < D_ALIGN_CHAOTIC)
-                yyerror("Illegal alignment - ignoring!");
-            else
-                tmpdungeon[n_dgns].flags |= (yyvsp[(3) - (3)].i) ;
-          ;}
+			if((yyvsp[(3) - (3)].i) && (yyvsp[(3) - (3)].i) < D_ALIGN_CHAOTIC)
+			    yyerror("Illegal alignment - ignoring!");
+			else
+			    tmpdungeon[n_dgns].flags |= (yyvsp[(3) - (3)].i) ;
+		  ;}
     break;
 
   case 20:
@@ -1579,14 +1579,14 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 150 "dgn_comp.y"
     {
-            if((yyvsp[(3) - (3)].i) && ((yyvsp[(3) - (3)].i) < 0 || (yyvsp[(3) - (3)].i) >= MAX_CMAP_TYPES))
-                yyerror("Illegal tileset - ignoring!");
-            else
-            {
-                tmpdungeon[n_dgns].has_tileset = 1;
-                tmpdungeon[n_dgns].tileset = (yyvsp[(3) - (3)].i) ;
-            }
-          ;}
+			if((yyvsp[(3) - (3)].i) && ((yyvsp[(3) - (3)].i) < 0 || (yyvsp[(3) - (3)].i) >= MAX_CMAP_TYPES))
+			    yyerror("Illegal tileset - ignoring!");
+			else
+			{
+			    tmpdungeon[n_dgns].has_tileset = 1;
+			    tmpdungeon[n_dgns].tileset = (yyvsp[(3) - (3)].i) ;
+			}
+		  ;}
     break;
 
   case 21:
@@ -1594,9 +1594,9 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 162 "dgn_comp.y"
     {
-            Strcpy(tmpdungeon[n_dgns].protoname, (yyvsp[(3) - (3)].str));
-            Free((yyvsp[(3) - (3)].str));
-          ;}
+			Strcpy(tmpdungeon[n_dgns].protoname, (yyvsp[(3) - (3)].str));
+			Free((yyvsp[(3) - (3)].str));
+		  ;}
     break;
 
   case 27:
@@ -1604,16 +1604,16 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 176 "dgn_comp.y"
     {
-            init_level();
-            Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (7)].str));
-            Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (7)].str));
-            tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (7)].i);
-            tmplevel[n_levs].lev.base = couple.base;
-            tmplevel[n_levs].lev.rand = couple.rand;
-            tmpdungeon[n_dgns].levels++;
-            Free((yyvsp[(3) - (7)].str));
-            Free((yyvsp[(4) - (7)].str));
-          ;}
+			init_level();
+			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (7)].str));
+			Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (7)].str));
+			tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (7)].i);
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmpdungeon[n_dgns].levels++;
+			Free((yyvsp[(3) - (7)].str));
+			Free((yyvsp[(4) - (7)].str));
+		  ;}
     break;
 
   case 28:
@@ -1621,17 +1621,17 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 188 "dgn_comp.y"
     {
-            init_level();
-            Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (8)].str));
-            Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (8)].str));
-            tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (8)].i);
-            tmplevel[n_levs].lev.base = couple.base;
-            tmplevel[n_levs].lev.rand = couple.rand;
-            tmplevel[n_levs].rndlevs = (yyvsp[(8) - (8)].i);
-            tmpdungeon[n_dgns].levels++;
-            Free((yyvsp[(3) - (8)].str));
-            Free((yyvsp[(4) - (8)].str));
-          ;}
+			init_level();
+			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (8)].str));
+			Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (8)].str));
+			tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (8)].i);
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].rndlevs = (yyvsp[(8) - (8)].i);
+			tmpdungeon[n_dgns].levels++;
+			Free((yyvsp[(3) - (8)].str));
+			Free((yyvsp[(4) - (8)].str));
+		  ;}
     break;
 
   case 29:
@@ -1639,17 +1639,17 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 203 "dgn_comp.y"
     {
-            init_level();
-            Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (8)].str));
-            Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (8)].str));
-            tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (8)].i);
-            tmplevel[n_levs].lev.base = couple.base;
-            tmplevel[n_levs].lev.rand = couple.rand;
-            tmplevel[n_levs].chance = (yyvsp[(8) - (8)].i);
-            tmpdungeon[n_dgns].levels++;
-            Free((yyvsp[(3) - (8)].str));
-            Free((yyvsp[(4) - (8)].str));
-          ;}
+			init_level();
+			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (8)].str));
+			Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (8)].str));
+			tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (8)].i);
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = (yyvsp[(8) - (8)].i);
+			tmpdungeon[n_dgns].levels++;
+			Free((yyvsp[(3) - (8)].str));
+			Free((yyvsp[(4) - (8)].str));
+		  ;}
     break;
 
   case 30:
@@ -1657,18 +1657,18 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 216 "dgn_comp.y"
     {
-            init_level();
-            Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (9)].str));
-            Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (9)].str));
-            tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (9)].i);
-            tmplevel[n_levs].lev.base = couple.base;
-            tmplevel[n_levs].lev.rand = couple.rand;
-            tmplevel[n_levs].chance = (yyvsp[(8) - (9)].i);
-            tmplevel[n_levs].rndlevs = (yyvsp[(9) - (9)].i);
-            tmpdungeon[n_dgns].levels++;
-            Free((yyvsp[(3) - (9)].str));
-            Free((yyvsp[(4) - (9)].str));
-          ;}
+			init_level();
+			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (9)].str));
+			Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (9)].str));
+			tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (9)].i);
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = (yyvsp[(8) - (9)].i);
+			tmplevel[n_levs].rndlevs = (yyvsp[(9) - (9)].i);
+			tmpdungeon[n_dgns].levels++;
+			Free((yyvsp[(3) - (9)].str));
+			Free((yyvsp[(4) - (9)].str));
+		  ;}
     break;
 
   case 31:
@@ -1676,11 +1676,11 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 232 "dgn_comp.y"
     {
-            if((yyvsp[(3) - (3)].i) >= D_ALIGN_CHAOTIC)
-                yyerror("Illegal description - ignoring!");
-            else
-                tmplevel[n_levs].flags |= (yyvsp[(3) - (3)].i) ;
-          ;}
+			if((yyvsp[(3) - (3)].i) >= D_ALIGN_CHAOTIC)
+			    yyerror("Illegal description - ignoring!");
+			else
+			    tmplevel[n_levs].flags |= (yyvsp[(3) - (3)].i) ;
+		  ;}
     break;
 
   case 32:
@@ -1688,11 +1688,11 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 239 "dgn_comp.y"
     {
-            if((yyvsp[(3) - (3)].i) && (yyvsp[(3) - (3)].i) < D_ALIGN_CHAOTIC)
-                yyerror("Illegal alignment - ignoring!");
-            else
-                tmplevel[n_levs].flags |= (yyvsp[(3) - (3)].i) ;
-          ;}
+			if((yyvsp[(3) - (3)].i) && (yyvsp[(3) - (3)].i) < D_ALIGN_CHAOTIC)
+			    yyerror("Illegal alignment - ignoring!");
+			else
+			    tmplevel[n_levs].flags |= (yyvsp[(3) - (3)].i) ;
+		  ;}
     break;
 
   case 33:
@@ -1700,19 +1700,19 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 248 "dgn_comp.y"
     {
-            init_level();
-            Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (8)].str));
-            Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (8)].str));
-            tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (8)].i);
-            tmplevel[n_levs].chain = getchain((yyvsp[(6) - (8)].str));
-            tmplevel[n_levs].lev.base = couple.base;
-            tmplevel[n_levs].lev.rand = couple.rand;
-            if(!check_level()) n_levs--;
-            else tmpdungeon[n_dgns].levels++;
-            Free((yyvsp[(3) - (8)].str));
-            Free((yyvsp[(4) - (8)].str));
-            Free((yyvsp[(6) - (8)].str));
-          ;}
+			init_level();
+			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (8)].str));
+			Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (8)].str));
+			tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (8)].i);
+			tmplevel[n_levs].chain = getchain((yyvsp[(6) - (8)].str));
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			if(!check_level()) n_levs--;
+			else tmpdungeon[n_dgns].levels++;
+			Free((yyvsp[(3) - (8)].str));
+			Free((yyvsp[(4) - (8)].str));
+			Free((yyvsp[(6) - (8)].str));
+		  ;}
     break;
 
   case 34:
@@ -1720,20 +1720,20 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 263 "dgn_comp.y"
     {
-            init_level();
-            Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (9)].str));
-            Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (9)].str));
-            tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (9)].i);
-            tmplevel[n_levs].chain = getchain((yyvsp[(6) - (9)].str));
-            tmplevel[n_levs].lev.base = couple.base;
-            tmplevel[n_levs].lev.rand = couple.rand;
-            tmplevel[n_levs].rndlevs = (yyvsp[(9) - (9)].i);
-            if(!check_level()) n_levs--;
-            else tmpdungeon[n_dgns].levels++;
-            Free((yyvsp[(3) - (9)].str));
-            Free((yyvsp[(4) - (9)].str));
-            Free((yyvsp[(6) - (9)].str));
-          ;}
+			init_level();
+			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (9)].str));
+			Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (9)].str));
+			tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (9)].i);
+			tmplevel[n_levs].chain = getchain((yyvsp[(6) - (9)].str));
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].rndlevs = (yyvsp[(9) - (9)].i);
+			if(!check_level()) n_levs--;
+			else tmpdungeon[n_dgns].levels++;
+			Free((yyvsp[(3) - (9)].str));
+			Free((yyvsp[(4) - (9)].str));
+			Free((yyvsp[(6) - (9)].str));
+		  ;}
     break;
 
   case 35:
@@ -1741,20 +1741,20 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 281 "dgn_comp.y"
     {
-            init_level();
-            Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (9)].str));
-            Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (9)].str));
-            tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (9)].i);
-            tmplevel[n_levs].chain = getchain((yyvsp[(6) - (9)].str));
-            tmplevel[n_levs].lev.base = couple.base;
-            tmplevel[n_levs].lev.rand = couple.rand;
-            tmplevel[n_levs].chance = (yyvsp[(9) - (9)].i);
-            if(!check_level()) n_levs--;
-            else tmpdungeon[n_dgns].levels++;
-            Free((yyvsp[(3) - (9)].str));
-            Free((yyvsp[(4) - (9)].str));
-            Free((yyvsp[(6) - (9)].str));
-          ;}
+			init_level();
+			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (9)].str));
+			Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (9)].str));
+			tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (9)].i);
+			tmplevel[n_levs].chain = getchain((yyvsp[(6) - (9)].str));
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = (yyvsp[(9) - (9)].i);
+			if(!check_level()) n_levs--;
+			else tmpdungeon[n_dgns].levels++;
+			Free((yyvsp[(3) - (9)].str));
+			Free((yyvsp[(4) - (9)].str));
+			Free((yyvsp[(6) - (9)].str));
+		  ;}
     break;
 
   case 36:
@@ -1762,21 +1762,21 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 297 "dgn_comp.y"
     {
-            init_level();
-            Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (10)].str));
-            Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (10)].str));
-            tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (10)].i);
-            tmplevel[n_levs].chain = getchain((yyvsp[(6) - (10)].str));
-            tmplevel[n_levs].lev.base = couple.base;
-            tmplevel[n_levs].lev.rand = couple.rand;
-            tmplevel[n_levs].chance = (yyvsp[(9) - (10)].i);
-            tmplevel[n_levs].rndlevs = (yyvsp[(10) - (10)].i);
-            if(!check_level()) n_levs--;
-            else tmpdungeon[n_dgns].levels++;
-            Free((yyvsp[(3) - (10)].str));
-            Free((yyvsp[(4) - (10)].str));
-            Free((yyvsp[(6) - (10)].str));
-          ;}
+			init_level();
+			Strcpy(tmplevel[n_levs].name, (yyvsp[(3) - (10)].str));
+			Strcpy(tmplevel[n_levs].protoname, (yyvsp[(4) - (10)].str));
+			tmplevel[n_levs].boneschar = (char)(yyvsp[(5) - (10)].i);
+			tmplevel[n_levs].chain = getchain((yyvsp[(6) - (10)].str));
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = (yyvsp[(9) - (10)].i);
+			tmplevel[n_levs].rndlevs = (yyvsp[(10) - (10)].i);
+			if(!check_level()) n_levs--;
+			else tmpdungeon[n_dgns].levels++;
+			Free((yyvsp[(3) - (10)].str));
+			Free((yyvsp[(4) - (10)].str));
+			Free((yyvsp[(6) - (10)].str));
+		  ;}
     break;
 
   case 39:
@@ -1784,16 +1784,16 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 320 "dgn_comp.y"
     {
-            init_branch();
-            Strcpy(tmpbranch[n_brs].name, (yyvsp[(3) - (7)].str));
-            tmpbranch[n_brs].lev.base = couple.base;
-            tmpbranch[n_brs].lev.rand = couple.rand;
-            tmpbranch[n_brs].type = (yyvsp[(6) - (7)].i);
-            tmpbranch[n_brs].up = (yyvsp[(7) - (7)].i);
-            if(!check_branch()) n_brs--;
-            else tmpdungeon[n_dgns].branches++;
-            Free((yyvsp[(3) - (7)].str));
-          ;}
+			init_branch();
+			Strcpy(tmpbranch[n_brs].name, (yyvsp[(3) - (7)].str));
+			tmpbranch[n_brs].lev.base = couple.base;
+			tmpbranch[n_brs].lev.rand = couple.rand;
+			tmpbranch[n_brs].type = (yyvsp[(6) - (7)].i);
+			tmpbranch[n_brs].up = (yyvsp[(7) - (7)].i);
+			if(!check_branch()) n_brs--;
+			else tmpdungeon[n_dgns].branches++;
+			Free((yyvsp[(3) - (7)].str));
+		  ;}
     break;
 
   case 40:
@@ -1801,18 +1801,18 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 334 "dgn_comp.y"
     {
-            init_branch();
-            Strcpy(tmpbranch[n_brs].name, (yyvsp[(3) - (8)].str));
-            tmpbranch[n_brs].chain = getchain((yyvsp[(4) - (8)].str));
-            tmpbranch[n_brs].lev.base = couple.base;
-            tmpbranch[n_brs].lev.rand = couple.rand;
-            tmpbranch[n_brs].type = (yyvsp[(7) - (8)].i);
-            tmpbranch[n_brs].up = (yyvsp[(8) - (8)].i);
-            if(!check_branch()) n_brs--;
-            else tmpdungeon[n_dgns].branches++;
-            Free((yyvsp[(3) - (8)].str));
-            Free((yyvsp[(4) - (8)].str));
-          ;}
+			init_branch();
+			Strcpy(tmpbranch[n_brs].name, (yyvsp[(3) - (8)].str));
+			tmpbranch[n_brs].chain = getchain((yyvsp[(4) - (8)].str));
+			tmpbranch[n_brs].lev.base = couple.base;
+			tmpbranch[n_brs].lev.rand = couple.rand;
+			tmpbranch[n_brs].type = (yyvsp[(7) - (8)].i);
+			tmpbranch[n_brs].up = (yyvsp[(8) - (8)].i);
+			if(!check_branch()) n_brs--;
+			else tmpdungeon[n_dgns].branches++;
+			Free((yyvsp[(3) - (8)].str));
+			Free((yyvsp[(4) - (8)].str));
+		  ;}
     break;
 
   case 41:
@@ -1820,8 +1820,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 350 "dgn_comp.y"
     {
-            (yyval.i) = TBR_STAIR;    /* two way stair */
-          ;}
+			(yyval.i) = TBR_STAIR;	/* two way stair */
+		  ;}
     break;
 
   case 42:
@@ -1829,8 +1829,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 354 "dgn_comp.y"
     {
-            (yyval.i) = TBR_STAIR;    /* two way stair */
-          ;}
+			(yyval.i) = TBR_STAIR;	/* two way stair */
+		  ;}
     break;
 
   case 43:
@@ -1838,8 +1838,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 358 "dgn_comp.y"
     {
-            (yyval.i) = TBR_NO_UP;    /* no up staircase */
-          ;}
+			(yyval.i) = TBR_NO_UP;	/* no up staircase */
+		  ;}
     break;
 
   case 44:
@@ -1847,8 +1847,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 362 "dgn_comp.y"
     {
-            (yyval.i) = TBR_NO_DOWN;    /* no down staircase */
-          ;}
+			(yyval.i) = TBR_NO_DOWN;	/* no down staircase */
+		  ;}
     break;
 
   case 45:
@@ -1856,8 +1856,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 366 "dgn_comp.y"
     {
-            (yyval.i) = TBR_PORTAL;    /* portal connection */
-          ;}
+			(yyval.i) = TBR_PORTAL;	/* portal connection */
+		  ;}
     break;
 
   case 46:
@@ -1865,8 +1865,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 372 "dgn_comp.y"
     {
-            (yyval.i) = 0;    /* defaults to down */
-          ;}
+			(yyval.i) = 0;	/* defaults to down */
+		  ;}
     break;
 
   case 47:
@@ -1874,8 +1874,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 376 "dgn_comp.y"
     {
-            (yyval.i) = (yyvsp[(1) - (1)].i);
-          ;}
+			(yyval.i) = (yyvsp[(1) - (1)].i);
+		  ;}
     break;
 
   case 48:
@@ -1883,15 +1883,15 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 382 "dgn_comp.y"
     {
-            char *p = (yyvsp[(1) - (1)].str);
-            if (strlen(p) != 1) {
-                if (strcmp(p, "none") != 0)
-           yyerror("Bones marker must be a single char, or \"none\"!");
-                *p = '\0';
-            }
-            (yyval.i) = *p;
-            Free(p);
-          ;}
+			char *p = (yyvsp[(1) - (1)].str);
+			if (strlen(p) != 1) {
+			    if (strcmp(p, "none") != 0)
+		   yyerror("Bones marker must be a single char, or \"none\"!");
+			    *p = '\0';
+			}
+			(yyval.i) = *p;
+			Free(p);
+		  ;}
     break;
 
   case 51:
@@ -1899,19 +1899,19 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 418 "dgn_comp.y"
     {
-            if ((yyvsp[(2) - (5)].i) < -MAXLEVEL || (yyvsp[(2) - (5)].i) > MAXLEVEL) {
-                yyerror("Abs base out of dlevel range - zeroing!");
-                couple.base = couple.rand = 0;
-            } else if ((yyvsp[(4) - (5)].i) < -1 ||
-                (((yyvsp[(2) - (5)].i) < 0) ? (MAXLEVEL + (yyvsp[(2) - (5)].i) + (yyvsp[(4) - (5)].i) + 1) > MAXLEVEL :
-                    ((yyvsp[(2) - (5)].i) + (yyvsp[(4) - (5)].i)) > MAXLEVEL)) {
-                yyerror("Abs range out of dlevel range - zeroing!");
-                couple.base = couple.rand = 0;
-            } else {
-                couple.base = (yyvsp[(2) - (5)].i);
-                couple.rand = (yyvsp[(4) - (5)].i);
-            }
-          ;}
+			if ((yyvsp[(2) - (5)].i) < -MAXLEVEL || (yyvsp[(2) - (5)].i) > MAXLEVEL) {
+			    yyerror("Abs base out of dlevel range - zeroing!");
+			    couple.base = couple.rand = 0;
+			} else if ((yyvsp[(4) - (5)].i) < -1 ||
+				(((yyvsp[(2) - (5)].i) < 0) ? (MAXLEVEL + (yyvsp[(2) - (5)].i) + (yyvsp[(4) - (5)].i) + 1) > MAXLEVEL :
+					((yyvsp[(2) - (5)].i) + (yyvsp[(4) - (5)].i)) > MAXLEVEL)) {
+			    yyerror("Abs range out of dlevel range - zeroing!");
+			    couple.base = couple.rand = 0;
+			} else {
+			    couple.base = (yyvsp[(2) - (5)].i);
+			    couple.rand = (yyvsp[(4) - (5)].i);
+			}
+		  ;}
     break;
 
   case 52:
@@ -1919,14 +1919,14 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 455 "dgn_comp.y"
     {
-            if ((yyvsp[(2) - (5)].i) < -MAXLEVEL || (yyvsp[(2) - (5)].i) > MAXLEVEL) {
-                yyerror("Rel base out of dlevel range - zeroing!");
-                couple.base = couple.rand = 0;
-            } else {
-                couple.base = (yyvsp[(2) - (5)].i);
-                couple.rand = (yyvsp[(4) - (5)].i);
-            }
-          ;}
+			if ((yyvsp[(2) - (5)].i) < -MAXLEVEL || (yyvsp[(2) - (5)].i) > MAXLEVEL) {
+			    yyerror("Rel base out of dlevel range - zeroing!");
+			    couple.base = couple.rand = 0;
+			} else {
+			    couple.base = (yyvsp[(2) - (5)].i);
+			    couple.rand = (yyvsp[(4) - (5)].i);
+			}
+		  ;}
     break;
 
 
@@ -1970,35 +1970,35 @@ yyerrlab:
       yyerror (YY_("syntax error"));
 #else
       {
-    YYSIZE_T yysize = yysyntax_error (0, yystate, yychar);
-    if (yymsg_alloc < yysize && yymsg_alloc < YYSTACK_ALLOC_MAXIMUM)
-      {
-        YYSIZE_T yyalloc = 2 * yysize;
-        if (! (yysize <= yyalloc && yyalloc <= YYSTACK_ALLOC_MAXIMUM))
-          yyalloc = YYSTACK_ALLOC_MAXIMUM;
-        if (yymsg != yymsgbuf)
-          YYSTACK_FREE (yymsg);
-        yymsg = (char *) YYSTACK_ALLOC (yyalloc);
-        if (yymsg)
-          yymsg_alloc = yyalloc;
-        else
-          {
-        yymsg = yymsgbuf;
-        yymsg_alloc = sizeof yymsgbuf;
-          }
-      }
+	YYSIZE_T yysize = yysyntax_error (0, yystate, yychar);
+	if (yymsg_alloc < yysize && yymsg_alloc < YYSTACK_ALLOC_MAXIMUM)
+	  {
+	    YYSIZE_T yyalloc = 2 * yysize;
+	    if (! (yysize <= yyalloc && yyalloc <= YYSTACK_ALLOC_MAXIMUM))
+	      yyalloc = YYSTACK_ALLOC_MAXIMUM;
+	    if (yymsg != yymsgbuf)
+	      YYSTACK_FREE (yymsg);
+	    yymsg = (char *) YYSTACK_ALLOC (yyalloc);
+	    if (yymsg)
+	      yymsg_alloc = yyalloc;
+	    else
+	      {
+		yymsg = yymsgbuf;
+		yymsg_alloc = sizeof yymsgbuf;
+	      }
+	  }
 
-    if (0 < yysize && yysize <= yymsg_alloc)
-      {
-        (void) yysyntax_error (yymsg, yystate, yychar);
-        yyerror (yymsg);
-      }
-    else
-      {
-        yyerror (YY_("syntax error"));
-        if (yysize != 0)
-          goto yyexhaustedlab;
-      }
+	if (0 < yysize && yysize <= yymsg_alloc)
+	  {
+	    (void) yysyntax_error (yymsg, yystate, yychar);
+	    yyerror (yymsg);
+	  }
+	else
+	  {
+	    yyerror (YY_("syntax error"));
+	    if (yysize != 0)
+	      goto yyexhaustedlab;
+	  }
       }
 #endif
     }
@@ -2008,20 +2008,20 @@ yyerrlab:
   if (yyerrstatus == 3)
     {
       /* If just tried and failed to reuse lookahead token after an
-     error, discard it.  */
+	 error, discard it.  */
 
       if (yychar <= YYEOF)
-    {
-      /* Return failure if at end of input.  */
-      if (yychar == YYEOF)
-        YYABORT;
-    }
+	{
+	  /* Return failure if at end of input.  */
+	  if (yychar == YYEOF)
+	    YYABORT;
+	}
       else
-    {
-      yydestruct ("Error: discarding",
-              yytoken, &yylval);
-      yychar = YYEMPTY;
-    }
+	{
+	  yydestruct ("Error: discarding",
+		      yytoken, &yylval);
+	  yychar = YYEMPTY;
+	}
     }
 
   /* Else will try to reuse lookahead token after shifting the error
@@ -2053,29 +2053,29 @@ yyerrorlab:
 | yyerrlab1 -- common code for both syntax error and YYERROR.  |
 `-------------------------------------------------------------*/
 yyerrlab1:
-  yyerrstatus = 3;    /* Each real token shifted decrements this.  */
+  yyerrstatus = 3;	/* Each real token shifted decrements this.  */
 
   for (;;)
     {
       yyn = yypact[yystate];
       if (yyn != YYPACT_NINF)
-    {
-      yyn += YYTERROR;
-      if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
-        {
-          yyn = yytable[yyn];
-          if (0 < yyn)
-        break;
-        }
-    }
+	{
+	  yyn += YYTERROR;
+	  if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
+	    {
+	      yyn = yytable[yyn];
+	      if (0 < yyn)
+		break;
+	    }
+	}
 
       /* Pop the current state because it cannot handle the error token.  */
       if (yyssp == yyss)
-    YYABORT;
+	YYABORT;
 
 
       yydestruct ("Error: popping",
-          yystos[yystate], yyvsp);
+		  yystos[yystate], yyvsp);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -2118,7 +2118,7 @@ yyexhaustedlab:
 yyreturn:
   if (yychar != YYEMPTY)
      yydestruct ("Cleanup: discarding lookahead",
-         yytoken, &yylval);
+		 yytoken, &yylval);
   /* Do not reclaim the symbols of the rule which action triggered
      this YYABORT or YYACCEPT.  */
   YYPOPSTACK (yylen);
@@ -2126,7 +2126,7 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-          yystos[*yyssp], yyvsp);
+		  yystos[*yyssp], yyvsp);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -2150,248 +2150,248 @@ yyreturn:
 void
 init_dungeon()
 {
-    if(++n_dgns > MAXDUNGEON) {
-        (void) fprintf(stderr, "FATAL - Too many dungeons (limit: %d).\n",
-            MAXDUNGEON);
-        (void) fprintf(stderr, "To increase the limit edit MAXDUNGEON in global.h\n");
-        exit(EXIT_FAILURE);
-    }
+	if(++n_dgns > MAXDUNGEON) {
+	    (void) fprintf(stderr, "FATAL - Too many dungeons (limit: %d).\n",
+		    MAXDUNGEON);
+	    (void) fprintf(stderr, "To increase the limit edit MAXDUNGEON in global.h\n");
+	    exit(EXIT_FAILURE);
+	}
 
-    in_dungeon = 1;
-    tmpdungeon[n_dgns].lev.base = 0;
-    tmpdungeon[n_dgns].lev.rand = 0;
-    tmpdungeon[n_dgns].chance = 100;
-    Strcpy(tmpdungeon[n_dgns].name, "");
-    Strcpy(tmpdungeon[n_dgns].protoname, "");
-    tmpdungeon[n_dgns].flags = 0;
-    tmpdungeon[n_dgns].levels = 0;
-    tmpdungeon[n_dgns].branches = 0;
-    tmpdungeon[n_dgns].entry_lev = 0;
-    tmpdungeon[n_dgns].has_tileset = 0;
-    tmpdungeon[n_dgns].tileset = 0;
+	in_dungeon = 1;
+	tmpdungeon[n_dgns].lev.base = 0;
+	tmpdungeon[n_dgns].lev.rand = 0;
+	tmpdungeon[n_dgns].chance = 100;
+	Strcpy(tmpdungeon[n_dgns].name, "");
+	Strcpy(tmpdungeon[n_dgns].protoname, "");
+	tmpdungeon[n_dgns].flags = 0;
+	tmpdungeon[n_dgns].levels = 0;
+	tmpdungeon[n_dgns].branches = 0;
+	tmpdungeon[n_dgns].entry_lev = 0;
+	tmpdungeon[n_dgns].has_tileset = 0;
+	tmpdungeon[n_dgns].tileset = 0;
 }
 
 void
 init_level()
 {
-    if(++n_levs > LEV_LIMIT) {
+	if(++n_levs > LEV_LIMIT) {
 
-        yyerror("FATAL - Too many special levels defined.");
-        exit(EXIT_FAILURE);
-    }
-    tmplevel[n_levs].lev.base = 0;
-    tmplevel[n_levs].lev.rand = 0;
-    tmplevel[n_levs].chance = 100;
-    tmplevel[n_levs].rndlevs = 0;
-    tmplevel[n_levs].flags = 0;
-    Strcpy(tmplevel[n_levs].name, "");
-    Strcpy(tmplevel[n_levs].protoname, "");
-    tmplevel[n_levs].chain = -1;
+		yyerror("FATAL - Too many special levels defined.");
+		exit(EXIT_FAILURE);
+	}
+	tmplevel[n_levs].lev.base = 0;
+	tmplevel[n_levs].lev.rand = 0;
+	tmplevel[n_levs].chance = 100;
+	tmplevel[n_levs].rndlevs = 0;
+	tmplevel[n_levs].flags = 0;
+	Strcpy(tmplevel[n_levs].name, "");
+	Strcpy(tmplevel[n_levs].protoname, "");
+	tmplevel[n_levs].chain = -1;
 }
 
 void
 init_branch()
 {
-    if(++n_brs > BRANCH_LIMIT) {
+	if(++n_brs > BRANCH_LIMIT) {
 
-        yyerror("FATAL - Too many special levels defined.");
-        exit(EXIT_FAILURE);
-    }
-    tmpbranch[n_brs].lev.base = 0;
-    tmpbranch[n_brs].lev.rand = 0;
-    Strcpy(tmpbranch[n_brs].name, "");
-    tmpbranch[n_brs].chain = -1;
+		yyerror("FATAL - Too many special levels defined.");
+		exit(EXIT_FAILURE);
+	}
+	tmpbranch[n_brs].lev.base = 0;
+	tmpbranch[n_brs].lev.rand = 0;
+	Strcpy(tmpbranch[n_brs].name, "");
+	tmpbranch[n_brs].chain = -1;
 }
 
 int
 getchain(s)
-    char    *s;
+	char	*s;
 {
-    int i;
+	int i;
 
-    if(strlen(s)) {
+	if(strlen(s)) {
 
-        for(i = n_levs - tmpdungeon[n_dgns].levels + 1; i <= n_levs; i++)
-        if(!strcmp(tmplevel[i].protoname, s)) return i;
+	    for(i = n_levs - tmpdungeon[n_dgns].levels + 1; i <= n_levs; i++)
+		if(!strcmp(tmplevel[i].protoname, s)) return i;
 
-        yyerror("Can't locate the specified chain level.");
-        return(-2);
-    }
-    return(-1);
+	    yyerror("Can't locate the specified chain level.");
+	    return(-2);
+	}
+	return(-1);
 }
 
 /*
- *    Consistancy checking routines:
+ *	Consistancy checking routines:
  *
- *    - A dungeon must have a unique name.
- *    - A dungeon must have a originating "branch" command
- *      (except, of course, for the first dungeon).
- *    - A dungeon must have a proper depth (at least (1, 0)).
+ *	- A dungeon must have a unique name.
+ *	- A dungeon must have a originating "branch" command
+ *	  (except, of course, for the first dungeon).
+ *	- A dungeon must have a proper depth (at least (1, 0)).
  */
 
 int
 check_dungeon()
 {
-    int i;
+	int i;
 
-    for(i = 0; i < n_dgns; i++)
-        if(!strcmp(tmpdungeon[i].name, tmpdungeon[n_dgns].name)) {
-        yyerror("Duplicate dungeon name.");
-        return(0);
-        }
+	for(i = 0; i < n_dgns; i++)
+	    if(!strcmp(tmpdungeon[i].name, tmpdungeon[n_dgns].name)) {
+		yyerror("Duplicate dungeon name.");
+		return(0);
+	    }
 
-    if(n_dgns)
-      for(i = 0; i < n_brs - tmpdungeon[n_dgns].branches; i++) {
-        if(!strcmp(tmpbranch[i].name, tmpdungeon[n_dgns].name)) break;
+	if(n_dgns)
+	  for(i = 0; i < n_brs - tmpdungeon[n_dgns].branches; i++) {
+	    if(!strcmp(tmpbranch[i].name, tmpdungeon[n_dgns].name)) break;
 
-        if(i >= n_brs - tmpdungeon[n_dgns].branches) {
-        yyerror("Dungeon cannot be reached.");
-        return(0);
-        }
-      }
+	    if(i >= n_brs - tmpdungeon[n_dgns].branches) {
+		yyerror("Dungeon cannot be reached.");
+		return(0);
+	    }
+	  }
 
-    if(tmpdungeon[n_dgns].lev.base <= 0 ||
-       tmpdungeon[n_dgns].lev.rand < 0) {
-        yyerror("Invalid dungeon depth specified.");
-        return(0);
-    }
-    return(1);    /* OK */
+	if(tmpdungeon[n_dgns].lev.base <= 0 ||
+	   tmpdungeon[n_dgns].lev.rand < 0) {
+		yyerror("Invalid dungeon depth specified.");
+		return(0);
+	}
+	return(1);	/* OK */
 }
 
 /*
- *    - A level must have a unique level name.
- *    - If chained, the level used as reference for the chain
- *      must be in this dungeon, must be previously defined, and
- *      the level chained from must be "non-probabilistic" (ie.
- *      have a 100% chance of existing).
+ *	- A level must have a unique level name.
+ *	- If chained, the level used as reference for the chain
+ *	  must be in this dungeon, must be previously defined, and
+ *	  the level chained from must be "non-probabilistic" (ie.
+ *	  have a 100% chance of existing).
  */
 
 int
 check_level()
 {
-    int i;
+	int i;
 
-    if(!in_dungeon) {
-        yyerror("Level defined outside of dungeon.");
-        return(0);
-    }
+	if(!in_dungeon) {
+		yyerror("Level defined outside of dungeon.");
+		return(0);
+	}
 
-    for(i = 0; i < n_levs; i++)
-        if(!strcmp(tmplevel[i].protoname, tmplevel[n_levs].protoname)) {
-        yyerror("Duplicate level protoname.");
-        return(0);
-        }
+	for(i = 0; i < n_levs; i++)
+	    if(!strcmp(tmplevel[i].protoname, tmplevel[n_levs].protoname)) {
+		yyerror("Duplicate level protoname.");
+		return(0);
+	    }
 
-    if(tmplevel[i].chain == -2) {
-        yyerror("Invaild level chain reference.");
-        return(0);
-    } else if(tmplevel[i].chain != -1) {    /* there is a chain */
-        /* KMH -- tmplevel[tmpbranch[i].chain].chance was in error */
-        if(tmplevel[tmplevel[i].chain].chance != 100) {
-        yyerror("Level cannot chain from a probabilistic level.");
-        return(0);
-        } else if(tmplevel[i].chain == n_levs) {
-        yyerror("A level cannot chain to itself!");
-        return(0);
-        }
-    }
-    return(1);    /* OK */
+	if(tmplevel[i].chain == -2) {
+		yyerror("Invaild level chain reference.");
+		return(0);
+	} else if(tmplevel[i].chain != -1) {	/* there is a chain */
+	    /* KMH -- tmplevel[tmpbranch[i].chain].chance was in error */
+	    if(tmplevel[tmplevel[i].chain].chance != 100) {
+		yyerror("Level cannot chain from a probabilistic level.");
+		return(0);
+	    } else if(tmplevel[i].chain == n_levs) {
+		yyerror("A level cannot chain to itself!");
+		return(0);
+	    }
+	}
+	return(1);	/* OK */
 }
 
 /*
- *    - A branch may not branch backwards - to avoid branch loops.
- *    - A branch name must be unique.
- *      (ie. You can only have one entry point to each dungeon).
- *    - If chained, the level used as reference for the chain
- *      must be in this dungeon, must be previously defined, and
- *      the level chained from must be "non-probabilistic" (ie.
- *      have a 100% chance of existing).
+ *	- A branch may not branch backwards - to avoid branch loops.
+ *	- A branch name must be unique.
+ *	  (ie. You can only have one entry point to each dungeon).
+ *	- If chained, the level used as reference for the chain
+ *	  must be in this dungeon, must be previously defined, and
+ *	  the level chained from must be "non-probabilistic" (ie.
+ *	  have a 100% chance of existing).
  */
 
 int
 check_branch()
 {
-    int i;
+	int i;
 
-    if(!in_dungeon) {
-        yyerror("Branch defined outside of dungeon.");
-        return(0);
-    }
+	if(!in_dungeon) {
+		yyerror("Branch defined outside of dungeon.");
+		return(0);
+	}
 
-    for(i = 0; i < n_dgns; i++)
-        if(!strcmp(tmpdungeon[i].name, tmpbranch[n_brs].name)) {
+	for(i = 0; i < n_dgns; i++)
+	    if(!strcmp(tmpdungeon[i].name, tmpbranch[n_brs].name)) {
 
-        yyerror("Reverse branching not allowed.");
-        return(0);
-        }
+		yyerror("Reverse branching not allowed.");
+		return(0);
+	    }
 
-    if(tmpbranch[i].chain == -2) {
+	if(tmpbranch[i].chain == -2) {
 
-        yyerror("Invaild branch chain reference.");
-        return(0);
-    } else if(tmpbranch[i].chain != -1) {    /* it is chained */
+		yyerror("Invaild branch chain reference.");
+		return(0);
+	} else if(tmpbranch[i].chain != -1) {	/* it is chained */
 
-        if(tmplevel[tmpbranch[i].chain].chance != 100) {
-        yyerror("Branch cannot chain from a probabilistic level.");
-        return(0);
-        }
-    }
-    return(1);    /* OK */
+	    if(tmplevel[tmpbranch[i].chain].chance != 100) {
+		yyerror("Branch cannot chain from a probabilistic level.");
+		return(0);
+	    }
+	}
+	return(1);	/* OK */
 }
 
 /*
- *    Output the dungon definition into a file.
+ *	Output the dungon definition into a file.
  *
- *    The file will have the following format:
+ *	The file will have the following format:
  *
- *    [ nethack version ID ]
- *    [ number of dungeons ]
- *    [ first dungeon struct ]
- *    [ levels for the first dungeon ]
- *      ...
- *    [ branches for the first dungeon ]
- *      ...
- *    [ second dungeon struct ]
- *      ...
+ *	[ nethack version ID ]
+ *	[ number of dungeons ]
+ *	[ first dungeon struct ]
+ *	[ levels for the first dungeon ]
+ *	  ...
+ *	[ branches for the first dungeon ]
+ *	  ...
+ *	[ second dungeon struct ]
+ *	  ...
  */
 
 void
 output_dgn()
 {
-    int    nd, cl = 0, nl = 0,
-            cb = 0, nb = 0;
-    static struct version_info version_data = {
-            VERSION_NUMBER, VERSION_FEATURES,
-            VERSION_SANITY1, VERSION_SANITY2, VERSION_SANITY3
-    };
+	int	nd, cl = 0, nl = 0,
+		    cb = 0, nb = 0;
+	static struct version_info version_data = {
+			VERSION_NUMBER, VERSION_FEATURES,
+			VERSION_SANITY1, VERSION_SANITY2, VERSION_SANITY3
+	};
 
-    if(++n_dgns <= 0) {
-        yyerror("FATAL - no dungeons were defined.");
-        exit(EXIT_FAILURE);
-    }
+	if(++n_dgns <= 0) {
+	    yyerror("FATAL - no dungeons were defined.");
+	    exit(EXIT_FAILURE);
+	}
 
-    if (fwrite((char *)&version_data, sizeof version_data, 1, yyout) != 1) {
-        yyerror("FATAL - output failure.");
-        exit(EXIT_FAILURE);
-    }
+	if (fwrite((char *)&version_data, sizeof version_data, 1, yyout) != 1) {
+	    yyerror("FATAL - output failure.");
+	    exit(EXIT_FAILURE);
+	}
 
-    (void) fwrite((char *)&n_dgns, sizeof(int), 1, yyout);
-    for (nd = 0; nd < n_dgns; nd++) {
-        (void) fwrite((char *)&tmpdungeon[nd], sizeof(struct tmpdungeon),
-                            1, yyout);
+	(void) fwrite((char *)&n_dgns, sizeof(int), 1, yyout);
+	for (nd = 0; nd < n_dgns; nd++) {
+	    (void) fwrite((char *)&tmpdungeon[nd], sizeof(struct tmpdungeon),
+							1, yyout);
 
-        nl += tmpdungeon[nd].levels;
-        for(; cl < nl; cl++)
-        (void) fwrite((char *)&tmplevel[cl], sizeof(struct tmplevel),
-                            1, yyout);
+	    nl += tmpdungeon[nd].levels;
+	    for(; cl < nl; cl++)
+		(void) fwrite((char *)&tmplevel[cl], sizeof(struct tmplevel),
+							1, yyout);
 
-        nb += tmpdungeon[nd].branches;
-        for(; cb < nb; cb++)
-        (void) fwrite((char *)&tmpbranch[cb], sizeof(struct tmpbranch),
-                            1, yyout);
-    }
-    /* apparently necessary for Think C 5.x, otherwise harmless */
-    (void) fflush(yyout);
+	    nb += tmpdungeon[nd].branches;
+	    for(; cb < nb; cb++)
+		(void) fwrite((char *)&tmpbranch[cb], sizeof(struct tmpbranch),
+							1, yyout);
+	}
+	/* apparently necessary for Think C 5.x, otherwise harmless */
+	(void) fflush(yyout);
 }
 
 /*dgn_comp.y*/

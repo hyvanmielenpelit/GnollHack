@@ -77,6 +77,9 @@ void
 appropriate_exit(code)
 int code;
 {
+#ifdef _CRTDBG_MAP_ALLOC
+    _CrtDumpMemoryLeaks();
+#endif
 #ifdef EXIT_THREAD_ON_EXIT
     ExitThread(code);
 #else

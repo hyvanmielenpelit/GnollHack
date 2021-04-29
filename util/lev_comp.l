@@ -62,9 +62,14 @@ int FDECL(yyoutput, (int));
 
 #if defined(FLEX_SCANNER) || defined(FLEXHACK_SCANNER)
 /* older flex wants this */
+#ifdef _CRTDBG_MAP_ALLOC
+#define YY_MALLOC_DECL  genericptr_t FDECL(_malloc_dbg, (size_t, int, const char*, int)); \
+                        genericptr_t FDECL(_realloc_dbg, (genericptr_t, size_t, int, const char*, int));
+#else
 #define YY_MALLOC_DECL  genericptr_t FDECL(malloc, (size_t)); \
                         genericptr_t FDECL(realloc, (genericptr_t, size_t));
 /* newer flex assumes <stdlib.h> so needs this in case it's been suppressed */
+#endif
 YY_MALLOC_DECL
 #endif
 

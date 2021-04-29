@@ -5423,7 +5423,7 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
             newdungeon = (u.uz.dnum != newlevel->dnum),
             was_in_W_tower = In_W_tower(u.ux, u.uy, &u.uz),
             familiar = FALSE,
-            new = FALSE; /* made a new level? */
+            isnew = FALSE; /* made a new level? */
     struct monst *mtmp;
     char whynot[BUFSZ];
     char *annotation;
@@ -5620,7 +5620,7 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
             level_info[new_ledger].flags &= ~(FORGOTTEN | VISITED);
         }
         mklev();
-        new = TRUE; /* made the level */
+        isnew = TRUE; /* made the level */
     }
     else 
     {
@@ -5876,7 +5876,7 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     /* special location arrival messages/events */
     if (In_endgame(&u.uz)) 
     {
-        if (new && on_level(&u.uz, &astral_level))
+        if (isnew && on_level(&u.uz, &astral_level))
             final_level(); /* guardian angel,&c */
         else if (newdungeon && u.uhave.amulet)
             resurrect(); /* force confrontation with Wizard */
@@ -5893,7 +5893,7 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     else if (Is_knox(&u.uz))
     {
         /* alarm stops working once Croesus has died */
-        if (new || !mvitals[PM_CROESUS].died) 
+        if (isnew || !mvitals[PM_CROESUS].died) 
         {
             You("have penetrated a high security area!");
             play_sfx_sound(SFX_ALARM_SOUNDS);
@@ -5908,7 +5908,7 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     } 
     else 
     {
-        if (new && Is_rogue_level(&u.uz))
+        if (isnew && Is_rogue_level(&u.uz))
             You("enter what seems to be an older, more primitive world.");
 
         /* main dungeon message from your quest leader */

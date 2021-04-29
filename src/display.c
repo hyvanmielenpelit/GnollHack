@@ -155,7 +155,7 @@ STATIC_DCL int FDECL(wall_angle, (struct rm *));
 /* Glyph Buffering (3rd screen) =========================================== */
 
 typedef struct {
-    xchar new; /* perhaps move this bit into the rm structure. */
+    xchar isnew; /* perhaps move this bit into the rm structure. */
     struct layer_info layers;
 } gbuf_entry;
 
@@ -270,7 +270,7 @@ register int show;
             || feature_glyph_before != new_feature_glyph || feature_doodad_glyph_before != new_feature_doodad_glyph
             || cover_feature_glyph_before != new_cover_feature_glyph)
         {
-            gbuf[y][x].new = 1;
+            gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
                 gbuf_start[y] = x;
             if (gbuf_stop[y] < x)
@@ -1799,7 +1799,7 @@ int x, y;
     if (isok(x, y))
     {
         gbuf[y][x] = nul_gbuf;
-        gbuf[y][x].new = 1;
+        gbuf[y][x].isnew = 1;
         if (gbuf_start[y] > x)
             gbuf_start[y] = x;
         if (gbuf_stop[y] < x)
@@ -2249,7 +2249,7 @@ void
 force_redraw_at(x, y)
 register int x, y;
 {
-    gbuf[y][x].new = 1;
+    gbuf[y][x].isnew = 1;
     if (gbuf_start[y] > x)
         gbuf_start[y] = x;
     if (gbuf_stop[y] < x)
@@ -2279,7 +2279,7 @@ struct layer_info layers;
 
         if (layer_glyph_different)
         {
-            gbuf[y][x].new = 1;
+            gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
                 gbuf_start[y] = x;
             if (gbuf_stop[y] < x)
@@ -2340,7 +2340,7 @@ enum layer_types layer_idx;
 
         if (layer_glyph_before != glyph)
         {
-            gbuf[y][x].new = 1;
+            gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
                 gbuf_start[y] = x;
             if (gbuf_stop[y] < x)
@@ -2384,7 +2384,7 @@ xchar ux, uy;
 
         if (different)
         {
-            gbuf[y][x].new = 1;
+            gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
                 gbuf_start[y] = x;
             if (gbuf_stop[y] < x)
@@ -2407,7 +2407,7 @@ int damage_displayed;
         gbuf[y][x].layers.layer_flags |= disp_flags;
         if (old_flags != gbuf[y][x].layers.layer_flags)
         {
-            gbuf[y][x].new = 1;
+            gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
                 gbuf_start[y] = x;
             if (gbuf_stop[y] < x)
@@ -2433,7 +2433,7 @@ unsigned long missile_flags;
         gbuf[y][x].layers.missile_eroded2 = eroded2;
         gbuf[y][x].layers.missile_flags = missile_flags;
 
-        gbuf[y][x].new = 1;
+        gbuf[y][x].isnew = 1;
         if (gbuf_start[y] > x)
             gbuf_start[y] = x;
         if (gbuf_stop[y] < x)
@@ -2483,7 +2483,7 @@ int damage_displayed;
 
         if (old_dmg != gbuf[y][x].layers.damage_displayed)
         {
-            gbuf[y][x].new = 1;
+            gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
                 gbuf_start[y] = x;
             if (gbuf_stop[y] < x)
@@ -2504,7 +2504,7 @@ unsigned long added_flags;
 
         if (old_flags != gbuf[y][x].layers.layer_flags)
         {
-            gbuf[y][x].new = 1;
+            gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
                 gbuf_start[y] = x;
             if (gbuf_stop[y] < x)
@@ -2525,7 +2525,7 @@ unsigned long removed_flags;
 
         if (old_flags != gbuf[y][x].layers.layer_flags)
         {
-            gbuf[y][x].new = 1;
+            gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
                 gbuf_start[y] = x;
             if (gbuf_stop[y] < x)
@@ -2554,7 +2554,7 @@ int x, y;
         gbuf[y][x].layers.layer_flags &= ~(LFLAGS_M_MASK);
         if (old_flags != gbuf[y][x].layers.layer_flags)
         {
-            gbuf[y][x].new = 1;
+            gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
                 gbuf_start[y] = x;
             if (gbuf_stop[y] < x)
@@ -2840,7 +2840,7 @@ int x, y, glyph;
     {
         gbuf[y][x].layers.glyph = glyph;
         gbuf[y][x].layers.bkglyph = get_bk_glyph(x, y);
-        gbuf[y][x].new = 1;
+        gbuf[y][x].isnew = 1;
         if (gbuf_start[y] > x)
             gbuf_start[y] = x;
         if (gbuf_stop[y] < x)
@@ -2962,9 +2962,9 @@ int cursor_on_u;
         register gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];
 
         for (; x <= gbuf_stop[y]; gptr++, x++)
-            if (gptr->new) {
+            if (gptr->isnew) {
                 print_glyph(WIN_MAP, x, y, gptr->layers);
-                gptr->new = 0;
+                gptr->isnew = 0;
             }
     }
 

@@ -14,6 +14,12 @@
 #define DEBUG
 #endif
 
+#if 0 /* Toggle memory leak detection on and off */
+#ifndef GNH_CRTDBG
+#define GNH_CRTDBG
+#endif
+#endif
+
 /*
  * Files expected to exist in the playground directory.
  */

@@ -739,6 +739,26 @@ mswin_exit_nhwindows(const char *str)
     /* Write Window settings to the registry */
     mswin_write_reg();
 
+    /* Destroy nhwindows */
+    for (winid wid = 0; wid < MAXWINDOWS; wid++)
+    {
+        MSNHWinData windata = GetNHApp()->windowlist[wid];
+        if (windata.win != NULL && !windata.dead)
+        {
+            DestroyWindow(windata.win);
+            GetNHApp()->windowlist[wid].win = 0;
+            GetNHApp()->windowlist[wid].type = 0;
+            GetNHApp()->windowlist[wid].dead = 0;
+        }
+    }
+
+    /* Destroy the main window as well */
+    if (GetNHApp()->hMainWnd != NULL)
+    {
+        DestroyWindow(GetNHApp()->hMainWnd);
+        GetNHApp()->hMainWnd = 0;
+    }
+
     /* set things back to failsafes */
     windowprocs = *get_safe_procs(0);
 

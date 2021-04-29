@@ -571,16 +571,9 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return 0;
 
     case WM_DESTROY:
-        /* apparently we never get here
-           TODO: work on exit routines - need to send
-           WM_QUIT somehow */
-
-        /* clean up */
         free((PNHMainWindow) GetWindowLongPtr(hWnd, GWLP_USERDATA));
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) 0);
-
-        // PostQuitMessage(0);
-        exit(1);
+        PostQuitMessage(0);
         break;
 
     case WM_DPICHANGED: {

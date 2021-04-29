@@ -96,6 +96,10 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     UNREFERENCED_PARAMETER(lpCmdLine);
     UNREFERENCED_PARAMETER(nCmdShow);
 
+#if defined(DEBUG) && defined(_DEBUG) && defined(GNH_CRTDBG) && defined(WIN32) && defined(_CRTDBG_MAP_ALLOC)
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
     /*
      * Get a set of valid safe windowport function
      * pointers during early startup initialization.
