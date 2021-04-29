@@ -2499,7 +2499,7 @@ int style;
         stop_ambient_ray_sound(object_soundsets[objects[singleobj->otyp].oc_soundset].ray_soundset);
     }
     launch_drop_spot((struct obj *) 0, 0, 0);
-    if (!used_up) {
+    if (!used_up && singleobj) {
         singleobj->otrapped = 0;
         place_object(singleobj, x2, y2);
         newsym(x2, y2);

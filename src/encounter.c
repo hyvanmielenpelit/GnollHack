@@ -1157,6 +1157,9 @@ int encounter_index;
 int max_attk_monsters;
 {
 
+    if (max_attk_monsters < 0 || max_attk_monsters >= MAX_ENCOUNTER_ATTACKING_MONSTERS + 1 || encounter_index < 0 || encounter_index >= MAX_ENCOUNTERS)
+        return;
+
     long maxdifficulty = 0;
     long mindifficulty = 0;
     long pointdifficulty = 0;
