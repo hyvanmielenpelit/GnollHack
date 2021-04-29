@@ -1063,9 +1063,14 @@ mswin_putstr_ex(winid wid, int attr, const char *text, int app)
         mswin_get_nh_event();
     } else {
         // build text to display later in message box
-        GetNHApp()->saved_text =
+        char* tempchar_ptr = (char*)
             realloc(GetNHApp()->saved_text,
                     strlen(text) + strlen(GetNHApp()->saved_text) + 1);
+        if (!tempchar_ptr)
+            return;
+        else
+            GetNHApp()->saved_text = tempchar_ptr;
+
         strcat(GetNHApp()->saved_text, text);
     }
 }

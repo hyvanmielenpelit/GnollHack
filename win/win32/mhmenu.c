@@ -579,10 +579,12 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                        text_size * sizeof(data->text.text[0]));
         } else {
             text_size = _tcslen(data->text.text) + strlen(msg_data->text) + 4;
-            data->text.text = (TCHAR *) realloc(
+            TCHAR* temptxt_ptr = (TCHAR *) realloc(
                 data->text.text, text_size * sizeof(data->text.text[0]));
-            if (!data->text.text)
+            if (!temptxt_ptr)
                 return;
+            else
+                data->text.text = temptxt_ptr;
         }
         if (!data->text.text)
             break;
@@ -645,10 +647,12 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
         if (data->menu.size == data->menu.allocated) {
             data->menu.allocated += 10;
-            data->menu.items = (PNHMenuItem) realloc(
+            PNHMenuItem tempmenuitem_ptr = (PNHMenuItem) realloc(
                 data->menu.items, data->menu.allocated * sizeof(NHMenuItem));
-            if (!data->menu.items)
+            if (!tempmenuitem_ptr)
                 return;
+            else
+                data->menu.items = tempmenuitem_ptr;
         }
         if (!data->menu.items)
             return;
@@ -1060,7 +1064,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     PNHMenuWindow data;
     TEXTMETRIC tm;
     HGDIOBJ saveFont, normalFont;
-    HDC tileDC[MAX_TILE_SHEETS];
+    HDC tileDC[MAX_TILE_SHEETS] = { 0 };
     int ntile;
     int t_x, t_y;
     int x, y;

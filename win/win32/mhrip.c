@@ -276,8 +276,12 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         } else {
             text_size =
                 _tcslen(data->window_text) + strlen(msg_data->text) + 4;
-            data->window_text = (TCHAR *) realloc(
+            TCHAR* temptchar_ptr = (TCHAR *) realloc(
                 data->window_text, text_size * sizeof(data->window_text[0]));
+            if (!temptchar_ptr)
+                return;
+            else
+                data->window_text = temptchar_ptr;
         }
         if (!data->window_text)
             break;

@@ -544,6 +544,9 @@ boolean
 shade_glare(obj)
 struct obj *obj;
 {
+    if (!obj)
+        return FALSE;
+
     const struct artifact *arti;
 
     /* any silver object is effective */

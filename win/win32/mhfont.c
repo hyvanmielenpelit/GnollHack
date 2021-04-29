@@ -262,6 +262,8 @@ init_resource_fonts()
     if (res)
     {
         HGLOBAL mem = LoadResource(hResInstance, res);
+        if (!mem)
+            return;
         void* data = LockResource(mem);
         size_t len = SizeofResource(hResInstance, res);
 

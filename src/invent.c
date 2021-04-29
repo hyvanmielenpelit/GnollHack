@@ -2830,6 +2830,7 @@ struct obj* otmp_only;
     }
     else
     {
+        word = "";
         strcpy(leftbuf, "");
         strcpy(rightbuf, "");
         is_dip_into = FALSE;

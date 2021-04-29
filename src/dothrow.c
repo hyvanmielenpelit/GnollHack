@@ -35,6 +35,9 @@ struct obj *obj;
 int shotlimit;
 boolean firing;
 {
+    if (!obj)
+        return 0;
+
     struct obj *otmp;
     int multishot;
     //schar skill;

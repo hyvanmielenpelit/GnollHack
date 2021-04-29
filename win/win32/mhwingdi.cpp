@@ -53,6 +53,10 @@ extern "C" {
     {
         /* REMEMBER TO START GDI+ FIRST */
         HBITMAP hBmp = (HBITMAP)0;
+
+        if (!hInstance)
+            return hBmp;
+
         Color bkclr;
         bkclr.SetFromCOLORREF(bkcolor);
 #ifdef UNICODE

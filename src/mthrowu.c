@@ -342,7 +342,7 @@ monshoot(mtmp, otmp, mwep)
 struct monst *mtmp;
 struct obj *otmp, *mwep;
 {
-    if (!mtmp)
+    if (!mtmp || !otmp)
         return;
 
     boolean is_firing = (otmp && mwep && ammo_and_launcher(otmp, mwep));

@@ -167,7 +167,10 @@ boolean on;
 int
 Boots_on(VOID_ARGS)
 {
-    if (flags.verbose && uarmf)
+    if (!uarmf)
+        return 0;
+
+    if (flags.verbose)
         play_simple_object_sound(uarmf, OBJECT_SOUND_TYPE_WEAR);
 
     long oldprop =
@@ -194,6 +197,9 @@ Boots_on(VOID_ARGS)
 int
 Boots_off(VOID_ARGS)
 {
+    if (!uarmf)
+        return 0;
+
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
@@ -231,6 +237,9 @@ Boots_off(VOID_ARGS)
 STATIC_PTR int
 Cloak_on(VOID_ARGS)
 {
+    if (!uarmc)
+        return 0;
+
     if (flags.verbose && uarmc)
         play_simple_object_sound(uarmc, OBJECT_SOUND_TYPE_WEAR);
 
@@ -346,6 +355,9 @@ Helmet_on(VOID_ARGS)
 int
 Helmet_off(VOID_ARGS)
 {
+    if (!uarmh)
+        return 0;
+
     if (flags.verbose && uarmh)
         play_simple_object_sound(uarmh, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -370,6 +382,9 @@ STATIC_PTR
 int
 Gloves_on(VOID_ARGS)
 {
+    if (!uarmg)
+        return 0;
+
     if (flags.verbose && uarmg)
         play_simple_object_sound(uarmg, OBJECT_SOUND_TYPE_WEAR);
 
@@ -432,6 +447,9 @@ Gloves_off(VOID_ARGS)
 STATIC_PTR int
 Shield_on(VOID_ARGS)
 {
+    if (!uarms)
+        return 0;
+
     if (flags.verbose && uarms)
         play_simple_object_sound(uarms, OBJECT_SOUND_TYPE_WEAR);
 
@@ -455,6 +473,9 @@ Shield_off(VOID_ARGS)
 STATIC_PTR int
 Shirt_on(VOID_ARGS)
 {
+    if (!uarmu)
+        return 0;
+
     if (flags.verbose && uarmu)
         play_simple_object_sound(uarmu, OBJECT_SOUND_TYPE_WEAR);
 
@@ -479,6 +500,9 @@ Shirt_off(VOID_ARGS)
 STATIC_PTR int
 Robe_on(VOID_ARGS)
 {
+    if (!uarmo)
+        return 0;
+
     if (flags.verbose && uarmo)
         play_simple_object_sound(uarmo, OBJECT_SOUND_TYPE_WEAR);
 
@@ -502,6 +526,9 @@ Robe_off(VOID_ARGS)
 STATIC_PTR int
 Bracers_on(VOID_ARGS)
 {
+    if (!uarmb)
+        return 0;
+
     if (flags.verbose && uarmb)
         play_simple_object_sound(uarmb, OBJECT_SOUND_TYPE_WEAR);
 
@@ -587,6 +614,9 @@ STATIC_PTR
 int
 Armor_on(VOID_ARGS)
 {
+    if (!uarm)
+        return 0;
+
     if (flags.verbose && uarm)
         play_simple_object_sound(uarm, OBJECT_SOUND_TYPE_WEAR);
     /*
@@ -628,6 +658,9 @@ Armor_gone()
 STATIC_OVL void
 Amulet_on()
 {
+    if (!uamul)
+        return;
+
     if (flags.verbose && uamul)
         play_simple_object_sound(uamul, OBJECT_SOUND_TYPE_WEAR);
 
@@ -667,6 +700,9 @@ Amulet_on()
 void
 Amulet_off()
 {
+    if (!uamul)
+        return;
+
     if (flags.verbose && uamul)
         play_simple_object_sound(uamul, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -766,6 +802,9 @@ void
 Ring_on(obj)
 register struct obj *obj;
 {
+    if (!obj)
+        return;
+
     if(flags.verbose && obj)
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_WEAR);
 
@@ -807,6 +846,9 @@ Ring_off_or_gone(obj, gone)
 register struct obj *obj;
 boolean gone;
 {
+    if (!obj)
+        return;
+
     if (flags.verbose && obj && !gone)
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_TAKE_OFF);
 

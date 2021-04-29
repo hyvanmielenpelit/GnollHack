@@ -7035,6 +7035,9 @@ struct obj *obj;
 int d_override;
 boolean nocorpse;
 {
+    if (!mon)
+        return FALSE;
+
     int strike;
     boolean trapkilled = FALSE;
 

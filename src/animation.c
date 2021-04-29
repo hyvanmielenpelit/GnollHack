@@ -1881,6 +1881,9 @@ STATIC_OVL int
 get_shore_tile_index(mainlev, lev)
 struct rm* mainlev, *lev;
 {
+    if (!mainlev || !lev)
+        return -1;
+
     int mainlev_is_pool_ice_or_lava = (mainlev && (IS_POOL(mainlev->typ) || mainlev->typ == ICE || mainlev->typ == LAVAPOOL));
     if (lev->typ == WATER)
     {

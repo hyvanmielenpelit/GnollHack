@@ -1433,7 +1433,7 @@ nh_compose_ascii_screenshot()
     text =
         (PMSNHMsgGetText) malloc(sizeof(MSNHMsgGetText) + TEXT_BUFFER_SIZE);
 
-    if (!text)
+    if (!text || !retval)
         return "";
 
     text->max_size =

@@ -138,7 +138,7 @@ GetlinDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_COMMAND: {
-        TCHAR wbuf[BUFSZ];
+        TCHAR wbuf[BUFSZ] = { 0 };
 
         switch (LOWORD(wParam)) {
         /* OK button was pressed */

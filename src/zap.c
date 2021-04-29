@@ -10757,21 +10757,22 @@ int spl_otyp UNUSED;
             pline("%s descends from the heavens!", Monnam(mon));
         else
             You_feel("a %s presence near you!", is_peaceful(mon) ? "benevolent" : "threatening");
+
+        if (!Blind)
+        {
+            if (is_peaceful(mon))
+                pline("%s gazes at you and smiles.", Monnam(mon));
+            else
+                pline("%s looks worringly angry.", Monnam(mon));
+        }
+        else if (!Deaf && is_peaceful(mon))
+            You_hear("deep voice greeting you.");
     }
     else
     {
         pline("However, nothing else happens");
     }
 
-    if (!Blind)
-    {
-        if(is_peaceful(mon))
-            pline("%s gazes at you and smiles.", Monnam(mon));
-        else
-            pline("%s looks worringly angry.", Monnam(mon));
-    }
-    else if (!Deaf && is_peaceful(mon))
-        You_hear("deep voice greeting you.");
 }
 
 
