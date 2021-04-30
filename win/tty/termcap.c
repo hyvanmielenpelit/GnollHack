@@ -581,7 +581,11 @@ const char *s;
     (void) fputs(s, stdout);
 #else
 
-    tputs(s, 1, xputc);
+#if defined(GNH_APOLLO)
+    tputs(s, 1, (void (*)(int))xputc);
+#else
+    tputs(s, 1, (void (*)(char))xputc);
+#endif
 
 #if 0 /* Not sure what was the deal here with odd function pointer signature --JG */
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
@@ -763,7 +767,12 @@ tty_delay_output()
 #ifdef TERMINFO
 /* cbosgd!cbcephus!pds for SYS V R2 */
 
-       tputs("$<50>", 1, xputc);
+#if defined(GNH_APOLLO)
+        tputs("$<50>", 1, (void (*)(int))xputc);
+#else
+        tputs("$<50>", 1, (void (*)(char))xputc);
+#endif
+
 #if 0
 #ifdef NHSTDC
         tputs("$<50>", 1, (int (*) ()) xputc);
@@ -773,6 +782,11 @@ tty_delay_output()
 #endif
 
 #else
+#if defined(GNH_APOLLO)
+        tputs("50", 1, (void (*)(int))xputc);
+#else
+        tputs("50", 1, (void (*)(char))xputc);
+#endif
 
         tputs("50", 1, xputc);
 #if 0
@@ -828,7 +842,12 @@ int interval;
     if (flags.null) {
 #ifdef TERMINFO
 
-        tputs("$<50>", 1, xputc);
+#if defined(GNH_APOLLO)
+        tputs("$<50>", 1, (void (*)(int))xputc);
+#else
+        tputs("$<50>", 1, (void (*)(char))xputc);
+#endif
+
 #if 0
         /* cbosgd!cbcephus!pds for SYS V R2 */
 #ifdef NHSTDC
@@ -840,7 +859,12 @@ int interval;
 
 #else
 
-        tputs("50", 1, xputc);
+#if defined(GNH_APOLLO)
+        tputs("50", 1, (void (*)(int))xputc);
+#else
+        tputs("50", 1, (void (*)(char))xputc);
+#endif
+
 #if 0
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
         tputs("50", 1, (int (*) ()) xputc);
@@ -895,7 +919,12 @@ int intervals;
     if (flags.null) {
 #ifdef TERMINFO
         /* cbosgd!cbcephus!pds for SYS V R2 */
-        tputs("$<50>", 1, xputc);
+#if defined(GNH_APOLLO)
+        tputs("$<50>", 1, (void (*)(int))xputc);
+#else
+        tputs("$<50>", 1, (void (*)(char))xputc);
+#endif
+
 #if 0
 #ifdef NHSTDC
         tputs("$<50>", 1, (int (*) ()) xputc);
@@ -906,7 +935,11 @@ int intervals;
 
 #else
 
-        tputs("50", 1, xputc);
+#if defined(GNH_APOLLO)
+        tputs("50", 1, (void (*)(int))xputc);
+#else
+        tputs("50", 1, (void (*)(char))xputc);
+#endif
 
 #if 0
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
