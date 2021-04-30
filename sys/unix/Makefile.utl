@@ -468,7 +468,7 @@ $(OBJDIR)/monst.o: ../src/monst.c $(CONFIG_H) ../include/animation.h ../include/
 $(OBJDIR)/objects.o: ../src/objects.c $(CONFIG_H) ../include/animation.h ../include/general.h ../include/obj.h ../include/objclass.h ../include/monsym.h ../include/monflag.h ../include/monattk.h ../include/prop.h ../include/skills.h ../include/attrib.h ../include/soundset.h ../include/action.h
 	$(CC) $(CFLAGS) -c ../src/objects.c -o $@
 $(OBJDIR)/animdef.o: ../src/animdef.c $(CONFIG_H) ../include/animation.h  ../include/general.h  ../include/rm.h ../include/tiledata.h
-	$(CC) $(CFLAGS) -c ../src/monst.c -o $@
+	$(CC) $(CFLAGS) -c ../src/animdef.c -o $@
 $(OBJDIR)/dlb.o: ../src/dlb.c $(CONFIG_H) ../include/dlb.h
 	$(CC) $(CFLAGS) -c ../src/dlb.c -o $@
 
