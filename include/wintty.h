@@ -5,6 +5,7 @@
 #include "layer.h"
 #include "obj.h"
 #include "general.h"
+#include "config.h"
 
 #ifndef WINTTY_H
 #define WINTTY_H
@@ -118,7 +119,7 @@ E void FDECL(tty_startup, (int *, int *));
 #ifndef NO_TERMS
 E void NDECL(tty_shutdown);
 #endif
-#if defined(apollo)
+#if defined(GNH_APOLLO)
 /* Apollos don't widen old-style function definitions properly -- they try to
  * be smart and use the prototype, or some such strangeness.  So we have to
  * define UNWIDENDED_PROTOTYPES (in tradstdc.h), which makes CHAR_P below a

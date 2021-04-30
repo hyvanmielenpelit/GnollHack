@@ -564,7 +564,7 @@ register int x, y;
 /* See note above. xputc() is a special function. */
 void
 xputc(c)
-#if defined(apollo)
+#if defined(GNH_APOLLO)
     int c;
 #else
     char c;

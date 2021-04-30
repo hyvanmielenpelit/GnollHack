@@ -27,7 +27,7 @@ int FDECL(tgetnum, (const char *));
 char *FDECL(tgetstr, (const char *, char **));
 char *FDECL(tgoto, (const char *, int, int));
 char *FDECL(tparam, (const char *, char *, int, int, int, int, int));
-#if defined(apollo)
+#if defined(GNH_APOLLO)
 void FDECL(tputs, (const char*, int, void (*)(int)));
 #else
 void FDECL(tputs, (const char *, int, void (*)(char)));
@@ -508,7 +508,7 @@ void
 tputs(string, range, output_func)
 const char *string;   /* characters to output */
 int range;            /* number of lines affected, used for `*' delays */
-#if defined(apollo)
+#if defined(GNH_APOLLO)
 void (*output_func)(int); /* actual output routine */
 #else
 void (*output_func)(char); /* actual output routine */
@@ -538,7 +538,7 @@ void (*output_func)(char); /* actual output routine */
         if (c == '\200')
             c = '\0'; /* undo tgetstr's encoding */
 
-#if defined(apollo)
+#if defined(GNH_APOLLO)
         (*output_func)((int)c);
 #else
         (*output_func)(c);
@@ -561,7 +561,7 @@ void (*output_func)(char); /* actual output routine */
         c = PC; /* assume output_func isn't allowed to change PC */
         while (--num >= 0)
         {
-#if defined(apollo)
+#if defined(GNH_APOLLO)
             (*output_func)((int)c);
 #else
             (*output_func)(c);
