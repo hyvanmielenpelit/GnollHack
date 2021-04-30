@@ -27,7 +27,7 @@ int FDECL(tgetnum, (const char *));
 char *FDECL(tgetstr, (const char *, char **));
 char *FDECL(tgoto, (const char *, int, int));
 char *FDECL(tparam, (const char *, char *, int, int, int, int, int));
-void FDECL(tputs, (const char *, int, void (*)(char)));
+void FDECL(tputs, (const char *, int, void (*)(CHAR_P)));
 
 /* local support data */
 static char *tc_entry;
@@ -504,7 +504,7 @@ void
 tputs(string, range, output_func)
 const char *string;   /* characters to output */
 int range;            /* number of lines affected, used for `*' delays */
-void (*output_func)(char); /* actual output routine; return value ignored */
+void (*output_func)(CHAR_P); /* actual output routine; return value ignored */
 {
     register char c;
     register int num = 0;
