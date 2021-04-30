@@ -1026,8 +1026,9 @@ register struct monst *mtmp;
     /* special speeches for quest monsters */
     if (mon_can_move(mtmp) && nearby)
     {
-        boolean spoke = quest_talk(mtmp);
+        (void)quest_talk(mtmp);
 #if 0
+        boolean spoke = quest_talk(mtmp);
         if (spoke && canseemon(mtmp)) // Deactivated for the time being, as probably does not look good.
             talkeff(mtmp->mx, mtmp->my);
 #endif
