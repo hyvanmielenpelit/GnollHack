@@ -631,12 +631,12 @@ qt4xcmd.moc : ../win/Qt4/qt4xcmd.h
 qt4yndlg.moc : ../win/Qt4/qt4yndlg.h
 	$(QTDIR)/bin/$(MOC) -o qt4yndlg.moc ../win/Qt4/qt4yndlg.h
 
-#	build monst.o and objects.o before executing '$(MAKE) makedefs'
+#	build monst.o and objects.o and animdef.o before executing '$(MAKE) makedefs'
 $(MAKEDEFS): $(FIRSTOBJ) \
 		../util/makedefs.c $(CONFIG_H) ../include/permonst.h ../include/animation.h \
 		../include/objclass.h ../include/monsym.h \
 		../include/artilist.h ../include/dungeon.h ../include/obj.h \
-		../include/monst.h ../include/you.h ../include/flag.h \
+		../include/monst.h ../include/you.h ../include/context.h  ../include/flag.h \
 		../include/dlb.h ../include/patchlevel.h ../include/qtext.h
 	@( cd ../util ; $(MAKE) makedefs )
 
@@ -734,7 +734,7 @@ $(CONFIG_H): ../include/config.h ../include/config1.h ../include/tradstdc.h \
 		../include/wceconf.h ../include/ntconf.h
 	touch $(CONFIG_H)
 # hack.h timestamp
-$(HACK_H): ../include/hack.h $(CONFIG_H) ../include/lint.h ../include/align.h \
+$(HACK_H): ../include/hack.h $(CONFIG_H) ../include/lint.h ../include/align.h ../include/artifact.h \
 		../include/dungeon.h ../include/monsym.h ../include/mkroom.h \
 		../include/objclass.h ../include/youprop.h ../include/prop.h \
 		../include/permonst.h ../include/monattk.h \
@@ -988,9 +988,9 @@ vis_tab.o: vis_tab.c $(CONFIG_H) ../include/vis_tab.h
 allmain.o: allmain.c $(HACK_H)
 alloc.o: alloc.c $(CONFIG_H)
 animation.o: animation.c $(HACK_H)
-animdef.o: animdef.c $(HACK_H)
+animdef.o: animdef.c $(CONFIG_H) ../include/animation.h  ../include/general.h  ../include/rm.h ../include/tiledata.h
 apply.o: apply.c $(HACK_H)
-artifact.o: artifact.c $(HACK_H) ../include/artifact.h ../include/artilist.h
+artifact.o: artifact.c $(HACK_H) ../include/artilist.h
 attrib.o: attrib.c $(HACK_H)
 ball.o: ball.c $(HACK_H)
 bones.o: bones.c $(HACK_H) ../include/lev.h
@@ -998,7 +998,7 @@ botl.o: botl.c $(HACK_H)
 cmd.o: cmd.c $(HACK_H) ../include/lev.h ../include/func_tab.h
 dbridge.o: dbridge.c $(HACK_H)
 decl.o: decl.c $(HACK_H)
-detect.o: detect.c $(HACK_H) ../include/artifact.h
+detect.o: detect.c $(HACK_H)
 dig.o: dig.c $(HACK_H)
 display.o: display.c $(HACK_H)
 dlb.o: dlb.c $(CONFIG_H) ../include/dlb.h
@@ -1031,8 +1031,8 @@ mail.o: mail.c $(HACK_H) ../include/mail.h
 makemon.o: makemon.c $(HACK_H)
 mapglyph.o: mapglyph.c $(HACK_H)
 mcastu.o: mcastu.c $(HACK_H)
-mhitm.o: mhitm.c $(HACK_H) ../include/artifact.h
-mhitu.o: mhitu.c $(HACK_H) ../include/artifact.h
+mhitm.o: mhitm.c $(HACK_H)
+mhitu.o: mhitu.c $(HACK_H)
 minion.o: minion.c $(HACK_H)
 mklev.o: mklev.c $(HACK_H)
 mkmap.o: mkmap.c $(HACK_H) ../include/sp_lev.h
@@ -1041,10 +1041,11 @@ mkobj.o: mkobj.c $(HACK_H)
 mkroom.o: mkroom.c $(HACK_H)
 mon.o: mon.c $(HACK_H) ../include/mfndpos.h
 mondata.o: mondata.c $(HACK_H)
-monmove.o: monmove.c $(HACK_H) ../include/mfndpos.h ../include/artifact.h
+monmove.o: monmove.c $(HACK_H) ../include/mfndpos.h
 monst.o: monst.c $(CONFIG_H) ../include/permonst.h ../include/align.h \
 		../include/monattk.h ../include/monflag.h ../include/monsym.h \
-		../include/color.h
+		../include/color.h ../include/animation.h ../include/general.h \
+		../include/attrib.h ../include/soundset.h ../include/objclass.h ../include/action.h
 mplayer.o: mplayer.c $(HACK_H)
 mthrowu.o: mthrowu.c $(HACK_H)
 muse.o: muse.c $(HACK_H)
@@ -1052,7 +1053,9 @@ music.o: music.c $(HACK_H) #interp.c
 npc.o: npc.c $(HACK_H)
 o_init.o: o_init.c $(HACK_H) ../include/lev.h
 objects.o: objects.c $(CONFIG_H) ../include/obj.h ../include/objclass.h \
-		../include/prop.h ../include/skills.h ../include/color.h
+		../include/prop.h ../include/skills.h ../include/color.h ../include/animation.h \
+		../include/general.h ../include/monsym.h ../include/monflag.h ../include/monattk.h \
+		../include/attrib.h ../include/soundset.h ../include/action.h
 objnam.o: objnam.c $(HACK_H)
 options.o: options.c $(CONFIG_H) ../include/objclass.h ../include/flag.h \
 		$(HACK_H) ../include/tcap.h
@@ -1078,7 +1081,7 @@ rumors.o: rumors.c $(HACK_H) ../include/lev.h ../include/dlb.h
 save.o: save.c $(HACK_H) ../include/lev.h
 shk.o: shk.c $(HACK_H)
 shknam.o: shknam.c $(HACK_H)
-sit.o: sit.c $(HACK_H) ../include/artifact.h
+sit.o: sit.c $(HACK_H)
 sounds.o: sounds.c $(HACK_H)
 soundset.o: soundset.c $(HACK_H)
 sp_lev.o: sp_lev.c $(HACK_H) ../include/dlb.h ../include/sp_lev.h
