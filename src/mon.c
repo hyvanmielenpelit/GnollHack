@@ -1216,7 +1216,7 @@ struct monst *mon;
    individual monster's metabolism; some of these might need to
    be reclassified to occur more in proportion with movement rate */
 void
-update_monster_timouts()
+update_monster_timeouts()
 {
     struct monst *mtmp;
 

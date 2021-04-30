@@ -143,7 +143,7 @@ boolean resuming;
                     struct monst *mtmp;
 
                     /* set up for a new turn */
-                    update_monster_timouts(); /* adjust monsters' trap, blind, etc */
+                    update_monster_timeouts(); /* adjust monsters' trap, blind, etc */
 
                     /* reallocate movement rations to monsters; don't need
                        to skip dead monsters here because they will have
