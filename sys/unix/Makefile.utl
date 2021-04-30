@@ -231,7 +231,7 @@ makedefs:	$(MAKEOBJS) mdgrep.h
 makedefs.o: makedefs.c $(CONFIG_H) ../include/permonst.h ../include/animation.h \
 		../include/objclass.h ../include/monsym.h \
 		../include/artilist.h ../include/dungeon.h ../include/obj.h \
-		../include/monst.h ../include/you.h ../include/flag.h \
+		../include/monst.h ../include/you.h ../include/context.h ../include/flag.h \
 		../include/dlb.h ../include/patchlevel.h ../include/qtext.h
 
 # Don't require perl to build; that is why mdgrep.h is spelled wrong below.
@@ -463,10 +463,12 @@ $(OBJDIR)/drawing.o: ../src/drawing.c $(CONFIG_H)
 	$(CC) $(CFLAGS) -c ../src/drawing.c -o $@
 $(OBJDIR)/decl.o: ../src/decl.c $(CONFIG_H)
 	$(CC) $(CFLAGS) -c ../src/decl.c -o $@
-$(OBJDIR)/monst.o: ../src/monst.c $(CONFIG_H)
+$(OBJDIR)/monst.o: ../src/monst.c $(CONFIG_H) ../include/animation.h ../include/general.h ../include/permonst.h ../include/monsym.h ../include/attrib.h ../include/soundset.h ../include/objclass.h ../include/action.h 
 	$(CC) $(CFLAGS) -c ../src/monst.c -o $@
-$(OBJDIR)/objects.o: ../src/objects.c $(CONFIG_H)
+$(OBJDIR)/objects.o: ../src/objects.c $(CONFIG_H) ../include/animation.h ../include/general.h ../include/obj.h ../include/objclass.h ../include/monsym.h ../include/monflag.h ../include/monattk.h ../include/prop.h ../include/skills.h ../include/attrib.h ../include/soundset.h ../include/action.h
 	$(CC) $(CFLAGS) -c ../src/objects.c -o $@
+$(OBJDIR)/animdef.o: ../src/animdef.c $(CONFIG_H) ../include/animation.h  ../include/general.h  ../include/rm.h ../include/tiledata.h
+	$(CC) $(CFLAGS) -c ../src/monst.c -o $@
 $(OBJDIR)/dlb.o: ../src/dlb.c $(CONFIG_H) ../include/dlb.h
 	$(CC) $(CFLAGS) -c ../src/dlb.c -o $@
 
