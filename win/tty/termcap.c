@@ -16,15 +16,15 @@
 #define Tgetstr(key) (tgetstr(key, &tbufptr))
 #endif /* MICROPORT_286_BUG **/
 
-static char *FDECL(s_atr2str, (int));
-static char *FDECL(e_atr2str, (int));
+static char* FDECL(s_atr2str, (int));
+static char* FDECL(e_atr2str, (int));
 
 void FDECL(cmov, (int, int));
 void FDECL(nocmov, (int, int));
 #if defined(TEXTCOLOR) && defined(TERMLIB)
 #if !defined(UNIX) || !defined(TERMINFO)
 #ifndef TOS
-static void FDECL(analyze_seq, (char *, int *, int *));
+static void FDECL(analyze_seq, (char*, int*, int*));
 #endif
 #endif
 static void NDECL(init_hilite);
@@ -34,9 +34,9 @@ static void NDECL(kill_hilite);
 /* (see tcap.h) -- nh_CM, nh_ND, nh_CD, nh_HI,nh_HE, nh_US,nh_UE, ul_hack */
 struct tc_lcl_data tc_lcl_data = { 0, 0, 0, 0, 0, 0, 0, FALSE };
 
-STATIC_VAR char *HO, *CL, *CE, *UP, *XD, *BC, *SO, *SE, *TI, *TE;
-STATIC_VAR char *VS, *VE;
-STATIC_VAR char *ME, *MR, *MB, *MH, *MD;
+STATIC_VAR char* HO, * CL, * CE, * UP, * XD, * BC, * SO, * SE, * TI, * TE;
+STATIC_VAR char* VS, * VE;
+STATIC_VAR char* ME, * MR, * MB, * MH, * MD;
 
 #ifdef TERMLIB
 boolean dynamic_HIHE = FALSE;
@@ -47,13 +47,13 @@ STATIC_VAR char tbuf[512];
 
 #ifdef TEXTCOLOR
 #ifdef TOS
-const char *hilites[CLR_MAX]; /* terminal escapes for the various colors */
+const char* hilites[CLR_MAX]; /* terminal escapes for the various colors */
 #else
-char NEARDATA *hilites[CLR_MAX]; /* terminal escapes for the various colors */
+char NEARDATA* hilites[CLR_MAX]; /* terminal escapes for the various colors */
 #endif
 #endif
 
-static char *KS = (char *) 0, *KE = (char *) 0; /* keypad sequences */
+static char* KS = (char*)0, * KE = (char*)0; /* keypad sequences */
 static char nullstr[] = "";
 
 #if defined(ASCIIGRAPH) && !defined(NO_TERMS)
@@ -71,13 +71,13 @@ STATIC_VAR char tgotobuf[20];
 
 void
 tty_startup(wid, hgt)
-int *wid, *hgt;
+int* wid, * hgt;
 {
     register int i;
 #ifdef TERMLIB
-    register const char *term;
-    register char *tptr;
-    char *tbufptr, *pc;
+    register const char* term;
+    register char* tptr;
+    char* tbufptr, * pc;
 
 #ifdef VMS
     term = verify_termcap();
@@ -156,7 +156,7 @@ int *wid, *hgt;
 #ifdef TEXTCOLOR
         for (i = 0; i < CLR_MAX / 2; i++)
             if (i != CLR_BLACK) {
-                hilites[i | BRIGHT] = (char *) alloc(sizeof("\033[1;3%dm"));
+                hilites[i | BRIGHT] = (char*)alloc(sizeof("\033[1;3%dm"));
                 Sprintf(hilites[i | BRIGHT], "\033[1;3%dm", i);
                 if (i != CLR_GRAY)
 #ifdef MICRO
@@ -165,12 +165,12 @@ int *wid, *hgt;
                     else
 #endif
                     {
-                        hilites[i] = (char *) alloc(sizeof("\033[0;3%dm"));
+                        hilites[i] = (char*)alloc(sizeof("\033[0;3%dm"));
                         Sprintf(hilites[i], "\033[0;3%dm", i);
                     }
             }
 #endif /* TEXTCOLOR */
-        *wid = CO;
+        * wid = CO;
         *hgt = LI;
         CL = "\033[2J"; /* last thing set */
         return;
@@ -179,15 +179,15 @@ int *wid, *hgt;
 #endif /* ANSI_DEFAULT */
 
 #ifdef TERMLIB
-    tptr = (char *) alloc(1024);
+    tptr = (char*)alloc(1024);
 
     tbufptr = tbuf;
     if (!strncmp(term, "5620", 4))
         flags.null = FALSE; /* this should be a termcap flag */
     if (tgetent(tptr, term) < 1) {
         char buf[BUFSZ];
-        (void) strncpy(buf, term,
-                       (BUFSZ - 1) - (sizeof("Unknown terminal type: .  ")));
+        (void)strncpy(buf, term,
+            (BUFSZ - 1) - (sizeof("Unknown terminal type: .  ")));
         buf[BUFSZ - 1] = '\0';
         error("Unknown terminal type: %s.", term);
     }
@@ -210,7 +210,7 @@ int *wid, *hgt;
 #endif
 
 #ifdef MINIMAL_TERM
-    HO = (char *) 0;
+    HO = (char*)0;
 #else
     HO = Tgetstr("ho");
 #endif
@@ -228,7 +228,8 @@ int *wid, *hgt;
 #if defined(TOS) && defined(__GNUC__)
     if (!strcmp(term, "builtin")) {
         get_scr_size();
-    } else
+    }
+    else
 #endif
     {
         CO = tgetnum("co");
@@ -309,19 +310,19 @@ int *wid, *hgt;
     init_hilite();
 #endif
 #endif
-    *wid = CO;
+    * wid = CO;
     *hgt = LI;
     if (!(CL = Tgetstr("cl"))) /* last thing set */
         error("NetHack needs CL.");
-    if ((int) (tbufptr - tbuf) > (int) (sizeof tbuf))
+    if ((int)(tbufptr - tbuf) > (int)(sizeof tbuf))
         error("TERMCAP entry too big...\n");
-    free((genericptr_t) tptr);
+    free((genericptr_t)tptr);
 #endif /* TERMLIB */
 }
 
 /* note: at present, this routine is not part of the formal window interface
  */
-/* deallocate resources prior to final termination */
+ /* deallocate resources prior to final termination */
 void
 tty_shutdown()
 {
@@ -331,8 +332,8 @@ tty_shutdown()
     kill_hilite();
 #endif
     if (dynamic_HIHE) {
-        free((genericptr_t) nh_HI), nh_HI = (char *) 0;
-        free((genericptr_t) nh_HE), nh_HE = (char *) 0;
+        free((genericptr_t)nh_HI), nh_HI = (char*)0;
+        free((genericptr_t)nh_HE), nh_HE = (char*)0;
         dynamic_HIHE = FALSE;
     }
 #endif
@@ -401,7 +402,7 @@ tty_decgraphics_termcap_fixup()
     /* some termcaps suffer from the bizarre notion that resetting
        video attributes should also reset the chosen character set */
     {
-        const char *nh_he = nh_HE, *ae = AE;
+        const char* nh_he = nh_HE, * ae = AE;
         int he_limit, ae_length;
 
         if (digit(*ae)) { /* skip over delay prefix, if any */
@@ -446,10 +447,10 @@ tty_ascgraphics_hilite_fixup()
 
     for (c = 0; c < CLR_MAX / 2; c++)
         if (c != CLR_BLACK) {
-            hilites[c | BRIGHT] = (char *) alloc(sizeof("\033[1;3%dm"));
+            hilites[c | BRIGHT] = (char*)alloc(sizeof("\033[1;3%dm"));
             Sprintf(hilites[c | BRIGHT], "\033[1;3%dm", c);
             if (c != CLR_GRAY) {
-                hilites[c] = (char *) alloc(sizeof("\033[0;3%dm"));
+                hilites[c] = (char*)alloc(sizeof("\033[0;3%dm"));
                 Sprintf(hilites[c], "\033[0;3%dm", c);
             }
         }
@@ -506,46 +507,53 @@ void
 nocmov(x, y)
 int x, y;
 {
-    if ((int) ttyDisplay->cury > y) {
+    if ((int)ttyDisplay->cury > y) {
         if (UP) {
-            while ((int) ttyDisplay->cury > y) { /* Go up. */
+            while ((int)ttyDisplay->cury > y) { /* Go up. */
                 xputs(UP);
                 ttyDisplay->cury--;
             }
-        } else if (nh_CM) {
+        }
+        else if (nh_CM) {
             cmov(x, y);
-        } else if (HO) {
+        }
+        else if (HO) {
             home();
             tty_curs(BASE_WINDOW, x + 1, y);
         } /* else impossible("..."); */
-    } else if ((int) ttyDisplay->cury < y) {
+    }
+    else if ((int)ttyDisplay->cury < y) {
         if (XD) {
-            while ((int) ttyDisplay->cury < y) {
+            while ((int)ttyDisplay->cury < y) {
                 xputs(XD);
                 ttyDisplay->cury++;
             }
-        } else if (nh_CM) {
+        }
+        else if (nh_CM) {
             cmov(x, y);
-        } else {
-            while ((int) ttyDisplay->cury < y) {
+        }
+        else {
+            while ((int)ttyDisplay->cury < y) {
                 xputc('\n');
                 ttyDisplay->curx = 0;
                 ttyDisplay->cury++;
             }
         }
     }
-    if ((int) ttyDisplay->curx < x) { /* Go to the right. */
+    if ((int)ttyDisplay->curx < x) { /* Go to the right. */
         if (!nh_ND) {
             cmov(x, y);
-        } else { /* bah */
-             /* should instead print what is there already */
-            while ((int) ttyDisplay->curx < x) {
+        }
+        else { /* bah */
+          /* should instead print what is there already */
+            while ((int)ttyDisplay->curx < x) {
                 xputs(nh_ND);
                 ttyDisplay->curx++;
             }
         }
-    } else if ((int) ttyDisplay->curx > x) {
-        while ((int) ttyDisplay->curx > x) { /* Go to the left. */
+    }
+    else if ((int)ttyDisplay->curx > x) {
+        while ((int)ttyDisplay->curx > x) { /* Go to the left. */
             xputs(BC);
             ttyDisplay->curx--;
         }
@@ -565,17 +573,17 @@ register int x, y;
 void
 xputc(c)
 #if defined(apollo)
-    int c;
+int c;
 #else
-    char c;
+char c;
 #endif
 {
-    (void) putchar(c);
+    (void)putchar(c);
 }
 
 void
 xputs(s)
-const char *s;
+const char* s;
 {
 #ifndef TERMLIB
     (void) fputs(s, stdout);
@@ -593,7 +601,8 @@ cl_end()
 {
     if (CE) {
         xputs(CE);
-    } else { /* no-CE fix - free after Harold Rynes */
+    }
+    else { /* no-CE fix - free after Harold Rynes */
         register int cx = ttyDisplay->curx + 1;
 
         /* this looks terrible, especially on a slow terminal
@@ -602,8 +611,8 @@ cl_end()
             xputc(' ');
             cx++;
         }
-        tty_curs(BASE_WINDOW, (int) ttyDisplay->curx + 1,
-                 (int) ttyDisplay->cury);
+        tty_curs(BASE_WINDOW, (int)ttyDisplay->curx + 1,
+            (int)ttyDisplay->cury);
     }
 }
 
@@ -694,8 +703,8 @@ tty_nhbell()
 {
     if (flags.silent)
         return;
-    (void) putchar('\007'); /* curx does not change */
-    (void) fflush(stdout);
+    (void)putchar('\007'); /* curx does not change */
+    (void)fflush(stdout);
 }
 
 #ifdef ASCIIGRAPH
@@ -739,7 +748,7 @@ tty_delay_output()
         return;
 #ifdef TIMED_DELAY
     if (flags.nap) {
-        (void) fflush(stdout);
+        (void)fflush(stdout);
         msleep(50); /* sleep for 50 milliseconds */
         return;
     }
@@ -748,14 +757,14 @@ tty_delay_output()
     /* simulate the delay with "cursor here" */
     for (i = 0; i < 3; i++) {
         cmov(ttyDisplay->curx, ttyDisplay->cury);
-        (void) fflush(stdout);
+        (void)fflush(stdout);
     }
 #else /* MICRO */
     /* BUG: if the padding character is visible, as it is on the 5620
        then this looks terrible. */
     if (flags.null) {
 #ifdef TERMINFO
-/* cbosgd!cbcephus!pds for SYS V R2 */
+        /* cbosgd!cbcephus!pds for SYS V R2 */
 #ifdef NHSTDC
         tputs("$<50>", 1, (int (*) ()) xputc);
 #else
@@ -769,14 +778,15 @@ tty_delay_output()
 #endif
 #endif
 
-    } else if (ospeed > 0 && ospeed < SIZE(tmspc10) && nh_CM) {
+    }
+    else if (ospeed > 0 && ospeed < SIZE(tmspc10) && nh_CM) {
         /* delay by sending cm(here) an appropriate number of times */
         register int cmlen =
             strlen(tgoto(nh_CM, ttyDisplay->curx, ttyDisplay->cury));
         register int i = 500 + tmspc10[ospeed] / 2;
 
         while (i > 0) {
-            cmov((int) ttyDisplay->curx, (int) ttyDisplay->cury);
+            cmov((int)ttyDisplay->curx, (int)ttyDisplay->cury);
             i -= cmlen * tmspc10[ospeed];
         }
     }
@@ -903,7 +913,8 @@ cl_eos() /* free after Robert Viduya */
 {
     if (nh_CD) {
         xputs(nh_CD);
-    } else {
+    }
+    else {
         register int cy = ttyDisplay->cury + 1;
 
         while (cy <= LI - 2) {
@@ -912,8 +923,8 @@ cl_eos() /* free after Robert Viduya */
             cy++;
         }
         cl_end();
-        tty_curs(BASE_WINDOW, (int) ttyDisplay->curx + 1,
-                 (int) ttyDisplay->cury);
+        tty_curs(BASE_WINDOW, (int)ttyDisplay->curx + 1,
+            (int)ttyDisplay->cury);
     }
 }
 
@@ -943,10 +954,10 @@ cl_eos() /* free after Robert Viduya */
  * characters on the assumed black background.
  */
 
-/* `curses' is aptly named; various versions don't like these
-    macros used elsewhere within nethack; fortunately they're
-    not needed beyond this point, so we don't need to worry
-    about reconstructing them after the header file inclusion. */
+ /* `curses' is aptly named; various versions don't like these
+     macros used elsewhere within nethack; fortunately they're
+     not needed beyond this point, so we don't need to worry
+     about reconstructing them after the header file inclusion. */
 #undef delay_output
 #undef TRUE
 #undef FALSE
@@ -955,7 +966,7 @@ cl_eos() /* free after Robert Viduya */
 #include <curses.h>
 
 #if !defined(LINUX) && !defined(__FreeBSD__) && !defined(NOTPARMDECL)
-extern char *tparm();
+extern char* tparm();
 #endif
 
 #ifndef COLOR_BLACK /* trust include file */
@@ -998,12 +1009,12 @@ static void
 init_hilite()
 {
     register int c;
-    char *setf, *scratch;
+    char* setf, * scratch;
     int md_len;
 
     if (tgetnum("Co") < 8 || (MD == NULL) || (strlen(MD) == 0)
-        || ((setf = tgetstr("AF", (char **) 0)) == (char *) 0
-            && (setf = tgetstr("Sf", (char **) 0)) == (char *) 0)) {
+        || ((setf = tgetstr("AF", (char**)0)) == (char*)0
+            && (setf = tgetstr("Sf", (char**)0)) == (char*)0)) {
         /* Fallback when colors not available
          * It's arbitrary to collapse all colors except gray
          * together, but that's what the previous code did.
@@ -1031,10 +1042,10 @@ init_hilite()
 
     c = 6;
     while (c--) {
-        char *work;
+        char* work;
 
         scratch = tparm(setf, ti_map[c].ti_color);
-        work = (char *) alloc(strlen(scratch) + md_len + 1);
+        work = (char*)alloc(strlen(scratch) + md_len + 1);
         Strcpy(work, MD);
         hilites[ti_map[c].nh_bright_color] = work;
         work += md_len;
@@ -1043,7 +1054,7 @@ init_hilite()
     }
 
     scratch = tparm(setf, COLOR_WHITE);
-    hilites[CLR_WHITE] = (char *) alloc(strlen(scratch) + md_len + 1);
+    hilites[CLR_WHITE] = (char*)alloc(strlen(scratch) + md_len + 1);
     Strcpy(hilites[CLR_WHITE], MD);
     Strcat(hilites[CLR_WHITE], scratch);
 
@@ -1057,10 +1068,11 @@ init_hilite()
          * black background.  We can use it to represent black objects.
          */
         scratch = tparm(setf, COLOR_BLACK);
-        hilites[CLR_BLACK] = (char *) alloc(strlen(scratch) + md_len + 1);
+        hilites[CLR_BLACK] = (char*)alloc(strlen(scratch) + md_len + 1);
         Strcpy(hilites[CLR_BLACK], MD);
         Strcat(hilites[CLR_BLACK], scratch);
-    } else {
+    }
+    else {
         /* But it's concievable that hilighted black-on-black could
          * still be invisible on many others.  We substitute blue for
          * black.
@@ -1102,17 +1114,17 @@ kill_hilite()
 /* find the foreground and background colors set by nh_HI or nh_HE */
 static void
 analyze_seq(str, fg, bg)
-char *str;
-int *fg, *bg;
+char* str;
+int* fg, * bg;
 {
     register int c, code;
     int len;
 
 #ifdef MICRO
-    *fg = CLR_GRAY;
+    * fg = CLR_GRAY;
     *bg = CLR_BLACK;
 #else
-    *fg = *bg = NO_COLOR;
+    * fg = *bg = NO_COLOR;
 #endif
 
     c = (str[0] == '\233') ? 1 : 2; /* index of char beyond esc prefix */
@@ -1125,29 +1137,35 @@ int *fg, *bg;
         if ((code = atoi(&str[c])) == 0) { /* reset */
             /* this also catches errors */
 #ifdef MICRO
-            *fg = CLR_GRAY;
+            * fg = CLR_GRAY;
             *bg = CLR_BLACK;
 #else
-            *fg = *bg = NO_COLOR;
+            * fg = *bg = NO_COLOR;
 #endif
-        } else if (code == 1) { /* bold */
+        }
+        else if (code == 1) { /* bold */
             *fg |= BRIGHT;
 #if 0
-        /* I doubt we'll ever resort to using blinking characters,
-           unless we want a pulsing glow for something.  But, in case
-           we do... -3. */
-        } else if (code == 5) { /* blinking */
+            /* I doubt we'll ever resort to using blinking characters,
+               unless we want a pulsing glow for something.  But, in case
+               we do... -3. */
+        }
+        else if (code == 5) { /* blinking */
             *fg |= BLINK;
-        } else if (code == 25) { /* stop blinking */
+        }
+        else if (code == 25) { /* stop blinking */
             *fg &= ~BLINK;
 #endif
-        } else if (code == 7 || code == 27) { /* reverse */
+        }
+        else if (code == 7 || code == 27) { /* reverse */
             code = *fg & ~BRIGHT;
             *fg = *bg | (*fg & BRIGHT);
             *bg = code;
-        } else if (code >= 30 && code <= 37) { /* hi_foreground RGB */
+        }
+        else if (code >= 30 && code <= 37) { /* hi_foreground RGB */
             *fg = code - 30;
-        } else if (code >= 40 && code <= 47) { /* hi_background RGB */
+        }
+        else if (code >= 40 && code <= 47) { /* hi_background RGB */
             *bg = code - 40;
         }
         while (digit(str[++c]))
@@ -1181,8 +1199,8 @@ init_hilite()
      */
     hilites[0] = NOCOL;
     for (c = 1; c < SIZE(hilites); c++) {
-        char *foo;
-        foo = (char *) alloc(sizeof("\033b0"));
+        char* foo;
+        foo = (char*)alloc(sizeof("\033b0"));
         if (tos_numcolors > 4)
             Sprintf(foo, "\033b%c", (c & ~BRIGHT) + '0');
         else
@@ -1196,7 +1214,8 @@ init_hilite()
         nh_HE = COLHE;
         hilites[CLR_GREEN] = hilites[CLR_GREEN | BRIGHT] = "\033b2";
         hilites[CLR_RED] = hilites[CLR_RED | BRIGHT] = "\033b1";
-    } else {
+    }
+    else {
         sprintf(hilites[CLR_BROWN], "\033b%c", (CLR_BROWN ^ BRIGHT) + '0');
         sprintf(hilites[CLR_GREEN], "\033b%c", (CLR_GREEN ^ BRIGHT) + '0');
 
@@ -1213,7 +1232,7 @@ init_hilite()
 
     for (c = 0; c < SIZE(hilites); c++)
         hilites[c] = nh_HI;
-    hilites[CLR_GRAY] = hilites[NO_COLOR] = (char *) 0;
+    hilites[CLR_GRAY] = hilites[NO_COLOR] = (char*)0;
 
     analyze_seq(nh_HI, &hi_foreg, &hi_backg);
     analyze_seq(nh_HE, &foreg, &backg);
@@ -1226,9 +1245,9 @@ init_hilite()
                 continue;
 #endif
             if (c == foreg)
-                hilites[c] = (char *) 0;
+                hilites[c] = (char*)0;
             else if (c != hi_foreg || backg != hi_backg) {
-                hilites[c] = (char *) alloc(sizeof("\033[%d;3%d;4%dm"));
+                hilites[c] = (char*)alloc(sizeof("\033[%d;3%d;4%dm"));
                 Sprintf(hilites[c], "\033[%d", !!(c & BRIGHT));
                 if ((c | BRIGHT) != (foreg | BRIGHT))
                     Sprintf(eos(hilites[c]), ";3%d", c & ~BRIGHT);
@@ -1255,9 +1274,9 @@ kill_hilite()
         if (hilites[c | BRIGHT] == hilites[c])
             hilites[c | BRIGHT] = 0;
         if (hilites[c] && (hilites[c] != nh_HI))
-            free((genericptr_t) hilites[c]), hilites[c] = 0;
+            free((genericptr_t)hilites[c]), hilites[c] = 0;
         if (hilites[c | BRIGHT] && (hilites[c | BRIGHT] != nh_HI))
-            free((genericptr_t) hilites[c | BRIGHT]), hilites[c | BRIGHT] = 0;
+            free((genericptr_t)hilites[c | BRIGHT]), hilites[c | BRIGHT] = 0;
     }
 #endif
     return;
@@ -1267,7 +1286,7 @@ kill_hilite()
 
 static char nulstr[] = "";
 
-static char *
+static char*
 s_atr2str(n)
 int n;
 {
@@ -1277,7 +1296,8 @@ int n;
         if (n == ATR_BLINK) {
             if (MB && *MB)
                 return MB;
-        } else { /* Underline */
+        }
+        else { /* Underline */
             if (nh_US && *nh_US)
                 return nh_US;
         }
@@ -1300,7 +1320,7 @@ int n;
     return nulstr;
 }
 
-static char *
+static char*
 e_atr2str(n)
 int n;
 {
@@ -1351,7 +1371,7 @@ term_start_attr(attr)
 int attr;
 {
     if (attr) {
-        const char *astr = s_atr2str(attr);
+        const char* astr = s_atr2str(attr);
 
         if (astr && *astr)
             xputs(astr);
@@ -1363,7 +1383,7 @@ term_end_attr(attr)
 int attr;
 {
     if (attr) {
-        const char *astr = e_atr2str(attr);
+        const char* astr = e_atr2str(attr);
 
         if (astr && *astr)
             xputs(astr);
@@ -1429,7 +1449,7 @@ int color;
     /* hilites[] not used */
     return iflags.use_color ? 1 : 0;
 #else
-    return hilites[color] != (char *) 0;
+    return hilites[color] != (char*)0;
 #endif
 }
 
