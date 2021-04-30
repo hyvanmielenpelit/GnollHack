@@ -511,11 +511,7 @@ E int FDECL(vprintf, (const char *, va_list));
 
 #ifdef MICRO
 E int FDECL(tgetent, (const char *, const char *));
-#if defined(apollo)
-E void FDECL(tputs, (const char*, int, void (*)(int)));
-#else
-E void FDECL(tputs, (const char *, int, void (*)(char)));
-#endif
+E void FDECL(tputs, (const char *, int, int (*)()));
 E int FDECL(tgetnum, (const char *));
 E int FDECL(tgetflag, (const char *));
 E char *FDECL(tgetstr, (const char *, char **));
@@ -523,11 +519,7 @@ E char *FDECL(tgoto, (const char *, int, int));
 #else
 #if !(defined(HPUX) && defined(_POSIX_SOURCE))
 E int FDECL(tgetent, (char *, const char *));
-#if defined(apollo)
-E void FDECL(tputs, (const char *, int, void (*)(int)));
-#else
-E void FDECL(tputs, (const char*, int, void (*)(char)));
-#endif
+E void FDECL(tputs, (const char *, int, int (*)()));
 #endif
 E int FDECL(tgetnum, (const char *));
 E int FDECL(tgetflag, (const char *));
