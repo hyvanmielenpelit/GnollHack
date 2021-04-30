@@ -583,7 +583,7 @@ const char *s;
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
     tputs(s, 1, (void (*) (char)) xputc);
 #else
-    tputs(s, 1, (void (*) (char)) xputc);
+    tputs(s, 1, xputc);
 #endif
 #endif
 }
@@ -759,13 +759,13 @@ tty_delay_output()
 #ifdef NHSTDC
         tputs("$<50>", 1, (void (*) (char)) xputc);
 #else
-        tputs("$<50>", 1, (void (*) (char)) xputc);
+        tputs("$<50>", 1, xputc);
 #endif
 #else
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
         tputs("50", 1, (void (*) (char)) xputc);
 #else
-        tputs("50", 1, (void (*) (char)) xputc);
+        tputs("50", 1, xputc);
 #endif
 #endif
 
@@ -815,13 +815,13 @@ int interval;
 #ifdef NHSTDC
         tputs("$<50>", 1, (void (*) (char)) xputc);
 #else
-        tputs("$<50>", 1, (void (*) (char)) xputc);
+        tputs("$<50>", 1, xputc);
 #endif
 #else
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
         tputs("50", 1, (void (*) (char)) xputc);
 #else
-        tputs("50", 1, (void (*) (char)) xputc);
+        tputs("50", 1, xputc);
 #endif
 #endif
 
@@ -872,13 +872,13 @@ int intervals;
 #ifdef NHSTDC
         tputs("$<50>", 1, (void (*) (char)) xputc);
 #else
-        tputs("$<50>", 1, (void (*) (char)) xputc);
+        tputs("$<50>", 1, xputc);
 #endif
 #else
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
         tputs("50", 1, (void (*) (char)) xputc);
 #else
-        tputs("50", 1, (void (*) (char)) xputc);
+        tputs("50", 1, xputc);
 #endif
 #endif
 
