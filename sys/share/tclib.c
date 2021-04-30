@@ -27,11 +27,7 @@ int FDECL(tgetnum, (const char *));
 char *FDECL(tgetstr, (const char *, char **));
 char *FDECL(tgoto, (const char *, int, int));
 char *FDECL(tparam, (const char *, char *, int, int, int, int, int));
-#if defined(GNH_APOLLO)
-void FDECL(tputs, (const char*, int, void (*)(int)));
-#else
-void FDECL(tputs, (const char *, int, void (*)(char)));
-#endif
+void FDECL(tputs, (const char *, int, int (*)()));
 
 /* local support data */
 static char *tc_entry;
@@ -508,14 +504,9 @@ void
 tputs(string, range, output_func)
 const char *string;   /* characters to output */
 int range;            /* number of lines affected, used for `*' delays */
-#if defined(GNH_APOLLO)
-void (*output_func)(int); /* actual output routine */
-#else
-void (*output_func)(char); /* actual output routine */
-#endif
+int (*output_func)(); /* actual output routine; return value ignored */
 {
-    register char c;
-    register int num = 0;
+    register int c, num = 0;
     register const char *p = string;
 
     if (!p || !*p)
@@ -533,16 +524,10 @@ void (*output_func)(char); /* actual output routine */
     }
 
     /* output the string */
-    while ((c = *p++) != '\0') 
-    {
+    while ((c = *p++) != '\0') {
         if (c == '\200')
             c = '\0'; /* undo tgetstr's encoding */
-
-#if defined(GNH_APOLLO)
-        (*output_func)((int)c);
-#else
-        (*output_func)(c);
-#endif
+        (void) (*output_func)(c);
     }
 
 #ifndef NO_DELAY_PADDING
@@ -560,13 +545,7 @@ void (*output_func)(char); /* actual output routine */
 
         c = PC; /* assume output_func isn't allowed to change PC */
         while (--num >= 0)
-        {
-#if defined(GNH_APOLLO)
-            (*output_func)((int)c);
-#else
-            (*output_func)(c);
-#endif
-        }
+            (void) (*output_func)(c);
     }
 #endif /* !NO_DELAY_PADDING */
 

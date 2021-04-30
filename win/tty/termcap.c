@@ -564,7 +564,7 @@ register int x, y;
 /* See note above. xputc() is a special function. */
 void
 xputc(c)
-#if defined(GNH_APOLLO)
+#if defined(apollo)
     int c;
 #else
     char c;
@@ -580,21 +580,11 @@ const char *s;
 #ifndef TERMLIB
     (void) fputs(s, stdout);
 #else
-
-#if defined(GNH_APOLLO)
-    tputs(s, 1, (void (*)(int))xputc);
-#else
-    tputs(s, 1, (void (*)(char))xputc);
-#endif
-
-#if 0 /* Not sure what was the deal here with odd function pointer signature --JG */
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
     tputs(s, 1, (int (*) ()) xputc);
 #else
     tputs(s, 1, xputc);
 #endif
-#endif
-
 #endif
 }
 
@@ -766,37 +756,17 @@ tty_delay_output()
     if (flags.null) {
 #ifdef TERMINFO
 /* cbosgd!cbcephus!pds for SYS V R2 */
-
-#if defined(GNH_APOLLO)
-        tputs("$<50>", 1, (void (*)(int))xputc);
-#else
-        tputs("$<50>", 1, (void (*)(char))xputc);
-#endif
-
-#if 0
 #ifdef NHSTDC
         tputs("$<50>", 1, (int (*) ()) xputc);
 #else
         tputs("$<50>", 1, xputc);
 #endif
-#endif
-
 #else
-#if defined(GNH_APOLLO)
-        tputs("50", 1, (void (*)(int))xputc);
-#else
-        tputs("50", 1, (void (*)(char))xputc);
-#endif
-
-        tputs("50", 1, xputc);
-#if 0
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
         tputs("50", 1, (int (*) ()) xputc);
 #else
         tputs("50", 1, xputc);
 #endif
-#endif
-
 #endif
 
     } else if (ospeed > 0 && ospeed < SIZE(tmspc10) && nh_CM) {
@@ -841,38 +811,18 @@ int interval;
        then this looks terrible. */
     if (flags.null) {
 #ifdef TERMINFO
-
-#if defined(GNH_APOLLO)
-        tputs("$<50>", 1, (void (*)(int))xputc);
-#else
-        tputs("$<50>", 1, (void (*)(char))xputc);
-#endif
-
-#if 0
         /* cbosgd!cbcephus!pds for SYS V R2 */
 #ifdef NHSTDC
         tputs("$<50>", 1, (int (*) ()) xputc);
 #else
         tputs("$<50>", 1, xputc);
 #endif
-#endif
-
 #else
-
-#if defined(GNH_APOLLO)
-        tputs("50", 1, (void (*)(int))xputc);
-#else
-        tputs("50", 1, (void (*)(char))xputc);
-#endif
-
-#if 0
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
         tputs("50", 1, (int (*) ()) xputc);
 #else
         tputs("50", 1, xputc);
 #endif
-#endif
-
 #endif
 
     }
@@ -919,36 +869,17 @@ int intervals;
     if (flags.null) {
 #ifdef TERMINFO
         /* cbosgd!cbcephus!pds for SYS V R2 */
-#if defined(GNH_APOLLO)
-        tputs("$<50>", 1, (void (*)(int))xputc);
-#else
-        tputs("$<50>", 1, (void (*)(char))xputc);
-#endif
-
-#if 0
 #ifdef NHSTDC
         tputs("$<50>", 1, (int (*) ()) xputc);
 #else
         tputs("$<50>", 1, xputc);
 #endif
-#endif
-
 #else
-
-#if defined(GNH_APOLLO)
-        tputs("50", 1, (void (*)(int))xputc);
-#else
-        tputs("50", 1, (void (*)(char))xputc);
-#endif
-
-#if 0
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
         tputs("50", 1, (int (*) ()) xputc);
 #else
         tputs("50", 1, xputc);
 #endif
-#endif
-
 #endif
 
     }

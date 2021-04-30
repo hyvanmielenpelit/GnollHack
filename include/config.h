@@ -601,10 +601,6 @@ typedef unsigned char uchar;
 # endif
 #endif
 
-#if defined(apollo)
-#define GNH_APOLLO
-#endif
-
 #include "global.h" /* Define everything else according to choices above */
 
 #endif /* CONFIG_H */
