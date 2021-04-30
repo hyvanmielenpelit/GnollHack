@@ -514,7 +514,8 @@ void (*output_func)(int); /* actual output routine */
 void (*output_func)(char); /* actual output routine */
 #endif
 {
-    register int c, num = 0;
+    register char c;
+    register int num = 0;
     register const char *p = string;
 
     if (!p || !*p)
@@ -537,7 +538,11 @@ void (*output_func)(char); /* actual output routine */
         if (c == '\200')
             c = '\0'; /* undo tgetstr's encoding */
 
+#if defined(apollo)
+        (*output_func)((int)c);
+#else
         (*output_func)(c);
+#endif
     }
 
 #ifndef NO_DELAY_PADDING
@@ -555,7 +560,13 @@ void (*output_func)(char); /* actual output routine */
 
         c = PC; /* assume output_func isn't allowed to change PC */
         while (--num >= 0)
+        {
+#if defined(apollo)
+            (*output_func)((int)c);
+#else
             (*output_func)(c);
+#endif
+        }
     }
 #endif /* !NO_DELAY_PADDING */
 
