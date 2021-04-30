@@ -511,7 +511,7 @@ E int FDECL(vprintf, (const char *, va_list));
 
 #ifdef MICRO
 E int FDECL(tgetent, (const char *, const char *));
-E void FDECL(tputs, (const char *, int, int (*)()));
+E void FDECL(tputs, (const char *, int, void (*)(char)));
 E int FDECL(tgetnum, (const char *));
 E int FDECL(tgetflag, (const char *));
 E char *FDECL(tgetstr, (const char *, char **));
@@ -519,7 +519,7 @@ E char *FDECL(tgoto, (const char *, int, int));
 #else
 #if !(defined(HPUX) && defined(_POSIX_SOURCE))
 E int FDECL(tgetent, (char *, const char *));
-E void FDECL(tputs, (const char *, int, int (*)()));
+E void FDECL(tputs, (const char *, int, void (*)(char)));
 #endif
 E int FDECL(tgetnum, (const char *));
 E int FDECL(tgetflag, (const char *));

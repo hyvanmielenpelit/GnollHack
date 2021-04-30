@@ -27,7 +27,7 @@ int FDECL(tgetnum, (const char *));
 char *FDECL(tgetstr, (const char *, char **));
 char *FDECL(tgoto, (const char *, int, int));
 char *FDECL(tparam, (const char *, char *, int, int, int, int, int));
-void FDECL(tputs, (const char *, int, int (*)()));
+void FDECL(tputs, (const char *, int, void (*)(char)));
 
 /* local support data */
 static char *tc_entry;
@@ -504,7 +504,7 @@ void
 tputs(string, range, output_func)
 const char *string;   /* characters to output */
 int range;            /* number of lines affected, used for `*' delays */
-int (*output_func)(); /* actual output routine; return value ignored */
+void (*output_func)(char); /* actual output routine; return value ignored */
 {
     register int c, num = 0;
     register const char *p = string;
@@ -524,10 +524,12 @@ int (*output_func)(); /* actual output routine; return value ignored */
     }
 
     /* output the string */
-    while ((c = *p++) != '\0') {
+    while ((c = *p++) != '\0') 
+    {
         if (c == '\200')
             c = '\0'; /* undo tgetstr's encoding */
-        (void) (*output_func)(c);
+
+        (*output_func)(c);
     }
 
 #ifndef NO_DELAY_PADDING
@@ -545,7 +547,7 @@ int (*output_func)(); /* actual output routine; return value ignored */
 
         c = PC; /* assume output_func isn't allowed to change PC */
         while (--num >= 0)
-            (void) (*output_func)(c);
+            (*output_func)(c);
     }
 #endif /* !NO_DELAY_PADDING */
 
