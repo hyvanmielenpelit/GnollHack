@@ -371,7 +371,7 @@ curses_str_remainder(const char *str, int width, int line_num)
 #define BUFSZ 256
 #endif
     char substr[BUFSZ * 2];
-    //char curstr[BUFSZ * 2];
+    char curstr[BUFSZ * 2];
     char tmpstr[BUFSZ * 2];
 
     if (strsize > (BUFSZ * 2) - 1) {
