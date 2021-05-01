@@ -336,17 +336,29 @@ STATIC_OVL void
 convert_arg(c)
 char c;
 {
-    register const char *str;
+    register const char *str = 0;
+    char buf[BUFSZ] = "";
 
     switch (c) {
     case 'p':
-        str = plname;
+        if (iflags.using_gui_sounds)
+            str = "adventurer";
+        else
+            str = plname;
         break;
     case 'c':
         str = (flags.female && urole.name.f) ? urole.name.f : urole.name.m;
         break;
     case 'r':
-        str = rank_of(u.ulevel, Role_switch, flags.female);
+        if (iflags.using_gui_sounds)
+        {
+            str = (flags.female && urole.name.f) ? urole.name.f : urole.name.m;
+            strcpy(buf, str);
+            *buf = lowc(*buf);
+            str = 0;
+        }
+        else
+            str = rank_of(u.ulevel, Role_switch, flags.female);
         break;
     case 'R':
         str = rank_of(MIN_QUEST_LEVEL, Role_switch, flags.female);
@@ -421,7 +433,11 @@ char c;
         str = "";
         break;
     }
-    Strcpy(cvt_buf, str);
+
+    if(str)
+        Strcpy(cvt_buf, str);
+    else
+        Strcpy(cvt_buf, buf);
 }
 
 STATIC_OVL void
@@ -619,16 +635,28 @@ int msgnum;
 
     (void) dlb_fseek(msg_file, qt_msg->offset, SEEK_SET);
     if (qt_msg->delivery == 'p')
+    {
+        play_voice_com_pager(msgnum, TRUE);
         deliver_by_pline(qt_msg);
+    }
     else if (msgnum == 1)
+    {
+        play_intro_text();
         deliver_by_window(qt_msg, NHW_MENU);
+        stop_all_immediate_sounds();
+    }
     else
+    {
+        play_voice_com_pager(msgnum, FALSE);
         deliver_by_window(qt_msg, NHW_TEXT);
+        stop_all_immediate_sounds();
+    }
     return;
 }
 
 void
-qt_pager(msgnum)
+qt_pager(mtmp, msgnum)
+struct monst* mtmp;
 int msgnum;
 {
     struct qtmsg *qt_msg;
@@ -654,9 +682,16 @@ int msgnum;
 
     (void) dlb_fseek(msg_file, qt_msg->offset, SEEK_SET);
     if (qt_msg->delivery == 'p' && strcmp(windowprocs.name, "X11"))
+    {
+        play_voice_quest_pager(mtmp, qt_msg->msgnum, TRUE);
         deliver_by_pline(qt_msg);
+    }
     else
+    {
+        play_voice_quest_pager(mtmp, qt_msg->msgnum, FALSE);
         deliver_by_window(qt_msg, NHW_TEXT);
+        stop_all_immediate_sounds();
+    }
     return;
 }
 

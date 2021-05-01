@@ -9733,17 +9733,61 @@ play_intro_text()
 }
 
 void
-stop_all_immediate_sounds()
+play_voice_com_pager(msgnum, is_dialogue)
+int msgnum;
+boolean is_dialogue;
 {
-#if 0
     struct ghsound_immediate_info info = { 0 };
-    info.ghsound = GHSOUND_NONE;
-    info.volume = 0.0f;
-    info.stop_sounds = TRUE;
+    info.ghsound = GHSOUND_COM_PAGER;
+    info.volume = 1.0f;
+    info.sound_type = is_dialogue ? IMMEDIATE_SOUND_DIALOGUE : IMMEDIATE_SOUND_SFX;
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.dialogue_mid = 0;
+
+    info.parameter_names[0] = "RoleIndex";
+    info.parameter_values[0] = (float)urole.rolenum;
+    info.parameter_names[1] = "MsgIndex";
+    info.parameter_values[1] = (float)msgnum;
+    info.parameter_names[2] = (char*)0;
 
     play_immediate_ghsound(info);
-#endif
+}
 
+void
+play_voice_quest_pager(mon, msgnum, is_dialogue)
+struct monst* mon;
+int msgnum;
+boolean is_dialogue;
+{
+    struct ghsound_immediate_info info = { 0 };
+    info.ghsound = GHSOUND_QUEST_PAGER;
+    info.sound_type = is_dialogue ? IMMEDIATE_SOUND_DIALOGUE : IMMEDIATE_SOUND_SFX;
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.dialogue_mid = mon ? mon->m_id : 0;
+
+    info.parameter_names[0] = "RoleIndex";
+    info.parameter_values[0] = (float)urole.rolenum;
+    info.parameter_names[1] = "MsgIndex";
+    info.parameter_values[1] = (float)msgnum;
+    info.parameter_names[2] = "AlignmentIndex";
+    info.parameter_values[2] = (float)u.ualign.type;
+    info.parameter_names[3] = (char*)0;
+
+    float volume = 1.0f;
+    if (mon && isok(mon->mx, mon->my))
+    {
+        float hearing = hearing_array[mon->mx][mon->my];
+        volume = max(0.15f, max(context.global_minimum_volume, volume * hearing_array[mon->mx][mon->my]));
+    }
+
+    info.volume = min(1.0f, volume);
+
+    play_immediate_ghsound(info);
+}
+
+void
+stop_all_immediate_sounds()
+{
     struct stop_all_info info = { 0 };
     info.stop_flags = STOP_SOUNDS_FLAGS_IMMEDIATE_ALL;
     stop_all_sounds(info);

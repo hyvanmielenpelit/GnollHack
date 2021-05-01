@@ -113,13 +113,13 @@ Let me see if you have gained experience in the interim."
 Are you finally ready for the task that must be accomplished?"
 %E
 %Cc Arc 00018
-"%p, you have failed us.  All of my careful training has been in
+"%P, you have failed us.  All of my careful training has been in
 vain.  Begone!  Your tenure at this college has been revoked!
 
 "You are a disgrace to the profession!"
 %E ["%pC, you have failed us.  Begone!"]
 %Cc Arc 00019
-"%p, you are yet too inexperienced to undertake such a demanding
+"%P, you are yet too inexperienced to undertake such a demanding
 quest.  A mere %r could not possibly face the rigors demanded and
 survive.  Go forth, and come here again when your adventures have further
 taught you."

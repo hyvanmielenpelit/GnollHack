@@ -876,7 +876,6 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success WIS", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Resistance/Enemy Resistance Success CHA", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Vampire Transforms", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Gem/Glass/Glass Break", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Monster Is Hit with Celestial Magic", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Body Crumbles To Dust", 1.0f },
@@ -906,6 +905,11 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Too Much to Comprehend", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Air Crackles", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Aggravate Monster", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Com Pager", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Quest Pager", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Circle/Fire", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Circle/Frost", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Circle/Lightning", 1.0f },
