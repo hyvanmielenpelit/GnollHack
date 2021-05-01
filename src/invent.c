@@ -2315,7 +2315,7 @@ const char* headertext;
     //long dummymask;
     //Loot *sortedinvent, *srtinv;
 
-    construct_getobj_letters(let, word, lets, altlets, sizeof lets, sizeof altlets, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, getobj_autoselect_obj);
+    construct_getobj_letters(let, word, lets, altlets, buf, sizeof lets, sizeof altlets, sizeof buf, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, getobj_autoselect_obj);
     if (getobj_autoselect_obj)
     {
         if (index(lets, getobj_autoselect_obj->invlet))
@@ -2772,10 +2772,10 @@ const char* headertext;
 }
 
 void
-construct_getobj_letters(let, word, lets, altlets, lets_size, altlets_size, foo_ptr, foox_ptr, bp_ptr, allowcnt_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr, otmp_only)
+construct_getobj_letters(let, word, lets, altlets, buf, lets_size, altlets_size, buf_size, foo_ptr, foox_ptr, bp_ptr, allowcnt_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr, otmp_only)
 register const char *let, *word;
-char* lets, *altlets;
-size_t lets_size UNUSED, altlets_size;
+char* lets, *altlets, *buf;
+size_t lets_size UNUSED, altlets_size, buf_size;
 int* foo_ptr;
 xchar *foox_ptr, *allowcnt_ptr;
 char** bp_ptr;
@@ -2783,11 +2783,11 @@ boolean *usegold_ptr, *allowall_ptr, *allownone_ptr, *useboulder_ptr;
 struct obj* otmp_only;
 {
     register struct obj* otmp;
-    char buf[BUFSZ], leftbuf[BUFSZ], rightbuf[BUFSZ];
+    char leftbuf[BUFSZ], rightbuf[BUFSZ];
     char *ap;
     boolean is_dip_into = FALSE;
     int foo = 0;
-    char* bp = buf;
+    char *bp = *bp_ptr;
     xchar allowcnt = 0; /* 0, 1 or 2 */
     boolean usegold = FALSE; /* can't use gold because its illegal */
     boolean allowall = FALSE;
@@ -2876,7 +2876,7 @@ struct obj* otmp_only;
         if (otmp_only && otmp != otmp_only)
             continue;
 
-        if (&bp[foo] == &buf[sizeof buf - 1]
+        if (&bp[foo] == &buf[buf_size - 1]
             || ap == &altlets[altlets_size - 1])
         {
             /* we must have a huge number of NOINVSYM items somehow */
@@ -3084,7 +3084,7 @@ register const char* word;
     boolean useboulder = FALSE;
     xchar foox = 0;
 
-    construct_getobj_letters(let, word, lets, altlets, sizeof lets, sizeof altlets, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, otmp);
+    construct_getobj_letters(let, word, lets, altlets, buf, sizeof lets, sizeof altlets, sizeof buf, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, otmp);
 
     return !!index(lets, ilet);
 }
