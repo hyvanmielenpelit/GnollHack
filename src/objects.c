@@ -2926,7 +2926,7 @@ SPELL("power word stun",   "ludicrous", None, None, "Stuns the target",//Note mo
 SPELL("power word blind",   "anomalous", None, None, "Blinds the target", //Note monsters have a blindness timer
     P_ENCHANTMENT_SPELL,        4,  5,           250, 8, 80, A_MAX_INT_CHA, 8, 0, 5, -8, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 5, 10, 50, S1_NONE, S2_NONE, ALL_TARGETS, AD_BLND, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("mirror image",            "nonsensical", None, None, "A displaced mirror image appears beside the caster",
-    P_ENCHANTMENT_SPELL,        5, 3,             0, 2, 16, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, DISPLACED, 0, 0, 0, 0, 6, 10, 180, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+    P_ENCHANTMENT_SPELL,        5, 3,             0, 1, 6, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, DISPLACED, 0, 0, 0, 0, 6, 10, 180, S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
 SPELL("cure sickness",   "indigo", None, None, "Cures sickness, terminal illness, and sliming",
       P_HEALING_SPELL,            5,  3,             0, 3, 20, A_WIS, 5, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_HEAL, CLR_BLUE, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
