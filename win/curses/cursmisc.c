@@ -362,7 +362,7 @@ curses_str_remainder(const char *str, int width, int line_num)
     int strsize = strlen(str) + 1;
 #if __STDC_VERSION__ >= 199901L
     char substr[strsize];
-    //char curstr[strsize];
+    char curstr[strsize];
     char tmpstr[strsize];
 
     strcpy(substr, str);
