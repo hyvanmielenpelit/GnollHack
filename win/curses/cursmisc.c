@@ -399,12 +399,13 @@ curses_str_remainder(const char *str, int width, int line_num)
         if (last_space == 0) {  /* No spaces found */
             last_space = count - 1;
         }
-#if 0 /* Does not do anything */
+
         for (count = 0; count < last_space; count++) {
             curstr[count] = substr[count];
         }
         curstr[count] = '\0';
-#endif
+        curstr[count] = curstr[count]; /* Remove warning on not using curstr */
+
         if (substr[count] == '\0') {
             break;
         }
