@@ -3998,10 +3998,10 @@ ddoinv()
                         Sprintf(eos(tabbuf), "%s", " ");
                 }
 
-                if (efp->key != '\0')
+                if (efp->bound_key != '\0')
                     Sprintf(shortcutbuf, "%s(%s%c)", tabbuf,
-                        (efp->key & ctrlmask) == 0 ? "Ctrl-" : (efp->key & altmask) == altmask ? "Alt-" : "",
-                        (efp->key & ctrlmask) == 0 ? efp->key | ctrlmask : (efp->key & altmask) == altmask ? efp->key & ~altmask : efp->key);
+                        (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
+                        (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
                 else
                     strcpy(shortcutbuf, "");
 

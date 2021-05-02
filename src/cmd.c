@@ -4684,10 +4684,10 @@ int cmdflag;
         uchar altmask = 0x80;
         uchar ctrlmask = 0x20 | 0x40;
 
-        if (efp->key != '\0')
+        if (efp->bound_key != '\0')
             Sprintf(shortcutbuf, "  (%s%c)",
-            (efp->key & ctrlmask) == 0 ? "Ctrl-" : (efp->key & altmask) == altmask ? "Alt-" : "",
-                (efp->key & ctrlmask) == 0 ? efp->key | ctrlmask : (efp->key & altmask) == altmask ? efp->key & ~altmask : efp->key);
+            (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
+                (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
         else
             strcpy(shortcutbuf, "");
 
@@ -5241,6 +5241,8 @@ commands_init()
     (void) bind_key(M('4'), "targeting");
     (void) bind_key(M('*'), "targeting");
 #endif
+
+    update_bindings_list();
 }
 
 int
@@ -6208,6 +6210,32 @@ boolean initial;
         backed_dir_cmd = TRUE;
         for (i = 0; i < 8; i++)
             (void) bind_key(Cmd.dirchars[i], "nothing");
+
+        update_bindings_list();
+    }
+}
+
+void
+update_bindings_list()
+{
+    struct ext_func_tab* efp;
+    for (efp = extcmdlist; efp->ef_txt; efp++) 
+    {
+        efp->bound_key = 0;
+        if (efp->key && Cmd.commands[efp->key] == efp)
+        {
+            efp->bound_key = efp->key;
+            continue;
+        }
+
+        for (int i = 0; i < 256; i++)
+        {
+            if (Cmd.commands[i] == efp)
+            {
+                efp->bound_key = i;
+                break;
+            }
+        }
     }
 }
 

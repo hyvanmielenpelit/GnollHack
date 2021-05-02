@@ -2411,6 +2411,7 @@ char *origbuf;
     {
         if (!parsebindings(bufp))
             retval = FALSE;
+        update_bindings_list();
     }
     else if (match_varname(buf, "AUTOCOMPLETE", 5))
     {

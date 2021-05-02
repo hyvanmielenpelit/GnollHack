@@ -965,7 +965,10 @@ initoptions_finish()
 
     /* wait_on_space */
     if (flags.rest_on_space)
+    {
         (void)bind_key(' ', "wait");
+        update_bindings_list();
+    }
 
 #ifdef STATUS_HILITES
     /*
@@ -5231,6 +5234,8 @@ doset() /* changing options via menu by Per Liboriussen */
             (void)bind_key(' ', "wait");
         else
             (void)bind_key(' ', "nothing");
+
+        update_bindings_list();
     }
 
     return 0;
