@@ -1665,7 +1665,7 @@ dochat()
         return 0;
     }
 
-    if (!mtmp || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE
+    if (!mtmp || mtmp->mundetected || !canspotmon(mtmp) || M_AP_TYPE(mtmp) == M_AP_FURNITURE
         || M_AP_TYPE(mtmp) == M_AP_OBJECT)
     {
         play_sfx_sound(SFX_GENERAL_NOTHING_THERE);

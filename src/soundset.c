@@ -9753,10 +9753,23 @@ boolean is_dialogue;
 
     struct ghsound_immediate_info info = { 0 };
     info.ghsound = GHSOUND_COM_PAGER;
-    info.volume = 1.0f;
     info.sound_type = is_dialogue ? IMMEDIATE_SOUND_DIALOGUE : IMMEDIATE_SOUND_SFX;
     info.play_group = SOUND_PLAY_GROUP_LONG;
     info.dialogue_mid = 0;
+
+    if (is_dialogue)
+    {
+        float volume = 1.0f;
+        if (mon && isok(mon->mx, mon->my))
+        {
+            float hearing = hearing_array[mon->mx][mon->my];
+            volume = max(0.15f, max(context.global_minimum_volume, volume * hearing_array[mon->mx][mon->my]));
+        }
+
+        info.volume = min(1.0f, volume);
+    }
+    else
+        info.volume = 1.0f;
 
     info.parameter_names[0] = "RoleIndex";
     info.parameter_values[0] = (float)urole.rolenum;
@@ -9787,14 +9800,19 @@ boolean is_dialogue;
     info.parameter_values[2] = (float)u.ualign.type;
     info.parameter_names[3] = (char*)0;
 
-    float volume = 1.0f;
-    if (mon && isok(mon->mx, mon->my))
+    if (is_dialogue)
     {
-        float hearing = hearing_array[mon->mx][mon->my];
-        volume = max(0.15f, max(context.global_minimum_volume, volume * hearing_array[mon->mx][mon->my]));
-    }
+        float volume = 1.0f;
+        if (mon && isok(mon->mx, mon->my))
+        {
+            float hearing = hearing_array[mon->mx][mon->my];
+            volume = max(0.15f, max(context.global_minimum_volume, volume * hearing_array[mon->mx][mon->my]));
+        }
 
-    info.volume = min(1.0f, volume);
+        info.volume = min(1.0f, volume);
+    }
+    else
+        info.volume = 1.0f;
 
     play_immediate_ghsound(info);
 }
