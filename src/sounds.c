@@ -16,6 +16,8 @@ STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_sit, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_givepaw, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_pet, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_good_boy_girl, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_stay, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_standup, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_follow, (struct monst*));
@@ -1824,6 +1826,22 @@ dochat()
     /* Tame dog and cat commands */
     if (has_edog(mtmp) && is_tame(mtmp) && is_peaceful(mtmp))
     {
+        if (mtmp->data->mlet == S_DOG)
+        {
+            Sprintf(available_chat_list[chatnum].name, "\"Good %s!\"", mtmp->female ? "girl" : "boy");
+            available_chat_list[chatnum].function_ptr = &do_chat_pet_good_boy_girl;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
         if (mtmp->data->mlet == S_DOG && !mtmp->mstaying && mtmp->mwantstomove)
         {
             strcpy(available_chat_list[chatnum].name, "Command to sit down");
@@ -1839,6 +1857,7 @@ dochat()
 
             chatnum++;
         }
+
         if (mtmp->data->mlet == S_DOG)
         {
             strcpy(available_chat_list[chatnum].name, "Command to give paw");
@@ -1853,6 +1872,7 @@ dochat()
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
+
         }
 
         if (!mtmp->mstaying && mtmp->mwantstomove)
@@ -1988,9 +2008,27 @@ dochat()
 
     }
 
-    /* This is available also for hostile creatures */
+    /* These are available also for hostile creatures */
+    if (is_animal(mtmp->data))
+    {
+        /* Petting */
+        Sprintf(available_chat_list[chatnum].name, "Pet %s", mon_nam(mtmp));
+        available_chat_list[chatnum].function_ptr = &do_chat_pet_pet;
+        available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+        any = zeroany;
+        any.a_char = available_chat_list[chatnum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+        chatnum++;
+    }
+
     if ((is_domestic(mtmp->data) || mtmp->data->mlet == S_DOG || mtmp->data->mlet == S_FELINE || mtmp->data->mlet == S_YETI || mtmp->data->mlet == S_UNICORN || is_tame(mtmp)) && (carnivorous(mtmp->data) || herbivorous(mtmp->data)))
     {
+        /* Feeding */
         Sprintf(available_chat_list[chatnum].name, "Feed %s", mon_nam(mtmp));
         available_chat_list[chatnum].function_ptr = &do_chat_feed;
         available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -2151,6 +2189,7 @@ dochat()
             chatnum++;
         }
     }
+
 
     /* Peaceful monster with sellable items */
     if (is_peaceful(mtmp) && !(is_tame(mtmp) && !mtmp->ispartymember)
@@ -3219,6 +3258,112 @@ struct monst* mtmp;
     }
     else
         pline("%s stares at you but does nothing.", Monnam(mtmp));
+
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_pet_good_boy_girl(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return 0;
+
+    if (is_animal(mtmp->data) && mtmp->mtame > 2 && rn2(3) && mon_can_move(mtmp))
+    {
+        play_monster_happy_sound(mtmp, MONSTER_HAPPY_SOUND_NORMAL);
+
+        switch (mtmp->data->msound)
+        {
+        case MS_BARK:
+            pline("%s woofs!", Monnam(mtmp));
+            break;
+        case MS_MEW:
+            pline("%s mews softly!", Monnam(mtmp));
+            break;
+        default:
+            pline("%s seems to appreciate your kind words!", Monnam(mtmp));
+            break;
+        }
+
+        if (mtmp->mtame > 0 && mtmp->mtame < 10 && !rn2(20))
+            mtmp->mtame++;
+
+        if (mtmp->mtame >= 8 && !mtmp->isfaithful && !rn2(20))
+            mtmp->isfaithful = 1;
+    }
+    else if(mon_can_move(mtmp))
+        domonnoise(mtmp);
+    else
+        pline("%s does not seem to react to your words.", Monnam(mtmp));
+
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_pet_pet(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return 0;
+
+    if (is_animal(mtmp->data) && !is_peaceful(mtmp))
+    {
+        if (!rn2(is_domestic(mtmp->data) ? 20 : 200) && !(mtmp->data->mflags2 & M2_HOSTILE) && !(mtmp->data->geno & G_UNIQ) && !mtmp->iswiz && mtmp->cham < LOW_PM)
+        {
+            mtmp->mpeaceful = 1;
+            pline("%s seems to appreciate your gesture!", Monnam(mtmp));
+        }
+        else
+            pline("%s does not seem to appreciate your gesture!", Monnam(mtmp));
+    }
+    else if (is_animal(mtmp->data) && is_peaceful(mtmp) && !is_tame(mtmp))
+    {
+        if (!rn2(is_domestic(mtmp->data) ? 20 : 200) && !(mtmp->data->mflags2 & M2_HOSTILE) && !(mtmp->data->geno & G_UNIQ) && !mtmp->iswiz && mtmp->cham < LOW_PM)
+        {
+            mtmp->mpeaceful = 1;
+            tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE);
+            pline("%s seems to appreciate your gesture!", Monnam(mtmp));
+        }
+        else
+        {
+            pline("%s does not seem to appreciate your gesture!", Monnam(mtmp));
+            if (!rn2(is_domestic(mtmp->data) ? 20 : 4) && !(mtmp->data->mflags2 & M2_PEACEFUL))
+            {
+                setmangry(mtmp, FALSE);
+            }
+        }
+    }
+    else if (is_animal(mtmp->data) && mtmp->mtame > 0 && rn2(3) && mon_can_move(mtmp))
+    {
+        play_monster_happy_sound(mtmp, MONSTER_HAPPY_SOUND_PURR);
+
+        switch (mtmp->data->msound)
+        {
+        case MS_BARK:
+            pline("%s grunts softly!", Monnam(mtmp));
+            break;
+        case MS_MEW:
+            pline("%s purrs!", Monnam(mtmp));
+            break;
+        default:
+            pline("%s seems to appreciate your gesture!", Monnam(mtmp));
+            break;
+        }
+
+        if (mtmp->mtame > 0 && mtmp->mtame < 10 && !rn2(20))
+            mtmp->mtame++;
+
+        if (mtmp->mtame >= 8 && !mtmp->isfaithful && !rn2(20))
+            mtmp->isfaithful = 1;
+    }
+    else if(rn2(3) && mon_can_move(mtmp))
+        domonnoise(mtmp);
+    else
+        pline("%s does not seem to react to your gesture.", Monnam(mtmp));
+
+    force_redraw_at(mtmp->mx, mtmp->my);
+    flush_screen(1);
 
     return 1;
 }

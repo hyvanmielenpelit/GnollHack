@@ -3007,6 +3007,7 @@ E void FDECL(play_monster_special_dialogue_line, (struct monst*, int));
 E void FDECL(play_monster_standard_sound, (struct monst*, enum monster_standard_sounds));
 E void FDECL(play_monster_special_sound, (struct monst*, int));
 E void FDECL(play_monster_ouch_sound, (struct monst*, enum monster_ouch_sounds));
+E void FDECL(play_monster_happy_sound, (struct monst*, enum monster_happy_sounds));
 E enum monster_soundset_types FDECL(get_monster_soundset, (struct monst*));
 E void FDECL(play_voice_com_pager, (struct monst*, int, boolean));
 E void FDECL(play_voice_quest_pager, (struct monst*, int, boolean));

@@ -778,6 +778,8 @@ enum ghsound_types {
     GHSOUND_TOO_MUCH_TO_COMPREHEND,
     GHSOUND_AIR_CRACKLES,
     GHSOUND_AGGRAVATE_MONSTER,
+    GHSOUND_CAT_HAPPY,
+    GHSOUND_DOG_HAPPY,
 
     GHSOUND_INTRO_TEXT,
     GHSOUND_COM_PAGER,
@@ -2020,7 +2022,7 @@ enum monster_sound_types {
     MONSTER_SOUND_TYPE_BUMP_INTO,
     MONSTER_SOUND_TYPE_SEARCH,
     MONSTER_SOUND_TYPE_CAST,
-    MONSTER_SOUND_TYPE_PRAY, /* Obsolete, to be replaced with something else */
+    MONSTER_SOUND_TYPE_HAPPY, /* Line indexed */
     MONSTER_SOUND_TYPE_LAUGHTER,
     MONSTER_SOUND_TYPE_RANDOM_SOUND,
     MONSTER_SOUND_TYPE_HOWL_IN_ANGER,
@@ -2366,6 +2368,12 @@ enum monster_ouch_sounds
     MONSTER_OUCH_SOUND_PAINFUL_HEADACHE,        /* Aches painfully */
     MONSTER_OUCH_SOUND_VERY_PAINFUL_HEADACHE,   /* Aches very painfully */
     MONSTER_OUCH_SOUND_SCREAM_IN_TERROR,
+};
+
+enum monster_happy_sounds
+{
+    MONSTER_HAPPY_SOUND_NORMAL = 0,
+    MONSTER_HAPPY_SOUND_PURR, 
 };
 
 /* Order enums for some special lines, just as a note */
