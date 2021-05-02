@@ -908,6 +908,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Aggravate Monster", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Happy", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Happy", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Happy", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Ram/Ram Happy", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Com Pager", 1.0f },

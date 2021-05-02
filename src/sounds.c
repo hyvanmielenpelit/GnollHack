@@ -3245,15 +3245,12 @@ struct monst* mtmp;
         return 0;
 
     boolean givepawsuccess = FALSE;
-    if (mtmp->mtame >= 1 && mtmp->mtame <= 4)
-        givepawsuccess = !rn2(6 - is_tame(mtmp));
-    else if (mtmp->mtame >= 5)
-        givepawsuccess = TRUE;
+    givepawsuccess = mtmp->mtame > 1 ? rn2(mtmp->mtame) : FALSE;
 
     if (givepawsuccess)
     {
         pline("%s gives you the paw!", Monnam(mtmp));
-        if (mtmp->mtame > 0 && mtmp->mtame < 5)
+        if (mtmp->mtame > 0 && mtmp->mtame < 20 && !rn2(mtmp->mtame + 20))
             mtmp->mtame++;
     }
     else
@@ -3269,30 +3266,36 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
-    if (is_animal(mtmp->data) && mtmp->mtame > 2 && rn2(mtmp->mtame) && mon_can_move(mtmp))
+    if (is_animal(mtmp->data) && mtmp->mtame > 2 && rn2(mtmp->mtame) && mon_can_move(mtmp) && (!has_edog(mtmp) || (has_edog(mtmp) && (EDOG(mtmp)->abuse <= 0 || !rn2(EDOG(mtmp)->abuse + 2)))))
     {
         play_monster_happy_sound(mtmp, MONSTER_HAPPY_SOUND_NORMAL);
 
         switch (mtmp->data->msound)
         {
         case MS_BARK:
-            pline("%s woofs!", Monnam(mtmp));
+            pline("%s woofs.", Monnam(mtmp));
             break;
         case MS_MEW:
-            pline("%s mews softly!", Monnam(mtmp));
+            pline("%s mews softly.", Monnam(mtmp));
+            break;
+        case MS_NEIGH:
+            pline("%s snorts.", Monnam(mtmp));
+            break;
+        case MS_BLEAT:
+            pline("%s baas.", Monnam(mtmp));
             break;
         default:
             pline("%s seems to appreciate your kind words!", Monnam(mtmp));
             break;
         }
 
-        if (mtmp->mtame > 0 && mtmp->mtame < 10 && !rn2(20))
+        if (mtmp->mtame > 0 && mtmp->mtame < 20 && !rn2(10 + mtmp->mtame))
             mtmp->mtame++;
 
-        if (mtmp->mtame >= 8 && !mtmp->isfaithful && !rn2(20))
+        if (mtmp->mtame >= 15 && !mtmp->isfaithful && !rn2(max(2, 25 - mtmp->mtame)))
             mtmp->isfaithful = 1;
     }
-    else if(mon_can_move(mtmp))
+    else if(rn2(4) && mon_can_move(mtmp))
         domonnoise(mtmp);
     else
         pline("%s does not seem to react to your words.", Monnam(mtmp));
@@ -3334,30 +3337,36 @@ struct monst* mtmp;
             }
         }
     }
-    else if (is_animal(mtmp->data) && mtmp->mtame > 0 && rn2(mtmp->mtame + 1) && mon_can_move(mtmp))
+    else if (is_animal(mtmp->data) && mtmp->mtame > 0 && rn2(mtmp->mtame + 1) && mon_can_move(mtmp) && (!has_edog(mtmp) || (has_edog(mtmp) && (EDOG(mtmp)->abuse <= 0 || !rn2(EDOG(mtmp)->abuse + 2)))))
     {
         play_monster_happy_sound(mtmp, MONSTER_HAPPY_SOUND_PURR);
 
         switch (mtmp->data->msound)
         {
         case MS_BARK:
-            pline("%s grunts softly!", Monnam(mtmp));
+            pline("%s grunts softly in appreciation!", Monnam(mtmp));
             break;
         case MS_MEW:
-            pline("%s purrs!", Monnam(mtmp));
+            pline("%s purrs in appreciation!", Monnam(mtmp));
+            break;
+        case MS_NEIGH:
+            pline("%s snorts in appreciation!", Monnam(mtmp));
+            break;
+        case MS_BLEAT:
+            pline("%s baas in appreciation!", Monnam(mtmp));
             break;
         default:
             pline("%s seems to appreciate your gesture!", Monnam(mtmp));
             break;
         }
 
-        if (mtmp->mtame > 0 && mtmp->mtame < 10 && !rn2(20))
+        if (mtmp->mtame > 0 && mtmp->mtame < 20 && !rn2(10 + mtmp->mtame))
             mtmp->mtame++;
 
-        if (mtmp->mtame >= 8 && !mtmp->isfaithful && !rn2(20))
+        if (mtmp->mtame >= 15 && !mtmp->isfaithful && !rn2(max(2, 25 - mtmp->mtame)))
             mtmp->isfaithful = 1;
     }
-    else if(rn2(3) && mon_can_move(mtmp))
+    else if(rn2(4) && mon_can_move(mtmp))
         domonnoise(mtmp);
     else
         pline("%s does not seem to react to your gesture.", Monnam(mtmp));

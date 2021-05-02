@@ -1249,9 +1249,12 @@ boolean thrown;
         newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
     }
 
-    if (obj) { /* thrown food */
+    if (obj) 
+    { /* thrown food */
         if (!thrown)
+        {
             pline("%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
+        }
 
         /* defer eating until the edog extension has been set up */
         place_object(obj, mtmp->mx, mtmp->my); /* put on floor */
