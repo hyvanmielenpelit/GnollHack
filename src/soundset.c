@@ -9826,6 +9826,19 @@ stop_all_immediate_sounds()
 }
 
 void
+stop_all_dialogue_of_mon(mon)
+struct monst* mon;
+{
+    if (!mon)
+        return;
+
+    struct stop_all_info info = { 0 };
+    info.stop_flags = STOP_SOUNDS_FLAGS_IMMEDIATE_LONG | STOP_SOUNDS_FLAGS_ONLY_DIALOGUE_MID;
+    info.dialogue_mid = mon->m_id;
+    stop_all_sounds(info);
+}
+
+void
 play_voice_shopkeeper_welcome(shkp, rt)
 struct monst* shkp;
 int rt;

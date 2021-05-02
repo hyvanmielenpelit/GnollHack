@@ -23,6 +23,7 @@ struct GNHSoundInstance {
     int sound_type;
     boolean queued;
     boolean finished_playing; /* Used just for queable dialogues */
+    unsigned int dialogue_mid;
     struct GNHSoundInstance* next_instance;
 };
 
@@ -2186,14 +2187,6 @@ extern "C"
                 for (int i = NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1; i >= 1; i--)
                 {
                     longImmediateSoundInstances[i] = longImmediateSoundInstances[i - 1];
-                    /*
-                    longImmediateSoundInstances[i].eventInstance = longImmediateSoundInstances[i - 1].eventInstance;
-                    longImmediateSoundInstances[i].ghsound = longImmediateSoundInstances[i - 1].ghsound;
-                    longImmediateSoundInstances[i].normalVolume = longImmediateSoundInstances[i - 1].normalVolume;
-                    longImmediateSoundInstances[i].sound_type = longImmediateSoundInstances[i - 1].sound_type;
-                    longImmediateSoundInstances[i].queued = longImmediateSoundInstances[i - 1].queued;
-                    longImmediateSoundInstances[i].finished_playing = longImmediateSoundInstances[i - 1].finished_playing;
-                    */
                 }
             }
 
@@ -2202,6 +2195,7 @@ extern "C"
             longImmediateSoundInstances[0].ghsound = info.ghsound;
             longImmediateSoundInstances[0].normalVolume = info.volume;
             longImmediateSoundInstances[0].sound_type = info.sound_type;
+            longImmediateSoundInstances[0].dialogue_mid = info.dialogue_mid;
             longImmediateSoundInstances[0].queued = queue_sound;
             longImmediateSoundInstances[0].finished_playing = 0;
 
@@ -2235,14 +2229,6 @@ extern "C"
                 for (int i = NUM_IMMEDIATE_SOUND_INSTANCES - 1; i >= 1; i--)
                 {
                     immediateSoundInstances[i] = immediateSoundInstances[i - 1];
-                    /*
-                    immediateSoundInstances[i].eventInstance = immediateSoundInstances[i - 1].eventInstance;
-                    immediateSoundInstances[i].ghsound = immediateSoundInstances[i - 1].ghsound;
-                    immediateSoundInstances[i].normalVolume = immediateSoundInstances[i - 1].normalVolume;
-                    immediateSoundInstances[i].sound_type = immediateSoundInstances[i - 1].sound_type;
-                    immediateSoundInstances[i].queued = immediateSoundInstances[i - 1].queued;
-                    immediateSoundInstances[i].finished_playing = immediateSoundInstances[i - 1].finished_playing;
-                    */
                 }
             }
 
@@ -2251,6 +2237,7 @@ extern "C"
             immediateSoundInstances[0].ghsound = info.ghsound;
             immediateSoundInstances[0].normalVolume = info.volume;
             immediateSoundInstances[0].sound_type = info.sound_type;
+            immediateSoundInstances[0].dialogue_mid = info.dialogue_mid;
             immediateSoundInstances[0].queued = queue_sound;
 
             if (info.sound_type == IMMEDIATE_SOUND_DIALOGUE)
@@ -2650,11 +2637,13 @@ extern "C"
             }
         }
 
+        boolean only_mid = !!(info.stop_flags & STOP_SOUNDS_FLAGS_ONLY_DIALOGUE_MID);
+        /* Reverse order because of possible queueing */
         if (info.stop_flags & STOP_SOUNDS_FLAGS_IMMEDIATE_NORMAL)
         {
-            for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)
+            for (int i = NUM_IMMEDIATE_SOUND_INSTANCES - 1; i >= 0; i--)
             {
-                if (immediateSoundInstances[i].eventInstance)
+                if (immediateSoundInstances[i].eventInstance && (!only_mid || (only_mid && info.dialogue_mid == immediateSoundInstances[i].dialogue_mid)))
                 {
                     if (immediateSoundInstances[i].normalVolume > 0.0f && (result = immediateSoundInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
                         res = FALSE;
@@ -2667,9 +2656,9 @@ extern "C"
 
         if (info.stop_flags & STOP_SOUNDS_FLAGS_IMMEDIATE_LONG)
         {
-            for (int i = 0; i < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; i++)
+            for (int i = NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1; i >= 0; i--)
             {
-                if (longImmediateSoundInstances[i].eventInstance)
+                if (longImmediateSoundInstances[i].eventInstance && (!only_mid || (only_mid && info.dialogue_mid == longImmediateSoundInstances[i].dialogue_mid)))
                 {
                     if (longImmediateSoundInstances[i].normalVolume > 0.0f && (result = longImmediateSoundInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
                         res = FALSE;

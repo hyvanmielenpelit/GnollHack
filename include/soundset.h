@@ -1707,7 +1707,8 @@ struct effect_ambient_volume_info {
 };
 
 struct stop_all_info {
-    unsigned char stop_flags;
+    unsigned short stop_flags;
+    unsigned int dialogue_mid;
 };
 
 struct ghsound_occupation_ambient_info {

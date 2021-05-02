@@ -3236,6 +3236,10 @@ register struct monst *mtmp;
             break;
         }
     }
+
+    /* Stop any dialogue if currently speaking */
+    stop_all_dialogue_of_mon(mtmp);
+
     if (mtmp->iswiz)
         wizdead();
     if (mtmp->data->msound == MS_NEMESIS)
