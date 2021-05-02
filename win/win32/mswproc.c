@@ -268,6 +268,62 @@ mswin_init_nhwindows(int *argc, char **argv)
     mswin_color_from_string(iflags.wc_backgrnd_text, &text_bg_brush,
                             &text_bg_color);
 
+    /* Set menu accelerators */
+    HMENU hMenu = GetMenu(GetNHApp()->hMainWnd);
+
+    if (hMenu) 
+    {
+        struct menu_info {
+            UINT menu_item_id;
+            const char* menu_item_cmd_name;
+            const char* menu_item_description;
+        };
+
+        struct menu_info menus[] = {
+            {IDM_SAVE, "save", "Save and Exit"},
+            {IDM_EXIT, "quit", "Quit"},
+            {IDM_SETTINGS_OPTIONS, "options", "Options"},
+            {IDM_COMMAND_INVENTORY, "inventory", "Inventory"},
+            {IDM_COMMAND_ABILITIES, "abilities", "Abilities"},
+            {IDM_COMMAND_SKILLS, "skill", "Skills"},
+            {IDM_COMMAND_SPELLS, "spellmenu", "Spells"},
+            {IDM_COMMAND_COMMANDS, "commands", "Commands"},
+            {IDM_COMMAND_PICKUP, "pickup", "Pick Up"},
+            {IDM_COMMAND_LOOKHERE, "look", "Look Here"},
+            {IDM_COMMAND_SEARCH, "search", "Search"},
+            {IDM_COMMAND_WAIT, "wait", "Wait"},
+            {0, 0, 0}
+        };
+
+        MENUITEMINFOA menuitem = { sizeof(MENUITEMINFOA) };
+        static char buf[BUFSIZ], shortcutbuf[BUFSIZ];
+        uchar altmask = 0x80;
+        uchar ctrlmask = 0x20 | 0x40;
+        register const struct ext_func_tab* efp;
+        uchar cmd_id;
+
+        for (int i = 0; menus[i].menu_item_id > 0; i++)
+        {
+            cmd_id = cmd_from_txt(menus[i].menu_item_cmd_name);
+            if(!cmd_id)
+                continue;
+
+            efp = Cmd.commands[cmd_id];
+            if (!efp)
+                continue;
+
+            Sprintf(shortcutbuf, "%s%c",
+                !efp->bound_key ? "" : (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
+                !efp->bound_key ? '\0' : (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
+
+            Sprintf(buf, "%s\t%s", menus[i].menu_item_description, shortcutbuf);
+
+            ModifyMenu(hMenu, menus[i].menu_item_id, MF_BYCOMMAND | MF_STRING, menus[i].menu_item_id, buf);
+        }
+        DrawMenuBar(GetNHApp()->hMainWnd);
+    }
+
+    /* All done */
     if (iflags.wc_splash_screen)
         mswin_display_splash_window(FALSE);
 

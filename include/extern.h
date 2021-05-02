@@ -282,7 +282,7 @@ E int NDECL(doability);
 E int NDECL(dospellmainmenu);
 E int NDECL(docommandmenu);
 E char FDECL(cmd_from_func, (int NDECL((*))));
-E char FDECL(cmd_from_txt, (const char*));
+E uchar FDECL(cmd_from_txt, (const char*));
 E boolean FDECL(redraw_cmd, (CHAR_P));
 #ifdef USE_TRAMPOLI
 E int NDECL(doextcmd);

@@ -5154,7 +5154,7 @@ uchar key;
     return (char *) 0;
 }
 
-char
+uchar
 cmd_from_txt(command)
 const char* command;
 {
@@ -5163,7 +5163,7 @@ const char* command;
 
     for (int i = 0; i < 256; ++i)
         if (Cmd.commands[i] && Cmd.commands[i]->ef_txt && !strcmp(Cmd.commands[i]->ef_txt, command))
-            return (char) i;
+            return (uchar)i;
 
     return '\0';
 }
