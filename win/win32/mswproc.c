@@ -280,18 +280,26 @@ mswin_init_nhwindows(int *argc, char **argv)
         };
 
         struct menu_info menus[] = {
-            {IDM_SAVE, "save", "Save and Exit"},
-            {IDM_EXIT, "quit", "Quit"},
-            {IDM_SETTINGS_OPTIONS, "options", "Options"},
-            {IDM_COMMAND_INVENTORY, "inventory", "Inventory"},
-            {IDM_COMMAND_ABILITIES, "abilities", "Abilities"},
-            {IDM_COMMAND_SKILLS, "skill", "Skills"},
-            {IDM_COMMAND_SPELLS, "spellmenu", "Spells"},
-            {IDM_COMMAND_COMMANDS, "commands", "Commands"},
-            {IDM_COMMAND_PICKUP, "pickup", "Pick Up"},
-            {IDM_COMMAND_LOOKHERE, "look", "Look Here"},
-            {IDM_COMMAND_SEARCH, "search", "Search"},
-            {IDM_COMMAND_WAIT, "wait", "Wait"},
+            {IDM_SAVE, "save", "&Save and Exit"},
+            {IDM_EXIT, "quit", "&Quit"},
+            {IDM_SETTINGS_OPTIONS, "options", "&Options"},
+            {IDM_COMMAND_INVENTORY, "inventory", "&Inventory"},
+            {IDM_COMMAND_ABILITIES, "ability", "&Abilities"},
+            {IDM_COMMAND_SKILLS, "skill", "&Skills"},
+            {IDM_COMMAND_SPELLS, "spellmenu", "Sp&ells"},
+            {IDM_COMMAND_COMMANDS, "commands", "&Commands"},
+            {IDM_COMMAND_PICKUP, "pickup", "&Pick Up"},
+            {IDM_COMMAND_LOOKHERE, "look", "&Look Here"},
+            {IDM_COMMAND_SEARCH, "search", "Searc&h"},
+            {IDM_COMMAND_WAIT, "wait", "&Wait"},
+            {IDM_VIEW_ZOOMIN, "zoomin", "Zoom &In"},
+            {IDM_VIEW_ZOOMOUT, "zoomout", "Zoom &Out"},
+            {IDM_VIEW_NORMALZOOM, "zoomnormal", "&Normal Zoom"},
+            {IDM_VIEW_MINIMAPZOOM, "zoommini", "&Minimap Zoom"},
+            {IDM_VIEW_TOGGLEUMARK, "umark", "Toggle &Player Mark"},
+            {IDM_VIEW_TOGGLETARGETING, "targeting", "Toggle &Targeting"},
+            {IDM_VIEW_TOGGLEHITPOINTBARS, "bars", "Toggle Hit Point &Bars"},
+            {IDM_VIEW_TOGGLEBUFFTIMERS, "bufftimers", "Toggle B&uff Timers"},
             {0, 0, 0}
         };
 
@@ -305,15 +313,15 @@ mswin_init_nhwindows(int *argc, char **argv)
         for (int i = 0; menus[i].menu_item_id > 0; i++)
         {
             cmd_id = cmd_from_txt(menus[i].menu_item_cmd_name);
-            if (!cmd_id || !(efp = Cmd.commands[cmd_id]))
+            if (!cmd_id || !(efp = Cmd.commands[cmd_id]) || !efp->bound_key)
             {
                 Sprintf(buf, "%s", menus[i].menu_item_description);
             }
             else
             {
                 Sprintf(shortcutbuf, "%s%c",
-                    !efp->bound_key ? "" : (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
-                    !efp->bound_key ? '\0' : (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
+                    (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
+                    (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
 
                 Sprintf(buf, "%s\t%s", menus[i].menu_item_description, shortcutbuf);
             }
