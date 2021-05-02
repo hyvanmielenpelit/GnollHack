@@ -3269,7 +3269,7 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
-    if (is_animal(mtmp->data) && mtmp->mtame > 2 && rn2(3) && mon_can_move(mtmp))
+    if (is_animal(mtmp->data) && mtmp->mtame > 2 && rn2(mtmp->mtame) && mon_can_move(mtmp))
     {
         play_monster_happy_sound(mtmp, MONSTER_HAPPY_SOUND_NORMAL);
 
@@ -3334,7 +3334,7 @@ struct monst* mtmp;
             }
         }
     }
-    else if (is_animal(mtmp->data) && mtmp->mtame > 0 && rn2(3) && mon_can_move(mtmp))
+    else if (is_animal(mtmp->data) && mtmp->mtame > 0 && rn2(mtmp->mtame + 1) && mon_can_move(mtmp))
     {
         play_monster_happy_sound(mtmp, MONSTER_HAPPY_SOUND_PURR);
 
