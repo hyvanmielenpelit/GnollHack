@@ -305,19 +305,18 @@ mswin_init_nhwindows(int *argc, char **argv)
         for (int i = 0; menus[i].menu_item_id > 0; i++)
         {
             cmd_id = cmd_from_txt(menus[i].menu_item_cmd_name);
-            if(!cmd_id)
-                continue;
+            if (!cmd_id || !(efp = Cmd.commands[cmd_id]))
+            {
+                Sprintf(buf, "%s", menus[i].menu_item_description);
+            }
+            else
+            {
+                Sprintf(shortcutbuf, "%s%c",
+                    !efp->bound_key ? "" : (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
+                    !efp->bound_key ? '\0' : (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
 
-            efp = Cmd.commands[cmd_id];
-            if (!efp)
-                continue;
-
-            Sprintf(shortcutbuf, "%s%c",
-                !efp->bound_key ? "" : (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
-                !efp->bound_key ? '\0' : (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
-
-            Sprintf(buf, "%s\t%s", menus[i].menu_item_description, shortcutbuf);
-
+                Sprintf(buf, "%s\t%s", menus[i].menu_item_description, shortcutbuf);
+            }
             ModifyMenu(hMenu, menus[i].menu_item_id, MF_BYCOMMAND | MF_STRING, menus[i].menu_item_id, buf);
         }
         DrawMenuBar(GetNHApp()->hMainWnd);
