@@ -1171,7 +1171,7 @@ newgame()
 
     if (flags.legacy) {
         flush_screen(1);
-        com_pager(1);
+        com_pager((struct monst*)0, 1);
     }
 
     urealtime.realtime = 0L;

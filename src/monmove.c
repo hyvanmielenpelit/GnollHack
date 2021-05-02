@@ -730,7 +730,7 @@ register struct monst *mtmp;
             newsym(mtmp->mx, mtmp->my);
         if (mon_can_move(mtmp) && (mtmp->mstrategy & STRAT_CLOSE)
             && monnear(mtmp, u.ux, u.uy))
-            quest_talk(mtmp); /* give the leaders a chance to speak */
+            quest_talk(mtmp, TRUE); /* give the leaders a chance to speak */
         return 0;             /* other frozen monsters can't do anything */
     }
 
@@ -788,6 +788,9 @@ register struct monst *mtmp;
 
     /* check distance and scariness of attacks */
     distfleeck(mtmp, &inrange, &nearby, &scared);
+
+    /* special speeches for quest monsters */
+    (void)quest_talk(mtmp, !!nearby);
 
     if (find_defensive(mtmp)) 
     {
@@ -1023,16 +1026,15 @@ register struct monst *mtmp;
 
     /* talking for normal monsters */
     check_mon_talk(mtmp);
-    /* special speeches for quest monsters */
-    if (mon_can_move(mtmp) && nearby)
-    {
-        (void)quest_talk(mtmp);
+
 #if 0
-        boolean spoke = quest_talk(mtmp);
+    if (0)
+    {
+        boolean spoke = quest_talk(mtmp, nearby);
         if (spoke && canseemon(mtmp)) // Deactivated for the time being, as probably does not look good.
             talkeff(mtmp->mx, mtmp->my);
-#endif
     }
+#endif
 
     /* extra emotional attack for vile monsters */
     if (inrange && mtmp->data->msound == MS_CUSS && !is_peaceful(mtmp)

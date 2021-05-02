@@ -972,8 +972,8 @@ register struct monst *mtmp;
         }
         while (iflags.using_gui_sounds && (cuss_rnd >= 3 && cuss_rnd <= 5)); /* For the time being, remove ones using god names as difficult to implement when using voice acting */
 
-        play_voice_monster_cuss_with_god_name(mtmp, cuss_rnd + 1);
-        com_pager(cuss_rnd
+//        play_voice_monster_cuss_with_god_name(mtmp, cuss_rnd + 1);
+        com_pager(mtmp, cuss_rnd
                   + QT_ANGELIC);
     } 
     else 
@@ -986,8 +986,8 @@ register struct monst *mtmp;
         else
         {
             int cuss_rnd = rn2(QTN_DEMONIC);
-            play_voice_monster_cuss(mtmp, cuss_rnd + 1);
-            com_pager(cuss_rnd + QT_DEMONIC);
+//            play_voice_monster_cuss(mtmp, cuss_rnd + 1);
+            com_pager(mtmp, cuss_rnd + QT_DEMONIC);
         }
     }
     return res;

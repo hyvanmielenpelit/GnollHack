@@ -2859,7 +2859,8 @@ int level_limit;
     else if (ptr->msound == MS_NEMESIS)
     {
         mitem = BELL_OF_OPENING;
-    } else if (mndx == PM_PESTILENCE) 
+    }
+    else if (mndx == PM_PESTILENCE) 
     {
         mitem = POT_SICKNESS;
     }

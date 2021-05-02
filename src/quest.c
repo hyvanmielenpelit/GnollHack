@@ -243,7 +243,7 @@ struct obj *obj; /* quest artifact; possibly null if carrying Amulet */
            if not, suggest returning for it now */
         if ((otmp = carrying(BELL_OF_OPENING)) == 0)
         {
-            com_pager(5);
+            com_pager((struct monst*)0, 5);
         }
     }
     Qstat(got_thanks) = TRUE;
@@ -332,7 +332,7 @@ struct monst* mtmp;
         }
         else if (is_pure(TRUE) < 0) 
         {
-            com_pager(QT_BANISHED);
+            com_pager((struct monst*)0, QT_BANISHED);
             res = FALSE; // For safety
             expulsion(TRUE);
         }
@@ -390,9 +390,15 @@ chat_with_nemesis(mtmp)
 struct monst* mtmp;
 {
     /*  The nemesis will do most of the talking, but... */
-    qt_pager(mtmp, rn1(10, QT_DISCOURAGE));
     if (!Qstat(met_nemesis))
-        Qstat(met_nemesis++);
+        qt_pager(mtmp, QT_FIRSTNEMESIS);
+    else if (u.uhave.questart && !rn2(2))
+        qt_pager(mtmp, QT_NEMWANTSIT);
+    else
+        qt_pager(mtmp, rn1(10, QT_DISCOURAGE));
+
+    if (!Qstat(met_nemesis))
+        Qstat(met_nemesis) = TRUE;
 
     return TRUE;
 }
@@ -402,7 +408,7 @@ nemesis_speaks(mtmp)
 struct monst* mtmp;
 {
     boolean res = TRUE;
-    if (!Qstat(in_battle)) 
+    if (!Qstat(in_battle) || !Qstat(met_nemesis))
     {
         int msgnum = 0;
         if (u.uhave.questart)
@@ -502,10 +508,14 @@ register struct monst *mtmp;
 }
 
 boolean
-quest_talk(mtmp)
+quest_talk(mtmp, nearby)
 struct monst *mtmp;
+boolean nearby;
 {
-    if (mtmp->m_id == Qstat(leader_m_id)) 
+    if (!mtmp || !mon_can_move(mtmp))
+        FALSE;
+
+    if (mtmp->m_id == Qstat(leader_m_id) && nearby) 
     {
         return leader_speaks(mtmp);
     }
@@ -513,10 +523,12 @@ struct monst *mtmp;
     switch (mtmp->data->msound)
     {
     case MS_NEMESIS:
-        return nemesis_speaks(mtmp);
+        if(nearby || (!Qstat(met_nemesis) && cansee(mtmp->mx, mtmp->my) && distu(mtmp->mx, mtmp->my) <= 64))
+            return nemesis_speaks(mtmp);
         break;
     case MS_DJINNI:
-        return prisoner_speaks(mtmp);
+        if (nearby)
+            return prisoner_speaks(mtmp);
         break;
     default:
         break;

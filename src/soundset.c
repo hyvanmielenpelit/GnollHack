@@ -4,6 +4,7 @@
 
 #include "hack.h"
 #include "lev.h" /* for checking save modes */
+#include "qtext.h"
 
  /* flags */
 #define SSF_SHOW 0x1        /* display the sound source */
@@ -9733,10 +9734,23 @@ play_intro_text()
 }
 
 void
-play_voice_com_pager(msgnum, is_dialogue)
+play_voice_com_pager(mon, msgnum, is_dialogue)
+struct monst* mon;
 int msgnum;
 boolean is_dialogue;
 {
+    /* Special cases first */
+    if (msgnum >= QT_ANGELIC && msgnum <= QT_ANGELIC + QTN_ANGELIC - 1)
+    {
+        play_voice_monster_cuss_with_god_name(mon, msgnum - QT_ANGELIC + 1);
+        return;
+    }
+    else if (msgnum >= QT_DEMONIC && msgnum <= QT_DEMONIC + QTN_DEMONIC - 1)
+    {
+        play_voice_monster_cuss(mon, msgnum - QT_DEMONIC + 1);
+        return;
+    }
+
     struct ghsound_immediate_info info = { 0 };
     info.ghsound = GHSOUND_COM_PAGER;
     info.volume = 1.0f;

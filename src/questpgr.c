@@ -620,7 +620,8 @@ boolean common;
 }
 
 void
-com_pager(msgnum)
+com_pager(mtmp, msgnum)
+struct monst* mtmp;
 int msgnum;
 {
     struct qtmsg *qt_msg;
@@ -636,7 +637,7 @@ int msgnum;
     (void) dlb_fseek(msg_file, qt_msg->offset, SEEK_SET);
     if (qt_msg->delivery == 'p')
     {
-        play_voice_com_pager(msgnum, TRUE);
+        play_voice_com_pager(mtmp, msgnum, TRUE);
         deliver_by_pline(qt_msg);
     }
     else if (msgnum == 1)
@@ -647,7 +648,7 @@ int msgnum;
     }
     else
     {
-        play_voice_com_pager(msgnum, FALSE);
+        play_voice_com_pager(mtmp, msgnum, FALSE);
         deliver_by_window(qt_msg, NHW_TEXT);
         stop_all_immediate_sounds();
     }

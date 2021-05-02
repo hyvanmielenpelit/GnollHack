@@ -2499,7 +2499,7 @@ E boolean NDECL(ok_to_quest);
 E boolean FDECL(leader_speaks, (struct monst *));
 E boolean FDECL(nemesis_speaks, (struct monst*));
 E boolean FDECL(quest_chat, (struct monst *));
-E boolean FDECL(quest_talk, (struct monst *));
+E boolean FDECL(quest_talk, (struct monst *, boolean));
 E void FDECL(quest_stat_check, (struct monst *));
 E void FDECL(finish_quest, (struct obj *));
 
@@ -2511,7 +2511,7 @@ E short FDECL(quest_info, (int));
 E const char *NDECL(ldrname);
 E boolean FDECL(is_quest_artifact, (struct obj *));
 E struct obj *FDECL(find_quest_artifact, (unsigned));
-E void FDECL(com_pager, (int));
+E void FDECL(com_pager, (struct monst*, int));
 E void FDECL(qt_pager, (struct monst*, int));
 E struct permonst *NDECL(qt_montype);
 E void NDECL(deliver_splev_message);
@@ -3007,7 +3007,7 @@ E void FDECL(play_monster_standard_sound, (struct monst*, enum monster_standard_
 E void FDECL(play_monster_special_sound, (struct monst*, int));
 E void FDECL(play_monster_ouch_sound, (struct monst*, enum monster_ouch_sounds));
 E enum monster_soundset_types FDECL(get_monster_soundset, (struct monst*));
-E void FDECL(play_voice_com_pager, (int, boolean));
+E void FDECL(play_voice_com_pager, (struct monst*, int, boolean));
 E void FDECL(play_voice_quest_pager, (struct monst*, int, boolean));
 
 /* ### sys.c ### */

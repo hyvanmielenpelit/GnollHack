@@ -2254,11 +2254,11 @@ char *outbuf;
         Sprintf(eos(outbuf), ", %s", mon->data->mtitle);
     }
 
-    if (mon->data->msound == MS_LEADER)
+    if (mon->data->msound == MS_LEADER && quest_info(MS_LEADER) == mon->mnum)
     {
         strcat(outbuf, ", quest leader");
     }
-    else if (mon->data->msound == MS_NEMESIS)
+    else if (mon->data->msound == MS_NEMESIS && quest_info(MS_NEMESIS) == mon->mnum)
     {
         strcat(outbuf, ", quest nemesis");
     }
