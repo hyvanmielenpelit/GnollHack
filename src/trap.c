@@ -5518,7 +5518,7 @@ struct trap* ttmp;
         genotyp = WAN_POLYMORPH;
         break;
     case MAGIC_TRAP:
-        genotyp = random_objectid_from_class(WAND_CLASS);
+        genotyp = random_objectid_from_class(WAND_CLASS, 0UL);
         break;
     case LEVEL_TELEP:
         genotyp = CUBIC_GATE;

@@ -948,6 +948,8 @@ struct objclass {
 #define O4_CONTAINER_PEEK_INTO                             0x02000000UL    /* You peek into this container */
 #define O4_CONTAINER_MAY_CONTAIN_MONSTER                   0x04000000UL
 #define O4_WEAPON_TOOL                                     0x08000000UL
+#define O4_RARE                                            0x10000000UL
+#define O4_VERY_RARE                                       0x20000000UL
 
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */

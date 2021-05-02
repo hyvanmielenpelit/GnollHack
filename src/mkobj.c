@@ -268,14 +268,27 @@ boolean init, artif;
 
 /* mkobj(): select a type of item from a class, use mksobj() to create it */
 /* mkobj_type = 0 making contents on the floor, = 1 making box contents, = 2 wishing */
-struct obj *
+struct obj*
 mkobj(oclass, artif, mkobj_type)
 char oclass;
 boolean artif;
 int mkobj_type;
 {
+    return mkobj_with_flags(oclass, artif, mkobj_type, 0UL);
+}
+
+struct obj *
+mkobj_with_flags(oclass, artif, mkobj_type, mkflags)
+char oclass;
+boolean artif;
+int mkobj_type;
+unsigned long mkflags;
+{
     int tprob;
     int i = 0;
+    unsigned long rndflags = 0UL;
+    if (mkflags & MKOBJ_FLAGS_ALSO_RARE)
+        rndflags |= RNDITEM_FLAGS_ALSO_RARE;
 
     for (int try_ct = 0; try_ct < 20; try_ct++)
     {
@@ -290,21 +303,24 @@ int mkobj_type;
             oclass = iprobs->iclass;
         }
 
-        i = random_objectid_from_class(oclass);
+        i = random_objectid_from_class(oclass, rndflags);
 
         if (mkobj_type == 1 && (objects[i].oc_flags2 & O2_CONTAINER)) /* No containers in containers */
             continue;
         else
             break;
     }
-    return mksobj(i, TRUE, artif, mkobj_type);
+    return mksobj_with_flags(i, TRUE, artif, mkobj_type, mkflags);
 }
 
 int
-random_objectid_from_class(oclass)
+random_objectid_from_class(oclass, rndflags)
 char oclass;
+unsigned long rndflags;
 {
     int i = 0;
+    boolean also_rare = !!(rndflags & RNDITEM_FLAGS_ALSO_RARE);
+    xchar leveldif = level_difficulty();
 
     int randomizationclass = rn2(4);
 
@@ -325,6 +341,18 @@ char oclass;
         }
 
         if (objects[i].oc_flags3 & O3_NO_GENERATION)
+        {
+            i = 0;
+            continue; /* new try */
+        }
+
+        if (!also_rare && (objects[i].oc_flags4 & O4_RARE) && leveldif < 6 && tryct < 25)
+        {
+            i = 0;
+            continue; /* new try */
+        }
+
+        if (!also_rare && (objects[i].oc_flags4 & O4_VERY_RARE) && leveldif < 12 && tryct < 25)
         {
             i = 0;
             continue; /* new try */

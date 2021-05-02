@@ -436,6 +436,9 @@ enum main_menu_command {
 
 #define MKOBJ_FLAGS_OPEN_COFFIN                        0x00000001
 #define MKOBJ_FLAGS_MONSTER_SPECIFIED                  0x00000002
+#define MKOBJ_FLAGS_ALSO_RARE                          0x00000004
+
+#define RNDITEM_FLAGS_ALSO_RARE                        0x00000001
 
 #define STOP_SOUNDS_FLAGS_NONE                 0x0000
 #define STOP_SOUNDS_FLAGS_MUSIC                0x0001
