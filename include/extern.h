@@ -2921,6 +2921,7 @@ E void FDECL(play_object_hit_sound_at_location, (struct obj*, enum hit_surface_s
 E void FDECL(play_simple_player_sound, (enum monster_sound_types));
 E void FDECL(play_player_line_indexed_sound, (enum monster_sound_types, int, enum sound_play_groups play_group, enum immediate_sound_types));
 E void FDECL(play_player_ouch_sound, (enum monster_ouch_sounds));
+E void FDECL(play_player_flounder_sound, (enum monster_flounder_sounds));
 E void FDECL(play_simple_player_voice, (enum player_voice_types));
 E void FDECL(set_simple_player_sound_id_and_volume, (enum player_soundset_types, enum monster_sound_types, enum ghsound_types*, float*));
 E void FDECL(set_simple_player_voice_id_and_volume, (enum player_soundset_types, enum player_voice_types, enum ghsound_types*, float*));
@@ -3013,7 +3014,6 @@ E void FDECL(play_monster_happy_sound, (struct monst*, enum monster_happy_sounds
 E void FDECL(play_monster_unhappy_sound, (struct monst*, enum monster_unhappy_sounds));
 E void FDECL(play_monster_flounder_sound, (struct monst*, enum monster_flounder_sounds));
 E void FDECL(play_monster_chat_sound, (struct monst*, int));
-E void FDECL(play_player_flounder_sound, (enum monster_flounder_sounds));
 E enum monster_soundset_types FDECL(get_monster_soundset, (struct monst*));
 E void FDECL(play_voice_com_pager, (struct monst*, int, boolean));
 E void FDECL(play_voice_quest_pager, (struct monst*, int, boolean));
