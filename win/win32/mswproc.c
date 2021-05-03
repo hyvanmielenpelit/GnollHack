@@ -270,7 +270,6 @@ mswin_init_nhwindows(int *argc, char **argv)
 
     /* Set menu accelerators */
     HMENU hMenu = GetMenu(GetNHApp()->hMainWnd);
-
     if (hMenu) 
     {
         struct menu_info {
@@ -303,7 +302,6 @@ mswin_init_nhwindows(int *argc, char **argv)
             {0, 0, 0}
         };
 
-        MENUITEMINFOA menuitem = { sizeof(MENUITEMINFOA) };
         static char buf[BUFSIZ], shortcutbuf[BUFSIZ];
         uchar altmask = 0x80;
         uchar ctrlmask = 0x20 | 0x40;
