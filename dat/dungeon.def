@@ -25,11 +25,11 @@ LEVALIGN:	neutral
 CHAINBRANCH:	"Sokoban" "oracle" + (1, 0) up
 RNDLEVEL:	"Big Room" "bigrm" "B" @ (10, 3) 40 10
 CHAINBRANCH:	"The Quest" "oracle" + (6, 2) portal
-CHAINLEVEL:		"Treasure Island" "treasure1" "none" "oracle" + (9, 2)
+CHAINLEVEL:		"Treasure Island" "treasure1" "I" "oracle" + (9, 2)
 BRANCH:		"Fort Ludios" @ (18, 4) portal
 RNDLEVEL:	"Medusa's Island" "medusa" "none" @ (-3, 0) 4
 LEVALIGN:	chaotic
-LEVEL:		"Minotaur Maze" "minotaur" "none" @ (-2, 0)
+LEVEL:		"Minotaur Maze" "minotaur" "N" @ (-2, 0)
 LEVEL:		"Underground Castle" "castle" "none" @ (-1, 0)
 CHAINBRANCH:	"Gehennom" "castle" + (0, 0)
 BRANCH:		"The Elemental Planes" @ (1, 0) no_down up
@@ -122,24 +122,24 @@ LEVEL:		"Fort Ludious" "knox" "K" @ (-1, 0)
 #
 #	Plane of the Modron
 #
-DUNGEON:	"Plane of the Modron" "M" (5, 0)
+DUNGEON:	"Plane of the Modron" "N" (5, 0)
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
-LEVEL:		"Pemptonus" "modron1" "M" @ (1, 0)
-LEVEL:		"Tetartonus" "modron2" "M" @ (2, 0)
-LEVEL:		"Tritonus" "modron3" "M" @ (3, 0)
-LEVEL:		"Deuteronus" "modron4" "M" @ (4, 0)
-LEVEL:		"Protonus" "modron5" "M" @ (5, 0)
+LEVEL:		"Pemptonus" "modron1" "none" @ (1, 0)
+LEVEL:		"Tetartonus" "modron2" "none" @ (2, 0)
+LEVEL:		"Tritonus" "modron3" "none" @ (3, 0)
+LEVEL:		"Deuteronus" "modron4" "none" @ (4, 0)
+LEVEL:		"Protonus" "modron5" "none" @ (5, 0)
 
 #
 #	Hellish Pastures - Domain of Yacc
 #
-DUNGEON:	"Hellish Pastures" "B" (1, 0)
+DUNGEON:	"Hellish Pastures" "P" (1, 0)
 TILESET:    gehennom_tileset
 DESCRIPTION:	mazelike
 DESCRIPTION:	hellish
 ALIGNMENT:	chaotic
-LEVEL:		"Barn from Hell" "bovine1" "C" @ (-1, 0)
+LEVEL:		"Barn from Hell" "bovine1" "none" @ (-1, 0)
 
 #
 #	Vlad's Tower

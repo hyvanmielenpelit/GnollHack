@@ -1032,7 +1032,7 @@ int dif_level;
     case -3:
         return "e";
     case -2:
-        return "";
+        return "a";
     case -1:
         return  "h";
     case 0:
