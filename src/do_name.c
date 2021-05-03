@@ -738,15 +738,6 @@ enum game_cursor_types cursor_style;
             auto_describe(cx, cy);
         }
 
-        if (gpstart && cursor_style == CURSOR_STYLE_TELEPORT_CURSOR)
-        {
-            /* Hunting for a weird teleport start location bug */
-            if (tx != u.ux || ty != u.uy || cx != u.ux || cy != u.uy)
-                u.ux = u.ux;
-
-            gpstart = FALSE;
-        }
-
         c = nh_poskey(&tx, &ty, &sidx);
 
 

@@ -3200,8 +3200,6 @@ boolean copyof;
             mnew = mtmp;
         }
     }
-    if (mnew)
-        mnew->data = &mons[mnew->mnum]; /* Set the data pointer */
 
     return mnew;
 }
