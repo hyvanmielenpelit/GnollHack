@@ -710,7 +710,7 @@ register struct monst *mtmp;
         growl_verb = growl_sound(mtmp);
     if (growl_verb) 
     {
-        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GROWL);
+        play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_GROWL);
         pline("%s %s!", Monnam(mtmp), vtense((char *) 0, growl_verb));
         if (context.run)
             nomul(0);
@@ -755,7 +755,7 @@ register struct monst *mtmp;
         }
     if (yelp_verb)
     {
-        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_YELP);
+        play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_UNHAPPY);
         pline("%s %s!", Monnam(mtmp), vtense((char *) 0, yelp_verb));
         if (context.run)
             nomul(0);
@@ -792,7 +792,7 @@ register struct monst *mtmp;
             break;
         }
     if (whimper_verb) {
-        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_WHIMPER);
+        play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WHIMPER);
         pline("%s %s.", Monnam(mtmp), vtense((char *) 0, whimper_verb));
         if (context.run)
             nomul(0);

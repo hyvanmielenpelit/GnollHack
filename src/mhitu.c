@@ -2428,7 +2428,7 @@ register struct obj* omonwep;
         }
         else
         {
-            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_HOWL_IN_ANGER);
+            play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_HOWL_IN_ANGER);
             if (!Deaf)
                 You_hear("%s hissing!", s_suffix(mon_nam(mtmp)));
  do_stone:

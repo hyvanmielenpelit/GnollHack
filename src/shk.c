@@ -5398,7 +5398,7 @@ boolean eating;
 
                         if (iflags.using_gui_sounds)
                             delay_output_milliseconds(1200);
-                        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_WHIMPER);
+                        play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WHIMPER);
                         pline("%s backs away from %s.", Monnam(mtmp), the(cxname(obj)));
                     }
                     else
@@ -5407,7 +5407,7 @@ boolean eating;
                         verbalize("Drop that, now!");
                         if (iflags.using_gui_sounds)
                             delay_output_milliseconds(1200);
-                        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_WHIMPER);
+                        play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WHIMPER);
                         if (iflags.using_gui_sounds)
                             delay_output_milliseconds(200);
                         play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP, FALSE);

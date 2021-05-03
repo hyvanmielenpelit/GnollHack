@@ -1761,7 +1761,7 @@ newdogpos:
 #endif
                 const char *what = cursedobj[chi] ? distant_name(cursedobj[chi], doname) : something;
 
-                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_WARN_CURSED);
+                play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WARN_CURSED);
                 pline("%s %s reluctantly over %s.", noit_Monnam(mtmp),
                       vtense((char *) 0, locomotion(mtmp->data, "step")), what);
             }
