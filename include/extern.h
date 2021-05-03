@@ -594,9 +594,9 @@ E const char* FDECL(get_otyp_subtype_name, (int));
 
 /* ### do_name.c ### */
 
-E char *FDECL(coord_desc, (int, int, char *, CHAR_P));
+E char *FDECL(coord_desc, (int, int, char *, char));
 E boolean FDECL(getpos_menu, (coord *, int));
-E int FDECL(getpos, (coord *, BOOLEAN_P, const char *, enum game_cursor_types));
+E int FDECL(getpos, (coord *, boolean, const char *, enum game_cursor_types));
 E void FDECL(getpos_sethilite, (void (*f)(int), boolean (*d)(int,int)));
 E void FDECL(new_mname, (struct monst *, int));
 E void FDECL(free_mname, (struct monst *));
@@ -616,7 +616,7 @@ E boolean FDECL(objtyp_is_callable, (int));
 E int NDECL(docallcmd);
 E void FDECL(docall, (struct obj *));
 E const char *NDECL(rndghostname);
-E char *FDECL(x_monnam, (struct monst *, int, const char *, int, BOOLEAN_P));
+E char *FDECL(x_monnam, (struct monst *, int, const char *, int, boolean));
 E char *FDECL(l_monnam, (struct monst *));
 E char *FDECL(mon_nam, (struct monst *));
 E char *FDECL(noit_mon_nam, (struct monst *));
