@@ -3002,7 +3002,7 @@ E void FDECL(play_voice_monster_cuss_with_god_name, (struct monst*, int));
 E void FDECL(play_voice_monster_advice, (struct monst*, boolean));
 E void FDECL(play_voice_wizard_of_yendor_cuss, (struct monst*, int, int));
 E void FDECL(play_voice_wizard_of_yendor_simple_line, (struct monst*, enum wizard_of_yendor_simple_lines));
-E void FDECL(play_voice_monster_line_indexed_sound, (struct monst*, enum monster_sound_types, int, enum sound_play_groups, enum immediate_sound_types, double));
+E void FDECL(play_monster_line_indexed_sound, (struct monst*, enum monster_sound_types, int, enum sound_play_groups, enum immediate_sound_types, double));
 E void FDECL(play_monster_item_trading_line, (struct monst*, enum monster_item_trading_lines));
 E void FDECL(play_monster_standard_dialogue_line, (struct monst*, enum monster_standard_dialogue_lines));
 E void FDECL(play_monster_special_dialogue_line, (struct monst*, int));
@@ -3013,6 +3013,7 @@ E void FDECL(play_monster_happy_sound, (struct monst*, enum monster_happy_sounds
 E void FDECL(play_monster_unhappy_sound, (struct monst*, enum monster_unhappy_sounds));
 E void FDECL(play_monster_flounder_sound, (struct monst*, enum monster_flounder_sounds));
 E void FDECL(play_monster_chat_sound, (struct monst*, int));
+E void FDECL(play_player_flounder_sound, (enum monster_flounder_sounds));
 E enum monster_soundset_types FDECL(get_monster_soundset, (struct monst*));
 E void FDECL(play_voice_com_pager, (struct monst*, int, boolean));
 E void FDECL(play_voice_quest_pager, (struct monst*, int, boolean));

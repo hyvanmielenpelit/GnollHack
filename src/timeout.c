@@ -1766,6 +1766,8 @@ slip_or_trip()
                       : ((otmp2 = sobj_at(ROCK, u.ux, u.uy)) == 0
                              ? something
                              : (otmp2->quan == 1L ? "a rock" : "some rocks"));
+
+        play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_TRIP);
         if (Hallucination) {
             what = strcpy(buf, what);
             buf[0] = highc(buf[0]);
@@ -1781,6 +1783,7 @@ slip_or_trip()
             instapetrify(killer.name);
         }
     } else if (rn2(3) && is_ice(u.ux, u.uy)) {
+        play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_SLIP);
         pline("%s %s%s on the ice.",
               u.usteed ? upstart(x_monnam(u.usteed,
                                           (has_mname(u.usteed)) ? ARTICLE_NONE
@@ -1792,21 +1795,21 @@ slip_or_trip()
         if (on_foot) {
             switch (rn2(4)) {
             case 1:
-                play_simple_player_sound(MONSTER_SOUND_TYPE_TRIP);
+                play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_TRIP);
                 You("trip over your own %s.",
                     Hallucination ? "elbow" : makeplural(body_part(FOOT)));
                 break;
             case 2:
-                play_simple_player_sound(MONSTER_SOUND_TYPE_SLIP);
+                play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_SLIP);
                 You("slip %s.",
                     Hallucination ? "on a banana peel" : "and nearly fall");
                 break;
             case 3:
-                play_simple_player_sound(MONSTER_SOUND_TYPE_FLOUNDER);
+                play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_FLOUNDER);
                 You("flounder.");
                 break;
             default:
-                play_simple_player_sound(MONSTER_SOUND_TYPE_STUMBLE);
+                play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_STUMBLE);
                 You("stumble.");
                 break;
             }
