@@ -1002,9 +1002,9 @@ int dif_level;
     case -4:
         return "very easy";
     case -3:
-        return  "easy";
+        return "easy";
     case -2:
-        return  "medium";
+        return "average";
     case -1:
         return "hard";
     case 0:
@@ -1034,9 +1034,9 @@ int dif_level;
     case -2:
         return "a";
     case -1:
-        return  "h";
+        return "h";
     case 0:
-        return  "x";
+        return "x";
     case 1:
         return "m";
     case 2:
