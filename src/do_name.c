@@ -722,7 +722,6 @@ enum game_cursor_types cursor_style;
     lock_mouse_cursor(TRUE);
 #endif
 
-    boolean gpstart = TRUE;
     for (;;) 
     {
         flags.force_paint_at_cursor = TRUE;
