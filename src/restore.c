@@ -463,6 +463,9 @@ struct monst *mtmp;
            statue (inline int rather than pointer to something) */
         mread(fd, (genericptr_t) &MCORPSENM(mtmp), sizeof MCORPSENM(mtmp));
     } /* mextra */
+
+    /* Relink data */
+    mtmp->data = &mons[mtmp->mnum];
 }
 
 STATIC_OVL struct monst *
@@ -494,7 +497,6 @@ boolean ghostly;
             add_id_mapping(mtmp->m_id, nid);
             mtmp->m_id = nid;
         }
-        mtmp->data = &mons[mtmp->mnum];
         if (ghostly) {
             int mndx = monsndx(mtmp->data);
             if (propagate(mndx, TRUE, ghostly) == 0) {

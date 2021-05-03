@@ -3157,13 +3157,16 @@ struct monst *mtmp;
 
         *mtmp2 = *mtmp;
         mtmp2->mextra = (struct mextra *) 0;
+
+#if 0 /* All monsters should have data and mnum */
         if (mtmp->data)
             mtmp2->mnum = monsndx(mtmp->data);
+#endif
         /* invalidate pointers */
         /* m_id is needed to know if this is a revived quest leader */
         /* but m_id must be cleared when loading bones */
         mtmp2->nmon = (struct monst *) 0;
-        mtmp2->data = (struct permonst *) 0;
+        //mtmp2->data = (struct permonst *) 0; /* This sounds very dangerous to set to zero */
         mtmp2->minvent = (struct obj *) 0;
         mtmp2->facing_right = mtmp->facing_right;
         if (mtmp->mextra)

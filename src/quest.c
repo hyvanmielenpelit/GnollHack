@@ -410,7 +410,6 @@ struct monst* mtmp;
     boolean res = TRUE;
     if (!Qstat(in_battle) || !Qstat(met_nemesis))
     {
-        int msgnum = 0;
         if (u.uhave.questart)
             qt_pager(mtmp, QT_NEMWANTSIT);
         else if (Qstat(made_goal) == 1 || !Qstat(met_nemesis))
@@ -513,7 +512,7 @@ struct monst *mtmp;
 boolean nearby;
 {
     if (!mtmp || !mon_can_move(mtmp))
-        FALSE;
+        return FALSE;
 
     if (mtmp->m_id == Qstat(leader_m_id) && nearby) 
     {

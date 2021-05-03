@@ -1991,9 +1991,16 @@ int mnum_override; /* Use this mnum instead */
     if (mtmp2) 
     {
         /* save_mtraits() validated mtmp2->mnum */
-        mtmp2->data = &mons[mnum_override >= LOW_PM ? mnum_override : mtmp2->mnum];
+        if (mnum_override >= LOW_PM || !mtmp2->data)
+        {
+            int used_mnum = mnum_override >= LOW_PM ? mnum_override : mtmp2->mnum;
+            mtmp2->mnum = used_mnum;
+            mtmp2->data = &mons[used_mnum];
+        }
+
         if (mtmp2->mhpmax <= 0 && !is_rider(mtmp2->data))
             return (struct monst *) 0;
+        
         mtmp = makemon(mtmp2->data, cc->x, cc->y,
                        (MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH
                         | (adjacentok ? MM_ADJACENTOK : 0)));

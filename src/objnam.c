@@ -828,7 +828,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             struct monst* mtmp = get_mtraits(obj, FALSE);
             if (mtmp)
             {
-                mtmp->data = &mons[mtmp->mnum];
                 Strcpy(monbuf, x_monnam(mtmp, ARTICLE_NONE, (char*)0,
                     (has_mname(mtmp)) ? (SUPPRESS_SADDLE | SUPPRESS_IT | SUPPRESS_INVISIBLE)
                     : SUPPRESS_IT | SUPPRESS_INVISIBLE,
@@ -850,8 +849,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                           ? "the "
                           : just_an(anbuf, mons[omndx].mname),
                     monbuf);
-        } else
+        }
+        else
             Strcpy(buf, actualn);
+
         break;
     case BALL_CLASS:
         Sprintf(buf, "%sheavy iron ball",

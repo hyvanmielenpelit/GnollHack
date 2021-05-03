@@ -303,16 +303,22 @@ struct obj *obj;
 {
     boolean drying_feedback = (obj == uwep);
 
-    if (!freehand()) {
+    if (!freehand())
+    {
         You("have no free %s!", body_part(HAND));
         return 0;
-    } else if (obj == ublindf) {
+    } 
+    else if (obj == ublindf)
+    {
         You("cannot use it while you're wearing it!");
         return 0;
-    } else if (obj->cursed) {
+    } 
+    else if (obj->cursed) 
+    {
         long old;
 
-        switch (rn2(3)) {
+        switch (rn2(3)) 
+        {
         case 2:
             old = Glib;
             incr_itimeout(&Glib, rn1(10, 3));
@@ -322,18 +328,22 @@ struct obj *obj;
                 dry_a_towel(obj, -1, drying_feedback);
             return 1;
         case 1:
-            if (!ublindf) {
+            if (!ublindf) 
+            {
                 old = u.ucreamed;
                 u.ucreamed += rn1(10, 3);
                 pline("Yecch!  Your %s %s gunk on it!", body_part(FACE),
                       (old ? "has more" : "now has"));
                 make_blinded(Blinded + (long) u.ucreamed - old, TRUE);
-            } else {
+            } 
+            else
+            {
                 const char *what;
 
                 what = (obj->otyp == ublindf->otyp) ? "other towel"
                                                           : "blindfold";
-                if (ublindf->cursed) {
+                if (ublindf->cursed)
+                {
                     You("push your %s %s.", what,
                         rn2(2) ? "cock-eyed" : "crooked");
                 } else {
@@ -351,19 +361,23 @@ struct obj *obj;
         }
     }
 
-    if (Glib) {
+    if (Glib) 
+    {
         Glib = 0;
         You("wipe off your %s.", makeplural(body_part(HAND)));
         if (is_wet_towel(obj))
             dry_a_towel(obj, -1, drying_feedback);
         return 1;
-    } else if (u.ucreamed) {
+    } 
+    else if (u.ucreamed) 
+    {
         Blinded -= u.ucreamed;
         u.ucreamed = 0;
         if (!Blinded)
         {
             pline("You've got the glop off.");
-            if (!gulp_blnd_check()) {
+            if (!gulp_blnd_check()) 
+            {
                 Blinded = 1;
                 make_blinded(0L, TRUE);
             }
@@ -392,31 +406,41 @@ int rx, ry, *resp;
     struct obj *corpse = sobj_at(CORPSE, rx, ry),
                *statue = sobj_at(STATUE, rx, ry);
 
-    if (!can_reach_floor(TRUE)) { /* levitation or unskilled riding */
+    if (!can_reach_floor(TRUE)) 
+    { /* levitation or unskilled riding */
         corpse = 0;               /* can't reach corpse on floor */
         /* you can't reach tiny statues (even though you can fight
            tiny monsters while levitating--consistency, what's that?) */
         while (statue && mons[statue->corpsenm].msize == MZ_TINY)
             statue = nxtobj(statue, STATUE, TRUE);
     }
+
     /* when both corpse and statue are present, pick the uppermost one */
-    if (corpse && statue) {
+    if (corpse && statue) 
+    {
         if (nxtobj(statue, CORPSE, TRUE) == corpse)
             corpse = 0; /* corpse follows statue; ignore it */
         else
             statue = 0; /* corpse precedes statue; ignore statue */
     }
+
     more_corpses = (corpse && nxtobj(corpse, CORPSE, TRUE));
 
     /* additional stethoscope messages from jyoung@apanix.apana.org.au */
-    if (!corpse && !statue) {
+    if (!corpse && !statue)
+    {
         ; /* nothing to do */
 
-    } else if (Hallucination) {
-        if (!corpse) {
+    }
+    else if (Hallucination)
+    {
+        if (!corpse) 
+        {
             /* it's a statue */
             Strcpy(buf, "You're both stoned");
-        } else if (corpse->quan == 1L && !more_corpses) {
+        } 
+        else if (corpse->quan == 1L && !more_corpses) 
+        {
             int gndr = 2; /* neuter: "it" */
             struct monst *mtmp = get_mtraits(corpse, FALSE);
 
@@ -438,7 +462,9 @@ int rx, ry, *resp;
             }
             Sprintf(buf, "%s's dead", genders[gndr].he); /* "he"/"she"/"it" */
             buf[0] = highc(buf[0]);
-        } else { /* plural */
+        }
+        else
+        { /* plural */
             Strcpy(buf, "They're dead");
         }
         /* variations on "He's dead, Jim." (Star Trek's Dr McCoy) */
@@ -446,7 +472,9 @@ int rx, ry, *resp;
         *resp = 1;
         return TRUE;
 
-    } else if (corpse) {
+    } 
+    else if (corpse) 
+    {
         boolean here = (rx == u.ux && ry == u.uy),
                 one = (corpse->quan == 1L && !more_corpses), reviver = FALSE;
         int visglyph, corpseglyph;
@@ -457,7 +485,8 @@ int rx, ry, *resp;
         if (Blind && (visglyph != corpseglyph))
             map_object(corpse, TRUE);
 
-        if (Role_if(PM_HEALER)) {
+        if (Role_if(PM_HEALER)) 
+        {
             /* ok to reset `corpse' here; we're done with it */
             do {
                 if (obj_has_timer(corpse, REVIVE_MON))
@@ -471,22 +500,28 @@ int rx, ry, *resp;
             one ? "" : "s", one ? "is" : "are", reviver ? " mostly" : "");
         return TRUE;
 
-    } else { /* statue */
+    }
+    else
+    { /* statue */
         const char *what, *how;
 
         mptr = &mons[statue->corpsenm];
-        if (Blind) { /* ignore statue->dknown; it'll always be set */
+        if (Blind)
+        { /* ignore statue->dknown; it'll always be set */
             Sprintf(buf, "%s %s",
                     (rx == u.ux && ry == u.uy) ? "This" : "That",
                     humanoid(mptr) ? "person" : "creature");
             what = buf;
-        } else {
+        } 
+        else 
+        {
             what = corpse_monster_name(statue);
             if (!is_mname_proper_name(mptr))
                 what = The(what);
         }
         how = "fine";
-        if (Role_if(PM_HEALER)) {
+        if (Role_if(PM_HEALER))
+        {
             struct trap *ttmp = t_at(rx, ry);
 
             if (ttmp && ttmp->ttyp == STATUE_TRAP)

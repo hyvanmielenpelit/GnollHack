@@ -9809,7 +9809,6 @@ boolean is_dialogue;
         float volume = 1.0f;
         if (mon && isok(mon->mx, mon->my))
         {
-            float hearing = hearing_array[mon->mx][mon->my];
             volume = max(0.15f, max(context.global_minimum_volume, volume * hearing_array[mon->mx][mon->my]));
         }
 
@@ -9852,7 +9851,6 @@ boolean is_dialogue;
         float volume = 1.0f;
         if (mon && isok(mon->mx, mon->my))
         {
-            float hearing = hearing_array[mon->mx][mon->my];
             volume = max(0.15f, max(context.global_minimum_volume, volume * hearing_array[mon->mx][mon->my]));
         }
 
@@ -11189,7 +11187,7 @@ enum monster_unhappy_sounds line_id;
 void
 play_monster_flounder_sound(mtmp, line_id)
 struct monst* mtmp;
-enum monster_flunder_sounds line_id;
+enum monster_flounder_sounds line_id;
 {
     play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f);
 }
@@ -11204,7 +11202,7 @@ int line_id;
 
 void
 play_player_flounder_sound(line_id)
-enum monster_flunder_sounds line_id;
+enum monster_flounder_sounds line_id;
 {
     play_player_line_indexed_sound(MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX);
 }
