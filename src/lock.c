@@ -1528,6 +1528,7 @@ int x, y;
                         You_hear("a distant explosion.");
                     }
                 }
+                door->doormask &= ~D_TRAPPED;
                 if (is_door_destroyed_by_booby_trap_at_ptr(door))
                 {
                     door->doormask &= ~D_MASK;

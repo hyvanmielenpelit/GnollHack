@@ -1884,21 +1884,22 @@ register int after;
                     boolean door_intact = TRUE;
                     /* mfndpos guarantees this must be a doorbuster */
                     if (btrapped) 
-                    {
-                        here->doormask &= ~D_MASK;
+{
+                        here->doormask &= ~D_TRAPPED;
                         if (is_door_destroyed_by_booby_trap_at_ptr(here))
                         {
+                            here->doormask &= ~D_MASK;
                             here->doormask |= D_NODOOR;
                             door_intact = FALSE;
+                            unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                            newsym(mtmp->mx, mtmp->my);
                         }
-                        else
-                        {
-                            here->doormask |= D_ISOPEN;
-                        }
-                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
-                        newsym(mtmp->mx, mtmp->my);
                         if (mb_trapped(mtmp))
+                        {
+                            if (*in_rooms(mtmp->mx, mtmp->my, SHOPBASE))
+                                add_damage(mtmp->mx, mtmp->my, 0L);
                             return 2;
+                        }
                     }
 
                     if (door_intact && is_door_destroyed_by_monsters_at_ptr(here))
