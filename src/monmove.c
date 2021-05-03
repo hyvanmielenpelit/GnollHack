@@ -1811,13 +1811,17 @@ register int after;
                 {
                     if (btrapped) 
                     {
+                        here->doormask &= ~D_MASK;
                         if (is_door_destroyed_by_booby_trap_at_ptr(here))
                         {
-                            here->doormask &= ~D_MASK;
                             here->doormask |= D_NODOOR;
-                            unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
-                            newsym(mtmp->mx, mtmp->my);
                         }
+                        else
+                        {
+                            here->doormask |= D_ISOPEN;
+                        }
+                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                        newsym(mtmp->mx, mtmp->my);
                         if (mb_trapped(mtmp))
                             return 2;
                     }
@@ -1843,13 +1847,17 @@ register int after;
                 {
                     if (btrapped) 
                     {
+                        here->doormask &= ~D_MASK;
                         if (is_door_destroyed_by_booby_trap_at_ptr(here))
                         {
-                            here->doormask &= ~D_MASK;
                             here->doormask |= D_NODOOR;
-                            unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
-                            newsym(mtmp->mx, mtmp->my);
                         }
+                        else
+                        {
+                            here->doormask |= D_ISOPEN;
+                        }
+                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                        newsym(mtmp->mx, mtmp->my);
                         if (mb_trapped(mtmp))
                             return 2;
                     } 
@@ -1875,15 +1883,20 @@ register int after;
                 {
                     boolean door_intact = TRUE;
                     /* mfndpos guarantees this must be a doorbuster */
-                    if (btrapped) {
+                    if (btrapped) 
+                    {
+                        here->doormask &= ~D_MASK;
                         if (is_door_destroyed_by_booby_trap_at_ptr(here))
                         {
-                            here->doormask &= ~D_MASK;
                             here->doormask |= D_NODOOR;
-                            unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
-                            newsym(mtmp->mx, mtmp->my);
                             door_intact = FALSE;
                         }
+                        else
+                        {
+                            here->doormask |= D_ISOPEN;
+                        }
+                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                        newsym(mtmp->mx, mtmp->my);
                         if (mb_trapped(mtmp))
                             return 2;
                     }

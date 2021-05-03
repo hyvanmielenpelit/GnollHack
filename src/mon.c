@@ -5603,6 +5603,7 @@ struct obj* corpse;
 
     if (mtmp)
     {
+        mtmp->data = &mons[mtmp->mnum];
         return mon_monster_name(mtmp);
     }
     else 
@@ -5658,6 +5659,7 @@ struct obj* corpse;
 
     if (mtmp)
     {
+        mtmp->data = &mons[mtmp->mnum];
         return mon_common_name(mtmp);
     }
     else

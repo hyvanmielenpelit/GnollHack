@@ -461,24 +461,31 @@ unsigned long mkflags;
         struct permonst *mptr;
         int trycount = 10;
         boolean has_hat = FALSE;
+        int mnum = NON_PM;
 
         if(permonstid <= NON_PM)
         {
-        do { /* avoid ultimately hostile co-aligned unicorn */
-            mptr = &mons[rndmonnum()];
-        } while (--trycount > 0 && is_unicorn(mptr)
-                 && sgn(u.ualign.type) == sgn(mptr->maligntyp));
+            do 
+            { /* avoid ultimately hostile co-aligned unicorn */
+                mnum = rndmonnum();
+                mptr = &mons[mnum];
+            } 
+            while (--trycount > 0 && is_unicorn(mptr)
+                     && sgn(u.ualign.type) == sgn(mptr->maligntyp));
         }
         else
         {
-            mptr = &mons[permonstid];
+            mnum = permonstid;
+            mptr = &mons[mnum];
         }
-        statue = mkcorpstat(STATUE, (struct monst *) 0, mptr, x, y,
-                            CORPSTAT_NONE);
-        mtmp = makemon(&mons[statue->corpsenm], 0, 0, MM_NOCOUNTBIRTH);
+        mtmp = makemon(mptr, 0, 0, MM_NOCOUNTBIRTH);
         if (!mtmp)
             break; /* should never happen */
-        while (mtmp->minvent) {
+
+        statue = mkcorpstat(STATUE, mtmp, mptr, x, y, CORPSTAT_NONE);
+
+        while (mtmp->minvent)
+        {
             otmp = mtmp->minvent;
             otmp->owornmask = 0;
             obj_extract_self(otmp);
@@ -724,9 +731,21 @@ int *fail_reason;
                 (void) newcham(mon, mptr, FALSE, FALSE);
         } 
         else
-            mon = makemon(mptr, x, y, (cause == ANIMATE_SPELL)
-                                          ? (MM_NO_MONSTER_INVENTORY | MM_ADJACENTOK)
-                                          : MM_NO_MONSTER_INVENTORY);
+        {
+            boolean isfemale = !!(statue->speflags & SPEFLAGS_FEMALE);
+            boolean ismale = !!(statue->speflags & SPEFLAGS_FEMALE);
+
+            unsigned long mkflags = MM_NO_MONSTER_INVENTORY;
+            if (isfemale)
+                mkflags |= MM_FEMALE;
+            else if (ismale)
+                mkflags |= MM_MALE;
+
+            if(cause == ANIMATE_SPELL)
+                mkflags |= MM_ADJACENTOK;
+
+            mon = makemon(mptr, x, y, mkflags);
+        }
     }
 
     if (!mon) 

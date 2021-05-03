@@ -821,8 +821,23 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         Strcpy(buf, actualn);
         break;
     case ROCK_CLASS:
-        if (typ == STATUE && omndx != NON_PM) {
+        if (typ == STATUE && omndx != NON_PM) 
+        {
             char anbuf[10];
+            char monbuf[BUFSIZ] = "";
+            struct monst* mtmp = get_mtraits(obj, FALSE);
+            if (mtmp)
+            {
+                mtmp->data = &mons[mtmp->mnum];
+                Strcpy(monbuf, x_monnam(mtmp, ARTICLE_NONE, (char*)0,
+                    (has_mname(mtmp)) ? (SUPPRESS_SADDLE | SUPPRESS_IT | SUPPRESS_INVISIBLE)
+                    : SUPPRESS_IT | SUPPRESS_INVISIBLE,
+                    FALSE));
+            }
+            else
+            {
+                Strcpy(monbuf, mons[omndx].mname);
+            }
 
             Sprintf(buf, "%s%s of %s%s",
                     (Role_if(PM_ARCHAEOLOGIST) && (obj->speflags & SPEFLAGS_STATUE_HISTORIC))
@@ -834,7 +849,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                        : the_unique_pm(&mons[omndx])
                           ? "the "
                           : just_an(anbuf, mons[omndx].mname),
-                    mons[omndx].mname);
+                    monbuf);
         } else
             Strcpy(buf, actualn);
         break;
@@ -2054,6 +2069,8 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     int omndx = otmp->corpsenm;
     struct monst* mtmp = get_mtraits(otmp, FALSE);
     boolean isfemale = (mtmp && mtmp->female) || is_female(&mons[omndx]);
+    if(mtmp)
+        mtmp->data = &mons[mtmp->mnum];
 
     boolean ignore_quan = (cxn_flags & CXN_SINGULAR) != 0,
             /* suppress "the" from "the unique monster corpse" */

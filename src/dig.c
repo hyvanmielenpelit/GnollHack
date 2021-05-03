@@ -1675,24 +1675,34 @@ register struct monst *mtmp;
         cvt_sdoor_to_door(mtmp->mx, mtmp->my); /* ->typ = DOOR */
 
     /* Eats away door if present & closed or locked */
-    if (closed_door(mtmp->mx, mtmp->my)) {
+    if (closed_door(mtmp->mx, mtmp->my)) 
+    {
         if (!m_can_destroy_door(mtmp, here, TRUE) || !is_door_diggable_at_ptr(here))
             return FALSE;
 
         if (*in_rooms(mtmp->mx, mtmp->my, SHOPBASE))
             add_damage(mtmp->mx, mtmp->my, 0L);
+
         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
-        if (here->doormask & D_TRAPPED) {
+
+        if (here->doormask & D_TRAPPED) 
+        {
+            here->doormask &= ~D_MASK;
             if (is_door_destroyed_by_booby_trap_at_ptr(here))
             {
-                here->doormask &= ~D_MASK;
                 here->doormask |= D_NODOOR;
+            }
+            else
+            {
+                here->doormask |= D_BROKEN;
             }
             if (mb_trapped(mtmp)) { /* mtmp is killed */
                 newsym(mtmp->mx, mtmp->my);
                 return TRUE;
             }
-        } else {
+        }
+        else 
+        {
             if (!rn2(3) && flags.verbose) /* not too often.. */
                 draft_message(TRUE); /* "You feel an unexpected draft." */
             here->doormask &= ~D_MASK;

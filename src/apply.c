@@ -422,11 +422,14 @@ int rx, ry, *resp;
 
             /* (most corpses don't retain the monster's sex, so
                we're usually forced to use generic pronoun here) */
-            if (mtmp) {
+            if (mtmp) 
+            {
                 mptr = mtmp->data = &mons[mtmp->mnum];
                 /* TRUE: override visibility check--it's not on the map */
                 gndr = pronoun_gender(mtmp, TRUE);
-            } else {
+            } 
+            else 
+            {
                 mptr = &mons[corpse->corpsenm];
                 if (is_female(mptr))
                     gndr = 1;

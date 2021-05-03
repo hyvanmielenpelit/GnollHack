@@ -2921,8 +2921,11 @@ register struct obj *obj;
             if (has_omonst(obj))
             {
                 mtmp = get_mtraits(obj, FALSE);
-                if(mtmp && mtmp->data)
+                if (mtmp)
+                {
+                    mtmp->data = &mons[mtmp->mnum];
                     cwt += (int)obj->quan * ((int)mtmp->data->cwt);
+                }
             }
             
             if(!mtmp && obj->corpsenm >= LOW_PM)
