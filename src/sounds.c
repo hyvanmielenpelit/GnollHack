@@ -889,7 +889,7 @@ register struct monst *mtmp;
     else if (mtmp->ispriest)
         msound = MS_PRIEST;
 
-    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CHAT);
+    int chat_line = -1;
 
     switch (msound) {
     case MS_SILENT:
@@ -897,17 +897,29 @@ register struct monst *mtmp;
         break;
     case MS_ORACLE:
         if (is_peaceful(mtmp))
+        {
             Sprintf(verbuf, "Welcome to Delphi, adventurer!");
+            chat_line = 0;
+        }
         else
+        {
             Sprintf(verbuf, "Begone, you fool!");
+            chat_line = 1;
+        }
         verbl_msg = verbuf;
         break;
         //return doconsult(mtmp);
     case MS_PRIEST:
-        if(is_peaceful(mtmp))
+        if (is_peaceful(mtmp))
+        {
             Sprintf(verbuf, "Welcome to the temple of %s, adventurer!", (mtmp->ispriest && mtmp->mextra && mtmp->mextra->epri) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
+            chat_line = 0;
+        }
         else
+        {
             Sprintf(verbuf, "You shall perish by the divine hand of %s!", (mtmp->ispriest && mtmp->mextra && mtmp->mextra->epri) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
+            chat_line = 1;
+        }
         verbl_msg = verbuf;
         break;
         //priest_talk(mtmp);
@@ -950,9 +962,15 @@ register struct monst *mtmp;
         else
         {
             if (is_peaceful(mtmp))
+            {
                 Sprintf(verbuf, "Welcome, adventurer!");
+                chat_line = 0;
+            }
             else
+            {
                 Sprintf(verbuf, "You rotten thief!");
+                chat_line = 1;
+            }
         }
         verbl_msg = verbuf;
 
@@ -970,21 +988,36 @@ register struct monst *mtmp;
         break;
     case MS_SMITH: /* pitch, pay, total */
         if (is_peaceful(mtmp))
+        {
             Sprintf(verbuf, "Welcome to my smithy, adventurer!");
+            chat_line = 0;
+        }
         else
+        {
             Sprintf(verbuf, "Begone, you rotten vandal!");
+            chat_line = 1;
+        }
         verbl_msg = verbuf;
         break;
     case MS_NPC: /* pitch, pay, total */
         if (is_peaceful(mtmp))
         {
-            if(mtmp->isnpc && has_enpc(mtmp))
+            if (mtmp->isnpc && has_enpc(mtmp))
+            {
                 Sprintf(verbuf, "Welcome to my %s, adventurer!", npc_subtype_definitions[ENPC(mtmp)->npc_typ].room_name);
+                chat_line = 0;
+            }
             else
+            {
                 Sprintf(verbuf, "Welcome to my residence, adventurer!");
+                chat_line = 1;
+            }
         }
         else
+        {
             Sprintf(verbuf, "Begone, you rotten vandal!");
+            chat_line = 2;
+        }
 
         verbl_msg = verbuf;
         break;
@@ -992,14 +1025,26 @@ register struct monst *mtmp;
         if (is_peaceful(mtmp))
         {
             if (mtmp->isnpc && has_enpc(mtmp))
+            {
                 Sprintf(verbuf, "Welcome to my %s on the Plane of the Modron, adventurer!", npc_subtype_definitions[ENPC(mtmp)->npc_typ].room_name);
+                chat_line = 0;
+            }
             else if (mtmp->issmith)
+            {
                 Sprintf(verbuf, "Welcome to my smithy on the Plane of the Modron, adventurer!");
+                chat_line = 1;
+            }
             else
+            {
                 Sprintf(verbuf, "Welcome to the Plane of the Modron!");
+                chat_line = 2;
+            }
         }
         else
+        {
             Sprintf(verbuf, "Begone, you geometric anomaly!");
+            chat_line = 3;
+        }
 
         verbl_msg = verbuf;
         break;
@@ -1079,104 +1124,167 @@ register struct monst *mtmp;
     } break;
     case MS_WERE:
         if (flags.moonphase == FULL_MOON && (night() ^ !rn2(13))) {
+            chat_line = 1;
             pline("%s throws back %s head and lets out a blood curdling %s!",
                   Monnam(mtmp), mhis(mtmp),
                   ptr == &mons[PM_HUMAN_WERERAT] ? "shriek" : ptr == &mons[PM_HUMAN_WEREBEAR] ? "growl" : "howl");
             wake_nearto(mtmp->mx, mtmp->my, 11 * 11);
-        } else
+        }
+        else
+        {
             pline_msg =
                 "whispers inaudibly.  All you can make out is \"moon\".";
+            chat_line = 0;
+        }
         break;
     case MS_BARK:
-        if (flags.moonphase == FULL_MOON && night()) {
+        if (flags.moonphase == FULL_MOON && night())
+        {
             pline_msg = "howls.";
-        } else if (is_peaceful(mtmp)) {
+            chat_line = 4;
+        }
+        else if (is_peaceful(mtmp)) 
+        {
             if (mtmp->mtame
                 && (is_confused(mtmp) || is_fleeing(mtmp) || mtmp->mtrapped
                     || moves > EDOG(mtmp)->hungrytime || mtmp->mtame < 5))
+            {
                 pline_msg = "whines.";
-            else if (mtmp->mtame && EDOG(mtmp)->hungrytime > moves + 1000)
-                pline_msg = "yips.";
-            else {
-                    pline_msg = "barks.";
+                chat_line = 2;
             }
-        } else {
+            else if (mtmp->mtame && EDOG(mtmp)->hungrytime > moves + 1000)
+            {
+                pline_msg = "yips.";
+                chat_line = 1;
+            }
+            else 
+            {
+                pline_msg = "barks.";
+                chat_line = 0;
+            }
+        } 
+        else
+        {
             pline_msg = "growls.";
+            chat_line = 3;
         }
         break;
     case MS_MEW:
         if (is_tame(mtmp)) {
             if (is_confused(mtmp) || is_fleeing(mtmp) || mtmp->mtrapped
                 || mtmp->mtame < 5)
+            {
                 pline_msg = "yowls.";
+                chat_line = 3;
+            }
             else if (moves > EDOG(mtmp)->hungrytime)
+            {
                 pline_msg = "meows.";
+                chat_line = 2;
+            }
             else if (EDOG(mtmp)->hungrytime > moves + 1000)
+            {
                 pline_msg = "purrs.";
+                chat_line = 1;
+            }
             else
+            {
                 pline_msg = "mews.";
+                chat_line = 0;
+            }
             break;
         }
         /*FALLTHRU*/
     case MS_GROWL:
         pline_msg = is_peaceful(mtmp) ? "snarls." : "growls!";
+        chat_line = is_peaceful(mtmp) ? 1 : 0;
         break;
     case MS_ROAR:
         pline_msg = is_peaceful(mtmp) ? "snarls." : "roars!";
+        chat_line = is_peaceful(mtmp) ? 1 : 0;
         break;
     case MS_SQEEK:
         pline_msg = "squeaks.";
+        chat_line = 0;
         break;
     case MS_SQAWK:
         if (ptr == &mons[PM_RAVEN] && !is_peaceful(mtmp))
+        {
             verbl_msg = "Nevermore!";
+            chat_line = 1;
+        }
         else
             pline_msg = "squawks.";
         break;
     case MS_HISS:
         if (!is_peaceful(mtmp))
+        {
             pline_msg = "hisses!";
+            chat_line = 1;
+        }
         else
+        {
             pline_msg = "hisses gently.";
+            chat_line = 0;
+        }
         break;
     case MS_BUZZ:
         pline_msg = is_peaceful(mtmp) ? "drones." : "buzzes angrily.";
+        chat_line = is_peaceful(mtmp) ? 0 : 1;
         break;
     case MS_GRUNT:
         pline_msg = "grunts.";
+        chat_line = 0;
         break;
     case MS_NEIGH:
         if (mtmp->mtame < 5)
+        {
             pline_msg = "neighs.";
+            chat_line = 2;
+        }
         else if (moves > EDOG(mtmp)->hungrytime)
+        {
             pline_msg = "whinnies.";
+            chat_line = 1;
+        }
         else
+        {
             pline_msg = "whickers.";
+            chat_line = 0;
+        }
         break;
     case MS_BLEAT:
         pline_msg = "bleats.";
+        chat_line = 0;
         break;
     case MS_MOO:
         pline_msg = is_peaceful(mtmp) ? "moos." : "moos threateningly."; 
+        chat_line = is_peaceful(mtmp) ? 0 : 1;
         break;
     case MS_WAIL:
         pline_msg = "wails mournfully.";
+        chat_line = 0;
         break;
     case MS_GURGLE:
         pline_msg = "gurgles.";
+        chat_line = 0;
         break;
     case MS_BURBLE:
         pline_msg = "burbles.";
+        chat_line = 0;
         break;
     case MS_SHRIEK:
         pline_msg = "shrieks.";
+        chat_line = 0;
         aggravate();
         break;
     case MS_IMITATE:
         pline_msg = "imitates you.";
+        chat_line = 0;
         break;
     case MS_BONES:
         pline("%s rattles noisily.", Monnam(mtmp));
+        chat_line = 0;
         You("freeze for a moment.");
         nomul(-2);
         multi_reason = "scared by rattling";
@@ -1186,22 +1294,35 @@ register struct monst *mtmp;
         static const char *const laugh_msg[4] = {
             "giggles.", "chuckles.", "snickers.", "laughs.",
         };
-        pline_msg = laugh_msg[rn2(4)];
+        int roll = rn2(4);
+        pline_msg = laugh_msg[roll];
+        chat_line = roll;
     } break;
     case MS_MUMBLE:
         pline_msg = "mumbles incomprehensibly.";
+        chat_line = 0;
         break;
     case MS_DJINNI:
         if (is_tame(mtmp)) {
             verbl_msg = "Sorry, I'm all out of wishes.";
+            chat_line = 2;
         } else if (is_peaceful(mtmp)) {
             if (ptr == &mons[PM_WATER_DEMON])
+            {
                 pline_msg = "gurgles.";
+                chat_line = 1;
+            }
             else
+            {
                 verbl_msg = "I'm free!";
+                chat_line = 1;
+            }
         } else {
             if (ptr != &mons[PM_PRISONER])
+            {
                 verbl_msg = "This will teach you not to disturb me!";
+                chat_line = 2;
+            }
 #if 0
             else
                 verbl_msg = "??????????";
@@ -1214,12 +1335,15 @@ register struct monst *mtmp;
             case 0:
                 pline("%s boasts about %s gem collection.", Monnam(mtmp),
                       mhis(mtmp));
+                chat_line = 2;
                 break;
             case 1:
                 pline_msg = "complains about a diet of mutton.";
+                chat_line = 1;
                 break;
             default:
                 pline_msg = "shouts \"Fee Fie Foe Foo!\" and guffaws.";
+                chat_line = 0;
                 wake_nearto(mtmp->mx, mtmp->my, 7 * 7);
                 break;
             }
@@ -1231,78 +1355,135 @@ register struct monst *mtmp;
             if (In_endgame(&u.uz) && is_mplayer(ptr))
                 mplayer_talk(mtmp);
             else
+            {
                 pline_msg = "threatens you.";
+                chat_line = 0;
+            }
             break;
         }
         /* Generic peaceful humanoid behaviour. */
         if (is_fleeing(mtmp))
+        {
             pline_msg = "wants nothing to do with you.";
+            chat_line = 1;
+        }
         else if (mtmp->mhp < mtmp->mhpmax / 4)
+        {
             pline_msg = "moans.";
+            chat_line = 2;
+        }
         else if (is_confused(mtmp) || is_stunned(mtmp))
-            verbl_msg = !rn2(3) ? "Huh?" : rn2(2) ? "What?" : "Eh?";
+        {
+            const char* conf_msg[3] = { "Huh?", "What?", "Eh?" };
+        
+            int roll = rn2(3);
+            verbl_msg = conf_msg[roll];
+            chat_line = 3 + roll;
+        }
         else if (is_blinded(mtmp))
+        {
             verbl_msg = "I can't see!";
-        else if (mtmp->mtrapped) {
+            chat_line = 6;
+        }
+        else if (mtmp->mtrapped) 
+        {
             struct trap *t = t_at(mtmp->mx, mtmp->my);
 
             if (t)
                 t->tseen = 1;
             verbl_msg = "I'm trapped!";
-        } else if (mtmp->mhp < mtmp->mhpmax / 2)
+            chat_line = 7;
+        } 
+        else if (mtmp->mhp < mtmp->mhpmax / 2)
+        {
             pline_msg = "asks for a potion of healing.";
+            chat_line = 8;
+        }
         else if (mtmp->mtame && !mtmp->isminion
-                 && moves > EDOG(mtmp)->hungrytime)
+            && moves > EDOG(mtmp)->hungrytime)
+        {
             verbl_msg = "I'm hungry.";
+            chat_line = 9;
+        }
         /* Specific monsters' interests */
         else if (is_elf(ptr))
+        {
             pline_msg = "curses orcs.";
+            chat_line = 10;
+        }
         else if (is_dwarf(ptr))
+        {
             pline_msg = "talks about mining.";
+            chat_line = 11;
+        }
         else if (likes_magic(ptr))
+        {
             pline_msg = "talks about spellcraft.";
+            chat_line = 12;
+        }
         else if (ptr->mlet == S_CENTAUR)
+        {
             pline_msg = "discusses hunting.";
+            chat_line = 13;
+        }
         else
-            switch (monsndx(ptr)) {
+            switch (monsndx(ptr)) 
+            {
             case PM_HOBBIT:
                 pline_msg =
                     (mtmp->mhpmax - mtmp->mhp >= 10)
                         ? "complains about unpleasant dungeon conditions."
                         : "asks you about the One Ring.";
+
+                chat_line = 14 + ((mtmp->mhpmax - mtmp->mhp >= 10) ? 1 : 0);
                 break;
             case PM_ARCHAEOLOGIST:
                 pline_msg =
                 "describes a recent article in \"Spelunker Today\" magazine.";
+                chat_line = 16;
                 break;
             case PM_TOURIST:
                 verbl_msg = "Aloha.";
+                chat_line = 17;
                 break;
             case PM_ABBOT:
             case PM_MONK:
-                if(In_modron_level(&u.uz))
+                if (In_modron_level(&u.uz))
+                {
                     pline_msg = "discusses the ways of the Modron.";
+                    chat_line = 18;
+                }
                 else
+                {
                     pline_msg = "advises you on meditation.";
+                    chat_line = 19;
+                }
                 break;
             default:
                 pline_msg = "discusses dungeon exploration.";
+                chat_line = 20;
                 break;
             }
         break;
     case MS_SEDUCE: {
         int swval;
 
-        if (SYSOPT_SEDUCE) {
+        if (SYSOPT_SEDUCE)
+        {
             if (ptr->mlet != S_NYMPH
                 && could_seduce(mtmp, &youmonst, (struct attack *) 0) == 1) {
                 (void) doseduce(mtmp);
                 break;
             }
             swval = ((poly_gender() != (int) mtmp->female) ? rn2(3) : 0);
-        } else
+        }
+        else
+        {
             swval = ((poly_gender() == 0) ? rn2(3) : 0);
-        switch (swval) {
+        }
+
+        switch (swval) 
+        {
         case 2:
             verbl_msg = "Hello, sailor.";
             break;
@@ -1312,16 +1493,23 @@ register struct monst *mtmp;
         default:
             pline_msg = "cajoles you.";
         }
+        chat_line = swval;
     } break;
     case MS_ARREST:
         if (is_peaceful(mtmp))
+        {
             verbalize("Just the facts, %s.", flags.female ? "Ma'am" : "Sir");
-        else {
+            chat_line = flags.female ? 4 : 3;
+        }
+        else 
+        {
             static const char *const arrest_msg[3] = {
                 "Anything you say can be used against you.",
                 "You're under arrest!", "Stop in the name of the Law!",
             };
-            verbl_msg = arrest_msg[rn2(3)];
+            int roll = rn2(3);
+            verbl_msg = arrest_msg[roll];
+            chat_line = roll;
         }
         break;
     case MS_BRIBE:
@@ -1345,21 +1533,44 @@ register struct monst *mtmp;
     case MS_NURSE:
         verbl_msg_mcan = "I hate this job!";
         if (uwep && (uwep->oclass == WEAPON_CLASS || is_weptool(uwep)))
+        {
             verbl_msg = "Put that weapon away before you hurt someone!";
+            chat_line = 1;
+        }
         else if (uarmc || uarmo || uarm || uarmh || uarms || uarmb || uarmg || uarmf)
+        {
             verbl_msg = Role_if(PM_HEALER)
-                            ? "Doc, I can't help you unless you cooperate."
-                            : "Please undress so I can examine you.";
+                ? "Doc, I can't help you unless you cooperate."
+                : "Please undress so I can examine you.";
+
+            chat_line = Role_if(PM_HEALER) ? 2 : 3;
+
+        }
         else if (uarmu)
+        {
             verbl_msg = "Take off your shirt, please.";
+            chat_line = 4;
+        }
         else
+        {
             verbl_msg = "Relax, this won't hurt a bit.";
+            chat_line = 0;
+        }
+        if (is_cancelled(mtmp))
+            chat_line = 5;
+
         break;
     case MS_GUARD:
         if (money_cnt(invent))
+        {
             verbl_msg = "Please drop that gold and follow me.";
+            chat_line = 0;
+        }
         else
+        {
             verbl_msg = "Please follow me.";
+            chat_line = 1;
+        }
         break;
     case MS_SOLDIER: {
         static const char
@@ -1372,35 +1583,50 @@ register struct monst *mtmp;
                        "The food's not fit for Orcs!",
                        "My feet hurt, I've been on them all day!",
                    };
-        verbl_msg = is_peaceful(mtmp) ? soldier_pax_msg[rn2(3)]
-                                    : soldier_foe_msg[rn2(3)];
+        int roll = rn2(3);
+        chat_line = is_peaceful(mtmp) ? roll + 3 : roll;
+        verbl_msg = is_peaceful(mtmp) ? soldier_pax_msg[roll]
+                                    : soldier_foe_msg[roll];
         break;
     }
-    case MS_RIDER: {
+    case MS_RIDER:
+    {
         const char *tribtitle;
         struct obj *book = 0;
         boolean ms_Death = (ptr == &mons[PM_DEATH]);
 
         /* 3.6 tribute */
         if (ms_Death && !context.tribute.Deathnotice
-            && (book = u_have_novel()) != 0) {
-            if ((tribtitle = noveltitle(&book->novelidx)) != 0) {
+            && (book = u_have_novel()) != 0) 
+        {
+            if ((tribtitle = noveltitle(&book->novelidx)) != 0) 
+            {
                 Sprintf(verbuf, "Ah, so you have a copy of /%s/.", tribtitle);
                 /* no Death featured in these two, so exclude them */
                 if (strcmpi(tribtitle, "Snuff")
                     && strcmpi(tribtitle, "The Wee Free Men"))
                     Strcat(verbuf, "  I may have been misquoted there.");
                 verbl_msg = verbuf;
+                chat_line = 2;
             }
             context.tribute.Deathnotice = 1;
-        } else if (ms_Death && rn2(3) && Death_quote(verbuf, sizeof verbuf)) {
+        } 
+        else if (ms_Death && rn2(3) && Death_quote(verbuf, sizeof verbuf)) 
+        {
             verbl_msg = verbuf;
-        /* end of tribute addition */
-
-        } else if (ms_Death && !rn2(10)) {
+            /* end of tribute addition */
+            chat_line = -1; /* This needs to be activated later */
+        }
+        else if (ms_Death && !rn2(10)) 
+        {
             pline_msg = "is busy reading a copy of Sandman #8.";
-        } else
+            chat_line = 1;
+        }
+        else
+        {
             verbl_msg = "Who do you think you are, War?";
+            chat_line = 0;
+        }
         break;
     } /* case MS_RIDER */
     default:
@@ -1408,19 +1634,31 @@ register struct monst *mtmp;
         break;
     } /* switch */
 
-    if (pline_msg) {
+
+    if(chat_line >= 0)
+       play_monster_chat_sound(mtmp, chat_line);
+
+    if (pline_msg) 
+    {
         pline("%s %s", Monnam(mtmp), pline_msg);
-    } else if (is_cancelled(mtmp) && verbl_msg_mcan) {
+    }
+    else if (is_cancelled(mtmp) && verbl_msg_mcan)
+    {
         verbalize1(verbl_msg_mcan);
-    } else if (verbl_msg) {
+    } 
+    else if (verbl_msg) 
+    {
         /* more 3.6 tribute */
-        if (ptr == &mons[PM_DEATH]) {
+        if (ptr == &mons[PM_DEATH]) 
+        {
             /* Death talks in CAPITAL LETTERS
                and without quotation marks */
             char tmpbuf[BUFSZ];
 
             pline1(ucase(strcpy(tmpbuf, verbl_msg)));
-        } else {
+        }
+        else 
+        {
             verbalize1(verbl_msg);
         }
     }

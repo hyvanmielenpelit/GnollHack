@@ -4100,12 +4100,14 @@ struct monst *mtmp;
 {
     if (mtmp->data->msound == MS_SHRIEK) 
     {
-        if (!Deaf) {
-            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CHAT);
+        if (!Deaf)
+        {
+            play_monster_chat_sound(mtmp, 0);
             pline("%s shrieks.", Monnam(mtmp));
             stop_occupation();
         }
-        if (!rn2(10)) {
+        if (!rn2(10)) 
+        {
             if (!rn2(13))
                 (void) makemon(&mons[PM_PURPLE_WORM], 0, 0, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
             else
@@ -4118,7 +4120,8 @@ struct monst *mtmp;
         register int i;
 
         for (i = 0; i < NATTK; i++)
-            if (mtmp->data->mattk[i].aatyp == AT_GAZE) {
+            if (mtmp->data->mattk[i].aatyp == AT_GAZE)
+            {
                 (void) gazemu(mtmp, &mtmp->data->mattk[i]);
                 break;
             }
