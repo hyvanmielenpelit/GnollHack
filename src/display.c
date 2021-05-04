@@ -1251,7 +1251,7 @@ int damage_shown;
     {
         boolean old_glyph_is_invisible = glyph_is_invisible(lev->hero_memory_layers.glyph);
 
-        clear_hero_memory_at(x, y);
+        //clear_hero_memory_at(x, y);
 
         /* RECALL FIRST WHETHER THE LOCATION IS LIT OR NOT */
         /*
