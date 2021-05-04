@@ -9781,10 +9781,10 @@ play_intro_text()
 }
 
 void
-play_voice_com_pager(mon, msgnum, is_dialogue)
+play_voice_com_pager(mon, msgnum, via_pline)
 struct monst* mon;
 int msgnum;
-boolean is_dialogue;
+boolean via_pline;
 {
     /* Special cases first */
     if (msgnum >= QT_ANGELIC && msgnum <= QT_ANGELIC + QTN_ANGELIC - 1)
@@ -9800,11 +9800,11 @@ boolean is_dialogue;
 
     struct ghsound_immediate_info info = { 0 };
     info.ghsound = GHSOUND_COM_PAGER;
-    info.sound_type = is_dialogue ? IMMEDIATE_SOUND_DIALOGUE : IMMEDIATE_SOUND_SFX;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE; //  is_dialogue ? IMMEDIATE_SOUND_DIALOGUE : IMMEDIATE_SOUND_SFX;
     info.play_group = SOUND_PLAY_GROUP_LONG;
     info.dialogue_mid = 0;
 
-    if (is_dialogue)
+    if (via_pline)
     {
         float volume = 1.0f;
         if (mon && isok(mon->mx, mon->my))
@@ -9821,20 +9821,22 @@ boolean is_dialogue;
     info.parameter_values[0] = (float)urole.rolenum;
     info.parameter_names[1] = "MsgIndex";
     info.parameter_values[1] = (float)msgnum;
-    info.parameter_names[2] = (char*)0;
+    info.parameter_names[2] = "OriginalAlignmentIndex";
+    info.parameter_values[2] = (float)u.ualignbase[A_ORIGINAL];
+    info.parameter_names[3] = (char*)0;
 
     play_immediate_ghsound(info);
 }
 
 void
-play_voice_quest_pager(mon, msgnum, is_dialogue)
+play_voice_quest_pager(mon, msgnum, via_pline)
 struct monst* mon;
 int msgnum;
-boolean is_dialogue;
+boolean via_pline;
 {
     struct ghsound_immediate_info info = { 0 };
     info.ghsound = GHSOUND_QUEST_PAGER;
-    info.sound_type = is_dialogue ? IMMEDIATE_SOUND_DIALOGUE : IMMEDIATE_SOUND_SFX;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE; //  is_dialogue ? IMMEDIATE_SOUND_DIALOGUE : IMMEDIATE_SOUND_SFX;
     info.play_group = SOUND_PLAY_GROUP_LONG;
     info.dialogue_mid = mon ? mon->m_id : 0;
 
@@ -9844,9 +9846,13 @@ boolean is_dialogue;
     info.parameter_values[1] = (float)msgnum;
     info.parameter_names[2] = "AlignmentIndex";
     info.parameter_values[2] = (float)u.ualign.type;
-    info.parameter_names[3] = (char*)0;
+    info.parameter_names[3] = "OriginalAlignmentIndex";
+    info.parameter_values[3] = (float)u.ualignbase[A_ORIGINAL];
+    info.parameter_names[4] = "TitleIndex";
+    info.parameter_values[4] = (float)xlev_to_rank(u.ulevel);
+    info.parameter_names[5] = (char*)0;
 
-    if (is_dialogue)
+    if (via_pline)
     {
         float volume = 1.0f;
         if (mon && isok(mon->mx, mon->my))

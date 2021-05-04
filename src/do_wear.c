@@ -1771,7 +1771,9 @@ struct obj *obj;
             return 0;
 
         if (obj->otyp == HELM_OF_OPPOSITE_ALIGNMENT
-            && qstart_level.dnum == u.uz.dnum) { /* in quest */
+            && qstart_level.dnum == u.uz.dnum)
+        { /* in quest */
+            play_sfx_sound(SFX_GENERAL_NOT_A_GOOD_IDEA);
             if (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL])
                 You("narrowly avoid losing all chance at your goal.");
             else /* converted */

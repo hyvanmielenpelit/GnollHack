@@ -3410,6 +3410,11 @@ struct monst* mtmp;
     if (!m_general_talk_check(mtmp, "giving any advice") || !m_speak_check(mtmp))
         return 0;
 
+    if (mtmp->data->msound == MS_LEADER)
+    {
+        return do_chat_quest_chat(mtmp);
+    }
+
     if (mtmp->data->msound == MS_ORACLE || mtmp->data == &mons[PM_ORACLE])
     {
         pline("%s answers: \"The wisdom of Delphi shall be conveyed to thee by consultation.\"", Monnam(mtmp));
@@ -6414,8 +6419,8 @@ struct monst* mtmp;
     if (!m_speak_check(mtmp))
         return 0;
 
-    quest_chat(mtmp);
-    return 1;
+    (void)quest_chat(mtmp); /* To avoid two consecutive hints */
+    return 0;
 }
 
 

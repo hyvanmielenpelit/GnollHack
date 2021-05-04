@@ -350,15 +350,7 @@ char c;
         str = (flags.female && urole.name.f) ? urole.name.f : urole.name.m;
         break;
     case 'r':
-        if (iflags.using_gui_sounds)
-        {
-            str = (flags.female && urole.name.f) ? urole.name.f : urole.name.m;
-            strcpy(buf, str);
-            *buf = lowc(*buf);
-            str = 0;
-        }
-        else
-            str = rank_of(u.ulevel, Role_switch, flags.female);
+        str = rank_of(u.ulevel, Role_switch, flags.female);
         break;
     case 'R':
         str = rank_of(MIN_QUEST_LEVEL, Role_switch, flags.female);
