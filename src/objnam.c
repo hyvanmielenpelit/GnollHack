@@ -4732,7 +4732,7 @@ boolean is_wiz_wish;
         if (!BSTRCMPI(bp, p - 4, "tree")) {
             int subtype = get_initial_location_subtype(TREE);
             int vartype = get_initial_location_vartype(TREE, subtype);
-            create_simple_location(x, y, TREE, subtype, vartype, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            create_simple_location(x, y, TREE, subtype, vartype, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].vartyp : levl[x][y].floorvartyp, FALSE);
             pline("A tree.");
             newsym(x, y);
             block_vision_and_hearing_at_point(x, y);

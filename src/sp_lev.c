@@ -797,6 +797,7 @@ remove_boundary_syms()
                     levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
                     levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
                     levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+                    levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
                 }
     }
 }
@@ -1548,19 +1549,6 @@ struct mkroom *broom;
     }
     int typ = (dd->secret ? SDOOR : DOOR);
 
-#if 0
-    /* Door floors currently are always ROOM to make it simple */
-    if (IS_FLOOR(levl[x][y].typ))
-    {
-        levl[x][y].floortyp = levl[x][y].typ;
-        levl[x][y].floorsubtyp = levl[x][y].subtyp;
-    }
-    else
-    {
-        levl[x][y].floortyp = location_type_definitions[typ].initial_floor_type;
-        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
-    }
-#endif
     unsigned short dflags = dd->mask; /* Normal doormask */
     dflags |= dd->dflags;
 
@@ -5436,6 +5424,7 @@ genericptr_t arg;
     {
         levl[x][y].floortyp = 0;
         levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorvartyp = 0;
     }
     else if (IS_FLOOR(levl[x][y].typ))
     {
@@ -5502,6 +5491,7 @@ genericptr_t arg, arg2;
         levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
         levl[x][y].floortyp = 0;
         levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorvartyp = 0;
     }
     else
     {

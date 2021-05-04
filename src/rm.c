@@ -57,13 +57,13 @@ struct location_subtype_definition corridor_subtype_definitions[MAX_CORRIDOR_SUB
 struct location_subtype_definition grass_subtype_definitions[MAX_GRASS_SUBTYPES] =
 {
     { "normal grass", GRASS_SUBTYPE_NORMAL_VARIATIONS, 0 },
-    { "swampy grass", 1, GRASS_SUBTYPE_NORMAL_VARIATIONS },
+    { "swampy grass", GRASS_SUBTYPE_SWAMPY_VARIATIONS, GRASS_SUBTYPE_NORMAL_VARIATIONS },
 };
 
 struct location_subtype_definition ground_subtype_definitions[MAX_GROUND_SUBTYPES] =
 {
     { "normal ground", GROUND_SUBTYPE_NORMAL_VARIATIONS, 0 },
-    { "swampy ground", 1, GROUND_SUBTYPE_NORMAL_VARIATIONS },
+    { "swampy ground", GROUND_SUBTYPE_SWAMPY_VARIATIONS, GROUND_SUBTYPE_NORMAL_VARIATIONS },
 };
 
 struct location_subtype_definition floor_subtype_definitions[MAX_FLOOR_SUBTYPES] =
@@ -207,7 +207,7 @@ int typ, subtyp;
     if (!sub_def || subtyp < 0 || subtyp >= num_subs)
         return 0;
 
-    int num = sub_def->number_of_vartypes;
+    int num = sub_def[subtyp].number_of_vartypes;
 
     if (num <= 1)
         return 0;

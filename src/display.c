@@ -1170,9 +1170,6 @@ int damage_shown;
     if (!isok(x, y))
         return;
 
-    if (x == 15 && y == 5)
-        x = x;
-
     /* Add global flags */
     unsigned long newsym_flags = (specific_newsym_flags | context.global_newsym_flags);
 
@@ -3754,10 +3751,19 @@ xchar x, y;
     if (ptr->floortyp && IS_FLOOR(ptr->floortyp))
     {
         idx = location_type_definitions[ptr->floortyp].base_screen_symbol;
-        if (ptr->floorsubtyp > 0)
+        if (ptr->floorsubtyp > 0 || ptr->floorvartyp > 0)
         {
+            int subtyp_offset = 0;
+            if (ptr->floortyp == ROOM)
+                subtyp_offset = floor_subtype_definitions[ptr->floorsubtyp].variation_offset;
+            else if (ptr->floortyp == GRASS)
+                subtyp_offset = grass_subtype_definitions[ptr->floorsubtyp].variation_offset;
+            else if (ptr->floortyp == GROUND)
+                subtyp_offset = ground_subtype_definitions[ptr->floorsubtyp].variation_offset;
+            else if (ptr->floortyp == CORR)
+                subtyp_offset = corridor_subtype_definitions[ptr->floorsubtyp].variation_offset;
             int var_offset = defsyms[idx].variation_offset;
-            idx = var_offset + ptr->floorsubtyp - 1;
+            idx = var_offset + subtyp_offset + ptr->floorvartyp - 1;
             return cmap_variation_to_glyph(idx);
         }
 
