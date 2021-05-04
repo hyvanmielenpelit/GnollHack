@@ -221,7 +221,7 @@ struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS] = {
     {"circle-of-lightning", CLR_BRIGHT_CYAN, CIRCLE_OF_LIGHTNING_ANIMATION, SFX_CIRCLE_OF_LIGHTNING},
     {"circle-of-magic", CLR_MAGENTA, CIRCLE_OF_MAGIC_ANIMATION, SFX_CIRCLE_OF_MAGIC},
     {"circle-of-radiance", CLR_MAGENTA, NO_ANIMATION, SFX_CIRCLE_OF_RADIANCE},
-    {"scroll-of-earth", CLR_BROWN, NO_ANIMATION, SFX_RUMBLING_EARTH},
+    {"scroll-of-earth", CLR_BROWN, SCROLL_OF_EARTH_ANIMATION, SFX_RUMBLING_EARTH},
 };
 
 

@@ -5146,7 +5146,7 @@ enum action_tile_types action;
     update_m_action_core(mtmp, action, 0, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
     if(mtmp == &youmonst)
         u_wait_until_action();
-    else
+    else if(canseemon(mtmp))
         m_wait_until_action();
 }
 
@@ -5158,7 +5158,7 @@ enum action_tile_types action;
     update_m_action_core(mtmp, action, 2, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
     if (mtmp == &youmonst)
         u_wait_until_action();
-    else
+    else if (canseemon(mtmp))
         m_wait_until_action();
 }
 

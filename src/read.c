@@ -3100,22 +3100,36 @@ boolean *effect_happened_ptr;
             && (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) {
             register int x, y;
             int nboulders = 0;
-
+            boolean spef_on = FALSE;
             /* Identify the scroll */
-            play_sfx_sound(SFX_RUMBLING_EARTH);
-            if (u.uswallow)
-                You_hear("rumbling.");
-            else
-                pline_The("%s rumbles %s you!", ceiling(u.ux, u.uy),
-                          sblessed ? "around" : "above");
-            known = 1;
-            sokoban_guilt();
-
-            if (iflags.using_gui_sounds && !Deaf)
+            if (iflags.using_gui_sounds)
             {
                 /* Shake effect here would be nice */
-                delay_output_milliseconds(1000);
+                play_sfx_sound(SFX_RUMBLING_EARTH);
+                if (!Deaf)
+                {
+                    if (u.uswallow)
+                        You_hear("rumbling.");
+                    else
+                        pline_The("%s rumbles %s you!", ceiling(u.ux, u.uy),
+                            sblessed ? "around" : "above");
+                }
+                delay_output_milliseconds(400);
             }
+
+            if (!scursed)
+            {
+                spef_on = TRUE;
+                play_explosion_animation_at(u.ux, u.uy, EXPL_SCROLL_OF_EARTH);
+                explosion_wait_until_action();
+            }
+            else
+            {
+                if (iflags.using_gui_sounds)
+                    delay_output_milliseconds(600);
+            }
+            known = 1;
+            sokoban_guilt();
 
             /* Loop through the surrounding squares */
             if (!scursed)
@@ -3132,10 +3146,15 @@ boolean *effect_happened_ptr;
                     }
                 }
             /* Attack the player */
-            if (!sblessed) {
+            if (!sblessed) 
+            {
                 drop_boulder_on_player(confused, !scursed, TRUE, FALSE);
-            } else if (!nboulders)
+            }
+            else if (!nboulders)
                 pline("But nothing else happens.");
+
+            if(spef_on)
+                explosion_wait_until_end();
         }
         break;
     case SCR_PUNISHMENT:
@@ -3251,7 +3270,12 @@ boolean confused, helmet_protects, byu, skip_uswallow;
         newsym(u.ux, u.uy);
     }
     if (dmg)
-        losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "scroll of earth", KILLED_BY_AN);
+    {
+        double damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
+        if (damage > 0)
+            display_u_being_hit(HIT_GENERAL, (int)damage, 0UL);
+        losehp(damage, "scroll of earth", KILLED_BY_AN);
+    }
 }
 
 boolean
@@ -3303,9 +3327,12 @@ boolean confused, byu;
                           xname(helmet), mhim(mtmp));
             }
         }
+        double damage = adjust_damage(mdmg, byu ? &youmonst : (struct monst*)0, mtmp, AD_PHYS, ADFLAGS_NONE);
+        if (damage > 0)
+            display_m_being_hit(mtmp, HIT_GENERAL, (int)damage, 0UL, FALSE);
 
-        deduct_monster_hp(mtmp, adjust_damage(mdmg, byu ? &youmonst : (struct monst*)0, mtmp, AD_PHYS, ADFLAGS_NONE));
-        
+        deduct_monster_hp(mtmp, damage);
+
         if (DEADMONSTER(mtmp)) 
         {
             if (byu) {
