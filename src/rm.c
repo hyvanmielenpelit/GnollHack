@@ -49,40 +49,38 @@ NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
     {"UNDEFINED_LOCATION",      S_unexplored,0,     MAT_NONE,    LOCATION_SOUNDSET_NONE}
 };
 
-
-struct category_definition corridor_category_definitions[MAX_CORRIDOR_CATEGORIES] =
+struct location_subtype_definition corridor_subtype_definitions[MAX_CORRIDOR_SUBTYPES] =
 {
-    { CORRIDOR_SUBTYPE_NORMAL, 4},
+    { "normal corridor", CORRIDOR_SUBTYPE_NORMAL_VARIATIONS, 0 },
 };
 
-struct category_definition grass_category_definitions[MAX_GRASS_CATEGORIES] =
+struct location_subtype_definition grass_subtype_definitions[MAX_GRASS_SUBTYPES] =
 {
-    { GRASS_SUBTYPE_NORMAL, 3},
-    { GRASS_SUBTYPE_SWAMPY, 1},
+    { "normal grass", GRASS_SUBTYPE_NORMAL_VARIATIONS, 0 },
+    { "swampy grass", 1, GRASS_SUBTYPE_NORMAL_VARIATIONS },
 };
 
-struct category_definition ground_category_definitions[MAX_GROUND_CATEGORIES] =
+struct location_subtype_definition ground_subtype_definitions[MAX_GROUND_SUBTYPES] =
 {
-    { GROUND_SUBTYPE_NORMAL, 4},
-    { GROUND_SUBTYPE_SWAMPY, 1},
+    { "normal ground", GROUND_SUBTYPE_NORMAL_VARIATIONS, 0 },
+    { "swampy ground", 1, GROUND_SUBTYPE_NORMAL_VARIATIONS },
 };
 
-struct category_definition floor_category_definitions[MAX_FLOOR_CATEGORIES] =
+struct location_subtype_definition floor_subtype_definitions[MAX_FLOOR_SUBTYPES] =
 {
-    { FLOOR_SUBTYPE_NORMAL, 4},
-    { FLOOR_SUBTYPE_MARBLE, 1},
-    { FLOOR_SUBTYPE_PARQUET, 1},
+    { "normal floor", FLOOR_SUBTYPE_NORMAL_VARIATIONS, 0 },
+    { "marble floor", FLOOR_SUBTYPE_MARBLE_VARIATIONS, FLOOR_SUBTYPE_NORMAL_VARIATIONS },
+    { "parquet", FLOOR_SUBTYPE_PARQUET_VARIATIONS, FLOOR_SUBTYPE_MARBLE_VARIATIONS + FLOOR_SUBTYPE_NORMAL_VARIATIONS },
 };
 
-
-struct category_definition stone_category_definitions[MAX_STONE_CATEGORIES] =
+struct location_subtype_definition stone_subtype_definitions[MAX_STONE_SUBTYPES] =
 {
-    { STONE_SUBTYPE_NORMAL, NUM_NORMAL_STONE_SUBTYPES},
+    { "normal stone", STONE_SUBTYPE_NORMAL_VARIATIONS, 0 },
 };
 
-struct category_definition wall_category_definitions[MAX_WALL_CATEGORIES] =
+struct location_subtype_definition wall_subtype_definitions[MAX_WALL_SUBTYPES] =
 {
-    { WALL_SUBTYPE_STONE, NUM_NORMAL_STONE_SUBTYPES}, /* Must be aligned with stone normal category */
+    { "normal wall", WALL_SUBTYPE_NORMAL_VARIATIONS, 0 }, /* Must be aligned with stone normal subtypes */
 };
 
 
@@ -104,9 +102,18 @@ struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES] =
 
 struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES] =
 {
-    {"tree",          "tree",  TREE_SPECIES_GENERAL,     0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL},
-    {"spruce tree",   "tree",  TREE_SPECIES_CONIFEROUS,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL},
-    {"fir tree",      "tree",  TREE_SPECIES_CONIFEROUS,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL},
+    {"tree",          "tree",  
+        TREE_SUBTYPE_NORMAL_VARIATIONS, 0,  
+        TREE_CLASS_GENERAL,     0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
+    },
+    {"spruce tree",   "tree",  
+        TREE_SUBTYPE_SPRUCE_VARIATIONS, TREE_SUBTYPE_NORMAL_VARIATIONS,  
+        TREE_CLASS_CONIFEROUS,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
+    },
+    {"fir tree",      "tree",  
+        TREE_SUBTYPE_FIR_VARIATIONS, TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_NORMAL_VARIATIONS,  
+        TREE_CLASS_CONIFEROUS,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
+    },
 };
 
 /* force linkage */
@@ -134,9 +141,6 @@ int typ, subtyp;
             material = MAT_WOOD;
             break;
         case FLOOR_SUBTYPE_NORMAL:
-        case FLOOR_SUBTYPE_NORMAL_VARIATION_1:
-        case FLOOR_SUBTYPE_NORMAL_VARIATION_2:
-        case FLOOR_SUBTYPE_NORMAL_VARIATION_3:
         case FLOOR_SUBTYPE_MARBLE:
             /* Base material type */
             break;
@@ -149,63 +153,6 @@ int typ, subtyp;
 }
 
 int
-get_location_subtype_by_category(ltype, category_id)
-int ltype;
-int category_id;
-{
-    struct category_definition* cat_def = 0;
-    int cat_size = 0;
-
-    if (ltype == GRASS)
-    {
-        cat_def = grass_category_definitions;
-        cat_size = MAX_GRASS_CATEGORIES;
-    }
-    else if (ltype == GROUND)
-    {
-        cat_def = ground_category_definitions;
-        cat_size = MAX_GROUND_CATEGORIES;
-    }
-    else if (ltype == ROOM)
-    {
-        cat_def = floor_category_definitions;
-        cat_size = MAX_FLOOR_CATEGORIES;
-    }
-    else if (ltype == CORR)
-    {
-        cat_def = corridor_category_definitions;
-        cat_size = MAX_CORRIDOR_CATEGORIES;
-    }
-    else if (ltype == STONE)
-    {
-        cat_def = stone_category_definitions;
-        cat_size = MAX_STONE_CATEGORIES;
-    }
-    else if (IS_WALL(ltype))
-    {
-        cat_def = wall_category_definitions;
-        cat_size = MAX_WALL_CATEGORIES;
-    }
-
-    if (cat_def == 0)
-        return 0;
-
-    if (category_id < 0 || category_id >= cat_size)
-        category_id = 0; /* Default to normal if illegal category */
-
-    int first_st = cat_def[category_id].first_subtype;
-    int num_st = cat_def[category_id].number_of_subtypes;
-
-    if (num_st <= 0)
-        return 0;
-    else if (num_st == 1)
-        return max(0, first_st);
-    else
-        return max(0, first_st) + rn2(num_st);
-
-}
-
-int
 get_initial_location_subtype(ltype)
 int ltype;
 {
@@ -214,61 +161,58 @@ int ltype;
     else if (ltype == TREE)
         return rn2(MAX_TREE_SUBTYPES);
     else
-        return get_location_subtype_by_category(ltype, 
-            ltype == GRASS && level.flags.swampy ? GRASS_CATEGORY_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_CATEGORY_SWAMPY : 0
-    );
+        return ltype == GRASS && level.flags.swampy ? GRASS_SUBTYPE_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_SUBTYPE_SWAMPY : 0;
 }
 
 int
-get_location_category(typ, subtyp)
+get_initial_location_vartype(typ, subtyp)
 int typ, subtyp;
 {
-    struct category_definition* cat_def = 0;
-    int num_cats = 0;
+    struct location_subtype_definition* sub_def = 0;
+    int num_subs = 0;
 
     if (typ == CORR)
     {
-        cat_def = corridor_category_definitions;
-        num_cats = MAX_CORRIDOR_CATEGORIES;
+        sub_def = corridor_subtype_definitions;
+        num_subs = MAX_CORRIDOR_SUBTYPES;
     }
     else if (typ == GRASS)
     {
-        cat_def = grass_category_definitions;
-        num_cats = MAX_GRASS_CATEGORIES;
+        sub_def = grass_subtype_definitions;
+        num_subs = MAX_GRASS_SUBTYPES;
     }
     else if (typ == GROUND)
     {
-        cat_def = ground_category_definitions;
-        num_cats = MAX_GROUND_CATEGORIES;
+        sub_def = ground_subtype_definitions;
+        num_subs = MAX_GROUND_SUBTYPES;
     }
     else if (typ == ROOM)
     {
-        cat_def = floor_category_definitions;
-        num_cats = MAX_FLOOR_CATEGORIES;
+        sub_def = floor_subtype_definitions;
+        num_subs = MAX_FLOOR_SUBTYPES;
     }
     else if (typ == STONE)
     {
-        cat_def = stone_category_definitions;
-        num_cats = MAX_STONE_CATEGORIES;
+        sub_def = stone_subtype_definitions;
+        num_subs = MAX_STONE_SUBTYPES;
     }
     else if (IS_WALL(typ))
     {
-        cat_def = wall_category_definitions;
-        num_cats = MAX_WALL_CATEGORIES;
+        sub_def = wall_subtype_definitions;
+        num_subs = MAX_WALL_SUBTYPES;
     }
-
-    if (cat_def == 0)
+    else
         return 0;
 
-    for (int i = 0; i < num_cats; i++)
-    {
-        if (subtyp >= cat_def[i].first_subtype && subtyp < cat_def[i].first_subtype + cat_def[i].number_of_subtypes)
-        {
-            return i;
-        }
-    }
+    if (!sub_def || subtyp < 0 || subtyp >= num_subs)
+        return 0;
 
-    return 0;
+    int num = sub_def->number_of_vartypes;
+
+    if (num <= 1)
+        return 0;
+    else
+        return rn2(num);
 }
 
 const char*
@@ -692,26 +636,31 @@ boolean fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground;
     {
         lev->floortyp = GRASS;
         lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+        lev->floorvartyp = get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
     }
     else if (lev->typ == FOUNTAIN && fountain_on_ground)
     {
         lev->floortyp = GROUND;
         lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+        lev->floorvartyp = get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
     }
     else if (lev->typ == TREE && tree_on_ground)
     {
         lev->floortyp = GROUND;
         lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+        lev->floorvartyp = get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
     }
     else if (lev->typ == THRONE && throne_on_ground)
     {
         lev->floortyp = GROUND;
         lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+        lev->floorvartyp = get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
     }
     else
     {
         lev->floortyp = location_type_definitions[lev->typ].initial_floor_type;
         lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+        lev->floorvartyp = get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
     }
 }
 

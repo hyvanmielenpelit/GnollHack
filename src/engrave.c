@@ -1400,20 +1400,23 @@ boolean in_mklev_var;
         {
             levl[x][y].floortyp = levl[x][y].typ;
             levl[x][y].floorsubtyp = levl[x][y].subtyp;
+            levl[x][y].floorvartyp = levl[x][y].vartyp;
         }
         else if(!IS_FLOOR(levl[x][y].floortyp))
         {
             levl[x][y].floortyp = location_type_definitions[GRAVE].initial_floor_type;
             levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+            levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
         }
 
         levl[x][y].typ = GRAVE;
-        levl[x][y].subtyp = 0;
+        levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
+        levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
         levl[x][y].flags = 0;
     }
     else
     {
-        create_simple_location(x, y, GRAVE, 0, 0, 0, levl[x][y].typ == GRAVE ? levl[x][y].floortyp : levl[x][y].typ, levl[x][y].typ == GRAVE ? levl[x][y].floorsubtyp : levl[x][y].subtyp, FALSE);
+        create_simple_location(x, y, GRAVE, 0, 0, 0, 0, levl[x][y].typ == GRAVE ? levl[x][y].floortyp : levl[x][y].typ, levl[x][y].typ == GRAVE ? levl[x][y].floorsubtyp : levl[x][y].subtyp, levl[x][y].typ == GRAVE ? levl[x][y].floorvartyp : levl[x][y].vartyp, FALSE);
     }
 
     /* Engrave the headstone */
@@ -1444,20 +1447,24 @@ boolean in_mklev_var;
         {
             levl[x][y].floortyp = levl[x][y].typ;
             levl[x][y].floorsubtyp = levl[x][y].subtyp;
+            levl[x][y].floorvartyp = levl[x][y].vartyp;
         }
         else if (!IS_FLOOR(levl[x][y].floortyp))
         {
             levl[x][y].floortyp = location_type_definitions[GRAVE].initial_floor_type;
             levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+            levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
         }
 
         levl[x][y].typ = SIGNPOST;
-        levl[x][y].subtyp = 0;
+        levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
+        levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].vartyp);
         levl[x][y].flags = 0;
     }
     else
     {
-        create_simple_location(x, y, SIGNPOST, 0, 0, 0, levl[x][y].typ == SIGNPOST ? levl[x][y].floortyp : levl[x][y].typ, levl[x][y].typ == SIGNPOST ? levl[x][y].floorsubtyp : levl[x][y].subtyp, FALSE);
+        boolean issignpost = (levl[x][y].typ == SIGNPOST);
+        create_simple_location(x, y, SIGNPOST, 0, 0, 0, 0, issignpost ? levl[x][y].floortyp : levl[x][y].typ, issignpost ? levl[x][y].floorsubtyp : levl[x][y].subtyp, issignpost ? levl[x][y].floorvartyp : levl[x][y].vartyp, FALSE);
     }
 
     /* Engrave the signpost */

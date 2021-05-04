@@ -9659,15 +9659,21 @@ short exploding_wand_typ;
         {
             rangemod = -1000;
             struct mkroom* r = which_room(x, y);
-            int ltype = 0, lsubtype = 0;
+            int ltype = 0, lsubtype = 0, lvartype = 0;
             if (levl[x][y].floortyp)
                 ltype = levl[x][y].floortyp, lsubtype = levl[x][y].floorsubtyp;
-            else if (r && r->orig_rtype == GARDEN)
-                ltype = GRASS, lsubtype = get_initial_location_subtype(GRASS);
             else
-                ltype = ROOM, lsubtype = get_initial_location_subtype(ROOM);
+            {
+                if (r && r->orig_rtype == GARDEN)
+                    ltype = GRASS;
+                else
+                    ltype = ROOM;
+
+                lsubtype = get_initial_location_subtype(ltype);
+                lvartype = get_initial_location_vartype(ltype, lsubtype);
+            }
             play_sfx_sound_at_location(SFX_DISINTEGRATE, x, y);
-            create_simple_location(x, y, ltype, lsubtype, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
+            create_simple_location(x, y, ltype, lsubtype, lvartype, 0, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
             unblock_vision_and_hearing_at_point(x, y); /* vision */
             newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
             if (cansee(x, y))

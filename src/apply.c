@@ -6140,7 +6140,7 @@ struct trap* lever;
     {
         if (isok(target_x, target_y) && IS_ROCK(levl[target_x][target_y].typ))
         {
-            create_simple_location(target_x, target_y, DOOR, 0, D_CLOSED, 0, levl[target_x][target_y].floortyp, levl[target_x][target_y].floorsubtyp, TRUE);
+            create_simple_location(target_x, target_y, DOOR, 0, 0, D_CLOSED, 0, levl[target_x][target_y].floortyp, levl[target_x][target_y].floorsubtyp, levl[target_x][target_y].floorvartyp, TRUE);
             play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
         }
         break;
@@ -6149,10 +6149,11 @@ struct trap* lever;
     {
         int loctyp = (int)lever->effect_param1;
         int locsubtyp = (int)lever->effect_param2;
+        int locvartyp = (int)lever->effect_param3;
         int locflags = (uchar)lever->effect_flags;
         if (isok(target_x, target_y) && loctyp >= 0 && loctyp < MAX_TYPE)
         {
-            create_simple_location(target_x, target_y, loctyp, locsubtyp, locflags, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
+            create_simple_location(target_x, target_y, loctyp, locsubtyp, locvartyp, locflags, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorvartyp, TRUE);
             play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
         }
         break;
@@ -6167,11 +6168,11 @@ struct trap* lever;
         {
             if (loctyp2 >= 0 && loctyp2 < MAX_TYPE && (lever->tflags & TRAPFLAGS_STATE_MASK) == 0)
             {
-                create_simple_location(target_x, target_y, loctyp2, locsubtyp2, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
+                create_simple_location(target_x, target_y, loctyp2, locsubtyp2, 0, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorvartyp, TRUE);
             }
             else if (loctyp >= 0 && loctyp < MAX_TYPE && (lever->tflags & TRAPFLAGS_STATE_MASK) > 0)
             {
-                create_simple_location(target_x, target_y, loctyp, locsubtyp, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
+                create_simple_location(target_x, target_y, loctyp, locsubtyp, 0, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorvartyp, TRUE);
             }
             play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
         }

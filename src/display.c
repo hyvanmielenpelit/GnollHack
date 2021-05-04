@@ -574,7 +574,7 @@ int x, y, show;
     }
 
     /* Object layer */
-    clear_hero_object_memory_at(x, y);
+    //clear_hero_object_memory_at(x, y);
     if (!covers_objects(x, y))
     {
         boolean show_first_object_layer = show;
@@ -1170,6 +1170,9 @@ int damage_shown;
     if (!isok(x, y))
         return;
 
+    if (x == 15 && y == 5)
+        x = x;
+
     /* Add global flags */
     unsigned long newsym_flags = (specific_newsym_flags | context.global_newsym_flags);
 
@@ -1247,6 +1250,8 @@ int damage_shown;
     if (cansee(x, y)) 
     {
         boolean old_glyph_is_invisible = glyph_is_invisible(lev->hero_memory_layers.glyph);
+
+        clear_hero_memory_at(x, y);
 
         /* RECALL FIRST WHETHER THE LOCATION IS LIT OR NOT */
         /*
@@ -3018,12 +3023,12 @@ xchar x, y;
     stone_here:
         {
             idx = S_stone;
-            int used_subtyp = (ptr->typ == STONE ? ptr->subtyp : (ptr->subtyp % NUM_NORMAL_STONE_SUBTYPES));
-            if (used_subtyp > 0 && ptr->typ != SDOOR)
+            int used_vartyp = (ptr->typ == STONE ? ptr->vartyp : (ptr->vartyp % NUM_NORMAL_STONE_VARTYPES));
+            if ((used_vartyp > 0 || ptr->subtyp > 0) && ptr->typ != SDOOR)
             { /* Walls use also stone subtypes if looked from outside, but they can have a larger subtype than what is possible for walls */
                 is_variation = TRUE;
                 int var_offset = defsyms[idx].variation_offset;
-                idx = var_offset + used_subtyp - 1;
+                idx = var_offset + stone_subtype_definitions[ptr->subtyp].variation_offset + used_vartyp - 1;
             }
         }
     }
@@ -3031,39 +3036,39 @@ xchar x, y;
     case ROOM:
         idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM: */ S_room;
 
-        if (ptr->subtyp > 0)
+        if (ptr->subtyp > 0 || ptr->vartyp > 0)
         {
             is_variation = TRUE;
             int var_offset = defsyms[idx].variation_offset;
-            idx = var_offset + ptr->subtyp - 1;
+            idx = var_offset + floor_subtype_definitions[ptr->subtyp].variation_offset + ptr->vartyp - 1;
         }
 
         break;
     case GRASS:
         idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
-        if (ptr->subtyp > 0)
+        if (ptr->subtyp > 0 || ptr->vartyp > 0)
         {
             is_variation = TRUE;
             int var_offset = defsyms[idx].variation_offset;
-            idx = var_offset + ptr->subtyp - 1;
+            idx = var_offset + grass_subtype_definitions[ptr->subtyp].variation_offset + ptr->vartyp - 1;
         }
         break;
     case GROUND:
         idx = S_ground;
-        if (ptr->subtyp > 0)
+        if (ptr->subtyp > 0 || ptr->vartyp > 0)
         {
             is_variation = TRUE;
             int var_offset = defsyms[idx].variation_offset;
-            idx = var_offset + ptr->subtyp - 1;
+            idx = var_offset + ground_subtype_definitions[ptr->subtyp].variation_offset + ptr->vartyp - 1;
         }
         break;
     case CORR:
         idx = /* (ptr->waslit || flags.lit_corridor) ? */ S_litcorr /* : S_corr */;
-        if (ptr->subtyp > 0)
+        if (ptr->subtyp > 0 || ptr->vartyp > 0)
         {
             is_variation = TRUE;
             int var_offset = defsyms[idx].variation_offset;
-            idx = var_offset + ptr->subtyp - 1;
+            idx = var_offset + corridor_subtype_definitions[ptr->subtyp].variation_offset + ptr->vartyp - 1;
         }
         break;
     case HWALL:
@@ -3077,11 +3082,11 @@ xchar x, y;
 
         hwall_here:
             {
-                if (idx == S_hwall && ptr->subtyp > 0 && ptr->typ != SDOOR)
+                if (idx == S_hwall && (ptr->subtyp > 0 || ptr->vartyp > 0) && ptr->typ != SDOOR)
                 {
                     is_variation = TRUE;
                     int var_offset = defsyms[idx].variation_offset;
-                    idx = var_offset + ptr->subtyp - 1;
+                    idx = var_offset + wall_subtype_definitions[ptr->subtyp].variation_offset + ptr->vartyp - 1;
                 }
             }
         }
@@ -3097,11 +3102,11 @@ xchar x, y;
             if (idx == S_hwall)
                 goto hwall_here;
 
-            if (idx == S_vwall && ptr->subtyp > 0)
+            if (idx == S_vwall && (ptr->subtyp > 0 || ptr->vartyp > 0))
             {
                 is_variation = TRUE;
                 int var_offset = defsyms[idx].variation_offset;
-                idx = var_offset + ptr->subtyp - 1;
+                idx = var_offset + wall_subtype_definitions[ptr->subtyp].variation_offset + ptr->vartyp - 1;
             }
         }
         else
@@ -3145,7 +3150,7 @@ xchar x, y;
         else
             sym_idx = S_ndoor;
 
-        if (subtyp == 0 || sym_idx == S_ndoor)
+        if ((subtyp == 0) || sym_idx == S_ndoor)
         {
             idx = sym_idx;
         }
@@ -3163,8 +3168,9 @@ xchar x, y;
     case TREE:
     {
         int subtyp_idx = ptr->subtyp;
+        int vartyp_idx = ptr->vartyp;
         int sym_idx = S_tree;
-        if (subtyp_idx == 0)
+        if (subtyp_idx == 0 && vartyp_idx == 0)
         {
             idx = sym_idx;
         }
@@ -3172,7 +3178,7 @@ xchar x, y;
         {
             is_variation = TRUE;
             int var_offset = defsyms[sym_idx].variation_offset;
-            idx = var_offset + subtyp_idx - 1;
+            idx = var_offset + tree_subtype_definitions[ptr->subtyp].variation_offset + vartyp_idx - 1;
         }
         break;
     }

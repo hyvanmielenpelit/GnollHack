@@ -3269,37 +3269,37 @@ YY_RULE_SETUP
 case 234:
 YY_RULE_SETUP
 #line 368 "lev_comp.l"
-{ savetoken(yytext); yylval.i=FLOOR_CATEGORY_NORMAL; return FLOOR_TYPE; }
+{ savetoken(yytext); yylval.i=FLOOR_SUBTYPE_NORMAL; return FLOOR_TYPE; }
 	YY_BREAK
 case 235:
 YY_RULE_SETUP
 #line 369 "lev_comp.l"
-{ savetoken(yytext); yylval.i=FLOOR_CATEGORY_MARBLE; return FLOOR_TYPE; }
+{ savetoken(yytext); yylval.i=FLOOR_SUBTYPE_MARBLE; return FLOOR_TYPE; }
 	YY_BREAK
 case 236:
 YY_RULE_SETUP
 #line 370 "lev_comp.l"
-{ savetoken(yytext); yylval.i=FLOOR_CATEGORY_PARQUET; return FLOOR_TYPE; }
+{ savetoken(yytext); yylval.i=FLOOR_SUBTYPE_PARQUET; return FLOOR_TYPE; }
 	YY_BREAK
 case 237:
 YY_RULE_SETUP
 #line 371 "lev_comp.l"
-{ savetoken(yytext); yylval.i=GRASS_CATEGORY_NORMAL; return FLOOR_TYPE; }
+{ savetoken(yytext); yylval.i=GRASS_SUBTYPE_NORMAL; return FLOOR_TYPE; }
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
 #line 372 "lev_comp.l"
-{ savetoken(yytext); yylval.i=GRASS_CATEGORY_SWAMPY; return FLOOR_TYPE; }
+{ savetoken(yytext); yylval.i=GRASS_SUBTYPE_SWAMPY; return FLOOR_TYPE; }
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
 #line 373 "lev_comp.l"
-{ savetoken(yytext); yylval.i=GROUND_CATEGORY_NORMAL; return FLOOR_TYPE; }
+{ savetoken(yytext); yylval.i=GROUND_SUBTYPE_NORMAL; return FLOOR_TYPE; }
 	YY_BREAK
 case 240:
 YY_RULE_SETUP
 #line 374 "lev_comp.l"
-{ savetoken(yytext); yylval.i=GROUND_CATEGORY_SWAMPY; return FLOOR_TYPE; }
+{ savetoken(yytext); yylval.i=GROUND_SUBTYPE_SWAMPY; return FLOOR_TYPE; }
 	YY_BREAK
 case 241:
 YY_RULE_SETUP

@@ -2104,7 +2104,7 @@ lever_info	: ACTIVE_OR_INACTIVE
 		  }
 		| FLOOR_TYPE_ID ':' floortype
 		  {
-		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_CATEGORY));
+		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_FLOOR_SUBTYPE));
 		      $<i>$ = 0x0400;
 		  }
 		| EFFECT_FLAG_ID ':' INTEGER

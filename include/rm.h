@@ -267,117 +267,79 @@ struct location_type_definition {
 
 extern struct location_type_definition location_type_definitions[MAX_TYPE];
 
-struct category_definition {
-    int first_subtype;
-    int number_of_subtypes;
+struct location_subtype_definition {
+    const char* subtype_name;
+    int number_of_vartypes;
+    int variation_offset;
 };
 
 /* Floor subtypes and categories */
 
-enum corridor_categories {
-    CORRIDOR_CATEGORY_NORMAL = 0,
-    MAX_CORRIDOR_CATEGORIES
-};
-
-extern struct category_definition corridor_category_definitions[MAX_CORRIDOR_CATEGORIES];
-
+#define CORRIDOR_SUBTYPE_NORMAL_VARIATIONS 4
+#define TOTAL_CORRIDOR_SUBTYPE_VARIATIONS (CORRIDOR_SUBTYPE_NORMAL_VARIATIONS)
 enum corridor_subtypes {
     CORRIDOR_SUBTYPE_NORMAL = 0,
-    CORRIDOR_SUBTYPE_NORMAL_VARIATION_1,
-    CORRIDOR_SUBTYPE_NORMAL_VARIATION_2,
-    CORRIDOR_SUBTYPE_NORMAL_VARIATION_3,
     MAX_CORRIDOR_SUBTYPES
 };
 
+extern struct location_subtype_definition corridor_subtype_definitions[MAX_CORRIDOR_SUBTYPES];
 
-
-enum grass_categories {
-    GRASS_CATEGORY_NORMAL = 0,
-    GRASS_CATEGORY_SWAMPY,
-    MAX_GRASS_CATEGORIES
-};
-
-extern struct category_definition grass_category_definitions[MAX_GRASS_CATEGORIES];
-
+#define GRASS_SUBTYPE_NORMAL_VARIATIONS 3
+#define GRASS_SUBTYPE_SWAMPY_VARIATIONS 1
+#define TOTAL_GRASS_SUBTYPE_VARIATIONS (GRASS_SUBTYPE_NORMAL_VARIATIONS + GRASS_SUBTYPE_SWAMPY_VARIATIONS)
 enum grass_subtypes {
     GRASS_SUBTYPE_NORMAL = 0,
-    GRASS_SUBTYPE_NORMAL_VARIATION_1,
-    GRASS_SUBTYPE_NORMAL_VARIATION_2,
     GRASS_SUBTYPE_SWAMPY,
     MAX_GRASS_SUBTYPES
 };
 
-enum ground_categories {
-    GROUND_CATEGORY_NORMAL = 0,
-    GROUND_CATEGORY_SWAMPY,
-    MAX_GROUND_CATEGORIES
-};
+extern struct location_subtype_definition grass_subtype_definitions[MAX_GRASS_SUBTYPES];
 
-extern struct category_definition ground_category_definitions[MAX_GROUND_CATEGORIES];
-
+#define GROUND_SUBTYPE_NORMAL_VARIATIONS 4
+#define GROUND_SUBTYPE_SWAMPY_VARIATIONS 1
+#define TOTAL_GROUND_SUBTYPE_VARIATIONS (GROUND_SUBTYPE_NORMAL_VARIATIONS + GROUND_SUBTYPE_SWAMPY_VARIATIONS)
 enum ground_subtypes {
     GROUND_SUBTYPE_NORMAL = 0,
-    GROUND_SUBTYPE_NORMAL_VARIATION_1,
-    GROUND_SUBTYPE_NORMAL_VARIATION_2,
-    GROUND_SUBTYPE_NORMAL_VARIATION_3,
     GROUND_SUBTYPE_SWAMPY,
     MAX_GROUND_SUBTYPES
 };
 
-enum floor_categories {
-    FLOOR_CATEGORY_NORMAL = 0,
-    FLOOR_CATEGORY_MARBLE,
-    FLOOR_CATEGORY_PARQUET,
-    MAX_FLOOR_CATEGORIES
-};
+extern struct location_subtype_definition ground_subtype_definitions[MAX_GROUND_SUBTYPES];
 
-extern struct category_definition floor_category_definitions[MAX_FLOOR_CATEGORIES];
-
+#define FLOOR_SUBTYPE_NORMAL_VARIATIONS 4
+#define FLOOR_SUBTYPE_MARBLE_VARIATIONS 1
+#define FLOOR_SUBTYPE_PARQUET_VARIATIONS 1
+#define TOTAL_FLOOR_SUBTYPE_VARIATIONS (FLOOR_SUBTYPE_NORMAL_VARIATIONS + FLOOR_SUBTYPE_MARBLE_VARIATIONS + FLOOR_SUBTYPE_PARQUET_VARIATIONS)
 enum floor_subtypes {
     FLOOR_SUBTYPE_NORMAL = 0,
-    FLOOR_SUBTYPE_NORMAL_VARIATION_1,
-    FLOOR_SUBTYPE_NORMAL_VARIATION_2,
-    FLOOR_SUBTYPE_NORMAL_VARIATION_3,
     FLOOR_SUBTYPE_MARBLE,
     FLOOR_SUBTYPE_PARQUET,
     MAX_FLOOR_SUBTYPES
 };
 
+extern struct location_subtype_definition floor_subtype_definitions[MAX_FLOOR_SUBTYPES];
 
 /* Stone and wall subtypes and categories */
-#define NUM_NORMAL_STONE_SUBTYPES 4
+#define NUM_NORMAL_STONE_VARTYPES 4
 
-enum stone_categories {
-    STONE_CATEGORY_NORMAL = 0,
-    MAX_STONE_CATEGORIES
-};
-
-extern struct category_definition stone_category_definitions[MAX_STONE_CATEGORIES];
-
+#define STONE_SUBTYPE_NORMAL_VARIATIONS NUM_NORMAL_STONE_VARTYPES
+#define TOTAL_STONE_SUBTYPE_VARIATIONS (STONE_SUBTYPE_NORMAL_VARIATIONS)
 enum stone_subtypes {
     STONE_SUBTYPE_NORMAL = 0,
-    STONE_SUBTYPE_NORMAL_VARIATION_1,
-    STONE_SUBTYPE_NORMAL_VARIATION_2,
-    STONE_SUBTYPE_NORMAL_VARIATION_3,
     MAX_STONE_SUBTYPES
 };
 
+extern struct location_subtype_definition stone_subtype_definitions[MAX_STONE_SUBTYPES];
 
-enum wall_categories {
-    WALL_CATEGORY_STONE = 0,
-    MAX_WALL_CATEGORIES
-};
-
-extern struct category_definition wall_category_definitions[MAX_WALL_CATEGORIES];
+#define WALL_SUBTYPE_NORMAL_VARIATIONS NUM_NORMAL_STONE_VARTYPES
+#define TOTAL_WALL_SUBTYPE_VARIATIONS (WALL_SUBTYPE_NORMAL_VARIATIONS)
 
 enum wall_subtypes {
     WALL_SUBTYPE_STONE = 0,
-    WALL_SUBTYPE_STONE_VARIATION_1,
-    WALL_SUBTYPE_STONE_VARIATION_2,
-    WALL_SUBTYPE_STONE_VARIATION_3,
     MAX_WALL_SUBTYPES
 };
 
+extern struct location_subtype_definition wall_subtype_definitions[MAX_WALL_SUBTYPES];
 
 /* Other subtypes */
 enum modron_portal_subtypes {
@@ -445,10 +407,16 @@ enum tree_subtypes
     TREE_SUBTYPE_FIR,
     MAX_TREE_SUBTYPES
 };
+#define TREE_SUBTYPE_NORMAL_VARIATIONS 1
+#define TREE_SUBTYPE_SPRUCE_VARIATIONS 1
+#define TREE_SUBTYPE_FIR_VARIATIONS 1
+#define TOTAL_TREE_SUBTYPE_VARIATIONS (TREE_SUBTYPE_NORMAL_VARIATIONS + TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_FIR_VARIATIONS)
 
 struct tree_subtype_definition {
     const char* description;
     const char* short_description;
+    int number_of_vartypes;
+    int variation_offset;
     uchar tree_type;
     int fruit_type;
     short fruit_d;
@@ -463,12 +431,12 @@ struct tree_subtype_definition {
     unsigned long tree_flags;
 };
 
-enum tree_species_types
+enum tree_classes
 {
-    TREE_SPECIES_GENERAL = 0, /* Uses base_cmap */
-    TREE_SPECIES_LEAFED,
-    TREE_SPECIES_CONIFEROUS,
-    MAX_TREE_SPECIES
+    TREE_CLASS_GENERAL = 0, /* Uses base_cmap */
+    TREE_CLASS_LEAFED,
+    TREE_CLASS_CONIFEROUS,
+    MAX_TREE_CLASSES
 };
 
 extern struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES];
@@ -591,25 +559,25 @@ struct symdef_cmap_variation {
 #define CRWALL_VARIATIONS 1
 
 #define STONE_VARIATION_OFFSET (CRWALL_VARIATIONS + CRWALL_VARIATION_OFFSET)
-#define STONE_VARIATIONS (MAX_STONE_SUBTYPES - 1)
+#define STONE_VARIATIONS (TOTAL_STONE_SUBTYPE_VARIATIONS - 1)
 
 #define VWALL_VARIATION_OFFSET (STONE_VARIATIONS + STONE_VARIATION_OFFSET)
-#define VWALL_VARIATIONS (MAX_WALL_SUBTYPES - 1)
+#define VWALL_VARIATIONS (TOTAL_WALL_SUBTYPE_VARIATIONS - 1)
 
 #define HWALL_VARIATION_OFFSET (VWALL_VARIATIONS + VWALL_VARIATION_OFFSET)
-#define HWALL_VARIATIONS (MAX_WALL_SUBTYPES - 1)
+#define HWALL_VARIATIONS (TOTAL_WALL_SUBTYPE_VARIATIONS - 1)
 
 #define FLOOR_VARIATION_OFFSET (HWALL_VARIATIONS + HWALL_VARIATION_OFFSET)
-#define FLOOR_VARIATIONS (MAX_FLOOR_SUBTYPES - 1)
+#define FLOOR_VARIATIONS (TOTAL_FLOOR_SUBTYPE_VARIATIONS - 1)
 
 #define GRASS_VARIATION_OFFSET (FLOOR_VARIATIONS + FLOOR_VARIATION_OFFSET)
-#define GRASS_VARIATIONS (MAX_GRASS_SUBTYPES - 1)
+#define GRASS_VARIATIONS (TOTAL_GRASS_SUBTYPE_VARIATIONS - 1)
 
 #define GROUND_VARIATION_OFFSET (GRASS_VARIATIONS + GRASS_VARIATION_OFFSET)
-#define GROUND_VARIATIONS (MAX_GROUND_SUBTYPES - 1)
+#define GROUND_VARIATIONS (TOTAL_GROUND_SUBTYPE_VARIATIONS - 1)
 
 #define CORRIDOR_VARIATION_OFFSET (GROUND_VARIATIONS + GROUND_VARIATION_OFFSET)
-#define CORRIDOR_VARIATIONS (MAX_CORRIDOR_SUBTYPES - 1)
+#define CORRIDOR_VARIATIONS (TOTAL_CORRIDOR_SUBTYPE_VARIATIONS - 1)
 
 #define STAIRCASE_UP_VARIATION_OFFSET (CORRIDOR_VARIATIONS + CORRIDOR_VARIATION_OFFSET)
 enum staircase_subtypes
@@ -670,7 +638,7 @@ enum signpost_subtypes
 #define SIGNPOST_VARIATION_OFFSET (BRAZIER_VARIATIONS + BRAZIER_VARIATION_OFFSET)
 #define SIGNPOST_VARIATIONS (MAX_SIGNPOST_SUBTYPES - 1)
 #define TREE_VARIATION_OFFSET (SIGNPOST_VARIATIONS + SIGNPOST_VARIATION_OFFSET)
-#define TREE_VARIATIONS (MAX_TREE_SUBTYPES - 1)
+#define TREE_VARIATIONS (TOTAL_TREE_SUBTYPE_VARIATIONS - 1)
 
 #define MAX_VARIATIONS (TREE_VARIATIONS + TREE_VARIATION_OFFSET)
 
@@ -852,8 +820,10 @@ struct rm {
     struct layer_info hero_memory_layers; // glyph;               /* what the hero thinks is there */
     schar typ;               /* what is really there */
     schar subtyp;            /* grass containing flowers, etc., which may influence tile behavior, drawing, and description */
+    schar vartyp;            /* variation type for typ / subtyp combination, normally set at random */
     schar floortyp;          /* for feature layer typs, what is the floor typ underneath, which may influence GUI drawing */
     schar floorsubtyp;       /* subtyp for floortyp */
+    schar floorvartyp;       /* variation type for floortyp / floorsubtyp combination, normally set at random */
 
     int floor_doodad;        /* a floor doodad layer glyph: previously broken typ, etc., which appears on the broken feature layer above the floor layer */
     int feature_doodad;      /* a feature doodad layer glyph, which appears on the doodad layer above the dungeon feature */
@@ -884,14 +854,17 @@ struct rm {
                 if(IS_FLOOR(levl[(x)][(y)].typ)) {                \
                      levl[(x)][(y)].floortyp = levl[(x)][(y)].typ; \
                      levl[(x)][(y)].floorsubtyp = levl[(x)][(y)].subtyp; \
+                     levl[(x)][(y)].floorvartyp = levl[(x)][(y)].vartyp; \
                 }                                                 \
                 else if(!IS_FLOOR(levl[(x)][(y)].floortyp))       \
                 {                                                 \
                      levl[(x)][(y)].floortyp = location_type_definitions[ttyp].initial_floor_type; \
                      levl[(x)][(y)].floorsubtyp = get_initial_location_subtype(levl[(x)][(y)].floortyp);         \
+                     levl[(x)][(y)].floorvartyp = get_initial_location_vartype(levl[(x)][(y)].floortyp, levl[(x)][(y)].floorsubtyp);         \
                 }                                                 \
                 levl[(x)][(y)].typ = (ttyp);                      \
                 levl[(x)][(y)].subtyp = get_initial_location_subtype(ttyp); \
+                levl[(x)][(y)].vartyp = get_initial_location_vartype(levl[(x)][(y)].typ, levl[(x)][(y)].subtyp); \
                 initialize_location(&levl[(x)][(y)]);             \
             }                                                     \
             if ((ttyp) == LAVAPOOL)                               \

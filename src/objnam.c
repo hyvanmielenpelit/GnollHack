@@ -4617,6 +4617,7 @@ boolean is_wiz_wish;
         if (!BSTRCMPI(bp, p - 8, "fountain")) 
         {
             int lsubtype = 0;
+            int lvartype = 0;
             uchar lflags = 0;
             boolean lhorizontal = 0;
             if (!strncmpi(bp, "enchanted magic ", 16))
@@ -4639,7 +4640,11 @@ boolean is_wiz_wish;
             if (!strncmpi(bp, "poison ", 7))
                 lsubtype = FOUNTAIN_POISON;
             
-            full_location_transform(x, y, FOUNTAIN, lsubtype, lflags, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : get_initial_location_subtype(ROOM), FALSE, lhorizontal, 0, 0, FALSE);
+            int floortype = IS_FLOOR(lev->typ) ? lev->typ : ROOM;
+            int floorsubtype = IS_FLOOR(lev->typ) ? lev->subtyp : get_initial_location_subtype(ROOM);
+            int floorvartype = IS_FLOOR(lev->typ) ? lev->vartyp : get_initial_location_vartype(ROOM, floorsubtype);
+
+            full_location_transform(x, y, FOUNTAIN, lsubtype, lvartype, lflags, 0, 0, floortype, floorsubtype, floorvartype, FALSE, lhorizontal, 0, 0, FALSE);
 
             int ftyp = lev->subtyp; // (lev->fountainmask & FOUNTAIN_TYPE_MASK);
             pline("A %s.", ftyp == FOUNTAIN_MAGIC && lev->blessedftn ? "enchanted fountain" : fountain_type_text(ftyp));
@@ -4648,20 +4653,20 @@ boolean is_wiz_wish;
         }
         if (!BSTRCMPI(bp, p - 6, "throne")) 
         {
-            create_simple_location(x, y, THRONE, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            create_simple_location(x, y, THRONE, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A throne.");
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }
         if (!BSTRCMPI(bp, p - 4, "sink")) {
-            create_simple_location(x, y, SINK, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            create_simple_location(x, y, SINK, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A sink.");
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }
         /* ("water" matches "potion of water" rather than terrain) */
         if (!BSTRCMPI(bp, p - 4, "pool") || !BSTRCMPI(bp, p - 4, "moat")) {
-            create_simple_location(x, y, !BSTRCMPI(bp, p - 4, "pool") ? POOL : MOAT, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            create_simple_location(x, y, !BSTRCMPI(bp, p - 4, "pool") ? POOL : MOAT, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             del_engr_at(x, y);
             pline("A %s.", (lev->typ == POOL) ? "pool" : "moat");
             /* Must manually make kelp! */
@@ -4670,7 +4675,7 @@ boolean is_wiz_wish;
             return (struct obj *) &zeroobj;
         }
         if (!BSTRCMPI(bp, p - 4, "lava")) { /* also matches "molten lava" */
-            create_simple_location(x, y, LAVAPOOL, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            create_simple_location(x, y, LAVAPOOL, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             del_engr_at(x, y);
             pline("A pool of molten lava.");
             if (!(Levitation || Flying))
@@ -4693,7 +4698,7 @@ boolean is_wiz_wish;
             else /* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
                 al = (!rn2(6)) ? A_NONE : rn2((int) A_LAWFUL + 2) - 1;
 
-            create_simple_location(x, y, ALTAR, 0, Align2amask(al), 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            create_simple_location(x, y, ALTAR, 0, 0, Align2amask(al), 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("%s altar.", An(align_str(al)));
             newsym(x, y);
             return (struct obj *) &zeroobj;
@@ -4709,7 +4714,7 @@ boolean is_wiz_wish;
         }
 
         if (!BSTRCMPI(bp, p - 7, "brazier")) {
-            create_simple_location(x, y, BRAZIER, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            create_simple_location(x, y, BRAZIER, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("%s.", IS_BRAZIER(lev->typ) ? "A brazier"
                 : "Can't place a brazier here");
             newsym(x, y);
@@ -4725,7 +4730,9 @@ boolean is_wiz_wish;
         }
 
         if (!BSTRCMPI(bp, p - 4, "tree")) {
-            create_simple_location(x, y, TREE, get_initial_location_subtype(TREE), 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            int subtype = get_initial_location_subtype(TREE);
+            int vartype = get_initial_location_vartype(TREE, subtype);
+            create_simple_location(x, y, TREE, subtype, vartype, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A tree.");
             newsym(x, y);
             block_vision_and_hearing_at_point(x, y);
@@ -4733,7 +4740,7 @@ boolean is_wiz_wish;
         }
 
         if (!BSTRCMPI(bp, p - 4, "bars")) {
-            create_simple_location(x, y, IRONBARS, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            create_simple_location(x, y, IRONBARS, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].vartyp : levl[x][y].floorvartyp, FALSE);
             pline("Iron bars.");
             newsym(x, y);
             return (struct obj *) &zeroobj;

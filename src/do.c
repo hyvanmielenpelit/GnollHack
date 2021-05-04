@@ -4050,7 +4050,7 @@ boolean pushing;
                 levl[rx][ry].drawbridgemask |= DB_GROUND;
             }
             else
-                create_basic_floor_location(rx, ry, GROUND, get_location_subtype_by_category(GROUND, GROUND_CATEGORY_SWAMPY), 0, FALSE);
+                create_basic_floor_location(rx, ry, GROUND, GROUND_SUBTYPE_SWAMPY, 0, FALSE);
                 
             //levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
 
@@ -4358,28 +4358,28 @@ polymorph_sink()
     default:
     case 0:
         sym = S_fountain;
-        create_simple_location(u.ux, u.uy, FOUNTAIN, 0, rn2(MAX_FOUNTAIN_SUBTYPES), 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, FALSE);
+        create_simple_location(u.ux, u.uy, FOUNTAIN, FOUNTAIN_MAGIC + rn2(MAX_FOUNTAIN_SUBTYPES - FOUNTAIN_MAGIC), 0, 0, 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, levl[u.ux][u.uy].floorvartyp, FALSE);
         if (sinklooted)
             SET_FOUNTAIN_LOOTED(u.ux, u.uy);
         break;
     case 1:
         sym = S_throne;
-        create_simple_location(u.ux, u.uy, THRONE, 0, sinklooted ? T_LOOTED : 0, 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, FALSE);
+        create_simple_location(u.ux, u.uy, THRONE, 0, 0, sinklooted ? T_LOOTED : 0, 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, levl[u.ux][u.uy].floorvartyp, FALSE);
         break;
     case 2:
         sym = S_altar;
-        create_simple_location(u.ux, u.uy, ALTAR, 0, Align2amask(rn2((int)A_LAWFUL + 2) - 1), 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, FALSE);
+        create_simple_location(u.ux, u.uy, ALTAR, 0, 0, Align2amask(rn2((int)A_LAWFUL + 2) - 1), 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, levl[u.ux][u.uy].floorvartyp, FALSE);
         break;
     case 3:
         if (levl[u.ux][u.uy].floortyp)
         {
             sym = location_type_definitions[levl[u.ux][u.uy].floortyp].base_screen_symbol;
-            create_simple_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, 0, 0, 0, 0, FALSE);
+            create_simple_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, levl[u.ux][u.uy].floorvartyp, 0, 0, 0, 0, 0, FALSE);
         }
         else
         {
             sym = S_room;
-            create_basic_floor_location(u.ux, u.uy, ROOM, get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL), 0, FALSE);
+            create_basic_floor_location(u.ux, u.uy, ROOM, FLOOR_SUBTYPE_NORMAL, 0, FALSE);
         }
         make_grave(u.ux, u.uy, (char *) 0, FALSE);
         if (levl[u.ux][u.uy].typ == GRAVE)
@@ -4419,7 +4419,7 @@ teleport_sink()
 
     if ((levl[cx][cy].typ == ROOM || levl[cx][cy].typ == GRASS || levl[cx][cy].typ == GROUND) && !trp && !eng) {
         /* create sink at new position */
-        create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].subtyp, levl[u.ux][u.uy].looted, 0, levl[cx][cy].floortyp, levl[cx][cy].floorsubtyp, TRUE);
+        create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].subtyp, levl[u.ux][u.uy].vartyp, levl[u.ux][u.uy].looted, 0, levl[cx][cy].floortyp, levl[cx][cy].floorsubtyp, levl[cx][cy].floorvartyp, TRUE);
         /* remove old sink */
         create_basic_floor_location(u.ux, u.uy, levl[cx][cy].floortyp ? levl[cx][cy].floortyp : ROOM, levl[cx][cy].floorsubtyp ? levl[cx][cy].floorsubtyp : 0, 0, TRUE);
         return TRUE;
@@ -6519,35 +6519,39 @@ xchar x, y;
         del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
         levl[x][y].makingsound = 0;
     }
-
     levl[x][y].typ = UNDEFINED_LOCATION;
     levl[x][y].flags = 0;
     levl[x][y].subtyp = 0;
+    levl[x][y].vartyp = 0;
     levl[x][y].floor_doodad = 0;
     levl[x][y].feature_doodad = 0;
     levl[x][y].key_otyp = 0;
     levl[x][y].special_quality = 0;
     levl[x][y].floortyp = 0;
+    levl[x][y].floorsubtyp = 0;
+    levl[x][y].floorvartyp = 0;
     levl[x][y].facing_right = 0;
     levl[x][y].horizontal = 0;
 }
 
 void
-full_location_transform(x, y, type, subtype, location_flags, feature_doodad, floor_doodad, floortype, floorsubtype, facing_right, horizontal, key_otyp, special_quality, donewsym)
+full_location_transform(x, y, type, subtype, vartype, location_flags, feature_doodad, floor_doodad, floortype, floorsubtype, floorvartype, facing_right, horizontal, key_otyp, special_quality, donewsym)
 xchar x, y;
-int type, subtype, feature_doodad, floor_doodad, floortype, floorsubtype;
+int type, subtype, vartype, feature_doodad, floor_doodad, floortype, floorsubtype, floorvartype;
 unsigned short location_flags;
 boolean facing_right, horizontal, donewsym;
 short key_otyp, special_quality;
 {
     delete_location(x, y);
     levl[x][y].typ = type;
-    levl[x][y].flags = location_flags;
     levl[x][y].subtyp = subtype;
+    levl[x][y].vartyp = vartype;
+    levl[x][y].flags = location_flags;
     levl[x][y].floor_doodad = floor_doodad;
     levl[x][y].feature_doodad = feature_doodad;
     levl[x][y].floortyp = floortype;
     levl[x][y].floorsubtyp = floorsubtype;
+    levl[x][y].floorvartyp = floorvartype;
     levl[x][y].facing_right = facing_right;
     levl[x][y].horizontal = horizontal;
     levl[x][y].key_otyp = key_otyp;
@@ -6564,14 +6568,85 @@ short key_otyp, special_quality;
 }
 
 void
-create_simple_location(x, y, type, subtype, location_flags, floor_doodad, floortype, floorsubtype, donewsym)
+full_initial_location_transform(x, y, type, location_flags, feature_doodad, floor_doodad, floortype, facing_right, horizontal, key_otyp, special_quality, donewsym)
 xchar x, y;
-int type, subtype, floor_doodad, floortype, floorsubtype;
+int type, feature_doodad, floor_doodad, floortype;
+unsigned short location_flags;
+boolean facing_right, horizontal, donewsym;
+short key_otyp, special_quality;
+{
+    int subtype = get_initial_location_subtype(type);
+    int vartype = get_initial_location_vartype(type, subtype);
+    if (IS_FLOOR(type))
+        floortype = 0;
+    int floorsubtype = floortype == 0 ? 0 : get_initial_location_subtype(floortype);
+    int floorvartype = floortype == 0 ? 0 : get_initial_location_vartype(floortype, floorsubtype);
+    full_location_transform(x, y, type, subtype, vartype, location_flags, feature_doodad, floor_doodad, floortype, floorsubtype, floorvartype, facing_right, horizontal, key_otyp, special_quality, donewsym);
+    initialize_location(&levl[x][y]);
+}
+
+void
+create_simple_location(x, y, type, subtype, vartype, location_flags, floor_doodad, floortype, floorsubtype, floorvartype, donewsym)
+xchar x, y;
+int type, subtype, vartype, floor_doodad, floortype, floorsubtype, floorvartype;
 unsigned short location_flags;
 boolean donewsym;
 {
-    full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, floortype, floorsubtype, FALSE, FALSE, 0, 0, donewsym);
+    full_location_transform(x, y, type, subtype, vartype, location_flags, 0, floor_doodad, floortype, floorsubtype, floorvartype, FALSE, FALSE, 0, 0, donewsym);
     initialize_location(&levl[x][y]);
+}
+
+void
+create_simple_initial_location(x, y, type, location_flags, floor_doodad, floortype, donewsym)
+xchar x, y;
+int type, floor_doodad, floortype;
+unsigned short location_flags;
+boolean donewsym;
+{
+    full_initial_location_transform(x, y, type, location_flags, 0, floor_doodad, floortype, FALSE, FALSE, 0, 0, donewsym);
+    initialize_location(&levl[x][y]);
+}
+
+void
+create_location_with_current_floor(x, y, type, subtype, vartype, location_flags, floor_doodad, donewsym)
+xchar x, y;
+int type, subtype, vartype, floor_doodad;
+unsigned short location_flags;
+boolean donewsym;
+{
+    boolean isfloor = IS_FLOOR(levl[x][y].typ);
+    if (isfloor)
+        return; /* Do nothing, current floor already there */
+
+    create_simple_location(x, y, type, subtype, vartype, location_flags, floor_doodad, isfloor ? levl[x][y].typ : levl[x][y].floortyp, isfloor ? levl[x][y].subtyp : levl[x][y].floorsubtyp, isfloor ? levl[x][y].vartyp : levl[x][y].floorvartyp, donewsym);
+}
+
+void
+create_current_floor_location(x, y, location_flags, floor_doodad, donewsym)
+xchar x, y;
+int floor_doodad;
+unsigned short location_flags;
+boolean donewsym;
+{
+    if (IS_FLOOR(levl[x][y].typ))
+        return; /* Do nothing, floor already */
+
+    int type, subtype, vartype;
+    if (!levl[x][y].floortyp)
+    {
+        /* Backup */
+        type = location_type_definitions[levl[x][y].typ].initial_floor_type;
+        subtype = get_initial_location_subtype(type);
+        vartype = get_initial_location_vartype(type, subtype);
+    }
+    else
+    {
+        type = levl[x][y].floortyp;
+        subtype = levl[x][y].floorsubtyp;
+        vartype = levl[x][y].floorvartyp;
+    }
+
+    create_simple_location(x, y, type, subtype, vartype, location_flags, floor_doodad, 0, 0, 0, donewsym);
 }
 
 void
@@ -6584,19 +6659,9 @@ boolean donewsym;
     if (!isok(x, y))
         return;
 
-    full_location_transform(x, y, type, subtype, location_flags, 0, 0, 0, 0, FALSE, FALSE, 0, 0, donewsym);
+    int vartype = get_initial_location_vartype(type, subtype);
+    full_location_transform(x, y, type, subtype, vartype, location_flags, 0, 0, 0, 0, 0, FALSE, FALSE, 0, 0, donewsym);
 }
-
-void
-create_doodad_floor_location(x, y, type, location_flags, subtype, floor_doodad, donewsym)
-xchar x, y;
-int type, subtype, floor_doodad;
-unsigned short location_flags;
-boolean donewsym;
-{
-    full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, 0, 0, FALSE, FALSE, 0, 0, donewsym);
-}
-
 
 void
 transform_location_type(x, y, type, subtype)
@@ -6625,15 +6690,18 @@ int type, subtype;
     {
         levl[x][y].floortyp = levl[x][y].typ;
         levl[x][y].floorsubtyp = levl[x][y].subtyp;
+        levl[x][y].floorvartyp = levl[x][y].vartyp;
     }
     else if (IS_FLOOR(type))
     {
         levl[x][y].floortyp = 0;
         levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorvartyp = 0;
     }
 
     levl[x][y].typ = type;
     levl[x][y].subtyp = subtype;
+    levl[x][y].vartyp = get_initial_location_vartype(type, subtype);
 
     maybe_create_location_light_and_sound_sources(x, y);
     if (levl[x][y].typ == FOUNTAIN)

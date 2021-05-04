@@ -228,13 +228,21 @@ gottype:
     sroom->rtype = SHOPBASE + i;
 
     /* Change floor type */
-    enum floor_categories category = !rn2(2) ? FLOOR_CATEGORY_PARQUET : FLOOR_CATEGORY_MARBLE;
+    enum floor_subtypes lsubtype = !rn2(2) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
     for (x = sroom->lx; x <= sroom->hx; x++)
         for (y = sroom->ly; y <= sroom->hy; y++)
+        {
             if (levl[x][y].typ == ROOM)
-                levl[x][y].subtyp = get_location_subtype_by_category(ROOM, category);
+            {
+                levl[x][y].subtyp = lsubtype;
+                levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+            }
             else if (levl[x][y].floortyp == ROOM)
-                levl[x][y].floorsubtyp = get_location_subtype_by_category(ROOM, category);
+            {
+                levl[x][y].floorsubtyp = lsubtype;
+                levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
+            }
+        }
 
     /* set room bits before stocking the shop */
 #ifdef SPECIALIZATION
@@ -304,13 +312,21 @@ mkdesertedshop()
 
     /* Change floor */
     int x, y;
-    enum floor_categories category = !rn2(2) ? FLOOR_CATEGORY_PARQUET : FLOOR_CATEGORY_MARBLE;
+    enum floor_subtypes lsubtype = !rn2(2) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
     for (x = sroom->lx; x <= sroom->hx; x++)
         for (y = sroom->ly; y <= sroom->hy; y++)
+        {
             if (levl[x][y].typ == ROOM)
-                levl[x][y].subtyp = get_location_subtype_by_category(ROOM, category);
+            {
+                levl[x][y].subtyp = lsubtype;
+                levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+            }
             else if (levl[x][y].floortyp == ROOM)
-                levl[x][y].floorsubtyp = get_location_subtype_by_category(ROOM, category);
+            {
+                levl[x][y].floorsubtyp = lsubtype;
+                levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
+            }
+        }
 
     /* set room bits before stocking the shop */
     topologize(sroom);
@@ -421,9 +437,17 @@ struct mkroom *sroom;
                 if (!sroom->irregular || (sroom->irregular && levl[x][y].roomno == rmno))
                 {
                     if (levl[x][y].typ == ROOM)
-                        levl[x][y].typ = GROUND, levl[x][y].subtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
+                    {
+                        levl[x][y].typ = GROUND;
+                        levl[x][y].subtyp = GROUND_SUBTYPE_NORMAL;
+                        levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+                    }
                     else if (levl[x][y].floortyp == ROOM)
-                        levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
+                    {
+                        levl[x][y].floortyp = GROUND;
+                        levl[x][y].floorsubtyp = GROUND_SUBTYPE_NORMAL;
+                        levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
+                    }
                 }
         break;
     case COURT:
@@ -1068,12 +1092,14 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                 if (IS_FLOOR(levl[sx][sy].typ))
                 {
                     levl[sx][sy].typ = GRASS;
-                    levl[sx][sy].subtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_SWAMPY);
+                    levl[sx][sy].subtyp = GRASS_SUBTYPE_SWAMPY;
+                    levl[sx][sy].vartyp = get_initial_location_vartype(levl[sx][sy].typ, levl[sx][sy].subtyp);
                 }
                 else
                 {
                     levl[sx][sy].floortyp = GRASS;
-                    levl[sx][sy].floorsubtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_SWAMPY);
+                    levl[sx][sy].floorsubtyp = GRASS_SUBTYPE_SWAMPY;
+                    levl[sx][sy].floorvartyp = get_initial_location_vartype(levl[sx][sy].floortyp, levl[sx][sy].floorsubtyp);
                 }
 
                 if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy) && !nexttodoor(sx, sy))
@@ -1082,8 +1108,10 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                     {
                         levl[sx][sy].typ = POOL;
                         levl[sx][sy].subtyp = 0;
+                        levl[sx][sy].vartyp = get_initial_location_vartype(levl[sx][sy].typ, levl[sx][sy].subtyp);
                         levl[sx][sy].floortyp = location_type_definitions[POOL].initial_floor_type;
                         levl[sx][sy].floorsubtyp = get_initial_location_subtype(levl[sx][sy].floortyp);
+                        levl[sx][sy].floorvartyp = get_initial_location_vartype(levl[sx][sy].floortyp, levl[sx][sy].floorsubtyp);
                         if (!eelct || !rn2(4))
                         {
                             /* mkclass() won't do, as we might get kraken */
@@ -1153,13 +1181,15 @@ mkgarden()
                 levl[sx][sy].subtyp = 0; /* Only leaf trees in a garden */
                 int subtype = levl[sx][sy].subtyp;
                 levl[sx][sy].floortyp = GRASS;
-                levl[sx][sy].floorsubtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
+                levl[sx][sy].floorsubtyp = GRASS_SUBTYPE_NORMAL;
+                levl[sx][sy].floorvartyp = get_initial_location_vartype(levl[sx][sy].floortyp, levl[sx][sy].floorsubtyp);
                 initialize_location(&levl[sx][sy]);
             }
             else
             {
                 levl[sx][sy].typ = GRASS;
-                levl[sx][sy].subtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
+                levl[sx][sy].subtyp = GRASS_SUBTYPE_NORMAL;
+                levl[sx][sy].vartyp = get_initial_location_vartype(levl[sx][sy].typ, levl[sx][sy].subtyp);
                 /* Buried items */
                 if (!rn2(5))
                 {
@@ -1568,17 +1598,6 @@ mktemple()
      * located in the center of the room
      */
 
-#if 0
-     /* Change floor type */
-    enum floor_categories category = !rn2(2) ? FLOOR_CATEGORY_PARQUET : FLOOR_CATEGORY_MARBLE;
-    for (int x = sroom->lx; x <= sroom->hx; x++)
-        for (int y = sroom->ly - 1; y <= sroom->hy; y++)
-            if (levl[x][y].typ == ROOM)
-                levl[x][y].subtyp = get_location_subtype_by_category(ROOM, category);
-            else if (levl[x][y].floortyp == ROOM)
-                levl[x][y].floorsubtyp = get_location_subtype_by_category(ROOM, category);
-#endif
-
     shrine_spot = shrine_pos((int) ((sroom - rooms) + ROOMOFFSET));
     lev = &levl[shrine_spot->x][shrine_spot->y];
     if (IS_FLOOR(lev->typ))
@@ -1702,14 +1721,21 @@ mknpcroom()
     /* Change floor type */
     if (npc_subtype_definitions[npctype].general_flags & (NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_MARBLE_FLOOR))
     {
-        enum floor_categories category = (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_PARQUET_FLOOR) ? FLOOR_CATEGORY_PARQUET : FLOOR_CATEGORY_MARBLE;
+        enum floor_subtypes lsubtype = (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_PARQUET_FLOOR) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
         for (int x = sroom->lx; x <= sroom->hx; x++)
             for (int y = sroom->ly - 1; y <= sroom->hy; y++)
+            {
                 if (levl[x][y].typ == ROOM)
-                    levl[x][y].subtyp = get_location_subtype_by_category(ROOM, category);
+                {
+                    levl[x][y].subtyp = lsubtype;
+                    levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+                }
                 else if (levl[x][y].floortyp == ROOM)
-                    levl[x][y].floorsubtyp = get_location_subtype_by_category(ROOM, category);
-
+                {
+                    levl[x][y].floorsubtyp = lsubtype;
+                    levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
+                }
+            }
     }
 
     npcini(&u.uz, sroom, somex(sroom), somey(sroom), npctype, NON_PM);

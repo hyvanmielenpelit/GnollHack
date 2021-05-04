@@ -550,11 +550,11 @@ xchar x, y;
         digtxt = "chew a hole in the wall.";
         int ltype = 0;
         int lsubtype = 0;
+        int lvartype = 0;
         uchar lflags = 0;
         if (level.flags.is_maze_lev) 
         {
             ltype = ROOM;
-            lsubtype = get_initial_location_subtype(ROOM);
         }
         else if (level.flags.is_cavernous_lev && !in_town(x, y))
         {
@@ -565,14 +565,18 @@ xchar x, y;
             ltype = DOOR;
             lflags = D_NODOOR;
         }
-        create_simple_location(x, y, ltype, lsubtype, lflags, back_to_broken_glyph(x, y), lev->floortyp, lev->floorsubtyp, FALSE);
+        lsubtype = get_initial_location_subtype(ltype);
+        lvartype = get_initial_location_vartype(ltype, lsubtype);
+
+        create_simple_location(x, y, ltype, lsubtype, lvartype, lflags, back_to_broken_glyph(x, y), IS_FLOOR(ltype) ? 0 : lev->floortyp, IS_FLOOR(ltype) ? 0 : lev->floorsubtyp, IS_FLOOR(ltype) ? 0 : lev->floorvartyp, FALSE);
 
     }
     else if (IS_TREE(lev->typ))
     {
         digtxt = "chew through the tree.";
-        create_simple_location(x, y, lev->floortyp ? lev->floortyp : GRASS, lev->floorsubtyp ? lev->floorsubtyp : get_initial_location_subtype(GRASS), 0, back_to_broken_glyph(x, y), 0, 0, FALSE);
-    } else if (lev->typ == IRONBARS) 
+        create_current_floor_location(x, y, 0, back_to_broken_glyph(x, y), FALSE);
+    } 
+    else if (lev->typ == IRONBARS) 
     {
         digtxt = "eat through the bars.";
         dissolve_bars(x, y);

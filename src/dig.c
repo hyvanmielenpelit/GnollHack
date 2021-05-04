@@ -72,7 +72,15 @@ boolean waslit, rockit;
     unblock_vision_and_hearing_at_point(x, y); /* make sure vision knows this location is open */
 
     /* fake out saved state */
-    create_simple_location(x, y, (rockit ? STONE : GROUND), (rockit ? 0 : get_initial_location_subtype(GROUND)), 0, 0, rockit ? CORR : 0, rockit ? get_initial_location_subtype(CORR) : 0, FALSE);
+    int rocktyp = (rockit ? STONE : GROUND);
+    int rocksubtyp = get_initial_location_subtype(rocktyp);
+    int rockvartyp = get_initial_location_vartype(rocktyp, rocksubtyp);
+    int rockfloortyp = rockit ? CORR : 0;
+    int rockfloorsubtyp = get_initial_location_subtype(rockfloortyp);
+    int rockfloorvartyp = get_initial_location_vartype(rockfloortyp, rockfloorsubtyp);
+
+    create_simple_location(x, y, rocktyp, rocksubtyp, rockvartyp, 0, 0, rockfloortyp, rockfloorsubtyp, rockfloorvartyp, FALSE);
+
     lev->seenv = 0;
     //lev->doormask = 0;
     if (dist < 3)
@@ -132,7 +140,8 @@ register boolean rockit;
     if (!rockit && levl[u.ux][u.uy].typ == CORR)
     {
         levl[u.ux][u.uy].typ = GROUND; /* flags for CORR already 0 */
-        levl[u.ux][u.uy].subtyp = get_initial_location_subtype(GROUND);
+        levl[u.ux][u.uy].subtyp = get_initial_location_subtype(levl[u.ux][u.uy].typ);
+        levl[u.ux][u.uy].vartyp = get_initial_location_vartype(levl[u.ux][u.uy].typ, levl[u.ux][u.uy].subtyp);
         if (waslit)
             levl[u.ux][u.uy].waslit = TRUE;
         newsym(u.ux, u.uy); /* in case player is invisible */
@@ -483,7 +492,10 @@ dig(VOID_ARGS)
                 }
 
                 /* Change the location type */
-                create_simple_location(dpx, dpy, lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM, lev->floorsubtyp ? lev->floorsubtyp : r && r->orig_rtype == GARDEN ? get_initial_location_subtype(GRASS) : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(dpx, dpy), 0, 0, FALSE);
+                int typ = lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM;
+                int subtyp = lev->floorsubtyp ? lev->floorsubtyp : get_initial_location_subtype(typ);
+                int vartyp = lev->floorvartyp ? lev->floorvartyp : get_initial_location_vartype(typ, subtyp);
+                create_simple_location(dpx, dpy, typ, subtyp, vartyp, 0, back_to_broken_glyph(dpx, dpy), 0, 0, 0, FALSE);
             }
             else 
             {
@@ -501,23 +513,26 @@ dig(VOID_ARGS)
             }
             int ltype = 0;
             int lsubtype = 0;
+            int lvartype = 0;
             uchar lflags = 0;
             if (level.flags.is_maze_lev)
             {
                 ltype = CORR; // ROOM;
                 lsubtype = get_initial_location_subtype(ltype);
-            } 
+                lvartype = get_initial_location_vartype(ltype, lsubtype);
+            }
             else if (level.flags.is_cavernous_lev && !in_town(dpx, dpy)) 
             {
                 ltype = CORR;
                 lsubtype = get_initial_location_subtype(ltype);
+                lvartype = get_initial_location_vartype(ltype, lsubtype);
             }
             else 
             {
                 ltype = DOOR, lflags = D_NODOOR;
             }
             play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
-            create_simple_location(dpx, dpy, ltype, lsubtype, lflags, back_to_broken_glyph(dpx, dpy), !IS_FLOOR(ltype)? lev->floortyp : 0, !IS_FLOOR(ltype) ? lev->floorsubtyp : 0, FALSE);
+            create_simple_location(dpx, dpy, ltype, lsubtype, lvartype, lflags, back_to_broken_glyph(dpx, dpy), !IS_FLOOR(ltype)? lev->floortyp : 0, !IS_FLOOR(ltype) ? lev->floorsubtyp : 0, !IS_FLOOR(ltype) ? lev->floorvartyp : 0, FALSE);
 
             digtxt = "You make an opening in the wall.";
         } 
@@ -1124,7 +1139,10 @@ coord *cc;
         }
     }
     del_engr_at(dig_x, dig_y);
-    create_simple_location(dig_x, dig_y, levl[dig_x][dig_y].floortyp ? levl[dig_x][dig_y].floortyp : GROUND, levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : get_initial_location_subtype(GROUND), 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, TRUE);
+    int typ = levl[dig_x][dig_y].floortyp ? levl[dig_x][dig_y].floortyp : GROUND;
+    int subtyp = levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : get_initial_location_subtype(typ);
+    int vartyp = levl[dig_x][dig_y].floorvartyp ? levl[dig_x][dig_y].floorvartyp : get_initial_location_vartype(typ, subtyp);
+    create_simple_location(dig_x, dig_y, typ, subtyp, vartyp, 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, 0, TRUE);
     return;
 }
 
@@ -1730,35 +1748,54 @@ register struct monst *mtmp;
 
         int ltype = 0;
         int lsubtype = 0;
+        int lvartype = 0;
         int lflags = 0;
 
-        if (level.flags.is_maze_lev)
+        if (here->floortyp)
+            ltype = here->floortyp, lsubtype = here->floorsubtyp, lvartype = here->floorvartyp;
+        else
         {
-            ltype = CORR, lsubtype = get_initial_location_subtype(CORR), lflags = 0; //ROOM
-        } 
-        else if (level.flags.is_cavernous_lev
-                   && !in_town(mtmp->mx, mtmp->my))
-        {
-            ltype = CORR, lsubtype = get_initial_location_subtype(CORR), lflags = 0;
-        } 
-        else 
-        {
-            ltype = DOOR, lflags = D_NODOOR;
+            if (level.flags.is_maze_lev)
+            {
+                ltype = CORR, lflags = 0; //ROOM
+            }
+            else if (level.flags.is_cavernous_lev
+                && !in_town(mtmp->mx, mtmp->my))
+            {
+                ltype = CORR, lflags = 0;
+            }
+            else
+            {
+                ltype = DOOR, lflags = D_NODOOR;
+            }
+
+            lsubtype = get_initial_location_subtype(ltype);
+            lvartype = get_initial_location_vartype(ltype, lsubtype);
         }
 
-        create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, lflags, back_to_broken_glyph(mtmp->mx, mtmp->my), !IS_FLOOR(ltype) ? here->floortyp : 0, !IS_FLOOR(ltype) ? here->floorsubtyp : 0, FALSE);
+        create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, lvartype, lflags, back_to_broken_glyph(mtmp->mx, mtmp->my), !IS_FLOOR(ltype) ? here->floortyp : 0, !IS_FLOOR(ltype) ? here->floorsubtyp : 0, !IS_FLOOR(ltype) ? here->floorvartyp : 0, FALSE);
     }
     else if (IS_TREE(here->typ))
     {
         struct mkroom* r = which_room(mtmp->mx, mtmp->my);
         int ltype = 0;
         int lsubtype = 0;
+        int lvartype = 0;
+
         if(here->floortyp)
-            ltype = here->floortyp, lsubtype = here->floorsubtyp;
+            ltype = here->floortyp, lsubtype = here->floorsubtyp, lvartype = here->floorvartyp;
         else if (r && r->orig_rtype == GARDEN)
-            ltype = GRASS, lsubtype = get_initial_location_subtype(GRASS);
+        {
+            ltype = GRASS;
+            lsubtype = get_initial_location_subtype(ltype);
+            lvartype = get_initial_location_vartype(ltype, lsubtype);
+        }
         else
-            ltype = ROOM, lsubtype = get_initial_location_subtype(ROOM);
+        {
+            ltype = ROOM;
+            lsubtype = get_initial_location_subtype(ltype);
+            lvartype = get_initial_location_vartype(ltype, lsubtype);
+        }
 
         if (here->special_quality > 0 && tree_subtype_definitions[here->subtyp].fruit_type > STRANGE_OBJECT)
         {
@@ -1767,7 +1804,7 @@ register struct monst *mtmp;
             otmp->owt = weight(otmp);
         }
 
-        create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, 0, back_to_broken_glyph(mtmp->mx, mtmp->my), 0, 0, FALSE);
+        create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, lvartype, 0, back_to_broken_glyph(mtmp->mx, mtmp->my), 0, 0, 0, FALSE);
 
 #if 0
         if (pile && pile < 5)
@@ -2142,7 +2179,7 @@ struct obj* origobj;
 
                     ltype = CORR;
                     play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
-                    create_simple_location(zx, zy, ltype, get_initial_location_subtype(ltype), lflags, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
+                    create_simple_initial_location(zx, zy, ltype, lflags, back_to_broken_glyph(zx, zy), 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                     newsym(zx, zy);
                     force_redraw_at(zx, zy);
@@ -2160,7 +2197,7 @@ struct obj* origobj;
                 if (!(room->wall_info & W_NONDIGGABLE))
                 {
                     play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
-                    create_simple_location(zx, zy, room->floortyp ? room->floortyp : GROUND, room->floortyp ? room->floorsubtyp : get_initial_location_subtype(GROUND), 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
+                    create_current_floor_location(zx, zy, 0, back_to_broken_glyph(zx, zy), FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                     newsym(zx, zy);
                     force_redraw_at(zx, zy);
@@ -2200,6 +2237,7 @@ struct obj* origobj;
 
             int ltype = 0;
             int lsubtype = 0;
+            int lvartype = 0;
             uchar lflags = 0;
 
             if (IS_WALL_OR_SDOOR(room->typ))
@@ -2225,16 +2263,18 @@ struct obj* origobj;
             {
                 ltype = room->floortyp;
                 lsubtype = room->floorsubtyp;
+                lvartype = room->floorvartyp;
                 digdepth -= 2;
             } 
             else 
             { /* IS_ROCK but not IS_WALL or SDOOR */
                 ltype = CORR;
                 lsubtype = get_initial_location_subtype(CORR);
+                lvartype = get_initial_location_vartype(ltype, lsubtype);
                 digdepth--;
             }
             play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
-            create_simple_location(zx, zy, ltype, lsubtype, lflags, back_to_broken_glyph(zx, zy), !IS_FLOOR(ltype) ? room->floortyp : 0, !IS_FLOOR(ltype) ? room->floorsubtyp : 0, FALSE);
+            create_simple_location(zx, zy, ltype, lsubtype, lvartype, lflags, back_to_broken_glyph(zx, zy), !IS_FLOOR(ltype) ? room->floortyp : 0, !IS_FLOOR(ltype) ? room->floorsubtyp : 0, !IS_FLOOR(ltype) ? room->floorvartyp : 0, FALSE);
             unblock_vision_and_hearing_at_point(zx, zy); /* vision */
             newsym(zx, zy);
             force_redraw_at(zx, zy);
@@ -2341,7 +2381,7 @@ struct obj* origobj;
                 play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
                 play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_DRY_UP);
                 /* replace the fountain with ordinary floor */
-                create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floortyp ? lev->floorsubtyp : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
+                create_current_floor_location(zx, zy, 0, back_to_broken_glyph(zx, zy), TRUE);
                 newsym(zx, zy);
                 if (see_it)
                     pline_The("fountain dries up!");
@@ -2528,7 +2568,7 @@ struct obj* origobj;
             /* replace the fountain with ordinary floor */
             play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
             play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_DRY_UP);
-            create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floortyp ? lev->floorsubtyp : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
+            create_current_floor_location(zx, zy, 0, back_to_broken_glyph(zx, zy), TRUE);
             newsym(zx, zy);
             if (see_it)
                 pline_The("fountain dries up!");

@@ -542,7 +542,7 @@ invault()
             else if (x == lowx - 1 || x == hix + 1)
                 EGD(guard)->fakecorr[0].ftyp = VWALL;
         }
-        create_simple_location(x, y, DOOR, 0, D_NODOOR, 0, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floortyp : 0, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floorsubtyp : 0, FALSE);
+        create_simple_location(x, y, DOOR, 0, 0, D_NODOOR, 0, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floortyp : levl[x][y].typ, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floorsubtyp : levl[x][y].typ, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floorvartyp : 0, FALSE);
         unblock_vision_and_hearing_at_point(x, y); /* doesn't block light */
         EGD(guard)->fcend = 1;
         EGD(guard)->warncnt = 1;

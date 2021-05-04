@@ -232,7 +232,7 @@ enum sp_lever_var_flags {
     SP_L_V_TERRAIN2,
     SP_L_V_SPECIAL_QUALITY,
     SP_L_V_SUBTYPE,
-    SP_L_V_CATEGORY,
+    SP_L_V_FLOOR_SUBTYPE,
     SP_L_V_EFFECT_FLAG,
     SP_L_V_COORD,
 
@@ -439,7 +439,7 @@ typedef struct {
     long effect_parameter3;
     long effect_parameter4;
     long effect_subtype;
-    long effect_category;
+    long effect_subtype2;
     unsigned long effect_flags;
     unsigned long lever_flags;
 } spllever;
@@ -511,7 +511,7 @@ typedef struct {
 
 typedef struct {
     xchar x1, y1, x2, y2;
-    xchar rtype, rlit, rirreg, floormaintype, floortype, mtype;
+    xchar rtype, rlit, rirreg, rfloortyp, rfloorsubtyp, mtype;
 } region;
 
 typedef struct {
@@ -550,7 +550,7 @@ typedef struct _room {
     Str_or_Len parent;
     xchar x, y, w, h;
     xchar xalign, yalign;
-    xchar rtype, chance, rlit, filled, joined, floormaintype, floortype, mtype;
+    xchar rtype, chance, rlit, filled, joined, rfloortyp, rfloorsubtyp, mtype;
 } room;
 
 typedef struct {

@@ -137,7 +137,7 @@ genericptr_t poolcnt;
         pline("Water gushes forth from the overflowing fountain!");
 
     /* Put a pool at x, y */
-    create_simple_location(x, y, POOL, 0, 0, 0, levl[x][y].typ, levl[x][y].subtyp, FALSE);
+    create_simple_location(x, y, POOL, 0, 0, 0, 0, levl[x][y].typ, levl[x][y].subtyp, levl[x][y].vartyp, FALSE);
 
     /* No kelp! */
     del_engr_at(x, y);
@@ -211,7 +211,7 @@ boolean isyou;
         }
         /* replace the fountain with ordinary floor */
         play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_DRY_UP);
-        create_simple_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : ROOM, levl[x][y].floorsubtyp ? levl[x][y].floorsubtyp : 0, 0, back_to_broken_glyph(x, y), 0, 0, TRUE);
+        create_current_floor_location(x, y, 0, back_to_broken_glyph(x, y), TRUE);
         if (cansee(x, y))
             pline_The("fountain dries up!");
         /* The location is seen if the hero/monster is invisible
@@ -1155,7 +1155,7 @@ int x, y;
     play_sfx_sound(SFX_GUSH_OF_WATER_HITS);
     special_effect_wait_until_action(0);
 
-    create_simple_location(x, y, FOUNTAIN, 0, FOUNTAIN_NATURAL, 0 /*back_to_broken_glyph(x, y)*/, levl[x][y].floortyp, levl[x][y].floorsubtyp, FALSE);
+    create_simple_location(x, y, FOUNTAIN, 0, 0, FOUNTAIN_NATURAL, 0 /*back_to_broken_glyph(x, y)*/, levl[x][y].floortyp, levl[x][y].floorsubtyp, levl[x][y].floorvartyp, FALSE);
     SET_FOUNTAIN_LOOTED(x, y);
     newsym(x, y);
 

@@ -5444,7 +5444,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2106 "lev_comp.y"
     {
-		      add_opvars(splev, "ii", VA_PASS2((yyvsp[(3) - (3)].i), SP_L_V_CATEGORY));
+		      add_opvars(splev, "ii", VA_PASS2((yyvsp[(3) - (3)].i), SP_L_V_FLOOR_SUBTYPE));
 		      (yyval.i) = 0x0400;
 		  ;}
     break;
