@@ -6571,6 +6571,7 @@ unsigned short location_flags;
 boolean donewsym;
 {
     full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, floortype, floorsubtype, FALSE, FALSE, 0, 0, donewsym);
+    initialize_location(&levl[x][y]);
 }
 
 void

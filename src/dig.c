@@ -468,7 +468,6 @@ dig(VOID_ARGS)
                 play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You cut down the tree.";
                 struct mkroom* r = which_room(dpx, dpy);
-                create_simple_location(dpx, dpy, lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM, lev->floorsubtyp ? lev->floorsubtyp : r && r->orig_rtype == GARDEN ? get_initial_location_subtype(GRASS) : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(dpx, dpy), 0, 0, FALSE);
 
                 /* Wood */
                 struct obj* otmp_wood = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
@@ -476,27 +475,15 @@ dig(VOID_ARGS)
                 otmp_wood->owt = weight(otmp_wood);
 
                 /* Possibly some fruits */
-                if (!rn2(3))
+                if (lev->special_quality > 0 && tree_subtype_definitions[lev->subtyp].fruit_type > STRANGE_OBJECT)
                 {
-                    struct obj* otmp = rnd_treefruit_at(dpx, dpy);
-                    if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT 
-                        || objects[otmp->otyp].oc_edible_effect == EDIBLEFX_APPLE
-                        ))
-                    {
-                        otmp->quan = rnd(16) + 4;
-                        otmp->owt = weight(otmp);
-                    }
-                    else if (otmp && objects[otmp->otyp].oc_edible_effect == EDIBLEFX_CURE_SICKNESS)
-                    {
-                        otmp->quan = rnd(8) + 2;
-                        otmp->owt = weight(otmp);
-                    }
-                    else
-                    {
-                        otmp->quan = rnd(2);
-                        otmp->owt = weight(otmp);
-                    }
+                    struct obj* otmp = mksobj_at(tree_subtype_definitions[lev->subtyp].fruit_type, dpx, dpy, TRUE, FALSE); //rnd_treefruit_at(dpx, dpy);
+                    otmp->quan = lev->special_quality;
+                    otmp->owt = weight(otmp);
                 }
+
+                /* Change the location type */
+                create_simple_location(dpx, dpy, lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM, lev->floorsubtyp ? lev->floorsubtyp : r && r->orig_rtype == GARDEN ? get_initial_location_subtype(GRASS) : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(dpx, dpy), 0, 0, FALSE);
             }
             else 
             {
@@ -1773,8 +1760,16 @@ register struct monst *mtmp;
         else
             ltype = ROOM, lsubtype = get_initial_location_subtype(ROOM);
 
+        if (here->special_quality > 0 && tree_subtype_definitions[here->subtyp].fruit_type > STRANGE_OBJECT)
+        {
+            struct obj* otmp = mksobj_at(tree_subtype_definitions[here->subtyp].fruit_type, mtmp->mx, mtmp->my, TRUE, FALSE); //rnd_treefruit_at(mtmp->mx, mtmp->my);
+            otmp->quan = here->special_quality;
+            otmp->owt = weight(otmp);
+        }
+
         create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, 0, back_to_broken_glyph(mtmp->mx, mtmp->my), 0, 0, FALSE);
 
+#if 0
         if (pile && pile < 5)
         {
             struct obj* otmp = rnd_treefruit_at(mtmp->mx, mtmp->my);
@@ -1784,6 +1779,7 @@ register struct monst *mtmp;
                 otmp->owt = weight(otmp);
             }
         }
+#endif
     }
     else
     {

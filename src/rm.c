@@ -102,6 +102,13 @@ struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES] =
     {"black gate",           "gate", MAT_METAL, LOCATION_SOUNDSET_DOOR, DSTFLAGS_BLOCKS_VISION_AND_SOUND},
 };
 
+struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES] =
+{
+    {"tree",          "tree",  TREE_SPECIES_GENERAL,     0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL},
+    {"spruce tree",   "tree",  TREE_SPECIES_CONIFEROUS,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL},
+    {"fir tree",      "tree",  TREE_SPECIES_CONIFEROUS,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL},
+};
+
 /* force linkage */
 void
 init_rm()
@@ -204,6 +211,8 @@ int ltype;
 {
     if (ltype == FOUNTAIN)
         return FOUNTAIN_MAGIC + rn2(MAX_FOUNTAIN_SUBTYPES - FOUNTAIN_MAGIC);
+    else if (ltype == TREE)
+        return rn2(MAX_TREE_SUBTYPES);
     else
         return get_location_subtype_by_category(ltype, 
             ltype == GRASS && level.flags.swampy ? GRASS_CATEGORY_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_CATEGORY_SWAMPY : 0
@@ -703,6 +712,24 @@ boolean fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground;
     {
         lev->floortyp = location_type_definitions[lev->typ].initial_floor_type;
         lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+    }
+}
+
+void
+initialize_location(lev)
+struct rm* lev;
+{
+    if (!lev)
+        return;
+
+    int type = lev->typ;
+    if (type == TREE)
+    {
+        int subtype = lev->subtyp;
+        if (tree_subtype_definitions[subtype].fruit_type > STRANGE_OBJECT)
+        {
+            lev->special_quality = max(0, d(tree_subtype_definitions[subtype].fruit_d, tree_subtype_definitions[subtype].fruit_n) + tree_subtype_definitions[subtype].fruit_p);
+        }
     }
 }
 /* rm.c */

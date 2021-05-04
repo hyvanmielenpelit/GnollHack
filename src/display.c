@@ -3161,8 +3161,21 @@ xchar x, y;
         idx = S_bars;
         break;
     case TREE:
-        idx = S_tree;
+    {
+        int subtyp_idx = ptr->subtyp;
+        int sym_idx = S_tree;
+        if (subtyp_idx == 0)
+        {
+            idx = sym_idx;
+        }
+        else
+        {
+            is_variation = TRUE;
+            int var_offset = defsyms[sym_idx].variation_offset;
+            idx = var_offset + subtyp_idx - 1;
+        }
         break;
+    }
     case POOL:
     case MOAT:
         idx = S_pool;

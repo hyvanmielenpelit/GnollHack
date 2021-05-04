@@ -3034,7 +3034,8 @@ boolean *effect_happened_ptr;
 
         special_effect_wait_until_end(0);
         break;
-    case SCR_FIRE: {
+    case SCR_FIRE: 
+    {
         coord cc;
         boolean increased_damage = FALSE;
 
@@ -3044,7 +3045,8 @@ boolean *effect_happened_ptr;
         sobj = 0; /* it's gone */
         if (!already_known)
             (void) learnscrolltyp(SCR_FIRE);
-        if (confused) {
+        if (confused)
+        {
             if (Fire_immunity || Invulnerable) 
             {
                 u_shieldeff();
@@ -3063,10 +3065,14 @@ boolean *effect_happened_ptr;
             }
             break;
         }
-        if (Underwater) {
+        if (Underwater)
+        {
             pline_The("%s around you vaporizes violently!", hliquid("water"));
-        } else {
-            if (sblessed) {
+        } 
+        else
+        {
+            if (sblessed)
+            {
                 increased_damage = TRUE;
                 if (!already_known)
                     pline("This is a scroll of fire!");
@@ -3074,13 +3080,15 @@ boolean *effect_happened_ptr;
                 getpos_sethilite(display_stinking_cloud_positions,
                                  get_valid_stinking_cloud_pos);
                 (void) getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR);
-                if (!is_valid_stinking_cloud_pos(cc.x, cc.y, FALSE)) {
+                if (!is_valid_stinking_cloud_pos(cc.x, cc.y, FALSE)) 
+                {
                     /* try to reach too far, get burned */
                     cc.x = u.ux;
                     cc.y = u.uy;
                 }
             }
-            if (cc.x == u.ux && cc.y == u.uy) {
+            if (cc.x == u.ux && cc.y == u.uy) 
+            {
                 pline_The("scroll erupts in a tower of flame!");
                 iflags.last_msg = PLNMSG_TOWER_OF_FLAME; /* for explode() */
                 burn_away_slime();
@@ -3097,7 +3105,8 @@ boolean *effect_happened_ptr;
     case SCR_EARTH:
         /* TODO: handle steeds */
         if (!Is_rogue_level(&u.uz) && has_ceiling(&u.uz)
-            && (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) {
+            && (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) 
+        {
             register int x, y;
             int nboulders = 0;
             boolean spef_on = FALSE;
@@ -3115,6 +3124,10 @@ boolean *effect_happened_ptr;
                             sblessed ? "around" : "above");
                 }
                 delay_output_milliseconds(400);
+            }
+            else if(!Levitation && !Flying)
+            {
+                You_feel("the %s shaking %s you!", Underwater ? "water" : "earth", sblessed ? "around" : "above");
             }
 
             if (!scursed)

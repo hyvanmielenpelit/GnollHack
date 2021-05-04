@@ -583,6 +583,7 @@ E int NDECL(dotogglebufftimers);
 E void FDECL(delete_location, (xchar, xchar));
 E void FDECL(full_location_transform, (xchar, xchar, int, int, unsigned short, int, int, int, int, boolean, boolean, short, short, boolean));
 E void FDECL(create_simple_location, (xchar, xchar, int, int, unsigned short, int, int, int, boolean));
+E void FDECL(create_initialized_location, (xchar, xchar, int, int, unsigned short, int, int, int, boolean));
 E void FDECL(create_basic_floor_location, (xchar, xchar, int, int, unsigned short, boolean));
 E void FDECL(create_doodad_floor_location, (xchar, xchar, int, unsigned short, int, int, boolean));
 E void FDECL(transform_location_type, (xchar, xchar, int, int));
@@ -2646,6 +2647,7 @@ E boolean FDECL(door_blocks_vision_at_ptr, (struct rm*));
 E boolean FDECL(is_door_normally_without_lock_at, (xchar, xchar));
 E boolean FDECL(is_door_normally_without_lock_at_ptr, (struct rm*));
 E void FDECL(set_initial_location_floortype, (struct rm*, boolean, boolean, boolean, boolean));
+E void FDECL(initialize_location, (struct rm*));
 
 /* ### rnd.c ### */
 

@@ -399,6 +399,23 @@ enum arrow_trap_subtypes_types
     MAX_ARROW_TRAP_SUBTYPES
 };
 
+enum door_subtypes_types
+{
+    DOOR_SUBTYPE_WOODEN = 0,
+    DOOR_SUBTYPE_WOODEN_WINDOWED,
+    DOOR_SUBTYPE_IRON,
+    DOOR_SUBTYPE_IRON_WINDOWED,
+    DOOR_SUBTYPE_IRON_BARS,
+    DOOR_SUBTYPE_MAGIC,
+    DOOR_SUBTYPE_MAGIC_WINDOWED,
+    DOOR_SUBTYPE_MODRON,
+    DOOR_SUBTYPE_REINFORCED,
+    DOOR_SUBTYPE_STONE,
+    DOOR_SUBTYPE_OBSIDIAN,
+    DOOR_SUBTYPE_BLACK_GATE,
+    MAX_DOOR_SUBTYPES
+};
+
 struct door_subtype_definition {
     const char* description;
     const char* short_description;
@@ -419,24 +436,42 @@ struct door_subtype_definition {
 #define DSTFLAGS_NO_LOCK_DESCRIPTION_IS_DEFAULT             0x00000100 /* If no lock, nothing is printed, with normal lock, tells that has a metal lock */
 #define DSTFLAGS_NONPASSABLE                                0x00000200 /* Cannot be walked through with wallwalk */
 
-enum door_subtypes_types
+extern struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES];
+
+enum tree_subtypes
 {
-    DOOR_SUBTYPE_WOODEN = 0,
-    DOOR_SUBTYPE_WOODEN_WINDOWED,
-    DOOR_SUBTYPE_IRON,
-    DOOR_SUBTYPE_IRON_WINDOWED,
-    DOOR_SUBTYPE_IRON_BARS,
-    DOOR_SUBTYPE_MAGIC,
-    DOOR_SUBTYPE_MAGIC_WINDOWED,
-    DOOR_SUBTYPE_MODRON,
-    DOOR_SUBTYPE_REINFORCED,
-    DOOR_SUBTYPE_STONE,
-    DOOR_SUBTYPE_OBSIDIAN,
-    DOOR_SUBTYPE_BLACK_GATE,
-    MAX_DOOR_SUBTYPES
+    TREE_SUBTYPE_NORMAL = 0, /* Uses base_cmap */
+    TREE_SUBTYPE_SPRUCE,
+    TREE_SUBTYPE_FIR,
+    MAX_TREE_SUBTYPES
 };
 
-extern struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES];
+struct tree_subtype_definition {
+    const char* description;
+    const char* short_description;
+    uchar tree_type;
+    int fruit_type;
+    short fruit_d;
+    short fruit_n;
+    short fruit_p;
+    uchar fruit_kick_drop_chance;
+    short fruit_drop_d;
+    short fruit_drop_n;
+    short fruit_drop_p;
+    short burning_subtype;
+    short burnt_subtype;
+    unsigned long tree_flags;
+};
+
+enum tree_species_types
+{
+    TREE_SPECIES_GENERAL = 0, /* Uses base_cmap */
+    TREE_SPECIES_LEAFED,
+    TREE_SPECIES_CONIFEROUS,
+    MAX_TREE_SPECIES
+};
+
+extern struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES];
 
 /*
  * Avoid using the level types in inequalities:
@@ -634,7 +669,10 @@ enum signpost_subtypes
 };
 #define SIGNPOST_VARIATION_OFFSET (BRAZIER_VARIATIONS + BRAZIER_VARIATION_OFFSET)
 #define SIGNPOST_VARIATIONS (MAX_SIGNPOST_SUBTYPES - 1)
-#define MAX_VARIATIONS (SIGNPOST_VARIATIONS + SIGNPOST_VARIATION_OFFSET)
+#define TREE_VARIATION_OFFSET (SIGNPOST_VARIATIONS + SIGNPOST_VARIATION_OFFSET)
+#define TREE_VARIATIONS (MAX_TREE_SUBTYPES - 1)
+
+#define MAX_VARIATIONS (TREE_VARIATIONS + TREE_VARIATION_OFFSET)
 
 #define is_wall_variation(idx) (defsym_variations[(idx)].base_screen_symbol >= S_vwall && defsym_variations[(idx)].base_screen_symbol <= S_trwall) // ((idx) >= HWALL_VARIATION_OFFSET && (idx) < FLOOR_VARIATION_OFFSET)
 #define is_base_cmap_variation(idx) (defsym_variations[(idx)].base_screen_symbol >= S_stone && defsym_variations[(idx)].base_screen_symbol <= S_dnladder) // ((idx) >= HWALL_VARIATION_OFFSET && (idx) < ALTAR_VARIATION_OFFSET)
@@ -849,11 +887,12 @@ struct rm {
                 }                                                 \
                 else if(!IS_FLOOR(levl[(x)][(y)].floortyp))       \
                 {                                                 \
-                     levl[(x)][(y)].floortyp = location_type_definitions[levl[(x)][(y)].typ].initial_floor_type; \
+                     levl[(x)][(y)].floortyp = location_type_definitions[ttyp].initial_floor_type; \
                      levl[(x)][(y)].floorsubtyp = get_initial_location_subtype(levl[(x)][(y)].floortyp);         \
                 }                                                 \
                 levl[(x)][(y)].typ = (ttyp);                      \
                 levl[(x)][(y)].subtyp = get_initial_location_subtype(ttyp); \
+                initialize_location(&levl[(x)][(y)]);             \
             }                                                     \
             if ((ttyp) == LAVAPOOL)                               \
                 levl[(x)][(y)].lit = 1;                           \

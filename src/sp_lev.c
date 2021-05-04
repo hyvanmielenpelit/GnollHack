@@ -684,6 +684,7 @@ schar filling;
             levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
             levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
             levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+            initialize_location(&levl[x][y]);
         }
 }
 
@@ -696,6 +697,8 @@ schar lit;
 
     for (x = 1; x < COLNO /*x_maze_max*/; x++)
         for (y = 0; y < ROWNO /*y_maze_max*/; y++) {
+            level.locations[x][y].typ = STONE;
+            levl[x][y].typ = STONE; /* Force use of initial floor type */
             SET_TYPLIT(x, y, filling, lit);
         }
 }
@@ -6734,6 +6737,7 @@ struct sp_coder *coder;
                 lev->typ = mptyp;
                 lev->subtyp = get_initial_location_subtype(lev->typ);
                 set_initial_location_floortype(lev, coder->fountain_on_grass, coder->fountain_on_ground, coder->tree_on_ground, coder->throne_on_ground);
+                initialize_location(lev);
 #if 0
                 if (mptyp == FOUNTAIN && coder->fountain_on_grass)
                 {

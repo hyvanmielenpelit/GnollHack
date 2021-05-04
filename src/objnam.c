@@ -4725,7 +4725,7 @@ boolean is_wiz_wish;
         }
 
         if (!BSTRCMPI(bp, p - 4, "tree")) {
-            create_simple_location(x, y, TREE, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            create_simple_location(x, y, TREE, get_initial_location_subtype(TREE), 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A tree.");
             newsym(x, y);
             block_vision_and_hearing_at_point(x, y);

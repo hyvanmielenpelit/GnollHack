@@ -36,6 +36,7 @@ lev_init* init_lev;
             levl[i][j].typ = bg_typ;
             levl[i][j].subtyp = get_initial_location_subtype(bg_typ);
             set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
+            initialize_location(&levl[i][j]);
         }
 }
 
@@ -56,6 +57,7 @@ lev_init* init_lev;
             levl[i][j].typ = fg_typ;
             levl[i][j].subtyp = get_initial_location_subtype(fg_typ);
             set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
+            initialize_location(&levl[i][j]);
             count++;
         }
     }
@@ -96,6 +98,7 @@ lev_init* init_lev;
                 levl[i][j].typ = bg_typ;
                 levl[i][j].subtyp = get_initial_location_subtype(bg_typ);
                 set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
+                initialize_location(&levl[i][j]);
                 break;
             case 5:
             case 6:
@@ -104,6 +107,7 @@ lev_init* init_lev;
                 levl[i][j].typ = fg_typ;
                 levl[i][j].subtyp = get_initial_location_subtype(fg_typ);
                 set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
+                initialize_location(&levl[i][j]);
                 break;
             default:
                 break;
@@ -139,6 +143,7 @@ lev_init* init_lev;
             levl[i][j].typ = new_loc(i, j);
             levl[i][j].subtyp = get_initial_location_subtype(levl[i][j].typ);
             set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
+            initialize_location(&levl[i][j]);
         }
 }
 
@@ -168,6 +173,7 @@ lev_init* init_lev;
             levl[i][j].typ = new_loc(i, j);
             levl[i][j].subtyp = get_initial_location_subtype(levl[i][j].typ);
             set_initial_location_floortype(&levl[i][j], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
+            initialize_location(&levl[i][j]);
         }
 }
 
@@ -333,6 +339,7 @@ lev_init* init_lev;
                                 levl[sx][sy].subtyp = get_initial_location_subtype(bg_typ);
                                 levl[sx][sy].roomno = NO_ROOM;
                                 set_initial_location_floortype(&levl[sx][sy], init_lev->fountain_on_grass, init_lev->fountain_on_ground, init_lev->tree_on_ground, init_lev->throne_on_ground);
+                                initialize_location(&levl[sx][sy]);
                             }
                 }
             }
