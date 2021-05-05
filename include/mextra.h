@@ -110,12 +110,13 @@ struct esmi {
         peaceful_time; /* sense of peace */
 };
 
-
+#define MAX_SPECIAL_TEACH_SPELLS 8
 /* Non-player character (NPC) extension */
 struct enpc {
     uchar npc_typ;     /* type of NPC */
     schar npc_room;  /* index in rooms */
     d_level npc_room_level;  /* level (& dungeon) of NPC's room */
+    short special_teach_spells[MAX_SPECIAL_TEACH_SPELLS];
     long intone_time,  /* used to limit verbosity  +*/
         enter_time,    /*+ of smithy entry messages */
         hostile_time,  /* forbidding feeling */

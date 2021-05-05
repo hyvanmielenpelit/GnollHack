@@ -282,6 +282,7 @@ struct monst* origmonst;
         zap_type_text = "wand";
     /*FALLTHRU*/
     case SPE_FORCE_BOLT:
+    case SPE_FORCE_STRIKE:
     case SPE_MAGIC_ARROW:
     case SPE_ARROW_OF_DIANA:
         res = 1;
@@ -3718,6 +3719,7 @@ struct monst* origmonst;
             break;
         case WAN_STRIKING:
         case SPE_FORCE_BOLT:
+        case SPE_FORCE_STRIKE:
             /* learn the type if you see or hear something break
                (the sound could be implicit) */
             maybelearnit = cansee(obj->ox, obj->oy) || !Deaf;
@@ -4060,7 +4062,7 @@ boolean stop_at_first_hit_object;
         hit_only_one == 4 ? (bucstatus == -1 ? 2 : bucstatus == 0 ? 4 : 6) :
         0;
 
-    if (obj->otyp == SPE_FORCE_BOLT || obj->otyp == WAN_STRIKING)
+    if (obj->otyp == SPE_FORCE_BOLT || obj->otyp == SPE_FORCE_STRIKE || obj->otyp == WAN_STRIKING)
     {
         struct trap *t = t_at(tx, ty);
 
@@ -5303,6 +5305,7 @@ boolean ordinary;
     switch (obj->otyp) {
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
+    case SPE_FORCE_STRIKE:
         learn_it = TRUE;
         if (Magic_missile_immunity || Invulnerable)
         {
@@ -6273,6 +6276,7 @@ struct obj *obj; /* wand or spell */
     case SPE_POLYMORPH:
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
+    case SPE_FORCE_STRIKE:
     case SPE_SHOCKING_TOUCH:
     case SPE_BURNING_HANDS:
     case SPE_FREEZING_TOUCH:
@@ -6585,6 +6589,7 @@ struct obj *obj; /* wand or spell */
         break;
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
+    case SPE_FORCE_STRIKE:
         striking = TRUE;
         /*FALLTHRU*/
     case WAN_LOCKING:
@@ -6718,6 +6723,7 @@ struct obj *obj; /* wand or spell */
                 break;
             case WAN_STRIKING:
             case SPE_FORCE_BOLT:
+            case SPE_FORCE_STRIKE:
                 wipe_engr_at(x, y, d(2, 4), TRUE);
                 break;
             default:
@@ -7307,6 +7313,7 @@ boolean stop_at_first_hit_object;
                 break;
             case WAN_STRIKING:
             case SPE_FORCE_BOLT:
+            case SPE_FORCE_STRIKE:
                 if (typ != DRAWBRIDGE_UP)
                 {
                     destroy_drawbridge(x, y, FALSE);
@@ -7532,7 +7539,8 @@ boolean stop_at_first_hit_object;
             case SPE_KNOCK:
             case SPE_WIZARD_LOCK:
             case SPE_FORCE_BOLT:
-                if (doorlock(obj, bhitpos.x, bhitpos.y)) 
+            case SPE_FORCE_STRIKE:
+                if (doorlock(obj, bhitpos.x, bhitpos.y))
                 {
                     if (cansee(bhitpos.x, bhitpos.y)
                         || (obj->otyp == WAN_STRIKING && !Deaf))

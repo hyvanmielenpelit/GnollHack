@@ -56,8 +56,8 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT              0x00001000UL
 #define NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD                0x00002000UL
 #define NPC_SERVICE_TEACH_SPELL_FORCE_BOLT                  0x00004000UL
-/*free bit */
-/*free bit */
+#define NPC_SERVICE_TEACH_SPECIAL_SPELLS                    0x00008000UL
+#define NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS              0x00010000UL
 /*free bit */
 /*free bit */
 /*free bit */

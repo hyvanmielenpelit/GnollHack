@@ -2049,6 +2049,7 @@ boolean atme;
     case SPE_MAGIC_ARROW:
     case SPE_ARROW_OF_DIANA:
     case SPE_FORCE_BOLT:
+    case SPE_FORCE_STRIKE:
     case SPE_FIREBALL:
     case SPE_FIRE_STORM:
     case SPE_ICE_STORM:

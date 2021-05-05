@@ -5933,7 +5933,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    int spell_otyps[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    int spell_otyps[MAX_SPECIAL_TEACH_SPELLS + 3 + 1] = { 0 };
     int teach_num = 0;
     if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT)
     {
@@ -5950,8 +5950,15 @@ struct monst* mtmp;
         spell_otyps[teach_num] = SPE_FORCE_BOLT;
         teach_num++;
     }
+    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPECIAL_SPELLS)
+    {
+        for (int i = 0; i < MAX_SPECIAL_TEACH_SPELLS && ENPC(mtmp)->special_teach_spells[i] > STRANGE_OBJECT; i++)
+        {
+            spell_otyps[teach_num] = ENPC(mtmp)->special_teach_spells[i];
+            teach_num++;
+        }
+    }
     spell_otyps[teach_num] = 0;
-
     return spell_teaching(mtmp, spell_otyps);
 }
 

@@ -1377,6 +1377,7 @@ int x, y;
         case SPE_KNOCK:
         case WAN_STRIKING:
         case SPE_FORCE_BOLT:
+        case SPE_FORCE_STRIKE:
             transform_location_type_and_flags(x, y, DOOR, door->subtyp, D_CLOSED | (door->doormask & D_TRAPPED));
             newsym(x, y);
             if (cansee(x, y))
@@ -1505,7 +1506,8 @@ int x, y;
     }
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
-        if (door->doormask & (D_LOCKED | D_CLOSED)) 
+    case SPE_FORCE_STRIKE:
+        if (door->doormask & (D_LOCKED | D_CLOSED))
         {
             if (door->doormask & D_TRAPPED)
             {
