@@ -2271,8 +2271,6 @@ boolean atme;
         int shots = NUM_METEOR_SWARM_METEORS;
         coord cc = { u.ux, u.uy };
         pline("Where do you want to center the meteor swarm?");
-        getpos_sethilite(display_stinking_cloud_positions,
-            get_valid_stinking_cloud_pos);
 
         int trycnt = 0;
         while (trycnt < 10)
@@ -2335,9 +2333,12 @@ boolean atme;
     case SPE_FLAME_STRIKE:
     case SPE_STINKING_CLOUD:
     case SPE_CREATE_MONSTER:
-        update_u_action(ACTION_TILE_CAST_NODIR);
-        play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-        u_wait_until_action();
+        if (objects[otyp].oc_dir != TARGETED)
+        {
+            update_u_action(ACTION_TILE_CAST_NODIR);
+            play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+            u_wait_until_action();
+        }
         (void) seffects(pseudo, &effect_happened);
         break;
 

@@ -2355,18 +2355,57 @@ boolean *effect_happened_ptr;
         else {
             int i, j, bd = confused ? 5 : 1;
             struct monst* mtmp;
+            coord cc = { u.ux, u.uy };
 
             if (otyp != SCR_TAMING)
                 bd = objects[otyp].oc_spell_radius;
+
+            if (objects[otyp].oc_spell_range > 0)
+            {
+                pline("Where do you want to center the %s?", OBJ_NAME(objects[otyp]));
+
+                int trycnt = 0;
+                while (trycnt < 10)
+                {
+                    (void)getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR);
+                    if (!get_valid_targeted_position(cc.x, cc.y, otyp))
+                    {
+                        play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
+                        pline("Not a valid target position.");
+                        if (trycnt > 4)
+                        {
+                            cc.x = u.ux;
+                            cc.y = u.uy;
+                            break;
+                        }
+                    }
+                    else
+                        break;
+
+                    trycnt++;
+                }
+            }
+
+
+            if (objects[otyp].oc_dir == TARGETED)
+            {
+                u.dx = cc.x - u.ux;
+                update_u_facing(TRUE);
+                update_u_action(ACTION_TILE_CAST_NODIR);
+                play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+                u_wait_until_action();
+                u.dx = 0;
+            }
 
             /* note: maybe_tame() can return either positive or
                negative values, but not both for the same scroll */
             candidates = results = vis_results = 0;
             for (i = -bd; i <= bd; i++)
-                for (j = -bd; j <= bd; j++) {
-                    if (!isok(u.ux + i, u.uy + j))
+                for (j = -bd; j <= bd; j++)
+                {
+                    if (!isok(cc.x + i, cc.y + j))
                         continue;
-                    if ((mtmp = m_at(u.ux + i, u.uy + j)) != 0 || (!i && !j && (mtmp = u.usteed) != 0))
+                    if ((mtmp = m_at(cc.x + i, cc.y + j)) != 0 || (!i && !j && (mtmp = u.usteed) != 0))
                     {
                         ++candidates;
                         res = maybe_tame(mtmp, sobj, otyp != SCR_TAMING ? &youmonst : (struct monst*)0);
@@ -3082,6 +3121,9 @@ boolean *effect_happened_ptr;
                     cc.x = u.ux;
                     cc.y = u.uy;
                 }
+                u.dx = cc.x - u.ux;
+                update_u_facing(TRUE);
+                u.dx = 0;
             }
             if (cc.x == u.ux && cc.y == u.uy) 
             {
@@ -3186,16 +3228,38 @@ boolean *effect_happened_ptr;
         pline("Where do you want to center the flame strike?");
         cc.x = u.ux;
         cc.y = u.uy;
-        getpos_sethilite(display_stinking_cloud_positions,
-            get_valid_stinking_cloud_pos);
-        if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) {
-            pline1(Never_mind);
-            break;
-        }
-        if (!get_valid_targeted_position(cc.x, cc.y, otyp))
+        int trycnt = 0;
+        while (trycnt < 10)
         {
-            pline("The target is invalid. The spell fizzles out with no effect.");
-            break;
+
+            if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) {
+                pline1(Never_mind);
+                break;
+            }
+            if (!get_valid_targeted_position(cc.x, cc.y, otyp))
+            {
+                play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
+                pline("Not a valid target position.");
+                if (trycnt > 4)
+                {
+                    cc.x = u.ux;
+                    cc.y = u.uy;
+                    break;
+                }
+            }
+            else
+                break;
+
+            trycnt++;
+        }
+        if (objects[otyp].oc_dir == TARGETED)
+        {
+            u.dx = cc.x - u.ux;
+            update_u_facing(TRUE);
+            update_u_action(ACTION_TILE_CAST_NODIR);
+            play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+            u_wait_until_action();
+            u.dx = 0;
         }
         (void)explode(cc.x, cc.y, RAY_FIRE, &youmonst, 6, 6, 0, otyp, SPBOOK_CLASS, EXPL_FIERY);
         break;
@@ -3219,6 +3283,9 @@ boolean *effect_happened_ptr;
         }
         if (!is_valid_stinking_cloud_pos(cc.x, cc.y, TRUE))
             break;
+        u.dx = cc.x - u.ux;
+        update_u_facing(TRUE);
+        u.dx = 0;
         (void) create_gas_cloud(cc.x, cc.y, REGION_POISON_GAS, 3 + bcsign(sobj),
                                 1, 8 + 4 * bcsign(sobj), 5);
         break;
