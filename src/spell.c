@@ -2306,6 +2306,7 @@ boolean atme;
         }
         else
         {
+            play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
             pline("The spell fails!");
         }
         break;
