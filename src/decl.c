@@ -215,6 +215,7 @@ struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS] = {
     {"frosty", CLR_WHITE, FROSTY_EXPLOSION_ANIMATION, SFX_EXPLOSION_FROSTY},
     /* Additional explosions */
     {"scroll-of-fire", CLR_ORANGE, SCROLL_OF_FIRE_ANIMATION, SFX_TOWER_OF_FLAME_ERUPTS},
+    {"meteor-swarm", CLR_ORANGE, METEOR_SWARM_ANIMATION, SFX_EXPLOSION_FIERY},
     /* Large effects start here */
     {"circle-of-fire", CLR_ORANGE, CIRCLE_OF_FIRE_ANIMATION, SFX_CIRCLE_OF_FIRE},
     {"circle-of-frost", CLR_WHITE, CIRCLE_OF_FROST_ANIMATION, SFX_CIRCLE_OF_FROST},

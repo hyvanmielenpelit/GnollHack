@@ -5461,7 +5461,7 @@ boolean ordinary;
     case SPE_WRATH_OF_GOD:
     case SPE_DEATHSPELL:
     {
-        int expl_type = objects[obj->otyp].oc_damagetype == AD_FIRE ? EXPL_FIERY : objects[obj->otyp].oc_damagetype == AD_COLD ? EXPL_FROSTY : EXPL_MAGICAL;
+        int expl_type = obj->otyp == SPE_METEOR_SWARM ? EXPL_METEOR_SWARM : objects[obj->otyp].oc_damagetype == AD_FIRE ? EXPL_FIERY : objects[obj->otyp].oc_damagetype == AD_COLD ? EXPL_FROSTY : EXPL_MAGICAL;
         You("conjure %s on top of yourself!", OBJ_CONTENT_NAME(obj->otyp) ? an(OBJ_CONTENT_NAME(obj->otyp)) : an(OBJ_NAME(objects[obj->otyp])));
         explode(u.ux, u.uy, objects[obj->otyp].oc_dir_subtype, &youmonst, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, expl_type);
         break;
@@ -9090,6 +9090,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
             expltype = EXPL_MAGICAL;
             break;
         }
+
+        if(origobj && origobj->otyp == SPE_METEOR_SWARM)
+            expltype = EXPL_METEOR_SWARM;
 
         int otyp = 0;
         int oclass = 0;

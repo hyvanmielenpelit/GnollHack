@@ -2051,7 +2051,6 @@ boolean atme;
     case SPE_FORCE_BOLT:
     case SPE_FIREBALL:
     case SPE_FIRE_STORM:
-    case SPE_METEOR_SWARM:
     case SPE_ICE_STORM:
     case SPE_THUNDERSTORM:
     case SPE_MAGICAL_IMPLOSION:
@@ -2252,19 +2251,7 @@ boolean atme;
                 update_u_action(ACTION_TILE_CAST_DIR);
                 play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
                 u_wait_until_action();
-
-                if (otyp == SPE_METEOR_SWARM)
-                {
-                    int shots = NUM_METEOR_SWARM_METEORS;
-
-                    for (n = 0; n < shots; n++)
-                    {
-                        You("shoot a meteor!");
-                        weffects(pseudo);
-                    }
-                }
-                else
-                    weffects(pseudo);
+                weffects(pseudo);
 
             }
         } 
@@ -2279,7 +2266,50 @@ boolean atme;
 
         update_inventory(); /* spell may modify inventory */
         break;
+    case SPE_METEOR_SWARM:
+    {
+        int shots = NUM_METEOR_SWARM_METEORS;
+        coord cc = { u.ux, u.uy };
+        pline("Where do you want to center the meteor swarm?");
+        getpos_sethilite(display_stinking_cloud_positions,
+            get_valid_stinking_cloud_pos);
 
+        int trycnt = 0;
+        while (trycnt < 10)
+        {
+            (void)getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR);
+            if (!get_valid_targeted_position(cc.x, cc.y, otyp))
+            {
+                play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
+                pline("Not a valid target position.");
+                if (trycnt > 4)
+                {
+                    cc.x = u.ux;
+                    cc.y = u.uy;
+                    break;
+                }
+            }
+            else
+                break;
+
+            trycnt++;
+        }
+
+        if (isok(cc.x, cc.y))
+        {
+            int expl_type = EXPL_METEOR_SWARM;
+            for (n = 0; n < shots; n++)
+            {
+                You("shoot a meteor!");
+                explode(cc.x, cc.y, objects[otyp].oc_dir_subtype, &youmonst, objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize, objects[otyp].oc_spell_dmg_plus, otyp, SPBOOK_CLASS, expl_type);
+            }
+        }
+        else
+        {
+            pline("The spell fails!");
+        }
+        break;
+    }
     /* these are all duplicates of scroll effects */
     case SPE_REMOVE_CURSE:
     case SPE_CONFUSE_MONSTER:

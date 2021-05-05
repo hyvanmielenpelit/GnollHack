@@ -74,6 +74,7 @@ enum explosion_types {
     EXPL_FROSTY,
     /* Additional real explosions here (to be used with explode) */
     EXPL_SCROLL_OF_FIRE,
+    EXPL_METEOR_SWARM,
     /* Various large effects here (to be used with play_explosion_animation) */
     EXPL_CIRCLE_OF_FIRE,
     EXPL_CIRCLE_OF_FROST,

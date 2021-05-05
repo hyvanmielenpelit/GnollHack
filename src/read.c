@@ -26,10 +26,6 @@ STATIC_DCL void FDECL(forget_objclass, (int));
 #endif
 STATIC_DCL void FDECL(randomize, (int *, int));
 STATIC_DCL void FDECL(forget, (int));
-STATIC_DCL boolean FDECL(get_valid_targeted_position, (int, int, int));
-STATIC_DCL boolean FDECL(get_valid_stinking_cloud_pos, (int, int));
-STATIC_DCL boolean FDECL(is_valid_stinking_cloud_pos, (int, int, BOOLEAN_P));
-STATIC_PTR void FDECL(display_stinking_cloud_positions, (int));
 STATIC_PTR void FDECL(set_lit, (int, int, genericptr));
 STATIC_DCL void NDECL(do_class_genocide);
 
@@ -1614,7 +1610,7 @@ struct monst* origmonst;
     return 0;
 }
 
-STATIC_OVL boolean
+boolean
 get_valid_targeted_position(x, y, otyp)
 int x, y, otyp;
 {
@@ -1623,7 +1619,7 @@ int x, y, otyp;
         || distu(x, y) > objects[otyp].oc_spell_range * objects[otyp].oc_spell_range));
 }
 
-STATIC_OVL boolean
+boolean
 get_valid_stinking_cloud_pos(x,y)
 int x,y;
 {
@@ -1632,7 +1628,7 @@ int x,y;
               || distu(x, y) >= 32));
 }
 
-STATIC_OVL boolean
+boolean
 is_valid_stinking_cloud_pos(x, y, showmsg)
 int x, y;
 boolean showmsg;
@@ -1645,7 +1641,7 @@ boolean showmsg;
     return TRUE;
 }
 
-STATIC_PTR void
+void
 display_stinking_cloud_positions(state)
 int state;
 {
