@@ -2290,7 +2290,7 @@ mswin_main_loop()
 {
     MSG msg;
 
-    while (!mswin_have_input()) {
+    while (!mswin_have_input_and_clear_hangup()) {
         if (!iflags.debug_fuzzer || PeekMessage(&msg, NULL, 0, 0, FALSE)) {
             if(GetMessage(&msg, NULL, 0, 0) != 0) {
                 if (GetNHApp()->regGnollHackMode
@@ -2335,7 +2335,7 @@ mswin_wait_loop(int milliseconds)
     if (threshold > 50000000ULL)
         threshold = 50000000ULL;
 
-    disallow_keyboard_commands_in_wait_loop = TRUE;
+    disallow_keyboard_commands_in_wait_loop = FALSE; //TRUE
 
     do 
     {
@@ -2361,6 +2361,8 @@ mswin_wait_loop(int milliseconds)
 
         timepassed = current_largeint.QuadPart - start_largeint.QuadPart;
         program_state.animation_hangup = 0;
+        if (mswin_have_input())
+            break;
     } while (timepassed < threshold);
 
     disallow_keyboard_commands_in_wait_loop = FALSE;
@@ -2378,7 +2380,7 @@ mswin_wait_loop_intervals(int intervals)
     int counter_before = context.general_animation_counter;
     int counter_after = context.general_animation_counter;
 
-    disallow_keyboard_commands_in_wait_loop = TRUE;
+    disallow_keyboard_commands_in_wait_loop = FALSE; //TRUE
 
     do
     {
@@ -2398,7 +2400,8 @@ mswin_wait_loop_intervals(int intervals)
 
         counter_after = context.general_animation_counter;
         program_state.animation_hangup = 0;
-
+        if (mswin_have_input())
+            break;
     } while (counter_after - counter_before < intervals && counter_after >= counter_before);
 
     disallow_keyboard_commands_in_wait_loop = FALSE;

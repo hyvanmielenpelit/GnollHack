@@ -574,7 +574,7 @@ int x, y, show;
     }
 
     /* Object layer */
-    //clear_hero_object_memory_at(x, y);
+    clear_hero_object_memory_at(x, y);
     if (!covers_objects(x, y))
     {
         boolean show_first_object_layer = show;

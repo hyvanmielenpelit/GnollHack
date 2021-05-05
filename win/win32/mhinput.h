@@ -43,6 +43,7 @@ typedef struct mswin_event {
 
 void mswin_nh_input_init(void);
 int mswin_have_input(void);
+int mswin_have_input_and_clear_hangup(void);
 void mswin_input_push(PMSNHEvent event);
 PMSNHEvent mswin_input_pop(void);
 PMSNHEvent mswin_input_peek(void);

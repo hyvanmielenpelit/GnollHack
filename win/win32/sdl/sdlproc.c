@@ -2236,7 +2236,7 @@ sdl_main_loop()
 
     MSG msg;
 
-    while (!mswin_have_input()) {
+    while (!mswin_have_input_and_clear_hangup()) {
         if (!iflags.debug_fuzzer || PeekMessage(&msg, NULL, 0, 0, FALSE)) {
             if(GetMessage(&msg, NULL, 0, 0) != 0) {
                 if (GetNHApp()->regGnollHackMode

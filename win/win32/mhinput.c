@@ -36,13 +36,19 @@ mswin_nh_input_init(void)
 int
 mswin_have_input()
 {
-    program_state.animation_hangup = 0;
     return
 #ifdef SAFERHANGUP
         /* we always have input (ESC) if hangup was requested */
         program_state.done_hup ||
 #endif
         (nhi_read_pos != nhi_write_pos);
+}
+
+int
+mswin_have_input_and_clear_hangup()
+{
+    program_state.animation_hangup = 0;
+    return mswin_have_input();
 }
 
 /* add event to the queue */
