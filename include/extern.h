@@ -587,6 +587,7 @@ E void FDECL(full_initial_location_transform, (xchar, xchar, int, unsigned short
 E void FDECL(create_simple_location, (xchar, xchar, int, int, int, unsigned short, int, int, int, int, boolean));
 E void FDECL(create_simple_initial_location, (xchar, xchar, int, unsigned short, int, int, boolean));
 E void FDECL(create_location_with_current_floor, (xchar, xchar, int, int, int, unsigned short, int, boolean));
+E void FDECL(create_initial_location_with_current_floor, (xchar, xchar, int, unsigned short, int, boolean));
 E void FDECL(create_current_floor_location, (xchar, xchar, unsigned short, int, boolean));
 E void FDECL(create_basic_floor_location, (xchar, xchar, int, int, unsigned short, boolean));
 E void FDECL(transform_location_type, (xchar, xchar, int, int));

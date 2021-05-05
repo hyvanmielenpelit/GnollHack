@@ -337,6 +337,11 @@ MONSTER:$monster[4],(30,11)
 MONSTER:$monster[5],(33,11)
 MONSTER:$monster[6],(36,11)
 MONSTER:('e',"gazer"),(37,08)
+OBJECT: ('`', "statue"), (29,06), montype:"gazer", 1
+OBJECT: ('`', "statue"), (35,06), montype:"gazer", 1
+OBJECT: ('`', "statue"), (29,10), montype:"gazer", 1
+OBJECT: ('`', "statue"), (35,10), montype:"gazer", 1
+
 # MazeWalks
 MAZEWALK:(00,10),west
 # MAZEWALK:(62,06),east
@@ -349,7 +354,7 @@ REGION:(00,00,62,16),unlit,"ordinary"
 REGION:(00,05,05,11),lit,"ordinary"
 REGION:(57,05,62,11),lit,"ordinary"
 #   Throne room
-REGION:(27,05,37,11),lit,"throne",unfilled
+REGION:(27,05,37,11),lit,"throne",unfilled floortype:floor_marble
 #   Antechamber
 REGION:(07,05,14,11),lit,"ordinary"
 #   Storerooms

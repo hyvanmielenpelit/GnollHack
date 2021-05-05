@@ -451,7 +451,24 @@ struct mkroom *sroom;
                 }
         break;
     case COURT:
-        if (level.flags.is_maze_lev) 
+        /* Marble floors in court */
+        for (int x = sroom->lx; x <= sroom->hx; x++)
+            for (int y = sroom->ly; y <= sroom->hy; y++)
+                if (!sroom->irregular || (sroom->irregular && levl[x][y].roomno == rmno))
+                {
+                    if (levl[x][y].typ == ROOM)
+                    {
+                        levl[x][y].subtyp = FLOOR_SUBTYPE_MARBLE;
+                        levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+                    }
+                    else if (levl[x][y].floortyp == ROOM)
+                    {
+                        levl[x][y].floorsubtyp = FLOOR_SUBTYPE_MARBLE;
+                        levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
+                    }
+                }
+        break;
+        if (level.flags.is_maze_lev)
         {
             for (tx = sroom->lx; tx <= sroom->hx; tx++)
                 for (ty = sroom->ly; ty <= sroom->hy; ty++)
@@ -468,6 +485,23 @@ struct mkroom *sroom;
         mk_zoo_thronemon(tx, ty);
         break;
     case LIBRARY:
+        /* Wooden floors in library */
+        for (int x = sroom->lx; x <= sroom->hx; x++)
+            for (int y = sroom->ly; y <= sroom->hy; y++)
+                if (!sroom->irregular || (sroom->irregular && levl[x][y].roomno == rmno))
+                {
+                    if (levl[x][y].typ == ROOM)
+                    {
+                        levl[x][y].subtyp = FLOOR_SUBTYPE_PARQUET;
+                        levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+                    }
+                    else if (levl[x][y].floortyp == ROOM)
+                    {
+                        levl[x][y].floorsubtyp = FLOOR_SUBTYPE_PARQUET;
+                        levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
+                    }
+                }
+
         mon_one_in_chance = 2;
         if (hd <= 9)
         {
@@ -787,8 +821,10 @@ place_main_monst_here:
                     {
                         levl[sx][sy].floortyp = levl[sx][sy].typ;
                         levl[sx][sy].floorsubtyp = levl[sx][sy].subtyp;
+                        levl[sx][sy].floorvartyp = levl[sx][sy].vartyp;
                         levl[sx][sy].typ = ANVIL;
                         levl[sx][sy].subtyp = 0;
+                        levl[sx][sy].vartyp = 0;
                         anvil_created = TRUE;
                     }
                 }
@@ -817,7 +853,7 @@ place_main_monst_here:
     switch (type) {
     case COURT: {
         struct obj *chest, *gold;
-        levl[tx][ty].typ = THRONE;
+        create_initial_location_with_current_floor(tx, ty, THRONE, 0UL, 0, FALSE);
         (void) somexy(sroom, &mm);
         gold = mksobj(GOLD_PIECE, TRUE, FALSE, FALSE);
         gold->quan = (long) rn1(50 * level_difficulty(), 10);

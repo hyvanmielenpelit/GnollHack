@@ -6519,12 +6519,14 @@ xchar x, y;
 
     if (levl[x][y].lamplit)
     {
-        del_light_source(LS_LOCATION, xy_to_any(x, y));
+        if(!in_mklev)
+            del_light_source(LS_LOCATION, xy_to_any(x, y));
         levl[x][y].lamplit = 0;
     }
     if (levl[x][y].makingsound)
     {
-        del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
+        if (!in_mklev)
+            del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
         levl[x][y].makingsound = 0;
     }
     levl[x][y].typ = UNDEFINED_LOCATION;
@@ -6564,14 +6566,16 @@ short key_otyp, special_quality;
     levl[x][y].horizontal = horizontal;
     levl[x][y].key_otyp = key_otyp;
     levl[x][y].special_quality = special_quality;
-    maybe_create_location_light_and_sound_sources(x, y);
+
+    if(!in_mklev)
+        maybe_create_location_light_and_sound_sources(x, y);
 
     if (levl[x][y].typ == FOUNTAIN)
         level.flags.nfountains++;
     else if (levl[x][y].typ == SINK)
         level.flags.nsinks++;
 
-    if(donewsym)
+    if(donewsym && !in_mklev)
         newsym(x, y);
 }
 
@@ -6627,6 +6631,18 @@ boolean donewsym;
         return; /* Do nothing, current floor already there */
 
     create_simple_location(x, y, type, subtype, vartype, location_flags, floor_doodad, isfloor ? levl[x][y].typ : levl[x][y].floortyp, isfloor ? levl[x][y].subtyp : levl[x][y].floorsubtyp, isfloor ? levl[x][y].vartyp : levl[x][y].floorvartyp, donewsym);
+}
+
+void
+create_initial_location_with_current_floor(x, y, type, location_flags, floor_doodad, donewsym)
+xchar x, y;
+int type, floor_doodad;
+unsigned short location_flags;
+boolean donewsym;
+{
+    int subtype = get_initial_location_subtype(type);
+    int vartype = get_initial_location_vartype(type, subtype);
+    create_location_with_current_floor(x, y, type, subtype, vartype, location_flags, floor_doodad, donewsym);
 }
 
 void

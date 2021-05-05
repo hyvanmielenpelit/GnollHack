@@ -203,10 +203,17 @@ int floortyp, floorsubtyp, mtype;
                 lev = &levl[x][lowy];
                 for (y = lowy; y <= hiy; y++)
                 {
-                    if (lev->typ == ROOM)
+                    if (IS_FLOOR(lev->typ))
                     {
+                        lev->typ = floortyp;
                         lev->subtyp = floorsubtyp;
                         lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
+                    }
+                    else
+                    {
+                        lev->floortyp = floortyp;
+                        lev->floorsubtyp = floorsubtyp;
+                        lev->floorvartyp = get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
                     }
                     lev++;
                 }
