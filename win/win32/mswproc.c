@@ -299,7 +299,7 @@ mswin_init_nhwindows(int *argc, char **argv)
             {IDM_VIEW_TOGGLETARGETING, "targeting", "Toggle &Targeting"},
             {IDM_VIEW_TOGGLEHITPOINTBARS, "bars", "Toggle Hit Point &Bars"},
             {IDM_VIEW_TOGGLEBUFFTIMERS, "bufftimers", "Toggle B&uff Timers"},
-            {IDM_VIEW_TOGGLEGRID, "grid", "Toggle G&rid"},
+            {IDM_VIEW_TOGGLEGRID, "grid", "Toggle &Grid"},
             {0, 0, 0}
         };
 
