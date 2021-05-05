@@ -2857,7 +2857,27 @@ boolean
 glyph_is_specific_cmap_or_its_variation(glyph, s_idx)
 int glyph, s_idx;
 {
-    /* Alternatively: generic_glyph_to_cmap(glyph) == s_idx, but does not work for S_unexplored, since it is the default 'not found' value */
+    if (s_idx == S_unexplored)
+    {
+        if (glyph_is_cmap(glyph))
+        {
+            if (glyph_to_cmap(glyph) == s_idx)
+                return TRUE;
+        }
+        
+        if (glyph_is_cmap_variation(glyph))
+        {
+            if (defsym_variations[glyph_to_cmap_variation(glyph)].base_screen_symbol == s_idx)
+                return TRUE;
+        }
+    }
+    else
+    {
+        if (generic_glyph_to_cmap(glyph) == s_idx)
+            return TRUE;
+    }
+
+#if 0
     int base_glyph = cmap_to_glyph(s_idx);
     if (glyph == base_glyph)
         return TRUE;
@@ -2872,6 +2892,8 @@ int glyph, s_idx;
         if (glyph == var_glyph)
             return TRUE;
     }
+#endif
+
 
     return FALSE;
 }

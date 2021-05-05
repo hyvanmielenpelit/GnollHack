@@ -1190,6 +1190,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     continue;
             }
 
+            int relevant_darkening_cmap = level.locations[darkening_i][darkening_j].use_special_tileset ? (int)level.locations[darkening_i][darkening_j].special_tileset : current_cmap;
             boolean is_enl_you = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_M_YOU);
             unsigned m_id_stored = data->map[enl_i][enl_j].m_id;
             struct monst* m_here = m_at(enl_i, enl_j);
@@ -4001,8 +4002,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 double multiplier = 1.0;
                                 if (isyou)
                                 {
-                                    if(default_tileset_definition.you_darkening[current_cmap] > 0.0)
-                                        multiplier *= default_tileset_definition.you_darkening[current_cmap];
+                                    if(default_tileset_definition.you_darkening[relevant_darkening_cmap] > 0.0)
+                                        multiplier *= default_tileset_definition.you_darkening[relevant_darkening_cmap];
                                     else
                                         multiplier *= 0.85;
                                 }
@@ -4010,15 +4011,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     if (!levl[darkening_i][darkening_j].waslit)
                                     {
-                                        if (default_tileset_definition.nonlit_darkening[current_cmap] > 0.0)
-                                            multiplier *= default_tileset_definition.nonlit_darkening[current_cmap];
+                                        if (default_tileset_definition.nonlit_darkening[relevant_darkening_cmap] > 0.0)
+                                            multiplier *= default_tileset_definition.nonlit_darkening[relevant_darkening_cmap];
                                         else
                                             multiplier *= 0.35;
                                     }
                                     else
                                     {
-                                        if (default_tileset_definition.lit_darkening[current_cmap] > 0.0)
-                                            multiplier *= default_tileset_definition.lit_darkening[current_cmap];
+                                        if (default_tileset_definition.lit_darkening[relevant_darkening_cmap] > 0.0)
+                                            multiplier *= default_tileset_definition.lit_darkening[relevant_darkening_cmap];
                                         else
                                             multiplier *= 0.65;
                                     }

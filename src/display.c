@@ -513,15 +513,6 @@ register int x, y;
         levl[x][y].waslit = waslit;
         map_background(x, y, 0);
 
-#if 0
-        struct rm* lev = &levl[x][y];
-
-        /* Seems obsolete with back_to_glyph handling lighting --JG */
-        /* turn remembered dark room squares dark */
-        if (!lev->waslit && lev->hero_memory_layers.glyph == cmap_to_glyph(S_room) && lev->typ == ROOM)
-            clear_all_glyphs_at(x, y);
-#endif
-
         if ((trap = t_at(x, y)) != 0 && trap->tseen && !covers_traps(x, y))
         {
             map_trap(trap, 0);
@@ -660,7 +651,8 @@ boolean dropping_piercer;
              * mappearance is currently set to an S_ index value in
              * makemon.c.
              */
-            int sym = mon->mappearance, glyph = cmap_to_glyph(sym);
+            int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+            int sym = mon->mappearance, glyph = cmap_with_type_to_glyph(sym, cmap_type);
 
             //levl[x][y].hero_memory_layers.glyph = glyph;
             if (level.flags.hero_memory)
@@ -931,99 +923,10 @@ xchar x, y;
         // For simplicity, map always background
         map_background(x, y, 1);
 
-#if 0
-        if (IS_ROOM(lev->typ) || IS_POOL(lev->typ))
-        {
-            boolean do_room_glyph;
-
-            /*
-             * An open room or water location.  Normally we wouldn't touch
-             * this, but we have to get rid of remembered boulder symbols.
-             * This will only occur in rare occasions when the hero goes
-             * blind and doesn't find a boulder where expected (something
-             * came along and picked it up).  We know that there is not a
-             * boulder at this location.  Show fountains, pools, etc.
-             * underneath if already seen.  Otherwise, show the appropriate
-             * floor symbol.
-             *
-             * Similarly, if the hero digs a hole in a wall or feels a
-             * location that used to contain an unseen monster.  In these
-             * cases, there's no reason to assume anything was underneath,
-             * so just show the appropriate floor symbol.  If something was
-             * embedded in the wall, the glyph will probably already
-             * reflect that.  Don't change the symbol in this case.
-             *
-             * This isn't quite correct.  If the boulder was on top of some
-             * other objects they should be seen once the boulder is removed.
-             * However, we have no way of knowing that what is there now
-             * was there then.  So we let the hero have a lapse of memory.
-             * We could also just display what is currently on the top of the
-             * object stack (if anything).
-             */
-            do_room_glyph = FALSE;
-            int litsym = S_room;
-            //int darksym = S_darkroom;
-            if (lev->hero_memory_layers.glyph == objnum_to_glyph(BOULDER)
-                || glyph_is_invisible(lev->hero_memory_layers.glyph))
-            {
-                if (lev->typ != ROOM && lev->typ != GRASS && lev->typ != GROUND && lev->seenv)
-                    map_background(x, y, 1);
-                else
-                    do_room_glyph = TRUE;
-            }
-            else if (lev->hero_memory_layers.glyph >= cmap_to_glyph(S_unexplored)
-                && lev->hero_memory_layers.glyph < cmap_to_glyph(S_darkroom)) 
-            {
-                do_room_glyph = TRUE;
-            }
-            else if (lev->hero_memory_layers.glyph == cmap_to_glyph(S_grass))
-            {
-                do_room_glyph = TRUE;
-                litsym = S_grass;
-            }
-            else if (lev->hero_memory_layers.glyph == cmap_to_glyph(S_ground))
-            {
-                do_room_glyph = TRUE;
-                litsym = S_ground;
-            }
-
-            if (do_room_glyph) 
-            {
-                int new_glyph = cmap_to_glyph(litsym); /* (flags.dark_room && iflags.use_color && !Is_rogue_level(&u.uz))
-                    ? cmap_to_glyph(darksym) : (lev->waslit ? cmap_to_glyph(litsym) : cmap_to_glyph(S_unexplored)); */
-
-                lev->hero_memory_layers.glyph = new_glyph;
-                lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-                show_glyph_on_layer_and_ascii(x, y, new_glyph, LAYER_FLOOR);
-            }
-        }
-        else
-        {
-            /* We feel it (I think hallways are the only things left). */
-            map_background(x, y, 1);
-
-        }
-
-        if (IS_DOOR(lev->typ))
-        {
-            map_background(x, y, 1);
-        }
-#endif
-
         if ((boulder = sobj_at(BOULDER, x, y)) != 0)
         {
             map_object(boulder, 1);
         }
-        
-#if 0
-        if (IS_ROCK(lev->typ)
-            || (IS_DOOR(lev->typ)
-                && (lev->doormask & (D_LOCKED | D_CLOSED))))
-        {
-            map_background(x, y, 1);
-        }
-#endif
-
     } 
     else
     {
@@ -3009,6 +2912,7 @@ xchar x, y;
     boolean is_variation = FALSE;
     boolean facing_right = (ptr->facing_right != 0);
     int multiplier = facing_right ? -1 : 1;
+    int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
 
     switch (ptr->typ) {
     case UNDEFINED_LOCATION:
@@ -3307,9 +3211,9 @@ xchar x, y;
     }
 
     if(is_variation)
-        return multiplier * cmap_variation_to_glyph(idx);
+        return multiplier * cmap_variation_with_type_to_glyph(idx, cmap_type);
     else
-        return multiplier * cmap_to_glyph(idx);
+        return multiplier * cmap_with_type_to_glyph(idx, cmap_type);
 }
 
 
@@ -3747,6 +3651,7 @@ xchar x, y;
 {
     int idx;
     struct rm* ptr = &(levl[x][y]);
+    int cmap_type = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
 
     if (ptr->floortyp && IS_FLOOR(ptr->floortyp))
     {
@@ -3764,10 +3669,10 @@ xchar x, y;
                 subtyp_offset = corridor_subtype_definitions[ptr->floorsubtyp].variation_offset;
             int var_offset = defsyms[idx].variation_offset;
             idx = var_offset + subtyp_offset + ptr->floorvartyp - 1;
-            return cmap_variation_to_glyph(idx);
+            return cmap_variation_with_type_to_glyph(idx, cmap_type);
         }
 
-        return cmap_to_glyph(idx);
+        return cmap_with_type_to_glyph(idx, cmap_type);
     }
 
     switch (ptr->typ) 
@@ -3847,7 +3752,7 @@ xchar x, y;
         break;
     }
 
-    return cmap_to_glyph(idx);
+    return cmap_with_type_to_glyph(idx, cmap_type);
 }
 
 /* Floor doodad layer glyph  */
@@ -4613,11 +4518,12 @@ int dmg_received;
 boolean exclude_ascii;
 {
 
+    int cmap_type = levl[u.ux][u.uy].use_special_tileset ? levl[u.ux][u.uy].special_tileset : get_current_cmap_type_index();
     show_monster_glyph_with_extra_info_choose_ascii(u.ux, u.uy,
         maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)
             ? u_to_glyph() /*hero_glyph*/
             : (U_AP_TYPE == M_AP_FURNITURE)
-            ? cmap_to_glyph(youmonst.mappearance)
+            ? cmap_with_type_to_glyph(youmonst.mappearance, cmap_type)
             : (U_AP_TYPE == M_AP_OBJECT)
             ? objnum_to_glyph(youmonst.mappearance)
             /* else U_AP_TYPE == M_AP_MONSTER */

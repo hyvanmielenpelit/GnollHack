@@ -65,7 +65,9 @@ NPC:npc_artificer, (04,03)
 TELEPORT_REGION:levregion(01,00,05,20),(1,1,61,15),down
 TELEPORT_REGION:(64,01,70,15),(1,1,61,15),up
 STAIR:levregion(01,00,05,20),(0,0,62,16),up
-
+SPECIAL_TILESET:fillrect(63,00,71,07),undead_tileset
+SPECIAL_TILESET:fillrect(65,08,71,08),undead_tileset
+SPECIAL_TILESET:fillrect(63,09,71,16),undead_tileset
 # Stairs to Gehennom
 IF[50%] {
     BRANCH:(70,01,70,01),(0,0,0,0)

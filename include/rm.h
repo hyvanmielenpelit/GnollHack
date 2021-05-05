@@ -844,6 +844,8 @@ struct rm {
     Bitfield(roomno, 6); /* room # for special rooms */
     Bitfield(edge, 1);   /* marks boundaries for special rooms*/
     Bitfield(candig, 1); /* Exception to Can_dig_down; was a trapdoor */
+    Bitfield(use_special_tileset, 1); /* Use tileset specified below instead standard one */
+    Bitfield(special_tileset, 5); /* Specific tileset applicable to this location */
 };
 
 

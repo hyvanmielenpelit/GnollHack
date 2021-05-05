@@ -98,6 +98,7 @@ enum opcode_defs {
     SPO_ROOM_DOOR,
     SPO_REGION,
     SPO_SPECIAL_REGION,
+    SPO_SPECIAL_TILESET,
     SPO_NAMING,
     SPO_MINERALIZE,
     SPO_CMP,

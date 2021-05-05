@@ -119,6 +119,7 @@ MONSTER: 'S',(10,19)
 
 MAZE: "Arc-loca",'T'
 FLAGS: hardfloor
+TILESET:undead_tileset
 GEOMETRY:center,center
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -266,6 +267,7 @@ MONSTER:'Z',random
 #
 
 MAZE: "Arc-goal", ' '
+TILESET:undead_tileset
 GEOMETRY:center,center
 MAP
                                                                             
@@ -384,6 +386,7 @@ MONSTER:'Z',random
 #
 
 LEVEL: "Arc-fila"
+TILESET:undead_tileset
 #
 ROOM: "ordinary" , random, random, random, random {
   STAIR: random, up
@@ -428,6 +431,7 @@ ROOM: "ordinary" , random, random, random, random {
 RANDOM_CORRIDORS
 
 LEVEL: "Arc-filb"
+TILESET:undead_tileset
 #
 ROOM: "ordinary" , random, random, random, random {
   STAIR: random, up

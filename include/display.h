@@ -490,10 +490,14 @@
 
 #define base_cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + GLYPH_CMAP_OFF)
 #define base_cmap_variation_to_glyph(var_idx) ((int) (var_idx) + GLYPH_CMAP_VARIATION_OFF)
-#define cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF)
-#define broken_cmap_to_glyph(bcmap_idx) ((int) (bcmap_idx) + get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS + GLYPH_BROKEN_CMAP_OFF)
+#define cmap_with_type_to_glyph(cmap_idx, cmap_type) ((int) (cmap_idx) + cmap_type * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF)
+#define cmap_to_glyph(cmap_idx) cmap_with_type_to_glyph(cmap_idx, get_current_cmap_type_index())
+#define broken_cmap_with_type_to_glyph(bcmap_idx, cmap_type) ((int) (bcmap_idx) + cmap_type * NUM_CMAP_TYPE_CHARS + GLYPH_BROKEN_CMAP_OFF)
+#define broken_cmap_to_glyph(bcmap_idx) broken_cmap_with_type_to_glyph(bcmap_idx, get_current_cmap_type_index())
+#define cmap_variation_with_type_to_glyph(var_idx, cmap_type) ((int) (var_idx)+ cmap_type * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF)
 #define cmap_variation_to_glyph(var_idx) ((int) (var_idx)+ get_current_cmap_type_index() * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF)
-#define broken_cmap_variation_to_glyph(var_idx) ((int) (var_idx)+ get_current_cmap_type_index() * MAX_VARIATIONS + GLYPH_BROKEN_CMAP_VARIATION_OFF)
+#define broken_cmap_variation_with_type_to_glyph(var_idx, cmap_type) ((int) (var_idx)+ cmap_type * MAX_VARIATIONS + GLYPH_BROKEN_CMAP_VARIATION_OFF)
+#define broken_cmap_variation_to_glyph(var_idx) broken_cmap_variation_with_type_to_glyph(var_idx, get_current_cmap_type_index())
 
 #define obj_to_glyph(obj, rng)                                          \
     (((obj)->otyp == STATUE)                                            \
@@ -891,23 +895,29 @@
 
 
 #define glyph_to_cmap(glyph) \
-    (glyph_is_cmap(glyph) ? (abs(glyph) < GLYPH_CMAP_OFF + get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS ? (abs(glyph)) - GLYPH_CMAP_OFF : (abs(glyph)) - get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS - GLYPH_CMAP_OFF) : S_unexplored)
+    (glyph_is_cmap(glyph) ? (abs(glyph) - GLYPH_CMAP_OFF) % NUM_CMAP_TYPE_CHARS : S_unexplored)
+  //    (glyph_is_cmap(glyph) ? (abs(glyph) < GLYPH_CMAP_OFF + get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS ? (abs(glyph)) - GLYPH_CMAP_OFF : (abs(glyph)) - get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS - GLYPH_CMAP_OFF) : S_unexplored)
 
 #define glyph_to_broken_cmap(glyph) \
-    (glyph_is_broken_cmap(glyph) ? (abs(glyph) < GLYPH_BROKEN_CMAP_OFF + get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS ? (abs(glyph)) - GLYPH_BROKEN_CMAP_OFF : (abs(glyph)) - get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS - GLYPH_BROKEN_CMAP_OFF) : S_unexplored)
+    (glyph_is_broken_cmap(glyph) ? (abs(glyph) - GLYPH_BROKEN_CMAP_OFF) % NUM_CMAP_TYPE_CHARS : S_unexplored)
+//    (glyph_is_broken_cmap(glyph) ? (abs(glyph) < GLYPH_BROKEN_CMAP_OFF + get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS ? (abs(glyph)) - GLYPH_BROKEN_CMAP_OFF : (abs(glyph)) - get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS - GLYPH_BROKEN_CMAP_OFF) : S_unexplored)
 
 #define glyph_to_cmap_variation(glyph) \
-    (glyph_is_cmap_variation(glyph) ? (abs(glyph) < GLYPH_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_CMAP_VARIATION_OFF) : 0)
+    (glyph_is_cmap_variation(glyph) ? (abs(glyph) - GLYPH_CMAP_VARIATION_OFF) % MAX_VARIATIONS : 0)
+//(glyph_is_cmap_variation(glyph) ? (abs(glyph) < GLYPH_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_CMAP_VARIATION_OFF) : 0)
 
 #define glyph_to_broken_cmap_variation(glyph) \
-    (glyph_is_broken_cmap_variation(glyph) ? (abs(glyph) < GLYPH_BROKEN_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_BROKEN_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_BROKEN_CMAP_VARIATION_OFF) : 0)
+    (glyph_is_broken_cmap_variation(glyph) ? (abs(glyph) - GLYPH_BROKEN_CMAP_VARIATION_OFF) % MAX_VARIATIONS : 0)
+//(glyph_is_broken_cmap_variation(glyph) ? (abs(glyph) < GLYPH_BROKEN_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_BROKEN_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_BROKEN_CMAP_VARIATION_OFF) : 0)
 
 #define generic_glyph_to_cmap(glyph) \
     (glyph_is_cmap(glyph) ? glyph_to_cmap(glyph) \
       : glyph_is_broken_cmap(glyph) ? glyph_to_broken_cmap(glyph) \
-      : glyph_is_cmap_variation(glyph) ? (defsym_variations[(abs(glyph) < GLYPH_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_CMAP_VARIATION_OFF)].base_screen_symbol) \
-      : glyph_is_broken_cmap_variation(glyph) ? (defsym_variations[(abs(glyph) < GLYPH_BROKEN_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_BROKEN_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_BROKEN_CMAP_VARIATION_OFF)].base_screen_symbol) \
+      : glyph_is_cmap_variation(glyph) ? defsym_variations[max(0, (abs(glyph) - GLYPH_CMAP_VARIATION_OFF) % MAX_VARIATIONS)].base_screen_symbol \
+      : glyph_is_broken_cmap_variation(glyph) ? defsym_variations[max(0, (abs(glyph) - GLYPH_BROKEN_CMAP_VARIATION_OFF) % MAX_VARIATIONS)].base_screen_symbol \
       : S_unexplored)
+//: glyph_is_cmap_variation(glyph) ? (defsym_variations[(abs(glyph) < GLYPH_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_CMAP_VARIATION_OFF)].base_screen_symbol) \
+//    : glyph_is_broken_cmap_variation(glyph) ? (defsym_variations[(abs(glyph) < GLYPH_BROKEN_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_BROKEN_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_BROKEN_CMAP_VARIATION_OFF)].base_screen_symbol) \
 
 #define glyph_is_trap(glyph)                         \
     (glyph_is_cmap_or_cmap_variation(glyph) && generic_glyph_to_cmap(glyph) >= trap_to_defsym(1) \

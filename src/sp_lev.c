@@ -173,6 +173,7 @@ STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_floor, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
+STATIC_DCL void FDECL(sel_set_tileset, (int, int, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_fountain, (struct sp_coder*));
@@ -187,6 +188,7 @@ STATIC_DCL void NDECL(ensure_way_out);
 STATIC_DCL void FDECL(spo_levregion, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_region, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_special_region, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_special_tileset, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_naming, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_drawbridge, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_mazewalk, (struct sp_coder *));
@@ -6351,6 +6353,34 @@ struct sp_coder* coder;
 }
 
 void
+spo_special_tileset(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_special_tileset";
+    struct opvar*rtype, *sel;
+    int typ;
+
+    if (!OV_pop_i(rtype) || !OV_pop_typ(sel, SPOVAR_SEL))
+        return;
+
+    typ = OV_i(rtype);
+
+    selection_iterate(sel, sel_set_tileset, (genericptr_t)&typ);
+
+    opvar_free(sel);
+    opvar_free(rtype);
+}
+
+void
+sel_set_tileset(x, y, arg)
+int x, y;
+genericptr_t arg;
+{
+    levl[x][y].use_special_tileset = 1;
+    levl[x][y].special_tileset = (*(int*)arg);
+}
+
+void
 spo_naming(coder)
 struct sp_coder* coder;
 {
@@ -7328,6 +7358,9 @@ sp_lev *lvl;
             break;
         case SPO_SPECIAL_REGION:
             spo_special_region(coder);
+            break;
+        case SPO_SPECIAL_TILESET:
+            spo_special_tileset(coder);
             break;
         case SPO_NAMING:
             spo_naming(coder);
