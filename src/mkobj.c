@@ -1864,6 +1864,9 @@ unsigned long mkflags;
         }
     }
 
+    if (has_obj_mythic_uncurseable(otmp))
+        otmp->cursed = 0;
+
     /* some things must get done (corpsenm, timers) even if init = 0 */
     switch ((otmp->oclass == POTION_CLASS && otmp->otyp != POT_OIL)
             ? POT_WATER
@@ -2812,7 +2815,7 @@ register struct obj *otmp;
         old_volume = obj_ambient_sound_volume(otmp);
     already_cursed = otmp->cursed;
     otmp->blessed = 0;
-    if(objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
+    if((objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE) || has_obj_mythic_uncurseable(otmp))
         otmp->cursed = 0;
     else
         otmp->cursed = 1;

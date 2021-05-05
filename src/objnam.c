@@ -5020,21 +5020,6 @@ boolean is_wiz_wish;
         }
     }
 
-    /* set blessed/cursed -- setting the fields directly is safe
-     * since weight() is called below and addinv() will take care
-     * of luck */
-    if (iscursed) {
-        curse(otmp);
-    } else if (uncursed) {
-        otmp->blessed = 0;
-        otmp->cursed = (Luck < 0 && !wiz_wishing);
-    } else if (blessed) {
-        otmp->blessed = (Luck >= 0 || wiz_wishing);
-        otmp->cursed = (Luck < 0 && !wiz_wishing);
-    } else if (spesgn < 0) {
-        curse(otmp);
-    }
-
     /* set eroded and erodeproof */
     if (erosion_matters(otmp)) {
         if (eroded && (is_flammable(otmp) || is_rustprone(otmp)))
@@ -5152,6 +5137,24 @@ boolean is_wiz_wish;
                 }
             }
         }
+    }
+
+    /* set blessed/cursed -- setting the fields directly is safe
+ * since weight() is called below and addinv() will take care
+ * of luck */
+    if (iscursed) {
+        curse(otmp);
+    }
+    else if (uncursed) {
+        otmp->blessed = 0;
+        otmp->cursed = (Luck < 0 && !wiz_wishing);
+    }
+    else if (blessed) {
+        otmp->blessed = (Luck >= 0 || wiz_wishing);
+        otmp->cursed = (Luck < 0 && !wiz_wishing);
+    }
+    else if (spesgn < 0) {
+        curse(otmp);
     }
 
     /* empty for containers rather than for tins */
