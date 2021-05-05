@@ -1240,7 +1240,7 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
         return FALSE;
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_RETURNING_WEAPONS) && ((objects[(obj)->otyp].oc_flags4 & O4_TETHERED_WEAPON) != 0 || (objects[(obj)->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) != 0))
         return FALSE;
-    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_LOW_SPELLCASTING_PENALTY_ITEMS) && objects[(obj)->otyp].oc_spell_casting_penalty < 2)
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_LOW_SPELLCASTING_PENALTY_ITEMS) && objects[(obj)->otyp].oc_spell_casting_penalty < 1)
         return FALSE;
     
     return TRUE;
