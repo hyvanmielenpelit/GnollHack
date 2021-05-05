@@ -4947,7 +4947,7 @@ double hp_d;
 
 
     if (iflags.using_gui_tiles && flags.show_tile_u_hp_bar)
-        newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+        force_redraw_at(u.ux, u.uy);
 
     return *target_integer_part_ptr;
 }

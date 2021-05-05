@@ -242,6 +242,7 @@ static struct Bool_Opt {
     { "showscore", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
     { "show_buff_timer", &flags.show_buff_timer, FALSE, SET_IN_GAME },
+    { "show_grid", &flags.show_grid, FALSE, SET_IN_GAME },
     { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },
     { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
     { "show_tile_u_hp_bar", &flags.show_tile_u_hp_bar, FALSE, SET_IN_GAME },
@@ -4592,7 +4593,7 @@ boolean tinitial, tfrom_file;
             {
                     need_redraw = TRUE;
             }
-            else if (boolopt[i].addr == &flags.show_tile_mon_hp_bar || boolopt[i].addr == &flags.show_tile_pet_hp_bar || boolopt[i].addr == &flags.show_tile_u_hp_bar || boolopt[i].addr == &flags.show_buff_timer)
+            else if (boolopt[i].addr == &flags.show_grid || boolopt[i].addr == &flags.show_tile_mon_hp_bar || boolopt[i].addr == &flags.show_tile_pet_hp_bar || boolopt[i].addr == &flags.show_tile_u_hp_bar || boolopt[i].addr == &flags.show_buff_timer)
             {
                 need_redraw = TRUE;
             }

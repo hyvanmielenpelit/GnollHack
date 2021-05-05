@@ -6452,6 +6452,14 @@ dotogglehpbars()
     return 0;
 }
 
+int
+dotogglegrid()
+{
+    flags.show_grid = !flags.show_grid;
+    redraw_map();
+
+    return 0;
+}
 
 int
 dotogglebufftimers()

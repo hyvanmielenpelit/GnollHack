@@ -4204,6 +4204,18 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     boolean loc_is_you = (i == u.ux && j == u.uy);
 
+                    /* Grid */
+                    if (flags.show_grid)
+                    {
+                        HPEN curpen = CreatePen(PS_DOT, 1, RGB(0, 0, 0));
+                        HGDIOBJ saveobj = SelectObject(data->backBufferDC, curpen);
+                        MoveToEx(data->backBufferDC, rect->right - 1, rect->top, NULL);
+                        LineTo(data->backBufferDC, rect->right - 1, rect->bottom - 1);
+                        LineTo(data->backBufferDC, max(0, rect->left - 1), rect->bottom - 1);
+                        SelectObject(data->backBufferDC, saveobj);
+                        DeleteObject(curpen);
+                    }
+
                     /* Chain lock mark */
                     if (loc_is_you && uball && uchain)
                     {

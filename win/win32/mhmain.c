@@ -189,7 +189,7 @@ static const unsigned char
 #define KEYTABLE(x) \
     (STATEON(VK_SHIFT) ? KEYTABLE_SHIFT(x) : KEYTABLE_REGULAR(x))
 
-static const char *extendedlist = "abcdefghijlkmnopqrstuvwxyz?-+.,012345*:;";
+static const char *extendedlist = "abcdefghijlkmnopqrstuvwxyz?-+.,012345*:;_";
 
 #define SCANLO 0x02
 static const char scanmap[] = {
@@ -1143,7 +1143,10 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_TOGGLEBUFFTIMERS:
         (void)dotogglebufftimers();
         break;
-        
+    case IDM_VIEW_TOGGLEGRID:
+        (void)dotogglegrid();
+        break;
+
 
     case IDM_NHMODE: 
     {

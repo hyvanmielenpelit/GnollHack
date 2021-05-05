@@ -193,6 +193,9 @@
 #define IDM_COMMAND_SEARCH              32847
 #define IDM_COMMAND_WAIT                32848
 #define IDM_SETTINGS_OPTIONS            32849
+#define ID_VIEW_TOGGLE                  32850
+#define ID_VIEW_TOGGLEGRID              32851
+#define IDM_VIEW_TOGGLEGRID             32852
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -200,7 +203,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        181
-#define _APS_NEXT_COMMAND_VALUE         32850
+#define _APS_NEXT_COMMAND_VALUE         32853
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

@@ -78,6 +78,7 @@ struct flag {
     boolean show_tile_pet_hp_bar; /* show pet hp bar on tiles */
     boolean show_tile_u_hp_bar; /* show your hp bar on tiles */
     boolean show_weight_summary; /* show weight summary */
+    boolean show_grid; /* show grid on tiles */
     double screen_scale_adjustment; /* scale = 1.0 + screen_scale_adjustment */
     int preferred_screen_scale; /* user set preference for screen scale MIN_PREF_SCREEN_SCALE...MAX_PREF_SCREEN_SCALE */
     int shield_effect_length;

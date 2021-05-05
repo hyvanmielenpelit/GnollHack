@@ -4928,6 +4928,10 @@ struct ext_func_tab extcmdlist[] = {
             doquickwhatis, IFBURIED | GENERALCMD },
     { M('g'), "genocided", "list genocided monsters",
             dogenocidedmonsters, IFBURIED | INCMDMENU },
+#ifdef USE_TILES
+    { M('_'), "grid", "toggle tile grid on/off",
+            dotogglegrid, IFBURIED | AUTOCOMPLETE },
+#endif
     { M('h'), "handedness", "toggle swap weapon handedness",
             doswaphandedness, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { '?', "help", "give a help message", dohelp, IFBURIED | GENERALCMD },

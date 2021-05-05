@@ -92,6 +92,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Toggle Hit Point &Bars\t Alt+b", IDM_VIEW_TOGGLEHITPOINTBARS
         MENUITEM "Toggle B&uff Timers\tAlt+y",  IDM_VIEW_TOGGLEBUFFTIMERS
+        MENUITEM "Toggle &Grid\tAlt+_",         IDM_VIEW_TOGGLEGRID
     END
     POPUP "&Settings"
     BEGIN

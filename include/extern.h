@@ -577,6 +577,7 @@ E int FDECL(corpsedescription, (struct obj*));
 E void FDECL(printweight, (char*, int, boolean, boolean));
 E int FDECL(monsterdescription, (struct monst*));
 E int NDECL(dotogglehpbars);
+E int NDECL(dotogglegrid);
 E int NDECL(dotogglemonstertargeting);
 E int NDECL(dotoggleumark);
 E int NDECL(dotogglebufftimers);
