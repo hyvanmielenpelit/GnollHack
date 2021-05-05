@@ -211,6 +211,20 @@ struct obj *otmp;
 }
 
 struct obj *
+mkobj_at_with_flags(let, x, y, artif, mkflags)
+char let;
+int x, y;
+boolean artif;
+unsigned long mkflags;
+{
+    struct obj *otmp;
+
+    otmp = mkobj_with_flags(let, artif, FALSE, mkflags);
+    place_object(otmp, x, y);
+    return otmp;
+}
+
+struct obj *
 mkobj_at(let, x, y, artif)
 char let;
 int x, y;
@@ -306,6 +320,8 @@ unsigned long mkflags;
         i = random_objectid_from_class(oclass, rndflags);
 
         if (mkobj_type == 1 && (objects[i].oc_flags2 & O2_CONTAINER)) /* No containers in containers */
+            continue;
+        else if ((mkflags & MKOBJ_FLAGS_SHOP_ITEM) && (objects[i].oc_flags4 & O4_NO_CLASS_GENERATION_IN_SHOP) && try_ct < 15) /* No inappropriate items for shops */
             continue;
         else
             break;

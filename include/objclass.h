@@ -950,6 +950,7 @@ struct objclass {
 #define O4_WEAPON_TOOL                                     0x08000000UL
 #define O4_RARE                                            0x10000000UL
 #define O4_VERY_RARE                                       0x20000000UL
+#define O4_NO_CLASS_GENERATION_IN_SHOP                     0x40000000UL
 
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
