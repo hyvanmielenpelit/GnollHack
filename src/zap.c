@@ -4845,7 +4845,7 @@ register struct obj *obj;
     case SPE_CIRCLE_OF_RADIANCE:
     {
         int radius = objects[obj->otyp].oc_spell_radius;
-        play_explosion_animation_at(u.ux, u.uy, EXPL_CIRCLE_OF_MAGIC);
+        play_explosion_animation_at(u.ux, u.uy, EXPL_CIRCLE_OF_RADIANCE);
         play_sfx_sound(SFX_CIRCLE_OF_RADIANCE);
         explosion_wait_until_action();
         for (struct monst* mon = fmon; mon; mon = mon->nmon)
