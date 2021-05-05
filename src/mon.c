@@ -4109,7 +4109,10 @@ struct monst *mtmp;
         if (!rn2(10)) 
         {
             if (!rn2(13))
-                (void) makemon(&mons[PM_PURPLE_WORM], 0, 0, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+            {
+                int montype = (u.ulevel > mons[PM_PURPLE_WORM].difficulty / 2  || level_difficulty() > 10) ? PM_PURPLE_WORM : PM_BABY_PURPLE_WORM;
+                (void)makemon(&mons[montype], 0, 0, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+            }
             else
                 (void) makemon((struct permonst *) 0, 0, 0, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
         }
