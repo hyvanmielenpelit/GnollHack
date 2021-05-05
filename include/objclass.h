@@ -600,12 +600,12 @@ struct objclass {
 
 /* general*/
 #define oc_armor_class oc_oc1                        /* weapons and armor: AC used in ARM_AC_BONUS in do.c */
-#define oc_magic_cancellation oc_oc2                /* weapons and armor: MC, i.e., resistance level to magical attacks */
-#define oc_mana_bonus oc_oc3                        /* non-spellbooks: mana pool bonus: Fixed points unless O1_MANA_PERCENTAGE_BONUS is specified */
-#define oc_hp_bonus oc_oc4                            /* non-spellbooks: hit point bonus: Fixed points unless O1_HP_PERCENTAGE_BONUS is specified */
-#define oc_bonus_attributes oc_oc5                    /* non-spellbooks: gives bonuses using enchantment / oc_oc6 to attributes and properties */
+#define oc_magic_cancellation oc_oc2                 /* weapons and armor: MC, i.e., resistance level to magical attacks */
+#define oc_mana_bonus oc_oc3                         /* non-spellbooks: mana pool bonus: Fixed points unless O1_MANA_PERCENTAGE_BONUS is specified */
+#define oc_hp_bonus oc_oc4                           /* non-spellbooks: hit point bonus: Fixed points unless O1_HP_PERCENTAGE_BONUS is specified */
+#define oc_bonus_attributes oc_oc5                   /* non-spellbooks: gives bonuses using enchantment / oc_oc6 to attributes and properties */
 #define oc_attribute_bonus oc_oc6                    /* non-spellbooks: 0 => enchantment is used, otherise fixed bonus */
-#define oc_spell_casting_penalty oc_oc7                /* non-spells/wands: spell casting penalty when worn */
+#define oc_spell_casting_penalty oc_oc7              /* non-spells/wands: spell casting penalty when worn */
 #define oc_multishot_style oc_oc8                    /* multishot style specifying when the weapon can multishot and how many times */
 
 #define BONUS_TO_STR 0x0001
