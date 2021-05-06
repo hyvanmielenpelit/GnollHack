@@ -622,24 +622,22 @@ maybe_create_ringwraith()
                 {
                     ringwraith = christen_monst(ringwraith, "Witch-King of Angmar");
                     ringwraith->u_know_mname = TRUE; /* He's famous -- JG */
-                    ringwraith->leaves_no_corpse = TRUE;
                     (void)mongets(ringwraith, CROWN_OF_RULERSHIP);
                     context.made_witch_king = TRUE;
                 }
-
-                if (ringwraith)
-                    ringwraith_appeared = TRUE;
             }
             else
             {
                 ringwraith = makemon(&mons[mdx], 0, 0, NO_MM_FLAGS);
-                if (ringwraith)
-                {
-                    ringwraith->leaves_no_corpse = TRUE;
-                    ringwraith_appeared = TRUE;
-                }
             }
         }
+    }
+
+    if (ringwraith)
+    {
+        ringwraith->mon_flags |= MON_FLAGS_RINGWRAITH;
+        ringwraith->leaves_no_corpse = TRUE;
+        ringwraith_appeared = TRUE;
     }
 
     return ringwraith_appeared;

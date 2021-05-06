@@ -9,6 +9,7 @@
 #ifdef MAKEDEFS_C
 /* in makedefs.c, all we care about is the list of names */
 
+#define GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, replacement) nam
 #define A(nam, desc, hit_desc, typ, masktyp, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset) nam
 
 const char *artifact_names[] = {
@@ -17,18 +18,6 @@ const char *artifact_names[] = {
 
 #define GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, replacement) \
     {  typ, masktyp, nam, desc, hit_desc, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, replacement }
-
-#define ENLARGED_ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge) \
-    {  typ, masktyp, nam, desc, hit_desc, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, NO_REPLACEMENT }
-//    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, NO_REPLACEMENT)
-
-#define ENLARGED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, enlarge) \
-    {  typ, masktyp, nam, desc, hit_desc, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, enlarge, NO_REPLACEMENT }
-//    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, enlarge, NO_REPLACEMENT)
-
-#define ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim) \
-    {  typ, masktyp, nam, desc, hit_desc, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, NO_ENLARGEMENT, NO_REPLACEMENT }
-//    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, NO_ENLARGEMENT, NO_REPLACEMENT)
 
 #define A(nam, desc, hit_desc, typ, masktyp, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset) \
     {  typ, masktyp, nam, desc, hit_desc, exceptionality, mythic_prefix, mythic_suffix, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT }

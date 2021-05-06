@@ -186,6 +186,9 @@ struct monst {
 #define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
 
     unsigned long mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
+#define MON_FLAGS_NONE              0x00000000
+#define MON_FLAGS_RINGWRAITH        0x00000001
+
     unsigned long mstrategy; /* for monsters with mflag3: current strategy */
 
 #ifdef NHSTDC

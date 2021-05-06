@@ -2578,11 +2578,21 @@ struct obj *obj;
     /* leave off "your" for most of your artifacts, but prepend
      * "your" for unique objects and "foo of bar" quest artifacts */
     if (!carried(obj) || !obj_is_pname(obj)
-        || any_quest_artifact(obj)) {
+        || any_quest_artifact(obj)) 
+    {
         char *outbuf = shk_your(nextobuf(), obj);
         int space_left = BUFSZ - 1 - strlen(outbuf);
 
         s = strncat(outbuf, s, space_left);
+    }
+    else if (obj_is_pname(obj) || the_unique_obj(obj))
+    {
+        if (strncmpi(s, "the ", 4))
+        {
+            char tempbuf[BUFSZ];
+            strcpy(tempbuf, s);
+            Sprintf(s, "the %s", tempbuf);
+        }
     }
 
     return s;
@@ -2611,7 +2621,9 @@ struct obj *obj;
     char *s = shk_your(outbuf, obj); /* assert( s == outbuf ); */
     int space_left = BUFSZ - 1 - strlen(s);
 
-    return strncat(s, minimal_xname(obj), space_left);
+    char* min_name = minimal_xname(obj);
+
+    return strncat(s, min_name, space_left);
 }
 
 /* capitalized variant of ysimple_name() */
