@@ -376,6 +376,41 @@ int type;
     if ((sroom = pick_room(FALSE)) != 0) {
         sroom->rtype = type;
         fill_zoo(sroom);
+        
+        /* Change floor for some randomly generated zoo rooms */
+        int floorsubtype = 0;
+        switch (sroom->rtype)
+        {
+        case COURT:
+            floorsubtype = FLOOR_SUBTYPE_MARBLE;
+            break;
+        case LIBRARY:
+            floorsubtype = FLOOR_SUBTYPE_PARQUET;
+            break;
+        default:
+            break;
+        }
+
+        if (floorsubtype > 0)
+        {
+            int rmno = (int)((sroom - rooms) + ROOMOFFSET);
+            for (int x = sroom->lx; x <= sroom->hx; x++)
+                for (int y = sroom->ly; y <= sroom->hy; y++)
+                    if (!sroom->irregular || (sroom->irregular && levl[x][y].roomno == rmno))
+                    {
+                        if (levl[x][y].typ == ROOM)
+                        {
+                            levl[x][y].subtyp = floorsubtype;
+                            levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+                        }
+                        else if (levl[x][y].floortyp == ROOM)
+                        {
+                            levl[x][y].floorsubtyp = floorsubtype;
+                            levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
+                        }
+                    }
+
+        }
         return 1;
     }
     return 0;
@@ -451,23 +486,6 @@ struct mkroom *sroom;
                 }
         break;
     case COURT:
-        /* Marble floors in court */
-        for (int x = sroom->lx; x <= sroom->hx; x++)
-            for (int y = sroom->ly; y <= sroom->hy; y++)
-                if (!sroom->irregular || (sroom->irregular && levl[x][y].roomno == rmno))
-                {
-                    if (levl[x][y].typ == ROOM)
-                    {
-                        levl[x][y].subtyp = FLOOR_SUBTYPE_MARBLE;
-                        levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
-                    }
-                    else if (levl[x][y].floortyp == ROOM)
-                    {
-                        levl[x][y].floorsubtyp = FLOOR_SUBTYPE_MARBLE;
-                        levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
-                    }
-                }
-        break;
         if (level.flags.is_maze_lev)
         {
             for (tx = sroom->lx; tx <= sroom->hx; tx++)
@@ -485,23 +503,6 @@ struct mkroom *sroom;
         mk_zoo_thronemon(tx, ty);
         break;
     case LIBRARY:
-        /* Wooden floors in library */
-        for (int x = sroom->lx; x <= sroom->hx; x++)
-            for (int y = sroom->ly; y <= sroom->hy; y++)
-                if (!sroom->irregular || (sroom->irregular && levl[x][y].roomno == rmno))
-                {
-                    if (levl[x][y].typ == ROOM)
-                    {
-                        levl[x][y].subtyp = FLOOR_SUBTYPE_PARQUET;
-                        levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
-                    }
-                    else if (levl[x][y].floortyp == ROOM)
-                    {
-                        levl[x][y].floorsubtyp = FLOOR_SUBTYPE_PARQUET;
-                        levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
-                    }
-                }
-
         mon_one_in_chance = 2;
         if (hd <= 9)
         {
