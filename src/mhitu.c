@@ -3647,17 +3647,21 @@ boolean ufound;
 
     enum sfx_sound_types sfx_sound = SFX_ILLEGAL;
     enum special_effect_types spef_idx = MAX_SPECIAL_EFFECTS;
+    enum explosion_types expl_idx = MAX_EXPLOSIONS;
 
     switch (mattk->adtyp)
     {
     case AD_COLD:
-        sfx_sound = SFX_EXPLOSION_FREEZING_SPHERE;
+        expl_idx = EXPL_FREEZING_SPHERE;
+        sfx_sound = explosion_type_definitions[expl_idx].sfx;
         break;
     case AD_FIRE:
-        sfx_sound = SFX_EXPLOSION_FLAMING_SPHERE;
+        expl_idx = EXPL_FLAMING_SPHERE;
+        sfx_sound = explosion_type_definitions[expl_idx].sfx;
         break;
     case AD_ELEC:
-        sfx_sound = SFX_EXPLOSION_SHOCKING_SPHERE;
+        expl_idx = EXPL_SHOCKING_SPHERE;
+        sfx_sound = explosion_type_definitions[expl_idx].sfx;
         break;
     case AD_BLND:
         sfx_sound = SFX_BLINDING_FLASH;
@@ -3673,6 +3677,8 @@ boolean ufound;
 
     if(spef_idx < MAX_SPECIAL_EFFECTS)
         play_special_effect_at(spef_idx, 0, mtmp->mx, mtmp->my, FALSE);
+    else if (expl_idx < MAX_EXPLOSIONS)
+        play_explosion_animation_at(mtmp->mx, mtmp->my, expl_idx);
 
     if (sfx_sound != SFX_ILLEGAL)
         play_sfx_sound_at_location(sfx_sound, mtmp->mx, mtmp->my);
@@ -3681,6 +3687,13 @@ boolean ufound;
     {
         context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
         special_effect_wait_until_action(0);
+        show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
+        flush_screen(1);
+    }
+    else if (expl_idx < MAX_EXPLOSIONS)
+    {
+        context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+        explosion_wait_until_action();
         show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
         flush_screen(1);
     }
@@ -3769,7 +3782,7 @@ boolean ufound;
                 if (!Hallucination)
                     You("are caught in a blast of kaleidoscopic light!");
                 /* avoid hallucinating the black light as it dies */
-                mondead(mtmp);    /* remove it from map now */
+                mondead_with_flags(mtmp, MONDIED_FLAGS_NO_DEATH_ACTION);    /* remove it from map now */
                 kill_agr = FALSE; /* already killed (maybe lifesaved) */
                 chg =
                     make_hallucinated(HHallucination + (long)basedmg, FALSE, 0L);
@@ -3793,7 +3806,7 @@ boolean ufound;
         }
     }
     if (kill_agr)
-        mondead(mtmp);
+        mondead_with_flags(mtmp, MONDIED_FLAGS_NO_DEATH_ACTION);
     wake_nearto(mtmp->mx, mtmp->my, 7 * 7);
     
     if (spef_idx < MAX_SPECIAL_EFFECTS)
@@ -3801,7 +3814,11 @@ boolean ufound;
         special_effect_wait_until_end(0);
         context.global_newsym_flags = 0UL;
     }
-
+    else if (expl_idx < MAX_EXPLOSIONS)
+    {
+        explosion_wait_until_end();
+        context.global_newsym_flags = 0UL;
+    }
     return (!DEADMONSTER(mtmp)) ? 0 : 2;
 }
 

@@ -82,6 +82,9 @@ enum explosion_types {
     EXPL_CIRCLE_OF_MAGIC,
     EXPL_CIRCLE_OF_RADIANCE,
     EXPL_SCROLL_OF_EARTH,
+    EXPL_FLAMING_SPHERE,
+    EXPL_FREEZING_SPHERE,
+    EXPL_SHOCKING_SPHERE,
     MAX_EXPLOSIONS
 };
 
@@ -454,6 +457,9 @@ enum main_menu_command {
 #define STOP_SOUNDS_FLAGS_ALL                  0x00FF
 #define STOP_SOUNDS_FLAGS_IMMEDIATE_ALL        (STOP_SOUNDS_FLAGS_IMMEDIATE_NORMAL | STOP_SOUNDS_FLAGS_IMMEDIATE_LONG)
 #define STOP_SOUNDS_FLAGS_ONLY_DIALOGUE_MID    0x0100
+
+#define MONDIED_FLAGS_NONE                      0x00000000
+#define MONDIED_FLAGS_NO_DEATH_ACTION           0x00000001
 
 /* Moved from shk.c */
 #define NOTANGRY(mon) ((mon)->mpeaceful)

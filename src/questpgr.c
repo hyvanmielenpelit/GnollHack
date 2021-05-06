@@ -349,6 +349,12 @@ char c;
     case 'c':
         str = (flags.female && urole.name.f) ? urole.name.f : urole.name.m;
         break;
+    case 'v': /* Variable version of 'r' for voice acting purposes */
+        if (iflags.using_gui_sounds)
+            str = (flags.female && urole.name.f) ? urole.name.f : urole.name.m;
+        else
+            str = rank_of(u.ulevel, Role_switch, flags.female);
+        break;
     case 'r':
         str = rank_of(u.ulevel, Role_switch, flags.female);
         break;
@@ -453,10 +459,16 @@ char *in_line, *out_line;
                 convert_arg(*(++c));
                 switch (*(++c)) {
                 /* insert "a"/"an" prefix */
+                case 'B':
+                    cvt_buf[0] = lowc(cvt_buf[0]);
+                    /*FALLTHRU*/
                 case 'A':
                     Strcat(cc, An(cvt_buf));
                     cc += strlen(cc);
                     continue; /* for */
+                case 'b':
+                    cvt_buf[0] = lowc(cvt_buf[0]);
+                    /*FALLTHRU*/
                 case 'a':
                     Strcat(cc, an(cvt_buf));
                     cc += strlen(cc);
@@ -466,7 +478,9 @@ char *in_line, *out_line;
                 case 'C':
                     cvt_buf[0] = highc(cvt_buf[0]);
                     break;
-
+                case 'l':
+                    cvt_buf[0] = lowc(cvt_buf[0]);
+                    break;
                 /* replace name with pronoun;
                    valid for %d, %l, %n, and %o */
                 case 'h': /* he/she */

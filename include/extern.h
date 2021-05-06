@@ -1782,6 +1782,7 @@ E void FDECL(relmon, (struct monst *, struct monst **));
 E struct obj *FDECL(mlifesaver, (struct monst *));
 E boolean FDECL(corpse_chance, (struct monst *, struct monst *, BOOLEAN_P));
 E void FDECL(mondead, (struct monst *));
+E void FDECL(mondead_with_flags, (struct monst*, unsigned long));
 E void FDECL(mondied, (struct monst *));
 E void FDECL(mongone, (struct monst *));
 E void FDECL(monstone, (struct monst *));

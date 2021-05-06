@@ -2637,6 +2637,20 @@ extern "C"
                     immediateSoundInstances[i].eventInstance = 0;
                 }
             }
+
+            for (int i = NUM_IMMEDIATE_SOUND_INSTANCES - 1; i >= 0; i--)
+            {
+                if (immediateSoundInstances[i].eventInstance && !immediateSoundInstances[i].finished_playing)
+                {
+                    if (immediateSoundInstances[i].queued)
+                    {
+                        immediateSoundInstances[i].queued = 0;
+                        result = immediateSoundInstances[i].eventInstance->start();
+                        result = fmod_studio_system->update();
+                    }
+                    break;
+                }
+            }
         }
 
         if (info.stop_flags & STOP_SOUNDS_FLAGS_IMMEDIATE_LONG)
@@ -2653,6 +2667,19 @@ extern "C"
                 }
             }
 
+            for (int i = NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1; i >= 0; i--)
+            {
+                if (longImmediateSoundInstances[i].eventInstance && !longImmediateSoundInstances[i].finished_playing)
+                {
+                    if (longImmediateSoundInstances[i].queued)
+                    {
+                        longImmediateSoundInstances[i].queued = 0;
+                        result = longImmediateSoundInstances[i].eventInstance->start();
+                        result = fmod_studio_system->update();
+                    }
+                    break;
+                }
+            }
         }
 
         if (info.stop_flags & STOP_SOUNDS_FLAGS_SOUND_SOURCES)

@@ -126,7 +126,7 @@ taught you."
 %E [%pC, a mere %r is too inexperienced.]
 %Cc Arc 00020
 "%pC!  I've heard that you've been using sloppy techniques.  Your
-results lately can hardly be called suitable for %ra!
+results lately can hardly be called suitable for %vb!
 
 "How could you have strayed from the %a path?  Go from here, and come
 back only when you have purified yourself."
@@ -246,13 +246,13 @@ falter!"
 "%d has forsaken you!  You are lost now!"
 %E
 %Cp Arc 00067
-"A mere %r cannot hope to defeat me!"
+"A mere %vl cannot hope to defeat me!"
 %E
 %Cp Arc 00068
 "If you are the best %l can send, I have nothing to fear."
 %E
 %Cp Arc 00069
-"Die %c!  I shall exhibit your carcass as a trophy."
+"Die %cl!  I shall exhibit your carcass as a trophy."
 %E
 %Cc Arc 00070
 The power of %o flows through your body!  You feel

@@ -3063,7 +3063,15 @@ struct monst *mtmp;
 
 void
 mondead(mtmp)
+register struct monst* mtmp;
+{
+    mondead_with_flags(mtmp, 0UL);
+}
+
+void
+mondead_with_flags(mtmp, mdiedflags)
 register struct monst *mtmp;
+unsigned long mdiedflags;
 {
     struct permonst *mptr;
     int tmp;
@@ -3174,9 +3182,11 @@ register struct monst *mtmp;
     if (mtmp->isgd && !grddead(mtmp))
         return;
 
-
-    update_m_action_core(mtmp, ACTION_TILE_DEATH, 4, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
-    m_wait_until_action();
+    if (!(mdiedflags & MONDIED_FLAGS_NO_DEATH_ACTION))
+    {
+        update_m_action_core(mtmp, ACTION_TILE_DEATH, 4, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+        m_wait_until_action();
+    }
 
     /* Player is thrown from his steed when it dies */
     if (mtmp == u.usteed)

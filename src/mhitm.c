@@ -1106,17 +1106,21 @@ struct attack *mattk;
 
     enum sfx_sound_types sfx_sound = SFX_ILLEGAL;
     enum special_effect_types spef_idx = MAX_SPECIAL_EFFECTS;
+    enum explosion_types expl_idx = MAX_EXPLOSIONS;
 
     switch (mattk->adtyp)
     {
     case AD_COLD:
-        sfx_sound = SFX_EXPLOSION_FREEZING_SPHERE;
+        expl_idx = EXPL_FREEZING_SPHERE;
+        sfx_sound = explosion_type_definitions[expl_idx].sfx;
         break;
     case AD_FIRE:
-        sfx_sound = SFX_EXPLOSION_FLAMING_SPHERE;
+        expl_idx = EXPL_FLAMING_SPHERE;
+        sfx_sound = explosion_type_definitions[expl_idx].sfx;
         break;
     case AD_ELEC:
-        sfx_sound = SFX_EXPLOSION_SHOCKING_SPHERE;
+        expl_idx = EXPL_SHOCKING_SPHERE;
+        sfx_sound = explosion_type_definitions[expl_idx].sfx;
         break;
     case AD_BLND:
         sfx_sound = SFX_BLINDING_FLASH;
@@ -1129,9 +1133,10 @@ struct attack *mattk;
     default:
         break;
     }
-
     if (spef_idx < MAX_SPECIAL_EFFECTS)
         play_special_effect_at(spef_idx, 0, magr->mx, magr->my, FALSE);
+    else if (expl_idx < MAX_EXPLOSIONS)
+        play_explosion_animation_at(magr->mx, magr->my, expl_idx);
 
     if (sfx_sound != SFX_ILLEGAL)
         play_sfx_sound_at_location_with_minimum_volume(sfx_sound, magr->mx, magr->my, 0.15);
@@ -1140,6 +1145,13 @@ struct attack *mattk;
     {
         context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
         special_effect_wait_until_action(0);
+        show_glyph_on_layer(magr->mx, magr->my, NO_GLYPH, LAYER_MONSTER);
+        flush_screen(1);
+    }
+    else if (expl_idx < MAX_EXPLOSIONS)
+    {
+        context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+        explosion_wait_until_action();
         show_glyph_on_layer(magr->mx, magr->my, NO_GLYPH, LAYER_MONSTER);
         flush_screen(1);
     }
@@ -1156,7 +1168,7 @@ struct attack *mattk;
     {
         boolean was_leashed = (magr->mleashed != 0);
 
-        mondead(magr);
+        mondead_with_flags(magr, MONDIED_FLAGS_NO_DEATH_ACTION);
         if (!DEADMONSTER(magr))
             return result; /* life saved */
         result |= MM_AGR_DIED;
@@ -1176,6 +1188,11 @@ struct attack *mattk;
     if (spef_idx < MAX_SPECIAL_EFFECTS)
     {
         special_effect_wait_until_end(0);
+        context.global_newsym_flags = 0UL;
+    }
+    else if (expl_idx < MAX_EXPLOSIONS)
+    {
+        explosion_wait_until_end();
         context.global_newsym_flags = 0UL;
     }
 

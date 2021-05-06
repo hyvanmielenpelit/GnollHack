@@ -3299,17 +3299,21 @@ register struct attack *mattk;
 
     enum sfx_sound_types sfx_sound = SFX_ILLEGAL;
     enum special_effect_types spef_idx = MAX_SPECIAL_EFFECTS;
+    enum explosion_types expl_idx = MAX_EXPLOSIONS;
 
     switch (mattk->adtyp)
     {
     case AD_COLD:
-        sfx_sound = SFX_EXPLOSION_FREEZING_SPHERE;
+        expl_idx = EXPL_FREEZING_SPHERE;
+        sfx_sound = explosion_type_definitions[expl_idx].sfx;
         break;
     case AD_FIRE:
-        sfx_sound = SFX_EXPLOSION_FLAMING_SPHERE;
+        expl_idx = EXPL_FLAMING_SPHERE;
+        sfx_sound = explosion_type_definitions[expl_idx].sfx;
         break;
     case AD_ELEC:
-        sfx_sound = SFX_EXPLOSION_SHOCKING_SPHERE;
+        expl_idx = EXPL_SHOCKING_SPHERE;
+        sfx_sound = explosion_type_definitions[expl_idx].sfx;
         break;
     case AD_BLND:
         sfx_sound = SFX_BLINDING_FLASH;
@@ -3325,6 +3329,8 @@ register struct attack *mattk;
 
     if (spef_idx < MAX_SPECIAL_EFFECTS)
         play_special_effect_at(spef_idx, 0, u.ux, u.uy, FALSE);
+    else if (expl_idx < MAX_EXPLOSIONS)
+        play_explosion_animation_at(u.ux, u.uy, expl_idx);
 
     if (sfx_sound != SFX_ILLEGAL)
         play_sfx_sound(sfx_sound);
@@ -3333,6 +3339,13 @@ register struct attack *mattk;
     {
         context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
         special_effect_wait_until_action(0);
+        show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
+        flush_screen(1);
+    }
+    else if (expl_idx < MAX_EXPLOSIONS)
+    {
+        context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+        explosion_wait_until_action();
         show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
         flush_screen(1);
     }
@@ -3396,6 +3409,11 @@ register struct attack *mattk;
     if (spef_idx < MAX_SPECIAL_EFFECTS)
     {
         special_effect_wait_until_end(0);
+        context.global_newsym_flags = 0UL;
+    }
+    else if (expl_idx < MAX_EXPLOSIONS)
+    {
+        explosion_wait_until_end();
         context.global_newsym_flags = 0UL;
     }
 
