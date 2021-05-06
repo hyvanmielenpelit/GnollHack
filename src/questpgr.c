@@ -549,12 +549,15 @@ struct qtmsg *qt_msg;
 {
     long size;
     char in_line[BUFSZ] = "", out_line[BUFSZ] = "";
-    char total_out_line[BUFSZ * 10] = "";
+#define TOUTBUFSZ BUFSZ * 10
+    char total_out_line[TOUTBUFSZ] = "";
 
     //*in_line = '\0';
     for (size = 0; size < qt_msg->size; size += (long) strlen(in_line)) {
         (void) dlb_fgets(in_line, sizeof in_line, msg_file);
         convert_line(in_line, out_line);
+        if (strlen(total_out_line) + strlen(out_line) + 1 >= TOUTBUFSZ)
+            break;
         if(*total_out_line && *out_line)
             Sprintf(eos(total_out_line), " ");
         Sprintf(eos(total_out_line), "%s", out_line);
