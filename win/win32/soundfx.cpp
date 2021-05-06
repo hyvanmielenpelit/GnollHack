@@ -2635,6 +2635,7 @@ extern "C"
                     if ((result = immediateSoundInstances[i].eventInstance->release()) != FMOD_OK)
                         res = FALSE;
                     immediateSoundInstances[i].eventInstance = 0;
+                    immediateSoundInstances[i].queued = 0;
                 }
             }
 
@@ -2664,6 +2665,7 @@ extern "C"
                     if ((result = longImmediateSoundInstances[i].eventInstance->release()) != FMOD_OK)
                         res = FALSE;
                     longImmediateSoundInstances[i].eventInstance = 0;
+                    longImmediateSoundInstances[i].queued = 0;
                 }
             }
 
