@@ -3272,6 +3272,12 @@ unsigned long mdiedflags;
     }
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))
         unmap_object(mtmp->mx, mtmp->my);
+
+    if (!(mdiedflags & MONDIED_FLAGS_NO_DEATH_ACTION))
+    {
+        m_wait_until_end();
+    }
+
     mtmp->action = 0;
     m_detach(mtmp, mptr, TRUE);
 }
