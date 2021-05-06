@@ -89,10 +89,10 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Toggle &Player Mark\tAlt+:",  IDM_VIEW_TOGGLEUMARK
         MENUITEM "Toggle &Targeting\tAlt+;",    IDM_VIEW_TOGGLETARGETING
+        MENUITEM "Toggle &Grid\tAlt+_",         IDM_VIEW_TOGGLEGRID
         MENUITEM SEPARATOR
         MENUITEM "Toggle Hit Point &Bars\t Alt+b", IDM_VIEW_TOGGLEHITPOINTBARS
         MENUITEM "Toggle B&uff Timers\tAlt+y",  IDM_VIEW_TOGGLEBUFFTIMERS
-        MENUITEM "Toggle &Grid\tAlt+_",         IDM_VIEW_TOGGLEGRID
     END
     POPUP "&Settings"
     BEGIN
