@@ -727,10 +727,12 @@ struct objclass {
     int oc_item_cooldown;            /* cooldown before the item can be used / applied / zapped / read etc. again */
     int oc_item_level;                /* item level, to be used with loot tables */
 
-    unsigned long oc_flags;            /* E.g. if indestructible or disintegration resistant */
+    unsigned long oc_flags;         /* E.g. if indestructible or disintegration resistant */
     unsigned long oc_flags2;        /* More flags */
     unsigned long oc_flags3;        /* Even more flags */
     unsigned long oc_flags4;        /* Even more flags */
+    unsigned long oc_flags5;        /* Even more flags */
+    unsigned long oc_flags6;        /* Even more flags */
 
     unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
     unsigned long oc_target_permissions; /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
@@ -952,6 +954,8 @@ struct objclass {
 #define O4_VERY_RARE                                       0x20000000UL
 #define O4_NO_CLASS_GENERATION_IN_SHOP                     0x40000000UL
 
+#define O5_NONE                        0x00000000UL
+#define O6_NONE                        0x00000000UL
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
 #define PERMITTED_ALL                 0x00000000UL
