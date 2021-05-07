@@ -994,6 +994,7 @@ doengrave()
         ptext = FALSE;
     }
     if (zapwand && (otmp->charges < 0)) {
+        play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         pline("%s %sturns to dust.", The(xname(otmp)),
               Blind ? "" : "glows violently, then ");
         if (!IS_GRAVE(levl[u.ux][u.uy].typ))

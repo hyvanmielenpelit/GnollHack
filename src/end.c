@@ -1188,6 +1188,7 @@ int how;
                 if (how == CHOKING)
                     You("vomit ...");
                 You_feel("much better!");
+                play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
                 pline_The("medallion crumbles to dust!");
                 if (uamul)
                     useup(uamul);
@@ -1201,6 +1202,7 @@ int how;
                     if (how == CHOKING)
                         You("vomit ...");
                     You_feel("much better!");
+                    play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
                     pline_The("%s crumbles to dust!", cxname(lifesaver));
                     if (lifesaver)
                         useup(lifesaver);

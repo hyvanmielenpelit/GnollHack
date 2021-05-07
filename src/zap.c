@@ -9842,6 +9842,7 @@ boolean forcedestroy;
     int dmg, xresist, skip, dindx;
     const char *mult;
     boolean physical_damage;
+    int obj_sound_type = OBJECT_SOUND_TYPE_BREAK;
 
     physical_damage = FALSE;
     xresist = skip = 0;
@@ -9849,10 +9850,12 @@ boolean forcedestroy;
     dmg = dindx = 0;
     quan = 0L;
 
-    switch (dmgtyp) {
+    switch (dmgtyp) 
+    {
     case AD_COLD:
         if (osym == POTION_CLASS && obj->otyp != POT_OIL && !oresist_cold(obj))
         {
+            obj_sound_type = OBJECT_SOUND_TYPE_FROZEN;
             quan = obj->quan;
             dindx = 0;
             dmg = rnd(4);
@@ -9862,7 +9865,8 @@ boolean forcedestroy;
     case AD_FIRE:
         xresist = (Fire_immunity && obj->oclass != POTION_CLASS
                    && obj->otyp != GLOB_OF_GREEN_SLIME);
-        if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
+        if (obj->otyp == SPE_BOOK_OF_THE_DEAD) 
+        {
             skip++;
             if (!Blind)
                 pline("%s glows a strange %s, but remains intact.",
@@ -9872,7 +9876,9 @@ boolean forcedestroy;
             skip++;
 
         quan = obj->quan;
-        switch (osym) {
+        obj_sound_type = OBJECT_SOUND_TYPE_BURNT;
+        switch (osym) 
+        {
         case POTION_CLASS:
             dindx = (obj->otyp != POT_OIL) ? 1 : 2;
             dmg = rnd(6);
@@ -9886,10 +9892,13 @@ boolean forcedestroy;
             dmg = 1;
             break;
         case FOOD_CLASS:
-            if (obj->otyp == GLOB_OF_GREEN_SLIME) {
+            if (obj->otyp == GLOB_OF_GREEN_SLIME) 
+            {
                 dindx = 1; /* boil and explode */
                 dmg = (obj->owt + 19) / 20;
-            } else {
+            }
+            else 
+            {
                 skip++;
             }
             break;
@@ -9900,6 +9909,7 @@ boolean forcedestroy;
         break;
     case AD_ELEC:
         xresist = (Shock_immunity && obj->oclass != RING_CLASS);
+        obj_sound_type = OBJECT_SOUND_TYPE_ELECTROCUTED;
         quan = obj->quan;
         switch (osym) 
         {
@@ -9934,7 +9944,8 @@ boolean forcedestroy;
         break;
     }
 
-    if (!skip) {
+    if (!skip) 
+    {
         if (obj->in_use)
             --quan; /* one will be used up elsewhere */
         for (i = cnt = 0L; i < quan; i++)
@@ -9943,6 +9954,7 @@ boolean forcedestroy;
 
         if (!cnt)
             return;
+
         mult = (cnt == 1L)
                 ? ((quan == 1L) ? "Your"                         /* 1 of 1 */
                                 : "One of your")                 /* 1 of N */
@@ -9950,32 +9962,38 @@ boolean forcedestroy;
                                 : (quan == 2L) ? "Both of your"  /* 2 of 2 */
                                                : "All of your"); /* N of N */
 
-        play_simple_object_sound(obj, 
-            dmgtyp == AD_FIRE ? OBJECT_SOUND_TYPE_BURNT : 
-            dmgtyp == AD_COLD ? OBJECT_SOUND_TYPE_FROZEN : 
-            dmgtyp == AD_ELEC ? OBJECT_SOUND_TYPE_ELECTROCUTED : 
-            OBJECT_SOUND_TYPE_BREAK);
-
+        play_simple_object_sound(obj, obj_sound_type);
         pline("%s %s %s!", mult, xname(obj),
               destroy_strings[dindx][(cnt > 1L)]);
-        if (osym == POTION_CLASS && dmgtyp != AD_COLD) {
+
+        if (osym == POTION_CLASS && dmgtyp != AD_COLD) 
+        {
             if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
                 potionbreathe(obj);
         }
-        if (obj->owornmask) {
+
+        if (obj->owornmask) 
+        {
             if (obj->owornmask & W_RING) /* ring being worn */
                 Ring_gone(obj);
             else
                 setnotworn(obj);
         }
+
         if (obj == current_wand)
             current_wand = 0; /* destroyed */
+
         for (i = 0; i < cnt; i++)
             useup(obj);
-        if (dmg) {
-            if (xresist || Invulnerable) {
+
+        if (dmg) 
+        {
+            if (xresist || Invulnerable) 
+            {
                 You("aren't hurt!");
-            } else {
+            } 
+            else 
+            {
                 const char *how = destroy_strings[dindx][2];
                 boolean one = (cnt == 1L);
 
@@ -10034,7 +10052,8 @@ int osym, dmgtyp;
      */
     bypass_objlist(invent, FALSE); /* clear bypass bit for invent */
 
-    while ((obj = nxt_unbypassed_obj(invent)) != 0) {
+    while ((obj = nxt_unbypassed_obj(invent)) != 0) 
+    {
         if (obj->oclass != osym)
             continue; /* test only objs of type osym */
         if (obj->oartifact)
@@ -10053,7 +10072,8 @@ int osym, dmgtyp;
                 /* destroyed wands and potions of polymorph don't trigger
                    polymorph so don't need to be deferred */
                 || (obj->otyp == POT_WATER && u.ulycn >= LOW_PM
-                    && (Upolyd ? obj->blessed : obj->cursed)))) {
+                    && (Upolyd ? obj->blessed : obj->cursed)))) 
+        {
             deferrals[deferral_indx++] = obj->o_id;
             continue;
         }
@@ -10062,11 +10082,13 @@ int osym, dmgtyp;
     }
     /* if we saved some items for later (most likely just a worn ring
        of levitation) and they're still in inventory, handle them now */
-    for (i = 0; i < deferral_indx; ++i) {
+    for (i = 0; i < deferral_indx; ++i) 
+    {
         /* note: obj->nobj is only referenced when obj is skipped;
            having obj be dropped or destroyed won't affect traversal */
         for (obj = invent; obj; obj = obj->nobj)
-            if (obj->o_id == deferrals[i]) {
+            if (obj->o_id == deferrals[i]) 
+            {
                 destroy_one_item(obj, osym, dmgtyp, FALSE);
                 break;
             }
@@ -10084,8 +10106,10 @@ int osym, dmgtyp;
     long i, cnt, quan;
     int dindx;
     boolean vis;
+    int obj_sound_type = OBJECT_SOUND_TYPE_BREAK;
 
-    if (mtmp == &youmonst) { /* this simplifies artifact_hit() */
+    if (mtmp == &youmonst) 
+    { /* this simplifies artifact_hit() */
         destroy_item(osym, dmgtyp);
         return 0; /* arbitrary; value doesn't matter to artifact_hit() */
     }
@@ -10095,16 +10119,26 @@ int osym, dmgtyp;
     /* see destroy_item(); object destruction could disrupt inventory list */
     bypass_objlist(mtmp->minvent, FALSE); /* clear bypass bit for minvent */
 
-    while ((obj = nxt_unbypassed_obj(mtmp->minvent)) != 0) {
+    while ((obj = nxt_unbypassed_obj(mtmp->minvent)) != 0)
+    {
         if (obj->oclass != osym)
             continue; /* test only objs of type osym */
         skip = 0;
         quan = 0L;
         dindx = 0;
+        obj_sound_type = OBJECT_SOUND_TYPE_BREAK;
 
-        switch (dmgtyp) {
+        switch (dmgtyp) 
+        {
         case AD_COLD:
-            if (osym == POTION_CLASS && obj->otyp != POT_OIL) {
+            obj_sound_type = OBJECT_SOUND_TYPE_FROZEN;
+            if (oresist_cold(obj))
+            {
+                skip++;
+                break;
+            }
+            if (osym == POTION_CLASS && obj->otyp != POT_OIL)
+            {
                 quan = obj->quan;
                 dindx = 0;
                 tmp++;
@@ -10112,16 +10146,22 @@ int osym, dmgtyp;
                 skip++;
             break;
         case AD_FIRE:
-            if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
+            obj_sound_type = OBJECT_SOUND_TYPE_BURNT;
+            if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
+            {
                 skip++;
                 if (vis)
                     pline("%s glows a strange %s, but remains intact.",
                           The(distant_name(obj, xname)), hcolor("dark red"));
             }
             if (oresist_fire(obj))
+            {
                 skip++;
+                break;
+            }
             quan = obj->quan;
-            switch (osym) {
+            switch (osym) 
+            {
             case POTION_CLASS:
                 dindx = (obj->otyp != POT_OIL) ? 1 : 2;
                 tmp++;
@@ -10135,10 +10175,12 @@ int osym, dmgtyp;
                 tmp++;
                 break;
             case FOOD_CLASS:
-                if (obj->otyp == GLOB_OF_GREEN_SLIME) {
+                if (obj->otyp == GLOB_OF_GREEN_SLIME) 
+                {
                     dindx = 1; /* boil and explode */
                     tmp += (obj->owt + 19) / 20;
-                } else {
+                } else 
+                {
                     skip++;
                 }
                 break;
@@ -10148,17 +10190,27 @@ int osym, dmgtyp;
             }
             break;
         case AD_ELEC:
+            obj_sound_type = OBJECT_SOUND_TYPE_ELECTROCUTED;
             quan = obj->quan;
-            switch (osym) {
+            if(oresist_elec(obj))
+            {
+                skip++;
+                break;
+            }
+
+            switch (osym)
+            {
             case RING_CLASS:
-                if (obj->otyp == RIN_SHOCK_RESISTANCE) {
+                if (obj->otyp == RIN_SHOCK_RESISTANCE) 
+                {
                     skip++;
                     break;
                 }
                 dindx = 5;
                 break;
             case WAND_CLASS:
-                if (obj->otyp == WAN_LIGHTNING) {
+                if (obj->otyp == WAN_LIGHTNING) 
+                {
                     skip++;
                     break;
                 }
@@ -10174,7 +10226,8 @@ int osym, dmgtyp;
             skip++;
             break;
         }
-        if (!skip) {
+        if (!skip) 
+        {
             for (i = cnt = 0L; i < quan; i++)
                 if (!rn2(3))
                     cnt++;
@@ -10182,11 +10235,15 @@ int osym, dmgtyp;
             if (!cnt)
                 continue;
             if (vis)
+            {
+                play_simple_object_sound(obj, obj_sound_type);
                 pline("%s%s %s!",
-                      (cnt == obj->quan) ? "" : (cnt > 1L) ? "Some of "
-                                                           : "One of ",
-                      (cnt == obj->quan) ? Yname2(obj) : yname(obj),
-                      destroy_strings[dindx][(cnt > 1L)]);
+                    (cnt == obj->quan) ? "" : (cnt > 1L) ? "Some of "
+                    : "One of ",
+                    (cnt == obj->quan) ? Yname2(obj) : yname(obj),
+                    destroy_strings[dindx][(cnt > 1L)]);
+            }
+
             for (i = 0; i < cnt; i++)
                 m_useup(mtmp, obj);
         }

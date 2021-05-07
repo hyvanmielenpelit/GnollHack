@@ -1528,6 +1528,7 @@ boolean telekinesis; /* not picking it up directly by hand */
         else if (!obj->special_quality && !obj->cursed)
             obj->special_quality = 1;
         else {
+            play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
             pline_The("scroll%s %s to dust as you %s %s up.", plur(obj->quan),
                       otense(obj, "turn"), telekinesis ? "raise" : "pick",
                       (obj->quan == 1L) ? "it" : "them");

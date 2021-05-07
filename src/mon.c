@@ -3027,6 +3027,7 @@ struct monst *mtmp;
                 else
                     pline("%s looks much better!", Monnam(mtmp));
             }
+            play_sfx_sound_at_location(SFX_ITEM_CRUMBLES_TO_DUST, mtmp->mx, mtmp->my);
             pline_The("medallion crumbles to dust!");
         }
         m_useup(mtmp, lifesave);
