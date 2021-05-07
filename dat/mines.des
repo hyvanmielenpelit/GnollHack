@@ -135,8 +135,10 @@ FOUNTAIN:(25,09),fountain_poison
 # the altar's defiled; useful for BUC but never coaligned
 ALTAR:(20,13),noalign,shrine
 FLOOR:fillrect(18,11,22,14),location_floor,floor_marble
-OBJECT: ('(', "large five-branched candelabrum"), (18,14), special_quality:0, unlit
-OBJECT: ('(', "large five-branched candelabrum"), (22,14), special_quality:0, unlit
+OBJECT: ('(', "large five-branched candelabrum"), (18,11), special_quality:((-1)+(1d5)), unlit
+OBJECT: ('(', "large five-branched candelabrum"), (22,11), special_quality:((-1)+(1d5)), unlit
+OBJECT: ('(', "large five-branched candelabrum"), (18,14), special_quality:((-1)+(1d5)), unlit
+OBJECT: ('(', "large five-branched candelabrum"), (22,14), special_quality:((-1)+(1d5)), unlit
 
 # smithy
 ANVIL:(13,13)
@@ -340,7 +342,9 @@ SUBROOM: "temple", lit, (19,5), (4,4) floortype:floor_marble {
   ALTAR:(02,02),align[0],shrine
   MONSTER: ('g', "gnomish wizard"), random
   MONSTER: ('g', "gnomish wizard"), random
+  OBJECT: ('(', "large five-branched candelabrum"), (00,00), special_quality:5, lit
   OBJECT: ('(', "large five-branched candelabrum"), (03,00), special_quality:5, lit
+  OBJECT: ('(', "large five-branched candelabrum"), (00,03), special_quality:5, lit
   OBJECT: ('(', "large five-branched candelabrum"), (03,03), special_quality:5, lit
 }
 
@@ -414,7 +418,9 @@ SUBROOM:"temple",lit,(10,2),(3,4) floortype:floor_marble {
   MONSTER: ('g', "gnomish wizard"), random
   MONSTER: ('g', "gnomish wizard"), random
   OBJECT: ('(', "large five-branched candelabrum"), (00,00), special_quality:5, lit
+  OBJECT: ('(', "large five-branched candelabrum"), (02,00), special_quality:5, lit
   OBJECT: ('(', "large five-branched candelabrum"), (00,03), special_quality:5, lit
+  OBJECT: ('(', "large five-branched candelabrum"), (02,03), special_quality:5, lit
 }
 
 SUBROOM:"npcroom",random,(11,7),(2,2) floortype:floor_parquet {
@@ -520,7 +526,9 @@ SUBROOM:"temple",lit,(11,3),(5,4) floortype:floor_marble {
   MONSTER: ('g', "gnomish wizard"), random
   MONSTER: ('g', "gnomish wizard"), random
   OBJECT: ('(', "large five-branched candelabrum"), (00,00), special_quality:5, lit
+  OBJECT: ('(', "large five-branched candelabrum"), (00,03), special_quality:5, lit
   OBJECT: ('(', "large five-branched candelabrum"), (04,00), special_quality:5, lit
+  OBJECT: ('(', "large five-branched candelabrum"), (04,03), special_quality:5, lit
 }
 
 SUBROOM:"npcroom",random,(19,2),(2,2) {
@@ -731,6 +739,8 @@ DOOR:closed,(31,05)
 ALTAR:(31,03),align[0],shrine
 OBJECT: ('(', "large five-branched candelabrum"), (29,02), special_quality:5, lit
 OBJECT: ('(', "large five-branched candelabrum"), (33,02), special_quality:5, lit
+OBJECT: ('(', "large five-branched candelabrum"), (29,04), special_quality:5, lit
+OBJECT: ('(', "large five-branched candelabrum"), (33,04), special_quality:5, lit
 
 # Smithy
 REGION:(01,18,03,19),lit,"smithy"
@@ -782,6 +792,8 @@ REGION:(23,1,25,3),lit,"shop" floortype:floor_parquet
 REGION:(22,12,24,13),lit,"food shop" floortype:floor_parquet
 REGION:(31,12,36,14),lit,"temple" floortype:floor_marble
 ALTAR:(35,13),align[0],shrine
+OBJECT: ('(', "large five-branched candelabrum"), (31,12), special_quality:5, lit
+OBJECT: ('(', "large five-branched candelabrum"), (31,14), special_quality:5, lit
 OBJECT: ('(', "large five-branched candelabrum"), (36,12), special_quality:5, lit
 OBJECT: ('(', "large five-branched candelabrum"), (36,14), special_quality:5, lit
 
@@ -925,6 +937,8 @@ SUBROOM: "temple", lit, (24,6), (4,4) floortype:floor_marble {
   ALTAR:(02,01),align[0],shrine
   MONSTER: ('g', "gnomish wizard"), random
   MONSTER: ('g', "gnomish wizard"), random
+  OBJECT: ('(', "large five-branched candelabrum"), (00,00), special_quality:5, lit
+  OBJECT: ('(', "large five-branched candelabrum"), (00,03), special_quality:5, lit
   OBJECT: ('(', "large five-branched candelabrum"), (03,00), special_quality:5, lit
   OBJECT: ('(', "large five-branched candelabrum"), (03,03), special_quality:5, lit
 }

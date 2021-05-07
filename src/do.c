@@ -1260,7 +1260,7 @@ register struct obj* obj;
     if (is_obj_candelabrum(obj))
     {
         int max_candles = objects[obj->otyp].oc_special_quality;
-        Sprintf(buf, "Attachable items:       %d candle%s", max_candles, plur(max_candles));
+        Sprintf(buf, "Attachable items:       Up to %d candle%s", max_candles, plur(max_candles));
         txt = buf;
         putstr(datawin, 0, txt);
 
