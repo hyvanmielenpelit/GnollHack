@@ -1635,6 +1635,7 @@ mktemple()
      * located in the center of the room
      */
 
+     /* Altar */
     shrine_spot = shrine_pos((int) ((sroom - rooms) + ROOMOFFSET));
     lev = &levl[shrine_spot->x][shrine_spot->y];
     if (IS_FLOOR(lev->typ))
@@ -1644,7 +1645,58 @@ mktemple()
     }
     lev->typ = ALTAR;
     lev->subtyp = 0;
+    lev->vartyp = 0;
     lev->altarmask = induced_align(80);
+
+    /* Two candelabra */
+    int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    int roll = rn2(4);
+    switch (roll)
+    {
+    case 0:
+        x1 = sroom->lx, y1 = sroom->ly;
+        x2 = sroom->hx, y2 = sroom->ly;
+        break;
+    case 1:
+        x1 = sroom->hx, y1 = sroom->ly;
+        x2 = sroom->hx, y2 = sroom->hy;
+        break;
+    case 2:
+        x1 = sroom->lx, y1 = sroom->hy;
+        x2 = sroom->hx, y2 = sroom->hy;
+        break;
+    case 3:
+        x1 = sroom->lx, y1 = sroom->ly;
+        x2 = sroom->lx, y2 = sroom->hy;
+        break;
+    }
+
+    if (isok(x1, y1) && IS_FLOOR(levl[x1][y1].typ))
+    {
+        struct obj* otmp = mksobj_at(LARGE_FIVE_BRANCHED_CANDELABRUM, x1, y1, TRUE, TRUE);
+        if (otmp)
+        {
+            otmp->special_quality = objects[otmp->otyp].oc_special_quality;
+            otmp->age = CANDELABRUM_STARTING_AGE;
+            otmp->owt = weight(otmp);
+            if(!otmp->lamplit)
+                begin_burn(otmp, FALSE);
+        }
+    }
+
+    if (isok(x2, y2) && IS_FLOOR(levl[x2][y2].typ))
+    {
+        struct obj* otmp = mksobj_at(LARGE_FIVE_BRANCHED_CANDELABRUM, x2, y2, TRUE, TRUE);
+        if (otmp)
+        {
+            otmp->special_quality = objects[otmp->otyp].oc_special_quality;
+            otmp->owt = weight(otmp);
+            if (!otmp->lamplit)
+                begin_burn(otmp, FALSE);
+        }
+    }
+
+    /* Priest */
     priestini(&u.uz, sroom, shrine_spot->x, shrine_spot->y, FALSE, NON_PM);
     lev->altarmask |= AM_SHRINE;
     level.flags.has_temple = 1;

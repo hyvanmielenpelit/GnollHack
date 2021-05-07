@@ -217,6 +217,7 @@ struct obj *book2;
         }
 
         if (arti_cursed) {
+            play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
             pline_The("invocation fails!");
             pline("At least one of your artifacts is cursed...");
         } else if (arti1_primed && arti2_primed) {

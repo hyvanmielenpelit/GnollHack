@@ -1940,7 +1940,7 @@ struct obj **optr;
     if (candelabrum_cnt > 0 && floor_cnt > 0)
     {
         char qbuf[BUFSIZ] = "";
-        Sprintf(qbuf, "There is %s on the floor. Attach candles to %s?", floor_cnt > 1 ? "candelabra" : "a candelabrum", floor_cnt > 1 ? "one of them" : "it");
+        Sprintf(qbuf, "There is %s on the floor. Attach the candles to %s?", floor_cnt > 1 ? "candelabra" : "a candelabrum", floor_cnt > 1 ? "one of them" : "it");
         ans = yn_query(qbuf);
     }
 

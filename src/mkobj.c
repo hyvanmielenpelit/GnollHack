@@ -1466,6 +1466,20 @@ unsigned long mkflags;
                 otmp->quan = 1L + (long) (rn2(2) ? rn2(7) : 0);
                 blessorcurse(otmp, 5);
                 break;
+            case LARGE_FIVE_BRANCHED_CANDELABRUM:
+                otmp->special_quality = !rn2(3) ? 0 : !rn2(2) ? objects[otmp->otyp].oc_special_quality : rnd(objects[otmp->otyp].oc_special_quality);
+                if (otmp->special_quality > 0)
+                {
+                    otmp->age = CANDELABRUM_STARTING_AGE;
+                    otmp->lamplit = rn2(2);
+                }
+                else
+                {
+                    otmp->age = 0;
+                    otmp->lamplit = 0;
+                }
+                blessorcurse(otmp, 5);
+                break;
             case BRASS_LANTERN:
             case OIL_LAMP:
                 otmp->special_quality = 1;
@@ -3013,7 +3027,7 @@ register struct obj *obj;
         return (int) ((obj->quan) / 10L) + 1;
     } else if (obj->otyp == HEAVY_IRON_BALL && obj->owt != 0) {
         return (int) obj->owt; /* kludge for "very" heavy iron ball */
-    } else if (obj->otyp == CANDELABRUM_OF_INVOCATION && obj->special_quality) {
+    } else if (is_obj_candelabrum(obj) && obj->special_quality > 0) {
         return wt + obj->special_quality * (int) objects[TALLOW_CANDLE].oc_weight;
     }
     return (wt ? wt * (int) obj->quan : ((int) obj->quan + 1) >> 1);

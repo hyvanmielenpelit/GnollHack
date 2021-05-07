@@ -178,6 +178,7 @@ int floortyp, floorsubtyp, mtype;
                 lev->typ = IS_FLOOR(floortyp) ? floortyp : ROOM;
                 lev->subtyp = floorsubtyp; 
                 lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
+                lev->floortyp = lev->floorsubtyp = lev->floorvartyp = 0;
                 lev++;
             }
         }
@@ -208,6 +209,7 @@ int floortyp, floorsubtyp, mtype;
                         lev->typ = floortyp;
                         lev->subtyp = floorsubtyp;
                         lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
+                        lev->floortyp = lev->floorsubtyp = lev->floorvartyp = 0;
                     }
                     else
                     {
@@ -2212,6 +2214,7 @@ mkinvokearea()
     xchar ymin = inv_pos.y, ymax = inv_pos.y;
     register xchar i;
 
+    play_sfx_sound(SFX_RUMBLING_EARTH);
     pline_The("floor shakes violently under you!");
     pline_The("walls around you begin to bend and crumble!");
     display_nhwindow(WIN_MESSAGE, TRUE);

@@ -3093,20 +3093,20 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     switch (cidx)
                                     {
                                     case 0:
-                                        dest_x = x_start + (int)((double)(8) * obj_scaling_factor);
-                                        dest_y = y_start + (int)((double)(14) * obj_scaling_factor);
+                                        dest_x = x_start + (int)((double)(29) * obj_scaling_factor);
+                                        dest_y = y_start + (int)((double)(0) * obj_scaling_factor);
                                         break;
                                     case 1:
                                         dest_x = x_start + (int)((double)(18) * obj_scaling_factor);
                                         dest_y = y_start + (int)((double)(4) * obj_scaling_factor);
                                         break;
                                     case 2:
-                                        dest_x = x_start + (int)((double)(29) * obj_scaling_factor);
-                                        dest_y = y_start + (int)((double)(0) * obj_scaling_factor);
-                                        break;
-                                    case 3:
                                         dest_x = x_start + (int)((double)(40) * obj_scaling_factor);
                                         dest_y = y_start + (int)((double)(3) * obj_scaling_factor);
+                                        break;
+                                    case 3:
+                                        dest_x = x_start + (int)((double)(8) * obj_scaling_factor);
+                                        dest_y = y_start + (int)((double)(14) * obj_scaling_factor);
                                         break;
                                     case 4:
                                         dest_x = x_start + (int)((double)(50) * obj_scaling_factor);

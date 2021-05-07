@@ -1461,20 +1461,20 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         switch (cidx)
                         {
                         case 0:
-                            dest_x = x_start + (int)((double)(8) * scale_factor);
-                            dest_y = y_start + (int)((double)(14) * scale_factor);
+                            dest_x = x_start + (int)((double)(29) * scale_factor);
+                            dest_y = y_start + (int)((double)(0) * scale_factor);
                             break;
                         case 1:
                             dest_x = x_start + (int)((double)(18) * scale_factor);
                             dest_y = y_start + (int)((double)(4) * scale_factor);
                             break;
                         case 2:
-                            dest_x = x_start + (int)((double)(29) * scale_factor);
-                            dest_y = y_start + (int)((double)(0) * scale_factor);
-                            break;
-                        case 3:
                             dest_x = x_start + (int)((double)(40) * scale_factor);
                             dest_y = y_start + (int)((double)(3) * scale_factor);
+                            break;
+                        case 3:
+                            dest_x = x_start + (int)((double)(8) * scale_factor);
+                            dest_y = y_start + (int)((double)(14) * scale_factor);
                             break;
                         case 4:
                             dest_x = x_start + (int)((double)(50) * scale_factor);

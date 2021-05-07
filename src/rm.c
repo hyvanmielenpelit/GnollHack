@@ -659,8 +659,8 @@ boolean fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground;
     else
     {
         lev->floortyp = location_type_definitions[lev->typ].initial_floor_type;
-        lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
-        lev->floorvartyp = get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
+        lev->floorsubtyp = !IS_FLOOR(lev->floortyp) ? 0 : get_initial_location_subtype(lev->floortyp);
+        lev->floorvartyp = !IS_FLOOR(lev->floortyp) ? 0 : get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
     }
 }
 

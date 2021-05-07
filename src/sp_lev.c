@@ -701,8 +701,6 @@ schar lit;
 
     for (x = 1; x < COLNO /*x_maze_max*/; x++)
         for (y = 0; y < ROWNO /*y_maze_max*/; y++) {
-            level.locations[x][y].typ = STONE;
-            levl[x][y].typ = STONE; /* Force use of initial floor type */
             SET_TYPLIT(x, y, filling, lit);
         }
 }
@@ -2236,7 +2234,11 @@ struct mkroom *croom;
     if (o->mythic_suffix >= 0)
         otmp->mythic_suffix = (uchar)o->mythic_suffix;
     if (o->special_quality != -127)
+    {
         otmp->special_quality = o->special_quality;
+        if(is_obj_candelabrum(otmp) && otmp->special_quality > 0)
+            otmp->age = CANDELABRUM_STARTING_AGE;
+    }
     if(o->indestructible)
         otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE;
     if (o->uses_up_key)
@@ -2790,7 +2792,8 @@ schar ftyp, btyp;
     tx = dest->x;
     ty = dest->y;
     if (xx <= 0 || yy <= 0 || tx <= 0 || ty <= 0 || xx > COLNO - 1
-        || tx > COLNO - 1 || yy > ROWNO - 1 || ty > ROWNO - 1) {
+        || tx > COLNO - 1 || yy > ROWNO - 1 || ty > ROWNO - 1) 
+    {
         debugpline4("dig_corridor: bad coords <%d,%d> <%d,%d>.",
                     xx, yy, tx, ty);
         return FALSE;
@@ -2807,7 +2810,8 @@ schar ftyp, btyp;
     xx -= dx;
     yy -= dy;
     cct = 0;
-    while (xx != tx || yy != ty) {
+    while (xx != tx || yy != ty) 
+    {
         /* loop: dig corridor at [xx,yy] and find new [xx,yy] */
         if (cct++ > 500 || (nxcor && !rn2(35)))
             return FALSE;
@@ -2819,8 +2823,10 @@ schar ftyp, btyp;
             return FALSE; /* impossible */
 
         crm = &levl[xx][yy];
-        if (crm->typ == btyp) {
-            if (ftyp != CORR || rn2(100)) {
+        if (crm->typ == btyp) 
+        {
+            if (ftyp != CORR || rn2(100)) 
+            {
                 crm->typ = ftyp;
                 crm->subtyp = get_initial_location_subtype(ftyp);
                 crm->vartyp = get_initial_location_vartype(crm->typ, crm->subtyp);
@@ -2828,15 +2834,20 @@ schar ftyp, btyp;
                 {
                     crm->floortyp = 0;
                     crm->subtyp = 0;
+                    crm->vartyp = 0;
                 }
                 if (nxcor && !rn2(50))
                     (void) mksobj_at(BOULDER, xx, yy, TRUE, FALSE);
-            } else {
+            } 
+            else 
+            {
                 crm->typ = SCORR;
                 crm->subtyp = get_initial_location_subtype(SCORR);
                 crm->vartyp = get_initial_location_vartype(crm->typ, crm->subtyp);
             }
-        } else if (crm->typ != ftyp && crm->typ != SCORR) {
+        } 
+        else if (crm->typ != ftyp && crm->typ != SCORR) 
+        {
             /* strange ... */
             return FALSE;
         }
@@ -2845,27 +2856,35 @@ schar ftyp, btyp;
         dix = abs(xx - tx);
         diy = abs(yy - ty);
 
-        if ((dix > diy) && diy && !rn2(dix-diy+1)) {
+        if ((dix > diy) && diy && !rn2(dix-diy+1)) 
+        {
             dix = 0;
-        } else if ((diy > dix) && dix && !rn2(diy-dix+1)) {
+        } 
+        else if ((diy > dix) && dix && !rn2(diy-dix+1))
+        {
             diy = 0;
         }
 
         /* do we have to change direction ? */
-        if (dy && dix > diy) {
+        if (dy && dix > diy)
+        {
             register int ddx = (xx > tx) ? -1 : 1;
 
             crm = &levl[xx + ddx][yy];
-            if (crm->typ == btyp || crm->typ == ftyp || crm->typ == SCORR) {
+            if (crm->typ == btyp || crm->typ == ftyp || crm->typ == SCORR)
+            {
                 dx = ddx;
                 dy = 0;
                 continue;
             }
-        } else if (dx && diy > dix) {
+        } 
+        else if (dx && diy > dix) 
+        {
             register int ddy = (yy > ty) ? -1 : 1;
 
             crm = &levl[xx][yy + ddy];
-            if (crm->typ == btyp || crm->typ == ftyp || crm->typ == SCORR) {
+            if (crm->typ == btyp || crm->typ == ftyp || crm->typ == SCORR)
+            {
                 dy = ddy;
                 dx = 0;
                 continue;
@@ -2878,10 +2897,13 @@ schar ftyp, btyp;
             continue;
 
         /* no, what must we do now?? */
-        if (dx) {
+        if (dx) 
+        {
             dx = 0;
             dy = (ty < yy) ? -1 : 1;
-        } else {
+        } 
+        else 
+        {
             dy = 0;
             dx = (tx < xx) ? -1 : 1;
         }

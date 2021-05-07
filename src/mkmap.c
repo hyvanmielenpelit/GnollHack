@@ -320,19 +320,25 @@ lev_init* init_lev;
     /* first, use flood filling to find all of the regions that need joining
      */
     for (i = 2; i <= WIDTH; i++)
-        for (j = 1; j < HEIGHT; j++) {
-            if (levl[i][j].typ == fg_typ && levl[i][j].roomno == NO_ROOM) {
+        for (j = 1; j < HEIGHT; j++) 
+        {
+            struct rm* lev = &levl[i][j];
+            if (lev->typ == fg_typ && lev->roomno == NO_ROOM) 
+            {
                 min_rx = max_rx = i;
                 min_ry = max_ry = j;
                 n_loc_filled = 0;
                 flood_fill_rm(i, j, nroom + ROOMOFFSET, FALSE, FALSE);
-                if (n_loc_filled > 3) {
+                if (n_loc_filled > 3) 
+                {
                     add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OROOM,
-                             TRUE, ROOM, 0, NON_PM);
+                             TRUE, fg_typ, 0, NON_PM);
                     rooms[nroom - 1].irregular = TRUE;
                     if (nroom >= (MAXNROFROOMS * 2))
                         goto joinm;
-                } else {
+                } 
+                else 
+                {
                     /*
                      * it's a tiny hole; erase it from the map to avoid
                      * having the player end up here with no way out.
@@ -340,7 +346,8 @@ lev_init* init_lev;
                     for (sx = min_rx; sx <= max_rx; sx++)
                         for (sy = min_ry; sy <= max_ry; sy++)
                             if ((int) levl[sx][sy].roomno
-                                == nroom + ROOMOFFSET) {
+                                == nroom + ROOMOFFSET)
+                            {
                                 levl[sx][sy].typ = bg_typ;
                                 levl[sx][sy].subtyp = get_initial_location_subtype(bg_typ);
                                 levl[sx][sy].vartyp = get_initial_location_vartype(levl[sx][sy].typ, levl[sx][sy].subtyp);
@@ -359,9 +366,11 @@ joinm:
      * so don't call sort_rooms(), which can screw up the roomno's
      * validity in the levl structure.
      */
-    for (croom = &rooms[0], croom2 = croom + 1; croom2 < &rooms[nroom];) {
+    for (croom = &rooms[0], croom2 = croom + 1; croom2 < &rooms[nroom];) 
+    {
         /* pick random starting and end locations for "corridor" */
-        if (!somexy(croom, &sm) || !somexy(croom2, &em)) {
+        if (!somexy(croom, &sm) || !somexy(croom2, &em)) 
+        {
             /* ack! -- the level is going to be busted */
             /* arbitrarily pick centers of both rooms and hope for the best */
             impossible("No start/end room loc in join_map.");
