@@ -1025,6 +1025,8 @@ TILESET: undead_tileset
 # barrier up to the top row, which falls outside the drawn map.
 NON_PASSWALL:(39,00,41,00)
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         
+#1234567890123456789012345678901234567890123456789012345678901234567890123456789
 MAP
 ----------------------------------------------------------------------------
 |             --------------                                               |
@@ -1049,6 +1051,10 @@ MAP
 ENDMAP
 REGION:(15,07,21,10),lit,"temple"
 ALTAR:(18,08),noalign,sanctum
+OBJECT: ('(', "large five-branched candelabrum"), (15,07), special_quality:5, age:99000, lit
+OBJECT: ('(', "large five-branched candelabrum"), (21,07), special_quality:5, age:99000, lit
+OBJECT: ('(', "large five-branched candelabrum"), (15,10), special_quality:5, age:99000, lit
+OBJECT: ('(', "large five-branched candelabrum"), (21,10), special_quality:5, age:99000, lit
 REGION:(41,06,48,11),unlit,"morgue",filled,irregular
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)

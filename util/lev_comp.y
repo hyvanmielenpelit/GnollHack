@@ -194,7 +194,7 @@ extern char curr_token[512];
 %token	<i> object_ID monster_ID terrain_ID
 %token	<i> MAZEWALK_ID WALLIFY_ID REGION_ID SPECIAL_REGION_ID SPECIAL_LEVREGION_ID SPECIAL_REGION_TYPE NAMING_ID NAMING_TYPE FILLING IRREGULAR JOINED
 %token	<i> ALTAR_ID ANVIL_ID NPC_ID LADDER_ID STAIR_ID NON_DIGGABLE_ID NON_PASSWALL_ID ROOM_ID ARTIFACT_NAME_ID
-%token	<i> PORTAL_ID TELEPRT_ID BRANCH_ID LEV MINERALIZE_ID
+%token	<i> PORTAL_ID TELEPRT_ID BRANCH_ID LEV MINERALIZE_ID AGE_ID
 %token	<i> CORRIDOR_ID GOLD_ID ENGRAVING_ID FOUNTAIN_ID THRONE_ID MODRON_PORTAL_ID LEVEL_TELEPORTER_ID LEVEL_TELEPORT_DIRECTION_TYPE LEVEL_TELEPORT_END_TYPE POOL_ID SINK_ID NONE
 %token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE KEYTYPE_ID LEVER_ID NO_PICKUP_ID
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
@@ -1820,16 +1820,6 @@ object_info	: CURSE_TYPE
 		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_EXCEPTIONALITY));
 		      $$ = 0x10000;
 		  }
-		| MYTHIC_PREFIX_ID ':' MYTHIC_PREFIX_TYPE
-		  {
-		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_MYTHIC_PREFIX));
-		      $$ = 0x2000000;
-		  }
-		| MYTHIC_SUFFIX_ID ':' MYTHIC_SUFFIX_TYPE
-		  {
-		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_MYTHIC_SUFFIX));
-		      $$ = 0x4000000;
-		  }
 		| ENCHANTMENT_ID ':' integer_or_var
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_O_V_ENCHANTMENT));
@@ -1869,6 +1859,21 @@ object_info	: CURSE_TYPE
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_O_V_NO_PICKUP));
 		      $$ = 0x1000000;
+		  }
+		| MYTHIC_PREFIX_ID ':' MYTHIC_PREFIX_TYPE
+		  {
+		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_MYTHIC_PREFIX));
+		      $$ = 0x2000000;
+		  }
+		| MYTHIC_SUFFIX_ID ':' MYTHIC_SUFFIX_TYPE
+		  {
+		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_MYTHIC_SUFFIX));
+		      $$ = 0x4000000;
+		  }
+		| AGE_ID ':' integer_or_var
+		  {
+		      add_opvars(splev, "i", VA_PASS1(SP_O_V_AGE));
+		      $$ = 0x8000000;
 		  }
 		;
 

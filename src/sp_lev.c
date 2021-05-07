@@ -2233,6 +2233,8 @@ struct mkroom *croom;
         otmp->mythic_prefix = (uchar)o->mythic_prefix;
     if (o->mythic_suffix >= 0)
         otmp->mythic_suffix = (uchar)o->mythic_suffix;
+    if (o->age >= 0)
+        otmp->age = (long)o->age;
     if (o->special_quality != -127)
     {
         otmp->special_quality = o->special_quality;
@@ -3785,6 +3787,7 @@ struct sp_coder *coder;
     tmpobj.exceptionality = -1;  /* random */
     tmpobj.mythic_prefix = -1;  /* random */
     tmpobj.mythic_suffix = -1;  /* random */
+    tmpobj.age = -1;  /* not set */
     tmpobj.recharged = 0;
     tmpobj.invis = 0;
     tmpobj.greased = 0;
@@ -3909,6 +3912,10 @@ struct sp_coder *coder;
         case SP_O_V_SPECIAL_QUALITY:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.special_quality = OV_i(parm);
+            break;
+        case SP_O_V_AGE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.age = OV_i(parm);
             break;
         case SP_O_V_SPEFLAGS:
             if (OV_typ(parm) == SPOVAR_INT)

@@ -250,6 +250,7 @@ enchantment	ST_RET(ENCHANTMENT_ID);
 charges	    ST_RET(CHARGES_ID);
 special_quality	ST_RET(SPECIAL_QUALITY_ID);
 speflags	ST_RET(SPEFLAGS_ID);
+age	        ST_RET(AGE_ID);
 buried		ST_RET(BURIED_ID);
 eroded		ST_RET(ERODED_ID);
 erodeproof	ST_RET(ERODEPROOF_ID);
