@@ -1939,12 +1939,12 @@ anything *arg;
 long timeout;
 {
     struct obj *obj = arg->a_obj;
-    boolean canseeit, many, menorah, need_newsym, need_invupdate;
+    boolean canseeit, many, is_candelabrum, need_newsym, need_invupdate;
     xchar x, y;
     char whose[BUFSZ];
 
-    menorah = obj->otyp == CANDELABRUM_OF_INVOCATION;
-    many = menorah ? obj->special_quality > 1 : obj->quan > 1L;
+    is_candelabrum = is_obj_candelabrum(obj);
+    many = is_candelabrum ? obj->special_quality > 1 : obj->quan > 1L;
 
     /* timeout while away */
     if (timeout != monstermoves) {
@@ -1954,7 +1954,7 @@ long timeout;
             obj->age = 0;
             end_burn(obj, FALSE);
 
-            if (menorah) {
+            if (is_candelabrum) {
                 obj->special_quality = 0; /* no more candles */
                 obj->owt = weight(obj);
             } else if (is_candle(obj) || obj->otyp == POT_OIL) {
@@ -2087,6 +2087,7 @@ long timeout;
         break;
 
     case CANDELABRUM_OF_INVOCATION:
+    case LARGE_FIVE_BRANCHED_CANDELABRUM:
     case TALLOW_CANDLE:
     case WAX_CANDLE:
         switch (obj->age) {
@@ -2096,12 +2097,12 @@ long timeout;
                 case OBJ_INVENT:
                 case OBJ_MINVENT:
                     pline("%s%scandle%s getting short.", whose,
-                          menorah ? "candelabrum's " : "",
+                        is_candelabrum ? "candelabrum's " : "",
                           many ? "s are" : " is");
                     break;
                 case OBJ_FLOOR:
                     You_see("%scandle%s getting short.",
-                            menorah ? "a candelabrum's " : many ? "some "
+                        is_candelabrum ? "a candelabrum's " : many ? "some "
                                                                 : "a ",
                             many ? "s" : "");
                     break;
@@ -2114,12 +2115,12 @@ long timeout;
                 case OBJ_INVENT:
                 case OBJ_MINVENT:
                     pline("%s%scandle%s flame%s flicker%s low!", whose,
-                          menorah ? "candelabrum's " : "", many ? "s'" : "'s",
+                        is_candelabrum ? "candelabrum's " : "", many ? "s'" : "'s",
                           many ? "s" : "", many ? "" : "s");
                     break;
                 case OBJ_FLOOR:
                     You_see("%scandle%s flame%s flicker low!",
-                            menorah ? "a candelabrum's " : many ? "some "
+                        is_candelabrum ? "a candelabrum's " : many ? "some "
                                                                 : "a ",
                             many ? "s'" : "'s", many ? "s" : "");
                     break;
@@ -2129,7 +2130,7 @@ long timeout;
         case 0:
             /* we know even if blind and in our inventory */
             if (canseeit || obj->where == OBJ_INVENT) {
-                if (menorah) {
+                if (is_candelabrum) {
                     switch (obj->where) {
                     case OBJ_INVENT:
                         need_invupdate = TRUE;
@@ -2173,7 +2174,7 @@ long timeout;
             }
             end_burn(obj, FALSE);
 
-            if (menorah) {
+            if (is_candelabrum) {
                 obj->special_quality = 0;
                 obj->owt = weight(obj);
             } else {
@@ -2290,6 +2291,7 @@ boolean already_lit;
         break;
 
     case CANDELABRUM_OF_INVOCATION:
+    case LARGE_FIVE_BRANCHED_CANDELABRUM:
     case TALLOW_CANDLE:
     case WAX_CANDLE:
         /* magic times are 75, 15, and 0 */

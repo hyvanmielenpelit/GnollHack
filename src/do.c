@@ -1257,6 +1257,19 @@ register struct obj* obj;
         putstr(datawin, 0, txt);
     }
 
+    if (is_obj_candelabrum(obj))
+    {
+        int max_candles = objects[obj->otyp].oc_special_quality;
+        Sprintf(buf, "Attachable items:       %d candle%s", max_candles, plur(max_candles));
+        txt = buf;
+        putstr(datawin, 0, txt);
+
+        int cur_candles = (int)obj->special_quality;
+        Sprintf(buf, "Currently attached:     %d candle%s", cur_candles, plur(cur_candles));
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
     boolean weapon_stats_shown = FALSE;
     if (!uses_spell_flags && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && stats_known) || objects[obj->otyp].oc_class == GEM_CLASS))
     {

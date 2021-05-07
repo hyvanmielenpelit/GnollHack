@@ -2984,7 +2984,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     DeleteObject(bitmap);
 
                                     cnt++;
-                            }
+                                }
                             }
                             else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CANDELABRUM_CANDLES && otmp_round)
                             {
@@ -3018,6 +3018,103 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     dest_y = y_start;
                                     dest_x = x_start + (int)((double)(x_padding + item_xpos * item_width) * obj_scaling_factor);
+
+                                    int source_glyph = autodraws[autodraw].source_glyph;
+                                    int atile = glyph2tile[source_glyph];
+                                    int a_sheet_idx = TILE_SHEET_IDX(atile);
+                                    int at_x = TILEBMP_X(atile);
+                                    int at_y = TILEBMP_Y(atile);
+
+                                    RECT source_rt = { 0 };
+                                    source_rt.left = at_x + src_x;
+                                    source_rt.right = source_rt.left + item_width;
+                                    source_rt.top = at_y + src_y;
+                                    source_rt.bottom = source_rt.top + item_height;
+
+                                    RECT target_rt = { 0 };
+
+                                    if (print_first_directly_to_map)
+                                    {
+                                        target_rt.left = rect->left + (LONG)dest_x;
+                                        target_rt.right = rect->left + (LONG)dest_x + (LONG)(((double)data->xBackTile / (double)tileWidth) * obj_scaling_factor * (double)(source_rt.right - source_rt.left));
+                                        target_rt.top = rect->top + (LONG)dest_y;
+                                        target_rt.bottom = rect->top + (LONG)dest_y + (LONG)(((double)data->yBackTile / (double)tileHeight) * obj_scaling_factor * (double)(source_rt.bottom - source_rt.top));
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            data->backBufferDC, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
+                                            source_rt.top, source_rt.right - source_rt.left,
+                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                    }
+                                    else
+                                    {
+                                        target_rt.left = dest_x;
+                                        target_rt.right = (LONG)dest_x + (LONG)((double)(source_rt.right - source_rt.left) * obj_scaling_factor);
+                                        target_rt.top = dest_y;
+                                        target_rt.bottom = (LONG)dest_y + (LONG)((double)(source_rt.bottom - source_rt.top) * obj_scaling_factor);
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            hDCcopy, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC[a_sheet_idx], source_rt.left,
+                                            source_rt.top, source_rt.right - source_rt.left,
+                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                    }
+                                    cnt++;
+                                }
+                            }
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES && otmp_round)
+                            {
+                                int y_start = dest_top_added;
+                                int x_start = dest_left_added;
+                                int x_padding = 13;
+                                int item_width = 9;
+                                int item_height = 31;
+                                int src_unlit_x = 0;
+                                int src_unlit_y = 0;
+                                int src_lit_x = 9 * (1 + (int)autodraws[autodraw].flags);
+                                int src_lit_y = 0;
+                                int cnt = 0;
+
+                                for (int cidx = 0; cidx < min(objects[otmp_round->otyp].oc_special_quality, otmp_round->special_quality); cidx++)
+                                {
+                                    int src_x = 0, src_y = 0;
+                                    int dest_x = 0, dest_y = 0;
+                                    if (otmp_round->lamplit)
+                                    {
+                                        src_x = src_lit_x;
+                                        src_y = src_lit_y;
+                                    }
+                                    else
+                                    {
+                                        src_x = src_unlit_x;
+                                        src_y = src_unlit_y;
+                                    }
+
+                                    switch (cidx)
+                                    {
+                                    case 0:
+                                        dest_x = x_start + (int)((double)(8) * obj_scaling_factor);
+                                        dest_y = y_start + (int)((double)(14) * obj_scaling_factor);
+                                        break;
+                                    case 1:
+                                        dest_x = x_start + (int)((double)(18) * obj_scaling_factor);
+                                        dest_y = y_start + (int)((double)(4) * obj_scaling_factor);
+                                        break;
+                                    case 2:
+                                        dest_x = x_start + (int)((double)(29) * obj_scaling_factor);
+                                        dest_y = y_start + (int)((double)(0) * obj_scaling_factor);
+                                        break;
+                                    case 3:
+                                        dest_x = x_start + (int)((double)(40) * obj_scaling_factor);
+                                        dest_y = y_start + (int)((double)(3) * obj_scaling_factor);
+                                        break;
+                                    case 4:
+                                        dest_x = x_start + (int)((double)(50) * obj_scaling_factor);
+                                        dest_y = y_start + (int)((double)(15) * obj_scaling_factor);
+                                        break;
+                                    default:
+                                        break;
+                                    }
 
                                     int source_glyph = autodraws[autodraw].source_glyph;
                                     int atile = glyph2tile[source_glyph];

@@ -200,7 +200,7 @@ struct obj *book2;
         }
 
         for (otmp = invent; otmp; otmp = otmp->nobj) {
-            if (otmp->otyp == CANDELABRUM_OF_INVOCATION && otmp->special_quality == 7
+            if (otmp->otyp == CANDELABRUM_OF_INVOCATION && otmp->special_quality >= objects[otmp->otyp].oc_special_quality
                 && otmp->lamplit) {
                 if (!otmp->cursed)
                     arti1_primed = TRUE;

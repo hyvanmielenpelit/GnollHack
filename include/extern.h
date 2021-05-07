@@ -102,7 +102,7 @@ E int FDECL(use_lever, (struct trap*));
 E void FDECL(setapplyclasses, (char*));
 E void FDECL(setbreakclasses, (char*));
 E void FDECL(use_candelabrum, (struct obj*));
-E void FDECL(use_candle, (struct obj**));
+E int FDECL(use_candle, (struct obj**));
 E void FDECL(use_lamp, (struct obj*));
 E void FDECL(light_cocktail, (struct obj**));
 

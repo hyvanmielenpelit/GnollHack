@@ -1775,7 +1775,8 @@ register struct obj *obj;
         You("cannot make fire under water.");
         return;
     }
-    if (u.uswallow || obj->cursed) {
+    if (u.uswallow || obj->cursed) 
+    {
         if (!Blind)
         {
             play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
@@ -1788,24 +1789,34 @@ register struct obj *obj;
 
 
     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
-    if (obj->special_quality < 7) {
+    int max_candles = objects[obj->otyp].oc_special_quality;
+    
+    if (obj->special_quality < max_candles) 
+    {
         There("%s only %d %s in %s.", vtense(s, "are"), obj->special_quality, s,
               the(xname(obj)));
         if (!Blind)
             pline("%s lit.  %s dimly.", obj->special_quality == 1 ? "It is" : "They are",
                   Tobjnam(obj, "shine"));
-    } else {
+    }
+    else 
+    {
         pline("%s's %s burn%s", The(xname(obj)), s,
               (Blind ? "." : " brightly!"));
     }
-    if (!invocation_pos(u.ux, u.uy) || On_stairs(u.ux, u.uy)) {
+
+    if (obj->otyp != CANDELABRUM_OF_INVOCATION || !invocation_pos(u.ux, u.uy) || On_stairs(u.ux, u.uy)) 
+    {
         pline_The("%s %s being rapidly consumed!", s, vtense(s, "are"));
         /* this used to be obj->age /= 2, rounding down; an age of
            1 would yield 0, confusing begin_burn() and producing an
            unlightable, unrefillable candelabrum; round up instead */
         obj->age = (obj->age + 1L) / 2L;
-    } else {
-        if (obj->special_quality == 7) {
+    } 
+    else 
+    {
+        if (obj->special_quality == max_candles) 
+        {
             if (Blind)
                 pline("%s a strange warmth!", Tobjnam(obj, "radiate"));
             else
@@ -1816,7 +1827,7 @@ register struct obj *obj;
     begin_burn(obj, FALSE);
 }
 
-void
+int
 use_candle(optr)
 struct obj **optr;
 {
@@ -1824,16 +1835,60 @@ struct obj **optr;
     register struct obj *otmp;
     const char *s = (obj->quan != 1) ? "candles" : "candle";
     char qbuf[QBUFSZ], qsfx[QBUFSZ], *q;
+    const char tools[] = { TOOL_CLASS, 0 };
 
     if (u.uswallow)
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You(no_elbow_room);
-        return;
+        return 1;
     }
 
-    otmp = carrying(CANDELABRUM_OF_INVOCATION);
-    if (!otmp || otmp->special_quality == 7)
+    int candelabrum_cnt = 0;
+    struct obj* candelabrum = 0;
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+    {
+        if (is_obj_candelabrum(otmp) && otmp->special_quality < objects[otmp->otyp].oc_special_quality)
+        {
+            candelabrum_cnt++;
+            candelabrum = otmp;
+        }
+    }
+
+    int floor_cnt = 0;
+    struct obj* floor_candelabrum = 0;
+    for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
+    {
+        if (is_obj_candelabrum(otmp) && otmp->special_quality < objects[otmp->otyp].oc_special_quality)
+        {
+            floor_cnt++;
+            floor_candelabrum = otmp;
+            if(candelabrum_cnt == 0)
+                candelabrum = otmp;
+        }
+    }
+
+    char ans = 'n';
+    if (candelabrum_cnt > 0 || floor_cnt > 0)
+    {
+        char qbuf[BUFSZ];
+        Sprintf(qbuf, "Do you want to attach the %s to %s?", cxname(obj), 
+            candelabrum_cnt == 1 && floor_cnt == 0 && candelabrum ? yname(candelabrum) :
+            candelabrum_cnt == 0 && floor_cnt == 1 && floor_candelabrum ? "the candelabrum on the floor here" : 
+            "a candelabrum");
+
+        ans = ynq(qbuf);
+        if (ans == 'q')
+        {
+            pline1(Never_mind);
+            return 0;
+        }
+    }
+
+    otmp = candelabrum;
+    //otmp = carrying(CANDELABRUM_OF_INVOCATION);
+
+    if (ans != 'y')
     {
         boolean objsplitted = FALSE;
         struct obj* lightedcandle = (struct obj*)0;
@@ -1878,81 +1933,169 @@ struct obj **optr;
             }
         }
 
-        return;
+        return 1;
     }
 
-    /* first, minimal candelabrum suffix for formatting candles */
-    Sprintf(qsfx, " to\033%s?", thesimpleoname(otmp));
-    /* next, format the candles as a prefix for the candelabrum */
-    (void) safe_qbuf(qbuf, "Attach ", qsfx, obj, yname, thesimpleoname, s);
-    /* strip temporary candelabrum suffix */
-    if ((q = strstri(qbuf, " to\033")) != 0)
-        Strcpy(q, " to ");
-    /* last, format final "attach candles to candelabrum?" query */
-    if (yn_query(safe_qbuf(qbuf, qbuf, "?", otmp, yname, thesimpleoname, "it"))
-        == 'n') 
+    ans = 'n';
+    if (candelabrum_cnt > 0 && floor_cnt > 0)
     {
-        use_lamp(obj);
-        return;
-    } 
-    else 
+        char qbuf[BUFSIZ] = "";
+        Sprintf(qbuf, "There is %s on the floor. Attach candles to %s?", floor_cnt > 1 ? "candelabra" : "a candelabrum", floor_cnt > 1 ? "one of them" : "it");
+        ans = yn_query(qbuf);
+    }
+
+    if (ans == 'y' && floor_cnt > 0)
     {
-        if ((long) otmp->special_quality + obj->quan > 7L) 
+        if (floor_cnt == 1 && floor_candelabrum)
         {
-            obj = splitobj(obj, 7L - (long) otmp->special_quality);
-            /* avoid a grammatical error if obj->quan gets
-               reduced to 1 candle from more than one */
-            s = (obj->quan != 1) ? "candles" : "candle";
-        } 
-        else
-            *optr = 0;
-
-        play_sfx_sound(SFX_ATTACH_CANDLE);
-        You("attach %ld%s %s to %s.", obj->quan, !otmp->special_quality ? "" : " more", s,
-            the(xname(otmp)));
-
-        if (!otmp->special_quality || otmp->age > obj->age)
-            otmp->age = obj->age;
-
-        otmp->special_quality += (int) obj->quan;
-
-        if (otmp->lamplit && !obj->lamplit)
-            pline_The("new %s magically %s!", s, vtense(s, "ignite"));
-        else if (!otmp->lamplit && obj->lamplit)
-            pline("%s out.", (obj->quan > 1L) ? "They go" : "It goes");
-
-        if ((obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge)) && costly_spot(u.ux, u.uy))
-        {
-            char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
-            struct monst* shkp = shop_keeper(*o_shop);
-            if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
-            {
-                play_voice_shopkeeper_simple_line(shkp, otmp->lamplit ? ((obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT) :
-                    ((obj->quan > 1L) ? SHOPKEEPER_LINE_USE_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_USE_IT_BOUGHT_IT));
-            }
-            verbalize("You %s %s, you bought %s!",
-                otmp->lamplit ? "burn" : "use",
-                (obj->quan > 1L) ? "them" : "it",
-                (obj->quan > 1L) ? "them" : "it");
+            otmp = floor_candelabrum;
         }
-        if (obj->quan < 7L && otmp->special_quality == 7)
-            pline("%s now has seven%s candles attached.", The(xname(otmp)),
-                  otmp->lamplit ? " lit" : "");
-        
-        /* candelabrum's light range might increase */
-        if (otmp->lamplit)
-            obj_merge_light_sources(otmp, otmp);
+        else
+        {
+            int n;
+            winid win;
+            anything any;
+            menu_item* pick_list = (menu_item*)0;
 
-        /* candles are no longer a separate light source */
-        if (obj->lamplit)
-            end_burn(obj, TRUE);
+            any.a_void = 0;
+            win = create_nhwindow(NHW_MENU);
+            start_menu(win);
 
-        /* candles are now gone */
-        useupall(obj);
-        /* candelabrum's weight is changing */
-        otmp->owt = weight(otmp);
-        update_inventory();
+            for (struct obj* cobj = level.objects[u.ux][u.ux]; cobj; cobj = cobj->nexthere)
+                if (is_obj_candelabrum(cobj)) 
+                {
+                    any.a_obj = cobj;
+                    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                        doname(cobj), MENU_UNSELECTED);
+                }
+            end_menu(win, "Attach candles to which candelabrum?");
+            n = select_menu(win, PICK_ONE, &pick_list);
+            destroy_nhwindow(win);
+
+            if (n > 0) 
+            {
+                otmp = pick_list[0].item.a_obj;
+                free((genericptr_t)pick_list);
+            }
+            else
+            {
+                pline1(Never_mind);
+                return 0;
+            }
+        }
     }
+    else
+    {
+        if (candelabrum_cnt > 1)
+        {
+            otmp = getobj(tools, "attach candles to", 0, "");
+            if (!otmp)
+            {
+                pline1(Never_mind);
+                return 0;
+            }
+        }
+
+        if (candelabrum_cnt + floor_cnt > 1)
+        {
+            /* first, minimal candelabrum suffix for formatting candles */
+            Sprintf(qsfx, " to\033%s?", thesimpleoname(otmp));
+            /* next, format the candles as a prefix for the candelabrum */
+            (void)safe_qbuf(qbuf, "Attach ", qsfx, obj, yname, thesimpleoname, s);
+            /* strip temporary candelabrum suffix */
+            if ((q = strstri(qbuf, " to\033")) != 0)
+                Strcpy(q, " to ");
+
+            if (yn_query(safe_qbuf(qbuf, qbuf, "?", otmp, yname, thesimpleoname, "it"))
+                == 'n')
+            {
+                return 0;
+#if 0
+                use_lamp(obj);
+                return 1;
+#endif
+            }
+        }
+    }
+
+    if (!otmp)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (!is_obj_candelabrum(otmp))
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You("cannot attach candles to %s.", an(cxname(otmp)));
+        return 1;
+    }
+
+    long max_candles = objects[otmp->otyp].oc_special_quality;
+    if (otmp->special_quality >= max_candles)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline("%s is already full of candles.", The(cxname(otmp)));
+        return 1;
+    }
+
+    if ((long) otmp->special_quality + obj->quan > max_candles)
+    {
+        obj = splitobj(obj, max_candles - (long) otmp->special_quality);
+        /* avoid a grammatical error if obj->quan gets
+            reduced to 1 candle from more than one */
+        s = (obj->quan != 1) ? "candles" : "candle";
+    } 
+    else
+        *optr = 0;
+
+    play_sfx_sound(SFX_ATTACH_CANDLE);
+    You("attach %ld%s %s to %s.", obj->quan, !otmp->special_quality ? "" : " more", s,
+        the(xname(otmp)));
+
+    if (!otmp->special_quality || otmp->age > obj->age)
+        otmp->age = obj->age;
+
+    otmp->special_quality += (int) obj->quan;
+
+    if (otmp->lamplit && !obj->lamplit)
+        pline_The("new %s magically %s!", s, vtense(s, "ignite"));
+    else if (!otmp->lamplit && obj->lamplit)
+        pline("%s out.", (obj->quan > 1L) ? "They go" : "It goes");
+
+    if ((obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge)) && costly_spot(u.ux, u.uy))
+    {
+        char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+        struct monst* shkp = shop_keeper(*o_shop);
+        if (shkp && inhishop(shkp) && (obj->where == OBJ_FLOOR || is_obj_on_shk_bill(obj, shkp)))
+        {
+            play_voice_shopkeeper_simple_line(shkp, otmp->lamplit ? ((obj->quan > 1L) ? SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT) :
+                ((obj->quan > 1L) ? SHOPKEEPER_LINE_USE_THEM_BOUGHT_THEM : SHOPKEEPER_LINE_USE_IT_BOUGHT_IT));
+        }
+        verbalize("You %s %s, you bought %s!",
+            otmp->lamplit ? "burn" : "use",
+            (obj->quan > 1L) ? "them" : "it",
+            (obj->quan > 1L) ? "them" : "it");
+    }
+    if (obj->quan < max_candles && otmp->special_quality == max_candles)
+        pline("%s now has %ld%s candles attached.", The(xname(otmp)), max_candles,
+                otmp->lamplit ? " lit" : "");
+        
+    /* candelabrum's light range might increase */
+    if (otmp->lamplit)
+        obj_merge_light_sources(otmp, otmp);
+
+    /* candles are no longer a separate light source */
+    if (obj->lamplit)
+        end_burn(obj, TRUE);
+
+    /* candles are now gone */
+    useupall(obj);
+    /* candelabrum's weight is changing */
+    otmp->owt = weight(otmp);
+    update_inventory();
+
+    return 1;
 }
 
 /* call in drop, throw, and put in box, etc. */
@@ -1962,8 +2105,9 @@ struct obj *otmp;
 {
     boolean candle = is_candle(otmp);
 
-    if ((candle || otmp->otyp == CANDELABRUM_OF_INVOCATION)
-        && otmp->lamplit) {
+    if ((candle || is_obj_candelabrum(otmp))
+        && otmp->lamplit) 
+    {
         char buf[BUFSZ];
         xchar x, y;
         boolean many = candle ? (otmp->quan > 1L) : (otmp->special_quality > 1);
@@ -2015,13 +2159,13 @@ struct obj *obj;
     {
         if (obj->otyp == MAGIC_LAMP && obj->special_quality == 0)
             return FALSE;
-        if ((obj->otyp == MAGIC_CANDLE || obj->otyp == CANDELABRUM_OF_INVOCATION) && obj->special_quality == 0)
+        if ((obj->otyp == MAGIC_CANDLE || is_obj_candelabrum(obj)) && obj->special_quality == 0)
             return FALSE;
         else if (obj->otyp != MAGIC_LAMP && obj->otyp != MAGIC_CANDLE && obj->age == 0)
             return FALSE;
         if (!get_obj_location(obj, &x, &y, 0))
             return FALSE;
-        if (obj->otyp == CANDELABRUM_OF_INVOCATION && obj->cursed)
+        if (is_obj_candelabrum(obj) && obj->cursed)
             return FALSE;
         if ((obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP
              || obj->otyp == BRASS_LANTERN) && obj->cursed && !rn2(2))
@@ -5239,6 +5383,10 @@ doapply()
     {
         res = (pick_lock(obj) != 0);
     }
+    else if (is_obj_candelabrum(obj))
+    {
+        use_candelabrum(obj);
+    }
     else
     {
         /* All others */
@@ -5380,7 +5528,7 @@ doapply()
         case WAX_CANDLE:
         case TALLOW_CANDLE:
         case MAGIC_CANDLE:
-            use_candle(&obj);
+            res = use_candle(&obj);
             break;
         case OIL_LAMP:
         case MAGIC_LAMP:

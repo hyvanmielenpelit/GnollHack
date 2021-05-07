@@ -1557,7 +1557,7 @@ weapon_here:
             }
             break;
         }
-        if (obj->otyp == CANDELABRUM_OF_INVOCATION) 
+        if (is_obj_candelabrum(obj)) 
         {
             if (!obj->special_quality)
                 Strcpy(tmpbuf, "no");
@@ -4794,7 +4794,7 @@ boolean is_wiz_wish;
             typ = FAKE_AMULET_OF_YENDOR;
             break;
         case CANDELABRUM_OF_INVOCATION:
-            typ = rnd_class(TALLOW_CANDLE, WAX_CANDLE);
+            typ = !rn2(2) ? LARGE_FIVE_BRANCHED_CANDELABRUM : rnd_class(TALLOW_CANDLE, WAX_CANDLE);
             break;
         case BELL_OF_OPENING:
             typ = BELL;

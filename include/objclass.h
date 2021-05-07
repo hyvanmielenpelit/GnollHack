@@ -721,11 +721,11 @@ struct objclass {
 #define oc_potion_nutrition_plus oc_wedmgplus                /* potions: potion nutrition constant added */
 
 
-    int oc_dir_subtype;                /* spells: ID for type of ray or immediate effect, weapons: damage type */
+    int oc_dir_subtype;               /* spells: ID for type of ray or immediate effect, weapons: damage type */
 
-    int oc_material_components;        /* spells: ID for material component list for a spell or to make the item (if recipe is known), other items: ID of components produced when breaking */
-    int oc_item_cooldown;            /* cooldown before the item can be used / applied / zapped / read etc. again */
-    int oc_item_level;                /* item level, to be used with loot tables */
+    int oc_material_components;       /* spells: ID for material component list for a spell or to make the item (if recipe is known), other items: ID of components produced when breaking */
+    int oc_item_cooldown;             /* cooldown before the item can be used / applied / zapped / read etc. again */
+    int oc_special_quality;           /* special quality, e.g. maximum number of candles in the candelabrum */
 
     unsigned long oc_flags;         /* E.g. if indestructible or disintegration resistant */
     unsigned long oc_flags2;        /* More flags */
@@ -953,6 +953,7 @@ struct objclass {
 #define O4_RARE                                            0x10000000UL
 #define O4_VERY_RARE                                       0x20000000UL
 #define O4_NO_CLASS_GENERATION_IN_SHOP                     0x40000000UL
+#define O4_CANDELABRUM                                     0x80000000UL
 
 #define O5_NONE                        0x00000000UL
 #define O6_NONE                        0x00000000UL

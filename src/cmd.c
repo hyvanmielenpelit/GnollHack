@@ -7947,8 +7947,8 @@ dolight(VOID_ARGS)
                         if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y')
                         {
                             if (is_candle(otmp))
-                                use_candle(&otmp);
-                            else if (otmp->otyp == CANDELABRUM_OF_INVOCATION)
+                                return use_candle(&otmp);
+                            else if (is_obj_candelabrum(otmp))
                                 use_candelabrum(otmp);
                             else if (otmp->otyp == POT_OIL)
                                 light_cocktail(&otmp);

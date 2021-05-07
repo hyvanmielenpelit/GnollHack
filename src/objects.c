@@ -65,7 +65,7 @@ struct monst { struct monst *dummy; };  /* lint: struct obj's union */
 /* first pass -- object descriptive text */
 #define OBJ(name,desc,contentname,contentdesc,itemdesc,height,stand_anim,enlarge,replacement)  name, desc, contentname, contentdesc, itemdesc, height, stand_anim, enlarge, replacement
 #define OBJECT(obj,bits,prp1,prp2,prp3,pflags,sym,prob,multigen,dly,wt,cost, \
-               dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct,  hitbon,mcadj,fixdmgbon,range,  oc1,oc2,oc3,oc4,oc5,oc6,oc7,oc8,  nut,color, soundset,  dirsubtype,materials,cooldown,level,  powconfermask,permittedtargets,flags,flags2,flags3,flags4,flags5,flags6)  { obj }
+               dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct,  hitbon,mcadj,fixdmgbon,range,  oc1,oc2,oc3,oc4,oc5,oc6,oc7,oc8,  nut,color, soundset,  dirsubtype,materials,cooldown,special_quality,  powconfermask,permittedtargets,flags,flags2,flags3,flags4,flags5,flags6)  { obj }
 #define None (char *) 0 /* less visual distraction for 'no description' */
 
 NEARDATA struct objdescr obj_descr[] =
@@ -73,9 +73,9 @@ NEARDATA struct objdescr obj_descr[] =
 /* second pass -- object definitions */
 #define BITS(nmkn,mrg,uskn,ctnr,mgc,spetype,chrg,recharging,uniq,nwsh,big,tuf,dir,sub,skill,mtrl) \
   nmkn,mrg,uskn,0,mgc,spetype,chrg,recharging,uniq,nwsh,big,tuf,dir,mtrl,sub,skill /*SCO cpp fodder*/
-#define OBJECT(obj,bits,prp1,prp2,prp3,pflags,sym,prob,multigen,dly,wt,cost,dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct,   hitbon,mcadj,fixdmgbon,range,  oc1,oc2,oc3,oc4,oc5,oc6,oc7,oc8,  nut,color,soundset,  dirsubtype,materials,cooldown,level,  powconfermask,permittedtargets,flags,flags2,flags3,flags4,flags5,flags6) \
+#define OBJECT(obj,bits,prp1,prp2,prp3,pflags,sym,prob,multigen,dly,wt,cost,dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct,   hitbon,mcadj,fixdmgbon,range,  oc1,oc2,oc3,oc4,oc5,oc6,oc7,oc8,  nut,color,soundset,  dirsubtype,materials,cooldown,special_quality,  powconfermask,permittedtargets,flags,flags2,flags3,flags4,flags5,flags6) \
   { 0, 0, (char *) 0, bits, prp1, prp2, prp3, pflags, sym, dly, color, prob, wt, nut,  \
-    cost, dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, hitbon, mcadj, fixdmgbon, range,   oc1, oc2, oc3, oc4, oc5, oc6, oc7, oc8,   dirsubtype, materials, cooldown, level,  flags,flags2,flags3,flags4,flags5,flags6,powconfermask, permittedtargets, critpct, multigen, soundset }
+    cost, dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, hitbon, mcadj, fixdmgbon, range,   oc1, oc2, oc3, oc4, oc5, oc6, oc7, oc8,   dirsubtype, materials, cooldown, special_quality,  flags,flags2,flags3,flags4,flags5,flags6,powconfermask, permittedtargets, critpct, multigen, soundset }
 #ifndef lint
 #define HARDGEM(n) (n >= 8)
 #else
@@ -1921,26 +1921,26 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 
 /* tools ... */
 /* tools with weapon characteristics come last */
-#define GENERAL_TOOL(name,desc,contentname,contentdesc,itemdesc, stand_anim, enl, repl, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
+#define GENERAL_TOOL(name,desc,contentname,contentdesc,itemdesc, stand_anim, enl, repl, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,special_quality,mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
     OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, height, stand_anim, enl, repl),                                           \
            BITS(kn, mrg, charged || spetype ? 1 : 0, 0, mgc, spetype, charged, recharging, 0, 0, 0, 0, 0, subtype, P_NONE, mat), \
            power1, power2, power3, pflags,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
            0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, splcastpen, 0, \
            wt, color, soundset, \
-           0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4, flags5, flags6)
-#define TOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
-   GENERAL_TOOL(name,desc,contentname,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)
+           0, 0, cooldown, special_quality, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4, flags5, flags6)
+#define TOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,special_quality,mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
+   GENERAL_TOOL(name,desc,contentname,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,special_quality,mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)
 
-#define GENERAL_SPELLTOOL(name,desc,contentname,contentdesc,itemdesc, stand_anim, enl, repl, subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown, skill, mat,color,height,soundset,flags,flags2,flags3, flags4,flags5,flags6) \
+#define GENERAL_SPELLTOOL(name,desc,contentname,contentdesc,itemdesc, stand_anim, enl, repl, subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,special_quality, skill, mat,color,height,soundset,flags,flags2,flags3, flags4,flags5,flags6) \
     OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, height, stand_anim, enl, repl),                                           \
            BITS(kn, mrg, charged ? 1 : 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, dir, subtype, skill, mat), \
            0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
            adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-           wt, color, soundset, dirsubtype, 0, cooldown, 0, PERMITTED_ALL, ALL_TARGETS, O1_WAND_LIKE_TOOL | flags, flags2, flags3, flags4, flags5, flags6)
-#define SPELLTOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown, skill, mat,color,height,soundset,flags,flags2,flags3, flags4, flags5, flags6) \
-    GENERAL_SPELLTOOL(name,desc,contentname,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown, skill, mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6)
+           wt, color, soundset, dirsubtype, 0, cooldown, special_quality, PERMITTED_ALL, ALL_TARGETS, O1_WAND_LIKE_TOOL | flags, flags2, flags3, flags4, flags5, flags6)
+#define SPELLTOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,special_quality, skill, mat,color,height,soundset,flags,flags2,flags3, flags4, flags5, flags6) \
+    GENERAL_SPELLTOOL(name,desc,contentname,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, adtyp, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,special_quality, skill, mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6)
 /*
 OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, 0, 0, 0),                                           \
            BITS(kn, mrg, charged ? 1 : 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, dir, subtype, P_NONE, mat), \
@@ -1949,223 +1949,225 @@ OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, 0, 0, 0),            
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
            wt, color, height,soundset, dirsubtype, 0, cooldown, 0, PERMITTED_ALL, ALL_TARGETS, O1_WAND_LIKE_TOOL | flags, flags2, flags3, flags4)
 */
-#define CONTAINER(name,desc,itemdesc,subtype,stand_anim, enl, repl,kn,mgc,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
+#define CONTAINER(name,desc,itemdesc,subtype,stand_anim, enl, repl,kn,mgc,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,pflags,special_quality,mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
     OBJECT(OBJ(name, desc, None, None, itemdesc, height, stand_anim, enl, repl),                                           \
            BITS(kn, 0, charged ? 1 : 0, 1, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, 0, subtype, P_NONE, mat),   \
            0, 0, 0, pflags,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
            0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, 0, 0, \
-           wt, color, soundset, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, O2_CONTAINER | flags2, flags3, flags4, flags5, flags6)
-#define WEPTOOL(name,desc,itemdesc,kn,mgc,bi,prob,wt,cost, dmgtype, sdice, sdiesize, sdmgplus, ldice, ldiesize, ldmgplus, edmgtype, edice, ediesize, edmgplus, aflags, aflags2, critpct, hitbon,splcastpen,sub,skill,cooldown,mat,clr,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets)\
+           wt, color, soundset, 0, 0, cooldown, special_quality, powconfermask, ALL_TARGETS, flags, O2_CONTAINER | flags2, flags3, flags4, flags5, flags6)
+#define WEPTOOL(name,desc,itemdesc,kn,mgc,bi,prob,wt,cost, dmgtype, sdice, sdiesize, sdmgplus, ldice, ldiesize, ldmgplus, edmgtype, edice, ediesize, edmgplus, aflags, aflags2, critpct, hitbon,splcastpen,sub,skill,cooldown,special_quality,mat,clr,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,permittedtargets)\
     OBJECT(OBJ(name, desc, None, None, itemdesc, height, 0, 0, 0),                                           \
            BITS(kn, 0, 1, 0, mgc, ENCHTYPE_GENERAL_WEAPON, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, bi, 0, hitbon, sub, skill, mat),    \
            0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
            dmgtype, sdice, sdiesize, sdmgplus, ldice, ldiesize, ldmgplus, edmgtype, edice, ediesize, edmgplus, aflags, aflags2, critpct, \
            hitbon, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-           wt, clr, soundset, 0, 0, cooldown, 0, powconfermask, permittedtargets, flags, flags2, flags3, O4_WEAPON_TOOL | flags4, flags5, flags6)
+           wt, clr, soundset, 0, 0, cooldown, special_quality, powconfermask, permittedtargets, flags, flags2, flags3, O4_WEAPON_TOOL | flags4, flags5, flags6)
 
 /* containers */
 CONTAINER("large box",       None, None, TOOLTYPE_BOX, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 37, 350,   8, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_CHEST, O1_NONE, O2_CONTAINER_BOX, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), //STARTMARKER 1
+    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 37, 350,   8, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_CHEST, O1_NONE, O2_CONTAINER_BOX, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), //STARTMARKER 1
 CONTAINER("chest",           None, None, TOOLTYPE_CHEST, NO_ANIMATION, NO_ENLARGEMENT, CHEST_REPLACEMENT,
-    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 28, 600,  16, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_CHEST, O1_ROT_RESISTANT, O2_CONTAINER_BOX, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 28, 600,  16, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_CHEST, O1_ROT_RESISTANT, O2_CONTAINER_BOX, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("golden chest",           None, None, TOOLTYPE_CHEST, NO_ANIMATION, NO_ENLARGEMENT, GOLDEN_CHEST_REPLACEMENT,
-    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 600, 500, 0, 0, 0, 0, 0, P1_NONE, MAT_GOLD, HI_GOLD, 0, OBJECT_SOUNDSET_CHEST,
+    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 600, 500, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_GOLD, HI_GOLD, 0, OBJECT_SOUNDSET_CHEST,
     O1_DISINTEGRATION_RESISTANT | O1_NOT_CURSEABLE,
     O2_CONTAINER_BOX, O3_NO_WISH | O3_NO_GENERATION, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("ice box",         None, None, TOOLTYPE_BOX, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5, 900,  42, 0, 0, 0, 0, 0, P1_NONE, MAT_PLASTIC, CLR_WHITE, 0, OBJECT_SOUNDSET_CHEST, O1_ROT_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5, 900,  42, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_PLASTIC, CLR_WHITE, 0, OBJECT_SOUNDSET_CHEST, O1_ROT_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("bookshelf",         None, None, TOOLTYPE_GENERAL, NO_ANIMATION, BOOKSHELF_ENLARGEMENT, NO_REPLACEMENT,
-    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 1600, 36, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FULL_SIZED_BITMAP | O4_CONTAINER_CONTENTS_VISIBLE | O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_PEEK_INTO | O4_NO_CLASS_GENERATION_IN_SHOP, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 1600, 36, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FULL_SIZED_BITMAP | O4_CONTAINER_CONTENTS_VISIBLE | O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_PEEK_INTO | O4_NO_CLASS_GENERATION_IN_SHOP, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("weapon rack",         None, None, TOOLTYPE_GENERAL, NO_ANIMATION, WEAPON_RACK_ENLARGEMENT, NO_REPLACEMENT,
-    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 26,  600,  8, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FULL_SIZED_BITMAP | O4_CONTAINER_CONTENTS_VISIBLE | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS | O4_NO_CLASS_GENERATION_IN_SHOP, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 26,  600,  8, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FULL_SIZED_BITMAP | O4_CONTAINER_CONTENTS_VISIBLE | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS | O4_NO_CLASS_GENERATION_IN_SHOP, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("mine cart",         None, None, TOOLTYPE_GENERAL, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 2,  3200,  36, 0, 0, 0, 0, 0, P1_NONE, MAT_IRON, CLR_GRAY, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_CONTAINER_PEEK_INTO | O4_NO_CLASS_GENERATION_IN_SHOP, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 2,  3200,  36, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_IRON, CLR_GRAY, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_CONTAINER_PEEK_INTO | O4_NO_CLASS_GENERATION_IN_SHOP, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("sarcophagus",     None, None, TOOLTYPE_GENERAL, NO_ANIMATION, NO_ENLARGEMENT, SARCOPHAGUS_REPLACEMENT,
-    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 2,  2400,  36, 0, 0, 0, 0, 0, P1_NONE, MAT_MINERAL, CLR_YELLOW, 0, OBJECT_SOUNDSET_SARCOPHAGUS, O1_ROT_RESISTANT, O2_NONE, O3_NONE, O4_FULL_SIZED_BITMAP | O4_CONTAINER_HAS_LID | O4_CONTAINER_PEEK_INTO | O4_CONTAINER_MAY_CONTAIN_MONSTER | O4_NO_CLASS_GENERATION_IN_SHOP, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 2,  2400,  36, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_MINERAL, CLR_YELLOW, 0, OBJECT_SOUNDSET_SARCOPHAGUS, O1_ROT_RESISTANT, O2_NONE, O3_NONE, O4_FULL_SIZED_BITMAP | O4_CONTAINER_HAS_LID | O4_CONTAINER_PEEK_INTO | O4_CONTAINER_MAY_CONTAIN_MONSTER | O4_NO_CLASS_GENERATION_IN_SHOP, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("coffin",     None, None, TOOLTYPE_GENERAL, NO_ANIMATION, NO_ENLARGEMENT, COFFIN_REPLACEMENT,
-    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5,  1600,  36, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, CLR_BROWN, 0, OBJECT_SOUNDSET_COFFIN, O1_ROT_RESISTANT, O2_NONE, O3_NONE, O4_FULL_SIZED_BITMAP | O4_CONTAINER_HAS_LID | O4_CONTAINER_PEEK_INTO | O4_CONTAINER_MAY_CONTAIN_MONSTER | O4_NO_CLASS_GENERATION_IN_SHOP, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5,  1600,  36, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_WOOD, CLR_BROWN, 0, OBJECT_SOUNDSET_COFFIN, O1_ROT_RESISTANT, O2_NONE, O3_NONE, O4_FULL_SIZED_BITMAP | O4_CONTAINER_HAS_LID | O4_CONTAINER_PEEK_INTO | O4_CONTAINER_MAY_CONTAIN_MONSTER | O4_NO_CLASS_GENERATION_IN_SHOP, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("backpack",         None, None, TOOLTYPE_GENERAL, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5,  15,   5, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    1, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5,  15,   5, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 
 /* shuffled bags start here */
 CONTAINER("leather bag",     "brown bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,//STARTMARKER FOR SHUFFLED BAGS AND BAG WISHCLASS
-    0, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5,  15,  25, 0, 0, 0, 0, 0, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    0, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5,  15,  25, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("sack",           "vintage bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    0, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 10,  10,   5, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    0, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 10,  10,   5, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("oilskin sack",   "decorative bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    0, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5,  10, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    0, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5,  10, 100, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 /* magic bags start here */
 CONTAINER("bag of holding", "ornamental bag", "Reduces the weight of contents by half", TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 20, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), //STARTMARKER 2
+    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 20, 15, 100, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), //STARTMARKER 2
 CONTAINER("bag of wizardry", "antiquated bag", "Reduces the weight of spellbooks, scrolls, reagents, and wands to 1/8", TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("bag of treasure hauling", "silvery bag", "Reduces the weight of coins, gems, and other treasure to 1/32", TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("bag of the glutton", "dilapidated bag", "Reduces the weight of comestibles and potions to 1/10", TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("pouch of endless bolts", "old bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 15, 100, 1000, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 15, 100, 1000, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("bag of infinite sling bullets", "old-fashioned bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 15, 100, 1000, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 15, 100, 1000, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("bag of tricks", "runed bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,//ENDMARKER FOR SHUFFLED
-    0, 1, CHARGED_BAG_OF_TRICKS, RECHARGING_TOOL_SPECIAL_MAGICAL, 20, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_NONCONTAINER | O2_CONTAINER_MAGIC_BAG, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), //ENDMARKER 1&2
+    0, 1, CHARGED_BAG_OF_TRICKS, RECHARGING_TOOL_SPECIAL_MAGICAL, 20, 15, 100, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_NONCONTAINER | O2_CONTAINER_MAGIC_BAG, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), //ENDMARKER 1&2
 /* end of shuffled bags */
 CONTAINER("expensive handbag", "gold-encrusted bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    0, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED, MAT_SILK, HI_GOLD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_GENDER_FEMALE),
+    0, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED, 0, MAT_SILK, HI_GOLD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_GENDER_FEMALE),
 CONTAINER("oriental silk sack", "silk-woven bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,//ENDMARKER BAG WISHCLASS
-    0, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5,  3,  50, 0, 0, 0, 0, 0, P1_NONE, MAT_SILK, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    0, 0, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 5,  3,  50, 0, 0, 0, 0, 0, P1_NONE, 0, MAT_SILK, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 CONTAINER("quiver of infinite arrows", "cylindrical bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
-    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 15, 100, 1000, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 15, 100, 1000, 0, 0, 0, 0, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 #undef CONTAINER
 
 /* lock opening tools */
 TOOL("skeleton key",       "key", "metal", None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 70,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_KEY, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_KEY, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("magic key", None, "magic", None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_ZAP, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_KEY, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_METAL, HI_ZAP, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_KEY, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("geometric key",       "key", "geometric", None, None, TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_MODRONITE, CLR_WHITE, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_MODRONITE, CLR_WHITE, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("ornamental key",       "key", "ornamental", None, None, TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_METAL, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("stone key", None, "stone", None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_MINERAL, CLR_GRAY, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_MINERAL, CLR_GRAY, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("bronze key", None, "bronze", None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_COPPER, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_METAL, HI_COPPER, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("silver key", None, "silver", None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_SILVER, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_SILVER, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("gold key", None, "gold", None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_GOLD, HI_GOLD, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_GOLD, HI_GOLD, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("platinum key", None, "platinum", None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_PLATINUM, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_PLATINUM, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("mithril key", None, "mithril", None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_MITHRIL, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_MITHRIL, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("orichalcum key", None, "orichalcum", None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_ORICHALCUM, HI_GOLD, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_ORICHALCUM, HI_GOLD, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("adamantium key",       None, "adamantium", None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0,  2, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_ADAMANTIUM, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_ADAMANTIUM, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, O1_INDESTRUCTIBLE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("master key",           "key", "master", None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 2, 10, 0, 0, 0, 0, 0, 0, /* base item for master key of thievery */
-    ENHANCED_UNTRAP, NO_POWER, NO_POWER, P1_POWER_1_APPLIES_WHEN_CARRIED, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ROLE_ROGUE),
+    ENHANCED_UNTRAP, NO_POWER, NO_POWER, P1_POWER_1_APPLIES_WHEN_CARRIED, 0, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_KEY, O3_NO_WISH | O3_NO_GENERATION, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ROLE_ROGUE),
 TOOL("lock pick",           None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 55,  2, 20, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("credit card",         None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 10,  1, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_PLASTIC, CLR_WHITE, 16, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_READABLE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_PLASTIC, CLR_WHITE, 16, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_READABLE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 
 /* light sources */
 GENERAL_TOOL("tallow candle",   "old-fashioned candle", None, None, None, NO_ANIMATION, NO_ENLARGEMENT, OLD_FASHIONED_CANDLE_LIT_REPLACEMENT, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 18,  1, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_CANDLE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_CANDLE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 GENERAL_TOOL("wax candle",      "twisted candle", None, None, None, NO_ANIMATION, NO_ENLARGEMENT, TWISTED_CANDLE_LIT_REPLACEMENT, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 9,  1, 20, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_CANDLE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), //ENDMARKER
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_CANDLE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), //ENDMARKER
 GENERAL_TOOL("magic candle",    "handcrafted candle", None, None, None, NO_ANIMATION, NO_ENLARGEMENT, HANDCRAFTED_CANDLE_LIT_REPLACEMENT, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 3,  1, 20, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_CANDLE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_CANDLE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 GENERAL_TOOL("brass lantern",       None, None, None, None, NO_ANIMATION, NO_ENLARGEMENT, BRASS_LANTERN_LIT_REPLACEMENT, TOOLTYPE_LANTERN, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 30, 30, 12, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, 0, OBJECT_SOUNDSET_LANTERN, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_REFILLABLE_WITH_OIL, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-GENERAL_TOOL("oil lamp",          "antiquated brass lamp", None, None, None, NO_ANIMATION, NO_ENLARGEMENT, ANTIQUATED_BRASS_LAMP_LIT_REPLACEMENT, TOOLTYPE_LAMP, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 40, 20, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, 32, OBJECT_SOUNDSET_LAMP, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_REFILLABLE_WITH_OIL, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_COPPER, CLR_YELLOW, 0, OBJECT_SOUNDSET_LANTERN, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_REFILLABLE_WITH_OIL, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+GENERAL_TOOL("oil lamp",          "antiquated brass lamp", None, None, None, NO_ANIMATION, NO_ENLARGEMENT, ANTIQUATED_BRASS_LAMP_LIT_REPLACEMENT, TOOLTYPE_LAMP, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 37, 20, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_COPPER, CLR_YELLOW, 32, OBJECT_SOUNDSET_LAMP, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_REFILLABLE_WITH_OIL, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 GENERAL_TOOL("magic lamp",        "oriental brass lamp", None, None, None, NO_ANIMATION, NO_ENLARGEMENT, ORIENTAL_BRASS_LAMP_LIT_REPLACEMENT, TOOLTYPE_LAMP, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 20, 50, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, 32, OBJECT_SOUNDSET_LAMP, O1_NONE, O2_NONE, O3_INVOKABLE | O3_REFILLABLE_WITH_OIL | O3_IGNITABLE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL), //ENDMARKER
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_COPPER, CLR_YELLOW, 32, OBJECT_SOUNDSET_LAMP, O1_NONE, O2_NONE, O3_INVOKABLE | O3_REFILLABLE_WITH_OIL | O3_IGNITABLE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL), //ENDMARKER
+GENERAL_TOOL("large five-branched candelabrum", None, None, None, None, NO_ANIMATION, NO_ENLARGEMENT, LARGE_FIVE_BRANCHED_CANDELABRUM_REPLACEMENT, TOOLTYPE_CANDELABRUM, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 3, 300, 10, 0, 0, 0, 0, 0, 0,
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 5, MAT_COPPER, CLR_YELLOW, 32, OBJECT_SOUNDSET_CANDELABRUM, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_NO_PICKUP, O4_FULL_SIZED_BITMAP | O4_CANDELABRUM, O5_NONE, O6_NONE, PERMITTED_ALL),
 
 /* other tools */
 TOOL("expensive camera",    None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_MAGIC_MARKER, RECHARGING_CAMERA, 10, 12,200, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_PLASTIC, CLR_BLACK, 24, OBJECT_SOUNDSET_CAMERA, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_PLASTIC, CLR_BLACK, 24, OBJECT_SOUNDSET_CAMERA, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("mirror",   "looking glass", None, None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 25, 13, 10, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_GLASS, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_INVOKABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_GLASS, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_INVOKABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("magic mirror", "looking glass", None, None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 13, 10, 0, 0, 0, 0, 0, 0, /* Base item for The Magic Mirror of Merlin */
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_GLASS, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_INVOKABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_GLASS, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_INVOKABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("holy symbol", "religious symbol", None, None, "Religious symbol that can be applied to turn undead", TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_1D15_15, RECHARGING_HOLY_SYMBOL, 10, 10,100, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_SILVER, HI_SILVER, 32, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_SPECIAL_PRAYING_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_SILVER, HI_SILVER, 32, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_SPECIAL_PRAYING_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("crystal ball", "glass orb", None, None, None, TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_CRYSTAL_BALL, RECHARGING_CRYSTAL_BALL, 15, 100, 60, 25, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_GLASS, HI_GLASS, 0, OBJECT_SOUNDSET_CRYSTAL_BALL, O1_NONE, O2_NONE, O3_INVOKABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_GLASS, HI_GLASS, 0, OBJECT_SOUNDSET_CRYSTAL_BALL, O1_NONE, O2_NONE, O3_INVOKABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("blindfold",           None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 50, 2, 20, 0, 0, 0, 0, 0, 0,
-    BLINDFOLDED, NO_POWER, NO_POWER, P1_NONE, MAT_CLOTH, CLR_BLACK, 32, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    BLINDFOLDED, NO_POWER, NO_POWER, P1_NONE, 0, MAT_CLOTH, CLR_BLACK, 32, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("towel",               None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 35, 2, 50, 0, 0, 0, 0, 0, 0,
-    BLINDFOLDED, NO_POWER, NO_POWER, P1_NONE, MAT_CLOTH, CLR_MAGENTA, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    BLINDFOLDED, NO_POWER, NO_POWER, P1_NONE, 0, MAT_CLOTH, CLR_MAGENTA, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("saddle",              None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 10,200,150, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("leash",               None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 20, 12, 20, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("stethoscope",         None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 25,  4, 75, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("tinning kit",         None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_MAGIC_MARKER, RECHARGING_MAGIC_MARKER, 13,100, 30, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("tin opener",          None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 13,  4, 30, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_IRON, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("can of grease",       "metal can", "grease", "viscous fluid", None, TOOLTYPE_CAN, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_CAN_OF_GREASE, RECHARGING_CAN_OF_GREASE, 15, 15, 20, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_IRON, HI_METAL, 32, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO, O5_NONE, O6_NONE, PERMITTED_ALL),
 GENERAL_TOOL("figurine",            None, None, None, None, NO_ANIMATION, NO_ENLARGEMENT, FIGURINE_REPLACEMENT, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 50, 80, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_MINERAL, HI_MINERAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_MINERAL, HI_MINERAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
         /* FIGURINE REMOVED FROM THE GAME -- JG -- monster type specified by obj->corpsenm */
 TOOL("magic marker",        None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_MAGIC_MARKER, RECHARGING_MAGIC_MARKER, 25,  2, 50, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_PLASTIC, CLR_RED, 24, OBJECT_SOUNDSET_MAGIC_MARKER, O1_NONE, O2_NONE, O3_READABLE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_PLASTIC, CLR_RED, 24, OBJECT_SOUNDSET_MAGIC_MARKER, O1_NONE, O2_NONE, O3_READABLE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("cubic gate",        "small runed cube", None, None, None, TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_2D6_8, RECHARGING_TOOL_GENERAL, 10,  3, 250, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_MINERAL, CLR_GRAY, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_MINERAL, CLR_GRAY, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 
 /* traps */
 TOOL("land mine",           None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 300,180, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, CLR_RED, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_IRON, CLR_RED, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("beartrap",            None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 200, 60, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 
 /* instruments;
    "If tin whistles are made out of tin, what do they make foghorns out of?" */
 TOOL("tin whistle",    "old whistle", None, None, None, TOOLTYPE_WHISTLE, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 49, 2, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_METAL, 16, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_METAL, HI_METAL, 16, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("magic whistle",  "shiny whistle", None, None, None, TOOLTYPE_WHISTLE, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 40, 2, 10, 0, 0, 0, 0, 0, 0, //ENDMARKER
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_METAL, 16, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_METAL, HI_METAL, 16, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("wooden flute",     "oak flute", None, None, None, TOOLTYPE_FLUTE, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 6, 5, 12, 0, 0, 0, 0, 0, 0, //STARTMARKER
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, 32, OBJECT_SOUNDSET_FLUTE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_WOOD, HI_WOOD, 32, OBJECT_SOUNDSET_FLUTE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("magic flute",      "blackwood flute", None, None, None, TOOLTYPE_FLUTE, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL, RECHARGING_MUSICAL_INSTRUMENT, 3, 5, 36, 0, 0, 0, 0, 0, 0, //ENDMARKER
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, 32, OBJECT_SOUNDSET_FLUTE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_WOOD, HI_WOOD, 32, OBJECT_SOUNDSET_FLUTE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("brass horn",       None, None, None, None, TOOLTYPE_HORN, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_MUSICAL_INSTRUMENT, 5, 18, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER FOR HORN WISH CLASS
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_COPPER, CLR_YELLOW, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("tooled horn",       "arched horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_1D15_15, RECHARGING_MUSICAL_INSTRUMENT, 5, 18, 15, 0, 0, 0, 0, 0, 0, //STARTMARKER FOR SHUFFLED HORNS
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-SPELLTOOL("frost horn",   "spiral horn", "blast of frost", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_COLD, AD_COLD, 12, 6, 0, 0, 0, 0, 0, P_WAND, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
-SPELLTOOL("fire horn",    "curved horn", "blast of fire", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_FIRE, AD_FIRE, 12, 6, 0, 0, 0, 0, 0, P_WAND, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
-SPELLTOOL("horn of chaos", "polished horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D4_4, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, NODIR, NODIR_NONE, AD_NONE, 0, 0, 0, 1, 10, 70, 0, P_WAND, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+SPELLTOOL("frost horn",   "spiral horn", "blast of frost", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_COLD, AD_COLD, 12, 6, 0, 0, 0, 0, 0, 0, P_WAND, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+SPELLTOOL("fire horn",    "curved horn", "blast of fire", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_FIRE, AD_FIRE, 12, 6, 0, 0, 0, 0, 0, 0, P_WAND, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+SPELLTOOL("horn of chaos", "polished horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D4_4, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, NODIR, NODIR_NONE, AD_NONE, 0, 0, 0, 1, 10, 70, 0, 0, P_WAND, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 TOOL("horn of plenty",    "twisted horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_BAG_OF_TRICKS, RECHARGING_TOOL_SPECIAL_MAGICAL, 3, 18, 50, 300, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),//ENDMARKER FOR HORNS
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),//ENDMARKER FOR HORNS
         /* horn, but not an instrument */
 TOOL("wooden harp",       "ornamental harp", None, None, None, TOOLTYPE_HARP, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_MUSICAL_INSTRUMENT, 4, 30, 50, 0, 0, 0, 0, 0, 0, //STARTMARKER
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_HARP, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_HARP, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("magic harp",        "runed harp", None, None, None, TOOLTYPE_HARP, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL, RECHARGING_MUSICAL_INSTRUMENT, 3, 30, 50, 0, 0, 0, 0, 0, 0, //ENDMARKER
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_HARP, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_HARP, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("bell",                None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_MUSICAL_INSTRUMENT,  3, 30, 50, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, HI_COPPER, 32, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_COPPER, HI_COPPER, 32, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("bugle",               None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 10, 15, 0, 0, 0, 0, 0, 0,
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, HI_COPPER, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_COPPER, HI_COPPER, 0, OBJECT_SOUNDSET_HORN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("leather drum",      "old drum", None, None, None, TOOLTYPE_DRUM, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 25, 25, 0, 0, 0, 0, 0, 0, //STARTMARKER
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_DRUM, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_DRUM, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("drum of earthquake","antiquated drum", None, None, None, TOOLTYPE_DRUM, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL, RECHARGING_MUSICAL_INSTRUMENT, 3, 25, 25, 0, 0, 0, 0, 0, 0, //ENDMARKER
-    NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_DRUM, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_DRUM, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 GENERAL_SPELLTOOL("jar of extra healing salve", "glass jar", "healing salve", "yellow ointment", "Heals a target for 12d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_YELLOW_REPLACEMENT,
     TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL, //STARTMARKER for jars and salves and shuffled jars
-    20, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 12, 6, 0, 0, 0, 0, 0,
+    20, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 12, 6, 0, 0, 0, 0, 0, 0,
     P_NONE, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO, O5_NONE, O6_NONE),
 GENERAL_SPELLTOOL("jar of greater healing salve", "crystal jar", "healing salve", "purple ointment", "Heals a target for 24d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_PURPLE_REPLACEMENT,
     TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL,
-    10, 15, 300, TOUCH, TOUCH_NONE, AD_HEAL, 24, 6, 0, 0, 0, 0, 0,
+    10, 15, 300, TOUCH, TOUCH_NONE, AD_HEAL, 24, 6, 0, 0, 0, 0, 0, 0,
     P_NONE, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO | O4_RARE, O5_NONE, O6_NONE),
 GENERAL_SPELLTOOL("jar of medicinal salve", "crystalline jar", "medicinal salve", "white ointment", "Cures a target from sickness", NO_ANIMATION, NO_ENLARGEMENT, JAR_WHITE_REPLACEMENT,
     TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_6, RECHARGING_TOOL_GENERAL,
-    20, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 0, 0, 0, 0, 0,
+    20, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 0, 0, 0, 0, 0, 0,
     P_NONE, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO, O5_NONE, O6_NONE),
 GENERAL_SPELLTOOL("jar of prodigious healing salve", "transparent jar", "healing salve", "violet ointment", "Heals a target for 48d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_VIOLET_REPLACEMENT,
     TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL,  //ENDMARKER for salves and shuffled jars
-    5, 15, 500, TOUCH, TOUCH_NONE, AD_HEAL, 48, 6, 0, 0, 0, 0, 0,
+    5, 15, 500, TOUCH, TOUCH_NONE, AD_HEAL, 48, 6, 0, 0, 0, 0, 0, 0,
     P_NONE, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_ALLOWS_DIPPING_INTO | O4_VERY_RARE, O5_NONE, O6_NONE), // Endmarker for jars
 GENERAL_SPELLTOOL("jar of basilisk blood", "ornamental jar", "basilisk blood", "crimson liquid", "Cures a target from petrification", NO_ANIMATION, NO_ENLARGEMENT, JAR_CRIMSON_REPLACEMENT,
     TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D4_4, RECHARGING_TOOL_GENERAL,
-    15, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 0, 0, 0, 0, 0,
+    15, 15, 150, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 0, 0, 0, 0, 0, 0,
     P_NONE, MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_READABLE | O3_QUAFFABLE, O4_ALLOWS_DIPPING_INTO, O5_NONE, O6_NONE),
 SPELLTOOL("grail of healing", "wooden grail", "sacred wine", "red liquid", "Heals a target for 1000 hit points and 500 mana", 
     TOOLTYPE_GRAIL, 0, 0, 1, CHARGED_HOLY_GRAIL, RECHARGING_HOLY_GRAIL,  //Base item for Holy Grail
-    0, 15, 1000, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 1000, 0, 0, 0, 0, 
+    0, 15, 1000, TOUCH, TOUCH_NONE, AD_HEAL, 0, 0, 1000, 0, 0, 0, 0, 0,
     P_NONE, MAT_WOOD, CLR_BROWN, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION | O3_QUAFFABLE, O4_ALLOWS_DIPPING_INTO, O5_NONE, O6_NONE),
 
@@ -2173,26 +2175,26 @@ SPELLTOOL("grail of healing", "wooden grail", "sacred wine", "red liquid", "Heal
 WEPTOOL("pick-axe", None, None,
     1, 0, 0, 15, 75, 50,  
     AD_PHYS, 1, 6, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
-    WHACK, 0, TOOLTYPE_PICK_AXE, P_PICK_AXE, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
+    WHACK, 0, TOOLTYPE_PICK_AXE, P_PICK_AXE, 0, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_NON_MYTHIC, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEPTOOL("spade of colossal excavation", "large shovel", None,
     0, 1, 1,  5, 60, 100,
     AD_PHYS, 1, 10, 1, 2, 6, 0, AD_PHYS, 0, 0, 0, A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS, A2_NONE, 0,
-    SLASH, 0, TOOLTYPE_SHOVEL, P_PICK_AXE, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
+    SLASH, 0, TOOLTYPE_SHOVEL, P_PICK_AXE, 0, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_DOUBLE_DIGGING_EFFORT | O3_TARGET_PERMISSION_IS_M4_FLAG, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, M4_STONY),
 WEPTOOL("saw of mighty cutting", "silvery saw", None,
     0, 1, 1,  4, 15, 50,
     AD_PHYS, 1, 3, 0, 1, 4, 0, AD_PHYS, 4, 8, 0, A1_NONE, A2_NONE, 0,
-    SLASH, 0, TOOLTYPE_SAW, P_SWORD, 0, MAT_ADAMANTIUM, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
+    SLASH, 0, TOOLTYPE_SAW, P_SWORD, 0, 0, MAT_ADAMANTIUM, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
     O1_INDESTRUCTIBLE, O2_NONE, O3_DOUBLE_DIGGING_EFFORT | O3_TARGET_PERMISSION_IS_M4_FLAG, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, M4_WOODEN),
 WEPTOOL("golf club", "club-headed metal rod", None,
     0, 0, 0,  1, 12, 50,
     AD_PHYS, 1, 3, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
-    WHACK, 0, TOOLTYPE_GOLF_CLUB, P_BLUDGEONING_WEAPON, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
+    WHACK, 0, TOOLTYPE_GOLF_CLUB, P_BLUDGEONING_WEAPON, 0, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_NON_MYTHIC, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEPTOOL("grappling hook", "iron hook", None,
     0, 0, 0,  4, 30,  50,
-    AD_PHYS, 1, 2, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, WHACK, 0, TOOLTYPE_HOOK, P_THROWN_WEAPON, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
+    AD_PHYS, 1, 2, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, WHACK, 0, TOOLTYPE_HOOK, P_THROWN_WEAPON, 0, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_NON_MYTHIC, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
 OBJECT(OBJ("unicorn horn", None, None, None, None, 0, 0, 0, 0),
        BITS(1, 0, 1, 0, 1, ENCHTYPE_GENERAL_WEAPON, CHARGED_HORN_NORMAL, RECHARGING_UNICORN_HORN, 0, 0, 0, 0, 0, TOOLTYPE_HORN, P_SPEAR, MAT_BONE),
@@ -2209,7 +2211,7 @@ OBJECT(OBJ("Candelabrum of Invocation", "candelabrum", None, None, None, 0, 0, 0
        0, 0, 0, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 5000,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-       200, HI_GOLD, OBJECT_SOUNDSET_CANDELABRUM, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_INDESTRUCTIBLE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_NO_GENERATION | O3_NO_WISH | O3_UNBURIABLE, O4_NONE, O5_NONE, O6_NONE),
+       200, HI_GOLD, OBJECT_SOUNDSET_CANDELABRUM, 0, 0, 0, 7, PERMITTED_ALL, ALL_TARGETS, O1_INDESTRUCTIBLE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_NO_GENERATION | O3_NO_WISH | O3_UNBURIABLE, O4_CANDELABRUM, O5_NONE, O6_NONE),
 OBJECT(OBJ("Bell of Opening", "silver bell", None, None, None, 32, 0, 0, 0),
        BITS(0, 0, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_ALWAYS_3, RECHARGING_BELL_OF_OPENING, 1, 1, 0, 0, 0, TOOLTYPE_BELL, P_NONE, MAT_SILVER),
        0, 0, 0, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 5000,

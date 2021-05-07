@@ -605,6 +605,66 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0UL
     },
     {
+        "large-five-branched-candelabrum-autodraw",
+        AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES,
+        0,
+        ITEM2_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
+        "large-five-branched-candelabrum-animation-1-autodraw",
+        AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES,
+        1,
+        ITEM2_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
+        "large-five-branched-candelabrum-animation-2-autodraw",
+        AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES,
+        2,
+        ITEM2_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
+        "large-five-branched-candelabrum-animation-3-autodraw",
+        AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES,
+        3,
+        ITEM2_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
+        "large-five-branched-candelabrum-animation-4-autodraw",
+        AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES,
+        4,
+        ITEM2_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
+        "large-five-branched-candelabrum-animation-5-autodraw",
+        AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES,
+        5,
+        ITEM2_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0,
+        0UL
+    },
+    {
         "jar-yellow-autodraw",
         AUTODRAW_DRAW_JAR_CONTENTS,
         0,
@@ -2119,6 +2179,9 @@ enum autodraw_types* autodraw_ptr;
     short animation_idx = tile2animation[ntile];
     if (animation_idx > 0)
     {
+        if (animation_idx != 4)
+            animation_idx = animation_idx;
+
         if (autodraw_ptr)
             *autodraw_ptr = animations[animation_idx].main_tile_autodraw;
         if (animations[animation_idx].number_of_frames < 1)

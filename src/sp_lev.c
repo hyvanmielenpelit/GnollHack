@@ -2163,7 +2163,7 @@ struct mkroom *croom;
     {
         if(otmp->oclass == WAND_CLASS || objects[otmp->otyp].oc_charged)
             otmp->charges = (schar)o->enchantment;
-        else if (otmp->otyp == TIN || otmp->otyp == MAGIC_LAMP || otmp->otyp == MAGIC_CANDLE || otmp->otyp == TOWEL || otmp->otyp == CANDELABRUM_OF_INVOCATION || otmp->oclass == SCROLL_CLASS)
+        else if (otmp->otyp == TIN || otmp->otyp == MAGIC_LAMP || otmp->otyp == MAGIC_CANDLE || otmp->otyp == TOWEL || otmp->otyp == CANDELABRUM_OF_INVOCATION || is_obj_candelabrum(otmp) || otmp->oclass == SCROLL_CLASS)
             otmp->special_quality = (schar)o->enchantment;
         else if (otmp->otyp == CHEST && o->enchantment)
             otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX;

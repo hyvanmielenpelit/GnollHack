@@ -468,6 +468,10 @@ struct obj {
     ((objects[(otyp)].oc_flags2 & O2_CANDLE) != 0)
 #define is_candle(otmp) \
     is_otyp_candle((otmp)->otyp)
+#define is_otyp_candelabrum(otyp) \
+    ((objects[(otyp)].oc_flags4 & O4_CANDELABRUM) != 0)
+#define is_obj_candelabrum(otmp) \
+    is_otyp_candelabrum((otmp)->otyp)
 #define otyp_shines_magical_light(otyp)                                             \
     ((objects[(otyp)].oc_flags2 & O2_SHINES_MAGICAL_LIGHT) != 0)
 #define obj_shines_magical_light(otmp)     \
