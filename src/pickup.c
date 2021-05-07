@@ -1487,7 +1487,8 @@ boolean telekinesis;
     }
 
     if (obj->otyp == SCR_SCARE_MONSTER && result <= 0 && !container)
-        obj->special_quality = 0;
+        obj->speflags &= ~SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP;
+
     return result;
 }
 
@@ -1504,7 +1505,8 @@ boolean telekinesis; /* not picking it up directly by hand */
 {
     int res, nearload;
 
-    if (obj->quan < count) {
+    if (obj->quan < count) 
+    {
         impossible("pickup_object: count %ld > quan %ld?", count, obj->quan);
         return 0;
     }
@@ -1514,20 +1516,28 @@ boolean telekinesis; /* not picking it up directly by hand */
     if (!Blind)
         obj->dknown = 1;
 
-    if (obj == uchain) { /* do not pick up attached chain */
+    if (obj == uchain)
+    { /* do not pick up attached chain */
         return 0;
-    } else if (obj->oartifact && !touch_artifact(obj, &youmonst)) {
+    }
+    else if (obj->oartifact && !touch_artifact(obj, &youmonst)) 
+    {
         return 0;
-    } else if (obj->otyp == CORPSE) {
+    }
+    else if (obj->otyp == CORPSE) 
+    {
         if (fatal_corpse_mistake(obj, telekinesis)
             || rider_corpse_revival(obj, telekinesis))
             return -1;
-    } else if (obj->otyp == SCR_SCARE_MONSTER) {
+    } 
+    else if (obj->otyp == SCR_SCARE_MONSTER) 
+    {
         if (obj->blessed)
             obj->blessed = 0;
-        else if (!obj->special_quality && !obj->cursed)
-            obj->special_quality = 1;
-        else {
+        else if (!(obj->speflags & SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP) && !obj->cursed)
+            obj->speflags |= SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP;
+        else 
+        {
             play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
             pline_The("scroll%s %s to dust as you %s %s up.", plur(obj->quan),
                       otense(obj, "turn"), telekinesis ? "raise" : "pick",
