@@ -3596,6 +3596,8 @@ static const struct alt_spellings {
     { "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
     { "belt of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
     { "girdle of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
+    { "candelabrum", LARGE_FIVE_BRANCHED_CANDELABRUM },
+    { "large candelabrum", LARGE_FIVE_BRANCHED_CANDELABRUM },
     /* if we ever add other sizes, move this to o_ranges[] with "bag" */
     { "box", LARGE_BOX },
     /* normally we wouldn't have to worry about unnecessary <space>, but
@@ -4832,7 +4834,7 @@ boolean is_wiz_wish;
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
     if (islit && (typ == OIL_LAMP || typ == MAGIC_LAMP || typ == BRASS_LANTERN
-                  || is_candle(otmp) || typ == POT_OIL)) 
+                  || is_candle(otmp) || is_obj_candelabrum(otmp) || typ == POT_OIL)) 
     {
         place_object(otmp, u.ux, u.uy); /* make it viable light source */
         begin_burn(otmp, FALSE);

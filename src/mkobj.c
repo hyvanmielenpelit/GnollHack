@@ -1468,15 +1468,14 @@ unsigned long mkflags;
                 break;
             case LARGE_FIVE_BRANCHED_CANDELABRUM:
                 otmp->special_quality = !rn2(3) ? 0 : !rn2(2) ? objects[otmp->otyp].oc_special_quality : rnd(objects[otmp->otyp].oc_special_quality);
+                otmp->lamplit = 0;
                 if (otmp->special_quality > 0)
                 {
                     otmp->age = CANDELABRUM_STARTING_AGE;
-                    otmp->lamplit = rn2(2);
                 }
                 else
                 {
                     otmp->age = 0;
-                    otmp->lamplit = 0;
                 }
                 blessorcurse(otmp, 5);
                 break;
