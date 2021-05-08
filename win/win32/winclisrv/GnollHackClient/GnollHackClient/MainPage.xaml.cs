@@ -37,8 +37,14 @@ namespace GnollHackClient
         {
             InitializeComponent();
 
+            Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
+            {
+                canvasView.InvalidateSurface();
+                return true;
+            });
+
             connection = new HubConnectionBuilder()
-            .WithUrl("https://localhost:44333/gnollhack", options =>
+            .WithUrl("http://10.0.2.2:57061/gnollhack", options =>
             {
                 var cookie = new System.Net.Cookie(".AspNetCore.Cookies", _accessToken, "/", "localhost");
                 options.Cookies.Add(cookie);
@@ -111,8 +117,8 @@ namespace GnollHackClient
                 });
 
                 //var result = await client.PostAsync("https://localhost:44333/Identity/Account/LoginRemote", content);
-                var s = "https://localhost:44333/Identity/Account/LoginRemote?UserName=Tommi&Password=HMPTommi1!";
-                var result = await client.GetAsync(s);
+                //var s = "https://localhost:44333/Identity/Account/LoginRemote?UserName=Tommi&Password=HMPTommi1!";
+                //var result = await client.GetAsync(s);
 
                 await connection.StartAsync();
 
@@ -167,45 +173,28 @@ namespace GnollHackClient
             canvas.DrawText(str, xText, yText, textPaint);
 
             str = _message2;
-            textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.5f * info.Width * textPaint.TextSize / textWidth;
-            xText = info.Width / 2 - textBounds.MidX;
-            yText = info.Height / 2 - textBounds.MidY + 100;
+            textPaint.TextSize = 36;
+            yText = 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
             str = _result.ToString();
-            textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.5f * info.Width * textPaint.TextSize / textWidth;
-            xText = info.Width / 2 - textBounds.MidX;
-            yText = info.Height / 2 - textBounds.MidY + 150;
+            yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
             str = _result2.ToString();
-            textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.5f * info.Width * textPaint.TextSize / textWidth;
-            xText = info.Width / 2 - textBounds.MidX;
-            yText = info.Height / 2 - textBounds.MidY + 200;
+            yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
             str = _message3;
-            textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.5f * info.Width * textPaint.TextSize / textWidth;
-            xText = info.Width / 2 - textBounds.MidX;
-            yText = info.Height / 2 - textBounds.MidY + 250;
+            yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
             str = _message4;
-            textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.5f * info.Width * textPaint.TextSize / textWidth;
-            xText = info.Width / 2 - textBounds.MidX;
-            yText = info.Height / 2 - textBounds.MidY + 300;
+            yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
             str = _message5;
-            textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.5f * info.Width * textPaint.TextSize / textWidth;
-            xText = info.Width / 2 - textBounds.MidX;
-            yText = info.Height / 2 - textBounds.MidY + 350;
+            yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
         }

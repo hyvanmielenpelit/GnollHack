@@ -41,7 +41,7 @@ namespace GnollHackMG
 
             // TODO: use this.Content to load your game content here
             connection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:44333/gnollhack", options =>
+                .WithUrl("http://127.0.0.1:57061/gnollhack", options =>
                 {
                     var cookie = new System.Net.Cookie(".AspNetCore.Cookies", _accessToken, "/", "localhost");
                     options.Cookies.Add(cookie); 
@@ -122,8 +122,8 @@ namespace GnollHackMG
                 });
 
                 //var result = await client.PostAsync("https://localhost:44333/Identity/Account/LoginRemote", content);
-                var s = "https://localhost:44333/Identity/Account/LoginRemote?UserName=Tommi&Password=HMPTommi1!";
-                var result = await client.GetAsync(s);
+                //var s = "https://localhost:44333/Identity/Account/LoginRemote?UserName=Tommi&Password=HMPTommi1!";
+                //var result = await client.GetAsync(s);
 
                 await connection.StartAsync();
 
