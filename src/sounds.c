@@ -63,6 +63,7 @@ STATIC_DCL int FDECL(do_chat_smith_protect_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_refill_lantern, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_forge_dragon_scale_mail, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_identify, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_sell_ore, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
@@ -2823,6 +2824,21 @@ dochat()
         {
             strcpy(available_chat_list[chatnum].name, "Identify a weapon or armor");
             available_chat_list[chatnum].function_ptr = &do_chat_smith_identify;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+
+            char sbuf[BUFSIZ];
+            Sprintf(sbuf, "Sell nuggets of ore to %s", mon_nam(mtmp));
+            strcpy(available_chat_list[chatnum].name, sbuf);
+            available_chat_list[chatnum].function_ptr = &do_chat_smith_sell_ore;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
             any = zeroany;
@@ -5748,6 +5764,26 @@ struct monst* mtmp;
 }
 
 STATIC_OVL int
+do_chat_smith_sell_ore(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !has_esmi(mtmp))
+        return 0;
+
+    const char sell_types[] = { ALLOW_COUNT, GEM_CLASS, 0 };
+    int result, i = (invent) ? 0 : (SIZE(sell_types) - 1);
+
+    result = sell_to_npc(getobj(&sell_types[i], "sell to the smith", 3, ""), mtmp);
+
+    if (result)
+    {
+        /* Do nothing at the moment */
+    }
+
+    return 1;
+}
+
+STATIC_OVL int
 do_chat_npc_branch_portal(mtmp)
 struct monst* mtmp;
 {
@@ -6274,7 +6310,8 @@ struct monst* mtmp;
 
     struct obj *otmp = 0;
     int res = 0;
-    if (!mtmp || !has_enpc(mtmp))
+    boolean is_smith = mtmp->issmith && has_esmi(mtmp);
+    if (!mtmp || !(has_enpc(mtmp) || is_smith))
     {
         res = 0;
         goto merge_obj_back;
@@ -6309,8 +6346,9 @@ struct monst* mtmp;
     long ltmp = 0L, offer, shkmoney;
     boolean saleitem, container = Has_contents(obj);
     boolean isgold = (obj->oclass == COIN_CLASS);
+    boolean inroom = is_smith ? inhissmithy(mtmp) : in_his_npc_room(mtmp);
 
-    if (!in_his_npc_room(mtmp))
+    if (!inroom)
     {
         res = 0;
         goto merge_obj_back;
@@ -6322,7 +6360,7 @@ struct monst* mtmp;
         res = 0;
         goto merge_obj_back;
     }
-    saleitem = ENPC(mtmp)->npc_typ == NPC_WARP_ENGINEER && obj->otyp == DILITHIUM_CRYSTAL ? TRUE : ENPC(mtmp)->npc_typ == NPC_GEOLOGIST && obj->oclass == GEM_CLASS ? TRUE :
+    saleitem = is_smith ? is_ore(obj) : ENPC(mtmp)->npc_typ == NPC_WARP_ENGINEER && obj->otyp == DILITHIUM_CRYSTAL ? TRUE : ENPC(mtmp)->npc_typ == NPC_GEOLOGIST && obj->oclass == GEM_CLASS ? TRUE :
         ENPC(mtmp)->npc_typ == NPC_ARTIFICER && obj->oclass == SPBOOK_CLASS ? TRUE :
         FALSE;
 

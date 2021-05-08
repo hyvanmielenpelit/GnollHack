@@ -490,6 +490,8 @@ int mtype;
         smith->issmith = 1;
         smith->msleeping = 0;
         set_malign(smith); /* mpeaceful may have changed */
+
+        (void)mongetsgold(smith, 3000L + (long)rn2(6) * 500L);
     }
 }
 

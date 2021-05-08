@@ -1751,9 +1751,9 @@ register struct monst *mtmp;
         int lvartype = 0;
         int lflags = 0;
 
-        if (here->floortyp)
-            ltype = here->floortyp, lsubtype = here->floorsubtyp, lvartype = here->floorvartyp;
-        else
+//        if (here->floortyp)
+//            ltype = here->floortyp, lsubtype = here->floorsubtyp, lvartype = here->floorvartyp;
+//        else
         {
             if (level.flags.is_maze_lev)
             {
