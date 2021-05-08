@@ -134,6 +134,7 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CEC5D360-8804-454F-8591-002184C23499}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{CEC5D360-8804-454F-8591-002184C23499}.Debug|Any CPU.Build.0 = Debug|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Debug|ARM.ActiveCfg = Debug|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Debug|iPhone.ActiveCfg = Debug|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
