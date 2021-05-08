@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using SkiaSharp;
+using SkiaSharp.Views.Forms;
 
 namespace GnollHackClient
 {
@@ -13,6 +15,11 @@ namespace GnollHackClient
         public MainPage()
         {
             InitializeComponent();
+        }
+
+        private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        {
+
         }
     }
 }

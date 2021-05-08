@@ -86,7 +86,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GnollHackXW", "GnollHackXW.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackMG", "..\winclisrv\GnollHackMG\GnollHackMG.csproj", "{0E0D76B5-BC9B-4BF7-9C63-334C4B3287AA}"
 	ProjectSection(ProjectDependencies) = postProject
-		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66} = {31BFD9BC-3798-4A01-ADBD-59CD1D323C66}
+		{272434B5-141B-48AD-9C5E-87F0CB6C5161} = {272434B5-141B-48AD-9C5E-87F0CB6C5161}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackServer", "..\winclisrv\GnollHackServer\GnollHackServer.csproj", "{272434B5-141B-48AD-9C5E-87F0CB6C5161}"
@@ -111,7 +111,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.Android", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.iOS", "..\winclisrv\GnollHackClient\GnollHackClient.iOS\GnollHackClient.iOS.csproj", "{0BBCFE15-9A3B-4175-A543-24B39C812D9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient", "..\winclisrv\GnollHackClient\GnollHackClient\GnollHackClient.csproj", "{514A3E21-9E1F-4F19-B8C3-77898D1326F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackClient", "..\winclisrv\GnollHackClient\GnollHackClient\GnollHackClient.csproj", "{514A3E21-9E1F-4F19-B8C3-77898D1326F6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{272434B5-141B-48AD-9C5E-87F0CB6C5161} = {272434B5-141B-48AD-9C5E-87F0CB6C5161}
+		{40516BC7-AC45-4F0C-9754-6C6A381302AB} = {40516BC7-AC45-4F0C-9754-6C6A381302AB}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
