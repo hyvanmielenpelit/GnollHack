@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -9,6 +9,20 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\buttons.png" />
+    <None Remove="Assets\button_normal.png" />
+    <None Remove="Assets\diablo_h.ttf" />
+    <None Remove="Assets\gnollhack-logo-test-2.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\buttons.png" />
+    <EmbeddedResource Include="Assets\button_normal.png" />
+    <EmbeddedResource Include="Assets\diablo_h.ttf" />
+    <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />

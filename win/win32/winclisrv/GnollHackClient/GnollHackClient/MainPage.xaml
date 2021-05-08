@@ -5,10 +5,24 @@
              xmlns:local="clr-namespace:GnollHackClient"
              x:Class="GnollHackClient.MainPage">
 
-    <skia:SKCanvasView x:Name="canvasView"
-                       PaintSurface="canvasView_PaintSurface" />
+    <AbsoluteLayout VerticalOptions="FillAndExpand"
+                    HorizontalOptions="FillAndExpand">
+        <skia:SKCanvasView x:Name="canvasView"
+                       PaintSurface="canvasView_PaintSurface" 
+                           AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
+                           AbsoluteLayout.LayoutFlags="All" />
+
+        <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 0.2, 1.0, 0.10"
+                           AbsoluteLayout.LayoutFlags="All" WidthRequest="300" HeightRequest="60">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Image x:Name="myImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="60" Grid.Row="0" />
+            <Button Text="Click also me" x:Name="secondButton" Clicked="firstButton_Clicked" FontFamily="Diablo" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="60" Grid.Row="0" />
+        </Grid>
+    </AbsoluteLayout>
     
-<!--    <StackLayout>
+    <!--    <StackLayout>
         <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
             <Label Text="Welcome to Xamarin.Forms!" HorizontalTextAlignment="Center" TextColor="White" FontSize="36"/>
         </Frame>

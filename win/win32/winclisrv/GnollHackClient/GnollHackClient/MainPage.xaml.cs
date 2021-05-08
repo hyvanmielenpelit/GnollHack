@@ -18,6 +18,9 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 using GnollHackCommon;
+using System.Reflection;
+
+[assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 
 namespace GnollHackClient
 {
@@ -31,11 +34,33 @@ namespace GnollHackClient
         private string _message5 = "";
         private int _result = 0;
         private int _result2 = 0;
+        private int _moveamount = 0;
         private string _accessToken = "MyAccessToken";
+        SKBitmap bitmap;
+        Font _font;
+        SKTypeface _typeface;
 
         public MainPage()
         {
             InitializeComponent();
+
+            string resourceID = "GnollHackClient.Assets.gnollhack-logo-test-2.png";
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceID))
+            {
+                bitmap = SKBitmap.Decode(stream);
+            }
+
+
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
+            {
+                if (stream != null)
+                    _typeface = SKTypeface.FromStream(stream);
+            }
+
+            //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
 
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
@@ -143,13 +168,22 @@ namespace GnollHackClient
 
             canvas.Clear(SKColors.CornflowerBlue);
 
+
+            float x = (info.Width - bitmap.Width) / 2;
+            float y = (info.Height - bitmap.Height) / 2;
+
+            canvas.DrawBitmap(bitmap, x, y + _moveamount);
+
             string str = "This is GnollHack!";
 
             // Create an SKPaint object to display the text
             SKPaint textPaint = new SKPaint
             {
-                Color = SKColors.Chocolate
+                Color = SKColors.DarkBlue
             };
+
+            if (_typeface != null)
+                textPaint.Typeface = _typeface;
 
             // Adjust TextSize property so text is 90% of screen width
             float textWidth = textPaint.MeasureText(str);
@@ -197,6 +231,11 @@ namespace GnollHackClient
             yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
+        }
+
+        private void firstButton_Clicked(object sender, EventArgs e)
+        {
+            _moveamount += 5;
         }
     }
 }
