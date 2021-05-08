@@ -113,8 +113,7 @@ namespace GnollHackMG
 
             try
             {
-                using var client = new HttpClient();
-
+                var client = new HttpClient();
                 var content = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("Input.UserName", "Tommi"),
