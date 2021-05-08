@@ -19,7 +19,10 @@ namespace GnollHackClient
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            SKSurface surface = e.Surface;
+            SKCanvas canvas = surface.Canvas;
 
+            canvas.Clear(SKColors.Red);
         }
     }
 }
