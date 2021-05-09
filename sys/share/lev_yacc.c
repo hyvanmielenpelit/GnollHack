@@ -5626,8 +5626,8 @@ yyreduce:
 		      long flt = (long)(yyvsp[(10) - (11)].i);
 
 		      if (rflags == -1) rflags = (1 << 0);
-		      if (flmt == -1) flmt = 0;
-		      if (flt == -1) flt = 0;
+		      //if (flmt == -1) flmt = 0;
+		      //if (flt == -1) flt = 0;
 
 		      if (!(rflags & 1)) rt += MAXRTYPE+1;
 		      irr = ((rflags & 2) != 0);

@@ -2222,8 +2222,8 @@ region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroo
 		      long flt = (long)$<i>10;
 
 		      if (rflags == -1) rflags = (1 << 0);
-		      if (flmt == -1) flmt = 0;
-		      if (flt == -1) flt = 0;
+		      //if (flmt == -1) flmt = 0;
+		      //if (flt == -1) flt = 0;
 
 		      if (!(rflags & 1)) rt += MAXRTYPE+1;
 		      irr = ((rflags & 2) != 0);

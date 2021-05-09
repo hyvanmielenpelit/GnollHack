@@ -104,6 +104,7 @@ MONSTER: ('s',"scorpion"),random,hostile
 
 MAZE: "Ran-loca",' '
 FLAGS: hardfloor
+TILESET: gnomish_mines_tileset
 GEOMETRY:center,center
 #1234567890123456789012345678901234567890123456789012345678901234567890
 MAP
@@ -187,6 +188,7 @@ MONSTER:'s',random,hostile
 
 MAZE: "Ran-goal", ' '
 FLAGS: throne_on_ground
+TILESET: gnomish_mines_tileset
 GEOMETRY:center,center
 MAP
                                                                             
@@ -297,6 +299,7 @@ WALLIFY
 
 MAZE: "Ran-fila" , ' '
 INIT_MAP: mines, ':' , ' ', true, true, random, true
+TILESET: gnomish_mines_tileset
 NOMAP
 #
 STAIR: random, up

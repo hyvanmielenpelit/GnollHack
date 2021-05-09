@@ -6242,6 +6242,10 @@ struct sp_coder *coder;
     prefilled = !(OV_i(rflags) & (1 << 0));
     irregular = (OV_i(rflags) & (1 << 1));
     joined = !(OV_i(rflags) & (1 << 2));
+    int rawfloortype = OV_i(rfloortyp);
+    int rawfloorsubtype = OV_i(rfloorsubtyp);
+    int usedfloortype = IS_FLOOR(rawfloortype) ? rawfloortype : rawfloorsubtype >= 0 ? ROOM : 0; /* If only subtype is defined, assume that we speak of room floors */
+    int usedfloorsubtype = rawfloorsubtype >= 0 ? rawfloorsubtype : 0;
 
     if (OV_i(rtype) > MAXRTYPE) {
         OV_i(rtype) -= MAXRTYPE + 1;
@@ -6285,8 +6289,8 @@ struct sp_coder *coder;
         if (!room_not_needed)
             impossible("Too many rooms on new level!");
         tmpregion.rlit = OV_i(rlit);
-        tmpregion.rfloortyp = IS_FLOOR(OV_i(rfloortyp)) ? OV_i(rfloortyp) : 0;
-        tmpregion.rfloorsubtyp = IS_FLOOR(tmpregion.rfloortyp) && OV_i(rfloorsubtyp) >= 0 ? OV_i(rfloorsubtyp) : 0;
+        tmpregion.rfloortyp = usedfloortype; /* If only subtype is defined, assume that we speak of room floors */
+        tmpregion.rfloorsubtyp = usedfloorsubtype;
         tmpregion.x1 = dx1;
         tmpregion.y1 = dy1;
         tmpregion.x2 = dx2;
@@ -6319,13 +6323,13 @@ struct sp_coder *coder;
         min_ry = max_ry = dy1;
         smeq[nroom] = nroom;
         flood_fill_rm(dx1, dy1, nroom + ROOMOFFSET, OV_i(rlit), TRUE);
-        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE, IS_FLOOR(OV_i(rfloortyp)) ? OV_i(rfloortyp) : 0, OV_i(rfloorsubtyp) >= 0 ? OV_i(rfloorsubtyp) : 0, roommontype);
+        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype);
         troom->rlit = OV_i(rlit);
         troom->irregular = TRUE;
     }
     else 
     {
-        add_room(dx1, dy1, dx2, dy2, OV_i(rlit), OV_i(rtype), TRUE, IS_FLOOR(OV_i(rfloortyp)) ? OV_i(rfloortyp) : 0, OV_i(rfloorsubtyp) >= 0 ? OV_i(rfloorsubtyp) : 0, roommontype);
+        add_room(dx1, dy1, dx2, dy2, OV_i(rlit), OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype);
 #ifdef SPECIALIZATION
         topologize(troom, FALSE); /* set roomno */
 #else
