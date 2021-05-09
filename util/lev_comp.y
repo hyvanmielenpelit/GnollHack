@@ -1293,8 +1293,8 @@ subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomreg
 		      long flt = (long)$<i>10;
 
 		      if (rflags == -1) rflags = (1 << 0);
-		      if (flmt == -1) flmt = ROOM;
-		      if (flt == -1) flt = 0;
+		      //if (flmt == -1) flmt = ROOM;
+		      //if (flt == -1) flt = 0;
 
 		      add_opvars(splev, "iiiiiiiiio",
 				 VA_PASS10(flt, flmt, rflags, ERR, ERR,
@@ -1316,6 +1316,8 @@ room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optr
 		      long flt = (long)$<i>12;
 
 		      if (rflags == -1) rflags = (1 << 0);
+		      //if (flmt == -1) flmt = ROOM;
+		      //if (flt == -1) flt = 0;
 
 		      add_opvars(splev, "iiiiiiiiio",
 				 VA_PASS10(flt, flmt, rflags,
@@ -2220,7 +2222,7 @@ region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroo
 		      long flt = (long)$<i>10;
 
 		      if (rflags == -1) rflags = (1 << 0);
-		      if (flmt == -1) flmt = ROOM;
+		      if (flmt == -1) flmt = 0;
 		      if (flt == -1) flt = 0;
 
 		      if (!(rflags & 1)) rt += MAXRTYPE+1;
@@ -2424,7 +2426,7 @@ roomregionflag : FILLING
 
 optfloormaintype : /* empty */
 		  {
-			$<i>$ = ROOM;
+			$<i>$ = -1;
 		  }
 		| FLOOR_MAIN_TYPE_ID ':' floormaintype
 		  {

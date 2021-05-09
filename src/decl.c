@@ -456,6 +456,7 @@ const char *ARGV0;
 
 /* support for lint.h */
 unsigned nhUse_dummy = 0;
+unsigned long file_end_marker = 0xF23EE6D8;
 
 /* dummy routine used to force linkage */
 void

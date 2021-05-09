@@ -1242,6 +1242,7 @@ boolean ghostly;
 
     restdamage(fd, ghostly);
     rest_regions(fd, ghostly);
+
     if (ghostly) {
         /* Now get rid of all the temp fruits... */
         freefruitchn(oldfruit), oldfruit = 0;

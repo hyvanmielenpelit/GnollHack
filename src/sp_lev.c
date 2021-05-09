@@ -1387,7 +1387,7 @@ int floortyp, floorsubtyp, mtype;
     if (!vault) {
         smeq[nroom] = nroom;
         add_room(xabs, yabs, xabs + wtmp - 1, yabs + htmp - 1, rlit, rtype,
-                 FALSE, IS_FLOOR(floortyp) ? floortyp : ROOM, floorsubtyp, mtype);
+                 FALSE, IS_FLOOR(floortyp) ? floortyp : 0, IS_FLOOR(floortyp) ? floorsubtyp : 0, mtype);
     } else {
         rooms[nroom].lx = xabs;
         rooms[nroom].ly = yabs;
@@ -4354,8 +4354,8 @@ struct sp_coder *coder;
         tmproom.filled = (OV_i(rflags) & (1 << 0));
         /*tmproom.irregular = (OV_i(rflags) & (1 << 1));*/
         tmproom.joined = !(OV_i(rflags) & (1 << 2));
-        tmproom.rfloortyp = flmt ? flmt : ROOM;
-        tmproom.rfloorsubtyp = flt >= 0 ? flt : 0;
+        tmproom.rfloortyp = flmt >= 0 && IS_FLOOR(flmt) ? flmt : ROOM; /* Rooms have default flooring as ROOM, rather than nothing */
+        tmproom.rfloorsubtyp = IS_FLOOR(tmproom.rfloortyp) && flt >= 0 ? flt : 0;
         tmproom.mtype = NON_PM;
         if (OV_typ(mtype) == SPOVAR_MONST)
         {
@@ -6285,8 +6285,8 @@ struct sp_coder *coder;
         if (!room_not_needed)
             impossible("Too many rooms on new level!");
         tmpregion.rlit = OV_i(rlit);
-        tmpregion.rfloorsubtyp = OV_i(rfloorsubtyp) >= 0 ? OV_i(rfloorsubtyp) : 0;
-        tmpregion.rfloortyp = IS_FLOOR(OV_i(rfloortyp)) ? OV_i(rfloortyp) : ROOM;
+        tmpregion.rfloortyp = IS_FLOOR(OV_i(rfloortyp)) ? OV_i(rfloortyp) : 0;
+        tmpregion.rfloorsubtyp = IS_FLOOR(tmpregion.rfloortyp) && OV_i(rfloorsubtyp) >= 0 ? OV_i(rfloorsubtyp) : 0;
         tmpregion.x1 = dx1;
         tmpregion.y1 = dy1;
         tmpregion.x2 = dx2;
@@ -6319,13 +6319,13 @@ struct sp_coder *coder;
         min_ry = max_ry = dy1;
         smeq[nroom] = nroom;
         flood_fill_rm(dx1, dy1, nroom + ROOMOFFSET, OV_i(rlit), TRUE);
-        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE, IS_FLOOR(OV_i(rfloortyp)) ? OV_i(rfloortyp) : ROOM, OV_i(rfloorsubtyp) >= 0 ? OV_i(rfloorsubtyp) : 0, roommontype);
+        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE, IS_FLOOR(OV_i(rfloortyp)) ? OV_i(rfloortyp) : 0, OV_i(rfloorsubtyp) >= 0 ? OV_i(rfloorsubtyp) : 0, roommontype);
         troom->rlit = OV_i(rlit);
         troom->irregular = TRUE;
     }
     else 
     {
-        add_room(dx1, dy1, dx2, dy2, OV_i(rlit), OV_i(rtype), TRUE, IS_FLOOR(OV_i(rfloortyp)) ? OV_i(rfloortyp) : ROOM, OV_i(rfloorsubtyp) >= 0 ? OV_i(rfloorsubtyp) : 0, roommontype);
+        add_room(dx1, dy1, dx2, dy2, OV_i(rlit), OV_i(rtype), TRUE, IS_FLOOR(OV_i(rfloortyp)) ? OV_i(rfloortyp) : 0, OV_i(rfloorsubtyp) >= 0 ? OV_i(rfloorsubtyp) : 0, roommontype);
 #ifdef SPECIALIZATION
         topologize(troom, FALSE); /* set roomno */
 #else

@@ -545,6 +545,7 @@ struct early_opt {
 NEARDATA E coord bhitpos; /* place where throw or zap hits or stops */
 E boolean disallow_keyboard_commands_in_wait_loop;
 
+E unsigned long file_end_marker;
 #undef E
 
 #endif /* DECL_H */
