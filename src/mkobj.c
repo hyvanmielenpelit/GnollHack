@@ -1508,31 +1508,62 @@ unsigned long mkflags;
                 if (!(mkflags & MKOBJ_FLAGS_OPEN_COFFIN) && !(mkflags & MKOBJ_FLAGS_MONSTER_SPECIFIED))
                 {
                     int cnm = NON_PM;
+                    struct permonst* ptr = 0;
 
                     if (otmp->otyp == SARCOPHAGUS)
                     {
-                        boolean low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_LICH].difficulty);
-                        cnm = monsndx(mkclass(rn2(3) || low_level ? S_GREATER_UNDEAD : S_LICH, 0));
-                        set_corpsenm(otmp, !rn2(2) ? ((low_level || rn2(3)) && cnm > NON_PM ? cnm :
-                            ((level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_WARRIOR].difficulty - 2 ? PM_SKELETON : 
-                                !rn2(2) || (level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR : 
-                                !rn2(2) || (level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING)) : 
-                            NON_PM);
+                        if (!rn2(2))
+                            cnm = NON_PM;
+                        else
+                        {
+                            boolean low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_LICH].difficulty);
+                            int classmonster = NON_PM;
+                            ptr = mkclass(rn2(3) || low_level ? S_GREATER_UNDEAD : S_LICH, 0);
+                            if (ptr)
+                                classmonster = monsndx(ptr);
+
+                            int tmp = ((low_level || rn2(3)) && classmonster > NON_PM ? classmonster :
+                                ((level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_WARRIOR].difficulty - 2 ? PM_SKELETON :
+                                    !rn2(2) || (level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR :
+                                    !rn2(2) || (level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING));
+
+                            if (tmp >= LOW_PM && !(mvitals[tmp].mvflags & G_GONE))
+                                cnm = tmp;
+                        }
+
+                        set_corpsenm(otmp, cnm);
                     }
                     else
                     {
+                        /* Coffin */
+                        int classmonster = NON_PM;
                         if (In_V_tower(&u.uz))
                         {
-                            cnm = monsndx(mkclass(S_VAMPIRE, 0));
-                            set_corpsenm(otmp, cnm > NON_PM ? cnm : PM_VAMPIRE);
+                            ptr = mkclass(S_VAMPIRE, 0);
+                            if(ptr)
+                                classmonster = monsndx(ptr);
+                            if (classmonster >= LOW_PM)
+                                cnm = classmonster;
+                            else if (!(mvitals[PM_VAMPIRE].mvflags & G_GONE))
+                                cnm = PM_VAMPIRE;
                         }
                         else
                         {
-                            boolean low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_VAMPIRE].difficulty);
-                            boolean very_low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_BARROW_WIGHT].difficulty - 1);
-                            cnm = monsndx(mkclass(rn2(3) && !low_level ? S_VAMPIRE : S_LESSER_UNDEAD, 0));
-                            set_corpsenm(otmp, rn2(3) ? (rn2(9) && cnm > NON_PM ? cnm : very_low_level ? PM_HUMAN_ZOMBIE : low_level ? PM_BARROW_WIGHT : PM_SKELETON_WARRIOR) : NON_PM);
+                            if (!rn2(3))
+                                cnm = NON_PM;
+                            else
+                            {
+                                boolean low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_VAMPIRE].difficulty);
+                                boolean very_low_level = ((level_difficulty() + u.ulevel) / 2 < mons[PM_BARROW_WIGHT].difficulty - 1);
+                                ptr = mkclass(rn2(3) && !low_level ? S_VAMPIRE : S_LESSER_UNDEAD, 0);
+                                if (ptr)
+                                    classmonster = monsndx(ptr);
+                                int tmp = (rn2(9) && classmonster > NON_PM ? classmonster : very_low_level ? PM_HUMAN_ZOMBIE : low_level ? PM_BARROW_WIGHT : PM_SKELETON_WARRIOR);
+                                if (tmp >= LOW_PM && !(mvitals[tmp].mvflags & G_GONE))
+                                    cnm = tmp;
+                            }
                         }
+                        set_corpsenm(otmp, cnm);
                     }
 
                     if (otmp->corpsenm == NON_PM && !rn2(2))
@@ -3231,6 +3262,9 @@ boolean copyof;
             /* Never insert this returned pointer into mon chains! */
             mnew = mtmp;
         }
+
+        if (mnew)
+            mnew->data = &mons[mnew->mnum];
     }
 
     return mnew;
