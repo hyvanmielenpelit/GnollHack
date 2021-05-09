@@ -12,17 +12,19 @@
                            AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
                            AbsoluteLayout.LayoutFlags="All" />
 
-        <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 0.2, 1.0, 0.10"
-                           AbsoluteLayout.LayoutFlags="All" WidthRequest="300" HeightRequest="60">
+        <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 0.90, 1.0, 0.10"
+                           AbsoluteLayout.LayoutFlags="All" WidthRequest="300" HeightRequest="70">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Image x:Name="myImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="60" Grid.Row="0" />
-            <Button Text="Click also me" x:Name="secondButton" Clicked="firstButton_Clicked" FontFamily="Diablo" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="60" Grid.Row="0" />
+            <Image x:Name="myImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="0" />
+            <Button Text="Start Game" x:Name="StartGameButton" Clicked="firstButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="0" />
         </Grid>
 
+        <!--
         <ListView x:Name="myListView" HeightRequest="500" WidthRequest="300" BackgroundColor="Transparent" AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.25"
                            AbsoluteLayout.LayoutFlags="All" />
+        -->
     </AbsoluteLayout>
     
     <!--    <StackLayout>

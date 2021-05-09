@@ -42,7 +42,9 @@ namespace GnollHackClient
             public Color FavoriteColor { private set; get; }
         };
 
+        Boolean _connectionAttempted = false;
         private HubConnection connection;
+        private string _connection_status = "";
         private string _message = "";
         private string _message2 = "";
         private string _message3 = "";
@@ -50,24 +52,25 @@ namespace GnollHackClient
         private string _message5 = "";
         private int _result = 0;
         private int _result2 = 0;
-        private int _moveamount = 0;
         private string _accessToken = "MyAccessToken";
-        SKBitmap bitmap;
-        Font _font;
+        SKBitmap _background_bitmap;
+        SKBitmap _logo_bitmap;
         SKTypeface _typeface;
 
         public MainPage()
         {
             InitializeComponent();
-
-            string resourceID = "GnollHackClient.Assets.gnollhack-logo-test-2.png";
             Assembly assembly = GetType().GetTypeInfo().Assembly;
 
-            using (Stream stream = assembly.GetManifestResourceStream(resourceID))
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.window_background.png"))
             {
-                bitmap = SKBitmap.Decode(stream);
+                _background_bitmap = SKBitmap.Decode(stream);
             }
 
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
+            {
+                _logo_bitmap = SKBitmap.Decode(stream);
+            }
 
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
             {
@@ -79,42 +82,43 @@ namespace GnollHackClient
             myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
 
 
-            // Define some data.
-            List<Person> people = new List<Person>
-            {
-                new Person("Abigail", new DateTime(1975, 1, 15), Color.Aqua),
-                new Person("Bob", new DateTime(1976, 2, 20), Color.Black),
-                // ...etc.,...
-                new Person("Yvonne", new DateTime(1987, 1, 10), Color.Purple),
-                new Person("Zachary", new DateTime(1988, 2, 5), Color.Red)
-            };
-
-            // Create the ListView.
-            // Source of data items.
-            myListView.ItemsSource = people;
-            myListView.ItemTemplate = new DataTemplate(() =>
+/*
+                // Define some data.
+                List<Person> people = new List<Person>
                 {
+                    new Person("Abigail", new DateTime(1975, 1, 15), Color.Aqua),
+                    new Person("Bob", new DateTime(1976, 2, 20), Color.Black),
+                    // ...etc.,...
+                    new Person("Yvonne", new DateTime(1987, 1, 10), Color.Purple),
+                    new Person("Zachary", new DateTime(1988, 2, 5), Color.Red)
+                };
+
+                // Create the ListView.
+                // Source of data items.
+                myListView.ItemsSource = people;
+                myListView.ItemTemplate = new DataTemplate(() =>
+                    {
                     // Create views with bindings for displaying each property.
                     Label nameLabel = new Label();
-                    nameLabel.SetBinding(Label.TextProperty, "Name");
+                        nameLabel.SetBinding(Label.TextProperty, "Name");
 
-                    Label birthdayLabel = new Label();
-                    birthdayLabel.SetBinding(Label.TextProperty,
-                        new Binding("Birthday", BindingMode.OneWay,
-                            null, null, "Born {0:d}"));
+                        Label birthdayLabel = new Label();
+                        birthdayLabel.SetBinding(Label.TextProperty,
+                            new Binding("Birthday", BindingMode.OneWay,
+                                null, null, "Born {0:d}"));
 
-                    BoxView boxView = new BoxView();
-                    boxView.SetBinding(BoxView.ColorProperty, "FavoriteColor");
+                        BoxView boxView = new BoxView();
+                        boxView.SetBinding(BoxView.ColorProperty, "FavoriteColor");
 
                     // Return an assembled ViewCell.
                     return new ViewCell
-                    {
-                        View = new StackLayout
                         {
-                            Padding = new Thickness(0, 5),
-                            Orientation = StackOrientation.Horizontal,
-                            Children =
-                                {
+                            View = new StackLayout
+                            {
+                                Padding = new Thickness(0, 5),
+                                Orientation = StackOrientation.Horizontal,
+                                Children =
+                                    {
                                     boxView,
                                     new StackLayout
                                     {
@@ -126,11 +130,12 @@ namespace GnollHackClient
                                             birthdayLabel
                                         }
                                         }
-                                }
-                        }
-                    };
-                });
-
+                                    }
+                            }
+                        };
+                    });
+            }
+*/
 
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
@@ -138,6 +143,11 @@ namespace GnollHackClient
                 return true;
             });
 
+
+        }
+
+        protected void ConnectToServer()
+        {
             connection = new HubConnectionBuilder()
             .WithUrl("http://10.0.2.2:57061/gnollhack", options =>
             {
@@ -146,8 +156,14 @@ namespace GnollHackClient
             })
             .Build();
 
+            if(connection != null)
+                _connection_status = "Connection attempted";
+            else
+                _connection_status = "Connection attempt failed";
+
             connection.Closed += async (error) =>
             {
+                _connection_status = "Connection closed";
                 await Task.Delay(new Random().Next(0, 5) * 1000);
                 await connection.StartAsync();
             };
@@ -192,15 +208,10 @@ namespace GnollHackClient
             {
                 _message5 = "ResponseFromClientResult: " + result + ", GUID: " + guid;
             });
-
-            LoadContent();
         }
 
-        protected async void LoadContent()
+        protected async void LoginToServer()
         {
-
-            _result2 = 0; // DoSomeCalc2();
-
             try
             {
                 var client = new HttpClient();
@@ -236,20 +247,27 @@ namespace GnollHackClient
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
 
-            canvas.Clear(SKColors.CornflowerBlue);
+            canvas.Clear(SKColors.DarkGray);
 
+            float x = info.Width;
+            float y = info.Height;
 
-            float x = (info.Width - bitmap.Width) / 2;
-            float y = (info.Height - bitmap.Height) / 2;
+            SKRect bkdest = new SKRect(0f, 0f, x, y);
+            canvas.DrawBitmap(_background_bitmap, bkdest);
 
-            canvas.DrawBitmap(bitmap, x, y + _moveamount);
+            float logo_width = (float)info.Width;
+            float logo_height = (float)_logo_bitmap.Height * logo_width / ((float)_logo_bitmap.Width);
+            x = (info.Width - logo_width) / 2;
+            y = (float)info.Height * 0.2f;
+            SKRect dest = new SKRect(x, y, x + logo_width, y + logo_height);
+            canvas.DrawBitmap(_logo_bitmap, dest);
 
-            string str = "This is GnollHack!";
+            string str = "GnollHack 4.1.0";
 
             // Create an SKPaint object to display the text
             SKPaint textPaint = new SKPaint
             {
-                Color = SKColors.DarkBlue
+                Color = SKColors.Black
             };
 
             if (_typeface != null)
@@ -257,37 +275,70 @@ namespace GnollHackClient
 
             // Adjust TextSize property so text is 90% of screen width
             float textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.9f * info.Width * textPaint.TextSize / textWidth;
+            textPaint.TextSize = 0.65f * info.Width * textPaint.TextSize / textWidth;
 
             // Find the text bounds
             SKRect textBounds = new SKRect();
             textPaint.MeasureText(str, ref textBounds);
 
             float xText = info.Width / 2 - textBounds.MidX;
-            float yText = info.Height / 2 - textBounds.MidY;
+            float yText = y + logo_height + 30; // info.Height / 2 - textBounds.MidY;
 
             // And draw the text
             canvas.DrawText(str, xText, yText, textPaint);
 
-            str = "Message = " + _message;
-            textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.5f * info.Width * textPaint.TextSize / textWidth;
+            str = "Android Version";
+            yText = yText + textPaint.TextSize + 5;
+            textPaint.MeasureText(str, ref textBounds);
             xText = info.Width / 2 - textBounds.MidX;
-            yText = info.Height / 2 - textBounds.MidY + 50;
+            canvas.DrawText(str, xText, yText, textPaint);
+
+            xText = 10;
+            yText = 0;
+            string additional_info = "";
+            if(connection == null && _connectionAttempted)
+                additional_info = ", no connection";
+            else if (connection == null)
+            {
+                /* Do nothing */
+            }
+            else if (connection.State == HubConnectionState.Connected)
+                additional_info = ", connected";
+            else if (connection.State == HubConnectionState.Connecting)
+                additional_info = ", connecting";
+            else if (connection.State == HubConnectionState.Disconnected)
+                additional_info = ", disconnected";
+            else if (connection.State == HubConnectionState.Reconnecting)
+                additional_info = ", reconnecting";
+
+            str = _connection_status + additional_info;
+            textPaint.TextSize = 36;
+            yText = yText + 50;
+            canvas.DrawText(str, xText, yText, textPaint);
+
+            str = _message;
+            textPaint.TextSize = 36;
+            yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
             str = _message2;
             textPaint.TextSize = 36;
-            yText = 50;
-            canvas.DrawText(str, xText, yText, textPaint);
-
-            str = _result.ToString();
             yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
-            str = _result2.ToString();
-            yText = yText + 50;
-            canvas.DrawText(str, xText, yText, textPaint);
+            if (_result != 0)
+            {
+                str = _result.ToString();
+                yText = yText + 50;
+                canvas.DrawText(str, xText, yText, textPaint);
+            }
+
+            if(_result2 != 0)
+            {
+                str = _result2.ToString();
+                yText = yText + 50;
+                canvas.DrawText(str, xText, yText, textPaint);
+            }
 
             str = _message3;
             yText = yText + 50;
@@ -305,7 +356,22 @@ namespace GnollHackClient
 
         private void firstButton_Clicked(object sender, EventArgs e)
         {
-            _moveamount += 5;
+            _connectionAttempted = true;
+            _connection_status = "Not connected";
+            _message = "Please wait...";
+
+            if (connection == null)
+                ConnectToServer();
+            else if(connection.State != HubConnectionState.Connected)
+            {
+                connection.StopAsync();
+                ConnectToServer();
+            }
+            else
+                _connection_status = "Connected";
+
+            if (connection != null)
+                LoginToServer();
         }
     }
 }
