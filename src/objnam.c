@@ -4084,10 +4084,12 @@ boolean is_wiz_wish;
     {
         if ((p = strstri(bp, mythic_suffix_qualities[mythic_idx].mythic_affix)) != 0) 
         {
-            char ringbuf[BUFSZ], robebuf[BUFSZ], bootsbuf[BUFSZ], glovesbuf[BUFSZ], gauntletsbuf[BUFSZ], bracersbuf[BUFSZ], amuletbuf[BUFSZ];
+            char ringbuf[BUFSZ], robebuf[BUFSZ], bootsbuf[BUFSZ], glovesbuf[BUFSZ], gauntletsbuf[BUFSZ], bracersbuf[BUFSZ], amuletbuf[BUFSZ], cloakbuf[BUFSZ], shirtbuf[BUFSZ];
             Sprintf(ringbuf, "ring%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(robebuf, "robe%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(bootsbuf, "boots%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(cloakbuf, "cloak%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(shirtbuf, "shirt%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(glovesbuf, "gloves%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(amuletbuf, "amulet%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(bracersbuf, "bracers%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
@@ -4096,6 +4098,8 @@ boolean is_wiz_wish;
             if (!(p == bp + 4 && !strcmp(p - 4, ringbuf)) /* No rings and other standard itmes etc. */
                 && !(p == bp + 4 && !strcmp(p - 4, robebuf))
                 && !(p == bp + 5 && !strcmp(p - 5, bootsbuf))
+                && !(p == bp + 5 && !strcmp(p - 5, cloakbuf))
+                && !(p == bp + 5 && !strcmp(p - 5, shirtbuf))
                 && !(p == bp + 6 && !strcmp(p - 6, glovesbuf))
                 && !(p == bp + 6 && !strcmp(p - 6, amuletbuf))
                 && !(p == bp + 7 && !strcmp(p - 7, bracersbuf))
