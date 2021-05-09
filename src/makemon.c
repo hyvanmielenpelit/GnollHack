@@ -32,6 +32,9 @@ boolean
 is_home_elemental(ptr)
 struct permonst *ptr;
 {
+    if (!ptr)
+        return FALSE;
+
     if (ptr->mlet == S_ELEMENTAL)
         switch (monsndx(ptr)) {
         case PM_ELDER_AIR_ELEMENTAL:
@@ -2496,7 +2499,7 @@ unsigned long mmflags;
 int level_limit;
 {
     register struct monst *mtmp;
-    int mndx, mcham, ct, mitem;
+    int mndx = NON_PM, mcham, ct, mitem;
     boolean anymon = (!ptr);
     boolean byyou = (x == u.ux && y == u.uy);
     boolean allow_minvent = ((mmflags & MM_NO_MONSTER_INVENTORY) == 0);
@@ -2588,7 +2591,10 @@ int level_limit;
                  && ((tryct == 1 && throws_rocks(ptr) && In_sokoban(&u.uz))
                      || !goodpos(x, y, &fakemon, gpflags)));
 
-        mndx = monsndx(ptr);
+        if (ptr)
+            mndx = monsndx(ptr);
+        else
+            return (struct monst*)0;
     }
 
     /* Play animation */

@@ -4773,8 +4773,20 @@ struct monst *mon;
                 mndx = NON_PM;
         } else { /* general humanoids */
             tryct = 20;
-            do {
-                mndx = monsndx(rndmonst()); // rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+            struct permonst* pm;
+            do 
+            {
+                pm = rndmonst();
+                if (pm)
+                    mndx = monsndx(pm);
+                else if (tryct < 10)
+                    mndx = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+                else
+                    continue;
+
+                if (mndx == NON_PM)
+                    continue;
+
                 if (humanoid(&mons[mndx]) && polyok(&mons[mndx]))
                     break;
             } while (--tryct > 0);
@@ -4786,11 +4798,25 @@ struct monst *mon;
         if (rn2(3))
         {
             tryct = 20;
-            do {
-                mndx = monsndx(rndmonst()); // rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+            struct permonst* pm = 0;
+            do
+            {
+                pm = rndmonst();
+                if (pm)
+                    mndx = monsndx(pm);
+                else if(tryct < 10)
+                    mndx = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+                else
+                    continue;
+
+                if (mndx == NON_PM)
+                    continue;
+
                 if (is_animal(&mons[mndx]) && polyok(&mons[mndx]))
                     break;
-            } while (--tryct > 0);
+            } 
+            while (--tryct > 0);
+
             if (!tryct)
                 mndx = NON_PM; // pick_animal();
         }
@@ -4861,17 +4887,24 @@ struct monst *mon;
     }
 
     /* if no form was specified above, pick one at random now */
-    if (mndx == NON_PM) {
+    if (mndx == NON_PM) 
+    {
         tryct = 50;
-        do {
-            if(tryct > 10) /* try to find first a monster of approriate level */
-                mndx = monsndx(rndmonst());
-            else /* and if that does not work out, randomize any monster */
+        struct permonst* pm = 0;
+        do 
+        {
+            if ((pm = rndmonst()) != 0)
+            {/* try to find first a monster of approriate level */
+                mndx = monsndx(pm);
+            }
+            else if (tryct < 30) /* and if that does not work out, randomize any monster */
                 mndx = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
-        } while (--tryct > 0 && !validspecmon(mon, mndx)
+        } 
+        while (--tryct > 0 && (mndx == NON_PM || !validspecmon(mon, mndx)
                  /* try harder to select uppercase monster on rogue level */
-                 && (tryct > 40 && Is_rogue_level(&u.uz)
-                     && !isupper((uchar) mons[mndx].mlet)));
+                                                || (tryct > 40 && Is_rogue_level(&u.uz) && !isupper((uchar) mons[mndx].mlet))
+                                )
+                 );
     }
     return mndx;
 }
@@ -5439,6 +5472,9 @@ boolean
 usmellmon(mdat)
 struct permonst *mdat;
 {
+    if (!mdat)
+        return FALSE;
+
     int mndx;
     boolean nonspecific = FALSE;
     boolean msg_given = FALSE;

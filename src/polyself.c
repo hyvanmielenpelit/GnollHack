@@ -684,13 +684,25 @@ int psflags;
     if (mntmp < LOW_PM)
     {
         tryct = 200;
+        struct permonst* pm = 0;
         do
         {
             /* randomly pick an "ordinary" monster */
-            mntmp = monsndx(rndmonst()); //rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+            pm = rndmonst();
+            if (pm)
+                mntmp = monsndx(pm);
+            else if (tryct < 100)
+                mntmp = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
+            else
+                continue;
+
+            if (mntmp == NON_PM)
+                continue;
+
             if (polyok(&mons[mntmp]) && !is_placeholder(&mons[mntmp]))
                 break;
-        } while (--tryct > 0);
+        } 
+        while (--tryct > 0);
     }
 
     /* The below polyok() fails either if everything is genocided, or if

@@ -290,6 +290,9 @@ set_mon_data(mon, ptr)
 struct monst *mon;
 struct permonst *ptr;
 {
+    if (!mon || !ptr)
+        return;
+
     int new_speed, old_speed = mon->data ? mon->data->mmove : 0;
 
     mon->data = ptr;
@@ -728,6 +731,9 @@ int
 num_horns(ptr)
 struct permonst *ptr;
 {
+    if (!ptr)
+        return 0;
+
     switch (monsndx(ptr)) {
     case PM_HORNED_DEVIL: /* ? "more than one" */
     case PM_MINOTAUR:
