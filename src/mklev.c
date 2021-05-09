@@ -2524,8 +2524,12 @@ define_level_location_floor_types()
     {
         for (xchar y = 0; y < ROWNO; y++)
         {
-            if(levl[x][y].floortyp == 0 && !IS_FLOOR(levl[x][y].typ))
+            if (levl[x][y].floortyp == 0 && !IS_FLOOR(levl[x][y].typ))
+            {
                 levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
+                levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+                levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
+            }
         }
     }
 }
