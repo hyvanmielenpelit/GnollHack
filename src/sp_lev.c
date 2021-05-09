@@ -7920,7 +7920,7 @@ sp_lev *lvl;
 
     create_level_light_sources();
     create_level_sound_sources();
-    define_level_location_floor_types();
+    define_level_location_floor_types(coder->fountain_on_grass, coder->fountain_on_ground, coder->tree_on_ground, coder->throne_on_ground);
 
     if (coder->premapped)
         sokoban_detect();

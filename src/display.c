@@ -146,7 +146,6 @@ STATIC_DCL int FDECL(set_corn, (int, int, int, int, int, int, int, int));
 STATIC_DCL int FDECL(set_crosswall, (int, int));
 STATIC_DCL void FDECL(set_seenv, (struct rm *, int, int, int, int));
 STATIC_DCL void FDECL(t_warn, (struct rm *));
-STATIC_DCL int FDECL(wall_angle, (struct rm *));
 
 #define remember_topology(x, y) (lastseentyp[x][y] = levl[x][y].typ)
 
@@ -4156,7 +4155,7 @@ struct rm *lev;
  * draw diagrams.  See rm.h for more details on the wall modes and
  * seen vector (SV).
  */
-STATIC_OVL int
+int
 wall_angle(lev)
 struct rm *lev;
 {

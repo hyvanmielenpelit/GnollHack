@@ -51,10 +51,12 @@ lev_init* init_lev;
 
     limit = (WIDTH * HEIGHT * 2) / 5;
     count = 0;
-    while (count < limit) {
+    while (count < limit)
+    {
         i = rn1(WIDTH - 1, 2);
         j = rnd(HEIGHT - 1);
-        if (levl[i][j].typ == bg_typ) {
+        if (levl[i][j].typ == bg_typ) 
+        {
             levl[i][j].typ = fg_typ;
             levl[i][j].subtyp = get_initial_location_subtype(fg_typ);
             levl[i][j].vartyp = get_initial_location_vartype(levl[i][j].typ, levl[i][j].subtyp);
@@ -407,7 +409,8 @@ joinm:
         /* only increment croom if croom and croom2 are non-overlapping */
         if (croom2->lx > croom->hx
             || ((croom2->ly > croom->hy || croom2->hy < croom->ly)
-                && rn2(3))) {
+                && rn2(3))) 
+        {
             croom = croom2;
         }
         croom2++; /* always increment the next room */
@@ -426,7 +429,8 @@ lev_init* init_lev;
     if (walled)
         wallify_entire_map();
 
-    if (lit) {
+    if (lit)
+    {
         for (i = 1; i < COLNO; i++)
             for (j = 0; j < ROWNO; j++)
                 if ((!IS_ROCK(fg_typ) && levl[i][j].typ == fg_typ)
@@ -440,7 +444,8 @@ lev_init* init_lev;
     /* light lava even if everything's otherwise unlit;
        ice might be frozen pool rather than frozen moat */
     for (i = 1; i < COLNO; i++)
-        for (j = 0; j < ROWNO; j++) {
+        for (j = 0; j < ROWNO; j++) 
+        {
             if (levl[i][j].typ == LAVAPOOL)
                 levl[i][j].lit = TRUE;
             else if (levl[i][j].typ == ICE)
@@ -464,19 +469,23 @@ int lx, ly, hx, hy;
     int i;
     struct mkroom *croom;
 
-    for (i = nroom - 1; i >= 0; --i) {
+    for (i = nroom - 1; i >= 0; --i) 
+    {
         croom = &rooms[i];
         if (croom->hx < lx || croom->lx >= hx || croom->hy < ly
             || croom->ly >= hy)
             continue; /* no overlap */
 
         if (croom->lx < lx || croom->hx >= hx || croom->ly < ly
-            || croom->hy >= hy) { /* partial overlap */
+            || croom->hy >= hy)
+        { /* partial overlap */
             /* TODO: ensure remaining parts of room are still joined */
 
             if (!croom->irregular)
                 impossible("regular room in joined map");
-        } else {
+        } 
+        else 
+        {
             /* total overlap, remove the room */
             remove_room((unsigned) i);
         }
@@ -498,7 +507,8 @@ unsigned roomno;
     int i, j;
     unsigned oroomno;
 
-    if (croom != maxroom) {
+    if (croom != maxroom)
+    {
         /* since the order in the array only matters for making corridors,
          * copy the last room over the one being removed on the assumption
          * that corridors have already been dug. */
@@ -509,7 +519,8 @@ unsigned roomno;
         oroomno = nroom + ROOMOFFSET;
         roomno += ROOMOFFSET;
         for (i = croom->lx; i <= croom->hx; ++i)
-            for (j = croom->ly; j <= croom->hy; ++j) {
+            for (j = croom->ly; j <= croom->hy; ++j) 
+            {
                 if (levl[i][j].roomno == oroomno)
                     levl[i][j].roomno = roomno;
             }

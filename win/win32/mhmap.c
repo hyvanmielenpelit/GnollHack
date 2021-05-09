@@ -4106,7 +4106,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 }
                                 else
                                 {
-                                    if (!levl[darkening_i][darkening_j].waslit)
+                                    boolean is_lit_unknown_wall = levl[darkening_i][darkening_j].waslit && IS_NON_STONE_WALL(levl[darkening_i][darkening_j].typ) && wall_angle(&levl[darkening_i][darkening_j]) == S_stone;
+                                    if (!levl[darkening_i][darkening_j].waslit || is_lit_unknown_wall)
                                     {
                                         if (default_tileset_definition.nonlit_darkening[relevant_darkening_cmap] > 0.0)
                                             multiplier *= default_tileset_definition.nonlit_darkening[relevant_darkening_cmap];

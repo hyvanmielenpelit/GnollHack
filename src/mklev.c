@@ -1239,7 +1239,7 @@ makelevel()
 
     create_level_light_sources();
     create_level_sound_sources();
-    define_level_location_floor_types();
+    define_level_location_floor_types(FALSE, FALSE, FALSE, FALSE);
 
 }
 
@@ -2518,7 +2518,8 @@ xchar x, y;
 }
 
 void
-define_level_location_floor_types()
+define_level_location_floor_types(fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground)
+boolean fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground;
 {
     for (xchar x = 1; x < COLNO; x++)
     {
@@ -2526,9 +2527,7 @@ define_level_location_floor_types()
         {
             if (levl[x][y].floortyp == 0 && !IS_FLOOR(levl[x][y].typ))
             {
-                levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
-                levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
-                levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
+                set_initial_location_floortype(&levl[x][y], fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground);
             }
         }
     }
