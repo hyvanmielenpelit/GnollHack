@@ -27,6 +27,7 @@ struct attack {
     short damn, damd, damp;
     short mcadj; /* MC and saving throw adjustment*/
     short mlevel; /* level at which the attack is used */
+    short range; /* range of ranged attacks */
     unsigned long aflags; /* any relevant attack flags */
     uchar action_tile; /* Action tile used for the attack */
 };

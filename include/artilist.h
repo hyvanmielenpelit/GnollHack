@@ -24,14 +24,14 @@ const char *artifact_names[] = {
 //    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT)
 
 /* clang-format off */
-#define     NO_ATTK            {0,0,0,0,0,0,0,0UL,0}               /* no attack */
-#define     PHYS(a,b)        {0,AD_PHYS,a,b,0,0,0,0UL,0}         /* physical */
-#define     PHYSI(a,b,c)    {0,AD_PHYS,a,b,c,0,0,0UL,0}         /* physical */
-#define     DRLI(a,b)        {0,AD_DRLI,a,b,0,0,0,0UL,0}         /* life drain */
-#define     COLD(a,b)        {0,AD_COLD,a,b,0,0,0,0UL,0}
-#define     FIRE(a,b)        {0,AD_FIRE,a,b,0,0,0,0UL,0}
-#define     ELEC(a,b)        {0,AD_ELEC,a,b,0,0,0,0UL,0}         /* electrical shock */
-#define     STUN(a,b)        {0,AD_STUN,a,b,0,0,0,0UL,0}         /* magical attack */
+#define     NO_ATTK          {0,0,0,0,0,0,0,0,0UL,0}               /* no attack */
+#define     PHYS(a,b)        {0,AD_PHYS,a,b,0,0,0,0,0UL,0}         /* physical */
+#define     PHYSI(a,b,c)     {0,AD_PHYS,a,b,c,0,0,0,0UL,0}         /* physical */
+#define     DRLI(a,b)        {0,AD_DRLI,a,b,0,0,0,0,0UL,0}         /* life drain */
+#define     COLD(a,b)        {0,AD_COLD,a,b,0,0,0,0,0UL,0}
+#define     FIRE(a,b)        {0,AD_FIRE,a,b,0,0,0,0,0UL,0}
+#define     ELEC(a,b)        {0,AD_ELEC,a,b,0,0,0,0,0UL,0}         /* electrical shock */
+#define     STUN(a,b)        {0,AD_STUN,a,b,0,0,0,0,0UL,0}         /* magical attack */
 /* clang-format on */
 
 #define None (const char *)0
