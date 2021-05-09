@@ -916,8 +916,6 @@
       : glyph_is_cmap_variation(glyph) ? defsym_variations[max(0, (abs(glyph) - GLYPH_CMAP_VARIATION_OFF) % MAX_VARIATIONS)].base_screen_symbol \
       : glyph_is_broken_cmap_variation(glyph) ? defsym_variations[max(0, (abs(glyph) - GLYPH_BROKEN_CMAP_VARIATION_OFF) % MAX_VARIATIONS)].base_screen_symbol \
       : S_unexplored)
-//: glyph_is_cmap_variation(glyph) ? (defsym_variations[(abs(glyph) < GLYPH_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_CMAP_VARIATION_OFF)].base_screen_symbol) \
-//    : glyph_is_broken_cmap_variation(glyph) ? (defsym_variations[(abs(glyph) < GLYPH_BROKEN_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_BROKEN_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_BROKEN_CMAP_VARIATION_OFF)].base_screen_symbol) \
 
 #define glyph_is_trap(glyph)                         \
     (glyph_is_cmap_or_cmap_variation(glyph) && generic_glyph_to_cmap(glyph) >= trap_to_defsym(1) \

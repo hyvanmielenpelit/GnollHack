@@ -1921,13 +1921,13 @@ struct obj **optr;
     char ans = 'n';
     if (candelabrum_cnt > 0 || floor_cnt > 0)
     {
-        char qbuf[BUFSZ];
-        Sprintf(qbuf, "Do you want to attach the %s to %s?", cxname(obj), 
+        char attachbuf[BUFSZ];
+        Sprintf(attachbuf, "Do you want to attach the %s to %s?", cxname(obj),
             candelabrum_cnt == 1 && floor_cnt == 0 && candelabrum ? yname(candelabrum) :
             candelabrum_cnt == 0 && floor_cnt == 1 && floor_candelabrum ? "the candelabrum on the floor here" : 
             "a candelabrum");
 
-        ans = ynq(qbuf);
+        ans = ynq(attachbuf);
         if (ans == 'q')
         {
             pline1(Never_mind);
@@ -1989,9 +1989,9 @@ struct obj **optr;
     ans = 'n';
     if (candelabrum_cnt > 0 && floor_cnt > 0)
     {
-        char qbuf[BUFSIZ] = "";
-        Sprintf(qbuf, "There is %s on the floor. Attach the candles to %s?", floor_cnt > 1 ? "candelabra" : "a candelabrum", floor_cnt > 1 ? "one of them" : "it");
-        ans = yn_query(qbuf);
+        char attachbuf[BUFSIZ] = "";
+        Sprintf(attachbuf, "There is %s on the floor. Attach the candles to %s?", floor_cnt > 1 ? "candelabra" : "a candelabrum", floor_cnt > 1 ? "one of them" : "it");
+        ans = yn_query(attachbuf);
     }
 
     if (ans == 'y' && floor_cnt > 0)
