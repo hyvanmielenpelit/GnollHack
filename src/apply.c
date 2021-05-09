@@ -1192,37 +1192,52 @@ struct obj *obj;
     useeit = !Blind && (!invis_mirror || See_invisible);
     uvisage = beautiful();
     mirror = simpleonames(obj); /* "mirror" or "looking glass" */
-    if (obj->cursed && !rn2(2)) {
+
+    if (obj->cursed && !rn2(2))
+    {
         if (!Blind)
             pline_The("%s fogs up and doesn't reflect!", mirror);
         return 1;
     }
-    if (!u.dx && !u.dy && !u.dz) {
-        if (!useeit) {
+
+    if (!u.dx && !u.dy && !u.dz) 
+    {
+        if (!useeit) 
+        {
             You_cant("see your %s %s.", uvisage, body_part(FACE));
-        } else {
-            if (u.umonnum == PM_FLOATING_EYE) {
-                if (Free_action) {
+        } 
+        else
+        {
+            if (u.umonnum == PM_FLOATING_EYE) 
+            {
+                if (Free_action) 
+                {
                     You("stiffen momentarily under your gaze.");
-                } else {
+                }
+                else
+                {
                     if (Hallucination)
                         pline("Yow!  The %s stares back!", mirror);
                     else
                         pline("Yikes!  You've frozen yourself!");
-                    if (!Hallucination || !rn2(4)) {
+                    if (!Hallucination || !rn2(4)) 
+                    {
                         nomul(-rnd(MAXULEV + 6 - u.ulevel));
                         multi_reason = "gazing into a mirror";
                     }
                     nomovemsg = 0; /* default, "you can move again" */
                 }
-            } else if (youmonst.data->mlet == S_VAMPIRE)
+            } 
+            else if (youmonst.data->mlet == S_VAMPIRE)
                 You("don't have a reflection.");
-            else if (u.umonnum == PM_UNDERWORLD_HULK) {
+            else if (u.umonnum == PM_UNDERWORLD_HULK)
+            {
                 pline("Huh?  That doesn't look like you!");
                 if (!Confusion)
                     play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                 make_confused(itimeout_incr(HConfusion, d(3, 4)), FALSE);
-            } else if (Hallucination)
+            } 
+            else if (Hallucination)
                 You(look_str, hcolor((char *) 0));
             else if (Sick)
                 You(look_str, "peaked");
@@ -1237,19 +1252,25 @@ struct obj *obj;
         }
         return 1;
     }
-    if (u.uswallow) {
+
+    if (u.uswallow) 
+    {
         if (useeit)
             You("reflect %s %s.", s_suffix(mon_nam(u.ustuck)),
                 mbodypart(u.ustuck, STOMACH));
         return 1;
     }
-    if (Underwater) {
+
+    if (Underwater)
+    {
         if (useeit)
             You(Hallucination ? "give the fish a chance to fix their makeup."
                               : "reflect the murky water.");
         return 1;
     }
-    if (u.dz) {
+
+    if (u.dz) 
+    {
         if (useeit)
             You("reflect the %s.",
                 (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
@@ -1271,26 +1292,37 @@ struct obj *obj;
     /* whether monster is able to use its vision-based capabilities */
     monable = !is_cancelled(mtmp) && (!is_invisible(mtmp) || has_see_invisible(mtmp));
     mlet = mtmp->data->mlet;
-    if (is_sleeping(mtmp)) {
+    if (is_sleeping(mtmp)) 
+    {
         if (vis)
             pline("%s is too tired to look at your %s.", Monnam(mtmp),
                   mirror);
-    } else if (is_blinded(mtmp)) {
+    }
+    else if (is_blinded(mtmp))
+    {
         if (vis)
             pline("%s can't see anything right now.", Monnam(mtmp));
-    } else if (invis_mirror && !has_see_invisible(mtmp)) {
+    } 
+    else if (invis_mirror && !has_see_invisible(mtmp)) 
+    {
         if (vis)
             pline("%s fails to notice your %s.", Monnam(mtmp), mirror);
         /* infravision doesn't produce an image in the mirror */
-    } else if ((how_seen & SEENMON) == MONSEEN_INFRAVIS) {
+    } 
+    else if ((how_seen & SEENMON) == MONSEEN_INFRAVIS)
+    {
         if (vis) /* (redundant) */
             pline("%s is too far away to see %sself in the dark.",
                   Monnam(mtmp), mhim(mtmp));
         /* some monsters do special things */
-    } else if (mlet == S_VAMPIRE || mlet == S_GHOST || is_vampshifter(mtmp)) {
+    }
+    else if (mlet == S_VAMPIRE || mlet == S_GHOST || is_vampshifter(mtmp)) 
+    {
         if (vis)
             pline("%s doesn't have a reflection.", Monnam(mtmp));
-    } else if (monable && mtmp->data == &mons[PM_MEDUSA]) {
+    }
+    else if (monable && mtmp->data == &mons[PM_MEDUSA]) 
+    {
         if (mon_reflects(mtmp, "The gaze is reflected away by %s %s!"))
         {
             play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
@@ -1298,9 +1330,13 @@ struct obj *obj;
         }
         if (vis)
             pline("%s is turned to stone!", Monnam(mtmp));
+
+        play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
         stoned = TRUE;
         killed(mtmp);
-    } else if (monable && mtmp->data == &mons[PM_FLOATING_EYE]) {
+    } 
+    else if (monable && mtmp->data == &mons[PM_FLOATING_EYE]) 
+    {
         int tmp = d((int) mtmp->m_lev, (int) mtmp->data->mattk[0].damd);
         if (!rn2(4))
             tmp = 120;
@@ -1309,19 +1345,26 @@ struct obj *obj;
         else
             You_hear("%s stop moving.", something);
         paralyze_monst(mtmp, (int) mtmp->mfrozen + tmp, FALSE);
-    } else if (monable && mtmp->data == &mons[PM_UNDERWORLD_HULK]) {
+    } 
+    else if (monable && mtmp->data == &mons[PM_UNDERWORLD_HULK]) 
+    {
         if (vis)
             pline("%s confuses itself!", Monnam(mtmp));
         nonadditive_increase_mon_property(mtmp, CONFUSION, 10 + rnd(10));
-    } else if (monable && (mlet == S_NYMPH || mtmp->data == &mons[PM_INCUBUS])) {
-        if (vis) {
+    } 
+    else if (monable && (mlet == S_NYMPH || mtmp->data == &mons[PM_INCUBUS])) 
+    {
+        if (vis) 
+        {
             char buf[BUFSZ]; /* "She" or "He" */
 
             pline("%s admires %sself in your %s.", Monnam(mtmp), mhim(mtmp),
                   mirror);
             pline("%s takes it!", upstart(strcpy(buf, mhe(mtmp))));
-        } else
+        }
+        else
             pline("It steals your %s!", mirror);
+
         setnotworn(obj); /* in case mirror was wielded */
         freeinv(obj);
         (void) mpickobj(mtmp, obj);
@@ -1329,23 +1372,30 @@ struct obj *obj;
         {
             (void)rloc2(mtmp, TRUE, TRUE);
         }
-    } else if (!is_unicorn(mtmp->data) && !humanoid(mtmp->data)
-               && (!is_invisible(mtmp) || has_see_invisible(mtmp)) && rn2(5)) {
+    }
+    else if (!is_unicorn(mtmp->data) && !humanoid(mtmp->data)
+               && (!is_invisible(mtmp) || has_see_invisible(mtmp)) && rn2(5)) 
+    {
         boolean do_react = TRUE;
 
-        if (mtmp->mfrozen) {
+        if (mtmp->mfrozen) 
+        {
             if (vis)
                 You("discern no obvious reaction from %s.", mon_nam(mtmp));
             else
                 You_feel("a bit silly gesturing the mirror in that direction.");
             do_react = FALSE;
         }
-        if (do_react) {
+
+        if (do_react)
+        {
             if (vis)
                 pline("%s is frightened by its reflection.", Monnam(mtmp));
             monflee(mtmp, d(2, 4), FALSE, FALSE);
         }
-    } else if (!Blind) {
+    }
+    else if (!Blind)
+    {
         if (is_invisible(mtmp) && !See_invisible)
             ;
         else if ((is_invisible(mtmp) && !has_see_invisible(mtmp))

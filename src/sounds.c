@@ -88,6 +88,8 @@ STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
 STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
 STATIC_DCL int FDECL(learn_spell_func, (struct monst*));
 STATIC_DCL int FDECL(spell_teaching, (struct monst*, int*));
+STATIC_DCL boolean FDECL(maybe_dilithium_crystal, (struct obj*));
+STATIC_DCL boolean FDECL(maybe_ore, (struct obj*));
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -5763,6 +5765,16 @@ struct monst* mtmp;
     return 1;
 }
 
+STATIC_OVL boolean
+maybe_ore(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return FALSE;
+
+    return is_ore(otmp);
+}
+
 STATIC_OVL int
 do_chat_smith_sell_ore(mtmp)
 struct monst* mtmp;
@@ -5773,7 +5785,7 @@ struct monst* mtmp;
     const char sell_types[] = { ALLOW_COUNT, GEM_CLASS, 0 };
     int result, i = (invent) ? 0 : (SIZE(sell_types) - 1);
 
-    result = sell_to_npc(getobj(&sell_types[i], "sell to the smith", 3, ""), mtmp);
+    result = sell_to_npc(getobj_ex(&sell_types[i], "sell", 3, "", maybe_ore), mtmp);
 
     if (result)
     {
@@ -6149,6 +6161,19 @@ struct monst* mtmp;
     return 1;
 }
 
+STATIC_OVL boolean
+maybe_dilithium_crystal(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return FALSE;
+    if(objects[otmp->otyp].oc_name_known)
+        return (otmp->otyp == DILITHIUM_CRYSTAL);
+    else
+        return (otmp->oclass == GEM_CLASS && !objects[otmp->otyp].oc_name_known && objects[otmp->otyp].oc_color == objects[DILITHIUM_CRYSTAL].oc_color);
+
+}
+
 STATIC_OVL int
 do_chat_npc_sell_dilithium_crystals(mtmp)
 struct monst* mtmp;
@@ -6159,7 +6184,7 @@ struct monst* mtmp;
     const char sell_types[] = { ALLOW_COUNT, GEM_CLASS, 0 };
     int result, i = (invent) ? 0 : (SIZE(sell_types) - 1);
 
-    result = sell_to_npc(getobj(&sell_types[i], "sell", 3, ""), mtmp);
+    result = sell_to_npc(getobj_ex(&sell_types[i], "sell", 3, "", maybe_dilithium_crystal), mtmp);
 
     if (result)
     {
@@ -6344,7 +6369,7 @@ struct monst* mtmp;
     /* Now check if you want to sell it */
 
     long ltmp = 0L, offer, shkmoney;
-    boolean saleitem, container = Has_contents(obj);
+    boolean saleitem = FALSE, container = Has_contents(obj);
     boolean isgold = (obj->oclass == COIN_CLASS);
     boolean inroom = is_smith ? inhissmithy(mtmp) : in_his_npc_room(mtmp);
 
@@ -6360,9 +6385,25 @@ struct monst* mtmp;
         res = 0;
         goto merge_obj_back;
     }
-    saleitem = is_smith ? is_ore(obj) : ENPC(mtmp)->npc_typ == NPC_WARP_ENGINEER && obj->otyp == DILITHIUM_CRYSTAL ? TRUE : ENPC(mtmp)->npc_typ == NPC_GEOLOGIST && obj->oclass == GEM_CLASS ? TRUE :
-        ENPC(mtmp)->npc_typ == NPC_ARTIFICER && obj->oclass == SPBOOK_CLASS ? TRUE :
-        FALSE;
+
+    if (is_smith)
+    {
+        saleitem = is_ore(otmp);
+    }
+    else if(has_enpc(mtmp))
+    {
+        if ((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_DILITHIUM_CRYSTALS) && obj->otyp == DILITHIUM_CRYSTAL)
+        {
+            saleitem = TRUE;
+            makeknown(DILITHIUM_CRYSTAL);
+        }
+
+        if((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_GEMS_AND_STONES) && obj->oclass == GEM_CLASS)
+            saleitem = TRUE;
+        
+        if ((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_SPELLBOOKS) && obj->oclass == SPBOOK_CLASS)
+            saleitem = TRUE;
+    }
 
     if (!isgold && saleitem)
         ltmp = set_cost(obj, mtmp);

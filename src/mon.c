@@ -3599,7 +3599,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
             nocorpse = (xkill_flags & XKILL_NOCORPSE) != 0,
             noconduct = (xkill_flags & XKILL_NOCONDUCT) != 0;
 
-    if(!nomsg)
+    if(!nomsg && !stoned)
         play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
 
     mtmp->mhp = 0; /* caller will usually have already done this */

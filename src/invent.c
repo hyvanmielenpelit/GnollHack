@@ -2290,11 +2290,21 @@ const char* action;
 !!!! test if gold can be used in unusual ways (eaten etc.)
 !!!! may be able to remove "usegold"
  */
-struct obj *
+struct obj*
 getobj(let, word, show_weights, headertext)
+register const char* let, * word;
+int show_weights;
+const char* headertext;
+{
+    return getobj_ex(let, word, show_weights, headertext, (boolean (*)(struct obj*))0);
+}
+
+struct obj *
+getobj_ex(let, word, show_weights, headertext, validitemfunc)
 register const char *let, *word;
 int show_weights;
 const char* headertext;
+boolean (*validitemfunc)(struct obj*);
 {
     register struct obj *otmp;
     register char ilet = 0;
@@ -2315,7 +2325,7 @@ const char* headertext;
     //long dummymask;
     //Loot *sortedinvent, *srtinv;
 
-    construct_getobj_letters(let, word, lets, altlets, buf, sizeof lets, sizeof altlets, sizeof buf, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, getobj_autoselect_obj);
+    construct_getobj_letters(let, word, validitemfunc, lets, altlets, buf, sizeof lets, sizeof altlets, sizeof buf, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, getobj_autoselect_obj);
     if (getobj_autoselect_obj)
     {
         if (index(lets, getobj_autoselect_obj->invlet))
@@ -2772,8 +2782,9 @@ const char* headertext;
 }
 
 void
-construct_getobj_letters(let, word, lets, altlets, buf, lets_size, altlets_size, buf_size, foo_ptr, foox_ptr, bp_ptr, allowcnt_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr, otmp_only)
+construct_getobj_letters(let, word, validitemfunc, lets, altlets, buf, lets_size, altlets_size, buf_size, foo_ptr, foox_ptr, bp_ptr, allowcnt_ptr, usegold_ptr, allowall_ptr, allownone_ptr, useboulder_ptr, otmp_only)
 register const char *let, *word;
+boolean (*validitemfunc)(struct obj*);
 char* lets, *altlets, *buf;
 size_t lets_size UNUSED, altlets_size, buf_size;
 int* foo_ptr;
@@ -2919,7 +2930,8 @@ struct obj* otmp_only;
              * "else" in "you don't have anything else to ___".
              */
             else if (
-                (putting_on(word)
+                (validitemfunc && !(*validitemfunc)(otmp))
+                || (putting_on(word)
                     && ((otmp->oclass == FOOD_CLASS && otmp->otyp != MEAT_RING)
                         || (otmp->oclass == TOOL_CLASS && otyp != BLINDFOLD
                             && otyp != TOWEL)))
@@ -2980,7 +2992,6 @@ struct obj* otmp_only;
                 || (!strcmp(word, "charge") && !is_chargeable(otmp))
                 || (!strcmp(word, "fire") && (!uwep || !otmp || (otmp && uwep && !ammo_and_launcher(otmp, uwep))))
                 || (!strcmp(word, "open") && otyp != TIN)
-                || (!strcmp(word, "sell to the smith") && !is_ore(otmp))
                 || (!strcmp(word, "call") && !objtyp_is_callable(otyp))
                 || (is_dip_into && !otyp_allows_object_to_be_dipped_into_it(otyp))
                 || (!strcmp(word, "adjust") && otmp->oclass == COIN_CLASS && !usegold)
@@ -3086,7 +3097,7 @@ register const char* word;
     boolean useboulder = FALSE;
     xchar foox = 0;
 
-    construct_getobj_letters(let, word, lets, altlets, buf, sizeof lets, sizeof altlets, sizeof buf, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, otmp);
+    construct_getobj_letters(let, word, (boolean(*)(struct obj*))0, lets, altlets, buf, sizeof lets, sizeof altlets, sizeof buf, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, otmp);
 
     return !!index(lets, ilet);
 }

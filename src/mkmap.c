@@ -87,13 +87,15 @@ lev_init* init_lev;
     schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
 
     for (i = 2; i <= WIDTH; i++)
-        for (j = 1; j < HEIGHT; j++) {
+        for (j = 1; j < HEIGHT; j++) 
+        {
             for (count = 0, dr = 0; dr < 8; dr++)
                 if (get_map(i + dirs[dr * 2], j + dirs[(dr * 2) + 1], bg_typ)
                     == fg_typ)
                     count++;
 
-            switch (count) {
+            switch (count) 
+            {
             case 0: /* death */
             case 1:
             case 2:
@@ -130,7 +132,8 @@ lev_init* init_lev;
     schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
 
     for (i = 2; i <= WIDTH; i++)
-        for (j = 1; j < HEIGHT; j++) {
+        for (j = 1; j < HEIGHT; j++) 
+        {
             for (count = 0, dr = 0; dr < 8; dr++)
                 if (get_map(i + dirs[dr * 2], j + dirs[(dr * 2) + 1], bg_typ)
                     == fg_typ)
@@ -161,11 +164,13 @@ lev_init* init_lev;
     schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
 
     for (i = 2; i <= WIDTH; i++)
-        for (j = 1; j < HEIGHT; j++) {
+        for (j = 1; j < HEIGHT; j++)
+        {
             for (count = 0, dr = 0; dr < 8; dr++)
                 if (get_map(i + dirs[dr * 2], j + dirs[(dr * 2) + 1], bg_typ)
                     == fg_typ)
                     count++;
+
             if (count < 3)
                 new_loc(i, j) = bg_typ;
             else
@@ -206,6 +211,7 @@ boolean anyroom;
                               : levl[sx][sy].typ == fg_typ)
            && (int) levl[sx][sy].roomno != rmno)
         sx--;
+
     sx++; /* compensate for extra decrement */
 
     /* assume sx,sy is valid */
@@ -214,16 +220,19 @@ boolean anyroom;
     if (sy < min_ry)
         min_ry = sy;
 
-    for (i = sx; i <= WIDTH && levl[i][sy].typ == fg_typ; i++) {
+    for (i = sx; i <= WIDTH && levl[i][sy].typ == fg_typ; i++) 
+    {
         levl[i][sy].roomno = rmno;
         levl[i][sy].lit = lit;
-        if (anyroom) {
+        if (anyroom)
+        {
             /* add walls to room as well */
             register int ii, jj;
             for (ii = (i == sx ? i - 1 : i); ii <= i + 1; ii++)
                 for (jj = sy - 1; jj <= sy + 1; jj++)
                     if (isok(ii, jj) && (IS_WALL_OR_SDOOR(levl[ii][jj].typ)
-                                         || IS_DOOR(levl[ii][jj].typ))) {
+                                         || IS_DOOR(levl[ii][jj].typ))) 
+                    {
                         levl[ii][jj].edge = 1;
                         if (lit)
                             levl[ii][jj].lit = lit;
@@ -235,37 +244,49 @@ boolean anyroom;
     }
     nx = i;
 
-    if (isok(sx, sy - 1)) {
+    if (isok(sx, sy - 1)) 
+    {
         for (i = sx; i < nx; i++)
-            if (levl[i][sy - 1].typ == fg_typ) {
+            if (levl[i][sy - 1].typ == fg_typ) 
+            {
                 if ((int) levl[i][sy - 1].roomno != rmno)
                     flood_fill_rm(i, sy - 1, rmno, lit, anyroom);
-            } else {
+            }
+            else 
+            {
                 if ((i > sx || isok(i - 1, sy - 1))
-                    && levl[i - 1][sy - 1].typ == fg_typ) {
+                    && levl[i - 1][sy - 1].typ == fg_typ) 
+                {
                     if ((int) levl[i - 1][sy - 1].roomno != rmno)
                         flood_fill_rm(i - 1, sy - 1, rmno, lit, anyroom);
                 }
                 if ((i < nx - 1 || isok(i + 1, sy - 1))
-                    && levl[i + 1][sy - 1].typ == fg_typ) {
+                    && levl[i + 1][sy - 1].typ == fg_typ)
+                {
                     if ((int) levl[i + 1][sy - 1].roomno != rmno)
                         flood_fill_rm(i + 1, sy - 1, rmno, lit, anyroom);
                 }
             }
     }
-    if (isok(sx, sy + 1)) {
+    if (isok(sx, sy + 1)) 
+    {
         for (i = sx; i < nx; i++)
-            if (levl[i][sy + 1].typ == fg_typ) {
+            if (levl[i][sy + 1].typ == fg_typ) 
+            {
                 if ((int) levl[i][sy + 1].roomno != rmno)
                     flood_fill_rm(i, sy + 1, rmno, lit, anyroom);
-            } else {
+            }
+            else
+            {
                 if ((i > sx || isok(i - 1, sy + 1))
-                    && levl[i - 1][sy + 1].typ == fg_typ) {
+                    && levl[i - 1][sy + 1].typ == fg_typ) 
+                {
                     if ((int) levl[i - 1][sy + 1].roomno != rmno)
                         flood_fill_rm(i - 1, sy + 1, rmno, lit, anyroom);
                 }
                 if ((i < nx - 1 || isok(i + 1, sy + 1))
-                    && levl[i + 1][sy + 1].typ == fg_typ) {
+                    && levl[i + 1][sy + 1].typ == fg_typ) 
+                {
                     if ((int) levl[i + 1][sy + 1].roomno != rmno)
                         flood_fill_rm(i + 1, sy + 1, rmno, lit, anyroom);
                 }
@@ -332,7 +353,7 @@ lev_init* init_lev;
                 if (n_loc_filled > 3) 
                 {
                     add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OROOM,
-                             TRUE, fg_typ, 0, NON_PM);
+                             TRUE, 0, 0, NON_PM);
                     rooms[nroom - 1].irregular = TRUE;
                     if (nroom >= (MAXNROFROOMS * 2))
                         goto joinm;

@@ -2086,21 +2086,28 @@ coord *c;
     int try_cnt = 0;
     int i;
 
-    if (croom->irregular) {
+    if (croom->irregular)
+    {
         i = (int) ((croom - rooms) + ROOMOFFSET);
+        struct rm* lev;
 
         while (try_cnt++ < 100) {
             c->x = somex(croom);
             c->y = somey(croom);
-            if (!levl[c->x][c->y].edge && (int) levl[c->x][c->y].roomno == i)
+            lev = &levl[c->x][c->y];
+            if (!lev->edge && (int)lev->roomno == i)
                 return TRUE;
         }
         /* try harder; exhaustively search until one is found */
         for (c->x = croom->lx; c->x <= croom->hx; c->x++)
             for (c->y = croom->ly; c->y <= croom->hy; c->y++)
-                if (!levl[c->x][c->y].edge
-                    && (int) levl[c->x][c->y].roomno == i)
+            {
+                lev = &levl[c->x][c->y];
+                if (!lev->edge && (int)lev->roomno == i)
                     return TRUE;
+
+            }
+
         return FALSE;
     }
 

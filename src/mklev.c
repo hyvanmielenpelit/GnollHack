@@ -132,14 +132,17 @@ int floortyp, floorsubtyp, mtype;
     if (hiy >= ROWNO - 1)
         hiy = ROWNO - 2;
 
-    if (lit) {
-        for (x = lowx - 1; x <= hix + 1; x++) {
+    if (lit) 
+    {
+        for (x = lowx - 1; x <= hix + 1; x++)
+        {
             lev = &levl[x][max(lowy - 1, 0)];
             for (y = lowy - 1; y <= hiy + 1; y++)
                 lev++->lit = 1;
         }
         croom->rlit = 1;
-    } else
+    }
+    else
         croom->rlit = 0;
 
     croom->lx = lowx;
@@ -158,49 +161,72 @@ int floortyp, floorsubtyp, mtype;
 
     croom->nsubrooms = 0;
     croom->sbrooms[0] = (struct mkroom *) 0;
-    if (!special) {
+    if (!special) 
+    {
         for (x = lowx - 1; x <= hix + 1; x++)
-            for (y = lowy - 1; y <= hiy + 1; y += (hiy - lowy + 2)) {
+            for (y = lowy - 1; y <= hiy + 1; y += (hiy - lowy + 2)) 
+            {
                 levl[x][y].typ = HWALL;
-                levl[x][y].subtyp = levl[x][y].subtyp; /* Retain the subtyp setting from stone */
+                levl[x][y].subtyp = 0; 
+                levl[x][y].vartyp = levl[x][y].vartyp; /* Retain the vartyp setting from stone */
+                /* Retain floortype from stone */
                 levl[x][y].horizontal = 1; /* For open/secret doors. */
             }
+
         for (x = lowx - 1; x <= hix + 1; x += (hix - lowx + 2))
-            for (y = lowy; y <= hiy; y++) {
+            for (y = lowy; y <= hiy; y++) 
+            {
                 levl[x][y].typ = VWALL;
-                levl[x][y].subtyp = levl[x][y].subtyp; /* Retain the subtyp setting from stone */
+                levl[x][y].subtyp = 0;
+                levl[x][y].vartyp = levl[x][y].vartyp; /* Retain the vartyp setting from stone */
+                /* Retain floortype from stone */
                 levl[x][y].horizontal = 0; /* For open/secret doors. */
             }
-        for (x = lowx; x <= hix; x++) {
-            lev = &levl[x][lowy];
-            for (y = lowy; y <= hiy; y++)
+
+        if (IS_FLOOR(floortyp))
+        {
+            for (x = lowx; x <= hix; x++)
             {
-                lev->typ = IS_FLOOR(floortyp) ? floortyp : ROOM;
-                lev->subtyp = floorsubtyp; 
-                lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
-                lev->floortyp = lev->floorsubtyp = lev->floorvartyp = 0;
-                lev++;
+                lev = &levl[x][lowy];
+                for (y = lowy; y <= hiy; y++)
+                {
+                    lev->typ = floortyp;
+                    lev->subtyp = floorsubtyp;
+                    lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
+                    lev->floortyp = lev->floorsubtyp = lev->floorvartyp = 0;
+                    lev++;
+                }
             }
         }
-        if (is_room) {
+
+        if (is_room) 
+        {
             levl[lowx - 1][lowy - 1].typ = TLCORNER;
             levl[hix + 1][lowy - 1].typ = TRCORNER;
             levl[lowx - 1][hiy + 1].typ = BLCORNER;
             levl[hix + 1][hiy + 1].typ = BRCORNER;
 
-            levl[lowx - 1][lowy - 1].subtyp = levl[lowx - 1][lowy - 1].subtyp; /* Retain the subtyp setting from stone */
-            levl[hix + 1][lowy - 1].subtyp = levl[hix + 1][lowy - 1].subtyp; /* Retain the subtyp setting from stone */
-            levl[lowx - 1][hiy + 1].subtyp = levl[lowx - 1][hiy + 1].subtyp; /* Retain the subtyp setting from stone */
-            levl[hix + 1][hiy + 1].subtyp = levl[hix + 1][hiy + 1].subtyp; /* Retain the subtyp setting from stone */
-        } else { /* a subroom */
+            levl[lowx - 1][lowy - 1].subtyp = 0;
+            levl[hix + 1][lowy - 1].subtyp = 0;
+            levl[lowx - 1][hiy + 1].subtyp = 0;
+            levl[hix + 1][hiy + 1].subtyp = 0;
+
+            levl[lowx - 1][lowy - 1].vartyp = levl[lowx - 1][lowy - 1].vartyp; /* Retain the vartyp setting from stone */
+            levl[hix + 1][lowy - 1].vartyp = levl[hix + 1][lowy - 1].vartyp; /* Retain the vartyp setting from stone */
+            levl[lowx - 1][hiy + 1].vartyp = levl[lowx - 1][hiy + 1].vartyp; /* Retain the vartyp setting from stone */
+            levl[hix + 1][hiy + 1].vartyp = levl[hix + 1][hiy + 1].vartyp; /* Retain the vartyp setting from stone */
+        }
+        else 
+        { /* a subroom */
             wallification(lowx - 1, lowy - 1, hix + 1, hiy + 1);
         }
     }
     else
     {
-        if (floorsubtyp >= 0 && floorsubtyp < MAX_FLOOR_SUBTYPES)
+        if (IS_FLOOR(floortyp))
         {
-            for (x = lowx; x <= hix; x++) {
+            for (x = lowx; x <= hix; x++)
+            {
                 lev = &levl[x][lowy];
                 for (y = lowy; y <= hiy; y++)
                 {
