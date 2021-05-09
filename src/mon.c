@@ -4791,16 +4791,21 @@ struct monst *mon;
             mndx = pick_nasty();
         } 
         else // Removed as potentially being too dangerous */ 
-        if (rn2(3)) { /* role monsters */
+        if (rn2(3)) 
+        { /* role monsters */
             mndx = rn1(PM_WIZARD - PM_ARCHAEOLOGIST + 1, PM_ARCHAEOLOGIST);
-        } else if (!rn2(3)) { /* quest guardians */
+        } 
+        else if (!rn2(3)) 
+        { /* quest guardians */
             mndx = rn1(PM_APPRENTICE - PM_STUDENT + 1, PM_STUDENT);
             /* avoid own role's guardian */
             if (mndx == urole.guardnum)
                 mndx = NON_PM;
-        } else { /* general humanoids */
+        } 
+        else 
+        { /* general humanoids */
             tryct = 20;
-            struct permonst* pm;
+            struct permonst* pm = 0;
             do 
             {
                 pm = rndmonst();
@@ -4816,7 +4821,9 @@ struct monst *mon;
 
                 if (humanoid(&mons[mndx]) && polyok(&mons[mndx]))
                     break;
-            } while (--tryct > 0);
+            }
+            while (--tryct > 0);
+
             if (!tryct)
                 mndx = NON_PM;
         }

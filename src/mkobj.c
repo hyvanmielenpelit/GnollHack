@@ -3263,7 +3263,7 @@ boolean copyof;
             mnew = mtmp;
         }
 
-        if (mnew)
+        if (mnew && !mnew->data)
             mnew->data = &mons[mnew->mnum];
     }
 
