@@ -227,7 +227,7 @@ STAIR:random,up
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)
 # Objects
-OBJECT:(')',"mace"),(23,10),blessed,0,name:"The Sceptre of Might"
+OBJECT:(')',"runed sceptre"),(23,10),blessed,0,name:"The Sceptre of Might"
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random

@@ -2442,7 +2442,7 @@ floormaintype : FLOOR_MAIN_TYPE
 
 optfloortype : /* empty */
 		  {
-			$<i>$ = 0;
+			$<i>$ = -1;
 		  }
 		| FLOOR_TYPE_ID ':' floortype
 		  {

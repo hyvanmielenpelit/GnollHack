@@ -5983,7 +5983,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2444 "lev_comp.y"
     {
-			(yyval.i) = 0;
+			(yyval.i) = -1;
 		  ;}
     break;
 
