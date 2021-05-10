@@ -897,7 +897,14 @@ gazemm(magr, mdef, mattk)
 register struct monst *magr, *mdef;
 struct attack *mattk;
 {
-    if (!magr || !mdef)
+    if (!magr || !mdef || !mattk)
+        return 0;
+
+    int range = mattk->range ? mattk->range : M_GENERIC_RANGED_ATTACK_RANGE;
+    if (dist2(magr->mx, magr->my, mdef->mx, mdef->my) > range * range)
+        return 0; /* Out of range */
+
+    if ((mattk->aflags & ATTKFLAG_MUST_SEE_TARGET) && !(m_cansee_m(magr, mdef) && m_cansee(magr, mdef->mx, mdef->my)))
         return 0;
 
     char buf[BUFSZ];

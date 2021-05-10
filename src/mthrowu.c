@@ -1221,10 +1221,11 @@ spitmm(mtmp, mattk, mtarg)
 struct monst *mtmp, *mtarg;
 struct attack *mattk;
 {
-    if (!mtmp || !mtarg)
+    if (!mtmp || !mtarg || !mattk)
         return 0;
 
     struct obj *otmp;
+    int range = mattk->range ? mattk->range : M_GENERIC_RANGED_ATTACK_RANGE;
 
     if (is_cancelled(mtmp)) {
         if (!Deaf)
@@ -1232,7 +1233,7 @@ struct attack *mattk;
                   s_suffix(mon_nam(mtmp)));
         return 0;
     }
-    if (m_lined_up(mtarg, mtmp, TRUE, mattk->adtyp, FALSE, M_GENERIC_RANGED_ATTACK_RANGE)) {
+    if (m_lined_up(mtarg, mtmp, TRUE, mattk->adtyp, FALSE, range)) {
         update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
 
         switch (mattk->adtyp) {
@@ -1285,8 +1286,9 @@ struct attack  *mattk;
 
     /* if new breath types are added, change AD_ACID to max type */
     int typ = get_ray_adtyp(mattk->adtyp); // Does not include death ray
+    int range = mattk->range ? mattk->range : M_BREATH_WEAPON_RANGE;
 
-    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, M_BREATH_WEAPON_RANGE))
+    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, range))
     {
         update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
         if (is_cancelled(mtmp))
@@ -1341,8 +1343,9 @@ struct attack* mattk;
         return 0;
 
     int typ = get_ray_adtyp(mattk->adtyp);
+    int range = mattk->range ? mattk->range : M_RAY_RANGE;
 
-    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
+    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, range))
     {
         update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
         if (is_cancelled(mtmp) || is_blinded(mtmp))
@@ -1393,13 +1396,14 @@ struct attack* mattk;
 
     int adtyp = 0;
     int damn = 0, damd = 0, damp = 0;
+    int range = mattk->range ? mattk->range : M_RAY_RANGE;
 
     set_m_ray_spell_stats(mtmp, mattk, mtarg, &adtyp, &damn, &damd, &damp);
 
     if (adtyp < AD_MAGM || adtyp > AD_STON)
         return 0;
 
-    if (m_lined_up(mtarg, mtmp, TRUE, adtyp, TRUE, M_RAY_RANGE))
+    if (m_lined_up(mtarg, mtmp, TRUE, adtyp, TRUE, range))
     {
         update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
         if (is_cancelled(mtmp))
@@ -1752,6 +1756,7 @@ struct attack *mattk;
         return 0;
 
     struct obj *otmp;
+    int range = mattk->range ? mattk->range : M_GENERIC_RANGED_ATTACK_RANGE;
 
     if (is_cancelled(mtmp)) 
     {
@@ -1760,7 +1765,7 @@ struct attack *mattk;
                   s_suffix(mon_nam(mtmp)));
         return 0;
     }
-    if (lined_up(mtmp, TRUE, mattk->adtyp, FALSE, M_GENERIC_RANGED_ATTACK_RANGE))
+    if (lined_up(mtmp, TRUE, mattk->adtyp, FALSE, range))
     {
         update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
         switch (mattk->adtyp)
@@ -1817,8 +1822,9 @@ struct attack *mattk;
         return 0;
 
     int typ = get_ray_adtyp(mattk->adtyp);
+    int range = mattk->range ? mattk->range : M_RAY_RANGE;
 
-    if (lined_up(mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
+    if (lined_up(mtmp, TRUE, typ, TRUE, range))
     {
         update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
         if (is_cancelled(mtmp) || is_blinded(mtmp))
@@ -1867,8 +1873,9 @@ struct attack* mattk;
 
     /* if new breath types are added, change AD_ACID to max type */
     int typ = get_ray_adtyp(mattk->adtyp); //NOTE: Does not include death ray
+    int range = mattk->range ? mattk->range : M_BREATH_WEAPON_RANGE;
 
-    if (lined_up(mtmp, TRUE, typ, TRUE, M_BREATH_WEAPON_RANGE))
+    if (lined_up(mtmp, TRUE, typ, TRUE, range))
     {
         update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
         if (is_cancelled(mtmp))

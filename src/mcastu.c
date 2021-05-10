@@ -1286,7 +1286,8 @@ register struct attack *mattk;
 
     }
 
-    if (appr_spec_ptr && !(*appr_spec_ptr) && lined_up(mtmp, TRUE, adtyp, TRUE, M_RAY_RANGE) && rn2(3))
+    int range = mattk->range ? mattk->range : M_RAY_RANGE;
+    if (appr_spec_ptr && !(*appr_spec_ptr) && lined_up(mtmp, TRUE, adtyp, TRUE, range) && rn2(3))
     {
         nomul(0);
         if (adtyp && adtyp <= AD_STON)

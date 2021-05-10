@@ -32,6 +32,8 @@ struct attack {
     uchar action_tile; /* Action tile used for the attack */
 };
 
+#define ATTKFLAG_MUST_SEE_TARGET 0x00000001
+
 struct action_info
 {
     short actions[MAX_ACTION_TILES];

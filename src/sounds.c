@@ -6388,7 +6388,7 @@ struct monst* mtmp;
 
     if (is_smith)
     {
-        saleitem = is_ore(otmp);
+        saleitem = is_ore(obj);
     }
     else if(has_enpc(mtmp))
     {

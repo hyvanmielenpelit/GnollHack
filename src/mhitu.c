@@ -3828,6 +3828,9 @@ gazemu(mtmp, mattk)
 struct monst *mtmp;
 struct attack *mattk;
 {
+    if (!mtmp || !mattk)
+        return 0;
+
     static const char *const reactions[] = {
         "confused",              /* [0] */
         "stunned",               /* [1] */
@@ -3838,6 +3841,13 @@ struct attack *mattk;
     };
     int react = -1;
     boolean cancelled = is_cancelled(mtmp), already = FALSE;
+    
+    int range = mattk->range ? mattk->range : M_GENERIC_RANGED_ATTACK_RANGE;
+    if (distu(mtmp->mx, mtmp->my) > range * range)
+        return 0; /* Out of range */
+
+    if ((mattk->aflags & ATTKFLAG_MUST_SEE_TARGET) && !(m_canseeu(mtmp) && m_cansee(mtmp, u.ux, u.uy)))
+        return 0;
 
     /* assumes that hero has to see monster's gaze in order to be
        affected, rather than monster just having to look at hero;

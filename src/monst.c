@@ -259,7 +259,7 @@ NEARDATA struct permonst mons[] = {
      * cockatrice
      */
     MON("pyrolisk", None, "magical bird with fiery gaze", None, None, S_COCKATRICE, LVL(6, 6, 6, 0, 30, 0), (G_GENO | 1),
-        A(ATTK(AT_GAZE, AD_FIRE, 2, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
+        A(ATTK(AT_GAZE, AD_FIRE, 2, 6, 0, 0, 0, 0, ATTKFLAG_MUST_SEE_TARGET, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 30, MS_HISS, MZ_SMALL, 1, 0, MAT_FLESH), STATS(9, 9, 9, 1, 1, 1), 
         MR_POISON,
@@ -552,7 +552,7 @@ NEARDATA struct permonst mons[] = {
         ACTION_INFO(SHOCKING_SPHERE_STAND_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), NO_ACTION_INFO),
     MON("gazer", None, "floating sphere that shoots deadly rays from its eyestalks", None, None, S_EYE, LVL(12, 9, 0, 8, 0, -10),
         (G_GENO | 1), 
-        A(    ATTK(AT_GAZE, AD_CNCL, 0, 0, 0, 0, 0, 0, 0UL, 0),
+        A(    ATTK(AT_GAZE, AD_CNCL, 0, 0, 0, 0, 0, 0, ATTKFLAG_MUST_SEE_TARGET, 0),
             ATTK(AT_EYES, AD_REY1, 3, 6, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_EYES, AD_REY2, 3, 6, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_BITE, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0),
@@ -567,7 +567,7 @@ NEARDATA struct permonst mons[] = {
         22, CLR_BRIGHT_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("elder gazer", None, "powerful magic-using floating sphere that shoots deadly rays from its eyestalks", None, None, S_EYE, LVL(20, 12, -8, 14, 0, -14),
         (G_GENO | G_HELL | 1), 
-        A(    ATTK(AT_GAZE, AD_CNCL, 0, 0, 0, 0, 0, 0, 0UL, 0),
+        A(    ATTK(AT_GAZE, AD_CNCL, 0, 0, 0, 0, 0, 0, ATTKFLAG_MUST_SEE_TARGET, 0),
             ATTK(AT_EYES, AD_REY1, 6, 6, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_EYES, AD_REY2, 6, 6, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_BITE, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0),
@@ -582,7 +582,7 @@ NEARDATA struct permonst mons[] = {
         35, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("death gazer", None, "magic-using undead floating sphere that shoots deadly rays from its eyestalks", None, None, S_EYE, LVL(30, 8, -4, 14, 0, -17),
         (G_GENO | G_HELL | G_NOCORPSE | 1),
-        A(    ATTK(AT_GAZE, AD_CNCL, 0, 0, 0, 0, 0, 0, 0UL, 0),
+        A(    ATTK(AT_GAZE, AD_CNCL, 0, 0, 0, 0, 0, 0, ATTKFLAG_MUST_SEE_TARGET, 0),
             ATTK(AT_EYES, AD_COLD, 12, 6, 0, 0, 0, 0, 0UL, 0), /* just three stalks left, but can use all of them */
             ATTK(AT_EYES, AD_SLEE, 12, 6, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_EYES, AD_DRAY, 0, 0, 0, 0, 0, 0, 0UL, 0),

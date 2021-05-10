@@ -51,6 +51,11 @@ extern char *viz_rmax;            /* max could see indices */
          ? couldsee((m)->mx, (m)->my)                      \
          : 0)
 
+#define m_cansee_m(magr, mdef)                                       \
+    ((!is_invisible(mdef) || has_see_invisible(magr)) && !is_blinded(magr) && !(mdef)->mundetected    \
+         ? couldsee((magr)->mx, (magr)->my)                      \
+         : 0)
+
 /*
  *  Circle information
  */
