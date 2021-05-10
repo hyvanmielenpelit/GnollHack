@@ -53,7 +53,7 @@ extern char *viz_rmax;            /* max could see indices */
 
 #define m_cansee_m(magr, mdef)                                       \
     ((!is_invisible(mdef) || has_see_invisible(magr)) && !is_blinded(magr) && !(mdef)->mundetected    \
-         ? couldsee((magr)->mx, (magr)->my)                      \
+         ? m_cansee(magr, (mdef)->mx, (mdef)->my)                      \
          : 0)
 
 /*

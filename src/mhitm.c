@@ -904,7 +904,7 @@ struct attack *mattk;
     if (dist2(magr->mx, magr->my, mdef->mx, mdef->my) > range * range)
         return 0; /* Out of range */
 
-    if ((mattk->aflags & ATTKFLAG_MUST_SEE_TARGET) && !(m_cansee_m(magr, mdef) && m_cansee(magr, mdef->mx, mdef->my)))
+    if ((mattk->aflags & ATTKFLAG_MUST_SEE_TARGET) && !m_cansee_m(magr, mdef))
         return 0;
 
     char buf[BUFSZ];
