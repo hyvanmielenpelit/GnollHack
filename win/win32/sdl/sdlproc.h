@@ -136,6 +136,7 @@ char *sdl_getmsghistory(BOOLEAN_P init);
 void sdl_putmsghistory(const char *msg, BOOLEAN_P);
 
 void sdl_status_init(void);
+void sdl_statuslines_init(void);
 void sdl_status_finish(void);
 void sdl_status_enablefield(int fieldidx, const char *nm, const char *fmt,
                               boolean enable);
