@@ -37,6 +37,7 @@
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
+    <AndroidSupportedAbis />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,11 +66,24 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FmodService.cs" />
+    <Compile Include="fmod.cs" />
+    <Compile Include="fmod_dsp.cs" />
+    <Compile Include="fmod_errors.cs" />
+    <Compile Include="fmod_studio.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidNativeLibrary Include="libs\arm64-v8a\libfmod.so" />
+    <AndroidNativeLibrary Include="libs\arm64-v8a\libfmodstudio.so" />
+    <AndroidNativeLibrary Include="libs\armeabi-v7a\libfmod.so" />
+    <AndroidNativeLibrary Include="libs\armeabi-v7a\libfmodstudio.so" />
+    <AndroidNativeLibrary Include="libs\x86\libfmod.so" />
+    <AndroidNativeLibrary Include="libs\x86\libfmodstudio.so" />
+    <AndroidNativeLibrary Include="libs\x86_64\libfmod.so" />
+    <AndroidNativeLibrary Include="libs\x86_64\libfmodstudio.so" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -94,6 +108,10 @@
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GnollHackClient.Android.Bindings\GnollHackClient.Android.Bindings.csproj">
+      <Project>{6603a81b-b0d4-4119-b731-77c579ac7c86}</Project>
+      <Name>GnollHackClient.Android.Bindings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GnollHackClient\GnollHackClient.csproj">
       <Project>{5A266A7A-92C8-4E71-88AE-74AC420F9F18}</Project>
       <Name>GnollHackClient</Name>

@@ -15,6 +15,10 @@
     <None Remove="Assets\button_normal.png" />
     <None Remove="Assets\diablo_h.ttf" />
     <None Remove="Assets\gnollhack-logo-test-2.png" />
+    <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
+    <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
+    <None Remove="Assets\Master.bank" />
+    <None Remove="Assets\Master.strings.bank" />
     <None Remove="Assets\window_background.png" />
   </ItemGroup>
 
@@ -23,6 +27,10 @@
     <EmbeddedResource Include="Assets\button_normal.png" />
     <EmbeddedResource Include="Assets\diablo_h.ttf" />
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
+    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
+    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
+    <EmbeddedResource Include="Assets\Master.bank" />
+    <EmbeddedResource Include="Assets\Master.strings.bank" />
     <EmbeddedResource Include="Assets\window_background.png" />
   </ItemGroup>
 

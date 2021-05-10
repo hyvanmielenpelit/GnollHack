@@ -33,6 +33,7 @@ include/pm.h
 include/animoff.h
 include/animtotals.h
 win/win32/gnollhack_64x96_transparent_32bits*.png
+win/win32/winclisrv/GnollHackClient/GnollHackClient/Assets/gnollhack_64x96_transparent_32bits*.png
 win/win32/vs2017/*.lev
 win/win32/vs2017/default.nh
 *.csv
@@ -367,3 +368,5 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+!win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/libs/*

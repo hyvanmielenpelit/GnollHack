@@ -117,6 +117,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GnollHackClient", "..\wincl
 		{40516BC7-AC45-4F0C-9754-6C6A381302AB} = {40516BC7-AC45-4F0C-9754-6C6A381302AB}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.Android.Bindings", "..\winclisrv\GnollHackClient\GnollHackClient.Android.Bindings\GnollHackClient.Android.Bindings.csproj", "{6603A81B-B0D4-4119-B731-77C579AC7C86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -594,6 +596,30 @@ Global
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|Win32.Build.0 = Release|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|x64.ActiveCfg = Release|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|x64.Build.0 = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|ARM.Build.0 = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|Win32.Build.0 = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|x64.Build.0 = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|ARM.ActiveCfg = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|ARM.Build.0 = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|iPhone.Build.0 = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|Win32.ActiveCfg = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|Win32.Build.0 = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|x64.ActiveCfg = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -56,6 +56,7 @@ namespace GnollHackClient
         SKBitmap _background_bitmap;
         SKBitmap _logo_bitmap;
         SKTypeface _typeface;
+        private IFmodService _fmodService;
 
         public MainPage()
         {
@@ -143,7 +144,9 @@ namespace GnollHackClient
                 return true;
             });
 
-
+            _fmodService = DependencyService.Get<IFmodService>();
+            _fmodService.InitializeFmod();
+            _fmodService.LoadBanks();
         }
 
         protected void ConnectToServer()
@@ -356,6 +359,8 @@ namespace GnollHackClient
 
         private void firstButton_Clicked(object sender, EventArgs e)
         {
+            _fmodService.PlayTestSound();
+
             _connectionAttempted = true;
             _connection_status = "Not connected";
             _message = "Please wait...";
