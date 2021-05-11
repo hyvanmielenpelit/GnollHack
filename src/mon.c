@@ -960,9 +960,9 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = wizard (no priest specific rea
 int
 randomore()
 {
-    int totalprob = 0;
+    int totalprob = 0, i;
 
-    for (int i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
+    for (i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
     {
         if (Inhell)
             totalprob += 1;
@@ -974,7 +974,7 @@ randomore()
     int probcount = 0;
     int oreid = 0;
 
-    for (int i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
+    for (i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
     {
         if (Inhell)
             probcount += 1;
@@ -1219,6 +1219,7 @@ void
 update_monster_timeouts()
 {
     struct monst *mtmp;
+    int i;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -1256,7 +1257,7 @@ update_monster_timeouts()
         were_change(mtmp);
 
         /* gradually time out temporary problems */
-        for (int i = 1; i <= LAST_PROP; i++)
+        for (i = 1; i <= LAST_PROP; i++)
         {
             unsigned short otherflags = mtmp->mprops[i] & ~M_TIMEOUT;
             unsigned short duration = mtmp->mprops[i] & M_TIMEOUT;
@@ -1529,7 +1530,7 @@ update_monster_timeouts()
         update_all_mon_statistics(mtmp, TRUE);
 
         /* recurring properties */
-        for (int i = 1; i <= LAST_PROP; i++)
+        for (i = 1; i <= LAST_PROP; i++)
         {
             if ((mtmp->mprops[i] & M_TIMEOUT) == 0 && property_definitions[i].recurring && (mtmp->mprops[i] & ~M_TIMEOUT))
             {

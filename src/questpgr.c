@@ -552,8 +552,9 @@ struct qtmsg *qt_msg;
 #define TOUTBUFSZ BUFSZ * 10
     char total_out_line[TOUTBUFSZ] = "";
 
-    //*in_line = '\0';
-    for (size = 0; size < qt_msg->size; size += (long) strlen(in_line)) {
+    /* *in_line = '\0'; */
+    for (size = 0; size < qt_msg->size; size += (long) strlen(in_line)) 
+    {
         (void) dlb_fgets(in_line, sizeof in_line, msg_file);
         convert_line(in_line, out_line);
         if (strlen(total_out_line) + strlen(out_line) + 1 >= TOUTBUFSZ)
@@ -576,7 +577,8 @@ int how;
     winid datawin = create_nhwindow(qtdump ? NHW_TEXT : how);
 
 #ifdef DEBUG
-    if (qtdump) {
+    if (qtdump) 
+    {
         char buf[BUFSZ];
 
         /* when dumping quest messages at startup, all of them are passed to

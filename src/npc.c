@@ -278,6 +278,7 @@ uchar npctype;
 int mtype;
 {
     struct monst* npc;
+    int i;
     int npc_loc_x = sx;
     int npc_loc_y = sy;
     if (!isok(npc_loc_x, npc_loc_y) || IS_ROCK(levl[npc_loc_x][npc_loc_y].typ))
@@ -370,20 +371,20 @@ int mtype;
         if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_GEOLOGIST_ITEMS)
         {
             /* High chance of at least one ore of each type */
-            for (int i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
+            for (i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
             {
                 if(rn2(9))
                     mongets(npc, i);
             }
 
             /* Random ores */
-            for (int i = 0; i < 24; i++)
+            for (i = 0; i < 24; i++)
             {
                 mongets(npc, rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE));
             }
 
             /* Random gems */
-            for (int i = 0; i < 24; i++)
+            for (i = 0; i < 24; i++)
             {
                 mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
             }

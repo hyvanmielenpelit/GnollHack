@@ -128,7 +128,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;TILES;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;EXIT_THREAD_ON_EXIT;GNOLLHACK_MAIN_PROGRAM;GNOLLHACK_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;USE_TILES;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;EXIT_THREAD_ON_EXIT;GNOLLHACK_MAIN_PROGRAM;GNOLLHACK_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

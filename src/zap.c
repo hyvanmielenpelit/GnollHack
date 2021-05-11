@@ -8545,7 +8545,7 @@ register xchar sx, sy;
 register int dx, dy;
 boolean say; /* Announce out of sight hit/miss events if true */
 {
-    int range, abstype = abs(type) % NUM_ZAP;
+    int i, range, abstype = abs(type) % NUM_ZAP;
     register xchar lsx = 0, lsy = 0;
     struct monst *mon;
     coord save_bhitpos;
@@ -8609,7 +8609,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     int anim_intervals = 0;
     context.zap_aggregate_intervals_to_wait_until_end = 0UL;
     context.zap_aggregate_intervals_to_wait_until_action = 0UL;
-    for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
+    for (i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
         context.zap_animation_counter_on[i] = FALSE;
         context.zap_animation_counter[i] = 0L;
@@ -9066,7 +9066,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     tmp_at(DISP_END, 0);
     stop_ambient_ray_sound(soundset_id);
     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_DESTROY, lsx, lsy);
-    for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
+    for (i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
         context.zap_animation_counter_on[i] = FALSE;
         context.zap_animation_counter[i] = 0L;

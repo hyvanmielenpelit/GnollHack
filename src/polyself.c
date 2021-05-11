@@ -41,17 +41,18 @@ void
 set_uasmon()
 {
     struct permonst *mdat = &mons[u.umonnum];
+    int i;
 
     set_mon_data(&youmonst, mdat);
 
     /* Clear out FROM_FORMs*/
-    for (int i = 1; i <= LAST_PROP; i++)
+    for (i = 1; i <= LAST_PROP; i++)
     {
         u.uprops[i].intrinsic &= ~FROM_FORM;
     }
 
     unsigned long bit = 1UL;
-    for (int i = 1; i <= 32; i++)
+    for (i = 1; i <= 32; i++)
     {
         int prop = 0;
         if(i > 1)

@@ -1077,6 +1077,7 @@ register struct monst *mtmp;
     register struct permonst *ptr = mtmp->data;
     int mndx = monsndx(ptr);
     int n = 0;
+    int i;
 
     if (Is_rogue_level(&u.uz))
         return;
@@ -1108,7 +1109,7 @@ register struct monst *mtmp;
             if (!rn2(2))
             {
                 int num = rnd(3);
-                for (int i = 0; i < num; i++)
+                for (i = 0; i < num; i++)
                 {
                     otmp = mkobj(GEM_CLASS, TRUE, 0);
                     (void)mpickobj(mtmp, otmp);
@@ -1118,7 +1119,7 @@ register struct monst *mtmp;
         else if (mndx >= PM_ANCIENT_GRAY_DRAGON && mndx <= PM_ANCIENT_YELLOW_DRAGON)
         {
             int num = rnd(4);
-            for (int i = 0; i < num; i++)
+            for (i = 0; i < num; i++)
             {
                 if (!rn2(2))
                     otmp = mongets(mtmp, randomtruegem());
@@ -1348,12 +1349,12 @@ register struct monst *mtmp;
                 (void)mongetsgold(mtmp, rn2(501) + 200);
             //Reagents
             n = rnd(5);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 0));
 
             //Spellbooks
             n = rnd(3); // 1...3
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
             {
                 otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
                 (void)mpickobj(mtmp, otmp);
@@ -1421,14 +1422,14 @@ register struct monst *mtmp;
             
             //Reagents
             n = rnd(4);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
             {
                 (void)mongets(mtmp, randomreagent(TRUE, 2));
             }
 
             //Some spellbooks
             n = rnd(4); // 1...4
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
             {
                 otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
                 (void)mpickobj(mtmp, otmp);
@@ -1464,7 +1465,7 @@ register struct monst *mtmp;
 
         //Reagents
         n = rnd(3) + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 2 : 0); //1...3 + 2
-        for (int i = 0; i < n; i++)
+        for (i = 0; i < n; i++)
             (void)mongets(mtmp, randomreagent(TRUE, 2));
 
         //Some spellbooks
@@ -1475,7 +1476,7 @@ register struct monst *mtmp;
         else
             n = rnd(3); // 1...3
 
-        for (int i = 0; i < n; i++)
+        for (i = 0; i < n; i++)
         {
             otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
             (void)mpickobj(mtmp, otmp);
@@ -1511,7 +1512,7 @@ register struct monst *mtmp;
 
             //Reagents
             n = rnd(3) + 2;
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 2));
 
             if (!rn2(4))
@@ -1578,7 +1579,7 @@ register struct monst *mtmp;
 
         if (n > 0)
         {
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
             {
                 otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
                 (void)mpickobj(mtmp, otmp);
@@ -1617,7 +1618,8 @@ register struct monst *mtmp;
             
             /* Some random reagants */
             n = rn2(3);
-            for (int i = 0; i < n; i++)
+            i;
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 0));
 
             if (!rn2(2))
@@ -1625,7 +1627,7 @@ register struct monst *mtmp;
             
             /* Some spellbooks */
             n = rn2(2);
-            for(int i = 0; i < n; i++)
+            for(i = 0; i < n; i++)
             {
                 otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
                 (void)mpickobj(mtmp, otmp);
@@ -1641,22 +1643,22 @@ register struct monst *mtmp;
         {
             /* Some random reagants */
             n = rn2(4);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 1));
 
             n = rn2(3);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, GINSENG_ROOT);
         }
         else if (ptr == &mons[PM_GREATER_MUMMY_HIGH_PRIEST])
         {
             /* Some random reagants */
             n = rn2(6);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 1));
 
             n = rn2(4);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, GINSENG_ROOT);
         }
         break;
@@ -1665,22 +1667,22 @@ register struct monst *mtmp;
         {
             /* Some random reagants */
             n = rn2(4);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 1));
 
             n = rn2(3);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, GINSENG_ROOT);
         }
         else if (ptr == &mons[PM_OWLBEAR_SHAMAN])
         {
             /* Some random reagants */
             n = rn2(3);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 1));
 
             n = rn2(2);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, GINSENG_ROOT);
         }
         break;
@@ -1818,13 +1820,13 @@ register struct monst *mtmp;
                     (void)mongets(mtmp, !rn2(10) ? POT_FULL_ENERGY : !rn2(4) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
 
                 n = rn2(3);
-                for (int i = 0; i < n; i++)
+                for (i = 0; i < n; i++)
                     (void)mongets(mtmp, randomreagent(FALSE, 1));
 
                 if (ptr == &mons[PM_GNOLL_SUPREME_WARDEN])
                 {
                     n = rn2(3);
-                    for (int i = 0; i < n; i++)
+                    for (i = 0; i < n; i++)
                         (void)mongets(mtmp, GINSENG_ROOT);
                 }
                 else
@@ -1835,7 +1837,7 @@ register struct monst *mtmp;
                 }
                 
                 n = rn2(2);
-                for (int i = 0; i < n; i++)
+                for (i = 0; i < n; i++)
                 {
                     otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
                     (void)mpickobj(mtmp, otmp);
@@ -1914,14 +1916,14 @@ register struct monst *mtmp;
         if (ptr == &mons[PM_GNOMISH_WIZARD])
         {
             n = rnd(3);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 2));
 
             if (!rn2(2))
                 (void)mongets(mtmp, GINSENG_ROOT);
             
             n = rn2(2);
-            for (int i = 0; i < n; i++)
+            for (i = 0; i < n; i++)
             {
                 otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
                 (void)mpickobj(mtmp, otmp);

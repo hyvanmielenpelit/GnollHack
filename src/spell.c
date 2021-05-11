@@ -3227,7 +3227,7 @@ int splaction; /* SPELLMENU_CAST, SPELLMENU_VIEW, or spl_book[] index */
 int *spell_no;
 {
     winid tmpwin;
-    int i, n, how, splnum;
+    int i, j, n, how, splnum;
     char buf[BUFSZ], descbuf[BUFSZ], fmt[BUFSZ];
     char* colorbufs[MAXSPELL];
     int colorbufcnt = 0;
@@ -3236,7 +3236,7 @@ int *spell_no;
     anything any;
     const char* nodesc = "(No short description)";
 
-    for (int j = 0; j < MAXSPELL; j++)
+    for (j = 0; j < MAXSPELL; j++)
     {
         colorbufs[j] = (char*)malloc(BUFSZ * sizeof(char));
         strcpy(colorbufs[j], "");
@@ -3473,12 +3473,12 @@ int *spell_no;
     destroy_nhwindow(tmpwin);
     
     //Remove menucolors
-    for (int j = 0; j < colorbufcnt; j++)
+    for (j = 0; j < colorbufcnt; j++)
     {
         free_menu_coloring_str(colorbufs[j]);
     }
 
-    for (int j = 0; j < MAXSPELL; j++)
+    for (j = 0; j < MAXSPELL; j++)
     {
         free(colorbufs[j]);
     }
@@ -4379,6 +4379,8 @@ STATIC_OVL int
 domaterialcomponentsmenu(spell)
 int spell;
 {
+    int j;
+
     //This might happen with amnesia etc., the spells no longer "age"
     if (spellknow(spell) <= 0)
     {
@@ -4411,7 +4413,7 @@ int spell;
     struct obj* selcomps[MAX_MATERIALS];
     struct obj* difcomps[MAX_MATERIALS];
     int difcomp_req_amt[MAX_MATERIALS];
-    for (int j = 0; j < MAX_MATERIALS; j++)
+    for (j = 0; j < MAX_MATERIALS; j++)
     {
         selcomps[j] = (struct obj*)0;
         difcomps[j] = (struct obj*)0;
@@ -4428,7 +4430,7 @@ int spell;
     int difmatcnt = 0;
 
     //Check the material components here
-    for(int j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
+    for(j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
     {
         matcnt++;
         struct obj* otmp = (struct obj*)0;
@@ -4582,7 +4584,7 @@ int spell;
     }
 
     //Now go through the selected material components
-    for (int j = 0; j < matcnt; j++)
+    for (j = 0; j < matcnt; j++)
     {
         struct obj* otmp = selcomps[j];
         struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];

@@ -171,8 +171,9 @@ docharacterstatistics()
     putstr(datawin, 0, txt);
 
     int trait_count = 0;
+    int i;
 
-    for (int i = 0; i < MAX_TRAIT_DESCRIPTIONS; i++)
+    for (i = 0; i < MAX_TRAIT_DESCRIPTIONS; i++)
     {
         if (urace.trait_descriptions[i] && strcmp(urace.trait_descriptions[i], ""))
         {
@@ -191,7 +192,7 @@ docharacterstatistics()
             break;
     }
 
-    for (int i = 0; i < MAX_TRAIT_DESCRIPTIONS; i++)
+    for (i = 0; i < MAX_TRAIT_DESCRIPTIONS; i++)
     {
         if (urole.trait_descriptions[i] && strcmp(urole.trait_descriptions[i], ""))
         {
@@ -240,7 +241,7 @@ docharacterstatistics()
     putstr(datawin, 0, txt);
 
     int intrinsic_count = 0;
-    for (int i = 1; i <= LAST_PROP; i++)
+    for (i = 1; i <= LAST_PROP; i++)
     {
         long innate_intrinsic = u.uprops[i].intrinsic & (INTRINSIC | FROM_FORM);
         if (innate_intrinsic)
@@ -300,7 +301,7 @@ docharacterstatistics()
 
 
     /* Level-up intrinsics */
-    for(int i = 1; i <= 2; i++)
+    for(i = 1; i <= 2; i++)
     {
         Sprintf(buf, "Abilities to be acquired from %s:", i == 1 ? "race" : "role");
         txt = buf;
@@ -3494,7 +3495,8 @@ register struct obj* obj;
                 strcpy(affectbuf, "");
 
                 int cnt = 0;
-                for (int i = 0; i < NUM_UNSIGNED_LONG_BITS; i++)
+                int i;
+                for (i = 0; i < NUM_UNSIGNED_LONG_BITS; i++)
                 {
                     unsigned long bit = 1UL;
 
@@ -3506,7 +3508,7 @@ register struct obj* obj;
                 }
 
                 int idx = 0;
-                for (int i = 0; i < NUM_UNSIGNED_LONG_BITS; i++)
+                for (i = 0; i < NUM_UNSIGNED_LONG_BITS; i++)
                 {
                     unsigned long bit = 1UL;
 
@@ -3893,8 +3895,8 @@ register struct monst* mon;
     putstr(datawin, 0, txt);
 
     int number_of_attacks = 0;
-
-    for (int i = 0; i < NATTK; i++)
+    int i;
+    for (i = 0; i < NATTK; i++)
     {
         if (mon->data->mattk[i].aatyp == 0 && mon->data->mattk[i].adtyp == 0 && mon->data->mattk[i].damd == 0 && mon->data->mattk[i].damn == 0 && mon->data->mattk[i].damp == 0)
             break;
@@ -3906,7 +3908,7 @@ register struct monst* mon;
     txt = buf;
     putstr(datawin, 0, txt);
 
-    for (int i = 0; i < number_of_attacks; i++)
+    for (i = 0; i < number_of_attacks; i++)
     {
         char attypebuf[BUFSZ];
         char adtypebuf[BUFSZ];

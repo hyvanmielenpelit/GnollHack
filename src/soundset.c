@@ -7674,6 +7674,9 @@ void
 play_sfx_sound(sfx_sound_id)
 enum sfx_sound_types sfx_sound_id;
 {
+    if (sfx_sound_id < 0 || sfx_sound_id >= MAX_SFX_SOUND_TYPES)
+        return;
+
     if (Deaf && sfx_sounds[sfx_sound_id].affected_by_deafness)
         return;
 
@@ -7728,6 +7731,9 @@ enum sfx_sound_types sfx_sound_id;
 int x, y;
 double min_volume_d;
 {
+    if (sfx_sound_id < 0 || sfx_sound_id >= MAX_SFX_SOUND_TYPES)
+        return;
+
     float min_volume = (float)min_volume_d;
 
     if (min_volume < 0.0f)
@@ -7987,11 +7993,11 @@ int mode; /* 0 = normal, 1 = clear */
         return;
 
     int hear_distance = get_max_hearing_distance();
-
     /* Fill the array */
     hearing_array[u.ux][u.uy] = prev_hearing_array[u.ux][u.uy] = 1.0f;
 
-    for (int r = 1; r <= hear_distance; r++)
+    int r, i, y, prev_y, x, prev_x;
+    for (r = 1; r <= hear_distance; r++)
     {
         int x_min = u.ux - r;
         int x_max = u.ux + r;
@@ -8007,7 +8013,7 @@ int mode; /* 0 = normal, 1 = clear */
         boolean horizontal_max_done = FALSE;
 
         /* 1. Horizontal lines, left to right */
-        for (int i = 0; i <= 1; i++)
+        for (i = 0; i <= 1; i++)
         {
             if (i == 0)
             {
@@ -8027,7 +8033,7 @@ int mode; /* 0 = normal, 1 = clear */
             int y = (i == 0 ? y_min_adjusted : y_max_adjusted);
 
             
-            for (int x = x_min_adjusted; x <= x_max_adjusted; x++)
+            for (x = x_min_adjusted; x <= x_max_adjusted; x++)
             {
                 float prev_hearing = 0.0f;
                 int prev_y = (i == 0) ? y + 1 : y - 1;
@@ -8045,7 +8051,7 @@ int mode; /* 0 = normal, 1 = clear */
                     float maximum = 0.0f;
 
                     /* Take maximum from above or below from the previous round */
-                    for (int prev_x = max(x_min_adjusted + 1, x - 1); prev_x <= min(x_max_adjusted - 1, x + 1); prev_x++)
+                    for (prev_x = max(x_min_adjusted + 1, x - 1); prev_x <= min(x_max_adjusted - 1, x + 1); prev_x++)
                     {
                         maximum = max(maximum, prev_hearing_array[prev_x][prev_y]);
                     }
@@ -8070,7 +8076,7 @@ int mode; /* 0 = normal, 1 = clear */
         }
 
         /* Vertical lines, top to bottom */
-        for (int i = 0; i <= 1; i++)
+        for (i = 0; i <= 1; i++)
         {
             if (i == 0 && x_min_adjusted != x_min)
                 continue;
@@ -8080,7 +8086,7 @@ int mode; /* 0 = normal, 1 = clear */
             int x = (i == 0 ? x_min_adjusted : x_max_adjusted);
             int upper_y_limit = y_max_adjusted - (horizontal_max_done ? 1 : 0);
 
-            for (int y = y_min_adjusted + (horizontal_min_done ? 1 : 0); y <= upper_y_limit; y++)
+            for (y = y_min_adjusted + (horizontal_min_done ? 1 : 0); y <= upper_y_limit; y++)
             {
                 float prev_hearing = 0.0f;
                 int prev_x = (i == 0) ? x + 1 : x - 1;
@@ -8096,7 +8102,7 @@ int mode; /* 0 = normal, 1 = clear */
                 else
                 {
                     float maximum = 0.0f;
-                    for (int prev_y = max(y_min_adjusted + 1, y - 1); prev_y <= min(y_max_adjusted - 1, y + 1); prev_y++)
+                    for (prev_y = max(y_min_adjusted + 1, y - 1); prev_y <= min(y_max_adjusted - 1, y + 1); prev_y++)
                     {
                         maximum = max(maximum, prev_hearing_array[prev_x][prev_y]);
                     }
@@ -8121,7 +8127,7 @@ int mode; /* 0 = normal, 1 = clear */
         }
 
         /* Vertical lines, bottom to top */
-        for (int i = 0; i <= 1; i++)
+        for (i = 0; i <= 1; i++)
         {
             if (i == 0 && x_max_adjusted != x_max)
                 continue;
@@ -8130,7 +8136,7 @@ int mode; /* 0 = normal, 1 = clear */
 
             int x = (i == 0 ? x_max_adjusted : x_min_adjusted);
 
-            for (int y = y_max_adjusted - 1 ; y >= y_min_adjusted; y--)
+            for (y = y_max_adjusted - 1 ; y >= y_min_adjusted; y--)
             {
                 if(prev_hearing_array[x][y + 1] > 0.0f)
                     set_hearing_array(x, y, prev_hearing_array[x][y + 1], r);
@@ -8138,7 +8144,7 @@ int mode; /* 0 = normal, 1 = clear */
         }
 
         /* Horizontal lines, right to left */
-        for (int i = 0; i <= 1; i++)
+        for (i = 0; i <= 1; i++)
         {
             if (i == 0 && y_max_adjusted != y_max)
                 continue;
@@ -8147,7 +8153,7 @@ int mode; /* 0 = normal, 1 = clear */
 
             int y = (i == 0 ? y_max_adjusted : y_min_adjusted);
 
-            for (int x = x_max_adjusted - 1; x >= x_min_adjusted; x--)
+            for (x = x_max_adjusted - 1; x >= x_min_adjusted; x--)
             {
                 if (prev_hearing_array[x + 1][y] > 0.0f)
                     set_hearing_array(x, y, prev_hearing_array[x + 1][y], r);
@@ -8224,7 +8230,8 @@ int radius;
 void
 update_ambient_sounds()
 {
-    for (struct soundsource_t* curr = sound_base; curr; curr = curr->next)
+    struct soundsource_t* curr;
+    for (curr = sound_base; curr; curr = curr->next)
     {
         if (!isok(curr->x, curr->y))
             continue;

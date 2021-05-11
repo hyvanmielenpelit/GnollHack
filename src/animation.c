@@ -1526,9 +1526,6 @@ enum autodraw_types* autodraw_ptr;
                 /* Return the tile based on stone's vartyp (i.e., take the right variation) */
                 int repl_idx = min(replacements[replacement_idx].number_of_tiles - 1, levl[x][y].vartyp);
 
-                if (x == u.ux && y == u.uy - 1)
-                    x = x;
-
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
                 return glyph2tile[repl_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
@@ -2179,9 +2176,6 @@ enum autodraw_types* autodraw_ptr;
     short animation_idx = tile2animation[ntile];
     if (animation_idx > 0)
     {
-        if (animation_idx != 4)
-            animation_idx = animation_idx;
-
         if (autodraw_ptr)
             *autodraw_ptr = animations[animation_idx].main_tile_autodraw;
         if (animations[animation_idx].number_of_frames < 1)
@@ -2341,9 +2335,11 @@ int
 get_animation_base_tile(animidx)
 short animidx;
 {
-    for (int i = LOW_PM; i < NUM_MONSTERS; i++)
+    int i, j, cmap_idx;
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
-        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        int action;
+        for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
         {
             if (mons[i].animation.actions[action] == animidx)
                 return glyph2tile[i + get_monster_action_glyph_offset(action, 0)];
@@ -2353,7 +2349,7 @@ short animidx;
         if (mons[i].animation.corpse == animidx)
             return glyph2tile[i + GLYPH_BODY_OFF];
 
-        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
         {
             if (mons[i].female_animation.actions[action] == animidx)
                 return glyph2tile[i + get_monster_action_glyph_offset(action, 1)];
@@ -2364,15 +2360,15 @@ short animidx;
             return glyph2tile[i + GLYPH_FEMALE_STATUE_OFF];
     }
 
-    for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
+    for (i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
     {
         if(obj_descr[objects[i].oc_descr_idx].stand_animation == animidx)
             return glyph2tile[i + GLYPH_OBJ_OFF];
     }
 
-    for (int cmap_idx = 0; cmap_idx < MAX_CMAP_TYPES; cmap_idx++)
+    for (cmap_idx = 0; cmap_idx < MAX_CMAP_TYPES; cmap_idx++)
     {
-        for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
+        for (i = 0; i < MAX_CMAPPED_CHARS; i++)
         {
             if (defsyms[i].stand_animation[cmap_idx] == animidx)
                 return glyph2tile[i + GLYPH_CMAP_OFF];
@@ -2380,7 +2376,7 @@ short animidx;
                 return glyph2tile[i + GLYPH_BROKEN_CMAP_OFF];
         }
 
-        for (int i = 0; i < MAX_VARIATIONS; i++)
+        for (i = 0; i < MAX_VARIATIONS; i++)
         {
             if (defsym_variations[i].stand_animation[cmap_idx] == animidx)
                 return glyph2tile[i + GLYPH_CMAP_VARIATION_OFF];
@@ -2389,18 +2385,20 @@ short animidx;
         }
     }
 
-    for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+    int roleidx, raceidx, genderidx, alignment, glevel;
+    for (roleidx = 0; roleidx < NUM_ROLES; roleidx++)
     {
-        for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+        for (raceidx = 0; raceidx < NUM_RACES; raceidx++)
         {
-            for (int genderidx = 0; genderidx <= 1; genderidx++)
+            for (genderidx = 0; genderidx <= 1; genderidx++)
             {
-                for (int alignment = A_CHAOTIC; alignment <= A_LAWFUL; alignment++)
+                for (alignment = A_CHAOTIC; alignment <= A_LAWFUL; alignment++)
                 {
-                    for (int glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
+                    for (glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
                     {
                         int player_glyph_index = player_to_glyph_index(roleidx, raceidx, genderidx, alignment, glevel);
-                        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+                        int action;
+                        for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                         {
                             if (get_player_animation(action, roleidx, raceidx, genderidx, alignment, glevel) == animidx)
                                 return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
@@ -2412,65 +2410,65 @@ short animidx;
     }
 
     /* Explosion */
-    for (int i = 0; i < MAX_EXPLOSIONS; i++)
+    for (i = 0; i < MAX_EXPLOSIONS; i++)
     {
         if (explosion_type_definitions[i].animation == animidx)
             return glyph2tile[i * MAX_EXPLOSION_CHARS + GLYPH_EXPLODE_OFF];
     }
 
     /* Zap */
-    for (int i = 0; i < MAX_ZAP_TYPES; i++)
+    for (i = 0; i < MAX_ZAP_TYPES; i++)
     {
         if (zap_type_definitions[i].animation == animidx)
             return glyph2tile[ZAP_INDEX_WITH_FIRST_TILE +  i * NUM_ZAP_CHARS + GLYPH_ZAP_OFF];
     }
 
     /* Swallow */
-    for (int i = 0; i < NUM_MONSTERS; i++)
+    for (i = 0; i < NUM_MONSTERS; i++)
     {
         if (mons[i].animation.swallow == animidx || mons[i].female_animation.swallow == animidx)
             return glyph2tile[i * MAX_SWALLOW_CHARS + GLYPH_SWALLOW_OFF];
     }
 
     /* Special Effects */
-    for (enum special_effect_types i = SPECIAL_EFFECT_TELEPORT_OUT; i < MAX_SPECIAL_EFFECTS; i++)
+    for (i = SPECIAL_EFFECT_TELEPORT_OUT; i < MAX_SPECIAL_EFFECTS; i++)
     {
         if (special_effects[i].animation == animidx)
             return glyph2tile[i + GLYPH_SPECIAL_EFFECT_OFF];
     }
 
     /* Cursors */
-    for (enum game_cursor_types i = CURSOR_STYLE_GENERIC_CURSOR; i < MAX_CURSORS; i++)
+    for (i = CURSOR_STYLE_GENERIC_CURSOR; i < MAX_CURSORS; i++)
     {
         if (game_cursors[i].animation == animidx)
             return glyph2tile[i + GLYPH_CURSOR_OFF];
     }
 
     /* Hit tiles */
-    for (enum hit_tile_types i = HIT_GENERAL; i < MAX_HIT_TILES; i++)
+    for (i = HIT_GENERAL; i < MAX_HIT_TILES; i++)
     {
         if (hit_tile_definitions[i].animation == animidx)
             return glyph2tile[i + GLYPH_HIT_TILE_OFF];
     }
 
     /* General tiles */
-    for (enum general_tile_types i = GENERAL_TILE_DEATH; i < MAX_GENERAL_TILES; i++)
+    for (i = GENERAL_TILE_DEATH; i < MAX_GENERAL_TILES; i++)
     {
         if (general_tile_definitions[i].animation == animidx)
             return glyph2tile[i + GLYPH_GENERAL_TILE_OFF];
     }
 
     /* UI Tiles */
-    for (enum game_ui_tile_types i = GENERAL_UI_ELEMENTS; i < MAX_UI_TILES; i++)
+    for (i = GENERAL_UI_ELEMENTS; i < MAX_UI_TILES; i++)
     {
         if (ui_tile_component_array[i].animation == animidx)
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
     }
 
     /* Replacement */
-    for (int i = 1; i < MAX_REPLACEMENTS; i++)
+    for (i = 1; i < MAX_REPLACEMENTS; i++)
     {
-        for (int j = 0; j < replacements[i].number_of_tiles; j++)
+        for (j = 0; j < replacements[i].number_of_tiles; j++)
         {
             if (replacements[i].tile_animation[j] == animidx)
                 return glyph2tile[j + replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
@@ -2485,9 +2483,11 @@ int
 get_enlargement_base_tile(enlidx, enl_anim_tile_idx)
 short enlidx, enl_anim_tile_idx;
 {
-    for (int i = LOW_PM; i < NUM_MONSTERS; i++)
+    int i, j, cmap_idx;
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
-        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        int action;
+        for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
         {
             if (mons[i].enlargement.actions[action] == enlidx)
                 return glyph2tile[i + get_monster_action_glyph_offset(action, 0)];
@@ -2497,7 +2497,7 @@ short enlidx, enl_anim_tile_idx;
         if (mons[i].enlargement.corpse == enlidx)
             return glyph2tile[i + GLYPH_BODY_OFF];
 
-        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
         {
             if (mons[i].female_enlargement.actions[action] == enlidx)
                 return glyph2tile[i + get_monster_action_glyph_offset(action, 1)];
@@ -2508,16 +2508,16 @@ short enlidx, enl_anim_tile_idx;
             return glyph2tile[i + GLYPH_FEMALE_BODY_OFF];
     }
 
-    for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
+    for (i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
     {
         if (obj_descr[objects[i].oc_descr_idx].enlargement == enlidx)
             return glyph2tile[i + GLYPH_OBJ_OFF];
     }
 
-    for (int cmap_idx = 0; cmap_idx < MAX_CMAP_TYPES; cmap_idx++)
+    for (cmap_idx = 0; cmap_idx < MAX_CMAP_TYPES; cmap_idx++)
     {
 
-        for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
+        for (i = 0; i < MAX_CMAPPED_CHARS; i++)
         {
             if (defsyms[i].enlargement[cmap_idx] == enlidx)
                 return glyph2tile[i + cmap_idx * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF];
@@ -2525,7 +2525,7 @@ short enlidx, enl_anim_tile_idx;
                 return glyph2tile[i + cmap_idx * NUM_CMAP_TYPE_CHARS + GLYPH_BROKEN_CMAP_OFF];
         }
 
-        for (int i = 0; i < MAX_VARIATIONS; i++)
+        for (i = 0; i < MAX_VARIATIONS; i++)
         {
             if (defsym_variations[i].enlargement[cmap_idx] == enlidx)
                 return glyph2tile[i + cmap_idx * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF];
@@ -2534,18 +2534,20 @@ short enlidx, enl_anim_tile_idx;
         }
     }
 
-    for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+    int roleidx, raceidx, genderidx, alignment, glevel;
+    for (roleidx = 0; roleidx < NUM_ROLES; roleidx++)
     {
-        for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+        for (raceidx = 0; raceidx < NUM_RACES; raceidx++)
         {
-            for (int genderidx = 0; genderidx <= 1; genderidx++)
+            for (genderidx = 0; genderidx <= 1; genderidx++)
             {
-                for (int alignment = A_CHAOTIC; alignment <= A_LAWFUL; alignment++)
+                for (alignment = A_CHAOTIC; alignment <= A_LAWFUL; alignment++)
                 {
-                    for (int glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
+                    for (glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
                     {
                         int player_glyph_index = player_to_glyph_index(roleidx, raceidx, genderidx, alignment, glevel);
-                        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+                        int action;
+                        for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                         {
                             if (get_player_enlargement(action, roleidx, raceidx, genderidx, alignment, glevel) == enlidx)
                                 return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
@@ -2556,31 +2558,31 @@ short enlidx, enl_anim_tile_idx;
         }
     }
 
-    for (enum special_effect_types i = SPECIAL_EFFECT_TELEPORT_OUT; i < MAX_SPECIAL_EFFECTS; i++)
+    for (i = SPECIAL_EFFECT_TELEPORT_OUT; i < MAX_SPECIAL_EFFECTS; i++)
     {
         if (special_effects[i].enlargement == enlidx)
             return glyph2tile[i + GLYPH_SPECIAL_EFFECT_OFF];
     }
 
-    for (enum game_cursor_types i = CURSOR_STYLE_GENERIC_CURSOR; i < MAX_CURSORS; i++)
+    for (i = CURSOR_STYLE_GENERIC_CURSOR; i < MAX_CURSORS; i++)
     {
         if (game_cursors[i].enlargement == enlidx)
             return glyph2tile[i + GLYPH_CURSOR_OFF];
     }
 
-    for (enum hit_tile_types i = HIT_GENERAL; i < MAX_HIT_TILES; i++)
+    for (i = HIT_GENERAL; i < MAX_HIT_TILES; i++)
     {
         if (hit_tile_definitions[i].enlargement == enlidx)
             return glyph2tile[i + GLYPH_HIT_TILE_OFF];
     }
 
-    for (enum general_tile_types i = GENERAL_TILE_DEATH; i < MAX_GENERAL_TILES; i++)
+    for (i = GENERAL_TILE_DEATH; i < MAX_GENERAL_TILES; i++)
     {
         if (general_tile_definitions[i].enlargement == enlidx)
             return glyph2tile[i + GLYPH_GENERAL_TILE_OFF];
     }
 
-    for (enum game_ui_tile_types i = GENERAL_UI_ELEMENTS; i < MAX_UI_TILES; i++)
+    for (i = GENERAL_UI_ELEMENTS; i < MAX_UI_TILES; i++)
     {
         if (ui_tile_component_array[i].enlargement == enlidx)
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
@@ -2588,9 +2590,9 @@ short enlidx, enl_anim_tile_idx;
 
 
     /* Replacement */
-    for (int i = 1; i < MAX_REPLACEMENTS; i++)
+    for (i = 1; i < MAX_REPLACEMENTS; i++)
     {
-        for (int j = 0; j < replacements[i].number_of_tiles; j++)
+        for (j = 0; j < replacements[i].number_of_tiles; j++)
         {
             if (replacements[i].tile_enlargement[j] == enlidx)
                 return glyph2tile[j + replacement_offsets[i] /* replacements[i].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
@@ -2598,9 +2600,9 @@ short enlidx, enl_anim_tile_idx;
     }
 
     /* Animation */
-    for (int i = 1; i < MAX_ANIMATIONS; i++)
+    for (i = 1; i < MAX_ANIMATIONS; i++)
     {
-        for (int j = 0; j < animations[i].number_of_tiles; j++)
+        for (j = 0; j < animations[i].number_of_tiles; j++)
         {
             if (animations[i].tile_enlargement == enlidx && (enl_anim_tile_idx < 0 || enl_anim_tile_idx == j))
             {
@@ -2631,9 +2633,11 @@ int
 get_replacement_base_tile(replacement_idx)
 short replacement_idx;
 {
-    for (int i = LOW_PM; i < NUM_MONSTERS; i++)
+    int i, cmap_idx;
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
-        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        int action;
+        for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
         {
             if (mons[i].replacement.actions[action] == replacement_idx)
                 return glyph2tile[i + get_monster_action_glyph_offset(action, 0)];
@@ -2643,7 +2647,7 @@ short replacement_idx;
         if (mons[i].replacement.corpse == replacement_idx)
             return glyph2tile[i + GLYPH_BODY_OFF];
 
-        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
         {
             if (mons[i].female_replacement.actions[action] == replacement_idx)
                 return glyph2tile[i + get_monster_action_glyph_offset(action, 1)];
@@ -2654,15 +2658,15 @@ short replacement_idx;
             return glyph2tile[i + GLYPH_FEMALE_STATUE_OFF];
     }
 
-    for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
+    for (i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
     {
         if (obj_descr[objects[i].oc_descr_idx].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_OBJ_OFF];
     }
 
-    for (int cmap_idx = 0; cmap_idx < MAX_CMAP_TYPES; cmap_idx++)
+    for (cmap_idx = 0; cmap_idx < MAX_CMAP_TYPES; cmap_idx++)
     {
-        for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
+        for (i = 0; i < MAX_CMAPPED_CHARS; i++)
         {
             if (defsyms[i].replacement[cmap_idx] == replacement_idx)
                 return glyph2tile[i + GLYPH_CMAP_OFF];
@@ -2670,7 +2674,7 @@ short replacement_idx;
                 return glyph2tile[i + GLYPH_BROKEN_CMAP_OFF];
         }
 
-        for (int i = 0; i < MAX_VARIATIONS; i++)
+        for (i = 0; i < MAX_VARIATIONS; i++)
         {
             if (defsym_variations[i].replacement[cmap_idx] == replacement_idx)
                 return glyph2tile[i + GLYPH_CMAP_VARIATION_OFF];
@@ -2679,18 +2683,20 @@ short replacement_idx;
         }
     }
 
-    for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+    int roleidx, raceidx, genderidx, alignment, glevel;
+    for (roleidx = 0; roleidx < NUM_ROLES; roleidx++)
     {
-        for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+        for (raceidx = 0; raceidx < NUM_RACES; raceidx++)
         {
-            for (int genderidx = 0; genderidx <= 1; genderidx++)
+            for (genderidx = 0; genderidx <= 1; genderidx++)
             {
-                for (int alignment = A_CHAOTIC; alignment <= A_LAWFUL; alignment++)
+                for (alignment = A_CHAOTIC; alignment <= A_LAWFUL; alignment++)
                 {
-                    for (int glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
+                    for (glevel = 0; glevel < NUM_PLAYER_GLYPH_LEVELS; glevel++)
                     {
                         int player_glyph_index = player_to_glyph_index(roleidx, raceidx, genderidx, alignment, glevel);
-                        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+                        int action;
+                        for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                         {
                             if (get_player_replacement(action, roleidx, raceidx, genderidx, alignment, glevel) == replacement_idx)
                                 return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
@@ -2701,31 +2707,31 @@ short replacement_idx;
         }
     }
 
-    for (enum special_effect_types i = SPECIAL_EFFECT_TELEPORT_OUT; i < MAX_SPECIAL_EFFECTS; i++)
+    for (i = SPECIAL_EFFECT_TELEPORT_OUT; i < MAX_SPECIAL_EFFECTS; i++)
     {
         if (special_effects[i].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_SPECIAL_EFFECT_OFF];
     }
 
-    for (enum game_cursor_types i = CURSOR_STYLE_GENERIC_CURSOR; i < MAX_CURSORS; i++)
+    for (i = CURSOR_STYLE_GENERIC_CURSOR; i < MAX_CURSORS; i++)
     {
         if (game_cursors[i].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_CURSOR_OFF];
     }
 
-    for (enum hit_tile_types i = HIT_GENERAL; i < MAX_HIT_TILES; i++)
+    for (i = HIT_GENERAL; i < MAX_HIT_TILES; i++)
     {
         if (hit_tile_definitions[i].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_HIT_TILE_OFF];
     }
 
-    for (enum general_tile_types i = GENERAL_TILE_DEATH; i < MAX_GENERAL_TILES; i++)
+    for (i = GENERAL_TILE_DEATH; i < MAX_GENERAL_TILES; i++)
     {
         if (general_tile_definitions[i].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_GENERAL_TILE_OFF];
     }
 
-    for (enum game_ui_tile_types i = GENERAL_UI_ELEMENTS; i < MAX_UI_TILES; i++)
+    for (i = GENERAL_UI_ELEMENTS; i < MAX_UI_TILES; i++)
     {
         if (ui_tile_component_array[i].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
@@ -2909,9 +2915,10 @@ stop_animations()
     context.explosion_animation_counter_on = FALSE;
     context.m_action_animation_counter_on = FALSE;
     context.u_action_animation_counter_on = FALSE;
-    for(int i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
+    int i;
+    for(i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
         context.special_effect_animation_counter_on[i] = FALSE;
-    for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
+    for (i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
         context.zap_animation_counter_on[i] = FALSE;
 }
 

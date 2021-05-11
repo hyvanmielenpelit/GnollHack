@@ -1793,6 +1793,8 @@ register struct trobj *trop;
             {
                 /* Add one sulfur */
                 struct obj* otmp = (struct obj*)0;
+                int i;
+
                 otmp = mksobj(PINCH_OF_SULFUROUS_ASH, FALSE, FALSE, TRUE);
                 otmp->known = 1;
                 otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
@@ -1800,7 +1802,7 @@ register struct trobj *trop;
 
 
                 /* Add some food */
-                for (int i = 1; i <= 2; i++)
+                for (i = 1; i <= 2; i++)
                 {
                     otmp = mksobj(!rn2(3) ? CHANTERELLE : !rn2(2) ? CHAMPIGNON : PENNY_BUN, TRUE, FALSE, TRUE);
                     knows_object(otmp->otyp);
@@ -1825,7 +1827,7 @@ register struct trobj *trop;
                 otmp = add_to_container(obj, otmp);
 
                 int n = 2 + rn2(4); //2...5
-                for (int i = 0; i < n; i++)
+                for (i = 0; i < n; i++)
                 {
                     struct obj* otmp2 = mksobj(randomreagent(FALSE, 2), FALSE, FALSE, FALSE);
                     if (otmp)

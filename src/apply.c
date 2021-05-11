@@ -2362,7 +2362,7 @@ struct obj **optr;
         }
         return;
     } else if (Underwater) {
-        play_sfx_sound(GHSOUND_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         There("is not enough oxygen to sustain a fire.");
         return;
     }
@@ -4228,11 +4228,11 @@ struct obj *obj;
         proficient = 0;
 
     if (u.uswallow && attack(u.ustuck)) {
-        play_sfx_sound(GHSOUND_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         There("is not enough room to flick your bullwhip.");
 
     } else if (Underwater) {
-        play_sfx_sound(GHSOUND_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         There("is too much resistance to flick your bullwhip.");
 
     } else if (u.dz < 0) {
@@ -5937,7 +5937,7 @@ struct obj* obj;
     if (no_golf_swing) 
     {
         /* ignore direction typed before player notices kick failed */
-        play_sfx_sound(GHSOUND_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         display_nhwindow(WIN_MESSAGE, TRUE); /* --More-- */
         return 0;
     }

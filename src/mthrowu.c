@@ -1470,8 +1470,8 @@ int *typ, *damn, *damd, *damp;
 
     //boolean is_target_you = (mtarg == &youmonst);
     boolean spell_ok[10] = { 0 };
-
-    for (int i = AD_MAGM; i <= AD_STON; i++)
+    int i;
+    for (i = AD_MAGM; i <= AD_STON; i++)
     {
         spell_ok[i - 1] = !is_immune(mtarg, i);
 
@@ -1529,7 +1529,7 @@ int *typ, *damn, *damd, *damp;
     }
 
     int sum = 0;
-    for (int i = 0; i < 10; i++)
+    for (i = 0; i < 10; i++)
         sum += spell_ok[i];
 
     /* Too weak if others are available */

@@ -1319,7 +1319,8 @@ struct obj **optr;
         start_menu(tmpwin);
         any = zeroany; /* zero out all bits */
 
-        for (int k = 0; k < MAX_MONSTER_CLASSES; k++)
+        int k;
+        for (k = 0; k < MAX_MONSTER_CLASSES; k++)
         {
             if (strcmp(def_monsyms[k].explain, ""))
             {
@@ -1327,7 +1328,7 @@ struct obj **optr;
                 add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym == ' ' ? ',' : def_monsyms[k].sym, 0, ATR_NONE, def_monsyms[k].explain, MENU_UNSELECTED);
             }
         }
-        for (int k = 0; k < MAX_OBJECT_CLASSES; k++)
+        for (k = 0; k < MAX_OBJECT_CLASSES; k++)
         {
             if (strcmp(def_oc_syms[k].explain, "") && def_oc_syms[k].sym != ILLOBJ_SYM && def_oc_syms[k].sym != '\0')
             {

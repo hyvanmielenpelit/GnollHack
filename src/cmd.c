@@ -1823,6 +1823,7 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 {
     if (wizard) 
     {
+        int i, j;
         pline("Starting writing monsters.csv...");
         const char* fq_save = "monsters.csv";
         int fd;
@@ -1838,7 +1839,7 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 
         Sprintf(buf, "Name,Level,Move,AC,MC,MR,Alignment,GenoFlags,");
         (void)write(fd, buf, strlen(buf));
-        for (int j = 0; j < NATTK; j++)
+        for (j = 0; j < NATTK; j++)
         {
             Sprintf(buf, "Attack%d,Type,DmgType,DiceNum,DieSize,DmgPlus,MCAdj,", j+1);
             (void)write(fd, buf, strlen(buf));
@@ -1850,35 +1851,35 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 
         Sprintf(buf, "MResists,");
         (void)write(fd, buf, strlen(buf));
-        for (int j = 0; j < 32; j++)
+        for (j = 0; j < 32; j++)
         {
             Sprintf(buf, "%d,", j+1);
             (void)write(fd, buf, strlen(buf));
         }
         Sprintf(buf, "MConveys,");
         (void)write(fd, buf, strlen(buf));
-        for (int j = 0; j < 32; j++)
+        for (j = 0; j < 32; j++)
         {
             Sprintf(buf, "%d,", j + 1);
             (void)write(fd, buf, strlen(buf));
         }
         Sprintf(buf, "MFlags1,");
         (void)write(fd, buf, strlen(buf));
-        for (int j = 0; j < 32; j++)
+        for (j = 0; j < 32; j++)
         {
             Sprintf(buf, "%d,", j + 1);
             (void)write(fd, buf, strlen(buf));
         }
         Sprintf(buf, "MFlags2,");
         (void)write(fd, buf, strlen(buf));
-        for (int j = 0; j < 32; j++)
+        for (j = 0; j < 32; j++)
         {
             Sprintf(buf, "%d,", j + 1);
             (void)write(fd, buf, strlen(buf));
         }
         Sprintf(buf, "MFlags3,");
         (void)write(fd, buf, strlen(buf));
-        for (int j = 0; j < 32; j++)
+        for (j = 0; j < 32; j++)
         {
             Sprintf(buf, "%d,", j + 1);
             (void)write(fd, buf, strlen(buf));
@@ -1890,7 +1891,7 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
         (void)write(fd, buf, strlen(buf));
 
 
-        for (int i = LOW_PM; i < NUM_MONSTERS; i++)
+        for (i = LOW_PM; i < NUM_MONSTERS; i++)
         {
             Sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%lu,",
                 mons[i].mname, 
@@ -1898,7 +1899,7 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
                 (int)mons[i].ac, (int)mons[i].mc, (int)mons[i].mr, 
                 (int)mons[i].maligntyp, mons[i].geno);
             (void)write(fd, buf, strlen(buf));
-            for (int j = 0; j < NATTK; j++)
+            for (j = 0; j < NATTK; j++)
             {
                 Sprintf(buf, ",%d,%d,%d,%d,%d,%d,", 
                     mons[i].mattk[j].aatyp, mons[i].mattk[j].adtyp, 
@@ -1914,35 +1915,35 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 
             Sprintf(buf, ",");
             (void)write(fd, buf, strlen(buf));
-            for (int j = 0; j < 32; j++)
+            for (j = 0; j < 32; j++)
             {
                 Sprintf(buf, "%d,", (mons[i].mresists & (1L << j)) ? 1 : 0);
                 (void)write(fd, buf, strlen(buf));
             }
             Sprintf(buf, ",");
             (void)write(fd, buf, strlen(buf));
-            for (int j = 0; j < 32; j++)
+            for (j = 0; j < 32; j++)
             {
                 Sprintf(buf, "%d,", (mons[i].mconveys & (1L << j)) ? 1 : 0);
                 (void)write(fd, buf, strlen(buf));
             }
             Sprintf(buf, ",");
             (void)write(fd, buf, strlen(buf));
-            for (int j = 0; j < 32; j++)
+            for (j = 0; j < 32; j++)
             {
                 Sprintf(buf, "%d,", (mons[i].mflags1 & (1L << j)) ? 1 : 0);
                 (void)write(fd, buf, strlen(buf));
             }
             Sprintf(buf, ",");
             (void)write(fd, buf, strlen(buf));
-            for (int j = 0; j < 32; j++)
+            for (j = 0; j < 32; j++)
             {
                 Sprintf(buf, "%d,", (mons[i].mflags2 & (1L << j)) ? 1 : 0);
                 (void)write(fd, buf, strlen(buf));
             }
             Sprintf(buf, ",");
             (void)write(fd, buf, strlen(buf));
-            for (int j = 0; j < 32; j++)
+            for (j = 0; j < 32; j++)
             {
                 Sprintf(buf, "%d,", (mons[i].mflags3 & (1L << j)) ? 1 : 0);
                 (void)write(fd, buf, strlen(buf));
@@ -5894,7 +5895,7 @@ struct {
 } const spkeys_binds[] = {
     { NHKF_ESC,              '\033', (char *) 0 }, /* no binding */
     { NHKF_DOAGAIN,          DOAGAIN, "repeat" },
-    { NHKF_DOAGAIN2,         '§', "repeat.alternate" },
+    { NHKF_DOAGAIN2,         -89 /*'§'*/, "repeat.alternate" },
     { NHKF_REQMENU,          'm', "reqmenu" },
     { NHKF_RUN,              'G', "run" },
     { NHKF_RUN2,             '5', "run.numpad" },

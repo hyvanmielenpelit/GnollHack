@@ -3895,7 +3895,8 @@ ddoinv()
         int longest_len_header = 0;
         int slen = 0;
         unsigned long allflags = 0UL;
-        for (int j = 0; j < NUM_CMD_SECTIONS; j++)
+        int i, j;
+        for (j = 0; j < NUM_CMD_SECTIONS; j++)
         {
             allflags |= section_flags[j];
 
@@ -3904,7 +3905,7 @@ ddoinv()
                 longest_len_header = slen;
 
         }
-        for (int i = 0; extcmdlist[i].ef_txt; i++)
+        for (i = 0; extcmdlist[i].ef_txt; i++)
         {
             if (!(extcmdlist[i].flags & allflags) || !extcmdlist[i].getobj_word)
                 continue;
@@ -3914,10 +3915,10 @@ ddoinv()
                 longest_len = slen;
         }
 
-        for (int j = 0; j < NUM_CMD_SECTIONS; j++)
+        for (j = 0; j < NUM_CMD_SECTIONS; j++)
         {
             int cnt = 0;
-            for (int i = 0; extcmdlist[i].ef_txt; i++)
+            for (i = 0; extcmdlist[i].ef_txt; i++)
             {
                 if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
                     continue;
@@ -3963,7 +3964,7 @@ ddoinv()
                 0, 0, iflags.menu_headings,
                 hbuf, MENU_UNSELECTED);
 
-            for (int i = 0; extcmdlist[i].ef_txt; i++)
+            for (i = 0; extcmdlist[i].ef_txt; i++)
             {
                 if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
                     continue;

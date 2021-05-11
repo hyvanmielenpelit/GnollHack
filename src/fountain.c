@@ -1300,13 +1300,14 @@ void
 init_fountains()
 {
     /*Initialize fountain variations */
-    for (int i = 0; i < MAX_FOUNTAIN_SUBTYPES; i++)
+    int i;
+    for (i = 0; i < MAX_FOUNTAIN_SUBTYPES; i++)
     {
         context.used_fountain_subtype[i] = i;
     }
 
     /* Water always looks like water, so it is not shuffled (the same for natural) */
-    for (int i = FOUNTAIN_MAGIC; i < LAST_SHUFFLED_FOUNTAIN - 1; i++)
+    for (i = FOUNTAIN_MAGIC; i < LAST_SHUFFLED_FOUNTAIN - 1; i++)
     {
         int new_i = i + rn2(LAST_SHUFFLED_FOUNTAIN - i);
         int saved_value = context.used_fountain_subtype[i];

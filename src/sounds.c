@@ -6897,7 +6897,9 @@ int* spell_otyps;
         return 0;
 
     int cnt = 0, not_known_cnt = 0;
-    for (int* spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
+    int* spell_otyp_ptr;
+
+    for (spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
     {
         cnt++;
         int i = *spell_otyp_ptr;
@@ -6927,7 +6929,7 @@ int* spell_otyps;
     win = create_nhwindow(NHW_MENU);
     start_menu(win);
 
-    for(int* spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
+    for(spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
     {
         int i = *spell_otyp_ptr;
 

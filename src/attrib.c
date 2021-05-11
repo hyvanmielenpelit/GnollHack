@@ -215,7 +215,7 @@ int msgflg; /* positive => no message, zero => message, and */
                      (incr > 0) ? "improved" : "declined");
             }
         }
-        old_amin = old_amin; /* remove gcc warning */
+        old_amin = 1 * old_amin; /* remove gcc warning */
         return limitexceeded ? 2 : FALSE;
     }
 
@@ -723,11 +723,12 @@ void
 update_extrinsics()
 {
     struct obj* uitem;
+    int idx;
 
     //Clear first all carried item extrinsics
-    for (int i = 0; i <= LAST_PROP; i++)
+    for (idx = 0; idx <= LAST_PROP; idx++)
     {
-        u.uprops[i].extrinsic = 0L; // &= ~W_CARRIED;
+        u.uprops[idx].extrinsic = 0L; // &= ~W_CARRIED;
     }
     context.warntype.obj = 0;
 
@@ -889,11 +890,11 @@ update_extrinsics()
 
 
     /* Check if any of the recurring properties should be cleared out */
-    for (int i = 0; i <= LAST_PROP; i++)
+    for (idx = 0; idx <= LAST_PROP; idx++)
     {
-        struct prop *upp = &u.uprops[i];
+        struct prop *upp = &u.uprops[idx];
 
-        if ((upp->intrinsic & TIMEOUT) > 0 && property_definitions[i].recurring && !(upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
+        if ((upp->intrinsic & TIMEOUT) > 0 && property_definitions[idx].recurring && !(upp->extrinsic || (upp->intrinsic & ~TIMEOUT)))
         {
             upp->intrinsic = 0;
         }

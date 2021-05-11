@@ -1170,7 +1170,8 @@ int max_attk_monsters;
     double totalpowdifficulty = 0;
     double power = 1.0/3.0;
     int monster_cnt = 0;
-    for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
+    int i;
+    for (i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
     {
         int pmid = encounter_list[encounter_index].encounter_monsters[i].permonstid;
         if (pmid == NON_PM)
@@ -1190,7 +1191,7 @@ int max_attk_monsters;
     if (power <= 0)
         power = 1.0 / 3.0;
 
-    for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
+    for (i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
     {
         int pmid = encounter_list[encounter_index].encounter_monsters[i].permonstid;
         if (pmid == NON_PM)
@@ -1386,8 +1387,8 @@ int selected_encounter, x, y;
 
     boolean upper = Is_rogue_level(&u.uz);
     boolean elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
-
-    for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
+    int i;
+    for (i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
     {
         int pmid = encounter_list[selected_encounter].encounter_monsters[i].permonstid;
         if (pmid == NON_PM)
@@ -1419,7 +1420,7 @@ int selected_encounter, x, y;
         xpdiff = 0;
 
     int nx = x, ny = y;
-    for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
+    for (i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
     {
         int pmid = encounter_list[selected_encounter].encounter_monsters[i].permonstid;
         if (pmid == NON_PM)
@@ -1620,10 +1621,11 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 #endif
 
         char buf[BUFSIZ] = "";
+        int i, j;
 
         Sprintf(buf, "#,DifMin");
         (void)write(fd, buf, strlen(buf));
-        for (int j = 1; j <= MAX_ENCOUNTER_ATTACKING_MONSTERS; j++)
+        for (j = 1; j <= MAX_ENCOUNTER_ATTACKING_MONSTERS; j++)
         {
             Sprintf(buf, ",DifP%d", j);
             (void)write(fd, buf, strlen(buf));
@@ -1633,7 +1635,7 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
         (void)write(fd, buf, strlen(buf));
 
 
-        for (int j = 0; j < 16; j++)
+        for (j = 0; j < 16; j++)
         {
             Sprintf(buf, ",%d,Monster", j + 1);
             (void)write(fd, buf, strlen(buf));
@@ -1644,7 +1646,7 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 
 
 
-        for (int i = 0; i < MAX_ENCOUNTERS; i++)
+        for (i = 0; i < MAX_ENCOUNTERS; i++)
         {
             if (encounter_list[i].probability == 0)
                 break;
@@ -1652,7 +1654,7 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
             Sprintf(buf, "%d,%d", i, encounter_list[i].difficulty_min);
             (void)write(fd, buf, strlen(buf));
 
-            for (int j = 1; j <= MAX_ENCOUNTER_ATTACKING_MONSTERS; j++)
+            for (j = 1; j <= MAX_ENCOUNTER_ATTACKING_MONSTERS; j++)
             {
                 Sprintf(buf, ",%d", encounter_list[i].difficulty_point_estimate[j]);
                 (void)write(fd, buf, strlen(buf));
@@ -1666,7 +1668,7 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
 
 
 
-            for (int j = 0; j < MAX_ENCOUNTER_MONSTERS; j++)
+            for (j = 0; j < MAX_ENCOUNTER_MONSTERS; j++)
             {
                 if (encounter_list[i].encounter_monsters[j].permonstid == NON_PM)
                     break;

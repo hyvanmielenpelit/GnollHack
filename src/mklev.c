@@ -1074,7 +1074,8 @@ makelevel()
                         /* Otyugh lair */
                         (void)maketrap(x, y, PIT, NON_PM, MKTRAP_NO_FLAGS);
                         int itemnum = rnd(3) + 2;
-                        for(int i = 0; i < itemnum;i++)
+                        int i;
+                        for(i = 0; i < itemnum;i++)
                         {
                             int itemtype = CLUMP_OF_BAT_GUANO;
                             switch (rn2(5))
@@ -1097,7 +1098,7 @@ makelevel()
                         }
 
                         int itemnum2 = rn2(3) + (tmonst->data == &mons[PM_NEO_OTYUGH]) ? 1 : 0;
-                        for (int i = 0; i < itemnum2; i++)
+                        for (i = 0; i < itemnum2; i++)
                         {
                             (void)mkobj_at(RANDOM_CLASS, x, y, TRUE);
                         }

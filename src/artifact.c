@@ -2462,7 +2462,7 @@ struct obj *obj;
     /* Check requirements */
     if ((oart->aflags & AF_INVOKE_REQUIRES_WORN) && !is_worn_correctly(obj))
     {
-        play_sfx_sound(GHSOUND_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("You have to wear %s before invoking.", the(cxname(obj)));
         return 1;
     }
@@ -2485,7 +2485,7 @@ struct obj *obj;
     }
     else if (u.uen < artilist[obj->oartifact].inv_mana_cost)
     {
-        play_sfx_sound(GHSOUND_GENERAL_CANNOT);
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("You do not have enough mana to invoke %s.", the(cxname(obj)));
         return 0;
     }

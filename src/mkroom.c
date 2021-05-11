@@ -1405,7 +1405,7 @@ STATIC_OVL int
 mkdragonlair()
 {
     register struct mkroom* sroom = (struct mkroom*)0;
-    register int sx, sy, i;
+    register int sx, sy, i, j;
 
     for (i = 0; i < nroom; i++) { /* turn up to 1 rooms into a dragon lair */
         sroom = &rooms[rn2(nroom)];
@@ -1489,14 +1489,14 @@ mkdragonlair()
             {
                 /* Ancient dragons have 5-10 true gems */
                 int gemcnt = 5 + rn2(6);
-                for (int j = 0; j < gemcnt; j++)
+                for (j = 0; j < gemcnt; j++)
                 {
                     (void)mksobj_at(randomtruegem(), sx, sy, FALSE, FALSE);
                 }
 
                 /* Ancient dragons have 1-6 other items */
                 int itemcnt = rnd(6);
-                for (int j = 0; j < itemcnt; j++)
+                for (j = 0; j < itemcnt; j++)
                 {
                     (void)mkobj_at(0, sx, sy, FALSE);
                 }
@@ -1506,14 +1506,14 @@ mkdragonlair()
             {
                 /* Adult dragons have 0-5 gems */
                 int gemcnt = rn2(6);
-                for (int j = 0; j < gemcnt; j++)
+                for (j = 0; j < gemcnt; j++)
                 {
                     (void)mkobj_at(GEM_CLASS, sx, sy, FALSE);
                 }
 
                 /* Adult dragons have 0-3 other items */
                 int itemcnt = rn2(4);
-                for (int j = 0; j < itemcnt; j++)
+                for (j = 0; j < itemcnt; j++)
                 {
                     (void)mkobj_at(0, sx, sy, FALSE);
                 }
@@ -1522,14 +1522,14 @@ mkdragonlair()
             {
                 /* Hatchlings dragons have 0-2 gems */
                 int gemcnt = rn2(3);
-                for (int j = 0; j < gemcnt; j++)
+                for (j = 0; j < gemcnt; j++)
                 {
                     (void)mkobj_at(GEM_CLASS, sx, sy, FALSE);
                 }
 
                 /* Adult dragons have 0-1 other items */
                 int itemcnt = rn2(2);
-                for (int j = 0; j < itemcnt; j++)
+                for (j = 0; j < itemcnt; j++)
                 {
                     (void)mkobj_at(0, sx, sy, FALSE);
                 }

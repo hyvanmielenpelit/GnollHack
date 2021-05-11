@@ -1160,7 +1160,8 @@ uchar *prefix_ptr, *suffix_ptr;
 
         int cnt = 0;
         int total_prob = 0;
-        for (uchar i = 1; i < max_mythic; i++)
+        uchar i;
+        for (i = 1; i < max_mythic; i++)
         {
             eligible[i] = FALSE;
             if(!is_mythic_affix_ok(j, i, obj, is_wish))
@@ -1178,7 +1179,7 @@ uchar *prefix_ptr, *suffix_ptr;
         }
 
         int roll = total_prob > 1 ? rn2(total_prob) : 0;
-        for (uchar i = 1; i < max_mythic; i++)
+        for (i = 1; i < max_mythic; i++)
         {
             if (!eligible[i])
                 continue;

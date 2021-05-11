@@ -25,6 +25,14 @@ extern "C" {
   boolean regex_compile(const char *s, struct nhregex *re) {
     if (!re)
       return FALSE;
+
+    re->re.reset(new std::regex(s, (std::regex::extended
+        | std::regex::nosubs
+        | std::regex::optimize)));
+    re->err.reset(nullptr);
+    return TRUE;
+
+    /*
     try {
       re->re.reset(new std::regex(s, (std::regex::extended
                                     | std::regex::nosubs
@@ -35,7 +43,7 @@ extern "C" {
       re->err.reset(new std::regex_error(err));
       re->re.reset(nullptr);
       return FALSE;
-    }
+    }*/
   }
 
   const char *regex_error_desc(struct nhregex *re) {
@@ -48,11 +56,14 @@ extern "C" {
   boolean regex_match(const char *s, struct nhregex *re) {
     if (!re->re)
       return false;
+
+    return regex_search(s, *re->re, std::regex_constants::match_any);
+    /*
     try {
       return regex_search(s, *re->re, std::regex_constants::match_any);
     } catch (const std::regex_error& err) {
       return false;
-    }
+    }*/
   }
 
   void regex_free(struct nhregex *re) {

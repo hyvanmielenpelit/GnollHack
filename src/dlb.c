@@ -381,17 +381,17 @@ dlb *dp;
                 break; /* EOF or error */
 
             if (0xA5 == ubuf[0])
-                *bp = 'å';
+                *bp = -27;
             else if (0xA4 == ubuf[0])
-                *bp = 'ä';
+                *bp = -28;
             else if (0xB6 == ubuf[0])
-                *bp = 'ö';
+                *bp = -10;
             else if (0x85 == ubuf[0])
-                *bp = 'Å';
+                *bp = -59;
             else if (0x84 == ubuf[0])
-                *bp = 'Ä';
+                *bp = -60;
             else if (0x96 == ubuf[0])
-                *bp = 'Ö';
+                *bp = -42;
             else
                 *bp = '?';
         }
