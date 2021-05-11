@@ -298,7 +298,7 @@
     <ClCompile Include="$(LibDroidDir)gnollhackdroid.c" />
     <ClCompile Include="$(LibDroidDir)libproc.c" />
     <ClCompile Include="..\..\..\sys\share\ioctl.c" />
-    <ClCompile Include="..\..\..\sys\share\regex.c" />
+    <ClCompile Include="..\..\..\sys\share\posixregex.c" />
     <ClCompile Include="..\..\..\sys\share\unixtty.c" />
   </ItemGroup>
   <ItemGroup>

@@ -376,7 +376,7 @@
     <ClCompile Include="..\..\..\sys\share\ioctl.c">
       <Filter>Android Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\sys\share\regex.c">
+    <ClCompile Include="..\..\..\sys\share\posixregex.c">
       <Filter>Android Source Files</Filter>
     </ClCompile>
   </ItemGroup>
