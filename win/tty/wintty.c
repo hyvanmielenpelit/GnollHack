@@ -4937,13 +4937,14 @@ int* y_ptr;
     startbp = restbuf;
     boolean breakdoloop = FALSE;
     int selected_status = -1;
+    int i;
 
     do
     {
         selected_status = -1;
         breakdoloop = FALSE;
         firstbp = 0;
-        for (int i = 0; i < no_of_statuses; i++)
+        for (i = 0; i < no_of_statuses; i++)
         {
             bp = strstr(startbp, status_strings[i]);
             if (bp && (bp < firstbp || firstbp == 0))
@@ -4955,7 +4956,7 @@ int* y_ptr;
         if (firstbp)
         {
             secondbp = 0;
-            for (int i = 0; i < no_of_statuses; i++)
+            for (i = 0; i < no_of_statuses; i++)
             {
                 bp = strstr(firstbp + 1, status_strings[i]);
                 if (bp && (bp < secondbp || secondbp == 0))

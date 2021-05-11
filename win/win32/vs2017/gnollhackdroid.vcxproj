@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{51daf34f-b699-442d-a9ba-4a3b2800a09a}</ProjectGuid>
+    <Keyword>Android</Keyword>
+    <RootNamespace>gnollhackdroid</RootNamespace>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <ApplicationType>Android</ApplicationType>
+    <ApplicationTypeRevision>3.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+    <UseOfStl>c++_static</UseOfStl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_5_0</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="default.props" />
+  <Import Project="common.props" />
+  <Import Project="dirs.props" />
+  <Import Project="files.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <CppLanguageStandard>Default</CppLanguageStandard>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;GNOLLHACK_MAIN_PROGRAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>-lm</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <CppLanguageStandard>Default</CppLanguageStandard>
+      <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;USE_TILES;LIB_GRAPHICS;NOMAIL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <CppLanguageStandard>Default</CppLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <CppLanguageStandard>Default</CppLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)allmain.c" />
+    <ClCompile Include="$(SrcDir)alloc.c" />
+    <ClCompile Include="$(SrcDir)animation.c" />
+    <ClCompile Include="$(SrcDir)animdef.c" />
+    <ClCompile Include="$(SrcDir)apply.c" />
+    <ClCompile Include="$(SrcDir)artifact.c" />
+    <ClCompile Include="$(SrcDir)attrib.c" />
+    <ClCompile Include="$(SrcDir)ball.c" />
+    <ClCompile Include="$(SrcDir)bones.c" />
+    <ClCompile Include="$(SrcDir)botl.c" />
+    <ClCompile Include="$(SrcDir)cmd.c" />
+    <ClCompile Include="$(SrcDir)dbridge.c" />
+    <ClCompile Include="$(SrcDir)decl.c" />
+    <ClCompile Include="$(SrcDir)detect.c" />
+    <ClCompile Include="$(SrcDir)dig.c" />
+    <ClCompile Include="$(SrcDir)display.c" />
+    <ClCompile Include="$(SrcDir)dlb.c" />
+    <ClCompile Include="$(SrcDir)do.c" />
+    <ClCompile Include="$(SrcDir)dog.c" />
+    <ClCompile Include="$(SrcDir)dogmove.c" />
+    <ClCompile Include="$(SrcDir)dokick.c" />
+    <ClCompile Include="$(SrcDir)dothrow.c" />
+    <ClCompile Include="$(SrcDir)do_name.c" />
+    <ClCompile Include="$(SrcDir)do_wear.c" />
+    <ClCompile Include="$(SrcDir)drawing.c" />
+    <ClCompile Include="$(SrcDir)dungeon.c" />
+    <ClCompile Include="$(SrcDir)eat.c" />
+    <ClCompile Include="$(SrcDir)encounter.c" />
+    <ClCompile Include="$(SrcDir)end.c" />
+    <ClCompile Include="$(SrcDir)engrave.c" />
+    <ClCompile Include="$(SrcDir)exper.c" />
+    <ClCompile Include="$(SrcDir)explode.c" />
+    <ClCompile Include="$(SrcDir)extralev.c" />
+    <ClCompile Include="$(SrcDir)files.c" />
+    <ClCompile Include="$(SrcDir)fountain.c" />
+    <ClCompile Include="$(SrcDir)hack.c" />
+    <ClCompile Include="$(SrcDir)hacklib.c" />
+    <ClCompile Include="$(SrcDir)invent.c" />
+    <ClCompile Include="$(SrcDir)isaac64.c" />
+    <ClCompile Include="$(SrcDir)light.c" />
+    <ClCompile Include="$(SrcDir)lock.c" />
+    <ClCompile Include="$(SrcDir)mail.c" />
+    <ClCompile Include="$(SrcDir)makemon.c" />
+    <ClCompile Include="$(SrcDir)mapglyph.c" />
+    <ClCompile Include="$(SrcDir)matcomps.c" />
+    <ClCompile Include="$(SrcDir)mcastu.c" />
+    <ClCompile Include="$(SrcDir)mhitm.c" />
+    <ClCompile Include="$(SrcDir)mhitu.c" />
+    <ClCompile Include="$(SrcDir)minion.c" />
+    <ClCompile Include="$(SrcDir)mklev.c" />
+    <ClCompile Include="$(SrcDir)mkmap.c" />
+    <ClCompile Include="$(SrcDir)mkmaze.c" />
+    <ClCompile Include="$(SrcDir)mkobj.c" />
+    <ClCompile Include="$(SrcDir)mkroom.c" />
+    <ClCompile Include="$(SrcDir)mon.c" />
+    <ClCompile Include="$(SrcDir)mondata.c" />
+    <ClCompile Include="$(SrcDir)monmove.c" />
+    <ClCompile Include="$(SrcDir)monst.c" />
+    <ClCompile Include="$(SrcDir)monstr.c" />
+    <ClCompile Include="$(SrcDir)mplayer.c" />
+    <ClCompile Include="$(SrcDir)mthrowu.c" />
+    <ClCompile Include="$(SrcDir)muse.c" />
+    <ClCompile Include="$(SrcDir)music.c" />
+    <ClCompile Include="$(SrcDir)npc.c" />
+    <ClCompile Include="$(SrcDir)objects.c" />
+    <ClCompile Include="$(SrcDir)objnam.c" />
+    <ClCompile Include="$(SrcDir)options.c" />
+    <ClCompile Include="$(SrcDir)o_init.c" />
+    <ClCompile Include="$(SrcDir)pager.c" />
+    <ClCompile Include="$(SrcDir)pickup.c" />
+    <ClCompile Include="$(SrcDir)pline.c" />
+    <ClCompile Include="$(SrcDir)polyself.c" />
+    <ClCompile Include="$(SrcDir)potion.c" />
+    <ClCompile Include="$(SrcDir)pray.c" />
+    <ClCompile Include="$(SrcDir)priest.c" />
+    <ClCompile Include="$(SrcDir)prop.c" />
+    <ClCompile Include="$(SrcDir)quest.c" />
+    <ClCompile Include="$(SrcDir)questpgr.c" />
+    <ClCompile Include="$(SrcDir)read.c" />
+    <ClCompile Include="$(SrcDir)rect.c" />
+    <ClCompile Include="$(SrcDir)region.c" />
+    <ClCompile Include="$(SrcDir)restore.c" />
+    <ClCompile Include="$(SrcDir)rip.c" />
+    <ClCompile Include="$(SrcDir)rm.c" />
+    <ClCompile Include="$(SrcDir)rnd.c" />
+    <ClCompile Include="$(SrcDir)role.c" />
+    <ClCompile Include="$(SrcDir)rumors.c" />
+    <ClCompile Include="$(SrcDir)save.c" />
+    <ClCompile Include="$(SrcDir)shk.c" />
+    <ClCompile Include="$(SrcDir)shknam.c" />
+    <ClCompile Include="$(SrcDir)sit.c" />
+    <ClCompile Include="$(SrcDir)sounds.c" />
+    <ClCompile Include="$(SrcDir)soundset.c" />
+    <ClCompile Include="$(SrcDir)spell.c" />
+    <ClCompile Include="$(SrcDir)sp_lev.c" />
+    <ClCompile Include="$(SrcDir)steal.c" />
+    <ClCompile Include="$(SrcDir)steed.c" />
+    <ClCompile Include="$(SrcDir)sys.c" />
+    <ClCompile Include="$(SrcDir)teleport.c" />
+    <ClCompile Include="$(SrcDir)tiledata.c" />
+    <ClCompile Include="$(SrcDir)timeout.c" />
+    <ClCompile Include="$(SrcDir)topten.c" />
+    <ClCompile Include="$(SrcDir)track.c" />
+    <ClCompile Include="$(SrcDir)trap.c" />
+    <ClCompile Include="$(SrcDir)uhitm.c" />
+    <ClCompile Include="$(SrcDir)u_init.c" />
+    <ClCompile Include="$(SrcDir)vault.c" />
+    <ClCompile Include="$(SrcDir)version.c" />
+    <ClCompile Include="$(SrcDir)vision.c" />
+    <ClCompile Include="$(SrcDir)vis_tab.c" />
+    <ClCompile Include="$(SrcDir)weapon.c" />
+    <ClCompile Include="$(SrcDir)were.c" />
+    <ClCompile Include="$(SrcDir)wield.c" />
+    <ClCompile Include="$(SrcDir)windows.c" />
+    <ClCompile Include="$(SrcDir)wizard.c" />
+    <ClCompile Include="$(SrcDir)worm.c" />
+    <ClCompile Include="$(SrcDir)worn.c" />
+    <ClCompile Include="$(SrcDir)write.c" />
+    <ClCompile Include="$(SrcDir)zap.c" />
+    <ClCompile Include="$(LibDroidDir)droidmain.c" />
+    <ClCompile Include="$(LibDroidDir)droidunix.c" />
+    <ClCompile Include="$(LibDroidDir)gnollhackdroid.c" />
+    <ClCompile Include="$(LibDroidDir)libproc.c" />
+    <ClCompile Include="..\..\..\sys\share\ioctl.c" />
+    <ClCompile Include="..\..\..\sys\share\regex.c" />
+    <ClCompile Include="..\..\..\sys\share\unixtty.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(IncDir)action.h" />
+    <ClInclude Include="$(IncDir)align.h" />
+    <ClInclude Include="$(IncDir)animation.h" />
+    <ClInclude Include="$(IncDir)animoff.h" />
+    <ClInclude Include="$(IncDir)animtotals.h" />
+    <ClInclude Include="$(IncDir)artifact.h" />
+    <ClInclude Include="$(IncDir)artilist.h" />
+    <ClInclude Include="$(IncDir)attrib.h" />
+    <ClInclude Include="$(IncDir)bitmfile.h" />
+    <ClInclude Include="$(IncDir)botl.h" />
+    <ClInclude Include="$(IncDir)color.h" />
+    <ClInclude Include="$(IncDir)config.h" />
+    <ClInclude Include="$(IncDir)config1.h" />
+    <ClInclude Include="$(IncDir)context.h" />
+    <ClInclude Include="$(IncDir)coord.h" />
+    <ClInclude Include="$(IncDir)date.h" />
+    <ClInclude Include="$(IncDir)decl.h" />
+    <ClInclude Include="$(IncDir)dgn_comp.h" />
+    <ClInclude Include="$(IncDir)dgn_file.h" />
+    <ClInclude Include="$(IncDir)display.h" />
+    <ClInclude Include="$(IncDir)dlb.h" />
+    <ClInclude Include="$(IncDir)dungeon.h" />
+    <ClInclude Include="$(IncDir)encounter.h" />
+    <ClInclude Include="$(IncDir)engrave.h" />
+    <ClInclude Include="$(IncDir)extern.h" />
+    <ClInclude Include="$(IncDir)flag.h" />
+    <ClInclude Include="$(IncDir)func_tab.h" />
+    <ClInclude Include="$(IncDir)general.h" />
+    <ClInclude Include="$(IncDir)global.h" />
+    <ClInclude Include="$(IncDir)hack.h" />
+    <ClInclude Include="$(IncDir)integer.h" />
+    <ClInclude Include="$(IncDir)isaac64.h" />
+    <ClInclude Include="$(IncDir)layer.h" />
+    <ClInclude Include="$(IncDir)lev.h" />
+    <ClInclude Include="$(IncDir)lev_comp.h" />
+    <ClInclude Include="$(IncDir)lint.h" />
+    <ClInclude Include="$(IncDir)load_img.h" />
+    <ClInclude Include="$(IncDir)matcomps.h" />
+    <ClInclude Include="$(IncDir)mextra.h" />
+    <ClInclude Include="$(IncDir)mfndpos.h" />
+    <ClInclude Include="$(IncDir)micro.h" />
+    <ClInclude Include="$(IncDir)mkroom.h" />
+    <ClInclude Include="$(IncDir)monattk.h" />
+    <ClInclude Include="$(IncDir)mondata.h" />
+    <ClInclude Include="$(IncDir)monflag.h" />
+    <ClInclude Include="$(IncDir)monst.h" />
+    <ClInclude Include="$(IncDir)monsym.h" />
+    <ClInclude Include="$(IncDir)npc.h" />
+    <ClInclude Include="$(IncDir)obj.h" />
+    <ClInclude Include="$(IncDir)objclass.h" />
+    <ClInclude Include="$(IncDir)onames.h" />
+    <ClInclude Include="$(IncDir)patchlevel.h" />
+    <ClInclude Include="$(IncDir)permonst.h" />
+    <ClInclude Include="$(IncDir)pm.h" />
+    <ClInclude Include="$(IncDir)prop.h" />
+    <ClInclude Include="$(IncDir)quest.h" />
+    <ClInclude Include="$(IncDir)rect.h" />
+    <ClInclude Include="$(IncDir)region.h" />
+    <ClInclude Include="$(IncDir)rm.h" />
+    <ClInclude Include="$(IncDir)skills.h" />
+    <ClInclude Include="$(IncDir)soundset.h" />
+    <ClInclude Include="$(IncDir)spell.h" />
+    <ClInclude Include="$(IncDir)sp_lev.h" />
+    <ClInclude Include="$(IncDir)sys.h" />
+    <ClInclude Include="$(IncDir)system.h" />
+    <ClInclude Include="$(IncDir)tcap.h" />
+    <ClInclude Include="$(IncDir)tile2x11.h" />
+    <ClInclude Include="$(IncDir)tiledata.h" />
+    <ClInclude Include="$(IncDir)timeout.h" />
+    <ClInclude Include="$(IncDir)tradstdc.h" />
+    <ClInclude Include="$(IncDir)trampoli.h" />
+    <ClInclude Include="$(IncDir)trap.h" />
+    <ClInclude Include="$(IncDir)vision.h" />
+    <ClInclude Include="$(IncDir)vis_tab.h" />
+    <ClInclude Include="$(IncDir)winprocs.h" />
+    <ClInclude Include="$(IncDir)wintty.h" />
+    <ClInclude Include="$(IncDir)wintype.h" />
+    <ClInclude Include="$(IncDir)you.h" />
+    <ClInclude Include="$(IncDir)youprop.h" />
+    <ClInclude Include="$(LibDroidDir)droidconf.h" />
+    <ClInclude Include="$(LibDroidDir)gnollhackdroid.h" />
+    <ClInclude Include="$(LibDroidDir)pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SrcDir)Makefile.gcc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

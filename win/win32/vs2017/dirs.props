@@ -29,13 +29,15 @@
     <UtilDir>$(RootDir)util\</UtilDir>
     <!--<Yacc>bison</Yacc>-->
     <!--<Lex>flex</Lex>-->
-	<SysShareDir>$(RootDir)sys\share\</SysShareDir>
+	  <SysShareDir>$(RootDir)sys\share\</SysShareDir>
     <SysWinntDir>$(RootDir)sys\winnt\</SysWinntDir>
     <WinShareDir>$(RootDir)win\share\</WinShareDir>
     <WinTtyDir>$(RootDir)win\tty\</WinTtyDir>
     <WinWin32Dir>$(RootDir)win\win32\</WinWin32Dir>
+    <WinCursesDir>$(RootDir)win\curses\</WinCursesDir>
     <MonoGameBinDir>$(RootDir)bin\$(Configuration)\Client\netcoreapp3.1\</MonoGameBinDir>
     <GnollHackServerBinDir>$(RootDir)bin\$(Configuration)\Server\netcoreapp3.1\</GnollHackServerBinDir>
+    <LibDroidDir>$(RootDir)win\win32\winclisrv\GnollHackClient\gnollhackdroid\</LibDroidDir>
     <OutDir>$(ToolsDir)</OutDir>
 	<IntDir>$(ObjDir)</IntDir>
 	<WinCursDir>$(RootDir)win\curses\</WinCursDir>

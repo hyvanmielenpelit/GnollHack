@@ -1343,7 +1343,7 @@ E void FDECL(silly_thing, (const char *, struct obj *));
 
 /* ### ioctl.c ### */
 
-#if defined(UNIX) || defined(__BEOS__)
+#if (defined(UNIX) || defined(__BEOS__)) && !defined(GNH_ANDROID)
 E void NDECL(getwindowsz);
 E void NDECL(getioctls);
 E void NDECL(setioctls);
@@ -1981,7 +1981,7 @@ E int FDECL(_copyfile, (char *, char *));
 E int NDECL(kbhit);
 E void NDECL(set_colors);
 E void NDECL(restore_colors);
-#ifdef SUSPEND
+#if defined(SUSPEND) && !defined(GNH_ANDROID)
 E int NDECL(dosuspend);
 #endif
 #endif /* TOS */
@@ -3360,7 +3360,7 @@ E void NDECL(m_wait_until_end);
 
 /* ### unixmain.c ### */
 
-#ifdef UNIX
+#if defined(UNIX) && !defined(GNH_ANDROID)
 #ifdef PORT_HELP
 E void NDECL(port_help);
 #endif
@@ -3383,7 +3383,7 @@ E void VDECL(error, (const char *, ...)) PRINTF_F(1, 2);
 
 /* ### unixunix.c ### */
 
-#ifdef UNIX
+#if defined(UNIX) && !defined(GNH_ANDROID)
 E void NDECL(getlock);
 E void FDECL(regularize, (char *));
 #if defined(TIMED_DELAY) && !defined(msleep) && defined(SYSV)
@@ -3554,7 +3554,7 @@ E int NDECL(dosh);
 #if defined(SHELL) || defined(MAIL)
 E int FDECL(vms_doshell, (const char *, BOOLEAN_P));
 #endif
-#ifdef SUSPEND
+#if defined(SUSPEND) && !defined(GNH_ANDROID)
 E int NDECL(dosuspend);
 #endif
 #ifdef SELECTSAVED

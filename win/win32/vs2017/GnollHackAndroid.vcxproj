@@ -47,6 +47,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
+    <UseOfStl>gnustl_static</UseOfStl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -57,6 +58,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
+    <UseOfStl>gnustl_static</UseOfStl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -67,6 +69,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
+    <UseOfStl>c++_static</UseOfStl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -77,6 +80,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_5_0</PlatformToolset>
+    <UseOfStl>gnustl_static</UseOfStl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -110,14 +114,16 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>$(WinWin32Dir)winclisrv\GnollHackLibrary\GnollHackAndroid\pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_ANDROID;TILES;NOMAIL;USE_TILES;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;GNOLLHACK_MAIN_PROGRAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(WinCursesDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_ANDROID;TILES;NOMAIL;USE_TILES;DLB;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;GNOLLHACK_MAIN_PROGRAM;LIB_GRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UndefinePreprocessorDefinitions>WIN32</UndefinePreprocessorDefinitions>
-      <PrecompiledHeaderCompileAs>CompileAsCpp</PrecompiledHeaderCompileAs>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
       <CLanguageStandard>Default</CLanguageStandard>
       <CppLanguageStandard>Default</CppLanguageStandard>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -128,9 +134,9 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>$(WinWin32Dir)winclisrv\GnollHackLibrary\GnollHackAndroid\pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderCompileAs>CompileAsCpp</PrecompiledHeaderCompileAs>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
       <CLanguageStandard>Default</CLanguageStandard>
       <CppLanguageStandard>Default</CppLanguageStandard>
     </ClCompile>
@@ -143,9 +149,9 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>$(WinWin32Dir)winclisrv\GnollHackLibrary\GnollHackAndroid\pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderCompileAs>CompileAsCpp</PrecompiledHeaderCompileAs>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
       <CLanguageStandard>Default</CLanguageStandard>
       <CppLanguageStandard>Default</CppLanguageStandard>
     </ClCompile>
@@ -158,9 +164,9 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>$(WinWin32Dir)winclisrv\GnollHackLibrary\GnollHackAndroid\pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderCompileAs>CompileAsCpp</PrecompiledHeaderCompileAs>
+      <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
       <CLanguageStandard>Default</CLanguageStandard>
       <CppLanguageStandard>Default</CppLanguageStandard>
     </ClCompile>
@@ -290,11 +296,18 @@
     <ClCompile Include="..\..\..\src\worn.c" />
     <ClCompile Include="..\..\..\src\write.c" />
     <ClCompile Include="..\..\..\src\zap.c" />
-    <ClCompile Include="..\..\..\sys\share\cppregex.cpp" />
+    <ClCompile Include="..\..\..\sys\android\androidmain.c" />
+    <ClCompile Include="..\..\..\sys\android\androidunix.c" />
     <ClCompile Include="..\..\..\sys\share\nhlan.c" />
     <ClCompile Include="..\..\..\sys\share\random.c" />
+    <ClCompile Include="..\..\..\sys\share\regex.c" />
+    <ClCompile Include="..\..\..\sys\unix\unixunix.c" />
     <ClCompile Include="..\..\share\safeproc.c" />
-    <ClCompile Include="..\winclisrv\GnollHackLibrary\GnollHackAndroid\GnollHackAndroid.cpp" />
+    <ClCompile Include="..\..\tty\getline.c" />
+    <ClCompile Include="..\..\tty\topl.c" />
+    <ClCompile Include="..\..\tty\wintty.c" />
+    <ClCompile Include="..\winclisrv\GnollHackLibrary\GnollHackAndroid\GnollHackAndroid.c" />
+    <ClCompile Include="..\winclisrv\GnollHackLibrary\GnollHackAndroid\libproc.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\action.h" />

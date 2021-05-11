@@ -1,12 +1,4 @@
 #pragma once
 
-extern "C" {
-	class GnollHackAndroid
-	{
-	public:
-		const char* getPlatformABI();
-		GnollHackAndroid();
-		~GnollHackAndroid();
-	};
-}
-
+extern const char* getPlatformABI();
+extern void GnollHackAndroid();

@@ -14,7 +14,7 @@ namespace GnollHackServer.Hubs
     {
         private readonly ServerGameCenter _serverGameCenter;
 
-        [DllImport(@"libgnollhack.dll", CharSet = CharSet.Unicode)]
+        [DllImport(@"gnollhacklib.dll", CharSet = CharSet.Unicode)]
         public static extern int DoSomeCalc2();
 
         /*

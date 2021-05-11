@@ -1971,7 +1971,8 @@ struct obj* origobj;
     int anim_intervals = 0;
     context.zap_aggregate_intervals_to_wait_until_end = 0UL;
     context.zap_aggregate_intervals_to_wait_until_action = 0UL;
-    for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
+    int i;
+    for (i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
         context.zap_animation_counter_on[i] = FALSE;
         context.zap_animation_counter[i] = 0L;
@@ -2396,7 +2397,8 @@ struct obj* origobj;
     int anim_intervals = 0;
     context.zap_aggregate_intervals_to_wait_until_end = 0UL;
     context.zap_aggregate_intervals_to_wait_until_action = 0UL;
-    for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
+    int i;
+    for (i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
         context.zap_animation_counter_on[i] = FALSE;
         context.zap_animation_counter[i] = 0L;

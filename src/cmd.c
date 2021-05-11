@@ -1264,7 +1264,7 @@ enter_explore_mode(VOID_ARGS)
         You("are already in explore mode.");
     } else {
 #ifdef SYSCF
-#if defined(UNIX)
+#if defined(UNIX) && !defined(GNH_ANDROID)
         if (!sysopt.explorers || !sysopt.explorers[0]
             || !check_user_string(sysopt.explorers)) {
             You("cannot access explore mode.");
@@ -7771,7 +7771,7 @@ const char *prompt;
 STATIC_PTR int
 dosuspend_core(VOID_ARGS)
 {
-#ifdef SUSPEND
+#if defined(SUSPEND) && !defined(GNH_ANDROID)
     /* Does current window system support suspend? */
     if ((*windowprocs.win_can_suspend)()) {
         /* NB: SYSCF SHELLERS handled in port code. */

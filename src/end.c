@@ -398,7 +398,7 @@ int sig_unused UNUSED;
     return;
 }
 
-#if defined(UNIX) || defined(VMS) || defined(__EMX__)
+#if (defined(UNIX) || defined(VMS) || defined(__EMX__))  && !defined(GNH_ANDROID)
 /* signal() handler */
 static void
 done_hangup(sig)
@@ -1304,7 +1304,7 @@ int how;
         wait_synch(); /* flush screen output */
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, (SIG_RET_TYPE) done_intr);
-#if defined(UNIX) || defined(VMS) || defined(__EMX__)
+#if (defined(UNIX) || defined(VMS) || defined(__EMX__)) && !defined(GNH_ANDROID)
     (void) signal(SIGQUIT, (SIG_RET_TYPE) done_intr);
     sethanguphandler(done_hangup);
 #endif

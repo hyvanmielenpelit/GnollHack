@@ -119,11 +119,18 @@
     <ClCompile Include="..\..\..\src\worn.c" />
     <ClCompile Include="..\..\..\src\write.c" />
     <ClCompile Include="..\..\..\src\zap.c" />
-    <ClCompile Include="..\..\..\sys\share\cppregex.cpp" />
     <ClCompile Include="..\..\..\sys\share\nhlan.c" />
     <ClCompile Include="..\..\..\sys\share\random.c" />
     <ClCompile Include="..\..\share\safeproc.c" />
-    <ClCompile Include="..\winclisrv\GnollHackLibrary\GnollHackAndroid\GnollHackAndroid.cpp" />
+    <ClCompile Include="..\winclisrv\GnollHackLibrary\GnollHackAndroid\GnollHackAndroid.c" />
+    <ClCompile Include="..\..\..\sys\share\regex.c" />
+    <ClCompile Include="..\..\tty\wintty.c" />
+    <ClCompile Include="..\..\tty\topl.c" />
+    <ClCompile Include="..\..\tty\getline.c" />
+    <ClCompile Include="..\winclisrv\GnollHackLibrary\GnollHackAndroid\libproc.c" />
+    <ClCompile Include="..\..\..\sys\unix\unixunix.c" />
+    <ClCompile Include="..\..\..\sys\android\androidmain.c" />
+    <ClCompile Include="..\..\..\sys\android\androidunix.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\action.h" />

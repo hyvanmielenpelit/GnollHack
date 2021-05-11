@@ -82,7 +82,7 @@ namespace GnollHackServer
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void VoidIntConstCharPtrConstCharPtrBooleanCallback(int value1, string value2, string value3, byte value4);
 
-        [DllImport(@"libgnollhack.dll")]
+        [DllImport(@"gnollhacklib.dll")]
         public static extern int RunGnollHack(
             UInt32 wincaps1,
             UInt32 wincaps2,
@@ -167,25 +167,25 @@ namespace GnollHackServer
             VoidIntCallback callback_outrip_end
         );
 
-        [DllImport(@"libgnollhack.dll")]
+        [DllImport(@"gnollhacklib.dll")]
         public static extern int RunGnollHackSimple(
             UInt32 wincaps1,
             UInt32 wincaps2
         );
 
-        [DllImport(@"libgnollhack.dll")]
+        [DllImport(@"gnollhacklib.dll")]
         public static extern int RunGnollHackSimple2(
             UInt32 wincaps1,
             UInt32 wincaps2,
             VoidVoidCallback callback_init_nhwindows);
 
-        [DllImport(@"libgnollhack.dll")]
+        [DllImport(@"gnollhacklib.dll")]
         public static extern byte dll_validrole(int role);
 
-        [DllImport(@"libgnollhack.dll")]
+        [DllImport(@"gnollhacklib.dll")]
         public static extern byte dll_str2role([MarshalAs(UnmanagedType.LPStr)] string role_str);
 
-        [DllImport(@"libgnollhack.dll")]
+        [DllImport(@"gnollhacklib.dll")]
         public static extern int DoSomeCalc2();
 
         private Thread _gnhthread;

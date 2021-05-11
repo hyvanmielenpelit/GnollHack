@@ -1754,6 +1754,9 @@ static struct win_info window_opts[] = {
 #ifdef DLL_GRAPHICS
     { "dll", "dll" },
 #endif
+#ifdef LIB_GRAPHICS
+    { "lib", "lib" },
+#endif
 #ifdef NUKLEAR_GRAPHICS
     { "nuklear", "nuklear" },
 #endif

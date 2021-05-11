@@ -168,6 +168,9 @@ typedef uchar nhsym;
 #include "androidconf.h"
 #endif
 
+#ifdef GNH_ANDROID
+#include "droidconf.h"
+#endif
 
 /* Displayable name of this port; don't redefine if defined in *conf.h */
 #ifndef PORT_ID

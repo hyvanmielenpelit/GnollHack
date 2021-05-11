@@ -607,7 +607,7 @@ clearlocks()
 #ifndef NO_SIGNAL
         (void) signal(SIGINT, SIG_IGN);
 #endif
-#ifndef ANDROID
+#if !defined(ANDROID) && !defined(GNH_ANDROID)
 #if defined(UNIX) || defined(VMS)
         sethanguphandler((void FDECL((*), (int) )) SIG_IGN);
 #endif

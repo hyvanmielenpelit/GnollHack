@@ -53,6 +53,7 @@
 /* #define NUKLEAR_GRAPHICS */ /* Nuklear */
 /* #define ANDROID_GRAPHICS */ /* Android graphics */
 /* #define DLL_GRAPHICS */     /* Windows via DLL callback */
+/* #define LIB_GRAPHICS */     /* Linux / Unix / Android via library callback */
 
 /*
  * Define the default window system.  This should be one that is compiled
@@ -137,6 +138,16 @@
 #define HACKDIR "\\GnollHack"
 #endif
 #endif
+
+#ifdef LIB_GRAPHICS
+#ifndef DEFAULT_WINDOW_SYS
+#define DEFAULT_WINDOW_SYS "lib"
+#endif
+#ifndef HACKDIR
+#define HACKDIR "\\GnollHack"
+#endif
+#endif
+
 
 #ifdef ANDROID
 #define ANDROID_GRAPHICS

@@ -49,6 +49,9 @@ extern struct window_procs mswin_procs;
 #ifdef DLL_GRAPHICS
 extern struct window_procs dll_procs;
 #endif
+#ifdef LIB_GRAPHICS
+extern struct window_procs lib_procs;
+#endif
 #ifdef NUKLEAR_GRAPHICS
 extern struct window_procs nuklear_procs;
 #endif
@@ -147,6 +150,9 @@ static struct win_choices {
 #endif
 #ifdef DLL_GRAPHICS
     { &dll_procs, 0 CHAINR(0) },
+#endif
+#ifdef LIB_GRAPHICS
+    { &lib_procs, 0 CHAINR(0) },
 #endif
 #ifdef NUKLEAR_GRAPHICS
     { &nuklear_procs, 0 CHAINR(0) },

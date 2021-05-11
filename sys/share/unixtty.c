@@ -36,7 +36,7 @@
 #define termstruct termio
 #endif
 #endif /* POSIX_TYPES */
-#if defined(LINUX) && !defined(ANDROID)
+#if defined(LINUX) && !defined(ANDROID) && !defined(GNH_ANDROID)
 #include <sys/ioctl.h>
 #undef delay_output /* curses redefines this */
 #include <curses.h>

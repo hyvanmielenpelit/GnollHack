@@ -56,7 +56,8 @@ void
 init_tiledata()
 {
     /* fill out condition names*/
-    for (int i = 0; i < BL_MASK_BITS; i++)
+    int i;
+    for (i = 0; i < BL_MASK_BITS; i++)
     {
         unsigned long bit = 1UL << i;
         const char* cond_name = get_condition_name(bit);
@@ -109,8 +110,8 @@ uchar* tilemapflags;
                 continue;
         }
         const char* gender_name = (gender == 0 ? "base" : "female");
-
-        for (int spset = 0; spset < MAX_ACTION_TILES + 2; spset++)
+        int spset;
+        for (spset = 0; spset < MAX_ACTION_TILES + 2; spset++)
         {
             if (spset > ACTION_TILE_NO_ACTION && spset < MAX_ACTION_TILES)
             {
@@ -216,7 +217,8 @@ uchar* tilemapflags;
 
                         if (spset == ACTION_TILE_NO_ACTION)
                         {
-                            for (enum action_tile_types action = ACTION_TILE_ATTACK; action < MAX_ACTION_TILES; action++)
+                            enum action_tile_types action;
+                            for (action = ACTION_TILE_ATTACK; action < MAX_ACTION_TILES; action++)
                             {
                                 if (tsd->action_tile_style[action] != 1)
                                     tilemaparray[i + get_monster_action_glyph_offset(action, 0)] = tile_count;
@@ -226,7 +228,8 @@ uchar* tilemapflags;
                         {
                             /* Write these again if we get here */
                             enum action_tile_types action_array[6] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST_DIR, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK, ACTION_TILE_ITEM_USE };
-                            for (int idx = 0; idx < 6; idx++)
+                            int idx;
+                            for (idx = 0; idx < 6; idx++)
                             {
                                 enum action_tile_types action = action_array[idx];
                                 if (tsd->action_tile_style[action] != 1)
@@ -236,7 +239,8 @@ uchar* tilemapflags;
                         else if (spset == ACTION_TILE_DOOR_USE)
                         {
                             enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST_DIR, ACTION_TILE_ITEM_USE };
-                            for (int idx = 0; idx < 3; idx++)
+                            int idx;
+                            for (idx = 0; idx < 3; idx++)
                             {
                                 enum action_tile_types action = action_array[idx];
                                 if (tsd->action_tile_style[action] != 1)
@@ -252,7 +256,8 @@ uchar* tilemapflags;
 
                     if (spset == ACTION_TILE_NO_ACTION)
                     {
-                        for (enum action_tile_types action = ACTION_TILE_ATTACK; action < MAX_ACTION_TILES; action++)
+                        enum action_tile_types action;
+                        for (action = ACTION_TILE_ATTACK; action < MAX_ACTION_TILES; action++)
                         {
                             if (tsd->action_tile_style[action] != 1)
                                 tilemaparray[i + get_monster_action_glyph_offset(action, 1)] = tile_count;
@@ -262,7 +267,8 @@ uchar* tilemapflags;
                     {
                         /* Write these again if we get here */
                         enum action_tile_types action_array[6] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST_DIR, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK, ACTION_TILE_ITEM_USE };
-                        for (int idx = 0; idx < 6; idx++)
+                        int idx;
+                        for (idx = 0; idx < 6; idx++)
                         {
                             enum action_tile_types action = action_array[idx];
                             if (tsd->action_tile_style[action] != 1)
@@ -272,7 +278,8 @@ uchar* tilemapflags;
                     else if (spset == ACTION_TILE_DOOR_USE)
                     {
                         enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST_DIR, ACTION_TILE_ITEM_USE };
-                        for (int idx = 0; idx < 3; idx++)
+                        int idx;
+                        for (idx = 0; idx < 3; idx++)
                         {
                             enum action_tile_types action = action_array[idx];
                             if (tsd->action_tile_style[action] != 1)
@@ -346,7 +353,8 @@ uchar* tilemapflags;
                 {
                     if (j == 1)
                     {
-                        for (int n = 0; n < missile_tile_num; n++)
+                        int n;
+                        for (n = 0; n < missile_tile_num; n++)
                         {
                             Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%d\n", tile_section_name, set_name, oclass_name, 
                                 "generic", "scroll", 
@@ -381,14 +389,16 @@ uchar* tilemapflags;
                     {
                         if(missile_tile_num == 1)
                         {
-                            for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                            int n;
+                            for (n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
                                 /* Found scroll */
                                 tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
                                 tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
 
                                 /* Add the tile to all scrolls */
-                                for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
+                                int m;
+                                for (m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
                                 {
                                     if (objects[m].oc_class == SCROLL_CLASS)
                                     {

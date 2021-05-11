@@ -1,12 +1,10 @@
 #include "GnollHackAndroid.h"
-#include "pch.h"
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "GnollHackAndroid", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "GnollHackAndroid", __VA_ARGS__))
 
-extern "C" {
 	/* This trivial function returns the platform ABI for which this dynamic native library is compiled.*/
-	const char * GnollHackAndroid::getPlatformABI()
+	const char * getPlatformABI()
 	{
 	#if defined(__arm__)
 	#if defined(__ARM_ARCH_7A__)
@@ -31,11 +29,3 @@ extern "C" {
 	{
 	}
 
-	GnollHackAndroid::GnollHackAndroid()
-	{
-	}
-
-	GnollHackAndroid::~GnollHackAndroid()
-	{
-	}
-}
