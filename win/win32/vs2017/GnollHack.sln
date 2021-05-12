@@ -108,6 +108,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.UWP", "..\winclisrv\GnollHackClient\GnollHackClient.UWP\GnollHackClient.UWP.csproj", "{FC538EE2-A6CA-4443-96C3-88441272B242}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.Android", "..\winclisrv\GnollHackClient\GnollHackClient.Android\GnollHackClient.Android.csproj", "{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}"
+	ProjectSection(ProjectDependencies) = postProject
+		{51DAF34F-B699-442D-A9BA-4A3B2800A09A} = {51DAF34F-B699-442D-A9BA-4A3B2800A09A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.iOS", "..\winclisrv\GnollHackClient\GnollHackClient.iOS\GnollHackClient.iOS.csproj", "{0BBCFE15-9A3B-4175-A543-24B39C812D9E}"
 EndProject
