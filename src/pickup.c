@@ -1723,16 +1723,22 @@ boolean looting; /* loot vs tip */
         You("cannot %s things that are deep in the %s.", verb,
             hliquid(is_lava(x, y) ? "lava" : "water"));
         return FALSE;
-    } else if (nolimbs(youmonst.data)) {
+    } 
+#if 0
+    else if (nolimbs(youmonst.data)) 
+    {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         pline("Without limbs, you cannot %s anything.", verb);
         return FALSE;
-    } else if (looting && !freehand()) {
+    } 
+    else if (looting && !freehand()) 
+    {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         pline("Without a free %s, you cannot loot anything.",
               body_part(HAND));
         return FALSE;
     }
+#endif
     return TRUE;
 }
 
@@ -1942,11 +1948,13 @@ doloot()
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         return 0;
     }
+#if 0
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You("have no hands!"); /* not `body_part(HAND)' */
         return 0;
     }
+#endif
     if (Confusion) {
         if (rn2(6) && reverse_loot())
             return 1;
@@ -2967,8 +2975,10 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
     abort_looting = FALSE;
     emptymsg[0] = '\0';
 
+#if 0
     if (!u_handsy() && !is_telekinetic_operator(youmonst.data))
         return 0;
+#endif
 
     if (obj->olocked) 
     {
