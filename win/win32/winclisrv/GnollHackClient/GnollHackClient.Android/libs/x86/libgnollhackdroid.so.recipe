@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project>
+  <SOLibPaths>C:\hmp\GnollHack\win\win32\winclisrv\GnollHackClient\GnollHackClient.Android\libs\x86\libgnollhackdroid.so;C:\Microsoft\AndroidNDK64\android-ndk-r16b\prebuilt\android-x86\gdbserver\gdbserver;C:\Microsoft\AndroidNDK64\android-ndk-r16b\sources\cxx-stl\llvm-libc++\libs\x86\libandroid_support.a;C:\Microsoft\AndroidNDK64\android-ndk-r16b\sources\cxx-stl\llvm-libc++\libs\x86\libc++_static.a;C:\Microsoft\AndroidNDK64\android-ndk-r16b\sources\cxx-stl\llvm-libc++\libs\x86\libc++abi.a</SOLibPaths>
+  <AndroidLibPaths />
+  <OObjPaths>C:\hmp\GnollHack\win\win32\vs2017\obj\Debug\x86\libgnollhackdroid</OObjPaths>
+  <Configuration>Debug</Configuration>
+  <Platform>x86</Platform>
+  <AndroidArchitecture>x86</AndroidArchitecture>
+  <!--links to other recipe files-->
+  <RecipeFiles />
+</project>

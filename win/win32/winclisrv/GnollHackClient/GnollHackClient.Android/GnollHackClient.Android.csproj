@@ -38,6 +38,7 @@
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidSupportedAbis />
+    <Debugger>Xamarin</Debugger>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -85,6 +86,9 @@
     <AndroidNativeLibrary Include="libs\x86_64\libfmod.so" />
     <AndroidNativeLibrary Include="libs\x86_64\libfmodstudio.so" />
     <AndroidNativeLibrary Include="libs\armeabi-v7a\libgnollhackdroid.so" />
+    <AndroidNativeLibrary Include="libs\arm64-v8a\libgnollhackdroid.so" />
+    <AndroidNativeLibrary Include="libs\x86\libgnollhackdroid.so" />
+    <AndroidNativeLibrary Include="libs\x86_64\libgnollhackdroid.so" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -109,6 +113,12 @@
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\vs2017\gnollhackdroid.vcxproj">
+      <Project>{51daf34f-b699-442d-a9ba-4a3b2800a09a}</Project>
+      <Name>gnollhackdroid</Name>
+      <TargetPlatformIdentifier>Android</TargetPlatformIdentifier>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="..\GnollHackClient.Android.Bindings\GnollHackClient.Android.Bindings.csproj">
       <Project>{6603a81b-b0d4-4119-b731-77c579ac7c86}</Project>
       <Name>GnollHackClient.Android.Bindings</Name>
