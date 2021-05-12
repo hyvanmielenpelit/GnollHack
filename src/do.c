@@ -6642,9 +6642,6 @@ unsigned short location_flags;
 boolean donewsym;
 {
     boolean isfloor = IS_FLOOR(levl[x][y].typ);
-    if (isfloor)
-        return; /* Do nothing, current floor already there */
-
     create_simple_location(x, y, type, subtype, vartype, location_flags, floor_doodad, isfloor ? levl[x][y].typ : levl[x][y].floortyp, isfloor ? levl[x][y].subtyp : levl[x][y].floorsubtyp, isfloor ? levl[x][y].vartyp : levl[x][y].floorvartyp, donewsym);
 }
 

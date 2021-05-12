@@ -2631,6 +2631,7 @@ E void NDECL(init_rm);
 E enum obj_material_types FDECL(get_location_type_material, (int, int));
 E int FDECL(get_initial_location_subtype, (int));
 E int FDECL(get_initial_location_vartype, (int, int));
+E int NDECL(get_initial_tree_subtype);
 E const char* FDECL(get_door_name_at, (xchar, xchar));
 E const char* FDECL(get_door_name_at_ptr, (struct rm*));
 E const char* FDECL(get_short_door_name_at, (xchar, xchar));

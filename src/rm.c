@@ -104,15 +104,19 @@ struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES] =
 {
     {"tree",          "tree",  
         TREE_SUBTYPE_NORMAL_VARIATIONS, 0,  
-        TREE_CLASS_GENERAL,     0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
+        TREE_CLASS_GENERAL, 10,     0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
     },
     {"spruce tree",   "tree",  
         TREE_SUBTYPE_SPRUCE_VARIATIONS, TREE_SUBTYPE_NORMAL_VARIATIONS,  
-        TREE_CLASS_CONIFEROUS,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
+        TREE_CLASS_CONIFEROUS, 10,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
     },
     {"fir tree",      "tree",  
         TREE_SUBTYPE_FIR_VARIATIONS, TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_NORMAL_VARIATIONS,  
-        TREE_CLASS_CONIFEROUS,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
+        TREE_CLASS_CONIFEROUS, 10,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
+    },
+    {"date palm",      "tree",
+        TREE_SUBTYPE_DATE_PALM_VARIATIONS, TREE_SUBTYPE_FIR_VARIATIONS + TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_NORMAL_VARIATIONS,
+        TREE_CLASS_TROPICAL, 0,  CLUSTER_OF_DATES, 2, 4, 0, 50, 1, 2, 0,  -1, -1,  0UL
     },
 };
 
@@ -153,13 +157,38 @@ int typ, subtyp;
 }
 
 int
+get_initial_tree_subtype()
+{
+    int i, totalprob = 0;
+    for (i = 0; i < MAX_TREE_SUBTYPES; i++)
+        totalprob += tree_subtype_definitions[i].probability;
+
+    if (totalprob <= 0)
+        return 0;
+
+    int roll = rn2(totalprob);
+    for(i = 0; i < MAX_TREE_SUBTYPES; i++)
+    {
+        roll -= tree_subtype_definitions[i].probability;
+        if (roll <= 0)
+            break;
+    }
+
+    if (i >= MAX_TREE_SUBTYPES)
+        return 0;
+
+    return i;
+}
+
+
+int
 get_initial_location_subtype(ltype)
 int ltype;
 {
     if (ltype == FOUNTAIN)
         return FOUNTAIN_MAGIC + rn2(MAX_FOUNTAIN_SUBTYPES - FOUNTAIN_MAGIC);
     else if (ltype == TREE)
-        return rn2(MAX_TREE_SUBTYPES);
+        return get_initial_tree_subtype();
     else
         return ltype == GRASS && level.flags.swampy ? GRASS_SUBTYPE_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_SUBTYPE_SWAMPY : 0;
 }

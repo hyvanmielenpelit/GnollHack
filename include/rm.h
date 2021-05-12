@@ -405,12 +405,14 @@ enum tree_subtypes
     TREE_SUBTYPE_NORMAL = 0, /* Uses base_cmap */
     TREE_SUBTYPE_SPRUCE,
     TREE_SUBTYPE_FIR,
+    TREE_SUBTYPE_DATE_PALM,
     MAX_TREE_SUBTYPES
 };
 #define TREE_SUBTYPE_NORMAL_VARIATIONS 1
 #define TREE_SUBTYPE_SPRUCE_VARIATIONS 1
 #define TREE_SUBTYPE_FIR_VARIATIONS 1
-#define TOTAL_TREE_SUBTYPE_VARIATIONS (TREE_SUBTYPE_NORMAL_VARIATIONS + TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_FIR_VARIATIONS)
+#define TREE_SUBTYPE_DATE_PALM_VARIATIONS 1
+#define TOTAL_TREE_SUBTYPE_VARIATIONS (TREE_SUBTYPE_NORMAL_VARIATIONS + TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_FIR_VARIATIONS + TREE_SUBTYPE_DATE_PALM_VARIATIONS)
 
 struct tree_subtype_definition {
     const char* description;
@@ -418,6 +420,7 @@ struct tree_subtype_definition {
     int number_of_vartypes;
     int variation_offset;
     uchar tree_type;
+    short probability;
     int fruit_type;
     short fruit_d;
     short fruit_n;
@@ -436,6 +439,7 @@ enum tree_classes
     TREE_CLASS_GENERAL = 0, /* Uses base_cmap */
     TREE_CLASS_LEAFED,
     TREE_CLASS_CONIFEROUS,
+    TREE_CLASS_TROPICAL,
     MAX_TREE_CLASSES
 };
 

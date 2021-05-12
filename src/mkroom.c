@@ -1215,7 +1215,7 @@ mkgarden()
                 && !nexttodoor(sx, sy) && !nexttotree(sx, sy) && !rn2(3))
             {
                 levl[sx][sy].typ = TREE;
-                levl[sx][sy].subtyp = TREE_SUBTYPE_NORMAL; /* Only leaf trees in a garden */
+                levl[sx][sy].subtyp = rn2(3) ? TREE_SUBTYPE_NORMAL : TREE_SUBTYPE_DATE_PALM; /* Only leaf trees in a garden */
                 levl[sx][sy].vartyp = get_initial_location_vartype(levl[sx][sy].typ, levl[sx][sy].subtyp);
                 levl[sx][sy].floortyp = GRASS;
                 levl[sx][sy].floorsubtyp = GRASS_SUBTYPE_NORMAL;
