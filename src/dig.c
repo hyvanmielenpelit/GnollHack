@@ -489,6 +489,7 @@ dig(VOID_ARGS)
                     struct obj* otmp = mksobj_at(tree_subtype_definitions[lev->subtyp].fruit_type, dpx, dpy, TRUE, FALSE); //rnd_treefruit_at(dpx, dpy);
                     otmp->quan = lev->special_quality;
                     otmp->owt = weight(otmp);
+                    lev->special_quality = 0;
                 }
 
                 /* Change the location type */

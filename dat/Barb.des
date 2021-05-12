@@ -144,6 +144,8 @@ REGION:(56,00,75,08),unlit,"ordinary"
 REGION:(64,09,75,16),unlit,"ordinary"
 SPECIAL_TILESET:fillrect(56,00,75,19), gnomish_mines_tileset
 SPECIAL_TILESET:fillrect(53,00,55,01), gnomish_mines_tileset
+TREE:(12,10),tree_date_palm
+TREE:(17,12),tree_date_palm
 # Doors
 DOOR:open,(23,03)
 DOOR:open,(30,08)

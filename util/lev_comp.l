@@ -200,6 +200,7 @@ GOLD		ST_RET(GOLD_ID);
 GRAVE		ST_RET(GRAVE_ID);
 BRAZIER		ST_RET(BRAZIER_ID);
 SIGNPOST	ST_RET(SIGNPOST_ID);
+TREE		ST_RET(TREE_ID);
 ENGRAVING	ST_RET(ENGRAVING_ID);
 MINERALIZE	ST_RET(MINERALIZE_ID);
 (NAME|name)	ST_RET(NAME_ID);
@@ -418,6 +419,10 @@ door_reinforced { savetoken(yytext); yylval.i=DOOR_SUBTYPE_REINFORCED; return DO
 door_stone { savetoken(yytext); yylval.i=DOOR_SUBTYPE_STONE; return DOOR_SUBTYPE; }
 door_obsidian { savetoken(yytext); yylval.i=DOOR_SUBTYPE_OBSIDIAN; return DOOR_SUBTYPE; }
 door_black_gate { savetoken(yytext); yylval.i=DOOR_SUBTYPE_BLACK_GATE; return DOOR_SUBTYPE; }
+tree_normal { savetoken(yytext); yylval.i=TREE_SUBTYPE_NORMAL; return TREE_SUBTYPE; }
+tree_spruce { savetoken(yytext); yylval.i=TREE_SUBTYPE_SPRUCE; return TREE_SUBTYPE; }
+tree_fir { savetoken(yytext); yylval.i=TREE_SUBTYPE_FIR; return TREE_SUBTYPE; }
+tree_date_palm { savetoken(yytext); yylval.i=TREE_SUBTYPE_DATE_PALM; return TREE_SUBTYPE; }
 teleport_up    { savetoken(yytext); yylval.i=-1; return LEVEL_TELEPORT_DIRECTION_TYPE; }
 teleport_down  { savetoken(yytext); yylval.i=1; return LEVEL_TELEPORT_DIRECTION_TYPE; }
 matching_portal { savetoken(yytext); yylval.i=0; return LEVEL_TELEPORT_END_TYPE; }

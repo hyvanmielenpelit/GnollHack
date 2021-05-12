@@ -127,6 +127,7 @@ STATIC_DCL void FDECL(spo_ladder, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_grave, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_brazier, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_signpost, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_tree, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_altar, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_trap, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_gold, (struct sp_coder *));
@@ -4615,7 +4616,7 @@ struct sp_coder* coder;
         }
         else
         {
-            levl[x][y].floortyp = location_type_definitions[SIGNPOST].initial_floor_type;
+            levl[x][y].floortyp = location_type_definitions[BRAZIER].initial_floor_type;
             levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
             levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
         }
@@ -4640,6 +4641,49 @@ struct sp_coder* coder;
     opvar_free(gcoord);
     opvar_free(subtyp);
     opvar_free(lamplit);
+}
+
+void
+spo_tree(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_tree";
+    struct opvar* gcoord, * subtyp;
+    schar x, y;
+
+    if (!OV_pop_i(subtyp) || !OV_pop_c(gcoord))
+        return;
+
+    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
+
+    if (isok(x, y) && !t_at(x, y))
+    {
+        if (IS_FLOOR(levl[x][y].typ))
+        {
+            levl[x][y].floortyp = levl[x][y].typ;
+            levl[x][y].floorsubtyp = levl[x][y].subtyp;
+            levl[x][y].floorvartyp = levl[x][y].vartyp;
+        }
+        else
+        {
+            levl[x][y].floortyp = location_type_definitions[TREE].initial_floor_type;
+            levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+            levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
+        }
+
+        levl[x][y].typ = TREE;
+        int val = OV_i(subtyp);
+        if (val >= 0)
+            levl[x][y].subtyp = val;
+        else
+            levl[x][y].subtyp = get_initial_tree_subtype();
+
+        levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+        initialize_location(&levl[x][y]);
+    }
+
+    opvar_free(gcoord);
+    opvar_free(subtyp);
 }
 
 void
@@ -7338,6 +7382,9 @@ sp_lev *lvl;
             break;
         case SPO_SIGNPOST:
             spo_signpost(coder);
+            break;
+        case SPO_TREE:
+            spo_tree(coder);
             break;
         case SPO_ALTAR:
             spo_altar(coder);

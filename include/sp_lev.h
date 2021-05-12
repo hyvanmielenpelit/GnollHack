@@ -130,6 +130,7 @@ enum opcode_defs {
     SPO_GRAVE,
     SPO_BRAZIER,
     SPO_SIGNPOST,
+    SPO_TREE,
     SPO_FRAME_PUSH,
     SPO_FRAME_POP,
     SPO_CALL,
