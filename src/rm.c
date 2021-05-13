@@ -208,12 +208,24 @@ int ltype;
         return FOUNTAIN_MAGIC + rn2(MAX_FOUNTAIN_SUBTYPES - FOUNTAIN_MAGIC);
     else if (ltype == TREE)
         return get_initial_tree_subtype(level.flags.forest_type);
+    else if (ltype == GRASS)
+    {
+        if(level.flags.swampy)
+            return GRASS_SUBTYPE_SWAMPY;
+        else
+            return GRASS_SUBTYPE_NORMAL;
+    }
+    else if (ltype == GROUND)
+    {
+        if (level.flags.desert)
+            return GROUND_SUBTYPE_DESERT_SAND;
+        else if (level.flags.swampy)
+            return GROUND_SUBTYPE_SWAMPY;
+        else
+            return GROUND_SUBTYPE_NORMAL;
+    }
     else
-        return 
-            ltype == GRASS && level.flags.swampy ? GRASS_SUBTYPE_SWAMPY : 
-            ltype == GROUND && level.flags.desert ? GROUND_SUBTYPE_DESERT_SAND :
-            ltype == GROUND && level.flags.swampy ? GROUND_SUBTYPE_SWAMPY : 
-            0;
+        return 0;
 }
 
 int
