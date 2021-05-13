@@ -452,7 +452,7 @@ struct tree_subtype_definition {
 
 enum tree_classes
 {
-    TREE_CLASS_GENERAL = 0, /* Uses base_cmap */
+    TREE_CLASS_GENERAL = 0,
     TREE_CLASS_DECIDUOUS,
     TREE_CLASS_CONIFEROUS,
     TREE_CLASS_TROPICAL,
