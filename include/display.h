@@ -490,13 +490,13 @@
 
 #define base_cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + GLYPH_CMAP_OFF)
 #define base_cmap_variation_to_glyph(var_idx) ((int) (var_idx) + GLYPH_CMAP_VARIATION_OFF)
-#define cmap_with_type_to_glyph(cmap_idx, cmap_type) ((int) (cmap_idx) + cmap_type * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF)
+#define cmap_with_type_to_glyph(cmap_idx, cmap_type) ((int) (cmap_idx) + (cmap_type) * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF)
 #define cmap_to_glyph(cmap_idx) cmap_with_type_to_glyph(cmap_idx, get_current_cmap_type_index())
-#define broken_cmap_with_type_to_glyph(bcmap_idx, cmap_type) ((int) (bcmap_idx) + cmap_type * NUM_CMAP_TYPE_CHARS + GLYPH_BROKEN_CMAP_OFF)
+#define broken_cmap_with_type_to_glyph(bcmap_idx, cmap_type) ((int) (bcmap_idx) + (cmap_type) * NUM_CMAP_TYPE_CHARS + GLYPH_BROKEN_CMAP_OFF)
 #define broken_cmap_to_glyph(bcmap_idx) broken_cmap_with_type_to_glyph(bcmap_idx, get_current_cmap_type_index())
-#define cmap_variation_with_type_to_glyph(var_idx, cmap_type) ((int) (var_idx)+ cmap_type * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF)
+#define cmap_variation_with_type_to_glyph(var_idx, cmap_type) ((int) (var_idx)+ (cmap_type) * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF)
 #define cmap_variation_to_glyph(var_idx) ((int) (var_idx)+ get_current_cmap_type_index() * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF)
-#define broken_cmap_variation_with_type_to_glyph(var_idx, cmap_type) ((int) (var_idx)+ cmap_type * MAX_VARIATIONS + GLYPH_BROKEN_CMAP_VARIATION_OFF)
+#define broken_cmap_variation_with_type_to_glyph(var_idx, cmap_type) ((int) (var_idx)+ (cmap_type) * MAX_VARIATIONS + GLYPH_BROKEN_CMAP_VARIATION_OFF)
 #define broken_cmap_variation_to_glyph(var_idx) broken_cmap_variation_with_type_to_glyph(var_idx, get_current_cmap_type_index())
 
 #define obj_to_glyph(obj, rng)                                          \
@@ -507,7 +507,7 @@
                : ((obj)->otyp == CORPSE)                                \
                      ?  (is_female_corpse_or_statue(obj) ? ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF))  : ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_BODY_OFF)) )         \
                      : ((obj)->otyp == BOULDER) \
-                        ? cmap_to_glyph(S_extra_boulder) \
+                        ? cmap_with_type_to_glyph(S_extra_boulder, (obj)->has_special_tileset ? (obj)->special_tileset : get_current_cmap_type_index()) \
                             : ((obj)->oartifact > 0) \
                                 ? ((int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_OFF) \
                                     :  ((int)(obj)->otyp + GLYPH_OBJ_OFF))
@@ -521,7 +521,7 @@
                : ((obj)->otyp == CORPSE)                                \
                      ?  (is_female_corpse_or_statue(obj) ? ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF))  : ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_BODY_OFF)) )         \
                      : ((obj)->otyp == BOULDER) \
-                        ? cmap_to_glyph(S_extra_boulder) \
+                        ? cmap_with_type_to_glyph(S_extra_boulder, (obj)->has_special_tileset ? (obj)->special_tileset : get_current_cmap_type_index()) \
                             : ((obj)->oartifact > 0) \
                                 ? ((int)((obj)->oartifact - 1) * NUM_MISSILE_DIRS + (dir_index) + GLYPH_ARTIFACT_MISSILE_OFF) \
                                     :  ((int)(obj)->otyp * NUM_MISSILE_DIRS + (dir_index) + GLYPH_OBJ_MISSILE_OFF)) )

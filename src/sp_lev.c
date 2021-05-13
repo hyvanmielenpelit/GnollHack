@@ -2256,6 +2256,12 @@ struct mkroom *croom;
         otmp->oinvis = 1;
 #endif
 
+    if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
+    {
+        otmp->has_special_tileset = 1;
+        otmp->special_tileset = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+    }
+
     if (o->quan > 0 && objects[otmp->otyp].oc_merge) {
         otmp->quan = o->quan;
         otmp->owt = weight(otmp);

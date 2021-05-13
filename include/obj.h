@@ -146,6 +146,7 @@ struct obj {
     Bitfield(greased, 1);    /* covered with grease */
     Bitfield(nomerge, 1);    /* set temporarily to prevent merging */
     Bitfield(was_thrown, 1); /* thrown by hero since last picked up */
+    Bitfield(has_special_tileset, 1); /* thrown by hero since last picked up */
 
     Bitfield(in_use, 1); /* for magic items before useup items */
     Bitfield(bypass, 1); /* mark this as an object to be skipped by bhito() */
@@ -172,6 +173,7 @@ struct obj {
     unsigned o_id_memory;  /* This is a memory object of this o_id */
     unsigned m_id_memory;  /* This is a memory object of this mimic m_id */
 
+    uchar special_tileset;
     int glyph;
     struct oextra *oextra; /* pointer to oextra struct */
 };

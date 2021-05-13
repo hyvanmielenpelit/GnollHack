@@ -217,10 +217,21 @@ int x, y;
 boolean artif;
 unsigned long mkflags;
 {
+    if (!isok(x, y))
+        return (struct obj*)0;
+
     struct obj *otmp;
 
     otmp = mkobj_with_flags(let, artif, FALSE, mkflags);
-    place_object(otmp, x, y);
+    if (otmp)
+    {
+        place_object(otmp, x, y);
+        if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
+        {
+            otmp->has_special_tileset = 1;
+            otmp->special_tileset = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+        }
+    }
     return otmp;
 }
 
@@ -230,11 +241,7 @@ char let;
 int x, y;
 boolean artif;
 {
-    struct obj *otmp;
-
-    otmp = mkobj(let, artif, FALSE);
-    place_object(otmp, x, y);
-    return otmp;
+    return mkobj_at_with_flags(let, x, y, artif, 0UL);
 }
 
 struct obj *
@@ -242,11 +249,7 @@ mksobj_at(otyp, x, y, init, artif)
 int otyp, x, y;
 boolean init, artif;
 {
-    struct obj *otmp;
-
-    otmp = mksobj(otyp, init, artif, FALSE);
-    place_object(otmp, x, y);
-    return otmp;
+    return mksobj_at_with_flags(otyp, x, y, init, artif, 0UL);
 }
 
 struct obj*
@@ -255,10 +258,21 @@ int otyp, x, y;
 boolean init, artif;
 unsigned long mkflags;
 {
+    if (!isok(x, y))
+        return (struct obj*)0;
+
     struct obj* otmp;
 
     otmp = mksobj_with_flags(otyp, init, artif, 0, mkflags);
-    place_object(otmp, x, y);
+    if (otmp)
+    {
+        place_object(otmp, x, y);
+        if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
+        {
+            otmp->has_special_tileset = 1;
+            otmp->special_tileset = levl[x][y].use_special_tileset ? levl[x][y].special_tileset : get_current_cmap_type_index();
+        }
+    }
     return otmp;
 }
 
@@ -1304,6 +1318,8 @@ unsigned long mkflags;
     otmp->lamplit = 0;
     otmp->makingsound = 0;
     otmp->special_quality = 0;
+    otmp->has_special_tileset = 0;
+    otmp->special_tileset = 0;
     otmp->cobj = (struct obj*)0;
 
     if ((objects[otmp->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && (mkflags & MKOBJ_FLAGS_OPEN_COFFIN))
@@ -1805,6 +1821,13 @@ unsigned long mkflags;
                        objects[otmp->otyp].oc_class);
             return (struct obj *) 0;
         }
+    }
+
+    /* Default to current tile set, and override later, if necessary */
+    if ((objects[otmp->otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
+    {
+        otmp->has_special_tileset = 1;
+        otmp->special_tileset = get_current_cmap_type_index();
     }
 
     /* Blessed or cursed */

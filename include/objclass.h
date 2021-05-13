@@ -956,6 +956,8 @@ struct objclass {
 #define O4_CANDELABRUM                                     0x80000000UL
 
 #define O5_NONE                        0x00000000UL
+#define O5_TILE_IS_TILESET_DEPENDENT   0x00000001UL
+
 #define O6_NONE                        0x00000000UL
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */

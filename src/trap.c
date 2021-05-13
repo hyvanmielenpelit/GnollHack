@@ -2605,6 +2605,11 @@ long ocount;
         otmp->quan = ocount;
         otmp->owt = weight(otmp);
         place_object(otmp, cc.x, cc.y);
+        if ((objects[otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT) != 0)
+        {
+            otmp->has_special_tileset = 1;
+            otmp->special_tileset = levl[cc.x][cc.y].use_special_tileset ? levl[cc.x][cc.y].special_tileset : get_current_cmap_type_index();
+        }
         stackobj(otmp);
     }
     ttmp->launch.x = cc.x;

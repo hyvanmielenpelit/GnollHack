@@ -382,6 +382,7 @@ register struct monst *mtmp;
         default:
             if (rn2(2))
                 (void)mongets(mtmp, (mm != PM_ETTIN) ? BOULDER : CLUB);
+
             break;
         }
         break;
@@ -3929,6 +3930,12 @@ int otyp;
 
             if (otmp->oclass == ARMOR_CLASS && otmp->enchantment < 0)
                 otmp->enchantment = 0;
+        }
+
+        if (isok(mtmp->mx, mtmp->my) && (objects[otyp].oc_flags5 & O5_TILE_IS_TILESET_DEPENDENT))
+        {
+            otmp->has_special_tileset = 1;
+            otmp->special_tileset = levl[mtmp->mx][mtmp->my].use_special_tileset ? levl[mtmp->mx][mtmp->my].special_tileset : get_current_cmap_type_index();
         }
 
         (void) mpickobj(mtmp, otmp); /* might free otmp */
