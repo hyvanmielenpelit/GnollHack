@@ -12,6 +12,7 @@ using System.Reflection;
 using System.IO;
 using Xamarin.Forms;
 using System.Runtime.InteropServices;
+using Android.Content.Res;
 
 [assembly: Dependency(typeof(GnollHackClient.Droid.GhollHackService))]
 namespace GnollHackClient.Droid
@@ -57,6 +58,70 @@ namespace GnollHackClient.Droid
             string cwd10 = Android.App.Application.Context.FilesDir.Path;
             string cwd11 = Android.App.Application.Context.ObbDir.Path;
             //string cwd4 = System.AppDomain.CurrentDomain.BaseDirectory;
+
+            string content;
+            AssetManager assets = MainActivity.StaticAssets;
+            using(StreamReader sr = new StreamReader(assets.Open("GNHAssets/credits")))
+            {
+                content = sr.ReadToEnd();
+            }
+            if (File.Exists(Path.Combine(cwd10, "credits")))
+                File.Delete(Path.Combine(cwd10, "credits"));
+
+            using (StreamWriter sw = new StreamWriter(Path.Combine(cwd10, "credits")))
+            {
+                sw.Write(content);
+            }
+
+            using (StreamReader sr = new StreamReader(assets.Open("GNHAssets/record")))
+            {
+                content = sr.ReadToEnd();
+            }
+            if (File.Exists(Path.Combine(cwd10, "record")))
+                File.Delete(Path.Combine(cwd10, "record"));
+
+            using (StreamWriter sw = new StreamWriter(Path.Combine(cwd10, "record")))
+            {
+                sw.Write(content);
+            }
+
+            using (StreamReader sr = new StreamReader(assets.Open("GNHAssets/sysconf")))
+            {
+                content = sr.ReadToEnd();
+            }
+            if (File.Exists(Path.Combine(cwd10, "sysconf")))
+                File.Delete(Path.Combine(cwd10, "sysconf"));
+
+            using (StreamWriter sw = new StreamWriter(Path.Combine(cwd10, "sysconf")))
+            {
+                sw.Write(content);
+            }
+
+            using (StreamReader sr = new StreamReader(assets.Open("GNHAssets/symbols")))
+            {
+                content = sr.ReadToEnd();
+            }
+            if (File.Exists(Path.Combine(cwd10, "symbols")))
+                File.Delete(Path.Combine(cwd10, "symbols"));
+
+            using (StreamWriter sw = new StreamWriter(Path.Combine(cwd10, "symbols")))
+            {
+                sw.Write(content);
+            }
+
+            byte[] data;
+            int cnt = 2048 * 1024;
+            using (BinaryReader br = new BinaryReader(assets.Open("GNHAssets/nhdat")))
+            {
+                data = br.ReadBytes(cnt);
+            }
+            if (File.Exists(Path.Combine(cwd10, "nhdat")))
+                File.Delete(Path.Combine(cwd10, "nhdat"));
+            using (BinaryWriter sw = new BinaryWriter(File.Open(Path.Combine(cwd10, "nhdat"), FileMode.Create)))
+            {
+                sw.Write(data);
+            }
+
             return RunGnollHackTest(cwd4, cwd10, cwd3);
         }
     }

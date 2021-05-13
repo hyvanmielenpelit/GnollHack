@@ -99,8 +99,7 @@ int GnollHackMain(int argc, char** argv)
 	char* curwd2 = argv[2];
 	int res = chdir(curwd2);
 	int e = errno;
-	res = chdir("..");
-	e = errno;
+
 	char dirbuf[BUFSZ];
 	Sprintf(dirbuf, "%s%s", curwd2, "");
 	int cnt = 0;
