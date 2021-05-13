@@ -57,6 +57,7 @@ namespace GnollHackClient
         SKBitmap _logo_bitmap;
         SKTypeface _typeface;
         private IFmodService _fmodService;
+        private IGnollHackService _gnollHackService;
 
         public MainPage()
         {
@@ -147,6 +148,11 @@ namespace GnollHackClient
             _fmodService = DependencyService.Get<IFmodService>();
             _fmodService.InitializeFmod();
             _fmodService.LoadBanks();
+
+            _gnollHackService = DependencyService.Get<IGnollHackService>();
+            _gnollHackService.InitializeGnollHack();
+            int res = _gnollHackService.Test1();
+            _message = "GnollHack: " + res;
         }
 
         protected void ConnectToServer()

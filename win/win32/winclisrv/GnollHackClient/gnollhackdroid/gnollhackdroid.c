@@ -30,3 +30,7 @@ void gnollhackdroid()
 
 }
 
+int DoSomeCalcDroid()
+{
+	return 5;
+}

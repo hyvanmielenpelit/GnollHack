@@ -55,11 +55,6 @@ void gnollhack_exit(int code)
 
 int GnollHackMain(int argc, char** argv)
 {
-	return main(argc, argv);
-}
-
-int main(int argc, char** argv)
-{
 	//debuglog("Starting GnollHack!");
 
 	int val;
