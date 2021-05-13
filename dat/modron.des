@@ -178,7 +178,7 @@ DOOR:locked,(19,10),subtype:door_magic,keytype:"magic key"
 DOOR:locked,(29,10),subtype:door_magic,keytype:"magic key"
 
 # Middle room
-REGION:(22,09,26,11),lit,"temple" floortype:floor_marble
+REGION:(22,09,26,11),lit,"temple" floorsubtype:floor_marble
 ALTAR:(24,10),neutral,shrine,montype:"monk"
 BRAZIER:(20,07)
 BRAZIER:(28,07)

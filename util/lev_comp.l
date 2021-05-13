@@ -144,8 +144,8 @@ TILESET	    ST_RET(TILESET_ID);
 SPECIAL_TILESET	    ST_RET(SPECIAL_TILESET_ID);
 BOUNDARY_TYPE	ST_RET(BOUNDARY_TYPE_ID);
 FOREST	    ST_RET(FOREST_ID);
+floorsubtype	ST_RET(FLOOR_SUBTYPE_ID);
 floortype	ST_RET(FLOOR_TYPE_ID);
-floormaintype	ST_RET(FLOOR_MAIN_TYPE_ID);
 mazegrid	ST_RET(MAZE_GRID_ID);
 solidfill	ST_RET(SOLID_FILL_ID);
 mines		ST_RET(MINES_ID);
@@ -369,17 +369,17 @@ sokoban_tileset { savetoken(yytext); yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
 elemental_tileset { savetoken(yytext); yylval.i=CMAP_ELEMENTAL_PLANES; return CMAP_TYPE; }
 astral_tileset { savetoken(yytext); yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
 gehennom_cavernous_tileset { savetoken(yytext); yylval.i=CMAP_GEHENNOM_CAVERNOUS; return CMAP_TYPE; }
-floor_normal { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_NORMAL; return FLOOR_TYPE; }
-floor_marble { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_MARBLE; return FLOOR_TYPE; }
-floor_parquet { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_PARQUET; return FLOOR_TYPE; }
-grass_normal { savetoken(yytext); yylval.i=GRASS_SUBTYPE_NORMAL; return FLOOR_TYPE; }
-grass_swampy { savetoken(yytext); yylval.i=GRASS_SUBTYPE_SWAMPY; return FLOOR_TYPE; }
-ground_normal { savetoken(yytext); yylval.i=GROUND_SUBTYPE_NORMAL; return FLOOR_TYPE; }
-ground_swampy { savetoken(yytext); yylval.i=GROUND_SUBTYPE_SWAMPY; return FLOOR_TYPE; }
-location_floor { savetoken(yytext); yylval.i=ROOM; return FLOOR_MAIN_TYPE; }
-location_corridor { savetoken(yytext); yylval.i=CORR; return FLOOR_MAIN_TYPE; }
-location_grass { savetoken(yytext); yylval.i=GRASS; return FLOOR_MAIN_TYPE; }
-location_ground { savetoken(yytext); yylval.i=GROUND; return FLOOR_MAIN_TYPE; }
+floor_normal { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_NORMAL; return FLOOR_SUBTYPE; }
+floor_marble { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_MARBLE; return FLOOR_SUBTYPE; }
+floor_parquet { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_PARQUET; return FLOOR_SUBTYPE; }
+grass_normal { savetoken(yytext); yylval.i=GRASS_SUBTYPE_NORMAL; return FLOOR_SUBTYPE; }
+grass_swampy { savetoken(yytext); yylval.i=GRASS_SUBTYPE_SWAMPY; return FLOOR_SUBTYPE; }
+ground_normal { savetoken(yytext); yylval.i=GROUND_SUBTYPE_NORMAL; return FLOOR_SUBTYPE; }
+ground_swampy { savetoken(yytext); yylval.i=GROUND_SUBTYPE_SWAMPY; return FLOOR_SUBTYPE; }
+location_floor { savetoken(yytext); yylval.i=ROOM; return FLOOR_TYPE; }
+location_corridor { savetoken(yytext); yylval.i=CORR; return FLOOR_TYPE; }
+location_grass { savetoken(yytext); yylval.i=GRASS; return FLOOR_TYPE; }
+location_ground { savetoken(yytext); yylval.i=GROUND; return FLOOR_TYPE; }
 flaming { savetoken(yytext); yylval.i=FIRE_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 freezing { savetoken(yytext); yylval.i=COLD_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
 electrified { savetoken(yytext); yylval.i=LIGHTNING_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }

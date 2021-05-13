@@ -199,7 +199,7 @@ extern char curr_token[512];
 %token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE KEYTYPE_ID LEVER_ID NO_PICKUP_ID
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
-%token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_TYPE FLOOR_TYPE_ID FLOOR_ID FLOOR_MAIN_TYPE FLOOR_MAIN_TYPE_ID
+%token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_SUBTYPE FLOOR_SUBTYPE_ID FLOOR_ID FLOOR_TYPE FLOOR_TYPE_ID
 %token	<i> ELEMENTAL_ENCHANTMENT_TYPE EXCEPTIONALITY_TYPE EXCEPTIONALITY_ID ELEMENTAL_ENCHANTMENT_ID ENCHANTMENT_ID SECRET_DOOR_ID USES_UP_KEY_ID
 %token	<i> MYTHIC_PREFIX_TYPE MYTHIC_SUFFIX_TYPE MYTHIC_PREFIX_ID MYTHIC_SUFFIX_ID
 %token	<i> CHARGES_ID SPECIAL_QUALITY_ID SPEFLAGS_ID
@@ -254,7 +254,7 @@ extern char curr_token[512];
 %type	<i> object_infos object_info monster_infos monster_info
 %type	<i> levstatements stmt_block region_detail_end
 %type	<i> engraving_type flag_list roomregionflag roomregionflags
-%type	<i> optroomregionflags floortype optfloortype floormaintype optfloormaintype optmontype
+%type	<i> optroomregionflags floorsubtype optfloorsubtype floortype optfloortype optmontype
 %type	<i> humidity_flags
 %type	<i> comparestmt encodecoord encoderegion mapchar
 %type	<i> seen_trap_mask
@@ -415,7 +415,7 @@ forest_detail : FOREST_ID ':' FOREST_TYPE ',' INITIALIZE_TYPE
 		  }
 		;
 
-boundary_type_detail : BOUNDARY_TYPE_ID ':' FLOOR_MAIN_TYPE
+boundary_type_detail : BOUNDARY_TYPE_ID ':' FLOOR_TYPE
 		  {
 		      add_opvars(splev, "io", VA_PASS2((int)$<i>3, SPO_BOUNDARY_TYPE));
 		  }
@@ -1298,7 +1298,7 @@ room_begin      : room_type opt_percent ',' light_state
                   }
                 ;
 
-subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags optfloormaintype optfloortype optmontype
+subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags optfloortype optfloorsubtype optmontype
 		  {
 		      long rflags = $8;
 		      long flmt = (long)$<i>9;
@@ -1321,7 +1321,7 @@ subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomreg
 		  }
 		;
 
-room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags optfloormaintype optfloortype optmontype
+room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags optfloortype optfloorsubtype optmontype
 		  {
 		      long rflags = $10;
 		      long flmt = (long)$<i>11;
@@ -2122,7 +2122,7 @@ lever_info	: ACTIVE_OR_INACTIVE
 		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_SUBTYPE));
 		      $<i>$ = 0x0200;
 		  }
-		| FLOOR_TYPE_ID ':' floortype
+		| FLOOR_SUBTYPE_ID ':' floorsubtype
 		  {
 		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_FLOOR_SUBTYPE));
 		      $<i>$ = 0x0400;
@@ -2225,7 +2225,7 @@ special_tileset_detail : SPECIAL_TILESET_ID ':' ter_selection ',' CMAP_TYPE
 		  }
 		;
 
-region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags optfloormaintype optfloortype optmontype
+region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags optfloortype optfloorsubtype optmontype
 		  {
 		      long irr;
 		      long rt = $7;
@@ -2288,7 +2288,7 @@ anvil_detail : ANVIL_ID ':' coord_or_var
 		  }
 		;
 
-floor_detail : FLOOR_ID ':' ter_selection ',' FLOOR_MAIN_TYPE ',' FLOOR_TYPE
+floor_detail : FLOOR_ID ':' ter_selection ',' FLOOR_TYPE ',' FLOOR_SUBTYPE
 		  {
 		      add_opvars(splev, "iio", VA_PASS3((int)$7, (int)$5, SPO_FLOOR));
 		  }
@@ -2453,22 +2453,6 @@ roomregionflag : FILLING
 		  }
 		;
 
-optfloormaintype : /* empty */
-		  {
-			$<i>$ = -1;
-		  }
-		| FLOOR_MAIN_TYPE_ID ':' floormaintype
-		  {
-			$<i>$ = $<i>3;
-		  }
-		;
-
-floormaintype : FLOOR_MAIN_TYPE
-		  {
-		      $<i>$ = $<i>1;
-		  }
-		;
-
 optfloortype : /* empty */
 		  {
 			$<i>$ = -1;
@@ -2480,6 +2464,22 @@ optfloortype : /* empty */
 		;
 
 floortype : FLOOR_TYPE
+		  {
+		      $<i>$ = $<i>1;
+		  }
+		;
+
+optfloorsubtype : /* empty */
+		  {
+			$<i>$ = -1;
+		  }
+		| FLOOR_SUBTYPE_ID ':' floorsubtype
+		  {
+			$<i>$ = $<i>3;
+		  }
+		;
+
+floorsubtype : FLOOR_SUBTYPE
 		  {
 		      $<i>$ = $<i>1;
 		  }

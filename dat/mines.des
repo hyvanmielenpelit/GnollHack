@@ -269,12 +269,12 @@ WALLIFY
 # "Town Square"
 #
 LEVEL: "minetn-2"
-ROOM: "ordinary" , lit, (3,3), (center,center), (31,15) floormaintype:location_ground {
+ROOM: "ordinary" , lit, (3,3), (center,center), (31,15) floortype:location_ground {
 FOUNTAIN: (17, 5),fountain_healing
 FOUNTAIN: (13, 8),fountain_water
 SIGNPOST: (15, 6),signpost_normal,"Stay out of the fountains!"
 
-[75%]: SUBROOM: "ordinary", random, (2,0), (2,2) floortype:floor_parquet {
+[75%]: SUBROOM: "ordinary", random, (2,0), (2,2) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, west, random
 }
 
@@ -282,7 +282,7 @@ SIGNPOST: (15, 6),signpost_normal,"Stay out of the fountains!"
   ROOMDOOR: false, closed, south, random
 }
 
-[75%]: SUBROOM: "ordinary", random, (8,0), (2,2) floortype:floor_parquet {
+[75%]: SUBROOM: "ordinary", random, (8,0), (2,2) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, east, random
 }
 
@@ -290,7 +290,7 @@ SIGNPOST: (15, 6),signpost_normal,"Stay out of the fountains!"
   ROOMDOOR: false, closed, west, random
 }
 
-[75%]: SUBROOM: "ordinary", unlit, (19,0), (2,2) floortype:floor_parquet {
+[75%]: SUBROOM: "ordinary", unlit, (19,0), (2,2) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, south, random
 }
 
@@ -316,15 +316,15 @@ SIGNPOST: (15, 6),signpost_normal,"Stay out of the fountains!"
   MONSTER: ('g', "gnome"), random
 }
 
-SUBROOM: "shop" [90%] , lit, (2,10), (4,3) floortype:floor_parquet {
+SUBROOM: "shop" [90%] , lit, (2,10), (4,3) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, west, random
 }
 
-SUBROOM: "tool shop" [90%], lit, (23,10), (4,3) floortype:floor_parquet {
+SUBROOM: "tool shop" [90%], lit, (23,10), (4,3) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, east, random
 }
 
-SUBROOM: "food shop" [90%], lit, (24,5), (3,4) floortype:floor_parquet {
+SUBROOM: "food shop" [90%], lit, (24,5), (3,4) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, north, random
 }
 
@@ -332,12 +332,12 @@ SUBROOM: "candle shop", lit, (11,10), (4,3) {
   ROOMDOOR: false, closed, east, random
 }
 
-SUBROOM: "npcroom", lit, (7,10), (3,3) floortype:floor_parquet {
+SUBROOM: "npcroom", lit, (7,10), (3,3) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, north, random
   NPC: npc_geologist, random
 }
 
-SUBROOM: "temple", lit, (19,5), (4,4) floortype:floor_marble {
+SUBROOM: "temple", lit, (19,5), (4,4) floorsubtype:floor_marble {
   ROOMDOOR: false, closed, north, random
   ALTAR:(02,02),align[0],shrine
   MONSTER: ('g', "gnomish wizard"), random
@@ -363,22 +363,22 @@ MONSTER: ('@', "watch captain"), random, peaceful
 
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   STAIR: random, up
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   STAIR: random, down
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
   MONSTER: ('g', "gnome"), random
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   MONSTER: ('h', "dwarf"), random
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
 }
@@ -390,7 +390,7 @@ RANDOM_CORRIDORS
 # "Alley Town"
 #
 LEVEL: "minetn-3"
-ROOM: "ordinary",lit,(3,3),(center,center),(31,15) floormaintype:location_ground {
+ROOM: "ordinary",lit,(3,3),(center,center),(31,15) floortype:location_ground {
 FOUNTAIN:(01,06),fountain_healing
 FOUNTAIN:(29,13),fountain_water
 
@@ -398,7 +398,7 @@ SUBROOM:"ordinary",random,(2,2),(2,2) {
   ROOMDOOR: false,closed,south,random
 }
 
-SUBROOM:"tool shop" [30%], lit,(5,3),(2,3) floortype:floor_parquet {
+SUBROOM:"tool shop" [30%], lit,(5,3),(2,3) floorsubtype:floor_parquet {
   ROOMDOOR: false,closed,south,random
 }
 
@@ -408,11 +408,11 @@ SUBROOM:"smithy",lit,(2,10),(2,3) {
   MONSTER: 'g',random
 }
 
-SUBROOM:"ordinary",random,(5,9),(2,2) floortype:floor_parquet {
+SUBROOM:"ordinary",random,(5,9),(2,2) floorsubtype:floor_parquet {
   ROOMDOOR: false,closed,north,random
 }
 
-SUBROOM:"temple",lit,(10,2),(3,4) floortype:floor_marble {
+SUBROOM:"temple",lit,(10,2),(3,4) floorsubtype:floor_marble {
   ROOMDOOR: false,closed,east,random
   ALTAR:(1,1),align[0],shrine
   MONSTER: ('g', "gnomish wizard"), random
@@ -423,12 +423,12 @@ SUBROOM:"temple",lit,(10,2),(3,4) floortype:floor_marble {
   OBJECT: ('(', "large five-branched candelabrum"), (02,03), special_quality:5, lit
 }
 
-SUBROOM:"npcroom",random,(11,7),(2,2) floortype:floor_parquet {
+SUBROOM:"npcroom",random,(11,7),(2,2) floorsubtype:floor_parquet {
   ROOMDOOR: false,closed,west,random
   NPC: npc_geologist, random
 }
 
-SUBROOM:"shop",lit,(10,10),(3,3) floortype:floor_parquet {
+SUBROOM:"shop",lit,(10,10),(3,3) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,west,random
 }
 
@@ -441,7 +441,7 @@ SUBROOM:"ordinary",random,(14,11),(2,2) {
   ROOMDOOR:false,closed,south,random
 }
 
-SUBROOM:"tool shop" [40%],lit,(17,10),(3,3) floortype:floor_parquet {
+SUBROOM:"tool shop" [40%],lit,(17,10),(3,3) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,north,random
 }
 
@@ -450,7 +450,7 @@ SUBROOM:"ordinary",random,(21,11),(2,2) {
   MONSTER:'g',random
 }
 
-SUBROOM:"food shop" [90%],lit,(26,8),(3,2) floortype:floor_parquet {
+SUBROOM:"food shop" [90%],lit,(26,8),(3,2) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,west,random
 }
 
@@ -458,11 +458,11 @@ SUBROOM:"ordinary",random,(16,2),(2,2) {
   ROOMDOOR:false,closed,west,random
 }
 
-SUBROOM:"ordinary",random,(19,2),(2,2) floortype:floor_parquet {
+SUBROOM:"ordinary",random,(19,2),(2,2) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,north,random
 }
 
-SUBROOM:"wand shop" [30%],lit,(19,5),(3,2) floortype:floor_parquet {
+SUBROOM:"wand shop" [30%],lit,(19,5),(3,2) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,west,random
 }
 
@@ -478,22 +478,22 @@ MONSTER: ('@', "watch captain"), random, peaceful
 
 }
 
-ROOM: "ordinary", random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary", random, random, random, random floortype:location_ground {
   STAIR: random, up
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   STAIR: random, down
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
   MONSTER: ('g', "gnome"), random
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   MONSTER: ('h', "dwarf"), random
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
 }
@@ -505,7 +505,7 @@ RANDOM_CORRIDORS
 # "College Town"
 #
 LEVEL: "minetn-4"
-ROOM: "ordinary",lit,(3,3),(center,center),(30,15) floormaintype:location_ground {
+ROOM: "ordinary",lit,(3,3),(center,center),(30,15) floortype:location_ground {
 FOUNTAIN:(08,07),fountain_healing
 FOUNTAIN:(18,07),fountain_water
 SIGNPOST:(06,07),signpost_normal,"Stay out of the fountain!"
@@ -520,7 +520,7 @@ SUBROOM:"smithy",lit,(8,2),(2,2) {
   ANVIL:(1,1)
 }
 
-SUBROOM:"temple",lit,(11,3),(5,4) floortype:floor_marble {
+SUBROOM:"temple",lit,(11,3),(5,4) floorsubtype:floor_marble {
   ROOMDOOR: false,closed,south,random
   ALTAR:(2,1),align[0],shrine
   MONSTER: ('g', "gnomish wizard"), random
@@ -557,7 +557,7 @@ SUBROOM:"ordinary",random,(8,11),(2,2) {
   MONSTER: 'f',random
 }
 
-SUBROOM:"food shop" [90%],lit,(11,11),(3,2) floortype:floor_parquet {
+SUBROOM:"food shop" [90%],lit,(11,11),(3,2) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,east,random
 }
 
@@ -570,7 +570,7 @@ SUBROOM:"ordinary",random,(20,10),(2,2) {
   MONSTER:'g',random
 }
 
-SUBROOM:"shop" [90%],lit,(23,10),(3,3) floortype:floor_parquet {
+SUBROOM:"shop" [90%],lit,(23,10),(3,3) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,north,random
 }
 
@@ -582,22 +582,22 @@ MONSTER: ('@', "watch captain"), random, peaceful
 
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   STAIR: random, up
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   STAIR: random, down
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
   MONSTER: ('g', "gnome"), random
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   MONSTER: ('h', "dwarf"), random
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
 }
@@ -701,9 +701,9 @@ REGION:(25,17,28,19),lit,"candle shop"
 DOOR:closed,(24,18)
 REGION:(59,9,67,10),lit,"shop"
 DOOR:closed,(66,08)
-REGION:(57,13,60,15),lit,"tool shop" floortype:floor_parquet
+REGION:(57,13,60,15),lit,"tool shop" floorsubtype:floor_parquet
 DOOR:closed,(56,14)
-REGION:(05,09,08,10),lit,"food shop" floortype:floor_parquet
+REGION:(05,09,08,10),lit,"food shop" floorsubtype:floor_parquet
 DOOR:closed,(07,11)
 # Gnome homes
 DOOR:closed,(04,14)
@@ -734,7 +734,7 @@ OBJECT: '(', (50,03)
 OBJECT: ('`', "statue"), (38,15), montype:"gnome king", 1
 
 # Temple
-REGION:(29,02,33,04),lit,"temple" floortype:floor_marble
+REGION:(29,02,33,04),lit,"temple" floorsubtype:floor_marble
 DOOR:closed,(31,05)
 ALTAR:(31,03),align[0],shrine
 OBJECT: ('(', "large five-branched candelabrum"), (29,02), special_quality:5, lit
@@ -748,7 +748,7 @@ DOOR:closed,(01,17)
 ANVIL:(02,19)
 
 # Geologist
-REGION:(19,17,21,18),lit,"npcroom" floortype:floor_parquet
+REGION:(19,17,21,18),lit,"npcroom" floorsubtype:floor_parquet
 DOOR:closed,(20,16)
 NPC:npc_geologist,(20,18)
 
@@ -787,10 +787,10 @@ FOUNTAIN:(22,07),fountain_healing
 FOUNTAIN:(09,13),fountain_water
 REGION:(13,5,14,6),unlit,"ordinary"
 REGION:(9,7,11,9),lit,"candle shop"
-REGION:(16,4,18,6),lit,"tool shop" floortype:floor_parquet
-REGION:(23,1,25,3),lit,"shop" floortype:floor_parquet
-REGION:(22,12,24,13),lit,"food shop" floortype:floor_parquet
-REGION:(31,12,36,14),lit,"temple" floortype:floor_marble
+REGION:(16,4,18,6),lit,"tool shop" floorsubtype:floor_parquet
+REGION:(23,1,25,3),lit,"shop" floorsubtype:floor_parquet
+REGION:(22,12,24,13),lit,"food shop" floorsubtype:floor_parquet
+REGION:(31,12,36,14),lit,"temple" floorsubtype:floor_marble
 ALTAR:(35,13),align[0],shrine
 OBJECT: ('(', "large five-branched candelabrum"), (31,12), special_quality:5, lit
 OBJECT: ('(', "large five-branched candelabrum"), (31,14), special_quality:5, lit
@@ -803,7 +803,7 @@ DOOR:closed,(05,02)
 ANVIL:(03,02)
 
 # Geologist
-REGION:(19,11,20,13),lit,"npcroom" floortype:floor_parquet
+REGION:(19,11,20,13),lit,"npcroom" floorsubtype:floor_parquet
 DOOR:closed,(19,10)
 NPC:npc_geologist,(20,13)
 
@@ -848,7 +848,7 @@ MONSTER: ('@', "watch captain"), random, peaceful
 # "Bazaar Town" by Kelly Bailey
 #
 LEVEL: "minetn-7"
-ROOM: "ordinary" , lit, (3,3), (center,center), (30,15) floormaintype:location_ground {
+ROOM: "ordinary" , lit, (3,3), (center,center), (30,15) floortype:location_ground {
 FOUNTAIN: (12, 07),fountain_healing
 FOUNTAIN: (11, 13),fountain_water
 SIGNPOST: (09, 08), signpost_normal, "Stay out of the fountains!"
@@ -858,7 +858,7 @@ SUBROOM: "npcroom", random, (2,2), (4,2) {
   NPC: npc_geologist, random
 } 
 
-[75%]: SUBROOM: "ordinary", random, (7,2), (2,2) floortype:floor_parquet {
+[75%]: SUBROOM: "ordinary", random, (7,2), (2,2) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, north, random
 }
 
@@ -866,7 +866,7 @@ SUBROOM: "npcroom", random, (2,2), (4,2) {
   ROOMDOOR: false, closed, south, random
 }
 
-[75%]: SUBROOM: "ordinary", lit, (10,2), (3,4) floortype:floor_parquet {
+[75%]: SUBROOM: "ordinary", lit, (10,2), (3,4) floorsubtype:floor_parquet {
   MONSTER:('g',"gnome"),random
   MONSTER:('Y',"monkey"),random
   MONSTER:('Y',"monkey"),random
@@ -919,20 +919,20 @@ SUBROOM: "smithy", lit, (17,11), (4,2) {
   MONSTER: ('g', "gnome lord"), random
 }
 
-[75%]: SUBROOM: "ordinary", random, (22,11), (2,2) floortype:floor_parquet {
+[75%]: SUBROOM: "ordinary", random, (22,11), (2,2) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, south, random
   SINK: (00,00)
 }
 
-SUBROOM: "food shop" [50%], lit, (25,11), (3,2) floortype:floor_parquet {
+SUBROOM: "food shop" [50%], lit, (25,11), (3,2) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, east, random
 }
 
-SUBROOM: "tool shop" [30%], lit, (25,2), (3,3) floortype:floor_parquet {
+SUBROOM: "tool shop" [30%], lit, (25,2), (3,3) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, west, random
 }
 
-SUBROOM: "temple", lit, (24,6), (4,4) floortype:floor_marble {
+SUBROOM: "temple", lit, (24,6), (4,4) floorsubtype:floor_marble {
   ROOMDOOR: false, closed, west, random
   ALTAR:(02,01),align[0],shrine
   MONSTER: ('g', "gnomish wizard"), random
@@ -957,22 +957,22 @@ MONSTER:('Y',"monkey"),random
 
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   STAIR: random, up
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   STAIR: random, down
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
   MONSTER: ('g', "gnome"), random
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   MONSTER: ('h', "dwarf"), random
 }
 
-ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
+ROOM: "ordinary" , random, random, random, random floortype:location_ground {
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
 }

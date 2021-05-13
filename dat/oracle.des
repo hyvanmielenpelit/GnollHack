@@ -17,7 +17,7 @@ ROOM: "ordinary" , lit, (3,3), (center,center), (11,9) {
   OBJECT:('`',"statue"),(2,4),montype:'C',1
   OBJECT:('`',"statue"),(8,4),montype:'C',1
 
-  SUBROOM: "delphi" , lit , (4,3) , (3,3) floortype:floor_marble {
+  SUBROOM: "delphi" , lit , (4,3) , (3,3) floorsubtype:floor_marble {
     FOUNTAIN: (0, 1),fountain_healing
     FOUNTAIN: (1, 0),fountain_mana
     FOUNTAIN: (1, 2),fountain_mana

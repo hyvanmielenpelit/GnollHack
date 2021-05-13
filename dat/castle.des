@@ -358,14 +358,14 @@ REGION:(00,00,62,16),unlit,"ordinary"
 REGION:(00,05,05,11),lit,"ordinary"
 REGION:(57,05,62,11),lit,"ordinary"
 #   Throne room
-REGION:(27,05,37,11),lit,"throne",unfilled floortype:floor_marble
+REGION:(27,05,37,11),lit,"throne",unfilled floorsubtype:floor_marble
 #   Antechamber
 REGION:(07,05,14,11),lit,"ordinary"
 #   Storerooms
-REGION:(39,05,45,06),lit,"ordinary" floortype:floor_parquet
-REGION:(39,10,45,11),lit,"ordinary" floortype:floor_parquet
-REGION:(49,05,55,06),lit,"ordinary" floortype:floor_parquet
-REGION:(49,10,55,11),lit,"ordinary" floortype:floor_parquet
+REGION:(39,05,45,06),lit,"ordinary" floorsubtype:floor_parquet
+REGION:(39,10,45,11),lit,"ordinary" floorsubtype:floor_parquet
+REGION:(49,05,55,06),lit,"ordinary" floorsubtype:floor_parquet
+REGION:(49,10,55,11),lit,"ordinary" floorsubtype:floor_parquet
 #   Corners
 REGION:(02,02,06,03),lit,"ordinary"
 REGION:(56,02,60,03),lit,"ordinary"
