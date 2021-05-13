@@ -153,6 +153,8 @@ namespace GnollHackClient
             _gnollHackService.InitializeGnollHack();
             int res = _gnollHackService.Test1();
             _message = "GnollHack: " + res;
+            int res2 = _gnollHackService.Test2();
+            _message2 = "GnollHack2: " + res2;
         }
 
         protected void ConnectToServer()
@@ -365,6 +367,7 @@ namespace GnollHackClient
 
         private void firstButton_Clicked(object sender, EventArgs e)
         {
+            _gnollHackService.TestRunGnollHack();
             _fmodService.PlayTestSound();
 
             _connectionAttempted = true;

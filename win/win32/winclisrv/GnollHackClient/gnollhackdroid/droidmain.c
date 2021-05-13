@@ -8,6 +8,8 @@
 
 #include <sys/stat.h>
 #include <pwd.h>
+#include <sys/types.h>
+#include <dirent.h>
 #ifndef O_RDONLY
 #include <fcntl.h>
 #endif
@@ -53,6 +55,19 @@ void gnollhack_exit(int code)
 	longjmp(env, code);
 }
 
+int RunGnollHackTest(char* curwd, char* curwd2, char* curwd3)
+{
+	char* params[5] = { 0 };
+
+	params[0] = "gnollhack";
+	params[1] = curwd;
+	params[2] = curwd2;
+	params[3] = curwd3;
+	params[4] = 0;
+
+	return GnollHackMain(1, params);
+}
+
 int GnollHackMain(int argc, char** argv)
 {
 	//debuglog("Starting GnollHack!");
@@ -78,6 +93,32 @@ int GnollHackMain(int argc, char** argv)
 	hname = argv[0];
 	hackpid = getpid();
 	(void)umask(0777 & ~FCMASK);
+
+	char cwbuf[BUFSIZ] = "";
+	char* curwd = getcwd(cwbuf, sizeof(cwbuf));
+	char* curwd2 = argv[2];
+	int res = chdir(curwd2);
+	int e = errno;
+	res = chdir("..");
+	e = errno;
+	char dirbuf[BUFSZ];
+	Sprintf(dirbuf, "%s%s", curwd2, "");
+	int cnt = 0;
+	DIR* dir;
+	struct dirent* ent;
+	if ((dir = opendir(dirbuf)) != NULL) {
+		/* print all the files and directories within directory */
+		while ((ent = readdir(dir)) != NULL) {
+			Sprintf(dirbuf , "%s\n", ent->d_name);
+			cnt++;
+		}
+		closedir(dir);
+	}
+	else {
+		/* could not open directory */
+		e = errno;
+		return EXIT_FAILURE;
+	}
 
 	// hack
 	// remove dangling locks
@@ -397,4 +438,9 @@ sys_random_seed()
         }
     }
     return seed;
+}
+
+int DoSomeHackDroid()
+{
+	return (int)artilist[ART_HOWLING_FLAIL].cost;
 }

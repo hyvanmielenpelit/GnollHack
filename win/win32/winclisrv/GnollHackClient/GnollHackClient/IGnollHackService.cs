@@ -8,5 +8,7 @@ namespace GnollHackClient
     {
         void InitializeGnollHack();
         int Test1();
+        int Test2();
+        int TestRunGnollHack();
     }
 }

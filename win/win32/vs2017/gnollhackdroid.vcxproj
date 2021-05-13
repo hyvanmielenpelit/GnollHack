@@ -128,7 +128,7 @@
       <AdditionalOptions>-target x86_64-none-android</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,7 +149,7 @@
       <AdditionalOptions>-target i386-none-android</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
@@ -170,7 +170,7 @@
       <AdditionalOptions>-target arm64v8a-none-eabi</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -191,7 +191,7 @@
       <AdditionalOptions>-target armv7a-none-eabi</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
