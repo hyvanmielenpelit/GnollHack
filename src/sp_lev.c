@@ -173,7 +173,7 @@ STATIC_DCL void FDECL(sel_set_ter, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_floor, (int, int, genericptr_t, genericptr_t));
-STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t));
+STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_tileset, (int, int, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
@@ -4165,6 +4165,27 @@ struct sp_coder *coder;
         level.flags.shortsighted = 1;
     if (lflags & ARBOREAL)
         level.flags.arboreal = 1;
+    if (lflags & DESERT)
+    {
+        level.flags.desert = 1;
+        int i, j;
+        for(i = 1; i < COLNO; i++)
+            for (j = 0; j < ROWNO; j++)
+            {
+                if (levl[i][j].typ == TREE)
+                {
+                    levl[i][j].floortyp = GROUND;
+                    levl[i][j].floorsubtyp = get_initial_location_subtype(levl[i][j].floortyp);
+                    levl[i][j].floorvartyp = get_initial_location_vartype(levl[i][j].floortyp, levl[i][j].floorsubtyp);
+                }
+                else if (IS_FLOOR(levl[i][j].typ))
+                {
+                    levl[i][j].typ = GROUND;
+                    levl[i][j].subtyp = get_initial_location_subtype(levl[i][j].typ);
+                    levl[i][j].vartyp = get_initial_location_vartype(levl[i][j].typ, levl[i][j].subtyp);
+                }
+            }
+    }
     if (lflags & SWAMPY)
         level.flags.swampy = 1;
     if (lflags & THRONE_ON_GROUND)
@@ -5629,12 +5650,16 @@ genericptr_t arg, arg2;
 }
 
 void
-sel_set_subtype(x, y, arg)
+sel_set_subtype(x, y, arg1, arg2)
 int x, y;
-genericptr_t arg;
+genericptr_t arg1, arg2;
 {
-    levl[x][y].subtyp = (*(int*)arg);
-    levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].vartyp, levl[x][y].subtyp);
+    int typ = (*(int*)arg1);
+    if (typ < 0 || levl[x][y].typ == typ)
+    {
+        levl[x][y].subtyp = (*(int*)arg2);
+        levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].vartyp, levl[x][y].subtyp);
+    }
 }
 
 void
@@ -5906,14 +5931,15 @@ struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_subtype";
     struct opvar* sel;
-    struct opvar* subtyp_opvar;
-    int subtyp;
+    struct opvar* subtyp_opvar, * typ_opvar;
+    int typ, subtyp;
 
-    if (!OV_pop_i(subtyp_opvar) || !OV_pop_typ(sel, SPOVAR_SEL))
+    if (!OV_pop_i(typ_opvar) || !OV_pop_i(subtyp_opvar) || !OV_pop_typ(sel, SPOVAR_SEL))
         return;
 
+    typ = OV_i(typ_opvar);
     subtyp = OV_i(subtyp_opvar);
-    selection_iterate(sel, sel_set_subtype, (genericptr_t)&subtyp);
+    selection_iterate2(sel, sel_set_subtype, (genericptr_t)&typ, (genericptr_t)&subtyp);
 
     opvar_free(subtyp_opvar);
     opvar_free(sel);
@@ -6588,7 +6614,7 @@ struct sp_coder *coder;
         return;
 
     if (OV_i(ftyp) < 1) {
-        OV_i(ftyp) = level.flags.corrmaze ? CORR : level.flags.arboreal ? GRASS : level.flags.swampy ? GRASS : ROOM;
+        OV_i(ftyp) = level.flags.corrmaze ? CORR : level.flags.arboreal ? GRASS : level.flags.swampy ? GRASS : level.flags.desert ? GROUND : ROOM;
     }
 
     /* don't use move() - it doesn't use W_NORTH, etc. */

@@ -64,6 +64,7 @@ struct location_subtype_definition ground_subtype_definitions[MAX_GROUND_SUBTYPE
 {
     { "normal ground", GROUND_SUBTYPE_NORMAL_VARIATIONS, 0 },
     { "swampy ground", GROUND_SUBTYPE_SWAMPY_VARIATIONS, GROUND_SUBTYPE_NORMAL_VARIATIONS },
+    { "desert sand",   GROUND_SUBTYPE_DESERT_SAND_VARIATIONS, GROUND_SUBTYPE_NORMAL_VARIATIONS + GROUND_SUBTYPE_SWAMPY_VARIATIONS },
 };
 
 struct location_subtype_definition floor_subtype_definitions[MAX_FLOOR_SUBTYPES] =
@@ -208,7 +209,11 @@ int ltype;
     else if (ltype == TREE)
         return get_initial_tree_subtype(level.flags.forest_type);
     else
-        return ltype == GRASS && level.flags.swampy ? GRASS_SUBTYPE_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_SUBTYPE_SWAMPY : 0;
+        return 
+            ltype == GRASS && level.flags.swampy ? GRASS_SUBTYPE_SWAMPY : 
+            ltype == GROUND && level.flags.desert ? GROUND_SUBTYPE_DESERT_SAND :
+            ltype == GROUND && level.flags.swampy ? GROUND_SUBTYPE_SWAMPY : 
+            0;
 }
 
 int

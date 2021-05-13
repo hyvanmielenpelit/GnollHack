@@ -794,6 +794,7 @@ clear_level_structures()
     level.flags.is_cavernous_lev = 0;
     level.flags.arboreal = 0;
     level.flags.swampy = 0;
+    level.flags.desert = 0;
     level.flags.wizard_bones = 0;
     level.flags.corrmaze = 0;
     level.flags.mapping_does_not_reveal_special = 0;

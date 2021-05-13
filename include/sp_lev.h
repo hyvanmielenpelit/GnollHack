@@ -37,6 +37,7 @@
 #define TREE_ON_GROUND                      0x00020000L
 #define MAPPING_DOES_NOT_REVEAL_SPECIAL     0x00040000L
 #define NO_MAP_PADDING                      0x00080000L
+#define DESERT                              0x00100000L
 
 /* different level layout initializers */
 enum lvlinit_types {

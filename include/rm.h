@@ -297,10 +297,12 @@ extern struct location_subtype_definition grass_subtype_definitions[MAX_GRASS_SU
 
 #define GROUND_SUBTYPE_NORMAL_VARIATIONS 4
 #define GROUND_SUBTYPE_SWAMPY_VARIATIONS 1
-#define TOTAL_GROUND_SUBTYPE_VARIATIONS (GROUND_SUBTYPE_NORMAL_VARIATIONS + GROUND_SUBTYPE_SWAMPY_VARIATIONS)
+#define GROUND_SUBTYPE_DESERT_SAND_VARIATIONS 1
+#define TOTAL_GROUND_SUBTYPE_VARIATIONS (GROUND_SUBTYPE_NORMAL_VARIATIONS + GROUND_SUBTYPE_SWAMPY_VARIATIONS + GROUND_SUBTYPE_DESERT_SAND_VARIATIONS)
 enum ground_subtypes {
     GROUND_SUBTYPE_NORMAL = 0,
     GROUND_SUBTYPE_SWAMPY,
+    GROUND_SUBTYPE_DESERT_SAND,
     MAX_GROUND_SUBTYPES
 };
 
@@ -1059,6 +1061,7 @@ struct levelflags {
     Bitfield(is_cavernous_lev, 1);
     Bitfield(arboreal, 1);     /* Trees replace rock */
     Bitfield(swampy, 1);       /* Swampy outdoor level with swampy grass */
+    Bitfield(desert, 1);       /* Desert map, furniture may have desert ground as floor */
     Bitfield(wizard_bones, 1); /* set if level came from a bones file
                                   which was created in wizard mode (or
                                   normal mode descendant of such) */

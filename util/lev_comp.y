@@ -2296,7 +2296,11 @@ floor_detail : FLOOR_ID ':' ter_selection ',' FLOOR_TYPE ',' FLOOR_SUBTYPE
 
 subtype_detail : SUBTYPE_ID ':' ter_selection ',' INTEGER
 		  {
-		      add_opvars(splev, "io", VA_PASS2((int)$5, SPO_SUBTYPE));
+		      add_opvars(splev, "iio", VA_PASS3((int)$5, -1, SPO_SUBTYPE));
+		  }
+		| SUBTYPE_ID ':' ter_selection ',' FLOOR_TYPE ',' FLOOR_SUBTYPE
+		  {
+		      add_opvars(splev, "iio", VA_PASS3((int)$7, (int)$5, SPO_SUBTYPE));
 		  }
 		;
 
