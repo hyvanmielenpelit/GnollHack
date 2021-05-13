@@ -205,7 +205,7 @@ extern char curr_token[512];
 %token	<i> CHARGES_ID SPECIAL_QUALITY_ID SPEFLAGS_ID
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID NON_PASSDOOR_ID
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
-%token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID LOCATION_SUBTYPE_ID DOOR_SUBTYPE BRAZIER_SUBTYPE SIGNPOST_SUBTYPE TREE_SUBTYPE
+%token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID LOCATION_SUBTYPE_ID DOOR_SUBTYPE BRAZIER_SUBTYPE SIGNPOST_SUBTYPE TREE_SUBTYPE FOREST_ID FOREST_TYPE INITIALIZE_TYPE
 %token	<i> EXIT_ID SHUFFLE_ID
 %token	<i> QUANTITY_ID BURIED_ID LOOP_ID
 %token	<i> FOR_ID TO_ID
@@ -405,6 +405,16 @@ tileset_detail : TILESET_ID ':' tileset_number
 		  }
 		;
 
+forest_detail : FOREST_ID ':' FOREST_TYPE ',' INITIALIZE_TYPE
+		  {
+		      add_opvars(splev, "iio", VA_PASS3((int)$<i>5, (int)$<i>3, SPO_FOREST));
+		  }
+		| FOREST_ID ':' FOREST_TYPE
+		  {
+		      add_opvars(splev, "iio", VA_PASS3(0, (int)$<i>3, SPO_FOREST));
+		  }
+		;
+
 boundary_type_detail : BOUNDARY_TYPE_ID ':' FLOOR_MAIN_TYPE
 		  {
 		      add_opvars(splev, "io", VA_PASS2((int)$<i>3, SPO_BOUNDARY_TYPE));
@@ -489,6 +499,7 @@ levstatement 	: message
 		| tileset_detail
 		| special_tileset_detail
 		| boundary_type_detail
+		| forest_detail
 		| subtype_detail
 		| floor_detail
 		| altar_detail
@@ -2344,12 +2355,17 @@ signpost_detail	: SIGNPOST_ID ':' coord_or_var ',' SIGNPOST_SUBTYPE ',' string_e
 
 tree_detail	: TREE_ID ':' coord_or_var ',' TREE_SUBTYPE
 		  {
-		      add_opvars(splev, "io", VA_PASS2((int)$5, SPO_TREE));
+		      add_opvars(splev, "iio", VA_PASS3(-1, (int)$5, SPO_TREE));
+		  }
+		| TREE_ID ':' coord_or_var ',' FOREST_TYPE
+		  {
+		      add_opvars(splev, "iio",
+				 VA_PASS3((int)$5, -1, SPO_TREE));
 		  }
 		| TREE_ID ':' coord_or_var
 		  {
-		      add_opvars(splev, "io",
-				 VA_PASS2(0, SPO_TREE));
+		      add_opvars(splev, "iio",
+				 VA_PASS3(-1, -1, SPO_TREE));
 		  }
 		;
 

@@ -802,6 +802,7 @@ clear_level_structures()
     level.flags.special_naming_reveal_type = SPECIAL_LEVEL_NAMING_REVEALED_NEVER;
     level.flags.special_naming_seen_monster_type = NON_PM;
     level.flags.special_naming_seen_monster_class = 0;
+    level.flags.forest_type = 0;
     level.flags.boundary_type = ROOM;
 
     nroom = 0;

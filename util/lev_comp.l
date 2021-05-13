@@ -143,6 +143,7 @@ INIT_MAP	ST_RET(LEV_INIT_ID);
 TILESET	    ST_RET(TILESET_ID);
 SPECIAL_TILESET	    ST_RET(SPECIAL_TILESET_ID);
 BOUNDARY_TYPE	ST_RET(BOUNDARY_TYPE_ID);
+FOREST	    ST_RET(FOREST_ID);
 floortype	ST_RET(FLOOR_TYPE_ID);
 floormaintype	ST_RET(FLOOR_MAIN_TYPE_ID);
 mazegrid	ST_RET(MAZE_GRID_ID);
@@ -423,6 +424,18 @@ tree_normal { savetoken(yytext); yylval.i=TREE_SUBTYPE_NORMAL; return TREE_SUBTY
 tree_spruce { savetoken(yytext); yylval.i=TREE_SUBTYPE_SPRUCE; return TREE_SUBTYPE; }
 tree_fir { savetoken(yytext); yylval.i=TREE_SUBTYPE_FIR; return TREE_SUBTYPE; }
 tree_date_palm { savetoken(yytext); yylval.i=TREE_SUBTYPE_DATE_PALM; return TREE_SUBTYPE; }
+uninitialized { savetoken(yytext); yylval.i=0; return INITIALIZE_TYPE; }
+initialized { savetoken(yytext); yylval.i=1; return INITIALIZE_TYPE; }
+forest_normal { savetoken(yytext); yylval.i=FOREST_TYPE_NORMAL; return FOREST_TYPE; }
+forest_deciduous { savetoken(yytext); yylval.i=FOREST_TYPE_DECIDUOUS; return FOREST_TYPE; }
+forest_coniferous { savetoken(yytext); yylval.i=FOREST_TYPE_CONIFEROUS; return FOREST_TYPE; }
+forest_tropical { savetoken(yytext); yylval.i=FOREST_TYPE_TROPICAL; return FOREST_TYPE; }
+forest_desert { savetoken(yytext); yylval.i=FOREST_TYPE_DESERT; return FOREST_TYPE; }
+forest_garden { savetoken(yytext); yylval.i=FOREST_TYPE_GARDEN; return FOREST_TYPE; }
+forest_swamp { savetoken(yytext); yylval.i=FOREST_TYPE_SWAMP; return FOREST_TYPE; }
+forest_islands { savetoken(yytext); yylval.i=FOREST_TYPE_ISLANDS; return FOREST_TYPE; }
+forest_undead { savetoken(yytext); yylval.i=FOREST_TYPE_UNDEAD; return FOREST_TYPE; }
+forest_gehennom { savetoken(yytext); yylval.i=FOREST_TYPE_GEHENNOM; return FOREST_TYPE; }
 teleport_up    { savetoken(yytext); yylval.i=-1; return LEVEL_TELEPORT_DIRECTION_TYPE; }
 teleport_down  { savetoken(yytext); yylval.i=1; return LEVEL_TELEPORT_DIRECTION_TYPE; }
 matching_portal { savetoken(yytext); yylval.i=0; return LEVEL_TELEPORT_END_TYPE; }

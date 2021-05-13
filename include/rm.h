@@ -400,6 +400,21 @@ struct door_subtype_definition {
 
 extern struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES];
 
+enum forest_types
+{
+    FOREST_TYPE_NORMAL = 0,
+    FOREST_TYPE_DECIDUOUS,
+    FOREST_TYPE_CONIFEROUS,
+    FOREST_TYPE_TROPICAL,
+    FOREST_TYPE_DESERT,
+    FOREST_TYPE_GARDEN,
+    FOREST_TYPE_SWAMP,
+    FOREST_TYPE_ISLANDS,
+    FOREST_TYPE_UNDEAD,
+    FOREST_TYPE_GEHENNOM,
+    MAX_FOREST_TYPES
+};
+
 enum tree_subtypes
 {
     TREE_SUBTYPE_NORMAL = 0, /* Uses base_cmap */
@@ -408,6 +423,7 @@ enum tree_subtypes
     TREE_SUBTYPE_DATE_PALM,
     MAX_TREE_SUBTYPES
 };
+
 #define TREE_SUBTYPE_NORMAL_VARIATIONS 1
 #define TREE_SUBTYPE_SPRUCE_VARIATIONS 1
 #define TREE_SUBTYPE_FIR_VARIATIONS 1
@@ -420,7 +436,7 @@ struct tree_subtype_definition {
     int number_of_vartypes;
     int variation_offset;
     uchar tree_type;
-    short probability;
+    short probability[MAX_FOREST_TYPES];
     int fruit_type;
     short fruit_d;
     short fruit_n;
@@ -437,7 +453,7 @@ struct tree_subtype_definition {
 enum tree_classes
 {
     TREE_CLASS_GENERAL = 0, /* Uses base_cmap */
-    TREE_CLASS_LEAFED,
+    TREE_CLASS_DECIDUOUS,
     TREE_CLASS_CONIFEROUS,
     TREE_CLASS_TROPICAL,
     MAX_TREE_CLASSES
@@ -1002,9 +1018,11 @@ struct cemetery {
 struct levelflags {
     char special_description[BUFSZ];
     enum special_level_naming_types special_naming_reveal_type;
-    int special_naming_seen_monster_type;
-    int special_naming_seen_monster_class;
-    int boundary_type; /* floor style to replace boundary tiles */
+    short special_naming_seen_monster_type;
+    xchar special_naming_seen_monster_class;
+
+    schar forest_type;
+    schar boundary_type; /* floor style to replace boundary tiles */
 
     uchar tileset;
     uchar nfountains; /* number of fountains on level */

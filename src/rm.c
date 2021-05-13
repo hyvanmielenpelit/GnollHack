@@ -104,19 +104,27 @@ struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES] =
 {
     {"tree",          "tree",  
         TREE_SUBTYPE_NORMAL_VARIATIONS, 0,  
-        TREE_CLASS_GENERAL, 10,     0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
+        TREE_CLASS_GENERAL, 
+        {10, 10, 0, 0, 0, 10, 10, 10, 0, 0},
+        0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL,
     },
     {"spruce tree",   "tree",  
         TREE_SUBTYPE_SPRUCE_VARIATIONS, TREE_SUBTYPE_NORMAL_VARIATIONS,  
-        TREE_CLASS_CONIFEROUS, 10,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
+        TREE_CLASS_CONIFEROUS, 
+        {10, 0, 10, 0, 0, 10, 10, 10, 10, 10},
+        0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL,
     },
     {"fir tree",      "tree",  
         TREE_SUBTYPE_FIR_VARIATIONS, TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_NORMAL_VARIATIONS,  
-        TREE_CLASS_CONIFEROUS, 10,  0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL
+        TREE_CLASS_CONIFEROUS, 
+        {10, 0, 10, 0, 0, 10, 10, 10, 10, 10},
+        0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL,
     },
     {"date palm",      "tree",
         TREE_SUBTYPE_DATE_PALM_VARIATIONS, TREE_SUBTYPE_FIR_VARIATIONS + TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_NORMAL_VARIATIONS,
-        TREE_CLASS_TROPICAL, 0,  CLUSTER_OF_DATES, 2, 4, 0, 50, 1, 2, 0,  -1, -1,  0UL
+        TREE_CLASS_TROPICAL, 
+        {0, 0, 0, 10, 10, 10, 0, 0, 0, 0},
+        CLUSTER_OF_DATES, 2, 4, 0, 50, 1, 2, 0,  -1, -1,  0UL,
     },
 };
 
@@ -157,20 +165,30 @@ int typ, subtyp;
 }
 
 int
-get_initial_tree_subtype()
+get_initial_tree_subtype(forest_type)
+schar forest_type;
 {
-    int i, totalprob = 0;
+    if (forest_type < 0 || forest_type >= MAX_FOREST_TYPES)
+    {
+        forest_type = level.flags.forest_type;
+        if (forest_type < 0 || forest_type >= MAX_FOREST_TYPES)
+            return 0;
+    }
+
+    int i = 0, totalprob = 0;
+
     for (i = 0; i < MAX_TREE_SUBTYPES; i++)
-        totalprob += tree_subtype_definitions[i].probability;
+        
+        totalprob += tree_subtype_definitions[i].probability[forest_type];
 
     if (totalprob <= 0)
         return 0;
 
     int roll = rn2(totalprob);
-    for(i = 0; i < MAX_TREE_SUBTYPES; i++)
+    for (i = 0; i < MAX_TREE_SUBTYPES; i++)
     {
-        roll -= tree_subtype_definitions[i].probability;
-        if (roll <= 0)
+        roll -= tree_subtype_definitions[i].probability[forest_type];
+        if (roll < 0)
             break;
     }
 
@@ -188,7 +206,7 @@ int ltype;
     if (ltype == FOUNTAIN)
         return FOUNTAIN_MAGIC + rn2(MAX_FOUNTAIN_SUBTYPES - FOUNTAIN_MAGIC);
     else if (ltype == TREE)
-        return get_initial_tree_subtype();
+        return get_initial_tree_subtype(level.flags.forest_type);
     else
         return ltype == GRASS && level.flags.swampy ? GRASS_SUBTYPE_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_SUBTYPE_SWAMPY : 0;
 }

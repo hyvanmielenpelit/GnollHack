@@ -3888,7 +3888,7 @@ dospellmanagemenu()
         int action;
         //int (*function_ptr)(int);
     };
-    struct available_selection_item available_selection_item[10] = { 0 };
+    struct available_selection_item available_selection_item[10] = { { 0 } };
     int selnum = 0;
 
 #if 0

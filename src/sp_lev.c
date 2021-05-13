@@ -117,6 +117,7 @@ STATIC_DCL void FDECL(spo_modron_level_teleporter, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_level_flags, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_initlevel, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_tileset, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_forest, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_boundary_type, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_engraving, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_mineralize, (struct sp_coder *));
@@ -4218,16 +4219,60 @@ struct sp_coder* coder;
 }
 
 void
+spo_forest(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_forest";
+    struct opvar* forest_type, *initialize_type;
+    schar forest_id = 0;
+    int initialize_forest = 0;
+
+    if (!OV_pop_i(forest_type) || !OV_pop_i(initialize_type))
+        return;
+
+    forest_id = (schar)OV_i(forest_type);
+    initialize_forest = OV_i(initialize_type);
+
+    if (forest_id < 0 || forest_id >= MAX_FOREST_TYPES)
+    {
+        level.flags.forest_type = 0;
+    }
+    else
+    {
+        level.flags.forest_type = forest_id;
+    }
+
+    int x, y;
+    for (x = 1; x < COLNO; x++)
+    {
+        for (y = 0; y < ROWNO; y++)
+        {
+            if (levl[x][y].typ == TREE)
+            {
+                levl[x][y].subtyp = get_initial_tree_subtype(level.flags.forest_type);
+                levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+                levl[x][y].special_quality = 0;
+                if (initialize_forest)
+                    initialize_location(&levl[x][y]);
+            }
+        }
+    }
+
+    opvar_free(forest_type);
+    opvar_free(initialize_type);
+}
+
+void
 spo_boundary_type(coder)
 struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_boundary_type";
     struct opvar* bt_opvar;
-    long boundary_location_type = 0;
+    schar boundary_location_type = 0;
 
     if (!OV_pop_i(bt_opvar))
         return;
-    boundary_location_type = OV_i(bt_opvar);
+    boundary_location_type = (schar)OV_i(bt_opvar);
 
     if (boundary_location_type < 0 || boundary_location_type >= MAX_TYPE || !IS_FLOOR(boundary_location_type))
     {
@@ -4235,7 +4280,7 @@ struct sp_coder* coder;
     }
     else
     {
-        level.flags.boundary_type = (int)boundary_location_type;
+        level.flags.boundary_type = boundary_location_type;
     }
     opvar_free(bt_opvar);
 }
@@ -4648,10 +4693,10 @@ spo_tree(coder)
 struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_tree";
-    struct opvar* gcoord, * subtyp;
+    struct opvar* gcoord, * subtyp, * foresttyp;
     schar x, y;
 
-    if (!OV_pop_i(subtyp) || !OV_pop_c(gcoord))
+    if (!OV_pop_i(foresttyp) || !OV_pop_i(subtyp) || !OV_pop_c(gcoord))
         return;
 
     get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
@@ -4672,11 +4717,12 @@ struct sp_coder* coder;
         }
 
         levl[x][y].typ = TREE;
+        int forest_id = OV_i(foresttyp);
         int val = OV_i(subtyp);
         if (val >= 0)
             levl[x][y].subtyp = val;
         else
-            levl[x][y].subtyp = get_initial_tree_subtype();
+            levl[x][y].subtyp = get_initial_tree_subtype(forest_id >= 0 ? forest_id : level.flags.forest_type);
 
         levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
         initialize_location(&levl[x][y]);
@@ -5582,6 +5628,7 @@ int x, y;
 genericptr_t arg;
 {
     levl[x][y].subtyp = (*(int*)arg);
+    levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].vartyp, levl[x][y].subtyp);
 }
 
 void
@@ -7338,6 +7385,9 @@ sp_lev *lvl;
             break;
         case SPO_TILESET:
             spo_tileset(coder);
+            break;
+        case SPO_FOREST:
+            spo_forest(coder);
             break;
         case SPO_BOUNDARY_TYPE:
             spo_boundary_type(coder);
