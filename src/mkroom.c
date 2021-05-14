@@ -826,6 +826,7 @@ place_main_monst_here:
                         levl[sx][sy].typ = ANVIL;
                         levl[sx][sy].subtyp = 0;
                         levl[sx][sy].vartyp = 0;
+                        levl[sx][sy].special_quality = 0;
                         anvil_created = TRUE;
                     }
                 }
@@ -1146,6 +1147,7 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                         levl[sx][sy].typ = POOL;
                         levl[sx][sy].subtyp = 0;
                         levl[sx][sy].vartyp = get_initial_location_vartype(levl[sx][sy].typ, levl[sx][sy].subtyp);
+                        levl[sx][sy].special_quality = 0;
                         levl[sx][sy].floortyp = location_type_definitions[POOL].initial_floor_type;
                         levl[sx][sy].floorsubtyp = get_initial_location_subtype(levl[sx][sy].floortyp);
                         levl[sx][sy].floorvartyp = get_initial_location_vartype(levl[sx][sy].floortyp, levl[sx][sy].floorsubtyp);
@@ -1217,6 +1219,7 @@ mkgarden()
                 levl[sx][sy].typ = TREE;
                 levl[sx][sy].subtyp = get_initial_tree_subtype(FOREST_TYPE_GARDEN);
                 levl[sx][sy].vartyp = get_initial_location_vartype(levl[sx][sy].typ, levl[sx][sy].subtyp);
+                levl[sx][sy].special_quality = 0;
                 levl[sx][sy].floortyp = GRASS;
                 levl[sx][sy].floorsubtyp = GRASS_SUBTYPE_NORMAL;
                 levl[sx][sy].floorvartyp = get_initial_location_vartype(levl[sx][sy].floortyp, levl[sx][sy].floorsubtyp);
@@ -1227,6 +1230,7 @@ mkgarden()
                 levl[sx][sy].typ = GRASS;
                 levl[sx][sy].subtyp = GRASS_SUBTYPE_NORMAL;
                 levl[sx][sy].vartyp = get_initial_location_vartype(levl[sx][sy].typ, levl[sx][sy].subtyp);
+                levl[sx][sy].special_quality = 0;
                 /* Buried items */
                 if (!rn2(5))
                 {
@@ -1662,6 +1666,7 @@ mktemple()
     lev->typ = ALTAR;
     lev->subtyp = 0;
     lev->vartyp = 0;
+    lev->special_quality = 0;
     lev->altarmask = induced_align(80);
 
     /* Four candelabra */
@@ -1721,6 +1726,7 @@ mksmithy()
     lev->typ = ANVIL;
     lev->subtyp = 0;
     lev->vartyp = 0;
+    lev->special_quality = 0;
     smithini(&u.uz, sroom, anvil_spot->x, anvil_spot->y, 0, NON_PM);
     level.flags.has_smithy = 1;
 

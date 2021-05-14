@@ -521,7 +521,7 @@ typedef struct {
 } region;
 
 typedef struct {
-    xchar ter, tlit;
+    xchar ter, subter, tlit;
 } terrain;
 
 typedef struct {

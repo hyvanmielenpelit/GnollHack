@@ -2175,7 +2175,11 @@ replace_terrain_detail : REPLACE_TERRAIN_ID ':' region_or_var ',' mapchar_or_var
 
 terrain_detail : TERRAIN_ID ':' ter_selection ',' mapchar_or_var
 		 {
-		     add_opvars(splev, "o", VA_PASS1(SPO_TERRAIN));
+		     add_opvars(splev, "io", VA_PASS2(-1, SPO_TERRAIN));
+		 }
+	   | TERRAIN_ID ':' ter_selection ',' mapchar_or_var ',' FLOOR_SUBTYPE
+		 {
+		     add_opvars(splev, "io", VA_PASS2($<i>7, SPO_TERRAIN));
 		 }
 	       ;
 

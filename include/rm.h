@@ -876,11 +876,16 @@ struct rm {
 };
 
 
-#define SET_TYPLIT(x, y, ttyp, llit)                              \
+#define SET_TYPLIT(x, y, ttyp, tsubtyp, llit)                              \
     {                                                             \
         if ((x) >= 0 && (y) >= 0 && (x) < COLNO && (y) < ROWNO) { \
             if ((ttyp) < MAX_TYPE)  {                             \
-                if(IS_FLOOR(levl[(x)][(y)].typ)) {                \
+                if(IS_FLOOR(ttyp)) {                \
+                     levl[(x)][(y)].floortyp = 0; \
+                     levl[(x)][(y)].floorsubtyp = 0; \
+                     levl[(x)][(y)].floorvartyp = 0; \
+                }                                                 \
+                else if(IS_FLOOR(levl[(x)][(y)].typ)) {                \
                      levl[(x)][(y)].floortyp = levl[(x)][(y)].typ; \
                      levl[(x)][(y)].floorsubtyp = levl[(x)][(y)].subtyp; \
                      levl[(x)][(y)].floorvartyp = levl[(x)][(y)].vartyp; \
@@ -892,8 +897,9 @@ struct rm {
                      levl[(x)][(y)].floorvartyp = get_initial_location_vartype(levl[(x)][(y)].floortyp, levl[(x)][(y)].floorsubtyp);         \
                 }                                                 \
                 levl[(x)][(y)].typ = (ttyp);                      \
-                levl[(x)][(y)].subtyp = get_initial_location_subtype(ttyp); \
+                levl[(x)][(y)].subtyp = (tsubtyp) < 0 ? get_initial_location_subtype(ttyp) : (tsubtyp); \
                 levl[(x)][(y)].vartyp = get_initial_location_vartype(levl[(x)][(y)].typ, levl[(x)][(y)].subtyp); \
+                levl[(x)][(y)].special_quality = 0;                      \
                 initialize_location(&levl[(x)][(y)]);             \
             }                                                     \
             if ((ttyp) == LAVAPOOL)                               \

@@ -169,6 +169,7 @@ int floortyp, floorsubtyp, mtype;
                 levl[x][y].typ = HWALL;
                 levl[x][y].subtyp = 0; 
                 levl[x][y].vartyp = levl[x][y].vartyp; /* Retain the vartyp setting from stone */
+                levl[x][y].special_quality = 0;
                 /* Retain floortype from stone */
                 levl[x][y].horizontal = 1; /* For open/secret doors. */
             }
@@ -179,6 +180,7 @@ int floortyp, floorsubtyp, mtype;
                 levl[x][y].typ = VWALL;
                 levl[x][y].subtyp = 0;
                 levl[x][y].vartyp = levl[x][y].vartyp; /* Retain the vartyp setting from stone */
+                levl[x][y].special_quality = 0;
                 /* Retain floortype from stone */
                 levl[x][y].horizontal = 0; /* For open/secret doors. */
             }
@@ -193,6 +195,7 @@ int floortyp, floorsubtyp, mtype;
                     lev->typ = floortyp;
                     lev->subtyp = floorsubtyp;
                     lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
+                    lev->special_quality = 0;
                     lev->floortyp = lev->floorsubtyp = lev->floorvartyp = 0;
                     lev++;
                 }
@@ -235,6 +238,7 @@ int floortyp, floorsubtyp, mtype;
                         lev->typ = floortyp;
                         lev->subtyp = floorsubtyp;
                         lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
+                        lev->special_quality = 0;
                         lev->floortyp = lev->floorsubtyp = lev->floorvartyp = 0;
                     }
                     else
@@ -604,6 +608,7 @@ int trap_type;
                 rm->typ = CORR;
                 rm->subtyp = get_initial_location_subtype(rm->typ);
                 rm->vartyp = get_initial_location_vartype(rm->typ, rm->subtyp);
+                rm->special_quality = 0;
                 if (rn2(7))
                 {
                     int u_depth = depth(&u.uz);
@@ -843,6 +848,7 @@ makelevel()
             {
                 levl[x][y].subtyp = get_initial_location_subtype(STONE);
                 levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+                levl[x][y].special_quality = 0;
             }
 
     {
@@ -1585,6 +1591,7 @@ xchar x, y; /* location */
         boolean make_extra_special = (((Is_stronghold(&u.uz)) && !sstairs.up) || ((u.uz.dlevel == 1 || Is_sanctum(&u.uz)) && sstairs.up));
         levl[x][y].subtyp = make_extra_special ? STAIRCASE_TO_DEEPER : STAIRCASE_BRANCH;
         levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+        levl[x][y].special_quality = 0;
 
         if (sstairs.up)
         {
@@ -2031,6 +2038,7 @@ int subtyp;
     levl[x][y].typ = STAIRS;
     levl[x][y].subtyp = subtyp;
     levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+    levl[x][y].special_quality = 0;
     levl[x][y].ladder = up ? LA_UP : LA_DOWN;
 
     if (up)
@@ -2081,6 +2089,7 @@ struct mkroom *croom;
     levl[m.x][m.y].typ = FOUNTAIN;
     levl[m.x][m.y].subtyp = 1 + rn2(MAX_FOUNTAIN_SUBTYPES - 1); /* No natural fountains normally */
     levl[m.x][m.y].vartyp = get_initial_location_vartype(levl[m.x][m.y].typ, levl[m.x][m.y].subtyp);
+    levl[m.x][m.y].special_quality = 0;
     levl[m.x][m.y].fountainmask = 0;
 //    levl[m.x][m.y].fountainmask &= ~FOUNTAIN_TYPE_MASK;
 //    levl[m.x][m.y].fountainmask |= rn2(6);
@@ -2122,6 +2131,7 @@ struct mkroom *croom;
     levl[m.x][m.y].typ = SINK;
     levl[m.x][m.y].subtyp = 0;
     levl[m.x][m.y].vartyp = get_initial_location_vartype(levl[m.x][m.y].typ, levl[m.x][m.y].subtyp);
+    levl[m.x][m.y].special_quality = 0;
 
     level.flags.nsinks++;
 }
@@ -2161,6 +2171,7 @@ boolean match_player_alignment;
     levl[m.x][m.y].typ = ALTAR;
     levl[m.x][m.y].subtyp = 0;
     levl[m.x][m.y].vartyp = get_initial_location_vartype(levl[m.x][m.y].typ, levl[m.x][m.y].subtyp);
+    levl[m.x][m.y].special_quality = 0;
 
     /* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
     if (match_player_alignment)
@@ -2343,6 +2354,7 @@ int dist;
         lev->typ = ROOM;
         lev->subtyp = get_initial_location_subtype(ROOM);
         lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
+        lev->special_quality = 0;
         ttmp = maketrap(x, y, FIRE_TRAP, NON_PM, MKTRAP_NO_FLAGS);
         if (ttmp)
             ttmp->tseen = TRUE;
@@ -2354,12 +2366,14 @@ int dist;
         lev->typ = ROOM;
         lev->subtyp = get_initial_location_subtype(ROOM);
         lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
+        lev->special_quality = 0;
         break;
     case 4: /* pools (aka a wide moat) */
     case 5:
         lev->typ = MOAT;
         lev->subtyp = get_initial_location_subtype(MOAT);
         lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
+        lev->special_quality = 0;
         /* No kelp! */
         break;
     default:

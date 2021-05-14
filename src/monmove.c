@@ -2060,6 +2060,7 @@ register int x, y;
     levl[x][y].typ = levl[x][y].floortyp ? levl[x][y].floortyp : floor_is_room ? ROOM : CORR;
     levl[x][y].subtyp = levl[x][y].floorsubtyp ? levl[x][y].floorsubtyp : get_initial_location_subtype(levl[x][y].typ);
     levl[x][y].vartyp = levl[x][y].floorvartyp ? levl[x][y].floorvartyp : get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
+    levl[x][y].special_quality = 0;
     levl[x][y].flags = 0;
     newsym(x, y);
 }

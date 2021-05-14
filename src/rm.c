@@ -128,7 +128,7 @@ struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES] =
         TREE_SUBTYPE_DATE_PALM_VARIATIONS, TREE_SUBTYPE_FIR_VARIATIONS + TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_NORMAL_VARIATIONS,
         TREE_CLASS_TROPICAL, 
         {0, 0, 0, 10, 10, 10, 0, 0, 0, 0},
-        CLUSTER_OF_DATES, 2, 4, 0, 50, 1, 2, 0,  -1, -1,  
+        CLUSTER_OF_DATES, 1, 4, -1, 50, 1, 2, 0,  -1, -1,  
         TREE_FLAGS_NONE,
     },
 };
@@ -213,6 +213,9 @@ int ltype;
     {
     case FOUNTAIN:
         res = FOUNTAIN_MAGIC + rn2(MAX_FOUNTAIN_SUBTYPES - FOUNTAIN_MAGIC);
+        break;
+    case BRAZIER:
+        res = rn2(MAX_BRAZIER_SUBTYPES);
         break;
     case TREE:
         res = get_initial_tree_subtype(level.flags.forest_type);
