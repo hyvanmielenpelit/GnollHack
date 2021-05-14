@@ -3357,7 +3357,6 @@ struct monst* mtmp;
             break;
         }
         play_voice_quest_leader_whoareyou(mtmp);
-        Sprintf(ansbuf, "I am %s, your quest leader.", mon_nam(mtmp));
         verbalize("%s", ansbuf);
 
     }
