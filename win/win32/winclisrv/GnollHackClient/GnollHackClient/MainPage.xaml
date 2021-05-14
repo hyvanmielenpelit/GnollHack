@@ -12,13 +12,16 @@
                            AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
                            AbsoluteLayout.LayoutFlags="All" />
 
-        <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 0.90, 1.0, 0.10"
-                           AbsoluteLayout.LayoutFlags="All" WidthRequest="300" HeightRequest="70">
+        <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 0.90, 1.0, 0.20"
+                           AbsoluteLayout.LayoutFlags="All" WidthRequest="300" HeightRequest="160">
             <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Image x:Name="myImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="0" />
-            <Button Text="Start Game" x:Name="StartGameButton" Clicked="firstButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="0" />
+            <Button Text="Local Game" x:Name="StartLocalGameButton" Clicked="localButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="0" />
+            <Image x:Name="myImage2" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
+            <Button Text="Server Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
         </Grid>
 
         <!--
