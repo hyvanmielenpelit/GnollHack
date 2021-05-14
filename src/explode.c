@@ -947,6 +947,9 @@ struct obj *obj; /* only scatter this obj        */
         if (stmp->obj) {
             if (x != sx || y != sy)
                 total += stmp->obj->quan;
+            else if (scflags & ADD_CAUGHT_IN_LEAVES_FLAG)
+                stmp->obj->speflags |= SPEFLAGS_CAUGHT_IN_LEAVES;
+
             place_object(stmp->obj, x, y);
             stackobj(stmp->obj);
         }

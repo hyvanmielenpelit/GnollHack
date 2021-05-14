@@ -1579,46 +1579,58 @@ dokick() {
                 goto ouch;
             }
 
-            if (maploc->special_quality > 0 && tree_subtype_definitions[maploc->subtyp].fruit_type > STRANGE_OBJECT && rn2(100) < tree_subtype_definitions[maploc->subtyp].fruit_kick_drop_chance) //!(maploc->looted & TREE_LOOTED) && (treefruit = rnd_treefruit_at(x, y)))
+            if (tree_subtype_definitions[maploc->subtyp].fruit_type > STRANGE_OBJECT && rn2(100) < tree_subtype_definitions[maploc->subtyp].fruit_kick_drop_chance) //!(maploc->looted & TREE_LOOTED) && (treefruit = rnd_treefruit_at(x, y)))
             {
-                long nfruit = (long)min(maploc->special_quality, max(0, d(tree_subtype_definitions[maploc->subtyp].fruit_drop_d, tree_subtype_definitions[maploc->subtyp].fruit_drop_n) + tree_subtype_definitions[maploc->subtyp].fruit_drop_p));
-                long nfall;
-                if (nfruit > 0)
+                if (maploc->special_quality > 0)
                 {
-                    maploc->special_quality -= (short)nfruit;
-                    treefruit = mksobj_at(tree_subtype_definitions[maploc->subtyp].fruit_type, x, y, TRUE, FALSE); //rnd_treefruit_at(mtmp->mx, mtmp->my);
-                    treefruit->quan = nfruit;
-                    treefruit->owt = weight(treefruit);
-
-                    short frtype = treefruit->otyp;
-
-                    if (is_plural(treefruit))
-                        pline("Some %s fall from the tree!", xname(treefruit));
-                    else
-                        pline("%s falls from the tree!", An(xname(treefruit)));
-
-                    nfall = scatter(x, y, 2, MAY_HIT, treefruit);
-                    if (nfall != nfruit)
+                    long nfruit = (long)min(maploc->special_quality, max(0, d(tree_subtype_definitions[maploc->subtyp].fruit_drop_d, tree_subtype_definitions[maploc->subtyp].fruit_drop_n) + tree_subtype_definitions[maploc->subtyp].fruit_drop_p));
+                    long nfall;
+                    if (nfruit > 0)
                     {
-                        /* scatter left some in the tree, but treefruit
-                         * may not refer to the correct object */
-                        struct obj caughtfruit = zeroobj;
-                        caughtfruit.otyp = frtype;
-                        caughtfruit.oclass = objects[frtype].oc_class;
-                        caughtfruit.quan = nfruit - nfall;
-                        //treefruit = mksobj(frtype, TRUE, FALSE, FALSE);
-                        //treefruit->quan = nfruit - nfall;
-                        pline("%ld %s got caught in the branches.",
-                            nfruit - nfall, xname(&caughtfruit));
-                        //dealloc_obj(treefruit);
+                        maploc->special_quality -= (short)nfruit;
+                        treefruit = mksobj_at(tree_subtype_definitions[maploc->subtyp].fruit_type, x, y, TRUE, FALSE); //rnd_treefruit_at(mtmp->mx, mtmp->my);
+                        treefruit->quan = nfruit;
+                        treefruit->owt = weight(treefruit);
+
+                        short frtype = treefruit->otyp;
+
+                        if (is_plural(treefruit))
+                            pline("Some %s fall from the tree!", xname(treefruit));
+                        else
+                            pline("%s falls from the tree!", An(xname(treefruit)));
+
+                        nfall = scatter(x, y, 2, MAY_HIT | ADD_CAUGHT_IN_LEAVES_FLAG, treefruit);
+                        if (nfall != nfruit)
+                        {
+                            /* scatter left some in the tree, but treefruit
+                             * may not refer to the correct object */
+                            struct obj caughtfruit = zeroobj;
+                            caughtfruit.otyp = frtype;
+                            caughtfruit.oclass = objects[frtype].oc_class;
+                            caughtfruit.quan = nfruit - nfall;
+                            //treefruit = mksobj(frtype, TRUE, FALSE, FALSE);
+                            //treefruit->quan = nfruit - nfall;
+                            pline("%ld %s got caught in the branches.",
+                                nfruit - nfall, xname(&caughtfruit));
+                            //dealloc_obj(treefruit);
+                        }
+                        exercise(A_DEX, TRUE);
+                        exercise(A_WIS, TRUE); /* discovered a new food source! */
+                        newsym(x, y);
+                        //maploc->looted |= TREE_LOOTED;
+                        update_u_action_revert(ACTION_TILE_NO_ACTION);
                     }
-                    exercise(A_DEX, TRUE);
-                    exercise(A_WIS, TRUE); /* discovered a new food source! */
-                    newsym(x, y);
-                    //maploc->looted |= TREE_LOOTED;
-                    update_u_action_revert(ACTION_TILE_NO_ACTION);
+                    return 1;
                 }
-                return 1;
+                else
+                {
+                    struct obj pseudo = zeroobj;
+                    pseudo.otyp = tree_subtype_definitions[maploc->subtyp].fruit_type;
+                    pseudo.oclass = objects[pseudo.otyp].oc_class;
+                    pseudo.quan = 2; /* Plural */
+                    pline("The tree seems to be low on %s!", xname(&pseudo));
+                    return 1;
+                }
             } 
             else if ((levl[x][y].flags & TREE_HAS_BEE_HIVE) && !(maploc->looted & TREE_SWARM))
             {

@@ -693,6 +693,7 @@ static const char empty_string[] = "";
 #define PIT_BOTTOM_BORDER 2
 #define OBJECT_PILE_START_HEIGHT 2
 #define OBJECT_PILE_HEIGHT_DIFFERENCE 2
+#define OBJECT_CAUGHT_IN_LEAVES_HEIGHT (TILE_Y / 2)
 
 #define ANIMATION_FRAME_INTERVAL 25 /* in milliseconds */
 #define DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS 2 /* 2 animation intervals, or 50 milliseconds */

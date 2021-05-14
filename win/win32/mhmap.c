@@ -2093,18 +2093,24 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 dest_top_added = (int)(applicable_scaling_factor_y * ((double)((int)tileHeight - used_item_height + base_dest_added_from_source)));
                                 dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)base_source_height_deducted));
 
-                                /* Leave a little room for monster feet if not cover object */
-                                if (base_layer == LAYER_OBJECT)
-                                    dest_top_added += (int)(applicable_scaling_factor_y * (double)(objects_in_pit ? -PIT_BOTTOM_BORDER : -OBJECT_PILE_START_HEIGHT));
-
-                                /* Pile the objects in order with two pixels in between */
-                                if (layer_rounds > 1)
+                                if (otmp_round && (otmp_round->speflags & SPEFLAGS_CAUGHT_IN_LEAVES))
                                 {
-                                    dest_top_added += (int)(applicable_scaling_factor_y * ((double)-OBJECT_PILE_HEIGHT_DIFFERENCE * (double)(max(0,layer_round - (layer_rounds - objcnt)) /*layer_rounds - 1 - layer_round*/)));
+                                    dest_top_added -= OBJECT_CAUGHT_IN_LEAVES_HEIGHT;
                                 }
+                                else
+                                {
+                                    /* Leave a little room for monster feet if not cover object */
+                                    if (base_layer == LAYER_OBJECT)
+                                        dest_top_added += (int)(applicable_scaling_factor_y * (double)(objects_in_pit ? -PIT_BOTTOM_BORDER : -OBJECT_PILE_START_HEIGHT));
 
-                                if (otmp_round && !showing_detection && objects_in_pit)
-                                    obj_scaling_factor *= 0.75;
+                                    /* Pile the objects in order with two pixels in between */
+                                    if (layer_rounds > 1)
+                                    {
+                                        dest_top_added += (int)(applicable_scaling_factor_y * ((double)-OBJECT_PILE_HEIGHT_DIFFERENCE * (double)(max(0, layer_round - (layer_rounds - objcnt)) /*layer_rounds - 1 - layer_round*/)));
+                                    }
+                                    if (otmp_round && !showing_detection && objects_in_pit)
+                                        obj_scaling_factor *= 0.75;
+                                }
                             }
                         }
                         else if (base_layer == LAYER_MONSTER || base_layer == LAYER_MONSTER_EFFECT)
