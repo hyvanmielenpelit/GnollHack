@@ -452,6 +452,9 @@ struct tree_subtype_definition {
     unsigned long tree_flags;
 };
 
+#define TREE_FLAGS_NONE                     0x00000000
+#define TREE_FLAGS_MAY_HAVE_KILLER_BEES     0x00000001
+
 enum tree_classes
 {
     TREE_CLASS_GENERAL = 0,
@@ -755,6 +758,7 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
  */
 #define TREE_LOOTED 1
 #define TREE_SWARM 2
+#define TREE_HAS_BEE_HIVE 4
 
 /*
  * Fountains have limits, and special warnings.

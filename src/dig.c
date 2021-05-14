@@ -478,6 +478,8 @@ dig(VOID_ARGS)
                 digtxt = "You cut down the tree.";
                 struct mkroom* r = which_room(dpx, dpy);
 
+                uncatch_tree_objects(dpx, dpy);
+
                 /* Wood */
                 struct obj* otmp_wood = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
                 otmp_wood->quan = d(1, 3);
@@ -1783,6 +1785,8 @@ register struct monst *mtmp;
         int lsubtype = 0;
         int lvartype = 0;
 
+        uncatch_tree_objects(mtmp->mx, mtmp->my);
+
         if(here->floortyp)
             ltype = here->floortyp, lsubtype = here->floorsubtyp, lvartype = here->floorvartyp;
         else if (r && r->orig_rtype == GARDEN)
@@ -2199,6 +2203,7 @@ struct obj* origobj;
                 if (!(room->wall_info & W_NONDIGGABLE))
                 {
                     play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
+                    uncatch_tree_objects(zx, zy);
                     create_current_floor_location(zx, zy, 0, back_to_broken_glyph(zx, zy), FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                     newsym(zx, zy);
@@ -2267,6 +2272,7 @@ struct obj* origobj;
                 lsubtype = room->floorsubtyp;
                 lvartype = room->floorvartyp;
                 digdepth -= 2;
+                uncatch_tree_objects(zx, zy);
             } 
             else 
             { /* IS_ROCK but not IS_WALL or SDOOR */
@@ -3297,6 +3303,20 @@ dodig()
 }
 
 
+void
+uncatch_tree_objects(x, y)
+int x, y;
+{
+    if (!isok(x, y))
+        return;
+
+    /* Things are not caught in leaves anymore */
+    struct obj* otmp_caught;
+    for (otmp_caught = level.objects[x][y]; otmp_caught; otmp_caught = otmp_caught->nexthere)
+    {
+        otmp_caught->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES; /* Not caught anymore */
+    }
+}
 
 
 /*dig.c*/

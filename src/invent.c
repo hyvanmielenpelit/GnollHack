@@ -1534,7 +1534,8 @@ struct obj *obj;
     obj_was_thrown = obj->was_thrown;
     obj->was_thrown = 0;       /* not meaningful for invent */
     obj->speflags &= ~SPEFLAGS_GRABBED_FROM_YOU; /* You got it back! */
-
+    obj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES; /* Obviously not caught anymore! */
+    
     addinv_core1(obj);
 
     /* merge with quiver in preference to any other inventory slot
@@ -5260,9 +5261,9 @@ int x, y;
     }
     else if (IS_SIGNPOST(ltyp))
         cmap = S_signpost; /* "signpost" */
-    else if (ltyp == TREE)
+    else if (IS_TREE(ltyp))
         cmap = S_tree; /* "tree" */
-    else if (ltyp == ANVIL)
+    else if (IS_ANVIL(ltyp))
         cmap = S_anvil; /* "anvil" */
     else if (ltyp == IRONBARS)
         dfeature = "set of iron bars";

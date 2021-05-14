@@ -1872,7 +1872,7 @@ register int sx, sy;
             if (!isok(sx + dx, sy + dy))
                 continue;
             lev = &levl[sx + dx][sy + dy];
-            if (lev->typ == TREE)
+            if (IS_TREE(lev->typ))
                 return TRUE;
         }
     return FALSE;

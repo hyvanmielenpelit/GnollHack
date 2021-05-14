@@ -434,6 +434,8 @@ E schar FDECL(fillholetyp, (int, int, BOOLEAN_P));
 E void FDECL(liquid_flow,
              (XCHAR_P, XCHAR_P, SCHAR_P, struct trap *, const char *));
 E boolean FDECL(conjoined_pits, (struct trap *, struct trap *, BOOLEAN_P));
+E void FDECL(uncatch_tree_objects, (int, int));
+
 #if 0
 E void FDECL(bury_monst, (struct monst *));
 E void NDECL(bury_you);

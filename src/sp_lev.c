@@ -4172,7 +4172,7 @@ struct sp_coder *coder;
         for(i = 1; i < COLNO; i++)
             for (j = 0; j < ROWNO; j++)
             {
-                if (levl[i][j].typ == TREE)
+                if (IS_TREE(levl[i][j].typ))
                 {
                     levl[i][j].floortyp = GROUND;
                     levl[i][j].floorsubtyp = get_initial_location_subtype(levl[i][j].floortyp);
@@ -4274,7 +4274,7 @@ struct sp_coder* coder;
     {
         for (y = 0; y < ROWNO; y++)
         {
-            if (levl[x][y].typ == TREE)
+            if (IS_TREE(levl[x][y].typ))
             {
                 levl[x][y].subtyp = get_initial_tree_subtype(level.flags.forest_type);
                 levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);

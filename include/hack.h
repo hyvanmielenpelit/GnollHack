@@ -473,6 +473,7 @@ extern short tile2enlargement[MAX_TILES];
 #define MAY_HIT (MAY_HITMON | MAY_HITYOU)
 #define MAY_DESTROY 0x08  /* objects may be destroyed at random */
 #define MAY_FRACTURE 0x10 /* boulders & statues may fracture */
+#define ADD_CAUGHT_IN_LEAVES_FLAG 0x20 /* if obj stays at x,y, add a speflag SPEFLAGS_CAUGHT_IN_LEAVES */
 
 /* Macros for launching objects */
 #define ROLL 0x01          /* the object is rolling */

@@ -107,25 +107,29 @@ struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES] =
         TREE_SUBTYPE_NORMAL_VARIATIONS, 0,  
         TREE_CLASS_GENERAL, 
         {10, 10, 0, 0, 0, 10, 10, 10, 0, 0},
-        0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL,
+        0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  
+        TREE_FLAGS_MAY_HAVE_KILLER_BEES,
     },
     {"spruce tree",   "tree",  
         TREE_SUBTYPE_SPRUCE_VARIATIONS, TREE_SUBTYPE_NORMAL_VARIATIONS,  
         TREE_CLASS_CONIFEROUS, 
         {10, 0, 10, 0, 0, 10, 10, 10, 10, 10},
-        0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL,
+        0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  
+        TREE_FLAGS_NONE,
     },
     {"fir tree",      "tree",  
         TREE_SUBTYPE_FIR_VARIATIONS, TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_NORMAL_VARIATIONS,  
         TREE_CLASS_CONIFEROUS, 
         {10, 0, 10, 0, 0, 10, 10, 10, 10, 10},
-        0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  0UL,
+        0, 0, 0, 0, 0, 0, 0, 0,  -1, -1,  
+        TREE_FLAGS_NONE,
     },
     {"date palm",      "tree",
         TREE_SUBTYPE_DATE_PALM_VARIATIONS, TREE_SUBTYPE_FIR_VARIATIONS + TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_NORMAL_VARIATIONS,
         TREE_CLASS_TROPICAL, 
         {0, 0, 0, 10, 10, 10, 0, 0, 0, 0},
-        CLUSTER_OF_DATES, 2, 4, 0, 50, 1, 2, 0,  -1, -1,  0UL,
+        CLUSTER_OF_DATES, 2, 4, 0, 50, 1, 2, 0,  -1, -1,  
+        TREE_FLAGS_NONE,
     },
 };
 
@@ -714,7 +718,7 @@ boolean fountain_on_grass, fountain_on_ground, tree_on_ground, throne_on_ground;
         lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
         lev->floorvartyp = get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
     }
-    else if (lev->typ == TREE && tree_on_ground)
+    else if (IS_TREE(lev->typ) && tree_on_ground)
     {
         lev->floortyp = GROUND;
         lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
@@ -742,12 +746,17 @@ struct rm* lev;
         return;
 
     int type = lev->typ;
-    if (type == TREE)
+    if (IS_TREE(type))
     {
         int subtype = lev->subtyp;
         if (tree_subtype_definitions[subtype].fruit_type > STRANGE_OBJECT)
         {
             lev->special_quality = max(0, d(tree_subtype_definitions[subtype].fruit_d, tree_subtype_definitions[subtype].fruit_n) + tree_subtype_definitions[subtype].fruit_p);
+        }
+
+        if ((tree_subtype_definitions[subtype].tree_flags & TREE_FLAGS_MAY_HAVE_KILLER_BEES) && !rn2(6))
+        {
+            lev->flags |= TREE_HAS_BEE_HIVE;
         }
     }
 }
