@@ -914,27 +914,6 @@ register struct monst *mtmp;
             }
             break;
         }
-        case PM_ORCUS:
-        {
-            //(void) mongets(mtmp, WAN_DEATH); /* the Wand of Orcus */
-            int weaptype = MACE_OF_THE_UNDERWORLD;
-            short artifacttype = ART_WAND_OF_ORCUS;
-            otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
-
-            if(otmp)
-                otmp = oname(otmp, artiname(artifacttype));
-
-            if (otmp)
-            {
-                curse(otmp);
-                otmp->oerodeproof = TRUE;
-                spe2 = 2 + rnd(3);
-                otmp->enchantment = max(otmp->enchantment, spe2);
-                (void)mpickobj(mtmp, otmp);
-            }
-            break;
-        }
-
         case PM_HORNED_DEVIL:
             (void) mongets(mtmp, rn2(4) ? TRIDENT : BULLWHIP);
             break;
@@ -961,28 +940,6 @@ register struct monst *mtmp;
             otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
             (void)mpickobj(mtmp, otmp);
             break;
-        case PM_DISPATER:
-            (void) mongets(mtmp, WAN_STRIKING);
-            break;
-        case PM_YEENOGHU:
-        {
-            int weaptype = TRIPLE_HEADED_FLAIL;
-            short artifacttype = ART_TRIPLE_HEADED_FLAIL_OF_YEENOGHU;
-            otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
-
-            if (otmp)
-                otmp = oname(otmp, artiname(artifacttype));
-
-            if (otmp)
-            {
-                curse(otmp);
-                otmp->oerodeproof = TRUE;
-                spe2 = 1 + rnd(4);
-                otmp->enchantment = max(otmp->enchantment, spe2);
-                (void)mpickobj(mtmp, otmp);
-            }
-            break;
-        }
         case PM_BAPHOMET:
             /* Baphomet's bardiche */
             otmp = mksobj(BARDICHE, TRUE, FALSE, FALSE);

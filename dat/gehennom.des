@@ -499,6 +499,7 @@ OBJECT:random,random
 # The resident nasty
 MONSTER:('&',"Orcus"),(33,15)
 {
+  OBJECT:(')',"mace of the underworld"),cursed,enchantment:(2+(1d3)),erodeproof,name:"Wand of Orcus"
   OBJECT:('(',"ornamental key"),special_quality:4
 }
 CONTAINER:('(',"chest"),trapped,locked,(32,15),keytype:('(',"ornamental key"),special_quality:4,no_pickup {
@@ -873,6 +874,7 @@ MAZEWALK:(00,06),west
 REGION:(00,00,20,11),unlit,"ordinary"
 # The fellow in residence
 MONSTER:('&',"Yeenoghu"),(10,06) {
+  OBJECT:(')',"triple-headed flail"),cursed,enchantment:(2+(1d4)),erodeproof,name:"Triple-Headed Flail of Yeenoghu"
   OBJECT:('(',"ornamental key"),special_quality:6
 }
 
