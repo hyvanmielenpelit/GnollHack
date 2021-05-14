@@ -90,16 +90,16 @@
     <AndroidNativeLibrary Include="libs\arm64-v8a\libgnollhackdroid.so" />
     <AndroidNativeLibrary Include="libs\x86\libgnollhackdroid.so" />
     <AndroidNativeLibrary Include="libs\x86_64\libgnollhackdroid.so" />
-    <AndroidAsset Include="GNHAssets\credits" />
-    <AndroidAsset Include="GNHAssets\defaults.gnh" />
-    <AndroidAsset Include="GNHAssets\license" />
-    <AndroidAsset Include="GNHAssets\logfile" />
-    <AndroidAsset Include="GNHAssets\nhdat" />
-    <AndroidAsset Include="GNHAssets\opthelp" />
-    <AndroidAsset Include="GNHAssets\paniclog" />
-    <AndroidAsset Include="GNHAssets\record" />
-    <AndroidAsset Include="GNHAssets\symbols" />
-    <AndroidAsset Include="GNHAssets\sysconf" />
+    <AndroidAsset Include="gnh\credits" />
+    <AndroidAsset Include="gnh\license" />
+    <AndroidAsset Include="gnh\logfile" />
+    <AndroidAsset Include="gnh\nhdat" />
+    <AndroidAsset Include="gnh\record" />
+    <AndroidAsset Include="gnh\symbols" />
+    <AndroidAsset Include="gnh\sysconf" />
+    <AndroidAsset Include="gnh\perm" />
+    <AndroidAsset Include="gnh\recover" />
+    <AndroidAsset Include="gnh\xlogfile" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -138,11 +138,6 @@
       <Project>{5A266A7A-92C8-4E71-88AE-74AC420F9F18}</Project>
       <Name>GnollHackClient</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="GNHAssets\Guidebook.txt" />
-    <AndroidAsset Include="GNHAssets\nethack.txt" />
-    <AndroidAsset Include="GNHAssets\recover.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

@@ -411,6 +411,7 @@
     <ClInclude Include="$(LibDroidDir)droidconf.h" />
     <ClInclude Include="$(LibDroidDir)gnollhackdroid.h" />
     <ClInclude Include="$(LibDroidDir)pch.h" />
+    <ClInclude Include="..\winclisrv\GnollHackClient\gnollhackdroid\libproc.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(SrcDir)Makefile.gcc" />

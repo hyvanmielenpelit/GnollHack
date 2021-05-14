@@ -3,6 +3,8 @@
  */
 
 #include "hack.h"
+#include "libproc.h"
+
 #include "dlb.h"
 #include <setjmp.h>
 
@@ -55,19 +57,6 @@ void gnollhack_exit(int code)
 	longjmp(env, code);
 }
 
-int RunGnollHackTest(char* curwd, char* curwd2, char* curwd3)
-{
-	char* params[5] = { 0 };
-
-	params[0] = "gnollhack";
-	params[1] = curwd;
-	params[2] = curwd2;
-	params[3] = curwd3;
-	params[4] = 0;
-
-	return GnollHackMain(1, params);
-}
-
 int GnollHackMain(int argc, char** argv)
 {
 	//debuglog("Starting GnollHack!");
@@ -81,7 +70,6 @@ int GnollHackMain(int argc, char** argv)
 		return 0;
 	}
 
-
 	register int fd;
 	boolean exact_username;
 	FILE* fp;
@@ -94,31 +82,6 @@ int GnollHackMain(int argc, char** argv)
 	hackpid = getpid();
 	(void)umask(0777 & ~FCMASK);
 
-	char cwbuf[BUFSIZ] = "";
-	char* curwd = getcwd(cwbuf, sizeof(cwbuf));
-	char* curwd2 = argv[2];
-	int res = chdir(curwd2);
-	int e = errno;
-
-	char dirbuf[BUFSZ];
-	Sprintf(dirbuf, "%s%s", curwd2, "");
-	int cnt = 0;
-	DIR* dir;
-	struct dirent* ent;
-	if ((dir = opendir(dirbuf)) != NULL) {
-		/* print all the files and directories within directory */
-		while ((ent = readdir(dir)) != NULL) {
-			Sprintf(dirbuf , "%s\n", ent->d_name);
-			cnt++;
-		}
-		closedir(dir);
-	}
-	else {
-		/* could not open directory */
-		e = errno;
-		return EXIT_FAILURE;
-	}
-
 	// hack
 	// remove dangling locks
 	remove_lock_file(RECORD);
@@ -127,12 +90,10 @@ int GnollHackMain(int argc, char** argv)
 	fp = fopen_datafile(RECORD, "a", SCOREPREFIX);
 	fclose(fp);
 
-	choose_windows(DEFAULT_WINDOW_SYS);
-
+	check_recordfile((char*)0);
+	iflags.windowtype_deferred = TRUE;
+	
 	initoptions();
-
-	init_nhwindows(&argc, argv);
-	//exact_username = whoami();
 
 	/*
 	 * It seems you really want to play.
@@ -145,6 +106,12 @@ int GnollHackMain(int argc, char** argv)
 	if(!(catmore = nh_getenv("HACKPAGER")) && !(catmore = nh_getenv("PAGER")))
 	catmore = DEF_PAGER;
 #endif
+
+	/* Now initialize windows */
+	choose_windows(DEFAULT_WINDOW_SYS);
+	init_nhwindows(&argc, argv);
+	//exact_username = whoami();
+
 
 //#ifdef MAIL
 //	getmailstatus();
