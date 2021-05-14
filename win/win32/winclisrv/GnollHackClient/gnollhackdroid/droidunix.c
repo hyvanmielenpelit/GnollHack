@@ -12,8 +12,6 @@
 #include <fcntl.h>
 #endif
 
-static struct stat buf;
-
 void
 regularize(s)	/* normalize file name - we don't like .'s, /'s, spaces */
 char *s;
@@ -47,7 +45,7 @@ eraseoldlocks()
 void
 getlock()
 {
-	register int i = 0, fd, c;
+	register int fd;
 	const char *fq_lock;
 
 	if (!lock_file(HLOCK, LOCKPREFIX, 10))

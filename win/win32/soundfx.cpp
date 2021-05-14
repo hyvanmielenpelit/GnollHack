@@ -895,6 +895,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Com Pager", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Quest Pager", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Quest Leader Who Are You", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Circle/Fire", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Circle/Frost", 1.0f },

@@ -3033,6 +3033,7 @@ E void FDECL(play_monster_chat_sound, (struct monst*, int));
 E enum monster_soundset_types FDECL(get_monster_soundset, (struct monst*));
 E void FDECL(play_voice_com_pager, (struct monst*, int, boolean));
 E void FDECL(play_voice_quest_pager, (struct monst*, int, boolean));
+E void FDECL(play_voice_shopkeeper_whoareyou, (struct monst*));
 
 /* ### sys.c ### */
 

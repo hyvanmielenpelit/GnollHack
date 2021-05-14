@@ -10868,6 +10868,41 @@ enum cost_alteration_types alteration_type;
 
 }
 
+void
+play_voice_quest_leader_whoareyou(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || Deaf)
+        return;
+
+    struct ghsound_immediate_info info = { 0 };
+
+    info.ghsound = GHSOUND_VOICE_QUEST_LEADER_WHOAREYOU;
+    info.parameter_names[0] = "RoleIndex";
+    info.parameter_values[0] = (float)urole.rolenum;
+    info.parameter_names[1] = (char*)0;
+
+
+    float volume = SHOPKEEPER_BASE_VOLUME;
+    if (isok(mtmp->mx, mtmp->my))
+    {
+        float hearing = hearing_array[mtmp->mx][mtmp->my];
+        if (max(hearing, context.global_minimum_volume) <= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
+            volume = SHOPKEEPER_DISTANT_VOLUME;
+        else
+            volume = max(SHOPKEEPER_NEARBY_MINIMUM_VOLUME, max((float)context.global_minimum_volume, volume * hearing_array[mtmp->mx][mtmp->my]));
+    }
+
+    info.volume = min(1.0f, volume);
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    info.dialogue_mid = mtmp->m_id;
+
+    if (info.ghsound > GHSOUND_NONE)
+        play_immediate_ghsound(info);
+
+}
+
 /* cuss_id = 0 is aspirations on your ancestry or something general; positive integers indicate lines from pager */
 void
 play_voice_monster_cuss(mtmp, cuss_id)

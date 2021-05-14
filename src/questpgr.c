@@ -410,7 +410,7 @@ char c;
         str = align_gname(A_LAWFUL);
         break;
     case 'e':
-        str = align_gname(u.ualignbase[u.ualign.type]);
+        str = align_gname(u.ualign.type);
         break;
     case 'C':
         str = "chaotic";
