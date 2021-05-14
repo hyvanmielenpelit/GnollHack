@@ -3122,7 +3122,7 @@ struct obj *otmp;
     else if (artilist[(int) otmp->oartifact].cost)
         return artilist[(int) otmp->oartifact].cost;
     else
-        return (100L * objects[otmp->otyp].oc_cost);
+        return (20L * (objects[otmp->otyp].oc_cost + 75L));
 }
 
 struct abil2adtyp_tag {

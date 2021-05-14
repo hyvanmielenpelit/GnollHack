@@ -1564,6 +1564,7 @@ aligntyp g_align;
                     pline("%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
                 bless(otmp);
                 otmp->bknown = 1;
+                update_inventory();
                 break;
             }
         }
@@ -1988,6 +1989,8 @@ boolean bless_stuff;
                 use_items || !strcmp(buf, "") ? "religious item" : buf,
                 ((other || changed > 1L) ? "s" : ""), (changed > 1L ? "" : "s"),
                 (bless_stuff ? hcolor(NH_LIGHT_BLUE) : hcolor(NH_BLACK)));
+
+        update_inventory();
     }
 
     return (boolean)(changed > 0L);
@@ -2735,6 +2738,7 @@ dosacrifice()
                         pline("%s with %s aura.", Yobjnam2(otmp2, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
                     bless(otmp2);
                     otmp2->bknown = 1;
+                    update_inventory();
                     break;
                 }
             }

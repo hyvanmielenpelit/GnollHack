@@ -2275,8 +2275,8 @@ register struct monst *shkp; /* if angry, impose a surcharge */
         tmp = 1L;
     /* the artifact prices in artilist[] are also used as a score bonus;
        inflate their shop price here without affecting score calculation */
-    if (obj->oartifact)
-        tmp *= 4L;
+//    if (obj->oartifact)
+//        tmp *= 4L;
 
     /* anger surcharge should match rile_shk's, so we do it separately
        from the multiplier/divisor calculation */
