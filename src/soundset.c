@@ -9857,7 +9857,9 @@ boolean via_pline;
     info.parameter_values[3] = (float)u.ualignbase[A_ORIGINAL];
     info.parameter_names[4] = "TitleIndex";
     info.parameter_values[4] = (float)xlev_to_rank(u.ulevel);
-    info.parameter_names[5] = (char*)0;
+    info.parameter_names[5] = "GenderIndex";
+    info.parameter_values[5] = mon ? (float)mon->female : 0;
+    info.parameter_names[6] = (char*)0;
 
     if (via_pline)
     {
