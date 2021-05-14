@@ -312,7 +312,7 @@ evil magic in the air.
 
 Without thought, you ready your weapon, and mutter under your breath:
 
-    "By %d, there will be blood spilt today."
+    "By %e, there will be blood spilt today."
 %E [You reach the vicinity of %H, but sense evil magic nearby.]
 %Cp Bar 00002
 Once again, you near %H.  You know that %l
@@ -476,7 +476,7 @@ And your life as well."
 "My pets will dine on your carcass tonight!"
 %E
 %Cp Bar 00061
-"You are a sorry excuse for %ra."
+"You are a sorry excuse for %va."
 %E
 %Cp Bar 00062
 "Run while you can, %c.  My next spell will be your last."
@@ -485,7 +485,7 @@ And your life as well."
 "I shall use your very skin to bind my next grimoire."
 %E
 %Cp Bar 00064
-"%d cannot protect you now.  Here, you die."
+"%e cannot protect you now.  Here, you die."
 %E
 %Cp Bar 00065
 "Your %a nature makes you weak.  You cannot defeat me."
