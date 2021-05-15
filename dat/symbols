@@ -91,6 +91,9 @@ start: IBMgraphics
 	S_sw_mr: \xb3			# meta-3, vertical rule
 	S_explode4: \xb3		# meta-3, vertical rule
 	S_explode6: \xb3		# meta-3, vertical rule
+	S_signpost: \xe2
+	S_brazier: \xe9
+	S_grave: \xef
 finish
 
 start: IBMGraphics_1
@@ -112,6 +115,9 @@ start: IBMGraphics_1
 	S_sw_mr: \xb3			# meta-3, vertical rule
 	S_explode4: \xb3		# meta-3, vertical rule
 	S_explode6: \xb3		# meta-3, vertical rule
+	S_signpost: \xe2
+	S_brazier: \xe9
+	S_grave: \xef
 finish
 
 start: IBMGraphics_2
@@ -137,6 +143,9 @@ start: IBMGraphics_2
 	S_sw_mr: \xb3			# meta-3, vertical rule
 	S_explode4: \xb3		# meta-3, vertical rule
 	S_explode6: \xb3		# meta-3, vertical rule
+	S_signpost: \xe2
+	S_brazier: \xe9
+	S_grave: \xef
 finish
 
 start: MACgraphics

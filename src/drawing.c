@@ -355,7 +355,7 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },               /* brazier */
        { '|', "signpost", "broken signpost",              LAYER_FEATURE, FALSE,      SIGNPOST_VARIATIONS, SIGNPOST_VARIATION_OFFSET,
-            { C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), /*5*/ C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), /*10*/ C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA) },
+            { C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*5*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*10*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },               /* signpost */
@@ -1167,12 +1167,12 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                /* brazier */
 
        { S_signpost, "signpost-subtype-1",  "signpost with a small symbol", "", FALSE,     
-            { C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), /*5*/ C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA),  /*10*/ C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA) }, 
+            { C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*5*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN),  /*10*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) }, 
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                /* signpost */
        { S_signpost, "signpost-subtype-2",  "signpost with a large symbol", "", FALSE,
-            { C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), /*5*/ C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA),  /*10*/ C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA), C(CLR_MAGENTA) }, 
+            { C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*5*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN),  /*10*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) }, 
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                /* signpost */
