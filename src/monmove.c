@@ -1371,6 +1371,10 @@ register int after;
         }
     }
 
+    register int pctload = 0;
+    if (mtmp->mnum == PM_ASHIKAGA_TAKAUJI)
+        pctload = pctload;
+
     if ((!is_peaceful(mtmp) || !rn2(10)) && (!Is_rogue_level(&u.uz)))
     {
         int throwrange = throws_rocks(youmonst.data) ? 20 : ACURRSTR / 2 + 1;
@@ -1382,7 +1386,7 @@ register int after;
              * situation where you toss arrows at it and it has nothing
              * better to do than pick the arrows up.
              */
-            register int pctload =
+            pctload =
                 (curr_mon_load(mtmp) * 100) / max_mon_load(mtmp);
 
             /* look for gold or jewels nearby */
@@ -1977,7 +1981,7 @@ register int after;
              * or if the "likegold" case got taken above */
             if (setlikes) 
             {
-                int pctload = (curr_mon_load(mtmp) * 100) / max_mon_load(mtmp);
+                pctload = (curr_mon_load(mtmp) * 100) / max_mon_load(mtmp);
 
                 /* look for gold or jewels nearby */
                 likegold = (likes_gold(ptr) && pctload < 95);

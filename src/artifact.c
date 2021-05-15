@@ -733,7 +733,7 @@ struct monst *mon;
                 obj->nknown = TRUE;
             }
         }
-        else if (mon->mnum != PM_WIZARD_OF_YENDOR /*!is_covetous(mon->data)*/ && !is_mplayer(mon->data)) {
+        else if (mon->mnum != PM_WIZARD_OF_YENDOR && !((mon->data->mflags3 & M3_WANTSARTI) && is_quest_artifact(obj)) /*!is_covetous(mon->data)*/ && !is_mplayer(mon->data)) {
             badclass = self_willed && oart->role != NON_PM
                 && oart != &artilist[ART_EXCALIBUR];
             badalign = (oart->aflags & AF_RESTR) && oart->alignment != A_NONE
