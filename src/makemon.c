@@ -1576,7 +1576,6 @@ register struct monst *mtmp;
             
             /* Some random reagants */
             n = rn2(3);
-            i;
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 0));
 

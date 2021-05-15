@@ -360,7 +360,6 @@ dlb *dp;
 {
     int i;
     char *bp, c = 0;
-    unsigned char ubuf[2] = { 0, 0 };
 
     if (len <= 0)
         return buf; /* sanity check */

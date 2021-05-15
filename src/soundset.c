@@ -8030,13 +8030,12 @@ int mode; /* 0 = normal, 1 = clear */
                 horizontal_max_done = TRUE;
             }
 
-            int y = (i == 0 ? y_min_adjusted : y_max_adjusted);
-
+            y = (i == 0 ? y_min_adjusted : y_max_adjusted);
             
             for (x = x_min_adjusted; x <= x_max_adjusted; x++)
             {
                 float prev_hearing = 0.0f;
-                int prev_y = (i == 0) ? y + 1 : y - 1;
+                prev_y = (i == 0) ? y + 1 : y - 1;
 
                 if (r == 1)
                 {
@@ -8083,13 +8082,13 @@ int mode; /* 0 = normal, 1 = clear */
             if (i == 1 && x_max_adjusted != x_max)
                 continue;
 
-            int x = (i == 0 ? x_min_adjusted : x_max_adjusted);
+            x = (i == 0 ? x_min_adjusted : x_max_adjusted);
             int upper_y_limit = y_max_adjusted - (horizontal_max_done ? 1 : 0);
 
             for (y = y_min_adjusted + (horizontal_min_done ? 1 : 0); y <= upper_y_limit; y++)
             {
                 float prev_hearing = 0.0f;
-                int prev_x = (i == 0) ? x + 1 : x - 1;
+                prev_x = (i == 0) ? x + 1 : x - 1;
 
                 if (r == 1)
                 {
@@ -8134,7 +8133,7 @@ int mode; /* 0 = normal, 1 = clear */
             if (i == 1 && x_min_adjusted != x_min)
                 continue;
 
-            int x = (i == 0 ? x_max_adjusted : x_min_adjusted);
+            x = (i == 0 ? x_max_adjusted : x_min_adjusted);
 
             for (y = y_max_adjusted - 1 ; y >= y_min_adjusted; y--)
             {
@@ -8151,7 +8150,7 @@ int mode; /* 0 = normal, 1 = clear */
             if (i == 1 && y_min_adjusted != y_min)
                 continue;
 
-            int y = (i == 0 ? y_max_adjusted : y_min_adjusted);
+            y = (i == 0 ? y_max_adjusted : y_min_adjusted);
 
             for (x = x_max_adjusted - 1; x >= x_min_adjusted; x--)
             {
