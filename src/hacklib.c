@@ -1227,4 +1227,71 @@ strbuf_t *strbuf;
     }
 }
 
+void
+convertUTF8toCP437(buf, bufsize)
+char* buf;
+size_t bufsize;
+{
+    if (!buf || !*buf)
+        return;
+
+    char* bp, *wp;
+    char copybuf[BUFSIZ] = "";
+    wp = copybuf;
+    boolean was_unicode = FALSE;
+    uchar uc;
+
+    for (bp = buf; *bp && bp < bp + bufsize && wp < copybuf + sizeof(copybuf); bp++)
+    {
+        uc = (uchar)(*bp);
+        if (uc >= 0x80)
+        {
+            if (uc == 0xc3) /* A replaceble character */
+            {
+                bp++;
+                uc = (uchar)(*bp);
+                if (0xa5 == uc)
+                    *wp = (char)134; /* å */
+                else if (0xa4 == uc)
+                    *wp = (char)132;  /* ä */
+                else if (0xb6 == uc)
+                    *wp = (char)148; /* ö */
+                else if (0x85 == uc)
+                    *wp = (char)143; /* Å */
+                else if (0x84 == uc)
+                    *wp = (char)142; /* Ä */
+                else if (0x96 == uc)
+                    *wp = (char)153; /* Ö */
+                else
+                    *wp = '?';
+
+                wp++;
+            }
+            else 
+            {
+                if (!was_unicode)
+                {
+                    *wp = '?';
+                    wp++;
+                }
+            }
+
+            was_unicode = TRUE;
+        }
+        else
+        {
+            *wp = *bp;
+            wp++;
+            was_unicode = FALSE;
+        }
+    }
+
+    if(wp < copybuf + sizeof(copybuf))
+        *wp = '\0';
+    else
+        copybuf[sizeof(copybuf) - 1] = '\0';
+
+    strcpy(buf, copybuf);
+}
+
 /*hacklib.c*/

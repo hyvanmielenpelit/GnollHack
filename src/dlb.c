@@ -374,28 +374,6 @@ dlb *dp;
          i++, bp++) {
         if (dlb_fread(bp, 1, 1, dp) <= 0)
             break; /* EOF or error */
-        if (*bp == -61)
-        {
-            /* Read unicode */
-            if (dlb_fread((char*)ubuf, 1, 1, dp) <= 0)
-                break; /* EOF or error */
-
-            if (0xA5 == ubuf[0])
-                *bp = -27;
-            else if (0xA4 == ubuf[0])
-                *bp = -28;
-            else if (0xB6 == ubuf[0])
-                *bp = -10;
-            else if (0x85 == ubuf[0])
-                *bp = -59;
-            else if (0x84 == ubuf[0])
-                *bp = -60;
-            else if (0x96 == ubuf[0])
-                *bp = -42;
-            else
-                *bp = '?';
-        }
-
         c = *bp;
     }
     *bp = '\0';

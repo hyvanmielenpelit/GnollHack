@@ -224,7 +224,10 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         if (!data->window_text)
             break;
 
-        _tcscat(data->window_text, NH_A2W(msg_data->text, wbuf, BUFSZ));
+        char nbuf[BUFSIZ];
+        strcpy(nbuf, msg_data->text);
+        convertUTF8toTCHAR(nbuf, sizeof(nbuf));
+        _tcscat(data->window_text, NH_A2W(nbuf, wbuf, BUFSZ));
         _tcscat(data->window_text, TEXT("\r\n"));
         break;
     }

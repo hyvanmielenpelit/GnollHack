@@ -3686,3 +3686,70 @@ mswin_exit_hack(int status)
 {
     mswin_exit_platform(status);
 }
+
+void
+convertUTF8toTCHAR(buf, bufsize)
+char* buf;
+size_t bufsize;
+{
+    if (!buf || !*buf)
+        return;
+
+    char* bp, * wp;
+    char copybuf[BUFSIZ] = "";
+    wp = copybuf;
+    boolean was_unicode = FALSE;
+    uchar uc;
+
+    for (bp = buf; *bp && bp < bp + bufsize && wp < copybuf + sizeof(copybuf); bp++)
+    {
+        uc = (uchar)(*bp);
+        if (uc >= 0x80)
+        {
+            if (uc == 0xc3) /* A replaceble character */
+            {
+                bp++;
+                uc = (uchar)(*bp);
+                if (0xa5 == uc)
+                    *wp = 'å'; /* å */
+                else if (0xa4 == uc)
+                    *wp = 'ä';  /* ä */
+                else if (0xb6 == uc)
+                    *wp = 'ö'; /* ö */
+                else if (0x85 == uc)
+                    *wp = 'Å'; /* Å */
+                else if (0x84 == uc)
+                    *wp = 'Ä'; /* Ä */
+                else if (0x96 == uc)
+                    *wp = 'Ö'; /* Ö */
+                else
+                    *wp = '?';
+
+                wp++;
+            }
+            else
+            {
+                if (!was_unicode)
+                {
+                    *wp = '?';
+                    wp++;
+                }
+            }
+
+            was_unicode = TRUE;
+        }
+        else
+        {
+            *wp = *bp;
+            wp++;
+            was_unicode = FALSE;
+        }
+    }
+
+    if (wp < copybuf + sizeof(copybuf))
+        *wp = '\0';
+    else
+        copybuf[sizeof(copybuf) - 1] = '\0';
+
+    strcpy(buf, copybuf);
+}

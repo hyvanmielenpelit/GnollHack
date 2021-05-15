@@ -239,6 +239,7 @@ void mswin_apply_window_style(HWND hwnd);
 
 void mswin_init_platform(VOID_ARGS);
 void mswin_exit_platform(int);
+void convertUTF8toTCHAR(char*, size_t);
 
 int NHMessageBox(HWND hWnd, LPCTSTR text, UINT type);
 

@@ -2923,6 +2923,10 @@ boolean complain;
 #endif
                 if (index(buf, '\t') != 0)
                     (void) tabexpand(buf);
+
+                if(!strcmp(symset[PRIMARY].name, "IBMgraphics") || !strcmp(symset[PRIMARY].name, "IBMGraphics") || !strcmp(symset[PRIMARY].name, "IBMGraphics_2")) /* Using CP437 */
+                    convertUTF8toCP437(buf, sizeof(buf));
+
                 empty = FALSE;
                 tty_putstr(datawin, 0, buf);
                 if (wins[datawin]->flags & WIN_CANCELLED)

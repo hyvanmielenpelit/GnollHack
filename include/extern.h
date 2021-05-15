@@ -1241,6 +1241,7 @@ E void FDECL(strbuf_reserve, (strbuf_t *, size_t));
 E void FDECL(strbuf_empty, (strbuf_t *));
 E void FDECL(strbuf_nl_to_crlf, (strbuf_t *));
 E void NDECL(adjusted_delay_output);
+E void FDECL(convertUTF8toCP437, (char*, size_t));
 
 /* ### invent.c ### */
 
