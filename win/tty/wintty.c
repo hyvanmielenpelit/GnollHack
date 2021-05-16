@@ -3399,7 +3399,9 @@ char ch;
 
         //putchar((char)firstbyte);
         //putchar((char)secondbyte);
-        printf("%c%c", (char)firstbyte, (char)firstbyte);
+        char buf[3];
+        Sprintf("%c%c", (char)firstbyte, (char)firstbyte);
+        puts(buf);
     }
     else /* No higher ones are possible with unisgned short */
     {
@@ -3410,7 +3412,9 @@ char ch;
         //putchar((char)firstbyte);
         //putchar((char)firstbyte);
         //putchar((char)thirdbyte);
-        printf("%c%c%c", (char)firstbyte, (char)secondbyte, (char)thirdbyte);
+        char buf[4];
+        Sprintf(buf, "%c%c%c", (char)firstbyte, (char)secondbyte, (char)thirdbyte);
+        puts(buf);
     }
 }
 
