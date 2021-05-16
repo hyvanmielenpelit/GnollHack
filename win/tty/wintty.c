@@ -3410,6 +3410,7 @@ char ch;
 
 int
 doputchar(ch)
+char ch;
 {
     if (flags.ibm2utf8)
         return putcp437charutf8(ch);

@@ -922,7 +922,7 @@ struct layer_info layers UNUSED;
 /*ARGSUSED*/
 static void
 hup_init_print_glyph(initid)
-int initid;
+int initid UNUSED;
 {
     return;
 }
