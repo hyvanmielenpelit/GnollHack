@@ -3652,7 +3652,7 @@ struct layer_info layers;
         xputg(glyph, (int)ch, special);
     else
 #endif
-    if(flags.ibm2utf8)
+    if(use_utf8_encoding())
         doputchar(ch);
     else
         g_putch((int)ch); /* print the character */

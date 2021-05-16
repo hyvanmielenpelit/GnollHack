@@ -630,7 +630,7 @@ g_putch(in_ch)
 int in_ch;
 {
     boolean inverse = FALSE;
-    unsigned char ch = (unsigned char) in_ch;
+    int ch = in_ch;
 
     set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
 
