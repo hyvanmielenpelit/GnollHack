@@ -3392,7 +3392,9 @@ char ch;
     unsigned char uch = (unsigned char)ch;
     wchar_t unicodechar = cp437toUnicode[uch];
     setlocale(LC_ALL, "en_US.UTF-8");
+    freopen(NULL, "w", stdout);
     putwchar(unicodechar);
+    freopen(NULL, "w", stdout);
 
 #if 0
     if (utf8char < 0x80)
