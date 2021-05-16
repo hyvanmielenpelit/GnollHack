@@ -16,7 +16,7 @@
 #include <wchar.h>
 #include <locale.h>
 
-const wchar_t cp437toUnicode[256] = {
+const long cp437toUnicode[256] = {
     0x0020, 0x263A, 0x263B, 0x2665, 0x2666, 0x2663, 0x2660, 0x2022,
     0x25D8, 0x25CB, 0x25D9, 0x2642, 0x2640, 0x266A, 0x266B, 0x263C,
     0x25BA, 0x25C4, 0x2195, 0x203C, 0x00B6, 0x00A7, 0x25AC, 0x21A8,
@@ -459,6 +459,8 @@ int *argcp UNUSED;
 char **argv UNUSED;
 {
     int wid, hgt, i;
+
+    tty_init_print_glyph(1);
 
     /* options aren't processed yet so wc2_statuslines might be 0;
        make sure that it has a reasonable value during tty setup */
@@ -3413,11 +3415,26 @@ putcp437charutf8(ch)
 char ch;
 {
     unsigned char uch = (unsigned char)ch;
-    wchar_t unicodechar = cp437toUnicode[uch];
-    setlocale(LC_ALL, "en_US.UTF-8");
-    freopen(NULL, "w", stdout);
-    (void)putwchar(unicodechar);
-    freopen(NULL, "w", stdout);
+    long unicodechar = cp437toUnicode[uch];
+//    freopen(NULL, "w", stdout);
+//    (void)putwchar(unicodechar);
+//    freopen(NULL, "w", stdout);
+    if (c < 0x80) {
+        putchar(c);
+    } else if(c < 0x800) {
+        putchar(0xC0 | (c>>6));
+        putchar(0x80 | (c & 0x3F));
+    } else if (c < 0x10000) {
+        putchar(0xE0 | (c>>12));
+        putchar(0x80 | (c>>6 & 0x3F));
+        putchar(0x80 | (c & 0x3F));
+    } else if (c < 0x200000) {
+        putchar(0xF0 | (c>>18));
+        putchar(0x80 | (c>>12 & 0x3F));
+        putchar(0x80 | (c>>6 & 0x3F));
+        putchar(0x80 | (c & 0x3F));
+    }
+
     return 0;
 }
 
@@ -3521,13 +3538,13 @@ int initid;
     {
         switch (initid)
         {
-#if 0
         case 0: /* Set locale to default */
             break;
         case 1: /* Set locale to UTF-8 */
             setlocale(LC_ALL, "en_US.UTF-8");
-            //freopen(NULL, "w", stdout);
+            setlocale(LC_CTYPE, "");
             break;
+#if 0
         case 2: /* Start print_glyph */
             setlocale(LC_ALL, "en_US.UTF-8");
             //freopen(NULL, "w", stdout);
@@ -3626,6 +3643,9 @@ struct layer_info layers;
         xputg(glyph, ch, special);
     else
 #endif
+    if(flags.ibm2utf8)
+        doputchar(ch);
+    else
         g_putch(ch); /* print the character */
 
     if (reverse_on || underline_on) {

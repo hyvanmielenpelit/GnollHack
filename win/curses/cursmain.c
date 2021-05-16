@@ -648,8 +648,11 @@ curses_cliparound(int x, int y)
 void
 curses_init_print_glyph(int initid)
 {
-    if(initid == 1)
+    if (initid == 1)
+    {
         setlocale(LC_ALL, "en_US.UTF-8");
+        setlocale(LC_CTYPE, "");
+    }
 }
 
 /*

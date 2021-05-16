@@ -44,7 +44,7 @@ static nethack_wid *nhwids = NULL;      /* NetHack wid array */
 static boolean is_main_window(winid wid);
 static void write_char(WINDOW * win, int x, int y, nethack_char ch);
 static void clear_map(void);
-extern const wchar_t cp437toUnicode[256];
+extern const long cp437toUnicode[256];
 
 /* Create a window with the specified size and orientation */
 
