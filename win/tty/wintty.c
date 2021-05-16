@@ -13,12 +13,8 @@
 #define H2344_BROKEN
 
 #include "hack.h"
-#include <locale.h>
-#include <stdlib.h>
-#include <stddef.h>
 
-
-const wchar_t cp437toUnicode[256] = {
+const unsigned short cp437toUnicode[256] = {
     0x0020, 0x263A, 0x263B, 0x2665, 0x2666, 0x2663, 0x2660, 0x2022,
     0x25D8, 0x25CB, 0x25D9, 0x2642, 0x2640, 0x266A, 0x266B, 0x263C,
     0x25BA, 0x25C4, 0x2195, 0x203C, 0x00B6, 0x00A7, 0x25AC, 0x21A8,
@@ -3392,14 +3388,8 @@ putcp437charutf8(ch)
 char ch;
 {
     unsigned char uch = (unsigned char)ch;
-    wchar_t utf8char = cp437toUnicode[uch];
+    unsigned short utf8char = cp437toUnicode[uch];
 
-    setlocale(LC_ALL, "en_US.utf8");
-    char mbstr[BUFSZ];
-    wcstombs(mbstr, utf8char, BUFSZ);
-    puts(mbstr);
-
-#if 0
     if (utf8char < 0x80)
         putchar(ch);
     else if (utf8char < 0x0800)
@@ -3426,7 +3416,7 @@ char ch;
         Sprintf(buf, "%c%c%c", (char)firstbyte, (char)secondbyte, (char)thirdbyte);
         puts(buf);
     }
-#endif
+
 }
 
 #ifndef WIN32
