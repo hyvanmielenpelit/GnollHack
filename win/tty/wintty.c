@@ -3414,7 +3414,7 @@ char ch;
 {
     unsigned char uch = (unsigned char)ch;
     wchar_t unicodechar = cp437toUnicode[uch];
-//    setlocale(LC_ALL, "en_US.UTF-8");
+    setlocale(LC_ALL, "en_US.UTF-8");
     freopen(NULL, "w", stdout);
     return (int)putwchar(unicodechar);
     freopen(NULL, "w", stdout);
@@ -3517,6 +3517,7 @@ void
 tty_init_print_glyph(initid)
 int initid;
 {
+#if 0
     if (flags.ibm2utf8)
     {
         switch (initid)
@@ -3538,6 +3539,7 @@ int initid;
             break;
         }
     }
+#endif
 }
 
 /*
