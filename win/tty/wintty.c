@@ -2682,7 +2682,8 @@ char ch;
     case NHW_MAP:
     case NHW_BASE:
         tty_curs(window, x, y);
-        (void) putchar(ch);
+        (int)doputchar(ch);
+        //(void) putchar(ch);
         ttyDisplay->curx++;
         cw->curx++;
         break;

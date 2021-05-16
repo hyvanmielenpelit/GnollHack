@@ -578,19 +578,45 @@ coordinates without a refresh.  Currently only used for the map. */
 static void
 write_char(WINDOW * win, int x, int y, nethack_char nch)
 {
-    int printedchar;
+    long printedchar;
     curses_toggle_color_attr(win, nch.color, nch.attr, ON);
 
     if (flags.ibm2utf8 && nch.ch >= 0 && nch.ch < 256) /* Note requires that ncursesw has been installed */
-        printedchar = (int)cp437toUnicode[nch.ch];
+        printedchar = cp437toUnicode[nch.ch];
     else
         printedchar = nch.ch;
 
 #ifdef PDCURSES
-    mvwaddrawch(win, y, x, printedchar);
+#define cputchar(c) mvwaddrawch(win, y, x, (c));
 #else
-    mvwaddch(win, y, x, printedchar);
+#define cputchar(c) mvwaddch(win, y, x, (c));
 #endif
+
+    if (flags.ibm2utf8)
+    {
+        if (c < 0x80) {
+            cputchar(c);
+        }
+        else if (c < 0x800) {
+            cputchar(0xC0 | (c >> 6));
+            cputchar(0x80 | (c & 0x3F));
+        }
+        else if (c < 0x10000) {
+            cputchar(0xE0 | (c >> 12));
+            cputchar(0x80 | (c >> 6 & 0x3F));
+            cputchar(0x80 | (c & 0x3F));
+        }
+        else if (c < 0x200000) {
+            cputchar(0xF0 | (c >> 18));
+            cputchar(0x80 | (c >> 12 & 0x3F));
+            cputchar(0x80 | (c >> 6 & 0x3F));
+            cputchar(0x80 | (c & 0x3F));
+        }
+    }
+    else
+    {
+        cputchar(c);
+    }
 
     curses_toggle_color_attr(win, nch.color, nch.attr, OFF);
 }
