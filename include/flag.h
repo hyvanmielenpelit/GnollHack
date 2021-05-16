@@ -38,6 +38,7 @@ struct flag {
 #define discover flags.explore
     boolean friday13;        /* it's Friday the 13th */
     boolean help;            /* look in data file for info about stuff */
+    boolean ibm2utf8;        /* converts IBMgraphics (cp437) to UTF-8 */
     boolean ignintr;         /* ignore interrupts */
     boolean ins_chkpt;       /* checkpoint as appropriate; INSURANCE */
     boolean invlet_constant; /* let objects keep their inventory symbol */
