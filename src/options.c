@@ -159,7 +159,9 @@ static struct Bool_Opt {
     { "hilite_pet", &iflags.wc_hilite_pet, FALSE, SET_IN_GAME }, /*WC*/
     { "hilite_pile", &iflags.hilite_pile, FALSE, SET_IN_GAME },
     { "hitpointbar", &iflags.wc2_hitpointbar, FALSE, SET_IN_GAME }, /*WC2*/
+#if 0
     { "ibm2utf8", &flags.ibm2utf8, FALSE, SET_IN_GAME },
+#endif
 #ifndef MAC
     { "ignintr", &flags.ignintr, FALSE, SET_IN_GAME },
 #else
