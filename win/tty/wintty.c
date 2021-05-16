@@ -300,11 +300,24 @@ int i, c, d;
                 vt_tile_current_window = c;
             }
             if (d >= 0)
-                printf("\033[1;%d;%d;%d%c", i, c, d, TILE_ANSI_COMMAND);
+            {
+                if(flags.ibm2utf8)
+                    wprintf(L"\033[1;%d;%d;%d%c", i, c, d, TILE_ANSI_COMMAND);
+                else
+                    printf("\033[1;%d;%d;%d%c", i, c, d, TILE_ANSI_COMMAND);
+            }
             else
-                printf("\033[1;%d;%d%c", i, c, TILE_ANSI_COMMAND);
+            {
+                if (flags.ibm2utf8)
+                    wprintf(L"\033[1;%d;%d%c", i, c, TILE_ANSI_COMMAND);
+                else
+                    printf("\033[1;%d;%d%c", i, c, TILE_ANSI_COMMAND);
+            }
         } else {
-            printf("\033[1;%d%c", i, TILE_ANSI_COMMAND);
+            if (flags.ibm2utf8)
+                wprintf(L"\033[1;%d%c", i, TILE_ANSI_COMMAND);
+            else
+                printf("\033[1;%d%c", i, TILE_ANSI_COMMAND);
         }
     }
 }
