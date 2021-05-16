@@ -3397,8 +3397,9 @@ char ch;
         unsigned char firstbyte = 0xC0 | ((utf8char & 0x0040) >> 6) | ((utf8char & 0x0080) >> 6) | ((utf8char & 0x0100) >> 6) | ((utf8char & 0x0200) >> 6) | ((utf8char & 0x0400) >> 6);
         unsigned char secondbyte = 0x80 | (utf8char & 0x003F);
 
-        putchar((char)firstbyte);
-        putchar((char)secondbyte);
+        //putchar((char)firstbyte);
+        //putchar((char)secondbyte);
+        printf("%c%c", (char)firstbyte, (char)firstbyte);
     }
     else /* No higher ones are possible with unisgned short */
     {
@@ -3406,9 +3407,10 @@ char ch;
         unsigned char secondbyte = 0x80 | ((utf8char & 0x0FC0) >> 6);
         unsigned char thirdbyte = 0x80 | (utf8char & 0x003F);
 
-        putchar((char)firstbyte);
-        putchar((char)secondbyte);
-        putchar((char)thirdbyte);
+        //putchar((char)firstbyte);
+        //putchar((char)firstbyte);
+        //putchar((char)thirdbyte);
+        printf("%c%c%c", (char)firstbyte, (char)secondbyte, (char)thirdbyte);
     }
 }
 
