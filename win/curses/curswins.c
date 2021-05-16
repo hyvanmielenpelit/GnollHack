@@ -578,18 +578,18 @@ coordinates without a refresh.  Currently only used for the map. */
 static void
 write_char(WINDOW * win, int x, int y, nethack_char nch)
 {
-    long printedchar;
+    long c;
     curses_toggle_color_attr(win, nch.color, nch.attr, ON);
 
     if (flags.ibm2utf8 && nch.ch >= 0 && nch.ch < 256) /* Note requires that ncursesw has been installed */
-        printedchar = cp437toUnicode[nch.ch];
+        c = cp437toUnicode[nch.ch];
     else
-        printedchar = nch.ch;
+        c = nch.ch;
 
 #ifdef PDCURSES
-#define cputchar(c) mvwaddrawch(win, y, x, (c));
+#define cputchar(ch) mvwaddrawch(win, y, x, (ch));
 #else
-#define cputchar(c) mvwaddch(win, y, x, (c));
+#define cputchar(ch) mvwaddch(win, y, x, (ch));
 #endif
 
     if (flags.ibm2utf8)
