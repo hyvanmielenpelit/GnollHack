@@ -3517,11 +3517,11 @@ void
 tty_init_print_glyph(initid)
 int initid;
 {
-#if 0
     if (flags.ibm2utf8)
     {
         switch (initid)
         {
+#if 0
         case 0: /* Set locale to default */
             break;
         case 1: /* Set locale to UTF-8 */
@@ -3535,11 +3535,11 @@ int initid;
         case 3: /* End print_glyph */
             //freopen(NULL, "w", stdout);
             break;
+#endif
         default:
             break;
         }
     }
-#endif
 }
 
 /*
