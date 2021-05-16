@@ -539,6 +539,7 @@ static boolean need_update_inventory; /* for doset() */
 static boolean need_set_animation_timer;
 static boolean need_update_space_binding;
 static boolean need_status_initialize;
+static boolean need_init_print_glyph;
 
 #if defined(TOS) && defined(TEXTCOLOR)
 extern boolean colors_changed;  /* in tos.c */
@@ -4590,9 +4591,14 @@ boolean tinitial, tfrom_file;
                         need_redraw = TRUE;
                 }
             } 
-            else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors || boolopt[i].addr == &flags.ibm2utf8)
+            else if (boolopt[i].addr == &flags.ibm2utf8)
             {
                     need_redraw = TRUE;
+                    need_init_print_glyph = TRUE;
+            }
+            else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors)
+            {
+                need_redraw = TRUE;
             }
             else if (boolopt[i].addr == &flags.show_grid || boolopt[i].addr == &flags.show_tile_mon_hp_bar || boolopt[i].addr == &flags.show_tile_pet_hp_bar || boolopt[i].addr == &flags.show_tile_u_hp_bar || boolopt[i].addr == &flags.show_buff_timer)
             {
@@ -5199,7 +5205,12 @@ doset() /* changing options via menu by Per Liboriussen */
     }
 
     destroy_nhwindow(tmpwin);
-    
+
+    if (need_init_print_glyph)
+    {
+        init_print_glyph(1);
+    }
+
     if (need_status_initialize)
     {
         if (VIA_WINDOWPORT())

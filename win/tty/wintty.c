@@ -301,22 +301,22 @@ int i, c, d;
             }
             if (d >= 0)
             {
-                if(flags.ibm2utf8)
-                    wprintf(L"\033[1;%d;%d;%d%c", i, c, d, TILE_ANSI_COMMAND);
-                else
+                //if(flags.ibm2utf8)
+                //    wprintf(L"\033[1;%d;%d;%d%c", i, c, d, TILE_ANSI_COMMAND);
+                //else
                     printf("\033[1;%d;%d;%d%c", i, c, d, TILE_ANSI_COMMAND);
             }
             else
             {
-                if (flags.ibm2utf8)
-                    wprintf(L"\033[1;%d;%d%c", i, c, TILE_ANSI_COMMAND);
-                else
+                //if (flags.ibm2utf8)
+                //    wprintf(L"\033[1;%d;%d%c", i, c, TILE_ANSI_COMMAND);
+                //else
                     printf("\033[1;%d;%d%c", i, c, TILE_ANSI_COMMAND);
             }
         } else {
-            if (flags.ibm2utf8)
-                wprintf(L"\033[1;%d%c", i, TILE_ANSI_COMMAND);
-            else
+            //if (flags.ibm2utf8)
+            //    wprintf(L"\033[1;%d%c", i, TILE_ANSI_COMMAND);
+            //else
                 printf("\033[1;%d%c", i, TILE_ANSI_COMMAND);
         }
     }
@@ -3415,9 +3415,9 @@ char ch;
     unsigned char uch = (unsigned char)ch;
     wchar_t unicodechar = cp437toUnicode[uch];
 //    setlocale(LC_ALL, "en_US.UTF-8");
-//    freopen(NULL, "w", stdout);
+    freopen(NULL, "w", stdout);
     return (int)putwchar(unicodechar);
-//    freopen(NULL, "w", stdout);
+    freopen(NULL, "w", stdout);
 
 }
 
@@ -3525,14 +3525,14 @@ int initid;
             break;
         case 1: /* Set locale to UTF-8 */
             setlocale(LC_ALL, "en_US.UTF-8");
-            freopen(NULL, "w", stdout);
+            //freopen(NULL, "w", stdout);
             break;
         case 2: /* Start print_glyph */
             setlocale(LC_ALL, "en_US.UTF-8");
-            freopen(NULL, "w", stdout);
+            //freopen(NULL, "w", stdout);
             break;
         case 3: /* End print_glyph */
-            freopen(NULL, "w", stdout);
+            //freopen(NULL, "w", stdout);
             break;
         default:
             break;
