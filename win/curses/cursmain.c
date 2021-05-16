@@ -140,7 +140,7 @@ curses_init_nhwindows(int *argcp UNUSED,
 #ifdef PDCURSES
     char window_title[BUFSZ];
 #endif
-
+    curses_init_print_glyph(1);
 #ifdef XCURSES
     base_term = Xinitscr(*argcp, argv);
 #else
@@ -648,7 +648,7 @@ curses_cliparound(int x, int y)
 void
 curses_init_print_glyph(int initid)
 {
-    if(initid >= 0)
+    if(initid == 1)
         setlocale(LC_ALL, "en_US.UTF-8");
 }
 
