@@ -3074,22 +3074,22 @@ boolean nextlevel;
     {
     case P_ISRESTRICTED:
     case P_UNSKILLED:
-        res = 0.5;
-        break;
-    case P_BASIC:
         res = 1.0;
         break;
-    case P_SKILLED:
+    case P_BASIC:
         res = 1.5;
         break;
-    case P_EXPERT:
+    case P_SKILLED:
         res = 2.0;
         break;
-    case P_MASTER:
+    case P_EXPERT:
         res = 3.0;
         break;
-    case P_GRAND_MASTER:
+    case P_MASTER:
         res = 4.0;
+        break;
+    case P_GRAND_MASTER:
+        res = 6.0;
         break;
     default:
         break;
