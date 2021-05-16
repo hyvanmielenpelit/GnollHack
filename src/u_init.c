@@ -447,7 +447,7 @@ static const struct def_skill Skill_B_Max[] = {
     { P_THROWN_WEAPON, P_EXPERT },
     { P_RIDING, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_EXPERT },
-    { P_BARE_HANDED_COMBAT, P_EXPERT },
+    { P_BARE_HANDED_COMBAT, P_MASTER },
     { P_DISARM_TRAP, P_SKILLED },
     { P_NONE, 0 }
 };
@@ -472,7 +472,7 @@ static const struct def_skill Skill_C_Max[] = {
     { P_SLING, P_MASTER },
     { P_THROWN_WEAPON, P_MASTER },
     { P_NATURE_SPELL, P_EXPERT },
-    { P_BARE_HANDED_COMBAT, P_EXPERT },
+    { P_BARE_HANDED_COMBAT, P_MASTER },
     { P_WAND, P_EXPERT },
     { P_DISARM_TRAP, P_BASIC },
     { P_NONE, 0 }
@@ -571,8 +571,8 @@ static const struct def_skill Skill_Monk_Max[] = {
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_Monk_Init[] = {
-    { P_BARE_HANDED_COMBAT, P_GRAND_MASTER },
-    { P_MARTIAL_ARTS, P_BASIC },
+    { P_BARE_HANDED_COMBAT, P_EXPERT },
+    { P_MARTIAL_ARTS, P_UNSKILLED },
     { P_ABJURATION_SPELL, P_BASIC },
     { P_MOVEMENT_SPELL, P_BASIC },
     { P_NONE, 0 }

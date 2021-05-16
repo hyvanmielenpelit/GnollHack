@@ -1737,16 +1737,16 @@ int skill_level;
     switch (skill_level)
     {
     case P_BASIC:
-        percentage = 0;
+        percentage = 20;
         break;
     case P_SKILLED:
-        percentage = 25;
+        percentage = 40;
         break;
     case P_EXPERT:
-        percentage = 50;
+        percentage = 60;
         break;
     case P_MASTER:
-        percentage = 75;
+        percentage = 80;
         break;
     case P_GRAND_MASTER:
         percentage = 100;
@@ -1770,18 +1770,18 @@ int skill;
      *  basic -> skilled        1
      *  skilled -> expert       2
      */
-     /* More slots used up for martial.
-      *  unskilled -> basic      2
-      *  basic -> skilled        3
-      *  skilled -> expert       3
-      *  expert -> master        4
-      *  master -> grand master  4
+     /* More slots used up for b.h. and martial.
+      *  unskilled -> basic      1  3
+      *  basic -> skilled        1  4
+      *  skilled -> expert       2  4
+      *  expert -> master        2  5
+      *  master -> grand master  3  5
       */
     if (skill == P_BARE_HANDED_COMBAT)
         return max(1, (tmp + 1) / 2);
 
     if (skill == P_MARTIAL_ARTS)
-        return max(1, (tmp + 4) / 2);
+        return max(1, (tmp + 6) / 2);
 
     if (skill == P_TWO_WEAPON_COMBAT)
         return max(1, (tmp + 1) / 2);
@@ -2199,8 +2199,16 @@ enhance_weapon_skill()
                         char hbuf[BUFSZ];
                         char dbuf[BUFSZ];
                         char mbuf[BUFSZ];
-                        Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
-                        Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+                        if (P_SKILL_LEVEL(i) > P_UNSKILLED)
+                        {
+                            Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+                            Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+                        }
+                        else
+                        {
+                            Sprintf(hbuf, "--");
+                            Sprintf(dbuf, "--");
+                        }
                         Sprintf(mbuf, "%d%%", multihitpct);
                         Sprintf(bonusbuf, "%5s/%s/%s", hbuf, dbuf, mbuf);
 
@@ -2212,9 +2220,16 @@ enhance_weapon_skill()
                             char hbuf2[BUFSZ] = "";
                             char dbuf2[BUFSZ] = "";
                             char mbuf2[BUFSZ] = "";
-                            Sprintf(mbuf2, "%d%%", multihitpct);
-                            Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
-                            Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
+                            if (P_SKILL_LEVEL(i) + 1 > P_UNSKILLED)
+                            {
+                                Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
+                                Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
+                            }
+                            else
+                            {
+                                Sprintf(hbuf2, "--");
+                                Sprintf(dbuf2, "--");
+                            }
                             Sprintf(mbuf2, "%d%%", multihitpct2);
                             Sprintf(nextbonusbuf, "%5s/%s/%s", hbuf2, dbuf2, mbuf2);
                         }
@@ -2229,8 +2244,17 @@ enhance_weapon_skill()
                         char hbuf[BUFSZ];
                         char dbuf[BUFSZ];
                         char cbuf[BUFSZ];
-                        Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
-                        Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+                        if(i == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
+                        {
+                            Sprintf(hbuf, "--");
+                            Sprintf(dbuf, "--");
+                            criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, FALSE);
+                        }
+                        else
+                        {
+                            Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+                            Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+                        }
                         Sprintf(cbuf, "%d%%", criticalhitpct);
                         Sprintf(bonusbuf, "%5s/%s/%s", hbuf, dbuf, cbuf);
 
@@ -2242,8 +2266,17 @@ enhance_weapon_skill()
                             char hbuf2[BUFSZ];
                             char dbuf2[BUFSZ];
                             char cbuf2[BUFSZ];
-                            Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
-                            Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
+                            if (i == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
+                            {
+                                Sprintf(hbuf2, "--");
+                                Sprintf(dbuf2, "--");
+                                criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, TRUE);
+                            }
+                            else
+                            {
+                                Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
+                                Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
+                            }
                             Sprintf(cbuf2, "%d%%", criticalhitpct2);
                             Sprintf(nextbonusbuf, "%5s/%s/%s", hbuf2, dbuf2, cbuf2);
                         }
@@ -2451,7 +2484,7 @@ weapon_skill_type(obj)
 struct obj *obj;
 {
     if (!obj || (is_gloves(obj) && (obj->owornmask & W_ARMG)))
-        return (P_SKILL_LEVEL(P_MARTIAL_ARTS) <= P_UNSKILLED || P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) < P_EXPERT  ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS); /* Not using a weapon */
+        return (P_SKILL_LEVEL(P_MARTIAL_ARTS) >= P_UNSKILLED && P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) >= P_GRAND_MASTER  ? P_MARTIAL_ARTS : P_BARE_HANDED_COMBAT); /* Not using a weapon */
 
     /* JG -- Now all items have a skill */
     /*
@@ -2489,7 +2522,7 @@ boolean nextlevel;
     int wep_type = weapon_skill_type(weapon);
     int type = use_this_skill ? use_this_skill : wep_type;
     
-    if (type == P_BARE_HANDED_COMBAT || Is_worn_gauntlets) 
+    if (type == P_BARE_HANDED_COMBAT || type == P_MARTIAL_ARTS || Is_worn_gauntlets)
     {
         int type2 = type;
         if (type == P_NONE || type == P_MARTIAL_ARTS)
@@ -2497,7 +2530,7 @@ boolean nextlevel;
 
         int skill_level = min(P_MAX_SKILL_LEVEL(type2), P_SKILL_LEVEL(type2) + (nextlevel ? 1 : 0));
 
-        bonus += max(skill_level - 1, 0) - 1;
+        bonus += 3 * max(skill_level - 1, 0);
         /* unskilled: -1, basic: +0, skilled: +1, expert: +2 */
     /*
      *        b.h. m.a.
@@ -2584,7 +2617,7 @@ boolean nextlevel;
     if ((!use_this_skill && apply_martial_arts_bonus) || type == P_MARTIAL_ARTS)
     {
         int skill_level = min(P_MAX_SKILL_LEVEL(P_MARTIAL_ARTS), P_SKILL_LEVEL(P_MARTIAL_ARTS) + (nextlevel ? 1 : 0));
-        bonus += 2 * max(skill_level - 1, 0); /* unskilled => 0 */
+        bonus += 4 * max(skill_level - 1, 0); /* unskilled => 0 */
         /* unskilled: +0, basic: +2, skilled: +4, expert: +6 */
         /* total with expert in bare-handed combat: */
         /* unskilled: +2, basic: +4, skilled: +6, expert: +8 */
@@ -2639,7 +2672,7 @@ boolean nextlevel;
     int wep_type = weapon_skill_type(weapon);
     int type = use_this_skill > P_NONE ? use_this_skill : wep_type;
 
-    if (type == P_BARE_HANDED_COMBAT || Is_worn_gauntlets)
+    if (type == P_BARE_HANDED_COMBAT || type == P_MARTIAL_ARTS || Is_worn_gauntlets)
     {
         int type2 = type;
         if (type == P_NONE || type == P_MARTIAL_ARTS)
@@ -2647,7 +2680,7 @@ boolean nextlevel;
 
         int skill_level = min(P_MAX_SKILL_LEVEL(type2), P_SKILL_LEVEL(type2) + (nextlevel ? 1 : 0));
 
-        bonus += max(skill_level - 1, 0); /* unskilled => 0 */
+        bonus += 2 * max(skill_level - 1, 0); /* unskilled => 0 */
         /*
          *        b.h. m.a.
          * unskl:   0  n/a
@@ -2729,7 +2762,7 @@ boolean nextlevel;
     if ((!use_this_skill && apply_martial_arts_bonus) || type == P_MARTIAL_ARTS)
     {
         int skill_level = min(P_MAX_SKILL_LEVEL(P_MARTIAL_ARTS), P_SKILL_LEVEL(P_MARTIAL_ARTS) + (nextlevel ? 1 : 0));
-        bonus += 2 * max(skill_level - 1, 0); /* unskilled => 0 */
+        bonus += 3 * max(skill_level - 1, 0); /* unskilled => 0 */
         /* unskilled: +0, basic: +2, skilled: +4, expert: +6 */
         /* total with expert in bare-handed combat: */
         /* unskilled: +3, basic: +5, skilled: +7, expert: +9 */
@@ -2961,13 +2994,13 @@ boolean nextlevel;
             res = 10;
             break;
         case P_EXPERT:
-            res = 15;
-            break;
-        case P_MASTER:
             res = 20;
             break;
+        case P_MASTER:
+            res = 40;
+            break;
         case P_GRAND_MASTER:
-            res = 25;
+            res = 70;
             break;
         default:
             break;
@@ -2982,19 +3015,19 @@ boolean nextlevel;
             res = get_skill_critical_strike_chance(P_BARE_HANDED_COMBAT, nextlevel);
             break;
         case P_BASIC:
-            res = 30;
+            res = 75;
             break;
         case P_SKILLED:
-            res = 40;
+            res = 80;
             break;
         case P_EXPERT:
-            res = 50;
+            res = 85;
             break;
         case P_MASTER:
-            res = 60;
+            res = 90;
             break;
         case P_GRAND_MASTER:
-            res = 70;
+            res = 95;
             break;
         default:
             break;
