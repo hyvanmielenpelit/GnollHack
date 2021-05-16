@@ -7,7 +7,6 @@
 #include "hack.h"
 #include "wincurs.h"
 #include "curswins.h"
-#include <wchar.h>
 
 /* Window handling for curses interface */
 
@@ -44,7 +43,6 @@ static nethack_wid *nhwids = NULL;      /* NetHack wid array */
 static boolean is_main_window(winid wid);
 static void write_char(WINDOW * win, int x, int y, nethack_char ch);
 static void clear_map(void);
-extern const long cp437toUnicode[256];
 
 /* Create a window with the specified size and orientation */
 
@@ -578,13 +576,9 @@ coordinates without a refresh.  Currently only used for the map. */
 static void
 write_char(WINDOW * win, int x, int y, nethack_char nch)
 {
-    long c;
     curses_toggle_color_attr(win, nch.color, nch.attr, ON);
 
-    if (flags.ibm2utf8) /* Note requires that ncursesw has been installed */
-        c = (long)cp437toUnicode[(unsigned char)nch.ch];
-    else
-        c = nch.ch;
+    long c = nch.ch;
 
 #ifdef PDCURSES
 #define cputchar(ch) mvwaddrawch(win, y, x, (ch));
@@ -592,32 +586,7 @@ write_char(WINDOW * win, int x, int y, nethack_char nch)
 #define cputchar(ch) mvwaddch(win, y, x, (ch));
 #endif
 
-    if (flags.ibm2utf8)
-    {
-        if (c < 0x80) {
-            cputchar(c);
-        }
-        else if (c < 0x800) {
-            cputchar(0xC0 | (c >> 6));
-            cputchar(0x80 | (c & 0x3F));
-        }
-        else if (c < 0x10000) {
-            cputchar(0xE0 | (c >> 12));
-            cputchar(0x80 | (c >> 6 & 0x3F));
-            cputchar(0x80 | (c & 0x3F));
-        }
-        else if (c < 0x200000) {
-            cputchar(0xF0 | (c >> 18));
-            cputchar(0x80 | (c >> 12 & 0x3F));
-            cputchar(0x80 | (c >> 6 & 0x3F));
-            cputchar(0x80 | (c & 0x3F));
-        }
-    }
-    else
-    {
-        cputchar(c);
-    }
-
+    cputchar(c);
     curses_toggle_color_attr(win, nch.color, nch.attr, OFF);
 }
 
