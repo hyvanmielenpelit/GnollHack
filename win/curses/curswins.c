@@ -614,7 +614,7 @@ write_char(WINDOW * win, int x, int y, nethack_char nch)
     int printedchar;
     curses_toggle_color_attr(win, nch.color, nch.attr, ON);
 
-    if (flags.ibm2utf8 && nch.ch >= 0 && nch.ch < 255)
+    if (flags.ibm2utf8 && nch.ch >= 0 && nch.ch < 256)
         printedchar = cp437toUnicode[nch.ch];
     else
         printedchar = nch.ch;
