@@ -484,75 +484,37 @@ curses_convert_glyph(int ch, int glyph)
         return ch;
     }
 
-    if (flags.ibm2utf8)
-    {
-        switch (symbol) {
-        case S_vwall:
-        case S_vbeam:
-            return WACS_VLINE;
-        case S_hwall:
-        case S_hbeam:
-            return WACS_HLINE;
-        case S_tlcorn:
-            return WACS_ULCORNER;
-        case S_trcorn:
-            return WACS_URCORNER;
-        case S_blcorn:
-            return WACS_LLCORNER;
-        case S_brcorn:
-            return WACS_LRCORNER;
-        case S_crwall:
-            return WACS_PLUS;
-        case S_tuwall:
-            return WACS_BTEE;
-        case S_tdwall:
-            return WACS_TTEE;
-        case S_tlwall:
-            return WACS_RTEE;
-        case S_trwall:
-            return WACS_LTEE;
-        case S_tree:
-            return WACS_PLMINUS;
-        case S_corr:
-            return WACS_CKBOARD;
-        case S_litcorr:
-            return WACS_CKBOARD;
-        }
-    }
-    else
-    {
-        switch (symbol) {
-        case S_vwall:
-        case S_vbeam:
-            return ACS_VLINE;
-        case S_hwall:
-        case S_hbeam:
-            return ACS_HLINE;
-        case S_tlcorn:
-            return ACS_ULCORNER;
-        case S_trcorn:
-            return ACS_URCORNER;
-        case S_blcorn:
-            return ACS_LLCORNER;
-        case S_brcorn:
-            return ACS_LRCORNER;
-        case S_crwall:
-            return ACS_PLUS;
-        case S_tuwall:
-            return ACS_BTEE;
-        case S_tdwall:
-            return ACS_TTEE;
-        case S_tlwall:
-            return ACS_RTEE;
-        case S_trwall:
-            return ACS_LTEE;
-        case S_tree:
-            return ACS_PLMINUS;
-        case S_corr:
-            return ACS_CKBOARD;
-        case S_litcorr:
-            return ACS_CKBOARD;
-        }
+    switch (symbol) {
+    case S_vwall:
+    case S_vbeam:
+        return ACS_VLINE;
+    case S_hwall:
+    case S_hbeam:
+        return ACS_HLINE;
+    case S_tlcorn:
+        return ACS_ULCORNER;
+    case S_trcorn:
+        return ACS_URCORNER;
+    case S_blcorn:
+        return ACS_LLCORNER;
+    case S_brcorn:
+        return ACS_LRCORNER;
+    case S_crwall:
+        return ACS_PLUS;
+    case S_tuwall:
+        return ACS_BTEE;
+    case S_tdwall:
+        return ACS_TTEE;
+    case S_tlwall:
+        return ACS_RTEE;
+    case S_trwall:
+        return ACS_LTEE;
+    case S_tree:
+        return ACS_PLMINUS;
+    case S_corr:
+        return ACS_CKBOARD;
+    case S_litcorr:
+        return ACS_CKBOARD;
     }
 
     return ch;
