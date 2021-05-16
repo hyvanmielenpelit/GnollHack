@@ -8,6 +8,7 @@
 #include "patchlevel.h"
 #include "color.h"
 #include "wincurs.h"
+#include <locale.h>
 
 extern long curs_mesg_suppress_turn; /* from cursmesg.c */
 
@@ -647,7 +648,8 @@ curses_cliparound(int x, int y)
 void
 curses_init_print_glyph(int initid)
 {
-    return;
+    if(initid >= 0)
+        setlocale(LC_ALL, "en_US.UTF-8");
 }
 
 /*
