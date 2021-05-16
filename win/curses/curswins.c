@@ -581,8 +581,8 @@ write_char(WINDOW * win, int x, int y, nethack_char nch)
     long c;
     curses_toggle_color_attr(win, nch.color, nch.attr, ON);
 
-    if (flags.ibm2utf8 && nch.ch >= 0 && nch.ch < 256) /* Note requires that ncursesw has been installed */
-        c = cp437toUnicode[nch.ch];
+    if (flags.ibm2utf8) /* Note requires that ncursesw has been installed */
+        c = (long)cp437toUnicode[(unsigned char)nch.ch];
     else
         c = nch.ch;
 
