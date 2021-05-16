@@ -3446,7 +3446,10 @@ int in_ch;
             graph_off();
             GFlag = FALSE;
         }
-        (void) putchar(ch);
+        if (flags.ibm2utf8)
+            putcp437charutf8(ch);
+        else
+            (void) putchar(ch);
     }
 
 #else

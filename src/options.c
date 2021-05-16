@@ -4590,7 +4590,7 @@ boolean tinitial, tfrom_file;
                         need_redraw = TRUE;
                 }
             } 
-            else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors)
+            else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors || boolopt[i].addr == &flags.ibm2utf8)
             {
                     need_redraw = TRUE;
             }
