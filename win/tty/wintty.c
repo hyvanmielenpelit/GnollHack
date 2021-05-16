@@ -3415,9 +3415,9 @@ putcp437charutf8(ch)
 char ch;
 {
     unsigned char uch = (unsigned char)ch;
-    long unicodechar = cp437toUnicode[uch];
+    long c = cp437toUnicode[uch];
 //    freopen(NULL, "w", stdout);
-//    (void)putwchar(unicodechar);
+//    (void)putwchar(c);
 //    freopen(NULL, "w", stdout);
     if (c < 0x80) {
         putchar(c);
