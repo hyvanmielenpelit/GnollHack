@@ -3400,7 +3400,7 @@ char ch;
         //putchar((char)firstbyte);
         //putchar((char)secondbyte);
         char buf[3];
-        Sprintf(buf, "%c%c", (char)firstbyte, (char)firstbyte);
+        Sprintf(buf, "%c%c", (char)firstbyte, (char)secondbyte);
         puts(buf);
     }
     else /* No higher ones are possible with unisgned short */
