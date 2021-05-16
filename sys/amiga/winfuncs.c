@@ -1936,6 +1936,13 @@ port_help()
  */
 
 void
+amii_init_print_glyph(initid)
+int initid;
+{
+    return;
+}
+
+void
 amii_print_glyph(win, x, y, layers)
 winid win;
 xchar x, y;

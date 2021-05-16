@@ -57,6 +57,7 @@ DLL int WINAPI RunGnollHack(
     /* If positionbar is on */
     UpdatePositionBarCallback callback_update_positionbar,
     PrintGlyphCallback callback_print_glyph,
+    InitPrintGlyphCallback callback_init_print_glyph,
     RawPrintCallback callback_raw_print,
     RawPrintBoldCallback callback_raw_print_bold,
     GetChCallback callback_nhgetch,
@@ -144,6 +145,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_cliparound = callback_cliparound;
     dll_callbacks.callback_update_positionbar = callback_update_positionbar;
     dll_callbacks.callback_print_glyph = callback_print_glyph;
+    dll_callbacks.callback_init_print_glyph = callback_init_print_glyph;
     dll_callbacks.callback_raw_print = callback_raw_print;
     dll_callbacks.callback_raw_print_bold = callback_raw_print_bold;
     dll_callbacks.callback_nhgetch = callback_nhgetch;

@@ -56,6 +56,7 @@ struct window_procs curses_procs = {
     donull,
 #endif
     curses_print_glyph,
+    curses_init_print_glyph,
     curses_raw_print,
     curses_raw_print_bold,
     curses_nhgetch,
@@ -641,6 +642,12 @@ curses_cliparound(int x, int y)
     if (redraw) {
         curses_draw_map(sx, sy, ex, ey);
     }
+}
+
+void
+curses_init_print_glyph(int initid)
+{
+    return;
 }
 
 /*

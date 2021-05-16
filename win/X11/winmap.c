@@ -70,6 +70,13 @@ static void FDECL(display_cursor, (struct xwindow *));
 /* Global functions ======================================================= */
 
 void
+X11_init_print_glyph(initid)
+int initid;
+{
+    return;
+}
+
+void
 X11_print_glyph(window, x, y, layers)
 winid window;
 xchar x, y;

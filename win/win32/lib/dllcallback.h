@@ -32,7 +32,7 @@ typedef unsigned char(__stdcall* BooleanVoidPtrCallback)(void*);
 typedef char(__stdcall* CharConstCharPtrConstCharPtrCharCallback)(const char*, const char*, char);
 typedef void(__stdcall* VoidConstCharPtrCharPtrCallback)(const char*, char*);
 typedef char*(__stdcall* CharPtrBooleanCallback)(unsigned char);
-typedef void(__stdcall* VoidIntIntIntIntInt)(int, int, int, int, int);
+typedef void(__stdcall* VoidIntIntIntIntIntCallback)(int, int, int, int, int);
 typedef void(__stdcall* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, unsigned char);
 
 
@@ -63,7 +63,8 @@ typedef VoidVoidCallback MarkSynchCallback;
 typedef VoidVoidCallback WaitSynchCallback;
 typedef VoidIntIntCallback ClipAroundCallback;
 typedef VoidCharCallback UpdatePositionBarCallback;
-typedef VoidIntIntIntIntInt PrintGlyphCallback;
+typedef VoidIntIntIntIntIntCallback PrintGlyphCallback;
+typedef VoidIntCallback InitPrintGlyphCallback;
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;
 typedef IntVoidCallback GetChCallback;
@@ -144,6 +145,7 @@ struct callback_procs {
     UpdatePositionBarCallback callback_update_positionbar;
     
     PrintGlyphCallback callback_print_glyph;
+    InitPrintGlyphCallback callback_init_print_glyph;
     RawPrintCallback callback_raw_print;
     RawPrintBoldCallback callback_raw_print_bold;
     GetChCallback callback_nhgetch;

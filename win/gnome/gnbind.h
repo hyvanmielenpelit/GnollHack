@@ -72,6 +72,7 @@ void gnome_cliparound(int x, int y);
 */
 void gnome_cliparound_proper(winid wid, int x, int y);
 void gnome_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph);
+void gnome_init_print_glyph(int initid);
 void gnome_raw_print(const char *str);
 void gnome_raw_print_bold(const char *str);
 int gnome_nhgetch(void);

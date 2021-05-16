@@ -115,6 +115,7 @@ namespace GnollHackServer
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
             VoidIntIntIntIntIntCallback callback_print_glyph,
+            VoidIntCallback callback_init_print_glyph,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
             IntVoidCallback callback_nhgetch,
@@ -253,6 +254,7 @@ namespace GnollHackServer
                 /* If positionbar is on */
                 GameCallback_VoidCharDummy,
                 GameCallback_VoidIntIntIntIntIntDummy,
+                GameCallback_VoidIntDummy,
                 GameCallback_VoidConstCharDummy,
                 GameCallback_VoidConstCharDummy,
                 GameCallback_IntVoidDummy,

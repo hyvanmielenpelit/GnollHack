@@ -867,6 +867,7 @@ class NetHackQtBind : NetHackQtBindBase
     static void qt_cliparound(int x, int y);
     static void qt_cliparound_window(winid wid, int x, int y);
     static void qt_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
+    static void qt_init_print_glyph(int);
     static void qt_raw_print(const char *str);
     static void qt_raw_print_bold(const char *str);
     static int qt_nhgetch();

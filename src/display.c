@@ -2132,12 +2132,14 @@ redraw_map()
      * the map would currently be showing.
      */
     struct layer_info layers;
+    init_print_glyph(2);
     for (y = 0; y < ROWNO; ++y)
         for (x = 1; x < COLNO; ++x) {
             layers = layers_at(x, y); /* not levl[x][y].hero_memory_layers.glyph */
             print_glyph(WIN_MAP, x, y, layers);
         }
     flush_screen(1);
+    init_print_glyph(3);
 }
 
 /* FIXME: This is a dirty hack, because newsym() doesn't distinguish
@@ -2864,6 +2866,7 @@ int cursor_on_u;
         return;
 #endif
 
+    init_print_glyph(2);
     for (y = 0; y < ROWNO; y++) {
         register gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];
 
@@ -2873,6 +2876,7 @@ int cursor_on_u;
                 gptr->isnew = 0;
             }
     }
+    init_print_glyph(3);
 
     if (cursor_on_u)
         curs(WIN_MAP, u.ux, u.uy); /* move cursor to the hero */

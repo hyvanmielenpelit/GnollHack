@@ -104,7 +104,7 @@ struct window_procs nuklear_procs = {
 #ifdef POSITIONBAR
     donull,
 #endif
-    sdl_print_glyph, sdl_raw_print, sdl_raw_print_bold, sdl_nhgetch,
+    sdl_print_glyph, sdl_init_print_glyph, sdl_raw_print, sdl_raw_print_bold, sdl_nhgetch,
     sdl_nh_poskey, sdl_nhbell, sdl_doprev_message, sdl_yn_function,
     sdl_getlin, sdl_get_ext_cmd, sdl_number_pad, sdl_delay_output, sdl_delay_output_milliseconds, sdl_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
@@ -1315,6 +1315,12 @@ sdl_cliparound(int x, int y)
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CLIPAROUND, (LPARAM) &data);
     }
+}
+
+void
+sdl_init_print_glyph(int initid)
+{
+    return;
 }
 
 /*

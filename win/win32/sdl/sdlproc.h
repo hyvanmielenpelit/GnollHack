@@ -112,6 +112,7 @@ void sdl_mark_synch(void);
 void sdl_wait_synch(void);
 void sdl_cliparound(int x, int y);
 void sdl_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
+void sdl_init_print_glyph(int initid);
 void sdl_raw_print(const char *str);
 void sdl_raw_print_bold(const char *str);
 void sdl_raw_print_flush();

@@ -285,6 +285,13 @@ char *posbar;
 
 /* XXX can we decode the glyph in a meaningful way? */
 void
+chainin_init_print_glyph(initid)
+int initid;
+{
+    (*cibase->nprocs->win_init_print_glyph)(cibase->ndata, initid);
+}
+
+void
 chainin_print_glyph(window, x, y, layers)
 winid window;
 xchar x, y;
@@ -562,7 +569,7 @@ struct window_procs chainin_procs = {
 #ifdef POSITIONBAR
     chainin_update_positionbar,
 #endif
-    chainin_print_glyph, chainin_raw_print, chainin_raw_print_bold,
+    chainin_print_glyph, chainin_init_print_glyph, chainin_raw_print, chainin_raw_print_bold,
     chainin_nhgetch, chainin_nh_poskey, chainin_nhbell,
     chainin_doprev_message, chainin_yn_function, chainin_getlin,
     chainin_get_ext_cmd, chainin_number_pad, chainin_delay_output, chainin_delay_output_milliseconds, chainin_delay_output_intervals,

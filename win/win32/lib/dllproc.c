@@ -85,7 +85,7 @@ struct window_procs dll_procs = {
 #ifdef POSITIONBAR
     donull,
 #endif
-    dll_print_glyph, dll_raw_print, dll_raw_print_bold, dll_nhgetch,
+    dll_print_glyph, dll_init_print_glyph, dll_raw_print, dll_raw_print_bold, dll_nhgetch,
     dll_nh_poskey, dll_nhbell, dll_doprev_message, dll_yn_function,
     dll_getlin, dll_get_ext_cmd, dll_number_pad, dll_delay_output, dll_delay_output_milliseconds, dll_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
@@ -1331,6 +1331,12 @@ dll_cliparound(int x, int y)
                     (WPARAM) MSNH_MSG_CLIPAROUND, (LPARAM) &data);
     }
 #endif
+}
+
+void
+dll_init_print_glyph(int initid)
+{
+    return;
 }
 
 /*

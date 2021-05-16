@@ -435,6 +435,10 @@ void NetHackQtBind::qt_cliparound_window(winid wid, int x, int y)
     NetHackQtWindow* window=id_to_window[(int)wid];
     window->ClipAround(x,y);
 }
+void NetHackQtBind::qt_init_print_glyph(int initid)
+{
+
+}
 void NetHackQtBind::qt_print_glyph(winid wid,XCHAR_P x,XCHAR_P y,struct layer_info layers)
 {
     /* TODO: bkglyph */
@@ -787,6 +791,7 @@ struct window_procs Qt_procs = {
     nethack_qt4::Qt_positionbar,
 #endif
     nethack_qt4::NetHackQtBind::qt_print_glyph,
+    nethack_qt4::NetHackQtBind::qt_init_print_glyph,
     //NetHackQtBind::qt_print_glyph_compose,
     nethack_qt4::NetHackQtBind::qt_raw_print,
     nethack_qt4::NetHackQtBind::qt_raw_print_bold,

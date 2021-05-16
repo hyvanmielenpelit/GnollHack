@@ -121,7 +121,7 @@ struct window_procs X11_procs = {
 #ifdef POSITIONBAR
     donull,
 #endif
-    X11_print_glyph, X11_raw_print, X11_raw_print_bold, X11_nhgetch,
+    X11_print_glyph, X11_init_print_glyph, X11_raw_print, X11_raw_print_bold, X11_nhgetch,
     X11_nh_poskey, X11_nhbell, X11_doprev_message, X11_yn_function,
     X11_getlin, X11_get_ext_cmd, X11_number_pad, X11_delay_output, X11_delay_output_milliseconds, X11_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */

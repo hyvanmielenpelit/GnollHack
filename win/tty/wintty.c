@@ -51,6 +51,9 @@ const wchar_t cp437toUnicode[256] = {
     0x00b0, 0x2219, 0x00b7, 0x221a, 0x207f, 0x00b2, 0x25a0, 0x00a0
 };
 
+int FDECL(putcp437charutf8, (char));
+int FDECL(doputchar, (char));
+
 #ifdef TTY_GRAPHICS
 #include "dlb.h"
 
@@ -147,7 +150,7 @@ struct window_procs tty_procs = {
 #ifdef POSITIONBAR
     tty_update_positionbar,
 #endif
-    tty_print_glyph, tty_raw_print, tty_raw_print_bold, tty_nhgetch,
+    tty_print_glyph, tty_init_print_glyph, tty_raw_print, tty_raw_print_bold, tty_nhgetch,
     tty_nh_poskey, tty_nhbell, tty_doprev_message, tty_yn_function,
     tty_getlin, tty_get_ext_cmd, tty_number_pad, tty_delay_output, tty_delay_output_milliseconds, tty_delay_output_intervals,
 #ifdef CHANGE_COLOR /* the Mac uses a palette device */
@@ -2289,6 +2292,8 @@ struct WinDesc *cw;
     boolean linestart;
     register char *cp;
 
+    init_print_glyph(2);
+
     for (n = 0, i = 0; i < cw->maxrow; i++) {
         HUPSKIP();
         if (!cw->offx && (n + cw->offy == ttyDisplay->rows - 1)) {
@@ -2316,7 +2321,7 @@ struct WinDesc *cw;
         if (cw->data[i]) {
             attr = cw->data[i][0] - 1;
             if (cw->offx) {
-                (void) putchar(' ');
+                (void) doputchar(' ');
                 ++ttyDisplay->curx;
             }
             term_start_attr(attr);
@@ -2336,7 +2341,7 @@ struct WinDesc *cw;
                     end_glyphout();
                     linestart = FALSE;
                 } else {
-                    (void) putchar(*cp);
+                    (void) doputchar(*cp);
                 }
             }
             term_end_attr(attr);
@@ -2356,6 +2361,8 @@ struct WinDesc *cw;
         if (morc == '\033')
             cw->flags |= WIN_CANCELLED;
     }
+
+    init_print_glyph(3);
 }
 
 /*ARGSUSED*/
@@ -3334,6 +3341,8 @@ register int xmin, ymax;
     }
 #endif /*0*/
 
+    init_print_glyph(2);
+
 #if defined(SIGWINCH) && defined(CLIPPING)
     if (ymax > LI)
         ymax = LI; /* can happen if window gets smaller */
@@ -3358,6 +3367,7 @@ register int xmin, ymax;
         row_refresh(xmin - (int) cw->offx, COLNO - 1, y - (int) cw->offy);
 #endif
     }
+    init_print_glyph(3);
 
     end_glyphout();
     if (ymax >= (int) wins[WIN_STATUS]->offy) {
@@ -3385,45 +3395,29 @@ end_glyphout()
 #endif
 }
 
-void
+int
 putcp437charutf8(ch)
 char ch;
 {
     unsigned char uch = (unsigned char)ch;
     wchar_t unicodechar = cp437toUnicode[uch];
-    setlocale(LC_ALL, "en_US.UTF-8");
-    freopen(NULL, "w", stdout);
-    putwchar(unicodechar);
-    freopen(NULL, "w", stdout);
+//    setlocale(LC_ALL, "en_US.UTF-8");
+//    freopen(NULL, "w", stdout);
+    return (int)putwchar(unicodechar);
+//    freopen(NULL, "w", stdout);
 
-#if 0
-    if (utf8char < 0x80)
-        putchar(ch);
-    else if (utf8char < 0x0800)
+}
+
+int
+doputchar(ch)
+{
+    if (flags.ibm2utf8)
+        return putcp437charutf8(ch);
+    else
     {
-        unsigned char firstbyte = 0xC0 | ((utf8char & 0x0040) >> 6) | ((utf8char & 0x0080) >> 6) | ((utf8char & 0x0100) >> 6) | ((utf8char & 0x0200) >> 6) | ((utf8char & 0x0400) >> 6);
-        unsigned char secondbyte = 0x80 | (utf8char & 0x003F);
-
-        //putchar((char)firstbyte);
-        //putchar((char)secondbyte);
-        char buf[3];
-        Sprintf(buf, "%c%c", (char)firstbyte, (char)secondbyte);
-        puts(buf);
+        (void)putchar(ch);
+        return 0;
     }
-    else /* No higher ones are possible with unisgned short */
-    {
-        unsigned char firstbyte = 0xC0 | ((utf8char & 0x1000) >> 12) | ((utf8char & 0x2000) >> 12) | ((utf8char & 0x4000) >> 12) | ((utf8char & 0x8000) >> 12);
-        unsigned char secondbyte = 0x80 | ((utf8char & 0x0FC0) >> 6);
-        unsigned char thirdbyte = 0x80 | (utf8char & 0x003F);
-
-        //putchar((char)firstbyte);
-        //putchar((char)firstbyte);
-        //putchar((char)thirdbyte);
-        char buf[4];
-        Sprintf(buf, "%c%c%c", (char)firstbyte, (char)secondbyte, (char)thirdbyte);
-        puts(buf);
-    }
-#endif
 }
 
 #ifndef WIN32
@@ -3442,35 +3436,23 @@ int in_ch;
         || (iflags.eight_bit_tty && (!SYMHANDLING(H_DEC)
                                      || (in_ch & 0x7f) < 0x60))) {
         /* IBM-compatible displays don't need other stuff */
-        if (flags.ibm2utf8)
-            putcp437charutf8(ch);
-        else
-            (void) putchar(ch);
+        (void) doputchar(ch);
     } else if (ch & 0x80) {
         if (!GFlag || HE_resets_AS) {
             graph_on();
             GFlag = TRUE;
         }
-        if (flags.ibm2utf8)
-            putcp437charutf8((ch ^ 0x80));
-        else
-            (void) putchar((ch ^ 0x80)); /* Strip 8th bit */
+        (void) doputchar((ch ^ 0x80)); /* Strip 8th bit */
     } else {
         if (GFlag) {
             graph_off();
             GFlag = FALSE;
         }
-        if (flags.ibm2utf8)
-            putcp437charutf8(ch);
-        else
-            (void) putchar(ch);
+        doputchar(ch);
     }
 
 #else
-    if (flags.ibm2utf8)
-        putcp437charutf8(ch);
-    else
-        (void) putchar(ch);
+    (void) doputchar(ch);
 
 #endif /* ASCIIGRAPH && !NO_TERMS */
 
@@ -3516,6 +3498,33 @@ int x, y;
     }
 }
 #endif /* CLIPPING */
+
+void
+tty_init_print_glyph(initid)
+int initid;
+{
+    if (flags.ibm2utf8)
+    {
+        switch (initid)
+        {
+        case 0: /* Set locale to default */
+            break;
+        case 1: /* Set locale to UTF-8 */
+            setlocale(LC_ALL, "en_US.UTF-8");
+            freopen(NULL, "w", stdout);
+            break;
+        case 2: /* Start print_glyph */
+            setlocale(LC_ALL, "en_US.UTF-8");
+            freopen(NULL, "w", stdout);
+            break;
+        case 3: /* End print_glyph */
+            freopen(NULL, "w", stdout);
+            break;
+        default:
+            break;
+        }
+    }
+}
 
 /*
  *  tty_print_glyph

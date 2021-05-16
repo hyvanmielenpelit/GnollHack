@@ -106,7 +106,7 @@ struct window_procs mswin_procs = {
 #ifdef POSITIONBAR
     donull,
 #endif
-    mswin_print_glyph, mswin_raw_print, mswin_raw_print_bold, mswin_nhgetch,
+    mswin_print_glyph, mswin_init_print_glyph, mswin_raw_print, mswin_raw_print_bold, mswin_nhgetch,
     mswin_nh_poskey, mswin_nhbell, mswin_doprev_message, mswin_yn_function,
     mswin_getlin, mswin_get_ext_cmd, mswin_number_pad, mswin_delay_output, mswin_delay_output_milliseconds, mswin_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
@@ -1399,6 +1399,12 @@ mswin_cliparound(int x, int y)
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CLIPAROUND, (LPARAM) &data);
     }
+}
+
+void
+mswin_init_print_glyph(int initid)
+{
+    return;
 }
 
 /*

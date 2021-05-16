@@ -2932,6 +2932,13 @@ int x, y;
 }
 
 void
+mar_init_print_glyph(initid)
+int initid
+{
+    return;
+}
+
+void
 mar_print_glyph(window, x, y, layers)
 winid window;
 struct layer_info layers;
