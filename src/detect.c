@@ -2238,7 +2238,8 @@ dump_map()
         blankrow = TRUE; /* assume blank until we discover otherwise */
         lastnonblank = -1; /* buf[] index rather than map's x */
         for (x = 1; x < COLNO; x++) {
-            int ch, color;
+            nhsym ch;
+            int color;
             unsigned long special;
 
             glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow,

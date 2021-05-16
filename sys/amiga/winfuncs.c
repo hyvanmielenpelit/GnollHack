@@ -1953,7 +1953,8 @@ struct layer_info layers;
 
     struct amii_WinDesc *cw;
     uchar ch;
-    int color, och;
+    int color;
+    nhsym och;
     extern const int zapcolors[];
     unsigned special;
 

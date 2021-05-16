@@ -456,7 +456,7 @@ curses_is_text(winid wid)
 cursesgraphics option is enabled */
 
 int
-curses_convert_glyph(int ch, int glyph)
+curses_convert_glyph(nhsym ch, int glyph)
 {
     int symbol;
 

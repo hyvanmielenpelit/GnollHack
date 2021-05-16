@@ -667,7 +667,8 @@ print_glyph(window, x, y, glyph, bkglyph)
 void
 curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
-    int ch;
+    nhsym ch;
+    int cch;
     int color;
     unsigned long special;
     int attr = -1;
@@ -692,8 +693,10 @@ curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
         attr = A_REVERSE;
     }
     if (!symset[PRIMARY].name || !strcmpi(symset[PRIMARY].name, "curses")) {
-        ch = curses_convert_glyph(ch, glyph);
+        cch = curses_convert_glyph(ch, glyph);
     }
+    else
+        cch = (int)ch;
     if (wid == NHW_MAP) {
 /* hilite stairs not in 3.6, yet
         if ((special & MG_STAIRS) && iflags.hilite_hidden_stairs) {
@@ -708,7 +711,7 @@ curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
         }
     }
 
-    curses_putch(wid, x, y, ch, color, attr);
+    curses_putch(wid, x, y, cch, color, attr);
 }
 
 /*

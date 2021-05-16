@@ -81,14 +81,14 @@ curses_add_inv(int y,
     if (accelerator && glyph != NO_GLYPH && iflags.use_menu_glyphs) {
         unsigned dummy = 0; /* Not used */
         int color = 0;
-        int symbol = 0;
+        nhsym symbol = 0;
         attr_t glyphclr;
 
         mapglyph(glyph, &symbol, &color, &dummy,
                      u.ux, u.uy);
         glyphclr = curses_color_attr(color, 0);
         wattron(win, glyphclr);
-        wprintw(win, "%c ", symbol);
+        wprintw(win, "%c ", (char)symbol);
         wattroff(win, glyphclr);
     }
 #endif

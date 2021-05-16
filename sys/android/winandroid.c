@@ -1429,7 +1429,7 @@ void and_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 		tile = -1;
 	else
 		tile = glyph2tile[glyph];
-	int ch;
+	nhsym ch;
 	int col;
 	unsigned int special;
 	mapglyph(glyph, &ch, &col, &special, x, y); // , 0);
@@ -1442,7 +1442,7 @@ void and_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 	if(!iflags.use_inverse)
 		special &= ~MG_DETECT;
 
-	JNICallV(jPrintTile, wid, x, y, tile, ch, nhcolor_to_RGB(col), special);
+	JNICallV(jPrintTile, wid, x, y, tile, (int)ch, nhcolor_to_RGB(col), special);
 }
 
 //____________________________________________________________________________________

@@ -721,6 +721,7 @@ struct symsetentry {
 #define H_IBM     1
 #define H_DEC     2
 #define H_CURS    3
+#define H_UNICODE 4
 
 extern const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS]; /* defaults */
 extern const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS];

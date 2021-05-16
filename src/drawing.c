@@ -1324,7 +1324,7 @@ update_bouldersym()
     nhsym boulder = (nhsym) iflags.bouldersym;
 
     if (!boulder)
-        boulder = def_oc_syms[ROCK_CLASS].sym; /* (nhsym) ROCK_SYM */
+        boulder = (nhsym)def_oc_syms[ROCK_CLASS].sym; /* (nhsym) ROCK_SYM */
     showsyms[SYM_BOULDER + SYM_OFF_X] = boulder;
     l_syms[SYM_BOULDER + SYM_OFF_X] = boulder;
     r_syms[SYM_BOULDER + SYM_OFF_X] = boulder;
@@ -1336,20 +1336,20 @@ init_showsyms()
     register int i;
 
     for (i = 0; i < MAX_CMAPPED_CHARS; i++)
-        showsyms[i + SYM_OFF_P] = defsyms[i].sym;
+        showsyms[i + SYM_OFF_P] = (nhsym)defsyms[i].sym;
     for (i = 0; i < MAX_OBJECT_CLASSES; i++)
-        showsyms[i + SYM_OFF_O] = def_oc_syms[i].sym;
+        showsyms[i + SYM_OFF_O] = (nhsym)def_oc_syms[i].sym;
     for (i = 0; i < MAX_MONSTER_CLASSES; i++)
-        showsyms[i + SYM_OFF_M] = def_monsyms[i].sym;
+        showsyms[i + SYM_OFF_M] = (nhsym)def_monsyms[i].sym;
     for (i = 0; i < WARNCOUNT; i++)
-        showsyms[i + SYM_OFF_W] = def_warnsyms[i].sym;
+        showsyms[i + SYM_OFF_W] = (nhsym)def_warnsyms[i].sym;
     for (i = 0; i < MAXOTHER; i++) {
         if (i == SYM_BOULDER)
-            showsyms[i + SYM_OFF_X] = iflags.bouldersym
+            showsyms[i + SYM_OFF_X] = (nhsym)(iflags.bouldersym
                                         ? iflags.bouldersym
-                                        : def_oc_syms[ROCK_CLASS].sym;
+                                        : def_oc_syms[ROCK_CLASS].sym);
         else if (i == SYM_INVISIBLE)
-            showsyms[i + SYM_OFF_X] = DEF_INVISIBLE;
+            showsyms[i + SYM_OFF_X] = (nhsym)DEF_INVISIBLE;
     }
 }
 
@@ -1480,7 +1480,7 @@ int nondefault;
 void
 update_l_symset(symp, val)
 struct symparse *symp;
-int val;
+nhsym val;
 {
     l_syms[symp->idx] = val;
 }
@@ -1488,7 +1488,7 @@ int val;
 void
 update_r_symset(symp, val)
 struct symparse *symp;
-int val;
+nhsym val;
 {
     r_syms[symp->idx] = val;
 }
@@ -1527,6 +1527,7 @@ const char *known_handling[] = {
     "IBM",     /* H_IBM  */
     "DEC",     /* H_DEC  */
     "CURS",    /* H_CURS */
+    "UNICODE", /* H_UNICODE */
     (const char *) 0,
 };
 

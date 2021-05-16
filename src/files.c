@@ -3528,7 +3528,8 @@ parse_sym_line(buf, which_set)
 char *buf;
 int which_set;
 {
-    int val, i;
+    nhsym val;
+    int i;
     struct symparse *symp = (struct symparse *) 0;
     char *bufp, *commentp, *altp;
 

@@ -556,7 +556,7 @@ auto_describe(cx, cy)
 int cx, cy;
 {
     coord cc;
-    int sym = 0;
+    nhsym sym = 0;
     char tmpbuf[BUFSZ];
     const char *firstmatch = "unknown";
 
@@ -610,7 +610,7 @@ int gloc;
         char fullbuf[BUFSZ];
         coord tmpcc;
         const char *firstmatch = "unknown";
-        int sym = 0;
+        nhsym sym = 0;
 
         any.a_int = i + 1;
         tmpcc.x = garr[i].x;

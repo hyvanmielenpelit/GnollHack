@@ -148,6 +148,46 @@ start: IBMGraphics_2
 	S_grave: \xef
 finish
 
+start: UnicodeGraphics
+	Handling: UNICODE
+	S_vwall: \u2503			# meta-3, vertical rule
+	S_hwall: \u2501			# meta-D, horizontal rule
+	S_tlcorn: \u250F			# meta-Z, top left corner
+	S_trcorn: \u2513			# meta-?, top right corner
+	S_blcorn: \u2517			# meta-@, bottom left
+	S_brcorn: \u251B			# meta-Y, bottom right
+	S_crwall: \u254B			# meta-E, cross
+	S_tuwall: \u253B			# meta-A, T up
+	S_tdwall: \u252F			# meta-B, T down
+	S_tlwall: \u252B			# meta-4, T left
+	S_trwall: \u2523			# meta-C, T right
+	S_ndoor: \u22C5			# meta-z, centered dot
+	S_vodoor: \u229F			# meta-~, small centered square
+	S_hodoor: \u229F			# meta-~, small centered square
+	S_bars: \u2260			# equivalence symbol
+	S_treant: \u2618			# plus or minus symbol
+	S_tree: \u2618			# plus or minus symbol
+	S_room: \u22C5			# meta-z, centered dot
+	S_corr: \u2591			# meta-0, light shading
+	S_litcorr: \u2592			# meta-1, medium shading
+	S_fountain: \u222B		# meta-t, integral top half
+	S_pool: \u224B			# meta-w, approx. equals
+	S_ice: \u22C5			# meta-z, centered dot
+	S_lava: \u224B			# meta-w, approx. equals
+	S_vodbridge: \u22C5 		# meta-z, centered dot
+	S_hodbridge: \u22C5		# meta-z, centered dot
+	S_water: \u224B			# meta-w, approx. equals
+	S_vbeam: \u2503			# meta-3, vertical rule
+	S_hbeam: \u2501			# meta-D, horizontal rule
+	S_sw_ml: \u2503			# meta-3, vertical rule
+	S_sw_mr: \u2503			# meta-3, vertical rule
+	S_explode4: \u2503		# meta-3, vertical rule
+	S_explode6: \u2503		# meta-3, vertical rule
+	S_signpost: \u2691
+	S_brazier: \u2668
+	S_grave: \u2670
+finish
+
 start: MACgraphics
 	Handling: MAC
 	S_vwall: \xba

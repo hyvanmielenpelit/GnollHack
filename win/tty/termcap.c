@@ -564,11 +564,7 @@ register int x, y;
 /* See note above. xputc() is a special function. */
 void
 xputc(c)
-#if defined(apollo)
-    int c;
-#else
-    CHAR_P c;
-#endif
+int c;
 {
     (void) putchar(c);
 }
@@ -581,7 +577,7 @@ const char *s;
     (void) fputs(s, stdout);
 #else
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
-    tputs(s, 1, (void (*) (CHAR_P)) xputc);
+    tputs(s, 1, (void (*) (int)) xputc);
 #else
     tputs(s, 1, xputc);
 #endif
@@ -757,13 +753,13 @@ tty_delay_output()
 #ifdef TERMINFO
 /* cbosgd!cbcephus!pds for SYS V R2 */
 #ifdef NHSTDC
-        tputs("$<50>", 1, (void (*) (CHAR_P)) xputc);
+        tputs("$<50>", 1, (void (*) (int)) xputc);
 #else
         tputs("$<50>", 1, xputc);
 #endif
 #else
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
-        tputs("50", 1, (void (*) (CHAR_P)) xputc);
+        tputs("50", 1, (void (*) (int)) xputc);
 #else
         tputs("50", 1, xputc);
 #endif
@@ -813,13 +809,13 @@ int interval;
 #ifdef TERMINFO
         /* cbosgd!cbcephus!pds for SYS V R2 */
 #ifdef NHSTDC
-        tputs("$<50>", 1, (void (*) (CHAR_P)) xputc);
+        tputs("$<50>", 1, (void (*) (int)) xputc);
 #else
         tputs("$<50>", 1, xputc);
 #endif
 #else
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
-        tputs("50", 1, (void (*) (CHAR_P)) xputc);
+        tputs("50", 1, (void (*) (int)) xputc);
 #else
         tputs("50", 1, xputc);
 #endif
@@ -870,13 +866,13 @@ int intervals;
 #ifdef TERMINFO
         /* cbosgd!cbcephus!pds for SYS V R2 */
 #ifdef NHSTDC
-        tputs("$<50>", 1, (void (*) (CHAR_P)) xputc);
+        tputs("$<50>", 1, (void (*) (int)) xputc);
 #else
         tputs("$<50>", 1, xputc);
 #endif
 #else
 #if defined(NHSTDC) || defined(ULTRIX_PROTO)
-        tputs("50", 1, (void (*) (CHAR_P)) xputc);
+        tputs("50", 1, (void (*) (int)) xputc);
 #else
         tputs("50", 1, xputc);
 #endif

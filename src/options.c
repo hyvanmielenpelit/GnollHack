@@ -616,6 +616,7 @@ static boolean initial, from_file;
 
 STATIC_DCL void FDECL(nmcpy, (char *, const char *, int));
 STATIC_DCL void FDECL(escapes, (const char *, char *));
+STATIC_DCL void FDECL(escapes_ex, (const char*, void*, boolean));
 STATIC_DCL void FDECL(rejectoption, (const char *));
 STATIC_DCL char *FDECL(string_for_opt, (char *, BOOLEAN_P));
 STATIC_DCL char *FDECL(string_for_env_opt, (const char *, char *, BOOLEAN_P));
@@ -1035,13 +1036,25 @@ int maxlen;
  */
 STATIC_OVL void
 escapes(cp, tp)
+const char* cp; /* might be 'tp', updating in place */
+char* tp; /* result is never longer than 'cp' */
+{
+    escapes_ex(cp, tp, FALSE);
+}
+
+STATIC_OVL void
+escapes_ex(cp, tp, tp_is_nhsym)
 const char *cp; /* might be 'tp', updating in place */
-char *tp; /* result is never longer than 'cp' */
+void *tp; /* result is never longer than 'cp' */
+boolean tp_is_nhsym;
 {
     static NEARDATA const char oct[] = "01234567", dec[] = "0123456789",
                                hex[] = "00112233445566778899aAbBcCdDeEfF";
     const char *dp;
-    int cval, meta, dcount;
+    long cval, dcount;
+    int meta;
+    long* tp_long = (long*)tp;
+    char* tp_char = (char*)tp;
 
     while (*cp) {
         /* \M has to be followed by something to do meta conversion,
@@ -1076,6 +1089,12 @@ char *tp; /* result is never longer than 'cp' */
             do {
                 cval = (cval * 16) + ((int) (dp - hex) / 2);
             } while (*++cp && (dp = index(hex, *cp)) != 0 && ++dcount < 2);
+        } else if ((cp[1] == 'u' || cp[1] == 'U') && cp[2]
+                   && (dp = index(hex, cp[2])) != 0) {
+            cp += 2; /* move past backslash and 'U' */
+            do {
+                cval = (cval * 16) + ((int) (dp - hex) / 2);
+            } while (*++cp && (dp = index(hex, *cp)) != 0 && ++dcount < 6);
         } else { /* C-style character escapes */
             switch (*++cp) {
             case '\\':
@@ -1101,9 +1120,17 @@ char *tp; /* result is never longer than 'cp' */
 
         if (meta)
             cval |= 0x80;
-        *tp++ = (char) cval;
+
+        if(tp_is_nhsym)
+            *tp_long++ = (nhsym)cval;
+        else
+            *tp_char++ = (char)cval;
     }
-    *tp = '\0';
+
+    if (tp_is_nhsym)
+        *tp_long = '\0';
+    else
+        *tp_char = '\0';
 }
 
 STATIC_OVL void
@@ -6731,7 +6758,7 @@ boolean
 parsesymbols(opts)
 register char *opts;
 {
-    int val;
+    nhsym val;
     char *op, *symname, *strval;
     struct symparse *symp;
 
@@ -6790,27 +6817,28 @@ char *buf;
     return (struct symparse *) 0;
 }
 
-int
+nhsym
 sym_val(strval)
 const char *strval; /* up to 4*BUFSZ-1 long; only first few chars matter */
 {
-    char buf[QBUFSZ], tmp[QBUFSZ]; /* to hold trucated copy of 'strval' */
+    nhsym buf[QBUFSZ];
+    char tmp[QBUFSZ]; /* to hold trucated copy of 'strval' */
 
     buf[0] = '\0';
     if (!strval[0] || !strval[1]) { /* empty, or single character */
         /* if single char is space or tab, leave buf[0]=='\0' */
         if (!isspace((uchar) strval[0]))
-            buf[0] = strval[0];
+            buf[0] = (nhsym)strval[0];
     } else if (strval[0] == '\'') { /* single quote */
         /* simple matching single quote; we know strval[1] isn't '\0' */
         if (strval[2] == '\'' && !strval[3]) {
             /* accepts '\' as backslash and ''' as single quote */
-            buf[0] = strval[1];
+            buf[0] = (nhsym)strval[1];
 
         /* if backslash, handle single or double quote or second backslash */
         } else if (strval[1] == '\\' && strval[2] && strval[3] == '\''
             && index("'\"\\", strval[2]) && !strval[4]) {
-            buf[0] = strval[2];
+            buf[0] = (nhsym)strval[2];
 
         /* not simple quote or basic backslash;
            strip closing quote and let escapes() deal with it */
@@ -6822,16 +6850,16 @@ const char *strval; /* up to 4*BUFSZ-1 long; only first few chars matter */
             tmp[sizeof tmp - 1] = '\0';
             if ((p = rindex(tmp, '\'')) != 0) {
                 *p = '\0';
-                escapes(tmp, buf);
+                escapes_ex(tmp, buf, TRUE);
             } /* else buf[0] stays '\0' */
         }
     } else { /* not lone char nor single quote */
         (void) strncpy(tmp, strval, sizeof tmp - 1);
         tmp[sizeof tmp - 1] = '\0';
-        escapes(tmp, buf);
+        escapes_ex(tmp, buf, TRUE);
     }
 
-    return (int) *buf;
+    return (nhsym) *buf;
 }
 
 /* data for option_help() */

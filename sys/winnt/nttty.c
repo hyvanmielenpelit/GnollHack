@@ -536,7 +536,7 @@ int x, y;
 
 void
 xputc(ch)
-char ch;
+int ch;
 {
     set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
     xputc_core(ch);
@@ -564,7 +564,7 @@ const char *s;
  */
 void
 xputc_core(ch)
-char ch;
+int ch;
 {
     nhassert(console.cursor.X >= 0 && console.cursor.X < console.width);
     nhassert(console.cursor.Y >= 0 && console.cursor.Y < console.height);
@@ -602,7 +602,7 @@ char ch;
             console.attr |= COMMON_LVB_UNDERSCORE;
 
         cell.attribute = console.attr;
-        cell.character = (console.has_unicode ? console.cpMap[ch] : ch);
+        cell.character = (console.has_unicode && ch >= 0 && ch < 256 ? console.cpMap[ch] : ch);
 
         buffer_write(console.back_buffer, &cell, console.cursor);
 
@@ -1647,8 +1647,10 @@ check_font_widths()
     boolean used[256];
     memset(used, 0, sizeof(used));
     for (int i = 0; i < SYM_MAX; i++) {
-        used[l_syms[i]] = TRUE;
-        used[r_syms[i]] = TRUE;
+        if(l_syms[i] < 256)
+            used[l_syms[i]] = TRUE;
+        if (r_syms[i] < 256)
+            used[r_syms[i]] = TRUE;
     }
 
     int wcUsedCount = 0;

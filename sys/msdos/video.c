@@ -595,7 +595,7 @@ const char *s;
 }
 
 void xputc(ch) /* write out character (and attribute) */
-char ch;
+int ch;
 {
     int i;
     char attribute;
@@ -623,7 +623,7 @@ int ch;
 unsigned special;
 {
     if (!iflags.grmode || !iflags.tile_view) {
-        xputc((char) ch);
+        xputc(ch);
 #ifdef SCREEN_VGA
     } else if (iflags.grmode && iflags.usevga) {
         vga_xputg(glyphnum, ch, special);

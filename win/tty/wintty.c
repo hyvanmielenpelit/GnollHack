@@ -13,10 +13,9 @@
 #define H2344_BROKEN
 
 #include "hack.h"
-#include <wchar.h>
 #include <locale.h>
 
-const long cp437toUnicode[256] = {
+const nhsym cp437toUnicode[256] = {
     0x0020, 0x263A, 0x263B, 0x2665, 0x2666, 0x2663, 0x2660, 0x2022,
     0x25D8, 0x25CB, 0x25D9, 0x2642, 0x2640, 0x266A, 0x266B, 0x263C,
     0x25BA, 0x25C4, 0x2195, 0x203C, 0x00B6, 0x00A7, 0x25AC, 0x21A8,
@@ -50,9 +49,6 @@ const long cp437toUnicode[256] = {
     0x2261, 0x00b1, 0x2265, 0x2264, 0x2320, 0x2321, 0x00f7, 0x2248,
     0x00b0, 0x2219, 0x00b7, 0x221a, 0x207f, 0x00b2, 0x25a0, 0x00a0
 };
-
-int FDECL(putcp437charutf8, (char));
-int FDECL(doputchar, (char));
 
 #ifdef TTY_GRAPHICS
 #include "dlb.h"
@@ -251,7 +247,7 @@ STATIC_DCL void FDECL(process_menu_window, (winid, struct WinDesc *));
 STATIC_DCL void FDECL(process_text_window, (winid, struct WinDesc *));
 STATIC_DCL tty_menu_item *FDECL(reverse, (tty_menu_item *));
 STATIC_DCL const char *FDECL(compress_str, (const char *));
-STATIC_DCL void FDECL(tty_putsym, (winid, int, int, CHAR_P));
+STATIC_DCL void FDECL(tty_putsym, (winid, int, int, nhsym));
 STATIC_DCL void FDECL(setup_rolemenu, (winid, BOOLEAN_P, int, int, int));
 STATIC_DCL void FDECL(setup_racemenu, (winid, BOOLEAN_P, int, int, int));
 STATIC_DCL void FDECL(setup_gendmenu, (winid, BOOLEAN_P, int, int, int));
@@ -270,6 +266,10 @@ STATIC_DCL void FDECL(shrink_enc, (int));
 STATIC_DCL void FDECL(shrink_dlvl, (int));
 STATIC_DCL void FDECL(print_rest_partyline, (char*, int*, int*));
 #endif
+
+STATIC_DCL int FDECL(putcharutf8, (nhsym));
+STATIC_DCL int FDECL(doputchar, (nhsym));
+STATIC_DCL boolean NDECL(use_utf8_encoding);
 
 
 /*
@@ -606,7 +606,7 @@ tty_player_selection()
         if ((int) strlen(prompt) + 1 < CO) {
             /* Echo choice and move back down line */
             tty_putsym(BASE_WINDOW, (int) strlen(prompt) + 1, echoline,
-                       pick4u);
+                       (nhsym)pick4u);
             tty_putstr(BASE_WINDOW, 0, "");
         } else
             /* Otherwise it's hard to tell where to echo, and things are
@@ -2356,7 +2356,7 @@ struct WinDesc *cw;
                     end_glyphout();
                     linestart = FALSE;
                 } else {
-                    (void) doputchar(*cp);
+                    (void) doputchar((nhsym)(*cp));
                 }
             }
             term_end_attr(attr);
@@ -2662,7 +2662,7 @@ STATIC_OVL void
 tty_putsym(window, x, y, ch)
 winid window;
 int x, y;
-char ch;
+nhsym ch;
 {
     register struct WinDesc *cw = 0;
 
@@ -2805,7 +2805,7 @@ const char *str;
                 break;
             }
             if (*ob != *nb)
-                tty_putsym(WIN_STATUS, i, cw->cury, *nb);
+                tty_putsym(WIN_STATUS, i, cw->cury, (nhsym) (*nb));
             if (*ob)
                 ob++;
         }
@@ -2984,7 +2984,7 @@ boolean complain;
                 if (index(buf, '\t') != 0)
                     (void) tabexpand(buf);
 
-                if(!strcmp(symset[PRIMARY].name, "IBMgraphics") || !strcmp(symset[PRIMARY].name, "IBMGraphics_1") || !strcmp(symset[PRIMARY].name, "IBMGraphics_2")) /* Using CP437 */
+                if(SYMHANDLING(H_IBM)) /* Using CP437 */
                     convertUTF8toCP437(buf, sizeof(buf));
 
                 empty = FALSE;
@@ -3411,15 +3411,11 @@ end_glyphout()
 #endif
 }
 
-int
-putcp437charutf8(ch)
-char ch;
+STATIC_OVL int
+putcharutf8(ch)
+nhsym ch;
 {
-    unsigned char uch = (unsigned char)ch;
-    long c = cp437toUnicode[uch];
-//    freopen(NULL, "w", stdout);
-//    (void)putwchar(c);
-//    freopen(NULL, "w", stdout);
+    long c = (long)ch;
     if (c < 0x80) {
         putchar(c);
     } else if(c < 0x800) {
@@ -3439,17 +3435,29 @@ char ch;
     return 0;
 }
 
-int
+STATIC_OVL int
 doputchar(ch)
-char ch;
+nhsym ch;
 {
-    if (flags.ibm2utf8)
-        return putcp437charutf8(ch);
+    if (use_utf8_encoding())
+    {
+        nhsym c = ch;
+        if (flags.ibm2utf8)
+            c = cp437toUnicode[ch];
+
+        return putcharutf8(c);
+    }
     else
     {
         (void)putchar(ch);
         return 0;
     }
+}
+
+STATIC_OVL boolean
+use_utf8_encoding()
+{
+    return (flags.ibm2utf8 || SYMHANDLING(H_UNICODE));
 }
 
 #ifndef WIN32
@@ -3575,7 +3583,7 @@ winid window;
 xchar x, y;
 struct layer_info layers;
 {
-    int ch;
+    nhsym ch;
     boolean reverse_on = FALSE;
     boolean underline_on = FALSE;
     int color;
@@ -3641,13 +3649,13 @@ struct layer_info layers;
 
 #if defined(USE_TILES) && defined(MSDOS)
     if (iflags.grmode && iflags.tile_view)
-        xputg(glyph, ch, special);
+        xputg(glyph, (int)ch, special);
     else
 #endif
     if(flags.ibm2utf8)
         doputchar(ch);
     else
-        g_putch(ch); /* print the character */
+        g_putch((int)ch); /* print the character */
 
     if (reverse_on || underline_on) {
         if(reverse_on)

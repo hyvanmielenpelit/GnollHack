@@ -51,7 +51,7 @@ int
 mapglyph(layers, ochar, ocolor, ospecial, x, y)
 struct layer_info layers;
 int *ocolor, x, y;
-int *ochar;
+nhsym *ochar;
 unsigned long *ospecial;
 {
     int signed_glyph = layers.glyph;
@@ -490,7 +490,7 @@ normal_monster_here:
 //    if (ch == ' ' && color != NO_COLOR)  /* Does not look very good */
 //        special |= MG_STONE_INVERSE;
 
-    *ochar = (int) ch;
+    *ochar = ch;
     *ospecial = special;
 #ifdef TEXTCOLOR
     *ocolor = color;
@@ -523,7 +523,8 @@ const char *str;
 
     while (*str) {
         if (*str == '\\') {
-            int rndchk, dcount, so, gv, ch = 0, oc = 0;
+            int rndchk, dcount, so, gv, oc = 0;
+            nhsym ch = 0;
             unsigned long os = 0;
             const char *dp, *save_str;
 
@@ -548,7 +549,7 @@ const char *str;
                     layers.glyph = gv;
 
                     so = mapglyph(layers, &ch, &oc, &os, 0, 0);
-                    *put++ = showsyms[so];
+                    *put++ = (char)showsyms[so];
                     /* 'str' is ready for the next loop iteration and '*str'
                        should not be copied at the end of this iteration */
                     continue;

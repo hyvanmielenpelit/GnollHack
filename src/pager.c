@@ -923,7 +923,7 @@ int
 do_screen_description(cc, looked, sym, out_str, firstmatch, for_supplement)
 coord cc;
 boolean looked;
-int sym;
+nhsym sym;
 char *out_str;
 const char **firstmatch;
 struct permonst **for_supplement;
@@ -948,11 +948,11 @@ struct permonst **for_supplement;
         /* Convert glyph at selected position to a symbol for use below. */
         (void) mapglyph(layers, &sym, &oc, &os, cc.x, cc.y);
 
-        Sprintf(prefix, "%c - ", sym);
+        Sprintf(prefix, "%c - ", (char)sym);
         //Sprintf(prefix, "%s - ", encglyph(glyph));
     }
     else
-        Sprintf(prefix, "%c - ", sym);
+        Sprintf(prefix, "%c - ", (char)sym);
 
     /*
      * Check all the possibilities, saving all explanations in a buffer.
@@ -1296,7 +1296,7 @@ coord *click_cc;
     const char *firstmatch = 0;
     struct permonst *pm = 0, *supplemental_pm = 0;
     int i = '\0', ans = 0;
-    int sym;              /* typed symbol or converted glyph */
+    nhsym sym;              /* typed symbol or converted glyph */
     int found;            /* count of matching syms found */
     coord cc;             /* screen pos of unknown glyph */
     boolean save_verbose; /* saved value of flags.verbose */
@@ -1408,7 +1408,7 @@ coord *click_cc;
                 checkfile(out_str, pm, TRUE, TRUE, (char *) 0);
                 return 0;
             }
-            sym = out_str[0];
+            sym = (nhsym)out_str[0];
             break;
         case 'm':
             look_all(TRUE, TRUE); /* list nearby monsters */

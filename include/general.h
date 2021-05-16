@@ -491,6 +491,10 @@ enum main_menu_command {
 #define ARTDMG_TRIPLE_DAMAGE -2
 #define ARTDMG_QUADRUPLE_DAMAGE -3
 
+/*
+ * type nhsym: loadable symbols go into this type
+ */
+typedef long nhsym;
 
 #endif /* GENERAL_H */
 

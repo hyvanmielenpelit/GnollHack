@@ -77,7 +77,7 @@ int mode;
 
 void
 xputc(ch)
-char ch;
+int ch;
 {
     return;
 }

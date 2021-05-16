@@ -132,7 +132,7 @@ void NetHackQtMapViewport::paintEvent(QPaintEvent* event)
 	    for (int i=garea.left(); i<=garea.right(); i++) {
 		unsigned short g=Glyph(i,j);
 		int color;
-		int ch;
+		nhsym ch;
 		unsigned special;
 
 		painter.setPen( Qt::green );
@@ -176,7 +176,7 @@ void NetHackQtMapViewport::paintEvent(QPaintEvent* event)
 	    for (int i=garea.left(); i<=garea.right(); i++) {
 		unsigned short g=Glyph(i,j);
 		int color;
-		int ch;
+		nhsym ch;
 		unsigned special;
 		struct layer_info layers = { 0 };
 		layers.glyph = g;
@@ -863,7 +863,7 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
 	    for (int i=garea.left(); i<=garea.right(); i++) {
 		unsigned short g=Glyph(i,j);
 		int color;
-		int ch;
+		nhsym ch;
 		unsigned special;
 		struct layer_info layers = { 0 };
 		layers.glyph = g;

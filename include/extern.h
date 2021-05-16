@@ -820,8 +820,8 @@ E void NDECL(update_bouldersym);
 E void NDECL(init_showsyms);
 E void NDECL(init_l_symbols);
 E void FDECL(clear_symsetentry, (int, BOOLEAN_P));
-E void FDECL(update_l_symset, (struct symparse *, int));
-E void FDECL(update_r_symset, (struct symparse *, int));
+E void FDECL(update_l_symset, (struct symparse *, nhsym));
+E void FDECL(update_r_symset, (struct symparse *, nhsym));
 E boolean FDECL(cursed_object_at, (int, int));
 E const char* FDECL(get_cmap_tilename, (int));
 
@@ -1516,7 +1516,7 @@ E void NDECL(makemon_animation_wait_until_end);
 
 /* ### mapglyph.c ### */
 
-E int FDECL(mapglyph, (struct layer_info, int *, int *, unsigned long*, int, int));
+E int FDECL(mapglyph, (struct layer_info, nhsym *, int *, unsigned long*, int, int));
 E char *FDECL(encglyph, (int));
 E char *FDECL(decode_mixed, (char *, const char *));
 E void FDECL(genl_putmixed, (winid, int, const char *));
@@ -2224,7 +2224,7 @@ E void NDECL(free_symsets);
 E boolean FDECL(parsesymbols, (char *));
 E struct symparse *FDECL(match_sym, (char *));
 E void NDECL(set_playmode);
-E int FDECL(sym_val, (const char *));
+E nhsym FDECL(sym_val, (const char *));
 E int FDECL(query_color, (const char *));
 E int FDECL(query_attr, (const char *));
 E const char *FDECL(clr2colorname, (int));
@@ -2245,7 +2245,7 @@ E void NDECL(msgtype_free);
 E char *FDECL(self_lookat, (char *));
 E void FDECL(mhidden_description, (struct monst *, BOOLEAN_P, char *));
 E boolean FDECL(object_from_map, (int,int,int,struct obj **));
-E int FDECL(do_screen_description, (coord, BOOLEAN_P, int, char *,
+E int FDECL(do_screen_description, (coord, BOOLEAN_P, nhsym, char *,
                                     const char **, struct permonst **));
 E int FDECL(do_look, (int, coord *));
 E int NDECL(dowhatis);

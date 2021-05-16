@@ -620,7 +620,7 @@ onPaint(HWND hWnd)
                         RECT glyph_rect;
                         int color;
                         unsigned special;
-                        int mgch;
+                        nhsym mgch;
                         HBRUSH back_brush;
                         COLORREF OldFg;
 

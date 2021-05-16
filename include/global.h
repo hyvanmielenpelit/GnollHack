@@ -82,11 +82,6 @@ typedef xchar boolean; /* 0 or 1 */
 #define FALSE 0 //((boolean) 0)
 #endif
 
-/*
- * type nhsym: loadable symbols go into this type
- */
-typedef uchar nhsym;
-
 #ifndef STRNCMPI
 #ifndef __SASC_60 /* SAS/C already shifts to stricmp */
 #define strcmpi(a, b) strncmpi((a), (b), -1)

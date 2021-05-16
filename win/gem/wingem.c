@@ -951,7 +951,7 @@ winid window;
 xchar x, y;
 struct layer_info layers;
 {
-    int ch;
+    nhsym ch;
     int color;
     unsigned special;
 
@@ -964,7 +964,7 @@ struct layer_info layers;
         color = NO_COLOR;
 #endif /* TEXTCOLOR */
 
-    mar_print_char(window, x, y, ch, color);
+    mar_print_char(window, x, y, (int)ch, color);
 }
 
 extern void mar_raw_print(const char *);

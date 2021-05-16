@@ -126,7 +126,7 @@ E void NDECL(tty_shutdown);
  * actually would be expanded.    So here, we have to make an exception. */
 E void FDECL(xputc, (int));
 #else
-E void FDECL(xputc, (CHAR_P));
+E void FDECL(xputc, (int));
 #endif
 E void FDECL(xputs, (const char *));
 #if defined(SCREEN_VGA) || defined(SCREEN_8514)

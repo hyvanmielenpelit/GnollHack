@@ -1683,7 +1683,8 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
 	    for (int i=garea.left(); i<=garea.right(); i++) {
 		unsigned short g=Glyph(i,j);
 		uchar ch;
-		int color, och;
+        int color;
+        nhsym och;
 		unsigned special;
 
 		painter.setPen( green );
