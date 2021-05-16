@@ -27,6 +27,7 @@ dat/*.lev
 dat/dungeon
 dat/options
 dat/quest.dat
+dat/dungeon.pdf
 include/date.h
 include/onames.h
 include/pm.h
