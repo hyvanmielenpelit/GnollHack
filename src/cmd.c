@@ -5426,7 +5426,7 @@ int NDECL((*fn));
  * wizard mode sanity_check code
  */
 
-static const char template[] = "%-27s  %4ld  %6ld";
+static const char template[] = "%-27s  %4ld  %6zu";
 static const char stats_hdr[] = "                             count  bytes";
 static const char stats_sep[] = "---------------------------  ----- -------";
 
