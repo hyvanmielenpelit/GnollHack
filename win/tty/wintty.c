@@ -3416,9 +3416,9 @@ char ch;
     wchar_t unicodechar = cp437toUnicode[uch];
     setlocale(LC_ALL, "en_US.UTF-8");
     freopen(NULL, "w", stdout);
-    return (int)putwchar(unicodechar);
+    (void)putwchar(unicodechar);
     freopen(NULL, "w", stdout);
-
+    return 0;
 }
 
 int
