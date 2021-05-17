@@ -197,8 +197,7 @@ STATIC_DCL char *FDECL(make_lockname, (const char *, char *));
 #endif
 STATIC_DCL void FDECL(set_configfile_name, (const char *));
 STATIC_DCL FILE *FDECL(fopen_config_file, (const char *, int));
-STATIC_DCL int FDECL(get_uchars, (char *, uchar *, BOOLEAN_P,
-                                  int, const char *));
+STATIC_DCL int FDECL(get_nhsyms, (char*, nhsym*, BOOLEAN_P, int, const char*));
 boolean FDECL(proc_wizkit_line, (char *));
 boolean FDECL(parse_config_line, (char *));
 STATIC_DCL boolean FDECL(parse_conf_file, (FILE *, boolean (*proc)(char *)));
@@ -2152,18 +2151,18 @@ int src;
 }
 
 /*
- * Retrieve a list of integers from buf into a uchar array.
+ * Retrieve a list of integers from buf into a nhsym array.
  *
  * NOTE: zeros are inserted unless modlist is TRUE, in which case the list
  *  location is unchanged.  Callers must handle zeros if modlist is FALSE.
  */
 STATIC_OVL int
-get_uchars(bufp, list, modlist, size, name)
-char *bufp;       /* current pointer */
-uchar *list;      /* return list */
+get_nhsyms(bufp, list, modlist, size, name)
+char* bufp;       /* current pointer */
+nhsym* list;      /* return list */
 boolean modlist;  /* TRUE: list is being modified in place */
 int size;         /* return list size */
-const char *name; /* name of option for error message */
+const char* name; /* name of option for error message */
 {
     unsigned int num = 0;
     int count = 0;
@@ -2365,7 +2364,7 @@ char *origbuf;
     int n;
 #endif
     char *bufp, buf[INBUF_SIZ];
-    uchar translate[MAX_CMAPPED_CHARS];
+    nhsym translate[MAX_CMAPPED_CHARS];
     int len;
     boolean retval = TRUE;
     int src = iflags.parse_config_file_src;
@@ -2757,7 +2756,7 @@ char *origbuf;
     } 
     else if (match_varname(buf, "BOULDER", 3)) 
     {
-        (void) get_uchars(bufp, &iflags.bouldersym, TRUE, 1,
+        (void) get_nhsyms(bufp, &iflags.bouldersym, TRUE, 1,
                           "BOULDER");
     }
     else if (match_varname(buf, "MENUCOLOR", 9))
@@ -2774,7 +2773,7 @@ char *origbuf;
     } 
     else if (match_varname(buf, "WARNINGS", 5)) 
     {
-        (void) get_uchars(bufp, translate, FALSE, WARNCOUNT,
+        (void) get_nhsyms(bufp, translate, FALSE, WARNCOUNT,
                           "WARNINGS");
         assign_warnings(translate);
     }

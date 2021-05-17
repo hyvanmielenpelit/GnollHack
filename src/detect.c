@@ -643,7 +643,9 @@ int class;            /* an object class, 0 for all */
     int ct = 0, ctu = 0;
     register struct obj *obj, *otmp = (struct obj *) 0;
     register struct monst *mtmp;
-    int sym, boulder = 0, ter_typ = TER_DETECT | TER_OBJ;
+    nhsym sym;
+    char boulder = 0;
+    int ter_typ = TER_DETECT | TER_OBJ;
 
     if (class < 0 || class >= MAX_OBJECT_CLASSES) {
         impossible("object_detect:  illegal class %d", class);
@@ -656,7 +658,7 @@ int class;            /* an object class, 0 for all */
      * detect. Rather than trump anything, show both possibilities.
      * We can exclude checking the buried obj chain for boulders below.
      */
-    sym = class ? def_oc_syms[class].sym : 0;
+    sym = (nhsym)(class ? def_oc_syms[class].sym : 0);
     if (sym && iflags.bouldersym && sym == iflags.bouldersym)
         boulder = ROCK_CLASS;
 
@@ -1424,7 +1426,7 @@ struct obj **optr;
             ret = object_detect(/* (struct obj *) 0*/ obj, class);
         else if ((class = def_char_to_monclass(ch)) != MAX_MONSTER_CLASSES)
             ret = monster_detect(/* (struct obj *) 0*/ obj, class);
-        else if (iflags.bouldersym && (ch == iflags.bouldersym))
+        else if (iflags.bouldersym && iflags.bouldersym < 128 && (ch == (char)iflags.bouldersym))
             ret = object_detect(/* (struct obj *) 0*/ obj, ROCK_CLASS);
         else
             switch (ch) 
@@ -2247,7 +2249,7 @@ dump_map()
             struct layer_info layers = nul_layerinfo;
             layers.glyph = glyph;
             (void) mapglyph(layers, &ch, &color, &special, x, y);
-            buf[x - 1] = ch;
+            buf[x - 1] = (char)ch; /* Does not quite handle unicode */
             if (ch != ' ') {
                 blankrow = FALSE;
                 lastnonblank = x - 1;

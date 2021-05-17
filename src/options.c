@@ -19,6 +19,8 @@ NEARDATA struct instance_flags iflags; /* provide linkage */
 #include <ctype.h>
 #endif
 
+#include <wchar.h>
+
 #define BACKWARD_COMPAT
 
 #ifdef DEFAULT_WC_TILED_MAP
@@ -1053,7 +1055,7 @@ boolean tp_is_nhsym;
     const char *dp;
     long cval, dcount;
     int meta;
-    long* tp_long = (long*)tp;
+    nhsym* tp_nhsym = (nhsym*)tp;
     char* tp_char = (char*)tp;
 
     while (*cp) {
@@ -1122,13 +1124,13 @@ boolean tp_is_nhsym;
             cval |= 0x80;
 
         if(tp_is_nhsym)
-            *tp_long++ = (nhsym)cval;
+            *tp_nhsym++ = (nhsym)cval;
         else
             *tp_char++ = (char)cval;
     }
 
     if (tp_is_nhsym)
-        *tp_long = '\0';
+        *tp_nhsym = '\0';
     else
         *tp_char = '\0';
 }
@@ -1268,26 +1270,31 @@ warning_opts(opts, optype)
 register char *opts;
 const char *optype;
 {
-    uchar translate[WARNCOUNT];
-    int length, i;
+    nhsym translate[WARNCOUNT];
+    int length = 0, i;
 
     if (!(opts = string_for_env_opt(optype, opts, FALSE)))
         return FALSE;
-    escapes(opts, opts);
 
-    length = (int) strlen(opts);
+    nhsym outstr[64] = { 0 };
+    escapes_ex(opts, outstr, TRUE);
+
+    for(i = 0; i < 64; i++)
+        if(outstr[i])
+            length++;
+
     /* match the form obtained from PC configuration files */
     for (i = 0; i < WARNCOUNT; i++)
         translate[i] = (i >= length) ? 0
-                                     : opts[i] ? (uchar) opts[i]
-                                               : def_warnsyms[i].sym;
+                                     : outstr[i] ? outstr[i]
+                                               : (nhsym)def_warnsyms[i].sym;
     assign_warnings(translate);
     return TRUE;
 }
 
 void
 assign_warnings(graph_chars)
-register uchar *graph_chars;
+register nhsym *graph_chars;
 {
     int i;
 
@@ -2965,25 +2972,30 @@ boolean tinitial, tfrom_file;
          */
         if (!(opts = string_for_opt(opts, FALSE)))
             return FALSE;
-        escapes(opts, opts);
+
+        nhsym outstr[64] = { 0 };
+        escapes_ex(opts, outstr, TRUE);
         /* note: dummy monclass #0 has symbol value '\0'; we allow that--
            attempting to set bouldersym to '^@'/'\0' will reset to default */
-        if (def_char_to_monclass(opts[0]) != MAX_MONSTER_CLASSES)
-            clash = opts[0] ? 1 : 0;
-        else if (opts[0] >= '1' && opts[0] < WARNCOUNT + '0')
-            clash = 2;
+        if (outstr[0] < 128)
+        {
+            if (def_char_to_monclass((char)outstr[0]) != MAX_MONSTER_CLASSES)
+                clash = outstr[0] ? 1 : 0;
+            else if (outstr[0] >= '1' && outstr[0] < WARNCOUNT + '0')
+                clash = 2;
+        }
         if (clash) {
             /* symbol chosen matches a used monster or warning
                symbol which is not good - reject it */
             config_error_add(
             "Badoption - boulder symbol '%s' would conflict with a %s symbol",
-                             visctrl(opts[0]),
+                             visctrl((char)outstr[0]),
                              (clash == 1) ? "monster" : "warning");
         } else {
             /*
              * Override the default boulder symbol.
              */
-            iflags.bouldersym = (uchar) opts[0];
+            iflags.bouldersym = outstr[0];
             /* for 'initial', update_bouldersym() is done in
                initoptions_finish(), after all symset options
                have been processed */
@@ -6164,10 +6176,8 @@ char *buf;
 #endif
 #ifdef BACKWARD_COMPAT
     else if (!strcmp(optname, "boulder"))
-        Sprintf(buf, "%c",
-                iflags.bouldersym
-                    ? iflags.bouldersym
-                    : showsyms[(int) objects[BOULDER].oc_class + SYM_OFF_O]);
+        Sprintf(buf, "%lc", (wint_t)(iflags.bouldersym ? iflags.bouldersym
+                    : showsyms[(int) objects[BOULDER].oc_class + SYM_OFF_O]));
 #endif
     else if (!strcmp(optname, "catname"))
         Sprintf(buf, "%s", catname[0] ? catname : none);
