@@ -3442,7 +3442,7 @@ nhsym ch;
     if (use_utf8_encoding())
     {
         nhsym c = ch;
-        if (flags.ibm2utf8)
+        if (flags.ibm2utf8 && SYMHANDLING(H_IBM))
             c = cp437toUnicode[ch];
 
         return putcharutf8(c);
@@ -3457,7 +3457,7 @@ nhsym ch;
 STATIC_OVL boolean
 use_utf8_encoding()
 {
-    return (flags.ibm2utf8 || SYMHANDLING(H_UNICODE));
+    return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)) || SYMHANDLING(H_UNICODE));
 }
 
 #ifndef WIN32
@@ -3543,7 +3543,7 @@ void
 tty_init_print_glyph(initid)
 int initid;
 {
-    if (flags.ibm2utf8)
+    if (use_utf8_encoding())
     {
         switch (initid)
         {

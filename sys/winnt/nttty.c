@@ -647,7 +647,7 @@ int in_ch;
     cell_t cell;
 
     cell.attribute = console.attr;
-    cell.character = ((console.has_unicode || flags.ibm2utf8) && !SYMHANDLING(H_UNICODE)) ? cp437[ch] : ch;
+    cell.character = ((console.has_unicode || (flags.ibm2utf8 && SYMHANDLING(H_IBM))) && !SYMHANDLING(H_UNICODE)) ? cp437[ch] : ch;
 
     buffer_write(console.back_buffer, &cell, console.cursor);
 }
