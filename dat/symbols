@@ -170,22 +170,33 @@ start: UnicodeGraphics
 	S_room: \u00B7			# meta-z, centered dot
 	S_corr: \u2591			# meta-0, light shading
 	S_litcorr: \u2592			# meta-1, medium shading
-	S_fountain: \u222B		# meta-t, integral top half
+	S_fountain: \u222E		# meta-t, integral top half
 	S_pool: \u224B			# meta-w, approx. equals
-	S_ice: \u00B7			# meta-z, centered dot
-	S_lava: \u224B			# meta-w, approx. equals
+	S_ice: \u2042			# meta-z, centered dot
+	S_lava: \u224A			# meta-w, approx. equals
 	S_vodbridge: \u00B7 		# meta-z, centered dot
 	S_hodbridge: \u00B7		# meta-z, centered dot
 	S_water: \u224B			# meta-w, approx. equals
 	S_vbeam: \u2502			# meta-3, vertical rule
 	S_hbeam: \u2500			# meta-D, horizontal rule
+	S_lslant: \u2571
+	S_rslant: \u2572
+	S_digbeam: \u233E
+	S_flashbeam: \u235F
 	S_sw_ml: \u2502			# meta-3, vertical rule
 	S_sw_mr: \u2502			# meta-3, vertical rule
+	S_explode1: \u2571		# meta-3, vertical rule
+	S_explode2: \u2500		# meta-3, vertical rule
+	S_explode3: \u2572		# meta-3, vertical rule
 	S_explode4: \u2502		# meta-3, vertical rule
 	S_explode6: \u2502		# meta-3, vertical rule
+	S_explode7: \u2572		# meta-3, vertical rule
+	S_explode8: \u2500		# meta-3, vertical rule
+	S_explode9: \u2571		# meta-3, vertical rule
 	S_signpost: \u2691
 	S_brazier: \u2668
 	S_grave: \u2670
+	S_boulder: \u26AB
 finish
 
 start: MACgraphics
