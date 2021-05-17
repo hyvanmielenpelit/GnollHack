@@ -7084,7 +7084,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     play_sfx_sound(SFX_NEARBY_LOUD_CLANGING);
     pline("%s starts working on %s.", Monnam(mtmp), yname(otmp));
     if (iflags.using_gui_sounds)
-        delay_output_milliseconds(1000);
+        delay_output_milliseconds(2000);
 
     if (otmp->quan > quan_needed)
     {
