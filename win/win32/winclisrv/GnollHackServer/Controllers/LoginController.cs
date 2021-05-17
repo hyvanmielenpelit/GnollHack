@@ -1,4 +1,5 @@
-﻿using GnollHackServer.Data;
+﻿using GnollHackCommon.Authentication;
+using GnollHackServer.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;

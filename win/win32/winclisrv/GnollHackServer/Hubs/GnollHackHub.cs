@@ -10,6 +10,7 @@ using GnollHackCommon;
 
 namespace GnollHackServer.Hubs
 {
+    [Authorize]
     public class GnollHackHub : Hub
     {
         private readonly ServerGameCenter _serverGameCenter;

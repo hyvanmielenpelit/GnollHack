@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GnollHackServer.Data
+namespace GnollHackCommon.Authentication
 {
     public class LoginCredentials
     {
