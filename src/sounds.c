@@ -86,7 +86,7 @@ STATIC_DCL int FDECL(general_service_query_with_components, (struct monst*, int 
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
-STATIC_DCL int FDECL(forge_special_func, (struct monst*, const char*, boolean (*)(struct obj*), char, int, int, int));
+STATIC_DCL int FDECL(forge_special_func, (struct monst*, const char*, int, int, int));
 STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_adamantium_full_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_mithril_full_plate_mail_func, (struct monst*));
@@ -95,10 +95,9 @@ STATIC_DCL int FDECL(learn_spell_func, (struct monst*));
 STATIC_DCL int FDECL(spell_teaching, (struct monst*, int*));
 STATIC_DCL boolean FDECL(maybe_dilithium_crystal, (struct obj*));
 STATIC_DCL boolean FDECL(maybe_ore, (struct obj*));
-STATIC_DCL boolean FDECL(maybe_adamantium_ore, (struct obj*));
-STATIC_DCL boolean FDECL(maybe_mithril_ore, (struct obj*));
-STATIC_DCL boolean FDECL(maybe_orichalcum_ore, (struct obj*));
 STATIC_DCL boolean FDECL(maybe_dragon_scales, (struct obj*));
+STATIC_DCL boolean FDECL(maybe_otyp, (struct obj*));
+static int otyp_for_maybe_otyp = 0;
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -5870,36 +5869,6 @@ struct obj* otmp;
 }
 
 STATIC_OVL boolean
-maybe_adamantium_ore(otmp)
-struct obj* otmp;
-{
-    if (!otmp)
-        return FALSE;
-
-    return (otmp->otyp == NUGGET_OF_ADAMANTIUM_ORE);
-}
-
-STATIC_OVL boolean
-maybe_mithril_ore(otmp)
-struct obj* otmp;
-{
-    if (!otmp)
-        return FALSE;
-
-    return (otmp->otyp == NUGGET_OF_MITHRIL_ORE);
-}
-
-STATIC_OVL boolean
-maybe_orichalcum_ore(otmp)
-struct obj* otmp;
-{
-    if (!otmp)
-        return FALSE;
-
-    return (otmp->otyp == NUGGET_OF_ORICHALCUM_ORE);
-}
-
-STATIC_OVL boolean
 maybe_dragon_scales(otmp)
 struct obj* otmp;
 {
@@ -5907,6 +5876,16 @@ struct obj* otmp;
         return FALSE;
 
     return !!is_dragon_scales(otmp);
+}
+
+STATIC_OVL boolean
+maybe_otyp(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return FALSE;
+
+    return (otmp->otyp == otyp_for_maybe_otyp);
 }
 
 STATIC_OVL int
@@ -7044,39 +7023,36 @@ STATIC_OVL int
 forge_orichalcum_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, "forge into an orichalcum full plate mail", maybe_orichalcum_ore, GEM_CLASS, NUGGET_OF_ORICHALCUM_ORE, 8, ORICHALCUM_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, "forge into an orichalcum full plate mail", NUGGET_OF_ORICHALCUM_ORE, 8, ORICHALCUM_FULL_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_adamantium_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, "forge into an adamantium full plate mail", maybe_adamantium_ore, GEM_CLASS, NUGGET_OF_ADAMANTIUM_ORE, 8, ADAMANTIUM_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, "forge into an adamantium full plate mail", NUGGET_OF_ADAMANTIUM_ORE, 8, ADAMANTIUM_FULL_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_mithril_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, "forge into an mithril full plate mail", maybe_mithril_ore, GEM_CLASS, NUGGET_OF_MITHRIL_ORE, 8, MITHRIL_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, "forge into a mithril full plate mail",  NUGGET_OF_MITHRIL_ORE, 8, MITHRIL_FULL_PLATE_MAIL);
 }
 
 STATIC_OVL int
-forge_special_func(mtmp, forge_string, forge_source_func, forge_source_class, forge_source_otyp, forge_source_quan, forge_dest_otyp)
+forge_special_func(mtmp, forge_string, forge_source_otyp, forge_source_quan, forge_dest_otyp)
 struct monst* mtmp;
 const char* forge_string;
-boolean(*forge_source_func)(struct obj*);
-char forge_source_class;
-int forge_source_otyp;
-int forge_source_quan;
-int forge_dest_otyp;
+int forge_source_otyp, forge_source_quan, forge_dest_otyp;
 {
     char forge_objects[3] = { 0, 0, 0 };
     forge_objects[0] = ALL_CLASSES;
-    forge_objects[1] = forge_source_class;
+    forge_objects[1] = objects[forge_source_otyp].oc_class;
     forge_objects[2] = 0;
 
-    struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, "", forge_source_func);
+    otyp_for_maybe_otyp = forge_source_otyp;
+    struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, "", maybe_otyp);
 
     if (!otmp)
         return 0;
@@ -7085,12 +7061,14 @@ int forge_dest_otyp;
 
     int quan_needed = forge_source_quan;
     /* Check if the selection is appropriate */
-    if (otmp && !forge_source_func(otmp))
+    if (otmp && !maybe_otyp(otmp))
     {
         play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
         verbalize("Sorry, this is not an item that I can forge into %s.", an(OBJ_NAME(objects[forge_dest_otyp])));
         return 0;
     }
+
+    otyp_for_maybe_otyp = 0;
 
     if (otmp->quan < quan_needed)
     {
@@ -7103,7 +7081,11 @@ int forge_dest_otyp;
         return 0;
     }
 
+    play_sfx_sound(SFX_NEARBY_LOUD_CLANGING);
     pline("%s starts working on %s.", Monnam(mtmp), yname(otmp));
+    if (iflags.using_gui_sounds)
+        delay_output_milliseconds(1000);
+
     if (otmp->quan > quan_needed)
     {
         otmp->quan -= quan_needed;
@@ -7123,6 +7105,8 @@ int forge_dest_otyp;
             The(aobjnam(craftedobj, "slip")),
             (const char*)0);
 
+        stop_all_immediate_sounds();
+        play_sfx_sound(SFX_BUY_FROM_NPC);
         verbalize("Thank you for using my services.");
     }
     else

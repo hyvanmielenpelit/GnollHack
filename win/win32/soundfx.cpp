@@ -440,7 +440,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Level/Temple/Plea For Donations", 0.3f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Level/Smithy/Iron Being Forged", 0.3f },
-    { SOUND_BANK_MASTER, "event:/SFX/Level/Smithy/Loud Clanging", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Level/Smithy/Loud Clanging", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/Smithy/Water Being Vaporized", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/NPC/Someone Mumbling", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/NPC/Distant Chitchat", 0.3f },

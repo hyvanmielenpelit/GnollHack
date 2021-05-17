@@ -4314,7 +4314,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     },
     {
         "GHSOUND_LEVEL_LOUD_CLANGING",
-        {GHSOUND_LEVEL_LOUD_CLANGING, 1.0f},
+        {GHSOUND_LEVEL_LOUD_CLANGING, 0.3f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
     {
@@ -5580,6 +5580,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_CIRCLE_OF_RADIANCE",
         {GHSOUND_CIRCLE_OF_RADIANCE, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_LEVEL_LOUD_CLANGING",
+        {GHSOUND_LEVEL_LOUD_CLANGING, 2.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
 };
