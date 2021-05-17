@@ -1207,20 +1207,25 @@ const char *build_date;
     char subbuf[64], versbuf[64];
     char betabuf[64];
     char editbuf[64];
+    char hotfixbuf[64];
 
     editbuf[0] = '\0';
+    hotfixbuf[0] = '\0';
     betabuf[0] = '\0';
-#ifdef PREALPHA
-    if(EDITLEVEL > 0)
-        Sprintf(editbuf, " %d", EDITLEVEL);
 
-    Sprintf(betabuf, "%s%s", " Pre-Alpha", editbuf);
+    if (EDITLEVEL > 0)
+        Sprintf(editbuf, " %d", EDITLEVEL);
+    if (HOTFIXLEVEL > 0)
+        Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
+
+#ifdef PREALPHA
+    Sprintf(betabuf, "%s%s%s", " Pre-Alpha", editbuf, hotfixbuf);
 #endif
 #ifdef ALPHA
-    Strcpy(betabuf, " Alpha");
+    Sprintf(betabuf, "%s%s%s", " Alpha", editbuf, hotfixbuf);
 #endif
 #ifdef BETA
-    Strcpy(betabuf, " Beta");
+    Sprintf(betabuf, "%s%s%s", " Beta", editbuf, hotfixbuf);
 #endif
 
     subbuf[0] = '\0';
@@ -1240,26 +1245,28 @@ bannerc_string(outbuf, build_date)
 char *outbuf;
 const char *build_date;
 {
-    char subbuf[64], versbuf[64], betabuf[64], editbuf[64];
+    char subbuf[64], versbuf[64], betabuf[64], editbuf[64], hotfixbuf[64];
 
-    editbuf[0] = '\0';
     subbuf[0] = '\0';
+    editbuf[0] = '\0';
+    hotfixbuf[0] = '\0';
+    if (EDITLEVEL > 0)
+        Sprintf(editbuf, " %d", EDITLEVEL);
+    if (HOTFIXLEVEL > 0)
+        Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
 #ifdef PORT_SUB_ID
     subbuf[0] = ' ';
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
     Strcpy(betabuf, "");
 #ifdef PREALPHA
-    if (EDITLEVEL > 0)
-        Sprintf(editbuf, " %d", EDITLEVEL);
-
-    Sprintf(betabuf, "%s%s", " Pre-Alpha", editbuf);
+    Sprintf(betabuf, "%s%s%s", " Pre-Alpha", editbuf, hotfixbuf);
 #endif
 #ifdef ALPHA
-    Strcpy(betabuf, " Alpha");
+    Sprintf(betabuf, "%s%s%s", " Alpha", editbuf, hotfixbuf);
 #endif
 #ifdef BETA
-    Strcpy(betabuf, " Beta");
+    Sprintf(betabuf, "%s%s%s", " Beta", editbuf, hotfixbuf);
 #endif
     Strcat(subbuf, betabuf);
 

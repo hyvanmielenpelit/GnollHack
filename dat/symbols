@@ -161,28 +161,28 @@ start: UnicodeGraphics
 	S_tdwall: \u252F			# meta-B, T down
 	S_tlwall: \u252B			# meta-4, T left
 	S_trwall: \u2523			# meta-C, T right
-	S_ndoor: \u22C5			# meta-z, centered dot
-	S_vodoor: \u229F			# meta-~, small centered square
-	S_hodoor: \u229F			# meta-~, small centered square
+	S_ndoor: \u00B7			# meta-z, centered dot
+	S_vodoor: \u25A0			# meta-~, small centered square
+	S_hodoor: \u25A0			# meta-~, small centered square
 	S_bars: \u2260			# equivalence symbol
 	S_treant: \u2618			# plus or minus symbol
 	S_tree: \u2618			# plus or minus symbol
-	S_room: \u22C5			# meta-z, centered dot
+	S_room: \u00B7			# meta-z, centered dot
 	S_corr: \u2591			# meta-0, light shading
 	S_litcorr: \u2592			# meta-1, medium shading
 	S_fountain: \u222B		# meta-t, integral top half
 	S_pool: \u224B			# meta-w, approx. equals
-	S_ice: \u22C5			# meta-z, centered dot
+	S_ice: \u00B7			# meta-z, centered dot
 	S_lava: \u224B			# meta-w, approx. equals
-	S_vodbridge: \u22C5 		# meta-z, centered dot
-	S_hodbridge: \u22C5		# meta-z, centered dot
+	S_vodbridge: \u00B7 		# meta-z, centered dot
+	S_hodbridge: \u00B7		# meta-z, centered dot
 	S_water: \u224B			# meta-w, approx. equals
-	S_vbeam: \u2503			# meta-3, vertical rule
-	S_hbeam: \u2501			# meta-D, horizontal rule
-	S_sw_ml: \u2503			# meta-3, vertical rule
-	S_sw_mr: \u2503			# meta-3, vertical rule
-	S_explode4: \u2503		# meta-3, vertical rule
-	S_explode6: \u2503		# meta-3, vertical rule
+	S_vbeam: \u2502			# meta-3, vertical rule
+	S_hbeam: \u2500			# meta-D, horizontal rule
+	S_sw_ml: \u2502			# meta-3, vertical rule
+	S_sw_mr: \u2502			# meta-3, vertical rule
+	S_explode4: \u2502		# meta-3, vertical rule
+	S_explode6: \u2502		# meta-3, vertical rule
 	S_signpost: \u2691
 	S_brazier: \u2668
 	S_grave: \u2670
