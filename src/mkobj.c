@@ -295,7 +295,7 @@ boolean init, artif;
 
 
 /* mkobj(): select a type of item from a class, use mksobj() to create it */
-/* mkobj_type = 0 making contents on the floor, = 1 making box contents, = 2 wishing */
+/* mkobj_type = 0 making contents on the floor, = 1 making box contents, = 2 wishing, = 3 forging */
 struct obj*
 mkobj(oclass, artif, mkobj_type)
 char oclass;
@@ -1263,7 +1263,7 @@ static const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS, ARMOR_CL
                                 WEAPON_CLASS, TOOL_CLASS, FOOD_CLASS, 0 };
 
 /* mksobj(): create a specific type of object */
-/* mkobj_type = 0 making contents on the floor, = 1 making box contents, = 2 wishing */
+/* mkobj_type = 0 making contents on the floor, = 1 making box contents, = 2 wishing, = 3 forging */
 struct obj*
 mksobj(otyp, init, artif, mkobj_type)
 int otyp;
@@ -1351,11 +1351,11 @@ unsigned long mkflags;
             else
                 blessorcurse(otmp, 10);
 
-            if (mkobj_type != 2 && is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED))
+            if (mkobj_type < 2 && is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED))
                 otmp->opoisoned = 1;
-            else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type != 2 && (is_multigen(otmp) ? !rn2(40) : !rn2(160)))))
+            else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type < 2 && (is_multigen(otmp) ? !rn2(40) : !rn2(160)))))
             {
-                if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type != 2 && !rn2(10))))
+                if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type < 2 && !rn2(10))))
                 {
                     otmp->elemental_enchantment = DEATH_ENCHANTMENT;
                     if (is_multigen(otmp))
@@ -1733,7 +1733,7 @@ unsigned long mkflags;
                     otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
 
             }
-            if (mkobj_type <= 1 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5))
+            if (mkobj_type < 2 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5))
             {
                 if (otmp->otyp == WAN_WISHING)
                     otmp->otyp = WAN_POLYMORPH;

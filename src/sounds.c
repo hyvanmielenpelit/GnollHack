@@ -61,6 +61,7 @@ STATIC_DCL int FDECL(do_chat_smith_repair_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_refill_lantern, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_forge_standard_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_forge_special_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_sell_ore, (struct monst*));
@@ -91,6 +92,10 @@ STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_adamantium_full_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_mithril_full_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_orichalcum_full_plate_mail_func, (struct monst*));
+STATIC_DCL int FDECL(forge_plate_mail_func, (struct monst*));
+STATIC_DCL int FDECL(forge_bronze_plate_mail_func, (struct monst*));
+STATIC_DCL int FDECL(forge_field_plate_mail_func, (struct monst*));
+STATIC_DCL int FDECL(forge_full_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(learn_spell_func, (struct monst*));
 STATIC_DCL int FDECL(spell_teaching, (struct monst*, int*));
 STATIC_DCL boolean FDECL(maybe_dilithium_crystal, (struct obj*));
@@ -2927,6 +2932,19 @@ dochat()
 
             Sprintf(available_chat_list[chatnum].name, "Protect a weapon");
             available_chat_list[chatnum].function_ptr = &do_chat_smith_protect_weapon;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+
+            Sprintf(available_chat_list[chatnum].name, "Forge a plate armor");
+            available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_standard_armor;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
             any = zeroany;
@@ -5784,16 +5802,103 @@ struct monst* mtmp;
         return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail");
         break;
     case 2:
-        cost = max(1, (int)((500 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_components(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", "8 nuggets of adamantium ore");
         break;
     case 3:
-        cost = max(1, (int)((500 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_components(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", "8 nuggets of mithril ore");
         break;
     case 4:
-        cost = max(1, (int)((500 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_components(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", "8 nuggets of orichalcum ore");
+        break;
+    default:
+        pline1(Never_mind);
+        break;
+    }
+
+    return 0;
+}
+
+STATIC_OVL int
+do_chat_smith_forge_standard_armor(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
+        return 0;
+
+    menu_item* pick_list = (menu_item*)0;
+    winid win;
+    anything any;
+
+    any = zeroany;
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win);
+
+
+    any = zeroany;
+    any.a_char = 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge a plate mail", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 2;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge a bronze plate mail", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 3;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge a field plate mail", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 4;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge a full plate mail", MENU_UNSELECTED);
+
+    /* Finish the menu */
+    end_menu(win, "Which type of armor do you want to forge?");
+
+    int i = 0;
+    /* Now generate the menu */
+    if (select_menu(win, PICK_ONE, &pick_list) > 0)
+    {
+        i = pick_list->item.a_char;
+        free((genericptr_t)pick_list);
+    }
+    destroy_nhwindow(win);
+
+    if (i < 1)
+        return 0;
+
+    int cost = 0;
+
+    switch (i)
+    {
+    case 1:
+        cost = max(1, (int)((100 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_components(mtmp, forge_plate_mail_func, "forge a plate mail", cost, "forging any armor", "8 nuggets of iron ore");
+        break;
+    case 2:
+        cost = max(1, (int)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_components(mtmp, forge_bronze_plate_mail_func, "forge a bronze plate mail", cost, "forging any armor", "8 nuggets of copper ore");
+        break;
+    case 3:
+        cost = max(1, (int)((200 + 20 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_components(mtmp, forge_field_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", "15 nuggets of iron ore");
+        break;
+    case 4:
+        cost = max(1, (int)((400 + 40 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_components(mtmp, forge_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", "30 nuggets of iron ore");
         break;
     default:
         pline1(Never_mind);
@@ -7039,6 +7144,35 @@ struct monst* mtmp;
 {
     return forge_special_func(mtmp, "forge into a mithril full plate mail",  NUGGET_OF_MITHRIL_ORE, 8, MITHRIL_FULL_PLATE_MAIL);
 }
+
+STATIC_OVL int
+forge_plate_mail_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, "forge into a plate mail", NUGGET_OF_IRON_ORE, 8, PLATE_MAIL);
+}
+
+STATIC_OVL int
+forge_bronze_plate_mail_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, "forge into a bronze plate mail", NUGGET_OF_COPPER_ORE, 8, BRONZE_PLATE_MAIL);
+}
+
+STATIC_OVL int
+forge_field_plate_mail_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, "forge into a field plate mail", NUGGET_OF_IRON_ORE, 15, FIELD_PLATE_MAIL);
+}
+
+STATIC_OVL int
+forge_full_plate_mail_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, "forge into a full plate mail", NUGGET_OF_IRON_ORE, 30, FULL_PLATE_MAIL);
+}
+
 
 STATIC_OVL int
 forge_special_func(mtmp, forge_string, forge_source_otyp, forge_source_quan, forge_dest_otyp)
