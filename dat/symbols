@@ -180,8 +180,8 @@ start: UnicodeGraphics
 	S_water: \u224B			# meta-w, approx. equals
 	S_vbeam: \u2502			# meta-3, vertical rule
 	S_hbeam: \u2500			# meta-D, horizontal rule
-	S_lslant: \u2571
-	S_rslant: \u2572
+	S_lslant: \u2572
+	S_rslant: \u2571
 	S_digbeam: \u233E
 	S_flashbeam: \u25CC
 	S_sw_tl: \u2571
@@ -202,7 +202,7 @@ start: UnicodeGraphics
 	S_explode9: \u2571		# meta-3, vertical rule
 	S_signpost: \u2691
 	S_brazier: \u25CE
-	S_grave: \u22C2
+	S_grave: \u25AE
 	S_boulder: \u25EF
 	S_human: \u263B
 finish
