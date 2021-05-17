@@ -61,7 +61,7 @@ STATIC_DCL int FDECL(do_chat_smith_repair_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_refill_lantern, (struct monst*));
-STATIC_DCL int FDECL(do_chat_smith_forge_dragon_scale_mail, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_forge_special_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_sell_ore, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
@@ -72,7 +72,7 @@ STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_dilithium_crystals, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_spellbooks, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_branch_portal, (struct monst*));
-STATIC_OVL int FDECL(sell_to_npc, (struct obj*, struct monst*));
+STATIC_DCL int FDECL(sell_to_npc, (struct obj*, struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_enchant_accessory, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_recharge, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_blessed_recharge, (struct monst*));
@@ -82,14 +82,23 @@ STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
 STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int, const char*));
 STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, long, const char*));
+STATIC_DCL int FDECL(general_service_query_with_components, (struct monst*, int (*)(struct monst*), const char*, long, const char*, const char*));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
+STATIC_DCL int FDECL(forge_special_func, (struct monst*, const char*, boolean (*)(struct obj*), char, int, int, int));
 STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
+STATIC_DCL int FDECL(forge_adamantium_full_plate_mail_func, (struct monst*));
+STATIC_DCL int FDECL(forge_mithril_full_plate_mail_func, (struct monst*));
+STATIC_DCL int FDECL(forge_orichalcum_full_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(learn_spell_func, (struct monst*));
 STATIC_DCL int FDECL(spell_teaching, (struct monst*, int*));
 STATIC_DCL boolean FDECL(maybe_dilithium_crystal, (struct obj*));
 STATIC_DCL boolean FDECL(maybe_ore, (struct obj*));
+STATIC_DCL boolean FDECL(maybe_adamantium_ore, (struct obj*));
+STATIC_DCL boolean FDECL(maybe_mithril_ore, (struct obj*));
+STATIC_DCL boolean FDECL(maybe_orichalcum_ore, (struct obj*));
+STATIC_DCL boolean FDECL(maybe_dragon_scales, (struct obj*));
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -2930,8 +2939,8 @@ dochat()
 
             chatnum++;
 
-            Sprintf(available_chat_list[chatnum].name, "Forge dragon scales into a scale mail");
-            available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_dragon_scale_mail;
+            Sprintf(available_chat_list[chatnum].name, "Forge a special armor");
+            available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_special_armor;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
             any = zeroany;
@@ -5709,14 +5718,90 @@ struct monst* mtmp;
 }
 
 STATIC_OVL int
-do_chat_smith_forge_dragon_scale_mail(mtmp)
+do_chat_smith_forge_special_armor(mtmp)
 struct monst* mtmp;
 {
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail");
+    menu_item* pick_list = (menu_item*)0;
+    winid win;
+    anything any;
+
+    any = zeroany;
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win);
+
+
+    any = zeroany;
+    any.a_char = 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge dragon scales into a dragon scale mail", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 2;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge an adamantium full plate mail", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 3;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge a mithril full plate mail", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 4;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge an orichalcum full plate mail", MENU_UNSELECTED);
+
+    /* Finish the menu */
+    end_menu(win, "Which type of armor do you want to forge?");
+
+    int i = 0;
+    /* Now generate the menu */
+    if (select_menu(win, PICK_ONE, &pick_list) > 0)
+    {
+        i = pick_list->item.a_char;
+        free((genericptr_t)pick_list);
+    }
+    destroy_nhwindow(win);
+
+    if (i < 1)
+        return 0;
+
+    int cost = 0;
+
+    switch(i)
+    {
+    case 1:
+        cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail");
+        break;
+    case 2:
+        cost = max(1, (int)((500 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_components(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", "8 nuggets of adamantium ore");
+        break;
+    case 3:
+        cost = max(1, (int)((500 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_components(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", "8 nuggets of mithril ore");
+        break;
+    case 4:
+        cost = max(1, (int)((500 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_components(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", "8 nuggets of orichalcum ore");
+        break;
+    default:
+        pline1(Never_mind);
+        break;
+    }
+
+    return 0;
 }
 
 STATIC_OVL int
@@ -5782,6 +5867,46 @@ struct obj* otmp;
         return FALSE;
 
     return is_ore(otmp);
+}
+
+STATIC_OVL boolean
+maybe_adamantium_ore(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return FALSE;
+
+    return (otmp->otyp == NUGGET_OF_ADAMANTIUM_ORE);
+}
+
+STATIC_OVL boolean
+maybe_mithril_ore(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return FALSE;
+
+    return (otmp->otyp == NUGGET_OF_MITHRIL_ORE);
+}
+
+STATIC_OVL boolean
+maybe_orichalcum_ore(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return FALSE;
+
+    return (otmp->otyp == NUGGET_OF_ORICHALCUM_ORE);
+}
+
+STATIC_OVL boolean
+maybe_dragon_scales(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return FALSE;
+
+    return !!is_dragon_scales(otmp);
 }
 
 STATIC_OVL int
@@ -6695,6 +6820,19 @@ long service_cost;
 const char* no_mood_string;
 {
 
+    return general_service_query_with_components(mtmp, service_func, service_verb, service_cost, no_mood_string, (const char* )0);
+}
+
+STATIC_OVL int
+general_service_query_with_components(mtmp, service_func, service_verb, service_cost, no_mood_string, component_string)
+struct monst* mtmp;
+int (*service_func)(struct monst*);
+const char* service_verb;
+long service_cost;
+const char* no_mood_string;
+const char* component_string;
+{
+
     long umoney = money_cnt(invent);
     long u_pay;
     char qbuf[QBUFSZ];
@@ -6708,7 +6846,11 @@ const char* no_mood_string;
         return 0;
     }
 
-    Sprintf(qbuf, "Would you like to %s? (%ld %s)", service_verb, service_cost, currency(service_cost));
+    if(component_string)
+        Sprintf(qbuf, "Would you like to %s? (%ld %s, %s)", service_verb, service_cost, currency(service_cost), component_string);
+    else
+        Sprintf(qbuf, "Would you like to %s? (%ld %s)", service_verb, service_cost, currency(service_cost));
+
     switch (ynq(qbuf))
     {
     default:
@@ -6735,6 +6877,7 @@ const char* no_mood_string;
 
     return 1;
 }
+
 
 STATIC_OVL int
 repair_armor_func(mtmp)
@@ -6873,8 +7016,8 @@ STATIC_OVL int
 forge_dragon_scale_mail_func(mtmp)
 struct monst* mtmp;
 {
-    const char refill_lantern_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
-    struct obj* otmp = getobj(refill_lantern_objects, "forge into a dragon scale mail", 0, "");
+    const char forge_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
+    struct obj* otmp = getobj_ex(forge_objects, "forge into a dragon scale mail", 0, "", maybe_dragon_scales);
 
     if (!otmp)
         return 0;
@@ -6882,7 +7025,7 @@ struct monst* mtmp;
     pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
 
     /* Check if the selection is appropriate */
-    if (otmp && !is_dragon_scales(otmp))
+    if (otmp && !maybe_dragon_scales(otmp))
     {
         play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
         verbalize("Sorry, this is not an item that I can forge into a dragon scale mail.");
@@ -6894,6 +7037,99 @@ struct monst* mtmp;
     dragon_scales_to_scale_mail(otmp, FALSE);
 
     verbalize("Thank you for using my services.");
+    return 1;
+}
+
+STATIC_OVL int
+forge_orichalcum_full_plate_mail_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, "forge into an orichalcum full plate mail", maybe_orichalcum_ore, GEM_CLASS, NUGGET_OF_ORICHALCUM_ORE, 8, ORICHALCUM_FULL_PLATE_MAIL);
+}
+
+STATIC_OVL int
+forge_adamantium_full_plate_mail_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, "forge into an adamantium full plate mail", maybe_adamantium_ore, GEM_CLASS, NUGGET_OF_ADAMANTIUM_ORE, 8, ADAMANTIUM_FULL_PLATE_MAIL);
+}
+
+STATIC_OVL int
+forge_mithril_full_plate_mail_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, "forge into an mithril full plate mail", maybe_mithril_ore, GEM_CLASS, NUGGET_OF_MITHRIL_ORE, 8, MITHRIL_FULL_PLATE_MAIL);
+}
+
+STATIC_OVL int
+forge_special_func(mtmp, forge_string, forge_source_func, forge_source_class, forge_source_otyp, forge_source_quan, forge_dest_otyp)
+struct monst* mtmp;
+const char* forge_string;
+boolean(*forge_source_func)(struct obj*);
+char forge_source_class;
+int forge_source_otyp;
+int forge_source_quan;
+int forge_dest_otyp;
+{
+    char forge_objects[3] = { 0, 0, 0 };
+    forge_objects[0] = ALL_CLASSES;
+    forge_objects[1] = forge_source_class;
+    forge_objects[2] = 0;
+
+    struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, "", forge_source_func);
+
+    if (!otmp)
+        return 0;
+
+    pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+
+    int quan_needed = forge_source_quan;
+    /* Check if the selection is appropriate */
+    if (otmp && !forge_source_func(otmp))
+    {
+        play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+        verbalize("Sorry, this is not an item that I can forge into %s.", an(OBJ_NAME(objects[forge_dest_otyp])));
+        return 0;
+    }
+
+    if (otmp->quan < quan_needed)
+    {
+        play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+        struct obj pseudo = zeroobj;
+        pseudo.otyp = forge_source_otyp;
+        pseudo.oclass = objects[forge_source_otyp].oc_class;
+        pseudo.quan = quan_needed;
+        verbalize("Sorry, you need %d %s to forge %s.", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
+        return 0;
+    }
+
+    pline("%s starts working on %s.", Monnam(mtmp), yname(otmp));
+    if (otmp->quan > quan_needed)
+    {
+        otmp->quan -= quan_needed;
+        otmp->owt = weight(otmp);
+    }
+    else
+    {
+        useupall(otmp);
+        otmp = 0;
+    }
+
+    struct obj* craftedobj = mksobj(forge_dest_otyp, FALSE, FALSE, 3);
+    if (craftedobj)
+    {
+        pline("%s hands %s to you.", Monnam(mtmp), an(cxname(craftedobj)));
+        hold_another_object(craftedobj, "Oops!  %s out of your grasp!",
+            The(aobjnam(craftedobj, "slip")),
+            (const char*)0);
+
+        verbalize("Thank you for using my services.");
+    }
+    else
+    {
+        pline("%s stares blankly for a moment as if something is seriously amiss.", Monnam(mtmp));
+    }
+
     return 1;
 }
 
