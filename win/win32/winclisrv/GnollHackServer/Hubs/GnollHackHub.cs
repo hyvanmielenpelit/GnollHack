@@ -7,12 +7,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System.Runtime.InteropServices;
 using GnollHackCommon;
+using Microsoft.AspNetCore.Http;
 
 namespace GnollHackServer.Hubs
 {
+    [Authorize]
     public class GnollHackHub : Hub
     {
         private readonly ServerGameCenter _serverGameCenter;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         [DllImport(@"gnollhacklib.dll", CharSet = CharSet.Unicode)]
         public static extern int DoSomeCalc2();
@@ -23,10 +26,11 @@ namespace GnollHackServer.Hubs
 
         }
         */
-        public GnollHackHub(IHubContext<GnollHackHub> hubContext)
+        public GnollHackHub(IHubContext<GnollHackHub> hubContext, IHttpContextAccessor httpContextAccessor)
         {
             _serverGameCenter = ServerGameCenter.Instance;
             _serverGameCenter.InitializeHubContext(hubContext);
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /*
@@ -52,12 +56,14 @@ namespace GnollHackServer.Hubs
         public async Task DoCalc()
         {
             int result = DoSomeCalc2();
+            
             //Arg1 function
             //Arg2 and later can be any object
             await Clients.Caller.SendAsync("CalcResult", result);
         }
         public async Task AddNewServerGame()
         {
+            var userName = _httpContextAccessor.HttpContext.User.Identity.Name;
             int result = 1;
             _serverGameCenter.AddNewGame();
             //Arg1 function

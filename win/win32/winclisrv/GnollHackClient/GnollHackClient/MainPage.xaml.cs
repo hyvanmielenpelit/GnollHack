@@ -19,6 +19,10 @@ using System.Threading;
 using System.Diagnostics;
 using GnollHackCommon;
 using System.Reflection;
+using GnollHackCommon.Authentication;
+using Newtonsoft.Json;
+using System.Net;
+using System.Net.Http.Headers;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 
@@ -158,17 +162,62 @@ namespace GnollHackClient
             _message2 = "GnollHack2: " + res2;
         }
 
-        protected void ConnectToServer()
+        private async Task<Cookie> Authenticate()
         {
-            connection = new HubConnectionBuilder()
-            .WithUrl("http://10.0.2.2:57061/gnollhack", options =>
-            {
-                var cookie = new System.Net.Cookie(".AspNetCore.Cookies", _accessToken, "/", "localhost");
-                options.Cookies.Add(cookie);
-            })
-            .Build();
+            CookieContainer cookies = new CookieContainer();
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.CookieContainer = cookies;
+            Uri url = new Uri("http://10.0.2.2:57061/api/login");
 
-            if(connection != null)
+            Cookie authCookie = null;
+            using (var client = new HttpClient(handler))
+            {
+                client.BaseAddress = url;
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                LoginCredentials loginCredentials = new LoginCredentials()
+                {
+                    UserName = "Tommi",
+                    Password = "HMPTommi1!"
+                };
+
+                using (StringWriter sw = new StringWriter())
+                {
+                    JsonSerializer js = new JsonSerializer();
+                    js.Serialize(sw, loginCredentials);
+                    System.Net.Http.StringContent content = new StringContent(sw.ToString(), Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync("", content);
+                    if (response.IsSuccessStatusCode && response.Headers.Contains("Set-Cookie"))
+                    {
+                        var responseCookies = cookies.GetCookies(url).Cast<Cookie>();
+                        return responseCookies.First(c => c.Name == ".AspNetCore.Identity.Application");
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+        }
+
+        protected void ConnectToServer(Cookie authCookie)
+        {
+            var b = new HubConnectionBuilder();
+            b.WithUrl("http://10.0.2.2:57061/gnollhack");
+            if (authCookie != null)
+            {
+                b.WithUrl("http://10.0.2.2:57061/gnollhack", options =>
+                {
+                    options.Cookies.Add(authCookie);
+                });
+            }
+            else
+            {
+                b.WithUrl("http://10.0.2.2:57061/gnollhack");
+            }
+            connection = b.Build();
+
+            if (connection != null)
                 _connection_status = "Connection attempted";
             else
                 _connection_status = "Connection attempt failed";
@@ -226,18 +275,6 @@ namespace GnollHackClient
         {
             try
             {
-                var client = new HttpClient();
-
-                var content = new FormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("Input.UserName", "Tommi"),
-                    new KeyValuePair<string, string>("Input.Password", "HMPTommi1!")
-                });
-
-                //var result = await client.PostAsync("https://localhost:44333/Identity/Account/LoginRemote", content);
-                //var s = "https://localhost:44333/Identity/Account/LoginRemote?UserName=Tommi&Password=HMPTommi1!";
-                //var result = await client.GetAsync(s);
-
                 await connection.StartAsync();
 
                 await connection.InvokeAsync("SendMessage",
@@ -371,8 +408,10 @@ namespace GnollHackClient
             _gnollHackService.TestRunGnollHack();
         }
 
-        private void serverButton_Clicked(object sender, EventArgs e)
+        private async void serverButton_Clicked(object sender, EventArgs e)
         {
+            var authCookie = await Authenticate();
+
             _fmodService.PlayTestSound();
 
             _connectionAttempted = true;
@@ -380,11 +419,11 @@ namespace GnollHackClient
             _message = "Please wait...";
 
             if (connection == null)
-                ConnectToServer();
+                ConnectToServer(authCookie);
             else if(connection.State != HubConnectionState.Connected)
             {
-                connection.StopAsync();
-                ConnectToServer();
+                await connection.StopAsync();
+                ConnectToServer(authCookie);
             }
             else
                 _connection_status = "Connected";
