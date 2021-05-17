@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GnollHackClient": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

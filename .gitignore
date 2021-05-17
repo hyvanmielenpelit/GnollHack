@@ -375,3 +375,4 @@ ASALocalRun/
 .mfractor/
 
 !win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/libs/*
+!*.json

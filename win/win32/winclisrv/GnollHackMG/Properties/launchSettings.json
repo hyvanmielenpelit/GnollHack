@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GnollHackMG": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
