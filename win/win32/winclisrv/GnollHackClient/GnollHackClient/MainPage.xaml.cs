@@ -169,7 +169,6 @@ namespace GnollHackClient
             handler.CookieContainer = cookies;
             Uri url = new Uri("http://10.0.2.2:57061/api/login");
 
-            Cookie authCookie = null;
             using (var client = new HttpClient(handler))
             {
                 client.BaseAddress = url;
