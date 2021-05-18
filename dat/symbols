@@ -150,36 +150,41 @@ finish
 
 start: UnicodeGraphics
 	Handling: UNICODE
-	S_vwall: \u2502			# meta-3, vertical rule
-	S_hwall: \u2500			# meta-D, horizontal rule
-	S_tlcorn: \u250C			# meta-Z, top left corner
-	S_trcorn: \u2510			# meta-?, top right corner
-	S_blcorn: \u2514			# meta-@, bottom left
-	S_brcorn: \u2518			# meta-Y, bottom right
-	S_crwall: \u253C			# meta-E, cross
-	S_tuwall: \u2534			# meta-A, T up
-	S_tdwall: \u252C			# meta-B, T down
-	S_tlwall: \u2524			# meta-4, T left
-	S_trwall: \u251C			# meta-C, T right
-	S_ndoor: \u00B7			# meta-z, centered dot
-	S_vodoor: \u25A0			# meta-~, small centered square
-	S_hodoor: \u25A0			# meta-~, small centered square
-	S_altar: \u2583			# equivalence symbol
-	S_anvil: \u25BC			# equivalence symbol
-	S_treant: \u00B1			# plus or minus symbol
-	S_tree: \u00B1			# plus or minus symbol
-	S_room: \u00B7			# meta-z, centered dot
-	S_corr: \u2591			# meta-0, light shading
-	S_litcorr: \u2592			# meta-1, medium shading
-	S_fountain: \u222B		# meta-t, integral top half
-	S_pool: \u224B			# meta-w, approx. equals
-	S_ice: \u2042			# meta-z, centered dot
-	S_lava: \u224A			# meta-w, approx. equals
-	S_vodbridge: \u00B7 		# meta-z, centered dot
-	S_hodbridge: \u00B7		# meta-z, centered dot
-	S_water: \u224B			# meta-w, approx. equals
-	S_vbeam: \u2502			# meta-3, vertical rule
-	S_hbeam: \u2500			# meta-D, horizontal rule
+	S_vwall: \u2502			
+	S_hwall: \u2500		
+	S_tlcorn: \u250C		
+	S_trcorn: \u2510		
+	S_blcorn: \u2514		
+	S_brcorn: \u2518		
+	S_crwall: \u253C	
+	S_tuwall: \u2534		
+	S_tdwall: \u252C		
+	S_tlwall: \u2524			
+	S_trwall: \u251C		
+	S_ndoor: \u00B7		
+	S_vodoor: \u25A0		
+	S_hodoor: \u25A0		
+	S_bars: \u2317		
+	S_throne: \u2338
+	S_altar: \u2583
+	S_anvil: \u25BC			
+	S_sink: \u2362
+	S_treant: \u00B1
+	S_tree: \u00B1
+	S_room: \u00B7
+	S_corr: \u2591
+	S_litcorr: \u2592
+	S_fountain: \u222B
+	S_pool: \u224B
+	S_ice: \u2042
+	S_lava: \u224A
+	S_vodbridge: \u00B7
+	S_hodbridge: \u00B7
+	S_vcdbridge: \u2318
+	S_hcdbridge: \u2318
+	S_water: \u224B			
+	S_vbeam: \u2502		
+	S_hbeam: \u2500			
 	S_lslant: \u2572
 	S_rslant: \u2571
 	S_digbeam: \u233E
@@ -187,19 +192,19 @@ start: UnicodeGraphics
 	S_sw_tl: \u2571
 	S_sw_tc: \u2500
 	S_sw_tr: \u2572
-	S_sw_ml: \u2502			# meta-3, vertical rule
-	S_sw_mr: \u2502			# meta-3, vertical rule
+	S_sw_ml: \u2502			
+	S_sw_mr: \u2502			
 	S_sw_bl: \u2572
 	S_sw_bc: \u2500
 	S_sw_br: \u2571
-	S_explode1: \u2571		# meta-3, vertical rule
-	S_explode2: \u2500		# meta-3, vertical rule
-	S_explode3: \u2572		# meta-3, vertical rule
-	S_explode4: \u2502		# meta-3, vertical rule
-	S_explode6: \u2502		# meta-3, vertical rule
-	S_explode7: \u2572		# meta-3, vertical rule
-	S_explode8: \u2500		# meta-3, vertical rule
-	S_explode9: \u2571		# meta-3, vertical rule
+	S_explode1: \u2571
+	S_explode2: \u2500
+	S_explode3: \u2572
+	S_explode4: \u2502
+	S_explode6: \u2502
+	S_explode7: \u2572
+	S_explode8: \u2500
+	S_explode9: \u2571
 	S_signpost: \u2691
 	S_brazier: \u25CE
 	S_grave: \u25AE
