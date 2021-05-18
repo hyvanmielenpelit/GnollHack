@@ -3465,37 +3465,43 @@ void
 g_putch(in_ch)
 int in_ch;
 {
-    register char ch = (char) in_ch;
-
-    HUPSKIP();
-#if defined(ASCIIGRAPH) && !defined(NO_TERMS)
-    if (SYMHANDLING(H_IBM)
-        /* for DECgraphics, lower-case letters with high bit set mean
-           switch character set and render with high bit clear;
-           user might want 8-bits for other characters */
-        || (iflags.eight_bit_tty && (!SYMHANDLING(H_DEC)
-                                     || (in_ch & 0x7f) < 0x60))) {
-        /* IBM-compatible displays don't need other stuff */
-        (void) doputchar(ch);
-    } else if (ch & 0x80) {
-        if (!GFlag || HE_resets_AS) {
-            graph_on();
-            GFlag = TRUE;
-        }
-        (void) doputchar((ch ^ 0x80)); /* Strip 8th bit */
-    } else {
-        if (GFlag) {
-            graph_off();
-            GFlag = FALSE;
-        }
+    if (use_utf8_encoding())
         doputchar(ch);
-    }
+    else
+    {
+        register char ch = (char)in_ch;
+
+        HUPSKIP();
+#if defined(ASCIIGRAPH) && !defined(NO_TERMS)
+        if (SYMHANDLING(H_IBM)
+            /* for DECgraphics, lower-case letters with high bit set mean
+               switch character set and render with high bit clear;
+               user might want 8-bits for other characters */
+            || (iflags.eight_bit_tty && (!SYMHANDLING(H_DEC)
+                || (in_ch & 0x7f) < 0x60))) {
+            /* IBM-compatible displays don't need other stuff */
+            (void)putchar(ch);
+        }
+        else if (ch & 0x80) {
+            if (!GFlag || HE_resets_AS) {
+                graph_on();
+                GFlag = TRUE;
+            }
+            (void)putchar((ch ^ 0x80)); /* Strip 8th bit */
+        }
+        else {
+            if (GFlag) {
+                graph_off();
+                GFlag = FALSE;
+            }
+            putchar(ch);
+        }
 
 #else
-    (void) doputchar(ch);
+        (void)putchar(ch);
 
 #endif /* ASCIIGRAPH && !NO_TERMS */
-
+    }
     return;
 }
 #endif /* !WIN32 */
@@ -3652,10 +3658,7 @@ struct layer_info layers;
         xputg(glyph, (int)ch, special);
     else
 #endif
-    if(use_utf8_encoding())
-        doputchar(ch);
-    else
-        g_putch((int)ch); /* print the character */
+    g_putch((int)ch); /* print the character */
 
     if (reverse_on || underline_on) {
         if(reverse_on)
