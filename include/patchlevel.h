@@ -17,13 +17,13 @@
  * EDITLEVEL is also used to indicate the pre-alpha / alpha / beta version if PREALPHA / ALPHA / BETA compiler preprocessor option is on.
  * Change EDITLEVEL when the changes to the game are save-file-breaking.
  */
-#define EDITLEVEL 2
+#define EDITLEVEL 3
 
 /*
  * HOTFIXLEVEL indicates the hot fix number in PREALPHA / ALPHA / BETA. 
  * It does not invalidate save files and is meant to address non-save-file-breaking bugs during PREALPHA / ALPHA / BETA
  */
-#define HOTFIXLEVEL 3
+#define HOTFIXLEVEL 0
 
 #define COPYRIGHT_BANNER_A "GnollHack, Copyright 2021 by Sound Mind Games"
 #define COPYRIGHT_BANNER_B \
