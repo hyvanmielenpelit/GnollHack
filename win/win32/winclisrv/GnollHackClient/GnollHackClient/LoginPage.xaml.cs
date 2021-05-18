@@ -44,6 +44,7 @@ namespace GnollHackClient
             App.AuthenticationCookie = await Authenticate();
             if(App.AuthenticationCookie != null)
             {
+                App.SelectedServer = SelectedServer;
                 await Application.Current.MainPage.Navigation.PopModalAsync();
             }
         }
@@ -104,7 +105,8 @@ namespace GnollHackClient
                         try
                         {
                             var responseCookies = cookies.GetCookies(url).Cast<Cookie>();
-                            return responseCookies.First(c => c.Name == ".AspNetCore.Identity.Application");
+                            var cookie = responseCookies.First(c => c.Name == ".AspNetCore.Identity.Application");
+                            return cookie;
                         }
                         catch(Exception ex)
                         {

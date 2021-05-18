@@ -47,7 +47,7 @@ namespace GnollHackClient
         };
 
         Boolean _connectionAttempted = false;
-        private HubConnection connection;
+        private HubConnection _connection;
         private string _connection_status = "";
         private string _message = "";
         private string _message2 = "";
@@ -162,109 +162,76 @@ namespace GnollHackClient
             _message2 = "GnollHack2: " + res2;
         }
 
-        private async Task<Cookie> Authenticate()
+        protected void ConnectToServer()
         {
-            CookieContainer cookies = new CookieContainer();
-            HttpClientHandler handler = new HttpClientHandler();
-            handler.CookieContainer = cookies;
-            Uri url = new Uri("http://10.0.2.2:57061/api/login");
-
-            using (var client = new HttpClient(handler))
+            if(App.AuthenticationCookie == null)
             {
-                client.BaseAddress = url;
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                LoginCredentials loginCredentials = new LoginCredentials()
-                {
-                    UserName = "Tommi",
-                    Password = "HMPTommi1!"
-                };
-
-                using (StringWriter sw = new StringWriter())
-                {
-                    JsonSerializer js = new JsonSerializer();
-                    js.Serialize(sw, loginCredentials);
-                    System.Net.Http.StringContent content = new StringContent(sw.ToString(), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync("", content);
-                    if (response.IsSuccessStatusCode && response.Headers.Contains("Set-Cookie"))
-                    {
-                        var responseCookies = cookies.GetCookies(url).Cast<Cookie>();
-                        return responseCookies.First(c => c.Name == ".AspNetCore.Identity.Application");
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
+                throw new Exception("AuthenticationCookie is null");
             }
-        }
 
-        protected void ConnectToServer(Cookie authCookie)
-        {
-            var b = new HubConnectionBuilder();
-            b.WithUrl("http://10.0.2.2:57061/gnollhack");
-            if (authCookie != null)
+            if (App.SelectedServer == null)
             {
-                b.WithUrl("http://10.0.2.2:57061/gnollhack", options =>
-                {
-                    options.Cookies.Add(authCookie);
-                });
+                throw new Exception("SelectedServer is null");
             }
-            else
-            {
-                b.WithUrl("http://10.0.2.2:57061/gnollhack");
-            }
-            connection = b.Build();
 
-            if (connection != null)
+            _connection = new HubConnectionBuilder().WithUrl(App.SelectedServer.Url + "gnollhack", options =>
+            {
+                options.Cookies.Add(App.AuthenticationCookie);
+            }).Build();
+
+            if (_connection != null)
+            {
                 _connection_status = "Connection attempted";
+            }
             else
+            {
                 _connection_status = "Connection attempt failed";
+            }
 
-            connection.Closed += async (error) =>
+            _connection.Closed += async (error) =>
             {
                 _connection_status = "Connection closed";
                 await Task.Delay(new Random().Next(0, 5) * 1000);
-                await connection.StartAsync();
+                await _connection.StartAsync();
             };
 
-            connection.On<string, string>("ReceiveMessage", (user, message) =>
+            _connection.On<string, string>("ReceiveMessage", (user, message) =>
             {
                 _message = message;
             });
 
-            connection.On<int>("CalcResult", (result) =>
+            _connection.On<int>("CalcResult", (result) =>
             {
                 _result = result;
             });
 
-            connection.On<string, string>("LoginMessage", (user, message) =>
+            _connection.On<string, string>("LoginMessage", (user, message) =>
             {
                 _message2 = message;
             });
 
-            connection.On<int>("AddNewGameResult", (result) =>
+            _connection.On<int>("AddNewGameResult", (result) =>
             {
                 _message3 = "New Game Added: " + result;
             });
 
-            connection.On<bool>("GameAliveResult", (result) =>
+            _connection.On<bool>("GameAliveResult", (result) =>
             {
                 _message4 = "Game Alive: " + result.ToString();
             });
-            connection.On<int, int>("Client_ExitHack", (hash, status) =>
+            _connection.On<int, int>("Client_ExitHack", (hash, status) =>
             {
                 _message5 = "ExitHack: Hash: " + hash + ", Status: " + status;
             });
-            connection.On<int>("Client_PlayerSelection", (hash) =>
+            _connection.On<int>("Client_PlayerSelection", (hash) =>
             {
                 _message5 = "PlayerSelection: Hash: " + hash;
             });
-            connection.On<GHCommandFromServer>("CommandFromServer", (command) =>
+            _connection.On<GHCommandFromServer>("CommandFromServer", (command) =>
             {
                 _message5 = "CommandFromServer: " + command.CommandName + ", GUID: " + command.Id.ToString();
             });
-            connection.On<Guid, int>("ResponseFromClientResult", (guid, result) =>
+            _connection.On<Guid, int>("ResponseFromClientResult", (guid, result) =>
             {
                 _message5 = "ResponseFromClientResult: " + result + ", GUID: " + guid;
             });
@@ -274,14 +241,14 @@ namespace GnollHackClient
         {
             try
             {
-                await connection.StartAsync();
+                await _connection.StartAsync();
 
-                await connection.InvokeAsync("SendMessage",
+                await _connection.InvokeAsync("SendMessage",
                     "user", "My message");
 
-                await connection.InvokeAsync("DoCalc");
+                await _connection.InvokeAsync("DoCalc");
 
-                await connection.InvokeAsync("AddNewServerGame");
+                await _connection.InvokeAsync("AddNewServerGame");
             }
             catch (Exception ex)
             {
@@ -344,19 +311,19 @@ namespace GnollHackClient
             xText = 10;
             yText = 0;
             string additional_info = "";
-            if(connection == null && _connectionAttempted)
-                additional_info = ", no connection";
-            else if (connection == null)
+            if(_connection == null && _connectionAttempted)
+                additional_info = ", no _connection";
+            else if (_connection == null)
             {
                 /* Do nothing */
             }
-            else if (connection.State == HubConnectionState.Connected)
+            else if (_connection.State == HubConnectionState.Connected)
                 additional_info = ", connected";
-            else if (connection.State == HubConnectionState.Connecting)
+            else if (_connection.State == HubConnectionState.Connecting)
                 additional_info = ", connecting";
-            else if (connection.State == HubConnectionState.Disconnected)
+            else if (_connection.State == HubConnectionState.Disconnected)
                 additional_info = ", disconnected";
-            else if (connection.State == HubConnectionState.Reconnecting)
+            else if (_connection.State == HubConnectionState.Reconnecting)
                 additional_info = ", reconnecting";
 
             str = _connection_status + additional_info;
@@ -424,19 +391,24 @@ namespace GnollHackClient
                 _connection_status = "Not connected";
                 _message = "Please wait...";
 
-                if (connection == null)
-                    ConnectToServer(App.AuthenticationCookie);
-                else if (connection.State != HubConnectionState.Connected)
+                if (_connection == null)
                 {
-                    await connection.StopAsync();
-                    ConnectToServer(App.AuthenticationCookie
-                        );
+                    ConnectToServer();
+                }
+                else if (_connection.State != HubConnectionState.Connected)
+                {
+                    await _connection.StopAsync();
+                    ConnectToServer();
                 }
                 else
+                {
                     _connection_status = "Connected";
+                }
 
-                if (connection != null)
+                if (_connection != null)
+                {
                     LoginToServer();
+                }
             };
 
             await Navigation.PushModalAsync(loginPage);

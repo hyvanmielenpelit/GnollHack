@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GnollHackClient.Data;
+using System;
 using System.Net;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -27,5 +28,6 @@ namespace GnollHackClient
         }
 
         public static Cookie AuthenticationCookie { get; set; }
+        public static Server SelectedServer { get; set; }
     }
 }
