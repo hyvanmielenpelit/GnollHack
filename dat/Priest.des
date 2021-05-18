@@ -65,7 +65,8 @@ DOOR:closed,(40,14)
 DOOR:closed,(46,14)
 DOOR:closed,(52,14)
 # Unattended Altar - unaligned due to conflict - player must align it.
-ALTAR:(28,09),noalign,altar
+# Changed to coaligned --JG
+ALTAR:(28,09),coaligned,altar
 # High Priest
 MONSTER:('@',"Arch Priest"),(28,10)
 # The treasure of High Priest

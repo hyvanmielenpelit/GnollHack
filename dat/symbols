@@ -164,30 +164,29 @@ start: UnicodeGraphics
 	S_ndoor: \u00B7		
 	S_vodoor: \u25A0		
 	S_hodoor: \u25A0		
-	S_bars: \u2317		
-	S_throne: \u2338
-	S_altar: \u2583
+	S_throne: \u0394
+	S_altar: \u2584
 	S_anvil: \u25BC			
-	S_sink: \u2362
+	S_sink: \u20B8
 	S_treant: \u00B1
 	S_tree: \u00B1
 	S_room: \u00B7
 	S_corr: \u2591
 	S_litcorr: \u2592
 	S_fountain: \u222B
-	S_pool: \u224B
-	S_ice: \u2042
-	S_lava: \u224A
+	S_pool: \u2248
+	S_ice: \u20AA
+	S_lava: \u2248
 	S_vodbridge: \u00B7
 	S_hodbridge: \u00B7
-	S_vcdbridge: \u2318
-	S_hcdbridge: \u2318
-	S_water: \u224B			
+	S_vcdbridge: \u03A0
+	S_hcdbridge: \u03A0
+	S_water: \u2248			
 	S_vbeam: \u2502		
 	S_hbeam: \u2500			
 	S_lslant: \u2572
 	S_rslant: \u2571
-	S_digbeam: \u233E
+	S_digbeam: \u25CA
 	S_flashbeam: \u25CC
 	S_sw_tl: \u2571
 	S_sw_tc: \u2500
@@ -205,11 +204,12 @@ start: UnicodeGraphics
 	S_explode7: \u2572
 	S_explode8: \u2500
 	S_explode9: \u2571
-	S_signpost: \u2691
-	S_brazier: \u25CE
-	S_grave: \u25AE
+	S_signpost: \u0393
+	S_brazier: \u0398
+	S_grave: \u2229
 	S_boulder: \u039F
 	S_human: \u263B
+	S_magic_portal: \u03A0
 finish
 
 start: MACgraphics
