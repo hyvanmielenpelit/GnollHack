@@ -150,17 +150,17 @@ finish
 
 start: UnicodeGraphics
 	Handling: UNICODE
-	S_vwall: \u2503			# meta-3, vertical rule
-	S_hwall: \u2501			# meta-D, horizontal rule
-	S_tlcorn: \u250F			# meta-Z, top left corner
-	S_trcorn: \u2513			# meta-?, top right corner
-	S_blcorn: \u2517			# meta-@, bottom left
-	S_brcorn: \u251B			# meta-Y, bottom right
-	S_crwall: \u254B			# meta-E, cross
-	S_tuwall: \u253B			# meta-A, T up
-	S_tdwall: \u252F			# meta-B, T down
-	S_tlwall: \u252B			# meta-4, T left
-	S_trwall: \u2523			# meta-C, T right
+	S_vwall: \u2502			# meta-3, vertical rule
+	S_hwall: \u2500			# meta-D, horizontal rule
+	S_tlcorn: \u250C			# meta-Z, top left corner
+	S_trcorn: \u2510			# meta-?, top right corner
+	S_blcorn: \u2514			# meta-@, bottom left
+	S_brcorn: \u2518			# meta-Y, bottom right
+	S_crwall: \u253C			# meta-E, cross
+	S_tuwall: \u2534			# meta-A, T up
+	S_tdwall: \u252C			# meta-B, T down
+	S_tlwall: \u2524			# meta-4, T left
+	S_trwall: \u251C			# meta-C, T right
 	S_ndoor: \u00B7			# meta-z, centered dot
 	S_vodoor: \u25A0			# meta-~, small centered square
 	S_hodoor: \u25A0			# meta-~, small centered square
