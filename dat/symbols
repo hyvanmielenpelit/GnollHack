@@ -203,7 +203,7 @@ start: UnicodeGraphics
 	S_signpost: \u2691
 	S_brazier: \u25CE
 	S_grave: \u25AE
-	S_boulder: \u25EF
+	S_boulder: \u039F
 	S_human: \u263B
 finish
 

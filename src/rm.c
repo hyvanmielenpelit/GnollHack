@@ -145,6 +145,13 @@ struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SUBTYPES] =
         BANANA, 1, 3, 0, 50, 0, 0, 1,  -1, -1,
         TREE_FLAGS_NONE,
     },
+    {"fig tree",      "tree",
+        TREE_SUBTYPE_FIG_VARIATIONS, TREE_SUBTYPE_BANANA_VARIATIONS + TREE_SUBTYPE_APPLE_VARIATIONS + TREE_SUBTYPE_DATE_PALM_VARIATIONS + TREE_SUBTYPE_FIR_VARIATIONS + TREE_SUBTYPE_SPRUCE_VARIATIONS + TREE_SUBTYPE_NORMAL_VARIATIONS,
+        TREE_CLASS_DECIDUOUS,
+        {2, 2, 0, 2, 0, 5, 0, 0, 0, 0},
+        FIG, 1, 4, 0, 50, 1, 2, 0,  -1, -1,
+        TREE_FLAGS_MAY_HAVE_KILLER_BEES,
+    },
 };
 
 /* force linkage */

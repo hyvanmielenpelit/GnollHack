@@ -4475,19 +4475,29 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int ct_y = TILEBMP_Y(mtile);
                             int tiles_per_row = tileWidth / ui_tile_component_array[STATUS_MARKS].width;
                             int max_fitted_rows = (tileHeight - 4) / (ui_tile_component_array[STATUS_MARKS].height + 2);
+                            enum game_ui_status_mark_type statusmarkorder[MAX_STATUS_MARKS] = { STATUS_MARK_TOWNGUARD, STATUS_MARK_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 
-                            for (enum game_ui_status_mark_types status_mark = STATUS_MARK_PET; status_mark < min(MAX_STATUS_MARKS, ui_tile_component_array[STATUS_MARKS].number); status_mark++)
+                            for (int statusorder_idx = STATUS_MARK_PET; statusorder_idx < SIZE(statusmarkorder); statusorder_idx++)
                             {
+                                enum game_ui_status_mark_type status_mark = statusmarkorder[statusorder_idx];
                                 boolean display_this_status_mark = FALSE;
 
                                 switch (status_mark)
                                 {
+                                case STATUS_MARK_TOWNGUARD:
+                                    if (!loc_is_you && is_watch(mtmp->data))
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_HOSTILE:
+                                    if (!loc_is_you && !ispeaceful && is_watch(mtmp->data))
+                                        display_this_status_mark = TRUE;
+                                    break;
                                 case STATUS_MARK_PET:
                                     if (!loc_is_you && ispet)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_PEACEFUL:
-                                    if (!loc_is_you && ispeaceful)
+                                    if (!loc_is_you && ispeaceful && !is_watch(mtmp->data))
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_DETECTED:
