@@ -4986,7 +4986,7 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
         WCHAR wch;
         int color;
         unsigned long special;
-        int mgch;
+        nhsym mgch;
         HBRUSH back_brush;
         COLORREF OldFg;
 
@@ -5025,8 +5025,14 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
             OldFg = SetTextColor(data->backBufferDC, nhcolor_to_RGB(color));
         }
     #endif
-        if (data->bUnicodeFont) {
-            wch = winos_ascii_to_wide(ch);
+        if (data->bUnicodeFont || SYMHANDLING(H_UNICODE) || SYMHANDLING(H_IBM)) { /* For H_IBM note that DrawTextA uses CP850, not CP437 */
+            if (SYMHANDLING(H_UNICODE))
+                wch = (WCHAR)mgch;
+            else if (SYMHANDLING(H_IBM))
+                wch = winos_ascii_to_wide((unsigned char)ch);
+            else
+                wch = (WCHAR)ch;
+
             if (wch == 0x2591 || wch == 0x2592) {
                 int level = 80;
                 HBRUSH brush = CreateSolidBrush(RGB(level, level, level));

@@ -542,6 +542,7 @@ static boolean need_set_animation_timer;
 static boolean need_update_space_binding;
 static boolean need_status_initialize;
 static boolean need_init_print_glyph;
+static boolean need_stretch_map;
 
 #if defined(TOS) && defined(TEXTCOLOR)
 extern boolean colors_changed;  /* in tos.c */
@@ -5250,6 +5251,11 @@ doset() /* changing options via menu by Per Liboriussen */
         init_print_glyph(1);
     }
 
+    if (need_stretch_map)
+    {
+        stretch_window();
+    }
+
     if (need_status_initialize)
     {
         if (VIA_WINDOWPORT())
@@ -6123,6 +6129,8 @@ boolean setinitial, setfromfile;
         } else if (!rogueflag)
             assign_graphics(PRIMARY);
         preference_update("symset");
+        need_init_print_glyph = TRUE;
+        need_stretch_map = TRUE;
         need_redraw = TRUE;
 
     } else {

@@ -232,12 +232,12 @@ UINT
 mswin_charset()
 {
     CHARSETINFO cis;
-    if (SYMHANDLING(H_IBM))
+    /* if (SYMHANDLING(H_IBM))
         if (TranslateCharsetInfo((DWORD *) (uintptr_t) GetOEMCP(), &cis, TCI_SRCCODEPAGE))
             return cis.ciCharset;
         else
             return OEM_CHARSET;
-    else if (TranslateCharsetInfo((DWORD *) (uintptr_t) GetACP(), &cis, TCI_SRCCODEPAGE))
+    else */ if (TranslateCharsetInfo((DWORD *) (uintptr_t) GetACP(), &cis, TCI_SRCCODEPAGE))
         return cis.ciCharset;
     else
         return ANSI_CHARSET;
