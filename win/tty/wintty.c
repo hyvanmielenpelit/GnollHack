@@ -3466,7 +3466,7 @@ g_putch(in_ch)
 int in_ch;
 {
     if (use_utf8_encoding())
-        doputchar(ch);
+        doputchar((nhsym)in_ch);
     else
     {
         register char ch = (char)in_ch;
