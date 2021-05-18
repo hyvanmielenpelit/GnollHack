@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -24,5 +25,7 @@ namespace GnollHackClient
         protected override void OnResume()
         {
         }
+
+        public static Cookie AuthenticationCookie { get; set; }
     }
 }

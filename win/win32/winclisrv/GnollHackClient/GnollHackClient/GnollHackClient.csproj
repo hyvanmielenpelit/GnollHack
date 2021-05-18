@@ -46,4 +46,14 @@
   <ItemGroup>
     <ProjectReference Include="..\..\GnollHackCommon\GnollHackCommon.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="LoginPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
 </Project>

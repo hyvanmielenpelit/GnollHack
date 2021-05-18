@@ -169,7 +169,6 @@ namespace GnollHackClient
             handler.CookieContainer = cookies;
             Uri url = new Uri("http://10.0.2.2:57061/api/login");
 
-            Cookie authCookie = null;
             using (var client = new HttpClient(handler))
             {
                 client.BaseAddress = url;
@@ -410,26 +409,37 @@ namespace GnollHackClient
 
         private async void serverButton_Clicked(object sender, EventArgs e)
         {
-            var authCookie = await Authenticate();
+            var loginPage = new LoginPage();
 
-            _fmodService.PlayTestSound();
-
-            _connectionAttempted = true;
-            _connection_status = "Not connected";
-            _message = "Please wait...";
-
-            if (connection == null)
-                ConnectToServer(authCookie);
-            else if(connection.State != HubConnectionState.Connected)
+            loginPage.Disappearing += async (sender2, e2) =>
             {
-                await connection.StopAsync();
-                ConnectToServer(authCookie);
-            }
-            else
-                _connection_status = "Connected";
+                if (App.AuthenticationCookie == null)
+                {
+                    return;
+                }
 
-            if (connection != null)
-                LoginToServer();
+                _fmodService.PlayTestSound();
+
+                _connectionAttempted = true;
+                _connection_status = "Not connected";
+                _message = "Please wait...";
+
+                if (connection == null)
+                    ConnectToServer(App.AuthenticationCookie);
+                else if (connection.State != HubConnectionState.Connected)
+                {
+                    await connection.StopAsync();
+                    ConnectToServer(App.AuthenticationCookie
+                        );
+                }
+                else
+                    _connection_status = "Connected";
+
+                if (connection != null)
+                    LoginToServer();
+            };
+
+            await Navigation.PushModalAsync(loginPage);
         }
     }
 }
