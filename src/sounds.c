@@ -99,7 +99,7 @@ STATIC_DCL int FDECL(forge_full_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(learn_spell_func, (struct monst*));
 STATIC_DCL int FDECL(spell_teaching, (struct monst*, int*));
 STATIC_DCL boolean FDECL(maybe_dilithium_crystal, (struct obj*));
-STATIC_DCL boolean FDECL(maybe_ore, (struct obj*));
+STATIC_DCL boolean FDECL(maybe_forgeable_ore, (struct obj*));
 STATIC_DCL boolean FDECL(maybe_dragon_scales, (struct obj*));
 STATIC_DCL boolean FDECL(maybe_otyp, (struct obj*));
 static int otyp_for_maybe_otyp = 0;
@@ -5964,13 +5964,13 @@ struct monst* mtmp;
 }
 
 STATIC_OVL boolean
-maybe_ore(otmp)
+maybe_forgeable_ore(otmp)
 struct obj* otmp;
 {
     if (!otmp)
         return FALSE;
 
-    return is_ore(otmp);
+    return is_ore(otmp) && otmp->otyp != NUGGET_OF_SILVER_ORE && otmp->otyp != NUGGET_OF_GOLD_ORE && otmp->otyp != NUGGET_OF_PLATINUM_ORE;
 }
 
 STATIC_OVL boolean
@@ -6003,7 +6003,7 @@ struct monst* mtmp;
     const char sell_types[] = { ALLOW_COUNT, GEM_CLASS, 0 };
     int result, i = (invent) ? 0 : (SIZE(sell_types) - 1);
 
-    result = sell_to_npc(getobj_ex(&sell_types[i], "sell", 3, "", maybe_ore), mtmp);
+    result = sell_to_npc(getobj_ex(&sell_types[i], "sell", 3, "", maybe_forgeable_ore), mtmp);
 
     if (result)
     {
@@ -6606,7 +6606,7 @@ struct monst* mtmp;
 
     if (is_smith)
     {
-        saleitem = is_ore(obj);
+        saleitem = maybe_forgeable_ore(obj);
     }
     else if(has_enpc(mtmp))
     {
