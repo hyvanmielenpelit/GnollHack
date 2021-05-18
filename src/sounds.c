@@ -5894,11 +5894,11 @@ struct monst* mtmp;
         break;
     case 3:
         cost = max(1, (int)((200 + 20 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_field_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", "15 nuggets of iron ore");
+        return general_service_query_with_components(mtmp, forge_field_plate_mail_func, "forge a field plate mail", cost, "forging any armor", "15 nuggets of iron ore");
         break;
     case 4:
         cost = max(1, (int)((400 + 40 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", "30 nuggets of iron ore");
+        return general_service_query_with_components(mtmp, forge_full_plate_mail_func, "forge a full plate mail", cost, "forging any armor", "30 nuggets of iron ore");
         break;
     default:
         pline1(Never_mind);

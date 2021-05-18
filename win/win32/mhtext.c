@@ -72,7 +72,7 @@ mswin_display_text_window(HWND hWnd)
         SetWindowText(control, data->window_text);
     }
 
-    mswin_popup_display(hWnd, NULL);
+    mswin_popup_display(hWnd, NULL, TRUE);
     mswin_popup_destroy(hWnd);
 }
 

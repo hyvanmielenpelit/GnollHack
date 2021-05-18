@@ -227,7 +227,7 @@ winid mswin_winid_from_handle(HWND hWnd);
 void mswin_window_mark_dead(winid wid);
 void bail(const char *mesg);
 
-void mswin_popup_display(HWND popup, int *done_indicator);
+void mswin_popup_display(HWND popup, int *done_indicator, boolean close_on_any_key);
 void mswin_popup_destroy(HWND popup);
 
 void mswin_read_reg(void);

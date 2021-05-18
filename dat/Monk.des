@@ -64,8 +64,9 @@ DOOR:closed,(52,12)
 DOOR:closed,(40,14)
 DOOR:closed,(46,14)
 DOOR:closed,(52,14)
-# Unattended Altar - unaligned due to conflict - player must align it.
-ALTAR:(28,09),noalign,altar
+# OBSOLETE: Unattended Altar - unaligned due to conflict - player must align it.
+# Changed to coaligned, since unaligned == Moloch 
+ALTAR:(28,09),coaligned,altar
 # The Grand Master
 MONSTER:('@',"Grand Master"),(28,10)
 # No treasure chest!

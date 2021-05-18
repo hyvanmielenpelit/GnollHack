@@ -2508,7 +2508,7 @@ initMapTiles(void)
 }
 
 void
-mswin_popup_display(HWND hWnd, int *done_indicator)
+mswin_popup_display(HWND hWnd, int *done_indicator, boolean close_on_any_key)
 {
     MSG msg;
     HWND hChild;
@@ -2542,13 +2542,22 @@ mswin_popup_display(HWND hWnd, int *done_indicator)
     SetFocus(hWnd);
 
     /* go into message loop */
-    while (IsWindow(hWnd) && (done_indicator == NULL || !*done_indicator)) {
-        if (!iflags.debug_fuzzer || PeekMessage(&msg, NULL, 0, 0, FALSE)) {
-            if(GetMessage(&msg, NULL, 0, 0) != 0) {
-                if (msg.message == WM_MSNH_COMMAND ||
-                    !IsDialogMessage(hWnd, &msg)) {
+    while (IsWindow(hWnd) && (done_indicator == NULL || !*done_indicator)) 
+    {
+        if (!iflags.debug_fuzzer || PeekMessage(&msg, NULL, 0, 0, FALSE)) 
+        {
+            if(GetMessage(&msg, NULL, 0, 0) != 0) 
+            {
+                /* Close on any key */
+                if (close_on_any_key && (msg.message == WM_KEYDOWN || msg.message == WM_KEYUP))
+                    msg.wParam = VK_ESCAPE;
+
+                if ((msg.message == WM_MSNH_COMMAND ||
+                    !IsDialogMessage(hWnd, &msg))) 
+                {
                     if (!TranslateAccelerator(msg.hwnd,
-                                              GetNHApp()->hAccelTable, &msg)) {
+                                              GetNHApp()->hAccelTable, &msg)) 
+                    {
                         TranslateMessage(&msg);
                         DispatchMessage(&msg);
                     }
@@ -2561,6 +2570,7 @@ mswin_popup_display(HWND hWnd, int *done_indicator)
             nhassert(iflags.debug_fuzzer);
             PostMessage(hWnd, WM_MSNH_COMMAND, MSNH_MSG_RANDOM_INPUT, 0);
         }
+
         program_state.animation_hangup = 0;
     }
 }

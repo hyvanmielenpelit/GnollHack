@@ -204,7 +204,7 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
     LayoutMenu(hWnd); // show dialog buttons
 
     if (activate) {
-        mswin_popup_display(hWnd, &data->done);
+        mswin_popup_display(hWnd, &data->done, (data->how == PICK_NONE));
     } else {
         SetFocus(GetNHApp()->hMainWnd);
         mswin_layout_main_window(hWnd);
