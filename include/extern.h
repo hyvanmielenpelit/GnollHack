@@ -402,8 +402,6 @@ E void NDECL(sokoban_detect);
 E void NDECL(dump_map);
 #endif
 E void FDECL(reveal_terrain, (int, int));
-E char FDECL(nhsym_to_char, (nhsym));
-E char FDECL(unicode_to_char, (nhsym));
 
 /* ### dig.c ### */
 
@@ -1243,7 +1241,10 @@ E void FDECL(strbuf_reserve, (strbuf_t *, size_t));
 E void FDECL(strbuf_empty, (strbuf_t *));
 E void FDECL(strbuf_nl_to_crlf, (strbuf_t *));
 E void NDECL(adjusted_delay_output);
+E void FDECL(convertUTF8toCharUnicode, (char*, size_t));
 E void FDECL(convertUTF8toCP437, (char*, size_t));
+E char FDECL(nhsym_to_char, (nhsym));
+E char FDECL(unicode_to_char, (nhsym));
 
 /* ### invent.c ### */
 

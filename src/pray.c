@@ -2081,10 +2081,11 @@ dosacrifice()
 {
     static NEARDATA const char cloud_of_smoke[] =
         "A cloud of %s smoke surrounds you...";
-    register struct obj *otmp;
+    register struct obj* otmp;
     int value = 0, pm;
-    boolean highaltar;
+    boolean highaltar, molochaltar, godlessaltar;
     aligntyp altaralign = a_align(u.ux, u.uy);
+    int altarsubtyp = levl[u.ux][u.uy].subtyp;
 
     if (!on_altar() || u.uswallow) 
     {
@@ -2094,6 +2095,9 @@ dosacrifice()
 
     highaltar = ((Is_astralevel(&u.uz) || Is_sanctum(&u.uz))
                  && (levl[u.ux][u.uy].altarmask & AM_SHRINE));
+
+    molochaltar = (altarsubtyp == ALTAR_SUBTYPE_MOLOCH);
+    godlessaltar = (altaralign == A_NONE && altarsubtyp == ALTAR_SUBTYPE_NORMAL);
 
     otmp = floorfood("sacrifice", 1);
     if (!otmp)
@@ -2151,7 +2155,7 @@ dosacrifice()
             {
                 goto desecrate_high_altar;
             } 
-            else if (altaralign != A_CHAOTIC && altaralign != A_NONE) 
+            else if (altaralign != A_CHAOTIC && !molochaltar) 
             {
                 /* curse the lawful/neutral altar */
                 play_sfx_sound(SFX_DESECRATE_ALTAR);
@@ -2164,7 +2168,7 @@ dosacrifice()
                 struct monst *dmon;
                 const char *demonless_msg;
 
-                /* Human sacrifice on a chaotic or unaligned altar */
+                /* Human sacrifice on a chaotic or Moloch altar */
                 /* is equivalent to demon summoning */
                 play_sfx_sound(SFX_DESECRATE_ALTAR);
                 if (altaralign == A_CHAOTIC && u.ualign.type != A_CHAOTIC)
@@ -2181,7 +2185,7 @@ dosacrifice()
                 {
                     /* either you're chaotic or altar is Moloch's or both */
                     pline_The("blood covers the altar!");
-                    luck_change += (altaralign == A_NONE ? -2 : 2);
+                    luck_change += (molochaltar ? -2 : 2);
                     demonless_msg = "blood coagulates";
                 }
 
@@ -2299,7 +2303,7 @@ dosacrifice()
         if (!highaltar)
         {
         too_soon:
-            if (altaralign == A_NONE && Inhell)
+            if (molochaltar)
                 /* hero has left Moloch's Sanctum so is in the process
                    of getting away with the Amulet (outside of Gehennom,
                    fall through to the "ashamed" feedback) */
@@ -2326,7 +2330,7 @@ dosacrifice()
             else
                 useupf(otmp, 1L);
             You("offer the Amulet of Yendor to %s...", a_gname());
-            if (altaralign == A_NONE)
+            if (molochaltar)
             {
                 /* Moloch's high altar */
                 if (u.ualign.record > -99)
@@ -2433,7 +2437,13 @@ dosacrifice()
     }
     else if (value < 0) 
     { /* I don't think the gods are gonna like this... */
-        gods_upset(altaralign);
+        if(!godlessaltar)
+            gods_upset(altaralign);
+        else
+        {
+            pline1(nothing_happens);
+            return 1;
+        }
     }
     else
     {
@@ -2446,7 +2456,7 @@ dosacrifice()
         {
             /* Is this a conversion ? */
             /* An unaligned altar in Gehennom will always elicit rejection. */
-            if (ugod_is_angry() || (altaralign == A_NONE && Inhell)) 
+            if (ugod_is_angry() || molochaltar) 
             {
                 if (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL]
                     && altaralign != A_NONE) 
@@ -2462,6 +2472,11 @@ dosacrifice()
                     luck_change += -3;
                     u.uprayer_timeout += Role_if(PM_PRIEST) ? 150 : 300;
                 } 
+                else if (godlessaltar)
+                {
+                    pline1(nothing_happens);
+                    return 1;
+                }
                 else 
                 {
                     u.ugangr += 3;
@@ -2480,8 +2495,9 @@ dosacrifice()
             else 
             {
                 consume_offering(otmp);
-                You("sense a conflict between %s and %s.", u_gname(), a_gname());
-                if (rn2(8 + u.ulevel) > 5)
+                if(!godlessaltar)
+                    You("sense a conflict between %s and %s.", u_gname(), a_gname());
+                if (godlessaltar || rn2(8 + u.ulevel) > 5)
                 {
                     struct monst *pri;
                     play_sfx_sound(SFX_ALTAR_POWER_INCREASE);

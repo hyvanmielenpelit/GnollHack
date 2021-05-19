@@ -15,7 +15,7 @@
 #include "hack.h"
 #include <locale.h>
 
-extern const nhsym cp437toUnicode[256]; /* From detect.c */
+extern const nhsym cp437toUnicode[256]; /* From hacklib.c */
 
 #ifdef TTY_GRAPHICS
 #include "dlb.h"
@@ -2951,6 +2951,11 @@ boolean complain;
                 if (index(buf, '\t') != 0)
                     (void) tabexpand(buf);
 
+#if 0
+                if (SYMHANDLING(H_UNICODE))
+                    convertUTF8toCharUnicode(buf, sizeof(buf));
+                else 
+#endif                    
                 if(SYMHANDLING(H_IBM)) /* Using CP437 */
                     convertUTF8toCP437(buf, sizeof(buf));
 
