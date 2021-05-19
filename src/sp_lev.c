@@ -4737,7 +4737,7 @@ struct sp_coder* coder;
     struct opvar* gcoord, * subtyp, * foresttyp;
     schar x, y;
 
-    if (!OV_pop_i(foresttyp) || !OV_pop_i(subtyp) || !OV_pop_c(gcoord))
+    if (!OV_pop_i(subtyp) || !OV_pop_i(foresttyp) || !OV_pop_c(gcoord))
         return;
 
     get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
@@ -4763,7 +4763,7 @@ struct sp_coder* coder;
         if (val >= 0)
             levl[x][y].subtyp = val;
         else
-            levl[x][y].subtyp = get_initial_tree_subtype(forest_id >= 0 ? forest_id : level.flags.forest_type);
+            levl[x][y].subtyp = get_initial_tree_subtype(forest_id >= 0 ? forest_id : -1);
 
         levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
         levl[x][y].special_quality = 0;
