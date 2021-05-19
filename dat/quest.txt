@@ -73,7 +73,7 @@ You have an odd feeling this may be the last time you ever come here.
 "Did you see Lash LaRue in 'Song of Old Wyoming' the other night?"
 %E
 %Cp Arc 00006
-"Hey man, got any potions of hallucination for sale?"
+"Hey man, got any potions of water for sale?"
 %E
 %Cp Arc 00007
 "Did you see the artifact %l brought back from the last dig?"
@@ -88,7 +88,7 @@ You have an odd feeling this may be the last time you ever come here.
 "Did you see Lash LaRue in 'Song of Old Wyoming' the other night?"
 %E
 %Cp Arc 00011
-"Hey man, got any potions of hallucination for sale?"
+"Hey man, got any potions of water for sale?"
 %E
 %Cp Arc 00012
 "I guess you are guaranteed to make full professor now."

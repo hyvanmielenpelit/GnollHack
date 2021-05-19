@@ -1270,6 +1270,15 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Ill Add That to Your Bill", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Costly Alteration/Alter Pay", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Monster/Student/Male/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Student/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Student/Female/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Student/Female/Advice", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Chieftain/Male/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Chieftain/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Chieftain/Female/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Chieftain/Female/Advice", 1.0f },
 };
 
 

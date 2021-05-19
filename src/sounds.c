@@ -3409,17 +3409,37 @@ struct monst* mtmp;
     else if (msound == MS_GUARDIAN)
     {
         char namebuf[BUFSIZ] = "";
+        char endbuf[BUFSIZ] = "";
+        const char * titlestr = "";
+        switch (mtmp->mnum)
+        {
+        case PM_STUDENT:
+            titlestr = "a student at the College of Archaeology";
+            break;
+        case PM_CHIEFTAIN:
+            titlestr = "a local chieftain";
+            break;
+        default:
+            if (mtmp->mnum == urole.guardnum)
+                titlestr = "your quest guardian";
+            else
+                titlestr = "a quest guardian";
+            break;
+
+        }
+
         if (has_mname(mtmp))
         {
-            Sprintf(namebuf, "%s, ", MNAME(mtmp));
+            if (!iflags.using_gui_sounds)
+                Sprintf(namebuf, "%s, ", MNAME(mtmp));
+            else
+                Sprintf(endbuf, " (The name tag shows %s name is %s.)", mhis(mtmp), MNAME(mtmp));
+
             mtmp->u_know_mname = 1;
         }
 
-        if(mtmp->mnum == urole.guardnum)
-            Sprintf(ansbuf, "I am %syour quest guardian.", namebuf);
-        else
-            Sprintf(ansbuf, "I am %sa quest guardian.", namebuf);
-
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+        Sprintf(ansbuf, "I am %s%s.%s", namebuf, titlestr, endbuf);
         verbalize("%s", ansbuf);
     }
     else if (msound == MS_NEMESIS)
