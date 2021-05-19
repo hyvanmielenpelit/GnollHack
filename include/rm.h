@@ -344,6 +344,21 @@ enum wall_subtypes {
 extern struct location_subtype_definition wall_subtype_definitions[MAX_WALL_SUBTYPES];
 
 /* Other subtypes */
+#define ALTAR_SUBTYPE_NORMAL_VARIATIONS 4
+#define ALTAR_SUBTYPE_HIGH_VARIATIONS 1
+#define ALTAR_SUBTYPE_MOLOCH_VARIATIONS 1
+#define TOTAL_ALTAR_SUBTYPE_VARIATIONS (ALTAR_SUBTYPE_NORMAL_VARIATIONS + ALTAR_SUBTYPE_HIGH_VARIATIONS + ALTAR_SUBTYPE_MOLOCH_VARIATIONS)
+enum altar_subtypes
+{
+    ALTAR_SUBTYPE_NORMAL = 0,
+    ALTAR_SUBTYPE_HIGH,
+    ALTAR_SUBTYPE_MOLOCH,
+    MAX_ALTAR_SUBTYPES
+};
+
+extern struct location_subtype_definition altar_subtype_definitions[MAX_ALTAR_SUBTYPES];
+
+
 enum modron_portal_subtypes {
     MODRON_PORTAL_SUBTYPE_BASE = 0, /* Indicates use of base cmap */
     MODRON_PORTAL_SUBTYPE_SPHERICAL,
@@ -432,7 +447,7 @@ enum tree_subtypes
 #define TREE_SUBTYPE_NORMAL_VARIATIONS 1
 #define TREE_SUBTYPE_SPRUCE_VARIATIONS 1
 #define TREE_SUBTYPE_FIR_VARIATIONS 1
-#define TREE_SUBTYPE_DATE_PALM_VARIATIONS 1
+#define TREE_SUBTYPE_DATE_PALM_VARIATIONS 2
 #define TREE_SUBTYPE_APPLE_VARIATIONS 1
 #define TREE_SUBTYPE_BANANA_VARIATIONS 1
 #define TREE_SUBTYPE_FIG_VARIATIONS 1
@@ -623,15 +638,7 @@ enum staircase_subtypes
 #define STAIRCASE_DOWN_VARIATION_OFFSET (STAIRCASE_VARIATIONS + STAIRCASE_UP_VARIATION_OFFSET)
 
 #define ALTAR_VARIATION_OFFSET (STAIRCASE_VARIATIONS + STAIRCASE_DOWN_VARIATION_OFFSET)
-enum altar_variation_types
-{
-    ALTAR_VARIATION_LAWFUL = 0,
-    ALTAR_VARIATION_NEUTRAL,
-    ALTAR_VARIATION_CHAOTIC,
-    ALTAR_VARIATION_MOLOCH,
-    ALTAR_VARIATION_HIGH,
-    ALTAR_VARIATIONS
-};
+#define ALTAR_VARIATIONS (TOTAL_ALTAR_SUBTYPE_VARIATIONS - 1)
 
 #define FOUNTAIN_VARIATION_OFFSET (ALTAR_VARIATIONS + ALTAR_VARIATION_OFFSET)
 #define FOUNTAIN_VARIATIONS (MAX_FOUNTAIN_SUBTYPES - 1)
@@ -1159,5 +1166,13 @@ extern dlevel_t level; /* structure describing the current level */
 
 /* restricted movement, potential luck penalties */
 #define Sokoban level.flags.sokoban_rules
+
+ /* From pray.c */
+#include "align.h"
+#define a_align(x, y) ((aligntyp) Amask2align(levl[x][y].altarmask & AM_MASK))
+#define ugod_is_angry() (u.ualign.record < 0)
+#define on_altar() IS_ALTAR(levl[u.ux][u.uy].typ)
+#define on_shrine() ((levl[u.ux][u.uy].altarmask & AM_SHRINE) != 0)
+
 
 #endif /* RM_H */

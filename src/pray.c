@@ -99,11 +99,6 @@ static int p_type; /* (-1)-3: (-1)=really naughty, 3=really good */
 #define TROUBLE_TELEPORTITIS (-13)
 
 
-#define ugod_is_angry() (u.ualign.record < 0)
-#define on_altar() IS_ALTAR(levl[u.ux][u.uy].typ)
-#define on_shrine() ((levl[u.ux][u.uy].altarmask & AM_SHRINE) != 0)
-#define a_align(x, y) ((aligntyp) Amask2align(levl[x][y].altarmask & AM_MASK))
-
 /* critically low hit points if hp <= 5 or hp <= maxhp/N for some N */
 boolean
 critically_low_hp(only_if_injured)
@@ -3088,6 +3083,12 @@ xchar x, y;
     if (!IS_ALTAR(levl[x][y].typ))
         return (char *) 0;
 
+    if (levl[x][y].subtyp == ALTAR_SUBTYPE_MOLOCH)
+        return Moloch;
+
+    if (a_align(x, y) == A_NONE)
+        return "no-one";
+
     return align_gname(a_align(x, y));
 }
 
@@ -3228,6 +3229,9 @@ altar_wrath(x, y)
 register int x, y;
 {
     aligntyp altaralign = a_align(x, y);
+
+    if (levl[x][y].subtyp != ALTAR_SUBTYPE_MOLOCH && altaralign == A_NONE) /* Related to no-one */
+        return;
 
     if (!strcmp(align_gname(altaralign), u_gname())) {
         godvoice(altaralign, "How darest thou desecrate my altar!");

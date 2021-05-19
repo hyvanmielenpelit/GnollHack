@@ -402,6 +402,8 @@ E void NDECL(sokoban_detect);
 E void NDECL(dump_map);
 #endif
 E void FDECL(reveal_terrain, (int, int));
+E char FDECL(nhsym_to_char, (nhsym));
+E char FDECL(unicode_to_char, (nhsym));
 
 /* ### dig.c ### */
 

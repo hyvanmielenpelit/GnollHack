@@ -3134,12 +3134,24 @@ xchar x, y;
     {
         aligntyp alignment_mask = (ptr->altarmask & ~AM_SHRINE);
         aligntyp alignment = Amask2align(alignment_mask);
-        int var_idx = Is_astralevel(&u.uz) ? ALTAR_VARIATION_HIGH :
-            alignment == A_LAWFUL ? ALTAR_VARIATION_LAWFUL :
-            alignment == A_NEUTRAL ? ALTAR_VARIATION_NEUTRAL :
-            alignment == A_CHAOTIC ? ALTAR_VARIATION_CHAOTIC :
-            alignment == A_NONE /*&& (Is_sanctum(&u.uz) || Is_valley(&u.uz))*/ ? ALTAR_VARIATION_MOLOCH : -1
-            ;
+        int var_idx = -1;
+        
+        if (ptr->subtyp > 0 || alignment != A_NONE)
+        {
+            if (ptr->subtyp == 0)
+            {
+                var_idx = altar_subtype_definitions[ptr->subtyp].variation_offset + 
+                    (alignment == A_LAWFUL ? 0 :
+                        alignment == A_NEUTRAL ? 1 :
+                        alignment == A_CHAOTIC ? 2 : -1
+                        );
+            }
+            else
+            {
+                var_idx = altar_subtype_definitions[ptr->subtyp].variation_offset - 1; /* Just one variation here with any alignment */
+            }
+        }
+
         int sym_idx = S_altar;
         if (var_idx == -1)
         {

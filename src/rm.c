@@ -84,6 +84,13 @@ struct location_subtype_definition wall_subtype_definitions[MAX_WALL_SUBTYPES] =
     { "normal wall", WALL_SUBTYPE_NORMAL_VARIATIONS, 0 }, /* Must be aligned with stone normal subtypes */
 };
 
+struct location_subtype_definition altar_subtype_definitions[MAX_ALTAR_SUBTYPES] =
+{
+    { "normal altar", ALTAR_SUBTYPE_NORMAL_VARIATIONS, 0 },
+    { "high altar", ALTAR_SUBTYPE_HIGH_VARIATIONS, ALTAR_SUBTYPE_NORMAL_VARIATIONS },
+    { "altar of moloch", ALTAR_SUBTYPE_MOLOCH_VARIATIONS, ALTAR_SUBTYPE_NORMAL_VARIATIONS + ALTAR_SUBTYPE_HIGH_VARIATIONS },
+};
+
 
 struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES] =
 {
@@ -298,6 +305,18 @@ int typ, subtyp;
     {
         sub_def = wall_subtype_definitions;
         num_subs = MAX_WALL_SUBTYPES;
+    }
+    else if (IS_TREE(typ))
+    {
+        num_subs = MAX_TREE_SUBTYPES;
+        if (subtyp < 0 || subtyp >= num_subs)
+            return 0;
+
+        int num = tree_subtype_definitions[subtyp].number_of_vartypes;
+        if (num <= 1)
+            return 0;
+        else
+            return rn2(num);
     }
     else
         return 0;

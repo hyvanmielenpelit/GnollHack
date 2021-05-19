@@ -366,7 +366,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(30,12),no_pickup {
 
 # Secret temple
 REGION:(23,15,27,17),lit,"temple"
-ALTAR:(25,16),noalign,shrine,montype:"monk"
+ALTAR:(25,16),noalign,shrine,altar_moloch,montype:"monk"
 OBJECT:('(', "cubic gate"),(25,16),no_pickup
 
 

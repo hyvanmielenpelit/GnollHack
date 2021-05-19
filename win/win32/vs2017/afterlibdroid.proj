@@ -1,0 +1,13 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="dirs.props"/>
+  <Import Project="files.props"/>
+  <!-- TODO not copying record-->
+  <Target Name="Build"
+    Inputs="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png;$(WinWin32Dir)Master.bank;$(WinWin32Dir)Master.strings.bank"
+    Outputs="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png;$(ClientCommonAssetsDir)Master.bank;$(ClientCommonAssetsDir)Master.strings.bank">
+    <Copy SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png;$(WinWin32Dir)Master.bank;$(WinWin32Dir)Master.strings.bank" DestinationFolder="$(ClientCommonAssetsDir)"/>
+  </Target>
+  <Target Name="Clean">
+    <Delete Files="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png;$(ClientCommonAssetsDir)Master.bank;$(ClientCommonAssetsDir)Master.strings.bank"/>
+  </Target>
+</Project>

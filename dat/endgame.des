@@ -555,9 +555,9 @@ REGION:(61,05,74,14),lit,"ordinary",filled,irregular
 REGION:(04,07,10,11),lit,"temple"
 REGION:(34,03,40,07),lit,"temple"
 REGION:(64,07,70,11),lit,"temple"
-ALTAR:(07,09),align[0],sanctum
-ALTAR:(37,05),align[1],sanctum
-ALTAR:(67,09),align[2],sanctum
+ALTAR:(07,09),align[0],sanctum,altar_high
+ALTAR:(37,05),align[1],sanctum,altar_high
+ALTAR:(67,09),align[2],sanctum,altar_high
 # Doors
 DOOR:closed,(11,09)
 DOOR:closed,(17,09)

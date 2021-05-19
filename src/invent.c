@@ -5215,13 +5215,41 @@ int x, y;
     else if (IS_SINK(ltyp))
         cmap = S_sink; /* "sink" */
     else if (IS_ALTAR(ltyp)) {
-        Sprintf(altbuf, "%saltar to %s (%s)",
-                ((lev->altarmask & AM_SHRINE)
-                 && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
+        if (lsubtyp == ALTAR_SUBTYPE_HIGH)
+        {
+            if(a_align(x, y) == A_NONE)
+                Sprintf(altbuf, "high altar (unaligned)");
+            else
+                Sprintf(altbuf, "%saltar to %s (%s)", "high ", a_gname_at(x, y),
+                    align_str(Amask2align(lev->altarmask & ~AM_SHRINE)));
+        }
+        else if (lsubtyp == ALTAR_SUBTYPE_MOLOCH)
+        {
+            Sprintf(altbuf, "%saltar to %s",
+                ((lev->altarmask& AM_SHRINE)
+                    && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
+                ? "high " : "",
+                "Moloch");
+        }
+        else
+        {
+            if (a_align(x, y) == A_NONE)
+                Sprintf(altbuf, "%saltar (unaligned)",
+                    ((lev->altarmask & AM_SHRINE)
+                        && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
                     ? "high "
-                    : "",
+                    : ""
+                    );
+            else
+                Sprintf(altbuf, "%saltar to %s (%s)",
+                ((lev->altarmask& AM_SHRINE)
+                    && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
+                ? "high "
+                : "",
                 a_gname_at(x, y),
                 align_str(Amask2align(lev->altarmask & ~AM_SHRINE)));
+        }
+
         dfeature = altbuf;
     }
     else if ((x == xupstair && y == yupstair))

@@ -560,16 +560,31 @@ char *buf, *monbuf;
         switch (gl)
         {
         case S_altar:
-            Sprintf(buf, "%s %saltar",
-                /* like endgame high priests, endgame high altars
-                   are only recognizable when immediately adjacent */
-                (Is_astralevel(&u.uz) && distu(x, y) > 2)
-                ? "aligned"
-                : align_str(Amask2align(levl[x][y].altarmask & ~AM_SHRINE)),
-                ((levl[x][y].altarmask & AM_SHRINE)
-                    && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
-                ? "high "
-                : "");
+            if(levl[x][y].subtyp == ALTAR_SUBTYPE_MOLOCH)
+                Sprintf(buf, "%saltar to Moloch",
+                    ((levl[x][y].altarmask & AM_SHRINE)
+                        && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
+                    ? "high "
+                    : "");
+            else if (levl[x][y].subtyp == ALTAR_SUBTYPE_HIGH)
+                Sprintf(buf, "%s %saltar",
+                    /* like endgame high priests, endgame high altars
+                       are only recognizable when immediately adjacent */
+                    (Is_astralevel(&u.uz) && distu(x, y) > 2)
+                    ? "aligned"
+                    : align_str(Amask2align(levl[x][y].altarmask & ~AM_SHRINE)),
+                    "high ");
+            else
+                Sprintf(buf, "%s %saltar",
+                    /* like endgame high priests, endgame high altars
+                       are only recognizable when immediately adjacent */
+                    (Is_astralevel(&u.uz) && distu(x, y) > 2)
+                    ? "aligned"
+                    : align_str(Amask2align(levl[x][y].altarmask & ~AM_SHRINE)),
+                    ((levl[x][y].altarmask & AM_SHRINE)
+                        && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
+                    ? "high "
+                    : "");
             break;
         case S_ndoor:
             if (is_drawbridge_wall(x, y) >= 0)

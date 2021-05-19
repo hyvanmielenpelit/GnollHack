@@ -198,7 +198,7 @@ extern char curr_token[512];
 %token	<i> CORRIDOR_ID GOLD_ID ENGRAVING_ID FOUNTAIN_ID THRONE_ID MODRON_PORTAL_ID LEVEL_TELEPORTER_ID LEVEL_TELEPORT_DIRECTION_TYPE LEVEL_TELEPORT_END_TYPE POOL_ID SINK_ID NONE
 %token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE KEYTYPE_ID LEVER_ID NO_PICKUP_ID
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
-%token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
+%token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE ALTAR_SUBTYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
 %token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_SUBTYPE FLOOR_SUBTYPE_ID FLOOR_ID FLOOR_TYPE FLOOR_TYPE_ID
 %token	<i> ELEMENTAL_ENCHANTMENT_TYPE EXCEPTIONALITY_TYPE EXCEPTIONALITY_ID ELEMENTAL_ENCHANTMENT_ID ENCHANTMENT_ID SECRET_DOOR_ID USES_UP_KEY_ID
 %token	<i> MYTHIC_PREFIX_TYPE MYTHIC_SUFFIX_TYPE MYTHIC_PREFIX_ID MYTHIC_SUFFIX_ID
@@ -2272,15 +2272,24 @@ region_detail_end : /* nothing */
 
 altar_detail	: ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type
 		  {
-		      add_opvars(splev, "Miio",
-				 VA_PASS4(-1, (long)$7, (long)$5, SPO_ALTAR));
+		      add_opvars(splev, "Miiio",
+				 VA_PASS5(-1, 0, (long)$7, (long)$5, SPO_ALTAR));
 		  }
 		| ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type ',' MONTYPE_ID ':' monster_or_var
 		  {
-		      add_opvars(splev, "iio",
-				 VA_PASS3((long)$7, (long)$5, SPO_ALTAR));
+		      add_opvars(splev, "iiio",
+				 VA_PASS4(0, (long)$7, (long)$5, SPO_ALTAR));
 		  }
-		;
+        | ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type ',' ALTAR_SUBTYPE
+		  {
+		      add_opvars(splev, "Miiio",
+				 VA_PASS5(-1, (long)$9, (long)$7, (long)$5, SPO_ALTAR));
+		  }
+		| ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type ',' ALTAR_SUBTYPE ',' MONTYPE_ID ':' monster_or_var
+		  {
+		      add_opvars(splev, "iiio",
+				 VA_PASS4((long)$9, (long)$7, (long)$5, SPO_ALTAR));
+		  }		;
 
 anvil_detail : ANVIL_ID ':' coord_or_var
 		  {

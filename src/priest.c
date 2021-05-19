@@ -737,10 +737,6 @@ int roomno;
            once hero has encountered the temple priest on those levels */
         mapseen_temple(priest);
     }
-    else if (In_quest(&u.uz))
-    {
-        /* Nothing, assume that the quest leader speaks later or nemesis talks, whicever maybe the case */
-    }
     else 
     {
         /* untended */

@@ -87,7 +87,7 @@ IF[50%] {
     OBJECT:('(',"sarcophagus"),(70,01),open
 }
 SIGNPOST: (63,08), signpost_normal,"Keep Out - Gate to Gehennom Closed"
-ALTAR:(70,08),noalign,altar
+ALTAR:(70,08),noalign,altar,altar_moloch
 DOOR:locked,(65,08)
 DOOR:locked,(67,05)
 DOOR:locked,(67,11)

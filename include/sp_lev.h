@@ -488,6 +488,7 @@ typedef struct {
     xchar x, y;
     aligntyp align;
     xchar shrine;
+    xchar subtyp;
     int mtype;
 } altar;
 

@@ -4437,12 +4437,20 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         /* rely on GnollHack core helper routine */
                         (void)mapglyph(data->map[i][j], &mgch, &color,
                             &special, i, j);
+
                         ch = (char)mgch;
+
                         OldFg = SetTextColor(data->backBufferDC, nhcolor_to_RGB(color));
                         OldBg = SetBkColor(data->backBufferDC, RGB(0,0,0));
 
-                        if (data->bUnicodeFont) {
-                            wch = winos_ascii_to_wide(ch);
+                        if (data->bUnicodeFont || SYMHANDLING(H_IBM) || SYMHANDLING(H_UNICODE)) {
+                            if (SYMHANDLING(H_UNICODE))
+                                wch = (WCHAR)mgch;
+                            else if (SYMHANDLING(H_IBM))
+                                wch = winos_ascii_to_wide((unsigned char)ch);
+                            else
+                                wch = (WCHAR)ch;
+
                             DrawTextW(data->backBufferDC, &wch, 1, rect,
                                 DT_CENTER | DT_VCENTER | DT_NOPREFIX
                                 | DT_SINGLELINE);

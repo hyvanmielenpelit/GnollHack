@@ -133,7 +133,7 @@ FOUNTAIN:(16,09),fountain_poison
 FOUNTAIN:(25,09),fountain_poison
 
 # the altar's defiled; useful for BUC but never coaligned
-ALTAR:(20,13),noalign,shrine
+ALTAR:(20,13),noalign,shrine,altar_moloch
 FLOOR:fillrect(18,11,22,14),location_floor,floor_marble
 OBJECT: ('(', "large five-branched candelabrum"), (18,11), special_quality:((-1)+(1d5)), unlit
 OBJECT: ('(', "large five-branched candelabrum"), (22,11), special_quality:((-1)+(1d5)), unlit

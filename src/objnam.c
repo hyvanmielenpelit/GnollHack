@@ -4689,6 +4689,13 @@ boolean is_wiz_wish;
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }
+        if (!BSTRCMPI(bp, p - 5, "anvil"))
+        {
+            create_simple_location(x, y, ANVIL, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
+            pline("An anvil.");
+            newsym(x, y);
+            return (struct obj*)&zeroobj;
+        }
         if (!BSTRCMPI(bp, p - 4, "sink")) {
             create_simple_location(x, y, SINK, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A sink.");

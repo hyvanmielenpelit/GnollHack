@@ -496,5 +496,6 @@ enum main_menu_command {
  */
 typedef long nhsym;
 
+
 #endif /* GENERAL_H */
 

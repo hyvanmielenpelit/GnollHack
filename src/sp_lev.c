@@ -2556,7 +2556,7 @@ struct mkroom *croom;
         levl[x][y].floorvartyp = get_initial_location_vartype(levl[x][y].floortyp, levl[x][y].floorsubtyp);
     }
     levl[x][y].typ = ALTAR;
-    levl[x][y].subtyp = 0;
+    levl[x][y].subtyp = a->subtyp;
     levl[x][y].vartyp = 0;
     levl[x][y].special_quality = 0;
     levl[x][y].altarmask = amask;
@@ -4779,15 +4779,16 @@ spo_altar(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_altar";
-    struct opvar *al, *shrine, *acoord, *mtype;
+    struct opvar *al, *shrine, *acoord, *mtype, *subtype;
     altar tmpaltar;
 
-    if (!OV_pop_i(al) || !OV_pop_i(shrine) || !OV_pop(mtype) || !OV_pop_c(acoord))
+    if (!OV_pop_i(al) || !OV_pop_i(shrine) || !OV_pop_i(subtype) || !OV_pop(mtype) || !OV_pop_c(acoord))
         return;
 
     tmpaltar.coord = OV_i(acoord);
     tmpaltar.align = OV_i(al);
     tmpaltar.shrine = OV_i(shrine);
+    tmpaltar.subtyp = OV_i(subtype);
     tmpaltar.mtype = NON_PM;
     if (OV_typ(mtype) == SPOVAR_MONST) 
     {
@@ -4808,6 +4809,7 @@ struct sp_coder *coder;
 
     opvar_free(acoord);
     opvar_free(shrine);
+    opvar_free(subtype);
     opvar_free(al);
     opvar_free(mtype);
 }
