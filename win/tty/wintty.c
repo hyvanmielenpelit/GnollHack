@@ -3388,9 +3388,9 @@ STATIC_OVL int
 putcharutf8(ch)
 nhsym ch;
 {
-    long c = (long)ch;
+    unsigned long c = (unsigned long)ch;
     if (c < 0x80) {
-        putchar(c);
+        putchar((char)c);
     } else if(c < 0x800) {
         putchar((char)(0xC0 | (c>>6)));
         putchar((char)(0x80 | (c & 0x3F)));
@@ -3431,7 +3431,7 @@ STATIC_OVL boolean
 use_utf8_encoding()
 {
     /* Windows ASCII GnollHack does not use UTF-8 encoding with Unicode */
-#if WIN32
+#ifdef WIN32
     return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)));
 #else
     return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)) || SYMHANDLING(H_UNICODE));
