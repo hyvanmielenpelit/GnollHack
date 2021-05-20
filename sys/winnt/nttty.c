@@ -630,7 +630,7 @@ g_putch(in_ch)
 int in_ch;
 {
     boolean inverse = FALSE;
-    int ch = in_ch;
+    nhsym ch = in_ch;
 
     set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
 
@@ -647,7 +647,7 @@ int in_ch;
     cell_t cell;
 
     cell.attribute = console.attr;
-    cell.character = ((console.has_unicode || (flags.ibm2utf8 && SYMHANDLING(H_IBM))) && !SYMHANDLING(H_UNICODE)) ? cp437[ch] : ch;
+    cell.character = (WCHAR)(((console.has_unicode || (flags.ibm2utf8 && SYMHANDLING(H_IBM))) && !(SYMHANDLING(H_UNICODE) || ch < 0 || ch >= 256)) ? cp437[ch] : ch);
 
     buffer_write(console.back_buffer, &cell, console.cursor);
 }

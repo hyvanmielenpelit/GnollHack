@@ -2319,11 +2319,11 @@ struct WinDesc *cw;
                 /* message recall for msg_window:full/combination/reverse
                    might have output from '/' in it (see redotoplin()) */
                 if (linestart && (*cp & 0x80) != 0) {
-                    g_putch(*cp);
+                    g_putch((int)((unsigned char)(*cp)));
                     end_glyphout();
                     linestart = FALSE;
                 } else {
-                    (void) doputchar((nhsym)(*cp));
+                    (void) doputchar((nhsym)((unsigned char)(*cp)));
                 }
             }
             term_end_attr(attr);
@@ -2951,12 +2951,10 @@ boolean complain;
                 if (index(buf, '\t') != 0)
                     (void) tabexpand(buf);
 
-#if 0
+                /* Windows ASCII GnollHack does not use UTF-8 */
                 if (SYMHANDLING(H_UNICODE))
                     convertUTF8toCharUnicode(buf, sizeof(buf));
-                else 
-#endif                    
-                if(SYMHANDLING(H_IBM)) /* Using CP437 */
+                else  if(SYMHANDLING(H_IBM)) /* Using CP437 */
                     convertUTF8toCP437(buf, sizeof(buf));
 
                 empty = FALSE;
@@ -3387,21 +3385,21 @@ STATIC_OVL int
 putcharutf8(ch)
 nhsym ch;
 {
-    long c = (long)ch;
+    unsigned long c = (unsigned long)ch;
     if (c < 0x80) {
-        putchar(c);
+        putchar((char)c);
     } else if(c < 0x800) {
-        putchar(0xC0 | (c>>6));
-        putchar(0x80 | (c & 0x3F));
+        putchar((char)(0xC0 | (c>>6)));
+        putchar((char)(0x80 | (c & 0x3F)));
     } else if (c < 0x10000) {
-        putchar(0xE0 | (c>>12));
-        putchar(0x80 | (c>>6 & 0x3F));
-        putchar(0x80 | (c & 0x3F));
+        putchar((char)(0xE0 | (c>>12)));
+        putchar((char)(0x80 | (c>>6 & 0x3F)));
+        putchar((char)(0x80 | (c & 0x3F)));
     } else if (c < 0x200000) {
-        putchar(0xF0 | (c>>18));
-        putchar(0x80 | (c>>12 & 0x3F));
-        putchar(0x80 | (c>>6 & 0x3F));
-        putchar(0x80 | (c & 0x3F));
+        putchar((char)(0xF0 | (c>>18)));
+        putchar((char)(0x80 | (c>>12 & 0x3F)));
+        putchar((char)(0x80 | (c>>6 & 0x3F)));
+        putchar((char)(0x80 | (c & 0x3F)));
     }
 
     return 0;
@@ -3414,7 +3412,7 @@ nhsym ch;
     if (use_utf8_encoding())
     {
         nhsym c = ch;
-        if (flags.ibm2utf8 && SYMHANDLING(H_IBM))
+        if (flags.ibm2utf8 && SYMHANDLING(H_IBM) && ch >= 0 && ch < 256)
             c = cp437toUnicode[ch];
 
         return putcharutf8(c);
@@ -3429,7 +3427,12 @@ nhsym ch;
 STATIC_OVL boolean
 use_utf8_encoding()
 {
+    /* Windows ASCII GnollHack does not use UTF-8 encoding with Unicode */
+#ifdef WIN32
+    return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)));
+#else
     return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)) || SYMHANDLING(H_UNICODE));
+#endif
 }
 
 #ifndef WIN32
@@ -3437,11 +3440,13 @@ void
 g_putch(in_ch)
 int in_ch;
 {
+    register nhsym ch = (nhsym)in_ch;
     if (use_utf8_encoding())
-        doputchar((nhsym)in_ch);
+    {
+        doputchar(ch);
+    }
     else
     {
-        register char ch = (char)in_ch;
 
         HUPSKIP();
 #if defined(ASCIIGRAPH) && !defined(NO_TERMS)
