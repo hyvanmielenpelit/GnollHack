@@ -246,6 +246,21 @@ register const char *s; /* chars allowed besides return */
         if (c == '\n' || c == '\r')
             break;
 
+        if (c == '\033')
+        {
+            c = tty_nhgetch();
+            if (c == 0 || c == '\033')
+                c == '\033';
+            else if (c == 91)
+            {
+                c = tty_nhgetch();
+                break;  /* Break; regard arrow key etc. as an enter */
+            }
+        }
+
+        if (c == EOF)
+            break;
+
         if (iflags.cbreak) {
             if (c == '\033') {
                 if (ttyDisplay)
