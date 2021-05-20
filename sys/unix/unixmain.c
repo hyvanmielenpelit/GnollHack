@@ -15,6 +15,7 @@
 #ifndef O_RDONLY
 #include <fcntl.h>
 #endif
+#include <sys/select.h>
 
 #if !defined(_BULL_SOURCE) && !defined(__sgi) && !defined(_M_UNIX)
 #if !defined(SUNOS4) && !(defined(ULTRIX) && defined(__GNUC__))
@@ -808,19 +809,21 @@ sys_random_seed()
     return seed;
 }
 
+
 int
-tgetch()
+únix_is_stdin_empty()
 {
-    char buf[BUFSIZ];
-    int c = getchar();
-    if (fgets(buf, BUFSIZ, stdin) != NULL)
-    {
-        if (strlen(buf) > 0)
-        {
-            c = c;
-        }
+    fd_set fds;
+
+    FD_ZERO(&fds);
+    FD_SET(STDIN, &fds);
+
+    select(1, &fds, NULL, NULL, NULL);
+
+    if (FD_ISSET(0, &fds)) {
+        return TRUE;
     }
 
-    return c;
+    return FALSE;
 }
 /*unixmain.c*/

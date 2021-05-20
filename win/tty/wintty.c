@@ -1308,17 +1308,25 @@ tty_askname()
             if (c == '\033') 
             {
 #ifdef UNIX
-                c = tty_nhgetch();
-                if (c == '\033' || c == EOF || c == 0)
+                if (is_stdin_empty())
                 {
                     ct = 0;
                     break;
                 }
-                else if (c == 91)
+                else
                 {
                     c = tty_nhgetch();
-                    /* Disregard */
-                    continue;
+                    if (c == '\033' || c == EOF || c == 0)
+                    {
+                        ct = 0;
+                        break;
+                    }
+                    else if (c == 91)
+                    {
+                        c = tty_nhgetch();
+                        /* Disregard */
+                        continue;
+                    }
                 }
 #else
                 ct = 0;

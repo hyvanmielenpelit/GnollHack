@@ -5,6 +5,8 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h" /* for config.h+extern.h */
+#include <stdio.h>
+
 /*=
     Assorted 'small' utility routines.  They're virtually independent of
     GnollHack, except that rounddiv may call panic().  setrandom calls one
@@ -1505,7 +1507,7 @@ int* x, * y, * mod;
     int c = nh_poskey(x, y, mod);
 
 #ifdef UNIX
-    if (c == '\033')
+    if (c == '\033' && !is_stdin_empty())
     {
         c = nhgetch();
         if (c == EOF || c == 0 || c == '\033')
@@ -1551,4 +1553,17 @@ int* x, * y, * mod;
     return c;
 }
 
+#if defined(UNIX) && !defined(GNH_ANDROID) 
+extern int unix_is_stdin_empty(); /* From unixmain.c */
+#endif
+
+int
+is_stdin_empty()
+{
+#if defined(UNIX) && !defined(GNH_ANDROID) 
+    unix_is_stdin_empty();
+#else
+    return TRUE;
+#endif
+}
 /*hacklib.c*/

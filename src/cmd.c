@@ -7629,7 +7629,7 @@ readchar()
         sym = '\033';
 #ifdef ALTMETA
     }
-    else if (sym == '\033' && alt_esc) {
+    else if (sym == '\033' && alt_esc && !is_stdin_empty()) {
         /* iflags.altmeta: treat two character ``ESC c'' as single `M-c' */
         sym = *readchar_queue ? *readchar_queue++ : pgetchar();
         if (sym == EOF || sym == 0)
@@ -7643,7 +7643,7 @@ readchar()
 #endif /*ALTMETA*/
 
 #ifdef UNIX
-    } else if (sym == '\033' && escape_sequence_key_start_allowed) {
+    } else if (sym == '\033' && escape_sequence_key_start_allowed && !is_stdin_empty()) {
         sym = *readchar_queue ? *readchar_queue++ : pgetchar();
         if (sym == EOF || sym == 0 || sym == '\033')
             sym = '\033';
