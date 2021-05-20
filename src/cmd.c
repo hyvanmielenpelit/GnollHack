@@ -7626,9 +7626,39 @@ readchar()
         sym = *readchar_queue ? *readchar_queue++ : pgetchar();
         if (sym == EOF || sym == 0)
             sym = '\033';
+        else if (sym == 91)
+            goto sym91here;
         else if (sym != '\033')
             sym |= 0200; /* force 8th bit on */
 #endif /*ALTMETA*/
+    }
+    else if (sym == '\033') {
+        sym = *readchar_queue ? *readchar_queue++ : pgetchar();
+        if (sym == EOF || sym == 0)
+            sym = '\033';
+        else if (sym == 91)
+        {
+        sym91here:
+            sym = *readchar_queue ? *readchar_queue++ : pgetchar();
+            switch (sym)
+            {
+            case 65:
+                sym = Cmd.move_N;
+                break;
+            case 66:
+                sym = Cmd.move_S;
+                break;
+            case 67:
+                sym = Cmd.move_E;
+                break;
+            case 68:
+                sym = Cmd.move_W;
+                break;
+            default:
+                sym = '\033';
+                break;
+            }
+        }
     } else if (sym == 0) {
         /* click event */
         readchar_queue = click_to_cmd(x, y, mod);
