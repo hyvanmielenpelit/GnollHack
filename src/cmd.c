@@ -7633,13 +7633,13 @@ readchar()
 #endif /*ALTMETA*/
     }
     else if (sym == '\033') {
-        sym = *readchar_queue ? *readchar_queue++ : pgetchar();
+        sym = *readchar_queue ? *readchar_queue++ : 0;
         if (sym == EOF || sym == 0)
             sym = '\033';
         else if (sym == 91)
         {
         sym91here:
-            sym = *readchar_queue ? *readchar_queue++ : pgetchar();
+            sym = *readchar_queue ? *readchar_queue++ : 0;
             switch (sym)
             {
             case 65:
