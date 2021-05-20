@@ -14,7 +14,7 @@ namespace GnollHackClient
 
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
-
+            
             MainPage = navPage;
         }
 
@@ -32,5 +32,7 @@ namespace GnollHackClient
 
         public static Cookie AuthenticationCookie { get; set; }
         public static Server SelectedServer { get; set; }
+        public static NavigationPage MainNavigationPage { get { return (NavigationPage)Current.MainPage; } }
+
     }
 }

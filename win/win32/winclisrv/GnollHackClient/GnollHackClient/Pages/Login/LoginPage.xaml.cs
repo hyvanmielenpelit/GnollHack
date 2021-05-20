@@ -27,6 +27,8 @@ namespace GnollHackClient
         private Color _errorColor = Color.Red;
         private Color _infoColor = Color.Black;
         private Color _successColor = Color.Green;
+        private bool _canClickButton = true;
+        private bool _canClickLogin = true;
 
         public IList<Server> Servers { get { return _servers; } }
         public Server SelectedServer { get; set; }
@@ -42,12 +44,22 @@ namespace GnollHackClient
 
         private async void btnLogin_Clicked(object sender, EventArgs e)
         {
+            if (_canClickLogin == false)
+            {
+                return;
+            }
+
+            _canClickLogin = false;
+
             App.AuthenticationCookie = await Authenticate();
             if(App.AuthenticationCookie != null)
             {
                 App.SelectedServer = SelectedServer;
+                MainPage.LoginSuccessful = true;
                 await Application.Current.MainPage.Navigation.PopAsync();
             }
+
+            _canClickLogin = true;
         }
 
         private async Task<Cookie> Authenticate()
@@ -141,6 +153,11 @@ namespace GnollHackClient
 
         private async void OpenWebView(string urlEnd, string title)
         {
+            if (_canClickButton == false)
+            {
+                return;
+            }
+
             if (SelectedServer == null)
             {
                 lblStatus.TextColor = _errorColor;
@@ -148,18 +165,19 @@ namespace GnollHackClient
                 return;
             }
 
-            btnRegister.IsEnabled = false;
-
+            _canClickButton = false;
+            
             string url = SelectedServer.Url + urlEnd;
             var webViewPage = new WebViewPage(url);
             webViewPage.Title = string.Format(title, SelectedServer.Name);
             var navPage = new NavigationPage(webViewPage);
-            navPage.Popped += (sender2, e2) =>
-            {
-                btnRegister.IsEnabled = true;
-            };
 
             await App.Current.MainPage.Navigation.PushAsync(navPage);
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            _canClickButton = true;
         }
     }
 }

@@ -56,13 +56,16 @@ namespace GnollHackClient
         private string _message5 = "";
         private int _result = 0;
         private int _result2 = 0;
-        private string _accessToken = "MyAccessToken";
         SKBitmap _background_bitmap;
         SKBitmap _logo_bitmap;
         SKTypeface _typeface;
         private IFmodService _fmodService;
         private IGnollHackService _gnollHackService;
-        private bool _canClickServerButton = true;
+        private bool _canClickButton = true;
+        private bool _serverButtonClicked = false;
+        private NavigationPage _loginNavPage = null;
+
+        public static bool LoginSuccessful { get; set; }
 
         public MainPage()
         {
@@ -377,24 +380,36 @@ namespace GnollHackClient
 
         private async void serverButton_Clicked(object sender, EventArgs e)
         {
-            if(_canClickServerButton == false)
+            if(_canClickButton == false)
             {
                 return;
             }
 
-            _canClickServerButton = false;
+            _serverButtonClicked = true;
+            _canClickButton = false;
+            LoginSuccessful = false;
 
             var loginPage = new LoginPage();
-            var navPage = new NavigationPage(loginPage);
-            navPage.Popped += async (sender2, e2) =>
-            {
-                //Will run only on Login button pressed and explicit PopAsync called
+            _loginNavPage = new NavigationPage(loginPage);
 
-                if (App.AuthenticationCookie == null)
+            await Navigation.PushAsync(_loginNavPage);
+        }
+
+        private async void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            if(_serverButtonClicked)
+            {
+                _serverButtonClicked = false;
+                _canClickButton = true;
+
+                //Returns from login
+                if (LoginSuccessful == false)
                 {
+                    //Not authenticated
                     return;
                 }
 
+                //Authenticated
                 _fmodService.PlayTestSound();
 
                 _connectionAttempted = true;
@@ -419,14 +434,7 @@ namespace GnollHackClient
                 {
                     LoginToServer();
                 }
-            };
-
-            await Navigation.PushAsync(navPage);
-        }
-
-        private void ContentPage_Appearing(object sender, EventArgs e)
-        {
-            _canClickServerButton = true;
+            }
         }
     }
 }
