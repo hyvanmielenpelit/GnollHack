@@ -811,7 +811,7 @@ sys_random_seed()
 
 
 int
-únix_is_stdin_empty()
+unix_is_stdin_empty()
 {
     fd_set fds;
 
