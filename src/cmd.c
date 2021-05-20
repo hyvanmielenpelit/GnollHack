@@ -7628,18 +7628,22 @@ readchar()
 #endif
         sym = '\033';
 #ifdef ALTMETA
-    } else if (sym == '\033' && alt_esc) {
+    }
+    else if (sym == '\033' && alt_esc && !is_stdin_empty()) {
         /* iflags.altmeta: treat two character ``ESC c'' as single `M-c' */
         sym = *readchar_queue ? *readchar_queue++ : pgetchar();
         if (sym == EOF || sym == 0)
             sym = '\033';
+#ifdef UNIX
         else if (sym == 91)
             goto sym91here;
+#endif
         else if (sym != '\033')
             sym |= 0200; /* force 8th bit on */
 #endif /*ALTMETA*/
-    }
-    else if (sym == '\033' && escape_sequence_key_start_allowed) {
+
+#ifdef UNIX
+    } else if (sym == '\033' && escape_sequence_key_start_allowed && !is_stdin_empty()) {
         sym = *readchar_queue ? *readchar_queue++ : pgetchar();
         if (sym == EOF || sym == 0 || sym == '\033')
             sym = '\033';
@@ -7675,6 +7679,7 @@ readchar()
             /* Extra handling here, but currently they all give ESC */
             sym = '\033';
         }
+#endif
     } else if (sym == 0) {
         /* click event */
         readchar_queue = click_to_cmd(x, y, mod);

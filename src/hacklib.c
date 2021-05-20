@@ -1504,7 +1504,8 @@ int* x, * y, * mod;
 {
     int c = nh_poskey(x, y, mod);
 
-    if (c == '\033')
+#ifdef UNIX
+    if (c == '\033' && !is_stdin_empty())
     {
         c = nhgetch();
         if (c == EOF || c == 0 || c == '\033')
@@ -1545,8 +1546,19 @@ int* x, * y, * mod;
 #endif
         }
     }
+#endif
 
     return c;
 }
 
+int
+is_stdin_empty()
+{
+    long original_position = ftell(stdin);
+    fseek(stdin, 0, SEEK_END);
+    long end_of_file = ftell(stdin);
+    fseek(stdin, original_position, SEEK_SET);
+
+    return (original_position == end_of_file);
+}
 /*hacklib.c*/

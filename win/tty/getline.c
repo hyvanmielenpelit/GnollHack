@@ -75,9 +75,10 @@ getlin_hook_proc hook;
         Strcat(strcat(strcpy(toplines, query), " "), obufp);
         c = pgetchar();
         if (c == '\033' || c == EOF) {
-            if(c != EOF)
+            if(c != EOF && !is_stdin_empty())
+#ifdef UNIX
                 c = pgetchar(); /* Get another one */
-
+#endif
             if ((c == '\033' || c == 0) && obufp[0] != '\0') {
                 obufp[0] = '\0';
                 bufp = obufp;
@@ -86,7 +87,8 @@ getlin_hook_proc hook;
                 addtopl(query);
                 addtopl(" ");
                 addtopl(obufp);
-            } else if (c == 91) {
+#ifdef UNIX
+            } else if (c == 91 && !is_stdin_empty()) {
                 c = pgetchar(); /* Get third one */
                 switch (c)
                 {
@@ -104,6 +106,7 @@ getlin_hook_proc hook;
                     break;
                 }
                 continue;
+#endif
             } else {
                 obufp[0] = '\033';
                 obufp[1] = '\0';
@@ -246,11 +249,16 @@ register const char *s; /* chars allowed besides return */
         if (c == '\n' || c == '\r')
             break;
 
-        if (c == '\033')
+#ifdef UNIX
+        if (c == '\033' && !is_stdin_empty())
         {
             c = tty_nhgetch();
             if (c == 0 || c == '\033')
+            {
                 c = '\033';
+                break;
+
+            }
             else if (c == 91)
             {
                 c = tty_nhgetch();
@@ -260,6 +268,8 @@ register const char *s; /* chars allowed besides return */
 
         if (c == EOF)
             break;
+
+#endif
 
         if (iflags.cbreak) {
             if (c == '\033') {
