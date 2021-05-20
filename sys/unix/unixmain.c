@@ -816,7 +816,7 @@ int
     fd_set fds;
 
     FD_ZERO(&fds);
-    FD_SET(STDIN, &fds);
+    FD_SET(0, &fds);
 
     select(1, &fds, NULL, NULL, NULL);
 
