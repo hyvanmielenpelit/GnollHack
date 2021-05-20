@@ -3730,6 +3730,36 @@ tty_nhgetch()
               : (read(fileno(stdin), (genericptr_t) &nestbuf, 1) == 1)
                   ? (int) nestbuf : EOF;
         --nesting;
+
+        if (i == 27)
+        {
+            i = tgetch();
+            if (i == 91)
+            {
+                i = tgetch();
+                switch (i)
+                {
+                case 65:
+                    i = Cmd.move_N;
+                    break;
+                case 66:
+                    i = Cmd.move_S;
+                    break;
+                case 67:
+                    i = Cmd.move_E;
+                    break;
+                case 68:
+                    i = Cmd.move_W;
+                    break;
+                default:
+                    i = 0;
+                    break;
+                }
+            }
+            else
+                i = 0;
+        }
+
 #else
         i = tgetch();
 #endif
