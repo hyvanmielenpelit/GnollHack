@@ -818,7 +818,9 @@ unix_is_stdin_empty()
     FD_ZERO(&fds);
     FD_SET(0, &fds);
 
-    select(1, &fds, NULL, NULL, NULL);
+    struct timeval tv = { 0 };
+
+    select(1, &fds, NULL, NULL, &tv);
 
     if (FD_ISSET(0, &fds)) {
         return FALSE;
