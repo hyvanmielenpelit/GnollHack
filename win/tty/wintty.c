@@ -2319,11 +2319,11 @@ struct WinDesc *cw;
                 /* message recall for msg_window:full/combination/reverse
                    might have output from '/' in it (see redotoplin()) */
                 if (linestart && (*cp & 0x80) != 0) {
-                    g_putch(*cp);
+                    g_putch((int)((unsigned char)(*cp)));
                     end_glyphout();
                     linestart = FALSE;
                 } else {
-                    (void) doputchar((nhsym)(*cp));
+                    (void) doputchar((nhsym)((unsigned char)(*cp)));
                 }
             }
             term_end_attr(attr);
@@ -2951,7 +2951,8 @@ boolean complain;
                 if (index(buf, '\t') != 0)
                     (void) tabexpand(buf);
 
-#if 0
+                /* Windows ASCII GnollHack does not use UTF-8 */
+#if WIN32
                 if (SYMHANDLING(H_UNICODE))
                     convertUTF8toCharUnicode(buf, sizeof(buf));
                 else 
@@ -3414,7 +3415,7 @@ nhsym ch;
     if (use_utf8_encoding())
     {
         nhsym c = ch;
-        if (flags.ibm2utf8 && SYMHANDLING(H_IBM))
+        if (flags.ibm2utf8 && SYMHANDLING(H_IBM) && ch >= 0 && ch < 256)
             c = cp437toUnicode[ch];
 
         return putcharutf8(c);
@@ -3429,7 +3430,12 @@ nhsym ch;
 STATIC_OVL boolean
 use_utf8_encoding()
 {
+    /* Windows ASCII GnollHack does not use UTF-8 encoding with Unicode */
+#if WIN32
+    return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)));
+#else
     return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)) || SYMHANDLING(H_UNICODE));
+#endif
 }
 
 #ifndef WIN32
