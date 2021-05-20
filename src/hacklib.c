@@ -1357,16 +1357,17 @@ size_t bufsize;
     char* bp, *wp;
     char copybuf[BUFSIZ] = "";
     wp = copybuf;
-    uchar uc; // , uc2, uc3, uc4;
-    //unsigned long unicode = 0, byte2bits, byte1bits, byte3bits, byte4bits;
+    uchar uc, uc2, uc3, uc4;
+    unsigned long unicode = 0, byte2bits, byte1bits, byte3bits, byte4bits;
     char cp437char = 0;
-    boolean was_unicode = FALSE;
+    //boolean was_unicode = FALSE;
 
     for (bp = buf; *bp && bp < bp + bufsize && wp < copybuf + sizeof(copybuf); bp++)
     {
         uc = (uchar)(*bp);
         if (uc >= 0x80)
         {
+#if 0
             if (uc == 0xc3) /* A replaceble character */
             {
                 bp++;
@@ -1398,8 +1399,7 @@ size_t bufsize;
             }
 
             was_unicode = TRUE;
-
-#if 0
+#endif
             if ((uc & 0xE0) == 0xC0)
             {
                 byte1bits = (uc & 0x1F) << 6;
@@ -1454,13 +1454,13 @@ size_t bufsize;
             }
             *wp = cp437char;
             wp++;
-#endif
+
         }
         else
         {
             *wp = *bp;
             wp++;
-            was_unicode = FALSE;
+            //was_unicode = FALSE;
         }
     }
 
