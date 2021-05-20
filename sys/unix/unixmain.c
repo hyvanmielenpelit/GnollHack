@@ -821,9 +821,9 @@ unix_is_stdin_empty()
     select(1, &fds, NULL, NULL, NULL);
 
     if (FD_ISSET(0, &fds)) {
-        return TRUE;
+        return FALSE;
     }
 
-    return FALSE;
+    return TRUE;
 }
 /*unixmain.c*/
