@@ -56,12 +56,16 @@ namespace GnollHackClient
         private string _message5 = "";
         private int _result = 0;
         private int _result2 = 0;
-        private string _accessToken = "MyAccessToken";
         SKBitmap _background_bitmap;
         SKBitmap _logo_bitmap;
         SKTypeface _typeface;
         private IFmodService _fmodService;
         private IGnollHackService _gnollHackService;
+        private bool _canClickButton = true;
+        private bool _serverButtonClicked = false;
+        private NavigationPage _loginNavPage = null;
+
+        public static bool LoginSuccessful { get; set; }
 
         public MainPage()
         {
@@ -376,15 +380,36 @@ namespace GnollHackClient
 
         private async void serverButton_Clicked(object sender, EventArgs e)
         {
-            var loginPage = new LoginPage();
-
-            loginPage.Disappearing += async (sender2, e2) =>
+            if(_canClickButton == false)
             {
-                if (App.AuthenticationCookie == null)
+                return;
+            }
+
+            _serverButtonClicked = true;
+            _canClickButton = false;
+            LoginSuccessful = false;
+
+            var loginPage = new LoginPage();
+            _loginNavPage = new NavigationPage(loginPage);
+
+            await Navigation.PushAsync(_loginNavPage);
+        }
+
+        private async void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            if(_serverButtonClicked)
+            {
+                _serverButtonClicked = false;
+                _canClickButton = true;
+
+                //Returns from login
+                if (LoginSuccessful == false)
                 {
+                    //Not authenticated
                     return;
                 }
 
+                //Authenticated
                 _fmodService.PlayTestSound();
 
                 _connectionAttempted = true;
@@ -409,9 +434,7 @@ namespace GnollHackClient
                 {
                     LoginToServer();
                 }
-            };
-
-            await Navigation.PushModalAsync(loginPage);
+            }
         }
     }
 }

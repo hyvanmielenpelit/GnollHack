@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              xmlns:local="clr-namespace:GnollHackClient"
-             x:Class="GnollHackClient.MainPage">
+             x:Class="GnollHackClient.MainPage"
+             NavigationPage.HasNavigationBar="false"
+             Appearing="ContentPage_Appearing">
 
     <AbsoluteLayout VerticalOptions="FillAndExpand"
                     HorizontalOptions="FillAndExpand">

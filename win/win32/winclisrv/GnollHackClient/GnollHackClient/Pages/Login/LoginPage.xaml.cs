@@ -1,4 +1,5 @@
 ﻿using GnollHackClient.Data;
+using GnollHackClient.Pages.Login;
 using GnollHackCommon.Authentication;
 using Newtonsoft.Json;
 using System;
@@ -26,6 +27,8 @@ namespace GnollHackClient
         private Color _errorColor = Color.Red;
         private Color _infoColor = Color.Black;
         private Color _successColor = Color.Green;
+        private bool _canClickButton = true;
+        private bool _canClickLogin = true;
 
         public IList<Server> Servers { get { return _servers; } }
         public Server SelectedServer { get; set; }
@@ -41,12 +44,22 @@ namespace GnollHackClient
 
         private async void btnLogin_Clicked(object sender, EventArgs e)
         {
+            if (_canClickLogin == false)
+            {
+                return;
+            }
+
+            _canClickLogin = false;
+
             App.AuthenticationCookie = await Authenticate();
             if(App.AuthenticationCookie != null)
             {
                 App.SelectedServer = SelectedServer;
-                await Application.Current.MainPage.Navigation.PopModalAsync();
+                MainPage.LoginSuccessful = true;
+                await Application.Current.MainPage.Navigation.PopAsync();
             }
+
+            _canClickLogin = true;
         }
 
         private async Task<Cookie> Authenticate()
@@ -125,9 +138,46 @@ namespace GnollHackClient
             }
         }
 
-        private async void btnCancel_Clicked(object sender, EventArgs e)
+        private void btnForgotPassword_Clicked(object sender, EventArgs e)
         {
-            await Application.Current.MainPage.Navigation.PopModalAsync();
+            
+            string urlEnd = "Identity/Account/ForgotPassword";
+            OpenWebView(urlEnd, "Recover Password on {0}");
+        }
+
+        private void btnRegister_Clicked(object sender, EventArgs e)
+        {
+            string urlEnd = "Identity/Account/Register";
+            OpenWebView(urlEnd, "Sign up to {0}");
+        }
+
+        private async void OpenWebView(string urlEnd, string title)
+        {
+            if (_canClickButton == false)
+            {
+                return;
+            }
+
+            if (SelectedServer == null)
+            {
+                lblStatus.TextColor = _errorColor;
+                lblStatus.Text = "Please select a server.";
+                return;
+            }
+
+            _canClickButton = false;
+            
+            string url = SelectedServer.Url + urlEnd;
+            var webViewPage = new WebViewPage(url);
+            webViewPage.Title = string.Format(title, SelectedServer.Name);
+            var navPage = new NavigationPage(webViewPage);
+
+            await App.Current.MainPage.Navigation.PushAsync(navPage);
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            _canClickButton = true;
         }
     }
 }

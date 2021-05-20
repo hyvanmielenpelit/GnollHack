@@ -12,7 +12,10 @@ namespace GnollHackClient
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            var mainPage = new MainPage();
+            var navPage = new NavigationPage(mainPage);
+            
+            MainPage = navPage;
         }
 
         protected override void OnStart()
@@ -29,5 +32,7 @@ namespace GnollHackClient
 
         public static Cookie AuthenticationCookie { get; set; }
         public static Server SelectedServer { get; set; }
+        public static NavigationPage MainNavigationPage { get { return (NavigationPage)Current.MainPage; } }
+
     }
 }
