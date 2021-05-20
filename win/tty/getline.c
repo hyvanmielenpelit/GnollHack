@@ -250,7 +250,7 @@ register const char *s; /* chars allowed besides return */
         {
             c = tty_nhgetch();
             if (c == 0 || c == '\033')
-                c == '\033';
+                c = '\033';
             else if (c == 91)
             {
                 c = tty_nhgetch();
