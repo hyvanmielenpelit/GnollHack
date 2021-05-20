@@ -67,17 +67,17 @@ DOOR:closed,(52,14)
 # Unattended Altar - unaligned due to conflict - player must align it.
 ALTAR:(28,09),noalign,altar
 # The Grand Master
-MONSTER:('@',"Grand Master"),(28,10)
+MONSTER:('@',"Grand Master"),(28,10),protector
 # No treasure chest!
 # guards for the audience chamber
-MONSTER:('@',"abbot"),(32,07)
-MONSTER:('@',"abbot"),(32,08)
-MONSTER:('@',"abbot"),(32,11)
-MONSTER:('@',"abbot"),(32,12)
-MONSTER:('@',"abbot"),(33,07)
-MONSTER:('@',"abbot"),(33,08)
-MONSTER:('@',"abbot"),(33,11)
-MONSTER:('@',"abbot"),(33,12)
+MONSTER:('@',"abbot"),(32,07),protector
+MONSTER:('@',"abbot"),(32,08),protector
+MONSTER:('@',"abbot"),(32,11),protector
+MONSTER:('@',"abbot"),(32,12),protector
+MONSTER:('@',"abbot"),(33,07),protector
+MONSTER:('@',"abbot"),(33,08),protector
+MONSTER:('@',"abbot"),(33,11),protector
+MONSTER:('@',"abbot"),(33,12),protector
 # Non diggable walls
 NON_DIGGABLE:(18,03,55,16)
 # Random traps

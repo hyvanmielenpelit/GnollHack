@@ -186,6 +186,7 @@ enum sp_mon_var_flags {
     SP_M_V_CONFUSED,
     SP_M_V_SEENTRAPS,
     SP_M_V_WAITFORU,
+    SP_M_V_PROTECTOR,
 
     SP_M_V_END
 };
@@ -457,7 +458,7 @@ typedef struct {
     xchar x, y, class, appear;
     schar peaceful, asleep;
     long female, invis, cancelled, revived, avenge, fleeing, blinded,
-        paralyzed, stunned, confused, waitforu;
+        paralyzed, stunned, confused, waitforu, protector;
     long seentraps;
     long has_invent;
 } monster;

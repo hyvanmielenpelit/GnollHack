@@ -1980,6 +1980,8 @@ struct mkroom *croom;
             mtmp->female = 1;
         if (m->waitforu)
             mtmp->mstrategy |= STRAT_WAITFORU;
+        if (m->protector)
+            mtmp->isprotector = 1;
 
         if (m->cancelled)
         {
@@ -3696,6 +3698,10 @@ struct sp_coder *coder;
         case SP_M_V_WAITFORU:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpmons.waitforu = OV_i(parm);
+            break;
+        case SP_M_V_PROTECTOR:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpmons.protector = OV_i(parm);
             break;
         case SP_M_V_INVIS:
             if (OV_typ(parm) == SPOVAR_INT)

@@ -68,18 +68,18 @@ DOOR:open,(23,13)
 DOOR:open,(25,10)
 DOOR:open,(28,05)
 # Elder
-MONSTER:('@',"Pelias"),(10,07)
+MONSTER:('@',"Pelias"),(10,07),protector
 # The treasure of Pelias
 OBJECT:('(',"chest"),(09,05)
 # chieftain guards for the audience chamber
-MONSTER:('@',"chieftain"),(10,05)
-MONSTER:('@',"chieftain"),(10,09)
-MONSTER:('@',"chieftain"),(11,05)
-MONSTER:('@',"chieftain"),(11,09)
-MONSTER:('@',"chieftain"),(14,05)
-MONSTER:('@',"chieftain"),(14,09)
-MONSTER:('@',"chieftain"),(16,05)
-MONSTER:('@',"chieftain"),(16,09)
+MONSTER:('@',"chieftain"),(10,05),protector
+MONSTER:('@',"chieftain"),(10,09),protector
+MONSTER:('@',"chieftain"),(11,05),protector
+MONSTER:('@',"chieftain"),(11,09),protector
+MONSTER:('@',"chieftain"),(14,05),protector
+MONSTER:('@',"chieftain"),(14,09),protector
+MONSTER:('@',"chieftain"),(16,05),protector
+MONSTER:('@',"chieftain"),(16,09),protector
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)
 # One trap to keep the ogres at bay.

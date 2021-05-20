@@ -67,18 +67,18 @@ DOOR:closed,(52,14)
 # Unattended Altar - unaligned due to conflict - player must align it.
 ALTAR:(28,09),noalign,altar
 # High Priest
-MONSTER:('@',"Arch Priest"),(28,10)
+MONSTER:('@',"Arch Priest"),(28,10),protector
 # The treasure of High Priest
 OBJECT:('(',"chest"),(27,10)
 # knight guards for the audience chamber
-MONSTER:('@',"acolyte"),(32,07)
-MONSTER:('@',"acolyte"),(32,08)
-MONSTER:('@',"acolyte"),(32,11)
-MONSTER:('@',"acolyte"),(32,12)
-MONSTER:('@',"acolyte"),(33,07)
-MONSTER:('@',"acolyte"),(33,08)
-MONSTER:('@',"acolyte"),(33,11)
-MONSTER:('@',"acolyte"),(33,12)
+MONSTER:('@',"acolyte"),(32,07),protector
+MONSTER:('@',"acolyte"),(32,08),protector
+MONSTER:('@',"acolyte"),(32,11),protector
+MONSTER:('@',"acolyte"),(32,12),protector
+MONSTER:('@',"acolyte"),(33,07),protector
+MONSTER:('@',"acolyte"),(33,08),protector
+MONSTER:('@',"acolyte"),(33,11),protector
+MONSTER:('@',"acolyte"),(33,12),protector
 # Non diggable walls
 NON_DIGGABLE:(18,03,55,16)
 # Random traps

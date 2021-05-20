@@ -737,7 +737,7 @@ int roomno;
            once hero has encountered the temple priest on those levels */
         mapseen_temple(priest);
     }
-    else 
+    else if (!In_quest(&u.uz)) /* Some quest levels have specially occupied temples, so let's not do this (in fact there should be a special handler for those) */
     {
         /* untended */
 

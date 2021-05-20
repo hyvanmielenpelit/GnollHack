@@ -74,20 +74,20 @@ DOOR:closed,(31,14)
 DOOR:locked,(49,14)
 # Lord Carnarvon
 MONSTER:('@',"Lord Carnarvon"),(25,10)
-# The treasure of Lord Carnarvon
+# The treasure of Lord Carnarvon,protector
 OBJECT:('(',"chest"),(25,10)
 # student guards for the audience chamber
-MONSTER:('@',"student"),(26,09)
-MONSTER:('@',"student"),(27,09)
-MONSTER:('@',"student"),(28,09)
-MONSTER:('@',"student"),(26,10)
-MONSTER:('@',"student"),(28,10)
-MONSTER:('@',"student"),(26,11)
-MONSTER:('@',"student"),(27,11)
-MONSTER:('@',"student"),(28,11)
+MONSTER:('@',"student"),(26,09),protector
+MONSTER:('@',"student"),(27,09),protector
+MONSTER:('@',"student"),(28,09),protector
+MONSTER:('@',"student"),(26,10),protector
+MONSTER:('@',"student"),(28,10),protector
+MONSTER:('@',"student"),(26,11),protector
+MONSTER:('@',"student"),(27,11),protector
+MONSTER:('@',"student"),(28,11),protector
 # city watch guards in the antechambers
-MONSTER:('@',"watchman"),(50,06)
-MONSTER:('@',"watchman"),(50,14)
+MONSTER:('@',"watchman"),(50,06),protector
+MONSTER:('@',"watchman"),(50,14),protector
 # Eels in the moat
 MONSTER:(';',"giant eel"),(20,10)
 MONSTER:(';',"giant eel"),(45,04)
