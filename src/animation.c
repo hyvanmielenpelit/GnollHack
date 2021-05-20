@@ -1926,6 +1926,47 @@ enum autodraw_types* autodraw_ptr;
             }
             break;
         }
+        case REPLACEMENT_ACTION_ALIGNED_PRIEST:
+        {
+            if (!mtmp || !has_epri(mtmp))
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (EPRI(mtmp)->shralign == A_NONE)
+            {
+                int glyph_idx = 0;
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_ALIGNED_PRIEST_STATUE:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            struct monst* mtmp = get_mtraits(otmp, FALSE);
+            if (mtmp && has_epri(mtmp) && EPRI(mtmp)->shralign == A_NONE)
+            {
+                int glyph_idx = 0;
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
         default:
             break;
         }

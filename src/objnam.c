@@ -847,7 +847,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                        ? ""
                        : the_unique_pm(&mons[omndx])
                           ? "the "
-                          : just_an(anbuf, mons[omndx].mname),
+                          : just_an(anbuf, monbuf),
                     monbuf);
         }
         else

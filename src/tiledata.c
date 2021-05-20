@@ -2154,7 +2154,7 @@ uchar* tilemapflags;
                 {
                     int glyph = i + get_monster_action_glyph_offset(action, 1);
                     int tile = tilemaparray[glyph];
-                    tile2replacement[tile] = mons[i].replacement.actions[action];
+                    tile2replacement[tile] = mons[i].female_replacement.actions[action];
                 }
             }
             if (mons[i].female_replacement.corpse)
@@ -2356,7 +2356,7 @@ uchar* tilemapflags;
                 {
                     int glyph = i + get_monster_action_glyph_offset(action, 1);
                     int tile = tilemaparray[glyph];
-                    tile2animation[tile] = mons[i].animation.actions[action];
+                    tile2animation[tile] = mons[i].female_animation.actions[action];
                 }
             }
             if (mons[i].female_animation.corpse)
