@@ -7633,15 +7633,19 @@ readchar()
 #endif /*ALTMETA*/
     }
     else if (sym == '\033') {
-        sym = *readchar_queue ? *readchar_queue++ : 0;
-        if (sym == EOF || sym == 0)
+        sym = *readchar_queue ? *readchar_queue++ : pgetchar();
+        if (sym == EOF || sym == 0 || sym == '\033')
             sym = '\033';
         else if (sym == 91)
         {
         sym91here:
-            sym = *readchar_queue ? *readchar_queue++ : 0;
+            sym = *readchar_queue ? *readchar_queue++ : pgetchar();
             switch (sym)
             {
+            case 0: /* Alt+[ */
+                sym = '['; //91
+                sym |= 0200; /* force 8th bit on */
+                break;
             case 65:
                 sym = Cmd.move_N;
                 break;
@@ -7660,7 +7664,10 @@ readchar()
             }
         }
         else
+        {
+            /* Extra handling here, but currently they all give ESC */
             sym = '\033';
+        }
     } else if (sym == 0) {
         /* click event */
         readchar_queue = click_to_cmd(x, y, mod);
