@@ -27,6 +27,7 @@
 #ifdef ALTMETA
 STATIC_VAR boolean alt_esc = FALSE;
 #endif
+STATIC_VAR boolean escape_sequence_key_start_allowed = FALSE;
 
 struct cmd Cmd = { 0 }; /* flag.h */
 
@@ -7460,6 +7461,8 @@ parse()
 #ifdef ALTMETA
     alt_esc = iflags.altmeta; /* readchar() hack */
 #endif
+    escape_sequence_key_start_allowed = 1;
+
     if ((!Cmd.num_pad && !Cmd.gnh_layout) || ((foo = readchar()) == Cmd.spkeys[NHKF_COUNT])) {
         long tmpmulti = multi;
 
@@ -7469,6 +7472,7 @@ parse()
 #ifdef ALTMETA
     alt_esc = FALSE; /* readchar() reset */
 #endif
+    escape_sequence_key_start_allowed = 0;
 
     if (iflags.debug_fuzzer /* if fuzzing, override '!' and ^Z */
         && (Cmd.commands[foo & 0x0ff]
@@ -7632,7 +7636,7 @@ readchar()
             sym |= 0200; /* force 8th bit on */
 #endif /*ALTMETA*/
     }
-    else if (sym == '\033') {
+    else if (sym == '\033' && escape_sequence_key_start_allowed) {
         sym = *readchar_queue ? *readchar_queue++ : pgetchar();
         if (sym == EOF || sym == 0 || sym == '\033')
             sym = '\033';
