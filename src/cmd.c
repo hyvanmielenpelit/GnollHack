@@ -6727,11 +6727,14 @@ const char *s;
     int is_mov;
 
 retry:
+    escape_sequence_key_start_allowed = 1;
     if (in_doagain || *readchar_queue)
         dirsym = readchar();
     else
         dirsym = yn_function((s && *s != '^') ? s : "In what direction?",
                              (char *) 0, '\0');
+    
+    escape_sequence_key_start_allowed = 0;
     /* remove the prompt string so caller won't have to */
     clear_nhwindow(WIN_MESSAGE);
 

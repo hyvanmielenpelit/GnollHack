@@ -75,7 +75,10 @@ getlin_hook_proc hook;
         Strcat(strcat(strcpy(toplines, query), " "), obufp);
         c = pgetchar();
         if (c == '\033' || c == EOF) {
-            if (c == '\033' && obufp[0] != '\0') {
+            if(c != EOF)
+                c = pgetchar(); /* Get another one */
+
+            if ((c == '\033' || c == 0) && obufp[0] != '\0') {
                 obufp[0] = '\0';
                 bufp = obufp;
                 tty_clear_nhwindow(WIN_MESSAGE);
@@ -83,12 +86,31 @@ getlin_hook_proc hook;
                 addtopl(query);
                 addtopl(" ");
                 addtopl(obufp);
+            } else if (c == 91) {
+                c = pgetchar(); /* Get third one */
+                switch (c)
+                {
+                case 0: /* Alt+[ */
+                    break;
+                case 65: /* Up */
+                    break;
+                case 66: /* Down */
+                    break;
+                case 67: /* Right */
+                    break;
+                case 68: /* Left */
+                    break;
+                default:
+                    break;
+                }
+                continue;
             } else {
                 obufp[0] = '\033';
                 obufp[1] = '\0';
                 break;
             }
         }
+
         if (ttyDisplay->intr) {
             ttyDisplay->intr--;
             *bufp = 0;
