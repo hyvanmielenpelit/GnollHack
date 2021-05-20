@@ -1246,7 +1246,6 @@ E void FDECL(convertUTF8toCP437, (char*, size_t));
 E char FDECL(nhsym_to_char, (nhsym));
 E char FDECL(unicode_to_char, (nhsym));
 int FDECL(converted_nh_poskey, (int*, int*, int*));
-int NDECL(is_stdin_empty);
 
 /* ### invent.c ### */
 
@@ -3378,6 +3377,7 @@ E void FDECL(sethanguphandler, (void (*)(int)));
 E boolean NDECL(authorize_wizard_mode);
 E boolean FDECL(check_user_string, (char *));
 E char *NDECL(get_login_name);
+E int NDECL(tgetch);
 #endif /* UNIX */
 
 /* ### unixtty.c ### */

@@ -311,7 +311,7 @@
 
 #define HLOCK "perm" /* an empty file used for locking purposes */
 
-#define tgetch getchar
+//#define tgetch getchar
 
 #ifndef NOSHELL
 #define SHELL /* do not delete the '!' command */

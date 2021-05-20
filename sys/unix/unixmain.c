@@ -808,4 +808,19 @@ sys_random_seed()
     return seed;
 }
 
+int
+tgetch()
+{
+    char buf[BUFSIZ];
+    int c = getchar();
+    if (fgets(buf, BUFSIZ, stdin) != NULL)
+    {
+        if (strlen(buffer) > 0)
+        {
+            c = c;
+        }
+    }
+
+    return c;
+}
 /*unixmain.c*/
