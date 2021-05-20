@@ -1,4 +1,5 @@
 ﻿using GnollHackClient.Data;
+using GnollHackClient.Pages.Login;
 using GnollHackCommon.Authentication;
 using Newtonsoft.Json;
 using System;
@@ -45,7 +46,7 @@ namespace GnollHackClient
             if(App.AuthenticationCookie != null)
             {
                 App.SelectedServer = SelectedServer;
-                await Application.Current.MainPage.Navigation.PopModalAsync();
+                await Application.Current.MainPage.Navigation.PopAsync();
             }
         }
 
@@ -125,9 +126,40 @@ namespace GnollHackClient
             }
         }
 
-        private async void btnCancel_Clicked(object sender, EventArgs e)
+        private void btnForgotPassword_Clicked(object sender, EventArgs e)
         {
-            await Application.Current.MainPage.Navigation.PopModalAsync();
+            
+            string urlEnd = "Identity/Account/ForgotPassword";
+            OpenWebView(urlEnd, "Recover Password on {0}");
+        }
+
+        private void btnRegister_Clicked(object sender, EventArgs e)
+        {
+            string urlEnd = "Identity/Account/Register";
+            OpenWebView(urlEnd, "Sign up to {0}");
+        }
+
+        private async void OpenWebView(string urlEnd, string title)
+        {
+            if (SelectedServer == null)
+            {
+                lblStatus.TextColor = _errorColor;
+                lblStatus.Text = "Please select a server.";
+                return;
+            }
+
+            btnRegister.IsEnabled = false;
+
+            string url = SelectedServer.Url + urlEnd;
+            var webViewPage = new WebViewPage(url);
+            webViewPage.Title = string.Format(title, SelectedServer.Name);
+            var navPage = new NavigationPage(webViewPage);
+            navPage.Popped += (sender2, e2) =>
+            {
+                btnRegister.IsEnabled = true;
+            };
+
+            await App.Current.MainPage.Navigation.PushAsync(navPage);
         }
     }
 }

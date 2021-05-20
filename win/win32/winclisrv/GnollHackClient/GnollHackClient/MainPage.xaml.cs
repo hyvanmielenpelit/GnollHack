@@ -62,6 +62,7 @@ namespace GnollHackClient
         SKTypeface _typeface;
         private IFmodService _fmodService;
         private IGnollHackService _gnollHackService;
+        private bool _canClickServerButton = true;
 
         public MainPage()
         {
@@ -376,10 +377,19 @@ namespace GnollHackClient
 
         private async void serverButton_Clicked(object sender, EventArgs e)
         {
-            var loginPage = new LoginPage();
-
-            loginPage.Disappearing += async (sender2, e2) =>
+            if(_canClickServerButton == false)
             {
+                return;
+            }
+
+            _canClickServerButton = false;
+
+            var loginPage = new LoginPage();
+            var navPage = new NavigationPage(loginPage);
+            navPage.Popped += async (sender2, e2) =>
+            {
+                //Will run only on Login button pressed and explicit PopAsync called
+
                 if (App.AuthenticationCookie == null)
                 {
                     return;
@@ -411,7 +421,12 @@ namespace GnollHackClient
                 }
             };
 
-            await Navigation.PushModalAsync(loginPage);
+            await Navigation.PushAsync(navPage);
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            _canClickServerButton = true;
         }
     }
 }

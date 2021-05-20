@@ -12,7 +12,10 @@ namespace GnollHackClient
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            var mainPage = new MainPage();
+            var navPage = new NavigationPage(mainPage);
+
+            MainPage = navPage;
         }
 
         protected override void OnStart()
