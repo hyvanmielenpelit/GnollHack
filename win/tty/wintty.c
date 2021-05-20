@@ -3443,10 +3443,10 @@ void
 g_putch(in_ch)
 int in_ch;
 {
-    register unsigned char ch = (unsigned char)in_ch;
+    register nhsym ch = (nhsym)in_ch;
     if (use_utf8_encoding())
     {
-        doputchar((nhsym)ch);
+        doputchar(ch);
     }
     else
     {
