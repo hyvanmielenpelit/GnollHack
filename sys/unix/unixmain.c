@@ -815,7 +815,7 @@ tgetch()
     int c = getchar();
     if (fgets(buf, BUFSIZ, stdin) != NULL)
     {
-        if (strlen(buffer) > 0)
+        if (strlen(buf) > 0)
         {
             c = c;
         }
