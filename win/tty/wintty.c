@@ -3697,6 +3697,7 @@ const char *str;
 #endif
 }
 
+static int curchar = 0, prevchar = 0, prevprevchar = 0;
 int
 tty_nhgetch()
 {
@@ -3731,35 +3732,30 @@ tty_nhgetch()
                   ? (int) nestbuf : EOF;
         --nesting;
 
-        if (i == 27)
-        {
-            i = tgetch();
-            if (i == 91)
-            {
-                i = tgetch();
-                switch (i)
-                {
-                case 65:
-                    i = Cmd.move_N;
-                    break;
-                case 66:
-                    i = Cmd.move_S;
-                    break;
-                case 67:
-                    i = Cmd.move_E;
-                    break;
-                case 68:
-                    i = Cmd.move_W;
-                    break;
-                default:
-                    i = 0;
-                    break;
-                }
-            }
-            else
-                i = 0;
-        }
+        prevprevchar = prevchar;
+        prevchar = curchar;
+        curchar = i;
 
+        if (prevprevchar == 27 && prevchar == 91)
+        {
+            switch (i)
+            {
+            case 65:
+                i = Cmd.move_N;
+                break;
+            case 66:
+                i = Cmd.move_S;
+                break;
+            case 67:
+                i = Cmd.move_E;
+                break;
+            case 68:
+                i = Cmd.move_W;
+                break;
+            default:
+                break;
+            }
+        }
 #else
         i = tgetch();
 #endif
