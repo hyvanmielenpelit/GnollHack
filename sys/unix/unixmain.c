@@ -819,6 +819,7 @@ unix_is_stdin_empty()
     FD_SET(0, &fds);
 
     struct timeval tv = { 0 };
+    tv.tv_usec = 10;
 
     select(1, &fds, NULL, NULL, &tv);
 
