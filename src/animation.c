@@ -1957,8 +1957,8 @@ enum autodraw_types* autodraw_ptr;
             if (replacements[replacement_idx].number_of_tiles < 1)
                 return ntile;
 
-            struct monst* mtmp = get_mtraits(otmp, FALSE);
-            if (mtmp && has_epri(mtmp) && EPRI(mtmp)->shralign == A_NONE)
+            struct monst* mtmp2 = get_mtraits(otmp, FALSE);
+            if (mtmp2 && has_epri(mtmp2) && EPRI(mtmp2)->shralign == A_NONE)
             {
                 int glyph_idx = 0;
                 if (autodraw_ptr)
