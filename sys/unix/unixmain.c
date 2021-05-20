@@ -816,14 +816,14 @@ unix_is_stdin_empty()
     fd_set fds;
 
     FD_ZERO(&fds);
-    FD_SET(0, &fds);
+    FD_SET(fileno(stdin), &fds);
 
     struct timeval tv = { 0 };
     tv.tv_usec = 10;
 
-    select(1, &fds, NULL, NULL, &tv);
+    select(fileno(stdin) + 1, &fds, NULL, NULL, &tv);
 
-    if (FD_ISSET(0, &fds)) {
+    if (FD_ISSET(fileno(stdin), &fds)) {
         return FALSE;
     }
 
