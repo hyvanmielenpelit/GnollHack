@@ -1498,4 +1498,55 @@ nhsym ch;
     return '?';
 }
 
+int
+converted_nh_poskey(x, y, mod)
+int* x, * y, * mod;
+{
+    int c = nh_poskey(x, y, mod);
+
+    if (c == '\033')
+    {
+        c = nhgetch();
+        if (c == EOF || c == 0 || c == '\033')
+        {
+            c = '\033';
+        }
+        else if (c == 91)
+        {
+            c = nhgetch();
+            switch (c)
+            {
+            case 0: /* Alt+[ */
+                c = '['; //91
+                c |= 0200;
+                break;
+            case 65:
+                c = Cmd.move_N;
+                break;
+            case 66:
+                c = Cmd.move_S;
+                break;
+            case 67:
+                c = Cmd.move_E;
+                break;
+            case 68:
+                c = Cmd.move_W;
+                break;
+            default:
+                c = 0;
+                break;
+            }
+        }
+        else
+        {
+#ifdef ALTMETA
+            if(iflags.altmeta)
+                c = c | 0200;
+#endif
+        }
+    }
+
+    return c;
+}
+
 /*hacklib.c*/

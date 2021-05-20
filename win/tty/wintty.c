@@ -1297,12 +1297,27 @@ tty_askname()
         ct = 0;
         while ((c = tty_nhgetch()) != '\n') {
             if (c == EOF)
-                c = '\033';
-            if (c == '\r')
-                break;
-            if (c == '\033') {
+            {
                 ct = 0;
                 break;
+            }
+
+            if (c == '\r')
+                break;
+
+            if (c == '\033') {
+                c = tty_nhgetch();
+                if (c == '\033' || c == EOF || c == 0)
+                {
+                    ct = 0;
+                    break;
+                }
+                else if (c == 91)
+                {
+                    c = tty_nhgetch();
+                    /* Disregard */
+                    continue;
+                }
             } /* continue outer loop */
 #if defined(WIN32CON)
             if (c == '\003')
@@ -3785,6 +3800,7 @@ int *x, *y, *mod;
     nhUse(mod);
 
     i = tty_nhgetch();
+
 #endif /* ?WIN32CON */
     return i;
 }

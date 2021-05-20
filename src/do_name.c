@@ -737,7 +737,7 @@ enum game_cursor_types cursor_style;
             auto_describe(cx, cy);
         }
 
-        c = nh_poskey(&tx, &ty, &sidx);
+        c = converted_nh_poskey(&tx, &ty, &sidx);
 
 
         if (hilite_state) 

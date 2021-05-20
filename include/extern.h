@@ -1245,6 +1245,8 @@ E void FDECL(convertUTF8toCharUnicode, (char*, size_t));
 E void FDECL(convertUTF8toCP437, (char*, size_t));
 E char FDECL(nhsym_to_char, (nhsym));
 E char FDECL(unicode_to_char, (nhsym));
+int FDECL(converted_nh_poskey, (int*, int*, int*));
+
 
 /* ### invent.c ### */
 
