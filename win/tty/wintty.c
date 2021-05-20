@@ -3392,17 +3392,17 @@ nhsym ch;
     if (c < 0x80) {
         putchar(c);
     } else if(c < 0x800) {
-        putchar(0xC0 | (c>>6));
-        putchar(0x80 | (c & 0x3F));
+        putchar((char)(0xC0 | (c>>6)));
+        putchar((char)(0x80 | (c & 0x3F)));
     } else if (c < 0x10000) {
-        putchar(0xE0 | (c>>12));
-        putchar(0x80 | (c>>6 & 0x3F));
-        putchar(0x80 | (c & 0x3F));
+        putchar((char)(0xE0 | (c>>12)));
+        putchar((char)(0x80 | (c>>6 & 0x3F)));
+        putchar((char)(0x80 | (c & 0x3F)));
     } else if (c < 0x200000) {
-        putchar(0xF0 | (c>>18));
-        putchar(0x80 | (c>>12 & 0x3F));
-        putchar(0x80 | (c>>6 & 0x3F));
-        putchar(0x80 | (c & 0x3F));
+        putchar((char)(0xF0 | (c>>18)));
+        putchar((char)(0x80 | (c>>12 & 0x3F)));
+        putchar((char)(0x80 | (c>>6 & 0x3F)));
+        putchar((char)(0x80 | (c & 0x3F)));
     }
 
     return 0;
