@@ -1560,10 +1560,10 @@ extern int unix_is_stdin_empty(); /* From unixmain.c */
 int
 is_stdin_empty()
 {
-#if defined(UNIX) && !defined(GNH_ANDROID) 
+#if 0 // defined(UNIX) && !defined(GNH_ANDROID)
     unix_is_stdin_empty();
 #else
-    return TRUE;
+    return !flags.enablettyarrowkeys;
 #endif
 }
 /*hacklib.c*/

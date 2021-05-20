@@ -819,7 +819,7 @@ unix_is_stdin_empty()
     FD_SET(fileno(stdin), &fds);
 
     struct timeval tv = { 0 };
-    tv.tv_usec = 10;
+    tv.tv_usec = 0;
 
     select(fileno(stdin) + 1, &fds, NULL, NULL, &tv);
 

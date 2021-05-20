@@ -56,6 +56,7 @@ struct flag {
     boolean displace_peaceful;  /* displace peaceful monsters */
     boolean showexp;         /* show experience points */
     boolean tellexp;         /* tell experience points when received */
+    boolean enablettyarrowkeys;  /* experimental: enable tty arrow keys but comes with drawvback of double ESC */
     boolean showmove;         /* show move on statusline */
     boolean show_buff_timer;    /* show buff timers in GUI */
     boolean search_box_traps; /* search all boxes for traps when pressing s */
