@@ -2952,12 +2952,9 @@ boolean complain;
                     (void) tabexpand(buf);
 
                 /* Windows ASCII GnollHack does not use UTF-8 */
-#if WIN32
                 if (SYMHANDLING(H_UNICODE))
                     convertUTF8toCharUnicode(buf, sizeof(buf));
-                else 
-#endif                    
-                if(SYMHANDLING(H_IBM)) /* Using CP437 */
+                else  if(SYMHANDLING(H_IBM)) /* Using CP437 */
                     convertUTF8toCP437(buf, sizeof(buf));
 
                 empty = FALSE;
