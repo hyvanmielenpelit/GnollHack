@@ -7659,6 +7659,8 @@ readchar()
                 break;
             }
         }
+        else
+            sym = '\033';
     } else if (sym == 0) {
         /* click event */
         readchar_queue = click_to_cmd(x, y, mod);
