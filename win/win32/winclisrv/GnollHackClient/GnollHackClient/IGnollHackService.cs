@@ -10,5 +10,6 @@ namespace GnollHackClient
         int Test1();
         int Test2();
         int TestRunGnollHack();
+        int StartGnollHack(ClientGame clientGame);
     }
 }

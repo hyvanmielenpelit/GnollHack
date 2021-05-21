@@ -69,17 +69,19 @@ struct callback_procs lib_callbacks = { 0 }; /* To be set by RunGnollHack in gno
 /* Function definitions */
 void lib_init_nhwindows(int* argc, char** argv)
 {
-
+    lib_callbacks.callback_init_nhwindows();
 }
 
 void lib_player_selection(void)
 {
-
+    int i = lib_callbacks.callback_player_selection();
+    /* Select player here */
 }
 
 void lib_askname(void)
 {
-
+    char* name = lib_callbacks.callback_askname();
+    strcpy(plname, name);
 }
 
 void lib_get_nh_event(void)

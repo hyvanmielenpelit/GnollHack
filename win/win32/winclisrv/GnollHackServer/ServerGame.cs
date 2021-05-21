@@ -12,8 +12,6 @@ namespace GnollHackServer
 {
     public class ServerGame
     {
-
-
         [DllImport(@"gnollhacklib.dll")]
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,

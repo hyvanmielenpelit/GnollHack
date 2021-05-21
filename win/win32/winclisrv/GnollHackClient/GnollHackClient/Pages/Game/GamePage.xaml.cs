@@ -31,6 +31,7 @@ namespace GnollHackClient.Pages.Game
         private IGnollHackService _gnollHackService;
         private bool _isFirstAppearance = true;
         private Thread _gnhthread;
+        private ClientGame _clientGame;
 
         public IFmodService FModService { get { return _fmodService; } }
 
@@ -111,7 +112,8 @@ namespace GnollHackClient.Pages.Game
 
         protected void GNHThreadProc()
         {
-            _gnollHackService.TestRunGnollHack();
+            _clientGame = new ClientGame();
+            _gnollHackService.StartGnollHack(_clientGame);
         }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
