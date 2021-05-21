@@ -29,7 +29,8 @@ extern boolean FDECL(main, (int, char **));
 
 #define MAX_CMDLINE_PARAM 255
 
-int GnollHackStart()
+int GnollHackStart(cmdlineargs)
+char* cmdlineargs;
 {
     int argc;
     char *argv[MAX_CMDLINE_PARAM];

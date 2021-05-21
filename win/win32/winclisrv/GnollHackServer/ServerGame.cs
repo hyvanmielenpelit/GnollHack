@@ -16,6 +16,8 @@ namespace GnollHackServer
 
         [DllImport(@"gnollhacklib.dll")]
         public static extern int RunGnollHack(
+            [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
+            [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
             UInt32 wincaps1,
             UInt32 wincaps2,
             VoidVoidCallback callback_init_nhwindows,
@@ -155,6 +157,8 @@ namespace GnollHackServer
 //            System.Environment.SetEnvironmentVariable("GNOLLHACKDIR", curdir, EnvironmentVariableTarget.Process);
 
             RunGnollHack(
+                curdir,
+                "",
                 0,
                 0,
                 GameCallback_InitWindows,

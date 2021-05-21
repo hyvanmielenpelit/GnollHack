@@ -10,8 +10,6 @@
 #ifndef DLLHACK_H
 #define DLLHACK_H
 
-#define DLL __declspec(dllexport)
-
 /* Functions in dllproc.c */
 DLL void FDECL(dll_reduce_counters_intervals, (int));
 
@@ -43,6 +41,8 @@ DLL int FDECL(dll_pick_align, (int, int, int, int));
 
 /* Main GnollHack routine with all the necessary callback functions in dllmain.c */
 DLL int RunGnollHack(
+    char* gnhdir,
+    char* cmdlineargs,
     unsigned long wincap1,
     unsigned long wincap2,
     InitWindowsCallback callback_init_nhwindows,

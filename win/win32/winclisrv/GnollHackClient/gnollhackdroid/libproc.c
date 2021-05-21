@@ -484,3 +484,13 @@ libdef_wait_synch(VOID_ARGS)
      */
     return;
 }
+
+
+void
+set_wincaps(wincap1, wincap2)
+unsigned long wincap1, wincap2;
+{
+    lib_procs.wincap = wincap1;
+    lib_procs.wincap2 = wincap2;
+}
+

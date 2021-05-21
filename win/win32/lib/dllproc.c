@@ -2846,7 +2846,7 @@ dll_exit_hack(int status)
 
 
 void
-set_dll_wincaps(wincap1, wincap2)
+set_wincaps(wincap1, wincap2)
 unsigned long wincap1, wincap2;
 {
     dll_procs.wincap = wincap1;

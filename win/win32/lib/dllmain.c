@@ -22,10 +22,12 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
 
 extern struct callback_procs dll_callbacks;
-extern void FDECL(set_dll_wincaps, (unsigned long, unsigned long));
-extern int NDECL(GnollHackStart);
+extern void FDECL(set_wincaps, (unsigned long, unsigned long));
+extern int FDECL(GnollHackStart, (char*));
 
 DLL int WINAPI RunGnollHack(
+    char* gnhdir,
+    char* cmdlineargs,
     unsigned long wincap1,
     unsigned long wincap2,
     InitWindowsCallback callback_init_nhwindows,
@@ -114,7 +116,7 @@ DLL int WINAPI RunGnollHack(
 )
 {
     /* Set wincaps */
-    set_dll_wincaps(wincap1, wincap2);
+    set_wincaps(wincap1, wincap2);
 
     /* Set callback function pointers here */
     dll_callbacks.callback_init_nhwindows = callback_init_nhwindows;
@@ -198,7 +200,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_outrip_end = callback_outrip_end;
 
     /* Start GnollHack by calling main */
-    return GnollHackStart();
+    return GnollHackStart(cmdlineargs);
 }
 
 DLL int WINAPI RunGnollHackSimple(
@@ -206,9 +208,9 @@ DLL int WINAPI RunGnollHackSimple(
     unsigned long wincap2)
 {
     /* Set wincaps */
-    set_dll_wincaps(wincap1, wincap2);
+    set_wincaps(wincap1, wincap2);
 
-    return GnollHackStart();
+    return GnollHackStart("");
 }
 
 DLL int WINAPI RunGnollHackSimple2(
@@ -218,11 +220,11 @@ DLL int WINAPI RunGnollHackSimple2(
     )
 {
     /* Set wincaps */
-    set_dll_wincaps(wincap1, wincap2);
+    set_wincaps(wincap1, wincap2);
 
     /* Set callback function pointers here */
     dll_callbacks.callback_init_nhwindows = callback_init_nhwindows;
 
-    return GnollHackStart();
+    return GnollHackStart("");
 }
 
