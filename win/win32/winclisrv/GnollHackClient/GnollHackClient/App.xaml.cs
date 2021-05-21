@@ -1,11 +1,18 @@
 ﻿using GnollHackClient.Data;
+using SkiaSharp;
 using System;
+using System.IO;
 using System.Net;
+using System.Reflection;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+[assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 namespace GnollHackClient
 {
+    public delegate Task<bool> BackButtonHandler(object sender, EventArgs e);
+
     public partial class App : Application
     {
         public App()
@@ -16,6 +23,15 @@ namespace GnollHackClient
             var navPage = new NavigationPage(mainPage);
             
             MainPage = navPage;
+
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
+            {
+                if (stream != null)
+                {
+                    DiabloTypeface = SKTypeface.FromStream(stream);
+                }                    
+            }
         }
 
         protected override void OnStart()
@@ -33,7 +49,23 @@ namespace GnollHackClient
         public static Cookie AuthenticationCookie { get; set; }
         public static Server SelectedServer { get; set; }
         public static string UserName { get; set; }
+        public static bool IsServerGame { get; set; }
+
         public static NavigationPage MainNavigationPage { get { return (NavigationPage)Current.MainPage; } }
 
+        public static event BackButtonHandler BackButtonPressed;
+
+        public static async Task<bool> OnBackButtonPressed()
+        {
+            var handler = BackButtonPressed;
+            if(handler != null)
+            {
+                var result = await handler.Invoke(App.Current, new EventArgs());
+                return result;
+            }
+            return true;
+        }
+
+        public static SKTypeface DiabloTypeface { get; set; }
     }
 }

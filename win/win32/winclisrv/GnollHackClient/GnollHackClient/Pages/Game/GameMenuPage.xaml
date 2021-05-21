@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GnollHackClient.Pages.Game.GameMenuPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label x:Name="lblHeader" Text="Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo"
+                HorizontalOptions="CenterAndExpand" Margin="0,10,0,0" />
+            <Button x:Name="btnBackToGame" FontFamily="Diablo" Text="Back to Game"
+                    HorizontalOptions="FillAndExpand" Clicked="btnBackToGame_Clicked" />
+            <Button x:Name="btnSave" FontFamily="Diablo" Text="Save &amp; Exit Game"
+                    HorizontalOptions="FillAndExpand" Clicked="btnSave_Clicked" />
+            <Button x:Name="btnQuit" FontFamily="Diablo" Text="Quit Without Saving"
+                    HorizontalOptions="FillAndExpand" Clicked="btnQuit_Clicked" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

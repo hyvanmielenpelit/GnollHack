@@ -27,6 +27,8 @@ namespace GnollHackClient.Droid
         FMOD.Studio.Bank _bank1;
         FMOD.Studio.Bank _bank2;
 
+        FMOD.Studio.EventInstance? _testEventInstance;
+
         private void LoadNativeLibrary(string libName)
         {
             Java.Lang.JavaSystem.LoadLibrary(libName);
@@ -70,11 +72,21 @@ namespace GnollHackClient.Droid
             string eventPath = "event:/Music/Start/Splash";
             FMOD.Studio.EventDescription eventDescription;
             RESULT res = _system.getEvent(eventPath, out eventDescription);
-            FMOD.Studio.EventInstance eventInstance;
-            res = eventDescription.createInstance(out eventInstance);
-            res = eventInstance.setVolume(1.0f);
-            res = eventInstance.start();
+            FMOD.Studio.EventInstance testEventInstance;
+            res = eventDescription.createInstance(out testEventInstance);
+            _testEventInstance = testEventInstance;
+            res = _testEventInstance.Value.setVolume(1.0f);
+            res = _testEventInstance.Value.start();
             res = _system.update();
+        }
+
+        public void StopTestSound()
+        {
+            if(_testEventInstance.HasValue)
+            {
+                var res = _testEventInstance.Value.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                res = _system.update();
+            }
         }
     }
 }
