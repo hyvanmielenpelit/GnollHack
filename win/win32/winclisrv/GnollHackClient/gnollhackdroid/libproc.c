@@ -74,8 +74,17 @@ void lib_init_nhwindows(int* argc, char** argv)
 
 void lib_player_selection(void)
 {
-    int i = lib_callbacks.callback_player_selection();
-    /* Select player here */
+    int res = common_player_selection();
+    if (res == 1)
+    {
+        res = lib_callbacks.callback_player_selection();
+        if (res != 0)
+            lib_bail((char*)0);
+    }
+    else if (res == 2)
+    {
+        lib_bail((char*)0);
+    }
 }
 
 void lib_askname(void)
@@ -426,7 +435,7 @@ void lib_exit_hack(int status)
 /* Helper functions */
 void lib_bail(const char* mesg)
 {
-
+    gnollhack_exit(EXIT_FAILURE);
 }
 
 void lib_init_platform(VOID_ARGS)

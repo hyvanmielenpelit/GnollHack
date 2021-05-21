@@ -123,15 +123,25 @@ namespace GnollHackClient.Droid
             Java.Lang.JavaSystem.LoadLibrary(libName);
         }
 
-        public void InitializeGnollHack()
+        public void LoadLibrary()
         {
             LoadNativeLibrary("gnollhackdroid");
-
+        }
+        public void InitializeGnollHack()
+        {
             /* Unpack GnollHack files */
             /* Add a check whether to unpack if there are existing files or not */
 
             string filesdir = Android.App.Application.Context.FilesDir.Path;
             _gnollhackfilesdir = filesdir;
+
+            /* For debugging purposes now, delete all existing files in filesdir first */
+            System.IO.DirectoryInfo di = new DirectoryInfo(_gnollhackfilesdir);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
 
             string content;
             AssetManager assets = MainActivity.StaticAssets;

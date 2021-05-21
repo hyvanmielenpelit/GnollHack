@@ -327,6 +327,7 @@
     <ClCompile Include="..\..\..\sys\share\ioctl.c" />
     <ClCompile Include="..\..\..\sys\share\posixregex.c" />
     <ClCompile Include="..\..\..\sys\share\unixtty.c" />
+    <ClCompile Include="..\share\callback.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)action.h" />

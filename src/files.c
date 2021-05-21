@@ -3301,6 +3301,9 @@ boolean FDECL((*proc), (char *));
 
     while (fgets(inbuf, (int) inbufsz, fp)) 
     {
+        if (inbuf[0] == '\r' && inbuf[1] == '\0')
+            continue; /* Disregard all lines with just '\r', as this indicates that Windows and Unix text files have been mixed up */
+
         ep = index(inbuf, '\n');
         if (skip)
         { /* in case previous line was too long */
@@ -3353,7 +3356,7 @@ boolean FDECL((*proc), (char *));
                 }
 
                 ep = inbuf;
-                while (*ep == ' ' || *ep == '\t') ep++;
+                while (*ep == ' ' || *ep == '\t' || *ep == '\r') ep++;
 
                 /* lines beginning with '#' are comments. ignore empty lines. */
                 if (!*ep || *ep == '#')

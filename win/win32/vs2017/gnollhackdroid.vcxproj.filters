@@ -379,6 +379,9 @@
     <ClCompile Include="..\..\..\sys\share\posixregex.c">
       <Filter>Android Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\share\callback.c">
+      <Filter>Android Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)action.h">

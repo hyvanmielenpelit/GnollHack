@@ -56,8 +56,6 @@ namespace GnollHackClient.Pages.Game
 
             _gnollHackService = DependencyService.Get<IGnollHackService>();
             _gnollHackService.InitializeGnollHack();
-            
-
         }
 
         private async void ContentPage_Appearing(object sender, EventArgs e)
@@ -68,7 +66,7 @@ namespace GnollHackClient.Pages.Game
             {
                 _isFirstAppearance = false;
 
-                int res = _gnollHackService.Test1();
+                int res = 0; // _gnollHackService.Test1();
                 _message = "GnollHack: " + res;
                 int res2 = _gnollHackService.Test2();
                 _message2 = "GnollHack2: " + res2;

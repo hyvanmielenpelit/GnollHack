@@ -207,4 +207,7 @@ struct callback_procs {
     OutRipEndCallback callback_outrip_end;
 };
 
+
+extern int common_player_selection();
+
 #endif /* CALLBACK_H */

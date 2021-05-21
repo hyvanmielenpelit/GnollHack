@@ -35,10 +35,16 @@ namespace GnollHackClient
         private bool _canClickButton = true;
         private bool _serverButtonClicked = false;
         private NavigationPage _loginNavPage = null;
+        private IGnollHackService _mainGnollHackService = null;
 
         public MainPage()
         {
             InitializeComponent();
+
+            _mainGnollHackService = DependencyService.Get<IGnollHackService>();
+            _mainGnollHackService.LoadLibrary();
+            int testres = _mainGnollHackService.Test1();
+
             Assembly assembly = GetType().GetTypeInfo().Assembly;
 
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.window_background.png"))
@@ -54,7 +60,6 @@ namespace GnollHackClient
             //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
                 canvasView.InvalidateSurface();

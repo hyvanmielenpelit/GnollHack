@@ -1276,7 +1276,7 @@ randrole_filtered()
 
     /* this doesn't rule out impossible combinations but attempts to
        honor all the filter masks */
-    for (i = 0; i < SIZE(roles); ++i)
+    for (i = 0; i < SIZE(roles) - 1; ++i)
         if (ok_role(i, ROLE_NONE, ROLE_NONE, ROLE_NONE)
             && ok_race(i, ROLE_RANDOM, ROLE_NONE, ROLE_NONE)
             && ok_gend(i, ROLE_NONE, ROLE_RANDOM, ROLE_NONE)

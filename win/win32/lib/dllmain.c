@@ -20,7 +20,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     return TRUE;
 }
 
-
 extern struct callback_procs dll_callbacks;
 extern void FDECL(set_wincaps, (unsigned long, unsigned long));
 extern int FDECL(GnollHackStart, (char*));

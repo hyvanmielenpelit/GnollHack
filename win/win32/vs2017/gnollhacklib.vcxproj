@@ -374,6 +374,7 @@
     <ClCompile Include="..\lib\dllhack.c" />
     <ClCompile Include="..\lib\dllmain.c" />
     <ClCompile Include="..\lib\dllproc.c" />
+    <ClCompile Include="..\share\callback.c" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\GnollHackNew.ico" />

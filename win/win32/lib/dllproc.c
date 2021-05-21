@@ -55,7 +55,6 @@ dll_logDebug(const char *fmt, ...)
 }
 #endif
 
-static void prompt_for_player_selection(void);
 strbuf_t dll_raw_print_strbuf = { 0 };
 
 /* Interface definition, for windows.c */
@@ -232,6 +231,18 @@ dll_init_nhwindows(int *argc, char **argv)
 void
 dll_player_selection(void)
 {
+    int res = common_player_selection();
+    if (res == 1)
+    {
+        res = dll_callbacks.callback_player_selection();
+        if (res != 0)
+            dll_bail((char*)0);
+    }
+    else if (res == 2)
+    {
+        dll_bail((char*)0);
+    }
+#if 0
     dll_logDebug("dll_player_selection()\n");
 
     if (iflags.wc_player_selection == VIA_DIALOG) 
@@ -303,8 +314,10 @@ dll_player_selection(void)
     { /* iflags.wc_player_selection == VIA_PROMPTS */
         prompt_for_player_selection();
     }
+#endif
 }
 
+#if 0
 void
 prompt_for_player_selection(void)
 {
@@ -718,6 +731,8 @@ prompt_for_player_selection(void)
     /* Success! */
     /* tty_display_nhwindow(BASE_WINDOW, FALSE); */
 }
+
+#endif
 
 /* Ask the user for a player name. */
 void

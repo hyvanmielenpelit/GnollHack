@@ -104,8 +104,12 @@ int GnollHackMain(int argc, char** argv)
 	fclose(fp);
 
 	check_recordfile((char*)0);
-	iflags.windowtype_deferred = TRUE;
-	
+
+	/* Now initialize windows */
+	choose_windows(DEFAULT_WINDOW_SYS);
+	init_nhwindows(&argc, argv);
+	//exact_username = whoami();
+
 	initoptions();
 
 	/*
@@ -119,12 +123,6 @@ int GnollHackMain(int argc, char** argv)
 	if(!(catmore = nh_getenv("HACKPAGER")) && !(catmore = nh_getenv("PAGER")))
 	catmore = DEF_PAGER;
 #endif
-
-	/* Now initialize windows */
-	choose_windows(DEFAULT_WINDOW_SYS);
-	init_nhwindows(&argc, argv);
-	//exact_username = whoami();
-
 
 //#ifdef MAIL
 //	getmailstatus();

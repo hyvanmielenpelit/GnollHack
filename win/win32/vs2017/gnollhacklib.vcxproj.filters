@@ -632,6 +632,9 @@
     <ClCompile Include="..\..\..\sys\winnt\windmain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\share\callback.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\GnollHackNew.ico">
