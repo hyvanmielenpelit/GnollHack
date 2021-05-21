@@ -35,7 +35,6 @@ namespace GnollHackClient
         private bool _canClickButton = true;
         private bool _serverButtonClicked = false;
         private NavigationPage _loginNavPage = null;
-        private Thread _gnhthread;
 
         public MainPage()
         {
@@ -137,7 +136,7 @@ namespace GnollHackClient
             await Navigation.PushAsync(_loginNavPage);
         }
 
-        private async void ContentPage_Appearing(object sender, EventArgs e)
+        private void ContentPage_Appearing(object sender, EventArgs e)
         {
 
         }

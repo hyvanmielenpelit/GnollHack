@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -29,6 +30,7 @@ namespace GnollHackClient.Pages.Game
         private IFmodService _fmodService;
         private IGnollHackService _gnollHackService;
         private bool _isFirstAppearance = true;
+        private Thread _gnhthread;
 
         public IFmodService FModService { get { return _fmodService; } }
 
@@ -98,8 +100,18 @@ namespace GnollHackClient.Pages.Game
                         LoginToServer();
                     }
                 }
-                
+                else
+                {
+                    Thread t = new Thread(new ThreadStart(GNHThreadProc));
+                    _gnhthread = t;
+                    _gnhthread.Start();
+                }
             }
+        }
+
+        protected void GNHThreadProc()
+        {
+            _gnollHackService.TestRunGnollHack();
         }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
