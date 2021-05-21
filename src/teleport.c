@@ -1979,6 +1979,8 @@ register struct obj *obj;
             return FALSE;
     }
 
+    obj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES;
+
     obj_extract_self(obj);
     otx = obj->ox;
     oty = obj->oy;

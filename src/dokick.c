@@ -848,6 +848,7 @@ boolean is_golf_swing;
         else
             pline("%s %s loose.", The(distant_name(kickedobj, xname)),
                   otense(kickedobj, "come"));
+        kickedobj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES;
         obj_extract_self(kickedobj);
         newsym(x, y);
         if (costly && (!costly_spot(u.ux, u.uy)
