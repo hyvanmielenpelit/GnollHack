@@ -55,6 +55,7 @@ namespace GnollHackClient
             if(App.AuthenticationCookie != null)
             {
                 App.SelectedServer = SelectedServer;
+                App.UserName = eUserName.Text;
                 MainPage.LoginSuccessful = true;
                 await Application.Current.MainPage.Navigation.PopAsync();
             }
