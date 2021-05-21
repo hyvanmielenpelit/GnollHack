@@ -57,6 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\Game\" />
     <Folder Include="Views\" />
   </ItemGroup>
 
