@@ -34,7 +34,8 @@
 #include "mhfont.h"
 #endif
 #include "resource.h"
-#include "dllcallback.h"
+#include "callback.h"
+#include "dllhack.h"
 
 #define LLEN 128
 

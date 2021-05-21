@@ -1,39 +1,43 @@
 /*
- * dllcallback.h
+ * callback.h
  * Copyright (c) Janne Gustafsson, 2021
  */
 
-#ifndef DLLCALLBACK_H
-#define DLLCALLBACK_H
+#ifndef CALLBACK_H
+#define CALLBACK_H
 
-#define DLL __declspec(dllexport)
+#ifdef WIN32
+#define __callconv __stdcall
+#else
+#define __callconv 
+#endif
 
  /* General callback types */
-typedef void(__stdcall* VoidVoidCallback)();
-typedef void(__stdcall* VoidCharCallback)(char*);
-typedef void(__stdcall* VoidConstCharCallback)(const char*);
-typedef int(__stdcall* IntIntCallback)(int);
-typedef void(__stdcall* VoidIntCallback)(int);
-typedef void(__stdcall* VoidIntIntCallback)(int, int);
-typedef void(__stdcall* VoidIntIntIntCallback)(int, int, int);
-typedef void(__stdcall* VoidIntBooleanCallback)(int, unsigned char);
-typedef void(__stdcall* VoidIntIntConstCharCallback)(int, const char*);
-typedef void(__stdcall* VoidIntIntConstCharIntCallback)(int, int, const char*, int);
-typedef void(__stdcall* VoidConstCharIntCallback)(const char*, int);
-typedef void(__stdcall* VoidConstCharBooleanCallback)(const char*, unsigned char);
-typedef int(__stdcall* IntVoidCallback)();
-typedef unsigned char(__stdcall* BooleanVoidCallback)();
-typedef char*(__stdcall* CharVoidCallback)();
-typedef unsigned char(__stdcall* BooleanIntDoubleCallback)(int, double);
-typedef unsigned char(__stdcall* BooleanDoubleDoubleDoubleDoubleDoubleCallback)(double, double, double, double, double);
-typedef unsigned char(__stdcall* BooleanIntDoubleVoidPtrCallback)(int, double, void*);
-typedef unsigned char(__stdcall* BooleanVoidPtrDoubleCallback)(void* , double);
-typedef unsigned char(__stdcall* BooleanVoidPtrCallback)(void*);
-typedef char(__stdcall* CharConstCharPtrConstCharPtrCharCallback)(const char*, const char*, char);
-typedef void(__stdcall* VoidConstCharPtrCharPtrCallback)(const char*, char*);
-typedef char*(__stdcall* CharPtrBooleanCallback)(unsigned char);
-typedef void(__stdcall* VoidIntIntIntIntIntCallback)(int, int, int, int, int);
-typedef void(__stdcall* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, unsigned char);
+typedef void(__callconv* VoidVoidCallback)();
+typedef void(__callconv* VoidCharCallback)(char*);
+typedef void(__callconv* VoidConstCharCallback)(const char*);
+typedef int(__callconv* IntIntCallback)(int);
+typedef void(__callconv* VoidIntCallback)(int);
+typedef void(__callconv* VoidIntIntCallback)(int, int);
+typedef void(__callconv* VoidIntIntIntCallback)(int, int, int);
+typedef void(__callconv* VoidIntBooleanCallback)(int, unsigned char);
+typedef void(__callconv* VoidIntIntConstCharCallback)(int, const char*);
+typedef void(__callconv* VoidIntIntConstCharIntCallback)(int, int, const char*, int);
+typedef void(__callconv* VoidConstCharIntCallback)(const char*, int);
+typedef void(__callconv* VoidConstCharBooleanCallback)(const char*, unsigned char);
+typedef int(__callconv* IntVoidCallback)();
+typedef unsigned char(__callconv* BooleanVoidCallback)();
+typedef char*(__callconv* CharVoidCallback)();
+typedef unsigned char(__callconv* BooleanIntDoubleCallback)(int, double);
+typedef unsigned char(__callconv* BooleanDoubleDoubleDoubleDoubleDoubleCallback)(double, double, double, double, double);
+typedef unsigned char(__callconv* BooleanIntDoubleVoidPtrCallback)(int, double, void*);
+typedef unsigned char(__callconv* BooleanVoidPtrDoubleCallback)(void* , double);
+typedef unsigned char(__callconv* BooleanVoidPtrCallback)(void*);
+typedef char(__callconv* CharConstCharPtrConstCharPtrCharCallback)(const char*, const char*, char);
+typedef void(__callconv* VoidConstCharPtrCharPtrCallback)(const char*, char*);
+typedef char*(__callconv* CharPtrBooleanCallback)(unsigned char);
+typedef void(__callconv* VoidIntIntIntIntIntCallback)(int, int, int, int, int);
+typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, unsigned char);
 
 
 /* Specific callback types */
@@ -53,11 +57,11 @@ typedef VoidIntIntConstCharIntCallback PutStrExCallback;
 typedef VoidIntIntConstCharCallback PutMixedCallback;
 typedef VoidConstCharBooleanCallback DisplayFileCallback;
 typedef VoidIntCallback StartMenuCallback;
-typedef void(__stdcall* AddMenuCallback)(int);
-typedef void(__stdcall* AddExtendedMenuCallback)(int);
+typedef void(__callconv* AddMenuCallback)(int);
+typedef void(__callconv* AddExtendedMenuCallback)(int);
 typedef VoidIntIntConstCharCallback EndMenuCallback;
-typedef int(__stdcall* SelectMenuCallback)(int, int, void*);
-typedef void(__stdcall* MessageMenuCallback)(int);
+typedef int(__callconv* SelectMenuCallback)(int, int, void*);
+typedef void(__callconv* MessageMenuCallback)(int);
 typedef VoidVoidCallback UpdateInventoryCallback;
 typedef VoidVoidCallback MarkSynchCallback;
 typedef VoidVoidCallback WaitSynchCallback;
@@ -68,7 +72,7 @@ typedef VoidIntCallback InitPrintGlyphCallback;
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;
 typedef IntVoidCallback GetChCallback;
-typedef int(__stdcall* PosKeyCallback)(int*, int*, int*);
+typedef int(__callconv* PosKeyCallback)(int*, int*, int*);
 typedef VoidVoidCallback BellCallback;
 typedef IntVoidCallback DoPrevMessageCallback;
 typedef CharConstCharPtrConstCharPtrCharCallback YnFunctionCallback;
@@ -80,27 +84,27 @@ typedef VoidIntCallback DelayOutputMillisecondsCallback;
 typedef VoidIntCallback DelayOutputIntervalsCallback;
 typedef VoidVoidCallback ChangeColorCallback;
 typedef VoidIntCallback ChangeBackgroundCallback;
-typedef void(__stdcall* SetFontNameCallback)(int);
+typedef void(__callconv* SetFontNameCallback)(int);
 typedef CharVoidCallback GetColorStringCallback;
 typedef VoidVoidCallback StartScreenCallback;
 typedef VoidVoidCallback EndScreenCallback;
-typedef void(__stdcall* OutRipCallback)(int);
+typedef void(__callconv* OutRipCallback)(int);
 typedef VoidConstCharCallback PreferenceUpdateCallback;
 typedef CharPtrBooleanCallback GetMsgHistoryCallback;
 typedef VoidConstCharBooleanCallback PutMsgHistoryCallback;
 typedef VoidVoidCallback StatusInitCallback;
 typedef VoidVoidCallback StatusFinishCallback;
 typedef VoidIntConstCharPtrConstCharPtrBooleanCallback StatusEnableFieldCallback;
-typedef void(__stdcall* StatusUpdateCallback)(int, void*, int, int, int, unsigned long*);
+typedef void(__callconv* StatusUpdateCallback)(int, void*, int, int, int, unsigned long*);
 typedef BooleanVoidCallback CanSuspendYesCallback;
 typedef VoidVoidCallback StretchWindowCallback;
-typedef void(__stdcall* SetAnimationTimerCallback)(unsigned long);
-typedef void(__stdcall* OpenSpecialViewCallback)(int);
+typedef void(__callconv* SetAnimationTimerCallback)(unsigned long);
+typedef void(__callconv* OpenSpecialViewCallback)(int);
 typedef BooleanVoidCallback StopAllSoundsCallback;
 typedef BooleanIntDoubleCallback PlayImmediateSoundCallback;
 typedef BooleanIntDoubleCallback PlayOccupationAmbientCallback;
 typedef BooleanIntDoubleCallback PlayEffectAmbientCallback;
-typedef unsigned char(__stdcall* SetEffectAmbientVolumeCallback)(double);
+typedef unsigned char(__callconv* SetEffectAmbientVolumeCallback)(double);
 typedef BooleanIntDoubleCallback PlayMusicCallback;
 typedef BooleanIntDoubleCallback PlayLevelAmbientCallback;
 typedef BooleanIntDoubleCallback PlayEnvironmentAmbientCallback;
@@ -108,10 +112,10 @@ typedef BooleanDoubleDoubleDoubleDoubleDoubleCallback AdjustGeneralVolumesCallba
 typedef BooleanIntDoubleVoidPtrCallback AddAmbientSoundCallback;
 typedef BooleanVoidPtrCallback DeleteAmbientSoundCallback;
 typedef BooleanVoidPtrDoubleCallback SetAmbientVolumeCallback;
-typedef void(__stdcall* ExitHackCallback)(int);
+typedef void(__callconv* ExitHackCallback)(int);
 
-typedef char*(__stdcall* GetCwdCallback)();
-typedef int (__stdcall* MessageBoxCallback)(char*, char*, unsigned int);
+typedef char*(__callconv* GetCwdCallback)();
+typedef int (__callconv* MessageBoxCallback)(char*, char*, unsigned int);
 typedef VoidIntCallback OutRipBeginCallback;
 typedef VoidIntCallback OutRipEndCallback;
 
@@ -199,4 +203,4 @@ struct callback_procs {
     OutRipEndCallback callback_outrip_end;
 };
 
-#endif /* DLLCALLBACK_H */
+#endif /* CALLBACK_H */

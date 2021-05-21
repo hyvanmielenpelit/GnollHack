@@ -132,7 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(LibShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -230,7 +230,7 @@
     <ClInclude Include="..\..\..\include\wintype.h" />
     <ClInclude Include="..\..\..\include\you.h" />
     <ClInclude Include="..\..\..\include\youprop.h" />
-    <ClInclude Include="..\lib\dllcallback.h" />
+    <ClInclude Include="..\share\callback.h" />
     <ClInclude Include="..\lib\dllhack.h" />
     <ClInclude Include="..\lib\dllproc.h" />
     <ClInclude Include="..\lib\resource.h" />

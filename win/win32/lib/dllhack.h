@@ -4,11 +4,13 @@
  */
 
 #include <windows.h>
-#include "dllcallback.h"
+#include "callback.h"
 #include "tradstdc.h"
 
 #ifndef DLLHACK_H
 #define DLLHACK_H
+
+#define DLL __declspec(dllexport)
 
 /* Functions in dllproc.c */
 DLL void FDECL(dll_reduce_counters_intervals, (int));

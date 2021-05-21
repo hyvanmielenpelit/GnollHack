@@ -1,6 +1,7 @@
 #include "gnollhackdroid.h"
 #include "hack.h"
 #include "libproc.h"
+#include "callback.h"
 
 extern int GnollHackMain(int argc, char** argv);
 
@@ -39,38 +40,12 @@ int DoSomeCalcDroid()
 	return 5;
 }
 
-
-void
-libdef_raw_print(s)
-const char* s;
-{
-	puts(s);
-}
-
-void
-libdef_wait_synch(VOID_ARGS)
-{
-	/* Config file error handling routines
-	 * call wait_sync() without checking to
-	 * see if it actually has a value,
-	 * leading to spectacular violations
-	 * when you try to execute address zero.
-	 * The existence of this allows early
-	 * processing to have something to execute
-	 * even though it essentially does nothing
-	 */
-	return;
-}
-
 int RunGnollHackTest(char* gnhdir)
 {
 	char* params[2] = { 0 };
 
 	params[0] = "gnollhack";
 	params[1] = 0;
-
-	lib_procs.win_raw_print = libdef_raw_print;
-	lib_procs.win_wait_synch = libdef_wait_synch;
 
 #if 0
 	{
