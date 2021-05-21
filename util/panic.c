@@ -8,6 +8,14 @@
  *      mode for the makedefs / drg code.
  */
 
+#if defined(GNOLLHACK_MAIN_PROGRAM) && (defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(ANDROID) || defined(GNH_ANDROID) || defined(WIN32))
+extern void FDECL(gnollhack_exit, (int));
+#else
+#ifndef gnollhack_exit
+#define gnollhack_exit exit
+#endif
+#endif
+
 #define NEED_VARARGS
 #include "config.h"
 
@@ -16,9 +24,6 @@
 #endif
 #ifdef VMS
 extern void NDECL(vms_abort);
-#endif
-#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
-extern void FDECL(appropriate_exit, (int));
 #endif
 
 /*VARARGS1*/
@@ -47,11 +52,7 @@ VA_DECL(const char *, str)
 #endif
     VA_END();
 
-#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
-    appropriate_exit(EXIT_FAILURE);
-#else
-    exit(EXIT_FAILURE);
-#endif
+    gnollhack_exit(EXIT_FAILURE);
 }
 
 #ifdef ALLOCA_HACK

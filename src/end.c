@@ -66,12 +66,6 @@ STATIC_DCL void NDECL(dump_plines);
 STATIC_DCL void FDECL(dump_everything, (int, time_t));
 STATIC_DCL int NDECL(num_extinct);
 
-#if defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(ANDROID)
-extern void FDECL(gnollhack_exit, (int));
-#else
-#define gnollhack_exit exit
-#endif
-
 #define done_stopprint program_state.stopprint
 
 #ifndef PANICTRACE

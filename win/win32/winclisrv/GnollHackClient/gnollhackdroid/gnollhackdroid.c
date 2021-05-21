@@ -110,3 +110,5 @@ int RunGnollHackTest(char* gnhdir)
 
 	return GnollHackMain(1, params);
 }
+
+

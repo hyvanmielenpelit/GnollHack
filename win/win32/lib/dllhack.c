@@ -15,7 +15,6 @@
 #error You must #define SAFEPROCS to build winhack.c
 #endif
 
-extern void FDECL(gnollhack_exit, (int));
 static TCHAR *_get_cmd_arg(TCHAR *pCmdLine);
 extern int GUILaunched;     /* We tell shared startup code in windmain.c
                                that the GUI was launched via this */

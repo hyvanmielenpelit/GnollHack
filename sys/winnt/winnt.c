@@ -73,20 +73,6 @@ switchar()
 }
 
 
-void
-appropriate_exit(code)
-int code;
-{
-#ifdef _CRTDBG_MAP_ALLOC
-    _CrtDumpMemoryLeaks();
-#endif
-#ifdef EXIT_THREAD_ON_EXIT
-    ExitThread(code);
-#else
-    exit(code);
-#endif
-}
-
 long
 freediskspace(path)
 char *path;
@@ -249,11 +235,7 @@ VA_DECL(const char *, s)
         raw_printf(buf);
     }
     VA_END();
-#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
-    appropriate_exit(EXIT_FAILURE);
-#else
-    exit(EXIT_FAILURE);
-#endif
+    gnollhack_exit(EXIT_FAILURE);
 }
 
 void
@@ -541,7 +523,15 @@ int code;
     if (getreturn_enabled)
         wait_synch();
 
-    appropriate_exit(code);
+#ifdef _CRTDBG_MAP_ALLOC
+    _CrtDumpMemoryLeaks();
+#endif
+#if defined(WIN32) && defined(EXIT_THREAD_ON_EXIT)
+    ExitThread(code);
+#else
+    exit(code);
+#endif
+
 }
 
 #undef kbhit

@@ -85,10 +85,6 @@ static void NDECL(set_known_good_console_font);
 static void NDECL(restore_original_console_font);
 extern void NDECL(safe_routines);
 
-#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
-extern void FDECL(appropriate_exit, (int));
-#endif
-
 /* Win32 Screen buffer,coordinate,console I/O information */
 COORD ntcoord;
 INPUT_RECORD ir;
@@ -1155,11 +1151,7 @@ VA_DECL(const char *, s)
     msmsg(buf);
     really_move_cursor();
     VA_END();
-#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
-    appropriate_exit(EXIT_FAILURE);
-#else
-    exit(EXIT_FAILURE);
-#endif
+    gnollhack_exit(EXIT_FAILURE);
 }
 
 void

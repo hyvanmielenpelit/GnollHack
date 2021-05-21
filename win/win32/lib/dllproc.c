@@ -55,7 +55,6 @@ dll_logDebug(const char *fmt, ...)
 }
 #endif
 
-extern void FDECL(gnollhack_exit, (int));
 static void prompt_for_player_selection(void);
 strbuf_t dll_raw_print_strbuf = { 0 };
 
