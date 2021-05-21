@@ -95,7 +95,7 @@ void lib_askname(void)
 
 void lib_get_nh_event(void)
 {
-
+    lib_callbacks.callback_get_nh_event();
 }
 
 void lib_exit_nhwindows(const char* param)
@@ -229,12 +229,12 @@ void lib_raw_print_flush()
 
 int lib_nhgetch(void)
 {
-    return '\033';
+    return lib_callbacks.callback_nhgetch();
 }
 
 int lib_nh_poskey(int* x, int* y, int* mod)
 {
-    return '\033';
+    return lib_callbacks.callback_nh_poskey(x, y, mod);
 }
 
 void lib_nhbell(void)

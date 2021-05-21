@@ -31,10 +31,25 @@ namespace GnollHackClient
             Debug.WriteLine("ClientCallback_AskName");
             return "Janne Test";
         }
+        public void ClientCallback_get_nh_event()
+        {
+            Debug.WriteLine("ClientCallback_get_nh_event");
+        }
 
         public void ClientCallback_ExitHack(int status)
         {
             Debug.WriteLine("ClientCallback_ExitHack");
+        }
+
+        public int ClientCallback_nhgetch()
+        {
+            Debug.WriteLine("ClientCallback_nhgetch");
+            return 0;
+        }
+        public int ClientCallback_nh_poskey(ref int value1, ref int value2, ref int value3)
+        {
+            Debug.WriteLine("ClientCallback_nh_poskey");
+            return 0;
         }
 
         /*
