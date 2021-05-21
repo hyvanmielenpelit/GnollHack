@@ -64,6 +64,7 @@ namespace GnollHackClient
         private bool _canClickButton = true;
         private bool _serverButtonClicked = false;
         private NavigationPage _loginNavPage = null;
+        private Thread _gnhthread;
 
         public static bool LoginSuccessful { get; set; }
 
@@ -374,6 +375,13 @@ namespace GnollHackClient
         }
 
         private void localButton_Clicked(object sender, EventArgs e)
+        {
+            Thread t = new Thread(new ThreadStart(GNHThreadProc));
+            _gnhthread = t;
+            _gnhthread.Start();
+        }
+
+        protected void GNHThreadProc()
         {
             _gnollHackService.TestRunGnollHack();
         }

@@ -208,7 +208,7 @@ void lib_raw_print(const char* str)
 
 void lib_raw_print_bold(const char* str)
 {
-    libdef_raw_print(str);
+    libdef_raw_print_bold(str);
 }
 
 void lib_raw_print_flush()
@@ -274,14 +274,14 @@ void lib_delay_output_intervals(int intervals)
 
 }
 
-void lib_change_color(void)
+void lib_change_color(int param1, long param2, int param3)
 {
 
 }
 
-void lib_change_background(void)
+char* lib_change_background(void)
 {
-
+    return "";
 }
 
 char* lib_get_color_string(void)
@@ -330,7 +330,7 @@ void lib_status_finish(void)
 }
 
 void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt,
-    boolean enable)
+    int enable)
 {
 
 }
@@ -460,6 +460,12 @@ void set_username()
 
 void
 libdef_raw_print(const char* s)
+{
+    puts(s);
+}
+
+void
+libdef_raw_print_bold(const char* s)
 {
     puts(s);
 }

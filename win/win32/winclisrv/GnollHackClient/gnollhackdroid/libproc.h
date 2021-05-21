@@ -52,8 +52,8 @@ void lib_number_pad(int state);
 void lib_delay_output(void);
 void lib_delay_output_milliseconds(int interval);
 void lib_delay_output_intervals(int intervals);
-void lib_change_color(void);
-void lib_change_background(void);
+void lib_change_color(int, long, int);
+char* lib_change_background(void);
 char* lib_get_color_string(void);
 void lib_start_screen(void);
 void lib_end_screen(void);
@@ -64,8 +64,7 @@ void lib_putmsghistory(const char* msg, BOOLEAN_P);
 
 void lib_status_init(void);
 void lib_status_finish(void);
-void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt,
-    boolean enable);
+void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, int enable);
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks);
 void lib_stretch_window(void);
 void lib_set_animation_timer(unsigned int);
@@ -89,6 +88,7 @@ void lib_bail(const char* mesg);
 void lib_init_platform(VOID_ARGS);
 void lib_exit_platform(int);
 void libdef_raw_print(const char*);
+void libdef_raw_print_bold(const char*);
 void libdef_wait_synch(VOID_ARGS);
 
 #endif

@@ -47,6 +47,11 @@ int RunGnollHackTest(char* gnhdir)
 	params[0] = "gnollhack";
 	params[1] = 0;
 
+	windowprocs.win_raw_print = libdef_raw_print;
+	windowprocs.win_raw_print_bold = libdef_raw_print_bold;
+	windowprocs.win_wait_synch = libdef_wait_synch;
+
+
 #if 0
 	{
 		char cwbuf[BUFSIZ] = "";
