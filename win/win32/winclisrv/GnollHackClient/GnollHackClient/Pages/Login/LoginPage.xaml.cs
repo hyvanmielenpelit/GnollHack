@@ -1,4 +1,5 @@
 ﻿using GnollHackClient.Data;
+using GnollHackClient.Pages.Game;
 using GnollHackClient.Pages.Login;
 using GnollHackCommon.Authentication;
 using Newtonsoft.Json;
@@ -56,8 +57,10 @@ namespace GnollHackClient
             {
                 App.SelectedServer = SelectedServer;
                 App.UserName = eUserName.Text;
-                MainPage.LoginSuccessful = true;
-                await Application.Current.MainPage.Navigation.PopAsync();
+                App.IsServerGame = true;
+
+                var gamePage = new GamePage();
+                await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
             }
 
             _canClickLogin = true;
