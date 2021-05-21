@@ -2178,7 +2178,7 @@ dll_preference_update(const char *pref)
 char *
 dll_getmsghistory(BOOLEAN_P init)
 {
-    return dll_callbacks.callback_getmsghistory(init);
+    return (char*)0; // dll_callbacks.callback_getmsghistory(init);
 
 #if 0
     static PMSNHMsgGetText text = 0;

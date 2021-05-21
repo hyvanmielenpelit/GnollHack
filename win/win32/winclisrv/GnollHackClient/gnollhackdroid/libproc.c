@@ -322,7 +322,7 @@ void lib_preference_update(const char* pref)
 
 char* lib_getmsghistory(BOOLEAN_P init)
 {
-    return "";
+    return (char*)0;
 }
 
 void lib_putmsghistory(const char* msg, BOOLEAN_P param)
