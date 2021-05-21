@@ -636,6 +636,9 @@
     <ClInclude Include="..\share\callback.h">
       <Filter>Android Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\winclisrv\GnollHackClient\gnollhackdroid\date_unix.h">
+      <Filter>Android Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common Header Files">

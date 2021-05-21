@@ -2570,9 +2570,7 @@ SCROLL(None, "STRC PRST SKRZ KRK", None, 1,   0, 100, S1_NONE, O1_NONE, O2_NONE,
                                                         tongue-twister */
     /* These must come last because they have special fixed descriptions.
      */
-#ifdef MAIL
 SCROLL("mail",          "stamped", None, 0,   0,   0, S1_NONE, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-#endif
 SCROLL("blank paper", "unlabeled", None, 0,  25,  60, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 #undef SCROLL
 

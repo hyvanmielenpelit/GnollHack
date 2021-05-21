@@ -5172,7 +5172,6 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
         55, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     /* other demons
      */
-#ifdef MAIL
     MON("mail daemon", None, None, None, None, S_DEMON, LVL(56, 24, 10, 0, 127, 0), (G_NOGEN | G_NOCORPSE),
         A(NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(600, 300, MS_SILENT, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(18, 18, 18, 18, 18, 18),
@@ -5183,7 +5182,6 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
         M3_INFRAVISIBLE | M3_INFRAVISION, 
         M4_NONE, M5_NONE, M6_NON_EATER, M7_NONE, M8_NONE,
         26, CLR_BRIGHT_BLUE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-#endif
     MON("djinni", None, "humanoid-shaped magical being from the elemental plane of air sometimes capable of granting wishes", None, None, 
         S_DEMON, LVL(7, 12, 4, 15, 30, 0), (G_NOGEN | G_NOCORPSE),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,

@@ -5,7 +5,12 @@
 
 #include "hack.h"
 #include "dlb.h"
+#if defined(GNH_ANDROID)
+#include "date_unix.h"
+#else
 #include "date.h"
+#endif
+
 /*
  * All the references to the contents of patchlevel.h have been moved
  * into makedefs....
@@ -255,6 +260,10 @@ struct version_info *version_data;
 const char *filename;
 boolean complain;
 {
+    unsigned long vsan1 = VERSION_SANITY1;
+    unsigned long vsan2 = VERSION_SANITY2;
+    unsigned long vsan3 = VERSION_SANITY3;
+
     if (
 #ifdef VERSION_COMPATIBILITY
         version_data->incarnation < VERSION_COMPATIBILITY
@@ -266,16 +275,17 @@ boolean complain;
         if (complain)
             pline("Version mismatch for file \"%s\".", filename);
         return FALSE;
-    } else if (
+    } 
+    else if (
 #ifndef IGNORED_FEATURES
         version_data->feature_set != VERSION_FEATURES
 #else
         (version_data->feature_set & ~IGNORED_FEATURES)
             != (VERSION_FEATURES & ~IGNORED_FEATURES)
 #endif
-        || version_data->entity_count != VERSION_SANITY1
-        || version_data->struct_sizes1 != VERSION_SANITY2
-        || version_data->struct_sizes2 != VERSION_SANITY3) {
+        || version_data->entity_count != vsan1
+        || version_data->struct_sizes1 != vsan2
+        || version_data->struct_sizes2 != vsan3) {
         if (complain)
             pline("Configuration incompatibility for file \"%s\".", filename);
         return FALSE;

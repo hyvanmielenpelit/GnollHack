@@ -783,8 +783,12 @@ init_dungeons()
         clear_nhwindow(WIN_MAP);
     if (!check_version(&vers_info, DUNGEON_FILE, TRUE))
     {
+#ifdef GNH_ANDROID
+        impossible("Dungeon description not valid. Check that GnollHack Android files are up-to-date.");
+#else
         panic("Dungeon description not valid.");
         return;
+#endif
     }
     /*
      * Read in each dungeon and transfer the results to the internal
