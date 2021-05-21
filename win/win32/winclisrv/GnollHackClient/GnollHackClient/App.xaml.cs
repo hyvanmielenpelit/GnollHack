@@ -32,6 +32,7 @@ namespace GnollHackClient
 
         public static Cookie AuthenticationCookie { get; set; }
         public static Server SelectedServer { get; set; }
+        public static string UserName { get; set; }
         public static NavigationPage MainNavigationPage { get { return (NavigationPage)Current.MainPage; } }
 
     }
