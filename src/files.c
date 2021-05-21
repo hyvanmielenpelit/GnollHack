@@ -8,10 +8,6 @@
 #include "hack.h"
 #include "dlb.h"
 
-#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
-extern void FDECL(appropriate_exit, (int));
-#endif
-
 #ifdef TTY_GRAPHICS
 #include "wintty.h" /* more() */
 #endif
@@ -4154,11 +4150,7 @@ assure_syscf_file()
         return;
     }
     raw_printf("Unable to open SYSCF_FILE.\n");
-#if defined(WIN32) && defined(GNOLLHACK_MAIN_PROGRAM)
-    appropriate_exit(EXIT_FAILURE);
-#else
-    exit(EXIT_FAILURE);
-#endif
+    gnollhack_exit(EXIT_FAILURE);
 }
 
 #endif /* SYSCF_FILE */

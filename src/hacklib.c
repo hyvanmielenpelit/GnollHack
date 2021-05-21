@@ -5,7 +5,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h" /* for config.h+extern.h */
-#include <stdio.h>
 
 /*=
     Assorted 'small' utility routines.  They're virtually independent of
@@ -1566,4 +1565,6 @@ is_stdin_empty()
     return !flags.enablettyarrowkeys;
 #endif
 }
+
+
 /*hacklib.c*/

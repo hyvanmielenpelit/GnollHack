@@ -16,6 +16,8 @@
 #include <fcntl.h>
 #endif
 
+#include <pthread.h>
+
 extern void set_username();
 
 static jmp_buf env;
@@ -52,10 +54,21 @@ void remove_lock_file(const char *filename)
 	unlink(lockname);
 }
 
-void gnollhack_exit(int code)
+void
+gnollhack_exit(code)
+int code;
 {
+#if defined(EXIT_THREAD_ON_EXIT)
+	char retbuf[BUFSZ];
+	Sprintf(retbuf, "GnollHack thread exit with value %d", code);
+
+	pthread_exit(retbuf);
+#else
 	longjmp(env, code);
+	//exit(code);
+#endif
 }
+
 
 int GnollHackMain(int argc, char** argv)
 {

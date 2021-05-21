@@ -35,6 +35,7 @@ namespace GnollHackClient
         private bool _canClickButton = true;
         private bool _serverButtonClicked = false;
         private NavigationPage _loginNavPage = null;
+        private Thread _gnhthread;
 
         public MainPage()
         {

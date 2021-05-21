@@ -734,4 +734,10 @@ static const char empty_string[] = "";
 #define readLenType unsigned
 #endif
 
+#if defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(ANDROID) || defined(GNH_ANDROID) || defined(WIN32)
+extern void FDECL(gnollhack_exit, (int));
+#else
+#define gnollhack_exit exit
+#endif
+
 #endif /* HACK_H */

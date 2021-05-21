@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\lib\dllcallback.h">
+    <ClInclude Include="..\share\callback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\lib\dllhack.h">

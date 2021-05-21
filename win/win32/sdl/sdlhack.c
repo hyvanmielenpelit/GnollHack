@@ -57,7 +57,6 @@ Version     _WIN_32IE   Platform/IE
  * "http://www.microsoft.com/msdownload/ieplatform/ie/comctrlx86.asp"*/
 
 static void reset_program_state();
-extern void FDECL(gnollhack_exit, (int));
 static TCHAR *_get_cmd_arg(TCHAR *pCmdLine);
 static HRESULT GetComCtlVersion(LPDWORD pdwMajor, LPDWORD pdwMinor);
 BOOL WINAPI
