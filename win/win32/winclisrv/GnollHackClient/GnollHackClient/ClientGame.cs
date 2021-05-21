@@ -44,12 +44,12 @@ namespace GnollHackClient
         public int ClientCallback_nhgetch()
         {
             Debug.WriteLine("ClientCallback_nhgetch");
-            return 0;
+            return 27;
         }
         public int ClientCallback_nh_poskey(ref int value1, ref int value2, ref int value3)
         {
             Debug.WriteLine("ClientCallback_nh_poskey");
-            return 0;
+            return 27;
         }
 
         /*
