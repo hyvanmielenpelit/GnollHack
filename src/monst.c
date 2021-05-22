@@ -277,7 +277,7 @@ NEARDATA struct permonst mons[] = {
         MC_POISON | MC_STONE, M1_ANIMAL | M1_NOHANDS | M1_OMNIVORE | M1_TOUCH_PETRIFIES,
         M2_HOSTILE | M2_COCKATRICE,
         M3_INFRAVISIBLE, 
-        M4_BIRD, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
+        M4_BIRD, M5_CORPSE_TILE, M6_NONE, M7_NONE, M8_NONE, 
         8, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("cockatrice", None, "slow magical bird with petrifying touch", None, None, S_COCKATRICE, LVL(5, 6, 6, 0, 30, 0), (G_GENO | 5),
         A(ATTK(AT_BITE, AD_PHYS, 1, 3, 0, 0, 0, 0, 0UL, 0), ATTK(AT_TUCH, AD_STON, 0, 0, 0, 0, 0, 0, 0UL, 0),
