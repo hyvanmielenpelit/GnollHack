@@ -7629,13 +7629,13 @@ readchar()
         sym = '\033';
 #ifdef ALTMETA
     }
-    else if (sym == '\033' && alt_esc && !is_stdin_empty()) {
+    else if (sym == '\033' && alt_esc) {
         /* iflags.altmeta: treat two character ``ESC c'' as single `M-c' */
         sym = *readchar_queue ? *readchar_queue++ : pgetchar();
         if (sym == EOF || sym == 0)
             sym = '\033';
 #ifdef UNIX
-        else if (sym == 91)
+        else if (sym == 91 && !is_stdin_empty())
             goto sym91here;
 #endif
         else if (sym != '\033')

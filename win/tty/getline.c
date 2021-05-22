@@ -75,8 +75,8 @@ getlin_hook_proc hook;
         Strcat(strcat(strcpy(toplines, query), " "), obufp);
         c = pgetchar();
         if (c == '\033' || c == EOF) {
-            if(c != EOF && !is_stdin_empty())
 #ifdef UNIX
+            if(c != EOF && !is_stdin_empty())
                 c = pgetchar(); /* Get another one */
 #endif
             if ((c == '\033' || c == 0) && obufp[0] != '\0') {
