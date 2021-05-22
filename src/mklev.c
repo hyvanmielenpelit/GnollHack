@@ -24,7 +24,7 @@ STATIC_DCL void FDECL(makeniche, (int));
 STATIC_DCL void NDECL(make_niches);
 STATIC_PTR int FDECL(CFDECLSPEC do_comp, (const genericptr,
                                           const genericptr));
-STATIC_DCL void FDECL(dosdoor, (XCHAR_P, XCHAR_P, struct mkroom *, int, uchar));
+STATIC_DCL void FDECL(dosdoor, (XCHAR_P, XCHAR_P, struct mkroom *, int, UCHAR_P));
 STATIC_DCL void FDECL(join, (int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(do_room_or_subroom, (struct mkroom *, int, int,
                                            int, int, BOOLEAN_P,
@@ -1105,7 +1105,7 @@ makelevel()
                             (void)mksobj_at(itemtype, x, y, FALSE, FALSE);
                         }
 
-                        int itemnum2 = rn2(3) + (tmonst->data == &mons[PM_NEO_OTYUGH]) ? 1 : 0;
+                        int itemnum2 = rn2(3) + ((tmonst->data == &mons[PM_NEO_OTYUGH]) ? 1 : 0);
                         for (i = 0; i < itemnum2; i++)
                         {
                             (void)mkobj_at(RANDOM_CLASS, x, y, TRUE);

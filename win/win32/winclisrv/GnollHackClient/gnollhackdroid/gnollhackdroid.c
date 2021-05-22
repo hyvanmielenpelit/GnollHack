@@ -30,6 +30,8 @@ const char *getPlatformABI()
 	return "This native library is compiled with ABI: %s" ABI ".";
 }
 
+extern void FDECL(set_wincaps, (unsigned long, unsigned long));
+
 void gnollhackdroid()
 {
 

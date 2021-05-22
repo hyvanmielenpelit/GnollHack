@@ -179,7 +179,7 @@ const char*
 get_mflag_description(mflag_bit, plural, mindex)
 unsigned long mflag_bit;
 boolean plural;
-unsigned char mindex;
+uchar mindex;
 {
     struct mflag_description* mtable = m1flag_descriptions;
 

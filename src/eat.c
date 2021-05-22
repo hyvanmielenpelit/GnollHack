@@ -25,7 +25,7 @@ STATIC_DCL void FDECL(corpse_after_effect, (int));
 STATIC_DCL void FDECL(consume_tin, (const char *));
 STATIC_DCL void FDECL(start_tin, (struct obj *));
 STATIC_DCL int FDECL(eatcorpse, (struct obj *));
-STATIC_DCL void FDECL(start_eating, (struct obj *, boolean));
+STATIC_DCL void FDECL(start_eating, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(food_pre_effect, (struct obj *));
 STATIC_DCL void FDECL(food_after_effect, (struct obj *));
 STATIC_DCL int NDECL(bite);

@@ -2507,9 +2507,7 @@ dosacrifice()
                     /* Yes, this is supposed to be &=, not |= */
                     levl[u.ux][u.uy].altarmask &= AM_SHRINE;
                     /* the following accommodates stupid compilers */
-                    levl[u.ux][u.uy].altarmask =
-                        levl[u.ux][u.uy].altarmask
-                        | (Align2amask(u.ualign.type));
+                    levl[u.ux][u.uy].altarmask = (levl[u.ux][u.uy].altarmask | (Align2amask(u.ualign.type)));
                     newsym(u.ux, u.uy);
                     if (!Blind)
                         pline_The("altar glows %s.",

@@ -272,7 +272,7 @@ struct prop_color {
     uchar r, g, b;
 };
 struct prop_info {
-    char prop_tile_name[60];
+    const char* prop_tile_name;
 
     Bitfield(show_buff, 1);
     Bitfield(buff_text_needs_background, 1);

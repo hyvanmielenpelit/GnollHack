@@ -344,6 +344,7 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #define UCHAR_P uchar
 #define XCHAR_P xchar
 #define SHORT_P short
+#define UNSIGNED_SHORT_P unsigned short
 #ifndef SKIP_BOOLEAN
 #define BOOLEAN_P boolean
 #endif
@@ -357,6 +358,7 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #endif
 #define XCHAR_P int
 #define SHORT_P int
+#define UNSIGNED_SHORT_P int
 #define BOOLEAN_P int
 #define ALIGNTYP_P int
 #else

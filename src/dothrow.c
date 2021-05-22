@@ -7,7 +7,7 @@
 
 #include "hack.h"
 
-STATIC_DCL int FDECL(throw_obj, (struct obj *, int, boolean));
+STATIC_DCL int FDECL(throw_obj, (struct obj *, int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(ok_to_throw, (int *));
 STATIC_DCL void NDECL(autoquiver);
 STATIC_DCL int FDECL(gem_accept, (struct monst *, struct obj *));

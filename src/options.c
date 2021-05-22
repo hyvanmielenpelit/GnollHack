@@ -622,7 +622,7 @@ static boolean initial, from_file;
 
 STATIC_DCL void FDECL(nmcpy, (char *, const char *, int));
 STATIC_DCL void FDECL(escapes, (const char *, char *));
-STATIC_DCL void FDECL(escapes_ex, (const char*, void*, boolean));
+STATIC_DCL void FDECL(escapes_ex, (const char*, void*, BOOLEAN_P));
 STATIC_DCL void FDECL(rejectoption, (const char *));
 STATIC_DCL char *FDECL(string_for_opt, (char *, BOOLEAN_P));
 STATIC_DCL char *FDECL(string_for_env_opt, (const char *, char *, BOOLEAN_P));
@@ -764,7 +764,7 @@ initoptions()
 void
 initoptions_init()
 {
-#if defined(UNIX) || defined(VMS)
+#if (defined(UNIX) || defined(VMS)) && defined (TTY_GRAPHICS)
     char *opts;
 #endif
     int i;
@@ -869,8 +869,7 @@ initoptions_init()
 #endif
     }
 #endif /* UNIX && TTY_GRAPHICS */
-#if defined(UNIX) || defined(VMS)
-#ifdef TTY_GRAPHICS
+#if (defined(UNIX) || defined(VMS)) && defined (TTY_GRAPHICS)
     /* detect whether a "vt" terminal can handle alternate charsets */
     if ((opts = nh_getenv("TERM"))
         /* [could also check "xterm" which emulates vtXXX by default] */
@@ -880,8 +879,7 @@ initoptions_init()
             load_symset("DECGraphics", PRIMARY);
         switch_symbols(TRUE);
     }
-#endif
-#endif /* UNIX || VMS */
+#endif /* (UNIX || VMS) && TTY_GRAPHICS */
 
 #if defined(MSDOS) || defined(WIN32)
     /* Use IBM defaults. Can be overridden via config file */

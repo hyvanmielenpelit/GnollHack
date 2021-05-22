@@ -2971,16 +2971,11 @@ glyph_to_player_mon(int glyph)
 {
     int offset = glyph - GLYPH_PLAYER_OFF;
 
-    int glyph_level_idx = NUM_PLAYER_GLYPH_LEVELS > 1 ? (offset % NUM_PLAYER_GLYPH_LEVELS) : 0;
-    int alignment_idx = (offset % (3 * NUM_PLAYER_GLYPH_LEVELS)) / NUM_PLAYER_GLYPH_LEVELS;
-    int gender_idx = (offset % (2 * 3 * NUM_PLAYER_GLYPH_LEVELS)) / (3 * NUM_PLAYER_GLYPH_LEVELS);
+    //int glyph_level_idx = NUM_PLAYER_GLYPH_LEVELS > 1 ? (offset % NUM_PLAYER_GLYPH_LEVELS) : 0;
+    //int alignment_idx = (offset % (3 * NUM_PLAYER_GLYPH_LEVELS)) / NUM_PLAYER_GLYPH_LEVELS;
+    //int gender_idx = (offset % (2 * 3 * NUM_PLAYER_GLYPH_LEVELS)) / (3 * NUM_PLAYER_GLYPH_LEVELS);
     int race_idx = (offset % (2 * 3 * NUM_PLAYER_GLYPH_LEVELS * NUM_RACES)) / (2 * 3 * NUM_PLAYER_GLYPH_LEVELS);
     int role_idx = (offset % (2 * 3 * NUM_PLAYER_GLYPH_LEVELS * NUM_RACES * NUM_ROLES)) / (2 * 3 * NUM_PLAYER_GLYPH_LEVELS * NUM_RACES);
-
-    /* Some use for otherwise unused idx's */
-    glyph_level_idx = glyph_level_idx;
-    alignment_idx = alignment_idx;
-    gender_idx = gender_idx;
 
     if (flags.showrace)
     {

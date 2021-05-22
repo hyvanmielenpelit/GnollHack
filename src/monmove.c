@@ -1372,8 +1372,6 @@ register int after;
     }
 
     register int pctload = 0;
-    if (mtmp->mnum == PM_ASHIKAGA_TAKAUJI)
-        pctload = pctload;
 
     if ((!is_peaceful(mtmp) || !rn2(10)) && (!Is_rogue_level(&u.uz)))
     {

@@ -9,7 +9,7 @@ STATIC_DCL void FDECL(m_lose_armor, (struct monst *, struct obj *));
 STATIC_DCL boolean FDECL(m_dowear_type,
                       (struct monst *, long, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL int FDECL(extra_pref, (struct monst *, struct obj *));
-STATIC_DCL void FDECL(set_mon_temporary_property, (struct monst*, int, unsigned short));
+STATIC_DCL void FDECL(set_mon_temporary_property, (struct monst*, int, UNSIGNED_SHORT_P));
 
 
 const struct worn {
@@ -611,7 +611,7 @@ unsigned short amount;
         amount = M_TIMEOUT;
 
     unsigned short otherflags = mon->mprops[prop_index] & ~M_TIMEOUT;
-    mon->mprops[prop_index] = amount | otherflags;
+    mon->mprops[prop_index] = (amount | otherflags);
 }
 
 

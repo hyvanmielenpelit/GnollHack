@@ -1241,11 +1241,11 @@ mkgarden()
                     {
                     case 0:
                         itemtype = MANDRAKE_ROOT;
-                        quan = 1 + !rn2(5) ? 1 : 0;
+                        quan = 1 + (!rn2(5) ? 1 : 0);
                         break;
                     case 1:
                         itemtype = GINSENG_ROOT;
-                        quan = 1 + !rn2(3) ? 1 : 0 + !rn2(5) ? 1 : 0;
+                        quan = 1 + (!rn2(3) ? 1 : 0) + (!rn2(5) ? 1 : 0);
                         break;
                     case 2:
                         itemtype = CARROT;
