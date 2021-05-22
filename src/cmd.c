@@ -7531,7 +7531,9 @@ parse()
     in_line[0] = foo;
     in_line[1] = '\0';
     if (prefix_cmd(foo)) {
+        escape_sequence_key_start_allowed = 1;
         foo = readchar();
+        escape_sequence_key_start_allowed = 0;
         savech((char) foo);
         in_line[1] = foo;
         in_line[2] = 0;
@@ -7643,7 +7645,7 @@ readchar()
 #endif /*ALTMETA*/
 
 #ifdef UNIX
-    } else if (sym == '\033' && escape_sequence_key_start_allowed && !is_stdin_empty()) {
+    } else if (sym == '\033' && !is_stdin_empty()) {
         sym = *readchar_queue ? *readchar_queue++ : pgetchar();
         if (sym == EOF || sym == 0 || sym == '\033')
             sym = '\033';

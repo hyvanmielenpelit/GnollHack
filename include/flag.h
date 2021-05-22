@@ -73,7 +73,7 @@ struct flag {
     boolean detailed_weights; /* use ounces and grams instead of lbs and kg */
     boolean show_cursor_on_u; /* force show cursor on you even with tiles */
     boolean force_paint_at_cursor; /* force paint at cursor (normally, because the cursor appears on you) */
-    enum game_cursor_types active_cursor_style;
+    uchar active_cursor_style;
     boolean show_tile_u_mark; /* show u tile mark on tiles */
     boolean show_tile_monster_target; /* show monster tile mark */
     boolean show_tile_mon_hp_bar; /* show mon hp bar on tiles */
