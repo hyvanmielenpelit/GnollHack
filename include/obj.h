@@ -287,7 +287,7 @@ struct obj {
     ((is_weapon(otmp) && !is_launcher(otmp) && objects[(otmp)->otyp].oc_dir > WHACK) || objects[(otmp)->otyp].oc_flags3 & O3_POISONABLE)
 
 #define is_obj_tethered_weapon(o, wmask)  \
-    ((objects[(obj)->otyp].oc_flags4 & O4_TETHERED_WEAPON) != 0 && ((wmask) & W_WIELDED_WEAPON) != 0)
+    ((objects[(o)->otyp].oc_flags4 & O4_TETHERED_WEAPON) != 0 && ((wmask) & W_WIELDED_WEAPON) != 0)
 
 
 #define uslinging() (uwep && objects[uwep->otyp].oc_skill == P_SLING)
