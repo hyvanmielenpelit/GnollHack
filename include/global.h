@@ -123,7 +123,7 @@ typedef xchar boolean; /* 0 or 1 */
 #include "vmsconf.h"
 #endif
 
-#ifdef UNIX
+#if defined (UNIX)
 #include "unixconf.h"
 #endif
 

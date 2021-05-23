@@ -37,6 +37,8 @@
     <ClCompile Include="..\..\..\src\objects.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\action.h" />
+    <ClInclude Include="..\..\..\include\align.h" />
     <ClInclude Include="..\..\..\include\animation.h" />
     <ClInclude Include="..\..\..\include\config.h" />
     <ClInclude Include="..\..\..\include\config1.h" />
@@ -48,9 +50,14 @@
     <ClInclude Include="..\..\..\include\monflag.h" />
     <ClInclude Include="..\..\..\include\monsym.h" />
     <ClInclude Include="..\..\..\include\ntconf.h" />
+    <ClInclude Include="..\..\..\include\obj.h" />
     <ClInclude Include="..\..\..\include\objclass.h" />
     <ClInclude Include="..\..\..\include\patchlevel.h" />
+    <ClInclude Include="..\..\..\include\permonst.h" />
+    <ClInclude Include="..\..\..\include\prop.h" />
     <ClInclude Include="..\..\..\include\qtext.h" />
+    <ClInclude Include="..\..\..\include\rm.h" />
+    <ClInclude Include="..\..\..\include\soundset.h" />
     <ClInclude Include="..\..\..\include\tradstdc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

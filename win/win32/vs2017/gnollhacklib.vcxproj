@@ -391,7 +391,7 @@
   </Target>
   <Target Name="AfterClean">
     <MSBuild Projects="aftergnollhack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
-    <MSBuild Projects="aftergnollhackdll.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <MSBuild Projects="aftergnollhackdll.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterRebuild">
     <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />

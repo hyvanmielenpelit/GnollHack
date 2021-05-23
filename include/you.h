@@ -21,6 +21,7 @@
 #endif
 #include "skills.h"
 
+#include <time.h>
 
 enum role_types
 {

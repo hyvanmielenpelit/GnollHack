@@ -3,8 +3,8 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #ifdef GNH_ANDROID
-#ifndef ANDROIDCONF_H
-#define ANDROIDCONF_H
+#ifndef DROIDCONF_H
+#define DROIDCONF_H
 
 //#define error debuglog
 
@@ -44,5 +44,5 @@
 
 #define CHANGE_COLOR
 
-# endif /* ANDROIDCONF_H */
-#endif /* ANDROID */
+# endif /* DROIDCONF_H */
+#endif /* GNH_ANDROID */
