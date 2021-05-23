@@ -98,13 +98,13 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(IncDir);$(LibDroidDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GNH_ANDROID;DLB;LIB_GRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetPath)</OutputFile>
     </Link>
     <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -d;./makedefsdroid.out -r;./makedefsdroid.out -q;./makedefsdroid.out -h;./makedefsdroid.out -s;./makedefsdroid.out -a;./makedefsdroid.out -e;mkdir /mnt/c/wsl-out;mkdir /mnt/c/wsl-out/include;mkdir /mnt/c/wsl-out/dat;cp ../include/*.h /mnt/c/wsl-out/include/;cp ../dat/* /mnt/c/wsl-out/dat/</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;./makedefsdroid.out -d;./makedefsdroid.out -r;./makedefsdroid.out -q;./makedefsdroid.out -h;./makedefsdroid.out -s;./makedefsdroid.out -a;./makedefsdroid.out -e;mkdir /mnt/c/wsl-out;mkdir /mnt/c/wsl-out/include;mkdir /mnt/c/wsl-out/dat;cp ../include/*.h /mnt/c/wsl-out/include/;cp ../dat/* /mnt/c/wsl-out/dat/</Command>
     </RemotePostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -112,7 +112,6 @@
     <ClCompile Include="$(UtilDir)makedefs.c" />
     <ClCompile Include="$(SrcDir)monst.c" />
     <ClCompile Include="$(SrcDir)objects.c" />
-    <ClCompile Include="$(RootDir)win\win32\winclisrv\GnollHackClient\makedefsdroid\main.c" />
     <SourcesToCopyRemotely Include="@(ClCompile)" />
   </ItemGroup>
   <ItemGroup>

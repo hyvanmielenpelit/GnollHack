@@ -5,7 +5,6 @@
     <ClCompile Include="$(UtilDir)makedefs.c" />
     <ClCompile Include="$(SrcDir)monst.c" />
     <ClCompile Include="$(SrcDir)objects.c" />
-    <ClCompile Include="$(RootDir)win\win32\winclisrv\GnollHackClient\makedefsdroid\main.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)action.h">

@@ -121,7 +121,7 @@
       <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
       <CppLanguageStandard>Default</CppLanguageStandard>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;GNOLLHACK_MAIN_PROGRAM;MAIL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;GNOLLHACK_MAIN_PROGRAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
       <AdditionalOptions>-target x86_64-none-android</AdditionalOptions>
