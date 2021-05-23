@@ -85,7 +85,8 @@
     <IntDir>$(ObjDir)</IntDir>
     <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
     <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/deploy</RemoteDeployDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
   </ItemGroup>

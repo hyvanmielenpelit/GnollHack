@@ -48,6 +48,7 @@ win/win32/winclisrv/GnollHackClient/gnollhackdroid/date*.h
 *.ogg
 *.bank
 *.psd
+*.tlog
 
 # User-specific files
 *.suo
