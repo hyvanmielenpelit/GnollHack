@@ -59,6 +59,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -68,6 +69,18 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -79,4 +92,42 @@
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <Import Project="default.props" />
+  <Import Project="console.props" />
+  <Import Project="dirs.props" />
+  <Import Project="files.props" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(IncDir);$(LibDroidDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetPath)</OutputFile>
+    </Link>
+    <RemotePostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd ../../../dat;mkdir /mnt/c/wsl-out;mkdir /mnt/c/wsl-out/bin;../tools/dlbdroid.out cf nhdat help hh cmdhelp keyhelp history opthelp wizhelp dungeon tribute dispater.lev baalz.lev bigrm-*.lev bovine?.lev castle.lev fakewiz?.lev juiblex.lev knox.lev medusa-?.lev minend-?.lev minefill.lev minetn-?.lev minotaur.lev modron?.lev oracle.lev orcus.lev sanctum.lev soko?-?.lev tarrasque.lev tower?.lev treasure1.lev valley.lev wizard?.lev yeenoghu.lev mainfill.lev hellfill.lev astral.lev air.lev earth.lev fire.lev water.lev ???-goal.lev ???-fil?.lev ???-loca.lev ???-strt.lev bogusmon data engrave epitaph oracles options quest.dat rumors;mkdir /mnt/c/wsl-out/include;mkdir /mnt/c/wsl-out/dat;cp ../include/*.h /mnt/c/wsl-out/include/;cp ../dat/* /mnt/c/wsl-out/dat/;cp nhdat /mnt/c/wsl-out/bin/</Command>
+    </RemotePostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)alloc.c" />
+    <ClCompile Include="$(SrcDir)dlb.c" />
+    <ClCompile Include="$(UtilDir)dlb_main.c" />
+    <ClCompile Include="$(UtilDir)panic.c" />
+    <SourcesToCopyRemotely Include="@(ClCompile)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(IncDir)dlb.h" />
+    <SourcesToCopyRemotely Include="@(ClInclude)" />
+    <SourcesToCopyRemotely Include="$(IncDir)*.h" />
+  </ItemGroup>
+    <Target Name="AfterBuild">
+    <MSBuild Projects="afterdroidutils.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="AfterClean">
+    <MSBuild Projects="afterdroidutils.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="AfterRebuild">
+    <MSBuild Projects="afterdroidutils.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>
+
 </Project>

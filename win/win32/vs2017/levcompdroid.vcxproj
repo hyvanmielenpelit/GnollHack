@@ -59,6 +59,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -68,6 +69,18 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -79,4 +92,37 @@
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <Import Project="default.props" />
+  <Import Project="console.props" />
+  <Import Project="dirs.props" />
+  <Import Project="files.props" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(IncDir);$(LibDroidDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetPath)</OutputFile>
+    </Link>
+    <RemotePostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd ../../../tools;./levcompdroid.out -des</Command>
+    </RemotePostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)alloc.c" />
+    <ClCompile Include="$(SrcDir)decl.c" />
+    <ClCompile Include="$(SrcDir)drawing.c" />
+    <ClCompile Include="$(UtilDir)lev_lex.c" />
+    <ClCompile Include="$(UtilDir)lev_main.c" />
+    <ClCompile Include="$(UtilDir)lev_yacc.c" />
+    <ClCompile Include="$(SrcDir)monst.c" />
+    <ClCompile Include="$(SrcDir)objects.c" />
+    <ClCompile Include="$(UtilDir)panic.c" />
+    <SourcesToCopyRemotely Include="@(ClCompile)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(IncDir)lev_comp.h" />
+    <SourcesToCopyRemotely Include="@(ClInclude)" />
+    <SourcesToCopyRemotely Include="$(IncDir)*.h" />
+  </ItemGroup>
 </Project>

@@ -59,6 +59,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>~/projects</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -68,6 +69,18 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -79,4 +92,77 @@
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <Import Project="default.props" />
+  <Import Project="console.props" />
+  <Import Project="dirs.props" />
+  <Import Project="files.props" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(IncDir);$(LibDroidDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetPath)</OutputFile>
+    </Link>
+    <RemotePostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd ../../../tools;./dgncompdroid.out ../dat/dungeon.pdf</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Message>
+    </RemotePostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)alloc.c" />
+    <ClCompile Include="$(SysShareDir)\dgn_lex.c" />
+    <ClCompile Include="$(UtilDir)dgn_main.c" />
+    <ClCompile Include="$(SysShareDir)dgn_yacc.c" />
+    <ClCompile Include="$(UtilDir)panic.c" />
+    <SourcesToCopyRemotely Include="@(ClCompile)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(IncDir)align.h" />
+    <ClInclude Include="$(IncDir)attrib.h" />
+    <ClInclude Include="$(IncDir)color.h" />
+    <ClInclude Include="$(IncDir)config.h" />
+    <ClInclude Include="$(IncDir)config1.h" />
+    <ClInclude Include="$(IncDir)context.h" />
+    <ClInclude Include="$(IncDir)coord.h" />
+    <ClInclude Include="$(IncDir)decl.h" />
+    <ClInclude Include="$(IncDir)dgn_comp.h" />
+    <ClInclude Include="$(IncDir)dgn_file.h" />
+    <ClInclude Include="$(IncDir)display.h" />
+    <ClInclude Include="$(IncDir)dungeon.h" />
+    <ClInclude Include="$(IncDir)engrave.h" />
+    <ClInclude Include="$(IncDir)flag.h" />
+    <ClInclude Include="$(IncDir)global.h" />
+    <ClInclude Include="$(IncDir)mkroom.h" />
+    <ClInclude Include="$(IncDir)monattk.h" />
+    <ClInclude Include="$(IncDir)monst.h" />
+    <ClInclude Include="$(IncDir)monsym.h" />
+    <ClInclude Include="$(IncDir)npc.h" />
+    <ClInclude Include="$(IncDir)ntconf.h" />
+    <ClInclude Include="$(IncDir)obj.h" />
+    <ClInclude Include="$(IncDir)objclass.h" />
+    <ClInclude Include="$(IncDir)onames.h" />
+    <ClInclude Include="$(IncDir)permonst.h" />
+    <ClInclude Include="$(IncDir)pm.h" />
+    <ClInclude Include="$(IncDir)prop.h" />
+    <ClInclude Include="$(IncDir)quest.h" />
+    <ClInclude Include="$(IncDir)rect.h" />
+    <ClInclude Include="$(IncDir)region.h" />
+    <ClInclude Include="$(IncDir)rm.h" />
+    <ClInclude Include="$(IncDir)skills.h" />
+    <ClInclude Include="$(IncDir)spell.h" />
+    <ClInclude Include="$(IncDir)timeout.h" />
+    <ClInclude Include="$(IncDir)tradstdc.h" />
+    <ClInclude Include="$(IncDir)trampoli.h" />
+    <ClInclude Include="$(IncDir)trap.h" />
+    <ClInclude Include="$(IncDir)vision.h" />
+    <ClInclude Include="$(IncDir)winprocs.h" />
+    <ClInclude Include="$(IncDir)wintty.h" />
+    <ClInclude Include="$(IncDir)wintype.h" />
+    <ClInclude Include="$(IncDir)you.h" />
+    <ClInclude Include="$(IncDir)youprop.h" />
+    <SourcesToCopyRemotely Include="@(ClInclude)" />
+    <SourcesToCopyRemotely Include="$(IncDir)*.h" />
+  </ItemGroup>
 </Project>

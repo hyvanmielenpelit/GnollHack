@@ -31,34 +31,34 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\animdef.c" />
-    <ClCompile Include="..\..\..\util\makedefs.c" />
-    <ClCompile Include="..\..\..\src\monst.c" />
-    <ClCompile Include="..\..\..\src\objects.c" />
+    <ClCompile Include="$(SrcDir)animdef.c" />
+    <ClCompile Include="$(UtilDir)makedefs.c" />
+    <ClCompile Include="$(SrcDir)monst.c" />
+    <ClCompile Include="$(SrcDir)objects.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\action.h" />
-    <ClInclude Include="..\..\..\include\align.h" />
-    <ClInclude Include="..\..\..\include\animation.h" />
-    <ClInclude Include="..\..\..\include\config.h" />
-    <ClInclude Include="..\..\..\include\config1.h" />
-    <ClInclude Include="..\..\..\include\context.h" />
-    <ClInclude Include="..\..\..\include\coord.h" />
-    <ClInclude Include="..\..\..\include\general.h" />
-    <ClInclude Include="..\..\..\include\global.h" />
-    <ClInclude Include="..\..\..\include\monattk.h" />
-    <ClInclude Include="..\..\..\include\monflag.h" />
-    <ClInclude Include="..\..\..\include\monsym.h" />
-    <ClInclude Include="..\..\..\include\ntconf.h" />
-    <ClInclude Include="..\..\..\include\obj.h" />
-    <ClInclude Include="..\..\..\include\objclass.h" />
-    <ClInclude Include="..\..\..\include\patchlevel.h" />
-    <ClInclude Include="..\..\..\include\permonst.h" />
-    <ClInclude Include="..\..\..\include\prop.h" />
-    <ClInclude Include="..\..\..\include\qtext.h" />
-    <ClInclude Include="..\..\..\include\rm.h" />
-    <ClInclude Include="..\..\..\include\soundset.h" />
-    <ClInclude Include="..\..\..\include\tradstdc.h" />
+    <ClInclude Include="$(IncDir)action.h" />
+    <ClInclude Include="$(IncDir)align.h" />
+    <ClInclude Include="$(IncDir)animation.h" />
+    <ClInclude Include="$(IncDir)config.h" />
+    <ClInclude Include="$(IncDir)config1.h" />
+    <ClInclude Include="$(IncDir)context.h" />
+    <ClInclude Include="$(IncDir)coord.h" />
+    <ClInclude Include="$(IncDir)general.h" />
+    <ClInclude Include="$(IncDir)global.h" />
+    <ClInclude Include="$(IncDir)monattk.h" />
+    <ClInclude Include="$(IncDir)monflag.h" />
+    <ClInclude Include="$(IncDir)monsym.h" />
+    <ClInclude Include="$(IncDir)ntconf.h" />
+    <ClInclude Include="$(IncDir)obj.h" />
+    <ClInclude Include="$(IncDir)objclass.h" />
+    <ClInclude Include="$(IncDir)patchlevel.h" />
+    <ClInclude Include="$(IncDir)permonst.h" />
+    <ClInclude Include="$(IncDir)prop.h" />
+    <ClInclude Include="$(IncDir)qtext.h" />
+    <ClInclude Include="$(IncDir)rm.h" />
+    <ClInclude Include="$(IncDir)soundset.h" />
+    <ClInclude Include="$(IncDir)tradstdc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">

@@ -16,6 +16,10 @@
 #include "tcap.h"
 #endif
 #include <ctype.h>
+#ifdef UNIX
+#include <dirent.h>
+#include <stdio.h>
+#endif
 
 #ifdef MAC
 #if defined(__SC__) || defined(__MRC__)
@@ -243,12 +247,37 @@ struct lc_funcdefs *function_definitions = NULL;
 extern int allow_break_statements;
 extern struct lc_breakdef *break_list;
 
+boolean
+process_file(fname)
+char* fname;
+{
+    boolean errors_encountered = FALSE;
+
+    FILE* fin;
+    fin = freopen(fname, "r", stdin);
+    if (!fin) {
+        lc_pline("Can't open \"%s\" for input.\n", VA_PASS1(fname));
+        perror(fname);
+        errors_encountered = TRUE;
+    }
+    else {
+        fname_counter = 1;
+        init_yyin(fin);
+        (void)yyparse();
+        nh_line_number = 1;
+        if (fatal_error > 0 || got_errors > 0) {
+            errors_encountered = TRUE;
+            fatal_error = 0;
+        }
+    }
+    return errors_encountered;
+}
+
 int
 main(argc, argv)
 int argc;
 char **argv;
 {
-    FILE *fin;
     int i;
     boolean errors_encountered = FALSE;
 #if defined(MAC) && (defined(THINK_C) || defined(__MWERKS__))
@@ -291,27 +320,36 @@ char **argv;
                 be_verbose++;
                 continue;
             }
-            fin = freopen(fname, "r", stdin);
-            if (!fin) {
-                lc_pline("Can't open \"%s\" for input.\n", VA_PASS1(fname));
-                perror(fname);
-                errors_encountered = TRUE;
-            } else {
-                fname_counter = 1;
-                init_yyin(fin);
-                (void) yyparse();
-                nh_line_number = 1;
-                if (fatal_error > 0 || got_errors > 0) {
-                    errors_encountered = TRUE;
-                    fatal_error = 0;
+
+            if (!strcmp(fname, "-des"))
+            {
+#ifdef UNIX
+                DIR* d;
+                struct dirent* dir;
+                chdir("../dat");
+                d = opendir(".");
+                if (d)
+                {
+                    while ((dir = readdir(d)) != NULL)
+                    {
+                        if(strlen(dir->d_name) > 4 && !strcmp(dir->d_name + strlen(dir->d_name) - 4, ".des"))
+                            errors_encountered += process_file(dir->d_name);
+                    }
+                    closedir(d);
                 }
+#else
+                continue;
+#endif
             }
+            else
+                errors_encountered += process_file(fname);
         }
     }
     exit(errors_encountered ? EXIT_FAILURE : EXIT_SUCCESS);
     /*NOTREACHED*/
     return 0;
 }
+
 
 /*
  * Each time the parser detects an error, it uses this function.
