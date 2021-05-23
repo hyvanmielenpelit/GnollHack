@@ -7314,7 +7314,7 @@ boolean stop_at_first_hit_object;
             case WAN_STRIKING:
             case SPE_FORCE_BOLT:
             case SPE_FORCE_STRIKE:
-                if (typ != DRAWBRIDGE_UP)
+                if (typ == DBWALL)
                 {
                     destroy_drawbridge(x, y, FALSE);
                     drawbridge_hit = TRUE;
