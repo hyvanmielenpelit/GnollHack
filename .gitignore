@@ -44,6 +44,7 @@ win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/libs/armeabi-v7a/lib
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/credits
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/symbols
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/license
+win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/nhdat
 dat/dlb.lst
 win/win32/winclisrv/GnollHackClient/gnollhackdroid/date*.h
 *.lastbuildstate
