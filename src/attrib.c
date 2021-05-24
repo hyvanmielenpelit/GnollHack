@@ -2177,14 +2177,16 @@ struct monst* mon;
     for (uitem = is_you ? invent : mon->minvent; uitem; uitem = uitem->nobj)
     {
         otyp = uitem->otyp;
+        boolean cursed_plus_cursed_good = uitem->cursed && cursed_are_good;
+        long applicable_enchantment = (long)(cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);
+        boolean worn = is_you ? is_obj_worn(uitem) :
+            ((!is_weapon(uitem) && !is_shield(uitem) && (uitem->owornmask & ~W_WEAPON) != 0)
+                || ((is_weapon(uitem) || is_shield(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON)));
 
         /* Following are for non-spellbooks and non-wands */
         if (!object_uses_spellbook_wand_flags_and_properties(uitem))
         {
             boolean inappr = inappropriate_monster_character_type(mon, uitem);
-            boolean worn = is_you ? is_obj_worn(uitem) :
-                    ((!is_weapon(uitem) && !is_shield(uitem) && (uitem->owornmask & ~W_WEAPON) != 0) 
-                        || ((is_weapon(uitem) || is_shield(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON)));
 
             if ((worn || (!worn && (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)))
                 && ((!inappr && !(objects[otyp].oc_pflags & (P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY)))
@@ -2195,9 +2197,6 @@ struct monst* mon;
             {
                 long multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
                     ((objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1L : 1L;
-
-                boolean cursed_plus_cursed_good = uitem->cursed && cursed_are_good;
-                long applicable_enchantment = (long)(cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);
 
                 for (int i = 0; i <= A_MAX + 6; i++)
                 {
@@ -2262,7 +2261,7 @@ struct monst* mon;
 
                                     /* Take the lowest maximum (most constraining) */
                                     if (afixmaxcandidate < *afixmax_ptr[i])
-                                        *afixmax_ptr[i] = (schar)afixmaxcandidate;
+                                        *afixmax_ptr[i] = (schar)min(125, afixmaxcandidate);
                                 }
                                 else
                                 {
@@ -2272,7 +2271,7 @@ struct monst* mon;
 
                                     /* Take the highest minimum (most constraining) */
                                     if (afixmincandidate > *afixmin_ptr[i])
-                                        *afixmin_ptr[i] = (schar)afixmincandidate;
+                                        *afixmin_ptr[i] = (schar)min(125, afixmincandidate);
                                 }
                             }
                             else
@@ -2327,6 +2326,17 @@ struct monst* mon;
                     }
                 }
             }
+        }
+
+        /* Mythic */
+        if (has_obj_mythic_great_strength(uitem) && worn)
+        {
+            long afixmincandidate = STR18(100);
+            afixmincandidate += applicable_enchantment;
+
+            /* Take the highest minimum (most constraining) */
+            if (afixmincandidate > *afixmin_ptr[A_STR])
+                *afixmin_ptr[A_STR] = (schar)min(STR19(25), afixmincandidate);
         }
 
         /* Following are for all items */

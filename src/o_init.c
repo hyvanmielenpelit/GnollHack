@@ -43,6 +43,11 @@ NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
     },
     {
+        "Herculean", "Herculean ", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
+        MYTHIC_PREFIX_POWER_GREAT_STRENGTH,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE
+    },
+    {
         "vampiric", "vampiric ", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_LIFE_DRAINING,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_THROWN_OR_AMMO
@@ -79,6 +84,7 @@ NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_PREFIX_P
     { "Triple base damage", "Triple base damage", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Improved enchantability", "Increases maximum enchantable level by 50%", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Uncurseable", "Cannot be cursed", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
+    { "Great power", "Raises strength to 18/00 plus enchantment bonus", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
 };
 
 

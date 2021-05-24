@@ -680,6 +680,7 @@ enum mythic_prefix_types {
     MYTHIC_PREFIX_ATLANTEAN,
     MYTHIC_PREFIX_ELYSIAN,
     MYTHIC_PREFIX_CYCLOPEAN,
+    MYTHIC_PREFIX_HERCULEAN,
     MYTHIC_PREFIX_VAMPIRIC,
     MYTHIC_PREFIX_RADIANT,
     MYTHIC_PREFIX_HALLOWED,
@@ -761,6 +762,7 @@ enum mythic_prefix_power_types {
     MYTHIC_PREFIX_POWER_INDEX_TRIPLE_BASE_DAMAGE,
     MYTHIC_PREFIX_POWER_INDEX_ADDED_ENCHANTABILITY,
     MYTHIC_PREFIX_POWER_INDEX_UNCURSEABLE,
+    MYTHIC_PREFIX_POWER_INDEX_GREAT_STRENGTH,
     MAX_MYTHIC_PREFIX_POWERS
 };
 
@@ -778,6 +780,7 @@ enum mythic_prefix_power_types {
 #define MYTHIC_PREFIX_POWER_TRIPLE_BASE_DAMAGE      (1UL << MYTHIC_PREFIX_POWER_INDEX_TRIPLE_BASE_DAMAGE)
 #define MYTHIC_PREFIX_POWER_ADDED_ENCHANTABILITY    (1UL << MYTHIC_PREFIX_POWER_INDEX_ADDED_ENCHANTABILITY)
 #define MYTHIC_PREFIX_POWER_UNCURSEABLE             (1UL << MYTHIC_PREFIX_POWER_INDEX_UNCURSEABLE)
+#define MYTHIC_PREFIX_POWER_GREAT_STRENGTH          (1UL << MYTHIC_PREFIX_POWER_INDEX_GREAT_STRENGTH)
 
 enum mythic_suffix_power_types {
     MYTHIC_SUFFIX_POWER_INDEX_LIGHTNESS = 0,
@@ -889,6 +892,7 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 #define has_obj_mythic_added_enchantability(o)  has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_ADDED_ENCHANTABILITY)
 #define has_obj_mythic_return_to_hand(o)        has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_RETURN_TO_HAND_AFTER_THROW)
 #define has_obj_mythic_uncurseable(o)           has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_UNCURSEABLE)
+#define has_obj_mythic_great_strength(o)        has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_GREAT_STRENGTH)
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1
