@@ -429,7 +429,6 @@ static const struct def_skill Skill_A_Init[] = {
     { P_WHIP, P_BASIC },
     { P_CROSSBOW, P_BASIC },
     { P_DIVINATION_SPELL, P_BASIC },
-    { P_WAND, P_BASIC },
     { P_NONE, 0 }
 };
 
@@ -485,7 +484,6 @@ static const struct def_skill Skill_C_Init[] = {
     { P_THROWN_WEAPON, P_BASIC },
     { P_BARE_HANDED_COMBAT, P_BASIC },
     { P_NATURE_SPELL, P_BASIC },
-    { P_WAND, P_BASIC },
     { P_NONE, 0 }
 };
 
@@ -687,7 +685,6 @@ static const struct def_skill Skill_Rogue_Init[] = {
     { P_CROSSBOW, P_BASIC },
     { P_THROWN_WEAPON, P_BASIC },
     { P_DISARM_TRAP, P_BASIC },
-    { P_WAND, P_BASIC },
     { P_NONE, 0 }
 };
 
