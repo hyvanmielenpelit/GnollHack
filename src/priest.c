@@ -500,8 +500,8 @@ aligntyp
 mon_aligntyp(mon)
 struct monst *mon;
 {
-    aligntyp algn = mon->ispriest ? EPRI(mon)->shralign
-                                  : mon->isminion ? EMIN(mon)->min_align
+    aligntyp algn = mon->ispriest && has_epri(mon) ? EPRI(mon)->shralign
+                                  : mon->isminion && has_emin(mon) ? EMIN(mon)->min_align
                                                   : mon->data->maligntyp;
 
     if (algn == A_NONE)

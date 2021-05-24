@@ -1928,7 +1928,7 @@ enum autodraw_types* autodraw_ptr;
         }
         case REPLACEMENT_ACTION_ALIGNED_PRIEST:
         {
-            if (!mtmp || !has_epri(mtmp))
+            if (!mtmp)
                 return ntile;
 
             if (autodraw_ptr)
@@ -1937,7 +1937,8 @@ enum autodraw_types* autodraw_ptr;
             if (replacements[replacement_idx].number_of_tiles < 1)
                 return ntile;
 
-            if (EPRI(mtmp)->shralign == A_NONE)
+            aligntyp algn = mon_aligntyp(mtmp);
+            if (algn == A_NONE)
             {
                 int glyph_idx = 0;
                 if (autodraw_ptr)
