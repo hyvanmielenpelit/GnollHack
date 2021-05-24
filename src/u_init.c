@@ -469,7 +469,7 @@ static const struct def_skill Skill_C_Max[] = {
     { P_POLEARM, P_BASIC },
     { P_SPEAR, P_EXPERT },
     { P_BOW, P_BASIC },
-    { P_SLING, P_MASTER },
+    { P_SLING, P_GRAND_MASTER },
     { P_THROWN_WEAPON, P_MASTER },
     { P_NATURE_SPELL, P_EXPERT },
     { P_BARE_HANDED_COMBAT, P_MASTER },

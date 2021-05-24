@@ -64,9 +64,9 @@ int code;
 
 	pthread_exit(retbuf);
 #else
-	longjmp(env, code);
-	//exit(code);
+	exit(code);
 #endif
+	//longjmp(env, code);
 }
 
 

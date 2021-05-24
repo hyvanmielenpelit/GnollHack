@@ -100,17 +100,17 @@ void lib_get_nh_event(void)
 
 void lib_exit_nhwindows(const char* param)
 {
-
+    return;
 }
 
 void lib_suspend_nhwindows(const char* param)
 {
-
+    return;
 }
 
 void lib_resume_nhwindows(void)
 {
-
+    return;
 }
 
 winid lib_create_nhwindow(int type)
@@ -120,7 +120,7 @@ winid lib_create_nhwindow(int type)
 
 void lib_clear_nhwindow(winid wid)
 {
-
+    return;
 }
 
 void lib_display_nhwindow(winid wid, BOOLEAN_P block)
@@ -130,46 +130,46 @@ void lib_display_nhwindow(winid wid, BOOLEAN_P block)
 
 void lib_destroy_nhwindow(winid wid)
 {
-
+    return;
 }
 
 void lib_curs(winid wid, int x, int y)
 {
-
+    return;
 }
 
 void lib_putstr(winid wid, int attr, const char* text)
 {
-
+    return;
 }
 
 void lib_putstr_ex(winid wid, int attr, const char* text, int param)
 {
-
+    return;
 }
 
 void lib_display_file(const char* filename, BOOLEAN_P must_exist)
 {
-
+    return;
 }
 
 void lib_start_menu(winid wid)
 {
-
+    return;
 }
 
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-
+    return;
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-
+    return;
 }
 
 void lib_end_menu(winid wid, const char* prompt)
@@ -184,12 +184,12 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
 
 void lib_update_inventory(void)
 {
-
+    return;
 }
 
 void lib_mark_synch(void)
 {
-
+    return;
 }
 
 void lib_wait_synch(void)
@@ -199,17 +199,17 @@ void lib_wait_synch(void)
 
 void lib_cliparound(int x, int y)
 {
-
+    return;
 }
 
 void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
-
+    return;
 }
 
 void lib_init_print_glyph(int initid)
 {
-
+    return;
 }
 
 void lib_raw_print(const char* str)
@@ -224,7 +224,7 @@ void lib_raw_print_bold(const char* str)
 
 void lib_raw_print_flush()
 {
-
+    return;
 }
 
 int lib_nhgetch(void)
@@ -239,7 +239,7 @@ int lib_nh_poskey(int* x, int* y, int* mod)
 
 void lib_nhbell(void)
 {
-
+    return;
 }
 
 int lib_doprev_message(void)
@@ -254,7 +254,7 @@ char lib_yn_function(const char* question, const char* choices, CHAR_P def)
 
 void lib_getlin(const char* question, char* input)
 {
-
+    return;
 }
 
 int lib_get_ext_cmd(void)
@@ -265,29 +265,29 @@ int lib_get_ext_cmd(void)
 
 void lib_number_pad(int state)
 {
-
+    return;
 }
 
 
 void lib_delay_output(void)
 {
-
+    return;
 }
 
 void lib_delay_output_milliseconds(int interval)
 {
-
+    return;
 }
 
 
 void lib_delay_output_intervals(int intervals)
 {
-
+    return;
 }
 
 void lib_change_color(int param1, long param2, int param3)
 {
-
+    return;
 }
 
 char* lib_change_background(void)
@@ -302,17 +302,17 @@ char* lib_get_color_string(void)
 
 void lib_start_screen(void)
 {
-
+    return;
 }
 
 void lib_end_screen(void)
 {
-
+    return;
 }
 
 void lib_outrip(winid wid, int how, time_t when)
 {
-
+    return;
 }
 
 void lib_preference_update(const char* pref)
@@ -327,108 +327,108 @@ char* lib_getmsghistory(BOOLEAN_P init)
 
 void lib_putmsghistory(const char* msg, BOOLEAN_P param)
 {
-
+    return;
 }
 
 void lib_status_init(void)
 {
-
+    return;
 }
 
 void lib_status_finish(void)
 {
-
+    return;
 }
 
 void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt,
     int enable)
 {
-
+    return;
 }
 
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks)
 {
-
+    return;
 }
 
 void lib_stretch_window(void)
 {
-
+    return;
 }
 
 void lib_set_animation_timer(unsigned int param)
 {
-
+    return;
 }
 
 void lib_open_special_view(struct special_view_info info)
 {
-
+    return;
 }
 
 void lib_stop_all_sounds(struct stop_all_info info)
 {
-
+    return;
 }
 
 void lib_play_immediate_ghsound(struct ghsound_immediate_info info)
 {
-
+    return;
 }
 
 void lib_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
 {
-
+    return;
 }
 
 void lib_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 {
-
+    return;
 }
 
 void lib_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 {
-
+    return;
 }
 
 void lib_play_ghsound_music(struct ghsound_music_info info)
 {
-
+    return;
 }
 
 void lib_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 {
-
+    return;
 }
 
 void lib_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info)
 {
-
+    return;
 }
 
 void lib_adjust_ghsound_general_volumes(VOID_ARGS)
 {
-
+    return;
 }
 
 void lib_add_ambient_ghsound(struct soundsource_t* soundsource)
 {
-
+    return;
 }
 
 void lib_delete_ambient_ghsound(struct soundsource_t* soundsource)
 {
-
+    return;
 }
 
 void lib_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 {
-
+    return;
 }
 
 void lib_exit_hack(int status)
 {
-
+    lib_callbacks.callback_exit_hack(status);
 }
 
 
