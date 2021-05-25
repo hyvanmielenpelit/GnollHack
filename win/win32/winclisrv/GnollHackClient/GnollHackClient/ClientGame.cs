@@ -4,15 +4,60 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using GnollHackCommon;
+using System.Threading;
+using GnollHackClient.Pages.Game;
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace GnollHackClient
 {
     public class ClientGame
     {
+        private static ConcurrentQueue<GHRequest> _concurrentRequestQueue = new ConcurrentQueue<GHRequest>();
+        private static ConcurrentQueue<GHResponse> _concurrentResponseQueue = new ConcurrentQueue<GHResponse>();
+        private string _inputBuffer = "";
+        private string _characterName = "";
+        private object _characterNameLock = new object();
+
+        public static ConcurrentQueue<GHRequest> RequestQueue { get { return _concurrentRequestQueue; } }
+        public static ConcurrentQueue<GHResponse> ResponseQueue { get { return _concurrentResponseQueue; } }
+        public string CharacterName { //get; set; }
+            get { lock (_characterNameLock) { return _characterName; } } 
+            set { lock (_characterNameLock) { _characterName = value; } }
+        }
+
         public ClientGame()
         {
 
         }
+
+        private void pollResponseQueue()
+        {
+            GHResponse response;
+            if (ClientGame.ResponseQueue.TryDequeue(out response))
+            {
+                if (response.RequestingClientGame == this)
+                {
+                    switch (response.RequestType)
+                    {
+                        case GHRequestType.AskName:
+                            CharacterName = response.ResponseStringValue;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        public void AddInput(int type, float x, float y)
+        {
+            _inputBuffer = _inputBuffer + " ";    
+        }
+
+
 
         public void ClientCallback_InitWindows()
         {
@@ -21,7 +66,7 @@ namespace GnollHackClient
         public int ClientCallback_PlayerSelection()
         {
             Debug.WriteLine("ClientCallback_PlayerSelection");
-            System.Threading.Thread.Sleep(3000);
+            Thread.Sleep(3000);
             return 0;
         }
 
@@ -29,8 +74,15 @@ namespace GnollHackClient
         public string ClientCallback_AskName()
         {
             Debug.WriteLine("ClientCallback_AskName");
-            return "Janne Test";
+            ClientGame.RequestQueue.Enqueue(new GHRequest(this, GHRequestType.AskName));
+            while(string.IsNullOrEmpty(CharacterName))
+            {
+                Thread.Sleep(25);
+                pollResponseQueue();
+            }
+            return CharacterName;
         }
+
         public void ClientCallback_get_nh_event()
         {
             Debug.WriteLine("ClientCallback_get_nh_event");
@@ -44,12 +96,24 @@ namespace GnollHackClient
         public int ClientCallback_nhgetch()
         {
             Debug.WriteLine("ClientCallback_nhgetch");
-            return 27;
+            while(_inputBuffer == "")
+            {
+                Thread.Sleep(25);
+            }
+            string value = _inputBuffer.Substring(0, 1);
+            _inputBuffer = _inputBuffer.Substring(1, _inputBuffer.Length - 1);
+            return value.ToCharArray()[0];
         }
         public int ClientCallback_nh_poskey(ref int value1, ref int value2, ref int value3)
         {
             Debug.WriteLine("ClientCallback_nh_poskey");
-            return 27;
+            while (_inputBuffer == "")
+            {
+                Thread.Sleep(25);
+            }
+            string value = _inputBuffer.Substring(0, 1);
+            _inputBuffer = _inputBuffer.Substring(1, _inputBuffer.Length - 1);
+            return value.ToCharArray()[0];
         }
 
         /*

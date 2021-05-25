@@ -60,11 +60,6 @@ namespace GnollHackClient
             //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
-            {
-                canvasView.InvalidateSurface();
-                return true;
-            });
         }        
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
@@ -119,10 +114,10 @@ namespace GnollHackClient
             canvas.DrawText(str, xText, yText, textPaint);
         }
 
-        private void localButton_Clicked(object sender, EventArgs e)
+        private async void localButton_Clicked(object sender, EventArgs e)
         {
-            var namePage = new NamePage();
-            App.Current.MainPage.Navigation.PushModalAsync(namePage);
+            var gamePage = new GamePage();
+            await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
         }
 
         private async void serverButton_Clicked(object sender, EventArgs e)

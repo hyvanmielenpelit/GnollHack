@@ -47,6 +47,7 @@ namespace GnollHackClient.Pages.Game
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
                 canvasView.InvalidateSurface();
+                pollRequestQueue();
                 return true;
             });
 
@@ -112,6 +113,29 @@ namespace GnollHackClient.Pages.Game
         {
             _clientGame = new ClientGame();
             _gnollHackService.StartGnollHack(_clientGame);
+        }
+
+        private void pollRequestQueue()
+        {
+            GHRequest req;
+            if(ClientGame.RequestQueue.TryDequeue(out req))
+            {
+                if(req.RequestingClientGame == _clientGame)
+                {
+                    switch(req.RequestType)
+                    {
+                        case GHRequestType.AskName:
+                            AskName();
+                            break;
+                    }
+                }
+            }
+        }
+
+        private async void AskName()
+        {
+            var namePage = new NamePage(_clientGame, this);
+            await App.Current.MainPage.Navigation.PushModalAsync(namePage);
         }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
@@ -266,6 +290,7 @@ namespace GnollHackClient.Pages.Game
             _connection.On<int>("AddNewGameResult", (result) =>
             {
                 _message3 = "New Game Added: " + result;
+                _clientGame = new ClientGame();
             });
 
             _connection.On<bool>("GameAliveResult", (result) =>
@@ -306,6 +331,20 @@ namespace GnollHackClient.Pages.Game
             catch (Exception ex)
             {
                 //Error
+            }
+        }
+
+        private void canvasView_Touch(object sender, SKTouchEventArgs e)
+        {
+            _clientGame.AddInput(0, e.Location.X, e.Location.X);
+            e.Handled = true;
+            if (_clientGame != null)
+            {
+                if(e.ActionType == SKTouchAction.Released)
+                {
+                    _clientGame.AddInput(0, e.Location.X, e.Location.X);
+                    e.Handled = true;
+                }
             }
         }
     }

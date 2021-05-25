@@ -14,11 +14,15 @@ namespace GnollHackClient.Pages.Game
     public partial class NamePage : ContentPage
     {
         public Regex ValidationExpression { get; set; }
+        private ClientGame _clientGame;
+        private GamePage _gamePage;
 
-        public NamePage()
+        public NamePage(ClientGame clientgame, GamePage gamepage)
         {
             InitializeComponent();
             ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,32}$");
+            _clientGame = clientgame;
+            _gamePage = gamepage;
         }
 
         private async void btnOK_Clicked(object sender, EventArgs e)
@@ -37,13 +41,10 @@ namespace GnollHackClient.Pages.Game
                 return;
             }
 
-            App.UserName = eName.Text;
+            //_clientGame.CharacterName = eName.Text;
             App.IsServerGame = false;
-
-            await App.Current.MainPage.Navigation.PopModalAsync();
-
-            var gamePage = new GamePage();
-            await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
+            ClientGame.ResponseQueue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, eName.Text));
+            await _gamePage.Navigation.PopModalAsync();
         }
     }
 }
