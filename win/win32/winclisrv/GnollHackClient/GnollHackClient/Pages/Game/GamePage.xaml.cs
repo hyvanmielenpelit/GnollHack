@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -118,17 +119,19 @@ namespace GnollHackClient.Pages.Game
         private void pollRequestQueue()
         {
             GHRequest req;
-            if(ClientGame.RequestQueue.TryDequeue(out req))
+            ConcurrentQueue<GHRequest> queue;
+            if(ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
             {
-                if(req.RequestingClientGame == _clientGame)
+                if (queue.TryDequeue(out req))
                 {
-                    switch(req.RequestType)
+                    switch (req.RequestType)
                     {
                         case GHRequestType.AskName:
                             AskName();
                             break;
                     }
                 }
+
             }
         }
 

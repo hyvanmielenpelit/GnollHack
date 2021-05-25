@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,8 +44,12 @@ namespace GnollHackClient.Pages.Game
 
             //_clientGame.CharacterName = eName.Text;
             App.IsServerGame = false;
-            ClientGame.ResponseQueue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, eName.Text));
-            await _gamePage.Navigation.PopModalAsync();
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, eName.Text));
+                await _gamePage.Navigation.PopModalAsync();
+            }
         }
     }
 }

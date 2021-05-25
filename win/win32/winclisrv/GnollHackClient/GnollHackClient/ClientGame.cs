@@ -15,14 +15,14 @@ namespace GnollHackClient
 {
     public class ClientGame
     {
-        private static ConcurrentQueue<GHRequest> _concurrentRequestQueue = new ConcurrentQueue<GHRequest>();
-        private static ConcurrentQueue<GHResponse> _concurrentResponseQueue = new ConcurrentQueue<GHResponse>();
+        private static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> _concurrentRequestDictionary = new ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>>();
+        private static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> _concurrentResponseDictionary = new ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>>();
         private string _inputBuffer = "";
         private string _characterName = "";
         private object _characterNameLock = new object();
 
-        public static ConcurrentQueue<GHRequest> RequestQueue { get { return _concurrentRequestQueue; } }
-        public static ConcurrentQueue<GHResponse> ResponseQueue { get { return _concurrentResponseQueue; } }
+        public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
+        public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
         public string CharacterName { //get; set; }
             get { lock (_characterNameLock) { return _characterName; } } 
             set { lock (_characterNameLock) { _characterName = value; } }
@@ -30,15 +30,25 @@ namespace GnollHackClient
 
         public ClientGame()
         {
+            ClientGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
+            ClientGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
+        }
 
+        ~ClientGame()
+        {
+            ConcurrentQueue<GHRequest> requestqueue;
+            ConcurrentQueue<GHResponse> responsequeue;
+            ClientGame.RequestDictionary.TryRemove(this, out requestqueue);
+            ClientGame.ResponseDictionary.TryRemove(this, out responsequeue);
         }
 
         private void pollResponseQueue()
         {
+            ConcurrentQueue<GHResponse> queue;
             GHResponse response;
-            if (ClientGame.ResponseQueue.TryDequeue(out response))
+            if(ClientGame.ResponseDictionary.TryGetValue(this, out queue))
             {
-                if (response.RequestingClientGame == this)
+                if (queue.TryDequeue(out response))
                 {
                     switch (response.RequestType)
                     {
@@ -74,13 +84,19 @@ namespace GnollHackClient
         public string ClientCallback_AskName()
         {
             Debug.WriteLine("ClientCallback_AskName");
-            ClientGame.RequestQueue.Enqueue(new GHRequest(this, GHRequestType.AskName));
-            while(string.IsNullOrEmpty(CharacterName))
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
-                Thread.Sleep(25);
-                pollResponseQueue();
+                queue.Enqueue(new GHRequest(this, GHRequestType.AskName));
+                while (string.IsNullOrEmpty(CharacterName))
+                {
+                    Thread.Sleep(25);
+                    pollResponseQueue();
+                }
+                return CharacterName;
             }
-            return CharacterName;
+            else
+                return "AskNameFailed";
         }
 
         public void ClientCallback_get_nh_event()
