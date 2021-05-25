@@ -115,37 +115,38 @@ void lib_resume_nhwindows(void)
 
 winid lib_create_nhwindow(int type)
 {
-    return 0;
+    return lib_callbacks.callback_create_nhwindow(type);
 }
 
 void lib_clear_nhwindow(winid wid)
 {
-    return;
+    lib_callbacks.callback_clear_nhwindow(wid);
 }
 
 void lib_display_nhwindow(winid wid, BOOLEAN_P block)
 {
-
+    lib_callbacks.callback_display_nhwindow(wid, block);
 }
 
 void lib_destroy_nhwindow(winid wid)
 {
+    lib_callbacks.callback_destroy_nhwindow(wid);
     return;
 }
 
 void lib_curs(winid wid, int x, int y)
 {
-    return;
+    lib_callbacks.callback_curs(wid, x, y);
 }
 
 void lib_putstr(winid wid, int attr, const char* text)
 {
-    return;
+    lib_callbacks.callback_putstr_ex(wid, attr, text, 0);
 }
 
 void lib_putstr_ex(winid wid, int attr, const char* text, int param)
 {
-    return;
+    lib_callbacks.callback_putstr_ex(wid, attr, text, param);
 }
 
 void lib_display_file(const char* filename, BOOLEAN_P must_exist)
@@ -204,7 +205,13 @@ void lib_cliparound(int x, int y)
 
 void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
-    return;
+    char* symbol[2] = { 0, 0 };
+    nhsym sym = 0;
+    int ocolor = 0;
+    unsigned long special = 0UL;
+    int res = mapglyph(layers, &sym, &ocolor, &special, 0, 0);
+    symbol[0] = (char)sym;
+    lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special);
 }
 
 void lib_init_print_glyph(int initid)

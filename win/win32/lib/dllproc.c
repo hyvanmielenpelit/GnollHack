@@ -1373,7 +1373,7 @@ dll_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     int bkglyph = layers.bkglyph;
 
     dll_logDebug("dll_print_glyph(%d, %d, %d, %d, %d)\n", wid, x, y, glyph, bkglyph);
-    dll_callbacks.callback_print_glyph(wid, (int)x, (int)y, glyph, bkglyph);
+    dll_callbacks.callback_print_glyph(wid, (int)x, (int)y, glyph, bkglyph, "", CLR_WHITE, 0);
 
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)

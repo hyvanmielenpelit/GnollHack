@@ -33,6 +33,8 @@ namespace GnollHackClient.Pages.Game
         private bool _isFirstAppearance = true;
         private Thread _gnhthread;
         private ClientGame _clientGame;
+        private int[,] mapGlyph = new int[80, 21];
+        private string[,] mapSymbol = new string[80, 21];
 
         public IFmodService FModService { get { return _fmodService; } }
 
@@ -111,7 +113,7 @@ namespace GnollHackClient.Pages.Game
 
         protected void GNHThreadProc()
         {
-            _clientGame = new ClientGame();
+            _clientGame = new ClientGame(this);
             _gnollHackService.StartGnollHack(_clientGame);
         }
 
@@ -245,6 +247,21 @@ namespace GnollHackClient.Pages.Game
             yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
+            for(int mapx = 1; mapx < 80; mapx++)
+            {
+                for(int mapy = 0; mapy < 21; mapy++)
+                {
+                    if(mapSymbol[mapx, mapy] != null && mapSymbol[mapx, mapy] != "")
+                    {
+                        str = mapSymbol[mapx, mapy];
+                        textPaint.TextSize = 48;
+                        yText = 100 + 30 * mapy;
+                        xText = 20 * mapx;
+                        canvas.DrawText(str, xText, yText, textPaint);
+                    }
+                }
+            }
+
         }
 
         protected void ConnectToServer()
@@ -298,7 +315,7 @@ namespace GnollHackClient.Pages.Game
             _connection.On<int>("AddNewGameResult", (result) =>
             {
                 _message3 = "New Game Added: " + result;
-                _clientGame = new ClientGame();
+                _clientGame = new ClientGame(this);
             });
 
             _connection.On<bool>("GameAliveResult", (result) =>
@@ -355,6 +372,19 @@ namespace GnollHackClient.Pages.Game
                         e.Handled = true;
                     }
                 }
+            }
+        }
+
+        public void SetMapSymbol(int x, int y, string c)
+        {
+            mapSymbol[x, y] = c;
+        }
+        public void ClearMap()
+        {
+            for(int x = 1; x < 80; x++)
+            {
+                for(int y = 0; y < 21; y++)
+                    mapSymbol[x, y] = "";
             }
         }
     }

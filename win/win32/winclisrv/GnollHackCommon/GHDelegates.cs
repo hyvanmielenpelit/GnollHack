@@ -47,7 +47,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate byte BooleanVoidPtrCallback(IntPtr value1);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void VoidIntIntIntIntIntCallback(int value1, int value2, int value3, int value4, int value5);
+    public delegate void VoidIntIntIntIntIntCharPtrIntUlongCallback(int value1, int value2, int value3, int value4, int value5, [MarshalAs(UnmanagedType.LPStr)] string value6, int value7, uint value8);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]

@@ -20,7 +20,10 @@ namespace GnollHackClient
         private string _inputBuffer = "";
         private string _characterName = "";
         private object _characterNameLock = new object();
-        private object _gameViewLock = new object();
+        private GamePage _gamePage;
+        private object _gamePageLock = new object();
+        private Dictionary<int, GHWindow> _ghWindows = new Dictionary<int, GHWindow>();
+        private int _lastWindowHandle = 0;
 
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
@@ -28,11 +31,19 @@ namespace GnollHackClient
             get { lock (_characterNameLock) { return _characterName; } } 
             set { lock (_characterNameLock) { _characterName = value; } }
         }
+        public GamePage ClientGamePage
+        {
+            get { lock (_gamePageLock) { return _gamePage; } }
+        }
 
-        public ClientGame()
+        public ClientGame(GamePage gamePage)
         {
             ClientGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
             ClientGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
+            lock (_gamePageLock)
+            {
+                _gamePage = gamePage;
+            }
         }
 
         ~ClientGame()
@@ -70,13 +81,65 @@ namespace GnollHackClient
         public void ClientCallback_InitWindows()
         {
             Debug.WriteLine("ClientCallback_InitWindows");
+            _ghWindows.Clear();
         }
+        public int ClientCallback_CreateGHWindow(int wintype)
+        {
+            _lastWindowHandle++;
+            int handle = _lastWindowHandle;
+            GHWindow ghwin = new GHWindow((GHWinType)wintype, ClientGamePage);
+            _ghWindows.Add(handle, ghwin);
+            ghwin.Create();
+            return handle;
+        }
+        public void ClientCallback_DestroyGHWindow(int winHandle)
+        {
+            GHWindow ghwin;
+            if(_ghWindows.TryGetValue(winHandle, out ghwin))
+            {
+                _ghWindows.Remove(winHandle);
+                ghwin.Destroy();
+            }
+        }
+        public void ClientCallback_ClearGHWindow(int winHandle)
+        {
+            GHWindow ghwin;
+            if (_ghWindows.TryGetValue(winHandle, out ghwin))
+            {
+                ghwin.Clear();
+            }
+        }
+        public void ClientCallback_DisplayGHWindow(int winHandle, byte blocking)
+        {
+            GHWindow ghwin;
+            if (_ghWindows.TryGetValue(winHandle, out ghwin))
+            {
+                ghwin.Display(blocking != 0);
+            }
+        }
+
         public int ClientCallback_PlayerSelection()
         {
             Debug.WriteLine("ClientCallback_PlayerSelection");
             return 0;
         }
 
+        public void ClientCallback_Curs(int winHandle, int x, int y)
+        {
+            GHWindow ghwin;
+            if (_ghWindows.TryGetValue(winHandle, out ghwin))
+            {
+                ghwin.Curs(x, y);
+            }
+        }
+        public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, string symbol, int ocolor, uint special)
+        {
+            GHWindow ghwin;
+            if (_ghWindows.TryGetValue(winHandle, out ghwin))
+            {
+                ghwin.PrintGlyph(x, y, symbol, ocolor, special);
+            }
+        }
 
         public string ClientCallback_AskName()
         {
@@ -137,6 +200,7 @@ namespace GnollHackClient
 
             return ClientCallback_nhgetch();
         }
+
 
         public void ClientCallback_VoidVoidDummy()
         {

@@ -40,7 +40,7 @@ typedef unsigned char(__callconv* BooleanVoidPtrCallback)(void*);
 typedef char(__callconv* CharConstCharPtrConstCharPtrCharCallback)(const char*, const char*, char);
 typedef void(__callconv* VoidConstCharPtrCharPtrCallback)(const char*, char*);
 typedef char*(__callconv* CharPtrBooleanCallback)(unsigned char);
-typedef void(__callconv* VoidIntIntIntIntIntCallback)(int, int, int, int, int);
+typedef void(__callconv* VoidIntIntIntIntIntCharPtrIntULongCallback)(int, int, int, int, int, char*, int, unsigned long);
 typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, unsigned char);
 
 
@@ -71,7 +71,7 @@ typedef VoidVoidCallback MarkSynchCallback;
 typedef VoidVoidCallback WaitSynchCallback;
 typedef VoidIntIntCallback ClipAroundCallback;
 typedef VoidCharCallback UpdatePositionBarCallback;
-typedef VoidIntIntIntIntIntCallback PrintGlyphCallback;
+typedef VoidIntIntIntIntIntCharPtrIntULongCallback PrintGlyphCallback;
 typedef VoidIntCallback InitPrintGlyphCallback;
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;

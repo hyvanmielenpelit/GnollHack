@@ -16,10 +16,10 @@ using Android.Content.Res;
 using GnollHackClient;
 using GnollHackCommon;
 
-[assembly: Dependency(typeof(GnollHackClient.Droid.GhollHackService))]
+[assembly: Dependency(typeof(GnollHackClient.Droid.GnollHackService))]
 namespace GnollHackClient.Droid
 {
-    class GhollHackService : IGnollHackService
+    class GnollHackService : IGnollHackService
     {
         private string _gnollhackfilesdir;
 
@@ -57,7 +57,7 @@ namespace GnollHackClient.Droid
             VoidIntIntCallback callback_cliparound,
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
-            VoidIntIntIntIntIntCallback callback_print_glyph,
+            VoidIntIntIntIntIntCharPtrIntUlongCallback callback_print_glyph,
             VoidIntCallback callback_init_print_glyph,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
@@ -230,11 +230,11 @@ namespace GnollHackClient.Droid
                 clientGame.ClientCallback_VoidConstCharDummy,
                 clientGame.ClientCallback_VoidConstCharDummy,
                 clientGame.ClientCallback_VoidVoidDummy,
-                clientGame.ClientCallback_IntIntDummy,
-                clientGame.ClientCallback_VoidIntDummy,
-                clientGame.ClientCallback_VoidIntBooleanDummy,
-                clientGame.ClientCallback_VoidIntDummy,
-                clientGame.ClientCallback_VoidIntIntIntDummy,
+                clientGame.ClientCallback_CreateGHWindow,
+                clientGame.ClientCallback_ClearGHWindow,
+                clientGame.ClientCallback_DisplayGHWindow,
+                clientGame.ClientCallback_DestroyGHWindow,
+                clientGame.ClientCallback_Curs,
                 clientGame.ClientCallback_VoidIntIntConstCharIntDummy,
                 clientGame.ClientCallback_VoidIntIntConstCharDummy,
                 clientGame.ClientCallback_VoidConstCharBooleanDummy,
@@ -251,7 +251,7 @@ namespace GnollHackClient.Droid
                 clientGame.ClientCallback_VoidIntIntDummy,
                 /* If positionbar is on */
                 clientGame.ClientCallback_VoidCharDummy,
-                clientGame.ClientCallback_VoidIntIntIntIntIntDummy,
+                clientGame.ClientCallback_PrintGlyph,
                 clientGame.ClientCallback_VoidIntDummy,
                 clientGame.ClientCallback_VoidConstCharDummy,
                 clientGame.ClientCallback_VoidConstCharDummy,
