@@ -252,8 +252,12 @@ namespace GnollHackClient.Pages.Game
             textPaint.TextSize = 48;
             textPaint.MeasureText(str, ref textBounds);
 
-            float height = (float)textPaint.TextSize; // ;
-            float width = (height / textBounds.Height) * textBounds.Width;
+            double canvaswidth = canvasView.CanvasSize.Width;
+            double canvasheight = canvasView.CanvasSize.Height;
+            float width = (float)(canvaswidth / 80);
+            float height = (width / textBounds.Width) * textBounds.Height;
+            //float width = (height / textBounds.Height) * textBounds.Width;
+            textPaint.TextSize = height;
             float tx = 0, ty = 0;
             for (int mapx = 1; mapx < 80; mapx++)
             {
@@ -372,10 +376,20 @@ namespace GnollHackClient.Pages.Game
             {
                 if(e.ActionType == SKTouchAction.Pressed)
                 {
+                    string ch = " ";
+                    if (e.Location.Y < canvasView.CanvasSize.Height * 0.2)
+                        ch = "k";
+                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.8)
+                        ch = "j";
+                    else if (e.Location.X < canvasView.CanvasSize.Width * 0.2)
+                        ch = "h";
+                    else if (e.Location.X > canvasView.CanvasSize.Width * 0.8)
+                        ch = "l";
+
                     ConcurrentQueue<GHResponse> queue;
                     if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
                     {
-                        queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, " "));
+                        queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, ch));
                         e.Handled = true;
                     }
                 }
