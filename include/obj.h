@@ -124,8 +124,8 @@ struct obj {
     Bitfield(dknown, 1);    /* description = color or text known */
     Bitfield(bknown, 1);    /* blessing or curse known */
     Bitfield(rknown, 1);    /* rustproof or not known */
-
     Bitfield(oeroded, 2);  /* rusted/burnt weapon/armor */
+
     Bitfield(oeroded2, 2); /* corroded/rotted weapon/armor */
 #define greatest_erosion(otmp)                                 \
     (int)((otmp)->oeroded > (otmp)->oeroded2 ? (otmp)->oeroded \
@@ -145,10 +145,10 @@ struct obj {
     Bitfield(makingsound, 1);   /* a sound-source -- can be turned on to make noise */
     Bitfield(globby, 1);    /* combines with like types on adjacent squares */
     Bitfield(greased, 1);    /* covered with grease */
+
     Bitfield(nomerge, 1);    /* set temporarily to prevent merging */
     Bitfield(was_thrown, 1); /* thrown by hero since last picked up */
     Bitfield(has_special_tileset, 1); /* thrown by hero since last picked up */
-
     Bitfield(in_use, 1); /* for magic items before useup items */
     Bitfield(bypass, 1); /* mark this as an object to be skipped by bhito() */
     Bitfield(cknown, 1); /* contents of container assumed to be known */
@@ -156,7 +156,9 @@ struct obj {
     Bitfield(tknown, 1); /* trapped status of a container is known */
     Bitfield(nknown, 1); /* artifact's true name is known */
     Bitfield(aknown, 1); /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
+
     Bitfield(mknown, 1); /* mythic quality is known */
+    /* 1 free bit to 32-bit integer */
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
 #define leashmon corpsenm /* gets m_id of attached pet */

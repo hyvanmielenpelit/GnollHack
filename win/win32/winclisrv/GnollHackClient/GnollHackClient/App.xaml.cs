@@ -32,6 +32,21 @@ namespace GnollHackClient
                     DiabloTypeface = SKTypeface.FromStream(stream);
                 }                    
             }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.uwch.ttf"))
+            {
+                if (stream != null)
+                {
+                    UnderwoodTypeface = SKTypeface.FromStream(stream);
+                }
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.consola.ttf"))
+            {
+                if (stream != null)
+                {
+                    ConsolasTypeface = SKTypeface.FromStream(stream);
+                }
+            }
         }
 
         protected override void OnStart()
@@ -67,5 +82,7 @@ namespace GnollHackClient
         }
 
         public static SKTypeface DiabloTypeface { get; set; }
+        public static SKTypeface ConsolasTypeface { get; set; }
+        public static SKTypeface UnderwoodTypeface { get; set; }
     }
 }

@@ -247,17 +247,24 @@ namespace GnollHackClient.Pages.Game
             yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
-            for(int mapx = 1; mapx < 80; mapx++)
+            textPaint.Typeface = App.ConsolasTypeface;
+            str = "A";
+            textPaint.TextSize = 48;
+            textPaint.MeasureText(str, ref textBounds);
+
+            float height = (float)textPaint.TextSize; // ;
+            float width = (height / textBounds.Height) * textBounds.Width;
+            float tx = 0, ty = 0;
+            for (int mapx = 1; mapx < 80; mapx++)
             {
                 for(int mapy = 0; mapy < 21; mapy++)
                 {
                     if(mapSymbol[mapx, mapy] != null && mapSymbol[mapx, mapy] != "")
                     {
                         str = mapSymbol[mapx, mapy];
-                        textPaint.TextSize = 48;
-                        yText = 100 + 30 * mapy;
-                        xText = 20 * mapx;
-                        canvas.DrawText(str, xText, yText, textPaint);
+                        tx = width * (float)mapx;
+                        ty = 150.0f + height * (float)mapy;
+                        canvas.DrawText(str, tx, ty, textPaint);
                     }
                 }
             }

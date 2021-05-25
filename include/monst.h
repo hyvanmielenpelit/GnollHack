@@ -154,6 +154,7 @@ struct monst {
                                */
     Bitfield(mrevived, 1);  /* has been revived from the dead */
     Bitfield(mcloned, 1);   /* has been cloned from another */
+
     Bitfield(mavenge, 1);   /* did something to deserve retaliation */
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */
     Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */
@@ -164,6 +165,7 @@ struct monst {
     Bitfield(ispriest, 1);  /* is an aligned priest or high priest */
     Bitfield(issmith, 1);   /* is a smith */
     Bitfield(isnpc, 1);   /* is a non-player character */
+
     Bitfield(issummoned, 1);                    /* is a summoned monster */
     Bitfield(disregards_enemy_strength, 1);        /* the monster attacks too strong enemies */
     Bitfield(disregards_own_health, 1);            /* the monster attacks even when its health is low */
@@ -172,7 +174,9 @@ struct monst {
     Bitfield(isfaithful, 1);                    /* being separate from the owner does not reduce tameness */
     Bitfield(isprotector, 1);                    /* attacks hostiles if itself is being peaceful */
     Bitfield(ispartymember, 1);                    /* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
-    Bitfield(talkstate, 3);                        /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
+    /* 4 free bits to 32 bit integer */
+    /* The follow splits bitfields so they fit in one int both in 32 bit and 64 bit systems */
+    uchar  talkstate;                           /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
     Bitfield(leaves_no_corpse, 1);                /* this particular monster does not leave a corpse */
     Bitfield(delayed_killer_by_you, 1);            /* is petrification or other delayed killer initiated by you */
     Bitfield(u_know_mname, 1);                  /* you know the monster's name */
@@ -181,7 +185,7 @@ struct monst {
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */
-    /* About 20 free bits */
+    /* 21 free bits to 32-bit integer */
 
 #define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
 
