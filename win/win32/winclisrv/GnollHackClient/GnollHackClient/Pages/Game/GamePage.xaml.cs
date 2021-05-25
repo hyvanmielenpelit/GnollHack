@@ -39,18 +39,17 @@ namespace GnollHackClient.Pages.Game
         public GamePage()
         {
             InitializeComponent();
-
-            if(App.IsServerGame)
-            {
-
-            }
-
-            Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(1f / 10), () =>
             {
                 canvasView.InvalidateSurface();
                 pollRequestQueue();
                 return true;
             });
+
+            if (App.IsServerGame)
+            {
+
+            }
 
             _fmodService = DependencyService.Get<IFmodService>();
             _fmodService.InitializeFmod();
@@ -126,12 +125,14 @@ namespace GnollHackClient.Pages.Game
                 {
                     switch (req.RequestType)
                     {
+                        case GHRequestType.GetChar:
+                            GetChar();
+                            break;
                         case GHRequestType.AskName:
                             AskName();
                             break;
                     }
                 }
-
             }
         }
 
@@ -141,6 +142,10 @@ namespace GnollHackClient.Pages.Game
             await App.Current.MainPage.Navigation.PushModalAsync(namePage);
         }
 
+        private void GetChar()
+        {
+            // Set focus to GameViewPage
+        }
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
             var menu = new GameMenuPage(this);
@@ -339,14 +344,16 @@ namespace GnollHackClient.Pages.Game
 
         private void canvasView_Touch(object sender, SKTouchEventArgs e)
         {
-            _clientGame.AddInput(0, e.Location.X, e.Location.X);
-            e.Handled = true;
             if (_clientGame != null)
             {
-                if(e.ActionType == SKTouchAction.Released)
+                if(e.ActionType == SKTouchAction.Pressed)
                 {
-                    _clientGame.AddInput(0, e.Location.X, e.Location.X);
-                    e.Handled = true;
+                    ConcurrentQueue<GHResponse> queue;
+                    if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                    {
+                        queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, " "));
+                        e.Handled = true;
+                    }
                 }
             }
         }

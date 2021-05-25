@@ -7,7 +7,8 @@ namespace GnollHackClient
     public enum GHRequestType
     {
         None,
-        AskName
+        GetChar,
+        AskName,
     }
 
     public class GHRequest

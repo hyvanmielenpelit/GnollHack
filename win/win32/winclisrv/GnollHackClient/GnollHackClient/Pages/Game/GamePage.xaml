@@ -9,10 +9,11 @@
         <AbsoluteLayout VerticalOptions="FillAndExpand"
                     HorizontalOptions="FillAndExpand">
             <skia:SKCanvasView x:Name="canvasView"
-                       PaintSurface="canvasView_PaintSurface" 
-                       Touch="canvasView_Touch"
-                           AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
-                           AbsoluteLayout.LayoutFlags="All" />
+                        EnableTouchEvents="True"
+                        PaintSurface="canvasView_PaintSurface" 
+                        Touch="canvasView_Touch"
+                        AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
+                        AbsoluteLayout.LayoutFlags="All" />
         </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

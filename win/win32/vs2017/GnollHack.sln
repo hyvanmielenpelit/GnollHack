@@ -133,6 +133,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhackdroid", "gnollhack
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "makedefsdroid", "makedefsdroid.vcxproj", "{19C1C54D-60D5-44AB-820E-7D07B180F153}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BA3DD34C-04B7-40D0-B373-9329AA9E8945} = {BA3DD34C-04B7-40D0-B373-9329AA9E8945}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "levcompdroid", "levcompdroid.vcxproj", "{F8445183-52F2-45A0-BB4F-B433F3B721F0}"
 	ProjectSection(ProjectDependencies) = postProject

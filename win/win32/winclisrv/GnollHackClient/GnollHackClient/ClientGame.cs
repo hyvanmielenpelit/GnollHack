@@ -20,10 +20,11 @@ namespace GnollHackClient
         private string _inputBuffer = "";
         private string _characterName = "";
         private object _characterNameLock = new object();
+        private object _gameViewLock = new object();
 
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
-        public string CharacterName { //get; set; }
+        public string CharacterName {
             get { lock (_characterNameLock) { return _characterName; } } 
             set { lock (_characterNameLock) { _characterName = value; } }
         }
@@ -55,18 +56,15 @@ namespace GnollHackClient
                         case GHRequestType.AskName:
                             CharacterName = response.ResponseStringValue;
                             break;
+                        case GHRequestType.GetChar:
+                            _inputBuffer = _inputBuffer + response.ResponseStringValue;
+                            break;
                         default:
                             break;
                     }
                 }
             }
         }
-
-        public void AddInput(int type, float x, float y)
-        {
-            _inputBuffer = _inputBuffer + " ";    
-        }
-
 
 
         public void ClientCallback_InitWindows()
@@ -76,7 +74,6 @@ namespace GnollHackClient
         public int ClientCallback_PlayerSelection()
         {
             Debug.WriteLine("ClientCallback_PlayerSelection");
-            Thread.Sleep(3000);
             return 0;
         }
 
@@ -112,41 +109,35 @@ namespace GnollHackClient
         public int ClientCallback_nhgetch()
         {
             Debug.WriteLine("ClientCallback_nhgetch");
-            while(_inputBuffer == "")
+
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
-                Thread.Sleep(25);
+                queue.Enqueue(new GHRequest(this, GHRequestType.GetChar));
+                while (string.IsNullOrEmpty(_inputBuffer))
+                {
+                    Thread.Sleep(25);
+                    pollResponseQueue();
+                }
+                int res = 0;
+                if (_inputBuffer.Length > 0)
+                {
+                    res = (int)_inputBuffer.ToCharArray()[_inputBuffer.Length - 1];
+                    _inputBuffer = _inputBuffer.Substring(0, _inputBuffer.Length - 1);
+                }
+                return res;
             }
-            string value = _inputBuffer.Substring(0, 1);
-            _inputBuffer = _inputBuffer.Substring(1, _inputBuffer.Length - 1);
-            return value.ToCharArray()[0];
+            else
+                return 0;
+
         }
         public int ClientCallback_nh_poskey(ref int value1, ref int value2, ref int value3)
         {
             Debug.WriteLine("ClientCallback_nh_poskey");
-            while (_inputBuffer == "")
-            {
-                Thread.Sleep(25);
-            }
-            string value = _inputBuffer.Substring(0, 1);
-            _inputBuffer = _inputBuffer.Substring(1, _inputBuffer.Length - 1);
-            return value.ToCharArray()[0];
+
+            return ClientCallback_nhgetch();
         }
 
-        /*
-        typedef void (__stdcall* VoidVoidCallback) ();
-        typedef void (__stdcall* VoidCharCallback) (char*);
-        typedef void (__stdcall* VoidConstCharCallback) (const char*);
-        typedef int (__stdcall* IntIntCallback) (int);
-        typedef void (__stdcall* VoidIntCallback) (int);
-        typedef void (__stdcall* VoidIntIntCallback) (int, int);
-        typedef void (__stdcall* VoidIntIntIntCallback) (int, int, int);
-        typedef void (__stdcall* VoidIntBooleanCallback) (int, unsigned char);
-        typedef void (__stdcall* VoidIntIntConstCharCallback) (int, const char*);
-        typedef void (__stdcall* VoidConstCharIntCallback) (const char*, int);
-        typedef void (__stdcall* VoidConstCharBooleanCallback) (const char*, unsigned char);
-        typedef int (__stdcall* IntVoidCallback) ();
-        typedef int (__stdcall* BooleanVoidCallback) ();
-         */
         public void ClientCallback_VoidVoidDummy()
         {
 
