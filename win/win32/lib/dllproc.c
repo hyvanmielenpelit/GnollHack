@@ -2864,8 +2864,10 @@ void
 set_wincaps(wincap1, wincap2)
 unsigned long wincap1, wincap2;
 {
-    dll_procs.wincap = wincap1;
-    dll_procs.wincap2 = wincap2;
+    if(wincap1 > 0)
+        dll_procs.wincap = wincap1;
+    if (wincap2 > 0)
+        dll_procs.wincap2 = wincap2;
 }
 
 

@@ -25,6 +25,7 @@ namespace GnollHackClient
         private object _gamePageLock = new object();
         private GHWindow[] _ghWindows = new GHWindow[GHConstants.MaxGHWindows];
         private int _lastWindowHandle = 0;
+        public GHWindow[] Windows { get { return _ghWindows; } }
 
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
@@ -208,6 +209,24 @@ namespace GnollHackClient
             _gamePage.ClipY = y;
         }
 
+        public void ClientCallback_RawPrint(string str)
+        {
+            _gamePage.Message = str;
+        }
+        public void ClientCallback_RawPrintBold(string str)
+        {
+            _gamePage.Message = str;
+        }
+        public void ClientCallback_PutStrEx(int win_id, int attributes, string str, int append)
+        {
+            _ghWindows[win_id].PutStrEx(attributes, str, append);
+        }
+
+
+
+
+
+        /* Dummies */
         public void ClientCallback_VoidVoidDummy()
         {
 

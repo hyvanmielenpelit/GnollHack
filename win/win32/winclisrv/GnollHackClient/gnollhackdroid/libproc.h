@@ -40,7 +40,6 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
 void lib_init_print_glyph(int initid);
 void lib_raw_print(const char* str);
 void lib_raw_print_bold(const char* str);
-void lib_raw_print_flush();
 int lib_nhgetch(void);
 int lib_nh_poskey(int* x, int* y, int* mod);
 void lib_nhbell(void);

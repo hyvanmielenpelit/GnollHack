@@ -18,8 +18,6 @@
 
 #include <pthread.h>
 
-extern void set_username();
-
 static jmp_buf env;
 
 extern struct passwd *FDECL( getpwuid, ( uid_t));
@@ -134,8 +132,6 @@ int GnollHackMain(int argc, char** argv)
 #ifdef WIZARD
 	if(!wizard)
 #endif
-	set_username();
-
 	Sprintf(lock, "%d%s", (int)getuid(), plname);
 	getlock();
 

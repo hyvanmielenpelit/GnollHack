@@ -223,17 +223,12 @@ void lib_init_print_glyph(int initid)
 
 void lib_raw_print(const char* str)
 {
-    libdef_raw_print(str);
+    lib_callbacks.callback_raw_print(str);
 }
 
 void lib_raw_print_bold(const char* str)
 {
-    libdef_raw_print_bold(str);
-}
-
-void lib_raw_print_flush()
-{
-    return;
+    lib_callbacks.callback_raw_print_bold(str);
 }
 
 
@@ -473,12 +468,6 @@ void play_usersound(const char* filename, int volume)
 
 #endif
 
-void set_username()
-{
-	strcpy(plname, "Adventurer");
-}
-
-
 void
 libdef_raw_print(const char* s)
 {
@@ -511,8 +500,10 @@ void
 set_wincaps(wincap1, wincap2)
 unsigned long wincap1, wincap2;
 {
-    lib_procs.wincap = wincap1;
-    lib_procs.wincap2 = wincap2;
+    if(wincap1 > 0)
+        lib_procs.wincap = wincap1;
+    if (wincap2 > 0)
+        lib_procs.wincap2 = wincap2;
 }
 
 int convert_gnhch(int ch)
