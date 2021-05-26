@@ -2061,7 +2061,7 @@ int src;
     }
     /* fall through to standard names */
 
-#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32) || defined(ANDROID)
+#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32) || defined(ANDROID) || defined(GNH_ANDROID)
     set_configfile_name(fqname(default_configfile, CONFIGPREFIX, 0));
     if ((fp = fopenp(configfile, "r")) != (FILE *) 0) {
         return fp;

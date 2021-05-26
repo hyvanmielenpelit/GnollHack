@@ -4172,10 +4172,13 @@ const char *verb;
             || (u.utrap && u.ux == x && u.uy == y)) 
         {
             if (*verb && (cansee(x, y) || distu(x, y) == 0))
+            {
+                play_simple_object_sound_at_location(obj, x, y, OBJECT_SOUND_TYPE_TUMBLE_DOWNWARDS);
                 pline("%s boulder %s into the pit%s.",
-                      Blind ? "A" : "The",
-                      vtense((const char *) 0, verb),
-                      mtmp ? "" : " with you");
+                    Blind ? "A" : "The",
+                    vtense((const char*)0, verb),
+                    mtmp ? "" : " with you");
+            }
 
             if (mtmp)
             {
@@ -4233,25 +4236,35 @@ const char *verb;
                     reset_utrap(TRUE);
             }
         }
-        if (*verb) 
+
+        if (*verb)
         {
-            if (Blind && (x == u.ux) && (y == u.uy)) 
+            if (Blind && (x == u.ux) && (y == u.uy))
             {
                 You_hear("a CRASH! beneath you.");
-            } 
-            else if (!Blind && cansee(x, y)) 
+            }
+            else if (!Blind && cansee(x, y))
             {
                 pline_The("boulder %s%s.",
-                          (ttyp == TRAPDOOR && !tseen)
-                              ? "triggers and " : "",
-                          (ttyp == TRAPDOOR)
-                              ? "plugs a trap door"
-                              : (ttyp == HOLE) ? "plugs a hole"
-                                               : "fills a pit");
-            } 
-            else 
+                    (ttyp == TRAPDOOR && !tseen)
+                    ? "triggers and " : "",
+                    (ttyp == TRAPDOOR)
+                    ? "plugs a trap door"
+                    : (ttyp == HOLE) ? "plugs a hole"
+                    : "fills a pit");
+            }
+            else
             {
                 You_hear("a boulder %s.", verb);
+            }
+
+            if (iflags.using_gui_sounds && !Deaf)
+            {
+                if ((ttyp == TRAPDOOR && !tseen))
+                {
+                    play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, x, y);
+                }
+                play_sfx_sound_at_location(ttyp == TRAPDOOR || ttyp == HOLE ? SFX_BOULDER_PLUGS_HOLE_OR_TRAPDOOR : SFX_BOULDER_FILLS_PIT, x, y);
             }
         }
         /*
@@ -4280,6 +4293,7 @@ const char *verb;
         {
             if (!Underwater) 
             {
+                play_object_floor_sound_at_location(obj, OBJECT_SOUND_TYPE_DROP, x, y, Underwater);
                 if (weight(obj) > 9) 
                 {
                     pline("Splash!");
@@ -4297,8 +4311,11 @@ const char *verb;
     else if (u.ux == x && u.uy == y && (t = t_at(x, y)) != 0
                && uteetering_at_seen_pit(t)) 
     {
+        play_simple_object_sound_at_location(obj, x, y, OBJECT_SOUND_TYPE_TUMBLE_DOWNWARDS);
         if (Blind && !Deaf)
+        {
             You_hear("%s tumble downwards.", the(xname(obj)));
+        }
         else
             pline("%s %s into %s pit.", The(xname(obj)),
                   otense(obj, "tumble"), the_your[t->madeby_u]);

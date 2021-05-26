@@ -764,6 +764,9 @@ enum ghsound_types {
     GHSOUND_HORSE_HAPPY,
     GHSOUND_RAM_HAPPY,
     GHSOUND_RAM_UNHAPPY,
+    GHSOUND_BOULDER_TUMBLE_DOWNWARDS,
+    GHSOUND_BOULDER_FILLS_PIT,
+    GHSOUND_BOULDER_PLUGS_HOLE_OR_TRAPDOOR,
 
     GHSOUND_INTRO_TEXT,
     GHSOUND_COM_PAGER,
@@ -1655,6 +1658,8 @@ enum sfx_sound_types {
     SFX_CIRCLE_OF_MAGIC,
     SFX_CIRCLE_OF_RADIANCE,
     SFX_NEARBY_LOUD_CLANGING,
+    SFX_BOULDER_FILLS_PIT,
+    SFX_BOULDER_PLUGS_HOLE_OR_TRAPDOOR,
     MAX_SFX_SOUND_TYPES
 };
 
@@ -1904,9 +1909,10 @@ enum object_sound_types {
     OBJECT_SOUND_TYPE_EROSION_CORRODES, /* Sound upon item erosion by corrosion */
     OBJECT_SOUND_TYPE_EROSION_ROTS,     /* Sound upon item erosion by rotting */
     OBJECT_SOUND_TYPE_GENERAL_EFFECT,    /* Sound upon general effect 1 - E.g., Discarding a tin */
-    OBJECT_SOUND_TYPE_GENERAL_EFFECT2,    /* Sound when general effect 2 - E.g., for axe, when you hit and sparks fly */
+    OBJECT_SOUND_TYPE_GENERAL_EFFECT2,    /* Sound when general effect 2 - E.g., for axe, when you hit and sparks fly, or a glob coalesces */
     OBJECT_SOUND_TYPE_PUSH,                /* Sound upon pushing the item on the ground */
     OBJECT_SOUND_TYPE_BUMP_INTO,        /* Sound upon bumping into the item, especially boulder */
+    OBJECT_SOUND_TYPE_TUMBLE_DOWNWARDS,        /* Sound upon the object tumbling downwards (to a pit) */
 
     /* Movement */
     OBJECT_SOUND_TYPE_WALK,                /* Walk sound if used as boots */

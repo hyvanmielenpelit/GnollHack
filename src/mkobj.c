@@ -4635,21 +4635,31 @@ struct obj *otmp2;
             inpack = (carried(otmp) || carried(otmp2));
 
     /* the player will know something happened inside his own inventory */
-    if ((!Blind && visible) || inpack) {
-        if (Hallucination) {
-            if (onfloor) {
+    play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
+    if ((!Blind && visible) || inpack) 
+    {
+        if (Hallucination) 
+        {
+            if (onfloor)
+            {
                 You_see("parts of the floor melting!");
-            } else if (inpack) {
+            } 
+            else if (inpack) 
+            {
                 Your("pack reaches out and grabs something!");
             }
             /* even though we can see where they should be,
              * they'll be out of our view (minvent or container)
              * so don't actually show anything */
-        } else if (onfloor || inpack) {
+        } 
+        else if (onfloor || inpack) 
+        {
             pline("The %s coalesce%s.", makeplural(obj_typename(otmp->otyp)),
                   inpack ? " inside your pack" : "");
         }
-    } else {
+    } 
+    else 
+    {
         You_hear("a faint sloshing sound.");
     }
 }
