@@ -1967,13 +1967,13 @@ const char *filename;
 /* ----------  BEGIN CONFIG FILE HANDLING ----------- */
 
 const char *default_configfile =
-#if defined(UNIX) && !defined(ANDROID)
+#if defined(UNIX) && !defined(ANDROID) && !defined(GNH_ANDROID)
     ".gnollhackrc";
 #else
 #if defined(MAC) || defined(__BEOS__)
     "GnollHack Defaults";
 #else
-#if defined(MSDOS) || defined(WIN32) || defined(ANDROID)
+#if defined(MSDOS) || defined(WIN32) || defined(ANDROID) || defined(GNH_ANDROID)
     "defaults.gnh";
 #else
     "GnollHack.cnf";

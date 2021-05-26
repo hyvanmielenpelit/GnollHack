@@ -28,8 +28,6 @@
 #define DUMPLOG_FILE        "%n.%d.dumplog.txt"
 #endif
 
-#define CONFIG_FILE "defaults.gnh"
-
 //#undef MAIL
 //#undef DEF_PAGER
 #undef DEF_MAILREADER
