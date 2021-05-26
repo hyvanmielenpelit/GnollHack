@@ -147,7 +147,7 @@ namespace GnollHackClient.Droid
             AssetManager assets = MainActivity.StaticAssets;
 
             string assetsourcedir = "gnh";
-            string[] txtfileslist = { "credits" , "license", "logfile", "perm", "record", "recover", "symbols", "sysconf" , "xlogfile" };
+            string[] txtfileslist = { "credits" , "license", "logfile", "perm", "record", "recover", "symbols", "sysconf" , "xlogfile", "defaults.gnh" };
 
             foreach(string txtfile in txtfileslist)
             {

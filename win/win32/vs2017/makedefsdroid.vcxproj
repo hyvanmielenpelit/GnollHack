@@ -105,7 +105,7 @@
       <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetPath)</OutputFile>
     </Link>
     <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/history;dos2unix ../dat/hh;./makedefsdroid.out -v;cp ../include/date.h ../include/date_unix.h;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;./makedefsdroid.out -v;cp ../include/date.h ../include/date_unix.h;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e</Command>
     </RemotePostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -162,6 +162,7 @@
     <GnhDataFiles Include="$(DatDir)symbols" />
     <GnhDataFiles Include="$(DatDir)credits" />
     <GnhDataFiles Include="$(DatDir)license" />
+    <GnhDataFiles Include="$(LibDroidDir)defaults.gnh" />
     <DataFilesToCopyRemotely Include="@(GnhDataFiles)" />
   </ItemGroup>
 </Project>

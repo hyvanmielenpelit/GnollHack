@@ -45,6 +45,7 @@ win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/credits
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/symbols
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/license
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/nhdat
+win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/defaults.gnh
 dat/dlb.lst
 win/win32/winclisrv/GnollHackClient/gnollhackdroid/date*.h
 *.lastbuildstate
