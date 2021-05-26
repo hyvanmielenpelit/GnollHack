@@ -205,14 +205,16 @@ void lib_cliparound(int x, int y)
     lib_callbacks.callback_cliparound(x, y);
 }
 
+extern const nhsym cp437toUnicode[256];
+
 void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
-    char* symbol[2] = { 0, 0 };
+    long symbol;
     nhsym sym = 0;
     int ocolor = 0;
     unsigned long special = 0UL;
     int res = mapglyph(layers, &sym, &ocolor, &special, 0, 0);
-    symbol[0] = (char)sym;
+    symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (long)cp437toUnicode[sym] : (long)sym;
     lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special);
 }
 

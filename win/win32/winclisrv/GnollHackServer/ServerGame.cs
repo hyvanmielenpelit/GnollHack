@@ -46,7 +46,7 @@ namespace GnollHackServer
             VoidIntIntCallback callback_cliparound,
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
-            VoidIntIntIntIntIntCharPtrIntUlongCallback callback_print_glyph,
+            VoidIntIntIntIntIntLongIntUlongCallback callback_print_glyph,
             VoidIntCallback callback_init_print_glyph,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
@@ -187,7 +187,7 @@ namespace GnollHackServer
                 GameCallback_VoidIntIntDummy,
                 /* If positionbar is on */
                 GameCallback_VoidCharDummy,
-                GameCallback_VoidIntIntIntIntIntCharPtrIntULongDummy,
+                GameCallback_VoidIntIntIntIntIntLongIntULongDummy,
                 GameCallback_VoidIntDummy,
                 GameCallback_VoidConstCharDummy,
                 GameCallback_VoidConstCharDummy,
@@ -407,7 +407,7 @@ namespace GnollHackServer
         {
             return "";
         }
-        protected void GameCallback_VoidIntIntIntIntIntCharPtrIntULongDummy(int value1, int value2, int value3, int value4, int value5, string value6, int value7, uint value8)
+        protected void GameCallback_VoidIntIntIntIntIntLongIntULongDummy(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8)
         {
             return;
         }

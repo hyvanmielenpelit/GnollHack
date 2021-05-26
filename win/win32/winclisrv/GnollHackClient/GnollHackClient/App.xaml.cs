@@ -47,6 +47,13 @@ namespace GnollHackClient
                     ConsolasTypeface = SKTypeface.FromStream(stream);
                 }
             }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono.ttf"))
+            {
+                if (stream != null)
+                {
+                    DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
+                }
+            }
         }
 
         protected override void OnStart()
@@ -84,5 +91,7 @@ namespace GnollHackClient
         public static SKTypeface DiabloTypeface { get; set; }
         public static SKTypeface ConsolasTypeface { get; set; }
         public static SKTypeface UnderwoodTypeface { get; set; }
+        public static SKTypeface DejaVuSansMonoTypeface { get; set; }
+        
     }
 }

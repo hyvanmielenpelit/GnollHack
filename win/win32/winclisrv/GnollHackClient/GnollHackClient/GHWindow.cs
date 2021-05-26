@@ -83,7 +83,7 @@ namespace GnollHackClient
             CursX = x;
             CursY = y;
         }
-        public void PrintGlyph(int x, int y, string symbol, int color, uint special)
+        public void PrintGlyph(int x, int y, int symbol, int color, uint special)
         {
             ClientGamePage.SetMapSymbol(x, y, symbol, color, special);
         }

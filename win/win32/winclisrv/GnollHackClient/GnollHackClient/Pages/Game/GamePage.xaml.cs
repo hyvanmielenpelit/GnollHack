@@ -262,12 +262,12 @@ namespace GnollHackClient.Pages.Game
             yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
-            textPaint.Typeface = App.ConsolasTypeface;
+            textPaint.Typeface = App.DejaVuSansMonoTypeface;
             textPaint.TextSize = 48;
             float canvaswidth = canvasView.CanvasSize.Width;
             float canvasheight = canvasView.CanvasSize.Height;
-            float width = textPaint.FontMetrics.MaxCharacterWidth;
-            float height = textPaint.FontMetrics.Bottom - textPaint.FontMetrics.Top;
+            float width = textPaint.FontMetrics.AverageCharacterWidth;
+            float height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
             float mapwidth = width * (GHConstants.MapCols -1);
             float mapheight = height * (GHConstants.MapRows);
 
@@ -452,7 +452,7 @@ namespace GnollHackClient.Pages.Game
             switch (nhcolor)
             {
                 case nhcolor.CLR_BLACK:
-                    res = SKColors.Black;
+                    res = SKColors.DarkGray;
                     break;
                 case nhcolor.CLR_RED:
                     res = SKColors.Red;
@@ -506,9 +506,9 @@ namespace GnollHackClient.Pages.Game
 
             return res;
         }
-        public void SetMapSymbol(int x, int y, string c, int color, uint special)
+        public void SetMapSymbol(int x, int y, int c, int color, uint special)
         {
-            _mapData[x, y].Symbol = c;
+            _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
             _mapData[x, y].Color = NHColor2SKColor((nhcolor)color);
         }
         public void ClearMap()

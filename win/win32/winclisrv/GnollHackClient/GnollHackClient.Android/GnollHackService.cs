@@ -57,7 +57,7 @@ namespace GnollHackClient.Droid
             VoidIntIntCallback callback_cliparound,
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
-            VoidIntIntIntIntIntCharPtrIntUlongCallback callback_print_glyph,
+            VoidIntIntIntIntIntLongIntUlongCallback callback_print_glyph,
             VoidIntCallback callback_init_print_glyph,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
