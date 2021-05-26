@@ -8,6 +8,7 @@ namespace GnollHackClient
     {
         public GHRequestType RequestType { get; set; }
         public string ResponseStringValue { get; set; }
+        public int ResponseIntValue { get; set; }
         public ClientGame RequestingClientGame { get; }
 
         public GHResponse()
@@ -26,6 +27,12 @@ namespace GnollHackClient
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             ResponseStringValue = responsestringvalue;
+        }
+        public GHResponse(ClientGame clientgame, GHRequestType requesttype, int responseintvalue)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            ResponseIntValue = responseintvalue;
         }
     }
 }

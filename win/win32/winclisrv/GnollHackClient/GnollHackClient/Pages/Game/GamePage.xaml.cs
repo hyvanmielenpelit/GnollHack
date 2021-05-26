@@ -36,6 +36,9 @@ namespace GnollHackClient.Pages.Game
         private int[,] mapGlyph = new int[80, 21];
         private string[,] mapSymbol = new string[80, 21];
 
+        public int ClipX { get; set; }
+        public int ClipY { get; set; }
+
         public IFmodService FModService { get { return _fmodService; } }
 
         public GamePage()
@@ -252,22 +255,37 @@ namespace GnollHackClient.Pages.Game
             textPaint.TextSize = 48;
             textPaint.MeasureText(str, ref textBounds);
 
-            double canvaswidth = canvasView.CanvasSize.Width;
-            double canvasheight = canvasView.CanvasSize.Height;
-            float width = (float)(canvaswidth / 80);
-            float height = (width / textBounds.Width) * textBounds.Height;
-            //float width = (height / textBounds.Height) * textBounds.Width;
-            textPaint.TextSize = height;
-            float tx = 0, ty = 0;
-            for (int mapx = 1; mapx < 80; mapx++)
+            float canvaswidth = canvasView.CanvasSize.Width;
+            float canvasheight = canvasView.CanvasSize.Height;
+            float width = textBounds.Width;
+            float height = textBounds.Height;
+            float mapwidth = width * (GHConstants.MapCols -1);
+            float mapheight = height * (GHConstants.MapRows);
+
+            int startX = 1;
+            int endX = GHConstants.MapCols - 1;
+            int startY = 0;
+            int endY = GHConstants.MapRows - 1;
+
+            float offsetX = (canvaswidth - mapwidth) / 2;
+            float offsetY = (canvasheight - mapheight) / 2;
+
+            if(ClipX > 0 && (mapwidth > canvaswidth || mapheight > canvasheight))
             {
-                for(int mapy = 0; mapy < 21; mapy++)
+                offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * width;
+                offsetY -= (ClipY - GHConstants.MapRows / 2) * height;
+            }
+
+            float tx = 0, ty = 0;
+            for (int mapx = startX; mapx <= endX; mapx++)
+            {
+                for(int mapy = startY; mapy <= endY; mapy++)
                 {
                     if(mapSymbol[mapx, mapy] != null && mapSymbol[mapx, mapy] != "")
                     {
                         str = mapSymbol[mapx, mapy];
-                        tx = width * (float)mapx;
-                        ty = 150.0f + height * (float)mapy;
+                        tx = (offsetX + width * (float)mapx);
+                        ty = (offsetY + height * (float)mapy);
                         canvas.DrawText(str, tx, ty, textPaint);
                     }
                 }
@@ -376,20 +394,31 @@ namespace GnollHackClient.Pages.Game
             {
                 if(e.ActionType == SKTouchAction.Pressed)
                 {
-                    string ch = " ";
-                    if (e.Location.Y < canvasView.CanvasSize.Height * 0.2)
-                        ch = "k";
+                    int resp = 0;
+                    //string ch = " ";
+                    if (e.Location.Y < canvasView.CanvasSize.Height * 0.2 && e.Location.X < canvasView.CanvasSize.Width * 0.2)
+                        resp = -7;
+                    else if (e.Location.Y < canvasView.CanvasSize.Height * 0.2 && e.Location.X > canvasView.CanvasSize.Width * 0.8)
+                        resp = -9;
+                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.8 && e.Location.X < canvasView.CanvasSize.Width * 0.2)
+                        resp = -1;
+                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.8 && e.Location.X > canvasView.CanvasSize.Width * 0.8)
+                        resp = -3;
+                    else if (e.Location.Y < canvasView.CanvasSize.Height * 0.2)
+                        resp = -8; //ch = "k";
                     else if (e.Location.Y > canvasView.CanvasSize.Height * 0.8)
-                        ch = "j";
+                        resp = -2; // ch = "j";
                     else if (e.Location.X < canvasView.CanvasSize.Width * 0.2)
-                        ch = "h";
+                        resp = -4; // ch = "h";
                     else if (e.Location.X > canvasView.CanvasSize.Width * 0.8)
-                        ch = "l";
+                        resp = -6; // ch = "l";
+                    else
+                        resp = 32;
 
                     ConcurrentQueue<GHResponse> queue;
                     if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
                     {
-                        queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, ch));
+                        queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
                         e.Handled = true;
                     }
                 }

@@ -248,7 +248,7 @@ namespace GnollHackClient.Droid
                 clientGame.ClientCallback_VoidVoidDummy,
                 clientGame.ClientCallback_VoidVoidDummy,
                 /* If clipping is on */
-                clientGame.ClientCallback_VoidIntIntDummy,
+                clientGame.ClientCallback_Cliparound,
                 /* If positionbar is on */
                 clientGame.ClientCallback_VoidCharDummy,
                 clientGame.ClientCallback_PrintGlyph,

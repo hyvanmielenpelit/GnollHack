@@ -17,12 +17,13 @@ namespace GnollHackClient
     {
         private static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> _concurrentRequestDictionary = new ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>>();
         private static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> _concurrentResponseDictionary = new ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>>();
-        private string _inputBuffer = "";
+        private int[] _inputBuffer = new int[GHConstants.InputBufferLength];
+        private int _inputBufferLocation = -1;
         private string _characterName = "";
         private object _characterNameLock = new object();
         private GamePage _gamePage;
         private object _gamePageLock = new object();
-        private GHWindow[] _ghWindows = new GHWindow[32];
+        private GHWindow[] _ghWindows = new GHWindow[GHConstants.MaxGHWindows];
         private int _lastWindowHandle = 0;
 
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
@@ -68,7 +69,10 @@ namespace GnollHackClient
                             CharacterName = response.ResponseStringValue;
                             break;
                         case GHRequestType.GetChar:
-                            _inputBuffer = _inputBuffer + response.ResponseStringValue;
+                            _inputBufferLocation++;
+                            if(_inputBufferLocation >= GHConstants.InputBufferLength)
+                                _inputBufferLocation = GHConstants.InputBufferLength -1;
+                            _inputBuffer[_inputBufferLocation] = response.ResponseIntValue;
                             break;
                         default:
                             break;
@@ -84,8 +88,8 @@ namespace GnollHackClient
         }
         public int ClientCallback_CreateGHWindow(int wintype)
         {
-            if (_lastWindowHandle >= 32) /* Should not happen, but paranoid */
-                _lastWindowHandle = 31;
+            if (_lastWindowHandle >= GHConstants.MaxGHWindows) /* Should not happen, but paranoid */
+                _lastWindowHandle = GHConstants.MaxGHWindows - 1;
 
             while (_lastWindowHandle > 0 && _ghWindows[_lastWindowHandle] == null)
                 _lastWindowHandle--;
@@ -93,7 +97,7 @@ namespace GnollHackClient
             if (_ghWindows[_lastWindowHandle] != null)
                 _lastWindowHandle++;
 
-            if (_lastWindowHandle >= 32)
+            if (_lastWindowHandle >= GHConstants.MaxGHWindows)
                 return 0;
 
             int handle = _lastWindowHandle;
@@ -173,16 +177,17 @@ namespace GnollHackClient
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.GetChar));
-                while (string.IsNullOrEmpty(_inputBuffer))
+                while (_inputBufferLocation < 0)
                 {
-                    Thread.Sleep(25);
+                    Thread.Sleep(GHConstants.PollingInterval);
                     pollResponseQueue();
                 }
                 int res = 0;
-                if (_inputBuffer.Length > 0)
+                if (_inputBufferLocation >= 0)
                 {
-                    res = (int)_inputBuffer.ToCharArray()[_inputBuffer.Length - 1];
-                    _inputBuffer = _inputBuffer.Substring(0, _inputBuffer.Length - 1);
+                    res = _inputBuffer[_inputBufferLocation];
+                    _inputBuffer[_inputBufferLocation] = 0;
+                    _inputBufferLocation--;
                 }
                 return res;
             }
@@ -197,6 +202,11 @@ namespace GnollHackClient
             return ClientCallback_nhgetch();
         }
 
+        public void ClientCallback_Cliparound(int x, int y)
+        {
+            _gamePage.ClipX = x;
+            _gamePage.ClipY = y;
+        }
 
         public void ClientCallback_VoidVoidDummy()
         {

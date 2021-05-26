@@ -65,6 +65,8 @@ struct window_procs lib_procs = {
 
 struct callback_procs lib_callbacks = { 0 }; /* To be set by RunGnollHack in gnollhackdroid.c */
 
+int convert_gnhch(int ch);
+
 
 /* Function definitions */
 void lib_init_nhwindows(int* argc, char** argv)
@@ -200,7 +202,7 @@ void lib_wait_synch(void)
 
 void lib_cliparound(int x, int y)
 {
-    return;
+    lib_callbacks.callback_cliparound(x, y);
 }
 
 void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
@@ -234,14 +236,15 @@ void lib_raw_print_flush()
     return;
 }
 
+
 int lib_nhgetch(void)
 {
-    return lib_callbacks.callback_nhgetch();
+    return convert_gnhch(lib_callbacks.callback_nhgetch());
 }
 
 int lib_nh_poskey(int* x, int* y, int* mod)
 {
-    return lib_callbacks.callback_nh_poskey(x, y, mod);
+    return convert_gnhch(lib_callbacks.callback_nh_poskey(x, y, mod));
 }
 
 void lib_nhbell(void)
@@ -512,3 +515,39 @@ unsigned long wincap1, wincap2;
     lib_procs.wincap2 = wincap2;
 }
 
+int convert_gnhch(int ch)
+{
+    int key = 0;
+    switch (ch)
+    {
+    case -1:
+        key = Cmd.move_SW;
+        break;
+    case -2:
+        key = Cmd.move_S;
+        break;
+    case -3:
+        key = Cmd.move_SE;
+        break;
+    case -4:
+        key = Cmd.move_W;
+        break;
+    case -6:
+        key = Cmd.move_E;
+        break;
+    case -7:
+        key = Cmd.move_NW;
+        break;
+    case -8:
+        key = Cmd.move_N;
+        break;
+    case -9:
+        key = Cmd.move_NE;
+        break;
+    default:
+        key = ch;
+        break;
+    }
+
+    return key;
+}
