@@ -248,16 +248,16 @@ extern int allow_break_statements;
 extern struct lc_breakdef *break_list;
 
 boolean
-process_file(fname)
-char* fname;
+process_file(file_name)
+char* file_name;
 {
     boolean errors_encountered = FALSE;
 
     FILE* fin;
-    fin = freopen(fname, "r", stdin);
+    fin = freopen(file_name, "r", stdin);
     if (!fin) {
-        lc_pline("Can't open \"%s\" for input.\n", VA_PASS1(fname));
-        perror(fname);
+        lc_pline("Can't open \"%s\" for input.\n", VA_PASS1(file_name));
+        perror(file_name);
         errors_encountered = TRUE;
     }
     else {
@@ -333,7 +333,7 @@ char **argv;
                     while ((dir = readdir(d)) != NULL)
                     {
                         if(strlen(dir->d_name) > 4 && !strcmp(dir->d_name + strlen(dir->d_name) - 4, ".des"))
-                            errors_encountered += process_file(dir->d_name);
+                            errors_encountered |= process_file(dir->d_name);
                     }
                     closedir(d);
                 }
@@ -342,7 +342,7 @@ char **argv;
 #endif
             }
             else
-                errors_encountered += process_file(fname);
+                errors_encountered |= process_file(fname);
         }
     }
     exit(errors_encountered ? EXIT_FAILURE : EXIT_SUCCESS);
