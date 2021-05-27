@@ -102,17 +102,17 @@ void lib_get_nh_event(void)
 
 void lib_exit_nhwindows(const char* param)
 {
-    return;
+    lib_callbacks.callback_exit_nhwindows(param);
 }
 
 void lib_suspend_nhwindows(const char* param)
 {
-    return;
+    lib_callbacks.callback_suspend_nhwindows(param);
 }
 
 void lib_resume_nhwindows(void)
 {
-    return;
+    lib_callbacks.callback_resume_nhwindows();
 }
 
 winid lib_create_nhwindow(int type)
@@ -187,12 +187,12 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
 
 void lib_update_inventory(void)
 {
-    return;
+    lib_callbacks.callback_update_inventory();
 }
 
 void lib_mark_synch(void)
 {
-    return;
+    lib_callbacks.callback_mark_synch();
 }
 
 void lib_wait_synch(void)
@@ -220,7 +220,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 
 void lib_init_print_glyph(int initid)
 {
-    return;
+    lib_callbacks.callback_init_print_glyph(initid);
 }
 
 void lib_raw_print(const char* str)
@@ -232,7 +232,6 @@ void lib_raw_print_bold(const char* str)
 {
     lib_callbacks.callback_raw_print_bold(str);
 }
-
 
 int lib_nhgetch(void)
 {
@@ -246,7 +245,7 @@ int lib_nh_poskey(int* x, int* y, int* mod)
 
 void lib_nhbell(void)
 {
-    return;
+    lib_callbacks.callback_nhbell();
 }
 
 int lib_doprev_message(void)
@@ -278,18 +277,18 @@ void lib_number_pad(int state)
 
 void lib_delay_output(void)
 {
-    return;
+    lib_callbacks.callback_delay_output();
 }
 
 void lib_delay_output_milliseconds(int interval)
 {
-    return;
+    lib_callbacks.callback_delay_output_milliseconds(interval);
 }
 
 
 void lib_delay_output_intervals(int intervals)
 {
-    return;
+    lib_callbacks.callback_delay_output_intervals(intervals);
 }
 
 void lib_change_color(int param1, long param2, int param3)
@@ -324,7 +323,7 @@ void lib_outrip(winid wid, int how, time_t when)
 
 void lib_preference_update(const char* pref)
 {
-
+    lib_callbacks.callback_preference_update(pref);
 }
 
 char* lib_getmsghistory(BOOLEAN_P init)
@@ -339,23 +338,30 @@ void lib_putmsghistory(const char* msg, BOOLEAN_P param)
 
 void lib_status_init(void)
 {
-    return;
+    lib_callbacks.callback_status_init();
 }
 
 void lib_status_finish(void)
 {
-    return;
+    lib_callbacks.callback_status_finish();
 }
 
 void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt,
     int enable)
 {
-    return;
+    lib_callbacks.callback_status_enablefield(fieldidx, nm, fmt, enable);
 }
 
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks)
 {
-    return;
+    //lib_callbacks.callback_status_update(idx, ptr, chg, percent, color, colormasks);
+    lib_curs(WIN_MAP, 0, 0);
+    char* line1 = do_statusline1();
+    lib_putstr(WIN_MAP, 0, line1);
+    lib_curs(WIN_MAP, 0, 1);
+    char* line2 = do_statusline2();
+    lib_putstr(WIN_MAP, 0, line2);
+    lib_curs(WIN_MAP, u.ux, u.uy);
 }
 
 void lib_stretch_window(void)
@@ -365,6 +371,7 @@ void lib_stretch_window(void)
 
 void lib_set_animation_timer(unsigned int param)
 {
+    lib_callbacks.callback_set_animation_timer((unsigned long)param);
     return;
 }
 

@@ -301,10 +301,17 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            for(int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
+            textPaint.Typeface = App.DiabloTypeface;
+            textPaint.TextSize = 36;
+            textPaint.Color = SKColors.White;
+
+            for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
             {
-                for(int j = 0; _clientGame.Windows[i].PutStrs[j] != null && _clientGame.Windows[i].PutStrs[j] != "" && j < GHConstants.MaxPutStrHeight; j++)
+                for(int j = 0; j < GHConstants.MaxPutStrHeight; j++)
                 {
+                    if (_clientGame.Windows[i].PutStrs[j] == null || _clientGame.Windows[i].PutStrs[j] == "")
+                        continue;
+
                     str = _clientGame.Windows[i].PutStrs[j];
                     textPaint.Color = SKColors.White;
                     tx = _clientGame.Windows[i].WinX;

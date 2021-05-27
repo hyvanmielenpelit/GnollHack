@@ -233,8 +233,8 @@ StatusWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             data->status_lines = msg_data->status_lines;
             InvalidateRect(hWnd, NULL, TRUE);
 
-            SendMessage(GetNHApp()->windowlist[WIN_MAP].win, WM_MSNH_COMMAND,
-                (WPARAM)MSNH_MSG_UPDATE_ALL_STATUSES_ON_MAP, (LPARAM)0);
+            //SendMessage(GetNHApp()->windowlist[WIN_MAP].win, WM_MSNH_COMMAND,
+            //    (WPARAM)MSNH_MSG_UPDATE_ALL_STATUSES_ON_MAP, (LPARAM)0);
 
         } break;
 

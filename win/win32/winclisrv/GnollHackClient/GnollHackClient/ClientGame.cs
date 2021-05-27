@@ -221,9 +221,38 @@ namespace GnollHackClient
         {
             _ghWindows[win_id].PutStrEx(attributes, str, append);
         }
+        public void ClientCallback_DelayOutput()
+        {
+            Thread.Sleep(2 * GHConstants.DefaultAnimationInterval);
+        }
+        public void ClientCallback_DelayOutputMilliseconds(int milliseconds)
+        {
+            Thread.Sleep(milliseconds);
+        }
+        public void ClientCallback_DelayOutputIntervals(int intervals)
+        {
+            Thread.Sleep(intervals * GHConstants.DefaultAnimationInterval); /* To be fixed */
+        }
+        public void ClientCallback_PreferenceUpdate(string str)
+        {
 
+        }
+        public void ClientCallback_StatusInit()
+        {
 
+        }
+        public void ClientCallback_StatusFinish()
+        {
 
+        }
+        public void ClientCallback_StatusEnable(int value1, string value2, string value3, byte value4)
+        {
+
+        }
+        public void ClientCallback_StatusUpdate(int value1, ref int value2, int value3, int value4, int value5, ref UInt32 value6)
+        {
+
+        }
 
 
         /* Dummies */
