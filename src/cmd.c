@@ -4135,11 +4135,11 @@ int final;
     if (Magical_protection)
         you_have("magical protection (-3 to AC and +1 to MC)", from_what(MAGICAL_PROTECTION));
     if (Magical_shielding)
-        you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));
+        you_have("magical shielding (-6 to AC and +2 to MC)", from_what(MAGICAL_SHIELDING));
     if (Magical_barkskin)
-        you_have("magical barkskin (+7 to MC)", from_what(MAGICAL_BARKSKIN));
+        you_have("magical barkskin (-12 to AC and +4 to MC)", from_what(MAGICAL_BARKSKIN));
     if (Magical_stoneskin)
-        you_have("magical stoneskin (-10 to AC)", from_what(MAGICAL_STONESKIN));
+        you_have("magical stoneskin (-18 to AC and +6 to MC)", from_what(MAGICAL_STONESKIN));
     if (Titan_strength)
         you_are("magically as strong as a titan", from_what(TITAN_STRENGTH));
     if (Divine_dexterity)

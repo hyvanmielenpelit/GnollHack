@@ -1625,8 +1625,12 @@ struct monst *mon;
 
     if (is_you)
     {
-        if (Magical_barkskin)
-            mc += 7;
+        if (Magical_stoneskin)
+            mc += 6;
+        else if (Magical_barkskin)
+            mc += 4;
+        else if (Magical_shielding)
+            mc += 2;
         else if (Magical_protection)
             mc += 1;
 
@@ -1639,8 +1643,12 @@ struct monst *mon;
     }
     else
     {
-        if (mon->mprops[MAGICAL_BARKSKIN] != 0)
-            mc += 7;
+        if (mon->mprops[MAGICAL_STONESKIN] != 0)
+            mc += 6;
+        else if (mon->mprops[MAGICAL_BARKSKIN] != 0)
+            mc += 4;
+        else if (mon->mprops[MAGICAL_SHIELDING] != 0)
+            mc += 2;
         else if (mon->mprops[MAGICAL_PROTECTION] != 0)
             mc += 1;
     }

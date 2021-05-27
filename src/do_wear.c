@@ -2119,9 +2119,11 @@ find_ac()
     uac -= u.uacbonus;
 
     if (Magical_stoneskin)
-        uac -= 10;
+        uac -= 18;
+    else if (Magical_barkskin)
+        uac -= 12;
     else if (Magical_shielding)
-        uac -= 4;
+        uac -= 6;
     else if (Magical_protection)
         uac -= 3;
     
