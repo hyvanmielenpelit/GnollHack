@@ -202,6 +202,29 @@ namespace GnollHackClient
 
             return ClientCallback_nhgetch();
         }
+        public int ClientCallback_yn_question(string question, string responses, string def)
+        {
+            if(question != null)
+                ClientCallback_RawPrint(question);
+            if(responses == null || responses == "")
+                return ClientCallback_nhgetch();
+            else
+            {
+                int cnt = 0;
+                while(cnt < 5)
+                {
+                    int val = ClientCallback_nhgetch();
+                    string res = Char.ConvertFromUtf32(val);
+                    if (responses.Contains(res))
+                        return val;
+
+                    ClientCallback_RawPrint("Invalid!");
+                    cnt++;
+                }
+            }
+            return 27;
+        }
+
 
         public void ClientCallback_Cliparound(int x, int y)
         {
@@ -365,7 +388,7 @@ namespace GnollHackClient
         {
             return 0;
         }
-        public sbyte ClientCallback_CharConstCharPtrConstCharPtrCharDummy(string value1, string value2, sbyte value3)
+        public int ClientCallback_IntConstCharPtrConstCharPtrCharPtrDummy(string value1, string value2, string value3)
         {
             return 0;
         }

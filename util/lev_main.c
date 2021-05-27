@@ -10,7 +10,11 @@
 
 #define NEED_VARARGS
 #include "hack.h"
+#ifdef GNH_ANDROID
+#include "date_unix.h"
+#else
 #include "date.h"
+#endif
 #include "sp_lev.h"
 #ifdef STRICT_REF_DEF
 #include "tcap.h"

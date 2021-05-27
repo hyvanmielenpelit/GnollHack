@@ -781,6 +781,11 @@ init_dungeons()
      */
     if (iflags.window_inited)
         clear_nhwindow(WIN_MAP);
+
+#ifdef GNH_ANDROID
+#define GNH_ANDROID2
+#endif
+
     if (!check_version(&vers_info, DUNGEON_FILE, TRUE))
     {
 #ifdef GNH_ANDROID

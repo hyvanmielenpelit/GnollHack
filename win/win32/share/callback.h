@@ -37,7 +37,7 @@ typedef unsigned char(__callconv* BooleanDoubleDoubleDoubleDoubleDoubleCallback)
 typedef unsigned char(__callconv* BooleanIntDoubleVoidPtrCallback)(int, double, void*);
 typedef unsigned char(__callconv* BooleanVoidPtrDoubleCallback)(void* , double);
 typedef unsigned char(__callconv* BooleanVoidPtrCallback)(void*);
-typedef char(__callconv* CharConstCharPtrConstCharPtrCharCallback)(const char*, const char*, char);
+typedef int(__callconv* IntConstCharPtrConstCharPtrCharPtrCallback)(const char*, const char*, const char*);
 typedef void(__callconv* VoidConstCharPtrCharPtrCallback)(const char*, char*);
 typedef char*(__callconv* CharPtrBooleanCallback)(unsigned char);
 typedef void(__callconv* VoidIntIntIntIntIntLongIntULongCallback)(int, int, int, int, int, long, int, unsigned long);
@@ -79,7 +79,7 @@ typedef IntVoidCallback GetChCallback;
 typedef int(__callconv* PosKeyCallback)(int*, int*, int*);
 typedef VoidVoidCallback BellCallback;
 typedef IntVoidCallback DoPrevMessageCallback;
-typedef CharConstCharPtrConstCharPtrCharCallback YnFunctionCallback;
+typedef IntConstCharPtrConstCharPtrCharPtrCallback YnFunctionCallback;
 typedef VoidConstCharPtrCharPtrCallback GetLinCallback;
 typedef IntVoidCallback GetExtCmdCallback;
 typedef VoidIntCallback NumberPadCallback;

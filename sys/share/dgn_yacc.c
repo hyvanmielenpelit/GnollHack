@@ -94,7 +94,11 @@
 #endif
 
 #include "config.h"
+#ifdef GNH_ANDROID
+#include "date_unix.h"
+#else
 #include "date.h"
+#endif
 #include "dgn_file.h"
 #include "hack.h"
 

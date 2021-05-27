@@ -1598,7 +1598,9 @@ char
 dll_yn_function(const char *question, const char *choices, CHAR_P def)
 {
     dll_logDebug("dll_yn_function(%s, %s, %d)\n", question, choices, def);
-    return dll_callbacks.callback_yn_function(question, choices, def);
+    char defs[2] = { 0, 0 };
+    defs[0] = def;
+    return dll_callbacks.callback_yn_function(question, choices, defs);
 
 #if 0
     char ch;

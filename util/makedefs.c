@@ -58,7 +58,11 @@ static const char SCCS_Id[] UNUSED = "@(#)makedefs.c\t3.6\t2019/05/07";
 #endif
 
 /* names of files to be generated */
+#ifdef GNH_ANDROID
+#define DATE_FILE "date_unix.h"
+#else
 #define DATE_FILE "date.h"
+#endif
 #define MONST_FILE "pm.h"
 #define ONAME_FILE "onames.h"
 #define ANIMATION_OFFSET_FILE "animoff.h"

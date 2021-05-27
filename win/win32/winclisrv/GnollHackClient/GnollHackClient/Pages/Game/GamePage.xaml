@@ -12,8 +12,26 @@
                         EnableTouchEvents="True"
                         PaintSurface="canvasView_PaintSurface" 
                         Touch="canvasView_Touch"
-                        AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
+                        AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 0.9"
                         AbsoluteLayout.LayoutFlags="All" />
+            <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.10"
+                           AbsoluteLayout.LayoutFlags="All" HeightRequest="160" BackgroundColor="Black">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button Text="," x:Name="PickupButton" Clicked="PickupButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="0" />
+                <Button Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="1" />
+                <Button Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="2" />
+                <Button Text="Dn" x:Name="DownButton" Clicked="DownButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="3" />
+                <Button Text="Up" x:Name="UpButton" Clicked="UpButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="4" />
+            </Grid>
         </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -531,5 +531,39 @@ namespace GnollHackClient.Pages.Game
                 }
             }
         }
+
+
+        private void PickupButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, ',');
+        }
+        private void SearchButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 's');
+        }
+        private void KickButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'k');
+        }
+        private void UpButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, '<');
+        }
+        private void DownButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, '>');
+        }
+
+        private void GenericButton_Clicked(object sender, EventArgs e, int resp)
+        {
+            if (_clientGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
+                }
+            }
+        }
     }
 }

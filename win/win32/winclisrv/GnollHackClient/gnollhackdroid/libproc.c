@@ -65,7 +65,7 @@ struct window_procs lib_procs = {
 
 struct callback_procs lib_callbacks = { 0 }; /* To be set by RunGnollHack in gnollhackdroid.c */
 
-int convert_gnhch(int ch);
+char convert_gnhch(int ch);
 
 
 /* Function definitions */
@@ -235,12 +235,12 @@ void lib_raw_print_bold(const char* str)
 
 int lib_nhgetch(void)
 {
-    return convert_gnhch(lib_callbacks.callback_nhgetch());
+    return (int)convert_gnhch(lib_callbacks.callback_nhgetch());
 }
 
 int lib_nh_poskey(int* x, int* y, int* mod)
 {
-    return convert_gnhch(lib_callbacks.callback_nh_poskey(x, y, mod));
+    return (int)convert_gnhch(lib_callbacks.callback_nh_poskey(x, y, mod));
 }
 
 void lib_nhbell(void)
@@ -255,12 +255,14 @@ int lib_doprev_message(void)
 
 char lib_yn_function(const char* question, const char* choices, CHAR_P def)
 {
-    return 'y';
+    char defs[2] = { 0,0 };
+    defs[0] = def;
+    return convert_gnhch(lib_callbacks.callback_yn_function(question, choices, defs));
 }
 
 void lib_getlin(const char* question, char* input)
 {
-    return;
+    lib_callbacks.callback_getlin(question, input);
 }
 
 int lib_get_ext_cmd(void)
@@ -515,9 +517,9 @@ unsigned long wincap1, wincap2;
         lib_procs.wincap2 = wincap2;
 }
 
-int convert_gnhch(int ch)
+char convert_gnhch(int ch)
 {
-    int key = 0;
+    char key = 0;
     switch (ch)
     {
     case -1:
