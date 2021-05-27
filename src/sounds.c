@@ -3376,6 +3376,7 @@ struct monst* mtmp;
         switch (urole.rolenum)
         {
         case ROLE_ARCHAEOLOGIST:
+        case ROLE_BARBARIAN:
             Sprintf(ansbuf, "I am %s, %s.", mon_nam(mtmp), mtmp->data->mtitle);
             break;
         default:

@@ -3854,6 +3854,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "oak-tree-enlargement", 0, 0,
+      TREE_ENLARGEMENT_TILES,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "tree-spruce-enlargement", 0, 0,
       TREE_ENLARGEMENT_TILES,
       3, 2, 0,
@@ -3876,6 +3883,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 }
     },
     { "tree-date-2-enlargement", 0, 0,
+      TREE_ENLARGEMENT_TILES,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "tree-date-3-enlargement", 0, 0,
       TREE_ENLARGEMENT_TILES,
       3, 2, 0,
       { 0, 1, 2, 3, 4 },
@@ -3911,6 +3925,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 }
     },
     { "tree-pitaya-enlargement", 0, 0,
+      TREE_ENLARGEMENT_TILES,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "tree-fir-snowy-enlargement", 0, 0,
       TREE_ENLARGEMENT_TILES,
       3, 2, 0,
       { 0, 1, 2, 3, 4 },
