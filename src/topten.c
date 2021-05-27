@@ -487,6 +487,9 @@ char* buf;
 const char* achievement;
 boolean condition;
 {
+    if (!buf || !achievement)
+        return;
+
     if (condition) {
         if (buf[0] != '\0') {
             Strcat(buf, ",");
