@@ -440,8 +440,6 @@ encodeconduct()
     return e;
 }
 
-#define NUM_ACHIEVEMENTS 14
-
 STATIC_OVL long
 encodeachieve()
 {
@@ -501,103 +499,23 @@ boolean condition;
 STATIC_OVL char*
 encode_extended_achievements()
 {
-    static char buf[NUM_ACHIEVEMENTS * 40];
-    const char* achievement = NULL;
-    int i;
+    static char buf[4 * BUFSZ]; /* Long enough */
 
     buf[0] = '\0';
-    for (i = 0; i < NUM_ACHIEVEMENTS; i++) {
-        switch (i) {
-        case 0:
-            if (u.uachieve.bell)
-                achievement = "obtained_the_bell_of_opening";
-            else
-                continue;
-            break;
-        case 1:
-            if (u.uachieve.enter_gehennom)
-                achievement = "entered_gehennom";
-            else
-                continue;
-            break;
-        case 2:
-            if (u.uachieve.menorah)
-                achievement = "obtained_the_candelabrum_of_invocation";
-            else
-                continue;
-            break;
-        case 3:
-            if (u.uachieve.book)
-                achievement = "obtained_the_book_of_the_dead";
-            else
-                continue;
-            break;
-        case 4:
-            if (u.uevent.invoked)
-                achievement = "performed_the_invocation_ritual";
-            else
-                continue;
-            break;
-        case 5:
-            if (u.uachieve.amulet)
-                achievement = "obtained_the_amulet_of_yendor";
-            else
-                continue;
-            break;
-        case 6:
-            if (In_endgame(&u.uz))
-                achievement = "entered_elemental_planes";
-            else
-                continue;
-            break;
-        case 7:
-            if (In_endgame(&u.uz))
-                achievement = "entered_astral_plane";
-            else
-                continue;
-            break;
-        case 8:
-            if (u.uachieve.ascended)
-                achievement = "ascended";
-            else
-                continue;
-            break;
-        case 9:
-            if (u.uachieve.mines_luckstone)
-                achievement = "obtained_the_luckstone_from_the_mines";
-            else
-                continue;
-            break;
-        case 10:
-            if (u.uachieve.finish_sokoban)
-                achievement = "obtained_the_sokoban_prize";
-            else
-                continue;
-            break;
-        case 11:
-            if (u.uachieve.killed_medusa)
-                achievement = "defeated_medusa";
-            else
-                continue;
-            break;
-        case 12:
-            if (u.uachieve.killed_yacc)
-                achievement = "defeated_yacc";
-            else
-                continue;
-            break;
-        case 13:
-            if (u.uachieve.prime_codex)
-                achievement = "obtained_the_prime_codex";
-            else
-                continue;
-            break;
-        default:
-            continue;
-        }
-
-        add_achieveX(buf, achievement, TRUE);
-    }
+    add_achieveX(buf, "obtained_the_bell_of_opening", u.uachieve.bell);
+    add_achieveX(buf, "entered_gehennom", u.uachieve.enter_gehennom);
+    add_achieveX(buf, "obtained_the_candelabrum_of_invocation", u.uachieve.menorah);
+    add_achieveX(buf, "obtained_the_book_of_the_dead", u.uachieve.book);
+    add_achieveX(buf, "performed_the_invocation_ritual", u.uevent.invoked);
+    add_achieveX(buf, "obtained_the_amulet_of_yendor", u.uachieve.amulet);
+    add_achieveX(buf, "entered_elemental_planes", In_endgame(&u.uz));
+    add_achieveX(buf, "entered_astral_plane", In_endgame(&u.uz));
+    add_achieveX(buf, "ascended", u.uachieve.ascended);
+    add_achieveX(buf, "obtained_the_luckstone_from_the_mines", u.uachieve.mines_luckstone);
+    add_achieveX(buf, "obtained_the_sokoban_prize", u.uachieve.finish_sokoban);
+    add_achieveX(buf, "defeated_medusa", u.uachieve.killed_medusa);
+    add_achieveX(buf, "defeated_yacc", u.uachieve.killed_yacc);
+    add_achieveX(buf, "obtained_the_prime_codex", u.uachieve.prime_codex);
 
     return buf;
 }
@@ -605,7 +523,7 @@ encode_extended_achievements()
 STATIC_OVL char*
 encode_extended_conducts()
 {
-    static char buf[BUFSZ];
+    static char buf[4 * BUFSZ]; /* Long enough */
 
     buf[0] = '\0';
     add_achieveX(buf, "foodless", !u.uconduct.food);
