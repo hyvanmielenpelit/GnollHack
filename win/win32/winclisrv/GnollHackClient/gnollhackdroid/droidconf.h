@@ -42,7 +42,5 @@
 
 #define CHANGE_COLOR
 
-#define TEXTCOLOR
-
 # endif /* DROIDCONF_H */
 #endif /* GNH_ANDROID */

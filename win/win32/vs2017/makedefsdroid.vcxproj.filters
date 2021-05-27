@@ -56,7 +56,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)align.h" />
-    <ClInclude Include="$(IncDir)ntconf.h" />
     <ClInclude Include="$(IncDir)obj.h" />
     <ClInclude Include="$(IncDir)permonst.h" />
     <ClInclude Include="$(IncDir)prop.h" />
