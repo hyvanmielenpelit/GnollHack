@@ -2548,8 +2548,10 @@ mswin_popup_display(HWND hWnd, int *done_indicator, boolean close_on_any_key)
         {
             if(GetMessage(&msg, NULL, 0, 0) != 0) 
             {
-                /* Close on any key */
-                if (close_on_any_key && (msg.message == WM_KEYDOWN || msg.message == WM_KEYUP))
+                /* Close on any key, except space or enter */
+                if (close_on_any_key && (msg.message == WM_KEYDOWN || msg.message == WM_KEYUP)
+                    && msg.wParam != VK_SPACE && msg.wParam != VK_RETURN && msg.wParam != VK_PRIOR && msg.wParam != VK_NEXT 
+                    && msg.wParam != VK_SHIFT && msg.wParam != VK_MENU && msg.wParam != VK_CONTROL && msg.wParam != VK_LCONTROL && msg.wParam != VK_RCONTROL)
                     msg.wParam = VK_ESCAPE;
 
                 if ((msg.message == WM_MSNH_COMMAND ||
