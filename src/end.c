@@ -754,22 +754,6 @@ time_t when; /* date+time at end of game */
     putstr(0, 0, pbuf);
     putstr(0, 0, "");
 
-#if 0 //def XLOGFILE
-    Sprintf(pbuf, "xlogstats: score=%ld dnum=%d realtime=%lu starttime=%lu finishtime=%lu conduct=0x%lx achieve=0x%lx cflags=0x%lx difficulty=%d", 
-        u.u_gamescore,
-        (int)u.uz.dnum,
-        (unsigned long)urealtime.realtime,
-        (unsigned long)urealtime.start_timing,
-        (unsigned long)urealtime.finish_time,
-        encodeconduct(),
-        encodeachieve(),
-        encodexlogflags(),
-        (int)context.game_difficulty
-    );
-    putstr(0, 0, pbuf);
-    putstr(0, 0, "");
-#endif
-
     dump_map();
     putstr(0, 0, do_statusline1());
     putstr(0, 0, do_statusline2());

@@ -69,6 +69,13 @@ STATIC_DCL void FDECL(readentry, (FILE *, struct toptenentry *));
 STATIC_DCL void FDECL(writeentry, (FILE *, struct toptenentry *));
 #ifdef XLOGFILE
 STATIC_DCL void FDECL(writexlentry, (FILE *, struct toptenentry *, int));
+
+STATIC_DCL long NDECL(encodexlogflags);
+STATIC_DCL long NDECL(encodeconduct);
+STATIC_DCL long NDECL(encodeachieve);
+STATIC_DCL void FDECL(add_achieveX, (char*, const char*, BOOLEAN_P));
+STATIC_DCL char* NDECL(encode_extended_achievements);
+STATIC_DCL char* NDECL(encode_extended_conducts);
 #endif
 STATIC_DCL void FDECL(free_ttlist, (struct toptenentry *));
 STATIC_DCL int FDECL(classmon, (char *));
@@ -366,6 +373,8 @@ int how;
                 multi_reason ? multi_reason : "helpless");
     Fprintf(rfile, "%cconduct=0x%lx%cturns=%ld%cachieve=0x%lx", XLOG_SEP,
             encodeconduct(), XLOG_SEP, moves, XLOG_SEP, encodeachieve());
+    Fprintf(rfile, "%cachieveX=%s", XLOG_SEP, encode_extended_achievements());
+    Fprintf(rfile, "%cconductX=%s", XLOG_SEP, encode_extended_conducts());
     Fprintf(rfile, "%crealtime=%ld%cstarttime=%ld%cendtime=%ld", XLOG_SEP,
             (long) urealtime.realtime, XLOG_SEP,
             (long) ubirthday, XLOG_SEP, (long) urealtime.finish_time);
@@ -373,13 +382,15 @@ int how;
             genders[flags.initgend].filecode, XLOG_SEP,
             aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);
     Fprintf(rfile, "%cflags=0x%lx", XLOG_SEP, encodexlogflags());
+    Fprintf(rfile, "%cachieveX=%s", XLOG_SEP, encode_extended_achievements());
+    Fprintf(rfile, "%cconductX=%s", XLOG_SEP, encode_extended_conducts());
     Fprintf(rfile, "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
     Fprintf(rfile, "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : "normal");
     Fprintf(rfile, "\n");
 #undef XLOG_SEP
 }
 
-long
+STATIC_OVL long
 encodexlogflags()
 {
     long e = 0L;
@@ -394,7 +405,7 @@ encodexlogflags()
     return e;
 }
 
-long
+STATIC_OVL long
 encodeconduct()
 {
     long e = 0L;
@@ -423,11 +434,17 @@ encodeconduct()
         e |= 1L << 10;
     if (!num_genocides())
         e |= 1L << 11;
+    if (u.uroleplay.blind)
+        e |= 1L << 12;
+    if (u.uroleplay.nudist)
+        e |= 1L << 13;
 
     return e;
 }
 
-long
+#define NUM_ACHIEVEMENTS 14
+
+STATIC_OVL long
 encodeachieve()
 {
     long r = 0L;
@@ -456,18 +473,159 @@ encodeachieve()
         r |= 1L << 10;
     if (u.uachieve.killed_medusa)
         r |= 1L << 11;
-    if (u.uroleplay.blind)
-        r |= 1L << 12;
-    if (u.uroleplay.nudist)
-        r |= 1L << 13;
     if (u.uachieve.killed_yacc)
-        r |= 1L << 14;
+        r |= 1L << 12;
     if (u.uachieve.prime_codex)
-        r |= 1L << 15;
+        r |= 1L << 13;
 
     return r;
 }
 
+
+/* add the achievement or conduct comma-separated to string */
+STATIC_OVL void
+add_achieveX(buf, achievement, condition)
+char* buf;
+const char* achievement;
+boolean condition;
+{
+    if (condition) {
+        if (buf[0] != '\0') {
+            Strcat(buf, ",");
+        }
+        Strcat(buf, achievement);
+    }
+}
+
+STATIC_OVL char*
+encode_extended_achievements()
+{
+    static char buf[NUM_ACHIEVEMENTS * 40];
+    const char* achievement = NULL;
+    int i;
+
+    buf[0] = '\0';
+    for (i = 0; i < NUM_ACHIEVEMENTS; i++) {
+        switch (i) {
+        case 0:
+            if (u.uachieve.bell)
+                achievement = "obtained_the_bell_of_opening";
+            else
+                continue;
+            break;
+        case 1:
+            if (u.uachieve.enter_gehennom)
+                achievement = "entered_gehennom";
+            else
+                continue;
+            break;
+        case 2:
+            if (u.uachieve.menorah)
+                achievement = "obtained_the_candelabrum_of_invocation";
+            else
+                continue;
+            break;
+        case 3:
+            if (u.uachieve.book)
+                achievement = "obtained_the_book_of_the_dead";
+            else
+                continue;
+            break;
+        case 4:
+            if (u.uevent.invoked)
+                achievement = "performed_the_invocation_ritual";
+            else
+                continue;
+            break;
+        case 5:
+            if (u.uachieve.amulet)
+                achievement = "obtained_the_amulet_of_yendor";
+            else
+                continue;
+            break;
+        case 6:
+            if (In_endgame(&u.uz))
+                achievement = "entered_elemental_planes";
+            else
+                continue;
+            break;
+        case 7:
+            if (In_endgame(&u.uz))
+                achievement = "entered_astral_plane";
+            else
+                continue;
+            break;
+        case 8:
+            if (u.uachieve.ascended)
+                achievement = "ascended";
+            else
+                continue;
+            break;
+        case 9:
+            if (u.uachieve.mines_luckstone)
+                achievement = "obtained_the_luckstone_from_the_mines";
+            else
+                continue;
+            break;
+        case 10:
+            if (u.uachieve.finish_sokoban)
+                achievement = "obtained_the_sokoban_prize";
+            else
+                continue;
+            break;
+        case 11:
+            if (u.uachieve.killed_medusa)
+                achievement = "defeated_medusa";
+            else
+                continue;
+            break;
+        case 12:
+            if (u.uachieve.killed_yacc)
+                achievement = "defeated_yacc";
+            else
+                continue;
+            break;
+        case 13:
+            if (u.uachieve.prime_codex)
+                achievement = "obtained_the_prime_codex";
+            else
+                continue;
+            break;
+        default:
+            continue;
+        }
+
+        add_achieveX(buf, achievement, TRUE);
+    }
+
+    return buf;
+}
+
+STATIC_OVL char*
+encode_extended_conducts()
+{
+    static char buf[BUFSZ];
+    const char* achievement = NULL;
+    int i;
+
+    buf[0] = '\0';
+    add_achieveX(buf, "foodless", !u.uconduct.food);
+    add_achieveX(buf, "vegan", !u.uconduct.unvegan);
+    add_achieveX(buf, "vegetarian", !u.uconduct.unvegetarian);
+    add_achieveX(buf, "atheist", !u.uconduct.gnostic);
+    add_achieveX(buf, "weaponless", !u.uconduct.weaphit);
+    add_achieveX(buf, "pacifist", !u.uconduct.killer);
+    add_achieveX(buf, "illiterate", !u.uconduct.literate);
+    add_achieveX(buf, "polyless", !u.uconduct.polypiles);
+    add_achieveX(buf, "polyselfless", !u.uconduct.polyselfs);
+    add_achieveX(buf, "wishless", !u.uconduct.wishes);
+    add_achieveX(buf, "artiwishless", !u.uconduct.wisharti);
+    add_achieveX(buf, "genocideless", !num_genocides());
+    add_achieveX(buf, "blind", u.uroleplay.blind);
+    add_achieveX(buf, "nudist", u.uroleplay.nudist);
+
+    return buf;
+}
 #endif /* XLOGFILE */
 
 STATIC_OVL void
