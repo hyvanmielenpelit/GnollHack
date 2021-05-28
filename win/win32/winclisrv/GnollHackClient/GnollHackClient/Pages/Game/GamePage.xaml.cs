@@ -143,6 +143,11 @@ namespace GnollHackClient.Pages.Game
                         case GHRequestType.AskName:
                             AskName();
                             break;
+                        case GHRequestType.ReturnToMainMenu:
+                            ClearMap();
+                            _clientGame = null;
+                            ReturnToMainMenu();
+                            break;
                     }
                 }
             }
@@ -157,6 +162,10 @@ namespace GnollHackClient.Pages.Game
         private void GetChar()
         {
             // Set focus to GameViewPage
+        }
+        private async void ReturnToMainMenu()
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
         }
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {

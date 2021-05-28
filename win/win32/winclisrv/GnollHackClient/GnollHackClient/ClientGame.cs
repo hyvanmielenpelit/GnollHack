@@ -132,8 +132,11 @@ namespace GnollHackClient
         }
         public void ClientCallback_DisplayGHWindow(int winHandle, byte blocking)
         {
-            if (_ghWindows[winHandle] != null)
-                _ghWindows[winHandle].Display(blocking != 0);
+            lock (_ghWindowsLock)
+            {
+                if (_ghWindows[winHandle] != null)
+                    _ghWindows[winHandle].Display(blocking != 0);
+            }
 
             if(blocking != 0)
             {
@@ -149,13 +152,19 @@ namespace GnollHackClient
 
         public void ClientCallback_Curs(int winHandle, int x, int y)
         {
-            if (_ghWindows[winHandle] != null)
-                _ghWindows[winHandle].Curs(x, y);
+            lock (_ghWindowsLock)
+            {
+                if (_ghWindows[winHandle] != null)
+                    _ghWindows[winHandle].Curs(x, y);
+            }
         }
         public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special)
         {
-            if (_ghWindows[winHandle] != null)
-                _ghWindows[winHandle].PrintGlyph(x, y, symbol, ocolor, special);
+            lock(_ghWindowsLock)
+            {
+                if (_ghWindows[winHandle] != null)
+                    _ghWindows[winHandle].PrintGlyph(x, y, symbol, ocolor, special);
+            }
         }
 
         public string ClientCallback_AskName()
@@ -184,6 +193,12 @@ namespace GnollHackClient
         public void ClientCallback_ExitHack(int status)
         {
             Debug.WriteLine("ClientCallback_ExitHack");
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                queue.Enqueue(new GHRequest(this, GHRequestType.ReturnToMainMenu));
+            }
+
         }
 
         public int ClientCallback_nhgetch()

@@ -9,6 +9,7 @@ namespace GnollHackClient
         None,
         GetChar,
         AskName,
+        ReturnToMainMenu,
     }
 
     public class GHRequest
