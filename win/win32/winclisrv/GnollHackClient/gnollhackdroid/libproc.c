@@ -359,9 +359,18 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
     //lib_callbacks.callback_status_update(idx, ptr, chg, percent, color, colormasks);
     lib_curs(WIN_MAP, 0, 0);
     char* line1 = do_statusline1();
+    char* loc;
+    if ((loc = strstr(line1, "\\G")) != 0)
+    {
+        *loc = '\0';
+    }
     lib_putstr(WIN_MAP, 0, line1);
     lib_curs(WIN_MAP, 0, 1);
     char* line2 = do_statusline2();
+    if ((loc = strstr(line2, "\\G")) != 0)
+    {
+        *loc = '\0';
+    }
     lib_putstr(WIN_MAP, 0, line2);
     lib_curs(WIN_MAP, u.ux, u.uy);
 }

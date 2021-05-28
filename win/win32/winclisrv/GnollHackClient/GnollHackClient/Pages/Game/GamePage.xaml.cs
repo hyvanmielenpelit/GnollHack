@@ -221,11 +221,6 @@ namespace GnollHackClient.Pages.Game
             yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
-            str = Message;
-            textPaint.TextSize = 36;
-            yText = yText + 50;
-            canvas.DrawText(str, xText, yText, textPaint);
-
             str = _message;
             textPaint.TextSize = 36;
             yText = yText + 50;
@@ -262,6 +257,8 @@ namespace GnollHackClient.Pages.Game
             yText = yText + 50;
             canvas.DrawText(str, xText, yText, textPaint);
 
+
+            /* Map */
             textPaint.Typeface = App.DejaVuSansMonoTypeface;
             textPaint.TextSize = 48;
             float canvaswidth = canvasView.CanvasSize.Width;
@@ -301,24 +298,55 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
+            /* Window strings */
+            lock (_clientGame.WindowsLock)
+            {
+                for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
+                {
+                    if (_clientGame.Windows[i].Visible)
+                    {
+                        textPaint.Typeface = _clientGame.Windows[i].Typeface;
+                        textPaint.TextSize = _clientGame.Windows[i].TextSize;
+                        textPaint.Color = _clientGame.Windows[i].TextColor;
+                        width = textPaint.FontMetrics.AverageCharacterWidth;
+                        height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+
+                        SKRect winRect = new SKRect(_clientGame.Windows[i].Left, _clientGame.Windows[i].Top,
+                            _clientGame.Windows[i].Right,
+                            _clientGame.Windows[i].Bottom);
+
+                        SKPaint winPaint = new SKPaint
+                        {
+                            Color = _clientGame.Windows[i].BackgroundColor,
+                            Style = SKPaintStyle.Fill
+                        };
+
+                        canvas.DrawRect(winRect, winPaint);
+
+                        for (int j = 0; j < GHConstants.MaxPutStrHeight; j++)
+                        {
+                            if (_clientGame.Windows[i].PutStrs[j] == null || _clientGame.Windows[i].PutStrs[j] == "")
+                                continue;
+
+                            str = _clientGame.Windows[i].PutStrs[j];
+                            textPaint.Color = SKColors.White;
+                            tx = _clientGame.Windows[i].Left + _clientGame.Windows[i].Padding.Left;
+                            ty = _clientGame.Windows[i].Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+                            canvas.DrawText(str, tx, ty, textPaint);
+                        }
+                    }
+                }
+            }
+
+            /* RawPrint */
+            str = Message;
             textPaint.Typeface = App.DiabloTypeface;
             textPaint.TextSize = 36;
             textPaint.Color = SKColors.White;
+            yText = 50;
+            canvas.DrawText(str, xText, yText, textPaint);
 
-            for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
-            {
-                for(int j = 0; j < GHConstants.MaxPutStrHeight; j++)
-                {
-                    if (_clientGame.Windows[i].PutStrs[j] == null || _clientGame.Windows[i].PutStrs[j] == "")
-                        continue;
 
-                    str = _clientGame.Windows[i].PutStrs[j];
-                    textPaint.Color = SKColors.White;
-                    tx = _clientGame.Windows[i].WinX;
-                    ty = _clientGame.Windows[i].WinY + j * height;
-                    canvas.DrawText(str, tx, ty, textPaint);
-                }
-            }
         }
 
         protected void ConnectToServer()

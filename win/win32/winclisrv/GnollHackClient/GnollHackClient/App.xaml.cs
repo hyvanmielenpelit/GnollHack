@@ -40,11 +40,25 @@ namespace GnollHackClient
                 }
             }
 
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.consola.ttf"))
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.endr.ttf"))
             {
                 if (stream != null)
                 {
-                    ConsolasTypeface = SKTypeface.FromStream(stream);
+                    EndorTypeface = SKTypeface.FromStream(stream);
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.imrl.ttf"))
+            {
+                if (stream != null)
+                {
+                    ImmortalTypeface = SKTypeface.FromStream(stream);
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.shxi.ttf"))
+            {
+                if (stream != null)
+                {
+                    XizorTypeface = SKTypeface.FromStream(stream);
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono.ttf"))
@@ -89,7 +103,9 @@ namespace GnollHackClient
         }
 
         public static SKTypeface DiabloTypeface { get; set; }
-        public static SKTypeface ConsolasTypeface { get; set; }
+        public static SKTypeface ImmortalTypeface { get; set; }
+        public static SKTypeface EndorTypeface { get; set; }
+        public static SKTypeface XizorTypeface { get; set; }
         public static SKTypeface UnderwoodTypeface { get; set; }
         public static SKTypeface DejaVuSansMonoTypeface { get; set; }
         
