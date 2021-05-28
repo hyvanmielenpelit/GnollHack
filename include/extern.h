@@ -3039,6 +3039,8 @@ E void FDECL(play_voice_monster_advice, (struct monst*, BOOLEAN_P));
 E void FDECL(play_voice_wizard_of_yendor_cuss, (struct monst*, int, int));
 E void FDECL(play_voice_wizard_of_yendor_simple_line, (struct monst*, enum wizard_of_yendor_simple_lines));
 E void FDECL(play_monster_line_indexed_sound, (struct monst*, enum monster_sound_types, int, enum sound_play_groups, enum immediate_sound_types, double));
+E void FDECL(play_monster_msg_indexed_sound, (struct monst*, enum monster_sound_types, int, enum sound_play_groups, enum immediate_sound_types, double));
+E void FDECL(play_monster_simply_indexed_sound, (struct monst*, enum monster_sound_types, int, enum sound_play_groups, enum immediate_sound_types, double, const char*));
 E void FDECL(play_monster_item_trading_line, (struct monst*, enum monster_item_trading_lines));
 E void FDECL(play_monster_standard_dialogue_line, (struct monst*, enum monster_standard_dialogue_lines));
 E void FDECL(play_monster_special_dialogue_line, (struct monst*, int));
