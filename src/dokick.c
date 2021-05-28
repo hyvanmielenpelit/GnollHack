@@ -564,9 +564,15 @@ uchar* hitres_ptr;
             }
         } else if (mtmp->ispriest) {
             if (is_peaceful(mtmp))
+            {
+                play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANK_YOU_FOR_YOUR_CONTRIBUTION);
                 verbalize("Thank you for your contribution.");
+            }
             else
+            {
+                play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANKS_SCUM);
                 verbalize("Thanks, scum!");
+            }
         } else if (mtmp->issmith || mtmp->isnpc) {
             if (is_peaceful(mtmp))
                 verbalize("Thank you for your assistance.");

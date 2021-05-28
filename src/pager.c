@@ -561,11 +561,11 @@ char *buf, *monbuf;
         {
         case S_altar:
             if(levl[x][y].subtyp == ALTAR_SUBTYPE_MOLOCH)
-                Sprintf(buf, "%saltar to Moloch",
+                Sprintf(buf, "%saltar to %s",
                     ((levl[x][y].altarmask & AM_SHRINE)
                         && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
                     ? "high "
-                    : "");
+                    : "" , Moloch);
             else if (levl[x][y].subtyp == ALTAR_SUBTYPE_HIGH)
                 Sprintf(buf, "%s %saltar",
                     /* like endgame high priests, endgame high altars

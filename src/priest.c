@@ -702,7 +702,9 @@ int roomno;
         sanctum = (priest->data == &mons[PM_HIGH_PRIEST]
                    && (Is_sanctum(&u.uz) || In_endgame(&u.uz)));
         can_speak = (mon_can_move(priest));
-        if (can_speak && !Deaf && moves >= epri_p->intone_time) 
+        enum priest_special_dialogue_lines spdl_id1 = PRIEST_SPECIAL_DIALOGUE_NONE;
+        enum priest_special_dialogue_lines spdl_id2 = PRIEST_SPECIAL_DIALOGUE_NONE;
+        if (can_speak && !Deaf && moves >= epri_p->intone_time)
         {
             unsigned save_priest = priest->ispriest;
 
@@ -727,6 +729,8 @@ int roomno;
                 /* first time inside */
                 msg1 = "Infidel, you have entered Moloch's Sanctum!";
                 msg2 = "Be gone!";
+                spdl_id1 = PRIEST_SPECIAL_DIALOGUE_HIGH_ENTERED_SANCTUM;
+                spdl_id2 = PRIEST_SPECIAL_DIALOGUE_HIGH_BE_GONE;
                 priest->mpeaceful = 0;
                 /* became angry voluntarily; no penalty for attacking him */
                 set_malign(priest);
@@ -735,6 +739,7 @@ int roomno;
             {
                 /* repeat visit, or attacked priest before entering */
                 msg1 = "You desecrate this place by your presence!";
+                spdl_id1 = PRIEST_SPECIAL_DIALOGUE_HIGH_DESECRATE_PLACE_BY_YOUR_PRESENCE;
             }
         } 
         else if (moves >= epri_p->enter_time) 
@@ -742,13 +747,18 @@ int roomno;
             Sprintf(buf, "Pilgrim, you enter a %s place!",
                     !shrined ? "desecrated" : "sacred");
             msg1 = buf;
+            spdl_id1 = !shrined ? PRIEST_SPECIAL_DIALOGUE_PILGRIM_ENTER_DESECRATED_PLACE : PRIEST_SPECIAL_DIALOGUE_PILGRIM_ENTER_SACRED_PLACE;
         }
 
         if (msg1 && can_speak && !Deaf)
         {
+            play_monster_special_dialogue_line(priest, spdl_id1);
             verbalize1(msg1);
             if (msg2)
+            {
+                play_monster_special_dialogue_line(priest, spdl_id2);
                 verbalize1(msg2);
+            }
             epri_p->enter_time = moves + (long) d(10, 100); /* ~505 */
         }
 
@@ -967,8 +977,10 @@ register struct monst *priest;
             priest->mfrozen = priest->msleeping = 0;
             priest->mcanmove = 1;
         }
+        int roll = rn2(3);
         priest->mpeaceful = 0;
-        verbalize1(cranky_msg[rn2(3)]);
+        play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_WORD_OR_TWO + roll);
+        verbalize1(cranky_msg[roll]);
         return;
     }
 
@@ -976,6 +988,7 @@ register struct monst *priest;
     if (is_peaceful(priest) && *in_rooms(priest->mx, priest->my, TEMPLE)
         && !has_shrine(priest)) 
     {
+        play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_BEGONE_DESECRATE_HOLY_PLACE);
         verbalize(
               "Begone!  Thou desecratest this holy place with thy presence.");
         priest->mpeaceful = 0;
@@ -989,13 +1002,17 @@ register struct monst *priest;
             long pmoney = money_cnt(priest->minvent);
             if (pmoney > 0L) 
             {
+                play_monster_special_dialogue_line(priest, (pmoney == 1L) ? PRIEST_SPECIAL_DIALOGUE_TAKE_THIS_HAVE_ALE : PRIEST_SPECIAL_DIALOGUE_TAKE_THESE_HAVE_ALE);
                 /* Note: two bits is actually 25 cents.  Hmm. */
                 pline("%s gives you %s for an ale.", Monnam(priest),
                       (pmoney == 1L) ? "one bit" : "two bits");
                 money2u(priest, pmoney > 1L ? 2 : 1);
             }
             else
+            {
+                play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_VIRTUES_OF_POVERTY);
                 pline("%s preaches the virtues of poverty.", Monnam(priest));
+            }
 
             exercise(A_WIS, TRUE);
         } 
@@ -1008,10 +1025,12 @@ register struct monst *priest;
     {
         long offer;
 
+        play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_CONSIDER_CONTRIBUTION);
         pline("%s asks you for a contribution for the temple.",
               Monnam(priest));
         if ((offer = bribe(priest)) == 0) 
         {
+            play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_REGRET_ACTION);
             verbalize("Thou shalt regret thine action!");
             if (coaligned)
                 adjalign(-1);
@@ -1020,10 +1039,12 @@ register struct monst *priest;
         {
             if (money_cnt(invent) > (offer * 2L)) 
             {
+                play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_CHEAPSKATE);
                 verbalize("Cheapskate.");
             } 
             else 
             {
+                play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_THANK_FOR_CONTRIBUTION);
                 verbalize("I thank thee for thy contribution.");
                 /* give player some token */
                 exercise(A_WIS, TRUE);
@@ -1031,10 +1052,12 @@ register struct monst *priest;
         } 
         else if (offer < (u.ulevel * 400)) 
         {
+            play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_PIOUS_INDIVIDUAL);
             verbalize("Thou art indeed a pious individual.");
             if (money_cnt(invent) < (offer * 2L)) {
                 if (coaligned && u.ualign.record <= ALGN_SINNED)
                     adjalign(1);
+                play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_BESTOW_BLESSING);
                 verbalize("I bestow upon thee a blessing.");
                 incr_itimeout(&HClairvoyant, rn1(500, 500));
             }
@@ -1048,6 +1071,7 @@ register struct monst *priest;
                        || (u.ublessed < 12
                            && (u.ublessed < 8 || !rn2(u.ublessed)))))
         {
+            play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_DEVOTION_REWARDED);
             verbalize("Thy devotion has been rewarded.");
             if (u.ublessed == 0)
                 u.ublessed = rnd(3);
@@ -1056,6 +1080,7 @@ register struct monst *priest;
         }
         else
         {
+            play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_GENEROSITY_APPRECIATED);
             verbalize("Thy selfless generosity is deeply appreciated.");
             if (money_cnt(invent) < (offer * 2L) && coaligned)
             {

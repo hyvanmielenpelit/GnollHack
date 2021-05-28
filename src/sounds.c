@@ -554,9 +554,17 @@ dosounds()
             while (!letter(*msg))
                 ++msg; /* skip control flags */
 
-            play_sfx_sound(temple_sound[roll]);
+            if (roll != 2 && mtmp) /* Should be in his shop, since it is tended */
+            {
+                context.global_minimum_volume = 0.15f;
+                play_monster_special_dialogue_line(mtmp, roll == 0 ? PRIEST_SPECIAL_DIALOGUE_PRAISE_GOD : roll == 1 ? PRIEST_SPECIAL_DIALOGUE_HEAR_PRAYERS : PRIEST_SPECIAL_DIALOGUE_CONSIDER_DONATION);
+                context.global_minimum_volume = 0.0f;
+            }
+            else
+                play_sfx_sound(temple_sound[roll]);
+
             if (index(msg, '%'))
-                You_hear(msg, halu_gname(EPRI(mtmp)->shralign));
+                You_hear(msg, iflags.using_gui_sounds ? (mon_aligntyp(mtmp) == A_NONE ? Moloch : "god") : halu_gname(EPRI(mtmp)->shralign));
             else
                 You_hear1(msg);
             return;
@@ -926,19 +934,26 @@ register struct monst *mtmp;
         break;
         //return doconsult(mtmp);
     case MS_PRIEST:
+    {
+        const char* temple_god = iflags.using_gui_sounds ? (mon_aligntyp(mtmp) == A_NONE ? Moloch : "our almighty god") :
+            ((mtmp->ispriest && mtmp->mextra && mtmp->mextra->epri) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
+
         if (is_peaceful(mtmp))
         {
-            Sprintf(verbuf, "Welcome to the temple of %s, adventurer!", (mtmp->ispriest && mtmp->mextra && mtmp->mextra->epri) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
+            play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_WELCOME_TO_TEMPLE_LONG);
+            Sprintf(verbuf, "Welcome to the temple of %s, adventurer!", temple_god);
             chat_line = 0;
         }
         else
         {
-            Sprintf(verbuf, "You shall perish by the divine hand of %s!", (mtmp->ispriest && mtmp->mextra && mtmp->mextra->epri) ? align_gname(mtmp->mextra->epri->shralign) : "our almighty god");
+            play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_YOU_SHALL_PERISH);
+            Sprintf(verbuf, "You shall perish by the divine hand of %s!", temple_god);
             chat_line = 1;
         }
         verbl_msg = verbuf;
         break;
         //priest_talk(mtmp);
+    }
     case MS_LEADER:
     case MS_NEMESIS:
     case MS_GUARDIAN:
@@ -3314,13 +3329,35 @@ struct monst* mtmp;
     }
     else if (mtmp->ispriest || msound == MS_PRIEST)
     {
-        if (has_mname(mtmp))
+        if (iflags.using_gui_sounds)
         {
-            Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), mon_nam(mtmp));
-            mtmp->u_know_mname = 1;
+            play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+            if (has_mname(mtmp))
+            {
+                if (mon_aligntyp(mtmp) == A_NONE)
+                    Sprintf(ansbuf, "I am a %s of %s.", mtmp->female ? "priestess" : "priest", Moloch);
+                else
+                    Sprintf(ansbuf, "I am a local %s. (The name tag indicates that %s name is %s.)", mtmp->female ? "priestess" : "priest", mhis(mtmp), MNAME(mtmp));
+
+                mtmp->u_know_mname = 1;
+            }
+            else
+            {
+                Sprintf(ansbuf, "I am a local %s.", mtmp->female ? "priestess" : "priest");
+            }
         }
         else
-            Sprintf(ansbuf, "I am %s.", mon_nam(mtmp));
+        {
+            if (has_mname(mtmp))
+            {
+                Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), mon_nam(mtmp));
+                mtmp->u_know_mname = 1;
+            }
+            else
+            {
+                Sprintf(ansbuf, "I am %s.", mon_nam(mtmp));
+            }
+        }
         verbalize("%s", ansbuf);
     }
     else if (mtmp->mnum == PM_ORACLE || msound == MS_ORACLE)
@@ -5252,6 +5289,7 @@ struct monst* mtmp;
         return 0;
     }
 
+    play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_MAJOR_CONTRIBUTION);
     Sprintf(qbuf, "Would you like to make a major contribution for the temple? (%d %s)", major_cost, currency((long)major_cost));
     switch (ynq(qbuf)) {
     default:
@@ -5268,6 +5306,7 @@ struct monst* mtmp;
         break;
         break;
     case 'n':
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_MINOR_DONATION);
         Sprintf(qbuf, "Then would you like to make a minor donation instead? (%d %s)",
             minor_cost, currency((long)minor_cost));
         if (yn_query(qbuf) != 'y')
@@ -5292,6 +5331,7 @@ struct monst* mtmp;
 
     if (priest_action == 2)
     {
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_PIOUS_INDIVIDUAL);
         verbalize("Thou art indeed a pious individual.");
         if (coaligned && u.ualign.record <= ALGN_SINNED)
         {
@@ -5299,6 +5339,7 @@ struct monst* mtmp;
             adjalign(1);
         }
         play_sfx_sound(SFX_PRAY_BLESS_WATER);
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_BESTOW_BLESSING);
         verbalize("I bestow upon thee a blessing.");
         incr_itimeout(&HClairvoyant, rn1(500, 500));
     }
@@ -5312,6 +5353,7 @@ struct monst* mtmp;
                 && (u.ublessed < 8 || !rn2(u.ublessed)))))
     {
         play_sfx_sound(SFX_ALTAR_GIFT);
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_DEVOTION_REWARDED);
         verbalize("Thy devotion has been rewarded.");
         if (u.ublessed == 0)
             u.ublessed = rnd(3);
@@ -5320,6 +5362,7 @@ struct monst* mtmp;
     }
     else
     {
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_GENEROSITY_APPRECIATED);
         verbalize("Thy selfless generosity is deeply appreciated.");
         if (coaligned)
         {
@@ -5360,6 +5403,7 @@ struct monst* mtmp;
         return 0;
     }
 
+    play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_WOULD_YOU_LIKE_TO_SEE_YOUR_FORTUNE);
     Sprintf(qbuf, "Would you like to see your fortune? (%d %s)", divination_cost, currency((long)divination_cost));
     switch (ynq(qbuf)) {
     default:
@@ -5380,40 +5424,85 @@ struct monst* mtmp;
 
     u.uconduct.gnostic++;
 
+    play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_IS_LIKE);
     verbalize("Very well, then. Let's see what your fortune is like.");
 
     if (can_pray(FALSE))
+    {
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_CAN_SAFELY_PRAY);
         verbalize("First, I see that you can safely pray.");
+
+    }
     else
     {
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_CANNOT_SAFELY_PRAY);
         verbalize("First, you should know that you cannot safely pray.");
 
         if (u.ugangr)
-            verbalize("I see that %s is %sangry with you.", u_gname(), u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
+        {
+            play_monster_special_dialogue_line(mtmp, u.ugangr > 6 ? PRIEST_SPECIAL_DIALOGUE_GOD_EXTREMELY_ANGRY : u.ugangr > 3 ? PRIEST_SPECIAL_DIALOGUE_GOD_VERY_ANGRY : PRIEST_SPECIAL_DIALOGUE_GOD_ANGRY );
+            verbalize("I see that %s is %sangry with you.", iflags.using_gui_sounds ? "your god" : u_gname(), u.ugangr > 6 ? "extremely " : u.ugangr > 3 ? "very " : "");
+        }
 
         if (u.uprayer_timeout > 0)
         {
-            verbalize("For your prayer conduct, the number %d appears before me.", u.uprayer_timeout / 10 + 1);
+            if (iflags.using_gui_sounds)
+            {
+                play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_PRAYER_CONDUCT_NUMBER);
+                verbalize("For your prayer conduct, a number appears before me. (The number appears to be %d.)", u.uprayer_timeout / 10 + 1);
+            }
+            else
+                verbalize("For your prayer conduct, the number %d appears before me.", u.uprayer_timeout / 10 + 1);
 
             if (u.uprayer_timeout > 300)
-                verbalize("I can see that %s is quite tired of your constant whining.", u_gname());
+            {
+                play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_GOD_TIRED_OF_WHINING);
+                verbalize("I can see that %s is quite tired of your constant whining.", iflags.using_gui_sounds ? "your god" : u_gname());
+            }
+
+            if(u.uprayer_timeout >= 50)
+                play_monster_special_dialogue_line(mtmp, u.uprayer_timeout < 50 ? PRIEST_SPECIAL_DIALOGUE_WISE_TO_WAIT_LITTLE_LONGER : u.uprayer_timeout > 200 ? PRIEST_SPECIAL_DIALOGUE_WISE_TO_WAIT_LONG_TIME : PRIEST_SPECIAL_DIALOGUE_WISE_TO_WAIT_LITTLE_LONGER);
+            else
+                play_monster_special_dialogue_line(mtmp, u.uprayer_timeout < 50 ? PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LITTLE_LONGER : u.uprayer_timeout > 200 ? PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LONG_TIME : PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LITTLE_LONGER);
 
             verbalize("Thus, %s wait %sbefore bothering %s again.",
                 u.uprayer_timeout >= 50 ? "it would be wise to" : "you must",
                 u.uprayer_timeout < 50 ? "a little longer " : u.uprayer_timeout > 200 ? "a long time " : "",
-                u_gname());
+                iflags.using_gui_sounds ? "your god" : u_gname());
         }
     }
 
-    if (Luck < 0)
-        verbalize("For your fortune, I see a number of %d. That is not good, for it is %s unlucky number.",
-            abs(Luck), abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an");
-    else if(Luck > 0)
-        verbalize("For your fortune, I see a number of %d. That is good, for it is %s lucky number.",
-            Luck, Luck >= 10 ? "an extremely" : Luck >= 5 ? "a very" : "a");
-    else
-        verbalize("For your fortune, my vision is neutral.");
+    char buf1[BUFSZ] = "";
+    char buf2[BUFSZ] = "";
+    if (!iflags.using_gui_sounds)
+        Sprintf(buf1, " of %d", abs(Luck));
+    if (iflags.using_gui_sounds)
+        Sprintf(buf2, " (This number appears to be %d.)", abs(Luck));
 
+    if (Luck < 0)
+    {
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_NUMBER);
+        play_monster_special_dialogue_line(mtmp, abs(Luck) >= 10 ? PRIEST_SPECIAL_DIALOGUE_EXTREMELY_UNLUCKY_NUMBER : abs(Luck) >= 5 ? PRIEST_SPECIAL_DIALOGUE_VERY_UNLUCKY_NUMBER : PRIEST_SPECIAL_DIALOGUE_UNLUCKY_NUMBER);
+
+        verbalize("For your fortune, I see a number%s. That is not good, for it is %s unlucky number.%s",
+            buf1, abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an", buf2);
+    }
+    else if (Luck > 0)
+    {
+
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_NUMBER);
+        play_monster_special_dialogue_line(mtmp, abs(Luck) >= 10 ? PRIEST_SPECIAL_DIALOGUE_EXTREMELY_LUCKY_NUMBER : abs(Luck) >= 5 ? PRIEST_SPECIAL_DIALOGUE_VERY_LUCKY_NUMBER : PRIEST_SPECIAL_DIALOGUE_LUCKY_NUMBER);
+
+        verbalize("For your fortune, I see a number%s. That is good, for it is %s lucky number.%s",
+            buf1, abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an", buf2);
+    }
+    else
+    {
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FORTUNE_NEUTRAL);
+        verbalize("For your fortune, my vision is neutral.");
+    }
+
+    play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANK_YOU_FOR_YOUR_INTEREST);
     verbalize("That's all for now. Thank you for your interest in divine matters.");
 
     return 1;
@@ -7293,11 +7382,13 @@ int* spell_otyps;
 
     if (cnt == 0)
     {
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_CANNOT_TEACH_SPELLS);
         verbalize("Unfortunately, I cannot teach any spells at the moment.");
         return 1;
     }
     else if (not_known_cnt == 0)
     {
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_CANNOT_TEACH_SPELLS_YOU_DONT_KNOW);
         verbalize("Unfortunately, I cannot teach any spells you do not already know.");
         return 1;
     }

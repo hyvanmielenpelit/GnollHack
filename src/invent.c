@@ -5229,7 +5229,7 @@ int x, y;
                 ((lev->altarmask& AM_SHRINE)
                     && (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)))
                 ? "high " : "",
-                "Moloch");
+                Moloch);
         }
         else
         {
