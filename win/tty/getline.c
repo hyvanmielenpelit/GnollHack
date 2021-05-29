@@ -235,7 +235,7 @@ getlin_hook_proc hook;
 
     if (use_utf8_encoding())
     {
-        convertUTF8toCP437(bufp, strlen(bufp));
+        convertUTF8toCP437(obufp, strlen(obufp));
     }
 }
 
