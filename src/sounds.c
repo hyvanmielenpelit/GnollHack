@@ -6345,7 +6345,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->ispriest || !mtmp->mextra || !EPRI(mtmp))
         return 0;
 
-    int spell_otyps[10] = { SPE_EXTRA_HEALING, SPE_GREATER_HEALING, 0, 0, 0, 0, 0, 0, 0, 0 };
+    int spell_otyps[10] = { SPE_MINOR_HEALING, SPE_HEALING, SPE_EXTRA_HEALING, SPE_GREATER_HEALING, 0, 0, 0, 0, 0, 0 };
 
     return spell_teaching(mtmp, spell_otyps);
 }
