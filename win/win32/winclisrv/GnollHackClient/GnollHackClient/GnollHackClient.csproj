@@ -22,6 +22,8 @@
     <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
     <None Remove="Assets\imrl.ttf" />
+    <None Remove="Assets\Lato-Bold.ttf" />
+    <None Remove="Assets\Lato-Regular.ttf" />
     <None Remove="Assets\Master.bank" />
     <None Remove="Assets\Master.strings.bank" />
     <None Remove="Assets\shxi.ttf" />
@@ -39,6 +41,8 @@
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
     <EmbeddedResource Include="Assets\imrl.ttf" />
+    <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
+    <EmbeddedResource Include="Assets\Lato-Regular.ttf" />
     <EmbeddedResource Include="Assets\Master.bank" />
     <EmbeddedResource Include="Assets\Master.strings.bank" />
     <EmbeddedResource Include="Assets\shxi.ttf" />

@@ -324,6 +324,14 @@ namespace GnollHackClient.Pages.Game
                             _clientGame.Windows[i].Right,
                             _clientGame.Windows[i].Bottom);
 
+                        if(_clientGame.Windows[i].CenterHorizontally && winRect.Right - winRect.Left < canvaswidth)
+                        {
+                            float newleft = (canvaswidth - (winRect.Right - winRect.Left)) / 2;
+                            float addition = newleft - winRect.Left;
+                            winRect.Left += addition;
+                            winRect.Right += addition;
+                        }
+
                         SKPaint winPaint = new SKPaint
                         {
                             Color = _clientGame.Windows[i].BackgroundColor,
@@ -339,8 +347,8 @@ namespace GnollHackClient.Pages.Game
 
                             str = _clientGame.Windows[i].PutStrs[j];
                             textPaint.Color = SKColors.White;
-                            tx = _clientGame.Windows[i].Left + _clientGame.Windows[i].Padding.Left;
-                            ty = _clientGame.Windows[i].Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+                            tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
+                            ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
                             canvas.DrawText(str, tx, ty, textPaint);
                         }
                     }

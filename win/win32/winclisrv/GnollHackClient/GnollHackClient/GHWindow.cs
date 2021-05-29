@@ -42,6 +42,7 @@ namespace GnollHackClient
         public SKColor BackgroundColor { get; set; }
         public int CursX { get; set; }
         public int CursY { get; set; }
+        public bool CenterHorizontally { get; set; }
         public GHWinType WindowType { get { return _winType; } }
         public GamePage ClientGamePage { get { return _gamePage; } }
         public string[] PutStrs = new string[GHConstants.MaxPutStrHeight];
@@ -67,9 +68,9 @@ namespace GnollHackClient
 
         public void Create()
         {
-            Typeface = App.XizorTypeface;
+            Typeface = App.LatoRegular;
             TextColor = SKColors.White;
-            TextSize = 48;
+            TextSize = 42;
             BackgroundColor = new SKColor(25, 25, 25);
             switch (_winType)
             {
@@ -81,12 +82,14 @@ namespace GnollHackClient
                     Top = 0;
                     break;
                 case GHWinType.Status: /* Does not exist */
+                    TextSize = 36;
+                    Typeface = App.LatoRegular;
                     Left = 0;
                     Top = 0;
                     break;
                 case GHWinType.Map:
-                    TextSize = 60;
-                    Typeface = App.XizorTypeface;
+                    TextSize = 36;
+                    Typeface = App.LatoRegular;
                     Left = 0;
                     Top = 100;
                     break;
@@ -94,13 +97,15 @@ namespace GnollHackClient
                     Typeface = App.EndorTypeface;
                     TextSize = 42;
                     Left = 0;
-                    Top = 350;
+                    Top = 250;
+                    CenterHorizontally = true;
                     break;
                 case GHWinType.Text:
                     Typeface = App.EndorTypeface;
                     TextSize = 42;
                     Left = 0;
-                    Top = 350;
+                    Top = 250;
+                    CenterHorizontally = true;
                     break;
             }
         }
