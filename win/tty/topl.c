@@ -315,14 +315,14 @@ int c;
         ttyDisplay->cury++;
         cw->cury = ttyDisplay->cury;
 #ifdef WIN32CON
-        (void) putchar(c);
+        (void) doputchar(c);
 #endif
         break;
     default:
         if (ttyDisplay->curx == CO - 1)
             topl_putsym('\n'); /* 1 <= curx < CO; avoid CO */
 #ifdef WIN32CON
-        (void) putchar(c);
+        (void) doputchar(c);
 #endif
         ttyDisplay->curx++;
     }
@@ -330,7 +330,7 @@ int c;
     if (cw->curx == 0)
         cl_end();
 #ifndef WIN32CON
-    (void) putchar(c);
+    (void) doputchar(c);
 #endif
 }
 

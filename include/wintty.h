@@ -184,6 +184,7 @@ E void FDECL(docorner, (int, int));
 E void NDECL(end_glyphout);
 E void FDECL(g_putch, (int));
 E void FDECL(win_tty_init, (int));
+E int FDECL(doputchar, (nhsym));
 
 /* external declarations */
 E void FDECL(tty_init_nhwindows, (int *, char **));

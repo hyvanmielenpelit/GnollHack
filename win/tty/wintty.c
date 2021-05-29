@@ -235,7 +235,6 @@ STATIC_DCL void FDECL(print_rest_partyline, (char*, int*, int*));
 #endif
 
 STATIC_DCL int FDECL(putcharutf8, (nhsym));
-STATIC_DCL int FDECL(doputchar, (nhsym));
 
 /*
  * A string containing all the default commands -- to add to a list
@@ -3432,7 +3431,7 @@ nhsym ch;
     return 0;
 }
 
-STATIC_OVL int
+int
 doputchar(ch)
 nhsym ch;
 {
