@@ -525,7 +525,7 @@ namespace GnollHackClient.Pages.Game
                     res = SKColors.Cyan;
                     break;
                 case nhcolor.CLR_GRAY:
-                    res = SKColors.Gray;
+                    res = SKColors.LightGray;
                     break;
                 case nhcolor.NO_COLOR:
                     break;

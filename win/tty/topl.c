@@ -15,7 +15,7 @@
 #endif
 
 STATIC_DCL void FDECL(redotoplin, (const char *));
-STATIC_DCL void FDECL(topl_putsym, (CHAR_P));
+STATIC_DCL void FDECL(topl_putsym, (int));
 STATIC_DCL void FDECL(removetopl, (int));
 STATIC_DCL void FDECL(msghistory_snapshot, (BOOLEAN_P));
 STATIC_DCL void FDECL(free_msghistory_snapshot, (BOOLEAN_P));
@@ -132,7 +132,7 @@ const char *str;
     if (*str & 0x80) {
         /* kludge for the / command, the only time we ever want a */
         /* graphics character on the top line */
-        g_putch((int)((unsigned char)(*str++)));
+        g_putch((int)*str++);
         ttyDisplay->curx++;
     }
     end_glyphout(); /* in case message printed during graphics output */
@@ -291,7 +291,7 @@ register const char *bp;
 STATIC_OVL
 void
 topl_putsym(c)
-char c;
+int c;
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
 

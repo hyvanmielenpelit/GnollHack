@@ -451,10 +451,19 @@ tgetch()
     really_move_cursor();
     if (iflags.debug_fuzzer)
         return randomkey();
-    return (program_state.done_hup)
-               ? '\033'
-               : keyboard_handler.pCheckInput(
-                   console.hConIn, &ir, &count, iflags.num_pad, 0, &mod, &cc);
+
+    int res = (program_state.done_hup)
+        ? '\033'
+        : keyboard_handler.pCheckInput(
+            console.hConIn, &ir, &count, iflags.num_pad, 0, &mod, &cc);
+
+    if (console.has_unicode)
+    {
+        /* Convert to CP437, since it will be converted back to Unicode later */
+        res = unicode_to_char((nhsym)res);
+    }
+
+    return res;
 }
 
 int
@@ -535,6 +544,10 @@ xputc(ch)
 int ch;
 {
     set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
+
+    if (ch < 0 && ch >= -128)
+        ch += 256; /* Assume certain negatives are chars that need to be converted to unsigned char */
+
     xputc_core(ch);
 }
 
@@ -627,6 +640,8 @@ int in_ch;
 {
     boolean inverse = FALSE;
     nhsym ch = in_ch;
+    if (ch < 0 && ch >= -128)
+        ch += 256; /* Assume this is a char of over 127 value */
 
     set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
 

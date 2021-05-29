@@ -1373,12 +1373,12 @@ tty_askname()
 #if defined(MICRO)
 #if defined(MSDOS)
                 if (iflags.grmode) {
-                    (void) putchar(c);
+                    (void) doputchar((nhsym)c);
                 } else
 #endif
                     msmsg("%c", c);
 #else
-                (void) putchar(c);
+                (void) doputchar((nhsym)c);
 #endif
                 plname[ct++] = c;
 #ifdef WIN32CON
@@ -1795,7 +1795,7 @@ tty_menu_item *item;
     HUPSKIP();
     tty_curs(window, 4, lineno);
     term_start_attr(item->attr);
-    (void) putchar(ch);
+    (void) doputchar((nhsym)ch);
     ttyDisplay->curx++;
     term_end_attr(item->attr);
 }
@@ -2045,7 +2045,7 @@ struct WinDesc *cw;
                             else
                                 (void) putchar('#'); /* count selected */
                         } else
-                            (void) putchar(*cp);
+                            (void) doputchar((nhsym)*cp);
                     } /* for *cp */
                     if (n > attr_n && (color != NO_COLOR || attr != ATR_NONE))
                         toggle_menu_attr(FALSE, color, attr);
@@ -2348,7 +2348,7 @@ struct WinDesc *cw;
                 /* message recall for msg_window:full/combination/reverse
                    might have output from '/' in it (see redotoplin()) */
                 if (linestart && (*cp & 0x80) != 0) {
-                    g_putch((int)((unsigned char)(*cp)));
+                    g_putch((int)*cp);
                     end_glyphout();
                     linestart = FALSE;
                 } else {
@@ -2816,7 +2816,7 @@ const char *str;
         tty_curs(window, cw->curx + 1, cw->cury);
         term_start_attr(attr);
         while (*str && (int) ttyDisplay->curx < (int) ttyDisplay->cols - 1) {
-            (void) putchar(*str);
+            (void) doputchar((nhsym)*str);
             str++;
             ttyDisplay->curx++;
         }
@@ -2833,7 +2833,7 @@ const char *str;
                 cw->cury++;
                 tty_curs(window, cw->curx + 1, cw->cury);
             }
-            (void) putchar(*str);
+            (void) doputchar((nhsym)*str);
             str++;
             ttyDisplay->curx++;
         }
@@ -3440,7 +3440,11 @@ nhsym ch;
 {
     if (use_utf8_encoding())
     {
+        if (ch < 0 && ch >= -128)
+            ch += 256; /* Assume this is a negative char */
+
         nhsym c = ch;
+
         if (flags.ibm2utf8 && SYMHANDLING(H_IBM) && ch >= 0 && ch < 256)
             c = cp437toUnicode[ch];
 
@@ -4545,7 +4549,7 @@ int x, y;
         for (i = 0; i < lth; ++i) {
             n = i + x;
             if (n < ncols && *text) {
-                (void) putchar(*text);
+                (void) doputchar((nhsym)*text);
                 ttyDisplay->curx++;
                 cw->curx++;
                 cw->data[y][n - 1] = *text;

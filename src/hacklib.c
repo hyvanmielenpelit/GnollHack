@@ -1489,14 +1489,15 @@ unicode_to_char(ch)
 nhsym ch;
 {
     int i;
-    if (ch < 256 && cp437toUnicode[ch] == ch)
+
+    if (ch < 32 || (ch < 256 && cp437toUnicode[ch] == ch))
         return (char)ch;
 
     for (i = 0; i < 256; i++)
         if (cp437toUnicode[i] == ch)
             return (char)i;
 
-    return '?';
+    return (char)ch;
 }
 
 int
