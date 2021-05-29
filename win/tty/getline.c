@@ -41,6 +41,8 @@ register char *bufp;
     hooked_tty_getlin(query, bufp, (getlin_hook_proc) 0);
 }
 
+boolean skip_utf8 = FALSE;
+
 STATIC_OVL void
 hooked_tty_getlin(query, bufp, hook)
 const char *query;
@@ -70,6 +72,7 @@ getlin_hook_proc hook;
     *bufp = '\0';
 #endif
 
+    skip_utf8 = TRUE;
     for (;;) {
         (void) fflush(stdout);
         Strcat(strcat(strcpy(toplines, query), " "), obufp);
@@ -232,6 +235,8 @@ getlin_hook_proc hook;
         dumplogmsg(toplines);
 #endif
     }
+
+    skip_utf8 = FALSE;
 
     if (use_utf8_encoding())
     {

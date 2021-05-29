@@ -106,6 +106,7 @@ extern struct DisplayDesc *ttyDisplay; /* the tty display descriptor */
 
 extern char morc;         /* last character typed to xwaitforspace */
 extern char defmorestr[]; /* default --more-- prompt */
+extern boolean skip_utf8;
 
 /* port specific external function references */
 
