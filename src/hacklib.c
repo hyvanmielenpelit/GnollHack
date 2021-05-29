@@ -1553,6 +1553,20 @@ int* x, * y, * mod;
     return c;
 }
 
+
+boolean
+use_utf8_encoding()
+{
+    /* Windows ASCII GnollHack does not use UTF-8 encoding with Unicode */
+#ifdef WIN32
+    return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)));
+#else
+    return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)) || SYMHANDLING(H_UNICODE));
+#endif
+}
+
+
+
 #if defined(UNIX) && !defined(GNH_ANDROID) 
 extern int unix_is_stdin_empty(); /* From unixmain.c */
 #endif

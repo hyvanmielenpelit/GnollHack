@@ -236,8 +236,6 @@ STATIC_DCL void FDECL(print_rest_partyline, (char*, int*, int*));
 
 STATIC_DCL int FDECL(putcharutf8, (nhsym));
 STATIC_DCL int FDECL(doputchar, (nhsym));
-STATIC_DCL boolean NDECL(use_utf8_encoding);
-
 
 /*
  * A string containing all the default commands -- to add to a list
@@ -3455,17 +3453,6 @@ nhsym ch;
         (void)putchar(ch);
         return 0;
     }
-}
-
-STATIC_OVL boolean
-use_utf8_encoding()
-{
-    /* Windows ASCII GnollHack does not use UTF-8 encoding with Unicode */
-#ifdef WIN32
-    return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)));
-#else
-    return ((flags.ibm2utf8 && SYMHANDLING(H_IBM)) || SYMHANDLING(H_UNICODE));
-#endif
 }
 
 #ifndef WIN32

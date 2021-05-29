@@ -232,6 +232,11 @@ getlin_hook_proc hook;
         dumplogmsg(toplines);
 #endif
     }
+
+    if (use_utf8_encoding())
+    {
+        convertUTF8toCP437(bufp, strlen(bufp));
+    }
 }
 
 void
