@@ -72,7 +72,7 @@ cell_t undefined_cell = { CONSOLE_UNDEFINED_CHARACTER,
  */
 
 static BOOL FDECL(CtrlHandler, (DWORD));
-static void FDECL(xputc_core, (char));
+static void FDECL(xputc_core, (int));
 void FDECL(cmov, (int, int));
 void FDECL(nocmov, (int, int));
 int FDECL(process_keystroke,
@@ -550,7 +550,7 @@ const char *s;
 
     if (s) {
         for (k = 0; k < slen && s[k]; ++k)
-            xputc_core(s[k]);
+            xputc_core((int)((unsigned char)s[k]));
     }
 }
 

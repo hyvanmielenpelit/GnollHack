@@ -116,11 +116,12 @@ unsigned long *ospecial;
         || (offset = (glyph - GLYPH_ARTIFACT_OFF)) >= 0
         )
     { /* an artifact */
-        int objoffset = artilist[offset].otyp;                
-        if (artilist[offset].maskotyp != STRANGE_OBJECT)
+        int artidx = offset + 1;
+        int objoffset = artilist[artidx].otyp;
+        if (artilist[artidx].maskotyp != STRANGE_OBJECT)
         {
             /* We always use maskotyp for base case if there is one, since the item is specified to look like one */
-            objoffset = artilist[offset].maskotyp;
+            objoffset = artilist[artidx].maskotyp;
         }
         /* Select the right symbol */
         idx = objects[objoffset].oc_class + SYM_OFF_O;
@@ -142,10 +143,10 @@ unsigned long *ospecial;
         }
         else
         {
-            if(artilist[offset].ocolor == NO_COLOR)
+            if(artilist[artidx].ocolor == NO_COLOR)
                 obj_color(objoffset);
             else
-                artifact_color(offset);
+                artifact_color(artidx);
         }
         if (objoffset != BOULDER && is_objpile(x, y))
             special |= MG_OBJPILE;
