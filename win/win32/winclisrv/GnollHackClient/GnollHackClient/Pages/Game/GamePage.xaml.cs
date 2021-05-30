@@ -129,25 +129,28 @@ namespace GnollHackClient.Pages.Game
 
         private void pollRequestQueue()
         {
-            GHRequest req;
-            ConcurrentQueue<GHRequest> queue;
-            if(ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
+            if(_clientGame != null)
             {
-                if (queue.TryDequeue(out req))
+                GHRequest req;
+                ConcurrentQueue<GHRequest> queue;
+                if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
                 {
-                    switch (req.RequestType)
+                    if (queue.TryDequeue(out req))
                     {
-                        case GHRequestType.GetChar:
-                            GetChar();
-                            break;
-                        case GHRequestType.AskName:
-                            AskName();
-                            break;
-                        case GHRequestType.ReturnToMainMenu:
-                            ClearMap();
-                            _clientGame = null;
-                            ReturnToMainMenu();
-                            break;
+                        switch (req.RequestType)
+                        {
+                            case GHRequestType.GetChar:
+                                GetChar();
+                                break;
+                            case GHRequestType.AskName:
+                                AskName();
+                                break;
+                            case GHRequestType.ReturnToMainMenu:
+                                ClearMap();
+                                _clientGame = null;
+                                ReturnToMainMenu();
+                                break;
+                        }
                     }
                 }
             }
@@ -307,52 +310,56 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            /* Window strings */
-            lock (_clientGame.WindowsLock)
+            if(_clientGame != null)
             {
-                for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
+                /* Window strings */
+                lock (_clientGame.WindowsLock)
                 {
-                    if (_clientGame.Windows[i].Visible)
+                    for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
                     {
-                        textPaint.Typeface = _clientGame.Windows[i].Typeface;
-                        textPaint.TextSize = _clientGame.Windows[i].TextSize;
-                        textPaint.Color = _clientGame.Windows[i].TextColor;
-                        width = textPaint.FontMetrics.AverageCharacterWidth;
-                        height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-
-                        SKRect winRect = new SKRect(_clientGame.Windows[i].Left, _clientGame.Windows[i].Top,
-                            _clientGame.Windows[i].Right,
-                            _clientGame.Windows[i].Bottom);
-
-                        if(_clientGame.Windows[i].CenterHorizontally && winRect.Right - winRect.Left < canvaswidth)
+                        if (_clientGame.Windows[i].Visible)
                         {
-                            float newleft = (canvaswidth - (winRect.Right - winRect.Left)) / 2;
-                            float addition = newleft - winRect.Left;
-                            winRect.Left += addition;
-                            winRect.Right += addition;
-                        }
+                            textPaint.Typeface = _clientGame.Windows[i].Typeface;
+                            textPaint.TextSize = _clientGame.Windows[i].TextSize;
+                            textPaint.Color = _clientGame.Windows[i].TextColor;
+                            width = textPaint.FontMetrics.AverageCharacterWidth;
+                            height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
 
-                        SKPaint winPaint = new SKPaint
-                        {
-                            Color = _clientGame.Windows[i].BackgroundColor,
-                            Style = SKPaintStyle.Fill
-                        };
+                            SKRect winRect = new SKRect(_clientGame.Windows[i].Left, _clientGame.Windows[i].Top,
+                                _clientGame.Windows[i].Right,
+                                _clientGame.Windows[i].Bottom);
 
-                        canvas.DrawRect(winRect, winPaint);
+                            if(_clientGame.Windows[i].CenterHorizontally && winRect.Right - winRect.Left < canvaswidth)
+                            {
+                                float newleft = (canvaswidth - (winRect.Right - winRect.Left)) / 2;
+                                float addition = newleft - winRect.Left;
+                                winRect.Left += addition;
+                                winRect.Right += addition;
+                            }
 
-                        for (int j = 0; j < GHConstants.MaxPutStrHeight; j++)
-                        {
-                            if (_clientGame.Windows[i].PutStrs[j] == null || _clientGame.Windows[i].PutStrs[j] == "")
-                                continue;
+                            SKPaint winPaint = new SKPaint
+                            {
+                                Color = _clientGame.Windows[i].BackgroundColor,
+                                Style = SKPaintStyle.Fill
+                            };
 
-                            str = _clientGame.Windows[i].PutStrs[j];
-                            textPaint.Color = SKColors.White;
-                            tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
-                            ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
-                            canvas.DrawText(str, tx, ty, textPaint);
+                            canvas.DrawRect(winRect, winPaint);
+
+                            for (int j = 0; j < GHConstants.MaxPutStrHeight; j++)
+                            {
+                                if (_clientGame.Windows[i].PutStrs[j] == null || _clientGame.Windows[i].PutStrs[j] == "")
+                                    continue;
+
+                                str = _clientGame.Windows[i].PutStrs[j];
+                                textPaint.Color = SKColors.White;
+                                tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
+                                ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+                                canvas.DrawText(str, tx, ty, textPaint);
+                            }
                         }
                     }
                 }
+
             }
 
             /* RawPrint */
