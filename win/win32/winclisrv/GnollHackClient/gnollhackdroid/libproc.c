@@ -158,31 +158,31 @@ void lib_display_file(const char* filename, BOOLEAN_P must_exist)
 
 void lib_start_menu(winid wid)
 {
-    return;
+    lib_callbacks.callback_start_menu(wid);
 }
 
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    return;
+    lib_callbacks.callback_add_menu(wid, glyph, identifier, accelerator, group_accel, attr, str, presel);
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    return;
+    lib_callbacks.callback_add_menu(wid, glyph, identifier, accelerator, group_accel, attr, str, presel);
 }
 
 void lib_end_menu(winid wid, const char* prompt)
 {
-
+    lib_callbacks.callback_end_menu(wid, prompt);
 }
 
 int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
 {
-    return 0;
+    return lib_callbacks.callback_select_menu(wid, how, selected);
 }
 
 void lib_update_inventory(void)

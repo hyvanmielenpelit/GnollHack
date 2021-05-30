@@ -18,11 +18,11 @@ namespace GnollHackClient.Pages.Game
         private ClientGame _clientGame;
         private GamePage _gamePage;
 
-        public NamePage(ClientGame clientgame, GamePage gamepage)
+        public NamePage(GamePage gamepage)
         {
             InitializeComponent();
             ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,32}$");
-            _clientGame = clientgame;
+            _clientGame = gamepage.ClientGame;
             _gamePage = gamepage;
         }
 

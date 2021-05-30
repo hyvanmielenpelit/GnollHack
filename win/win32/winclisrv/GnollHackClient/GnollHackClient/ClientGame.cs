@@ -35,6 +35,7 @@ namespace GnollHackClient
             get { lock (_characterNameLock) { return _characterName; } } 
             set { lock (_characterNameLock) { _characterName = value; } }
         }
+
         public GamePage ClientGamePage
         {
             get { lock (_gamePageLock) { return _gamePage; } }
@@ -77,6 +78,19 @@ namespace GnollHackClient
                                 _inputBufferLocation = GHConstants.InputBufferLength -1;
                             _inputBuffer[_inputBufferLocation] = response.ResponseIntValue;
                             break;
+                        case GHRequestType.ShowMenuPage:
+                            if(response.RequestingGHWindow != null)
+                            {
+                                if (response.SelectedMenuItems != null)
+                                    response.RequestingGHWindow.SelectedMenuItems = response.SelectedMenuItems;
+                                else
+                                    response.RequestingGHWindow.SelectedMenuItems = new List<GHMenuItem>(); /* Empty selection */
+                            }
+                            else
+                            {
+                                //Throw an error or stop waiting
+                            }
+                            break;
                         default:
                             break;
                     }
@@ -104,7 +118,7 @@ namespace GnollHackClient
                 return 0;
 
             int handle = _lastWindowHandle;
-            GHWindow ghwin = new GHWindow((GHWinType)wintype, ClientGamePage);
+            GHWindow ghwin = new GHWindow((GHWinType)wintype, ClientGamePage, handle);
             lock(_ghWindowsLock)
             {
                 _ghWindows[handle] = ghwin;
@@ -317,6 +331,85 @@ namespace GnollHackClient
 
         }
 
+        public void ClientCallback_StartMenu(int winid)
+        {
+            lock(_ghWindowsLock)
+            {
+                if (_ghWindows[winid] != null)
+                {
+                    _ghWindows[winid].MenuInfo = new GHMenuInfo();
+                }
+            }
+        }
+        public void ClientCallback_AddMenu(int winid, int glyph, IntPtr identifier, char accel, char groupaccel, int attributes, string text, byte presel)
+        {
+            lock (_ghWindowsLock)
+            {
+                if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
+                {
+                    GHMenuItem mi = new GHMenuItem();
+                    mi.Accelerator = accel;
+                    mi.GroupAccelerator = groupaccel;
+                    mi.Attributes = attributes;
+                    mi.Glyph = glyph;
+                    mi.Text = text;
+                    mi.Preselected = (presel != 0);
+                    _ghWindows[winid].MenuInfo.MenuItems.Add(mi);
+                }
+            }
+        }
+
+        public void ClientCallback_EndMenu(int winid, string prompt)
+        {
+            lock (_ghWindowsLock)
+            {
+                if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
+                {
+                    _ghWindows[winid].MenuInfo.Header = prompt;
+                }
+            }
+        }
+        public int ClientCallback_SelectMenu(int winid, int how, IntPtr returnValues)
+        {
+            Debug.WriteLine("ClientCallback_SelectMenu");
+            ConcurrentQueue<GHRequest> queue;
+
+            lock (_ghWindowsLock)
+            {
+                if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
+                {
+                    SelectionMode smode = (SelectionMode)how;
+                    _ghWindows[winid].MenuInfo.SelectionHow = smode;
+
+                    _ghWindows[winid].SelectedMenuItems = null; /* Clear menu response */
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, _ghWindows[winid], _ghWindows[winid].MenuInfo));
+                    }
+                }
+            }
+
+            bool continuepolling = true;
+            while (continuepolling)
+            {
+                lock(_ghWindowsLock)
+                {
+                    if (_ghWindows[winid] == null)
+                        continuepolling = false;
+                    else
+                        continuepolling = (_ghWindows[winid].SelectedMenuItems == null);
+                }
+                if (!continuepolling)
+                    break;
+
+                Thread.Sleep(25);
+                pollResponseQueue();
+            }
+
+            /* Handle result */
+
+            return 0;
+        }
 
         /* Dummies */
         public void ClientCallback_VoidVoidDummy()

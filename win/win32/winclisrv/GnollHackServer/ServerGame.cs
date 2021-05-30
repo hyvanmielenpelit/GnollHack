@@ -34,9 +34,9 @@ namespace GnollHackServer
             VoidIntIntConstCharCallback callback_putmixed,
             VoidConstCharBooleanCallback callback_display_file,
             VoidIntCallback callback_start_menu,
-            VoidIntCallback callback_add_menu,
+            AddMenuCallback callback_add_menu,
             VoidIntCallback callback_add_extended_menu,
-            VoidIntIntConstCharCallback callback_end_menu,
+            VoidIntConstCharCallback callback_end_menu,
             IntIntIntVoidPtrCallback callback_select_menu,
             VoidIntCallback callback_message_menu, /* no need for X-specific handling */
             VoidVoidCallback callback_update_inventory,
@@ -175,9 +175,9 @@ namespace GnollHackServer
                 GameCallback_VoidIntIntConstCharDummy,
                 GameCallback_VoidConstCharBooleanDummy,
                 GameCallback_VoidIntDummy,
+                GameCallback_AddMenu,
                 GameCallback_VoidIntDummy,
-                GameCallback_VoidIntDummy,
-                GameCallback_VoidIntIntConstCharDummy,
+                GameCallback_VoidIntConstCharDummy,
                 GameCallback_IntIntIntVoidPtrDummy,
                 GameCallback_VoidIntDummy, /* no need for X-specific handling */
                 GameCallback_VoidVoidDummy,
@@ -267,21 +267,12 @@ namespace GnollHackServer
             _serverGameCenter.ServerCenter_ExitHack(this, status);
         }
 
-        /*
-        typedef void (__stdcall* VoidVoidCallback) ();
-        typedef void (__stdcall* VoidCharCallback) (char*);
-        typedef void (__stdcall* VoidConstCharCallback) (const char*);
-        typedef int (__stdcall* IntIntCallback) (int);
-        typedef void (__stdcall* VoidIntCallback) (int);
-        typedef void (__stdcall* VoidIntIntCallback) (int, int);
-        typedef void (__stdcall* VoidIntIntIntCallback) (int, int, int);
-        typedef void (__stdcall* VoidIntBooleanCallback) (int, unsigned char);
-        typedef void (__stdcall* VoidIntIntConstCharCallback) (int, const char*);
-        typedef void (__stdcall* VoidConstCharIntCallback) (const char*, int);
-        typedef void (__stdcall* VoidConstCharBooleanCallback) (const char*, unsigned char);
-        typedef int (__stdcall* IntVoidCallback) ();
-        typedef int (__stdcall* BooleanVoidCallback) ();
-         */
+        protected void GameCallback_AddMenu(int winid, int glyph, IntPtr identifier, char accel, char groupaccel, int attributes, string text, byte presel)
+        {
+
+        }
+
+
         protected void GameCallback_VoidVoidDummy()
         {
 
@@ -315,6 +306,10 @@ namespace GnollHackServer
 
         }
         protected void GameCallback_VoidIntCharDummy(int value1, string value2)
+        {
+
+        }
+        protected void GameCallback_VoidIntConstCharDummy(int value1, string value2)
         {
 
         }

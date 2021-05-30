@@ -36,6 +36,7 @@ namespace GnollHackClient.Pages.Game
         private bool _isFirstAppearance = true;
         private Thread _gnhthread;
         private ClientGame _clientGame;
+        public ClientGame ClientGame { get { return _clientGame; } }
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
 
         public int ClipX { get; set; }
@@ -150,6 +151,9 @@ namespace GnollHackClient.Pages.Game
                                 _clientGame = null;
                                 ReturnToMainMenu();
                                 break;
+                            case GHRequestType.ShowMenuPage:
+                                ShowMenuPage(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(), req.RequestingGHWindow);
+                                break;
                         }
                     }
                 }
@@ -158,7 +162,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void AskName()
         {
-            var namePage = new NamePage(_clientGame, this);
+            var namePage = new NamePage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(namePage);
         }
 
@@ -169,6 +173,15 @@ namespace GnollHackClient.Pages.Game
         private async void ReturnToMainMenu()
         {
             await App.Current.MainPage.Navigation.PopModalAsync();
+        }
+        private async void ShowMenuPage(GHMenuInfo menuinfo, GHWindow ghwindow)
+        {
+            var menuPage = new GHMenuPage(this, ghwindow);
+            if (menuinfo != null)
+                menuPage.MenuItems.AddRange(menuinfo.MenuItems);
+
+            menuPage.Header = menuinfo.Header;
+            await App.Current.MainPage.Navigation.PushModalAsync(menuPage);
         }
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {

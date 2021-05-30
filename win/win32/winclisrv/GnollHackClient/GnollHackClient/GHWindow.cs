@@ -36,6 +36,8 @@ namespace GnollHackClient
     {
         private GHWinType _winType = 0;
         private GamePage _gamePage;
+        private int _winId;
+
         public SKTypeface Typeface { get; set; }
         public SKColor TextColor { get; set; }
         public float TextSize { get; set; }
@@ -45,6 +47,8 @@ namespace GnollHackClient
         public bool CenterHorizontally { get; set; }
         public GHWinType WindowType { get { return _winType; } }
         public GamePage ClientGamePage { get { return _gamePage; } }
+        public int WindowID { get { return _winId; } }
+
         public string[] PutStrs = new string[GHConstants.MaxPutStrHeight];
         public bool Visible { get; set; }
         private int _width = 0;
@@ -60,10 +64,22 @@ namespace GnollHackClient
         public float Bottom { get { return Top + _pixelHeight; } }
         private float _pixelWidth = 0;
         private float _pixelHeight = 0;
-        public GHWindow(GHWinType winType, GamePage gamePage)
+
+        public GHMenuInfo MenuInfo { get; set; }
+
+        private List<GHMenuItem> _selectedMenuItems = null;
+        private object _selectedMenuItemsLock = new object();
+        public List<GHMenuItem> SelectedMenuItems
+        {
+            get { lock (_selectedMenuItemsLock) { return _selectedMenuItems; } }
+            set { lock (_selectedMenuItemsLock) { _selectedMenuItems = value; } }
+        }
+
+        public GHWindow(GHWinType winType, GamePage gamePage, int winid)
         {
             _winType = winType;
             _gamePage = gamePage;
+            _winId = winid;
         }
 
         public void Create()
