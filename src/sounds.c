@@ -87,8 +87,9 @@ STATIC_DCL int FDECL(general_service_query_with_components, (struct monst*, int 
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
-STATIC_DCL int FDECL(forge_special_func, (struct monst*, const char*, int, int, int));
+STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int, int));
 STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
+STATIC_DCL int FDECL(forge_crystal_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_adamantium_full_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_mithril_full_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_orichalcum_full_plate_mail_func, (struct monst*));
@@ -2852,6 +2853,32 @@ dochat()
 
         if (is_peaceful(mtmp) && mtmp->mextra && ESMI(mtmp) &&!mtmp->mrevived) /* no mrivived here to prevent abuse*/
         {
+            Sprintf(available_chat_list[chatnum].name, "Forge a plate armor");
+            available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_standard_armor;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+
+            Sprintf(available_chat_list[chatnum].name, "Forge a special armor");
+            available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_special_armor;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+
             strcpy(available_chat_list[chatnum].name, "Identify a weapon or armor");
             available_chat_list[chatnum].function_ptr = &do_chat_smith_identify;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -2880,7 +2907,7 @@ dochat()
 
             chatnum++;
 
-            Sprintf(available_chat_list[chatnum].name, "Enchant an armor");
+            Sprintf(available_chat_list[chatnum].name, "Enchant a piece of armor");
             available_chat_list[chatnum].function_ptr = &do_chat_smith_enchant_armor;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2958,31 +2985,6 @@ dochat()
 
             chatnum++;
 
-            Sprintf(available_chat_list[chatnum].name, "Forge a plate armor");
-            available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_standard_armor;
-            available_chat_list[chatnum].charnum = 'a' + chatnum;
-
-            any = zeroany;
-            any.a_char = available_chat_list[chatnum].charnum;
-
-            add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
-                available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-            chatnum++;
-
-            Sprintf(available_chat_list[chatnum].name, "Forge a special armor");
-            available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_special_armor;
-            available_chat_list[chatnum].charnum = 'a' + chatnum;
-
-            any = zeroany;
-            any.a_char = available_chat_list[chatnum].charnum;
-
-            add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
-                available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-            chatnum++;
 
             Sprintf(available_chat_list[chatnum].name, "Refill oil for a lamp or lantern");
             available_chat_list[chatnum].function_ptr = &do_chat_smith_refill_lantern;
@@ -5872,17 +5874,24 @@ struct monst* mtmp;
 
     add_menu(win, NO_GLYPH, &any,
         0, 0, ATR_NONE,
-        "Forge an adamantium full plate mail", MENU_UNSELECTED);
+        "Forge a crystal plate mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 3;
 
     add_menu(win, NO_GLYPH, &any,
         0, 0, ATR_NONE,
-        "Forge a mithril full plate mail", MENU_UNSELECTED);
+        "Forge an adamantium full plate mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 4;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge a mithril full plate mail", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 5;
 
     add_menu(win, NO_GLYPH, &any,
         0, 0, ATR_NONE,
@@ -5913,13 +5922,17 @@ struct monst* mtmp;
         break;
     case 2:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", "8 nuggets of adamantium ore");
+        return general_service_query_with_components(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", "3 dilithium crystals");
         break;
     case 3:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", "8 nuggets of mithril ore");
+        return general_service_query_with_components(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", "8 nuggets of adamantium ore");
         break;
     case 4:
+        cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_components(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", "8 nuggets of mithril ore");
+        break;
+    case 5:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_components(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", "8 nuggets of orichalcum ore");
         break;
@@ -7238,62 +7251,71 @@ STATIC_OVL int
 forge_orichalcum_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, "forge into an orichalcum full plate mail", NUGGET_OF_ORICHALCUM_ORE, 8, ORICHALCUM_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_ORICHALCUM_ORE, 8, ORICHALCUM_FULL_PLATE_MAIL);
+}
+
+STATIC_OVL int
+forge_crystal_plate_mail_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 3, CRYSTAL_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_adamantium_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, "forge into an adamantium full plate mail", NUGGET_OF_ADAMANTIUM_ORE, 8, ADAMANTIUM_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_ADAMANTIUM_ORE, 8, ADAMANTIUM_FULL_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_mithril_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, "forge into a mithril full plate mail",  NUGGET_OF_MITHRIL_ORE, 8, MITHRIL_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_MITHRIL_ORE, 8, MITHRIL_FULL_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, "forge into a plate mail", NUGGET_OF_IRON_ORE, 8, PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 8, PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_bronze_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, "forge into a bronze plate mail", NUGGET_OF_COPPER_ORE, 8, BRONZE_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_COPPER_ORE, 8, BRONZE_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_field_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, "forge into a field plate mail", NUGGET_OF_IRON_ORE, 15, FIELD_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 15, FIELD_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, "forge into a full plate mail", NUGGET_OF_IRON_ORE, 30, FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 30, FULL_PLATE_MAIL);
 }
 
 
 STATIC_OVL int
-forge_special_func(mtmp, forge_string, forge_source_otyp, forge_source_quan, forge_dest_otyp)
+forge_special_func(mtmp, forge_source_otyp, forge_source_quan, forge_dest_otyp)
 struct monst* mtmp;
-const char* forge_string;
 int forge_source_otyp, forge_source_quan, forge_dest_otyp;
 {
     char forge_objects[3] = { 0, 0, 0 };
     forge_objects[0] = ALL_CLASSES;
     forge_objects[1] = objects[forge_source_otyp].oc_class;
     forge_objects[2] = 0;
+
+    char forge_string[BUFSZ];
+    Sprintf(forge_string, "forge into %s", an(OBJ_NAME(objects[forge_dest_otyp])));
 
     otyp_for_maybe_otyp = forge_source_otyp;
     struct obj* otmp = getobj_ex((const char*)forge_objects, forge_string, 0, "", maybe_otyp);
