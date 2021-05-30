@@ -22,6 +22,7 @@ namespace GnollHackClient.Pages.Game
         public List<GHMenuItem> MenuItems { get { return _GHMenuItems; } }
 
         public string Header { get { return HeaderLabel.Text; } set { HeaderLabel.Text = value; } }
+        public SelectionMode SelectionHow { get { return MenuView.SelectionMode; } set { MenuView.SelectionMode = value; } }
 
         public GHMenuPage(GamePage gamepage, GHWindow ghwindow)
         {
@@ -51,11 +52,34 @@ namespace GnollHackClient.Pages.Game
 
         private async void OKButton_Clicked(object sender, EventArgs e)
         {
+            List<GHMenuItem> resultlist = new List<GHMenuItem>();
+            if(MenuView.SelectionMode == SelectionMode.Multiple)
+            {
+                foreach (GHMenuItem mi in MenuView.SelectedItems)
+                {
+                    resultlist.Add(mi);
+                }
+            }
+            else if(MenuView.SelectionMode == SelectionMode.Single)
+            {
+                if(MenuView.SelectedItem != null)
+                    resultlist.Add((GHMenuItem)MenuView.SelectedItem);
+            }
+
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, _ghwindow, new List<GHMenuItem>()));
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, _ghwindow, resultlist));
                 await _gamePage.Navigation.PopModalAsync();
+            }
+        }
+
+        public void Process()
+        {
+            foreach(GHMenuItem mi in MenuItems)
+            {
+                if (mi.Selected)
+                    MenuView.SelectedItems.Add(mi);
             }
         }
     }

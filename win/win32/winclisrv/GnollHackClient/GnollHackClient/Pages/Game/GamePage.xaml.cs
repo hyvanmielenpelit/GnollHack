@@ -177,10 +177,11 @@ namespace GnollHackClient.Pages.Game
         private async void ShowMenuPage(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
             var menuPage = new GHMenuPage(this, ghwindow);
+            menuPage.SelectionHow = menuinfo.SelectionHow;
+            menuPage.Header = menuinfo.Header;
             if (menuinfo != null)
                 menuPage.MenuItems.AddRange(menuinfo.MenuItems);
-
-            menuPage.Header = menuinfo.Header;
+            menuPage.Process();
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage);
         }
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)

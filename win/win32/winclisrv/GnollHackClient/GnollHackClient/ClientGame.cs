@@ -348,12 +348,13 @@ namespace GnollHackClient
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
                     GHMenuItem mi = new GHMenuItem();
+                    mi.Identifier = identifier;
                     mi.Accelerator = accel;
                     mi.GroupAccelerator = groupaccel;
                     mi.Attributes = attributes;
                     mi.Glyph = glyph;
                     mi.Text = text;
-                    mi.Preselected = (presel != 0);
+                    mi.Selected = (presel != 0);
                     _ghWindows[winid].MenuInfo.MenuItems.Add(mi);
                 }
             }
@@ -369,7 +370,7 @@ namespace GnollHackClient
                 }
             }
         }
-        public int ClientCallback_SelectMenu(int winid, int how, IntPtr returnValues)
+        public int ClientCallback_SelectMenu(int winid, int how, out int pickid)
         {
             Debug.WriteLine("ClientCallback_SelectMenu");
             ConcurrentQueue<GHRequest> queue;
@@ -407,8 +408,20 @@ namespace GnollHackClient
             }
 
             /* Handle result */
+            int result = 0;
+            pickid = 0;
+            lock (_ghWindowsLock)
+            {
+                if (_ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].SelectedMenuItems.Count == 0)
+                    result = 0;
+                else
+                {
+                    result = 1;
+                    pickid = _ghWindows[winid].MenuInfo.MenuItems.IndexOf(_ghWindows[winid].SelectedMenuItems[0]);
+                }
+            }
 
-            return 0;
+            return result;
         }
 
         /* Dummies */

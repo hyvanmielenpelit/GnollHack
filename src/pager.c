@@ -66,7 +66,7 @@ const char *new_str;
         return 0;
 
     space_left = BUFSZ - strlen(buf) - 1;
-    if (space_left < 1)
+    if (space_left < 5)
         return 0;
     (void) strncat(buf, " or ", space_left);
     (void) strncat(buf, new_str, space_left - 4);

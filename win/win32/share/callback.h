@@ -65,7 +65,7 @@ typedef VoidIntCallback StartMenuCallback;
 typedef void(__callconv* AddMenuCallback)(int, int, void*, char, char, int, const char*, unsigned char);
 typedef void(__callconv* AddExtendedMenuCallback)(int);
 typedef VoidIntConstCharCallback EndMenuCallback;
-typedef int(__callconv* SelectMenuCallback)(int, int, void*);
+typedef int(__callconv* SelectMenuCallback)(int, int, int*);
 typedef void(__callconv* MessageMenuCallback)(int);
 typedef VoidVoidCallback UpdateInventoryCallback;
 typedef VoidVoidCallback MarkSynchCallback;
