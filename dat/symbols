@@ -207,7 +207,7 @@ start: UnicodeGraphics
 	S_signpost: \u0393
 	S_brazier: \u0398
 	S_grave: \u2229
-	S_boulder: \u039F
+	S_boulder: \u0030
 	S_human: \u263B
 	S_magic_portal: \u03A0
 finish
