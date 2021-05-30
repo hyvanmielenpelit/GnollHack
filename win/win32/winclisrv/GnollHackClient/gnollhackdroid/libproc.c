@@ -165,7 +165,7 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    lib_callbacks.callback_add_menu(wid, glyph, identifier, accelerator, group_accel, attr, str, presel);
+    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_int, accelerator, group_accel, attr, str, presel);
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
@@ -180,11 +180,34 @@ void lib_end_menu(winid wid, const char* prompt)
     lib_callbacks.callback_end_menu(wid, prompt);
 }
 
-int lib_select_menu(winid wid, int how, MENU_ITEM_P** menu_list)
+int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
 {
-    int pickid;
-    int cnt = lib_callbacks.callback_select_menu(wid, how, &pickid);
+    int* picklist = 0;
+    int cnt = lib_callbacks.callback_select_menu(wid, how, picklist);
+    int i;
+
     return 0;
+
+    if (!selected)
+        return 0;
+
+    *selected = 0;
+
+    if (cnt > 0)
+    {
+        if (!picklist)
+            return -1;
+
+        int n = 2 * cnt; /* length of picklist */
+        *selected = (MENU_ITEM_P*)malloc(sizeof(MENU_ITEM_P) * cnt);
+        for (i = 0; i < n; i++)
+        {
+            (*selected)[i].item.a_int = *picklist++;
+            (*selected)[i].count = *picklist++;
+        }
+    }
+
+    return cnt;
 }
 
 void lib_update_inventory(void)

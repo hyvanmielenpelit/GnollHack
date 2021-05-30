@@ -267,7 +267,7 @@ namespace GnollHackServer
             _serverGameCenter.ServerCenter_ExitHack(this, status);
         }
 
-        protected void GameCallback_AddMenu(int winid, int glyph, IntPtr identifier, char accel, char groupaccel, int attributes, string text, byte presel)
+        protected void GameCallback_AddMenu(int winid, int glyph, int identifier, char accel, char groupaccel, int attributes, string text, byte presel)
         {
 
         }
@@ -346,9 +346,9 @@ namespace GnollHackServer
         {
             return 1;
         }
-        protected int GameCallback_IntIntIntOutIntDummy(int value1, int value2, out int value3)
+        protected int GameCallback_IntIntIntOutIntDummy(int value1, int value2, /* out int[] */ IntPtr value3)
         {
-            value3 = 0;
+            value3 = (IntPtr)0; // new int[2];
             return 0;
         }
         protected int GameCallback_IntIntPtrIntPtrIntPtrDummy(ref int value1, ref int value2, ref int value3)

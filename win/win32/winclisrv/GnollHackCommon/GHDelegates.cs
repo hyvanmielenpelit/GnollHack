@@ -52,7 +52,7 @@ namespace GnollHackCommon
     public delegate void VoidIntIntIntIntIntLongIntUlongCallback(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void AddMenuCallback(int winid, int glyph, IntPtr identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)]  string text, byte presel);
+    public delegate void AddMenuCallback(int winid, int glyph, int identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)]  string text, byte presel);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]
@@ -69,7 +69,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int IntCharCharUintCallback([MarshalAs(UnmanagedType.LPStr)] string value1, [MarshalAs(UnmanagedType.LPStr)] string value2, uint value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate int IntIntIntOutIntCallback(int value1, int value2, out int value3);
+    public delegate int IntIntIntOutIntCallback(int value1, int value2, /* [Out, MarshalAs(UnmanagedType.LPArray)] out int[] */ IntPtr value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int IntIntPtrIntPtrIntPtrCallback(ref int value1, ref int value2, ref int value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]

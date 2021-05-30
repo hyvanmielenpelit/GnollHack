@@ -10,6 +10,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Runtime.InteropServices;
 
 namespace GnollHackClient
 {
@@ -341,7 +342,7 @@ namespace GnollHackClient
                 }
             }
         }
-        public void ClientCallback_AddMenu(int winid, int glyph, IntPtr identifier, char accel, char groupaccel, int attributes, string text, byte presel)
+        public void ClientCallback_AddMenu(int winid, int glyph, int identifier, char accel, char groupaccel, int attributes, string text, byte presel)
         {
             lock (_ghWindowsLock)
             {
@@ -355,6 +356,7 @@ namespace GnollHackClient
                     mi.Glyph = glyph;
                     mi.Text = text;
                     mi.Selected = (presel != 0);
+                    mi.Count = mi.Selected ? -1 : 0;
                     _ghWindows[winid].MenuInfo.MenuItems.Add(mi);
                 }
             }
@@ -370,7 +372,7 @@ namespace GnollHackClient
                 }
             }
         }
-        public int ClientCallback_SelectMenu(int winid, int how, out int pickid)
+        public int ClientCallback_SelectMenu(int winid, int how, IntPtr /*out int[]*/ picklistptr)
         {
             Debug.WriteLine("ClientCallback_SelectMenu");
             ConcurrentQueue<GHRequest> queue;
@@ -393,7 +395,7 @@ namespace GnollHackClient
             bool continuepolling = true;
             while (continuepolling)
             {
-                lock(_ghWindowsLock)
+                lock (_ghWindowsLock)
                 {
                     if (_ghWindows[winid] == null)
                         continuepolling = false;
@@ -408,20 +410,28 @@ namespace GnollHackClient
             }
 
             /* Handle result */
-            int result = 0;
-            pickid = 0;
+            int cnt = 0;
+            int[] picklist = null;
+
             lock (_ghWindowsLock)
             {
-                if (_ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].SelectedMenuItems.Count == 0)
-                    result = 0;
+                if (_ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null)
+                    cnt = -1;
+                else if (_ghWindows[winid].SelectedMenuItems.Count <= 0)
+                    cnt = 0;
                 else
                 {
-                    result = 1;
-                    pickid = _ghWindows[winid].MenuInfo.MenuItems.IndexOf(_ghWindows[winid].SelectedMenuItems[0]);
+                    cnt = _ghWindows[winid].SelectedMenuItems.Count;
+                    picklist = new int[cnt * 2];
+                    for(int i = 0; i < cnt; i++)
+                    {
+                        picklist[2 * i] = _ghWindows[winid].SelectedMenuItems[i].Identifier;
+                        picklist[2 * i + 1] = _ghWindows[winid].SelectedMenuItems[i].Count;
+                    }
                 }
             }
 
-            return result;
+            return cnt;
         }
 
         /* Dummies */
