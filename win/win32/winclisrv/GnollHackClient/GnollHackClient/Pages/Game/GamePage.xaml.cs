@@ -631,5 +631,10 @@ namespace GnollHackClient.Pages.Game
                 }
             }
         }
+
+        private void InventoryButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'i');
+        }
     }
 }

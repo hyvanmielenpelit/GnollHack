@@ -431,7 +431,7 @@ namespace GnollHackClient
                         picklist[2 * i + 1] = _ghWindows[winid].SelectedMenuItems[i].Count;
                     }
                 }
-                int size = picklist.Length;
+                int size = (picklist == null ? 0 : picklist.Length);
                 if (cnt < 1)
                     arrayptr = Marshal.AllocHGlobal(Marshal.SizeOf(size) * 1); /* One int */
                 else
