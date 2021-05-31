@@ -19,6 +19,7 @@ typedef union any {
     unsigned int a_uint;
     long a_long;
     unsigned long a_ulong;
+    long long a_longlong;
     int *a_iptr;
     long *a_lptr;
     unsigned long *a_ulptr;

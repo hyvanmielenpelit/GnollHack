@@ -270,7 +270,7 @@ namespace GnollHackServer
             _serverGameCenter.ServerCenter_ExitHack(this, status);
         }
 
-        protected void GameCallback_AddMenu(int winid, int glyph, int identifier, char accel, char groupaccel, int attributes, string text, byte presel)
+        protected void GameCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel)
         {
 
         }

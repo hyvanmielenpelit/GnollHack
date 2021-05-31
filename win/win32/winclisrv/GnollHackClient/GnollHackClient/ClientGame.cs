@@ -342,7 +342,7 @@ namespace GnollHackClient
                 }
             }
         }
-        public void ClientCallback_AddMenu(int winid, int glyph, int identifier, char accel, char groupaccel, int attributes, string text, byte presel)
+        public void ClientCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel)
         {
             lock (_ghWindowsLock)
             {
@@ -411,7 +411,7 @@ namespace GnollHackClient
 
             /* Handle result */
             int cnt = 0;
-            int[] picklist = null;
+            Int64[] picklist = null;
 
             IntPtr arrayptr;
 
@@ -424,19 +424,20 @@ namespace GnollHackClient
                 else
                 {
                     cnt = _ghWindows[winid].SelectedMenuItems.Count;
-                    picklist = new int[cnt * 2];
+                    picklist = new Int64[cnt * 2];
                     for(int i = 0; i < cnt; i++)
                     {
                         picklist[2 * i] = _ghWindows[winid].SelectedMenuItems[i].Identifier;
-                        picklist[2 * i + 1] = _ghWindows[winid].SelectedMenuItems[i].Count;
+                        picklist[2 * i + 1] = (Int64)_ghWindows[winid].SelectedMenuItems[i].Count;
                     }
                 }
+                Int64 i64var = 0;
                 int size = (picklist == null ? 0 : picklist.Length);
                 if (cnt < 1)
-                    arrayptr = Marshal.AllocHGlobal(Marshal.SizeOf(size) * 1); /* One int */
+                    arrayptr = Marshal.AllocHGlobal(Marshal.SizeOf(i64var) * 1); /* One int */
                 else
                 {
-                    arrayptr = Marshal.AllocHGlobal(Marshal.SizeOf(size) * size);
+                    arrayptr = Marshal.AllocHGlobal(Marshal.SizeOf(i64var) * size);
                     Marshal.Copy(picklist, 0, arrayptr, size);
                 }
             }

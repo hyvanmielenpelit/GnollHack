@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace GnollHackCommon
@@ -50,5 +51,12 @@ namespace GnollHackCommon
         public const int MaxPutStrHeight = 21;
         public const int DefaultAnimationInterval = 25;
 
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct GHSelectedItem
+    {
+        public IntPtr Identifier;
+        public int Count;
     }
 }

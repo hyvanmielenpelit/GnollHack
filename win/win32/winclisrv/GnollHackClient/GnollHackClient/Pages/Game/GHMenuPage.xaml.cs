@@ -58,12 +58,19 @@ namespace GnollHackClient.Pages.Game
                 foreach (GHMenuItem mi in MenuView.SelectedItems)
                 {
                     resultlist.Add(mi);
+                    mi.Count = -1;
+                    mi.Selected = true;
                 }
             }
             else if(MenuView.SelectionMode == SelectionMode.Single)
             {
                 if(MenuView.SelectedItem != null)
-                    resultlist.Add((GHMenuItem)MenuView.SelectedItem);
+                {
+                    GHMenuItem mi = (GHMenuItem)MenuView.SelectedItem;
+                    mi.Count = -1;
+                    mi.Selected = true;
+                    resultlist.Add(mi);
+                }
             }
 
             ConcurrentQueue<GHResponse> queue;

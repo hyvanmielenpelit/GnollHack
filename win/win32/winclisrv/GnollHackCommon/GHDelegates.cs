@@ -52,7 +52,7 @@ namespace GnollHackCommon
     public delegate void VoidIntIntIntIntIntLongIntUlongCallback(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void AddMenuCallback(int winid, int glyph, int identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)]  string text, byte presel);
+    public delegate void AddMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)]  string text, byte presel);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]

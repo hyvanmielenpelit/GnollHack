@@ -44,7 +44,6 @@ typedef char*(__callconv* CharPtrBooleanCallback)(unsigned char);
 typedef void(__callconv* VoidIntIntIntIntIntLongIntULongCallback)(int, int, int, int, int, long, int, unsigned long);
 typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, unsigned char);
 
-
 /* Specific callback types */
 typedef VoidVoidCallback InitWindowsCallback;
 typedef IntVoidCallback PlayerSelectionCallback;
@@ -62,10 +61,10 @@ typedef VoidIntIntConstCharIntCallback PutStrExCallback;
 typedef VoidIntIntConstCharCallback PutMixedCallback;
 typedef VoidConstCharBooleanCallback DisplayFileCallback;
 typedef VoidIntCallback StartMenuCallback;
-typedef void(__callconv* AddMenuCallback)(int, int, int, char, char, int, const char*, unsigned char);
+typedef void(__callconv* AddMenuCallback)(int, int, long long, char, char, int, const char*, unsigned char);
 typedef void(__callconv* AddExtendedMenuCallback)(int);
 typedef VoidIntConstCharCallback EndMenuCallback;
-typedef int(__callconv* SelectMenuCallback)(int, int, int**, int*);
+typedef int(__callconv* SelectMenuCallback)(int, int, long long**, int*);
 typedef void(__callconv* MessageMenuCallback)(int);
 typedef VoidVoidCallback UpdateInventoryCallback;
 typedef VoidVoidCallback MarkSynchCallback;

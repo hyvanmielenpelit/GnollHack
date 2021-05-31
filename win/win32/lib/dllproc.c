@@ -1267,7 +1267,7 @@ dll_select_menu(winid wid, int how, MENU_ITEM_P **selected)
 
     dll_logDebug("dll_select_menu(%d, %d)\n", wid, how);
 
-    int* picklist;
+    long long* picklist;
     int picklistsize;
 
     nReturned = dll_callbacks.callback_select_menu((int)wid, how, &picklist, &picklistsize);

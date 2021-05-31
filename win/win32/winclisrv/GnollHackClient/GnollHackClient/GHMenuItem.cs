@@ -6,7 +6,7 @@ namespace GnollHackClient
 {
     public class GHMenuItem
     {
-        public int Identifier { get; set; }
+        public Int64 Identifier { get; set; }
         public int Count { get; set; }
         public char Accelerator { get; set; }
         public char GroupAccelerator { get; set; }
