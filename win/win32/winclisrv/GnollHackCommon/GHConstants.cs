@@ -26,6 +26,20 @@ namespace GnollHackCommon
         CLR_MAX
     }
 
+    [Flags]
+    public enum MenuItemAttributes : int
+    {
+        None =      0x00000000,
+        Bold =      0x00000001,
+        Dim =       0x00000002,
+        Underline = 0x00000004,
+        Blink =     0x00000005,
+        Inverse =   0x00000007,
+        Urgent =    0x00000010,
+        NoHistory = 0x00000020,
+        StayOnLine =0x00000040,
+        NoTabs =    0x00000080,
+    }
     public class GHConstants
     {
         public const int InputBufferLength = 32;

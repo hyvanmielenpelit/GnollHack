@@ -82,5 +82,23 @@ namespace GnollHackClient.Pages.Game
                     MenuView.SelectedItems.Add(mi);
             }
         }
+
+        private void MenuView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach(GHMenuItem mi in e.CurrentSelection)
+            {
+                if(mi.Identifier == 0)
+                {
+                    if (mi == MenuView.SelectedItem)
+                    {
+                        MenuView.SelectedItem = null;
+                    }
+                    else
+                    {
+                        MenuView.SelectedItems.Remove(mi);
+                    }
+                }
+            }
+        }
     }
 }
