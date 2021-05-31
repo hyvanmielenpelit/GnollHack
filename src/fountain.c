@@ -650,7 +650,7 @@ register struct obj *obj;
                 break;
             case POT_GREATER_ENERGY:
             case POT_GREATER_HEALING:
-                obj->otyp = POT_GREATER_HEALING;
+                obj->otyp = POT_FULL_HEALING;
                 break;
             case POT_FULL_ENERGY:
             case POT_FULL_HEALING:
@@ -716,9 +716,11 @@ register struct obj *obj;
             switch (obj->otyp)
             {
             case POT_EXTRA_HEALING:
+                obj->otyp = POT_GREATER_ENERGY;
+                break;
             case POT_GREATER_HEALING:
             case POT_GREATER_ENERGY:
-                obj->otyp = POT_GREATER_ENERGY;
+                obj->otyp = POT_FULL_ENERGY;
                 break;
             case POT_FULL_HEALING:
             case POT_FULL_ENERGY:
