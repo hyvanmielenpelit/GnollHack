@@ -288,12 +288,24 @@ char lib_yn_function(const char* question, const char* choices, CHAR_P def)
 
 void lib_getlin(const char* question, char* input)
 {
-    lib_callbacks.callback_getlin(question, input);
+    char* res = lib_callbacks.callback_getlin(question);
+    if(res && input) 
+       strcpy(input, res);
 }
 
 int lib_get_ext_cmd(void)
 {
-    return 0;
+    char* res = lib_callbacks.callback_getlin("Type an Extended Command");
+    int extcmd = -1;
+    if (res)
+    {
+        int cmd = (int)cmd_from_txt(res);
+        if (cmd > 0)
+            extcmd = cmd;
+        else
+            raw_print("Invalid extended command!");
+    }
+    return extcmd;
 }
 
 

@@ -39,7 +39,7 @@ typedef unsigned char(__callconv* BooleanIntDoubleVoidPtrCallback)(int, double, 
 typedef unsigned char(__callconv* BooleanVoidPtrDoubleCallback)(void* , double);
 typedef unsigned char(__callconv* BooleanVoidPtrCallback)(void*);
 typedef int(__callconv* IntConstCharPtrConstCharPtrCharPtrCallback)(const char*, const char*, const char*);
-typedef void(__callconv* VoidConstCharPtrCharPtrCallback)(const char*, char*);
+typedef char*(__callconv* GetLineCallback)(const char*);
 typedef char*(__callconv* CharPtrBooleanCallback)(unsigned char);
 typedef void(__callconv* VoidIntIntIntIntIntLongIntULongCallback)(int, int, int, int, int, long, int, unsigned long);
 typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, unsigned char);
@@ -80,7 +80,6 @@ typedef int(__callconv* PosKeyCallback)(int*, int*, int*);
 typedef VoidVoidCallback BellCallback;
 typedef IntVoidCallback DoPrevMessageCallback;
 typedef IntConstCharPtrConstCharPtrCharPtrCallback YnFunctionCallback;
-typedef VoidConstCharPtrCharPtrCallback GetLinCallback;
 typedef IntVoidCallback GetExtCmdCallback;
 typedef VoidIntCallback NumberPadCallback;
 typedef VoidVoidCallback DelayOutputCallback;
@@ -162,7 +161,7 @@ struct callback_procs {
     BellCallback callback_nhbell;
     DoPrevMessageCallback callback_doprev_message;
     YnFunctionCallback callback_yn_function;
-    GetLinCallback callback_getlin;
+    GetLineCallback callback_getlin;
     GetExtCmdCallback callback_get_ext_cmd;
     NumberPadCallback callback_number_pad;
     DelayOutputCallback callback_delay_output;

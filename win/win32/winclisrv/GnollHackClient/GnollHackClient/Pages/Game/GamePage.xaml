@@ -4,6 +4,7 @@
              x:Class="GnollHackClient.Pages.Game.GamePage"
              Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing"
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             BackgroundColor="Black"
              >
     <ContentPage.Content>
         <AbsoluteLayout VerticalOptions="FillAndExpand"
@@ -12,11 +13,12 @@
                         EnableTouchEvents="True"
                         PaintSurface="canvasView_PaintSurface" 
                         Touch="canvasView_Touch"
-                        AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 0.9"
+                        AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 0.8"
                         AbsoluteLayout.LayoutFlags="All" />
-            <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.10"
+            <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.20"
                            AbsoluteLayout.LayoutFlags="All" HeightRequest="160" BackgroundColor="Black">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -24,13 +26,15 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button Text="," x:Name="PickupButton" Clicked="PickupButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="0" />
-                <Button Text="i" x:Name="InventoryButton" Clicked="InventoryButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="1" />
-                <Button Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="2" />
-                <Button Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="3" />
-                <Button Text="=" x:Name="MenuButton" Clicked="MenuButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="4" />
+                <Button Text="," x:Name="PickupButton" Clicked="PickupButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="0" />
+                <Button Text=":" x:Name="LookHereButton" Clicked="LookHereButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="1" />
+                <Button Text="." x:Name="WaitButton" Clicked="WaitButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="2" />
+                <Button Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="3" />
+                <Button Text="i" x:Name="InventoryButton" Clicked="InventoryButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="0" />
+                <Button Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="1" />
+                <Button Text="f" x:Name="FireButton" Clicked="FireButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="2" />
+                <Button Text="=" x:Name="MenuButton" Clicked="MenuButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="3" />
             </Grid>
         </AbsoluteLayout>
     </ContentPage.Content>

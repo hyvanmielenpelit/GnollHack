@@ -104,6 +104,58 @@ namespace GnollHackClient.Pages.Game
             _gamePage.GenericButton_Clicked(sender, e, '+');
         }
 
+        private async void PrayButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('p'));
+        }
+
+        private async void SacrificeButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('o'));
+        }
+        private async void NameButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('N'));
+        }
+        private async void QuaffButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('q'));
+        }
+        private async void PayButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'p');
+        }
+        private async void DigButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Ctrl('g'));
+        }
+        private async void ForceFightButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'F');
+        }
+        private async void LightButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Ctrl('l'));
+        }
+        private async void TravelButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, '_');
+        }
+        private async void ExtendedCommandButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, '#');
+        }
+
         private async void BackButton_Clicked(object sender, EventArgs e)
         {
             await App.Current.MainPage.Navigation.PopModalAsync();

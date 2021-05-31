@@ -111,7 +111,7 @@ namespace GnollHackClient
                     break;
                 case GHWinType.Menu:
                     Typeface = App.UnderwoodTypeface;
-                    TextSize = 36;
+                    TextSize = 33;
                     Left = 0;
                     Top = 250;
                     CenterHorizontally = true;

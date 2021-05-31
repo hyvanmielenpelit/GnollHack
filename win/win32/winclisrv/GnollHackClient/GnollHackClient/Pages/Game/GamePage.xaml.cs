@@ -146,6 +146,9 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.AskName:
                                 AskName();
                                 break;
+                            case GHRequestType.GetLine:
+                                GetLine(req.RequestString);
+                                break;
                             case GHRequestType.ReturnToMainMenu:
                                 ClearMap();
                                 _clientGame = null;
@@ -164,6 +167,11 @@ namespace GnollHackClient.Pages.Game
         {
             var namePage = new NamePage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(namePage);
+        }
+        private async void GetLine(string query)
+        {
+            var getLinePage = new GetLinePage(this, query);
+            await App.Current.MainPage.Navigation.PushModalAsync(getLinePage);
         }
 
         private void GetChar()
@@ -635,6 +643,18 @@ namespace GnollHackClient.Pages.Game
         private void InventoryButton_Clicked(object sender, EventArgs e)
         {
             GenericButton_Clicked(sender, e, 'i');
+        }
+        private void LookHereButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, ':');
+        }
+        private void WaitButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, '.');
+        }
+        private void FireButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'f');
         }
 
         private async void MenuButton_Clicked(object sender, EventArgs e)

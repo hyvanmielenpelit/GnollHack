@@ -178,7 +178,7 @@ int RunGnollHack(
     BellCallback callback_nhbell,
     DoPrevMessageCallback callback_doprev_message,
     YnFunctionCallback callback_yn_function,
-    GetLinCallback callback_getlin,
+    GetLineCallback callback_getlin,
     GetExtCmdCallback callback_get_ext_cmd,
     NumberPadCallback callback_number_pad,
     DelayOutputCallback callback_delay_output,

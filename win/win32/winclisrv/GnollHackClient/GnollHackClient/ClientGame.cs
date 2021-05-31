@@ -20,6 +20,7 @@ namespace GnollHackClient
         private static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> _concurrentResponseDictionary = new ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>>();
         private int[] _inputBuffer = new int[GHConstants.InputBufferLength];
         private int _inputBufferLocation = -1;
+        private string _getLineString = null;
         private string _characterName = "";
         private object _characterNameLock = new object();
         private GamePage _gamePage;
@@ -78,6 +79,9 @@ namespace GnollHackClient
                             if(_inputBufferLocation >= GHConstants.InputBufferLength)
                                 _inputBufferLocation = GHConstants.InputBufferLength -1;
                             _inputBuffer[_inputBufferLocation] = response.ResponseIntValue;
+                            break;
+                        case GHRequestType.GetLine:
+                            _getLineString = response.ResponseStringValue;
                             break;
                         case GHRequestType.ShowMenuPage:
                             if(response.RequestingGHWindow != null)
@@ -463,6 +467,29 @@ namespace GnollHackClient
                 Debug.WriteLine("Not same");
 
             Marshal.FreeHGlobal(issame ? ptr : _outGoingIntPtr);
+        }
+
+        public string ClientCallback_getlin(string query)
+        {
+            Debug.WriteLine("ClientCallback_getlin");
+
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                _getLineString = null;
+                queue.Enqueue(new GHRequest(this, GHRequestType.GetLine, query));
+                while (_getLineString == null)
+                {
+                    Thread.Sleep(GHConstants.PollingInterval);
+                    pollResponseQueue();
+                }
+
+                return _getLineString;
+            }
+            else
+            {
+                return "";
+            }
         }
 
         /* Dummies */
