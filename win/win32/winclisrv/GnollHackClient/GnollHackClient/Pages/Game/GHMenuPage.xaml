@@ -24,14 +24,16 @@
 
                             <Label Grid.Column="0" TextColor="White" 
                                    Text="{Binding Accelerator}"
-                                   FontFamily="Diablo" 
+                                   FontFamily="Underwood" 
+                                   FontSize="Large"
                                    FontAttributes="Bold" />
                             
                             <!-- SKCanvas in column 1? -->
 
                             <Label Grid.Column="2" TextColor="White" 
                                    Text="{Binding Text}"
-                                   FontFamily="Diablo" 
+                                   FontFamily="Underwood" 
+                                   FontSize="Large"
                                     />
                         </Grid>
                     </DataTemplate>

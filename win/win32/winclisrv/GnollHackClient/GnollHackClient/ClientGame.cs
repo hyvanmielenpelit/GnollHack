@@ -147,13 +147,17 @@ namespace GnollHackClient
         }
         public void ClientCallback_DisplayGHWindow(int winHandle, byte blocking)
         {
+            bool ismenu = false;
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winHandle] != null)
+                {
                     _ghWindows[winHandle].Display(blocking != 0);
+                    ismenu = (_ghWindows[winHandle].WindowType == GHWinType.Menu);
+                }
             }
 
-            if(blocking != 0)
+            if(blocking != 0 || ismenu)
             {
                 int res = ClientCallback_nhgetch();
             }
