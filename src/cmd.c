@@ -5207,6 +5207,21 @@ const char* command;
     return '\0';
 }
 
+int
+ext_cmd_from_txt(ext_command)
+const char* ext_command;
+{
+    if (!ext_command)
+        return -1;
+
+    for (int i = 0; extcmdlist[i].ef_txt != 0; i++)
+        if (!strcmp(extcmdlist[i].ef_txt, ext_command))
+            return i;
+
+    return -1;
+}
+
+
 boolean
 bind_key(key, command)
 uchar key;

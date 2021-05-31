@@ -296,15 +296,17 @@ void lib_getlin(const char* question, char* input)
 int lib_get_ext_cmd(void)
 {
     char* res = lib_callbacks.callback_getlin("Type an Extended Command");
-    int extcmd = -1;
-    if (res)
-    {
-        int cmd = (int)cmd_from_txt(res);
-        if (cmd > 0)
-            extcmd = cmd;
-        else
-            raw_print("Invalid extended command!");
-    }
+    if (!res)
+        return -1;
+
+    char buf[BUFSZ];
+    strncpy(buf, res, BUFSZ - 1);
+    buf[BUFSZ - 1] = 0;
+    mungspaces(buf);
+    int extcmd = ext_cmd_from_txt(buf);
+    if (extcmd == -1)
+        pline("'%s' is an invalid extended command.", buf);
+
     return extcmd;
 }
 

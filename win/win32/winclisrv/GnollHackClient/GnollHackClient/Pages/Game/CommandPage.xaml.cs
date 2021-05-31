@@ -35,7 +35,7 @@ namespace GnollHackClient.Pages.Game
         private async void CmdButton_Clicked(object sender, EventArgs e)
         {
             await App.Current.MainPage.Navigation.PopModalAsync();
-            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Ctrl('c'));
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('c'));
         }
 
         private async void SkillButton_Clicked(object sender, EventArgs e)
@@ -123,7 +123,7 @@ namespace GnollHackClient.Pages.Game
         private async void QuaffButton_Clicked(object sender, EventArgs e)
         {
             await App.Current.MainPage.Navigation.PopModalAsync();
-            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('q'));
+            _gamePage.GenericButton_Clicked(sender, e, 'q');
         }
         private async void PayButton_Clicked(object sender, EventArgs e)
         {
