@@ -97,7 +97,9 @@ namespace GnollHackServer
             CharVoidCallback callback_getcwd,
             IntCharCharUintCallback callback_messagebox,
             VoidIntCallback callback_outrip_begin,
-            VoidIntCallback callback_outrip_end
+            VoidIntCallback callback_outrip_end,
+
+            FreeMemoryCallback callback_free_memory
         );
 
         [DllImport(@"gnollhacklib.dll")]
@@ -238,7 +240,8 @@ namespace GnollHackServer
                 GameCallback_GetCwd,
                 GameCallback_MessageBox,
                 GameCallback_VoidIntDummy,
-                GameCallback_VoidIntDummy
+                GameCallback_VoidIntDummy,
+                GameCallback_FreeMemory
             );
         }
 
@@ -272,6 +275,10 @@ namespace GnollHackServer
 
         }
 
+        protected void GameCallback_FreeMemory(ref IntPtr ptr)
+        {
+
+        }
 
         protected void GameCallback_VoidVoidDummy()
         {
@@ -346,9 +353,10 @@ namespace GnollHackServer
         {
             return 1;
         }
-        protected int GameCallback_IntIntIntOutIntDummy(int value1, int value2, /* out int[] */ IntPtr value3)
+        protected int GameCallback_IntIntIntOutIntDummy(int value1, int value2, /* out int[] */ out IntPtr value3, out int value4)
         {
             value3 = (IntPtr)0; // new int[2];
+            value4 = 0;
             return 0;
         }
         protected int GameCallback_IntIntPtrIntPtrIntPtrDummy(ref int value1, ref int value2, ref int value3)

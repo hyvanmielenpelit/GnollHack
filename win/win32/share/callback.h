@@ -65,7 +65,7 @@ typedef VoidIntCallback StartMenuCallback;
 typedef void(__callconv* AddMenuCallback)(int, int, int, char, char, int, const char*, unsigned char);
 typedef void(__callconv* AddExtendedMenuCallback)(int);
 typedef VoidIntConstCharCallback EndMenuCallback;
-typedef int(__callconv* SelectMenuCallback)(int, int, void*);
+typedef int(__callconv* SelectMenuCallback)(int, int, int**, int*);
 typedef void(__callconv* MessageMenuCallback)(int);
 typedef VoidVoidCallback UpdateInventoryCallback;
 typedef VoidVoidCallback MarkSynchCallback;
@@ -123,6 +123,7 @@ typedef char*(__callconv* GetCwdCallback)();
 typedef int (__callconv* MessageBoxCallback)(char*, char*, unsigned int);
 typedef VoidIntCallback OutRipBeginCallback;
 typedef VoidIntCallback OutRipEndCallback;
+typedef void(__callconv* FreeMemoryCallback)(void**);
 
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;
@@ -206,6 +207,9 @@ struct callback_procs {
     MessageBoxCallback callback_messagebox;
     OutRipBeginCallback callback_outrip_begin;
     OutRipEndCallback callback_outrip_end;
+
+    FreeMemoryCallback callback_free_memory;
+
 };
 
 

@@ -1267,7 +1267,10 @@ dll_select_menu(winid wid, int how, MENU_ITEM_P **selected)
 
     dll_logDebug("dll_select_menu(%d, %d)\n", wid, how);
 
-    nReturned = dll_callbacks.callback_select_menu((int)wid, how, (void*)selected);
+    int* picklist;
+    int picklistsize;
+
+    nReturned = dll_callbacks.callback_select_menu((int)wid, how, &picklist, &picklistsize);
 
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)

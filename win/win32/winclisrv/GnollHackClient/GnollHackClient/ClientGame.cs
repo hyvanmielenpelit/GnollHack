@@ -372,7 +372,7 @@ namespace GnollHackClient
                 }
             }
         }
-        public int ClientCallback_SelectMenu(int winid, int how, IntPtr /*out int[]*/ picklistptr)
+        public int ClientCallback_SelectMenu(int winid, int how, out IntPtr picklistptr, out int listsize)
         {
             Debug.WriteLine("ClientCallback_SelectMenu");
             ConcurrentQueue<GHRequest> queue;
@@ -413,6 +413,8 @@ namespace GnollHackClient
             int cnt = 0;
             int[] picklist = null;
 
+            IntPtr arrayptr;
+
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null)
@@ -429,9 +431,32 @@ namespace GnollHackClient
                         picklist[2 * i + 1] = _ghWindows[winid].SelectedMenuItems[i].Count;
                     }
                 }
+                int size = picklist.Length;
+                if (cnt < 1)
+                    arrayptr = Marshal.AllocHGlobal(Marshal.SizeOf(size) * 1); /* One int */
+                else
+                {
+                    arrayptr = Marshal.AllocHGlobal(Marshal.SizeOf(size) * size);
+                    Marshal.Copy(picklist, 0, arrayptr, size);
+                }
             }
 
+            picklistptr = arrayptr;
+            _outGoingIntPtr = arrayptr;
+            listsize = cnt * 2;
             return cnt;
+        }
+
+        private IntPtr _outGoingIntPtr;
+
+        public void ClientCallback_FreeMemory(ref IntPtr ptr)
+        {
+            IntPtr inComingIntPtr = ptr;
+            Boolean issame = (inComingIntPtr == _outGoingIntPtr);
+            if (!issame)
+                Debug.WriteLine("Not same");
+
+            Marshal.FreeHGlobal(issame ? ptr : _outGoingIntPtr);
         }
 
         /* Dummies */

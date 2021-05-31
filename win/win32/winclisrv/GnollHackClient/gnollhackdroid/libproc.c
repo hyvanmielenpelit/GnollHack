@@ -183,10 +183,9 @@ void lib_end_menu(winid wid, const char* prompt)
 int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
 {
     int* picklist = 0;
-    int cnt = lib_callbacks.callback_select_menu(wid, how, picklist);
+    int picklistsize = 0;
+    int cnt = lib_callbacks.callback_select_menu(wid, how, &picklist, &picklistsize);
     int i;
-
-    return 0;
 
     if (!selected)
         return 0;
@@ -198,14 +197,15 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
         if (!picklist)
             return -1;
 
-        int n = 2 * cnt; /* length of picklist */
         *selected = (MENU_ITEM_P*)malloc(sizeof(MENU_ITEM_P) * cnt);
-        for (i = 0; i < n; i++)
+        for (i = 0; i < cnt; i++)
         {
             (*selected)[i].item.a_int = *picklist++;
             (*selected)[i].count = *picklist++;
         }
     }
+
+    lib_callbacks.callback_free_memory(&picklist);
 
     return cnt;
 }

@@ -69,7 +69,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int IntCharCharUintCallback([MarshalAs(UnmanagedType.LPStr)] string value1, [MarshalAs(UnmanagedType.LPStr)] string value2, uint value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate int IntIntIntOutIntCallback(int value1, int value2, /* [Out, MarshalAs(UnmanagedType.LPArray)] out int[] */ IntPtr value3);
+    public delegate int IntIntIntOutIntCallback(int value1, int value2, /* [Out, MarshalAs(UnmanagedType.LPArray)] out int[] */ out IntPtr value3, out int value4);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int IntIntPtrIntPtrIntPtrCallback(ref int value1, ref int value2, ref int value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -78,5 +78,8 @@ namespace GnollHackCommon
     public delegate void VoidUlongCallback(UInt32 value);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidIntConstCharPtrConstCharPtrBooleanCallback(int value1, string value2, string value3, byte value4);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void FreeMemoryCallback(ref IntPtr ptr);
 
 }

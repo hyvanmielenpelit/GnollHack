@@ -221,7 +221,9 @@ int RunGnollHack(
     GetCwdCallback callback_getcwd,
     MessageBoxCallback callback_messagebox,
     OutRipBeginCallback callback_outrip_begin,
-    OutRipEndCallback callback_outrip_end
+    OutRipEndCallback callback_outrip_end,
+
+    FreeMemoryCallback callback_free_memory
 )
 {
     /* Set wincaps */
@@ -307,6 +309,8 @@ int RunGnollHack(
     lib_callbacks.callback_messagebox = callback_messagebox;
     lib_callbacks.callback_outrip_begin = callback_outrip_begin;
     lib_callbacks.callback_outrip_end = callback_outrip_end;
+
+    lib_callbacks.callback_free_memory = callback_free_memory;
 
 
     windowprocs.win_raw_print = libdef_raw_print;
