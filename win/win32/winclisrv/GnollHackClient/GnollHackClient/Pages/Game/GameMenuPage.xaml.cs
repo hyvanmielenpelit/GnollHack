@@ -46,5 +46,10 @@ namespace GnollHackClient.Pages.Game
                 await App.Current.MainPage.Navigation.PopAsync(); //Login
             }
         }
+
+        private void btnOptions_Clicked(object sender, EventArgs e)
+        {
+            _gamePage.GenericButton_Clicked(sender, e, 'O');
+        }
     }
 }

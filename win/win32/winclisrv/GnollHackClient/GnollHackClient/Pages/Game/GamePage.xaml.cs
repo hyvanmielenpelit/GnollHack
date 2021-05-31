@@ -620,7 +620,7 @@ namespace GnollHackClient.Pages.Game
             GenericButton_Clicked(sender, e, '>');
         }
 
-        private void GenericButton_Clicked(object sender, EventArgs e, int resp)
+        public void GenericButton_Clicked(object sender, EventArgs e, int resp)
         {
             if (_clientGame != null)
             {
@@ -635,6 +635,13 @@ namespace GnollHackClient.Pages.Game
         private void InventoryButton_Clicked(object sender, EventArgs e)
         {
             GenericButton_Clicked(sender, e, 'i');
+        }
+
+        private async void MenuButton_Clicked(object sender, EventArgs e)
+        {
+            var cmdPage = new CommandPage(this);
+            await App.Current.MainPage.Navigation.PushModalAsync(cmdPage);
+
         }
     }
 }

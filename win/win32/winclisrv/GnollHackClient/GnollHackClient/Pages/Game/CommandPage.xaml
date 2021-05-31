@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GnollHackClient.Pages.Game.CommandPage"
+              BackgroundColor="Black" >
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button Text="Dn" x:Name="DownButton" Clicked="DownButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="0" />
+                <Button Text="Up" x:Name="UpButton" Clicked="UpButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="1" />
+                <Button Text="Cm" x:Name="CmdButton" Clicked="CmdButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="2" />
+                <Button Text="Sk" x:Name="SkillButton" Clicked="SkillButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="3" />
+                <Button Text="Ab" x:Name="AbilityButton" Clicked="AbilityButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="4" />
+                <Button Text="Ea" x:Name="EatButton" Clicked="EatButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="0" />
+                <Button Text="Lt" x:Name="LootButton" Clicked="LootButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="1" />
+                <Button Text="Op" x:Name="OpenButton" Clicked="OpenButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70"  Grid.Row="1" Grid.Column="2" />
+                <Button Text="Cl" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70"  Grid.Row="1" Grid.Column="3" />
+                <Button Text="Ch" x:Name="ChatButton" Clicked="ChatButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="4" />
+                <Button Text="Yl" x:Name="YellButton" Clicked="YellButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="0" />
+                <Button Text="Sw" x:Name="SwapWeapButton" Clicked="SwapWeapButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="1" />
+                <Button Text="2W" x:Name="TwoWeapButton" Clicked="TwoWeapButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="2" />
+                <Button Text="+" x:Name="SpellsButton" Clicked="SpellsButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="3" />
+                <Button Text="Bk" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="4" Grid.Column="4" />
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

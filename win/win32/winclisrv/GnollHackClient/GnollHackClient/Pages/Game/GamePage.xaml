@@ -25,14 +25,12 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button Text="," x:Name="PickupButton" Clicked="PickupButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="0" />
                 <Button Text="i" x:Name="InventoryButton" Clicked="InventoryButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="1" />
                 <Button Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="2" />
                 <Button Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="3" />
-                <Button Text="Dn" x:Name="DownButton" Clicked="DownButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="4" />
-                <Button Text="Up" x:Name="UpButton" Clicked="UpButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="5" />
+                <Button Text="=" x:Name="MenuButton" Clicked="MenuButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="4" />
             </Grid>
         </AbsoluteLayout>
     </ContentPage.Content>
