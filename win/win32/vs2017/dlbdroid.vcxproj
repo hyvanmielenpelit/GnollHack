@@ -76,9 +76,9 @@
     <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
     <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
     <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)</IntDir>
+    <IntDir>$(ObjDir)dlb\</IntDir>
     <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj</RemoteIntDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/dlb</RemoteIntDir>
     <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
     <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
   </PropertyGroup>
