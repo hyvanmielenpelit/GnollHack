@@ -5522,7 +5522,7 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     /* Prevent the player from going past the first quest level unless
      * (s)he has been given the go-ahead by the leader.
      */
-    if (on_level(&u.uz, &qstart_level) && !newdungeon && !ok_to_quest())
+    if (on_level(&u.uz, &qstart_level) && !newdungeon && !ok_to_quest() && !wizard)
     {
         play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);
         pline("A mysterious force prevents you from descending.");

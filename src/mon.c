@@ -3798,6 +3798,11 @@ cleanup:
         luck_change += -5;
     }
 
+    if (mtmp->m_id == quest_status.leader_m_id)
+    { /* REAL BAD! */
+        luck_change += -5;
+    }
+
     change_luck(luck_change, TRUE);
 
     /* give experience points */

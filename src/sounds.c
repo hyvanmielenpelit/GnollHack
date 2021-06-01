@@ -89,6 +89,7 @@ STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
 STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int, int));
 STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
+STATIC_DCL int FDECL(forge_shield_of_reflection_func, (struct monst*));
 STATIC_DCL int FDECL(forge_crystal_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_adamantium_full_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_mithril_full_plate_mail_func, (struct monst*));
@@ -5879,24 +5880,31 @@ struct monst* mtmp;
 
     add_menu(win, NO_GLYPH, &any,
         0, 0, ATR_NONE,
-        "Forge a crystal plate mail", MENU_UNSELECTED);
+        "Forge a shield of reflection", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 3;
 
     add_menu(win, NO_GLYPH, &any,
         0, 0, ATR_NONE,
-        "Forge an adamantium full plate mail", MENU_UNSELECTED);
+        "Forge a crystal plate mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 4;
 
     add_menu(win, NO_GLYPH, &any,
         0, 0, ATR_NONE,
-        "Forge a mithril full plate mail", MENU_UNSELECTED);
+        "Forge an adamantium full plate mail", MENU_UNSELECTED);
 
     any = zeroany;
     any.a_char = 5;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge a mithril full plate mail", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 6;
 
     add_menu(win, NO_GLYPH, &any,
         0, 0, ATR_NONE,
@@ -5926,18 +5934,22 @@ struct monst* mtmp;
         return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail");
         break;
     case 2:
-        cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", "3 dilithium crystals");
+        cost = max(1, (int)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_components(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", "12 nuggets of silver ore");
         break;
     case 3:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", "8 nuggets of adamantium ore");
+        return general_service_query_with_components(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", "3 dilithium crystals");
         break;
     case 4:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", "8 nuggets of mithril ore");
+        return general_service_query_with_components(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", "8 nuggets of adamantium ore");
         break;
     case 5:
+        cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_components(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", "8 nuggets of mithril ore");
+        break;
+    case 6:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_components(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", "8 nuggets of orichalcum ore");
         break;
@@ -6098,7 +6110,7 @@ struct obj* otmp;
     if (!otmp)
         return FALSE;
 
-    return is_ore(otmp) && otmp->otyp != NUGGET_OF_SILVER_ORE && otmp->otyp != NUGGET_OF_GOLD_ORE && otmp->otyp != NUGGET_OF_PLATINUM_ORE;
+    return is_ore(otmp) && otmp->otyp != NUGGET_OF_GOLD_ORE && otmp->otyp != NUGGET_OF_PLATINUM_ORE;
 }
 
 STATIC_OVL boolean
@@ -7264,6 +7276,13 @@ forge_crystal_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
     return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 3, CRYSTAL_PLATE_MAIL);
+}
+
+STATIC_OVL int
+forge_shield_of_reflection_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 12, SHIELD_OF_REFLECTION);
 }
 
 STATIC_OVL int

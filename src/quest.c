@@ -144,7 +144,7 @@ struct obj *obj;
 boolean
 ok_to_quest()
 {
-    return (boolean) ((Qstat(got_quest) || Qstat(got_thanks))
+    return (boolean) ((Qstat(got_quest) || Qstat(got_thanks) || Qstat(leader_is_dead))
                       && is_pure(FALSE) > 0);
 }
 

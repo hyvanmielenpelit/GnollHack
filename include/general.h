@@ -136,6 +136,8 @@ struct replacement_info {
 
 struct extended_menu_info {
     struct obj* object;
+    struct monst* monster;
+    char heading_for_group_accelerator;
     int color;
     unsigned long menu_flags;
 };
