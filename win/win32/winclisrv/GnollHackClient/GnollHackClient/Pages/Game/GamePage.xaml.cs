@@ -528,43 +528,43 @@ namespace GnollHackClient.Pages.Game
                     {
                         case 0:
                             str = "\u2190";
-                            tx = canvasView.CanvasSize.Width * 0.1f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
                             break;
                         case 1:
                             str = "\u2191";
                             tx = canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.1f + textPaint.FontMetrics.Descent;
+                            ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 2:
                             str = "\u2192";
-                            tx = canvasView.CanvasSize.Width * 0.9f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
                             break;
                         case 3:
                             str = "\u2193";
                             tx = canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.9f + textPaint.FontMetrics.Descent;
+                            ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                         case 4:
                             str = "\u2196";
-                            tx = canvasView.CanvasSize.Width * 0.1f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.1f + textPaint.FontMetrics.Descent;
+                            tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 5:
                             str = "\u2197";
-                            tx = canvasView.CanvasSize.Width * 0.9f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.1f + textPaint.FontMetrics.Descent;
+                            tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                         case 6:
                             str = "\u2198";
-                            tx = canvasView.CanvasSize.Width * 0.1f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.9f + textPaint.FontMetrics.Descent;
+                            tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                         case 7:
                             str = "\u2199";
-                            tx = canvasView.CanvasSize.Width * 0.9f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.9f + textPaint.FontMetrics.Descent;
+                            tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                     }
                     canvas.DrawText(str, tx, ty, textPaint);
@@ -693,21 +693,21 @@ namespace GnollHackClient.Pages.Game
                 {
                     int resp = 0;
                     //string ch = " ";
-                    if (e.Location.Y < canvasView.CanvasSize.Height * 0.2 && e.Location.X < canvasView.CanvasSize.Width * 0.2)
+                    if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
                         resp = -7;
-                    else if (e.Location.Y < canvasView.CanvasSize.Height * 0.2 && e.Location.X > canvasView.CanvasSize.Width * 0.8)
+                    else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
                         resp = -9;
-                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.8 && e.Location.X < canvasView.CanvasSize.Width * 0.2)
+                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
                         resp = -1;
-                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.8 && e.Location.X > canvasView.CanvasSize.Width * 0.8)
+                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
                         resp = -3;
-                    else if (e.Location.Y < canvasView.CanvasSize.Height * 0.2)
+                    else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3)
                         resp = -8; //ch = "k";
-                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.8)
+                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7)
                         resp = -2; // ch = "j";
-                    else if (e.Location.X < canvasView.CanvasSize.Width * 0.2)
+                    else if (e.Location.X < canvasView.CanvasSize.Width * 0.3)
                         resp = -4; // ch = "h";
-                    else if (e.Location.X > canvasView.CanvasSize.Width * 0.8)
+                    else if (e.Location.X > canvasView.CanvasSize.Width * 0.7)
                         resp = -6; // ch = "l";
                     else
                         resp = 32;

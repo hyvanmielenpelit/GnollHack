@@ -5054,6 +5054,7 @@ struct monst* mtmp;
         return 0;
     }
 
+    play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_BLESS_AN_ITEM);
     Sprintf(qbuf, "Would you like to bless an item? (%d %s)", bless_cost, currency((long)bless_cost));
     switch (ynq(qbuf)) {
     default:
@@ -5070,6 +5071,7 @@ struct monst* mtmp;
             break;
         break;
     case 'n':
+        play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_CURSE_AN_ITEM);
         Sprintf(qbuf, "Then would you like to curse one? (%d %s)",
             curse_cost, currency((long)curse_cost));
         if (yn_query(qbuf) != 'y')
@@ -5137,6 +5139,7 @@ struct monst* mtmp;
         return 0;
     }
 
+    play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_STANDARD_HEALING);
     Sprintf(qbuf, "Would you like to have a standard healing? (%d %s)", extrahealing_cost, currency((long)extrahealing_cost));
     switch (ynq(qbuf)) {
     default:
@@ -5186,6 +5189,7 @@ struct monst* mtmp;
         return 0;
     }
 
+    play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FULL_HEALING);
     Sprintf(qbuf, "Would you like to have a full healing? (%d %s)", fullhealing_cost, currency((long)fullhealing_cost));
     switch (ynq(qbuf)) {
     default:
@@ -5235,6 +5239,7 @@ struct monst* mtmp;
         return 0;
     }
 
+    play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_SICKNESS_CURED);
     Sprintf(qbuf, "Would you like to have your sickness cured? (%d %s)", cure_sickness_cost, currency((long)cure_sickness_cost));
     switch (ynq(qbuf)) {
     default:
@@ -5463,9 +5468,9 @@ struct monst* mtmp;
             }
 
             if(u.uprayer_timeout >= 50)
-                play_monster_special_dialogue_line(mtmp, u.uprayer_timeout < 50 ? PRIEST_SPECIAL_DIALOGUE_WISE_TO_WAIT_LITTLE_LONGER : u.uprayer_timeout > 200 ? PRIEST_SPECIAL_DIALOGUE_WISE_TO_WAIT_LONG_TIME : PRIEST_SPECIAL_DIALOGUE_WISE_TO_WAIT_LITTLE_LONGER);
+                play_monster_special_dialogue_line(mtmp, u.uprayer_timeout < 50 ? PRIEST_SPECIAL_DIALOGUE_WISE_TO_WAIT_LITTLE_LONGER : u.uprayer_timeout > 200 ? PRIEST_SPECIAL_DIALOGUE_WISE_TO_WAIT_LONG_TIME : PRIEST_SPECIAL_DIALOGUE_WISE_TO_WAIT);
             else
-                play_monster_special_dialogue_line(mtmp, u.uprayer_timeout < 50 ? PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LITTLE_LONGER : u.uprayer_timeout > 200 ? PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LONG_TIME : PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LITTLE_LONGER);
+                play_monster_special_dialogue_line(mtmp, u.uprayer_timeout < 50 ? PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LITTLE_LONGER : u.uprayer_timeout > 200 ? PRIEST_SPECIAL_DIALOGUE_MUST_WAIT_LONG_TIME : PRIEST_SPECIAL_DIALOGUE_MUST_WAIT);
 
             verbalize("Thus, %s wait %sbefore bothering %s again.",
                 u.uprayer_timeout >= 50 ? "it would be wise to" : "you must",
@@ -5479,7 +5484,7 @@ struct monst* mtmp;
     if (!iflags.using_gui_sounds)
         Sprintf(buf1, " of %d", abs(Luck));
     if (iflags.using_gui_sounds)
-        Sprintf(buf2, " (This number appears to be %d.)", abs(Luck));
+        Sprintf(buf2, " (This number seems to be %d.)", abs(Luck));
 
     if (Luck < 0)
     {
