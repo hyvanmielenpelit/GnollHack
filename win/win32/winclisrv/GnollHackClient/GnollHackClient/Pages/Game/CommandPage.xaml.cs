@@ -161,6 +161,22 @@ namespace GnollHackClient.Pages.Game
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
+        private async void WhatIsButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, '/');
+        }
 
+        private async void LookFarButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, ';');
+        }
+
+        private async void HelpButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, '?');
+        }
     }
 }

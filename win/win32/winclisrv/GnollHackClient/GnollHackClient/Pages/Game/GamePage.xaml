@@ -57,10 +57,12 @@
                 <Button Text=":" x:Name="LookHereButton" Clicked="LookHereButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="1" />
                 <Button Text="." x:Name="WaitButton" Clicked="WaitButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="2" />
                 <Button Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="3" />
+                <Button Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="4" />
                 <Button Text="i" x:Name="InventoryButton" Clicked="InventoryButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="0" />
                 <Button Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="1" />
                 <Button Text="f" x:Name="FireButton" Clicked="FireButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="2" />
-                <Button Text="=" x:Name="MenuButton" Clicked="MenuButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="3" />
+                <Button Text="Z" x:Name="CastButton" Clicked="CastButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="3" />
+                <Button Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="4" />
             </Grid>
 
             <Grid x:Name="YnGrid" Padding="5,5,5,5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 0.70, 1.0, 0.20"
@@ -74,12 +76,14 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label  Text="?" x:Name="QuestionLabel" FontFamily="Diablo" FontSize="16" TextColor="White" VerticalTextAlignment="End" HorizontalOptions="Center" HeightRequest="70" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" />
-                <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="0" IsVisible="false" />
-                <Button Text="?" x:Name="SecondButton" Clicked="SecondButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="1" IsVisible="false" />
-                <Button Text="?" x:Name="ThirdButton" Clicked="ThirdButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="2" IsVisible="false" />
-                <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="3" IsVisible="false" />
+                <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="0" IsVisible="false" />
+                <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="1" IsVisible="false" />
+                <Button Text="?" x:Name="SecondButton" Clicked="SecondButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="2" IsVisible="false" />
+                <Button Text="?" x:Name="ThirdButton" Clicked="ThirdButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="3" IsVisible="false" />
+                <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="4" IsVisible="false" />
             </Grid>
 
         </AbsoluteLayout>

@@ -221,6 +221,7 @@ namespace GnollHackClient.Pages.Game
             else if(responses.Length == 1)
             {
                 SecondButton.Text = responses;
+                ZeroButton.IsVisible = false;
                 FirstButton.IsVisible = false;
                 SecondButton.IsVisible = true;
                 ThirdButton.IsVisible = false;
@@ -228,18 +229,31 @@ namespace GnollHackClient.Pages.Game
             }
             else if(responses.Length == 2)
             {
-                FirstButton.IsVisible = false;
+                ZeroButton.IsVisible = false;
+                FirstButton.IsVisible = true;
+                SecondButton.IsVisible = true;
+                ThirdButton.IsVisible = false;
+                FourthButton.IsVisible = false;
+                FirstButton.Text = responses.Substring(0, 1);
+                SecondButton.Text = responses.Substring(1, 1);
+            }
+            else if (responses.Length == 3)
+            {
+                ZeroButton.IsVisible = false;
+                FirstButton.IsVisible = true;
                 SecondButton.IsVisible = true;
                 ThirdButton.IsVisible = true;
                 FourthButton.IsVisible = false;
-                SecondButton.Text = responses.Substring(0, 1);
-                ThirdButton.Text = responses.Substring(1, 1);
+                FirstButton.Text = responses.Substring(0, 1);
+                SecondButton.Text = responses.Substring(1, 1);
+                ThirdButton.Text = responses.Substring(2, 1);
             }
-            else 
+            else
             {
-                Button[] btnList = { FirstButton, SecondButton, ThirdButton, FourthButton };
+                Button[] btnList = { ZeroButton, FirstButton, SecondButton, ThirdButton, FourthButton };
 
-                for (int i = 0; i < 3; i++)
+
+                for (int i = 0; i < 4; i++)
                 {
                     if (i < responses.Length)
                     {
@@ -554,17 +568,17 @@ namespace GnollHackClient.Pages.Game
                         case 5:
                             str = "\u2197";
                             tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
+                            ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 6:
                             str = "\u2198";
-                            tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                         case 7:
                             str = "\u2199";
-                            tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
+                            tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                     }
                     canvas.DrawText(str, tx, ty, textPaint);
@@ -722,7 +736,7 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private SKColor GHDarkGray = new SKColor(40, 40, 40);
+        private SKColor GHDarkGray = new SKColor(96, 96, 96);
 
         public SKColor NHColor2SKColor(nhcolor nhcolor)
         {
@@ -863,33 +877,53 @@ namespace GnollHackClient.Pages.Game
 
         }
 
+        private void ZeroButton_Clicked(object sender, EventArgs e)
+        {
+            if (CurrentYnResponses.Length >= 4)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(0, 1).ToCharArray()[0]);
+        }
         private void FirstButton_Clicked(object sender, EventArgs e)
         {
-            if (CurrentYnResponses.Length >= 1)
+            if (CurrentYnResponses.Length >= 4)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(1, 1).ToCharArray()[0]);
+            else if (CurrentYnResponses.Length >= 2)
                 GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(0, 1).ToCharArray()[0]);
         }
 
         private void SecondButton_Clicked(object sender, EventArgs e)
         {
-            if (CurrentYnResponses.Length == 1 || CurrentYnResponses.Length == 2)
+            if (CurrentYnResponses.Length == 1)
                 GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(0, 1).ToCharArray()[0]);
-            if (CurrentYnResponses.Length >= 3)
+            else if (CurrentYnResponses.Length >= 4)
                 GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(2, 1).ToCharArray()[0]);
+            else if (CurrentYnResponses.Length >= 2)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(1, 1).ToCharArray()[0]);
         }
 
         private void ThirdButton_Clicked(object sender, EventArgs e)
         {
-            if (CurrentYnResponses.Length == 2)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(1, 1).ToCharArray()[0]);
-            else if (CurrentYnResponses.Length >= 3)
+            if (CurrentYnResponses.Length == 3)
                 GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(2, 1).ToCharArray()[0]);
+            else if (CurrentYnResponses.Length >= 4)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(3, 1).ToCharArray()[0]);
         }
 
         private void FourthButton_Clicked(object sender, EventArgs e)
         {
-            if (CurrentYnResponses.Length >= 4)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(3, 1).ToCharArray()[0]);
+            if (CurrentYnResponses.Length >= 5)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(4, 1).ToCharArray()[0]);
         }
+
+        private void RepeatButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, GHUtils.Ctrl('A'));
+        }
+
+        private void CastButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'Z');
+        }
+
     }
 
     public class ColorConverter : IValueConverter
