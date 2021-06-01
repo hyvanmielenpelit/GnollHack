@@ -10,6 +10,8 @@ using Xamarin.Forms.Xaml;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
+[assembly: ExportFont("imrl.ttf", Alias = "Immortal")]
+[assembly: ExportFont("endr.ttf", Alias = "Endor")]
 [assembly: ExportFont("Lato-Regular.ttf", Alias = "Lato-Regular")]
 [assembly: ExportFont("Lato-Bold.ttf", Alias = "Lato-Bold")]
 namespace GnollHackClient
