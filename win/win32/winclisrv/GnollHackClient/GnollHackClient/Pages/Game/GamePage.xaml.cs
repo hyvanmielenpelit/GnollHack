@@ -41,6 +41,7 @@ namespace GnollHackClient.Pages.Game
         public ClientGame ClientGame { get { return _clientGame; } }
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         private bool _cursorIsOn;
+        private bool _showDirections = false;
 
         public int ClipX { get; set; }
         public int ClipY { get; set; }
@@ -57,7 +58,7 @@ namespace GnollHackClient.Pages.Game
                 return true;
             });
 
-            Device.StartTimer(TimeSpan.FromSeconds(1f), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(1f / 2), () =>
             {
                 if (ClientGame != null)
                     _cursorIsOn = !_cursorIsOn;
@@ -159,6 +160,18 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.PrintTopLine:
                                 PrintTopLine(req.RequestString, req.RequestStringAttributes);
                                 break;
+                            case GHRequestType.ShowYnResponses:
+                                ShowYnResponses(req.RequestString, req.Responses);
+                                break;
+                            case GHRequestType.HideYnResponses:
+                                HideYnResponses();
+                                break;
+                            case GHRequestType.ShowDirections:
+                                ShowDirections();
+                                break;
+                            case GHRequestType.HideDirections:
+                                HideDirections();
+                                break;
                             case GHRequestType.GetChar:
                                 GetChar();
                                 break;
@@ -196,6 +209,65 @@ namespace GnollHackClient.Pages.Game
                     break;
             }
             */
+        }
+
+        private string CurrentYnResponses;
+        private void ShowYnResponses(string question, string responses)
+        {
+            CurrentYnResponses = responses;
+            QuestionLabel.Text = question;
+            if (responses.Length == 0)
+                return;
+            else if(responses.Length == 1)
+            {
+                SecondButton.Text = responses;
+                FirstButton.IsVisible = false;
+                SecondButton.IsVisible = true;
+                ThirdButton.IsVisible = false;
+                FourthButton.IsVisible = false;
+            }
+            else if(responses.Length == 2)
+            {
+                FirstButton.IsVisible = false;
+                SecondButton.IsVisible = true;
+                ThirdButton.IsVisible = true;
+                FourthButton.IsVisible = false;
+                SecondButton.Text = responses.Substring(0, 1);
+                ThirdButton.Text = responses.Substring(1, 1);
+            }
+            else 
+            {
+                Button[] btnList = { FirstButton, SecondButton, ThirdButton, FourthButton };
+
+                for (int i = 0; i < 3; i++)
+                {
+                    if (i < responses.Length)
+                    {
+                        btnList[i].Text = responses.Substring(i, 1);
+                        btnList[i].IsVisible = true;
+                    }
+                    else
+                    {
+                        btnList[i].Text = "?";
+                        btnList[i].IsVisible = false;
+                    }
+                }
+            }
+
+            YnGrid.IsVisible = true;
+        }
+
+        private void HideYnResponses()
+        {
+            YnGrid.IsVisible = false;
+        }
+        private void ShowDirections()
+        {
+            _showDirections = true;
+        }
+        private void HideDirections()
+        {
+            _showDirections = false;
         }
 
         private void PrintHistory(List<GHMsgHistoryItem> msgHistory)
@@ -445,6 +517,62 @@ namespace GnollHackClient.Pages.Game
 
             }
 
+            if(_showDirections)
+            {
+                textPaint.Color = new SKColor(255, 255, 255, 128);
+                textPaint.Typeface = App.DejaVuSansMonoTypeface;
+                textPaint.TextSize = 400;
+                for (int i = 0; i < 8;i++)
+                {
+                    switch(i)
+                    {
+                        case 0:
+                            str = "\u2190";
+                            tx = canvasView.CanvasSize.Width * 0.1f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
+                            break;
+                        case 1:
+                            str = "\u2191";
+                            tx = canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.1f + textPaint.FontMetrics.Descent;
+                            break;
+                        case 2:
+                            str = "\u2192";
+                            tx = canvasView.CanvasSize.Width * 0.9f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
+                            break;
+                        case 3:
+                            str = "\u2193";
+                            tx = canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.9f + textPaint.FontMetrics.Descent;
+                            break;
+                        case 4:
+                            str = "\u2196";
+                            tx = canvasView.CanvasSize.Width * 0.1f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.1f + textPaint.FontMetrics.Descent;
+                            break;
+                        case 5:
+                            str = "\u2197";
+                            tx = canvasView.CanvasSize.Width * 0.9f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.1f + textPaint.FontMetrics.Descent;
+                            break;
+                        case 6:
+                            str = "\u2198";
+                            tx = canvasView.CanvasSize.Width * 0.1f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.9f + textPaint.FontMetrics.Descent;
+                            break;
+                        case 7:
+                            str = "\u2199";
+                            tx = canvasView.CanvasSize.Width * 0.9f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height * 0.9f + textPaint.FontMetrics.Descent;
+                            break;
+                    }
+                    canvas.DrawText(str, tx, ty, textPaint);
+
+                }
+            }
+
+
             /* RawPrint */
             /*
             lock(MessageLock)
@@ -594,13 +722,15 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private SKColor GHDarkGray = new SKColor(40, 40, 40);
+
         public SKColor NHColor2SKColor(nhcolor nhcolor)
         {
             SKColor res = SKColors.Gray;
             switch (nhcolor)
             {
                 case nhcolor.CLR_BLACK:
-                    res = SKColors.DarkGray;
+                    res = GHDarkGray;
                     break;
                 case nhcolor.CLR_RED:
                     res = SKColors.Red;
@@ -731,6 +861,34 @@ namespace GnollHackClient.Pages.Game
             var cmdPage = new CommandPage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(cmdPage);
 
+        }
+
+        private void FirstButton_Clicked(object sender, EventArgs e)
+        {
+            if (CurrentYnResponses.Length >= 1)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(0, 1).ToCharArray()[0]);
+        }
+
+        private void SecondButton_Clicked(object sender, EventArgs e)
+        {
+            if (CurrentYnResponses.Length == 1 || CurrentYnResponses.Length == 2)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(0, 1).ToCharArray()[0]);
+            if (CurrentYnResponses.Length >= 3)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(2, 1).ToCharArray()[0]);
+        }
+
+        private void ThirdButton_Clicked(object sender, EventArgs e)
+        {
+            if (CurrentYnResponses.Length == 2)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(1, 1).ToCharArray()[0]);
+            else if (CurrentYnResponses.Length >= 3)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(2, 1).ToCharArray()[0]);
+        }
+
+        private void FourthButton_Clicked(object sender, EventArgs e)
+        {
+            if (CurrentYnResponses.Length >= 4)
+                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(3, 1).ToCharArray()[0]);
         }
     }
 

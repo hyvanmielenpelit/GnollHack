@@ -14,6 +14,10 @@ namespace GnollHackClient
         AskName,
         ReturnToMainMenu,
         ShowMenuPage,
+        ShowYnResponses,
+        HideYnResponses,
+        ShowDirections,
+        HideDirections,
     }
 
     public class GHRequest
@@ -26,6 +30,7 @@ namespace GnollHackClient
         public uint RequestStringAttributes { get; set; }
         public int RequestInt { get; set; }
         public List<GHMsgHistoryItem> MessageHistory { get; set; }
+        public string Responses { get; set; }
         public GHRequest()
         {
 
@@ -61,6 +66,13 @@ namespace GnollHackClient
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             MessageHistory = msgHistory;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, string responses)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            RequestString = requeststring;
+            Responses = responses;
         }
     }
 }

@@ -267,30 +267,59 @@ namespace GnollHackClient
         {
             if(question != null)
                 ClientCallback_RawPrint(question);
-            if(responses == null || responses == "")
-                return ClientCallback_nhgetch();
+
+            ConcurrentQueue<GHRequest> queue;
+            if (responses == null || responses == "")
+            {
+                if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                {
+                    queue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections));
+                }
+                int res = ClientCallback_nhgetch(); /* Get direction */
+                if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                {
+                    queue.Enqueue(new GHRequest(this, GHRequestType.HideDirections));
+                }
+                return res;
+            }
             else
             {
+                if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                {
+                    queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, question, responses));
+                }
+
                 int cnt = 0;
                 while(cnt < 5)
                 {
                     int val = ClientCallback_nhgetch();
+                    string desc = "";
                     if (val < 0)
                     {
-                        if(val == -2)
-                            val = 'n';
-                        else if (val == -8)
-                            val = 'y';
-                        else
-                            val = 27;
+                        desc = "Numpad direction " + Math.Abs(val);
+                        val = 27;
                     }
-                    string res = Char.ConvertFromUtf32(val);
-                    if (responses.Contains(res))
-                        return val;
 
-                    ClientCallback_RawPrint("Invalid!");
+                    string res = Char.ConvertFromUtf32(val);
+                    if (desc == "")
+                        desc = res;
+
+                    if (responses.Contains(res))
+                    {
+                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.HideYnResponses));
+                        }
+                        return val;
+                    }
+
+                    ClientCallback_RawPrint("'" + desc + "': Invalid input!");
                     cnt++;
                 }
+            }
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                queue.Enqueue(new GHRequest(this, GHRequestType.HideYnResponses));
             }
             return 27;
         }
