@@ -38,5 +38,12 @@ namespace GnollHackClient.Pages.Game
                 await _gamePage.Navigation.PopModalAsync();
             }
         }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            entryText.Focus();
+        }
     }
 }

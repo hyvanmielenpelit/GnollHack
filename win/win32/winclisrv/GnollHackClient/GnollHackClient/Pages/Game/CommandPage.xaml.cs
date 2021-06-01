@@ -160,5 +160,7 @@ namespace GnollHackClient.Pages.Game
         {
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
+
+
     }
 }

@@ -31,6 +31,7 @@ namespace GnollHackClient
         public GHWindow[] Windows { get { return _ghWindows; } }
         public object WindowsLock { get { return _ghWindowsLock; } }
         public int MapWindowId { get; set; }
+        private List<GHMsgHistoryItem> _message_history = new List<GHMsgHistoryItem>();
 
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
@@ -303,16 +304,38 @@ namespace GnollHackClient
 
         public void ClientCallback_RawPrint(string str)
         {
-            lock(_gamePage.MessageLock)
+            if (_message_history.Count > 0)
+                _message_history[_message_history.Count - 1].IsLast = false;
+            _message_history.Add(new GHMsgHistoryItem(str));
+            if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
+                _message_history.RemoveAt(0);
+
+            List<GHMsgHistoryItem> sendlist = new List<GHMsgHistoryItem>();
+            sendlist.AddRange(_message_history);
+            if(sendlist.Count > 0)
+                sendlist[sendlist.Count - 1].IsLast = true;
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
-                _gamePage.Message = str;
+                queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, sendlist));
             }
         }
         public void ClientCallback_RawPrintBold(string str)
         {
-            lock (_gamePage.MessageLock)
+            if (_message_history.Count > 0)
+                _message_history[_message_history.Count - 1].IsLast = false;
+            _message_history.Add(new GHMsgHistoryItem(str, 1));
+            if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
+                _message_history.RemoveAt(0);
+
+            List<GHMsgHistoryItem> sendlist = new List<GHMsgHistoryItem>();
+            sendlist.AddRange(_message_history);
+            if (sendlist.Count > 0)
+                sendlist[sendlist.Count - 1].IsLast = true;
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
-                _gamePage.Message = str;
+                queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, sendlist));
             }
         }
         public void ClientCallback_PutStrEx(int win_id, int attributes, string str, int append)

@@ -107,20 +107,20 @@ namespace GnollHackClient
                     TextSize = 36;
                     Typeface = App.LatoRegular;
                     Left = 0;
-                    Top = 100;
+                    Top = 0;
                     break;
                 case GHWinType.Menu:
                     Typeface = App.UnderwoodTypeface;
-                    TextSize = 33;
+                    TextSize = 42;
                     Left = 0;
-                    Top = 250;
+                    Top = 150;
                     CenterHorizontally = true;
                     break;
                 case GHWinType.Text:
                     Typeface = App.EndorTypeface;
                     TextSize = 42;
                     Left = 0;
-                    Top = 250;
+                    Top = 150;
                     CenterHorizontally = true;
                     break;
             }

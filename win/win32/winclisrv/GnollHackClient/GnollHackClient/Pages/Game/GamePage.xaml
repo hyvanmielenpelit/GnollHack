@@ -3,18 +3,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GnollHackClient.Pages.Game.GamePage"
              Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing"
-             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms" xmlns:local="clr-namespace:GnollHackClient.Pages.Game"
              BackgroundColor="Black"
              >
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:ColorConverter x:Key="ColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
     <ContentPage.Content>
-        <AbsoluteLayout VerticalOptions="FillAndExpand"
-                    HorizontalOptions="FillAndExpand">
+        <AbsoluteLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <CollectionView x:Name="MessageHistoryView" BackgroundColor="Black" 
+                            AbsoluteLayout.LayoutBounds="0.0, 5, 1.0, 80" AbsoluteLayout.LayoutFlags="WidthProportional" >
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" TextColor="{Binding IsLast, Converter={StaticResource ColorConverter}}" 
+                                   Text="{Binding Text}"
+                                   FontFamily="Diablo" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
             <skia:SKCanvasView x:Name="canvasView"
                         EnableTouchEvents="True"
                         PaintSurface="canvasView_PaintSurface" 
                         Touch="canvasView_Touch"
-                        AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 0.8"
-                        AbsoluteLayout.LayoutFlags="All" />
+                        AbsoluteLayout.LayoutBounds="0.0, 80, 1.0, 0.7"
+                        AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional" />
+
+            
             <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.20"
                            AbsoluteLayout.LayoutFlags="All" HeightRequest="160" BackgroundColor="Black">
                 <Grid.RowDefinitions>

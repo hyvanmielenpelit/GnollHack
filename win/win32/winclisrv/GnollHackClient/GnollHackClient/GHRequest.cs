@@ -9,6 +9,8 @@ namespace GnollHackClient
         None,
         GetChar,
         GetLine,
+        PrintTopLine,
+        PrintHistory,
         AskName,
         ReturnToMainMenu,
         ShowMenuPage,
@@ -21,6 +23,9 @@ namespace GnollHackClient
         public GHWindow RequestingGHWindow { get; set; }
         public GHMenuInfo RequestMenuInfo { get; set; }
         public string RequestString { get; set; }
+        public uint RequestStringAttributes { get; set; }
+        public int RequestInt { get; set; }
+        public List<GHMsgHistoryItem> MessageHistory { get; set; }
         public GHRequest()
         {
 
@@ -43,6 +48,19 @@ namespace GnollHackClient
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             RequestString = requeststring;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, uint attributes)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            RequestString = requeststring;
+            RequestStringAttributes = attributes;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, List<GHMsgHistoryItem> msgHistory)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            MessageHistory = msgHistory;
         }
     }
 }

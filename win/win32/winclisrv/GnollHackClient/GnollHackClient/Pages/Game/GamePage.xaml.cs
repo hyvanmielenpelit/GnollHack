@@ -5,6 +5,7 @@ using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -21,9 +22,9 @@ namespace GnollHackClient.Pages.Game
         Boolean _connectionAttempted = false;
         private HubConnection _connection;
         private string _connection_status = "";
-        public string Message { get { return _message1; } set { _message1 = value; } }
-        public object MessageLock = new object();
-        private string _message1 = "";
+        //private string Message { get { lock (MessageLock) { return TopLineLabel.Text; } } set { lock (MessageLock) { TopLineLabel.Text = value; } } }
+        //private object MessageLock = new object();
+        //private string _message1 = "";
 
         private string _message = "";
         private string _message2 = "";
@@ -152,6 +153,12 @@ namespace GnollHackClient.Pages.Game
                     {
                         switch (req.RequestType)
                         {
+                            case GHRequestType.PrintHistory:
+                                PrintHistory(req.MessageHistory);
+                                break;
+                            case GHRequestType.PrintTopLine:
+                                PrintTopLine(req.RequestString, req.RequestStringAttributes);
+                                break;
                             case GHRequestType.GetChar:
                                 GetChar();
                                 break;
@@ -173,6 +180,29 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
             }
+        }
+
+        private void PrintTopLine(string str, uint attributes)
+        {
+            /*
+            TopLineLabel.Text = str;
+            switch(attributes)
+            {
+                case 0:
+                    TopLineLabel.FontAttributes = FontAttributes.None;
+                    break;
+                case 1:
+                    TopLineLabel.FontAttributes = FontAttributes.Bold;
+                    break;
+            }
+            */
+        }
+
+        private void PrintHistory(List<GHMsgHistoryItem> msgHistory)
+        {
+            MessageHistoryView.ItemsSource = msgHistory;
+            if(msgHistory.Count > 0)
+                MessageHistoryView.ScrollTo(msgHistory.Count - 1, -1, ScrollToPosition.End, false);
         }
 
         private async void AskName()
@@ -416,6 +446,7 @@ namespace GnollHackClient.Pages.Game
             }
 
             /* RawPrint */
+            /*
             lock(MessageLock)
             {
                 str = Message;
@@ -426,6 +457,7 @@ namespace GnollHackClient.Pages.Game
             textPaint.Color = SKColors.White;
             yText = 50;
             canvas.DrawText(str, xText, yText, textPaint);
+            */
 
 
         }
@@ -701,4 +733,29 @@ namespace GnollHackClient.Pages.Game
 
         }
     }
+
+    public class ColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+
+            if ((bool)value == true)
+            {
+                return Color.White;
+            }
+
+            return Color.DarkGray;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value == true)
+            {
+                return Color.White;
+            }
+
+            return Color.DarkGray;
+        }
+    }
+
 }
