@@ -11,6 +11,7 @@ namespace GnollHackClient
         public int BkGlyph { get; set; }
         public string Symbol { get; set; }
         public SKColor Color { get; set; }
+        public uint Special { get; set; }
 
         public MapData()
         {

@@ -41,6 +41,25 @@ namespace GnollHackCommon
         StayOnLine =0x00000040,
         NoTabs =    0x00000080,
     }
+    [Flags]
+    public enum MapSpecial : uint
+    {
+        None =              0x00000000,
+        Corpse =            0x00000001,
+        Invisible =         0x00000002,
+        Detected =          0x00000004,
+        Pet =               0x00000008,
+        Ridden =            0x00000010,
+        Statue =            0x00000020,
+        ObjectPile =        0x00000040,
+        BlackWhiteLava =    0x00000080,
+        Peaceful =          0x00000100,
+        Saddled =           0x00000200,
+        Female =            0x00000400,
+        HorizontalFlip =    0x00000800,
+        StoneInverse =      0x00001000,
+    }
+
     public class GHConstants
     {
         public const int InputBufferLength = 32;

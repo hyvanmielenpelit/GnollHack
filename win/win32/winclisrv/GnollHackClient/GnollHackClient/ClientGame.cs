@@ -30,6 +30,7 @@ namespace GnollHackClient
         private object _ghWindowsLock = new object();
         public GHWindow[] Windows { get { return _ghWindows; } }
         public object WindowsLock { get { return _ghWindowsLock; } }
+        public int MapWindowId { get; set; }
 
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
@@ -128,6 +129,8 @@ namespace GnollHackClient
             {
                 _ghWindows[handle] = ghwin;
                 ghwin.Create();
+                if (wintype == (int)GHWinType.Map)
+                    MapWindowId = handle;
             }
             return handle;
         }
@@ -138,6 +141,8 @@ namespace GnollHackClient
                 GHWindow ghwin = _ghWindows[winHandle];
                 if (ghwin != null)
                     ghwin.Destroy();
+                if (ghwin.WindowType == GHWinType.Map)
+                    MapWindowId = 0;
                 _ghWindows[winHandle] = null;
             }
         }
@@ -298,11 +303,17 @@ namespace GnollHackClient
 
         public void ClientCallback_RawPrint(string str)
         {
-            _gamePage.Message = str;
+            lock(_gamePage.MessageLock)
+            {
+                _gamePage.Message = str;
+            }
         }
         public void ClientCallback_RawPrintBold(string str)
         {
-            _gamePage.Message = str;
+            lock (_gamePage.MessageLock)
+            {
+                _gamePage.Message = str;
+            }
         }
         public void ClientCallback_PutStrEx(int win_id, int attributes, string str, int append)
         {

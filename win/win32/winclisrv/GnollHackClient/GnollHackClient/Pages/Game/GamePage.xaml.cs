@@ -22,6 +22,7 @@ namespace GnollHackClient.Pages.Game
         private HubConnection _connection;
         private string _connection_status = "";
         public string Message { get { return _message1; } set { _message1 = value; } }
+        public object MessageLock = new object();
         private string _message1 = "";
 
         private string _message = "";
@@ -38,6 +39,7 @@ namespace GnollHackClient.Pages.Game
         private ClientGame _clientGame;
         public ClientGame ClientGame { get { return _clientGame; } }
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
+        private bool _cursorIsOn;
 
         public int ClipX { get; set; }
         public int ClipY { get; set; }
@@ -51,6 +53,16 @@ namespace GnollHackClient.Pages.Game
             {
                 canvasView.InvalidateSurface();
                 pollRequestQueue();
+                return true;
+            });
+
+            Device.StartTimer(TimeSpan.FromSeconds(1f), () =>
+            {
+                if (ClientGame != null)
+                    _cursorIsOn = !_cursorIsOn;
+                else
+                    _cursorIsOn = false;
+
                 return true;
             });
 
@@ -325,6 +337,13 @@ namespace GnollHackClient.Pages.Game
                     {
                         str = _mapData[mapx, mapy].Symbol;
                         textPaint.Color = _mapData[mapx, mapy].Color;
+                        if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Pet) != 0)
+                        {
+                            textPaint.Style = SKPaintStyle.Fill;
+                            SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Descent, tx + width, ty + textPaint.FontMetrics.Descent + height);
+                            canvas.DrawRect(winRect, textPaint);
+                            textPaint.Color = SKColors.Black;
+                        }
                         tx = (offsetX + width * (float)mapx);
                         ty = (offsetY + height * (float)mapy);
                         canvas.DrawText(str, tx, ty, textPaint);
@@ -332,11 +351,23 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            if(_clientGame != null)
+
+            if (_clientGame != null)
             {
                 /* Window strings */
                 lock (_clientGame.WindowsLock)
                 {
+                    /* Cursor */
+                    if (_clientGame.MapWindowId > 0 && _clientGame.Windows[_clientGame.MapWindowId] != null && _clientGame.Windows[_clientGame.MapWindowId].WindowType == GHWinType.Map && _cursorIsOn)
+                    {
+                        int cx = _clientGame.Windows[_clientGame.MapWindowId].CursX, cy = _clientGame.Windows[_clientGame.MapWindowId].CursY;
+                        str = "_";
+                        textPaint.Color = SKColors.White;
+                        tx = (offsetX + width * (float)cx);
+                        ty = (offsetY + height * (float)cy);
+                        canvas.DrawText(str, tx, ty, textPaint);
+                    }
+
                     for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
                     {
                         if (_clientGame.Windows[i].Visible)
@@ -385,7 +416,11 @@ namespace GnollHackClient.Pages.Game
             }
 
             /* RawPrint */
-            str = Message;
+            lock(MessageLock)
+            {
+                str = Message;
+            }
+
             textPaint.Typeface = App.DiabloTypeface;
             textPaint.TextSize = 36;
             textPaint.Color = SKColors.White;
@@ -591,6 +626,7 @@ namespace GnollHackClient.Pages.Game
         {
             _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
             _mapData[x, y].Color = NHColor2SKColor((nhcolor)color);
+            _mapData[x, y].Special = special;
         }
         public void ClearMap()
         {
@@ -602,6 +638,7 @@ namespace GnollHackClient.Pages.Game
                     _mapData[x, y].BkGlyph = 0;
                     _mapData[x, y].Symbol = "";
                     _mapData[x, y].Color = SKColors.Black;// default(MapData);
+                    _mapData[x, y].Special = 0;
                 }
             }
         }
