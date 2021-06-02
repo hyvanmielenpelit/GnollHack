@@ -18,6 +18,10 @@ namespace GnollHackClient
         HideYnResponses,
         ShowDirections,
         HideDirections,
+        CreateWindowView,
+        ClearWindowView,
+        DestroyWindowView,
+        DisplayWindowView,
     }
 
     public class GHRequest
@@ -31,6 +35,8 @@ namespace GnollHackClient
         public int RequestInt { get; set; }
         public List<GHMsgHistoryItem> MessageHistory { get; set; }
         public string Responses { get; set; }
+        public string[] RequestStringTable { get; set; }
+
         public GHRequest()
         {
 
@@ -40,6 +46,19 @@ namespace GnollHackClient
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            RequestInt = requestint;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, string[] strs)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            RequestInt = requestint;
+            RequestStringTable = strs;
         }
         public GHRequest(ClientGame clientgame, GHRequestType requesttype, GHWindow requestingGHWindow, GHMenuInfo menuinfo)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using GnollHackClient.Pages.Game;
@@ -36,6 +37,7 @@ namespace GnollHackClient
     {
         private GHWinType _winType = 0;
         private GamePage _gamePage;
+        private ClientGame _clientGame;
         private int _winId;
 
         public SKTypeface Typeface { get; set; }
@@ -79,6 +81,7 @@ namespace GnollHackClient
         {
             _winType = winType;
             _gamePage = gamePage;
+            _clientGame = gamePage.ClientGame;
             _winId = winid;
         }
 
@@ -124,11 +127,28 @@ namespace GnollHackClient
                     CenterHorizontally = true;
                     break;
             }
+
+            if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
+            {
+                ConcurrentQueue<GHRequest> queue;
+                if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHRequest(_clientGame, GHRequestType.CreateWindowView, _winId));
+                }
+            }
         }
 
         public void Destroy()
         {
             Visible = false;
+            if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
+            {
+                ConcurrentQueue<GHRequest> queue;
+                if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHRequest(_clientGame, GHRequestType.DestroyWindowView, _winId));
+                }
+            }
         }
         public void Clear()
         {
@@ -147,10 +167,27 @@ namespace GnollHackClient
             _pixelHeight = 0;
             CursX = 0;
             CursY = 0;
+
+            if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
+            {
+                ConcurrentQueue<GHRequest> queue;
+                if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHRequest(_clientGame, GHRequestType.ClearWindowView, _winId));
+                }
+            }
         }
         public void Display(bool blocking)
         {
             Visible = true;
+            if(_winType == GHWinType.Menu || _winType == GHWinType.Text)
+            {
+                ConcurrentQueue<GHRequest> queue;
+                if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHRequest(_clientGame, GHRequestType.DisplayWindowView, _winId, PutStrs));
+                }
+            }
         }
         public void Curs(int x, int y)
         {
@@ -219,7 +256,6 @@ namespace GnollHackClient
 
                     CursX = 0;
                 }
-
             }
 
             float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
