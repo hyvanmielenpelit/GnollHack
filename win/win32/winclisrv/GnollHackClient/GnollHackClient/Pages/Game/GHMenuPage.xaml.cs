@@ -112,26 +112,6 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private double _width = 0;
-        private double _height = 0;
-        protected override void OnSizeAllocated(double width, double height)
-        {
-            base.OnSizeAllocated(width, height);
-            if (_width != width || _height != height)
-            {
-                _width = width;
-                _height = height;
-                if (width > height)
-                {
-                    menuStack.Orientation = StackOrientation.Horizontal;
-                }
-                else
-                {
-                    menuStack.Orientation = StackOrientation.Vertical;
-                }
-            }
-        }
-
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             if(!_responseSent)

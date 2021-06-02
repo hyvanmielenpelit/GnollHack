@@ -1441,6 +1441,10 @@ boolean verbose;
         //You("feel your charisma is less than before.");
     }
 
+    if (iflags.perm_invent && (oldstr != ACURR(A_STR) || oldcon != ACURR(A_CON)))
+    {
+        update_inventory(); /* For weight allowance */
+    }
 
     /* Condition change check */
     if ((was_flying != !!Flying)
