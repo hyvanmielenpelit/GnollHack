@@ -1371,7 +1371,7 @@ amii_player_selection()
 
         prompt = build_plselection_prompt(pbuf, QBUFSZ,
                                           flags.initrole, flags.initrace,
-                                          flags.initgend, flags.initalign);
+                                          flags.initgend, flags.initalign, TRUE);
         pline("%s", prompt);
         do { /* loop until we get valid input */
             cursor_on(WIN_MESSAGE);

@@ -2102,16 +2102,18 @@ int buflen, rolenum, racenum, gendnum, alignnum;
 }
 
 char *
-build_plselection_prompt(buf, buflen, rolenum, racenum, gendnum, alignnum)
+build_plselection_prompt(buf, buflen, rolenum, racenum, gendnum, alignnum, add_ynq)
 char *buf;
 int buflen, rolenum, racenum, gendnum, alignnum;
+boolean add_ynq;
 {
-    const char *defprompt = "Shall I pick a character for you? [ynaq] ";
+    const char *defprompt = "Shall I pick a character for you?";
+    const char *defprompt_ynq = "Shall I pick a character for you? [ynaq] ";
     int num_post_attribs = 0;
     char tmpbuf[BUFSZ], *p;
 
     if (buflen < QBUFSZ)
-        return (char *) defprompt;
+        return (char *) (add_ynq ? defprompt_ynq : defprompt);
 
     Strcpy(tmpbuf, "Shall I pick ");
     if (racenum != ROLE_NONE || validrole(rolenum))
@@ -2173,7 +2175,9 @@ int buflen, rolenum, racenum, gendnum, alignnum;
             Strcat(buf, "alignment");
         }
     }
-    Strcat(buf, " for you? [ynaq] ");
+    Strcat(buf, " for you?");
+    if(add_ynq)
+        Strcat(buf, " [ynaq] ");
     return buf;
 }
 

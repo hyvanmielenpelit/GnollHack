@@ -99,7 +99,7 @@ common_prompt_for_player_selection()
         /* int echoline; */
         char* prompt = build_plselection_prompt(
             pbuf, QBUFSZ, flags.initrole, flags.initrace, flags.initgend,
-            flags.initalign);
+            flags.initalign, FALSE);
 
         /* tty_putstr(BASE_WINDOW, 0, ""); */
         /* echoline = wins[BASE_WINDOW]->cury; */

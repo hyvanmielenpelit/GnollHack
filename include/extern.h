@@ -2725,7 +2725,7 @@ E void NDECL(rigid_role_checks);
 E boolean FDECL(setrolefilter, (const char *));
 E boolean NDECL(gotrolefilter);
 E void NDECL(clearrolefilter);
-E char *FDECL(build_plselection_prompt, (char *, int, int, int, int, int));
+E char *FDECL(build_plselection_prompt, (char *, int, int, int, int, int, BOOLEAN_P));
 E char *FDECL(root_plselection_prompt, (char *, int, int, int, int, int));
 E void NDECL(plnamesuffix);
 E void FDECL(role_selection_prolog, (int, winid));

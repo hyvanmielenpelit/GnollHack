@@ -551,7 +551,7 @@ tty_player_selection()
         || ALGN == ROLE_NONE) {
         int echoline;
         char *prompt = build_plselection_prompt(pbuf, QBUFSZ,
-                                                ROLE, RACE, GEND, ALGN);
+                                                ROLE, RACE, GEND, ALGN, TRUE);
 
         /* this prompt string ends in "[ynaq]?":
            y - game picks role,&c then asks player to confirm;

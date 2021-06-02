@@ -211,7 +211,7 @@ Gem_player_selection()
          * [ynq]",ynqchars,'n');*/
         pick4u = yn_function(build_plselection_prompt(
                                  pbuf, QBUFSZ, flags.initrole, flags.initrace,
-                                 flags.initgend, flags.initalign),
+                                 flags.initgend, flags.initalign, FALSE),
                              ynqchars, 'n');
         if (pick4u == 'q') {
         give_up: /* Just quit */

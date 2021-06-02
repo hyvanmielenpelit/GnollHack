@@ -26,6 +26,7 @@ namespace GnollHackClient.Pages.Game
         public string Header { get { return HeaderLabel.Text; } set { HeaderLabel.Text = value; } }
         public SelectionMode SelectionHow { get { return MenuView.SelectionMode; } set { MenuView.SelectionMode = value; } }
 
+        private bool _responseSent = false;
         public GHMenuPage(GamePage gamepage, GHWindow ghwindow)
         {
             InitializeComponent();
@@ -44,12 +45,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
-            ConcurrentQueue<GHResponse> queue;
-            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, _ghwindow, new List<GHMenuItem>()));
-                await _gamePage.Navigation.PopModalAsync();
-            }
+            await _gamePage.Navigation.PopModalAsync();
         }
 
         private async void OKButton_Clicked(object sender, EventArgs e)
@@ -79,8 +75,9 @@ namespace GnollHackClient.Pages.Game
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, _ghwindow, resultlist));
-                await _gamePage.Navigation.PopModalAsync();
             }
+            _responseSent = true;
+            await _gamePage.Navigation.PopModalAsync();
         }
 
         public void Process()
@@ -115,12 +112,15 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-
+        private double _width = 0;
+        private double _height = 0;
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-            if (width != this.Width || height != this.Height)
+            if (_width != width || _height != height)
             {
+                _width = width;
+                _height = height;
                 if (width > height)
                 {
                     menuStack.Orientation = StackOrientation.Horizontal;
@@ -132,6 +132,17 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            if(!_responseSent)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, _ghwindow, new List<GHMenuItem>()));
+                }
+            }
+        }
     }
 
 

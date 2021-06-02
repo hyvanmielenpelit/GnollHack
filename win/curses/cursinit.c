@@ -469,7 +469,7 @@ curses_choose_character()
 
     prompt = build_plselection_prompt(pbuf, QBUFSZ, flags.initrole,
                                       flags.initrace, flags.initgend,
-                                      flags.initalign);
+                                      flags.initalign, TRUE);
 
     /* This part is irritating: we have to strip the choices off of
        the string and put them in a separate string in order to use
