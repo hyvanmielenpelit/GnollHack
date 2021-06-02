@@ -53,7 +53,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>WSL_1_0</PlatformToolset>
+    <PlatformToolset>Remote_GCC_1_0</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -88,6 +88,42 @@
     <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
     <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)makedefs\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)makedefs\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)makedefs\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
   <ItemGroup>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
@@ -106,6 +142,15 @@
     </Link>
     <RemotePostBuildEvent>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e</Command>
+    </RemotePostBuildEvent>
+    <RemotePostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e</Command>
+    </RemotePostBuildEvent>
+    <RemotePostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e</Command>
+    </RemotePostBuildEvent>
+    <RemotePostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e</Command>
     </RemotePostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

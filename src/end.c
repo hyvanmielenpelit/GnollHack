@@ -1852,8 +1852,6 @@ int status;
     {
         program_state.exiting = 1;
         program_state.exit_status = status;
-        if (exit_hack)
-            exit_hack(status);
 
         gnollhack_exit(status);
     }

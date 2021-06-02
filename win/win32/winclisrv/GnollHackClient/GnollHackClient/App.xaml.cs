@@ -20,6 +20,7 @@ namespace GnollHackClient
 
     public partial class App : Application
     {
+
         public App()
         {
             InitializeComponent();
@@ -87,6 +88,12 @@ namespace GnollHackClient
                     LatoBold = SKTypeface.FromStream(stream);
                 }
             }
+
+            _fmodService = DependencyService.Get<IFmodService>();
+            _fmodService.InitializeFmod();
+            _fmodService.LoadBanks();
+
+            _appCloseService = DependencyService.Get<IAppCloseService>();
         }
 
         protected override void OnStart()
@@ -109,6 +116,11 @@ namespace GnollHackClient
         public static NavigationPage MainNavigationPage { get { return (NavigationPage)Current.MainPage; } }
 
         public static event BackButtonHandler BackButtonPressed;
+
+        private static IFmodService _fmodService = null;
+        public static IFmodService FmodService { get { return _fmodService; } }
+        private static IAppCloseService _appCloseService = null;
+        public static IAppCloseService AppCloseService { get { return _appCloseService; } }
 
         public static async Task<bool> OnBackButtonPressed()
         {

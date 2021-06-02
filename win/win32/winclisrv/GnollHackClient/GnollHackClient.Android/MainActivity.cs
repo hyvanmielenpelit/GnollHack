@@ -11,6 +11,8 @@ namespace GnollHackClient.Droid
     [Activity(Label = "GnollHackClient", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        public static MainActivity CurrentMainActivity = null;
+
         public static AssetManager StaticAssets;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -23,6 +25,7 @@ namespace GnollHackClient.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             MainActivity.StaticAssets = this.Assets;
+            CurrentMainActivity = this;
 
             LoadApplication(new App());
         }

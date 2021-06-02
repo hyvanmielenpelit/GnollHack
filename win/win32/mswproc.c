@@ -3696,7 +3696,6 @@ mswin_exit_platform(int status)
 {
     StopGdiplus();
     (void)close_fmod_studio();
-    gnollhack_exit(status);
 }
 
 void

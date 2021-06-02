@@ -512,7 +512,8 @@ int code;
      * not vanish instantly after being created.
      * GUILaunched is defined and set in nttty.c.
      */
-    
+    if (exit_hack)
+        exit_hack(code);
 
     if (!GUILaunched) {
         windowprocs = *get_safe_procs(1);

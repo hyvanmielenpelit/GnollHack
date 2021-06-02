@@ -39,7 +39,7 @@
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidSupportedAbis>
     </AndroidSupportedAbis>
-    <Debugger>Xamarin</Debugger>
+    <Debugger>Native</Debugger>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -68,6 +68,7 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppCloseService.cs" />
     <Compile Include="FmodService.cs" />
     <Compile Include="fmod.cs" />
     <Compile Include="fmod_dsp.cs" />

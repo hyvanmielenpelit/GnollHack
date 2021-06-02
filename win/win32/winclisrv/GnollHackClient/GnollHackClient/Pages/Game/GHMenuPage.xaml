@@ -13,7 +13,7 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+        <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical">
             <Label x:Name="HeaderLabel"
                    FontFamily="Diablo" FontSize="Large" TextColor="White" FontAttributes="Bold" Margin="0,10,0,10" BackgroundColor="Transparent"
                    HorizontalOptions="CenterAndExpand" />

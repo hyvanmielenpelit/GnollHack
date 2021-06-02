@@ -482,6 +482,9 @@ void
 gnollhack_exit(code)
 int code;
 {
+    if (exit_hack)
+        exit_hack(code);
+
     msexit();
     exit(code);
 }

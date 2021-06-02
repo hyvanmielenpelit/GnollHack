@@ -50,6 +50,9 @@ void remove_lock_file(const char *filename)
 
 void gnollhack_exit(int code)
 {
+	if (exit_hack)
+		exit_hack(code);
+
 	longjmp(env, code);
 }
 

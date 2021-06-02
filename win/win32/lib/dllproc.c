@@ -2868,7 +2868,6 @@ dll_exit_hack(int status)
 {
     dll_exit_platform(status);
     dll_callbacks.callback_exit_hack(status);
-    gnollhack_exit(status);
 }
 
 

@@ -33,7 +33,6 @@ namespace GnollHackClient.Pages.Game
         private string _message5 = "";
         private int _result = 0;
         private int _result2 = 0;
-        private IFmodService _fmodService;
         private IGnollHackService _gnollHackService;
         private bool _isFirstAppearance = true;
         private Thread _gnhthread;
@@ -42,15 +41,15 @@ namespace GnollHackClient.Pages.Game
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         private bool _cursorIsOn;
         private bool _showDirections = false;
+        private MainPage _mainPage;
 
         public int ClipX { get; set; }
         public int ClipY { get; set; }
 
-        public IFmodService FModService { get { return _fmodService; } }
-
-        public GamePage()
+        public GamePage(MainPage mainPage)
         {
             InitializeComponent();
+            _mainPage = mainPage;
             Device.StartTimer(TimeSpan.FromSeconds(1f / 10), () =>
             {
                 canvasView.InvalidateSurface();
@@ -81,10 +80,6 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            _fmodService = DependencyService.Get<IFmodService>();
-            _fmodService.InitializeFmod();
-            _fmodService.LoadBanks();
-
             _gnollHackService = DependencyService.Get<IGnollHackService>();
             _gnollHackService.InitializeGnollHack();
         }
@@ -100,7 +95,7 @@ namespace GnollHackClient.Pages.Game
                 int res = 0; // _gnollHackService.Test1();
 
                 //Authenticated
-                _fmodService.PlayTestSound();
+                App.FmodService.PlayTestSound();
 
                 if (App.IsServerGame)
                 {
@@ -308,7 +303,14 @@ namespace GnollHackClient.Pages.Game
         }
         private async void ReturnToMainMenu()
         {
+            if(!App.IsServerGame)
+                _mainPage.HideLocalGameButton();
+    
             await App.Current.MainPage.Navigation.PopModalAsync();
+            if (App.IsServerGame)
+            {
+                await App.Current.MainPage.Navigation.PopAsync(); //Login
+            }
         }
         private async void ShowMenuPage(GHMenuInfo menuinfo, GHWindow ghwindow)
         {

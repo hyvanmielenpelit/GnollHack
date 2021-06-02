@@ -56,6 +56,9 @@ void
 gnollhack_exit(code)
 int code;
 {
+	if (exit_hack)
+		exit_hack(code);
+
 #if defined(EXIT_THREAD_ON_EXIT)
 	char retbuf[BUFSZ];
 	Sprintf(retbuf, "GnollHack thread exit with value %d", code);

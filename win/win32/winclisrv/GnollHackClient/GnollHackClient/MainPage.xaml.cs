@@ -31,7 +31,6 @@ namespace GnollHackClient
     {
         SKBitmap _background_bitmap;
         SKBitmap _logo_bitmap;
-        private IFmodService _fmodService;
         private bool _canClickButton = true;
         private bool _serverButtonClicked = false;
         private NavigationPage _loginNavPage = null;
@@ -60,7 +59,7 @@ namespace GnollHackClient
             //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-        }        
+        }
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -114,9 +113,14 @@ namespace GnollHackClient
             canvas.DrawText(str, xText, yText, textPaint);
         }
 
+        public void HideLocalGameButton()
+        {
+            StartLocalGameButton.IsVisible = false;
+            ExitAppButton.IsVisible = true;
+        }
         private async void localButton_Clicked(object sender, EventArgs e)
         {
-            var gamePage = new GamePage();
+            var gamePage = new GamePage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
         }
 
@@ -130,7 +134,7 @@ namespace GnollHackClient
             _serverButtonClicked = true;
             _canClickButton = false;
 
-            var loginPage = new LoginPage();
+            var loginPage = new LoginPage(this);
             _loginNavPage = new NavigationPage(loginPage);
 
             await Navigation.PushAsync(_loginNavPage);
@@ -139,6 +143,11 @@ namespace GnollHackClient
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
 
+        }
+
+        private void ExitAppButton_Clicked(object sender, EventArgs e)
+        {
+            App.AppCloseService.CloseApplication();
         }
     }
 }

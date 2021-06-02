@@ -481,6 +481,9 @@ chdir(dir) char *dir;
 void
 gnollhack_exit(code)
 {
+    if (exit_hack)
+        exit_hack(code);
+
 #ifdef CHDIR
     extern char orgdir[];
 #endif

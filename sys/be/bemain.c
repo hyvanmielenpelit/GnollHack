@@ -271,6 +271,9 @@ void gnollhack_exit(int status);
 void
 gnollhack_exit(int status)
 {
+    if (exit_hack)
+        exit_hack(status);
+
     exit(status);
 }
 #endif /* !__begui__ */

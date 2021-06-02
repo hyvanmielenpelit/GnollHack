@@ -22,6 +22,7 @@
             </Grid.RowDefinitions>
             <Image x:Name="myImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="0" />
             <Button Text="Local Game" x:Name="StartLocalGameButton" Clicked="localButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="0" />
+            <Button Text="Exit App" x:Name="ExitAppButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="0" IsVisible="false" />
             <Image x:Name="myImage2" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
             <Button Text="Server Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
         </Grid>

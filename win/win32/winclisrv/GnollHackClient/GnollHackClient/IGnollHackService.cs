@@ -7,6 +7,7 @@ namespace GnollHackClient
     public interface IGnollHackService
     {
         void LoadLibrary();
+        void UnloadLibrary();
         void InitializeGnollHack();
         int Test1();
         int Test2();

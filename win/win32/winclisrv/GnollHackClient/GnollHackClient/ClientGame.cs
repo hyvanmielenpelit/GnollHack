@@ -222,13 +222,12 @@ namespace GnollHackClient
         public void ClientCallback_ExitHack(int status)
         {
             Debug.WriteLine("ClientCallback_ExitHack");
-            _gamePage.FModService.StopTestSound();
+            App.FmodService.StopTestSound();
             ConcurrentQueue<GHRequest> queue;
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.ReturnToMainMenu));
             }
-
         }
 
         public int ClientCallback_nhgetch()

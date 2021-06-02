@@ -500,7 +500,7 @@ void lib_exit_hack(int status)
 /* Helper functions */
 void lib_bail(const char* mesg)
 {
-    gnollhack_exit(EXIT_FAILURE);
+    gnollhack_exit(EXIT_SUCCESS);
 }
 
 void lib_init_platform(VOID_ARGS)

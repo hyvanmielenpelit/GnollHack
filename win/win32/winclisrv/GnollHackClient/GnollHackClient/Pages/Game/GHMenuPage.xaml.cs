@@ -115,7 +115,25 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width != this.Width || height != this.Height)
+            {
+                if (width > height)
+                {
+                    menuStack.Orientation = StackOrientation.Horizontal;
+                }
+                else
+                {
+                    menuStack.Orientation = StackOrientation.Vertical;
+                }
+            }
+        }
+
     }
+
 
 
     public class FontConverter : IValueConverter
@@ -141,6 +159,10 @@ namespace GnollHackClient.Pages.Game
             return "Underwood";
         }
     }
+
+
+
+
 
     public class FontSizeConverter : IValueConverter
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GnollHackCommon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,14 +22,16 @@ namespace GnollHackClient.Pages.Game
             _gamePage = gamePage;
         }
 
-        private void btnSave_Clicked(object sender, EventArgs e)
+        private async void btnSave_Clicked(object sender, EventArgs e)
         {
-            DoQuit();
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('s'));
         }
 
-        private void btnQuit_Clicked(object sender, EventArgs e)
+        private async void btnQuit_Clicked(object sender, EventArgs e)
         {
-            DoQuit();
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('q'));
         }
 
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
@@ -38,7 +41,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void DoQuit()
         {
-            _gamePage.FModService.StopTestSound();
+            App.FmodService.StopTestSound();
             await App.Current.MainPage.Navigation.PopModalAsync(); // Game Menu
             await App.Current.MainPage.Navigation.PopModalAsync(); // Game
             if (App.IsServerGame)
@@ -47,9 +50,10 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private void btnOptions_Clicked(object sender, EventArgs e)
+        private async void btnOptions_Clicked(object sender, EventArgs e)
         {
             _gamePage.GenericButton_Clicked(sender, e, 'O');
+            await App.Current.MainPage.Navigation.PopModalAsync();
         }
     }
 }

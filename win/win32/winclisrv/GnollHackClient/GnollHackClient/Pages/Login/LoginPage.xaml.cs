@@ -30,6 +30,7 @@ namespace GnollHackClient
         private Color _successColor = Color.Green;
         private bool _canClickButton = true;
         private bool _canClickLogin = true;
+        private MainPage _mainPage;
 
         public IList<Server> Servers { get { return _servers; } }
         public Server SelectedServer { get; set; }
@@ -37,9 +38,10 @@ namespace GnollHackClient
         public string UserName { get; set; }
         public string Password { get; set; }
         
-        public LoginPage()
+        public LoginPage(MainPage mainPage)
         {
             BindingContext = this;
+            _mainPage = mainPage;
             InitializeComponent();
         }
 
@@ -59,7 +61,7 @@ namespace GnollHackClient
                 App.UserName = eUserName.Text;
                 App.IsServerGame = true;
 
-                var gamePage = new GamePage();
+                var gamePage = new GamePage(_mainPage);
                 await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
             }
 

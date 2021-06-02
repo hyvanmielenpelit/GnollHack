@@ -124,10 +124,18 @@ namespace GnollHackClient.Droid
         {
             Java.Lang.JavaSystem.LoadLibrary(libName);
         }
+        private void UnloadNativeLibrary(string libName)
+        {
+            Java.Lang.JavaSystem.Gc();
+        }
 
         public void LoadLibrary()
         {
             LoadNativeLibrary("gnollhackdroid");
+        }
+        public void UnloadLibrary()
+        {
+            UnloadNativeLibrary("gnollhackdroid");
         }
         public void InitializeGnollHack()
         {
@@ -145,6 +153,19 @@ namespace GnollHackClient.Droid
                 file.Delete();
             }
 
+            /* Make relevant directories */
+            string[] ghdirlist = { "save" };
+            foreach (string ghdir in ghdirlist)
+            {
+                string fulldirepath = Path.Combine(_gnollhackfilesdir, ghdir);
+                if(!Directory.Exists(fulldirepath))
+                {
+                    Directory.CreateDirectory(fulldirepath);
+                }
+            }
+
+
+            /* Copy missing files from resources */
             string content;
             AssetManager assets = MainActivity.StaticAssets;
 
@@ -160,7 +181,7 @@ namespace GnollHackClient.Droid
                 }
                 string fulltargetpath = Path.Combine(filesdir, txtfile);
                 if (File.Exists(fulltargetpath))
-                    File.Delete(fulltargetpath);
+                    continue; // File.Delete(fulltargetpath);
 
                 using (StreamWriter sw = new StreamWriter(fulltargetpath))
                 {
@@ -182,7 +203,7 @@ namespace GnollHackClient.Droid
 
                 string fulltargetpath = Path.Combine(filesdir, binfile);
                 if (File.Exists(fulltargetpath))
-                    File.Delete(fulltargetpath);
+                    continue; // File.Delete(fulltargetpath);
 
                 using (BinaryWriter sw = new BinaryWriter(File.Open(fulltargetpath, FileMode.Create)))
                 {
@@ -201,21 +222,6 @@ namespace GnollHackClient.Droid
         }
         public int TestRunGnollHack()
         {
-            /*
-            string cwd = Directory.GetCurrentDirectory();
-            string cwd2 = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string cwd3 = Android.OS.Environment.DataDirectory.Path;
-            string cwd4 = Android.App.Application.Context.DataDir.Path;
-            string cwd5 = Android.App.Application.Context.ApplicationInfo.DataDir;
-            string cwd6 = Android.App.Application.Context.ApplicationInfo.NativeLibraryDir;
-            string cwd7 = Android.App.Application.Context.ApplicationInfo.PublicSourceDir;
-            string cwd8 = Android.App.Application.Context.ApplicationInfo.SourceDir;
-            string cwd9 = Android.App.Application.Context.ApplicationInfo.DeviceProtectedDataDir;
-            string cwd10 = Android.App.Application.Context.FilesDir.Path;
-            string cwd11 = Android.App.Application.Context.ObbDir.Path;
-            */
-            //string cwd4 = System.AppDomain.CurrentDomain.BaseDirectory;
-
             return RunGnollHackTest(_gnollhackfilesdir);
         }
         public int StartGnollHack(ClientGame clientGame)
