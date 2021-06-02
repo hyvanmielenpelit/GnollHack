@@ -5935,7 +5935,7 @@ struct monst* mtmp;
         break;
     case 2:
         cost = max(1, (int)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", "12 nuggets of silver ore");
+        return general_service_query_with_components(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", "15 nuggets of silver ore");
         break;
     case 3:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
@@ -7282,7 +7282,7 @@ STATIC_OVL int
 forge_shield_of_reflection_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 12, SHIELD_OF_REFLECTION);
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 15, SHIELD_OF_REFLECTION);
 }
 
 STATIC_OVL int

@@ -34,7 +34,7 @@
                 <Button Text="C" x:Name="ChatButton" Clicked="ChatButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="4" />
                 
                 <Button Text="Cy" x:Name="YellButton" Clicked="YellButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="0" />
-                <Button Text="" x:Name="Reserved1Button" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="1" />
+                <Button Text="E" x:Name="EngraveButton" Clicked="EngraveButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="1" />
                 <Button Text="" x:Name="Reserved2Button" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="2" />
                 <Button Text="CL" x:Name="LightButton" Clicked="LightButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="3" />
                 <Button Text="Mp" x:Name="PrayButton" Clicked="PrayButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="4" />
@@ -56,6 +56,9 @@
                 <Button Text="_" x:Name="TravelButton" Clicked="TravelButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="2" />
                 <Button Text="#" x:Name="ExtendedCommandButton" Clicked="ExtendedCommandButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="3" />
                 <Button Text="&#x2261;" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="4" />
+
+                <Label Text="Travel" Grid.Row="5" Grid.Column="2" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+                <Label Text="Extended" Grid.Row="5" Grid.Column="3" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
             </Grid>
         </StackLayout>
     </ContentPage.Content>

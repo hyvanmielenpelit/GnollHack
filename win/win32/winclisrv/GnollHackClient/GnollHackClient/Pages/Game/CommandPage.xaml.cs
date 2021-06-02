@@ -178,5 +178,11 @@ namespace GnollHackClient.Pages.Game
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, '?');
         }
+
+        private async void EngraveButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'E');
+        }
     }
 }

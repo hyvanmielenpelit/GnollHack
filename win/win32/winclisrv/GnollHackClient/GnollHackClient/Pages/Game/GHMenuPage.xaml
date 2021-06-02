@@ -1,8 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:local="clr-namespace:GnollHackClient.Pages.Game"
              x:Class="GnollHackClient.Pages.Game.GHMenuPage" 
              BackgroundColor="Black">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:FontConverter x:Key="FontConverter" />
+            <local:FontSizeConverter x:Key="FontSizeConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.Content>
         <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
@@ -24,16 +32,16 @@
 
                             <Label Grid.Column="0" TextColor="White" 
                                    Text="{Binding Accelerator}"
-                                   FontFamily="Underwood" 
-                                   FontSize="Large"
-                                   FontAttributes="Bold" />
+                                   FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
+                                   FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}"
+                                    />
                             
                             <!-- SKCanvas in column 1? -->
 
                             <Label Grid.Column="2" TextColor="White" 
                                    Text="{Binding Text}"
-                                   FontFamily="Underwood" 
-                                   FontSize="Large"
+                                   FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
+                                   FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}"
                                     />
                         </Grid>
                     </DataTemplate>

@@ -9,7 +9,7 @@ STATIC_DCL int NDECL(common_prompt_for_player_selection);
 int
 common_player_selection()
 {
-    if (iflags.wc_player_selection == VIA_DIALOG)
+    if (0 && iflags.wc_player_selection == VIA_DIALOG)
     {
         /* pick player type randomly (use pre-selected
          * role/race/gender/alignment) */

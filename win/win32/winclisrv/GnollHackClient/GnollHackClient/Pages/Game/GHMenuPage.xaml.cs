@@ -1,6 +1,8 @@
-﻿using System;
+﻿using GnollHackCommon;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -113,6 +115,55 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+    }
+
+
+    public class FontConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+
+            if (((int)value & (int)MenuItemAttributes.Bold) != 0)
+            {
+                return "Diablo";
+            }
+
+            return "Underwood";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (((int)value & (int)MenuItemAttributes.Bold) != 0)
+            {
+                return "Diablo";
+            }
+
+            return "Underwood";
+        }
+    }
+
+    public class FontSizeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+
+            if (((int)value & (int)MenuItemAttributes.Bold) != 0)
+            {
+                return 24;
+            }
+
+            return 20;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (((int)value & (int)MenuItemAttributes.Bold) != 0)
+            {
+                return 24;
+            }
+
+            return 20;
+        }
     }
 
 }

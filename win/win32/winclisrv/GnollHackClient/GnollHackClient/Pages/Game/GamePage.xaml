@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GnollHackClient.Pages.Game.GamePage"
              Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing"
-             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms" xmlns:local="clr-namespace:GnollHackClient.Pages.Game"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms" 
+             xmlns:local="clr-namespace:GnollHackClient.Pages.Game"
              BackgroundColor="Black"
              >
     <ContentPage.Resources>
@@ -63,6 +64,17 @@
                 <Button Text="f" x:Name="FireButton" Clicked="FireButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="2" />
                 <Button Text="Z" x:Name="CastButton" Clicked="CastButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="3" />
                 <Button Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="4" />
+
+                <Label Text="Pick Up" Grid.Row="0" Grid.Column="0" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+                <Label Text="Look Here" Grid.Row="0" Grid.Column="1" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+                <Label Text="Wait" Grid.Row="0" Grid.Column="2" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+                <Label Text="Search" Grid.Row="0" Grid.Column="3" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+                <Label Text="Repeat" Grid.Row="0" Grid.Column="4" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+
+                <Label Text="Inventory" Grid.Row="1" Grid.Column="0" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+                <Label Text="Kick" Grid.Row="1" Grid.Column="1" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+                <Label Text="Fire" Grid.Row="1" Grid.Column="2" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+                <Label Text="Cast" Grid.Row="1" Grid.Column="3" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
             </Grid>
 
             <Grid x:Name="YnGrid" Padding="5,5,5,5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 0.70, 1.0, 0.20"

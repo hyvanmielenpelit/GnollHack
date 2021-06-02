@@ -463,6 +463,11 @@ namespace GnollHackClient.Pages.Game
                         tx = (offsetX + width * (float)mapx);
                         ty = (offsetY + height * (float)mapy);
                         canvas.DrawText(str, tx, ty, textPaint);
+
+                        if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Peaceful) != 0)
+                        {
+                            canvas.DrawText("_", tx, ty, textPaint);
+                        }
                     }
                 }
             }
