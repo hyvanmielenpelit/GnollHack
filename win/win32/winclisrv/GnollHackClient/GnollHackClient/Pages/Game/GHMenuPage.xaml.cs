@@ -107,11 +107,11 @@ namespace GnollHackClient.Pages.Game
                         MenuView.SelectedItems.Remove(mi);
                     }
                 }
-                else if(MenuView.SelectionMode == SelectionMode.Single && mi == MenuView.SelectedItem)
-                {
-                    OKButton_Clicked(sender, e);
-                    return;
-                }
+                //else if(MenuView.SelectionMode == SelectionMode.Single && mi == MenuView.SelectedItem)
+                //{
+                //    OKButton_Clicked(sender, e);
+                //    return;
+                //}
             }
         }
 

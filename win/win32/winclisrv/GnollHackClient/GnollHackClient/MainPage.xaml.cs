@@ -148,6 +148,7 @@ namespace GnollHackClient
         private void ExitAppButton_Clicked(object sender, EventArgs e)
         {
             App.AppCloseService.CloseApplication();
+            Environment.Exit(0);
         }
     }
 }

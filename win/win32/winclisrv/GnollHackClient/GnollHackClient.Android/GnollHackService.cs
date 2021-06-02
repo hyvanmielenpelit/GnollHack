@@ -146,12 +146,13 @@ namespace GnollHackClient.Droid
             _gnollhackfilesdir = filesdir;
 
             /* For debugging purposes now, delete all existing files in filesdir first */
-            System.IO.DirectoryInfo di = new DirectoryInfo(_gnollhackfilesdir);
 
-            foreach (FileInfo file in di.GetFiles())
-            {
-                file.Delete();
-            }
+            //System.IO.DirectoryInfo di = new DirectoryInfo(_gnollhackfilesdir);
+
+            //foreach (FileInfo file in di.GetFiles())
+            //{
+            //    file.Delete();
+            //}
 
             /* Make relevant directories */
             string[] ghdirlist = { "save" };
@@ -235,7 +236,7 @@ namespace GnollHackClient.Droid
                 clientGame.ClientCallback_PlayerSelection,
                 clientGame.ClientCallback_AskName,
                 clientGame.ClientCallback_get_nh_event,
-                clientGame.ClientCallback_VoidConstCharDummy,
+                clientGame.ClientCallback_ExitWindows,
                 clientGame.ClientCallback_VoidConstCharDummy,
                 clientGame.ClientCallback_VoidVoidDummy,
                 clientGame.ClientCallback_CreateGHWindow,

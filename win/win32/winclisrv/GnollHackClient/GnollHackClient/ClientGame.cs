@@ -158,19 +158,48 @@ namespace GnollHackClient
         public void ClientCallback_DisplayGHWindow(int winHandle, byte blocking)
         {
             bool ismenu = false;
+            bool istext = false;
+            bool ismap = false;
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winHandle] != null)
                 {
                     _ghWindows[winHandle].Display(blocking != 0);
                     ismenu = (_ghWindows[winHandle].WindowType == GHWinType.Menu);
+                    istext = (_ghWindows[winHandle].WindowType == GHWinType.Text);
+                    ismap = (_ghWindows[winHandle].WindowType == GHWinType.Map);
                 }
             }
 
-            if(blocking != 0 || ismenu)
+            if((blocking != 0 && ismap) || ismenu || istext)
             {
                 int res = ClientCallback_nhgetch();
             }
+        }
+        public void ClientCallback_ExitWindows(string str)
+        {
+            Debug.WriteLine("ClientCallback_ExitWindows");
+            ClientCallback_RawPrint(str);
+
+            if (str != null && str != "")
+                Thread.Sleep(1100);
+
+            lock (_ghWindowsLock)
+            {
+                for(int winHandle = 0; winHandle <= _lastWindowHandle; winHandle++)
+                {
+                    GHWindow ghwin = _ghWindows[winHandle];
+                    if (ghwin == null)
+                        continue;
+                    if (ghwin.WindowType == GHWinType.Map)
+                        MapWindowId = 0;
+
+                    ghwin.Destroy();
+                    _ghWindows[winHandle] = null;
+                }
+                _lastWindowHandle = -1;
+            }
+
         }
 
         public int ClientCallback_PlayerSelection()
