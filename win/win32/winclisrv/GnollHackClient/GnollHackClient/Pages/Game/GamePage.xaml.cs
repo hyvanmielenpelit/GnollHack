@@ -40,6 +40,8 @@ namespace GnollHackClient.Pages.Game
         public ClientGame ClientGame { get { return _clientGame; } }
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         private object _mapDataLock = new object();
+        private int _mapCursorX;
+        private int _mapCursorY;
         private bool _cursorIsOn;
         private bool _showDirections = false;
         private MainPage _mainPage;
@@ -146,7 +148,7 @@ namespace GnollHackClient.Pages.Game
                 ConcurrentQueue<GHRequest> queue;
                 if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
                 {
-                    if (queue.TryDequeue(out req))
+                    while (queue.TryDequeue(out req))
                     {
                         switch (req.RequestType)
                         {
@@ -521,6 +523,17 @@ namespace GnollHackClient.Pages.Game
                         }
                     }
                 }
+
+                /* Cursor */
+                if (_mapCursorX >= 1 && _mapCursorY >= 0 && _cursorIsOn)
+                {
+                    int cx = _mapCursorX, cy = _mapCursorY;
+                    str = "_";
+                    textPaint.Color = SKColors.White;
+                    tx = (offsetX + width * (float)cx);
+                    ty = (offsetY + height * (float)cy);
+                    canvas.DrawText(str, tx, ty, textPaint);
+                }
             }
 
             if (_clientGame != null)
@@ -528,17 +541,6 @@ namespace GnollHackClient.Pages.Game
                 /* Window strings */
                 lock (_clientGame.WindowsLock)
                 {
-                    /* Cursor */
-                    if (_clientGame.MapWindowId > 0 && _clientGame.Windows[_clientGame.MapWindowId] != null && _clientGame.Windows[_clientGame.MapWindowId].WindowType == GHWinType.Map && _cursorIsOn)
-                    {
-                        int cx = _clientGame.Windows[_clientGame.MapWindowId].CursX, cy = _clientGame.Windows[_clientGame.MapWindowId].CursY;
-                        str = "_";
-                        textPaint.Color = SKColors.White;
-                        tx = (offsetX + width * (float)cx);
-                        ty = (offsetY + height * (float)cy);
-                        canvas.DrawText(str, tx, ty, textPaint);
-                    }
-
                     for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
                     {
                         if (_clientGame.Windows[i].Visible &&
@@ -571,15 +573,18 @@ namespace GnollHackClient.Pages.Game
 
                             canvas.DrawRect(winRect, winPaint);
 
-                            int j = 0;
-                            foreach (string str2 in _clientGame.Windows[i].PutStrs)
+                            lock(_clientGame.Windows[i].PutStrsLock)
                             {
-                                str = str2;
-                                textPaint.Color = SKColors.White;
-                                tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
-                                ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
-                                canvas.DrawText(str, tx, ty, textPaint);
-                                j++;
+                                int j = 0;
+                                foreach (string str2 in _clientGame.Windows[i].PutStrs)
+                                {
+                                    str = str2;
+                                    textPaint.Color = SKColors.White;
+                                    tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
+                                    ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+                                    canvas.DrawText(str, tx, ty, textPaint);
+                                    j++;
+                                }
                             }
                         }
                     }
@@ -861,6 +866,14 @@ namespace GnollHackClient.Pages.Game
                 _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
                 _mapData[x, y].Color = NHColor2SKColor((nhcolor)color);
                 _mapData[x, y].Special = special;
+            }
+        }
+        public void SetMapCursor(int x, int y)
+        {
+            lock (_mapDataLock)
+            {
+                _mapCursorX = x;
+                _mapCursorY = y;
             }
         }
         public void ClearMap()

@@ -69,7 +69,7 @@ namespace GnollHackClient
             GHResponse response;
             if(ClientGame.ResponseDictionary.TryGetValue(this, out queue))
             {
-                if (queue.TryDequeue(out response))
+                while (queue.TryDequeue(out response))
                 {
                     switch (response.RequestType)
                     {

@@ -52,6 +52,7 @@ namespace GnollHackClient
         public int WindowID { get { return _winId; } }
 
         private List<string> _putStrs = new List<string>();
+        public object PutStrsLock = new object();
         public List<string> PutStrs { get { return _putStrs; } }
 
         public bool Visible { get; set; }
@@ -161,14 +162,21 @@ namespace GnollHackClient
                     break;
             }
 
-            PutStrs.Clear();
+            lock(PutStrsLock)
+            {
+                PutStrs.Clear();
+            }
 
-            _height = 0;
-            _width = 0;
-            _pixelWidth = 0;
-            _pixelHeight = 0;
-            CursX = 0;
-            CursY = 0;
+            lock(_clientGame.WindowsLock)
+            {
+                _height = 0;
+                _width = 0;
+                _pixelWidth = 0;
+                _pixelHeight = 0;
+                CursX = 0;
+                CursY = 0;
+
+            }
 
             if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
             {
@@ -188,7 +196,10 @@ namespace GnollHackClient
                 if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
                 {
                     List<string> clonestrs = new List<string>();
-                    clonestrs.AddRange(PutStrs);
+                    lock (PutStrsLock)
+                    {
+                        clonestrs.AddRange(PutStrs);
+                    }
                     queue.Enqueue(new GHRequest(_clientGame, GHRequestType.DisplayWindowView, _winId, clonestrs));
                 }
             }
@@ -197,6 +208,8 @@ namespace GnollHackClient
         {
             CursX = x;
             CursY = y;
+            if(WindowType == GHWinType.Map)
+                ClientGamePage.SetMapCursor(x, y);
         }
         public void PrintGlyph(int x, int y, int symbol, int color, uint special)
         {
@@ -205,71 +218,74 @@ namespace GnollHackClient
 
         public void PutStrEx(int attributes, string str, int append)
         {
-            SKPaint textPaint = new SKPaint()
+            lock (PutStrsLock)
             {
-                Typeface = Typeface,
-                TextSize = TextSize
-            };
-
-            if(CursY >= PutStrs.Count)
-            {
-                for(int i = 0; i < CursY - PutStrs.Count + 1; i++)
+                SKPaint textPaint = new SKPaint()
                 {
-                    PutStrs.Add("");
-                }
-            }
+                    Typeface = Typeface,
+                    TextSize = TextSize
+                };
 
-            if (CursY >= 0)
-            {
-                if(append != 0)
+                if (CursY >= PutStrs.Count)
                 {
-                    PutStrs[CursY] = PutStrs[CursY] + str;
-                    CursX += str.Length;
-                    if (PutStrs[CursY].Length > _width)
-                        _width = PutStrs[CursY].Length;
-
-                    float textWidth = textPaint.MeasureText(PutStrs[CursY]);
-                    textWidth += Padding.Left + Padding.Right;
-                    if (textWidth > _pixelWidth)
-                        _pixelWidth = textWidth;
-                }
-                else
-                {
-                    if (PutStrs[CursY] == null || PutStrs[CursY] == "")
+                    for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
                     {
-                        PutStrs[CursY] = str;
+                        PutStrs.Add("");
                     }
-                    else if (CursX <= PutStrs[CursY].Length + 1)
-                    {
+                }
 
-                        PutStrs[CursY] = PutStrs[CursY].Substring(0, CursX) + str;
+                if (CursY >= 0)
+                {
+                    if (append != 0)
+                    {
+                        PutStrs[CursY] = PutStrs[CursY] + str;
+                        CursX += str.Length;
+                        if (PutStrs[CursY].Length > _width)
+                            _width = PutStrs[CursY].Length;
+
+                        float textWidth = textPaint.MeasureText(PutStrs[CursY]);
+                        textWidth += Padding.Left + Padding.Right;
+                        if (textWidth > _pixelWidth)
+                            _pixelWidth = textWidth;
                     }
                     else
                     {
-                        int n = CursX - 1 - PutStrs[CursY].Length;
-                        string spaces = new String(' ', n);
-                        PutStrs[CursY] = PutStrs[CursY].Substring(0, CursX - 1) + spaces + str;
+                        if (PutStrs[CursY] == null || PutStrs[CursY] == "")
+                        {
+                            PutStrs[CursY] = str;
+                        }
+                        else if (CursX <= PutStrs[CursY].Length + 1)
+                        {
+
+                            PutStrs[CursY] = PutStrs[CursY].Substring(0, CursX) + str;
+                        }
+                        else
+                        {
+                            int n = CursX - 1 - PutStrs[CursY].Length;
+                            string spaces = new String(' ', n);
+                            PutStrs[CursY] = PutStrs[CursY].Substring(0, CursX - 1) + spaces + str;
+                        }
+
+                        // Adjust TextSize property so text is 90% of screen width
+                        float textWidth = textPaint.MeasureText(PutStrs[CursY]);
+                        textWidth += Padding.Left + Padding.Right;
+                        if (textWidth > _pixelWidth)
+                            _pixelWidth = textWidth;
+
+                        if (PutStrs[CursY].Length > _width)
+                            _width = PutStrs[CursY].Length;
+
+                        if (CursY + 1 > _height)
+                            _height = CursY + 1;
+
+                        CursY++;
+                        CursX = 0;
                     }
-
-                    // Adjust TextSize property so text is 90% of screen width
-                    float textWidth = textPaint.MeasureText(PutStrs[CursY]);
-                    textWidth += Padding.Left + Padding.Right;
-                    if (textWidth > _pixelWidth)
-                        _pixelWidth = textWidth;
-
-                    if (PutStrs[CursY].Length > _width)
-                        _width = PutStrs[CursY].Length;
-
-                    if (CursY + 1 > _height)
-                        _height = CursY + 1;
-
-                    CursY++;
-                    CursX = 0;
                 }
-            }
 
-            float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-            _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
+                float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
+            }
         }
     }
 }
