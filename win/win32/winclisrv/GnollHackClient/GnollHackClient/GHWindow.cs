@@ -51,7 +51,9 @@ namespace GnollHackClient
         public GamePage ClientGamePage { get { return _gamePage; } }
         public int WindowID { get { return _winId; } }
 
-        public string[] PutStrs = new string[GHConstants.MaxPutStrHeight];
+        private List<string> _putStrs = new List<string>();
+        public List<string> PutStrs { get { return _putStrs; } }
+
         public bool Visible { get; set; }
         private int _width = 0;
         private int _height = 0;
@@ -158,8 +160,8 @@ namespace GnollHackClient
                     ClientGamePage.ClearMap();
                     break;
             }
-            for (int i = 0; i < GHConstants.MaxPutStrHeight; i++)
-                PutStrs[i] = null;
+
+            PutStrs.Clear();
 
             _height = 0;
             _width = 0;
@@ -185,7 +187,8 @@ namespace GnollHackClient
                 ConcurrentQueue<GHRequest> queue;
                 if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
                 {
-                    string[] clonestrs = (string[])PutStrs.Clone();
+                    List<string> clonestrs = new List<string>();
+                    clonestrs.AddRange(PutStrs);
                     queue.Enqueue(new GHRequest(_clientGame, GHRequestType.DisplayWindowView, _winId, clonestrs));
                 }
             }
@@ -208,7 +211,15 @@ namespace GnollHackClient
                 TextSize = TextSize
             };
 
-            if (CursY >= 0 && CursY < GHConstants.MaxPutStrHeight)
+            if(CursY >= PutStrs.Count)
+            {
+                for(int i = 0; i < CursY - PutStrs.Count + 1; i++)
+                {
+                    PutStrs.Add("");
+                }
+            }
+
+            if (CursY >= 0)
             {
                 if(append != 0)
                 {
@@ -252,9 +263,7 @@ namespace GnollHackClient
                     if (CursY + 1 > _height)
                         _height = CursY + 1;
 
-                    if ( CursY < GHConstants.MaxPutStrHeight - 1)
-                        CursY++;
-
+                    CursY++;
                     CursX = 0;
                 }
             }

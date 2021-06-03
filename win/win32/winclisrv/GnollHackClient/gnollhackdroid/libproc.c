@@ -6,6 +6,7 @@
 #include "hack.h"
 #include "libproc.h"
 #include "callback.h"
+#include "dlb.h"
 
 struct window_procs lib_procs = {
     "LIB",
@@ -153,7 +154,41 @@ void lib_putstr_ex(winid wid, int attr, const char* text, int param)
 
 void lib_display_file(const char* filename, BOOLEAN_P must_exist)
 {
-    return;
+    dlb* f;
+    //lib_callbacks.callback_display_file(filename, must_exist);
+
+    f = dlb_fopen(filename, RDTMODE);
+    if (!f) 
+    {
+        if (must_exist) 
+        {
+            char* message[BUFSZ];
+            Sprintf(message, "Warning! Could not find file: %s", filename);
+            raw_print(message);
+        }
+    }
+    else 
+    {
+        winid text;
+#define LLEN 128
+        char line[LLEN];
+
+        text = lib_create_nhwindow(NHW_TEXT);
+
+        while (dlb_fgets(line, LLEN, f)) 
+        {
+            size_t len;
+            len = strlen(line);
+            if (line[len - 1] == '\n')
+                line[len - 1] = '\x0';
+            lib_putstr(text, ATR_NONE, line);
+        }
+        (void)dlb_fclose(f);
+
+        lib_display_nhwindow(text, 1);
+        lib_destroy_nhwindow(text);
+    }
+
 }
 
 void lib_start_menu(winid wid)

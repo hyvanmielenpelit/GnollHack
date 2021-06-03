@@ -19,7 +19,7 @@
                             AbsoluteLayout.LayoutBounds="0.0, 5, 1.0, 80" AbsoluteLayout.LayoutFlags="WidthProportional" >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10">
+                        <Grid Padding="2">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>

@@ -51,7 +51,7 @@ namespace GnollHackClient.Pages.Game
         {
             InitializeComponent();
             _mainPage = mainPage;
-            Device.StartTimer(TimeSpan.FromSeconds(1f / 10), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
                 canvasView.InvalidateSurface();
                 pollRequestQueue();
@@ -218,11 +218,11 @@ namespace GnollHackClient.Pages.Game
 
         }
 
-        private void DisplayWindowView(int winid, string[] strs)
+        private void DisplayWindowView(int winid, List<string> strs)
         {
             ShowWindowPage(strs);
         }
-        private async void ShowWindowPage(string[] strs)
+        private async void ShowWindowPage(List<string> strs)
         {
             List<GHPutStrItem> list = new List<GHPutStrItem>();
             foreach (string str in strs)
@@ -571,16 +571,15 @@ namespace GnollHackClient.Pages.Game
 
                             canvas.DrawRect(winRect, winPaint);
 
-                            for (int j = 0; j < GHConstants.MaxPutStrHeight; j++)
+                            int j = 0;
+                            foreach (string str2 in _clientGame.Windows[i].PutStrs)
                             {
-                                if (_clientGame.Windows[i].PutStrs[j] == null || _clientGame.Windows[i].PutStrs[j] == "")
-                                    continue;
-
-                                str = _clientGame.Windows[i].PutStrs[j];
+                                str = str2;
                                 textPaint.Color = SKColors.White;
                                 tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
                                 ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
                                 canvas.DrawText(str, tx, ty, textPaint);
+                                j++;
                             }
                         }
                     }

@@ -5,6 +5,9 @@
              Disappearing="GHTextPage_Disappearing">
     <ContentPage.Content>
         <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <CollectionView Margin="3" x:Name="TextView" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  BackgroundColor="Transparent"  >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>

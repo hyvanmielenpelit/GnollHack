@@ -67,7 +67,6 @@ namespace GnollHackCommon
         public const int PollingInterval = 25;
         public const int MapCols = 80;
         public const int MapRows = 21;
-        public const int MaxPutStrHeight = 21;
         public const int DefaultAnimationInterval = 25;
         public const int MaxMessageHistoryLength = 256;
 

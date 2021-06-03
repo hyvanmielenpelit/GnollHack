@@ -241,7 +241,6 @@ int RunGnollHack(
     lib_callbacks.callback_clear_nhwindow = callback_clear_nhwindow;
     lib_callbacks.callback_display_nhwindow = callback_display_nhwindow;
     lib_callbacks.callback_destroy_nhwindow = callback_destroy_nhwindow;
-    lib_callbacks.callback_display_file = callback_display_file;
     lib_callbacks.callback_curs = callback_curs;
     lib_callbacks.callback_putstr_ex = callback_putstr_ex;
     lib_callbacks.callback_putmixed = callback_putmixed;
