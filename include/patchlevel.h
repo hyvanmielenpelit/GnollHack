@@ -24,6 +24,7 @@
  * It does not invalidate save files and is meant to address non-save-file-breaking bugs during PREALPHA / ALPHA / BETA
  */
 #define HOTFIXLEVEL 0
+#define PREALPHA
 
 #define COPYRIGHT_BANNER_A "GnollHack, Copyright 2021 by Sound Mind Games"
 #define COPYRIGHT_BANNER_B \

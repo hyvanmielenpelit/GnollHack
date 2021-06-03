@@ -120,7 +120,7 @@
       <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
       <CppLanguageStandard>Default</CppLanguageStandard>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
       <AdditionalOptions>-target x86_64-none-android</AdditionalOptions>
@@ -142,7 +142,7 @@
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
       <CppLanguageStandard>Default</CppLanguageStandard>
       <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;MAIL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;MAIL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
       <AdditionalOptions>-target i386-none-android</AdditionalOptions>
     </ClCompile>
@@ -162,7 +162,7 @@
       <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
       <CppLanguageStandard>Default</CppLanguageStandard>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;MAIL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;MAIL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-target arm64v8a-none-eabi</AdditionalOptions>
@@ -183,7 +183,7 @@
       <PrecompiledHeaderFile>$(LibDroidDir)pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
       <CppLanguageStandard>Default</CppLanguageStandard>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;PREALPHA;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;MAIL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;MAIL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-target armv7a-none-eabi</AdditionalOptions>
