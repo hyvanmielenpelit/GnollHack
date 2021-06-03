@@ -139,8 +139,16 @@ struct extended_menu_info {
     struct monst* monster;
     char heading_for_group_accelerator;
     int color;
+    int item_subtype; /* Generic subtype if needed */
     unsigned long menu_flags;
 };
+
+#define MENU_FLAGS_NONE                         0x00000000
+#define MENU_FLAGS_IS_HEADING                   0x00000001
+#define MENU_FLAGS_HAS_ASSOCIATED_GROUP_ACCELERATOR \
+                                                0x00000002
+#define MENU_FLAGS_MONOSPACE_FONT_REQUESTED     0x00000004
+#define MENU_FLAGS_NARROW_FONT_REQUESTED        0x00000008
 
 enum obj_material_types {
     MAT_NONE = 0,
