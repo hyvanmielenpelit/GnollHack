@@ -35,16 +35,16 @@
                             <Label Grid.Column="0" TextColor="White" 
                                    Text="{Binding Accelerator}"
                                    FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
-                                   FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}"
-                                    />
-                            
+                                   FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">
+                            </Label>
+
                             <!-- SKCanvas in column 1? -->
 
                             <Label Grid.Column="2" TextColor="White" 
                                    Text="{Binding Text}"
                                    FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
-                                   FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}"
-                                    />
+                                   FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">
+                            </Label>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
