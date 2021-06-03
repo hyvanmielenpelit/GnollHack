@@ -43,7 +43,6 @@ namespace GnollHackClient.Pages.Game
         private bool _cursorIsOn;
         private bool _showDirections = false;
         private MainPage _mainPage;
-        private CollectionView[] _windowViews = new CollectionView[GHConstants.MaxGHWindows];
 
         public int ClipX { get; set; }
         public int ClipY { get; set; }
@@ -206,93 +205,35 @@ namespace GnollHackClient.Pages.Game
 
         private void CreateWindowView(int winid)
         {
-            double y = 0;
-            lock(_clientGame.WindowsLock)
-            {
-                y = (double)_clientGame.Windows[winid].Top;
-            }
-            CollectionView cw = new CollectionView();
-            cw.IsVisible = false;
-            cw.HorizontalOptions = LayoutOptions.FillAndExpand;
-            cw.VerticalOptions = LayoutOptions.FillAndExpand;
-            cw.BackgroundColor = Color.Black;
-            cw.SelectionMode = SelectionMode.None;
-            cw.Margin = new Thickness(3.0);
-            AbsoluteLayout.SetLayoutFlags(cw, AbsoluteLayoutFlags.SizeProportional);
-            AbsoluteLayout.SetLayoutBounds(cw, new Rectangle(0.0, 0.0, 1.0, 1.0));
-            cw.ItemTemplate = new DataTemplate(() =>
-            {
-                TapGestureRecognizer tgr2 = new TapGestureRecognizer();
-                tgr2.BindingContext = this;
-                tgr2.Command = new Command(() => {
-                    HideWindowPage();
-                });
-                var grid = new Grid();
-                grid.IsClippedToBounds = false;
-                grid.GestureRecognizers.Add(tgr2);
 
-                var textLabel = new Label { FontAttributes = FontAttributes.Bold, FontFamily = "Underwood", FontSize = 20, TextColor = Color.White };
-                textLabel.SetBinding(Label.TextProperty, "Text");
-                textLabel.GestureRecognizers.Add(tgr2);
-                grid.Children.Add(textLabel);
-
-                return grid;
-            });
-            _windowViews[winid] = cw;
         }
+
         private void DestroyWindowView(int winid)
         {
-            if(_windowViews[winid] != null && _windowViews[winid].IsVisible == true)
-            {
-                _windowViews[winid].IsVisible = false;
-                _windowViews[winid] = null;
-                HideWindowPage();
-            }
+
         }
+
         private void ClearWindowView(int winid)
         {
-            if (_windowViews[winid] != null)
-            {
-                _windowViews[winid].ItemsSource = null;
-            }
+
         }
+
         private void DisplayWindowView(int winid, string[] strs)
         {
-            if(_windowViews[winid] != null)
-            {
-                List<GHPutStrItem> list = new List<GHPutStrItem>();
-                foreach(string str in strs)
-                {
-                    list.Add(new GHPutStrItem(str));
-                }
-                _windowViews[winid].ItemsSource = list;
-                _windowViews[winid].IsVisible = true;
-                ShowWindowPage(winid);
-            }
+            ShowWindowPage(strs);
         }
-        private async void ShowWindowPage(int winid)
+        private async void ShowWindowPage(string[] strs)
         {
-            var cpage = new GHWindowPage(winid);
-            
-            cpage.Disappearing += new EventHandler(WindowPage_Disappearing);
-            AbsoluteLayout al = new AbsoluteLayout { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions =LayoutOptions.FillAndExpand, BackgroundColor = Color.Black  };
-            cpage.Content = al;
-            al.Children.Add(_windowViews[winid]);
-
+            List<GHPutStrItem> list = new List<GHPutStrItem>();
+            foreach (string str in strs)
+            {
+                if (str == null)
+                    break;
+                list.Add(new GHPutStrItem(str));
+            }
+            var cpage = new GHTextPage(this, list);
             await App.Current.MainPage.Navigation.PushModalAsync(cpage);
 
-        }
-        private void WindowPage_Disappearing(object sender, EventArgs e)
-        {
-            int winid = ((GHWindowPage)sender).WinId;
-            _windowViews[winid].IsVisible = false;
-            _windowViews[winid] = null;
-            GenericButton_Clicked(sender, e, 27);
-        }
-
-        private async void HideWindowPage()
-        {
-            await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
         private void PrintTopLine(string str, uint attributes)
@@ -558,7 +499,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     for (int mapy = startY; mapy <= endY; mapy++)
                     {
-                        if (_mapData[mapx, mapy] != null && _mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
+                        if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
                         {
                             str = _mapData[mapx, mapy].Symbol;
                             textPaint.Color = _mapData[mapx, mapy].Color;
@@ -819,7 +760,7 @@ namespace GnollHackClient.Pages.Game
         {
             if (_clientGame != null)
             {
-                if(e.ActionType == SKTouchAction.Pressed)
+                if(e?.ActionType == SKTouchAction.Pressed)
                 {
                     int resp = 0;
                     //string ch = " ";

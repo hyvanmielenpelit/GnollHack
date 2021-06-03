@@ -5,7 +5,7 @@ using SkiaSharp;
 
 namespace GnollHackClient
 {
-    public class MapData
+    public struct MapData
     {
         public int Glyph { get; set; }
         public int BkGlyph { get; set; }
@@ -13,10 +13,6 @@ namespace GnollHackClient
         public SKColor Color { get; set; }
         public uint Special { get; set; }
 
-        public MapData()
-        {
-
-        }
     }
 
 }

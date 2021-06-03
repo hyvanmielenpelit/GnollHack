@@ -159,7 +159,7 @@ namespace GnollHackClient
                     break;
             }
             for (int i = 0; i < GHConstants.MaxPutStrHeight; i++)
-                PutStrs[i] = "";
+                PutStrs[i] = null;
 
             _height = 0;
             _width = 0;
@@ -185,7 +185,8 @@ namespace GnollHackClient
                 ConcurrentQueue<GHRequest> queue;
                 if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
                 {
-                    queue.Enqueue(new GHRequest(_clientGame, GHRequestType.DisplayWindowView, _winId, PutStrs));
+                    string[] clonestrs = (string[])PutStrs.Clone();
+                    queue.Enqueue(new GHRequest(_clientGame, GHRequestType.DisplayWindowView, _winId, clonestrs));
                 }
             }
         }
