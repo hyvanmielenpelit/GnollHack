@@ -9052,7 +9052,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
         }
         else
         {
-            if(cansee(sx, sy))
+            if(isok(sx, sy) && cansee(sx, sy))
                 adjusted_delay_output(); /* wait a little */
         }
 
