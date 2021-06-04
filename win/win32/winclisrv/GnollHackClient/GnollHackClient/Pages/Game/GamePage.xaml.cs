@@ -797,9 +797,9 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private SKColor GHDarkGray = new SKColor(96, 96, 96);
+        private static SKColor GHDarkGray = new SKColor(96, 96, 96);
 
-        public SKColor NHColor2SKColor(nhcolor nhcolor)
+        public static SKColor NHColor2SKColor(nhcolor nhcolor)
         {
             SKColor res = SKColors.Gray;
             switch (nhcolor)

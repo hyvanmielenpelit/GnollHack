@@ -60,6 +60,13 @@ namespace GnollHackCommon
         StoneInverse =      0x00001000,
     }
 
+    public enum MenuFlags : uint
+    {
+        None =              0x00000000,
+        IsHeading =         0x00000001,
+        IsGroupHeading =    0x00000002,
+    }
+
     public class GHConstants
     {
         public const int InputBufferLength = 32;

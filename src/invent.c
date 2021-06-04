@@ -4308,7 +4308,10 @@ nextclass:
             any = zeroany; /* all bits zero */
             ilet = otmp->invlet;
             if (flags.sortpack && !classcount) {
-                add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+                struct extended_menu_info info = { 0 };
+                info.menu_flags |= MENU_FLAGS_IS_HEADING;
+                info.heading_for_group_accelerator = *invlet;
+                add_extended_menu(win, NO_GLYPH, &any, info, 0, 0, iflags.menu_headings,
                          let_to_name(*invlet, FALSE,
                                      (want_reply && iflags.menu_head_objsym)),
                          MENU_UNSELECTED);

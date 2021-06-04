@@ -98,10 +98,26 @@ namespace GnollHackClient.Pages.Game
                     if (mi == MenuView.SelectedItem)
                     {
                         MenuView.SelectedItem = null;
+
                     }
                     else
                     {
                         MenuView.SelectedItems.Remove(mi);
+                    }
+
+                    if((mi.MenuFlags & (ulong)MenuFlags.IsGroupHeading) != 0)
+                    {
+                        foreach (GHMenuItem o in MenuView.ItemsSource)
+                        {
+                            if(o.GroupAccelerator == mi.HeadingGroupAccelerator)
+                            {
+                                o.Selected = true;
+                                if (!MenuView.SelectedItems.Contains(o))
+                                    MenuView.SelectedItems.Add(o);
+                                else
+                                    MenuView.SelectedItems.Remove(o);
+                            }
+                        }
                     }
                 }
                 //else if(MenuView.SelectionMode == SelectionMode.Single && mi == MenuView.SelectedItem)
@@ -121,6 +137,18 @@ namespace GnollHackClient.Pages.Game
                 {
                     queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, _ghwindow, new List<GHMenuItem>()));
                 }
+            }
+        }
+
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            foreach(GHMenuItem o in MenuView.ItemsSource)
+            {
+                o.Selected = true;
+                if(!MenuView.SelectedItems.Contains(o))
+                    MenuView.SelectedItems.Add(o);
+                else
+                    MenuView.SelectedItems.Remove(o);
             }
         }
     }
@@ -173,6 +201,18 @@ namespace GnollHackClient.Pages.Game
             }
 
             return 20;
+        }
+    }
+    public class FontColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return GHUtils.NHColor2Color((nhcolor)value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return GHUtils.NHColor2Color((nhcolor)value);
         }
     }
 

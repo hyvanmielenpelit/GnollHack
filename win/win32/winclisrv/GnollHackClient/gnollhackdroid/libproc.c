@@ -200,15 +200,23 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    
-    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str, presel);
+    int color = CLR_WHITE;
+#ifdef TEXTCOLOR
+    get_menu_coloring(str, &color, &attr);
+#endif
+    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str, presel, color);
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    lib_add_menu(wid, glyph, identifier, accelerator, group_accel, attr, str, presel);
+    int color = CLR_WHITE;
+#ifdef TEXTCOLOR
+    get_menu_coloring(str, &color, &attr);
+#endif
+    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str, presel, color,
+        (unsigned long long)(info.object ? info.object->o_id : 0), (unsigned long long)(info.monster ? info.monster->m_id : 0), info.heading_for_group_accelerator, info.menu_flags);
 }
 
 void lib_end_menu(winid wid, const char* prompt)

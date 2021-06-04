@@ -46,7 +46,7 @@ namespace GnollHackClient.Droid
             VoidConstCharBooleanCallback callback_display_file,
             VoidIntCallback callback_start_menu,
             AddMenuCallback callback_add_menu,
-            VoidIntCallback callback_add_extended_menu,
+            AddExtendedMenuCallback callback_add_extended_menu,
             VoidIntConstCharCallback callback_end_menu,
             IntIntIntOutIntCallback callback_select_menu,
             VoidIntCallback callback_message_menu, /* no need for X-specific handling */
@@ -249,7 +249,7 @@ namespace GnollHackClient.Droid
                 clientGame.ClientCallback_VoidConstCharBooleanDummy,
                 clientGame.ClientCallback_StartMenu,
                 clientGame.ClientCallback_AddMenu,
-                clientGame.ClientCallback_VoidIntDummy,
+                clientGame.ClientCallback_AddExtendedMenu,
                 clientGame.ClientCallback_EndMenu,
                 clientGame.ClientCallback_SelectMenu,
                 clientGame.ClientCallback_VoidIntDummy, /* no need for X-specific handling */

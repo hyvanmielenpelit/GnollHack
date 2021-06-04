@@ -1172,29 +1172,14 @@ dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct exte
     dll_logDebug("dll_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
              presel);
+     
+    int color = CLR_WHITE;
+#ifdef TEXTCOLOR;
+    get_menu_coloring(str, &color, &attr);
+#endif
 
-    dll_callbacks.callback_add_extended_menu(0);
-
-#if 0
-    struct obj* otmp = info.object;
-
-    if ((wid >= 0) && (wid < MAXWINDOWS)
-        && (GetNHApp()->windowlist[wid].win != NULL)) {
-        MSNHMsgAddMenu data;
-        ZeroMemory(&data, sizeof(data));
-        data.glyph = glyph;
-        data.identifier = identifier;
-        data.object = otmp;
-        data.accelerator = accelerator;
-        data.group_accel = group_accel;
-        data.attr = attr;
-        data.str = str;
-        data.presel = presel;
-
-        SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
-                    (WPARAM) MSNH_MSG_ADDMENU, (LPARAM) &data);
-    }
-#endif;
+    dll_callbacks.callback_add_extended_menu(wid, glyph, identifier, accelerator, group_accel, attr,
+        str, presel, color, info.object ? info.object->o_id : 0, info.monster ? info.monster->m_id : 0, info.heading_for_group_accelerator, info.menu_flags);
 }
 
 void

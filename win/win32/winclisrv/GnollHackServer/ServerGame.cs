@@ -35,7 +35,7 @@ namespace GnollHackServer
             VoidConstCharBooleanCallback callback_display_file,
             VoidIntCallback callback_start_menu,
             AddMenuCallback callback_add_menu,
-            VoidIntCallback callback_add_extended_menu,
+            AddExtendedMenuCallback callback_add_extended_menu,
             VoidIntConstCharCallback callback_end_menu,
             IntIntIntOutIntCallback callback_select_menu,
             VoidIntCallback callback_message_menu, /* no need for X-specific handling */
@@ -178,7 +178,7 @@ namespace GnollHackServer
                 GameCallback_VoidConstCharBooleanDummy,
                 GameCallback_VoidIntDummy,
                 GameCallback_AddMenu,
-                GameCallback_VoidIntDummy,
+                GameCallback_AddExtendedMenu,
                 GameCallback_VoidIntConstCharDummy,
                 GameCallback_IntIntIntOutIntDummy,
                 GameCallback_VoidIntDummy, /* no need for X-specific handling */
@@ -270,7 +270,13 @@ namespace GnollHackServer
             _serverGameCenter.ServerCenter_ExitHack(this, status);
         }
 
-        protected void GameCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel)
+        protected void GameCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color)
+        {
+
+        }
+
+        protected void GameCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color,
+            UInt64 oid, UInt64 mid, char heading_group_accel, UInt32 menu_flags)
         {
 
         }

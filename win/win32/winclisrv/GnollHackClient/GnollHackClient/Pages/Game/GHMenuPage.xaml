@@ -10,6 +10,7 @@
         <ResourceDictionary>
             <local:FontConverter x:Key="FontConverter" />
             <local:FontSizeConverter x:Key="FontSizeConverter" />
+            <local:FontColorConverter x:Key="FontColorConverter" />
             <local:PaddingConverter x:Key="PaddingConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -18,7 +19,11 @@
         <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical">
             <Label x:Name="HeaderLabel"
                    FontFamily="Diablo" FontSize="Large" TextColor="White" FontAttributes="Bold" Margin="2,10,2,6" BackgroundColor="Transparent"
-                   HorizontalOptions="CenterAndExpand" />
+                   HorizontalOptions="CenterAndExpand">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </Label.GestureRecognizers>
+            </Label>
             <CollectionView x:Name="MenuView" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged"  >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -32,7 +37,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0" TextColor="White" 
+                            <Label Grid.Column="0" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
                                    Text="{Binding Accelerator}"
                                    FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
                                    FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">
@@ -40,7 +45,7 @@
 
                             <!-- SKCanvas in column 1? -->
 
-                            <Label Grid.Column="2" TextColor="White" 
+                            <Label Grid.Column="2" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
                                    Text="{Binding Text}"
                                    FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
                                    FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">

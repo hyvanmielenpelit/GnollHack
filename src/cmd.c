@@ -4708,6 +4708,7 @@ int cmdflag;
         strcpy(descbuf, efp->ef_desc);
         *descbuf = highc(*descbuf);
 
+#ifndef GNH_ANDROID
         size_t desclen = 0;
         desclen = strlen(descbuf);
         if (desclen < maxdesclength)
@@ -4725,7 +4726,7 @@ int cmdflag;
                 (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
         else
             strcpy(shortcutbuf, "");
-
+#endif
         Sprintf(buf, "%s  %s%s", cmdbuf, descbuf, shortcutbuf);
 
         add_menu(menuwin, NO_GLYPH, &any, cmdchar, 0, ATR_NONE,
