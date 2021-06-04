@@ -4955,7 +4955,7 @@ struct ext_func_tab extcmdlist[] = {
     { 'E', "engrave", "engrave writing on the floor", doengrave, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_styluses, "write with" },
     { '\0', "enhance", "advance or check weapon and spell skills",
             enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
-    { M('e'), "exploremode", "enter explore (discovery) mode",
+    { '\0', "exploremode", "enter explore (discovery) mode",
             enter_explore_mode, IFBURIED },
     { 'f', "fire", "fire ammunition from quiver", dofire, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_allowall, "fire" },
     { M('f'), "force", "force a lock", doforce, AUTOCOMPLETE | INCMDMENU },
