@@ -924,7 +924,9 @@ int show_weights;
                 /* if sorting, print type name (once only) */
                 if (sorted && !printed_type_name) {
                     any = zeroany;
-                    add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+                    add_extended_menu(win, NO_GLYPH, &any, 
+                        menu_group_heading_info(*pack > ILLOBJ_CLASS && *pack < MAX_OBJECT_CLASSES ? def_oc_syms[*pack].sym : '\0'), 
+                        0, 0, iflags.menu_headings,
                              let_to_name(*pack, FALSE,
                                          ((how != PICK_NONE)
                                           && iflags.menu_head_objsym)),
@@ -963,7 +965,7 @@ int show_weights;
         if (sorted && n > 1) {
             Sprintf(buf, "%s Creatures",
                     is_animal(u.ustuck->data) ? "Swallowed" : "Engulfed");
-            add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
+            add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, buf,
                      MENU_UNSELECTED);
         }
         fake_hero_object = zeroobj;

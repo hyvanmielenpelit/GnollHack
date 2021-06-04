@@ -1994,7 +1994,7 @@ xchar *rdgn;
         }
         if (bymenu) {
             any = zeroany;
-            add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
+            add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, buf,
                      MENU_UNSELECTED);
         } else
             putstr(win, 0, buf);

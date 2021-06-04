@@ -3750,7 +3750,30 @@ obj_to_extended_menu_info(otmp)
 struct obj* otmp;
 {
     struct extended_menu_info info = { 0 };
+    info.color = CLR_WHITE;
     info.object = otmp;
+
+    return info;
+}
+
+struct extended_menu_info
+menu_heading_info()
+{
+    struct extended_menu_info info = { 0 };
+    info.color = CLR_WHITE;
+    info.menu_flags = MENU_FLAGS_IS_HEADING;
+
+    return info;
+}
+
+struct extended_menu_info
+menu_group_heading_info(groupaccel)
+char groupaccel;
+{
+    struct extended_menu_info info = { 0 };
+    info.color = CLR_WHITE;
+    info.menu_flags = MENU_FLAGS_IS_HEADING | MENU_FLAGS_IS_GROUP_HEADING;
+    info.heading_for_group_accelerator = groupaccel;
 
     return info;
 }

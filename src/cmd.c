@@ -503,7 +503,7 @@ doextlist(VOID_ARGS)
                    results menu. */
                 if (!menushown[pass]) {
                     Strcpy(buf, headings[pass]);
-                    add_menu(menuwin, NO_GLYPH, &any, 0, 0,
+                    add_extended_menu(menuwin, NO_GLYPH, &any, menu_heading_info(), 0, 0,
                              iflags.menu_headings, buf, MENU_UNSELECTED);
                     menushown[pass] = 1;
                 }
@@ -748,7 +748,7 @@ doability(VOID_ARGS)
 
     /* CHARACTER ABILITY INFORMATION */
     any = zeroany;
-    add_menu(win, NO_GLYPH, &any,
+    add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
         0, 0, iflags.menu_headings,
         "View Character Abilities              ", MENU_UNSELECTED);
 
@@ -797,7 +797,7 @@ doability(VOID_ARGS)
 
     /* SKILL-BASED ABILITIES */
     any = zeroany;
-    add_menu(win, NO_GLYPH, &any,
+    add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
         0, 0, iflags.menu_headings,
         "Use Skill-Based Abilities             ", MENU_UNSELECTED);
 
@@ -847,7 +847,7 @@ doability(VOID_ARGS)
         )
     {
         any = zeroany;
-        add_menu(win, NO_GLYPH, &any,
+        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
             0, 0, iflags.menu_headings,
             "Use Monster Abilities                 ", MENU_UNSELECTED);
             
@@ -1085,7 +1085,7 @@ doability(VOID_ARGS)
         )
     {
         any = zeroany;
-        add_menu(win, abs(mon_to_glyph(u.usteed, rn2_on_display_rng)), &any,
+        add_extended_menu(win, abs(mon_to_glyph(u.usteed, rn2_on_display_rng)), &any, menu_heading_info(),
             0, 0, iflags.menu_headings,
             "Use Your Steed's Abilities            ", MENU_UNSELECTED);
 
@@ -1126,7 +1126,7 @@ doability(VOID_ARGS)
     if (petcount > 0)
     {
         any = zeroany;
-        add_menu(win, NO_GLYPH, &any,
+        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
             0, 0, iflags.menu_headings,
             "View Companion Abilities            ", MENU_UNSELECTED);
 
@@ -4487,7 +4487,7 @@ minimal_enlightenment()
     buf[0] = buf2[0] = '\0';
     tmpwin = create_nhwindow(NHW_MENU);
     start_menu(tmpwin);
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
              "Starting", FALSE);
 
     /* Starting name, race, role, gender */
@@ -4507,7 +4507,7 @@ minimal_enlightenment()
 
     /* Current name, race, role, gender */
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", FALSE);
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
              "Current", FALSE);
     Sprintf(buf, fmtstr, "race", Upolyd ? youmonst.data->mname : urace.noun);
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, FALSE);
@@ -4537,7 +4537,7 @@ minimal_enlightenment()
 
     /* Deity list */
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", FALSE);
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
              "Deities", FALSE);
     Sprintf(buf2, deity_fmtstr, align_gname(A_CHAOTIC),
             (u.ualignbase[A_ORIGINAL] == u.ualign.type

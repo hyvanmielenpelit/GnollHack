@@ -19,7 +19,7 @@
         <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical">
             <Label x:Name="HeaderLabel"
                    FontFamily="Diablo" FontSize="Large" TextColor="White" FontAttributes="Bold" Margin="2,10,2,6" BackgroundColor="Transparent"
-                   HorizontalOptions="CenterAndExpand">
+                   HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                 </Label.GestureRecognizers>
@@ -27,7 +27,7 @@
             <CollectionView x:Name="MenuView" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged"  >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="{Binding Attributes, Converter={StaticResource PaddingConverter}}">
+                        <Grid Padding="{Binding MenuFlags, Converter={StaticResource PaddingConverter}}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>

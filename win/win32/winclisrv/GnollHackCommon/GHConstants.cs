@@ -41,6 +41,7 @@ namespace GnollHackCommon
         StayOnLine =0x00000040,
         NoTabs =    0x00000080,
     }
+
     [Flags]
     public enum MapSpecial : uint
     {
@@ -60,7 +61,8 @@ namespace GnollHackCommon
         StoneInverse =      0x00001000,
     }
 
-    public enum MenuFlags : uint
+    [Flags]
+    public enum MenuFlags : UInt32
     {
         None =              0x00000000,
         IsHeading =         0x00000001,

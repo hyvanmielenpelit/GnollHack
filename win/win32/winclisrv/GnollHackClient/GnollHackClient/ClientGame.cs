@@ -444,23 +444,8 @@ namespace GnollHackClient
         }
         public void ClientCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color)
         {
-            lock (_ghWindowsLock)
-            {
-                if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
-                {
-                    GHMenuItem mi = new GHMenuItem();
-                    mi.Identifier = identifier;
-                    mi.Accelerator = accel;
-                    mi.GroupAccelerator = groupaccel;
-                    mi.Attributes = attributes;
-                    mi.Glyph = glyph;
-                    mi.Text = text;
-                    mi.Selected = (presel != 0);
-                    mi.Count = mi.Selected ? -1 : 0;
-                    mi.NHColor = color;
-                    _ghWindows[winid].MenuInfo.MenuItems.Add(mi);
-                }
-            }
+            ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attributes, text, presel, color,
+                        0, 0, '\0', 0);
         }
         public void ClientCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color,
             UInt64 oid, UInt64 mid, char headingaccel, UInt32 menuflags)

@@ -5084,7 +5084,7 @@ doset() /* changing options via menu by Per Liboriussen */
     }
 
     any = zeroany;
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
              "Booleans (selecting will toggle value):", MENU_UNSELECTED);
     any.a_int = 0;
     /* first list any other non-modifiable booleans, then modifiable ones */
@@ -5116,7 +5116,7 @@ doset() /* changing options via menu by Per Liboriussen */
     indexoffset = boolcount;
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
              "Compounds (selecting will prompt for new value):",
              MENU_UNSELECTED);
 
@@ -5145,7 +5145,7 @@ doset() /* changing options via menu by Per Liboriussen */
 
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
              "Other settings:", MENU_UNSELECTED);
 
     for (i = 0; (name = othropt[i].name) != 0; i++) {
@@ -5159,7 +5159,7 @@ doset() /* changing options via menu by Per Liboriussen */
 #ifdef PREFIXES_IN_USE
     any = zeroany;
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
              "Variable playground locations:", MENU_UNSELECTED);
     for (i = 0; i < PREFIX_COUNT; i++)
         doset_add_menu(tmpwin, fqn_prefix_names[i], 0);
@@ -5965,7 +5965,7 @@ boolean setinitial, setfromfile;
                     continue;
                 ape = iflags.autopickup_exceptions[pass];
                 any = zeroany;
-                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+                add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
                          (pass == 0) ? "Never pickup" : "Always pickup",
                          MENU_UNSELECTED);
                 for (i = 0; i < numapes[pass] && ape; i++) {

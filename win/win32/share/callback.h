@@ -3,6 +3,8 @@
  * Copyright (c) Janne Gustafsson, 2021
  */
 
+#include "config.h"
+
 #ifndef CALLBACK_H
 #define CALLBACK_H
 
@@ -24,12 +26,12 @@ typedef int(__callconv* IntIntCallback)(int);
 typedef void(__callconv* VoidIntCallback)(int);
 typedef void(__callconv* VoidIntIntCallback)(int, int);
 typedef void(__callconv* VoidIntIntIntCallback)(int, int, int);
-typedef void(__callconv* VoidIntBooleanCallback)(int, unsigned char);
+typedef void(__callconv* VoidIntBooleanCallback)(int, UCHAR_P);
 typedef void(__callconv* VoidIntIntConstCharCallback)(int, int, const char*);
 typedef void(__callconv* VoidIntConstCharCallback)(int, const char*);
 typedef void(__callconv* VoidIntIntConstCharIntCallback)(int, int, const char*, int);
 typedef void(__callconv* VoidConstCharIntCallback)(const char*, int);
-typedef void(__callconv* VoidConstCharBooleanCallback)(const char*, unsigned char);
+typedef void(__callconv* VoidConstCharBooleanCallback)(const char*, UCHAR_P);
 typedef int(__callconv* IntVoidCallback)();
 typedef unsigned char(__callconv* BooleanVoidCallback)();
 typedef char*(__callconv* CharVoidCallback)();
@@ -40,9 +42,9 @@ typedef unsigned char(__callconv* BooleanVoidPtrDoubleCallback)(void* , double);
 typedef unsigned char(__callconv* BooleanVoidPtrCallback)(void*);
 typedef int(__callconv* IntConstCharPtrConstCharPtrCharPtrCallback)(const char*, const char*, const char*);
 typedef char*(__callconv* GetLineCallback)(const char*);
-typedef char*(__callconv* CharPtrBooleanCallback)(unsigned char);
+typedef char*(__callconv* CharPtrBooleanCallback)(UCHAR_P);
 typedef void(__callconv* VoidIntIntIntIntIntLongIntULongCallback)(int, int, int, int, int, long, int, unsigned long);
-typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, unsigned char);
+typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, UCHAR_P);
 
 /* Specific callback types */
 typedef VoidVoidCallback InitWindowsCallback;
@@ -61,9 +63,9 @@ typedef VoidIntIntConstCharIntCallback PutStrExCallback;
 typedef VoidIntIntConstCharCallback PutMixedCallback;
 typedef VoidConstCharBooleanCallback DisplayFileCallback;
 typedef VoidIntCallback StartMenuCallback;
-typedef void(__callconv* AddMenuCallback)(int, int, long long, char, char, int, const char*, unsigned char, int);
-typedef void(__callconv* AddExtendedMenuCallback)(int, int, long long, char, char, int, const char*, unsigned char, int,
-    unsigned long long, unsigned long long, char, unsigned long);
+typedef void(__callconv* AddMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, const char*, UCHAR_P, int);
+typedef void(__callconv* AddExtendedMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, const char*, UCHAR_P, int,
+    unsigned long long, unsigned long long, CHAR_P, unsigned long);
 typedef VoidIntConstCharCallback EndMenuCallback;
 typedef int(__callconv* SelectMenuCallback)(int, int, long long**, int*);
 typedef void(__callconv* MessageMenuCallback)(int);

@@ -211,7 +211,7 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    int color = CLR_WHITE;
+    int color = info.color;
 #ifdef TEXTCOLOR
     get_menu_coloring(str, &color, &attr);
 #endif

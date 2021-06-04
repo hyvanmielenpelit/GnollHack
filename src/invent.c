@@ -3964,7 +3964,7 @@ ddoinv()
             Sprintf(hbuf, "%s%s", headings[j], catbuf);
 
             any = zeroany;
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
                 0, 0, iflags.menu_headings,
                 hbuf, MENU_UNSELECTED);
 
@@ -4283,7 +4283,7 @@ boolean addinventoryheader;
    } else if (xtra_choice) {
         /* wizard override ID and xtra_choice are mutually exclusive */
         if (flags.sortpack)
-            add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+            add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
                      "Miscellaneous", MENU_UNSELECTED);
         any.a_char = HANDS_SYM; /* '-' */
         add_menu(win, NO_GLYPH, &any, HANDS_SYM, 0, ATR_NONE,
@@ -4308,10 +4308,9 @@ nextclass:
             any = zeroany; /* all bits zero */
             ilet = otmp->invlet;
             if (flags.sortpack && !classcount) {
-                struct extended_menu_info info = { 0 };
-                info.menu_flags |= MENU_FLAGS_IS_HEADING;
-                info.heading_for_group_accelerator = *invlet;
-                add_extended_menu(win, NO_GLYPH, &any, info, 0, 0, iflags.menu_headings,
+                add_extended_menu(win, NO_GLYPH, &any, 
+                    menu_group_heading_info(*invlet > ILLOBJ_CLASS && *invlet < MAX_OBJECT_CLASSES ? def_oc_syms[*invlet].sym : '\0'),
+                    0, 0, iflags.menu_headings,
                          let_to_name(*invlet, FALSE,
                                      (want_reply && iflags.menu_head_objsym)),
                          MENU_UNSELECTED);
@@ -4345,7 +4344,7 @@ nextclass:
     }
     if (iflags.force_invmenu && lets && want_reply) {
         any = zeroany;
-        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
                  "Special", MENU_UNSELECTED);
         any.a_char = '*';
         add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE,
@@ -4423,7 +4422,7 @@ int show_weights;
     if (show_weights > 0)
     {
         anything any = zeroany;
-        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
             "Weight Summary", MENU_UNSELECTED);
 
         char wtbuf[BUFSZ];
@@ -4701,7 +4700,7 @@ char avoidlet;
                 if (!flags.sortpack || otmp->oclass == *invlet) {
                     if (flags.sortpack && !classcount) {
                         any = zeroany; /* zero */
-                        add_menu(win, NO_GLYPH, &any, 0, 0,
+                        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0,
                                  iflags.menu_headings,
                                  let_to_name(*invlet, FALSE, FALSE),
                                  MENU_UNSELECTED);
@@ -6334,7 +6333,7 @@ const char *hdr, *txt;
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
     start_menu(win);
-    add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings, hdr,
+    add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, hdr,
              MENU_UNSELECTED);
     add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
     add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, txt, MENU_UNSELECTED);

@@ -35,7 +35,7 @@
                 
                 <Button Text="Cy" x:Name="YellButton" Clicked="YellButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="0" />
                 <Button Text="E" x:Name="EngraveButton" Clicked="EngraveButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="1" />
-                <Button Text="" x:Name="Reserved2Button" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="2" />
+                <Button Text="D" x:Name="DropManyButton" Clicked="DropManyButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="2" />
                 <Button Text="CL" x:Name="LightButton" Clicked="LightButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="3" />
                 <Button Text="Mp" x:Name="PrayButton" Clicked="PrayButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="4" />
                 

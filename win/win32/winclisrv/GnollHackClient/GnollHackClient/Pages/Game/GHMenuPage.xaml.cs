@@ -105,13 +105,12 @@ namespace GnollHackClient.Pages.Game
                         MenuView.SelectedItems.Remove(mi);
                     }
 
-                    if((mi.MenuFlags & (ulong)MenuFlags.IsGroupHeading) != 0)
+                    if(MenuView.SelectionMode == SelectionMode.Multiple && (mi.MenuFlags & (Int32)MenuFlags.IsGroupHeading) != 0)
                     {
                         foreach (GHMenuItem o in MenuView.ItemsSource)
                         {
                             if(o.GroupAccelerator == mi.HeadingGroupAccelerator)
                             {
-                                o.Selected = true;
                                 if (!MenuView.SelectedItems.Contains(o))
                                     MenuView.SelectedItems.Add(o);
                                 else
@@ -142,13 +141,22 @@ namespace GnollHackClient.Pages.Game
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
-            foreach(GHMenuItem o in MenuView.ItemsSource)
+            if(MenuView.SelectionMode == SelectionMode.Multiple)
             {
-                o.Selected = true;
-                if(!MenuView.SelectedItems.Contains(o))
-                    MenuView.SelectedItems.Add(o);
-                else
-                    MenuView.SelectedItems.Remove(o);
+                foreach (GHMenuItem o in MenuView.ItemsSource)
+                {
+                    if(o.Identifier != 0)
+                    {
+                        if (!MenuView.SelectedItems.Contains(o))
+                        {
+                            MenuView.SelectedItems.Add(o);
+                        }
+                        else
+                        {
+                            MenuView.SelectedItems.Remove(o);
+                        }
+                    }
+                }
             }
         }
     }
@@ -223,7 +231,7 @@ namespace GnollHackClient.Pages.Game
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
 
-            if (((int)value & (int)MenuItemAttributes.Bold) != 0)
+            if (((UInt32)value & (UInt32)MenuFlags.IsHeading) != 0)
             {
                 return BiggerPadding;
             }
@@ -233,7 +241,7 @@ namespace GnollHackClient.Pages.Game
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (((int)value & (int)MenuItemAttributes.Bold) != 0)
+            if (((UInt32)value & (UInt32)MenuFlags.IsHeading) != 0)
             {
                 return BiggerPadding;
             }

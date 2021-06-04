@@ -3310,7 +3310,7 @@ int *spell_no;
             Sprintf(buf, "Name\tH\tDescription");
         }
 
-        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
+        add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, buf,
             MENU_UNSELECTED);
 
 
@@ -3540,7 +3540,7 @@ boolean addemptyline;
     }
 
     any = zeroany;
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, buf,
         MENU_UNSELECTED);
 
 }
@@ -3696,7 +3696,7 @@ boolean addemptyline;
     }
 
     any = zeroany;
-    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings, buf,
+    add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, buf,
         MENU_UNSELECTED);
 
 }

@@ -2041,7 +2041,7 @@ enhance_weapon_skill()
                     to_advance + eventually_advance > 0 ? "Next level" : "");
         }
 
-        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
             headerbuf, MENU_UNSELECTED);
         
         for (pass = 0; pass < SIZE(skill_ranges); pass++)
@@ -2094,7 +2094,7 @@ enhance_weapon_skill()
                     */
                     if (skillcount > 0)
                     {
-                        add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+                        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
                             skill_ranges[pass].name, MENU_UNSELECTED);
                         //firstheader = FALSE;
                     }
