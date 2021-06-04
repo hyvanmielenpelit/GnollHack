@@ -34,6 +34,9 @@ int objtype;
 char olet;
 int expltype;
 {
+    if (!isok(x, y))
+        return;
+
     int i, j, k;
     boolean starting = 1;
     boolean visible, any_shield;
