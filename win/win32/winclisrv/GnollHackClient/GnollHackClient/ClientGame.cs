@@ -461,8 +461,7 @@ namespace GnollHackClient
                     mi.Attributes = attributes;
                     mi.Glyph = glyph;
                     mi.Text = text;
-                    mi.Selected = (presel != 0);
-                    mi.Count = mi.Selected ? -1 : 0;
+                    mi.Count = (presel != 0) ? -1 : 0;
                     mi.MaxCount = maxcount;
 //                    mi.SelectedSliderValue = maxcount + 1;
 //                    mi.SelectedPickerIndex = maxcount + 1;

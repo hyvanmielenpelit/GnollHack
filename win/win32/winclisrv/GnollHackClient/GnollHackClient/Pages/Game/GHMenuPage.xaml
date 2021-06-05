@@ -17,9 +17,7 @@
             <local:EnableCountConverter x:Key="EnableCountConverter" />
             <local:EnablePickerConverter x:Key="EnablePickerConverter" />
             <local:EnableSliderConverter x:Key="EnableSliderConverter" />
-            <local:CountLabelVisibilityConverter x:Key="CountLabelVisibilityConverter" />
             <local:ColumnSpanConverter x:Key="ColumnSpanConverter" />
-            <local:DisplayLabelTextConverter x:Key="DisplayLabelTextConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -39,7 +37,7 @@
                             <SwipeView.LeftItems>
                                 <SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
                                     <SwipeItemView>
-                                        <StackLayout Margin="0" WidthRequest="120" VerticalOptions="FillAndExpand" >
+                                        <StackLayout Margin="0" WidthRequest="120" VerticalOptions="CenterAndExpand" >
                                             <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto" />
@@ -48,52 +46,56 @@
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
-                                                <Picker IsVisible="{Binding MaxCount, Converter={StaticResource EnablePickerConverter}}"
+                                                <Picker x:Name="CountPicker"
                                                         VerticalOptions="CenterAndExpand"
                                                         VerticalTextAlignment="Center"
                                                         HorizontalOptions="CenterAndExpand"
                                                         HorizontalTextAlignment="Center"
                                                         FontFamily="Underwood"
                                                         WidthRequest="70"
+                                                        SelectedIndex="{Binding ConvertedCount}"
                                                         TextColor="White"
-                                                        BackgroundColor="#606060"
+                                                        BackgroundColor="#303030"
                                                         TitleColor="Gray"
                                                         Title="Count"
                                                         ItemsSource="{Binding MaxCount, Converter={StaticResource ItemSourceConverter}}"
-                                                        SelectedIndex="{Binding ConvertedCount, Mode=TwoWay }"
-                                                        SelectedIndexChanged="Picker_SelectedIndexChanged"
                                                         ItemDisplayBinding="{Binding Name}"
                                                         />
                                                 <Button Text="&#x221E;" FontFamily="DejaVuSansMono" TextColor="White" BackgroundColor="DarkBlue"
                                                         VerticalOptions="CenterAndExpand"
                                                         Margin="0,2,0,2"
                                                         WidthRequest="40"
-                                                        IsVisible="{Binding MaxCount, Converter={StaticResource EnablePickerConverter}}"
                                                         Clicked="Button_Clicked" Grid.Column="1"/>
-                                                <Slider x:Name="countSlider" 
-                                                        Maximum="{Binding MaxCount, Converter={StaticResource MaxCountConverter}}" 
-                                                        IsVisible="{Binding MaxCount, Converter={StaticResource EnableSliderConverter}}"
-                                                        Value="{Binding ConvertedCount, Mode=TwoWay}"
-                                                        WidthRequest="110"
-                                                        VerticalOptions="Start"
-                                                        Scale="2"
-                                                        HorizontalOptions="CenterAndExpand"
-                                                        ValueChanged="Slider_ValueChanged"
-                                                        Grid.ColumnSpan="2"/>
-                                                <Label x:Name="displayLabel"
-                                                       IsVisible="{Binding MaxCount, Converter={StaticResource EnableSliderConverter}}"
-                                                       FontFamily="Lato-Regular"
-                                                       FontSize="Small"
-                                                       Text="{Binding LabelString}"
-                                                       HorizontalOptions="CenterAndExpand"
-                                                       VerticalOptions="End" Grid.ColumnSpan="2"
-                                                       />
                                             </Grid>
                                         </StackLayout>
                                     </SwipeItemView>
                                 </SwipeItems>
                             </SwipeView.LeftItems>
-                            <Grid HorizontalOptions="FillAndExpand" Padding="{Binding MenuFlags, Converter={StaticResource PaddingConverter}}">
+                            <SwipeView.RightItems>
+                                <SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
+                                    <SwipeItemView>
+                                        <StackLayout Margin="0" WidthRequest="140" VerticalOptions="CenterAndExpand" >
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <Entry Text="{Binding EntryString}" TextColor="{Binding EntryTextColor}" FontFamily="Underwood" BackgroundColor="#303030" Margin="2,2,2,2" PlaceholderColor="Gray" Placeholder="Count" Keyboard="Numeric" WidthRequest="80" ></Entry>
+                                                <Button x:Name="CountOKButton" Text="OK" PropertyChanged="CountOKButton_PropertyChanged" FontFamily="DejaVuSansMono" FontSize="Small" TextColor="White" BackgroundColor="DarkBlue"
+                                                        VerticalOptions="CenterAndExpand"
+                                                        Margin="0,2,0,2"
+                                                        WidthRequest="50"
+                                                        Clicked="CountOKButton_Clicked" Grid.Column="1"/>
+                                            </Grid>
+                                        </StackLayout>
+                                    </SwipeItemView>
+                                </SwipeItems>                            
+                            </SwipeView.RightItems>
+
+                            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Padding="{Binding MenuFlags, Converter={StaticResource PaddingConverter}}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
@@ -101,11 +103,10 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="60" />
                                 </Grid.ColumnDefinitions>
 
                                 <Label Grid.Column="0" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
-                                   Text="{Binding Accelerator}"
+                                   Text="{Binding Accelerator}" VerticalTextAlignment="Center" VerticalOptions="Center"
                                    FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
                                    FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">
                                 </Label>
@@ -113,24 +114,34 @@
                                 <!-- SKCanvas in column 1? -->
 
                                 <Label Grid.Column="2" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
-                                       Text="{Binding Text}"
+                                       Text="{Binding Text}" VerticalTextAlignment="Center" VerticalOptions="Center"
                                        HorizontalOptions="StartAndExpand"
                                        FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
                                        FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}"
-                                       Grid.ColumnSpan="{Binding IsLabelVisible, Converter={StaticResource ColumnSpanConverter}}" />
+                                       Grid.ColumnSpan="1" />
                                 <!--{Binding IsLabelVisible, Converter={StaticResource ColumnSpanConverter}}"-->
 
-                                <Label x:Name="CountLabel"
-                                       Grid.Column="3"
-                                       HorizontalOptions="EndAndExpand"
-                                       HorizontalTextAlignment="End"
+
+                                <Frame BackgroundColor="Red" CornerRadius="10"
+                                       HorizontalOptions="End"
+                                       Padding="6,3,6,3"
+                                       Margin="0"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsLabelVisible}"
+                                       Grid.Column="2"
+                                       >
+                                    <Label x:Name="CountLabel"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
                                        VerticalTextAlignment="Center"
-                                       TextColor="Red"
+                                       VerticalOptions="Center"
+                                       Margin="0"
+                                       TextColor="White"
                                        Text="{Binding LabelString}"
                                        FontFamily="Lato-Regular" 
-                                       FontSize="Medium"
-                                       IsVisible="{Binding IsLabelVisible}"
+                                       FontSize="Small"
                                        />
+                                </Frame>
                                 <!--"{Binding IsLabelVisible}"-->
 
                             </Grid>
