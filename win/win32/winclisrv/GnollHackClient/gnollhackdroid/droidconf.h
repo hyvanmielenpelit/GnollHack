@@ -14,7 +14,7 @@
 #define SELF_RECOVER		/* Allow the game itself to recover from an aborted game */ 
 
 #ifdef getchar
-#  undef getchar
+#undef getchar
 #endif
 #define getchar nhgetch
 #undef tgetch
@@ -42,5 +42,5 @@
 
 #define CHANGE_COLOR
 
-# endif /* DROIDCONF_H */
+#endif /* DROIDCONF_H */
 #endif /* GNH_ANDROID */
