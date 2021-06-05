@@ -29,6 +29,7 @@ unsigned long gpflags;
 {
     struct permonst *mdat = (struct permonst *) 0;
     boolean ignorewater = ((gpflags & MM_IGNOREWATER) != 0);
+    boolean ignoreyou = ((gpflags & GOODPOS_IGNOREYOU) != 0);
 
     if (!isok(x, y))
         return FALSE;
@@ -39,7 +40,7 @@ unsigned long gpflags;
      * which could be co-located and thus get restricted a bit too much.
      * oh well.
      */
-    if (mtmp != &youmonst && x == u.ux && y == u.uy
+    if (!ignoreyou && mtmp != &youmonst && x == u.ux && y == u.uy
         && (!u.usteed || mtmp != u.usteed))
         return FALSE;
 

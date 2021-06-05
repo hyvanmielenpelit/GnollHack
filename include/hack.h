@@ -317,31 +317,31 @@ extern short tile2enlargement[MAX_TILES];
 #endif /* USE_TRAMPOLI */
 
 /* flags to control makemon() */
-#define NO_MM_FLAGS                    0x00000000UL /* use this rather than plain 0 */
-#define MM_NO_MONSTER_INVENTORY        0x00000001UL /* suppress minvent when creating mon */
-#define MM_NOWAIT                    0x00000002UL /* don't set STRAT_WAITMASK flags */
-#define MM_NOCOUNTBIRTH                0x00000004UL /* don't increment born counter (for revival) */
-#define MM_IGNOREWATER                0x00000008UL /* ignore water when positioning */
-#define MM_ADJACENTOK                0x00000010UL /* it is acceptable to use adjacent coordinates */
-#define MM_ANGRY                    0x00000020UL /* monster is created angry */
-#define MM_NONAME                    0x00000040UL /* monster is not christened */
-#define MM_WAITFORU                    0x00000080UL /* set WAITFORU strategy for monster */
-#define MM_EGD                        0x00000100UL /* add egd structure */
-#define MM_EPRI                        0x00000200UL /* add epri structure */
-#define MM_ESMI                        0x00000400UL /* add esmi structure */
-#define MM_ENPC                        0x00000800UL /* add enpc structure */
-#define MM_ESHK                        0x00001000UL /* add eshk structure */
-#define MM_EMIN                        0x00002000UL /* add emin structure */
-#define MM_EDOG                        0x00004000UL /* add edog structure */
-#define MM_ASLEEP                    0x00008000UL /* monsters should be generated asleep */
-#define MM_NOGRP                    0x00010000UL /* suppress creation of monster groups */
-#define MM_MAX_HP                    0x00020000UL /* maximum hit points */
-#define MM_MALE                        0x00040000UL /* always male */
-#define MM_FEMALE                    0x00080000UL /* always female */
-#define MM_NORMAL_HIT_DICE            0x00100000UL /* use normal hit dice */
-#define MM_EMIN_COALIGNED            0x00200000UL /* minion is of the same alignment as player */
-#define MM_NO_DIFFICULTY_HP_CHANGE  0x00400000UL /* OBSOLETE - HP remains unadjusted due to difficulty */
-#define MM_ADJUST_HP_FROM_EXISTING  0x00800000UL /* OBSOLETE - Calculate only new maxhp and adjust HP proportionally */
+#define NO_MM_FLAGS                     0x00000000UL /* use this rather than plain 0 */
+#define MM_NO_MONSTER_INVENTORY         0x00000001UL /* suppress minvent when creating mon */
+#define MM_NOWAIT                       0x00000002UL /* don't set STRAT_WAITMASK flags */
+#define MM_NOCOUNTBIRTH                 0x00000004UL /* don't increment born counter (for revival) */
+#define MM_IGNOREWATER                  0x00000008UL /* ignore water when positioning */
+#define MM_ADJACENTOK                   0x00000010UL /* it is acceptable to use adjacent coordinates */
+#define MM_ANGRY                        0x00000020UL /* monster is created angry */
+#define MM_NONAME                       0x00000040UL /* monster is not christened */
+#define MM_WAITFORU                     0x00000080UL /* set WAITFORU strategy for monster */
+#define MM_EGD                          0x00000100UL /* add egd structure */
+#define MM_EPRI                         0x00000200UL /* add epri structure */
+#define MM_ESMI                         0x00000400UL /* add esmi structure */
+#define MM_ENPC                         0x00000800UL /* add enpc structure */
+#define MM_ESHK                         0x00001000UL /* add eshk structure */
+#define MM_EMIN                         0x00002000UL /* add emin structure */
+#define MM_EDOG                         0x00004000UL /* add edog structure */
+#define MM_ASLEEP                       0x00008000UL /* monsters should be generated asleep */
+#define MM_NOGRP                        0x00010000UL /* suppress creation of monster groups */
+#define MM_MAX_HP                       0x00020000UL /* maximum hit points */
+#define MM_MALE                         0x00040000UL /* always male */
+#define MM_FEMALE                       0x00080000UL /* always female */
+#define MM_NORMAL_HIT_DICE              0x00100000UL /* use normal hit dice */
+#define MM_EMIN_COALIGNED               0x00200000UL /* minion is of the same alignment as player */
+#define MM_NO_DIFFICULTY_HP_CHANGE      0x00400000UL /* OBSOLETE - HP remains unadjusted due to difficulty */
+#define MM_ADJUST_HP_FROM_EXISTING      0x00800000UL /* OBSOLETE - Calculate only new maxhp and adjust HP proportionally */
 #define MM_PLAY_SUMMON_ANIMATION        0x01000000UL
 #define MM_SUMMON_MONSTER_ANIMATION     0x00000000UL
 #define MM_CHAOTIC_SUMMON_ANIMATION     0x02000000UL
@@ -357,8 +357,9 @@ extern short tile2enlargement[MAX_TILES];
 #define MM_PLAY_SUMMON_SOUND            0x10000000UL
 #define MM_ANIMATION_WAIT_UNTIL_END     0x20000000UL
 #define MM_FACING_LEFT                  0x40000000UL
-#define MM_FACING_RIGHT                  0x80000000UL
+#define MM_FACING_RIGHT                 0x80000000UL
 
+#define GOODPOS_IGNOREYOU               0x80000000UL
 
 /* flags for make_corpse() and mkcorpstat() */
 #define CORPSTAT_NONE 0x00

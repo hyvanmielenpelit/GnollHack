@@ -28,7 +28,7 @@
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" TextColor="{Binding IsLast, Converter={StaticResource ColorConverter}}" 
                                    Text="{Binding Text}"
-                                   FontFamily="Diablo" />
+                                   FontFamily="Underwood" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
@@ -54,16 +54,16 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button Text="," x:Name="PickupButton" Clicked="PickupButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="0" />
-                <Button Text=":" x:Name="LookHereButton" Clicked="LookHereButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="1" />
-                <Button Text="." x:Name="WaitButton" Clicked="WaitButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="2" />
-                <Button Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="3" />
-                <Button Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="4" />
-                <Button Text="i" x:Name="InventoryButton" Clicked="InventoryButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="0" />
-                <Button Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="1" />
-                <Button Text="f" x:Name="FireButton" Clicked="FireButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="2" />
-                <Button Text="Z" x:Name="CastButton" Clicked="CastButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="3" />
-                <Button Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="4" />
+                <Button Text="," x:Name="PickupButton" Clicked="PickupButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="0" />
+                <Button Text=":" x:Name="LookHereButton" Clicked="LookHereButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="1" />
+                <Button Text="." x:Name="WaitButton" Clicked="WaitButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="2" />
+                <Button Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="3" />
+                <Button Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="4" />
+                <Button Text="i" x:Name="InventoryButton" Clicked="InventoryButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="0" />
+                <Button Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="1" />
+                <Button Text="f" x:Name="FireButton" Clicked="FireButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="2" />
+                <Button Text="Z" x:Name="CastButton" Clicked="CastButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="3" />
+                <Button Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="4" />
 
                 <Label Text="Pick Up" Grid.Row="0" Grid.Column="0" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
                 <Label Text="Look Here" Grid.Row="0" Grid.Column="1" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />

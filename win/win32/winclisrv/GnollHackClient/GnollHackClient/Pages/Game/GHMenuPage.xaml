@@ -47,11 +47,12 @@
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
                                                 <Picker x:Name="CountPicker"
-                                                        VerticalOptions="CenterAndExpand"
+                                                        VerticalOptions="Center"
                                                         VerticalTextAlignment="Center"
                                                         HorizontalOptions="CenterAndExpand"
                                                         HorizontalTextAlignment="Center"
                                                         FontFamily="Underwood"
+                                                        FontSize="14"
                                                         WidthRequest="70"
                                                         SelectedIndex="{Binding ConvertedCount}"
                                                         TextColor="White"
@@ -63,7 +64,9 @@
                                                         />
                                                 <Button Text="&#x221E;" FontFamily="DejaVuSansMono" TextColor="White" BackgroundColor="DarkBlue"
                                                         VerticalOptions="CenterAndExpand"
-                                                        Margin="0,2,0,2"
+                                                        CornerRadius="10"
+                                                        Margin="0,1,0,1"
+                                                        FontSize="14"
                                                         WidthRequest="40"
                                                         Clicked="Button_Clicked" Grid.Column="1"/>
                                             </Grid>
@@ -83,10 +86,15 @@
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
-                                                <Entry Text="{Binding EntryString}" TextColor="{Binding EntryTextColor}" FontFamily="Underwood" BackgroundColor="#303030" Margin="2,2,2,2" PlaceholderColor="Gray" Placeholder="Count" Keyboard="Numeric" WidthRequest="80" ></Entry>
-                                                <Button x:Name="CountOKButton" Text="OK" PropertyChanged="CountOKButton_PropertyChanged" FontFamily="DejaVuSansMono" FontSize="Small" TextColor="White" BackgroundColor="DarkBlue"
+                                                <Entry Text="{Binding EntryString}"
+                                                       TextColor="{Binding EntryTextColor}" 
+                                                       FontFamily="Underwood"
+                                                       BackgroundColor="#303030"
+                                                       Margin="1,1,1,1" FontSize="14" PlaceholderColor="Gray" Placeholder="Count" Keyboard="Numeric" WidthRequest="80" ></Entry>
+                                                <Button x:Name="CountOKButton" Text="OK" PropertyChanged="CountOKButton_PropertyChanged" FontFamily="DejaVuSansMono" FontSize="14" TextColor="White" BackgroundColor="DarkBlue"
                                                         VerticalOptions="CenterAndExpand"
-                                                        Margin="0,2,0,2"
+                                                        CornerRadius="10"
+                                                        Margin="0,1,0,1"
                                                         WidthRequest="50"
                                                         Clicked="CountOKButton_Clicked" Grid.Column="1"/>
                                             </Grid>

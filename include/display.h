@@ -151,17 +151,17 @@
  */
 #define is_safepet(mon)    \
     (mon && is_tame(mon) && canspotmon(mon) && flags.safe_dog && !Confusion \
-     && !Hallucination && !Stunned && goodpos(u.ux, u.uy, mon, 0UL))
+     && !Hallucination && !Stunned && goodpos(u.ux, u.uy, mon, GOODPOS_IGNOREYOU))
 
 #define is_special_peaceful(mon) \
     ((mon)->isshk || (mon)->ispriest || (mon)->isnpc || (mon)->issmith || (mon)->isgd || ((mon)->data->geno & G_UNIQ) || (mon)->mnum == urole.ldrnum)
 
 #define is_displaceable_peaceful(mon)    \
-     (mon && flags.displace_peaceful && is_peaceful(mon) && !is_special_peaceful(mon) && mon_can_move(mon) && !is_confused(mon) && !is_hallucinating(mon) && !is_stunned(mon) && goodpos(u.ux, u.uy, mon, 0UL) \
+     (mon && flags.displace_peaceful && is_peaceful(mon) && !is_special_peaceful(mon) && mon_can_move(mon) && !is_confused(mon) && !is_hallucinating(mon) && !is_stunned(mon) && goodpos(u.ux, u.uy, mon, GOODPOS_IGNOREYOU) \
       && canspotmon(mon) && !Confusion && !Hallucination && !Stunned)
 
 #define is_stopping_peaceful(mon) \
-    (mon && flags.displace_peaceful && is_peaceful(mon) && (is_special_peaceful(mon) || !mon_can_move(mon) || is_confused(mon) || is_hallucinating(mon) || is_stunned(mon) || !goodpos(u.ux, u.uy, mon, 0UL))  \
+    (mon && flags.displace_peaceful && is_peaceful(mon) && (is_special_peaceful(mon) || !mon_can_move(mon) || is_confused(mon) || is_hallucinating(mon) || is_stunned(mon) || !goodpos(u.ux, u.uy, mon, GOODPOS_IGNOREYOU))  \
       && canspotmon(mon) && !Confusion && !Hallucination && !Stunned)
 
  /*
