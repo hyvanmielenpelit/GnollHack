@@ -925,7 +925,7 @@ int show_weights;
                 if (sorted && !printed_type_name) {
                     any = zeroany;
                     add_extended_menu(win, NO_GLYPH, &any, 
-                        menu_group_heading_info(*pack > ILLOBJ_CLASS && *pack < MAX_OBJECT_CLASSES ? def_oc_syms[*pack].sym : '\0'), 
+                        menu_group_heading_info(*pack > ILLOBJ_CLASS && *pack < MAX_OBJECT_CLASSES ? def_oc_syms[(int)*pack].sym : '\0'), 
                         0, 0, iflags.menu_headings,
                              let_to_name(*pack, FALSE,
                                          ((how != PICK_NONE)

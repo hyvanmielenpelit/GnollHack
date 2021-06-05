@@ -3859,8 +3859,9 @@ ddoinv()
     //(void) display_inventory((char *) 0, FALSE, 1);
 
     char invlet;
+    long cnt = 0;
 
-    invlet = display_inventory_with_header((const char*)0, TRUE, 1);
+    invlet = display_inventory_with_header((const char*)0, TRUE, &cnt, 1);
     if (!invlet || invlet == '\033' || invlet == '\0')
         return 0;
 
@@ -4059,9 +4060,15 @@ ddoinv()
 
         int res = 0;
         int selected_action = cmd_idx - 1;
-        if (extcmdlist[selected_action].ef_funct)
+        if (extcmdlist[selected_action].ef_funct && cnt != 0)
         {
-            getobj_autoselect_obj = otmp;
+            if(cnt <= -1 || cnt >= otmp->quan)
+                getobj_autoselect_obj = otmp;
+            else
+            {
+                struct obj* otmpsplit = splitobj(otmp, cnt);
+                getobj_autoselect_obj = otmpsplit;
+            }
             res = (extcmdlist[selected_action].ef_funct)();
             getobj_autoselect_obj = (struct obj*)0;
         }
@@ -4662,13 +4669,14 @@ int show_weights;
 }
 
 char
-display_inventory_with_header(lets, want_reply, show_weights)
+display_inventory_with_header(lets, want_reply, out_cnt, show_weights)
 const char* lets;
 boolean want_reply;
+long* out_cnt;
 int show_weights;
 {
     return display_pickinv(lets, (char*)0, (char*)0,
-        want_reply, (long*)0, show_weights, "", TRUE);
+        want_reply, out_cnt, show_weights, "", TRUE);
 }
 
 /*

@@ -54,7 +54,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void AddMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)]  string text, byte presel, int color);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void AddExtendedMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)] string text, byte presel, int color,
+    public delegate void AddExtendedMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)] string text, byte presel, int color, int maxcount,
         UInt64 oid, UInt64 mid, char heading_groupaccel, UInt32 menuflags);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]

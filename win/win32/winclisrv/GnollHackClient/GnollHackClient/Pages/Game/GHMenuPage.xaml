@@ -12,6 +12,14 @@
             <local:FontSizeConverter x:Key="FontSizeConverter" />
             <local:FontColorConverter x:Key="FontColorConverter" />
             <local:PaddingConverter x:Key="PaddingConverter" />
+            <local:MaxCountConverter x:Key="MaxCountConverter" />
+            <local:ItemSourceConverter x:Key="ItemSourceConverter" />
+            <local:EnableCountConverter x:Key="EnableCountConverter" />
+            <local:EnablePickerConverter x:Key="EnablePickerConverter" />
+            <local:EnableSliderConverter x:Key="EnableSliderConverter" />
+            <local:CountLabelVisibilityConverter x:Key="CountLabelVisibilityConverter" />
+            <local:ColumnSpanConverter x:Key="ColumnSpanConverter" />
+            <local:DisplayLabelTextConverter x:Key="DisplayLabelTextConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -27,30 +35,106 @@
             <CollectionView x:Name="MenuView" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged"  >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="{Binding MenuFlags, Converter={StaticResource PaddingConverter}}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <SwipeView HorizontalOptions="FillAndExpand" IsEnabled="{Binding MaxCount, Converter={StaticResource EnableCountConverter}}">
+                            <SwipeView.LeftItems>
+                                <SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
+                                    <SwipeItemView>
+                                        <StackLayout Margin="0" WidthRequest="120" VerticalOptions="FillAndExpand" >
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <Picker IsVisible="{Binding MaxCount, Converter={StaticResource EnablePickerConverter}}"
+                                                        VerticalOptions="CenterAndExpand"
+                                                        VerticalTextAlignment="Center"
+                                                        HorizontalOptions="CenterAndExpand"
+                                                        HorizontalTextAlignment="Center"
+                                                        FontFamily="Underwood"
+                                                        WidthRequest="70"
+                                                        TextColor="White"
+                                                        BackgroundColor="#606060"
+                                                        TitleColor="Gray"
+                                                        Title="Count"
+                                                        ItemsSource="{Binding MaxCount, Converter={StaticResource ItemSourceConverter}}"
+                                                        SelectedIndex="{Binding ConvertedCount, Mode=TwoWay }"
+                                                        SelectedIndexChanged="Picker_SelectedIndexChanged"
+                                                        ItemDisplayBinding="{Binding Name}"
+                                                        />
+                                                <Button Text="&#x221E;" FontFamily="DejaVuSansMono" TextColor="White" BackgroundColor="DarkBlue"
+                                                        VerticalOptions="CenterAndExpand"
+                                                        Margin="0,2,0,2"
+                                                        WidthRequest="40"
+                                                        IsVisible="{Binding MaxCount, Converter={StaticResource EnablePickerConverter}}"
+                                                        Clicked="Button_Clicked" Grid.Column="1"/>
+                                                <Slider x:Name="countSlider" 
+                                                        Maximum="{Binding MaxCount, Converter={StaticResource MaxCountConverter}}" 
+                                                        IsVisible="{Binding MaxCount, Converter={StaticResource EnableSliderConverter}}"
+                                                        Value="{Binding ConvertedCount, Mode=TwoWay}"
+                                                        WidthRequest="110"
+                                                        VerticalOptions="Start"
+                                                        Scale="2"
+                                                        HorizontalOptions="CenterAndExpand"
+                                                        ValueChanged="Slider_ValueChanged"
+                                                        Grid.ColumnSpan="2"/>
+                                                <Label x:Name="displayLabel"
+                                                       IsVisible="{Binding MaxCount, Converter={StaticResource EnableSliderConverter}}"
+                                                       FontFamily="Lato-Regular"
+                                                       FontSize="Small"
+                                                       Text="{Binding LabelString}"
+                                                       HorizontalOptions="CenterAndExpand"
+                                                       VerticalOptions="End" Grid.ColumnSpan="2"
+                                                       />
+                                            </Grid>
+                                        </StackLayout>
+                                    </SwipeItemView>
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+                            <Grid HorizontalOptions="FillAndExpand" Padding="{Binding MenuFlags, Converter={StaticResource PaddingConverter}}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="60" />
+                                </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
+                                <Label Grid.Column="0" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
                                    Text="{Binding Accelerator}"
                                    FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
                                    FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">
-                            </Label>
+                                </Label>
 
-                            <!-- SKCanvas in column 1? -->
+                                <!-- SKCanvas in column 1? -->
 
-                            <Label Grid.Column="2" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
-                                   Text="{Binding Text}"
-                                   FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
-                                   FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">
-                            </Label>
-                        </Grid>
+                                <Label Grid.Column="2" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
+                                       Text="{Binding Text}"
+                                       HorizontalOptions="StartAndExpand"
+                                       FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
+                                       FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}"
+                                       Grid.ColumnSpan="{Binding IsLabelVisible, Converter={StaticResource ColumnSpanConverter}}" />
+                                <!--{Binding IsLabelVisible, Converter={StaticResource ColumnSpanConverter}}"-->
+
+                                <Label x:Name="CountLabel"
+                                       Grid.Column="3"
+                                       HorizontalOptions="EndAndExpand"
+                                       HorizontalTextAlignment="End"
+                                       VerticalTextAlignment="Center"
+                                       TextColor="Red"
+                                       Text="{Binding LabelString}"
+                                       FontFamily="Lato-Regular" 
+                                       FontSize="Medium"
+                                       IsVisible="{Binding IsLabelVisible}"
+                                       />
+                                <!--"{Binding IsLabelVisible}"-->
+
+                            </Grid>
+                        </SwipeView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

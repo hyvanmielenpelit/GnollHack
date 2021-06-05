@@ -1514,10 +1514,10 @@ const char *s2;
     for (;; s1++, s2++) {
         u1 = (uchar) *s1;
         if (isupper(u1))
-            u1 = tolower(u1);
+            u1 = (uchar)tolower(u1);
         u2 = (uchar) *s2;
         if (isupper(u2))
-            u2 = tolower(u2);
+            u2 = (uchar)tolower(u2);
         if (u1 == '\0' || u1 != u2)
             break;
     }

@@ -1179,7 +1179,8 @@ dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct exte
 #endif
 
     dll_callbacks.callback_add_extended_menu(wid, glyph, identifier, accelerator, group_accel, attr,
-        str, presel, color, info.object ? info.object->o_id : 0, info.monster ? info.monster->m_id : 0, info.heading_for_group_accelerator, info.menu_flags);
+        str, presel, color, info.object ? info.object->quan : 0, info.object ? info.object->o_id : 0, 
+        info.monster ? info.monster->m_id : 0, info.heading_for_group_accelerator, info.menu_flags);
 }
 
 void

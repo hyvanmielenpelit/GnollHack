@@ -147,7 +147,7 @@ struct extended_menu_info {
 #define MENU_FLAGS_IS_HEADING                   0x00000001
 #define MENU_FLAGS_IS_GROUP_HEADING             0x00000002
 #define MENU_FLAGS_MONOSPACE_FONT_REQUESTED     0x00000004
-#define MENU_FLAGS_NARROW_FONT_REQUESTED        0x00000008
+#define MENU_FLAGS_COUNT_DISALLOWED             0x00000008
 
 enum obj_material_types {
     MAT_NONE = 0,

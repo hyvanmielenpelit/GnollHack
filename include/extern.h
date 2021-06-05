@@ -1329,7 +1329,7 @@ E char *FDECL(xprname,
               (struct obj *, const char *, CHAR_P, BOOLEAN_P, long, long));
 E int NDECL(ddoinv);
 E char FDECL(display_inventory, (const char *, BOOLEAN_P, int));
-E char FDECL(display_inventory_with_header, (const char*, BOOLEAN_P, int));
+E char FDECL(display_inventory_with_header, (const char*, BOOLEAN_P, long*, int));
 E int FDECL(display_binventory, (int, int, BOOLEAN_P));
 E struct obj *FDECL(display_cinventory, (struct obj *));
 E struct obj *FDECL(display_minventory, (struct monst *, int, char *));

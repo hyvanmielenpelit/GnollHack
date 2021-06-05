@@ -89,7 +89,7 @@ const struct class_sym def_monsyms[MAX_MONSTER_CLASSES] = {
     { DEF_LIGHT, "lights", "light" },
     { DEF_LESSER_UNDEAD, "zombies, skeletons, and other lesser undead", "zombie, skeleton, or other lesser undead" },
     { DEF_ANGEL, "angelic beings", "angelic being" },
-    { DEF_BAT, "bats and bírds", "bat or bird" },
+    { DEF_BAT, "bats and birds", "bat or bird" },
     { DEF_CENTAUR, "centaurs", "centaur" },
     { DEF_DRAGON, "dragons", "dragon" },
     { DEF_ELEMENTAL, "elementals", "elemental" },

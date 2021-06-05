@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -27,6 +27,8 @@ namespace GnollHackClient.Pages.Game
         public SelectionMode SelectionHow { get { return MenuView.SelectionMode; } set { MenuView.SelectionMode = value; } }
 
         private bool _responseSent = false;
+        private bool unselect_on_tap = false;
+
         public GHMenuPage(GamePage gamepage, GHWindow ghwindow)
         {
             InitializeComponent();
@@ -55,9 +57,14 @@ namespace GnollHackClient.Pages.Game
             {
                 foreach (GHMenuItem mi in MenuView.SelectedItems)
                 {
-                    resultlist.Add(mi);
-                    mi.Count = -1;
-                    mi.Selected = true;
+                    if(!mi.CountSet)
+                        mi.Count = -1;
+
+                    if((mi.Count > 0 &&  mi.MaxCount > 0) || mi.MaxCount == 0)
+                    {
+                        resultlist.Add(mi);
+                        mi.Selected = true;
+                    }
                 }
             }
             else if(MenuView.SelectionMode == SelectionMode.Single)
@@ -65,9 +72,14 @@ namespace GnollHackClient.Pages.Game
                 if(MenuView.SelectedItem != null)
                 {
                     GHMenuItem mi = (GHMenuItem)MenuView.SelectedItem;
-                    mi.Count = -1;
-                    mi.Selected = true;
-                    resultlist.Add(mi);
+                    if (!mi.CountSet)
+                        mi.Count = -1;
+
+                    if ((mi.Count > 0 && mi.MaxCount > 0) || mi.MaxCount == 0)
+                    {
+                        mi.Selected = true;
+                        resultlist.Add(mi);
+                    }
                 }
             }
 
@@ -147,21 +159,236 @@ namespace GnollHackClient.Pages.Game
                 {
                     if(o.Identifier != 0)
                     {
-                        if (!MenuView.SelectedItems.Contains(o))
+                        if(!unselect_on_tap)
                         {
-                            MenuView.SelectedItems.Add(o);
+                            if (!MenuView.SelectedItems.Contains(o))
+                            {
+                                MenuView.SelectedItems.Add(o);
+                            }
                         }
                         else
                         {
-                            MenuView.SelectedItems.Remove(o);
+                            if (MenuView.SelectedItems.Contains(o))
+                            {
+                                MenuView.SelectedItems.Remove(o);
+                            }
                         }
                     }
                 }
+                unselect_on_tap = !unselect_on_tap;
+            }
+        }
+
+        private void Slider_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            Slider s = (Slider)sender;
+            var newVal = Math.Round(e.NewValue);
+            s.Value = newVal;
+
+            var menuitem = s.BindingContext as GHMenuItem;
+            if(menuitem != null)
+            {
+                //menuitem.CountSet = true;
+                //menuitem.Count = newVal > menuitem.MaxCount ? -1 : (int)newVal;
+                //menuitem.SelectedPickerIndex = menuitem.Count;
+                //menuitem.SelectedSliderValue = menuitem.Count;
+
+                if (menuitem.Count != 0)
+                {
+                    if (MenuView.SelectionMode == SelectionMode.Single && MenuView.SelectedItem != menuitem)
+                        MenuView.SelectedItem = menuitem;
+                    else if (MenuView.SelectionMode == SelectionMode.Multiple && !MenuView.SelectedItems.Contains(menuitem))
+                        MenuView.SelectedItems.Add(menuitem);
+                }
+                else
+                {
+                    if (MenuView.SelectionMode == SelectionMode.Single && MenuView.SelectedItem == menuitem)
+                        MenuView.SelectedItem = null;
+                    else if (MenuView.SelectionMode == SelectionMode.Multiple && MenuView.SelectedItems.Contains(menuitem))
+                        MenuView.SelectedItems.Remove(menuitem);
+                }
+            }
+        }
+
+        private void Picker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Picker p = (Picker)sender;
+            var menuitem = p.BindingContext as GHMenuItem;
+            if(menuitem != null && p.SelectedItem != null)
+            {
+                /*
+                menuitem.CountSet = true;
+                menuitem.Count = ((GHNumberPickItem)p.SelectedItem).Number;
+                if(menuitem.Count == -1)
+                {
+                    menuitem.SelectedPickerIndex = menuitem.MaxCount + 1;
+                    menuitem.SelectedSliderValue = menuitem.MaxCount + 1;
+                }
+                else 
+                {
+                    menuitem.SelectedPickerIndex = menuitem.Count;
+                    menuitem.SelectedSliderValue = menuitem.Count;
+                }
+                */
+                if(menuitem.Count != 0)
+                {
+                    if (MenuView.SelectionMode == SelectionMode.Single && MenuView.SelectedItem != menuitem)
+                        MenuView.SelectedItem = menuitem;
+                    else if (MenuView.SelectionMode == SelectionMode.Multiple && !MenuView.SelectedItems.Contains(menuitem))
+                        MenuView.SelectedItems.Add(menuitem);
+                }
+                else
+                {
+                    if (MenuView.SelectionMode == SelectionMode.Single && MenuView.SelectedItem == menuitem)
+                        MenuView.SelectedItem = null;
+                    else if (MenuView.SelectionMode == SelectionMode.Multiple && MenuView.SelectedItems.Contains(menuitem))
+                        MenuView.SelectedItems.Remove(menuitem);
+                }
+
+            }
+        }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            var menuitem = ((Button)sender).BindingContext as GHMenuItem;
+            if(menuitem != null)
+            {
+//                menuitem.CountSet = true;
+                menuitem.Count = -1;
+//                menuitem.SelectedPickerIndex = menuitem.MaxCount + 1;
+//                menuitem.SelectedSliderValue = menuitem.MaxCount + 1;
+                if (MenuView.SelectionMode == SelectionMode.Single && MenuView.SelectedItem != menuitem)
+                    MenuView.SelectedItem = menuitem;
+                else if (MenuView.SelectionMode == SelectionMode.Multiple && !MenuView.SelectedItems.Contains(menuitem))
+                    MenuView.SelectedItems.Add(menuitem);
             }
         }
     }
 
 
+    public class DisplayLabelTextConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            string str = "";
+            if((double)values[0] + 1 >= (double)values[1])
+                str = "All";
+            else
+                str = String.Format("{0}", values[1]);
+
+            return str;
+        }
+
+        public object[] ConvertBack(object values, Type[] targetType, object parameter, CultureInfo culture)
+        {
+            object[] res = new object[2];
+            return res;
+        }
+    }
+    public class CountLabelVisibilityConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)((int)values[0] > 0 && (int)values[1] > 0);
+        }
+
+        public object[] ConvertBack(object values, Type[] targetType, object parameter, CultureInfo culture)
+        {
+            return new object[2];
+        }
+    }
+    public class ColumnSpanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (int)((bool)value ? 1 : 2);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (int)((bool)value ? 1 : 2);
+        }
+    }
+
+    public class MaxCountConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (int)value + 1;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (int)value + 1;
+        }
+    }
+
+    public class EnableCountConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)((int)value > 0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)((int)value > 0);
+        }
+    }
+    public class EnablePickerConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)((int)value > 0 && (int)value <= 100);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)((int)value > 0 && (int)value <= 100);
+        }
+    }
+    public class EnableSliderConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)((int)value > 100);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)((int)value > 100);
+        }
+    }
+    public class ItemSourceConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            List<GHNumberPickItem> list = new List<GHNumberPickItem>();
+            for(int i = 0; i <= (int)value; i++)
+            {
+                list.Add(new GHNumberPickItem(i));
+            }
+
+            if ((int)value > 0)
+                list.Add(new GHNumberPickItem(-1, "All"));
+
+            return list;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            List<GHNumberPickItem> list = new List<GHNumberPickItem>();
+            for (int i = 0; i < (int)value; i++)
+            {
+                list.Add(new GHNumberPickItem(i));
+            }
+
+            if((int)value > 0)
+                list.Add(new GHNumberPickItem(-1, "All"));
+
+            return list;
+        }
+    }
 
     public class FontConverter : IValueConverter
     {

@@ -64,7 +64,7 @@ typedef VoidIntIntConstCharCallback PutMixedCallback;
 typedef VoidConstCharBooleanCallback DisplayFileCallback;
 typedef VoidIntCallback StartMenuCallback;
 typedef void(__callconv* AddMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, const char*, UCHAR_P, int);
-typedef void(__callconv* AddExtendedMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, const char*, UCHAR_P, int,
+typedef void(__callconv* AddExtendedMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, const char*, UCHAR_P, int, int,
     unsigned long long, unsigned long long, CHAR_P, unsigned long);
 typedef VoidIntConstCharCallback EndMenuCallback;
 typedef int(__callconv* SelectMenuCallback)(int, int, long long**, int*);

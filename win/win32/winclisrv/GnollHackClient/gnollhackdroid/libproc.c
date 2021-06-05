@@ -215,7 +215,7 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct
 #ifdef TEXTCOLOR
     get_menu_coloring(str, &color, &attr);
 #endif
-    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str, presel, color,
+    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str, presel, color, (info.object && !(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? info.object->quan : 0),
         (unsigned long long)(info.object ? info.object->o_id : 0), (unsigned long long)(info.monster ? info.monster->m_id : 0), info.heading_for_group_accelerator, info.menu_flags);
 }
 
