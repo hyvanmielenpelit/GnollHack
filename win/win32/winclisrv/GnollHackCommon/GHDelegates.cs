@@ -75,7 +75,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int IntIntIntOutIntCallback(int value1, int value2, /* [Out, MarshalAs(UnmanagedType.LPArray)] out int[] */ out IntPtr value3, out int value4);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate int IntIntPtrIntPtrIntPtrCallback(ref int value1, ref int value2, ref int value3);
+    public delegate int NhPosKeyCallback(out int x, out int y, out int mod);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidIntIntPtrIntIntIntUlongPtrCallback(int value1, ref int value2, int value3, int value4, int value5, ref UInt32 value6);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]

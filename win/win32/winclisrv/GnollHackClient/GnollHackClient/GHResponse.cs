@@ -12,7 +12,9 @@ namespace GnollHackClient
         public List<GHMenuItem> SelectedMenuItems { get; set; }
         public ClientGame RequestingClientGame { get; }
         public GHWindow RequestingGHWindow { get; }
-
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Mod { get; set; }
         public GHResponse()
         {
 
@@ -42,6 +44,14 @@ namespace GnollHackClient
             RequestType = requesttype;
             RequestingGHWindow = window;
             SelectedMenuItems = responselist;
+        }
+        public GHResponse(ClientGame clientgame, GHRequestType requesttype, int x, int y, int mod)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            X = x;
+            Y = y;
+            Mod = mod;
         }
     }
 }

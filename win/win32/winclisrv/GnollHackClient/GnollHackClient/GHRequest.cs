@@ -8,6 +8,8 @@ namespace GnollHackClient
     {
         None,
         GetChar,
+        Location,
+        PosKey,
         GetLine,
         PrintTopLine,
         PrintHistory,

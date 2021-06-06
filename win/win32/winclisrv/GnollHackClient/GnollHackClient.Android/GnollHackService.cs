@@ -62,7 +62,7 @@ namespace GnollHackClient.Droid
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
             IntVoidCallback callback_nhgetch,
-            IntIntPtrIntPtrIntPtrCallback callback_nh_poskey,
+            NhPosKeyCallback callback_nh_poskey,
             VoidVoidCallback callback_nhbell,
             IntVoidCallback callback_doprev_message,
             IntConstCharPtrConstCharPtrCharPtrCallback callback_yn_function,

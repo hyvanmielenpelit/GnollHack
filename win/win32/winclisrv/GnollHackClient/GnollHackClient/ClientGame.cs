@@ -25,6 +25,12 @@ namespace GnollHackClient
         private object _characterNameLock = new object();
         private GamePage _gamePage;
         private object _gamePageLock = new object();
+
+        private bool _touchLocSet = false;
+        private int _touchLocX;
+        private int _touchLocY;
+        private int _touchLocMod;
+
         private int _lastWindowHandle = 0;
         private GHWindow[] _ghWindows = new GHWindow[GHConstants.MaxGHWindows];
         private object _ghWindowsLock = new object();
@@ -81,6 +87,12 @@ namespace GnollHackClient
                             if(_inputBufferLocation >= GHConstants.InputBufferLength)
                                 _inputBufferLocation = GHConstants.InputBufferLength -1;
                             _inputBuffer[_inputBufferLocation] = response.ResponseIntValue;
+                            break;
+                        case GHRequestType.Location:
+                            _touchLocX = response.X;
+                            _touchLocY = response.Y;
+                            _touchLocMod = response.Mod;
+                            _touchLocSet = true;
                             break;
                         case GHRequestType.GetLine:
                             _getLineString = response.ResponseStringValue;
@@ -289,11 +301,47 @@ namespace GnollHackClient
                 return 0;
 
         }
-        public int ClientCallback_nh_poskey(ref int value1, ref int value2, ref int value3)
+        public int ClientCallback_nh_poskey(out int x, out int y, out int mod)
         {
             Debug.WriteLine("ClientCallback_nh_poskey");
 
-            return ClientCallback_nhgetch();
+            x = 0;
+            y = 0;
+            mod = 0;
+
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                queue.Enqueue(new GHRequest(this, GHRequestType.PosKey));
+                while (_inputBufferLocation < 0)
+                {
+                    if(_touchLocSet)
+                    {
+                        _touchLocSet = false;
+                        x = _touchLocX;
+                        y = _touchLocY;
+                        mod = _touchLocMod;
+                        return 0;
+                    }
+                    Thread.Sleep(GHConstants.PollingInterval);
+                    pollResponseQueue();
+                }
+                int res = 0;
+                if (_inputBufferLocation >= 0)
+                {
+                    res = _inputBuffer[0];
+                    for (int i = 1; i <= _inputBufferLocation; i++)
+                    {
+                        _inputBuffer[i - 1] = _inputBuffer[i];
+                    }
+                    _inputBuffer[_inputBufferLocation] = 0;
+                    _inputBufferLocation--;
+                }
+                return res;
+            }
+            else
+                return 0;
+
         }
         public int ClientCallback_yn_question(string question, string responses, string def)
         {

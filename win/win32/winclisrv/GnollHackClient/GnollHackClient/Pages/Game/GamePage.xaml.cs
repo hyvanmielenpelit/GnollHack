@@ -913,34 +913,66 @@ namespace GnollHackClient.Pages.Game
                     case SKTouchAction.Released:
                         if(!_touchMoved)
                         {
-                            int resp = 0;
-                            //string ch = " ";
-                            if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
-                                resp = -7;
-                            else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
-                                resp = -9;
-                            else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
-                                resp = -1;
-                            else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
-                                resp = -3;
-                            else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3)
-                                resp = -8; //ch = "k";
-                            else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7)
-                                resp = -2; // ch = "j";
-                            else if (e.Location.X < canvasView.CanvasSize.Width * 0.3)
-                                resp = -4; // ch = "h";
-                            else if (e.Location.X > canvasView.CanvasSize.Width * 0.7)
-                                resp = -6; // ch = "l";
-                            else
-                                resp = showNumberPad ? -5 : 32;
-
-                            if (showNumberPad)
-                                resp -= 10;
-
-                            ConcurrentQueue<GHResponse> queue;
-                            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                            if(TravelMode)
                             {
-                                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
+                                int x = 0, y = 0, mod = 0;
+                                float canvaswidth = canvasView.CanvasSize.Width;
+                                float canvasheight = canvasView.CanvasSize.Height;
+                                float offsetX = (canvaswidth - _mapWidth) / 2;
+                                float offsetY = (canvasheight - _mapHeight) / 2;
+
+                                if (ClipX > 0 && (_mapWidth > canvaswidth || _mapHeight > canvasheight))
+                                {
+                                    offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * _tileWidth;
+                                    offsetY -= (ClipY - GHConstants.MapRows / 2) * _tileHeight;
+                                }
+                                offsetX += _mapOffsetX;
+                                offsetY += _mapOffsetY;
+                                if(_tileWidth > 0)
+                                    x = (int)((e.Location.X - offsetX) / _tileWidth);
+                                if (_tileHeight > 0)
+                                    y = (int)((e.Location.Y - offsetY) / _tileHeight);
+
+                                if (x > 0 && x < GHConstants.MapCols && y >= 0 && y < GHConstants.MapRows)
+                                {
+                                    ConcurrentQueue<GHResponse> queue;
+                                    if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                                    {
+                                        queue.Enqueue(new GHResponse(_clientGame, GHRequestType.Location, x, y, mod));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                int resp = 0;
+                                //string ch = " ";
+                                if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
+                                    resp = -7;
+                                else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
+                                    resp = -9;
+                                else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
+                                    resp = -1;
+                                else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
+                                    resp = -3;
+                                else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3)
+                                    resp = -8; //ch = "k";
+                                else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7)
+                                    resp = -2; // ch = "j";
+                                else if (e.Location.X < canvasView.CanvasSize.Width * 0.3)
+                                    resp = -4; // ch = "h";
+                                else if (e.Location.X > canvasView.CanvasSize.Width * 0.7)
+                                    resp = -6; // ch = "l";
+                                else
+                                    resp = showNumberPad ? -5 : 32;
+
+                                if (showNumberPad)
+                                    resp -= 10;
+
+                                ConcurrentQueue<GHResponse> queue;
+                                if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                                {
+                                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
+                                }
                             }
                         }
                         if(TouchDictionary.ContainsKey(e.Id))
