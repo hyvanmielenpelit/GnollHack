@@ -42,9 +42,10 @@
                         PaintSurface="canvasView_PaintSurface" 
                         Touch="canvasView_Touch"
                         AbsoluteLayout.LayoutBounds="0.0, 80, 1.0, 0.55"
-                        AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional" />
+                        AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
+            </skia:SKCanvasView>
 
-            
+
             <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.35"
                            AbsoluteLayout.LayoutFlags="All" HeightRequest="160" BackgroundColor="Black">
                 <Grid.RowDefinitions>

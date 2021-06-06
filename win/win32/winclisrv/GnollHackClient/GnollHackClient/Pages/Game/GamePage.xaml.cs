@@ -48,8 +48,10 @@ namespace GnollHackClient.Pages.Game
         private bool showNumberPad { get { return _showNumberPad; } set { NumberPadZeroButton.IsVisible = value; _showNumberPad = value; } }
         private MainPage _mainPage;
 
-        public int ClipX { get; set; }
-        public int ClipY { get; set; }
+        private int _clipX;
+        private int _clipY;
+        public int ClipX { get { return _clipX; } set { _clipX = value; _mapOffsetX = 0 ; } }
+        public int ClipY { get { return _clipY; } set { _clipY = value; _mapOffsetY = 0; } }
         public bool TravelMode { get; set; }
 
         public GamePage(MainPage mainPage)
@@ -522,8 +524,8 @@ namespace GnollHackClient.Pages.Game
                                 canvas.DrawRect(winRect, textPaint);
                                 textPaint.Color = SKColors.Black;
                             }
-                            tx = (offsetX + width * (float)mapx);
-                            ty = (offsetY + height * (float)mapy);
+                            tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                            ty = (offsetY + _mapOffsetY + height * (float)mapy);
                             canvas.DrawText(str, tx, ty, textPaint);
 
                             if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Peaceful) != 0)
@@ -540,8 +542,8 @@ namespace GnollHackClient.Pages.Game
                     int cx = _mapCursorX, cy = _mapCursorY;
                     str = "_";
                     textPaint.Color = SKColors.White;
-                    tx = (offsetX + width * (float)cx);
-                    ty = (offsetY + height * (float)cy);
+                    tx = (offsetX + _mapOffsetX + width * (float)cx);
+                    ty = (offsetY + _mapOffsetY + height * (float)cy);
                     canvas.DrawText(str, tx, ty, textPaint);
                 }
             }
@@ -802,42 +804,86 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private float _touchAnchorX = 0;
+        private float _touchAnchorY = 0;
+        private float _mapOffsetX = 0;
+        private float _mapOffsetY = 0;
+        private bool _touchMoved = false;
+
         private void canvasView_Touch(object sender, SKTouchEventArgs e)
         {
             if (_clientGame != null)
             {
-                if(e?.ActionType == SKTouchAction.Pressed)
+                switch (e?.ActionType)
                 {
-                    int resp = 0;
-                    //string ch = " ";
-                    if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
-                        resp = -7;
-                    else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
-                        resp = -9;
-                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
-                        resp = -1;
-                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
-                        resp = -3;
-                    else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3)
-                        resp = -8; //ch = "k";
-                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7)
-                        resp = -2; // ch = "j";
-                    else if (e.Location.X < canvasView.CanvasSize.Width * 0.3)
-                        resp = -4; // ch = "h";
-                    else if (e.Location.X > canvasView.CanvasSize.Width * 0.7)
-                        resp = -6; // ch = "l";
-                    else
-                        resp = showNumberPad ? -5 : 32;
-
-                    if (showNumberPad)
-                        resp -= 10;
-
-                    ConcurrentQueue<GHResponse> queue;
-                    if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
-                    {
-                        queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
+                    case SKTouchAction.Entered:
+                        break;
+                    case SKTouchAction.Pressed:
+                        _touchAnchorX = e.Location.X;
+                        _touchAnchorY = e.Location.Y;
                         e.Handled = true;
-                    }
+                        break;
+                    case SKTouchAction.Moved:
+                        if(_touchAnchorX > 0 && _touchAnchorY > 0 && TravelMode)
+                        {
+                            float diffX = e.Location.X - _touchAnchorX;
+                            float diffY = e.Location.Y - _touchAnchorY;
+
+                            if(diffX != 0 || diffY != 0)
+                            {
+                                _mapOffsetX += diffX;
+                                _mapOffsetY += diffY;
+                                _touchAnchorX = e.Location.X;
+                                _touchAnchorY = e.Location.Y;
+                                _touchMoved = true;
+                            }
+                        }
+                        e.Handled = true;
+                        break;
+                    case SKTouchAction.Released:
+                        if(!_touchMoved)
+                        {
+                            int resp = 0;
+                            //string ch = " ";
+                            if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
+                                resp = -7;
+                            else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
+                                resp = -9;
+                            else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
+                                resp = -1;
+                            else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
+                                resp = -3;
+                            else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3)
+                                resp = -8; //ch = "k";
+                            else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7)
+                                resp = -2; // ch = "j";
+                            else if (e.Location.X < canvasView.CanvasSize.Width * 0.3)
+                                resp = -4; // ch = "h";
+                            else if (e.Location.X > canvasView.CanvasSize.Width * 0.7)
+                                resp = -6; // ch = "l";
+                            else
+                                resp = showNumberPad ? -5 : 32;
+
+                            if (showNumberPad)
+                                resp -= 10;
+
+                            ConcurrentQueue<GHResponse> queue;
+                            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                            {
+                                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
+                            }
+                        }
+                        _touchMoved = false;
+                        e.Handled = true;
+                        break;
+                    case SKTouchAction.Cancelled:
+                        break;
+                    case SKTouchAction.Exited:
+                        break;
+                    case SKTouchAction.WheelChanged:
+                        break;
+                    default:
+                        break;
                 }
             }
         }
