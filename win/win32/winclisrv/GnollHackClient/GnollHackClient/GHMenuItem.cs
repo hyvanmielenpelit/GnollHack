@@ -31,7 +31,7 @@ namespace GnollHackClient
         }
         public bool IsLabelVisible { get { return (Count > 0 && MaxCount > 0); } }
         public string LabelString { get { return (MaxCount <= 0 ? "N/A" : Count == -1 ? "All" : Count.ToString()); } }
-        public int ConvertedCount { get { return (Count < 0 ? MaxCount + 1 : Count); } set { Count = (value >= MaxCount + 1 ? -1 : value); } }
+        public int ConvertedCount { get { return (Count + 1); } set { Count = value - 1; } }
         public bool IsSwipeVisible { get { return (Count != 0 && MaxCount > 1); } }
         public string EntryString { get; set; }
         public Color EntryTextColor { get; set; }

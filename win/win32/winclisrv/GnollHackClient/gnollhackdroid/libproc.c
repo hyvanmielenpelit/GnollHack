@@ -626,6 +626,8 @@ char convert_gnhch(int ch)
     case -4:
         key = Cmd.move_W;
         break;
+    case -5:
+        key = '5';
     case -6:
         key = Cmd.move_E;
         break;
@@ -638,8 +640,14 @@ char convert_gnhch(int ch)
     case -9:
         key = Cmd.move_NE;
         break;
+    case -10:
+        key = '0';
+        break;
     default:
-        key = ch;
+        if (ch >= -19 && ch <= -10)
+            key = abs(ch) - 10 + '0';
+        else
+            key = ch;
         break;
     }
 

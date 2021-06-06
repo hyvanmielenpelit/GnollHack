@@ -275,7 +275,11 @@ namespace GnollHackClient
                 int res = 0;
                 if (_inputBufferLocation >= 0)
                 {
-                    res = _inputBuffer[_inputBufferLocation];
+                    res = _inputBuffer[0];
+                    for(int i = 1; i <= _inputBufferLocation; i++)
+                    {
+                        _inputBuffer[i - 1] = _inputBuffer[i];
+                    }
                     _inputBuffer[_inputBufferLocation] = 0;
                     _inputBufferLocation--;
                 }

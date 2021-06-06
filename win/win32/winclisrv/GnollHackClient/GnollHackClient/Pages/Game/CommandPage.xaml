@@ -13,6 +13,7 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -51,14 +52,20 @@
                 <Button Text="+" x:Name="SpellsButton" Clicked="SpellsButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="4" Grid.Column="3" />
                 <Button Text="?" x:Name="HelpButton" Clicked="HelpButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="4" Grid.Column="4" />
 
-                <Button Text="/" x:Name="WhatIsButton" Clicked="WhatIsButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="0" />
-                <Button Text=";" x:Name="LookFarButton" Clicked="LookFarButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="1" />
-                <Button Text="_" x:Name="TravelButton" Clicked="TravelButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="2" />
-                <Button Text="#" x:Name="ExtendedCommandButton" Clicked="ExtendedCommandButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="3" />
-                <Button Text="&#x2261;" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="4" />
+                <Button Text="n" x:Name="CountButton" Clicked="CountButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="0" />
+                <Button Text="n20s" x:Name="Search20Button" Clicked="Search20Button_Clicked" FontFamily="Immortal" FontSize="14" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="1" />
+                <Button Text="n200s" x:Name="Search200Button" Clicked="Search200Button_Clicked" FontFamily="Immortal" FontSize="14" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="2" />
+                <Button Text="" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="3" />
+                <Button Text="" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="4" />
 
-                <Label Text="Travel" Grid.Row="5" Grid.Column="2" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
-                <Label Text="Extended" Grid.Row="5" Grid.Column="3" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+                <Button Text="/" x:Name="WhatIsButton" Clicked="WhatIsButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="6" Grid.Column="0" />
+                <Button Text=";" x:Name="LookFarButton" Clicked="LookFarButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="6" Grid.Column="1" />
+                <Button Text="_" x:Name="TravelButton" Clicked="TravelButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="6" Grid.Column="2" />
+                <Button Text="#" x:Name="ExtendedCommandButton" Clicked="ExtendedCommandButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="6" Grid.Column="3" />
+                <Button Text="&#x2261;" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="6" Grid.Column="4" />
+
+                <Label Text="Travel" Grid.Row="6" Grid.Column="2" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
+                <Label Text="Extended" Grid.Row="6" Grid.Column="3" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
             </Grid>
         </StackLayout>
     </ContentPage.Content>

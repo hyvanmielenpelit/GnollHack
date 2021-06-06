@@ -190,5 +190,36 @@ namespace GnollHackClient.Pages.Game
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, 'D');
         }
+
+        private async void CountButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'n');
+            _gamePage.ShowNumberPad();
+        }
+
+        private async void Search20Button_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'n');
+            _gamePage.GenericButton_Clicked(sender, e, -12);
+            _gamePage.GenericButton_Clicked(sender, e, -10);
+            _gamePage.GenericButton_Clicked(sender, e, 's');
+        }
+
+        private async void Search200Button_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'n');
+            _gamePage.GenericButton_Clicked(sender, e, -12);
+            _gamePage.GenericButton_Clicked(sender, e, -10);
+            _gamePage.GenericButton_Clicked(sender, e, -10);
+            _gamePage.GenericButton_Clicked(sender, e, 's');
+        }
+
+        private void ZeroButton_Clicked(object sender, EventArgs e)
+        {
+            _gamePage.GenericButton_Clicked(sender, e, -10);
+        }
     }
 }

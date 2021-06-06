@@ -205,17 +205,36 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private void CountOKButton_Clicked(object sender, EventArgs e)
+        private void SwipeView_SwipeStarted(object sender, SwipeStartedEventArgs e)
         {
-            var menuitem = ((Button)sender).BindingContext as GHMenuItem;
+
+        }
+
+        private void SwipeView_SwipeEnded(object sender, SwipeEndedEventArgs e)
+        {
+
+        }
+
+        private void Entry_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var menuitem = ((Entry)sender).BindingContext as GHMenuItem;
+            if (menuitem != null)
+            {
+                menuitem.EntryTextColor = Color.White;
+            }
+        }
+
+        private void Entry_Completed(object sender, EventArgs e)
+        {
+            var menuitem = ((Entry)sender).BindingContext as GHMenuItem;
             if (menuitem != null)
             {
                 string str = menuitem.EntryString;
                 int value;
                 bool res = int.TryParse(str, out value);
-                if(res)
+                if (res)
                 {
-                    if(value < 0 || value > menuitem.MaxCount)
+                    if (value < 0 || value > menuitem.MaxCount)
                         menuitem.Count = -1;
                     else
                         menuitem.Count = value;
@@ -227,28 +246,6 @@ namespace GnollHackClient.Pages.Game
                     menuitem.EntryTextColor = Color.Red;
                 }
             }
-        }
-
-        private void CountOKButton_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Text")
-            {
-                var menuitem = ((Button)sender).BindingContext as GHMenuItem;
-                if (menuitem != null)
-                {
-                    menuitem.EntryTextColor = Color.White;
-                }
-            }
-        }
-
-        private void SwipeView_SwipeStarted(object sender, SwipeStartedEventArgs e)
-        {
-
-        }
-
-        private void SwipeView_SwipeEnded(object sender, SwipeEndedEventArgs e)
-        {
-
         }
     }
 
@@ -319,12 +316,11 @@ namespace GnollHackClient.Pages.Game
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             List<GHNumberPickItem> list = new List<GHNumberPickItem>();
-            for(int i = 0; i <= (int)value; i++)
+            list.Add(new GHNumberPickItem(-1, "All"));
+            for (int i = 0; i <= (int)value; i++)
             {
                 list.Add(new GHNumberPickItem(i));
             }
-
-            list.Add(new GHNumberPickItem(-1, "All"));
             return list;
         }
 

@@ -44,10 +44,13 @@ namespace GnollHackClient.Pages.Game
         private int _mapCursorY;
         private bool _cursorIsOn;
         private bool _showDirections = false;
+        private bool _showNumberPad = false;
+        private bool showNumberPad { get { return _showNumberPad; } set { NumberPadZeroButton.IsVisible = value; _showNumberPad = value; } }
         private MainPage _mainPage;
 
         public int ClipX { get; set; }
         public int ClipY { get; set; }
+        public bool TravelMode { get; set; }
 
         public GamePage(MainPage mainPage)
         {
@@ -321,10 +324,17 @@ namespace GnollHackClient.Pages.Game
         private void ShowDirections()
         {
             _showDirections = true;
+            showNumberPad = false;
         }
         private void HideDirections()
         {
             _showDirections = false;
+            showNumberPad = false;
+        }
+        public void ShowNumberPad()
+        {
+            if(!_showDirections)
+                showNumberPad = true;
         }
 
         private void PrintHistory(List<GHMsgHistoryItem> msgHistory)
@@ -592,52 +602,84 @@ namespace GnollHackClient.Pages.Game
 
             }
 
-            if(_showDirections)
+            if(_showDirections || showNumberPad)
             {
                 textPaint.Color = new SKColor(255, 255, 255, 128);
                 textPaint.Typeface = App.DejaVuSansMonoTypeface;
-                textPaint.TextSize = 400;
-                for (int i = 0; i < 8;i++)
+                textPaint.TextSize = showNumberPad ? 250 : 400;
+                for (int i = 0; i < 9;i++)
                 {
-                    switch(i)
+                    switch (i)
                     {
                         case 0:
-                            str = "\u2190";
+                            if (_showDirections)
+                                str = "\u2190";
+                            else
+                                str = "4";
                             tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
                             break;
                         case 1:
-                            str = "\u2191";
+                            if (_showDirections)
+                                str = "\u2191";
+                            else
+                                str = "8";
                             tx = canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 2:
-                            str = "\u2192";
+                            if (_showDirections)
+                                str = "\u2192";
+                            else
+                                str = "6";
                             tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
                             break;
                         case 3:
-                            str = "\u2193";
+                            if (_showDirections)
+                                str = "\u2193";
+                            else
+                                str = "2";
                             tx = canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                         case 4:
-                            str = "\u2196";
+                            if (_showDirections)
+                                str = "\u2196";
+                            else
+                                str = "7";
                             tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 5:
-                            str = "\u2197";
+                            if (_showDirections)
+                                str = "";
+                            else
+                                str = "5";
+                            tx = canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
+                            break;
+                        case 6:
+                            if (_showDirections)
+                                str = "\u2197";
+                            else
+                                str = "9";
                             tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
-                        case 6:
-                            str = "\u2198";
+                        case 7:
+                            if (_showDirections)
+                                str = "\u2198";
+                            else
+                                str = "3";
                             tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
-                        case 7:
-                            str = "\u2199";
+                        case 8:
+                            if (_showDirections)
+                                str = "\u2199";
+                            else
+                                str = "1";
                             tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
                             ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
@@ -785,7 +827,10 @@ namespace GnollHackClient.Pages.Game
                     else if (e.Location.X > canvasView.CanvasSize.Width * 0.7)
                         resp = -6; // ch = "l";
                     else
-                        resp = 32;
+                        resp = showNumberPad ? -5 : 32;
+
+                    if (showNumberPad)
+                        resp -= 10;
 
                     ConcurrentQueue<GHResponse> queue;
                     if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
@@ -918,6 +963,9 @@ namespace GnollHackClient.Pages.Game
 
         public void GenericButton_Clicked(object sender, EventArgs e, int resp)
         {
+            if (!((resp >= '0' && resp <= '9') || (resp <= -1 && resp >= -19)))
+                showNumberPad = false;
+
             if (_clientGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
@@ -999,6 +1047,44 @@ namespace GnollHackClient.Pages.Game
             GenericButton_Clicked(sender, e, 'Z');
         }
 
+        private void LootButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'l');
+        }
+
+        private void EatButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'e');
+        }
+
+        private void CountButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'n');
+        }
+
+        private void RunButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'G');
+        }
+
+        private void ESCButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 27);
+        }
+
+        private void ToggleModeButton_Clicked(object sender, EventArgs e)
+        {
+            TravelMode = !TravelMode;
+            if (TravelMode)
+                ToggleModeButton.BackgroundColor = Color.Green;
+            else
+                ToggleModeButton.BackgroundColor = Color.DarkBlue;
+        }
+
+        private void NumberPadZeroButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, -10);
+        }
     }
 
     public class ColorConverter : IValueConverter
