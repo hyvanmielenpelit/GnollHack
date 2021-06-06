@@ -24,6 +24,7 @@ namespace GnollHackClient
                     PropertyChanged(this, new PropertyChangedEventArgs("Count"));
                     PropertyChanged(this, new PropertyChangedEventArgs("ConvertedCount"));
                     PropertyChanged(this, new PropertyChangedEventArgs("IsLabelVisible"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsSwipeVisible"));
                     PropertyChanged(this, new PropertyChangedEventArgs("LabelString"));
                 }
             }
@@ -31,6 +32,7 @@ namespace GnollHackClient
         public bool IsLabelVisible { get { return (Count > 0 && MaxCount > 0); } }
         public string LabelString { get { return (MaxCount <= 0 ? "N/A" : Count == -1 ? "All" : Count.ToString()); } }
         public int ConvertedCount { get { return (Count < 0 ? MaxCount + 1 : Count); } set { Count = (value >= MaxCount + 1 ? -1 : value); } }
+        public bool IsSwipeVisible { get { return (Count != 0 && MaxCount > 1); } }
         public string EntryString { get; set; }
         public Color EntryTextColor { get; set; }
         public int MaxCount { get; set; }

@@ -15,7 +15,7 @@
     
     <ContentPage.Content>
         <AbsoluteLayout x:Name="GameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-            <CollectionView x:Name="MessageHistoryView" BackgroundColor="Black" 
+            <CollectionView x:Name="MessageHistoryView" BackgroundColor="Black" Margin="0,0,0,3"
                             AbsoluteLayout.LayoutBounds="0.0, 5, 1.0, 80" AbsoluteLayout.LayoutFlags="WidthProportional" >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>

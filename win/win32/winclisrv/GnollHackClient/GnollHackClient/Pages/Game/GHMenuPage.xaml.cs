@@ -57,7 +57,7 @@ namespace GnollHackClient.Pages.Game
             {
                 foreach (GHMenuItem mi in MenuView.SelectedItems)
                 {
-                    if((mi.Count > 0 &&  mi.MaxCount > 0) || mi.MaxCount == 0)
+                    if(mi.Count != 0)
                     {
                         resultlist.Add(mi);
                     }
@@ -68,7 +68,7 @@ namespace GnollHackClient.Pages.Game
                 if(MenuView.SelectedItem != null)
                 {
                     GHMenuItem mi = (GHMenuItem)MenuView.SelectedItem;
-                    if ((mi.Count > 0 && mi.MaxCount > 0) || mi.MaxCount == 0)
+                    if (mi.Count != 0)
                     {
                         resultlist.Add(mi);
                     }
@@ -240,6 +240,16 @@ namespace GnollHackClient.Pages.Game
                 }
             }
         }
+
+        private void SwipeView_SwipeStarted(object sender, SwipeStartedEventArgs e)
+        {
+
+        }
+
+        private void SwipeView_SwipeEnded(object sender, SwipeEndedEventArgs e)
+        {
+
+        }
     }
 
     public class ColumnSpanConverter : IValueConverter
@@ -314,22 +324,19 @@ namespace GnollHackClient.Pages.Game
                 list.Add(new GHNumberPickItem(i));
             }
 
-            if ((int)value > 0)
-                list.Add(new GHNumberPickItem(-1, "All"));
-
+            list.Add(new GHNumberPickItem(-1, "All"));
             return list;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             List<GHNumberPickItem> list = new List<GHNumberPickItem>();
-            for (int i = 0; i < (int)value; i++)
+            for (int i = 0; i <= (int)value; i++)
             {
                 list.Add(new GHNumberPickItem(i));
             }
 
-            if((int)value > 0)
-                list.Add(new GHNumberPickItem(-1, "All"));
+            list.Add(new GHNumberPickItem(-1, "All"));
 
             return list;
         }

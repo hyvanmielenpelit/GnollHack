@@ -120,6 +120,7 @@ namespace GnollHackClient
         }
         private async void localButton_Clicked(object sender, EventArgs e)
         {
+            StartLocalGameButton.IsEnabled = false;
             var gamePage = new GamePage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
         }

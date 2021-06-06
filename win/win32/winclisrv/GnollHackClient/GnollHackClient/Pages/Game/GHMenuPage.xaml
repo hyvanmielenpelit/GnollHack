@@ -33,10 +33,10 @@
             <CollectionView x:Name="MenuView" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged"  >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <SwipeView HorizontalOptions="FillAndExpand" IsEnabled="{Binding MaxCount, Converter={StaticResource EnableCountConverter}}">
+                        <SwipeView HorizontalOptions="FillAndExpand" SwipeStarted="SwipeView_SwipeStarted" SwipeEnded="SwipeView_SwipeEnded" IsEnabled="{Binding MaxCount, Converter={StaticResource EnableCountConverter}}">
                             <SwipeView.LeftItems>
                                 <SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
-                                    <SwipeItemView>
+                                    <SwipeItemView IsVisible="{Binding IsSwipeVisible}" >
                                         <StackLayout Margin="0" WidthRequest="120" VerticalOptions="CenterAndExpand" >
                                             <Grid>
                                                 <Grid.RowDefinitions>
@@ -75,8 +75,8 @@
                                 </SwipeItems>
                             </SwipeView.LeftItems>
                             <SwipeView.RightItems>
-                                <SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
-                                    <SwipeItemView>
+                                <SwipeItems SwipeBehaviorOnInvoked="RemainOpen" >
+                                    <SwipeItemView IsVisible="{Binding IsSwipeVisible}">
                                         <StackLayout Margin="0" WidthRequest="140" VerticalOptions="CenterAndExpand" >
                                             <Grid>
                                                 <Grid.RowDefinitions>
