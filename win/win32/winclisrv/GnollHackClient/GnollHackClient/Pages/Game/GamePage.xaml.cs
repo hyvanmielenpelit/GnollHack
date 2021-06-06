@@ -54,6 +54,15 @@ namespace GnollHackClient.Pages.Game
         public int ClipY { get { return _clipY; } set { _clipY = value; _mapOffsetY = 0; } }
         public bool TravelMode { get; set; }
 
+      
+        private float _mapFontSize = 48;
+        private object _mapFontSizeLock = new object();
+        public float MapFontSize { get { lock (_mapFontSizeLock) { return _mapFontSize; } } set { lock (_mapFontSizeLock) { _mapFontSize = value; } } }
+        private float _tileWidth;
+        private float _tileHeight;
+        private float _mapWidth;
+        private float _mapHeight;
+
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
@@ -484,13 +493,18 @@ namespace GnollHackClient.Pages.Game
 
             /* Map */
             textPaint.Typeface = App.DejaVuSansMonoTypeface;
-            textPaint.TextSize = 48;
+            textPaint.TextSize = MapFontSize;
             float canvaswidth = canvasView.CanvasSize.Width;
             float canvasheight = canvasView.CanvasSize.Height;
             float width = textPaint.FontMetrics.AverageCharacterWidth;
             float height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
             float mapwidth = width * (GHConstants.MapCols -1);
             float mapheight = height * (GHConstants.MapRows);
+
+            _tileWidth = width;
+            _tileHeight = height;
+            _mapWidth = mapwidth;
+            _mapHeight = mapheight;
 
             int startX = 1;
             int endX = GHConstants.MapCols - 1;
@@ -804,8 +818,7 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private float _touchAnchorX = 0;
-        private float _touchAnchorY = 0;
+        private Dictionary<long, SKPoint> TouchDictionary = new Dictionary<long, SKPoint>();
         private float _mapOffsetX = 0;
         private float _mapOffsetY = 0;
         private bool _touchMoved = false;
@@ -819,22 +832,79 @@ namespace GnollHackClient.Pages.Game
                     case SKTouchAction.Entered:
                         break;
                     case SKTouchAction.Pressed:
-                        _touchAnchorX = e.Location.X;
-                        _touchAnchorY = e.Location.Y;
+                        if (TouchDictionary.ContainsKey(e.Id))
+                            TouchDictionary[e.Id] = e.Location;
+                        else
+                            TouchDictionary.Add(e.Id, e.Location);
+                        
+                        if (TouchDictionary.Count > 1)
+                            _touchMoved = true;
+
                         e.Handled = true;
                         break;
                     case SKTouchAction.Moved:
-                        if(_touchAnchorX > 0 && _touchAnchorY > 0 && TravelMode)
+                        SKPoint anchor;
+                        bool res = TouchDictionary.TryGetValue(e.Id, out anchor);
+                        if(res)
                         {
-                            float diffX = e.Location.X - _touchAnchorX;
-                            float diffY = e.Location.Y - _touchAnchorY;
+                            float diffX = e.Location.X - anchor.X;
+                            float diffY = e.Location.Y - anchor.Y;
 
-                            if(diffX != 0 || diffY != 0)
+                            if(TouchDictionary.Count == 1 && TravelMode)
                             {
-                                _mapOffsetX += diffX;
-                                _mapOffsetY += diffY;
-                                _touchAnchorX = e.Location.X;
-                                _touchAnchorY = e.Location.Y;
+                                /* Just one finger => Move the map */
+                                if (diffX != 0 || diffY != 0)
+                                {
+                                    _mapOffsetX += diffX;
+                                    _mapOffsetY += diffY;
+                                    if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
+                                    {
+                                        _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
+                                    }
+                                    if (_mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * _mapHeight)
+                                    {
+                                        _mapOffsetY = 10 * _mapHeight * Math.Sign(_mapOffsetY);
+                                    }
+                                    TouchDictionary[e.Id] = e.Location;
+                                    _touchMoved = true;
+                                }
+                            }
+                            else if (TouchDictionary.Count == 2)
+                            {
+                                SKPoint prevloc = TouchDictionary[e.Id];
+                                SKPoint curloc = e.Location;
+                                SKPoint otherloc;
+
+                                Dictionary<long, SKPoint>.KeyCollection keys = TouchDictionary.Keys;
+                                long other_key = 0;
+                                foreach(long key in keys)
+                                {
+                                    if (key != e.Id)
+                                    {
+                                        other_key = key;
+                                        break;
+                                    }
+                                }
+
+                                if(other_key != 0)
+                                {
+                                    otherloc = TouchDictionary[other_key];
+                                    float prevdist = (float)Math.Sqrt((Math.Pow((double)otherloc.X - (double)prevloc.X, 2) + Math.Pow((double)otherloc.Y - (double)prevloc.Y, 2)));
+                                    float curdist = (float)Math.Sqrt((Math.Pow((double)otherloc.X - (double)curloc.X, 2) + Math.Pow((double)otherloc.Y - (double)curloc.Y, 2)));
+                                    if(prevdist > 0 && curdist > 0)
+                                    {
+                                        float ratio = curdist / prevdist;
+                                        float curfontsize = MapFontSize;
+                                        float newfontsize = curfontsize * ratio;
+                                        if (newfontsize > 500)
+                                            newfontsize = 500;
+                                        if (newfontsize < 4)
+                                            newfontsize = 4;
+                                        MapFontSize = newfontsize;
+                                    }
+                                }
+
+                                TouchDictionary[e.Id] = e.Location;
                                 _touchMoved = true;
                             }
                         }
@@ -873,7 +943,10 @@ namespace GnollHackClient.Pages.Game
                                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
                             }
                         }
-                        _touchMoved = false;
+                        if(TouchDictionary.ContainsKey(e.Id))
+                            TouchDictionary.Remove(e.Id);
+                        if(TouchDictionary.Count == 0)
+                            _touchMoved = false;
                         e.Handled = true;
                         break;
                     case SKTouchAction.Cancelled:
