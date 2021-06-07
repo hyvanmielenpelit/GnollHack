@@ -55,5 +55,11 @@ namespace GnollHackClient.Pages.Game
             _gamePage.GenericButton_Clicked(sender, e, 'O');
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
+
+        private async void btnSettings_Clicked(object sender, EventArgs e)
+        {
+            var settingsPage = new SettingsPage(this._gamePage);
+            await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
+        }
     }
 }

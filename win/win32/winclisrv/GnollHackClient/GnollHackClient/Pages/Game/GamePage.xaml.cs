@@ -13,12 +13,15 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Xamarin.Essentials;
 
 namespace GnollHackClient.Pages.Game
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GamePage : ContentPage
     {
+        private SKColor _cursorDefaultGreen = new SKColor(0, 255, 0);
+
         Boolean _connectionAttempted = false;
         private HubConnection _connection;
         private string _connection_status = "";
@@ -42,6 +45,7 @@ namespace GnollHackClient.Pages.Game
         private object _mapDataLock = new object();
         private int _mapCursorX;
         private int _mapCursorY;
+        public TTYCursorStyle CursorStyle { get; set; }
         private bool _cursorIsOn;
         private bool _showDirections = false;
         private bool _showNumberPad = false;
@@ -67,6 +71,14 @@ namespace GnollHackClient.Pages.Game
         {
             InitializeComponent();
             _mainPage = mainPage;
+
+            string style = Preferences.Get("CursorStyle", "0");
+            int parseint;
+            if (int.TryParse(style, out parseint))
+            {
+                CursorStyle = (TTYCursorStyle)parseint;
+            }
+
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
                 canvasView.InvalidateSurface();
@@ -531,7 +543,15 @@ namespace GnollHackClient.Pages.Game
                         {
                             str = _mapData[mapx, mapy].Symbol;
                             textPaint.Color = _mapData[mapx, mapy].Color;
-                            if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Pet) != 0)
+                            if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
+                            {
+                                textPaint.Style = SKPaintStyle.Fill;
+                                textPaint.Color = _cursorDefaultGreen;
+                                SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Descent, tx + width, ty + textPaint.FontMetrics.Descent + height);
+                                canvas.DrawRect(winRect, textPaint);
+                                textPaint.Color = SKColors.Black;
+                            }
+                            else if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Pet) != 0)
                             {
                                 textPaint.Style = SKPaintStyle.Fill;
                                 SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Descent, tx + width, ty + textPaint.FontMetrics.Descent + height);
@@ -551,7 +571,7 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 /* Cursor */
-                if (_mapCursorX >= 1 && _mapCursorY >= 0 && _cursorIsOn)
+                if (CursorStyle == TTYCursorStyle.BlinkingUnderline && _mapCursorX >= 1 && _mapCursorY >= 0 && _cursorIsOn)
                 {
                     int cx = _mapCursorX, cy = _mapCursorY;
                     str = "_";

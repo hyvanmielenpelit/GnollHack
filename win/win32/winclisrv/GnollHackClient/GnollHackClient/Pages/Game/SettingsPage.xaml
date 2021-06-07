@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GnollHackClient.Pages.Game.SettingsPage"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label x:Name="lblHeader" Text="Settings" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo"
+                HorizontalOptions="CenterAndExpand" Margin="0,10,0,0" />
+            <Grid HorizontalOptions="CenterAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Text="Cursor Style" Grid.Column="0"
+                       FontFamily="Diablo"
+                       VerticalOptions="Center" 
+                       HorizontalOptions="Start" />
+                <Picker x:Name="CursorPicker"
+                        Title="Select a cursor style" Grid.Column="1" 
+                        FontFamily="Underwood" 
+                        VerticalOptions="Center"
+                        HorizontalOptions="StartAndExpand"
+                        SelectedIndexChanged="Picker_SelectedIndexChanged" >
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Blinking Underline</x:String>
+                            <x:String>Green Block</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

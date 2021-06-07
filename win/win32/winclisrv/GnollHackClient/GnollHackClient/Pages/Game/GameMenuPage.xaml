@@ -10,6 +10,8 @@
                     HorizontalOptions="FillAndExpand" Clicked="btnBackToGame_Clicked" />
             <Button x:Name="btnOptions" FontFamily="Diablo" Text="Options"
                     HorizontalOptions="FillAndExpand" Clicked="btnOptions_Clicked" />
+            <Button x:Name="btnSettings" FontFamily="Diablo" Text="Settings"
+                    HorizontalOptions="FillAndExpand" Clicked="btnSettings_Clicked" />
             <Button x:Name="btnSave" FontFamily="Diablo" Text="Save &amp; Exit Game"
                     HorizontalOptions="FillAndExpand" Clicked="btnSave_Clicked" />
             <Button x:Name="btnQuit" FontFamily="Diablo" Text="Quit Without Saving"

@@ -68,6 +68,11 @@ namespace GnollHackCommon
         IsHeading =         0x00000001,
         IsGroupHeading =    0x00000002,
     }
+    public enum TTYCursorStyle
+    {
+        BlinkingUnderline = 0,
+        GreenBlock
+    }
 
     public class GHConstants
     {
