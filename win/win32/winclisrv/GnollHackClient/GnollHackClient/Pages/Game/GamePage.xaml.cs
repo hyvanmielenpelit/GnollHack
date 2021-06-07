@@ -70,7 +70,7 @@ namespace GnollHackClient.Pages.Game
         private float _tileHeight;
         private float _mapWidth;
         private float _mapHeight;
-        private float _mapFontDescent;
+        private float _mapFontAscent;
 
         public GamePage(MainPage mainPage)
         {
@@ -522,7 +522,7 @@ namespace GnollHackClient.Pages.Game
             _tileHeight = height;
             _mapWidth = mapwidth;
             _mapHeight = mapheight;
-            _mapFontDescent = textPaint.FontMetrics.Descent;
+            _mapFontAscent = textPaint.FontMetrics.Ascent;
 
             int startX = 1;
             int endX = GHConstants.MapCols - 1;
@@ -973,7 +973,7 @@ namespace GnollHackClient.Pages.Game
                                         }
                                     }
                                     offsetX += _mapOffsetX;
-                                    offsetY += _mapOffsetY - _mapFontDescent;
+                                    offsetY += _mapOffsetY + _mapFontAscent;
 
                                     if (_tileWidth > 0)
                                         x = (int)((e.Location.X - offsetX) / _tileWidth);
