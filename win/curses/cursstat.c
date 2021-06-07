@@ -584,10 +584,10 @@ boolean border;
                 /*FALLTHRU*/
             //case BL_ALIGN:
             case BL_LEVELDESC:
-                spacing[fld] = (i > 0 ? 1 : 0); /* extra space unless first */
+                spacing[fld] = 0; // (i > 0 ? 1 : 0); /* extra space unless first */
                 break;
 			case BL_SKILL:
-				spacing[fld] = (number_of_lines < 3 && (skill_and_2wep & 1)) ? 1 : 0;
+				spacing[fld] = 0; // (number_of_lines < 3 && (skill_and_2wep & 1)) ? 1 : 0;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
@@ -596,7 +596,7 @@ boolean border;
                 }
 				break;
 			case BL_2WEP:
-				spacing[fld] = (number_of_lines < 3 && (skill_and_2wep & 2) && !(skill_and_2wep & 1)) ? 1 : 0;
+				spacing[fld] = 0; // (number_of_lines < 3 && (skill_and_2wep & 2) && !(skill_and_2wep & 1)) ? 1 : 0;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
@@ -605,7 +605,7 @@ boolean border;
                 }
 				break;
 			case BL_HUNGER:
-                spacing[fld] = (number_of_lines < 3 && !skill_and_2wep  && (cap_and_hunger & 1)) ? 1 : 0;
+                spacing[fld] = 0; // (number_of_lines < 3 && !skill_and_2wep  && (cap_and_hunger & 1)) ? 1 : 0;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
@@ -614,7 +614,7 @@ boolean border;
                 }
                 break;
             case BL_CAP:
-                spacing[fld] = (number_of_lines < 3 && !skill_and_2wep && ((cap_and_hunger & 2) && !(cap_and_hunger & 1)))? 1 : 0;
+                spacing[fld] = 0; // (number_of_lines < 3 && !skill_and_2wep && ((cap_and_hunger & 2) && !(cap_and_hunger & 1)))? 1 : 0;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
@@ -624,7 +624,7 @@ boolean border;
                 break;
             case BL_CONDITION:
                 text = cbuf; /* for 'w += strlen(text)' below */
-                spacing[fld] = (number_of_lines < 3 && !cap_and_hunger && !skill_and_2wep) ? 1 : 0;
+                spacing[fld] = 0; // (number_of_lines < 3 && !cap_and_hunger && !skill_and_2wep) ? 1 : 0;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
@@ -638,23 +638,23 @@ boolean border;
                 }
                 break;
 			case BL_HP:
-				spacing[fld] = (i > 0 ? 1 : 0); /* extra space unless first */
+				spacing[fld] = 0; //  (i > 0 ? 1 : 0); /* extra space unless first */
 				break;
 			case BL_STR:
 			case BL_ENE:
             case BL_AC:
 			case BL_MC_LVL:
 			case BL_GOLD:
-                spacing[fld] = 1; /* always extra space */
+                spacing[fld] = 0; // 1; /* always extra space */
                 break;
             case BL_XP:
             case BL_HD:
             case BL_MOVE:
             case BL_TIME:
-                spacing[fld] = status_activefields[fld] ? 1 : 0;
+                spacing[fld] = 0; // status_activefields[fld] ? 1 : 0;
                 break;
             case BL_SCORE:
-                spacing[fld] = sho_score ? 1 : 0;
+                spacing[fld] = 0; // sho_score ? 1 : 0;
                 break;
             default:
                 break;

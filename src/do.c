@@ -1808,9 +1808,9 @@ register struct obj* obj;
 
         Sprintf(buf2, "%s%ld%%", splcaster <= 0 ? "+" : "", -splcaster * ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
         if (splcaster < 0)
-            Sprintf(buf, "Spell casting bonus:    %s", buf2);
+            Sprintf(buf, "Spell casting bonus:    %s (somatic spells only)", buf2);
         else
-            Sprintf(buf, "Spell casting penalty:  %s", buf2);
+            Sprintf(buf, "Spell casting penalty:  %s (somatic spells only)", buf2);
 
         txt = buf;
         putstr(datawin, 0, txt);
