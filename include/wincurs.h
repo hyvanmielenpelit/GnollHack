@@ -101,7 +101,7 @@ extern int curses_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 extern void curses_update_inventory(void);
 extern void curses_mark_synch(void);
 extern void curses_wait_synch(void);
-extern void curses_cliparound(int x, int y);
+extern void curses_cliparound(int x, int y, BOOLEAN_P force);
 extern void curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
 extern void curses_init_print_glyph(int initid);
 extern void curses_raw_print(const char *str);

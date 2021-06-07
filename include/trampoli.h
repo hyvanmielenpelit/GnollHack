@@ -276,7 +276,7 @@
 #define tty_mark_synch() tty_mark_synch_()
 #define tty_wait_synch() tty_wait_synch_()
 #ifdef CLIPPING
-#define tty_cliparound(x, y) tty_cliparound_(x, y)
+#define tty_cliparound(x, y, force) tty_cliparound_(x, y, force)
 #endif
 #ifdef POSITIONBAR
 #define tty_update_positionbar(x) tty_update_positionbar_(x)

@@ -672,7 +672,7 @@ static void FDECL(hup_curs, (winid, int, int));
 static void FDECL(hup_display_nhwindow, (winid, BOOLEAN_P));
 static void FDECL(hup_display_file, (const char *, BOOLEAN_P));
 #ifdef CLIPPING
-static void FDECL(hup_cliparound, (int, int));
+static void FDECL(hup_cliparound, (int, int, BOOLEAN_P));
 #endif
 #ifdef CHANGE_COLOR
 static void FDECL(hup_change_color, (int, long, int));
@@ -951,8 +951,9 @@ boolean complain UNUSED;
 #ifdef CLIPPING
 /*ARGSUSED*/
 static void
-hup_cliparound(x, y)
+hup_cliparound(x, y, force)
 int x UNUSED, y UNUSED;
+boolean force UNUSED;
 {
     return;
 }

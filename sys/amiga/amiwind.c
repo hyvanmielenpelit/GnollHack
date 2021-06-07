@@ -214,7 +214,7 @@ register struct IntuiMessage *message;
             clipymax = LI + clipy;
             if (CO < COLNO || LI < ROWNO) {
                 clipping = TRUE;
-                amii_cliparound(u.ux, u.uy);
+                amii_cliparound(u.ux, u.uy, FALSE);
             } else {
                 clipping = FALSE;
                 clipx = clipy = 0;
@@ -325,7 +325,7 @@ register struct IntuiMessage *message;
                 clipxmax = CO + clipx;
                 clipymax = LI + clipy;
                 if (CO < COLNO || LI < ROWNO) {
-                    amii_cliparound(u.ux, u.uy);
+                    amii_cliparound(u.ux, u.uy, FALSE);
                 } else {
                     CO = COLNO;
                     LI = ROWNO;
@@ -472,7 +472,7 @@ register struct IntuiMessage *message;
             clipxmax = CO + clipx;
             clipymax = LI + clipy;
             if (CO < COLNO || LI < ROWNO) {
-                amii_cliparound(u.ux, u.uy);
+                amii_cliparound(u.ux, u.uy, FALSE);
             } else {
                 clipping = FALSE;
                 clipx = clipy = 0;

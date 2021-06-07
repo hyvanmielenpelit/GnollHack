@@ -407,7 +407,7 @@ new_status_window()
     if (u.ux) {
         if (LI < 1 + ROWNO + iflags.wc2_statuslines) {
             setclipped();
-            tty_cliparound(u.ux, u.uy);
+            tty_cliparound(u.ux, u.uy, FALSE);
         } else {
             clipping = FALSE;
             clipx = clipy = 0;
@@ -3513,8 +3513,9 @@ setclipped()
 }
 
 void
-tty_cliparound(x, y)
+tty_cliparound(x, y, force)
 int x, y;
+boolean force UNUSED;
 {
     int oldx = clipx, oldy = clipy;
 

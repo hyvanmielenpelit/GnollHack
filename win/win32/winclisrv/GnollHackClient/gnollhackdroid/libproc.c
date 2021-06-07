@@ -290,9 +290,9 @@ void lib_wait_synch(void)
     libdef_wait_synch();
 }
 
-void lib_cliparound(int x, int y)
+void lib_cliparound(int x, int y, boolean force)
 {
-    lib_callbacks.callback_cliparound(x, y);
+    lib_callbacks.callback_cliparound(x, y, force);
 }
 
 extern const nhsym cp437toUnicode[256];

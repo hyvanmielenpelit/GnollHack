@@ -555,17 +555,18 @@ void *vp;
 
 #ifdef CLIPPING
 void
-trace_cliparound(vp, x, y)
+trace_cliparound(vp, x, y, force)
 void *vp;
 int x;
 int y;
+boolean force;
 {
     struct trace_data *tdp = vp;
 
     fprintf(wc_tracelogf, "%scliparound(%d, %d)\n", INDENT, x, y);
 
     PRE;
-    (*tdp->nprocs->win_cliparound)(tdp->ndata, x, y);
+    (*tdp->nprocs->win_cliparound)(tdp->ndata, x, y, force);
     POST;
 }
 #endif

@@ -328,14 +328,15 @@ void *vp;
 
 #ifdef CLIPPING
 void
-chainout_cliparound(vp, x, y)
+chainout_cliparound(vp, x, y, force)
 void *vp;
 int x;
 int y;
+boolean force;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_cliparound)(x, y);
+    (*tdp->nprocs->win_cliparound)(x, y, force);
 }
 #endif
 

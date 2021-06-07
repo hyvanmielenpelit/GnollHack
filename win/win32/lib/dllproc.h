@@ -66,7 +66,7 @@ int dll_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 void dll_update_inventory(void);
 void dll_mark_synch(void);
 void dll_wait_synch(void);
-void dll_cliparound(int x, int y);
+void dll_cliparound(int x, int y, boolean force);
 void dll_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
 void dll_init_print_glyph(int initid);
 void dll_raw_print(const char *str);

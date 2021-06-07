@@ -158,9 +158,10 @@ struct layer_info layers;
  */
 /*ARGSUSED*/
 void
-X11_cliparound(x, y)
+X11_cliparound(x, y, force)
 int x UNUSED;
 int y UNUSED;
+boolean force UNUSED;
 {
     return;
 }

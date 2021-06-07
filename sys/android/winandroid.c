@@ -33,7 +33,7 @@ static void NDECL(and_update_inventory);
 static void NDECL(and_mark_synch);
 static void NDECL(and_wait_synch);
 #ifdef CLIPPING
-static void FDECL(and_cliparound, (int, int));
+static void FDECL(and_cliparound, (int, int, BOOLEAN_P));
 #endif
 #ifdef POSITIONBAR
 static void FDECL(and_update_positionbar, (char *));
@@ -1379,7 +1379,7 @@ void and_wait_synch()
 //cliparound(x, y)-- Make sure that the user is more-or-less centered on the
 //		   screen if the playing area is larger than the screen.
 //		-- This function is only defined if CLIPPING is defined.
-void and_cliparound(int x, int y)
+void and_cliparound(int x, int y, boolean force)
 {
 	//debuglog("and_cliparound %dx%d (%dx%d)", x, y, u.ux, u.uy);
 	JNICallV(jCliparound, x, y, u.ux, u.uy);

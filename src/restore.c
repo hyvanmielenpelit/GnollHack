@@ -694,7 +694,7 @@ unsigned int *stuckid, *steedid;
 
     set_uasmon();
 #ifdef CLIPPING
-    cliparound(u.ux, u.uy);
+    cliparound(u.ux, u.uy, TRUE);
 #endif
     if (u.uhp <= 0 && (!Upolyd || u.mh <= 0)) {
         u.ux = u.uy = 0; /* affects pline() [hence You()] */

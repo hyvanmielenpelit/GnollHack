@@ -39,6 +39,7 @@ typedef struct mswin_nhmsg_print_glyph {
 typedef struct mswin_nhmsg_cliparound {
     int x;
     int y;
+    boolean force;
 } MSNHMsgClipAround, *PMSNHMsgClipAround;
 
 typedef struct mswin_nhmsg_add_menu {

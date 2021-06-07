@@ -1318,12 +1318,12 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-dll_cliparound(int x, int y)
+dll_cliparound(int x, int y, boolean force)
 {
     winid wid = WIN_MAP;
 
     dll_logDebug("dll_cliparound(%d, %d)\n", x, y);
-    dll_callbacks.callback_cliparound(x, y);
+    dll_callbacks.callback_cliparound(x, y, force);
 
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)
@@ -2148,12 +2148,12 @@ dll_preference_update(const char *pref)
 #endif
 
     if (stricmp(pref, "scroll_amount") == 0) {
-        dll_cliparound(u.ux, u.uy);
+        dll_cliparound(u.ux, u.uy, TRUE);
         return;
     }
 
     if (stricmp(pref, "scroll_margin") == 0) {
-        dll_cliparound(u.ux, u.uy);
+        dll_cliparound(u.ux, u.uy, TRUE);
         return;
     }
 

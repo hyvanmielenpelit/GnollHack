@@ -17,7 +17,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidIntCallback(int value);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void VoidIntIntCallback(int value1, int value2);
+    public delegate void VoidIntIntBooleanCallback(int value1, int value2, byte value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidIntIntIntCallback(int value1, int value2, int value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]

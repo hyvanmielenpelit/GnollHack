@@ -2139,8 +2139,9 @@ amii_setclipped()
  * edge of the map is already displayed
  */
 void
-amii_cliparound(x, y)
+amii_cliparound(x, y, force)
 register int x, y;
+boolean force;
 {
 #ifdef CLIPPING
     int oldx = clipx, oldy = clipy;

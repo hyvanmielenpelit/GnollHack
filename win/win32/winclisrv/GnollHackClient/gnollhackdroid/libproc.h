@@ -35,7 +35,7 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected);
 void lib_update_inventory(void);
 void lib_mark_synch(void);
 void lib_wait_synch(void);
-void lib_cliparound(int x, int y);
+void lib_cliparound(int x, int y, boolean force);
 void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
 void lib_init_print_glyph(int initid);
 void lib_raw_print(const char* str);

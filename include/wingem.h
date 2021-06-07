@@ -80,7 +80,7 @@ E void NDECL(Gem_update_inventory);
 E void NDECL(Gem_mark_synch);
 E void NDECL(Gem_wait_synch);
 #ifdef CLIPPING
-E void FDECL(Gem_cliparound, (int, int));
+E void FDECL(Gem_cliparound, (int, int, BOOLEAN_P force));
 #endif
 #ifdef POSITIONBAR
 E void FDECL(Gem_update_positionbar, (char *));

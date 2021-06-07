@@ -853,7 +853,7 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-gnome_cliparound(int x, int y)
+gnome_cliparound(int x, int y, boolean force UNUSED)
 {
     /* FIXME!!!  winid should be a parameter!!!
      * Call a function that Does The Right Thing(tm).

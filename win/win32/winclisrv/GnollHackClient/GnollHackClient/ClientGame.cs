@@ -411,9 +411,9 @@ namespace GnollHackClient
         }
 
 
-        public void ClientCallback_Cliparound(int x, int y)
+        public void ClientCallback_Cliparound(int x, int y, byte force)
         {
-            if (_gamePage.MapNoClipMode || _gamePage.MapLookMode)
+            if (force == 0 && (_gamePage.MapNoClipMode || _gamePage.MapLookMode))
                 return; /* No clip mode ignores cliparound commands */
 
             lock(_gamePage.ClipLock)

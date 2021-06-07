@@ -462,7 +462,7 @@ boolean resuming;
 
 #ifdef CLIPPING
         /* just before rhack */
-        cliparound(u.ux, u.uy);
+        cliparound(u.ux, u.uy, FALSE);
 #endif
 
         u.umoved = FALSE;

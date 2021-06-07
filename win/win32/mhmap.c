@@ -426,7 +426,7 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
     si.nPos = data->yPos;
     SetScrollInfo(hWnd, SB_VERT, &si, TRUE);
 
-    mswin_cliparound(data->xCur, data->yCur);
+    mswin_cliparound(data->xCur, data->yCur, TRUE);
 
     if (redraw) {
         dirtyAll(data);

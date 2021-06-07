@@ -216,7 +216,7 @@ E void NDECL(tty_update_inventory);
 E void NDECL(tty_mark_synch);
 E void NDECL(tty_wait_synch);
 #ifdef CLIPPING
-E void FDECL(tty_cliparound, (int, int));
+E void FDECL(tty_cliparound, (int, int, BOOLEAN_P));
 #endif
 #ifdef POSITIONBAR
 E void FDECL(tty_update_positionbar, (char *));

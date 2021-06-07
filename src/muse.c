@@ -2289,7 +2289,7 @@ struct monst *mtmp;
           s_suffix(noit_mon_nam(mtmp)));
     cls();
 #ifdef CLIPPING
-    cliparound(mtmp->mx, mtmp->my);
+    cliparound(mtmp->mx, mtmp->my, FALSE);
 #endif
     show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, rn2), mtmp, 0UL, 0);
     display_self();

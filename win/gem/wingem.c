@@ -886,8 +886,9 @@ Gem_wait_synch()
 #ifdef CLIPPING
 extern void mar_cliparound(void);
 void
-Gem_cliparound(x, y)
+Gem_cliparound(x, y, force)
 int x, y;
+boolean force;
 {
     mar_curs(x - 1, y);
     mar_cliparound();
@@ -1213,7 +1214,7 @@ const char *pref;
     }
     if (stricmp(pref, "scroll_margin") == 0) {
         mar_set_margin(iflags.wc_scroll_margin);
-        Gem_cliparound(u.ux, u.uy);
+        Gem_cliparound(u.ux, u.uy, TRUE);
         return;
     }
     if (stricmp(pref, "ascii_map") == 0) {

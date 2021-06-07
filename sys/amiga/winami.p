@@ -12,7 +12,7 @@ void NDECL(amii_update_inventory );
 void NDECL(amii_mark_synch );
 void NDECL(amii_wait_synch );
 void NDECL(amii_setclipped );
-void FDECL(amii_cliparound, (int  , int ));
+void FDECL(amii_cliparound, (int  , int  , BOOLEAN_P));
 void NDECL(amii_askname );
 void NDECL(amii_player_selection );
 void NDECL(flush_output );

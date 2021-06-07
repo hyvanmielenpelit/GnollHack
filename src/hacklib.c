@@ -1622,9 +1622,9 @@ size_t bufsize;
 const char* text;
 {
     nhsym sym;
-    char* tp = text;
+    const char* tp = text;
     char* bp = buf;
-    while (*tp && bp - buf < bufsize - 5)
+    while (*tp && bp - buf < (int)(bufsize - 5))
     {
         sym = (nhsym)((uchar)*tp);
         if (SYMHANDLING(H_IBM) && !flags.ibm2utf8 && sym >= 0 && sym < 256)

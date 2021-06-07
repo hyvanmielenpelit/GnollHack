@@ -43,7 +43,7 @@ namespace GnollHackServer
             VoidVoidCallback callback_mark_synch,
             VoidVoidCallback callback_wait_synch,
             /* If clipping is on */
-            VoidIntIntCallback callback_cliparound,
+            VoidIntIntBooleanCallback callback_cliparound,
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
             VoidIntIntIntIntIntLongIntUlongCallback callback_print_glyph,
@@ -186,7 +186,7 @@ namespace GnollHackServer
                 GameCallback_VoidVoidDummy,
                 GameCallback_VoidVoidDummy,
                 /* If clipping is on */
-                GameCallback_VoidIntIntDummy,
+                GameCallback_VoidIntIntBooleanDummy,
                 /* If positionbar is on */
                 GameCallback_VoidCharDummy,
                 GameCallback_VoidIntIntIntIntIntLongIntULongDummy,
@@ -306,7 +306,7 @@ namespace GnollHackServer
         {
 
         }
-        protected void GameCallback_VoidIntIntDummy(int value1, int value2)
+        protected void GameCallback_VoidIntIntBooleanDummy(int value1, int value2, byte value3)
         {
 
         }

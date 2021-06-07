@@ -864,7 +864,7 @@ class NetHackQtBind : NetHackQtBindBase
     static void qt_mark_synch();
     static void qt_wait_synch();
 
-    static void qt_cliparound(int x, int y);
+    static void qt_cliparound(int x, int y, BOOLEAN_P force);
     static void qt_cliparound_window(winid wid, int x, int y);
     static void qt_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
     static void qt_init_print_glyph(int);

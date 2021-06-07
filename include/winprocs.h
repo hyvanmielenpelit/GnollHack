@@ -45,7 +45,7 @@ struct window_procs {
     void NDECL((*win_mark_synch));
     void NDECL((*win_wait_synch));
 #ifdef CLIPPING
-    void FDECL((*win_cliparound), (int, int));
+    void FDECL((*win_cliparound), (int, int, BOOLEAN_P));
 #endif
 #ifdef POSITIONBAR
     void FDECL((*win_update_positionbar), (char *));
@@ -389,7 +389,7 @@ struct chain_procs {
     void FDECL((*win_mark_synch), (CARGS));
     void FDECL((*win_wait_synch), (CARGS));
 #ifdef CLIPPING
-    void FDECL((*win_cliparound), (CARGS, int, int));
+    void FDECL((*win_cliparound), (CARGS, int, int, BOOLEAN_P));
 #endif
 #ifdef POSITIONBAR
     void FDECL((*win_update_positionbar), (CARGS, char *));
@@ -484,7 +484,7 @@ extern void NDECL(safe_update_inventory);
 extern void NDECL(safe_mark_synch);
 extern void NDECL(safe_wait_synch);
 #ifdef CLIPPING
-extern void FDECL(safe_cliparound, (int, int));
+extern void FDECL(safe_cliparound, (int, int, BOOLEAN_P));
 #endif
 #ifdef POSITIONBAR
 extern void FDECL(safe_update_positionbar, (char *));

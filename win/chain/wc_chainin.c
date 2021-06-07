@@ -266,11 +266,12 @@ chainin_wait_synch()
 
 #ifdef CLIPPING
 void
-chainin_cliparound(x, y)
+chainin_cliparound(x, y, force)
 int x;
 int y;
+boolean force;
 {
-    (*cibase->nprocs->win_cliparound)(cibase->ndata, x, y);
+    (*cibase->nprocs->win_cliparound)(cibase->ndata, x, y, force);
 }
 #endif
 

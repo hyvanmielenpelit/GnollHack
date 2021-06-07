@@ -111,7 +111,7 @@ void NDECL(vga_backsp);
 STATIC_DCL void FDECL(vga_scrollmap, (BOOLEAN_P));
 #endif
 STATIC_DCL void FDECL(vga_redrawmap, (BOOLEAN_P));
-static void FDECL(vga_cliparound, (int, int));
+static void FDECL(vga_cliparound, (int, int, BOOLEAN_P));
 STATIC_OVL void FDECL(decal_planar, (struct planar_cell_struct *, unsigned));
 
 #ifdef POSITIONBAR
@@ -432,8 +432,9 @@ int col, row;
 
 #if defined(USE_TILES) && defined(CLIPPING)
 static void
-vga_cliparound(x, y)
+vga_cliparound(x, y, force)
 int x, y;
+boolean force;
 {
     extern boolean restoring;
     int oldx = clipx;
@@ -525,7 +526,7 @@ boolean left;
         x = min(COLNO - 1, clipxmax + 10);
     else
         x = max(0, clipx - 10);
-    vga_cliparound(x, 10); /* y value is irrelevant on VGA clipping */
+    vga_cliparound(x, 10, FALSE); /* y value is irrelevant on VGA clipping */
     positionbar();
     vga_DrawCursor();
 }

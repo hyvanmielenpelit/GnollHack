@@ -635,7 +635,7 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-curses_cliparound(int x, int y)
+curses_cliparound(int x, int y, boolean force UNUSED)
 {
     int sx, sy, ex, ey;
     boolean redraw = curses_map_borders(&sx, &sy, &ex, &ey, x, y);

@@ -187,7 +187,7 @@ mswin_map_stretch(HWND hWnd, LPSIZE lpsz, BOOL redraw)
     }
     data->hMapFont = CreateFontIndirect(&lgfnt);
 
-    mswin_cliparound(data->xCur, data->yCur);
+    mswin_cliparound(data->xCur, data->yCur, FALSE);
 
     if (redraw)
         InvalidateRect(hWnd, NULL, TRUE);

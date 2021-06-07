@@ -427,7 +427,7 @@ E void NDECL(X11_update_inventory);
 E void NDECL(X11_mark_synch);
 E void NDECL(X11_wait_synch);
 #ifdef CLIPPING
-E void FDECL(X11_cliparound, (int, int));
+E void FDECL(X11_cliparound, (int, int, BOOLEAN_P));
 #endif
 E void FDECL(X11_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
 E void FDECL(X11_init_print_glyph, (int));

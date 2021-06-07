@@ -35,7 +35,7 @@ static void FDECL(vesa_FillRect, (
         unsigned color));
 
 static void NDECL(vesa_redrawmap);
-static void FDECL(vesa_cliparound, (int, int));
+static void FDECL(vesa_cliparound, (int, int, BOOLEAN_P));
 static void FDECL(decal_packed, (const struct TileImage *tile, unsigned special));
 static void FDECL(vesa_SwitchMode, (unsigned mode));
 static boolean FDECL(vesa_SetPalette, (const struct Pixel *));
@@ -593,8 +593,9 @@ int col, row;
 
 #if defined(USE_TILES) && defined(CLIPPING)
 static void
-vesa_cliparound(x, y)
+vesa_cliparound(x, y, force)
 int x, y;
+boolean force;
 {
     int oldx = clipx;
 
@@ -679,7 +680,7 @@ boolean left;
         x = min(COLNO - 1, clipxmax + 10);
     else
         x = max(0, clipx - 10);
-    vesa_cliparound(x, 10); /* y value is irrelevant on VGA clipping */
+    vesa_cliparound(x, 10, FALSE); /* y value is irrelevant on VGA clipping */
     positionbar();
     vesa_DrawCursor();
 }

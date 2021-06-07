@@ -714,7 +714,7 @@ enum game_cursor_types cursor_style;
     ty = (int)ccp->y;
 
 #if defined(CLIPPING) && !defined(ANDROID)
-    cliparound(cx, cy);
+    cliparound(cx, cy, FALSE);
 #endif
     curs(WIN_MAP, cx, cy);
     flush_screen(0);
@@ -1063,7 +1063,7 @@ enum game_cursor_types cursor_style;
     nxtc:
         ;
 #ifdef CLIPPING
-        cliparound(cx, cy);
+        cliparound(cx, cy, FALSE);
 #endif
         curs(WIN_MAP, cx, cy);
         flush_screen(0);

@@ -233,7 +233,7 @@ E void FDECL(mac_add_extended_menu, (winid, int, const anything*, struct extende
 E void FDECL(mac_end_menu, (winid, const char *));
 E int FDECL(mac_select_menu, (winid, int, menu_item **));
 #ifdef CLIPPING
-E void FDECL(mac_cliparound, (int, int));
+E void FDECL(mac_cliparound, (int, int, BOOLEAN_P));
 #endif
 E int NDECL(mac_nhgetch);
 E int FDECL(mac_nh_poskey, (int *, int *, int *));

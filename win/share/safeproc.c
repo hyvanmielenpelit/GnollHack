@@ -332,8 +332,9 @@ safe_wait_synch()
 
 #ifdef CLIPPING
 void
-safe_cliparound(x, y)
+safe_cliparound(x, y, force)
 int x, y;
+boolean force;
 {
 }
 #endif /* CLIPPING */

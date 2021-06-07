@@ -114,7 +114,7 @@ void amii_update_inventory(void);
 void amii_mark_synch(void);
 void amii_wait_synch(void);
 void amii_setclipped(void);
-void amii_cliparound(int x, int y);
+void amii_cliparound(int x, int y, BOOLEAN_P force);
 void amii_set_text_font(char *font, int size);
 BitMapHeader ReadImageFiles(char **, struct BitMap **, char **);
 BitMapHeader ReadTileImageFiles(void);
