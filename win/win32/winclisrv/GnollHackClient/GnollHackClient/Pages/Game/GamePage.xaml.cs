@@ -58,8 +58,11 @@ namespace GnollHackClient.Pages.Game
         public int ClipX { get { return _clipX; } set { _clipX = value; _mapOffsetX = 0 ; } }
         public int ClipY { get { return _clipY; } set { _clipY = value; _mapOffsetY = 0; } }
         public GHMapMode MapMode { get; set; }
+        public bool MapNoClipMode { get; set; }
+        public bool MapLookMode { get; set; }
+        public bool MapTravelMode { get; set; }
 
-      
+
         private float _mapFontSize = 48;
         private object _mapFontSizeLock = new object();
         public float MapFontSize { get { lock (_mapFontSizeLock) { return _mapFontSize; } } set { lock (_mapFontSizeLock) { _mapFontSize = value; } } }
@@ -953,7 +956,7 @@ namespace GnollHackClient.Pages.Game
                             long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
                             {
-                                if (MapMode == GHMapMode.Travel || MapMode == GHMapMode.Look)
+                                if ((MapMode == GHMapMode.Travel || MapMode == GHMapMode.Look) && !_showDirections && !_showNumberPad)
                                 {
                                     int x = 0, y = 0, mod = 0;
                                     float canvaswidth = canvasView.CanvasSize.Width;
@@ -1273,35 +1276,55 @@ namespace GnollHackClient.Pages.Game
 
         private void ToggleModeButton_Clicked(object sender, EventArgs e)
         {
-            int curmapmode = (int)MapMode;
-            curmapmode++;
-            MapMode = (GHMapMode)(curmapmode % (int)GHMapMode.NumMapModes);
-
-            switch (MapMode)
+            MapTravelMode = !MapTravelMode;
+            if(MapTravelMode)
             {
-                case GHMapMode.Normal:
-                    ToggleModeButton.BackgroundColor = Color.DarkBlue;
-                    ToggleModeButton.Text = "\u2694";
-                    break;
-                case GHMapMode.Travel:
-                    ToggleModeButton.Text = "\u265C";
-                    ToggleModeButton.BackgroundColor = Color.Green;
-                    break;
-                case GHMapMode.Look:
-                    ToggleModeButton.Text = "\u2600";
-                    ToggleModeButton.BackgroundColor = Color.Red;
-                    break;
-                case GHMapMode.NumMapModes:
-                    break;
-                default:
-                    break;
+                ToggleModeButton.BackgroundColor = Color.Green;
+                MapMode = GHMapMode.Travel;
+                MapLookMode = false;
+                LookModeButton.BackgroundColor = Color.DarkBlue;
             }
+            else
+            {
+                ToggleModeButton.BackgroundColor = Color.DarkBlue;
+                MapMode = GHMapMode.Normal;
+            }
+        }
+        private void LookModeButton_Clicked(object sender, EventArgs e)
+        {
+            MapLookMode = !MapLookMode;
+            if(MapLookMode)
+            {
+                LookModeButton.BackgroundColor = Color.Green;
+                MapMode = GHMapMode.Look;
+                MapTravelMode = false;
+                ToggleModeButton.BackgroundColor = Color.DarkBlue;
+            }
+            else 
+            {
+                LookModeButton.BackgroundColor = Color.DarkBlue;
+                MapMode = GHMapMode.Normal;
+            }
+        }
+        private void NoClipButton_Clicked(object sender, EventArgs e)
+        {
+            MapNoClipMode = !MapNoClipMode;
+            if (MapNoClipMode)
+            {
+                NoClipButton.BackgroundColor = Color.Green;
+            }
+            else
+            {
+                NoClipButton.BackgroundColor = Color.DarkBlue;
+            }
+
         }
 
         private void NumberPadZeroButton_Clicked(object sender, EventArgs e)
         {
             GenericButton_Clicked(sender, e, -10);
         }
+
     }
 
     public class ColorConverter : IValueConverter
