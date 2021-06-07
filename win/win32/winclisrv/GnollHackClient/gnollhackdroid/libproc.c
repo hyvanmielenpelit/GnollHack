@@ -290,7 +290,7 @@ void lib_wait_synch(void)
     libdef_wait_synch();
 }
 
-void lib_cliparound(int x, int y, boolean force)
+void lib_cliparound(int x, int y, BOOLEAN_P force)
 {
     lib_callbacks.callback_cliparound(x, y, force);
 }

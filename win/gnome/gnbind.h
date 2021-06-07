@@ -66,7 +66,7 @@ int gnome_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 void gnome_update_inventory(void);
 void gnome_mark_synch(void);
 void gnome_wait_synch(void);
-void gnome_cliparound(int x, int y, boolean force);
+void gnome_cliparound(int x, int y, BOOLEAN_P force);
 /* The following function does the right thing.  The nethack
  * gnome_cliparound (which lacks the winid) simply calls this function.
 */

@@ -3859,9 +3859,9 @@ ddoinv()
     //(void) display_inventory((char *) 0, FALSE, 1);
 
     char invlet;
-    long cnt = 0;
+    long pickcnt = 0;
 
-    invlet = display_inventory_with_header((const char*)0, TRUE, &cnt, 1);
+    invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1);
     if (!invlet || invlet == '\033' || invlet == '\0')
         return 0;
 
@@ -4060,13 +4060,13 @@ ddoinv()
 
         int res = 0;
         int selected_action = cmd_idx - 1;
-        if (extcmdlist[selected_action].ef_funct && cnt != 0)
+        if (extcmdlist[selected_action].ef_funct && pickcnt != 0)
         {
-            if(cnt <= -1 || cnt >= otmp->quan)
+            if(pickcnt <= -1 || pickcnt >= otmp->quan)
                 getobj_autoselect_obj = otmp;
             else
             {
-                struct obj* otmpsplit = splitobj(otmp, cnt);
+                struct obj* otmpsplit = splitobj(otmp, pickcnt);
                 getobj_autoselect_obj = otmpsplit;
             }
             res = (extcmdlist[selected_action].ef_funct)();
@@ -4316,7 +4316,7 @@ nextclass:
             ilet = otmp->invlet;
             if (flags.sortpack && !classcount) {
                 add_extended_menu(win, NO_GLYPH, &any, 
-                    menu_group_heading_info(*invlet > ILLOBJ_CLASS && *invlet < MAX_OBJECT_CLASSES ? def_oc_syms[*invlet].sym : '\0'),
+                    menu_group_heading_info(*invlet > ILLOBJ_CLASS && *invlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*invlet)].sym : '\0'),
                     0, 0, iflags.menu_headings,
                          let_to_name(*invlet, FALSE,
                                      (want_reply && iflags.menu_head_objsym)),

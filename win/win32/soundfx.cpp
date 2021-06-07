@@ -1292,6 +1292,15 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Female/Curse", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Female/Mumbled Curse", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Female/Death", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Male/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Male/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Male/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Male/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Male/Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Male/Mumbled Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Male/Death", 1.0f },
 };
 
 

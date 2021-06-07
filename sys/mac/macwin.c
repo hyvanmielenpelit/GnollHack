@@ -1793,7 +1793,7 @@ mac_delay_output_milliseconds(int intervals)
 
 #ifdef CLIPPING
 static void
-mac_cliparound(int x, int y, boolean force)
+mac_cliparound(int x, int y, BOOLEAN_P force)
 {
 #if defined(__SC__) || defined(__MRC__)
 #pragma unused(x, y, force)

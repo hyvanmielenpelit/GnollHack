@@ -1301,7 +1301,7 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-sdl_cliparound(int x, int y, boolean force)
+sdl_cliparound(int x, int y, BOOLEAN_P force)
 {
     winid wid = WIN_MAP;
 

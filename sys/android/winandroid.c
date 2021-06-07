@@ -1379,7 +1379,7 @@ void and_wait_synch()
 //cliparound(x, y)-- Make sure that the user is more-or-less centered on the
 //		   screen if the playing area is larger than the screen.
 //		-- This function is only defined if CLIPPING is defined.
-void and_cliparound(int x, int y, boolean force)
+void and_cliparound(int x, int y, BOOLEAN_P force)
 {
 	//debuglog("and_cliparound %dx%d (%dx%d)", x, y, u.ux, u.uy);
 	JNICallV(jCliparound, x, y, u.ux, u.uy);

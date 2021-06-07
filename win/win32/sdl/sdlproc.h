@@ -110,7 +110,7 @@ int sdl_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 void sdl_update_inventory(void);
 void sdl_mark_synch(void);
 void sdl_wait_synch(void);
-void sdl_cliparound(int x, int y, boolean force);
+void sdl_cliparound(int x, int y, BOOLEAN_P force);
 void sdl_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers);
 void sdl_init_print_glyph(int initid);
 void sdl_raw_print(const char *str);

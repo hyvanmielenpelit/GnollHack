@@ -4864,7 +4864,7 @@ void NetHackQtBind::qt_wait_synch()
 {
 }
 
-void NetHackQtBind::qt_cliparound(int x, int y, boolean force)
+void NetHackQtBind::qt_cliparound(int x, int y, BOOLEAN_P force)
 {
     // XXXNH - winid should be a parameter!
     qt_cliparound_window(WIN_MAP,x,y);

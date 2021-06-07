@@ -1192,7 +1192,7 @@ cliparound(x, y)-- Make sure that the user is more-or-less centered on the
                 -- This function is only defined if CLIPPING is defined.
 */
 void
-mswin_cliparound(int x, int y, boolean force)
+mswin_cliparound(int x, int y, BOOLEAN_P force)
 {
     winid wid = WIN_MAP;
 
