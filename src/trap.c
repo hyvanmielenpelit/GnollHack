@@ -5494,32 +5494,40 @@ struct trap* ttmp;
     
     /* Skills gained */
     int skillgained = 5;
+    boolean ismagictrap = FALSE;
 
     switch (ttmp->ttyp)
     {
     case POLY_TRAP:
         skillgained = 32;
+        ismagictrap = TRUE;
         break;
     case MAGIC_TRAP:
         skillgained = 28;
+        ismagictrap = TRUE;
         break;
     case LEVEL_TELEP:
         skillgained = 26;
+        ismagictrap = TRUE;
         break;
     case ANTI_MAGIC_TRAP:
         skillgained = 24;
+        ismagictrap = TRUE;
         break;
     case TELEP_TRAP:
         skillgained = 22;
+        ismagictrap = TRUE;
         break;
     case SLP_GAS_TRAP:
         skillgained = 20;
+        ismagictrap = TRUE;
         break;
     case RUST_TRAP:
         skillgained = 18;
         break;
     case FIRE_TRAP:
         skillgained = 16;
+        ismagictrap = TRUE;
         break;
     case ROLLING_BOULDER_TRAP:
         skillgained = 14;
@@ -5532,41 +5540,51 @@ struct trap* ttmp;
     }
     use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : skillgained);
 
+    int skill_level = P_SKILL_LEVEL(P_DISARM_TRAP);
+    int getitem_normal = (skill_level <= P_UNSKILLED ? !rn2(3) :
+        skill_level == P_BASIC ? rn2(3) :
+        skill_level == P_SKILLED ? rn2(6) : rn2(12));
+    int getitem_magic = (skill_level <= P_UNSKILLED ? 0 :
+        skill_level == P_BASIC ? !rn2(3) :
+        skill_level == P_SKILLED ? rn2(3) : rn2(6));
+    int getitem = ismagictrap ? getitem_magic : getitem_normal;
 
-    /* Items gained */
     int genotyp = STRANGE_OBJECT;
-
-    switch (ttmp->ttyp)
+    if (getitem)
     {
-    case POLY_TRAP:
-        genotyp = WAN_POLYMORPH;
-        break;
-    case MAGIC_TRAP:
-        genotyp = random_objectid_from_class(WAND_CLASS, 0UL);
-        break;
-    case LEVEL_TELEP:
-        genotyp = CUBIC_GATE;
-        break;
-    case ANTI_MAGIC_TRAP:
-        genotyp = POT_MAGIC_RESISTANCE;
-        break;
-    case TELEP_TRAP:
-        genotyp = WAN_TELEPORTATION;
-        break;
-    case SLP_GAS_TRAP:
-        genotyp = WAN_SLEEP;
-        break;
-    case RUST_TRAP:
-        genotyp = POT_WATER;
-        break;
-    case FIRE_TRAP:
-        genotyp = WAN_FIRE;
-        break;
-    case ROCKTRAP:
-        genotyp = get_shooting_trap_object(ttmp);
-        break;
-    default:
-        break;
+        /* Items gained */
+        switch (ttmp->ttyp)
+        {
+        case POLY_TRAP:
+            genotyp = WAN_POLYMORPH;
+            break;
+        case MAGIC_TRAP:
+            genotyp = random_objectid_from_class(WAND_CLASS, 0UL);
+            break;
+        case LEVEL_TELEP:
+            genotyp = CUBIC_GATE;
+            break;
+        case ANTI_MAGIC_TRAP:
+            genotyp = POT_MAGIC_RESISTANCE;
+            break;
+        case TELEP_TRAP:
+            genotyp = WAN_TELEPORTATION;
+            break;
+        case SLP_GAS_TRAP:
+            genotyp = WAN_SLEEP;
+            break;
+        case RUST_TRAP:
+            genotyp = POT_WATER;
+            break;
+        case FIRE_TRAP:
+            genotyp = WAN_FIRE;
+            break;
+        case ROCKTRAP:
+            genotyp = get_shooting_trap_object(ttmp);
+            break;
+        default:
+            break;
+        }
     }
 
     if (genotyp > STRANGE_OBJECT)
@@ -5690,7 +5708,16 @@ int otyp;
 
     play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
     You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
-    cnv_trap_obj(otyp, 50 - rnl(50), ttmp, FALSE);
+
+    int skill_level = P_SKILL_LEVEL(P_DISARM_TRAP);
+    int getitem = (skill_level <= P_UNSKILLED ? !rn2(3) :
+        skill_level == P_BASIC ? rn2(3) :
+        skill_level == P_SKILLED ? rn2(6) : rn2(12));
+
+    if (getitem)
+        cnv_trap_obj(otyp, 50 - rnl(50), ttmp, FALSE);
+    else
+        deltrap(ttmp);
 
     /* gain skill for untrap */
     use_skill(P_DISARM_TRAP, ttmp->madeby_u ? 0 : 10);
