@@ -1264,6 +1264,8 @@ E char FDECL(unicode_to_char, (nhsym));
 E boolean NDECL(use_utf8_encoding);
 E int FDECL(converted_nh_poskey, (int*, int*, int*));
 E int NDECL(is_stdin_empty);
+E void FDECL(write_nhsym_utf8, (char**, nhsym));
+E void FDECL(write_text2buf_utf8, (char*, size_t, const char*));
 
 /* ### invent.c ### */
 

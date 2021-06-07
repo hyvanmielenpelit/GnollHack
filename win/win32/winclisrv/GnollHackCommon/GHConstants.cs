@@ -73,6 +73,19 @@ namespace GnollHackCommon
         BlinkingUnderline = 0,
         GreenBlock
     }
+    public enum GHMapMode
+    {
+        Normal = 0,
+        Travel,
+        Look,
+        NumMapModes
+    }
+    public enum NhGetPosMods
+    {
+        None = 0,
+        Click1,
+        Click2
+    }
 
     public class GHConstants
     {
@@ -83,6 +96,7 @@ namespace GnollHackCommon
         public const int MapRows = 21;
         public const int DefaultAnimationInterval = 25;
         public const int MaxMessageHistoryLength = 256;
+        public const long MoveOrPressTimeThreshold = 250; /* Milliseconds */
 
     }
 

@@ -37,6 +37,8 @@ namespace GnollHackClient
         public GHWindow[] Windows { get { return _ghWindows; } }
         public object WindowsLock { get { return _ghWindowsLock; } }
         public int MapWindowId { get; set; }
+        public int MessageWindowId { get; set; }
+        public int StatusWindowId { get; set; }
         private List<GHMsgHistoryItem> _message_history = new List<GHMsgHistoryItem>();
 
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
@@ -144,6 +146,10 @@ namespace GnollHackClient
                 ghwin.Create();
                 if (wintype == (int)GHWinType.Map)
                     MapWindowId = handle;
+                else if (wintype == (int)GHWinType.Message)
+                    MessageWindowId = handle;
+                else if (wintype == (int)GHWinType.Status)
+                    StatusWindowId = handle;
             }
             return handle;
         }
@@ -407,8 +413,14 @@ namespace GnollHackClient
 
         public void ClientCallback_Cliparound(int x, int y)
         {
-            _gamePage.ClipX = x;
-            _gamePage.ClipY = y;
+            if (_gamePage.MapMode == GHMapMode.Look)
+                return; /* Look mode ignores cliparound commands */
+
+            lock(_gamePage.ClipLock)
+            {
+                _gamePage.ClipX = x;
+                _gamePage.ClipY = y;
+            }
         }
 
         public void ClientCallback_RawPrint(string str)
@@ -449,7 +461,17 @@ namespace GnollHackClient
         }
         public void ClientCallback_PutStrEx(int win_id, int attributes, string str, int append)
         {
-            _ghWindows[win_id].PutStrEx(attributes, str, append);
+            if (win_id == MessageWindowId)
+            {
+                if((attributes & (int)MenuItemAttributes.Bold) != 0)
+                    ClientCallback_RawPrintBold(str);
+                else
+                    ClientCallback_RawPrint(str);
+            }
+            else
+            {
+                _ghWindows[win_id].PutStrEx(attributes, str, append);
+            }
         }
         public void ClientCallback_DelayOutput()
         {

@@ -144,13 +144,19 @@ void lib_curs(winid wid, int x, int y)
 
 void lib_putstr(winid wid, int attr, const char* text)
 {
-    lib_callbacks.callback_putstr_ex(wid, attr, text, 0);
+    lib_putstr_ex(wid, attr, text, 0);
 }
 
 void lib_putstr_ex(winid wid, int attr, const char* text, int param)
 {
-    lib_callbacks.callback_putstr_ex(wid, attr, text, param);
+    if (!text)
+        return;
+
+    char buf[BUFSIZ];
+    write_text2buf_utf8(buf, BUFSIZ, text);
+    lib_callbacks.callback_putstr_ex(wid, attr, buf, param);
 }
+
 
 void lib_display_file(const char* filename, BOOLEAN_P must_exist)
 {
@@ -200,28 +206,34 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
+    char buf[BUFSIZ];
+    write_text2buf_utf8(buf, BUFSIZ, str);
     int color = CLR_WHITE;
 #ifdef TEXTCOLOR
     get_menu_coloring(str, &color, &attr);
 #endif
-    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str, presel, color);
+    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, buf, presel, color);
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
+    char buf[BUFSIZ];
+    write_text2buf_utf8(buf, BUFSIZ, str);
     int color = info.color;
 #ifdef TEXTCOLOR
     get_menu_coloring(str, &color, &attr);
 #endif
-    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str, presel, color, (info.object && !(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? info.object->quan : 0),
+    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, buf, presel, color, (info.object && !(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? info.object->quan : 0),
         (unsigned long long)(info.object ? info.object->o_id : 0), (unsigned long long)(info.monster ? info.monster->m_id : 0), info.heading_for_group_accelerator, info.menu_flags);
 }
 
 void lib_end_menu(winid wid, const char* prompt)
 {
-    lib_callbacks.callback_end_menu(wid, prompt);
+    char buf[BUFSIZ];
+    write_text2buf_utf8(buf, BUFSIZ, prompt);
+    lib_callbacks.callback_end_menu(wid, buf);
 }
 
 int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
@@ -294,12 +306,16 @@ void lib_init_print_glyph(int initid)
 
 void lib_raw_print(const char* str)
 {
-    lib_callbacks.callback_raw_print(str);
+    char buf[BUFSIZ];
+    write_text2buf_utf8(buf, BUFSIZ, str);
+    lib_callbacks.callback_raw_print(buf);
 }
 
 void lib_raw_print_bold(const char* str)
 {
-    lib_callbacks.callback_raw_print_bold(str);
+    char buf[BUFSIZ];
+    write_text2buf_utf8(buf, BUFSIZ, str);
+    lib_callbacks.callback_raw_print_bold(buf);
 }
 
 int lib_nhgetch(void)
@@ -324,14 +340,18 @@ int lib_doprev_message(void)
 
 char lib_yn_function(const char* question, const char* choices, CHAR_P def)
 {
+    char buf[BUFSIZ];
+    write_text2buf_utf8(buf, BUFSIZ, question);
     char defs[2] = { 0,0 };
     defs[0] = def;
-    return convert_gnhch(lib_callbacks.callback_yn_function(question, choices, defs));
+    return convert_gnhch(lib_callbacks.callback_yn_function(buf, choices, defs));
 }
 
 void lib_getlin(const char* question, char* input)
 {
-    char* res = lib_callbacks.callback_getlin(question);
+    char buf[BUFSIZ];
+    write_text2buf_utf8(buf, BUFSIZ, question);
+    char* res = lib_callbacks.callback_getlin(buf);
     if(res && input) 
        strcpy(input, res);
 }

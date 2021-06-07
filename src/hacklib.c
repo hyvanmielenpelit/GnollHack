@@ -1581,5 +1581,59 @@ is_stdin_empty()
 #endif
 }
 
+void
+write_nhsym_utf8(buf_ptr, ch)
+char** buf_ptr;
+nhsym ch;
+{
+    if (!buf_ptr)
+        return;
+
+    char* buf = *buf_ptr;
+    if (!buf)
+        return;
+
+    unsigned long c = (unsigned long)ch;
+    if (c < 0x80) {
+        *buf++ = (char)c;
+    }
+    else if (c < 0x800) {
+        *buf++ = ((char)(0xC0 | (c >> 6)));
+        *buf++ = ((char)(0x80 | (c & 0x3F)));
+    }
+    else if (c < 0x10000) {
+        *buf++ = ((char)(0xE0 | (c >> 12)));
+        *buf++ = ((char)(0x80 | (c >> 6 & 0x3F)));
+        *buf++ = ((char)(0x80 | (c & 0x3F)));
+    }
+    else if (c < 0x200000) {
+        *buf++ = ((char)(0xF0 | (c >> 18)));
+        *buf++ = ((char)(0x80 | (c >> 12 & 0x3F)));
+        *buf++ = ((char)(0x80 | (c >> 6 & 0x3F)));
+        *buf++ = ((char)(0x80 | (c & 0x3F)));
+    }
+    *buf_ptr = buf;
+}
+
+void
+write_text2buf_utf8(buf, bufsize, text)
+char* buf;
+size_t bufsize;
+const char* text;
+{
+    nhsym sym;
+    char* tp = text;
+    char* bp = buf;
+    while (*tp && bp - buf < bufsize - 5)
+    {
+        sym = (nhsym)((uchar)*tp);
+        if (SYMHANDLING(H_IBM) && !flags.ibm2utf8 && sym >= 0 && sym < 256)
+            sym = cp437toUnicode[sym];
+        write_nhsym_utf8(&bp, sym);
+        tp++;
+    }
+    *bp = '\0';
+}
+
 
 /*hacklib.c*/
