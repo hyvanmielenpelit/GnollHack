@@ -3938,6 +3938,20 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "tree-wizened-enlargement", 0, 0,
+      TREE_ENLARGEMENT_TILES,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "tree-eucalyptus-enlargement", 0, 0,
+      TREE_ENLARGEMENT_TILES,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "dungeon-normal-upstairs-enlargement", 0, 0,
       UPSTAIRS_ENLARGEMENT_TILES,
       1, 2, 0,
