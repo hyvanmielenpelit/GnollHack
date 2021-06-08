@@ -2325,22 +2325,31 @@ mswin_wait_loop(int milliseconds)
         return;
 
     MSG msg;
-    SYSTEMTIME start_systime = { 0 };
-    FILETIME start_filetime = { 0 };
-    ULARGE_INTEGER start_largeint = { 0 };
-    GetSystemTimeAsFileTime(&start_filetime);
-    //GetSystemTime(&start_systime);
-    //SystemTimeToFileTime(&start_systime, &start_filetime);
-    start_largeint.LowPart = start_filetime.dwLowDateTime;
-    start_largeint.HighPart = start_filetime.dwHighDateTime;
+    //SYSTEMTIME start_systime = { 0 };
+    //FILETIME start_filetime = { 0 };
+    //ULARGE_INTEGER start_largeint = { 0 };
+    //GetSystemTimeAsFileTime(&start_filetime);
+    ////GetSystemTime(&start_systime);
+    ////SystemTimeToFileTime(&start_systime, &start_filetime);
+    //start_largeint.LowPart = start_filetime.dwLowDateTime;
+    //start_largeint.HighPart = start_filetime.dwHighDateTime;
 
-    SYSTEMTIME current_systime = { 0 };
-    FILETIME current_filetime = { 0 };
-    ULARGE_INTEGER current_largeint = { 0 };
-    ULONGLONG timepassed = 0;
-    ULONGLONG threshold = (ULONGLONG)milliseconds * 10000ULL;
-    if (threshold > 50000000ULL)
-        threshold = 50000000ULL;
+    //SYSTEMTIME current_systime = { 0 };
+    //FILETIME current_filetime = { 0 };
+    //ULARGE_INTEGER current_largeint = { 0 };
+    //ULONGLONG timepassed = 0;
+    //ULONGLONG threshold = (ULONGLONG)milliseconds * 10000ULL;
+    //if (threshold > 50000000ULL)
+    //    threshold = 50000000ULL;
+
+    LARGE_INTEGER li_frequency;
+    LARGE_INTEGER li_count_start;
+    LARGE_INTEGER li_count_now;
+    LARGE_INTEGER li_timepassed;
+    LARGE_INTEGER li_threshold;
+    (void)QueryPerformanceFrequency(&li_frequency);
+    li_threshold.QuadPart = (li_frequency.QuadPart * (LONGLONG)milliseconds) / 1000LL;
+    (void)QueryPerformanceCounter(&li_count_start);
 
     disallow_keyboard_commands_in_wait_loop = FALSE; //TRUE
 
@@ -2360,17 +2369,22 @@ mswin_wait_loop(int milliseconds)
             break;
         }
 
-        GetSystemTimeAsFileTime(&current_filetime);
+        //GetSystemTimeAsFileTime(&current_filetime);
         //GetSystemTime(&current_systime);
         //SystemTimeToFileTime(&current_systime, &current_filetime);
-        current_largeint.LowPart = current_filetime.dwLowDateTime;
-        current_largeint.HighPart = current_filetime.dwHighDateTime;
+        //current_largeint.LowPart = current_filetime.dwLowDateTime;
+        //current_largeint.HighPart = current_filetime.dwHighDateTime;
+        //timepassed = current_largeint.QuadPart - start_largeint.QuadPart;
 
-        timepassed = current_largeint.QuadPart - start_largeint.QuadPart;
+        (void)QueryPerformanceCounter(&li_count_now);
+        if (li_count_now.QuadPart < li_count_start.QuadPart)
+            break;
+        li_timepassed.QuadPart = li_count_now.QuadPart - li_count_start.QuadPart;
+
         program_state.animation_hangup = 0;
         if (mswin_have_input())
             break;
-    } while (timepassed < threshold);
+    } while (li_timepassed.QuadPart < li_threshold.QuadPart); // timepassed < threshold);
 
     disallow_keyboard_commands_in_wait_loop = FALSE;
 
