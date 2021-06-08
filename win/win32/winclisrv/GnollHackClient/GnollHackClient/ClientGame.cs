@@ -506,6 +506,30 @@ namespace GnollHackClient
 
         }
 
+        private int _msgIndex = 0;
+        public string ClientCallback_GetMsgHistory(byte init)
+        {
+            if (init != 0)
+                _msgIndex = 0;
+
+            string res = null;
+            if (_msgIndex < _message_history.Count)
+            {
+                res = _message_history[_msgIndex].Text;
+                _msgIndex++;
+                if (_msgIndex < 0)
+                    _msgIndex = 0;
+            }
+
+            return res;
+        }
+
+        public void ClientCallback_PutMsgHistory(string msg, byte is_restoring)
+        {
+            if(msg != null)
+                ClientCallback_RawPrint(msg);
+        }
+
         public void ClientCallback_StartMenu(int winid)
         {
             lock(_ghWindowsLock)
@@ -790,7 +814,7 @@ namespace GnollHackClient
         }
         public string ClientCallback_CharPtrBooleanDummy(byte value1)
         {
-            return "message here";
+            return null;
         }
         public string ClientCallback_CharVoidDummy()
         {

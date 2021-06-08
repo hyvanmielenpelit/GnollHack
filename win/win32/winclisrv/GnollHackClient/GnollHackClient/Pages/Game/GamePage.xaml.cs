@@ -990,6 +990,12 @@ namespace GnollHackClient.Pages.Game
                                         {
                                             queue.Enqueue(new GHResponse(_clientGame, GHRequestType.Location, x, y, mod));
                                         }
+
+                                        if(MapMode == GHMapMode.Travel)
+                                        {
+                                            /* Toggle travel mode off after pressing */
+                                            ToggleModeButton_Clicked(sender, e);
+                                        }
                                     }
                                 }
                                 else

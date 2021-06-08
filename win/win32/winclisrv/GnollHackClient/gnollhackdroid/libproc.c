@@ -446,12 +446,19 @@ void lib_preference_update(const char* pref)
 
 char* lib_getmsghistory(BOOLEAN_P init)
 {
-    return (char*)0;
+    char* res = lib_callbacks.callback_getmsghistory((int)init);
+    static char buf[BUFSIZ] = "";
+    if (res)
+    {
+        strncpy(buf, res, BUFSIZ - 1);
+        buf[BUFSIZ - 1] = '\0';
+    }
+    return res ? buf : 0;
 }
 
-void lib_putmsghistory(const char* msg, BOOLEAN_P param)
+void lib_putmsghistory(const char* msg, BOOLEAN_P is_restoring)
 {
-    return;
+    lib_callbacks.callback_putmsghistory(msg, is_restoring);
 }
 
 void lib_status_init(void)

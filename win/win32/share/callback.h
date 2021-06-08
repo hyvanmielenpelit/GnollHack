@@ -31,7 +31,7 @@ typedef void(__callconv* VoidIntIntConstCharCallback)(int, int, const char*);
 typedef void(__callconv* VoidIntConstCharCallback)(int, const char*);
 typedef void(__callconv* VoidIntIntConstCharIntCallback)(int, int, const char*, int);
 typedef void(__callconv* VoidConstCharIntCallback)(const char*, int);
-typedef void(__callconv* VoidConstCharBooleanCallback)(const char*, UCHAR_P);
+typedef void(__callconv* VoidConstCharBooleanCallback)(const char*, BOOLEAN_P);
 typedef int(__callconv* IntVoidCallback)();
 typedef unsigned char(__callconv* BooleanVoidCallback)();
 typedef char*(__callconv* CharVoidCallback)();
@@ -42,7 +42,7 @@ typedef unsigned char(__callconv* BooleanVoidPtrDoubleCallback)(void* , double);
 typedef unsigned char(__callconv* BooleanVoidPtrCallback)(void*);
 typedef int(__callconv* IntConstCharPtrConstCharPtrCharPtrCallback)(const char*, const char*, const char*);
 typedef char*(__callconv* GetLineCallback)(const char*);
-typedef char*(__callconv* CharPtrBooleanCallback)(UCHAR_P);
+typedef char*(__callconv* CharPtrBooleanCallback)(BOOLEAN_P);
 typedef void(__callconv* VoidIntIntIntIntIntLongIntULongCallback)(int, int, int, int, int, long, int, unsigned long);
 typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, UCHAR_P);
 
