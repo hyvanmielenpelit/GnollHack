@@ -506,12 +506,16 @@ namespace GnollHackClient
         }
         public void ClientCallback_StatusUpdate(int idx, string str, Int32 condbits, int cng, int percent, int color, IntPtr colormasksptr)
         {
+            return;
+
             if (_statusInfo == null)
                 return;
 
             Int32[] colormasks = new Int32[GHConstants.BlCondMaskBits];
-            IntPtr srcPtr = colormasksptr;
-            Marshal.Copy(srcPtr, colormasks, 0, GHConstants.BlCondMaskBits);
+            if(colormasksptr != null)
+            {
+                Marshal.Copy(colormasksptr, colormasks, 0, GHConstants.BlCondMaskBits);
+            }
         }
 
         private int _msgIndex = 0;

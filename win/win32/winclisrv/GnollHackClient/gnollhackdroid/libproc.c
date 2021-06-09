@@ -472,6 +472,8 @@ void lib_putmsghistory(const char* msg, BOOLEAN_P is_restoring)
 void lib_status_init(void)
 {
     lib_callbacks.callback_status_init();
+    WIN_STATUS = lib_create_nhwindow(NHW_STATUS);
+    lib_display_nhwindow(WIN_STATUS, FALSE);
 }
 
 void lib_status_finish(void)
@@ -502,22 +504,22 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
 
     lib_callbacks.callback_status_update(idx, txt, condbits, chg, percent, color, colormasks);
 
-    lib_curs(WIN_MAP, 0, 0);
+    lib_curs(WIN_STATUS, 0, 0);
     char* line1 = do_statusline1();
     char* loc;
     if ((loc = strstr(line1, "\\G")) != 0)
     {
         *loc = '\0';
     }
-    lib_putstr(WIN_MAP, 0, line1);
-    lib_curs(WIN_MAP, 0, 1);
+    lib_putstr(WIN_STATUS, 0, line1);
+    lib_curs(WIN_STATUS, 0, 1);
     char* line2 = do_statusline2();
     if ((loc = strstr(line2, "\\G")) != 0)
     {
         *loc = '\0';
     }
-    lib_putstr(WIN_MAP, 0, line2);
-    lib_curs(WIN_MAP, u.ux, u.uy);
+    lib_putstr(WIN_STATUS, 0, line2);
+    lib_curs(WIN_STATUS, u.ux, u.uy);
 }
 
 
