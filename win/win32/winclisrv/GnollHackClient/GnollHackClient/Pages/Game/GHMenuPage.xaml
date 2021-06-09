@@ -24,7 +24,7 @@
     <ContentPage.Content>
         <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical">
             <Label x:Name="HeaderLabel"
-                   FontFamily="Diablo" FontSize="Large" TextColor="White" FontAttributes="Bold" Margin="2,10,2,6" BackgroundColor="Transparent"
+                   FontFamily="Diablo" FontSize="22" TextColor="White" FontAttributes="Bold" Margin="2,10,2,6" BackgroundColor="Transparent"
                    HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
@@ -52,7 +52,7 @@
                                                         HorizontalOptions="CenterAndExpand"
                                                         HorizontalTextAlignment="Center"
                                                         FontFamily="Underwood"
-                                                        FontSize="12"
+                                                        FontSize="10"
                                                         WidthRequest="70"
                                                         Margin="1"
                                                         SelectedIndex="{Binding ConvertedCount}"
@@ -84,10 +84,10 @@
                                                        HorizontalTextAlignment="Center"
                                                        VerticalTextAlignment="Center"
                                                        FontFamily="Underwood"
-                                                       FontSize="12" 
+                                                       FontSize="10" 
                                                        BackgroundColor="#303030"
                                                        PropertyChanged="Entry_PropertyChanged"
-                                                       Margin="1,1,1,1"
+                                                       Margin="1"
                                                        PlaceholderColor="Gray" Placeholder="Count" 
                                                        Keyboard="Numeric" 
                                                        WidthRequest="70"

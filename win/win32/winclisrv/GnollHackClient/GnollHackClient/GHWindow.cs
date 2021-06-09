@@ -93,12 +93,13 @@ namespace GnollHackClient
             _winId = winid;
         }
 
+        private SKColor TransparentBlack = new SKColor(0, 0, 0, 128);
         public void Create()
         {
             Typeface = App.LatoRegular;
             TextColor = SKColors.White;
             TextSize = 42;
-            BackgroundColor = new SKColor(64, 64, 64, 128);
+            BackgroundColor = SKColors.Transparent;
             switch (_winType)
             {
                 case GHWinType.None:
@@ -108,8 +109,9 @@ namespace GnollHackClient
                     Left = 0;
                     Top = 0;
                     break;
-                case GHWinType.Status: /* Does not exist */
-                    TextSize = 36;
+                case GHWinType.Status:
+                    BackgroundColor = TransparentBlack;
+                    TextSize = 30;
                     Typeface = App.LatoRegular;
                     Left = 0;
                     Top = 0;
@@ -284,12 +286,6 @@ namespace GnollHackClient
                     if (CursY + 1 > _height)
                         _height = CursY + 1;
 
-                    if (WindowType != GHWinType.Map && WindowType != GHWinType.Status)
-                    {
-                        CursY++;
-                        CursX = 0;
-                    }
-
                     int i;
                     for (i = origCursX; i < CursX; i++)
                     {
@@ -311,6 +307,12 @@ namespace GnollHackClient
                     }
 
                     PutStrs[CursY].ConvertCurrentListFromArrays(curattrs, curclrs);
+
+                    if (WindowPrintStyle == GHWindowPrintLocations.PrintToWindow)
+                    {
+                        CursY++;
+                        CursX = 0;
+                    }
                 }
 
                 float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;

@@ -175,7 +175,7 @@ void lib_display_file(const char* filename, BOOLEAN_P must_exist)
     {
         if (must_exist) 
         {
-            char* message[BUFSZ];
+            char message[BUFSZ];
             Sprintf(message, "Warning! Could not find file: %s", filename);
             raw_print(message);
         }
@@ -312,7 +312,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     nhsym sym = 0;
     int ocolor = 0;
     unsigned long special = 0UL;
-    int res = mapglyph(layers, &sym, &ocolor, &special, x, y);
+    (void)mapglyph(layers, &sym, &ocolor, &special, x, y);
     symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (long)cp437toUnicode[sym] : (long)sym;
     lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special);
 }
@@ -665,6 +665,7 @@ void lib_status_flush(void)
     enum statusfields idx, * fieldlist;
     register int i, j;
 
+#if 0
     static int fieldorder_old[2][19] = { {
         BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_FLUSH,
         BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
@@ -674,6 +675,7 @@ void lib_status_flush(void)
         BL_EXP, BL_HD, BL_TIME, BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
         BL_FLUSH
     } };
+#endif
 
     static const int fieldorder1[] = { BL_TITLE, BL_STR, BL_DX,    BL_CO,    BL_IN,
                              BL_WI,    BL_CH, BL_GOLD,  /*BL_ALIGN,*/ BL_FLUSH, };
@@ -694,7 +696,7 @@ void lib_status_flush(void)
     static const int* fieldorders_2statuslines[MAX_STATUS_LINES + 1] = { fieldorder1, fieldorder2_2statuslines, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
     static const int* fieldorders[MAX_STATUS_LINES + 1] = { fieldorder1, fieldorder2, fieldorder3, fieldorder4, fieldorder5, fieldorder6, fieldorder7, fieldorder8, NULL };
 
-    int** fieldorder = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines : fieldorders;
+    const int** fieldorder = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines : fieldorders;
 
     for (j = 0; fieldorder[j] != NULL && j < iflags.wc2_statuslines; j++)
     {
@@ -708,9 +710,8 @@ void lib_status_flush(void)
 
 void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks)
 {
-    long cond, * condptr = (long*)ptr;
-    char* nb, * text = (char*)ptr;
-    int i;
+    long *condptr = (long*)ptr;
+    char *text = (char*)ptr;
 
     if (idx == BL_FLUSH || idx == BL_RESET)
     {
@@ -725,16 +726,20 @@ void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int co
             active_conditions = condptr ? *condptr : 0L;
             *status_vals[idx] = 0;
         }
-        else if (idx == BL_GOLD && *text == '\\')
-        {
-            // Remove encoded glyph value. (This might break in the future if the format is changed in botl.c)
-            text += 10;
-            Sprintf(status_vals[idx], "$%s", text);
-            status_colors[idx] = color;
-        }
         else
         {
-            Sprintf(status_vals[idx], status_fieldfmt[idx] ? status_fieldfmt[idx] : "%s", text ? text : "");
+            // Remove encoded glyph value. (This might break in the future if the format is changed in botl.c)
+            if (idx == BL_GOLD && *text == '\\' && strlen(text) > 10)
+            {
+                char gbuf[BUFSZ];
+                text += 10;
+                Sprintf(gbuf, "$%s", text);
+                Sprintf(status_vals[idx], status_fieldfmt[idx] ? status_fieldfmt[idx] : "%s", gbuf);
+            }
+            else
+            {
+                Sprintf(status_vals[idx], status_fieldfmt[idx] ? status_fieldfmt[idx] : "%s", text ? text : "");
+            }
             status_colors[idx] = color;
         }
     }

@@ -14,40 +14,82 @@
     </ContentPage.Resources>
     
     <ContentPage.Content>
-        <AbsoluteLayout x:Name="GameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-            <CollectionView x:Name="MessageHistoryView" BackgroundColor="Black" Margin="0,0,0,3"
-                            AbsoluteLayout.LayoutBounds="0.0, 5, 1.0, 80" AbsoluteLayout.LayoutFlags="WidthProportional" >
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="2">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" TextColor="{Binding IsLast, Converter={StaticResource ColorConverter}}" 
-                                   Text="{Binding Text}"
-                                   FontFamily="Underwood" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-            <Button x:Name="NumberPadZeroButton" AbsoluteLayout.LayoutBounds="1.0, 0, 0.35, 85" AbsoluteLayout.LayoutFlags="WidthProportional,XProportional"
-                    Clicked="NumberPadZeroButton_Clicked" Text="0" TextColor="Gray" BackgroundColor="Black" 
-                    FontFamily="DejaVuSansMono" FontSize="48" IsVisible="false" />
+        <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid HorizontalOptions="FillAndExpand" HeightRequest="70" Grid.Row="0" >
+                <!--AbsoluteLayout.LayoutBounds="0.0, 5, 1.0, 60" AbsoluteLayout.LayoutFlags="WidthProportional" -->
+                <CollectionView x:Name="MessageHistoryView" BackgroundColor="Black" Margin="0,0,0,3">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" TextColor="{Binding IsLast, Converter={StaticResource ColorConverter}}" 
+                                       Text="{Binding Text}"
+                                       FontSize="15"
+                                       FontFamily="Underwood" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <!--AbsoluteLayout.LayoutBounds="1.0, 0, 0.35, 65" AbsoluteLayout.LayoutFlags="WidthProportional,XProportional"-->
+                <Button x:Name="NumberPadZeroButton" HorizontalOptions="End" VerticalOptions="Center"
+                        Clicked="NumberPadZeroButton_Clicked" Text="0" TextColor="Gray" BackgroundColor="#88000000" 
+                        FontFamily="DejaVuSansMono" FontSize="48" Margin="0" Padding="0" IsVisible="false" />
+            </Grid>
+            <AbsoluteLayout x:Name="GameLayout" Grid.Row="1" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <skia:SKCanvasView x:Name="canvasView"
+                            EnableTouchEvents="True"
+                            PaintSurface="canvasView_PaintSurface" 
+                            Touch="canvasView_Touch"
+                            AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
+                            AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
+                </skia:SKCanvasView>
+                <Grid x:Name="YnGrid" Padding="5,5,5,5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" 
+                      AbsoluteLayout.LayoutBounds="0.0, 0.95, 1.0, 0.35"
+                      AbsoluteLayout.LayoutFlags="All" BackgroundColor="#88000000" IsVisible="false">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Text="?" x:Name="QuestionLabel" FontFamily="Diablo" FontSize="16" TextColor="White" VerticalTextAlignment="End" HorizontalOptions="Center" HeightRequest="70"  />
+                    <Grid  Grid.Row="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="0" IsVisible="false" CornerRadius="5"  />
+                        <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="1" IsVisible="false" CornerRadius="5"  />
+                        <Button Text="?" x:Name="SecondButton" Clicked="SecondButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="2" IsVisible="false" CornerRadius="5"  />
+                        <Button Text="?" x:Name="ThirdButton" Clicked="ThirdButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="3" IsVisible="false" CornerRadius="5"  />
+                        <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="4" IsVisible="false" CornerRadius="5"  />
+                    </Grid>
+                </Grid>
 
-            <skia:SKCanvasView x:Name="canvasView"
-                        EnableTouchEvents="True"
-                        PaintSurface="canvasView_PaintSurface" 
-                        Touch="canvasView_Touch"
-                        AbsoluteLayout.LayoutBounds="0.0, 80, 1.0, 0.55"
-                        AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
-            </skia:SKCanvasView>
-
-
-            <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.35"
-                           AbsoluteLayout.LayoutFlags="All" HeightRequest="160" BackgroundColor="Black">
+            </AbsoluteLayout>
+            <!-- AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.35"  AbsoluteLayout.LayoutFlags="All"  -->
+            <Grid  Grid.Row="2" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" 
+                               HeightRequest="160" BackgroundColor="Black">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
@@ -92,29 +134,6 @@
                 <Label Text="Fire" Grid.Row="2" Grid.Column="2" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
                 <Label Text="Cast" Grid.Row="2" Grid.Column="3" Margin="1,3,1,3" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontFamily="Lato-Regular" FontSize="12" TextColor="White" BackgroundColor="Transparent" InputTransparent="True" />
             </Grid>
-
-            <Grid x:Name="YnGrid" Padding="5,5,5,5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" 
-                  AbsoluteLayout.LayoutBounds="0.0, 0.55, 1.0, 0.20"
-                  AbsoluteLayout.LayoutFlags="All" HeightRequest="160" BackgroundColor="#88000000" IsVisible="false">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Label  Text="?" x:Name="QuestionLabel" FontFamily="Diablo" FontSize="16" TextColor="White" VerticalTextAlignment="End" HorizontalOptions="Center" HeightRequest="70" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"  />
-                <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="0" IsVisible="false" CornerRadius="5"  />
-                <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="1" IsVisible="false" CornerRadius="5"  />
-                <Button Text="?" x:Name="SecondButton" Clicked="SecondButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="2" IsVisible="false" CornerRadius="5"  />
-                <Button Text="?" x:Name="ThirdButton" Clicked="ThirdButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="3" IsVisible="false" CornerRadius="5"  />
-                <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="1" Grid.Column="4" IsVisible="false" CornerRadius="5"  />
-            </Grid>
-
-        </AbsoluteLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

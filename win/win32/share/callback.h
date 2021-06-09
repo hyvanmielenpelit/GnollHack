@@ -124,7 +124,7 @@ typedef char*(__callconv* GetCwdCallback)();
 typedef int (__callconv* MessageBoxCallback)(char*, char*, unsigned int);
 typedef VoidIntCallback OutRipBeginCallback;
 typedef VoidIntCallback OutRipEndCallback;
-typedef void(__callconv* FreeMemoryCallback)(void**);
+typedef void(__callconv* FreeMemoryCallback)(long long**);
 
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;

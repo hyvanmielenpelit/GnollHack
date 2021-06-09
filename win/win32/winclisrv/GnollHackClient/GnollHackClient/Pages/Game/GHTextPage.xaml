@@ -25,7 +25,7 @@
                             <Label Grid.Column="0" TextColor="White" 
                                    Text="{Binding Text}"
                                    FontFamily="Underwood" 
-                                   FontSize="20">
+                                   FontSize="16">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>

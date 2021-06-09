@@ -370,20 +370,20 @@ namespace GnollHackClient.Pages.Game
 
             if (((int)value & (int)MenuItemAttributes.Bold) != 0)
             {
-                return 24;
+                return 18;
             }
 
-            return 18;
+            return 15;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (((int)value & (int)MenuItemAttributes.Bold) != 0)
             {
-                return 24;
+                return 18;
             }
 
-            return 18;
+            return 15;
         }
     }
     public class FontColorConverter : IValueConverter
@@ -401,8 +401,8 @@ namespace GnollHackClient.Pages.Game
 
     public class PaddingConverter : IValueConverter
     {
-        private static Thickness NormalPadding = new Thickness(3, 6, 3, 6);
-        private static Thickness BiggerPadding = new Thickness(3, 15, 3, 6);
+        private static Thickness NormalPadding = new Thickness(3, 3, 2, 3);
+        private static Thickness BiggerPadding = new Thickness(3, 12, 2, 3);
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
 
