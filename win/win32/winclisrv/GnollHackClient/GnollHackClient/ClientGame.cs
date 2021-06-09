@@ -39,6 +39,7 @@ namespace GnollHackClient
         public int MapWindowId { get; set; }
         public int MessageWindowId { get; set; }
         public int StatusWindowId { get; set; }
+        private StatusInfo _statusInfo;
         private List<GHMsgHistoryItem> _message_history = new List<GHMsgHistoryItem>();
 
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
@@ -459,7 +460,7 @@ namespace GnollHackClient
                 queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, sendlist));
             }
         }
-        public void ClientCallback_PutStrEx(int win_id, int attributes, string str, int append)
+        public void ClientCallback_PutStrEx(int win_id, int attributes, string str, int append, int color)
         {
             if (win_id == MessageWindowId)
             {
@@ -470,7 +471,7 @@ namespace GnollHackClient
             }
             else
             {
-                _ghWindows[win_id].PutStrEx(attributes, str, append);
+                _ghWindows[win_id].PutStrEx(attributes, str, append, color);
             }
         }
         public void ClientCallback_DelayOutput()
@@ -491,19 +492,26 @@ namespace GnollHackClient
         }
         public void ClientCallback_StatusInit()
         {
-
+            _statusInfo = new StatusInfo();
         }
         public void ClientCallback_StatusFinish()
         {
-
+            if (_statusInfo == null)
+                return;
         }
         public void ClientCallback_StatusEnable(int value1, string value2, string value3, byte value4)
         {
-
+            if (_statusInfo == null)
+                return;
         }
-        public void ClientCallback_StatusUpdate(int value1, ref int value2, int value3, int value4, int value5, ref UInt32 value6)
+        public void ClientCallback_StatusUpdate(int idx, string str, Int32 condbits, int cng, int percent, int color, IntPtr colormasksptr)
         {
+            if (_statusInfo == null)
+                return;
 
+            Int32[] colormasks = new Int32[GHConstants.BlCondMaskBits];
+            IntPtr srcPtr = colormasksptr;
+            Marshal.Copy(srcPtr, colormasks, 0, GHConstants.BlCondMaskBits);
         }
 
         private int _msgIndex = 0;

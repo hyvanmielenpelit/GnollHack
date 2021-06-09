@@ -3904,7 +3904,7 @@ static int hpbar_percent, hpbar_color;
 static struct condition_t {
     long mask;
     const char *text[3]; /* 3: potential display vals, progressively shorter */
-} conditions[] = {
+} conditions[NUM_BL_CONDITIONS] = {
     /* The sequence order of these matters */
     { BL_MASK_GRAB,     { "Grab",     "Grb",   "Gr"  } },
     { BL_MASK_STONE,    { "Stone",    "Ston",  "Sto" } },

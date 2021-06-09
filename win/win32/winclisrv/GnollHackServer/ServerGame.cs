@@ -30,7 +30,7 @@ namespace GnollHackServer
             VoidIntBooleanCallback callback_display_nhwindow,
             VoidIntCallback callback_destroy_nhwindow,
             VoidIntIntIntCallback callback_curs,
-            VoidIntIntConstCharIntCallback callback_putstr_ex,
+            PutStrExColorCallback callback_putstr_ex,
             VoidIntIntConstCharCallback callback_putmixed,
             VoidConstCharBooleanCallback callback_display_file,
             VoidIntCallback callback_start_menu,
@@ -76,7 +76,7 @@ namespace GnollHackServer
             VoidVoidCallback callback_status_init,
             VoidVoidCallback callback_status_finish,
             VoidIntConstCharPtrConstCharPtrBooleanCallback callback_status_enablefield,
-            VoidIntIntPtrIntIntIntUlongPtrCallback callback_status_update,
+            StatusUpdateCallback callback_status_update,
             BooleanVoidCallback callback_can_suspend_yes,
             VoidVoidCallback callback_stretch_window,
             VoidUlongCallback callback_set_animation_timer,
@@ -173,7 +173,7 @@ namespace GnollHackServer
                 GameCallback_VoidIntBooleanDummy,
                 GameCallback_VoidIntDummy,
                 GameCallback_VoidIntIntIntDummy,
-                GameCallback_VoidIntIntConstCharIntDummy,
+                GameCallback_PutStrExColor,
                 GameCallback_VoidIntIntConstCharDummy,
                 GameCallback_VoidConstCharBooleanDummy,
                 GameCallback_VoidIntDummy,
@@ -219,7 +219,7 @@ namespace GnollHackServer
                 GameCallback_VoidVoidDummy,
                 GameCallback_VoidVoidDummy,
                 GameCallback_VoidIntConstCharPtrConstCharPtrBooleanDummy,
-                GameCallback_VoidIntIntPtrIntIntIntUlongPtrDummy,
+                GameCallback_StatusUpdate,
                 GameCallback_BooleanVoidDummy,
                 GameCallback_VoidVoidDummy,
                 GameCallback_VoidUlongDummy,
@@ -330,7 +330,7 @@ namespace GnollHackServer
         {
 
         }
-        protected void GameCallback_VoidIntIntConstCharIntDummy(int value1, int value2, string value3, int value4)
+        protected void GameCallback_PutStrExColor(int value1, int value2, string value3, int value4, int value5)
         {
 
         }
@@ -372,7 +372,7 @@ namespace GnollHackServer
             mod = 0;
             return 0;
         }
-        protected void GameCallback_VoidIntIntPtrIntIntIntUlongPtrDummy(int value1, ref int value2, int value3, int value4, int value5, ref UInt32 value6)
+        protected void GameCallback_StatusUpdate(int idx, string str, Int32 condbits, int chg, int percent, int color, IntPtr colormasks)
         {
             return;
         }

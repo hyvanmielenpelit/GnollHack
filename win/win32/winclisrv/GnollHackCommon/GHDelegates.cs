@@ -27,7 +27,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidIntIntConstCharCallback(int value1, int value2, [MarshalAs(UnmanagedType.LPStr)] string value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void VoidIntIntConstCharIntCallback(int value1, int value2, [MarshalAs(UnmanagedType.LPStr)] string value3, int value4);
+    public delegate void PutStrExColorCallback(int value1, int value2, [MarshalAs(UnmanagedType.LPStr)] string value3, int value4, int value5);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidConstCharIntCallback([MarshalAs(UnmanagedType.LPStr)] string value1, int value2);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -77,7 +77,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int NhPosKeyCallback(out int x, out int y, out int mod);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void VoidIntIntPtrIntIntIntUlongPtrCallback(int value1, ref int value2, int value3, int value4, int value5, ref UInt32 value6);
+    public delegate void StatusUpdateCallback(int value1, string value2, Int32 value3, int value4, int value5, int value6, IntPtr value7);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidUlongCallback(UInt32 value);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]

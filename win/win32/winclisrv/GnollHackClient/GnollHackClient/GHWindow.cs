@@ -216,7 +216,7 @@ namespace GnollHackClient
             ClientGamePage.SetMapSymbol(x, y, symbol, color, special);
         }
 
-        public void PutStrEx(int attributes, string str, int append)
+        public void PutStrEx(int attributes, string str, int append, int color)
         {
             lock (PutStrsLock)
             {

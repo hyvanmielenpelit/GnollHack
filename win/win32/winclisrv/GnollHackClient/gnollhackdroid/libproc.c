@@ -152,7 +152,15 @@ void lib_putstr_ex(winid wid, int attr, const char* text, int param)
     char buf[BUFSIZ];
     if(text)
         write_text2buf_utf8(buf, BUFSIZ, text);
-    lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, param);
+    lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, param, CLR_WHITE);
+}
+
+void lib_putstr_ex_color(winid wid, int attr, const char* text, int param, int color)
+{
+    char buf[BUFSIZ];
+    if (text)
+        write_text2buf_utf8(buf, BUFSIZ, text);
+    lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, param, color);
 }
 
 
@@ -479,7 +487,21 @@ void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt,
 
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks)
 {
-    //lib_callbacks.callback_status_update(idx, ptr, chg, percent, color, colormasks);
+    char* txt = (char*)0;
+    long condbits = 0L;
+    if (ptr)
+    {
+        if (idx != BL_CONDITION)
+            txt = ptr;
+        else
+        {
+            long* bits_ptr = (long*)ptr;
+            condbits = *bits_ptr;
+        }
+    }
+
+    lib_callbacks.callback_status_update(idx, txt, condbits, chg, percent, color, colormasks);
+
     lib_curs(WIN_MAP, 0, 0);
     char* line1 = do_statusline1();
     char* loc;
@@ -497,6 +519,217 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
     lib_putstr(WIN_MAP, 0, line2);
     lib_curs(WIN_MAP, u.ux, u.uy);
 }
+
+
+
+
+extern const char* status_fieldfmt[MAXBLSTATS];
+extern char* status_vals[MAXBLSTATS];
+static int status_colors[MAXBLSTATS];
+extern boolean status_activefields[MAXBLSTATS];
+static unsigned long* cond_hilites;
+static unsigned long active_conditions;
+static const char* cond_names[NUM_BL_CONDITIONS] = {
+    "Stone", "Slime", "Strngl", "Suffoc", "FoodPois", "TermIll", "Blind",
+    "Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot", "Lyca"
+};
+
+int hl_attridx_to_attrmask(int idx)
+{
+    switch (idx)
+    {
+    case HL_ATTCLR_DIM: 	return (1 << ATR_DIM);
+    case HL_ATTCLR_BLINK:	return (1 << ATR_BLINK);
+    case HL_ATTCLR_ULINE:   return (1 << ATR_ULINE);
+    case HL_ATTCLR_INVERSE:	return (1 << ATR_INVERSE);
+    case HL_ATTCLR_BOLD:	return (1 << ATR_BOLD);
+    }
+    return 0;
+}
+
+int hl_attrmask_to_attrmask(int mask)
+{
+    int attr = 0;
+    if (mask & HL_DIM) attr |= (1 << ATR_DIM);
+    if (mask & HL_BLINK) attr |= (1 << ATR_BLINK);
+    if (mask & HL_ULINE) attr |= (1 << ATR_ULINE);
+    if (mask & HL_INVERSE) attr |= (1 << ATR_INVERSE);
+    if (mask & HL_BOLD) attr |= (1 << ATR_BOLD);
+    return attr;
+}
+
+void lib_set_health_color(int nhcolor)
+{
+    //Callback set health color    
+}
+
+void lib_bot_updated()
+{
+    //Callback redraw status??    
+}
+
+
+int get_condition_color(int cond_mask)
+{
+    int i;
+    for (i = 0; i < CLR_MAX; i++)
+        if (cond_hilites[i] & cond_mask)
+            return i;
+    return CLR_WHITE;
+}
+
+int get_condition_attr(int cond_mask)
+{
+    int i;
+    int attr = 0;
+    for (i = CLR_MAX; i < BL_ATTCLR_MAX; i++)
+        if (cond_hilites[i] & cond_mask)
+            attr |= hl_attridx_to_attrmask(i);
+    return attr;
+}
+
+void print_conditions(const char** names)
+{
+    int i;
+    for (i = 0; i < NUM_BL_CONDITIONS; i++) {
+        int cond_mask = 1 << i;
+        if (active_conditions & cond_mask)
+        {
+            const char* name = names[i];
+            int color = get_condition_color(cond_mask);
+            int attr = get_condition_attr(cond_mask);
+            //debuglog("cond '%s' active. col=%s attr=%x", name, colname(color), attr);
+            lib_putstr_ex_color(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+            lib_putstr_ex_color(WIN_STATUS, attr, name, 0, color);
+        }
+    }
+}
+
+void print_status_field(int idx, boolean first_field)
+{
+    if (!status_activefields[idx])
+        return;
+
+    const char* val = status_vals[idx];
+
+    if (first_field && *val == ' ')
+    {
+        // Remove leading space of first field
+        val++;
+    }
+    else if (idx == BL_LEVELDESC && !first_field)
+    {
+        /* leveldesc has no leading space, so if we've moved
+           it past the first position, provide one */
+        lib_putstr_ex_color(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+    }
+
+    // Don't want coloring on leading spaces (ATR_INVERSE would show), so print those first
+    while (*val == ' ')
+    {
+        lib_putstr_ex_color(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+        val++;
+    }
+
+    if (idx == BL_CONDITION)
+    {
+        print_conditions(cond_names);
+    }
+    else
+    {
+        int attr = (status_colors[idx] >> 8) & 0xFF;
+        int color = status_colors[idx] & 0xFF;
+        if (idx == BL_HP)
+        {
+            lib_set_health_color(color);
+        }
+        else if (idx == BL_HPMAX)
+        {
+            // Set hp-max to same color as hp if it's not explicitly defined
+            if (color == NO_COLOR && attr == ATR_NONE && status_activefields[BL_HP])
+            {
+                attr = (status_colors[BL_HP] >> 8) & 0xFF;
+                color = status_colors[BL_HP] & 0xFF;
+            }
+        }
+        else if (idx == BL_ENEMAX)
+        {
+            // Set power-max to same color as power if it's not explicitly defined
+            if (color == NO_COLOR && attr == ATR_NONE && status_activefields[BL_ENE])
+            {
+                attr = (status_colors[BL_ENE] >> 8) & 0xFF;
+                color = status_colors[BL_ENE] & 0xFF;
+            }
+        }
+        lib_putstr_ex_color(WIN_STATUS, hl_attrmask_to_attrmask(attr), val, 0, color);
+        //	debuglog("field %d: %s color %s", idx+1, val, colname(color));
+    }
+}
+
+void lib_status_flush(void)
+{
+    enum statusfields idx, * fieldlist;
+    register int i;
+
+    static enum statusfields fieldorder_line1[] = {
+        BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_FLUSH,
+        BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
+        BL_FLUSH
+    };
+
+    static enum statusfields fieldorder_line2[] = {
+        BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_XP,
+        BL_EXP, BL_HD, BL_TIME, BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
+        BL_FLUSH
+    };
+
+    curs(WIN_STATUS, 1, 0);
+    for (i = 0; (idx = fieldorder_line1[i]) != BL_FLUSH; ++i)
+        print_status_field(idx, i == 0);
+
+    curs(WIN_STATUS, 1, 1);
+    for (i = 0; (idx = fieldorder_line2[i]) != BL_FLUSH; ++i)
+        print_status_field(idx, i == 0);
+
+    lib_bot_updated();
+}
+
+void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks)
+{
+    long cond, * condptr = (long*)ptr;
+    char* nb, * text = (char*)ptr;
+    int i;
+
+    if (idx == BL_FLUSH)
+    {
+        if (cond_hilites)
+            lib_status_flush();
+    }
+    else if (status_activefields[idx])
+    {
+        if (idx == BL_CONDITION)
+        {
+            cond_hilites = colormasks;
+            active_conditions = condptr ? *condptr : 0L;
+            *status_vals[idx] = 0;
+        }
+        else if (idx == BL_GOLD && *text == '\\')
+        {
+            // Remove encoded glyph value. (This might break in the future if the format is changed in botl.c)
+            text += 10;
+            Sprintf(status_vals[idx], "$%s", text);
+            status_colors[idx] = color;
+        }
+        else
+        {
+            Sprintf(status_vals[idx], status_fieldfmt[idx] ? status_fieldfmt[idx] : "%s", text ? text : "");
+            status_colors[idx] = color;
+        }
+    }
+}
+
+
+
 
 void lib_stretch_window(void)
 {

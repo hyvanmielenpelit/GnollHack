@@ -1029,7 +1029,7 @@ dll_putstr(winid wid, int attr, const char *text)
 void
 dll_putstr_ex(winid wid, int attr, const char *text, int app)
 {
-    dll_callbacks.callback_putstr_ex((int)wid, attr, text, app);
+    dll_callbacks.callback_putstr_ex((int)wid, attr, text, app, CLR_WHITE);
 
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
@@ -2572,7 +2572,7 @@ void
 dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *condmasks)
 {
     dll_logDebug("dll_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
-    dll_callbacks.callback_status_update(idx, ptr, chg, percent, color, condmasks);
+    dll_callbacks.callback_status_update(idx, ptr, chg, percent, color, condmasks, CLR_WHITE);
 
 #if 0
     long cond, * condptr = (long*)ptr;

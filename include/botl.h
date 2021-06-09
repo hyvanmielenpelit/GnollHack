@@ -37,12 +37,12 @@ enum statusfields {
     BL_RESET = -2,           /* Force everything to redisplay */
     BL_FLUSH = -1,           /* Finished cycling through bot fields */
     BL_TITLE = 0,
-    BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD,  /* 1..6 */
-    BL_SCORE, BL_CAP, BL_ENE, BL_ENEMAX, /* 7..12 */ // BL_ALIGN, 
-    BL_XP, BL_2WEP, BL_SKILL, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_HD, BL_TIME, BL_HUNGER, BL_HP, /* 13..20 */
-    BL_HPMAX, BL_LEVELDESC, BL_EXP, BL_CONDITION, /* 21..24 */
+    BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_ALIGN,
+    BL_SCORE, BL_CAP, BL_ENE, BL_ENEMAX, 
+    BL_XP, BL_2WEP, BL_SKILL, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_HD, BL_TIME, BL_HUNGER, BL_HP,
+    BL_HPMAX, BL_LEVELDESC, BL_EXP, BL_CONDITION,
     BL_PARTYSTATS, BL_PARTYSTATS2, BL_PARTYSTATS3, BL_PARTYSTATS4, BL_PARTYSTATS5,
-    MAXBLSTATS /* [25] */
+    MAXBLSTATS /* [32] */
 };
 
 enum relationships { NO_LTEQGT = -1,
@@ -55,30 +55,57 @@ enum relationships { NO_LTEQGT = -1,
 /* Boolean condition bits for the condition mask */
 
 /* clang-format off */
-#define BL_MASK_STONE           0x00000001UL
-#define BL_MASK_SLIME           0x00000002UL
-#define BL_MASK_STRNGL          0x00000004UL
-#define BL_MASK_SUFFOC          0x00000008UL
-#define BL_MASK_FOODPOIS        0x00000010UL
-#define BL_MASK_TERMILL         0x00000020UL
-#define BL_MASK_BLIND           0x00000040UL
-#define BL_MASK_DEAF            0x00000080UL
-#define BL_MASK_STUN            0x00000100UL
-#define BL_MASK_CONF            0x00000200UL
-#define BL_MASK_HALLU           0x00000400UL
-#define BL_MASK_LEV             0x00000800UL
-#define BL_MASK_FLY             0x00001000UL
-#define BL_MASK_RIDE            0x00002000UL
-#define BL_MASK_SLOWED          0x00004000UL
-#define BL_MASK_PARALYZED       0x00008000UL
-#define BL_MASK_FEARFUL         0x00010000UL
-#define BL_MASK_SLEEPING        0x00020000UL
-#define BL_MASK_CANCELLED       0x00040000UL
-#define BL_MASK_SILENCED        0x00080000UL
-#define BL_MASK_GRAB            0x00100000UL
-#define BL_MASK_ROT             0x00200000UL
-#define BL_MASK_LYCANTHROPY     0x00400000UL
-#define BL_MASK_BITS            23 /* number of mask bits that can be set */
+enum bl_conditions {
+    BL_COND_STONE = 0,
+    BL_COND_SLIME,
+    BL_COND_STRNGL,
+    BL_COND_SUFFOC,
+    BL_COND_FOODPOIS,
+    BL_COND_TERMILL,
+    BL_COND_BLIND,
+    BL_COND_DEAF,
+    BL_COND_STUN,
+    BL_COND_CONF,
+    BL_COND_HALLU,
+    BL_COND_LEV,
+    BL_COND_FLY,
+    BL_COND_RIDE,
+    BL_COND_SLOWED,
+    BL_COND_PARALYZED,
+    BL_COND_FEARFUL,
+    BL_COND_SLEEPING,
+    BL_COND_CANCELLED,
+    BL_COND_SILENCED,
+    BL_COND_GRAB,
+    BL_COND_ROT,
+    BL_COND_LYCANTHROPY,
+    NUM_BL_CONDITIONS
+};
+
+#define BL_MASK_STONE           (1UL << BL_COND_STONE) // 0x00000001UL
+#define BL_MASK_SLIME           (1UL << BL_COND_SLIME) // 0x00000002UL
+#define BL_MASK_STRNGL          (1UL << BL_COND_STRNGL) // 0x00000004UL
+#define BL_MASK_SUFFOC          (1UL << BL_COND_SUFFOC) // 0x00000008UL
+#define BL_MASK_FOODPOIS        (1UL << BL_COND_FOODPOIS) // 0x00000010UL
+#define BL_MASK_TERMILL         (1UL << BL_COND_TERMILL) // 0x00000020UL
+#define BL_MASK_BLIND           (1UL << BL_COND_BLIND) // 0x00000040UL
+#define BL_MASK_DEAF            (1UL << BL_COND_DEAF) // 0x00000080UL
+#define BL_MASK_STUN            (1UL << BL_COND_STUN) // 0x00000100UL
+#define BL_MASK_CONF            (1UL << BL_COND_CONF) // 0x00000200UL
+#define BL_MASK_HALLU           (1UL << BL_COND_HALLU) // 0x00000400UL
+#define BL_MASK_LEV             (1UL << BL_COND_LEV) // 0x00000800UL
+#define BL_MASK_FLY             (1UL << BL_COND_FLY) // 0x00001000UL
+#define BL_MASK_RIDE            (1UL << BL_COND_RIDE) // 0x00002000UL
+#define BL_MASK_SLOWED          (1UL << BL_COND_SLOWED) // 0x00004000UL
+#define BL_MASK_PARALYZED       (1UL << BL_COND_PARALYZED) // 0x00008000UL
+#define BL_MASK_FEARFUL         (1UL << BL_COND_FEARFUL) // 0x00010000UL
+#define BL_MASK_SLEEPING        (1UL << BL_COND_SLEEPING) // 0x00020000UL
+#define BL_MASK_CANCELLED       (1UL << BL_COND_CANCELLED) // 0x00040000UL
+#define BL_MASK_SILENCED        (1UL << BL_COND_SILENCED) // 0x00080000UL
+#define BL_MASK_GRAB            (1UL << BL_COND_GRAB) // 0x00100000UL
+#define BL_MASK_ROT             (1UL << BL_COND_ROT) // 0x00200000UL
+#define BL_MASK_LYCANTHROPY     (1UL << BL_COND_LYCANTHROPY) // 0x00400000UL
+#define BL_MASK_BITS            NUM_BL_CONDITIONS /* number of mask bits that can be set */
 /* clang-format on */
 
 #define VIA_WINDOWPORT() \
