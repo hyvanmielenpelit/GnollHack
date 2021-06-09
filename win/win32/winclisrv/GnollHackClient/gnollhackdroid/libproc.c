@@ -20,7 +20,8 @@ struct window_procs lib_procs = {
 #ifdef STATUS_HILITES
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
-    WC2_PREFERRED_SCREEN_SCALE, lib_init_nhwindows, lib_player_selection, lib_askname,
+    WC2_PREFERRED_SCREEN_SCALE | WC2_STATUSLINES | WC2_AUTOSTATUSLINES,
+    lib_init_nhwindows, lib_player_selection, lib_askname,
     lib_get_nh_event, lib_exit_nhwindows, lib_suspend_nhwindows,
     lib_resume_nhwindows, lib_create_nhwindow, lib_clear_nhwindow,
     lib_display_nhwindow, lib_destroy_nhwindow, lib_curs, lib_putstr,
@@ -498,7 +499,7 @@ void lib_status_finish(void)
 }
 
 void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt,
-    int enable)
+    BOOLEAN_P enable)
 {
     lib_callbacks.callback_status_enablefield(fieldidx, nm, fmt, enable);
     genl_status_enablefield(fieldidx, nm, fmt, enable);
@@ -507,8 +508,8 @@ void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt,
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks)
 {
     __lib_status_update(idx, ptr, chg, percent, color, colormasks);
-    return;
 
+#if 0
     char* txt = (char*)0;
     long condbits = 0L;
     if (ptr)
@@ -523,23 +524,7 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
     }
 
     lib_callbacks.callback_status_update(idx, txt, condbits, chg, percent, color, colormasks);
-
-    lib_curs(WIN_STATUS, 0, 0);
-    char* line1 = do_statusline1();
-    char* loc;
-    if ((loc = strstr(line1, "\\G")) != 0)
-    {
-        *loc = '\0';
-    }
-    lib_putstr(WIN_STATUS, 0, line1);
-    lib_curs(WIN_STATUS, 0, 1);
-    char* line2 = do_statusline2();
-    if ((loc = strstr(line2, "\\G")) != 0)
-    {
-        *loc = '\0';
-    }
-    lib_putstr(WIN_STATUS, 0, line2);
-    lib_curs(WIN_STATUS, u.ux, u.uy);
+#endif
 }
 
 
@@ -678,27 +663,45 @@ void print_status_field(int idx, boolean first_field)
 void lib_status_flush(void)
 {
     enum statusfields idx, * fieldlist;
-    register int i;
+    register int i, j;
 
-    static enum statusfields fieldorder_line1[] = {
+    static int fieldorder_old[2][19] = { {
         BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_FLUSH,
         BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
         BL_FLUSH
-    };
-
-    static enum statusfields fieldorder_line2[] = {
+    }, {
         BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_XP,
         BL_EXP, BL_HD, BL_TIME, BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
         BL_FLUSH
-    };
+    } };
 
-    curs(WIN_STATUS, 1, 0);
-    for (i = 0; (idx = fieldorder_line1[i]) != BL_FLUSH; ++i)
-        print_status_field(idx, i == 0);
+    static const int fieldorder1[] = { BL_TITLE, BL_STR, BL_DX,    BL_CO,    BL_IN,
+                             BL_WI,    BL_CH, BL_GOLD,  /*BL_ALIGN,*/ BL_FLUSH, };
+    static const int fieldorder2[] = { BL_LEVELDESC, BL_HP,   BL_HPMAX,
+                                 BL_ENE,       BL_ENEMAX,    BL_AC,  BL_MC_LVL, BL_MC_PCT,    BL_MOVE,  BL_XP,
+                                 BL_EXP,       BL_HD,        BL_TIME, BL_SCORE, BL_FLUSH };
+    static const int fieldorder2_2statuslines[] = { BL_LEVELDESC, BL_HP,   BL_HPMAX,
+                                 BL_ENE,       BL_ENEMAX,    BL_AC,    BL_MC_LVL, BL_MC_PCT,    BL_MOVE,   BL_XP,
+                                 BL_EXP,       BL_HD,        BL_TIME,  BL_2WEP,   BL_SKILL,     BL_HUNGER, BL_CAP,  BL_CONDITION, BL_FLUSH };
+    static const int fieldorder3[] = { BL_2WEP, BL_SKILL,     BL_HUNGER,
+                                 BL_CAP,       BL_CONDITION, BL_FLUSH };
+    static const int fieldorder4[] = { BL_PARTYSTATS, BL_FLUSH };
+    static const int fieldorder5[] = { BL_PARTYSTATS2, BL_FLUSH };
+    static const int fieldorder6[] = { BL_PARTYSTATS3, BL_FLUSH };
+    static const int fieldorder7[] = { BL_PARTYSTATS4, BL_FLUSH };
+    static const int fieldorder8[] = { BL_PARTYSTATS5, BL_FLUSH };
 
-    curs(WIN_STATUS, 1, 1);
-    for (i = 0; (idx = fieldorder_line2[i]) != BL_FLUSH; ++i)
-        print_status_field(idx, i == 0);
+    static const int* fieldorders_2statuslines[MAX_STATUS_LINES + 1] = { fieldorder1, fieldorder2_2statuslines, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+    static const int* fieldorders[MAX_STATUS_LINES + 1] = { fieldorder1, fieldorder2, fieldorder3, fieldorder4, fieldorder5, fieldorder6, fieldorder7, fieldorder8, NULL };
+
+    int** fieldorder = iflags.wc2_statuslines == 2 ? fieldorders_2statuslines : fieldorders;
+
+    for (j = 0; fieldorder[j] != NULL && j < iflags.wc2_statuslines; j++)
+    {
+        curs(WIN_STATUS, 1, j);
+        for (i = 0; (idx = fieldorder[j][i]) != BL_FLUSH; i++)
+            print_status_field(idx, i == 0);
+    }
 
     lib_bot_updated();
 }
@@ -709,9 +712,9 @@ void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int co
     char* nb, * text = (char*)ptr;
     int i;
 
-    if (idx == BL_FLUSH)
+    if (idx == BL_FLUSH || idx == BL_RESET)
     {
-        if (cond_hilites)
+//        if (cond_hilites)
             lib_status_flush();
     }
     else if (status_activefields[idx])

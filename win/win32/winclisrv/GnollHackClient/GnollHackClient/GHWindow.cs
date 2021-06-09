@@ -93,7 +93,7 @@ namespace GnollHackClient
             Typeface = App.LatoRegular;
             TextColor = SKColors.White;
             TextSize = 42;
-            BackgroundColor = new SKColor(25, 25, 25);
+            BackgroundColor = new SKColor(64, 64, 64, 128);
             switch (_winType)
             {
                 case GHWinType.None:
@@ -250,21 +250,21 @@ namespace GnollHackClient
                     }
                     else
                     {
-                        if (PutStrs[CursY] == null || PutStrs[CursY] == "")
-                        {
-                            PutStrs[CursY] = str;
-                        }
-                        else if (CursX <= PutStrs[CursY].Length)
-                        {
+                        int len = str.Length;
+                        string curstr = PutStrs[CursY] == null ? "" : PutStrs[CursY];
+                        int curlen = curstr.Length;
 
-                            PutStrs[CursY] = PutStrs[CursY].Substring(0, CursX) + str;
-                        }
-                        else
+                        if (CursX > curlen)
                         {
-                            int n = CursX - 1 - PutStrs[CursY].Length;
+                            int n = CursX - curlen;
                             string spaces = new String(' ', n);
-                            PutStrs[CursY] = PutStrs[CursY].Substring(0, CursX - 1) + spaces + str;
+                            curstr = curstr + spaces;
+                            curlen = curstr.Length;
                         }
+
+                        string leftstr = CursX <= 0 ? "" : curstr.Substring(0, CursX);
+                        //string rightstr = curstr.Length <= CursX + len ? "" : curstr.Substring(CursX + len, curlen - (CursX + len));
+                        PutStrs[CursY] = leftstr + str; // + rightstr;
 
                         CursX += str.Length;
 
