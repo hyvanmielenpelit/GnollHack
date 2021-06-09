@@ -488,7 +488,10 @@ namespace GnollHackClient
         }
         public void ClientCallback_PreferenceUpdate(string str)
         {
-
+            if(str == "statuslines")
+            {
+                _ghWindows[StatusWindowId].Clear();
+            }
         }
         public void ClientCallback_StatusInit()
         {

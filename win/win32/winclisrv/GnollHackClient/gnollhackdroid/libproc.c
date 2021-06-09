@@ -451,6 +451,10 @@ void lib_outrip(winid wid, int how, time_t when)
 void lib_preference_update(const char* pref)
 {
     lib_callbacks.callback_preference_update(pref);
+    if (!strcmp(pref, "statuslines"))
+    {
+        context.botl = context.botlx = 1;
+    }
 }
 
 char* lib_getmsghistory(BOOLEAN_P init)
@@ -611,11 +615,40 @@ void print_status_field(int idx, boolean first_field)
         // Remove leading space of first field
         val++;
     }
+    else if (!strcmp(val, " "))
+    {
+        // No extra spaces if the field is just a space
+        val++;
+    }
     else if (idx == BL_LEVELDESC && !first_field)
     {
         /* leveldesc has no leading space, so if we've moved
            it past the first position, provide one */
         lib_putstr_ex_color(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+    }
+    else if (iflags.wc2_statuslines >= 3)
+    {
+        /* looks like first field */
+        if (idx == BL_SKILL && *val == ' ')
+        {
+            if (!strcmp(status_vals[BL_2WEP], " "))
+                val++;
+        }
+        else if (idx == BL_HUNGER && *val == ' ')
+        {
+            if (!strcmp(status_vals[BL_2WEP], " ") && !strcmp(status_vals[BL_SKILL], " "))
+                val++;
+        }
+        else if (idx == BL_CAP && *val == ' ')
+        {
+            if (!strcmp(status_vals[BL_2WEP], " ") && !strcmp(status_vals[BL_SKILL], " ") && !strcmp(status_vals[BL_HUNGER], " "))
+                val++;
+        }
+        else if (idx == BL_CONDITION && *val == ' ')
+        {
+            if (!strcmp(status_vals[BL_2WEP], " ") && !strcmp(status_vals[BL_SKILL], " ") && !strcmp(status_vals[BL_HUNGER], " ") && !strcmp(status_vals[BL_CAP], " "))
+                val++;
+        }
     }
 
     // Don't want coloring on leading spaces (ATR_INVERSE would show), so print those first
