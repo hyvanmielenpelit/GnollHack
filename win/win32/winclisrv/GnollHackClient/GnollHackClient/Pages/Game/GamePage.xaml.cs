@@ -228,7 +228,7 @@ namespace GnollHackClient.Pages.Game
                                 ClearWindowView(req.RequestInt);
                                 break;
                             case GHRequestType.DisplayWindowView:
-                                DisplayWindowView(req.RequestInt, req.RequestStringTable);
+                                DisplayWindowView(req.RequestInt, req.RequestPutStrItems);
                                 break;
                         }
                     }
@@ -251,22 +251,14 @@ namespace GnollHackClient.Pages.Game
 
         }
 
-        private void DisplayWindowView(int winid, List<string> strs)
+        private void DisplayWindowView(int winid, List<GHPutStrItem> strs)
         {
             ShowWindowPage(strs);
         }
-        private async void ShowWindowPage(List<string> strs)
+        private async void ShowWindowPage(List<GHPutStrItem> strs)
         {
-            List<GHPutStrItem> list = new List<GHPutStrItem>();
-            foreach (string str in strs)
-            {
-                if (str == null)
-                    break;
-                list.Add(new GHPutStrItem(str));
-            }
-            var cpage = new GHTextPage(this, list);
+            var cpage = new GHTextPage(this, strs);
             await App.Current.MainPage.Navigation.PushModalAsync(cpage);
-
         }
 
         private void PrintTopLine(string str, uint attributes)
@@ -542,7 +534,20 @@ namespace GnollHackClient.Pages.Game
             }
 
             float tx = 0, ty = 0;
-            lock(_mapDataLock)
+            float startx = 0, starty = 0;
+            if(_clientGame != null)
+            {
+                lock (_clientGame.WindowsLock)
+                {
+                    if (_clientGame.Windows[_clientGame.MapWindowId] != null)
+                    {
+                        startx = _clientGame.Windows[_clientGame.MapWindowId].Left;
+                        starty = _clientGame.Windows[_clientGame.MapWindowId].Top;
+                    }
+                }
+            }
+
+            lock (_mapDataLock)
             {
                 for (int mapx = startX; mapx <= endX; mapx++)
                 {
@@ -552,8 +557,8 @@ namespace GnollHackClient.Pages.Game
                         {
                             str = _mapData[mapx, mapy].Symbol;
                             textPaint.Color = _mapData[mapx, mapy].Color;
-                            tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                            ty = (offsetY + _mapOffsetY + height * (float)mapy);
+                            tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
+                            ty = (startY + offsetY + _mapOffsetY + height * (float)mapy);
                             if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
                             {
                                 textPaint.Style = SKPaintStyle.Fill;
@@ -586,8 +591,8 @@ namespace GnollHackClient.Pages.Game
                     int cx = _mapCursorX, cy = _mapCursorY;
                     str = "_";
                     textPaint.Color = SKColors.White;
-                    tx = (offsetX + _mapOffsetX + width * (float)cx);
-                    ty = (offsetY + _mapOffsetY + height * (float)cy);
+                    tx = (startX + offsetX + _mapOffsetX + width * (float)cx);
+                    ty = (startY + offsetY + _mapOffsetY + height * (float)cy);
                     canvas.DrawText(str, tx, ty, textPaint);
                 }
             }
@@ -600,8 +605,7 @@ namespace GnollHackClient.Pages.Game
                     for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
                     {
                         if (_clientGame.Windows[i].Visible &&
-                            _clientGame.Windows[i].WindowType != GHWinType.Menu && 
-                            _clientGame.Windows[i].WindowType != GHWinType.Text)
+                            _clientGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.PrintToMap)
                         {
                             textPaint.Typeface = _clientGame.Windows[i].Typeface;
                             textPaint.TextSize = _clientGame.Windows[i].TextSize;
@@ -632,13 +636,29 @@ namespace GnollHackClient.Pages.Game
                             lock(_clientGame.Windows[i].PutStrsLock)
                             {
                                 int j = 0;
-                                foreach (string str2 in _clientGame.Windows[i].PutStrs)
+                                foreach (GHPutStrItem putstritem in _clientGame.Windows[i].PutStrs)
                                 {
-                                    str = str2;
-                                    textPaint.Color = SKColors.White;
-                                    tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
-                                    ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
-                                    canvas.DrawText(str, tx, ty, textPaint);
+                                    int pos = 0;
+                                    float xpos = 0;
+                                    foreach(GHPutStrInstructions instr in putstritem.InstructionList)
+                                    {
+                                        if (putstritem.Text == null)
+                                            str = "";
+                                        else if(pos + instr.PrintLength <= putstritem.Text.Length)
+                                            str = putstritem.Text.Substring(pos, instr.PrintLength);
+                                        else if (putstritem.Text.Length - pos > 0)
+                                            str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
+                                        else
+                                            str = "";
+                                        pos += str.Length;
+                                        textPaint.Color = NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
+                                        textPaint.MeasureText(str.Replace(' ', '_'), ref textBounds);
+                                        /* attributes */
+                                        tx = xpos + winRect.Left + _clientGame.Windows[i].Padding.Left;
+                                        ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+                                        canvas.DrawText(str, tx, ty, textPaint);
+                                        xpos += textBounds.Width;
+                                    }
                                     j++;
                                 }
                             }
@@ -662,72 +682,72 @@ namespace GnollHackClient.Pages.Game
                                 str = "\u2190";
                             else
                                 str = "4";
-                            tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
+                            tx = startX + canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = startY + canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
                             break;
                         case 1:
                             if (_showDirections)
                                 str = "\u2191";
                             else
                                 str = "8";
-                            tx = canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
+                            tx = startX + canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = startY + canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 2:
                             if (_showDirections)
                                 str = "\u2192";
                             else
                                 str = "6";
-                            tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
+                            tx = startX + canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = startY + canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
                             break;
                         case 3:
                             if (_showDirections)
                                 str = "\u2193";
                             else
                                 str = "2";
-                            tx = canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
+                            tx = startX + canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = startY + canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                         case 4:
                             if (_showDirections)
                                 str = "\u2196";
                             else
                                 str = "7";
-                            tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
+                            tx = startX + canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = startY + canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 5:
                             if (_showDirections)
                                 str = "";
                             else
                                 str = "5";
-                            tx = canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
+                            tx = startX + canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = startY + canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
                             break;
                         case 6:
                             if (_showDirections)
                                 str = "\u2197";
                             else
                                 str = "9";
-                            tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
+                            tx = startX + canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = startY + canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 7:
                             if (_showDirections)
                                 str = "\u2198";
                             else
                                 str = "3";
-                            tx = canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
+                            tx = startX + canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = startY + canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                         case 8:
                             if (_showDirections)
                                 str = "\u2199";
                             else
                                 str = "1";
-                            tx = canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
+                            tx = startX + canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = startY + canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                     }
                     canvas.DrawText(str, tx, ty, textPaint);
@@ -1054,7 +1074,7 @@ namespace GnollHackClient.Pages.Game
 
         public static SKColor NHColor2SKColor(nhcolor nhcolor)
         {
-            SKColor res = SKColors.Gray;
+            SKColor res = SKColors.White;
             switch (nhcolor)
             {
                 case nhcolor.CLR_BLACK:

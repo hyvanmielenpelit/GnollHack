@@ -462,7 +462,7 @@ namespace GnollHackClient
         }
         public void ClientCallback_PutStrEx(int win_id, int attributes, string str, int append, int color)
         {
-            if (win_id == MessageWindowId)
+            if (_ghWindows[win_id].WindowPrintStyle == GHWindowPrintLocations.RawPrint)
             {
                 if((attributes & (int)MenuItemAttributes.Bold) != 0)
                     ClientCallback_RawPrintBold(str);

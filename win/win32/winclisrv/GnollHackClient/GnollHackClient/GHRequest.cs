@@ -37,7 +37,7 @@ namespace GnollHackClient
         public int RequestInt { get; set; }
         public List<GHMsgHistoryItem> MessageHistory { get; set; }
         public string Responses { get; set; }
-        public List<string> RequestStringTable { get; set; }
+        public List<GHPutStrItem> RequestPutStrItems { get; set; }
 
         public GHRequest()
         {
@@ -55,12 +55,12 @@ namespace GnollHackClient
             RequestType = requesttype;
             RequestInt = requestint;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, List<string> strs)
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, List<GHPutStrItem> strs)
         {
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             RequestInt = requestint;
-            RequestStringTable = strs;
+            RequestPutStrItems = strs;
         }
         public GHRequest(ClientGame clientgame, GHRequestType requesttype, GHWindow requestingGHWindow, GHMenuInfo menuinfo)
         {

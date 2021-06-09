@@ -51,9 +51,9 @@ namespace GnollHackClient
         public GamePage ClientGamePage { get { return _gamePage; } }
         public int WindowID { get { return _winId; } }
 
-        private List<string> _putStrs = new List<string>();
+        private List<GHPutStrItem> _putStrs = new List<GHPutStrItem>();
         public object PutStrsLock = new object();
-        public List<string> PutStrs { get { return _putStrs; } }
+        public List<GHPutStrItem> PutStrs { get { return _putStrs; } }
 
         public bool Visible { get; set; }
         private int _width = 0;
@@ -63,6 +63,11 @@ namespace GnollHackClient
 
         public int WidthInChars { get { return _width; } }
         public int HeightInChars { get { return _height; } }
+        public GHWindowPrintLocations WindowPrintStyle 
+        { get { 
+                return (_winType == GHWinType.Message ? GHWindowPrintLocations.RawPrint : _winType == GHWinType.Map || _winType == GHWinType.Status ? GHWindowPrintLocations.PrintToMap : GHWindowPrintLocations.PrintToWindow);
+              } 
+        }
         public float Left { get; set; }
         public float Top { get; set; }
         public float Right { get { return Left + _pixelWidth; } }
@@ -110,10 +115,10 @@ namespace GnollHackClient
                     Top = 0;
                     break;
                 case GHWinType.Map:
-                    TextSize = 36;
+                    TextSize = 30;
                     Typeface = App.LatoRegular;
                     Left = 0;
-                    Top = 0;
+                    Top = 120;
                     break;
                 case GHWinType.Menu:
                     Typeface = App.UnderwoodTypeface;
@@ -195,7 +200,7 @@ namespace GnollHackClient
                 ConcurrentQueue<GHRequest> queue;
                 if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
                 {
-                    List<string> clonestrs = new List<string>();
+                    List<GHPutStrItem> clonestrs = new List<GHPutStrItem>();
                     lock (PutStrsLock)
                     {
                         clonestrs.AddRange(PutStrs);
@@ -230,62 +235,82 @@ namespace GnollHackClient
                 {
                     for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
                     {
-                        PutStrs.Add("");
+                        PutStrs.Add(new GHPutStrItem(""));
                     }
                 }
 
                 if (CursY >= 0)
                 {
+                    if (PutStrs[CursY] == null)
+                        PutStrs[CursY] = new GHPutStrItem("");
+                    else if (PutStrs[CursY].Text == null)
+                        PutStrs[CursY].Text = "";
+
+                    int len = str.Length;
+                    string curstr = PutStrs[CursY].Text;
+                    int curlen = curstr.Length;
+                    List<int> curattrs;
+                    List<int> curclrs;
+                    PutStrs[CursY].ConvertCurrentListToArrays(out curattrs, out curclrs);
+
                     if (append != 0)
+                        CursX = PutStrs[CursY].Text.Length;
+
+                    int origCursX = CursX;
+
+                    if (CursX > curlen)
                     {
-                        PutStrs[CursY] = PutStrs[CursY] + str;
-                        CursX += str.Length;
-                        if (PutStrs[CursY].Length > _width)
-                            _width = PutStrs[CursY].Length;
-
-                        float textWidth = textPaint.MeasureText(PutStrs[CursY]);
-                        textWidth += Padding.Left + Padding.Right;
-                        if (textWidth > _pixelWidth)
-                            _pixelWidth = textWidth;
+                        int n = CursX - curlen;
+                        string spaces = new String(' ', n);
+                        curstr = curstr + spaces;
+                        curlen = curstr.Length;
                     }
-                    else
+
+                    string leftstr = CursX <= 0 ? "" : curstr.Substring(0, CursX);
+                    //string rightstr = curstr.Length <= CursX + len ? "" : curstr.Substring(CursX + len, curlen - (CursX + len));
+                    PutStrs[CursY].Text = leftstr + str; // + rightstr;
+
+                    CursX += str.Length;
+
+                    // Adjust TextSize property so text is 90% of screen width
+                    float textWidth = textPaint.MeasureText(PutStrs[CursY].Text);
+                    textWidth += Padding.Left + Padding.Right;
+                    if (textWidth > _pixelWidth)
+                        _pixelWidth = textWidth;
+
+                    if (PutStrs[CursY].Text.Length > _width)
+                        _width = PutStrs[CursY].Text.Length;
+
+                    if (CursY + 1 > _height)
+                        _height = CursY + 1;
+
+                    if (WindowType != GHWinType.Map && WindowType != GHWinType.Status)
                     {
-                        int len = str.Length;
-                        string curstr = PutStrs[CursY] == null ? "" : PutStrs[CursY];
-                        int curlen = curstr.Length;
-
-                        if (CursX > curlen)
-                        {
-                            int n = CursX - curlen;
-                            string spaces = new String(' ', n);
-                            curstr = curstr + spaces;
-                            curlen = curstr.Length;
-                        }
-
-                        string leftstr = CursX <= 0 ? "" : curstr.Substring(0, CursX);
-                        //string rightstr = curstr.Length <= CursX + len ? "" : curstr.Substring(CursX + len, curlen - (CursX + len));
-                        PutStrs[CursY] = leftstr + str; // + rightstr;
-
-                        CursX += str.Length;
-
-                        // Adjust TextSize property so text is 90% of screen width
-                        float textWidth = textPaint.MeasureText(PutStrs[CursY]);
-                        textWidth += Padding.Left + Padding.Right;
-                        if (textWidth > _pixelWidth)
-                            _pixelWidth = textWidth;
-
-                        if (PutStrs[CursY].Length > _width)
-                            _width = PutStrs[CursY].Length;
-
-                        if (CursY + 1 > _height)
-                            _height = CursY + 1;
-
-                        if(WindowType != GHWinType.Map && WindowType != GHWinType.Status)
-                        {
-                            CursY++;
-                            CursX = 0;
-                        }
+                        CursY++;
+                        CursX = 0;
                     }
+
+                    int i;
+                    for (i = origCursX; i < CursX; i++)
+                    {
+                        while (i > curattrs.Count)
+                            curattrs.Add(0);
+
+                        while (i > curclrs.Count)
+                            curclrs.Add((int)nhcolor.CLR_WHITE);
+
+                        if (i == curattrs.Count)
+                            curattrs.Add(attributes);
+                        else if (i < curattrs.Count)
+                            curattrs[i] = attributes;
+
+                        if (i == curclrs.Count)
+                            curclrs.Add(color);
+                        else if (i < curattrs.Count)
+                            curclrs[i] = color;
+                    }
+
+                    PutStrs[CursY].ConvertCurrentListFromArrays(curattrs, curclrs);
                 }
 
                 float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;

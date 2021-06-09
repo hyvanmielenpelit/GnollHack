@@ -27,6 +27,13 @@ namespace GnollHackCommon
         CLR_MAX
     }
 
+    public enum GHWindowPrintLocations
+    {
+        PrintToMap = 0,
+        PrintToWindow,
+        RawPrint
+    }
+
     [Flags]
     public enum MenuItemAttributes : int
     {
