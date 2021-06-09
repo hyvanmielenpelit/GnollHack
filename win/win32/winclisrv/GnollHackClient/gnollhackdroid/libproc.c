@@ -67,7 +67,7 @@ struct window_procs lib_procs = {
 struct callback_procs lib_callbacks = { 0 }; /* To be set by RunGnollHack in gnollhackdroid.c */
 
 char convert_gnhch(int ch);
-
+void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks);
 
 /* Function definitions */
 void lib_init_nhwindows(int* argc, char** argv)
@@ -469,26 +469,46 @@ void lib_putmsghistory(const char* msg, BOOLEAN_P is_restoring)
     lib_callbacks.callback_putmsghistory(msg, is_restoring);
 }
 
+
+
+
+extern const char* status_fieldnm[MAXBLSTATS];
+extern const char* status_fieldfmt[MAXBLSTATS];
+extern boolean status_activefields[MAXBLSTATS];
+extern char* status_vals[MAXBLSTATS];
+static int status_colors[MAXBLSTATS];
+static unsigned long* cond_hilites;
+static unsigned long active_conditions;
+static const char* cond_names[NUM_BL_CONDITIONS] = {
+    "Stone", "Slime", "Strngl", "Suffoc", "FoodPois", "TermIll", "Blind",
+    "Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot", "Lyca"
+};
+
 void lib_status_init(void)
 {
     lib_callbacks.callback_status_init();
-    WIN_STATUS = lib_create_nhwindow(NHW_STATUS);
-    lib_display_nhwindow(WIN_STATUS, FALSE);
+    genl_status_init();
+
 }
 
 void lib_status_finish(void)
 {
     lib_callbacks.callback_status_finish();
+    genl_status_finish();
 }
 
 void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt,
     int enable)
 {
     lib_callbacks.callback_status_enablefield(fieldidx, nm, fmt, enable);
+    genl_status_enablefield(fieldidx, nm, fmt, enable);
 }
 
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks)
 {
+    __lib_status_update(idx, ptr, chg, percent, color, colormasks);
+    return;
+
     char* txt = (char*)0;
     long condbits = 0L;
     if (ptr)
@@ -522,19 +542,6 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
     lib_curs(WIN_STATUS, u.ux, u.uy);
 }
 
-
-
-
-extern const char* status_fieldfmt[MAXBLSTATS];
-extern char* status_vals[MAXBLSTATS];
-static int status_colors[MAXBLSTATS];
-extern boolean status_activefields[MAXBLSTATS];
-static unsigned long* cond_hilites;
-static unsigned long active_conditions;
-static const char* cond_names[NUM_BL_CONDITIONS] = {
-    "Stone", "Slime", "Strngl", "Suffoc", "FoodPois", "TermIll", "Blind",
-    "Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot", "Lyca"
-};
 
 int hl_attridx_to_attrmask(int idx)
 {

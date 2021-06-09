@@ -254,7 +254,7 @@ namespace GnollHackClient
                         {
                             PutStrs[CursY] = str;
                         }
-                        else if (CursX <= PutStrs[CursY].Length + 1)
+                        else if (CursX <= PutStrs[CursY].Length)
                         {
 
                             PutStrs[CursY] = PutStrs[CursY].Substring(0, CursX) + str;
@@ -265,6 +265,8 @@ namespace GnollHackClient
                             string spaces = new String(' ', n);
                             PutStrs[CursY] = PutStrs[CursY].Substring(0, CursX - 1) + spaces + str;
                         }
+
+                        CursX += str.Length;
 
                         // Adjust TextSize property so text is 90% of screen width
                         float textWidth = textPaint.MeasureText(PutStrs[CursY]);
@@ -278,8 +280,11 @@ namespace GnollHackClient
                         if (CursY + 1 > _height)
                             _height = CursY + 1;
 
-                        CursY++;
-                        CursX = 0;
+                        if(WindowType != GHWinType.Map && WindowType != GHWinType.Status)
+                        {
+                            CursY++;
+                            CursX = 0;
+                        }
                     }
                 }
 

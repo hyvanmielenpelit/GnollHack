@@ -3044,7 +3044,7 @@ struct permonst _mons2[] = {
         24, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
         ACTION_INFO(MINOTAUR_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MINOTAUR_STATUE_ENLARGEMENT, 0, 0),
         ACTION_INFO(MINOTAUR_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MINOTAUR_STATUE_ENLARGEMENT, 0, 0)),
-    MON("titan", None, "powerful spell-casting giant", None, None, S_GIANT, LVL(16, 18, -3, 15, 70, 9), (1),
+    ENLARGED_MON("titan", None, "powerful spell-casting giant", None, None, S_GIANT, LVL(16, 18, -3, 15, 70, 9), (1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2300, 900, MS_SPELL, MZ_HUGE, 1, 0, MAT_FLESH), STATS(STR19(25), 18, 24, 19, 19, 24), 
@@ -3054,7 +3054,9 @@ struct permonst _mons2[] = {
         M2_NASTY | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_BRAVE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
-        33, CLR_MAGENTA, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        33, CLR_MAGENTA, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(TITAN_MALE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TITAN_MALE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(TITAN_FEMALE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TITAN_FEMALE_STATUE_ENLARGEMENT, 0, 0)),
     /* 'I' is a visual marker for all invisible monsters and must be unused */
     /*
      * Jabberwock and juggernaut
