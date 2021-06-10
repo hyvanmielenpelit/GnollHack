@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
+using System.Runtime.InteropServices;
+using System.Reflection;
+using System.IO;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -37,6 +40,7 @@ namespace GnollHackClient.Pages.Game
         private int _result = 0;
         private int _result2 = 0;
         private IGnollHackService _gnollHackService;
+        public IGnollHackService GnollHackService { get { return _gnollHackService;} }
         private bool _isFirstAppearance = true;
         private Thread _gnhthread;
         private ClientGame _clientGame;
@@ -46,6 +50,7 @@ namespace GnollHackClient.Pages.Game
         private int _mapCursorX;
         private int _mapCursorY;
         public TTYCursorStyle CursorStyle { get; set; }
+        public GHGraphicsStyle GraphicsStyle { get; set; }
         private bool _cursorIsOn;
         private bool _showDirections = false;
         private bool _showNumberPad = false;
@@ -71,6 +76,17 @@ namespace GnollHackClient.Pages.Game
         private float _mapWidth;
         private float _mapHeight;
         private float _mapFontAscent;
+        public object Glyph2TileLock = new object();
+        public int[] Glyph2Tile { get; set; }
+        public int Glyph2TileSize { get; set; }
+        private SKBitmap[] _tileMap = new SKBitmap[GHConstants.MaxTileSheets];
+        public SKBitmap[] TileMap { get { return _tileMap; } }
+        public int UsedTileSheets { get; set; }
+        public int TotalTiles { get; set; }
+        public int UnexploredGlyph { get; set; }
+        public int NoGlyph { get; set; }
+        private int[] _tilesPerRow = new int[GHConstants.MaxTileSheets];
+        public int[] TilesPerRow { get { return _tilesPerRow; } }
 
         public GamePage(MainPage mainPage)
         {
@@ -82,6 +98,13 @@ namespace GnollHackClient.Pages.Game
             if (int.TryParse(style, out parseint))
             {
                 CursorStyle = (TTYCursorStyle)parseint;
+            }
+
+            string gstyle = Preferences.Get("GraphicsStyle", "0");
+            int gparseint;
+            if (int.TryParse(style, out gparseint))
+            {
+                GraphicsStyle = (GHGraphicsStyle)gparseint;
             }
 
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
@@ -106,16 +129,47 @@ namespace GnollHackClient.Pages.Game
 
             }
 
-            for(int i = 0; i < GHConstants.MapCols; i++)
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits.png"))
             {
-                for(int j = 0; j < GHConstants.MapRows; j++)
-                {
-                    _mapData[i, j] = new MapData();
-                }
+                _tileMap[0] = SKBitmap.Decode(stream);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits-2.png"))
+            {
+                _tileMap[1] = SKBitmap.Decode(stream);
             }
 
             _gnollHackService = DependencyService.Get<IGnollHackService>();
             _gnollHackService.InitializeGnollHack();
+            UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
+            NoGlyph = _gnollHackService.GetNoGlyph();
+
+            for (int i = 0; i < GHConstants.MapCols; i++)
+            {
+                for (int j = 0; j < GHConstants.MapRows; j++)
+                {
+                    _mapData[i, j] = new MapData();
+                    _mapData[i, j].Glyph = UnexploredGlyph;
+                    _mapData[i, j].BkGlyph = NoGlyph;
+                }
+            }
+
+
+        }
+
+        private int TileSheetIdx(int ntile)
+        {
+            return (Math.Min(UsedTileSheets - 1, Math.Max(0, (ntile / GHConstants.NumberOfTilesPerSheet))));
+        }
+
+        private int TileSheetX(int ntile)
+        {
+            return (((ntile % GHConstants.NumberOfTilesPerSheet) % _tilesPerRow[TileSheetIdx(ntile)]) * GHConstants.TileWidth);
+        }
+        private int TileSheetY(int ntile)
+        {
+            return (((ntile % GHConstants.NumberOfTilesPerSheet) / _tilesPerRow[TileSheetIdx(ntile)]) * GHConstants.TileHeight);
         }
 
         private async void ContentPage_Appearing(object sender, EventArgs e)
@@ -507,6 +561,13 @@ namespace GnollHackClient.Pages.Game
             float canvasheight = canvasView.CanvasSize.Height;
             float width = textPaint.FontMetrics.AverageCharacterWidth;
             float height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+
+            if (GraphicsStyle == GHGraphicsStyle.Tiles)
+            {
+                width = GHConstants.TileWidth * MapFontSize / 48;
+                height = GHConstants.TileHeight * MapFontSize / 48;
+            }
+
             float mapwidth = width * (GHConstants.MapCols -1);
             float mapheight = height * (GHConstants.MapRows);
 
@@ -547,39 +608,83 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            lock (_mapDataLock)
+            lock(Glyph2TileLock)
             {
-                for (int mapx = startX; mapx <= endX; mapx++)
+                lock (_mapDataLock)
                 {
-                    for (int mapy = startY; mapy <= endY; mapy++)
+                    if (GraphicsStyle == GHGraphicsStyle.ASCII)
                     {
-                        if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
+                        for (int mapx = startX; mapx <= endX; mapx++)
                         {
-                            str = _mapData[mapx, mapy].Symbol;
-                            textPaint.Color = _mapData[mapx, mapy].Color;
-                            tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
-                            ty = (startY + offsetY + _mapOffsetY + height * (float)mapy);
-                            if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
+                            for (int mapy = startY; mapy <= endY; mapy++)
                             {
-                                textPaint.Style = SKPaintStyle.Fill;
-                                textPaint.Color = _cursorDefaultGreen;
-                                SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
-                                canvas.DrawRect(winRect, textPaint);
-                                textPaint.Color = SKColors.Black;
-                            }
-                            else if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Pet) != 0)
-                            {
-                                textPaint.Style = SKPaintStyle.Fill;
-                                SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
-                                canvas.DrawRect(winRect, textPaint);
-                                textPaint.Color = SKColors.Black;
-                            }
+                                if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
+                                {
+                                    str = _mapData[mapx, mapy].Symbol;
+                                    textPaint.Color = _mapData[mapx, mapy].Color;
+                                    tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
+                                    ty = (startY + offsetY + _mapOffsetY + height * (float)mapy);
+                                    if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
+                                    {
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        textPaint.Color = _cursorDefaultGreen;
+                                        SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
+                                        canvas.DrawRect(winRect, textPaint);
+                                        textPaint.Color = SKColors.Black;
+                                    }
+                                    else if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Pet) != 0)
+                                    {
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
+                                        canvas.DrawRect(winRect, textPaint);
+                                        textPaint.Color = SKColors.Black;
+                                    }
 
-                            canvas.DrawText(str, tx, ty, textPaint);
+                                    canvas.DrawText(str, tx, ty, textPaint);
 
-                            if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Peaceful) != 0)
+                                    if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Peaceful) != 0)
+                                    {
+                                        canvas.DrawText("_", tx, ty, textPaint);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (Glyph2Tile != null && _tilesPerRow[0] > 0 && UsedTileSheets > 0)
+                        {
+                            for (int mapx = startX; mapx <= endX; mapx++)
                             {
-                                canvas.DrawText("_", tx, ty, textPaint);
+                                for (int mapy = startY; mapy <= endY; mapy++)
+                                {
+                                    for (int layer = 0; layer < 2; layer++)
+                                    {
+                                        int signed_glyph = layer == 0 ? _mapData[mapx, mapy].BkGlyph : _mapData[mapx, mapy].Glyph;
+                                        int glyph = Math.Abs(signed_glyph);
+                                        bool hflip = (signed_glyph < 0);
+
+                                        if (glyph == 0 && layer == 0)
+                                            continue;
+
+                                        if (glyph < Glyph2Tile.Length)
+                                        {
+                                            int ntile = Glyph2Tile[glyph];
+                                            int sheet_idx = TileSheetIdx(ntile);
+                                            int tile_x = TileSheetX(ntile);
+                                            int tile_y = TileSheetY(ntile);
+
+                                            SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+
+                                            tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
+                                            ty = (startY + offsetY + _mapOffsetY + height * (float)mapy);
+
+                                            SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+
+                                            canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -1132,10 +1237,12 @@ namespace GnollHackClient.Pages.Game
 
             return res;
         }
-        public void SetMapSymbol(int x, int y, int c, int color, uint special)
+        public void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special)
         {
             lock (_mapDataLock)
             {
+                _mapData[x, y].Glyph = glyph;
+                _mapData[x, y].BkGlyph = bkglyph;
                 _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
                 _mapData[x, y].Color = NHColor2SKColor((nhcolor)color);
                 _mapData[x, y].Special = special;
@@ -1157,8 +1264,8 @@ namespace GnollHackClient.Pages.Game
                 {
                     for (int y = 0; y < GHConstants.MapRows; y++)
                     {
-                        _mapData[x, y].Glyph = 0;
-                        _mapData[x, y].BkGlyph = 0;
+                        _mapData[x, y].Glyph = UnexploredGlyph;
+                        _mapData[x, y].BkGlyph = NoGlyph;
                         _mapData[x, y].Symbol = "";
                         _mapData[x, y].Color = SKColors.Black;// default(MapData);
                         _mapData[x, y].Special = 0;

@@ -80,6 +80,11 @@ namespace GnollHackCommon
         BlinkingUnderline = 0,
         GreenBlock
     }
+    public enum GHGraphicsStyle
+    {
+        ASCII = 0,
+        Tiles
+    }
     public enum GHMapMode
     {
         Normal = 0,
@@ -107,6 +112,10 @@ namespace GnollHackCommon
         public const int BlCondMaskBits = 23;
         public const int MaxStatusLines = 8;
         public const int MaxStatusFieldsPerLine = 24;
+        public const int TileWidth = 64;
+        public const int TileHeight = 96;
+        public const int MaxTileSheets = 4;
+        public const int NumberOfTilesPerSheet = 16224;
     }
 
     [StructLayout(LayoutKind.Sequential)]

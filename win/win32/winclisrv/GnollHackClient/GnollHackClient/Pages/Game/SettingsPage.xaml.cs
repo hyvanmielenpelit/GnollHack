@@ -21,20 +21,20 @@ namespace GnollHackClient.Pages.Game
             _gamePage = gamePage;
         }
 
-        private void Picker_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             _gamePage.CursorStyle = (TTYCursorStyle)CursorPicker.SelectedIndex;
             Preferences.Set("CursorStyle", ((int)_gamePage.CursorStyle).ToString());
+
+            _gamePage.GraphicsStyle = (GHGraphicsStyle)GraphicsPicker.SelectedIndex;
+            Preferences.Set("GraphicsStyle", ((int)_gamePage.GraphicsStyle).ToString());
         }
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             CursorPicker.SelectedIndex = (int)_gamePage.CursorStyle;
+            GraphicsPicker.SelectedIndex = (int)_gamePage.GraphicsStyle;
         }
+
     }
 }

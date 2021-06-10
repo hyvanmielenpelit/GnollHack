@@ -114,6 +114,15 @@ namespace GnollHackClient.Droid
         );
 
         [DllImport(@"libgnollhackdroid.so")]
+        public static extern int GetGlyph2Tile(out IntPtr gl2ti_ptr, out int size);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int CountTotalTiles();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetUnexploredGlyph();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetNoGlyph();
+
+        [DllImport(@"libgnollhackdroid.so")]
         public static extern int DoSomeCalcDroid();
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int DoSomeHackDroid();
@@ -211,6 +220,23 @@ namespace GnollHackClient.Droid
                     sw.Write(data);
                 }
             }
+        }
+
+        public void GetTileArrays(out IntPtr gl2ti, out int size)
+        {
+            GetGlyph2Tile(out gl2ti, out size);
+        }
+        public int GetTotalTiles()
+        {
+            return CountTotalTiles();
+        }
+        public int GetUnexploredGlyph()
+        {
+            return LibGetUnexploredGlyph();
+        }
+        public int GetNoGlyph()
+        {
+            return LibGetNoGlyph();
         }
 
         public int Test1()

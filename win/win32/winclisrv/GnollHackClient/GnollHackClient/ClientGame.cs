@@ -124,6 +124,32 @@ namespace GnollHackClient
         public void ClientCallback_InitWindows()
         {
             Debug.WriteLine("ClientCallback_InitWindows");
+
+            /* Initialize now glyph2tile and other relevant arrays */
+            IntPtr gl2ti_ptr;
+            int gl2ti_size;
+            _gamePage.GnollHackService.GetTileArrays(out gl2ti_ptr, out gl2ti_size);
+            if (gl2ti_ptr != null && gl2ti_size > 0)
+            {
+                lock (_gamePage.Glyph2TileLock)
+                {
+                    _gamePage.Glyph2Tile = new int[gl2ti_size];
+                    Marshal.Copy(gl2ti_ptr, _gamePage.Glyph2Tile, 0, gl2ti_size);
+                }
+            }
+
+            int total_tiles_used = _gamePage.GnollHackService.GetTotalTiles();
+            int total_sheets_used = Math.Min(GHConstants.MaxTileSheets, (total_tiles_used - 1) / GHConstants.NumberOfTilesPerSheet + 1);
+
+            lock (_gamePage.Glyph2TileLock)
+            {
+                _gamePage.UsedTileSheets = total_sheets_used;
+                _gamePage.TotalTiles = total_tiles_used;
+                for (int i = 0; i < total_sheets_used; i++)
+                {
+                    _gamePage.TilesPerRow[i] = _gamePage.TileMap[i].Width / GHConstants.TileWidth;
+                }
+            }
         }
         public int ClientCallback_CreateGHWindow(int wintype)
         {
@@ -240,7 +266,7 @@ namespace GnollHackClient
             lock(_ghWindowsLock)
             {
                 if (_ghWindows[winHandle] != null)
-                    _ghWindows[winHandle].PrintGlyph(x, y, symbol, ocolor, special);
+                    _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special);
             }
         }
 

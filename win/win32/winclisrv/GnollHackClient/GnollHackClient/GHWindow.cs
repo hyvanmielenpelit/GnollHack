@@ -218,9 +218,9 @@ namespace GnollHackClient
             if(WindowType == GHWinType.Map)
                 ClientGamePage.SetMapCursor(x, y);
         }
-        public void PrintGlyph(int x, int y, int symbol, int color, uint special)
+        public void PrintGlyph(int x, int y, int glyph, int bkglyph, int symbol, int color, uint special)
         {
-            ClientGamePage.SetMapSymbol(x, y, symbol, color, special);
+            ClientGamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, color, special);
         }
 
         public void PutStrEx(int attributes, string str, int append, int color)

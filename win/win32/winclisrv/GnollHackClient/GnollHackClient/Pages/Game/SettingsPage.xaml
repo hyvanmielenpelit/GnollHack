@@ -15,6 +15,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Label Text="Cursor Style" Grid.Column="0"
                        FontFamily="Diablo"
@@ -24,12 +25,27 @@
                         Title="Select a cursor style" Grid.Column="1" 
                         FontFamily="Underwood" 
                         VerticalOptions="Center"
-                        HorizontalOptions="StartAndExpand"
-                        SelectedIndexChanged="Picker_SelectedIndexChanged" >
+                        HorizontalOptions="StartAndExpand" >
                     <Picker.ItemsSource>
                         <x:Array Type="{x:Type x:String}">
                             <x:String>Blinking Underline</x:String>
                             <x:String>Green Block</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+                <Label Text="Graphics" Grid.Column="0" Grid.Row="1"
+                       FontFamily="Diablo"
+                       VerticalOptions="Center" 
+                       HorizontalOptions="Start" />
+                <Picker x:Name="GraphicsPicker"
+                        Title="Select a graphics style" Grid.Column="1" Grid.Row="1"
+                        FontFamily="Underwood" 
+                        VerticalOptions="Center"
+                        HorizontalOptions="StartAndExpand" >
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>ASCII</x:String>
+                            <x:String>Tiles</x:String>
                         </x:Array>
                     </Picker.ItemsSource>
                 </Picker>

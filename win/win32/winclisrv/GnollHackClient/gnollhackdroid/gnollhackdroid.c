@@ -32,14 +32,41 @@ const char *getPlatformABI()
 
 extern void FDECL(set_wincaps, (unsigned long, unsigned long));
 
-void gnollhackdroid()
+void gnollhackdroid(void)
 {
 
 }
 
-int DoSomeCalcDroid()
+int DoSomeCalcDroid(void)
 {
 	return 5;
+}
+
+void GetGlyph2Tile(int** gl2ti_ptr, int* size_ptr)
+{
+    if (!gl2ti_ptr || !size_ptr)
+        return;
+#ifdef USE_TILES
+    *gl2ti_ptr = glyph2tile;
+    *size_ptr = SIZE(glyph2tile);
+#else
+    *gl2ti_ptr = 0;
+    *size_ptr = 0;
+#endif
+}
+
+int CountTotalTiles()
+{
+    return process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
+}
+
+int LibGetUnexploredGlyph()
+{
+    return base_cmap_to_glyph(S_unexplored);
+}
+int LibGetNoGlyph()
+{
+    return NO_GLYPH;
 }
 
 int RunGnollHackTest(char* gnhdir)

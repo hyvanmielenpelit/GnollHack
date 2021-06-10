@@ -91,6 +91,7 @@ int GnollHackMain(int argc, char** argv)
     boolean resuming = FALSE; /* assume new game */
 
     sys_early_init();
+	lib_init_platform();
 
 	hname = argv[0];
 	hackpid = getpid();

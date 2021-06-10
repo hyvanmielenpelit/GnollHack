@@ -860,6 +860,7 @@ void lib_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 void lib_exit_hack(int status)
 {
     lib_callbacks.callback_exit_hack(status);
+    lib_exit_platform(status);
 }
 
 
@@ -871,6 +872,10 @@ void lib_bail(const char* mesg)
 
 void lib_init_platform(VOID_ARGS)
 {
+    /* Tiles */
+#ifdef USE_TILES
+    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
+#endif
 
 }
 
