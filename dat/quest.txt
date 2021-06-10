@@ -359,7 +359,7 @@ need of your help.  There is a great quest you must undertake.
 "But first, I must see if you are ready to take on such a challenge."
 %E ["At last you have returned.  There is a great quest you must undertake."]
 %Cp Bar 00016
-"%p, you are back.  Are you ready now for the challenge?"
+"%pC, you are back.  Are you ready now for the challenge?"
 %E
 %Cp Bar 00017
 "Again, you stand before me, %p.  Surely you have prepared yourself."
@@ -373,7 +373,7 @@ closed this future to you.
 me and destroy all who once called you %s.  Now begone!"
 %E ["You have betrayed %d; soon %n will destroy us.  Begone!"]
 %Cc Bar 00019
-"%p, I fear that you are as yet too inexperienced to face
+"%pC, I fear that you are as yet too inexperienced to face
 %n.  Only %Ra with the help of %d could ever hope to
 defeat %ni."
 %E ["You are too inexperienced.  Come back when you are %Ra."]

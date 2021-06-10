@@ -1281,8 +1281,19 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
 
     { SOUND_BANK_MASTER, "event:/Monster/Chieftain/Male/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Chieftain/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Chieftain/Male/Death", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Chieftain/Female/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Chieftain/Female/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Chieftain/Female/Death", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Male/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Male/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Male/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Male/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Male/Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Male/Mumbled Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Male/Death", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Female/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Moloch/Female/Special Dialogue", 1.0f },
