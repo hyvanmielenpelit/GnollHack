@@ -5446,7 +5446,7 @@ void
 goto_level(newlevel, at_stairs, falling, portal)
 d_level *newlevel;
 boolean at_stairs, falling;
-xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destination) */
+xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destination) */
 {
     int fd, l_idx;
     xchar new_ledger;
