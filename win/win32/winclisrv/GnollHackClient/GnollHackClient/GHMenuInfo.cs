@@ -10,6 +10,16 @@ namespace GnollHackClient
         public List<GHMenuItem> MenuItems = new List<GHMenuItem>();
         public string Header { get; set; }
         public SelectionMode SelectionHow { get; set; }
+        private char _autoAccelerator = 'a';
+        public char AutoAccelerator { get { char res = _autoAccelerator; IncrementAutoAccelerator(); return res; } }
+        private void IncrementAutoAccelerator()
+        {
+            _autoAccelerator++;
+            if (_autoAccelerator == 'z' + 1)
+                _autoAccelerator = 'A';
+            if (_autoAccelerator == 'Z' + 1)
+                _autoAccelerator = 'a';
+        }
         public GHMenuInfo()
         {
 

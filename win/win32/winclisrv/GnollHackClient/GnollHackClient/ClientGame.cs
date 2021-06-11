@@ -593,7 +593,10 @@ namespace GnollHackClient
                 {
                     GHMenuItem mi = new GHMenuItem();
                     mi.Identifier = identifier;
-                    mi.Accelerator = accel;
+                    if (accel == 0 && identifier != 0)
+                        mi.Accelerator = _ghWindows[winid].MenuInfo.AutoAccelerator;
+                    else
+                        mi.Accelerator = accel;
                     mi.GroupAccelerator = groupaccel;
                     mi.Attributes = attributes;
                     mi.Glyph = glyph;
