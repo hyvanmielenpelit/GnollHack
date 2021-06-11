@@ -98,6 +98,13 @@ namespace GnollHackCommon
         Click1,
         Click2
     }
+    [Flags]
+    public enum RunGnollHackFlags: UInt32
+    {
+        None =          0x00000000,
+        SetWinCaps =    0x00000001,
+        WizardMode =    0x00000002
+    }
 
     public class GHConstants
     {

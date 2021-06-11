@@ -11,10 +11,15 @@ extern void gnollhackdroid();
 
 int FDECL(GnollHackStart, (char*));
 
+#define GHRUNFLAGS_NONE         0x00000000
+#define GHRUNFLAGS_SET_WINCAPS  0x00000001
+#define GHRUNFLAGS_WIZARD_MODE  0x00000002
+
 /* Main GnollHack routine with all the necessary callback functions in dllmain.c */
 int RunGnollHack(
     char* gnhdir,
     char* cmdlineargs,
+    unsigned long runflags,
     unsigned long wincap1,
     unsigned long wincap2,
     InitWindowsCallback callback_init_nhwindows,

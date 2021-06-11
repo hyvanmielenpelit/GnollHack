@@ -27,6 +27,7 @@ namespace GnollHackClient.Droid
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
+            UInt32 runflags,
             UInt32 wincaps1,
             UInt32 wincaps2,
             VoidVoidCallback callback_init_nhwindows,
@@ -256,6 +257,7 @@ namespace GnollHackClient.Droid
             return RunGnollHack(
                 _gnollhackfilesdir,
                 "",
+                (UInt32)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0),
                 0,
                 0,
                 clientGame.ClientCallback_InitWindows,

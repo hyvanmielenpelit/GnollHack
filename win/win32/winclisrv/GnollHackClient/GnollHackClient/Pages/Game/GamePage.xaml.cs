@@ -88,6 +88,8 @@ namespace GnollHackClient.Pages.Game
         private int[] _tilesPerRow = new int[GHConstants.MaxTileSheets];
         public int[] TilesPerRow { get { return _tilesPerRow; } }
 
+        public bool EnableWizardMode { get; set; }
+
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
@@ -221,7 +223,7 @@ namespace GnollHackClient.Pages.Game
 
         protected void GNHThreadProc()
         {
-            _clientGame = new ClientGame(this);
+            _clientGame = new ClientGame(this, EnableWizardMode);
             _gnollHackService.StartGnollHack(_clientGame);
         }
 
@@ -929,7 +931,7 @@ namespace GnollHackClient.Pages.Game
             _connection.On<int>("AddNewGameResult", (result) =>
             {
                 _message3 = "New Game Added: " + result;
-                _clientGame = new ClientGame(this);
+                _clientGame = new ClientGame(this, EnableWizardMode);
             });
 
             _connection.On<bool>("GameAliveResult", (result) =>

@@ -390,7 +390,6 @@ char *argv[];
             }
             break;
         case 'X':
-
             discover = TRUE, wizard = FALSE;
             break;
 #ifdef NEWS

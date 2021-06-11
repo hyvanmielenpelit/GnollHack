@@ -48,13 +48,15 @@ namespace GnollHackClient
             get { lock (_characterNameLock) { return _characterName; } } 
             set { lock (_characterNameLock) { _characterName = value; } }
         }
+        private bool _wizardMode;
+        public bool WizardMode { get { return _wizardMode; } }
 
         public GamePage ClientGamePage
         {
             get { lock (_gamePageLock) { return _gamePage; } }
         }
 
-        public ClientGame(GamePage gamePage)
+        public ClientGame(GamePage gamePage, bool wizardMode)
         {
             ClientGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
             ClientGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
@@ -62,6 +64,7 @@ namespace GnollHackClient
             {
                 _gamePage = gamePage;
             }
+            _wizardMode = wizardMode;
         }
 
         ~ClientGame()

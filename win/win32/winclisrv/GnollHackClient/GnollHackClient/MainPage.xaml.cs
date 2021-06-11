@@ -122,6 +122,7 @@ namespace GnollHackClient
         {
             StartLocalGameButton.IsEnabled = false;
             var gamePage = new GamePage(this);
+            gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
             await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
         }
 

@@ -14,17 +14,29 @@
                            AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
                            AbsoluteLayout.LayoutFlags="All" />
 
-        <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 0.90, 1.0, 0.20"
+        <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 0.90, 1.0, 0.30"
                            AbsoluteLayout.LayoutFlags="All" WidthRequest="300" HeightRequest="160">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Image x:Name="myImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="0" />
-            <Button Text="Local Game" x:Name="StartLocalGameButton" Clicked="localButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="0" />
-            <Button Text="Exit App" x:Name="ExitAppButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="0" IsVisible="false" />
-            <Image x:Name="myImage2" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
-            <Button Text="Server Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
+            <Grid Grid.Row="0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label Text="Wizard Mode" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center"/>
+                <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" />
+            </Grid>
+            <Image x:Name="myImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
+            <Button Text="Local Game" x:Name="StartLocalGameButton" Clicked="localButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
+            <Button Text="Exit App" x:Name="ExitAppButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="1" IsVisible="false" />
+            <Image x:Name="myImage2" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="2" />
+            <Button Text="Server Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="2" />
         </Grid>
 
         <!--

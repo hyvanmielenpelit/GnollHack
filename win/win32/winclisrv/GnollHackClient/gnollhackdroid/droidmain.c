@@ -133,10 +133,11 @@ int GnollHackMain(int argc, char** argv)
 	plnamesuffix(); /* strip suffix from name; calls askname() */
 					/* again if suffix was whole name */
 					/* accepts any suffix */
-#ifdef WIZARD
+
+	set_playmode(); /* sets plname to "wizard" for wizard mode */
+
 	if(!wizard)
-#endif
-	Sprintf(lock, "%d%s", (int)getuid(), plname);
+		Sprintf(lock, "%d%s", (int)getuid(), plname);
 	getlock();
 
 	/* Set up level 0 file to keep the game state.
@@ -176,12 +177,10 @@ int GnollHackMain(int argc, char** argv)
 
 	if((fd = restore_saved_game()) >= 0)
 	{
-#ifdef WIZARD
 		/* Since wizard is actually flags.debug, restoring might
 		 * overwrite it.
 		 */
 		boolean remember_wiz_mode = wizard;
-#endif
 		const char *fq_save = fqname(SAVEF, SAVEPREFIX, 1);
 
 #ifdef NEWS
@@ -196,10 +195,10 @@ int GnollHackMain(int argc, char** argv)
 		if(!dorecover(fd))
 			goto not_recovered;
 		resuming = TRUE;
-#ifdef WIZARD
+
 		if(!wizard && remember_wiz_mode)
 			wizard = TRUE;
-#endif
+
 		check_special_room(FALSE);
 		wd_message();
 
@@ -256,14 +255,12 @@ static void process_options(argc, argv)
 		switch(argv[0][1])
 		{
 		case 'D':
-#ifdef WIZARD
-			wizard = TRUE;
-		break;
-#endif
+			wizard = TRUE, discover = FALSE;
+			break;
 		/* otherwise fall thru to discover */
 		case 'X':
-			discover = TRUE;
-		break;
+			discover = TRUE, wizard = FALSE;
+			break;
 #ifdef NEWS
 			case 'n':
 			iflags.news = FALSE;

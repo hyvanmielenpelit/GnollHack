@@ -16,6 +16,7 @@ namespace GnollHackServer
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
+            UInt32 runflags,
             UInt32 wincaps1,
             UInt32 wincaps2,
             VoidVoidCallback callback_init_nhwindows,
@@ -125,9 +126,11 @@ namespace GnollHackServer
 
         private Thread _gnhthread;
         private ServerGameCenter _serverGameCenter;
+        public bool WizardMode { get; set; }
 
-        public ServerGame()
+        public ServerGame(bool wizardMode)
         {
+            WizardMode = wizardMode;
             Thread t = new Thread(new ThreadStart(GNHThreadProc));
             _gnhthread = t;
             _serverGameCenter = ServerGameCenter.Instance;
@@ -159,6 +162,7 @@ namespace GnollHackServer
             RunGnollHack(
                 curdir,
                 "",
+                (UInt32)(WizardMode ? RunGnollHackFlags.WizardMode : 0),
                 0,
                 0,
                 GameCallback_InitWindows,

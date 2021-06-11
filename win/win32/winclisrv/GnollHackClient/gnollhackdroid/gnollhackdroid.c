@@ -164,6 +164,7 @@ extern struct callback_procs lib_callbacks;
 int RunGnollHack(
     char* gnhdir,
     char* cmdlineargs,
+    unsigned long runflags,
     unsigned long wincap1,
     unsigned long wincap2,
     InitWindowsCallback callback_init_nhwindows,
@@ -254,7 +255,15 @@ int RunGnollHack(
 )
 {
     /* Set wincaps */
-    set_wincaps(wincap1, wincap2);
+    if(runflags & GHRUNFLAGS_SET_WINCAPS)
+        set_wincaps(wincap1, wincap2);
+
+    /* Authorize wizard mode */
+    if (runflags & GHRUNFLAGS_WIZARD_MODE)
+    {
+        wizard = TRUE, discover = FALSE;
+        strcpy(plname, "wizard");
+    }
 
     /* Set callback function pointers here */
     lib_callbacks.callback_init_nhwindows = callback_init_nhwindows;
