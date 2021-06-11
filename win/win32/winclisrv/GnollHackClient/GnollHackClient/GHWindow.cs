@@ -275,7 +275,7 @@ namespace GnollHackClient
                     CursX += str.Length;
 
                     // Adjust TextSize property so text is 90% of screen width
-                    float textWidth = textPaint.MeasureText(PutStrs[CursY].Text);
+                    float textWidth = textPaint.MeasureText(PutStrs[CursY].Text.Replace(' ', '_'));
                     textWidth += Padding.Left + Padding.Right;
                     if (textWidth > _pixelWidth)
                         _pixelWidth = textWidth;

@@ -56,8 +56,9 @@
                             AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
                             AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
                 </skia:SKCanvasView>
-                <Grid x:Name="YnGrid" Padding="5,5,5,5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" 
-                      AbsoluteLayout.LayoutBounds="0.0, 0.95, 1.0, 0.35"
+                <Grid x:Name="YnGrid" Padding="5,5,5,5" 
+                      HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" MinimumHeightRequest="140"
+                      AbsoluteLayout.LayoutBounds="0.0, 0.95, 1.0, 0.35" 
                       AbsoluteLayout.LayoutFlags="All" BackgroundColor="#88000000" IsVisible="false">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -66,8 +67,9 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Text="?" x:Name="QuestionLabel" FontFamily="Diablo" FontSize="16" TextColor="White" VerticalTextAlignment="End" HorizontalOptions="Center" HeightRequest="70"  />
-                    <Grid  Grid.Row="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" >
+                    <Label Grid.Row="0" Text="?" x:Name="QuestionLabel" FontFamily="Diablo" FontSize="16" TextColor="White"
+                           VerticalTextAlignment="End" HorizontalOptions="Center" MinimumHeightRequest="70"  />
+                    <Grid  Grid.Row="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" MinimumHeightRequest="70" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>

@@ -1144,7 +1144,7 @@ namespace GnollHackClient.Pages.Game
                                     else if (e.Location.X > canvasView.CanvasSize.Width * 0.7)
                                         resp = -6; // ch = "l";
                                     else
-                                        resp = showNumberPad ? -5 : 32;
+                                        resp = showNumberPad ? -5 : 46; /* '.', or self */
 
                                     if (showNumberPad)
                                         resp -= 10;
