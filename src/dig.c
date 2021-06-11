@@ -249,9 +249,8 @@ int x, y;
     } 
     else if ((IS_ROCK(levl[x][y].typ) && levl[x][y].typ != SDOOR
                 && (levl[x][y].wall_info & W_NONDIGGABLE) != 0)
-               || (ttmp && (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN))
+               || (ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN) || (!Can_dig_down(&u.uz) && !levl[x][y].candig)))
                || (IS_DOOR_OR_SDOOR(levl[x][y].typ) && !is_door_diggable_at(x, y))
-               || (!Can_dig_down(&u.uz) && !levl[x][y].candig)
               ) 
     {
         if (verbose)
@@ -941,13 +940,11 @@ coord *cc;
     lev = &levl[dig_x][dig_y];
     nohole = (!Can_dig_down(&u.uz) && !lev->candig);
 
-    if ((ttmp && (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN) != 0)
-        || nohole
+    if ((ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN) != 0 || nohole))
         || (IS_ROCK(lev->typ) && lev->typ != SDOOR
             && (lev->wall_info & W_NONDIGGABLE) != 0)) {
         pline_The("%s %shere is too hard to dig in.", surface(dig_x, dig_y),
                   (dig_x != u.ux || dig_y != u.uy) ? "t" : "");
-
     } else if (is_pool_or_lava(dig_x, dig_y)) {
         pline_The("%s sloshes furiously for a moment, then subsides.",
                   hliquid(is_lava(dig_x, dig_y) ? "lava" : "water"));
@@ -2874,7 +2871,7 @@ boolean *dealloced;
 
     obj_extract_self(otmp);
 
-    if (is_obj_unburiable(otmp)) //(otmp == uchain || obj_resists(otmp, 0, 0))
+    if (is_obj_unburiable(otmp) || obj_resists(otmp, 0, 0)) //(otmp == uchain || obj_resists(otmp, 0, 0))
     {
         /*
          * obj_resists(,0,0) prevents Rider corpses from being buried.
