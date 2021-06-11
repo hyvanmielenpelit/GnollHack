@@ -2871,7 +2871,7 @@ boolean *dealloced;
 
     obj_extract_self(otmp);
 
-    if (is_obj_unburiable(otmp) || obj_resists(otmp, 0, 0)) //(otmp == uchain || obj_resists(otmp, 0, 0))
+    if (is_obj_unburiable(otmp)) //(otmp == uchain || obj_resists(otmp, 0, 0))
     {
         /*
          * obj_resists(,0,0) prevents Rider corpses from being buried.

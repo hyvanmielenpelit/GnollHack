@@ -563,7 +563,7 @@ struct obj {
 #define is_obj_unique(obj) is_otyp_unique((obj)->otyp)
 #define is_obj_nowish(obj) is_otyp_nowish((obj)->otyp)
 #define is_obj_unburiable(obj) \
-    (is_otyp_unburiable((obj)->otyp) || (obj) == uchain || ((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && is_rider(&mons[(obj)->corpsenm])))
+    (is_otyp_unburiable((obj)->otyp) || obj_resists(obj, 0, 0) || (obj) == uchain || ((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && is_rider(&mons[(obj)->corpsenm])))
 
 #define nonrotting_food(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_NONROTTING_FOOD) != 0)
