@@ -1704,9 +1704,9 @@ int spell;
     if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
     {
         if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE)
-            Sprintf(buf, "Other:                      %s", "Bypasses magic resistance for all monsters");
+            Sprintf(buf, "Other:            %s", "Bypasses magic resistance for all monsters");
         else
-            Sprintf(buf, "Other:                      %s", "Bypasses magic resistance for non-unique monsters");
+            Sprintf(buf, "Other:            %s", "Bypasses magic resistance for non-unique monsters");
         txt = buf;
         putstr(datawin, 0, txt);
     }
