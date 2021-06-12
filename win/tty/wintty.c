@@ -2977,11 +2977,7 @@ boolean complain;
                 if (index(buf, '\t') != 0)
                     (void) tabexpand(buf);
 
-                /* Windows ASCII GnollHack does not use UTF-8 */
-                if (SYMHANDLING(H_UNICODE))
-                    convertUTF8toCharUnicode(buf, sizeof(buf));
-                else  if(SYMHANDLING(H_IBM)) /* Using CP437 */
-                    convertUTF8toCP437(buf, sizeof(buf));
+                convertUTF8toCP437(buf, sizeof(buf));
 
                 empty = FALSE;
                 tty_putstr(datawin, 0, buf);

@@ -1265,6 +1265,7 @@ strbuf_t *strbuf;
     }
 }
 
+#if 0
 void
 convertUTF8toCharUnicode(buf, bufsize)
 char* buf;
@@ -1346,6 +1347,7 @@ size_t bufsize;
 
     strcpy(buf, copybuf);
 }
+#endif
 
 void
 convertUTF8toCP437(buf, bufsize)
