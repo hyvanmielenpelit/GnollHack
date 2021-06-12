@@ -240,10 +240,7 @@ getlin_hook_proc hook;
 
     if (use_utf8_encoding())
     {
-        if (SYMHANDLING(H_UNICODE))
-            convertUTF8toCharUnicode(obufp, strlen(obufp)); /* This is all we can do, since the obufp is a char rather than something wider */
-        else
-            convertUTF8toCP437(obufp, strlen(obufp));
+        convertUTF8toCP437(obufp, strlen(obufp)); /* Texts are stored internally as CP437 */
     }
 }
 
