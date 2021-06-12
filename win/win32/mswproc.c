@@ -1168,6 +1168,8 @@ mswin_display_file(const char *filename, BOOLEAN_P must_exist)
             len = strlen(line);
             if (line[len - 1] == '\n')
                 line[len - 1] = '\x0';
+
+            convertUTF8toCP437(line, LLEN);
             mswin_putstr(text, ATR_NONE, line);
         }
         (void) dlb_fclose(f);
@@ -1533,7 +1535,8 @@ mswin_nhgetch()
     while ((event = mswin_input_pop()) == NULL || event->type != NHEVENT_CHAR)
         mswin_main_loop();
 
-    key = event->kbd.ch;
+    key = (int)unicode_to_CP437((nhsym)event->kbd.ch);
+    
     return (key);
 }
 
@@ -1688,7 +1691,7 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
     ch = 0;
     do {
         ShowCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
-        ch = mswin_nhgetch();
+        ch = (char)mswin_nhgetch();
         HideCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
         if (choices)
             ch = lowc(ch);
@@ -1819,7 +1822,7 @@ mswin_getlin(const char *question, char *input)
         ShowCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
         done = FALSE;
         while (!done) {
-            c = mswin_nhgetch();
+            c = (char)mswin_nhgetch();
             switch (c) {
             case VK_ESCAPE:
                 strcpy(input, "\033");
@@ -1888,7 +1891,7 @@ mswin_get_ext_cmd()
         ShowCaret(mswin_hwnd_from_winid(WIN_MESSAGE));
         while (i == -2) {
             int oindex, com_index;
-            c = mswin_nhgetch();
+            c = (char)mswin_nhgetch();
             switch (c) {
             case VK_ESCAPE:
                 i = -1;

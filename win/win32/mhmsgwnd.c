@@ -271,10 +271,12 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         PMSNHMsgPutstr msg_data = (PMSNHMsgPutstr) lParam;
         SCROLLINFO si;
         char *p;
+        char msgbuf[BUFSIZ] = "";
+        write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
 
         if (msg_data->append == 1) {
             /* Forcibly append to line, even if we pass the edge */
-            strncat(data->window_text[MSG_LINES - 1].text, msg_data->text,
+            strncat(data->window_text[MSG_LINES - 1].text, msgbuf,
                     MAXWINDOWTEXT
                         - strlen(data->window_text[MSG_LINES - 1].text));
         } else if (msg_data->append < 0) {
@@ -283,11 +285,11 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             int newend = max(len + msg_data->append, 0);
             data->window_text[MSG_LINES - 1].text[newend] = '\0';
         } else {
-            if (!(msg_data->attr & ATR_STAY_ON_LINE) && can_append_text(hWnd, msg_data->attr, msg_data->text)) {
+            if (!(msg_data->attr & ATR_STAY_ON_LINE) && can_append_text(hWnd, msg_data->attr, msgbuf)) {
                 strncat(data->window_text[MSG_LINES - 1].text, "  ",
                         MAXWINDOWTEXT
                             - strlen(data->window_text[MSG_LINES - 1].text));
-                strncat(data->window_text[MSG_LINES - 1].text, msg_data->text,
+                strncat(data->window_text[MSG_LINES - 1].text, msgbuf,
                         MAXWINDOWTEXT
                             - strlen(data->window_text[MSG_LINES - 1].text));
             } else {
@@ -359,7 +361,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                 /* append new text to the end of the array */
                 data->window_text[MSG_LINES - 1].attr = msg_data->attr;
-                strncpy(data->window_text[MSG_LINES - 1].text, msg_data->text,
+                strncpy(data->window_text[MSG_LINES - 1].text, msgbuf,
                         MAXWINDOWTEXT);
 
                 if (!(msg_data->attr & ATR_STAY_ON_LINE))
@@ -384,7 +386,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 #ifdef USER_SOUNDS
         if (!GetNHApp()->bNoSounds)
-            play_sound_for_message(msg_data->text);
+            play_sound_for_message(msgbuf);
 #endif
     } break;
 

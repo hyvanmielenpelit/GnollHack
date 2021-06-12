@@ -460,7 +460,7 @@ tgetch()
     if (console.has_unicode)
     {
         /* Convert to CP437, since it will be converted back to Unicode later */
-        res = unicode_to_char((nhsym)res);
+        res = unicode_to_CP437((nhsym)res);
     }
 
     return res;
@@ -635,8 +635,9 @@ int ch;
  */
 
 void
-g_putch(in_ch)
+g_putch(in_ch, is_CP437)
 int in_ch;
+boolean is_CP437;
 {
     boolean inverse = FALSE;
     nhsym ch = in_ch;
@@ -658,7 +659,7 @@ int in_ch;
     cell_t cell;
 
     cell.attribute = console.attr;
-    cell.character = (WCHAR)(((console.has_unicode && SYMHANDLING(H_IBM)) && ch >= 0 && ch < 256) ? cp437[ch] : ch);
+    cell.character = (WCHAR)(((console.has_unicode && is_CP437) && ch >= 0 && ch < 256) ? cp437[ch] : ch);
     /* Windows always uses unicode (but not UTF-8), but showsyms are in CP437 if H_IBM is on */
 
     buffer_write(console.back_buffer, &cell, console.cursor);

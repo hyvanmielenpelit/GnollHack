@@ -2255,7 +2255,7 @@ dump_map()
             layers.glyph = glyph;
             (void) mapglyph(layers, &ch, &color, &special, x, y);
 
-            write_nhsym_utf8(&bp, ch); //buf[x - 1] = ch;
+            write_nhsym_utf8(&bp, ch, !!SYMHANDLING(H_IBM)); //buf[x - 1] = ch;
             /* UTF-8 must be handled here, because you cannot write nhsym (long) to the buf (char) and convert it later */
             /* Note: write_nhsym_utf8 moves bp forward the right amount (1-4 bytes) */
 

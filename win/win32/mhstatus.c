@@ -187,7 +187,9 @@ StatusWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wParam) {
         case MSNH_MSG_PUTSTR: {
             PMSNHMsgPutstr msg_data = (PMSNHMsgPutstr) lParam;
-            strncpy(data->window_text[data->index], msg_data->text,
+            char msgbuf[BUFSIZ] = "";
+            write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
+            strncpy(data->window_text[data->index], msgbuf,
                     MAXWINDOWTEXT);
             data->index = (data->index + 1) % NHSW_LINES;
             InvalidateRect(hWnd, NULL, TRUE);
@@ -345,8 +347,10 @@ onWMPaint(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 atr = status_string->attribute;
 
                 const char *str = status_string->str;
+                char msgbuf[BUFSIZ] = "";
+                write_CP437_to_buf_unicode(msgbuf, BUFSIZ, str);
 
-                vlen = strlen(str);
+                vlen = strlen(msgbuf);
 
                 if (atr & HL_BOLD)
                     fntatr = ATR_BOLD;
@@ -368,7 +372,7 @@ onWMPaint(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                 BOOL useUnicode = fnt->supportsUnicode;
 
-                winos_ascii_to_wide_str(str, wbuf, SIZE(wbuf));
+                winos_ascii_to_wide_str(msgbuf, wbuf, SIZE(wbuf));
 
                 nFg = (clr == NO_COLOR ? status_fg_color
                     : ((clr >= 0 && clr < CLR_MAX) ? nhcolor_to_RGB(clr)
@@ -416,10 +420,10 @@ onWMPaint(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     }
                     else {
                         /* get bounding rectangle */
-                        GetTextExtentPoint32A(hdc, str, vlen, &sz);
+                        GetTextExtentPoint32A(hdc, msgbuf, vlen, &sz);
 
                         /* first draw title normally */
-                        DrawTextA(hdc, str, vlen, &rt, DT_LEFT);
+                        DrawTextA(hdc, msgbuf, vlen, &rt, DT_LEFT);
                     }
                     int bar_percent = status_string->bar_percent;
                     if (bar_percent > 0) {
@@ -440,7 +444,7 @@ onWMPaint(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         if (useUnicode)
                             DrawTextW(hdc, wbuf, vlen, &barrect, DT_LEFT);
                         else
-                            DrawTextA(hdc, str, vlen, &barrect, DT_LEFT);
+                            DrawTextA(hdc, msgbuf, vlen, &barrect, DT_LEFT);
                     }
                     DeleteObject(back_brush);
                 }
@@ -466,10 +470,10 @@ onWMPaint(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     }
                     else {
                         /* get bounding rectangle */
-                        GetTextExtentPoint32A(hdc, str, vlen, &sz);
+                        GetTextExtentPoint32A(hdc, msgbuf, vlen, &sz);
 
                         /* draw */
-                        DrawTextA(hdc, str, vlen, &rt, DT_LEFT);
+                        DrawTextA(hdc, msgbuf, vlen, &rt, DT_LEFT);
                     }
                 }
                 assert(sz.cy >= 0);

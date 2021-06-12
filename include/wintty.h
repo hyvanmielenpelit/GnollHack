@@ -183,9 +183,9 @@ E void NDECL(setclipped);
 #endif
 E void FDECL(docorner, (int, int));
 E void NDECL(end_glyphout);
-E void FDECL(g_putch, (int));
+E void FDECL(g_putch, (int, BOOLEAN_P));
 E void FDECL(win_tty_init, (int));
-E int FDECL(doputchar, (nhsym));
+E int FDECL(doputchar, (nhsym, BOOLEAN_P));
 
 /* external declarations */
 E void FDECL(tty_init_nhwindows, (int *, char **));

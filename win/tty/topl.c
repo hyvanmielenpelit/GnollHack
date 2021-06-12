@@ -132,7 +132,7 @@ const char *str;
     if (*str & 0x80) {
         /* kludge for the / command, the only time we ever want a */
         /* graphics character on the top line */
-        g_putch((int)*str++);
+        g_putch((int)*str++, TRUE);
         ttyDisplay->curx++;
     }
     end_glyphout(); /* in case message printed during graphics output */
@@ -318,7 +318,7 @@ int c;
         if (skip_utf8)
             (void)putchar(c);
         else
-            (void) doputchar(c);
+            (void) doputchar(c, TRUE);
 #endif
         break;
     default:
@@ -328,7 +328,7 @@ int c;
         if (skip_utf8)
             (void)putchar(c);
         else
-            (void) doputchar(c);
+            (void) doputchar(c, TRUE);
 #endif
         ttyDisplay->curx++;
     }
@@ -339,7 +339,7 @@ int c;
     if (skip_utf8)
         (void)putchar(c);
     else
-        (void) doputchar(c);
+        (void) doputchar(c, TRUE);
 #endif
 }
 

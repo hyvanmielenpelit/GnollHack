@@ -374,8 +374,13 @@ void lib_getlin(const char* question, char* input)
     if (question)
         write_text2buf_utf8(buf, BUFSIZ, question);
     char* res = lib_callbacks.callback_getlin(question ? buf : 0);
-    if(res && input) 
-       strcpy(input, res);
+    if (res && input)
+    {
+        char msgbuf[BUFSZ] = "";
+        strcpy(msgbuf, res);
+        convertUTF8toCP437(msgbuf, BUFSZ);
+        strcpy(input, msgbuf);
+    }
 }
 
 int lib_get_ext_cmd(void)

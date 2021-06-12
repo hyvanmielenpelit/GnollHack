@@ -2005,7 +2005,7 @@ if(u.uz.dlevel != x){
 
             amiga_print_glyph(win, color, ch);
 #else
-            g_putch(ch); /* print the character */
+            g_putch(ch, !!SYMHANDLING(H_IBM)); /* print the character */
 #endif
             cw->curx++; /* one character over */
         }

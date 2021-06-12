@@ -224,10 +224,14 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         if (!data->window_text)
             break;
 
-        char nbuf[BUFSIZ];
-        strcpy(nbuf, msg_data->text);
-        convertUTF8toTCHAR(nbuf, sizeof(nbuf));
-        _tcscat(data->window_text, NH_A2W(nbuf, wbuf, BUFSZ));
+        char msgbuf[BUFSIZ] = "";
+        write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
+
+        //char nbuf[BUFSIZ];
+        //strcpy(nbuf, msg_data->text);
+        //convertUTF8toTCHAR(nbuf, sizeof(nbuf));
+
+        _tcscat(data->window_text, NH_A2W(msgbuf, wbuf, BUFSZ));
         _tcscat(data->window_text, TEXT("\r\n"));
         break;
     }

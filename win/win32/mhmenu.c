@@ -589,7 +589,10 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         if (!data->text.text)
             break;
 
-        _tcscat(data->text.text, NH_A2W(msg_data->text, wbuf, BUFSZ));
+        char msgbuf[BUFSIZ] = "";
+        write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
+
+        _tcscat(data->text.text, NH_A2W(msgbuf /*msg_data->text*/, wbuf, BUFSZ));
         _tcscat(data->text.text, TEXT("\r\n"));
 
         text_view = GetDlgItem(hWnd, IDC_MENU_TEXT);
@@ -605,7 +608,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         cached_font * font = mswin_get_font(NHW_MENU, ATR_NONE, hdc, FALSE);
         saveFont = SelectObject(hdc, font->hFont);
         SetRect(&text_rt, 0, 0, 0, 0);
-        DrawTextA(hdc, msg_data->text, strlen(msg_data->text), &text_rt,
+        DrawTextA(hdc, msgbuf, strlen(msgbuf), &text_rt,
                  DT_CALCRECT | DT_TOP | DT_LEFT | DT_NOPREFIX
                      | DT_SINGLELINE);
         data->text.text_box_size.cx =
@@ -666,8 +669,12 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         data->menu.items[new_item].accelerator = msg_data->accelerator;
         data->menu.items[new_item].group_accel = msg_data->group_accel;
         data->menu.items[new_item].attr = msg_data->attr;
-        strncpy(data->menu.items[new_item].str, msg_data->str,
+
+        char msgbuf[NHMENU_STR_SIZE] = "";
+        write_CP437_to_buf_unicode(msgbuf, NHMENU_STR_SIZE, msg_data->str);
+        strncpy(data->menu.items[new_item].str, msgbuf,
                 NHMENU_STR_SIZE);
+
     /* prevent & being interpreted as a mnemonic start */
         strNsubst(data->menu.items[new_item].str, "&", "&&", 0);
         data->menu.items[new_item].presel = msg_data->presel;
@@ -956,15 +963,22 @@ SetMenuListType(HWND hWnd, int how)
     ZeroMemory(&lvcol, sizeof(lvcol));
     lvcol.mask = LVCF_WIDTH | LVCF_TEXT;
     lvcol.cx = monitorInfo.width;
-    lvcol.pszText = NH_A2W(data->menu.prompt, wbuf, BUFSZ);
+    
+    char querybuf[BUFSZ] = "";
+    write_CP437_to_buf_unicode(querybuf, BUFSZ, data->menu.prompt);
+    lvcol.pszText = NH_A2W(querybuf, wbuf, BUFSZ);
+    
     ListView_InsertColumn(control, 0, &lvcol);
     
     /* add items to the list view */
     for (i = 0; i < data->menu.size; i++) {
         LVITEM lvitem;
         ZeroMemory(&lvitem, sizeof(lvitem));
+        char msgbuf[BUFSZ] = "";
+        write_CP437_to_buf_unicode(msgbuf, BUFSZ, data->menu.items[i].str);
+
         sprintf(buf, "%c - %s", max(data->menu.items[i].accelerator, ' '),
-                data->menu.items[i].str);
+            msgbuf);
 
         lvitem.mask = LVIF_PARAM | LVIF_STATE | LVIF_TEXT;
         lvitem.iItem = i;

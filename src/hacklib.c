@@ -1474,18 +1474,7 @@ size_t bufsize;
 }
 
 char
-nhsym_to_char(ch)
-nhsym ch;
-{
-    if (SYMHANDLING(H_UNICODE))
-        return unicode_to_char(ch);
-    else
-        return (char)ch;
-
-}
-
-char
-unicode_to_char(ch)
+unicode_to_CP437(ch)
 nhsym ch;
 {
     int i;
@@ -1493,7 +1482,7 @@ nhsym ch;
     if (ch < 32 || (ch < 256 && cp437toUnicode[ch] == ch))
         return (char)ch;
 
-    for (i = 0; i < 256; i++)
+    for (i = 32; i < 256; i++)
         if (cp437toUnicode[i] == ch)
             return (char)i;
 
@@ -1582,9 +1571,10 @@ is_stdin_empty()
 }
 
 void
-write_nhsym_utf8(buf_ptr, ch)
+write_nhsym_utf8(buf_ptr, ch, is_CP437)
 char** buf_ptr;
 nhsym ch;
+boolean is_CP437;
 {
     if (!buf_ptr)
         return;
@@ -1597,7 +1587,7 @@ nhsym ch;
         ch += 256; /* Assume this is a char of over 127 value */
 
     /* Convert cp437 to Unicode first, if need be */
-    if (SYMHANDLING(H_IBM) && ch >= 0 && ch < 256)
+    if (is_CP437 && ch >= 0 && ch < 256)
         ch = cp437toUnicode[ch];
 
     unsigned long c = (unsigned long)ch;
@@ -1634,11 +1624,29 @@ const char* text;
     while (*tp && bp - buf < (int)(bufsize - 5))
     {
         sym = (nhsym)((uchar)*tp);
-        write_nhsym_utf8(&bp, sym);
+        write_nhsym_utf8(&bp, sym, TRUE); /* All text is internally stored as CP437 */
         tp++;
     }
     *bp = '\0';
 }
 
+void
+write_CP437_to_buf_unicode(buf, bufsize, text)
+char* buf;
+size_t bufsize;
+const char* text;
+{
+    int ch;
+    const char* tp = text;
+    char* bp = buf;
+    while (*tp && bp - buf < (int)(bufsize - 1))
+    {
+        ch = (int)((uchar)*tp);
+        *bp = ch < 32 ? ch : cp437toUnicode[ch] < 256 ? (char)cp437toUnicode[ch] : '?';
+        bp++;
+        tp++;
+    }
+    *bp = '\0';
+}
 
 /*hacklib.c*/

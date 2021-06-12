@@ -263,9 +263,11 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         PMSNHMsgPutstr msg_data = (PMSNHMsgPutstr) lParam;
         TCHAR wbuf[BUFSZ];
         size_t text_size;
+        char msgbuf[BUFSIZ] = "";
+        write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
 
         if (!data->window_text) {
-            text_size = strlen(msg_data->text) + 4;
+            text_size = strlen(msgbuf) + 4;
             data->window_text =
                 (TCHAR *) malloc(text_size * sizeof(data->window_text[0]));
             if (!data->window_text)
@@ -275,7 +277,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                        text_size * sizeof(data->window_text[0]));
         } else {
             text_size =
-                _tcslen(data->window_text) + strlen(msg_data->text) + 4;
+                _tcslen(data->window_text) + strlen(msgbuf) + 4;
             TCHAR* temptchar_ptr = (TCHAR *) realloc(
                 data->window_text, text_size * sizeof(data->window_text[0]));
             if (!temptchar_ptr)
@@ -286,7 +288,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         if (!data->window_text)
             break;
 
-        _tcscat(data->window_text, NH_A2W(msg_data->text, wbuf, BUFSZ));
+        _tcscat(data->window_text, NH_A2W(msgbuf, wbuf, BUFSZ));
         _tcscat(data->window_text, TEXT("\r\n"));
         break;
     }

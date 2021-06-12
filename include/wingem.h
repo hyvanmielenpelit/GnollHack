@@ -29,7 +29,7 @@ E void NDECL(setclipped);
 #endif
 E void FDECL(docorner, (int, int));
 E void NDECL(end_glyphout);
-E void FDECL(g_putch, (int));
+E void FDECL(g_putch, (int, BOOLEAN_P));
 E void FDECL(win_Gem_init, (int));
 E int NDECL(mar_gem_init);
 E char NDECL(mar_ask_class);
