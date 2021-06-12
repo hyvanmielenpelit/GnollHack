@@ -1229,8 +1229,12 @@ u_init()
         knows_object(GNOLLISH_STUDDED_LEATHER_ARMOR);
         knows_object(GNOLLISH_QUARREL);
         P_MAX_SKILL_LEVEL(P_FLAIL) = P_GRAND_MASTER;
+        if (P_SKILL_LEVEL(P_FLAIL) == P_ISRESTRICTED)
+            P_SKILL_LEVEL(P_FLAIL) = P_UNSKILLED;
         if(P_MAX_SKILL_LEVEL(P_CROSSBOW) < P_SKILLED)
             P_MAX_SKILL_LEVEL(P_CROSSBOW) = P_SKILLED;
+        if (P_SKILL_LEVEL(P_CROSSBOW) == P_ISRESTRICTED)
+            P_SKILL_LEVEL(P_CROSSBOW) = P_UNSKILLED;
         break;
 
     case PM_ORC:
