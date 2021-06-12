@@ -724,7 +724,7 @@ time_t when; /* date+time at end of game */
     if (!iflags.in_dumplog)
         return;
 
-    init_symbols(); /* revert to default symbol set */
+    //init_symbols(); /* Dumplog should now handle UTF-8 */ /* revert to default symbol set */
 
     /* one line version ID, which includes build date+time;
        it's conceivable that the game started with a different
@@ -781,6 +781,47 @@ time_t when; /* date+time at end of game */
     nhUse(when);
 #endif
 }
+
+/* #wizdumplog command - test dump_everything(). */
+int
+wiz_dumplog(VOID_ARGS)
+{
+#ifdef DUMPLOG
+    if (wizard) {
+        time_t dumptime = getnow();
+        char buf[BUFSZ] = "";
+        char fbuf[BUFSZ] = "";
+        char* fname;
+#ifdef SYSCF
+        if (!sysopt.dumplogfile)
+        {
+            pline1("No dumplog file specified in sysconf. Aborting.");
+            return 0;
+        }
+        fname = dump_fmtstr(sysopt.dumplogfile, fbuf);
+        if(fname)
+            strcpy(buf, fname);
+#else
+#ifdef DUMPLOG_FILE
+        fname = dump_fmtstr(DUMPLOG_FILE, fbuf);
+        if(fname)
+            strcpy(buf, fname);
+#endif
+#endif
+        pline("Writing dumplog to %s...", buf);
+        dump_open_log(dumptime);
+        dump_everything(ASCENDED, dumptime);
+        dump_close_log();
+        pline1("Done.");
+    }
+    else
+#endif
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_dumplog)));
+
+    return 0;
+}
+
+
 
 STATIC_OVL void
 disclose(how, taken)

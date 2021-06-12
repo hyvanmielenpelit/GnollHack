@@ -658,7 +658,8 @@ int in_ch;
     cell_t cell;
 
     cell.attribute = console.attr;
-    cell.character = (WCHAR)(((console.has_unicode || (flags.ibm2utf8 && SYMHANDLING(H_IBM))) && !(SYMHANDLING(H_UNICODE) || ch < 0 || ch >= 256)) ? cp437[ch] : ch);
+    cell.character = (WCHAR)(((console.has_unicode && SYMHANDLING(H_IBM)) && ch >= 0 && ch < 256) ? cp437[ch] : ch);
+    /* Windows always uses unicode (but not UTF-8), but showsyms are in CP437 if H_IBM is on */
 
     buffer_write(console.back_buffer, &cell, console.cursor);
 }

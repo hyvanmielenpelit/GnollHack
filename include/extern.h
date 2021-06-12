@@ -989,7 +989,7 @@ E void FDECL(panictrace_setsignals, (BOOLEAN_P));
 void and_you_die();
 #endif
 E long NDECL(get_current_game_score);
-
+E int NDECL(wiz_dumplog);
 
 /* ### engrave.c ### */
 
@@ -1259,7 +1259,6 @@ E void FDECL(strbuf_nl_to_crlf, (strbuf_t *));
 E void NDECL(adjusted_delay_output);
 E void FDECL(convertUTF8toCharUnicode, (char*, size_t));
 E void FDECL(convertUTF8toCP437, (char*, size_t));
-E char FDECL(nhsym_to_char, (nhsym));
 E char FDECL(unicode_to_char, (nhsym));
 E boolean NDECL(use_utf8_encoding);
 E int FDECL(converted_nh_poskey, (int*, int*, int*));
@@ -3736,6 +3735,11 @@ E void FDECL(dump_open_log, (time_t));
 E void NDECL(dump_close_log);
 E void FDECL(dump_redirect, (BOOLEAN_P));
 E void FDECL(dump_forward_putstr, (winid, int, const char*, int));
+#ifdef DUMPLOG
+E char* FDECL(dump_fmtstr, (const char*, char*));
+E void FDECL(dump_putstr_no_utf8, (winid, int, const char*));
+#endif
+
 #if defined(ANDROID) && defined(DUMPLOG)
 E void FDECL(and_get_dumplog_dir, (char*));
 #endif

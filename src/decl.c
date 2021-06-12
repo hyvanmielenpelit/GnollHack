@@ -460,6 +460,10 @@ unsigned long file_end_marker = 0xF23EE6D8;
 
 
 NEARDATA const char* Moloch = "Moloch";
+/* for rejecting attempts to use wizard mode commands */
+NEARDATA const char unavailcmd[] = "Unavailable command '%s'.";
+/* for rejecting #if !SHELL, !SUSPEND */
+NEARDATA const char cmdnotavail[] = "'%s' command not available.";
 
 
 

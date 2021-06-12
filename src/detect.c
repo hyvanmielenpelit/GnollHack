@@ -2223,8 +2223,9 @@ dump_map()
 {
     int x, y, glyph, skippedrows, lastnonblank;
     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
-    int default_glyph = cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
-    char buf[BUFSZ];
+    int default_glyph = base_cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
+    char buf[BUFSIZ];
+    char* bp;
     boolean blankrow, toprow;
 
     /*
@@ -2237,10 +2238,13 @@ dump_map()
      */
     skippedrows = 0;
     toprow = TRUE;
-    for (y = 0; y < ROWNO; y++) {
+    for (y = 0; y < ROWNO; y++) 
+    {
+        bp = buf;
         blankrow = TRUE; /* assume blank until we discover otherwise */
         lastnonblank = -1; /* buf[] index rather than map's x */
-        for (x = 1; x < COLNO; x++) {
+        for (x = 1; x < COLNO; x++) 
+        {
             nhsym ch;
             int color;
             unsigned long special;
@@ -2251,28 +2255,39 @@ dump_map()
             layers.glyph = glyph;
             (void) mapglyph(layers, &ch, &color, &special, x, y);
 
-            buf[x - 1] = nhsym_to_char(ch);
-            if (ch != ' ') {
+            write_nhsym_utf8(&bp, ch); //buf[x - 1] = ch;
+            /* UTF-8 must be handled here, because you cannot write nhsym (long) to the buf (char) and convert it later */
+            /* Note: write_nhsym_utf8 moves bp forward the right amount (1-4 bytes) */
+
+            if (ch != ' ') 
+            {
                 blankrow = FALSE;
-                lastnonblank = x - 1;
+                lastnonblank = bp - buf - 1; /* Since write_nhsym_utf8 moved the pointer one further than last nonblank */ //x - 1;
             }
         }
-        if (!blankrow) {
+
+        if (!blankrow) 
+        {
             buf[lastnonblank + 1] = '\0';
-            if (toprow) {
+            if (toprow) 
+            {
                 skippedrows = 0;
                 toprow = FALSE;
             }
+
             for (x = 0; x < skippedrows; x++)
-                putstr(0, 0, "");
-            putstr(0, 0, buf); /* map row #y */
+                dump_putstr_no_utf8(0, 0, "");
+
+            dump_putstr_no_utf8(0, 0, buf); /* map row #y, utf-8 already handled */
             skippedrows = 0;
-        } else {
+        }
+        else 
+        {
             ++skippedrows;
         }
     }
     if (skippedrows)
-        putstr(0, 0, "");
+        dump_putstr_no_utf8(0, 0, "");
 }
 #endif /* DUMPLOG */
 

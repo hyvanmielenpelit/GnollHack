@@ -547,6 +547,12 @@ E boolean disallow_keyboard_commands_in_wait_loop;
 
 E const char* Moloch;
 
+/* From cmd.c so wizard mode commands can use these in other .c files */
+/* for rejecting attempts to use wizard mode commands */
+E const char unavailcmd[];
+/* for rejecting #if !SHELL, !SUSPEND */
+E const char cmdnotavail[];
+
 E unsigned long file_end_marker;
 #undef E
 

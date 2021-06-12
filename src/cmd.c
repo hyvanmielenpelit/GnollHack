@@ -220,10 +220,6 @@ STATIC_DCL void FDECL(add_command_menu_items, (winid, int));
 
 static const char *readchar_queue = "";
 static coord clicklook_cc;
-/* for rejecting attempts to use wizard mode commands */
-static const char unavailcmd[] = "Unavailable command '%s'.";
-/* for rejecting #if !SHELL, !SUSPEND */
-static const char cmdnotavail[] = "'%s' command not available.";
 
 STATIC_PTR int
 doprev_message(VOID_ARGS)
@@ -5152,6 +5148,10 @@ struct ext_func_tab extcmdlist[] = {
             wiz_level_tele, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizlightsources", "show mobile light sources",
             wiz_light_sources, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+#ifdef DUMPLOG
+    { '\0', "wizdumplog", "write the dumplog",
+            wiz_dumplog, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+#endif
     { '\0', "wizmakemap", "recreate the current level",
             wiz_makemap, IFBURIED | WIZMODECMD },
     { C('f'), "wizmap", "map the level",
@@ -8106,6 +8106,5 @@ dolight(VOID_ARGS)
 
     return 0;
 }
-
 
 /*cmd.c*/

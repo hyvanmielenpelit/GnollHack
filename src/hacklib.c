@@ -1593,6 +1593,13 @@ nhsym ch;
     if (!buf)
         return;
 
+    if (ch < 0 && ch >= -128)
+        ch += 256; /* Assume this is a char of over 127 value */
+
+    /* Convert cp437 to Unicode first, if need be */
+    if (SYMHANDLING(H_IBM) && ch >= 0 && ch < 256)
+        ch = cp437toUnicode[ch];
+
     unsigned long c = (unsigned long)ch;
     if (c < 0x80) {
         *buf++ = (char)c;
@@ -1627,8 +1634,6 @@ const char* text;
     while (*tp && bp - buf < (int)(bufsize - 5))
     {
         sym = (nhsym)((uchar)*tp);
-        if (SYMHANDLING(H_IBM) && !flags.ibm2utf8 && sym >= 0 && sym < 256)
-            sym = cp437toUnicode[sym];
         write_nhsym_utf8(&bp, sym);
         tp++;
     }

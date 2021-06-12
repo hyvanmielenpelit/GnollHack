@@ -1316,9 +1316,7 @@ STATIC_VAR FILE *dumplog_file;
 #ifdef DUMPLOG
 STATIC_VAR time_t dumplog_now;
 
-STATIC_DCL char *FDECL(dump_fmtstr, (const char *, char *));
-
-STATIC_OVL char *
+char *
 dump_fmtstr(fmt, buf)
 const char *fmt;
 char *buf;
@@ -1455,8 +1453,12 @@ int attr;
 const char *str;
 int no_forward;
 {
+    char buf[BUFSIZ * 4] = "";
+    if (str)
+        write_text2buf_utf8(buf, BUFSIZ * 4, str);
+
     if (dumplog_file)
-        fprintf(dumplog_file, "%s\n", str);
+        fprintf(dumplog_file, "%s\n", buf);
     if (!no_forward)
         putstr(win, attr, str);
 }
@@ -1468,9 +1470,26 @@ winid win UNUSED;
 int attr UNUSED;
 const char *str;
 {
+    char buf[BUFSIZ * 4] = "";
+    if(str)
+        write_text2buf_utf8(buf, BUFSIZ * 4, str);
+
+    if (dumplog_file)
+        fprintf(dumplog_file, "%s\n", buf);
+}
+
+#ifdef DUMPLOG
+/*ARGSUSED*/
+void
+dump_putstr_no_utf8(win, attr, str)
+winid win UNUSED;
+int attr UNUSED;
+const char* str;
+{
     if (dumplog_file)
         fprintf(dumplog_file, "%s\n", str);
 }
+#endif
 
 STATIC_OVL winid
 dump_create_nhwindow(dummy)
@@ -1524,11 +1543,15 @@ int attr UNUSED;
 const char *str;
 boolean preselected UNUSED;
 {
+    char buf[BUFSIZ * 4] = "";
+    if (str)
+        write_text2buf_utf8(buf, BUFSIZ * 4, str);
+
     if (dumplog_file) {
         if (glyph == NO_GLYPH)
-            fprintf(dumplog_file, " %s\n", str);
+            fprintf(dumplog_file, " %s\n", buf);
         else
-            fprintf(dumplog_file, "  %c - %s\n", ch, str);
+            fprintf(dumplog_file, "  %c - %s\n", ch, buf);
     }
 }
 
@@ -1545,11 +1568,15 @@ int attr UNUSED;
 const char* str;
 boolean preselected UNUSED;
 {
+    char buf[BUFSIZ * 4] = "";
+    if (str)
+        write_text2buf_utf8(buf, BUFSIZ * 4, str);
+
     if (dumplog_file) {
         if (glyph == NO_GLYPH)
-            fprintf(dumplog_file, " %s\n", str);
+            fprintf(dumplog_file, " %s\n", buf);
         else
-            fprintf(dumplog_file, "  %c - %s\n", ch, str);
+            fprintf(dumplog_file, "  %c - %s\n", ch, buf);
     }
 }
 
@@ -1559,9 +1586,13 @@ dump_end_menu(win, str)
 winid win UNUSED;
 const char *str;
 {
+    char buf[BUFSIZ * 4] = "";
+    if (str)
+        write_text2buf_utf8(buf, BUFSIZ * 4, str);
+
     if (dumplog_file) {
         if (str)
-            fprintf(dumplog_file, "%s\n", str);
+            fprintf(dumplog_file, "%s\n", buf);
         else
             fputs("\n", dumplog_file);
     }
