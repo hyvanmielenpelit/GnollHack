@@ -1307,6 +1307,13 @@ int how;
     urealtime.finish_time = endtime = getnow();
     urealtime.realtime += (long) (endtime - urealtime.start_timing);
 
+    /* Calculate final score */
+    u.u_gamescore = get_current_game_score();
+ 
+    /* Write xlogfile */
+    topten(how, endtime);
+
+    /* Write dumplog */
     dump_open_log(endtime);
 
     You("were playing on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
@@ -1479,7 +1486,7 @@ int how;
         if (deepest > 20)
             tmp += 1000L * (long) ((deepest > 30) ? 10 : deepest - 20);
 #endif
-        u.u_gamescore = get_current_game_score();
+        //u.u_gamescore = get_current_game_score();
 
 #if 0
         nowrap_add(u.u_gamescore, tmp);
@@ -1747,7 +1754,8 @@ int how;
     if (have_windows && !iflags.toptenwin)
         exit_nhwindows((char*)0), have_windows = FALSE;
 
-    topten(how, endtime);
+    /* Moved to be the first thing to be done */
+    //topten(how, endtime);
 
     if (have_windows)
         exit_nhwindows((char*)0);
