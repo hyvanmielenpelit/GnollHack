@@ -585,7 +585,7 @@ typedef unsigned char uchar;
 #endif
 
 #ifndef DUMPLOG_FILE
-#define DUMPLOG_FILE        "/tmp/GnollHack.%n.%d.log"
+#define DUMPLOG_FILE        "/tmp/gnollhack.%n.%d.log"
 /* DUMPLOG_FILE allows following placeholders:
    %% literal '%'
    %v version (eg. "3.6.2-0")
