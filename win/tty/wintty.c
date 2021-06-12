@@ -3457,7 +3457,7 @@ boolean is_CP437;
 
 #ifndef WIN32
 void
-g_putch(in_ch)
+g_putch(in_ch, is_CP437)
 int in_ch;
 boolean is_CP437;
 {
