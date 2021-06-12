@@ -91,7 +91,7 @@ struct monst* origmonst;
         return 0;
 
     int skill_type = objects[otyp].oc_skill;
-    int skill_level = (int)(origmonst == &youmonst ? P_SKILL_LEVEL(skill_type) : is_prince(origmonst->data) ? P_EXPERT : is_lord(origmonst->data) ? P_SKILLED : P_BASIC);
+    int skill_level = (int)(origmonst == &youmonst ? P_SKILL_LEVEL(skill_type) : is_prince(origmonst->data) ? P_GRAND_MASTER : is_lord(origmonst->data) ? P_EXPERT : P_BASIC);
     int max_level =  10 * max(0, skill_level - 1);
     return max_level;
 }
@@ -228,9 +228,9 @@ struct monst* origmonst;
         else
         {
             if (is_prince(origmonst->data))
-                skill_level = P_EXPERT;
+                skill_level = P_GRAND_MASTER;
             else if (is_lord(origmonst->data))
-                skill_level = P_SKILLED;
+                skill_level = P_EXPERT;
             else
                 skill_level = P_BASIC;
         }
@@ -6947,11 +6947,11 @@ int otyp;
     else
     {
         if(is_prince(mtmp->data))
-            skill_level = P_EXPERT;
+            skill_level = P_GRAND_MASTER;
         else if (is_lord(mtmp->data))
-            skill_level = P_SKILLED;
+            skill_level = P_EXPERT;
         else
-            skill_level = P_UNSKILLED;
+            skill_level = P_BASIC;
     }
 
     switch (skill_level) {
@@ -7026,11 +7026,11 @@ int otyp;
     else
     {
         if (is_prince(mtmp->data))
-            skill_level = P_EXPERT;
+            skill_level = P_GRAND_MASTER;
         else if (is_lord(mtmp->data))
-            skill_level = P_SKILLED;
+            skill_level = P_EXPERT;
         else
-            skill_level = P_UNSKILLED;
+            skill_level = P_BASIC;
     }
 
     return wand_skill_hit_bonus(skill_level);

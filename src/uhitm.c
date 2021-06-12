@@ -777,15 +777,10 @@ struct attack *uattk;
 {
     boolean malive = TRUE, wep_was_destroyed = FALSE;
     int armorpenalty, attknum = 0, x = u.ux + u.dx, y = u.uy + u.dy;
-    int multistrike = 1;
-    int multistrikernd = 0;
     struct obj* wep = (uwep ? uwep : uarmg ? uarmg : (struct obj*)0);
     struct obj* wepbefore = wep;
 
-    get_multishot_stats(&youmonst, wep, wep, FALSE, &multistrike, &multistrikernd);
-
-    if (multistrikernd > 0)
-        multistrike += rn2(multistrikernd + 1);
+    int multistrike = get_multishot_stats(&youmonst, wep, wep, FALSE, (double*)0);
 
     for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
     {
@@ -845,15 +840,10 @@ struct attack *uattk;
         else
             You("strike with your left %s%s.", uarmg ? "gloved " : "", body_part(HAND));
 
-        int multistrike2 = 1;
-        int multistrikernd2 = 0;
         wep = (uarms ? uarms : uarmg ? uarmg : (struct obj*)0);
         wepbefore = wep;
 
-        get_multishot_stats(&youmonst, wep, wep, FALSE, &multistrike2, &multistrikernd2);
-
-        if (multistrikernd2 > 0)
-            multistrike += rn2(multistrikernd + 1);
+        int multistrike2 = get_multishot_stats(&youmonst, wep, wep, FALSE, (double*)0);
 
         for (int strike2index = 0; strike2index < multistrike2; strike2index++)
         {
@@ -3789,13 +3779,7 @@ register struct monst *mon;
             if (!weapon) /* no need to go beyond no-gloves to rings; not ...*/
                 originalweapon = &uarmg; /*... subject to erosion damage */
 
-            int multistrike = 1;
-            int multistrikernd = 0;
-
-            get_multishot_stats(&youmonst, weapon, weapon, FALSE, &multistrike, &multistrikernd);
-
-            if (multistrikernd > 0)
-                multistrike += rn2(multistrikernd + 1);
+            int multistrike = get_multishot_stats(&youmonst, weapon, weapon, FALSE, (double*)0);
 
             for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
             {

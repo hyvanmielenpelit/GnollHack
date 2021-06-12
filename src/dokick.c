@@ -402,13 +402,7 @@ xchar x, y;
         return;
     }
 
-    int multistrike = 1;
-    int multistrikernd = 0;
-
-    get_multishot_stats(&youmonst, (struct obj*)0, (struct obj*)0, FALSE, &multistrike, &multistrikernd);
-
-    if (multistrikernd > 0)
-        multistrike += rn2(multistrikernd + 1);
+    int multistrike = get_multishot_stats(&youmonst, (struct obj*)0, (struct obj*)0, FALSE, (double*)0);
 
     for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
     {

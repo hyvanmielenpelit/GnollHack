@@ -409,7 +409,6 @@ register struct monst *magr, *mdef;
         otmp = (struct obj *) 0;
         attk = 1;
         int multistrike = 1;
-        int multistrikernd = 0;
 
         switch (mattk->aatyp)
         {
@@ -447,10 +446,7 @@ register struct monst *magr, *mdef;
 
             }
 
-            get_multishot_stats(magr, otmp, otmp, FALSE, &multistrike, &multistrikernd);
-
-            if (multistrikernd > 0)
-                multistrike += rn2(multistrikernd + 1);
+            multistrike = get_multishot_stats(magr, otmp, otmp, FALSE, (double*)0);
 
             /*FALLTHRU*/
         case AT_CLAW:

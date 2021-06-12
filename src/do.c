@@ -3672,18 +3672,17 @@ register struct obj* obj;
         putstr(datawin, 0, txt);
 #endif
 
-        int multistrike = 0, multistrikernd = 0;
-        get_multishot_stats(&youmonst, obj, uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, (is_ammo(obj) || throwing_weapon(obj)), &multistrike, &multistrikernd);
-        double average_multi_shot_times = (double)multistrike + ((double)multistrikernd) / 2.0;
+        double average_multi_shot_times = 1.0;
+        (void)get_multishot_stats(&youmonst, obj, uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, (is_ammo(obj) || throwing_weapon(obj)), &average_multi_shot_times);
 
         powercnt++;
         const char* applicable_verb = throwing_weapon(obj) ? "throw" : ammo_and_launcher(obj, applicable_launcher) ? "fire" : "strike";
-        if (average_multi_shot_times == 1 && multistrikernd == 0)
+        if (average_multi_shot_times == 1.0)
             Sprintf(buf, " %2d - You %s once per round", powercnt, applicable_verb);
-        else if (average_multi_shot_times == 2 && multistrikernd == 0)
+        else if (average_multi_shot_times == 2.0)
             Sprintf(buf, " %2d - You %s twice per round", powercnt, applicable_verb);
-        else if (average_multi_shot_times == 3 && multistrikernd == 0)
-            Sprintf(buf, " %2d - You %s three per round", powercnt, applicable_verb);
+        else if (average_multi_shot_times == 3.0)
+            Sprintf(buf, " %2d - You %s three times per round", powercnt, applicable_verb);
         else
             Sprintf(buf, " %2d - You %s an average of %.1f time%s per round", powercnt, applicable_verb, average_multi_shot_times, plur(average_multi_shot_times));
         txt = buf;

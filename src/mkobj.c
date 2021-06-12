@@ -2367,6 +2367,12 @@ int spe_type_index;
     case ENCHTYPE_TWO_HANDED_LAUNCHER:
         initspe = Inhell ? rne(5) : rne(3);
         break;
+    case ENCHTYPE_TWO_HANDED_ELVEN_LAUNCHER:
+        initspe = Inhell ? rne(7) : rne(4);
+        break;
+    case ENCHTYPE_SINGLE_HANDED_ELVEN_MELEE_WEAPON:
+        initspe = Inhell ? rne(10) : rne(6);
+        break;
     }
 
     return initspe;
@@ -2445,6 +2451,12 @@ int spe_type_index;
         break;
     case ENCHTYPE_TWO_HANDED_LAUNCHER:
         maxspe = 7;
+        break;
+    case ENCHTYPE_TWO_HANDED_ELVEN_LAUNCHER:
+        maxspe = 10;
+        break;
+    case ENCHTYPE_SINGLE_HANDED_ELVEN_MELEE_WEAPON:
+        maxspe = 15;
         break;
     case ENCHTYPE_PROJECTILE_ALWAYS_START_0:
         maxspe = 5;

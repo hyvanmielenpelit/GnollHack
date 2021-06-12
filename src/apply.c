@@ -4568,7 +4568,7 @@ int* max_range;
         return;
 
     boolean is_you = (mon == &youmonst);
-    int skill_level = is_you ? P_SKILL_LEVEL(objects[obj->otyp].oc_skill) : is_prince(mon->data) ? P_EXPERT : is_lord(mon->data) ? P_SKILLED : P_BASIC;
+    int skill_level = is_you ? P_SKILL_LEVEL(objects[obj->otyp].oc_skill) : is_prince(mon->data) ? P_GRAND_MASTER : is_lord(mon->data) ? P_EXPERT : P_BASIC;
 
     if (is_pole(obj))
     {

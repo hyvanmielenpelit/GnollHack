@@ -932,19 +932,15 @@ register struct monst *mtmp;
                         mon_currwep = MON_WEP(mtmp);
 
                     int multistrike = 1;
-                    int multistrikernd = 0;
 
                     if (mon_currwep) 
                     {
                         hittmp = weapon_to_hit_value(mon_currwep, &youmonst, mtmp, 0);
                         tmp += hittmp;
 
-                        get_multishot_stats(mtmp, mon_currwep, mon_currwep, FALSE, &multistrike, &multistrikernd);
+                        multistrike = get_multishot_stats(mtmp, mon_currwep, mon_currwep, FALSE, (double*)0);
 
                     }
-
-                    if (multistrikernd > 0)
-                        multistrike += rn2(multistrikernd + 1);
 
                     for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
                     {

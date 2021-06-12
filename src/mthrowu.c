@@ -223,7 +223,6 @@ struct obj *otmp, *mwep;
 {
     //int skill = (int) objects[otmp->otyp].oc_skill;
     int multishot = 1;
-    int multishotrndextra = 0;
 
     if (otmp->quan > 1L /* no point checking if there's only 1 */
         /* ammo requires corresponding launcher be wielded */
@@ -234,7 +233,7 @@ struct obj *otmp, *mwep;
         && !is_confused(mtmp)) 
     {
 
-        get_multishot_stats(mtmp, otmp, mwep, TRUE, &multishot, &multishotrndextra);
+        multishot = get_multishot_stats(mtmp, otmp, mwep, TRUE, (double*)0);
 
 #if 0
         struct obj* otmpmulti = (struct obj*)0;
@@ -291,10 +290,6 @@ struct obj *otmp, *mwep;
         }
 
 #endif
-        /* Some randomness */
-        if (multishotrndextra > 0)
-            multishot += rn2(multishotrndextra + 1);
-
 
         /* this portion is different from hero multishot; from slash'em?
          */

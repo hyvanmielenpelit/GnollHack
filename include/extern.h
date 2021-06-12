@@ -799,7 +799,7 @@ E boolean FDECL(walk_path, (coord *, coord *,
 E boolean FDECL(hurtle_jump, (genericptr_t, int, int));
 E boolean FDECL(hurtle_step, (genericptr_t, int, int));
 
-E void FDECL(get_multishot_stats, (struct monst*, struct obj*, struct obj*, BOOLEAN_P, int*, int*));
+E int FDECL(get_multishot_stats, (struct monst*, struct obj*, struct obj*, BOOLEAN_P, double*));
 E void FDECL(check_shop_obj, (struct obj*, XCHAR_P, XCHAR_P, BOOLEAN_P));
 
 

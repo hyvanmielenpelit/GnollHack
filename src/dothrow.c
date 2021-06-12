@@ -111,7 +111,6 @@ boolean firing;
      * (potential volley of up to N missiles; default for N is 1)
      */
     multishot = 1;
-    int multishotrndextra = 0;
     //skill = objects[obj->otyp].oc_skill;
     if (obj->quan > 1L /* no point checking if there's only 1 */
         /* ammo requires corresponding launcher be wielded */
@@ -144,7 +143,7 @@ boolean firing;
         */
 #endif
 
-        get_multishot_stats(&youmonst, obj, uwep, TRUE, &multishot, &multishotrndextra);
+        multishot = get_multishot_stats(&youmonst, obj, uwep, TRUE, (double*)0);
 
 #if 0
         struct obj* otmpmulti = (struct obj*)0;
@@ -230,10 +229,7 @@ boolean firing;
         }
         */
 #endif
-
-        if(multishotrndextra > 0)
-            multishot += rn2(multishotrndextra + 1); //add random amount;
-        
+     
         if ((long) multishot > obj->quan)
             multishot = (int) obj->quan;
         if (shotlimit > 0 && multishot > shotlimit)
@@ -288,23 +284,20 @@ boolean firing;
     return 1;
 }
 
-void
-get_multishot_stats(magr, otmp, weapon, thrown, output_multishot_constant, output_multishot_rnd)
+int
+get_multishot_stats(magr, otmp, weapon, thrown, average_ptr)
 struct monst* magr;
 struct obj* otmp;
 struct obj* weapon;
 boolean thrown;
-int* output_multishot_constant;
-int* output_multishot_rnd;
+double* average_ptr;
 {
-    if (!output_multishot_constant || !output_multishot_rnd)
-        return;
-
-    *output_multishot_constant = 1;
-    *output_multishot_rnd = 0;
-
     if (!magr)
-        return;
+        return 1;
+
+    int multishot = 1;
+    if (average_ptr)
+        *average_ptr = 1.0;
 
     if (!otmp || otmp == uarmg)
     {
@@ -335,11 +328,13 @@ int* output_multishot_rnd;
             }
         }
 
-        *output_multishot_constant = 1;
         if (rn2(100) < martial_arts_multishot_percentage_chance(skilllevel))
-            (*output_multishot_constant)++;
+            multishot++;
 
-        return;
+        if (average_ptr)
+            *average_ptr = 1.0 + martial_arts_multishot_percentage_chance(skilllevel);
+
+        return multishot;
     }
 
     boolean isammo = is_ammo(otmp);
@@ -371,21 +366,21 @@ int* output_multishot_rnd;
     else
     {
         if (is_prince(magr->data))
-            skilllevel = P_EXPERT;
+            skilllevel = P_GRAND_MASTER;
         else if (is_lord(magr->data))
-            skilllevel = P_SKILLED;
+            skilllevel = P_EXPERT;
         else
             skilllevel = P_BASIC;
     }
 
 
-    /* choose multishot style */
+    /* Choose multishot style */
     if (matching && thrown)
-        used_multishotstyle = 1;
+        used_multishotstyle = 1; /* Launcher */
     else if(!matching && thrown)
-        used_multishotstyle = 2;
+        used_multishotstyle = 2; /* Thrown */
     else
-        used_multishotstyle = 3;
+        used_multishotstyle = 3; /* Melee */
 
 
     int multishotstyle = objects[otmpmulti->otyp].oc_multishot_style;
@@ -395,87 +390,15 @@ int* output_multishot_rnd;
         /* ammo and laucher */
         switch (multishotstyle)
         {
-        case MULTISHOT_LAUNCHER_1D2_NOSKILL:
-            *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_LAUNCHER_1D2_BASIC:
-            if(skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_LAUNCHER_1D2_SKILLED:
-            if (skilllevel >= P_SKILLED)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_LAUNCHER_1D2_EXPERT:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_LAUNCHER_2_NOSKILL:
-            *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_LAUNCHER_2_BASIC:
-            if (skilllevel >= P_BASIC)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_LAUNCHER_2_SKILLED:
-            if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_LAUNCHER_2_EXPERT:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_LAUNCHER_1D2_1_NOSKILL:
-            *output_multishot_constant = 2;
-            *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_LAUNCHER_3_NOSKILL:
-            *output_multishot_constant = 3;
+        case MULTISHOT_LAUNCHER_MULTISHOT_BOW:
+            multishot = 1 + (skilllevel > P_BASIC ? (rn2(100) < (skilllevel - 2) * 25 ? 1 : 0) : 0);
+            if (average_ptr)
+                *average_ptr = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 2) * 0.25 : 0.0);
             break; 
-        case MULTISHOT_LAUNCHER_1D3_NOSKILL:
-            *output_multishot_rnd = 2;
-            break;
-        case MULTISHOT_LAUNCHER_2_SKILLED_1D2_BASIC:
-            if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_LAUNCHER_1D2_1_EXPERT_2_SKILLED_1D2_BASIC:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 2, * output_multishot_rnd = 1;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
-            break; 
-        case MULTISHOT_LAUNCHER_3_EXPERT_2_SKILLED_1D2_BASIC:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 3;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_LAUNCHER_4_EXPERT_3_SKILLED_2_BASIC:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 4;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 3;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_LAUNCHER_2_EXPERT_1D2_SKILLED:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_LAUNCHER_3_EXPERT_2_SKILLED:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 3;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
+        case MULTISHOT_LAUNCHER_REPEATING_CROSSBOW:
+            multishot = 2;
+            if (average_ptr)
+                *average_ptr = 2.0;
             break;
         default:
             break;
@@ -487,87 +410,20 @@ int* output_multishot_rnd;
         /* thrown weapons */
         switch (multishotstyle)
         {
-        case MULTISHOT_THROWN_1D2_NOSKILL:
-            *output_multishot_rnd = 1;
+        case MULTISHOT_THROWN_DART:
+            multishot = 1 + (skilllevel > P_SKILLED ? (rn2(100) < (skilllevel - 3) * 25 ? 1 : 0) : 0);
+            if (average_ptr)
+                *average_ptr = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 3) * 0.25 : 0.0);
             break;
-        case MULTISHOT_THROWN_1D2_BASIC:
-            if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
+        case MULTISHOT_THROWN_SHURIKEN:
+            multishot = 1 + (skilllevel > P_BASIC ? (rn2(100) < (skilllevel - 2) * 25 ? 1 : 0) : 0);
+            if (average_ptr)
+                *average_ptr = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 2) * 0.25 : 0.0);
             break;
-        case MULTISHOT_THROWN_1D2_SKILLED:
-            if (skilllevel >= P_SKILLED)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_THROWN_1D2_EXPERT:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_THROWN_2_NOSKILL:
-            *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_THROWN_2_BASIC:
-            if (skilllevel >= P_BASIC)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_THROWN_2_SKILLED:
-            if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_THROWN_2_EXPERT:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_THROWN_1D2_1_NOSKILL:
-            *output_multishot_constant = 2;
-            *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_THROWN_3_NOSKILL:
-            *output_multishot_constant = 3;
-            break;
-        case MULTISHOT_THROWN_1D3_NOSKILL:
-            *output_multishot_rnd = 2;
-            break;
-        case MULTISHOT_THROWN_2_SKILLED_1D2_BASIC:
-            if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_THROWN_1D2_1_EXPERT_2_SKILLED_1D2_BASIC:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 2, * output_multishot_rnd = 1;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_THROWN_3_EXPERT_2_SKILLED_1D2_BASIC:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 3;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_THROWN_4_EXPERT_3_SKILLED_2_BASIC:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 4;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 3;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_THROWN_2_EXPERT_1D2_SKILLED:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_THROWN_3_EXPERT_2_SKILLED:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 3;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
+        case MULTISHOT_THROWN_DAGGER:
+            multishot = 1 + (skilllevel > P_EXPERT ? (rn2(100) < (skilllevel - 4) * 25 ? 1 : 0) : 0);
+            if (average_ptr)
+                *average_ptr = 1.0 + (skilllevel > P_BASIC ? (skilllevel - 4) * 0.25 : 0.0);
             break;
         default:
             break;
@@ -578,94 +434,29 @@ int* output_multishot_rnd;
         /* melee weapons */
         switch (multishotstyle)
         {
-        case MULTISHOT_MELEE_1D2_NOSKILL:
-            *output_multishot_rnd = 1;
+        case MULTISHOT_MELEE_DOUBLE_HEADED_FLAIL:
+        {
+            int fixed = min(2, max(1, skilllevel / 2));
+            boolean has_random = skilllevel == P_SKILLED ? 1 : 0;
+            int random = has_random ? rn2(2) : 0;
+            multishot = fixed + random;
+            if (average_ptr)
+                *average_ptr = (double)fixed + (has_random ? 0.5 : 0.0);
+        }
             break;
-        case MULTISHOT_MELEE_1D2_BASIC:
-            if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
+        case MULTISHOT_MELEE_TRIPLE_HEADED_FLAIL:
+        {
+            multishot = max(1, skilllevel - 3);
+            if (average_ptr)
+                *average_ptr = (double)multishot;
             break;
-        case MULTISHOT_MELEE_1D2_SKILLED:
-            if (skilllevel >= P_SKILLED)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_MELEE_1D2_EXPERT:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_MELEE_2_NOSKILL:
-            *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_MELEE_2_BASIC:
-            if (skilllevel >= P_BASIC)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_MELEE_2_SKILLED:
-            if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_MELEE_2_EXPERT:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_MELEE_1D2_1_NOSKILL:
-            *output_multishot_constant = 2;
-            *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_MELEE_3_NOSKILL:
-            *output_multishot_constant = 3;
-            break;
-        case MULTISHOT_MELEE_1D3_NOSKILL:
-            *output_multishot_rnd = 2;
-            break;
-        case MULTISHOT_MELEE_2_SKILLED_1D2_BASIC:
-            if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_MELEE_1D2_1_EXPERT_2_SKILLED_1D2_BASIC:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 2, * output_multishot_rnd = 1;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_MELEE_3_EXPERT_2_SKILLED_1D2_BASIC:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 3;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_MELEE_4_EXPERT_3_SKILLED_2_BASIC:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 4;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 3;
-            else if (skilllevel >= P_BASIC)
-                *output_multishot_constant = 2;
-            break;
-        case MULTISHOT_MELEE_2_EXPERT_1D2_SKILLED:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 2;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_rnd = 1;
-            break;
-        case MULTISHOT_MELEE_3_EXPERT_2_SKILLED:
-            if (skilllevel >= P_EXPERT)
-                *output_multishot_constant = 3;
-            else if (skilllevel >= P_SKILLED)
-                *output_multishot_constant = 2;
-            break;
+        }
         default:
             break;
         }
     }
 
-    return;
+    return multishot;
 }
 
 
