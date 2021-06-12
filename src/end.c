@@ -1307,12 +1307,6 @@ int how;
     urealtime.finish_time = endtime = getnow();
     urealtime.realtime += (long) (endtime - urealtime.start_timing);
 
-    /* Calculate final score */
-    u.u_gamescore = get_current_game_score();
- 
-    /* Write xlogfile */
-    topten(how, endtime);
-
     /* Write dumplog */
     dump_open_log(endtime);
 
@@ -1587,7 +1581,7 @@ int how;
                     : urole.name.m)
                 : (const char *) (flags.female ? "Demigoddess" : "Demigod"));
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
-    //dump_forward_putstr(endwin, 0, "", done_stopprint);
+    dump_forward_putstr(endwin, 0, "", done_stopprint);
 
     if (how == ESCAPED || how == ASCENDED) 
     {
@@ -1754,8 +1748,7 @@ int how;
     if (have_windows && !iflags.toptenwin)
         exit_nhwindows((char*)0), have_windows = FALSE;
 
-    /* Moved to be the first thing to be done */
-    //topten(how, endtime);
+    topten(how, endtime);
 
     if (have_windows)
         exit_nhwindows((char*)0);
