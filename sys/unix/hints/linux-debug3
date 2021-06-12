@@ -20,7 +20,7 @@ VARDIR = $(HACKDIR)/var
 
 
 
-POSTINSTALL=cp -n sys/unix/sysconf $(INSTDIR)/sysconf; $(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf; $(CHGRP) $(GAMEGRP) $(INSTDIR)/sysconf; chmod $(VARFILEPERM) $(INSTDIR)/sysconf;
+POSTINSTALL=cp -n sys/unix/sysconfdgl $(INSTDIR)/sysconf; $(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf; $(CHGRP) $(GAMEGRP) $(INSTDIR)/sysconf; chmod $(VARFILEPERM) $(INSTDIR)/sysconf;
 
 CFLAGS=-g -O0 -I../include -DNOTPARMDECL
 CFLAGS+=-DDLB
