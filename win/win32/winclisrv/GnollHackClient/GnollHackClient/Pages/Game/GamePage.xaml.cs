@@ -160,16 +160,16 @@ namespace GnollHackClient.Pages.Game
 
         }
 
-        private int TileSheetIdx(int ntile)
+        public int TileSheetIdx(int ntile)
         {
             return (Math.Min(UsedTileSheets - 1, Math.Max(0, (ntile / GHConstants.NumberOfTilesPerSheet))));
         }
 
-        private int TileSheetX(int ntile)
+        public int TileSheetX(int ntile)
         {
             return (((ntile % GHConstants.NumberOfTilesPerSheet) % _tilesPerRow[TileSheetIdx(ntile)]) * GHConstants.TileWidth);
         }
-        private int TileSheetY(int ntile)
+        public int TileSheetY(int ntile)
         {
             return (((ntile % GHConstants.NumberOfTilesPerSheet) / _tilesPerRow[TileSheetIdx(ntile)]) * GHConstants.TileHeight);
         }

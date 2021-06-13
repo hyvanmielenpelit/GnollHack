@@ -156,7 +156,6 @@ namespace GnollHackClient.Droid
             _gnollhackfilesdir = filesdir;
 
             /* For debugging purposes now, delete all existing files in filesdir first */
-
             //System.IO.DirectoryInfo di = new DirectoryInfo(_gnollhackfilesdir);
 
             //foreach (FileInfo file in di.GetFiles())
@@ -169,7 +168,7 @@ namespace GnollHackClient.Droid
             foreach (string ghdir in ghdirlist)
             {
                 string fulldirepath = Path.Combine(_gnollhackfilesdir, ghdir);
-                if(!Directory.Exists(fulldirepath))
+                if (!Directory.Exists(fulldirepath))
                 {
                     Directory.CreateDirectory(fulldirepath);
                 }
@@ -181,9 +180,9 @@ namespace GnollHackClient.Droid
             AssetManager assets = MainActivity.StaticAssets;
 
             string assetsourcedir = "gnh";
-            string[] txtfileslist = { "credits" , "license", "logfile", "perm", "record", "recover", "symbols", "sysconf" , "xlogfile", "defaults.gnh" };
+            string[] txtfileslist = { "credits", "license", "logfile", "perm", "record", "recover", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
 
-            foreach(string txtfile in txtfileslist)
+            foreach (string txtfile in txtfileslist)
             {
                 string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
                 using (StreamReader sr = new StreamReader(assets.Open(fullsourcepath)))
@@ -192,7 +191,11 @@ namespace GnollHackClient.Droid
                 }
                 string fulltargetpath = Path.Combine(filesdir, txtfile);
                 if (File.Exists(fulltargetpath))
-                    continue; // File.Delete(fulltargetpath);
+                {
+                    /* Should check whether the current one is an up-to-date version; assume for now that it is not */
+                    File.Delete(fulltargetpath);
+                    //continue;
+                }
 
                 using (StreamWriter sw = new StreamWriter(fulltargetpath))
                 {
@@ -214,7 +217,11 @@ namespace GnollHackClient.Droid
 
                 string fulltargetpath = Path.Combine(filesdir, binfile);
                 if (File.Exists(fulltargetpath))
-                    continue; // File.Delete(fulltargetpath);
+                {
+                    /* Should check whether the current one is an up-to-date version; assume for now that it is not */
+                    File.Delete(fulltargetpath);
+                    //continue;
+                }
 
                 using (BinaryWriter sw = new BinaryWriter(File.Open(fulltargetpath, FileMode.Create)))
                 {

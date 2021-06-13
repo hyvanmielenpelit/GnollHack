@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms" 
              xmlns:local="clr-namespace:GnollHackClient.Pages.Game"
              x:Class="GnollHackClient.Pages.Game.GHMenuPage"
              Disappearing="ContentPage_Disappearing"
@@ -117,16 +118,36 @@
                                    FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">
                                 </Label>
 
-                                <!-- SKCanvas in column 1? -->
+                                <skia:SKCanvasView Grid.Column="1" x:Name="menuItemCanvasView" SizeChanged="menuItemCanvasView_SizeChanged"
+                                                   IsVisible="{Binding IsGlyphVisible}"
+                                                   HorizontalOptions="Center" VerticalOptions="Center"
+                                                   WidthRequest="32" HeightRequest="24"
+                                                   BackgroundColor="Transparent"
+                                                   PaintSurface="menuItemCanvasView_PaintSurface">
+                                </skia:SKCanvasView>
 
-                                <Label Grid.Column="2" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
-                                       Text="{Binding Text}" VerticalTextAlignment="Center" VerticalOptions="Center"
-                                       HorizontalOptions="FillAndExpand"
+                                <Grid Grid.Column="2" RowSpacing="0" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Row="0" Padding="0" Margin="0" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
+                                       Text="{Binding MainText}" VerticalTextAlignment="{Binding MainTextVerticalTextAlign}" VerticalOptions="{Binding MainTextVerticalOptions}"
+                                       HorizontalOptions="Start" HorizontalTextAlignment="Start"
                                        FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
                                        FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}"
-                                       Grid.ColumnSpan="1" />
-                                <!--{Binding IsLabelVisible, Converter={StaticResource ColumnSpanConverter}}"-->
-
+                                       />
+                                    <Label Grid.Row="1" Padding="0" Margin="0" TextColor="Gray" 
+                                           Text="{Binding SuffixText}" VerticalTextAlignment="Start" VerticalOptions="Start"
+                                           HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                                           FontFamily="Underwood" 
+                                           FontSize="12"
+                                           IsVisible="{Binding IsSuffixTextVisible}"
+                                       />
+                                </Grid >
 
                                 <Frame BackgroundColor="Red" CornerRadius="10"
                                        HorizontalOptions="End"

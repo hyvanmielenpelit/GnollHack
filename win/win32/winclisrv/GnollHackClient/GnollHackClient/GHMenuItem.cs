@@ -8,6 +8,7 @@ namespace GnollHackClient
 {
     public class GHMenuItem : IEquatable<GHMenuItem>, INotifyPropertyChanged
     {
+        private int _noGlyph;
         public Int64 Identifier { get; set; }
         private int _count;
         public int Count
@@ -38,7 +39,69 @@ namespace GnollHackClient
         public int MaxCount { get; set; }
         public char Accelerator { get; set; }
         public char GroupAccelerator { get; set; }
-        public string Text { get; set; }
+        private string _text;
+        private string _mainText;
+        private string _suffixText;
+        public string Text
+        {
+            get { return _text; }
+            set
+            {
+                _text = value;
+                int first_parenthesis_open = value.IndexOf('(');
+                if(first_parenthesis_open < 0)
+                    _mainText = value;
+                else if (first_parenthesis_open > 0)
+                    _mainText = value.Substring(0, first_parenthesis_open);
+                else
+                    _mainText = "";
+
+                if (first_parenthesis_open >=0)
+                    _suffixText = ParseSuffixText(value);
+                else
+                    _suffixText = "";
+            }
+        }
+        public string MainText { get { return _mainText; } }
+        public string SuffixText { get { return _suffixText; } }
+        public bool IsSuffixTextVisible { get { return (SuffixText != null && SuffixText != ""); } }
+        private string ParseSuffixText(string text)
+        {
+            string str = text;
+            string res = "";
+            while(!string.IsNullOrWhiteSpace(str))
+            {
+                int poidx = str.IndexOf('(');
+                if (poidx < 0 || poidx >= str.Length - 1)
+                    break;
+                string searchstr = str.Substring(poidx + 1);
+                int pcidx = searchstr.IndexOf(')');
+                if (pcidx < 0)
+                    break;
+
+                if (pcidx > 0)
+                {
+                    string sufstr = searchstr.Substring(0, pcidx);
+                    if(!string.IsNullOrWhiteSpace(sufstr))
+                    {
+                        if (res != "")
+                            res = res + ", ";
+
+                        res = res + sufstr;
+                    }
+                }
+
+                if (pcidx >= searchstr.Length - 1)
+                    break;
+                str = searchstr.Substring(pcidx + 1);
+            }
+            
+            return res;
+        }
+        public LayoutOptions MainTextVerticalOptions { get { return IsSuffixTextVisible ? LayoutOptions.End : LayoutOptions.Center; } }
+        public TextAlignment MainTextVerticalTextAlign { get { return IsSuffixTextVisible ? TextAlignment.End : TextAlignment.Center; } }
+        public bool IsGlyphVisible { get { return (Glyph != _noGlyph); } }
+
         public int Attributes { get; set; }
         public int Glyph { get; set; }
         public int NHColor { get; set; }
@@ -58,8 +121,9 @@ namespace GnollHackClient
                 return (this.Text.Equals(other.Text));
         }
 
-        public GHMenuItem()
+        public GHMenuItem(int noGlyph)
         {
+            _noGlyph = noGlyph;
             EntryTextColor = Color.White;
         }
 

@@ -1,4 +1,6 @@
 ﻿using GnollHackCommon;
+using SkiaSharp;
+using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -246,6 +248,55 @@ namespace GnollHackClient.Pages.Game
                     menuitem.EntryTextColor = Color.Red;
                 }
             }
+        }
+
+        private void menuItemCanvasView_PaintSurface(object sender, SkiaSharp.Views.Forms.SKPaintSurfaceEventArgs e)
+        {
+            if (sender == null)
+                return;
+
+            SKCanvasView canvasView = (SKCanvasView)sender;
+            GHMenuItem menuitem = (GHMenuItem)canvasView.BindingContext;
+            if(menuitem != null)
+            {
+                //SKImageInfo info = e.Info;
+                SKSurface surface = e.Surface;
+                SKCanvas canvas = surface.Canvas;
+
+                canvas.Clear(SKColors.Transparent);
+
+                //float width = info.Width;
+                //float height = info.Height;
+                float canvaswidth = canvasView.CanvasSize.Width;
+                float canvasheight = canvasView.CanvasSize.Height;
+
+                int signed_glyph = menuitem.Glyph;
+                int glyph = Math.Abs(signed_glyph);
+                bool hflip = (signed_glyph < 0);
+
+                if (glyph < _gamePage.Glyph2Tile.Length)
+                {
+                    int ntile = _gamePage.Glyph2Tile[glyph];
+                    int sheet_idx = _gamePage.TileSheetIdx(ntile);
+                    int tile_x = _gamePage.TileSheetX(ntile);
+                    int tile_y = _gamePage.TileSheetY(ntile);
+                    int tile_extra_y = GHConstants.TileHeight / 2;
+
+                    SKRect sourcerect = new SKRect(tile_x, tile_y + tile_extra_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                    SKRect targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
+
+                    canvas.DrawBitmap(_gamePage.TileMap[sheet_idx], sourcerect, targetrect);
+                }
+
+            }
+        }
+
+        private void menuItemCanvasView_SizeChanged(object sender, EventArgs e)
+        {
+            if (sender == null)
+                return;
+
+            SKCanvasView canvasView = (SKCanvasView)sender;
         }
     }
 
