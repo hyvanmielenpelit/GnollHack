@@ -5873,6 +5873,12 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     /* in case we've managed to bypass the Valley's stairway down */
     if (Inhell && !Is_valley(&u.uz))
         u.uevent.gehennom_entered = 1;
+    
+    if (In_modron_level(&u.uz))
+        u.uevent.modron_plane_entered = 1;
+    
+    if (In_bovine_level(&u.uz))
+        u.uevent.hellish_pastures_entered = 1;
 
     if (familiar) 
     {

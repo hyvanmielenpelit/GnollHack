@@ -99,7 +99,9 @@ struct u_event {
     Bitfield(invoked, 1);           /* invoked Gate to the Sanctum level */
     Bitfield(gehennom_entered, 1);  /* entered Gehennom via Valley */
     Bitfield(modron_portal_hint, 1); /* modron portal hint given */
+    Bitfield(modron_plane_entered, 1); /* entered the modron plane */
     Bitfield(bovine_portal_hint, 1); /* bovine portal hint given */
+    Bitfield(hellish_pastures_entered, 1); /* entered the Hellish Pastures */
     Bitfield(uhand_of_elbereth, 2); /* became Hand of Elbereth */
     Bitfield(udemigod, 1);          /* killed the wiz */
     Bitfield(uvibrated, 1);         /* stepped on "vibrating square" */

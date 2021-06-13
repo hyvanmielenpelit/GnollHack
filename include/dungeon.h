@@ -262,6 +262,8 @@ typedef struct mapseen {
            with entry portal and is reset once quest has been finished;
            questing is for quest home (level 1) */
         Bitfield(quest_summons, 1); /* heard summons from leader */
+        Bitfield(modron_hint_shown, 1); /* received hint for the modron level */
+        Bitfield(yacc_hint_shown, 1); /* received hint for the Hellish Pastures level */
         Bitfield(questing, 1); /* quest leader has unlocked quest stairs */
     } flags;
     /* custom naming */

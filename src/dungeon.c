@@ -2482,7 +2482,8 @@ mapseen *mptr;
     /* level is of interest if it has an auto-generated annotation */
     if (mptr->flags.oracle || mptr->flags.bigroom || mptr->flags.roguelevel
         || mptr->flags.castle || mptr->flags.valley || mptr->flags.msanctum || mptr->flags.special_level
-        || mptr->flags.quest_summons || mptr->flags.questing)
+        || mptr->flags.quest_summons || mptr->flags.questing
+        || mptr->flags.modron_hint_shown || mptr->flags.yacc_hint_shown)
         return TRUE;
     /* when in Sokoban, list all sokoban levels visited; when not in it,
        list any visited Sokoban level which remains unsolved (will usually
@@ -2566,6 +2567,8 @@ recalc_mapseen()
                                       || quest_status.leader_is_dead));
     mptr->flags.questing = (on_level(&u.uz, &qstart_level)
                             && quest_status.got_quest);
+    mptr->flags.modron_hint_shown = (at_dgn_entrance("Plane of the Modron") && u.uevent.modron_portal_hint && !u.uevent.modron_plane_entered);
+    mptr->flags.yacc_hint_shown = (at_dgn_entrance("Hellish Pastures") && u.uevent.bovine_portal_hint && !u.uevent.hellish_pastures_entered);
 
     /* track rooms the hero is in */
     for (i = 0; i < SIZE(u.urooms); ++i) {
@@ -3244,6 +3247,14 @@ boolean printdun;
     /* quest entrance is not mutually-exclusive with bigroom or rogue level */
     if (mptr->flags.quest_summons) {
         Sprintf(buf, "%sSummoned by %s.", PREFIX, ldrname());
+        putstr(win, 0, buf);
+    }
+    if(mptr->flags.modron_hint_shown) {
+        Sprintf(buf, "%sHad a sensation of unusually straight angles.", PREFIX);
+        putstr(win, 0, buf);
+    }
+    if (mptr->flags.yacc_hint_shown) {
+        Sprintf(buf, "%sHeard distant grunting and bellowing.", PREFIX);
         putstr(win, 0, buf);
     }
 
