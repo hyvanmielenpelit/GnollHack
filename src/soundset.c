@@ -298,9 +298,9 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
         },
         SOUNDSOURCE_AMBIENT_GENERAL,
         {
-            OBJECT_SOUNDSET_HUMAN_BAREHANDED, 
-            OBJECT_SOUNDSET_GENERIC, 
-            OBJECT_SOUNDSET_GENERIC, 
+            OBJECT_SOUNDSET_HUMAN_BAREHANDED,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
             OBJECT_SOUNDSET_GENERIC,
             OBJECT_SOUNDSET_GENERIC,
             OBJECT_SOUNDSET_GENERIC,
@@ -364,7 +364,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_GENERIC,
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
-    }, 
+    },
     {
         "Student Female",
         MONSTER_SOUNDSET_HUMAN_FEMALE,
@@ -420,7 +420,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_GENERIC,
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
-    }, 
+    },
     {
         "Chieftain Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -532,7 +532,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_GENERIC,
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
-    }, 
+    },
     {
         "Aligned Priest",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -644,7 +644,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_GENERIC,
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
-    }, 
+    },
     {
         "Priest of Moloch",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -891,7 +891,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
-            OCCUPATION_SOUNDSET_GENERIC_STUDYING,        
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
             OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
             OCCUPATION_SOUNDSET_GENERIC_SWINGING,
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
@@ -2970,7 +2970,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
         OBJECT_RAY_SOUNDSET_NONE,
         OBJECT_INSTRUMENT_SOUNDSET_NONE,
         OBJECT_CONTAINER_SOUNDSET_SARCOPHAGUS
-    }, 
+    },
     {
         "magic marker",
         OBJECT_SOUNDSET_GENERIC,
@@ -3039,7 +3039,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
         OBJECT_RAY_SOUNDSET_NONE,
         OBJECT_INSTRUMENT_SOUNDSET_NONE,
         OBJECT_CONTAINER_SOUNDSET_NONE
-    }, 
+    },
     {
         "crystal ball",
         OBJECT_SOUNDSET_GENERIC,
@@ -3246,7 +3246,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
         OBJECT_RAY_SOUNDSET_NONE,
         OBJECT_INSTRUMENT_SOUNDSET_NONE,
         OBJECT_CONTAINER_SOUNDSET_NONE
-    }, 
+    },
 };
 
 NEARDATA struct occupation_soundset_definition occupation_soundset_definitions[MAX_OCCUPATION_SOUNDSETS] =
@@ -3713,7 +3713,7 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
-    }, 
+    },
     {
         "brazier",
         LOCATION_SOUNDSET_GENERAL,
@@ -3742,7 +3742,7 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {MAX_GHSOUNDS, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_LIT
-    }, 
+    },
 };
 
 
@@ -3850,7 +3850,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
 {
     {
         "",
-        {GHSOUND_NONE, 0.0f}, 
+        {GHSOUND_NONE, 0.0f},
         FALSE, SOUND_PLAY_GROUP_NORMAL
     },
     {
@@ -5942,7 +5942,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "GHSOUND_ENEMY_RESISTANCE_SUCCESS_CHA",
         {GHSOUND_ENEMY_RESISTANCE_SUCCESS_CHA, 1.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
-    }, 
+    },
     {
         "GHSOUND_VAMPIRE_TRANSFORMS",
         {GHSOUND_VAMPIRE_TRANSFORMS, 1.0f},
@@ -6083,7 +6083,13 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_BOULDER_PLUGS_HOLE_OR_TRAPDOOR, 1.0f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_INVISIBLE_CHOIR_SINGS",
+        {GHSOUND_INVISIBLE_CHOIR_SINGS, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
 };
+
 
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
@@ -6695,8 +6701,8 @@ play_environment_ambient_sounds()
 }
 
 enum floor_surface_types
-get_floor_surface_type(x, y, is_underwater)
-int x, y;
+    get_floor_surface_type(x, y, is_underwater)
+    int x, y;
 boolean is_underwater;
 {
     if (!isok(x, y))
@@ -6750,7 +6756,7 @@ enum climbing_types climbingid;
     enum object_sound_types sound_type = OBJECT_SOUND_TYPE_WALK;
 
     if (isyou)
-    { 
+    {
         if (!isok(u.ux, u.uy))
             return;
 
@@ -6765,8 +6771,8 @@ enum climbing_types climbingid;
 
         set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
 
-//        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-//        volume = object_soundsets[oss].sounds[sound_type].volume;
+        //        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        //        volume = object_soundsets[oss].sounds[sound_type].volume;
 
         if (is_flyer(mtmp->data) || Flying)
         {
@@ -6776,14 +6782,14 @@ enum climbing_types climbingid;
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
                 set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
                 set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if (is_floater(mtmp->data) || Levitation)
@@ -6794,14 +6800,14 @@ enum climbing_types climbingid;
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
                 set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
                 set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if ((is_swimmer(mtmp->data) || amphibious(mtmp->data) || Swimming) && floorid == FLOOR_SURFACE_LIQUID)
@@ -6812,22 +6818,22 @@ enum climbing_types climbingid;
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
                 set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
                 set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if (uarmf)
         {
             enum object_soundset_types oss_boots = objects[uarmf->otyp].oc_soundset;
             set_simple_object_sound_id_and_volume(oss_boots, sound_type, &soundid, &volume);
-//            soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
-//            volume = object_soundsets[oss_boots].sounds[sound_type].volume;
+            //            soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
+            //            volume = object_soundsets[oss_boots].sounds[sound_type].volume;
         }
     }
     else
@@ -6845,8 +6851,8 @@ enum climbing_types climbingid;
         treadingid = mtmp->mprops[STEALTH] != 0 ? FLOOR_TREADING_TYPE_STEALTH : FLOOR_TREADING_TYPE_NORMAL;
 
         set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
-//        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-//        volume = object_soundsets[oss].sounds[sound_type].volume;
+        //        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        //        volume = object_soundsets[oss].sounds[sound_type].volume;
 
         if (is_flying(mtmp))
         {
@@ -6856,14 +6862,14 @@ enum climbing_types climbingid;
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
                 set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
                 set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if (is_levitating(mtmp))
@@ -6874,14 +6880,14 @@ enum climbing_types climbingid;
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
                 set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
                 set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if ((has_swimming(mtmp) || amphibious(mtmp->data)) && floorid == FLOOR_SURFACE_LIQUID)
@@ -6892,14 +6898,14 @@ enum climbing_types climbingid;
             {
                 enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
                 set_simple_object_sound_id_and_volume(oss2, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss2].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss2].sounds[sound_type].volume;
             }
             else
             {
                 set_simple_object_sound_id_and_volume(oss, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
         else if (mtmp->worn_item_flags & W_ARMF)
@@ -6909,11 +6915,11 @@ enum climbing_types climbingid;
             {
                 enum object_soundset_types oss_boots = objects[omtp_boots->otyp].oc_soundset;
                 set_simple_object_sound_id_and_volume(oss_boots, sound_type, &soundid, &volume);
-//                soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
-//                volume = object_soundsets[oss_boots].sounds[sound_type].volume;
+                //                soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
+                //                volume = object_soundsets[oss_boots].sounds[sound_type].volume;
             }
         }
-        
+
         float hearing = hearing_array[mtmp->mx][mtmp->my];
         if (hearing == 0.0f && context.global_minimum_volume <= 0.0f)
             return;
@@ -6936,8 +6942,8 @@ enum climbing_types climbingid;
     immediateinfo.parameter_names[5] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
-    
-    if(soundid > GHSOUND_NONE && volume > MINIMUM_PLAYABLE_MOVEMENT_SOUND_VOLUME)
+
+    if (soundid > GHSOUND_NONE && volume > MINIMUM_PLAYABLE_MOVEMENT_SOUND_VOLUME)
         play_immediate_ghsound(immediateinfo);
 }
 
@@ -7001,7 +7007,7 @@ enum object_sound_types sound_type;
 {
     /* Do not use for hit sounds */
 
-    if (!obj || !isok(x,y))
+    if (!obj || !isok(x, y))
         return;
 
     if (Deaf)
@@ -7304,9 +7310,9 @@ float* volume_ptr;
     }
 }
 
-enum ghsound_types 
-get_monster_ambient_sound_id(mss)
-enum monster_soundset_types mss;
+enum ghsound_types
+    get_monster_ambient_sound_id(mss)
+    enum monster_soundset_types mss;
 {
     enum ghsound_types sound_id = GHSOUND_NONE;
     float volume = 0.0f;
@@ -7396,10 +7402,10 @@ boolean is_underwater;
         return;
 
     xchar ox = 0, oy = 0;
-    if(!get_obj_location(obj, &ox, &oy, 0))
+    if (!get_obj_location(obj, &ox, &oy, 0))
         return;
-    
-    if(!isok(ox, oy))
+
+    if (!isok(ox, oy))
         return;
 
     play_object_floor_sound_at_location(obj, sound_type, (int)ox, (int)oy, is_underwater);
@@ -7484,7 +7490,7 @@ enum location_sound_types sound_type;
     /* Move one square towards the player, since the square itself may be rock etc. */
     xchar hear_x = x + sgn(u.ux - x);
     xchar hear_y = y + sgn(u.uy - y);
-    
+
     if (!isok(hear_x, hear_y))
         hear_x = x, hear_y = y;
 
@@ -7691,7 +7697,7 @@ enum monster_sound_types sound_type;
         || sound_type == MONSTER_SOUND_TYPE_MUMBLED_CURSE
         || sound_type == MONSTER_SOUND_TYPE_YELL
         )
-       )
+        )
     {
         sfxtype = IMMEDIATE_SOUND_DIALOGUE;
         playgroup = SOUND_PLAY_GROUP_LONG;
@@ -7789,7 +7795,7 @@ enum object_sound_types sound_type;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if(soundid > GHSOUND_NONE && volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -7853,7 +7859,7 @@ void
 get_hit_location(surface_type, surface_source_ptr, defx_ptr, defy_ptr)
 enum hit_surface_source_types surface_type;
 anything* surface_source_ptr;
-xchar *defx_ptr, *defy_ptr;
+xchar* defx_ptr, * defy_ptr;
 {
     if (!surface_source_ptr || !defx_ptr || !defy_ptr)
         return;
@@ -7905,8 +7911,8 @@ xchar *defx_ptr, *defy_ptr;
         xchar hear_x = cc.x + sgn(u.ux - cc.x);
         xchar hear_y = cc.y + sgn(u.uy - cc.y);
 
-        if(isok(hear_x, hear_y))
-        { 
+        if (isok(hear_x, hear_y))
+        {
             *defx_ptr = hear_x;
             *defy_ptr = hear_y;
         }
@@ -7930,8 +7936,8 @@ xchar *defx_ptr, *defy_ptr;
 
 
 enum hit_surface_types
-get_hit_surface_type(surface_type, surface_source_ptr)
-enum hit_surface_source_types surface_type;
+    get_hit_surface_type(surface_type, surface_source_ptr)
+    enum hit_surface_source_types surface_type;
 anything* surface_source_ptr;
 {
     enum hit_surface_types surfaceid = HIT_SURFACE_NONE;
@@ -8460,14 +8466,14 @@ int x, y;
     info.volume = min(1.0f, occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].volume * hearing_volume);
     info.play_group = SOUND_PLAY_GROUP_NORMAL;
 
-    if(info.volume > 0.0f)
+    if (info.volume > 0.0f)
         play_immediate_ghsound(info);
 }
 
 enum player_soundset_types
-get_player_soundset()
+    get_player_soundset()
 {
-    if(flags.female)
+    if (flags.female)
         return PLAYER_SOUNDSET_FEMALE;
     else
         return PLAYER_SOUNDSET_GENERAL;
@@ -8518,21 +8524,21 @@ int mode; /* 0 = normal, 1 = clear */
         {
             if (i == 0)
             {
-                if(y_min_adjusted != y_min)
+                if (y_min_adjusted != y_min)
                     continue;
 
                 horizontal_min_done = TRUE;
             }
             else if (i == 1)
             {
-                if(y_max_adjusted != y_max)
+                if (y_max_adjusted != y_max)
                     continue;
 
                 horizontal_max_done = TRUE;
             }
 
             y = (i == 0 ? y_min_adjusted : y_max_adjusted);
-            
+
             for (x = x_min_adjusted; x <= x_max_adjusted; x++)
             {
                 float prev_hearing = 0.0f;
@@ -8555,9 +8561,9 @@ int mode; /* 0 = normal, 1 = clear */
                     {
                         maximum = max(maximum, prev_hearing_array[prev_x][prev_y]);
                     }
-    
+
                     /* Take also previous from the same line */
-                    if(x > x_min_adjusted)
+                    if (x > x_min_adjusted)
                         maximum = max(maximum, prev_hearing_array[x - 1][y]);
 
                     prev_hearing = maximum;
@@ -8636,9 +8642,9 @@ int mode; /* 0 = normal, 1 = clear */
 
             x = (i == 0 ? x_max_adjusted : x_min_adjusted);
 
-            for (y = y_max_adjusted - 1 ; y >= y_min_adjusted; y--)
+            for (y = y_max_adjusted - 1; y >= y_min_adjusted; y--)
             {
-                if(prev_hearing_array[x][y + 1] > 0.0f)
+                if (prev_hearing_array[x][y + 1] > 0.0f)
                     set_hearing_array(x, y, prev_hearing_array[x][y + 1], r);
             }
         }
@@ -8712,7 +8718,7 @@ int radius;
         float new_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing)));
         if (new_prev_hearing > prev_hearing_array[x][y])
             prev_hearing_array[x][y] = new_prev_hearing;
-        if(new_hearing > hearing_array[x][y])
+        if (new_hearing > hearing_array[x][y])
             hearing_array[x][y] = new_hearing;
     }
     else
@@ -8799,11 +8805,11 @@ update_ambient_sounds()
                 total_volume = 0.0f;
         }
 
-        if(total_volume < SOUND_HEARING_THRESHOLD)
+        if (total_volume < SOUND_HEARING_THRESHOLD)
             total_volume = 0.0f; /* turn off if too quiet */
 
         curr->heard_volume = total_volume;
-        if(curr->heard_volume != old_heard_volume)
+        if (curr->heard_volume != old_heard_volume)
             set_ambient_ghsound_volume(curr);
     }
 }
@@ -8894,7 +8900,7 @@ anything* id;
 {
     sound_source* ss;
     double absvolume = volume > 0.0 ? volume : -volume;
-    if (absvolume > 1.0 || absvolume < 0.0) 
+    if (absvolume > 1.0 || absvolume < 0.0)
     {
         impossible("new_sound_source:  illegal volume %f", volume);
         return;
@@ -9004,9 +9010,9 @@ int fd, mode, volume;
         }
     }
 
-    if (release_data(mode)) 
+    if (release_data(mode))
     {
-        for (prev = &sound_base; (curr = *prev) != 0;) 
+        for (prev = &sound_base; (curr = *prev) != 0;)
         {
             if (!curr->id.a_monst)
             {
@@ -9014,7 +9020,7 @@ int fd, mode, volume;
                 is_global = 0;
             }
             else
-                switch (curr->type) 
+                switch (curr->type)
                 {
                 case SOUNDSOURCE_OBJECT:
                     is_global = !obj_is_local(curr->id.a_obj);
@@ -9035,10 +9041,10 @@ int fd, mode, volume;
                     break;
                 }
             /* if global and not doing local, or vice versa, remove it */
-            if (is_global ^ (volume == RANGE_LEVEL)) 
+            if (is_global ^ (volume == RANGE_LEVEL))
             {
                 *prev = curr->next;
-                if(delete_ambient_ghsound != 0)
+                if (delete_ambient_ghsound != 0)
                     delete_ambient_ghsound(curr);
                 free((genericptr_t)curr);
             }
@@ -9069,7 +9075,7 @@ int fd;
         mread(fd, (genericptr_t)ss, sizeof(sound_source));
         ss->next = sound_base;
         sound_base = ss;
-        if(add_ambient_ghsound != 0)
+        if (add_ambient_ghsound != 0)
             add_ambient_ghsound(ss);
     }
 }
@@ -9315,7 +9321,7 @@ sound_source* ss;
                 /* No need to do anything, coord can be written to disk as is */
             }
             else if (ss->type == SOUNDSOURCE_REGION)
-            { 
+            {
                 reg = (struct nhregion*)ss->id.a_nhregion;
                 ss->id = zeroany;
                 ss->id.a_uint = get_rid(reg);
@@ -9413,7 +9419,7 @@ struct obj* src, * dest;
     sound_source* ss, * new_ss;
 
     for (ss = sound_base; ss; ss = ss->next)
-        if (ss->type == SOUNDSOURCE_OBJECT && ss->id.a_obj == src) 
+        if (ss->type == SOUNDSOURCE_OBJECT && ss->id.a_obj == src)
         {
             /*
              * Insert the new source at beginning of list.  This will
@@ -9444,7 +9450,7 @@ struct obj* src, * dest;
 
 
     for (ss = sound_base; ss; ss = ss->next)
-        if (ss->type == SOUNDSOURCE_OBJECT && ss->id.a_obj == dest) 
+        if (ss->type == SOUNDSOURCE_OBJECT && ss->id.a_obj == dest)
         {
             //ss->volume = candle_sound_range(dest);
             hearing_full_recalc = 1; /* in case volume changed */
@@ -9482,27 +9488,27 @@ boolean already_making_noise;
     do_timer = FALSE;
     turns = 0;
 
-    if (do_timer) 
+    if (do_timer)
     {
-        if (start_timer(turns, TIMER_OBJECT, MAKE_SOUND_OBJECT, obj_to_any(obj))) 
+        if (start_timer(turns, TIMER_OBJECT, MAKE_SOUND_OBJECT, obj_to_any(obj)))
         {
             obj->makingsound = 1;
             obj->age -= turns; /* Needs own timer, otherwise possible conflict with light sources */
             if (carried(obj) && !already_making_noise)
                 update_inventory();
         }
-        else 
+        else
         {
             obj->makingsound = 0;
         }
     }
-    else 
+    else
     {
         if (carried(obj) && !already_making_noise)
             update_inventory();
     }
 
-    if (obj->makingsound && !already_making_noise) 
+    if (obj->makingsound && !already_making_noise)
     {
         xchar x, y;
         enum object_soundset_types objsoundset = objects[obj->otyp].oc_soundset;
@@ -9527,7 +9533,7 @@ end_sound(obj, timer_attached)
 struct obj* obj;
 boolean timer_attached;
 {
-    if (!obj->makingsound) 
+    if (!obj->makingsound)
     {
         impossible("end_sound: obj %s not making sound", xname(obj));
         return;
@@ -9555,8 +9561,8 @@ struct obj* obj;
 }
 
 enum ghsound_types
-obj_ambient_sound(obj)
-struct obj* obj;
+    obj_ambient_sound(obj)
+    struct obj* obj;
 {
     if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
         return GHSOUND_NONE;
@@ -9585,10 +9591,10 @@ struct obj* obj;
 }
 
 enum ghsound_types
-get_location_ambient_sound_type(x, y, volume_ptr, subtype_ptr)
-xchar x, y;
+    get_location_ambient_sound_type(x, y, volume_ptr, subtype_ptr)
+    xchar x, y;
 double* volume_ptr;
-enum soundsource_ambient_subtypes *subtype_ptr;
+enum soundsource_ambient_subtypes* subtype_ptr;
 {
     if (!isok(x, y))
         return GHSOUND_NONE;
@@ -9614,36 +9620,36 @@ enum soundsource_ambient_subtypes *subtype_ptr;
 }
 
 enum ghsound_types
-get_dungeon_music(dnum)
-int dnum;
+    get_dungeon_music(dnum)
+    int dnum;
 {
     enum ghsound_types res = GHSOUND_NONE;
 
     if (dnum == mines_dnum)
-       res = GHSOUND_GNOMISH_MINES_MUSIC_NORMAL;
+        res = GHSOUND_GNOMISH_MINES_MUSIC_NORMAL;
     else if (dnum == sokoban_dnum)
-       res = GHSOUND_SOKOBAN_MUSIC_NORMAL;
+        res = GHSOUND_SOKOBAN_MUSIC_NORMAL;
     else if (dnum == quest_dnum)
-       res = GHSOUND_QUEST_MUSIC_NORMAL;
+        res = GHSOUND_QUEST_MUSIC_NORMAL;
     else if (dnum == tower_dnum)
-       res = GHSOUND_VLAD_TOWER_MUSIC_NORMAL;
+        res = GHSOUND_VLAD_TOWER_MUSIC_NORMAL;
     else if (dnum == modron_dnum)
-       res = GHSOUND_MODRON_MUSIC_NORMAL;
+        res = GHSOUND_MODRON_MUSIC_NORMAL;
     else if (dnum == bovine_dnum)
-       res = GHSOUND_BOVINE_MUSIC_NORMAL;
+        res = GHSOUND_BOVINE_MUSIC_NORMAL;
     else if (Inhell)
-       res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
+        res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
     else if (In_endgame(&u.uz))
-       res = GHSOUND_ENDGAME_MUSIC_NORMAL;
+        res = GHSOUND_ENDGAME_MUSIC_NORMAL;
     else
-       res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
 
     return res;
 }
 
 enum ghsound_types
-get_level_music(dlvl)
-struct d_level* dlvl;
+    get_level_music(dlvl)
+    struct d_level* dlvl;
 {
     if (!dlvl)
         return GHSOUND_NONE;
@@ -9685,8 +9691,8 @@ struct d_level* dlvl;
 }
 
 enum ghsound_types
-get_room_music(room)
-struct mkroom* room;
+    get_room_music(room)
+    struct mkroom* room;
 {
     enum roomtype_types rtype = room->orig_rtype;
     enum ghsound_types res = get_level_music(&u.uz);
@@ -9695,7 +9701,7 @@ struct mkroom* room;
     {
         if (room->resident && room->resident->isshk && room->resident->mextra && ESHK(room->resident))
         {
-            if(is_peaceful(room->resident))
+            if (is_peaceful(room->resident))
             {
                 switch (rtype)
                 {
@@ -9814,8 +9820,8 @@ struct mkroom* room;
 
 
 enum ghsound_types
-get_level_ambient_sounds(dlvl)
-struct d_level* dlvl;
+    get_level_ambient_sounds(dlvl)
+    struct d_level* dlvl;
 {
     if (!dlvl)
         return GHSOUND_NONE;
@@ -9831,8 +9837,8 @@ struct d_level* dlvl;
 }
 
 enum ghsound_types
-get_room_ambient_sounds(room)
-struct mkroom* room;
+    get_room_ambient_sounds(room)
+    struct mkroom* room;
 {
     enum roomtype_types rtype = room->orig_rtype;
     enum ghsound_types res = get_level_ambient_sounds(&u.uz);
@@ -9916,7 +9922,7 @@ struct mkroom* room;
 }
 
 enum ghsound_types
-get_environment_ambient_sounds()
+    get_environment_ambient_sounds()
 {
     enum ghsound_types res = GHSOUND_NONE;
 
@@ -10468,8 +10474,8 @@ enum shopkeeper_lines line_idx;
     case SHOPKEEPER_LINE_NONE:
         break;
     case SHOPKEEPER_LINE_THANK_YOU_SHOPPING_IN_MY_STORE:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THANK_YOU_SHOPPING_IN_MY_STORE : 
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THANK_YOU_SHOPPING_IN_MY_STORE : 
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THANK_YOU_SHOPPING_IN_MY_STORE :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THANK_YOU_SHOPPING_IN_MY_STORE :
             GHSOUND_VOICE_SHOPKEEPER_MALE_THANK_YOU_SHOPPING_IN_MY_STORE;
         break;
     case SHOPKEEPER_LINE_INVISIBLE_CUSTOMERS_NOT_WELCOME:
@@ -10518,8 +10524,8 @@ enum shopkeeper_lines line_idx;
             GHSOUND_VOICE_SHOPKEEPER_MALE_OUT_OF_MY_WAY_SCUM;
         break;
     case SHOPKEEPER_LINE_GET_YOUR_JUNK_OUT_OF_MY_WALL:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_GET_YOUR_JUNK_OUT_OF_MY_WALL:
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_GET_YOUR_JUNK_OUT_OF_MY_WALL:
+        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_GET_YOUR_JUNK_OUT_OF_MY_WALL :
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_GET_YOUR_JUNK_OUT_OF_MY_WALL :
             GHSOUND_VOICE_SHOPKEEPER_MALE_GET_YOUR_JUNK_OUT_OF_MY_WALL;
         break;
     case SHOPKEEPER_LINE_I_WAS_LOOKING_FOR_SOMEONE_ELSE:
@@ -10713,14 +10719,14 @@ enum shopkeeper_lines line_idx;
             GHSOUND_VOICE_SHOPKEEPER_MALE_WAS_ROBBED;
         break;
     case SHOPKEEPER_LINE_OWE_SOME_GOLD:
-        if(flags.female)
+        if (flags.female)
             info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MADAM_OWE_SOME_GOLD :
-                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_MADAM_OWE_SOME_GOLD :
-                GHSOUND_VOICE_SHOPKEEPER_MALE_MADAM_OWE_SOME_GOLD;
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_MADAM_OWE_SOME_GOLD :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_MADAM_OWE_SOME_GOLD;
         else
             info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SIR_OWE_SOME_GOLD :
-                shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SIR_OWE_SOME_GOLD :
-                GHSOUND_VOICE_SHOPKEEPER_MALE_SIR_OWE_SOME_GOLD;
+            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SIR_OWE_SOME_GOLD :
+            GHSOUND_VOICE_SHOPKEEPER_MALE_SIR_OWE_SOME_GOLD;
         break;
     case SHOPKEEPER_LINE_USING_OUTSTANDING_CREDIT:
         info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USING_OUTSTANDING_CREDIT :
@@ -10817,7 +10823,7 @@ enum shopkeeper_lines line_idx;
     if (isok(shkp->mx, shkp->my))
     {
         float hearing = hearing_array[shkp->mx][shkp->my];
-        if(special_minimum_volume != -1.0f)
+        if (special_minimum_volume != -1.0f)
             volume = max(special_minimum_volume, max((float)context.global_minimum_volume, volume * hearing_array[shkp->mx][shkp->my]));
         else
         {
@@ -10856,12 +10862,12 @@ boolean is_angry;
     struct ghsound_immediate_info info = { 0 };
     if (is_angry)
         info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_STUFF_OUTSIDE :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_STUFF_OUTSIDE:
-            GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_STUFF_OUTSIDE;
+        shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_STUFF_OUTSIDE :
+        GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_STUFF_OUTSIDE;
     else
         info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE :
-            shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE :
-            GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE;
+        shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE :
+        GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE;
 
     if (!strcmp(tool_str, "pick") || !strcmp(tool_str, "pick-axe"))
     {
@@ -10905,8 +10911,8 @@ boolean is_angry;
     info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
     info.dialogue_mid = shkp->m_id;
 
-    if(info.ghsound > GHSOUND_NONE)
-       play_immediate_ghsound(info);
+    if (info.ghsound > GHSOUND_NONE)
+        play_immediate_ghsound(info);
 
 }
 
@@ -11144,7 +11150,7 @@ int obj_quan, save_quan;
         {
             if (save_quan > 1)
             {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE : 
+                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE;
             }
@@ -11454,8 +11460,8 @@ int cuss_id;
     int godindex = 7;
     int titleandgodindex = 9;
 
-    get_god_indices(&godindex, &titleandgodindex); 
-    
+    get_god_indices(&godindex, &titleandgodindex);
+
     struct ghsound_immediate_info info = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
@@ -11801,5 +11807,53 @@ struct monst* mtmp;
         return isfemale ? mtmp->data->female_soundset : mtmp->data->soundset;
 }
 
+
+void
+play_voice_god_simple_line_at(x, y, line_id)
+xchar x, y;
+enum god_simple_lines line_id;
+{
+    if (!IS_ALTAR(levl[x][y].typ))
+        return; /* No altar */
+
+    aligntyp godalign = 0;
+    if (levl[x][y].subtyp == ALTAR_SUBTYPE_MOLOCH)
+        godalign = A_NONE; /* Altar of Moloch */
+    else if (a_align(x, y) == A_NONE)
+        return; /* No god is associated with altar */
+    else
+        godalign = a_align(x, y);
+
+    play_voice_god_simple_line_by_align(godalign, line_id);
+}
+
+void
+play_voice_god_simple_line_by_align(godalign, line_id)
+aligntyp godalign;
+enum god_simple_lines line_id;
+{
+    /* You will hear the god even if you are deaf */
+
+    const char* godname = align_gname(godalign);
+    if (!godname)
+        return;
+
+    boolean isfemale = (*godname == '_');
+    struct ghsound_immediate_info info = { 0 };
+    enum ghsound_types soundid = isfemale ? GHSOUND_VOICE_GOD_FEMALE_SPEAKS : GHSOUND_VOICE_GOD_MALE_SPEAKS;
+    float volume = 1.0f;
+    info.parameter_names[0] = "MsgIndex";
+    info.parameter_values[0] = (float)line_id;
+    info.parameter_names[1] = (char*)0;
+
+    info.ghsound = soundid;
+    info.volume = min(1.0f, volume);
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    info.dialogue_mid = 0;
+
+    if (info.ghsound > GHSOUND_NONE)
+        play_immediate_ghsound(info);
+}
 
 /* soundset.c */

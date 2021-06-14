@@ -1285,6 +1285,7 @@ random_levtport:
         }
         if (newlev <= -10) {
             You("arrive in heaven.");
+            play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_ART_EARLY_BUT_WELL_ADMIT_THEE);
             verbalize("Thou art early, but we'll admit thee.");
             killer.format = NO_KILLER_PREFIX;
             Strcpy(killer.name, "went to heaven prematurely");

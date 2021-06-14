@@ -706,6 +706,7 @@ boolean talk;
         if (talk)
         {
             pline_The("voice of %s booms:", align_gname(alignment));
+            play_voice_god_simple_line_by_align(alignment, GOD_LINE_THOU_SHALT_PAY_FOR_THINE_INDISCRETION);
             verbalize("Thou shalt pay for thine indiscretion!");
             if (!Blind)
                 pline("%s appears before you.", Amonnam(mon));
@@ -1042,6 +1043,7 @@ boolean fromspell;
                      message will be heard even if that fails) */
     if (!fromspell && Conflict) 
     {
+        play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THY_DESIRE_FOR_CONFLICT_SHALL_BE_FULFILLED);
         pline("A voice booms:");
         verbalize("Thy desire for conflict shall be fulfilled!");
         /* send in some hostile angels instead */
@@ -1049,6 +1051,7 @@ boolean fromspell;
     }
     else if (fromspell || u.ualign.record > 8) 
     { /* fervent */
+        play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_HAST_BEEN_WORTHY_OF_ME);
         pline("A voice whispers:");
         verbalize("Thou hast been worthy of me!");
         mm.x = u.ux;

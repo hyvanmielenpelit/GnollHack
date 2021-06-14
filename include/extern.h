@@ -3060,6 +3060,8 @@ E enum monster_soundset_types FDECL(get_monster_soundset, (struct monst*));
 E void FDECL(play_voice_com_pager, (struct monst*, int, BOOLEAN_P));
 E void FDECL(play_voice_quest_pager, (struct monst*, int, BOOLEAN_P));
 E void FDECL(play_voice_quest_leader_whoareyou, (struct monst*));
+E void FDECL(play_voice_god_simple_line_at, (XCHAR_P, XCHAR_P, enum god_simple_lines));
+E void FDECL(play_voice_god_simple_line_by_align, (ALIGNTYP_P, enum god_simple_lines));
 
 /* ### sys.c ### */
 

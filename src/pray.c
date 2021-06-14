@@ -750,14 +750,17 @@ aligntyp resp_god;
             fry_by_god(resp_god, TRUE);
         } else {
             You("bask in its %s glow for a minute...", NH_BLACK);
+            play_voice_god_simple_line_by_align(resp_god, GOD_LINE_I_BELIEVE_IT_NOT);
             godvoice(resp_god, "I believe it not!");
         }
         if (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)) {
             /* one more try for high altars */
+            play_voice_god_simple_line_by_align(resp_god, GOD_LINE_THOU_CANNOT_ESCAPE_MY_WRATH_MORTAL);
             verbalize("Thou cannot escape my wrath, mortal!");
             summon_minion(resp_god, FALSE);
             summon_minion(resp_god, FALSE);
             summon_minion(resp_god, FALSE);
+            play_voice_god_simple_line_by_align(resp_god, flags.female ? GOD_LINE_DESTROY_HER_MY_SERVANTS : GOD_LINE_DESTROY_HIM_MY_SERVANTS);
             verbalize("Destroy %s, my servants!", uhim());
         }
     }
@@ -810,12 +813,16 @@ aligntyp resp_god;
     case 2:
     case 3:
         godvoice(resp_god, (char *) 0);
-
+        play_voice_god_simple_line_by_align(resp_god,
+            youmonst.data->mlet == S_HUMAN ? (ugod_is_angry() && resp_god == u.ualign.type ? GOD_LINE_THOU_HAST_STRAYED_FROM_THE_PATH_MORTAL : GOD_LINE_THOU_ART_ARROGANT_MORTAL) : 
+            (ugod_is_angry() && resp_god == u.ualign.type ? GOD_LINE_THOU_HAST_STRAYED_FROM_THE_PATH_CREATURE : GOD_LINE_THOU_ART_ARROGANT_CREATURE));
         verbalize("Thou %s, %s.",
               (ugod_is_angry() && resp_god == u.ualign.type)
                   ? "hast strayed from the path"
                   : "art arrogant",
               youmonst.data->mlet == S_HUMAN ? "mortal" : "creature");
+
+        play_voice_god_simple_line_by_align(resp_god, GOD_LINE_THOU_MUST_RELEARN_THY_LESSONS);
         verbalize("Thou must relearn thy lessons!");
         (void) adjattrib(A_WIS, -1, FALSE);
         losexp((char *) 0);
@@ -836,12 +843,16 @@ aligntyp resp_god;
     case 7:
     case 8:
         godvoice(resp_god, (char *) 0);
+        play_voice_god_simple_line_by_align(resp_god, 
+            (on_altar() && (a_align(u.ux, u.uy) != resp_god)) ? GOD_LINE_THOU_DURST_SCORN_ME : GOD_LINE_THOU_DURST_CALL_UPON_ME);
+
         verbalize("Thou durst %s me?",
                   (on_altar() && (a_align(u.ux, u.uy) != resp_god))
                       ? "scorn"
                       : "call upon");
+        play_voice_god_simple_line_by_align(resp_god, youmonst.data->mlet == S_HUMAN ? GOD_LINE_THEN_DIE_MORTAL : GOD_LINE_THEN_DIE_CREATURE);
         verbalize("Then die, %s!",
-              youmonst.data->mlet == S_HUMAN ? "mortal" : "creature");
+            youmonst.data->mlet == S_HUMAN ? "mortal" : "creature");
         summon_minion(resp_god, FALSE);
         break;
 
@@ -913,6 +924,7 @@ gcrownu()
         u.uevent.uhand_of_elbereth = 1;
         in_hand = (uwep && uwep->oartifact == ART_KATANA_OF_MASAMUNE);
         in_hand2 = (uarms && uarms->oartifact == ART_KATANA_OF_MASAMUNE);
+        play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_I_CROWN_THEE_THE_HAND_OF_ELBERETH);
         verbalize("I crown thee...  The Hand of Elbereth!");
         break;
     case A_NEUTRAL:
@@ -920,6 +932,7 @@ gcrownu()
         in_hand = (uwep && uwep->oartifact == ART_VORPAL_BLADE);
         in_hand2 = (uarms && uarms->oartifact == ART_VORPAL_BLADE);
         already_exists = exist_artifact(LONG_SWORD, artiname(ART_VORPAL_BLADE));
+        play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_SHALT_BE_MY_ENVOY_OF_BALANCE);
         verbalize("Thou shalt be my Envoy of Balance!");
         break;
     case A_CHAOTIC:
@@ -928,10 +941,17 @@ gcrownu()
         in_hand2 = (uarms && uarms->oartifact == chaotic_crowning_gift_oartifact);
         already_exists = exist_artifact(chaotic_crowning_gift_baseitem, artiname(chaotic_crowning_gift_oartifact));
         if (Role_if(PM_WIZARD) || Role_if(PM_PRIEST))
+        {
+            play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_I_CROWN_THEE_THE_GLORY_OF_ARIOCH);
             verbalize("I crown thee... The Glory of Arioch!");
+        }
         else
+        {
+            boolean takelives = ((already_exists && !in_hand && !in_hand2) || chaotic_crowning_gift_oartifact != ART_STORMBRINGER);
+            play_voice_god_simple_line_by_align(u.ualign.type, takelives ? GOD_LINE_THOU_ART_CHOSEN_TO_TAKE_LIVES_FOR_MY_GLORY : GOD_LINE_THOU_ART_CHOSEN_TO_STEAL_SOULS_FOR_MY_GLORY);
             verbalize("Thou art chosen to %s for My Glory!",
-                ((already_exists && !in_hand && !in_hand2) || chaotic_crowning_gift_oartifact != ART_STORMBRINGER) ? "take lives" : "steal souls");
+                takelives ? "take lives" : "steal souls");
+        }
         break;
     }
 
@@ -1702,9 +1722,11 @@ aligntyp g_align;
             if (!u.uevent.uopened_dbridge && !u.uevent.gehennom_entered) {
                 if (u.uevent.uheard_tune < 1) {
                     godvoice(g_align, (char *) 0);
+                    play_voice_god_simple_line_by_align(g_align, youmonst.data->mlet == S_HUMAN ? GOD_LINE_HARK_MORTAL : GOD_LINE_HARK_CREATURE);
                     verbalize("Hark, %s!", youmonst.data->mlet == S_HUMAN
                                                ? "mortal"
                                                : "creature");
+                    play_voice_god_simple_line_by_align(g_align, GOD_LINE_TO_ENTER_THE_CASTLE_THOU_MUST_PLAY_THE_RIGHT_TUNE);
                     verbalize(
                        "To enter the castle, thou must play the right tune!");
                     u.uevent.uheard_tune++;
@@ -1786,18 +1808,22 @@ aligntyp g_align;
                 "\"and thus I grant thee the gift of %s!\"";
 
             play_sfx_sound(SFX_PRAY_GIFT);
+            play_voice_god_simple_line_by_align(g_align, GOD_LINE_THOU_HAST_PLEASED_ME_WITH_THY_PROGRESS);
             godvoice(u.ualign.type,
                      "Thou hast pleased me with thy progress,");
             if (!(HTelepat & INTRINSIC)) {
                 HTelepat |= FROM_ACQUIRED;
+                play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_TELEPATHY);
                 pline(msg, "Telepathy");
                 if (Blind)
                     see_monsters();
             } else if (!(HFast & INTRINSIC)) {
                 HFast |= FROM_ACQUIRED;
+                play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_SPEED);
                 pline(msg, "Speed");
             } else if (!(HStealth & INTRINSIC)) {
                 HStealth |= FROM_ACQUIRED;
+                play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_STEALTH);
                 pline(msg, "Stealth");
             }
             else if (u.ublessed < 9)
@@ -1806,12 +1832,14 @@ aligntyp g_align;
                     u.ublessed = rnd(3);
                 else
                     u.ublessed++;
+                play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_MY_PROTECTION);
                 pline(msg, "my protection");
             }
             else
             {
                 goto crown_here;
             }
+            play_voice_god_simple_line_by_align(g_align, GOD_LINE_USE_IT_WISELY_IN_MY_NAME);
             verbalize("Use it wisely in my name!");
             break;
         }
@@ -2018,6 +2046,7 @@ STATIC_OVL void
 gods_angry(g_align)
 aligntyp g_align;
 {
+    play_voice_god_simple_line_by_align(g_align, GOD_LINE_THOU_HAST_ANGERED_ME);
     godvoice(g_align, "Thou hast angered me.");
 }
 
@@ -2367,10 +2396,13 @@ dosacrifice()
                     context.botl = 1;
 #endif
                 u.uachieve.ascended = 1;
+                play_sfx_sound(SFX_INVISIBLE_CHOIR_SINGS);
                 pline(
                "An invisible choir sings, and you are bathed in radiance...");
+                play_voice_god_simple_line_by_align(altaralign, GOD_LINE_MORTAL_THOU_HAST_DONE_WELL);
                 godvoice(altaralign, "Mortal, thou hast done well!");
                 display_nhwindow(WIN_MESSAGE, FALSE);
+                play_voice_god_simple_line_by_align(altaralign, GOD_LINE_IN_RETURN_FOR_THY_SERVICE_I_GRANT_THEE_THE_GIFT_OF_IMMORTALITY);
                 verbalize(
           "In return for thy service, I grant thee the gift of Immortality!");
                 You("ascend to the status of Demigod%s...",
@@ -2428,6 +2460,7 @@ dosacrifice()
         play_sfx_sound(SFX_ALTAR_CHARGED_AIR);
         You_feel("the air around you grow charged...");
         pline("Suddenly, you realize that %s has noticed you...", a_gname());
+        play_voice_god_simple_line_by_align(altaralign, GOD_LINE_SO_MORTAL_YOU_DARE_DESECRATE_MY_HIGH_TEMPLE);
         godvoice(altaralign,
                  "So, mortal!  You dare desecrate my High Temple!");
         /* Throw everything we have at the player */
@@ -2481,6 +2514,7 @@ dosacrifice()
                     adjalign(-5);
                     pline("%s rejects your sacrifice!", a_gname());
                     play_sfx_sound(SFX_ALTAR_ANGRY_REJECTS_SACRIFICE);
+                    play_voice_god_simple_line_by_align(altaralign, GOD_LINE_SUFFER_INFIDEL);
                     godvoice(altaralign, "Suffer, infidel!");
                     luck_change += -5;
                     (void) adjattrib(A_WIS, -2, TRUE);
@@ -2880,6 +2914,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
 
     if (p_type == -1) 
     {
+        play_voice_god_simple_line_by_align(alignment, (alignment == A_LAWFUL) ? GOD_LINE_VILE_CREATURE_THOU_DURST_CALL_UPON_ME : GOD_LINE_WALK_NO_MORE_PERVERSION_OF_NATURE);
         godvoice(alignment,
                  (alignment == A_LAWFUL)
                     ? "Vile creature, thou durst call upon me?"
@@ -3246,10 +3281,12 @@ register int x, y;
         return;
 
     if (!strcmp(align_gname(altaralign), u_gname())) {
+        play_voice_god_simple_line_by_align(altaralign, GOD_LINE_HOW_DAREST_THOU_DESECRATE_MY_ALTAR);
         godvoice(altaralign, "How darest thou desecrate my altar!");
         (void) adjattrib(A_WIS, -1, FALSE);
     } else {
         pline("A voice (could it be %s?) whispers:", align_gname(altaralign));
+        play_voice_god_simple_line_by_align(altaralign, GOD_LINE_THOU_SHALT_PAY_INFIDEL);
         verbalize("Thou shalt pay, infidel!");
         change_luck(-1, TRUE);
     }
