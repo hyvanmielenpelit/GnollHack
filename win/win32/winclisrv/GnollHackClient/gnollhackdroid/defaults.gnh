@@ -236,6 +236,47 @@ OPTIONS=hilite_status:skill-availability/skill/green
 ## Two-weapon fighting
 OPTIONS=hilite_status:two-weapon-fighting/2weap/yellow
 
+## Weapon styles
+OPTIONS=hilite_status:primary-weapon/M/white
+OPTIONS=hilite_status:primary-weapon/2hM/white
+OPTIONS=hilite_status:primary-weapon/MS/white
+OPTIONS=hilite_status:primary-weapon/2hMS/white
+OPTIONS=hilite_status:primary-weapon/S/white
+OPTIONS=hilite_status:primary-weapon/R0/red
+OPTIONS=hilite_status:primary-weapon/2hR0/red
+OPTIONS=hilite_status:primary-weapon/R!/red
+OPTIONS=hilite_status:primary-weapon/2hR!/red
+OPTIONS=hilite_status:primary-weapon/R/green
+OPTIONS=hilite_status:primary-weapon/2hR/green
+OPTIONS=hilite_status:primary-weapon/T/orange
+OPTIONS=hilite_status:primary-weapon/A/orange
+OPTIONS=hilite_status:primary-weapon/!/gray
+OPTIONS=hilite_status:primary-weapon/P/blue
+OPTIONS=hilite_status:primary-weapon/2hP/blue
+OPTIONS=hilite_status:primary-weapon/c/brown
+OPTIONS=hilite_status:primary-weapon/p/cyan
+OPTIONS=hilite_status:primary-weapon/-/black
+
+OPTIONS=hilite_status:secondary-weapon/M/white
+OPTIONS=hilite_status:secondary-weapon/2hM/white
+OPTIONS=hilite_status:secondary-weapon/MS/white
+OPTIONS=hilite_status:secondary-weapon/2hMS/white
+OPTIONS=hilite_status:secondary-weapon/S/white
+OPTIONS=hilite_status:secondary-weapon/R0/red
+OPTIONS=hilite_status:secondary-weapon/2hR0/red
+OPTIONS=hilite_status:secondary-weapon/R!/red
+OPTIONS=hilite_status:secondary-weapon/2hR!/red
+OPTIONS=hilite_status:secondary-weapon/R/green
+OPTIONS=hilite_status:secondary-weapon/2hR/green
+OPTIONS=hilite_status:secondary-weapon/T/orange
+OPTIONS=hilite_status:secondary-weapon/A/orange
+OPTIONS=hilite_status:secondary-weapon/!/gray
+OPTIONS=hilite_status:secondary-weapon/P/blue
+OPTIONS=hilite_status:secondary-weapon/2hP/blue
+OPTIONS=hilite_status:secondary-weapon/c/brown
+OPTIONS=hilite_status:secondary-weapon/p/cyan
+OPTIONS=hilite_status:secondary-weapon/-/black
+
 ## Grabbed
 OPTIONS=hilite_status:condition/grab/yellow
 
