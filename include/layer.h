@@ -110,6 +110,9 @@ struct layer_info {
 /* Traps */
 #define LFLAGS_T_TRAPPED            0x10000000UL
 
+/* Important */
+#define LFLAGS_ASCENSION_RADIANCE   0x20000000UL /* Lighten up */
+
 
 #define MISSILE_FLAGS_CORRODEABLE   0x00000001UL
 #define MISSILE_FLAGS_ROTTABLE      0x00000002UL

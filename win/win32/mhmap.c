@@ -4098,7 +4098,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     /* First, darkening of dark areas and areas drawn from memory */
                     if (!skip_darkening)
                     {
-                        if (!cansee(darkening_i, darkening_j) || (data->map[darkening_i][darkening_j].layer_flags & LFLAGS_SHOWING_MEMORY))
+                        boolean ascension_radiance = ((data->map[darkening_i][darkening_j].layer_flags & LFLAGS_ASCENSION_RADIANCE) != 0);
+                        if (!cansee(darkening_i, darkening_j)  || ascension_radiance || (data->map[darkening_i][darkening_j].layer_flags & LFLAGS_SHOWING_MEMORY))
                         {
                             if (1)
                             {
@@ -4153,16 +4154,35 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
                                     int idx, x, y;
-                                    for (x = 0; x < width; x++)
+                                    if (ascension_radiance)
                                     {
-                                        for (y = 0; y < height; y++)
+                                        multiplier = min(1.0, 0.4 + sqrt((double)dist2(darkening_i, darkening_j, u.ux, u.uy)) / 12.0);
+                                        for (x = 0; x < width; x++)
                                         {
-                                            idx = y * pitch;
-                                            idx += x * 4;
+                                            for (y = 0; y < height; y++)
+                                            {
+                                                idx = y * pitch;
+                                                idx += x * 4;
 
-                                            lpBitmapBits[idx + 0] = (unsigned char)(((double)lpBitmapBits[idx + 0]) * multiplier);  // blue
-                                            lpBitmapBits[idx + 1] = (unsigned char)(((double)lpBitmapBits[idx + 1]) * multiplier); // green
-                                            lpBitmapBits[idx + 2] = (unsigned char)(((double)lpBitmapBits[idx + 2]) * multiplier);  // red 
+                                                lpBitmapBits[idx + 0] = (unsigned char)(((double)lpBitmapBits[idx + 0]) * multiplier + 255 * (1.0 - multiplier));  // blue
+                                                lpBitmapBits[idx + 1] = (unsigned char)(((double)lpBitmapBits[idx + 1]) * multiplier + 255 * (1.0 - multiplier)); // green
+                                                lpBitmapBits[idx + 2] = (unsigned char)(((double)lpBitmapBits[idx + 2]) * multiplier + 255 * (1.0 - multiplier));  // red 
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (x = 0; x < width; x++)
+                                        {
+                                            for (y = 0; y < height; y++)
+                                            {
+                                                idx = y * pitch;
+                                                idx += x * 4;
+
+                                                lpBitmapBits[idx + 0] = (unsigned char)(((double)lpBitmapBits[idx + 0]) * multiplier);  // blue
+                                                lpBitmapBits[idx + 1] = (unsigned char)(((double)lpBitmapBits[idx + 1]) * multiplier); // green
+                                                lpBitmapBits[idx + 2] = (unsigned char)(((double)lpBitmapBits[idx + 2]) * multiplier);  // red 
+                                            }
                                         }
                                     }
                                     StretchBlt(data->backBufferDC, rect->left, rect->top, width, height, hDCMem, 0, 0, width, height, SRCCOPY);
@@ -4178,19 +4198,41 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
                                     int idx, x, y;
-                                    for (x = 0; x < width; x++)
+                                    if (ascension_radiance)
                                     {
-                                        for (y = 0; y < height; y++)
+                                        multiplier = min(1.0, 0.4 + sqrt((double)dist2(darkening_i, darkening_j, u.ux, u.uy)) / 12.0);
+                                        for (x = 0; x < width; x++)
                                         {
-                                            idx = y * pitch;
-                                            idx += x * 4;
+                                            for (y = 0; y < height; y++)
+                                            {
+                                                idx = y * pitch;
+                                                idx += x * 4;
 
-                                            if (lpBitmapBitsCopy[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsCopy[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsCopy[idx + 2] == TILE_BK_COLOR_RED)
-                                                continue;
+                                                if (lpBitmapBitsCopy[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsCopy[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsCopy[idx + 2] == TILE_BK_COLOR_RED)
+                                                    continue;
 
-                                            lpBitmapBitsCopy[idx + 0] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 0]) * multiplier);  // blue
-                                            lpBitmapBitsCopy[idx + 1] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 1]) * multiplier); // green
-                                            lpBitmapBitsCopy[idx + 2] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 2]) * multiplier);  // red 
+                                                lpBitmapBitsCopy[idx + 0] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 0]) * multiplier + 255 * (1.0 - multiplier));  // blue
+                                                lpBitmapBitsCopy[idx + 1] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 1]) * multiplier + 255 * (1.0 - multiplier)); // green
+                                                lpBitmapBitsCopy[idx + 2] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 2]) * multiplier + 255 * (1.0 - multiplier));  // red 
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (x = 0; x < width; x++)
+                                        {
+                                            for (y = 0; y < height; y++)
+                                            {
+                                                idx = y * pitch;
+                                                idx += x * 4;
+
+                                                if (lpBitmapBitsCopy[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsCopy[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsCopy[idx + 2] == TILE_BK_COLOR_RED)
+                                                    continue;
+
+                                                lpBitmapBitsCopy[idx + 0] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 0]) * multiplier);  // blue
+                                                lpBitmapBitsCopy[idx + 1] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 1]) * multiplier); // green
+                                                lpBitmapBitsCopy[idx + 2] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 2]) * multiplier);  // red 
+                                            }
                                         }
                                     }
                                 }

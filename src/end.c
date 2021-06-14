@@ -1284,7 +1284,7 @@ int how;
     /* render vision subsystem inoperative */
     iflags.vision_inited = 0;
     
-    if (stop_all_sounds)
+    if (stop_all_sounds && how != ASCENDED)
     {
         struct stop_all_info sainfo = { 0 };
         stop_all_sounds(sainfo);

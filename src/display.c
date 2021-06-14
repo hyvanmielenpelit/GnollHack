@@ -1142,13 +1142,12 @@ int damage_shown;
     /* Extra info shown */
     show_extra_info(x, y, disp_flags, damage_shown);
 
-    /* Add chain, otherwise, remove it */
-
-
     /* Can physically see the location. */
     if (cansee(x, y)) 
     {
         boolean old_glyph_is_invisible = glyph_is_invisible(lev->hero_memory_layers.glyph);
+        if(u.uachieve.ascended)
+            add_glyph_buffer_layer_flags(x, y, LFLAGS_ASCENSION_RADIANCE);
 
         //clear_hero_memory_at(x, y);
 

@@ -2397,8 +2397,19 @@ dosacrifice()
 #endif
                 u.uachieve.ascended = 1;
                 play_sfx_sound(SFX_INVISIBLE_CHOIR_SINGS);
-                pline(
-               "An invisible choir sings, and you are bathed in radiance...");
+                pline("An invisible choir sings, and you are bathed in radiance...");
+                
+                /* Radiance */
+                for (int x = 1; x < COLNO; x++)
+                    for (int y = 0; y < ROWNO; y++)
+                        if(cansee(x, y))
+                            newsym(x, y);
+
+                flush_screen(0);
+                
+                if (iflags.using_gui_sounds)
+                    delay_output_milliseconds(4500);
+
                 play_voice_god_simple_line_by_align(altaralign, GOD_LINE_MORTAL_THOU_HAST_DONE_WELL);
                 godvoice(altaralign, "Mortal, thou hast done well!");
                 display_nhwindow(WIN_MESSAGE, FALSE);
