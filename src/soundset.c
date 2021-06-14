@@ -11834,11 +11834,7 @@ enum god_simple_lines line_id;
 {
     /* You will hear the god even if you are deaf */
 
-    const char* godname = align_gname(godalign);
-    if (!godname)
-        return;
-
-    boolean isfemale = (*godname == '_');
+    boolean isfemale = align_gfemale(godalign);
     struct ghsound_immediate_info info = { 0 };
     enum ghsound_types soundid = isfemale ? GHSOUND_VOICE_GOD_FEMALE_SPEAKS : GHSOUND_VOICE_GOD_MALE_SPEAKS;
     float volume = 1.0f;

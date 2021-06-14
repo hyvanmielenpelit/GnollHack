@@ -2723,6 +2723,7 @@ dosacrifice()
                             dropy(otmp2);
                         }
                     }
+                    play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_USE_MY_GIFT_WISELY);
                     godvoice(u.ualign.type, "Use my gift wisely!");
                     u.ugifts++;
                     u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(150 + (25 * nartifacts)) : rnz(300 + (50 * nartifacts));
@@ -3144,6 +3145,36 @@ const char *
 u_gname()
 {
     return align_gname(u.ualign.type);
+}
+
+boolean
+align_gfemale(alignment)
+aligntyp alignment;
+{
+    const char* gnam = 0;
+
+    switch (alignment) {
+    case A_NONE:
+        gnam = Moloch;
+        break;
+    case A_LAWFUL:
+        gnam = urole.lgod;
+        break;
+    case A_NEUTRAL:
+        gnam = urole.ngod;
+        break;
+    case A_CHAOTIC:
+        gnam = urole.cgod;
+        break;
+    default:
+        impossible("unknown alignment.");
+        gnam = "someone";
+        break;
+    }
+    if (gnam && *gnam == '_')
+        return TRUE;
+
+    return FALSE;
 }
 
 const char *
