@@ -1769,7 +1769,8 @@ struct obj *obj;
     long mask = 0L;
     boolean armor, ring, eyewear;
 
-    if (obj->owornmask & (W_ACCESSORY | W_ARMOR)) {
+    if (obj->owornmask & (W_ACCESSORY | W_ARMOR)) 
+    {
         already_wearing(c_that_);
         return 0;
     }
@@ -1778,7 +1779,8 @@ struct obj *obj;
     ring = (obj->oclass == RING_CLASS || obj->otyp == MEAT_RING);
     eyewear = (obj->otyp == BLINDFOLD || obj->otyp == TOWEL);
     /* checks which are performed prior to actually touching the item */
-    if (armor) {
+    if (armor) 
+    {
         if (!canwearobj(obj, &mask, TRUE))
             return 0;
 
@@ -1795,35 +1797,46 @@ struct obj *obj;
             context.botl = 1; /*for AC after zeroing u.ublessed */
             return 1;
         }
-    } else {
+    }
+    else 
+    {
         /* accessory */
-        if (ring) {
+        if (ring)
+        {
             char answer, qbuf[QBUFSZ];
             int res = 0;
 
-            if (nolimbs(youmonst.data) || nohands(youmonst.data)) {
+            if (nolimbs(youmonst.data) || nohands(youmonst.data)) 
+            {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("cannot make the ring stick to your body.");
                 return 0;
             }
-            if (uleft && uright) {
+            if (uleft && uright) 
+            {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 There("are no more %s%s to fill.",
                       humanoid(youmonst.data) ? "ring-" : "",
                       makeplural(body_part(FINGER)));
                 return 0;
             }
-            if (uleft) {
+            if (uleft) 
+            {
                 mask = RIGHT_RING;
-            } else if (uright) {
+            } 
+            else if (uright) {
                 mask = LEFT_RING;
-            } else {
-                do {
+            }
+            else 
+            {
+                do 
+                {
                     Sprintf(qbuf, "Which %s%s, Right or Left?",
                             humanoid(youmonst.data) ? "ring-" : "",
                             body_part(FINGER));
                     answer = yn_function(qbuf, "rl", '\0');
-                    switch (answer) {
+                    switch (answer) 
+                    {
                     case '\0':
                         return 0;
                     case 'l':
@@ -1837,16 +1850,20 @@ struct obj *obj;
                     }
                 } while (!mask);
             }
-            if (uarmg && uarmg->cursed) {
+            if (uarmg && uarmg->cursed) 
+            {
                 res = !uarmg->bknown;
                 uarmg->bknown = 1;
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("cannot remove your gloves to put on the ring.");
                 return res; /* uses move iff we learned gloves are cursed */
             }
-            if (uwep) {
+
+            if (uwep) 
+            {
                 res = !uwep->bknown; /* check this before calling welded() */
-                if ((mask == RIGHT_RING || bimanual(uwep)) && welded(uwep, &youmonst)) {
+                if ((mask == RIGHT_RING || bimanual(uwep)) && welded(uwep, &youmonst)) 
+                {
                     const char *hand = body_part(HAND);
 
                     /* welded will set bknown */
@@ -1858,12 +1875,16 @@ struct obj *obj;
                     return res; /* uses move iff we learned weapon is cursed */
                 }
             }
-        } else if (obj->oclass == AMULET_CLASS) {
-            if (uamul) {
+        }
+        else if (obj->oclass == AMULET_CLASS) 
+        {
+            if (uamul) 
+            {
                 already_wearing("an amulet");
                 return 0;
             }
-        } else if (obj->oclass == MISCELLANEOUS_CLASS) {
+        }
+        else if (obj->oclass == MISCELLANEOUS_CLASS) {
             if (objects[obj->otyp].oc_subtyp != MISC_MULTIPLE_PERMITTED &&
                 ((umisc && objects[umisc->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
                 || (umisc2 && objects[umisc2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
@@ -1876,24 +1897,33 @@ struct obj *obj;
                 already_wearing(an(misc_type_names[objects[obj->otyp].oc_subtyp]));
                 return 0;
             }
-            if (umisc && umisc2 && umisc3 && umisc4 && umisc5) {
+            if (umisc && umisc2 && umisc3 && umisc4 && umisc5) 
+            {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("cannot wear more than five miscellanous items.");
                 return 0;
             }
-        } else if (eyewear) {
-            if (ublindf) {
+        }
+        else if (eyewear) 
+        {
+            if (ublindf) 
+            {
                 if (ublindf->otyp == TOWEL)
                     Your("%s is already covered by a towel.",
                          body_part(FACE));
-                else if (ublindf->otyp == BLINDFOLD) {
+                else if (ublindf->otyp == BLINDFOLD) 
+                {
                     already_wearing("a blindfold");
-                } else {
+                }
+                else
+                {
                     already_wearing(something); /* ??? */
                 }
                 return 0;
             }
-        } else {
+        } 
+        else
+        {
             /* neither armor nor accessory */
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_cant("wear that!");
@@ -1904,7 +1934,8 @@ struct obj *obj;
     if (!retouch_object(&obj, FALSE))
         return 1; /* costs a turn even though it didn't get worn */
 
-    if (armor) {
+    if (armor) 
+    {
         int delay;
 
         /* if the armor is wielded, release it for wearing (won't be
@@ -1948,29 +1979,38 @@ struct obj *obj;
         }
 
         delay = -objects[obj->otyp].oc_delay;
-        if (delay) {
+        if (delay) 
+        {
             nomul(delay);
             multi_reason = "dressing up";
             nomovemsg = "You finish your dressing maneuver.";
-        } else {
+        } else 
+        {
             unmul(""); /* call (*aftermv)(), clear it+nomovemsg+multi_reason */
             on_msg(obj);
         }
         context.takeoff.mask = context.takeoff.what = 0L;
-    } else { /* not armor */
+    } 
+    else 
+    { /* not armor */
         boolean give_feedback = FALSE;
 
         /* [releasing wielded accessory handled in Xxx_on()] */
-        if (ring) {
+        if (ring) 
+        {
             setworn(obj, mask);
             Ring_on(obj);
             give_feedback = TRUE;
-        } else if (obj->oclass == AMULET_CLASS) {
+        } 
+        else if (obj->oclass == AMULET_CLASS) 
+        {
             setworn(obj, W_AMUL);
             Amulet_on();
             /* no feedback here if amulet of change got used up */
             give_feedback = (uamul != 0);
-        } else if (obj->oclass == MISCELLANEOUS_CLASS) {
+        } 
+        else if (obj->oclass == MISCELLANEOUS_CLASS) 
+        {
             if(!umisc)
             {
                 MiscellaneousItem_on(obj, W_MISC);
@@ -1997,7 +2037,9 @@ struct obj *obj;
                 MiscellaneousItem_on(obj, W_MISC5);
                 give_feedback = (umisc5 != 0);
             }
-        } else if (eyewear) {
+        } 
+        else if (eyewear) 
+        {
             /* setworn() handled by Blindf_on() */
             Blindf_on(obj);
             /* message handled by Blindf_on(); leave give_feedback False */
@@ -2023,7 +2065,8 @@ dowear()
         return 0;
     }
     if (uarm && uarmu && uarmc && uarmh && uarms && uarmg && uarmf && uarmo && uarmb && umisc && umisc2 && umisc3 && umisc4 && umisc5
-        && uleft && uright && uamul && ublindf) {
+        && uleft && uright && uamul && ublindf) 
+    {
         /* 'W' message doesn't mention accessories */
         You("are already wearing a full complement of armor.");
         return 0;

@@ -3157,7 +3157,7 @@ boolean is_left_arm;
     }
     else
     {
-        if (objects[wep->otyp].oc_bimanual)
+        if (is_weapon(wep) && objects[wep->otyp].oc_bimanual)
         {
             strcpy(eos(buf), "2h");
         }
@@ -3172,7 +3172,7 @@ boolean is_left_arm;
                     strcpy(eos(buf), "R!");
             }
             else
-                strcpy(eos(buf), "R-");
+                strcpy(eos(buf), "R0");
         }
         else if (is_ammo(wep))
         {

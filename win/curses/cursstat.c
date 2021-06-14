@@ -455,7 +455,7 @@ boolean border;
         blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD }
     };
 
-    const enum statusfields (*fieldorder)[20];
+    const enum statusfields (*fieldorder)[blCols];
     xchar spacing[MAXBLSTATS], valline[MAXBLSTATS];
     enum statusfields fld, prev_fld;
     char *text, *p, cbuf[BUFSZ], ebuf[STATVAL_WIDTH];
