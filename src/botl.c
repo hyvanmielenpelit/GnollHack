@@ -1152,7 +1152,7 @@ boolean *valsetlist;
 {
     static int oldrndencode = 0;
     static nhsym oldgoldsym = 0;
-    int pc, chg, color = NO_COLOR;
+    int pc, chg, chgmax = 0, color = NO_COLOR;
     unsigned anytype;
     boolean updated = FALSE, reset;
     struct istat_s *curr = NULL, *prev = NULL;
@@ -1165,8 +1165,12 @@ boolean *valsetlist;
     curr = &blstats[idx][fld];
     prev = &blstats[1 - idx][fld];
     color = NO_COLOR;
+    idxmax = curr->idxmax;
+    idxcurr = curr->idxcurr;
+    if (idxmax >= 0)
+        chgmax = compare_blstats(curr, &blstats[idx][idxmax]);
 
-    chg = update_all ? 0 : compare_blstats(prev, curr);
+    chg = update_all ? 0 : (compare_blstats(prev, curr) || chgmax);
 
 #ifndef ANDROID
     /* Temporary? hack: moveloop()'s prolog for a new game sets
@@ -1207,7 +1211,7 @@ boolean *valsetlist;
 #endif
 
         /*
-         * TODO?
+         * TODO? Done --JG
          *  It's possible for HPmax (or ENEmax) to change while current
          *  HP (or energy) stays the same.  [Perhaps current and maximum
          *  both go up, then before the next status update takes place
@@ -1217,8 +1221,6 @@ boolean *valsetlist;
          */
     if (update_all || chg || reset) 
     {
-        idxmax = curr->idxmax;
-        idxcurr = curr->idxcurr;
         pc = 0;
         if(idxmax >= 0)
             pc = percentage(curr, &blstats[idx][idxmax]);
