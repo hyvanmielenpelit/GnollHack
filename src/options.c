@@ -252,6 +252,7 @@ static struct Bool_Opt {
     { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },
     { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
     { "show_tile_u_hp_bar", &flags.show_tile_u_hp_bar, FALSE, SET_IN_GAME },
+    { "show_weapon_style", &flags.show_weapon_style, TRUE, SET_IN_GAME },
     { "show_weight_summary", &flags.show_weight_summary, TRUE, SET_IN_GAME },
     { "silent", &flags.silent, TRUE, SET_IN_GAME },
     { "softkeyboard", &iflags.wc2_softkeyboard, FALSE, SET_IN_FILE }, /*WC2*/
@@ -4617,6 +4618,7 @@ boolean tinitial, tfrom_file;
 #endif
                 || boolopt[i].addr == &flags.showexp
                 || boolopt[i].addr == &flags.showmove
+                || boolopt[i].addr == &flags.show_weapon_style
                 )
             {
                 if (VIA_WINDOWPORT())

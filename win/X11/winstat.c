@@ -104,14 +104,14 @@ static int X11_status_colors[MAXBLSTATS];
 static int hpbar_percent, hpbar_color;
 
 #define X11_NUM_STATUS_LINES 2
-#define X11_NUM_STATUS_FIELD 16
+#define X11_NUM_STATUS_FIELD 18
 
 static enum statusfields X11_fieldorder[X11_NUM_STATUS_LINES][X11_NUM_STATUS_FIELD] = {
     { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_ALIGN,
-      BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
+      BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
       BL_FLUSH },
     { BL_LEVELDESC, BL_GOLD, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,
-      BL_AC, BL_MOVE, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_HUNGER,
+      BL_AC, BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_HUNGER,
       BL_CAP, BL_CONDITION, BL_FLUSH }
 };
 
@@ -544,6 +544,8 @@ unsigned long *colormasks UNUSED;
         { BL_XP, F_LEVEL },
         { BL_AC, F_AC },
         { BL_MOVE, F_MOVE },
+        { BL_UWEP, F_UWEP },
+        { BL_UWEP2, F_UWEP2 },
         /*{ BL_HD, F_ },*/
         { BL_TIME, F_TIME },
         { BL_HUNGER, F_HUNGER },

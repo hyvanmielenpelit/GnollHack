@@ -3112,4 +3112,95 @@ uchar exceptionality;
 
 }
 
+void
+print_weapon_style_string(buf, is_left_arm)
+char* buf;
+boolean is_left_arm;
+{
+    if (!buf)
+        return;
+
+    struct obj* wep = is_left_arm ? uarms : uwep;
+    strcpy(buf, "");
+    if (!wep)
+    {
+        if (is_left_arm)
+        {
+            if (!uwep)
+            {
+                if(u.twoweap)
+                    strcpy(buf, "-");
+                else
+                    strcpy(buf, "");
+            }
+            else if(objects[uwep->otyp].oc_bimanual)
+                strcpy(buf, "");
+            else if(u.twoweap)
+                strcpy(buf, "-");
+            else
+                strcpy(buf, "");
+        }
+        else
+            strcpy(buf, "-");
+    }
+    else if (wep->otyp == CORPSE)
+    {
+        strcpy(buf, "c");
+    }
+    else if (wep->oclass == POTION_CLASS)
+    {
+        strcpy(buf, "p");
+    }
+    else if (!is_weapon(wep) && !is_shield(wep))
+    {
+        strcpy(buf, "!");
+    }
+    else
+    {
+        if (objects[wep->otyp].oc_bimanual)
+        {
+            strcpy(eos(buf), "2h");
+        }
+
+        if (is_launcher(wep))
+        {
+            if (uquiver)
+            {
+                if (ammo_and_launcher(uquiver, wep))
+                    strcpy(eos(buf), "R");
+                else
+                    strcpy(eos(buf), "R!");
+            }
+            else
+                strcpy(eos(buf), "R-");
+        }
+        else if (is_ammo(wep))
+        {
+            strcpy(eos(buf), "A");
+        }
+        else if (nonmelee_throwing_weapon(wep))
+        {
+            strcpy(eos(buf), "T");
+        }
+        else if (is_appliable_pole_type_weapon(wep))
+        {
+            strcpy(eos(buf), "P");
+        }
+        else if (is_weapon(wep))
+        {
+            strcpy(eos(buf), "M");
+            if (throwing_weapon(wep))
+            {
+                strcpy(eos(buf), "T");
+            }
+        }
+
+        if (is_shield(wep))
+        {
+            strcpy(eos(buf), "S");
+        }
+    }
+}
+
+
 /*weapon.c*/

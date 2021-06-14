@@ -454,6 +454,12 @@ Shield_on(VOID_ARGS)
         play_simple_object_sound(uarms, OBJECT_SOUND_TYPE_WEAR);
 
     uarms->known = 1; /* shield's +/- evident because of status line AC */
+
+#ifdef STATUS_HILITES
+    if (VIA_WINDOWPORT())
+        status_initialize(REASSESS_ONLY);
+#endif
+
     return 0;
 }
 
@@ -467,6 +473,12 @@ Shield_off(VOID_ARGS)
 
     setworn((struct obj *) 0, W_ARMS);
     context.takeoff.cancelled_don = FALSE;
+
+#ifdef STATUS_HILITES
+    if (VIA_WINDOWPORT())
+        status_initialize(REASSESS_ONLY);
+#endif
+
     return 0;
 }
 

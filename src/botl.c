@@ -127,9 +127,9 @@ do_statusline2()
          /* dungeon location (and gold), hero health (HP, PW, AC),
             experience (HD if poly'd, else Exp level and maybe Exp points),
             time (in moves), varying number of status conditions */
-         dloc[QBUFSZ], hlth[QBUFSZ], expr[QBUFSZ], tmmv[QBUFSZ], move[QBUFSZ], cond[QBUFSZ], skll[QBUFSZ];
+         dloc[QBUFSZ], hlth[QBUFSZ], expr[QBUFSZ], tmmv[QBUFSZ], move[QBUFSZ], weaponstyle[QBUFSZ], cond[QBUFSZ], skll[QBUFSZ];
     register char *nb;
-    unsigned dln, dx, hln, xln, mln, tln, cln, sln;
+    unsigned dln, dx, hln, xln, mln, tln, cln, sln, wln;
     int hp, hpmax, cap;
 
     /*
@@ -171,6 +171,21 @@ do_statusline2()
     else
         move[0] = '\0';
     mln = strlen(move);
+
+    if (flags.show_weapon_style)
+    {
+        char buf1[BUFSZ] = "";
+        char bufplus[BUFSZ] = "";
+        char buf2[BUFSZ] = "";
+        print_weapon_style_string(buf1, FALSE);
+        print_weapon_style_string(buf2, TRUE);
+        if (strcmp(buf2, ""))
+            strcpy(bufplus, "+");
+        Sprintf(weaponstyle, "W:%s%s%s", buf1, bufplus, buf2);
+    }
+    else
+        weaponstyle[0] = '\0';
+    wln = strlen(weaponstyle);
 
     /* time/move counter */
     if (flags.time)
@@ -255,16 +270,16 @@ do_statusline2()
      * wider displays can still show wider status than the map if the
      * interface supports that.
      */
-    if ((dln - dx) + 1 + hln + 1 + xln + 1 + mln + 1 + tln + 1 + sln + 1 + cln <= COLNO) 
+    if ((dln - dx) + 1 + hln + 1 + xln + 1 + mln + 1 + wln + 1 + tln + 1 + sln + 1 + cln <= COLNO) 
     {
-        Sprintf(newbot2, "%s %s %s %s %s %s %s", dloc, hlth, expr, move, tmmv, skll, cond);
+        Sprintf(newbot2, "%s %s %s %s %s %s %s %s", dloc, hlth, expr, move, weaponstyle, tmmv, skll, cond);
     }
     else
     {
-        if (dln + 1 + hln + 1 + xln + 1 + mln + 1 + tln + 1 + cln + 1 > MAXCO)
+        if (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1 > MAXCO)
         {
             panic("bot2: second status line exceeds MAXCO (%u > %d)",
-                  (dln + 1 + hln + 1 + xln + 1 + mln + 1 + tln + 1 + cln + 1), MAXCO);
+                  (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1), MAXCO);
             strcpy(newbot2, "");
             return newbot2;
         }
@@ -585,6 +600,8 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("magic-cancellation-level", " MC:%s", ANY_INT, 10, BL_MC_LVL),
     INIT_BLSTAT("magic-cancellation-percentage", "/%s%%", ANY_INT, 10, BL_MC_PCT),
     INIT_BLSTAT("move", " MS:%s", ANY_LONG, 10, BL_MOVE),
+    INIT_BLSTAT("primary-weapon", " W:%s", ANY_STR, 20, BL_UWEP),
+    INIT_BLSTAT("secondary-weapon", "/%s", ANY_STR, 20, BL_UWEP2),
     INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
     INIT_BLSTAT("time", " T:%s", ANY_LONG, 20, BL_TIME),
     /* hunger used to be 'ANY_UINT'; see note below in bot_via_windowport() */
@@ -770,6 +787,14 @@ bot_via_windowport()
 
     /* Move speed */
     blstats[idx][BL_MOVE].a.a_long = (long)get_u_move_speed(TRUE);
+
+    /* Primary weapon style */
+    print_weapon_style_string(blstats[idx][BL_UWEP].val, FALSE);
+    valset[BL_UWEP] = TRUE;
+
+    /* Secondary weapon style */
+    print_weapon_style_string(blstats[idx][BL_UWEP2].val, TRUE);
+    valset[BL_UWEP2] = TRUE;
 
     /* Time (moves) */
     blstats[idx][BL_TIME].a.a_long = moves;
@@ -1244,6 +1269,8 @@ boolean *valsetlist;
             || ((i == BL_EXP) && !flags.showexp)
             || ((i == BL_TIME) && !flags.time)
             || ((i == BL_MOVE) && !flags.showmove)
+            || ((i == BL_UWEP) && !flags.show_weapon_style)
+            || ((i == BL_UWEP2) && (!flags.show_weapon_style || (uwep && is_weapon(uwep) && objects[uwep->otyp].oc_bimanual) || (!u.twoweap && !uarms)))
             || ((i == BL_HD) && !Upolyd)
             || ((i == BL_XP || i == BL_EXP) && Upolyd)) {
             notpresent++;
@@ -1314,7 +1341,9 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
                    : (fld == BL_TIME) ? flags.time
                      : (fld == BL_EXP) ? (boolean) (flags.showexp && !Upolyd)
                        : (fld == BL_MOVE) ? flags.showmove
-                       : (fld == BL_XP) ? (boolean) !Upolyd
+                        : (fld == BL_UWEP) ? flags.show_weapon_style
+                        : (fld == BL_UWEP2) ? flags.show_weapon_style && !(uwep && is_weapon(uwep) && objects[uwep->otyp].oc_bimanual) && (u.twoweap || uarms)
+                        : (fld == BL_XP) ? (boolean) !Upolyd
                          : (fld == BL_HD) ? (boolean) Upolyd
                            : TRUE;
 

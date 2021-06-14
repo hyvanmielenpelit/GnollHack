@@ -58,6 +58,7 @@ struct flag {
     boolean tellexp;         /* tell experience points when received */
     boolean enablettyarrowkeys;  /* experimental: enable tty arrow keys but comes with drawvback of double ESC */
     boolean showmove;         /* show move on statusline */
+    boolean show_weapon_style;         /* show weapon style on statusline */
     boolean show_buff_timer;    /* show buff timers in GUI */
     boolean search_box_traps; /* search all boxes for traps when pressing s */
     boolean underline_peaceful;     /* underline non-tame peaceful monsters */

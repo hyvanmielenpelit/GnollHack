@@ -606,6 +606,11 @@ dowield()
 
     update_all_character_properties((struct obj*)0, TRUE);
 
+#ifdef STATUS_HILITES
+    if (VIA_WINDOWPORT())
+        status_initialize(REASSESS_ONLY);
+#endif
+
     return result;
 }
 
@@ -739,6 +744,11 @@ long mask;
     {
         /* Do nothing */
     }
+
+#ifdef STATUS_HILITES
+    if (VIA_WINDOWPORT())
+        status_initialize(REASSESS_ONLY);
+#endif
 
     //Do not take a turn
     return 0; // result;
@@ -1026,6 +1036,11 @@ doswapweapon()
     {
         /* Do nothing */
     }
+
+#ifdef STATUS_HILITES
+    if (VIA_WINDOWPORT())
+        status_initialize(REASSESS_ONLY);
+#endif
 
     //Do not take a turn
     return 0; // result;
@@ -1574,29 +1589,25 @@ dotwoweapon()
     if (u.twoweap) 
     {
         play_ui_sound(UI_SOUND_STOP_TWO_WEAPON_COMBAT);
-
-        //You("switch to your primary weapon.");
         You("stop two-weapon fighting.");
         u.twoweap = 0;
-        update_hand_unweapon(2);
-        context.botl = context.botlx = TRUE;
-        update_inventory();
-        return 0;
     }
     else
     {
         play_ui_sound(UI_SOUND_START_TWO_WEAPON_COMBAT);
-
-        /* May we use two weapons? */
-        /* if (can_twoweapon())*/
-        /* Success! */
         You("begin two-weapon fighting.");
         u.twoweap = 1;
-        update_hand_unweapon(2);
-        context.botl = context.botlx = TRUE;
-        update_inventory();
-        return 0; // (rnd(20) > ACURR(A_DEX));
     }
+
+    update_hand_unweapon(2);
+    context.botl = context.botlx = TRUE;
+    force_redraw_at(u.ux, u.uy);
+    flush_screen(0);
+    update_inventory();
+#ifdef STATUS_HILITES
+    if (VIA_WINDOWPORT())
+        status_initialize(REASSESS_ONLY);
+#endif
     return 0;
 }
 
@@ -1618,6 +1629,10 @@ uwepgone()
         setworn((struct obj *) 0, W_WEP);
         update_unweapon();
         update_inventory();
+#ifdef STATUS_HILITES
+        if (VIA_WINDOWPORT())
+            status_initialize(REASSESS_ONLY);
+#endif
     }
 }
 
@@ -1633,6 +1648,10 @@ uwep2gone()
         setworn((struct obj*) 0, W_ARMS);
         update_unweapon();
         update_inventory();
+#ifdef STATUS_HILITES
+        if (VIA_WINDOWPORT())
+            status_initialize(REASSESS_ONLY);
+#endif
     }
 }
 

@@ -3648,6 +3648,7 @@ E int FDECL(martial_arts_multishot_percentage_chance, (int));
 E int FDECL(get_skill_critical_strike_chance, (enum p_skills, BOOLEAN_P));
 E double FDECL(get_wand_damage_multiplier, (int, BOOLEAN_P));
 E int FDECL(get_exceptionality_multiplier, (UCHAR_P));
+E void FDECL(print_weapon_style_string, (char*, BOOLEAN_P));
 
 /* ### were.c ### */
 
