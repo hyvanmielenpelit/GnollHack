@@ -752,6 +752,7 @@ int roomno;
 
         if (msg1 && can_speak && !Deaf)
         {
+            context.global_minimum_volume = 0.50;
             play_monster_special_dialogue_line(priest, spdl_id1);
             verbalize1(msg1);
             if (msg2)
@@ -760,6 +761,7 @@ int roomno;
                 verbalize1(msg2);
             }
             epri_p->enter_time = moves + (long) d(10, 100); /* ~505 */
+            context.global_minimum_volume = 0.0;
         }
 
         if (!sanctum) 
@@ -1612,20 +1614,23 @@ ustatusline()
         Sprintf(eos(info), "  %d(%d) heads", youmonst.heads_left, youmonst.data->heads);
     }
 
-    if (Sick || FoodPoisoned) {
+    if (Sick || FoodPoisoned) 
+    {
         Strcat(info, ", dying from");
         if (FoodPoisoned)
             Strcat(info, " food poisoning");
         if (FoodPoisoned)
             Strcat(info, " food poisoning");
-        if (Sick) {
+        if (Sick) 
+        {
             if (FoodPoisoned)
                 Strcat(info, " and");
             Strcat(info, " illness");
         }
     }
 
-    if (MummyRot) {
+    if (MummyRot) 
+    {
         Strcat(info, ", mummy rot");
     }
 

@@ -20,8 +20,8 @@ STATIC_DCL void NDECL(regenerate_mana);
 STATIC_DCL void FDECL(interrupt_multi, (const char *));
 STATIC_DCL void FDECL(debug_fields, (const char *));
 STATIC_DCL void NDECL(create_monster_or_encounter);
-STATIC_DCL int NDECL(select_ringwraith);
-STATIC_DCL boolean NDECL(maybe_create_ringwraith);
+STATIC_DCL int NDECL(select_rwraith);
+STATIC_DCL boolean NDECL(maybe_create_rwraith);
 
 void
 moveloop(resuming)
@@ -533,10 +533,10 @@ void
 create_monster_or_encounter()
 {
 
-    /* Special ringwraith appearance for the One Ring */
-    boolean ringwraith_appeared = maybe_create_ringwraith();
+    /* Special wraith appearance for the True Ring */
+    boolean rwraith_appeared = maybe_create_rwraith();
 
-    if (!ringwraith_appeared)
+    if (!rwraith_appeared)
     {
         if (u.uz.dnum == modron_dnum)
         {
@@ -560,12 +560,12 @@ create_monster_or_encounter()
 
 STATIC_OVL
 int
-select_ringwraith()
+select_rwraith()
 {
-    /* Special ringwraith appearance for the One Ring */
+    /* Special wraith appearance for the True Ring */
     int minlevel = 0, maxlevel = 1;
     int mdx = NON_PM;
-    boolean nazgulok = FALSE;
+    boolean wraithlordok = FALSE;
     boolean kingwraithok = FALSE;
     boolean spectreok = FALSE;
     boolean barrowwightok = FALSE;
@@ -576,18 +576,18 @@ select_ringwraith()
         /* Difficulty level is one level higher than normal */
         get_generated_monster_minmax_levels(i, &minlevel, &maxlevel, 1);
 
-        nazgulok = maxlevel >= mons[PM_WRAITHLORD].difficulty && !(mvitals[PM_WRAITHLORD].mvflags & G_GONE);
+        wraithlordok = maxlevel >= mons[PM_WRAITHLORD].difficulty && !(mvitals[PM_WRAITHLORD].mvflags & G_GONE);
         kingwraithok = maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE);
         spectreok = maxlevel >= mons[PM_SPECTRE].difficulty && !(mvitals[PM_SPECTRE].mvflags & G_GONE);
         barrowwightok = maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & G_GONE);
         wraithok = maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & G_GONE);
 
-        if (nazgulok || kingwraithok || spectreok || barrowwightok || wraithok)
+        if (wraithlordok || kingwraithok || spectreok || barrowwightok || wraithok)
             break;
     }
 
-    /* Select a ringwraith */
-    if (nazgulok)
+    /* Select a wraith */
+    if (wraithlordok)
         mdx = PM_WRAITHLORD;
     else if (kingwraithok)
         mdx = PM_KING_WRAITH;
@@ -603,44 +603,44 @@ select_ringwraith()
 
 STATIC_OVL
 boolean
-maybe_create_ringwraith()
+maybe_create_rwraith()
 {
-    struct monst* ringwraith = (struct monst*)0;
-    boolean ringwraith_appeared = FALSE;
+    struct monst* rwraith = (struct monst*)0;
+    boolean rwraith_appeared = FALSE;
     int mdx = NON_PM;
 
-    if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && !(u.uz.dnum == bovine_dnum) && (mdx = select_ringwraith()) >= LOW_PM)
+    if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && !(u.uz.dnum == bovine_dnum) && (mdx = select_rwraith()) >= LOW_PM)
     {
-        /* Special ringwraith appearance if carrying the One Ring */
+        /* Special wraith appearance if carrying the True Ring */
         struct obj* ring = carrying(RIN_SUPREME_POWER);
-        if (ring && ring->oartifact == ART_ONE_RING && mdx >= LOW_PM && !rn2(20))
+        if (ring && ring->oartifact == ART_TRUE_RING && mdx >= LOW_PM && !rn2(20))
         {
             if (!context.made_witch_king && mdx == PM_WRAITHLORD && !rn2(9))
             {
-                ringwraith = makemon(&mons[PM_WRAITHLORD], 0, 0, MM_MAX_HP | MM_MALE);
-                if (ringwraith)
+                rwraith = makemon(&mons[PM_WRAITHLORD], 0, 0, MM_MAX_HP | MM_MALE);
+                if (rwraith)
                 {
-                    ringwraith = christen_monst(ringwraith, "Witch-King of Yendor");
-                    ringwraith->u_know_mname = TRUE; /* He's famous -- JG */
-                    (void)mongets(ringwraith, CROWN_OF_RULERSHIP);
+                    rwraith = christen_monst(rwraith, "Witch-King of Yendor");
+                    rwraith->u_know_mname = TRUE; /* He's famous -- JG */
+                    (void)mongets(rwraith, CROWN_OF_RULERSHIP);
                     context.made_witch_king = TRUE;
                 }
             }
             else
             {
-                ringwraith = makemon(&mons[mdx], 0, 0, NO_MM_FLAGS);
+                rwraith = makemon(&mons[mdx], 0, 0, NO_MM_FLAGS);
             }
         }
     }
 
-    if (ringwraith)
+    if (rwraith)
     {
-        ringwraith->mon_flags |= MON_FLAGS_RINGWRAITH;
-        ringwraith->leaves_no_corpse = TRUE;
-        ringwraith_appeared = TRUE;
+        rwraith->mon_flags |= MON_FLAGS_RWRAITH;
+        rwraith->leaves_no_corpse = TRUE;
+        rwraith_appeared = TRUE;
     }
 
-    return ringwraith_appeared;
+    return rwraith_appeared;
 }
 
 /* maybe recover some lost health (or lose some when an eel out of water) */

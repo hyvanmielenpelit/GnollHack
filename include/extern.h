@@ -2591,7 +2591,7 @@ E boolean FDECL(cant_revive, (int *, BOOLEAN_P, struct obj *));
 E boolean NDECL(create_particular);
 E int FDECL(maybe_tame, (struct monst*, struct obj*, struct monst*));
 E int FDECL(maybe_controlled, (struct monst*, struct obj*, struct monst*));
-E void FDECL(read_the_one_ring, (struct obj*));
+E void FDECL(read_the_true_ring, (struct obj*));
 E void FDECL(strip_charges, (struct obj*, BOOLEAN_P));
 E void FDECL(p_glow1, (struct obj*));
 E void FDECL(p_glow2, (struct obj*, const char*));

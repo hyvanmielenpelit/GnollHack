@@ -2201,12 +2201,17 @@ struct monst *mtmp;
 {
     struct obj *chain, *obj;
 
-    if (mtmp == &youmonst) {
+    if (mtmp == &youmonst) 
+    {
         chain = invent;
-    } else {
+    } 
+    else 
+    {
         chain = mtmp->minvent;
     }
-    for (obj = chain; obj; obj = obj->nobj) {
+
+    for (obj = chain; obj; obj = obj->nobj) 
+    {
         int typ = obj->otyp;
 
         if (typ == COIN_CLASS && obj->quan > 100L)

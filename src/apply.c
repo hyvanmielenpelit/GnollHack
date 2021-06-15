@@ -3555,12 +3555,12 @@ struct obj* obj;
                 }
                 break;
             case WAN_FIRE:
-                if (otmp->oartifact == ART_ONE_RING)
+                if (otmp->oartifact == ART_TRUE_RING)
                 {
                     wandknown = TRUE;
                     play_sfx_sound(SFX_MONSTER_ON_FIRE);
                     pline("Flames emerge from %s and engulf %s!", the(xname(obj)), yname(otmp));
-                    read_the_one_ring(otmp);
+                    read_the_true_ring(otmp);
                     break;
                 }
 

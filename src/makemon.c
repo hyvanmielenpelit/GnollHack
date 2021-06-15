@@ -653,7 +653,7 @@ register struct monst *mtmp;
             if (!rn2(100))
             {
                 int ringtype = RIN_SUPREME_POWER;
-                int artifacttype = ART_ONE_RING;
+                int artifacttype = ART_TRUE_RING;
 
                 otmp = mksobj(ringtype, FALSE, FALSE, FALSE);
 
@@ -1338,7 +1338,7 @@ register struct monst *mtmp;
             if (!rn2(20))
             {
                 int ringtype = RIN_SUPREME_POWER;
-                short artifacttype = ART_ONE_RING;
+                short artifacttype = ART_TRUE_RING;
 
                 otmp = mksobj(ringtype, FALSE, FALSE, FALSE);
 
@@ -1706,7 +1706,7 @@ register struct monst *mtmp;
                 serpent_ring_ok = FALSE;
             if (exist_artifact(RIN_SEVEN_CHARGES, artiname(ART_RING_OF_CONFLICT)))
                 conflict_ok = FALSE;
-            if (exist_artifact(RIN_SUPREME_POWER, artiname(ART_ONE_RING)))
+            if (exist_artifact(RIN_SUPREME_POWER, artiname(ART_TRUE_RING)))
                 one_ring_ok = FALSE;
 
 
@@ -1732,7 +1732,7 @@ register struct monst *mtmp;
             if (one_ring_ok && !three_wishes_ok && !serpent_ring_ok && !conflict_ok && !rn2(2))
             {
                 weaptype = RIN_SUPREME_POWER;
-                artifacttype = ART_ONE_RING;
+                artifacttype = ART_TRUE_RING;
             }
             otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
 

@@ -4108,12 +4108,12 @@ int dice; /* of d6 */
         destroy_item(SPBOOK_CLASS, AD_FIRE);
         destroy_item(POTION_CLASS, AD_FIRE);
 
-        /* Check for the One Ring */
+        /* Check for the True Ring */
         for (struct obj* oring = invent; oring; oring = oring->nobj)
         {
-            if (oring->oartifact == ART_ONE_RING)
+            if (oring->oartifact == ART_TRUE_RING)
             {
-                read_the_one_ring(oring);
+                read_the_true_ring(oring);
                 break;
             }
         }
@@ -7259,9 +7259,9 @@ lava_effects()
                     pline("%s glows a strange %s, but remains intact.",
                           The(xname(obj)), hcolor("dark red"));
             }
-            else if (obj->oartifact == ART_ONE_RING)
+            else if (obj->oartifact == ART_TRUE_RING)
             {
-                read_the_one_ring(obj);
+                read_the_true_ring(obj);
             }
             else if (obj->in_use)
             {
