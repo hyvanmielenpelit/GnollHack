@@ -1251,7 +1251,7 @@ u_init()
         knows_object(ORCISH_RING_MAIL);
         knows_object(ORCISH_HELM);
         knows_object(ORCISH_SHIELD);
-        knows_object(GREAT_ORC_SHIELD);
+        knows_object(GREAT_ORCISH_SHIELD);
         knows_object(ORCISH_CLOAK);
         break;
 

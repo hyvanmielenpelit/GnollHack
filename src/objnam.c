@@ -3587,7 +3587,7 @@ static const struct alt_spellings {
     { "galadhrim bow", GALADHRIM_BOW },
     { "galadhrim boots", GALADHRIM_BOOTS },
     { "bag of gluttony", BAG_OF_THE_GLUTTON },
-    { "uruk-hai shield", GREAT_ORC_SHIELD },
+    { "uruk-hai shield", GREAT_ORCISH_SHIELD },
     { (const char *) 0, 0 },
 };
 

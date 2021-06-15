@@ -737,7 +737,7 @@ register struct monst *mtmp;
                 m_initthrow(mtmp, ORCISH_ARROW, 10, 12, TRUE, 0, 0);
             }
             if (!rn2(3))
-                (void) mongets(mtmp, GREAT_ORC_SHIELD);
+                (void) mongets(mtmp, GREAT_ORCISH_SHIELD);
             break;
         case PM_ORC_SHAMAN:
             if (!rn2(2))
