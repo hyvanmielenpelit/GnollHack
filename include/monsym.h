@@ -19,7 +19,7 @@ enum mon_class_types {
     S_EYE        =  5, /* e */
     S_FELINE     =  6, /* f: cats */
     S_GNOME         =  7, /* g */
-    S_HUMANOID   =  8, /* h: small humanoids: hobbit, dwarf */
+    S_HUMANOID   =  8, /* h: small humanoids: halfling, dwarf */
     S_IMP        =  9, /* i: minor demons */
     S_JELLY      = 10, /* j */
     S_KOBOLD     = 11, /* k */

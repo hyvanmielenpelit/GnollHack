@@ -739,7 +739,7 @@ struct permonst *ptr;
     case PM_MINOTAUR:
     case PM_ASMODEUS:
     case PM_DISPATER:
-    case PM_BALROG:
+    case PM_BALOR:
         return 2;
     case PM_WHITE_UNICORN:
     case PM_GRAY_UNICORN:
@@ -1058,19 +1058,19 @@ int* fem_ptr;
             { "wood-elf", PM_WOODLAND_ELF, 0 },
             { "wood elf", PM_WOODLAND_ELF, 0 },
             { "woodland nymph", PM_WOOD_NYMPH, 0 },
-            { "halfling", PM_HOBBIT, 0 },    /* potential guess for polyself */
+            { "halfling", PM_HALFLING, 0 },    /* potential guess for polyself */
             { "genie", PM_DJINNI, 0 }, /* potential guess for ^G/#wizgenesis */
             /* Hyphenated names -- it would be nice to handle these via
                fuzzymatch() but it isn't able to ignore trailing stuff */
             { "ki rin", PM_KI_RIN, 0 },
-            { "uruk hai", PM_URUK_HAI, 0 },
+            { "uruk hai", PM_GREAT_ORC, 0 },
             { "orc captain", PM_ORC_CAPTAIN, 0 },
             { "woodland elf", PM_WOODLAND_ELF, 0 },
             { "green elf", PM_GREEN_ELF, 0 },
             { "grey elf", PM_GREY_ELF, 0 },
             { "gray elf", PM_GREY_ELF, 0 },
             { "elf lord", PM_ELF_LORD, 0 },
-            { "olog hai", PM_OLOG_HAI, 0 },
+            { "olog hai", PM_WAR_TROLL, 0 },
             { "arch lich", PM_ARCH_LICH, 0 },
             { "archlich", PM_ARCH_LICH, 0 },
             /* Some irregular plurals */
@@ -1097,6 +1097,16 @@ int* fem_ptr;
             { "mummy high priest", PM_GREATER_MUMMY_HIGH_PRIEST, 0 },
             { "leocrotta", PM_LEUCROTTA, 0 },
             { "archeologist", PM_ARCHAEOLOGIST, 0 },
+            { "hobbit", PM_HALFLING, 0 },
+            { "balrog", PM_BALOR, 0 },
+            { "ent", PM_TREANT, 0 },
+            { "elder ent", PM_ELDER_TREANT, 0 },
+            { "mordor orc", PM_BLACK_ORC, 0 },
+            { "Mordor orc", PM_BLACK_ORC, 0 },
+            { "uruk-hai", PM_GREAT_ORC, 0 },
+            { "Uruk-hai", PM_GREAT_ORC, 0 },
+            { "olog-hai", PM_WAR_TROLL, 0 },
+            { "Olog-hai", PM_WAR_TROLL, 0 },
             /* end of list */
             { 0, NON_PM }
         };
@@ -1344,8 +1354,8 @@ static const short grownups[][2] = {
     { PM_TENTACLED_ONE, PM_ELDER_TENTACLED_ONE },
     { PM_ORC, PM_ORC_CAPTAIN },
     { PM_HILL_ORC, PM_ORC_CAPTAIN },
-    { PM_MORDOR_ORC, PM_ORC_CAPTAIN },
-    { PM_URUK_HAI, PM_ORC_CAPTAIN },
+    { PM_BLACK_ORC, PM_ORC_CAPTAIN },
+    { PM_GREAT_ORC, PM_ORC_CAPTAIN },
     { PM_SEWER_RAT, PM_GIANT_RAT },
     { PM_CAVE_SPIDER, PM_GIANT_SPIDER },
     { PM_GIANT_SPIDER, PM_PHASE_SPIDER },

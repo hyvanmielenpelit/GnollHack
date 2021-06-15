@@ -236,7 +236,7 @@ register struct monst* mtmp;
         else
             christen_monst(mtmp, upstart(randomize_male_human_name(mnamebuf)));
     }
-    if (mtmp->data == &mons[PM_HOBBIT] && !has_mname(mtmp))
+    if (mtmp->data == &mons[PM_HALFLING] && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_hobbit_name(mnamebuf)));
 }
 
@@ -608,7 +608,7 @@ register struct monst *mtmp;
         break;
 
     case S_HUMANOID:
-        if (mm == PM_HOBBIT)
+        if (mm == PM_HALFLING)
         {
             switch (rn2(3))
             {
@@ -712,9 +712,9 @@ register struct monst *mtmp;
         if (rn2(2))
             (void) mongets(mtmp, ORCISH_HELM);
         switch ((mm != PM_ORC_CAPTAIN) ? mm
-                : rn2(2) ? PM_MORDOR_ORC : PM_URUK_HAI)
+                : rn2(2) ? PM_BLACK_ORC : PM_GREAT_ORC)
         {
-        case PM_MORDOR_ORC:
+        case PM_BLACK_ORC:
             if (!rn2(3))
                 (void) mongets(mtmp, SCIMITAR);
             if (!rn2(3))
@@ -724,7 +724,7 @@ register struct monst *mtmp;
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_CHAIN_MAIL);
             break;
-        case PM_URUK_HAI:
+        case PM_GREAT_ORC:
             if (!rn2(3))
                 (void) mongets(mtmp, ORCISH_CLOAK);
             if (!rn2(3))
@@ -737,7 +737,7 @@ register struct monst *mtmp;
                 m_initthrow(mtmp, ORCISH_ARROW, 10, 12, TRUE, 0, 0);
             }
             if (!rn2(3))
-                (void) mongets(mtmp, URUK_HAI_SHIELD);
+                (void) mongets(mtmp, GREAT_ORC_SHIELD);
             break;
         case PM_ORC_SHAMAN:
             if (!rn2(2))
@@ -820,9 +820,9 @@ register struct monst *mtmp;
         }
         break;
     case S_WRAITH:
-        if (ptr == &mons[PM_NAZGUL])
+        if (ptr == &mons[PM_WRAITHLORD])
         {
-            (void)mongets(mtmp, MORGUL_BLADE);
+            (void)mongets(mtmp, WRAITHBLADE);
             otmp = mongets(mtmp, LONG_SWORD);
             if (otmp)
                 otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
@@ -886,7 +886,7 @@ register struct monst *mtmp;
     case S_DEMON:
         switch (mm) 
         {
-        case PM_BALROG:
+        case PM_BALOR:
         {
             otmp = mksobj(BULLWHIP, TRUE, FALSE, FALSE);
             spe2 = rnd(5);
@@ -1334,7 +1334,7 @@ register struct monst *mtmp;
         }
         break;
     case S_WRAITH:
-        if (ptr == &mons[PM_NAZGUL]) {
+        if (ptr == &mons[PM_WRAITHLORD]) {
             if (!rn2(20))
             {
                 int ringtype = RIN_SUPREME_POWER;
@@ -1492,7 +1492,7 @@ register struct monst *mtmp;
 
             n = rn2(3); // 0...2
         }
-        else if (ptr == &mons[PM_HOBBIT])
+        else if (ptr == &mons[PM_HALFLING])
         {
             if (!rn2(2))
                 (void)mongetsgold(mtmp, 5 + rn2(11));
@@ -1745,7 +1745,7 @@ register struct monst *mtmp;
         break;
     case S_ORC:
         if (!rn2(2))
-            (void)mongetsgold(mtmp, ptr == &mons[PM_ORC_CAPTAIN] ? 20 + rn2(201) : ptr == &mons[PM_URUK_HAI] ? 10 + rn2(31) : 5 + rn2(16));
+            (void)mongetsgold(mtmp, ptr == &mons[PM_ORC_CAPTAIN] ? 20 + rn2(201) : ptr == &mons[PM_GREAT_ORC] ? 10 + rn2(31) : 5 + rn2(16));
 
         if (ptr == &mons[PM_ORC_SHAMAN])
         {
@@ -3018,7 +3018,7 @@ int mndx;
     int blimit = MAXMONNO;
     switch (mndx)
     {
-    case PM_NAZGUL:
+    case PM_WRAITHLORD:
         blimit = 9;
         break;
     case PM_MODRON_QUINTON:

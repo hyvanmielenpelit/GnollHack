@@ -240,9 +240,9 @@ LOOP [5 + 1d10] {
         MONSTER: ('o', "orc-captain"), rndcoord($inside), hostile
     } ELSE {
         IF [80%] {
-            MONSTER: ('o', "Uruk-hai"), rndcoord($inside), hostile
+            MONSTER: ('o', "great orc"), rndcoord($inside), hostile
         } ELSE {
-            MONSTER: ('o', "Mordor orc"), rndcoord($inside), hostile
+            MONSTER: ('o', "black orc"), rndcoord($inside), hostile
         }
     }
 }
@@ -1101,8 +1101,8 @@ MONSTER:('g',"gnome"),random
 MONSTER:('g',"gnome"),random
 MONSTER:('g',"gnome"),random
 MONSTER:('g',"gnome"),random
-MONSTER:('h',"hobbit"),random
-MONSTER:('h',"hobbit"),random
+MONSTER:('h',"halfling"),random
+MONSTER:('h',"halfling"),random
 MONSTER:('h',"dwarf"),random
 MONSTER:('h',"dwarf"),random
 MONSTER:('h',"dwarf"),random
@@ -1265,8 +1265,8 @@ MONSTER:('g',"gnome"),random
 MONSTER:('g',"gnome"),random
 MONSTER:('g',"gnome"),random
 MONSTER:('g',"gnome"),random
-MONSTER:('h',"hobbit"),random
-MONSTER:('h',"hobbit"),random
+MONSTER:('h',"halfling"),random
+MONSTER:('h',"halfling"),random
 MONSTER:('h',"dwarf"),random
 MONSTER:('h',"dwarf"),random
 MONSTER:('h',"dwarf"),random

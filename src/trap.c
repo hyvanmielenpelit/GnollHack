@@ -3311,7 +3311,7 @@ register struct monst *mtmp;
             case PM_PURPLE_WORM:
             case PM_JABBERWOCK:
             case PM_IRON_GOLEM:
-            case PM_BALROG:
+            case PM_BALOR:
             case PM_KRAKEN:
             case PM_MASTODON:
             case PM_ORION:

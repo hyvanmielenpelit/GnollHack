@@ -1462,7 +1462,7 @@ register struct monst *mtmp;
         else
             switch (monsndx(ptr)) 
             {
-            case PM_HOBBIT:
+            case PM_HALFLING:
                 pline_msg =
                     (mtmp->mhpmax - mtmp->mhp >= 10)
                         ? "complains about unpleasant dungeon conditions."

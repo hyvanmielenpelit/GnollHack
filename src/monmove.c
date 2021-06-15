@@ -2217,7 +2217,7 @@ struct monst *mtmp;
             && typ != LEATHER_JACKET && typ != CREDIT_CARD && !is_shirt(obj)
             && !(typ == CORPSE && verysmall(&mons[obj->corpsenm]))
             && typ != FORTUNE_COOKIE && typ != CANDY_BAR && typ != PANCAKE
-            && typ != LEMBAS_WAFER && typ != LUMP_OF_ROYAL_JELLY
+            && typ != ELVEN_WAYBREAD && typ != LUMP_OF_ROYAL_JELLY
             && obj->oclass != AMULET_CLASS && obj->oclass != MISCELLANEOUS_CLASS && obj->oclass != RING_CLASS
             && obj->oclass != VENOM_CLASS && typ != SACK && typ != ORIENTAL_SILK_SACK && typ != LEATHER_BAG && typ != BACKPACK
             && typ != EXPENSIVE_HANDBAG

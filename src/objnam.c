@@ -3522,7 +3522,7 @@ static const struct alt_spellings {
     { "kelp", KELP_FROND },
     { "eucalyptus", EUCALYPTUS_LEAF },
     { "royal jelly", LUMP_OF_ROYAL_JELLY },
-    { "lembas", LEMBAS_WAFER },
+    { "lembas", ELVEN_WAYBREAD },
     { "cookie", FORTUNE_COOKIE },
     { "pie", CREAM_PIE },
     { "marker", MAGIC_MARKER },
@@ -3552,7 +3552,7 @@ static const struct alt_spellings {
     { "gold ore", NUGGET_OF_GOLD_ORE },
     { "platinum ore", NUGGET_OF_PLATINUM_ORE },
     { "orichalcum ore", NUGGET_OF_ORICHALCUM_ORE },
-    { "orihacon ore", NUGGET_OF_ORICHALCUM_ORE },
+    { "orihalcon ore", NUGGET_OF_ORICHALCUM_ORE },
     { "nugget of orihacon ore", NUGGET_OF_ORICHALCUM_ORE },
     { "mithril ore", NUGGET_OF_MITHRIL_ORE },
     { "adamantium ore", NUGGET_OF_ADAMANTIUM_ORE },
@@ -3587,6 +3587,7 @@ static const struct alt_spellings {
     { "galadhrim bow", GALADHRIM_BOW },
     { "galadhrim boots", GALADHRIM_BOOTS },
     { "bag of gluttony", BAG_OF_THE_GLUTTON },
+    { "uruk-hai shield", GREAT_ORC_SHIELD },
     { (const char *) 0, 0 },
 };
 

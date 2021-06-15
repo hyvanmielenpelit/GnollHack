@@ -787,7 +787,7 @@ stolen_booty(VOID_ARGS)
     for (i = 0; i < cnt; ++i) {
         /* Food items - but no lembas! (or some other weird things) */
         otyp = rn2((TIN - TRIPE_RATION) + 1) + TRIPE_RATION;
-        if (otyp != LEMBAS_WAFER && otyp != GLOB_OF_GRAY_OOZE
+        if (otyp != ELVEN_WAYBREAD && otyp != GLOB_OF_GRAY_OOZE
             && otyp != GLOB_OF_BROWN_PUDDING && otyp != GLOB_OF_GREEN_SLIME
             && otyp != GLOB_OF_BLACK_PUDDING && otyp != MEAT_STICK
             && otyp != MEATBALL && otyp != MEAT_STICK && otyp != MEAT_RING

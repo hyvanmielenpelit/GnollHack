@@ -316,7 +316,7 @@ struct obj *otmp;
                       : otmp->globby ? otmp->owt
                          : (unsigned) objects[otmp->otyp].oc_nutrition;
 
-    if (otmp->otyp == LEMBAS_WAFER) {
+    if (otmp->otyp == ELVEN_WAYBREAD) {
         if (maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF)))
             nut += nut / 4; /* 800 -> 1000 */
         else if (maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC)))
@@ -324,7 +324,7 @@ struct obj *otmp;
         /* prevent polymorph making a partly eaten wafer
            become more nutritious than an untouched one */
         if (otmp->oeaten >= nut)
-            otmp->oeaten = (otmp->oeaten < objects[LEMBAS_WAFER].oc_nutrition)
+            otmp->oeaten = (otmp->oeaten < objects[ELVEN_WAYBREAD].oc_nutrition)
                               ? (nut - 1) : nut;
     } else if (otmp->otyp == CRAM_RATION) {
         if (maybe_polyd(is_dwarf(youmonst.data), Race_if(PM_DWARF)))
@@ -2281,7 +2281,7 @@ struct obj *otmp;
                 make_vomiting((long) rn1(context.victual.reqtime, 14), FALSE);
         }
         break;
-    case LEMBAS_WAFER:
+    case ELVEN_WAYBREAD:
         if (maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC))) {
             pline("%s", "!#?&* elf kibble!");
             break;

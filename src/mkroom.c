@@ -2254,7 +2254,7 @@ armorymon()
         if (u.ualign.type == A_CHAOTIC)
         {
             /* Dwarfs and gnomes for chaotic */
-            mndx = ldif >= 11 ? PM_DWARF_LORD : ldif >= 7 ? PM_DWARF : ldif >= 5 ? (!rn2(2) ? PM_DWARF : PM_GNOME) : (!rn2(2) ? PM_GNOME : PM_HOBBIT);
+            mndx = ldif >= 11 ? PM_DWARF_LORD : ldif >= 7 ? PM_DWARF : ldif >= 5 ? (!rn2(2) ? PM_DWARF : PM_GNOME) : (!rn2(2) ? PM_GNOME : PM_HALFLING);
             if (ldif <= 3 && !rn2(6))
                 mndx = PM_DWARF;
             else if (ldif < 11 && ldif >= 6 && !rn2(5))

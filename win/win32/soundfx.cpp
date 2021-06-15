@@ -1313,6 +1313,15 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Male/Mumbled Curse", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Male/Death", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Female/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Female/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Female/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Female/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Female/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Female/Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Female/Mumbled Curse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Priest/Normal/Female/Death", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Voice Acting/God/Male/God Speaks", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/God/Female/God Speaks", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Invisible Choir Sings", 1.0f },

@@ -3892,7 +3892,7 @@ dotip()
         /* charged consumed below */
         spillage = "grease";
     } else if (cobj->otyp == FOOD_RATION || cobj->otyp == CRAM_RATION
-               || cobj->otyp == LEMBAS_WAFER) {
+               || cobj->otyp == ELVEN_WAYBREAD) {
         spillage = "crumbs";
     } else if (cobj->oclass == VENOM_CLASS) {
         spillage = "venom";

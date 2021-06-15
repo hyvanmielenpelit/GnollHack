@@ -576,7 +576,7 @@ select_ringwraith()
         /* Difficulty level is one level higher than normal */
         get_generated_monster_minmax_levels(i, &minlevel, &maxlevel, 1);
 
-        nazgulok = maxlevel >= mons[PM_NAZGUL].difficulty && !(mvitals[PM_NAZGUL].mvflags & G_GONE);
+        nazgulok = maxlevel >= mons[PM_WRAITHLORD].difficulty && !(mvitals[PM_WRAITHLORD].mvflags & G_GONE);
         kingwraithok = maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE);
         spectreok = maxlevel >= mons[PM_SPECTRE].difficulty && !(mvitals[PM_SPECTRE].mvflags & G_GONE);
         barrowwightok = maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & G_GONE);
@@ -588,7 +588,7 @@ select_ringwraith()
 
     /* Select a ringwraith */
     if (nazgulok)
-        mdx = PM_NAZGUL;
+        mdx = PM_WRAITHLORD;
     else if (kingwraithok)
         mdx = PM_KING_WRAITH;
     else if (spectreok && (rn2(3) || !(barrowwightok || wraithok)))
@@ -615,12 +615,12 @@ maybe_create_ringwraith()
         struct obj* ring = carrying(RIN_SUPREME_POWER);
         if (ring && ring->oartifact == ART_ONE_RING && mdx >= LOW_PM && !rn2(20))
         {
-            if (!context.made_witch_king && mdx == PM_NAZGUL && !rn2(9))
+            if (!context.made_witch_king && mdx == PM_WRAITHLORD && !rn2(9))
             {
-                ringwraith = makemon(&mons[PM_NAZGUL], 0, 0, MM_MAX_HP | MM_MALE);
+                ringwraith = makemon(&mons[PM_WRAITHLORD], 0, 0, MM_MAX_HP | MM_MALE);
                 if (ringwraith)
                 {
-                    ringwraith = christen_monst(ringwraith, "Witch-King of Angmar");
+                    ringwraith = christen_monst(ringwraith, "Witch-King of Yendor");
                     ringwraith->u_know_mname = TRUE; /* He's famous -- JG */
                     (void)mongets(ringwraith, CROWN_OF_RULERSHIP);
                     context.made_witch_king = TRUE;

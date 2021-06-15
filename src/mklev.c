@@ -1149,13 +1149,15 @@ makelevel()
                 ));
 
             /* First, write Gilthoniel underneath */
-            make_engr_at(x, y, Gilthoniel_word, 0L, ENGRAVE, ENGR_FLAGS_NONE);
+            /* Changed this to be speflag --JG */
+            //make_engr_at(x, y, Gilthoniel_word, 0L, ENGRAVE, ENGR_FLAGS_NONE);
 
             /* Stash has now some random contents */
             struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
             stash->olocked = FALSE;
             stash->otrapped = FALSE;
             stash->tknown = 1;
+            stash->speflags |= SPEFLAGS_NO_PICKUP;
             char namebuf[BUFSZ];
             Sprintf(namebuf, "%s stash", s_suffix(plname));
             stash = uoname(stash, namebuf);
