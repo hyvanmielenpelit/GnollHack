@@ -2357,6 +2357,7 @@ dosacrifice()
             else
                 useupf(otmp, 1L);
             You("offer the Amulet of Yendor to %s...", a_gname());
+            play_sfx_sound(SFX_ALTAR_BURST_OF_FLAME);
             if (molochaltar)
             {
                 /* Moloch's high altar */
