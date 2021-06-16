@@ -1466,7 +1466,7 @@ register struct monst *mtmp;
                 pline_msg =
                     (mtmp->mhpmax - mtmp->mhp >= 10)
                         ? "complains about unpleasant dungeon conditions."
-                        : "asks you about the One Ring.";
+                        : "asks you about the True Ring.";
 
                 chat_line = 14 + ((mtmp->mhpmax - mtmp->mhp >= 10) ? 1 : 0);
                 break;

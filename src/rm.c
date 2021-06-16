@@ -852,4 +852,35 @@ struct rm* lev;
         }
     }
 }
+
+void
+set_initial_location_type_at(x, y, typ)
+xchar x, y;
+int typ;
+{
+    if (x < 0 || y < 0 || x >= COLNO || y >= ROWNO)
+        return;
+
+    set_initial_location_type_ptr(&levl[x][y], typ);
+}
+
+void
+set_initial_location_type_ptr(lev, typ)
+struct rm* lev;
+int typ;
+{
+    if (!lev)
+        return;
+
+    lev->typ = typ;
+    lev->subtyp = get_initial_location_subtype(lev->typ);
+    lev->vartyp = get_initial_location_vartype(lev->typ, lev->subtyp);
+    lev->special_quality = 0;
+    lev->floortyp = location_type_definitions[lev->typ].initial_floor_type;
+    lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+    lev->floorvartyp = get_initial_location_vartype(lev->floortyp, lev->floorsubtyp);
+    lev->flags = 0;
+
+}
+
 /* rm.c */

@@ -281,7 +281,7 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
             {1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} }, /* dark room */
 /*+1*/ { ',', "grass",  "",              LAYER_FLOOR, FALSE,       GRASS_VARIATIONS, GRASS_VARIATION_OFFSET,     
             { C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN),/*5*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), /*10*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN) },
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GRASS_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GRASS_REPLACEMENT, DUNGEON_NORMAL_GRASS_REPLACEMENT, GEHENNOM_GRASS_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },         /* grass */
 /*+1*/ { ',', "grass in dark",  "",      LAYER_FLOOR, FALSE,       0, 0,
@@ -373,9 +373,9 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* fountain */
        { '}', "water", "",               LAYER_FLOOR, FALSE,        0, 0,     
             { C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE), C(CLR_BLUE) }, 
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_WATER_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_WATER_REPLACEMENT, 0, GEHENNOM_WATER_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                /* pool */
+            {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                /* pool */
        { '.', "ice", "",                 LAYER_FLOOR, FALSE,        0, 0,     
            { C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN) }, 
            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_ICE_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
@@ -672,38 +672,38 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
 
        { S_grass, "grass-variation-1", "", "",  FALSE,   
             { C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN),    /*5*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN),      /*10*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN) },
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GRASS_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GRASS_REPLACEMENT, DUNGEON_NORMAL_GRASS_REPLACEMENT, GEHENNOM_GRASS_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* grass */
        { S_grass, "grass-variation-2", "", "",  FALSE,       
             { C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN),    /*5*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN),      /*10*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN) },
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GRASS_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GRASS_REPLACEMENT, DUNGEON_NORMAL_GRASS_REPLACEMENT, GEHENNOM_GRASS_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* grass */
        { S_grass, "grass-variation-swampy",   "swampy grass", "",  FALSE,          
             { C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN),    /*5*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN),      /*10*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN) },
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GRASS_SWAMPY_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GRASS_SWAMPY_REPLACEMENT, DUNGEON_NORMAL_GRASS_SWAMPY_REPLACEMENT, GEHENNOM_GRASS_SWAMPY_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* grass */
 
        { S_ground, "ground-variation-1", "", "",  FALSE,   
             { C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),    /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) },
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GROUND_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GROUND_REPLACEMENT, DUNGEON_NORMAL_GROUND_REPLACEMENT, DUNGEON_NORMAL_GROUND_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },
        { S_ground, "ground-variation-2", "", "",  FALSE,       
             { C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),    /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) },
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GROUND_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GROUND_REPLACEMENT, DUNGEON_NORMAL_GROUND_REPLACEMENT, DUNGEON_NORMAL_GROUND_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },
        { S_ground, "ground-variation-3", "", "",  FALSE,
             { C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),    /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) },
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GROUND_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GROUND_REPLACEMENT, DUNGEON_NORMAL_GROUND_REPLACEMENT, DUNGEON_NORMAL_GROUND_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },
        { S_ground, "ground-variation-swampy", "swampy ground", "",  FALSE,
             { C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),    /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) },
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GROUND_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_GROUND_REPLACEMENT, DUNGEON_NORMAL_GROUND_REPLACEMENT, DUNGEON_NORMAL_GROUND_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },
        { S_ground, "ground-variation-desert-sand", "desert sand", "",  FALSE,

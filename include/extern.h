@@ -2687,6 +2687,8 @@ E boolean FDECL(is_door_normally_without_lock_at, (XCHAR_P, XCHAR_P));
 E boolean FDECL(is_door_normally_without_lock_at_ptr, (struct rm*));
 E void FDECL(set_initial_location_floortype, (struct rm*, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(initialize_location, (struct rm*));
+E void FDECL(set_initial_location_type_at, (XCHAR_P, XCHAR_P, int));
+E void FDECL(set_initial_location_type_ptr, (struct rm*, int));
 
 /* ### rnd.c ### */
 

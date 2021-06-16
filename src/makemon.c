@@ -1698,7 +1698,7 @@ register struct monst *mtmp;
             boolean three_wishes_ok = TRUE;
             boolean serpent_ring_ok = TRUE;
             boolean conflict_ok = TRUE;
-            boolean one_ring_ok = TRUE;
+            boolean true_ring_ok = TRUE;
 
             if (exist_artifact(RIN_THREE_CHARGES, artiname(ART_RING_OF_THREE_WISHES)))
                 three_wishes_ok = FALSE;
@@ -1707,7 +1707,7 @@ register struct monst *mtmp;
             if (exist_artifact(RIN_SEVEN_CHARGES, artiname(ART_RING_OF_CONFLICT)))
                 conflict_ok = FALSE;
             if (exist_artifact(RIN_SUPREME_POWER, artiname(ART_TRUE_RING)))
-                one_ring_ok = FALSE;
+                true_ring_ok = FALSE;
 
 
             if (three_wishes_ok)
@@ -1728,8 +1728,8 @@ register struct monst *mtmp;
                 artifacttype = ART_RING_OF_CONFLICT;
             }
 
-            /* One Ring is rare with Yacc */
-            if (one_ring_ok && !three_wishes_ok && !serpent_ring_ok && !conflict_ok && !rn2(2))
+            /* True Ring is rare with Yacc */
+            if (true_ring_ok && !three_wishes_ok && !serpent_ring_ok && !conflict_ok && !rn2(2))
             {
                 weaptype = RIN_SUPREME_POWER;
                 artifacttype = ART_TRUE_RING;

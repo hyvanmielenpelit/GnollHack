@@ -1178,7 +1178,7 @@ dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct exte
     get_menu_coloring(str, &color, &attr);
 #endif
 
-    dll_callbacks.callback_add_extended_menu(wid, glyph, identifier, accelerator, group_accel, attr,
+    dll_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr,
         str, presel, color, info.object ? info.object->quan : 0, info.object ? info.object->o_id : 0, 
         info.monster ? info.monster->m_id : 0, info.heading_for_group_accelerator, info.menu_flags);
 }
@@ -1761,7 +1761,9 @@ void
 dll_getlin(const char *question, char *input)
 {
     dll_logDebug("dll_getlin(%s, %p)\n", question, input);
-    dll_callbacks.callback_getlin(question, input);
+    char* res = dll_callbacks.callback_getlin(question);
+    if (res && input)
+        strcpy(input, res);
 
 #if 0
     if (!iflags.wc_popup_dialog) {
@@ -2572,7 +2574,7 @@ void
 dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *condmasks)
 {
     dll_logDebug("dll_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
-    dll_callbacks.callback_status_update(idx, ptr, chg, percent, color, condmasks, CLR_WHITE);
+    //dll_callbacks.callback_status_update(idx, ptr, chg, percent, color, condmasks);
 
 #if 0
     long cond, * condptr = (long*)ptr;
