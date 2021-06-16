@@ -3149,15 +3149,15 @@ boolean is_left_arm;
     }
     else if (wep->oclass == POTION_CLASS)
     {
-        strcpy(buf, "p");
-    }
-    else if (!is_weapon(wep) && !is_shield(wep))
-    {
         strcpy(buf, "!");
+    }
+    else if (!is_weapon(wep) && !is_shield(wep) && !is_pick(wep))
+    {
+        strcpy(buf, "*");
     }
     else
     {
-        if (is_weapon(wep) && objects[wep->otyp].oc_bimanual)
+        if ((is_weapon(wep) || is_pick(wep)) && objects[wep->otyp].oc_bimanual)
         {
             strcpy(eos(buf), "2h");
         }
@@ -3169,7 +3169,7 @@ boolean is_left_arm;
                 if (ammo_and_launcher(uquiver, wep))
                     strcpy(eos(buf), "R");
                 else
-                    strcpy(eos(buf), "R!");
+                    strcpy(eos(buf), "Re");
             }
             else
                 strcpy(eos(buf), "R0");
@@ -3193,6 +3193,14 @@ boolean is_left_arm;
             {
                 strcpy(eos(buf), "T");
             }
+            if (is_pick(wep))
+            {
+                strcpy(eos(buf), "D");
+            }
+        }
+        else if (is_pick(wep))
+        {
+            strcpy(eos(buf), "D");
         }
 
         if (is_shield(wep))
