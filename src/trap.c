@@ -2896,7 +2896,7 @@ register struct monst *mtmp;
                     show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_COVER_TRAP);
                     flush_screen(1);
                     play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_CLOSE, 0, trap->tx, trap->ty, FALSE);
-                    play_sfx_sound(SFX_BEAR_TRAP_CLOSES);
+                    play_sfx_sound_at_location(SFX_BEAR_TRAP_CLOSES, trap->tx, trap->ty);
                     special_effect_wait_until_action(0);
                     pline("%s is caught in %s bear trap!", Monnam(mtmp),
                           a_your[trap->madeby_u]);

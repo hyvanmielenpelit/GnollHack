@@ -266,9 +266,9 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
             {1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },            /* bars */
        { '#', "tree", "tree stump",      LAYER_COVER_FEATURE, TRUE,     TREE_VARIATIONS, TREE_VARIATION_OFFSET,
             { C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), /*5*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), /*10*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN) }, 
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {TREE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {TREE_ENLARGEMENT, 0, TREE_GEHENNOM_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* tree */
+            {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },      /* tree */
        { '.', "floor of a room", "",    LAYER_FLOOR, FALSE,       FLOOR_VARIATIONS, FLOOR_VARIATION_OFFSET,
             { C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),    /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_WHITE) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {DUNGEON_NORMAL_ROOM_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -1209,9 +1209,9 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
 
        { S_tree, "tree-oak",  "oak tree", "", TRUE,     
             { C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), /*5*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN),  /*10*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN) }, 
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {OAK_TREE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {OAK_TREE_ENLARGEMENT, 0, OAK_TREE_GEHENNOM_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                /* tree */
+            {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0} },                /* tree */
        { S_tree, "tree-spruce",  "spruce tree", "", TRUE,     
             { C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), /*5*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN),  /*10*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN) }, 
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {SPRUCE_TREE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
