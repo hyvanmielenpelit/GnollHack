@@ -277,7 +277,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     struct stat st = { 0 };
 
     if (stat(DUMPLOG_DIR, &st) == -1) {
-        mkdir(DUMPLOG_DIR, 0700);
+        mkdir(DUMPLOG_DIR);
     }
 #endif
 
