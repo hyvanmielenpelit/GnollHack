@@ -109,27 +109,13 @@ namespace GnollHackClient.Pages.Game
                 GraphicsStyle = (GHGraphicsStyle)gparseint;
             }
 
-            Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
-            {
-                canvasView.InvalidateSurface();
-                pollRequestQueue();
-                return true;
-            });
+        }
 
-            Device.StartTimer(TimeSpan.FromSeconds(1f / 2), () =>
-            {
-                if (ClientGame != null)
-                    _cursorIsOn = !_cursorIsOn;
-                else
-                    _cursorIsOn = false;
+        public async void StartGame()
+        {
+            //Authenticated
+            App.FmodService.PlayTestSound();
 
-                return true;
-            });
-
-            if (App.IsServerGame)
-            {
-
-            }
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits.png"))
@@ -157,7 +143,62 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
+            if (App.IsServerGame)
+            {
+                _connectionAttempted = true;
+                _connection_status = "Not connected";
+                _message = "Please wait...";
 
+                if (_connection == null)
+                {
+                    ConnectToServer();
+                }
+                else if (_connection.State != HubConnectionState.Connected)
+                {
+                    await _connection.StopAsync();
+                    ConnectToServer();
+                }
+                else
+                {
+                    _connection_status = "Connected";
+                }
+
+                if (_connection != null)
+                {
+                    LoginToServer();
+                }
+            }
+            else
+            {
+                Thread t = new Thread(new ThreadStart(GNHThreadProc));
+                _gnhthread = t;
+                _gnhthread.Start();
+            }
+
+            Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
+            {
+                canvasView.InvalidateSurface();
+                pollRequestQueue();
+                return true;
+            });
+
+            Device.StartTimer(TimeSpan.FromSeconds(1f / 2), () =>
+            {
+                if (ClientGame != null)
+                    _cursorIsOn = !_cursorIsOn;
+                else
+                    _cursorIsOn = false;
+
+                return true;
+            });
+
+
+        }
+
+        public void HideLoadingScreen()
+        {
+            LoadingLabel.IsVisible = false;
+            MainGrid.IsVisible = true;
         }
 
         public int TileSheetIdx(int ntile)
@@ -183,41 +224,6 @@ namespace GnollHackClient.Pages.Game
                 _isFirstAppearance = false;
 
                 int res = 0; // _gnollHackService.Test1();
-
-                //Authenticated
-                App.FmodService.PlayTestSound();
-
-                if (App.IsServerGame)
-                {
-                    _connectionAttempted = true;
-                    _connection_status = "Not connected";
-                    _message = "Please wait...";
-
-                    if (_connection == null)
-                    {
-                        ConnectToServer();
-                    }
-                    else if (_connection.State != HubConnectionState.Connected)
-                    {
-                        await _connection.StopAsync();
-                        ConnectToServer();
-                    }
-                    else
-                    {
-                        _connection_status = "Connected";
-                    }
-
-                    if (_connection != null)
-                    {
-                        LoginToServer();
-                    }
-                }
-                else
-                {
-                    Thread t = new Thread(new ThreadStart(GNHThreadProc));
-                    _gnhthread = t;
-                    _gnhthread.Start();
-                }
             }
         }
 
@@ -285,6 +291,9 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.DisplayWindowView:
                                 DisplayWindowView(req.RequestInt, req.RequestPutStrItems);
+                                break;
+                            case GHRequestType.HideLoadingScreen:
+                                HideLoadingScreen();
                                 break;
                         }
                     }
@@ -693,7 +702,7 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 /* Cursor */
-                if (CursorStyle == TTYCursorStyle.BlinkingUnderline && _mapCursorX >= 1 && _mapCursorY >= 0 && _cursorIsOn)
+                if (GraphicsStyle == GHGraphicsStyle.ASCII && CursorStyle == TTYCursorStyle.BlinkingUnderline && _cursorIsOn && _mapCursorX >= 1 && _mapCursorY >= 0)
                 {
                     int cx = _mapCursorX, cy = _mapCursorY;
                     str = "_";

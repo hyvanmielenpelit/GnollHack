@@ -24,6 +24,7 @@ namespace GnollHackClient
         ClearWindowView,
         DestroyWindowView,
         DisplayWindowView,
+        HideLoadingScreen
     }
 
     public class GHRequest

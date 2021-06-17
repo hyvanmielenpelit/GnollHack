@@ -153,6 +153,12 @@ namespace GnollHackClient
                     _gamePage.TilesPerRow[i] = _gamePage.TileMap[i].Width / GHConstants.TileWidth;
                 }
             }
+
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                queue.Enqueue(new GHRequest(this, GHRequestType.HideLoadingScreen));
+            }
         }
         public int ClientCallback_CreateGHWindow(int wintype)
         {
