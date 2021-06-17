@@ -25,7 +25,9 @@
 
 #ifdef DUMPLOG
 #undef DUMPLOG_FILE
-#define DUMPLOG_FILE        "%n.%d.dumplog.txt"
+#define DUMPLOG_FILE        "dumplog/%n.%d.dumplog.txt"
+#undef DUMPLOG_DIR
+#define DUMPLOG_DIR        "dumplog" /* Note: this is just used to create a directory, DUMPLOG_FILE still needs to have the full path */
 #endif
 
 //#undef MAIL

@@ -8,7 +8,6 @@
 #include "hack.h"
 #include "dlb.h"
 #include <ctype.h>
-#include <sys\stat.h>
 #include <errno.h>
 
 #if 0
@@ -270,8 +269,17 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     process_options(argc, argv);
    
     /*
- * It seems you really want to play.
- */
+     * It seems you really want to play.
+     */
+
+#if defined(DUMPLOG) && defined(DUMPLOG_DIR)
+     /* Make DUMPLOG_DIR if defined */
+    struct stat st = { 0 };
+
+    if (stat(DUMPLOG_DIR, &st) == -1) {
+        mkdir(DUMPLOG_DIR, 0700);
+    }
+#endif
 
     if (argc >= 1
         && (!strcmpi(default_window_sys, "mswin") || !strcmpi(default_window_sys, "nuklear") || !strcmpi(default_window_sys, "dll"))

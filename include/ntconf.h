@@ -28,6 +28,8 @@
 
 #define DUMPLOG      /* Enable dumplog files */
 /*#define DUMPLOG_FILE "GnollHack-%n-%d.log"*/
+#undef DUMPLOG_DIR
+#define DUMPLOG_DIR        "dumplog" /* Note: this is just used to create a directory, DUMPLOG_FILE still needs to have the full path */
 #define DUMPLOG_MSG_COUNT 50
 
 #define USER_SOUNDS
