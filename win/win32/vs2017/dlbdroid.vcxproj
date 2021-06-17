@@ -118,6 +118,54 @@
     <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
     <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)dlb\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/dlb</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)dlb\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/dlb</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)dlb\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/dlb</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)dlb\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/dlb</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared" />

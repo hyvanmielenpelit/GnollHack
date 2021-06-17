@@ -124,6 +124,54 @@
     <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
     <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)makedefs\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)makedefs\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)makedefs\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
+    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
+    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(ObjDir)makedefs\</IntDir>
+    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
+    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
+    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
+    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+  </PropertyGroup>
   <ItemGroup>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
@@ -135,7 +183,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(IncDir);$(LibDroidDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetPath)</OutputFile>
