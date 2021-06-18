@@ -298,7 +298,7 @@ static NEARDATA const char *ends[NUM_GAME_END_TYPES] = {
     "starved", "drowned", "were drowned", "burned",
     "dissolved in the lava",
     "were crushed", "were strangled", "suffocated", "turned to stone", "were disintegrated",
-    "turned into slime", "died of illness", "died of mummy rot", "were genocided",
+    "turned into slime", "died of your illness", "died of mummy rot", "were genocided",
     "panicked", "were tricked", "quit",
     "escaped", "ascended"
 };

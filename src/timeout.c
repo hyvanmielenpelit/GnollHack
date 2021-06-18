@@ -227,7 +227,7 @@ sick_dialogue()
         char buf[BUFSZ];
 
         Strcpy(buf, sick_texts[SIZE(sick_texts) - i]);
-        pline1(buf);
+        pline_ex(ATR_NONE, CLR_RED, "%s", buf);
     }
     else if (has_head(youmonst.data) && !rn2(3))
     {
@@ -277,14 +277,14 @@ food_poisoned_dialogue()
         char buf[BUFSZ];
 
         Strcpy(buf, food_poisoned_texts[SIZE(food_poisoned_texts) - i]);
-        pline1(buf);
+        pline_ex(ATR_NONE, CLR_RED, "%s", buf);
     }
     else if (!rn2(3))
     {
         if (!rn2(2))
-            Your("stomach hurts%s.", (alternate_sick_text ? " badly" : ""));
+            pline_ex(ATR_NONE, CLR_RED, "Your %s", "stomach hurts%s.", (alternate_sick_text ? " badly" : ""));
         else
-            You("experience a %sbout of stomach cramps.", (alternate_sick_text ? "severe " : "terrible "));
+            pline_ex(ATR_NONE, CLR_RED, "You %s", "experience a %sbout of stomach cramps.", (alternate_sick_text ? "severe " : "terrible "));
 
         alternate_sick_text = !alternate_sick_text;
 
@@ -318,34 +318,34 @@ mummy_rot_dialogue()
         switch (i % 10)
         {
         case 0:
-            pline("%s patches of skin are appearing on your %s!", i >= 10 ? "More black" : "Black", body_part(FACE));
+            pline_ex(ATR_NONE, CLR_RED, "%s patches of skin are appearing on your %s!", i >= 10 ? "More black" : "Black", body_part(FACE));
             break;
         case 1:
-            pline("%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGERTIP)));
+            pline_ex(ATR_NONE, CLR_RED, "%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGERTIP)));
             break;
         case 2:
-            pline("%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
+            pline_ex(ATR_NONE, CLR_RED, "%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
             break;
         case 3:
-            pline("%s patches of your skin are turning black!", i >= 10 ? "Huge" : "Large");
+            pline_ex(ATR_NONE, CLR_RED, "%s patches of your skin are turning black!", i >= 10 ? "Huge" : "Large");
             break;
         case 4:
-            pline("%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGER)));
+            pline_ex(ATR_NONE, CLR_RED, "%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGER)));
             break;
         case 5:
-            pline("%s falls off!", i >= 10 ? "Large patches of your hair" : "One of your teeth");
+            pline_ex(ATR_NONE, CLR_RED, "%s falls off!", i >= 10 ? "Large patches of your hair" : "One of your teeth");
             break;
         case 6:
-            Your("%s are turning %sblack!", makeplural(body_part(HAND)), i >= 10 ? "pitch " : "");
+            pline_ex(ATR_NONE, CLR_RED, "Your %s are turning %sblack!", makeplural(body_part(HAND)), i >= 10 ? "pitch " : "");
             break;
         case 7:
-            pline("%s of your %s feels loose!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGER)));
+            pline_ex(ATR_NONE, CLR_RED, "%s of your %s feels loose!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGER)));
             break;
         case 8:
-            Your("%s are turning %sblack!", makeplural(body_part(FOOT)), i >= 10 ? "pitch " : "");
+            pline_ex(ATR_NONE, CLR_RED, "Your %s are turning %sblack!", makeplural(body_part(FOOT)), i >= 10 ? "pitch " : "");
             break;
         case 9:
-            pline("%s of your %s feels loose!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
+            pline_ex(ATR_NONE, CLR_RED, "%s of your %s feels loose!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
             break;
         default:
             break;
@@ -360,22 +360,22 @@ mummy_rot_dialogue()
         switch (sel_index % 6)
         {
         case 0:
-            pline("%s of your %s falls off!", sel_index >= 30 ? "Further parts" : "A part", body_part(FACE));
+            pline_ex(ATR_NONE, CLR_RED, "%s of your %s falls off!", sel_index >= 30 ? "Further parts" : "A part", body_part(FACE));
             break;
         case 1:
-            pline("%s of your %s falls off!", sel_index >= 30 ? "Another one" : "One", makeplural(body_part(FINGER)));
+            pline_ex(ATR_NONE, CLR_RED, "%s of your %s falls off!", sel_index >= 30 ? "Another one" : "One", makeplural(body_part(FINGER)));
             break;
         case 2:
-            pline("%s of your %s falls off!", sel_index >= 30 ? "Another one" : "One", makeplural(body_part(TOE)));
+            pline_ex(ATR_NONE, CLR_RED, "%s of your %s falls off!", sel_index >= 30 ? "Another one" : "One", makeplural(body_part(TOE)));
             break;
         case 3:
-            pline("%s of your %s falls off!", sel_index >= 30 ? "Further parts" : "A part", body_part(NOSE));
+            pline_ex(ATR_NONE, CLR_RED, "%s of your %s falls off!", sel_index >= 30 ? "Further parts" : "A part", body_part(NOSE));
             break;
         case 4:
-            pline("Further patches of your hair falls off!");
+            pline_ex(ATR_NONE, CLR_RED, "Further patches of your hair falls off!");
             break;
         case 5:
-            pline("Another one of your teeth falls off!");
+            pline_ex(ATR_NONE, CLR_RED, "Another one of your teeth falls off!");
             break;
         default:
             break;
@@ -409,7 +409,7 @@ stoned_dialogue()
         Strcpy(buf, stoned_texts[SIZE(stoned_texts) - i]);
         if (nolimbs(youmonst.data) && strstri(buf, "limbs"))
             (void) strsubst(buf, "limbs", "extremities");
-        pline1(buf);
+        pline_ex(ATR_NONE, CLR_RED, buf);
     }
     switch ((int) i) {
     case 5: /* slowing down */
@@ -522,7 +522,7 @@ vomiting_dialogue()
         break;
     }
     if (txt)
-        You1(txt);
+        pline_ex(ATR_NONE, CLR_RED, "You %s", txt);
     exercise(A_CON, FALSE);
 }
 
@@ -549,14 +549,14 @@ choke_dialogue()
 
     if (i > 0 && i <= SIZE(choke_texts)) {
         if (Breathless || !rn2(50))
-            pline(choke_texts2[SIZE(choke_texts2) - i], body_part(NECK));
+            pline_ex(ATR_NONE, CLR_RED, choke_texts2[SIZE(choke_texts2) - i], body_part(NECK));
         else {
             const char *str = choke_texts[SIZE(choke_texts) - i];
 
             if (index(str, '%'))
-                pline(str, hcolor(NH_BLUE));
+                pline_ex(ATR_NONE, CLR_RED, str, hcolor(NH_BLUE));
             else
-                pline1(str);
+                pline_ex(ATR_NONE, CLR_RED, "%s", str);
         }
     }
     exercise(A_STR, FALSE);
@@ -624,12 +624,12 @@ slime_dialogue()
         if (index(buf, '%')) {
             if (i == 4L) {  /* "you are turning green" */
                 if (!Blind) /* [what if you're already green?] */
-                    pline(buf, hcolor(NH_GREEN));
+                    pline_ex(ATR_NONE, CLR_RED, buf, hcolor(NH_GREEN));
             } else
-                pline(buf,
+                pline_ex(ATR_NONE, CLR_RED, buf,
                       an(Hallucination ? rndmonnam(NULL) : "green slime"));
         } else
-            pline1(buf);
+            pline_ex(ATR_NONE, CLR_RED, "%s", buf);
     }
 
     switch (i) {

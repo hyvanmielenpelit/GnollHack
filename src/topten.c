@@ -102,7 +102,7 @@ boolean incl_helpless;
         /* DROWNING, DROWNED, BURNING, DISSOLVED, CRUSHING, STRANGULATION, SUFFOCATION,*/
         "drowned in ", "drowned by ", "burned by ", "dissolved in ", "crushed to death by ", "strangled to death by ", "suffocated in ",
         /* STONING, DISINTEGRATION, TURNED_SLIME, ILLNESS, ROTTED, GENOCIDED,   */
-        "petrified by ", "disintegrated by ", "turned to slime by ", "died of ", "died of ", "killed by ",
+        "petrified by ", "disintegrated by ", "turned to slime by ", "died of an illness contracted by ", "died of mummy rot contracted by ", "killed by ",
         /* PANICKED, TRICKED, QUIT, ESCAPED, ASCENDED */
         "", "", "", "", ""
     };
