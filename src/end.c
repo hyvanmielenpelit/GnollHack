@@ -284,21 +284,21 @@ NH_panictrace_gdb()
 /*
  * The order of these needs to match the macros in hack.h.
  */
-static NEARDATA const char *deaths[] = {
+static NEARDATA const char *deaths[NUM_GAME_END_TYPES] = {
     /* the array of death */
-    "died", "choked", "poisoned", "starvation", "drowning", "burning",
-    "dissolving under the heat and pressure", "crushed", "turned to stone",
-    "turned into slime", "genocided", "panic", "trickery", "quit",
+    "died", "choked", "poisoned", "starvation", "drowning", "drowned", "burning",
+    "dissolving under the heat and pressure", "crushed", "strangled", "suffocated", "turned to stone", "disintegrated",
+    "turned into slime", "illness", "mummy rot", "genocided", "panic", "trickery", "quit",
     "escaped", "ascended"
 };
 
-static NEARDATA const char *ends[] = {
+static NEARDATA const char *ends[NUM_GAME_END_TYPES] = {
     /* "when you %s" */
     "died", "choked", "were poisoned",
-    "starved", "drowned", "burned",
+    "starved", "drowned", "were drowned", "burned",
     "dissolved in the lava",
-    "were crushed", "turned to stone",
-    "turned into slime", "were genocided",
+    "were crushed", "were strangled", "suffocated", "turned to stone", "were disintegrated",
+    "turned into slime", "died of illness", "died of mummy rot", "were genocided",
     "panicked", "were tricked", "quit",
     "escaped", "ascended"
 };
@@ -500,6 +500,16 @@ int how;
         Strcat(buf, pm_monster_name(mptr, mtmp->female));
         if (has_umname(mtmp))
             Sprintf(eos(buf), " called %s", UMNAME(mtmp));
+    }
+
+    if (how == DROWNED)
+    {
+        boolean moat = (levl[mtmp->mx][mtmp->my].typ != POOL)
+            && (levl[mtmp->mx][mtmp->my].typ != WATER)
+            && !Is_medusa_level(&u.uz)
+            && !Is_waterlevel(&u.uz);
+
+        Sprintf(eos(buf), " in a %s", moat ? "moat" : "pool of water");
     }
 
     Strcpy(killer.name, buf);
@@ -1168,7 +1178,7 @@ int how;
     if (how < PANICKED)
     {
         update_u_action(ACTION_TILE_DEATH);
-        if(how != STONING)
+        if(how != STONING && how != DISINTEGRATION)
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_DEATH);
         u_wait_until_action();
     }
@@ -1343,7 +1353,7 @@ int how;
     /* maintain ugrave_arise even for !bones_ok */
     if (how == PANICKED)
         u.ugrave_arise = (NON_PM - 3); /* no corpse, no grave */
-    else if (how == BURNING || how == DISSOLVED) /* corpse burns up too */
+    else if (how == BURNING || how == DISSOLVED || how == DISINTEGRATION) /* corpse burns up too */
         u.ugrave_arise = (NON_PM - 2); /* leave no corpse */
     else if (how == STONING)
         u.ugrave_arise = (NON_PM - 1); /* statue instead of corpse */
@@ -1354,6 +1364,14 @@ int how;
                 before genocide; don't try to arise as one if they're gone */
              && !(mvitals[PM_GREEN_SLIME].mvflags & G_GENOD))
         u.ugrave_arise = PM_GREEN_SLIME;
+    else if (how == ROTTED)
+    {
+        int montype = mon_to_mummy(u.umonnum);
+        if(montype == NON_PM)
+            montype = mon_to_mummy(u.umonster);
+        if(montype > NON_PM && !(mvitals[montype].mvflags & G_GENOD))
+            u.ugrave_arise = montype;
+    }
 
     if (how == QUIT) 
     {

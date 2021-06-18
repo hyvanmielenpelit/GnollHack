@@ -2486,9 +2486,9 @@ register struct obj* omonwep;
                         pline("%s swings itself around you!", Monnam(mtmp));
 
                     if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious)
-                        pline("%s is drowning you!", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_RED, "%s is drowning you!", Monnam(mtmp));
                     else if (is_constrictor(mtmp->data))
-                        pline("%s is constricting you to death!", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_RED, "%s is constricting you to death!", Monnam(mtmp));
 
                     play_sfx_sound(SFX_ACQUIRE_GRAB);
                     u.ustuck = mtmp;

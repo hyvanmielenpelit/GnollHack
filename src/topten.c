@@ -96,13 +96,13 @@ unsigned siz;
 int how;
 boolean incl_helpless;
 {
-    static NEARDATA const char *const killed_by_prefix[] = {
+    static NEARDATA const char *const killed_by_prefix[NUM_GAME_END_TYPES] = {
         /* DIED, CHOKING, POISONING, STARVING, */
         "killed by ", "choked on ", "poisoned by ", "died of ",
-        /* DROWNING, BURNING, DISSOLVED, CRUSHING, */
-        "drowned in ", "burned by ", "dissolved in ", "crushed to death by ",
-        /* STONING, TURNED_SLIME, GENOCIDED, */
-        "petrified by ", "turned to slime by ", "killed by ",
+        /* DROWNING, DROWNED, BURNING, DISSOLVED, CRUSHING, STRANGULATION, SUFFOCATION,*/
+        "drowned in ", "drowned by ", "burned by ", "dissolved in ", "crushed to death by ", "strangled to death by ", "suffocated in ",
+        /* STONING, DISINTEGRATION, TURNED_SLIME, ILLNESS, ROTTED, GENOCIDED,   */
+        "petrified by ", "disintegrated by ", "turned to slime by ", "died of ", "died of ", "killed by ",
         /* PANICKED, TRICKED, QUIT, ESCAPED, ASCENDED */
         "", "", "", "", ""
     };
@@ -150,9 +150,13 @@ boolean incl_helpless;
     }
     *buf = '\0';
 
-    if (incl_helpless && multi) {
+    if (incl_helpless && (multi || Paralyzed || Sleeping)) {
         /* X <= siz: 'sizeof "string"' includes 1 for '\0' terminator */
-        if (multi_reason && strlen(multi_reason) + sizeof ", while " <= siz)
+        if (Paralyzed && strlen(", while paralyzed") <= siz)
+            Sprintf(buf, ", while %s", "paralyzed");
+        else if (Sleeping && strlen(", while sleeping") <= siz)
+            Sprintf(buf, ", while %s", "sleeping");
+        else if (multi_reason && strlen(multi_reason) + sizeof ", while " <= siz)
             Sprintf(buf, ", while %s", multi_reason);
         /* either multi_reason wasn't specified or wouldn't fit */
         else if (sizeof ", while helpless" <= siz)

@@ -928,7 +928,7 @@ nh_timeout()
                         killer.format = KILLED_BY;
                     }
                 }
-                done(POISONING);
+                done(ILLNESS);
                 break;
             case MUMMY_ROT:
                 if (MummyRot)
@@ -977,7 +977,7 @@ nh_timeout()
                             killer.format = KILLED_BY;
                         }
                     }
-                    done(POISONING);
+                    done(ROTTED);
                     /* Life saved */
                     make_mummy_rotted(0L, (char*)0, FALSE);
                 }
@@ -996,10 +996,16 @@ nh_timeout()
                 }
                 break;
             case STRANGLED:
-                killer.format = KILLED_BY;
-                Strcpy(killer.name,
-                    (u.uburied) ? "suffocation" : "strangulation");
-                done(DIED);
+                killer.format = KILLED_BY_AN;
+                if (uamul && uamul->otyp == AMULET_OF_STRANGULATION)
+                {
+                    Strcpy(killer.name, "amulet of strangulation");
+                    done(STRANGULATION);
+                }
+                else if (u.ustuck && (is_constrictor(u.ustuck->data) || hug_throttles(u.ustuck->data)))
+                {
+                    done_in_by(u.ustuck, STRANGULATION);
+                }
                 /* must be declining to die in explore|wizard mode;
                    treat like being cured of strangulation by prayer */
                 if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
@@ -1016,9 +1022,16 @@ nh_timeout()
                 else
                 {
                     You("%s.", Underwater || drowned_by_monster ? "drown" : "suffocate");
-                    killer.format = KILLED_BY;
-                    Strcpy(killer.name, Underwater || drowned_by_monster ? "drowning" : "suffocation");
-                    done(Underwater || drowned_by_monster ? DROWNING : DIED);
+                    if (drowned_by_monster)
+                        done_in_by(u.ustuck, DROWNED);
+                    else
+                    {
+                        killer.format = KILLED_BY;
+                        Sprintf(killer.name, "%s",
+                            is_pool(u.ux, u.uy) ? (levl[u.ux][u.uy].typ == MOAT ? "moat" : "pool of water") : u.uburied ? "an underground location" : "");
+
+                        done(Underwater ? DROWNING : SUFFOCATION);
+                    }
                 }
                 break;
             }
@@ -1407,11 +1420,11 @@ nh_timeout()
             // Continuous warning
             switch (propnum) {
             case STRANGLED:
-                You("are being strangled!");
+                pline_ex(ATR_NONE, CLR_RED, "You %s", "are being strangled!");
                 break;
             case AIRLESS_ENVIRONMENT:
                 if (!Survives_without_air)
-                    You("cannot breathe!");
+                    pline_ex(ATR_NONE, CLR_RED, "You %s", "cannot breathe!");
                 else
                     upp->intrinsic &= ~TIMEOUT; /* You can breathe, so clear the suffocation timeout -- It will be set to the full time value below */
                 break;
