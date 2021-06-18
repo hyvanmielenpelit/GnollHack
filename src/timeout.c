@@ -886,7 +886,8 @@ nh_timeout()
                     killer.format = NO_KILLER_PREFIX;
                     Strcpy(killer.name, "killed by petrification");
                 }
-                dealloc_killer(kptr);
+                if (kptr)
+                    dealloc_killer(kptr);
                 /* (unlike sliming, you aren't changing form here) */
                 play_sfx_sound(SFX_PETRIFY);
                 done(STONING);
@@ -911,7 +912,9 @@ nh_timeout()
                     killer.format = KILLED_BY_AN;
                     killer.name[0] = 0; /* take the default */
                 }
-                dealloc_killer(kptr);
+    
+                if(kptr)
+                    dealloc_killer(kptr);
 
                 if ((m_idx = name_to_mon(killer.name)) >= LOW_PM)
                 {
@@ -958,7 +961,9 @@ nh_timeout()
                         killer.format = KILLED_BY_AN;
                         killer.name[0] = 0; /* take the default */
                     }
-                    dealloc_killer(kptr);
+
+                    if (kptr)
+                        dealloc_killer(kptr);
 
                     if ((m_idx = name_to_mon(killer.name)) >= LOW_PM) 
                     {

@@ -8031,6 +8031,7 @@ const char *fltxt;
 {
     int dam = 0, abstyp = abs(type);
     enum hit_tile_types hit_tile = HIT_GENERAL;
+    char killername[BUFSIZ] = "";
 
     //Base damage here, set to zero, if not needed
     if (origobj)
@@ -8041,6 +8042,43 @@ const char *fltxt;
         dam = d(dmgdice, dicesize) + dmgplus;
 
     double damage = adjust_damage(dam, origmonst, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 39) ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
+
+    if (fltxt)
+    {
+        if (origmonst)
+        {
+            char hisbuf[BUFSZ];
+            if (origmonst == &youmonst)
+                Sprintf(hisbuf, "%s own", uhis());
+            else
+                Sprintf(hisbuf, "%s's", an(mon_monster_name(origmonst)));
+
+            if (origobj)
+            {
+                Sprintf(killername, "%s from %s %s", fltxt, hisbuf, OBJ_NAME(objects[origobj->otyp]));
+            }
+            else
+            {
+                if (is_buzztype_breath_weapon(type))
+                    Sprintf(killername, "%s from %s %s", fltxt, hisbuf, "breath weapon");
+                else if(is_buzztype_eyestalk(type))
+                    Sprintf(killername, "%s from %s %s", fltxt, hisbuf, "eyestalk");
+                else
+                    Sprintf(killername, "%s %s", hisbuf, fltxt);
+            }
+        }
+        else
+        {
+            Strcpy(killername, fltxt);
+        }
+    }
+    else
+    {
+        if(origmonst)
+            Strcpy(killername, mon_monster_name(origmonst));
+        else
+            Strcpy(killername, "");
+    }
 
     switch (abstyp % 10) 
     {
@@ -8148,7 +8186,7 @@ const char *fltxt;
         if (uarmu)
             (void) destroy_arm(uarmu);
         killer.format = KILLED_BY_AN;
-        Strcpy(killer.name, fltxt ? fltxt : "");
+        strcpy(killer.name, killername);
         /* when killed by disintegration attack, don't leave corpse */
         u.ugrave_arise = (abstyp % 10 == ZT_DISINTEGRATION) ? -3 : NON_PM;
         display_u_being_hit(HIT_DISINTEGRATED, 0, 0UL);
@@ -8174,7 +8212,7 @@ const char *fltxt;
         }
 #endif
         killer.format = KILLED_BY_AN;
-        Strcpy(killer.name, fltxt ? fltxt : "");
+        Strcpy(killer.name, killername);
         display_u_being_hit(HIT_DEATH, 0, 0UL);
         done(DIED);
         return; /* lifesaved */
@@ -8210,7 +8248,7 @@ const char *fltxt;
             {
                 int kformat = KILLED_BY_AN;
                 char kname[BUFSZ];
-                Strcpy(kname, fltxt ? fltxt : "");
+                Strcpy(kname, killername);
                 make_stoned(5L, (char*)0, kformat, kname);
             }
         }
@@ -8522,6 +8560,22 @@ xchar sx, sy;
 int dx, dy;
 {
     dobuzz(type, origobj, origmonst, dmgdice, dicesize, dmgplus, sx, sy, dx, dy, TRUE);
+}
+
+boolean
+is_buzztype_breath_weapon(type)
+int type;
+{
+    if (abs(type) >= 20 && abs(type) < 30)
+        return TRUE;
+}
+
+boolean
+is_buzztype_eyestalk(type)
+int type;
+{
+    if (abs(type) >= 30 && abs(type) < 40)
+        return TRUE;
 }
 
 /*

@@ -492,9 +492,14 @@ int how;
            it overrides the effect of Hallucination on priestname() */
         Strcat(buf, m_monnam(mtmp));
     } else {
+        if (has_mname(mtmp) && mtmp->u_know_mname)
+        {
+            killer.format = KILLED_BY;
+            Sprintf(eos(buf), "%s, the ", MNAME(mtmp));
+        }
         Strcat(buf, pm_monster_name(mptr, mtmp->female));
-        if (has_mname(mtmp))
-            Sprintf(eos(buf), " called %s", MNAME(mtmp));
+        if (has_umname(mtmp))
+            Sprintf(eos(buf), " called %s", UMNAME(mtmp));
     }
 
     Strcpy(killer.name, buf);
