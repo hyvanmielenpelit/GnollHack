@@ -1117,7 +1117,7 @@ mswin_putstr_ex(winid wid, int attr, const char *text, int app, int color)
             ZeroMemory(&data, sizeof(data));
             data.attr = attr;
             data.text = text;
-            data.append = !!app;
+            data.append = app;
             data.color = color;
             SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                         (WPARAM) MSNH_MSG_PUTSTR, (LPARAM) &data);

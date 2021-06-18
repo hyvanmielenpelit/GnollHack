@@ -2170,6 +2170,7 @@ E char *FDECL(corpse_xname, (struct obj *, const char *, unsigned));
 E char *FDECL(cxname, (struct obj *));
 E char *FDECL(cxname_singular, (struct obj *));
 E char *FDECL(killer_xname, (struct obj *));
+E char* FDECL(killer_xname_flags, (struct obj*, unsigned));
 E char *FDECL(short_oname,
               (struct obj *, char *(*)(OBJ_P), char *(*)(OBJ_P), size_t));
 E const char *FDECL(singular, (struct obj *, char *(*)(OBJ_P)));

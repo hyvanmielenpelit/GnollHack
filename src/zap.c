@@ -8055,7 +8055,7 @@ const char *fltxt;
 
             if (origobj)
             {
-                Sprintf(killername, "%s from %s %s", fltxt, hisbuf, OBJ_NAME(objects[origobj->otyp]));
+                Sprintf(killername, "%s from %s %s", fltxt, hisbuf, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE));
             }
             else
             {

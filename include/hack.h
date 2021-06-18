@@ -169,7 +169,9 @@ enum dismount_types {
 #define CXN_ARTICLE 8   /* include a/an/the prefix */
 #define CXN_NOCORPSE 16 /* suppress " corpse" suffix */
 
-/* getpos() return values */
+#define KXNFLAGS_NO_ARTICLE 0x01
+
+   /* getpos() return values */
 enum getpos_retval {
     LOOK_TRADITIONAL = 0, /* '.' -- ask about "more info?" */
     LOOK_QUICK       = 1, /* ',' -- skip "more info?" */

@@ -2159,9 +2159,17 @@ struct obj *obj;
 }
 
 /* treat an object as fully ID'd when it might be used as reason for death */
-char *
+char*
 killer_xname(obj)
+struct obj* obj;
+{
+    return killer_xname_flags(obj, 0);
+}
+
+char *
+killer_xname_flags(obj, kxnflags)
 struct obj *obj;
+unsigned kxnflags;
 {
     struct obj save_obj;
     unsigned save_ocknown;
@@ -2222,8 +2230,11 @@ struct obj *obj;
         buf = xname(obj);
     }
     /* apply an article if appropriate; caller should always use KILLED_BY */
-    if (obj->quan == 1L && !strstri(buf, "'s ") && !strstri(buf, "s' "))
-        buf = (obj_is_pname(obj) || the_unique_obj(obj)) ? the(buf) : an(buf);
+    if (!(kxnflags & KXNFLAGS_NO_ARTICLE))
+    {
+        if (obj->quan == 1L && !strstri(buf, "'s ") && !strstri(buf, "s' "))
+            buf = (obj_is_pname(obj) || the_unique_obj(obj)) ? the(buf) : an(buf);
+    }
 
     objects[obj->otyp].oc_name_known = save_ocknown;
     objects[obj->otyp].oc_uname = save_ocuname;
