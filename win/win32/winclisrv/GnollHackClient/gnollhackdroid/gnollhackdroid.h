@@ -35,7 +35,7 @@ int RunGnollHack(
     DestroyWindowCallback callback_destroy_nhwindow,
     CursCallback callback_curs,
     PutStrExCallback callback_putstr_ex,
-    PutMixedCallback callback_putmixed,
+    PutMixedCallback callback_putmixed_ex,
     DisplayFileCallback callback_display_file,
     StartMenuCallback callback_start_menu,
     AddMenuCallback callback_add_menu,

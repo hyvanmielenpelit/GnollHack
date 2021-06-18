@@ -53,7 +53,7 @@ struct window_procs mswin_procs = {
     mswin_player_selection, mswin_askname, mswin_get_nh_event,
     mswin_exit_nhwindows, mswin_suspend_nhwindows, mswin_resume_nhwindows,
     mswin_create_nhwindow, mswin_clear_nhwindow, mswin_display_nhwindow,
-    mswin_destroy_nhwindow, mswin_curs, mswin_putstr, genl_putmixed,
+    mswin_destroy_nhwindow, mswin_curs, mswin_putstr_ex, genl_putmixed_ex,
     mswin_display_file, mswin_start_menu, mswin_add_menu, mswin_add_extended_menu, mswin_end_menu,
     mswin_select_menu,
     genl_message_menu, /* no need for X-specific handling */
@@ -932,11 +932,11 @@ mswin_putstr(winid wid, int attr, const char *text)
 {
     logDebug("mswin_putstr(%d, %d, %s)\n", wid, attr, text);
 
-    mswin_putstr_ex(wid, attr, text, 0);
+    mswin_putstr_ex(wid, attr, text, 0, NO_COLOR);
 }
 
 void
-mswin_putstr_ex(winid wid, int attr, const char *text, boolean app)
+mswin_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 {
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
@@ -951,7 +951,7 @@ mswin_putstr_ex(winid wid, int attr, const char *text, boolean app)
             ZeroMemory(&data, sizeof(data));
             data.attr = attr;
             data.text = text;
-            data.append = app;
+            data.append = !!app;
             SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                         (WPARAM) MSNH_MSG_PUTSTR, (LPARAM) &data);
         }
@@ -1464,7 +1464,7 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
     if (isprint(ch)) {
         res_ch[0] = ch;
         res_ch[1] = '\x0';
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1);
+        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1, NO_COLOR);
     }
 
     /* prevent "--more--" prompt from appearing when several

@@ -1815,7 +1815,7 @@ mac_exit_nhwindows(const char *s)
  * Don't forget to decrease in_putstr before returning...
  */
 void
-mac_putstr(winid win, int attr, const char *str)
+mac_putstr_ex(winid win, int attr, const char *str, int app, int color)
 {
     long len, slen;
     NhWindow *aWin = &theWindows[win];
@@ -3284,8 +3284,8 @@ struct window_procs mac_procs = {
     mac_unimplemented, /* see macmenu.c:mac_askname() for player selection */
     mac_askname, mac_get_nh_event, mac_exit_nhwindows, mac_suspend_nhwindows,
     mac_unimplemented, mac_create_nhwindow, mac_clear_nhwindow,
-    mac_display_nhwindow, mac_destroy_nhwindow, mac_curs, mac_putstr,
-    genl_putmixed, mac_display_file, mac_start_menu, mac_add_menu, mac_add_extended_menu,
+    mac_display_nhwindow, mac_destroy_nhwindow, mac_curs, mac_putstr_ex,
+    genl_putmixed_ex, mac_display_file, mac_start_menu, mac_add_menu, mac_add_extended_menu,
     mac_end_menu, mac_select_menu, genl_message_menu, mac_unimplemented,
     mac_get_nh_event, mac_get_nh_event,
 #ifdef CLIPPING

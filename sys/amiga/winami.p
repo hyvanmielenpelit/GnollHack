@@ -23,7 +23,8 @@ int NDECL(amii_get_ext_cmd);
 char FDECL(amii_yn_function, (const char * , const char * , char ));
 void FDECL(amii_addtopl, (const char *));
 void FDECL(TextSpaces, (struct RastPort * , int ));
-void FDECL(amii_putstr, (winid  , int  , const char *));
+void FDECL(amii_putstr_ex, (winid  , int  , const char *));
+#define amii_putstr(x, y, z) amii_putstr_ex(x, y, z, 0, NO_COLOR)
 void FDECL(amii_putsym, (winid  , int  , int  , CHAR_P ));
 void FDECL(amii_clear_nhwindow, (winid ));
 void FDECL(amii_exit_nhwindows, (const char *));

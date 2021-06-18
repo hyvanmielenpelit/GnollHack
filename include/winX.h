@@ -414,7 +414,8 @@ E void FDECL(X11_clear_nhwindow, (winid));
 E void FDECL(X11_display_nhwindow, (winid, BOOLEAN_P));
 E void FDECL(X11_destroy_nhwindow, (winid));
 E void FDECL(X11_curs, (winid, int, int));
-E void FDECL(X11_putstr, (winid, int, const char *));
+E void FDECL(X11_putstr_ex, (winid, int, const char *, int, int));
+#define X11_putstr(x, y, z) X11_putstr_ex(x, y, z, 0 , 0)
 E void FDECL(X11_display_file, (const char *, BOOLEAN_P));
 E void FDECL(X11_start_menu, (winid));
 E void FDECL(X11_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P, int,

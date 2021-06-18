@@ -292,10 +292,10 @@ int y;
 }
 
 void
-trace_putstr(vp, window, attr, str)
+trace_putstr_ex(vp, window, attr, str, app, color)
 void *vp;
 winid window;
-int attr;
+int attr, app, color;
 const char *str;
 {
     struct trace_data *tdp = vp;
@@ -309,15 +309,15 @@ const char *str;
     }
 
     PRE;
-    (*tdp->nprocs->win_putstr)(tdp->ndata, window, attr, str);
+    (*tdp->nprocs->win_putstr_ex)(tdp->ndata, window, attr, str, app, color);
     POST;
 }
 
 void
-trace_putmixed(vp, window, attr, str)
+trace_putmixed_ex(vp, window, attr, str, app, color)
 void *vp;
 winid window;
-int attr;
+int attr, app, color;
 const char *str;
 {
     struct trace_data *tdp = vp;
@@ -331,7 +331,7 @@ const char *str;
     }
 
     PRE;
-    (*tdp->nprocs->win_putmixed)(tdp->ndata, window, attr, str);
+    (*tdp->nprocs->win_putmixed_ex)(tdp->ndata, window, attr, str, app, color);
     POST;
 }
 
@@ -1197,7 +1197,7 @@ struct chain_procs trace_procs = {
     trace_player_selection, trace_askname, trace_get_nh_event,
     trace_exit_nhwindows, trace_suspend_nhwindows, trace_resume_nhwindows,
     trace_create_nhwindow, trace_clear_nhwindow, trace_display_nhwindow,
-    trace_destroy_nhwindow, trace_curs, trace_putstr, trace_putmixed,
+    trace_destroy_nhwindow, trace_curs, trace_putstr_ex, trace_putmixed_ex,
     trace_display_file, trace_start_menu, trace_add_menu, trace_add_extended_menu, trace_end_menu,
     trace_select_menu, trace_message_menu, trace_update_inventory,
     trace_mark_synch, trace_wait_synch,

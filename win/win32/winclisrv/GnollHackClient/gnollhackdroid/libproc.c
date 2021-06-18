@@ -24,8 +24,8 @@ struct window_procs lib_procs = {
     lib_init_nhwindows, lib_player_selection, lib_askname,
     lib_get_nh_event, lib_exit_nhwindows, lib_suspend_nhwindows,
     lib_resume_nhwindows, lib_create_nhwindow, lib_clear_nhwindow,
-    lib_display_nhwindow, lib_destroy_nhwindow, lib_curs, lib_putstr,
-    genl_putmixed, lib_display_file, lib_start_menu, lib_add_menu, lib_add_extended_menu,
+    lib_display_nhwindow, lib_destroy_nhwindow, lib_curs, lib_putstr_ex,
+    genl_putmixed_ex, lib_display_file, lib_start_menu, lib_add_menu, lib_add_extended_menu,
     lib_end_menu, lib_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     lib_update_inventory, lib_mark_synch, lib_wait_synch,
@@ -145,18 +145,10 @@ void lib_curs(winid wid, int x, int y)
 
 void lib_putstr(winid wid, int attr, const char* text)
 {
-    lib_putstr_ex(wid, attr, text, 0);
+    lib_putstr_ex(wid, attr, text, 0, NO_COLOR);
 }
 
-void lib_putstr_ex(winid wid, int attr, const char* text, int param)
-{
-    char buf[BUFSIZ];
-    if(text)
-        write_text2buf_utf8(buf, BUFSIZ, text);
-    lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, param, CLR_WHITE);
-}
-
-void lib_putstr_ex_color(winid wid, int attr, const char* text, int param, int color)
+void lib_putstr_ex(winid wid, int attr, const char* text, int param, int color)
 {
     char buf[BUFSIZ];
     if (text)
@@ -602,8 +594,8 @@ void print_conditions(const char** names)
             int color = get_condition_color(cond_mask);
             int attr = get_condition_attr(cond_mask);
             //debuglog("cond '%s' active. col=%s attr=%x", name, colname(color), attr);
-            lib_putstr_ex_color(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
-            lib_putstr_ex_color(WIN_STATUS, attr, name, 0, color);
+            lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+            lib_putstr_ex(WIN_STATUS, attr, name, 0, color);
         }
     }
 }
@@ -629,7 +621,7 @@ void print_status_field(int idx, boolean first_field)
     {
         /* leveldesc has no leading space, so if we've moved
            it past the first position, provide one */
-        lib_putstr_ex_color(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+        lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
     }
     else if (iflags.wc2_statuslines >= 3)
     {
@@ -659,7 +651,7 @@ void print_status_field(int idx, boolean first_field)
     // Don't want coloring on leading spaces (ATR_INVERSE would show), so print those first
     while (*val == ' ')
     {
-        lib_putstr_ex_color(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+        lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
         val++;
     }
 
@@ -693,7 +685,7 @@ void print_status_field(int idx, boolean first_field)
                 color = status_colors[BL_ENE] & 0xFF;
             }
         }
-        lib_putstr_ex_color(WIN_STATUS, hl_attrmask_to_attrmask(attr), val, 0, color);
+        lib_putstr_ex(WIN_STATUS, hl_attrmask_to_attrmask(attr), val, 0, color);
         //	debuglog("field %d: %s color %s", idx+1, val, colname(color));
     }
 }

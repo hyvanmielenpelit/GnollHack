@@ -166,7 +166,7 @@ winid window;
 }
 
 void
-chainout_curs(vp, window, x, y)
+chainout_curs(vp, window, x, y, force)
 void *vp;
 winid window;
 int x;
@@ -178,27 +178,27 @@ int y;
 }
 
 void
-chainout_putstr(vp, window, attr, str)
+chainout_putstr_ex(vp, window, attr, str, app, color)
 void *vp;
 winid window;
-int attr;
+int attr, app, color;
 const char *str;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_putstr)(window, attr, str);
+    (*tdp->nprocs->win_putstr_ex)(window, attr, str, app, color);
 }
 
 void
-chainout_putmixed(vp, window, attr, str)
+chainout_putmixed_ex(vp, window, attr, str, app, color)
 void *vp;
 winid window;
-int attr;
+int attr, app, color;
 const char *str;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_putmixed)(window, attr, str);
+    (*tdp->nprocs->win_putmixed_ex)(window, attr, str, app, color);
 }
 
 void
@@ -706,8 +706,8 @@ struct chain_procs chainout_procs = {
     chainout_exit_nhwindows, chainout_suspend_nhwindows,
     chainout_resume_nhwindows, chainout_create_nhwindow,
     chainout_clear_nhwindow, chainout_display_nhwindow,
-    chainout_destroy_nhwindow, chainout_curs, chainout_putstr,
-    chainout_putmixed, chainout_display_file, chainout_start_menu,
+    chainout_destroy_nhwindow, chainout_curs, chainout_putstr_ex,
+    chainout_putmixed_ex, chainout_display_file, chainout_start_menu,
     chainout_add_menu, chainout_end_menu, chainout_select_menu,
     chainout_message_menu, chainout_update_inventory, chainout_mark_synch,
     chainout_wait_synch,

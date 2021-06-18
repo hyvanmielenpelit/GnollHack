@@ -1542,7 +1542,7 @@ E void NDECL(makemon_animation_wait_until_end);
 E int FDECL(mapglyph, (struct layer_info, nhsym *, int *, unsigned long*, int, int));
 E char *FDECL(encglyph, (int));
 E char *FDECL(decode_mixed, (char *, const char *));
-E void FDECL(genl_putmixed, (winid, int, const char *));
+E void FDECL(genl_putmixed_ex, (winid, int, const char *, int, int));
 E int FDECL(zap_glyph_to_cmap, (int));
 
 /* ### mcastu.c ### */

@@ -9,9 +9,9 @@
 /* Put a string into the indicated window using the indicated attribute */
 
 void
-amii_putstr(window, attr, str)
+amii_putstr_ex(window, attr, str, app, color)
 winid window;
-int attr;
+int attr app, color;
 const char *str;
 {
     int fudge;

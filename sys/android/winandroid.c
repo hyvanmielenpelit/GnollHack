@@ -20,8 +20,8 @@ static void FDECL(and_display_nhwindow, (winid, BOOLEAN_P));
 static void FDECL(and_dismiss_nhwindow, (winid));
 static void FDECL(and_destroy_nhwindow, (winid));
 static void FDECL(and_curs, (winid,int,int));
-static void FDECL(and_putstr, (winid, int, const char *));
-static void FDECL(and_putmixed, (winid, int, const char *));
+static void FDECL(and_putstr_ex, (winid, int, const char *, int, int));
+static void FDECL(and_putmixed_ex, (winid, int, const char *, int, int));
 static void FDECL(and_display_file, (const char *, BOOLEAN_P));
 static void FDECL(and_start_menu, (winid));
 static void FDECL(and_add_menu, (winid,int,const ANY_P *, CHAR_P,CHAR_P,int,const char *, BOOLEAN_P));
@@ -86,8 +86,8 @@ struct window_procs and_procs = {
 	and_display_nhwindow,
 	and_destroy_nhwindow,
 	and_curs,
-	and_putstr,
-	and_putmixed,
+	and_putstr_ex,
+	and_putmixed_ex,
 	and_display_file,
 	and_start_menu,
 	and_add_menu,
@@ -1114,13 +1114,13 @@ void and_status_flush()
 }
 
 //____________________________________________________________________________________
-void and_putmixed(window, attr, str)
+void and_putmixed_ex(window, attr, str, app, color)
 winid window;
-int attr;
+int attr, app, color;
 const char *str;
 {
 	//debuglog("put mixed: %s", str);
-	genl_putmixed(window, attr, str);
+	genl_putmixed_ex(window, attr, str, app, color);
 }
 
 //____________________________________________________________________________________

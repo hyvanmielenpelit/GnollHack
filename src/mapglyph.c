@@ -601,15 +601,15 @@ const char *str;
  */
 
 void
-genl_putmixed(window, attr, str)
+genl_putmixed_ex(window, attr, str, app, color)
 winid window;
-int attr;
+int attr, app, color;
 const char *str;
 {
     char buf[BUFSZ];
 
     /* now send it to the normal putstr */
-    putstr(window, attr, decode_mixed(buf, str));
+    putstr_ex(window, attr, decode_mixed(buf, str), app, color);
 }
 
 int

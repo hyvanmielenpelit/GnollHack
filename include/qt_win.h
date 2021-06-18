@@ -849,7 +849,7 @@ class NetHackQtBind : NetHackQtBindBase
     static void qt_display_nhwindow(winid wid, BOOLEAN_P block);
     static void qt_destroy_nhwindow(winid wid);
     static void qt_curs(winid wid, int x, int y);
-    static void qt_putstr(winid wid, int attr, const char *text);
+    static void qt_putstr(winid wid, int attr, const char *text, int app, int color);
     static void qt_display_file(const char *filename, BOOLEAN_P must_exist);
     static void qt_start_menu(winid wid);
     static void qt_add_menu(winid wid, int glyph, const ANY_P *identifier,

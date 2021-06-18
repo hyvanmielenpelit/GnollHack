@@ -37,6 +37,7 @@ typedef struct mswin_nhmsg_putstr {
     int attr;
     const char *text;
     int append;
+    int color;
 } MSNHMsgPutstr, *PMSNHMsgPutstr;
 
 typedef struct mswin_nhmsg_print_glyph {

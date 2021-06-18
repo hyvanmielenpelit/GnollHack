@@ -46,8 +46,8 @@ struct window_procs Gem_procs = {
     0L, Gem_init_nhwindows, Gem_player_selection, Gem_askname,
     Gem_get_nh_event, Gem_exit_nhwindows, Gem_suspend_nhwindows,
     Gem_resume_nhwindows, Gem_create_nhwindow, Gem_clear_nhwindow,
-    Gem_display_nhwindow, Gem_destroy_nhwindow, Gem_curs, Gem_putstr,
-    genl_putmixed, Gem_display_file, Gem_start_menu, Gem_add_menu, Gem_add_extended_menu,
+    Gem_display_nhwindow, Gem_destroy_nhwindow, Gem_curs, Gem_putstr_ex,
+    genl_putmixed_ex, Gem_display_file, Gem_start_menu, Gem_add_menu, Gem_add_extended_menu,
     Gem_end_menu, Gem_select_menu, genl_message_menu, Gem_update_inventory,
     Gem_mark_synch, Gem_wait_synch,
 #ifdef CLIPPING
@@ -668,12 +668,15 @@ register int x, y;
 }
 
 extern void mar_add_status_str(const char *, int);
-extern void mar_putstr_text(winid, int, const char *);
+extern void mar_putstr_text_ex(winid, int, const char *, int, int);
+extern void mar_putstr_text(winid, int, const char*);
+
+#define Gem_putstr(window, attr, str) Gem_putstr_ex(window, attr, str, 0, NO_COLOR)
 
 void
-Gem_putstr(window, attr, str)
+Gem_putstr_ex(window, attr, str, app, color)
 winid window;
-int attr;
+int attr, app, color;
 const char *str;
 {
     int win_type;

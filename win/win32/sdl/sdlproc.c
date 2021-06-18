@@ -93,8 +93,8 @@ struct window_procs nuklear_procs = {
     WC2_PREFERRED_SCREEN_SCALE, sdl_init_nhwindows, sdl_player_selection, sdl_askname,
     sdl_get_nh_event, sdl_exit_nhwindows, sdl_suspend_nhwindows,
     sdl_resume_nhwindows, sdl_create_nhwindow, sdl_clear_nhwindow,
-    sdl_display_nhwindow, sdl_destroy_nhwindow, sdl_curs, sdl_putstr,
-    genl_putmixed, sdl_display_file, sdl_start_menu, sdl_add_menu, sdl_add_extended_menu,
+    sdl_display_nhwindow, sdl_destroy_nhwindow, sdl_curs, sdl_putstr_ex,
+    genl_putmixed_ex, sdl_display_file, sdl_start_menu, sdl_add_menu, sdl_add_extended_menu,
     sdl_end_menu, sdl_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     sdl_update_inventory, sdl_mark_synch, sdl_wait_synch,
@@ -1023,7 +1023,7 @@ sdl_putstr(winid wid, int attr, const char *text)
 }
 
 void
-sdl_putstr_ex(winid wid, int attr, const char *text, int app)
+sdl_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 {
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
@@ -1038,7 +1038,8 @@ sdl_putstr_ex(winid wid, int attr, const char *text, int app)
             ZeroMemory(&data, sizeof(data));
             data.attr = attr;
             data.text = text;
-            data.append = app;
+            data.append = !!app;
+            data.color = color;
             SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                         (WPARAM) MSNH_MSG_PUTSTR, (LPARAM) &data);
         }
@@ -1670,12 +1671,12 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
             char z, digit_string[2];
             int n_len = 0;
             long value = 0;
-            sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, ("#"), 1);
+            sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, ("#"), 1, NO_COLOR);
             n_len++;
             digit_string[1] = '\0';
             if (ch != '#') {
                 digit_string[0] = ch;
-                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
+                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1, NO_COLOR);
                 n_len++;
                 value = ch - '0';
                 ch = '#';
@@ -1687,7 +1688,7 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
                     if (value < 0)
                         break; /* overflow: try again */
                     digit_string[0] = z;
-                    sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
+                    sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1, NO_COLOR);
                     n_len++;
                 } else if (z == 'y' || index(quitchars, z)) {
                     if (z == '\033')
@@ -1700,7 +1701,7 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
                     } else {
                         value /= 10;
                         sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string,
-                                        -1);
+                                        -1, NO_COLOR);
                         n_len--;
                     }
                 } else {
@@ -1714,7 +1715,7 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
             else if (value == 0)
                 ch = 'n'; /* 0 => "no" */
             else {        /* remove number from top line, then try again */
-                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, -n_len);
+                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, -n_len, NO_COLOR);
                 n_len = 0;
                 ch = (char) 0;
             }
@@ -1729,7 +1730,7 @@ sdl_yn_function(const char *question, const char *choices, CHAR_P def)
     if (isprint((uchar) ch) && ch != '#') {
         res_ch[0] = ch;
         res_ch[1] = '\x0';
-        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1);
+        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1, NO_COLOR);
     }
 
     return ch;
@@ -1761,10 +1762,10 @@ sdl_getlin(const char *question, char *input)
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
         /* sdl_clear_nhwindow(WIN_MESSAGE); */
-        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, question, 0);
-        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, " ", 1);
+        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, question, 0, NO_COLOR);
+        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, " ", 1, NO_COLOR);
 #ifdef EDIT_GETLIN
-        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0);
+        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0, NO_COLOR);
         len = strlen(input);
 #else
         input[0] = '\0';
@@ -1786,7 +1787,7 @@ sdl_getlin(const char *question, char *input)
                 break;
             default:
                 if (input[0])
-                    sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, input, -len);
+                    sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, input, -len, NO_COLOR);
                 if (c == VK_BACK) {
                     if (len > 0)
                         len--;
@@ -1797,7 +1798,7 @@ sdl_getlin(const char *question, char *input)
                     input[len++] = c;
                     input[len] = '\0';
                 }
-                sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, input, 1);
+                sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, input, 1, NO_COLOR);
                 break;
             }
         }
@@ -1837,7 +1838,7 @@ sdl_get_ext_cmd()
         cmd[0] = '\0';
         i = -2;
         sdl_clear_nhwindow(WIN_MESSAGE);
-        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, "#", 0);
+        sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, "#", 0, NO_COLOR);
         len = 0;
         ShowCaret(sdl_hwnd_from_winid(WIN_MESSAGE));
         while (i == -2) {
@@ -1862,7 +1863,7 @@ sdl_get_ext_cmd()
             default:
                 if (cmd[0])
                     sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd,
-                                    -(int) strlen(cmd));
+                                    -(int) strlen(cmd), NO_COLOR);
                 if (c == VK_BACK) {
                     if (len > 0)
                         len--;
@@ -1888,7 +1889,7 @@ sdl_get_ext_cmd()
                         Strcpy(cmd, extcmdlist[com_index].ef_txt);
                     }
                 }
-                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd, 1);
+                sdl_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd, 1, NO_COLOR);
                 break;
             }
         }
@@ -2234,7 +2235,7 @@ sdl_putmsghistory(const char *msg, BOOLEAN_P restoring)
     save_sound_opt = GetNHApp()->bNoSounds;
     GetNHApp()->bNoSounds =
         TRUE; /* disable sounds while restoring message history */
-    sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, msg, 0);
+    sdl_putstr_ex(WIN_MESSAGE, ATR_NONE, msg, 0, NO_COLOR);
     clear_nhwindow(WIN_MESSAGE); /* it is in fact end-of-turn indication so
                                     each message will print on the new line */
     GetNHApp()->bNoSounds = save_sound_opt; /* restore sounds option */

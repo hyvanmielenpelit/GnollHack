@@ -60,7 +60,7 @@ typedef VoidIntBooleanCallback DisplayWindowCallback;
 typedef VoidIntCallback DestroyWindowCallback;
 typedef VoidIntIntIntCallback CursCallback;
 typedef PutStrExColorCallback PutStrExCallback;
-typedef VoidIntIntConstCharCallback PutMixedCallback;
+typedef PutStrExColorCallback PutMixedCallback;
 typedef VoidConstCharBooleanCallback DisplayFileCallback;
 typedef VoidIntCallback StartMenuCallback;
 typedef void(__callconv* AddMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, const char*, UCHAR_P, int);
@@ -140,7 +140,7 @@ struct callback_procs {
     DestroyWindowCallback callback_destroy_nhwindow;
     CursCallback callback_curs;
     PutStrExCallback callback_putstr_ex;
-    PutMixedCallback callback_putmixed;
+    PutMixedCallback callback_putmixed_ex;
     DisplayFileCallback callback_display_file;
     StartMenuCallback callback_start_menu;
     AddMenuCallback callback_add_menu;

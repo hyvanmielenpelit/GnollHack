@@ -180,7 +180,7 @@ int RunGnollHack(
     DestroyWindowCallback callback_destroy_nhwindow,
     CursCallback callback_curs,
     PutStrExCallback callback_putstr_ex,
-    PutMixedCallback callback_putmixed,
+    PutMixedCallback callback_putmixed_ex,
     DisplayFileCallback callback_display_file,
     StartMenuCallback callback_start_menu,
     AddMenuCallback callback_add_menu,
@@ -279,7 +279,7 @@ int RunGnollHack(
     lib_callbacks.callback_destroy_nhwindow = callback_destroy_nhwindow;
     lib_callbacks.callback_curs = callback_curs;
     lib_callbacks.callback_putstr_ex = callback_putstr_ex;
-    lib_callbacks.callback_putmixed = callback_putmixed;
+    lib_callbacks.callback_putmixed_ex = callback_putmixed_ex;
     lib_callbacks.callback_display_file = callback_display_file;
     lib_callbacks.callback_start_menu = callback_start_menu;
     lib_callbacks.callback_add_menu = callback_add_menu;

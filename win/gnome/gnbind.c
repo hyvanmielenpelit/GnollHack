@@ -28,7 +28,7 @@ struct window_procs Gnome_procs = {
     gnome_player_selection, gnome_askname, gnome_get_nh_event,
     gnome_exit_nhwindows, gnome_suspend_nhwindows, gnome_resume_nhwindows,
     gnome_create_nhwindow, gnome_clear_nhwindow, gnome_display_nhwindow,
-    gnome_destroy_nhwindow, gnome_curs, gnome_putstr, genl_putmixed,
+    gnome_destroy_nhwindow, gnome_curs, gnome_putstr_ex, genl_putmixed_ex,
     gnome_display_file, gnome_start_menu, gnome_add_menu, gnome_add_extended_menu, gnome_end_menu,
     gnome_select_menu,
     genl_message_menu, /* no need for X-specific handling */
@@ -581,7 +581,13 @@ Attributes
                    by calling more() or displaying both on the same line.
 */
 void
-gnome_putstr(winid wid, int attr, const char *text)
+gnome_putstr(winid wid, int attr, const char* text)
+{
+    gnome_putstr_ex(wid, attr, text, app, color);
+}
+
+void
+gnome_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 {
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (gnome_windowlist[wid].win != NULL)) {

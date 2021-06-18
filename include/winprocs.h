@@ -30,8 +30,8 @@ struct window_procs {
     void FDECL((*win_display_nhwindow), (winid, BOOLEAN_P));
     void FDECL((*win_destroy_nhwindow), (winid));
     void FDECL((*win_curs), (winid, int, int));
-    void FDECL((*win_putstr), (winid, int, const char *));
-    void FDECL((*win_putmixed), (winid, int, const char *));
+    void FDECL((*win_putstr_ex), (winid, int, const char *, int, int));
+    void FDECL((*win_putmixed_ex), (winid, int, const char *, int, int));
     void FDECL((*win_display_file), (const char *, BOOLEAN_P));
     void FDECL((*win_start_menu), (winid));
     void FDECL((*win_add_menu), (winid, int, const ANY_P *, CHAR_P, CHAR_P,
@@ -129,8 +129,10 @@ extern
 #define display_nhwindow (*windowprocs.win_display_nhwindow)
 #define destroy_nhwindow (*windowprocs.win_destroy_nhwindow)
 #define curs (*windowprocs.win_curs)
-#define putstr (*windowprocs.win_putstr)
-#define putmixed (*windowprocs.win_putmixed)
+#define putstr_ex (*windowprocs.win_putstr_ex)
+#define putstr(x, y, z) putstr_ex(x, y, z, 0, NO_COLOR)
+#define putmixed_ex (*windowprocs.win_putmixed_ex)
+#define putmixed(x, y, z) putmixed_ex(x, y, z, 0, NO_COLOR)
 #define display_file (*windowprocs.win_display_file)
 #define start_menu (*windowprocs.win_start_menu)
 #define add_menu (*windowprocs.win_add_menu)
@@ -374,8 +376,8 @@ struct chain_procs {
     void FDECL((*win_display_nhwindow), (CARGS, winid, BOOLEAN_P));
     void FDECL((*win_destroy_nhwindow), (CARGS, winid));
     void FDECL((*win_curs), (CARGS, winid, int, int));
-    void FDECL((*win_putstr), (CARGS, winid, int, const char *));
-    void FDECL((*win_putmixed), (CARGS, winid, int, const char *));
+    void FDECL((*win_putstr_ex), (CARGS, winid, int, const char *, int, int));
+    void FDECL((*win_putmixed_ex), (CARGS, winid, int, const char *, int, int));
     void FDECL((*win_display_file), (CARGS, const char *, BOOLEAN_P));
     void FDECL((*win_start_menu), (CARGS, winid));
     void FDECL((*win_add_menu), (CARGS, winid, int, const ANY_P *, CHAR_P,
@@ -469,8 +471,8 @@ extern void FDECL(safe_clear_nhwindow, (winid));
 extern void FDECL(safe_display_nhwindow, (winid, BOOLEAN_P));
 extern void FDECL(safe_destroy_nhwindow, (winid));
 extern void FDECL(safe_curs, (winid, int, int));
-extern void FDECL(safe_putstr, (winid, int, const char *));
-extern void FDECL(safe_putmixed, (winid, int, const char *));
+extern void FDECL(safe_putstr_ex, (winid, int, const char *, int, int));
+extern void FDECL(safe_putmixed_ex, (winid, int, const char *, int, int));
 extern void FDECL(safe_display_file, (const char *, BOOLEAN_P));
 extern void FDECL(safe_start_menu, (winid));
 extern void FDECL(safe_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P,

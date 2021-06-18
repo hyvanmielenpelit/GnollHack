@@ -38,8 +38,8 @@ struct window_procs curses_procs = {
     curses_display_nhwindow,
     curses_destroy_nhwindow,
     curses_curs,
-    curses_putstr,
-    genl_putmixed,
+    curses_putstr_ex,
+    genl_putmixed_ex,
     curses_display_file,
     curses_start_menu,
     curses_add_menu,
@@ -423,7 +423,7 @@ putstr(window, attr, str)
                    by calling more() or displaying both on the same line.
 */
 void
-curses_putstr(winid wid, int attr, const char *text)
+curses_putstr_ex(winid wid, int attr, const char *text, int app UNUSED, int color UNUSED)
 {
     int mesgflags, curses_attr;
 

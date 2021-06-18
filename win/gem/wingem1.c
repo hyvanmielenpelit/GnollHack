@@ -1509,8 +1509,15 @@ mar_set_text_to_rip(winid w)
 {
     use_rip = TRUE;
 }
+
 void
-mar_putstr_text(winid window, int attr, const char *str)
+mar_putstr_text(winid window, int attr, const char* str)
+{
+    mar_putstr_text_ex(window, attr, str, 0, NO_COLOR);
+}
+
+void
+mar_putstr_text_ex(winid window, int attr, const char *str, int app, int color)
 {
     static int zeilen_frei = 0;
     int breite;

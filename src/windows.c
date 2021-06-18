@@ -87,7 +87,7 @@ STATIC_DCL void FDECL(dump_add_extended_menu, (winid, int, const ANY_P*, struct 
     CHAR_P, int, const char*, BOOLEAN_P));
 STATIC_DCL void FDECL(dump_end_menu, (winid, const char *));
 STATIC_DCL int FDECL(dump_select_menu, (winid, int, MENU_ITEM_P **));
-STATIC_DCL void FDECL(dump_putstr, (winid, int, const char *));
+STATIC_DCL void FDECL(dump_putstr_ex, (winid, int, const char *, int, int));
 #endif /* DUMPLOG */
 
 #ifdef HANGUPHANDLING
@@ -664,7 +664,7 @@ static void FDECL(hup_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P,
 static void FDECL(hup_add_extended_menu, (winid, int, const anything*, struct extended_menu_info, CHAR_P, CHAR_P,
     int, const char*, BOOLEAN_P));
 static void FDECL(hup_end_menu, (winid, const char *));
-static void FDECL(hup_putstr, (winid, int, const char *));
+static void FDECL(hup_putstr_ex, (winid, int, const char *, int, int));
 static void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
 static void FDECL(hup_init_print_glyph, (int));
 static void FDECL(hup_outrip, (winid, int, time_t));
@@ -699,7 +699,7 @@ static struct window_procs hup_procs = {
     hup_void_ndecl,                                    /* resume_nhwindows */
     hup_create_nhwindow, hup_void_fdecl_winid,         /* clear_nhwindow */
     hup_display_nhwindow, hup_void_fdecl_winid,        /* destroy_nhwindow */
-    hup_curs, hup_putstr, hup_putstr,                  /* putmixed */
+    hup_curs, hup_putstr_ex, hup_putstr_ex,            /* putmixed */
     hup_display_file, hup_void_fdecl_winid,            /* start_menu */
     hup_add_menu, hup_add_extended_menu, hup_end_menu, hup_select_menu, genl_message_menu,
     hup_void_ndecl,                                    /* update_inventory */
@@ -885,9 +885,9 @@ const char *prompt UNUSED;
 
 /*ARGSUSED*/
 static void
-hup_putstr(window, attr, text)
+hup_putstr_ex(window, attr, text, app, color)
 winid window UNUSED;
-int attr UNUSED;
+int attr UNUSED, app UNUSED, color UNUSED;
 const char *text UNUSED;
 {
     return;
@@ -1466,9 +1466,9 @@ int no_forward;
 
 /*ARGSUSED*/
 STATIC_OVL void
-dump_putstr(win, attr, str)
+dump_putstr_ex(win, attr, str, app, color)
 winid win UNUSED;
-int attr UNUSED;
+int attr UNUSED, app UNUSED, color UNUSED;
 const char *str;
 {
     char buf[BUFSIZ * 4] = "";
@@ -1624,7 +1624,7 @@ boolean onoff_flag;
             windowprocs.win_add_extended_menu = dump_add_extended_menu;
             windowprocs.win_end_menu = dump_end_menu;
             windowprocs.win_select_menu = dump_select_menu;
-            windowprocs.win_putstr = dump_putstr;
+            windowprocs.win_putstr_ex = dump_putstr_ex;
         } else {
             windowprocs = dumplog_windowprocs_backup;
         }

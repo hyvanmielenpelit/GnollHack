@@ -73,8 +73,8 @@ struct window_procs dll_procs = {
     WC2_PREFERRED_SCREEN_SCALE, dll_init_nhwindows, dll_player_selection, dll_askname,
     dll_get_nh_event, dll_exit_nhwindows, dll_suspend_nhwindows,
     dll_resume_nhwindows, dll_create_nhwindow, dll_clear_nhwindow,
-    dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr,
-    genl_putmixed, dll_display_file, dll_start_menu, dll_add_menu, dll_add_extended_menu,
+    dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr_ex,
+    genl_putmixed_ex, dll_display_file, dll_start_menu, dll_add_menu, dll_add_extended_menu,
     dll_end_menu, dll_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     dll_update_inventory, dll_mark_synch, dll_wait_synch,
@@ -1023,13 +1023,13 @@ dll_putstr(winid wid, int attr, const char *text)
 {
     dll_logDebug("dll_putstr(%d, %d, %s)\n", wid, attr, text);
 
-    dll_putstr_ex(wid, attr, text, 0);
+    dll_putstr_ex(wid, attr, text, 0, NO_COLOR);
 }
 
 void
-dll_putstr_ex(winid wid, int attr, const char *text, int app)
+dll_putstr_ex(winid wid, int attr, const char *text, int app, int color)
 {
-    dll_callbacks.callback_putstr_ex((int)wid, attr, text, app, CLR_WHITE);
+    dll_callbacks.callback_putstr_ex((int)wid, attr, text, app, color);
 
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
@@ -1681,12 +1681,12 @@ dll_yn_function(const char *question, const char *choices, CHAR_P def)
             char z, digit_string[2];
             int n_len = 0;
             long value = 0;
-            dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, ("#"), 1);
+            dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, ("#"), 1, NO_COLOR);
             n_len++;
             digit_string[1] = '\0';
             if (ch != '#') {
                 digit_string[0] = ch;
-                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
+                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1, NO_COLOR);
                 n_len++;
                 value = ch - '0';
                 ch = '#';
@@ -1698,7 +1698,7 @@ dll_yn_function(const char *question, const char *choices, CHAR_P def)
                     if (value < 0)
                         break; /* overflow: try again */
                     digit_string[0] = z;
-                    dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1);
+                    dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, 1, NO_COLOR);
                     n_len++;
                 } else if (z == 'y' || index(quitchars, z)) {
                     if (z == '\033')
@@ -1711,7 +1711,7 @@ dll_yn_function(const char *question, const char *choices, CHAR_P def)
                     } else {
                         value /= 10;
                         dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string,
-                                        -1);
+                                        -1, NO_COLOR);
                         n_len--;
                     }
                 } else {
@@ -1725,7 +1725,7 @@ dll_yn_function(const char *question, const char *choices, CHAR_P def)
             else if (value == 0)
                 ch = 'n'; /* 0 => "no" */
             else {        /* remove number from top line, then try again */
-                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, -n_len);
+                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, digit_string, -n_len, NO_COLOR);
                 n_len = 0;
                 ch = (char) 0;
             }
@@ -1740,7 +1740,7 @@ dll_yn_function(const char *question, const char *choices, CHAR_P def)
     if (isprint((uchar) ch) && ch != '#') {
         res_ch[0] = ch;
         res_ch[1] = '\x0';
-        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1);
+        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, res_ch, 1, NO_COLOR);
     }
 
     return ch;
@@ -1777,10 +1777,10 @@ dll_getlin(const char *question, char *input)
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
         /* dll_clear_nhwindow(WIN_MESSAGE); */
-        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, question, 0);
-        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, " ", 1);
+        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, question, 0, NO_COLOR);
+        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, " ", 1, NO_COLOR, NO_COLOR);
 #ifdef EDIT_GETLIN
-        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0);
+        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0, NO_COLOR);
         len = strlen(input);
 #else
         input[0] = '\0';
@@ -1802,7 +1802,7 @@ dll_getlin(const char *question, char *input)
                 break;
             default:
                 if (input[0])
-                    dll_putstr_ex(WIN_MESSAGE, ATR_NONE, input, -len);
+                    dll_putstr_ex(WIN_MESSAGE, ATR_NONE, input, -len, NO_COLOR);
                 if (c == VK_BACK) {
                     if (len > 0)
                         len--;
@@ -1813,7 +1813,7 @@ dll_getlin(const char *question, char *input)
                     input[len++] = c;
                     input[len] = '\0';
                 }
-                dll_putstr_ex(WIN_MESSAGE, ATR_NONE, input, 1);
+                dll_putstr_ex(WIN_MESSAGE, ATR_NONE, input, 1, NO_COLOR);
                 break;
             }
         }
@@ -1856,7 +1856,7 @@ dll_get_ext_cmd()
         cmd[0] = '\0';
         i = -2;
         dll_clear_nhwindow(WIN_MESSAGE);
-        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, "#", 0);
+        dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, "#", 0, NO_COLOR);
         len = 0;
         ShowCaret(dll_hwnd_from_winid(WIN_MESSAGE));
         while (i == -2) {
@@ -1881,7 +1881,7 @@ dll_get_ext_cmd()
             default:
                 if (cmd[0])
                     dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd,
-                                    -(int) strlen(cmd));
+                                    -(int) strlen(cmd), NO_COLOR);
                 if (c == VK_BACK) {
                     if (len > 0)
                         len--;
@@ -1907,7 +1907,7 @@ dll_get_ext_cmd()
                         Strcpy(cmd, extcmdlist[com_index].ef_txt);
                     }
                 }
-                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd, 1);
+                dll_putstr_ex(WIN_MESSAGE, ATR_BOLD, cmd, 1, NO_COLOR);
                 break;
             }
         }
@@ -2234,7 +2234,7 @@ dll_putmsghistory(const char *msg, BOOLEAN_P restoring)
     save_sound_opt = GetNHApp()->bNoSounds;
     GetNHApp()->bNoSounds =
         TRUE; /* disable sounds while restoring message history */
-    dll_putstr_ex(WIN_MESSAGE, ATR_NONE, msg, 0);
+    dll_putstr_ex(WIN_MESSAGE, ATR_NONE, msg, 0, NO_COLOR);
     clear_nhwindow(WIN_MESSAGE); /* it is in fact end-of-turn indication so
                                     each message will print on the new line */
     GetNHApp()->bNoSounds = save_sound_opt; /* restore sounds option */
