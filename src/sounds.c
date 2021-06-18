@@ -5228,7 +5228,7 @@ struct monst* mtmp;
 {
 
     long umoney = money_cnt(invent);
-    int u_pay, cure_sickness_cost = max(1, (int)(25 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int u_pay, cure_sickness_cost = max(1, (int)(100 * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
