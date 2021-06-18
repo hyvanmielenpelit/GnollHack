@@ -1027,10 +1027,17 @@ nh_timeout()
                     else
                     {
                         killer.format = KILLED_BY;
-                        Sprintf(killer.name, "%s",
-                            is_pool(u.ux, u.uy) ? (levl[u.ux][u.uy].typ == MOAT ? "moat" : "pool of water") : u.uburied ? "an underground location" : "");
+                        boolean isdrowning = (Underwater || is_pool(u.ux, u.uy));
 
-                        done(Underwater ? DROWNING : SUFFOCATION);
+                        if (isdrowning)
+                        {
+                            killer.format = KILLED_BY_AN;
+                            Sprintf(killer.name, "%s", is_pool(u.ux, u.uy) ? (levl[u.ux][u.uy].typ == MOAT ? "moat" : "pool of water") : "body of water");
+                        }
+                        else
+                            Sprintf(killer.name, "%s", u.uburied ? "being buried alive" : "");
+
+                        done(isdrowning ? DROWNING : SUFFOCATION);
                     }
                 }
                 break;
