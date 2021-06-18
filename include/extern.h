@@ -2377,6 +2377,7 @@ E void NDECL(dumplogfreemessages);
 #endif
 E void VDECL(pline, (const char *, ...)) PRINTF_F(1, 2);
 E void VDECL(custompline, (unsigned, const char *, ...)) PRINTF_F(2, 3);
+E void VDECL(pline_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
 E void VDECL(Norep, (const char *, ...)) PRINTF_F(1, 2);
 E void NDECL(free_youbuf);
 E void VDECL(You, (const char *, ...)) PRINTF_F(1, 2);

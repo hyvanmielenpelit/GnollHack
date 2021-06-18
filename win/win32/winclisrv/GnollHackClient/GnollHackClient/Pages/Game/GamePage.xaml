@@ -40,7 +40,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <Label Grid.Column="0" TextColor="{Binding IsLast, Converter={StaticResource ColorConverter}}" 
+                                <Label Grid.Column="0" TextColor="{Binding Color}" 
                                        Text="{Binding Text}"
                                        FontSize="15"
                                        FontFamily="Underwood" />

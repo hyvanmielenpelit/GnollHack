@@ -21,10 +21,11 @@
 
 struct window_line {
     int attr;
+    int color;
     char text[MAXWINDOWTEXT + 1];
 };
 
-typedef struct mswin_GnollHack_message_window {
+typedef struct mswin_gnollhack_message_window {
     size_t max_text;
     struct window_line window_text[MAX_MSG_LINES];
     int lines_last_turn; /* lines added during the last turn */
@@ -52,10 +53,10 @@ static void onMSNH_VScroll(HWND hWnd, WPARAM wParam, LPARAM lParam);
 #ifndef MSG_WRAP_TEXT
 static void onMSNH_HScroll(HWND hWnd, WPARAM wParam, LPARAM lParam);
 #endif
-static COLORREF setMsgTextColor(HDC hdc, int gray);
+static COLORREF setMsgTextColor(HDC hdc, int gray, int nhcolor);
 static void onPaint(HWND hWnd);
 static void onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam);
-static BOOL can_append_text(HWND hWnd, int attr, const char *text);
+static BOOL can_append_text(HWND hWnd, int attr, int color, const char *text);
 /* check if text can be appended to the last line without wrapping */
 
 static BOOL more_prompt_check(HWND hWnd);
@@ -285,7 +286,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             int newend = max(len + msg_data->append, 0);
             data->window_text[MSG_LINES - 1].text[newend] = '\0';
         } else {
-            if (!(msg_data->attr & ATR_STAY_ON_LINE) && can_append_text(hWnd, msg_data->attr, msgbuf)) {
+            if (!(msg_data->attr & ATR_STAY_ON_LINE) && can_append_text(hWnd, msg_data->attr, msg_data->color, msgbuf)) {
                 strncat(data->window_text[MSG_LINES - 1].text, "  ",
                         MAXWINDOWTEXT
                             - strlen(data->window_text[MSG_LINES - 1].text));
@@ -361,6 +362,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                 /* append new text to the end of the array */
                 data->window_text[MSG_LINES - 1].attr = msg_data->attr;
+                data->window_text[MSG_LINES - 1].color = msg_data->color;
                 strncpy(data->window_text[MSG_LINES - 1].text, msgbuf,
                         MAXWINDOWTEXT);
 
@@ -589,25 +591,57 @@ onMSNH_HScroll(HWND hWnd, WPARAM wParam, LPARAM lParam)
 #endif // MSG_WRAP_TEXT
 
 COLORREF
-setMsgTextColor(HDC hdc, int gray)
+setMsgTextColor(HDC hdc, int gray, int nhcolor)
 {
     COLORREF fg, color1, color2;
-    if (gray) {
-        if (message_bg_brush) {
-            color1 = message_bg_color;
-            color2 = message_fg_color;
-        } else {
-            color1 = (COLORREF) GetSysColor(DEFAULT_COLOR_BG_MSG);
-            color2 = (COLORREF) GetSysColor(DEFAULT_COLOR_FG_MSG);
+    if (nhcolor == NO_COLOR)
+    {
+        if (gray)
+        {
+            if (message_bg_brush)
+            {
+                color1 = message_bg_color;
+                color2 = message_fg_color;
+            }
+            else 
+            {
+                color1 = (COLORREF)GetSysColor(DEFAULT_COLOR_BG_MSG);
+                color2 = (COLORREF)GetSysColor(DEFAULT_COLOR_FG_MSG);
+            }
+            /* Make a "gray" color by taking the average of the individual R,G,B
+               components of two colors. Thanks to Jonathan del Strother */
+            fg = RGB((GetRValue(color1) + GetRValue(color2)) / 2,
+                (GetGValue(color1) + GetGValue(color2)) / 2,
+                (GetBValue(color1) + GetBValue(color2)) / 2);
         }
-        /* Make a "gray" color by taking the average of the individual R,G,B
-           components of two colors. Thanks to Jonathan del Strother */
-        fg = RGB((GetRValue(color1) + GetRValue(color2)) / 2,
-                 (GetGValue(color1) + GetGValue(color2)) / 2,
-                 (GetBValue(color1) + GetBValue(color2)) / 2);
-    } else {
-        fg = message_fg_brush ? message_fg_color
-                              : (COLORREF) GetSysColor(DEFAULT_COLOR_FG_MSG);
+        else 
+        {
+            fg = message_fg_brush ? message_fg_color
+                : (COLORREF)GetSysColor(DEFAULT_COLOR_FG_MSG);
+        }
+    }
+    else
+    {
+        if (gray)
+        {
+            if (message_bg_brush)
+            {
+                color1 = message_bg_color;
+                color2 = GetNHApp()->regMapColors[nhcolor];
+            }
+            else
+            {
+                color1 = (COLORREF)GetSysColor(DEFAULT_COLOR_BG_MSG);
+                color2 = GetNHApp()->regMapColors[nhcolor];
+            }
+            fg = RGB((GetRValue(color1) + GetRValue(color2)) / 2,
+                (GetGValue(color1) + GetGValue(color2)) / 2,
+                (GetBValue(color1) + GetBValue(color2)) / 2);
+        }
+        else
+        {
+            fg = GetNHApp()->regMapColors[nhcolor];
+        }
     }
 
     return SetTextColor(hdc, fg);
@@ -632,7 +666,7 @@ onPaint(HWND hWnd)
     OldBg = SetBkColor(
         hdc, message_bg_brush ? message_bg_color
                               : (COLORREF) GetSysColor(DEFAULT_COLOR_BG_MSG));
-    OldFg = setMsgTextColor(hdc, 0);
+    OldFg = setMsgTextColor(hdc, 0, NO_COLOR);
 
     data = (PNHMessageWindow) GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
@@ -665,7 +699,7 @@ onPaint(HWND hWnd)
             NH_A2W(tmptext, wbuf, sizeof(wbuf));
             wbuf[MAXWINDOWTEXT + 1] = '\0';
             wlen = _tcslen(wbuf);
-            setMsgTextColor(hdc, i < (MSG_LINES - data->lines_last_turn));
+            setMsgTextColor(hdc, i < (MSG_LINES - data->lines_last_turn), data->window_text[i].color);
 #ifdef MSG_WRAP_TEXT
             /* Find out how large the bounding rectangle of the text is */
             DrawText(hdc, wbuf, wlen, &draw_rt,
@@ -799,7 +833,7 @@ mswin_message_window_size(HWND hWnd, LPSIZE sz)
 
 /* check if text can be appended to the last line without wrapping */
 BOOL
-can_append_text(HWND hWnd, int attr, const char *text)
+can_append_text(HWND hWnd, int attr, int color, const char *text)
 {
     PNHMessageWindow data;
     char tmptext[MAXWINDOWTEXT + 1];
@@ -816,6 +850,8 @@ can_append_text(HWND hWnd, int attr, const char *text)
 
     /* cannot append text with different attrbutes */
     if (data->window_text[MSG_LINES - 1].attr != attr)
+        return FALSE;
+    if (data->window_text[MSG_LINES - 1].color != color)
         return FALSE;
 
     /* cannot append if current line ends in newline */

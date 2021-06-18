@@ -1248,6 +1248,78 @@ namespace GnollHackClient.Pages.Game
 
             return res;
         }
+        public static Color NHColor2Color(nhcolor color)
+        {
+            Color res = Color.White;
+            switch (color)
+            {
+                case nhcolor.CLR_BLACK:
+                    res = Color.DarkGray;
+                    break;
+                case nhcolor.CLR_RED:
+                    res = Color.Red;
+                    break;
+                case nhcolor.CLR_GREEN:
+                    res = Color.Green;
+                    break;
+                case nhcolor.CLR_BROWN:
+                    res = Color.Brown;
+                    break;
+                case nhcolor.CLR_BLUE:
+                    res = Color.Blue;
+                    break;
+                case nhcolor.CLR_MAGENTA:
+                    res = Color.Magenta;
+                    break;
+                case nhcolor.CLR_CYAN:
+                    res = Color.Cyan;
+                    break;
+                case nhcolor.CLR_GRAY:
+                    res = Color.LightGray;
+                    break;
+                case nhcolor.NO_COLOR:
+                    break;
+                case nhcolor.CLR_ORANGE:
+                    res = Color.Orange;
+                    break;
+                case nhcolor.CLR_BRIGHT_GREEN:
+                    res = Color.LightGreen;
+                    break;
+                case nhcolor.CLR_YELLOW:
+                    res = Color.Yellow;
+                    break;
+                case nhcolor.CLR_BRIGHT_BLUE:
+                    res = Color.LightBlue;
+                    break;
+                case nhcolor.CLR_BRIGHT_MAGENTA:
+                    res = Color.LightPink;
+                    break;
+                case nhcolor.CLR_BRIGHT_CYAN:
+                    res = Color.LightCyan;
+                    break;
+                case nhcolor.CLR_WHITE:
+                    res = Color.White;
+                    break;
+                case nhcolor.CLR_MAX:
+                    break;
+                default:
+                    break;
+            }
+
+            return res;
+        }
+        public static Color NHColor2GrayedColor(nhcolor color)
+        {
+            Color basecolor = NHColor2Color(color);
+            Color bgcolor = Color.Black;
+            Color grayedcolor;
+            if (color == nhcolor.NO_COLOR || color == nhcolor.CLR_WHITE)
+                grayedcolor = new Color((basecolor.R + bgcolor.R) / 2, (basecolor.G + bgcolor.G) / 2, (basecolor.B  + bgcolor.B) / 2, basecolor.A);
+            else /* Special colors are brighter */
+                grayedcolor = new Color((basecolor.R * 2 + bgcolor.R) / 3, (basecolor.G * 2 + bgcolor.G) / 3, (basecolor.B * 2 + bgcolor.B) / 3, basecolor.A);
+
+            return grayedcolor;
+        }
         public void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special)
         {
             lock (_mapDataLock)

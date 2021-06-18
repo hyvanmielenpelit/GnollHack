@@ -74,6 +74,7 @@ void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int co
 void lib_init_nhwindows(int* argc, char** argv)
 {
     lib_callbacks.callback_init_nhwindows();
+    iflags.window_inited = 1;
 }
 
 void lib_player_selection(void)
@@ -143,11 +144,6 @@ void lib_curs(winid wid, int x, int y)
     lib_callbacks.callback_curs(wid, x, y);
 }
 
-void lib_putstr(winid wid, int attr, const char* text)
-{
-    lib_putstr_ex(wid, attr, text, 0, NO_COLOR);
-}
-
 void lib_putstr_ex(winid wid, int attr, const char* text, int param, int color)
 {
     char buf[BUFSIZ];
@@ -186,7 +182,7 @@ void lib_display_file(const char* filename, BOOLEAN_P must_exist)
             len = strlen(line);
             if (line[len - 1] == '\n')
                 line[len - 1] = '\x0';
-            lib_putstr(text, ATR_NONE, line);
+            putstr(text, ATR_NONE, line);
         }
         (void)dlb_fclose(f);
 

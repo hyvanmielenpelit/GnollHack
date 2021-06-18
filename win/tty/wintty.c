@@ -2889,7 +2889,7 @@ const char *str;
                 i--;
             if (i) {
                 cw->data[cw->cury - 1][++i] = '\0';
-                tty_putstr(window, attr, &str[i]);
+                tty_putstr_ex(window, attr, &str[i], app, color);
             }
         }
         break;

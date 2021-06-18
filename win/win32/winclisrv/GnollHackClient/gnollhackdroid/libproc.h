@@ -20,7 +20,6 @@ void lib_clear_nhwindow(winid wid);
 void lib_display_nhwindow(winid wid, BOOLEAN_P block);
 void lib_destroy_nhwindow(winid wid);
 void lib_curs(winid wid, int x, int y);
-void lib_putstr(winid wid, int attr, const char* text);
 void lib_putstr_ex(winid wid, int attr, const char* text, int app, int color);
 void lib_display_file(const char* filename, BOOLEAN_P must_exist);
 void lib_start_menu(winid wid);

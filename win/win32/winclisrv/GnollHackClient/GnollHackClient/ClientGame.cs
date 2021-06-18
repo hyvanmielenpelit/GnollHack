@@ -461,27 +461,17 @@ namespace GnollHackClient
 
         public void ClientCallback_RawPrint(string str)
         {
-            if (_message_history.Count > 0)
-                _message_history[_message_history.Count - 1].IsLast = false;
-            _message_history.Add(new GHMsgHistoryItem(str));
-            if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
-                _message_history.RemoveAt(0);
-
-            List<GHMsgHistoryItem> sendlist = new List<GHMsgHistoryItem>();
-            sendlist.AddRange(_message_history);
-            if(sendlist.Count > 0)
-                sendlist[sendlist.Count - 1].IsLast = true;
-            ConcurrentQueue<GHRequest> queue;
-            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
-            {
-                queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, sendlist));
-            }
+            RawPrintEx(str, 0, (int)nhcolor.NO_COLOR);
         }
         public void ClientCallback_RawPrintBold(string str)
         {
+            RawPrintEx(str, 1, (int)nhcolor.NO_COLOR);
+        }
+        public void RawPrintEx(string str, int attr, int color)
+        {
             if (_message_history.Count > 0)
                 _message_history[_message_history.Count - 1].IsLast = false;
-            _message_history.Add(new GHMsgHistoryItem(str, 1));
+            _message_history.Add(new GHMsgHistoryItem(str, attr, color));
             if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
                 _message_history.RemoveAt(0);
 
@@ -499,10 +489,7 @@ namespace GnollHackClient
         {
             if (_ghWindows[win_id].WindowPrintStyle == GHWindowPrintLocations.RawPrint)
             {
-                if((attributes & (int)MenuItemAttributes.Bold) != 0)
-                    ClientCallback_RawPrintBold(str);
-                else
-                    ClientCallback_RawPrint(str);
+                RawPrintEx(str, attributes, color);
             }
             else
             {

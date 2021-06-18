@@ -10,6 +10,8 @@
                               * config file parsing) with modest decoration;
                               * result will then be truncated to BUFSZ-1 */
 
+static int pline_attr = 0;
+static int pline_color = NO_COLOR;
 static unsigned pline_flags = 0;
 static char prevmsg[BUFSZ];
 
@@ -71,7 +73,7 @@ static void
 putmesg(line)
 const char *line;
 {
-    int attr = ATR_NONE;
+    int attr = ATR_NONE, color = NO_COLOR;
 
     if ((pline_flags & URGENT_MESSAGE) != 0
         && (windowprocs.wincap2 & WC2_URGENT_MESG) != 0)
@@ -82,7 +84,10 @@ const char *line;
     if ((pline_flags & STAY_ON_LINE) != 0)
         attr |= ATR_STAY_ON_LINE;
 
-    putstr(WIN_MESSAGE, attr, line);
+    attr |= pline_attr;
+    color = pline_color;
+
+    putstr_ex(WIN_MESSAGE, attr, line, 0, color);
 }
 
 /* Note that these declarations rely on knowledge of the internals
@@ -233,6 +238,20 @@ VA_DECL2(unsigned, pflags, const char *, line)
     pline_flags = pflags;
     vpline(line, VA_ARGS);
     pline_flags = 0;
+    VA_END();
+    return;
+}
+
+void pline_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    vpline(line, VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
     VA_END();
     return;
 }
