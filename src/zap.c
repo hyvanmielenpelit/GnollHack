@@ -5776,7 +5776,7 @@ boolean ordinary;
                 && polymon(PM_STONE_GOLEM))) {
             int kformat = NO_KILLER_PREFIX;
             char kname[BUFSZ] = "";
-            Sprintf(kname, "cast a petrification spell on %sself", uhim());
+            Sprintf(kname, "casting a petrification spell on %sself", uhim());
             make_stoned(5L, (char*)0, kformat, kname);
         }
         break;
@@ -8042,17 +8042,29 @@ const char *fltxt;
         dam = d(dmgdice, dicesize) + dmgplus;
 
     double damage = adjust_damage(dam, origmonst, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 39) ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
+    char hisbuf[BUFSZ] = "";
 
-    if (fltxt)
+    if (origmonst && !origobj && is_buzztype_breath_weapon(type) && 
+        ((abstyp % 10) == ZT_DISINTEGRATION || (abstyp % 10) == ZT_PETRIFICATION)
+        )
     {
+        /* Special case: Omit fltxt to avoid repetition: disintegrated/petrified by a black dragon's / gorgon's breath weapon */
+        if (origmonst == &youmonst)
+            Sprintf(hisbuf, "%s own", uhis());
+        else
+            Sprintf(hisbuf, "%s's", mon_monster_name(origmonst));
+
+        Sprintf(killername, "%s %s", hisbuf, "breath weapon");
+    }
+    else if (fltxt)
+    {
+        if (origmonst == &youmonst)
+            Sprintf(hisbuf, "%s own", uhis());
+        else
+            Sprintf(hisbuf, "%s's", an(mon_monster_name(origmonst)));
+
         if (origmonst)
         {
-            char hisbuf[BUFSZ];
-            if (origmonst == &youmonst)
-                Sprintf(hisbuf, "%s own", uhis());
-            else
-                Sprintf(hisbuf, "%s's", an(mon_monster_name(origmonst)));
-
             if (origobj)
             {
                 Sprintf(killername, "%s from %s %s", fltxt, hisbuf, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE));
@@ -8074,8 +8086,10 @@ const char *fltxt;
     }
     else
     {
-        if(origmonst)
+        if (origmonst)
+        {
             Strcpy(killername, mon_monster_name(origmonst));
+        }
         else
             Strcpy(killername, "");
     }
@@ -8190,7 +8204,7 @@ const char *fltxt;
         /* when killed by disintegration attack, don't leave corpse */
         u.ugrave_arise = (abstyp % 10 == ZT_DISINTEGRATION) ? -3 : NON_PM;
         display_u_being_hit(HIT_DISINTEGRATED, 0, 0UL);
-        done(DIED);
+        done(DISINTEGRATION);
         return; /* lifesaved */
     case ZT_DEATH:
         damage = 0;
@@ -8308,7 +8322,7 @@ const char *fltxt;
     if (damage > 0)
     {
         int hpbefore = Upolyd ? u.mh : u.uhp;
-        losehp(damage, fltxt, KILLED_BY_AN);
+        losehp(damage, killername, KILLED_BY_AN);
         int hpafter = Upolyd ? u.mh : u.uhp;
         int damagedealt = hpbefore - hpafter;
         if (damagedealt > 0)
@@ -8568,6 +8582,8 @@ int type;
 {
     if (abs(type) >= 20 && abs(type) < 30)
         return TRUE;
+
+    return FALSE;
 }
 
 boolean
@@ -8576,6 +8592,8 @@ int type;
 {
     if (abs(type) >= 30 && abs(type) < 40)
         return TRUE;
+
+    return FALSE;
 }
 
 /*
