@@ -546,6 +546,20 @@ create_monster_or_encounter()
         {
             (void)makemon(&mons[!rn2(2) ? PM_HELL_BOVINE : PM_BISON], 0, 0, NO_MM_FLAGS);
         }
+        else if (Is_valley(&u.uz))
+        {
+            int valleyclasses[6] = { S_GREATER_UNDEAD, S_LESSER_UNDEAD, S_VAMPIRE, S_LICH, S_WRAITH, S_GHOST };
+            (void)makemon(mkclass(valleyclasses[rn2(6)], 0), 0, 0, NO_MM_FLAGS);
+        }
+        else if (Is_orcus_level(&u.uz))
+        {
+            int orcustownclasses[7] = { S_GREATER_UNDEAD, S_LESSER_UNDEAD, S_VAMPIRE, S_LICH, S_WRAITH, S_GHOST, S_DEMON };
+            (void)makemon(mkclass(orcustownclasses[rn2(7)], 0), 0, 0, NO_MM_FLAGS);
+        }
+        else if (In_V_tower(&u.uz))
+        {
+            (void)makemon(mkclass(S_VAMPIRE, 0), 0, 0, NO_MM_FLAGS);
+        }
         else if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !In_sokoban(&u.uz) && !In_V_tower(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
         {
             randomize_encounter(0, 0);
