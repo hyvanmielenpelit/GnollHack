@@ -513,7 +513,7 @@ vomiting_dialogue()
                [vomit() issues its own message for the cantvomit() case
                and for the FAINTING-or-worse case where stomach is empty] */
             if (u.uhs < FAINTING)
-                You("%s!", !Hallucination ? "vomit" : "hurl chunks");
+                You_ex(ATR_NONE, CLR_RED, "%s!", !Hallucination ? "vomit" : "hurl chunks");
         }
         vomit();
         break;
@@ -521,7 +521,7 @@ vomiting_dialogue()
         break;
     }
     if (txt)
-        You_ex(ATR_NONE, CLR_RED, txt);
+        You_ex1(ATR_NONE, CLR_RED, txt);
     exercise(A_CON, FALSE);
 }
 
