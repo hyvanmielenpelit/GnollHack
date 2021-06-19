@@ -444,6 +444,11 @@ E NEARDATA winid WIN_MAP, WIN_INVEN;
 #define Sprintf1(buf, cstr) Sprintf(buf, "%s", cstr)
 #define panic1(cstr) panic("%s", cstr)
 
+#define pline_ex1(a, b, cstr) pline_ex(a, b, "%s", cstr)
+#define Your_ex1(a, b, cstr) Your_ex(a, b, "%s", cstr)
+#define You_ex1(a, b, cstr) You_ex(a, b, "%s", cstr)
+#define You_hear_ex1(a, b, cstr) You_hear_ex(a, b, "%s", cstr)
+
 E char toplines[];
 #ifndef TCAP_H
 E struct tc_gbl_data {   /* also declared in tcap.h */

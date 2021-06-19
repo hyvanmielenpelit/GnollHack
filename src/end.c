@@ -522,7 +522,11 @@ int how;
      *  transformation.  (Turning to slime isn't an issue here because
      *  Unchanging prevents that from happening.)
      */
-    if (mptr->mlet == S_WRAITH)
+    if (mptr == &mons[PM_SPECTRE])
+        u.ugrave_arise = PM_SPECTRE;
+    else if (mptr == &mons[PM_BARROW_WIGHT])
+        u.ugrave_arise = PM_BARROW_WIGHT;
+    else if (mptr->mlet == S_WRAITH)
         u.ugrave_arise = PM_WRAITH;
     else if (mptr->mlet == S_GREATER_UNDEAD && urace.mummynum != NON_PM)
         u.ugrave_arise = urace.mummynum;
@@ -1366,9 +1370,7 @@ int how;
         u.ugrave_arise = PM_GREEN_SLIME;
     else if (how == ROTTED)
     {
-        int montype = mon_to_mummy(u.umonnum);
-        if(montype == NON_PM)
-            montype = mon_to_mummy(u.umonster);
+        int montype = urace.mummynum;
         if(montype > NON_PM && !(mvitals[montype].mvflags & G_GENOD))
             u.ugrave_arise = montype;
     }

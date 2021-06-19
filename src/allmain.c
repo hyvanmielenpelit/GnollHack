@@ -758,7 +758,7 @@ regenerate_hp()
 
     if (MummyRot && !Sick_resistance && (Upolyd ? u.mh : u.uhp) <= 4 && added_hp <= -1)
     {
-        pline_ex(ATR_NONE, CLR_RED, "You feel %s", "desiccated!");
+        You_feel_ex(ATR_NONE, CLR_RED, "desiccated!");
         nomul(0);
     }
     if (Upolyd)
@@ -773,7 +773,7 @@ regenerate_hp()
         {
             if (MummyRot && !Sick_resistance)
             {
-                pline_ex(ATR_NONE, CLR_RED, "You %s", "die from your illness.");
+                You_ex(ATR_NONE, CLR_RED, "die from your illness.");
 
                 struct kinfo* kptr = find_delayed_killer(MUMMY_ROT);
                 if (kptr && kptr->name[0])

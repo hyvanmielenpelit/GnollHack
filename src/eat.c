@@ -3867,7 +3867,7 @@ boolean incr;
 
                 /* stop what you're doing, then faint */
                 stop_occupation();
-                pline_ex(ATR_NONE, CLR_RED, "You %s", "faint from lack of food.");
+                You_ex(ATR_NONE, CLR_RED, "faint from lack of food.");
                 incr_itimeout(&HDeaf, duration);
                 context.botl = TRUE;
                 play_environment_ambient_sounds();
@@ -3920,7 +3920,7 @@ boolean incr;
                 You((!incr) ? "now have a lesser case of the munchies."
                             : "are getting the munchies.");
             } else
-                pline_ex(ATR_NONE, CLR_YELLOW, "You %s", (!incr) ? "only feel hungry now."
+                You_ex(ATR_NONE, CLR_YELLOW, (!incr) ? "only feel hungry now."
                             : (u.uhunger < 145)
                                   ? "feel hungry."
                                   : "are beginning to feel hungry.");
@@ -3940,7 +3940,7 @@ boolean incr;
                           ? urole.name.m
                           : "Elf");
             else
-                pline_ex(ATR_NONE, CLR_RED, "You %s", (!incr)
+                You_ex(ATR_NONE, CLR_RED, (!incr)
                         ? "feel weak now."
                         : (u.uhunger < 45) ? "feel weak."
                                            : "are beginning to feel weak.");

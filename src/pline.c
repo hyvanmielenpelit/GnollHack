@@ -10,6 +10,14 @@
                               * config file parsing) with modest decoration;
                               * result will then be truncated to BUFSZ-1 */
 
+                              /* `prefix' must be a string literal, not a pointer */
+#define YouPrefix(pointer, prefix, text) \
+    Strcpy((pointer = You_buf(strlen(text) + sizeof prefix)), prefix)
+
+#define YouMessage(pointer, prefix, text) \
+    strcat((YouPrefix(pointer, prefix, text), pointer), text)
+
+
 static int pline_attr = 0;
 static int pline_color = NO_COLOR;
 static unsigned pline_flags = 0;
@@ -256,6 +264,156 @@ VA_DECL3(int, attr, int, color, const char*, line)
     return;
 }
 
+
+/*VARARGS1*/
+void You_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    char* tmp;
+
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    vpline(YouMessage(tmp, "You ", line), VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
+
+/*VARARGS1*/
+void Your_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    char* tmp;
+
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    vpline(YouMessage(tmp, "Your ", line), VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
+
+/*VARARGS1*/
+void You_feel_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    char* tmp;
+
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    if (Unaware)
+        YouPrefix(tmp, "You dream that you feel ", line);
+    else
+        YouPrefix(tmp, "You feel ", line);
+    vpline(strcat(tmp, line), VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
+
+/*VARARGS1*/
+void You_cant_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    char* tmp;
+
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    vpline(YouMessage(tmp, "You can't ", line), VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
+
+/*VARARGS1*/
+void pline_The_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    char* tmp;
+
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    vpline(YouMessage(tmp, "The ", line), VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
+
+/*VARARGS1*/
+void There_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    char* tmp;
+
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    vpline(YouMessage(tmp, "There ", line), VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
+
+/*VARARGS1*/
+void You_hear_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    char* tmp;
+
+    if (Deaf || !flags.acoustics)
+        return;
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    if (Underwater)
+        YouPrefix(tmp, "You barely hear ", line);
+    else if (Unaware)
+        YouPrefix(tmp, "You dream that you hear ", line);
+    else
+        YouPrefix(tmp, "You hear ", line);
+    vpline(strcat(tmp, line), VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
+
+/*VARARGS1*/
+void You_see_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    char* tmp;
+
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    if (Unaware)
+        YouPrefix(tmp, "You dream that you see ", line);
+    else if (Blind) /* caller should have caught this... */
+        YouPrefix(tmp, "You sense ", line);
+    else
+        YouPrefix(tmp, "You see ", line);
+    vpline(strcat(tmp, line), VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
+
+
+
+
 /*VARARGS1*/
 void Norep
 VA_DECL(const char *, line)
@@ -294,12 +452,7 @@ free_youbuf()
     you_buf_siz = 0;
 }
 
-/* `prefix' must be a string literal, not a pointer */
-#define YouPrefix(pointer, prefix, text) \
-    Strcpy((pointer = You_buf(strlen(text) + sizeof prefix)), prefix)
 
-#define YouMessage(pointer, prefix, text) \
-    strcat((YouPrefix(pointer, prefix, text), pointer), text)
 
 /*VARARGS1*/
 void You

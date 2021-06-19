@@ -225,9 +225,8 @@ sick_dialogue()
 
     if (i > 0L && i <= SIZE(sick_texts)) {
         char buf[BUFSZ];
-
         Strcpy(buf, sick_texts[SIZE(sick_texts) - i]);
-        pline_ex(ATR_NONE, CLR_RED, "%s", buf);
+        pline_ex1(ATR_NONE, CLR_RED, buf);
     }
     else if (has_head(youmonst.data) && !rn2(3))
     {
@@ -277,14 +276,14 @@ food_poisoned_dialogue()
         char buf[BUFSZ];
 
         Strcpy(buf, food_poisoned_texts[SIZE(food_poisoned_texts) - i]);
-        pline_ex(ATR_NONE, CLR_RED, "%s", buf);
+        pline_ex1(ATR_NONE, CLR_RED, buf);
     }
     else if (!rn2(3))
     {
         if (!rn2(2))
-            pline_ex(ATR_NONE, CLR_RED, "Your %s", "stomach hurts%s.", (alternate_sick_text ? " badly" : ""));
+            Your_ex(ATR_NONE, CLR_RED, "stomach hurts%s.", (alternate_sick_text ? " badly" : ""));
         else
-            pline_ex(ATR_NONE, CLR_RED, "You %s", "experience a %sbout of stomach cramps.", (alternate_sick_text ? "severe " : "terrible "));
+            You_ex(ATR_NONE, CLR_RED, "experience a %sbout of stomach cramps.", (alternate_sick_text ? "severe " : "terrible "));
 
         alternate_sick_text = !alternate_sick_text;
 
@@ -409,7 +408,7 @@ stoned_dialogue()
         Strcpy(buf, stoned_texts[SIZE(stoned_texts) - i]);
         if (nolimbs(youmonst.data) && strstri(buf, "limbs"))
             (void) strsubst(buf, "limbs", "extremities");
-        pline_ex(ATR_NONE, CLR_RED, buf);
+        pline_ex1(ATR_NONE, CLR_RED, buf);
     }
     switch ((int) i) {
     case 5: /* slowing down */
@@ -522,7 +521,7 @@ vomiting_dialogue()
         break;
     }
     if (txt)
-        pline_ex(ATR_NONE, CLR_RED, "You %s", txt);
+        You_ex(ATR_NONE, CLR_RED, txt);
     exercise(A_CON, FALSE);
 }
 
@@ -556,7 +555,7 @@ choke_dialogue()
             if (index(str, '%'))
                 pline_ex(ATR_NONE, CLR_RED, str, hcolor(NH_BLUE));
             else
-                pline_ex(ATR_NONE, CLR_RED, "%s", str);
+                pline_ex1(ATR_NONE, CLR_RED, str);
         }
     }
     exercise(A_STR, FALSE);
@@ -629,7 +628,7 @@ slime_dialogue()
                 pline_ex(ATR_NONE, CLR_RED, buf,
                       an(Hallucination ? rndmonnam(NULL) : "green slime"));
         } else
-            pline_ex(ATR_NONE, CLR_RED, "%s", buf);
+            pline_ex1(ATR_NONE, CLR_RED, buf);
     }
 
     switch (i) {
@@ -900,7 +899,7 @@ nh_timeout()
                 break;
             case SICK:
             case FOOD_POISONED:
-                pline_ex(ATR_NONE, CLR_RED, "You %s", "die from your illness.");
+                You_ex(ATR_NONE, CLR_RED, "die from your illness.");
 
                 if (kptr && kptr->name[0])
                 {
@@ -935,9 +934,9 @@ nh_timeout()
                     mummy_rot_dialogue();
 
                 if (ABASE(A_CON) <= ATTRMIN(A_CON) + 2)
-                    pline_ex(ATR_NONE, CLR_RED, "You feel %s", "desiccated.");
+                    You_feel_ex(ATR_NONE, CLR_RED, "desiccated.");
                 else
-                    pline_ex(ATR_NONE, CLR_RED, "You feel %s", "gangrenous.");
+                    You_feel_ex(ATR_NONE, CLR_RED, "gangrenous.");
 
                 if (ABASE(A_CHA) > ATTRMIN(A_CHA))
                 {
@@ -949,7 +948,7 @@ nh_timeout()
                 }
                 else
                 {
-                    pline_ex(ATR_NONE, CLR_RED, "You %s", "die from your illness.");
+                    You_ex(ATR_NONE, CLR_RED, "die from your illness.");
                 
                     if (kptr && kptr->name[0]) 
                     {
@@ -988,7 +987,7 @@ nh_timeout()
                     //incr_itimeout(&HSleepy, rnd(100));
                 }
                 else if (Sleepy) {
-                    pline_ex(ATR_NONE, CLR_RED, "You %s", "fall asleep.");
+                    You_ex(ATR_NONE, CLR_RED, "fall asleep.");
                     sleeptime = rnd(20);
                     fall_asleep(-sleeptime, TRUE);
                     extratime = sleeptime;
@@ -1021,7 +1020,7 @@ nh_timeout()
                     ;
                 else
                 {
-                    pline_ex(ATR_NONE, CLR_RED, "You %s", "%s.", Underwater || drowned_by_monster ? "drown" : "suffocate");
+                    You_ex(ATR_NONE, CLR_RED, Underwater || drowned_by_monster ? "drown." : "suffocate.");
                     if (drowned_by_monster)
                         done_in_by(u.ustuck, DROWNED);
                     else
@@ -1427,11 +1426,11 @@ nh_timeout()
             // Continuous warning
             switch (propnum) {
             case STRANGLED:
-                pline_ex(ATR_NONE, CLR_RED, "You %s", "are being strangled!");
+                You_ex(ATR_NONE, CLR_RED, "are being strangled!");
                 break;
             case AIRLESS_ENVIRONMENT:
                 if (!Survives_without_air)
-                    pline_ex(ATR_NONE, CLR_RED, "You %s", "cannot breathe!");
+                    You_ex(ATR_NONE, CLR_RED, "cannot breathe!");
                 else
                     upp->intrinsic &= ~TIMEOUT; /* You can breathe, so clear the suffocation timeout -- It will be set to the full time value below */
                 break;
@@ -1796,10 +1795,10 @@ slip_or_trip()
         if (Hallucination) {
             what = strcpy(buf, what);
             buf[0] = highc(buf[0]);
-            pline("Egads!  %s bite%s your %s!", what,
+            pline_ex(ATR_NONE, CLR_YELLOW, "Egads!  %s bite%s your %s!", what,
                   (!otmp || otmp->quan == 1L) ? "s" : "", body_part(FOOT));
         } else {
-            You("trip over %s.", what);
+            You_ex(ATR_NONE, CLR_YELLOW,  "trip over %s.", what);
         }
         if (!uarmf && otmp->otyp == CORPSE
             && touch_petrifies(&mons[otmp->corpsenm]) && !Stone_resistance) {
@@ -1809,7 +1808,7 @@ slip_or_trip()
         }
     } else if (rn2(3) && is_ice(u.ux, u.uy)) {
         play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_SLIP);
-        pline("%s %s%s on the ice.",
+        pline_ex(ATR_NONE, CLR_YELLOW, "%s %s%s on the ice.",
               u.usteed ? upstart(x_monnam(u.usteed,
                                           (has_mname(u.usteed)) ? ARTICLE_NONE
                                                                 : ARTICLE_THE,
@@ -1821,37 +1820,37 @@ slip_or_trip()
             switch (rn2(4)) {
             case 1:
                 play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_TRIP);
-                You("trip over your own %s.",
+                You_ex(ATR_NONE, CLR_YELLOW, "trip over your own %s.",
                     Hallucination ? "elbow" : makeplural(body_part(FOOT)));
                 break;
             case 2:
                 play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_SLIP);
-                You("slip %s.",
+                You_ex(ATR_NONE, CLR_YELLOW, "slip %s.",
                     Hallucination ? "on a banana peel" : "and nearly fall");
                 break;
             case 3:
                 play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_FLOUNDER);
-                You("flounder.");
+                You_ex(ATR_NONE, CLR_YELLOW, "flounder.");
                 break;
             default:
                 play_player_flounder_sound(MONSTER_FLOUNDER_SOUND_STUMBLE);
-                You("stumble.");
+                You_ex(ATR_NONE, CLR_YELLOW, "stumble.");
                 break;
             }
         } else {
             switch (rn2(4)) {
             case 1:
-                Your("%s slip out of the stirrups.",
+                Your_ex(ATR_NONE, CLR_YELLOW, "%s slip out of the stirrups.",
                      makeplural(body_part(FOOT)));
                 break;
             case 2:
-                You("let go of the reins.");
+                You_ex(ATR_NONE, CLR_YELLOW, "let go of the reins.");
                 break;
             case 3:
-                You("bang into the saddle-horn.");
+                You_ex(ATR_NONE, CLR_YELLOW, "bang into the saddle-horn.");
                 break;
             default:
-                You("slide to one side of the saddle.");
+                You_ex(ATR_NONE, CLR_YELLOW, "slide to one side of the saddle.");
                 break;
             }
             dismount_steed(DISMOUNT_FELL);
@@ -1866,16 +1865,16 @@ laugh_uncontrollably()
     play_simple_player_sound(MONSTER_SOUND_TYPE_LAUGHTER);
     switch (rn2(4)) {
         case 1:
-            You("start laughing uncontrollably.");
+            You_ex(ATR_NONE, CLR_YELLOW, "start laughing uncontrollably.");
             break;
         case 2:
-            You("suddenly almost laugh your head off.");
+            You_ex(ATR_NONE, CLR_YELLOW, "suddenly almost laugh your head off.");
             break;
         case 3:
-            You("remember something funny and laugh out loudly.");
+            You_ex(ATR_NONE, CLR_YELLOW, "remember something funny and laugh out loudly.");
             break;
         default:
-            You("giggle at some funny thoughts.");
+            You_ex(ATR_NONE, CLR_YELLOW, "giggle at some funny thoughts.");
             break;
         }
 }
@@ -1888,30 +1887,30 @@ get_odd_idea()
     switch (context.oddideacnt)
     {
     case 1:
-        You("are suddenly sure that the government is controlled by...");
-        pline("...squid-faced, brain-sucking aliens from inside the hollow earth.");
+        You_ex(ATR_NONE, CLR_YELLOW, "are suddenly sure that the government is controlled by...");
+        pline_ex(ATR_NONE, CLR_YELLOW, "...squid-faced, brain-sucking aliens from inside the hollow earth.");
         break;
     case 2:
-        You("suddenly feel as if strange beings shaped like... ");
-        pline("...platonic solids are trying to contact you telepathically.");
+        You_ex(ATR_NONE, CLR_YELLOW, "suddenly feel as if strange beings shaped like... ");
+        pline_ex(ATR_NONE, CLR_YELLOW, "...platonic solids are trying to contact you telepathically.");
         break;
     case 3:
-        You("suddenly feel that the radiation inside the dungeon is getting stronger.");
+        You_ex(ATR_NONE, CLR_YELLOW, "suddenly feel that the radiation inside the dungeon is getting stronger.");
         break;
     case 4:
-        You("are suddenly even more conviced that the government is controlled by...");
-        pline("...squid-faced, brain-sucking aliens from inside the hollow earth.");
+        You_ex(ATR_NONE, CLR_YELLOW, "are suddenly even more conviced that the government is controlled by...");
+        pline_ex(ATR_NONE, CLR_YELLOW, "...squid-faced, brain-sucking aliens from inside the hollow earth.");
         break;
     case 5:
-        You("suddenly feel like strange beings shaped like...");
-        pline("...platonic solids are trying to contact you telepathically again.");
+        You_ex(ATR_NONE, CLR_YELLOW, "suddenly feel as if strange beings shaped like...");
+        pline_ex(ATR_NONE, CLR_YELLOW, "...platonic solids are trying to contact you telepathically again.");
         break;
     case 6:
-        You("are suddenly feel that the radiation inside the dungeon is getting even stronger.");
+        You_ex(ATR_NONE, CLR_YELLOW, "suddenly feel that the radiation inside the dungeon is getting even stronger.");
         context.oddideacnt = 3;
         break;
     default:
-        You("suddenly feel somewhat paranoid.");
+        You_ex(ATR_NONE, CLR_YELLOW, "suddenly feel somewhat paranoid.");
         break;
     }
 }
@@ -1924,6 +1923,8 @@ const char *tailer;
 {
     switch (obj->where) {
     case OBJ_INVENT:
+        pline_ex(ATR_NONE, CLR_YELLOW, "%s flickers%s.", Yname2(obj), tailer);
+        break;
     case OBJ_MINVENT:
         pline("%s flickers%s.", Yname2(obj), tailer);
         break;
@@ -1941,15 +1942,15 @@ struct obj *obj;
     /* from adventure */
     switch (obj->where) {
     case OBJ_INVENT:
-        Your("lantern is getting dim.");
+        Your_ex(ATR_NONE, CLR_YELLOW, "lantern is getting dim.");
         if (Hallucination)
-            pline("Batteries have not been invented yet.");
+            pline_ex(ATR_NONE, CLR_YELLOW, "Batteries have not been invented yet.");
         break;
     case OBJ_FLOOR:
-        You_see("a lantern getting dim.");
+        You_see_ex(ATR_NONE, CLR_YELLOW, "a lantern getting dim.");
         break;
     case OBJ_MINVENT:
-        pline("%s lantern is getting dim.", s_suffix(Monnam(obj->ocarry)));
+        pline_ex(ATR_NONE, CLR_YELLOW, "%s lantern is getting dim.", s_suffix(Monnam(obj->ocarry)));
         break;
     }
 }
