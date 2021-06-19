@@ -900,7 +900,7 @@ nh_timeout()
                 break;
             case SICK:
             case FOOD_POISONED:
-                You("die from your illness.");
+                pline_ex(ATR_NONE, CLR_RED, "You %s", "die from your illness.");
 
                 if (kptr && kptr->name[0])
                 {
@@ -935,9 +935,9 @@ nh_timeout()
                     mummy_rot_dialogue();
 
                 if (ABASE(A_CON) <= ATTRMIN(A_CON) + 2)
-                    You_feel("desiccated.");
+                    pline_ex(ATR_NONE, CLR_RED, "You feel %s", "desiccated.");
                 else
-                    You_feel("gangrenous.");
+                    pline_ex(ATR_NONE, CLR_RED, "You feel %s", "gangrenous.");
 
                 if (ABASE(A_CHA) > ATTRMIN(A_CHA))
                 {
@@ -949,7 +949,7 @@ nh_timeout()
                 }
                 else
                 {
-                    You("die from your illness.");
+                    pline_ex(ATR_NONE, CLR_RED, "You %s", "die from your illness.");
                 
                     if (kptr && kptr->name[0]) 
                     {
@@ -988,7 +988,7 @@ nh_timeout()
                     //incr_itimeout(&HSleepy, rnd(100));
                 }
                 else if (Sleepy) {
-                    You("fall asleep.");
+                    pline_ex(ATR_NONE, CLR_RED, "You %s", "fall asleep.");
                     sleeptime = rnd(20);
                     fall_asleep(-sleeptime, TRUE);
                     extratime = sleeptime;
@@ -1021,7 +1021,7 @@ nh_timeout()
                     ;
                 else
                 {
-                    You("%s.", Underwater || drowned_by_monster ? "drown" : "suffocate");
+                    pline_ex(ATR_NONE, CLR_RED, "You %s", "%s.", Underwater || drowned_by_monster ? "drown" : "suffocate");
                     if (drowned_by_monster)
                         done_in_by(u.ustuck, DROWNED);
                     else

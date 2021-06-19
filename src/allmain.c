@@ -758,7 +758,7 @@ regenerate_hp()
 
     if (MummyRot && !Sick_resistance && (Upolyd ? u.mh : u.uhp) <= 4 && added_hp <= -1)
     {
-        You_feel("desiccated!");
+        pline_ex(ATR_NONE, CLR_RED, "You feel %s", "desiccated!");
         nomul(0);
     }
     if (Upolyd)
@@ -773,7 +773,7 @@ regenerate_hp()
         {
             if (MummyRot && !Sick_resistance)
             {
-                You("die from your illness.");
+                pline_ex(ATR_NONE, CLR_RED, "You %s", "die from your illness.");
 
                 struct kinfo* kptr = find_delayed_killer(MUMMY_ROT);
                 if (kptr && kptr->name[0])
@@ -801,7 +801,7 @@ regenerate_hp()
                         killer.format = KILLED_BY;
                     }
                 }
-                done(POISONING);
+                done(ROTTED);
             }
             else if(youmonst.data->mlet == S_EEL && !is_pool(u.ux, u.uy) && !Is_waterlevel(&u.uz))
             {
