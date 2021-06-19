@@ -911,7 +911,9 @@ int roomno;
 
         if (moves >= esmi_p->enter_time) 
         {
+            context.global_minimum_volume = 0.5;
             play_monster_special_dialogue_line(smith, !smithied ? SMITH_LINE_ADVENTURER_WELCOME : SMITH_LINE_ADVENTURER_WELCOME_TO_THE_SMITHY);
+            context.global_minimum_volume = 0.0;
             Sprintf(buf, "Adventurer, %s!",
                 !smithied ? "welcome" : "welcome to the smithy");
 
