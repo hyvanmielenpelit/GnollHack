@@ -622,7 +622,15 @@ maybe_create_rwraith()
                 {
                     rwraith = christen_monst(rwraith, "Witch-King of Yendor");
                     rwraith->u_know_mname = TRUE; /* He's famous -- JG */
-                    (void)mongets(rwraith, CROWN_OF_RULERSHIP);
+                    struct obj* crown = mongets(rwraith, ROYAL_CROWN);
+                    if (crown)
+                    {
+                        crown->mythic_prefix = MYTHIC_PREFIX_WITCH_KINGS;
+                        crown->mythic_suffix = MYTHIC_SUFFIX_SORCERY;
+                        if (crown->enchantment < 5)
+                            crown->enchantment = 5;
+                        curse(crown);
+                    }
                     context.made_witch_king = TRUE;
                 }
             }
