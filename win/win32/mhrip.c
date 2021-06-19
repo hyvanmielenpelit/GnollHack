@@ -12,10 +12,13 @@
 #define RIP_WIDTH 400
 #define RIP_HEIGHT 200
 
-#define RIP_GRAVE_HEIGHT 120
-#define RIP_GRAVE_WIDTH 115
-#define RIP_GRAVE_X 90
-#define RIP_GRAVE_Y 60
+#define RIP_TARGET_WIDTH 600
+#define RIP_TARGET_HEIGHT 300
+
+#define RIP_GRAVE_HEIGHT 180
+#define RIP_GRAVE_WIDTH 175
+#define RIP_GRAVE_X 135
+#define RIP_GRAVE_Y 90
 
 #define RIP_OFFSET_X 10
 #define RIP_OFFSET_Y 10
@@ -83,8 +86,8 @@ mswin_display_RIP_window(HWND hWnd)
 
     data->x = (int)(RIP_OFFSET_X * monitorInfo.scale);
     data->y = (int)(RIP_OFFSET_Y * monitorInfo.scale);
-    data->width = (int)(RIP_WIDTH * monitorInfo.scale);
-    data->height = (int)(RIP_HEIGHT * monitorInfo.scale);
+    data->width = (int)(RIP_TARGET_WIDTH * monitorInfo.scale);
+    data->height = (int)(RIP_TARGET_HEIGHT * monitorInfo.scale);
     data->graveX = (int)(RIP_GRAVE_X * monitorInfo.scale);
     data->graveY = (int)(RIP_GRAVE_Y * monitorInfo.scale);
     data->graveWidth = (int)(RIP_GRAVE_WIDTH * monitorInfo.scale);
