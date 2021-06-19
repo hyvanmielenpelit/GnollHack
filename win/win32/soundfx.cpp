@@ -1326,6 +1326,21 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/God/Female/God Speaks", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Invisible Choir Sings", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Female/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Female/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Female/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Female/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Female/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Female/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Female/Death", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Flind/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Flind/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Flind/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Flind/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Flind/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Flind/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Flind/Death", 1.0f },
 };
 
 

@@ -343,9 +343,11 @@ int mtype;
         }
     }
 
-    npc = makemon(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC);
+    unsigned long extraflags = Inhell ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
+
+    npc = makemon(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC | extraflags);
     if(!npc)
-        npc = makemon(&mons[npc_subtype_definitions[npctype].mnum], npc_loc_x, npc_loc_y, MM_ENPC); /* Fallback */
+        npc = makemon(&mons[npc_subtype_definitions[npctype].mnum], npc_loc_x, npc_loc_y, MM_ENPC | extraflags); /* Fallback */
     
     if (npc)
     {

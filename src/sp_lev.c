@@ -1954,8 +1954,8 @@ struct mkroom *croom;
 
         if (m->seentraps)
             mtmp->mtrapseen = m->seentraps;
-        if (m->female)
-            mtmp->female = 1;
+        if (m->female >= 0)
+            mtmp->female = m->female;
         if (m->waitforu)
             mtmp->mstrategy |= STRAT_WAITFORU;
         if (m->protector)
@@ -3618,7 +3618,7 @@ struct sp_coder *coder;
     tmpmons.appear = 0;
     tmpmons.appear_as.str = (char *) 0;
     tmpmons.align = -MAX_REGISTERS - 2;
-    tmpmons.female = 0;
+    tmpmons.female = -1; /* random */
     tmpmons.invis = 0;
     tmpmons.cancelled = 0;
     tmpmons.revived = 0;

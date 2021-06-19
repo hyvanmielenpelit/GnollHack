@@ -81,9 +81,9 @@ STATIC_DCL int FDECL(do_chat_npc_teach_spells, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
-STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int, const char*));
-STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, long, const char*));
-STATIC_DCL int FDECL(general_service_query_with_components, (struct monst*, int (*)(struct monst*), const char*, long, const char*, const char*));
+STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int, const char*, int));
+STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, long, const char*, int));
+STATIC_DCL int FDECL(general_service_query_with_components, (struct monst*, int (*)(struct monst*), const char*, long, const char*, const char*, int));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
@@ -1022,11 +1022,13 @@ register struct monst *mtmp;
     case MS_SMITH: /* pitch, pay, total */
         if (is_peaceful(mtmp))
         {
+            play_monster_special_dialogue_line(mtmp, SMITH_LINE_WELCOME_TO_MY_SMITHY_ADVENTURER);
             Sprintf(verbuf, "Welcome to my smithy, adventurer!");
             chat_line = 0;
         }
         else
         {
+            play_monster_special_dialogue_line(mtmp, SMITH_LINE_BEGONE_YOU_ROTTEN_VANDAL);
             Sprintf(verbuf, "Begone, you rotten vandal!");
             chat_line = 1;
         }
@@ -3429,12 +3431,31 @@ struct monst* mtmp;
     }
     else if (mtmp->issmith)
     {
-        if (has_mname(mtmp))
-            Sprintf(ansbuf, "I am %s, a local smith.", MNAME(mtmp));
+        if (iflags.using_gui_sounds)
+        {
+            play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+            if (has_mname(mtmp))
+            {
+                Sprintf(ansbuf, "I am a local smith. (The name tag indicates that %s name is %s.)", mhis(mtmp), MNAME(mtmp));
+                mtmp->u_know_mname = 1;
+            }
+            else
+            {
+                Sprintf(ansbuf, "I am a local smith.");
+            }
+        }
         else
-            Sprintf(ansbuf, "I am a local smith.");
-
-        mtmp->u_know_mname = 1;
+        {
+            if (has_mname(mtmp))
+            {
+                Sprintf(ansbuf, "I am %s, a local smith.", MNAME(mtmp));
+                mtmp->u_know_mname = 1;
+            }
+            else
+            {
+                Sprintf(ansbuf, "I am a local smith.");
+            }
+        }
         verbalize("%s", ansbuf);
     }
     else if (mtmp->isnpc && has_enpc(mtmp))
@@ -5743,8 +5764,11 @@ struct monst* mtmp;
     else if (!m_speak_check(mtmp))
         return 0;
 
-
-    Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+    play_monster_special_dialogue_line(mtmp, SMITH_LINE_YOU_NEED_TO_PAY_A_LOT_OF_GOLD_IN_COMPENSATION);
+    if (iflags.using_gui_sounds)
+        Sprintf(qbuf, "\"You need to pay a lot of gold in compensation.\" (%ld %s in fact!)  Agree?", reconcile_cost, currency(reconcile_cost));
+    else
+        Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
 
     switch (ynq(qbuf)) {
     default:
@@ -5767,9 +5791,15 @@ struct monst* mtmp;
     newsym(mtmp->mx, mtmp->my);
 
     if (is_peaceful(mtmp))
+    {
+        play_monster_special_dialogue_line(mtmp, SMITH_LINE_THATS_A_DEAL_BE_MORE_CAREFUL_NEXT_TIME);
         verbalize("That's a deal. Be more careful next time.");
+    }
     else
+    {
+        play_monster_special_dialogue_line(mtmp, SMITH_LINE_ON_SECOND_THOUGHT_MAYBE_YOU_SHOULD_HANG_FOR_YOUR_CRIMES_ANYWAY);
         verbalize("On second thought, maybe you should hang for your crimes anyway.");
+    }
 
     return 1;
 }
@@ -5782,7 +5812,7 @@ struct monst* mtmp;
         return 0;
 
     int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));    
-    return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, 0, "enchant an armor", cost, "enchanting an armor");
+    return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, 0, "enchant an armor", cost, "enchanting an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ARMOR);
 }
 
 STATIC_OVL int
@@ -5793,7 +5823,7 @@ struct monst* mtmp;
         return 0;
 
     int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, 0, "enchant a weapon", cost, "enchanting a weapon");
+    return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, 0, "enchant a weapon", cost, "enchanting a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_A_WEAPON);
 }
 
 STATIC_OVL int
@@ -5804,7 +5834,7 @@ struct monst* mtmp;
         return 0;
 
     long cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return general_service_query(mtmp, repair_armor_func, "repair an armor", cost, "repairing an armor");
+    return general_service_query(mtmp, repair_armor_func, "repair an armor", cost, "repairing an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_REPAIR_AN_ARMOR);
 }
 
 STATIC_OVL int
@@ -5815,7 +5845,7 @@ struct monst* mtmp;
         return 0;
 
     long cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return general_service_query(mtmp, repair_weapon_func, "repair a weapon", cost, "repairing a weapon");
+    return general_service_query(mtmp, repair_weapon_func, "repair a weapon", cost, "repairing a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_REPAIR_A_WEAPON);
 }
 
 
@@ -5827,7 +5857,7 @@ struct monst* mtmp;
         return 0;
 
     int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SPE_PROTECT_ARMOR, 0, "protect an armor", cost, "protecting an armor");
+    return spell_service_query(mtmp, SPE_PROTECT_ARMOR, 0, "protect an armor", cost, "protecting an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_PROTECT_AN_ARMOR);
 }
 
 STATIC_OVL int
@@ -5838,7 +5868,7 @@ struct monst* mtmp;
         return 0;
 
     int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SPE_PROTECT_WEAPON, 0, "protect a weapon", cost, "protecting a weapon");
+    return spell_service_query(mtmp, SPE_PROTECT_WEAPON, 0, "protect a weapon", cost, "protecting a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_PROTECT_A_WEAPON);
 }
 
 STATIC_OVL int
@@ -5849,7 +5879,7 @@ struct monst* mtmp;
         return 0;
 
     long cost = max(5, (int)((max(objects[BRASS_LANTERN].oc_cost, objects[POT_OIL].oc_cost)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return general_service_query(mtmp, refill_lantern_func, "refill a lamp or lantern", cost, "refilling a lamp or lantern");
+    return general_service_query(mtmp, refill_lantern_func, "refill a lamp or lantern", cost, "refilling a lamp or lantern", SMITH_LINE_WOULD_YOU_LIKE_TO_REFILL_A_LAMP_OR_LANTERN);
 }
 
 STATIC_OVL int
@@ -5931,27 +5961,27 @@ struct monst* mtmp;
     {
     case 1:
         cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail");
+        return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_DRAGON_SCALE_MAIL);
         break;
     case 2:
         cost = max(1, (int)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", "15 nuggets of silver ore");
+        return general_service_query_with_components(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", "15 nuggets of silver ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION);
         break;
     case 3:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", "3 dilithium crystals");
+        return general_service_query_with_components(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", "3 dilithium crystals", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL);
         break;
     case 4:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", "8 nuggets of adamantium ore");
+        return general_service_query_with_components(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", "8 nuggets of adamantium ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL);
         break;
     case 5:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", "8 nuggets of mithril ore");
+        return general_service_query_with_components(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", "8 nuggets of mithril ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL);
         break;
     case 6:
         cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", "8 nuggets of orichalcum ore");
+        return general_service_query_with_components(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", "8 nuggets of orichalcum ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL);
         break;
     default:
         pline1(Never_mind);
@@ -6026,19 +6056,19 @@ struct monst* mtmp;
     {
     case 1:
         cost = max(1, (int)((100 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_plate_mail_func, "forge a plate mail", cost, "forging any armor", "8 nuggets of iron ore");
+        return general_service_query_with_components(mtmp, forge_plate_mail_func, "forge a plate mail", cost, "forging any armor", "8 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PLATE_MAIL);
         break;
     case 2:
         cost = max(1, (int)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_bronze_plate_mail_func, "forge a bronze plate mail", cost, "forging any armor", "8 nuggets of copper ore");
+        return general_service_query_with_components(mtmp, forge_bronze_plate_mail_func, "forge a bronze plate mail", cost, "forging any armor", "8 nuggets of copper ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_BRONZE_PLATE_MAIL);
         break;
     case 3:
         cost = max(1, (int)((200 + 20 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_field_plate_mail_func, "forge a field plate mail", cost, "forging any armor", "15 nuggets of iron ore");
+        return general_service_query_with_components(mtmp, forge_field_plate_mail_func, "forge a field plate mail", cost, "forging any armor", "15 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FIELD_PLATE_MAIL);
         break;
     case 4:
         cost = max(1, (int)((400 + 40 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_components(mtmp, forge_full_plate_mail_func, "forge a full plate mail", cost, "forging any armor", "30 nuggets of iron ore");
+        return general_service_query_with_components(mtmp, forge_full_plate_mail_func, "forge a full plate mail", cost, "forging any armor", "30 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FULL_PLATE_MAIL);
         break;
     default:
         pline1(Never_mind);
@@ -6072,6 +6102,7 @@ struct monst* mtmp;
         return 0;
     }
 
+    play_monster_special_dialogue_line(mtmp, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR);
     Sprintf(qbuf, "Would you like to identify a weapon or armor? (%d %s)", minor_id_cost, currency((long)minor_id_cost));
 
     switch (ynq(qbuf)) {
@@ -6266,8 +6297,10 @@ struct monst* mtmp;
     else if (!m_speak_check(mtmp))
         return 0;
 
-
-    Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+    if (iflags.using_gui_sounds)
+        Sprintf(qbuf, "\"You need to pay a lot of gold in compensation.\" (%ld %s in fact!)  Agree?", reconcile_cost, currency(reconcile_cost));
+    else
+        Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
 
     switch (ynq(qbuf)) {
     default:
@@ -6306,7 +6339,7 @@ struct monst* mtmp;
         return 0;
 
     int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SCR_ENCHANT_ACCESSORY, 0, "enchant an accessory", cost, "enchanting an accessory");
+    return spell_service_query(mtmp, SCR_ENCHANT_ACCESSORY, 0, "enchant an accessory", cost, "enchanting an accessory", 0);
 }
 
 STATIC_OVL int
@@ -6317,7 +6350,7 @@ struct monst* mtmp;
         return 0;
 
     int cost = max(1, (int)((1200 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SCR_CHARGING, 0, "recharge an item", cost, "recharging an item");
+    return spell_service_query(mtmp, SCR_CHARGING, 0, "recharge an item", cost, "recharging an item", 0);
 }
 
 
@@ -6329,7 +6362,7 @@ struct monst* mtmp;
         return 0;
 
     int cost = max(1, (int)((4000 + 200 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    return spell_service_query(mtmp, SCR_CHARGING, 1, "fully recharge an item", cost, "fully recharging an item");
+    return spell_service_query(mtmp, SCR_CHARGING, 1, "fully recharge an item", cost, "fully recharging an item", 0);
 }
 
 STATIC_OVL int
@@ -6973,11 +7006,12 @@ const char *msg;
 
 
 STATIC_OVL int
-spell_service_query(mtmp, service_spell_id, buc, service_verb, service_cost, no_mood_string)
+spell_service_query(mtmp, service_spell_id, buc, service_verb, service_cost, no_mood_string, special_dialogue_sound_id)
 struct monst* mtmp;
 int service_spell_id, buc, service_cost;
 const char* service_verb;
 const char* no_mood_string;
+int special_dialogue_sound_id;
 {
 
     long umoney = money_cnt(invent);
@@ -6992,6 +7026,9 @@ const char* no_mood_string;
         You("have no money.");
         return 0;
     }
+
+    if (special_dialogue_sound_id > 0)
+        play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
 
     Sprintf(qbuf, "Would you like to %s? (%d %s)", service_verb, service_cost, currency((long)service_cost));
     switch (ynq(qbuf)) 
@@ -7036,25 +7073,27 @@ const char* no_mood_string;
 }
 
 STATIC_OVL int
-general_service_query(mtmp, service_func, service_verb, service_cost, no_mood_string)
+general_service_query(mtmp, service_func, service_verb, service_cost, no_mood_string, special_dialogue_sound_id)
 struct monst* mtmp;
 int (*service_func)(struct monst*);
 const char* service_verb;
 long service_cost;
 const char* no_mood_string;
+int special_dialogue_sound_id;
 {
 
-    return general_service_query_with_components(mtmp, service_func, service_verb, service_cost, no_mood_string, (const char* )0);
+    return general_service_query_with_components(mtmp, service_func, service_verb, service_cost, no_mood_string, (const char* )0, special_dialogue_sound_id);
 }
 
 STATIC_OVL int
-general_service_query_with_components(mtmp, service_func, service_verb, service_cost, no_mood_string, component_string)
+general_service_query_with_components(mtmp, service_func, service_verb, service_cost, no_mood_string, component_string, special_dialogue_sound_id)
 struct monst* mtmp;
 int (*service_func)(struct monst*);
 const char* service_verb;
 long service_cost;
 const char* no_mood_string;
 const char* component_string;
+int special_dialogue_sound_id;
 {
 
     long umoney = money_cnt(invent);
@@ -7069,6 +7108,9 @@ const char* component_string;
         You("have no money.");
         return 0;
     }
+
+    if (special_dialogue_sound_id > 0)
+        play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
 
     if(component_string)
         Sprintf(qbuf, "Would you like to %s? (%ld %s, %s)", service_verb, service_cost, currency(service_cost), component_string);
@@ -7203,14 +7245,30 @@ struct monst* mtmp;
     /* Check if the selection is appropriate */
     if (otmp && !is_refillable_with_oil(otmp))
     {
-        play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
+//        play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
+        play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_THIS_IS_NOT_AN_ITEM_THAT_I_CAN_FILL_WITH_OIL);
         verbalize("Sorry, this is not an item that I can fill with oil.");
         return 0;
     }
     else if (otmp && otmp->age > 1500L)
     {
         play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
-        verbalize("Sorry, %s %s already full.", yname(otmp), otense(otmp, "are"));
+        if (iflags.using_gui_sounds)
+        {
+            if (otmp->otyp == BRASS_LANTERN)
+            {
+                play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_YOUR_LANTERN_IS_ALREADY_FULL);
+                verbalize("Sorry, your lantern is already full.");
+            }
+            else
+            {
+                play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_YOUR_LAMP_IS_ALREADY_FULL);
+                verbalize("Sorry, your lamp is already full.");
+            }
+        }
+        else
+            verbalize("Sorry, %s %s already full.", yname(otmp), otense(otmp, "are"));
+
         return 0;
     }
 
@@ -7232,6 +7290,7 @@ struct monst* mtmp;
     otmp->special_quality = 1;
     update_inventory();
 
+    play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
     verbalize("Thank you for using my services.");
     return 1;
 }
@@ -7246,12 +7305,21 @@ struct monst* mtmp;
     if (!otmp)
         return 0;
 
-    pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+    if (iflags.using_gui_sounds)
+    {
+        play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
+        pline("%s says: \"Let's have a look.\"", Monnam(mtmp));
+    }
+    else
+    {
+        pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+    }
 
     /* Check if the selection is appropriate */
     if (otmp && !maybe_dragon_scales(otmp))
     {
-        play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+        //play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+        play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_THIS_IS_NOT_AN_ITEM_THAT_I_CAN_FORGE_INTO_A_DRAGON_SCALE_MAIL);
         verbalize("Sorry, this is not an item that I can forge into a dragon scale mail.");
         return 0;
     }
@@ -7260,6 +7328,7 @@ struct monst* mtmp;
 
     dragon_scales_to_scale_mail(otmp, FALSE);
 
+    play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
     verbalize("Thank you for using my services.");
     return 1;
 }
@@ -7347,13 +7416,23 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     if (!otmp)
         return 0;
 
-    pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+    if (iflags.using_gui_sounds)
+    {
+        play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
+        pline("%s says: \"Let's have a look.\"", Monnam(mtmp));
+        delay_output_milliseconds(750);
+    }
+    else
+    {
+        pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+    }
 
     int quan_needed = forge_source_quan;
     /* Check if the selection is appropriate */
     if (otmp && !maybe_otyp(otmp))
     {
-        play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+        //play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+        play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_THIS_IS_NOT_A_COMPONENT_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM);
         verbalize("Sorry, this is not an item that I can forge into %s.", an(OBJ_NAME(objects[forge_dest_otyp])));
         return 0;
     }
@@ -7367,7 +7446,15 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
         pseudo.otyp = forge_source_otyp;
         pseudo.oclass = objects[forge_source_otyp].oc_class;
         pseudo.quan = quan_needed;
-        verbalize("Sorry, you need %d %s to forge %s.", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
+        if (iflags.using_gui_sounds)
+        {
+            play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM);
+            pline("\"Sorry, you need more components to forge the requested item.\" (You need %d %s for %s.) ", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
+        }
+        else
+        {
+            verbalize("Sorry, you need %d %s to forge %s.", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
+        }
         return 0;
     }
 
@@ -7397,6 +7484,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
 
         stop_all_immediate_sounds();
         play_sfx_sound(SFX_BUY_FROM_NPC);
+        play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
         verbalize("Thank you for using my services.");
     }
     else
@@ -7505,7 +7593,7 @@ int* spell_otyps;
             Sprintf(buf2, "learning the spell '%s'", OBJ_NAME(objects[spell_to_learn]));
             context.spbook.book = &pseudo;
             context.spbook.reading_result = READING_RESULT_SUCCESS;
-            learn_count = general_service_query(mtmp, learn_spell_func, buf, cost, buf2);
+            learn_count = general_service_query(mtmp, learn_spell_func, buf, cost, buf2, 0);
             context.spbook.book = 0;
             context.spbook.reading_result = 0;
         }

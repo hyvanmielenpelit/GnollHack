@@ -498,9 +498,11 @@ int mtype;
         /* Nothing here */
     }
 
-    smith = makemon(&mons[smith_montype], smith_loc_x, smith_loc_y, MM_ESMI);
+    unsigned long extraflags = Inhell ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
+
+    smith = makemon(&mons[smith_montype], smith_loc_x, smith_loc_y, MM_ESMI | extraflags);
     if(!smith)
-        smith = makemon(&mons[PM_SMITH], smith_loc_x, smith_loc_y, MM_ESMI); /* Fallback */
+        smith = makemon(&mons[PM_SMITH], smith_loc_x, smith_loc_y, MM_ESMI | extraflags); /* Fallback */
 
     if (smith) 
     {
@@ -909,6 +911,7 @@ int roomno;
 
         if (moves >= esmi_p->enter_time) 
         {
+            play_monster_special_dialogue_line(smith, !smithied ? SMITH_LINE_ADVENTURER_WELCOME : SMITH_LINE_ADVENTURER_WELCOME_TO_THE_SMITHY);
             Sprintf(buf, "Adventurer, %s!",
                 !smithied ? "welcome" : "welcome to the smithy");
 

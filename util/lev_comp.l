@@ -265,6 +265,7 @@ indestructible    ST_RET(INDESTRUCTIBLE_ID);
 level_teleporter  ST_RET(LEVEL_TELEPORTER_ID);
 no_pickup	ST_RET(NO_PICKUP_ID);
 female		ST_RET(FEMALE_ID);
+male		ST_RET(MALE_ID);
 cancelled	ST_RET(CANCELLED_ID);
 revived		ST_RET(REVIVED_ID);
 avenge		ST_RET(AVENGE_ID);
