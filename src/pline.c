@@ -446,6 +446,22 @@ VA_DECL(const char *, line)
     return;
 }
 
+void Norep_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    pline_flags = PLINE_NOREPEAT;
+    vpline(line, VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    pline_flags = 0;
+    VA_END();
+    return;
+}
+
 /* work buffer for You(), &c and verbalize() */
 static char *you_buf = 0;
 static size_t you_buf_siz = 0;

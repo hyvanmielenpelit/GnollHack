@@ -68,7 +68,7 @@ boolean talk;
 
     if (!xtime && old) {
         if (talk)
-            You_feel("less %s now.", Hallucination ? "trippy" : "confused");
+            You_feel_ex(ATR_NONE, CLR_GREEN, "less %s now.", Hallucination ? "trippy" : "confused");
     }
     if ((xtime && !old) || (!xtime && old))
         context.botl = context.botlx = TRUE;
@@ -89,7 +89,7 @@ boolean talk;
     if (!xtime && old) 
     {
         if (talk)
-            You_feel("%s now.",
+            You_feel_ex(ATR_NONE, CLR_GREEN, "%s now.",
                      Hallucination ? "less wobbly" : "a bit steadier");
     }
 
@@ -98,9 +98,9 @@ boolean talk;
         if (talk)
         {
             if (u.usteed)
-                You("wobble in the saddle.");
+                You_ex(ATR_NONE, CLR_RED, "wobble in the saddle.");
             else
-                You("%s...", stagger(youmonst.data, "stagger"));
+                You_ex(ATR_NONE, CLR_RED, "%s...", stagger(youmonst.data, "stagger"));
         }
     }
     if ((!xtime && old) || (xtime && !old))
@@ -135,13 +135,13 @@ boolean talk;
         if (!old) 
         {
             /* newly sick */
-            You_feel("deathly sick.");
+            You_feel_ex(ATR_NONE, CLR_RED, "deathly sick.");
         }
         else
         {
             /* already sick */
             if (talk)
-                You_feel("%s worse.", xtime <= Sick / 2L ? "much" : "even");
+                You_feel_ex(ATR_NONE, CLR_RED, "%s worse.", xtime <= Sick / 2L ? "much" : "even");
         }
         set_itimeout(&Sick, xtime);
         context.botl = context.botlx = TRUE;
@@ -152,9 +152,9 @@ boolean talk;
         if (talk)
         {
             if (FoodPoisoned || MummyRot)
-                You_feel("somewhat better.");
+                You_feel_ex(ATR_NONE, CLR_GREEN, "somewhat better.");
             else
-                You_feel("cured.  What a relief!");
+                You_feel_ex(ATR_NONE, CLR_GREEN, "cured.  What a relief!");
         }
         Sick = 0L; /* set_itimeout(&Sick, 0L) */
         context.botl = context.botlx = TRUE;
@@ -205,13 +205,13 @@ boolean talk;
         if (!old)
         {
             /* newly sick */
-            You_feel("terminally ill from food poisoning.");
+            You_feel_ex(ATR_NONE, CLR_RED, "terminally ill from food poisoning.");
         }
         else
         {
             /* already sick */
             if (talk)
-                You_feel("%s worse.", xtime <= FoodPoisoned / 2L ? "much" : "even");
+                You_feel_ex(ATR_NONE, CLR_RED, "%s worse.", xtime <= FoodPoisoned / 2L ? "much" : "even");
         }
         set_itimeout(&FoodPoisoned, xtime);
         context.botl = context.botlx = TRUE;
@@ -222,9 +222,9 @@ boolean talk;
         if (talk)
         {
             if (Sick || MummyRot)
-                You_feel("somewhat better.");
+                You_feel_ex(ATR_NONE, CLR_GREEN, "somewhat better.");
             else
-                You_feel("cured.  What a relief!");
+                You_feel_ex(ATR_NONE, CLR_GREEN, "cured.  What a relief!");
         }
         FoodPoisoned = 0L;
         context.botl = context.botlx = TRUE;
@@ -274,13 +274,13 @@ boolean talk;
         if (!old)
         {
             /* newly sick */
-            You_feel("severely ill.");
+            You_feel_ex(ATR_NONE, CLR_RED, "severely ill.");
         }
         else
         {
             /* already sick */
             if (talk)
-                You_feel("even worse.");
+                You_feel_ex(ATR_NONE, CLR_RED, "even worse.");
         }
 
         if (xtime > 0L)
@@ -296,9 +296,9 @@ boolean talk;
         if (talk)
         {
             if (Sick || FoodPoisoned)
-                You_feel("somewhat better.");
+                You_feel_ex(ATR_NONE, CLR_GREEN, "somewhat better.");
             else
-                You_feel("cured.  What a relief!");
+                You_feel_ex(ATR_NONE, CLR_GREEN, "cured.  What a relief!");
         }
         MummyRot = 0L;
         context.mummyrot_advancement = 0;
@@ -341,7 +341,7 @@ const char *msg;
     if ((xtime != 0L) ^ (old != 0L)) {
         context.botl = context.botlx = TRUE;
         if (msg)
-            pline("%s", msg);
+            pline_ex(ATR_NONE, !xtime ? CLR_GREEN : CLR_RED, "%s", msg);
     }
     if (!Slimed)
         dealloc_killer(find_delayed_killer(SLIMED));
@@ -365,7 +365,7 @@ const char *killername;
     if ((xtime != 0L) ^ (old != 0L)) {
         context.botl = context.botlx = TRUE;
         if (msg)
-            pline("%s", msg);
+            pline_ex(ATR_NONE, !xtime ? CLR_GREEN : CLR_RED, "%s", msg);
     }
     if (!Stoned)
         dealloc_killer(find_delayed_killer(STONED));
@@ -387,7 +387,7 @@ boolean talk;
     context.botl = context.botlx = TRUE;
     if (!xtime && old)
         if (talk)
-            You_feel("much less nauseated now.");
+            You_feel_ex(ATR_NONE, !xtime ? CLR_GREEN : CLR_RED, "much less nauseated now.");
 }
 
 static const char vismsg[] = "vision seems to %s for a moment but is %s now.";
@@ -416,9 +416,9 @@ boolean talk;
         if (talk) 
         {
             if (Hallucination)
-                pline("Far out!  Everything is all cosmic again!");
+                pline(ATR_NONE, CLR_GREEN, "Far out!  Everything is all cosmic again!");
             else
-                You("can see again.");
+                You_ex(ATR_NONE, CLR_GREEN, "can see again.");
         }
     } else if (old && !xtime) {
         /* clearing temporary blindness without toggling blindness */
@@ -439,9 +439,9 @@ boolean talk;
     if (u_could_see && !can_see_now) { /* losing sight */
         if (talk) {
             if (Hallucination)
-                pline("Oh, bummer!  Everything is dark!  Help!");
+                pline_ex(ATR_NONE, CLR_ORANGE, "Oh, bummer!  Everything is dark!  Help!");
             else
-                pline("A cloud of darkness falls upon you.");
+                pline_ex(ATR_NONE, CLR_ORANGE, "A cloud of darkness falls upon you.");
         }
         /* Before the hero goes blind, set the ball&chain variables. */
         if (Punished)
@@ -594,7 +594,7 @@ long mask; /* nonzero if resistance status should change by mask */
 
         context.botl = context.botlx = TRUE;
         if (talk)
-            pline(message, verb);
+            pline_ex(ATR_NONE, !xtime ? CLR_GREEN : CLR_RED, message, verb);
     }
 
     return changed;
@@ -618,7 +618,7 @@ boolean talk;
         update_hearing_array_and_ambient_sounds();
         play_environment_ambient_sounds();
         if (talk)
-            You(old ? "can hear again." : "are unable to hear anything.");
+            You_ex(ATR_NONE, !xtime ? CLR_GREEN : CLR_ORANGE, old ? "can hear again." : "are unable to hear anything.");
     }
 }
 
@@ -642,13 +642,13 @@ ghost_from_bottle()
         return;
     }
     if (Blind) {
-        pline("As you open the bottle, %s emerges.", something);
+        pline(ATR_NONE, CLR_ORANGE, "As you open the bottle, %s emerges.", something);
         return;
     }
-    pline("As you open the bottle, an enormous %s emerges!",
+    pline_ex(ATR_NONE, CLR_ORANGE, "As you open the bottle, an enormous %s emerges!",
           Hallucination ? rndmonnam(NULL) : (const char *) "ghost");
     if (flags.verbose)
-        You("are frightened to death, and unable to move.");
+        You_ex(ATR_NONE, CLR_ORANGE, "are frightened to death, and unable to move.");
     nomul(-3);
     multi_reason = "being frightened to death";
     nomovemsg = "You regain your composure.";
@@ -899,14 +899,14 @@ struct obj *otmp;
     case SPE_RESTORE_ABILITY:
         unkn++;
         if (otmp->cursed) {
-            pline("Ulch!  This makes you feel mediocre!");
+            pline_ex(ATR_NONE, CLR_YELLOW, "Ulch!  This makes you feel mediocre!");
             break;
         } else {
             /* unlike unicorn horn, overrides Fixed_abil */
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_RESTORE_ABILITY);
             special_effect_wait_until_action(0);
-            pline("Wow!  This makes you feel %s!",
+            pline_ex(ATR_NONE, CLR_GREEN, "Wow!  This makes you feel %s!",
                   (otmp->blessed)
                       ? (unfixable_trouble_count(FALSE) ? "better" : "great")
                       : "good");
@@ -963,11 +963,11 @@ struct obj *otmp;
             || u.ualign.type == A_CHAOTIC)
         {
             if (otmp->blessed) {
-                pline("This burns like %s!", hliquid("acid"));
+                pline_ex(ATR_NONE, CLR_RED, "This burns like %s!", hliquid("acid"));
                 exercise(A_CON, FALSE);
                 if (u.ulycn >= LOW_PM) 
                 {
-                    Your("affinity to %s disappears!",
+                    Your_ex(ATR_NONE, CLR_GREEN, "affinity to %s disappears!",
                          makeplural(mons[u.ulycn].mname));
                     if (youmonst.data == &mons[u.ulycn])
                         you_unwere(FALSE);
@@ -990,7 +990,7 @@ struct obj *otmp;
             if (otmp->blessed) 
             {
                 play_sfx_sound(SFX_CURE_DISEASE);
-                You_feel("full of awe.");
+                You_feel_ex(ATR_NONE, CLR_GREEN, "full of awe.");
                 make_sick(0L, (char *) 0, TRUE);
                 make_food_poisoned(0L, (char*)0, TRUE);
                 make_mummy_rotted(0L, (char*)0, TRUE);
@@ -1004,11 +1004,11 @@ struct obj *otmp;
             {
                 if (u.ualign.type == A_LAWFUL)
                 {
-                    pline("This burns like %s!", hliquid("acid"));
+                    pline_ex(ATR_NONE, CLR_RED, "This burns like %s!", hliquid("acid"));
                     losehp(adjust_damage(duration, (struct monst*)0, &youmonst, AD_ACID, ADFLAGS_NONE), "potion of unholy water",
                            KILLED_BY_AN);
                 } else
-                    You_feel("full of dread.");
+                    You_feel_ex(ATR_NONE, CLR_ORANGE, "full of dread.");
                 if (u.ulycn >= LOW_PM && !Upolyd)
                     you_were();
                 exercise(A_CON, FALSE);
@@ -1041,7 +1041,7 @@ struct obj *otmp;
         break;
     case POT_URINE:
         unkn++;
-        pline("Ooph!  This tastes like %s%s!",
+        pline_ex(ATR_NONE, CLR_YELLOW, "Ooph!  This tastes like %s%s!",
             otmp->odiluted ? "watered down " : "",
             Hallucination ? "dwarven ale" : objects[POT_URINE].oc_name_known ? "pee" : "urine sample");
         break;
@@ -1060,7 +1060,7 @@ struct obj *otmp;
                 (void) adjattrib(A_INT, 1, FALSE);
                 (void) adjattrib(A_WIS, 1, FALSE);
             }
-            You_feel("self-knowledgeable...");
+            You_feel_ex(ATR_NONE, CLR_GREEN, "self-knowledgeable...");
             display_nhwindow(WIN_MESSAGE, FALSE);
             enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
             pline_The("feeling subsides.");
@@ -1105,7 +1105,7 @@ struct obj *otmp;
 
         unkn++;
         if (otmp->cursed)
-            pline("Yecch!  This tastes %s.",
+            pline_ex(ATR_NONE, CLR_YELLOW, "Yecch!  This tastes %s.",
                   Hallucination ? "overripe" : "rotten");
         else
             pline(
@@ -1148,14 +1148,14 @@ struct obj *otmp;
         const char* flavortype = Hallucination ? halluflavors[rn2(6)] : "a nasty metallic";
 
         if (otmp->cursed)
-            pline("Yecch!  This tastes like %s%s, but it has %s flavor.", otmp->odiluted ? "particularly light " : "finely brewed ", beertype, flavortype);
+            pline_ex(ATR_NONE, CLR_YELLOW, "Yecch!  This tastes like %s%s, but it has %s flavor.", otmp->odiluted ? "particularly light " : "finely brewed ", beertype, flavortype);
         else
             pline("This tastes like %s%s.", otmp->odiluted ? "particularly light " : "", beertype);
 
         if (otmp->cursed)
             pline("Nevertheless, you feel refreshed%s.", !otmp->odiluted ? " although somewhat intoxicated" : "");
         else
-            You("feel refreshed.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel refreshed.");
 
         u.uhunger += nutrition / (otmp->odiluted ? 2 : 1);
         update_hunger_status(FALSE);
@@ -1169,14 +1169,14 @@ struct obj *otmp;
         break;
     case POT_PARALYSIS:
         if (Free_action) {
-            You("stiffen momentarily.");
+            You_ex(ATR_NONE, CLR_YELLOW, "stiffen momentarily.");
         } else {
             if (Levitation || Is_airlevel(&u.uz) || Is_waterlevel(&u.uz))
-                You("are motionlessly suspended.");
+                You_ex(ATR_NONE, CLR_GREEN, "are motionlessly suspended.");
             else if (u.usteed)
-                You("are frozen in place!");
+                You_ex(ATR_NONE, CLR_GREEN, "are frozen in place!");
             else
-                Your("%s are frozen to the %s!", makeplural(body_part(FOOT)),
+                Your_ex(ATR_NONE, CLR_GREEN, "%s are frozen to the %s!", makeplural(body_part(FOOT)),
                      surface(u.ux, u.uy));
             incr_itimeout(&HParalyzed, duration);
             context.botl = context.botlx = 1;
@@ -1191,11 +1191,11 @@ struct obj *otmp;
     case POT_SLEEPING:
         if (Sleep_resistance || Free_action)
         {
-            You("yawn.");
+            You_ex(ATR_NONE, CLR_YELLOW, "yawn.");
         } 
         else
         {
-            You("suddenly fall asleep!");
+            You_ex(ATR_NONE, CLR_RED, "suddenly fall asleep!");
             fall_asleep(-duration, TRUE);
         }
         break;
@@ -1250,7 +1250,7 @@ struct obj *otmp;
         exercise(A_WIS, TRUE);
         break;
     case POT_SICKNESS:
-        pline("Ulch!  This potion was contaminated!");
+        pline_ex(ATR_NONE, CLR_RED, "Ulch!  This potion was contaminated!");
         if (otmp->blessed)
         {
             pline("(But in fact it was mildly stale %s.)", fruitname(TRUE));
@@ -1287,7 +1287,7 @@ struct obj *otmp;
         }
         break;
     case POT_POISON:
-        pline("Yecch!  This stuff tastes like poison.");
+        pline_ex(ATR_NONE, CLR_RED, "Yecch!  This stuff tastes like poison.");
         if (Poison_resistance)
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
@@ -1327,10 +1327,10 @@ struct obj *otmp;
         if (!Confusion) {
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             if (Hallucination) {
-                pline("What a trippy feeling!");
+                pline_ex(ATR_NONE, CLR_ORANGE, "What a trippy feeling!");
                 unkn++;
             } else
-                pline("Huh, What?  Where am I?");
+                pline_ex(ATR_NONE, CLR_ORANGE, "Huh, What?  Where am I?");
         } else
             nothing++;
         make_confused(itimeout_incr(HConfusion, duration), FALSE);
@@ -1338,7 +1338,7 @@ struct obj *otmp;
     case POT_GAIN_ABILITY:
         if (otmp->cursed)
         {
-            pline("Ulch!  That potion tasted foul!");
+            pline_ex(ATR_NONE, CLR_ORANGE, "Ulch!  That potion tasted foul!");
             unkn++;
         } 
         else if (Fixed_abil) 
@@ -1397,11 +1397,11 @@ struct obj *otmp;
     case SPE_HASTE_SELF:
         if (otmp->otyp == POT_LIGHTNING_SPEED ? !Lightning_fast : otmp->otyp == POT_GREATER_SPEED ? !Ultra_fast || !Super_fast : otmp->otyp == POT_SPEED ? !Ultra_fast || !Super_fast || !Lightning_fast : !Very_fast || !Ultra_fast || !Super_fast || !Lightning_fast)
         { /* wwf@doe.carleton.ca */
-            You("are suddenly moving %sfaster.", (otmp->otyp == POT_LIGHTNING_SPEED ? Super_fast : otmp->otyp == POT_GREATER_SPEED ? Ultra_fast : otmp->otyp == POT_SPEED ? Very_fast : Fast) ? "" : "much ");
+            You_ex(ATR_NONE, CLR_GREEN, "are suddenly moving %sfaster.", (otmp->otyp == POT_LIGHTNING_SPEED ? Super_fast : otmp->otyp == POT_GREATER_SPEED ? Ultra_fast : otmp->otyp == POT_SPEED ? Very_fast : Fast) ? "" : "much ");
         }
         else 
         {
-            Your("%s get new energy.", makeplural(body_part(LEG)));
+            Your_ex(ATR_NONE, CLR_GREEN, "%s get new energy.", makeplural(body_part(LEG)));
             unkn++;
         }
         exercise(A_DEX, TRUE);
@@ -1414,11 +1414,11 @@ struct obj *otmp;
     case POT_MAGIC_RESISTANCE:
         if (!Antimagic)
         { 
-            You("feel secure from magical forces.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel secure from magical forces.");
         }
         else
         {
-            You("feel a bit more secure from magical forces.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel a bit more secure from magical forces.");
             unkn++;
         }
         exercise(A_WIS, TRUE);
@@ -1430,11 +1430,11 @@ struct obj *otmp;
     case POT_TITAN_STRENGTH:
         if (!Titan_strength)
         {
-            You("feel as strong as a titan.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel as strong as a titan.");
         }
         else
         {
-            You("feel a bit stronger than before.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel a bit stronger than before.");
             unkn++;
         }
         exercise(A_WIS, TRUE);
@@ -1446,11 +1446,11 @@ struct obj *otmp;
     case POT_FIRE_IMMUNITY:
         if (!Fire_immunity)
         {
-            You("feel fully protected from fire.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel fully protected from fire.");
         }
         else
         {
-            You("feel a bit more protected from fire.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel a bit more protected from fire.");
             unkn++;
         }
         exercise(A_WIS, TRUE);
@@ -1462,11 +1462,11 @@ struct obj *otmp;
     case POT_COLD_IMMUNITY:
         if (!Cold_immunity)
         {
-            You("feel fully protected from cold.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel fully protected from cold.");
         }
         else
         {
-            You("feel a bit more protected from cold.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel a bit more protected from cold.");
             unkn++;
         }
         exercise(A_WIS, TRUE);
@@ -1478,11 +1478,11 @@ struct obj *otmp;
     case POT_SHOCK_IMMUNITY:
         if (!Shock_immunity)
         {
-            You("feel fully protected from electricity.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel fully protected from electricity.");
         }
         else
         {
-            You("feel a bit more protected from electricity.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel a bit more protected from electricity.");
             unkn++;
         }
         exercise(A_WIS, TRUE);
@@ -1497,11 +1497,11 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         if (otmp->otyp == POT_HEROISM ? (!Heroism && !Super_heroism) : !Super_heroism)
         {
-            You("feel %sheroic.", otmp->otyp == POT_SUPER_HEROISM ? "super " : "");
+            You_ex(ATR_NONE, CLR_GREEN, "feel %sheroic.", otmp->otyp == POT_SUPER_HEROISM ? "super " : "");
         }
         else
         {
-            You("feel a bit more %sheroic than before.", otmp->otyp == POT_SUPER_HEROISM ? "super " : "");
+            You_ex(ATR_NONE, CLR_GREEN, "feel a bit more %sheroic than before.", otmp->otyp == POT_SUPER_HEROISM ? "super " : "");
             unkn++;
         }
         exercise(A_WIS, TRUE);
@@ -1513,11 +1513,11 @@ struct obj *otmp;
     case POT_GREATER_REGENERATION:
         if (otmp->otyp == POT_GREATER_REGENERATION ? !Divine_regeneration : otmp->otyp == POT_REGENERATION ? !Divine_regeneration && !Rapidest_regeneration : !Divine_regeneration && !Rapidest_regeneration &&!Rapider_regeneration)
         {
-            You_feel("unusually regenerative.");
+            You_feel_ex(ATR_NONE, CLR_GREEN, "unusually regenerative.");
         }
         else
         {
-            You("feel a bit more regenerative than before.");
+            You_ex(ATR_NONE, CLR_GREEN, "feel a bit more regenerative than before.");
             unkn++;
         }
         exercise(A_WIS, TRUE);
@@ -1529,7 +1529,7 @@ struct obj *otmp;
     case POT_LESSER_REJUVENATION:
     case POT_REJUVENATION:
     case POT_GREATER_REJUVENATION:
-        You_feel("rejuvenated.");
+        You_feel_ex(ATR_NONE, CLR_GREEN, "rejuvenated.");
         exercise(A_WIS, TRUE);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
@@ -1593,7 +1593,7 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_HEALING);
         special_effect_wait_until_action(0);
-        You_feel("better.");
+        You_feel_ex(ATR_NONE, CLR_GREEN, "better.");
         healup(duration, otmp->blessed ? extra_data1 : 0,
                !!otmp->blessed, !otmp->cursed, FALSE, FALSE, FALSE);
         exercise(A_CON, TRUE);
@@ -1603,7 +1603,7 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_HEALING);
         special_effect_wait_until_action(0);
-        You_feel("much better.");
+        You_feel_ex(ATR_NONE, CLR_GREEN, "much better.");
         healup(duration,
                otmp->blessed ? extra_data1 : 0, !otmp->cursed,
                TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
@@ -1615,7 +1615,7 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_HEALING);
         special_effect_wait_until_action(0);
-        You_feel("much, much better.");
+        You_feel_ex(ATR_NONE, CLR_GREEN, "much, much better.");
         healup(duration,
             otmp->blessed ? extra_data1 : 0, !otmp->cursed,
             TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
@@ -1627,7 +1627,7 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_FULL_HEALING);
         special_effect_wait_until_action(0);
-        You_feel("completely healed.");
+        You_feel_ex(ATR_NONE, CLR_GREEN, "completely healed.");
         healup(duration, otmp->blessed ? extra_data1 : 0, !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
         /* Restore one lost level if blessed */
         if (otmp->blessed && u.ulevel < u.ulevelmax) {
@@ -1715,9 +1715,9 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
 
         if (otmp->cursed)
-            You_feel("lackluster.");
+            You_feel_ex(ATR_NONE, CLR_ORANGE, "lackluster.");
         else
-            pline("Magical energies course through your body.");
+            pline_ex(ATR_NONE, CLR_GREEN, "Magical energies course through your body.");
 
         /* old: num = rnd(5) + 5 * otmp->blessed + 1;
          *      blessed:  +7..11 max & current (+9 avg)
@@ -1812,7 +1812,7 @@ struct obj *otmp;
         } else {
             int dmg;
 
-            pline("This burns%s!",
+            pline_ex(ATR_NONE, CLR_ORANGE, "This burns%s!",
                   otmp->blessed ? " a little" : otmp->cursed ? " a lot"
                                                              : " like acid");
             dmg = duration;

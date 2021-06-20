@@ -3924,7 +3924,7 @@ struct attack *mattk;
             if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
                 break;
             play_sfx_sound(SFX_PETRIFY);
-            You("turn to stone...");
+            You_ex(ATR_NONE, CLR_RED, "turn to stone...");
             killer.format = KILLED_BY;
             Strcpy(killer.name, mon_monster_name(mtmp));
             done(STONING);

@@ -2828,12 +2828,12 @@ struct obj *obj;
                 if (obj->charges > old_charges)
                 {
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
-                    p_glow2(obj, NH_BLUE);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_GREEN);
                 }
                 else if (obj->recharged != old_recharged)
                 {
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE2);
-                    p_glow1(obj);
+                    p_glow1(obj, ATR_NONE, CLR_GREEN);
                 }
                 else
                 {

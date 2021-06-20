@@ -408,7 +408,7 @@ newman()
         } else {
         dead: /* we come directly here if their experience level went to 0 or
                  less */
-            Your("new form doesn't seem healthy enough to survive.");
+            Your_ex(ATR_NONE, CLR_RED, "new form doesn't seem healthy enough to survive.");
             killer.format = KILLED_BY_AN;
             Strcpy(killer.name, "unsuccessful polymorph");
             done(DIED);
@@ -1472,7 +1472,7 @@ rehumanize()
     if (u.uhp < 1) {
         /* can only happen if some bit of code reduces u.uhp
            instead of u.mh while poly'd */
-        Your("old form was not healthy enough to survive.");
+        Your_ex(ATR_NONE, CLR_RED, "old form was not healthy enough to survive.");
         Sprintf(killer.name, "reverting to unhealthy %s form", urace.adj);
         killer.format = KILLED_BY;
         done(DIED);
@@ -2024,7 +2024,7 @@ dogaze()
                                 l_monnam(mtmp));
                             /* as if gazing at a sleeping anything is fruitful... */
                             play_sfx_sound(SFX_PETRIFY);
-                            You("turn to stone...");
+                            You_ex(ATR_NONE, CLR_RED, "turn to stone...");
                             killer.format = KILLED_BY;
                             Strcpy(killer.name, "deliberately meeting Medusa's gaze");
                             done(STONING);

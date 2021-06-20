@@ -534,7 +534,7 @@ struct monst* origmonst;
                     if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
                         break;
                     play_sfx_sound(SFX_PETRIFY);
-                    You("turn to stone...");
+                    You_ex(ATR_NONE, CLR_RED, "turn to stone...");
                     killer.format = KILLED_BY;
                     Strcpy(killer.name, mon_monster_name(mtmp));
                     done(STONING);
@@ -5504,8 +5504,8 @@ boolean ordinary;
             learn_it = TRUE;
             Sprintf(killer.name, "shot %sself with an evaporation ray", uhim());
             killer.format = NO_KILLER_PREFIX;
-            You("irradiate yourself with evaporating energy!");
-            You("die.");
+            You_ex(ATR_NONE, CLR_RED, "irradiate yourself with evaporating energy!");
+            You_ex(ATR_NONE, CLR_RED, "die.");
             /* They might survive with an amulet of life saving */
             done(DIED);
         }
@@ -5763,8 +5763,8 @@ boolean ordinary;
         learn_it = TRUE;
         Sprintf(killer.name, "shot %sself with a death ray", uhim());
         killer.format = NO_KILLER_PREFIX;
-        You("irradiate yourself with pure energy!");
-        You("die.");
+        You_ex(ATR_NONE, CLR_RED, "irradiate yourself with pure energy!");
+        You_ex(ATR_NONE, CLR_RED, "die.");
         /* They might survive with an amulet of life saving */
         done(DIED);
         break;
@@ -5846,12 +5846,12 @@ boolean ordinary;
         Sprintf(killer.name, "shot %sself with a disintegration ray", uhim());
         killer.format = NO_KILLER_PREFIX;
         play_sfx_sound(SFX_DISINTEGRATE);
-        You("irradiate yourself with disintegration field!");
-        You("are disintegrated.");
+        You_ex(ATR_NONE, CLR_RED, "irradiate yourself with disintegration field!");
+        You_ex(ATR_NONE, CLR_RED, "are disintegrated.");
         display_u_being_hit(HIT_DISINTEGRATED, 0, 0UL);
         /* when killed by disintegration breath, don't leave corpse */
         u.ugrave_arise = 3;
-        done(DIED);
+        done(DISINTEGRATION);
         break;
     case WAN_UNDEAD_TURNING:
     case SPE_TURN_UNDEAD:
@@ -10951,7 +10951,7 @@ armageddon()
 
     if (killstyle == 2)
     {
-        pline("Finally, the spell catches up on you... You die.");
+        pline_ex(ATR_NONE, CLR_RED, "Finally, the spell catches up on you... You die.");
         Strcpy(killer.name, "armageddon");
         killer.format = KILLED_BY_AN;
         done(DIED);

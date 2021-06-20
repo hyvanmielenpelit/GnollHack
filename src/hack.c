@@ -3548,7 +3548,7 @@ boolean k_format;
         killer.format = k_format;
         if (killer.name != knam) /* the thing that killed you */
             Strcpy(killer.name, knam ? knam : "");
-        You("die...");
+        You_ex(ATR_NONE, CLR_RED, "die...");
         done(DIED);
     } 
     else if (n > 0 && u.uhp * 10 < u.uhpmax) 

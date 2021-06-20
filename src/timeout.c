@@ -713,7 +713,7 @@ struct kinfo *kptr;
         killer.format = KILLED_BY;
         Strcpy(killer.name, "slimicide");
         /* immediately follows "OK, so you don't die." */
-        pline("Yes, you do.  Green slime has been genocided...");
+        pline_ex(ATR_NONE, CLR_RED, "Yes, you do.  Green slime has been genocided...");
         done(GENOCIDED);
         /* could be life-saved again (only in explore or wizard mode)
            but green slimes are gone; just stay in current form */

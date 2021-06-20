@@ -248,7 +248,7 @@ struct obj *food;
     if (Breathless || (!Strangled && !rn2(20))) {
         /* choking by eating AoS doesn't involve stuffing yourself */
         if (food && food->otyp == AMULET_OF_STRANGULATION) {
-            You("choke, but recover your composure.");
+            You(ATR_NONE, CLR_ORANGE, "choke, but recover your composure.");
             return;
         }
         You("stuff yourself and then vomit voluminously.");
@@ -261,7 +261,7 @@ struct obj *food;
          * high score list & tombstone.  So plan accordingly.
          */
         if (food) {
-            You("choke over your %s.", foodword(food));
+            You_ex(ATR_NONE, CLR_RED, "choke over your %s.", foodword(food));
             if (food->oclass == COIN_CLASS) {
                 Strcpy(killer.name, "very rich meal");
             } else {
@@ -269,10 +269,10 @@ struct obj *food;
                 Strcpy(killer.name, killer_xname(food));
             }
         } else {
-            You("choke over it.");
+            You_ex(ATR_NONE, CLR_RED, "choke over it.");
             Strcpy(killer.name, "quick snack");
         }
-        You("die...");
+        You_ex(ATR_NONE, CLR_RED, "die...");
         done(CHOKING);
     }
 }
@@ -598,7 +598,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         }
         else if (is_rider(pd))
         {
-            pline("Ingesting that is fatal.");
+            pline_ex(ATR_NONE, CLR_RED, "Ingesting that is fatal.");
             Sprintf(killer.name, "unwisely ate the brain of %s", mon_monster_name(mdef));
             killer.format = NO_KILLER_PREFIX;
             done(DIED);
@@ -657,7 +657,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         forget_objects(25); /* lose memory of 25% of objects */
 
         if(!Fixed_abil)
-            You("lose %d intelligence %s!", int_loss, int_loss > 1 ? "points" : "point");
+            You_ex(ATR_NONE, CLR_RED, "lose %d intelligence %s!", int_loss, int_loss > 1 ? "points" : "point");
 
         if (adjresult == 1 && !Fixed_abil)
             play_sfx_sound(SFX_LOSE_ABILITY);
@@ -672,14 +672,14 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
                 killer.format = KILLED_BY;
                 done(DIED);
                 /* amulet of life saving has now been used up */
-                pline("Unfortunately your brain is still gone.");
+                pline_ex(ATR_NONE, CLR_RED, "Unfortunately your brain is still gone.");
                 /* sanity check against adding other forms of life-saving */
                 u.uprops[LIFESAVED].extrinsic =
                     u.uprops[LIFESAVED].intrinsic = 0L;
             }
             else
             {
-                Your("last thought fades away.");
+                Your_ex(ATR_NONE, CLR_RED, "last thought fades away.");
             }
             Strcpy(killer.name, brainlessness);
             killer.format = KILLED_BY;
@@ -687,7 +687,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             /* can only get here when in wizard or explore mode and user has
                explicitly chosen not to die; arbitrarily boost intelligence */
             ABASE(A_INT) = ATTRMIN(A_INT) + 2;
-            You_feel("like a scarecrow.");
+            You_feel_ex(ATR_NONE, CLR_RED, "like a scarecrow.");
         }
         give_nutrit = TRUE; /* in case a conflicted pet is doing this */
         exercise(A_WIS, FALSE);
@@ -782,7 +782,7 @@ register int pm;
             Sprintf(killer.name, "tasting %s meat", pm_common_name(&mons[pm]));
             killer.format = KILLED_BY;
             play_sfx_sound(SFX_PETRIFY);
-            You("turn to stone.");
+            You_ex(ATR_NONE, CLR_RED, "turn to stone.");
             done(STONING);
             if (context.victual.piece)
                 context.victual.eating = FALSE;
@@ -817,7 +817,7 @@ register int pm;
     case PM_DEATH:
     case PM_PESTILENCE:
     case PM_FAMINE: {
-        pline("Eating that is instantly fatal.");
+        pline_ex(ATR_NONE, CLR_RED, "Eating that is instantly fatal.");
         Sprintf(killer.name, "unwisely ate the body of %s", pm_common_name(&mons[pm]));
         killer.format = NO_KILLER_PREFIX;
         done(DIED);
@@ -3887,7 +3887,7 @@ boolean incr;
             u.uhs = STARVED;
             context.botl = context.botlx = TRUE;
             bot();
-            You("die from starvation.");
+            You_ex(ATR_NONE, CLR_RED, "die from starvation.");
             killer.format = KILLED_BY;
             Strcpy(killer.name, "starvation");
             done(STARVING);
@@ -3954,7 +3954,7 @@ boolean incr;
         context.botl = context.botlx = TRUE;
         bot();
         if ((Upolyd ? u.mh : u.uhp) < 1) {
-            You("die from hunger and exhaustion.");
+            You_ex(ATR_NONE, CLR_RED, "die from hunger and exhaustion.");
             killer.format = KILLED_BY;
             Strcpy(killer.name, "exhaustion");
             done(STARVING);

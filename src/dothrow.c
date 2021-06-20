@@ -1389,7 +1389,7 @@ boolean hitsroof;
             killer.format = KILLED_BY;
             Strcpy(killer.name, "elementary physics"); /* "what goes up..." */
             play_sfx_sound(SFX_PETRIFY);
-            You("turn to stone.");
+            You_ex(ATR_NONE, CLR_RED, "turn to stone.");
             if (obj)
                 dropy(obj); /* bypass most of hitfloor() */
             thrownobj = 0;  /* now either gone or on floor */

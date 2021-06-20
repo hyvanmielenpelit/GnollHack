@@ -485,7 +485,7 @@ int poison_strength;   /* d6 per level damage*/
 
     if (u.uhp < 1) 
     {
-        pline_The("poison was deadly...");
+        pline_The_ex(ATR_NONE, CLR_RED, "poison was deadly...");
         killer.format = kprefix;
         Strcpy(killer.name, pkiller);
         /* "Poisoned by a poisoned ___" is redundant */
@@ -612,7 +612,7 @@ boolean lifesavedalready;
         {
             u.uhp = -1;
             context.botl = TRUE;
-            pline_The("magic was deadly...");
+            pline_The_ex(ATR_NONE, CLR_RED, "magic was deadly...");
         }
     }
 

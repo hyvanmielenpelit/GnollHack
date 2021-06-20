@@ -3602,7 +3602,7 @@ const char *str;
     if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
         return;
     play_sfx_sound(SFX_PETRIFY);
-    You("turn to stone...");
+    You_ex(ATR_NONE, CLR_RED, "turn to stone...");
     killer.format = KILLED_BY;
     if (str != killer.name)
         Strcpy(killer.name, str ? str : "");
@@ -4852,11 +4852,11 @@ drown()
 
     if (!u.uinwater) {
         play_sfx_sound(SFX_FALL_INTO_WATER);
-        You("%s into the %s%c", Is_waterlevel(&u.uz) ? "plunge" : "fall",
+        You_ex(ATR_NONE, CLR_RED, "%s into the %s%c", Is_waterlevel(&u.uz) ? "plunge" : "fall",
             hliquid("water"),
             Amphibious || Swimming ? '.' : '!');
         if (!Swimming && !Is_waterlevel(&u.uz))
-            You("sink like %s.", Hallucination ? "the Titanic" : "a rock");
+            You_ex(ATR_NONE, CLR_RED, "sink like %s.", Hallucination ? "the Titanic" : "a rock");
     }
 
     water_damage_chain(invent, FALSE);
@@ -4865,7 +4865,7 @@ drown()
         (void) split_mon(&youmonst, (struct monst *) 0);
     else if (is_iron(youmonst.data)) 
     {
-        You("rust!");
+        You_ex(ATR_NONE, CLR_RED, "rust!");
         double damage = adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
         i = (int)floor(damage);
         if (u.basemhmax > i)
@@ -4913,7 +4913,7 @@ drown()
             if (!is_pool(u.ux, u.uy))
                 return TRUE;
         } else
-            pline_The("attempted teleport spell fails.");
+            pline_The_ex(ATR_NONE, CLR_RED, "attempted teleport spell fails.");
     }
     if (u.usteed) {
         dismount_steed(DISMOUNT_GENERIC);
@@ -4955,19 +4955,19 @@ crawl:
         /* time to do some strip-tease... */
         boolean succ = Is_waterlevel(&u.uz) ? TRUE : emergency_disrobe(&lost);
 
-        You("try to crawl out of the %s.", hliquid("water"));
+        You_ex(ATR_NONE, CLR_ORANGE, "try to crawl out of the %s.", hliquid("water"));
         if (lost)
-            You("dump some of your gear to lose weight...");
+            You_ex(ATR_NONE, CLR_ORANGE, "dump some of your gear to lose weight...");
         if (succ) {
             pline("Pheew!  That was close.");
             teleds(x, y, TRUE, FALSE);
             return TRUE;
         }
         /* still too much weight */
-        pline("But in vain.");
+        pline_ex(ATR_NONE, CLR_RED, "But in vain.");
     }
     u.uinwater = 1;
-    You("drown.");
+    You_ex(ATR_NONE, CLR_RED, "drown.");
     for (i = 0; i < 5; i++) { /* arbitrary number of loops */
         /* killer format and name are reconstructed every iteration
            because lifesaving resets them */
@@ -4982,7 +4982,7 @@ crawl:
         if (safe_teleds(TRUE, FALSE))
             break; /* successful life-save */
         /* nowhere safe to land; repeat drowning loop... */
-        pline("You're still drowning.");
+        pline_ex(ATR_NONE, CLR_RED, "You're still drowning.");
     }
     if (u.uinwater) {
         u.uinwater = 0;
@@ -7288,12 +7288,12 @@ lava_effects()
                because lifesaving resets them */
             killer.format = KILLED_BY;
             Strcpy(killer.name, lava_killer);
-            You("%s...", boil_away ? "boil away" : "burn to a crisp");
+            You_ex(ATR_NONE, CLR_RED, "%s...", boil_away ? "boil away" : "burn to a crisp");
             done(BURNING);
             if (safe_teleds(TRUE, FALSE))
                 break; /* successful life-save */
             /* nowhere safe to land; repeat burning loop */
-            pline("You're still burning.");
+            pline_ex(ATR_NONE, CLR_RED, "You're still burning.");
         }
         You("find yourself back on solid %s.", surface(u.ux, u.uy));
         return TRUE;
@@ -7305,7 +7305,7 @@ lava_effects()
            hero needs to escape immediately */
         set_utrap((unsigned) (rn1(4, 4) + ((boil_away ? 2 : rn1(4, 12)) << 8)),
                   TT_LAVA);
-        You("sink into the %s%s!", hliquid("lava"),
+        You_ex(ATR_NONE, !boil_away ? CLR_ORANGE : CLR_RED, "sink into the %s%s!", hliquid("lava"),
             !boil_away ? ", but it only burns slightly"
                        : " and are about to be immolated");
         if (u.uhp > 1)
@@ -7342,7 +7342,7 @@ sink_into_lava()
         if (u.utrap < (1 << 8)) {
             killer.format = KILLED_BY;
             Strcpy(killer.name, "molten lava");
-            You("sink below the surface and die.");
+            You_ex(ATR_NONE, CLR_RED, "sink below the surface and die.");
             burn_away_slime(); /* add insult to injury? */
             done(DISSOLVED);
             /* can only get here via life-saving; try to get away from lava */
@@ -7354,7 +7354,7 @@ sink_into_lava()
             /* can't fully turn into slime while in lava, but might not
                have it be burned away until you've come awfully close */
             if (Slimed && rnd(10 - 1) >= (int) (Slimed & TIMEOUT)) {
-                pline(sink_deeper);
+                pline_ex(ATR_NONE, CLR_ORANGE, sink_deeper);
                 burn_away_slime();
             } else {
                 Norep(sink_deeper);

@@ -3509,7 +3509,7 @@ register struct attack *mattk;
                 /* eating a Rider or its corpse is fatal */
                 if (is_rider(pd)) 
                 {
-                    pline("Unfortunately, digesting any of it is fatal.");
+                    pline_ex(ATR_NONE, CLR_RED, "Unfortunately, digesting any of it is fatal.");
                     end_engulf();
                     Sprintf(killer.name, "unwisely tried to eat %s",
                         mon_monster_name(mdef));
