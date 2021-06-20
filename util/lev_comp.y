@@ -190,7 +190,7 @@ extern char curr_token[512];
 %token	<i> MINUS_INTEGER PLUS_INTEGER
 %token	<i> MAZE_GRID_ID SOLID_FILL_ID MINES_ID ROGUELEV_ID
 %token	<i> MESSAGE_ID MAZE_ID LEVEL_ID LEV_INIT_ID TILESET_ID GEOMETRY_ID NOMAP_ID BOUNDARY_TYPE_ID SPECIAL_TILESET_ID
-%token	<i> OBJECT_ID COBJECT_ID MONSTER_ID TRAP_ID DOOR_ID DRAWBRIDGE_ID
+%token	<i> OBJECT_ID COBJECT_ID MONSTER_ID TRAP_ID DOOR_ID DRAWBRIDGE_ID MONSTER_GENERATION_ID
 %token	<i> object_ID monster_ID terrain_ID
 %token	<i> MAZEWALK_ID WALLIFY_ID REGION_ID SPECIAL_REGION_ID SPECIAL_LEVREGION_ID SPECIAL_REGION_TYPE NAMING_ID NAMING_TYPE FILLING IRREGULAR JOINED
 %token	<i> ALTAR_ID ANVIL_ID NPC_ID LADDER_ID STAIR_ID NON_DIGGABLE_ID NON_PASSWALL_ID ROOM_ID ARTIFACT_NAME_ID
@@ -415,6 +415,12 @@ forest_detail : FOREST_ID ':' FOREST_TYPE ',' INITIALIZE_TYPE
 		  }
 		;
 
+monster_generation_detail : MONSTER_GENERATION_ID ':' INTEGER ',' encodemonster_list
+  		  {
+		      add_opvars(splev, "iio", VA_PASS3((int)$<i>5, (int)$<i>3, SPO_MONSTER_GENERATION));
+		  }
+		;
+
 boundary_type_detail : BOUNDARY_TYPE_ID ':' FLOOR_TYPE
 		  {
 		      add_opvars(splev, "io", VA_PASS2((int)$<i>3, SPO_BOUNDARY_TYPE));
@@ -501,6 +507,7 @@ levstatement 	: message
 		| boundary_type_detail
 		| forest_detail
 		| subtype_detail
+		| monster_generation_detail
 		| floor_detail
 		| altar_detail
 		| anvil_detail

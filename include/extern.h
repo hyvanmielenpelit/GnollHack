@@ -1535,7 +1535,8 @@ E boolean FDECL(wrong_elem_type, (struct permonst*));
 E void FDECL(m_initthrow, (struct monst*, int, int, int, BOOLEAN_P, UCHAR_P, UCHAR_P));
 E boolean FDECL(randomize_monster_gender, (struct permonst*));
 E void NDECL(makemon_animation_wait_until_end);
-
+E struct monst* FDECL(make_level_monster, (int, int, unsigned long));
+E struct monst* NDECL(make_level_monster_anywhere);
 
 /* ### mapglyph.c ### */
 

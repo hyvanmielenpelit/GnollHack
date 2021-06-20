@@ -118,6 +118,7 @@ STATIC_DCL void FDECL(spo_level_flags, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_initlevel, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_tileset, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_forest, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_monster_generation, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_boundary_type, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_engraving, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_mineralize, (struct sp_coder *));
@@ -2257,7 +2258,7 @@ struct mkroom *croom;
             if (!invent_carrying_monster) {
                 /*impossible("create_object: no container");*/
                 /* don't complain, the monster may be gone legally
-                   (eg. unique demon already generated)
+                   (e.g. unique demon already generated)
                    TODO: In the case of unique demon lords, they should
                    get their inventories even when they get generated
                    outside the des-file.  Maybe another data file that
@@ -3269,7 +3270,7 @@ fill_empty_maze()
         }
         for (x = rnd((int) (12 * mapfact) / 100); x; x--) {
             maze1xy(&mm, DRY);
-            (void) makemon((struct permonst *) 0, mm.x, mm.y, NO_MM_FLAGS);
+            (void) make_level_monster(mm.x, mm.y, NO_MM_FLAGS);
         }
         for (x = rn2((int) (15 * mapfact) / 100); x; x--) {
             maze1xy(&mm, DRY);
@@ -4281,6 +4282,63 @@ struct sp_coder* coder;
 
     opvar_free(forest_type);
     opvar_free(initialize_type);
+}
+
+void
+spo_monster_generation(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_monster_generation";
+    struct opvar* prob_var, *monnum_var, *id;
+    int probability = 0, monsternum = 0;
+
+    if (!OV_pop_i(prob_var) || !OV_pop_i(monnum_var))
+        return;
+
+    probability = OV_i(prob_var);
+    monsternum = OV_i(monnum_var);
+
+    int mnum = 0, mclass = 0, usedclass = 0;
+    for (int i = 0; i < monsternum; i++)
+    {
+        if (!OV_pop_typ(id, SPOVAR_MONST)) {
+            panic("no mon type");
+            return;
+        }
+
+        mnum = SP_MONST_PM(OV_i(id));
+        mclass = SP_MONST_CLASS(OV_i(id));
+
+        if (mclass >= 0)
+            usedclass = (char)def_char_to_monclass((char)mclass);
+        else
+            usedclass = 0;
+
+        level.flags.mon_gen_infos[level.flags.nmgeninfos].probability = (xchar)probability;
+        if (!usedclass)
+        {
+            level.flags.mon_gen_infos[level.flags.nmgeninfos].mnum = NON_PM;
+            level.flags.mon_gen_infos[level.flags.nmgeninfos].mclass = RANDOM_CLASS;
+        }
+        else if (mnum >= LOW_PM)
+        {
+            level.flags.mon_gen_infos[level.flags.nmgeninfos].mnum = mnum;
+            level.flags.mon_gen_infos[level.flags.nmgeninfos].mclass = usedclass;
+        }
+        else
+        {
+            level.flags.mon_gen_infos[level.flags.nmgeninfos].mnum = NON_PM;
+            level.flags.mon_gen_infos[level.flags.nmgeninfos].mclass = usedclass;
+        }
+
+        if (level.flags.nmgeninfos < MAX_MON_GEN_INFOS - 1)
+            level.flags.nmgeninfos++;
+
+        opvar_free(id);
+    }
+
+    opvar_free(prob_var);
+    opvar_free(monnum_var);
 }
 
 void
@@ -7422,6 +7480,9 @@ sp_lev *lvl;
             break;
         case SPO_FOREST:
             spo_forest(coder);
+            break;
+        case SPO_MONSTER_GENERATION:
+            spo_monster_generation(coder);
             break;
         case SPO_BOUNDARY_TYPE:
             spo_boundary_type(coder);

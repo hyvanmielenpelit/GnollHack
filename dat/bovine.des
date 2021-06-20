@@ -29,6 +29,12 @@ MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ENDMAP
+
+MONSTER_GENERATION: 50, ('H', "hell bovine") 
+MONSTER_GENERATION: 25, ('H', "minotaur") 
+MONSTER_GENERATION: 20, ('q',"bison") 
+MONSTER_GENERATION: 5, '&' 
+
 # Dungeon Description
 REGION:(00,00,46,15),lit,"ordinary"
 ## Portal arrival point; just about anywhere on the right hand side of the map

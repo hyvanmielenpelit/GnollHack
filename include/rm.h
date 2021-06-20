@@ -1059,11 +1059,22 @@ struct cemetery {
     boolean bonesknown;
 };
 
+struct monster_generation_info {
+    short mnum;
+    char mclass;
+    xchar probability;
+};
+
+#define MAX_MON_GEN_INFOS 32
+
 struct levelflags {
     char special_description[BUFSZ];
     enum special_level_naming_types special_naming_reveal_type;
     short special_naming_seen_monster_type;
     xchar special_naming_seen_monster_class;
+
+    xchar nmgeninfos;
+    struct monster_generation_info mon_gen_infos[MAX_MON_GEN_INFOS];
 
     schar forest_type;
     schar boundary_type; /* floor style to replace boundary tiles */

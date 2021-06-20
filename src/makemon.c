@@ -4290,5 +4290,80 @@ int *seencount;  /* secondary output */
 }
 
 
+struct monst*
+make_level_monster(x, y, mmflags)
+register int x, y;
+unsigned long mmflags; 
+{
+    if (level.flags.nmgeninfos <= 0)
+    {
+        return makemon((struct permonst*)0, x, y, mmflags);
+    }
 
+    int i, totalprob = 0;
+    for (i = 0; i < level.flags.nmgeninfos; i++)
+    {
+        totalprob += level.flags.mon_gen_infos[i].probability;
+    }
+    
+    if (totalprob <= 0)
+    {
+        /* Do not generate anything */
+        return (struct monst*)0;
+    }
+
+    int roll, trycnt = 0, n = level.flags.nmgeninfos, sel_index = -1;
+    struct monst* mtmp = 0;
+    do
+    {
+        if (totalprob < 2)
+            roll = 0;
+        else
+            roll = rn2(totalprob);
+
+        sel_index = -1;
+        for (i = level.flags.nmgeninfos - 1; i >= 0; i--)
+        {
+            roll -= level.flags.mon_gen_infos[i].probability;
+            if (roll < 0)
+            {
+                sel_index = i;
+                break;
+            }
+        }
+
+        if (sel_index >= 0)
+        {
+            if (level.flags.mon_gen_infos[sel_index].mnum >= LOW_PM)
+            {
+                mtmp = makemon(&mons[level.flags.mon_gen_infos[sel_index].mnum], x, y, mmflags);
+            }
+            else if (level.flags.mon_gen_infos[sel_index].mclass > 0)
+            {
+                struct permonst* pm = mkclass(level.flags.mon_gen_infos[sel_index].mclass, 0);
+                if(pm)
+                    mtmp = makemon(pm, x, y, mmflags);
+            }
+            else
+            {
+                mtmp = makemon((struct permonst*)0, x, y, mmflags);
+            }
+
+            if (mtmp)
+            {
+                return mtmp;
+            }
+        }
+
+        trycnt++;
+    } while (trycnt < 50);
+
+    return (struct monst*)0;
+}
+
+struct monst*
+make_level_monster_anywhere(VOID_ARGS)
+{
+    return make_level_monster(0, 0, NO_MM_FLAGS);
+}
 /*makemon.c*/

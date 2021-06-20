@@ -140,6 +140,7 @@ enum opcode_defs {
     SPO_LEVEL_FLAGS,
     SPO_TILESET,
     SPO_FOREST,
+    SPO_MONSTER_GENERATION,
     SPO_BOUNDARY_TYPE,
     SPO_VAR_INIT, /* variable_name data */
     SPO_SHUFFLE_ARRAY,

@@ -37,6 +37,9 @@ MAP
 ----------------------------------------------------------------------------
 ENDMAP
 
+MONSTER_GENERATION: 10, 'z', 'Z', 'L', 'V', 'W', ' ' 
+MONSTER_GENERATION: 5, '&' 
+
 # Make the path somewhat unpredictable
 # If you get "lucky", you may have to go through all three graveyards.
 IF [50%] {
@@ -232,6 +235,18 @@ x}}},}}}},,,,}}}},,}},,,,}}}}}}},,,}}},,,,}}}},}}}x
 x}}},}}}}},,}}},,}}}}},,}}},,}}}}},,}}},,}}}}},}}}x
 xx}}}}}x}}}}}x}}}}}x}}}}}x}}}}}x}}}}}x}}}}}x}}}}}xx
 ENDMAP
+
+MONSTER_GENERATION: 15, ('b', "mucilaginous cube") 
+MONSTER_GENERATION: 15, ('P', "green slime") 
+MONSTER_GENERATION: 5, ('P', "black pudding") 
+MONSTER_GENERATION: 10, (';', "jellyfish") 
+MONSTER_GENERATION: 5, ('#', "reaper") 
+MONSTER_GENERATION: 5, ('i', "lemure") 
+MONSTER_GENERATION: 10, 'm' 
+MONSTER_GENERATION: 5, 'j', 'b', 'P', 'F'
+MONSTER_GENERATION: 5, '&' 
+MONSTER_GENERATION: 2, random 
+
 # Random registers
 $monster = monster: { 'j','b','P','F' }
 SHUFFLE: $monster
@@ -242,17 +257,17 @@ SHUFFLE: $place
 # Dungeon description
 REGION:(00,00,50,17),unlit,"swamp"
 SPECIAL_LEVREGION:levregion(01,00,79,20),region_special_level_seen
-MAZEWALK:(00,09),west
-MAZEWALK:(50,08),east
+MAZEWALK:(00,09),west,false
+MAZEWALK:(50,08),east,false
 STAIR:levregion(01,00,11,20),(0,0,50,17),down
 STAIR:levregion(69,00,79,20),(0,0,50,17),up
 BRANCH:levregion(01,00,11,20),(0,0,50,17)
 TELEPORT_REGION:levregion(01,00,11,20),(0,0,50,17),up
 TELEPORT_REGION:levregion(69,00,79,20),(0,0,50,17),down
 FOUNTAIN:$place[0],fountain_random
-MONSTER:('m',"giant mimic"),$place[1],m_feature "fountain"
-MONSTER:('m',"giant mimic"),$place[2],m_feature "fountain"
-MONSTER:('m',"giant mimic"),$place[3],m_feature "fountain"
+MONSTER:('m',"chaos mimic"),$place[1],m_feature "fountain"
+MONSTER:('m',"chaos mimic"),$place[2],m_feature "fountain"
+MONSTER:('m',"chaos mimic"),$place[3],m_feature "fountain"
 # The demon of the swamp
 MONSTER:('&',"Juiblex"),(25,08)
 CONTAINER:('(',"oilskin sack"),buried,(25,08) {
@@ -340,10 +355,19 @@ MONSTER:'j',random
 MONSTER:'j',random
 MONSTER:'j',random
 MONSTER:'j',random
+MONSTER:'j',random
+MONSTER:'j',random
 MONSTER:'P',random
 MONSTER:'P',random
 MONSTER:'P',random
 MONSTER:'P',random
+MONSTER:'P',random
+MONSTER:'P',random
+MONSTER:'P',random
+MONSTER:'P',random
+MONSTER:'b',random
+MONSTER:'b',random
+MONSTER:'b',random
 MONSTER:'b',random
 MONSTER:'b',random
 MONSTER:'b',random
@@ -352,6 +376,12 @@ MONSTER:'F',random
 MONSTER:'F',random
 MONSTER:'m',random
 MONSTER:'m',random
+MONSTER:'m',random
+MONSTER:'m',random
+MONSTER:(';',"jellyfish"),random
+MONSTER:(';',"jellyfish"),random
+MONSTER:(';',"jellyfish"),random
+MONSTER:(';',"jellyfish"),random
 MONSTER:(';',"jellyfish"),random
 MONSTER:(';',"jellyfish"),random
 # Some random objects
@@ -404,6 +434,10 @@ MAP
 #|....|.......|......|....|####|.............
 ENDMAP
 MAZEWALK:(00,06),west
+
+MONSTER_GENERATION: 10, 'z', 'Z', 'L', 'V', 'W', ' ' 
+MONSTER_GENERATION: 20, '&' 
+
 # Entire main area
 REGION:(01,00,44,16),unlit,"ordinary"
 SPECIAL_REGION:(01,00,44,16),region_special_level_seen

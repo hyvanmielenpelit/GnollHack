@@ -772,6 +772,8 @@ clear_level_structures()
 
     level.flags.has_tileset = 0;
     level.flags.tileset = 0;
+    level.flags.nmgeninfos = 0;
+    memset(&level.flags.mon_gen_infos, 0, sizeof level.flags.mon_gen_infos);
     level.flags.nfountains = 0;
     level.flags.nsinks = 0;
     level.flags.has_shop = 0;

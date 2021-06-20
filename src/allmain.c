@@ -538,7 +538,12 @@ create_monster_or_encounter()
 
     if (!rwraith_appeared)
     {
-        if (u.uz.dnum == modron_dnum)
+        if (level.flags.nmgeninfos > 0)
+        {
+            /* Monster generation infos are defined */
+            (void)make_level_monster_anywhere();
+        }
+        else if (u.uz.dnum == modron_dnum)
         {
             (void)makemon(mkclass(S_MODRON, 0), 0, 0, NO_MM_FLAGS);
         }
