@@ -1673,7 +1673,7 @@ pm_to_humidity(pm)
 struct permonst *pm;
 {
     int loc = DRY;
-    if (!pm)
+    if (!pm || is_mimic(pm))
         return loc;
     if (pm->mlet == S_EEL || amphibious(pm) || is_swimmer(pm))
         loc = WET;
@@ -1692,7 +1692,7 @@ monster *m;
 struct mkroom *croom;
 {
     struct monst *mtmp;
-    schar x, y;
+    schar x = -1, y = -1;
     char class;
     aligntyp amask;
     coord cc;

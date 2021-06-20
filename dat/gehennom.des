@@ -384,13 +384,34 @@ MONSTER:(';',"jellyfish"),random
 MONSTER:(';',"jellyfish"),random
 MONSTER:(';',"jellyfish"),random
 MONSTER:(';',"jellyfish"),random
+MONSTER:(';',"jellyfish"),random
+MONSTER:(';',"jellyfish"),random
+MONSTER:(';',"jellyfish"),random
+MONSTER:(';',"jellyfish"),random
+MONSTER:(';',"jellyfish"),random
+MONSTER:(';',"jellyfish"),random
 # Some random objects
 OBJECT:'!',random
 OBJECT:'!',random
 OBJECT:'!',random
+OBJECT:'!',random
+OBJECT:'!',random
+OBJECT:'!',random
 OBJECT:'%',random
 OBJECT:'%',random
 OBJECT:'%',random
+OBJECT:'%',random
+OBJECT:'%',random
+OBJECT:'%',random
+OBJECT:'9',random
+OBJECT:'9',random
+OBJECT:'9',random
+OBJECT:('9', "mandrake root"),random,buried
+OBJECT:('9', "mandrake root"),random,buried
+OBJECT:('9', "mandrake root"),random,buried
+OBJECT:random,random
+OBJECT:random,random
+OBJECT:random,random
 OBJECT:('`',"boulder"),random
 # Some traps
 TRAP:"sleep gas",random

@@ -68,8 +68,8 @@ unsigned long gpflags;
                 return (Levitation || Flying || Wwalking || Swimming
                         || Amphibious);
             else
-                return (is_flying(mtmp) || is_levitating(mtmp) || has_swimming(mtmp)
-                        || is_clinger(mdat));
+                return ((is_flying(mtmp) || is_levitating(mtmp) || has_swimming(mtmp) || amphibious(mdat)
+                        || is_clinger(mdat)) && !is_mimic(mdat));
         } 
         else if (In_modron_level(&u.uz) && IS_AIR(levl[x][y].typ))
         {
