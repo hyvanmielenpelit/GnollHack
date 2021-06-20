@@ -3154,6 +3154,7 @@ int level_limit;
     register struct permonst *ptr;
     register int mndx, ct;
 
+    /* Special dungeons; note that these influence only wand of create monster, summon monster spells, and shapeshifters; random monster generation is handled in create_monster_or_encounter */
     if (u.uz.dnum == quest_dnum && rn2(7) && (ptr = qt_montype()) != 0)
         return ptr;
 
@@ -3166,12 +3167,17 @@ int level_limit;
         if(!(mons[PM_HELL_BOVINE].geno & G_GONE))
             ptr = &mons[PM_HELL_BOVINE];
         
-        if (!(mons[PM_BISON].geno & G_GONE) && (!ptr || !rn2(2)))
+        if (!(mons[PM_MINOTAUR].geno & G_GONE) && (!ptr || !rn2(2)))
+            ptr = &mons[PM_MINOTAUR];
+
+        if (!(mons[PM_BISON].geno & G_GONE) && (!ptr || !rn2(6)))
             ptr = &mons[PM_BISON];
 
         return ptr;
     }
 
+
+    /* Normal case */
     if (rndmonst_state.choice_count < 0) { /* need to recalculate */
         int minmlev = 0, maxmlev = 0;
         boolean elemlevel;
