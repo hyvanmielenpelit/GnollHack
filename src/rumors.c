@@ -612,36 +612,53 @@ struct monst* oracl;
         You("have no money.");
         return 0;
     }
-
-    Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
-        minor_id_cost, currency((long)minor_id_cost));
-
-    switch (ynq(qbuf)) 
+    else if (count_unidentified(invent) == 0)
     {
-    default:
-    case 'n':
-    case 'q':
+        You("have no unidentified items.");
         return 0;
-    case 'y':
-        if (umoney < (long)minor_id_cost) 
-        {
-            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
-            return 0;
-        }
-        u_pay = minor_id_cost;
-        break;
     }
 
-    int res = identify_pack(1, FALSE);
+    int cnt = 0;
+    int res = 0;
 
-    if (res)
+    do
     {
-        money2mon(oracl, (long)u_pay);
-        context.botl = 1;
-    }
+        if(!cnt)
+            Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
+                minor_id_cost, currency((long)minor_id_cost));
+        else
+            Sprintf(qbuf, "\"Wouldst thou desire a further identification?\" (%d %s)",
+                minor_id_cost, currency((long)minor_id_cost));
 
-    return 1;
+        switch (ynq(qbuf))
+        {
+        default:
+        case 'n':
+        case 'q':
+            return 0;
+        case 'y':
+            if (umoney < (long)minor_id_cost)
+            {
+                play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+                You("don't have enough money for that!");
+                return 0;
+            }
+            u_pay = minor_id_cost;
+            break;
+        }
+
+        res = identify_pack(1, FALSE);
+
+        if (res)
+        {
+            money2mon(oracl, (long)u_pay);
+            context.botl = 1;
+            umoney = money_cnt(invent);
+            cnt += res;
+        }
+    } while (res > 0 && count_unidentified(invent) > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
+
+    return (cnt > 0);
 }
 
 int

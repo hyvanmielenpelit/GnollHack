@@ -69,6 +69,7 @@ STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_stones_and_charged_items, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_general_identify, (struct monst*, const char*, int, int, int, int));
 STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_dilithium_crystals, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_spellbooks, (struct monst*));
@@ -2794,7 +2795,7 @@ dochat()
             shp_indx = ESHK(mtmp)->shoptype - SHOPBASE;
             const struct shclass* shp = &shtypes[shp_indx];
             char itembuf[BUFSIZ] = "";
-            strcpy(itembuf, shp->identified_item_description);
+            strcpy(itembuf, an(shp->identified_item_description));
             
             Sprintf(available_chat_list[chatnum].name, "Identify %s", itembuf);
             available_chat_list[chatnum].function_ptr = &do_chat_shk_identify;
@@ -5602,39 +5603,52 @@ struct monst* mtmp;
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
         return 0;
-    else if (!umoney) {
+    else if (!umoney) 
+    {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
         You("have no money.");
         return 0;
     }
 
-    Sprintf(qbuf, "Would you like to identify %s? (%d %s)", shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description, minor_id_cost, currency((long)minor_id_cost));
+    int res = 0;
+    int cnt = 0, unided = 0;
 
-    switch (ynq(qbuf)) {
-    default:
-    case 'q':
-        return 0;
-    case 'y':
-        if (umoney < (long)minor_id_cost) {
-            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
-            return 0;
-        }
-        u_pay = minor_id_cost;
-        break;
-    }
-
-    context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1; // shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb;
-
-    int res = identify_pack(1, FALSE);
-
-    context.shop_identify_type = 0;
-
-    if (res)
+    do
     {
-        money2mon(mtmp, (long)u_pay);
-        context.botl = 1;
-    }
+        if(!cnt)
+            Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description), minor_id_cost, currency((long)minor_id_cost));
+        else
+            Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description, minor_id_cost, currency((long)minor_id_cost));
+
+        switch (ynq(qbuf)) {
+        default:
+        case 'q':
+            return 0;
+        case 'y':
+            if (umoney < (long)minor_id_cost) {
+                play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+                You("don't have enough money for that!");
+                return 0;
+            }
+            u_pay = minor_id_cost;
+            break;
+        }
+
+        context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1; // shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb;
+
+        res = identify_pack(1, FALSE);
+        unided = count_unidentified(invent);
+
+        context.shop_identify_type = 0;
+
+        if (res)
+        {
+            money2mon(mtmp, (long)u_pay);
+            context.botl = 1;
+            umoney = money_cnt(invent);
+            cnt += res;
+        }
+    } while (res > 0 && unided > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
 
     return 1; 
 }
@@ -6082,56 +6096,7 @@ STATIC_OVL int
 do_chat_smith_identify(mtmp)
 struct monst* mtmp;
 {
-    if (!mtmp || !mtmp->mextra || !mtmp->mextra->esmi)
-        return 0;
-
-    long umoney;
-    int u_pay;
-    int minor_id_cost = max(1, (int)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    char qbuf[QBUFSZ];
-
-    multi = 0;
-    umoney = money_cnt(invent);
-
-
-    if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
-        return 0;
-    else if (!umoney) {
-        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
-        return 0;
-    }
-
-    play_monster_special_dialogue_line(mtmp, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR);
-    Sprintf(qbuf, "Would you like to identify a weapon or armor? (%d %s)", minor_id_cost, currency((long)minor_id_cost));
-
-    switch (ynq(qbuf)) {
-    default:
-    case 'q':
-        return 0;
-    case 'y':
-        if (umoney < (long)minor_id_cost) {
-            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
-            return 0;
-        }
-        u_pay = minor_id_cost;
-        break;
-    }
-
-    context.npc_identify_type = -1; /* Smith */
-
-    int res = identify_pack(1, FALSE);
-
-    context.npc_identify_type = 0;
-
-    if (res)
-    {
-        money2mon(mtmp, (long)u_pay);
-        context.botl = 1;
-    }
-
-    return 1;
+    return do_chat_npc_general_identify(mtmp, "weapon or armor", -1, max(1, (int)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR);
 }
 
 STATIC_OVL boolean
@@ -6480,55 +6445,9 @@ STATIC_OVL int
 do_chat_npc_identify_gems_and_stones(mtmp)
 struct monst* mtmp;
 {
-    if (!mtmp || !has_enpc(mtmp))
-        return 0;
-
-    long umoney;
-    int u_pay;
-    int minor_id_cost = max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    char qbuf[QBUFSZ];
-
-    multi = 0;
-    umoney = money_cnt(invent);
-
-
-    if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
-        return 0;
-    else if (!umoney) {
-        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
-        return 0;
-    }
-
-    Sprintf(qbuf, "Would you like to identify gems and stones? (%d %s)", minor_id_cost, currency((long)minor_id_cost));
-
-    switch (ynq(qbuf)) {
-    default:
-    case 'q':
-        return 0;
-    case 'y':
-        if (umoney < (long)minor_id_cost) {
-            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
-            return 0;
-        }
-        u_pay = minor_id_cost;
-        break;
-    }
-
-    context.npc_identify_type = 1;
-
-    int res = identify_pack(1, FALSE);
-
-    context.npc_identify_type = 0;
-
-    if (res)
-    {
-        money2mon(mtmp, (long)u_pay);
-        context.botl = 1;
-    }
-
-    return 1;
+    return do_chat_npc_general_identify(mtmp, "gem or stone", 1, 
+        max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), 
+        0, 0);
 }
 
 
@@ -6609,110 +6528,93 @@ STATIC_OVL int
 do_chat_npc_identify_accessories_and_charged_items(mtmp)
 struct monst* mtmp;
 {
-    if (!mtmp || !has_enpc(mtmp))
-        return 0;
-
-    long umoney;
-    int u_pay;
-    int minor_id_cost = max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-    char qbuf[QBUFSZ];
-
-    multi = 0;
-    umoney = money_cnt(invent);
-
-
-    if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
-        return 0;
-    else if (!umoney) {
-        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
-        return 0;
-    }
-
-    Sprintf(qbuf, "Would you like to identify an accessory or a charged item? (%d %s)", minor_id_cost, currency((long)minor_id_cost));
-
-    switch (ynq(qbuf)) {
-    default:
-    case 'q':
-        return 0;
-    case 'y':
-        if (umoney < (long)minor_id_cost) {
-            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
-            return 0;
-        }
-        u_pay = minor_id_cost;
-        break;
-    }
-
-    context.npc_identify_type = 2;
-
-    int res = identify_pack(1, FALSE);
-
-    context.npc_identify_type = 0;
-
-    if (res)
-    {
-        money2mon(mtmp, (long)u_pay);
-        context.botl = 1;
-    }
-
-    return 1;
+    return do_chat_npc_general_identify(mtmp, "accessory or charged item", 2,
+        max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        0, 0);
 }
 
 STATIC_OVL int
 do_chat_npc_identify_gems_stones_and_charged_items(mtmp)
 struct monst* mtmp;
 {
-    if (!mtmp || !has_enpc(mtmp))
+
+    return do_chat_npc_general_identify(mtmp, "gem, stone or a charged item", 3,
+        max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        0, 0);
+}
+
+STATIC_OVL int
+do_chat_npc_general_identify(mtmp, identify_item_str, id_idx, minor_id_cost, spdialogue1, spdialogue2)
+struct monst* mtmp;
+const char* identify_item_str;
+int id_idx, minor_id_cost, spdialogue1, spdialogue2;
+{
+    if (!mtmp)
         return 0;
 
     long umoney;
     int u_pay;
-    int minor_id_cost = max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
     umoney = money_cnt(invent);
 
-
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
         return 0;
-    else if (!umoney) {
+    else if (!umoney) 
+    {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
         You("have no money.");
         return 0;
     }
 
-    Sprintf(qbuf, "Would you like to identify a gem, stone or a charged item? (%d %s)", minor_id_cost, currency((long)minor_id_cost));
+    int res = 0;
+    int cnt = 0, unided = 0;
 
-    switch (ynq(qbuf)) {
-    default:
-    case 'q':
-        return 0;
-    case 'y':
-        if (umoney < (long)minor_id_cost) {
-            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
-            return 0;
-        }
-        u_pay = minor_id_cost;
-        break;
-    }
-
-    context.npc_identify_type = 3;
-
-    int res = identify_pack(1, FALSE);
-
-    context.npc_identify_type = 0;
-
-    if (res)
+    do
     {
-        money2mon(mtmp, (long)u_pay);
-        context.botl = 1;
-    }
+        if (!cnt)
+        {
+            play_monster_special_dialogue_line(mtmp, spdialogue1);
+            Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(identify_item_str), minor_id_cost, currency((long)minor_id_cost));
+        }
+        else
+        {
+            play_monster_special_dialogue_line(mtmp, spdialogue2);
+            Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", identify_item_str, minor_id_cost, currency((long)minor_id_cost));
+        }
 
-    return 1;
+        switch (ynq(qbuf)) {
+        default:
+        case 'q':
+            return 0;
+        case 'y':
+            if (umoney < (long)minor_id_cost) {
+                play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+                You("don't have enough money for that!");
+                return 0;
+            }
+            u_pay = minor_id_cost;
+            break;
+        }
+
+        context.npc_identify_type = id_idx;
+
+        res = identify_pack(1, FALSE);
+        unided = count_unidentified(invent);
+
+        context.npc_identify_type = 0;
+
+        if (res)
+        {
+            money2mon(mtmp, (long)u_pay);
+            context.botl = 1;
+            umoney = money_cnt(invent);
+            cnt += res;
+        }
+    } while (res > 0 && unided > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
+
+    return (cnt > 0);
 }
 
 
