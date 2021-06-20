@@ -231,9 +231,9 @@ sick_dialogue()
     else if (has_head(youmonst.data) && !rn2(3))
     {
         if(!rn2(2))
-            You("cough%s.", (alternate_sick_text ? " roughly" : ""));
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "cough%s.", (alternate_sick_text ? " roughly" : ""));
         else
-            You("have a %sbout of coughing.", (alternate_sick_text ? "severe " : "terrible "));
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "have a %sbout of coughing.", (alternate_sick_text ? "severe " : "terrible "));
 
         alternate_sick_text = !alternate_sick_text;
         if (multi > 0)
