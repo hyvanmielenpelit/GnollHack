@@ -38,6 +38,7 @@ MAP
 ENDMAP
 
 MONSTER_GENERATION: 10, 'z', 'Z', 'L', 'V', 'W', ' ' 
+MONSTER_GENERATION: 5, ('B',"vampire bat")
 MONSTER_GENERATION: 5, '&' 
 
 # Make the path somewhat unpredictable
@@ -456,7 +457,8 @@ MAP
 ENDMAP
 MAZEWALK:(00,06),west
 
-MONSTER_GENERATION: 10, 'z', 'Z', 'L', 'V', 'W', ' ' 
+MONSTER_GENERATION: 10, 'z', 'Z', 'L', 'V', 'W'
+MONSTER_GENERATION: 10, (' ',"shade") 
 MONSTER_GENERATION: 20, '&' 
 
 # Entire main area

@@ -4338,7 +4338,7 @@ unsigned long mmflags;
             {
                 mtmp = makemon(&mons[level.flags.mon_gen_infos[sel_index].mnum], x, y, mmflags);
             }
-            else if (level.flags.mon_gen_infos[sel_index].mclass > 0)
+            else if (level.flags.mon_gen_infos[sel_index].mclass > 0 && level.flags.mon_gen_infos[sel_index].mclass < MAX_MONSTER_CLASSES)
             {
                 struct permonst* pm = mkclass(level.flags.mon_gen_infos[sel_index].mclass, 0);
                 if(pm)

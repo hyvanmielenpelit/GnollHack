@@ -4298,7 +4298,9 @@ struct sp_coder* coder;
     probability = OV_i(prob_var);
     monsternum = OV_i(monnum_var);
 
-    int mnum = 0, mclass = 0, usedclass = 0;
+    short mnum = 0;
+    schar mclass = 0;
+    char usedclass = 0;
     for (int i = 0; i < monsternum; i++)
     {
         if (!OV_pop_typ(id, SPOVAR_MONST)) {
@@ -4306,8 +4308,8 @@ struct sp_coder* coder;
             return;
         }
 
-        mnum = SP_MONST_PM(OV_i(id));
-        mclass = SP_MONST_CLASS(OV_i(id));
+        mnum = (short)SP_MONST_PM(OV_i(id));
+        mclass = (schar)SP_MONST_CLASS(OV_i(id));
 
         if (mclass >= 0)
             usedclass = (char)def_char_to_monclass((char)mclass);
