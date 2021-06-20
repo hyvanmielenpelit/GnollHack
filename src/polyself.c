@@ -530,7 +530,7 @@ int psflags;
                 if (!class)
                     pline("I've never heard of such monsters.");
                 else
-                    You_cant("polymorph into any of those.");
+                    You_cant_ex(ATR_NONE, CLR_YELLOW, "polymorph into any of those.");
             } 
             else if (iswere && (were_beastie(mntmp) == u.ulycn
                                   || mntmp == counter_were(u.ulycn)
@@ -563,7 +563,7 @@ int psflags;
                 else if (!is_mname_proper_name(&mons[mntmp]))
                     pm_name = an(pm_name);
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_cant("polymorph into %s.", pm_name);
+                You_cant_ex(ATR_NONE, CLR_YELLOW, "polymorph into %s.", pm_name);
             }
             else
             {
@@ -1496,13 +1496,13 @@ dobreathe()
     struct attack *mattk;
 
     if (Strangled) {
-        You_cant("breathe.  Sorry.");
+        You_cant_ex(ATR_NONE, CLR_RED, "breathe.  Sorry.");
         return 0;
     }
     if (u.uen < 15) 
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MANA);
-        You("don't have enough energy to breathe!");
+        You_ex(ATR_NONE, CLR_YELLOW, "don't have enough energy to breathe!");
         return 0;
     }
     u.uen -= 15;
@@ -1693,7 +1693,7 @@ dospinweb()
     }
     if (u.utrap) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot spin webs while stuck in a trap.");
+        You_ex(ATR_NONE, CLR_YELLOW, "cannot spin webs while stuck in a trap.");
         return 0;
     }
     exercise(A_DEX, TRUE);
@@ -1812,14 +1812,14 @@ dogaze()
     int gazemanacost = (adtyp == AD_CNCL ? 5 : 15);
 
     if (Blind) {
-        You_cant("see anything to gaze at.");
+        You_cant_ex(ATR_NONE, CLR_YELLOW, "see anything to gaze at.");
         return 0;
     } else if (Hallucination) {
-        You_cant("gaze at anything you can see.");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "gaze at anything you can see.");
         return 0;
     }
     if (u.uen < gazemanacost) {
-        You("lack the energy to use your special gaze!");
+        You_ex(ATR_NONE, CLR_YELLOW, "lack the energy to use your special gaze!");
         return 0;
     }
 
@@ -1865,7 +1865,7 @@ dogaze()
                 }
                 else if (is_invisible(mtmp) && !See_invisible)
                 {
-                    You_cant("see where to gaze at %s.", Monnam(mtmp));
+                    You_cant_ex(ATR_NONE, CLR_YELLOW, "see where to gaze at %s.", Monnam(mtmp));
                 }
                 else if (M_AP_TYPE(mtmp) == M_AP_FURNITURE
                            || M_AP_TYPE(mtmp) == M_AP_OBJECT)
@@ -2049,16 +2049,16 @@ int
 doeyestalk()
 {
     if (Blind) {
-        You_cant("see anything to gaze at.");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "see anything to gaze at.");
         return 0;
     }
     else if (Cancelled) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("are cancelled and cannot use your eyestalks!");
+        You_ex(ATR_NONE, CLR_ORANGE, "are cancelled and cannot use your eyestalks!");
         return 0;
     }
     else if (Hallucination) {
-        You_cant("gaze at anything you can see.");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "gaze at anything you can see.");
         return 0;
     }
 
@@ -2086,7 +2086,7 @@ doeyestalk()
             continue;
 
         if (u.uen < 5) {
-            You("lack the energy to use your eyestalks%s!", attacksperformed > 0 ? " any further" : "");
+            You_ex(ATR_NONE, CLR_YELLOW, "lack the energy to use your eyestalks%s!", attacksperformed > 0 ? " any further" : "");
             return (attacksperformed > 0 ? 1 : 0);
         }
         u.uen -= 5;
@@ -2118,7 +2118,7 @@ dohide()
     /* can't hide while being held (or holding) or while trapped
        (except for floor hiders [trapper or mimic] in pits) */
     if (u.ustuck || (u.utrap && (u.utraptype != TT_PIT || on_ceiling))) {
-        You_cant("hide while you're %s.",
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "hide while you're %s.",
                  !u.ustuck ? "trapped"
                    : u.uswallow ? (is_animal(u.ustuck->data) ? "swallowed"
                                                              : "engulfed")
@@ -2244,7 +2244,7 @@ dolayegg()
     else if (u.uhunger < (int)objects[EGG].oc_nutrition)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MANA);
-        You("don't have enough energy to lay an egg.");
+        You_ex(ATR_NONE, CLR_YELLOW, "don't have enough energy to lay an egg.");
         return 0;
     }
     else if (eggs_in_water(youmonst.data))

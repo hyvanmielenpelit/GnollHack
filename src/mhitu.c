@@ -3535,7 +3535,7 @@ struct attack *mattk;
                 long was_blinded = Blinded;
 
                 if (!Blinded)
-                    You_cant("see in here!");
+                    You_cant_ex(ATR_NONE, CLR_ORANGE, "see in here!");
                 make_blinded((long)ceil(damage), FALSE);
                 if (!was_blinded && !Blind)
                     Your1(vision_clears);

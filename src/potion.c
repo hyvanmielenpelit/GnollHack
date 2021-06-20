@@ -664,7 +664,7 @@ dodrink()
 
     if (Strangled) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        pline("If you can't breathe air, how can you drink liquid?");
+        pline_ex(ATR_NONE, CLR_RED, "If you can't breathe air, how can you drink liquid?");
         return 0;
     }
     if (!getobj_autoselect_obj)

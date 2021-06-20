@@ -1042,15 +1042,15 @@ boolean verbose;
     if (Blind && !was_blind)
     {
         if (Hallucination && had_hallucination)
-            pline("Oh, bummer!  Everything is dark!  Help!");
+            pline_ex(ATR_NONE, CLR_ORANGE, "Oh, bummer!  Everything is dark!  Help!");
         else
         {
             if (Blindfolded && !was_wearing_blindfold)
-                You_cant("see any more.");
+                You_cant_ex(ATR_NONE, CLR_ORANGE, "see any more.");
             else if (!Blocks_Blindness || was_blocking_blindness)
-                You_cant("see anything now!");
+                You_cant_ex(ATR_NONE, CLR_ORANGE, "see anything now!");
             else
-                pline("A cloud of darkness falls upon you.");
+                pline_ex(ATR_NONE, CLR_ORANGE, "A cloud of darkness falls upon you.");
         }
 
         if (Punished)

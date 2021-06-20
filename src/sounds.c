@@ -879,7 +879,7 @@ register struct monst *mtmp;
     /* presumably nearness and sleep checks have already been made */
     if (Deaf)
     {
-        You("cannot hear anything.");
+        You_ex(ATR_NONE, CLR_YELLOW, "cannot hear anything.");
         return 0;
     }
     /* leader might be poly'd; if he can still speak, give leader speech */
@@ -1745,27 +1745,27 @@ speak_check()
 {
     if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
     {
-        pline("As %s, you cannot speak.", an(mon_monster_name(&youmonst)));
+        pline_ex(ATR_NONE, CLR_ORANGE, "As %s, you cannot speak.", an(mon_monster_name(&youmonst)));
         return 0;
     }
     if (Strangled)
     {
-        You_cant("speak.  You're choking!");
+        You_cant_ex(ATR_NONE, CLR_RED, "speak.  You're choking!");
         return 0;
     }
     if (Silenced)
     {
-        You_cant("speak.  Your voice is gone!");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "speak.  Your voice is gone!");
         return 0;
     }
     if (Underwater)
     {
-        Your("speech is unintelligible underwater.");
+        Your_ex(ATR_NONE, CLR_ORANGE, "speech is unintelligible underwater.");
         return 0;
     }
     if (Deaf)
     {
-        pline("How can you hold a conversation when you cannot hear?");
+        pline_ex(ATR_NONE, CLR_ORANGE, "How can you hold a conversation when you cannot hear?");
         return 0;
     }
     return 1;
@@ -1776,22 +1776,22 @@ yell_check()
 {
     if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
     {
-        pline("As %s, you cannot yell.", an(mon_monster_name(&youmonst)));
+        pline_ex(ATR_NONE, CLR_ORANGE, "As %s, you cannot yell.", an(mon_monster_name(&youmonst)));
         return 0;
     }
     if (Strangled)
     {
-        You_cant("yell.  You're choking!");
+        You_cant_ex(ATR_NONE, CLR_RED, "yell.  You're choking!");
         return 0;
     }
     if (Silenced)
     {
-        You_cant("yell.  Your voice is gone!");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "yell.  Your voice is gone!");
         return 0;
     }
     if (Underwater)
     {
-        You_cant("yell underwater.");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "yell underwater.");
         return 0;
     }
     return 1;
@@ -4305,9 +4305,9 @@ struct monst* mtmp;
         {
             play_sfx_sound(SFX_GENERAL_WELDED);
             if (otmp->owornmask & W_SADDLE)
-                You("try to remove %s from %s, but you can't. It's cursed!", cxname(otmp), mon_nam(mtmp));
+                You_ex(ATR_NONE, CLR_ORANGE, "try to remove %s from %s, but you can't. It's cursed!", cxname(otmp), mon_nam(mtmp));
             else
-                pline("%s tries to takes off %s, but can't. It's cursed!", Monnam(mtmp), cxname(otmp));
+                pline_ex(ATR_NONE, CLR_ORANGE, "%s tries to takes off %s, but can't. It's cursed!", Monnam(mtmp), cxname(otmp));
 
             otmp->bknown = TRUE;
         }
@@ -4396,7 +4396,7 @@ struct monst* mtmp;
         if (mwelded(mwep, mtmp))
         {
             play_sfx_sound(SFX_GENERAL_WELDED);
-            pline("%s tries to unwield %s, but can't. It's cursed!", Monnam(mtmp), cxname(mwep));
+            pline_ex(ATR_NONE, CLR_ORANGE, "%s tries to unwield %s, but can't. It's cursed!", Monnam(mtmp), cxname(mwep));
             mwep->bknown = TRUE;
         }
         else

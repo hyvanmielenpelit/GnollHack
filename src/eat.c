@@ -3128,7 +3128,7 @@ doeat()
 
     if (Strangled) 
     {
-        pline("If you can't breathe air, how can you consume solids?");
+        pline_ex(ATR_NONE, CLR_RED, "If you can't breathe air, how can you consume solids?");
         return 0;
     }
     if (!(otmp = floorfood("eat", 0)))
@@ -3198,7 +3198,7 @@ doeat()
 
         play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
 
-        pline("Ulch - that %s was rustproofed!", xname(otmp));
+        pline_ex(ATR_NONE, CLR_ORANGE, "Ulch - that %s was rustproofed!", xname(otmp));
         /* The regurgitated object's rustproofing is gone now */
         otmp->oerodeproof = 0;
         if (!Stunned)
@@ -3297,7 +3297,7 @@ doeat()
         if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) 
         {
             play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
-            pline("Ecch - that must have been poisonous!");
+            pline_ex(ATR_NONE, CLR_RED, "Ecch - that must have been poisonous!");
             if (!Poison_resistance) 
             {
                 losestr(rnd(4));
@@ -3414,7 +3414,7 @@ doeat()
         if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_TAINTED)
         {
             play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
-            pline("Ulch - that %s was tainted!", cxname(otmp));
+            pline_ex(ATR_NONE, CLR_RED, "Ulch - that %s was tainted!", cxname(otmp));
             if (Sick_resistance)
             {
                 pline("It doesn't seem at all sickening, though...");
@@ -3441,14 +3441,14 @@ doeat()
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC && !Acid_immunity && !Acid_resistance) 
         {
-            You("have a very bad case of stomach acid.");   /* not body_part() */
+            You_ex(ATR_NONE, CLR_ORANGE, "have a very bad case of stomach acid.");   /* not body_part() */
             losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, FALSE), "acidic food",
                 KILLED_BY_AN); /* acid damage */
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS)
         {
-            pline("Ecch - that must have been poisonous!");
+            pline_ex(ATR_NONE, CLR_RED, "Ecch - that must have been poisonous!");
             if (!Poison_resistance) 
             {
                 losestr(rnd(4));
@@ -3464,7 +3464,7 @@ doeat()
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS)
         {
-            pline("Ecch - that must have been terribly poisonous!");
+            pline_ex(ATR_NONE, CLR_RED, "Ecch - that must have been terribly poisonous!");
             if (!Poison_resistance) 
             {
                 losestr(d(2, 6));
@@ -3480,7 +3480,7 @@ doeat()
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING && !Sick_resistance)
         {
-            You_feel("%ssick.", (FoodPoisoned) ? "very " : "");
+            You_feel_ex(ATR_NONE, CLR_RED, "%ssick.", (FoodPoisoned) ? "very " : "");
             losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, ADFLAGS_NONE), "sickening food", KILLED_BY_AN);
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
         }

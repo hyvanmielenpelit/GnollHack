@@ -1411,7 +1411,7 @@ boolean telekinesis;
 
     if (obj->otyp == BOULDER && Sokoban) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot get your %s around this %s.", body_part(HAND),
+        You_ex(ATR_NONE, CLR_YELLOW, "cannot get your %s around this %s.", body_part(HAND),
             xname(obj));
         return -1;
     }
@@ -1425,7 +1425,7 @@ boolean telekinesis;
             return 1; /* lift regardless of current situation */
         /* if we reach here, we're out of slots and already have at least
            one of these, so treat this one more like a normal item */
-        You("are carrying too much stuff to pick up %s %s.",
+        You_ex(ATR_NONE, CLR_YELLOW, "are carrying too much stuff to pick up %s %s.",
             (obj->quan == 1L) ? "another" : "more", simpleonames(obj));
         return -1;
     }
@@ -1443,7 +1443,7 @@ boolean telekinesis;
            "grandcaller" aren't prepared to skip stuff and then pickup
            just gold, so the best we can do here is vary the message */
         play_ui_sound(UI_SOUND_KNAPSACK_FULL);
-        Your("knapsack cannot accommodate any more items%s.",
+        Your_ex(ATR_NONE, CLR_YELLOW, "knapsack cannot accommodate any more items%s.",
             /* floor follows by nexthere, otherwise container so by nobj */
             nxtobj(obj, GOLD_PIECE, (boolean)(obj->where == OBJ_FLOOR))
             ? " (except gold)" : "");        
@@ -2119,7 +2119,7 @@ doloot()
                 if (mtmp)
                 {
                     play_sfx_sound(SFX_SOMETHING_IN_WAY);
-                    You_cant("loot anything %sthere with %s in the way.",
+                    You_cant_ex(ATR_NONE, CLR_YELLOW, "loot anything %sthere with %s in the way.",
                              prev_inquiry ? "else " : "", mon_nam(mtmp));
                     return timepassed;
                 } 
@@ -2264,12 +2264,12 @@ boolean *prev_loot;
             if (nolimbs(youmonst.data)) 
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_cant("do that without limbs."); /* not body_part(HAND) */
+                You_cant_ex(ATR_NONE, CLR_ORANGE, "do that without limbs."); /* not body_part(HAND) */
                 return 0;
             }
             if (otmp->cursed)
             {
-                You("can't.  The saddle seems to be stuck to %s.",
+                You_ex(ATR_NONE, CLR_ORANGE, "can't.  The saddle seems to be stuck to %s.",
                     x_monnam(mtmp, ARTICLE_THE, (char *) 0,
                              SUPPRESS_SADDLE, FALSE));
                 /* the attempt costs you time */

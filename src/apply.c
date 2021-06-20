@@ -305,7 +305,7 @@ struct obj *obj;
 
     if (!freehand())
     {
-        You("have no free %s!", body_part(HAND));
+        You_ex(ATR_NONE, CLR_ORANGE, "have no free %s!", body_part(HAND));
         return 0;
     } 
     else if (obj == ublindf)
@@ -554,15 +554,15 @@ register struct obj *obj;
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You("have no hands!"); /* not `body_part(HAND)' */
+        You_ex(ATR_NONE, CLR_ORANGE, "have no hands!"); /* not `body_part(HAND)' */
         return 0;
     } else if (Deaf) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You_cant("hear anything!");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "hear anything!");
         return 0;
     } else if (!freehand() && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You("have no free %s.", body_part(HAND));
+        You_ex(ATR_NONE, CLR_ORANGE, "have no free %s.", body_part(HAND));
         return 0;
     }
     if (!getdir((char *) 0))
@@ -2644,9 +2644,10 @@ int magic; /* 0=Physical, otherwise skill level */
         /* normally (nolimbs || slithy) implies !Jumping,
            but that isn't necessarily the case for knights */
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("jump; you have no legs!");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "jump; you have no legs!");
         return 0;
-    } else if (!magic && !Jumping)
+    } 
+    else if (!magic && !Jumping)
     {
         You_cant("jump very far.");
         return 0;
@@ -2690,7 +2691,7 @@ int magic; /* 0=Physical, otherwise skill level */
             return 1;
         }
         play_sfx_sound(SFX_STUCK_IN_TRAP);
-        You("cannot escape from %s!", mon_nam(u.ustuck));
+        You_ex(ATR_NONE, CLR_ORANGE, "cannot escape from %s!", mon_nam(u.ustuck));
         return 0;
     }
     else if (Levitation || Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) 
@@ -5411,7 +5412,7 @@ doapply()
     if (obj->cooldownleft > 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot apply %s before its cooldown has expired.", the(cxname(obj)));
+        You_ex(ATR_NONE, CLR_YELLOW, "cannot apply %s before its cooldown has expired.", the(cxname(obj)));
         return 0;
     }
 
@@ -5927,7 +5928,7 @@ struct obj* obj;
                 no_golf_swing = FALSE;
             break;
         case TT_WEB:
-            You_cant("move your %s!", makeplural(body_part(ARM)));
+            You_cant_ex(ATR_NONE, CLR_ORANGE, "move your %s!", makeplural(body_part(ARM)));
             break;
         default:
             break;
@@ -5965,7 +5966,7 @@ struct obj* obj;
         {
         case 0:
             play_sfx_sound(SFX_STUCK_IN_TRAP);
-            You_cant("move your %s!", makeplural(body_part(ARM)));
+            You_cant_ex(ATR_NONE, CLR_ORANGE, "move your %s!", makeplural(body_part(ARM)));
             break;
         case 1:
             if (is_animal(u.ustuck->data)) 

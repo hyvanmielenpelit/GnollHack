@@ -508,7 +508,7 @@ struct obj *pick;
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) 
     {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_cant("hold %s -- you have no hands!", doname(pick));
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "hold %s -- you have no hands!", doname(pick));
         return PICKLOCK_DID_NOTHING;
     }
     else if (u.uswallow)
@@ -611,7 +611,7 @@ boolean is_auto;
                     if (!is_auto)
                     {
                         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-                        You_cant("reach %s from up here.", the(xname(otmp)));
+                        You_cant_ex(ATR_NONE, CLR_YELLOW, "reach %s from up here.", the(xname(otmp)));
                     }
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
@@ -691,7 +691,7 @@ boolean is_auto;
         if (u.utrap && u.utraptype == TT_PIT) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-            You_cant("reach over the edge of the pit.");
+            You_cant_ex(ATR_NONE, CLR_YELLOW, "reach over the edge of the pit.");
             return PICKLOCK_LEARNED_SOMETHING;
         }
 
@@ -829,7 +829,7 @@ doforce()
     char qbuf[QBUFSZ];
 
     if (u.uswallow) {
-        You_cant("force anything from inside here.");
+        You_cant_ex(ATR_NONE, CLR_YELLOW, "force anything from inside here.");
         return 0;
     }
     if (!uwep /* proper type test */
@@ -940,13 +940,13 @@ int x, y;
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_cant("open anything -- you have no hands!");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "open anything -- you have no hands!");
         return 0;
     }
 
     if (u.utrap && u.utraptype == TT_PIT) {
         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-        You_cant("reach over the edge of the pit.");
+        You_cant_ex(ATR_NONE, CLR_YELLOW, "reach over the edge of the pit.");
         return 0;
     }
 
@@ -1173,13 +1173,13 @@ doclose()
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_cant("close anything -- you have no hands!");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "close anything -- you have no hands!");
         return 0;
     }
 
     if (u.utrap && u.utraptype == TT_PIT) {
         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-        You_cant("reach over the edge of the pit.");
+        You_cant_ex(ATR_NONE, CLR_YELLOW, "reach over the edge of the pit.");
         return 0;
     }
 

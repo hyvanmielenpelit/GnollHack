@@ -1373,7 +1373,7 @@ boolean verbose_fail;
         if (canseemon(mon)) {
             pline("%s wields %s!", Monnam(mon), doname(obj));
             if (mwelded(mw_tmp, mon)) {
-                pline("%s %s to %s %s!", Tobjnam(obj, "weld"),
+                pline_ex(ATR_NONE, CLR_RED, "%s %s to %s %s!", Tobjnam(obj, "weld"),
                       is_plural(obj) ? "themselves" : "itself",
                       s_suffix(mon_nam(mon)), mbodypart(mon, HAND));
                 obj->bknown = 1;

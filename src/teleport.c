@@ -567,7 +567,7 @@ boolean iscontrolled;
     {
         if (unconscious() && !iscontrolled && !iswizcmd)
         {
-            pline("Being unconscious, you cannot control your teleport.");
+            pline_ex(ATR_NONE, CLR_ORANGE, "Being unconscious, you cannot control your teleport.");
         }
         else 
         {

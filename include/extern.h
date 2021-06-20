@@ -2398,6 +2398,7 @@ E void VDECL(You_hear_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
 E void VDECL(You_see_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
 E void VDECL(pline_The_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
 E void VDECL(There_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
+E void VDECL(verbalize_ex, (int, int, const char*, ...)) PRINTF_F(3, 4);
 E void VDECL(verbalize, (const char *, ...)) PRINTF_F(1, 2);
 E void VDECL(raw_printf, (const char *, ...)) PRINTF_F(1, 2);
 E void VDECL(impossible, (const char *, ...)) PRINTF_F(1, 2);

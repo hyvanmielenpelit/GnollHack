@@ -251,7 +251,7 @@ long mask;
                 tmp = "";
 
             play_sfx_sound(SFX_ITEM_WELDS);
-            pline("%s%s %s to your %s!", tmp, aobjnam(wep, "weld"),
+            pline_ex(ATR_NONE, CLR_RED, "%s%s %s to your %s!", tmp, aobjnam(wep, "weld"),
                   (wep->quan == 1L) ? "itself" : "themselves", /* a3 */
                   bimanual(wep) ? (const char *) makeplural(body_part(HAND))
                                 : body_part(HAND));
@@ -1409,21 +1409,21 @@ const char *verb; /* "rub",&c */
             if (strstri(what, "pair of ") != 0)
                 more_than_1 = FALSE;
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline(
+            pline_ex(ATR_NONE, CLR_RED,
                "Since your weapon is welded to your %s, you cannot %s %s %s.",
                   hand, verb, more_than_1 ? "those" : "that", xname(obj));
         }
         else 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You_cant("do that.");
+            You_cant_ex(ATR_NONE, CLR_RED, "do that.");
         }
         return FALSE;
     }
 
     if (cantwield(youmonst.data))
     {
-        You_cant("hold %s strongly enough.", more_than_1 ? "them" : "it");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "hold %s strongly enough.", more_than_1 ? "them" : "it");
         return FALSE;
     }
 
@@ -1904,7 +1904,7 @@ register struct obj *obj;
 
     savewornmask = obj->owornmask;
     play_sfx_sound(SFX_GENERAL_WELDED);
-    pline("%s welded to your %s%s!", Yobjnam2(obj, "are"), bimanual(obj) ? "" : savewornmask & W_WEP ? "right " : "left ",
+    pline_ex(ATR_NONE, CLR_RED, "%s welded to your %s%s!", Yobjnam2(obj, "are"), bimanual(obj) ? "" : savewornmask & W_WEP ? "right " : "left ",
           bimanual(obj) ? (const char *) makeplural(body_part(HAND))
                         : body_part(HAND));
     obj->owornmask = savewornmask;

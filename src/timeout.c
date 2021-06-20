@@ -4063,7 +4063,7 @@ boolean was_flying;
         {
             u.usleep = 0;
             if (Paralyzed_or_immobile)
-                You("wake up but still cannot move!");
+                You_ex(ATR_NONE, CLR_RED, "wake up but still cannot move!");
             else
                 You("wake up!");
         }

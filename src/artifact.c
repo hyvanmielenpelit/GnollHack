@@ -2429,7 +2429,7 @@ doinvoke()
     if (obj->repowerleft > 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot invoke %s before its has repowered itself.", the(cxname(obj)));
+        You_ex(ATR_NONE, CLR_YELLOW, "cannot invoke %s before its has repowered itself.", the(cxname(obj)));
         return 0;
     }
 
@@ -3562,7 +3562,7 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
 
         /* hero can't handle this object, but didn't get touch_artifact()'s
            "<obj> evades your grasp|control" message; give an alternate one */
-        You_cant("handle %s%s!", yname(obj),
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "handle %s%s!", yname(obj),
                  obj->owornmask ? " anymore" : "");
         /* also inflict damage unless touch_artifact() already did so */
         if (!touch_blasted) {

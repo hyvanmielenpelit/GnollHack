@@ -178,7 +178,7 @@ int x, y;
 boolean up, check_pit;
 {
     play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-    You("can't reach the %s.",
+    You_ex(ATR_NONE, CLR_YELLOW, "can't reach the %s.",
         up ? ceiling(x, y)
            : (check_pit && can_reach_floor(FALSE))
                ? "bottom of the pit"
@@ -564,7 +564,7 @@ doengrave()
     }
     if (cantwield(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("even hold anything!");
+        You_cant_ex(ATR_NONE, CLR_ORANGE, "even hold anything!");
         return 0;
     }
     if (check_capacity((char *) 0))

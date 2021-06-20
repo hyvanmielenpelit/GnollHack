@@ -411,6 +411,25 @@ VA_DECL3(int, attr, int, color, const char*, line)
     VA_END();
 }
 
+/*VARARGS1*/
+void verbalize_ex
+VA_DECL3(int, attr, int, color, const char*, line)
+{
+    char* tmp;
+
+    VA_START(line);
+    VA_INIT(line, const char*);
+    pline_attr = attr;
+    pline_color = color;
+    tmp = You_buf(strlen(line) + sizeof "\"\"");
+    Strcpy(tmp, "\"");
+    Strcat(tmp, line);
+    Strcat(tmp, "\"");
+    vpline(tmp, VA_ARGS);
+    pline_attr = 0;
+    pline_color = NO_COLOR;
+    VA_END();
+}
 
 
 

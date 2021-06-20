@@ -192,7 +192,7 @@ doread()
     if (scroll->oclass == SPBOOK_CLASS && scroll->cooldownleft > 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot read %s before its cooldown has expired.", the(cxname(scroll)));
+        You_ex(ATR_NONE, CLR_YELLOW, "cannot read %s before its cooldown has expired.", the(cxname(scroll)));
         return 0;
     }
 
@@ -369,7 +369,7 @@ doread()
             what = "formula on the scroll";
         if (what) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline("Being blind, you cannot read the %s.", what);
+            pline_ex(ATR_NONE, CLR_ORANGE, "Being blind, you cannot read the %s.", what);
             return 0;
         }
     }
