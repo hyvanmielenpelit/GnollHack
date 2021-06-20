@@ -1076,7 +1076,7 @@ struct monst *mtmp;
         if (!otmp->cursed && is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
         if (vismon)
-            pline("%s looks better.", Monnam(mtmp));
+            pline(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : NO_COLOR, "%s looks better.", Monnam(mtmp));
         if (oseen)
             makeknown(POT_HEALING);
         m_useup(mtmp, otmp);

@@ -49,6 +49,11 @@
 #define DRAGON_SILVER CLR_BRIGHT_CYAN
 #define HI_ZAP CLR_BRIGHT_BLUE
 
+#define CLR_MSG_POSITIVE   CLR_GREEN
+#define CLR_MSG_CRITICAL   CLR_RED
+#define CLR_MSG_WARNING    CLR_ORANGE
+#define CLR_MSG_ATTENTION  CLR_YELLOW
+
 struct menucoloring {
     struct nhregex *match;
     char *origstr;

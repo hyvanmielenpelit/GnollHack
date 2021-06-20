@@ -534,7 +534,7 @@ struct monst* origmonst;
                     if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
                         break;
                     play_sfx_sound(SFX_PETRIFY);
-                    You_ex(ATR_NONE, CLR_RED, "turn to stone...");
+                    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "turn to stone...");
                     killer.format = KILLED_BY;
                     Strcpy(killer.name, mon_monster_name(mtmp));
                     done(STONING);
@@ -1066,15 +1066,15 @@ struct monst* origmonst;
             mtmp->mprops[MUMMY_ROT] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
 
             if (!is_sick(mtmp) && !is_food_poisoned(mtmp) && !is_turning_into_slime(mtmp) && !is_mummy_rotted(mtmp) && (was_sick || was_food_poisoned || was_turning_into_slime || was_mummy_rotted))
-                pline("%s looks much better!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s looks much better!", Monnam(mtmp));
             else if (!has_sick(mtmp) && had_sick)
-                pline("%s is cured of its terminal illness!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s is cured of its terminal illness!", Monnam(mtmp));
             else if (!has_food_poisoned(mtmp) && had_food_poisoned)
-                pline("%s is cured of its food poisoning!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s is cured of its food poisoning!", Monnam(mtmp));
             else if (!has_mummy_rot(mtmp) && had_mummy_rot)
-                pline("%s is cured of its mummy rot!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s is cured of its mummy rot!", Monnam(mtmp));
             else if (!has_slimed(mtmp) && had_slimed)
-                pline("%s is cured of its sliming!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s is cured of its sliming!", Monnam(mtmp));
             else if (!surpress_noeffect_message)
                 pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
         }
@@ -1092,9 +1092,9 @@ struct monst* origmonst;
         boolean had_blinded = !!mtmp->mprops[BLINDED];
         mtmp->mprops[BLINDED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
         if (!is_blinded(mtmp) && was_blinded)
-            pline("%s can see again!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s can see again!", Monnam(mtmp));
         else if (!mtmp->mprops[BLINDED] && had_blinded)
-            pline("%s is cured of its underlying blindness!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s is cured of its underlying blindness!", Monnam(mtmp));
         else
             pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
 
@@ -1114,12 +1114,12 @@ cure_petrification_here:
         if (!is_stoning(mtmp) && was_stoning)
         {
             learn_it = TRUE;
-            pline("%s stops solidifying!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s stops solidifying!", Monnam(mtmp));
         }
         else if (!mtmp->mprops[STONED] && had_stoned)
         {
             learn_it = TRUE;
-            pline("%s is cured of its petrification!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s is cured of its petrification!", Monnam(mtmp));
         }
         else
             pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
@@ -1196,7 +1196,7 @@ cure_petrification_here:
                     } else
                         mimic_hit_msg(mtmp, otyp);
                 } else
-                    pline("%s looks %s.", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s looks %s.", Monnam(mtmp),
                           otyp == SPE_PRODIGIOUS_HEALING || otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE || otyp == GRAIL_OF_HEALING ? "vastly better" :
                         otyp == SPE_GREATER_HEALING || otyp == JAR_OF_GREATER_HEALING_SALVE ? "much, much better" :
                         otyp == SPE_EXTRA_HEALING || otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much better" : 
@@ -1210,7 +1210,7 @@ cure_petrification_here:
                 {
                     (void)set_mon_property_b(mtmp, STONED, 0, canseemon(mtmp));
                     if (canseemon(mtmp))
-                        pline("%s looks limber!", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s looks limber!", Monnam(mtmp));
                 }
 
                 if (has_slimed(mtmp))
@@ -1278,7 +1278,7 @@ cure_petrification_here:
                         mimic_hit_msg(mtmp, otyp);
                 }
                 else
-                    pline("%s looks %s.", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s looks %s.", Monnam(mtmp),
                         otyp == SPE_GREATER_UNDEATH_REPLENISHMENT ? "much better" : "better");
             }
             special_effect_wait_until_end(0);
@@ -5504,8 +5504,8 @@ boolean ordinary;
             learn_it = TRUE;
             Sprintf(killer.name, "shot %sself with an evaporation ray", uhim());
             killer.format = NO_KILLER_PREFIX;
-            You_ex(ATR_NONE, CLR_RED, "irradiate yourself with evaporating energy!");
-            You_ex(ATR_NONE, CLR_RED, "die.");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "irradiate yourself with evaporating energy!");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die.");
             /* They might survive with an amulet of life saving */
             done(DIED);
         }
@@ -5763,8 +5763,8 @@ boolean ordinary;
         learn_it = TRUE;
         Sprintf(killer.name, "shot %sself with a death ray", uhim());
         killer.format = NO_KILLER_PREFIX;
-        You_ex(ATR_NONE, CLR_RED, "irradiate yourself with pure energy!");
-        You_ex(ATR_NONE, CLR_RED, "die.");
+        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "irradiate yourself with pure energy!");
+        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die.");
         /* They might survive with an amulet of life saving */
         done(DIED);
         break;
@@ -5846,8 +5846,8 @@ boolean ordinary;
         Sprintf(killer.name, "shot %sself with a disintegration ray", uhim());
         killer.format = NO_KILLER_PREFIX;
         play_sfx_sound(SFX_DISINTEGRATE);
-        You_ex(ATR_NONE, CLR_RED, "irradiate yourself with disintegration field!");
-        You_ex(ATR_NONE, CLR_RED, "are disintegrated.");
+        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "irradiate yourself with disintegration field!");
+        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "are disintegrated.");
         display_u_being_hit(HIT_DISINTEGRATED, 0, 0UL);
         /* when killed by disintegration breath, don't leave corpse */
         u.ugrave_arise = 3;
@@ -5895,7 +5895,7 @@ boolean ordinary;
                 obj->otyp == GRAIL_OF_HEALING, 
                 obj->otyp == GRAIL_OF_HEALING);
             
-            You_feel("%sbetter.", 
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "%sbetter.",
                 obj->otyp == SPE_PRODIGIOUS_HEALING || obj->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE || obj->otyp == GRAIL_OF_HEALING ? "vastly " :
                 obj->otyp == SPE_GREATER_HEALING || obj->otyp == JAR_OF_GREATER_HEALING_SALVE ? "much, much " :
                 obj->otyp == SPE_EXTRA_HEALING || obj->otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much " :
@@ -5924,7 +5924,7 @@ boolean ordinary;
             special_effect_wait_until_action(0);
             learn_it = TRUE; /* (no effect for spells...) */
             healup(1000, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
-            You_feel("completely healed.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "completely healed.");
             special_effect_wait_until_end(0);
         }
         else
@@ -5938,7 +5938,7 @@ boolean ordinary;
         {
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             special_effect_wait_until_action(0);
-            pline("The liquid burns inside you!");
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "The liquid burns inside you!");
             u.uen = 0;
             losehp(adjust_damage(d(48, 6), (struct monst*)0, &youmonst, AD_CLRC, ADFLAGS_NONE), "drinking from Holy Grail", KILLED_BY_AN);
             context.botl = 1;
@@ -5951,7 +5951,7 @@ boolean ordinary;
             special_effect_wait_until_action(0);
             learn_it = TRUE;
             healup(basedmg, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
-            You_feel("truly completely healed.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "truly completely healed.");
 
             if (u.ulycn >= LOW_PM || is_were(youmonst.data))
                 you_unwere(TRUE);
@@ -5991,7 +5991,7 @@ boolean ordinary;
         play_sfx_sound(SFX_CURE_DISEASE);
         special_effect_wait_until_action(0);
         if (Sick || FoodPoisoned || MummyRot)
-            You("are no longer ill.");
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are no longer ill.");
         if (Slimed)
             make_slimed(0L, "The slime disappears!");
         healup(0, 0, TRUE, FALSE, FALSE, FALSE, FALSE);
@@ -6015,7 +6015,7 @@ boolean ordinary;
             special_effect_wait_until_action(0);
             learn_it = TRUE; /* (no effect for spells...) */
             healup(basedmg, 0, FALSE, (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), FALSE, FALSE);
-            You_feel("%sbetter.", obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT ? "much " : "");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "%sbetter.", obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT ? "much " : "");
             special_effect_wait_until_end(0);
         }
         else
@@ -10951,7 +10951,7 @@ armageddon()
 
     if (killstyle == 2)
     {
-        pline_ex(ATR_NONE, CLR_RED, "Finally, the spell catches up on you... You die.");
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Finally, the spell catches up on you... You die.");
         Strcpy(killer.name, "armageddon");
         killer.format = KILLED_BY_AN;
         done(DIED);

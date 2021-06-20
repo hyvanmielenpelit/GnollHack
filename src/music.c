@@ -725,7 +725,7 @@ struct obj *instr;
     else if ((objects[instr->otyp].oc_subtyp == TOOLTYPE_FLUTE || objects[instr->otyp].oc_subtyp == TOOLTYPE_HORN)
                && !can_blow(&youmonst)) 
     {
-        You_ex(ATR_NONE, CLR_ORANGE, "are incapable of playing %s.", the(distant_name(instr, xname)));
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "are incapable of playing %s.", the(distant_name(instr, xname)));
         return 0;
     }
 

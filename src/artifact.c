@@ -2429,7 +2429,7 @@ doinvoke()
     if (obj->repowerleft > 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_YELLOW, "cannot invoke %s before its has repowered itself.", the(cxname(obj)));
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot invoke %s before its has repowered itself.", the(cxname(obj)));
         return 0;
     }
 
@@ -2828,12 +2828,12 @@ struct obj *obj;
                 if (obj->charges > old_charges)
                 {
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
-                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_BRIGHT_GREEN);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE);
                 }
                 else if (obj->recharged != old_recharged)
                 {
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE2);
-                    p_glow1(obj, ATR_NONE, CLR_BRIGHT_GREEN);
+                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE);
                 }
                 else
                 {
@@ -3562,7 +3562,7 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
 
         /* hero can't handle this object, but didn't get touch_artifact()'s
            "<obj> evades your grasp|control" message; give an alternate one */
-        You_cant_ex(ATR_NONE, CLR_ORANGE, "handle %s%s!", yname(obj),
+        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "handle %s%s!", yname(obj),
                  obj->owornmask ? " anymore" : "");
         /* also inflict damage unless touch_artifact() already did so */
         if (!touch_blasted) {

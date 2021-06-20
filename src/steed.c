@@ -265,7 +265,7 @@ boolean force;      /* Quietly force this animal */
     if (!force && (near_capacity() > SLT_ENCUMBER))
     {
         play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
-        You_cant_ex(ATR_NONE, CLR_ORANGE, "do that while carrying so much stuff.");
+        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "do that while carrying so much stuff.");
         return (FALSE);
     }
 
@@ -332,7 +332,7 @@ boolean force;      /* Quietly force this animal */
         if (t)
         {
             play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-            You_cant_ex(ATR_NONE, CLR_YELLOW, "mount %s while %s's trapped in %s.", mon_nam(mtmp),
+            You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "mount %s while %s's trapped in %s.", mon_nam(mtmp),
                 mhe(mtmp), an(get_trap_explanation(t)));
         }
 
@@ -361,7 +361,7 @@ boolean force;      /* Quietly force this animal */
     if (!force && Underwater && !is_swimmer(ptr))
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You_cant_ex(ATR_NONE, CLR_YELLOW, "ride that creature while under %s.",
+        You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "ride that creature while under %s.",
                  hliquid("water"));
         return (FALSE);
     }
@@ -377,13 +377,13 @@ boolean force;      /* Quietly force this animal */
         && !Lev_at_will)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-        You_ex(ATR_NONE, CLR_YELLOW, "cannot reach %s.", mon_nam(mtmp));
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot reach %s.", mon_nam(mtmp));
         return (FALSE);
     }
     if (!force && uarm && is_metallic(uarm) && greatest_erosion(uarm)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        Your_ex(ATR_NONE, CLR_YELLOW, "%s armor is too stiff to be able to mount %s.",
+        Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s armor is too stiff to be able to mount %s.",
              uarm->oeroded ? "rusty" : "corroded", mon_nam(mtmp));
         return (FALSE);
     }
@@ -392,10 +392,10 @@ boolean force;      /* Quietly force this animal */
             || (u.ulevel + mtmp->mtame < rnd(MAXULEV / 2 + 5))))
     {
         if (Levitation) {
-            pline_ex(ATR_NONE, CLR_ORANGE, "%s slips away from you.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s slips away from you.", Monnam(mtmp));
             return FALSE;
         }
-        You_ex(ATR_NONE, CLR_ORANGE, "slip while trying to get on %s.", mon_nam(mtmp));
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "slip while trying to get on %s.", mon_nam(mtmp));
 
         Sprintf(buf, "slipped while mounting %s",
                 /* "a saddled mumak" or "a saddled pony called Dobbin" */
@@ -596,13 +596,13 @@ int reason; /* Player was thrown off etc. */
     case DISMOUNT_BYCHOICE:
     default:
         if (otmp && otmp->cursed) {
-            You_ex(ATR_NONE, CLR_RED, "can't.  The saddle %s cursed.",
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "can't.  The saddle %s cursed.",
                 otmp->bknown ? "is" : "seems to be");
             otmp->bknown = TRUE;
             return;
         }
         if (!have_spot) {
-            You_ex(ATR_NONE, CLR_ORANGE, "can't.  There isn't anywhere for you to stand.");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "can't.  There isn't anywhere for you to stand.");
             return;
         }
         if (!has_mname(mtmp)) {

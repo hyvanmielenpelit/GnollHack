@@ -385,7 +385,7 @@ const char *drainer; /* cause of death, if drain should be fatal */
     play_sfx_sound(SFX_LOSE_LEVEL);
     if (u.ulevel > 1)
     {
-        pline_ex(ATR_NONE, CLR_RED, "%s level %d.", Goodbye(), u.ulevel);
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s level %d.", Goodbye(), u.ulevel);
         u.ulevel--;
         /* remove intrinsic abilities */
         adjabil(u.ulevel + 1, u.ulevel);
@@ -462,7 +462,7 @@ boolean incr; /* true iff via incremental experience growth */
     int hpinc, eninc;
 
     if (!incr)
-        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "more experienced.");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more experienced.");
 
     play_sfx_sound(SFX_GAIN_LEVEL);
 
@@ -493,7 +493,7 @@ boolean incr; /* true iff via incremental experience growth */
             u.uexp = newuexp(u.ulevel);
         }
         ++u.ulevel;
-        pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "Welcome %sto experience level %d.",
+        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Welcome %sto experience level %d.",
               u.ulevelmax < u.ulevel ? "" : "back ",
               u.ulevel);
         if (u.ulevelmax < u.ulevel)

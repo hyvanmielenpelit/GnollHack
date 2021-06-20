@@ -142,7 +142,7 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
     if (!canspotmon(mtmp)
         && !glyph_is_warning(glyph) && !glyph_is_invisible(glyph)
         && !(!Blind && mtmp->mundetected && hides_under(mtmp->data))) {
-        pline_ex(ATR_NONE, CLR_ORANGE, "Wait!  There's %s there you can't see!", something);
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "Wait!  There's %s there you can't see!", something);
         map_invisible(bhitpos.x, bhitpos.y);
         /* if it was an invisible mimic, treat it as if we stumbled
          * onto a visible mimic
@@ -3509,7 +3509,7 @@ register struct attack *mattk;
                 /* eating a Rider or its corpse is fatal */
                 if (is_rider(pd)) 
                 {
-                    pline_ex(ATR_NONE, CLR_RED, "Unfortunately, digesting any of it is fatal.");
+                    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Unfortunately, digesting any of it is fatal.");
                     end_engulf();
                     Sprintf(killer.name, "unwisely tried to eat %s",
                         mon_monster_name(mdef));
@@ -3607,7 +3607,7 @@ register struct attack *mattk;
                              (struct obj *) 0)) 
                 {
                     if (!is_blinded(mdef))
-                        pline_ex(ATR_NONE, CLR_ORANGE, "%s can't see in there!", Monnam(mdef));
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s can't see in there!", Monnam(mdef));
 
                     nonadditive_increase_mon_property(mdef, BLINDED, (int)ceil(damage));
                 }

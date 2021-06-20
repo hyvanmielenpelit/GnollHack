@@ -186,7 +186,7 @@ struct obj *book2;
                          arti_cursed = FALSE;
 
         if (book2->cursed) {
-            pline_The_ex(ATR_NONE, CLR_ORANGE, "runes appear scrambled.  You can't read them!");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "runes appear scrambled.  You can't read them!");
             return;
         }
 
@@ -218,7 +218,7 @@ struct obj *book2;
 
         if (arti_cursed) {
             play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
-            pline_The_ex(ATR_NONE, CLR_ORANGE, "invocation fails!");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "invocation fails!");
             pline("At least one of your artifacts is cursed...");
         } else if (arti1_primed && arti2_primed) {
             unsigned soon =
@@ -659,7 +659,7 @@ register struct obj *spellbook;
                 if (eyecount(youmonst.data) > 1)
                     eyes = makeplural(eyes);
                 play_sfx_sound(SFX_ACQUIRE_SLEEP);
-                pline_ex(ATR_NONE, CLR_YELLOW, "This book is so dull that you can't keep your %s open.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "This book is so dull that you can't keep your %s open.",
                       eyes);
                 dullbook += rnd(2 * objects[booktype].oc_spell_level);
                 fall_asleep(-dullbook, TRUE);
@@ -882,13 +882,13 @@ rejectcasting()
     if (Stunned)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_ORANGE, "are too impaired to cast a spell.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "are too impaired to cast a spell.");
         return TRUE;
     } 
     else if (Cancelled)
     {
         play_sfx_sound(SFX_CANCELLATION_IN_FORCE);
-        Your_ex(ATR_NONE, CLR_ORANGE, "magic is not flowing properly to allow for casting a spell.");
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "magic is not flowing properly to allow for casting a spell.");
         return TRUE;
     }
     return FALSE;
@@ -909,13 +909,13 @@ int spell;
     if (!(objects[spellbookid].oc_spell_flags & S1_NO_VERBAL_COMPONENT) && !can_chant(&youmonst))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_ORANGE, "are unable to chant the incantation for a spell with a verbal component!");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "are unable to chant the incantation for a spell with a verbal component!");
         return TRUE;
     }
     else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && nohands(youmonst.data))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_ORANGE, "do not have hands to cast a spell with a somatic component!");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "do not have hands to cast a spell with a somatic component!");
         return TRUE;
     }
     else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && !freehand())
@@ -925,12 +925,12 @@ int spell;
          * to be makeplural(bodypart(ARM)).
          */
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        Your_ex(ATR_NONE, CLR_ORANGE, "arms are not free to cast a spell with a somatic component!");
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "arms are not free to cast a spell with a somatic component!");
         return TRUE;
     }
     else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && u.uburied) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_ORANGE, "cannot cast a spell with a somatic component while being buried!");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot cast a spell with a somatic component while being buried!");
         return TRUE;
     }
     return FALSE;
@@ -1210,7 +1210,7 @@ int spell;
     if (spellknow(spell) <= 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_ORANGE, "cannot recall this spell anymore.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot recall this spell anymore.");
         return 0;
     }
 
@@ -1854,13 +1854,13 @@ boolean atme;
 
     if (spellamount(spell) == 0) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_YELLOW, "do not have the spell's material components prepared.");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "do not have the spell's material components prepared.");
         return 0; /* no time elapses */
     }
 
     if (spellcooldownleft(spell) > 0) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_YELLOW, "cannot cast the spell before the cooldown has expired.");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot cast the spell before the cooldown has expired.");
         return 0; /* no time elapses */
     }
 
@@ -1868,7 +1868,7 @@ boolean atme;
     if (spellknow(spell) <= 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_ORANGE, "cannot recall this spell anymore.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot recall this spell anymore.");
         return 0;
     }
 
@@ -1907,7 +1907,7 @@ boolean atme;
     } else*/
     if (ACURR(A_STR) < 4 && spellid(spell) != SPE_RESTORE_ABILITY) {
         play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_STAMINA);
-        You_ex(ATR_NONE, CLR_ORANGE, "lack the strength to cast spells.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "lack the strength to cast spells.");
         return 0;
     } else if (check_capacity(
                 "Your concentration falters while carrying so much stuff.")) {
@@ -1941,7 +1941,7 @@ boolean atme;
     if (denergy > dumana)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MANA);
-        You_ex(ATR_NONE, CLR_YELLOW, "don't have enough mana to cast that spell.");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "don't have enough mana to cast that spell.");
         return res;
     } 
     //else {
@@ -2017,7 +2017,7 @@ boolean atme;
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         u_wait_until_action();
         play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
-        You_ex(ATR_NONE, CLR_ORANGE, "fail to cast the spell correctly.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "fail to cast the spell correctly.");
         deduct_mana_cost(denergy / 2);
         context.botl = 1;
         update_u_action_revert(ACTION_TILE_NO_ACTION);
@@ -2307,7 +2307,7 @@ boolean atme;
         else
         {
             play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
-            pline_ex(ATR_NONE, CLR_ORANGE, "The spell fails!");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "The spell fails!");
         }
         break;
     }
@@ -4385,7 +4385,7 @@ int spell;
     if (spellknow(spell) <= 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_ORANGE, "cannot recall this spell or its material components anymore.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot recall this spell or its material components anymore.");
         return 0;
     }
 

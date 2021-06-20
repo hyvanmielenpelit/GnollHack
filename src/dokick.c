@@ -1098,13 +1098,13 @@ dokick() {
     if (nolimbs(youmonst.data) || slithy(youmonst.data)) 
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You_ex(ATR_NONE, CLR_ORANGE, "have no legs to kick with.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "have no legs to kick with.");
         no_kick = TRUE;
     }
     else if (verysmall(youmonst.data))
     {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_ex(ATR_NONE, CLR_ORANGE, "are too small to do any kicking.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "are too small to do any kicking.");
         no_kick = TRUE;
     } 
     else if (u.usteed) 
@@ -1129,7 +1129,7 @@ dokick() {
         if (wl == BOTH_SIDES)
             bp = makeplural(bp);
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        Your_ex(ATR_NONE, CLR_ORANGE, "%s%s %s in no shape for kicking.",
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s in no shape for kicking.",
              (wl == LEFT_SIDE) ? "left " : (wl == RIGHT_SIDE) ? "right " : "",
              bp, (wl == BOTH_SIDES) ? "are" : "is");
         no_kick = TRUE;
@@ -1137,13 +1137,13 @@ dokick() {
     else if (near_capacity() > SLT_ENCUMBER)
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        Your_ex(ATR_NONE, CLR_ORANGE, "load is too heavy to balance yourself for a kick.");
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "load is too heavy to balance yourself for a kick.");
         no_kick = TRUE;
     }
     else if (youmonst.data->mlet == S_LIZARD) 
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        Your_ex(ATR_NONE, CLR_ORANGE, "legs cannot kick effectively.");
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "legs cannot kick effectively.");
         no_kick = TRUE;
     } 
     else if (u.uinwater && !rn2(2)) 
@@ -1169,7 +1169,7 @@ dokick() {
         case TT_WEB:
         case TT_BEARTRAP:
             play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-            You_cant_ex(ATR_NONE, CLR_ORANGE, "move your %s!", body_part(LEG));
+            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "move your %s!", body_part(LEG));
             break;
         default:
             break;
@@ -1215,7 +1215,7 @@ dokick() {
         {
         case 0:
             play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-            You_cant_ex(ATR_NONE, CLR_ORANGE, "move your %s!", body_part(LEG));
+            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "move your %s!", body_part(LEG));
             break;
         case 1:
             if (is_animal(u.ustuck->data))

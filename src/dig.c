@@ -328,7 +328,7 @@ dig(VOID_ARGS)
         switch (rn2(3)) {
         case 0:
             if (!welded(wep, &youmonst)) {
-                You_ex(ATR_NONE, CLR_ORANGE, "fumble and drop %s.", yname(wep));
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "fumble and drop %s.", yname(wep));
                 dropx(wep);
             } else {
                 if (u.usteed)

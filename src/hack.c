@@ -956,7 +956,7 @@ int mode;
                 if (mode == DO_MOVE)
                 {
                     if (amorphous(youmonst.data))
-                        You_ex(ATR_NONE, CLR_YELLOW, "try to ooze under the door, but can't squeeze your possessions through.");
+                        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "try to ooze under the door, but can't squeeze your possessions through.");
 
                     if (flags.autoopen && !context.run && !Confusion
                         && !Stunned && !Fumbling)
@@ -1899,7 +1899,7 @@ domove_core()
                     if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck) && !is_crazed(u.ustuck))
                         goto pull_free;
                     play_sfx_sound(SFX_STUCK_IN_TRAP);
-                    You_ex(ATR_NONE, CLR_ORANGE, "cannot escape from %s!", mon_nam(u.ustuck));
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot escape from %s!", mon_nam(u.ustuck));
                     nomul(0);
                     if (iflags.using_gui_sounds)
                         delay_output_milliseconds(100); // Just give a bit of time for the sound before moving on.
@@ -2203,7 +2203,7 @@ domove_core()
             if (u.usteed)
                 u.usteed->mx = u.ux, u.usteed->my = u.uy;
             play_sfx_sound(SFX_SOMETHING_IN_WAY);
-            You_ex(ATR_NONE, CLR_YELLOW, "stop.  %s can't move diagonally.", upstart(y_monnam(mtmp)));
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "stop.  %s can't move diagonally.", upstart(y_monnam(mtmp)));
         }
         else if (u.ux0 != x && u.uy0 != y && bad_rock(mtmp->data, x, u.uy0)
                    && bad_rock(mtmp->data, u.ux0, y)
@@ -3182,13 +3182,13 @@ pickup_checks()
         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
         struct trap *traphere = t_at(u.ux, u.uy);
         if (traphere && uteetering_at_seen_pit(traphere))
-            You_ex(ATR_NONE, CLR_YELLOW, "cannot reach the bottom of the pit.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot reach the bottom of the pit.");
         else if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC)
             rider_cant_reach();
         else if (Blind && !can_reach_floor(TRUE))
-            You_ex(ATR_NONE, CLR_YELLOW, "cannot reach anything here.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot reach anything here.");
         else
-            You_ex(ATR_NONE, CLR_YELLOW, "cannot reach the %s.", surface(u.ux, u.uy));
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot reach the %s.", surface(u.ux, u.uy));
         return 0;
     }
     return -1; /* can do normal pickup */
@@ -3231,7 +3231,7 @@ lookaround()
     /* they polymorphed while in the middle of a long move. */
     if (NODIAG(u.umonnum) && u.dx && u.dy) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_ex(ATR_NONE, CLR_YELLOW, "cannot move diagonally.");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot move diagonally.");
         nomul(0);
         return;
     }
@@ -3503,18 +3503,18 @@ maybe_wail()
         who = (Role_if(PM_WIZARD) || Role_if(PM_VALKYRIE)) ? urole.name.m
                                                            : "Elf";
         if (u.uhp == 1) {
-            pline_ex(ATR_NONE, CLR_RED, "%s is about to die.", who);
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s is about to die.", who);
         } else {
             for (i = 0, powercnt = 0; i < SIZE(powers); ++i)
                 if (u.uprops[powers[i]].intrinsic & INTRINSIC)
                     ++powercnt;
 
-            pline_ex(ATR_NONE, CLR_RED, (powercnt >= 4) ? "%s, all your powers will be lost..."
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, (powercnt >= 4) ? "%s, all your powers will be lost..."
                                   : "%s, your life force is running out.",
                   who);
         }
     } else {
-        You_hear_ex(ATR_NONE, CLR_RED, u.uhp == 1 ? "the wailing of the Banshee..."
+        You_hear_ex(ATR_NONE, CLR_MSG_CRITICAL, u.uhp == 1 ? "the wailing of the Banshee..."
                             : "the howling of the CwnAnnwn...");
     }
 }
@@ -3548,7 +3548,7 @@ boolean k_format;
         killer.format = k_format;
         if (killer.name != knam) /* the thing that killed you */
             Strcpy(killer.name, knam ? knam : "");
-        You_ex(ATR_NONE, CLR_RED, "die...");
+        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die...");
         done(DIED);
     } 
     else if (n > 0 && u.uhp * 10 < u.uhpmax) 
@@ -3704,9 +3704,9 @@ const char *str;
     if (near_capacity() >= EXT_ENCUMBER) {
         play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
         if (str)
-            pline_ex1(ATR_NONE, CLR_ORANGE, str);
+            pline_ex1(ATR_NONE, CLR_MSG_WARNING, str);
         else
-            You_cant_ex(ATR_NONE, CLR_ORANGE, "do that while carrying so much stuff.");
+            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "do that while carrying so much stuff.");
         return 1;
     }
     return 0;

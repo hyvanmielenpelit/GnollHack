@@ -305,7 +305,7 @@ struct obj *obj;
 
     if (!freehand())
     {
-        You_ex(ATR_NONE, CLR_ORANGE, "have no free %s!", body_part(HAND));
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "have no free %s!", body_part(HAND));
         return 0;
     } 
     else if (obj == ublindf)
@@ -554,15 +554,15 @@ register struct obj *obj;
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_ex(ATR_NONE, CLR_ORANGE, "have no hands!"); /* not `body_part(HAND)' */
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "have no hands!"); /* not `body_part(HAND)' */
         return 0;
     } else if (Deaf) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You_cant_ex(ATR_NONE, CLR_ORANGE, "hear anything!");
+        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "hear anything!");
         return 0;
     } else if (!freehand() && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You_ex(ATR_NONE, CLR_ORANGE, "have no free %s.", body_part(HAND));
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "have no free %s.", body_part(HAND));
         return 0;
     }
     if (!getdir((char *) 0))
@@ -2644,7 +2644,7 @@ int magic; /* 0=Physical, otherwise skill level */
         /* normally (nolimbs || slithy) implies !Jumping,
            but that isn't necessarily the case for knights */
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant_ex(ATR_NONE, CLR_ORANGE, "jump; you have no legs!");
+        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "jump; you have no legs!");
         return 0;
     } 
     else if (!magic && !Jumping)
@@ -2691,7 +2691,7 @@ int magic; /* 0=Physical, otherwise skill level */
             return 1;
         }
         play_sfx_sound(SFX_STUCK_IN_TRAP);
-        You_ex(ATR_NONE, CLR_ORANGE, "cannot escape from %s!", mon_nam(u.ustuck));
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot escape from %s!", mon_nam(u.ustuck));
         return 0;
     }
     else if (Levitation || Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) 
@@ -2964,7 +2964,7 @@ struct obj *obj;
         case 2:
             if (!Confusion)
             {
-                You_ex(ATR_NONE, CLR_ORANGE, "suddenly feel %s.",
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "suddenly feel %s.",
                     Hallucination ? "trippy" : "confused");
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             }
@@ -3149,7 +3149,7 @@ struct obj *obj;
     if (did_attr)
     {
         play_sfx_sound(SFX_RESTORE_ABILITY);
-        pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "This makes you feel %s!",
+        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "This makes you feel %s!",
             (did_prop + did_attr) == (trouble_count + unfixable_trbl)
             ? "great"
             : "better");
@@ -3494,7 +3494,7 @@ struct obj* obj;
                 if (is_death_enchantable(otmp))
                 {
                     wandknown = TRUE;
-                    You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "enchant %s with death magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with death magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, 
                         max(1, DEATH_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * DEATH_ENCHANTMENT_QUANTITY_BUC_VARIATION),
                         DEATH_ENCHANTMENT);
@@ -3531,7 +3531,7 @@ struct obj* obj;
                 if (is_elemental_enchantable(otmp))
                 {
                     wandknown = TRUE;
-                    You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "enchant %s with cold magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with cold magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, 
                         max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION),
                         COLD_ENCHANTMENT);
@@ -3600,7 +3600,7 @@ struct obj* obj;
                 else if(is_elemental_enchantable(otmp))
                 {
                         wandknown = TRUE;
-                        You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "enchant %s with fire magic.", yname(otmp));
+                        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with fire magic.", yname(otmp));
                         otmp = elemental_enchant_quan(otmp, 
                             max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION),
                             FIRE_ENCHANTMENT);
@@ -3634,7 +3634,7 @@ struct obj* obj;
                 if (is_elemental_enchantable(otmp))
                 {
                     wandknown = TRUE;
-                    You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "enchant %s with lightning magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with lightning magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, 
                         max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION), 
                         LIGHTNING_ENCHANTMENT);
@@ -3693,7 +3693,7 @@ struct obj* obj;
                 if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY)
                 {
                     wandknown = TRUE;
-                    pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s the destructive energies of %s.", Yobjnam2(uarmc, "absorb"), the(xname(obj)));
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s the destructive energies of %s.", Yobjnam2(uarmc, "absorb"), the(xname(obj)));
                     makeknown(uarmc->otyp);
                     break;
                 }
@@ -5412,7 +5412,7 @@ doapply()
     if (obj->cooldownleft > 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_YELLOW, "cannot apply %s before its cooldown has expired.", the(cxname(obj)));
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot apply %s before its cooldown has expired.", the(cxname(obj)));
         return 0;
     }
 
@@ -5928,7 +5928,7 @@ struct obj* obj;
                 no_golf_swing = FALSE;
             break;
         case TT_WEB:
-            You_cant_ex(ATR_NONE, CLR_ORANGE, "move your %s!", makeplural(body_part(ARM)));
+            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "move your %s!", makeplural(body_part(ARM)));
             break;
         default:
             break;
@@ -5966,7 +5966,7 @@ struct obj* obj;
         {
         case 0:
             play_sfx_sound(SFX_STUCK_IN_TRAP);
-            You_cant_ex(ATR_NONE, CLR_ORANGE, "move your %s!", makeplural(body_part(ARM)));
+            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "move your %s!", makeplural(body_part(ARM)));
             break;
         case 1:
             if (is_animal(u.ustuck->data)) 

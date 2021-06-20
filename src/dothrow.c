@@ -475,7 +475,7 @@ int *shotlimit_p; /* (see dothrow()) */
         return FALSE;
     } else if (nohands(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant_ex(ATR_NONE, CLR_ORANGE, "throw or shoot without hands."); /* not body_part(HAND) */
+        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "throw or shoot without hands."); /* not body_part(HAND) */
         return FALSE;
         /*[what about !freehand(), aside from cursed missile launcher?]*/
     }
@@ -665,7 +665,7 @@ dofire()
     if (obj && !ammo_and_launcher(obj, uwep))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_YELLOW, "cannot fire %s with %s.", an(cxname_singular(obj)), an(cxname_singular(uwep)));
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot fire %s with %s.", an(cxname_singular(obj)), an(cxname_singular(uwep)));
         return 0;
     }
 
@@ -1389,7 +1389,7 @@ boolean hitsroof;
             killer.format = KILLED_BY;
             Strcpy(killer.name, "elementary physics"); /* "what goes up..." */
             play_sfx_sound(SFX_PETRIFY);
-            You_ex(ATR_NONE, CLR_RED, "turn to stone.");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "turn to stone.");
             if (obj)
                 dropy(obj); /* bypass most of hitfloor() */
             thrownobj = 0;  /* now either gone or on floor */

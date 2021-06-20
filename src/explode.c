@@ -738,9 +738,9 @@ int expltype;
 
                 if (iflags.last_msg == PLNMSG_CAUGHT_IN_EXPLOSION
                     || iflags.last_msg == PLNMSG_TOWER_OF_FLAME) /*seffects()*/
-                    pline_ex(ATR_NONE, CLR_RED, "It is fatal.");
+                    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "It is fatal.");
                 else
-                    pline_The_ex(ATR_NONE, CLR_RED, "%s is fatal.", str);
+                    pline_The_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s is fatal.", str);
 
                 /* Known BUG: BURNING suppresses corpse in bones data,
                    but done does not handle killer reason correctly */

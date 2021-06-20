@@ -626,7 +626,7 @@ boolean allow_drag;
  drag:
 
     if (near_capacity() > SLT_ENCUMBER && dist2(x, y, u.ux, u.uy) <= 2) {
-        You_ex(ATR_NONE, CLR_YELLOW, "cannot %sdrag the heavy iron ball.",
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot %sdrag the heavy iron ball.",
             invent ? "carry all that and also " : "");
         nomul(0);
         return FALSE;

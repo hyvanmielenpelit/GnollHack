@@ -457,7 +457,7 @@ double damage;
     if (mtmp->mhp < mtmp->mhpmax)
     {
         if (canseemon(mtmp))
-            pline("%s looks better.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : NO_COLOR, "%s looks better.", Monnam(mtmp));
         /* note: player healing does 6d4; this used to do 1d8 */
         deduct_monster_hp(mtmp, -damage);
         //if ((mtmp->mhp += d(3, 6)) > mtmp->mhpmax)
@@ -491,7 +491,7 @@ int spellnum;
     switch (spellnum) 
     {
     case MGC_DEATH_TOUCH:
-        pline_ex(ATR_NONE, CLR_RED, "Oh no, %s's using the touch of death!", mhe(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Oh no, %s's using the touch of death!", mhe(mtmp));
         //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
 
         if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
@@ -502,7 +502,7 @@ int spellnum;
         {
             if (Hallucination) 
             {
-                You_ex(ATR_NONE, CLR_ORANGE, "have an out of body experience.");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "have an out of body experience.");
             }
             else
             {
@@ -758,7 +758,7 @@ int spellnum;
     switch (spellnum) 
     {
     case CLC_DEATH_TOUCH:
-        pline_ex(ATR_NONE, CLR_RED, "Oh no, %s's using the touch of death!", mhe(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Oh no, %s's using the touch of death!", mhe(mtmp));
 
         if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
         {
@@ -768,7 +768,7 @@ int spellnum;
         {
             if (Hallucination)
             {
-                You(ATR_NONE, CLR_ORANGE, "have an out of body experience.");
+                You(ATR_NONE, CLR_MSG_WARNING, "have an out of body experience.");
             }
             else
             {

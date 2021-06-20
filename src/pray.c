@@ -402,15 +402,15 @@ int trouble;
         if (uamul && uamul->otyp == AMULET_OF_STRANGULATION)
         {
             play_sfx_sound(SFX_ITEM_VANISHES);
-            Your_ex(ATR_NONE, CLR_BRIGHT_GREEN, "amulet vanishes!");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "amulet vanishes!");
             useup(uamul);
         }
-        You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "can breathe again.");
+        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "can breathe again.");
         Strangled = 0;
         context.botl = context.botlx = 1;
         break;
     case TROUBLE_LAVA:
-        You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "are back on solid ground.");
+        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are back on solid ground.");
         /* teleport should always succeed, but if not, just untrap them */
         if (!safe_teleds(FALSE, FALSE))
             reset_utrap(TRUE);
@@ -419,23 +419,23 @@ int trouble;
         /* temporarily lost strength recovery now handled by init_uhunger() */
         /*FALLTHRU*/
     case TROUBLE_HUNGRY:
-        Your_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s feels content.", body_part(STOMACH));
+        Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s feels content.", body_part(STOMACH));
         init_uhunger();
         context.botl = context.botlx = 1;
         break;
     case TROUBLE_SICK:
         play_sfx_sound(SFX_CURE_DISEASE);
-        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "better.");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "better.");
         make_sick(0L, (char *) 0, FALSE);
         break;
     case TROUBLE_FOOD_POISONED:
         play_sfx_sound(SFX_CURE_DISEASE);
-        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "better.");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "better.");
         make_food_poisoned(0L, (char*)0, FALSE);
         break;
     case TROUBLE_MUMMY_ROT:
         play_sfx_sound(SFX_CURE_DISEASE);
-        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "better.");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "better.");
         make_mummy_rotted(0L, (char*)0, FALSE);
         break;
     case TROUBLE_REGION:
@@ -447,7 +447,7 @@ int trouble;
            5 or less hit points, so make sure they're always
            boosted to be more than that */
         play_sfx_sound(SFX_FULL_HEALING);
-        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "much better.");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much better.");
         if (Upolyd) {
             u.basemhmax += rnd(5);
             if (u.basemhmax <= 5)
@@ -466,7 +466,7 @@ int trouble;
     case TROUBLE_COLLAPSING:
         play_sfx_sound(SFX_GAIN_ABILITY);
         /* override Fixed_abil; uncurse that if feasible */
-        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%sstronger.",
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "%sstronger.",
                  (AMAX(A_STR) - ABASE(A_STR) > 6) ? "much " : "");
         ABASE(A_STR) = AMAX(A_STR);
         context.botl = 1;
@@ -485,7 +485,7 @@ int trouble;
     case TROUBLE_STUCK_IN_WALL:
         /* no control, but works on no-teleport levels */
         if (safe_teleds(FALSE, FALSE)) {
-            Your_ex(ATR_NONE, CLR_BRIGHT_GREEN, "surroundings change.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "surroundings change.");
         } else {
             /* safe_teleds() couldn't find a safe place; perhaps the
                level is completely full.  As a last resort, confer
@@ -497,7 +497,7 @@ int trouble;
             set_itimeout(&HPasses_walls, (long) (d(4, 4) + 4)); /* 8..20 */
             /* how else could you move between packed rocks or among
                lattice forming "solid" rock? */
-            You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "much slimmer.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much slimmer.");
         }
         break;
     case TROUBLE_CURSED_LEVITATION:
@@ -546,7 +546,7 @@ int trouble;
      */
     case TROUBLE_PUNISHED:
         play_sfx_sound(SFX_BLESS_ITEM_SUCCESS);
-        Your_ex(ATR_NONE, CLR_BRIGHT_GREEN, "chain disappears.");
+        Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "chain disappears.");
         if (u.utrap && u.utraptype == TT_BURIEDBALL)
             buried_ball_to_freedom();
         else
@@ -568,7 +568,7 @@ int trouble;
         break;
     case TROUBLE_TELEPORTITIS:
         play_sfx_sound(SFX_CURE_AILMENT);
-        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "much more composed.");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much more composed.");
         u.uprops[TELEPORT].intrinsic = (u.uprops[TELEPORT].intrinsic & TIMEOUT);
         break;
     case TROUBLE_CURSED_ITEMS:
@@ -583,7 +583,7 @@ int trouble;
             return;
         }
         if (!Blind || (otmp == ublindf && Blind_because_of_blindfold_only)) {
-            pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s %s.",
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s.",
                   what ? what : (const char *) Yobjnam2(otmp, "softly glow"),
                   hcolor(NH_AMBER));
             iflags.last_msg = PLNMSG_OBJ_GLOWS;
@@ -598,7 +598,7 @@ int trouble;
         if (Hallucination)
             pline("There's a tiger in your tank.");
         else
-            You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "in good health again.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "in good health again.");
 
         play_sfx_sound(SFX_RESTORE_ABILITY);
 
@@ -633,7 +633,7 @@ int trouble;
             }
         }
         if (*msgbuf)
-            pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s.", msgbuf);
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s.", msgbuf);
         break;
     }
     case TROUBLE_WOUNDED_LEGS:
@@ -650,14 +650,14 @@ int trouble;
         break;
     case TROUBLE_HALLUCINATION:
         play_sfx_sound(SFX_CURE_AILMENT);
-        pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "Looks like you are back in Kansas.");
+        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Looks like you are back in Kansas.");
         (void) make_hallucinated(0L, FALSE, 0L);
         break;
     case TROUBLE_SADDLE:
         play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
         otmp = which_armor(u.usteed, W_SADDLE);
         if (!Blind) {
-            pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s %s.", Yobjnam2(otmp, "softly glow"), hcolor(NH_AMBER));
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s.", Yobjnam2(otmp, "softly glow"), hcolor(NH_AMBER));
             otmp->bknown = TRUE;
         }
         uncurse(otmp);
@@ -677,11 +677,11 @@ god_zaps_you(resp_god)
 aligntyp resp_god;
 {
     if (u.uswallow) {
-        pline_ex(ATR_NONE, CLR_RED,
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL,
           "Suddenly a bolt of lightning comes down at you from the heavens!");
         pline("It strikes %s!", mon_nam(u.ustuck));
         if (!is_mon_immune_to_elec(u.ustuck)) {
-            pline_ex(ATR_NONE, CLR_RED, "%s fries to a crisp!", Monnam(u.ustuck));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s fries to a crisp!", Monnam(u.ustuck));
             /* Yup, you get experience.  It takes guts to successfully
              * pull off this trick on your god, anyway.
              * Other credit/blame applies (luck or alignment adjustments),
@@ -697,7 +697,7 @@ aligntyp resp_god;
     }
     else 
     {
-        pline_ex(ATR_NONE, CLR_RED, "Suddenly, a bolt of lightning strikes you!");
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Suddenly, a bolt of lightning strikes you!");
         if (Reflecting) {
             play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
@@ -715,10 +715,10 @@ aligntyp resp_god;
 
     pline("%s is not deterred...", align_gname(resp_god));
     if (u.uswallow) {
-        pline_ex(ATR_NONE, CLR_RED, "A wide-angle disintegration beam aimed at you hits %s!",
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A wide-angle disintegration beam aimed at you hits %s!",
               mon_nam(u.ustuck));
         if (!resists_disint(u.ustuck)) {
-            pline_ex(ATR_NONE, CLR_RED, "%s disintegrates into a pile of dust!", Monnam(u.ustuck));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s disintegrates into a pile of dust!", Monnam(u.ustuck));
             xkilled(u.ustuck, XKILL_NOMSG | XKILL_NOCORPSE | XKILL_NOCONDUCT);
         }
         else
@@ -727,7 +727,7 @@ aligntyp resp_god;
             pline("%s seems unaffected.", Monnam(u.ustuck));
         }
     } else {
-        pline_ex(ATR_NONE, CLR_RED, "A wide-angle disintegration beam hits you!");
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A wide-angle disintegration beam hits you!");
 
         /* disintegrate shield and body armor before disintegrating
          * the impudent mortal, like black dragon breath -3.
@@ -774,7 +774,7 @@ boolean via_disintegration;
     if (via_disintegration)
         play_sfx_sound(SFX_DISINTEGRATE);
 
-    You_ex(ATR_NONE, CLR_RED, "%s!", !via_disintegration ? "fry to a crisp"
+    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s!", !via_disintegration ? "fry to a crisp"
                                    : "disintegrate into a pile of dust");
     killer.format = KILLED_BY;
     Sprintf(killer.name, "the wrath of %s", align_gname(resp_god));
@@ -837,7 +837,7 @@ aligntyp resp_god;
     case 5:
         gods_angry(resp_god);
         if (!Blind && !Antimagic)
-            pline_ex(ATR_NONE, CLR_RED, "%s glow surrounds you.", An(hcolor(NH_BLACK)));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s glow surrounds you.", An(hcolor(NH_BLACK)));
         rndcurse();
         break;
     case 7:
@@ -1340,13 +1340,13 @@ gcrownu()
             }
             else if (obj && in_hand)
             {
-                Your_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s shines white for a while!", xname(obj));
+                Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines white for a while!", xname(obj));
                 obj->enchantment = max(1, obj->enchantment + rnd(3));
                 obj->dknown = obj->aknown = obj->nknown = TRUE;
             }
             else if (obj2 && in_hand2)
             {
-                Your_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s shines white for a while!", xname(obj2));
+                Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s shines white for a while!", xname(obj2));
                 obj2->enchantment = max(1, obj2->enchantment + rnd(3));
                 obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
             }
@@ -1368,7 +1368,7 @@ gcrownu()
             else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj->otyp].oc_cost < 2000L && !obj->oartifact)
             {
                 if (!Blind)
-                    Your_ex(ATR_NONE, CLR_BRIGHT_GREEN, "sword shines brightly for a moment.");
+                    Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "sword shines brightly for a moment.");
                 obj->otyp = LONG_SWORD;
                 obj = oname(obj, artiname(ART_EXCALIBUR));
                 if (obj && obj->oartifact == ART_EXCALIBUR)
@@ -1381,7 +1381,7 @@ gcrownu()
             else if (obj2 && objects[obj2->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj2->otyp].oc_cost < 2000L && !obj2->oartifact)
             {
                 if (!Blind)
-                    Your_ex(ATR_NONE, CLR_BRIGHT_GREEN, "sword shines brightly for a moment.");
+                    Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "sword shines brightly for a moment.");
                 obj2->otyp = LONG_SWORD;
                 obj2 = oname(obj2, artiname(ART_EXCALIBUR));
                 if (obj2 && obj2->oartifact == ART_EXCALIBUR)
@@ -1574,7 +1574,7 @@ aligntyp g_align;
             {
                 play_sfx_sound(SFX_AURA_GLOW);
                 if(!Blind)
-                    pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
                 bless(otmp);
                 otmp->bknown = 1;
                 update_inventory();
@@ -1677,11 +1677,11 @@ aligntyp g_align;
                 {
                     if (!Blind)
                     {
-                        pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s %s%s.", Yobjnam2(uwep, "softly glow"), hcolor(NH_AMBER), repair_buf);
+                        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s%s.", Yobjnam2(uwep, "softly glow"), hcolor(NH_AMBER), repair_buf);
                         iflags.last_msg = PLNMSG_OBJ_GLOWS;
                     }
                     else
-                        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "the power of %s over %s.", u_gname(), yname(uwep));
+                        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "the power of %s over %s.", u_gname(), yname(uwep));
                     uncurse(uwep);
                     uwep->bknown = TRUE;
                     *repair_buf = '\0';
@@ -1690,11 +1690,11 @@ aligntyp g_align;
                 {
                     if (!Blind)
                     {
-                        pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s with %s aura%s.", Yobjnam2(uwep, "softly glow"), an(hcolor(NH_LIGHT_BLUE)), repair_buf);
+                        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s with %s aura%s.", Yobjnam2(uwep, "softly glow"), an(hcolor(NH_LIGHT_BLUE)), repair_buf);
                         iflags.last_msg = PLNMSG_OBJ_GLOWS;
                     }
                     else
-                        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "the blessing of %s over %s.", u_gname(), yname(uwep));
+                        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "the blessing of %s over %s.", u_gname(), yname(uwep));
                     bless(uwep);
                     uwep->bknown = TRUE;
                     *repair_buf = '\0';
@@ -1708,7 +1708,7 @@ aligntyp g_align;
                     /* only give this message if we didn't just bless
                        or uncurse (which has already given a message) */
                     if (*repair_buf)
-                        pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s as good as new!",
+                        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s as good as new!",
                               Yobjnam2(uwep, Blind ? "feel" : "look"));
                 }
                 update_inventory();
@@ -1742,7 +1742,7 @@ aligntyp g_align;
         case 2:
             play_sfx_sound(SFX_PRAY_HEALING);
             if (!Blind)
-                You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "are surrounded by %s glow.", an(hcolor(NH_GOLDEN)));
+                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are surrounded by %s glow.", an(hcolor(NH_GOLDEN)));
             /* if any levels have been lost (and not yet regained),
                treat this effect like blessed full healing */
             if (u.ulevel < u.ulevelmax) {
@@ -1782,15 +1782,15 @@ aligntyp g_align;
 
             play_sfx_sound(SFX_PRAY_UNCURSE);
             if (Blind)
-                You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "the power of %s.", u_gname());
+                You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "the power of %s.", u_gname());
             else
-                You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "are surrounded by %s aura.", an(hcolor(NH_LIGHT_BLUE)));
+                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are surrounded by %s aura.", an(hcolor(NH_LIGHT_BLUE)));
             for (otmp = invent; otmp; otmp = otmp->nobj) {
                 if (otmp->cursed
                     && (otmp != uarmh /* [see worst_cursed_item()] */
                         || uarmh->otyp != HELM_OF_OPPOSITE_ALIGNMENT)) {
                     if (!Blind) {
-                        pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s %s.", Yobjnam2(otmp, "softly glow"),
+                        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s.", Yobjnam2(otmp, "softly glow"),
                               hcolor(NH_AMBER));
                         iflags.last_msg = PLNMSG_OBJ_GLOWS;
                         otmp->bknown = TRUE;
@@ -1932,7 +1932,7 @@ boolean bless_water;
         play_sfx_sound(bless_water ? SFX_PRAY_BLESS_WATER : SFX_PRAY_CURSE_WATER);
 
         if (!Blind)
-            pline_ex(ATR_NONE, bless_water ? CLR_BRIGHT_GREEN : NO_COLOR, "%s potion%s on the altar glow%s %s for a moment.",
+            pline_ex(ATR_NONE, bless_water ? CLR_MSG_POSITIVE : NO_COLOR, "%s potion%s on the altar glow%s %s for a moment.",
               ((other && changed > 1L) ? "Some of the"
                                        : (other ? "One of the" : "The")),
               ((other || changed > 1L) ? "s" : ""), (changed > 1L ? "" : "s"),
@@ -2004,7 +2004,7 @@ boolean bless_stuff;
         play_sfx_sound(bless_stuff ? SFX_PRAY_BLESS_WATER : SFX_PRAY_CURSE_WATER);
 
         if(!Blind)
-            pline_ex(ATR_NONE, bless_stuff ? CLR_BRIGHT_GREEN : NO_COLOR, "%s %s%s on the altar glow%s %s for a moment.",
+            pline_ex(ATR_NONE, bless_stuff ? CLR_MSG_POSITIVE : NO_COLOR, "%s %s%s on the altar glow%s %s for a moment.",
                 ((other && changed > 1L) ? "Some of the"
                     : (other ? "One of the" : "The")),
                 use_items || !strcmp(buf, "") ? "religious item" : buf,
@@ -2200,7 +2200,7 @@ dosacrifice()
                 play_sfx_sound(SFX_DESECRATE_ALTAR);
                 if (altaralign == A_CHAOTIC && u.ualign.type != A_CHAOTIC)
                 {
-                    pline_ex(ATR_NONE, CLR_RED, "The blood floods the altar, which vanishes in %s cloud!",
+                    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "The blood floods the altar, which vanishes in %s cloud!",
                           an(hcolor(NH_BLACK)));
 
                     create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, levl[u.ux][u.uy].floorsubtyp ? levl[u.ux][u.uy].floorsubtyp : 0, 0, TRUE);
@@ -2211,7 +2211,7 @@ dosacrifice()
                 else 
                 {
                     /* either you're chaotic or altar is Moloch's or both */
-                    pline_The_ex(ATR_NONE, CLR_RED, "blood covers the altar!");
+                    pline_The_ex(ATR_NONE, CLR_MSG_CRITICAL, "blood covers the altar!");
                     luck_change += (molochaltar ? -2 : 2);
                     demonless_msg = "blood coagulates";
                 }
@@ -2227,13 +2227,13 @@ dosacrifice()
                     else
                         dmon->mstrategy &= ~STRAT_APPEARMSG;
 
-                    You_ex(ATR_NONE, CLR_RED, "have summoned %s!", dbuf);
+                    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "have summoned %s!", dbuf);
                     if (sgn(u.ualign.type) == sgn(dmon->data->maligntyp))
                         dmon->mpeaceful = TRUE;
 
                     if (!Fear_resistance)
                     {
-                        You_ex(ATR_NONE, CLR_RED, "are terrified, and unable to move.");
+                        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "are terrified, and unable to move.");
                         nomul(-3);
                         multi_reason = "being terrified of a demon";
                         nomovemsg = 0;
@@ -2268,7 +2268,7 @@ dosacrifice()
         {
                 /* mtmp is a temporary pointer to a tame monster's attributes,
                  * not a real monster */
-            pline_ex(ATR_NONE, CLR_RED, "So this is how you repay loyalty?");
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "So this is how you repay loyalty?");
             adjalign(-3);
             value = -1;
             HAggravate_monster |= FROM_ACQUIRED;
@@ -2286,7 +2286,7 @@ dosacrifice()
             {
                 /* When same as altar, always a very bad action.
                  */
-                pline_ex(ATR_NONE, CLR_RED, "Such an action is an insult to %s!",
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Such an action is an insult to %s!",
                       (unicalign == A_CHAOTIC) ? "chaos"
                          : unicalign ? "law" : "balance");
                 (void) adjattrib(A_WIS, -1, TRUE);
@@ -2299,9 +2299,9 @@ dosacrifice()
                  * it's a very good action.
                  */
                 if (u.ualign.record < ALIGNLIM)
-                    You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "appropriately %s.", align_str(u.ualign.type));
+                    You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "appropriately %s.", align_str(u.ualign.type));
                 else
-                    You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "you are thoroughly on the right path.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "you are thoroughly on the right path.");
                 adjalign(5);
                 value += 3;
                 play_sfx_sound(SFX_ALTAR_ADD_ALIGNMENT);
@@ -2364,14 +2364,14 @@ dosacrifice()
                 if (u.ualign.record > -99)
                     u.ualign.record = -99;
                 /*[apparently shrug/snarl can be sensed without being seen]*/
-                pline_ex(ATR_NONE, CLR_RED, "%s shrugs and retains dominion over %s,", Moloch,
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s shrugs and retains dominion over %s,", Moloch,
                       u_gname());
-                pline_ex(ATR_NONE, CLR_RED, "then mercilessly snuffs out your life.");
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "then mercilessly snuffs out your life.");
                 Sprintf(killer.name, "%s indifference", s_suffix(Moloch));
                 killer.format = KILLED_BY;
                 done(DIED);
                 /* life-saved (or declined to die in wizard/explore mode) */
-                pline_ex(ATR_NONE, CLR_RED, "%s snarls and tries again...", Moloch);
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s snarls and tries again...", Moloch);
                 fry_by_god(A_NONE, TRUE); /* wrath of Moloch */
                 /* declined to die in wizard or explore mode */
                 pline(cloud_of_smoke, hcolor(NH_BLACK));
@@ -2384,8 +2384,8 @@ dosacrifice()
                 adjalign(-99);
                 pline("%s accepts your gift, and gains dominion over %s...",
                       a_gname(), u_gname());
-                pline_ex(ATR_NONE, CLR_ORANGE, "%s is enraged...", u_gname());
-                pline_ex(ATR_NONE, CLR_ORANGE, "Fortunately, %s permits you to live...", a_gname());
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s is enraged...", u_gname());
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Fortunately, %s permits you to live...", a_gname());
                 pline(cloud_of_smoke, hcolor(NH_ORANGE));
                 done(ESCAPED);
             } 
@@ -2524,7 +2524,7 @@ dosacrifice()
                 {
                     u.ugangr += 3;
                     adjalign(-5);
-                    pline_ex(ATR_NONE, CLR_RED, "%s rejects your sacrifice!", a_gname());
+                    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s rejects your sacrifice!", a_gname());
                     play_sfx_sound(SFX_ALTAR_ANGRY_REJECTS_SACRIFICE);
                     play_voice_god_simple_line_by_align(altaralign, GOD_LINE_SUFFER_INFIDEL);
                     godvoice(altaralign, "Suffer, infidel!");
@@ -2540,12 +2540,12 @@ dosacrifice()
             {
                 consume_offering(otmp);
                 if(!godlessaltar)
-                    You_ex(ATR_NONE, CLR_ORANGE, "sense a conflict between %s and %s.", u_gname(), a_gname());
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "sense a conflict between %s and %s.", u_gname(), a_gname());
                 if (godlessaltar || rn2(8 + u.ulevel) > 5)
                 {
                     struct monst *pri;
                     play_sfx_sound(SFX_ALTAR_POWER_INCREASE);
-                    You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "the power of %s increase.", u_gname());
+                    You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "the power of %s increase.", u_gname());
                     exercise(A_WIS, TRUE);
                     luck_change += 1;
                     /* Yes, this is supposed to be &=, not |= */
@@ -2554,7 +2554,7 @@ dosacrifice()
                     levl[u.ux][u.uy].altarmask = (levl[u.ux][u.uy].altarmask | (Align2amask(u.ualign.type)));
                     newsym(u.ux, u.uy);
                     if (!Blind)
-                        pline_The_ex(ATR_NONE, CLR_BRIGHT_GREEN, "altar glows %s.",
+                        pline_The_ex(ATR_NONE, CLR_MSG_POSITIVE, "altar glows %s.",
                                   hcolor((u.ualign.type == A_LAWFUL)
                                             ? NH_WHITE
                                             : u.ualign.type
@@ -2572,7 +2572,7 @@ dosacrifice()
                 else
                 {
                     play_sfx_sound(SFX_ALTAR_POWER_DECREASE);
-                    pline_ex(ATR_NONE, CLR_ORANGE, "Unluckily, you feel the power of %s decrease.",
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "Unluckily, you feel the power of %s decrease.",
                           u_gname());
                     luck_change += -1;
                     exercise(A_WIS, FALSE);
@@ -2634,7 +2634,7 @@ dosacrifice()
                 value = -u.ualign.record;
             adjalign(value);
             play_sfx_sound(SFX_ALTAR_ABSOLVED);
-            You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "partially absolved.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "partially absolved.");
         }
         else if (u.uprayer_timeout > 0)
         {
@@ -2662,7 +2662,7 @@ dosacrifice()
                     if (Hallucination)
                         pline("Overall, there is a smell of fried onions.");
                     else
-                        You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "have a feeling of reconciliation.");
+                        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "have a feeling of reconciliation.");
                     if ((int) u.uluck < 0)
                         u.uluck = 0;
                 }
@@ -2789,7 +2789,7 @@ dosacrifice()
                 {
                     play_sfx_sound(SFX_AURA_GLOW);
                     if(!Blind)
-                        pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s with %s aura.", Yobjnam2(otmp2, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
+                        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s with %s aura.", Yobjnam2(otmp2, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
                     bless(otmp2);
                     otmp2->bknown = 1;
                     update_inventory();
@@ -2910,7 +2910,7 @@ dopray()
     if (p_type == 3 && !Inhell) {
         /* if you've been true to your god you can't die while you pray */
         if (!Blind)
-            You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "are surrounded by a shimmering light.");
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are surrounded by a shimmering light.");
         play_sfx_sound(SFX_PRAY_SHIMMERING_LIGHT);
         u.uinvulnerable = TRUE;
     }
@@ -2932,7 +2932,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
                  (alignment == A_LAWFUL)
                     ? "Vile creature, thou durst call upon me?"
                     : "Walk no more, perversion of nature!");
-        You_feel_ex(ATR_NONE, CLR_RED, "like you are falling apart.");
+        You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "like you are falling apart.");
         /* KMH -- Gods have mastery over unchanging */
         rehumanize();
         /* no Half_physical_damage adjustment here */
@@ -2944,7 +2944,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
     if (Inhell) 
     {
         play_sfx_sound(SFX_PRAY_FAIL);
-        pline_ex(ATR_NONE, CLR_RED, "Since you are in Gehennom, %s won't help you.",
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Since you are in Gehennom, %s won't help you.",
               align_gname(alignment));
         /* haltingly aligned is least likely to anger */
         if (u.ualign.record <= 0 || rnl(u.ualign.record))
@@ -3010,12 +3010,12 @@ absolution_spell()
 
     if (sins_absolved)
     {
-        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "that your sins have been forgiven.");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "that your sins have been forgiven.");
         return 1;
     }
     else
     {
-        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "that %s is already pleased with you.", u_gname());
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "that %s is already pleased with you.", u_gname());
         return 0;
     }
 }

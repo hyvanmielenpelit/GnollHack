@@ -1354,7 +1354,7 @@ update_monster_timeouts()
                                 if (mtmp == u.ustuck)
                                     u.ustuck = 0;
                                 if (is_tame(mtmp) && !canspotmon(mtmp))
-                                    You_ex(ATR_NONE, CLR_ORANGE, "have a peculiarly sad feeling for a moment, then it passes.");
+                                    You_ex(ATR_NONE, CLR_MSG_WARNING, "have a peculiarly sad feeling for a moment, then it passes.");
                             }
                         }
                         break;
@@ -1381,14 +1381,14 @@ update_monster_timeouts()
                             if (canseemon(mtmp))
                             {
                                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
-                                pline_ex(ATR_NONE, CLR_ORANGE, "%s dies of %s terminal illness!", Monnam(mtmp), mhis(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s dies of %s terminal illness!", Monnam(mtmp), mhis(mtmp));
                             }
                             mtmp->mhp = 0;
                             mondied(mtmp);
                             if (mtmp == u.ustuck)
                                 u.ustuck = 0;
                             if (is_tame(mtmp) && !canspotmon(mtmp))
-                                You_ex(ATR_NONE, CLR_ORANGE, "have a peculiarly sad feeling for a moment, then it passes.");
+                                You_ex(ATR_NONE, CLR_MSG_WARNING, "have a peculiarly sad feeling for a moment, then it passes.");
                         }
                         break;
                     case FOOD_POISONED:
@@ -1397,14 +1397,14 @@ update_monster_timeouts()
                             if (canseemon(mtmp))
                             {
                                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
-                                pline_ex(ATR_NONE, CLR_ORANGE, "%s dies of %s food poisoning!", Monnam(mtmp), mhis(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s dies of %s food poisoning!", Monnam(mtmp), mhis(mtmp));
                             }
                             mtmp->mhp = 0;
                             mondied(mtmp);
                             if (mtmp == u.ustuck)
                                 u.ustuck = 0;
                             if (is_tame(mtmp) && !canspotmon(mtmp))
-                                You_ex(ATR_NONE, CLR_ORANGE, "have a peculiarly sad feeling for a moment, then it passes.");
+                                You_ex(ATR_NONE, CLR_MSG_WARNING, "have a peculiarly sad feeling for a moment, then it passes.");
                         }
                         break;
                     case MUMMY_ROT:
@@ -1413,14 +1413,14 @@ update_monster_timeouts()
                             if (canseemon(mtmp))
                             {
                                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
-                                pline_ex(ATR_NONE, CLR_ORANGE, "%s dies of %s mummy rot!", Monnam(mtmp), mhis(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s dies of %s mummy rot!", Monnam(mtmp), mhis(mtmp));
                             }
                             mtmp->mhp = 0;
                             mondied(mtmp);
                             if (mtmp == u.ustuck)
                                 u.ustuck = 0;
                             if (is_tame(mtmp) && !canspotmon(mtmp))
-                                You_ex(ATR_NONE, CLR_ORANGE, "have a peculiarly sad feeling for a moment, then it passes.");
+                                You_ex(ATR_NONE, CLR_MSG_WARNING, "have a peculiarly sad feeling for a moment, then it passes.");
                         }
                         break;                    
                     case STRANGLED:
@@ -1428,14 +1428,14 @@ update_monster_timeouts()
                         {
                             if (canseemon(mtmp))
                             {
-                                pline_ex(ATR_NONE, CLR_ORANGE, "%s dies of strangulation!", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s dies of strangulation!", Monnam(mtmp));
                             }
                             mtmp->mhp = 0;
                             mondied(mtmp);
                             if (mtmp == u.ustuck)
                                 u.ustuck = 0;
                             if (is_tame(mtmp) && !canspotmon(mtmp))
-                                You_ex(ATR_NONE, CLR_ORANGE, "have a peculiarly sad feeling for a moment, then it passes.");
+                                You_ex(ATR_NONE, CLR_MSG_WARNING, "have a peculiarly sad feeling for a moment, then it passes.");
                         }
                         break;
                     case AIRLESS_ENVIRONMENT:
@@ -1443,14 +1443,14 @@ update_monster_timeouts()
                         {
                             if (canseemon(mtmp))
                             {
-                                pline_ex(ATR_NONE, CLR_ORANGE, "%s dies of suffocation!", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s dies of suffocation!", Monnam(mtmp));
                             }
                             mtmp->mhp = 0;
                             mondied(mtmp);
                             if (mtmp == u.ustuck)
                                 u.ustuck = 0;
                             if (is_tame(mtmp) && !canspotmon(mtmp))
-                                You_ex(ATR_NONE, CLR_ORANGE, "have a peculiarly sad feeling for a moment, then it passes.");
+                                You_ex(ATR_NONE, CLR_MSG_WARNING, "have a peculiarly sad feeling for a moment, then it passes.");
                         }
                         break;
                     case LAUGHING:
@@ -3547,7 +3547,7 @@ int how;
         mondied(mdef);
 
     if (be_sad && DEADMONSTER(mdef))
-        You_ex(ATR_NONE, CLR_ORANGE, "have a sad feeling for a moment, then it passes.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "have a sad feeling for a moment, then it passes.");
 }
 
 void

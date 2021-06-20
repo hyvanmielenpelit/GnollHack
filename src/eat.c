@@ -248,7 +248,7 @@ struct obj *food;
     if (Breathless || (!Strangled && !rn2(20))) {
         /* choking by eating AoS doesn't involve stuffing yourself */
         if (food && food->otyp == AMULET_OF_STRANGULATION) {
-            You(ATR_NONE, CLR_ORANGE, "choke, but recover your composure.");
+            You(ATR_NONE, CLR_MSG_WARNING, "choke, but recover your composure.");
             return;
         }
         You("stuff yourself and then vomit voluminously.");
@@ -261,7 +261,7 @@ struct obj *food;
          * high score list & tombstone.  So plan accordingly.
          */
         if (food) {
-            You_ex(ATR_NONE, CLR_RED, "choke over your %s.", foodword(food));
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "choke over your %s.", foodword(food));
             if (food->oclass == COIN_CLASS) {
                 Strcpy(killer.name, "very rich meal");
             } else {
@@ -269,10 +269,10 @@ struct obj *food;
                 Strcpy(killer.name, killer_xname(food));
             }
         } else {
-            You_ex(ATR_NONE, CLR_RED, "choke over it.");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "choke over it.");
             Strcpy(killer.name, "quick snack");
         }
-        You_ex(ATR_NONE, CLR_RED, "die...");
+        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die...");
         done(CHOKING);
     }
 }
@@ -598,7 +598,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         }
         else if (is_rider(pd))
         {
-            pline_ex(ATR_NONE, CLR_RED, "Ingesting that is fatal.");
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Ingesting that is fatal.");
             Sprintf(killer.name, "unwisely ate the brain of %s", mon_monster_name(mdef));
             killer.format = NO_KILLER_PREFIX;
             done(DIED);
@@ -657,7 +657,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         forget_objects(25); /* lose memory of 25% of objects */
 
         if(!Fixed_abil)
-            You_ex(ATR_NONE, CLR_RED, "lose %d intelligence %s!", int_loss, int_loss > 1 ? "points" : "point");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "lose %d intelligence %s!", int_loss, int_loss > 1 ? "points" : "point");
 
         if (adjresult == 1 && !Fixed_abil)
             play_sfx_sound(SFX_LOSE_ABILITY);
@@ -672,14 +672,14 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
                 killer.format = KILLED_BY;
                 done(DIED);
                 /* amulet of life saving has now been used up */
-                pline_ex(ATR_NONE, CLR_RED, "Unfortunately your brain is still gone.");
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Unfortunately your brain is still gone.");
                 /* sanity check against adding other forms of life-saving */
                 u.uprops[LIFESAVED].extrinsic =
                     u.uprops[LIFESAVED].intrinsic = 0L;
             }
             else
             {
-                Your_ex(ATR_NONE, CLR_RED, "last thought fades away.");
+                Your_ex(ATR_NONE, CLR_MSG_CRITICAL, "last thought fades away.");
             }
             Strcpy(killer.name, brainlessness);
             killer.format = KILLED_BY;
@@ -687,7 +687,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             /* can only get here when in wizard or explore mode and user has
                explicitly chosen not to die; arbitrarily boost intelligence */
             ABASE(A_INT) = ATTRMIN(A_INT) + 2;
-            You_feel_ex(ATR_NONE, CLR_RED, "like a scarecrow.");
+            You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "like a scarecrow.");
         }
         give_nutrit = TRUE; /* in case a conflicted pet is doing this */
         exercise(A_WIS, FALSE);
@@ -782,7 +782,7 @@ register int pm;
             Sprintf(killer.name, "tasting %s meat", pm_common_name(&mons[pm]));
             killer.format = KILLED_BY;
             play_sfx_sound(SFX_PETRIFY);
-            You_ex(ATR_NONE, CLR_RED, "turn to stone.");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "turn to stone.");
             done(STONING);
             if (context.victual.piece)
                 context.victual.eating = FALSE;
@@ -817,7 +817,7 @@ register int pm;
     case PM_DEATH:
     case PM_PESTILENCE:
     case PM_FAMINE: {
-        pline_ex(ATR_NONE, CLR_RED, "Eating that is instantly fatal.");
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Eating that is instantly fatal.");
         Sprintf(killer.name, "unwisely ate the body of %s", pm_common_name(&mons[pm]));
         killer.format = NO_KILLER_PREFIX;
         done(DIED);
@@ -3128,7 +3128,7 @@ doeat()
 
     if (Strangled) 
     {
-        pline_ex(ATR_NONE, CLR_RED, "If you can't breathe air, how can you consume solids?");
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "If you can't breathe air, how can you consume solids?");
         return 0;
     }
     if (!(otmp = floorfood("eat", 0)))
@@ -3198,7 +3198,7 @@ doeat()
 
         play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
 
-        pline_ex(ATR_NONE, CLR_ORANGE, "Ulch - that %s was rustproofed!", xname(otmp));
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "Ulch - that %s was rustproofed!", xname(otmp));
         /* The regurgitated object's rustproofing is gone now */
         otmp->oerodeproof = 0;
         if (!Stunned)
@@ -3297,7 +3297,7 @@ doeat()
         if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) 
         {
             play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
-            pline_ex(ATR_NONE, CLR_RED, "Ecch - that must have been poisonous!");
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Ecch - that must have been poisonous!");
             if (!Poison_resistance) 
             {
                 losestr(rnd(4));
@@ -3414,7 +3414,7 @@ doeat()
         if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_TAINTED)
         {
             play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
-            pline_ex(ATR_NONE, CLR_RED, "Ulch - that %s was tainted!", cxname(otmp));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Ulch - that %s was tainted!", cxname(otmp));
             if (Sick_resistance)
             {
                 pline("It doesn't seem at all sickening, though...");
@@ -3441,14 +3441,14 @@ doeat()
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC && !Acid_immunity && !Acid_resistance) 
         {
-            You_ex(ATR_NONE, CLR_ORANGE, "have a very bad case of stomach acid.");   /* not body_part() */
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "have a very bad case of stomach acid.");   /* not body_part() */
             losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, FALSE), "acidic food",
                 KILLED_BY_AN); /* acid damage */
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS)
         {
-            pline_ex(ATR_NONE, CLR_RED, "Ecch - that must have been poisonous!");
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Ecch - that must have been poisonous!");
             if (!Poison_resistance) 
             {
                 losestr(rnd(4));
@@ -3464,7 +3464,7 @@ doeat()
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS)
         {
-            pline_ex(ATR_NONE, CLR_RED, "Ecch - that must have been terribly poisonous!");
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Ecch - that must have been terribly poisonous!");
             if (!Poison_resistance) 
             {
                 losestr(d(2, 6));
@@ -3480,7 +3480,7 @@ doeat()
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING && !Sick_resistance)
         {
-            You_feel_ex(ATR_NONE, CLR_RED, "%ssick.", (FoodPoisoned) ? "very " : "");
+            You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "%ssick.", (FoodPoisoned) ? "very " : "");
             losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, ADFLAGS_NONE), "sickening food", KILLED_BY_AN);
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
         }
@@ -3867,7 +3867,7 @@ boolean incr;
 
                 /* stop what you're doing, then faint */
                 stop_occupation();
-                You_ex(ATR_NONE, CLR_RED, "faint from lack of food.");
+                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "faint from lack of food.");
                 incr_itimeout(&HDeaf, duration);
                 context.botl = TRUE;
                 play_environment_ambient_sounds();
@@ -3887,7 +3887,7 @@ boolean incr;
             u.uhs = STARVED;
             context.botl = context.botlx = TRUE;
             bot();
-            You_ex(ATR_NONE, CLR_RED, "die from starvation.");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die from starvation.");
             killer.format = KILLED_BY;
             Strcpy(killer.name, "starvation");
             done(STARVING);
@@ -3920,7 +3920,7 @@ boolean incr;
                 You((!incr) ? "now have a lesser case of the munchies."
                             : "are getting the munchies.");
             } else
-                You_ex(ATR_NONE, CLR_YELLOW, (!incr) ? "only feel hungry now."
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, (!incr) ? "only feel hungry now."
                             : (u.uhunger < 145)
                                   ? "feel hungry."
                                   : "are beginning to feel hungry.");
@@ -3935,12 +3935,12 @@ boolean incr;
               : "The munchies are interfering with your motor capabilities.");
             else if (incr && (Role_if(PM_WIZARD) || Race_if(PM_ELF)
                               || Role_if(PM_VALKYRIE)))
-                pline_ex(ATR_NONE, CLR_RED, "%s needs food, badly!",
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s needs food, badly!",
                       (Role_if(PM_WIZARD) || Role_if(PM_VALKYRIE))
                           ? urole.name.m
                           : "Elf");
             else
-                You_ex(ATR_NONE, CLR_RED, (!incr)
+                You_ex(ATR_NONE, CLR_MSG_CRITICAL, (!incr)
                         ? "feel weak now."
                         : (u.uhunger < 45) ? "feel weak."
                                            : "are beginning to feel weak.");
@@ -3954,7 +3954,7 @@ boolean incr;
         context.botl = context.botlx = TRUE;
         bot();
         if ((Upolyd ? u.mh : u.uhp) < 1) {
-            You_ex(ATR_NONE, CLR_RED, "die from hunger and exhaustion.");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die from hunger and exhaustion.");
             killer.format = KILLED_BY;
             Strcpy(killer.name, "exhaustion");
             done(STARVING);

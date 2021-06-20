@@ -2486,9 +2486,9 @@ register struct obj* omonwep;
                         pline("%s swings itself around you!", Monnam(mtmp));
 
                     if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious)
-                        pline_ex(ATR_NONE, CLR_RED, "%s is drowning you!", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s is drowning you!", Monnam(mtmp));
                     else if (is_constrictor(mtmp->data))
-                        pline_ex(ATR_NONE, CLR_RED, "%s is constricting you to death!", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s is constricting you to death!", Monnam(mtmp));
 
                     play_sfx_sound(SFX_ACQUIRE_GRAB);
                     u.ustuck = mtmp;
@@ -3535,7 +3535,7 @@ struct attack *mattk;
                 long was_blinded = Blinded;
 
                 if (!Blinded)
-                    You_cant_ex(ATR_NONE, CLR_ORANGE, "see in here!");
+                    You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "see in here!");
                 make_blinded((long)ceil(damage), FALSE);
                 if (!was_blinded && !Blind)
                     Your1(vision_clears);
@@ -3924,7 +3924,7 @@ struct attack *mattk;
             if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
                 break;
             play_sfx_sound(SFX_PETRIFY);
-            You_ex(ATR_NONE, CLR_RED, "turn to stone...");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "turn to stone...");
             killer.format = KILLED_BY;
             Strcpy(killer.name, mon_monster_name(mtmp));
             done(STONING);

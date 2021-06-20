@@ -931,7 +931,7 @@ struct obj *otmp;
         if (was_blind) {
             /* "still cannot see" makes no sense when removing lenses
                since they can't have been the cause of your blindness */
-            You_ex(ATR_NONE, CLR_ORANGE, "still cannot see.");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "still cannot see.");
         }
     }
 
@@ -1403,7 +1403,7 @@ register struct obj *otmp;
                                || otmp->quan > 1L);
 
         play_sfx_sound(SFX_GENERAL_WELDED);
-        You_ex(ATR_NONE, CLR_ORANGE, "can't.  %s cursed.", use_plural ? "They are" : "It is");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "can't.  %s cursed.", use_plural ? "They are" : "It is");
         otmp->bknown = TRUE;
         return 1;
     }
@@ -1545,7 +1545,7 @@ boolean noisy;
     if (!can_operate_objects(youmonst.data))
     {
         if (noisy)
-            You_ex(ATR_NONE, CLR_ORANGE, "can't wear any armor in your current form.");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "can't wear any armor in your current form.");
         return 0;
     }
 
@@ -1575,7 +1575,7 @@ boolean noisy;
         if (noisy)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You_ex(ATR_NONE, CLR_ORANGE, "cannot do that while holding your %s.",
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot do that while holding your %s.",
                 is_sword(uwep) ? c_sword : c_weapon);
         }
         return 0;
@@ -1668,7 +1668,7 @@ boolean noisy;
             if (noisy)
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_ex(ATR_NONE, CLR_ORANGE, "cannot wear gloves over your %s.",
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot wear gloves over your %s.",
                     is_sword(uwep) ? c_sword : c_weapon);
             }
             err++;
@@ -1809,7 +1809,7 @@ struct obj *obj;
             if (nolimbs(youmonst.data) || nohands(youmonst.data)) 
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_ex(ATR_NONE, CLR_ORANGE, "cannot make the ring stick to your body.");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot make the ring stick to your body.");
                 return 0;
             }
             if (uleft && uright) 
@@ -1855,7 +1855,7 @@ struct obj *obj;
                 res = !uarmg->bknown;
                 uarmg->bknown = 1;
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_ex(ATR_NONE, CLR_RED, "cannot remove your gloves to put on the ring.");
+                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "cannot remove your gloves to put on the ring.");
                 return res; /* uses move iff we learned gloves are cursed */
             }
 
@@ -1870,7 +1870,7 @@ struct obj *obj;
                     if (bimanual(uwep))
                         hand = makeplural(hand);
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    You_ex(ATR_NONE, CLR_RED, "cannot free your weapon %s to put on the ring.",
+                    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "cannot free your weapon %s to put on the ring.",
                         hand);
                     return res; /* uses move iff we learned weapon is cursed */
                 }
@@ -2376,7 +2376,7 @@ register struct obj *otmp;
     /* special ring checks */
     if (otmp == uright || otmp == uleft) {
         if (nolimbs(youmonst.data)) {
-            pline_The_ex(ATR_NONE, CLR_ORANGE, "ring is stuck.");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "ring is stuck.");
             return 0;
         }
         why = 0; /* the item which prevents ring removal */
@@ -2389,7 +2389,7 @@ register struct obj *otmp;
         }
         if (why) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You_ex(ATR_NONE, CLR_ORANGE, "cannot %s to remove the ring.", buf);
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot %s to remove the ring.", buf);
             why->bknown = TRUE;
             return 0;
         }
@@ -2397,12 +2397,12 @@ register struct obj *otmp;
     /* special glove checks */
     if (otmp == uarmg) {
         if (welded(uwep, &youmonst)) {
-            You_ex(ATR_NONE, CLR_ORANGE, "are unable to take off your %s while wielding that %s.",
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "are unable to take off your %s while wielding that %s.",
                 c_gloves, is_sword(uwep) ? c_sword : c_weapon);
             uwep->bknown = TRUE;
             return 0;
         } else if (Glib) {
-            You_cant_ex(ATR_NONE, CLR_ORANGE, "take off the slippery %s with your slippery %s.",
+            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "take off the slippery %s with your slippery %s.",
                      c_gloves, makeplural(body_part(FINGER)));
             return 0;
         }
@@ -2410,11 +2410,11 @@ register struct obj *otmp;
     /* special boot checks */
     if (otmp == uarmf) {
         if (u.utrap && u.utraptype == TT_BEARTRAP) {
-            pline_The_ex(ATR_NONE, CLR_ORANGE, "bear trap prevents you from pulling your %s out.",
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "bear trap prevents you from pulling your %s out.",
                       body_part(FOOT));
             return 0;
         } else if (u.utrap && u.utraptype == TT_INFLOOR) {
-            You_ex(ATR_NONE, CLR_ORANGE, "are stuck in the %s, and cannot pull your %s out.",
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "are stuck in the %s, and cannot pull your %s out.",
                 surface(u.ux, u.uy), makeplural(body_part(FOOT)));
             return 0;
         }
@@ -2440,7 +2440,7 @@ register struct obj *otmp;
         }
         if (why) {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You_ex(ATR_NONE, CLR_ORANGE, "cannot %s to take off %s.", buf, the(xname(otmp)));
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot %s to take off %s.", buf, the(xname(otmp)));
             why->bknown = TRUE;
             return 0;
         }

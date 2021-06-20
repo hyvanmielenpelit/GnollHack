@@ -567,7 +567,7 @@ boolean iscontrolled;
     {
         if (unconscious() && !iscontrolled && !iswizcmd)
         {
-            pline_ex(ATR_NONE, CLR_ORANGE, "Being unconscious, you cannot control your teleport.");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Being unconscious, you cannot control your teleport.");
         }
         else 
         {
@@ -1180,13 +1180,13 @@ boolean iscontrolled;
             play_special_effect_at(SPECIAL_EFFECT_LEVEL_TELEPORT_OUT, 0, u.ux, u.uy, TRUE);
             play_sfx_sound(SFX_LEVEL_TELEPORT);
             special_effect_wait_until_action(0);
-            You_ex(ATR_NONE, CLR_RED, "%s in agony as your body begins to warp...",
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s in agony as your body begins to warp...",
                 is_silent(youmonst.data) ? "writhe" : "scream");
             display_nhwindow(WIN_MESSAGE, FALSE);
             show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
             force_redraw_at(u.ux, u.uy);
             flush_screen(1);
-            You_ex(ATR_NONE, CLR_RED, "cease to exist.");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "cease to exist.");
             if (invent)
                 Your("possessions land on the %s with a thud.",
                      surface(u.ux, u.uy));
@@ -1303,8 +1303,8 @@ random_levtport:
         } else if (Flying) {
             escape_by_flying = "fly down to the ground";
         } else {
-            pline_ex(ATR_NONE, CLR_RED, "Unfortunately, you don't know how to fly.");
-            You_ex(ATR_NONE, CLR_RED, "plummet a few thousand feet to your death.");
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Unfortunately, you don't know how to fly.");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "plummet a few thousand feet to your death.");
             Sprintf(killer.name,
                     "teleported out of the dungeon and fell to %s death",
                     uhis());
