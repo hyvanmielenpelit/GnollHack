@@ -431,14 +431,14 @@ boolean digest_meal;
             if (canseemon(mon))
             {
                 play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_DEATH);
-                pline("%s dies of %s mummy rot!", Monnam(mon), mhis(mon));
+                pline_ex(ATR_NONE, CLR_ORANGE, "%s dies of %s mummy rot!", Monnam(mon), mhis(mon));
             }
             mon->mhp = 0;
             mondied(mon);
             if (mon == u.ustuck)
                 u.ustuck = 0;
             if (is_tame(mon) && !canspotmon(mon))
-                You("have a peculiarly sad feeling for a moment, then it passes.");
+                You_ex(ATR_NONE, CLR_ORANGE, "have a peculiarly sad feeling for a moment, then it passes.");
 
             return;
         }

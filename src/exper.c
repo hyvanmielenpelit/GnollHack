@@ -462,7 +462,7 @@ boolean incr; /* true iff via incremental experience growth */
     int hpinc, eninc;
 
     if (!incr)
-        You_feel_ex(ATR_NONE, CLR_GREEN, "more experienced.");
+        You_feel_ex(ATR_NONE, CLR_BRIGHT_GREEN, "more experienced.");
 
     play_sfx_sound(SFX_GAIN_LEVEL);
 
@@ -493,7 +493,7 @@ boolean incr; /* true iff via incremental experience growth */
             u.uexp = newuexp(u.ulevel);
         }
         ++u.ulevel;
-        pline_ex(ATR_NONE, CLR_GREEN, "Welcome %sto experience level %d.",
+        pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "Welcome %sto experience level %d.",
               u.ulevelmax < u.ulevel ? "" : "back ",
               u.ulevel);
         if (u.ulevelmax < u.ulevel)

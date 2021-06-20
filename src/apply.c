@@ -2964,7 +2964,7 @@ struct obj *obj;
         case 2:
             if (!Confusion)
             {
-                You("suddenly feel %s.",
+                You_ex(ATR_NONE, CLR_ORANGE, "suddenly feel %s.",
                     Hallucination ? "trippy" : "confused");
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             }
@@ -3149,7 +3149,7 @@ struct obj *obj;
     if (did_attr)
     {
         play_sfx_sound(SFX_RESTORE_ABILITY);
-        pline("This makes you feel %s!",
+        pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "This makes you feel %s!",
             (did_prop + did_attr) == (trouble_count + unfixable_trbl)
             ? "great"
             : "better");
@@ -3494,7 +3494,7 @@ struct obj* obj;
                 if (is_death_enchantable(otmp))
                 {
                     wandknown = TRUE;
-                    You("enchant %s with death magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "enchant %s with death magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, 
                         max(1, DEATH_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * DEATH_ENCHANTMENT_QUANTITY_BUC_VARIATION),
                         DEATH_ENCHANTMENT);
@@ -3531,7 +3531,7 @@ struct obj* obj;
                 if (is_elemental_enchantable(otmp))
                 {
                     wandknown = TRUE;
-                    You("enchant %s with cold magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "enchant %s with cold magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, 
                         max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION),
                         COLD_ENCHANTMENT);
@@ -3600,7 +3600,7 @@ struct obj* obj;
                 else if(is_elemental_enchantable(otmp))
                 {
                         wandknown = TRUE;
-                        You("enchant %s with fire magic.", yname(otmp));
+                        You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "enchant %s with fire magic.", yname(otmp));
                         otmp = elemental_enchant_quan(otmp, 
                             max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION),
                             FIRE_ENCHANTMENT);
@@ -3634,7 +3634,7 @@ struct obj* obj;
                 if (is_elemental_enchantable(otmp))
                 {
                     wandknown = TRUE;
-                    You("enchant %s with lightning magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_BRIGHT_GREEN, "enchant %s with lightning magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, 
                         max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION), 
                         LIGHTNING_ENCHANTMENT);
@@ -3693,7 +3693,7 @@ struct obj* obj;
                 if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY)
                 {
                     wandknown = TRUE;
-                    pline("%s the destructive energies of %s.", Yobjnam2(uarmc, "absorb"), the(xname(obj)));
+                    pline_ex(ATR_NONE, CLR_BRIGHT_GREEN, "%s the destructive energies of %s.", Yobjnam2(uarmc, "absorb"), the(xname(obj)));
                     makeknown(uarmc->otyp);
                     break;
                 }

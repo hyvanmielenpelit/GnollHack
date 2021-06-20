@@ -593,7 +593,7 @@ onMSNH_HScroll(HWND hWnd, WPARAM wParam, LPARAM lParam)
 COLORREF
 setMsgTextColor(HDC hdc, int gray, int nhcolor)
 {
-    COLORREF fg, color1, color2;
+    COLORREF fg, color1, color2, adjcolor;
     if (nhcolor == NO_COLOR)
     {
         if (gray)
