@@ -385,7 +385,7 @@ const char *drainer; /* cause of death, if drain should be fatal */
     play_sfx_sound(SFX_LOSE_LEVEL);
     if (u.ulevel > 1)
     {
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s level %d.", Goodbye(), u.ulevel);
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s level %d.", Goodbye(), u.ulevel);
         u.ulevel--;
         /* remove intrinsic abilities */
         adjabil(u.ulevel + 1, u.ulevel);

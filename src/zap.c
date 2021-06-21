@@ -534,7 +534,7 @@ struct monst* origmonst;
                     if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
                         break;
                     play_sfx_sound(SFX_PETRIFY);
-                    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "turn to stone...");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "turn to stone...");
                     killer.format = KILLED_BY;
                     Strcpy(killer.name, mon_monster_name(mtmp));
                     done(STONING);
@@ -5504,8 +5504,8 @@ boolean ordinary;
             learn_it = TRUE;
             Sprintf(killer.name, "shot %sself with an evaporation ray", uhim());
             killer.format = NO_KILLER_PREFIX;
-            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "irradiate yourself with evaporating energy!");
-            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die.");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "irradiate yourself with evaporating energy!");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die.");
             /* They might survive with an amulet of life saving */
             done(DIED);
         }
@@ -5763,8 +5763,8 @@ boolean ordinary;
         learn_it = TRUE;
         Sprintf(killer.name, "shot %sself with a death ray", uhim());
         killer.format = NO_KILLER_PREFIX;
-        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "irradiate yourself with pure energy!");
-        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die.");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "irradiate yourself with pure energy!");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die.");
         /* They might survive with an amulet of life saving */
         done(DIED);
         break;
@@ -5846,8 +5846,8 @@ boolean ordinary;
         Sprintf(killer.name, "shot %sself with a disintegration ray", uhim());
         killer.format = NO_KILLER_PREFIX;
         play_sfx_sound(SFX_DISINTEGRATE);
-        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "irradiate yourself with disintegration field!");
-        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "are disintegrated.");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "irradiate yourself with disintegration field!");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are disintegrated.");
         display_u_being_hit(HIT_DISINTEGRATED, 0, 0UL);
         /* when killed by disintegration breath, don't leave corpse */
         u.ugrave_arise = 3;
@@ -5938,7 +5938,7 @@ boolean ordinary;
         {
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             special_effect_wait_until_action(0);
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "The liquid burns inside you!");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "The liquid burns inside you!");
             u.uen = 0;
             losehp(adjust_damage(d(48, 6), (struct monst*)0, &youmonst, AD_CLRC, ADFLAGS_NONE), "drinking from Holy Grail", KILLED_BY_AN);
             context.botl = 1;
@@ -10035,7 +10035,7 @@ boolean forcedestroy;
                                                : "All of your"); /* N of N */
 
         play_simple_object_sound(obj, obj_sound_type);
-        pline("%s %s %s!", mult, xname(obj),
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s %s!", mult, xname(obj),
               destroy_strings[dindx][(cnt > 1L)]);
 
         if (osym == POTION_CLASS && dmgtyp != AD_COLD) 
@@ -10309,7 +10309,7 @@ int osym, dmgtyp;
             if (vis)
             {
                 play_simple_object_sound(obj, obj_sound_type);
-                pline("%s%s %s!",
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s%s %s!",
                     (cnt == obj->quan) ? "" : (cnt > 1L) ? "Some of "
                     : "One of ",
                     (cnt == obj->quan) ? Yname2(obj) : yname(obj),
@@ -10951,7 +10951,7 @@ armageddon()
 
     if (killstyle == 2)
     {
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Finally, the spell catches up on you... You die.");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Finally, the spell catches up on you... You die.");
         Strcpy(killer.name, "armageddon");
         killer.format = KILLED_BY_AN;
         done(DIED);

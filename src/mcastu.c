@@ -491,7 +491,7 @@ int spellnum;
     switch (spellnum) 
     {
     case MGC_DEATH_TOUCH:
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Oh no, %s's using the touch of death!", mhe(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Oh no, %s's using the touch of death!", mhe(mtmp));
         //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
 
         if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
@@ -758,7 +758,7 @@ int spellnum;
     switch (spellnum) 
     {
     case CLC_DEATH_TOUCH:
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Oh no, %s's using the touch of death!", mhe(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Oh no, %s's using the touch of death!", mhe(mtmp));
 
         if (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance)
         {

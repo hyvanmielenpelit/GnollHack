@@ -677,11 +677,11 @@ god_zaps_you(resp_god)
 aligntyp resp_god;
 {
     if (u.uswallow) {
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL,
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE,
           "Suddenly a bolt of lightning comes down at you from the heavens!");
         pline("It strikes %s!", mon_nam(u.ustuck));
         if (!is_mon_immune_to_elec(u.ustuck)) {
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s fries to a crisp!", Monnam(u.ustuck));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s fries to a crisp!", Monnam(u.ustuck));
             /* Yup, you get experience.  It takes guts to successfully
              * pull off this trick on your god, anyway.
              * Other credit/blame applies (luck or alignment adjustments),
@@ -697,7 +697,7 @@ aligntyp resp_god;
     }
     else 
     {
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Suddenly, a bolt of lightning strikes you!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Suddenly, a bolt of lightning strikes you!");
         if (Reflecting) {
             play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
@@ -715,10 +715,10 @@ aligntyp resp_god;
 
     pline("%s is not deterred...", align_gname(resp_god));
     if (u.uswallow) {
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A wide-angle disintegration beam aimed at you hits %s!",
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A wide-angle disintegration beam aimed at you hits %s!",
               mon_nam(u.ustuck));
         if (!resists_disint(u.ustuck)) {
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s disintegrates into a pile of dust!", Monnam(u.ustuck));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s disintegrates into a pile of dust!", Monnam(u.ustuck));
             xkilled(u.ustuck, XKILL_NOMSG | XKILL_NOCORPSE | XKILL_NOCONDUCT);
         }
         else
@@ -727,7 +727,7 @@ aligntyp resp_god;
             pline("%s seems unaffected.", Monnam(u.ustuck));
         }
     } else {
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A wide-angle disintegration beam hits you!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A wide-angle disintegration beam hits you!");
 
         /* disintegrate shield and body armor before disintegrating
          * the impudent mortal, like black dragon breath -3.
@@ -774,7 +774,7 @@ boolean via_disintegration;
     if (via_disintegration)
         play_sfx_sound(SFX_DISINTEGRATE);
 
-    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s!", !via_disintegration ? "fry to a crisp"
+    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", !via_disintegration ? "fry to a crisp"
                                    : "disintegrate into a pile of dust");
     killer.format = KILLED_BY;
     Sprintf(killer.name, "the wrath of %s", align_gname(resp_god));
@@ -837,7 +837,7 @@ aligntyp resp_god;
     case 5:
         gods_angry(resp_god);
         if (!Blind && !Antimagic)
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s glow surrounds you.", An(hcolor(NH_BLACK)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s glow surrounds you.", An(hcolor(NH_BLACK)));
         rndcurse();
         break;
     case 7:
@@ -2200,7 +2200,7 @@ dosacrifice()
                 play_sfx_sound(SFX_DESECRATE_ALTAR);
                 if (altaralign == A_CHAOTIC && u.ualign.type != A_CHAOTIC)
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "The blood floods the altar, which vanishes in %s cloud!",
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "The blood floods the altar, which vanishes in %s cloud!",
                           an(hcolor(NH_BLACK)));
 
                     create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, levl[u.ux][u.uy].floorsubtyp ? levl[u.ux][u.uy].floorsubtyp : 0, 0, TRUE);
@@ -2211,7 +2211,7 @@ dosacrifice()
                 else 
                 {
                     /* either you're chaotic or altar is Moloch's or both */
-                    pline_The_ex(ATR_NONE, CLR_MSG_CRITICAL, "blood covers the altar!");
+                    pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "blood covers the altar!");
                     luck_change += (molochaltar ? -2 : 2);
                     demonless_msg = "blood coagulates";
                 }
@@ -2227,13 +2227,13 @@ dosacrifice()
                     else
                         dmon->mstrategy &= ~STRAT_APPEARMSG;
 
-                    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "have summoned %s!", dbuf);
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "have summoned %s!", dbuf);
                     if (sgn(u.ualign.type) == sgn(dmon->data->maligntyp))
                         dmon->mpeaceful = TRUE;
 
                     if (!Fear_resistance)
                     {
-                        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "are terrified, and unable to move.");
+                        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are terrified, and unable to move.");
                         nomul(-3);
                         multi_reason = "being terrified of a demon";
                         nomovemsg = 0;
@@ -2268,7 +2268,7 @@ dosacrifice()
         {
                 /* mtmp is a temporary pointer to a tame monster's attributes,
                  * not a real monster */
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "So this is how you repay loyalty?");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "So this is how you repay loyalty?");
             adjalign(-3);
             value = -1;
             HAggravate_monster |= FROM_ACQUIRED;
@@ -2286,7 +2286,7 @@ dosacrifice()
             {
                 /* When same as altar, always a very bad action.
                  */
-                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Such an action is an insult to %s!",
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Such an action is an insult to %s!",
                       (unicalign == A_CHAOTIC) ? "chaos"
                          : unicalign ? "law" : "balance");
                 (void) adjattrib(A_WIS, -1, TRUE);
@@ -2364,14 +2364,14 @@ dosacrifice()
                 if (u.ualign.record > -99)
                     u.ualign.record = -99;
                 /*[apparently shrug/snarl can be sensed without being seen]*/
-                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s shrugs and retains dominion over %s,", Moloch,
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s shrugs and retains dominion over %s,", Moloch,
                       u_gname());
-                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "then mercilessly snuffs out your life.");
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "then mercilessly snuffs out your life.");
                 Sprintf(killer.name, "%s indifference", s_suffix(Moloch));
                 killer.format = KILLED_BY;
                 done(DIED);
                 /* life-saved (or declined to die in wizard/explore mode) */
-                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s snarls and tries again...", Moloch);
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s snarls and tries again...", Moloch);
                 fry_by_god(A_NONE, TRUE); /* wrath of Moloch */
                 /* declined to die in wizard or explore mode */
                 pline(cloud_of_smoke, hcolor(NH_BLACK));
@@ -2406,7 +2406,7 @@ dosacrifice()
                         if(cansee(x, y))
                             newsym(x, y);
 
-                flush_screen(0);
+                flush_screen(1);
                 
                 if (iflags.using_gui_sounds)
                     delay_output_milliseconds(4500);
@@ -2524,7 +2524,7 @@ dosacrifice()
                 {
                     u.ugangr += 3;
                     adjalign(-5);
-                    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s rejects your sacrifice!", a_gname());
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s rejects your sacrifice!", a_gname());
                     play_sfx_sound(SFX_ALTAR_ANGRY_REJECTS_SACRIFICE);
                     play_voice_god_simple_line_by_align(altaralign, GOD_LINE_SUFFER_INFIDEL);
                     godvoice(altaralign, "Suffer, infidel!");
@@ -2932,7 +2932,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
                  (alignment == A_LAWFUL)
                     ? "Vile creature, thou durst call upon me?"
                     : "Walk no more, perversion of nature!");
-        You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "like you are falling apart.");
+        You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "like you are falling apart.");
         /* KMH -- Gods have mastery over unchanging */
         rehumanize();
         /* no Half_physical_damage adjustment here */
@@ -2944,7 +2944,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
     if (Inhell) 
     {
         play_sfx_sound(SFX_PRAY_FAIL);
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Since you are in Gehennom, %s won't help you.",
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Since you are in Gehennom, %s won't help you.",
               align_gname(alignment));
         /* haltingly aligned is least likely to anger */
         if (u.ualign.record <= 0 || rnl(u.ualign.record))

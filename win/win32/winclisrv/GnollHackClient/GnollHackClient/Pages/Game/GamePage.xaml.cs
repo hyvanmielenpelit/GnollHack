@@ -109,6 +109,7 @@ namespace GnollHackClient.Pages.Game
                 GraphicsStyle = (GHGraphicsStyle)gparseint;
             }
 
+            ToggleModeButton_Clicked(null, null);
         }
 
         public async void StartGame()
@@ -215,7 +216,7 @@ namespace GnollHackClient.Pages.Game
             return (((ntile % GHConstants.NumberOfTilesPerSheet) / _tilesPerRow[TileSheetIdx(ntile)]) * GHConstants.TileHeight);
         }
 
-        private async void ContentPage_Appearing(object sender, EventArgs e)
+        private /*async*/ void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
 
@@ -223,7 +224,7 @@ namespace GnollHackClient.Pages.Game
             {
                 _isFirstAppearance = false;
 
-                int res = 0; // _gnollHackService.Test1();
+                //int res = 0; // _gnollHackService.Test1();
             }
         }
 
@@ -1126,12 +1127,6 @@ namespace GnollHackClient.Pages.Game
                                         {
                                             queue.Enqueue(new GHResponse(_clientGame, GHRequestType.Location, x, y, mod));
                                         }
-
-                                        if(MapMode == GHMapMode.Travel)
-                                        {
-                                            /* Toggle travel mode off after pressing */
-                                            ToggleModeButton_Clicked(sender, e);
-                                        }
                                     }
                                 }
                                 else
@@ -1527,11 +1522,11 @@ namespace GnollHackClient.Pages.Game
             MapNoClipMode = !MapNoClipMode;
             if (MapNoClipMode)
             {
-                NoClipButton.BackgroundColor = Color.Green;
+                //NoClipButton.BackgroundColor = Color.Green;
             }
             else
             {
-                NoClipButton.BackgroundColor = Color.DarkBlue;
+                //NoClipButton.BackgroundColor = Color.DarkBlue;
             }
 
         }
@@ -1541,6 +1536,50 @@ namespace GnollHackClient.Pages.Game
             GenericButton_Clicked(sender, e, -10);
         }
 
+        private void ChatButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'C');
+        }
+
+        private void ThrowQuiveredButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 't');
+        }
+
+        private void ApplyWieldedButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'a');
+        }
+
+        private void ZapButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'z');
+        }
+
+        private void SwapWeaponButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'x');
+        }
+
+        private void LootContextButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'l');
+        }
+
+        private void EatContextButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'e');
+        }
+
+        private void DropAllContextButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'D');
+        }
+
+        private void SacrificeContextButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, GHUtils.Meta('o'));
+        }
     }
 
     public class ColorConverter : IValueConverter

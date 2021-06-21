@@ -4673,7 +4673,7 @@ const char *word;
             if (!strcmp(word, "throw") && obj->quan > 1L)
                 obj->corpsenm = 1;
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "For some reason, you cannot %s%s %s%s!", word,
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "For some reason, you cannot %s%s %s%s!", word,
                   obj->corpsenm ? " any of" : "", is_graystone(obj) ? "the stone" : "the item", plur(obj->quan));
         }
         obj->corpsenm = 0; /* reset */
@@ -5203,7 +5203,7 @@ dodown()
     if (u.ustuck)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "are %s, and cannot go down.",
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are %s, and cannot go down.",
             !u.uswallow ? "being held" : is_animal(u.ustuck->data)
                                              ? "swallowed"
                                              : "engulfed");
@@ -5302,7 +5302,7 @@ doup()
     }
     if (u.ustuck) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "are %s, and cannot go up.",
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are %s, and cannot go up.",
             !u.uswallow ? "being held" : is_animal(u.ustuck->data)
                                              ? "swallowed"
                                              : "engulfed");

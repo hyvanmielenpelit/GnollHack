@@ -1219,7 +1219,7 @@ int curse_bless;
         if ((obj->enchantment > maxcharge || obj->enchantment < -maxcharge) && rn2(3))
         {
             play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
                 otense(obj, "explode"));
             if (is_on)
                 Ring_gone(obj);
@@ -1810,7 +1810,7 @@ boolean *effect_happened_ptr;
         {
             play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
             otmp->in_use = TRUE;
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s violently %s%s%s for a while, then %s.", Yname2(otmp),
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s violently %s%s%s for a while, then %s.", Yname2(otmp),
                 otense(otmp, Blind ? "vibrate" : "glow"),
                 (!Blind && !same_color) ? " " : "",
                 (Blind || same_color) ? "" : hcolor(scursed ? NH_BLACK
@@ -1845,7 +1845,7 @@ boolean *effect_happened_ptr;
 
         special_effect_wait_until_action(0);
 
-        pline_ex(ATR_NONE, scursed ? CLR_MSG_CRITICAL : CLR_MSG_POSITIVE, "%s %s%s%s%s for a %s.", Yname2(otmp),
+        pline_ex(ATR_NONE, scursed ? CLR_MSG_NEGATIVE : CLR_MSG_POSITIVE, "%s %s%s%s%s for a %s.", Yname2(otmp),
             s == 0 ? "violently " : "",
             otense(otmp, Blind ? "vibrate" : "glow"),
             (!Blind && !same_color) ? " " : "",
@@ -3037,14 +3037,14 @@ boolean *effect_happened_ptr;
         forget((!sblessed ? ALL_SPELLS : 0)
                | (!confused || scursed ? ALL_MAP : 0));
         if (Hallucination) /* Ommmmmm! */
-            Your_ex(ATR_NONE, CLR_MSG_CRITICAL, "mind releases itself from mundane concerns.");
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "mind releases itself from mundane concerns.");
         else if (!strncmpi(plname, "Maud", 4))
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL,
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE,
           "As your mind turns inward on itself, you forget everything else.");
         else if (rn2(2))
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Who was that Maud person anyway?");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Who was that Maud person anyway?");
         else
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Thinking of Maud you forget everything else.");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Thinking of Maud you forget everything else.");
         exercise(A_WIS, FALSE);
         special_effect_wait_until_end(0);
         break;
@@ -3777,7 +3777,7 @@ do_class_genocide()
                         if (Unchanging)
                         {
                             if (!feel_dead++)
-                                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die.");
+                                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die.");
                             /* finish genociding this class of
                                monsters before ultimately dying */
                             gameover = TRUE;
@@ -3793,12 +3793,12 @@ do_class_genocide()
                         if (Upolyd) 
                         {
                             if (!feel_dead++)
-                                You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s inside.", udeadinside());
+                                You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s inside.", udeadinside());
                         } 
                         else 
                         {
                             if (!feel_dead++)
-                                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die.");
+                                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die.");
                             gameover = TRUE;
                         }
                     }
@@ -4000,7 +4000,7 @@ int how;
             if (Upolyd && ptr != youmonst.data) 
             {
                 delayed_killer(POLYMORPH, killer.format, killer.name);
-                You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s inside.", udeadinside());
+                You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s inside.", udeadinside());
             } 
             else
                 done(GENOCIDED);
@@ -4057,11 +4057,11 @@ struct obj *sobj;
 
     /* KMH -- Punishment is still okay when you are riding */
     if (!reuse_ball)
-        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "are being punished for your misbehavior!");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being punished for your misbehavior!");
 
     if (Punished)
     {
-        Your_ex(ATR_NONE, CLR_MSG_CRITICAL, "iron ball gets heavier.");
+        Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "iron ball gets heavier.");
         uball->owt += IRON_BALL_W_INCR * (1 + sobj->cursed);
         return;
     }

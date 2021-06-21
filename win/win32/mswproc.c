@@ -3543,6 +3543,8 @@ mswin_open_special_view(struct special_view_info info)
     case SPECIAL_VIEW_CHAT_MESSAGE:
         genl_chat_message();
         break;
+    case SPECIAL_VIEW_FADE_SCREEN_OUT:
+        break;
     default:
         break;
     }

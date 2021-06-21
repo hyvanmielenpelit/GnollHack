@@ -226,14 +226,14 @@ sick_dialogue()
     if (i > 0L && i <= SIZE(sick_texts)) {
         char buf[BUFSZ];
         Strcpy(buf, sick_texts[SIZE(sick_texts) - i]);
-        pline_ex1(ATR_NONE, CLR_MSG_CRITICAL, buf);
+        pline_ex1(ATR_NONE, CLR_MSG_NEGATIVE, buf);
     }
     else if (has_head(youmonst.data) && !rn2(3))
     {
         if(!rn2(2))
-            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "cough%s.", (alternate_sick_text ? " roughly" : ""));
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "cough%s.", (alternate_sick_text ? " roughly" : ""));
         else
-            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "have a %sbout of coughing.", (alternate_sick_text ? "severe " : "terrible "));
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "have a %sbout of coughing.", (alternate_sick_text ? "severe " : "terrible "));
 
         alternate_sick_text = !alternate_sick_text;
         if (multi > 0)
@@ -276,14 +276,14 @@ food_poisoned_dialogue()
         char buf[BUFSZ];
 
         Strcpy(buf, food_poisoned_texts[SIZE(food_poisoned_texts) - i]);
-        pline_ex1(ATR_NONE, CLR_MSG_CRITICAL, buf);
+        pline_ex1(ATR_NONE, CLR_MSG_NEGATIVE, buf);
     }
     else if (!rn2(3))
     {
         if (!rn2(2))
-            Your_ex(ATR_NONE, CLR_MSG_CRITICAL, "stomach hurts%s.", (alternate_sick_text ? " badly" : ""));
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "stomach hurts%s.", (alternate_sick_text ? " badly" : ""));
         else
-            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "experience a %sbout of stomach cramps.", (alternate_sick_text ? "severe " : "terrible "));
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "experience a %sbout of stomach cramps.", (alternate_sick_text ? "severe " : "terrible "));
 
         alternate_sick_text = !alternate_sick_text;
 
@@ -317,34 +317,34 @@ mummy_rot_dialogue()
         switch (i % 10)
         {
         case 0:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s patches of skin are appearing on your %s!", i >= 10 ? "More black" : "Black", body_part(FACE));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s patches of skin are appearing on your %s!", i >= 10 ? "More black" : "Black", body_part(FACE));
             break;
         case 1:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGERTIP)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGERTIP)));
             break;
         case 2:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
             break;
         case 3:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s patches of your skin are turning black!", i >= 10 ? "Huge" : "Large");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s patches of your skin are turning black!", i >= 10 ? "Huge" : "Large");
             break;
         case 4:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGER)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGER)));
             break;
         case 5:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s falls off!", i >= 10 ? "Large patches of your hair" : "One of your teeth");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s falls off!", i >= 10 ? "Large patches of your hair" : "One of your teeth");
             break;
         case 6:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Your %s are turning %sblack!", makeplural(body_part(HAND)), i >= 10 ? "pitch " : "");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Your %s are turning %sblack!", makeplural(body_part(HAND)), i >= 10 ? "pitch " : "");
             break;
         case 7:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s of your %s feels loose!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGER)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s of your %s feels loose!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGER)));
             break;
         case 8:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Your %s are turning %sblack!", makeplural(body_part(FOOT)), i >= 10 ? "pitch " : "");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Your %s are turning %sblack!", makeplural(body_part(FOOT)), i >= 10 ? "pitch " : "");
             break;
         case 9:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s of your %s feels loose!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s of your %s feels loose!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
             break;
         default:
             break;
@@ -359,22 +359,22 @@ mummy_rot_dialogue()
         switch (sel_index % 6)
         {
         case 0:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s of your %s falls off!", sel_index >= 30 ? "Further parts" : "A part", body_part(FACE));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s of your %s falls off!", sel_index >= 30 ? "Further parts" : "A part", body_part(FACE));
             break;
         case 1:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s of your %s falls off!", sel_index >= 30 ? "Another one" : "One", makeplural(body_part(FINGER)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s of your %s falls off!", sel_index >= 30 ? "Another one" : "One", makeplural(body_part(FINGER)));
             break;
         case 2:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s of your %s falls off!", sel_index >= 30 ? "Another one" : "One", makeplural(body_part(TOE)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s of your %s falls off!", sel_index >= 30 ? "Another one" : "One", makeplural(body_part(TOE)));
             break;
         case 3:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s of your %s falls off!", sel_index >= 30 ? "Further parts" : "A part", body_part(NOSE));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s of your %s falls off!", sel_index >= 30 ? "Further parts" : "A part", body_part(NOSE));
             break;
         case 4:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Further patches of your hair falls off!");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Further patches of your hair falls off!");
             break;
         case 5:
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Another one of your teeth falls off!");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Another one of your teeth falls off!");
             break;
         default:
             break;
@@ -408,7 +408,7 @@ stoned_dialogue()
         Strcpy(buf, stoned_texts[SIZE(stoned_texts) - i]);
         if (nolimbs(youmonst.data) && strstri(buf, "limbs"))
             (void) strsubst(buf, "limbs", "extremities");
-        pline_ex1(ATR_NONE, CLR_MSG_CRITICAL, buf);
+        pline_ex1(ATR_NONE, CLR_MSG_NEGATIVE, buf);
     }
     switch ((int) i) {
     case 5: /* slowing down */
@@ -513,7 +513,7 @@ vomiting_dialogue()
                [vomit() issues its own message for the cantvomit() case
                and for the FAINTING-or-worse case where stomach is empty] */
             if (u.uhs < FAINTING)
-                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s!", !Hallucination ? "vomit" : "hurl chunks");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", !Hallucination ? "vomit" : "hurl chunks");
         }
         vomit();
         break;
@@ -521,7 +521,7 @@ vomiting_dialogue()
         break;
     }
     if (txt)
-        You_ex1(ATR_NONE, CLR_MSG_CRITICAL, txt);
+        You_ex1(ATR_NONE, CLR_MSG_NEGATIVE, txt);
     exercise(A_CON, FALSE);
 }
 
@@ -548,14 +548,14 @@ choke_dialogue()
 
     if (i > 0 && i <= SIZE(choke_texts)) {
         if (Breathless || !rn2(50))
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, choke_texts2[SIZE(choke_texts2) - i], body_part(NECK));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, choke_texts2[SIZE(choke_texts2) - i], body_part(NECK));
         else {
             const char *str = choke_texts[SIZE(choke_texts) - i];
 
             if (index(str, '%'))
-                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, str, hcolor(NH_BLUE));
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, str, hcolor(NH_BLUE));
             else
-                pline_ex1(ATR_NONE, CLR_MSG_CRITICAL, str);
+                pline_ex1(ATR_NONE, CLR_MSG_NEGATIVE, str);
         }
     }
     exercise(A_STR, FALSE);
@@ -623,12 +623,12 @@ slime_dialogue()
         if (index(buf, '%')) {
             if (i == 4L) {  /* "you are turning green" */
                 if (!Blind) /* [what if you're already green?] */
-                    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, buf, hcolor(NH_GREEN));
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, buf, hcolor(NH_GREEN));
             } else
-                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, buf,
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, buf,
                       an(Hallucination ? rndmonnam(NULL) : "green slime"));
         } else
-            pline_ex1(ATR_NONE, CLR_MSG_CRITICAL, buf);
+            pline_ex1(ATR_NONE, CLR_MSG_NEGATIVE, buf);
     }
 
     switch (i) {
@@ -713,7 +713,7 @@ struct kinfo *kptr;
         killer.format = KILLED_BY;
         Strcpy(killer.name, "slimicide");
         /* immediately follows "OK, so you don't die." */
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Yes, you do.  Green slime has been genocided...");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Yes, you do.  Green slime has been genocided...");
         done(GENOCIDED);
         /* could be life-saved again (only in explore or wizard mode)
            but green slimes are gone; just stay in current form */
@@ -899,7 +899,7 @@ nh_timeout()
                 break;
             case SICK:
             case FOOD_POISONED:
-                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die from your illness.");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die from your illness.");
 
                 if (kptr && kptr->name[0])
                 {
@@ -934,9 +934,9 @@ nh_timeout()
                     mummy_rot_dialogue();
 
                 if (ABASE(A_CON) <= ATTRMIN(A_CON) + 2)
-                    You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "desiccated.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "desiccated.");
                 else
-                    You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "gangrenous.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "gangrenous.");
 
                 if (ABASE(A_CHA) > ATTRMIN(A_CHA))
                 {
@@ -948,7 +948,7 @@ nh_timeout()
                 }
                 else
                 {
-                    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die from your illness.");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die from your illness.");
                 
                     if (kptr && kptr->name[0]) 
                     {
@@ -987,7 +987,7 @@ nh_timeout()
                     //incr_itimeout(&HSleepy, rnd(100));
                 }
                 else if (Sleepy) {
-                    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "fall asleep.");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "fall asleep.");
                     sleeptime = rnd(20);
                     fall_asleep(-sleeptime, TRUE);
                     extratime = sleeptime;
@@ -1020,7 +1020,7 @@ nh_timeout()
                     ;
                 else
                 {
-                    You_ex(ATR_NONE, CLR_MSG_CRITICAL, Underwater || drowned_by_monster ? "drown." : "suffocate.");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, Underwater || drowned_by_monster ? "drown." : "suffocate.");
                     if (drowned_by_monster)
                         done_in_by(u.ustuck, DROWNED);
                     else
@@ -1426,11 +1426,11 @@ nh_timeout()
             // Continuous warning
             switch (propnum) {
             case STRANGLED:
-                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "are being strangled!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being strangled!");
                 break;
             case AIRLESS_ENVIRONMENT:
                 if (!Survives_without_air)
-                    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "cannot breathe!");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "cannot breathe!");
                 else
                     upp->intrinsic &= ~TIMEOUT; /* You can breathe, so clear the suffocation timeout -- It will be set to the full time value below */
                 break;
@@ -4063,7 +4063,7 @@ boolean was_flying;
         {
             u.usleep = 0;
             if (Paralyzed_or_immobile)
-                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "wake up but still cannot move!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "wake up but still cannot move!");
             else
                 You("wake up!");
         }

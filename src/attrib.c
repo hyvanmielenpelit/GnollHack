@@ -485,7 +485,7 @@ int poison_strength;   /* d6 per level damage*/
 
     if (u.uhp < 1) 
     {
-        pline_The_ex(ATR_NONE, CLR_MSG_CRITICAL, "poison was deadly...");
+        pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "poison was deadly...");
         killer.format = kprefix;
         Strcpy(killer.name, pkiller);
         /* "Poisoned by a poisoned ___" is redundant */
@@ -612,7 +612,7 @@ boolean lifesavedalready;
         {
             u.uhp = -1;
             context.botl = TRUE;
-            pline_The_ex(ATR_NONE, CLR_MSG_CRITICAL, "magic was deadly...");
+            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "magic was deadly...");
         }
     }
 
@@ -1866,15 +1866,15 @@ int oldlevel, newlevel;
                 u.uprops[abil->propid].intrinsic |= mask;
             if (!(u.uprops[abil->propid].intrinsic & INTRINSIC & ~mask)) {
                 if (*(abil->gainstr))
-                    You_feel("%s!", abil->gainstr);
+                    You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s!", abil->gainstr);
             }
         } else if (oldlevel >= abil->ulevel && newlevel < abil->ulevel) {
             u.uprops[abil->propid].intrinsic &= ~mask;
             if (!(u.uprops[abil->propid].intrinsic & INTRINSIC)) {
                 if (*(abil->losestr))
-                    You_feel("%s!", abil->losestr);
+                    You_feel_ex(CLR_MSG_NEGATIVE, "%s!", abil->losestr);
                 else if (*(abil->gainstr))
-                    You_feel("less %s!", abil->gainstr);
+                    You_feel_ex(CLR_MSG_NEGATIVE, "less %s!", abil->gainstr);
             }
         }
         if (prevabil != u.uprops[abil->propid].intrinsic) /* it changed */

@@ -1325,7 +1325,7 @@ boolean hitsroof;
             if (blindinc)
             {
                 if (otyp == BLINDING_VENOM && !Blind)
-                    pline("It blinds you!");
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "It blinds you!");
                 u.ucreamed += blindinc;
                 if (!Blinded)
                     play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
@@ -1389,7 +1389,7 @@ boolean hitsroof;
             killer.format = KILLED_BY;
             Strcpy(killer.name, "elementary physics"); /* "what goes up..." */
             play_sfx_sound(SFX_PETRIFY);
-            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "turn to stone.");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "turn to stone.");
             if (obj)
                 dropy(obj); /* bypass most of hitfloor() */
             thrownobj = 0;  /* now either gone or on floor */

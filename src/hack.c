@@ -2161,9 +2161,9 @@ domove_core()
     if ((is_safepet(mtmp) || is_displaceable_peaceful(mtmp)) && !(is_hider(mtmp->data) && mtmp->mundetected))
     {
         /* if trapped, there's a chance the pet goes wild */
-        if (mtmp->mtrapped)
+        if (mtmp->mtrapped && is_safepet(mtmp))
         {
-            if (!rn2(mtmp->mtame)) 
+            if (mtmp->mtame > 0 && !rn2(mtmp->mtame))
             {
                 mtmp->mtame = mtmp->mpeaceful = mtmp->msleeping = 0;
                 if (mtmp->mleashed)
@@ -3511,18 +3511,18 @@ maybe_wail()
         who = (Role_if(PM_WIZARD) || Role_if(PM_VALKYRIE)) ? urole.name.m
                                                            : "Elf";
         if (u.uhp == 1) {
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s is about to die.", who);
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is about to die.", who);
         } else {
             for (i = 0, powercnt = 0; i < SIZE(powers); ++i)
                 if (u.uprops[powers[i]].intrinsic & INTRINSIC)
                     ++powercnt;
 
-            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, (powercnt >= 4) ? "%s, all your powers will be lost..."
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, (powercnt >= 4) ? "%s, all your powers will be lost..."
                                   : "%s, your life force is running out.",
                   who);
         }
     } else {
-        You_hear_ex(ATR_NONE, CLR_MSG_CRITICAL, u.uhp == 1 ? "the wailing of the Banshee..."
+        You_hear_ex(ATR_NONE, CLR_MSG_NEGATIVE, u.uhp == 1 ? "the wailing of the Banshee..."
                             : "the howling of the CwnAnnwn...");
     }
 }
@@ -3556,7 +3556,7 @@ boolean k_format;
         killer.format = k_format;
         if (killer.name != knam) /* the thing that killed you */
             Strcpy(killer.name, knam ? knam : "");
-        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "die...");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die...");
         done(DIED);
     } 
     else if (n > 0 && u.uhp * 10 < u.uhpmax) 

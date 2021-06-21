@@ -98,9 +98,9 @@ boolean talk;
         if (talk)
         {
             if (u.usteed)
-                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "wobble in the saddle.");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "wobble in the saddle.");
             else
-                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s...", stagger(youmonst.data, "stagger"));
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s...", stagger(youmonst.data, "stagger"));
         }
     }
     if ((!xtime && old) || (xtime && !old))
@@ -135,13 +135,13 @@ boolean talk;
         if (!old) 
         {
             /* newly sick */
-            You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "deathly sick.");
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "deathly sick.");
         }
         else
         {
             /* already sick */
             if (talk)
-                You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s worse.", xtime <= Sick / 2L ? "much" : "even");
+                You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s worse.", xtime <= Sick / 2L ? "much" : "even");
         }
         set_itimeout(&Sick, xtime);
         context.botl = context.botlx = TRUE;
@@ -205,13 +205,13 @@ boolean talk;
         if (!old)
         {
             /* newly sick */
-            You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "terminally ill from food poisoning.");
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "terminally ill from food poisoning.");
         }
         else
         {
             /* already sick */
             if (talk)
-                You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s worse.", xtime <= FoodPoisoned / 2L ? "much" : "even");
+                You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s worse.", xtime <= FoodPoisoned / 2L ? "much" : "even");
         }
         set_itimeout(&FoodPoisoned, xtime);
         context.botl = context.botlx = TRUE;
@@ -274,13 +274,13 @@ boolean talk;
         if (!old)
         {
             /* newly sick */
-            You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "severely ill.");
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "severely ill.");
         }
         else
         {
             /* already sick */
             if (talk)
-                You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "even worse.");
+                You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "even worse.");
         }
 
         if (xtime > 0L)
@@ -341,7 +341,7 @@ const char *msg;
     if ((xtime != 0L) ^ (old != 0L)) {
         context.botl = context.botlx = TRUE;
         if (msg)
-            pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_CRITICAL, "%s", msg);
+            pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "%s", msg);
     }
     if (!Slimed)
         dealloc_killer(find_delayed_killer(SLIMED));
@@ -365,7 +365,7 @@ const char *killername;
     if ((xtime != 0L) ^ (old != 0L)) {
         context.botl = context.botlx = TRUE;
         if (msg)
-            pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_CRITICAL, "%s", msg);
+            pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "%s", msg);
     }
     if (!Stoned)
         dealloc_killer(find_delayed_killer(STONED));
@@ -387,7 +387,7 @@ boolean talk;
     context.botl = context.botlx = TRUE;
     if (!xtime && old)
         if (talk)
-            You_feel_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_CRITICAL, "much less nauseated now.");
+            You_feel_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "much less nauseated now.");
 }
 
 static const char vismsg[] = "vision seems to %s for a moment but is %s now.";
@@ -594,7 +594,7 @@ long mask; /* nonzero if resistance status should change by mask */
 
         context.botl = context.botlx = TRUE;
         if (talk)
-            pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_CRITICAL, message, verb);
+            pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, message, verb);
     }
 
     return changed;
@@ -664,7 +664,7 @@ dodrink()
 
     if (Strangled) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "If you can't breathe air, how can you drink liquid?");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "If you can't breathe air, how can you drink liquid?");
         return 0;
     }
     if (!getobj_autoselect_obj)
@@ -963,7 +963,7 @@ struct obj *otmp;
             || u.ualign.type == A_CHAOTIC)
         {
             if (otmp->blessed) {
-                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "This burns like %s!", hliquid("acid"));
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "This burns like %s!", hliquid("acid"));
                 exercise(A_CON, FALSE);
                 if (u.ulycn >= LOW_PM) 
                 {
@@ -1004,7 +1004,7 @@ struct obj *otmp;
             {
                 if (u.ualign.type == A_LAWFUL)
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "This burns like %s!", hliquid("acid"));
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "This burns like %s!", hliquid("acid"));
                     losehp(adjust_damage(duration, (struct monst*)0, &youmonst, AD_ACID, ADFLAGS_NONE), "potion of unholy water",
                            KILLED_BY_AN);
                 } else
@@ -1195,7 +1195,7 @@ struct obj *otmp;
         } 
         else
         {
-            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "suddenly fall asleep!");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "suddenly fall asleep!");
             fall_asleep(-duration, TRUE);
         }
         break;
@@ -1250,7 +1250,7 @@ struct obj *otmp;
         exercise(A_WIS, TRUE);
         break;
     case POT_SICKNESS:
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Ulch!  This potion was contaminated!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ulch!  This potion was contaminated!");
         if (otmp->blessed)
         {
             pline("(But in fact it was mildly stale %s.)", fruitname(TRUE));
@@ -1287,7 +1287,7 @@ struct obj *otmp;
         }
         break;
     case POT_POISON:
-        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Yecch!  This stuff tastes like poison.");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Yecch!  This stuff tastes like poison.");
         if (Poison_resistance)
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);

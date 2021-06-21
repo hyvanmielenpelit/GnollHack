@@ -332,11 +332,14 @@ enum special_view_types
 {
     SPECIAL_VIEW_NONE = 0,
     SPECIAL_VIEW_CHAT_MESSAGE,
+    SPECIAL_VIEW_FADE_SCREEN_OUT,
+    SPECIAL_VIEW_FADE_SCREEN_IN,
     MAX_SPECIAL_VIEW_TYPES
 };
 
 struct special_view_info {
     enum special_view_types viewtype;
+    char text[256];
 };
 
 /* Fountain types */

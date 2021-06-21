@@ -596,7 +596,7 @@ int reason; /* Player was thrown off etc. */
     case DISMOUNT_BYCHOICE:
     default:
         if (otmp && otmp->cursed) {
-            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "can't.  The saddle %s cursed.",
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "can't.  The saddle %s cursed.",
                 otmp->bknown ? "is" : "seems to be");
             otmp->bknown = TRUE;
             return;

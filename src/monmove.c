@@ -167,8 +167,8 @@ struct monst* mon;
                     {
                         if (mon->mnum == PM_PRISONER)
                         {
-                            strcpy(yellbuf, "Please free me, adventurer!");
-                            mon_yells(mon, yellbuf, "yells", "desperately", TRUE);
+                            strcpy(yellbuf, "Please help me, adventurer!");
+                            mon_yells(mon, yellbuf, "yell", "desperately", TRUE);
                         }
                         mon_talked = TRUE;
                     }

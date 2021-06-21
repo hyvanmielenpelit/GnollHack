@@ -3165,7 +3165,7 @@ unsigned long mdiedflags;
             newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
             if (spef_on)
             {
-                flush_screen(0);
+                flush_screen(1);
                 special_effect_wait_until_end(0);
             }
             return;

@@ -5,6 +5,7 @@ using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
 using Android.Content.Res;
+using Android.Views;
 
 namespace GnollHackClient.Droid
 {
@@ -18,7 +19,7 @@ namespace GnollHackClient.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
+            this.Window.AddFlags(WindowManagerFlags.Fullscreen);
             Rg.Plugins.Popup.Popup.Init(this);
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);

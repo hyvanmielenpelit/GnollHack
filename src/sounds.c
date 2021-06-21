@@ -1751,7 +1751,7 @@ speak_check()
     }
     if (Strangled)
     {
-        You_cant_ex(ATR_NONE, CLR_MSG_CRITICAL, "speak.  You're choking!");
+        You_cant_ex(ATR_NONE, CLR_MSG_NEGATIVE, "speak.  You're choking!");
         return 0;
     }
     if (Silenced)
@@ -1782,7 +1782,7 @@ yell_check()
     }
     if (Strangled)
     {
-        You_cant_ex(ATR_NONE, CLR_MSG_CRITICAL, "yell.  You're choking!");
+        You_cant_ex(ATR_NONE, CLR_MSG_NEGATIVE, "yell.  You're choking!");
         return 0;
     }
     if (Silenced)
@@ -4452,7 +4452,7 @@ struct monst* mtmp;
     */
     if (!join_cost)
     {
-        pline("%s is willing to join you for free. Do you accept?", Monnam(mtmp));
+        Sprintf(qbuf, "%s is willing to join you for free. Do you accept?", Monnam(mtmp));
     }
     else if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) )
     {

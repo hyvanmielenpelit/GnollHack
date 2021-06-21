@@ -1103,9 +1103,9 @@ struct obj *obj;         /* missile (or stack providing it) */
                         eyes = makeplural(eyes);
                     /* venom in the eyes */
                     if (!Blind)
-                        pline_The("venom blinds you.");
+                        pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "venom blinds you.");
                     else
-                        Your("%s %s.", eyes, vtense(eyes, "sting"));
+                        Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s.", eyes, vtense(eyes, "sting"));
                 }
             }
             if (hitu && singleobj->otyp == EGG) {

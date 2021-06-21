@@ -106,7 +106,7 @@ int distance;
         }
     }
 
-    flush_screen(0);
+    flush_screen(1);
 }
 
 /*

@@ -1855,7 +1855,7 @@ struct obj *obj;
                 res = !uarmg->bknown;
                 uarmg->bknown = 1;
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "cannot remove your gloves to put on the ring.");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "cannot remove your gloves to put on the ring.");
                 return res; /* uses move iff we learned gloves are cursed */
             }
 
@@ -1870,7 +1870,7 @@ struct obj *obj;
                     if (bimanual(uwep))
                         hand = makeplural(hand);
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    You_ex(ATR_NONE, CLR_MSG_CRITICAL, "cannot free your weapon %s to put on the ring.",
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "cannot free your weapon %s to put on the ring.",
                         hand);
                     return res; /* uses move iff we learned weapon is cursed */
                 }
