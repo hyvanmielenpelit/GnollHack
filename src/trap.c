@@ -588,12 +588,12 @@ boolean td; /* td == TRUE : trap door or hole */
         feeltrap(t);
         if (!Sokoban) {
             if (t->ttyp == TRAPDOOR)
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "A trap door opens up under you!");
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A trap door opens up under you!");
             else
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "There's a gaping hole under you!");
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "There's a gaping hole under you!");
         }
     } else
-        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s opens up under you!", surface(u.ux, u.uy));
+        pline_The_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s opens up under you!", surface(u.ux, u.uy));
 
     if (Sokoban && Can_fall_thru(&u.uz))
         ; /* KMH -- You can't escape the Sokoban level traps */
@@ -627,7 +627,7 @@ boolean td; /* td == TRUE : trap door or hole */
         dtmp.dnum = u.uz.dnum;
         dtmp.dlevel = newlevel;
         if (dist > 1)
-            You_ex(ATR_NONE, CLR_MSG_WARNING, "fall down a %s%sshaft!", dist > 3 ? "very " : "",
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "fall down a %s%sshaft!", dist > 3 ? "very " : "",
                 dist > 2 ? "deep " : "");
     }
     if (!td)
@@ -815,12 +815,12 @@ int *fail_reason;
                  && (mon != shkp || carried(statue)))
                    ? xname(statue)
                    : "statue");
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s!", upstart(statuename), comes_to_life);
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s %s!", upstart(statuename), comes_to_life);
     } 
     else if (Hallucination) 
     { /* They don't know it's a statue */
         play_sfx_sound(SFX_STATUE_BECOMES_ALIVE);
-        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s suddenly seems more animated.", rndmonnam((char *) 0));
+        pline_The_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s suddenly seems more animated.", rndmonnam((char *) 0));
     } 
     else if (cause == ANIMATE_SHATTER) 
     {
@@ -830,13 +830,13 @@ int *fail_reason;
                     xname(statue));
         else
             Strcpy(statuename, "a statue");
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "Instead of shattering, %s suddenly %s!", statuename,
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Instead of shattering, %s suddenly %s!", statuename,
               comes_to_life);
     } 
     else 
     { /* cause == ANIMATE_NORMAL */
         play_sfx_sound(SFX_TRAP_FOUND);
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "find %s posing as a statue.",
+        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "find %s posing as a statue.",
             canspotmon(mon) ? a_monnam(mon) : something);
         if (!canspotmon(mon) && Blind)
             map_invisible(x, y);
@@ -1138,7 +1138,7 @@ unsigned short trflags;
         seetrap(trap);
         otmp = t_missile(get_shooting_trap_object(trap), trap);
         play_sfx_sound(SFX_ARROW_TRAP_FIRE);
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s shoots out at you!", An(cxname_singular(otmp)));
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s shoots out at you!", An(cxname_singular(otmp)));
         if (u.usteed && !rn2(2) && steedintrap(trap, otmp))
         {
             ; /* nothing */
@@ -1167,7 +1167,7 @@ unsigned short trflags;
         trap->once = 1;
         seetrap(trap);
         play_sfx_sound(SFX_DART_TRAP_FIRE);
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "A little dart shoots out at you!");
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A little dart shoots out at you!");
         otmp = t_missile(get_shooting_trap_object(trap), trap);
         if (!rn2(6))
             otmp->opoisoned = 1;
@@ -1206,7 +1206,7 @@ unsigned short trflags;
         context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
         if (trap->once && trap->tseen && !rn2(15))
         {
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A trap door in %s opens, but nothing falls out!",
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "A trap door in %s opens, but nothing falls out!",
                   the(ceiling(u.ux, u.uy)));
             deltrap(trap);
             newsym(u.ux, u.uy);
@@ -1219,7 +1219,7 @@ unsigned short trflags;
             play_special_effect_at(SPECIAL_EFFECT_FALLING_ROCK_TRAP_FALLING_ROCK, 1, trap->tx, trap->ty, FALSE);
 
             otmp = t_missile(get_shooting_trap_object(trap), trap);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "A trap door in %s opens and %s falls on your %s!",
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A trap door in %s opens and %s falls on your %s!",
                 the(ceiling(u.ux, u.uy)), an(xname(otmp)), body_part(HEAD));
 
             special_effect_wait_until_action(1);
@@ -1299,7 +1299,7 @@ unsigned short trflags;
         {
             play_sfx_sound(SFX_SQUEAKY_BOARD);
             seetrap(trap);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "A board beneath you %s%s%s.",
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A board beneath you %s%s%s.",
                   Deaf ? "vibrates" : "squeaks ",
                   Deaf ? "" : trapnote(trap, 0), Deaf ? "" : " loudly");
             wake_nearby();
@@ -1358,7 +1358,7 @@ unsigned short trflags;
         set_utrap((unsigned) rn1(4, 4), TT_BEARTRAP);
         if (u.usteed) 
         {
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s bear trap closes on %s %s!", A_Your[trap->madeby_u],
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s bear trap closes on %s %s!", A_Your[trap->madeby_u],
                   s_suffix(mon_nam(u.usteed)), mbodypart(u.usteed, FOOT));
             if (thitm(0, u.usteed, (struct obj*)0, dmg, FALSE))
             {
@@ -1370,7 +1370,7 @@ unsigned short trflags;
         } 
         else 
         {
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s bear trap closes on your %s!", A_Your[trap->madeby_u],
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s bear trap closes on your %s!", A_Your[trap->madeby_u],
                   body_part(FOOT));
             set_wounded_legs(rn2(2) ? RIGHT_SIDE : LEFT_SIDE, rn1(10, 10));
             if (is_bear(&mons[u.umonnum]))
@@ -1400,7 +1400,7 @@ unsigned short trflags;
         } 
         else 
         {
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "A cloud of gas puts you to sleep!");
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A cloud of gas puts you to sleep!");
             fall_asleep(-rn1(7,8), TRUE);
         }
 
@@ -1423,11 +1423,11 @@ unsigned short trflags;
         switch (rn2(5))
         {
         case 0:
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s you on the %s!", A_gush_of_water_hits, body_part(HEAD));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s you on the %s!", A_gush_of_water_hits, body_part(HEAD));
             (void) water_damage(uarmh, helm_simple_name(uarmh), TRUE);
             break;
         case 1:
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s your left %s!", A_gush_of_water_hits, body_part(ARM));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s your left %s!", A_gush_of_water_hits, body_part(ARM));
             if (uarms && water_damage(uarms, is_shield(uarms) ? "shield" : "weapon", TRUE) != ER_NOTHING)
                 break;
             else if (uwep && bimanual(uwep))
@@ -1439,11 +1439,11 @@ unsigned short trflags;
              */
             break;
         case 2:
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s your right %s!", A_gush_of_water_hits, body_part(ARM));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s your right %s!", A_gush_of_water_hits, body_part(ARM));
             (void) water_damage(uwep, 0, TRUE);
             goto glovecheck;
         default:
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s you!", A_gush_of_water_hits);
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s you!", A_gush_of_water_hits);
             for (otmp = invent; otmp; otmp = otmp->nobj)
                 if (otmp->lamplit && otmp != uwep && otmp != uarms)
                     (void) snuff_lit(otmp);
@@ -1539,7 +1539,7 @@ unsigned short trflags;
             if (*verbbuf)
             {
                 play_sfx_sound(SFX_FALL_INTO_PIT);
-                You_ex(ATR_NONE, CLR_MSG_WARNING, "%s into %s pit!", verbbuf, a_your[trap->madeby_u]);
+                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s into %s pit!", verbbuf, a_your[trap->madeby_u]);
             }
         }
         /* wumpus reference */
@@ -1561,13 +1561,13 @@ unsigned short trflags;
             play_sfx_sound(SFX_LAND_ON_SPIKES);
             if (u.usteed) 
             {
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s %s!",
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s %s %s!",
                       upstart(x_monnam(u.usteed, steed_article, "poor",
                                        SUPPRESS_SADDLE, FALSE)),
                       conj_pit ? "steps" : "lands", predicament);
             } 
             else
-                You_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s!", conj_pit ? "step" : "land", predicament);
+                You_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s %s!", conj_pit ? "step" : "land", predicament);
         }
 
         /* FIXME:
@@ -1688,7 +1688,7 @@ unsigned short trflags;
                         Levitation ? (const char *) "float"
                                    : locomotion(youmonst.data, "stumble"));
             }
-            You_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s spider web!", verbbuf, a_your[trap->madeby_u]);
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s %s spider web!", verbbuf, a_your[trap->madeby_u]);
         }
 
         /* time will be adjusted below */
@@ -1773,7 +1773,7 @@ unsigned short trflags;
             special_effect_wait_until_action(0);
             deltrap(trap);
             newsym(u.ux, u.uy); /* update position */
-            You_ex(ATR_NONE, CLR_MSG_WARNING, "are caught in a magical explosion!");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "are caught in a magical explosion!");
             losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "magical explosion", KILLED_BY_AN);
             Your("body absorbs some of the magical energy!");
             u.uen = (u.ubaseenmax += 2);
@@ -1817,7 +1817,7 @@ unsigned short trflags;
                 dmgval2 = (dmgval2 + 3) / 4;
 
             play_sfx_sound(SFX_FEELING_LETHARGIC);
-            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, (dmgval2 >= hp) ? "unbearably torpid!"
+            You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, (dmgval2 >= hp) ? "unbearably torpid!"
                                      : (dmgval2 >= hp / 4) ? "very lethargic."
                                                            : "sluggish.");
             /* opposite of magical explosion */
@@ -1845,7 +1845,7 @@ unsigned short trflags;
             Sprintf(verbbuf, "%s onto",
                     Levitation ? (const char *) "float"
                                : locomotion(youmonst.data, "step"));
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "%s a polymorph trap!", verbbuf);
+        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s a polymorph trap!", verbbuf);
         if (Antimagic_or_resistance || Unchanging) {
             play_sfx_sound(SFX_POLYMORPH_FAIL);
             u_shieldeff();
@@ -1854,7 +1854,7 @@ unsigned short trflags;
         } else {
             (void) steedintrap(trap, (struct obj *) 0);
             deltrap(trap);      /* delete trap before polymorph */
-            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "a change coming over you.");
+            You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "a change coming over you.");
             polyself(0);
             newsym(u.ux, u.uy); /* get rid of trap symbol */
         }
@@ -1888,7 +1888,7 @@ unsigned short trflags;
             spef_on = TRUE;
             context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
 
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "KAABLAMM!!!  %s %s%s off!",
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "KAABLAMM!!!  %s %s%s off!",
                   forcebungle ? "Your inept attempt sets"
                               : "The air currents set",
                   already_seen ? a_your[trap->madeby_u] : "",
@@ -1914,7 +1914,7 @@ unsigned short trflags;
             spef_on = TRUE;
             context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
 
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "KAABLAMM!!!  You triggered %s land mine!",
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "KAABLAMM!!!  You triggered %s land mine!",
                   a_your[trap->madeby_u]);
             if (u.usteed)
                 steed_mid = u.usteed->m_id;
@@ -1961,7 +1961,7 @@ unsigned short trflags;
 
             play_sfx_sound(SFX_ROLLING_BOOULDER_TRAP_TRIGGER);
             feeltrap(trap);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Click!  You trigger a rolling boulder trap!");
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Click!  You trigger a rolling boulder trap!");
             if (!launch_obj(BOULDER, trap->launch.x, trap->launch.y,
                 trap->launch2.x, trap->launch2.y, style)) {
                 deltrap(trap);
@@ -2394,7 +2394,7 @@ int style;
                         else
                             play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, t->tx, t->ty);
 
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION,
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING,
                             "KAABLAMM!!!%s",
                             cansee(bhitpos.x, bhitpos.y)
                             ? " The rolling boulder triggers a land mine."
@@ -3770,7 +3770,7 @@ float_up()
         if (Lev_at_will) {
             pline("%s magically floats up!", Monnam(u.usteed));
         } else {
-            You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot stay on %s.", mon_nam(u.usteed));
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "cannot stay on %s.", mon_nam(u.usteed));
             dismount_steed(DISMOUNT_GENERIC);
         }
     }
@@ -4025,7 +4025,7 @@ int dice; /* of d6 */
 
     if ((box && !carried(box)) ? is_pool(box->ox, box->oy) : Underwater) {
         play_sfx_sound(SFX_STEAMY_BUBBLES);
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "A cascade of steamy bubbles erupts from %s!",
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A cascade of steamy bubbles erupts from %s!",
               the(box ? xname(box) : surface(u.ux, u.uy)));
         if (Fire_immunity)
             You("are uninjured.");
@@ -4034,7 +4034,7 @@ int dice; /* of d6 */
         return;
     }
     play_sfx_sound(SFX_TOWER_OF_FLAME_ERUPTS);
-    pline_ex(ATR_NONE, CLR_MSG_WARNING, "A %s %s from %s!", tower_of_flame, box ? "bursts" : "erupts",
+    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "A %s %s from %s!", tower_of_flame, box ? "bursts" : "erupts",
           the(box ? xname(box) : surface(u.ux, u.uy)));
 
     if (Fire_immunity) 
@@ -4144,18 +4144,18 @@ domagictrap()
         /* blindness effects */
         if (!resists_blnd(&youmonst) && !Flash_resistance)
         {
-            You_ex(ATR_NONE, CLR_MSG_WARNING, "are momentarily blinded by a flash of light!");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "are momentarily blinded by a flash of light!");
             make_blinded((long) rn1(5, 10), FALSE);
             if (!Blind)
                 Your1(vision_clears);
         } else if (!Blind) {
-            You_see_ex(ATR_NONE, CLR_MSG_WARNING, "a flash of light!");
+            You_see_ex(ATR_NONE, CLR_MSG_CRITICAL, "a flash of light!");
         }
 
         /* deafness effects */
         if (!Deaf) 
         {
-            You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "a deafening roar!");
+            You_hear_ex(ATR_NONE, CLR_MSG_CRITICAL, "a deafening roar!");
             incr_itimeout(&HDeaf, rn1(20, 30));
             context.botl = context.botlx = TRUE;
             play_environment_ambient_sounds();
@@ -4163,7 +4163,7 @@ domagictrap()
         else
         {
             /* magic vibrations still hit you */
-            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "rankled.");
+            You_feel_ex(ATR_NONE, CLR_MSG_CRITICAL, "rankled.");
             incr_itimeout(&HDeaf, rn1(5, 15));
             context.botl = context.botlx = TRUE;
             play_environment_ambient_sounds();
@@ -4376,7 +4376,7 @@ xchar x, y;
         if (obj->otyp == SPE_BOOK_OF_THE_DEAD) 
         {
             if (in_sight)
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Smoke rises from %s.", the(xname(obj)));
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Smoke rises from %s.", the(xname(obj)));
             return FALSE;
         }
 
@@ -4628,7 +4628,7 @@ boolean force;
         if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
         {
             play_sfx_sound_at_location(SFX_STEAMY_BUBBLES, x, y);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Steam rises from %s.", the(xname(obj)));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Steam rises from %s.", the(xname(obj)));
             return 0;
         }
         else if (is_obj_indestructible(obj))
@@ -4716,7 +4716,7 @@ boolean force;
             if (carried(obj))
             {
                 play_sfx_sound_at_location(SFX_POTION_DILUTES, x, y);
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Your %s %s.", ostr, vtense(ostr, "dilute"));
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Your %s %s.", ostr, vtense(ostr, "dilute"));
             }
             obj->odiluted++;
             if (carried(obj))
@@ -4955,9 +4955,9 @@ crawl:
         /* time to do some strip-tease... */
         boolean succ = Is_waterlevel(&u.uz) ? TRUE : emergency_disrobe(&lost);
 
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "try to crawl out of the %s.", hliquid("water"));
+        You_ex(ATR_NONE, CLR_MSG_CRITICAL, "try to crawl out of the %s.", hliquid("water"));
         if (lost)
-            You_ex(ATR_NONE, CLR_MSG_WARNING, "dump some of your gear to lose weight...");
+            You_ex(ATR_NONE, CLR_MSG_CRITICAL, "dump some of your gear to lose weight...");
         if (succ) {
             pline("Pheew!  That was close.");
             teleds(x, y, TRUE, FALSE);
@@ -5040,7 +5040,7 @@ dountrap()
     }
     if ((nohands(youmonst.data) && !webmaker(youmonst.data))
         || !youmonst.data->mmove) {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "And just how do you expect to do that?");
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "And just how do you expect to do that?");
         return 0;
     } else if (u.ustuck && sticks(youmonst.data)) {
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "You'll have to let go of %s first.", mon_nam(u.ustuck));
@@ -5815,7 +5815,7 @@ struct trap *ttmp;
     /* need to do cockatrice check first if sleeping or paralyzed */
     if (!untrap_ok)
     {
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "try to grab %s, but cannot get a firm grasp.", mon_nam(mtmp));
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "try to grab %s, but cannot get a firm grasp.", mon_nam(mtmp));
         if (mtmp->msleeping)
         {
             mtmp->msleeping = 0;

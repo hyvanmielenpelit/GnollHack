@@ -340,6 +340,8 @@
 #define M6_LONG_WORM                0x00000004UL /* Any sort of long worm (tailed or not, including tail) */
 #define M6_TAILED_LONG_WORM         0x00000008UL /* Multi-square long worm, a head with a tail */
 #define M6_PURPLE_WORM              0x00000010UL /* Any sort of purple worm (baby or normal) */
+#define M6_PEACEFUL_AUTO_JOIN       0x00000020UL
+#define M6_PEACEFUL_SPECIAL_SHOUT   0x00000040UL
 
 #define M7_NONE                        0x00000000UL
 #define M8_NONE                        0x00000000UL

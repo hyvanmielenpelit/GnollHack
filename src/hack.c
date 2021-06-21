@@ -3263,10 +3263,12 @@ lookaround()
             if (x == u.ux - u.dx && y == u.uy - u.dy)
                 continue;
 
-            if (IS_ROCK(levl[x][y].typ) || levl[x][y].typ == ROOM
+            if (IS_ROCK(levl[x][y].typ) || levl[x][y].typ == ROOM || levl[x][y].typ == GRASS || levl[x][y].typ == GROUND
                 || IS_AIR(levl[x][y].typ)) {
                 continue;
-            } else if (closed_door(x, y) || (mtmp && is_door_mappear(mtmp))) {
+            } 
+            else if (closed_door(x, y) || (mtmp && is_door_mappear(mtmp))) 
+            {
                 if (x != u.ux && y != u.uy)
                     continue;
                 if (context.run != 1) {
@@ -3275,9 +3277,12 @@ lookaround()
                     goto stop;
                 }
                 goto bcorr;
-            } else if (levl[x][y].typ == CORR) {
+            } 
+            else if (levl[x][y].typ == CORR) 
+            {
  bcorr:
-                if (levl[u.ux][u.uy].typ != ROOM) {
+                if (!(levl[u.ux][u.uy].typ == ROOM || levl[u.ux][u.uy].typ == GRASS || levl[u.ux][u.uy].typ == GROUND))
+                {
                     if (context.run == 1 || context.run == 3
                         || context.run == 8) {
                         i = dist2(x, y, u.ux + u.dx, u.uy + u.dy);
@@ -3311,7 +3316,9 @@ lookaround()
                     goto stop;
                 }
                 continue;
-            } else if (is_pool_or_lava(x, y)) {
+            } 
+            else if (is_pool_or_lava(x, y)) 
+            {
                 /* water and lava only stop you if directly in front, and stop
                  * you even if you are running
                  */
@@ -3343,7 +3350,8 @@ lookaround()
             return;
         } /* end for loops */
 
-    if (corrct > 1 && context.run == 2) {
+    if (corrct > 1 && context.run == 2) 
+    {
         if (iflags.mention_walls)
             pline_The("corridor widens here.");
         goto stop;

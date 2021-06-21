@@ -4426,6 +4426,9 @@ struct monst* mtmp;
     long join_cost = (base_join_cost * max(10, (100 - (ucha - 8) * 5))) / 100;
     char qbuf[QBUFSZ];
 
+    if((mtmp->data->mflags6 & M6_PEACEFUL_AUTO_JOIN) != 0 && is_peaceful(mtmp))
+        join_cost = 0;
+
     multi = 0;
     umoney = money_cnt(invent);
 
@@ -4447,7 +4450,11 @@ struct monst* mtmp;
         return 0;
     }
     */
-    if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) )
+    if (!join_cost)
+    {
+        pline("%s is willing to join you for free. Do you accept?", Monnam(mtmp));
+    }
+    else if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) )
     {
         pline("%s first %s, but then says:", Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
         Sprintf(qbuf, "\"You shall pay me a tribute of %ld %s.\" Do you yield to this demand?", join_cost, currency(join_cost));
@@ -4462,15 +4469,19 @@ struct monst* mtmp;
     case 'q':
         return 0;
     case 'y':
-        if (umoney < (long)join_cost) {
-            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
-            return 0;
-        }
-        u_pay = join_cost;
+        if (join_cost > 0)
+        {
+            if (umoney < (long)join_cost) 
+            {
+                play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+                You("don't have enough money for that!");
+                return 0;
+            }
+            u_pay = join_cost;
 
-        money2mon(mtmp, (long)u_pay);
-        context.botl = 1;
+            money2mon(mtmp, (long)u_pay);
+            context.botl = 1;
+        }
 
         boolean success = tamedog(mtmp, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
         if (success)

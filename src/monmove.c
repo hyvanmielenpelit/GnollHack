@@ -148,20 +148,31 @@ struct monst* mon;
             else
                 speaks = !rn2(3*(dist-1));
 
-            if(m_canseeu(mon) && dist <= 4 && speaks)
+            boolean special_talk = !!(mon->data->mflags6 & M6_PEACEFUL_SPECIAL_SHOUT);
+            if(m_canseeu(mon) && dist <= (special_talk ? 8 : 4) && speaks)
             { 
                 /* Normal peaceful monster talk */
-                if(is_peaceful(mon) && !is_undead(mon->data) && !is_demon(mon->data) && !In_endgame(&u.uz) && !Is_sanctum(&u.uz)
+                if(is_peaceful(mon) && (special_talk || (!is_undead(mon->data) && !is_demon(mon->data) && !In_endgame(&u.uz) && !Is_sanctum(&u.uz)
                     && !mon->isshk && !mon->isgd && !mon->ispriest && !mon->issmith && !mon->isnpc && !is_watch(mon->data) && !is_mercenary(mon->data)
                     && !(mon->iswiz || mon->data == &mons[PM_MEDUSA] || (mon->data->geno & G_UNIQ) != 0
                         || mon->data->msound == MS_NEMESIS || mon->data->msound == MS_LEADER || mon->data->msound == MS_ORACLE
                         || mon->data->msound == MS_GUARDIAN || mon->data->msound == MS_BRIBE
                         || mon->data == &mons[PM_VLAD_THE_IMPALER]
-                        || (mon->data == &mons[PM_ORACLE]))
+                        || (mon->data == &mons[PM_ORACLE]))))
                     )
                 {
+                    char yellbuf[BUFSZ];
                     int cnt = count_sellable_items(mon);
-                    if(cnt > 0)
+                    if (special_talk && (!cnt  || dist > 4 || rn2(4)))
+                    {
+                        if (mon->mnum == PM_PRISONER)
+                        {
+                            strcpy(yellbuf, "Please free me, adventurer!");
+                            mon_yells(mon, yellbuf, "yells", "desperately", TRUE);
+                        }
+                        mon_talked = TRUE;
+                    }
+                    else if(cnt > 0)
                     {
                         char itembuf[BUFSZ];
                         char someitembuf[BUFSZ];
@@ -180,8 +191,6 @@ struct monst* mon;
                         if (canseemon(mon))
                             talkeff(mon->mx, mon->my);
                         
-                        char yellbuf[BUFSZ];
-
                         switch (mon->talkstate)
                         {
                         case 0:
