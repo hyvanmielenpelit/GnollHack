@@ -1326,6 +1326,14 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/God/Female/God Speaks", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Invisible Choir Sings", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Male/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Male/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Male/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Male/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Male/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Male/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Male/Death", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Female/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Female/Special Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Female/Advice", 1.0f },
@@ -1341,6 +1349,14 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Flind/Get Angry", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Flind/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Flind/Death", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Undead/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Undead/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Undead/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Undead/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Undead/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Undead/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Smith/Undead/Death", 1.0f },
 };
 
 

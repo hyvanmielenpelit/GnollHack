@@ -2300,7 +2300,7 @@ int amt, saving_throw_adjustment, tellstyle;
     else
     {
         finish_meating(mon); /* terminate any meal-in-progress */
-        amt += (int) mon->mfrozen;
+        //amt += (int) mon->mfrozen;
         if (amt > 0) 
         { /* sleep for N turns */
             if(tellstyle == NOTELL)

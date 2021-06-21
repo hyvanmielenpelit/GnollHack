@@ -297,7 +297,7 @@ int ef_flags;
         if (uvictim || vismon || visobj)
         {
             play_simple_object_sound(otmp, obj_erode_sounds[type]);
-            pline("%s %s %s%s!",
+            pline_ex(ATR_NONE, uvictim ? CLR_MSG_CRITICAL : NO_COLOR, "%s %s %s%s!",
                 uvictim ? "Your"
                 : !vismon ? "The" /* visobj */
                 : s_suffix(Monnam(victim)),
@@ -322,7 +322,7 @@ int ef_flags;
         if (uvictim || vismon || visobj)
         {
             play_simple_object_sound(otmp, obj_erode_sounds[type]);
-            pline("%s %s %s away!",
+            pline_ex(ATR_NONE, uvictim ? CLR_MSG_CRITICAL : NO_COLOR, "%s %s %s away!",
                 uvictim ? "Your"
                 : !vismon ? "The" /* visobj */
                 : s_suffix(Monnam(victim)),
@@ -344,7 +344,7 @@ int ef_flags;
                 play_simple_object_sound(otmp, obj_erode_sounds[type]);
 
             if (uvictim)
-                Your("%s %s completely %s.",
+                Your_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s %s completely %s.",
                      ostr, vtense(ostr, Blind ? "feel" : "look"), msg[type]);
             else if (vismon || visobj)
                 pline("%s %s %s completely %s.",
@@ -1206,7 +1206,7 @@ unsigned short trflags;
         context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
         if (trap->once && trap->tseen && !rn2(15))
         {
-            pline("A trap door in %s opens, but nothing falls out!",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A trap door in %s opens, but nothing falls out!",
                   the(ceiling(u.ux, u.uy)));
             deltrap(trap);
             newsym(u.ux, u.uy);
@@ -2394,7 +2394,7 @@ int style;
                         else
                             play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, t->tx, t->ty);
 
-                        pline(
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION,
                             "KAABLAMM!!!%s",
                             cansee(bhitpos.x, bhitpos.y)
                             ? " The rolling boulder triggers a land mine."
@@ -3435,7 +3435,7 @@ register struct monst *mtmp;
             else if (in_sight) 
             {
                 newsym(mtmp->mx, mtmp->my);
-                pline("%s%s triggers %s land mine!",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%s triggers %s land mine!",
                       !Deaf ? "KAABLAMM!!!  " : "", Monnam(mtmp),
                       a_your[trap->madeby_u]);
             }
@@ -3454,7 +3454,7 @@ register struct monst *mtmp;
                 play_sfx_sound_at_location_with_minimum_volume(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my, 0.25);
 
             if ((!in_sight || !can_see_trap) && !Deaf)
-                pline("Kaablamm!  You hear an explosion in the distance!");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Kaablamm!  You hear an explosion in the distance!");
 
             blow_up_landmine(trap);
             /* explosion might have destroyed a drawbridge; don't
@@ -3669,7 +3669,7 @@ const char *arg;
 
     if (uwep && uwep->otyp == CORPSE && touch_petrifies(&mons[uwep->corpsenm])
         && !Stone_resistance) {
-        pline("%s touch the %s corpse.", arg, corpse_monster_name(uwep));
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s touch the %s corpse.", arg, corpse_monster_name(uwep));
         Sprintf(kbuf, "%s corpse", an(corpse_monster_name(uwep)));
         instapetrify(kbuf);
         /* life-saved; unwield the corpse if we can't handle it */
@@ -3678,7 +3678,7 @@ const char *arg;
     }
     if (uarms && uarms->otyp == CORPSE
         && touch_petrifies(&mons[uarms->corpsenm]) && !Stone_resistance) {
-        pline("%s touch the %s corpse.", arg, corpse_monster_name(uarms));
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s touch the %s corpse.", arg, corpse_monster_name(uarms));
         Sprintf(kbuf, "%s corpse", an(corpse_monster_name(uarms)));
         instapetrify(kbuf);
         /* life-saved; unwield the corpse */
@@ -4025,7 +4025,7 @@ int dice; /* of d6 */
 
     if ((box && !carried(box)) ? is_pool(box->ox, box->oy) : Underwater) {
         play_sfx_sound(SFX_STEAMY_BUBBLES);
-        pline("A cascade of steamy bubbles erupts from %s!",
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "A cascade of steamy bubbles erupts from %s!",
               the(box ? xname(box) : surface(u.ux, u.uy)));
         if (Fire_immunity)
             You("are uninjured.");
@@ -4144,18 +4144,18 @@ domagictrap()
         /* blindness effects */
         if (!resists_blnd(&youmonst) && !Flash_resistance)
         {
-            You("are momentarily blinded by a flash of light!");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "are momentarily blinded by a flash of light!");
             make_blinded((long) rn1(5, 10), FALSE);
             if (!Blind)
                 Your1(vision_clears);
         } else if (!Blind) {
-            You_see("a flash of light!");
+            You_see_ex(ATR_NONE, CLR_MSG_WARNING, "a flash of light!");
         }
 
         /* deafness effects */
         if (!Deaf) 
         {
-            You_hear("a deafening roar!");
+            You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "a deafening roar!");
             incr_itimeout(&HDeaf, rn1(20, 30));
             context.botl = context.botlx = TRUE;
             play_environment_ambient_sounds();
@@ -4163,7 +4163,7 @@ domagictrap()
         else
         {
             /* magic vibrations still hit you */
-            You_feel("rankled.");
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "rankled.");
             incr_itimeout(&HDeaf, rn1(5, 15));
             context.botl = context.botlx = TRUE;
             play_environment_ambient_sounds();
@@ -4201,23 +4201,23 @@ domagictrap()
         case 13:
             //play_sfx_sound(SFX_SHIVER_RUNS_DOWN_SPINE);
             play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
-            pline("A shiver runs up and down your %s!", body_part(SPINE));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "A shiver runs up and down your %s!", body_part(SPINE));
             break;
         case 14:
             play_sfx_sound(SFX_DISTANT_HOWLING);
-            You_hear(Hallucination ? "the moon howling at you."
+            You_hear_ex(ATR_NONE, CLR_MSG_WARNING, Hallucination ? "the moon howling at you."
                 : "distant howling.");
             break;
         case 15:
             play_sfx_sound(SFX_MAGIC_TRAP_WEIRD_EFFECT);
             if (on_level(&u.uz, &qstart_level))
-                You_feel(
+                You_feel_ex(ATR_NONE, CLR_MSG_WARNING,
                     "%slike the prodigal son.",
                     (flags.female || (Upolyd && is_neuter(youmonst.data)))
                     ? "oddly "
                     : "");
             else
-                You("suddenly yearn for %s.",
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "suddenly yearn for %s.",
                     Hallucination
                     ? "Cleveland"
                     : (In_quest(&u.uz) || at_dgn_entrance("The Quest"))
@@ -4226,15 +4226,15 @@ domagictrap()
             break;
         case 16:
             play_sfx_sound(SFX_PACK_SHAKING);
-            Your("pack shakes violently!");
+            Your_ex(ATR_NONE, CLR_MSG_WARNING, "pack shakes violently!");
             break;
         case 17:
             play_sfx_sound(SFX_MAGIC_TRAP_WEIRD_EFFECT);
-            You(Hallucination ? "smell hamburgers." : "smell charred flesh.");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, Hallucination ? "smell hamburgers." : "smell charred flesh.");
             break;
         case 18:
             play_sfx_sound(SFX_MAGIC_TRAP_WEIRD_EFFECT);
-            You_feel("tired.");
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "tired.");
             break;
 
             /* very occasionally something nice happens. */
@@ -4345,7 +4345,7 @@ xchar x, y;
         /* Container is burnt up - dump contents out */
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BURNT);
         if (in_sight)
-            pline("%s catches fire and burns.", Yname2(obj));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s catches fire and burns.", Yname2(obj));
         if (Has_contents(obj))
         {
             if (in_sight)
@@ -4376,7 +4376,7 @@ xchar x, y;
         if (obj->otyp == SPE_BOOK_OF_THE_DEAD) 
         {
             if (in_sight)
-                pline("Smoke rises from %s.", the(xname(obj)));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Smoke rises from %s.", the(xname(obj)));
             return FALSE;
         }
 
@@ -4387,7 +4387,7 @@ xchar x, y;
 
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BURNT);
         if (in_sight)
-            pline("%s %s.", Yname2(obj),
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s %s.", Yname2(obj),
                   destroy_strings[dindx][(obj->quan > 1L)]);
         setnotworn(obj);
         delobj(obj);
@@ -4506,7 +4506,7 @@ struct obj *obj;
             ) {
             if (!Blind) {
                 if (victim == &youmonst)
-                    pline("Your %s.", aobjnam(obj, "fade"));
+                    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Your %s.", aobjnam(obj, "fade"));
                 else if (vismon)
                     pline("%s %s.", s_suffix(Monnam(victim)),
                           aobjnam(obj, "fade"));
@@ -4574,7 +4574,7 @@ boolean force;
         && (obj->otyp != OILSKIN_SACK || (obj->cursed && !rn2(3)))) 
     {
         if (carried(obj))
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Water gets into your %s!", ostr);
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Water gets into your %s!", ostr);
 
         water_damage_chain(obj->cobj, FALSE);
         return ER_DAMAGED; /* contents were damaged */
@@ -4614,7 +4614,7 @@ boolean force;
         if (carried(obj))
         {
             play_sfx_sound_at_location(SFX_SCROLL_FADES, x, y);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Your %s %s.", ostr, vtense(ostr, "fade"));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Your %s %s.", ostr, vtense(ostr, "fade"));
         }
         obj->otyp = SCR_BLANK_PAPER;
         obj->dknown = 0;
@@ -4628,7 +4628,7 @@ boolean force;
         if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
         {
             play_sfx_sound_at_location(SFX_STEAMY_BUBBLES, x, y);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Steam rises from %s.", the(xname(obj)));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Steam rises from %s.", the(xname(obj)));
             return 0;
         }
         else if (is_obj_indestructible(obj))
@@ -4642,7 +4642,7 @@ boolean force;
         if (carried(obj))
         {
             play_sfx_sound_at_location(SFX_SCROLL_FADES, x, y);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Your %s %s.", ostr, vtense(ostr, "fade"));
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Your %s %s.", ostr, vtense(ostr, "fade"));
         }
         if (obj->otyp == SPE_NOVEL) 
         {
@@ -4680,7 +4680,7 @@ boolean force;
              */
             bufp = simpleonames(obj);
             play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, x, y);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s %s!", /* "A potion explodes!" */
+            pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s %s %s!", /* "A potion explodes!" */
                   !exploded ? (one ? "A" : "Some")
                             : (one ? "Another" : "More"),
                   bufp, vtense(bufp, "explode"));
@@ -4701,7 +4701,7 @@ boolean force;
             if (carried(obj))
             {
                 play_sfx_sound_at_location(SFX_POTION_DILUTES, x, y);
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Your %s %s further.", ostr, vtense(ostr, "dilute"));
+                pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "Your %s %s further.", ostr, vtense(ostr, "dilute"));
             }
             obj->otyp = POT_WATER;
             obj->dknown = 0;
@@ -7070,7 +7070,7 @@ xchar x, y;
     play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, x, y);
     special_effect_wait_until_action(0);
 
-    pline("KABOOM!!  %s was booby-trapped!", The(item));
+    pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "KABOOM!!  %s was booby-trapped!", The(item));
     wake_nearby();
     losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "explosion", KILLED_BY_AN);
     exercise(A_STR, FALSE);
@@ -7217,7 +7217,7 @@ lava_effects()
     if (uarmf && melts_in_lava(uarmf) && !uarmf->oerodeproof)
     {
         obj = uarmf;
-        pline("%s into flame!", Yobjnam2(obj, "burst"));
+        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s into flame!", Yobjnam2(obj, "burst"));
         iflags.in_lava_effects++; /* (see above) */
         (void) Boots_off();
         useup(obj);
@@ -7256,7 +7256,7 @@ lava_effects()
             if (obj->otyp == SPE_BOOK_OF_THE_DEAD && !Blind) 
             {
                 if (usurvive)
-                    pline("%s glows a strange %s, but remains intact.",
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s glows a strange %s, but remains intact.",
                           The(xname(obj)), hcolor("dark red"));
             }
             else if (obj->oartifact == ART_TRUE_RING)
@@ -7268,7 +7268,7 @@ lava_effects()
                 if (obj->owornmask) 
                 {
                     if (usurvive)
-                        pline("%s into flame!", Yobjnam2(obj, "burst"));
+                        pline_ex(ATR_NONE, CLR_MSG_CRITICAL, "%s into flame!", Yobjnam2(obj, "burst"));
                     remove_worn_item(obj, TRUE);
                 }
                 useupall(obj);

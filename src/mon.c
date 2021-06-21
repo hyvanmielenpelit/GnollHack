@@ -1412,15 +1412,8 @@ update_monster_timeouts()
                         {
                             if (canseemon(mtmp))
                             {
-                                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
-                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s dies of %s mummy rot!", Monnam(mtmp), mhis(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s looks very ill!", Monnam(mtmp));
                             }
-                            mtmp->mhp = 0;
-                            mondied(mtmp);
-                            if (mtmp == u.ustuck)
-                                u.ustuck = 0;
-                            if (is_tame(mtmp) && !canspotmon(mtmp))
-                                You_ex(ATR_NONE, CLR_MSG_WARNING, "have a peculiarly sad feeling for a moment, then it passes.");
                         }
                         break;                    
                     case STRANGLED:
