@@ -1360,7 +1360,7 @@ update_monster_timeouts()
                         break;
                     case SLIMED:
                         {
-                            if (!!slimeproof(mtmp->data))
+                            if (!slimeproof(mtmp->data))
                             {
                                 (void)newcham(mtmp, &mons[PM_GREEN_SLIME], FALSE, TRUE);
                                 break_charm(mtmp, FALSE);
