@@ -4931,7 +4931,7 @@ drown()
     if (is_fainted())
         reset_faint();
     /* can't crawl if unable to move (crawl_ok flag stays false) */
-    if (multi < 0 || (Upolyd && !youmonst.data->mmove))
+    if (multi < 0 || (Upolyd && !youmonst.data->mmove) || Sleeping || Paralyzed_or_immobile)
         goto crawl;
     /* look around for a place to crawl to */
     for (i = 0; i < 100; i++) {

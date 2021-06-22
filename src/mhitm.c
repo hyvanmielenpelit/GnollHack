@@ -2331,12 +2331,16 @@ void
 slept_monst(mon)
 struct monst *mon;
 {
+    if (!mon)
+        return;
+
     if (!mon_can_move(mon) && mon == u.ustuck
         && !sticks(youmonst.data) && !u.uswallow)
     {
         pline("%s grip relaxes.", s_suffix(Monnam(mon)));
         unstuck(mon);
     }
+    force_redraw_at(mon->mx, mon->my);
 }
 
 void

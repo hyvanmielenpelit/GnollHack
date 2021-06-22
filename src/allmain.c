@@ -294,7 +294,7 @@ boolean resuming;
                             (void)unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
                         }
                     }
-                    if (Searching && multi >= 0)
+                    if (Searching && multi >= 0 && !Sleeping && !Paralyzed_or_immobile)
                         (void) dosearch0(1);
                     if (Warning || Any_warning)
                         warnreveal();

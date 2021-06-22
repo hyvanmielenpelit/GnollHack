@@ -503,7 +503,7 @@ int what; /* should be a long */
        and read_engr_at in addition to bypassing autopickup itself
        [probably ought to check whether hero is using a cockatrice
        corpse for a pillow here... (also at initial faint/sleep)] */
-    if (autopickup && multi < 0 && unconscious())
+    if (autopickup && ((multi < 0 && unconscious()) || Sleeping || Paralyzed_or_immobile))
         return 0;
 
     if (what < 0) /* pick N of something */

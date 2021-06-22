@@ -439,7 +439,7 @@ gotobj:
                 /* can't charm you without first waking you */
                 if (Unaware)
                     unmul((char *) 0);
-                slowly = (armordelay >= 1 || multi < 0);
+                slowly = (armordelay >= 1 || multi < 0 || Sleeping || Paralyzed_or_immobile);
                 if (flags.female)
                     pline("%s charms you.  You gladly %s your %s.",
                           !seen ? "She" : Monnam(mtmp),

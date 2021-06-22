@@ -102,7 +102,6 @@ int distance;
             && sleep_monst(mtmp, (struct obj*)0, d(10, 10), 0, FALSE)) {
             //mtmp->msleeping = 1; /* 10d10 turns + wake_nearby to rouse */
             slept_monst(mtmp);
-            force_redraw_at(mtmp->mx, mtmp->my);
         }
     }
 

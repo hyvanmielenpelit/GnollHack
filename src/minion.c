@@ -834,7 +834,7 @@ struct monst *mtmp;
             (cash * (rnd(80) + 20 * Athome))
             / (100 * (1 + (sgn(u.ualign.type) == sgn(mtmp->data->maligntyp))));
 
-        if (!demand || multi < 0) { /* you have no gold or can't move */
+        if (!demand || multi < 0 || Sleeping || Paralyzed_or_immobile) { /* you have no gold or can't move */
             mtmp->mpeaceful = 0;
             set_malign(mtmp);
             newsym(mtmp->mx, mtmp->my);

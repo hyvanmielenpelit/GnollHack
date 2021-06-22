@@ -3611,7 +3611,7 @@ struct sp_coder *coder;
     int nparams = 0;
     struct opvar *varparam;
     struct opvar *id, *mcoord, *has_inv;
-    monster tmpmons;
+    monster tmpmons = { 0 };
 
     tmpmons.peaceful = -1;
     tmpmons.asleep = -1;
@@ -3632,6 +3632,7 @@ struct sp_coder *coder;
     tmpmons.seentraps = 0;
     tmpmons.has_invent = 0;
     tmpmons.waitforu = 0;
+    tmpmons.protector = 0;
 
     if (!OV_pop_i(has_inv))
         return;

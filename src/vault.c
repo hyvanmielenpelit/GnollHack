@@ -423,7 +423,7 @@ invault()
             mongone(guard);
             return;
         }
-        if (Strangled || is_silent(youmonst.data) || multi < 0) {
+        if (Strangled || is_silent(youmonst.data) || multi < 0 || Sleeping || Paralyzed_or_immobile) {
             /* [we ought to record whether this this message has already
                been given in order to vary it upon repeat visits, but
                discarding the monster and its egd data renders that hard] */
@@ -828,7 +828,7 @@ register struct monst *grd;
                 return -1;
             }
             /* not fair to get mad when (s)he's fainted or paralyzed */
-            if (!is_fainted() && multi >= 0)
+            if (!is_fainted() && multi >= 0 && !Sleeping && !Paralyzed_or_immobile)
                 egrd->warncnt++;
             return 0;
         }

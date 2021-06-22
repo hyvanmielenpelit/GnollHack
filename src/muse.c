@@ -1292,7 +1292,7 @@ struct monst *mtmp;
                 m.has_offense = MUSE_WAN_PETRIFICATION;
             }
             nomore(MUSE_WAN_SLEEP);
-            if (obj->otyp == WAN_SLEEP && obj->charges > 0 && multi >= 0 && !sleep_resistant_skip && !antimagic_skip && !level_skip_normal_wand &&
+            if (obj->otyp == WAN_SLEEP && obj->charges > 0 && multi >= 0 && !Sleeping && !Paralyzed_or_immobile && !sleep_resistant_skip && !antimagic_skip && !level_skip_normal_wand &&
                 lined_up(mtmp, TRUE, AD_SLEE, TRUE, M_RAY_RANGE))
             {
                 m.offensive = obj;
@@ -1362,7 +1362,7 @@ struct monst *mtmp;
         if (!level_skip_weak_wand && lined_up(mtmp, TRUE, AD_PHYS, FALSE, M_GENERIC_RANGED_ATTACK_RANGE))
         {
             nomore(MUSE_POT_PARALYSIS);
-            if (obj->otyp == POT_PARALYSIS && multi >= 0) {
+            if (obj->otyp == POT_PARALYSIS && multi >= 0 && !Sleeping && !Paralyzed_or_immobile) {
                 m.offensive = obj;
                 m.has_offense = MUSE_POT_PARALYSIS;
             }

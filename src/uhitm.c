@@ -4158,7 +4158,7 @@ register struct monst *mon;
             break;
         if (!Upolyd)
             break; /* No extra attacks if no longer a monster */
-        if (multi < 0)
+        if (multi < 0 || Sleeping || Paralyzed_or_immobile)
             break; /* If paralyzed while attacking, i.e. floating eye */
     }
     

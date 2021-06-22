@@ -659,7 +659,7 @@ register struct monst *mtmp;
     tmp += mtmp->m_lev;    //Add level to hit chance
     tmp += m_strdex_to_hit_bonus(mtmp); //Add monster's STR and DEX bonus, thrown weapons are dealt separately
     tmp += mtmp->mhitinc;
-    if (multi < 0)
+    if (multi < 0 || Sleeping || Paralyzed_or_immobile)
         tmp += 4;
     if ((Invis && !has_see_invisible(mtmp)) || is_blinded(mtmp))
         tmp -= 2;
@@ -2217,7 +2217,7 @@ register struct obj* omonwep;
         break;
     case AD_SLEE:
         hitmsg(mtmp, mattk, damagedealt, FALSE);
-        if (uncancelled && multi >= 0) 
+        if (uncancelled) 
         {
             if (Sleep_resistance || check_ability_resistance_success(&youmonst, A_WIS, mattk->mcadj))
                 break;
@@ -2312,7 +2312,7 @@ register struct obj* omonwep;
         break;
     case AD_PLYS:
         hitmsg(mtmp, mattk, damagedealt, FALSE);
-        if (uncancelled && multi >= 0) 
+        if (uncancelled) 
         {
             if (Free_action) 
             {
