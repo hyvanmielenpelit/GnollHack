@@ -198,7 +198,7 @@ struct prop {
     /*** Properties conveyed by objects ***/
     long extrinsic;
 /* Armor */
-#define W_ARM 0x00000001L  /* Body armor */
+#define W_ARM  0x00000001L  /* Body armor */
 #define W_ARMC 0x00000002L /* Cloak */
 #define W_ARMH 0x00000004L /* Helmet/hat */
 #define W_ARMS 0x00000008L /* Shield */
@@ -212,21 +212,21 @@ struct prop {
 
 
 /* Weapons */
-#define W_WEP        0x00000200L     /* Wielded weapon in the primary hand */
+#define W_WEP         0x00000200L     /* Wielded weapon in the primary hand */
 #define W_WEP2        W_ARMS            /* Wielded weapon in the secondary hand (uses the same hand as W_ARMS) */
-#define W_QUIVER    0x00000800L        /* Quiver for (f)iring ammo */
-#define W_SWAPWEP    0x00001000L        /* Alternate weapon in the primary hand */
+#define W_QUIVER      0x00000800L        /* Quiver for (f)iring ammo */
+#define W_SWAPWEP     0x00001000L        /* Alternate weapon in the primary hand */
 #define W_SWAPWEP2    0x00002000L        /* Alternate weapon/shield in the secondary hand */
 
 #define W_ENVIRONMENT 0x00004000L    /* Caused by environment, e.g., suffocation due to no air */
-#define W_STUCK        0x00008000L        /* A monster in u.ustuck had grabbed you and is e.g. constricting you */
+#define W_STUCK       0x00008000L        /* A monster in u.ustuck had grabbed you and is e.g. constricting you */
 
 #define W_WIELDED_WEAPON (W_WEP | W_WEP2)
 #define W_SWAP_WEAPON (W_SWAPWEP | W_SWAPWEP2)
 #define W_WEAPON (W_WIELDED_WEAPON | W_SWAP_WEAPON | W_QUIVER)
 
 /* Amulets, rings, tools, and other items */
-#define W_AMUL 0x00010000L    /* Amulet */
+#define W_AMUL  0x00010000L    /* Amulet */
 #define W_RINGL 0x00020000L   /* Left ring */
 #define W_RINGR 0x00040000L   /* Right ring */
 #define W_RING (W_RINGL | W_RINGR)
@@ -235,8 +235,8 @@ struct prop {
     /* historical note: originally in slash'em, 'worn' saddle stayed in
        hero's inventory; in GnollHack, it's kept in the steed's inventory */
 #define W_SADDLE 0x00100000L /* KMH -- For riding monsters */
-#define W_BALL 0x00200000L   /* Punishment ball */
-#define W_CHAIN 0x00400000L  /* Punishment chain */
+#define W_BALL   0x00200000L   /* Punishment ball */
+#define W_CHAIN  0x00400000L  /* Punishment chain */
 
     /* new accessories*/
 #define W_MISC  0x00800000L      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */

@@ -3709,10 +3709,14 @@ struct monst* mtmp;
         }
         else
         {
-            pline("%s does not seem to appreciate your gesture!", Monnam(mtmp));
-            if (!rn2(is_domestic(mtmp->data) ? 20 : 4) && !(mtmp->data->mflags2 & M2_PEACEFUL))
+            if (!rn2(is_domestic(mtmp->data) ? 40 : 10) && !(mtmp->data->mflags2 & M2_PEACEFUL))
             {
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s does not seem to appreciate your gesture!", Monnam(mtmp));
                 setmangry(mtmp, FALSE);
+            }
+            else
+            {
+                pline("%s seems to ignore your gesture!", Monnam(mtmp));
             }
         }
     }
@@ -6107,7 +6111,7 @@ STATIC_OVL int
 do_chat_smith_identify(mtmp)
 struct monst* mtmp;
 {
-    return do_chat_npc_general_identify(mtmp, "weapon or armor", -1, max(1, (int)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR);
+    return do_chat_npc_general_identify(mtmp, "weapon or armor", -1, max(1, (int)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_WEAPON_OR_ARMOR);
 }
 
 STATIC_OVL boolean

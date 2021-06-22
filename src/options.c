@@ -240,7 +240,7 @@ static struct Bool_Opt {
     { "search_box_traps", &flags.search_box_traps, TRUE, SET_IN_GAME },
     { "selectsaved", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME }, /*WC*/
     { "showexp", &flags.showexp, FALSE, SET_IN_GAME },
-    { "showmove", &flags.showmove, FALSE, SET_IN_GAME },
+    { "showmove", &flags.showmove, TRUE, SET_IN_GAME },
     { "showrace", &flags.showrace, FALSE, SET_IN_GAME },
 #ifdef SCORE_ON_BOTL
     { "showscore", &flags.showscore, FALSE, SET_IN_GAME },

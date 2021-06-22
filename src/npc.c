@@ -233,7 +233,7 @@ int roomno;
             verbalize1(msg1);
             if (msg2)
                 verbalize1(msg2);
-            enpc_p->enter_time = moves + (long)d(10, 100); /* ~505 */
+            enpc_p->enter_time = moves + (long)d(5, 50); /* ~125 */
         }
     }
     else
