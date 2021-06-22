@@ -2323,7 +2323,7 @@ int depthin;
         && obj->charges <= 0)
         return FALSE;
 
-    if ((container->otyp == BAG_OF_WIZARDRY || container->otyp == GOLDEN_CHEST) &&
+    if ((container->otyp == BAG_OF_WIZARDRY || (container->otyp == GOLDEN_CHEST && container->oartifact == ART_ARK_OF_THE_COVENANT)) &&
         (obj->otyp == WAN_CANCELLATION || obj->otyp == WAN_DISJUNCTION || obj->otyp == BAG_OF_TRICKS)
         && obj->charges > 0)
     {
@@ -2558,7 +2558,11 @@ register struct obj *obj;
         /* did not actually insert obj yet */
         if (was_unpaid)
             addtobill(obj, FALSE, FALSE, TRUE);
-        obfree(obj, (struct obj *) 0);
+
+        boolean destroyobj = !(is_obj_indestructible(obj) || obj->oartifact);
+        if (destroyobj)
+            obfree(obj, (struct obj *) 0);
+
         /* if carried, shop goods will be flagged 'unpaid' and obfree() will
            handle bill issues, but if on floor, we need to put them on bill
            before deleting them (non-shop items will be flagged 'no_charge') */
@@ -2581,6 +2585,13 @@ register struct obj *obj;
             obj_extract_self(curr);
             dropy(curr);
             (void)scatter(curr->ox, curr->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, curr);
+        }
+
+        /* The artifact flies out last */
+        if (!destroyobj)
+        {
+            dropy(obj);
+            (void)scatter(obj->ox, obj->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, obj);
         }
 
         if (!floor_container)
