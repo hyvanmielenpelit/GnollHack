@@ -126,19 +126,19 @@ const struct class_sym def_monsyms[MAX_MONSTER_CLASSES] = {
 };
 
 const struct symdef def_warnsyms[WARNCOUNT] = {
-    /* white warning  */
-    { '0', "unknown creature causing you little worry",    C(CLR_WHITE) },
-    /* pink warning   */
+    /* normal red warning  */
+    { '0', "unknown creature causing you little worry",    C(CLR_RED) },
+    /* normal red warning   */
     { '1', "unknown creature causing you worry",  C(CLR_RED) },
-    /* red warning    */
+    /* normal red warning    */
     { '2', "unknown creature causing you concern",  C(CLR_RED) },
-    /* ruby warning   */
+    /* normal red warning   */
     { '3', "unknown creature causing you anxiety", C(CLR_RED) },
-    /* ruby warning   */
+    /* normal red warning   */
     { '4', "unknown creature causing you disquiet", C(CLR_RED) },
-    /* purple warning */
+    /* magenta warning */
     { '5', "unknown creature causing you alarm",    C(CLR_MAGENTA) },
-    /* black warning  */
+    /* bright magenta warning  */
     { '6', "unknown creature causing you dread",    C(CLR_BRIGHT_MAGENTA) },
 };
 
