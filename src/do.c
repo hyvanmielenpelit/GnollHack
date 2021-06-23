@@ -1674,7 +1674,6 @@ register struct obj* obj;
     }
 
 
-
     boolean affectsac = (obj->oclass == ARMOR_CLASS
             || (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
             || (stats_known && obj->oclass == MISCELLANEOUS_CLASS && objects[otyp].oc_armor_class != 0)
@@ -1708,9 +1707,9 @@ register struct obj* obj;
         putstr(datawin, 0, txt);
     }
 
-    if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
+    if (stats_known)
     {
-        if (stats_known)
+        if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_wand_like_tool(obj)))
         {
             if (objects[otyp].oc_spell_dmg_dice > 0 || objects[otyp].oc_spell_dmg_diesize > 0 || objects[otyp].oc_spell_dmg_plus != 0)
             {
@@ -1791,7 +1790,7 @@ register struct obj* obj;
             /* Flags */
             if (objects[otyp].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
             {
-                if(objects[otyp].oc_spell_flags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE)
+                if (objects[otyp].oc_spell_flags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE)
                     Sprintf(buf, "Other:                  %s", "Bypasses magic resistance for all monsters");
                 else
                     Sprintf(buf, "Other:                  %s", "Bypasses magic resistance for non-unique monsters");
@@ -1799,117 +1798,128 @@ register struct obj* obj;
                 putstr(datawin, 0, txt);
             }
         }
-    }
 
-    if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
-        (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || objects[otyp].oc_spell_casting_penalty != 0))
-    {
-        long splcaster = has_obj_mythic_spellcasting(obj) ? 0L : objects[otyp].oc_spell_casting_penalty;
-
-        Sprintf(buf2, "%s%ld%%", splcaster <= 0 ? "+" : "", -splcaster * ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
-        if (splcaster < 0)
-            Sprintf(buf, "Spell casting bonus:    %s (somatic spells only)", buf2);
-        else
-            Sprintf(buf, "Spell casting penalty:  %s (somatic spells only)", buf2);
-
-        txt = buf;
-        putstr(datawin, 0, txt);
-    }
-
-
-
-    if (obj->known && objects[otyp].oc_charged)
-    {
-        strcpy(buf, "");
-
-        Sprintf(buf, "Charges left:           %d", obj->charges);
-        txt = buf;
-        putstr(datawin, 0, txt);
-
-        strcpy(buf, "");
-
-        Sprintf(buf, "Maximum charges:        %d", get_obj_max_charge(obj));
-        txt = buf;
-        putstr(datawin, 0, txt);
-
-        strcpy(buf, "");
-
-        Sprintf(buf, "Rechargings before:     %d", (int)obj->recharged);
-        txt = buf;
-        putstr(datawin, 0, txt);
-
-        strcpy(buf, "");
-
-        char rechargebuf[BUFSZ];
-        strcpy(rechargebuf, get_recharge_text(objects[otyp].oc_recharging));
-        *rechargebuf = highc(*rechargebuf);
-
-        Sprintf(buf, "Recharging type:        %s", rechargebuf);
-        txt = buf;
-        putstr(datawin, 0, txt);
-    }
-
-    if (obj->known && objects[otyp].oc_enchantable)
-    {
-        strcpy(buf, "");
-
-        char bonusbuf[BUFSZ];
-        strcpy(bonusbuf, "");
-
-        if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
+        if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
+            (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || objects[otyp].oc_spell_casting_penalty != 0))
         {
-            int enchplus = obj->enchantment;
-            int tohitplus = enchplus; // is_launcher(obj) ? (enchplus + 1 * sgn(enchplus)) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
-            int dmgplus = enchplus; //  is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1 * sgn(enchplus)) / 2 : enchplus;
+            long splcaster = has_obj_mythic_spellcasting(obj) ? 0L : objects[otyp].oc_spell_casting_penalty;
 
-            wep_avg_dmg += (double)dmgplus;
-            if (wep_avg_dmg < 0)
-                wep_avg_dmg = 0;
-
-            if (!uses_spell_flags && stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
-            {
-                enchplus *= 2;
-            }
-            if(tohitplus == dmgplus)
-                Sprintf(bonusbuf, " (%s%d to hit and damage)", tohitplus >= 0 ? "+" : "", tohitplus);
+            Sprintf(buf2, "%s%ld%%", splcaster <= 0 ? "+" : "", -splcaster * ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
+            if (splcaster < 0)
+                Sprintf(buf, "Spell casting bonus:    %s (somatic spells only)", buf2);
             else
-                Sprintf(bonusbuf, " (%s%d to hit and %s%d to damage)", tohitplus >= 0 ? "+" : "", tohitplus, dmgplus >= 0 ? "+" : "", dmgplus);
+                Sprintf(buf, "Spell casting penalty:  %s (somatic spells only)", buf2);
+
+            txt = buf;
+            putstr(datawin, 0, txt);
         }
 
-        if (affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC) && (affectsmc || (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)))
+        if (objects[otyp].oc_charged)
         {
-            Sprintf(eos(bonusbuf), " (%s%d to AC and %s%d to MC)",
-                obj->enchantment <= 0 ? "+" : "",
-                -obj->enchantment,
-                obj->enchantment / 3 >= 0 ? "+" : "",
-                obj->enchantment / 3
-            );
-        }
-        else if(affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC))
-        {
-            Sprintf(eos(bonusbuf), " (%s%d %s to AC)",
-                obj->enchantment <= 0 ? "+" : "",
-                -obj->enchantment,
-                obj->enchantment >= 0 ? "bonus" : "penalty");
-        }
-        else if (affectsmc || (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
-        {
-            Sprintf(eos(bonusbuf), " (%s%d %s to MC)",
-                obj->enchantment / 3 >= 0 ? "+" : "",
-                obj->enchantment / 3,
-                obj->enchantment / 3 >= 0 ? "bonus" : "penalty");
+            if (obj->known)
+            {
+                Sprintf(buf, "Charges left:           %d", obj->charges);
+                txt = buf;
+                putstr(datawin, 0, txt);
+            }
+            else
+            {
+                Sprintf(buf, "Charges:                %s", "Yes");
+                txt = buf;
+                putstr(datawin, 0, txt);
+            }
+
+            Sprintf(buf, "Maximum charges:        %d", get_obj_max_charge(obj));
+            txt = buf;
+            putstr(datawin, 0, txt);
+
+            if (obj->known)
+            {
+                Sprintf(buf, "Rechargings before:     %d", (int)obj->recharged);
+                txt = buf;
+                putstr(datawin, 0, txt);
+            }
+
+            char rechargebuf[BUFSZ];
+            strcpy(rechargebuf, get_recharge_text(objects[otyp].oc_recharging));
+            *rechargebuf = highc(*rechargebuf);
+
+            Sprintf(buf, "Recharging type:        %s", rechargebuf);
+            txt = buf;
+            putstr(datawin, 0, txt);
         }
 
-        Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);    
-        txt = buf;
-        putstr(datawin, 0, txt);
+        if (objects[otyp].oc_enchantable)
+        {
+            if (obj->known)
+            {
+                strcpy(buf, "");
 
-        int max_ench = get_obj_max_enchantment(obj);
-        Sprintf(buf, "Safe enchantable level: %s%d or below", max_ench >= 0 ? "+" : "", max_ench);
-        txt = buf;
-        putstr(datawin, 0, txt);
+                char bonusbuf[BUFSZ];
+                strcpy(bonusbuf, "");
+
+                if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
+                {
+                    int enchplus = obj->enchantment;
+                    int tohitplus = enchplus; // is_launcher(obj) ? (enchplus + 1 * sgn(enchplus)) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
+                    int dmgplus = enchplus; //  is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1 * sgn(enchplus)) / 2 : enchplus;
+
+                    wep_avg_dmg += (double)dmgplus;
+                    if (wep_avg_dmg < 0)
+                        wep_avg_dmg = 0;
+
+                    if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
+                    {
+                        enchplus *= 2;
+                    }
+                    if (tohitplus == dmgplus)
+                        Sprintf(bonusbuf, " (%s%d to hit and damage)", tohitplus >= 0 ? "+" : "", tohitplus);
+                    else
+                        Sprintf(bonusbuf, " (%s%d to hit and %s%d to damage)", tohitplus >= 0 ? "+" : "", tohitplus, dmgplus >= 0 ? "+" : "", dmgplus);
+                }
+
+                if (affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC) && (affectsmc || (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)))
+                {
+                    Sprintf(eos(bonusbuf), " (%s%d to AC and %s%d to MC)",
+                        obj->enchantment <= 0 ? "+" : "",
+                        -obj->enchantment,
+                        obj->enchantment / 3 >= 0 ? "+" : "",
+                        obj->enchantment / 3
+                    );
+                }
+                else if (affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC))
+                {
+                    Sprintf(eos(bonusbuf), " (%s%d %s to AC)",
+                        obj->enchantment <= 0 ? "+" : "",
+                        -obj->enchantment,
+                        obj->enchantment >= 0 ? "bonus" : "penalty");
+                }
+                else if (affectsmc || (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
+                {
+                    Sprintf(eos(bonusbuf), " (%s%d %s to MC)",
+                        obj->enchantment / 3 >= 0 ? "+" : "",
+                        obj->enchantment / 3,
+                        obj->enchantment / 3 >= 0 ? "bonus" : "penalty");
+                }
+
+                Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);
+                txt = buf;
+                putstr(datawin, 0, txt);
+
+            }
+            else
+            {
+                Sprintf(buf, "Enchantable:            %s", "Yes");
+                txt = buf;
+                putstr(datawin, 0, txt);
+            }
+
+            int max_ench = get_obj_max_enchantment(obj);
+            Sprintf(buf, "Safe enchantable level: %s%d or below", max_ench >= 0 ? "+" : "", max_ench);
+            txt = buf;
+            putstr(datawin, 0, txt);
+        }
     }
-
 
     if ((obj->oeroded || obj->oeroded2 || (obj->rknown && obj->oerodeproof)))
     {
@@ -1942,6 +1952,7 @@ register struct obj* obj;
         txt = buf;
         putstr(datawin, 0, txt);
     }
+
     /* Mythic status */
     if (obj->dknown && (obj->mythic_prefix || obj->mythic_suffix))
     {
