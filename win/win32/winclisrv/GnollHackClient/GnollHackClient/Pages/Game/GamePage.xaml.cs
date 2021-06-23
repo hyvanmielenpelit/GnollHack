@@ -1121,6 +1121,8 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         if (MapMode == GHMapMode.Look)
                                             mod = (int)NhGetPosMods.Click2;
+                                        else
+                                            mod = (int)NhGetPosMods.Click1;
 
                                         ConcurrentQueue<GHResponse> queue;
                                         if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
