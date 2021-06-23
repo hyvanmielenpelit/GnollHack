@@ -46,7 +46,7 @@ extern const char *enc_stat[]; /* encumbrance status from botl.c */
 
 #define CMD_TRAVEL (char) 0xFC //0x90
 #define CMD_CLICKLOOK (char) 0xFD //0x8F
-#define CMD_TRAVEL_ATTACK (char) 0xFA
+#define CMD_TRAVEL_ATTACK (char) 0xFE
 #define CMD_TRAVEL_PICKUP (char) 0xFB
 
 #ifdef DEBUG

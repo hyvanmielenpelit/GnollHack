@@ -748,7 +748,8 @@ namespace GnollHackClient.Pages.Game
                                 Style = SKPaintStyle.Fill
                             };
 
-                            canvas.DrawRect(winRect, winPaint);
+                            if(winPaint.Color != SKColors.Transparent)
+                                canvas.DrawRect(winRect, winPaint);
 
                             lock(_clientGame.Windows[i].PutStrsLock)
                             {
@@ -774,6 +775,11 @@ namespace GnollHackClient.Pages.Game
                                         tx = xpos + winRect.Left + _clientGame.Windows[i].Padding.Left;
                                         ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
                                         canvas.DrawText(str, tx, ty, textPaint);
+                                        textPaint.Style = SKPaintStyle.Stroke;
+                                        textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
+                                        textPaint.Color = SKColors.Black;
+                                        canvas.DrawText(str, tx, ty, textPaint);
+                                        textPaint.Style = SKPaintStyle.Fill;
                                         xpos += textBounds.Width;
                                     }
                                     j++;

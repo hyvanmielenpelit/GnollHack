@@ -43,6 +43,7 @@ namespace GnollHackClient
         public SKTypeface Typeface { get; set; }
         public SKColor TextColor { get; set; }
         public float TextSize { get; set; }
+        public float StrokeWidth { get; set; }
         public SKColor BackgroundColor { get; set; }
         public int CursX { get; set; }
         public int CursY { get; set; }
@@ -100,6 +101,7 @@ namespace GnollHackClient
             TextColor = SKColors.White;
             TextSize = 42;
             BackgroundColor = SKColors.Transparent;
+            StrokeWidth = 1.5f;
             switch (_winType)
             {
                 case GHWinType.None:
@@ -110,9 +112,9 @@ namespace GnollHackClient
                     Top = 0;
                     break;
                 case GHWinType.Status:
-                    BackgroundColor = TransparentBlack;
+                    //BackgroundColor = TransparentBlack;
                     TextSize = 30;
-                    Typeface = App.LatoRegular;
+                    Typeface = App.LatoBold;
                     Left = 0;
                     Top = 0;
                     break;
