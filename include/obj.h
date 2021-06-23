@@ -593,15 +593,27 @@ struct obj {
     ((objects[otyp].oc_flags4 & O4_MISSILE_TILE) != 0)
 
 #define is_otyp_drawn_in_front(otyp, tx, ty) \
-     ((objects[otyp].oc_flags4 & O4_DRAWN_IN_FRONT) && (tx) == u.ux && (ty) == u.uy)
+     ((objects[(otyp)].oc_flags4 & O4_DRAWN_IN_FRONT) && (tx) == u.ux && (ty) == u.uy)
 
 #define is_obj_drawn_in_front(obj) \
     (is_otyp_drawn_in_front((obj)->otyp, (obj)->ox, (obj)->oy))
 
 #define has_otyp_floor_tile(otyp)                                 \
-    ((objects[otyp].oc_flags4 & O4_FLOOR_TILE) != 0)
+    ((objects[(otyp)].oc_flags4 & O4_FLOOR_TILE) != 0)
 
 #define has_obj_floor_tile(o) has_otyp_floor_tile((o)->otyp)     
+
+#define is_otyp_mbag_destroying(otyp)                                 \
+    ((objects[(otyp)].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0)
+
+#define is_obj_mbag_destroying(obj) \
+    (is_otyp_mbag_destroying((obj)->otyp))
+
+#define does_otyp_drain_instead_of_explode(otyp)                                 \
+    ((objects[(otyp)].oc_flags5 & O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN) != 0)
+
+#define does_obj_drain_instead_of_explode(obj) \
+    (does_otyp_drain_instead_of_explode((obj)->otyp))
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */

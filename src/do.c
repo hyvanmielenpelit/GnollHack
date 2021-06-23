@@ -2017,13 +2017,13 @@ register struct obj* obj;
         putstr(datawin, 0, txt);
     }
 
-    /* Various extra info is the item is known */
+    /* Extra info is a non-spell-type item is known */
     if (stats_known && !uses_spell_flags)
     {
         if (objects[otyp].oc_oprop > 0
-            || objects[otyp].oc_oprop2 > 0 
-            || objects[otyp].oc_oprop3 > 0 
-            || objects[otyp].oc_mana_bonus > 0 
+            || objects[otyp].oc_oprop2 > 0
+            || objects[otyp].oc_oprop3 > 0
+            || objects[otyp].oc_mana_bonus > 0
             || objects[otyp].oc_hp_bonus > 0
             || objects[otyp].oc_bonus_attributes > 0
             || objects[otyp].oc_aflags > 0
@@ -2058,7 +2058,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_weapon(obj)? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2141,12 +2141,12 @@ register struct obj* obj;
                         strcpy(buf2, "");
                         Sprintf(buf3, " %2d - ", powercnt);
                     }
-                    if(j <= 3)
+                    if (j <= 3)
                     {
                         strcpy(buf2, get_property_name(prop));
                         *buf2 = highc(*buf2);
                     }
-                    else if(j == 4)
+                    else if (j == 4)
                     {
                         if (objects[otyp].oc_pflags & P1_MANA_PERCENTAGE_BONUS)
                         {
@@ -2180,7 +2180,7 @@ register struct obj* obj;
 
                             if (objects[otyp].oc_enchantable && !(prop & IGNORE_ENCHANTMENT))
                             {
-                                if(k == 9) /* MC*/
+                                if (k == 9) /* MC*/
                                     stat += obj->enchantment / 3;
                                 else
                                     stat += obj->enchantment;
@@ -2215,7 +2215,7 @@ register struct obj* obj;
                                     char strbuf[BUFSZ] = "";
                                     if (stat <= 18)
                                         Sprintf(strbuf, "%d", stat);
-                                    else if(stat < STR18(10))
+                                    else if (stat < STR18(10))
                                         Sprintf(strbuf, "18/0%d", stat - 18);
                                     else if (stat < STR18(100))
                                         Sprintf(strbuf, "18/%d", stat - 18);
@@ -2420,13 +2420,13 @@ register struct obj* obj;
                 else
                     Sprintf(chancebuf, " at %d%% chance", critchance);
 
-                if((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
+                if ((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
                     Sprintf(buf, " %2d - Disintegrates the target on hit%s", powercnt, critchance < 100 ? chancebuf : "");
                 else if ((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
                     Sprintf(buf, " %2d - Slays the target on hit%s", powercnt, critchance < 100 ? chancebuf : "");
                 else
                     Sprintf(buf, " %2d - Causes lethal %s damage%s", powercnt,
-                        get_damage_type_text((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE) ? objects[otyp].oc_extra_damagetype : AD_PHYS), 
+                        get_damage_type_text((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE) ? objects[otyp].oc_extra_damagetype : AD_PHYS),
                         critchance < 100 ? chancebuf : "");
                 txt = buf;
                 putstr(datawin, 0, txt);
@@ -2693,7 +2693,7 @@ register struct obj* obj;
                 if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG | O3_TARGET_PERMISSION_IS_M5_FLAG))
                 {
                     int flag_idx = 1;
-                    if(objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M2_FLAG))
+                    if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M2_FLAG))
                         flag_idx = 2;
                     else if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M3_FLAG))
                         flag_idx = 3;
@@ -2822,10 +2822,15 @@ register struct obj* obj;
                 }
             }
         }
+    }
 
+    /* General for all items */
+    if(stats_known)
+    {
         /* Item properties */
         if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
             | O1_WAND_LIKE_TOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD) 
+            || (objects[otyp].oc_flags5 & (O5_MBAG_DESTROYING_ITEM | O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN))
             || otyp_shines_magical_light(otyp)
             || is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp)
             || is_death_enchantable(obj) //|| is_otyp_elemental_enchantable(otyp) 
@@ -2971,6 +2976,21 @@ register struct obj* obj;
                 txt = buf;
                 putstr(datawin, 0, txt);
             }
+            if (objects[otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Destroys magic bags if put in", powercnt);
+                txt = buf;
+                putstr(datawin, 0, txt);
+            }
+            if (objects[otyp].oc_flags5 & O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Strips magic bag destroying items of charges; does not explode", powercnt);
+                txt = buf;
+                putstr(datawin, 0, txt);
+            }
+
 #if 0
             if (is_otyp_elemental_enchantable(otyp))
             {
@@ -2989,7 +3009,7 @@ register struct obj* obj;
         }
 
 
-        /* Item properties */
+        /* Corpse properties */
         if (otyp == CORPSE && obj->corpsenm > NON_PM)
         {
             int powercnt = 0;
@@ -3028,8 +3048,6 @@ register struct obj* obj;
             }
         }
     }
-
-
 
     /* Artifact powers */
     if (obj->oartifact && stats_known)

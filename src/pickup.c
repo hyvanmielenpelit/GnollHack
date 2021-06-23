@@ -2319,23 +2319,25 @@ struct obj *obj, *container;
 int depthin;
 {
     /* these won't cause an explosion when they're empty */
-    if ((obj->otyp == WAN_CANCELLATION || obj->otyp == WAN_DISJUNCTION || obj->otyp == BAG_OF_TRICKS)
-        && obj->charges <= 0)
+    if (is_obj_mbag_destroying(obj) && obj->charges <= 0)
         return FALSE;
 
-    if ((container->otyp == BAG_OF_WIZARDRY || (container->otyp == GOLDEN_CHEST && container->oartifact == ART_ARK_OF_THE_COVENANT)) &&
-        (obj->otyp == WAN_CANCELLATION || obj->otyp == WAN_DISJUNCTION || obj->otyp == BAG_OF_TRICKS)
-        && obj->charges > 0)
+    if (is_obj_mbag_destroying(obj) && does_obj_drain_instead_of_explode(container) && obj->charges > 0)
     {
         //Bag of wizardry will drain the charges of explosing-causing items
         obj->charges = 0;
         return FALSE;
     }
 
+    if (is_obj_indestructible(container) || container->oartifact > 0)
+        return FALSE;
+
     /* odds: 1/1, 2/2, 3/4, 4/8, 5/16, 6/32, 7/64, 8/128, 9/128, 10/128,... */
-    if ((Is_mbag(obj) || obj->otyp == WAN_CANCELLATION || obj->otyp == WAN_DISJUNCTION)
+    if ((Is_mbag(obj) || is_obj_mbag_destroying(obj))
         && (rn2(1 << (depthin > 7 ? 7 : depthin)) <= depthin))
+    {
         return TRUE;
+    }
     else if (Has_contents(obj)) 
     {
         struct obj *otmp;

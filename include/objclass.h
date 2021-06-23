@@ -915,6 +915,8 @@ struct objclass {
 
 #define O5_NONE                        0x00000000UL
 #define O5_TILE_IS_TILESET_DEPENDENT   0x00000001UL
+#define O5_MBAG_DESTROYING_ITEM        0x00000002UL
+#define O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN 0x00000004UL
 
 #define O6_NONE                        0x00000000UL
 
