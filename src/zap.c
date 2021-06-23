@@ -4080,7 +4080,7 @@ boolean stop_at_first_hit_object;
     for (otmp = level.objects[tx][ty]; otmp; otmp = next_obj) 
     {
         context.bhitcount++;
-        if (hit_only_one && context.bhitcount > bhitlimit)
+        if (hit_only_one && hitanything > bhitlimit)
             break;
 
         next_obj = otmp->nexthere;
