@@ -485,7 +485,7 @@ boolean resuming;
                 if (context.mv) 
                 {
                     if (multi < COLNO && !--multi)
-                        context.travel = context.travel1 = context.mv =
+                        context.travel = context.travel1 = context.travel_mode = context.mv =
                         context.run = 0;
                     domove();
                 }

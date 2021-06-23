@@ -3927,7 +3927,7 @@ boolean incr;
             if (incr && occupation
                 && (occupation != eatfood && occupation != opentin))
                 stop_occupation();
-            context.travel = context.travel1 = context.mv = context.run = 0;
+            context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
             break;
         case WEAK:
             if (Hallucination)
@@ -3947,7 +3947,7 @@ boolean incr;
             if (incr && occupation
                 && (occupation != eatfood && occupation != opentin))
                 stop_occupation();
-            context.travel = context.travel1 = context.mv = context.run = 0;
+            context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
             break;
         }
         u.uhs = newhs;

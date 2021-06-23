@@ -689,7 +689,7 @@ namespace GnollHackClient.Pages.Game
                                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
 
                                             tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
-                                            ty = (startY + offsetY + _mapOffsetY + height * (float)mapy);
+                                            ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
 
                                             SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 

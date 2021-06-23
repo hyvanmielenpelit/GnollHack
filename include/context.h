@@ -145,6 +145,9 @@ struct context_info
     short stethoscope_movement;
     boolean travel;  /* find way automatically to u.tx,u.ty */
     boolean travel1; /* first travel step */
+    uchar travel_mode;
+    unsigned tmid; /* target monster id for travel attack */
+    unsigned toid; /* target object id for travel pickup */
     boolean forcefight;
     boolean nopick; /* do not pickup objects (as when running) */
     boolean made_amulet;

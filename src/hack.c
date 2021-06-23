@@ -1632,7 +1632,41 @@ domove_core()
 
     context.hide_melee_range_warning = FALSE;
 
-    if (context.travel) {
+    if (context.travel) 
+    {
+        if (context.travel_mode == 1)
+        {
+            if (context.tmid > 0)
+            {
+                struct monst* mtmp = 0;
+                for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+                    if (mtmp->m_id == context.tmid)
+                        break;
+
+                if (mtmp && canspotmon(mtmp))
+                {
+                    u.tx = mtmp->mx;
+                    u.ty = mtmp->my;
+                }
+            }
+        }
+        else if (context.travel_mode == 2)
+        {
+            if (context.toid > 0)
+            {
+                struct obj* otmp = 0;
+                for (otmp = fobj; otmp; otmp = otmp->nobj)
+                    if (otmp->o_id == context.toid)
+                        break;
+
+                if (otmp && isok(otmp->ox, otmp->oy) && cansee(otmp->ox, otmp->oy))
+                {
+                    u.tx = otmp->ox;
+                    u.ty = otmp->oy;
+                }
+            }
+        }
+
         if (!findtravelpath(TRAVP_TRAVEL))
             (void) findtravelpath(TRAVP_GUESS);
         context.travel1 = 0;
@@ -3248,10 +3282,19 @@ lookaround()
             if ((mtmp = m_at(x, y)) != 0
                 && M_AP_TYPE(mtmp) != M_AP_FURNITURE
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
-                && (!is_invisible(mtmp) || See_invisible) && !mtmp->mundetected) {
+                && (!is_invisible(mtmp) || See_invisible) && !mtmp->mundetected) 
+            {
+                if (context.travel && context.travel_mode == 1 && !is_peaceful(mtmp) && !is_tame(mtmp) && mtmp->m_id == context.tmid)
+                {
+                    /* These settings should enable the character to attack */
+                    context.travel1 = 1;
+                    context.nopick = 0;
+                    return;
+                }
+
                 if ((context.run != 1 && !is_tame(mtmp))
-                    || (x == u.ux + u.dx && y == u.uy + u.dy
-                        && !context.travel)) {
+                    || (x == u.ux + u.dx && y == u.uy + u.dy && !context.travel))
+                {
                     if (iflags.mention_walls)
                         pline("%s blocks your path.", upstart(a_monnam(mtmp)));
                     goto stop;
@@ -3463,7 +3506,7 @@ register int nval;
     multi = nval;
     if (nval == 0)
         multi_reason = NULL;
-    context.travel = context.travel1 = context.mv = context.run = 0;
+    context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
 }
 
 /* called when a non-movement, multi-turn action has completed */
@@ -3549,7 +3592,7 @@ boolean k_format;
     deduct_player_hp(n);
 
     if(n > 0)
-        context.travel = context.travel1 = context.mv = context.run = 0;
+        context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
 
     if (u.uhp < 1) 
     {

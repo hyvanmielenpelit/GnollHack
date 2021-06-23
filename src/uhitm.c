@@ -479,7 +479,7 @@ register struct monst *mtmp;
                 buf[0] = highc(buf[0]);
                 play_sfx_sound(SFX_SOMETHING_IN_WAY);
                 You("stop.  %s is in the way!", buf);
-                context.travel = context.travel1 = context.mv = context.run
+                context.travel = context.travel1 = context.travel_mode = context.mv = context.run
                     = 0;
                 return TRUE;
             } 
@@ -487,7 +487,7 @@ register struct monst *mtmp;
             {
                 play_sfx_sound(SFX_PET_DOES_NOT_MOVE);
                 pline("%s doesn't seem to move!", Monnam(mtmp));
-                context.travel = context.travel1 = context.mv = context.run
+                context.travel = context.travel1 = context.travel_mode = context.mv = context.run
                     = 0;
                 return TRUE;
             }
