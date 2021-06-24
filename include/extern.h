@@ -349,6 +349,7 @@ E int NDECL(dozoommini);
 E int NDECL(dozoomhalf);
 E void FDECL(zoomtoscale, (double));
 E void NDECL(update_bindings_list);
+E void NDECL(create_context_menu);
 
 /* ### dbridge.c ### */
 
@@ -3748,7 +3749,7 @@ E void FDECL(genl_add_ambient_ghsound, (struct soundsource_t*));
 E void FDECL(genl_delete_ambient_ghsound, (struct soundsource_t*));
 E void FDECL(genl_set_ambient_ghsound_volume, (struct soundsource_t*));
 E void NDECL(genl_clear_context_menu);
-E void FDECL(genl_add_context_menu, (int, int, int, int, const char*, int, int));
+E void FDECL(genl_add_context_menu, (int, int, int, int, const char*, const char*, int, int));
 E void FDECL(genl_exit_hack, (int));
 
 

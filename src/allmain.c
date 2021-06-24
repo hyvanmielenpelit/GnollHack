@@ -374,6 +374,7 @@ boolean resuming;
 
         clear_splitobjs();
         update_all_character_properties((struct obj*)0, TRUE);
+        clear_context_menu();
 
         /* Redraw screen */
         if (!context.mv || Blind)

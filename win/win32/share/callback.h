@@ -119,7 +119,7 @@ typedef BooleanIntDoubleVoidPtrCallback AddAmbientSoundCallback;
 typedef BooleanVoidPtrCallback DeleteAmbientSoundCallback;
 typedef BooleanVoidPtrDoubleCallback SetAmbientVolumeCallback;
 typedef void(__callconv* ClearContextMenuCallback)(void);
-typedef void(__callconv* AddContextMenuCallback)(int, int, int, int, const char*, int, int);
+typedef void(__callconv* AddContextMenuCallback)(int, int, int, int, const char*, const char*, int, int);
 typedef void(__callconv* ExitHackCallback)(int);
 
 typedef char*(__callconv* GetCwdCallback)();

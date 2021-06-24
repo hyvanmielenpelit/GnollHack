@@ -113,7 +113,7 @@ void dll_add_ambient_ghsound(struct soundsource_t* soundsource);
 void dll_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void dll_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
 void dll_clear_context_menu(VOID_ARGS);
-void dll_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* text, int attr, int color);
+void dll_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
 void dll_exit_hack(int status);
 
 /* Helper functions */

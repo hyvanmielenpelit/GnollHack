@@ -24,7 +24,21 @@ namespace GnollHackClient
         ClearWindowView,
         DestroyWindowView,
         DisplayWindowView,
-        HideLoadingScreen
+        HideLoadingScreen,
+        ClearContextMenu,
+        AddContextMenu,
+    }
+
+    public struct AddContextMenuData
+    {
+        public int cmd_def_char;
+        public int cmd_cur_char;
+        public int dir;
+        public int glyph;
+        public string cmd_text;
+        public string target_text;
+        public int attr;
+        public int color;
     }
 
     public class GHRequest
@@ -40,6 +54,7 @@ namespace GnollHackClient
         public string Responses { get; set; }
         public List<GHPutStrItem> RequestPutStrItems { get; set; }
 
+        public AddContextMenuData ContextMenuData { get; set; }
         public GHRequest()
         {
 
@@ -95,6 +110,12 @@ namespace GnollHackClient
             RequestType = requesttype;
             RequestString = requeststring;
             Responses = responses;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, AddContextMenuData data)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            ContextMenuData = data;
         }
     }
 }

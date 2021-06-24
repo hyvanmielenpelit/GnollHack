@@ -6393,6 +6393,8 @@ register char *cmd;
     boolean prefix_seen, bad_command,
         firsttime = (cmd == 0);
 
+    create_context_menu();
+
     iflags.menu_requested = FALSE;
 #ifdef SAFERHANGUP
     if (program_state.done_hup)
@@ -7269,7 +7271,7 @@ boolean doit;
         || (u.ux == sstairs.sx && u.uy == sstairs.sy && !sstairs.up)
         || (u.ux == xdnladder && u.uy == ydnladder)) {
         Sprintf(buf, "Go down the %s",
-                (u.ux == xupladder && u.uy == yupladder)
+                (u.ux == xdnladder && u.uy == ydnladder)
                 ? "ladder" : "stairs");
         add_herecmd_menuitem(win, dodown, buf);
     }
@@ -8152,6 +8154,63 @@ dolight(VOID_ARGS)
     }
 
     return 0;
+}
+
+void
+create_context_menu(VOID_ARGS)
+{
+    clear_context_menu();
+
+    if (!isok(u.ux, u.uy))
+        return;
+
+    struct obj* otmp = level.objects[u.ux][u.uy];
+    if (otmp)
+    {
+        add_context_menu(',', cmd_from_func(dopickup), 0, otmp->glyph, "Pick up", cxname(otmp), 0, NO_COLOR);
+
+        if (is_edible(otmp))
+        {
+            add_context_menu('e', cmd_from_func(doeat), 0, otmp->glyph, "Eat", cxname(otmp), 0, NO_COLOR);
+        }
+
+        if (Is_container(otmp))
+        {
+            add_context_menu('l', cmd_from_func(doloot), 0, otmp->glyph, "Loot", cxname(otmp), 0, NO_COLOR);
+        }
+    }
+
+    struct rm* lev = &levl[u.ux][u.uy];
+    if (IS_ALTAR(lev->typ))
+    {
+        add_context_menu('D', cmd_from_func(doddrop), 0, back_to_glyph(u.ux, u.uy), "Drop many", 0, 0, NO_COLOR);
+        add_context_menu(M('o'), cmd_from_func(dosacrifice), 0, back_to_glyph(u.ux, u.uy), "Offer", 0, 0, NO_COLOR);
+        add_context_menu(M('p'), cmd_from_func(dopray), 0, back_to_glyph(u.ux, u.uy), "Pray", 0, 0, NO_COLOR);
+    }
+    else if (IS_FOUNTAIN(lev->typ) || IS_SINK(lev->typ))
+    {
+        add_context_menu('q', cmd_from_func(dodrink), 0, back_to_glyph(u.ux, u.uy), "Drop many", 0, 0, NO_COLOR);
+        add_context_menu(M('d'), cmd_from_func(dodip), 0, back_to_glyph(u.ux, u.uy), "Dip", 0, 0, NO_COLOR);
+    }
+    else if (IS_THRONE(lev->typ))
+    {
+        add_context_menu(C('s'), cmd_from_func(dosit), 0, back_to_glyph(u.ux, u.uy), "Sit", "on throne", 0, NO_COLOR);
+    }
+    else if ((u.ux == xupstair && u.uy == yupstair)
+        || (u.ux == sstairs.sx && u.uy == sstairs.sy && sstairs.up)
+        || (u.ux == xupladder && u.uy == yupladder)) 
+    {
+        add_context_menu('<', cmd_from_func(doup), 0, back_to_glyph(u.ux, u.uy), "Go up", 
+            (u.ux == xupladder && u.uy == yupladder) ? "ladder" : "stairs", 0, NO_COLOR);
+    }
+    else if ((u.ux == xdnstair && u.uy == ydnstair)
+        || (u.ux == sstairs.sx && u.uy == sstairs.sy && !sstairs.up)
+        || (u.ux == xdnladder && u.uy == ydnladder)) 
+    {
+        add_context_menu('>', cmd_from_func(dodown), 0, back_to_glyph(u.ux, u.uy), "Go down",
+            (u.ux == xdnladder && u.uy == ydnladder) ? "ladder" : "stairs", 0, NO_COLOR);
+    }
+
 }
 
 /*cmd.c*/

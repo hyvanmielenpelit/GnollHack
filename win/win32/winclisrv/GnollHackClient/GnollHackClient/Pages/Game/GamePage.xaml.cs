@@ -90,6 +90,9 @@ namespace GnollHackClient.Pages.Game
 
         public bool EnableWizardMode { get; set; }
 
+        private int _numContextButtons;
+        private int _maxContextButtons = 10;
+
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
@@ -202,6 +205,26 @@ namespace GnollHackClient.Pages.Game
             MainGrid.IsVisible = true;
         }
 
+        public void ClearContextMenu()
+        {
+            ContextGrid.Children.Clear();
+            ContextGrid.IsVisible = false;
+        }
+        public void AddContextMenu(AddContextMenuData data)
+        {
+            Button contextButton = new Button();
+            contextButton.Text = data.cmd_text;
+            contextButton.TextColor = Color.White;
+            contextButton.FontFamily = "Immortal";
+            contextButton.CornerRadius = 10;
+            contextButton.FontSize = 20;
+            contextButton.BackgroundColor = Color.DarkBlue;
+            contextButton.HeightRequest = 50;
+            Grid.SetRow(contextButton, ContextGrid.Children.Count);
+            ContextGrid.Children.Add(contextButton);
+            ContextGrid.IsVisible = true;
+        }
+
         public int TileSheetIdx(int ntile)
         {
             return (Math.Min(UsedTileSheets - 1, Math.Max(0, (ntile / GHConstants.NumberOfTilesPerSheet))));
@@ -295,6 +318,12 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.HideLoadingScreen:
                                 HideLoadingScreen();
+                                break;
+                            case GHRequestType.ClearContextMenu:
+                                ClearContextMenu();
+                                break;
+                            case GHRequestType.AddContextMenu:
+                                AddContextMenu(req.ContextMenuData);
                                 break;
                         }
                     }

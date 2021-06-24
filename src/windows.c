@@ -343,7 +343,7 @@ genl_clear_context_menu(VOID_ARGS)
 }
 
 void
-genl_add_context_menu(int cmd_def_char UNUSED, int cmd_cur_char UNUSED, int dir UNUSED, int glyph UNUSED, const char* text UNUSED, int attr UNUSED, int color UNUSED)
+genl_add_context_menu(int cmd_def_char UNUSED, int cmd_cur_char UNUSED, int dir UNUSED, int glyph UNUSED, const char* cmd_text UNUSED, const char* target_text UNUSED, int attr UNUSED, int color UNUSED)
 {
     return;
 }
