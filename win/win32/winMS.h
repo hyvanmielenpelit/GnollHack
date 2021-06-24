@@ -46,9 +46,6 @@
 #define MAXWINDOWS 15
 #endif
 
-#define NHW_RIP 32
-#define NHW_INVEN 33
-
 /* tile background color */
 #define TILE_BK_COLOR RGB(TILE_BK_COLOR_RED, TILE_BK_COLOR_GREEN, TILE_BK_COLOR_BLUE)
 

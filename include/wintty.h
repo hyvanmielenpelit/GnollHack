@@ -89,12 +89,6 @@ struct tty_status_fields {
 
 #define MAXWIN 20 /* maximum number of windows, cop-out */
 
-/* tty dependent window types */
-#ifdef NHW_BASE
-#undef NHW_BASE
-#endif
-#define NHW_BASE 6
-
 extern struct window_procs tty_procs;
 
 /* port specific variable declarations */

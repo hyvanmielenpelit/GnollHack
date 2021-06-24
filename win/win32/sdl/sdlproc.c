@@ -1021,7 +1021,7 @@ sdl_putstr(winid wid, int attr, const char *text)
 {
     logDebug("sdl_putstr(%d, %d, %s)\n", wid, attr, text);
 
-    sdl_putstr_ex(wid, attr, text, 0);
+    sdl_putstr_ex(wid, attr, text, 0, 0);
 }
 
 void

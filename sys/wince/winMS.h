@@ -43,10 +43,6 @@
 #define MAXWINDOWS 15
 #endif
 
-/* RIP window ID */
-#define NHW_RIP 32
-#define NHW_KEYPAD 33
-
 /* size of tiles */
 #ifndef TILE_X
 #define TILE_X 16

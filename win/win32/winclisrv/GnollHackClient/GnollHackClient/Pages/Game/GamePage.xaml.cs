@@ -788,6 +788,18 @@ namespace GnollHackClient.Pages.Game
                             width = textPaint.FontMetrics.AverageCharacterWidth;
                             height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
 
+                            if(_clientGame.Windows[i].AutoPlacement)
+                            {
+                                if(_clientGame.Windows[i].WindowType == GHWinType.Here)
+                                {
+                                    float newleft = 0;
+                                    float messagetop = canvasheight * (float)(MessageHistoryView.Y / canvasView.Height);
+                                    float newtop = messagetop - _clientGame.Windows[i].Height - 10;
+                                    _clientGame.Windows[i].Left = newleft;
+                                    _clientGame.Windows[i].Top = newtop;
+                                }
+                            }
+
                             SKRect winRect = new SKRect(_clientGame.Windows[i].Left, _clientGame.Windows[i].Top,
                                 _clientGame.Windows[i].Right,
                                 _clientGame.Windows[i].Bottom);
@@ -953,6 +965,7 @@ namespace GnollHackClient.Pages.Game
             }
 
 
+
             /* RawPrint */
             /*
             lock(MessageLock)
@@ -967,6 +980,24 @@ namespace GnollHackClient.Pages.Game
             canvas.DrawText(str, xText, yText, textPaint);
             */
 
+        }
+
+        private double _currentPageWidth = 0;
+        private double _currentPageHeight = 0;
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if(width != _currentPageWidth || height != _currentPageHeight)
+            {
+                _currentPageWidth = width;
+                _currentPageHeight = height;
+
+                if (width > height)
+                    ButtonRowStack.Orientation = StackOrientation.Horizontal;
+                else
+                    ButtonRowStack.Orientation = StackOrientation.Vertical;
+            }
         }
 
         protected void ConnectToServer()

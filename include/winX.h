@@ -224,8 +224,6 @@ struct xwindow {
 
 #define MAX_WINDOWS 20 /* max number of open windows */
 
-#define NHW_NONE 0 /* Unallocated window type.  Must be    */
-                   /* different from any other NHW_* type. */
 
 #define NO_CLICK 0 /* No click occurred on the map window. Must */
                    /* be different than CLICK_1 and CLICK_2.    */

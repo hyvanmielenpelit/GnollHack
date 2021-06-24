@@ -210,10 +210,10 @@ MacFlags macFlags;
  */
 Boolean small_screen = 0;
 
-#ifdef NHW_BASE
-#undef NHW_BASE
-#endif
-#define NHW_BASE 0
+//#ifdef NHW_BASE
+//#undef NHW_BASE
+//#endif
+//#define NHW_BASE 0
 
 static int FDECL(filter_scroll_key, (const int, NhWindow *));
 

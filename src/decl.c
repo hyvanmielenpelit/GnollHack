@@ -385,7 +385,8 @@ NEARDATA float hearing_array[COLNO][ROWNO] = { { 0 } };
 /* Global windowing data, defined here for multi-window-system support */
 NEARDATA winid WIN_MESSAGE = WIN_ERR;
 NEARDATA winid WIN_STATUS = WIN_ERR;
-NEARDATA winid WIN_MAP = WIN_ERR, WIN_INVEN = WIN_ERR;
+NEARDATA winid WIN_MAP = WIN_ERR, WIN_INVEN = WIN_ERR, WIN_HERE = WIN_ERR;
+
 char toplines[TBUFSZ];
 /* Windowing stuff that's really tty oriented, but present for all ports */
 struct tc_gbl_data tc_gbl_data = { 0, 0, 0, 0 }; /* AS,AE, LI,CO */

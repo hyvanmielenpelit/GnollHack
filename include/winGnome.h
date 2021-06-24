@@ -12,7 +12,6 @@ E struct window_procs Gnome_procs;
 
 #undef E
 
-#define NHW_WORN 6
 extern winid WIN_WORN;
 
 #endif /* WINGNOME_H */

@@ -2627,6 +2627,11 @@ boolean pick;
                 }
             }
         }
+
+        /* Clear here window now */
+        if (WIN_HERE != WIN_ERR)
+            clear_nhwindow(WIN_HERE);
+
         /*
          * If not a pit, pickup before triggering trap.
          * If pit, trigger trap before pickup.

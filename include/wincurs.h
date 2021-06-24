@@ -18,7 +18,7 @@ extern boolean counting;           /* Count window is active        */
 extern WINDOW *mapwin, *statuswin, *messagewin;    /* Main windows  */
 
 #define TEXTCOLOR   /* Allow color */
-#define NHW_END 19
+//#define NHW_END 19
 #define OFF 0
 #define ON 1
 #define NONE -1

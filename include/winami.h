@@ -115,8 +115,6 @@ typedef struct WEVENT {
 /* port specific variable declarations */
 extern winid WIN_BASE;
 extern winid WIN_OVER;
-#define NHW_BASE 6
-#define NHW_OVER 7 /* overview window */
 
 extern struct amii_WinDesc *amii_wins[MAXWIN + 1];
 

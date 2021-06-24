@@ -16,6 +16,14 @@ namespace GnollHackClient
         Map,
         Menu,
         Text,
+        Base,
+        Overview,
+        Worn,
+        Here,
+        Reserved,
+        Inventory,
+        RIP,
+        Keypad
     }
 
     public class GHPadding
@@ -50,6 +58,48 @@ namespace GnollHackClient
         public bool CenterHorizontally { get; set; }
         public GHWinType WindowType { get { return _winType; } }
         public GamePage ClientGamePage { get { return _gamePage; } }
+        public bool AutoPlacement { get; set; }
+        public bool AutoCarriageReturn
+        {
+            get
+            {
+                bool res = (WindowPrintStyle == GHWindowPrintLocations.PrintToWindow);
+                switch (_winType)
+                {
+                    case GHWinType.None:
+                        break;
+                    case GHWinType.Message:
+                        break;
+                    case GHWinType.Status:
+                        break;
+                    case GHWinType.Map:
+                        break;
+                    case GHWinType.Menu:
+                        break;
+                    case GHWinType.Text:
+                        break;
+                    case GHWinType.Base:
+                        break;
+                    case GHWinType.Overview:
+                        break;
+                    case GHWinType.Worn:
+                        break;
+                    case GHWinType.Here:
+                        res = true;
+                        break;
+                    case GHWinType.Reserved:
+                        break;
+                    case GHWinType.Inventory:
+                        break;
+                    case GHWinType.RIP:
+                        break;
+                    case GHWinType.Keypad:
+                        break;
+                }
+
+                return res;
+            }
+        }
         public int WindowID { get { return _winId; } }
 
         private List<GHPutStrItem> _putStrs = new List<GHPutStrItem>();
@@ -65,14 +115,54 @@ namespace GnollHackClient
         public int WidthInChars { get { return _width; } }
         public int HeightInChars { get { return _height; } }
         public GHWindowPrintLocations WindowPrintStyle 
-        { get { 
-                return (_winType == GHWinType.Message ? GHWindowPrintLocations.RawPrint : _winType == GHWinType.Map || _winType == GHWinType.Status ? GHWindowPrintLocations.PrintToMap : GHWindowPrintLocations.PrintToWindow);
-              } 
+        { get {
+                GHWindowPrintLocations res = GHWindowPrintLocations.PrintToWindow;
+                switch (_winType)
+                {
+                    case GHWinType.None:
+                        break;
+                    case GHWinType.Message:
+                        res = GHWindowPrintLocations.RawPrint;
+                        break;
+                    case GHWinType.Status:
+                        res = GHWindowPrintLocations.PrintToMap;
+                        break;
+                    case GHWinType.Map:
+                        res = GHWindowPrintLocations.PrintToMap;
+                        break;
+                    case GHWinType.Menu:
+                        break;
+                    case GHWinType.Text:
+                        break;
+                    case GHWinType.Base:
+                        break;
+                    case GHWinType.Overview:
+                        break;
+                    case GHWinType.Worn:
+                        break;
+                    case GHWinType.Here:
+                        res = GHWindowPrintLocations.PrintToMap;
+                        break;
+                    case GHWinType.Reserved:
+                        break;
+                    case GHWinType.Inventory:
+                        break;
+                    case GHWinType.RIP:
+                        break;
+                    case GHWinType.Keypad:
+                        break;
+                }
+
+                return res;
+            }
         }
         public float Left { get; set; }
         public float Top { get; set; }
         public float Right { get { return Left + _pixelWidth; } }
         public float Bottom { get { return Top + _pixelHeight; } }
+        public float Width { get { return _pixelHeight; } }
+        public float Height { get { return _pixelHeight; } }
+
         private float _pixelWidth = 0;
         private float _pixelHeight = 0;
 
@@ -101,7 +191,6 @@ namespace GnollHackClient
             TextColor = SKColors.White;
             TextSize = 42;
             BackgroundColor = SKColors.Transparent;
-            StrokeWidth = 1.5f;
             switch (_winType)
             {
                 case GHWinType.None:
@@ -115,6 +204,7 @@ namespace GnollHackClient
                     //BackgroundColor = TransparentBlack;
                     TextSize = 30;
                     Typeface = App.LatoBold;
+                    StrokeWidth = 1.5f;
                     Left = 0;
                     Top = 0;
                     break;
@@ -137,6 +227,26 @@ namespace GnollHackClient
                     Left = 0;
                     Top = 150;
                     CenterHorizontally = true;
+                    break;
+                case GHWinType.Base:
+                    break;
+                case GHWinType.Overview:
+                    break;
+                case GHWinType.Worn:
+                    break;
+                case GHWinType.Here:
+                    TextSize = 36;
+                    Typeface = App.LatoBold;
+                    StrokeWidth = 1.5f;
+                    AutoPlacement = true;
+                    break;
+                case GHWinType.Reserved:
+                    break;
+                case GHWinType.Inventory:
+                    break;
+                case GHWinType.RIP:
+                    break;
+                case GHWinType.Keypad:
                     break;
             }
 
@@ -310,7 +420,7 @@ namespace GnollHackClient
 
                     PutStrs[CursY].ConvertCurrentListFromArrays(curattrs, curclrs);
 
-                    if (WindowPrintStyle == GHWindowPrintLocations.PrintToWindow)
+                    if (AutoCarriageReturn)
                     {
                         CursY++;
                         CursX = 0;

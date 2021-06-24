@@ -73,12 +73,26 @@ typedef struct mi {
 #define PICK_ANY 2  /* can pick any amount */
 
 /* window types */
-/* any additional port specific types should be defined in win*.h */
+/* OBSOLETE (all collected here): any additional port specific types should be defined in win*.h */
+#define NHW_NONE 0 /* Unallocated window type.  Must be    */
+                   /* different from any other NHW_* type. From winX.h */
+
 #define NHW_MESSAGE 1
 #define NHW_STATUS 2
 #define NHW_MAP 3
 #define NHW_MENU 4
 #define NHW_TEXT 5
+
+/* Added in GnollHack */
+#define NHW_BASE 6
+#define NHW_OVER 7 /* overview window; from amiga */
+#define NHW_WORN 8 /* from winGnome.h, changed from 6 to 8 */
+#define NHW_HERE 9 /* Window for "things that are here" */
+
+/* From winMS.h in WinCE and WinMS */
+#define NHW_INVEN 11   /* originally 33 */
+#define NHW_RIP 12     /* originally 32 */
+#define NHW_KEYPAD 13  /* originally 33 */
 
 /* attribute types for putstr; the same as the ANSI value, for convenience */
 #define ATR_NONE       0

@@ -5465,7 +5465,9 @@ boolean picked_some;
     }
     /* we know there is something here */
 
-    if (skip_objects) {
+    boolean obj_msg_done = FALSE;
+    if (skip_objects)
+    {
         if (dfeature)
             pline1(fbuf);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
@@ -5501,7 +5503,11 @@ boolean picked_some;
                 feel_cockatrice(otmp, FALSE);
                 break;
             }
-    } else if (!otmp->nexthere) {
+
+        obj_msg_done = TRUE;
+    } 
+    else if (!otmp->nexthere) 
+    {
         /* only one object */
         if (dfeature)
             pline1(fbuf);
@@ -5510,14 +5516,41 @@ boolean picked_some;
         iflags.last_msg = PLNMSG_ONE_ITEM_HERE;
         if (otmp->otyp == CORPSE)
             feel_cockatrice(otmp, FALSE);
-    } else {
+
+        obj_msg_done = TRUE;
+    }
+
+
+    if(!obj_msg_done || WIN_HERE != WIN_ERR)
+    {
         char buf[BUFSZ];
         char buf2[BUFSZ];
         int count = 0;
         int totalweight = 0;
 
+        int total_count = 0;
+        for (struct obj* otmp_cnt = otmp; otmp_cnt; otmp_cnt = otmp_cnt->nexthere) 
+            total_count++;
+
         display_nhwindow(WIN_MESSAGE, FALSE);
-        tmpwin = create_nhwindow(NHW_MENU);
+
+        boolean use_menu_win = (WIN_HERE == WIN_ERR || total_count > HERE_WINDOW_MAX_SIZE);
+
+        if (use_menu_win)
+        {
+            tmpwin = create_nhwindow(NHW_MENU);
+            if (WIN_HERE != WIN_ERR)
+            {
+                clear_nhwindow(WIN_HERE);
+                putstr(WIN_HERE, 0, "There are many objects here.");
+            }
+        }
+        else
+        {
+            tmpwin = WIN_HERE;
+            clear_nhwindow(tmpwin);
+        }
+
         if (dfeature) {
             putstr(tmpwin, 0, fbuf);
             putstr(tmpwin, 0, "");
@@ -5543,11 +5576,15 @@ boolean picked_some;
             putstr(tmpwin, 0, buf2);
         }
 
-        if (flags.show_weight_summary)
+        if (flags.show_weight_summary && use_menu_win)
             add_weight_summary_putstr(tmpwin, totalweight, 1);
 
-        display_nhwindow(tmpwin, TRUE);
-        destroy_nhwindow(tmpwin);
+        if (use_menu_win)
+        {
+            display_nhwindow(tmpwin, TRUE);
+            destroy_nhwindow(tmpwin);
+        }
+
         if (felt_cockatrice)
             feel_cockatrice(otmp, FALSE);
         read_engr_at(u.ux, u.uy); /* Eric Backus */

@@ -42,7 +42,11 @@ enum window_option_types {
     TEXT_OPTION
 };
 
+#ifdef GNH_ANDROID
+#define PILE_LIMIT_DFLT (HERE_WINDOW_MAX_SIZE + 1)
+#else
 #define PILE_LIMIT_DFLT 5
+#endif
 
 /*
  *  NOTE:  If you add (or delete) an option, please update the short

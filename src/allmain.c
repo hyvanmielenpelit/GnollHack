@@ -374,6 +374,8 @@ boolean resuming;
 
         clear_splitobjs();
         update_all_character_properties((struct obj*)0, TRUE);
+
+        /* Clear context-dependent UI */
         clear_context_menu();
 
         /* Redraw screen */
@@ -975,6 +977,10 @@ display_gamewindows()
        ever having been used, use it here to pacify the Qt interface */
     start_menu(WIN_INVEN), end_menu(WIN_INVEN, (char *) 0);
 
+#ifdef GNH_ANDROID
+    WIN_HERE = create_nhwindow(NHW_HERE);
+#endif
+
 #ifdef MAC
     /* This _is_ the right place for this - maybe we will
      * have to split display_gamewindows into create_gamewindows
@@ -994,6 +1000,10 @@ display_gamewindows()
     display_nhwindow(WIN_MESSAGE, FALSE);
     clear_glyph_buffer();
     display_nhwindow(WIN_MAP, FALSE);
+
+#ifdef GNH_ANDROID
+    display_nhwindow(WIN_HERE, FALSE);
+#endif
 }
 
 const char*
