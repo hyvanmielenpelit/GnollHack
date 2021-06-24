@@ -972,7 +972,7 @@ struct encounterdef encounter_definitions[] =
     {
         {
             /* Monster 1 */
-            { { { PM_UNDERWORLD_HULK, 2, 2, 0, 0, 100, NOMONSTERITEMS },
+            { { { PM_UMBRAL_HULK, 2, 2, 0, 0, 100, NOMONSTERITEMS },
             NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
             NORANDOMIZEDMONSTER,
             NORANDOMIZEDMONSTER,

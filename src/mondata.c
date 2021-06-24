@@ -1040,7 +1040,7 @@ int* fem_ptr;
             { "master mindflayer", PM_ELDER_TENTACLED_ONE, 0 },
             { "mind flayer", PM_TENTACLED_ONE, 0 },
             { "master mind flayer", PM_ELDER_TENTACLED_ONE, 0 },
-            { "umber hulk", PM_UNDERWORLD_HULK, 0 },
+            { "umber hulk", PM_UMBRAL_HULK, 0 },
             /* More alternates; priest and priestess are separate monster
                types but that isn't the case for {aligned,high} priests */
             { "aligned priestess", PM_ALIGNED_PRIEST, 2 },

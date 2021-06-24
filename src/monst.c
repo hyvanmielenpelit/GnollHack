@@ -3785,7 +3785,7 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
     /*
      * Underworld hulk and otyugh
      */
-    MON("underworld hulk", None, "large tunneling humanoid with confusing gaze", None, None, S_UNDER, LVL(9, 6, 2, 12, 0, -9), (G_GENO | 2),
+    MON("umbral hulk", None, "large tunneling humanoid with confusing gaze", None, None, S_UNDER, LVL(9, 6, 2, 12, 0, -9), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_BITE, AD_PHYS, 2, 5, 0, 0, 0, 0, 0UL, 0), ATTK(AT_GAZE, AD_CONF, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),

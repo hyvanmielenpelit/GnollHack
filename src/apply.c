@@ -1230,7 +1230,7 @@ struct obj *obj;
             } 
             else if (youmonst.data->mlet == S_VAMPIRE)
                 You("don't have a reflection.");
-            else if (u.umonnum == PM_UNDERWORLD_HULK)
+            else if (u.umonnum == PM_UMBRAL_HULK)
             {
                 pline("Huh?  That doesn't look like you!");
                 if (!Confusion)
@@ -1346,7 +1346,7 @@ struct obj *obj;
             You_hear("%s stop moving.", something);
         paralyze_monst(mtmp, (int) mtmp->mfrozen + tmp, FALSE);
     } 
-    else if (monable && mtmp->data == &mons[PM_UNDERWORLD_HULK]) 
+    else if (monable && mtmp->data == &mons[PM_UMBRAL_HULK]) 
     {
         if (vis)
             pline("%s confuses itself!", Monnam(mtmp));
