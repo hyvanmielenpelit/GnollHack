@@ -4318,7 +4318,7 @@ unsigned long mmflags;
         return (struct monst*)0;
     }
 
-    int roll, trycnt = 0, n = level.flags.nmgeninfos, sel_index = -1;
+    int roll, trycnt = 0, sel_index = -1;
     struct monst* mtmp = 0;
     do
     {

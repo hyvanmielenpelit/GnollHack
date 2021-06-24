@@ -1638,15 +1638,15 @@ domove_core()
         {
             if (context.tmid > 0)
             {
-                struct monst* mtmp = 0;
-                for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
-                    if (mtmp->m_id == context.tmid)
+                struct monst* tmtmp = 0;
+                for (tmtmp = fmon; tmtmp; tmtmp = tmtmp->nmon)
+                    if (tmtmp->m_id == context.tmid)
                         break;
 
-                if (mtmp && canspotmon(mtmp))
+                if (tmtmp && canspotmon(tmtmp))
                 {
-                    u.tx = mtmp->mx;
-                    u.ty = mtmp->my;
+                    u.tx = tmtmp->mx;
+                    u.ty = tmtmp->my;
                 }
             }
         }

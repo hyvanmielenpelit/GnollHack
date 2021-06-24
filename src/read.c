@@ -1880,7 +1880,7 @@ boolean *effect_happened_ptr;
         if (otmp->enchantment > max_ench)
         {
             play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
-            pline(ATR_NONE, CLR_MSG_WARNING, "%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
                 Blind ? "again" : "unexpectedly");
         }
 

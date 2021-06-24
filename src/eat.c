@@ -248,7 +248,7 @@ struct obj *food;
     if (Breathless || (!Strangled && !rn2(20))) {
         /* choking by eating AoS doesn't involve stuffing yourself */
         if (food && food->otyp == AMULET_OF_STRANGULATION) {
-            You(ATR_NONE, CLR_MSG_WARNING, "choke, but recover your composure.");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "choke, but recover your composure.");
             return;
         }
         You("stuff yourself and then vomit voluminously.");

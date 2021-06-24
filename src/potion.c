@@ -416,7 +416,7 @@ boolean talk;
         if (talk) 
         {
             if (Hallucination)
-                pline(ATR_NONE, CLR_MSG_POSITIVE, "Far out!  Everything is all cosmic again!");
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Far out!  Everything is all cosmic again!");
             else
                 You_ex(ATR_NONE, CLR_MSG_POSITIVE, "can see again.");
         }
@@ -642,7 +642,7 @@ ghost_from_bottle()
         return;
     }
     if (Blind) {
-        pline(ATR_NONE, CLR_MSG_WARNING, "As you open the bottle, %s emerges.", something);
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "As you open the bottle, %s emerges.", something);
         return;
     }
     pline_ex(ATR_NONE, CLR_MSG_WARNING, "As you open the bottle, an enormous %s emerges!",

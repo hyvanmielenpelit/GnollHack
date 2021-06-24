@@ -1872,9 +1872,9 @@ int oldlevel, newlevel;
             u.uprops[abil->propid].intrinsic &= ~mask;
             if (!(u.uprops[abil->propid].intrinsic & INTRINSIC)) {
                 if (*(abil->losestr))
-                    You_feel_ex(CLR_MSG_NEGATIVE, "%s!", abil->losestr);
+                    You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", abil->losestr);
                 else if (*(abil->gainstr))
-                    You_feel_ex(CLR_MSG_NEGATIVE, "less %s!", abil->gainstr);
+                    You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "less %s!", abil->gainstr);
             }
         }
         if (prevabil != u.uprops[abil->propid].intrinsic) /* it changed */

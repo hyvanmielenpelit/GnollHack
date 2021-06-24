@@ -768,7 +768,7 @@ int spellnum;
         {
             if (Hallucination)
             {
-                You(ATR_NONE, CLR_MSG_WARNING, "have an out of body experience.");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "have an out of body experience.");
             }
             else
             {
