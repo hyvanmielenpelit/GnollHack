@@ -732,6 +732,21 @@ namespace GnollHackClient
             }
         }
 
+        public void ClientCallback_ClearContextMenu()
+        {
+
+        }
+
+        public void ClientCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, string text, int attr, int color)
+        {
+
+        }
+
+
+
+
+
+
         /* Dummies */
         public void ClientCallback_VoidVoidDummy()
         {

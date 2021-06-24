@@ -85,5 +85,7 @@ namespace GnollHackCommon
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void FreeMemoryCallback(ref IntPtr ptr);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void AddContextMenuCallback(int value1, int value2, int value3, int value4, string value5, int value6, int value7);
 
 }

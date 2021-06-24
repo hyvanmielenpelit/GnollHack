@@ -116,6 +116,8 @@ struct window_procs safe_procs = {
     safe_add_ambient_ghsound,
     safe_delete_ambient_ghsound,
     safe_set_ambient_ghsound_volume,
+    safe_clear_context_menu,
+    safe_add_context_menu,
     safe_exit_hack,
 };
 
@@ -525,6 +527,17 @@ safe_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
     return;
 }
 
+void
+safe_clear_context_menu(VOID_ARGS)
+{
+    return;
+}
+
+void
+safe_add_context_menu(int cmd_def_char UNUSED, int cmd_cur_char UNUSED, int dir UNUSED, int glyph UNUSED, const char* text UNUSED, int attr UNUSED, int color UNUSED)
+{
+    return;
+}
 void
 safe_exit_hack(status)
 int status;

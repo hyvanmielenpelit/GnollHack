@@ -111,6 +111,8 @@ struct window_procs dll_procs = {
     dll_add_ambient_ghsound,
     dll_delete_ambient_ghsound,
     dll_set_ambient_ghsound_volume,
+    dll_clear_context_menu,
+    dll_add_context_menu,
     dll_exit_hack,
 };
 
@@ -2858,6 +2860,17 @@ dll_exit_hack(int status)
     dll_callbacks.callback_exit_hack(status);
 }
 
+void
+dll_clear_context_menu(VOID_ARGS)
+{
+    return;
+}
+
+void
+dll_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* text, int attr, int color)
+{
+    return;
+}
 
 void
 set_wincaps(wincap1, wincap2)

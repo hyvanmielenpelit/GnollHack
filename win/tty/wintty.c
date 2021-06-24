@@ -151,6 +151,8 @@ struct window_procs tty_procs = {
     genl_add_ambient_ghsound,
     genl_delete_ambient_ghsound,
     genl_set_ambient_ghsound_volume,
+    genl_clear_context_menu,
+    genl_add_context_menu,
     genl_exit_hack,
 };
 

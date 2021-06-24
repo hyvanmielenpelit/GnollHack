@@ -93,7 +93,8 @@ STATIC_DCL void FDECL(dump_putstr_ex, (winid, int, const char *, int, int));
 #ifdef HANGUPHANDLING
 volatile
 #endif
-    NEARDATA struct window_procs windowprocs;
+
+NEARDATA struct window_procs windowprocs;
 
 #ifdef WINCHAIN
 #define CHAINR(x) , x
@@ -331,6 +332,18 @@ genl_delete_ambient_ghsound(struct soundsource_t* soundsource UNUSED)
 
 void
 genl_set_ambient_ghsound_volume(struct soundsource_t* soundsource UNUSED)
+{
+    return;
+}
+
+void
+genl_clear_context_menu(VOID_ARGS)
+{
+    return;
+}
+
+void
+genl_add_context_menu(int cmd_def_char UNUSED, int cmd_cur_char UNUSED, int dir UNUSED, int glyph UNUSED, const char* text UNUSED, int attr UNUSED, int color UNUSED)
 {
     return;
 }

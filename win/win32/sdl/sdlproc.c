@@ -131,6 +131,8 @@ struct window_procs nuklear_procs = {
     sdl_add_ambient_ghsound,
     sdl_delete_ambient_ghsound,
     sdl_set_ambient_ghsound_volume,
+    sdl_clear_context_menu,
+    sdl_add_context_menu,
     sdl_exit_hack,
 };
 
@@ -3628,4 +3630,16 @@ void
 sdl_exit_hack(int status)
 {
     sdl_exit_platform(EXIT_SUCCESS);
+}
+
+void
+sdl_clear_context_menu(VOID_ARGS)
+{
+    return;
+}
+
+void
+sdl_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* text, int attr, int color)
+{
+    return;
 }

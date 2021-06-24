@@ -118,6 +118,8 @@ typedef BooleanDoubleDoubleDoubleDoubleDoubleCallback AdjustGeneralVolumesCallba
 typedef BooleanIntDoubleVoidPtrCallback AddAmbientSoundCallback;
 typedef BooleanVoidPtrCallback DeleteAmbientSoundCallback;
 typedef BooleanVoidPtrDoubleCallback SetAmbientVolumeCallback;
+typedef void(__callconv* ClearContextMenuCallback)(void);
+typedef void(__callconv* AddContextMenuCallback)(int, int, int, int, const char*, int, int);
 typedef void(__callconv* ExitHackCallback)(int);
 
 typedef char*(__callconv* GetCwdCallback)();
@@ -202,6 +204,8 @@ struct callback_procs {
     AddAmbientSoundCallback callback_add_ambient_ghsound;
     DeleteAmbientSoundCallback callback_delete_ambient_ghsound;
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume;
+    ClearContextMenuCallback callback_clear_context_menu;
+    AddContextMenuCallback callback_add_context_menu;
     ExitHackCallback callback_exit_hack;
 
     GetCwdCallback callback_getcwd;

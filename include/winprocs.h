@@ -103,6 +103,8 @@ struct window_procs {
     void FDECL((*win_add_ambient_ghsound), (sound_source*));
     void FDECL((*win_delete_ambient_ghsound), (sound_source*));
     void FDECL((*win_set_ambient_ghsound_volume), (sound_source*));
+    void NDECL((*win_clear_context_menu));
+    void FDECL((*win_add_context_menu), (int, int, int, int, const char*, int, int));
     void FDECL((*win_exit_hack), (int));
 };
 
@@ -207,6 +209,8 @@ extern
 #define add_ambient_ghsound (*windowprocs.win_add_ambient_ghsound)
 #define delete_ambient_ghsound (*windowprocs.win_delete_ambient_ghsound)
 #define set_ambient_ghsound_volume (*windowprocs.win_set_ambient_ghsound_volume)
+#define clear_context_menu (*windowprocs.win_clear_context_menu)
+#define add_context_menu (*windowprocs.win_add_context_menu)
 #define exit_hack (*windowprocs.win_exit_hack)
 
 /*
@@ -450,6 +454,8 @@ struct chain_procs {
     void FDECL((*win_add_ambient_ghsound), (CARGS, sound_source*));
     void FDECL((*win_delete_ambient_ghsound), (CARGS, sound_source*));
     void FDECL((*win_set_ambient_ghsound_volume), (CARGS, sound_source*));
+    void FDECL((*win_clear_context_menu, (CARGS))));
+    void FDECL((*win_add_context_menu, (CARGS, int, int, int, int, const char*, int, int))));
     void FDECL((*win_exit_hack, (CARGS, int))));
 };
 #endif /* WINCHAIN */
@@ -541,6 +547,8 @@ extern void NDECL(safe_adjust_ghsound_general_volumes);
 extern void FDECL(safe_add_ambient_ghsound, (struct soundsource_t*));
 extern void FDECL(safe_delete_ambient_ghsound, (struct soundsource_t*));
 extern void FDECL(safe_set_ambient_ghsound_volume, (struct soundsource_t*));
+extern void NDECL(safe_clear_context_menu);
+extern void FDECL(safe_add_context_menu, (int, int, int, int, const char*, int, int));
 extern void FDECL(safe_exit_hack, (int));
 
 extern void FDECL(stdio_raw_print, (const char *));

@@ -94,6 +94,8 @@ namespace GnollHackServer
             BooleanIntDoubleVoidPtrCallback callback_add_ambient_ghsound,
             BooleanVoidPtrCallback callback_delete_ambient_ghsound,
             BooleanDoubleVoidPtrCallback callback_set_ambient_ghsound_volume,
+            VoidVoidCallback callback_clear_context_menu,
+            AddContextMenuCallback callback_add_context_menu,
             VoidIntCallback callback_exit_hack,
             CharVoidCallback callback_getcwd,
             IntCharCharUintCallback callback_messagebox,
@@ -240,6 +242,8 @@ namespace GnollHackServer
                 GameCallback_BooleanIntDoubleVoidPtrDummy,
                 GameCallback_BooleanVoidPtrDummy,
                 GameCallback_BooleanDoubleVoidPtrDummy,
+                GameCallback_ClearContextMenu,
+                GameCallback_AddContextMenu,
                 GameCallback_ExitHack,
                 GameCallback_GetCwd,
                 GameCallback_MessageBox,
@@ -272,6 +276,16 @@ namespace GnollHackServer
         {
             Debug.WriteLine("GameCallback_ExitHack");
             _serverGameCenter.ServerCenter_ExitHack(this, status);
+        }
+
+        public void GameCallback_ClearContextMenu()
+        {
+
+        }
+
+        public void GameCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, string text, int attr, int color)
+        {
+
         }
 
         protected void GameCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color)

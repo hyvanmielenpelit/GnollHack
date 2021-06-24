@@ -133,6 +133,8 @@ struct window_procs mswin_procs = {
     mswin_add_ambient_ghsound,
     mswin_delete_ambient_ghsound,
     mswin_set_ambient_ghsound_volume,
+    mswin_clear_context_menu,
+    mswin_add_context_menu,
     mswin_exit_hack,
 };
 
@@ -3723,6 +3725,19 @@ void
 mswin_exit_hack(int status)
 {
     mswin_exit_platform(status);
+}
+
+
+void
+mswin_clear_context_menu(VOID_ARGS)
+{
+    return;
+}
+
+void
+mswin_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* text, int attr, int color)
+{
+    return;
 }
 
 void

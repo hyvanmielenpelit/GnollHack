@@ -99,6 +99,8 @@ int RunGnollHack(
     AddAmbientSoundCallback callback_add_ambient_ghsound,
     DeleteAmbientSoundCallback callback_delete_ambient_ghsound,
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume,
+    ClearContextMenuCallback callback_clear_context_menu,
+    AddContextMenuCallback callback_add_context_menu,
     ExitHackCallback callback_exit_hack,
 
     GetCwdCallback callback_getcwd,

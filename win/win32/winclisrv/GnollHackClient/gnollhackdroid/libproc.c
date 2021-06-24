@@ -62,6 +62,8 @@ struct window_procs lib_procs = {
     lib_add_ambient_ghsound,
     lib_delete_ambient_ghsound,
     lib_set_ambient_ghsound_volume,
+    lib_clear_context_menu,
+    lib_add_context_menu,
     lib_exit_hack,
 };
 
@@ -844,6 +846,18 @@ void lib_exit_hack(int status)
     lib_exit_platform(status);
 }
 
+
+void
+lib_clear_context_menu(VOID_ARGS)
+{
+    lib_callbacks.callback_clear_context_menu();
+}
+
+void
+lib_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* text, int attr, int color)
+{
+    lib_callbacks.callback_add_context_menu(cmd_def_char, cmd_cur_char, dir, glyph, text, attr, color);
+}
 
 /* Helper functions */
 void lib_bail(const char* mesg)
