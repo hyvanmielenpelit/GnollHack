@@ -11,7 +11,7 @@
 #define NAMELIST_GOBLIN_KING 1
 #define NAMELIST_LICH 2
 #define NAMELIST_ARCH_LICH 3
-#define NAMELIST_LICH_KING 4
+#define NAMELIST_QUANTUM_MECHANIC 4
 
 static const char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] = 
 {
@@ -19,7 +19,7 @@ static const char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] =
     {"Urok", "Golluk", "Grimsh", "Urum", "", "", "", "", "", "", "", "", "", "", "", "" },
     {"Deimos", "Kangaxx", "Lyran", "Karlat", "Vongoethe", "", "", "", "", "", "", "", "", "", "", "" },
     {"Acererak ", "Vecna", "Zhengyi", "Jymahna", "Rhangaun", "Priamon Rakesk", "Shangalar the Black", "Kartak Spellseer", "", "", "", "", "", "", "", "" },
-    {"Ner'zhul", "Arthas Menethil", "Bolvar Fordragon", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+    {"Schroedinger", "Heisenberg", "Planck", "Dirac", "Feynman", "Bohr", "Pauli", "de Broglie", "Fermi", "Bell", "", "", "", "", "", "" },
     { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }
 };
 
@@ -579,8 +579,8 @@ struct encounterdef encounter_definitions[] =
     {
         {
             /* Monster 1 */
-            { { { PM_LICH, 1, 0, NAMELIST_LICH, EM_NAME_KNOWN, 40, NOMONSTERITEMS },
-                { PM_DEMILICH, 1, 0, NAMELIST_LICH, EM_NAME_KNOWN, 40, NOMONSTERITEMS },
+            { { { PM_LICH, 1, 0, NAMELIST_LICH, EM_NAME_KNOWN, 50, NOMONSTERITEMS },
+                { PM_DEMILICH, 1, 0, NAMELIST_LICH, EM_NAME_KNOWN, 50, NOMONSTERITEMS },
                 NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
             NORANDOMIZEDMONSTER,
             NORANDOMIZEDMONSTER,
@@ -589,6 +589,36 @@ struct encounterdef encounter_definitions[] =
         },
         20,
         ED_IGNORE_MONSTER_APPEARANCE_FLAGS
+    },
+
+    {
+        {
+            /* Monster 1 */
+            { { { PM_QUANTUM_MECHANIC, 1, 0, NAMELIST_QUANTUM_MECHANIC, EM_NAME_KNOWN | EM_MAXIMUM_HIT_POINTS, 100, 
+                    { 
+                      { 
+                        { { WAN_TELEPORTATION, 0, 0, 0, 0, 100 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM }
+                      },
+                      {
+                        { { CUBIC_GATE, 0, 0, 0, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM }
+                      },
+                      {
+                        { { SPE_TELEPORT_MONSTER, 0, 0, 0, 0, 20 }, { SPE_TELEPORT_SELF, 0, 0, 0, 0, 20 }, { SPE_CIRCLE_OF_TELEPORTATION, 0, 0, 0, 0, 20 }, { SPE_CONTROLLED_TELEPORT, 0, 0, 0, 0, 20 }, { SPE_CONTROLLED_LEVEL_TELEPORT, 0, 0, 0, 0, 20 } }
+                      },
+                      {
+                        { { CLOAK_OF_DISPLACEMENT, 0, 0, 0, 0, 100 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM }
+                      },
+                      NORANDOMIZEDALTERNATIVES }
+                },
+                NOMONSTERALTERNATIVE,
+                NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
+            NORANDOMIZEDMONSTER,
+            NORANDOMIZEDMONSTER,
+            NORANDOMIZEDMONSTER,
+            NORANDOMIZEDMONSTER
+        },
+        20,
+        0
     },
 
     {
