@@ -24,6 +24,7 @@ namespace GnollHackClient.Pages.Game
     public partial class GamePage : ContentPage
     {
         private SKColor _cursorDefaultGreen = new SKColor(0, 255, 0);
+        private SKRect canvasButtonRect = new SKRect(0, 0, 0, 0);
 
         Boolean _connectionAttempted = false;
         private HubConnection _connection;
@@ -54,7 +55,7 @@ namespace GnollHackClient.Pages.Game
         private bool _cursorIsOn;
         private bool _showDirections = false;
         private bool _showNumberPad = false;
-        private bool showNumberPad { get { return _showNumberPad; } set { NumberPadZeroButton.IsVisible = value; _showNumberPad = value; } }
+        private bool showNumberPad { get { return _showNumberPad; } set { _showNumberPad = value; } }
         private MainPage _mainPage;
 
         private int _clipX;
@@ -90,8 +91,7 @@ namespace GnollHackClient.Pages.Game
 
         public bool EnableWizardMode { get; set; }
 
-        private int _numContextButtons;
-        private int _maxContextButtons = 10;
+        private List<AddContextMenuData> _contextMenuData = new List<AddContextMenuData>();
 
         public GamePage(MainPage mainPage)
         {
@@ -208,21 +208,49 @@ namespace GnollHackClient.Pages.Game
         public void ClearContextMenu()
         {
             ContextGrid.Children.Clear();
+            _contextMenuData.Clear();
             ContextGrid.IsVisible = false;
         }
         public void AddContextMenu(AddContextMenuData data)
         {
+            _contextMenuData.Add(data);
             Button contextButton = new Button();
-            contextButton.Text = data.cmd_text;
+            string str;
+            if(data.cmd_def_char >=32 && data.cmd_def_char < 128)
+                str = ((char)data.cmd_def_char).ToString();
+            else if (data.cmd_def_char >= 128)
+                str = "M"+((char)(data.cmd_def_char - 128)).ToString();
+            else
+                str = "C" + ((char)(data.cmd_def_char + 64)).ToString();
+
+            contextButton.Text = str;
             contextButton.TextColor = Color.White;
             contextButton.FontFamily = "Immortal";
             contextButton.CornerRadius = 10;
             contextButton.FontSize = 20;
             contextButton.BackgroundColor = Color.DarkBlue;
             contextButton.HeightRequest = 50;
-            Grid.SetRow(contextButton, ContextGrid.Children.Count);
-            ContextGrid.Children.Add(contextButton);
+            contextButton.WidthRequest = 50;
+            contextButton.IsVisible = true;
+
+            contextButton.Clicked += ContextButton_Clicked;
+            int row = ContextGrid.RowDefinitions.Count - 1 - ContextGrid.Children.Count;
+            if (row < 0)
+                row = 0;
+            Grid.SetRow(contextButton, row);
             ContextGrid.IsVisible = true;
+            ContextGrid.Children.Add(contextButton);
+        }
+
+        private void ContextButton_Clicked(object sender, EventArgs e)
+        {
+            int idx = 0;
+            idx = ContextGrid.Children.IndexOf((Xamarin.Forms.View)sender);
+            if(idx >= 0 && idx < _contextMenuData.Count)
+            {
+                int resp = _contextMenuData[idx].cmd_cur_char;
+                GenericButton_Clicked(sender, e, resp);
+            }
         }
 
         public int TileSheetIdx(int ntile)
@@ -743,6 +771,7 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
+            canvasButtonRect.Top = 0; /* Maybe overrwritten below */
             if (_clientGame != null)
             {
                 /* Window strings */
@@ -780,7 +809,10 @@ namespace GnollHackClient.Pages.Game
                             if(winPaint.Color != SKColors.Transparent)
                                 canvas.DrawRect(winRect, winPaint);
 
-                            lock(_clientGame.Windows[i].PutStrsLock)
+                            if(i == _clientGame.StatusWindowId)
+                                canvasButtonRect.Top = winRect.Bottom;
+
+                            lock (_clientGame.Windows[i].PutStrsLock)
                             {
                                 int j = 0;
                                 foreach (GHPutStrItem putstritem in _clientGame.Windows[i].PutStrs)
@@ -820,12 +852,16 @@ namespace GnollHackClient.Pages.Game
 
             }
 
-            if(_showDirections || showNumberPad)
+            canvasButtonRect.Right = canvaswidth * (float)(ModeGrid.X / canvasView.Width);
+            canvasButtonRect.Left = canvaswidth * (float)(1 - ModeGrid.X / canvasView.Width);
+            canvasButtonRect.Bottom = canvasheight * (float)((canvasView.Height - MessageHistoryView.Height) / canvasView.Height);
+
+            if (_showDirections || showNumberPad)
             {
                 textPaint.Color = new SKColor(255, 255, 255, 128);
                 textPaint.Typeface = App.DejaVuSansMonoTypeface;
                 textPaint.TextSize = showNumberPad ? 250 : 400;
-                for (int i = 0; i < 9;i++)
+                for (int i = 0; i <= 9;i++)
                 {
                     switch (i)
                     {
@@ -834,72 +870,81 @@ namespace GnollHackClient.Pages.Game
                                 str = "\u2190";
                             else
                                 str = "4";
-                            tx = startX + canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = startY + canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
+                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
                             break;
                         case 1:
                             if (_showDirections)
                                 str = "\u2191";
                             else
                                 str = "8";
-                            tx = startX + canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = startY + canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
+                            tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 2:
                             if (_showDirections)
                                 str = "\u2192";
                             else
                                 str = "6";
-                            tx = startX + canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = startY + canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
+                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
                             break;
                         case 3:
                             if (_showDirections)
                                 str = "\u2193";
                             else
                                 str = "2";
-                            tx = startX + canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = startY + canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
+                            tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                         case 4:
                             if (_showDirections)
                                 str = "\u2196";
                             else
                                 str = "7";
-                            tx = startX + canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = startY + canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
+                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 5:
                             if (_showDirections)
                                 str = "";
                             else
                                 str = "5";
-                            tx = startX + canvasView.CanvasSize.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = startY + canvasView.CanvasSize.Height / 2 + textPaint.FontMetrics.Descent;
+                            tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
                             break;
                         case 6:
                             if (_showDirections)
                                 str = "\u2197";
                             else
                                 str = "9";
-                            tx = startX + canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = startY + canvasView.CanvasSize.Height * 0.15f + textPaint.FontMetrics.Descent;
+                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
                             break;
                         case 7:
                             if (_showDirections)
                                 str = "\u2198";
                             else
                                 str = "3";
-                            tx = startX + canvasView.CanvasSize.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = startY + canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
+                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.85f + textPaint.FontMetrics.Descent;
                             break;
                         case 8:
                             if (_showDirections)
                                 str = "\u2199";
                             else
                                 str = "1";
-                            tx = startX + canvasView.CanvasSize.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = startY + canvasView.CanvasSize.Height * 0.85f + textPaint.FontMetrics.Descent;
+                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.85f + textPaint.FontMetrics.Descent;
+                            break;
+                        case 9:
+                            if (_showDirections)
+                                continue;
+                            else
+                                str = "0";
+                            tx = 0 + canvasButtonRect.Left / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
+                            textPaint.TextSize = Math.Max(10.0f, textPaint.TextSize * Math.Min(1.0f, canvasButtonRect.Left / (canvasButtonRect.Width * 0.3f)));
                             break;
                     }
                     canvas.DrawText(str, tx, ty, textPaint);
@@ -921,7 +966,6 @@ namespace GnollHackClient.Pages.Game
             yText = 50;
             canvas.DrawText(str, xText, yText, textPaint);
             */
-
 
         }
 
@@ -1128,7 +1172,7 @@ namespace GnollHackClient.Pages.Game
                             long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
                             {
-                                if ((MapMode == GHMapMode.Travel || MapMode == GHMapMode.Look) && !_showDirections && !_showNumberPad)
+                                if (!_showDirections && !_showNumberPad)
                                 {
                                     int x = 0, y = 0, mod = 0;
                                     float canvaswidth = canvasView.CanvasSize.Width;
@@ -1156,8 +1200,10 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         if (MapMode == GHMapMode.Look)
                                             mod = (int)NhGetPosMods.Click2;
-                                        else
+                                        else if (MapMode == GHMapMode.Travel)
                                             mod = (int)NhGetPosMods.Click1;
+                                        else
+                                            mod = (int)NhGetPosMods.Click3;
 
                                         ConcurrentQueue<GHResponse> queue;
                                         if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
@@ -1168,34 +1214,47 @@ namespace GnollHackClient.Pages.Game
                                 }
                                 else
                                 {
-                                    int resp = 0;
-                                    //string ch = " ";
-                                    if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
-                                        resp = -7;
-                                    else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
-                                        resp = -9;
-                                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X < canvasView.CanvasSize.Width * 0.3)
-                                        resp = -1;
-                                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7 && e.Location.X > canvasView.CanvasSize.Width * 0.7)
-                                        resp = -3;
-                                    else if (e.Location.Y < canvasView.CanvasSize.Height * 0.3)
-                                        resp = -8; //ch = "k";
-                                    else if (e.Location.Y > canvasView.CanvasSize.Height * 0.7)
-                                        resp = -2; // ch = "j";
-                                    else if (e.Location.X < canvasView.CanvasSize.Width * 0.3)
-                                        resp = -4; // ch = "h";
-                                    else if (e.Location.X > canvasView.CanvasSize.Width * 0.7)
-                                        resp = -6; // ch = "l";
-                                    else
-                                        resp = showNumberPad ? -5 : 46; /* '.', or self */
-
-                                    if (showNumberPad)
-                                        resp -= 10;
-
-                                    ConcurrentQueue<GHResponse> queue;
-                                    if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                                    if(e.Location.X >= canvasButtonRect.Left && e.Location.X <= canvasButtonRect.Right && e.Location.Y >= canvasButtonRect.Top && e.Location.Y <= canvasButtonRect.Bottom)
                                     {
-                                        queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
+                                        int resp = 0;
+                                        SKPoint RectLoc = new SKPoint(e.Location.X - canvasButtonRect.Left, e.Location.Y - canvasButtonRect.Top);
+
+                                        if (RectLoc.Y < canvasButtonRect.Height * 0.3 && RectLoc.X < canvasButtonRect.Width * 0.3)
+                                            resp = -7;
+                                        else if (RectLoc.Y < canvasButtonRect.Height * 0.3 && RectLoc.X > canvasButtonRect.Width * 0.7)
+                                            resp = -9;
+                                        else if (RectLoc.Y > canvasButtonRect.Height * 0.7 && RectLoc.X < canvasButtonRect.Width * 0.3)
+                                            resp = -1;
+                                        else if (RectLoc.Y > canvasButtonRect.Height * 0.7 && RectLoc.X > canvasButtonRect.Width * 0.7)
+                                            resp = -3;
+                                        else if (RectLoc.Y < canvasButtonRect.Height * 0.3)
+                                            resp = -8; //ch = "k";
+                                        else if (RectLoc.Y > canvasButtonRect.Height * 0.7)
+                                            resp = -2; // ch = "j";
+                                        else if (RectLoc.X < canvasButtonRect.Width * 0.3)
+                                            resp = -4; // ch = "h";
+                                        else if (RectLoc.X > canvasButtonRect.Width * 0.7)
+                                            resp = -6; // ch = "l";
+                                        else
+                                            resp = showNumberPad ? -5 : 46; /* '.', or self */
+
+                                        if (showNumberPad)
+                                            resp -= 10;
+
+                                        ConcurrentQueue<GHResponse> queue;
+                                        if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                                        {
+                                            queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
+                                        }
+                                    }
+                                    else if (showNumberPad && e.Location.X < canvasButtonRect.Left && e.Location.Y >= canvasButtonRect.Top && e.Location.Y <= canvasButtonRect.Top + canvasButtonRect.Height / 3)
+                                    {
+                                        int resp = -10;
+                                        ConcurrentQueue<GHResponse> queue;
+                                        if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                                        {
+                                            queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
+                                        }
                                     }
                                 }
                             }
@@ -1566,11 +1625,6 @@ namespace GnollHackClient.Pages.Game
                 //NoClipButton.BackgroundColor = Color.DarkBlue;
             }
 
-        }
-
-        private void NumberPadZeroButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, -10);
         }
 
         private void ChatButton_Clicked(object sender, EventArgs e)

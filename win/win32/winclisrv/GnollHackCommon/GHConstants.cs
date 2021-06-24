@@ -96,7 +96,8 @@ namespace GnollHackCommon
     {
         None = 0,
         Click1,
-        Click2
+        Click2,
+        Click3
     }
     [Flags]
     public enum RunGnollHackFlags: UInt32

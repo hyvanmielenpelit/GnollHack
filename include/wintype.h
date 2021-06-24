@@ -97,6 +97,7 @@ typedef struct mi {
 /* nh_poskey() modifier types */
 #define CLICK_1 1
 #define CLICK_2 2
+#define CLICK_3 3 /* Precision mode click, move only single squares */
 
 /* invalid winid */
 #define WIN_ERR ((winid) -1)

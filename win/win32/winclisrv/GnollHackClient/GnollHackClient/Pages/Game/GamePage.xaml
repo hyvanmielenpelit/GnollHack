@@ -66,37 +66,31 @@
                         <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="4" IsVisible="false" CornerRadius="5"  />
                     </Grid>
                 </Grid>
-                    <Grid AbsoluteLayout.LayoutBounds="0,1.0,0.85,0.16" AbsoluteLayout.LayoutFlags="All" HorizontalOptions="FillAndExpand" BackgroundColor="Transparent" HeightRequest="70" Grid.Row="0" >
-                        <!--AbsoluteLayout.LayoutBounds="0.0, 5, 1.0, 60" AbsoluteLayout.LayoutFlags="WidthProportional" -->
-                        <CollectionView x:Name="MessageHistoryView" BackgroundColor="Transparent" Margin="0">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Padding="2">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" TextColor="{Binding Color}" 
+                    <CollectionView x:Name="MessageHistoryView" BackgroundColor="Transparent" Margin="0"
+                                    AbsoluteLayout.LayoutBounds="0,1.0,0.85,0.16" AbsoluteLayout.LayoutFlags="All" 
+                                    HorizontalOptions="FillAndExpand" HeightRequest="70" >
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" TextColor="{Binding Color}" 
                                        Text="{Binding Text}"
                                        FontSize="13"
                                        FontFamily="Underwood" />
-                                    </Grid>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                        <!--AbsoluteLayout.LayoutBounds="1.0, 0, 0.35, 65" AbsoluteLayout.LayoutFlags="WidthProportional,XProportional"-->
-                        <Button x:Name="NumberPadZeroButton" HorizontalOptions="End" VerticalOptions="Center"
-                        Clicked="NumberPadZeroButton_Clicked" Text="0" TextColor="Gray" BackgroundColor="#88000000" 
-                        FontFamily="DejaVuSansMono" FontSize="48" Margin="0" Padding="0" IsVisible="false" />
-                    </Grid>
-                    <Grid x:Name="ContextGrid" Padding="0,3"
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <Grid x:Name="ContextGrid" Padding="0,2"
                         HorizontalOptions="End" VerticalOptions="FillAndExpand"
-                        AbsoluteLayout.LayoutBounds="1.0, 0.0, 0.15, 1.0" 
+                        AbsoluteLayout.LayoutBounds="1.0, 0.3, 0.15, 1.0" 
                         AbsoluteLayout.LayoutFlags="All" BackgroundColor="Transparent" IsVisible="true">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
@@ -110,16 +104,25 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Row="4" Text="Mo" x:Name="SacrificeContextButton" Clicked="SacrificeContextButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
-                    <Button Grid.Row="5" Text="D" x:Name="DropAllContextButton" Clicked="DropAllContextButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
-                    <Button Grid.Row="6" Text="e" x:Name="EatContextButton" Clicked="EatContextButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
-                    <Button Grid.Row="7" Text="l" x:Name="LootContextButton" Clicked="LootContextButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
-                    <Button Grid.Row="8" Text=":" x:Name="LookHereContextButton" Clicked="LookHereButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
-                    <Button Grid.Row="9" Text="," x:Name="PickupContextButton" Clicked="PickupButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
-                    <Button Grid.Row="1" Text="&#x2699;" x:Name="LookModeButton" Clicked="LookModeButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
-                    <Button Grid.Row="2" Text="&#x265C;" x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
                 </Grid>
-            </AbsoluteLayout>
+                
+                    <Grid x:Name="ModeGrid" Padding="0,2"
+                        HorizontalOptions="End"
+                        AbsoluteLayout.LayoutBounds="1.0, 0.10, 0.15, 0.3" 
+                        AbsoluteLayout.LayoutFlags="All" BackgroundColor="Transparent" IsVisible="true">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Row="0" Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
+                        <Button Grid.Row="1" Text="&#x2699;" x:Name="LookModeButton" Clicked="LookModeButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
+                        <Button Grid.Row="2" Text="&#x265C;" x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
+                    </Grid>
+                </AbsoluteLayout>
             <!-- AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.35"  AbsoluteLayout.LayoutFlags="All"  -->
 
             <Grid  Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" 
@@ -140,8 +143,8 @@
                 <Button Grid.Row="0" Grid.Column="0" Text="i" x:Name="InventoryButton" Clicked="InventoryButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Grid.Row="0" Grid.Column="1" Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Grid.Row="0" Grid.Column="2" Text="." x:Name="WaitButton" Clicked="WaitButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70"/>
-                <Button Grid.Row="0" Grid.Column="3" Text="C" x:Name="ChatButton" Clicked="ChatButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Grid.Row="0" Grid.Column="4" Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Grid.Row="0" Grid.Column="3" Text=":" x:Name="LookHereButton" Clicked="LookHereButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Grid.Row="0" Grid.Column="4" Text="C" x:Name="ChatButton" Clicked="ChatButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Grid.Row="0" Grid.Column="5" Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Grid.Row="0" Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Grid.Row="1" Grid.Column="0" Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />

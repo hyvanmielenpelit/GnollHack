@@ -7345,7 +7345,8 @@ int x, y, mod;
     static char cmd[4];
     cmd[1] = 0;
 
-    if (iflags.clicklook && mod == CLICK_2) {
+    if (iflags.clicklook && mod == CLICK_2) 
+    {
         clicklook_cc.x = x;
         clicklook_cc.y = y;
         cmd[0] = Cmd.spkeys[NHKF_CLICKLOOK];
@@ -7355,10 +7356,14 @@ int x, y, mod;
     x -= u.ux;
     y -= u.uy;
 
-    if (flags.travelcmd) {
-        if (abs(x) <= 1 && abs(y) <= 1) {
+    if (flags.travelcmd) 
+    {
+        if ((abs(x) <= 1 && abs(y) <= 1) || mod == CLICK_3)
+        {
             x = sgn(x), y = sgn(y);
-        } else {
+        } 
+        else 
+        {
             u.tx = u.ux + x;
             u.ty = u.uy + y;
             struct monst* mtmp = 0;
@@ -7379,37 +7384,50 @@ int x, y, mod;
             return cmd;
         }
 
-        if (x == 0 && y == 0) {
-            if (iflags.herecmd_menu) {
+        if (x == 0 && y == 0) 
+        {
+            if (iflags.herecmd_menu) 
+            {
                 cmd[0] = here_cmd_menu(FALSE);
                 return cmd;
             }
 
             /* here */
             if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)
-                || IS_SINK(levl[u.ux][u.uy].typ)) {
-                cmd[0] = cmd_from_func(mod == CLICK_1 ? dodrink : dodip);
+                || IS_SINK(levl[u.ux][u.uy].typ)) 
+            {
+                cmd[0] = cmd_from_func(mod == CLICK_1 || mod == CLICK_3 ? dodrink : dodip);
                 return cmd;
-            } else if (IS_THRONE(levl[u.ux][u.uy].typ)) {
+            } 
+            else if (IS_THRONE(levl[u.ux][u.uy].typ)) 
+            {
                 cmd[0] = cmd_from_func(dosit);
                 return cmd;
-            } else if ((u.ux == xupstair && u.uy == yupstair)
+            } 
+            else if ((u.ux == xupstair && u.uy == yupstair)
                        || (u.ux == sstairs.sx && u.uy == sstairs.sy
                            && sstairs.up)
-                       || (u.ux == xupladder && u.uy == yupladder)) {
+                       || (u.ux == xupladder && u.uy == yupladder)) 
+            {
                 cmd[0] = cmd_from_func(doup);
                 return cmd;
-            } else if ((u.ux == xdnstair && u.uy == ydnstair)
+            } 
+            else if ((u.ux == xdnstair && u.uy == ydnstair)
                        || (u.ux == sstairs.sx && u.uy == sstairs.sy
                            && !sstairs.up)
-                       || (u.ux == xdnladder && u.uy == ydnladder)) {
+                       || (u.ux == xdnladder && u.uy == ydnladder)) 
+            {
                 cmd[0] = cmd_from_func(dodown);
                 return cmd;
-            } else if (OBJ_AT(u.ux, u.uy)) {
+            } 
+            else if (OBJ_AT(u.ux, u.uy)) 
+            {
                 cmd[0] = cmd_from_func(Is_container(level.objects[u.ux][u.uy])
                                        ? doloot : dopickup);
                 return cmd;
-            } else {
+            }
+            else 
+            {
                 cmd[0] = cmd_from_func(donull); /* just rest */
                 return cmd;
             }
@@ -7420,35 +7438,43 @@ int x, y, mod;
         dir = xytod(x, y);
 
         if (!m_at(u.ux + x, u.uy + y)
-            && !test_move(u.ux, u.uy, x, y, TEST_MOVE)) {
+            && !test_move(u.ux, u.uy, x, y, TEST_MOVE)) 
+        {
             cmd[1] = Cmd.dirchars[dir];
             cmd[2] = '\0';
-            if (iflags.herecmd_menu) {
+            if (iflags.herecmd_menu) 
+            {
                 cmd[0] = there_cmd_menu(FALSE, u.ux + x, u.uy + y);
                 if (cmd[0] == '\0')
                     cmd[1] = '\0';
                 return cmd;
             }
 
-            if (IS_DOOR(levl[u.ux + x][u.uy + y].typ)) {
+            if (IS_DOOR(levl[u.ux + x][u.uy + y].typ)) 
+            {
                 /* slight assistance to the player: choose kick/open for them
                  */
-                if (levl[u.ux + x][u.uy + y].doormask & D_LOCKED) {
+                if (levl[u.ux + x][u.uy + y].doormask & D_LOCKED) 
+                {
                     cmd[0] = cmd_from_func(dokick);
                     return cmd;
                 }
-                if (levl[u.ux + x][u.uy + y].doormask & D_CLOSED) {
+                if (levl[u.ux + x][u.uy + y].doormask & D_CLOSED) 
+                {
                     cmd[0] = cmd_from_func(doopen);
                     return cmd;
                 }
             }
-            if (levl[u.ux + x][u.uy + y].typ <= SCORR) {
+            if (levl[u.ux + x][u.uy + y].typ <= SCORR) 
+            {
                 cmd[0] = cmd_from_func(dosearch);
                 cmd[1] = 0;
                 return cmd;
             }
         }
-    } else {
+    } 
+    else 
+    {
         /* convert without using floating point, allowing sloppy clicking */
         if (x > 2 * abs(y))
             x = 1, y = 0;
@@ -7461,7 +7487,8 @@ int x, y, mod;
         else
             x = sgn(x), y = sgn(y);
 
-        if (x == 0 && y == 0) {
+        if (x == 0 && y == 0) 
+        {
             /* map click on player to "rest" command */
             cmd[0] = cmd_from_func(donull);
             return cmd;
@@ -7471,9 +7498,12 @@ int x, y, mod;
 
     /* move, attack, etc. */
     cmd[1] = 0;
-    if (mod == CLICK_1) {
+    if (mod == CLICK_1 || mod == CLICK_3) 
+    {
         cmd[0] = Cmd.dirchars[dir];
-    } else {
+    } 
+    else 
+    {
         cmd[0] = (Cmd.num_pad
                      ? M(Cmd.dirchars[dir])
                      : (Cmd.dirchars[dir] - 'a' + 'A')); /* run command */
