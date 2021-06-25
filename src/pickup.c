@@ -712,6 +712,7 @@ int what; /* should be a long */
     }
  pickupdone:
     add_valid_menu_class(0); /* reset */
+    update_here_window();
     return (n_tried > 0);
 }
 

@@ -5463,9 +5463,12 @@ boolean picked_some;
             You("%s no objects here.", verb);
         return !!Blind;
     }
-    /* we know there is something here */
 
-    boolean obj_msg_done = FALSE;
+    /* we know there is something here */
+    int total_count = 0;
+    for (struct obj* otmp_cnt = otmp; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
+        total_count++;
+
     if (skip_objects)
     {
         if (dfeature)
@@ -5504,7 +5507,6 @@ boolean picked_some;
                 break;
             }
 
-        obj_msg_done = TRUE;
     } 
     else if (!otmp->nexthere) 
     {
@@ -5516,40 +5518,17 @@ boolean picked_some;
         iflags.last_msg = PLNMSG_ONE_ITEM_HERE;
         if (otmp->otyp == CORPSE)
             feel_cockatrice(otmp, FALSE);
-
-        obj_msg_done = TRUE;
     }
-
-
-    if(!obj_msg_done || WIN_HERE != WIN_ERR)
+    else if (WIN_HERE == WIN_ERR || total_count > iflags.wc2_here_window_size)
     {
         char buf[BUFSZ];
         char buf2[BUFSZ];
         int count = 0;
         int totalweight = 0;
 
-        int total_count = 0;
-        for (struct obj* otmp_cnt = otmp; otmp_cnt; otmp_cnt = otmp_cnt->nexthere) 
-            total_count++;
-
         display_nhwindow(WIN_MESSAGE, FALSE);
 
-        boolean use_menu_win = (WIN_HERE == WIN_ERR || total_count > iflags.wc2_here_window_size);
-
-        if (use_menu_win)
-        {
-            tmpwin = create_nhwindow(NHW_MENU);
-            if (WIN_HERE != WIN_ERR)
-            {
-                clear_nhwindow(WIN_HERE);
-                putstr(WIN_HERE, 0, "There are many objects here.");
-            }
-        }
-        else
-        {
-            tmpwin = WIN_HERE;
-            clear_nhwindow(tmpwin);
-        }
+        tmpwin = create_nhwindow(NHW_MENU);
 
         if (dfeature) {
             putstr(tmpwin, 0, fbuf);
@@ -5576,20 +5555,113 @@ boolean picked_some;
             putstr(tmpwin, 0, buf2);
         }
 
-        if (flags.show_weight_summary && use_menu_win)
+        if (flags.show_weight_summary)
             add_weight_summary_putstr(tmpwin, totalweight, 1);
 
-        if (use_menu_win)
-        {
-            display_nhwindow(tmpwin, TRUE);
-            destroy_nhwindow(tmpwin);
-        }
+        display_nhwindow(tmpwin, TRUE);
+        destroy_nhwindow(tmpwin);
 
         if (felt_cockatrice)
             feel_cockatrice(otmp, FALSE);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
     }
+    update_here_window();
     return !!Blind;
+}
+
+void
+print_things_here_to_window(VOID_ARGS)
+{
+    winid tmpwin = WIN_HERE;
+    if (tmpwin == WIN_ERR)
+        return;
+
+    struct obj* otmp;
+    const char* dfeature = (char*)0;
+    boolean skip_objects, felt_cockatrice = FALSE;
+    char fbuf[BUFSZ] = "";
+    char dfbuf[BUFSZ] = "";
+    struct rm* lev = &levl[u.ux][u.uy];
+
+    otmp = level.objects[u.ux][u.uy];
+    dfeature = dfeature_at(u.ux, u.uy);
+    if (dfeature && !strcmp(dfeature, "pool of water") && Underwater)
+        dfeature = 0;
+
+    if (IS_BRAZIER(lev->typ))
+    {
+        if (lev->lamplit)
+            strcpy(dfbuf, "lit ");
+        else
+            strcpy(dfbuf, "unlit ");
+    }
+
+    char buf[BUFSZ];
+    char buf2[BUFSZ];
+    int count = 0;
+
+    int total_count = 0;
+    for (struct obj* otmp_cnt = otmp; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
+        total_count++;
+
+    if (total_count == 0 && !dfeature)
+        return;
+
+    if (total_count + (dfeature ? 1 : 0) > iflags.wc2_here_window_size)
+    {
+        putstr_ex(tmpwin, ATR_NONE, Blind ? "[You feel there are many objects here.]" : "[There are many objects here.]", 0, CLR_MSG_ATTENTION);
+    }
+    else
+    {
+        Sprintf(buf, "%s that %s here:", "Things",
+            Blind ? "you feel" : "are");
+        putstr(tmpwin, 0, buf);
+
+        if (dfeature)
+        {
+            Strcat(dfbuf, dfeature);
+            struct layer_info layers = nul_layerinfo;
+            char sym = 0;
+            nhsym ch = 0;
+            int color;
+            unsigned long special;
+            int glyph = back_to_glyph(u.ux, u.uy);
+            layers.glyph = glyph;
+            (void)mapglyph(layers, &ch, &color, &special, u.ux, u.uy);
+
+            if (SYMHANDLING(H_UNICODE))
+            {
+                sym = unicode_to_CP437(ch);
+            }
+            else
+            {
+                sym = (char)ch;
+            }
+        
+            Sprintf(fbuf, " %c - %s", sym, an(dfbuf));
+
+            putstr(tmpwin, 0, fbuf);
+        }
+
+        for (; otmp; otmp = otmp->nexthere) 
+        {
+            count++;
+            Sprintf(buf2, "%2d - %s", count, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
+            putstr(tmpwin, 0, buf2);
+        }
+    }
+}
+
+void
+update_here_window(VOID_ARGS)
+{
+    if (WIN_HERE == WIN_ERR)
+        return;
+
+    clear_nhwindow(WIN_HERE);
+    if (!Blind)
+        print_things_here_to_window();
+
 }
 
 /* the ':' command - explicitly look at what is here, including all objects */

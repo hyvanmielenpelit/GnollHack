@@ -43,8 +43,8 @@ enum window_option_types {
 };
 
 #define PILE_LIMIT_DFLT 5
-#define HERE_WIN_SIZ_DFLT 10
-#define DEFAULT_PILE_LIMIT (iflags.wc2_herewindow ? iflags.wc2_here_window_size : PILE_LIMIT_DFLT)
+#define HERE_WIN_SIZ_DFLT 8
+#define DEFAULT_PILE_LIMIT (iflags.wc2_herewindow ? iflags.wc2_here_window_size + 1 : PILE_LIMIT_DFLT)
 
 /*
  *  NOTE:  If you add (or delete) an option, please update the short

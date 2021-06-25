@@ -1367,6 +1367,8 @@ E long FDECL(count_contents, (struct obj *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(carry_obj_effects, (struct obj *));
 E const char *FDECL(currency, (long));
 E void FDECL(silly_thing, (const char *, struct obj *));
+E void print_things_here_to_window(VOID_ARGS);
+E void update_here_window(VOID_ARGS);
 
 /* ### ioctl.c ### */
 

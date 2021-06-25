@@ -6394,6 +6394,7 @@ register char *cmd;
         firsttime = (cmd == 0);
 
     create_context_menu();
+    update_here_window();
 
     iflags.menu_requested = FALSE;
 #ifdef SAFERHANGUP

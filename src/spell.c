@@ -918,6 +918,7 @@ int spell;
         You_ex(ATR_NONE, CLR_MSG_WARNING, "do not have hands to cast a spell with a somatic component!");
         return TRUE;
     }
+#if 0 /* Removed as excessively dangerous for wizards using staffs */
     else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && !freehand())
     {
         /* Note: !freehand() occurs when weapon and shield (or two-handed
@@ -928,6 +929,7 @@ int spell;
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "arms are not free to cast a spell with a somatic component!");
         return TRUE;
     }
+#endif
     else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && u.uburied) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot cast a spell with a somatic component while being buried!");
