@@ -220,6 +220,8 @@ namespace GnollHackClient.Pages.Game
                 str = ((char)data.cmd_def_char).ToString();
             else if (data.cmd_def_char >= 128)
                 str = "M"+((char)(data.cmd_def_char - 128)).ToString();
+            else if (data.cmd_def_char < 0)
+                str = "M" + ((char)(data.cmd_def_char + 256)).ToString();
             else
                 str = "C" + ((char)(data.cmd_def_char + 64)).ToString();
 

@@ -74,6 +74,13 @@ namespace GnollHackClient
                     DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
                 }
             }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono-Bold.ttf"))
+            {
+                if (stream != null)
+                {
+                    DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
+                }
+            }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Regular.ttf"))
             {
                 if (stream != null)
@@ -139,6 +146,7 @@ namespace GnollHackClient
         public static SKTypeface XizorTypeface { get; set; }
         public static SKTypeface UnderwoodTypeface { get; set; }
         public static SKTypeface DejaVuSansMonoTypeface { get; set; }
+        public static SKTypeface DejaVuSansMonoBoldTypeface { get; set; }
         public static SKTypeface LatoRegular { get; set; }
         public static SKTypeface LatoBold { get; set; }
 

@@ -118,6 +118,9 @@ MAP
 :::::::::::::::::::::::::::::::::::::
 ENDMAP
 
+MONSTER_GENERATION: 90, 'o'
+MONSTER_GENERATION: 10, random
+
 # Don't let the player fall into his likely death
 TELEPORT_REGION:levregion(01,01,20,19),levregion(20,00,70,19)
 REGION:(00,00,36,16),lit,"ordinary"

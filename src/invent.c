@@ -5613,8 +5613,7 @@ print_things_here_to_window(VOID_ARGS)
     }
     else
     {
-        Sprintf(buf, "%s that %s here:", "Things",
-            Blind ? "you feel" : "are");
+        Sprintf(buf, "%s that %s here:", "Things", Blind ? "you feel" : "are");
         putstr(tmpwin, 0, buf);
 
         if (dfeature)
@@ -5638,7 +5637,7 @@ print_things_here_to_window(VOID_ARGS)
                 sym = (char)ch;
             }
         
-            Sprintf(fbuf, " %c - %s", sym, an(dfbuf));
+            Sprintf(fbuf, "'%c' %s", sym, an(dfbuf));
 
             putstr(tmpwin, 0, fbuf);
         }
@@ -5646,7 +5645,26 @@ print_things_here_to_window(VOID_ARGS)
         for (; otmp; otmp = otmp->nexthere) 
         {
             count++;
-            Sprintf(buf2, "%2d - %s", count, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
+
+            struct layer_info layers = nul_layerinfo;
+            char sym = 0;
+            nhsym ch = 0;
+            int color;
+            unsigned long special;
+            int glyph = otmp->glyph;
+            layers.glyph = glyph;
+            (void)mapglyph(layers, &ch, &color, &special, u.ux, u.uy);
+
+            if (SYMHANDLING(H_UNICODE))
+            {
+                sym = unicode_to_CP437(ch);
+            }
+            else
+            {
+                sym = (char)ch;
+            }
+
+            Sprintf(buf2, "'%c' %s", sym, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
             putstr(tmpwin, 0, buf2);
         }
     }

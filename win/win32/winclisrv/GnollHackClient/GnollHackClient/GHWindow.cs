@@ -236,7 +236,7 @@ namespace GnollHackClient
                     break;
                 case GHWinType.Here:
                     TextSize = 36;
-                    Typeface = App.LatoBold;
+                    Typeface = App.DejaVuSansMonoBoldTypeface;
                     StrokeWidth = 1.5f;
                     AutoPlacement = true;
                     break;
