@@ -20,7 +20,7 @@ struct window_procs lib_procs = {
 #ifdef STATUS_HILITES
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
-    WC2_PREFERRED_SCREEN_SCALE | WC2_STATUSLINES | WC2_AUTOSTATUSLINES,
+    WC2_PREFERRED_SCREEN_SCALE | WC2_STATUSLINES | WC2_AUTOSTATUSLINES | WC2_HEREWINDOW,
     lib_init_nhwindows, lib_player_selection, lib_askname,
     lib_get_nh_event, lib_exit_nhwindows, lib_suspend_nhwindows,
     lib_resume_nhwindows, lib_create_nhwindow, lib_clear_nhwindow,

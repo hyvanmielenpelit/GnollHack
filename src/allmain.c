@@ -977,9 +977,11 @@ display_gamewindows()
        ever having been used, use it here to pacify the Qt interface */
     start_menu(WIN_INVEN), end_menu(WIN_INVEN, (char *) 0);
 
-#ifdef GNH_ANDROID
-    WIN_HERE = create_nhwindow(NHW_HERE);
-#endif
+    if (!(windowprocs.wincap2 & WC2_HEREWINDOW))
+        iflags.wc2_herewindow = FALSE;
+
+    if(iflags.wc2_herewindow)
+        WIN_HERE = create_nhwindow(NHW_HERE);
 
 #ifdef MAC
     /* This _is_ the right place for this - maybe we will
@@ -1001,9 +1003,9 @@ display_gamewindows()
     clear_glyph_buffer();
     display_nhwindow(WIN_MAP, FALSE);
 
-#ifdef GNH_ANDROID
-    display_nhwindow(WIN_HERE, FALSE);
-#endif
+    if (iflags.wc2_herewindow)
+        display_nhwindow(WIN_HERE, FALSE);
+
 }
 
 const char*

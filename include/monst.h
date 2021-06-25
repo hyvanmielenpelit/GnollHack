@@ -113,8 +113,8 @@ struct monst {
     unsigned short mprops[LAST_PROP + 1]; /* simplified props structure for monsters, taking 1/6 u.uprops memory space but doing about the same thing anyway --JG */
 
 #define M_TIMEOUT                0x3fff    /* timeout mask for temporary property */
-#define M_INTRINSIC_ACQUIRED    0x4000  /* permanent intrisic acquired e.g. by eating monster corpses */
-#define M_EXTRINSIC                0x8000  /* extrinsic from items or environment, updated frequently by clearing and checking a new value */
+#define M_INTRINSIC_ACQUIRED     0x4000    /* permanent intrisic acquired e.g. by eating monster corpses */
+#define M_EXTRINSIC              0x8000    /* extrinsic from items or environment, updated frequently by clearing and checking a new value */
 
     unsigned short mspec_used;             /* monster's general special ability and spell attack timeout */
     unsigned short mmagespell_used;        /* monster's mage-style normal ability or low-powered spell timeout */

@@ -5534,7 +5534,7 @@ boolean picked_some;
 
         display_nhwindow(WIN_MESSAGE, FALSE);
 
-        boolean use_menu_win = (WIN_HERE == WIN_ERR || total_count > HERE_WINDOW_MAX_SIZE);
+        boolean use_menu_win = (WIN_HERE == WIN_ERR || total_count > iflags.wc2_here_window_size);
 
         if (use_menu_win)
         {

@@ -42,11 +42,9 @@ enum window_option_types {
     TEXT_OPTION
 };
 
-#ifdef GNH_ANDROID
-#define PILE_LIMIT_DFLT (HERE_WINDOW_MAX_SIZE + 1)
-#else
 #define PILE_LIMIT_DFLT 5
-#endif
+#define HERE_WIN_SIZ_DFLT 10
+#define DEFAULT_PILE_LIMIT (iflags.wc2_herewindow ? iflags.wc2_here_window_size : PILE_LIMIT_DFLT)
 
 /*
  *  NOTE:  If you add (or delete) an option, please update the short
@@ -165,6 +163,7 @@ static struct Bool_Opt {
     { "guicolor", &iflags.wc2_guicolor, TRUE, SET_IN_GAME}, /*WC2*/
     { "help", &flags.help, TRUE, SET_IN_GAME },
     { "herecmd_menu", &iflags.herecmd_menu, FALSE, SET_IN_GAME },
+    { "herewindow", &iflags.wc2_herewindow, TRUE, SET_IN_GAME },
     { "hilite_pet", &iflags.wc_hilite_pet, FALSE, SET_IN_GAME }, /*WC*/
     { "hilite_pile", &iflags.hilite_pile, FALSE, SET_IN_GAME },
     { "hitpointbar", &iflags.wc2_hitpointbar, FALSE, SET_IN_GAME }, /*WC2*/
@@ -362,6 +361,10 @@ static struct Comp_Opt {
       DISP_IN_GAME }, /*WC*/
     { "fruit", "the name of a fruit you enjoy eating", PL_FSIZ, SET_IN_GAME },
     { "gender", "your starting gender (male or female)", 8, DISP_IN_GAME },
+    { "here_window_size",
+      "number of rows in the here window",
+      20, SET_IN_GAME
+    }, /*WC2*/
     { "horsename", "the name of your (first) horse (e.g., horsename:Silver)",
       PL_PSIZ, DISP_IN_GAME },
     { "luggagename", "the name of your (first) luggage (e.g., luggagename:Albert)",
@@ -551,6 +554,7 @@ static boolean need_update_space_binding;
 static boolean need_status_initialize;
 static boolean need_init_print_glyph;
 static boolean need_stretch_map;
+static boolean need_here_window;
 
 #if defined(TOS) && defined(TEXTCOLOR)
 extern boolean colors_changed;  /* in tos.c */
@@ -813,7 +817,6 @@ initoptions_init()
     flags.end_top = 3;
     flags.end_around = 2;
     flags.paranoia_bits = PARANOID_PRAY; /* old prayconfirm=TRUE */
-    flags.pile_limit = PILE_LIMIT_DFLT;  /* 5 */
     flags.runmode = RUN_LEAP;
     iflags.msg_history = 20;
     /* msg_window has conflicting defaults for multi-interface binary */
@@ -907,6 +910,8 @@ initoptions_init()
     /* these are currently only used by curses */
     iflags.wc2_statuslines = 2;
     iflags.wc2_windowborders = 2; /* 'Auto' */
+    iflags.wc2_here_window_size = HERE_WIN_SIZ_DFLT;
+    flags.pile_limit = PILE_LIMIT_DFLT;  /* 5 */
 
     flags.sound_volume_ambient = 100;
     flags.sound_volume_effects = 100;
@@ -4032,6 +4037,33 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    fullname = "here_window_size";
+    if (match_optname(opts, fullname, 16, TRUE)) {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated) {
+            bad_negation(fullname, TRUE);
+            itmp = HERE_WIN_SIZ_DFLT;
+            retval = FALSE;
+        }
+        else if (op) {
+            itmp = atoi(op);
+        }
+        if (itmp < 2 || itmp > 20) {
+            config_error_add("'%s' requires a value between 2 and 20", fullname);
+            retval = FALSE;
+        }
+        else {
+            iflags.wc2_here_window_size = itmp;
+            if (!initial)
+            {
+                need_redraw = TRUE;
+            }
+        }
+        return retval;
+    }
+
     fullname = "preferred_screen_scale";
     if (match_optname(opts, fullname, 22, TRUE))
     {
@@ -4686,6 +4718,11 @@ boolean tinitial, tfrom_file;
             {
                 need_redraw = TRUE;
             }
+            else if (boolopt[i].addr == &iflags.wc2_herewindow)
+            {
+                need_redraw = TRUE;
+                need_here_window = TRUE;
+            }
             else if (boolopt[i].addr == &iflags.hilite_pet)
             {
 #ifdef CURSES_GRAPHICS
@@ -5178,6 +5215,7 @@ doset() /* changing options via menu by Per Liboriussen */
     need_set_animation_timer = FALSE;
     need_update_space_binding = FALSE;
     need_status_initialize = FALSE;
+    need_here_window = FALSE;
 
     if ((pick_cnt = select_menu(tmpwin, PICK_ANY, &pick_list)) > 0) {
         /*
@@ -5252,6 +5290,26 @@ doset() /* changing options via menu by Per Liboriussen */
     }
 
     destroy_nhwindow(tmpwin);
+
+    if (need_here_window)
+    {
+        if (!(windowprocs.wincap2 & WC2_HEREWINDOW))
+            iflags.wc2_herewindow = FALSE;
+
+        if (iflags.wc2_herewindow)
+        {
+            if (WIN_HERE == WIN_ERR)
+                WIN_HERE = create_nhwindow(NHW_HERE);
+        }
+        else
+        {
+            if (WIN_HERE != WIN_ERR)
+            {
+                destroy_nhwindow(WIN_HERE);
+                WIN_HERE = WIN_ERR;
+            }
+        }
+    }
 
     if (need_init_print_glyph)
     {
@@ -6472,6 +6530,14 @@ char *buf;
         }
         /* else default to "unknown" */
     } 
+    else if (!strcmp(optname, "here_window_size"))
+    {
+        if (wc2_supported(optname))
+        {
+            Sprintf(buf, "%d", (iflags.wc2_here_window_size < 3) ? 2 : (iflags.wc2_here_window_size > 20) ? 20 : iflags.wc2_here_window_size);
+        }
+        /* else default to "unknown" */
+    }
     else if (!strcmp(optname, "preferred_screen_scale"))
     {
         if (wc2_supported(optname) && flags.preferred_screen_scale != 0)
@@ -7297,6 +7363,8 @@ static struct wc_Opt wc2_options[] = {
     { "petattr", WC2_PETATTR },
     { "guicolor", WC2_GUICOLOR },
     { "statuslines", WC2_STATUSLINES },
+    { "herewindow", WC2_HEREWINDOW },
+    { "here_window_size", WC2_HEREWINDOW },
     { "windowborders", WC2_WINDOWBORDERS },
     { "autostatuslines", WC2_AUTOSTATUSLINES },
     { "preferred_screen_scale", WC2_PREFERRED_SCREEN_SCALE },

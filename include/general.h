@@ -508,7 +508,7 @@ enum main_menu_command {
  */
 typedef long nhsym;
 
-#define HERE_WINDOW_MAX_SIZE 10
+#define DEF_HERE_WINDOW_MAX_SIZE 10
 
 #endif /* GENERAL_H */
 

@@ -281,8 +281,9 @@ extern
                                    *    suppression via non-disp attr   */
 #define WC2_AUTOSTATUSLINES         0x10000UL /* 17 automatically adjust number of status lines */
 #define WC2_PREFERRED_SCREEN_SCALE  0x20000UL /* 18 preferred screen scale */
+#define WC2_HEREWINDOW              0x40000UL /* 19 show the here window */
 
-/* 14 free bits */
+/* 13 free bits */
 
 #define ALIGN_LEFT   1
 #define ALIGN_RIGHT  2
