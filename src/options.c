@@ -163,7 +163,7 @@ static struct Bool_Opt {
     { "guicolor", &iflags.wc2_guicolor, TRUE, SET_IN_GAME}, /*WC2*/
     { "help", &flags.help, TRUE, SET_IN_GAME },
     { "herecmd_menu", &iflags.herecmd_menu, FALSE, SET_IN_GAME },
-    { "herewindow", &iflags.wc2_herewindow, TRUE, SET_IN_GAME },
+    { "herewindow", &iflags.wc2_herewindow, TRUE, SET_IN_FILE }, /*WC2*/
     { "hilite_pet", &iflags.wc_hilite_pet, FALSE, SET_IN_GAME }, /*WC*/
     { "hilite_pile", &iflags.hilite_pile, FALSE, SET_IN_GAME },
     { "hitpointbar", &iflags.wc2_hitpointbar, FALSE, SET_IN_GAME }, /*WC2*/
@@ -5293,20 +5293,20 @@ doset() /* changing options via menu by Per Liboriussen */
 
     if (need_here_window)
     {
-        if (!(windowprocs.wincap2 & WC2_HEREWINDOW))
-            iflags.wc2_herewindow = FALSE;
-
-        if (iflags.wc2_herewindow)
+        if (windowprocs.wincap2 & WC2_HEREWINDOW)
         {
-            if (WIN_HERE == WIN_ERR)
-                WIN_HERE = create_nhwindow(NHW_HERE);
-        }
-        else
-        {
-            if (WIN_HERE != WIN_ERR)
+            if (iflags.wc2_herewindow)
             {
-                destroy_nhwindow(WIN_HERE);
-                WIN_HERE = WIN_ERR;
+                if (WIN_HERE == WIN_ERR)
+                    WIN_HERE = create_nhwindow(NHW_HERE);
+            }
+            else
+            {
+                if (WIN_HERE != WIN_ERR)
+                {
+                    destroy_nhwindow(WIN_HERE);
+                    WIN_HERE = WIN_ERR;
+                }
             }
         }
     }
