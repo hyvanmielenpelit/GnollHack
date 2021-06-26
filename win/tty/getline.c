@@ -46,7 +46,7 @@ boolean skip_utf8 = FALSE;
 
 STATIC_OVL void
 hooked_tty_getlin_ex(attr, color, query, bufp, hook)
-int attr, color;
+int attr UNUSED, color UNUSED;
 const char *query;
 register char *bufp;
 getlin_hook_proc hook;

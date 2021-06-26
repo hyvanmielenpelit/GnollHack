@@ -7914,7 +7914,7 @@ paranoid_query(be_paranoid, prompt)
 boolean be_paranoid;
 const char* prompt;
 {
-    paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, be_paranoid, prompt);
+    return paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, be_paranoid, prompt);
 }
 
 /* for paranoid_confirm:quit,die,attack prompting */

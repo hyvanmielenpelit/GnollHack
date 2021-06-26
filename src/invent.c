@@ -5576,7 +5576,6 @@ print_things_here_to_window(VOID_ARGS)
 
     struct obj* otmp;
     const char* dfeature = (char*)0;
-    boolean skip_objects, felt_cockatrice = FALSE;
     char fbuf[BUFSZ] = "";
     char dfbuf[BUFSZ] = "";
     struct rm* lev = &levl[u.ux][u.uy];
