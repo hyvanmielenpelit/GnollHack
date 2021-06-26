@@ -796,7 +796,7 @@ namespace GnollHackClient.Pages.Game
                                 {
                                     float newleft = 0;
                                     float messagetop = canvasheight * (float)(MessageHistoryView.Y / canvasView.Height);
-                                    float newtop = messagetop - _clientGame.Windows[i].Height - 10;
+                                    float newtop = messagetop - _clientGame.Windows[i].Height - 30;
                                     _clientGame.Windows[i].Left = newleft;
                                     _clientGame.Windows[i].Top = newtop;
                                 }
