@@ -4053,7 +4053,7 @@ int spell;
     strcpy(spellnamebuf, spellname(spell));
 
     Sprintf(qbuf, "Are you sure you want to forget \'%s\' permanently?", spellnamebuf);
-    if (ynq(qbuf) == 'y')
+    if (ynq_ex(ATR_NONE, CLR_MSG_WARNING, qbuf) == 'y')
     {
         struct spell empty_spell = { 0 };
         for (int n = spell + 1; n <= MAXSPELL; n++)

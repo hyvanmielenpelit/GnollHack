@@ -385,10 +385,10 @@ namespace GnollHackClient
                 return 0;
 
         }
-        public int ClientCallback_yn_question(string question, string responses, string def)
+        public int ClientCallback_yn_question(int attr, int color, string question, string responses, string def)
         {
             if(question != null)
-                ClientCallback_RawPrint(question);
+                RawPrintEx(question, attr, color);
 
             ConcurrentQueue<GHRequest> queue;
             if (responses == null || responses == "")
@@ -709,7 +709,7 @@ namespace GnollHackClient
             Marshal.FreeHGlobal(issame ? ptr : _outGoingIntPtr);
         }
 
-        public string ClientCallback_getlin(string query)
+        public string ClientCallback_getlin(int attr, int color, string query)
         {
             Debug.WriteLine("ClientCallback_getlin");
 

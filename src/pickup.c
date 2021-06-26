@@ -1474,7 +1474,7 @@ boolean telekinesis;
                 (void) safe_qbuf(qbuf, qbuf, ".  Continue?", obj, doname,
                                  ansimpleoname, something);
                 obj->quan = savequan;
-                switch (ynq(qbuf)) {
+                switch (ynq_ex(ATR_NONE, CLR_MSG_ATTENTION, qbuf)) {
                 case 'q':
                     result = -1;
                     break;
@@ -2512,7 +2512,7 @@ register struct obj *obj;
     {
         char qbuf[BUFSZ], c;
         Sprintf(qbuf, "You are putting %s into %s. Continue?", the(xname(obj)), the(xname(current_container)));
-        if ((c = yn_function(qbuf, ynqchars, 'n')) != 'y')
+        if ((c = yn_function_ex(ATR_NONE, CLR_MSG_ATTENTION, qbuf, ynqchars, 'n')) != 'y')
             return 0;
     }
 

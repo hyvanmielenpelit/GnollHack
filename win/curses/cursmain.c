@@ -64,8 +64,8 @@ struct window_procs curses_procs = {
     curses_nh_poskey,
     curses_nhbell,
     curses_doprev_message,
-    curses_yn_function,
-    curses_getlin,
+    curses_yn_function_ex,
+    curses_getlin_ex,
     curses_get_ext_cmd,
     curses_number_pad,
     curses_delay_output,
@@ -225,7 +225,7 @@ curses_player_selection()
 void
 curses_askname()
 {
-    curses_line_input_dialog("Who are you?", plname, PL_NSIZ);
+    curses_line_input_dialog(ATR_NONE, NO_COLOR, "Who are you?", plname, PL_NSIZ);
 }
 
 
@@ -837,9 +837,9 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-curses_yn_function(const char *question, const char *choices, CHAR_P def)
+curses_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def)
 {
-    return (char) curses_character_input_dialog(question, choices, def);
+    return (char) curses_character_input_dialog(attr, color, question, choices, def);
 }
 
 /*
@@ -853,9 +853,9 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-curses_getlin(const char *question, char *input)
+curses_getlin_ex(int attr, int color, const char *question, char *input)
 {
-    curses_line_input_dialog(question, input, BUFSZ);
+    curses_line_input_dialog(attr, color, question, input, BUFSZ);
 }
 
 /*

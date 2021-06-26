@@ -1681,13 +1681,13 @@ domove_core()
         if (wtcap < OVERLOADED) 
         {
             play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_STAMINA);
-            You("don't have enough stamina to move.");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "don't have enough stamina to move.");
             exercise(A_CON, FALSE);
         }
         else
         {
             play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
-            You("collapse under your load.");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "collapse under your load.");
         }
         nomul(0);
         return;
@@ -1710,14 +1710,14 @@ domove_core()
             switch (rn2(3))
             {
             case 0:
-                You("tumble in place.");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "tumble in place.");
                 exercise(A_DEX, FALSE);
                 break;
             case 1:
-                You_cant("control your movements very well.");
+                You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "control your movements very well.");
                 break;
             case 2:
-                pline("It's hard to walk in thin air.");
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "It's hard to walk in thin air.");
                 exercise(A_DEX, TRUE);
                 break;
             }
@@ -1788,7 +1788,7 @@ domove_core()
                    doing so while encumbered is feasible; if in an aquatic
                    form, stressed or less is allowed; otherwise (magical
                    breathing), only burdened is allowed */
-                You("are carrying too much to climb out of the water.");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "are carrying too much to climb out of the water.");
                 nomul(0);
                 return;
             }
@@ -1814,10 +1814,10 @@ domove_core()
                     if (trap && trap->tseen)
                     {
                         //int tt = what_trap(trap->ttyp, rn2_on_display_rng);
-                        You("stop in front of %s.",
+                        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "stop in front of %s.",
                             an(get_trap_explanation(trap)));
                     } else if (is_pool_or_lava(x,y) && levl[x][y].seenv) {
-                        You("stop at the edge of the %s.",
+                        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "stop at the edge of the %s.",
                             hliquid(is_pool(x,y) ? "water" : "lava"));
                     }
                 }
@@ -1864,18 +1864,7 @@ domove_core()
                     char ynqbuf[BUFSZ] = "";
                     Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? "pool" : is_lava(x, y) ? "lava" : "location");
 
-                    boolean accept = FALSE;
-                    if (ParanoidWater)
-                    {
-                        accept = paranoid_query(ParanoidWater, ynqbuf);
-                    }
-                    else
-                    {
-                        char ans = ynq(ynqbuf);
-                        accept = (ans == 'y');
-                    }
-
-                    if (!accept)
+                    if (!paranoid_query(ParanoidWater, ynqbuf))
                     {
                         nomul(0);
                         return;
@@ -1890,18 +1879,7 @@ domove_core()
                 char ynqbuf[BUFSZ] = "";
                 Sprintf(ynqbuf, "There is %s. Step into it?", an(get_trap_explanation(trap)));
 
-                boolean accept = FALSE;
-                if (ParanoidTrap)
-                {
-                    accept = paranoid_query(ParanoidTrap, ynqbuf);
-                }
-                else
-                {
-                    char ans = ynq(ynqbuf);
-                    accept = (ans == 'y');
-                }
-
-                if (!accept)
+                if (!paranoid_query(ParanoidTrap, ynqbuf))
                 {
                     nomul(0);
                     context.move = FALSE;

@@ -65,10 +65,10 @@ namespace GnollHackCommon
     public delegate string CharPtrBooleanCallback(byte value1);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate int IntConstCharPtrConstCharPtrCharPtrCallback([MarshalAs(UnmanagedType.LPStr)] string value1, [MarshalAs(UnmanagedType.LPStr)] string value2, [MarshalAs(UnmanagedType.LPStr)] string value3);
+    public delegate int IntIntIntConstCharPtrConstCharPtrCharPtrCallback(int attr, int color, [MarshalAs(UnmanagedType.LPStr)] string value1, [MarshalAs(UnmanagedType.LPStr)] string value2, [MarshalAs(UnmanagedType.LPStr)] string value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]
-    public delegate string GetLineCallback([MarshalAs(UnmanagedType.LPStr)] string value1);
+    public delegate string GetLineCallback(int attr, int color, [MarshalAs(UnmanagedType.LPStr)] string value1);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int IntCharCharUintCallback([MarshalAs(UnmanagedType.LPStr)] string value1, [MarshalAs(UnmanagedType.LPStr)] string value2, uint value3);

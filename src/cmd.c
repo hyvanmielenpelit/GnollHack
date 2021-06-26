@@ -1271,9 +1271,9 @@ enter_explore_mode(VOID_ARGS)
         }
 #endif
 #endif
-        pline(
+        pline_ex(ATR_NONE, CLR_MSG_WARNING,
         "Beware!  From explore mode there will be no return to normal game.");
-        if (paranoid_query(ParanoidQuit,
+        if (paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidQuit,
                            "Do you want to enter explore mode?")) {
             clear_nhwindow(WIN_MESSAGE);
             You("are now in non-scoring explore mode.");
@@ -7862,7 +7862,8 @@ dotravel(VOID_ARGS)
  *   window port causing a buffer overflow there.
  */
 char
-yn_function(query, resp, def)
+yn_function_ex(attr, color, query, resp, def)
+int attr, color;
 const char *query, *resp;
 char def;
 {
@@ -7884,7 +7885,7 @@ char def;
         Strcpy(&qbuf[QBUFSZ - 1 - 3], "...");
         query = qbuf;
     }
-    res = (*windowprocs.win_yn_function)(query, resp, def);
+    res = (*windowprocs.win_yn_function_ex)(attr, color, query, resp, def);
 #ifdef DUMPLOG
     if (idx == saved_pline_index) {
         /* when idx is still the same as saved_pline_index, the interface
@@ -7898,9 +7899,28 @@ char def;
     return res;
 }
 
+char
+yn_function(query, resp, def)
+const char* query, * resp;
+char def;
+{
+    return yn_function_ex(ATR_NONE, NO_COLOR, query, resp, def);
+}
+
+
 /* for paranoid_confirm:quit,die,attack prompting */
 boolean
 paranoid_query(be_paranoid, prompt)
+boolean be_paranoid;
+const char* prompt;
+{
+    paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, be_paranoid, prompt);
+}
+
+/* for paranoid_confirm:quit,die,attack prompting */
+boolean
+paranoid_query_ex(attr, color, be_paranoid, prompt)
+int attr, color;
 boolean be_paranoid;
 const char *prompt;
 {
@@ -7923,7 +7943,7 @@ const char *prompt;
            (except we won't loop if response is ESC; it means no) */
         do {
             Sprintf(qbuf, "%s%s %s", promptprefix, prompt, responsetype);
-            getlin(qbuf, ans);
+            getlin_ex(attr, color, qbuf, ans);
             (void) mungspaces(ans);
             confirmed_ok = !strcmpi(ans, "yes");
             if (confirmed_ok || *ans == '\033')
@@ -7931,7 +7951,7 @@ const char *prompt;
             promptprefix = "\"Yes\" or \"No\": ";
         } while (ParanoidConfirm && strcmpi(ans, "no") && --trylimit);
     } else
-        confirmed_ok = (yn_query(prompt) == 'y');
+        confirmed_ok = (yn_query_ex(attr, color, prompt) == 'y');
 
     return confirmed_ok;
 }

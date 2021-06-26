@@ -745,9 +745,10 @@ void *vp;
 }
 
 char
-trace_yn_function(vp, query, resp, def)
+trace_yn_function_ex(vp, attr, color, query, resp, def)
 void *vp;
-const char *query, *resp;
+int attr, color;
+const char* query, * resp;
 char def;
 {
     struct trace_data *tdp = vp;
@@ -791,8 +792,9 @@ char def;
 }
 
 void
-trace_getlin(vp, query, bufp)
+trace_getlin(vp, attr, color, query, bufp)
 void *vp;
+int attr, color;
 const char *query;
 char *bufp;
 {
@@ -1208,8 +1210,8 @@ struct chain_procs trace_procs = {
     trace_update_positionbar,
 #endif
     trace_print_glyph, trace_init_print_glyph, trace_raw_print, trace_raw_print_bold, trace_nhgetch,
-    trace_nh_poskey, trace_nhbell, trace_doprev_message, trace_yn_function,
-    trace_getlin, trace_get_ext_cmd, trace_number_pad, trace_delay_output, trace_delay_output_milliseconds, trace_delay_output_intervals,
+    trace_nh_poskey, trace_nhbell, trace_doprev_message, trace_yn_function_ex,
+    trace_getlin_ex, trace_get_ext_cmd, trace_number_pad, trace_delay_output, trace_delay_output_milliseconds, trace_delay_output_intervals,
 #ifdef CHANGE_COLOR
     trace_change_color,
 #ifdef MAC

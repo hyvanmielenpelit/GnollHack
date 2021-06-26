@@ -476,6 +476,9 @@ extern short tile2enlargement[MAX_TILES];
 #define fnq(query) yn_function(query, fnqchars, 'q')
 #define dnq(query) yn_function(query, dnqchars, 'q')
 
+#define yn_query_ex(a, c, query) yn_function_ex(a, c, query, ynchars, 'n')
+#define ynq_ex(a, c, query) yn_function_ex(a, c, query, ynqchars, 'q')
+
 /* Macros for scatter */
 #define VIS_EFFECTS 0x01 /* display visual effects */
 #define MAY_HITMON 0x02  /* objects may hit monsters */

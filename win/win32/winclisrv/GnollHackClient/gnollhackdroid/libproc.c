@@ -36,8 +36,8 @@ struct window_procs lib_procs = {
     donull,
 #endif
     lib_print_glyph, lib_init_print_glyph, lib_raw_print, lib_raw_print_bold, lib_nhgetch,
-    lib_nh_poskey, lib_nhbell, lib_doprev_message, lib_yn_function,
-    lib_getlin, lib_get_ext_cmd, lib_number_pad, lib_delay_output, lib_delay_output_milliseconds, lib_delay_output_intervals,
+    lib_nh_poskey, lib_nhbell, lib_doprev_message, lib_yn_function_ex,
+    lib_getlin_ex, lib_get_ext_cmd, lib_number_pad, lib_delay_output, lib_delay_output_milliseconds, lib_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     lib_change_color, lib_change_background,
 #endif
@@ -348,22 +348,22 @@ int lib_doprev_message(void)
     return 0;
 }
 
-char lib_yn_function(const char* question, const char* choices, CHAR_P def)
+char lib_yn_function_ex(int attr, int color, const char* question, const char* choices, CHAR_P def)
 {
     char buf[BUFSIZ];
     if(question)
         write_text2buf_utf8(buf, BUFSIZ, question);
     char defs[2] = { 0,0 };
     defs[0] = def;
-    return convert_gnhch(lib_callbacks.callback_yn_function(question ? buf : 0, choices, defs));
+    return convert_gnhch(lib_callbacks.callback_yn_function_ex(attr, color, question ? buf : 0, choices, defs));
 }
 
-void lib_getlin(const char* question, char* input)
+void lib_getlin_ex(int attr, int color, const char* question, char* input)
 {
     char buf[BUFSIZ];
     if (question)
         write_text2buf_utf8(buf, BUFSIZ, question);
-    char* res = lib_callbacks.callback_getlin(question ? buf : 0);
+    char* res = lib_callbacks.callback_getlin_ex(attr, color, question ? buf : 0);
     if (res && input)
     {
         char msgbuf[BUFSZ] = "";
@@ -375,7 +375,7 @@ void lib_getlin(const char* question, char* input)
 
 int lib_get_ext_cmd(void)
 {
-    char* res = lib_callbacks.callback_getlin("Type an Extended Command");
+    char* res = lib_callbacks.callback_getlin_ex(ATR_NONE, NO_COLOR, "Type an Extended Command");
     if (!res)
         return -1;
 

@@ -810,7 +810,8 @@ amii_setpens(int count)
 /* Generate a requester for a string value. */
 
 void
-amii_getlin(prompt, bufp)
+amii_getlin_ex(attr, color, prompt, bufp)
+int attr, color;
 const char *prompt;
 char *bufp;
 {

@@ -111,9 +111,9 @@ extern int curses_nhgetch(void);
 extern int curses_nh_poskey(int *x, int *y, int *mod);
 extern void curses_nhbell(void);
 extern int curses_doprev_message(void);
-extern char curses_yn_function(const char *question, const char *choices,
+extern char curses_yn_function_ex(int, int, const char *question, const char *choices,
                                CHAR_P def);
-extern void curses_getlin(const char *question, char *input);
+extern void curses_getlin_ex(int attr, int color, const char *question, char *input);
 extern int curses_get_ext_cmd(void);
 extern void curses_number_pad(int state);
 extern void curses_delay_output(void);
@@ -182,9 +182,9 @@ extern int curses_get_mouse(int *mousex, int *mousey, int *mod);
 
 /* cursdial.c */
 
-extern void curses_line_input_dialog(const char *prompt,
+extern void curses_line_input_dialog(int attr UNUSED, int color UNUSED, const char *prompt,
                                      char *answer, int buffer);
-extern int curses_character_input_dialog(const char *prompt,
+extern int curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char *prompt,
                                          const char *choices, CHAR_P def);
 extern int curses_ext_cmd(void);
 extern void curses_create_nhmenu(winid wid);

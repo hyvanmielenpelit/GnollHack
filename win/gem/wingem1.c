@@ -1992,7 +1992,7 @@ XEVENT *xev;
             case MENU_SEARCH:
                 if (Inv_how != PICK_NONE) {
                     char buf[BUFSZ];
-                    Gem_getlin("Search for:", buf);
+                    Gem_getlin_ex(ATR_NONE, NO_COLOR, "Search for:", buf);
                     if (!*buf || buf[0] == '\033')
                         break;
                     for (it = invent_list; it; it = it->Gmi_next) {
@@ -3002,7 +3002,8 @@ int col;
 /************************* getlin *******************************/
 
 void
-Gem_getlin(ques, input)
+Gem_getlin_ex(attr, color, ques, input)
+int attr, color;
 const char *ques;
 char *input;
 {
@@ -3178,8 +3179,9 @@ XEVENT *xev;
 }
 
 char
-Gem_yn_function(query, resp, def)
-const char *query, *resp;
+Gem_yn_function_ex(attr, color, query, resp, def)
+int attr, color;
+const char* query, * resp;
 char def;
 {
     OBJECT *z_ob = zz_oblist[YNCHOICE];

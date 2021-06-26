@@ -9,7 +9,7 @@
 
 extern void FlashButton(DialogRef, short);
 extern char queued_resp(char *resp);
-extern char topl_yn_function(const char *query, const char *resp, char def);
+extern char topl_yn_function_ex(int, int, const char *query, const char *resp, char def);
 extern int get_line_from_key_queue(char *bufp);
 
 #endif /* MACPOPUP_H */

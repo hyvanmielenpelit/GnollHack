@@ -514,7 +514,7 @@ int NetHackQtBind::qt_doprev_message()
     return 0;
 }
 
-char NetHackQtBind::qt_yn_function(const char *question_, const char *choices, CHAR_P def)
+char NetHackQtBind::qt_yn_function_ex(int attr, int color, const char *question_, const char *choices, CHAR_P def)
 {
     QString question(QString::fromLatin1(question_));
     QString message;
@@ -590,7 +590,7 @@ char NetHackQtBind::qt_yn_function(const char *question_, const char *choices, C
     }
 }
 
-void NetHackQtBind::qt_getlin(const char *prompt, char *line)
+void NetHackQtBind::qt_getlin_ex(int attr, int color, const char *prompt, char *line)
 {
     NetHackQtStringRequestor requestor(mainWidget(),prompt);
     if (!requestor.Get(line)) {
@@ -805,8 +805,8 @@ struct window_procs Qt_procs = {
     nethack_qt4::NetHackQtBind::qt_nh_poskey,
     nethack_qt4::NetHackQtBind::qt_nhbell,
     nethack_qt4::NetHackQtBind::qt_doprev_message,
-    nethack_qt4::NetHackQtBind::qt_yn_function,
-    nethack_qt4::NetHackQtBind::qt_getlin,
+    nethack_qt4::NetHackQtBind::qt_yn_function_ex,
+    nethack_qt4::NetHackQtBind::qt_getlin_ex,
     nethack_qt4::NetHackQtBind::qt_get_ext_cmd,
     nethack_qt4::NetHackQtBind::qt_number_pad,
     nethack_qt4::NetHackQtBind::qt_delay_output,

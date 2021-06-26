@@ -43,8 +43,8 @@ struct window_procs amii_procs = {
     donull,
 #endif
     amii_print_glyph, amii_init_print_glyph, amii_raw_print, amii_raw_print_bold, amii_nhgetch,
-    amii_nh_poskey, amii_bell, amii_doprev_message, amii_yn_function,
-    amii_getlin, amii_get_ext_cmd, amii_number_pad, amii_delay_output, amii_delay_output_milliseconds, amii_delay_output_intervals,
+    amii_nh_poskey, amii_bell, amii_doprev_message, amii_yn_function_ex,
+    amii_getlin_ex, amii_get_ext_cmd, amii_number_pad, amii_delay_output, amii_delay_output_milliseconds, amii_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     amii_change_color, amii_get_color_string,
 #endif
@@ -91,8 +91,8 @@ struct window_procs amiv_procs = {
     donull,
 #endif
     amii_print_glyph, amii_init, print_glyph, amii_raw_print, amii_raw_print_bold, amii_nhgetch,
-    amii_nh_poskey, amii_bell, amii_doprev_message, amii_yn_function,
-    amii_getlin, amii_get_ext_cmd, amii_number_pad, amii_delay_output, amii_delay_output_milliseconds, amii_delay_output_intervals,
+    amii_nh_poskey, amii_bell, amii_doprev_message, amii_yn_function_ex,
+    amii_getlin_ex, amii_get_ext_cmd, amii_number_pad, amii_delay_output, amii_delay_output_milliseconds, amii_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     amii_change_color, amii_get_color_string,
 #endif
@@ -449,7 +449,7 @@ amii_askname()
     char plnametmp[300]; /* From winreq.c: sizeof(StrStringSIBuff) */
     *plnametmp = 0;
     do {
-        amii_getlin("Who are you?", plnametmp);
+        amii_getlin_ex(ATR_NONE, NO_COLOR, "Who are you?", plnametmp);
     } while (strlen(plnametmp) == 0);
 
     strncpy(plname, plnametmp, PL_NSIZ - 1); /* Avoid overflowing plname[] */
@@ -1005,8 +1005,9 @@ struct amii_WinDesc *cw;
 
 /* Ask a question and get a response */
 char
-amii_yn_function(query, resp, def)
-const char * query, *resp;
+amii_yn_function_ex(attr, color, query, resp, def)
+int attr, color;
+const char* query, * resp;
 char def;
 {
     /*

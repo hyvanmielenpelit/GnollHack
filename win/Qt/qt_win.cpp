@@ -4963,7 +4963,7 @@ int NetHackQtBind::qt_doprev_message()
     return 0;
 }
 
-char NetHackQtBind::qt_yn_function(const char *question, const char *choices, CHAR_P def)
+char NetHackQtBind::qt_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def)
 {
     if (qt_settings->ynInMessages() && WIN_MESSAGE!=WIN_ERR) {
 	// Similar to X11 windowport `slow' feature.
@@ -5038,7 +5038,7 @@ char NetHackQtBind::qt_yn_function(const char *question, const char *choices, CH
     }
 }
 
-void NetHackQtBind::qt_getlin(const char *prompt, char *line)
+void NetHackQtBind::qt_getlin_ex(int attr, int color, const char *prompt, char *line)
 {
     NetHackQtStringRequestor requestor(keybuffer,prompt);
     if (!requestor.Get(line)) {
@@ -5296,8 +5296,8 @@ struct window_procs Qt_procs = {
     NetHackQtBind::qt_nh_poskey,
     NetHackQtBind::qt_nhbell,
     NetHackQtBind::qt_doprev_message,
-    NetHackQtBind::qt_yn_function,
-    NetHackQtBind::qt_getlin,
+    NetHackQtBind::qt_yn_function_ex,
+    NetHackQtBind::qt_getlin_ex,
     NetHackQtBind::qt_get_ext_cmd,
     NetHackQtBind::qt_number_pad,
     NetHackQtBind::qt_delay_output,

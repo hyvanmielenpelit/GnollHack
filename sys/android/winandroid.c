@@ -46,8 +46,8 @@ static int NDECL(and_nhgetch);
 static int FDECL(and_nh_poskey, (int *, int *, int *));
 static void NDECL(and_nhbell);
 static int NDECL(and_doprev_message);
-static char FDECL(and_yn_function, (const char *, const char *, CHAR_P));
-static void FDECL(and_getlin, (const char *,char *));
+static char FDECL(and_yn_function_ex, (int, int, const char *, const char *, CHAR_P));
+static void FDECL(and_getlin_ex, (int, int, const char *,char *));
 static int NDECL(and_get_ext_cmd);
 static void FDECL(and_number_pad, (int));
 static void NDECL(and_delay_output);
@@ -112,8 +112,8 @@ struct window_procs and_procs = {
 	and_nh_poskey,
 	and_nhbell,
 	and_doprev_message,
-	and_yn_function,
-	and_getlin,
+	and_yn_function_ex,
+	and_getlin_ex,
 	and_get_ext_cmd,
 	and_number_pad,
 	and_delay_output,
@@ -342,7 +342,7 @@ void quit_possible()
 		quit_if_possible = FALSE;
 		if(!SaveAndExit())
 		{
-			if(and_yn_function("Error saving game. Quit anyway?", ynchars, 'n') == 'y')
+			if(and_yn_function_ex(ATR_NONE, NO_COLOR, "Error saving game. Quit anyway?", ynchars, 'n') == 'y')
 				nh_terminate(EXIT_SUCCESS);
 		}
 	}
@@ -1593,7 +1593,7 @@ int and_doprev_message()
 //		   returned, preserving case (upper or lower.) This means that
 //		   if the calling function needs an exact match, it must handle
 //		   user input correctness itself.
-char and_yn_function(const char *question, const char *choices, CHAR_P def)
+char and_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def)
 {
 	char ch;
 	char message[BUFSZ];
@@ -1895,7 +1895,7 @@ void and_n_getline_r(const char* question, char* buf, int nMax, int showLog, int
 //		-- getlin() can assume the input buffer is at least BUFSZ
 //		   bytes in size and must truncate inputs to fit, including
 //		   the nul character.
-void and_getlin(const char *question, char *input)
+void and_getlin_ex(int attr, int color, const char *question, char *input)
 {
 //	debuglog("and_getlin '%s'", question);
 	and_n_getline(question, input, BUFSZ, FALSE);

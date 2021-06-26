@@ -113,7 +113,7 @@ static nhmenu *nhmenus = NULL;  /* NetHack menu array */
    or a wish */
 
 void
-curses_line_input_dialog(const char *prompt, char *answer, int buffer)
+curses_line_input_dialog(int attr UNUSED, int color UNUSED, const char *prompt, char *answer, int buffer)
 {
     int map_height, map_width, maxwidth, remaining_buf, winx, winy, count;
     WINDOW *askwin, *bwin;
@@ -192,7 +192,7 @@ curses_line_input_dialog(const char *prompt, char *answer, int buffer)
 /* Get a single character response from the player, such as a y/n prompt */
 
 int
-curses_character_input_dialog(const char *prompt, const char *choices,
+curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char *prompt, const char *choices,
                               CHAR_P def)
 {
     WINDOW *askwin = NULL;
@@ -1362,7 +1362,7 @@ menu_get_selections(WINDOW * win, nhmenu *menu, int how)
             }
             break;
         case MENU_SEARCH:
-            curses_line_input_dialog("Search for:", search_key, BUFSZ);
+            curses_line_input_dialog(ATR_NONE, NO_COLOR, "Search for:", search_key, BUFSZ);
 
             refresh();
             touchwin(win);

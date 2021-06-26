@@ -333,7 +333,7 @@ done2()
 {
     if (iflags.debug_fuzzer)
         return 0;
-    if (!paranoid_query(ParanoidQuit, "Really quit?")) {
+    if (!paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidQuit, "Really quit?")) {
 #ifndef NO_SIGNAL
         (void) signal(SIGINT, (SIG_RET_TYPE) done1);
 #endif
@@ -1257,7 +1257,7 @@ int how;
     }
     /* explore and wizard modes offer player the option to keep playing */
     if (!survive && (wizard || discover) && how <= GENOCIDED
-        && !paranoid_query(ParanoidDie, "Die?")) {
+        && !paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidDie, "Die?")) {
         pline("OK, so you don't %s.", (how == CHOKING) ? "choke" : "die");
         savelife(how);
         survive = TRUE;
@@ -1538,7 +1538,7 @@ int how;
 
     if (bones_ok) 
     {
-        if (!wizard || paranoid_query(ParanoidBones, "Save bones?"))
+        if (!wizard || paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidBones, "Save bones?"))
             savebones(how, endtime, corpse);
         /* corpse may be invalid pointer now so
             ensure that it isn't used again */

@@ -1762,7 +1762,7 @@ newdogpos:
                 const char *what = cursedobj[chi] ? distant_name(cursedobj[chi], doname) : something;
 
                 play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_WARN_CURSED);
-                pline("%s %s reluctantly over %s.", noit_Monnam(mtmp),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s reluctantly over %s.", noit_Monnam(mtmp),
                       vtense((char *) 0, locomotion(mtmp->data, "step")), what);
             }
             for (j = MTSZ - 1; j > 0; j--)

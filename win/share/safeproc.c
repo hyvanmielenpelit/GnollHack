@@ -81,8 +81,8 @@ struct window_procs safe_procs = {
     safe_update_positionbar,
 #endif
     safe_print_glyph, safe_init_print_glyph, safe_raw_print, safe_raw_print_bold, safe_nhgetch,
-    safe_nh_poskey, safe_nhbell, safe_doprev_message, safe_yn_function,
-    safe_getlin, safe_get_ext_cmd, safe_number_pad, safe_delay_output, safe_delay_output_milliseconds, safe_delay_output_intervals,
+    safe_nh_poskey, safe_nhbell, safe_doprev_message, safe_yn_function_ex,
+    safe_getlin_ex, safe_get_ext_cmd, safe_number_pad, safe_delay_output, safe_delay_output_milliseconds, safe_delay_output_intervals,
 #ifdef CHANGE_COLOR /* the Mac uses a palette device */
     safe_change_color,
 #ifdef MAC
@@ -559,7 +559,8 @@ safe_doprev_message()
 }
 
 char
-safe_yn_function(query, resp, def)
+safe_yn_function_ex(attr, color, query, resp, def)
+int attr, color;
 const char *query;
 const char *resp;
 char def;
@@ -569,7 +570,8 @@ char def;
 
 /*ARGSUSED*/
 void
-safe_getlin(prompt, outbuf)
+safe_getlin_ex(attr, color, prompt, outbuf)
+int attr UNUSED, color UNUSED;
 const char *prompt UNUSED;
 char *outbuf;
 {

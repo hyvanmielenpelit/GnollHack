@@ -114,8 +114,8 @@ struct window_procs tty_procs = {
     tty_update_positionbar,
 #endif
     tty_print_glyph, tty_init_print_glyph, tty_raw_print, tty_raw_print_bold, tty_nhgetch,
-    tty_nh_poskey, tty_nhbell, tty_doprev_message, tty_yn_function,
-    tty_getlin, tty_get_ext_cmd, tty_number_pad, tty_delay_output, tty_delay_output_milliseconds, tty_delay_output_intervals,
+    tty_nh_poskey, tty_nhbell, tty_doprev_message, tty_yn_function_ex,
+    tty_getlin_ex, tty_get_ext_cmd, tty_number_pad, tty_delay_output, tty_delay_output_milliseconds, tty_delay_output_intervals,
 #ifdef CHANGE_COLOR /* the Mac uses a palette device */
     tty_change_color,
 #ifdef MAC
@@ -2235,7 +2235,7 @@ struct WinDesc *cw;
                 boolean on_curr_page = FALSE;
                 int lineno = 0;
 
-                tty_getlin("Search for:", tmpbuf);
+                tty_getlin_ex(ATR_NONE, NO_COLOR, "Search for:", tmpbuf);
                 if (!tmpbuf[0] || tmpbuf[0] == '\033')
                     break;
                 Sprintf(searchbuf, "*%s*", tmpbuf);

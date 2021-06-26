@@ -514,7 +514,7 @@ curses_choose_character()
     if (!flags.randomall &&
         (flags.initrole == ROLE_NONE || flags.initrace == ROLE_NONE ||
          flags.initgend == ROLE_NONE || flags.initalign == ROLE_NONE)) {
-        pick4u = tolower(curses_character_input_dialog(prompt, choice, 'y'));
+        pick4u = tolower(curses_character_input_dialog(ATR_NONE, NO_COLOR, prompt, choice, 'y'));
     } else {
         pick4u = 'y';
     }

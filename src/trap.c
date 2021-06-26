@@ -6127,10 +6127,10 @@ boolean force;
         || (!force && confused && !rn2(3)))
     {
         play_sfx_sound(SFX_TRAP_FOUND);
-        You("find a trap on the door!");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find a trap on the door!");
         exercise(A_WIS, TRUE);
 
-        if (ynq("Disarm it?") != 'y')
+        if (ynq_ex(ATR_NONE, CLR_MSG_ATTENTION, "Disarm it?") != 'y')
             return 1;
 
         if (levl[x][y].doormask & D_TRAPPED) 
@@ -6141,7 +6141,7 @@ boolean force;
                            || rnd(75 + level_difficulty() / 2) > ch)) 
             {
                 play_sfx_sound(SFX_DISARM_TRAP_FAIL);
-                You("set it off!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "set it off!");
                 b_trapped(get_short_door_name_at(x, y), FINGER, x, y);
                 levl[x][y].doormask &= ~D_TRAPPED;
                 if (is_door_destroyed_by_booby_trap_at(x, y))
@@ -6158,7 +6158,7 @@ boolean force;
             else 
             {
                 play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
-                You("disarm it!");
+                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "disarm it!");
                 levl[x][y].doormask &= ~D_TRAPPED;
                 use_skill(P_DISARM_TRAP, 10);
             }

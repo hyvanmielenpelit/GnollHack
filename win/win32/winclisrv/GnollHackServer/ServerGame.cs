@@ -55,8 +55,8 @@ namespace GnollHackServer
             NhPosKeyCallback callback_nh_poskey,
             VoidVoidCallback callback_nhbell,
             IntVoidCallback callback_doprev_message,
-            IntConstCharPtrConstCharPtrCharPtrCallback callback_yn_function,
-            GetLineCallback callback_getlin,
+            IntIntIntConstCharPtrConstCharPtrCharPtrCallback callback_yn_function_ex,
+            GetLineCallback callback_getlin_ex,
             IntVoidCallback callback_get_ext_cmd,
             VoidIntCallback callback_number_pad,
             VoidVoidCallback callback_delay_output,
@@ -203,7 +203,7 @@ namespace GnollHackServer
                 GmaeCallback_nh_poskey,
                 GameCallback_VoidVoidDummy,
                 GameCallback_IntVoidDummy,
-                GameCallback_IntConstCharPtrConstCharPtrCharPtrDummy,
+                GameCallback_YnFunction,
                 GameCallback_GetLineCallback,
                 GameCallback_IntVoidDummy,
                 GameCallback_VoidIntDummy,
@@ -422,11 +422,11 @@ namespace GnollHackServer
         {
             return 0;
         }
-        protected int GameCallback_IntConstCharPtrConstCharPtrCharPtrDummy(string value1, string value2, string value3)
+        protected int GameCallback_YnFunction(int attr, int color, string value1, string value2, string value3)
         {
             return 0;
         }
-        protected string GameCallback_GetLineCallback(string value1)
+        protected string GameCallback_GetLineCallback(int attr, int color, string value1)
         {
             return "";
         }

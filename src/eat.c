@@ -3000,7 +3000,7 @@ struct obj *otmp;
         /* Tainted meat */
         Sprintf(buf, "%s like %s could be tainted!  %s", foodsmell, it_or_they,
                 eat_it_anyway);
-        if (yn_function(buf, ynchars, 'n') == 'n')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_NEGATIVE, buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
@@ -3010,7 +3010,7 @@ struct obj *otmp;
     {
         Sprintf(buf, "%s like %s could be something very dangerous!  %s",
                 foodsmell, it_or_they, eat_it_anyway);
-        if (yn_function(buf, ynchars, 'n') == 'n')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_NEGATIVE, buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
@@ -3020,7 +3020,7 @@ struct obj *otmp;
         /* Rotten */
         Sprintf(buf, "%s like %s could be rotten! %s",  foodsmell, it_or_they,
                 eat_it_anyway);
-        if (yn_function(buf, ynchars, 'n') == 'n')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_NEGATIVE, buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
@@ -3031,7 +3031,7 @@ struct obj *otmp;
         /* poisonous */
         Sprintf(buf, "%s like %s might be poisonous!  %s", foodsmell,
                 it_or_they, eat_it_anyway);
-        if (yn_function(buf, ynchars, 'n') == 'n')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_NEGATIVE, buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
@@ -3042,14 +3042,14 @@ struct obj *otmp;
         /* causes sleep, for long enough to be dangerous */
         Sprintf(buf, "%s like %s might have been poisoned.  %s", foodsmell,
                 it_or_they, eat_it_anyway);
-        return (yn_function(buf, ynchars, 'n') == 'n') ? 1 : 2;
+        return (yn_function_ex(ATR_NONE, CLR_MSG_NEGATIVE, buf, ynchars, 'n') == 'n') ? 1 : 2;
     }
 
     if (cadaver && !vegetarian(&mons[mnum]) && !u.uconduct.unvegetarian
         && Role_if(PM_MONK)) 
     {
         Sprintf(buf, "%s unhealthy.  %s", foodsmell, eat_it_anyway);
-        if (yn_function(buf, ynchars, 'n') == 'n')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_WARNING, buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
@@ -3058,7 +3058,7 @@ struct obj *otmp;
     if ((objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC || (cadaver && has_acidic_corpse(&mons[mnum]))) && !Acid_immunity && !Acid_resistance) 
     {
         Sprintf(buf, "%s rather acidic.  %s", foodsmell, eat_it_anyway);
-        if (yn_function(buf, ynchars, 'n') == 'n')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_WARNING, buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
@@ -3069,7 +3069,7 @@ struct obj *otmp;
     {
         Sprintf(buf, "%s disgusting to you right now.  %s", foodsmell,
                 eat_it_anyway);
-        if (yn_function(buf, ynchars, 'n') == 'n')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_WARNING, buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
@@ -3085,7 +3085,7 @@ struct obj *otmp;
     {
         Sprintf(buf, "%s foul and unfamiliar to you.  %s", foodsmell,
                 eat_it_anyway);
-        if (yn_function(buf, ynchars, 'n') == 'n')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_WARNING, buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
@@ -3097,7 +3097,7 @@ struct obj *otmp;
             || (cadaver && !vegetarian(&mons[mnum]))))
     {
         Sprintf(buf, "%s unfamiliar to you.  %s", foodsmell, eat_it_anyway);
-        if (yn_function(buf, ynchars, 'n') == 'n')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_WARNING, buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
@@ -3108,7 +3108,7 @@ struct obj *otmp;
         /* Tainted meat with Sick_resistance */
         Sprintf(buf, "%s like %s could be tainted!  %s",
                 foodsmell, it_or_they, eat_it_anyway);
-        if (yn_function(buf, ynchars, 'n') == 'n')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_NEGATIVE, buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
@@ -3765,7 +3765,7 @@ int num;
                     if (context.victual.canchoke
                         && context.victual.reqtime > 1) {
                         /* a one-gulp food will not survive a stop */
-                        if (yn_function("Continue eating?", ynchars, 'n')
+                        if (yn_function_ex(ATR_NONE, CLR_MSG_WARNING, "Continue eating?", ynchars, 'n')
                             != 'y') {
                             reset_eat();
                             nomovemsg = (char *) 0;

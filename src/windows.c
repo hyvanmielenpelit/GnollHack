@@ -665,9 +665,9 @@ boolean is_restoring;
  */
 
 static int NDECL(hup_nhgetch);
-static char FDECL(hup_yn_function, (const char *, const char *, CHAR_P));
+static char FDECL(hup_yn_function_ex, (int, int, const char *, const char *, CHAR_P));
 static int FDECL(hup_nh_poskey, (int *, int *, int *));
-static void FDECL(hup_getlin, (const char *, char *));
+static void FDECL(hup_getlin_ex, (int, int, const char *, char *));
 static void FDECL(hup_init_nhwindows, (int *, char **));
 static void FDECL(hup_exit_nhwindows, (const char *));
 static winid FDECL(hup_create_nhwindow, (int));
@@ -731,7 +731,7 @@ static struct window_procs hup_procs = {
     hup_void_fdecl_constchar_p,                       /* raw_print_bold */
     hup_nhgetch, hup_nh_poskey, hup_void_ndecl,       /* nhbell  */
     hup_int_ndecl,                                    /* doprev_message */
-    hup_yn_function, hup_getlin, hup_int_ndecl,       /* get_ext_cmd */
+    hup_yn_function_ex, hup_getlin_ex, hup_int_ndecl,       /* get_ext_cmd */
     hup_void_fdecl_int,                               /* number_pad */
     hup_void_ndecl,                                   /* delay_output  */
     hup_void_fdecl_int,                               /* delay_output_milliseconds */
@@ -808,7 +808,8 @@ hup_nhgetch(VOID_ARGS)
 
 /*ARGSUSED*/
 static char
-hup_yn_function(prompt, resp, deflt)
+hup_yn_function_ex(attr, color, prompt, resp, deflt)
+int attr UNUSED, color UNUSED;
 const char *prompt UNUSED, *resp UNUSED;
 char deflt;
 {
@@ -827,7 +828,8 @@ int *x UNUSED, *y UNUSED, *mod UNUSED;
 
 /*ARGSUSED*/
 static void
-hup_getlin(prompt, outbuf)
+hup_getlin_ex(attr, color, prompt, outbuf)
+int attr UNUSED, color UNUSED;
 const char *prompt UNUSED;
 char *outbuf;
 {

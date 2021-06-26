@@ -175,7 +175,7 @@ picklock(VOID_ARGS)
         /* unfortunately we don't have a 'tknown' flag to record
            "known to be trapped" so declining to disarm and then
            retrying lock manipulation will find it all over again */
-        if (yn_query("You find a trap!  Do you want to try to disarm it?") == 'y') {
+        if (yn_query_ex(ATR_NONE, CLR_MSG_ATTENTION, "You find a trap!  Do you want to try to disarm it?") == 'y') {
             const char *what;
             boolean alreadyunlocked;
 

@@ -85,8 +85,8 @@ struct window_procs dll_procs = {
     donull,
 #endif
     dll_print_glyph, dll_init_print_glyph, dll_raw_print, dll_raw_print_bold, dll_nhgetch,
-    dll_nh_poskey, dll_nhbell, dll_doprev_message, dll_yn_function,
-    dll_getlin, dll_get_ext_cmd, dll_number_pad, dll_delay_output, dll_delay_output_milliseconds, dll_delay_output_intervals,
+    dll_nh_poskey, dll_nhbell, dll_doprev_message, dll_yn_function_ex,
+    dll_getlin_ex, dll_get_ext_cmd, dll_number_pad, dll_delay_output, dll_delay_output_milliseconds, dll_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     mswin, dll_change_background,
 #endif
@@ -1586,12 +1586,12 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-dll_yn_function(const char *question, const char *choices, CHAR_P def)
+dll_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def)
 {
-    dll_logDebug("dll_yn_function(%s, %s, %d)\n", question, choices, def);
+    dll_logDebug("dll_yn_function_ex(%s, %s, %d)\n", question, choices, def);
     char defs[2] = { 0, 0 };
     defs[0] = def;
-    return dll_callbacks.callback_yn_function(question, choices, defs);
+    return dll_callbacks.callback_yn_function_ex(attr, color, question, choices, defs);
 
 #if 0
     char ch;
@@ -1601,7 +1601,7 @@ dll_yn_function(const char *question, const char *choices, CHAR_P def)
     int createcaret;
     boolean digit_ok, allow_num;
 
-    dll_logDebug("dll_yn_function(%s, %s, %d)\n", question, choices, def);
+    dll_logDebug("dll_yn_function_ex(%s, %s, %d)\n", question, choices, def);
 
     if (WIN_MESSAGE == WIN_ERR && choices == ynchars) {
         char *text =
@@ -1760,10 +1760,10 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-dll_getlin(const char *question, char *input)
+dll_getlin_ex(int attr, int color, const char *question, char *input)
 {
     dll_logDebug("dll_getlin(%s, %p)\n", question, input);
-    char* res = dll_callbacks.callback_getlin(question);
+    char* res = dll_callbacks.callback_getlin_ex(attr, color, question);
     if (res && input)
         strcpy(input, res);
 

@@ -1109,7 +1109,7 @@ dokick() {
     } 
     else if (u.usteed) 
     {
-        if (yn_function("Kick your steed?", ynchars, 'y') == 'y')
+        if (yn_function_ex(ATR_NONE, CLR_MSG_ATTENTION, "Kick your steed?", ynchars, 'y') == 'y')
         {
             You("kick %s.", mon_nam(u.usteed));
             kick_steed();

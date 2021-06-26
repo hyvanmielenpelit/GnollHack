@@ -24,12 +24,12 @@ queued_resp(char *resp)
 }
 
 char
-topl_yn_function(const char *query, const char *resp, char def)
+topl_yn_function_ex(int attr, int color, const char *query, const char *resp, char def)
 {
     char buf[30];
     char c = queued_resp((char *) resp);
     if (!c) {
-        enter_topl_mode((char *) query);
+        enter_topl_mode(attr, color, (char *) query);
         topl_set_resp((char *) resp, def);
 
         do {
@@ -49,7 +49,8 @@ topl_yn_function(const char *query, const char *resp, char def)
 }
 
 char
-mac_yn_function(query, resp, def)
+mac_yn_function_ex(attr, color, query, resp, def)
+int attr, color;
 const char *query, *resp;
 char def;
 /*
@@ -60,7 +61,7 @@ char def;
  *   If resp is NULL, any single character is accepted and returned.
  */
 {
-    return topl_yn_function(query, resp, def);
+    return topl_yn_function_ex(attr, color, query, resp, def);
 }
 
 /* mactopl.c */

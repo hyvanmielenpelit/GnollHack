@@ -729,7 +729,7 @@ dodrink()
             Sprintf(qbuf, "This potion smells %s. Drink it?",
                 otmp->otyp == POT_SICKNESS ? "contaminated" : otmp->otyp == POT_POISON ? "like poison" : otmp->otyp == POT_URINE ? "like urine" : "foul");
 
-            char qres = yn_query(qbuf);
+            char qres = yn_query_ex(ATR_NONE, CLR_MSG_NEGATIVE, qbuf);
 
             if (qres != 'y')
                 return 0;

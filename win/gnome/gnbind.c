@@ -40,8 +40,8 @@ struct window_procs Gnome_procs = {
     donull,
 #endif
     gnome_print_glyph, gnome_init_print_glyph, gnome_raw_print, gnome_raw_print_bold, gnome_nhgetch,
-    gnome_nh_poskey, gnome_nhbell, gnome_doprev_message, gnome_yn_function,
-    gnome_getlin, gnome_get_ext_cmd, gnome_number_pad, gnome_delay_output, gnome_delay_output_milliseconds, gnome_delay_output_intervals,
+    gnome_nh_poskey, gnome_nhbell, gnome_doprev_message, gnome_yn_function_ex,
+    gnome_getlin_ex, gnome_get_ext_cmd, gnome_number_pad, gnome_delay_output, gnome_delay_output_milliseconds, gnome_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     donull, donull,
 #endif
@@ -1066,7 +1066,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-gnome_yn_function(const char *question, const char *choices, CHAR_P def)
+gnome_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def)
 {
     int ch;
     int result = -1;
@@ -1131,7 +1131,7 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-gnome_getlin(const char *question, char *input)
+gnome_getlin_ex(int attr, int color, const char *question, char *input)
 {
     int ret;
 

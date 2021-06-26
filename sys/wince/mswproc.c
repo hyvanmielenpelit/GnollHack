@@ -65,8 +65,8 @@ struct window_procs mswin_procs = {
     donull,
 #endif
     mswin_print_glyph, mswin_init_print_glyph, mswin_raw_print, mswin_raw_print_bold, mswin_nhgetch,
-    mswin_nh_poskey, mswin_nhbell, mswin_doprev_message, mswin_yn_function,
-    mswin_getlin, mswin_get_ext_cmd, mswin_number_pad, mswin_delay_output, mswin_delay_output_milliseconds, mswin_delay_output_intervals,
+    mswin_nh_poskey, mswin_nhbell, mswin_doprev_message, mswin_yn_function_ex,
+    mswin_getlin_ex, mswin_get_ext_cmd, mswin_number_pad, mswin_delay_output, mswin_delay_output_milliseconds, mswin_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     mswin, mswin_change_background,
 #endif
@@ -1379,7 +1379,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-mswin_yn_function(const char *question, const char *choices, CHAR_P def)
+mswin_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def)
 {
     int result = -1;
     char ch;
@@ -1387,7 +1387,7 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
     char message[BUFSZ];
     char res_ch[2];
 
-    logDebug("mswin_yn_function(%s, %s, %d)\n", question, choices, def);
+    logDebug("mswin_yn_function_ex(%s, %s, %d)\n", question, choices, def);
 
     if (choices) {
         char *cb, choicebuf[QBUFSZ];
@@ -1439,7 +1439,7 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
     }
 #endif /* defined(WIN_CE_SMARTPHONE) */
 
-    mswin_putstr(WIN_MESSAGE, ATR_BOLD, message);
+    mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, message, 0, color);
 
     /* Only here if main window is not present */
     while (result < 0) {
@@ -1490,10 +1490,10 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-mswin_getlin(const char *question, char *input)
+mswin_getlin_ex(int attr, int color, const char *question, char *input)
 {
     logDebug("mswin_getlin(%s, %p)\n", question, input);
-    if (mswin_getlin_window(question, input, BUFSZ) == IDCANCEL) {
+    if (mswin_getlin_window(attr, color, question, input, BUFSZ) == IDCANCEL) {
         strcpy(input, "\033");
     }
 }

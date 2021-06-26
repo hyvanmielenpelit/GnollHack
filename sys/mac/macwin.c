@@ -998,12 +998,12 @@ topl_resp_rect(int resp_idx, Rect *r)
 }
 
 void
-enter_topl_mode(char *query)
+enter_topl_mode(int attr, int color, char *query)
 {
     if (in_topl_mode())
         return;
 
-    putstr(WIN_MESSAGE, ATR_BOLD, query);
+    putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, query, 0, color);
 
     topl_query_len = strlen(query);
     (*top_line)->selStart = topl_query_len;
@@ -3295,8 +3295,8 @@ struct window_procs mac_procs = {
     donull,
 #endif
     tty_print_glyph, tty_init_print_glyph, tty_raw_print, tty_raw_print_bold, mac_nhgetch,
-    mac_nh_poskey, tty_nhbell, mac_doprev_message, mac_yn_function,
-    mac_getlin, mac_get_ext_cmd, mac_number_pad, mac_delay_output, mac_delay_output_milliseconds, mac_delay_output_intervals,
+    mac_nh_poskey, tty_nhbell, mac_doprev_message, mac_yn_function_ex,
+    mac_getlin_ex, mac_get_ext_cmd, mac_number_pad, mac_delay_output, mac_delay_output_milliseconds, mac_delay_output_intervals,
 #ifdef CHANGE_COLOR
     tty_change_color, tty_change_background, set_tty_font_name,
     tty_get_color_string,

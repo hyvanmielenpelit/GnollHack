@@ -1136,7 +1136,7 @@ mswin_direct_command()
 {
     char cmd[BUFSZ];
     ZeroMemory(cmd, sizeof(cmd));
-    mswin_getlin("Type cmd text", cmd);
+    mswin_getlin_ex(ATR_NONE, NO_COLOR, "Type cmd text", cmd);
     if (cmd[0]) {
         /* feed command to nethack */
         char *p = cmd;

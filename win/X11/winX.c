@@ -122,8 +122,8 @@ struct window_procs X11_procs = {
     donull,
 #endif
     X11_print_glyph, X11_init_print_glyph, X11_raw_print, X11_raw_print_bold, X11_nhgetch,
-    X11_nh_poskey, X11_nhbell, X11_doprev_message, X11_yn_function,
-    X11_getlin, X11_get_ext_cmd, X11_number_pad, X11_delay_output, X11_delay_output_milliseconds, X11_delay_output_intervals,
+    X11_nh_poskey, X11_nhbell, X11_doprev_message, X11_yn_function_ex,
+    X11_getlin_ex, X11_get_ext_cmd, X11_number_pad, X11_delay_output, X11_delay_output_milliseconds, X11_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     donull, donull,
 #endif
@@ -1912,7 +1912,8 @@ release_getline_widgets()
 }
 
 void
-X11_getlin(question, input)
+X11_getlin_ex(attr, color, question, input)
+int attr, color;
 const char *question;
 char *input;
 {
@@ -2155,8 +2156,9 @@ release_yn_widgets()
 /* X11-specific edition of yn_function(), the routine called by the core
    to show a prompt and get a single keystroke answer, often 'y' vs 'n' */
 char
-X11_yn_function(ques, choices, def)
-const char *ques;
+X11_yn_function_ex(attr, color, ques, choices, def)
+int attr, color;
+const char* ques;
 const char *choices; /* string of possible response chars; any char if Null */
 char def;            /* default response if user hits <space> or <return> */
 {

@@ -30,12 +30,12 @@ get_line_from_key_queue(char *bufp)
 }
 
 static void
-topl_getlin(const char *query, char *bufp, Boolean ext)
+topl_getlin_ex(int attr, int color, const char *query, char *bufp, Boolean ext)
 {
     if (get_line_from_key_queue(bufp))
         return;
 
-    enter_topl_mode((char *) query);
+    enter_topl_mode(attr, color, (char*)query);
     while (topl_key(nhgetch(), ext))
         ;
     leave_topl_mode(bufp);
@@ -48,9 +48,9 @@ topl_getlin(const char *query, char *bufp, Boolean ext)
  * resulting string is "\033".
  */
 void
-mac_getlin(const char *query, char *bufp)
+mac_getlin_ex(int attr, int color, const char *query, char *bufp)
 {
-    topl_getlin(query, bufp, false);
+    topl_getlin_ex(attr, color, query, bufp, false);
 }
 
 /* Read in an extended command - doing command line completion for
@@ -65,7 +65,7 @@ mac_get_ext_cmd()
 
     if (iflags.extmenu)
         return extcmd_via_menu();
-    topl_getlin("# ", bufp, true);
+    topl_getlin_ex(ATR_NONE, NO_COLOR, "# ", bufp, true);
     for (i = 0; extcmdlist[i].ef_txt != (char *) 0; i++)
         if (!strcmp(bufp, extcmdlist[i].ef_txt))
             break;

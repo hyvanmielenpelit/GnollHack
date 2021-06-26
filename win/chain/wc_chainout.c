@@ -443,9 +443,10 @@ void *vp;
 }
 
 char
-chainout_yn_function(vp, query, resp, def)
+chainout_yn_function_ex(vp, attr, color, query, resp, def)
 void *vp;
-const char *query, *resp;
+int attr, color;
+const char* query, * resp;
 char def;
 {
     struct chainout_data *tdp = vp;
@@ -457,8 +458,9 @@ char def;
 }
 
 void
-chainout_getlin(vp, query, bufp)
+chainout_getlin(vp, attr, color, query, bufp)
 void *vp;
+int attr, color;
 const char *query;
 char *bufp;
 {
@@ -719,7 +721,7 @@ struct chain_procs chainout_procs = {
 #endif
     chainout_print_glyph, chainout_init_print_glyph, chainout_raw_print, chainout_raw_print_bold,
     chainout_nhgetch, chainout_nh_poskey, chainout_nhbell,
-    chainout_doprev_message, chainout_yn_function, chainout_getlin,
+    chainout_doprev_message, chainout_yn_function_ex, chainout_getlin_ex,
     chainout_get_ext_cmd, chainout_number_pad, chainout_delay_output, chainout_delay_output_milliseconds, chainout_delay_output_intervals,
 #ifdef CHANGE_COLOR
     chainout_change_color,

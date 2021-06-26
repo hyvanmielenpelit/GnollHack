@@ -1174,7 +1174,7 @@ boolean iscontrolled;
         {
             if (trycnt >= 10)
                 goto random_levtport;
-            if (ynq("Go to Nowhere.  Are you sure?") != 'y')
+            if (ynq_ex(ATR_NONE, CLR_MSG_WARNING, "Go to Nowhere.  Are you sure?") != 'y')
                 return;
 
             play_special_effect_at(SPECIAL_EFFECT_LEVEL_TELEPORT_OUT, 0, u.ux, u.uy, TRUE);

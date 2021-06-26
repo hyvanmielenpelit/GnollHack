@@ -107,8 +107,8 @@ struct window_procs mswin_procs = {
     donull,
 #endif
     mswin_print_glyph, mswin_init_print_glyph, mswin_raw_print, mswin_raw_print_bold, mswin_nhgetch,
-    mswin_nh_poskey, mswin_nhbell, mswin_doprev_message, mswin_yn_function,
-    mswin_getlin, mswin_get_ext_cmd, mswin_number_pad, mswin_delay_output, mswin_delay_output_milliseconds, mswin_delay_output_intervals,
+    mswin_nh_poskey, mswin_nhbell, mswin_doprev_message, mswin_yn_function_ex,
+    mswin_getlin_ex, mswin_get_ext_cmd, mswin_number_pad, mswin_delay_output, mswin_delay_output_milliseconds, mswin_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     mswin, mswin_change_background,
 #endif
@@ -767,7 +767,7 @@ mswin_askname(void)
 {
     logDebug("mswin_askname()\n");
 
-    if (mswin_getlin_window("Who are you?", plname, PL_NSIZ) == IDCANCEL) {
+    if (mswin_getlin_window(ATR_NONE, NO_COLOR, "Who are you?", plname, PL_NSIZ) == IDCANCEL) {
         bail("bye-bye");
         /* not reached */
     }
@@ -1631,7 +1631,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-mswin_yn_function(const char *question, const char *choices, CHAR_P def)
+mswin_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def)
 {
     char ch;
     char yn_esc_map = '\033';
@@ -1640,7 +1640,7 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
     int createcaret;
     boolean digit_ok, allow_num;
 
-    logDebug("mswin_yn_function(%s, %s, %d)\n", question, choices, def);
+    logDebug("mswin_yn_function_ex(%s, %s, %d)\n", question, choices, def);
 
     if (WIN_MESSAGE == WIN_ERR && choices == ynchars) {
         char *text =
@@ -1688,7 +1688,7 @@ mswin_yn_function(const char *question, const char *choices, CHAR_P def)
                 (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
     mswin_clear_nhwindow(WIN_MESSAGE);
-    mswin_putstr(WIN_MESSAGE, ATR_BOLD, message);
+    mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, message, 0, color);
 
     /* Only here if main window is not present */
     ch = 0;
@@ -1798,7 +1798,7 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-mswin_getlin(const char *question, char *input)
+mswin_getlin_ex(int attr, int color, const char *question, char *input)
 {
     logDebug("mswin_getlin(%s, %p)\n", question, input);
 
@@ -1813,8 +1813,8 @@ mswin_getlin(const char *question, char *input)
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
         /* mswin_clear_nhwindow(WIN_MESSAGE); */
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, question, 0, NO_COLOR);
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, " ", 1, NO_COLOR);
+        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, question, 0, color);
+        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, " ", 1, color);
 #ifdef EDIT_GETLIN
         mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0, NO_COLOR);
         len = strlen(input);
@@ -1858,7 +1858,7 @@ mswin_getlin(const char *question, char *input)
         SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
     } else {
-        if (mswin_getlin_window(question, input, BUFSZ) == IDCANCEL) {
+        if (mswin_getlin_window(attr, color, question, input, BUFSZ) == IDCANCEL) {
             strcpy(input, "\033");
         }
     }

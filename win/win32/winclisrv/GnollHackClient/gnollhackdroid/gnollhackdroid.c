@@ -205,8 +205,8 @@ int RunGnollHack(
     PosKeyCallback callback_nh_poskey,
     BellCallback callback_nhbell,
     DoPrevMessageCallback callback_doprev_message,
-    YnFunctionCallback callback_yn_function,
-    GetLineCallback callback_getlin,
+    YnFunctionCallback callback_yn_function_ex,
+    GetLineCallback callback_getlin_ex,
     GetExtCmdCallback callback_get_ext_cmd,
     NumberPadCallback callback_number_pad,
     DelayOutputCallback callback_delay_output,
@@ -303,9 +303,9 @@ int RunGnollHack(
     lib_callbacks.callback_nhbell = callback_nhbell;
     lib_callbacks.callback_nhbell = callback_nhbell;
     lib_callbacks.callback_doprev_message = callback_doprev_message;
-    lib_callbacks.callback_yn_function = callback_yn_function;
-    lib_callbacks.callback_getlin = callback_getlin;
-    lib_callbacks.callback_yn_function = callback_yn_function;
+    lib_callbacks.callback_yn_function_ex = callback_yn_function_ex;
+    lib_callbacks.callback_getlin_ex = callback_getlin_ex;
+    lib_callbacks.callback_yn_function_ex = callback_yn_function_ex;
     lib_callbacks.callback_get_ext_cmd = callback_get_ext_cmd;
     lib_callbacks.callback_number_pad = callback_number_pad;
     lib_callbacks.callback_delay_output = callback_delay_output;

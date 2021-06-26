@@ -234,7 +234,7 @@
 #define dozap() dozap_()
 
 /* ### getline.c ### */
-#define tty_getlin(x, y) tty_getlin_(x, y)
+#define tty_getlin_ex(a, c, x, y) tty_getlin_ex_(a, c, x, y)
 #define tty_get_ext_cmd() tty_get_ext_cmd_()
 
 /* ### termcap.c ### */
@@ -248,7 +248,7 @@
 
 /* ### topl.c ### */
 #define tty_doprev_message() tty_doprev_message_()
-#define tty_yn_function(x, y, z) tty_yn_function_(x, y, z)
+#define tty_yn_function_ex_ex(x, y, z, a, b) tty_yn_function_ex_(x, y, z, a, b)
 
 /* ### wintty.c ### */
 #define tty_init_nhwindows(x, y) tty_init_nhwindows_(x, y)

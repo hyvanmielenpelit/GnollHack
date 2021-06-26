@@ -874,9 +874,9 @@ class NetHackQtBind : NetHackQtBindBase
     static int qt_nh_poskey(int *x, int *y, int *mod);
     static void qt_nhbell();
     static int qt_doprev_message();
-    static char qt_yn_function(const char *question, const char *choices,
+    static char qt_yn_function_ex(int, int, const char *question, const char *choices,
                                CHAR_P def);
-    static void qt_getlin(const char *prompt, char *line);
+    static void qt_getlin_ex(int attr, int color, const char *prompt, char *line);
     static int qt_get_ext_cmd();
     static void qt_number_pad(int);
     static void qt_delay_output();
