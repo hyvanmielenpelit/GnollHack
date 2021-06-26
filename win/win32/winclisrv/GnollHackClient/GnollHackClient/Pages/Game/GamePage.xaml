@@ -90,7 +90,7 @@
             <!-- AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.35"  AbsoluteLayout.LayoutFlags="All"  -->
 
                 <StackLayout Grid.Row="1" x:Name="ButtonRowStack" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Orientation="Vertical" >
-                    <Grid HeightRequest="55" BackgroundColor="Black" HorizontalOptions="StartAndExpand" >
+                    <Grid HeightRequest="55" BackgroundColor="Black" HorizontalOptions="CenterAndExpand" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -111,7 +111,7 @@
                         <Button Grid.Column="5" Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                         <Button Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                     </Grid>
-                    <Grid HeightRequest="55" BackgroundColor="Black"  HorizontalOptions="EndAndExpand">
+                    <Grid HeightRequest="55" BackgroundColor="Black"  HorizontalOptions="CenterAndExpand">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>

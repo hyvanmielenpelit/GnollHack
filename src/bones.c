@@ -83,9 +83,28 @@ boolean restore;
                     || is_quest_artifact(otmp)) 
                 {
                     /* prevent duplicate--revert to ordinary obj */
+                    /* Non-generable base item*/
+                    if (objects[otmp->otyp].oc_prob == 0 || objects[otmp->otyp].oc_flags3 & O3_NO_GENERATION)
+                    {
+                        if (artilist[otmp->oartifact].maskotyp && objects[artilist[otmp->oartifact].maskotyp].oc_prob > 0 && !(objects[artilist[otmp->oartifact].maskotyp].oc_flags3 & O3_NO_GENERATION))
+                        {
+                            otmp->otyp = artilist[otmp->oartifact].maskotyp;
+                        }
+                        else
+                        {
+                            otmp->otyp = random_objectid_from_class(otmp->oclass, RNDITEM_FLAGS_ALSO_RARE);
+                            otmp->elemental_enchantment = 0;
+                            otmp->exceptionality = 0;
+                            otmp->mythic_prefix = 0;
+                            otmp->mythic_suffix = 0;
+                            otmp->charges = 0;
+                            otmp->enchantment = 0;
+                        }
+                    }
                     otmp->oartifact = 0;
                     if (has_oname(otmp))
                         free_oname(otmp);
+
                 } 
                 else
                 {
