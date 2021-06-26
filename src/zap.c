@@ -5143,6 +5143,7 @@ register struct obj *obj;
         }
 
         You("query about your fortune.");
+
         if (Luck < 0)
             You("see a number of %d. You feel that it is %s unlucky number.",
                 abs(Luck), abs(Luck) >= 10 ? "an extremely" : abs(Luck) >= 5 ? "a very" : "an");

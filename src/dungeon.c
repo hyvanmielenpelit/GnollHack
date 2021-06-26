@@ -2627,6 +2627,7 @@ recalc_mapseen()
             else if (rooms[i].rtype == NPCROOM)
             {
                 /* 0 = Different types => residences, UNSPECIFIED_NPC_ROOM => residence, DESERTED_NPC_ROOM => deserted residence */
+                mtmp = findnpc(i + ROOMOFFSET);
                 uchar newtype = mtmp && has_enpc(mtmp) ? ENPC(mtmp)->npc_typ + 1 : UNSPECIFIED_NPC_ROOM + 1;
                 if (!mptr->feat.nnpcroom && mptr->msrooms[i].untended)
                     mptr->feat.npcroomtype = DESERTED_NPC_ROOM + 1;

@@ -166,8 +166,9 @@ int hand;
             : !is_weptool(wep) && !is_wet_towel(wep);
     }
     else
-        *unweapon_ptr = TRUE; /* for "bare hands" message */
-
+    {
+        *unweapon_ptr = ((uarmg && is_weapon(uarmg) && (P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) >= P_SKILLED)) || (P_SKILL_LEVEL(P_MARTIAL_ARTS) >= P_BASIC) || (P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) >= P_EXPERT)) ? FALSE : TRUE; /* for "bare hands" message */
+    }
 }
 
 STATIC_OVL boolean
