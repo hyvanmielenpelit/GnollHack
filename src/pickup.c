@@ -1647,17 +1647,17 @@ encumber_msg()
     if (oldcap < newcap) {
         switch (newcap) {
         case 1:
-            Your("movements are slowed slightly because of your load.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "movements are slowed slightly because of your load.");
             break;
         case 2:
-            You("rebalance your load.  Movement is difficult.");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "rebalance your load.  Movement is difficult.");
             break;
         case 3:
-            You("%s under your heavy load.  Movement is very hard.",
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s under your heavy load.  Movement is very hard.",
                 stagger(youmonst.data, "stagger"));
             break;
         default:
-            You("%s move a handspan with this load!",
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s move a handspan with this load!",
                 newcap == 4 ? "can barely" : "can't even");
             break;
         }
@@ -1665,16 +1665,16 @@ encumber_msg()
     } else if (oldcap > newcap) {
         switch (newcap) {
         case 0:
-            Your("movements are now unencumbered.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "movements are now unencumbered.");
             break;
         case 1:
-            Your("movements are only slowed slightly by your load.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "movements are only slowed slightly by your load.");
             break;
         case 2:
-            You("rebalance your load.  Movement is still difficult.");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "rebalance your load.  Movement is still difficult.");
             break;
         case 3:
-            You("%s under your load.  Movement is still very hard.",
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s under your load.  Movement is still very hard.",
                 stagger(youmonst.data, "stagger"));
             break;
         }

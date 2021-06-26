@@ -5791,7 +5791,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             else if (near_capacity() > UNENCUMBERED
                        || Punished || Fumbling) 
             {
-                You("fall down the %s.", at_ladder ? "ladder" : "stairs");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "fall down the %s.", at_ladder ? "ladder" : "stairs");
                 if (Punished) {
                     drag_down();
                     ballrelease(FALSE);
