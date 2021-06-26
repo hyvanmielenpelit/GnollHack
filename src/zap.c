@@ -5499,15 +5499,20 @@ boolean ordinary;
 
     case SPE_LOWER_WATER:
     case WAN_EVAPORATION:
-        if (youmonst.data == &mons[PM_WATER_ELEMENTAL])
+        if (youmonst.data == &mons[PM_WATER_ELEMENTAL] || youmonst.data == &mons[PM_ELDER_WATER_ELEMENTAL])
         {
-            learn_it = TRUE;
-            Sprintf(killer.name, "shot %sself with an evaporation ray", uhim());
-            killer.format = NO_KILLER_PREFIX;
-            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "irradiate yourself with evaporating energy!");
-            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die.");
-            /* They might survive with an amulet of life saving */
-            done(DIED);
+            if (!Upolyd || Unchanging)
+            {
+                learn_it = TRUE;
+                Sprintf(killer.name, "shot %sself with an evaporation ray", uhim());
+                killer.format = NO_KILLER_PREFIX;
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "irradiate yourself with evaporating energy!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die.");
+                /* They might survive with an amulet of life saving */
+                done(DIED);
+            }
+            else
+                rehumanize();
         }
         destroy_item(POTION_CLASS, AD_FIRE);
         destroy_item(POTION_CLASS, AD_FIRE);

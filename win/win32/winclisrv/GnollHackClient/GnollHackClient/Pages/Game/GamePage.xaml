@@ -20,54 +20,39 @@
                    AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1" />
             <Grid x:Name="MainGrid" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" 
                   AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1" IsVisible="false" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <AbsoluteLayout Grid.Row="0" x:Name="GameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-                <skia:SKCanvasView x:Name="canvasView"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <AbsoluteLayout Grid.Row="0" x:Name="GameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                    <skia:SKCanvasView x:Name="canvasView"
                             EnableTouchEvents="True"
                             PaintSurface="canvasView_PaintSurface" 
                             Touch="canvasView_Touch"
                             AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
                             AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
-                </skia:SKCanvasView>
-                <Grid x:Name="YnGrid" Padding="5,5,5,5" 
-                      HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" MinimumHeightRequest="140"
-                      AbsoluteLayout.LayoutBounds="0.0, 0.70, 1.0, 0.3" 
-                      AbsoluteLayout.LayoutFlags="All" BackgroundColor="#88000000" IsVisible="false">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Text="?" x:Name="QuestionLabel" FontFamily="Diablo" FontSize="16" TextColor="White"
-                           VerticalTextAlignment="End" HorizontalOptions="Center" MinimumHeightRequest="70"  />
-                    <Grid  Grid.Row="1" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" MinimumHeightRequest="70" >
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="0" IsVisible="false" CornerRadius="5"  />
-                        <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="1" IsVisible="false" CornerRadius="5"  />
-                        <Button Text="?" x:Name="SecondButton" Clicked="SecondButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="2" IsVisible="false" CornerRadius="5"  />
-                        <Button Text="?" x:Name="ThirdButton" Clicked="ThirdButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="3" IsVisible="false" CornerRadius="5"  />
-                        <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="4" IsVisible="false" CornerRadius="5"  />
-                    </Grid>
-                </Grid>
+                    </skia:SKCanvasView>
+                
+                    <StackLayout x:Name="YnGrid" Padding="10" Margin="60,0"
+                          HorizontalOptions="Center" VerticalOptions="Center"
+                          AbsoluteLayout.LayoutBounds="0.5, 0.70, AutoSize, AutoSize" 
+                          AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="#88000000" IsVisible="false">
+                        <Label Text="?" x:Name="QuestionLabel" FontFamily="Diablo" FontSize="16" TextColor="White"
+                               VerticalTextAlignment="End" HorizontalOptions="Center"  />
+                        <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" >
+                            <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                            <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                            <Button Text="?" x:Name="SecondButton" Clicked="SecondButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                            <Button Text="?" x:Name="ThirdButton" Clicked="ThirdButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                            <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                        </StackLayout>
+                    </StackLayout>
+                
                     <CollectionView x:Name="MessageHistoryView" BackgroundColor="Transparent" Margin="0"
-                                    AbsoluteLayout.LayoutBounds="0,1.0,0.85,0.16" AbsoluteLayout.LayoutFlags="All" 
+                                    AbsoluteLayout.LayoutBounds="0,1.0,0.85,0.18" AbsoluteLayout.LayoutFlags="All" 
                                     HorizontalOptions="FillAndExpand" HeightRequest="70" >
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
@@ -81,47 +66,26 @@
                                     <Label Grid.Column="0" TextColor="{Binding Color}" 
                                        Text="{Binding Text}"
                                        FontSize="13"
-                                       FontFamily="Underwood" />
+                                       FontFamily="DejaVuSansMono" />
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-                    <Grid x:Name="ContextGrid" Padding="0,2"
-                        HorizontalOptions="End" VerticalOptions="End"
-                        AbsoluteLayout.LayoutBounds="1.0, 1.0, 0.3, 0.7" 
-                        AbsoluteLayout.LayoutFlags="All" BackgroundColor="Transparent" IsVisible="true">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                </Grid>
                 
-                    <Grid x:Name="ModeGrid" Padding="0,2"
+                    <StackLayout x:Name="ContextGrid" Padding="0,2"
+                        HorizontalOptions="End" VerticalOptions="End"
+                        AbsoluteLayout.LayoutBounds="1.0, 1.0, AutoSize, AutoSize" 
+                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" IsVisible="true">
+                    </StackLayout>
+                
+                    <StackLayout x:Name="ModeLayout" Padding="0,2"
                         HorizontalOptions="End"
-                        AbsoluteLayout.LayoutBounds="1.0, 0.10, 0.15, 0.3" 
-                        AbsoluteLayout.LayoutFlags="All" BackgroundColor="Transparent" IsVisible="true">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Row="0" Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
-                        <Button Grid.Row="1" Text="&#x2699;" x:Name="LookModeButton" Clicked="LookModeButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
-                        <Button Grid.Row="2" Text="&#x265C;" x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" />
-                    </Grid>
+                        AbsoluteLayout.LayoutBounds="1.0, 0.10, AutoSize, AutoSize" 
+                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
+                        <Button Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" WidthRequest="50" />
+                        <Button Text="&#x2699;" x:Name="LookModeButton" Clicked="LookModeButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" WidthRequest="50" />
+                        <Button Text="&#x265C;" x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" WidthRequest="50" />
+                    </StackLayout>
                 </AbsoluteLayout>
             <!-- AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.35"  AbsoluteLayout.LayoutFlags="All"  -->
 
@@ -169,7 +133,7 @@
                         <Button Grid.Column="6" Text="x" x:Name="SwapWeaponButton" Clicked="SwapWeaponButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                     </Grid>
                 </StackLayout>
-        </Grid>
+            </Grid>
         </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

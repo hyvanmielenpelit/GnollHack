@@ -333,6 +333,7 @@ static struct Comp_Opt {
 #endif
     { "catname", "the name of your (first) cat (e.g., catname:Tabby)",
       PL_PSIZ, DISP_IN_GAME },
+    { "crawl_interval", "crawl movement interval in milliseconds", 3, SET_IN_GAME },
     { "disclose", "the kinds of information to disclose at end of game",
       sizeof flags.end_disclose * 2, SET_IN_GAME },
     { "dogname", "the name of your (first) dog (e.g., dogname:Fang)", PL_PSIZ,
@@ -389,6 +390,7 @@ static struct Comp_Opt {
       SET_IN_FILE },
     { "monsters", "the symbols to use for monsters", MAX_MONSTER_CLASSES,
       SET_IN_FILE },
+    { "move_interval", "normal movement interval in milliseconds", 3, SET_IN_GAME },
     { "msghistory", "number of top line messages to save", 5, DISP_IN_GAME },
 #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
     { "msg_window", "the type of message window required", 1, SET_IN_GAME },
@@ -817,7 +819,11 @@ initoptions_init()
     flags.end_top = 3;
     flags.end_around = 2;
     flags.paranoia_bits = PARANOID_PRAY; /* old prayconfirm=TRUE */
+#if defined(GNH_ANDROID) || defined(WIN32)
+    flags.runmode = RUN_STEP;
+#else
     flags.runmode = RUN_LEAP;
+#endif
     iflags.msg_history = 20;
     /* msg_window has conflicting defaults for multi-interface binary */
 #ifdef TTY_GRAPHICS
@@ -4182,6 +4188,64 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    fullname = "move_interval";
+    if (match_optname(opts, fullname, 13, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = 0;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 0 || itmp > 999)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 0, 999);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.move_interval_in_milliseconds = itmp;
+        }
+        return retval;
+    }
+
+    fullname = "crawl_interval";
+    if (match_optname(opts, fullname, 14, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = 0;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 0 || itmp > 999)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 0, 999);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.crawl_interval_in_milliseconds = itmp;
+        }
+        return retval;
+    }
+
     fullname = "sound_volume_general";
     if (match_optname(opts, fullname, 20, TRUE))
     {
@@ -6239,6 +6303,20 @@ char *buf;
             Sprintf(buf, "%d milliseconds", flags.animation_frame_interval_in_milliseconds);
         else
             Sprintf(buf, "%s, %d milliseconds", defopt, ANIMATION_FRAME_INTERVAL);
+    }
+    else if (!strcmp(optname, "move_interval"))
+    {
+        if (flags.move_interval_in_milliseconds > 0)
+            Sprintf(buf, "%d milliseconds", flags.move_interval_in_milliseconds);
+        else
+            Sprintf(buf, "%s, %d milliseconds", defopt, DEFAULT_MOVE_INTERVAL);
+    }
+    else if (!strcmp(optname, "crawl_interval"))
+    {
+        if (flags.crawl_interval_in_milliseconds > 0)
+            Sprintf(buf, "%d milliseconds", flags.crawl_interval_in_milliseconds);
+        else
+            Sprintf(buf, "%s, %d milliseconds", defopt, DEFAULT_CRAWL_INTERVAL);
     }
     else if (!strcmp(optname, "align"))
         Sprintf(buf, "%s", rolestring(flags.initalign, aligns, adj));

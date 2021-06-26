@@ -14,6 +14,8 @@ using Xamarin.Forms.Xaml;
 [assembly: ExportFont("endr.ttf", Alias = "Endor")]
 [assembly: ExportFont("Lato-Regular.ttf", Alias = "Lato-Regular")]
 [assembly: ExportFont("Lato-Bold.ttf", Alias = "Lato-Bold")]
+[assembly: ExportFont("DejaVuSansMono.ttf", Alias = "DejaVuSansMono")]
+[assembly: ExportFont("DejaVuSansMono-Bold.ttf", Alias = "DejaVuSansMono-Bold")]
 namespace GnollHackClient
 {
     public delegate Task<bool> BackButtonHandler(object sender, EventArgs e);

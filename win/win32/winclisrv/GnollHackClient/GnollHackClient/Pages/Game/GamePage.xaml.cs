@@ -236,10 +236,10 @@ namespace GnollHackClient.Pages.Game
             contextButton.IsVisible = true;
 
             contextButton.Clicked += ContextButton_Clicked;
-            int row = ContextGrid.RowDefinitions.Count - 1 - ContextGrid.Children.Count;
-            if (row < 0)
-                row = 0;
-            Grid.SetRow(contextButton, row);
+            //int row = ContextGrid.RowDefinitions.Count - 1 - ContextGrid.Children.Count;
+            //if (row < 0)
+            //    row = 0;
+            //Grid.SetRow(contextButton, row);
             ContextGrid.IsVisible = true;
             ContextGrid.Children.Add(contextButton);
         }
@@ -866,8 +866,8 @@ namespace GnollHackClient.Pages.Game
 
             }
 
-            canvasButtonRect.Right = canvaswidth * (float)(ModeGrid.X / canvasView.Width);
-            canvasButtonRect.Left = canvaswidth * (float)(1 - ModeGrid.X / canvasView.Width);
+            canvasButtonRect.Right = canvaswidth * (float)(0.8);
+            canvasButtonRect.Left = canvaswidth * (float)(0.2);
             canvasButtonRect.Bottom = canvasheight * (float)((canvasView.Height - MessageHistoryView.Height) / canvasView.Height);
 
             if (_showDirections || showNumberPad)
@@ -996,9 +996,15 @@ namespace GnollHackClient.Pages.Game
                 _currentPageHeight = height;
 
                 if (width > height)
+                {
                     ButtonRowStack.Orientation = StackOrientation.Horizontal;
+                    ModeLayout.Orientation = StackOrientation.Horizontal;
+                }
                 else
+                {
                     ButtonRowStack.Orientation = StackOrientation.Vertical;
+                    ModeLayout.Orientation = StackOrientation.Vertical;
+                }
             }
         }
 

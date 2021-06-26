@@ -8199,17 +8199,25 @@ create_context_menu(VOID_ARGS)
     if (otmp)
     {
         add_context_menu(',', cmd_from_func(dopickup), 0, otmp->glyph, "Pick up", cxname(otmp), 0, NO_COLOR);
-
-        if (is_edible(otmp))
+        struct obj* otmp_here;
+        boolean eat_added = FALSE;
+        boolean loot_added = FALSE;
+        for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
         {
-            add_context_menu('e', cmd_from_func(doeat), 0, otmp->glyph, "Eat", cxname(otmp), 0, NO_COLOR);
-        }
+            if (!eat_added && is_edible(otmp_here))
+            {
+                add_context_menu('e', cmd_from_func(doeat), 0, otmp_here->glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
+                eat_added = TRUE;
+            }
 
-        if (Is_container(otmp))
-        {
-            add_context_menu('l', cmd_from_func(doloot), 0, otmp->glyph, "Loot", cxname(otmp), 0, NO_COLOR);
+            if (!loot_added && Is_container(otmp_here))
+            {
+                add_context_menu('l', cmd_from_func(doloot), 0, otmp_here->glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
+                loot_added = TRUE;
+            }
         }
     }
+
 
     struct rm* lev = &levl[u.ux][u.uy];
     if (IS_ALTAR(lev->typ))

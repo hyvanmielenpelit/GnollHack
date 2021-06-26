@@ -32,6 +32,8 @@ struct flag {
     boolean debug;     /* in debugging mode */
 #define wizard flags.debug
     int animation_frame_interval_in_milliseconds; /* custom animation frame interval in milliseconds. If 0, then the default at 25 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
+    int move_interval_in_milliseconds; /* custom move step interval in milliseconds. If 0, then the default at 50 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
+    int crawl_interval_in_milliseconds; /* custom crawl step interval in milliseconds. If 0, then the default at 250 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
     boolean end_own; /* list all own scores */
     boolean explore; /* in exploration mode */
     boolean female;  /* initial selection */

@@ -707,6 +707,8 @@ static const char empty_string[] = "";
 
 #define ANIMATION_FRAME_INTERVAL 25 /* in milliseconds */
 #define DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS 2 /* 2 animation intervals, or 50 milliseconds */
+#define DEFAULT_MOVE_INTERVAL (ANIMATION_FRAME_INTERVAL * 2) /* in milliseconds */
+#define DEFAULT_CRAWL_INTERVAL (ANIMATION_FRAME_INTERVAL * 5) /* in milliseconds */
 #define ITEM_PICKUP_DROP_DELAY 75 /* in milliseconds */
 
 /* Some general definitions for graphics and sounds */
