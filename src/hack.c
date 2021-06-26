@@ -2364,9 +2364,9 @@ domove_core()
         nomovemsg = "";
     }
 
-    if (context.run && flags.runmode != RUN_TPORT) {
+    if (context.run && (flags.runmode != RUN_TPORT || (context.travel && context.travel_mode == 2))) {
         /* display every step or every 7th step depending upon mode */
-        if (flags.runmode != RUN_LEAP || !(moves % 7L)) {
+        if (flags.runmode != RUN_LEAP || (context.travel && context.travel_mode == 2) || !(moves % 7L)) {
             if (flags.time)
                 context.botl = 1;
             curs_on_u();

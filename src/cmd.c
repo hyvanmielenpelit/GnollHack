@@ -47,7 +47,7 @@ extern const char *enc_stat[]; /* encumbrance status from botl.c */
 #define CMD_TRAVEL (char) 0xFC //0x90
 #define CMD_CLICKLOOK (char) 0xFD //0x8F
 #define CMD_TRAVEL_ATTACK (char) 0xFE
-#define CMD_TRAVEL_PICKUP (char) 0xFB
+#define CMD_TRAVEL_WALK (char) 0xFB
 
 #ifdef DEBUG
 extern int NDECL(wiz_debug_cmd_bury);
@@ -5959,7 +5959,7 @@ struct {
     { NHKF_DOINV,            '0', "doinv" },
     { NHKF_TRAVEL,           CMD_TRAVEL, (char *) 0 }, /* no binding */
     { NHKF_TRAVEL_ATTACK,    CMD_TRAVEL_ATTACK, (char*)0 }, /* no binding */
-    { NHKF_TRAVEL_PICKUP,    CMD_TRAVEL_PICKUP, (char*)0 }, /* no binding */
+    { NHKF_TRAVEL_WALK,      CMD_TRAVEL_WALK, (char*)0 }, /* no binding */
     { NHKF_CLICKLOOK,        CMD_CLICKLOOK, (char *) 0 }, /* no binding */
     { NHKF_REDRAW,           C('r'), "redraw" },
     { NHKF_REDRAW2,          C('l'), "redraw.numpad" },
@@ -6518,14 +6518,14 @@ register char *cmd;
         return;
     case NHKF_TRAVEL:
     case NHKF_TRAVEL_ATTACK:
-    case NHKF_TRAVEL_PICKUP:
+    case NHKF_TRAVEL_WALK:
         if (flags.travelcmd) {
             context.travel = 1;
             context.travel1 = 1;
             context.run = 8;
             context.nopick = 1;
             domove_attempting |= DOMOVE_RUSH;
-            context.travel_mode = 0;
+            context.travel_mode = (spkey == NHKF_TRAVEL_WALK) ? 2 : 0;
             context.tmid = 0;
             context.toid = 0;
             if (isok(u.tx, u.ty))
@@ -6537,18 +6537,6 @@ register char *cmd;
                     if (tmtmp && canspotmon(tmtmp))
                     {
                         context.tmid = tmtmp->m_id;
-                    }
-                }
-                else if (spkey == NHKF_TRAVEL_PICKUP)
-                {
-                    context.travel_mode = 2;
-                    if (cansee(u.tx, u.ty))
-                    {
-                        struct obj* totmp = level.objects[u.tx][u.ty];
-                        if (totmp)
-                        {
-                            context.toid = totmp->o_id;
-                        }
                     }
                 }
             }
@@ -7368,20 +7356,19 @@ int x, y, mod;
             u.tx = u.ux + x;
             u.ty = u.uy + y;
             struct monst* mtmp = 0;
-            struct obj* otmp = 0;
+            //struct obj* otmp = 0;
 
             if (isok(u.tx, u.ty))
             {
                 mtmp = m_at(u.tx, u.ty);
-                otmp = cansee(u.tx, u.ty) ? level.objects[u.tx][u.ty] : 0;
+                //otmp = cansee(u.tx, u.ty) ? level.objects[u.tx][u.ty] : 0;
             }
 
             if(mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp))
                 cmd[0] = Cmd.spkeys[NHKF_TRAVEL_ATTACK];
-            else if (otmp)
-                cmd[0] = Cmd.spkeys[NHKF_TRAVEL_PICKUP];
             else
-                cmd[0] = Cmd.spkeys[NHKF_TRAVEL];
+                cmd[0] = Cmd.spkeys[NHKF_TRAVEL_WALK];
+
             return cmd;
         }
 

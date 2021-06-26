@@ -819,11 +819,7 @@ initoptions_init()
     flags.end_top = 3;
     flags.end_around = 2;
     flags.paranoia_bits = PARANOID_PRAY; /* old prayconfirm=TRUE */
-#if defined(GNH_ANDROID) || defined(WIN32)
-    flags.runmode = RUN_STEP;
-#else
     flags.runmode = RUN_LEAP;
-#endif
     iflags.msg_history = 20;
     /* msg_window has conflicting defaults for multi-interface binary */
 #ifdef TTY_GRAPHICS
