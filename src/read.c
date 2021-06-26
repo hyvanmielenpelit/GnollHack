@@ -720,30 +720,22 @@ boolean verbose;
         }
 
     }
-    else if (rtype == RECHARGING_TOOL_GENERAL 
-        || rtype == RECHARGING_TOOL_NONMAGICAL
-        || rtype == RECHARGING_TOOL_SPECIAL_MAGICAL
-        || rtype == RECHARGING_MAGIC_MARKER
-        || rtype == RECHARGING_CAMERA
-        || rtype == RECHARGING_CRYSTAL_BALL
-        || rtype == RECHARGING_BELL_OF_OPENING
-        || rtype == RECHARGING_CAN_OF_GREASE
-        || rtype == RECHARGING_HOLY_SYMBOL
-        || rtype == RECHARGING_MUSICAL_INSTRUMENT
-        || rtype == RECHARGING_UNICORN_HORN
-        )
+    else if (objects[obj->otyp].oc_charged && rtype > 0)  // obj->oclass == WEAPON_CLASS)
     {
-        int rechrg = (int) obj->recharged;
+        int rechrg = (int)obj->recharged;
 
-        /* Add recharging */
-        if (objects[obj->otyp].oc_charged) 
+        if (obj->oclass != TOOL_CLASS)
         {
             /* tools don't have a limit, but the counter used does */
-            if (rechrg < RECHARGE_LIMIT) /* recharge_limit */
-                obj->recharged++;
+            if (rechrg >= RECHARGE_LIMIT) /* recharge_limit */
+                goto not_chargable;
         }
 
-        switch (rtype) {
+        /* All other charged items here */
+        int lim = get_obj_max_charge(obj);
+
+        switch (rtype)
+        {
         case RECHARGING_BELL_OF_OPENING:
             if (is_cursed)
                 strip_charges(obj, verbose);
@@ -767,9 +759,10 @@ boolean verbose;
             break;
         case RECHARGING_MAGIC_MARKER:
         case RECHARGING_TOOL_NONMAGICAL:
+        case RECHARGING_TOOL_GENERAL:
+        case RECHARGING_CUBIC_GATE:
         case RECHARGING_CAMERA:
         {
-            int lim = get_obj_max_charge(obj);
             if (is_cursed)
                 strip_charges(obj, verbose);
             else if (rechrg
@@ -779,7 +772,7 @@ boolean verbose;
                 if (verbose)
                 {
                     if (obj->charges < 3)
-                        Your("marker seems permanently dried out.");
+                        Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "marker seems permanently dried out.");
                     else
                         pline1(nothing_happens);
                 }
@@ -830,7 +823,7 @@ boolean verbose;
             break;
         }
 #if 0
-            /* Charging does not add oil anymore, just charges of charged objects */
+        /* Charging does not add oil anymore, just charges of charged objects */
         case OIL_LAMP:
         case BRASS_LANTERN:
             if (is_cursed) {
@@ -839,13 +832,15 @@ boolean verbose;
                     if (!Blind)
                         pline("%s out!", Tobjnam(obj, "go"));
                     end_burn(obj, TRUE);
-                }
-            } else if (is_blessed) {
+            }
+        }
+            else if (is_blessed) {
                 obj->special_quality = 1;
                 obj->age = 1500;
                 if (verbose)
                     p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE);
-            } else {
+            }
+            else {
                 obj->special_quality = 1;
                 obj->age += 750;
                 if (obj->age > 1500)
@@ -857,7 +852,6 @@ boolean verbose;
 #endif
         case RECHARGING_CRYSTAL_BALL:
         {
-            int lim = get_obj_max_charge(obj);
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
@@ -890,9 +884,7 @@ boolean verbose;
             break;
         }
         case RECHARGING_TOOL_SPECIAL_MAGICAL:
-        case RECHARGING_CAN_OF_GREASE:
         {
-            int lim = get_obj_max_charge(obj);
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
@@ -926,9 +918,44 @@ boolean verbose;
             }
             break;
         }
+        case RECHARGING_CAN_OF_GREASE:
+        case RECHARGING_SALVE:
+        {
+            const char* contents = (OBJ_CONTENT_DESC(obj->otyp) != 0 ? OBJ_CONTENT_DESC(obj->otyp) : "unknown contents"); // (objects[obj->otyp].oc_name_known&& OBJ_CONTENT_NAME(obj->otyp) != 0 ? OBJ_CONTENT_NAME(obj->otyp) : OBJ_CONTENT_DESC(obj->otyp) != 0 ? OBJ_CONTENT_DESC(obj->otyp) : "unknown contents");
+            if (is_cursed)
+            {
+                strip_charges(obj, verbose);
+            }
+            else if (is_blessed)
+            {
+                obj->charges += rn1(max(2, (3 * lim) / 4), max(1, (2 * lim) / 4));
+
+                if (obj->charges > lim)
+                    obj->charges = lim;
+                if (verbose)
+                {
+                    play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s%s with %s.", Tobjnam(obj, "fill"), obj->charges >= lim ? " up" : "", contents);
+                    play_effect = TRUE;
+                }
+            }
+            else
+            {
+                obj->charges += rn1(max(2, (2 * lim) / 4), max(1, (1 * lim) / 8));
+
+                if (obj->charges > lim)
+                    obj->charges = lim;
+                if (verbose)
+                {
+                    play_sfx_sound(SFX_RECHARGE_SUCCESS);
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s%s with %s.", Tobjnam(obj, "fill"), obj->charges >= lim ? " up" : "", contents);
+                    play_effect = TRUE;
+                }
+            }
+            break;
+        }
         case RECHARGING_HOLY_SYMBOL:
         {
-            int lim = get_obj_max_charge(obj);
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
@@ -962,7 +989,6 @@ boolean verbose;
         case RECHARGING_MUSICAL_INSTRUMENT:
         case RECHARGING_UNICORN_HORN:
         {
-            int lim = get_obj_max_charge(obj);
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
@@ -993,22 +1019,6 @@ boolean verbose;
             }
             break;
         }
-        default:
-            goto not_chargable;
-            /*NOTREACHED*/
-            break;
-        } /* switch */
-    } 
-    else if (objects[obj->otyp].oc_charged && objects[obj->otyp].oc_recharging)  // obj->oclass == WEAPON_CLASS)
-    {
-        if (obj->recharged >= RECHARGE_LIMIT) /* recharge_limit */
-            goto not_chargable;
-
-        /* All other charged items here */
-        int lim = get_obj_max_charge(obj);
-
-        switch (rtype)
-        {
         case RECHARGING_NINE_LIVES_STEALER:
             if (is_cursed) 
             {
@@ -1022,7 +1032,7 @@ boolean verbose;
                 if (verbose)
                 {
                     play_sfx_sound(SFX_EXPLOSION_MAGICAL);
-                    pline("%s %s explodes!", Yname2(obj), expltext);
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s explodes!", Yname2(obj), expltext);
                 }
                 losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding sword", KILLED_BY_AN);
                 useup(obj);
@@ -1063,7 +1073,6 @@ boolean verbose;
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
-                update_inventory();
                 break;
             }
             else
@@ -1077,7 +1086,6 @@ boolean verbose;
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
-                update_inventory();
                 break;
             }
 
@@ -1086,7 +1094,6 @@ boolean verbose;
                 if(verbose)
                     play_sfx_sound(SFX_CHARGES_AT_MAXIMUM);
                 obj->charges = lim;
-                update_inventory();
                 break;
             }
             else if (obj->charges < lim)
@@ -1113,7 +1120,6 @@ boolean verbose;
                         play_effect = TRUE;
                     }
                 }
-                update_inventory();
             }
             else
             {
@@ -1123,6 +1129,8 @@ boolean verbose;
             break;
         }
         case RECHARGING_HOLY_GRAIL:
+        {
+            const char* contents = (objects[obj->otyp].oc_name_known && OBJ_CONTENT_NAME(obj->otyp) != 0 ? OBJ_CONTENT_NAME(obj->otyp) : OBJ_CONTENT_DESC(obj->otyp) != 0 ? OBJ_CONTENT_DESC(obj->otyp) : "unknown contents");
             if (obj->recharged >= 5)
             {
                 goto not_chargable;
@@ -1132,7 +1140,6 @@ boolean verbose;
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
-                update_inventory();
                 break;
             }
 
@@ -1156,17 +1163,18 @@ boolean verbose;
 
                 if (verbose)
                 {
-                    if(is_blessed)
+                    if (is_blessed)
                         play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
                     else
                         play_sfx_sound(SFX_RECHARGE_SUCCESS);
 
-                    pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s%s with %s.", Tobjnam(obj, "fill"), obj->charges >= lim ? " up" : "", contents);
                     play_effect = TRUE;
                 }
                 update_inventory();
             }
             break;
+        }
         default:
             goto not_chargable;
             break;
@@ -1176,6 +1184,7 @@ boolean verbose;
         if (obj->recharged < RECHARGE_LIMIT) /* recharge_limit */
             obj->recharged++;
 
+        update_inventory();
     }
     else
     {
@@ -3484,7 +3493,7 @@ int chg; /* recharging */
     dmg = d(n, k);
     obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
     play_sfx_sound(SFX_EXPLOSION_MAGICAL);
-    pline("%s %s explodes!", Yname2(obj), expl);
+    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s explodes!", Yname2(obj), expl);
     losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE), "exploding wand", KILLED_BY_AN);
     useup(obj);
     /* obscure side-effect */

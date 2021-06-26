@@ -332,7 +332,7 @@ double* average_ptr;
             multishot++;
 
         if (average_ptr)
-            *average_ptr = 1.0 + martial_arts_multishot_percentage_chance(skilllevel);
+            *average_ptr = 1.0 + martial_arts_multishot_percentage_chance(skilllevel) / 100.0;
 
         return multishot;
     }

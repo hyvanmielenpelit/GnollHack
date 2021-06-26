@@ -2247,7 +2247,9 @@ const char* recharge_texts[MAX_RECHARGING_TYPES] =
     "not rechargeable",
     "rechargeable up to seven times",
     "rechargeable up to seven times",
-    "rechargeable up to five times"    
+    "rechargeable up to five times",
+    "rechargeable to fill up the jar",
+    "rechargeable as a magic cube",
 };
 
 const char *

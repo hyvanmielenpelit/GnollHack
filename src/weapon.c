@@ -115,6 +115,8 @@ struct obj *obj;
     /* assorted special cases */
     switch (skill) {
     case P_NONE:
+    case P_BARE_HANDED_COMBAT:
+    case P_MARTIAL_ARTS:
         /* not a weapon or weptool: use item class name;
            override class name "food" for corpses, tins, and eggs,
            "large rock" for statues and boulders, and "tool" for towels */
