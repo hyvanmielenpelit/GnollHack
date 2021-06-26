@@ -9,6 +9,7 @@ namespace GnollHackClient
         void LoadLibrary();
         void UnloadLibrary();
         void InitializeGnollHack();
+        void ClearFiles();
         void GetTileArrays(out IntPtr gl2ti, out int size);
         int GetTotalTiles();
         int GetUnexploredGlyph();

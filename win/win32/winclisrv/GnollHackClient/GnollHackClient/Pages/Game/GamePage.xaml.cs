@@ -50,6 +50,7 @@ namespace GnollHackClient.Pages.Game
         private object _mapDataLock = new object();
         private int _mapCursorX;
         private int _mapCursorY;
+        private int _shownMessageRows = 4;
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
         private bool _cursorIsOn;
@@ -482,11 +483,19 @@ namespace GnollHackClient.Pages.Game
                 showNumberPad = true;
         }
 
+        private object msgHistoryLock = new object();
+        private List<GHMsgHistoryItem> _msgHistory = null;
         private void PrintHistory(List<GHMsgHistoryItem> msgHistory)
         {
-            MessageHistoryView.ItemsSource = msgHistory;
-            if(msgHistory.Count > 0)
-                MessageHistoryView.ScrollTo(msgHistory.Count - 1, -1, ScrollToPosition.End, false);
+            lock(msgHistoryLock)
+            {
+                _msgHistory = msgHistory;
+            }
+            /*
+            messagehistoryview.itemssource = msghistory;
+            if (msghistory.count > 0)
+                messagehistoryview.scrollto(msghistory.count - 1, -1, scrolltoposition.end, false);
+            */
         }
 
         private async void AskName()
@@ -774,6 +783,7 @@ namespace GnollHackClient.Pages.Game
             }
 
             canvasButtonRect.Top = 0; /* Maybe overrwritten below */
+            canvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
             if (_clientGame != null)
             {
                 /* Window strings */
@@ -781,21 +791,29 @@ namespace GnollHackClient.Pages.Game
                 {
                     for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
                     {
-                        if (_clientGame.Windows[i].Visible &&
-                            _clientGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.PrintToMap)
+                        if (_clientGame.Windows[i].Visible && (
+                            _clientGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.PrintToMap
+                            || _clientGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.RawPrint))
                         {
                             textPaint.Typeface = _clientGame.Windows[i].Typeface;
                             textPaint.TextSize = _clientGame.Windows[i].TextSize;
                             textPaint.Color = _clientGame.Windows[i].TextColor;
                             width = textPaint.FontMetrics.AverageCharacterWidth;
-                            height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                            height = textPaint.FontSpacing; // textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
 
                             if(_clientGame.Windows[i].AutoPlacement)
                             {
-                                if(_clientGame.Windows[i].WindowType == GHWinType.Here)
+                                if (_clientGame.Windows[i].WindowType == GHWinType.Message)
                                 {
                                     float newleft = 0;
-                                    float messagetop = canvasheight * (float)(MessageHistoryView.Y / canvasView.Height);
+                                    float newtop = canvasheight - height * _shownMessageRows - 30;
+                                    _clientGame.Windows[i].Left = newleft;
+                                    _clientGame.Windows[i].Top = newtop;
+                                }
+                                else if (_clientGame.Windows[i].WindowType == GHWinType.Here)
+                                {
+                                    float newleft = 0;
+                                    float messagetop = _clientGame.Windows[_clientGame.MessageWindowId].Top;
                                     float newtop = messagetop - _clientGame.Windows[i].Height - 30;
                                     _clientGame.Windows[i].Left = newleft;
                                     _clientGame.Windows[i].Top = newtop;
@@ -825,39 +843,107 @@ namespace GnollHackClient.Pages.Game
 
                             if(i == _clientGame.StatusWindowId)
                                 canvasButtonRect.Top = winRect.Bottom;
+                            else if (i == _clientGame.MessageWindowId)
+                                canvasButtonRect.Bottom = winRect.Top;
 
-                            lock (_clientGame.Windows[i].PutStrsLock)
+                            if (_clientGame.Windows[i].WindowType != GHWinType.Message)
                             {
-                                int j = 0;
-                                foreach (GHPutStrItem putstritem in _clientGame.Windows[i].PutStrs)
+                                lock (_clientGame.Windows[i].PutStrsLock)
                                 {
-                                    int pos = 0;
-                                    float xpos = 0;
-                                    foreach(GHPutStrInstructions instr in putstritem.InstructionList)
+                                    int j = 0;
+                                    foreach (GHPutStrItem putstritem in _clientGame.Windows[i].PutStrs)
                                     {
-                                        if (putstritem.Text == null)
-                                            str = "";
-                                        else if(pos + instr.PrintLength <= putstritem.Text.Length)
-                                            str = putstritem.Text.Substring(pos, instr.PrintLength);
-                                        else if (putstritem.Text.Length - pos > 0)
-                                            str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
-                                        else
-                                            str = "";
-                                        pos += str.Length;
-                                        textPaint.Color = NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
-                                        textPaint.MeasureText(str.Replace(' ', '_'), ref textBounds);
-                                        /* attributes */
-                                        tx = xpos + winRect.Left + _clientGame.Windows[i].Padding.Left;
-                                        ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
-                                        canvas.DrawText(str, tx, ty, textPaint);
-                                        textPaint.Style = SKPaintStyle.Stroke;
-                                        textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
-                                        textPaint.Color = SKColors.Black;
-                                        canvas.DrawText(str, tx, ty, textPaint);
-                                        textPaint.Style = SKPaintStyle.Fill;
-                                        xpos += textBounds.Width;
+                                        int pos = 0;
+                                        float xpos = 0;
+                                        foreach (GHPutStrInstructions instr in putstritem.InstructionList)
+                                        {
+                                            if (putstritem.Text == null)
+                                                str = "";
+                                            else if (pos + instr.PrintLength <= putstritem.Text.Length)
+                                                str = putstritem.Text.Substring(pos, instr.PrintLength);
+                                            else if (putstritem.Text.Length - pos > 0)
+                                                str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
+                                            else
+                                                str = "";
+                                            pos += str.Length;
+                                            textPaint.Color = NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
+                                            textPaint.MeasureText(str.Replace(' ', '_'), ref textBounds);
+                                            /* attributes */
+                                            tx = xpos + winRect.Left + _clientGame.Windows[i].Padding.Left;
+                                            ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+                                            canvas.DrawText(str, tx, ty, textPaint);
+                                            textPaint.Style = SKPaintStyle.Stroke;
+                                            textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
+                                            textPaint.Color = SKColors.Black;
+                                            canvas.DrawText(str, tx, ty, textPaint);
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            xpos += textBounds.Width;
+                                        }
+                                        j++;
                                     }
-                                    j++;
+                                }
+                            }
+
+                            if (_clientGame.Windows[i].WindowType == GHWinType.Message)
+                            {
+                                lock (msgHistoryLock)
+                                {
+                                    int j = _shownMessageRows - 1, idx;
+                                    for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
+                                    {
+                                        GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                        string longLine = msgHistoryItem.Text;
+                                        SKColor printColor = NHColor2SKColor(msgHistoryItem.NHColor < nhcolor.CLR_MAX ? msgHistoryItem.NHColor : nhcolor.CLR_WHITE);
+
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        textPaint.StrokeWidth = 0;
+                                        textPaint.Color = printColor;
+                                        /* attributes */
+
+                                        float lineLengthLimit = 0.8f * canvaswidth;
+                                        var wrappedLines = new List<string>();
+                                        var lineLength = 0.0f;
+                                        var line = "";
+                                        foreach (var word in longLine.Split(' '))
+                                        {
+                                            var wordWithSpace = word + " ";
+                                            var wordWithSpaceLength = textPaint.MeasureText(wordWithSpace);
+                                            if (lineLength + wordWithSpaceLength > lineLengthLimit)
+                                            {
+                                                wrappedLines.Add(line);
+                                                line = "" + wordWithSpace;
+                                                lineLength = wordWithSpaceLength;
+                                            }
+                                            else
+                                            {
+                                                line += wordWithSpace;
+                                                lineLength += wordWithSpaceLength;
+                                            }
+                                        }
+                                        wrappedLines.Add(line);
+
+                                        int lineidx;
+                                        for (lineidx = 0; lineidx < wrappedLines.Count; lineidx++)
+                                        {
+                                            string wrappedLine = wrappedLines[lineidx];
+                                            int window_row_idx = j + lineidx - wrappedLines.Count + 1;
+                                            if (window_row_idx < 0)
+                                                continue;
+                                            tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
+                                            ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
+                                            canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                            textPaint.Style = SKPaintStyle.Stroke;
+                                            textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
+                                            textPaint.Color = SKColors.Black;
+                                            canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            textPaint.StrokeWidth = 0;
+                                            textPaint.Color = printColor;
+                                        }
+                                        j -= wrappedLines.Count;
+
+                                    }
+
                                 }
                             }
                         }
@@ -868,7 +954,6 @@ namespace GnollHackClient.Pages.Game
 
             canvasButtonRect.Right = canvaswidth * (float)(0.8);
             canvasButtonRect.Left = canvaswidth * (float)(0.2);
-            canvasButtonRect.Bottom = canvasheight * (float)((canvasView.Height - MessageHistoryView.Height) / canvasView.Height);
 
             if (_showDirections || showNumberPad)
             {

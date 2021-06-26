@@ -1467,7 +1467,11 @@ STATIC_VAR const struct paranoia_opts {
       "y to pray (supersedes old \"prayconfirm\" option)" },
     { PARANOID_REMOVE, "Remove", 1, "Takeoff", 1,
       "always pick from inventory for Remove and Takeoff" },
-    /* for config file parsing; interactive menu skips these */
+    { PARANOID_WATER, "enter-water", 2, "water", 2,
+      "yes vs y to enter a pool of water or lava" },
+    { PARANOID_TRAP, "trap", 2, (const char*)0, 0,
+      "yes vs y to enter into a trap" },
+      /* for config file parsing; interactive menu skips these */
     { 0, "none", 4, 0, 0, 0 }, /* require full word match */
     { ~0, "all", 3, 0, 0, 0 }, /* ditto */
 };

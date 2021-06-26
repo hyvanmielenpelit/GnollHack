@@ -1864,8 +1864,18 @@ domove_core()
                     char ynqbuf[BUFSZ] = "";
                     Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? "pool" : is_lava(x, y) ? "lava" : "location");
 
-                    char ans = ynq(ynqbuf);
-                    if (ans != 'y')
+                    boolean accept = FALSE;
+                    if (ParanoidWater)
+                    {
+                        accept = paranoid_query(ParanoidWater, ynqbuf);
+                    }
+                    else
+                    {
+                        char ans = ynq(ynqbuf);
+                        accept = (ans == 'y');
+                    }
+
+                    if (!accept)
                     {
                         nomul(0);
                         return;
@@ -1880,8 +1890,18 @@ domove_core()
                 char ynqbuf[BUFSZ] = "";
                 Sprintf(ynqbuf, "There is %s. Step into it?", an(get_trap_explanation(trap)));
 
-                char ans = ynq(ynqbuf);
-                if (ans != 'y')
+                boolean accept = FALSE;
+                if (ParanoidTrap)
+                {
+                    accept = paranoid_query(ParanoidTrap, ynqbuf);
+                }
+                else
+                {
+                    char ans = ynq(ynqbuf);
+                    accept = (ans == 'y');
+                }
+
+                if (!accept)
                 {
                     nomul(0);
                     context.move = FALSE;

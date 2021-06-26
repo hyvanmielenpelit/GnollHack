@@ -196,9 +196,10 @@ namespace GnollHackClient
                 case GHWinType.None:
                     break;
                 case GHWinType.Message:
-                    Typeface = App.DiabloTypeface;
-                    Left = 0;
-                    Top = 0;
+                    TextSize = 32;
+                    Typeface = App.DejaVuSansMonoBoldTypeface;
+                    StrokeWidth = 1.5f;
+                    AutoPlacement = true;
                     break;
                 case GHWinType.Status:
                     //BackgroundColor = TransparentBlack;
@@ -235,7 +236,7 @@ namespace GnollHackClient
                 case GHWinType.Worn:
                     break;
                 case GHWinType.Here:
-                    TextSize = 36;
+                    TextSize = 32;
                     Typeface = App.DejaVuSansMonoBoldTypeface;
                     StrokeWidth = 1.5f;
                     AutoPlacement = true;

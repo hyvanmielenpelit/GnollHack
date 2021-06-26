@@ -149,6 +149,36 @@ namespace GnollHackClient.Droid
         {
             UnloadNativeLibrary("gnollhackdroid");
         }
+        public void ClearFiles()
+        {
+            string filesdir = Android.App.Application.Context.FilesDir.Path;
+            _gnollhackfilesdir = filesdir;
+
+            /* For debugging purposes now, delete all existing files in filesdir first */
+            System.IO.DirectoryInfo di = new DirectoryInfo(_gnollhackfilesdir);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+
+            /* Make relevant directories */
+            string[] ghdirlist = { "save" };
+            foreach (string ghdir in ghdirlist)
+            {
+                string fulldirepath = Path.Combine(_gnollhackfilesdir, ghdir);
+                if (Directory.Exists(fulldirepath))
+                {
+                    System.IO.DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                    foreach (FileInfo file in disave.GetFiles())
+                    {
+                        file.Delete();
+                    }
+                    Directory.CreateDirectory(fulldirepath);
+                }
+            }
+        }
+
         public void InitializeGnollHack()
         {
             /* Unpack GnollHack files */

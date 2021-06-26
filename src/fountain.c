@@ -930,7 +930,7 @@ register struct obj *obj;
             {
                 curse(obj);
                 if (!Blind)
-                    pline("%s %s for a moment.", Tobjnam(obj, "glows"), hcolor(NH_BLACK));
+                    pline("%s %s for a moment.", Tobjnam(obj, "glow"), hcolor(NH_BLACK));
                 else
                 {
                     identified = FALSE;

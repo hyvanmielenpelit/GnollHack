@@ -59,6 +59,7 @@ namespace GnollHackClient
             //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
         }
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
@@ -153,6 +154,13 @@ namespace GnollHackClient
             App.AppCloseService.CloseApplication();
             Thread.Sleep(50);
             System.Diagnostics.Process.GetCurrentProcess().Kill();
+        }
+
+        private void ClearFilesButton_Clicked(object sender, EventArgs e)
+        {
+            _mainGnollHackService.ClearFiles();
+            ClearFilesButton.Text = "Done";
+            ClearFilesButton.TextColor = Color.Red;
         }
     }
 }
