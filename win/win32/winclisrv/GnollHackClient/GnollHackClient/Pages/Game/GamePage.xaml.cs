@@ -888,62 +888,63 @@ namespace GnollHackClient.Pages.Game
                             {
                                 lock (msgHistoryLock)
                                 {
-                                    int j = _shownMessageRows - 1, idx;
-                                    for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
+                                    if(_msgHistory != null)
                                     {
-                                        GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
-                                        string longLine = msgHistoryItem.Text;
-                                        SKColor printColor = NHColor2SKColor(msgHistoryItem.NHColor < nhcolor.CLR_MAX ? msgHistoryItem.NHColor : nhcolor.CLR_WHITE);
-
-                                        textPaint.Style = SKPaintStyle.Fill;
-                                        textPaint.StrokeWidth = 0;
-                                        textPaint.Color = printColor;
-                                        /* attributes */
-
-                                        float lineLengthLimit = 0.8f * canvaswidth;
-                                        var wrappedLines = new List<string>();
-                                        var lineLength = 0.0f;
-                                        var line = "";
-                                        foreach (var word in longLine.Split(' '))
+                                        int j = _shownMessageRows - 1, idx;
+                                        for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
                                         {
-                                            var wordWithSpace = word + " ";
-                                            var wordWithSpaceLength = textPaint.MeasureText(wordWithSpace);
-                                            if (lineLength + wordWithSpaceLength > lineLengthLimit)
-                                            {
-                                                wrappedLines.Add(line);
-                                                line = "" + wordWithSpace;
-                                                lineLength = wordWithSpaceLength;
-                                            }
-                                            else
-                                            {
-                                                line += wordWithSpace;
-                                                lineLength += wordWithSpaceLength;
-                                            }
-                                        }
-                                        wrappedLines.Add(line);
+                                            GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                            string longLine = msgHistoryItem.Text;
+                                            SKColor printColor = NHColor2SKColor(msgHistoryItem.NHColor < nhcolor.CLR_MAX ? msgHistoryItem.NHColor : nhcolor.CLR_WHITE);
 
-                                        int lineidx;
-                                        for (lineidx = 0; lineidx < wrappedLines.Count; lineidx++)
-                                        {
-                                            string wrappedLine = wrappedLines[lineidx];
-                                            int window_row_idx = j + lineidx - wrappedLines.Count + 1;
-                                            if (window_row_idx < 0)
-                                                continue;
-                                            tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
-                                            ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
-                                            canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                            textPaint.Style = SKPaintStyle.Stroke;
-                                            textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
-                                            textPaint.Color = SKColors.Black;
-                                            canvas.DrawText(wrappedLine, tx, ty, textPaint);
                                             textPaint.Style = SKPaintStyle.Fill;
                                             textPaint.StrokeWidth = 0;
                                             textPaint.Color = printColor;
+                                            /* attributes */
+
+                                            float lineLengthLimit = 0.8f * canvaswidth;
+                                            var wrappedLines = new List<string>();
+                                            var lineLength = 0.0f;
+                                            var line = "";
+                                            foreach (var word in longLine.Split(' '))
+                                            {
+                                                var wordWithSpace = word + " ";
+                                                var wordWithSpaceLength = textPaint.MeasureText(wordWithSpace);
+                                                if (lineLength + wordWithSpaceLength > lineLengthLimit)
+                                                {
+                                                    wrappedLines.Add(line);
+                                                    line = "" + wordWithSpace;
+                                                    lineLength = wordWithSpaceLength;
+                                                }
+                                                else
+                                                {
+                                                    line += wordWithSpace;
+                                                    lineLength += wordWithSpaceLength;
+                                                }
+                                            }
+                                            wrappedLines.Add(line);
+
+                                            int lineidx;
+                                            for (lineidx = 0; lineidx < wrappedLines.Count; lineidx++)
+                                            {
+                                                string wrappedLine = wrappedLines[lineidx];
+                                                int window_row_idx = j + lineidx - wrappedLines.Count + 1;
+                                                if (window_row_idx < 0)
+                                                    continue;
+                                                tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
+                                                ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
+                                                canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                textPaint.Style = SKPaintStyle.Stroke;
+                                                textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
+                                                textPaint.Color = SKColors.Black;
+                                                canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                textPaint.Style = SKPaintStyle.Fill;
+                                                textPaint.StrokeWidth = 0;
+                                                textPaint.Color = printColor;
+                                            }
+                                            j -= wrappedLines.Count;
                                         }
-                                        j -= wrappedLines.Count;
-
                                     }
-
                                 }
                             }
                         }

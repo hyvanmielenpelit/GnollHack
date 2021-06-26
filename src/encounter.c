@@ -600,7 +600,7 @@ struct encounterdef encounter_definitions[] =
                         { { WAN_TELEPORTATION, 0, 0, 0, 0, 100 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM }
                       },
                       {
-                        { { CUBIC_GATE, 0, 0, 0, 0, 50 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM }
+                        { { CUBIC_GATE, 0, 0, 0, 0, 5 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM }
                       },
                       {
                         { { SPE_TELEPORT_MONSTER, 0, 0, 0, 0, 20 }, { SPE_TELEPORT_SELF, 0, 0, 0, 0, 20 }, { SPE_CIRCLE_OF_TELEPORTATION, 0, 0, 0, 0, 20 }, { SPE_CONTROLLED_TELEPORT, 0, 0, 0, 0, 20 }, { SPE_CONTROLLED_LEVEL_TELEPORT, 0, 0, 0, 0, 20 } }

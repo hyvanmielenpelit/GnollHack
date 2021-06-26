@@ -97,7 +97,8 @@ void lib_player_selection(void)
 void lib_askname(void)
 {
     char* name = lib_callbacks.callback_askname();
-    strcpy(plname, name);
+    strncpy(plname, name, PL_NSIZ - 1);
+    plname[PL_NSIZ - 1] = '\0';
 }
 
 void lib_get_nh_event(void)
@@ -355,7 +356,8 @@ char lib_yn_function_ex(int attr, int color, const char* question, const char* c
         write_text2buf_utf8(buf, BUFSIZ, question);
     char defs[2] = { 0,0 };
     defs[0] = def;
-    return convert_gnhch(lib_callbacks.callback_yn_function_ex(attr, color, question ? buf : 0, choices, defs));
+    int res = lib_callbacks.callback_yn_function_ex(attr, color, question ? buf : 0, choices, defs);
+    return convert_gnhch(res);
 }
 
 void lib_getlin_ex(int attr, int color, const char* question, char* input)

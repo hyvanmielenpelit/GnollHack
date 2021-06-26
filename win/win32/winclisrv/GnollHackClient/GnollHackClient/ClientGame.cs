@@ -712,6 +712,8 @@ namespace GnollHackClient
         public string ClientCallback_getlin(int attr, int color, string query)
         {
             Debug.WriteLine("ClientCallback_getlin");
+            if (query == null)
+                query = "";
 
             ConcurrentQueue<GHRequest> queue;
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
