@@ -811,6 +811,7 @@ boolean silently;
     boolean was_lightning_fast = is_lightning_fast(mtmp);
     boolean was_slow = is_slow(mtmp);
     boolean was_sleeping = is_sleeping(mtmp);
+    boolean was_stunned = is_stunned(mtmp);
     boolean was_paralyzed = is_paralyzed(mtmp);
     boolean was_blinded = is_blinded(mtmp);
     boolean was_confused = is_confused(mtmp);
@@ -1033,15 +1034,15 @@ boolean silently;
         }
 
         /* Stunned */
-        if (is_sleeping(mtmp) && !was_sleeping)
+        if (is_stunned(mtmp) && !was_stunned)
         {
             res = TRUE;
-            pline("%s falls asleep.", Monnam(mtmp));
+            pline("%s is stunned!", Monnam(mtmp));
         }
-        else if (!is_sleeping(mtmp) && was_sleeping)
+        else if (!is_stunned(mtmp) && was_stunned)
         {
             res = TRUE;
-            pline("%s wakes up.", Monnam(mtmp));
+            pline("%s looks less stunned.", Monnam(mtmp));
         }
 
         /* Confusion */
