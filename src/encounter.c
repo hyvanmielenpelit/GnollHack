@@ -19,7 +19,7 @@ static const char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] =
     {"Urok", "Golluk", "Grimsh", "Urum", "", "", "", "", "", "", "", "", "", "", "", "" },
     {"Deimos", "Kangaxx", "Lyran", "Karlat", "Vongoethe", "", "", "", "", "", "", "", "", "", "", "" },
     {"Acererak ", "Vecna", "Zhengyi", "Jymahna", "Rhangaun", "Priamon Rakesk", "Shangalar the Black", "Kartak Spellseer", "", "", "", "", "", "", "", "" },
-    {"Schroedinger", "Heisenberg", "Planck", "Dirac", "Feynman", "Bohr", "Pauli", "de Broglie", "Fermi", "Bell", "", "", "", "", "", "" },
+    {"Schroedinger", "Heisenberg", "Planck", "Dirac", "Feynman", "Bohr", "Pauli", "de Broglie", "Fermi", "Bell", "Born", "", "", "", "", "" },
     { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }
 };
 
