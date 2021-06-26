@@ -2069,7 +2069,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_wielded_weapon(obj) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2081,7 +2081,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_wielded_weapon(obj) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_POWER_2_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2093,7 +2093,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_wielded_weapon(obj) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_POWER_3_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2105,7 +2105,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_wielded_weapon(obj) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2119,7 +2119,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_MANA_BONUS_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_wielded_weapon(obj) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2133,7 +2133,7 @@ register struct obj* obj;
                     if (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)
                         Sprintf(eos(pwbuf), " when carried");
                     else
-                        Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+                        Sprintf(eos(pwbuf), " when %s", is_wielded_weapon(obj) ? "wielded" : "worn");
 
                     if (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS)
                         Sprintf(eos(pwbuf), " (applies to all)");
@@ -2357,7 +2357,7 @@ register struct obj* obj;
                 if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_WHEN_CARRIED)
                     Sprintf(eos(pwbuf), " when carried");
                 else
-                    Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+                    Sprintf(eos(pwbuf), " when %s", is_wielded_weapon(obj) ? "wielded" : "worn");
 
                 if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_ALL_CHARACTERS)
                     Sprintf(eos(pwbuf), " (applies to all)");
@@ -2377,7 +2377,7 @@ register struct obj* obj;
                 if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_WHEN_CARRIED)
                     Sprintf(eos(pwbuf), " when carried");
                 else
-                    Sprintf(eos(pwbuf), " when %s", is_weapon(obj) ? "wielded" : "worn");
+                    Sprintf(eos(pwbuf), " when %s", is_wielded_weapon(obj) ? "wielded" : "worn");
 
                 if (objects[otyp].oc_pflags & P1_LUCK_APPLIES_TO_ALL_CHARACTERS)
                     Sprintf(eos(pwbuf), " (applies to all)");
@@ -2959,6 +2959,13 @@ register struct obj* obj;
                 txt = buf;
                 putstr(datawin, 0, txt);
             }
+            if (objects[otyp].oc_flags5 & O5_IS_WEAPON_WHEN_WORN)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Is weapon when worn", powercnt);
+                txt = buf;
+                putstr(datawin, 0, txt);
+            }
             if (otyp_shines_magical_light(otyp))
             {
                 powercnt++;
@@ -3158,7 +3165,7 @@ register struct obj* obj;
             *defensetext = highc(*defensetext);
 
             powercnt++;
-            if (is_weapon(obj))
+            if (is_wielded_weapon(obj))
                 Sprintf(buf, " %2d - %s when wielded", powercnt, defensetext);
             else
                 Sprintf(buf, " %2d - %s when worn", powercnt, defensetext);
@@ -3399,7 +3406,7 @@ register struct obj* obj;
             if (i == 1)
             {
                 specialeffect = artilist[obj->oartifact].spfx;
-                if (is_weapon(obj))
+                if (is_wielded_weapon(obj))
                     strcpy(endbuf, "when wielded");
                 else
                     strcpy(endbuf, "when worn");

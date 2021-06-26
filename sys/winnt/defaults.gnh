@@ -260,6 +260,8 @@ OPTIONS=hilite_status:primary-weapon/2hP/blue
 OPTIONS=hilite_status:primary-weapon/c/brown
 OPTIONS=hilite_status:primary-weapon/!/cyan
 OPTIONS=hilite_status:primary-weapon/-/black
+OPTIONS=hilite_status:primary-weapon/g/black
+OPTIONS=hilite_status:primary-weapon/mg/black
 
 OPTIONS=hilite_status:secondary-weapon/M/white
 OPTIONS=hilite_status:secondary-weapon/2hM/white
@@ -284,6 +286,8 @@ OPTIONS=hilite_status:secondary-weapon/2hP/blue
 OPTIONS=hilite_status:secondary-weapon/c/brown
 OPTIONS=hilite_status:secondary-weapon/!/cyan
 OPTIONS=hilite_status:secondary-weapon/-/black
+OPTIONS=hilite_status:secondary-weapon/g/black
+OPTIONS=hilite_status:secondary-weapon/mg/black
 
 ## Grabbed
 OPTIONS=hilite_status:condition/grab/yellow

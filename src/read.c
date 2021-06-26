@@ -2251,6 +2251,14 @@ boolean *effect_happened_ptr;
                 otmp = uarms;
             else if (uwep && is_weapon(uwep) && uwep->oclass != ARMOR_CLASS && uarms && is_weapon(uarms) && uarms->oclass != ARMOR_CLASS)
                 otmp = !rn2(2) ? uwep : uarms;
+            else if (uwep && is_weapon(uwep) && uarms && is_weapon(uarms))
+                otmp = !rn2(2) ? uwep : uarms;
+            else if (uwep && is_weapon(uwep))
+                otmp = uwep;
+            else if (uarms && is_weapon(uarms))
+                otmp = uarms;
+            else if (uarmg && is_weapon(uarmg))
+                otmp = uarmg;
             else
                 otmp = 0;
 

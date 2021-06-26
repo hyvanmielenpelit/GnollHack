@@ -3197,9 +3197,7 @@ struct obj* otmp;
         return TRUE;
     if (is_bracers(otmp) && (otmp->owornmask & W_ARMB) != 0)
         return TRUE;
-    if (is_shield(otmp) && (otmp->owornmask & (W_ARMS | W_WEP)) != 0)
-        return TRUE;
-    if (is_weapon(otmp) && (otmp->owornmask & (W_ARMS | W_WEP)) != 0)
+    if (is_wielded_item(otmp) && (otmp->owornmask & (W_ARMS | W_WEP)) != 0)
         return TRUE;
     if (is_amulet(otmp) && (otmp->owornmask & W_AMUL) != 0)
         return TRUE;

@@ -835,7 +835,7 @@ struct attack *uattk;
 
     if (u.twoweap && !(uwep && bimanual(uwep)) && malive && m_at(x, y) == mon) //&& !override_confirmation 
     {
-        if (uarms && is_weapon(uarms))
+        if (uarms && is_wielded_weapon(uarms))
             You("strike with your left-hand weapon.");
         else
             You("strike with your left %s%s.", uarmg ? "gloved " : "", body_part(HAND));
@@ -1105,6 +1105,8 @@ boolean* obj_destroyed;
             /* is it not a melee weapon? */
             if (/* if you strike with a bow... */
                 is_launcher(obj)
+                /* or strike with non-worn weapon gloves */
+                || ((objects[(obj)->otyp].oc_flags5 & O5_IS_WEAPON_WHEN_WORN) != 0 && !is_obj_worn(obj))
                 /* or strike with a missile in your hand... */
                 || (!thrown && (is_missile(obj) || is_ammo(obj)))
                 /* or use a pole at short range and not mounted... */

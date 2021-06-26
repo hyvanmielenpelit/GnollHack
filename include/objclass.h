@@ -920,6 +920,7 @@ struct objclass {
 #define O5_MBAG_DESTROYING_ITEM        0x00000002UL
 #define O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN 0x00000004UL
 #define O5_NO_MYTHIC_RACIAL_PREFIXES   0x00000008UL
+#define O5_IS_WEAPON_WHEN_WORN         0x00000010UL /* Weapon gloves only */
 
 #define O6_NONE                        0x00000000UL
 

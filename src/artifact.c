@@ -378,7 +378,7 @@ int prop_index;
     /* Normal wielded and carried properties */
     if ((arti->carried_prop == prop_index)
         || ((arti->worn_prop == prop_index)
-            && (!is_weapon(otmp) || is_shield(otmp) ? (otmp->owornmask & W_WIELDED_WEAPON) : (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
+            && (is_wielded_item(otmp) ? (otmp->owornmask & W_WIELDED_WEAPON) : (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
             )
         )
         return TRUE;
@@ -390,7 +390,7 @@ int prop_index;
     /* Properties from spfx and cspx flags */
     unsigned long abil = prop_to_spfx(prop_index);
     boolean worn_mask_ok = FALSE;
-    if (is_weapon(otmp) || is_shield(otmp))
+    if (is_wielded_item(otmp))
         worn_mask_ok = !!(otmp->owornmask & W_WIELDED_WEAPON);
     else
         worn_mask_ok = !!(otmp->owornmask & (W_ARMOR | W_ACCESSORY));
@@ -3348,10 +3348,10 @@ int prop_index;
     if (!obj->owornmask)
         return carried_item_is_giving_monster_power(mon, obj, prop_index);
 
-    if ((obj->owornmask & W_WEP) && !(is_weapon(obj) || is_shield(obj)))
+    if ((obj->owornmask & W_WEP) && !is_wielded_item(obj))
         return carried_item_is_giving_monster_power(mon, obj, prop_index);
 
-    if ((obj->owornmask & W_WEP2) && !(is_weapon(obj) || is_shield(obj)))
+    if ((obj->owornmask & W_WEP2) && !is_wielded_item(obj))
         return carried_item_is_giving_monster_power(mon, obj, prop_index);
 
     int otyp = obj->otyp;

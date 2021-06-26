@@ -1114,7 +1114,7 @@ BOW("Galadhrim bow", "ornamental long bow",
            hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
            wt, color, soundset,\
            0, 0, 0, 0, \
-           powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, flags5, flags6)
+           powconfermask,permittedtargets, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, flags5 | O5_IS_WEAPON_WHEN_WORN, flags6)
 
 
 /* helmets */

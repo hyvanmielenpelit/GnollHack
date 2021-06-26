@@ -2461,7 +2461,7 @@ const char *str;
             }
             return TRUE;
         }
-        else if (is_weapon(orefl))
+        else if (is_wielded_weapon(orefl))
         {
             if (str)
             {
@@ -2535,7 +2535,7 @@ const char *fmt, *str;
                         pline(fmt, str, "shield");
                     makeknown(uarms->otyp);
                 }
-                else if(is_weapon(uarms))
+                else if(is_wielded_weapon(uarms))
                 {
                     pline(fmt, str, "left hand weapon");
                 }
@@ -2559,7 +2559,7 @@ const char *fmt, *str;
                     pline(fmt, str, "right hand shield");
                     makeknown(uwep->otyp);
                 }
-                else if (is_weapon(uwep))
+                else if (is_wielded_weapon(uwep))
                 {
                     if(u.twoweap)
                         pline(fmt, str, "right hand weapon");

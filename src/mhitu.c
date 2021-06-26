@@ -1556,7 +1556,7 @@ struct monst *mon;
         /* omit W_SWAPWEP+W_QUIVER; W_ARTIFACT_CARRIED+W_ARTIFACT_INVOKED handled by protects() */
         wearmask = (W_ARMOR & ~W_ARMS) | W_ACCESSORY;
 
-        if (is_shield(o) || is_weapon(o) || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(o))
+        if (is_wielded_item(o) || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(o))
             wearmask |= (W_WEP | W_ARMS);
 
         item_mc_bonus = 0;

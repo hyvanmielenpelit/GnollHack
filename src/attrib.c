@@ -742,7 +742,7 @@ update_extrinsics()
             bit = W_ARMC;
         else if (uitem == uarmh)
             bit = W_ARMH;
-        else if (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
+        else if (uitem == uarms && is_wielded_item(uitem))
             bit = W_ARMS;
         else if (uitem == uarmg)
             bit = W_ARMG;
@@ -772,7 +772,7 @@ update_extrinsics()
             bit = W_RINGL;
         else if (uitem == ublindf)
             bit = W_BLINDFOLD;
-        else if (uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
+        else if (uitem == uwep && is_wielded_item(uitem))
             bit = W_WEP;
         else
             bit = W_CARRIED;
@@ -1956,7 +1956,7 @@ struct monst* mon;
         otyp = uitem->otyp;
         boolean worn = is_you ? is_obj_worn(uitem) :
             ((mon->worn_item_flags & uitem->owornmask) != 0
-                && (!is_weapon(uitem) || !is_shield(uitem) || ((is_weapon(uitem) || is_shield(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON))));
+                && (!is_wielded_item(uitem) || (is_wielded_item(uitem) && (uitem->owornmask & W_WIELDED_WEAPON))));
 
         if (!object_uses_spellbook_wand_flags_and_properties(uitem)
             && objects[otyp].oc_hp_bonus != 0)
@@ -2180,8 +2180,8 @@ struct monst* mon;
         boolean cursed_plus_cursed_good = uitem->cursed && cursed_are_good;
         long applicable_enchantment = (long)(cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);
         boolean worn = is_you ? is_obj_worn(uitem) :
-            ((!is_weapon(uitem) && !is_shield(uitem) && (uitem->owornmask & ~W_WEAPON) != 0)
-                || ((is_weapon(uitem) || is_shield(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON)));
+            ((!is_wielded_item(uitem) && (uitem->owornmask & ~W_WEAPON) != 0)
+                || ((is_wielded_item(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON)));
 
         /* Following are for non-spellbooks and non-wands */
         if (!object_uses_spellbook_wand_flags_and_properties(uitem))
@@ -2387,11 +2387,11 @@ boolean is_obj_worn(uitem)
 struct obj* uitem;
 {
     return (
-        (uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
+        (uitem == uwep && is_wielded_item(uitem))
         || uitem == uarm
         || uitem == uarmc
         || uitem == uarmh
-        || (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
+        || (uitem == uarms && is_wielded_item(uitem))
         || uitem == uarmg
         || uitem == uarmf
         || uitem == uarmu

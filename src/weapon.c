@@ -3126,24 +3126,25 @@ boolean is_left_arm;
     strcpy(buf, "");
     if (!wep)
     {
+        const char* unarmedstr = (uarmg ? (is_weapon(uarmg) ? "mg" : "g") : "-");
         if (is_left_arm)
         {
             if (!uwep)
             {
                 if(u.twoweap)
-                    strcpy(buf, "-");
+                    strcpy(buf, unarmedstr);
                 else
                     strcpy(buf, "");
             }
             else if(objects[uwep->otyp].oc_bimanual)
                 strcpy(buf, "");
             else if(u.twoweap)
-                strcpy(buf, "-");
+                strcpy(buf, unarmedstr);
             else
                 strcpy(buf, "");
         }
         else
-            strcpy(buf, "-");
+            strcpy(buf, unarmedstr);
     }
     else if (wep->otyp == CORPSE)
     {

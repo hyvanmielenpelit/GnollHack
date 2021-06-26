@@ -3396,7 +3396,7 @@ struct monst* mtmp;
     {
         if (!is_peaceful(mtmp))
         {
-            if(uwep && is_weapon(uwep))
+            if(uwep && is_wielded_weapon(uwep))
                 Sprintf(ansbuf, "Hah, drop your weapon first, scum!");
             else
                 Sprintf(ansbuf, "The question is who are you, scum?");
