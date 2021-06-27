@@ -552,10 +552,16 @@ struct obj *obj;
     /* any silver object is effective */
     if (objects[obj->otyp].oc_material == MAT_SILVER)
         return TRUE;
+
+    /* any blessed object is effective */
+    if (obj->blessed)
+        return TRUE;
+
     /* non-silver artifacts with bonus against undead also are effective */
     arti = get_artifact(obj);
     if (arti && (arti->aflags & AF_DFLAG2) && (arti->mtype & M2_UNDEAD))
         return TRUE;
+
     if (obj->mythic_suffix && has_obj_mythic_suffix_power(obj, MYTHIC_SUFFIX_POWER_INDEX_UNDEAD_DESTRUCTION))
         return TRUE;
 

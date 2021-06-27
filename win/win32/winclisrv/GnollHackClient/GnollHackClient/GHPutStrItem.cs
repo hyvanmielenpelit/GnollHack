@@ -56,7 +56,8 @@ namespace GnollHackClient
                     res.Add(new GHPutStrInstructions(prevattr, prevclr, cnt - 1));
                     cnt = 1;
                 }
-                else if(i == Text.Length - 1)
+                
+                if(i == Text.Length - 1)
                 {
                     res.Add(new GHPutStrInstructions(curattr, curclr, cnt));
                 }
