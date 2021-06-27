@@ -3479,9 +3479,9 @@ monster_nearby()
                 continue;
             if ((mtmp = m_at(x, y)) && M_AP_TYPE(mtmp) != M_AP_FURNITURE
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
-                && (!is_peaceful(mtmp) || Hallucination)
+                && ((!is_peaceful(mtmp) && !noattacks(mtmp->data)) || Hallucination)
                 && (!is_hider(mtmp->data) || !mtmp->mundetected)
-                && !noattacks(mtmp->data) && mon_can_move(mtmp)
+                && mon_can_move(mtmp)
                 && !onscary(u.ux, u.uy, mtmp) && canspotmon(mtmp))
                 return 1;
         }

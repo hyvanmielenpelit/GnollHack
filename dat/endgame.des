@@ -126,6 +126,9 @@ MONSTER:('E',"elder earth elemental"),(04,18),hostile
 
 OBJECT:('`',"boulder"),random
 
+MON_GENERATION: 30, ('E',"earth elemental"), ('E',"elder earth elemental")
+MON_GENERATION: 10, ('T',"rock troll"), ('H',"stone giant"), ('U',"umbral hulk")
+
 
 MAZE:"air",' '
 FLAGS: noteleport,hardfloor,shortsighted
@@ -200,8 +203,8 @@ MONSTER:'D',random
 MONSTER:'E',random
 MONSTER:'E',random
 MONSTER:'E',random
-MONSTER:'J',random
-MONSTER:'J',random
+MONSTER:('J', "jabberwock"),random
+MONSTER:('J', "jabberwock"),random
 
 MONSTER:('&',"djinni"),random,hostile
 MONSTER:('&',"djinni"),random,hostile
@@ -226,6 +229,9 @@ MONSTER:('v',"steam vortex"),random,hostile
 MONSTER:('v',"steam vortex"),random,hostile
 MONSTER:('v',"steam vortex"),random,hostile
 MONSTER:('v',"steam vortex"),random,hostile
+
+MON_GENERATION: 30, ('E',"air elemental"), ('E',"elder air elemental")
+MON_GENERATION: 10, ('&',"djinni"),('J', "jabberwock"),'D', ('v',"fog cloud"), ('v',"energy vortex"), ('v',"steam vortex"), ('e',"floating eye"), ('y',"yellow light")
 
 
 MAZE:"fire",' '
@@ -378,6 +384,9 @@ OBJECT:('`',"boulder"),random
 OBJECT:('`',"boulder"),random
 OBJECT:('`',"boulder"),random
 
+MON_GENERATION: 30, ('E',"fire elemental"), ('E',"elder fire elemental")
+MON_GENERATION: 10, ('H',"fire giant"), ('v',"fire vortex"), (':',"salamander"), ('v',"steam vortex"), ('&',"pit fiend"), ('&',"balor"), ('d',"hell hound"), ('&',"barbed devil")
+
 
 MAZE:"water",' '
 FLAGS: noteleport,hardfloor,shortsighted
@@ -474,6 +483,8 @@ MONSTER:('E',"water elemental"),random,hostile
 MONSTER:('E',"elder water elemental"),random,hostile
 MONSTER:('E',"water elemental"),random,hostile
 MONSTER:('E',"elder water elemental"),random,hostile
+
+MON_GENERATION: 30, ('E',"water elemental"), ('E',"water fire elemental"), ';'
 
 
 MAZE:"astral",' '

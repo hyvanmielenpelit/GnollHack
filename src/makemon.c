@@ -653,7 +653,7 @@ register struct monst *mtmp;
             if (!rn2(100))
             {
                 int ringtype = RIN_SUPREME_POWER;
-                int artifacttype = ART_TRUE_RING;
+                int artifacttype = ART_RULING_RING_OF_YENDOR;
 
                 otmp = mksobj(ringtype, FALSE, FALSE, FALSE);
 
@@ -1338,7 +1338,7 @@ register struct monst *mtmp;
             if (!rn2(20))
             {
                 int ringtype = RIN_SUPREME_POWER;
-                short artifacttype = ART_TRUE_RING;
+                short artifacttype = ART_RULING_RING_OF_YENDOR;
 
                 otmp = mksobj(ringtype, FALSE, FALSE, FALSE);
 
@@ -1706,7 +1706,7 @@ register struct monst *mtmp;
                 serpent_ring_ok = FALSE;
             if (exist_artifact(RIN_SEVEN_CHARGES, artiname(ART_RING_OF_CONFLICT)))
                 conflict_ok = FALSE;
-            if (exist_artifact(RIN_SUPREME_POWER, artiname(ART_TRUE_RING)))
+            if (exist_artifact(RIN_SUPREME_POWER, artiname(ART_RULING_RING_OF_YENDOR)))
                 true_ring_ok = FALSE;
 
 
@@ -1728,11 +1728,11 @@ register struct monst *mtmp;
                 artifacttype = ART_RING_OF_CONFLICT;
             }
 
-            /* True Ring is rare with Yacc */
+            /* Ruling Ring of Yendor is rare with Yacc */
             if (true_ring_ok && !three_wishes_ok && !serpent_ring_ok && !conflict_ok && !rn2(2))
             {
                 weaptype = RIN_SUPREME_POWER;
-                artifacttype = ART_TRUE_RING;
+                artifacttype = ART_RULING_RING_OF_YENDOR;
             }
             otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
 

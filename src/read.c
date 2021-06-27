@@ -333,7 +333,7 @@ doread()
         pline("\"Odin.\"");
         u.uconduct.literate++;
         return 1;
-    } else if (scroll->oartifact == ART_TRUE_RING) {
+    } else if (scroll->oartifact == ART_RULING_RING_OF_YENDOR) {
         pline("The ring is plain and featureless, but you somehow feel that there is more to it than that.");
         return 1;
     } else if (scroll->otyp == CANDY_BAR) {
@@ -473,10 +473,10 @@ doread()
 }
 
 void
-read_the_true_ring(otmp)
+read_the_ruling_ring(otmp)
 struct obj* otmp;
 {
-    if (!otmp || otmp->oartifact != ART_TRUE_RING)
+    if (!otmp || otmp->oartifact != ART_RULING_RING_OF_YENDOR)
         return;
 
     if (Blind)

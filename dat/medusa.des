@@ -158,6 +158,11 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 
+MON_GENERATION: 20, ('B', "raven"), 'S'
+MON_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
+MON_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")
+
+
 MAZE:"medusa-2",'}'
 FLAGS: noteleport,swampy
 NAMING:"Islands",name_revealed_seeing_monster,montype:"Medusa"
@@ -320,6 +325,10 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 
+MON_GENERATION: 20, ('B', "raven"), 'S'
+MON_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
+MON_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")
+
 
 LEVEL:"medusa-3"
 FLAGS: noteleport,mazelevel,shortsighted,swampy
@@ -467,6 +476,10 @@ MONSTER:('n',"water nymph"),random
 LOOP [30] {
   MONSTER:('B',"raven"),random,hostile
 }
+ 
+MON_GENERATION: 20, ('B', "raven"), 'S'
+MON_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
+MON_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")
 
 
 LEVEL:"medusa-4"
@@ -622,3 +635,7 @@ LOOP [4] {
   MONSTER:('N',"black naga hatchling"), random
   MONSTER:('N',"black naga"), random
 }
+
+MON_GENERATION: 20, ('B', "raven"), 'S'
+MON_GENERATION: 10, (';', "giant eel"), (''',"stone golem"), (';', "jellyfish"), ('T', "water troll"), ('n', "water nymph"), ('N', "black naga"), ('N', "black naga hatchling")
+MON_GENERATION: 5, ('D', "yellow dragon"), (';', "electric eel"), (';', "kraken"), ('D', "yellow dragon hatchling"), ('#', "roper")

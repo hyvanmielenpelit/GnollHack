@@ -272,7 +272,7 @@ NEARDATA struct artifact artilist[] = {
         NO_COLOR, HI_WOOD, 0, OBJECT_SOUNDSET_NONE),
 
     /* Artifact rings */
-    A("The True Ring", "plain golden", None, RIN_SUPREME_POWER, RIN_SUPREME_POWER, 
+    A("The Ruling Ring of Yendor", "plain golden", None, RIN_SUPREME_POWER, RIN_SUPREME_POWER, 
         EXCEPTIONALITY_NORMAL, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_NONE, 
         (AF_RESTR | AF_INTEL | AF_MONSTERS_CAN_TRACK_ARTIFACT),
         AF2_NONE, SPFX_NONE, SPFX_AGGRAVATE_MONSTER | SPFX_UNLUCK, 0,

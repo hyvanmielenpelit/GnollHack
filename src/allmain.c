@@ -536,7 +536,7 @@ void
 create_monster_or_encounter()
 {
 
-    /* Special wraith appearance for the True Ring */
+    /* Special wraith appearance for the Ruling Ring of Yendor */
     boolean rwraith_appeared = maybe_create_rwraith();
 
     if (!rwraith_appeared)
@@ -562,7 +562,7 @@ STATIC_OVL
 int
 select_rwraith()
 {
-    /* Special wraith appearance for the True Ring */
+    /* Special wraith appearance for the Ruling Ring of Yendor */
     int minlevel = 0, maxlevel = 1;
     int mdx = NON_PM;
     boolean wraithlordok = FALSE;
@@ -611,9 +611,9 @@ maybe_create_rwraith()
 
     if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && !(u.uz.dnum == bovine_dnum) && (mdx = select_rwraith()) >= LOW_PM)
     {
-        /* Special wraith appearance if carrying the True Ring */
+        /* Special wraith appearance if carrying the Ruling Ring of Yendor */
         struct obj* ring = carrying(RIN_SUPREME_POWER);
-        if (ring && ring->oartifact == ART_TRUE_RING && mdx >= LOW_PM && !rn2(20))
+        if (ring && ring->oartifact == ART_RULING_RING_OF_YENDOR && mdx >= LOW_PM && !rn2(20))
         {
             if (!context.made_witch_king && mdx == PM_WRAITHLORD && !rn2(9))
             {

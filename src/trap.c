@@ -4108,12 +4108,12 @@ int dice; /* of d6 */
         destroy_item(SPBOOK_CLASS, AD_FIRE);
         destroy_item(POTION_CLASS, AD_FIRE);
 
-        /* Check for the True Ring */
+        /* Check for the Ruling Ring of Yendor */
         for (struct obj* oring = invent; oring; oring = oring->nobj)
         {
-            if (oring->oartifact == ART_TRUE_RING)
+            if (oring->oartifact == ART_RULING_RING_OF_YENDOR)
             {
-                read_the_true_ring(oring);
+                read_the_ruling_ring(oring);
                 break;
             }
         }
@@ -7259,9 +7259,9 @@ lava_effects()
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s glows a strange %s, but remains intact.",
                           The(xname(obj)), hcolor("dark red"));
             }
-            else if (obj->oartifact == ART_TRUE_RING)
+            else if (obj->oartifact == ART_RULING_RING_OF_YENDOR)
             {
-                read_the_true_ring(obj);
+                read_the_ruling_ring(obj);
             }
             else if (obj->in_use)
             {
