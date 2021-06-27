@@ -264,10 +264,10 @@ int
 dochugw(mtmp)
 register struct monst *mtmp;
 {
-    int x = mtmp->mx, y = mtmp->my;
     boolean already_saw_mon = !occupation ? 0 : canspotmon(mtmp);
     int rd = dochug(mtmp);
 
+    int x = mtmp->mx, y = mtmp->my;
     /* a similar check is in monster_nearby() in hack.c */
     /* check whether hero notices monster and stops current activity */
     if (occupation && !rd && !Confusion && (!is_peaceful(mtmp) || Hallucination)
@@ -277,7 +277,7 @@ register struct monst *mtmp;
         && (!already_saw_mon || !couldsee(x, y)
             || distu(x, y) > (M_SHOOT_RANGE + 1) * (M_SHOOT_RANGE + 1))
         /* can see it now, or sense it and would normally see it */
-        && (canseemon(mtmp) || (sensemon(mtmp) && couldsee(x, y)))
+        && canspotmon(mtmp) && couldsee(x, y)
         && mtmp->mcanmove && !noattacks(mtmp->data)
         && !onscary(u.ux, u.uy, mtmp))
         stop_occupation();
