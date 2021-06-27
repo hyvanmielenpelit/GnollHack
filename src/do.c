@@ -374,6 +374,9 @@ floorexamine()
     boolean res = TRUE;
     int cnt = 0;
 
+    if (covers_objects(u.ux, u.uy))
+        return TRUE;
+
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
         cnt++;
 
@@ -1713,7 +1716,7 @@ register struct obj* obj;
         {
             if (objects[otyp].oc_spell_dmg_dice > 0 || objects[otyp].oc_spell_dmg_diesize > 0 || objects[otyp].oc_spell_dmg_plus != 0)
             {
-                double dicemult = get_wand_damage_multiplier(P_SKILL_LEVEL(P_WAND), FALSE);
+                double dicemult = get_wand_damage_multiplier(P_SKILL_LEVEL(P_WAND));
                 boolean maindiceprinted = FALSE;
                 char plusbuf[BUFSZ];
                 Sprintf(buf, "Wand effect damage:     ");
@@ -2184,7 +2187,7 @@ register struct obj* obj;
                         for (int k = 0; k < 13; k++)
                         {
                             strcpy(buf2, "");
-                            int stat = objects[otyp].oc_attribute_bonus;
+                            int stat = (k == 9 ? /* MC */ objects[otyp].oc_attribute_bonus / 3 : objects[otyp].oc_attribute_bonus);
 
                             if (obj->cursed && (objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE))
                                 stat = -stat;

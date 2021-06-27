@@ -2169,7 +2169,7 @@ enhance_weapon_skill()
                     {
                         int tohitbonus = wand_skill_hit_bonus(P_SKILL_LEVEL(i));
                         //int criticalhitpct = get_skill_critical_strike_chance(i, FALSE);
-                        double dicemult = get_wand_damage_multiplier(P_SKILL_LEVEL(i), FALSE);
+                        double dicemult = get_wand_damage_multiplier(P_SKILL_LEVEL(i));
                         char hbuf[BUFSZ] = "";
                         //char cbuf[BUFSZ] = "";
                         char dbuf[BUFSZ] = "";
@@ -2183,7 +2183,7 @@ enhance_weapon_skill()
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
                             int tohitbonus2 = wand_skill_hit_bonus(nextlevel);
                             //int criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE);
-                            double dicemult2 = get_wand_damage_multiplier(nextlevel, TRUE);
+                            double dicemult2 = get_wand_damage_multiplier(nextlevel);
                             char hbuf2[BUFSZ] = "";
                             //char cbuf2[BUFSZ] = "";
                             char dbuf2[BUFSZ] = "";
@@ -3066,13 +3066,12 @@ boolean nextlevel;
 }
 
 double
-get_wand_damage_multiplier(skill_level, nextlevel)
+get_wand_damage_multiplier(skill_level)
 int skill_level;
-boolean nextlevel;
 {
     double res = 0.5;
 
-    switch (max(P_ISRESTRICTED, min(P_GRAND_MASTER, skill_level + (nextlevel ? 1 : 0))))
+    switch (max(P_ISRESTRICTED, min(P_GRAND_MASTER, skill_level)))
     {
     case P_ISRESTRICTED:
     case P_UNSKILLED:

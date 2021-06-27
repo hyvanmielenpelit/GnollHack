@@ -2301,7 +2301,7 @@ struct monst* mon;
                         }
                         else if (i == A_MAX + 3)
                         {
-                            *mcbonus_ptr += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
+                            *mcbonus_ptr += (schar)(multiplier * objects[otyp].oc_attribute_bonus / 3);
                             if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
                                 *mcbonus_ptr += (schar)(applicable_enchantment / 3);
                         }
