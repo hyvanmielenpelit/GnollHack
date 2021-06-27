@@ -2668,4 +2668,27 @@ enum smith_special_dialogue_lines
 #define MINIMUM_PLAYABLE_MOVEMENT_SOUND_VOLUME 0.01f
 #define MINIMUM_PLAYABLE_MOVEMENT_SOUND_DISTANCE 6
 
+
+/* GHSound -> FMOD event mapping here */
+enum sound_bank_types {
+    SOUND_BANK_NONE = 0,
+    SOUND_BANK_MASTER,
+    MAX_SOUND_BANKS
+};
+
+struct sound_bank_definition {
+    boolean isresource;
+    int resource_id;
+    const char* filename;
+};
+
+
+struct ghsound_eventmapping {
+    enum sound_bank_types bank_id;
+    const char* eventPath;
+    float volume;
+};
+
+extern const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS];
+
 #endif /* SOUNDSET_H */

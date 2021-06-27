@@ -1634,7 +1634,7 @@ domove_core()
 
     if (context.travel) 
     {
-        if (context.travel_mode == 1)
+        if (context.travel_mode == TRAVEL_MODE_ATTACK_AND_WALK)
         {
             if (context.tmid > 0)
             {
@@ -1647,22 +1647,6 @@ domove_core()
                 {
                     u.tx = tmtmp->mx;
                     u.ty = tmtmp->my;
-                }
-            }
-        }
-        else if (context.travel_mode == 2)
-        {
-            if (context.toid > 0)
-            {
-                struct obj* otmp = 0;
-                for (otmp = fobj; otmp; otmp = otmp->nobj)
-                    if (otmp->o_id == context.toid)
-                        break;
-
-                if (otmp && isok(otmp->ox, otmp->oy) && cansee(otmp->ox, otmp->oy))
-                {
-                    u.tx = otmp->ox;
-                    u.ty = otmp->oy;
                 }
             }
         }
@@ -2362,9 +2346,9 @@ domove_core()
         nomovemsg = "";
     }
 
-    if (context.run && (flags.runmode != RUN_TPORT || (context.travel && context.travel_mode == 2))) {
+    if (context.run && (flags.runmode != RUN_TPORT || (context.travel && context.travel_mode > TRAVEL_MODE_NORMAL))) {
         /* display every step or every 7th step depending upon mode */
-        if (flags.runmode != RUN_LEAP || (context.travel && context.travel_mode == 2) || !(moves % 7L)) {
+        if (flags.runmode != RUN_LEAP || (context.travel && context.travel_mode > TRAVEL_MODE_NORMAL) || !(moves % 7L)) {
             if (flags.time)
                 context.botl = 1;
             curs_on_u();
@@ -3293,7 +3277,7 @@ lookaround()
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT
                 && (!is_invisible(mtmp) || See_invisible) && !mtmp->mundetected) 
             {
-                if (context.travel && context.travel_mode == 1 && !is_peaceful(mtmp) && !is_tame(mtmp) && mtmp->m_id == context.tmid)
+                if (context.travel && context.travel_mode == TRAVEL_MODE_ATTACK_AND_WALK && !is_peaceful(mtmp) && !is_tame(mtmp) && mtmp->m_id == context.tmid)
                 {
                     /* These settings should enable the character to attack */
                     context.travel1 = 1;

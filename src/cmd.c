@@ -6525,14 +6525,14 @@ register char *cmd;
             context.run = 8;
             context.nopick = 1;
             domove_attempting |= DOMOVE_RUSH;
-            context.travel_mode = (spkey == NHKF_TRAVEL_WALK) ? 2 : 0;
+            context.travel_mode = (spkey == NHKF_TRAVEL_WALK) ? TRAVEL_MODE_WALK : TRAVEL_MODE_NORMAL;
             context.tmid = 0;
             context.toid = 0;
             if (isok(u.tx, u.ty))
             {
                 if (spkey == NHKF_TRAVEL_ATTACK)
                 {
-                    context.travel_mode = 1;
+                    context.travel_mode = TRAVEL_MODE_ATTACK_AND_WALK;
                     struct monst* tmtmp = m_at(u.tx, u.ty);
                     if (tmtmp && canspotmon(tmtmp))
                     {

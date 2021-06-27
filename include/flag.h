@@ -658,6 +658,12 @@ enum gloctypes {
     NUM_GLOCS
 };
 
+enum travel_modes {
+    TRAVEL_MODE_NORMAL = 0,
+    TRAVEL_MODE_ATTACK_AND_WALK,
+    TRAVEL_MODE_WALK
+};
+
 /* commands[] is used to directly access cmdlist[] instead of looping
    through it to find the entry for a given input character;
    move_X is the character used for moving one step in direction X;
