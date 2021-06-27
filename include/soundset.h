@@ -1762,7 +1762,6 @@ struct ghsound_immediate_info {
 struct ghsound_music_info {
     enum ghsound_types ghsound;
     float volume;
-    boolean stop_music;
 };
 
 struct ghsound_level_ambient_info {
@@ -2690,5 +2689,19 @@ struct ghsound_eventmapping {
 };
 
 extern const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS];
+
+#define STOP_SOUNDS_FLAGS_NONE                 0x0000
+#define STOP_SOUNDS_FLAGS_MUSIC                0x0001
+#define STOP_SOUNDS_FLAGS_LEVEL_AMBIENT        0x0002
+#define STOP_SOUNDS_FLAGS_ENVIRONMENT_AMBIENT  0x0004
+#define STOP_SOUNDS_FLAGS_OCCUPATION_AMBIENT   0x0008
+#define STOP_SOUNDS_FLAGS_EFFECT_AMBIENT       0x0010
+#define STOP_SOUNDS_FLAGS_IMMEDIATE_NORMAL     0x0020
+#define STOP_SOUNDS_FLAGS_IMMEDIATE_LONG       0x0040
+#define STOP_SOUNDS_FLAGS_SOUND_SOURCES        0x0080
+#define STOP_SOUNDS_FLAGS_ALL                  0x00FF
+#define STOP_SOUNDS_FLAGS_IMMEDIATE_ALL        (STOP_SOUNDS_FLAGS_IMMEDIATE_NORMAL | STOP_SOUNDS_FLAGS_IMMEDIATE_LONG)
+#define STOP_SOUNDS_FLAGS_ONLY_DIALOGUE_MID    0x0100
+
 
 #endif /* SOUNDSET_H */

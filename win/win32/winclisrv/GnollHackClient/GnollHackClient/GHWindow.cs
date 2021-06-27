@@ -368,8 +368,8 @@ namespace GnollHackClient
                     List<int> curclrs;
                     PutStrs[CursY].ConvertCurrentListToArrays(out curattrs, out curclrs);
 
-                    if (append != 0)
-                        CursX = PutStrs[CursY].Text.Length;
+                    //if (append != 0)
+                    //    CursX = PutStrs[CursY].Text.Length;
 
                     int origCursX = CursX;
 
@@ -388,7 +388,7 @@ namespace GnollHackClient
                     CursX += str.Length;
 
                     // Adjust TextSize property so text is 90% of screen width
-                    float textWidth = textPaint.MeasureText(PutStrs[CursY].Text.Replace(' ', '_'));
+                    float textWidth = textPaint.MeasureText(PutStrs[CursY].Text); //.Replace(' ', '_'));
                     textWidth += Padding.Left + Padding.Right;
                     if (textWidth > _pixelWidth)
                         _pixelWidth = textWidth;
@@ -421,7 +421,7 @@ namespace GnollHackClient
 
                     PutStrs[CursY].ConvertCurrentListFromArrays(curattrs, curclrs);
 
-                    if (AutoCarriageReturn)
+                    if (AutoCarriageReturn && append == 0)
                     {
                         CursY++;
                         CursX = 0;

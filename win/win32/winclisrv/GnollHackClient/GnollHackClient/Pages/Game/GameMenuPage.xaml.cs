@@ -41,7 +41,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void DoQuit()
         {
-            App.FmodService.StopTestSound();
+            //App.FmodService.StopTestSound();
             await App.Current.MainPage.Navigation.PopModalAsync(); // Game Menu
             await App.Current.MainPage.Navigation.PopModalAsync(); // Game
             if (App.IsServerGame)

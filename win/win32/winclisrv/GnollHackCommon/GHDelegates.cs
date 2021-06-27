@@ -58,6 +58,31 @@ namespace GnollHackCommon
         UInt64 oid, UInt64 mid, char heading_groupaccel, UInt32 menuflags);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int PlayImmediateSoundCallback(
+        int ghsound, 
+        [MarshalAs(UnmanagedType.LPStr)] string eventPath, 
+        int bankid, float eventVolume, 
+        float soundVolume,
+        [MarshalAs(UnmanagedType.LPArray, SizeConst = GHConstants.MaxSoundParameters)][In] string[] parameterNames, 
+        [MarshalAs(UnmanagedType.LPArray, SizeConst = GHConstants.MaxSoundParameters)][In] float[] parameterValues, 
+        int arraysize, 
+        int sound_type, 
+        int play_group, 
+        uint dialogue_mid);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int PlayMusicCallback(
+        int ghsound,
+        [MarshalAs(UnmanagedType.LPStr)] string eventPath,
+        int bankid, float eventVolume,
+        float soundVolume);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int StopAllSoundsCallback(
+        uint flags,
+        uint dialogue_mid);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]
     public delegate string CharVoidCallback();
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]

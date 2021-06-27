@@ -2730,19 +2730,23 @@ dll_open_special_view(struct special_view_info info)
 void
 dll_stop_all_sounds(struct stop_all_info info)
 {
+#if 0
     if (!dll_callbacks.callback_stop_all_sounds())
     {
         impossible("Cannot stop all sounds!");
     }
+#endif
 }
 
 void
 dll_play_immediate_ghsound(struct ghsound_immediate_info info)
 {
+#if 0
     if (!dll_callbacks.callback_play_immediate_ghsound(info.ghsound, (double)info.volume))
     {
         impossible("Cannot play immediate sound!");
     }
+#endif
 }
 
 void
@@ -2775,10 +2779,12 @@ dll_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 void
 dll_play_ghsound_music(struct ghsound_music_info info)
 {
+#if 0
     if (!dll_callbacks.callback_play_ghsound_music(info.ghsound, (double)info.volume))
     {
         impossible("Cannot play music!");
     }
+#endif
 }
 
 void

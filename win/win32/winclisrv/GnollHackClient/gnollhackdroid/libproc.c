@@ -75,12 +75,24 @@ void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int co
 /* Function definitions */
 void lib_init_nhwindows(int* argc, char** argv)
 {
+    struct ghsound_music_info mi = { 0 };
+    mi.ghsound = GHSOUND_MUSIC_SPLASH;
+    mi.volume = 1.0f;
+    play_ghsound_music(mi);
+
     lib_callbacks.callback_init_nhwindows();
     iflags.window_inited = 1;
+    iflags.using_gui_sounds = 1;
+    iflags.using_gui_tiles = 1;
 }
 
 void lib_player_selection(void)
 {
+    struct ghsound_music_info mi = { 0 };
+    mi.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
+    mi.volume = 1.0f;
+    play_ghsound_music(mi);
+
     int res = common_player_selection();
     if (res == 1)
     {
@@ -784,12 +796,31 @@ void lib_open_special_view(struct special_view_info info)
 
 void lib_stop_all_sounds(struct stop_all_info info)
 {
-    return;
+    unsigned int saflags = info.stop_flags;
+    unsigned int dialogue_mid = info.dialogue_mid;
+    (void)lib_callbacks.callback_stop_all_sounds(saflags, dialogue_mid);
 }
 
 void lib_play_immediate_ghsound(struct ghsound_immediate_info info)
 {
-    return;
+    if (info.ghsound == GHSOUND_NONE)
+        return;
+
+    int ghsound = info.ghsound;
+    const char* eventPath = ghsound2event[info.ghsound].eventPath;
+    int eventBank = ghsound2event[info.ghsound].bank_id;
+    float eventVolume = ghsound2event[info.ghsound].volume;
+    float soundVolume = info.volume;
+    const char** parameter_names = info.parameter_names;
+    float* parameter_values = info.parameter_values;
+    int parameterarraysize = MAX_SOUND_PARAMETERS;
+    int sound_type = info.sound_type;
+    int play_group = info.play_group;
+    unsigned int dialogue_mid = info.dialogue_mid;
+
+    (void)lib_callbacks.callback_play_immediate_ghsound(ghsound, eventPath, eventBank, eventVolume, soundVolume,
+        parameter_names, parameter_values, parameterarraysize, sound_type, play_group, dialogue_mid);
+
 }
 
 void lib_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
@@ -809,7 +840,16 @@ void lib_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 
 void lib_play_ghsound_music(struct ghsound_music_info info)
 {
-    return;
+    if (info.ghsound == GHSOUND_NONE)
+        return;
+
+    int ghsound = info.ghsound;
+    const char* eventPath = ghsound2event[info.ghsound].eventPath;
+    int eventBank = ghsound2event[info.ghsound].bank_id;
+    float eventVolume = ghsound2event[info.ghsound].volume;
+    float soundVolume = info.volume;
+
+    (void)lib_callbacks.callback_play_ghsound_music(ghsound, eventPath, eventBank, eventVolume, soundVolume);
 }
 
 void lib_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)

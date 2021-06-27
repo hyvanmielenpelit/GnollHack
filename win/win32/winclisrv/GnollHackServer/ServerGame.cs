@@ -82,12 +82,12 @@ namespace GnollHackServer
             VoidVoidCallback callback_stretch_window,
             VoidUlongCallback callback_set_animation_timer,
             VoidIntCallback callback_open_special_view,
-            BooleanVoidCallback callback_stop_all_sounds,
-            BooleanIntDoubleCallback callback_play_immediate_ghsound,
+            StopAllSoundsCallback callback_stop_all_sounds,
+            PlayImmediateSoundCallback callback_play_immediate_ghsound,
             BooleanIntDoubleCallback callback_play_ghsound_occupation_ambient,
             BooleanIntDoubleCallback callback_play_ghsound_effect_ambient,
             BooleanDoubleCallback callback_set_effect_ambient_volume,
-            BooleanDoubleCallback callback_play_ghsound_music,
+            PlayMusicCallback callback_play_ghsound_music,
             BooleanDoubleCallback callback_play_ghsound_level_ambient,
             BooleanDoubleCallback callback_play_ghsound_environment_ambient,
             BooleanDoubleDoubleDoubleDoubleDoubleCallback callback_adjust_ghsound_general_volumes,
@@ -230,12 +230,12 @@ namespace GnollHackServer
                 GameCallback_VoidVoidDummy,
                 GameCallback_VoidUlongDummy,
                 GameCallback_VoidIntDummy,
-                GameCallback_BooleanVoidDummy,
-                GameCallback_BooleanIntDoubleDummy,
+                GameCallback_StopAllSounds,
+                GameCallback_PlayImmediateSound,
                 GameCallback_BooleanIntDoubleDummy,
                 GameCallback_BooleanIntDoubleDummy,
                 GameCallback_BooleanDoubleDummy,
-                GameCallback_BooleanDoubleDummy,
+                GameCallback_PlayMusic,
                 GameCallback_BooleanDoubleDummy,
                 GameCallback_BooleanDoubleDummy,
                 GameCallback_BooleanDoubleDoubleDoubleDoubleDoubleDummy,
@@ -303,6 +303,21 @@ namespace GnollHackServer
         {
 
         }
+
+        public int GameCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)
+        {
+            return 0;
+        }
+        public int GameCallback_PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            return 0;
+        }
+
+        public int GameCallback_StopAllSounds(uint flags, uint dialogue_mid)
+        {
+            return 0;
+        }
+
 
         protected void GameCallback_VoidVoidDummy()
         {

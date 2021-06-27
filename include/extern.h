@@ -2961,7 +2961,6 @@ E void NDECL(genl_chat_message);
 /* ### soundset.c ### */
 
 E void NDECL(update_game_music);
-E void NDECL(stop_music);
 E void NDECL(play_level_ambient_sounds);
 E void NDECL(play_environment_ambient_sounds);
 E enum floor_surface_types FDECL(get_floor_surface_type, (int, int, BOOLEAN_P));

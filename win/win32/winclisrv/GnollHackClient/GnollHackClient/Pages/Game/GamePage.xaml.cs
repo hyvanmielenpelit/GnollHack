@@ -119,8 +119,7 @@ namespace GnollHackClient.Pages.Game
         public async void StartGame()
         {
             //Authenticated
-            App.FmodService.PlayTestSound();
-
+            //App.FmodService.PlayTestSound();
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits.png"))
@@ -855,6 +854,7 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         int pos = 0;
                                         float xpos = 0;
+                                        float totwidth = 0;
                                         foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                                         {
                                             if (putstritem.Text == null)
@@ -867,7 +867,8 @@ namespace GnollHackClient.Pages.Game
                                                 str = "";
                                             pos += str.Length;
                                             textPaint.Color = NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
-                                            textPaint.MeasureText(str.Replace(' ', '_'), ref textBounds);
+                                            totwidth = textPaint.MeasureText(str, ref textBounds);
+
                                             /* attributes */
                                             tx = xpos + winRect.Left + _clientGame.Windows[i].Padding.Left;
                                             ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
@@ -877,7 +878,7 @@ namespace GnollHackClient.Pages.Game
                                             textPaint.Color = SKColors.Black;
                                             canvas.DrawText(str, tx, ty, textPaint);
                                             textPaint.Style = SKPaintStyle.Fill;
-                                            xpos += textBounds.Width;
+                                            xpos += totwidth;
                                         }
                                         j++;
                                     }

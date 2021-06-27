@@ -305,7 +305,8 @@ namespace GnollHackClient
         public void ClientCallback_ExitHack(int status)
         {
             Debug.WriteLine("ClientCallback_ExitHack");
-            App.FmodService.StopTestSound();
+            //App.FmodService.StopTestSound();
+            App.FmodService.StopAllSounds((uint)GnollHackCommon.StopSoundFlags.All, 0);
             ConcurrentQueue<GHRequest> queue;
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
@@ -762,6 +763,35 @@ namespace GnollHackClient
 
         }
 
+        public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)
+        {
+            if(App.FmodService != null)
+            {
+                return App.FmodService.PlayImmediateSound(ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid);
+            }
+
+            return 1;
+        }
+
+        public int ClientCallback_PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            if (App.FmodService != null)
+            {
+                return App.FmodService.PlayMusic(ghsound, eventPath, bankid, eventVolume, soundVolume);
+            }
+
+            return 1;
+        }
+
+        public int ClientCallback_StopAllSounds(uint flags, uint dialogue_mid)
+        {
+            if (App.FmodService != null)
+            {
+                return App.FmodService.StopAllSounds(flags, dialogue_mid);
+            }
+
+            return 1;
+        }
 
 
 

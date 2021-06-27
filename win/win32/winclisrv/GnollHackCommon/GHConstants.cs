@@ -107,6 +107,23 @@ namespace GnollHackCommon
         WizardMode =    0x00000002
     }
 
+    [Flags]
+    public enum StopSoundFlags : UInt32
+    {
+        None =                  0x00000000,
+        Music =                 0x00000001,
+        LevelAmbient =          0x00000002,
+        EnvironmentAmbient =    0x00000004,
+        OccupationAmbient =     0x00000008,
+        EffectAmbient =         0x00000010,
+        ImmediateNormal =       0x00000020,
+        ImmediateLong =         0x00000040,
+        SoundSources =          0x00000080,
+        All =                   0x000000FF,
+        ImmediateAll =          0x00000060,
+        OnlyDialogueMid =       0x00000100,
+    }
+
     public class GHConstants
     {
         public const int InputBufferLength = 32;
@@ -124,6 +141,7 @@ namespace GnollHackCommon
         public const int TileHeight = 96;
         public const int MaxTileSheets = 4;
         public const int NumberOfTilesPerSheet = 16224;
+        public const int MaxSoundParameters = 8;
     }
 
     [StructLayout(LayoutKind.Sequential)]

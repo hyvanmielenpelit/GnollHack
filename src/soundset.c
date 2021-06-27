@@ -8222,17 +8222,6 @@ update_game_music()
 }
 
 void
-stop_music()
-{
-    struct ghsound_music_info musicinfo = { 0 };
-    musicinfo.ghsound = GHSOUND_NONE;
-    musicinfo.volume = 0.0f;
-    musicinfo.stop_music = TRUE;
-
-    play_ghsound_music(musicinfo);
-}
-
-void
 play_level_ambient_sounds()
 {
     struct ghsound_level_ambient_info lainfo = { 0 };

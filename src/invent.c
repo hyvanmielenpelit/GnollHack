@@ -5574,6 +5574,9 @@ print_things_here_to_window(VOID_ARGS)
     if (tmpwin == WIN_ERR)
         return;
 
+    int attr = 0;
+    int textcolor = CLR_MSG_ATTENTION;
+
     struct obj* otmp;
     const char* dfeature = (char*)0;
     char fbuf[BUFSZ] = "";
@@ -5606,12 +5609,12 @@ print_things_here_to_window(VOID_ARGS)
 
     if (total_count + (dfeature ? 1 : 0) > iflags.wc2_here_window_size)
     {
-        putstr_ex(tmpwin, ATR_NONE, Blind ? "[You feel there are many objects here.]" : "[There are many objects here.]", 0, CLR_MSG_ATTENTION);
+        putstr_ex(tmpwin, attr, Blind ? "[You feel there are many objects here.]" : "[There are many objects here.]", 0, textcolor);
     }
     else
     {
         Sprintf(buf, "%s that %s here:", "Things", Blind ? "you feel" : "are");
-        putstr(tmpwin, 0, buf);
+        putstr_ex(tmpwin, attr, buf, 0, textcolor);
 
         if (dfeature)
         {
@@ -5633,10 +5636,17 @@ print_things_here_to_window(VOID_ARGS)
             {
                 sym = (char)ch;
             }
-        
-            Sprintf(fbuf, "'%c' %s", sym, an(dfbuf));
 
-            putstr(tmpwin, 0, fbuf);
+            
+            putstr_ex(tmpwin, attr, "'", 1, textcolor);
+            Sprintf(fbuf, "%c", sym);
+            putstr_ex(tmpwin, 0, fbuf, 1, color);
+            putstr_ex(tmpwin, attr, "' ", 1, textcolor);
+            Sprintf(fbuf, "%s", an(dfbuf));
+            putstr_ex(tmpwin, attr, fbuf, 0, textcolor);
+            
+            //Sprintf(fbuf, "'%c' %s", sym, an(dfbuf));
+            //putstr_ex(tmpwin, attr, fbuf, 0, textcolor);
         }
 
         for (; otmp; otmp = otmp->nexthere) 
@@ -5660,9 +5670,16 @@ print_things_here_to_window(VOID_ARGS)
             {
                 sym = (char)ch;
             }
-
-            Sprintf(buf2, "'%c' %s", sym, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
-            putstr(tmpwin, 0, buf2);
+            
+            putstr_ex(tmpwin, attr, "'", 1, textcolor);
+            Sprintf(buf2, "%c", sym);
+            putstr_ex(tmpwin, 0, buf2, 1, color);
+            putstr_ex(tmpwin, attr, "' ", 1, textcolor);
+            Sprintf(buf2, "%s", (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
+            putstr_ex(tmpwin, attr, buf2, 0, textcolor);
+            
+            //Sprintf(buf2, "'%c' %s", sym, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
+            //putstr_ex(tmpwin, attr, buf2, 0, textcolor);
         }
     }
 }
