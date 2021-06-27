@@ -2508,7 +2508,7 @@ is_valid_jump_pos(x, y, magic, showmsg)
 int x, y, magic;
 boolean showmsg;
 {
-    if (!magic && !(HJumping & ~INTRINSIC) && !EJumping && distu(x, y) != 5) {
+    if (!magic && Role_if(PM_KNIGHT) && !(HJumping & ~INTRINSIC) && !EJumping && distu(x, y) != 5) {
         /* The Knight jumping restriction still applies when riding a
          * horse.  After all, what shape is the knight piece in chess?
          */

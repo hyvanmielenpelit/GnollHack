@@ -52,13 +52,9 @@ static const struct innate
                  { 4, HALF_SLOW_DIGESTION, "less hungry", "more hungry" },
                  { 7, POISON_RESISTANCE, "healthy", "" },
                  { 10, JUMPING, "jumpy", "" },
-                 { 13, SEE_INVISIBLE, "", "" },
                  { 16, STEALTH, "stealthy", "" },
-                 { 19, DEATH_RESISTANCE, "less mortal", "more mortal" },
                  { 22, SEARCHING, "perceptive", "unaware" },
-                 { 25, SICK_RESISTANCE, "even healthier", "" },
                  { 28, WARNING, "sensitive", "" },
-                 { 31, VERY_FAST, "very quick", "slow" },
                  { 34, TELEPORT_CONTROL, "controlled", "uncontrolled" },
                  { 0, 0, 0, 0 } },
 
