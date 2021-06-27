@@ -2187,7 +2187,7 @@ find_ac()
 
     /* Monk protection */
     if (Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
-        uac -= u.ulevel / 2;
+        uac -= u.ulevel / 3;
 
     /* [The magic binary numbers 127 and -128 should be replaced with the
      * mystic decimal numbers 99 and -99 which require no explanation to

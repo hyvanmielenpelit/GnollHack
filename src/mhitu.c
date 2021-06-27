@@ -1635,7 +1635,7 @@ struct monst *mon;
 
         /* Monk protection */
         if(Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
-            mc += u.ulevel / 6;
+            mc += u.ulevel / 9;
     }
     else
     {
