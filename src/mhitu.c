@@ -1634,8 +1634,7 @@ struct monst *mon;
         mc += u.ublessed / 3;
 
         /* Monk protection */
-        if(Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
-            mc += u.ulevel / 9;
+        mc += get_role_MC_bonus();
     }
     else
     {

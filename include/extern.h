@@ -722,8 +722,9 @@ E void NDECL(reset_remarm);
 E int NDECL(doddoremarm);
 E int FDECL(destroy_arm, (struct obj *));
 E void FDECL(adj_abon, (struct obj *, SCHAR_P));
-E boolean
-FDECL(inaccessible_equipment, (struct obj *, const char *, BOOLEAN_P));
+E boolean FDECL(inaccessible_equipment, (struct obj *, const char *, BOOLEAN_P));
+E int NDECL(get_role_AC_bonus);
+E int NDECL(get_role_MC_bonus);
 
 /* ### dog.c ### */
 

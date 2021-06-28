@@ -1739,19 +1739,19 @@ int skill_level;
     switch (skill_level)
     {
     case P_BASIC:
-        percentage = 20;
+        percentage = 10;
         break;
     case P_SKILLED:
-        percentage = 40;
+        percentage = 20;
         break;
     case P_EXPERT:
-        percentage = 60;
+        percentage = 30;
         break;
     case P_MASTER:
-        percentage = 80;
+        percentage = 40;
         break;
     case P_GRAND_MASTER:
-        percentage = 100;
+        percentage = 50;
         break;
     default:
         break;

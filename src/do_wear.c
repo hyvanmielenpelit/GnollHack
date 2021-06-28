@@ -2186,8 +2186,7 @@ find_ac()
     uac -= u.ublessed;
 
     /* Monk protection */
-    if (Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
-        uac -= u.ulevel / 3;
+    uac -= get_role_AC_bonus();
 
     /* [The magic binary numbers 127 and -128 should be replaced with the
      * mystic decimal numbers 99 and -99 which require no explanation to
@@ -2203,6 +2202,24 @@ find_ac()
         u.uac = uac;
         context.botl = 1;
     }
+}
+
+int
+get_role_AC_bonus(VOID_ARGS)
+{
+    if (Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
+        return u.ulevel / 4;
+    else
+        return 0;
+}
+
+int
+get_role_MC_bonus(VOID_ARGS)
+{
+    if (Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
+        return u.ulevel / 12;
+    else 
+        return 0;
 }
 
 void
