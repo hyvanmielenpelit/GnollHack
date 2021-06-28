@@ -231,7 +231,7 @@ MONSTER:('v',"steam vortex"),random,hostile
 MONSTER:('v',"steam vortex"),random,hostile
 
 MONSTER_GENERATION: 30, ('E',"air elemental"), ('E',"elder air elemental")
-MONSTER_GENERATION: 10, ('&',"djinni"),('J', "jabberwock"),'D', ('v',"fog cloud"), ('v',"energy vortex"), ('v',"steam vortex"), ('e',"floating eye"), ('y',"yellow light")
+MONSTER_GENERATION: 10, ('&',"djinni"),('J', "jabberwock"),'D', ('v',"fog cloud"), ('v',"energy vortex"), ('v',"steam vortex"), ('e',"floating eye"), ('y',"yellow light"), ('A',"couatl")
 
 
 MAZE:"fire",' '

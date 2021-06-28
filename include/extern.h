@@ -2863,6 +2863,7 @@ E void FDECL(make_happy_shk, (struct monst *, BOOLEAN_P));
 E void FDECL(make_happy_shoppers, (BOOLEAN_P));
 E void FDECL(hot_pursuit, (struct monst *));
 E void FDECL(make_angry_shk, (struct monst *, XCHAR_P, XCHAR_P));
+E struct monst* NDECL(can_pay_to_shkp);
 E int NDECL(dopay);
 E boolean FDECL(paybill, (int, BOOLEAN_P));
 E void NDECL(finish_paybill);

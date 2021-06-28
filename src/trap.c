@@ -6426,7 +6426,7 @@ boolean *noticed; /* set to true iff hero notices the effect; */
                 show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_COVER_TRAP);
                 flush_screen(1);
                 play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, t->tx, t->ty, FALSE);
-                play_sfx_sound(SFX_BEAR_TRAP_SET_UP);
+                play_sfx_sound_at_location(SFX_BEAR_TRAP_SET_UP, t->tx, t->ty);
                 special_effect_wait_until_action(0);
                 pline("%s is released from %s%s.", Monnam(mon), which,
                     trapdescr);
@@ -6456,7 +6456,7 @@ boolean *noticed; /* set to true iff hero notices the effect; */
                 show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_COVER_TRAP);
                 flush_screen(1);
                 play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, t->tx, t->ty, FALSE);
-                play_sfx_sound(SFX_BEAR_TRAP_SET_UP);
+                play_sfx_sound_at_location(SFX_BEAR_TRAP_SET_UP, t->tx, t->ty);
                 special_effect_wait_until_action(0);
                 pline("%s%s opens.", upstart(strcpy(buf, which)), trapdescr);
                 special_effect_wait_until_end(0);
@@ -6738,7 +6738,7 @@ boolean disarm;
         case 14:
         case 13:
             play_special_effect_at(SPECIAL_EFFECT_TRAP_NEEDLE, 0, obj->ox, obj->oy, FALSE);
-            play_sfx_sound(SFX_TRAP_NEEDLE_PRICKS);
+            play_sfx_sound_at_location(SFX_TRAP_NEEDLE_PRICKS, obj->ox, obj->oy);
             special_effect_wait_until_action(0);
             You_feel("a needle prick your %s.", body_part(bodypart));
             if (iflags.using_gui_sounds)
@@ -6757,7 +6757,7 @@ boolean disarm;
         case 10:
         case 9:
             play_special_effect_at(SPECIAL_EFFECT_TRAP_FIRE, 0, obj->ox, obj->oy, FALSE);
-            play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
+            play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, obj->ox, obj->oy);
             special_effect_wait_until_action(0);
             dofiretrap(obj, 3);
             special_effect_wait_until_end(0);

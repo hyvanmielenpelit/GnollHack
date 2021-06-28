@@ -8239,7 +8239,7 @@ create_context_menu(VOID_ARGS)
     }
     else if (IS_FOUNTAIN(lev->typ) || IS_SINK(lev->typ))
     {
-        add_context_menu('q', cmd_from_func(dodrink), 0, back_to_glyph(u.ux, u.uy), "Drop many", 0, 0, NO_COLOR);
+        add_context_menu('q', cmd_from_func(dodrink), 0, back_to_glyph(u.ux, u.uy), "Drink", 0, 0, NO_COLOR);
         add_context_menu(M('d'), cmd_from_func(dodip), 0, back_to_glyph(u.ux, u.uy), "Dip", 0, 0, NO_COLOR);
     }
     else if (IS_THRONE(lev->typ))
@@ -8261,6 +8261,11 @@ create_context_menu(VOID_ARGS)
             (u.ux == xdnladder && u.uy == ydnladder) ? "ladder" : "stairs", 0, NO_COLOR);
     }
 
+    struct monst* shkp = can_pay_to_shkp();
+    if (shkp)
+    {
+        add_context_menu('p', cmd_from_func(dopay), 0, mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
+    }
 }
 
 /*cmd.c*/

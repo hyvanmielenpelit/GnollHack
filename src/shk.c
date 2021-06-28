@@ -1303,6 +1303,25 @@ register struct monst *shkp;
     return gmin;
 }
 
+struct monst*
+can_pay_to_shkp()
+{
+    register struct monst* shkp;
+    struct monst* resident;
+
+    resident = 0;
+    for (shkp = next_shkp(fmon, FALSE); shkp;
+        shkp = next_shkp(shkp->nmon, FALSE)) {
+        if (inhishop(shkp) && (*u.ushops == ESHK(shkp)->shoproom) && canspotmon(shkp))
+        {
+            resident = shkp;
+            break;
+        }
+    }
+
+    return resident;
+}
+
 int
 dopay()
 {
