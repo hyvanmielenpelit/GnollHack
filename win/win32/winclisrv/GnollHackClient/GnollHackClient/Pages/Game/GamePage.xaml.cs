@@ -132,6 +132,10 @@ namespace GnollHackClient.Pages.Game
                 _tileMap[1] = SKBitmap.Decode(stream);
             }
 
+            InventoryImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.inventory.png");
+            SearchImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.search.png");
+            WaitImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.wait.png");
+
             _gnollHackService = DependencyService.Get<IGnollHackService>();
             _gnollHackService.InitializeGnollHack();
             UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
@@ -214,41 +218,115 @@ namespace GnollHackClient.Pages.Game
         public void AddContextMenu(AddContextMenuData data)
         {
             _contextMenuData.Add(data);
-            Button contextButton = new Button();
-            string str;
-            if(data.cmd_def_char >=32 && data.cmd_def_char < 128)
-                str = ((char)data.cmd_def_char).ToString();
-            else if (data.cmd_def_char >= 128)
-                str = "M"+((char)(data.cmd_def_char - 128)).ToString();
-            else if (data.cmd_def_char < 0)
-                str = "M" + ((char)(data.cmd_def_char + 256)).ToString();
+            string icon_string = "";
+            switch((char)data.cmd_def_char)
+            {
+                case 'e':
+                    icon_string = "GnollHackClient.Assets.Icons.eat.png";
+                    break;
+                case 'l':
+                    icon_string = "GnollHackClient.Assets.Icons.loot.png";
+                    break;
+                case 'p':
+                    icon_string = "GnollHackClient.Assets.Icons.pay.png";
+                    break;
+                case ',':
+                    icon_string = "GnollHackClient.Assets.Icons.pickup.png";
+                    break;
+            }
+
+            if(icon_string != "")
+            {
+                Image img = new Image();
+                img.Source = ImageSource.FromResource(icon_string);
+                img.BackgroundColor = Color.Transparent;
+                img.HeightRequest = 50;
+                img.WidthRequest = 50;
+                img.IsVisible = true;
+                img.InputTransparent = true;
+                img.VerticalOptions = LayoutOptions.Start;
+                img.HorizontalOptions = LayoutOptions.Center;
+
+                Label lbl = new Label();
+                lbl.Text = data.cmd_text;
+                lbl.TextColor = Color.White;
+                lbl.FontFamily = "LatoRegular";
+                lbl.VerticalOptions = LayoutOptions.End;
+                lbl.VerticalTextAlignment = TextAlignment.End;
+                lbl.HorizontalOptions = LayoutOptions.Center;
+                lbl.HorizontalTextAlignment = TextAlignment.Center;
+                lbl.FontSize = 10;
+                lbl.BackgroundColor = Color.Transparent;
+                lbl.WidthRequest = 50;
+                lbl.IsVisible = true;
+                lbl.InputTransparent = true;
+
+                Button contextButton = new Button();
+                contextButton.Text = "";
+                contextButton.HeightRequest = 50;
+                contextButton.WidthRequest = 50;
+                contextButton.IsVisible = true;
+                contextButton.BackgroundColor = Color.Transparent;
+                contextButton.HorizontalOptions = LayoutOptions.CenterAndExpand;
+                contextButton.VerticalOptions = LayoutOptions.CenterAndExpand;
+                contextButton.Clicked += ContextButton_Clicked;
+
+                Grid addgrid = new Grid();
+                addgrid.HeightRequest = 60;
+                addgrid.WidthRequest = 50;
+                addgrid.IsVisible = true;
+                addgrid.Children.Add(img);
+                addgrid.Children.Add(lbl);
+                addgrid.Children.Add(contextButton);
+
+                //int row = ContextGrid.RowDefinitions.Count - 1 - ContextGrid.Children.Count;
+                //if (row < 0)
+                //    row = 0;
+                //Grid.SetRow(contextButton, row);
+                ContextGrid.IsVisible = true;
+                ContextGrid.Children.Add(addgrid);
+            }
             else
-                str = "C" + ((char)(data.cmd_def_char + 64)).ToString();
+            {
+                Button contextButton = new Button();
+                string str;
+                if (data.cmd_def_char >= 32 && data.cmd_def_char < 128)
+                    str = ((char)data.cmd_def_char).ToString();
+                else if (data.cmd_def_char >= 128)
+                    str = "M" + ((char)(data.cmd_def_char - 128)).ToString();
+                else if (data.cmd_def_char < 0)
+                    str = "M" + ((char)(data.cmd_def_char + 256)).ToString();
+                else
+                    str = "C" + ((char)(data.cmd_def_char + 64)).ToString();
 
-            contextButton.Text = str;
-            contextButton.TextColor = Color.White;
-            contextButton.FontFamily = "Immortal";
-            contextButton.CornerRadius = 10;
-            contextButton.FontSize = 20;
-            contextButton.BackgroundColor = Color.DarkBlue;
-            contextButton.HeightRequest = 50;
-            contextButton.WidthRequest = 50;
-            contextButton.IsVisible = true;
+                contextButton.Text = str;
+                contextButton.TextColor = Color.White;
+                contextButton.FontFamily = "Immortal";
+                contextButton.CornerRadius = 10;
+                contextButton.FontSize = 20;
+                contextButton.BackgroundColor = Color.DarkBlue;
+                contextButton.HeightRequest = 50;
+                contextButton.WidthRequest = 50;
+                contextButton.IsVisible = true;
 
-            contextButton.Clicked += ContextButton_Clicked;
-            //int row = ContextGrid.RowDefinitions.Count - 1 - ContextGrid.Children.Count;
-            //if (row < 0)
-            //    row = 0;
-            //Grid.SetRow(contextButton, row);
-            ContextGrid.IsVisible = true;
-            ContextGrid.Children.Add(contextButton);
+                contextButton.Clicked += ContextButton_Clicked;
+                //int row = ContextGrid.RowDefinitions.Count - 1 - ContextGrid.Children.Count;
+                //if (row < 0)
+                //    row = 0;
+                //Grid.SetRow(contextButton, row);
+                ContextGrid.IsVisible = true;
+                ContextGrid.Children.Add(contextButton);
+            }
         }
 
         private void ContextButton_Clicked(object sender, EventArgs e)
         {
             int idx = 0;
             idx = ContextGrid.Children.IndexOf((Xamarin.Forms.View)sender);
-            if(idx >= 0 && idx < _contextMenuData.Count)
+            if(idx < 0)
+                idx = ContextGrid.Children.IndexOf((Xamarin.Forms.View)((Xamarin.Forms.View)sender).Parent);
+
+            if (idx >= 0 && idx < _contextMenuData.Count)
             {
                 int resp = _contextMenuData[idx].cmd_cur_char;
                 GenericButton_Clicked(sender, e, resp);
