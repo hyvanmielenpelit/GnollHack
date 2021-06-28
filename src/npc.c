@@ -195,7 +195,6 @@ int roomno;
     struct monst* npc;
     struct enpc* enpc_p;
     boolean has_room, can_speak;
-    const char* msg1, * msg2;
     char buf[BUFSZ];
 
     /* don't do anything if hero is already in the room */
@@ -205,36 +204,39 @@ int roomno;
     if ((npc = findnpc((char)roomno)) != 0)
     {
         /* tended */
+        if (!has_enpc(npc))
+            return;
 
         enpc_p = ENPC(npc);
         has_room = has_npc_room(npc);
         can_speak = (mon_can_move(npc));
-        if (can_speak && !Deaf && moves >= enpc_p->intone_time)
+        if (can_speak && !Deaf)
         {
-            pline("%s says:",
-                canseemon(npc) ? Monnam(npc) : "A nearby voice");
-            enpc_p->intone_time = moves + (long)d(10, 500); /* ~2505 */
-            enpc_p->enter_time = 0L;
-        }
-        msg1 = msg2 = 0;
+            if (moves >= enpc_p->intone_time && moves >= enpc_p->enter_time)
+            {
+                pline("%s says:",
+                    canseemon(npc) ? Monnam(npc) : "A nearby voice");
+                enpc_p->intone_time = moves + (long)d(10, 500); /* ~2505 */
+                enpc_p->enter_time = 0L;
+            }
 
-        if (moves >= enpc_p->enter_time)
-        {
-            if(has_room)
-                Sprintf(buf, "Adventurer, %s %s!", "welcome to my", npc_subtype_definitions[enpc_p->npc_typ].room_name);
-            else
-                Sprintf(buf, "Adventurer, welcome!");
+            if (moves >= enpc_p->enter_time)
+            {
+                int dialogueline = !has_room ? NPC_LINE_ADVENTURER_WELCOME : NPC_LINE_ADVENTURER_WELCOME_TO_MY_RESIDENCE;
+                context.global_minimum_volume = 0.5;
+                play_monster_special_dialogue_line(npc, dialogueline);
+                context.global_minimum_volume = 0.0;
 
-            msg1 = buf;
+                if (has_room)
+                    Sprintf(buf, "Adventurer, %s %s!", "welcome to my", npc_subtype_definitions[enpc_p->npc_typ].room_name);
+                else
+                    Sprintf(buf, "Adventurer, welcome!");
+
+                verbalize1(buf);
+                enpc_p->enter_time = moves + (long)d(5, 50); /* ~125 */
+            }
         }
 
-        if (msg1 && can_speak && !Deaf)
-        {
-            verbalize1(msg1);
-            if (msg2)
-                verbalize1(msg2);
-            enpc_p->enter_time = moves + (long)d(5, 50); /* ~125 */
-        }
     }
     else
     {
