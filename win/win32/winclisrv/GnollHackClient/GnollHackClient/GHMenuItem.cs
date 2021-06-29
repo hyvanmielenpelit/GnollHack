@@ -108,7 +108,9 @@ namespace GnollHackClient
         public bool IsGlyphVisible { get { return (Glyph != _noGlyph); } }
 
         public int Attributes { get; set; }
-        public int Glyph { get; set; }
+
+        private int _glyph;
+        public int Glyph { get { return _glyph; } set { _glyph = value; _glyphImageSource.Glyph = value; } }
         public int NHColor { get; set; }
         public bool Is_Heading { get; set; }
         public char HeadingGroupAccelerator { get; set; }
@@ -130,53 +132,22 @@ namespace GnollHackClient
         {
             _noGlyph = noGlyph;
             _gamePage = gamePage;
+            _glyphImageSource.GamePage = gamePage;
+            _glyphImageSource.X = 0;
+            _glyphImageSource.Y = GHConstants.TileHeight / 2;
+            _glyphImageSource.Width = GHConstants.TileWidth;
+            _glyphImageSource.Height = GHConstants.TileHeight / 2;
             EntryTextColor = Color.White;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private GlyphImageSource _glyphImageSource = new GlyphImageSource();
+
         public ImageSource GlyphImage
         {
             get {
-                if (_gamePage == null)
-                    return null;
-
-                int signed_glyph = Glyph;
-                int glyph = Math.Abs(signed_glyph);
-                if (glyph == 0)
-                    return null;
-
-                // get the bitmap we want to convert to a stream
-                SKBitmap bitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight / 2);
-
-                if (glyph < _gamePage.Glyph2Tile.Length)
-                {
-                    int ntile = _gamePage.Glyph2Tile[glyph];
-                    int sheet_idx = _gamePage.TileSheetIdx(ntile);
-                    int tile_x = _gamePage.TileSheetX(ntile);
-                    int tile_y = _gamePage.TileSheetY(ntile) + GHConstants.TileHeight / 2;
-
-                    int rowbytes = _gamePage.TileMap[sheet_idx].RowBytes;
-                    int bytesperpixel = _gamePage.TileMap[sheet_idx].BytesPerPixel;
-                    int pixelsperrow = rowbytes / bytesperpixel;
-                    int x = 0, y = 0;
-                    int sourcepixel = 0;
-                    int targetpixel = 0;
-                    for (x = 0; x < GHConstants.TileWidth; x++)
-                    {
-                        for (y = 0; y < GHConstants.TileHeight / 2; y++)
-                        {
-                            sourcepixel = x + tile_x + (y + tile_y) * pixelsperrow;
-                            targetpixel = x + y * GHConstants.TileWidth;
-                            bitmap.Pixels[targetpixel] = _gamePage.TileMap[sheet_idx].Pixels[sourcepixel];
-
-                        }
-                    }
-                }
-
-                ImageSource src = ImageSource.FromStream(() => new MemoryStream(bitmap.Bytes));
-
-                return src; 
+                return _glyphImageSource;
             }
         }
     }
