@@ -118,6 +118,7 @@
                                    FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">
                                 </Label>
 
+                                <!--
                                 <skia:SKCanvasView Grid.Column="1" x:Name="menuItemCanvasView" SizeChanged="menuItemCanvasView_SizeChanged"
                                                    IsVisible="{Binding IsGlyphVisible}"
                                                    HorizontalOptions="Center" VerticalOptions="Center"
@@ -125,6 +126,7 @@
                                                    BackgroundColor="Transparent"
                                                    PaintSurface="menuItemCanvasView_PaintSurface">
                                 </skia:SKCanvasView>
+                                -->
 
                                 <Grid Grid.Column="2" RowSpacing="0" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
                                     <Grid.RowDefinitions>

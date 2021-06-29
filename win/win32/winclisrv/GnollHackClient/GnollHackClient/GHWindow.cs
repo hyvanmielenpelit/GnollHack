@@ -17,13 +17,15 @@ namespace GnollHackClient
         Menu,
         Text,
         Base,
-        Overview,
-        Worn,
         Here,
-        Reserved,
         Inventory,
+        Reserved_1,
+        Reserved_2,
+        Reserved_3,
         RIP,
-        Keypad
+        Keypad,
+        Overview,
+        Worn
     }
 
     public class GHPadding
@@ -80,20 +82,22 @@ namespace GnollHackClient
                         break;
                     case GHWinType.Base:
                         break;
-                    case GHWinType.Overview:
-                        break;
-                    case GHWinType.Worn:
-                        break;
                     case GHWinType.Here:
                         res = true;
                         break;
-                    case GHWinType.Reserved:
-                        break;
                     case GHWinType.Inventory:
+                        break;
+                    case GHWinType.Reserved_1:
+                    case GHWinType.Reserved_2:
+                    case GHWinType.Reserved_3:
                         break;
                     case GHWinType.RIP:
                         break;
                     case GHWinType.Keypad:
+                        break;
+                    case GHWinType.Overview:
+                        break;
+                    case GHWinType.Worn:
                         break;
                 }
 
@@ -136,20 +140,22 @@ namespace GnollHackClient
                         break;
                     case GHWinType.Base:
                         break;
-                    case GHWinType.Overview:
-                        break;
-                    case GHWinType.Worn:
-                        break;
                     case GHWinType.Here:
                         res = GHWindowPrintLocations.PrintToMap;
                         break;
-                    case GHWinType.Reserved:
-                        break;
                     case GHWinType.Inventory:
+                        break;
+                    case GHWinType.Reserved_1:
+                    case GHWinType.Reserved_2:
+                    case GHWinType.Reserved_3:
                         break;
                     case GHWinType.RIP:
                         break;
                     case GHWinType.Keypad:
+                        break;
+                    case GHWinType.Overview:
+                        break;
+                    case GHWinType.Worn:
                         break;
                 }
 
@@ -231,23 +237,25 @@ namespace GnollHackClient
                     break;
                 case GHWinType.Base:
                     break;
-                case GHWinType.Overview:
-                    break;
-                case GHWinType.Worn:
-                    break;
                 case GHWinType.Here:
                     TextSize = 32;
                     Typeface = App.DejaVuSansMonoBoldTypeface;
                     StrokeWidth = 1.5f;
                     AutoPlacement = true;
                     break;
-                case GHWinType.Reserved:
-                    break;
                 case GHWinType.Inventory:
+                    break;
+                case GHWinType.Reserved_1:
+                case GHWinType.Reserved_2:
+                case GHWinType.Reserved_3:
                     break;
                 case GHWinType.RIP:
                     break;
                 case GHWinType.Keypad:
+                    break;
+                case GHWinType.Overview:
+                    break;
+                case GHWinType.Worn:
                     break;
             }
 

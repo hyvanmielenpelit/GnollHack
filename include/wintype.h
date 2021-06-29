@@ -83,16 +83,16 @@ typedef struct mi {
 #define NHW_MENU 4
 #define NHW_TEXT 5
 
-/* Added in GnollHack */
+/* Window types added in GnollHack; these may not exist in most windowing systems, so use with care */
 #define NHW_BASE 6
-#define NHW_OVER 7 /* overview window; from amiga */
-#define NHW_WORN 8 /* from winGnome.h, changed from 6 to 8 */
-#define NHW_HERE 9 /* Window for "things that are here" */
+#define NHW_HERE 7     /* new - window for "things that are here" */
+#define NHW_INVEN 8    /* from winMS.h in WinCE and Win32 */
 
-/* From winMS.h in WinCE and WinMS */
-#define NHW_INVEN 11   /* originally 33 */
-#define NHW_RIP 12     /* originally 32 */
-#define NHW_KEYPAD 13  /* originally 33 */
+/* Various esoteric window types from various ports; numbering has been changed */
+#define NHW_RIP 12     /* from winMS.h in WinCE and Win32 */
+#define NHW_KEYPAD 13  /* from winMS.h in WinCE and Win32 */
+#define NHW_OVER 14    /* overview window; from amiga */
+#define NHW_WORN 15    /* from winGnome.h */
 
 /* attribute types for putstr; the same as the ANSI value, for convenience */
 #define ATR_NONE       0
