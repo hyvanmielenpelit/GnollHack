@@ -1352,22 +1352,26 @@ register struct monst *mtmp;
         break;
     case MS_DJINNI:
         if (is_tame(mtmp)) {
+            play_monster_special_dialogue_line(mtmp, DJINN_LINE_SORRY_OUT_OF_WISHES);
             verbl_msg = "Sorry, I'm all out of wishes.";
             chat_line = 2;
         } else if (is_peaceful(mtmp)) {
             if (ptr == &mons[PM_WATER_DEMON])
             {
+                play_monster_special_dialogue_line(mtmp, DJINN_LINE_GURGLES);
                 pline_msg = "gurgles.";
                 chat_line = 1;
             }
             else
             {
+                play_monster_special_dialogue_line(mtmp, DJINN_LINE_IM_FREE);
                 verbl_msg = "I'm free!";
                 chat_line = 1;
             }
         } else {
             if (ptr != &mons[PM_PRISONER])
             {
+                play_monster_special_dialogue_line(mtmp, DJINN_LINE_THIS_WILL_TEACH_YOU);
                 verbl_msg = "This will teach you not to disturb me!";
                 chat_line = 2;
             }

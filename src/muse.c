@@ -120,11 +120,13 @@ struct obj *obj;
                 /* I suspect few players will be upset that monsters */
                 /* can't wish for wands of death here.... */
                 if (rn2(2)) {
+                    play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_FREED_ME);
                     verbalize("You freed me!");
                     mtmp->mpeaceful = 1;
                     set_malign(mtmp);
                     newsym(mtmp->mx, mtmp->my);
                 } else {
+                    play_monster_special_dialogue_line(mtmp, DJINN_LINE_IT_IS_ABOUT_TIME);
                     verbalize("It is about time.");
                     play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
                     if (vis)
