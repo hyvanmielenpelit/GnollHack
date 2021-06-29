@@ -43,6 +43,7 @@ namespace GnollHackClient.Pages.Game
 
             myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+
         }
 
 
@@ -92,6 +93,7 @@ namespace GnollHackClient.Pages.Game
                 if (mi.Count != 0)
                     MenuView.SelectedItems.Add(mi);
             }
+
         }
 
         private void MenuView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -294,8 +296,6 @@ namespace GnollHackClient.Pages.Game
         {
             if (sender == null)
                 return;
-
-            SKCanvasView canvasView = (SKCanvasView)sender;
         }
     }
 

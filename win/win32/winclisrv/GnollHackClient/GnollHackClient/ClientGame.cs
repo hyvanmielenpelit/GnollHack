@@ -588,7 +588,7 @@ namespace GnollHackClient
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
-                    GHMenuItem mi = new GHMenuItem(_gamePage.NoGlyph);
+                    GHMenuItem mi = new GHMenuItem(_gamePage.NoGlyph, _gamePage);
                     mi.Identifier = identifier;
                     if (accel == 0 && identifier != 0)
                         mi.Accelerator = _ghWindows[winid].MenuInfo.AutoAccelerator;
