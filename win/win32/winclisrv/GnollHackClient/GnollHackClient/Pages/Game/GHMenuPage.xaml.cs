@@ -34,6 +34,7 @@ namespace GnollHackClient.Pages.Game
         public GHMenuPage(GamePage gamepage, GHWindow ghwindow)
         {
             InitializeComponent();
+            //TestView.ItemsSource = MenuItems;
             MenuView.ItemsSource = MenuItems;
             _clientGame = gamepage.ClientGame;
             _gamePage = gamepage;
