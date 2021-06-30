@@ -824,8 +824,8 @@ aligntyp resp_god;
 
         play_voice_god_simple_line_by_align(resp_god, GOD_LINE_THOU_MUST_RELEARN_THY_LESSONS);
         verbalize("Thou must relearn thy lessons!");
-        (void) adjattrib(A_WIS, -1, FALSE);
-        losexp((char *) 0);
+        (void)adjattrib(A_WIS, -1, FALSE);
+        losexp((char*)0);
         break;
     case 6:
         if (!Punished) {
@@ -840,7 +840,25 @@ aligntyp resp_god;
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s glow surrounds you.", An(hcolor(NH_BLACK)));
         rndcurse();
         break;
+    case 9:
     case 7:
+        if (resp_god == u.ualignbase[A_ORIGINAL] && u.ualignbase[A_ORIGINAL] != u.ualign.type)
+        {
+            godvoice(resp_god, (char*)0);
+            play_voice_god_simple_line_by_align(resp_god,
+                youmonst.data->mlet == S_HUMAN ? GOD_LINE_THOU_HAST_STRAYED_FROM_THE_PATH_MORTAL :
+                (GOD_LINE_THOU_HAST_STRAYED_FROM_THE_PATH_CREATURE));
+
+            verbalize("Thou hast strayed from the path, %s.",
+                youmonst.data->mlet == S_HUMAN ? "mortal" : "creature");
+
+            summon_minion(resp_god, FALSE);
+
+            play_voice_god_simple_line_by_align(resp_god, GOD_LINE_THOU_SHALT_PAY_FOR_THINE_INDISCRETION);
+            verbalize("Thou shalt pay for thine indiscretion!");
+            break;
+        }
+        /* else fall thru */
     case 8:
         godvoice(resp_god, (char *) 0);
         play_voice_god_simple_line_by_align(resp_god, 

@@ -51,6 +51,7 @@
 #define MS_SMITH 42     /* offer artisan services */
 #define MS_NPC 43       /* offer artisan services */
 #define MS_MODRON 44    /* modron talk */
+#define MS_ALEAX 45     /* tells you that you are being punished by your god */
 
 /* resistances, and all intrinsics and extrinsics the monster can have */
 #define MR_NONE                    0x00000000UL
@@ -374,6 +375,7 @@
 #define G_GENDER_ONE_FOURTH  0x10000000UL
 #define G_GENDER_GEN_MASK    0x70000000UL /* gender distribution mask, bits 0x10000000 - 0x40000000 give relative rarity: one in 2^(1 + number) is female or male */
 
+#define G_STRAYED   0x00010000UL     /* generated only when the player has strayed from the his/her original alignment path */
 #define G_NOMINES   0x00008000UL     /* not generated in Gnomish Mines */
 #define G_YACC      0x00004000UL     /* generated on hellish pastures regardless of other flags */
 #define G_MODRON    0x00002000UL     /* generated on modron plane regardless of other flags */

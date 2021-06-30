@@ -1330,6 +1330,33 @@ register struct monst *mtmp;
         pline_msg = "imitates you.";
         chat_line = 0;
         break;
+    case MS_ALEAX:
+        if (u.ualignbase[A_ORIGINAL] != u.ualign.type)
+        {
+            switch (mtmp->talkstate_special)
+            {
+            default:
+            case 0:
+                verbalize("Thou hast strayed from the %s path, %s.", align_str(u.ualignbase[A_ORIGINAL]), is_living(youmonst.data) ? "mortal" : "creature");
+                break;
+            case 1:
+                verbalize("I have been sent by %s to punish thou for thine insolence.", align_gname(u.ualignbase[A_ORIGINAL]));
+                break;
+            case 2:
+                verbalize1("The punishment for such insolence is death.");
+                break;
+            }
+            mtmp->talkstate_special++;
+            if (mtmp->talkstate_special == 3)
+                mtmp->talkstate_special = 0;
+            chat_line = 0;
+        }
+        else
+        {
+            pline_msg = "looks perplexed.";
+            chat_line = 0;
+        }
+        break;
     case MS_BONES:
         pline("%s rattles noisily.", Monnam(mtmp));
         chat_line = 0;
@@ -3296,8 +3323,8 @@ dochat()
                 if (res == 2) /* Changed level or the like and mtmp does not exist anymore */
                     return 1;
 
-                if(mtmp->talkstate == 0)
-                    mtmp->talkstate = 1;
+                if(mtmp->talkstate_item_trading == 0)
+                    mtmp->talkstate_item_trading = 1;
                 mtmp->notalktimer = 100 + rnd(200);
             }
             break;

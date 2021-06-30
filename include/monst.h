@@ -176,7 +176,9 @@ struct monst {
     Bitfield(ispartymember, 1);                    /* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
     /* 4 free bits to 32 bit integer */
     /* The follow splits bitfields so they fit in one int both in 32 bit and 64 bit systems */
-    uchar  talkstate;                           /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
+    uchar  talkstate_item_trading;                           /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
+    uchar  talkstate_special;                           /* Special index, e.g., for Aleax */
+    short  general_special_index;                       /* Special general purpose index */
     Bitfield(leaves_no_corpse, 1);                /* this particular monster does not leave a corpse */
     Bitfield(delayed_killer_by_you, 1);            /* is petrification or other delayed killer initiated by you */
     Bitfield(u_know_mname, 1);                  /* you know the monster's name */

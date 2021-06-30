@@ -157,7 +157,7 @@ struct monst* mon;
                     && !(mon->iswiz || mon->data == &mons[PM_MEDUSA] || (mon->data->geno & G_UNIQ) != 0
                         || mon->data->msound == MS_NEMESIS || mon->data->msound == MS_LEADER || mon->data->msound == MS_ORACLE
                         || mon->data->msound == MS_GUARDIAN || mon->data->msound == MS_BRIBE
-                        || mon->data == &mons[PM_VLAD_THE_IMPALER]
+                        || mon->data == &mons[PM_VLAD_THE_IMPALER] || mon->data == &mons[PM_ALEAX]
                         || (mon->data == &mons[PM_ORACLE]))))
                     )
                 {
@@ -191,7 +191,7 @@ struct monst* mon;
                         if (canseemon(mon))
                             talkeff(mon->mx, mon->my);
                         
-                        switch (mon->talkstate)
+                        switch (mon->talkstate_item_trading)
                         {
                         case 0:
                             Sprintf(yellbuf, "Hello, adventurer! How are you? I have %s for sale.", someitembuf);
@@ -221,10 +221,10 @@ struct monst* mon;
 
     if (mon_talked)
     {
-        if (mon->talkstate == 3)
-            mon->talkstate--;
+        if (mon->talkstate_item_trading == 3)
+            mon->talkstate_item_trading--;
         else
-            mon->talkstate++;
+            mon->talkstate_item_trading++;
 
         mon->notalktimer = 100 + rnd(200);
         context.mon_talking = TRUE;

@@ -999,10 +999,10 @@ struct materialcomponentlist matlists[] =
         }
     },
 
-    { SPE_HEAVENLY_WARRIOR,
+    { SPE_HEAVENLY_SERPENT,
         "Opal",
         STRANGE_OBJECT,
-        2,
+        3,
         {
             {
                 {OPAL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},

@@ -4440,8 +4440,8 @@ register struct obj *obj;
         mtmp = summoncreature(obj->otyp, PM_ARCHON, "%s descends from the heavens.", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION,
             SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_PACIFIST | SUMMONCREATURE_FLAGS_FAITHFUL);
         break;
-    case SPE_HEAVENLY_WARRIOR:
-        mtmp = summoncreature(obj->otyp, PM_ALEAX, "%s descends from the heavens.", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION, 
+    case SPE_HEAVENLY_SERPENT:
+        mtmp = summoncreature(obj->otyp, PM_COUATL, "%s descends from the heavens.", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION, 
             SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_PACIFIST | SUMMONCREATURE_FLAGS_FAITHFUL);
         break;
     case SPE_DIVINE_MOUNT:
@@ -4465,7 +4465,7 @@ register struct obj *obj;
             switch (roll)
             {
             case 0:
-                monstid = PM_ALEAX;
+                monstid = PM_KI_RIN;
                 break;
             case 1:
                 monstid = PM_ANGEL;
@@ -4474,7 +4474,7 @@ register struct obj *obj;
                 monstid = PM_ARCHON;
                 break;
             default:
-                monstid = PM_ALEAX;
+                monstid = PM_COUATL;
                 break;
             }
             mtmp = summoncreature(obj->otyp, monstid, "", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION, 

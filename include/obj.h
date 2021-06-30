@@ -167,6 +167,7 @@ struct obj {
 #define keyotyp corpsenm  /* otyp of the key capable of locking / unlocking the chest (0 = SKELETON_KEY). Special_quality additionally defines the type of the key (its matching special_quality) */
     int usecount;           /* overloaded for various things that tally */
 #define spestudied usecount /* # of times a spellbook has been studied */
+#define ring_text_appeared usecount /* the round the text of Ruling Ring of Yendor appeared */
     unsigned oeaten;        /* nutrition left in food, if partly eaten */
     long age;               /* creation date */
     long owornmask;

@@ -657,8 +657,11 @@ boolean talk;
         mnum = lminion();
         break;
     case A_NEUTRAL:
-        mnum = PM_AIR_ELEMENTAL + rn2(4);
+    {
+        int minions[8] = { PM_AIR_ELEMENTAL, PM_EARTH_ELEMENTAL, PM_FIRE_ELEMENTAL, PM_WATER_ELEMENTAL, PM_ELDER_AIR_ELEMENTAL, PM_ELDER_EARTH_ELEMENTAL, PM_ELDER_FIRE_ELEMENTAL, PM_ELDER_WATER_ELEMENTAL };
+        mnum = minions[rn2(8)];
         break;
+    }
     case A_CHAOTIC:
     case A_NONE:
         mnum = ndemon(alignment);

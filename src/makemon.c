@@ -213,7 +213,7 @@ register struct monst* mtmp;
     if (is_undead(mtmp->data) && (mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_DEATH_FLAYER] || mtmp->data == &mons[PM_VAMPIRE_MAGE]) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_undead_spellcaster_name(mnamebuf)));
 
-    if (mtmp->data == &mons[PM_ANGEL] || mtmp->data == &mons[PM_ALEAX] || mtmp->data == &mons[PM_ARCHON])
+    if (mtmp->data == &mons[PM_ANGEL] || mtmp->data == &mons[PM_ARCHON])
         christen_monst(mtmp, upstart(randomize_angel_name(mnamebuf)));
 
     if (is_modron(mtmp->data))
@@ -3209,10 +3209,13 @@ int mndx;
         return TRUE;
     if (mvitals[mndx].mvflags & G_GONE)
         return TRUE;
+
+    boolean strayed_appearance_ok = (!(mvitals[mndx].mvflags & G_STRAYED) || ((mvitals[mndx].mvflags & G_STRAYED) && u.ualign.type != u.ualignbase[A_ORIGINAL]));
+
     if (Inhell)
-        return (boolean) (mons[mndx].maligntyp > A_NEUTRAL);
+        return (boolean) ((mons[mndx].maligntyp > A_NEUTRAL) && strayed_appearance_ok);
     else
-        return (boolean) ((mons[mndx].geno & G_HELL) != 0);
+        return (boolean) ((mons[mndx].geno & G_HELL) != 0 && strayed_appearance_ok);
 }
 
 /*
