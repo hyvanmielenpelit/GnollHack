@@ -261,7 +261,7 @@ struct obj* obj;
         if (objects[obj->otyp].oc_prob == 0 || (objects[obj->otyp].oc_flags3 & O3_NO_GENERATION))
         {
             if(!(objects[artilist[obj->oartifact].maskotyp].oc_prob == 0 || (objects[artilist[obj->oartifact].maskotyp].oc_flags3 & O3_NO_GENERATION)))
-                obj->otyp = artilist[obj->oartifact].maskotyp;
+                otyp = artilist[obj->oartifact].maskotyp;
             else
             {
                 generate_random_item = TRUE;
@@ -278,7 +278,7 @@ struct obj* obj;
         }
     }
 
-    otmp = mksobj(obj->otyp, FALSE, FALSE, 0);
+    otmp = mksobj(otyp, FALSE, FALSE, 0);
     if (otmp)
     {
         if (obj->blessed)
@@ -287,7 +287,6 @@ struct obj* obj;
             curse(otmp);
 
         otmp->quan = obj->quan;
-        otmp->owt = weight(obj);
         if (!generate_random_item)
         {
             otmp->opoisoned = obj->opoisoned;
@@ -299,7 +298,7 @@ struct obj* obj;
             otmp->charges = obj->charges;
             otmp->speflags |= SPEFLAGS_CLONED_ITEM; /* This item will disappear when Aleax dies / is gone */
         }
-
+        otmp->owt = weight(otmp);
         (void)mpickobj(mtmp, otmp);
     }
 
