@@ -80,6 +80,9 @@ namespace GnollHackClient.Pages.Game
         private float _mapFontAscent;
         public object Glyph2TileLock = new object();
         public int[] Glyph2Tile { get; set; }
+        public short[] Tile2Animation { get; set; }
+        public short[] Tile2Enlargement { get; set; }
+        public short[] Tile2Replacement { get; set; }
         public int Glyph2TileSize { get; set; }
         private SKBitmap[] _tileMap = new SKBitmap[GHConstants.MaxTileSheets];
         public SKBitmap[] TileMap { get { return _tileMap; } }

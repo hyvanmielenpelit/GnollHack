@@ -55,6 +55,45 @@ void GetGlyph2Tile(int** gl2ti_ptr, int* size_ptr)
 #endif
 }
 
+void GetTile2Animation(short** ti2an_ptr, int* size_ptr)
+{
+    if (!ti2an_ptr || !size_ptr)
+        return;
+#ifdef USE_TILES
+    *ti2an_ptr = tile2animation;
+    *size_ptr = SIZE(tile2animation);
+#else
+    *gl2ti_ptr = 0;
+    *size_ptr = 0;
+#endif
+}
+
+void GetTile2Enlargement(short** ti2en_ptr, int* size_ptr)
+{
+    if (!ti2en_ptr || !size_ptr)
+        return;
+#ifdef USE_TILES
+    *ti2en_ptr = tile2enlargement;
+    *size_ptr = SIZE(tile2enlargement);
+#else
+    *gl2ti_ptr = 0;
+    *size_ptr = 0;
+#endif
+}
+
+void GetTile2Replacement(short** ti2re_ptr, int* size_ptr)
+{
+    if (!ti2re_ptr || !size_ptr)
+        return;
+#ifdef USE_TILES
+    *ti2re_ptr = tile2replacement;
+    *size_ptr = SIZE(tile2replacement);
+#else
+    *gl2ti_ptr = 0;
+    *size_ptr = 0;
+#endif
+}
+
 int CountTotalTiles()
 {
     return process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);

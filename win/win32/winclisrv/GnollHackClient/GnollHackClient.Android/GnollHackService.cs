@@ -117,7 +117,13 @@ namespace GnollHackClient.Droid
         );
 
         [DllImport(@"libgnollhackdroid.so")]
-        public static extern int GetGlyph2Tile(out IntPtr gl2ti_ptr, out int size);
+        public static extern int GetGlyph2Tile(out IntPtr array_ptr, out int size);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int GetTile2Animation(out IntPtr array_ptr, out int size);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int GetTile2Enlargement(out IntPtr array_ptr, out int size);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int GetTile2Replacement(out IntPtr array_ptr, out int size);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int CountTotalTiles();
         [DllImport(@"libgnollhackdroid.so")]
@@ -276,9 +282,12 @@ namespace GnollHackClient.Droid
             }
         }
 
-        public void GetTileArrays(out IntPtr gl2ti, out int size)
+        public void GetTileArrays(out IntPtr gl2ti, out int size1, out IntPtr ti2an, out int size2, out IntPtr ti2en, out int size3, out IntPtr ti2re, out int size4)
         {
-            GetGlyph2Tile(out gl2ti, out size);
+            GetGlyph2Tile(out gl2ti, out size1);
+            GetTile2Animation(out ti2an, out size2);
+            GetTile2Enlargement(out ti2en, out size3);
+            GetTile2Replacement(out ti2re, out size4);
         }
         public int GetTotalTiles()
         {
