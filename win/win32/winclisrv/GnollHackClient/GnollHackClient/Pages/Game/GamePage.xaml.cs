@@ -83,6 +83,9 @@ namespace GnollHackClient.Pages.Game
         public short[] Tile2Animation { get; set; }
         public short[] Tile2Enlargement { get; set; }
         public short[] Tile2Replacement { get; set; }
+        public int[] AnimationOffsets { get; set; }
+        public int[] EnlargementOffsets { get; set; }
+        public int[] ReplacementOffsets { get; set; }
         public int Glyph2TileSize { get; set; }
         private SKBitmap[] _tileMap = new SKBitmap[GHConstants.MaxTileSheets];
         public SKBitmap[] TileMap { get { return _tileMap; } }
@@ -90,6 +93,9 @@ namespace GnollHackClient.Pages.Game
         public int TotalTiles { get; set; }
         public int UnexploredGlyph { get; set; }
         public int NoGlyph { get; set; }
+        public int AnimationOff { get; set; }
+        public int EnlargementOff { get; set; }
+        public int ReplacementOff { get; set; }
         private int[] _tilesPerRow = new int[GHConstants.MaxTileSheets];
         public int[] TilesPerRow { get { return _tilesPerRow; } }
 
@@ -149,6 +155,11 @@ namespace GnollHackClient.Pages.Game
             _gnollHackService.InitializeGnollHack();
             UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
             NoGlyph = _gnollHackService.GetNoGlyph();
+            int animoff, enloff, reoff;
+            _gnollHackService.GetOffs(out animoff, out enloff, out reoff);
+            AnimationOff = animoff;
+            EnlargementOff = enloff;
+            ReplacementOff = reoff;
             _animationDefs = _gnollHackService.GetAnimationArray();
             _enlargementDefs = _gnollHackService.GetEnlargementArray();
             _replacementDefs = _gnollHackService.GetReplacementArray();
@@ -840,18 +851,119 @@ namespace GnollHackClient.Pages.Game
                                         if (glyph < Glyph2Tile.Length)
                                         {
                                             int ntile = Glyph2Tile[glyph];
-                                            int sheet_idx = TileSheetIdx(ntile);
-                                            int tile_x = TileSheetX(ntile);
-                                            int tile_y = TileSheetY(ntile);
+                                            int replacement = Tile2Replacement[ntile];
+                                            /* Replace tile here */
+                                            int animation = Tile2Animation[ntile];
+                                            /* Determine animation tile here */
+                                            int enlargement = Tile2Enlargement[ntile];
+                                            for (int enl_idx = -1; enl_idx < 5; enl_idx++)
+                                            {
+                                                if (enlargement == 0 && enl_idx >= 0)
+                                                    break;
 
-                                            SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                bool vflip_glyph = false;
+                                                bool hflip_glyph = false;
+                                                int enlarg_idx = enl_idx;
+                                                int position_index = -1;
+                                                if (enlargement > 0)
+                                                {
+                                                    /* Set position_index */
+                                                    if (enlarg_idx == -1)
+                                                    {
+                                                        if (vflip_glyph)
+                                                            position_index = 1;
+                                                        else
+                                                            position_index = -1;
+                                                    }
+                                                    else if (enlarg_idx == 0)
+                                                    {
+                                                        if (vflip_glyph)
+                                                            position_index = hflip_glyph ? 0 : 2;
+                                                        else
+                                                            position_index = hflip_glyph ? 3 : 4;
+                                                    }
+                                                    else if (enlarg_idx == 1)
+                                                    {
+                                                        if (vflip_glyph)
+                                                            position_index = hflip_glyph ? 2 : 0;
+                                                        else
+                                                            position_index = hflip_glyph ? 4 : 3;
+                                                    }
+                                                    else if (enlarg_idx == 2)
+                                                    {
+                                                        if (vflip_glyph)
+                                                            position_index = hflip_glyph ? 3 : 4;
+                                                        else
+                                                            position_index = hflip_glyph ? 0 : 2;
+                                                    }
+                                                    else if (enlarg_idx == 3)
+                                                    {
+                                                        if (vflip_glyph)
+                                                            position_index = -1;
+                                                        else
+                                                            position_index = 1;
+                                                    }
+                                                    else if (enlarg_idx == 4)
+                                                    {
+                                                        if (vflip_glyph)
+                                                            position_index = hflip_glyph ? 4 : 3;
+                                                        else
+                                                            position_index = hflip_glyph ? 2 : 0;
+                                                    }
 
-                                            tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
-                                            ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                }
 
-                                            SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                if (enlargement > 0 && position_index >= 0)
+                                                {
+                                                    int enl_tile_idx = _enlargementDefs[enlargement].position2tile[position_index];
+                                                    if (enl_tile_idx >= 0)
+                                                    {
+                                                        int addedindex = 0;
+                                                        int enl_glyph = enl_tile_idx + addedindex + EnlargementOffsets[enlargement] + EnlargementOff;
+                                                        ntile = Glyph2Tile[enl_glyph]; /* replace */
+                                                    }
+                                                    else
+                                                        continue;
+                                                }
 
-                                            canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                                                int dx = 0, dy = 0;
+                                                switch(position_index)
+                                                {
+                                                    case 0:
+                                                        dx = -1;
+                                                        dy = -1;
+                                                        break;
+                                                    case 1:
+                                                        dx = 0;
+                                                        dy = -1;
+                                                        break;
+                                                    case 2:
+                                                        dx = 1;
+                                                        dy = -1;
+                                                        break;
+                                                    case 3:
+                                                        dx = -1;
+                                                        dy = 0;
+                                                        break;
+                                                    case 4:
+                                                        dx = 1;
+                                                        dy = 0;
+                                                        break;
+                                                }
+
+                                                int sheet_idx = TileSheetIdx(ntile);
+                                                int tile_x = TileSheetX(ntile);
+                                                int tile_y = TileSheetY(ntile);
+
+                                                SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+
+                                                tx = (startX + offsetX + _mapOffsetX + width * (float)(mapx + dx));
+                                                ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)(mapy + dy));
+
+                                                SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+
+                                                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                                            }
                                         }
                                     }
                                 }

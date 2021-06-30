@@ -63,7 +63,7 @@ void GetTile2Animation(short** ti2an_ptr, int* size_ptr)
     *ti2an_ptr = tile2animation;
     *size_ptr = SIZE(tile2animation);
 #else
-    *gl2ti_ptr = 0;
+    *ti2an_ptr = 0;
     *size_ptr = 0;
 #endif
 }
@@ -76,7 +76,7 @@ void GetTile2Enlargement(short** ti2en_ptr, int* size_ptr)
     *ti2en_ptr = tile2enlargement;
     *size_ptr = SIZE(tile2enlargement);
 #else
-    *gl2ti_ptr = 0;
+    *ti2en_ptr = 0;
     *size_ptr = 0;
 #endif
 }
@@ -89,11 +89,49 @@ void GetTile2Replacement(short** ti2re_ptr, int* size_ptr)
     *ti2re_ptr = tile2replacement;
     *size_ptr = SIZE(tile2replacement);
 #else
-    *gl2ti_ptr = 0;
+    *ti2re_ptr = 0;
     *size_ptr = 0;
 #endif
 }
 
+void GetAnimationOffsets(int** anoff_ptr, int* size_ptr)
+{
+    if (!anoff_ptr || !size_ptr)
+        return;
+#ifdef USE_TILES
+    *anoff_ptr = animation_offsets;
+    *size_ptr = SIZE(animation_offsets);
+#else
+    *anoff_ptr = 0;
+    *size_ptr = 0;
+#endif
+}
+
+void GetEnlargementOffsets(int** enoff_ptr, int* size_ptr)
+{
+    if (!enoff_ptr || !size_ptr)
+        return;
+#ifdef USE_TILES
+    *enoff_ptr = enlargement_offsets;
+    *size_ptr = SIZE(enlargement_offsets);
+#else
+    *enoff_ptr = 0;
+    *size_ptr = 0;
+#endif
+}
+
+void GetReplacementOffsets(int** reoff_ptr, int* size_ptr)
+{
+    if (!reoff_ptr || !size_ptr)
+        return;
+#ifdef USE_TILES
+    *reoff_ptr = replacement_offsets;
+    *size_ptr = SIZE(replacement_offsets);
+#else
+    *reoff_ptr = 0;
+    *size_ptr = 0;
+#endif
+}
 int CountTotalTiles()
 {
     return process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
@@ -107,6 +145,21 @@ int LibGetUnexploredGlyph()
 int LibGetNoGlyph()
 {
     return NO_GLYPH;
+}
+
+int LibGetAnimationOff()
+{
+    return GLYPH_ANIMATION_OFF;
+}
+
+int LibGetEnlargementOff()
+{
+    return GLYPH_ENLARGEMENT_OFF;
+}
+
+int LibGetReplacementOff()
+{
+    return GLYPH_ANIMATION_OFF;
 }
 
 int LibGetAnimationArraySize()
