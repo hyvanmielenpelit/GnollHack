@@ -817,9 +817,10 @@ boolean is_mon_dead;
     while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) 
     {
         obj_extract_self(otmp);
-        if (((mtmp->issummoned || mtmp->ispartymember) && (!is_mon_dead || otmp->oclass == COIN_CLASS)) 
+        if (((otmp->speflags & SPEFLAGS_CLONED_ITEM) || ((mtmp->issummoned || mtmp->ispartymember) && (!is_mon_dead || otmp->oclass == COIN_CLASS)))
             /* When leaving without dying, summoned and joined monsters take their possessions with them, except central artifacts 
              * Just their money mysteriously disappears when they die normally, to prevent hiring monsters always with the same money
+             * Also cloned items (Aleax) will disappear when Aleax is gone / dies, unless you somehow managed to steal them from Aleax before that
              */
             && otmp->otyp != AMULET_OF_YENDOR
             && otmp->otyp != FAKE_AMULET_OF_YENDOR

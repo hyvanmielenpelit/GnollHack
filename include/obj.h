@@ -80,6 +80,7 @@ struct obj {
 #define SPEFLAGS_ADDED_TO_YOUR_BILL            0x00080000UL
 #define SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP   0x00100000UL
 #define SPEFLAGS_CAUGHT_IN_LEAVES              0x00200000UL
+#define SPEFLAGS_CLONED_ITEM                   0x00400000UL
     
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */

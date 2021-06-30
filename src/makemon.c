@@ -20,6 +20,7 @@ STATIC_DCL void FDECL(m_initgrp, (struct monst *, int, int, int, int));
 STATIC_DCL void FDECL(m_initweap, (struct monst *));
 STATIC_DCL void FDECL(m_initinv, (struct monst *));
 STATIC_DCL void FDECL(m_init_background, (struct monst*));
+STATIC_DCL struct obj* FDECL(m_inityour, (struct monst*, struct obj*)); 
 STATIC_DCL boolean FDECL(makemon_rnd_goodpos, (struct monst *,
                                                unsigned long, coord *));
 
@@ -240,6 +241,70 @@ register struct monst* mtmp;
         christen_monst(mtmp, upstart(randomize_hobbit_name(mnamebuf)));
 }
 
+
+STATIC_OVL 
+struct obj*
+m_inityour(mtmp, obj)
+struct monst* mtmp;
+struct obj* obj;
+{
+    if (!mtmp || !obj)
+        return 0;
+
+    struct obj* otmp = 0;
+
+    int otyp = obj->otyp;
+    boolean generate_random_item = FALSE;
+    
+    if (obj->oartifact)
+    {
+        if (objects[obj->otyp].oc_prob == 0 || (objects[obj->otyp].oc_flags3 & O3_NO_GENERATION))
+        {
+            if(!(objects[artilist[obj->oartifact].maskotyp].oc_prob == 0 || (objects[artilist[obj->oartifact].maskotyp].oc_flags3 & O3_NO_GENERATION)))
+                obj->otyp = artilist[obj->oartifact].maskotyp;
+            else
+            {
+                generate_random_item = TRUE;
+                otyp = random_objectid_from_class(obj->oclass, 0UL);
+            }
+        }
+    }
+    else
+    {
+        if (objects[obj->otyp].oc_prob == 0 || (objects[obj->otyp].oc_flags3 & O3_NO_GENERATION))
+        {
+            generate_random_item = TRUE;
+            otyp = random_objectid_from_class(obj->oclass, 0UL);
+        }
+    }
+
+    otmp = mksobj(obj->otyp, FALSE, FALSE, 0);
+    if (otmp)
+    {
+        if (obj->blessed)
+            bless(otmp);
+        else if (obj->cursed)
+            curse(otmp);
+
+        otmp->quan = obj->quan;
+        otmp->owt = weight(obj);
+        if (!generate_random_item)
+        {
+            otmp->opoisoned = obj->opoisoned;
+            otmp->mythic_prefix = obj->mythic_prefix;
+            otmp->mythic_suffix = obj->mythic_suffix;
+            otmp->elemental_enchantment = obj->elemental_enchantment;
+            otmp->oerodeproof = TRUE;
+            otmp->enchantment = obj->enchantment;
+            otmp->charges = obj->charges;
+            otmp->speflags |= SPEFLAGS_CLONED_ITEM; /* This item will disappear when Aleax dies / is gone */
+        }
+
+        (void)mpickobj(mtmp, otmp);
+    }
+
+    return otmp;
+}
 
 STATIC_OVL void
 m_initweap(mtmp)
@@ -556,54 +621,107 @@ register struct monst *mtmp;
         if (humanoid(ptr)) 
         {
             /* create minion stuff; can't use mongets */
-            
-            int weaptype = !rn2(3) || is_lord(ptr) || is_prince(ptr) ? SWORD_OF_HOLY_VENGEANCE : !rn2(3) ? LONG_SWORD : SILVER_LONG_SWORD;
-            short artifacttype = 0;
-            
-#if 0
-            if (!rn2(4))
+            if (ptr == &mons[PM_ALEAX])
             {
-                switch (rn2(2))
+                /* Adapted from UnNetHack, but the items will disappear upon Aleax's death; you can still steal them before that */
+                /* mimic your weapon */
+                if (uwep && (is_weapon(uwep)))
+                    (void)m_inityour(mtmp, uwep);
+                else
                 {
-                case 0:
-                    weaptype = LONG_SWORD;
-                    artifacttype = ART_SUNSWORD;
-                    break;
-                case 1:
-                    weaptype = SILVER_LONG_SWORD;
-                    artifacttype = ART_DEMONBANE;
-                    break;
-                default:
-                    break;
+                    otmp = mongets(mtmp, LONG_SWORD);
+                    if (otmp)
+                    {
+                        bless(otmp);
+                        otmp->oerodeproof = TRUE;
+                        otmp->elemental_enchantment = FIRE_ENCHANTMENT; /* Make it a bit more street-credible */
+                    }
                 }
+
+                if (uarms && (is_weapon(uarms) || is_shield(uarms)))
+                    (void)m_inityour(mtmp, uarms);
+                else if(!(uwep && is_weapon(uwep) && bimanual(uwep)) && !rn2(4))
+                    (void)mongets(mtmp, SHIELD_OF_REFLECTION);
+
+                if (uswapwep && (is_weapon(uswapwep)))
+                    (void)m_inityour(mtmp, uswapwep);
+
+                if (uswapwep2 && (is_weapon(uswapwep2) || is_shield(uswapwep2)))
+                    (void)m_inityour(mtmp, uswapwep2);
+
+                if (uquiver && (is_ammo(uquiver) || is_missile(uquiver)))
+                    (void)m_inityour(mtmp, uquiver);
+
+                /* mimic your armor */
+                if (uarm) 
+                    (void)m_inityour(mtmp, uarm);
+                if (uarmc) 
+                    (void)m_inityour(mtmp, uarmc);
+                if (uarmh) 
+                    (void)m_inityour(mtmp, uarmh);
+                if (uarms) 
+                    (void)m_inityour(mtmp, uarms);
+                if (uarmg) 
+                    (void)m_inityour(mtmp, uarmg);
+                if (uarmf) 
+                    (void)m_inityour(mtmp, uarmf);
+                if (uarmu) 
+                    (void)m_inityour(mtmp, uarmu);
+                if (uarmo)
+                    (void)m_inityour(mtmp, uarmo);
+                if (uarmb)
+                    (void)m_inityour(mtmp, uarmb);
             }
+            else
+            {
+                int weaptype = !rn2(3) || is_lord(ptr) || is_prince(ptr) ? SWORD_OF_HOLY_VENGEANCE : !rn2(3) ? LONG_SWORD : SILVER_LONG_SWORD;
+                short artifacttype = 0;
+
+#if 0
+                if (!rn2(4))
+                {
+                    switch (rn2(2))
+                    {
+                    case 0:
+                        weaptype = LONG_SWORD;
+                        artifacttype = ART_SUNSWORD;
+                        break;
+                    case 1:
+                        weaptype = SILVER_LONG_SWORD;
+                        artifacttype = ART_DEMONBANE;
+                        break;
+                    default:
+                        break;
+                    }
+                }
 #endif
 
-            otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
+                otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
 
-            /* maybe make it special */
-            if (artifacttype > 0 && (!rn2(20) || is_lord(ptr) || is_prince(ptr)))
-                otmp = oname(otmp, artiname(artifacttype));
+                /* maybe make it special */
+                if (artifacttype > 0 && (!rn2(20) || is_lord(ptr) || is_prince(ptr)))
+                    otmp = oname(otmp, artiname(artifacttype));
 
-            if (otmp->oartifact == 0)
-                otmp->exceptionality = is_prince(ptr) || is_lord(ptr) || !rn2(4) ? EXCEPTIONALITY_CELESTIAL : !rn2(3) ? EXCEPTIONALITY_ELITE : !rn2(2) ? EXCEPTIONALITY_EXCEPTIONAL : 0;
-            
-            if (otmp->oartifact == 0 && weaptype != SWORD_OF_HOLY_VENGEANCE)
-                otmp->elemental_enchantment = FIRE_ENCHANTMENT;
+                if (otmp->oartifact == 0)
+                    otmp->exceptionality = is_prince(ptr) || is_lord(ptr) || !rn2(4) ? EXCEPTIONALITY_CELESTIAL : !rn2(3) ? EXCEPTIONALITY_ELITE : !rn2(2) ? EXCEPTIONALITY_EXCEPTIONAL : 0;
 
-            bless(otmp);
-            otmp->oerodeproof = TRUE;
-            spe2 = rnd(4);
-            otmp->enchantment = max(otmp->enchantment, spe2);
-            (void) mpickobj(mtmp, otmp);
+                if (otmp->oartifact == 0 && weaptype != SWORD_OF_HOLY_VENGEANCE)
+                    otmp->elemental_enchantment = FIRE_ENCHANTMENT;
 
-            otmp = mksobj(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION : !rn2(3) ? SPIKED_SILVER_SHIELD : LARGE_SHIELD,
-                          FALSE, FALSE, FALSE);
+                bless(otmp);
+                otmp->oerodeproof = TRUE;
+                spe2 = rnd(4);
+                otmp->enchantment = max(otmp->enchantment, spe2);
+                (void)mpickobj(mtmp, otmp);
 
-            otmp->cursed = FALSE;
-            otmp->oerodeproof = TRUE;
-            otmp->enchantment = 0;
-            (void) mpickobj(mtmp, otmp);
+                otmp = mksobj(!rn2(4) || is_lord(ptr) ? SHIELD_OF_REFLECTION : !rn2(3) ? SPIKED_SILVER_SHIELD : LARGE_SHIELD,
+                    FALSE, FALSE, FALSE);
+
+                otmp->cursed = FALSE;
+                otmp->oerodeproof = TRUE;
+                otmp->enchantment = 0;
+                (void)mpickobj(mtmp, otmp);
+            }
         }
         break;
 
