@@ -90,6 +90,12 @@ namespace GnollHackClient.Pages.Game
         private int[] _tilesPerRow = new int[GHConstants.MaxTileSheets];
         public int[] TilesPerRow { get { return _tilesPerRow; } }
 
+        private List<AnimationDefinition> _animationDefs = null;
+        private List<EnlargementDefinition> _enlargementDefs = null;
+        private List<ReplacementDefinition> _replacementDefs = null;
+        private List<AutoDrawDefinition> _autoDrawDefs = null;
+
+
         public bool EnableWizardMode { get; set; }
 
         private List<AddContextMenuData> _contextMenuData = new List<AddContextMenuData>();
@@ -140,6 +146,10 @@ namespace GnollHackClient.Pages.Game
             _gnollHackService.InitializeGnollHack();
             UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
             NoGlyph = _gnollHackService.GetNoGlyph();
+            _animationDefs = _gnollHackService.GetAnimationArray();
+            _enlargementDefs = _gnollHackService.GetEnlargementArray();
+            _replacementDefs = _gnollHackService.GetReplacementArray();
+            _autoDrawDefs = _gnollHackService.GetAutoDrawArray();
 
             for (int i = 0; i < GHConstants.MapCols; i++)
             {

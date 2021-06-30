@@ -124,13 +124,27 @@ namespace GnollHackClient.Droid
         public static extern int LibGetUnexploredGlyph();
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetNoGlyph();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetAnimationArraySize();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern AnimationDefinition LibGetAnimationArrayElement(int idx);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern EnlargementDefinition LibGetEnlargementArrayElement(int idx);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern ReplacementDefinition LibGetReplacementArrayElement(int idx);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern AutoDrawDefinition LibGetAutoDrawArrayElement(int idx);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetEnlargementArraySize();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetReplacementArraySize();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetAutoDrawArraySize();
 
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int DoSomeCalcDroid();
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int DoSomeHackDroid();
-        [DllImport(@"libgnollhackdroid.so")]
-        public static extern int RunGnollHackTest([MarshalAs(UnmanagedType.LPStr)] string gnhdir);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -278,6 +292,55 @@ namespace GnollHackClient.Droid
         {
             return LibGetNoGlyph();
         }
+        public List<AnimationDefinition> GetAnimationArray()
+        {
+            int siz = LibGetAnimationArraySize();
+            List<AnimationDefinition> array = new List<AnimationDefinition>();
+            for (int i = 0; i < siz; i++)
+            {
+                AnimationDefinition anim = LibGetAnimationArrayElement(i);
+                array.Add(anim);
+            }
+
+            return array;
+        }
+        public List<EnlargementDefinition> GetEnlargementArray()
+        {
+            int siz = LibGetEnlargementArraySize();
+            List<EnlargementDefinition> array = new List<EnlargementDefinition>();
+            for (int i = 0; i < siz; i++)
+            {
+                EnlargementDefinition enl = LibGetEnlargementArrayElement(i);
+                array.Add(enl);
+            }
+
+            return array;
+        }
+        public List<ReplacementDefinition> GetReplacementArray()
+        {
+            int siz = LibGetReplacementArraySize();
+            List<ReplacementDefinition> array = new List<ReplacementDefinition>();
+            List<ReplacementDefinition> array2 = array;
+            for (int i = 0; i < siz; i++)
+            {
+                ReplacementDefinition enl = LibGetReplacementArrayElement(i);
+                array2.Add(enl);
+            }
+
+            return array;
+        }
+        public List<AutoDrawDefinition> GetAutoDrawArray()
+        {
+            int siz = LibGetAutoDrawArraySize();
+            List<AutoDrawDefinition> array = new List<AutoDrawDefinition>();
+            for (int i = 0; i < siz; i++)
+            {
+                AutoDrawDefinition enl = LibGetAutoDrawArrayElement(i);
+                array.Add(enl);
+            }
+
+            return array;
+        }
 
         public int Test1()
         {
@@ -287,10 +350,7 @@ namespace GnollHackClient.Droid
         {
             return DoSomeHackDroid();
         }
-        public int TestRunGnollHack()
-        {
-            return RunGnollHackTest(_gnollhackfilesdir);
-        }
+
         public int StartGnollHack(ClientGame clientGame)
         {
             return RunGnollHack(

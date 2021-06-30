@@ -64,85 +64,54 @@ int LibGetUnexploredGlyph()
 {
     return base_cmap_to_glyph(S_unexplored);
 }
+
 int LibGetNoGlyph()
 {
     return NO_GLYPH;
 }
 
-int RunGnollHackTest(char* gnhdir)
+int LibGetAnimationArraySize()
 {
-	char* params[2] = { 0 };
+    return MAX_ANIMATIONS;
+}
 
-	params[0] = "gnollhack";
-	params[1] = 0;
+struct animation_definition LibGetAnimationArrayElement(idx)
+int idx;
+{
+    return animations[idx];
+}
 
-	windowprocs.win_raw_print = libdef_raw_print;
-	windowprocs.win_raw_print_bold = libdef_raw_print_bold;
-	windowprocs.win_wait_synch = libdef_wait_synch;
+int LibGetEnlargementArraySize()
+{
+    return MAX_ENLARGEMENTS;
+}
 
+struct enlargement_definition LibGetEnlargementArrayElement(idx)
+int idx;
+{
+    return enlargements[idx];
+}
 
-#if 0
-	{
-		char cwbuf[BUFSIZ] = "";
-		char* curwd = getcwd(cwbuf, sizeof(cwbuf));
-		char* curwd2 = argv[2];
-		int res = chdir(curwd2);
-		int e = errno;
+int LibGetReplacementArraySize()
+{
+    return MAX_REPLACEMENTS;
+}
 
-		char dirbuf[BUFSZ];
-		Sprintf(dirbuf, "%s%s", curwd2, "");
-		int cnt = 0;
-		DIR* dir;
-		struct dirent* ent;
-		if ((dir = opendir(dirbuf)) != NULL) {
-			/* print all the files and directories within directory */
-			while ((ent = readdir(dir)) != NULL) {
-				Sprintf(dirbuf, "%s\n", ent->d_name);
-				cnt++;
-			}
-			closedir(dir);
-		}
-		else {
-			/* could not open directory */
-			e = errno;
-			return EXIT_FAILURE;
-		}
-		char cwbuf[BUFSIZ] = "";
-		char* curwd = getcwd(cwbuf, sizeof(cwbuf));
-		char* curwd2 = argv[2];
-		int res = chdir(curwd2);
-		int e = errno;
+struct replacement_definition LibGetReplacementArrayElement(idx)
+int idx;
+{
+    return replacements[idx];
+}
 
-		char dirbuf[BUFSZ];
-		Sprintf(dirbuf, "%s%s", curwd2, "");
-		int cnt = 0;
-		DIR* dir;
-		struct dirent* ent;
-		if ((dir = opendir(dirbuf)) != NULL) {
-			/* print all the files and directories within directory */
-			while ((ent = readdir(dir)) != NULL) {
-				Sprintf(dirbuf, "%s\n", ent->d_name);
-				cnt++;
-			}
-			closedir(dir);
-		}
-		else {
-			/* could not open directory */
-			e = errno;
-			return EXIT_FAILURE;
-		}
-	}
-#endif
+int LibGetAutoDrawArraySize()
+{
+    return MAX_AUTODRAWS;
+}
 
-
-	int res = chdir(gnhdir);
-	if (res != 0)
-	{
-		/* Failed to change to right directory */
-		return 0;
-	}
-
-	return GnollHackMain(1, params);
+struct autodraw_definition LibGetAutoDrawArrayElement(idx)
+int idx;
+{
+    return autodraws[idx];
 }
 
 int GnollHackStart(cmdlineargs)
