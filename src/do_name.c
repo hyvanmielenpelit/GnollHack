@@ -241,7 +241,7 @@ const void *b;
 #define IS_UNEXPLORED_LOC(x,y) \
     (isok((x), (y))                                     \
      && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].hero_memory_layers.glyph)             \
-     && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].hero_memory_layers.glyph) == S_unexplored  \
+     && generic_glyph_to_cmap(levl[(x)][(y)].hero_memory_layers.glyph) == S_unexplored  \
      && !levl[(x)][(y)].seenv)
 
 static struct opvar *gloc_filter_map = (struct opvar *) 0;
@@ -417,7 +417,9 @@ int x, y, gloc;
                      || generic_glyph_to_cmap(glyph) == S_ground
                      || generic_glyph_to_cmap(glyph) == S_darkground
                      || generic_glyph_to_cmap(glyph) == S_corr
-                     || generic_glyph_to_cmap(glyph) == S_litcorr));
+                     || generic_glyph_to_cmap(glyph) == S_litcorr
+                     || generic_glyph_to_cmap(glyph) == S_unexplored
+                     ));
     }
     /*NOTREACHED*/
     return FALSE;

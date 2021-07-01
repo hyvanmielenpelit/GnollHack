@@ -1340,7 +1340,7 @@ register struct monst *mtmp;
                 verbalize("Thou hast strayed from the %s path, %s.", align_str(u.ualignbase[A_ORIGINAL]), is_living(youmonst.data) ? "mortal" : "creature");
                 break;
             case 1:
-                verbalize("I have been sent by %s to punish thou for thine insolence.", align_gname(u.ualignbase[A_ORIGINAL]));
+                verbalize("I have been sent by %s to punish thee for thine insolence.", align_gname(u.ualignbase[A_ORIGINAL]));
                 break;
             case 2:
                 verbalize1("The punishment for such insolence is death.");
@@ -3439,20 +3439,36 @@ struct monst* mtmp;
     {
         if (!is_peaceful(mtmp))
         {
-            if(uwep && is_wielded_weapon(uwep))
+            if (uwep && is_wielded_weapon(uwep))
+            {
+                play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HAH_DROP_YOUR_WEAPON_FIRST_SCUM);
                 Sprintf(ansbuf, "Hah, drop your weapon first, scum!");
+            }
             else
+            {
+                play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_THE_QUESTION_IS_WHO_ARE_YOU_SCUM);
                 Sprintf(ansbuf, "The question is who are you, scum?");
+            }
 
             verbalize("%s", ansbuf);
         }
         else
         {
-            if (has_mname(mtmp))
-                Sprintf(ansbuf, "I am %s, a local %s.", MNAME(mtmp), mon_monster_name(mtmp));
+            if (iflags.using_gui_sounds)
+            {
+                play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+                if (has_mname(mtmp))
+                    Sprintf(ansbuf, "I am a local %s. (The name tag indicates that %s name is %s.)", mon_monster_name(mtmp), mhis(mtmp), MNAME(mtmp));
+                else
+                    Sprintf(ansbuf, "I am a local %s.", mon_monster_name(mtmp));
+            }
             else
-                Sprintf(ansbuf, "I am a local %s.", mon_monster_name(mtmp));
-
+            {
+                if (has_mname(mtmp))
+                    Sprintf(ansbuf, "I am %s, a local %s.", MNAME(mtmp), mon_monster_name(mtmp));
+                else
+                    Sprintf(ansbuf, "I am a local %s.", mon_monster_name(mtmp));
+            }
             mtmp->u_know_mname = 1;
             verbalize("%s", ansbuf);
         }
@@ -6495,6 +6511,7 @@ struct monst* mtmp;
     else if (!m_speak_check(mtmp))
         return 0;
     else if (mvitals[PM_WATCHMAN].died > 0 || mvitals[PM_WATCH_CAPTAIN].died > 0) {
+        play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_YOU_WILL_HANG_FOR_YOUR_CRIMES_SCUM);
         verbalize("You will hang for your crimes, scum!");
         return 0;
     }
@@ -6503,8 +6520,16 @@ struct monst* mtmp;
         return 0;
     }
 
-    Sprintf(qbuf, "\"We can drop the case for %ld %s. Agree?\"", reconcile_cost, currency(reconcile_cost));
+    if (iflags.using_gui_sounds)
+    {
 
+        play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_WE_CAN_DROP_THE_CASE_FOR_THIS_AMOUNT_OF_GOLD);
+        Sprintf(qbuf, "\"We can drop the case for this amount of gold.\" (%ld %s in fact!) Agree?", reconcile_cost, currency(reconcile_cost));
+    }
+    else
+    {
+        Sprintf(qbuf, "\"We can drop the case for %ld %s. Agree?\"", reconcile_cost, currency(reconcile_cost));
+    }
     switch (ynq(qbuf)) {
     default:
     case 'q':
@@ -6525,10 +6550,16 @@ struct monst* mtmp;
     pacify_guards();
 
     play_sfx_sound(SFX_BUY_FROM_NPC);
-    if(is_peaceful(mtmp))
+    if (is_peaceful(mtmp))
+    {
+        play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_FINE_ITS_ALRIGHT_NOW_BE_MORE_CAREFUL_NEXT_TIME);
         verbalize("Fine, it's alright now. Be more careful next time.");
+    }
     else
+    {
+        play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_ON_SECOND_THOUGHT_MAYBE_ILL_HANG_YOU_ANYWAY);
         verbalize("On second thought, maybe I'll hang you anyway.");
+    }
 
     return 1; 
 }

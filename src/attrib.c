@@ -38,7 +38,6 @@ static const struct innate
                  { 9, SLEEP_RESISTANCE, "awake", "tired" },
                  { 14, BRAIN_PROTECTION, "hard-brained", "" },
                  { 19, DEATH_RESISTANCE, "less mortal", "more mortal" },
-                 { 24, REGENERATION, "regenerative", "" },
                  { 0, 0, 0, 0 } },
 
   kni_abil[] = { { 7, FAST, "quick", "slow" },

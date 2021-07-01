@@ -244,9 +244,11 @@ register struct monst *mtmp;
             && (levl[x][y].doormask & D_LOCKED)) {
             if (couldsee(mtmp->mx, mtmp->my)) {
                 if (levl[x][y].looted & D_WARNED) {
+                    play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HALT_THIEF_YOURE_UNDER_ARREST);
                     mon_yells(mtmp, "Halt, thief!  You're under arrest!", "yell", "angrily", FALSE);
                     (void) angry_guards(!!Deaf);
                 } else {
+                    play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HEY_STOP_PICKING_THAT_LOCK);
                     mon_yells(mtmp, "Hey, stop picking that lock!", "yell", "angrily", FALSE);
                     levl[x][y].looted |= D_WARNED;
                 }

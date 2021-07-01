@@ -1645,19 +1645,36 @@ boolean zap;
 
         if (mtmp) {
             if (zap || context.digging.warned) {
+                play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HALT_VANDAL_YOURE_UNDER_ARREST);
                 verbalize("Halt, vandal!  You're under arrest!");
                 (void) angry_guards(!!Deaf);
             } else {
                 const char *str;
+                int dialogueline = 0;
 
                 if (IS_DOOR(lev->typ))
+                {
                     str = "door";
+                    dialogueline = WATCHMAN_LINE_HEY_STOP_DAMAGING_THAT_DOOR;
+                }
                 else if (IS_TREE(lev->typ))
+                {
                     str = "tree";
+                    dialogueline = WATCHMAN_LINE_HEY_STOP_DAMAGING_THAT_TREE;
+                }
                 else if (IS_ROCK(lev->typ))
+                {
                     str = "wall";
+                    dialogueline = WATCHMAN_LINE_HEY_STOP_DAMAGING_THAT_WALL;
+                }
                 else
+                {
                     str = "fountain";
+                    dialogueline = WATCHMAN_LINE_HEY_STOP_DAMAGING_THAT_FOUNTAIN;
+                }
+
+
+                play_monster_special_dialogue_line(mtmp, dialogueline);
                 verbalize("Hey, stop damaging that %s!", str);
                 context.digging.warned = TRUE;
             }

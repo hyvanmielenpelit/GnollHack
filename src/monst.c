@@ -4760,7 +4760,7 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
         M1_HUMANOID | M1_OMNIVORE, M2_NOPOLY | M2_HUMAN | M2_STALK
                                        | M2_PEACEFUL | M2_COLLECT,
         M3_INFRAVISIBLE | M3_KNIGHT | M3_SPEAKING, M4_MERC, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
-        7, CLR_GRAY, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
+        7, CLR_GRAY, MONSTER_SOUNDSET_WATCHMAN_MALE, MONSTER_SOUNDSET_WATCHMAN_FEMALE),
     MON("watch captain", None, "commander of the town guard", None, None, S_HUMAN, LVL(10, 10, 10, 0, 15, -4),
         (G_NOGEN | G_GENO | 1 | G_GENDER_ONE_FOURTH),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
@@ -4769,7 +4769,7 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
         M1_HUMANOID | M1_OMNIVORE, M2_NOPOLY | M2_HUMAN | M2_STALK
                                        | M2_PEACEFUL | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_KNIGHT | M3_SPEAKING, M4_MERC, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
-        13, CLR_GREEN, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
+        13, CLR_GREEN, MONSTER_SOUNDSET_WATCHMAN_MALE, MONSTER_SOUNDSET_WATCHMAN_FEMALE),
     /* Unique humans not tied to quests.
      */
     MON("Medusa", None, "extremely powerful humanoid with petrifying gaze", None, None, S_HUMAN, LVL(20, 12, 2, 15, 50, -15), (G_NOGEN | G_UNIQ),
