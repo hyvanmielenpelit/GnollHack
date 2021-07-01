@@ -573,7 +573,7 @@ namespace GnollHackClient
             if (_statusInfo == null)
                 return;
         }
-        public void ClientCallback_StatusUpdate(int idx, string str, Int32 condbits, int cng, int percent, int color, IntPtr colormasksptr)
+        public void ClientCallback_StatusUpdate(int idx, string str, long condbits, int cng, int percent, int color, IntPtr colormasksptr)
         {
             if (_statusInfo == null)
                 return;
@@ -625,7 +625,7 @@ namespace GnollHackClient
                 0, 0, 0, '\0', 0);
         }
         public void ClientCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color, 
-            int maxcount, UInt64 oid, UInt64 mid, char headingaccel, UInt32 menuflags)
+            int maxcount, UInt64 oid, UInt64 mid, char headingaccel, ulong menuflags)
         {
             lock (_ghWindowsLock)
             {
@@ -918,11 +918,11 @@ namespace GnollHackClient
         {
             return 0;
         }
-        public void ClientCallback_VoidIntIntPtrIntIntIntUlongPtrDummy(int value1, ref int value2, int value3, int value4, int value5, ref UInt32 value6)
+        public void ClientCallback_VoidIntIntPtrIntIntIntUlongPtrDummy(int value1, ref int value2, int value3, int value4, int value5, ref ulong value6)
         {
             return;
         }
-        public void ClientCallback_VoidUlongDummy(UInt32 value1)
+        public void ClientCallback_VoidUlongDummy(ulong value1)
         {
 
         }

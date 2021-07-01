@@ -113,7 +113,7 @@ namespace GnollHackClient.Pages.Game
                         MenuView.SelectedItems.Remove(mi);
                     }
 
-                    if (MenuView.SelectionMode == SelectionMode.Multiple && (mi.MenuFlags & (Int32)MenuFlags.IsGroupHeading) != 0)
+                    if (MenuView.SelectionMode == SelectionMode.Multiple && (mi.MenuFlags & (ulong)MenuFlags.IsGroupHeading) != 0)
                     {
                         foreach (GHMenuItem o in MenuView.ItemsSource)
                         {
@@ -457,7 +457,7 @@ namespace GnollHackClient.Pages.Game
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
 
-            if (((UInt32)value & (UInt32)MenuFlags.IsHeading) != 0)
+            if (((ulong)value & (ulong)MenuFlags.IsHeading) != 0)
             {
                 return BiggerPadding;
             }
@@ -467,7 +467,7 @@ namespace GnollHackClient.Pages.Game
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (((UInt32)value & (UInt32)MenuFlags.IsHeading) != 0)
+            if (((ulong)value & (ulong)MenuFlags.IsHeading) != 0)
             {
                 return BiggerPadding;
             }

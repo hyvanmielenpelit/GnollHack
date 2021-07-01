@@ -55,7 +55,7 @@ namespace GnollHackCommon
     public delegate void AddMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)]  string text, byte presel, int color);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void AddExtendedMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)] string text, byte presel, int color, int maxcount,
-        UInt64 oid, UInt64 mid, char heading_groupaccel, UInt32 menuflags);
+        UInt64 oid, UInt64 mid, char heading_groupaccel, ulong menuflags);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int PlayImmediateSoundCallback(
@@ -102,9 +102,9 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int NhPosKeyCallback(out int x, out int y, out int mod);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void StatusUpdateCallback(int value1, string value2, Int32 value3, int value4, int value5, int value6, IntPtr value7);
+    public delegate void StatusUpdateCallback(int value1, string value2, long value3, int value4, int value5, int value6, IntPtr value7);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void VoidUlongCallback(UInt32 value);
+    public delegate void VoidUlongCallback(ulong value);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidIntConstCharPtrConstCharPtrBooleanCallback(int value1, string value2, string value3, byte value4);
 

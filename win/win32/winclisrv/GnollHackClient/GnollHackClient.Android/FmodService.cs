@@ -180,13 +180,13 @@ namespace GnollHackClient.Droid
             return (int)res;
         }
 
-        public int StopAllSounds(UInt32 flags, uint dialogue_mid)
+        public int StopAllSounds(ulong flags, uint dialogue_mid)
         {
             RESULT res = 0;
             if (flags == 0)
-                flags = (UInt32)StopSoundFlags.All;
+                flags = (ulong)StopSoundFlags.All;
 
-            if ((flags & (UInt32)StopSoundFlags.ImmediateNormal) != 0)
+            if ((flags & (ulong)StopSoundFlags.ImmediateNormal) != 0)
             {
                 foreach (GHSoundInstance ghsi in immediateInstances)
                 {
@@ -200,7 +200,7 @@ namespace GnollHackClient.Droid
                 immediateInstances.Clear();
             }
 
-            if ((flags & (UInt32)StopSoundFlags.ImmediateLong) != 0)
+            if ((flags & (ulong)StopSoundFlags.ImmediateLong) != 0)
             {
                 foreach (GHSoundInstance ghsi in longImmediateInstances)
                 {
@@ -214,7 +214,7 @@ namespace GnollHackClient.Droid
                 longImmediateInstances.Clear();
             }
 
-            if ((flags & (UInt32)StopSoundFlags.Music) != 0)
+            if ((flags & (ulong)StopSoundFlags.Music) != 0)
             {
                 foreach (GHSoundInstance ghsi in musicInstances)
                 {

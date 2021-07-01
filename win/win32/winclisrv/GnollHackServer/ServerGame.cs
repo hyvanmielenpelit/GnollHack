@@ -164,7 +164,7 @@ namespace GnollHackServer
             RunGnollHack(
                 curdir,
                 "",
-                (UInt32)(WizardMode ? RunGnollHackFlags.WizardMode : 0),
+                (ulong)(WizardMode ? RunGnollHackFlags.WizardMode : 0),
                 0,
                 0,
                 GameCallback_InitWindows,
@@ -294,7 +294,7 @@ namespace GnollHackServer
         }
 
         protected void GameCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color, int maxcount,
-            UInt64 oid, UInt64 mid, char heading_group_accel, UInt32 menu_flags)
+            UInt64 oid, UInt64 mid, char heading_group_accel, ulong menu_flags)
         {
 
         }
@@ -405,11 +405,11 @@ namespace GnollHackServer
             mod = 0;
             return 0;
         }
-        protected void GameCallback_StatusUpdate(int idx, string str, Int32 condbits, int chg, int percent, int color, IntPtr colormasks)
+        protected void GameCallback_StatusUpdate(int idx, string str, long condbits, int chg, int percent, int color, IntPtr colormasks)
         {
             return;
         }
-        protected void GameCallback_VoidUlongDummy(UInt32 value1)
+        protected void GameCallback_VoidUlongDummy(ulong value1)
         {
 
         }

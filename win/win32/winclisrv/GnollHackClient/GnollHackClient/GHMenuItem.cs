@@ -114,7 +114,7 @@ namespace GnollHackClient
         public int NHColor { get; set; }
         public bool Is_Heading { get; set; }
         public char HeadingGroupAccelerator { get; set; }
-        public UInt32 MenuFlags { get; set; }
+        public ulong MenuFlags { get; set; }
         public UInt64 Oid { get; set; }
         public UInt64 Mid { get; set; }
 

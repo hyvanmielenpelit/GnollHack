@@ -866,8 +866,10 @@ namespace GnollHackClient.Pages.Game
                                                 bool hflip_glyph = hflip;
                                                 int enlarg_idx = enl_idx;
                                                 int position_index = -1;
+                                                int orig_position_index = -1;
                                                 if (enlargement > 0)
                                                 {
+                                                    orig_position_index = -1;
                                                     /* Set position_index */
                                                     if (enlarg_idx == -1)
                                                     {
@@ -878,6 +880,7 @@ namespace GnollHackClient.Pages.Game
                                                     }
                                                     else if (enlarg_idx == 0)
                                                     {
+                                                        orig_position_index = 4;
                                                         if (vflip_glyph)
                                                             position_index = hflip_glyph ? 0 : 2;
                                                         else
@@ -885,6 +888,7 @@ namespace GnollHackClient.Pages.Game
                                                     }
                                                     else if (enlarg_idx == 1)
                                                     {
+                                                        orig_position_index = 3;
                                                         if (vflip_glyph)
                                                             position_index = hflip_glyph ? 2 : 0;
                                                         else
@@ -892,6 +896,7 @@ namespace GnollHackClient.Pages.Game
                                                     }
                                                     else if (enlarg_idx == 2)
                                                     {
+                                                        orig_position_index = 2;
                                                         if (vflip_glyph)
                                                             position_index = hflip_glyph ? 3 : 4;
                                                         else
@@ -899,6 +904,7 @@ namespace GnollHackClient.Pages.Game
                                                     }
                                                     else if (enlarg_idx == 3)
                                                     {
+                                                        orig_position_index = 1;
                                                         if (vflip_glyph)
                                                             position_index = -1;
                                                         else
@@ -906,6 +912,7 @@ namespace GnollHackClient.Pages.Game
                                                     }
                                                     else if (enlarg_idx == 4)
                                                     {
+                                                        orig_position_index = 0;
                                                         if (vflip_glyph)
                                                             position_index = hflip_glyph ? 4 : 3;
                                                         else
@@ -914,9 +921,9 @@ namespace GnollHackClient.Pages.Game
 
                                                 }
 
-                                                if (enlargement > 0 && position_index >= 0)
+                                                if (enlargement > 0 && orig_position_index >= 0)
                                                 {
-                                                    int enl_tile_idx = _enlargementDefs[enlargement].position2tile[position_index];
+                                                    int enl_tile_idx = _enlargementDefs[enlargement].position2tile[orig_position_index];
                                                     if (enl_tile_idx >= 0)
                                                     {
                                                         int addedindex = 0;
@@ -1787,32 +1794,17 @@ namespace GnollHackClient.Pages.Game
                         _mapData[x, y].Color = SKColors.Black;// default(MapData);
                         _mapData[x, y].Special = 0;
 
-                        if(_mapData[x, y].Layers.layer_glyphs != null)
-                        {
-                            _mapData[x, y].Layers.layer_glyphs[0] = UnexploredGlyph;
-                            for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
-                                _mapData[x, y].Layers.layer_glyphs[0] = NoGlyph;
+                        _mapData[x, y].Layers = new LayerInfo();
+                        _mapData[x, y].Layers.layer_glyphs = new int[(int)layer_types.MAX_LAYERS];
+                        _mapData[x, y].Layers.leash_mon_x = new sbyte[GHConstants.MaxLeashed + 1];
+                        _mapData[x, y].Layers.leash_mon_y = new sbyte[GHConstants.MaxLeashed + 1];
 
-                            _mapData[x, y].Layers.glyph = UnexploredGlyph;
-                            _mapData[x, y].Layers.bkglyph = UnexploredGlyph;
-                            _mapData[x, y].Layers.layer_flags = 0;
-                            _mapData[x, y].Layers.missile_elemental_enchantment = 0;
-                            _mapData[x, y].Layers.missile_eroded = 0;
-                            _mapData[x, y].Layers.missile_eroded2 = 0;
-                            _mapData[x, y].Layers.missile_exceptionality = 0;
-                            _mapData[x, y].Layers.missile_flags = 0;
-                            _mapData[x, y].Layers.missile_mythic_prefix = 0;
-                            _mapData[x, y].Layers.missile_mythic_suffix = 0;
-                            _mapData[x, y].Layers.missile_poisoned = 0;
-                            _mapData[x, y].Layers.m_id = 0;
-                            _mapData[x, y].Layers.special_monster_layer_height = 0;
+                        _mapData[x, y].Layers.layer_glyphs[0] = UnexploredGlyph;
+                        for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
+                            _mapData[x, y].Layers.layer_glyphs[i] = NoGlyph;
 
-                            for (int i = 0; i < GHConstants.MaxLeashed + 1; i++)
-                            {
-                                _mapData[x, y].Layers.leash_mon_x[i] = 0;
-                                _mapData[x, y].Layers.leash_mon_y[i] = 0;
-                            }
-                        }
+                        _mapData[x, y].Layers.glyph = UnexploredGlyph;
+                        _mapData[x, y].Layers.bkglyph = NoGlyph;
                     }
                 }
             }
