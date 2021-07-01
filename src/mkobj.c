@@ -1131,6 +1131,11 @@ int x, y;
 {
     if (isok(x, y))
     {
+        /* Just in case */
+        level.locations[x][y].hero_memory_layers.layer_glyphs[LAYER_OBJECT] = NO_GLYPH;
+        level.locations[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_OBJECT] = NO_GLYPH;
+
+        /* Clear actual memory objects */
         struct obj* obj, * contained_obj;
         while ((obj = level.locations[x][y].hero_memory_layers.memory_objchn) != 0)
         {

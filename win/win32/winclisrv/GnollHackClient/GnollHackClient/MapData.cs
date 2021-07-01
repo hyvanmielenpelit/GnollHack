@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
+using GnollHackCommon;
 
 namespace GnollHackClient
 {
@@ -12,6 +13,7 @@ namespace GnollHackClient
         public string Symbol { get; set; }
         public SKColor Color { get; set; }
         public uint Special { get; set; }
+        public LayerInfo Layers;
 
     }
 

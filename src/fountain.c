@@ -574,9 +574,9 @@ register struct obj *obj;
         if (u.ualign.type != A_LAWFUL) 
         {
             /* Ha!  Trying to cheat her. */
-            pline("A freezing mist rises from the %s and envelopes the sword.",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A freezing mist rises from the %s and envelopes the sword.",
                   hliquid("water"));
-            pline_The("fountain disappears!");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fountain disappears!");
             curse(obj);
             if (obj->enchantment > -6 && !rn2(3))
                 obj->enchantment--;
@@ -587,9 +587,9 @@ register struct obj *obj;
         {
             /* The lady of the lake acts! - Eric Backus */
             /* Be *REAL* nice */
-            pline(
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION,
               "From the murky depths, a hand reaches up to bless the sword.");
-            pline("As the hand retreats, the fountain disappears!");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As the hand retreats, the fountain disappears!");
             obj->otyp = LONG_SWORD;
             obj = oname(obj, artiname(ART_EXCALIBUR));
             discover_artifact(ART_EXCALIBUR);
@@ -610,7 +610,7 @@ register struct obj *obj;
         boolean identified = FALSE;
         if (obj && is_weapon(obj) && is_poisonable(obj) && obj->opoisoned)
         {
-            pline("A coating wears off %s.", the(xname(obj)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A coating wears off %s.", the(xname(obj)));
             obj->opoisoned = 0;
             identified = TRUE;
             effecthappened = TRUE;
@@ -620,9 +620,9 @@ register struct obj *obj;
             if (carried(obj))
             {
                 if(objects[obj->otyp].oc_name_known)
-                    pline("%s purified.", Yobjnam2(obj, "are"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s purified.", Yobjnam2(obj, "are"));
                 else 
-                    pline("%s.", Yobjnam2(obj, "clear"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s.", Yobjnam2(obj, "clear"));
             }
             obj->otyp = POT_WATER;
             obj->dknown = 0;
@@ -669,13 +669,13 @@ register struct obj *obj;
             {
                 identified = TRUE;
                 effecthappened = TRUE;
-                pline("%s imbued with healing energies of the fountain.", oldnameare);
-                pline("%s into %s.", oldnameturns, doname(obj));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s imbued with healing energies of the fountain.", oldnameare);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s into %s.", oldnameturns, doname(obj));
             }
             else if (obj->odiluted != olddiluted)
             {
                 effecthappened = TRUE;
-                pline("%s undiluted.", Tobjnam(obj, "become"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s undiluted.", Tobjnam(obj, "become"));
             }
 
             if (carried(obj))
@@ -689,7 +689,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline("That was a fountain of healing.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of healing.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -739,13 +739,13 @@ register struct obj *obj;
             {
                 identified = TRUE;
                 effecthappened = TRUE;
-                pline("%s imbued with magical energies of the fountain.", oldnameare);
-                pline("%s into %s.", oldnameturns, doname(obj));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s imbued with magical energies of the fountain.", oldnameare);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s into %s.", oldnameturns, doname(obj));
             }
             else if (obj->odiluted != olddiluted)
             {
                 effecthappened = TRUE;
-                pline("%s undiluted.", Tobjnam(obj, "become"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s undiluted.", Tobjnam(obj, "become"));
             }
 
             if (carried(obj))
@@ -759,7 +759,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline("That was a fountain of mana.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of mana.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -822,13 +822,13 @@ register struct obj *obj;
             {
                 identified = TRUE;
                 effecthappened = TRUE;
-                pline("%s empowered by the energies of the fountain.", oldnameare);
-                pline("%s into %s.", oldnameturns, doname(obj));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s empowered by the energies of the fountain.", oldnameare);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s into %s.", oldnameturns, doname(obj));
             }
             else if (obj->odiluted != olddiluted)
             {
                 effecthappened = TRUE;
-                pline("%s undiluted.", Tobjnam(obj, "become"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s undiluted.", Tobjnam(obj, "become"));
             }
 
             if (carried(obj))
@@ -842,7 +842,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline("That was a fountain of power.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of power.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -875,7 +875,7 @@ register struct obj *obj;
 
         if (obj && is_weapon(obj) && is_poisonable(obj) && !obj->opoisoned)
         {
-            pline("The fountain forms a coating on %s.", the(xname(obj)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The fountain forms a coating on %s.", the(xname(obj)));
             obj->opoisoned = TRUE;
             identified = TRUE;
             effecthappened = TRUE;
@@ -890,13 +890,13 @@ register struct obj *obj;
             {
                 identified = TRUE;
                 effecthappened = TRUE;
-                pline("%s to smell foul.", oldnamestart);
-                pline("%s into %s.", oldnameturns, doname(obj));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s to smell foul.", oldnamestart);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s into %s.", oldnameturns, doname(obj));
             }
             else if (obj->odiluted != olddiluted)
             {
                 effecthappened = TRUE;
-                pline("%s undiluted.", Tobjnam(obj, "become"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s undiluted.", Tobjnam(obj, "become"));
             }
 
             if (carried(obj))
@@ -911,7 +911,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline("That was a fountain of poison.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of poison.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -931,7 +931,7 @@ register struct obj *obj;
             {
                 curse(obj);
                 if (!Blind)
-                    pline("%s %s for a moment.", Tobjnam(obj, "glow"), hcolor(NH_BLACK));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s for a moment.", Tobjnam(obj, "glow"), hcolor(NH_BLACK));
                 else
                 {
                     identified = FALSE;
@@ -951,19 +951,19 @@ register struct obj *obj;
             if (obj->cursed) 
             {
                 if (!Blind)
-                    pline_The("%s glows for a moment.", hliquid("water"));
+                    pline_The_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s glows for a moment.", hliquid("water"));
                 uncurse(obj);
             } 
             else 
             {
-                pline("A feeling of loss comes over you.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A feeling of loss comes over you.");
             }
             break;
         case 21: /* Water Demon */
             if(zlevel > 12) { 
                 if (item_prevents_summoning(PM_WATER_DEMON))
                 {
-                    pline("You have a passing sensation of relief.");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You have a passing sensation of relief.");
                 }
                 else
                 {
@@ -971,7 +971,7 @@ register struct obj *obj;
                 }
             } else
             {
-                You("feel as if something evil is watching you."); 
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "feel as if something evil is watching you.");
             }
             break;
         case 22: /* Water Nymph */
@@ -981,12 +981,12 @@ register struct obj *obj;
             else
             {
                 if (Blind) {
-                        You("feel as if somebody is watching you.");
-                        pline("But then it passes disappears.");
+                        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel as if somebody is watching you.");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "But then it passes disappears.");
                 }
                 else {
-                    You_see("an image of someone stalking you.");
-                    pline("But it disappears.");
+                    You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "an image of someone stalking you.");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "But it disappears.");
                 }
             }
             break;
@@ -996,7 +996,7 @@ register struct obj *obj;
             }
             else
             {
-                You_hear("a snake hissing.");
+                You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "a snake hissing.");
             }
             break;
         case 24: /* Find a gem */
@@ -1009,13 +1009,13 @@ register struct obj *obj;
             dogushforth(FALSE);
             break;
         case 26: /* Strange feeling */
-            pline("A strange tingling runs up your %s.", body_part(ARM));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A strange tingling runs up your %s.", body_part(ARM));
             break;
         case 27: /* Strange feeling */
-            You_feel("a sudden chill.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a sudden chill.");
             break;
         case 28: /* Strange feeling */
-            pline("An urge to take a bath overwhelms you.");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "An urge to take a bath overwhelms you.");
             {
                 long money = money_cnt(invent);
                 struct obj *otmp;
@@ -1034,7 +1034,7 @@ register struct obj *obj;
                             if (!otmp->quan)
                                 delobj(otmp);
                         }
-                    You("lost some of your money in the fountain!");
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "lost some of your money in the fountain!");
                     CLEAR_FOUNTAIN_LOOTED(u.ux, u.uy);
                     exercise(A_WIS, FALSE);
                 }
@@ -1052,7 +1052,7 @@ register struct obj *obj;
                                        + 1) * 2) + 5),
                           u.ux, u.uy);
             if (!Blind)
-                pline("Far below you, you see coins glistening in the %s.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Far below you, you see coins glistening in the %s.",
                       hliquid("water"));
             exercise(A_WIS, TRUE);
             newsym(u.ux, u.uy);
@@ -1061,7 +1061,7 @@ register struct obj *obj;
 
         if (identified && !FOUNTAIN_IS_KNOWN(u.ux, u.uy))
         {
-            pline("That was a magic fountain.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a magic fountain.");
             SET_FOUNTAIN_KNOWN(u.ux, u.uy);
         }
 
@@ -1152,7 +1152,7 @@ int x, y;
         delay_output_milliseconds(1000);
     }
     if (cansee(x, y) || (x == u.ux && y == u.uy))
-        pline_The("pipes break!  Water spurts out!");
+        pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "pipes break!  Water spurts out!");
 
     play_special_effect_at(SPECIAL_EFFECT_TRAP_RUST, 0, x, y, FALSE);
     play_sfx_sound(SFX_GUSH_OF_WATER_HITS);
@@ -1187,15 +1187,15 @@ drinksink()
     {
     case 0:
         play_sfx_sound(SFX_QUAFF);
-        You("take a sip of very cold %s.", hliquid("water"));
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "take a sip of very cold %s.", hliquid("water"));
         break;
     case 1:
         play_sfx_sound(SFX_QUAFF);
-        You("take a sip of very warm %s.", hliquid("water"));
+        You(ATR_NONE, CLR_MSG_ATTENTION, "take a sip of very warm %s.", hliquid("water"));
         break;
     case 2:
         play_sfx_sound(SFX_QUAFF);
-        You("take a sip of scalding hot %s.", hliquid("water"));
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "take a sip of scalding hot %s.", hliquid("water"));
         if (Fire_immunity || Improved_fire_resistance || Fire_resistance)
             pline("It seems quite tasty.");
         else
@@ -1212,7 +1212,7 @@ drinksink()
             play_sfx_sound(SFX_WAS_HIDING);
             mtmp = makemon(&mons[PM_SEWER_RAT], u.ux, u.uy, NO_MM_FLAGS);
             if (mtmp)
-                pline("Eek!  There's %s in the sink!",
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Eek!  There's %s in the sink!",
                       (Blind || !canspotmon(mtmp)) ? "something squirmy"
                                                    : a_monnam(mtmp));
         }
@@ -1226,7 +1226,7 @@ drinksink()
             }
         } while (!otmp);
         otmp->cursed = otmp->blessed = 0;
-        pline("Some %s liquid flows from the faucet.",
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some %s liquid flows from the faucet.",
               Blind ? "odd" : hcolor(OBJ_DESCR(objects[otmp->otyp])));
         otmp->dknown = !(Blind || Hallucination);
         otmp->quan++;       /* Avoid panic upon useup() */
@@ -1237,19 +1237,19 @@ drinksink()
     case 5:
         if (!(levl[u.ux][u.uy].looted & S_LRING)) {
             play_sfx_sound(SFX_HIDDEN_TREASURE_FOUND);
-            You("find a ring in the sink!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find a ring in the sink!");
             (void) mkobj_at(RING_CLASS, u.ux, u.uy, TRUE);
             levl[u.ux][u.uy].looted |= S_LRING;
             exercise(A_WIS, TRUE);
             newsym(u.ux, u.uy);
         } else
-            pline("Some dirty %s backs up in the drain.", hliquid("water"));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some dirty %s backs up in the drain.", hliquid("water"));
         break;
     case 6:
         breaksink(u.ux, u.uy);
         break;
     case 7:
-        pline_The("%s moves as though of its own will!", hliquid("water"));
+        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s moves as though of its own will!", hliquid("water"));
         if ((mvitals[PM_WATER_ELEMENTAL].mvflags & G_GONE)
             || !makemon(&mons[PM_WATER_ELEMENTAL], u.ux, u.uy, NO_MM_FLAGS))
             pline("But it quiets down.");
@@ -1258,19 +1258,19 @@ drinksink()
         break;
     case 8:
         play_sfx_sound(SFX_QUAFF);
-        pline("Yuk, this %s tastes awful.", hliquid("water"));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Yuk, this %s tastes awful.", hliquid("water"));
         more_experienced(1, 0);
         newexplevel();
         break;
     case 9:
         play_sfx_sound(SFX_QUAFF);
-        pline("Gaggg... this tastes like sewage!  You vomit.");
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "Gaggg... this tastes like sewage!  You vomit.");
         morehungry(rn1(30 - ACURR(A_CON), 11));
         vomit();
         break;
     case 10:
         play_sfx_sound(SFX_QUAFF);
-        pline("This %s contains toxic wastes!", hliquid("water"));
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "This %s contains toxic wastes!", hliquid("water"));
         if (!Unchanging) {
             You("undergo a freakish metamorphosis!");
             polyself(0);
@@ -1279,21 +1279,21 @@ drinksink()
     /* more odd messages --JJB */
     case 11:
         play_sfx_sound(SFX_SINK_CLANKING_FROM_PIPES);
-        You_hear("clanking from the pipes...");
+        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "clanking from the pipes...");
         break;
     case 12:
         play_sfx_sound(SFX_SINK_SNATCHES_OF_SONG);
-        You_hear("snatches of song from among the sewers...");
+        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "snatches of song from among the sewers...");
         break;
     case 19:
         if (Hallucination) {
-            pline("From the murky drain, a hand reaches up... --oops--");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "From the murky drain, a hand reaches up... --oops--");
             break;
         }
         /*FALLTHRU*/
     default:
         play_sfx_sound(SFX_QUAFF);
-        You("take a sip of %s %s.",
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "take a sip of %s %s.",
             rn2(3) ? (rn2(2) ? "cold" : "warm") : "hot",
             hliquid("water"));
     }

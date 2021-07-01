@@ -27,9 +27,9 @@ namespace GnollHackClient.Droid
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
-            UInt32 runflags,
-            UInt32 wincaps1,
-            UInt32 wincaps2,
+            ulong runflags,
+            ulong wincaps1,
+            ulong wincaps2,
             VoidVoidCallback callback_init_nhwindows,
             IntVoidCallback callback_player_selection,
             CharVoidCallback callback_askname,
@@ -58,7 +58,7 @@ namespace GnollHackClient.Droid
             VoidIntIntBooleanCallback callback_cliparound,
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
-            VoidIntIntIntIntIntLongIntUlongCallback callback_print_glyph,
+            PrintGlyphCallback callback_print_glyph,
             VoidIntCallback callback_init_print_glyph,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,

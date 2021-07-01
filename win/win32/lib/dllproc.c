@@ -1371,7 +1371,7 @@ dll_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     (void)mapglyph(layers, &sym, &ocolor, &special, 0, 0);
     symbol = (long)sym;
 
-    dll_callbacks.callback_print_glyph(wid, (int)x, (int)y, glyph, bkglyph, symbol, ocolor, special);
+    dll_callbacks.callback_print_glyph(wid, (int)x, (int)y, glyph, bkglyph, symbol, ocolor, special, layers);
 
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)

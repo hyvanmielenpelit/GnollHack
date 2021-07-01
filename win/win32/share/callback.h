@@ -43,7 +43,6 @@ typedef unsigned char(__callconv* BooleanVoidPtrCallback)(void*);
 typedef int(__callconv* IntIntIntConstCharPtrConstCharPtrCharPtrCallback)(int, int, const char*, const char*, const char*);
 typedef char*(__callconv* GetLineCallback)(int, int, const char*);
 typedef char*(__callconv* CharPtrBooleanCallback)(BOOLEAN_P);
-typedef void(__callconv* VoidIntIntIntIntIntLongIntULongCallback)(int, int, int, int, int, long, int, unsigned long);
 typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, UCHAR_P);
 
 /* Specific callback types */
@@ -74,7 +73,7 @@ typedef VoidVoidCallback MarkSynchCallback;
 typedef VoidVoidCallback WaitSynchCallback;
 typedef VoidIntIntBooleanCallback ClipAroundCallback;
 typedef VoidCharCallback UpdatePositionBarCallback;
-typedef VoidIntIntIntIntIntLongIntULongCallback PrintGlyphCallback;
+typedef void(__callconv* PrintGlyphCallback)(int, int, int, int, int, long, int, unsigned long, struct layer_info);
 typedef VoidIntCallback InitPrintGlyphCallback;
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;

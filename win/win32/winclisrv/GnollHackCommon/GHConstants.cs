@@ -69,7 +69,7 @@ namespace GnollHackCommon
     }
 
     [Flags]
-    public enum MenuFlags : UInt32
+    public enum MenuFlags : ulong
     {
         None =              0x00000000,
         IsHeading =         0x00000001,
@@ -101,7 +101,7 @@ namespace GnollHackCommon
     }
 
     [Flags]
-    public enum RunGnollHackFlags: UInt32
+    public enum RunGnollHackFlags: ulong
     {
         None =          0x00000000,
         SetWinCaps =    0x00000001,
@@ -109,7 +109,7 @@ namespace GnollHackCommon
     }
 
     [Flags]
-    public enum StopSoundFlags : UInt32
+    public enum StopSoundFlags : ulong
     {
         None =                  0x00000000,
         Music =                 0x00000001,
@@ -196,7 +196,63 @@ namespace GnollHackCommon
         public int source_glyph2;
         public int source_glyph3;
         public int source_glyph4;
-        public UInt32 parameter1;
+        public ulong parameter1;
+    }
+
+    public enum layer_types
+    {
+        LAYER_FLOOR = 0,
+        LAYER_FLOOR_DOODAD,   /* Doodads underneath features and traps */
+        LAYER_FEATURE,
+        LAYER_TRAP,
+        LAYER_FEATURE_DOODAD, /* Doodads above features and traps */
+        LAYER_BACKGROUND_EFFECT,
+        LAYER_CHAIN,
+        LAYER_OBJECT,
+        LAYER_MONSTER,
+        LAYER_MISSILE,
+        LAYER_COVER_TRAP,
+        LAYER_COVER_OBJECT,
+        LAYER_COVER_FEATURE,
+        LAYER_LEASH,
+        LAYER_ENVIRONMENT,
+        LAYER_ZAP,
+        LAYER_GENERAL_EFFECT,
+        LAYER_MONSTER_EFFECT,
+        LAYER_GENERAL_UI,
+        MAX_LAYERS
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LayerInfo
+    {
+        public int glyph; /* For ascii compatibility */
+        public int bkglyph; /* For ascii compatibility */
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)layer_types.MAX_LAYERS)]
+        public int[] layer_glyphs;
+
+        public ulong layer_flags;
+        public uint m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
+
+        public IntPtr memory_objchn;     /* Pointer to the location's first memory object*/
+
+        public int damage_displayed;
+        public int special_monster_layer_height;
+
+        public byte missile_poisoned;
+        public byte missile_elemental_enchantment;
+        public byte missile_exceptionality;
+        public byte missile_mythic_prefix;
+        public byte missile_mythic_suffix;
+        public byte missile_eroded;
+        public byte missile_eroded2;
+        public ulong missile_flags;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxLeashed + 1)]
+        public sbyte[] leash_mon_x; /* the last coordinate is the other end of the leash, i.e., u.ux at the time */
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxLeashed + 1)]
+        public sbyte[] leash_mon_y; /* the last coordinate is the other end of the leash, i.e., u.uy at the time */
     }
 
     public class GHConstants
@@ -220,6 +276,7 @@ namespace GnollHackCommon
         public const int MaxFramesPerAnimation = 32;
         public const int NumPositionsInEnlargement = 5;
         public const int MaxTilesPerReplacement = 32;
+        public const int MaxLeashed = 2;
 
     }
 

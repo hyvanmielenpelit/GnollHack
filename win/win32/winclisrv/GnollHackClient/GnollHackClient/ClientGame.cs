@@ -313,12 +313,12 @@ namespace GnollHackClient
                     _ghWindows[winHandle].Curs(x, y);
             }
         }
-        public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special)
+        public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, LayerInfo layers)
         {
             lock(_ghWindowsLock)
             {
                 if (_ghWindows[winHandle] != null)
-                    _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special);
+                    _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, layers);
             }
         }
 

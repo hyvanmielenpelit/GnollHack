@@ -49,7 +49,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate byte BooleanVoidPtrCallback(IntPtr value1);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void VoidIntIntIntIntIntLongIntUlongCallback(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8);
+    public delegate void PrintGlyphCallback(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8, LayerInfo layers);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void AddMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)]  string text, byte presel, int color);

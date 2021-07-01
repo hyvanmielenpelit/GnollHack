@@ -633,7 +633,7 @@ namespace GnollHackClient.Pages.Game
             if (menuinfo != null)
                 menuPage.MenuItems.AddRange(menuinfo.MenuItems);
             menuPage.Process();
-            await App.Current.MainPage.Navigation.PushModalAsync(menuPage);
+            await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
         }
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
@@ -835,18 +835,19 @@ namespace GnollHackClient.Pages.Game
                     {
                         if (Glyph2Tile != null && _tilesPerRow[0] > 0 && UsedTileSheets > 0)
                         {
-                            for (int mapx = startX; mapx <= endX; mapx++)
+                            for (int layer = 0; layer < (int)layer_types.MAX_LAYERS; layer++)
                             {
-                                for (int mapy = startY; mapy <= endY; mapy++)
+                                for (int mapx = startX; mapx <= endX; mapx++)
                                 {
-                                    for (int layer = 0; layer < 2; layer++)
+                                    for (int mapy = startY; mapy <= endY; mapy++)
                                     {
-                                        int signed_glyph = layer == 0 ? _mapData[mapx, mapy].BkGlyph : _mapData[mapx, mapy].Glyph;
+
+                                        int signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer];
+                                        if (signed_glyph == NoGlyph)
+                                            continue;
+
                                         int glyph = Math.Abs(signed_glyph);
                                         bool hflip = (signed_glyph < 0);
-
-                                        if (glyph == 0 && layer == 0)
-                                            continue;
 
                                         if (glyph < Glyph2Tile.Length)
                                         {
@@ -862,7 +863,7 @@ namespace GnollHackClient.Pages.Game
                                                     break;
 
                                                 bool vflip_glyph = false;
-                                                bool hflip_glyph = false;
+                                                bool hflip_glyph = hflip;
                                                 int enlarg_idx = enl_idx;
                                                 int position_index = -1;
                                                 if (enlargement > 0)
@@ -960,9 +961,21 @@ namespace GnollHackClient.Pages.Game
                                                 tx = (startX + offsetX + _mapOffsetX + width * (float)(mapx + dx));
                                                 ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)(mapy + dy));
 
-                                                SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
-
-                                                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                                                if (hflip)
+                                                {
+                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                    {
+                                                        canvas.Translate(tx + width, ty);
+                                                        canvas.Scale(-1, 1, 0, 0);
+                                                        SKRect targetrect = new SKRect(0, 0, width, height);
+                                                        canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                    canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                                                }
                                             }
                                         }
                                     }
@@ -1740,7 +1753,7 @@ namespace GnollHackClient.Pages.Game
 
             return grayedcolor;
         }
-        public void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special)
+        public void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special, LayerInfo layers)
         {
             lock (_mapDataLock)
             {
@@ -1749,6 +1762,7 @@ namespace GnollHackClient.Pages.Game
                 _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
                 _mapData[x, y].Color = NHColor2SKColor((nhcolor)color);
                 _mapData[x, y].Special = special;
+                _mapData[x, y].Layers = layers;
             }
         }
         public void SetMapCursor(int x, int y)
@@ -1772,6 +1786,33 @@ namespace GnollHackClient.Pages.Game
                         _mapData[x, y].Symbol = "";
                         _mapData[x, y].Color = SKColors.Black;// default(MapData);
                         _mapData[x, y].Special = 0;
+
+                        if(_mapData[x, y].Layers.layer_glyphs != null)
+                        {
+                            _mapData[x, y].Layers.layer_glyphs[0] = UnexploredGlyph;
+                            for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
+                                _mapData[x, y].Layers.layer_glyphs[0] = NoGlyph;
+
+                            _mapData[x, y].Layers.glyph = UnexploredGlyph;
+                            _mapData[x, y].Layers.bkglyph = UnexploredGlyph;
+                            _mapData[x, y].Layers.layer_flags = 0;
+                            _mapData[x, y].Layers.missile_elemental_enchantment = 0;
+                            _mapData[x, y].Layers.missile_eroded = 0;
+                            _mapData[x, y].Layers.missile_eroded2 = 0;
+                            _mapData[x, y].Layers.missile_exceptionality = 0;
+                            _mapData[x, y].Layers.missile_flags = 0;
+                            _mapData[x, y].Layers.missile_mythic_prefix = 0;
+                            _mapData[x, y].Layers.missile_mythic_suffix = 0;
+                            _mapData[x, y].Layers.missile_poisoned = 0;
+                            _mapData[x, y].Layers.m_id = 0;
+                            _mapData[x, y].Layers.special_monster_layer_height = 0;
+
+                            for (int i = 0; i < GHConstants.MaxLeashed + 1; i++)
+                            {
+                                _mapData[x, y].Layers.leash_mon_x[i] = 0;
+                                _mapData[x, y].Layers.leash_mon_y[i] = 0;
+                            }
+                        }
                     }
                 }
             }

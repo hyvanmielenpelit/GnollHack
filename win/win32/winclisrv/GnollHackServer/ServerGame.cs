@@ -16,9 +16,9 @@ namespace GnollHackServer
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
-            UInt32 runflags,
-            UInt32 wincaps1,
-            UInt32 wincaps2,
+            ulong runflags,
+            ulong wincaps1,
+            ulong wincaps2,
             VoidVoidCallback callback_init_nhwindows,
             IntVoidCallback callback_player_selection,
             CharVoidCallback callback_askname,
@@ -47,7 +47,7 @@ namespace GnollHackServer
             VoidIntIntBooleanCallback callback_cliparound,
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
-            VoidIntIntIntIntIntLongIntUlongCallback callback_print_glyph,
+            PrintGlyphCallback callback_print_glyph,
             VoidIntCallback callback_init_print_glyph,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
@@ -107,14 +107,14 @@ namespace GnollHackServer
 
         [DllImport(@"gnollhacklib.dll")]
         public static extern int RunGnollHackSimple(
-            UInt32 wincaps1,
-            UInt32 wincaps2
+            ulong wincaps1,
+            ulong wincaps2
         );
 
         [DllImport(@"gnollhacklib.dll")]
         public static extern int RunGnollHackSimple2(
-            UInt32 wincaps1,
-            UInt32 wincaps2,
+            ulong wincaps1,
+            ulong wincaps2,
             VoidVoidCallback callback_init_nhwindows);
 
         [DllImport(@"gnollhacklib.dll")]
@@ -195,7 +195,7 @@ namespace GnollHackServer
                 GameCallback_VoidIntIntBooleanDummy,
                 /* If positionbar is on */
                 GameCallback_VoidCharDummy,
-                GameCallback_VoidIntIntIntIntIntLongIntULongDummy,
+                GameCallback_PrintGlyph,
                 GameCallback_VoidIntDummy,
                 GameCallback_VoidConstCharDummy,
                 GameCallback_VoidConstCharDummy,
@@ -453,7 +453,7 @@ namespace GnollHackServer
         {
             return "";
         }
-        protected void GameCallback_VoidIntIntIntIntIntLongIntULongDummy(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8)
+        protected void GameCallback_PrintGlyph(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8, LayerInfo layers)
         {
             return;
         }
