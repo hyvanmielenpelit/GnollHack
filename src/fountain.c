@@ -1191,7 +1191,7 @@ drinksink()
         break;
     case 1:
         play_sfx_sound(SFX_QUAFF);
-        You(ATR_NONE, CLR_MSG_ATTENTION, "take a sip of very warm %s.", hliquid("water"));
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "take a sip of very warm %s.", hliquid("water"));
         break;
     case 2:
         play_sfx_sound(SFX_QUAFF);
