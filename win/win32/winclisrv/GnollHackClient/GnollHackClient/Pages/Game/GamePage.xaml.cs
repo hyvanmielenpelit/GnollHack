@@ -935,7 +935,8 @@ namespace GnollHackClient.Pages.Game
                                                 }
 
                                                 int dx = 0, dy = 0;
-                                                switch(position_index)
+                                                int darken_dx = 0, darken_dy = 0;
+                                                switch (position_index)
                                                 {
                                                     case 0:
                                                         dx = -1;
@@ -959,14 +960,25 @@ namespace GnollHackClient.Pages.Game
                                                         break;
                                                 }
 
+                                                int draw_map_x = mapx + dx;
+                                                int draw_map_y = mapy + dy;
+                                                if (!GHUtils.isok(draw_map_x, draw_map_y))
+                                                    continue;
+
+                                                darken_dx = dx;
+                                                darken_dy = 0;
+                                                int darken_x = mapx + darken_dx;
+                                                int darken_y = mapy + darken_dy;
+                                                bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+
                                                 int sheet_idx = TileSheetIdx(ntile);
                                                 int tile_x = TileSheetX(ntile);
                                                 int tile_y = TileSheetY(ntile);
 
                                                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
 
-                                                tx = (startX + offsetX + _mapOffsetX + width * (float)(mapx + dx));
-                                                ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)(mapy + dy));
+                                                tx = (startX + offsetX + _mapOffsetX + width * (float)draw_map_x);
+                                                ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)draw_map_y);
 
                                                 if (hflip)
                                                 {
@@ -983,6 +995,39 @@ namespace GnollHackClient.Pages.Game
                                                     SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                                                     canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
                                                 }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                /* Darkening at the end of layers */
+                                if (layer == (int)layer_types.LAYER_OBJECT)
+                                {
+                                    for (int mapx = startX; mapx <= endX; mapx++)
+                                    {
+                                        for (int mapy = startY; mapy <= endY; mapy++)
+                                        {
+                                            bool darken = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+                                            // Draw rectangle with blend mode in bottom half
+                                            if(darken)
+                                            {
+                                                bool uloc = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
+                                                bool unlit = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_APPEARS_UNLIT) != 0);
+                                                // Get values from XAML controls
+                                                SKBlendMode blendMode = SKBlendMode.Modulate;
+                                                int val = ((uloc ? 85 : unlit ? 35 : 65) * 255) / 100;
+                                                SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
+
+                                                using (SKPaint paint = new SKPaint())
+                                                {
+                                                    paint.Color = color;
+                                                    paint.BlendMode = blendMode;
+                                                    tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
+                                                    ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                    SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                    canvas.DrawRect(targetrect, paint);
+                                                }
+
                                             }
                                         }
                                     }

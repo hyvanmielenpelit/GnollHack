@@ -1177,7 +1177,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 darkening_j = enl_j;
             }
 
-            int monster_layer_height = data->map[enl_i][enl_j].special_monster_layer_height;
+            int monster_layer_height = (int)data->map[enl_i][enl_j].special_monster_layer_height;
             if (base_layer == LAYER_MONSTER || base_layer == LAYER_MONSTER_EFFECT)
             {
                 if (monster_layer_height == 0 && tile_move_idx != 0)
@@ -4995,10 +4995,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             t_y, GetNHApp()->mapTile_X,
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
-                    else if (/* glyph_is_special_attacking3_monster(monster_glyph) || glyph_is_female_special_attacking3_monster(monster_glyph) || glyph_is_special_attacking3_player(monster_glyph) ||*/ data->map[i][j].layer_flags & LFLAGS_M_BEING_HIT)
+                    else if (data->map[i][j].layer_flags & LFLAGS_M_BEING_HIT)
                     {
-                        unsigned long hit_text_bits = (data->map[i][j].layer_flags & LFLAGS_M_HIT_TILE_MASK);
-                        unsigned long hit_text_num = hit_text_bits >> LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
+                        short hit_text_num = data->map[i][j].hit_tile;
                         int mglyph = max(0, min(MAX_HIT_TILES - 1, (int)hit_text_num)) + GLYPH_HIT_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
                         int m_sheet_idx = TILE_SHEET_IDX(mtile);
@@ -5754,7 +5753,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 enlarg = tile2enlargement[ntile];
             }
 
-            int monster_layer_height = data->map[x][y].special_monster_layer_height;
+            int monster_layer_height = (int)data->map[x][y].special_monster_layer_height;
             if (monster_layer_height > 0 && isok(x, y - 1) && data->mapDirty[x][y - 1] == FALSE)
             {
                 data->mapDirty[x][y - 1] = TRUE;

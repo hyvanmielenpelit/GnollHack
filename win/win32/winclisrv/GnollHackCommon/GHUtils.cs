@@ -15,6 +15,15 @@ namespace GnollHackCommon
         {
             return (0x80 | (c));
         }
+        public static bool isok(int x, int y)
+        {
+            if (x < 1 || x >= GHConstants.MapCols)
+                return false;
+            if (y < 0 || y >= GHConstants.MapRows)
+                return false;
+
+            return true;
+        }
         public static Color NHColor2Color(nhcolor nhcolor)
         {
             Color res = Color.White;

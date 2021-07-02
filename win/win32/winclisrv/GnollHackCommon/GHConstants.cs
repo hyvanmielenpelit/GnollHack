@@ -125,6 +125,43 @@ namespace GnollHackCommon
         OnlyDialogueMid =       0x00000100,
     }
 
+    [Flags]
+    public enum LayerFlags : ulong
+    {
+         None =                     0x00000000UL,
+         LFLAGS_M_PET =             0x00000001UL,
+         LFLAGS_M_PEACEFUL =        0x00000002UL,
+         LFLAGS_M_DETECTED =        0x00000004UL,
+         LFLAGS_M_RIDDEN =          0x00000008UL,
+         LFLAGS_M_SADDLED =         0x00000010UL,
+         LFLAGS_M_YOU =             0x00000020UL,
+         LFLAGS_M_MIMIC_OBJECT =    0x00000040UL,
+         LFLAGS_M_MIMIC_FURNITURE = 0x00000080UL,
+         LFLAGS_M_BEING_HIT =       0x00000100UL,
+         LFLAGS_U_TETHERED =        0x00000200UL, /* You are tethered */
+         LFLAGS_M_TETHERED =        0x00000400UL, /* Monster is tethered */
+         LFLAGS_M_DROPPING_PIERCER =0x00000800UL,
+         LFLAGS_M_WORM_TAIL =       0x00001000UL,
+         LFLAGS_M_WORM_SEEN =       0x00002000UL,
+         LFLAGS_M_MASK =            0x0000FFFFUL,
+         LFLAGS_O_PILE =            0x00010000UL,
+         LFLAGS_O_IN_PIT =          0x00020000UL,
+         LFLAGS_O_CHAIN =           0x00040000UL,
+         LFLAGS_O_MASK =            0x00070000UL,
+         LFLAGS_CMAP_MASK =         0x00080000UL,
+         LFLAGS_ZAP_LEADING_EDGE =  0x00100000UL, /* First (leading) tile in a zap */
+         LFLAGS_ZAP_TRAILING_EDGE = 0x00200000UL, /* Last (trailing) tile in a zap */
+         LFLAGS_ZAP_MASK = (0x00100000UL | 0x00200000UL),
+         LFLAGS_T_TRAPPED =         0x00400000UL,
+         /* free */
+         LFLAGS_SHOWING_MEMORY =    0x01000000UL, /* also implies that you cannot see the location (and hence showing memory) */
+         LFLAGS_SHOWING_DETECTION = 0x02000000UL, /* Do not darken */
+         LFLAGS_ASCENSION_RADIANCE =0x04000000UL, /* Lighten up */
+         LFLAGS_CAN_SEE =           0x08000000UL, /* cansee(x, y) is true (if not, then darken etc.) */
+         LFLAGS_UXUY =              0x10000000UL, /* x == u.ux && y == u.uy is true */
+         LFLAGS_APPEARS_UNLIT =     0x20000000UL, /* looks unlit */
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct AnimationDefinition
     {
@@ -237,8 +274,9 @@ namespace GnollHackCommon
 
         public IntPtr memory_objchn;     /* Pointer to the location's first memory object*/
 
-        public int damage_displayed;
-        public int special_monster_layer_height;
+        public short damage_displayed;
+        public short hit_tile;
+        public short special_monster_layer_height;
 
         public byte missile_poisoned;
         public byte missile_elemental_enchantment;
@@ -277,7 +315,7 @@ namespace GnollHackCommon
         public const int NumPositionsInEnlargement = 5;
         public const int MaxTilesPerReplacement = 32;
         public const int MaxLeashed = 2;
-
+        public const int LayerFlagHitTileMaskBitOffset = 9;
     }
 
     [StructLayout(LayoutKind.Sequential)]

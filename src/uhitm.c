@@ -5307,11 +5307,10 @@ unsigned long extra_flags;
         return;
 
     //boolean is_you = (x == u.ux && y == u.uy);
-    unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_GENERAL)) << LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
-    unsigned long hflags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
+    unsigned long hflags = (LFLAGS_M_BEING_HIT | extra_flags);
 
     //enum action_tile_types action_before = is_you ? u.action : mon->action;
-    show_extra_info(x, y, hflags, damage_shown);
+    show_extra_info(x, y, hflags, (short)(hit_symbol_shown - HIT_GENERAL), damage_shown);
     //update_m_action(mon, ACTION_TILE_SPECIAL_ATTACK_3);
     if(mon == &youmonst)
         u_wait_until_action();

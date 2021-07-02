@@ -659,7 +659,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
             play_sfx_sound_at_location(SFX_MUFFLED_CRACKING, x, y);
         }
         if (result) {
-            You_hear("a muffled %s.", result);
+            You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a muffled %s.", result);
             
             if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
                 change_luck(-2, TRUE);
@@ -836,17 +836,17 @@ boolean is_golf_swing;
         if ((!martial() && rn2(20) > ACURR(A_DEX))
             || IS_ROCK(levl[u.ux][u.uy].typ) || closed_door(u.ux, u.uy)) {
             if (Blind)
-                pline("It doesn't come loose.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It doesn't come loose.");
             else
-                pline("%s %sn't come loose.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %sn't come loose.",
                       The(distant_name(kickedobj, xname)),
                       otense(kickedobj, "do"));
             return (!rn2(3) || martial());
         }
         if (Blind)
-            pline("It comes loose.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It comes loose.");
         else
-            pline("%s %s loose.", The(distant_name(kickedobj, xname)),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s loose.", The(distant_name(kickedobj, xname)),
                   otense(kickedobj, "come"));
         kickedobj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES;
         obj_extract_self(kickedobj);
@@ -881,21 +881,21 @@ boolean is_golf_swing;
                 if (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == NON_PM || kickedobj->keyotyp == SKELETON_KEY)
                 {
                     play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_BREAK_LOCK);
-                    You("break open the lock!");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "break open the lock!");
                     breakchestlock(kickedobj, FALSE);
                     if (otrp)
                         (void) chest_trap(kickedobj, LEG, FALSE);
                 }
                 else
                 {
-                    pline("It feels that the lock of %s cannot be broken by kicking.", the(cxname(kickedobj)));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It feels that the lock of %s cannot be broken by kicking.", the(cxname(kickedobj)));
                 }
                 return 1;
             }
         } else {
             if (!rn2(3) || (martial() && !rn2(2))) {
                 play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_LID_SLAM);
-                pline_The("lid slams open, then falls shut.");
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "lid slams open, then falls shut.");
                 kickedobj->lknown = 1;
                 if (otrp)
                     (void) chest_trap(kickedobj, LEG, FALSE);
@@ -941,7 +941,7 @@ boolean is_golf_swing;
                 };
 
                 pline("Thwwpingg!");
-                You("%s!", flyingcoinmsg[rn2(SIZE(flyingcoinmsg))]);
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s!", flyingcoinmsg[rn2(SIZE(flyingcoinmsg))]);
                 (void) scatter(x, y, rn2(3) + 1, VIS_EFFECTS | MAY_HIT,
                                kickedobj);
                 newsym(x, y);
@@ -955,7 +955,7 @@ boolean is_golf_swing;
     }
 
     if (slide && !Blind)
-        pline("Whee!  %s %s across the %s.", Doname2(kickedobj),
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Whee!  %s %s across the %s.", Doname2(kickedobj),
               otense(kickedobj, "slide"), surface(x, y));
 
     if (costly && !isgold)
@@ -2156,14 +2156,14 @@ boolean shop_floor_obj;
         {
             play_sfx_sound_at_location(SFX_MUFFLED_CRASH, x, y);
             result = "crash";
-            You_hear("a muffled %s.", result);
+            You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a muffled %s.", result);
             if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
                 change_luck(-2, TRUE);
         } else {
             /* penalty for breaking eggs laid by you */
             play_sfx_sound_at_location(SFX_MUFFLED_SPLAT, x, y);
             result = "splat";
-            You_hear("a muffled %s.", result);
+            You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a muffled %s.", result);
             if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
                 change_luck((schar) -min(otmp->quan, 5L), TRUE);
         }

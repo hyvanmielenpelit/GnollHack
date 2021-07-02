@@ -2645,22 +2645,22 @@ boolean in_view;
     /*FALLTHRU*/
     case POT_WATER: /* really, all potions */
         if (!in_view)
-            You_hear("%s shatter!", something);
+            You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shatter!", something);
         else
-            pline("%s shatter%s%s!", Doname2(obj),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shatter%s%s!", Doname2(obj),
                   (obj->quan == 1L) ? "s" : "", to_pieces);
         break;
     case EGG:
     case MELON:
-        pline("Splat!");
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Splat!");
         break;
     case CREAM_PIE:
         if (in_view)
-            pline("What a mess!");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "What a mess!");
         break;
     case ACID_VENOM:
     case BLINDING_VENOM:
-        pline("Splash!");
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Splash!");
         break;
     }
 }
@@ -2680,7 +2680,7 @@ struct obj *obj;
     }
     freeinv(obj);
     if (u.uswallow) {
-        pline(is_animal(u.ustuck->data) ? "%s in the %s's entrails."
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, is_animal(u.ustuck->data) ? "%s in the %s's entrails."
                                         : "%s into %s.",
               "The money disappears", mon_nam(u.ustuck));
         add_to_minv(u.ustuck, obj);
@@ -2690,7 +2690,7 @@ struct obj *obj;
     if (u.dz) {
         if (u.dz < 0 && !Is_airlevel(&u.uz) && !Underwater
             && !Is_waterlevel(&u.uz)) {
-            pline_The("gold hits the %s, then falls back on top of your %s.",
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "gold hits the %s, then falls back on top of your %s.",
                       ceiling(u.ux, u.uy), body_part(HEAD));
             /* some self damage? */
             if (uarmh)
@@ -2728,7 +2728,7 @@ struct obj *obj;
     if (flooreffects(obj, bhitpos.x, bhitpos.y, "fall"))
         return 1;
     if (u.dz > 0)
-        pline_The("gold hits the %s.", surface(bhitpos.x, bhitpos.y));
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "gold hits the %s.", surface(bhitpos.x, bhitpos.y));
     place_object(obj, bhitpos.x, bhitpos.y);
     play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW, Underwater);
     if (*u.ushops)

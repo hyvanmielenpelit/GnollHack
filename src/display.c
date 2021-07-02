@@ -467,7 +467,7 @@ register xchar x, y;
             levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = GLYPH_INVISIBLE;
             levl[x][y].hero_memory_layers.special_monster_layer_height = 0;;
         }
-        show_monster_glyph_with_extra_info(x, y, GLYPH_INVISIBLE, (struct monst*)0, 0UL, 0);
+        show_monster_glyph_with_extra_info(x, y, GLYPH_INVISIBLE, (struct monst*)0, 0UL, 0, 0);
     }
 }
 
@@ -636,7 +636,7 @@ boolean dropping_piercer;
                        (int) mon->m_ap_type);
             /*FALLTHRU*/
         case M_AP_NOTHING:
-            show_monster_glyph_with_extra_info(x, y, any_mon_to_glyph(mon, newsym_rn2),  mon, 0UL, 0);
+            show_monster_glyph_with_extra_info(x, y, any_mon_to_glyph(mon, newsym_rn2),  mon, 0UL, 0, 0);
             clear_monster_layer_memory_at(x, y);
             break;
 
@@ -660,7 +660,7 @@ boolean dropping_piercer;
                 levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = glyph; /* Override, as otherwise not very credible */
             }
             if (!sensed) {
-                //show_monster_glyph_with_extra_info(x, y, glyph, (struct monst*)0, LFLAGS_M_MIMIC_FURNITURE, 0);
+                //show_monster_glyph_with_extra_info(x, y, glyph, (struct monst*)0, LFLAGS_M_MIMIC_FURNITURE, 0, 0);
                 /* override real topology with mimic's fake one */
                 show_glyph_ascii(x, y, glyph);
                 show_glyph_on_layer(x, y, glyph, LAYER_FEATURE);
@@ -682,7 +682,7 @@ boolean dropping_piercer;
             int glyph = obj_to_glyph(&obj, newsym_rn2);
             obj.glyph = glyph;
             //show_monster_glyph_with_extra_info(x, y,
-            //    glyph, mon, LFLAGS_M_MIMIC_OBJECT, 0);
+            //    glyph, mon, LFLAGS_M_MIMIC_OBJECT, 0, 0);
             //map_object(&obj, !sensed);
             if (level.flags.hero_memory)
             {
@@ -711,7 +711,7 @@ boolean dropping_piercer;
         }
 
         case M_AP_MONSTER:
-            show_monster_glyph_with_extra_info(x, y, any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng)), mon, 0UL, 0 );
+            show_monster_glyph_with_extra_info(x, y, any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng)), mon, 0UL, 0, 0 );
             clear_monster_layer_memory_at(x, y);
             break;
         }
@@ -765,10 +765,10 @@ boolean dropping_piercer;
         {
             extra_flags |= LFLAGS_M_DROPPING_PIERCER;
             show_glyph_on_layer_and_ascii(x, y, num, LAYER_MISSILE);
-            show_extra_info(x, y, extra_flags, 0);
+            show_extra_info(x, y, extra_flags, 0, 0);
         }
         else
-            show_monster_glyph_with_extra_info(x, y, num, /*worm_tail ? (struct monst*)0 :*/ mon, extra_flags, 0);
+            show_monster_glyph_with_extra_info(x, y, num, /*worm_tail ? (struct monst*)0 :*/ mon, extra_flags, 0, 0);
         clear_monster_layer_memory_at(x, y);
     }
 }
@@ -807,7 +807,7 @@ register struct monst *mon;
     if (glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))
         unmap_object(x, y);
 
-    show_monster_glyph_with_extra_info(x, y, glyph, (struct monst*)0, 0UL, 0);
+    show_monster_glyph_with_extra_info(x, y, glyph, (struct monst*)0, 0UL, 0, 0);
 }
 
 int
@@ -1043,7 +1043,7 @@ void
 newsym(x, y)
 register int x, y;
 {
-    newsym_with_extra_info_and_flags(x, y, 0UL, 0, 0UL);
+    newsym_with_extra_info_and_flags(x, y, 0UL, 0, 0, 0UL);
 }
 
 void
@@ -1051,23 +1051,23 @@ newsym_with_flags(x, y, newsym_flags)
 register int x, y;
 unsigned long newsym_flags;
 {
-    newsym_with_extra_info_and_flags(x, y, 0UL, 0, newsym_flags);
+    newsym_with_extra_info_and_flags(x, y, 0UL, 0, 0, newsym_flags);
 }
 
 void
-newsym_with_extra_info(x, y, disp_flags, damage_shown)
+newsym_with_extra_info(x, y, disp_flags, hit_tile_id, damage_shown)
 register int x, y;
 unsigned long disp_flags;
-int damage_shown;
+int hit_tile_id, damage_shown;
 {
-    newsym_with_extra_info_and_flags(x, y, disp_flags, damage_shown, 0UL);
+    newsym_with_extra_info_and_flags(x, y, disp_flags, hit_tile_id, damage_shown, 0UL);
 }
 
 void
-newsym_with_extra_info_and_flags(x, y, disp_flags, damage_shown, specific_newsym_flags)
+newsym_with_extra_info_and_flags(x, y, disp_flags, hit_tile_id, damage_shown, specific_newsym_flags)
 register int x, y;
 unsigned long disp_flags, specific_newsym_flags;
-int damage_shown;
+int hit_tile_id, damage_shown;
 {
     if (!isok(x, y))
         return;
@@ -1124,7 +1124,7 @@ int damage_shown;
     if (u.uswallow)
     {
         if (x == u.ux && y == u.uy)
-            display_self_with_extra_info_choose_ascii(disp_flags, damage_shown, FALSE);
+            display_self_with_extra_info_choose_ascii(disp_flags, hit_tile_id, damage_shown, FALSE);
         goto new_sym_end_here;
     }
 
@@ -1140,7 +1140,7 @@ int damage_shown;
     clear_all_glyphs_at(x, y);
 
     /* Extra info shown */
-    show_extra_info(x, y, disp_flags, damage_shown);
+    show_extra_info(x, y, disp_flags, hit_tile_id, damage_shown);
 
     /* Can physically see the location. */
     if (cansee(x, y)) 
@@ -1198,9 +1198,9 @@ int damage_shown;
                 }
             }
             if (see_self)
-                display_self_with_extra_info_choose_ascii(disp_flags | extra_flags, damage_shown, location_has_boulder);
+                display_self_with_extra_info_choose_ascii(disp_flags | extra_flags, hit_tile_id, damage_shown, location_has_boulder);
             else
-                show_extra_info(x, y, disp_flags | extra_flags, damage_shown);
+                show_extra_info(x, y, disp_flags | extra_flags, hit_tile_id, damage_shown);
 
             if (newsym_flags & NEWSYM_FLAGS_SHOW_DROPPING_PIERCER)
             {
@@ -1291,7 +1291,7 @@ int damage_shown;
 
             /* Monster layer */
             if (canspotself())
-                display_self_with_extra_info_choose_ascii(disp_flags, damage_shown, FALSE);
+                display_self_with_extra_info_choose_ascii(disp_flags, hit_tile_id, damage_shown, FALSE);
         }
         else
         {
@@ -1335,6 +1335,17 @@ int damage_shown;
     }
 
 new_sym_end_here:
+
+    if (x == u.ux && y == u.uy)
+        add_glyph_buffer_layer_flags(x, y, LFLAGS_UXUY); /* Mark player location */
+
+    if (cansee(x, y))
+        add_glyph_buffer_layer_flags(x, y, LFLAGS_CAN_SEE);
+
+    boolean is_lit_unknown_wall = (levl[x][y].waslit && IS_NON_STONE_WALL(levl[x][y].typ) && wall_angle(&levl[x][y]) == S_stone);
+    if (!levl[x][y].waslit || is_lit_unknown_wall)
+        add_glyph_buffer_layer_flags(x, y, LFLAGS_APPEARS_UNLIT);
+
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH)
     {
         show_glyph_on_layer(x, y, missile_glyph, LAYER_MISSILE);
@@ -2301,17 +2312,19 @@ xchar ux, uy;
 }
 
 void
-show_extra_info(x, y, disp_flags, damage_displayed)
+show_extra_info(x, y, disp_flags, hit_tile_id, damage_displayed)
 int x, y;
 unsigned long disp_flags;
-int damage_displayed;
+int hit_tile_id, damage_displayed;
 {
     if (isok(x, y))
     {
+        change_layer_hit_tile(x, y, hit_tile_id);
         change_layer_damage_displayed(x, y, damage_displayed);
 
         unsigned long old_flags = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_flags |= disp_flags;
+
         if (old_flags != gbuf[y][x].layers.layer_flags)
         {
             gbuf[y][x].isnew = 1;
@@ -2382,13 +2395,34 @@ int damage_displayed;
 {
     if (isok(x, y))
     {
-        int old_dmg = gbuf[y][x].layers.damage_displayed;
+        short old_dmg = gbuf[y][x].layers.damage_displayed;
         if (damage_displayed > 0)
-            gbuf[y][x].layers.damage_displayed = Hallucination ? rnd(2 * damage_displayed) : damage_displayed;
+            gbuf[y][x].layers.damage_displayed = (short)(Hallucination ? rnd(2 * damage_displayed) : damage_displayed);
         else
             gbuf[y][x].layers.damage_displayed = 0;
 
         if (old_dmg != gbuf[y][x].layers.damage_displayed)
+        {
+            gbuf[y][x].isnew = 1;
+            if (gbuf_start[y] > x)
+                gbuf_start[y] = x;
+            if (gbuf_stop[y] < x)
+                gbuf_stop[y] = x;
+        }
+    }
+}
+
+void
+change_layer_hit_tile(x, y, hit_tile_id)
+int x, y;
+int hit_tile_id;
+{
+    if (isok(x, y))
+    {
+        short old_hit_tile = gbuf[y][x].layers.hit_tile;
+        gbuf[y][x].layers.hit_tile = hit_tile_id;
+
+        if (old_hit_tile != gbuf[y][x].layers.hit_tile)
         {
             gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
@@ -2456,6 +2490,7 @@ int x, y;
     if (isok(x, y))
     {
         change_layer_damage_displayed(x, y, 0);
+        change_layer_hit_tile(x, y, 0);
 
         unsigned long old_flags = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_flags &= ~(LFLAGS_M_MASK);
@@ -2484,21 +2519,21 @@ int x, y;
 
 
 void
-show_monster_glyph_with_extra_info(x, y, glyph, mtmp, disp_flags, damage_displayed)
+show_monster_glyph_with_extra_info(x, y, glyph, mtmp, disp_flags, hit_tile_id, damage_displayed)
 int x, y, glyph;
 struct monst* mtmp;
 unsigned long disp_flags;
-int damage_displayed;
+int hit_tile_id, damage_displayed;
 {
-    show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph, mtmp, disp_flags, damage_displayed, FALSE);
+    show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph, mtmp, disp_flags, hit_tile_id, damage_displayed, FALSE);
 }
 
 void
-show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph,  mtmp, disp_flags, damage_displayed, exclude_ascii)
+show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph,  mtmp, disp_flags, hit_tile_id, damage_displayed, exclude_ascii)
 int x, y, glyph;
 struct monst* mtmp;
 unsigned long disp_flags;
-int damage_displayed;
+int hit_tile_id, damage_displayed;
 boolean exclude_ascii;
 {
     if (isok(x, y))
@@ -2508,7 +2543,7 @@ boolean exclude_ascii;
 
         show_glyph_on_layer(x, y, glyph, LAYER_MONSTER);
         clear_monster_extra_info(x, y);
-        show_extra_info(x, y, disp_flags, damage_displayed);
+        show_extra_info(x, y, disp_flags, hit_tile_id, damage_displayed);
 
         gbuf[y][x].layers.m_id = 0;
         gbuf[y][x].layers.special_monster_layer_height = 0;
@@ -4526,9 +4561,9 @@ int dx, dy;
 
 
 void
-display_self_with_extra_info_choose_ascii(displayed_flags, dmg_received, exclude_ascii)
+display_self_with_extra_info_choose_ascii(displayed_flags, hit_tile_id, dmg_received, exclude_ascii)
 unsigned long displayed_flags;
-int dmg_received;
+int hit_tile_id, dmg_received;
 boolean exclude_ascii;
 {
 
@@ -4545,7 +4580,7 @@ boolean exclude_ascii;
         ),
         u.usteed,
         displayed_flags | LFLAGS_M_YOU | (u.usteed && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL) | (u.usteed && mon_visible(u.usteed) && (u.usteed->worn_item_flags & W_SADDLE) ? LFLAGS_M_SADDLED : 0UL),
-        dmg_received, exclude_ascii);
+        hit_tile_id, dmg_received, exclude_ascii);
 
 }
 

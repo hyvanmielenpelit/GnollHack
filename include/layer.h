@@ -47,8 +47,9 @@ struct layer_info {
 
     struct obj* memory_objchn;     /* Pointer to the location's first memory object*/
 
-    int damage_displayed;
-    int special_monster_layer_height;
+    short damage_displayed;
+    short hit_tile;
+    short special_monster_layer_height;
 
     uchar missile_poisoned;
     uchar missile_elemental_enchantment;
@@ -75,44 +76,39 @@ struct layer_info {
 
 /* These are flags for showing extra stuff in graphical interfaces */
 #define LFLAGS_M_BEING_HIT          0x00000100UL
-#define LFLAGS_M_HIT_TILE_MASK      0x00003E00UL /* 3 bits indicating display of hit tile 0-31 */
-#define LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET 9 
-/* hit_tile_bit 002 */
-/* hit_tile_bit 004 */
-/* hit_tile_bit 008 */
-/* hit_tile_bit 010 */
-/* hit_tile_bit 020 */
-/* free for m_ flag 040 */
-#define LFLAGS_U_TETHERED           0x00008000UL /* You are tethered */
-#define LFLAGS_M_TETHERED           0x00010000UL /* Monster is tethered */
-#define LFLAGS_M_DROPPING_PIERCER   0x00020000UL
-#define LFLAGS_M_WORM_TAIL          0x00040000UL
-#define LFLAGS_M_WORM_SEEN          0x00080000UL
-#define LFLAGS_M_MASK               0x000FFFFFUL
+#define LFLAGS_U_TETHERED           0x00000200UL /* You are tethered */
+#define LFLAGS_M_TETHERED           0x00000400UL /* Monster is tethered */
+#define LFLAGS_M_DROPPING_PIERCER   0x00000800UL
+#define LFLAGS_M_WORM_TAIL          0x00001000UL
+#define LFLAGS_M_WORM_SEEN          0x00002000UL
+/* free bit */
+/* free bit */
+#define LFLAGS_M_MASK               0x0000FFFFUL
 
 /* These are flags for showing extra stuff in graphical interfaces */
-#define LFLAGS_O_PILE               0x00100000UL
-#define LFLAGS_O_IN_PIT             0x00200000UL
-#define LFLAGS_O_CHAIN              0x00400000UL
-#define LFLAGS_O_MASK               0x00700000UL
+#define LFLAGS_O_PILE               0x00010000UL
+#define LFLAGS_O_IN_PIT             0x00020000UL
+#define LFLAGS_O_CHAIN              0x00040000UL
+#define LFLAGS_O_MASK               0x00070000UL
 
 /* free bit for CMAPs */
-#define LFLAGS_CMAP_MASK            0x00800000UL
+#define LFLAGS_CMAP_MASK            0x00080000UL
+
+#define LFLAGS_ZAP_LEADING_EDGE     0x00100000UL /* First (leading) tile in a zap */
+#define LFLAGS_ZAP_TRAILING_EDGE    0x00200000UL /* Last (trailing) tile in a zap */
+#define LFLAGS_ZAP_MASK             (LFLAGS_ZAP_LEADING_EDGE | LFLAGS_ZAP_TRAILING_EDGE)
+
+/* Traps */
+#define LFLAGS_T_TRAPPED            0x00400000UL
+/* free bit */
 
 /* Important general flags */
 #define LFLAGS_SHOWING_MEMORY       0x01000000UL /* also implies that you cannot see the location (and hence showing memory) */
 #define LFLAGS_SHOWING_DETECTION    0x02000000UL /* Do not darken */
-
-#define LFLAGS_ZAP_LEADING_EDGE     0x04000000UL /* First (leading) tile in a zap */
-#define LFLAGS_ZAP_TRAILING_EDGE    0x08000000UL /* Last (trailing) tile in a zap */
-#define LFLAGS_ZAP_MASK             (LFLAGS_ZAP_LEADING_EDGE | LFLAGS_ZAP_TRAILING_EDGE)
-
-/* Traps */
-#define LFLAGS_T_TRAPPED            0x10000000UL
-
-/* Important */
-#define LFLAGS_ASCENSION_RADIANCE   0x20000000UL /* Lighten up */
-
+#define LFLAGS_ASCENSION_RADIANCE   0x04000000UL /* Lighten up */
+#define LFLAGS_CAN_SEE              0x08000000UL /* cansee(x, y) is true (if not, then darken etc.) */
+#define LFLAGS_UXUY                 0x10000000UL /* x == u.ux && y == u.uy is true */
+#define LFLAGS_APPEARS_UNLIT        0x20000000UL
 
 #define MISSILE_FLAGS_CORRODEABLE   0x00000001UL
 #define MISSILE_FLAGS_ROTTABLE      0x00000002UL
