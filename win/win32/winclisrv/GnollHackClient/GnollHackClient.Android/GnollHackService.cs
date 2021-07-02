@@ -122,6 +122,8 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int GetGlyph2Tile(out IntPtr array_ptr, out int size);
         [DllImport(@"libgnollhackdroid.so")]
+        public static extern int GetGlyphTileFlags(out IntPtr array_ptr, out int size);
+        [DllImport(@"libgnollhackdroid.so")]
         public static extern int GetTile2Animation(out IntPtr array_ptr, out int size);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int GetTile2Enlargement(out IntPtr array_ptr, out int size);
@@ -165,6 +167,10 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int get_tile_animation_index_from_glyph(int glyph);
 
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern byte LibGlyphIsExplosion(int glyph);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern byte LibGlyphIsZap(int glyph);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int maybe_get_animated_tile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, out int autodraw_ptr);
@@ -304,10 +310,11 @@ namespace GnollHackClient.Droid
             }
         }
 
-        public void GetTileArrays(out IntPtr gl2ti, out int size1, out IntPtr ti2an, out int size2, out IntPtr ti2en, out int size3, out IntPtr ti2re, out int size4, 
+        public void GetTileArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size, out IntPtr ti2an, out int size2, out IntPtr ti2en, out int size3, out IntPtr ti2re, out int size4, 
             out IntPtr anoff_ptr, out int anoff_size, out IntPtr enoff_ptr, out int enoff_size, out IntPtr reoff_ptr, out int reoff_size)
         {
             GetGlyph2Tile(out gl2ti, out size1);
+            GetGlyphTileFlags(out gltifl, out gltifl_size);
             GetTile2Animation(out ti2an, out size2);
             GetTile2Enlargement(out ti2en, out size3);
             GetTile2Replacement(out ti2re, out size4);
@@ -387,6 +394,14 @@ namespace GnollHackClient.Droid
         public int GetTileAnimationIndexFromGlyph(int glyph)
         {
             return get_tile_animation_index_from_glyph(glyph);
+        }
+        public bool GlyphIsExplosion(int glyph)
+        {
+            return (LibGlyphIsExplosion(glyph) != 0);
+        }
+        public bool GlyphIsZap(int glyph)
+        {
+            return (LibGlyphIsZap(glyph) != 0);
         }
 
         public int GetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,

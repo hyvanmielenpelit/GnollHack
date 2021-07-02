@@ -55,6 +55,19 @@ void GetGlyph2Tile(int** gl2ti_ptr, int* size_ptr)
 #endif
 }
 
+void GetGlyphTileFlags(uchar** gltifl_ptr, int* size_ptr)
+{
+    if (!gltifl_ptr || !size_ptr)
+        return;
+#ifdef USE_TILES
+    *gltifl_ptr = glyphtileflags;
+    *size_ptr = SIZE(glyphtileflags);
+#else
+    *gltifl_ptr = 0;
+    *size_ptr = 0;
+#endif
+}
+
 void GetTile2Animation(short** ti2an_ptr, int* size_ptr)
 {
     if (!ti2an_ptr || !size_ptr)
@@ -204,6 +217,18 @@ struct autodraw_definition LibGetAutoDrawArrayElement(idx)
 int idx;
 {
     return autodraws[idx];
+}
+
+boolean LibGlyphIsExplosion(glyph)
+int glyph;
+{
+    return glyph_is_explosion(glyph);
+}
+
+boolean LibGlyphIsZap(glyph)
+int glyph;
+{
+    return glyph_is_zap(glyph);
 }
 
 int GnollHackStart(cmdlineargs)

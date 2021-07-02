@@ -162,6 +162,17 @@ namespace GnollHackCommon
          LFLAGS_APPEARS_UNLIT =     0x20000000UL, /* looks unlit */
     }
 
+    [Flags]
+    public enum glyph_tile_flags : byte
+    {
+        None = 0x00,
+        GLYPH_TILE_FLAG_FLIP_HORIZONTALLY = 0x01,
+        GLYPH_TILE_FLAG_FLIP_VERTICALLY = 0x02,
+        GLYPH_TILE_FLAG_FULL_SIZED_ITEM = 0x04,
+        GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE = 0x08,
+        GLYPH_TILE_FLAG_HALF_SIZED_NONITEM = 0x10,
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct AnimationDefinition
     {
