@@ -108,7 +108,7 @@ DLL int RunGnollHack(
     StatusUpdateCallback callback_status_update,
     CanSuspendYesCallback callback_can_suspend_yes,
     StretchWindowCallback callback_stretch_window,
-    SetAnimationTimerCallback callback_set_animation_timer,
+    SetAnimationTimerCallback callback_set_animation_timer_interval,
     OpenSpecialViewCallback callback_open_special_view,
     StopAllSoundsCallback callback_stop_all_sounds,
     PlayImmediateSoundCallback callback_play_immediate_ghsound,
@@ -124,6 +124,9 @@ DLL int RunGnollHack(
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume,
     ClearContextMenuCallback callback_clear_context_menu,
     AddContextMenuCallback callback_add_context_menu,
+    ToggleAnimationTimerCallback callback_toggle_animation_timer,
+    SetAnimationWaitCallback callback_set_animation_wait,
+    GetAnimationWaitCallback callback_get_animation_wait,
     ExitHackCallback callback_exit_hack,
 
     GetCwdCallback callback_getcwd,

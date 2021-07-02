@@ -154,7 +154,7 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
     }
 
     data->is_active = activate && !GetNHApp()->regGnollHackMode;
-    context.general_animation_counter = 0UL;
+    animation_timers.general_animation_counter = 0UL;
 
     /* set menu type */
     SetMenuListType(hWnd, how);
@@ -533,10 +533,10 @@ MenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         return TRUE;
     case WM_TIMER:
-        if (context.general_animation_counter == GH_LONG_MAX)
-            context.general_animation_counter = 0UL;
+        if (animation_timers.general_animation_counter == GH_LONG_MAX)
+            animation_timers.general_animation_counter = 0UL;
         else
-            context.general_animation_counter++;
+            animation_timers.general_animation_counter++;
 
         for (int i = 0; i < data->menu.size; i++)
         {

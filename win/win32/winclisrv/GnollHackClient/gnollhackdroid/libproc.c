@@ -48,7 +48,7 @@ struct window_procs lib_procs = {
     lib_status_update,
     genl_can_suspend_yes,
     lib_stretch_window,
-    lib_set_animation_timer,
+    lib_set_animation_timer_interval,
     lib_open_special_view,
     lib_stop_all_sounds,
     lib_play_immediate_ghsound,
@@ -64,6 +64,9 @@ struct window_procs lib_procs = {
     lib_set_ambient_ghsound_volume,
     lib_clear_context_menu,
     lib_add_context_menu,
+    lib_toggle_animation_timer,
+    lib_set_animation_wait,
+    lib_get_animation_wait,
     lib_exit_hack,
 };
 
@@ -414,17 +417,20 @@ void lib_number_pad(int state)
 void lib_delay_output(void)
 {
     lib_callbacks.callback_delay_output();
+    reduce_counters_intervals(2);
 }
 
 void lib_delay_output_milliseconds(int interval)
 {
     lib_callbacks.callback_delay_output_milliseconds(interval);
+    reduce_counters(interval);
 }
 
 
 void lib_delay_output_intervals(int intervals)
 {
     lib_callbacks.callback_delay_output_intervals(intervals);
+    reduce_counters_intervals(intervals);
 }
 
 void lib_change_color(int param1, long param2, int param3)
@@ -783,9 +789,9 @@ void lib_stretch_window(void)
     return;
 }
 
-void lib_set_animation_timer(unsigned int param)
+void lib_set_animation_timer_interval(unsigned int param)
 {
-    lib_callbacks.callback_set_animation_timer((unsigned long)param);
+    lib_callbacks.callback_set_animation_timer_interval((unsigned long)param);
     return;
 }
 
@@ -899,6 +905,24 @@ void
 lib_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color)
 {
     lib_callbacks.callback_add_context_menu(cmd_def_char, cmd_cur_char, dir, glyph, cmd_text, target_text, attr, color);
+}
+
+void
+lib_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, unsigned long tflags)
+{
+    lib_callbacks.callback_toggle_animation_timer(timertype, timerid, state, x, y, layer, tflags);
+}
+
+void
+lib_set_animation_wait(int timertype, int timerid, int waittype, unsigned long value)
+{
+    lib_callbacks.callback_set_animation_wait(timertype, timerid, waittype, value);
+}
+
+unsigned long
+lib_get_animation_wait(int timertype, int timerid, int waittype)
+{
+    return lib_callbacks.callback_get_animation_wait(timertype, timerid, waittype);
 }
 
 /* Helper functions */

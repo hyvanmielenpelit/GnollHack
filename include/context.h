@@ -195,36 +195,40 @@ struct context_info
     struct tribute_info tribute;
     struct novel_tracking novel;
     uchar used_fountain_subtype[MAX_FOUNTAIN_SUBTYPES];
-    uchar m_action_animation_x;
-    uchar m_action_animation_y;
+
     boolean u_action_animation_counter_on;
     boolean m_action_animation_counter_on;
     boolean explosion_animation_counter_on;
     boolean zap_animation_counter_on[MAX_PLAYED_ZAP_ANIMATIONS];
     boolean special_effect_animation_counter_on[MAX_PLAYED_SPECIAL_EFFECTS];
-    long general_animation_counter;
-    long u_action_animation_counter;
-    long m_action_animation_counter;
-    long explosion_animation_counter;
-    long zap_animation_counter[MAX_PLAYED_ZAP_ANIMATIONS];
-    long special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
+    //long general_animation_counter;
+    //long u_action_animation_counter;
+    //long m_action_animation_counter;
+    //long explosion_animation_counter;
+    //long zap_animation_counter[MAX_PLAYED_ZAP_ANIMATIONS];
+    //long special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
+
+    uchar m_action_animation_x;
+    uchar m_action_animation_y;
+    uchar explosion_animation_x;
+    uchar explosion_animation_y;
+    uchar zap_animation_x[MAX_PLAYED_ZAP_ANIMATIONS];
+    uchar zap_animation_y[MAX_PLAYED_ZAP_ANIMATIONS];
+    uchar spef_action_animation_x[MAX_PLAYED_SPECIAL_EFFECTS];
+    uchar spef_action_animation_y[MAX_PLAYED_SPECIAL_EFFECTS];
+    enum layer_types spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
+
     unsigned long u_intervals_to_wait_until_action;
     unsigned long u_intervals_to_wait_until_end;
     unsigned long m_intervals_to_wait_until_action;
     unsigned long m_intervals_to_wait_until_end;
-    uchar zap_animation_x[MAX_PLAYED_ZAP_ANIMATIONS];
-    uchar zap_animation_y[MAX_PLAYED_ZAP_ANIMATIONS];
     unsigned long zap_aggregate_intervals_to_wait_until_action;
     unsigned long zap_aggregate_intervals_to_wait_until_end;
-    enum layer_types spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
-    uchar spef_action_animation_x[MAX_PLAYED_SPECIAL_EFFECTS];
-    uchar spef_action_animation_y[MAX_PLAYED_SPECIAL_EFFECTS];
     unsigned long spef_intervals_to_wait_until_action[MAX_PLAYED_SPECIAL_EFFECTS];
     unsigned long spef_intervals_to_wait_until_end[MAX_PLAYED_SPECIAL_EFFECTS];
-    uchar explosion_animation_x;
-    uchar explosion_animation_y;
     unsigned long expl_intervals_to_wait_until_action;
     unsigned long expl_intervals_to_wait_until_end;
+
     boolean force_allow_keyboard_commands;
     int makemon_spef_idx;
     unsigned long global_newsym_flags;

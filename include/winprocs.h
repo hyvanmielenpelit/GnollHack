@@ -89,7 +89,7 @@ struct window_procs {
     void FDECL((*win_status_update), (int, genericptr_t, int, int, int, unsigned long *));
     boolean NDECL((*win_can_suspend));
     void NDECL((*win_stretch_window));
-    void FDECL((*win_set_animation_timer), (unsigned int));
+    void FDECL((*win_set_animation_timer_interval), (unsigned int));
     void FDECL((*win_open_special_view), (struct special_view_info));
     void FDECL((*win_stop_all_sounds), (struct stop_all_info));
     void FDECL((*win_play_immediate_ghsound), (struct ghsound_immediate_info));
@@ -105,6 +105,30 @@ struct window_procs {
     void FDECL((*win_set_ambient_ghsound_volume), (sound_source*));
     void NDECL((*win_clear_context_menu));
     void FDECL((*win_add_context_menu), (int, int, int, int, const char*, const char*, int, int));
+    void FDECL((*win_toggle_animation_timer), (int, int, int, int, int, int, unsigned long)); /* timettype, id, state = on/off, x, y, flags */
+    void FDECL((*win_set_animation_wait), (int, int, int, unsigned long));
+    unsigned long FDECL((*win_get_animation_wait), (int, int, int));
+
+#if 0
+    void FDECL((*win_clear_object_list_at), (int, int, int));
+    void FDECL((*win_add_object_to_list_at), (int, int, int, struct obj));
+    void FDECL((*win_add_object_to_container_at), (int, int, int, unsigned, struct obj));
+    void FDECL((*win_set_monster_data_at), (int, int, struct monst, unsigned long, unsigned long));
+        /* x, y, mondata, conditionbits,
+           flags: has_unworn_items, is_watch(mtmp->data) */
+    void FDECL((*win_set_game_data), (int, int, int, int, int, int, int, int,
+        struct monst, struct prop*, unsigned, unsigned, unsigned, int, unsigned,
+        unsigned long));
+        /* u.ux, u.uy, uhp, uhpmax, umh, umhmax, u.en, u.enmax,
+          youmonst, u.uprops[], ustuck (mid), uball (oid), uchain (oid), u.carrying_capacity_level, u.uhs,
+          flags: Upolyd, u.uswallow, u.utrap, u.canadvanceskill, u.twoweap monster data set or not */
+    void FDECL((*win_floating_text), (int, int, double, const char*, int, double, double, double, int, int, unsigned long));
+    /* x, y, yoffset, text, vx, vy, time, attr, color, flags */
+    void FDECL((*win_move_glyph_on_layer), (int, int, int, int, int, int, double, unsigned long));
+    /* glyph, layer, x1, y1, x2, y2, time, flags */
+#endif
+
+
     void FDECL((*win_exit_hack), (int));
 };
 
@@ -195,7 +219,7 @@ extern
 #define status_enablefield (*windowprocs.win_status_enablefield)
 #define status_update (*windowprocs.win_status_update)
 #define stretch_window (*windowprocs.win_stretch_window)
-#define set_animation_timer (*windowprocs.win_set_animation_timer)
+#define set_animation_timer_interval (*windowprocs.win_set_animation_timer_interval)
 
 #define open_special_view (*windowprocs.win_open_special_view)
 #define stop_all_sounds (*windowprocs.win_stop_all_sounds)
@@ -212,6 +236,9 @@ extern
 #define set_ambient_ghsound_volume (*windowprocs.win_set_ambient_ghsound_volume)
 #define clear_context_menu (*windowprocs.win_clear_context_menu)
 #define add_context_menu (*windowprocs.win_add_context_menu)
+#define toggle_animation_timer (*windowprocs.win_toggle_animation_timer)
+#define set_animation_wait (*windowprocs.win_set_animation_wait)
+#define get_animation_wait (*windowprocs.win_get_animation_wait)
 #define exit_hack (*windowprocs.win_exit_hack)
 
 /*
@@ -442,7 +469,7 @@ struct chain_procs {
     void FDECL((*win_status_update), (CARGS, int, genericptr_t, int, int, int, unsigned long *));
     boolean FDECL((*win_can_suspend), (CARGS));
     void FDECL((*win_stretch_window, (CARGS)));
-    void FDECL((*win_set_animation_timer), (CARGS, unsigned int));
+    void FDECL((*win_set_animation_timer_interval), (CARGS, unsigned int));
     void FDECL((*win_open_special_view), (CARGS, struct special_view_info));
     void FDECL((*win_stop_all_sounds), (CARGS, struct stop_all_info));
     void FDECL((*win_play_immediate_ghsound), (CARGS, struct ghsound_immediate_info));
@@ -456,9 +483,12 @@ struct chain_procs {
     void FDECL((*win_add_ambient_ghsound), (CARGS, sound_source*));
     void FDECL((*win_delete_ambient_ghsound), (CARGS, sound_source*));
     void FDECL((*win_set_ambient_ghsound_volume), (CARGS, sound_source*));
-    void FDECL((*win_clear_context_menu, (CARGS))));
-    void FDECL((*win_add_context_menu, (CARGS, int, int, int, int, const char*, const char*, int, int))));
-    void FDECL((*win_exit_hack, (CARGS, int))));
+    void FDECL((*win_clear_context_menu), (CARGS));
+    void FDECL((*win_add_context_menu), (CARGS, int, int, int, int, const char*, const char*, int, int));
+    void FDECL((*win_toggle_animation_timer), (CARGS, int, int, int, int, int, int, unsigned long));
+    void FDECL((*win_set_animation_wait), (CARGS, int, int, int, unsigned long));
+    unsigned long FDECL((*win_get_animation_wait), (CARGS, int, int, int));
+    void FDECL((*win_exit_hack), (CARGS, int));
 };
 #endif /* WINCHAIN */
 
@@ -535,7 +565,7 @@ extern void FDECL(safe_status_enablefield,
 extern void FDECL(safe_status_update, (int, genericptr_t, int, int, int, unsigned long *));
 extern boolean NDECL(safe_can_suspend);
 extern void NDECL(safe_stretch_window);
-extern void FDECL(safe_set_animation_timer, (unsigned int));
+extern void FDECL(safe_set_animation_timer_interval, (unsigned int));
 extern void FDECL(safe_open_special_view, (struct special_view_info));
 extern void FDECL(safe_stop_all_sounds, (struct stop_all_info));
 extern void FDECL(safe_play_ghsound_occupation_ambient, (struct ghsound_occupation_ambient_info));
@@ -551,6 +581,9 @@ extern void FDECL(safe_delete_ambient_ghsound, (struct soundsource_t*));
 extern void FDECL(safe_set_ambient_ghsound_volume, (struct soundsource_t*));
 extern void NDECL(safe_clear_context_menu);
 extern void FDECL(safe_add_context_menu, (int, int, int, int, const char*, const char*, int, int));
+extern void FDECL(safe_toggle_animation_timer, (int, int, int, int, int, int, unsigned long));
+extern void FDECL(safe_set_animation_wait, (int, int, int, unsigned long));
+extern unsigned long FDECL(safe_get_animation_wait, (int, int, int));
 extern void FDECL(safe_exit_hack, (int));
 
 extern void FDECL(stdio_raw_print, (const char *));

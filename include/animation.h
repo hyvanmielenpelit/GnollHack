@@ -2216,4 +2216,30 @@ extern NEARDATA struct general_tile_definition general_tile_definitions[MAX_GENE
 #define MAX_PLAYED_SPECIAL_EFFECTS 12  // Must be greater than or equal to MAXNASTIES
 #define MAX_PLAYED_ZAP_ANIMATIONS 16
 
+/* This actually belongs to the GUI side, but it is here for general GUI use */
+struct animation_timer_list {
+    boolean u_action_animation_counter_on;
+    boolean m_action_animation_counter_on;
+    boolean explosion_animation_counter_on;
+    boolean zap_animation_counter_on[MAX_PLAYED_ZAP_ANIMATIONS];
+    boolean special_effect_animation_counter_on[MAX_PLAYED_SPECIAL_EFFECTS];
+
+    long general_animation_counter;
+    long u_action_animation_counter;
+    long m_action_animation_counter;
+    long explosion_animation_counter;
+    long zap_animation_counter[MAX_PLAYED_ZAP_ANIMATIONS];
+    long special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
+
+    uchar m_action_animation_x;
+    uchar m_action_animation_y;
+    uchar explosion_animation_x;
+    uchar explosion_animation_y;
+    uchar zap_animation_x[MAX_PLAYED_ZAP_ANIMATIONS];
+    uchar zap_animation_y[MAX_PLAYED_ZAP_ANIMATIONS];
+    uchar spef_action_animation_x[MAX_PLAYED_SPECIAL_EFFECTS];
+    uchar spef_action_animation_y[MAX_PLAYED_SPECIAL_EFFECTS];
+    enum layer_types spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
+};
+
 #endif /* ANIMATION_H */

@@ -102,7 +102,7 @@ struct window_procs safe_procs = {
 #endif
     safe_can_suspend,
     safe_stretch_window,
-    safe_set_animation_timer,
+    safe_set_animation_timer_interval,
     safe_open_special_view,
     safe_stop_all_sounds,
     safe_play_immediate_ghsound,
@@ -118,6 +118,9 @@ struct window_procs safe_procs = {
     safe_set_ambient_ghsound_volume,
     safe_clear_context_menu,
     safe_add_context_menu,
+    safe_toggle_animation_timer,
+    safe_set_animation_wait,
+    safe_get_animation_wait,
     safe_exit_hack,
 };
 
@@ -434,7 +437,7 @@ safe_stretch_window(VOID_ARGS)
 }
 
 void
-safe_set_animation_timer(interval)
+safe_set_animation_timer_interval(interval)
 unsigned int interval;
 {
     return;
@@ -538,6 +541,25 @@ safe_add_context_menu(int cmd_def_char UNUSED, int cmd_cur_char UNUSED, int dir 
 {
     return;
 }
+
+void
+safe_toggle_animation_timer(int type UNUSED, int id UNUSED, int state UNUSED, int x UNUSED, int y UNUSED, int layer UNUSED, unsigned long tflags UNUSED)
+{
+    return;
+}
+
+void
+safe_set_animation_wait(int type UNUSED, int id UNUSED, int waittype UNUSED, unsigned long value UNUSED)
+{
+    return;
+}
+
+unsigned long
+safe_get_animation_wait(int type UNUSED, int id UNUSED, int waittype UNUSED)
+{
+    return 0UL;
+}
+
 void
 safe_exit_hack(status)
 int status;

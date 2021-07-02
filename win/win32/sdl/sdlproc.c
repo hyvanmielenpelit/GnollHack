@@ -117,7 +117,7 @@ struct window_procs nuklear_procs = {
     sdl_status_update,
     genl_can_suspend_yes,
     sdl_stretch_window,
-    sdl_set_animation_timer,
+    sdl_set_animation_timer_interval,
     sdl_open_special_view,
     sdl_stop_all_sounds,
     sdl_play_immediate_ghsound,
@@ -133,6 +133,9 @@ struct window_procs nuklear_procs = {
     sdl_set_ambient_ghsound_volume,
     sdl_clear_context_menu,
     sdl_add_context_menu,
+    sdl_toggle_animation_timer,
+    sdl_set_animation_wait,
+    sdl_get_animation_wait,
     sdl_exit_hack,
 };
 
@@ -3418,7 +3421,7 @@ sdl_stretch_window(void)
 }
 
 void
-sdl_set_animation_timer(unsigned int interval)
+sdl_set_animation_timer_interval(unsigned int interval)
 {
     if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
         UINT data;
@@ -3642,4 +3645,60 @@ void
 sdl_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color)
 {
     return;
+}
+
+void
+sdl_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, int tflags)
+{
+    return;
+}
+
+void
+sdl_set_animation_wait(int timertype, int timerid, int waittype, unsigned long value)
+{
+    enum animation_timer_types att = (enum animation_timer_types)timertype;
+
+    switch (att)
+    {
+    case ANIMATION_TIMER_GENERAL:
+        break;
+    case ANIMATION_TIMER_YOU:
+        break;
+    case ANIMATION_TIMER_MONSTER:
+        break;
+    case ANIMATION_TIMER_EXPLOSION:
+        break;
+    case ANIMATION_TIMER_ZAP:
+        break;
+    case ANIMATION_TIMER_SPECIAL_EFFECT:
+        break;
+    default:
+        break;
+    }
+}
+
+unsigned long
+sdl_get_animation_wait(int timertype, int timerid, int waittype)
+{
+    enum animation_timer_types att = (enum animation_timer_types)timertype;
+
+    switch (att)
+    {
+    case ANIMATION_TIMER_GENERAL:
+        break;
+    case ANIMATION_TIMER_YOU:
+        break;
+    case ANIMATION_TIMER_MONSTER:
+        break;
+    case ANIMATION_TIMER_EXPLOSION:
+        break;
+    case ANIMATION_TIMER_ZAP:
+        break;
+    case ANIMATION_TIMER_SPECIAL_EFFECT:
+        break;
+    default:
+        break;
+    }
+
+    return 0UL;
 }

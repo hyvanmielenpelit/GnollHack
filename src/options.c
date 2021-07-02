@@ -551,7 +551,7 @@ extern struct symparse loadsyms[];
 static boolean need_redraw; /* for doset() */
 static boolean need_set_sound_volume; /* for doset() */
 static boolean need_update_inventory; /* for doset() */
-static boolean need_set_animation_timer;
+static boolean need_set_animation_timer_interval;
 static boolean need_update_space_binding;
 static boolean need_status_initialize;
 static boolean need_init_print_glyph;
@@ -4183,7 +4183,7 @@ boolean tinitial, tfrom_file;
         else
         {
             flags.animation_frame_interval_in_milliseconds = itmp;
-            need_set_animation_timer = TRUE;
+            need_set_animation_timer_interval = TRUE;
         }
         return retval;
     }
@@ -5276,7 +5276,7 @@ doset() /* changing options via menu by Per Liboriussen */
     need_redraw = FALSE;
     need_set_sound_volume = FALSE;
     need_update_inventory = FALSE;
-    need_set_animation_timer = FALSE;
+    need_set_animation_timer_interval = FALSE;
     need_update_space_binding = FALSE;
     need_status_initialize = FALSE;
     need_here_window = FALSE;
@@ -5411,9 +5411,9 @@ doset() /* changing options via menu by Per Liboriussen */
         update_inventory();
     }
 
-    if (need_set_animation_timer)
+    if (need_set_animation_timer_interval)
     {
-        set_animation_timer(flags.animation_frame_interval_in_milliseconds <= 0 ? ANIMATION_FRAME_INTERVAL : flags.animation_frame_interval_in_milliseconds);
+        set_animation_timer_interval(flags.animation_frame_interval_in_milliseconds <= 0 ? ANIMATION_FRAME_INTERVAL : flags.animation_frame_interval_in_milliseconds);
     }
     if (need_update_space_binding)
     {

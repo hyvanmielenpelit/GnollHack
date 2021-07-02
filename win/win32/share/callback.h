@@ -119,6 +119,9 @@ typedef BooleanVoidPtrCallback DeleteAmbientSoundCallback;
 typedef BooleanVoidPtrDoubleCallback SetAmbientVolumeCallback;
 typedef void(__callconv* ClearContextMenuCallback)(void);
 typedef void(__callconv* AddContextMenuCallback)(int, int, int, int, const char*, const char*, int, int);
+typedef void(__callconv* ToggleAnimationTimerCallback)(int, int, int, int, int, int, unsigned long);
+typedef void(__callconv* SetAnimationWaitCallback)(int, int, int, unsigned long);
+typedef unsigned long(__callconv* GetAnimationWaitCallback)(int, int, int);
 typedef void(__callconv* ExitHackCallback)(int);
 
 typedef char*(__callconv* GetCwdCallback)();
@@ -189,7 +192,7 @@ struct callback_procs {
     StatusUpdateCallback callback_status_update;
     CanSuspendYesCallback callback_can_suspend_yes;
     StretchWindowCallback callback_stretch_window;
-    SetAnimationTimerCallback callback_set_animation_timer;
+    SetAnimationTimerCallback callback_set_animation_timer_interval;
     OpenSpecialViewCallback callback_open_special_view;
     StopAllSoundsCallback callback_stop_all_sounds;
     PlayImmediateSoundCallback callback_play_immediate_ghsound;
@@ -205,6 +208,9 @@ struct callback_procs {
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume;
     ClearContextMenuCallback callback_clear_context_menu;
     AddContextMenuCallback callback_add_context_menu;
+    ToggleAnimationTimerCallback callback_toggle_animation_timer;
+    SetAnimationWaitCallback callback_set_animation_wait;
+    GetAnimationWaitCallback callback_get_animation_wait;
     ExitHackCallback callback_exit_hack;
 
     GetCwdCallback callback_getcwd;

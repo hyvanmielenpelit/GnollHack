@@ -87,7 +87,7 @@ struct window_procs curses_procs = {
     curses_status_update,
     genl_can_suspend_yes,
     genl_stretch_window,
-    genl_set_animation_timer,
+    genl_set_animation_timer_interval,
     genl_open_special_view,
     genl_stop_all_sounds,
     genl_play_immediate_ghsound,
@@ -103,6 +103,9 @@ struct window_procs curses_procs = {
     genl_set_ambient_ghsound_volume,
     genl_clear_context_menu,
     genl_add_context_menu,
+    genl_toggle_animation_timer,
+    genl_set_animation_wait,
+    genl_get_animation_wait,
     genl_exit_hack,
 };
 

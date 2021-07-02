@@ -65,7 +65,7 @@ void lib_status_finish(void);
 void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, int enable);
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks);
 void lib_stretch_window(void);
-void lib_set_animation_timer(unsigned int);
+void lib_set_animation_timer_interval(unsigned int);
 void lib_open_special_view(struct special_view_info info);
 void lib_stop_all_sounds(struct stop_all_info info);
 void lib_play_immediate_ghsound(struct ghsound_immediate_info info);
@@ -81,6 +81,9 @@ void lib_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void lib_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
 void lib_clear_context_menu(VOID_ARGS);
 void lib_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
+void lib_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, unsigned long tflags);
+void lib_set_animation_wait(int timertype, int timerid, int waittype, unsigned long value);
+unsigned long lib_get_animation_wait(int timertype, int timerid, int waittype);
 void lib_exit_hack(int status);
 
 /* Helper functions */

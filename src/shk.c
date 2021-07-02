@@ -713,7 +713,7 @@ char *enterstring;
                 play_voice_shopkeeper_leave_pick_outside(shkp, "steed", 1, !NOTANGRY(shkp));
                 verbalize(NOTANGRY(shkp) ? "Will you please leave %s outside?"
                     : "Leave %s outside.",
-                    y_monnam(u.usteed));
+                    iflags.using_gui_sounds ? "your steed" : y_monnam(u.usteed));
             }
             else
                 pline("%s %s to let you in while you're riding %s.",

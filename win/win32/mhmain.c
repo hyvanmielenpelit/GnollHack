@@ -223,7 +223,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         ZeroMemory(data, sizeof(NHMainWindow));
         data->mapAcsiiModeSave = MAP_MODE_ASCII12x16;
-        context.general_animation_counter = 0L;
+        animation_timers.general_animation_counter = 0L;
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) data);
 
         /* update menu items */
@@ -581,10 +581,10 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
 
     case WM_TIMER:
-        if(context.general_animation_counter == GH_LONG_MAX)
-            context.general_animation_counter = 0L; /* It is on! */
+        if(animation_timers.general_animation_counter == GH_LONG_MAX)
+            animation_timers.general_animation_counter = 0L; /* It is on! */
         else
-            context.general_animation_counter++;
+            animation_timers.general_animation_counter++;
         
         break;
 

@@ -112,5 +112,9 @@ namespace GnollHackCommon
     public delegate void FreeMemoryCallback(ref IntPtr ptr);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void AddContextMenuCallback(int value1, int value2, int value3, int value4, string value5, string value6, int value7, int value8);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void ToggleAnimationTimerCallback(int value1, int value2, int value3, int value4, int value5, int value6, ulong value7);
+    public delegate void SetAnimationWaitCallback(int value1, int value2, int value3, ulong value4);
+    public delegate ulong GetAnimationWaitCallback(int value1, int value2, int value3);
 
 }

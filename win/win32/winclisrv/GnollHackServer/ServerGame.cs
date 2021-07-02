@@ -80,7 +80,7 @@ namespace GnollHackServer
             StatusUpdateCallback callback_status_update,
             BooleanVoidCallback callback_can_suspend_yes,
             VoidVoidCallback callback_stretch_window,
-            VoidUlongCallback callback_set_animation_timer,
+            VoidUlongCallback callback_set_animation_timer_interval,
             VoidIntCallback callback_open_special_view,
             StopAllSoundsCallback callback_stop_all_sounds,
             PlayImmediateSoundCallback callback_play_immediate_ghsound,
@@ -96,6 +96,9 @@ namespace GnollHackServer
             BooleanDoubleVoidPtrCallback callback_set_ambient_ghsound_volume,
             VoidVoidCallback callback_clear_context_menu,
             AddContextMenuCallback callback_add_context_menu,
+            ToggleAnimationTimerCallback callback_toggle_animation_timer,
+            SetAnimationWaitCallback callback_set_animation_wait,
+            GetAnimationWaitCallback callback_get_animation_wait,
             VoidIntCallback callback_exit_hack,
             CharVoidCallback callback_getcwd,
             IntCharCharUintCallback callback_messagebox,
@@ -244,6 +247,9 @@ namespace GnollHackServer
                 GameCallback_BooleanDoubleVoidPtrDummy,
                 GameCallback_ClearContextMenu,
                 GameCallback_AddContextMenu,
+                GameCallback_ToggleAnimationTimer,
+                GameCallback_SetAnimationWait,
+                GameCallback_GetAnimationWait,
                 GameCallback_ExitHack,
                 GameCallback_GetCwd,
                 GameCallback_MessageBox,
@@ -286,6 +292,19 @@ namespace GnollHackServer
         public void GameCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, string cmd_text, string target_text, int attr, int color)
         {
 
+        }
+
+        public void GameCallback_ToggleAnimationTimer(int timertype, int timerid, int state, int x, int y, int layer, ulong tflags)
+        {
+
+        }
+        public void GameCallback_SetAnimationWait(int timertype, int timerid, int waittype, ulong val)
+        {
+
+        }
+        public ulong GameCallback_GetAnimationWait(int timertype, int timerid, int waittype)
+        {
+            return 0UL;
         }
 
         protected void GameCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color)

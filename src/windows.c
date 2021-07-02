@@ -235,7 +235,7 @@ genl_stretch_window(VOID_ARGS)
 }
 
 void
-genl_set_animation_timer(interval)
+genl_set_animation_timer_interval(interval)
 unsigned int interval UNUSED;
 {
     return;
@@ -346,6 +346,24 @@ void
 genl_add_context_menu(int cmd_def_char UNUSED, int cmd_cur_char UNUSED, int dir UNUSED, int glyph UNUSED, const char* cmd_text UNUSED, const char* target_text UNUSED, int attr UNUSED, int color UNUSED)
 {
     return;
+}
+
+void
+genl_toggle_animation_timer(int type UNUSED, int id UNUSED, int state UNUSED, int x UNUSED, int y UNUSED, int layer UNUSED, unsigned long tflags UNUSED)
+{
+    return;
+}
+
+void
+genl_set_animation_wait(int timertype UNUSED, int id UNUSED, int waittype UNUSED, unsigned long value UNUSED)
+{
+    return;
+}
+
+unsigned long
+genl_get_animation_wait(int timertype UNUSED, int id UNUSED, int waittype UNUSED)
+{
+    return 0UL;
 }
 
 void

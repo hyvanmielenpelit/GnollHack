@@ -301,7 +301,8 @@ int expltype;
     {
         /* Start the explosion */
         int framenum = 1;
-        context.explosion_animation_counter = 0;
+        toggle_animation_timer(ANIMATION_TIMER_EXPLOSION, 0, FALSE, 0, 0, 0, 0UL);
+        //context.explosion_animation_counter = 0;
         context.explosion_animation_counter_on = FALSE;
         context.expl_intervals_to_wait_until_action = 0;
         context.expl_intervals_to_wait_until_end = 0;
@@ -313,6 +314,7 @@ int expltype;
         {
             framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
             context.explosion_animation_counter_on = TRUE;
+            toggle_animation_timer(ANIMATION_TIMER_EXPLOSION, 0, TRUE, 0, 0, 0, 0UL);
         }
 
         for (i = 0; i < 3; i++)
@@ -1011,7 +1013,8 @@ enum explosion_types expltype;
     if (iflags.using_gui_tiles && isok(x, y))
     {
         int i, j, framenum = 1;
-        context.explosion_animation_counter = 0;
+        toggle_animation_timer(ANIMATION_TIMER_EXPLOSION, 0, FALSE, 0, 0, 0, 0UL);
+        //context.explosion_animation_counter = 0;
         context.explosion_animation_counter_on = FALSE;
         context.expl_intervals_to_wait_until_action = 0;
         context.expl_intervals_to_wait_until_end = 0;
@@ -1038,6 +1041,7 @@ enum explosion_types expltype;
         {
             framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
             context.explosion_animation_counter_on = TRUE;
+            toggle_animation_timer(ANIMATION_TIMER_EXPLOSION, 0, TRUE, x, y, 0, 0UL);
 
             if (animations[anim].sound_play_frame <= -1)
             {
@@ -1089,6 +1093,7 @@ explosion_wait_until_end()
     }
 
     context.explosion_animation_counter_on = FALSE;
+    toggle_animation_timer(ANIMATION_TIMER_EXPLOSION, 0, FALSE, 0, 0, 0, 0UL);
 
     int x = context.explosion_animation_x;
     int y = context.explosion_animation_y;
@@ -1109,7 +1114,7 @@ explosion_wait_until_end()
 
     context.global_newsym_flags = 0UL;
     context.expl_intervals_to_wait_until_action = 0UL;
-    context.explosion_animation_counter = 0L;
+    //context.explosion_animation_counter = 0L;
     context.explosion_animation_x = 0;
     context.explosion_animation_y = 0;
 }

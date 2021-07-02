@@ -2803,8 +2803,9 @@ boolean force_visibility;
         enum animation_types anim = special_effects[sp_effect].animation;
         if (anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
         {
-            context.special_effect_animation_counter[spef_number] = 0L;
+            //context.special_effect_animation_counter[spef_number] = 0L;
             context.special_effect_animation_counter_on[spef_number] = TRUE;
+            toggle_animation_timer(ANIMATION_TIMER_SPECIAL_EFFECT, spef_number, TRUE, x, y, layer, 0UL);
             force_redraw_at(x, y);
             flush_screen(1);
 
@@ -2867,8 +2868,9 @@ int spef_number;
         context.spef_intervals_to_wait_until_end[spef_number] = 0UL;
     }
 
+    toggle_animation_timer(ANIMATION_TIMER_SPECIAL_EFFECT, spef_number, 0, 0, 0, 0, 0UL);
     context.special_effect_animation_counter_on[spef_number] = FALSE;
-    context.special_effect_animation_counter[spef_number] = 0L;
+    //context.special_effect_animation_counter[spef_number] = 0L;
     context.spef_intervals_to_wait_until_action[spef_number] = 0L;
 
     if (isok(context.spef_action_animation_x[spef_number], context.spef_action_animation_y[spef_number]))
@@ -2954,14 +2956,14 @@ int intervals;
 void
 stop_animations()
 {
-    context.explosion_animation_counter_on = FALSE;
-    context.m_action_animation_counter_on = FALSE;
-    context.u_action_animation_counter_on = FALSE;
+    toggle_animation_timer(ANIMATION_TIMER_YOU, 0, 0, 0, 0, 0, 0UL);
+    toggle_animation_timer(ANIMATION_TIMER_MONSTER, 0, 0, 0, 0, 0, 0UL);
+    toggle_animation_timer(ANIMATION_TIMER_EXPLOSION, 0, 0, 0, 0, 0, 0UL);
     int i;
     for(i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
-        context.special_effect_animation_counter_on[i] = FALSE;
+        toggle_animation_timer(ANIMATION_TIMER_SPECIAL_EFFECT, i, 0, 0, 0, 0, 0UL);
     for (i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
-        context.zap_animation_counter_on[i] = FALSE;
+        toggle_animation_timer(ANIMATION_TIMER_ZAP, i, 0, 0, 0, 0, 0UL);
 }
 
 

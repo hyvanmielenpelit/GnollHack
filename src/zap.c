@@ -8690,8 +8690,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
     context.zap_aggregate_intervals_to_wait_until_action = 0UL;
     for (i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
+        toggle_animation_timer(ANIMATION_TIMER_ZAP, i, FALSE, 0, 0, 0, 0UL);
         context.zap_animation_counter_on[i] = FALSE;
-        context.zap_animation_counter[i] = 0L;
+        //context.zap_animation_counter[i] = 0L;
         context.zap_animation_x[i] = 0;
         context.zap_animation_y[i] = 0;
     }
@@ -8747,14 +8748,16 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
                     context.zap_animation_x[idx] = sx;
                     context.zap_animation_y[idx] = sy;
-                    context.zap_animation_counter[idx] = 0L;
+                    //context.zap_animation_counter[idx] = 0L;
                     context.zap_animation_counter_on[idx] = TRUE;
                     context.zap_aggregate_intervals_to_wait_until_action = 0UL;
                     context.zap_aggregate_intervals_to_wait_until_end = anim_intervals;
+                    toggle_animation_timer(ANIMATION_TIMER_ZAP, idx, TRUE, sx, sy, 0, 0UL);
 
                     if (animations[anim].action_execution_frame > 0)
                     {
                         long intervals_to_execution = (long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
+#if 0
                         if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
                         {
                             long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution -1; // -1;
@@ -8763,7 +8766,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                                 context.zap_animation_counter[prev_anim_counter_idx] -= diff;
                             }
                         }
-
+#endif
                         context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
                     }
 
@@ -9147,8 +9150,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_DESTROY, lsx, lsy);
     for (i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
+        toggle_animation_timer(ANIMATION_TIMER_ZAP, i, FALSE, 0, 0, 0, 0UL);
         context.zap_animation_counter_on[i] = FALSE;
-        context.zap_animation_counter[i] = 0L;
+        //context.zap_animation_counter[i] = 0L;
         context.zap_animation_x[i] = 0;
         context.zap_animation_y[i] = 0;
     }

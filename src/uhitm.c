@@ -5078,8 +5078,9 @@ unsigned long additional_newsym_flags;
 
     context.u_intervals_to_wait_until_action = 0UL;
     context.u_intervals_to_wait_until_end = 0UL;
-    context.u_action_animation_counter = 0L;
+    //context.u_action_animation_counter = 0L;
     context.u_action_animation_counter_on = FALSE;
+    toggle_animation_timer(ANIMATION_TIMER_YOU, 0, FALSE, 0, 0, 0, 0UL);
 
     u.action = action;
 
@@ -5090,8 +5091,9 @@ unsigned long additional_newsym_flags;
         if (u.action != ACTION_TILE_NO_ACTION && anim > 0
             && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY && !u.usteed)
         {
-            context.u_action_animation_counter = 0L;
+            //context.u_action_animation_counter = 0L;
             context.u_action_animation_counter_on = TRUE;
+            toggle_animation_timer(ANIMATION_TIMER_YOU, 0, TRUE, u.ux, u.uy, 0, 0UL);
             newsym_with_flags(u.ux, u.uy, additional_newsym_flags);
             force_redraw_at(u.ux, u.uy);
             flush_screen(1);
@@ -5199,8 +5201,9 @@ unsigned long additional_newsym_flags;
     context.m_intervals_to_wait_until_end = 0UL;
     context.m_action_animation_x = 0;
     context.m_action_animation_y = 0;
-    context.m_action_animation_counter = 0L;
+    //context.m_action_animation_counter = 0L;
     context.m_action_animation_counter_on = FALSE;
+    toggle_animation_timer(ANIMATION_TIMER_MONSTER, 0, FALSE, 0, 0, 0, 0UL);
 
     mtmp->action = action;
 
@@ -5212,8 +5215,9 @@ unsigned long additional_newsym_flags;
         {
             context.m_action_animation_x = mtmp->mx;
             context.m_action_animation_y = mtmp->my;
-            context.m_action_animation_counter = 0L;
+            //context.m_action_animation_counter = 0L;
             context.m_action_animation_counter_on = TRUE;
+            toggle_animation_timer(ANIMATION_TIMER_YOU, 0, TRUE, mtmp->mx, mtmp->my, 0, 0UL);
             newsym_with_flags(mtmp->mx, mtmp->my, additional_newsym_flags);
             force_redraw_at(mtmp->mx, mtmp->my);
             flush_screen(1);

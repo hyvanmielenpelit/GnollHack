@@ -839,7 +839,7 @@ nh_timeout()
 
     if (u.ugallop) {
         if (--u.ugallop == 0L && u.usteed)
-            pline("%s stops galloping.", Monnam(u.usteed));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stops galloping.", Monnam(u.usteed));
     }
 
     //Reduce spell cooldown timers
@@ -1009,7 +1009,7 @@ nh_timeout()
                    treat like being cured of strangulation by prayer */
                 if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
                     play_sfx_sound(SFX_ITEM_VANISHES);
-                    Your("amulet vanishes!");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "amulet vanishes!");
                     useup(uamul);
                 }
                 break;
@@ -1054,7 +1054,7 @@ nh_timeout()
                      * to this number must be thoroughly play tested.
                      */
                     if ((inv_weight() > -500)) {
-                        You("make a lot of noise!");
+                        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "make a lot of noise!");
                         wake_nearby();
                     }
                 }
@@ -1125,299 +1125,299 @@ nh_timeout()
             switch (propnum) {
             case FAST:
                 if (!Lightning_fast && !Super_fast && !Ultra_fast && !Very_fast)
-                    You("are starting to feel less quick than before.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less quick than before.");
                 break;
             case VERY_FAST:
                 if (!Lightning_fast && !Super_fast && !Ultra_fast)
-                    You("are starting to feel%s less quick than before.",
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel%s less quick than before.",
                     Fast ? " a bit" : "");
                 break;
             case ULTRA_FAST:
                 if (!Lightning_fast && !Super_fast)
-                    You("are starting to feel%s less quick than before.",
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel%s less quick than before.",
                         Very_fast || Fast ? " a bit" : "");
                 break;
             case SUPER_FAST:
                 if (!Lightning_fast)
-                    You("are starting to feel%s less quick than before.",
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel%s less quick than before.",
                         Ultra_fast || Very_fast || Fast ? " a bit" : "");
                 break;
             case LIGHTNING_FAST:
                 if (1)
-                    You("are starting to feel%s less quick than before.",
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel%s less quick than before.",
                         Super_fast || Ultra_fast || Very_fast || Fast ? " a bit" : "");
                 break;
             case SLOWED:
-                You_feel("you are starting to speed up.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to speed up.");
                 break;
             case HEROISM:
                 if (!Super_heroism && !Heroism)
-                    You("are starting to feel less heroic than before.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less heroic than before.");
                 break;
             case SUPER_HEROISM:
                 if (!Super_heroism)
-                    You("are starting to feel%s less heroic than before.",
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel%s less heroic than before.",
                         Heroism ? " a bit" : "");
                 break;
             case RAPID_REGENERATION:
                 if (!Divine_regeneration && !Rapidest_regeneration && !Rapider_regeneration)
-                    You_feel("you are starting to heal %sless rapidly than before.",
+                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to heal %sless rapidly than before.",
                         Regeneration ? "" : "much ");
                 break;
             case RAPIDER_REGENERATION:
                 if (!Divine_regeneration && !Rapidest_regeneration)
-                    You_feel("you are starting to heal %sless rapidly than before.",
+                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to heal %sless rapidly than before.",
                         Rapid_regeneration || Regeneration ? "" : "much ");
                 break;
             case RAPIDEST_REGENERATION:
                 if (!Divine_regeneration)
-                    You_feel("you are starting to heal %sless rapidly than before.",
+                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to heal %sless rapidly than before.",
                     Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
                 break;
             case DIVINE_REGENERATION:
-                You_feel("you are starting to heal %sless rapidly than before.",
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to heal %sless rapidly than before.",
                     Rapidest_regeneration || Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
                 break;
             case RAPID_ENERGY_REGENERATION:
                 if (!Rapidest_energy_regeneration && !Rapider_energy_regeneration)
-                    You_feel("you are starting to gain mana %sless rapidly than before.",
+                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to gain mana %sless rapidly than before.",
                         Energy_regeneration ? "" : "much ");
                 break;
             case RAPIDER_ENERGY_REGENERATION:
                 if (!Rapidest_energy_regeneration)
-                    You_feel("you are starting to gain mana %sless rapidly than before.",
+                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to gain mana %sless rapidly than before.",
                         Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
                 break;
             case RAPIDEST_ENERGY_REGENERATION:
-                You_feel("you are starting to gain mana %sless rapidly than before.",
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to gain mana %sless rapidly than before.",
                     Rapider_energy_regeneration || Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
                 break;
             case MELEE_LIFE_LEECH:
-                You_feel("you are starting to lose your ability to leech life in melee.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to lose your ability to leech life in melee.");
                 break;
             case CRAZED:
-                You("are starting to feel more sane than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel more sane than before.");
                 break;
             case SILENCED:
-                You_feel("your is starting to return.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "your is starting to return.");
                 break;
             case INVISIBILITY:
-                You("are starting to feel more visible.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel more visible.");
                 break;
             case SEE_INVISIBLE:
-                Your("vision of invisible monsters is becoming less clear.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "vision of invisible monsters is becoming less clear.");
                 break;
             case LEVITATION:
-                You("are starting to feel less buoyant.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less buoyant.");
                 break;
             case FLYING:
                 /* timed Flying is via #wizintrinsic only */
-                You("are starting to feel less aerial.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less aerial.");
                 break;
             case PASSES_WALLS:
-                pline("You're starting to get back to your %s self again.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You're starting to get back to your %s self again.",
                     !Upolyd ? "normal" : "unusual");
                 break;
             case REFLECTING:
-                Your("skin is starting to feel less reflecting than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel less reflecting than before.");
                 break;
             case FIRE_IMMUNITY:
-                Your("skin is starting to feel more prone to burning than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to burning than before.");
                 break;
             case COLD_IMMUNITY:
-                Your("skin is starting to feel more prone to frostbites than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to frostbites than before.");
                 break;
             case SHOCK_IMMUNITY:
-                Your("skin is starting to feel more prone to electricity than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to electricity than before.");
                 break;
             case IMPROVED_FIRE_RESISTANCE:
                 if (!Fire_immunity)
-                    Your("skin is starting to feel more prone to burning than before.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to burning than before.");
                 break;
             case IMPROVED_COLD_RESISTANCE:
                 if (!Cold_immunity)
-                    Your("skin is starting to feel more prone to frostbites than before.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to frostbites than before.");
                 break;
             case IMPROVED_SHOCK_RESISTANCE:
                 if (!Shock_immunity)
-                    Your("skin is starting to feel more prone to electricity than before.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to electricity than before.");
                 break;
             case FIRE_RESISTANCE:
                 if(!Improved_fire_resistance && !Fire_immunity)
-                    Your("skin is starting to feel more prone to burning than before.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to burning than before.");
                 break;
             case COLD_RESISTANCE:
                 if (!Improved_cold_resistance && !Cold_immunity)
-                    Your("skin is starting to feel more prone to frostbites than before.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to frostbites than before.");
                 break;
             case SHOCK_RESISTANCE:
                 if (!Improved_shock_resistance && !Shock_immunity)
-                    Your("skin is starting to feel more prone to electricity than before.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to electricity than before.");
                 break;
             case DISINTEGRATION_RESISTANCE:
-                Your("body is starting to feel less firm than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "body is starting to feel less firm than before.");
                 break;
             case POISON_RESISTANCE:
-                You("are starting to feel less healthy than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less healthy than before.");
                 break;
             case ACID_IMMUNITY:
-                Your("skin is starting to feel more prone to acid than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to acid than before.");
                 break;
             case IMPROVED_ACID_RESISTANCE:
                 if (!Acid_immunity)
-                    Your("skin is starting to feel more prone to acid than before.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to acid than before.");
                 break;
             case ACID_RESISTANCE:
                 if (!Improved_acid_resistance && !Acid_immunity)
-                    Your("skin is starting to feel more prone to acid than before.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to acid than before.");
                 break;
             case STONE_RESISTANCE:
-                You("are starting to feel a bit less limber than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel a bit less limber than before.");
                 break;
             case DRAIN_RESISTANCE:
-                You("are starting to feel more suspectible to draining than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel more suspectible to draining than before.");
                 break;
             case SICK_RESISTANCE:
-                You("are starting to feel more bothered by bugs.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel more bothered by bugs.");
                 break;
             case INVULNERABLE:
-                Your("skin is starting to feel more prone to damage than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel more prone to damage than before.");
                 break;
             case ANTIMAGIC:
-                You("are starting to feel less protected from magic.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected from magic.");
                 break;
             case MAGIC_MISSILE_IMMUNITY:
-                You("are starting to feel less protected from magic missiles.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected from magic missiles.");
                 break;
             case IMPROVED_MAGIC_MISSILE_RESISTANCE:
                 if (!Magic_missile_immunity)
-                    You("are starting to feel less protected from magic missiles.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected from magic missiles.");
                 break;
             case MAGIC_MISSILE_RESISTANCE:
                 if (!Improved_magic_missile_resistance && !Magic_missile_immunity)
-                    You("are starting to feel less protected from magic missiles.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected from magic missiles.");
                 break;
             case CANCELLED:
-                You("feel your magic is starting to flow more normally.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic is about to start to flow more normally.");
                 break;
             case CANCELLATION_RESISTANCE:
                 /* Nothing intentionally */
                 break;
             case THREE_FOURTHS_MAGIC_RESISTANCE:
                 if (!Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
-                    You("feel your magic resistance is starting to work more properly.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is starting to work more properly.");
                 break;
             case HALVED_MAGIC_RESISTANCE:
                 if (!One_fourth_magic_resistance && !No_magic_resistance)
-                    You("feel your magic resistance is starting to work more properly.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is starting to work more properly.");
                 break;
             case ONE_FOURTH_MAGIC_RESISTANCE:
                 if (!No_magic_resistance)
-                    You("feel your magic resistance is starting to work more properly.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is starting to work more properly.");
                 break;
             case NO_MAGIC_RESISTANCE:
-                You("feel your magic resistance is starting to work more properly.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is starting to work more properly.");
                 break;
             case PARALYZED:
                 if(!(Undead_immobility && is_undead(youmonst.data)))
-                    Your("limbs are starting move a bit.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "limbs are starting move a bit.");
                 break;
             case UNDEAD_IMMOBILITY:
                 if (!(Undead_immobility && is_undead(youmonst.data)))
-                    Your("limbs are starting move a bit.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "limbs are starting move a bit.");
                 break;
             case FEARFUL:
-                You("are starting to regain your composure.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to regain your composure.");
                 break;
             case SLEEPING:
-                You("are starting to wake up.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to wake up.");
                 break;
             case SUMMON_FORBIDDEN:
-                You("feel summoning is starting to work a bit more properly again.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel summoning is starting to work a bit more properly again.");
                 break;
             case CHARMED:
-                Your("own motivations are starting to make a bit more sense to you.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "own motivations are starting to make a bit more sense to you.");
                 break;
             case UNDEAD_CONTROL:
-                You("are starting to be more in control of your own actions.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to be more in control of your own actions.");
                 break;
             case DEATH_RESISTANCE:
-                Your("soul's silver cord is starting to feel thinner than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "soul's silver cord is starting to feel thinner than before.");
                 break;
             case CHARM_RESISTANCE:
-                You("are starting to feel less certain of your own motivations.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less certain of your own motivations.");
                 break;
             case FEAR_RESISTANCE:
-                You("are starting to feel less courageous.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less courageous.");
                 break;
             case MIND_SHIELDING:
-                You("are starting to feel less protected from mental detection.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected from mental detection.");
                 break;
             case LYCANTHROPY_RESISTANCE:
-                You("are starting to feel less protected from lycanthropy.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected from lycanthropy.");
                 break;
             case CURSE_RESISTANCE:
-                You("are starting to feel less protected from curses.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected from curses.");
                 break;
             case LIFESAVED:
-                You("are starting to feel more mortal than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel more mortal than before.");
                 break;
             case DETECT_MONSTERS:
-                You("are starting to feel less sensitive to the presence of monsters than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less sensitive to the presence of monsters than before.");
                 break;
             case BLIND_TELEPATHY:
-                You("are starting to feel less telepathic when blind than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less telepathic when blind than before.");
                 break;
             case TELEPAT:
-                You("are starting to feel less telepathic than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less telepathic than before.");
                 break;
             case XRAY_VISION:
-                Your("vision through the walls is starting to get blurred.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "vision through the walls is starting to get blurred.");
                 break;
             case WATER_WALKING:
-                You("are starting to feel less able to walk on water than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less able to walk on water than before.");
                 break;
             case MAGICAL_BREATHING:
-                You("are starting to feel less able to breathe in water than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less able to breathe in water than before.");
                 break;
             case DISPLACED:
-                Your("mirror image is starting to vanish.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "mirror image is starting to vanish.");
                 break;
             case CONFLICT:
-                Your("neighborhood is starting to feel less quarrelsome than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "neighborhood is starting to feel less quarrelsome than before.");
                 break;
             case MAGICAL_PROTECTION:
-                You("are starting to feel less protected than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less protected than before.");
                 break;
             case MAGICAL_SHIELDING:
-                You("are starting to feel less shielded than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less shielded than before.");
                 break;
             case MAGICAL_BARKSKIN:
-                Your("skin is starting to feel less bark-like than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel less bark-like than before.");
                 break;
             case MAGICAL_STONESKIN:
-                Your("skin is starting to feel less stone-like than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel less stone-like than before.");
                 break;
             case BISECTION_RESISTANCE:
-                Your("skin is starting to feel less steel-like than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin is starting to feel less steel-like than before.");
                 break;
             case TITAN_STRENGTH:
-                You("are starting to feel less strong than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less strong than before.");
                 break;
             case DIVINE_ENDURANCE:
-                Your("endurance is starting to feel worse than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "endurance is starting to feel worse than before.");
                 break;
             case DIVINE_DEXTERITY:
-                You("are starting to feel less dextrous than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less dextrous than before.");
                 break;
             case DIVINE_INTELLECT:
-                You("are starting to feel less smart than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less smart than before.");
                 break;
             case DIVINE_WISDOM:
-                Your("common sense is starting to feel less abundant than before.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "common sense is starting to feel less abundant than before.");
                 break;
             case DIVINE_CHARISMA:
-                You("are starting to feel less charming than before.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel less charming than before.");
                 break;
             }
         }
@@ -1661,10 +1661,10 @@ long timeout;
         case OBJ_INVENT:
             knows_egg = TRUE; /* true even if you are blind */
             if (!cansee_hatchspot)
-                You_feel("%s %s from your pack!", something,
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s from your pack!", something,
                          locomotion(mon->data, "drop"));
             else
-                You_see("%s %s out of your pack!", monnambuf,
+                You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s out of your pack!", monnambuf,
                         locomotion(mon->data, "drop"));
             if (yours) {
                 pline("%s cries sound like \"%s%s\"",
@@ -1678,7 +1678,7 @@ long timeout;
         case OBJ_FLOOR:
             if (cansee_hatchspot) {
                 knows_egg = TRUE;
-                You_see("%s hatch.", monnambuf);
+                You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hatch.", monnambuf);
                 redraw = TRUE; /* update egg's map location */
             }
             break;
@@ -1697,7 +1697,7 @@ long timeout;
                 } else {
                     Strcpy(carriedby, "thin air");
                 }
-                You_see("%s %s out of %s!", monnambuf,
+                You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s out of %s!", monnambuf,
                         locomotion(mon->data, "drop"), carriedby);
             }
             break;
@@ -1926,10 +1926,10 @@ const char *tailer;
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flickers%s.", Yname2(obj), tailer);
         break;
     case OBJ_MINVENT:
-        pline("%s flickers%s.", Yname2(obj), tailer);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flickers%s.", Yname2(obj), tailer);
         break;
     case OBJ_FLOOR:
-        You_see("%s flicker%s.", an(xname(obj)), tailer);
+        You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flicker%s.", an(xname(obj)), tailer);
         break;
     }
 }
@@ -2019,10 +2019,10 @@ long timeout;
                 need_invupdate = TRUE;
                 /*FALLTHRU*/
             case OBJ_MINVENT:
-                pline("%spotion of oil has burnt away.", whose);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%spotion of oil has burnt away.", whose);
                 break;
             case OBJ_FLOOR:
-                You_see("a burning potion of oil go out.");
+                You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "a burning potion of oil go out.");
                 need_newsym = TRUE;
                 break;
             }
@@ -2064,10 +2064,10 @@ long timeout;
                     switch (obj->where) {
                     case OBJ_INVENT:
                     case OBJ_MINVENT:
-                        pline("%s seems about to go out.", Yname2(obj));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems about to go out.", Yname2(obj));
                         break;
                     case OBJ_FLOOR:
-                        You_see("%s about to go out.", an(xname(obj)));
+                        You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s about to go out.", an(xname(obj)));
                         break;
                     }
                 }
@@ -2083,15 +2083,15 @@ long timeout;
                     /*FALLTHRU*/
                 case OBJ_MINVENT:
                     if (obj->otyp == BRASS_LANTERN)
-                        pline("%slantern has run out of power.", whose);
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%slantern has run out of power.", whose);
                     else
-                        pline("%s has gone out.", Yname2(obj));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s has gone out.", Yname2(obj));
                     break;
                 case OBJ_FLOOR:
                     if (obj->otyp == BRASS_LANTERN)
-                        You_see("a lantern run out of power.");
+                        You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "a lantern run out of power.");
                     else
-                        You_see("%s go out.", an(xname(obj)));
+                        You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s go out.", an(xname(obj)));
                     break;
                 }
             }
@@ -2122,12 +2122,12 @@ long timeout;
                 switch (obj->where) {
                 case OBJ_INVENT:
                 case OBJ_MINVENT:
-                    pline("%s%scandle%s getting short.", whose,
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%scandle%s getting short.", whose,
                         is_candelabrum ? "candelabrum's " : "",
                           many ? "s are" : " is");
                     break;
                 case OBJ_FLOOR:
-                    You_see("%scandle%s getting short.",
+                    You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%scandle%s getting short.",
                         is_candelabrum ? "a candelabrum's " : many ? "some "
                                                                 : "a ",
                             many ? "s" : "");
@@ -2140,12 +2140,12 @@ long timeout;
                 switch (obj->where) {
                 case OBJ_INVENT:
                 case OBJ_MINVENT:
-                    pline("%s%scandle%s flame%s flicker%s low!", whose,
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%scandle%s flame%s flicker%s low!", whose,
                         is_candelabrum ? "candelabrum's " : "", many ? "s'" : "'s",
                           many ? "s" : "", many ? "" : "s");
                     break;
                 case OBJ_FLOOR:
-                    You_see("%scandle%s flame%s flicker low!",
+                    You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%scandle%s flame%s flicker low!",
                         is_candelabrum ? "a candelabrum's " : many ? "some "
                                                                 : "a ",
                             many ? "s'" : "'s", many ? "s" : "");
@@ -2162,11 +2162,11 @@ long timeout;
                         need_invupdate = TRUE;
                         /*FALLTHRU*/
                     case OBJ_MINVENT:
-                        pline("%scandelabrum's flame%s.", whose,
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%scandelabrum's flame%s.", whose,
                               many ? "s die" : " dies");
                         break;
                     case OBJ_FLOOR:
-                        You_see("a candelabrum's flame%s die.",
+                        You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "a candelabrum's flame%s die.",
                                 many ? "s" : "");
                         break;
                     }
@@ -2177,7 +2177,7 @@ long timeout;
                            useupall() -> freeinv() handles it */
                         /*FALLTHRU*/
                     case OBJ_MINVENT:
-                        pline("%s %s consumed!", Yname2(obj),
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s consumed!", Yname2(obj),
                               many ? "are" : "is");
                         break;
                     case OBJ_FLOOR:
@@ -2185,7 +2185,7 @@ long timeout;
                           You see some wax candles consumed!
                           You see a wax candle consumed!
                          */
-                        You_see("%s%s consumed!", many ? "some " : "",
+                        You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%s consumed!", many ? "some " : "",
                                 many ? xname(obj) : an(xname(obj)));
                         need_newsym = TRUE;
                         break;
@@ -2488,7 +2488,7 @@ long timeout;
     if (flags.verbose && canseeunsummon) {
         char* bbname = xname(obj);
 
-        pline("%s%s%s %s in a puff of smoke%c", whosebuf, iswielded ? "wielded " : "", bbname,
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%s%s %s in a puff of smoke%c", whosebuf, iswielded ? "wielded " : "", bbname,
             otense(obj, "vanish"), iswielded ? '!' : '.');
     }
 
@@ -2558,7 +2558,7 @@ long timeout;
 
     play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
     if (canseemon(mon)) {
-        pline("%s vanishes in a puff of smoke!", Monnam(mon));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s vanishes in a puff of smoke!", Monnam(mon));
     }
 
     //Note: assume that the monster drops all its items
@@ -2621,7 +2621,7 @@ long timeout;
     }
 
     context.time_stopped = FALSE;
-    pline("The flow of time seems faster again.");
+    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The flow of time seems faster again.");
 }
 
 
@@ -2657,7 +2657,7 @@ do_storms()
     if (levl[u.ux][u.uy].typ == CLOUD) {
         /* Inside a cloud during a thunder storm is deafening. */
         /* Even if already deaf, we sense the thunder's vibrations. */
-        pline("Kaboom!!!  Boom!!  Boom!!");
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Kaboom!!!  Boom!!  Boom!!");
         incr_itimeout(&HDeaf, rn1(20, 30));
         context.botl = context.botlx = TRUE;
         play_environment_ambient_sounds();
@@ -3665,330 +3665,330 @@ boolean was_flying;
     {
     case REFLECTING:
         if (!Reflecting)
-            Your("skin feels less reflecting than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels less reflecting than before.");
         break;
     case FIRE_IMMUNITY:
         if (!Fire_immunity)
-            Your("skin feels more prone to burning than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to burning than before.");
         break;
     case COLD_IMMUNITY:
         if (!Cold_immunity)
-            Your("skin feels more prone to frostbites than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to frostbites than before.");
         break;
     case SHOCK_IMMUNITY:
         if (!Shock_immunity)
-            Your("skin feels more prone to electricity than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to electricity than before.");
         break;
     case IMPROVED_FIRE_RESISTANCE:
         if (!Improved_fire_resistance && !Fire_immunity)
-            Your("skin feels more prone to burning than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to burning than before.");
         break;
     case IMPROVED_COLD_RESISTANCE:
         if (!Improved_cold_resistance && !Cold_immunity)
-            Your("skin feels more prone to frostbites than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to frostbites than before.");
         break;
     case IMPROVED_SHOCK_RESISTANCE:
         if (!Improved_shock_resistance && !Shock_immunity)
-            Your("skin feels more prone to electricity than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to electricity than before.");
         break;
     case FIRE_RESISTANCE:
         if (!Fire_resistance && !Improved_fire_resistance && !Fire_immunity)
-            Your("skin feels more prone to burning than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to burning than before.");
         break;
     case COLD_RESISTANCE:
         if (!Cold_resistance && !Improved_cold_resistance && !Cold_immunity)
-            Your("skin feels more prone to frostbites than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to frostbites than before.");
         break;
     case SHOCK_RESISTANCE:
         if (!Shock_resistance && !Improved_shock_resistance && !Shock_immunity)
-            Your("skin feels more prone to electricity than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to electricity than before.");
         break;
     case DISINTEGRATION_RESISTANCE:
         if (!Disint_resistance)
-            Your("body feels less firm than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "body feels less firm than before.");
         break;
     case POISON_RESISTANCE:
         if (!Poison_resistance)
-            You("feel less healthy than before.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less healthy than before.");
         break;
     case ACID_IMMUNITY:
         if (!Acid_immunity)
-            Your("skin feels more prone to acid than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to acid than before.");
         break;
     case IMPROVED_ACID_RESISTANCE:
         if (!Improved_acid_resistance && !Acid_immunity)
-            Your("skin feels more prone to acid than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to acid than before.");
         break;
     case ACID_RESISTANCE:
         if (!Acid_resistance && !Improved_acid_resistance && !Acid_immunity)
-            Your("skin feels more prone to acid than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to acid than before.");
         break;
     case STONE_RESISTANCE:
         if (!Stone_resistance)
-            You("feel less limber than before.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less limber than before.");
         break;
     case DRAIN_RESISTANCE:
         if (!Drain_resistance)
-            You("feel more suspectible to draining than before.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel more suspectible to draining than before.");
         break;
     case SICK_RESISTANCE:
         if (!Sick_resistance)
-            You("feel like you might be catching a cold.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel like you might be catching a cold.");
         break;
     case INVULNERABLE:
         if (!Invulnerable)
-            Your("skin feels more prone to damage than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to damage than before.");
         break;
     case ANTIMAGIC:
         if (!Antimagic)
-            You("feel less protected from magic.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less protected from magic.");
         break;
     case MAGIC_MISSILE_IMMUNITY:
         if (!Magic_missile_immunity)
-            You("feel less protected from magic missiles.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less protected from magic missiles.");
         break;
     case IMPROVED_MAGIC_MISSILE_RESISTANCE:
         if (!Improved_magic_missile_resistance && !Magic_missile_immunity)
-            You("feel less protected from magic missiles.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less protected from magic missiles.");
         break;
     case MAGIC_MISSILE_RESISTANCE:
         if (!Magic_missile_resistance && !Improved_magic_missile_resistance && !Magic_missile_immunity)
-            You("feel less protected from magic missiles.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less protected from magic missiles.");
         break;
     case CANCELLED:
         if (!Cancelled)
-            You("feel your magic is flowing more normally.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic is flowing more normally.");
         break;
     case CANCELLATION_RESISTANCE:
         /* Nothing intentionally */
         break;
     case THREE_FOURTHS_MAGIC_RESISTANCE:
         if (!Three_fourths_magic_resistance && !Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
-            You("feel your magic resistance is working more properly.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is working more properly.");
         break;
     case HALVED_MAGIC_RESISTANCE:
         if (!Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
-            You("feel your magic resistance is working more properly.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is working more properly.");
         break;
     case ONE_FOURTH_MAGIC_RESISTANCE:
         if (!One_fourth_magic_resistance && !No_magic_resistance)
-            You("feel your magic resistance is working more properly.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is working more properly.");
         break;
     case NO_MAGIC_RESISTANCE:
         if (!No_magic_resistance)
-            You("feel your magic resistance is working more properly.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is working more properly.");
         break;
     case FEARFUL:
         if (!Fearful)
-            You("regain your composure.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "regain your composure.");
         break;
     case SUMMON_FORBIDDEN:
         if (!Summon_forbidden)
-            You("feel summoning is working properly again.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel summoning is working properly again.");
         break;
     case CHARMED:
         if (!Charmed_or_controlled)
-            Your("own motivations make more sense to you now.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "own motivations make more sense to you now.");
         break;
     case UNDEAD_CONTROL:
         if (!Charmed_or_controlled)
-            Your("are more in control of your own actions.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "are more in control of your own actions.");
         break;
     case DEATH_RESISTANCE:
         if (!Death_resistance)
-            Your("soul's silver cord feels thinner than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "soul's silver cord feels thinner than before.");
         break;
     case CHARM_RESISTANCE:
         if (!Charm_resistance)
-            You_feel("less certain of your own motivations.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less certain of your own motivations.");
         break;
     case FEAR_RESISTANCE:
         if (!Fear_resistance)
-            You_feel("less courageous.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less courageous.");
         break;
     case MIND_SHIELDING:
         if (!Mind_shielding)
-            You_feel("unprotected from mental detection.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "unprotected from mental detection.");
         break;
     case LYCANTHROPY_RESISTANCE:
         if (!Lycanthropy_resistance)
-            You("feel that your immunity to lycanthropy is gone.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel that your immunity to lycanthropy is gone.");
         break;
     case CURSE_RESISTANCE:
         if (!Curse_resistance)
-            You("feel less protected from curses.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less protected from curses.");
         break;
     case LIFESAVED:
         if (!Lifesaved)
-            You("feel more mortal than before.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel more mortal than before.");
         break;
     case DETECT_MONSTERS:
         if (!Detect_monsters)
-            You_feel("less sensitive to the presence of monsters than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less sensitive to the presence of monsters than before.");
         see_monsters();
         break;
     case BLIND_TELEPATHY:
         if (!Blind_telepat)
-            You_feel("less telepathic when blind.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less telepathic when blind.");
         see_monsters();
         break;
     case TELEPAT:
         if (!Unblind_telepat)
-            You_feel("less telepathic.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less telepathic.");
         see_monsters();
         break;
     case XRAY_VISION:
         if (!XRay_vision)
-            You("can no longer see through walls.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can no longer see through walls.");
         see_monsters();
         break;
     case WATER_WALKING:
         if (!Wwalking)
-            You_feel("less able to walk on water.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less able to walk on water.");
         break;
     case MAGICAL_BREATHING:
         if (!EMagical_breathing && !HMagical_breathing)
-            You_feel("less able to breathe in water.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less able to breathe in water.");
         break;
     case DISPLACED:
         if (!Displaced)
         {
             play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
-            Your("mirror image vanishes.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "mirror image vanishes.");
         }
         break;
     case CONFLICT:
         if (!Conflict)
-            Your("neighborhood feels less quarrelsome than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "neighborhood feels less quarrelsome than before.");
         break;
     case MAGICAL_PROTECTION:
         if (!Magical_protection)
-            You_feel("less protected than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less protected than before.");
         break;
     case MAGICAL_SHIELDING:
         if (!Magical_shielding)
-            You_feel("less shielded than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less shielded than before.");
         break;
     case MAGICAL_BARKSKIN:
         if (!Magical_barkskin)
-            Your("skin feels less bark-like than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels less bark-like than before.");
         break;
     case MAGICAL_STONESKIN:
         if (!Magical_stoneskin)
-            Your("skin feels less stone-like than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels less stone-like than before.");
         break;
     case BISECTION_RESISTANCE:
         if (!Bisection_resistance)
-            Your("skin feels less steel-like than before.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels less steel-like than before.");
         break;
     case TITAN_STRENGTH:
         if (!Titan_strength)
-            You("feel less strong than before.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less strong than before.");
         break;
     case DIVINE_ENDURANCE:
         if (!Divine_endurance)
-            You("feel you have less endurance than before.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel you have less endurance than before.");
         break;
     case DIVINE_DEXTERITY:
         if (!Divine_dexterity)
-            You("feel less dexterous than before.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less dexterous than before.");
         break;
     case DIVINE_INTELLECT:
         if (!Divine_intellect)
-            You("feel less smart than before.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less smart than before.");
         break;
     case DIVINE_WISDOM:
         if (!Divine_wisdom)
-            You("feel you have less common sense than before.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel you have less common sense than before.");
         break;
     case DIVINE_CHARISMA:
         if (!Divine_charisma)
-            You("feel less charming than before.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less charming than before.");
         break;
     case FAST:
         if (!Lightning_fast && !Super_fast && !Ultra_fast && !Very_fast && !Fast)
-            You_feel("less quick than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less quick than before.");
         break;
     case VERY_FAST:
         if (!Lightning_fast && !Super_fast && !Ultra_fast && !Very_fast)
-            You_feel("%sless quick than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless quick than before.",
                 Fast ? "a bit " : "");
         break;
     case ULTRA_FAST:
         if (!Lightning_fast && !Super_fast && !Ultra_fast)
-            You_feel("%sless quick than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless quick than before.",
                 Very_fast || Fast ? "a bit " : "");
         break;
     case SUPER_FAST:
         if (!Lightning_fast && !Super_fast)
-            You_feel("%sless quick than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless quick than before.",
                 Ultra_fast || Very_fast || Fast ? "a bit " : "");
         break;
     case LIGHTNING_FAST:
         if (!Lightning_fast)
-            You_feel("%sless quick than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless quick than before.",
                 Super_fast || Ultra_fast || Very_fast || Fast ? "a bit " : "");
         break;
     case SLOWED:
         if (!Slowed)
-            You_feel("yourself speed up%s.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "yourself speed up%s.",
                 Very_fast || Ultra_fast || Super_fast || Lightning_fast ? " a lot" : Fast ? "" : " a bit");
         break;
     case HEROISM:
         if (!Super_heroism && !Heroism)
-            You_feel("less heroic than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less heroic than before.");
         break;
     case SUPER_HEROISM:
         if (!Super_heroism)
-            You_feel("%sless heroic than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless heroic than before.",
                 Heroism ? "a bit " : "");
         break;
     case RAPID_REGENERATION:
         if (!Divine_regeneration && !Rapidest_regeneration && !Rapider_regeneration && !Rapid_regeneration)
-            You_feel("you are healing %sless rapidly than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are healing %sless rapidly than before.",
                 Regeneration ? "" : "much ");
         break;
     case RAPIDER_REGENERATION:
         if (!Divine_regeneration && !Rapidest_regeneration && !Rapider_regeneration)
-            You_feel("you are healing %sless rapidly than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are healing %sless rapidly than before.",
                 Rapid_regeneration || Regeneration ? "" : "much ");
         break;
     case RAPIDEST_REGENERATION:
         if (!Divine_regeneration && !Rapidest_regeneration)
-            You_feel("you are healing %sless rapidly than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are healing %sless rapidly than before.",
                 Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
         break;
     case DIVINE_REGENERATION:
         if (!Divine_regeneration)
-            You_feel("you are healing %sless rapidly than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are healing %sless rapidly than before.",
                 Rapidest_regeneration || Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
         break;
     case RAPID_ENERGY_REGENERATION:
         if (!Rapidest_energy_regeneration && !Rapider_energy_regeneration && !Rapid_energy_regeneration)
-            You_feel("you are gaining mana %sless rapidly than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are gaining mana %sless rapidly than before.",
                 Energy_regeneration ? "" : "much ");
         break;
     case RAPIDER_ENERGY_REGENERATION:
         if (!Rapidest_energy_regeneration && !Rapider_energy_regeneration)
-            You_feel("you are gaining mana %sless rapidly than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are gaining mana %sless rapidly than before.",
                 Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
         break;
     case RAPIDEST_ENERGY_REGENERATION:
         if (!Rapidest_energy_regeneration)
-            You_feel("you are gaining mana %sless rapidly than before.",
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are gaining mana %sless rapidly than before.",
                 Rapider_energy_regeneration || Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
         break;
     case MELEE_LIFE_LEECH:
         if (!Melee_life_leech)
-            You("have lost your ability to leech life in melee!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have lost your ability to leech life in melee!");
         break;
     case CRAZED:
         if (!Crazed)
-            You_feel("more sane than before!");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "more sane than before!");
         break;
     case SILENCED:
         if (!Silenced)
-            You("can speak again!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can speak again!");
         break;
 
     case INVISIBILITY:
@@ -4006,7 +4006,7 @@ boolean was_flying;
         newsym(u.ux, u.uy);   /* make self appear */
         stop_occupation();
         if (!See_invisible)
-            You("are no longer able to see invisibile monsters.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are no longer able to see invisibile monsters.");
         break;
     case LEVITATION:
         (void)float_down(I_SPECIAL | TIMEOUT, 0L);
@@ -4015,7 +4015,7 @@ boolean was_flying;
         /* timed Flying is via #wizintrinsic only */
         if (was_flying && !Flying) {
             context.botl = context.botlx = 1;
-            You("land.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "land.");
             spoteffects(TRUE);
         }
         break;
@@ -4024,7 +4024,7 @@ boolean was_flying;
         if (!Warn_of_mon) {
             context.warntype.speciesidx = NON_PM;
             if (context.warntype.species) {
-                You("are no longer warned about %s.",
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are no longer warned about %s.",
                     makeplural(context.warntype.species->mname));
                 context.warntype.species = (struct permonst*)0;
             }
@@ -4052,9 +4052,9 @@ boolean was_flying;
     case PASSES_WALLS:
         if (!Passes_walls) {
             if (stuck_in_wall())
-                You_feel("hemmed in again.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "hemmed in again.");
             else
-                pline("You're back to your %s self again.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You're back to your %s self again.",
                     !Upolyd ? "normal" : "unusual");
         }
         break;
@@ -4065,7 +4065,7 @@ boolean was_flying;
             if (Paralyzed_or_immobile)
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "wake up but still cannot move!");
             else
-                You("wake up!");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "wake up!");
         }
         break;
     case UNDEAD_IMMOBILITY:
@@ -4073,11 +4073,11 @@ boolean was_flying;
         if (!Paralyzed_or_immobile)
         {
             if (Sleeping)
-                You("are no longer paralyzed but still asleep!");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are no longer paralyzed but still asleep!");
             else if (nolimbs(youmonst.data))
-                You("are no longer paralyzed");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are no longer paralyzed");
             else
-                Your("limbs are moving again!");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "limbs are moving again!");
         }
         break;
     default:

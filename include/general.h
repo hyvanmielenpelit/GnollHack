@@ -381,6 +381,15 @@ enum cost_alteration_types {
     COST_CORRODE = 18 /* acid damage */
 };
 
+enum animation_timer_types {
+    ANIMATION_TIMER_GENERAL = 0,
+    ANIMATION_TIMER_YOU,
+    ANIMATION_TIMER_MONSTER,
+    ANIMATION_TIMER_EXPLOSION,
+    ANIMATION_TIMER_ZAP,
+    ANIMATION_TIMER_SPECIAL_EFFECT,
+};
+
 #define PICKLOCK_LEARNED_SOMETHING (-1) /* time passes */
 #define PICKLOCK_DID_NOTHING 0          /* no time passes */
 #define PICKLOCK_DID_SOMETHING 1
@@ -496,6 +505,7 @@ enum main_menu_command {
 typedef long nhsym;
 
 #define DEF_HERE_WINDOW_MAX_SIZE 10
+
 
 #endif /* GENERAL_H */
 

@@ -98,7 +98,7 @@ void dll_status_enablefield(int fieldidx, const char *nm, const char *fmt,
                               boolean enable);
 void dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *colormasks);
 void dll_stretch_window(void);
-void dll_set_animation_timer(unsigned int);
+void dll_set_animation_timer_interval(unsigned int);
 void dll_open_special_view(struct special_view_info info);
 void dll_stop_all_sounds(struct stop_all_info info);
 void dll_play_immediate_ghsound(struct ghsound_immediate_info info);
@@ -114,6 +114,9 @@ void dll_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void dll_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
 void dll_clear_context_menu(VOID_ARGS);
 void dll_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
+void dll_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, int tflags);
+void dll_set_animation_wait(int timertype, int timerid, int waittype, unsigned long value);
+unsigned long dll_get_animation_wait(int timertype, int timerid, int waittype);
 void dll_exit_hack(int status);
 
 /* Helper functions */

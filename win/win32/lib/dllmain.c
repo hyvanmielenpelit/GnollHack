@@ -92,7 +92,7 @@ DLL int WINAPI RunGnollHack(
     StatusUpdateCallback callback_status_update,
     CanSuspendYesCallback callback_can_suspend_yes,
     StretchWindowCallback callback_stretch_window,
-    SetAnimationTimerCallback callback_set_animation_timer,
+    SetAnimationTimerCallback callback_set_animation_timer_interval,
     OpenSpecialViewCallback callback_open_special_view,
     StopAllSoundsCallback callback_stop_all_sounds,
     PlayImmediateSoundCallback callback_play_immediate_ghsound,
@@ -108,6 +108,9 @@ DLL int WINAPI RunGnollHack(
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume,
     ClearContextMenuCallback callback_clear_context_menu,
     AddContextMenuCallback callback_add_context_menu,
+    ToggleAnimationTimerCallback callback_toggle_animation_timer,
+    SetAnimationWaitCallback callback_set_animation_wait,
+    GetAnimationWaitCallback callback_get_animation_wait,
     ExitHackCallback callback_exit_hack,
 
     GetCwdCallback callback_getcwd,
@@ -182,7 +185,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_status_update = callback_status_update;
     dll_callbacks.callback_can_suspend_yes = callback_can_suspend_yes;
     dll_callbacks.callback_stretch_window = callback_stretch_window;
-    dll_callbacks.callback_set_animation_timer = callback_set_animation_timer;
+    dll_callbacks.callback_set_animation_timer_interval = callback_set_animation_timer_interval;
     dll_callbacks.callback_open_special_view = callback_open_special_view;
     dll_callbacks.callback_stop_all_sounds = callback_stop_all_sounds;
     dll_callbacks.callback_play_immediate_ghsound = callback_play_immediate_ghsound;
@@ -198,6 +201,9 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_set_ambient_ghsound_volume = callback_set_ambient_ghsound_volume;
     dll_callbacks.callback_clear_context_menu = callback_clear_context_menu;
     dll_callbacks.callback_add_context_menu = callback_add_context_menu;
+    dll_callbacks.callback_toggle_animation_timer = callback_toggle_animation_timer;
+    dll_callbacks.callback_set_animation_wait = callback_set_animation_wait;
+    dll_callbacks.callback_get_animation_wait = callback_get_animation_wait;
     dll_callbacks.callback_exit_hack = callback_exit_hack;
     dll_callbacks.callback_getcwd = callback_getcwd;
     dll_callbacks.callback_messagebox = callback_messagebox;

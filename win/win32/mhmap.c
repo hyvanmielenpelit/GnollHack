@@ -710,54 +710,54 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_TIMER:
     {
-        if(context.general_animation_counter == GH_LONG_MAX)
-            context.general_animation_counter = 0L;
+        if(animation_timers.general_animation_counter == GH_LONG_MAX)
+            animation_timers.general_animation_counter = 0L;
         else
-            context.general_animation_counter++;
+            animation_timers.general_animation_counter++;
 
-        if (context.u_action_animation_counter_on)
+        if (animation_timers.u_action_animation_counter_on)
         {
-            if (context.u_action_animation_counter == GH_LONG_MAX)
-                context.u_action_animation_counter = 0L;
+            if (animation_timers.u_action_animation_counter == GH_LONG_MAX)
+                animation_timers.u_action_animation_counter = 0L;
             else
-                context.u_action_animation_counter++;
+                animation_timers.u_action_animation_counter++;
         }
 
-        if (context.m_action_animation_counter_on)
+        if (animation_timers.m_action_animation_counter_on)
         {
-            if (context.m_action_animation_counter == GH_LONG_MAX)
-                context.m_action_animation_counter = 0L;
+            if (animation_timers.m_action_animation_counter == GH_LONG_MAX)
+                animation_timers.m_action_animation_counter = 0L;
             else
-                context.m_action_animation_counter++;
+                animation_timers.m_action_animation_counter++;
         }
 
-        if (context.explosion_animation_counter_on)
+        if (animation_timers.explosion_animation_counter_on)
         {
-            if (context.explosion_animation_counter == GH_LONG_MAX)
-                context.explosion_animation_counter = 0L;
+            if (animation_timers.explosion_animation_counter == GH_LONG_MAX)
+                animation_timers.explosion_animation_counter = 0L;
             else
-                context.explosion_animation_counter++;
+                animation_timers.explosion_animation_counter++;
         }
 
         for (int spef_idx = 0; spef_idx < MAX_PLAYED_SPECIAL_EFFECTS; spef_idx++)
         {
-            if (context.special_effect_animation_counter_on[spef_idx])
+            if (animation_timers.special_effect_animation_counter_on[spef_idx])
             {
-                if (context.special_effect_animation_counter[spef_idx] == GH_LONG_MAX)
-                    context.special_effect_animation_counter[spef_idx] = 0L;
+                if (animation_timers.special_effect_animation_counter[spef_idx] == GH_LONG_MAX)
+                    animation_timers.special_effect_animation_counter[spef_idx] = 0L;
                 else
-                    (context.special_effect_animation_counter[spef_idx])++;
+                    (animation_timers.special_effect_animation_counter[spef_idx])++;
             }
         }
 
         for (int zap_anim_idx = 0; zap_anim_idx < MAX_PLAYED_ZAP_ANIMATIONS; zap_anim_idx++)
         {
-            if (context.zap_animation_counter_on[zap_anim_idx])
+            if (animation_timers.zap_animation_counter_on[zap_anim_idx])
             {
-                if (context.zap_animation_counter[zap_anim_idx] == GH_LONG_MAX)
-                    context.zap_animation_counter[zap_anim_idx] = 0L;
+                if (animation_timers.zap_animation_counter[zap_anim_idx] == GH_LONG_MAX)
+                    animation_timers.zap_animation_counter[zap_anim_idx] = 0L;
                 else
-                    (context.zap_animation_counter[zap_anim_idx])++;
+                    (animation_timers.zap_animation_counter[zap_anim_idx])++;
             }
         }
 
@@ -769,7 +769,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 for (int y = 0; y < ROWNO; y++)
                 {
                     if (data->mapAnimated[x][y] == 1
-                        || (data->mapAnimated[x][y] > 1 && (context.general_animation_counter % ((long)data->mapAnimated[x][y])) == 0L)
+                        || (data->mapAnimated[x][y] > 1 && (animation_timers.general_animation_counter % ((long)data->mapAnimated[x][y])) == 0L)
                         )
                         dirty(data, x, y, FALSE);
                 }
@@ -787,12 +787,12 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         else
         {
 
-            if (context.general_animation_counter == GH_LONG_MAX)
-                context.general_animation_counter = 0L;
+            if (animation_timers.general_animation_counter == GH_LONG_MAX)
+                animation_timers.general_animation_counter = 0L;
             else
-                context.general_animation_counter++;
+                animation_timers.general_animation_counter++;
 
-            if (flags.blinking_cursor_on_tiles && context.general_animation_counter % CURSOR_BLINK_IN_INTERVALS == 0 && !program_state.animation_hangup)
+            if (flags.blinking_cursor_on_tiles && animation_timers.general_animation_counter % CURSOR_BLINK_IN_INTERVALS == 0 && !program_state.animation_hangup)
             {
                 if (flags.force_paint_at_cursor)
                 {
@@ -985,7 +985,7 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     data->bAsciiMode = FALSE;
     data->cursorOn = TRUE;
-    context.general_animation_counter = 0;
+    animation_timers.general_animation_counter = 0;
 
     data->xFrontTile = GetNHApp()->mapTile_X;
     data->yFrontTile = GetNHApp()->mapTile_Y;
@@ -1394,8 +1394,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     int anim_frame_idx_dummy = 0, main_tile_idx_dummy = 0;
                                     main_tile = maybe_get_replaced_tile(main_tile, adj_x, adj_y, data_to_replacement_info(signed_main_glyph, base_layer, 0, worm, data->map[adj_x][adj_y].layer_flags), &autodraw);
 
-                                    if (context.m_action_animation_counter_on && base_layer == LAYER_MONSTER && context.m_action_animation_x == adj_x && context.m_action_animation_y == adj_y)
-                                        main_tile = maybe_get_animated_tile(main_tile, tile_animation_index, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx_dummy, &main_tile_idx_dummy, &mapAnimatedDummy, &autodraw);
+                                    if (animation_timers.m_action_animation_counter_on && base_layer == LAYER_MONSTER && animation_timers.m_action_animation_x == adj_x && animation_timers.m_action_animation_y == adj_y)
+                                        main_tile = maybe_get_animated_tile(main_tile, tile_animation_index, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.m_action_animation_counter, &anim_frame_idx_dummy, &main_tile_idx_dummy, &mapAnimatedDummy, &autodraw);
 
                                     int base_source_glyph = GLYPH_WORM_OFF;
                                     if (autodraw > 0)
@@ -1895,22 +1895,22 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
                     ntile = maybe_get_replaced_tile(ntile, i, j, data_to_replacement_info(signed_glyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags), &autodraw);
-                    if(context.u_action_animation_counter_on && base_layer == LAYER_MONSTER && enl_i == u.ux && enl_j == u.uy)
-                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
-                    else if (context.m_action_animation_counter_on && ((!is_dropping_piercer && base_layer == LAYER_MONSTER) || (is_dropping_piercer && base_layer == LAYER_MISSILE)) && context.m_action_animation_x == enl_i && context.m_action_animation_y == enl_j)
-                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                    if(animation_timers.u_action_animation_counter_on && base_layer == LAYER_MONSTER && enl_i == u.ux && enl_j == u.uy)
+                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                    else if (animation_timers.m_action_animation_counter_on && ((!is_dropping_piercer && base_layer == LAYER_MONSTER) || (is_dropping_piercer && base_layer == LAYER_MISSILE)) && animation_timers.m_action_animation_x == enl_i && animation_timers.m_action_animation_y == enl_j)
+                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (glyph_is_explosion(glyph))
-                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (glyph_is_zap(glyph))
                     {
                         boolean zap_found = FALSE;
                         for (int zap_anim_idx = 0; zap_anim_idx < MAX_PLAYED_ZAP_ANIMATIONS; zap_anim_idx++)
                         {
-                            if (context.zap_animation_counter_on[zap_anim_idx]
-                                && adj_x == context.zap_animation_x[zap_anim_idx]
-                                && adj_y == context.zap_animation_y[zap_anim_idx])
+                            if (animation_timers.zap_animation_counter_on[zap_anim_idx]
+                                && adj_x == animation_timers.zap_animation_x[zap_anim_idx]
+                                && adj_y == animation_timers.zap_animation_y[zap_anim_idx])
                             {
-                                ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.zap_animation_counter[zap_anim_idx], &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                                ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.zap_animation_counter[zap_anim_idx], &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                                 zap_found = TRUE;
                                 break;
                             }
@@ -1918,7 +1918,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
  
                         /* Otherwise, normal animation check */
                         if (!zap_found)
-                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, animation_timers.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     }
                     else
                     {
@@ -1926,12 +1926,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         boolean spef_found = FALSE;
                         for (int spef_idx = 0; spef_idx < MAX_PLAYED_SPECIAL_EFFECTS; spef_idx++)
                         {
-                            if (context.special_effect_animation_counter_on[spef_idx]
-                                && base_layer == context.spef_action_animation_layer[spef_idx]
-                                && enl_i == context.spef_action_animation_x[spef_idx]
-                                && enl_j == context.spef_action_animation_y[spef_idx])
+                            if (animation_timers.special_effect_animation_counter_on[spef_idx]
+                                && base_layer == animation_timers.spef_action_animation_layer[spef_idx]
+                                && enl_i == animation_timers.spef_action_animation_x[spef_idx]
+                                && enl_j == animation_timers.spef_action_animation_y[spef_idx])
                             {
-                                ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.special_effect_animation_counter[spef_idx], &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                                ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.special_effect_animation_counter[spef_idx], &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                                 spef_found = TRUE;
                                 break;
                             }
@@ -1939,7 +1939,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     
                         /* Otherwise, normal animation check */
                         if(!spef_found)
-                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, animation_timers.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     }
                     if (enlarg_idx >= 0)
                     {
@@ -4407,7 +4407,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int ctile = glyph2tile[cglyph];
                             int tile_animation_idx = get_tile_animation_index_from_glyph(cglyph);
                             ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
-                            ctile = maybe_get_animated_tile(ctile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
+                            ctile = maybe_get_animated_tile(ctile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, animation_timers.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
                             int c_sheet_idx = TILE_SHEET_IDX(ctile);
                             t_x = TILEBMP_X(ctile);
                             t_y = TILEBMP_Y(ctile);
@@ -4894,7 +4894,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 mtile = glyph2tile[mglyph];
                                 int tile_animation_idx = get_tile_animation_index_from_glyph(mglyph);
                                 mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags), (enum auto_drawtypes*)0);
-                                mtile = maybe_get_animated_tile(mtile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
+                                mtile = maybe_get_animated_tile(mtile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, animation_timers.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 m_sheet_idx = TILE_SHEET_IDX(mtile);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
@@ -5710,21 +5710,21 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
                 boolean is_dropping_piercer = m_at(x, y) && (data->map[x][y].layer_flags & LFLAGS_M_DROPPING_PIERCER);
 
-                if (context.u_action_animation_counter_on && layer_idx == LAYER_MONSTER && x == u.ux && y == u.uy)
-                    ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
-                else if (context.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == LAYER_MONSTER) || (is_dropping_piercer && layer_idx == LAYER_MISSILE)) && context.m_action_animation_x == x && context.m_action_animation_y == y)
-                    ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                if (animation_timers.u_action_animation_counter_on && layer_idx == LAYER_MONSTER && x == u.ux && y == u.uy)
+                    ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                else if (animation_timers.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == LAYER_MONSTER) || (is_dropping_piercer && layer_idx == LAYER_MISSILE)) && animation_timers.m_action_animation_x == x && animation_timers.m_action_animation_y == y)
+                    ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 else if (glyph_is_explosion(glyph))
-                    ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                    ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 else if (glyph_is_zap(glyph))
                 {
                     for (int zap_anim_idx = 0; zap_anim_idx < MAX_PLAYED_ZAP_ANIMATIONS; zap_anim_idx++)
                     {
-                        if (context.zap_animation_counter_on[zap_anim_idx]
-                            && x == context.zap_animation_x[zap_anim_idx]
-                            && y == context.zap_animation_y[zap_anim_idx])
+                        if (animation_timers.zap_animation_counter_on[zap_anim_idx]
+                            && x == animation_timers.zap_animation_x[zap_anim_idx]
+                            && y == animation_timers.zap_animation_y[zap_anim_idx])
                         {
-                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.zap_animation_counter[zap_anim_idx], &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.zap_animation_counter[zap_anim_idx], &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                             break;
                         }
                     }
@@ -5735,12 +5735,12 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     boolean spef_found = FALSE;
                     for (int spef_idx = 0; spef_idx < MAX_PLAYED_SPECIAL_EFFECTS; spef_idx++)
                     {
-                        if (context.special_effect_animation_counter_on[spef_idx]
-                            && layer_idx == context.spef_action_animation_layer[spef_idx]
-                            && x == context.spef_action_animation_x[spef_idx]
-                            && y == context.spef_action_animation_y[spef_idx])
+                        if (animation_timers.special_effect_animation_counter_on[spef_idx]
+                            && layer_idx == animation_timers.spef_action_animation_layer[spef_idx]
+                            && x == animation_timers.spef_action_animation_x[spef_idx]
+                            && y == animation_timers.spef_action_animation_y[spef_idx])
                         {
-                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.special_effect_animation_counter[spef_idx], &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.special_effect_animation_counter[spef_idx], &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                             spef_found = TRUE;
                             break;
                         }
@@ -5748,7 +5748,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 
                     /* Otherwise, normal animation check */
                     if (!spef_found)
-                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, context.general_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, animation_timers.general_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 }
                 enlarg = tile2enlargement[ntile];
             }

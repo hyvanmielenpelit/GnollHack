@@ -97,7 +97,7 @@ struct window_procs dll_procs = {
     dll_status_update,
     genl_can_suspend_yes,
     dll_stretch_window,
-    dll_set_animation_timer,
+    dll_set_animation_timer_interval,
     dll_open_special_view,
     dll_stop_all_sounds,
     dll_play_immediate_ghsound,
@@ -113,6 +113,9 @@ struct window_procs dll_procs = {
     dll_set_ambient_ghsound_volume,
     dll_clear_context_menu,
     dll_add_context_menu,
+    dll_toggle_animation_timer,    
+    dll_set_animation_wait,
+    dll_get_animation_wait,
     dll_exit_hack,
 };
 
@@ -2705,9 +2708,9 @@ dll_stretch_window(void)
 }
 
 void
-dll_set_animation_timer(unsigned int interval)
+dll_set_animation_timer_interval(unsigned int interval)
 {
-    dll_callbacks.callback_set_animation_timer(interval);
+    dll_callbacks.callback_set_animation_timer_interval(interval);
 #if 0
     if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
         UINT data;
@@ -2874,6 +2877,24 @@ dll_clear_context_menu(VOID_ARGS)
 
 void
 dll_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color)
+{
+    return;
+}
+
+void
+dll_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, unsigned long tflags)
+{
+    return;
+}
+
+void
+dll_set_animation_wait(int timertype, int timerid, int waittype, int value)
+{
+    return;
+}
+
+unsigned long
+dll_get_animation_wait(int timertype, int timerid, int waittype)
 {
     return;
 }

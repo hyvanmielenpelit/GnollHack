@@ -201,7 +201,7 @@ void mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
                               boolean enable);
 void mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *colormasks);
 void mswin_stretch_window(void);
-void mswin_set_animation_timer(unsigned int);
+void mswin_set_animation_timer_interval(unsigned int);
 void mswin_open_special_view(struct special_view_info info);
 void mswin_stop_all_sounds(struct stop_all_info info);
 void mswin_play_immediate_ghsound(struct ghsound_immediate_info info);
@@ -217,6 +217,9 @@ void mswin_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
 void mswin_clear_context_menu(VOID_ARGS);
 void mswin_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
+void mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, unsigned long tflags);
+void mswin_set_animation_wait(int timertype, int timerid, int waittype, unsigned long value);
+unsigned long mswin_get_animation_wait(int timertype, int timerid, int waittype);
 void mswin_exit_hack(int status);
 
 /* helper function */
@@ -284,6 +287,9 @@ extern COLORREF message_fg_color;
 
 #define IS_MAP_ASCII(mode) \
     ((mode) != MAP_MODE_TILES && (mode) != MAP_MODE_TILES_FIT_TO_SCREEN)
+
+
+extern struct animation_timer_list animation_timers;
 
 
 #endif /* WINMS_H */

@@ -47,6 +47,8 @@ logDebug(const char *fmt, ...)
 }
 #endif
 
+NEARDATA struct animation_timer_list animation_timers = DUMMY;
+
 void mswin_main_loop(void);
 static void mswin_wait_loop(int milliseconds);
 static void mswin_wait_loop_intervals(int intervals);
@@ -119,7 +121,7 @@ struct window_procs mswin_procs = {
     mswin_status_update,
     genl_can_suspend_yes,
     mswin_stretch_window,
-    mswin_set_animation_timer,
+    mswin_set_animation_timer_interval,
     mswin_open_special_view,
     mswin_stop_all_sounds,
     mswin_play_immediate_ghsound,
@@ -135,6 +137,9 @@ struct window_procs mswin_procs = {
     mswin_set_ambient_ghsound_volume,
     mswin_clear_context_menu,
     mswin_add_context_menu,
+    mswin_toggle_animation_timer,
+    mswin_set_animation_wait,
+    mswin_get_animation_wait,
     mswin_exit_hack,
 };
 
@@ -1987,11 +1992,7 @@ mswin_delay_output_milliseconds(int interval)
 {
     logDebug("mswin_delay_output_milliseconds()\n");
     //Sleep(interval);
-    int counter_before = context.general_animation_counter;
     mswin_wait_loop(interval);
-    int counter_after = context.general_animation_counter;
-    int counter_diff = counter_after - counter_before;
-    logDebug("mswin_delay_output_milliseconds counter_diff %d\n", counter_diff);
 }
 
 void
@@ -2404,8 +2405,8 @@ mswin_wait_loop_intervals(int intervals)
         return;
 
     MSG msg;
-    int counter_before = context.general_animation_counter;
-    int counter_after = context.general_animation_counter;
+    int counter_before = animation_timers.general_animation_counter;
+    int counter_after = animation_timers.general_animation_counter;
 
     disallow_keyboard_commands_in_wait_loop = FALSE; //TRUE
 
@@ -2425,7 +2426,7 @@ mswin_wait_loop_intervals(int intervals)
             break;
         }
 
-        counter_after = context.general_animation_counter;
+        counter_after = animation_timers.general_animation_counter;
         program_state.animation_hangup = 0;
         if (mswin_have_input())
             break;
@@ -3524,7 +3525,7 @@ mswin_stretch_window(void)
 }
 
 void
-mswin_set_animation_timer(unsigned int interval)
+mswin_set_animation_timer_interval(unsigned int interval)
 {
     if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
         UINT data;
@@ -3741,6 +3742,99 @@ mswin_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, c
 }
 
 void
+mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, unsigned long tflags)
+{
+    enum animation_timer_types att = (enum animation_timer_types)timertype;
+
+    switch (att)
+    {
+    case ANIMATION_TIMER_GENERAL:
+        break;
+    case ANIMATION_TIMER_YOU:
+        animation_timers.u_action_animation_counter = 0UL;
+        animation_timers.u_action_animation_counter_on = !!state;
+        break;
+    case ANIMATION_TIMER_MONSTER:
+        animation_timers.m_action_animation_counter = 0UL;
+        animation_timers.m_action_animation_counter_on = !!state;
+        animation_timers.m_action_animation_x = x;
+        animation_timers.m_action_animation_y = y;
+        break;
+    case ANIMATION_TIMER_EXPLOSION:
+        animation_timers.explosion_animation_counter = 0UL;
+        animation_timers.explosion_animation_counter_on = !!state;
+        animation_timers.explosion_animation_x = x;
+        animation_timers.explosion_animation_y = y;
+        break;
+    case ANIMATION_TIMER_ZAP:
+        animation_timers.zap_animation_counter[timerid] = 0UL;
+        animation_timers.zap_animation_counter_on[timerid] = !!state;
+        animation_timers.zap_animation_x[timerid] = x;
+        animation_timers.zap_animation_y[timerid] = y;
+        break;
+    case ANIMATION_TIMER_SPECIAL_EFFECT:
+        animation_timers.special_effect_animation_counter[timerid] = 0UL;
+        animation_timers.special_effect_animation_counter_on[timerid] = !!state;
+        animation_timers.spef_action_animation_x[timerid] = x;
+        animation_timers.spef_action_animation_y[timerid] = y;
+        animation_timers.spef_action_animation_layer[timerid] = (enum animation_timer_types)layer;
+        break;
+    default:
+        break;
+    }
+}
+
+void
+mswin_set_animation_wait(int timertype, int timerid, int waittype, unsigned long value)
+{
+    enum animation_timer_types att = (enum animation_timer_types)timertype;
+
+    switch (att)
+    {
+    case ANIMATION_TIMER_GENERAL:
+        break;
+    case ANIMATION_TIMER_YOU:
+        break;
+    case ANIMATION_TIMER_MONSTER:
+        break;
+    case ANIMATION_TIMER_EXPLOSION:
+        break;
+    case ANIMATION_TIMER_ZAP:
+        break;
+    case ANIMATION_TIMER_SPECIAL_EFFECT:
+        break;
+    default:
+        break;
+    }
+}
+
+unsigned long
+mswin_get_animation_wait(int timertype, int timerid, int waittype)
+{
+    enum animation_timer_types att = (enum animation_timer_types)timertype;
+
+    switch (att)
+    {
+    case ANIMATION_TIMER_GENERAL:
+        break;
+    case ANIMATION_TIMER_YOU:
+        break;
+    case ANIMATION_TIMER_MONSTER:
+        break;
+    case ANIMATION_TIMER_EXPLOSION:
+        break;
+    case ANIMATION_TIMER_ZAP:
+        break;
+    case ANIMATION_TIMER_SPECIAL_EFFECT:
+        break;
+    default:
+        break;
+    }
+
+    return 0UL;
+}
+
+void
 convertUTF8toTCHAR(buf, bufsize)
 char* buf;
 size_t bufsize;
@@ -3806,3 +3900,5 @@ size_t bufsize;
 
     strcpy(buf, copybuf);
 }
+
+
