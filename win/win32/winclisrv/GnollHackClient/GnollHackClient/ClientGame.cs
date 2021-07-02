@@ -557,7 +557,27 @@ namespace GnollHackClient
         }
         public void ClientCallback_DelayOutputIntervals(int intervals)
         {
-            Thread.Sleep(intervals * GHConstants.DefaultAnimationInterval); /* To be fixed */
+            long start_counter_value = 0L;
+            long current_counter_value = 0L;
+            lock (_gamePageLock)
+            {
+                lock(_gamePage.AnimationTimerLock)
+                {
+                    start_counter_value = _gamePage.AnimationTimers.general_animation_counter;
+                }
+            }
+
+            do
+            {
+                Thread.Sleep(5);
+                lock (_gamePageLock)
+                {
+                    lock (_gamePage.AnimationTimerLock)
+                    {
+                        current_counter_value = _gamePage.AnimationTimers.general_animation_counter;
+                    }
+                }
+            } while (current_counter_value < start_counter_value + (long)intervals);
         }
         public void ClientCallback_PreferenceUpdate(string str)
         {

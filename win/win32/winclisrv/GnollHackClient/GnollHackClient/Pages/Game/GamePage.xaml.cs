@@ -917,8 +917,8 @@ namespace GnollHackClient.Pages.Game
                                             int replacement = Tile2Replacement[ntile];
                                             /* Replace tile here */
                                             int animation = Tile2Animation[ntile];
-                                            int anim_frame_idx, main_tile_idx, autodraw;
-                                            sbyte mapAnimated;
+                                            int anim_frame_idx = 0, main_tile_idx = 0, autodraw = 0;
+                                            sbyte mapAnimated = 0;
                                             int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
                                             bool is_dropping_piercer = false;
 
@@ -1049,6 +1049,29 @@ namespace GnollHackClient.Pages.Game
                                                     if (enl_tile_idx >= 0)
                                                     {
                                                         int addedindex = 0;
+                                                        if (_enlargementDefs[enlargement].number_of_animation_frames > 0)
+                                                        {
+                                                            if (main_tile_idx == -1
+                                                                && anim_frame_idx >= 0
+                                                                && anim_frame_idx < _enlargementDefs[enlargement].number_of_animation_frames
+                                                                )
+                                                            {
+                                                                addedindex = anim_frame_idx * _enlargementDefs[enlargement].number_of_enlargement_tiles;
+                                                            }
+                                                            else if (main_tile_idx == 0
+                                                                && anim_frame_idx > 0
+                                                                && anim_frame_idx <= _enlargementDefs[enlargement].number_of_animation_frames)
+                                                            {
+                                                                addedindex = (anim_frame_idx - 1) * _enlargementDefs[enlargement].number_of_enlargement_tiles;
+                                                            }
+                                                            else if (main_tile_idx == _enlargementDefs[enlargement].number_of_animation_frames
+                                                                && anim_frame_idx >= 0
+                                                                && anim_frame_idx < _enlargementDefs[enlargement].number_of_animation_frames
+                                                                )
+                                                            {
+                                                                addedindex = anim_frame_idx * _enlargementDefs[enlargement].number_of_enlargement_tiles;
+                                                            }
+                                                        }
                                                         int enl_glyph = enl_tile_idx + addedindex + EnlargementOffsets[enlargement] + EnlargementOff;
                                                         ntile = Glyph2Tile[enl_glyph]; /* replace */
                                                     }
