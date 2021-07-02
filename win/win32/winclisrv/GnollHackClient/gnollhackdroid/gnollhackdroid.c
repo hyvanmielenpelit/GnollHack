@@ -407,6 +407,9 @@ int RunGnollHack(
     lib_callbacks.callback_set_ambient_ghsound_volume = callback_set_ambient_ghsound_volume;
     lib_callbacks.callback_clear_context_menu = callback_clear_context_menu;
     lib_callbacks.callback_add_context_menu = callback_add_context_menu;
+    lib_callbacks.callback_toggle_animation_timer = callback_toggle_animation_timer;
+    lib_callbacks.callback_set_animation_wait = callback_set_animation_wait;
+    lib_callbacks.callback_get_animation_wait = callback_get_animation_wait;
     lib_callbacks.callback_exit_hack = callback_exit_hack;
     lib_callbacks.callback_getcwd = callback_getcwd;
     lib_callbacks.callback_messagebox = callback_messagebox;

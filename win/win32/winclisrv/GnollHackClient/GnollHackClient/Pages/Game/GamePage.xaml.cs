@@ -78,6 +78,9 @@ namespace GnollHackClient.Pages.Game
         private float _mapWidth;
         private float _mapHeight;
         private float _mapFontAscent;
+        public object AnimationTimerLock = new object();
+        public GHAnimationTimerList AnimationTimers = new GHAnimationTimerList();
+
         public object Glyph2TileLock = new object();
         public int[] Glyph2Tile { get; set; }
         public short[] Tile2Animation { get; set; }
@@ -211,6 +214,57 @@ namespace GnollHackClient.Pages.Game
             {
                 canvasView.InvalidateSurface();
                 pollRequestQueue();
+
+                /* Increment counters */
+                lock(AnimationTimerLock)
+                {
+                    AnimationTimers.general_animation_counter++;
+                    if (AnimationTimers.general_animation_counter < 0)
+                        AnimationTimers.general_animation_counter = 0;
+
+                    if (AnimationTimers.u_action_animation_counter_on)
+                    {
+                        AnimationTimers.u_action_animation_counter++;
+                        if (AnimationTimers.u_action_animation_counter < 0)
+                            AnimationTimers.u_action_animation_counter = 0;
+                    }
+
+                    if (AnimationTimers.m_action_animation_counter_on)
+                    {
+                        AnimationTimers.m_action_animation_counter++;
+                        if (AnimationTimers.m_action_animation_counter < 0)
+                            AnimationTimers.m_action_animation_counter = 0;
+                    }
+
+                    if (AnimationTimers.explosion_animation_counter_on)
+                    {
+                        AnimationTimers.explosion_animation_counter++;
+                        if (AnimationTimers.explosion_animation_counter < 0)
+                            AnimationTimers.explosion_animation_counter = 0;
+                    }
+
+                    int i;
+                    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
+                    {
+                        if (AnimationTimers.zap_animation_counter_on[i])
+                        {
+                            AnimationTimers.zap_animation_counter[i]++;
+                            if (AnimationTimers.zap_animation_counter[i] < 0)
+                                AnimationTimers.zap_animation_counter[i] = 0;
+                        }
+                    }
+
+                    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
+                    {
+                        if (AnimationTimers.special_effect_animation_counter_on[i])
+                        {
+                            AnimationTimers.special_effect_animation_counter[i]++;
+                            if (AnimationTimers.special_effect_animation_counter[i] < 0)
+                                AnimationTimers.special_effect_animation_counter[i] = 0;
+                        }
+                    }
+                }
+
                 return true;
             });
 
@@ -835,14 +889,14 @@ namespace GnollHackClient.Pages.Game
                     {
                         if (Glyph2Tile != null && _tilesPerRow[0] > 0 && UsedTileSheets > 0)
                         {
-                            for (int layer = 0; layer < (int)layer_types.MAX_LAYERS; layer++)
+                            for (int layer_idx = 0; layer_idx < (int)layer_types.MAX_LAYERS; layer_idx++)
                             {
                                 for (int mapx = startX; mapx <= endX; mapx++)
                                 {
                                     for (int mapy = startY; mapy <= endY; mapy++)
                                     {
 
-                                        int signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer];
+                                        int signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
                                         if (signed_glyph == NoGlyph)
                                             continue;
 
@@ -855,6 +909,26 @@ namespace GnollHackClient.Pages.Game
                                             int replacement = Tile2Replacement[ntile];
                                             /* Replace tile here */
                                             int animation = Tile2Animation[ntile];
+                                            int anim_frame_idx, main_tile_idx, autodraw;
+                                            sbyte mapAnimated;
+                                            int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
+                                            bool is_dropping_piercer = false;
+
+                                            bool uloc = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
+
+                                            lock (AnimationTimerLock)
+                                            {
+                                                if (AnimationTimers.u_action_animation_counter_on)
+                                                    AnimationTimers.u_action_animation_counter_on = AnimationTimers.u_action_animation_counter_on;
+
+                                                if (AnimationTimers.u_action_animation_counter_on && layer_idx == (int)layer_types.LAYER_MONSTER && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
+                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MONSTER) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
+                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                else
+                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, AnimationTimers.general_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                            }
+
                                             /* Determine animation tile here */
                                             int enlargement = Tile2Enlargement[ntile];
                                             for (int enl_idx = -1; enl_idx < 5; enl_idx++)
@@ -1001,7 +1075,7 @@ namespace GnollHackClient.Pages.Game
                                 }
 
                                 /* Darkening at the end of layers */
-                                if (layer == (int)layer_types.LAYER_OBJECT)
+                                if (layer_idx == (int)layer_types.LAYER_OBJECT)
                                 {
                                     for (int mapx = startX; mapx <= endX; mapx++)
                                     {

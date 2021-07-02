@@ -20,6 +20,10 @@ namespace GnollHackClient
         List<EnlargementDefinition> GetEnlargementArray();
         List<ReplacementDefinition> GetReplacementArray();
         List<AutoDrawDefinition> GetAutoDrawArray();
+        int GetTileAnimationIndexFromGlyph(int glyph);
+        int GetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,
+            out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, out int autodraw_ptr);
+
         int Test1();
         int Test2();
         int StartGnollHack(ClientGame clientGame);

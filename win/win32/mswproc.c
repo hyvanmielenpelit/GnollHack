@@ -1985,6 +1985,7 @@ mswin_delay_output()
     //Sleep(50);
     //mswin_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
     mswin_wait_loop_intervals(DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
+    reduce_counters_intervals(DELAY_OUTPUT_INTERVAL_IN_ANIMATION_INTERVALS);
 }
 
 void
@@ -1993,6 +1994,8 @@ mswin_delay_output_milliseconds(int interval)
     logDebug("mswin_delay_output_milliseconds()\n");
     //Sleep(interval);
     mswin_wait_loop(interval);
+    reduce_counters(interval);
+
 }
 
 void
@@ -2001,6 +2004,7 @@ mswin_delay_output_intervals(int intervals)
     logDebug("mswin_delay_output_intervals()\n");
     //Sleep(interval);
     mswin_wait_loop_intervals(intervals);
+    reduce_counters_intervals(intervals);
 }
 
 
@@ -2394,8 +2398,6 @@ mswin_wait_loop(int milliseconds)
     } while (li_timepassed.QuadPart < li_threshold.QuadPart); // timepassed < threshold);
 
     disallow_keyboard_commands_in_wait_loop = FALSE;
-
-    reduce_counters(milliseconds);
 }
 
 void
@@ -2433,8 +2435,6 @@ mswin_wait_loop_intervals(int intervals)
     } while (counter_after - counter_before < intervals && counter_after >= counter_before);
 
     disallow_keyboard_commands_in_wait_loop = FALSE;
-
-    reduce_counters_intervals(intervals);
 }
 
 /* clean up and quit */
@@ -3751,29 +3751,29 @@ mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y
     case ANIMATION_TIMER_GENERAL:
         break;
     case ANIMATION_TIMER_YOU:
-        animation_timers.u_action_animation_counter = 0UL;
+        animation_timers.u_action_animation_counter = 0L;
         animation_timers.u_action_animation_counter_on = !!state;
         break;
     case ANIMATION_TIMER_MONSTER:
-        animation_timers.m_action_animation_counter = 0UL;
+        animation_timers.m_action_animation_counter = 0L;
         animation_timers.m_action_animation_counter_on = !!state;
         animation_timers.m_action_animation_x = x;
         animation_timers.m_action_animation_y = y;
         break;
     case ANIMATION_TIMER_EXPLOSION:
-        animation_timers.explosion_animation_counter = 0UL;
+        animation_timers.explosion_animation_counter = 0L;
         animation_timers.explosion_animation_counter_on = !!state;
         animation_timers.explosion_animation_x = x;
         animation_timers.explosion_animation_y = y;
         break;
     case ANIMATION_TIMER_ZAP:
-        animation_timers.zap_animation_counter[timerid] = 0UL;
+        animation_timers.zap_animation_counter[timerid] = 0L;
         animation_timers.zap_animation_counter_on[timerid] = !!state;
         animation_timers.zap_animation_x[timerid] = x;
         animation_timers.zap_animation_y[timerid] = y;
         break;
     case ANIMATION_TIMER_SPECIAL_EFFECT:
-        animation_timers.special_effect_animation_counter[timerid] = 0UL;
+        animation_timers.special_effect_animation_counter[timerid] = 0L;
         animation_timers.special_effect_animation_counter_on[timerid] = !!state;
         animation_timers.spef_action_animation_x[timerid] = x;
         animation_timers.spef_action_animation_y[timerid] = y;

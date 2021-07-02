@@ -293,6 +293,22 @@ namespace GnollHackCommon
         public sbyte[] leash_mon_y; /* the last coordinate is the other end of the leash, i.e., u.uy at the time */
     }
 
+    public enum animation_play_types
+    {
+        ANIMATION_PLAY_TYPE_ALWAYS = 0,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY
+    }
+
+    public enum animation_timer_types
+    {
+        ANIMATION_TIMER_GENERAL = 0,
+        ANIMATION_TIMER_YOU,
+        ANIMATION_TIMER_MONSTER,
+        ANIMATION_TIMER_EXPLOSION,
+        ANIMATION_TIMER_ZAP,
+        ANIMATION_TIMER_SPECIAL_EFFECT,
+    }
+
     public class GHConstants
     {
         public const int InputBufferLength = 32;
@@ -315,7 +331,9 @@ namespace GnollHackCommon
         public const int NumPositionsInEnlargement = 5;
         public const int MaxTilesPerReplacement = 32;
         public const int MaxLeashed = 2;
-        public const int LayerFlagHitTileMaskBitOffset = 9;
+        public const int MaxPlayedSpecialEffects = 12;
+        public const int MaxPlayedZapAnimations = 16;
+
     }
 
     [StructLayout(LayoutKind.Sequential)]
