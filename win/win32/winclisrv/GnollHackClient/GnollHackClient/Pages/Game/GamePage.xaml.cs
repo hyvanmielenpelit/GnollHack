@@ -896,7 +896,6 @@ namespace GnollHackClient.Pages.Game
                                 {
                                     for (int mapy = startY; mapy <= endY; mapy++)
                                     {
-
                                         int signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
                                         if (signed_glyph == NoGlyph)
                                             continue;

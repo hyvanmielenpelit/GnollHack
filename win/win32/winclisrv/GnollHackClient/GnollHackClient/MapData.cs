@@ -14,7 +14,6 @@ namespace GnollHackClient
         public SKColor Color { get; set; }
         public uint Special { get; set; }
         public LayerInfo Layers;
-
     }
 
 }

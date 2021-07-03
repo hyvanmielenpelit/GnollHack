@@ -2230,7 +2230,7 @@ domove_core()
             if (u.usteed)
                 u.usteed->mx = u.ux, u.usteed->my = u.uy;
             play_sfx_sound(SFX_GENERAL_DOES_NOT_FIT);
-            You("stop.  %s won't fit through.", upstart(y_monnam(mtmp)));
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "stop.  %s won't fit through.", upstart(y_monnam(mtmp)));
         }
         else
         {
