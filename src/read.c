@@ -479,21 +479,34 @@ struct obj* otmp;
     if (!otmp || otmp->oartifact != ART_RULING_RING_OF_YENDOR)
         return;
 
+    boolean revealed = (otmp->speflags & SPEFLAGS_INSCRIPTION_REVEALED) != 0;
+
     if (Blind)
-        pline("You feel that an inscription appears on %s, but you cannot see it.", yname(otmp));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You feel that an inscription appears%s on %s, but you cannot see it.", revealed ? " again" : "", yname(otmp));
     else
     {
-        pline("Suddenly, an inscription appears on %s in fiery letters:", yname(otmp));
-        verbalize("Ash nazg durbatuluk, ash nazg gimbatul,");
-        verbalize("Ash nazg thrakatuluk agh burzum-ishi krimpatul.");
-        if (!otmp->nknown)
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s, an inscription appears on %s in fiery letters:", revealed ? "Again" : "Suddenly", yname(otmp));
+        verbalize_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ash na... dur...");
+        if (otmp->speflags & SPEFLAGS_INSCRIPTION_REVEALED)
         {
-            pline("Huh. That was quite a tongue twister.");
-            otmp->nknown = TRUE;
-            otmp->aknown = TRUE;
-            if (carried(otmp))
-                prinv((char*)0, otmp, 0L);
+            You("still couldn't make much sense of it.");
         }
+        else
+        {
+            if (!otmp->nknown)
+            {
+                You("quite couldn't make sense of it, but it seemed like quite a tongue twister.");
+                otmp->nknown = TRUE;
+                otmp->aknown = TRUE;
+                if (carried(otmp))
+                    prinv((char*)0, otmp, 0L);
+            }
+            else
+            {
+                You("quite couldn't make sense of what it said.");
+            }
+        }
+        otmp->speflags |= SPEFLAGS_INSCRIPTION_REVEALED;
         u.uconduct.literate++;
     }
 }

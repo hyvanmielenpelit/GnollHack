@@ -181,7 +181,9 @@
             <CollectionView x:Name="MenuView" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged" HorizontalOptions="FillAndExpand"  >
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <SwipeView HorizontalOptions="FillAndExpand" SwipeStarted="SwipeView_SwipeStarted" SwipeEnded="SwipeView_SwipeEnded" IsEnabled="{Binding MaxCount, Converter={StaticResource EnableCountConverter}}">
+                        <SwipeView 
+                            HorizontalOptions="FillAndExpand" SwipeStarted="SwipeView_SwipeStarted" SwipeEnded="SwipeView_SwipeEnded" 
+                            IsEnabled="{Binding MaxCount, Converter={StaticResource EnableCountConverter}}">
                             <SwipeView.LeftItems>
                                 <SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
                                     <SwipeItemView IsVisible="{Binding IsSwipeVisible}" >
@@ -248,7 +250,7 @@
                             </SwipeView.RightItems>
 
                             <Grid HorizontalOptions="FillAndExpand" 
-                                  VerticalOptions="CenterAndExpand" 
+                                  VerticalOptions="CenterAndExpand"
                                   Padding="{Binding MenuFlags, Converter={StaticResource PaddingConverter}}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -265,7 +267,7 @@
                                    FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">
                                 </Label>
 
-
+                                <Label Grid.Column="0" Text=" " HeightRequest="{Binding MinimumRowHeight}" VerticalTextAlignment="Center" VerticalOptions="Center"></Label>
                                 <!--
                                 <skia:SKCanvasView Grid.Column="1" x:Name="menuItemCanvasView" SizeChanged="menuItemCanvasView_SizeChanged"
                                                    IsVisible="{Binding IsGlyphVisible}"

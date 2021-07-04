@@ -11,6 +11,7 @@
 
 MAZE:"earth",' '
 FLAGS: noteleport,hardfloor,shortsighted
+TILESET: gnomish_mines_tileset
 MESSAGE: "Well done, mortal!"
 MESSAGE: "But now thou must face the final Test..."
 MESSAGE: "Prove thyself worthy or perish!"

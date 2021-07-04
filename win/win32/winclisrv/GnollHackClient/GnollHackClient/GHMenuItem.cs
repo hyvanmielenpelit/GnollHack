@@ -39,6 +39,7 @@ namespace GnollHackClient
         public string LabelString { get { return (MaxCount <= 0 ? "N/A" : Count == -1 ? "All" : Count.ToString()); } }
         public int ConvertedCount { get { return (Count + 1); } set { Count = value - 1; } }
         public bool IsSwipeVisible { get { return (Count != 0 && MaxCount > 1); } }
+        public double MinimumRowHeight { get { return Identifier != 0 || HeadingGroupAccelerator != 0 ? 30.0 : 12.0; } }
         public string EntryString { get; set; }
         public Color EntryTextColor { get; set; }
         public int MaxCount { get; set; }
