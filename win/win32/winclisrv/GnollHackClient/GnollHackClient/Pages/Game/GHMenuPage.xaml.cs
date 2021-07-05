@@ -26,6 +26,11 @@ namespace GnollHackClient.Pages.Game
         public List<GHMenuItem> MenuItems { get { return _GHMenuItems; } }
 
         public string Header { get { return HeaderLabel.Text; } set { HeaderLabel.Text = value; } }
+        public bool HeaderVisible { get { return HeaderLabel.IsVisible; } set { HeaderLabel.IsVisible = value; } }
+
+        public string Subtitle { get { return SubtitleLabel.Text; } set { SubtitleLabel.Text = value; } }
+        public bool SubtitleVisible { get { return SubtitleLabel.IsVisible; } set { SubtitleLabel.IsVisible = value; } }
+
         public SelectionMode SelectionHow { get { return MenuView.SelectionMode; } set { MenuView.SelectionMode = value; } }
 
         private bool _responseSent = false;

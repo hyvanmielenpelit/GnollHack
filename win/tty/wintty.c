@@ -104,7 +104,7 @@ struct window_procs tty_procs = {
     tty_exit_nhwindows, tty_suspend_nhwindows, tty_resume_nhwindows,
     tty_create_nhwindow, tty_clear_nhwindow, tty_display_nhwindow,
     tty_destroy_nhwindow, tty_curs, tty_putstr_ex, genl_putmixed_ex,
-    tty_display_file, tty_start_menu, tty_add_menu, tty_add_extended_menu, tty_end_menu,
+    tty_display_file, tty_start_menu, tty_add_menu, tty_add_extended_menu, tty_end_menu_ex,
     tty_select_menu, tty_message_menu, tty_update_inventory, tty_mark_synch,
     tty_wait_synch,
 #ifdef CLIPPING
@@ -3106,9 +3106,9 @@ tty_menu_item *curr;
  * height of the window.
  */
 void
-tty_end_menu(window, prompt)
+tty_end_menu_ex(window, prompt, subtitle)
 winid window;       /* menu to use */
-const char *prompt; /* prompt to for menu */
+const char *prompt, *subtitle; /* prompt to for menu */
 {
     struct WinDesc *cw = 0;
     tty_menu_item *curr;
@@ -3126,13 +3126,18 @@ const char *prompt; /* prompt to for menu */
     cw->mlist = reverse(cw->mlist);
 
     /* Put the prompt at the beginning of the menu. */
-    if (prompt) {
+    if (prompt || subtitle) 
+    {
+        char buf[BUFSIZ] = "";
+
+        Sprintf(buf, "%s%s%s", prompt ? prompt : "", prompt&& subtitle && strcmp(prompt, "") && strcmp(subtitle, "") ? " - " : "", subtitle ? subtitle : "");
+
         anything any;
 
         any = zeroany; /* not selectable */
         tty_add_menu(window, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
                      MENU_UNSELECTED);
-        tty_add_menu(window, NO_GLYPH, &any, 0, 0, ATR_NONE, prompt,
+        tty_add_menu(window, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
                      MENU_UNSELECTED);
     }
 

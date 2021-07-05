@@ -136,9 +136,10 @@ register BOOLEAN_P preselected;
 /* Done building a menu. */
 
 void
-amii_end_menu(window, morestr)
+amii_end_menu_ex(window, morestr, subtitle)
 register winid window;
 register const char *morestr;
+register const char* subtitle;
 {
     register struct amii_WinDesc *cw;
 

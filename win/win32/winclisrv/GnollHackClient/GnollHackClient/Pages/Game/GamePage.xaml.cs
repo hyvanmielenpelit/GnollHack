@@ -684,7 +684,16 @@ namespace GnollHackClient.Pages.Game
         {
             var menuPage = new GHMenuPage(this, ghwindow);
             menuPage.SelectionHow = menuinfo.SelectionHow;
-            menuPage.Header = menuinfo.Header;
+            if (menuinfo.Header == null)
+                menuPage.HeaderVisible = false;
+            else
+                menuPage.Header = menuinfo.Header;
+
+            if (menuinfo.Subtitle == null)
+                menuPage.SubtitleVisible = false;
+            else
+                menuPage.Subtitle = menuinfo.Subtitle;
+
             if (menuinfo != null)
                 menuPage.MenuItems.AddRange(menuinfo.MenuItems);
             menuPage.Process();

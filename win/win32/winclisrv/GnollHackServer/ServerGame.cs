@@ -37,7 +37,7 @@ namespace GnollHackServer
             VoidIntCallback callback_start_menu,
             AddMenuCallback callback_add_menu,
             AddExtendedMenuCallback callback_add_extended_menu,
-            VoidIntConstCharCallback callback_end_menu,
+            EndMenuCallback callback_end_menu_ex,
             IntIntIntOutIntCallback callback_select_menu,
             VoidIntCallback callback_message_menu, /* no need for X-specific handling */
             VoidVoidCallback callback_update_inventory,
@@ -188,7 +188,7 @@ namespace GnollHackServer
                 GameCallback_VoidIntDummy,
                 GameCallback_AddMenu,
                 GameCallback_AddExtendedMenu,
-                GameCallback_VoidIntConstCharDummy,
+                GameCallback_EndMenu,
                 GameCallback_IntIntIntOutIntDummy,
                 GameCallback_VoidIntDummy, /* no need for X-specific handling */
                 GameCallback_VoidVoidDummy,
@@ -318,6 +318,11 @@ namespace GnollHackServer
 
         }
 
+        protected void GameCallback_EndMenu(int value1, string value2, string value3)
+        {
+
+        }
+
         protected void GameCallback_FreeMemory(ref IntPtr ptr)
         {
 
@@ -371,10 +376,6 @@ namespace GnollHackServer
 
         }
         protected void GameCallback_VoidIntCharDummy(int value1, string value2)
-        {
-
-        }
-        protected void GameCallback_VoidIntConstCharDummy(int value1, string value2)
         {
 
         }

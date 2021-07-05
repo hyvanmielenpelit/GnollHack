@@ -42,7 +42,7 @@ static int s_done = FALSE;
  *	ghack_add_menu    : NONE:POINTER
  *                            POINTER = GHackMenuItem*
  *
- *	ghack_end_menu    : NONE:POINTER
+ *	ghack_end_menu_ex    : NONE:POINTER
  *                            POINTER = char* to closing string
  *
  *	ghack_select_menu : NONE:POINTER,INT,POINTER
@@ -92,7 +92,7 @@ ghack_init_signals(void)
         GTK_TYPE_POINTER);
 
     ghack_signals[GHSIG_END_MENU] = gtk_object_class_user_signal_new(
-        gtk_type_class(gtk_widget_get_type()), "ghack_end_menu",
+        gtk_type_class(gtk_widget_get_type()), "ghack_end_menu_ex",
         GTK_RUN_FIRST, gtk_marshal_NONE__POINTER, GTK_TYPE_NONE, 1,
         GTK_TYPE_POINTER);
 

@@ -99,7 +99,7 @@ struct window_procs mswin_procs = {
     mswin_resume_nhwindows, mswin_create_nhwindow, mswin_clear_nhwindow,
     mswin_display_nhwindow, mswin_destroy_nhwindow, mswin_curs, mswin_putstr_ex,
     genl_putmixed_ex, mswin_display_file, mswin_start_menu, mswin_add_menu, mswin_add_extended_menu,
-    mswin_end_menu, mswin_select_menu,
+    mswin_end_menu_ex, mswin_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     mswin_update_inventory, mswin_mark_synch, mswin_wait_synch,
 #ifdef CLIPPING
@@ -1292,14 +1292,15 @@ end_menu(window, prompt)
                 ** it ever did).  That should be select_menu's job.  -dean
 */
 void
-mswin_end_menu(winid wid, const char *prompt)
+mswin_end_menu_ex(winid wid, const char *prompt, const char* subtitle)
 {
-    logDebug("mswin_end_menu(%d, %s)\n", wid, prompt);
+    logDebug("mswin_end_menu_ex(%d, %s)\n", wid, prompt);
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         MSNHMsgEndMenu data;
         ZeroMemory(&data, sizeof(data));
         data.text = prompt;
+        data.subtitle = subtitle;
 
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_ENDMENU, (LPARAM) &data);

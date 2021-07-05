@@ -195,7 +195,7 @@ E void FDECL(tty_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P, int,
                             const char *, BOOLEAN_P));
 E void FDECL(tty_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P, int,
     const char*, BOOLEAN_P));
-E void FDECL(tty_end_menu, (winid, const char *));
+E void FDECL(tty_end_menu_ex, (winid, const char *, const char*));
 E int FDECL(tty_select_menu, (winid, int, MENU_ITEM_P **));
 E char FDECL(tty_message_menu, (CHAR_P, int, const char *));
 E void NDECL(tty_update_inventory);

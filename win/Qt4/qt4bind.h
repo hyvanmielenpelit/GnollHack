@@ -59,7 +59,7 @@ public:
 	static void qt_add_extended_menu(winid wid, int glyph,
 		const ANY_P* identifier, struct extended_menu_info info, CHAR_P ch, CHAR_P gch, int attr,
 		const char* str, BOOLEAN_P presel);
-	static void qt_end_menu(winid wid, const char *prompt);
+	static void qt_end_menu_ex(winid wid, const char *prompt, const char* subtitle);
 	static int qt_select_menu(winid wid, int how, MENU_ITEM_P **menu_list);
 	static void qt_update_inventory();
 	static void qt_mark_synch();

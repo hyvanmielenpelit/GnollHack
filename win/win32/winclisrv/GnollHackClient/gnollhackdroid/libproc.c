@@ -26,7 +26,7 @@ struct window_procs lib_procs = {
     lib_resume_nhwindows, lib_create_nhwindow, lib_clear_nhwindow,
     lib_display_nhwindow, lib_destroy_nhwindow, lib_curs, lib_putstr_ex,
     genl_putmixed_ex, lib_display_file, lib_start_menu, lib_add_menu, lib_add_extended_menu,
-    lib_end_menu, lib_select_menu,
+    lib_end_menu_ex, lib_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     lib_update_inventory, lib_mark_synch, lib_wait_synch,
 #ifdef CLIPPING
@@ -251,13 +251,16 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct
         (unsigned long long)(info.object ? info.object->o_id : 0), (unsigned long long)(info.monster ? info.monster->m_id : 0), info.heading_for_group_accelerator, info.menu_flags);
 }
 
-void lib_end_menu(winid wid, const char* prompt)
+void lib_end_menu_ex(winid wid, const char* prompt, const char* subtitle)
 {
     char buf[BUFSIZ];
+    char buf2[BUFSIZ];
     if (prompt)
         write_text2buf_utf8(buf, BUFSIZ, prompt);
+    if (subtitle)
+        write_text2buf_utf8(buf2, BUFSIZ, subtitle);
 
-    lib_callbacks.callback_end_menu(wid, prompt ? buf : 0);
+    lib_callbacks.callback_end_menu_ex(wid, prompt ? buf : 0, subtitle ? buf2 : 0);
 }
 
 int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)

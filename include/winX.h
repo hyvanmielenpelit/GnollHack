@@ -420,7 +420,7 @@ E void FDECL(X11_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P, int,
                             const char *, BOOLEAN_P));
 E void FDECL(X11_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P, int,
     const char*, BOOLEAN_P));
-E void FDECL(X11_end_menu, (winid, const char *));
+E void FDECL(X11_end_menu_ex, (winid, const char *, const char*));
 E int FDECL(X11_select_menu, (winid, int, MENU_ITEM_P **));
 E void NDECL(X11_update_inventory);
 E void NDECL(X11_mark_synch);

@@ -48,7 +48,7 @@ struct window_procs Gem_procs = {
     Gem_resume_nhwindows, Gem_create_nhwindow, Gem_clear_nhwindow,
     Gem_display_nhwindow, Gem_destroy_nhwindow, Gem_curs, Gem_putstr_ex,
     genl_putmixed_ex, Gem_display_file, Gem_start_menu, Gem_add_menu, Gem_add_extended_menu,
-    Gem_end_menu, Gem_select_menu, genl_message_menu, Gem_update_inventory,
+    Gem_end_menu_ex, Gem_select_menu, genl_message_menu, Gem_update_inventory,
     Gem_mark_synch, Gem_wait_synch,
 #ifdef CLIPPING
     Gem_cliparound,
@@ -814,9 +814,9 @@ boolean preselected;        /* item is marked as selected */
  * We assign the keyboard accelerators as needed.
  */
 void
-Gem_end_menu(window, prompt)
+Gem_end_menu_ex(window, prompt, subtitle)
 winid window;       /* menu to use */
-const char *prompt; /* prompt to for menu */
+const char *prompt, *subtitle; /* prompt to for menu */
 {
     if (window == WIN_ERR || mar_hol_win_type(window) != NHW_MENU)
         panic(winpanicstr, window);
@@ -1044,7 +1044,7 @@ Gem_get_ext_cmd()
         Gem_add_menu(wind, NO_GLYPH, &any, accelerator, 0, ATR_NONE, ptr,
                      FALSE);
     }
-    Gem_end_menu(wind, "What extended command?");
+    Gem_end_menu_ex(wind, "What extended command?", 0);
     count = Gem_select_menu(wind, PICK_ONE, &selected);
     what = count ? selected->item.a_int : -1;
     if (selected)

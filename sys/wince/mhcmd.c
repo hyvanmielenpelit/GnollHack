@@ -1114,7 +1114,7 @@ ActivateCell(HWND hWnd, int cell)
             mswin_add_menu(wid, NO_GLYPH, &any, 'a' + i, 0, ATR_NONE,
                            nhcmdset_get_name(pSet, i), FALSE);
         }
-        mswin_end_menu(wid, "Select keypad layout");
+        mswin_end_menu_ex(wid, "Select keypad layout", (const char*)0);
         i = select_menu(wid, PICK_ONE, &selected);
         mswin_destroy_nhwindow(wid);
 

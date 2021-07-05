@@ -33,7 +33,7 @@ struct window_procs amii_procs = {
     amii_exit_nhwindows, amii_suspend_nhwindows, amii_resume_nhwindows,
     amii_create_nhwindow, amii_clear_nhwindow, amii_display_nhwindow,
     amii_destroy_nhwindow, amii_curs, amii_putstr_ex, genl_putmixed_ex,
-    amii_display_file, amii_start_menu, amii_add_menu, amii_add_extended_menu, amii_end_menu,
+    amii_display_file, amii_start_menu, amii_add_menu, amii_add_extended_menu, amii_end_menu_ex,
     amii_select_menu, genl_message_menu, amii_update_inventory,
     amii_mark_synch, amii_wait_synch,
 #ifdef CLIPPING
@@ -81,7 +81,7 @@ struct window_procs amiv_procs = {
     amii_exit_nhwindows, amii_suspend_nhwindows, amii_resume_nhwindows,
     amii_create_nhwindow, amii_clear_nhwindow, amii_display_nhwindow,
     amii_destroy_nhwindow, amii_curs, amii_putstr_ex, genl_putmixed_ex,
-    amii_display_file, amii_start_menu, amii_add_menu, amii_add_extended_menu, amii_end_menu,
+    amii_display_file, amii_start_menu, amii_add_menu, amii_add_extended_menu, amii_end_menu_ex,
     amii_select_menu, genl_message_menu, amii_update_inventory,
     amii_mark_synch, amii_wait_synch,
 #ifdef CLIPPING
@@ -807,7 +807,7 @@ amii_get_ext_cmd(void)
                           buf, MENU_UNSELECTED);
         }
 
-        amii_end_menu(win, (char *) 0);
+        amii_end_menu_ex(win, (char *) 0, (char*)0);
         sel = amii_select_menu(win, PICK_ONE, &mip);
         amii_destroy_nhwindow(win);
 
@@ -868,7 +868,7 @@ amii_get_ext_cmd(void)
                               0, buf, MENU_UNSELECTED);
             }
 
-            amii_end_menu(win, (char *) 0);
+            amii_end_menu_ex(win, (char *) 0, (char*)0);
             sel = amii_select_menu(win, PICK_ONE, &mip);
             amii_destroy_nhwindow(win);
 

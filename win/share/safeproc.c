@@ -71,7 +71,7 @@ struct window_procs safe_procs = {
     safe_exit_nhwindows, safe_suspend_nhwindows, safe_resume_nhwindows,
     safe_create_nhwindow, safe_clear_nhwindow, safe_display_nhwindow,
     safe_destroy_nhwindow, safe_curs, safe_putstr_ex, genl_putmixed_ex,
-    safe_display_file, safe_start_menu, safe_add_menu, safe_add_extended_menu, safe_end_menu,
+    safe_display_file, safe_start_menu, safe_add_menu, safe_add_extended_menu, safe_end_menu_ex,
     safe_select_menu, safe_message_menu, safe_update_inventory, safe_mark_synch,
     safe_wait_synch,
 #ifdef CLIPPING
@@ -293,9 +293,9 @@ boolean preselected;        /* item is marked as selected */
  * End a menu in this window, window must a type NHW_MENU.
  */
 void
-safe_end_menu(window, prompt)
+safe_end_menu_ex(window, prompt, subtitle)
 winid window;       /* menu to use */
-const char *prompt; /* prompt to for menu */
+const char *prompt, *subtitle; /* prompt to for menu */
 {
     return;
 }

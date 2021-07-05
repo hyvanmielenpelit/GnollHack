@@ -85,7 +85,7 @@ STATIC_DCL void FDECL(dump_add_menu, (winid, int, const ANY_P *, CHAR_P,
                                       CHAR_P, int, const char *, BOOLEAN_P));
 STATIC_DCL void FDECL(dump_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P,
     CHAR_P, int, const char*, BOOLEAN_P));
-STATIC_DCL void FDECL(dump_end_menu, (winid, const char *));
+STATIC_DCL void FDECL(dump_end_menu_ex, (winid, const char *, const char*));
 STATIC_DCL int FDECL(dump_select_menu, (winid, int, MENU_ITEM_P **));
 STATIC_DCL void FDECL(dump_putstr_ex, (winid, int, const char *, int, int));
 #endif /* DUMPLOG */
@@ -694,7 +694,7 @@ static void FDECL(hup_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P,
                                  int, const char *, BOOLEAN_P));
 static void FDECL(hup_add_extended_menu, (winid, int, const anything*, struct extended_menu_info, CHAR_P, CHAR_P,
     int, const char*, BOOLEAN_P));
-static void FDECL(hup_end_menu, (winid, const char *));
+static void FDECL(hup_end_menu_ex, (winid, const char *, const char*));
 static void FDECL(hup_putstr_ex, (winid, int, const char *, int, int));
 static void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
 static void FDECL(hup_init_print_glyph, (int));
@@ -732,7 +732,7 @@ static struct window_procs hup_procs = {
     hup_display_nhwindow, hup_void_fdecl_winid,        /* destroy_nhwindow */
     hup_curs, hup_putstr_ex, hup_putstr_ex,            /* putmixed */
     hup_display_file, hup_void_fdecl_winid,            /* start_menu */
-    hup_add_menu, hup_add_extended_menu, hup_end_menu, hup_select_menu, genl_message_menu,
+    hup_add_menu, hup_add_extended_menu, hup_end_menu_ex, hup_select_menu, genl_message_menu,
     hup_void_ndecl,                                    /* update_inventory */
     hup_void_ndecl,                                    /* mark_synch */
     hup_void_ndecl,                                    /* wait_synch */
@@ -909,9 +909,10 @@ boolean preselected UNUSED;
 
 /*ARGSUSED*/
 static void
-hup_end_menu(window, prompt)
+hup_end_menu_ex(window, prompt, subtitle)
 winid window UNUSED;
 const char *prompt UNUSED;
+const char *subtitle UNUSED;
 {
     return;
 }
@@ -1616,16 +1617,26 @@ boolean preselected UNUSED;
 
 /*ARGSUSED*/
 STATIC_OVL void
-dump_end_menu(win, str)
+dump_end_menu_ex(win, str, str2)
 winid win UNUSED;
-const char *str;
+const char *str, *str2;
 {
     char buf[BUFSIZ * 4] = "";
-    if (str)
-        write_text2buf_utf8(buf, BUFSIZ * 4, str);
+    char buf1[BUFSIZ * 4] = "";
+    char buf2[BUFSIZ * 4] = "";
+    const char* txt = 0;
+    txt = (str && str2) ? " - " : "";
 
-    if (dumplog_file) {
-        if (str)
+    if (str)
+        write_text2buf_utf8(buf1, BUFSIZ * 4, str);
+    if (str2)
+        write_text2buf_utf8(buf2, BUFSIZ * 4, str2);
+
+    Sprintf(buf, "%s%s%s", buf1, txt, buf2);
+
+    if (dumplog_file) 
+    {
+        if (str || str2)
             fprintf(dumplog_file, "%s\n", buf);
         else
             fputs("\n", dumplog_file);
@@ -1655,7 +1666,7 @@ boolean onoff_flag;
             windowprocs.win_start_menu = dump_start_menu;
             windowprocs.win_add_menu = dump_add_menu;
             windowprocs.win_add_extended_menu = dump_add_extended_menu;
-            windowprocs.win_end_menu = dump_end_menu;
+            windowprocs.win_end_menu_ex = dump_end_menu_ex;
             windowprocs.win_select_menu = dump_select_menu;
             windowprocs.win_putstr_ex = dump_putstr_ex;
         } else {

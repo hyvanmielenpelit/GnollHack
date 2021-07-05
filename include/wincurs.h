@@ -97,7 +97,7 @@ extern void curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
 extern void curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel);
-extern void curses_end_menu(winid wid, const char *prompt);
+extern void curses_end_menu_ex(winid wid, const char *prompt, const char *subtitle);
 extern int curses_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 extern void curses_update_inventory(void);
 extern void curses_mark_synch(void);
@@ -209,7 +209,7 @@ extern void curses_status_update(int, genericptr_t, int, int, int,
 
 extern void curses_update_inv(void);
 extern void curses_add_inv(int, int, CHAR_P, attr_t, const char *);
-extern void curses_finalize_inv(const char*);
+extern void curses_finalize_inv(const char*, const char*);
 
 /* cursinit.c */
 

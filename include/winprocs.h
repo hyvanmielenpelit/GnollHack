@@ -38,7 +38,7 @@ struct window_procs {
                                  int, const char *, BOOLEAN_P));
     void FDECL((*win_add_extended_menu), (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P,
         int, const char*, BOOLEAN_P));
-    void FDECL((*win_end_menu), (winid, const char *));
+    void FDECL((*win_end_menu_ex), (winid, const char *, const char*));
     int FDECL((*win_select_menu), (winid, int, MENU_ITEM_P **));
     char FDECL((*win_message_menu), (CHAR_P, int, const char *));
     void NDECL((*win_update_inventory));
@@ -163,7 +163,8 @@ extern
 #define start_menu (*windowprocs.win_start_menu)
 #define add_menu (*windowprocs.win_add_menu)
 #define add_extended_menu (*windowprocs.win_add_extended_menu)
-#define end_menu (*windowprocs.win_end_menu)
+#define end_menu_ex (*windowprocs.win_end_menu_ex)
+#define end_menu(a, b) end_menu_ex(a, b, (const char*)0)
 #define select_menu (*windowprocs.win_select_menu)
 #define message_menu (*windowprocs.win_message_menu)
 #define update_inventory (*windowprocs.win_update_inventory)
@@ -417,7 +418,7 @@ struct chain_procs {
                                  CHAR_P, int, const char *, BOOLEAN_P));
     void FDECL((*win_add_extended_menu), (CARGS, winid, int, const ANY_P*, struct extended_menu_info, CHAR_P,
         CHAR_P, int, const char*, BOOLEAN_P));
-    void FDECL((*win_end_menu), (CARGS, winid, const char *));
+    void FDECL((*win_end_menu_ex), (CARGS, winid, const char *, const char*));
     int FDECL((*win_select_menu), (CARGS, winid, int, MENU_ITEM_P **));
     char FDECL((*win_message_menu), (CARGS, CHAR_P, int, const char *));
     void FDECL((*win_update_inventory), (CARGS));
@@ -517,7 +518,7 @@ extern void FDECL(safe_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P,
                                   int, const char *, BOOLEAN_P));
 extern void FDECL(safe_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P,
     int, const char*, BOOLEAN_P));
-extern void FDECL(safe_end_menu, (winid, const char *));
+extern void FDECL(safe_end_menu_ex, (winid, const char *, const char*));
 extern int FDECL(safe_select_menu, (winid, int, MENU_ITEM_P **));
 extern char FDECL(safe_message_menu, (CHAR_P, int, const char *));
 extern void NDECL(safe_update_inventory);

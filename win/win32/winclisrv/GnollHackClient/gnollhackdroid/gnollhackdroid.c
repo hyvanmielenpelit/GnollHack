@@ -271,7 +271,7 @@ int RunGnollHack(
     StartMenuCallback callback_start_menu,
     AddMenuCallback callback_add_menu,
     AddExtendedMenuCallback callback_add_extended_menu,
-    EndMenuCallback callback_end_menu,
+    EndMenuCallback callback_end_menu_ex,
     SelectMenuCallback callback_select_menu,
     MessageMenuCallback callback_message_menu,
     UpdateInventoryCallback callback_update_inventory,
@@ -375,7 +375,7 @@ int RunGnollHack(
     lib_callbacks.callback_start_menu = callback_start_menu;
     lib_callbacks.callback_add_menu = callback_add_menu;
     lib_callbacks.callback_add_extended_menu = callback_add_extended_menu;
-    lib_callbacks.callback_end_menu = callback_end_menu;
+    lib_callbacks.callback_end_menu_ex = callback_end_menu_ex;
     lib_callbacks.callback_select_menu = callback_select_menu;
     lib_callbacks.callback_message_menu = callback_message_menu;
     lib_callbacks.callback_update_inventory = callback_update_inventory;

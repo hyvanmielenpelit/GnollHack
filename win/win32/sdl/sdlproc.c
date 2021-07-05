@@ -95,7 +95,7 @@ struct window_procs nuklear_procs = {
     sdl_resume_nhwindows, sdl_create_nhwindow, sdl_clear_nhwindow,
     sdl_display_nhwindow, sdl_destroy_nhwindow, sdl_curs, sdl_putstr_ex,
     genl_putmixed_ex, sdl_display_file, sdl_start_menu, sdl_add_menu, sdl_add_extended_menu,
-    sdl_end_menu, sdl_select_menu,
+    sdl_end_menu_ex, sdl_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     sdl_update_inventory, sdl_mark_synch, sdl_wait_synch,
 #ifdef CLIPPING
@@ -1204,14 +1204,15 @@ end_menu(window, prompt)
                 ** it ever did).  That should be select_menu's job.  -dean
 */
 void
-sdl_end_menu(winid wid, const char *prompt)
+sdl_end_menu_ex(winid wid, const char *prompt, const char* subtitle)
 {
-    logDebug("sdl_end_menu(%d, %s)\n", wid, prompt);
+    logDebug("sdl_end_menu_ex(%d, %s)\n", wid, prompt);
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         MSNHMsgEndMenu data;
         ZeroMemory(&data, sizeof(data));
         data.text = prompt;
+        data.subtitle = subtitle;
 
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_ENDMENU, (LPARAM) &data);

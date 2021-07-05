@@ -112,7 +112,7 @@ struct window_procs X11_procs = {
     X11_suspend_nhwindows, X11_resume_nhwindows, X11_create_nhwindow,
     X11_clear_nhwindow, X11_display_nhwindow, X11_destroy_nhwindow, X11_curs,
     X11_putstr_ex, genl_putmixed_ex, X11_display_file, X11_start_menu, X11_add_menu, X11_add_extended_menu,
-    X11_end_menu, X11_select_menu,
+    X11_end_menu_ex, X11_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     X11_update_inventory, X11_mark_synch, X11_wait_synch,
 #ifdef CLIPPING

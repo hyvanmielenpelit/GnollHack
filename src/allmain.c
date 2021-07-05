@@ -975,7 +975,8 @@ display_gamewindows()
     WIN_INVEN = create_nhwindow(NHW_MENU);
     /* in case of early quit where WIN_INVEN could be destroyed before
        ever having been used, use it here to pacify the Qt interface */
-    start_menu(WIN_INVEN), end_menu(WIN_INVEN, (char *) 0);
+    start_menu(WIN_INVEN);
+    end_menu(WIN_INVEN, (char*)0);
 
     if (!(windowprocs.wincap2 & WC2_HEREWINDOW))
         iflags.wc2_herewindow = FALSE;

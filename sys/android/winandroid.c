@@ -26,7 +26,7 @@ static void FDECL(and_display_file, (const char *, BOOLEAN_P));
 static void FDECL(and_start_menu, (winid));
 static void FDECL(and_add_menu, (winid,int,const ANY_P *, CHAR_P,CHAR_P,int,const char *, BOOLEAN_P));
 static void FDECL(and_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P, int, const char*, BOOLEAN_P));
-static void FDECL(and_end_menu, (winid, const char *));
+static void FDECL(and_end_menu_ex, (winid, const char *, const char*));
 static int FDECL(and_select_menu, (winid, int, MENU_ITEM_P **));
 static char FDECL(and_message_menu, (CHAR_P, int, const char *));
 static void NDECL(and_update_inventory);
@@ -92,7 +92,7 @@ struct window_procs and_procs = {
 	and_start_menu,
 	and_add_menu,
 	and_add_extended_menu,
-	and_end_menu,
+	and_end_menu_ex,
 	and_select_menu,
 	and_message_menu,
 	and_update_inventory,
@@ -456,7 +456,7 @@ void and_player_selection()
 					lastch = thisch;
 				}
 			}
-			and_end_menu(win, "Pick a role");
+			and_end_menu_ex(win, "Pick a role", (const char*)0);
 			result = and_select_menu(win, PICK_ONE, &selected);
 			and_destroy_nhwindow(win);
 
@@ -492,7 +492,7 @@ void and_player_selection()
 					any.a_int = i + 1; /* must be non-zero */
 					and_add_menu(win, NO_GLYPH, &any, races[i].noun[0], 0, ATR_NONE, races[i].noun, MENU_UNSELECTED);
 				}
-			and_end_menu(win, "Pick a race");
+			and_end_menu_ex(win, "Pick a race", (const char*)0);
 			result = and_select_menu(win, PICK_ONE, &selected);
 			and_destroy_nhwindow(win);
 
@@ -528,7 +528,7 @@ void and_player_selection()
 					any.a_int = i + 1;
 					and_add_menu(win, NO_GLYPH, &any, genders[i].adj[0], 0, ATR_NONE, genders[i].adj, MENU_UNSELECTED);
 				}
-			and_end_menu(win, "Pick a gender");
+			and_end_menu_ex(win, "Pick a gender", (const char*)0);
 			result = and_select_menu(win, PICK_ONE, &selected);
 			and_destroy_nhwindow(win);
 
@@ -562,7 +562,7 @@ void and_player_selection()
 					any.a_int = i + 1;
 					and_add_menu(win, NO_GLYPH, &any, aligns[i].adj[0], 0, ATR_NONE, aligns[i].adj, MENU_UNSELECTED);
 				}
-			and_end_menu(win, "Pick an alignment");
+			and_end_menu_ex(win, "Pick an alignment", (const char*)0);
 			result = and_select_menu(win, PICK_ONE, &selected);
 			and_destroy_nhwindow(win);
 
@@ -1236,7 +1236,7 @@ void and_add_extended_menu(winid wid, int glyph, const ANY_P* ident, struct exte
 //		   be printed.
 //		** This probably shouldn't flush the window any more (if
 //		** it ever did).  That should be select_menu's job.  -dean
-void and_end_menu(winid wid, const char *prompt)
+void and_end_menu_ex(winid wid, const char *prompt, const char* subtitle)
 {
 	jbyteArray jstr;
 	if(prompt)
@@ -2004,7 +2004,7 @@ int do_ext_cmd_menu(BOOLEAN_P complete)
 	any.a_int = i+1;
 	if(!complete)
 		and_add_menu(wid, NO_GLYPH, &any, '*', 0, ATR_NONE, "(list everything)", FALSE);
-	and_end_menu(wid, "Extended command");
+	and_end_menu_ex(wid, "Extended command", (const char*)0);
 	count = and_select_menu(wid, PICK_ONE, &selected);
 	what = count > 0 ? selected->item.a_int - 1 : -1;
 	if(selected)

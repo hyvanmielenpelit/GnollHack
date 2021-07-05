@@ -9,6 +9,7 @@ namespace GnollHackClient
     {
         public List<GHMenuItem> MenuItems = new List<GHMenuItem>();
         public string Header { get; set; }
+        public string Subtitle { get; set; }
         public SelectionMode SelectionHow { get; set; }
         private char _autoAccelerator = 'a';
         public char AutoAccelerator { get { char res = _autoAccelerator; IncrementAutoAccelerator(); return res; } }

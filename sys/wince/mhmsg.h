@@ -58,8 +58,9 @@ typedef struct mswin_nhmsg_cursor {
     int y;
 } MSNHMsgCursor, *PMSNHMsgCursor;
 
-typedef struct mswin_nhmsg_end_menu {
+typedef struct mswin_nhmsg_end_menu_ex {
     const char *text;
+    const char* subtitle;
 } MSNHMsgEndMenu, *PMSNHMsgEndMenu;
 
 #endif

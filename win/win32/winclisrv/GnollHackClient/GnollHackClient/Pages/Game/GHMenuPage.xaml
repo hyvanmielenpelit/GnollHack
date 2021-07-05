@@ -26,7 +26,14 @@
     <ContentPage.Content>
         <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical">
             <Label x:Name="HeaderLabel"
-                   FontFamily="Diablo" FontSize="22" TextColor="White" FontAttributes="Bold" Margin="2,10,2,6" BackgroundColor="Transparent"
+                   FontFamily="Diablo" FontSize="22" TextColor="White" FontAttributes="Bold" Margin="2,10,2,2" BackgroundColor="Transparent"
+                   HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="SubtitleLabel"
+                   FontFamily="Diablo" FontSize="15" TextColor="White" Margin="1,2,1,6" BackgroundColor="Transparent"
                    HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />

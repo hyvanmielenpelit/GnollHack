@@ -44,7 +44,7 @@ struct window_procs curses_procs = {
     curses_start_menu,
     curses_add_menu,
     curses_add_extended_menu,
-    curses_end_menu,
+    curses_end_menu_ex,
     curses_select_menu,
     genl_message_menu,
     curses_update_inventory,
@@ -345,7 +345,7 @@ curses_display_nhwindow(winid wid, BOOLEAN_P block)
     menu_item *selected = NULL;
 
     if (curses_is_menu(wid) || curses_is_text(wid)) {
-        curses_end_menu(wid, "");
+        curses_end_menu_ex(wid, "", 0);
         curses_select_menu(wid, PICK_NONE, &selected);
         return;
     }
@@ -547,15 +547,15 @@ end_menu(window, prompt)
                 ** it ever did).  That should be select_menu's job.  -dean
 */
 void
-curses_end_menu(winid wid, const char *prompt)
+curses_end_menu_ex(winid wid, const char *prompt, const char* subtitle)
 {
     if (inv_update)
     {
-        curses_finalize_inv(prompt);
+        curses_finalize_inv(prompt, subtitle);
         return;
     }
 
-    curses_finalize_nhmenu(wid, prompt);
+    curses_finalize_nhmenu(wid, prompt, subtitle);
 }
 
 /*

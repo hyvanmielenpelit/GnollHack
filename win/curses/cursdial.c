@@ -689,9 +689,13 @@ curs_menu_set_bottom_heavy(winid wid)
  finalized in memory */
 
 void
-curses_finalize_nhmenu(winid wid, const char *prompt)
+curses_finalize_nhmenu(winid wid, const char *prompt, const char *subtitle)
 {
     int count = 0;
+    char buf[BUFSIZ] = "";
+
+    Sprintf(buf, "%s%s%s", str ? str : "", str && subtitle && strcmp(str, "") && strcmp(subtitle, "") ? " - " : "", subtitle ? subtitle : "");
+
     nhmenu_item *menu_item_ptr;
     nhmenu *current_menu = get_menu(wid);
 
@@ -705,7 +709,7 @@ curses_finalize_nhmenu(winid wid, const char *prompt)
         count++;
 
     current_menu->num_entries = count;
-    current_menu->prompt = curses_copy_of(prompt);
+    current_menu->prompt = curses_copy_of(buf);
 }
 
 

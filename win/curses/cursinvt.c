@@ -111,9 +111,12 @@ curses_add_inv(int y,
 }
 
 void
-curses_finalize_inv(const char* str)
+curses_finalize_inv(const char* str, const char* subtitle)
 {
     WINDOW* win = curses_get_nhwin(INV_WIN);
+    char buf[BUFSIZ] = "";
+
+    Sprintf(buf, "%s%s%s", str ? str : "", str && subtitle && strcmp(str, "") && strcmp(subtitle, "") ? " - " : "", subtitle ? subtitle : "");
 
     boolean has_border = curses_window_has_border(INV_WIN);
     int x = has_border ? 1 : 0;
@@ -123,7 +126,7 @@ curses_finalize_inv(const char* str)
     attr_t bold = A_BOLD;
 
     wattron(win, bold);
-    wprintw(win, "%s", str);
+    wprintw(win, "%s", buf);
     wattroff(win, bold);
     wclrtoeol(win);
 }

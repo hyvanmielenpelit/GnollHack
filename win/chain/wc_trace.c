@@ -434,10 +434,10 @@ boolean preselected;        /* item is marked as selected */
 
 
 void
-trace_end_menu(vp, window, prompt)
+trace_end_menu_ex(vp, window, prompt, subtitle)
 void *vp;
 winid window;
-const char *prompt;
+const char *prompt, *subtitle;
 {
     struct trace_data *tdp = vp;
 
@@ -449,7 +449,7 @@ const char *prompt;
     }
 
     PRE;
-    (*tdp->nprocs->win_end_menu)(tdp->ndata, window, prompt);
+    (*tdp->nprocs->win_end_menu_ex)(tdp->ndata, window, prompt, subtitle);
     POST;
 }
 
@@ -1200,7 +1200,7 @@ struct chain_procs trace_procs = {
     trace_exit_nhwindows, trace_suspend_nhwindows, trace_resume_nhwindows,
     trace_create_nhwindow, trace_clear_nhwindow, trace_display_nhwindow,
     trace_destroy_nhwindow, trace_curs, trace_putstr_ex, trace_putmixed_ex,
-    trace_display_file, trace_start_menu, trace_add_menu, trace_add_extended_menu, trace_end_menu,
+    trace_display_file, trace_start_menu, trace_add_menu, trace_add_extended_menu, trace_end_menu_ex,
     trace_select_menu, trace_message_menu, trace_update_inventory,
     trace_mark_synch, trace_wait_synch,
 #ifdef CLIPPING

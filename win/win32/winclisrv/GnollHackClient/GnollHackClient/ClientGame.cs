@@ -682,13 +682,14 @@ namespace GnollHackClient
             }
         }
 
-        public void ClientCallback_EndMenu(int winid, string prompt)
+        public void ClientCallback_EndMenu(int winid, string prompt, string subtitle)
         {
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
                     _ghWindows[winid].MenuInfo.Header = prompt;
+                    _ghWindows[winid].MenuInfo.Subtitle = subtitle;
                 }
             }
         }

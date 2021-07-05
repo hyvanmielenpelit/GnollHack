@@ -28,7 +28,6 @@ typedef void(__callconv* VoidIntIntBooleanCallback)(int, int, BOOLEAN_P);
 typedef void(__callconv* VoidIntIntIntCallback)(int, int, int);
 typedef void(__callconv* VoidIntBooleanCallback)(int, UCHAR_P);
 typedef void(__callconv* VoidIntIntConstCharCallback)(int, int, const char*);
-typedef void(__callconv* VoidIntConstCharCallback)(int, const char*);
 typedef void(__callconv* PutStrExColorCallback)(int, int, const char*, int, int);
 typedef void(__callconv* VoidConstCharIntCallback)(const char*, int);
 typedef void(__callconv* VoidConstCharBooleanCallback)(const char*, BOOLEAN_P);
@@ -65,7 +64,7 @@ typedef VoidIntCallback StartMenuCallback;
 typedef void(__callconv* AddMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, const char*, UCHAR_P, int);
 typedef void(__callconv* AddExtendedMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, const char*, UCHAR_P, int, int,
     unsigned long long, unsigned long long, CHAR_P, unsigned long);
-typedef VoidIntConstCharCallback EndMenuCallback;
+typedef void(__callconv* EndMenuCallback)(int, const char*, const char*);
 typedef int(__callconv* SelectMenuCallback)(int, int, long long**, int*);
 typedef void(__callconv* MessageMenuCallback)(int);
 typedef VoidVoidCallback UpdateInventoryCallback;
@@ -149,7 +148,7 @@ struct callback_procs {
     StartMenuCallback callback_start_menu;
     AddMenuCallback callback_add_menu;
     AddExtendedMenuCallback callback_add_extended_menu;
-    EndMenuCallback callback_end_menu;
+    EndMenuCallback callback_end_menu_ex;
     SelectMenuCallback callback_select_menu;
     MessageMenuCallback callback_message_menu;
     UpdateInventoryCallback callback_update_inventory;

@@ -29,7 +29,7 @@ struct window_procs Gnome_procs = {
     gnome_exit_nhwindows, gnome_suspend_nhwindows, gnome_resume_nhwindows,
     gnome_create_nhwindow, gnome_clear_nhwindow, gnome_display_nhwindow,
     gnome_destroy_nhwindow, gnome_curs, gnome_putstr_ex, genl_putmixed_ex,
-    gnome_display_file, gnome_start_menu, gnome_add_menu, gnome_add_extended_menu, gnome_end_menu,
+    gnome_display_file, gnome_start_menu, gnome_add_menu, gnome_add_extended_menu, gnome_end_menu_ex,
     gnome_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     gnome_update_inventory, gnome_mark_synch, gnome_wait_synch,
@@ -777,7 +777,7 @@ end_menu(window, prompt)
                 ** it ever did).  That should be select_menu's job.  -dean
 */
 void
-gnome_end_menu(winid wid, const char *prompt)
+gnome_end_menu_ex(winid wid, const char *prompt, const char* subtitle)
 {
     if (wid != -1 && gnome_windowlist[wid].win != NULL) {
         gtk_signal_emit(GTK_OBJECT(gnome_windowlist[wid].win),

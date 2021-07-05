@@ -4374,7 +4374,7 @@ nextclass:
 
     if (addinventoryheader)
     {
-        char qbuf[BUFSIZ];
+        char qbuf[BUFSIZ], subtitlebuf[BUFSIZ];
         int icnt = inv_cnt(FALSE);
         char weightbuf[BUFSZ];
         printweight(weightbuf, wtcount, FALSE, FALSE);
@@ -4383,8 +4383,9 @@ nextclass:
         char maxbuf[BUFSZ];
         printweight(maxbuf, maxwt, FALSE, FALSE);
 
-        Sprintf(qbuf, "Inventory - %d/52 slots, %s/%s weight", icnt, weightbuf, maxbuf);
-        end_menu(win, qbuf);
+        Sprintf(qbuf, "Inventory", icnt, weightbuf, maxbuf);
+        Sprintf(subtitlebuf, "%d/52 slots, %s/%s weight", icnt, weightbuf, maxbuf);
+        end_menu_ex(win, qbuf, subtitlebuf);
     }
     else
         end_menu(win, query && *query ? query : (char *) 0);

@@ -453,7 +453,7 @@ ghack_menu_window_add_menu(GtkWidget *menuWin, gpointer menu_item,
 }
 
 void
-ghack_menu_window_end_menu(GtkWidget *menuWin, gpointer data)
+ghack_menu_window_end_menu_ex(GtkWidget *menuWin, gpointer data)
 {
     const char *p = (const char *) data;
 
@@ -595,8 +595,8 @@ ghack_init_menu_window(void)
     gtk_signal_connect(GTK_OBJECT(menuWin), "ghack_add_menu",
                        GTK_SIGNAL_FUNC(ghack_menu_window_add_menu), NULL);
 
-    gtk_signal_connect(GTK_OBJECT(menuWin), "ghack_end_menu",
-                       GTK_SIGNAL_FUNC(ghack_menu_window_end_menu), NULL);
+    gtk_signal_connect(GTK_OBJECT(menuWin), "ghack_end_menu_ex",
+                       GTK_SIGNAL_FUNC(ghack_menu_window_end_menu_ex), NULL);
 
     gtk_signal_connect(GTK_OBJECT(menuWin), "ghack_select_menu",
                        GTK_SIGNAL_FUNC(ghack_menu_window_select_menu), NULL);

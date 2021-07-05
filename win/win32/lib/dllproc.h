@@ -61,7 +61,7 @@ void dll_add_menu(winid wid, int glyph, const ANY_P *identifier,
 void dll_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel);
-void dll_end_menu(winid wid, const char *prompt);
+void dll_end_menu_ex(winid wid, const char *prompt, const char* subtitle);
 int dll_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 void dll_update_inventory(void);
 void dll_mark_synch(void);

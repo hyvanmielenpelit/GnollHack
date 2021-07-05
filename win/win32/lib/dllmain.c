@@ -47,7 +47,7 @@ DLL int WINAPI RunGnollHack(
     StartMenuCallback callback_start_menu,
     AddMenuCallback callback_add_menu,
     AddExtendedMenuCallback callback_add_extended_menu,
-    EndMenuCallback callback_end_menu,
+    EndMenuCallback callback_end_menu_ex,
     SelectMenuCallback callback_select_menu,
     MessageMenuCallback callback_message_menu, /* no need for X-specific handling */
     UpdateInventoryCallback callback_update_inventory,
@@ -144,7 +144,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_start_menu = callback_start_menu;
     dll_callbacks.callback_add_menu = callback_add_menu;
     dll_callbacks.callback_add_extended_menu = callback_add_extended_menu;
-    dll_callbacks.callback_end_menu = callback_end_menu;
+    dll_callbacks.callback_end_menu_ex = callback_end_menu_ex;
     dll_callbacks.callback_select_menu = callback_select_menu;
     dll_callbacks.callback_message_menu = callback_message_menu;
     dll_callbacks.callback_update_inventory = callback_update_inventory;

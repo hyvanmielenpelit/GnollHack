@@ -719,9 +719,9 @@ boolean preselected;
     X11_add_menu(window, glyph, identifier, ch, gch, attr, str, preselected);
 }
 void
-X11_end_menu(window, query)
+X11_end_menu_ex(window, query, subtitle)
 winid window;
-const char *query;
+const char *query, *subtitle;
 {
     struct menu_info_t *menu_info;
 
@@ -731,7 +731,7 @@ const char *query;
         impossible("end_menu:  called before start_menu");
         return;
     }
-    debugpline2("X11_end_menu(%i, %s)", window, query);
+    debugpline2("X11_end_menu_ex(%i, %s)", window, query);
     menu_info->new_menu.query = copy_of(query);
 }
 

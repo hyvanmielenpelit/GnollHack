@@ -23,8 +23,6 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidIntBooleanCallback(int value1, byte value2);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void VoidIntConstCharCallback(int value1, [MarshalAs(UnmanagedType.LPStr)] string value2);
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidIntIntConstCharCallback(int value1, int value2, [MarshalAs(UnmanagedType.LPStr)] string value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void PutStrExColorCallback(int value1, int value2, [MarshalAs(UnmanagedType.LPStr)] string value3, int value4, int value5);
@@ -56,6 +54,8 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void AddExtendedMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, [MarshalAs(UnmanagedType.LPStr)] string text, byte presel, int color, int maxcount,
         UInt64 oid, UInt64 mid, char heading_groupaccel, ulong menuflags);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void EndMenuCallback(int value1, [MarshalAs(UnmanagedType.LPStr)] string value2, [MarshalAs(UnmanagedType.LPStr)] string value3);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int PlayImmediateSoundCallback(

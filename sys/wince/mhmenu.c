@@ -637,8 +637,12 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     case MSNH_MSG_ENDMENU: {
         PMSNHMsgEndMenu msg_data = (PMSNHMsgEndMenu) lParam;
-        if (msg_data->text) {
-            strncpy(data->menu.prompt, msg_data->text,
+        if (msg_data->text || msg_data->subtitle)
+        {
+            char buf[QBUFSZ * 2 + 3] = "";
+            Sprintf(buf, "%s%s%s", msg_data->text ? msg_data->text : "", msg_data->text && msg_data->subtitle && strcmp(msg_data->text, "") && strcmp(msg_data->subtitle, "") ? " - " : "", msg_data->subtitle ? msg_data->subtitle : "");
+
+            strncpy(data->menu.prompt, buf,
                     sizeof(data->menu.prompt) - 1);
         } else {
             ZeroMemory(data->menu.prompt, sizeof(data->menu.prompt));

@@ -48,7 +48,7 @@ namespace GnollHackClient.Droid
             VoidIntCallback callback_start_menu,
             AddMenuCallback callback_add_menu,
             AddExtendedMenuCallback callback_add_extended_menu,
-            VoidIntConstCharCallback callback_end_menu,
+            EndMenuCallback callback_end_menu_ex,
             IntIntIntOutIntCallback callback_select_menu,
             VoidIntCallback callback_message_menu, /* no need for X-specific handling */
             VoidVoidCallback callback_update_inventory,

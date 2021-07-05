@@ -400,7 +400,7 @@ void NetHackQtBind::qt_add_menu(winid wid, int glyph,
         presel);
 }
 
-void NetHackQtBind::qt_end_menu(winid wid, const char *prompt)
+void NetHackQtBind::qt_end_menu_ex(winid wid, const char *prompt, const char* subtitle)
 {
     NetHackQtWindow* window=id_to_window[(int)wid];
     window->EndMenu(prompt);
@@ -784,7 +784,7 @@ struct window_procs Qt_procs = {
     nethack_qt4::NetHackQtBind::qt_start_menu,
     nethack_qt4::NetHackQtBind::qt_add_menu,
     nethack_qt4::NetHackQtBind::qt_add_extended_menu,
-    nethack_qt4::NetHackQtBind::qt_end_menu,
+    nethack_qt4::NetHackQtBind::qt_end_menu_ex,
     nethack_qt4::NetHackQtBind::qt_select_menu,
     genl_message_menu,      /* no need for X-specific handling */
     nethack_qt4::NetHackQtBind::qt_update_inventory,

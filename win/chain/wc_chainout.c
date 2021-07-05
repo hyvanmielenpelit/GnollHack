@@ -259,14 +259,14 @@ boolean preselected;        /* item is marked as selected */
         str, preselected);
 }
 void
-chainout_end_menu(vp, window, prompt)
+chainout_end_menu_ex(vp, window, prompt, subtitle)
 void *vp;
 winid window;
-const char *prompt;
+const char *prompt, *subtitle;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_end_menu)(window, prompt);
+    (*tdp->nprocs->win_end_menu_ex)(window, prompt, subtitle);
 }
 
 int
@@ -710,7 +710,7 @@ struct chain_procs chainout_procs = {
     chainout_clear_nhwindow, chainout_display_nhwindow,
     chainout_destroy_nhwindow, chainout_curs, chainout_putstr_ex,
     chainout_putmixed_ex, chainout_display_file, chainout_start_menu,
-    chainout_add_menu, chainout_end_menu, chainout_select_menu,
+    chainout_add_menu, chainout_end_menu_ex, chainout_select_menu,
     chainout_message_menu, chainout_update_inventory, chainout_mark_synch,
     chainout_wait_synch,
 #ifdef CLIPPING

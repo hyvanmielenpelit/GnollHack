@@ -801,7 +801,7 @@ curses_character_dialog(const char **choices, const char *prompt)
     identifier.a_int = ROLE_NONE;
     curses_add_menu(wid, NO_GLYPH, &identifier, 'q', 0, A_NORMAL, "Quit",
                     FALSE);
-    curses_end_menu(wid, prompt);
+    curses_end_menu_ex(wid, prompt, subtitle);
     ret = curses_select_menu(wid, PICK_ONE, &selected);
     if (ret == 1) {
         ret = (selected->item.a_int);

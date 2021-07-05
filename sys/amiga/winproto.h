@@ -44,7 +44,7 @@ void FDECL(amii_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P, int,
                            const char *, BOOLEAN_P));
 void FDECL(amii_add_extended_menu, (winid, int, const anything*, struct extended_menu_info, CHAR_P, CHAR_P, int,
     const char*, BOOLEAN_P));
-void FDECL(amii_end_menu, (winid, const char *));
+void FDECL(amii_end_menu_ex, (winid, const char *, const char*));
 int FDECL(amii_select_menu, (winid, int, menu_item **));
 int DoMenuScroll(int win, int blocking, int how, menu_item **);
 void ReDisplayData(winid win);

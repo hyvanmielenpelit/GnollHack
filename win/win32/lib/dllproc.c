@@ -75,7 +75,7 @@ struct window_procs dll_procs = {
     dll_resume_nhwindows, dll_create_nhwindow, dll_clear_nhwindow,
     dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr_ex,
     genl_putmixed_ex, dll_display_file, dll_start_menu, dll_add_menu, dll_add_extended_menu,
-    dll_end_menu, dll_select_menu,
+    dll_end_menu_ex, dll_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     dll_update_inventory, dll_mark_synch, dll_wait_synch,
 #ifdef CLIPPING
@@ -1208,10 +1208,10 @@ end_menu(window, prompt)
                 ** it ever did).  That should be select_menu's job.  -dean
 */
 void
-dll_end_menu(winid wid, const char *prompt)
+dll_end_menu_ex(winid wid, const char *prompt, const char* subtitle)
 {
-    dll_logDebug("dll_end_menu(%d, %s)\n", wid, prompt);
-    dll_callbacks.callback_end_menu(wid, prompt);
+    dll_logDebug("dll_end_menu_ex(%d, %s)\n", wid, prompt);
+    dll_callbacks.callback_end_menu_ex(wid, prompt, subtitle);
 
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)

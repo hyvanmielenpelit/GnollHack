@@ -2049,7 +2049,7 @@ mac_add_extended_menu(winid win, int glyph, const anything* any, struct extended
  * str and morestr might be ignored by some ports.
  */
 void
-mac_end_menu(winid win, const char *morestr)
+mac_end_menu_ex(winid win, const char *morestr, const char* subtitle)
 {
     Str255 buf;
     NhWindow *aWin = &theWindows[win];
@@ -3286,7 +3286,7 @@ struct window_procs mac_procs = {
     mac_unimplemented, mac_create_nhwindow, mac_clear_nhwindow,
     mac_display_nhwindow, mac_destroy_nhwindow, mac_curs, mac_putstr_ex,
     genl_putmixed_ex, mac_display_file, mac_start_menu, mac_add_menu, mac_add_extended_menu,
-    mac_end_menu, mac_select_menu, genl_message_menu, mac_unimplemented,
+    mac_end_menu_ex, mac_select_menu, genl_message_menu, mac_unimplemented,
     mac_get_nh_event, mac_get_nh_event,
 #ifdef CLIPPING
     mac_cliparound,

@@ -212,11 +212,12 @@ boolean preselected;        /* item is marked as selected */
         ch, gch, attr, str, preselected);
 }
 void
-chainin_end_menu(window, prompt)
+chainin_end_menu_ex(window, prompt, subtitle)
 winid window;
 const char *prompt;
+const char* subtitle;
 {
-    (*cibase->nprocs->win_end_menu)(cibase->ndata, window, prompt);
+    (*cibase->nprocs->win_end_menu_ex)(cibase->ndata, window, prompt, subtitle);
 }
 
 int
@@ -563,7 +564,7 @@ struct window_procs chainin_procs = {
     chainin_resume_nhwindows, chainin_create_nhwindow, chainin_clear_nhwindow,
     chainin_display_nhwindow, chainin_destroy_nhwindow, chainin_curs,
     chainin_putstr_ex, chainin_putmixed_ex, chainin_display_file,
-    chainin_start_menu, chainin_add_menu, chainin_add_extended_menu, chainin_end_menu,
+    chainin_start_menu, chainin_add_menu, chainin_add_extended_menu, chainin_end_menu_ex,
     chainin_select_menu, chainin_message_menu, chainin_update_inventory,
     chainin_mark_synch, chainin_wait_synch,
 #ifdef CLIPPING
