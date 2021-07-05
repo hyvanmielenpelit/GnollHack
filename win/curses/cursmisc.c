@@ -621,7 +621,7 @@ curses_view_file(const char *filename, boolean must_exist)
     }
 
     dlb_fclose(fp);
-    curses_end_menu_ex(wid, "", 0);
+    curses_end_menu_ex(wid, "", (const char*)0);
     curses_select_menu(wid, PICK_NONE, &selected);
     curses_del_wid(wid);
 }

@@ -358,7 +358,7 @@ curses_prev_mesg()
         curses_add_menu(wid, NO_GLYPH, &Id, 0, 0, A_NORMAL,
                         "[No past messages available.]", FALSE);
 
-    curses_end_menu_ex(wid, "", 0);
+    curses_end_menu_ex(wid, "", (const char*)0);
     if (!do_lifo)
         curs_menu_set_bottom_heavy(wid);
     curses_select_menu(wid, PICK_NONE, &selected);
