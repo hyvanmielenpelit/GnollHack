@@ -328,8 +328,8 @@ int FDECL((*rng), (int));
 
 void
 outrumor(mtmp, otmp, truth, mechanism)
-struct monst* mtmp;
-struct obj* otmp;
+struct monst* mtmp UNUSED;
+struct obj* otmp UNUSED;
 int truth; /* 1=true, -1=false, 0=either */
 int mechanism;
 {
