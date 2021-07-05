@@ -495,7 +495,7 @@ struct obj* otmp;
         {
             if (!otmp->nknown)
             {
-                You("quite couldn't make sense of it, but it seemed like quite a tongue twister.");
+                You("quite couldn't make sense of it, but it seemed like a real tongue twister.");
                 otmp->nknown = TRUE;
                 otmp->aknown = TRUE;
                 if (carried(otmp))
