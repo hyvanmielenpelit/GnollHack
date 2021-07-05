@@ -694,7 +694,7 @@ curses_finalize_nhmenu(winid wid, const char *prompt, const char *subtitle)
     int count = 0;
     char buf[BUFSIZ] = "";
 
-    Sprintf(buf, "%s%s%s", str ? str : "", str && subtitle && strcmp(str, "") && strcmp(subtitle, "") ? " - " : "", subtitle ? subtitle : "");
+    Sprintf(buf, "%s%s%s", prompt ? prompt : "", prompt && subtitle && strcmp(prompt, "") && strcmp(subtitle, "") ? " - " : "", subtitle ? subtitle : "");
 
     nhmenu_item *menu_item_ptr;
     nhmenu *current_menu = get_menu(wid);
