@@ -2996,10 +2996,16 @@ register boolean newlev;
             struct monst *oracle = monstinroom(&mons[PM_ORACLE], roomno);
             if (oracle) {
                 if (!is_peaceful(oracle))
-                    verbalize("You're in Delphi, %s.", plname);
+                {
+                    play_monster_special_dialogue_line(oracle, ORACLE_LINE_YOURE_IN_DELPHI_ADVENTURER);
+                    verbalize("You're in Delphi, %s.", iflags.using_gui_sounds ? "adventurer" : plname);
+                }
                 else
+                {
+                    play_monster_special_dialogue_line(oracle, ORACLE_LINE_HELLO_ADVENTURER_WELCOME_TO_DELPHI);
                     verbalize("%s, %s, welcome to Delphi!",
-                              Hello((struct monst *) 0), plname);
+                        iflags.using_gui_sounds ? "Hello" : Hello((struct monst*)0), iflags.using_gui_sounds ? "adventurer" : plname);
+                }
             } else
                 msg_given = FALSE;
             break;

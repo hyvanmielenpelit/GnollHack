@@ -2796,8 +2796,8 @@ E int FDECL(special_attack3_glyph_to_player_mon, (int));
 
 E char *FDECL(getrumor, (int, char *, BOOLEAN_P));
 E char *FDECL(get_rnd_text, (const char *, char *, int FDECL((*), (int))));
-E void FDECL(outrumor, (int, int));
-E void FDECL(outoracle, (BOOLEAN_P, int));
+E void FDECL(outrumor, (struct monst*, struct obj*, int, int));
+E void FDECL(outoracle, (struct monst*, struct obj*, BOOLEAN_P, int));
 E void FDECL(save_oracles, (int, int));
 E void FDECL(restore_oracles, (int));
 E int FDECL(doconsult, (struct monst *));
@@ -3085,6 +3085,7 @@ E void FDECL(play_voice_quest_pager, (struct monst*, int, BOOLEAN_P));
 E void FDECL(play_voice_quest_leader_whoareyou, (struct monst*));
 E void FDECL(play_voice_god_simple_line_at, (XCHAR_P, XCHAR_P, enum god_simple_lines));
 E void FDECL(play_voice_god_simple_line_by_align, (ALIGNTYP_P, enum god_simple_lines));
+E void FDECL(play_voice_oracle_major_consultation, (struct monst*, int));
 
 /* ### sys.c ### */
 

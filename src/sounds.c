@@ -665,7 +665,16 @@ dosounds()
                 SFX_LEVEL_NO_MORE_WOODCHUCKS, SFX_LEVEL_LOUD_ZOT,
             };
             int roll = rn2(3) + hallu * 2;
-            play_sfx_sound(ora_sound[roll]);
+            if (roll == 1 || roll == 3)
+            {
+                context.global_minimum_volume = 0.15f;
+                play_monster_special_dialogue_line(mtmp, roll == 3 ? ORACLE_LINE_NO_MORE_WOODCHUCKS : ORACLE_LINE_I_BEHOLD_THE_GREAT_WISDOM_OF_THE_ANCIENTS);
+                context.global_minimum_volume = 0.0f;
+            }
+            else
+            {
+                play_sfx_sound(ora_sound[roll]);
+            }
             You_hear1(ora_msg[roll]);
         }
         return;
@@ -934,11 +943,13 @@ register struct monst *mtmp;
     case MS_ORACLE:
         if (is_peaceful(mtmp))
         {
+            play_monster_special_dialogue_line(mtmp, ORACLE_LINE_WELCOME_TO_DELPHI_ADVENTURER);
             Sprintf(verbuf, "Welcome to Delphi, adventurer!");
             chat_line = 0;
         }
         else
         {
+            play_monster_special_dialogue_line(mtmp, ORACLE_LINE_BEGONE_YOU_FOOL);
             Sprintf(verbuf, "Begone, you fool!");
             chat_line = 1;
         }
@@ -3411,12 +3422,22 @@ struct monst* mtmp;
     }
     else if (mtmp->mnum == PM_ORACLE || msound == MS_ORACLE)
     {
-        Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
-        verbalize("%s", ansbuf);
-        mtmp->u_know_mname = 1;
-
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         Sprintf(ansbuf, "I am the Oracle of Delphi.");
         verbalize("%s", ansbuf);
+
+        if (iflags.using_gui_sounds)
+        {
+            Sprintf(ansbuf, "(The name tag indicates %s name is %s.)", mhis(mtmp), MNAME(mtmp));
+            pline1(ansbuf);
+            mtmp->u_know_mname = 1;
+        }
+        else
+        {
+            Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
+            verbalize("%s", ansbuf);
+            mtmp->u_know_mname = 1;
+        }
     }
     else if (msound == MS_ARREST)
     {
@@ -3632,6 +3653,7 @@ struct monst* mtmp;
 
     if (mtmp->data->msound == MS_ORACLE || mtmp->data == &mons[PM_ORACLE])
     {
+        play_monster_special_dialogue_line(mtmp, ORACLE_LINE_THE_WISDOM_OF_DELPHI_SHALL_BE_CONVEYED_TO_THEE_BY_CONSULTATION);
         pline("%s answers: \"The wisdom of Delphi shall be conveyed to thee by consultation.\"", Monnam(mtmp));
         mtmp->rumorsleft = -1;
         mtmp->told_rumor = TRUE;

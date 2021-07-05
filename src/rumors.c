@@ -327,7 +327,9 @@ int FDECL((*rng), (int));
 }
 
 void
-outrumor(truth, mechanism)
+outrumor(mtmp, otmp, truth, mechanism)
+struct monst* mtmp;
+struct obj* otmp;
 int truth; /* 1=true, -1=false, 0=either */
 int mechanism;
 {
@@ -354,10 +356,16 @@ int mechanism;
     switch (mechanism) {
     case BY_ORACLE:
         /* Oracle delivers the rumor */
-        pline("True to her word, the Oracle %ssays: ",
-              (!rn2(4) ? "offhandedly "
-                       : (!rn2(3) ? "casually "
-                                  : (rn2(2) ? "nonchalantly " : ""))));
+        if (iflags.using_gui_sounds)
+            pline("The Oracle seems to fall into a trance for a while. She then %sgives a note to you. It reads: ",
+                (!rn2(4) ? "offhandedly "
+                    : (!rn2(3) ? "casually "
+                        : (rn2(2) ? "nonchalantly " : ""))));
+        else
+            pline("True to her word, the Oracle %ssays: ",
+                  (!rn2(4) ? "offhandedly "
+                           : (!rn2(3) ? "casually "
+                                      : (rn2(2) ? "nonchalantly " : ""))));
         verbalize1(line);
         /* [WIS exercized by getrumor()] */
         return;
@@ -426,7 +434,9 @@ int fd;
 }
 
 void
-outoracle(special, oraclesstyle)
+outoracle(mtmp, otmp, special, oraclesstyle)
+struct monst* mtmp;
+struct obj* otmp;
 boolean special;
 int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
 {
@@ -469,6 +479,9 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
         else
             putstr(tmpwin, 0, "The message reads:");
         putstr(tmpwin, 0, "");
+
+        if (oraclesstyle == 1)
+            play_voice_oracle_major_consultation(mtmp, oracle_idx - 1);
 
         while (dlb_fgets(line, COLNO, oracles) && strcmp(line, "---\n")) {
             if ((endp = index(line, '\n')) != 0)
@@ -515,6 +528,7 @@ struct monst *oracl;
         return 0;
     }
 
+    play_monster_special_dialogue_line(oracl, ORACLE_LINE_WILT_THOU_SETTLE_FOR_A_MINOR_CONSULTATION);
     Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%d %s)",
         minor_cost, currency((long)minor_cost));
     switch (ynq(qbuf)) 
@@ -536,6 +550,8 @@ struct monst *oracl;
         if (umoney <= (long)minor_cost /* don't even ask */
             || (oracle_cnt == 1 || oracle_flg < 0))
             return 0;
+
+        play_monster_special_dialogue_line(oracl, ORACLE_LINE_THEN_DOST_THOU_DESIRE_A_MAJOR_ONE);
         Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%d %s)",
             major_cost, currency((long)major_cost));
         if (yn_query(qbuf) != 'y')
@@ -554,7 +570,7 @@ struct monst *oracl;
     switch (oracleaction) 
     {
     case 1:
-        outrumor(1, BY_ORACLE);
+        outrumor(oracl, (struct obj*)0, 1, BY_ORACLE);
         if (!u.uevent.minor_oracle)
             add_xpts = u_pay / (u.uevent.major_oracle ? 25 : 10);
         /* 5 pts if very 1st, or 2 pts if major already done */
@@ -563,7 +579,7 @@ struct monst *oracl;
     case 2:
         cheapskate = u_pay < major_cost;
 
-        outoracle(cheapskate, 1);
+        outoracle(oracl, (struct obj*)0, cheapskate, 1);
         if (!cheapskate && !u.uevent.major_oracle)
             add_xpts = u_pay / (u.uevent.minor_oracle ? 25 : 10);
 
@@ -623,12 +639,18 @@ struct monst* oracl;
 
     do
     {
-        if(!cnt)
+        if (!cnt)
+        {
+            play_monster_special_dialogue_line(oracl, ORACLE_LINE_DOST_THOU_DESIRE_AN_IDENTIFICATION);
             Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
                 minor_id_cost, currency((long)minor_id_cost));
+        }
         else
+        {
+            play_monster_special_dialogue_line(oracl, ORACLE_LINE_WOULDST_THOU_DESIRE_A_FURTHER_IDENTIFICATION);
             Sprintf(qbuf, "\"Wouldst thou desire a further identification?\" (%d %s)",
                 minor_id_cost, currency((long)minor_id_cost));
+        }
 
         switch (ynq(qbuf))
         {
@@ -689,6 +711,7 @@ struct monst* oracl;
         return 0;
     }
 
+    play_monster_special_dialogue_line(oracl, ORACLE_LINE_DOST_THOU_DESIRE_TO_ENLIGHTEN_YOURSELF);
     Sprintf(qbuf, "\"Dost thou desire to enlighten yourself?\" (%d %s)",
         enl_cost, currency((long)enl_cost));
     if (yn_query(qbuf) != 'y')

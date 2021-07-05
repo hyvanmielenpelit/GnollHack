@@ -2394,13 +2394,13 @@ boolean atme;
         update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         u_wait_until_action();
-        outrumor(1, BY_SPELL);
+        outrumor(&youmonst, pseudo, 1, BY_SPELL);
         break;
     case SPE_MAJOR_CONSULTATION:
         update_u_action(ACTION_TILE_CAST_NODIR);
         play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         u_wait_until_action();
-        outoracle(FALSE, 2);
+        outoracle(&youmonst, pseudo, FALSE, 2);
         break;
     case SPE_PROTECTION:
     case SPE_SHIELD:

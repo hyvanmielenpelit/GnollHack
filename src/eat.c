@@ -2748,7 +2748,7 @@ struct obj *otmp;
         }
         break;
     case EDIBLEFX_READ_FORTUNE:
-        outrumor(bcsign(otmp), BY_COOKIE);
+        outrumor((struct monst*)0, otmp, bcsign(otmp), BY_COOKIE);
         if (!Blind)
             u.uconduct.literate++;
         break;

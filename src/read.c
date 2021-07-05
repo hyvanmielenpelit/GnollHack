@@ -200,7 +200,7 @@ doread()
     if (scroll->otyp == FORTUNE_COOKIE) {
         if (flags.verbose)
             You("break up the cookie and throw away the pieces.");
-        outrumor(bcsign(scroll), BY_COOKIE);
+        outrumor((struct monst*)0, scroll, bcsign(scroll), BY_COOKIE);
         if (!Blind)
             u.uconduct.literate++;
         useup(scroll);
