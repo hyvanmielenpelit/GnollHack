@@ -5040,7 +5040,7 @@ render_status(VOID_ARGS)
                 /* not rendered => same text as before */
                 x += tlth;
             }
-            finalx[row][NOW] = x; // -1;
+            finalx[row][NOW] = x - 1;
             /* reset .redraw and .dirty now that they're rendered */
             tty_status[NOW][idx].dirty  = FALSE;
             tty_status[NOW][idx].redraw = FALSE;
