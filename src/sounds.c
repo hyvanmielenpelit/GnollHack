@@ -1601,7 +1601,7 @@ register struct monst *mtmp;
             int roll = rn2(3);
             play_monster_special_dialogue_line(mtmp, roll + KOP_DIALOGUE_LINE_ANYTHING_YOU_SAY_CAN_BE_USED);
             verbl_msg = arrest_msg[roll];
-            chat_line = roll;
+            chat_line = 0;
         }
         break;
     case MS_BRIBE:
@@ -1655,13 +1655,15 @@ register struct monst *mtmp;
     case MS_GUARD:
         if (money_cnt(invent))
         {
+            play_monster_special_dialogue_line(mtmp, VAULT_GUARD_LINE_PLEASE_DROP_THAT_GOLD_AND_FOLLOW_ME);
             verbl_msg = "Please drop that gold and follow me.";
             chat_line = 0;
         }
         else
         {
+            play_monster_special_dialogue_line(mtmp, VAULT_GUARD_LINE_PLEASE_FOLLOW_ME);
             verbl_msg = "Please follow me.";
-            chat_line = 1;
+            chat_line = 0;
         }
         break;
     case MS_SOLDIER: {
@@ -2132,7 +2134,7 @@ dochat()
         chatnum++;
 
 
-        if (is_izchak(mtmp, TRUE) || mtmp->rumorsleft >= 0)
+        if (!mtmp->isgd && (is_izchak(mtmp, TRUE) || mtmp->rumorsleft >= 0))
         {
             if(is_izchak(mtmp, TRUE))
                 strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask what is further on his mind" : "Ask what is on his mind");
@@ -3550,6 +3552,12 @@ struct monst* mtmp;
                 Sprintf(ansbuf, "I am a local smith.");
             }
         }
+        verbalize("%s", ansbuf);
+    }
+    else if (mtmp->isgd)
+    {
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+        Sprintf(ansbuf, "I am the vault guard.");
         verbalize("%s", ansbuf);
     }
     else if (mtmp->isnpc && has_enpc(mtmp))

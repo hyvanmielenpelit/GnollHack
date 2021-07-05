@@ -506,9 +506,11 @@ uchar* hitres_ptr;
     boolean msg_given = FALSE;
 
     if (!likes_gold(mtmp->data) && !mtmp->isshk && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc
-        && !mtmp->isgd && !is_mercenary(mtmp->data)) {
+        && !mtmp->isgd && !is_mercenary(mtmp->data)) 
+    {
         wakeup(mtmp, TRUE);
-    } else if (!mon_can_move(mtmp))
+    }
+    else if (!mon_can_move(mtmp))
     {
         /* too light to do real damage */
         if (canseemon(mtmp))
@@ -517,7 +519,9 @@ uchar* hitres_ptr;
                       otense(gold, "hit"), mon_nam(mtmp));
             msg_given = TRUE;
         }
-    } else {
+    } 
+    else 
+    {
         if (hitres_ptr)
             *hitres_ptr = 1;
 
@@ -532,10 +536,12 @@ uchar* hitres_ptr;
             pline("%s catches the gold.", Monnam(mtmp));
         (void) mpickobj(mtmp, gold);
         gold = (struct obj *) 0; /* obj has been freed */
-        if (mtmp->isshk) {
+        if (mtmp->isshk)
+        {
             long robbed = ESHK(mtmp)->robbed;
 
-            if (robbed) {
+            if (robbed) 
+            {
                 robbed -= value;
                 if (robbed < 0L)
                     robbed = 0L;
@@ -544,8 +550,11 @@ uchar* hitres_ptr;
                 ESHK(mtmp)->robbed = robbed;
                 if (!robbed)
                     make_happy_shk(mtmp, FALSE);
-            } else {
-                if (is_peaceful(mtmp)) {
+            } 
+            else 
+            {
+                if (is_peaceful(mtmp)) 
+                {
                     ESHK(mtmp)->credit += value;
                     You("have %ld %s in credit.", ESHK(mtmp)->credit,
                         currency(ESHK(mtmp)->credit));
@@ -556,7 +565,9 @@ uchar* hitres_ptr;
                     verbalize("Thank you, scum!");
                 }
             }
-        } else if (mtmp->ispriest) {
+        } 
+        else if (mtmp->ispriest) 
+        {
             if (is_peaceful(mtmp))
             {
                 play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANK_YOU_FOR_YOUR_CONTRIBUTION);
@@ -567,27 +578,53 @@ uchar* hitres_ptr;
                 play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_THANKS_SCUM);
                 verbalize("Thanks, scum!");
             }
-        } else if (mtmp->issmith || mtmp->isnpc) {
+        }
+        else if (mtmp->issmith || mtmp->isnpc) 
+        {
             if (is_peaceful(mtmp))
+            {
+                if (mtmp->issmith)
+                    play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_YOUR_ASSISTANCE);
+                else
+                    play_monster_special_dialogue_line(mtmp, NPC_LINE_THANK_YOU_FOR_YOUR_ASSISTANCE);
+
                 verbalize("Thank you for your assistance.");
+            }
             else
+            {
+                if(mtmp->issmith)
+                    play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANKS_SCUM);
+                else
+                    play_monster_special_dialogue_line(mtmp, NPC_LINE_THANKS_SCUM);
                 verbalize("Thanks, scum!");
-        } else if (mtmp->isgd) {
+            }
+        } 
+        else if (mtmp->isgd) 
+        {
             umoney = money_cnt(invent);
             /* Some of these are iffy, because a hostile guard
                won't become peaceful and resume leading hero
                out of the vault.  If he did do that, player
                could try fighting, then weasle out of being
                killed by throwing his/her gold when losing. */
-            verbalize(
-                umoney
+            play_monster_special_dialogue_line(mtmp, umoney
+                ? VAULT_GUARD_LINE_DROP_THE_REST_AND_FOLLOW_ME
+                : hidden_gold()
+                ? VAULT_GUARD_LINE_YOU_STILL_HAVE_HIDDEN_GOLD_DROP_IT_NOW
+                : is_peaceful(mtmp)
+                ? VAULT_GUARD_LINE_ILL_TAKE_CARE_OF_THAT_PLEASE_MOVE_ALONG
+                : VAULT_GUARD_LINE_ILL_TAKE_THAT_NOW_GET_MOVING);
+
+            verbalize(umoney
                     ? "Drop the rest and follow me."
                     : hidden_gold()
                           ? "You still have hidden gold.  Drop it now."
                           : is_peaceful(mtmp)
                                 ? "I'll take care of that; please move along."
                                 : "I'll take that; now get moving.");
-        } else if (is_mercenary(mtmp->data)) {
+        } 
+        else if (is_mercenary(mtmp->data))
+        {
             long goldreqd = 0L;
 
             if (rn2(3)) {
@@ -611,9 +648,13 @@ uchar* hitres_ptr;
                 }
             }
             if (is_peaceful(mtmp))
+            {
                 verbalize("That should do.  Now beat it!");
+            }
             else
+            {
                 verbalize("That's not enough, coward!");
+            }
         }
         return TRUE;
     }

@@ -748,7 +748,7 @@ deliver_splev_message()
             /* convert_line() expects encrypted input */
             (void) xcrypt(in_line, in_line);
             convert_line(in_line, out_line);
-            pline("%s", out_line);
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s", out_line);
 
             if ((nl = index(str, '\n')) == 0)
                 break; /* done if no newline */
