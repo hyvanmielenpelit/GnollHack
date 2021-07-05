@@ -1107,6 +1107,14 @@ int* fem_ptr;
             { "Uruk-hai", PM_GREAT_ORC, 0 },
             { "olog-hai", PM_WAR_TROLL, 0 },
             { "Olog-hai", PM_WAR_TROLL, 0 },
+            { "elven king", PM_ELVENKING, 1 },
+            { "elven-king", PM_ELVENKING, 1 },
+            { "elf king", PM_ELVENKING, 1 },
+            { "elf-king", PM_ELVENKING, 1 },
+            { "elven queen", PM_ELVENKING, 2 },
+            { "elven-queen", PM_ELVENKING, 2 },
+            { "elf queen", PM_ELVENKING, 2 },
+            { "elf-queen", PM_ELVENKING, 2 },
             /* end of list */
             { 0, NON_PM }
         };

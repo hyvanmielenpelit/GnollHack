@@ -5892,15 +5892,15 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     {
         if (Is_valley(&u.uz))
         {
-            You("arrive at the Valley of the Dead...");
-            pline_The("odor of burnt flesh and decay pervades the air.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "arrive at the Valley of the Dead...");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "odor of burnt flesh and decay pervades the air.");
 #ifdef MICRO
             display_nhwindow(WIN_MESSAGE, FALSE);
 #endif
-            You_hear("groans and moans everywhere.");
+            You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "groans and moans everywhere.");
         } 
         else
-            pline("It is hot here.  You smell smoke...");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It is hot here.  You smell smoke...");
 
 #ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.enter_gehennom)
@@ -5946,7 +5946,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             mesg = buf;
         }
         if (mesg)
-            pline1(mesg);
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, mesg);
     }
 
     /* special location arrival messages/events */
@@ -5964,16 +5964,16 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     else if (In_V_tower(&u.uz))
     {
         if (newdungeon && In_hell(&u.uz0))
-            pline_The("heat and smoke are gone.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "heat and smoke are gone.");
     } 
     else if (Is_knox(&u.uz))
     {
         /* alarm stops working once Croesus has died */
         if (isnew || !mvitals[PM_CROESUS].died) 
         {
-            You("have penetrated a high security area!");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "have penetrated a high security area!");
             play_sfx_sound(SFX_ALARM_SOUNDS);
-            pline("An alarm sounds!");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "An alarm sounds!");
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
             {
                 if (DEADMONSTER(mtmp))
@@ -5985,7 +5985,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     else 
     {
         if (isnew && Is_rogue_level(&u.uz))
-            You("enter what seems to be an older, more primitive world.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter what seems to be an older, more primitive world.");
 
         /* main dungeon message from your quest leader */
         if (!In_quest(&u.uz0) && at_dgn_entrance("The Quest")
@@ -6006,13 +6006,13 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         if (!In_modron_level(&u.uz0) && !u.uevent.modron_portal_hint && at_dgn_entrance("Plane of the Modron"))
         {
             u.uevent.modron_portal_hint = 1;
-            You("suddenly feel that angles are here straighter than normal, but then the feeling subsides.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "suddenly feel that angles are here straighter than normal, but then the feeling subsides.");
         }
 
         if (!Is_bovine_level(&u.uz0) && !u.uevent.bovine_portal_hint && at_dgn_entrance("Hellish Pastures"))
         {
             u.uevent.bovine_portal_hint = 1;
-            pline("For a moment, you think you hear distant grunting and bellowing, but then the noises are gone.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you think you hear distant grunting and bellowing, but then the noises are gone.");
         }
     }
 

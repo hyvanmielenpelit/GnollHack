@@ -337,7 +337,7 @@ register boolean nearshop;
     if (!Deaf)
     {
         play_sfx_sound(SFX_ALARM_SOUNDS);
-        pline("An alarm sounds!");
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "An alarm sounds!");
     }
 
     nokops = ((mvitals[PM_KEYSTONE_KOP].mvflags & G_GONE)
@@ -360,14 +360,14 @@ register boolean nearshop;
         if (nearshop) {
             /* Create swarm around you, if you merely "stepped out" */
             if (flags.verbose)
-                pline_The("Keystone Kops appear!");
+                pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "Keystone Kops appear!");
             mm.x = u.ux;
             mm.y = u.uy;
             makekops(&mm);
             return;
         }
         if (flags.verbose)
-            pline_The("Keystone Kops are after you!");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "Keystone Kops are after you!");
         /* Create swarm near down staircase (hinders return to level) */
         mm.x = xdnstair;
         mm.y = ydnstair;
@@ -4972,13 +4972,39 @@ boolean silent;
         mtmp2 = mtmp->nmon;
         if (mtmp->data->mlet == S_KOP) {
             if (canspotmon(mtmp))
+            {
+                if(cnt < MAX_PLAYED_SPECIAL_EFFECTS)
+                    play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, cnt, mtmp->mx, mtmp->my, FALSE);
+
                 cnt++;
+            }
+        }
+    }
+
+    if (cnt)
+    {
+        play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
+        special_effect_wait_until_action(0);
+    }
+    
+    for (mtmp = fmon; mtmp; mtmp = mtmp2) {
+        mtmp2 = mtmp->nmon;
+        if (mtmp->data->mlet == S_KOP) {
             mongone(mtmp);
         }
     }
+
     if (cnt && !silent)
-        pline_The("Kop%s (disappointed) vanish%s into thin air.",
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "Kop%s (disappointed) vanish%s into thin air.",
                   plur(cnt), (cnt == 1) ? "es" : "");
+
+    if (cnt)
+    {
+        flush_screen(1);
+        special_effect_wait_until_end(0);
+    }
+
+
 }
 
 STATIC_OVL long

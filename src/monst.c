@@ -3112,7 +3112,7 @@ struct permonst _mons2[] = {
         M2_HUMAN | M2_WANDER | M2_HOSTILE | M2_MALE | M2_COLLECT,
         M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        2, CLR_BLUE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        2, CLR_BLUE, MONSTER_SOUNDSET_KEYSTONE_KOP, MONSTER_SOUNDSET_KEYSTONE_KOP),
     MON("Kop Sergeant", None, "senior law enforcement officer at Dungeons of Doom", None, None, S_KOP, LVL(2, 8, 10, 0, 10, 10),
         (G_GENO | G_SGROUP | G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
@@ -3124,7 +3124,7 @@ struct permonst _mons2[] = {
         M2_HUMAN | M2_WANDER | M2_HOSTILE | M2_MALE | M2_COLLECT,
         M3_INFRAVISIBLE | M3_SPEAKING,
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        3, CLR_BLUE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        3, CLR_BLUE, MONSTER_SOUNDSET_KEYSTONE_KOP, MONSTER_SOUNDSET_KEYSTONE_KOP),
     MON("Kop Lieutenant", None, "highly-ranking law enforcement officer at Dungeons of Doom", None, None, S_KOP, LVL(3, 10, 10, 0, 20, 11), (G_GENO | G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -3135,7 +3135,7 @@ struct permonst _mons2[] = {
         M2_HUMAN | M2_WANDER | M2_HOSTILE | M2_MALE | M2_COLLECT,
         M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        5, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        5, CLR_CYAN, MONSTER_SOUNDSET_KEYSTONE_KOP, MONSTER_SOUNDSET_KEYSTONE_KOP),
     MON("Kop Kaptain", None, "top-ranking law enforcement officer at Dungeons of Doom", None, None, S_KOP, LVL(4, 12, 10, 0, 20, 12), (G_GENO | G_NOGEN),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -3146,7 +3146,7 @@ struct permonst _mons2[] = {
         M2_HUMAN | M2_WANDER | M2_HOSTILE | M2_MALE | M2_COLLECT,
         M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        7, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        7, HI_LORD, MONSTER_SOUNDSET_KEYSTONE_KOP, MONSTER_SOUNDSET_KEYSTONE_KOP),
     /*
      * Liches
      */
@@ -4671,7 +4671,7 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_HUMAN | M2_PEACEFUL | M2_COLLECT,
         M3_INFRAVISIBLE | M3_SPEAKING, M4_MERC, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
-        16, CLR_BLUE, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
+        16, CLR_BLUE, MONSTER_SOUNDSET_VAULT_GUARD_MALE, MONSTER_SOUNDSET_VAULT_GUARD_FEMALE),
     /* aligned priests always have the epri extension attached;
        individual instantiations should always have either ispriest
        or isminion set */

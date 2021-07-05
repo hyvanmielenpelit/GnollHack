@@ -1588,6 +1588,7 @@ register struct monst *mtmp;
     case MS_ARREST:
         if (is_peaceful(mtmp))
         {
+            play_monster_special_dialogue_line(mtmp, flags.female ? KOP_DIALOGUE_LINE_JUST_THE_FACTS_MAAM : KOP_DIALOGUE_LINE_JUST_THE_FACTS_SIR);
             verbalize("Just the facts, %s.", flags.female ? "Ma'am" : "Sir");
             chat_line = flags.female ? 4 : 3;
         }
@@ -1598,6 +1599,7 @@ register struct monst *mtmp;
                 "You're under arrest!", "Stop in the name of the Law!",
             };
             int roll = rn2(3);
+            play_monster_special_dialogue_line(mtmp, roll + KOP_DIALOGUE_LINE_ANYTHING_YOU_SAY_CAN_BE_USED);
             verbl_msg = arrest_msg[roll];
             chat_line = roll;
         }
@@ -3443,17 +3445,28 @@ struct monst* mtmp;
     {
         if(!is_peaceful(mtmp))
         {
+            play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
             Sprintf(ansbuf, "Hah, I'm the DDPD officer who is going to arrest you, scum!");
             verbalize("%s", ansbuf);
         }
         else
         {
-            Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
-            verbalize("%s", ansbuf);
-            mtmp->u_know_mname = 1;
-
+            play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU_SECONDARY);
             Sprintf(ansbuf, "I work for the DDPD.");
             verbalize("%s", ansbuf);
+
+            if (iflags.using_gui_sounds)
+            {
+                Sprintf(ansbuf, "(The name tag indicate that %s name is %s.)", mhis(mtmp), MNAME(mtmp));
+                pline1(ansbuf);
+                mtmp->u_know_mname = 1;
+            }
+            else
+            {
+                Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
+                verbalize("%s", ansbuf);
+                mtmp->u_know_mname = 1;
+            }
         }
     }
     else if (is_watch(mtmp->data))
