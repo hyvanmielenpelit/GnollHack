@@ -718,6 +718,7 @@ boolean preselected;
 {
     X11_add_menu(window, glyph, identifier, ch, gch, attr, str, preselected);
 }
+
 void
 X11_end_menu_ex(window, query, subtitle)
 winid window;

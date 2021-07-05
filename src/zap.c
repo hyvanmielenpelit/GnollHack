@@ -8705,7 +8705,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     }
     int zap_tile_count = 0;
     boolean first_tile_found = FALSE;
-    int prev_anim_counter_idx = -1;
+    //int prev_anim_counter_idx = -1;
 
     start_ambient_ray_sound_at_location(soundset_id, sx, sy);
     tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
@@ -8770,7 +8770,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
                     }
 
-                    prev_anim_counter_idx = idx;
+                    //prev_anim_counter_idx = idx;
 
                     if(!use_old)
                         zap_tile_count++;

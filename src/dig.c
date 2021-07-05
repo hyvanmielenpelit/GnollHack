@@ -2008,7 +2008,7 @@ struct obj* origobj;
     }
     int zap_tile_count = 0;
     boolean first_tile_found = FALSE;
-    int prev_anim_counter_idx = -1;
+    //int prev_anim_counter_idx = -1;
 
     shopdoor = shopwall = FALSE;
     maze_dig = level.flags.is_maze_lev && !Is_earthlevel(&u.uz);
@@ -2078,7 +2078,7 @@ struct obj* origobj;
                 context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
             }
 
-            prev_anim_counter_idx = idx;
+            //prev_anim_counter_idx = idx;
 
             if (!use_old)
                 zap_tile_count++;
@@ -2440,7 +2440,7 @@ struct obj* origobj;
     }
     int zap_tile_count = 0;
     boolean first_tile_found = FALSE;
-    int prev_anim_counter_idx = -1;
+    //int prev_anim_counter_idx = -1;
 
     /* normal case: evaporating across the level */
     lzx = u.ux;
@@ -2496,7 +2496,7 @@ struct obj* origobj;
                 context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
             }
 
-            prev_anim_counter_idx = idx;
+            //prev_anim_counter_idx = idx;
 
             if (!use_old)
                 zap_tile_count++;

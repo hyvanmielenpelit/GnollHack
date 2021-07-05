@@ -551,7 +551,7 @@ invault()
             if (Deaf)
             {
                 if (!Blind)
-                    pline_ex("%s holds out %s palm and beckons with %s other hand.",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s holds out %s palm and beckons with %s other hand.",
                           noit_Monnam(guard), noit_mhis(guard),
                           noit_mhis(guard));
             } 

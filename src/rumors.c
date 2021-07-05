@@ -436,7 +436,7 @@ int fd;
 void
 outoracle(mtmp, otmp, special, oraclesstyle)
 struct monst* mtmp;
-struct obj* otmp;
+struct obj* otmp UNUSED;
 boolean special;
 int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
 {
@@ -480,7 +480,7 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
             putstr(tmpwin, 0, "The message reads:");
         putstr(tmpwin, 0, "");
 
-        if (oraclesstyle == 1)
+        if (mtmp && oraclesstyle == 1)
             play_voice_oracle_major_consultation(mtmp, oracle_idx - 1);
 
         while (dlb_fgets(line, COLNO, oracles) && strcmp(line, "---\n")) {

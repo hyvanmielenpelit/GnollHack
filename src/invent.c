@@ -4383,7 +4383,7 @@ nextclass:
         char maxbuf[BUFSZ];
         printweight(maxbuf, maxwt, FALSE, FALSE);
 
-        Sprintf(qbuf, "Inventory", icnt, weightbuf, maxbuf);
+        strcpy(qbuf, "Inventory");
         Sprintf(subtitlebuf, "%d/52 slots, %s/%s weight", icnt, weightbuf, maxbuf);
         end_menu_ex(win, qbuf, subtitlebuf);
     }
