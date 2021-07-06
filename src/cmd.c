@@ -7357,10 +7357,10 @@ int x, y, mod;
         }
         else if (mod == CLICK_3)
         {
-            if (abs(y) <= (abs(x) / 2))
+            if (abs(y) <= (max(0, abs(x) - 1) / 2))
                 y = 0;
 
-            if (abs(x) <= (abs(y) / 2))
+            if (abs(x) <= (max(0, abs(y) - 1) / 2))
                 x = 0;
             
             x = sgn(x), y = sgn(y);
