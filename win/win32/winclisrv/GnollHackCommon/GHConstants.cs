@@ -345,6 +345,7 @@ namespace GnollHackCommon
         public const int DefaultAnimationInterval = 25;
         public const int MaxMessageHistoryLength = 256;
         public const long MoveOrPressTimeThreshold = 250; /* Milliseconds */
+        public const double MoveByHoldingDownThreshold = 0.25; /* Seconds */
         public const int BlCondMaskBits = 23;
         public const int MaxStatusLines = 8;
         public const int MaxStatusFieldsPerLine = 24;

@@ -7351,10 +7351,20 @@ int x, y, mod;
 
     if (flags.travelcmd) 
     {
-        if ((abs(x) <= 1 && abs(y) <= 1) || mod == CLICK_3)
+        if (abs(x) <= 1 && abs(y) <= 1)
         {
             x = sgn(x), y = sgn(y);
-        } 
+        }
+        else if (mod == CLICK_3)
+        {
+            if (abs(y) <= (abs(x) / 2))
+                y = 0;
+
+            if (abs(x) <= (abs(y) / 2))
+                x = 0;
+            
+            x = sgn(x), y = sgn(y);
+        }
         else 
         {
             u.tx = u.ux + x;
