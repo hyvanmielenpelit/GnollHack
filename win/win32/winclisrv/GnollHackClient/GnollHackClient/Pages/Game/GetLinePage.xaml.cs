@@ -15,6 +15,7 @@ namespace GnollHackClient.Pages.Game
     {
         private GamePage _gamePage;
         private ClientGame _clientGame;
+        private string _result = "";
         public GetLinePage(GamePage gamePage, string query)
         {
             InitializeComponent();
@@ -30,13 +31,8 @@ namespace GnollHackClient.Pages.Game
             {
                 res = "";
             }
-
-            ConcurrentQueue<GHResponse> queue;
-            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetLine, res));
-                await _gamePage.Navigation.PopModalAsync();
-            }
+            _result = res;
+            await _gamePage.Navigation.PopModalAsync();
         }
 
         protected override void OnAppearing()
@@ -44,6 +40,16 @@ namespace GnollHackClient.Pages.Game
             base.OnAppearing();
 
             entryText.Focus();
+        }
+
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetLine, _result));
+            }
+
         }
     }
 }

@@ -18,6 +18,10 @@ namespace GnollHackClient.Pages.Game
         {
             InitializeComponent();
             _gamePage = gamePage;
+            if (_gamePage.EnableWizardMode)
+                WizCmdGrid.IsVisible = true;
+            else
+                WizCmdGrid.IsVisible = false;
         }
 
         private async void DownButton_Clicked(object sender, EventArgs e)
@@ -217,9 +221,35 @@ namespace GnollHackClient.Pages.Game
             _gamePage.GenericButton_Clicked(sender, e, 's');
         }
 
-        private void ZeroButton_Clicked(object sender, EventArgs e)
+        private async void WizWishButton_Clicked(object sender, EventArgs e)
         {
-            _gamePage.GenericButton_Clicked(sender, e, -10);
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Ctrl('w'));
+
+        }
+
+        private async void WizMapButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Ctrl('f'));
+        }
+
+        private async void WizGenesisButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('m'));
+        }
+
+        private async void WizLevelportButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Ctrl('v'));
+        }
+
+        private async void WizTeleportButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Ctrl('t'));
         }
     }
 }
