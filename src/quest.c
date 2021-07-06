@@ -464,7 +464,8 @@ struct monst *mtmp;
         return FALSE;
 
     if (mtmp->data == &mons[PM_PRISONER]
-        && (mtmp->mstrategy & STRAT_WAITMASK)) {
+        && (mtmp->mstrategy & STRAT_WAITMASK)) 
+    {
         /* Awaken the prisoner */
         if (canseemon(mtmp))
             pline("%s speaks:", Monnam(mtmp));
