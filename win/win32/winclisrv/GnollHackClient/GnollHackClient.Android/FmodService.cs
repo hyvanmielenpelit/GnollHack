@@ -132,7 +132,7 @@ namespace GnollHackClient.Droid
 
             //lock(service.eventInstanceLock)
             //{
-                if (type == EVENT_CALLBACK_TYPE.STOPPED)
+                if (type == EVENT_CALLBACK_TYPE.STOPPED || type == EVENT_CALLBACK_TYPE.START_FAILED)
                 {
                     for (int i = 0; i < GHConstants.MaxNormalImmediateSoundInstances; i++)
                     {
@@ -207,7 +207,7 @@ namespace GnollHackClient.Droid
                     longImmediateInstances.Insert(0, ghinstance);
 
                     if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
-                        res = longImmediateInstances[0].instance.setCallback(GNHEventCallback, EVENT_CALLBACK_TYPE.STOPPED);
+                        res = longImmediateInstances[0].instance.setCallback(GNHEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
 
                     /* Fallback if queued for too long */
                     if (longImmediateInstances.Count >= GHConstants.MaxLongImmediateSoundInstances && longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].queued && !longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].stopped)
@@ -223,7 +223,7 @@ namespace GnollHackClient.Droid
                     immediateInstances.Insert(0, ghinstance);
 
                     if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
-                        res = immediateInstances[0].instance.setCallback(GNHEventCallback, EVENT_CALLBACK_TYPE.STOPPED);
+                        res = immediateInstances[0].instance.setCallback(GNHEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
 
                     /* Fallback if queued for too long */
                     if (immediateInstances.Count >= GHConstants.MaxNormalImmediateSoundInstances && immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].queued && !immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].stopped)
@@ -281,9 +281,9 @@ namespace GnollHackClient.Droid
             if (!queue_sound)
             {
                 res = eventInstance.start();
-                res = _system.update();
             }
 
+            res = _system.update();
             return (int)res;
         }
 
