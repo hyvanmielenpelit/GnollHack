@@ -1389,35 +1389,34 @@ register struct monst *mtmp;
         chat_line = 0;
         break;
     case MS_DJINNI:
-        if (is_tame(mtmp)) {
+        if (is_tame(mtmp)) 
+        {
             play_monster_special_dialogue_line(mtmp, DJINN_LINE_SORRY_OUT_OF_WISHES);
             verbl_msg = "Sorry, I'm all out of wishes.";
-            chat_line = 2;
-        } else if (is_peaceful(mtmp)) {
-            if (ptr == &mons[PM_WATER_DEMON])
-            {
-                play_monster_special_dialogue_line(mtmp, DJINN_LINE_GURGLES);
-                pline_msg = "gurgles.";
-                chat_line = 1;
-            }
-            else
-            {
-                play_monster_special_dialogue_line(mtmp, DJINN_LINE_IM_FREE);
-                verbl_msg = "I'm free!";
-                chat_line = 1;
-            }
-        } else {
-            if (ptr != &mons[PM_PRISONER])
-            {
-                play_monster_special_dialogue_line(mtmp, DJINN_LINE_THIS_WILL_TEACH_YOU);
-                verbl_msg = "This will teach you not to disturb me!";
-                chat_line = 2;
-            }
-#if 0
-            else
-                verbl_msg = "??????????";
-#endif
+            chat_line = 0;
         }
+        else if (is_peaceful(mtmp)) 
+        {
+            play_monster_special_dialogue_line(mtmp, DJINN_LINE_IM_FREE);
+            verbl_msg = "I'm free!";
+            chat_line = 0;
+        }
+        else 
+        {
+            play_monster_special_dialogue_line(mtmp, DJINN_LINE_THIS_WILL_TEACH_YOU);
+            verbl_msg = "This will teach you not to disturb me!";
+            chat_line = 0;
+        }
+        break;
+    case MS_PRISONER:
+        play_monster_special_dialogue_line(mtmp, DJINN_LINE_IM_FREE);
+        verbl_msg = "I'm free!";
+        chat_line = 0;
+        break;
+    case MS_WATER_DEMON:
+        play_monster_special_dialogue_line(mtmp, DJINN_LINE_GURGLES);
+        pline_msg = "gurgles.";
+        chat_line = 0;
         break;
     case MS_BOAST: /* giants */
         if (!is_peaceful(mtmp)) {
@@ -1588,7 +1587,7 @@ register struct monst *mtmp;
     case MS_ARREST:
         if (is_peaceful(mtmp))
         {
-            play_monster_special_dialogue_line(mtmp, flags.female ? KOP_DIALOGUE_LINE_JUST_THE_FACTS_MAAM : KOP_DIALOGUE_LINE_JUST_THE_FACTS_SIR);
+            play_monster_special_dialogue_line(mtmp, flags.female ? KOP_LINE_JUST_THE_FACTS_MAAM : KOP_LINE_JUST_THE_FACTS_SIR);
             verbalize("Just the facts, %s.", flags.female ? "Ma'am" : "Sir");
             chat_line = flags.female ? 4 : 3;
         }
@@ -1599,7 +1598,7 @@ register struct monst *mtmp;
                 "You're under arrest!", "Stop in the name of the Law!",
             };
             int roll = rn2(3);
-            play_monster_special_dialogue_line(mtmp, roll + KOP_DIALOGUE_LINE_ANYTHING_YOU_SAY_CAN_BE_USED);
+            play_monster_special_dialogue_line(mtmp, roll + KOP_LINE_ANYTHING_YOU_SAY_CAN_BE_USED);
             verbl_msg = arrest_msg[roll];
             chat_line = 0;
         }
@@ -3629,6 +3628,12 @@ struct monst* mtmp;
     else if (msound == MS_NEMESIS)
     {
         Sprintf(ansbuf, "I am %s, your quest nemesis. Tremble before me!", mon_nam(mtmp));
+        verbalize("%s", ansbuf);
+    }
+    else if (msound == MS_DJINNI)
+    {
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+        Sprintf(ansbuf, "I am a genie from the Elemental Plane of Air.");
         verbalize("%s", ansbuf);
     }
     else if (has_mname(mtmp))

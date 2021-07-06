@@ -52,6 +52,8 @@
 #define MS_NPC 43       /* offer artisan services */
 #define MS_MODRON 44    /* modron talk */
 #define MS_ALEAX 45     /* tells you that you are being punished by your god */
+#define MS_PRISONER 46  /* "Thank you for freeing me!" */
+#define MS_WATER_DEMON 47 /* "Thank you for freeing me!" */
 
 /* resistances, and all intrinsics and extrinsics the monster can have */
 #define MR_NONE                    0x00000000UL

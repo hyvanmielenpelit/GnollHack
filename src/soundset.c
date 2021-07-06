@@ -1360,7 +1360,9 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Geologist/Undead/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Geologist/Undead/Death", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Monster/Djinn/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Djinn/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Djinn/Advice", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Djinn/Death", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Neutral/Watchman/Male/Standard Dialogue", 1.0f },
@@ -2717,14 +2719,14 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
-            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {GHSOUND_VOICE_DJINN_STANDARD_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
             {GHSOUND_VOICE_DJINN_SPECIAL_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_CREATION */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
-            {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {GHSOUND_VOICE_DJINN_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_COUGH */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */

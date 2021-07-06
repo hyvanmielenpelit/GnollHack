@@ -525,7 +525,7 @@ boolean nearby;
         if(nearby || (!Qstat(met_nemesis) && cansee(mtmp->mx, mtmp->my) && distu(mtmp->mx, mtmp->my) <= 64))
             return nemesis_speaks(mtmp);
         break;
-    case MS_DJINNI:
+    case MS_PRISONER:
         if (nearby)
             return prisoner_speaks(mtmp);
         break;

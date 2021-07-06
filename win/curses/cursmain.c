@@ -345,7 +345,7 @@ curses_display_nhwindow(winid wid, BOOLEAN_P block)
     menu_item *selected = NULL;
 
     if (curses_is_menu(wid) || curses_is_text(wid)) {
-        curses_end_menu_ex(wid, "", 0);
+        curses_end_menu_ex(wid, "", (const char*)0);
         curses_select_menu(wid, PICK_NONE, &selected);
         return;
     }
