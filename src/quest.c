@@ -367,7 +367,8 @@ leader_speaks(mtmp)
 struct monst *mtmp;
 {
     /* maybe you attacked leader? */
-    if (!is_peaceful(mtmp)) {
+    if (!is_peaceful(mtmp)) 
+    {
         Qstat(pissed_off) = TRUE;
         mtmp->mstrategy &= ~STRAT_WAITMASK; /* end the inaction */
     }
@@ -376,10 +377,12 @@ struct monst *mtmp;
     if (!on_level(&u.uz, &qstart_level))
         return FALSE;
 
-    if (Qstat(pissed_off)) {
+    if (Qstat(pissed_off)) 
+    {
         qt_pager(mtmp, QT_LASTLEADER);
         expulsion(TRUE); // Return FALSE for safety
-    } else
+    }
+    else
         return chat_with_leader(mtmp);
 
     return FALSE;

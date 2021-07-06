@@ -320,6 +320,21 @@ namespace GnollHackCommon
         ANIMATION_TIMER_SPECIAL_EFFECT,
     }
 
+    public enum immediate_sound_types
+    {
+        IMMEDIATE_SOUND_SFX = 0,
+        IMMEDIATE_SOUND_UI,
+        IMMEDIATE_SOUND_DIALOGUE
+    }
+
+    public enum sound_play_groups
+    {
+        SOUND_PLAY_GROUP_NORMAL = 0,
+        SOUND_PLAY_GROUP_LONG,
+        MAX_SOUND_PLAY_GROUPS
+    }
+
+
     public class GHConstants
     {
         public const int InputBufferLength = 32;
@@ -344,6 +359,8 @@ namespace GnollHackCommon
         public const int MaxLeashed = 2;
         public const int MaxPlayedSpecialEffects = 12;
         public const int MaxPlayedZapAnimations = 16;
+        public const int MaxNormalImmediateSoundInstances = 64;
+        public const int MaxLongImmediateSoundInstances = 64;
 
     }
 
