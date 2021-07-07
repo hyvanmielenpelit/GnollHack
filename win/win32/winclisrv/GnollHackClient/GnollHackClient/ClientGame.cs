@@ -879,13 +879,15 @@ namespace GnollHackClient
                 }
             }
         }
-        public void ClientCallback_SetAnimationWait(int timertype, int timerid, int waittype, ulong val)
+
+        public void ClientCallback_DisplayFloatingText(int x, int y, string text, int style, int attr, int color, ulong tflags)
         {
 
         }
-        public ulong ClientCallback_GetAnimationWait(int timertype, int timerid, int waittype)
+
+        public void ClientCallback_DisplayScreenText(string text, string subtext, int style, int attr, int color, ulong tflags)
         {
-            return 0UL;
+
         }
 
         public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)

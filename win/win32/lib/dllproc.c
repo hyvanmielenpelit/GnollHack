@@ -114,8 +114,8 @@ struct window_procs dll_procs = {
     dll_clear_context_menu,
     dll_add_context_menu,
     dll_toggle_animation_timer,    
-    dll_set_animation_wait,
-    dll_get_animation_wait,
+    dll_display_floating_text,
+    dll_display_screen_text,
     dll_exit_hack,
 };
 
@@ -2888,15 +2888,15 @@ dll_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, 
 }
 
 void
-dll_set_animation_wait(int timertype, int timerid, int waittype, int value)
+dll_display_floating_text(int x, int y, const char* text, int style, int attr, int color, unsigned long tflags)
 {
     return;
 }
 
-unsigned long
-dll_get_animation_wait(int timertype, int timerid, int waittype)
+void
+dll_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
 {
-    return;
+
 }
 
 void

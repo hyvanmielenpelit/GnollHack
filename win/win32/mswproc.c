@@ -138,8 +138,8 @@ struct window_procs mswin_procs = {
     mswin_clear_context_menu,
     mswin_add_context_menu,
     mswin_toggle_animation_timer,
-    mswin_set_animation_wait,
-    mswin_get_animation_wait,
+    mswin_display_floating_text,
+    mswin_display_screen_text,
     mswin_exit_hack,
 };
 
@@ -3786,53 +3786,15 @@ mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y
 }
 
 void
-mswin_set_animation_wait(int timertype, int timerid, int waittype, unsigned long value)
+mswin_display_floating_text(int x, int y, const char* text, int style, int attr, int color, unsigned long tflags)
 {
-    enum animation_timer_types att = (enum animation_timer_types)timertype;
 
-    switch (att)
-    {
-    case ANIMATION_TIMER_GENERAL:
-        break;
-    case ANIMATION_TIMER_YOU:
-        break;
-    case ANIMATION_TIMER_MONSTER:
-        break;
-    case ANIMATION_TIMER_EXPLOSION:
-        break;
-    case ANIMATION_TIMER_ZAP:
-        break;
-    case ANIMATION_TIMER_SPECIAL_EFFECT:
-        break;
-    default:
-        break;
-    }
 }
 
-unsigned long
-mswin_get_animation_wait(int timertype, int timerid, int waittype)
+void
+mswin_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
 {
-    enum animation_timer_types att = (enum animation_timer_types)timertype;
 
-    switch (att)
-    {
-    case ANIMATION_TIMER_GENERAL:
-        break;
-    case ANIMATION_TIMER_YOU:
-        break;
-    case ANIMATION_TIMER_MONSTER:
-        break;
-    case ANIMATION_TIMER_EXPLOSION:
-        break;
-    case ANIMATION_TIMER_ZAP:
-        break;
-    case ANIMATION_TIMER_SPECIAL_EFFECT:
-        break;
-    default:
-        break;
-    }
-
-    return 0UL;
 }
 
 void

@@ -125,8 +125,8 @@ DLL int RunGnollHack(
     ClearContextMenuCallback callback_clear_context_menu,
     AddContextMenuCallback callback_add_context_menu,
     ToggleAnimationTimerCallback callback_toggle_animation_timer,
-    SetAnimationWaitCallback callback_set_animation_wait,
-    GetAnimationWaitCallback callback_get_animation_wait,
+    DisplayFloatingTextCallback callback_display_floating_text,
+    DisplayScreenTextCallback callback_display_screen_text,
     ExitHackCallback callback_exit_hack,
 
     GetCwdCallback callback_getcwd,

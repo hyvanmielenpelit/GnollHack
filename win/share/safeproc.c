@@ -119,8 +119,8 @@ struct window_procs safe_procs = {
     safe_clear_context_menu,
     safe_add_context_menu,
     safe_toggle_animation_timer,
-    safe_set_animation_wait,
-    safe_get_animation_wait,
+    safe_display_floating_text,
+    safe_display_screen_text,
     safe_exit_hack,
 };
 
@@ -549,15 +549,15 @@ safe_toggle_animation_timer(int type UNUSED, int id UNUSED, int state UNUSED, in
 }
 
 void
-safe_set_animation_wait(int type UNUSED, int id UNUSED, int waittype UNUSED, unsigned long value UNUSED)
+safe_display_floating_text(int x UNUSED, int y UNUSED, const char* text UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
 {
     return;
 }
 
-unsigned long
-safe_get_animation_wait(int type UNUSED, int id UNUSED, int waittype UNUSED)
+void
+safe_display_screen_text(const char* text UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
 {
-    return 0UL;
+    return;
 }
 
 void

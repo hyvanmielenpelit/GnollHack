@@ -119,8 +119,8 @@ typedef BooleanVoidPtrDoubleCallback SetAmbientVolumeCallback;
 typedef void(__callconv* ClearContextMenuCallback)(void);
 typedef void(__callconv* AddContextMenuCallback)(int, int, int, int, const char*, const char*, int, int);
 typedef void(__callconv* ToggleAnimationTimerCallback)(int, int, int, int, int, int, unsigned long);
-typedef void(__callconv* SetAnimationWaitCallback)(int, int, int, unsigned long);
-typedef unsigned long(__callconv* GetAnimationWaitCallback)(int, int, int);
+typedef void(__callconv* DisplayFloatingTextCallback)(int, int, const char*, int, int, int, unsigned long);
+typedef void(__callconv* DisplayScreenTextCallback)(const char*, const char*, int, int, int, unsigned long);
 typedef void(__callconv* ExitHackCallback)(int);
 
 typedef char*(__callconv* GetCwdCallback)();
@@ -208,8 +208,8 @@ struct callback_procs {
     ClearContextMenuCallback callback_clear_context_menu;
     AddContextMenuCallback callback_add_context_menu;
     ToggleAnimationTimerCallback callback_toggle_animation_timer;
-    SetAnimationWaitCallback callback_set_animation_wait;
-    GetAnimationWaitCallback callback_get_animation_wait;
+    DisplayFloatingTextCallback callback_display_floating_text;
+    DisplayScreenTextCallback callback_display_screen_text;
     ExitHackCallback callback_exit_hack;
 
     GetCwdCallback callback_getcwd;

@@ -69,8 +69,8 @@ struct window_procs Gnome_procs = {
     genl_clear_context_menu,
     genl_add_context_menu,
     genl_toggle_animation_timer,
-    genl_set_animation_wait,
-    genl_get_animation_wait,
+    genl_display_floating_text,
+    genl_display_screen_text,
     genl_exit_hack,
 };
 

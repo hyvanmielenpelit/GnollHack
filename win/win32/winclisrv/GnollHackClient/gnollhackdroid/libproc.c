@@ -65,8 +65,8 @@ struct window_procs lib_procs = {
     lib_clear_context_menu,
     lib_add_context_menu,
     lib_toggle_animation_timer,
-    lib_set_animation_wait,
-    lib_get_animation_wait,
+    lib_display_floating_text,
+    lib_display_screen_text,
     lib_exit_hack,
 };
 
@@ -917,15 +917,15 @@ lib_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, 
 }
 
 void
-lib_set_animation_wait(int timertype, int timerid, int waittype, unsigned long value)
+lib_display_floating_text(int x, int y, const char* text, int style, int attr, int color, unsigned long tflags)
 {
-    lib_callbacks.callback_set_animation_wait(timertype, timerid, waittype, value);
+    lib_callbacks.callback_display_floating_text(x, y, text, style, attr, color, tflags);
 }
 
-unsigned long
-lib_get_animation_wait(int timertype, int timerid, int waittype)
+void
+lib_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
 {
-    return lib_callbacks.callback_get_animation_wait(timertype, timerid, waittype);
+    lib_callbacks.callback_display_screen_text(text, subtext, style, attr, color, tflags);
 }
 
 /* Helper functions */

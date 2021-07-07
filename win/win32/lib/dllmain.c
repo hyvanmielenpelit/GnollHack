@@ -109,8 +109,8 @@ DLL int WINAPI RunGnollHack(
     ClearContextMenuCallback callback_clear_context_menu,
     AddContextMenuCallback callback_add_context_menu,
     ToggleAnimationTimerCallback callback_toggle_animation_timer,
-    SetAnimationWaitCallback callback_set_animation_wait,
-    GetAnimationWaitCallback callback_get_animation_wait,
+    DisplayFloatingTextCallback callback_display_floating_text,
+    DisplayScreenTextCallback callback_display_screen_text,
     ExitHackCallback callback_exit_hack,
 
     GetCwdCallback callback_getcwd,
@@ -202,8 +202,8 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_clear_context_menu = callback_clear_context_menu;
     dll_callbacks.callback_add_context_menu = callback_add_context_menu;
     dll_callbacks.callback_toggle_animation_timer = callback_toggle_animation_timer;
-    dll_callbacks.callback_set_animation_wait = callback_set_animation_wait;
-    dll_callbacks.callback_get_animation_wait = callback_get_animation_wait;
+    dll_callbacks.callback_display_floating_text = callback_display_floating_text;
+    dll_callbacks.callback_display_screen_text = callback_display_screen_text;
     dll_callbacks.callback_exit_hack = callback_exit_hack;
     dll_callbacks.callback_getcwd = callback_getcwd;
     dll_callbacks.callback_messagebox = callback_messagebox;

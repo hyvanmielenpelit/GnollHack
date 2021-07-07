@@ -355,15 +355,15 @@ genl_toggle_animation_timer(int type UNUSED, int id UNUSED, int state UNUSED, in
 }
 
 void
-genl_set_animation_wait(int timertype UNUSED, int id UNUSED, int waittype UNUSED, unsigned long value UNUSED)
+genl_display_floating_text(int x UNUSED, int y UNUSED, const char* text UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
 {
     return;
 }
 
-unsigned long
-genl_get_animation_wait(int timertype UNUSED, int id UNUSED, int waittype UNUSED)
+void
+genl_display_screen_text(const char* text UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
 {
-    return 0UL;
+    return;
 }
 
 void

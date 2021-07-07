@@ -97,8 +97,8 @@ namespace GnollHackServer
             VoidVoidCallback callback_clear_context_menu,
             AddContextMenuCallback callback_add_context_menu,
             ToggleAnimationTimerCallback callback_toggle_animation_timer,
-            SetAnimationWaitCallback callback_set_animation_wait,
-            GetAnimationWaitCallback callback_get_animation_wait,
+            DisplayFloatingTextCallback callback_display_floating_text,
+            DisplayScreenTextCallback callback_display_screen_text,
             VoidIntCallback callback_exit_hack,
             CharVoidCallback callback_getcwd,
             IntCharCharUintCallback callback_messagebox,
@@ -248,8 +248,8 @@ namespace GnollHackServer
                 GameCallback_ClearContextMenu,
                 GameCallback_AddContextMenu,
                 GameCallback_ToggleAnimationTimer,
-                GameCallback_SetAnimationWait,
-                GameCallback_GetAnimationWait,
+                GameCallback_DisplayFloatingText,
+                GameCallback_DisplayScreenText,
                 GameCallback_ExitHack,
                 GameCallback_GetCwd,
                 GameCallback_MessageBox,
@@ -298,13 +298,13 @@ namespace GnollHackServer
         {
 
         }
-        public void GameCallback_SetAnimationWait(int timertype, int timerid, int waittype, ulong val)
+        public void GameCallback_DisplayFloatingText(int x, int y, string text, int style, int attr, int color, ulong tflags)
         {
 
         }
-        public ulong GameCallback_GetAnimationWait(int timertype, int timerid, int waittype)
+        public void GameCallback_DisplayScreenText(string text, string subtext, int style, int attr, int color, ulong tflags)
         {
-            return 0UL;
+
         }
 
         protected void GameCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color)

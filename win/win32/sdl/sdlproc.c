@@ -134,8 +134,8 @@ struct window_procs nuklear_procs = {
     sdl_clear_context_menu,
     sdl_add_context_menu,
     sdl_toggle_animation_timer,
-    sdl_set_animation_wait,
-    sdl_get_animation_wait,
+    sdl_display_floating_text,
+    sdl_display_screen_text,
     sdl_exit_hack,
 };
 
@@ -3655,51 +3655,13 @@ sdl_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, 
 }
 
 void
-sdl_set_animation_wait(int timertype, int timerid, int waittype, unsigned long value)
+sdl_display_floating_text(int x, int y, const char* text, int style, int attr, int color, unsigned long tflags)
 {
-    enum animation_timer_types att = (enum animation_timer_types)timertype;
 
-    switch (att)
-    {
-    case ANIMATION_TIMER_GENERAL:
-        break;
-    case ANIMATION_TIMER_YOU:
-        break;
-    case ANIMATION_TIMER_MONSTER:
-        break;
-    case ANIMATION_TIMER_EXPLOSION:
-        break;
-    case ANIMATION_TIMER_ZAP:
-        break;
-    case ANIMATION_TIMER_SPECIAL_EFFECT:
-        break;
-    default:
-        break;
-    }
 }
 
-unsigned long
-sdl_get_animation_wait(int timertype, int timerid, int waittype)
+void
+sdl_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
 {
-    enum animation_timer_types att = (enum animation_timer_types)timertype;
 
-    switch (att)
-    {
-    case ANIMATION_TIMER_GENERAL:
-        break;
-    case ANIMATION_TIMER_YOU:
-        break;
-    case ANIMATION_TIMER_MONSTER:
-        break;
-    case ANIMATION_TIMER_EXPLOSION:
-        break;
-    case ANIMATION_TIMER_ZAP:
-        break;
-    case ANIMATION_TIMER_SPECIAL_EFFECT:
-        break;
-    default:
-        break;
-    }
-
-    return 0UL;
 }

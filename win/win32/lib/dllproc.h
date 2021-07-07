@@ -115,8 +115,8 @@ void dll_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
 void dll_clear_context_menu(VOID_ARGS);
 void dll_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
 void dll_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, int tflags);
-void dll_set_animation_wait(int timertype, int timerid, int waittype, unsigned long value);
-unsigned long dll_get_animation_wait(int timertype, int timerid, int waittype);
+void dll_display_floating_text(int x, int y, const char* text, int style, int attr, int color, unsigned long tflags);
+void dll_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags);
 void dll_exit_hack(int status);
 
 /* Helper functions */

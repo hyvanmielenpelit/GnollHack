@@ -3758,8 +3758,8 @@ E void FDECL(genl_set_ambient_ghsound_volume, (struct soundsource_t*));
 E void NDECL(genl_clear_context_menu);
 E void FDECL(genl_add_context_menu, (int, int, int, int, const char*, const char*, int, int));
 E void FDECL(genl_toggle_animation_timer, (int, int, int, int, int, int, unsigned long));
-E void FDECL(genl_set_animation_wait, (int, int, int, unsigned long));
-E unsigned long FDECL(genl_get_animation_wait, (int, int, int));
+E void FDECL(genl_display_floating_text, (int, int, const char*, int, int, int, unsigned long));
+E void FDECL(genl_display_screen_text, (const char*, const char*, int, int, int, unsigned long));
 E void FDECL(genl_exit_hack, (int));
 
 

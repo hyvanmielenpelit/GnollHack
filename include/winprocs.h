@@ -106,8 +106,8 @@ struct window_procs {
     void NDECL((*win_clear_context_menu));
     void FDECL((*win_add_context_menu), (int, int, int, int, const char*, const char*, int, int));
     void FDECL((*win_toggle_animation_timer), (int, int, int, int, int, int, unsigned long)); /* timettype, id, state = on/off, x, y, flags */
-    void FDECL((*win_set_animation_wait), (int, int, int, unsigned long));
-    unsigned long FDECL((*win_get_animation_wait), (int, int, int));
+    void FDECL((*win_display_floating_text), (int, int, const char*, int, int, int, unsigned long));
+    void FDECL((*win_display_screen_text), (const char*, const char*, int, int, int, unsigned long));
 
 #if 0
     void FDECL((*win_clear_object_list_at), (int, int, int));
@@ -122,8 +122,6 @@ struct window_procs {
         /* u.ux, u.uy, uhp, uhpmax, umh, umhmax, u.en, u.enmax,
           youmonst, u.uprops[], ustuck (mid), uball (oid), uchain (oid), u.carrying_capacity_level, u.uhs,
           flags: Upolyd, u.uswallow, u.utrap, u.canadvanceskill, u.twoweap monster data set or not */
-    void FDECL((*win_floating_text), (int, int, double, const char*, int, double, double, double, int, int, unsigned long));
-    /* x, y, yoffset, text, vx, vy, time, attr, color, flags */
     void FDECL((*win_move_glyph_on_layer), (int, int, int, int, int, int, double, unsigned long));
     /* glyph, layer, x1, y1, x2, y2, time, flags */
 #endif
@@ -238,8 +236,8 @@ extern
 #define clear_context_menu (*windowprocs.win_clear_context_menu)
 #define add_context_menu (*windowprocs.win_add_context_menu)
 #define toggle_animation_timer (*windowprocs.win_toggle_animation_timer)
-#define set_animation_wait (*windowprocs.win_set_animation_wait)
-#define get_animation_wait (*windowprocs.win_get_animation_wait)
+#define display_floating_text (*windowprocs.win_display_floating_text)
+#define display_screen_text (*windowprocs.win_display_screen_text)
 #define exit_hack (*windowprocs.win_exit_hack)
 
 /*
@@ -487,8 +485,8 @@ struct chain_procs {
     void FDECL((*win_clear_context_menu), (CARGS));
     void FDECL((*win_add_context_menu), (CARGS, int, int, int, int, const char*, const char*, int, int));
     void FDECL((*win_toggle_animation_timer), (CARGS, int, int, int, int, int, int, unsigned long));
-    void FDECL((*win_set_animation_wait), (CARGS, int, int, int, unsigned long));
-    unsigned long FDECL((*win_get_animation_wait), (CARGS, int, int, int));
+    void FDECL((*win_display_floating_text), (CARGS, int, int, const char*, int, int, int, unsigned long));
+    void FDECL((*win_display_screen_text), (CARGS, const char*, const char*, int, int, int, unsigned long));
     void FDECL((*win_exit_hack), (CARGS, int));
 };
 #endif /* WINCHAIN */
@@ -583,8 +581,8 @@ extern void FDECL(safe_set_ambient_ghsound_volume, (struct soundsource_t*));
 extern void NDECL(safe_clear_context_menu);
 extern void FDECL(safe_add_context_menu, (int, int, int, int, const char*, const char*, int, int));
 extern void FDECL(safe_toggle_animation_timer, (int, int, int, int, int, int, unsigned long));
-extern void FDECL(safe_set_animation_wait, (int, int, int, unsigned long));
-extern unsigned long FDECL(safe_get_animation_wait, (int, int, int));
+extern void FDECL(safe_display_floating_text, (int, int, const char*, int, int, int, unsigned long));
+extern void FDECL(safe_display_screen_text, (const char*, const char*, int, int, int, unsigned long));
 extern void FDECL(safe_exit_hack, (int));
 
 extern void FDECL(stdio_raw_print, (const char *));
