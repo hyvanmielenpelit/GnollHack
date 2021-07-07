@@ -422,6 +422,13 @@ enum floating_text_types {
     FLOATING_TEXT_BREAK_LOCATION,
 };
 
+enum screen_text_types {
+    SCREEN_TEXT_GENERAL = 0,
+    SCREEN_TEXT_ENTER_DUNGEON_LEVEL,
+    SCREEN_TEXT_GAIN_LEVEL,
+    SCREEN_TEXT_GAME_OVER,
+};
+
 #define PICKLOCK_LEARNED_SOMETHING (-1) /* time passes */
 #define PICKLOCK_DID_NOTHING 0          /* no time passes */
 #define PICKLOCK_DID_SOMETHING 1

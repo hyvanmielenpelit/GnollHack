@@ -500,6 +500,10 @@ boolean incr; /* true iff via incremental experience growth */
             u.ulevelmax = u.ulevel;
         adjabil(u.ulevel - 1, u.ulevel); /* give new intrinsics */
         reset_rndmonst(NON_PM);          /* new monster selection */
+
+        char lvlbuf[BUFSZ];
+        Sprintf(lvlbuf, "Level %d", u.ulevel);
+        display_screen_text(lvlbuf, "Welcome to", SCREEN_TEXT_GAIN_LEVEL, 0, 0, 0UL);
     }
     updatemaxhp();
     updatemaxen();

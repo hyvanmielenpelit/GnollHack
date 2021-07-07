@@ -1168,17 +1168,14 @@ cure_petrification_here:
             {
                 play_sfx_sound_at_location(SFX_FULL_HEALING, mtmp->mx, mtmp->my);
                 special_effect_wait_until_action(0);
-                mtmp->mhp = mtmp->mhpmax;
+                deduct_monster_hp(mtmp, -1000);  //mtmp->mhp = mtmp->mhpmax;
             }
             else
             {
                 play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
                 special_effect_wait_until_action(0);
-                mtmp->mhp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+                deduct_monster_hp(mtmp, -(d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus));
             }
-
-            if (mtmp->mhp > mtmp->mhpmax)
-                mtmp->mhp = mtmp->mhpmax;
 
             /* plain healing must be blessed to cure blindness; extra
                healing only needs to not be cursed, so spell always cures

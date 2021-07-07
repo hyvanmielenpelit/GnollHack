@@ -900,7 +900,18 @@ namespace GnollHackClient
 
         public void ClientCallback_DisplayScreenText(string text, string subtext, int style, int attr, int color, ulong tflags)
         {
-
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                DisplayScreenTextData data = new DisplayScreenTextData();
+                data.text = text;
+                data.subtext = subtext;
+                data.style = style;
+                data.attr = attr;
+                data.color = color;
+                data.tflags = tflags;
+                queue.Enqueue(new GHRequest(this, GHRequestType.DisplayScreenText, data));
+            }
         }
 
         public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)

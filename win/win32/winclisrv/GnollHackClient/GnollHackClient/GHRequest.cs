@@ -28,6 +28,7 @@ namespace GnollHackClient
         ClearContextMenu,
         AddContextMenu,
         DisplayFloatingText,
+        DisplayScreenText,
     }
 
     public struct AddContextMenuData
@@ -53,6 +54,15 @@ namespace GnollHackClient
         public ulong tflags;
     }
 
+    public struct DisplayScreenTextData
+    {
+        public string text;
+        public string subtext;
+        public int style;
+        public int attr;
+        public int color;
+        public ulong tflags;
+    }
 
     public class GHRequest
     {
@@ -69,6 +79,8 @@ namespace GnollHackClient
 
         public AddContextMenuData ContextMenuData { get; set; }
         public DisplayFloatingTextData FloatingTextData { get; set; }
+        public DisplayScreenTextData ScreenTextData { get; set; }
+
         public GHRequest()
         {
 
@@ -136,6 +148,12 @@ namespace GnollHackClient
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             FloatingTextData = data;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, DisplayScreenTextData data)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            ScreenTextData = data;
         }
     }
 }

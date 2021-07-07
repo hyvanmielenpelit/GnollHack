@@ -5878,6 +5878,14 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         level_teleport_effect_in(u.ux, u.uy);
     }
 
+    char lvlbuf[BUFSZ];
+    const char* dname = dungeons[u.uz.dnum].dname;
+    if (dname && !strncmp(dname, "The ", 4))
+        dname += 4;
+
+    Sprintf(lvlbuf, "%s Level %d", dname ? dname : "Dungeon", u.uz.dlevel);
+    display_screen_text(lvlbuf, (const char*)0, SCREEN_TEXT_ENTER_DUNGEON_LEVEL, 0, 0, 0UL);
+
     /* special levels can have a custom arrival message */
     deliver_splev_message();
 

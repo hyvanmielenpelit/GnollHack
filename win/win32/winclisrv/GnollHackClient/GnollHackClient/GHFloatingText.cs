@@ -88,6 +88,16 @@ namespace GnollHackClient
         }
         public SKColor GetBaseColor(long counter_value)
         {
+            switch(_data.style)
+            {
+                case 0:
+                case 1:
+                    return SKColors.Green;
+                case 2:
+                    return SKColors.Red;
+                default:
+                    break;
+            }
             return SKColors.Red;
         }
         public SKColor GetColor(long counter_value)
@@ -96,7 +106,7 @@ namespace GnollHackClient
             SKColor baseclr = GetBaseColor(counter_value);
             if (vsecs < GetFadeInTime())
             {
-                byte val = (byte)(255.0f * Math.Max(0.0f, Math.Min(1.0f, (vsecs) / GetFadeInLength())));
+                byte val = (byte)(baseclr.Alpha * Math.Max(0.0f, Math.Min(1.0f, (vsecs) / GetFadeInLength())));
                 SKColor clr =  new SKColor(baseclr.Red, baseclr.Green, baseclr.Blue, val);
                 return clr;
             }
@@ -104,7 +114,7 @@ namespace GnollHackClient
                 return SKColors.Transparent;
             else if (vsecs >= GetFadeOutTime())
             {
-                byte val = (byte)(255.0f * Math.Max(0.0f, Math.Min(1.0f, (GetFinishTime() - vsecs) / GetFadeOutLength())));
+                byte val = (byte)(baseclr.Alpha * Math.Max(0.0f, Math.Min(1.0f, (GetFinishTime() - vsecs) / GetFadeOutLength())));
                 SKColor clr = new SKColor(baseclr.Red, baseclr.Green, baseclr.Blue, val);
                 return clr;
             }

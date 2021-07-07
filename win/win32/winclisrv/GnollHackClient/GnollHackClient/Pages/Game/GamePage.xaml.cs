@@ -110,6 +110,8 @@ namespace GnollHackClient.Pages.Game
 
         private object _floatingTextLock = new object();
         private List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
+        private object _screenTextLock = new object();
+        private GHScreenText _screenText = null;
 
         public bool EnableWizardMode { get; set; }
 
@@ -276,6 +278,11 @@ namespace GnollHackClient.Pages.Game
                         }
                     }
 
+                    lock (_screenTextLock)
+                    {
+                        if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
+                            _screenText = null;
+                    }
                 }
 
                 return true;
@@ -421,6 +428,17 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        public void DisplayScreenText(DisplayScreenTextData data)
+        {
+            lock (_screenTextLock)
+            {
+                lock (AnimationTimerLock)
+                {
+                    _screenText = new GHScreenText(data, AnimationTimers.general_animation_counter);
+                }
+            }
+        }
+
         private void ContextButton_Clicked(object sender, EventArgs e)
         {
             int idx = 0;
@@ -537,6 +555,9 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.DisplayFloatingText:
                                 DisplayFloatingText(req.FloatingTextData);
+                                break;
+                            case GHRequestType.DisplayScreenText:
+                                DisplayScreenText(req.ScreenTextData);
                                 break;
                         }
                     }
@@ -1248,6 +1269,63 @@ namespace GnollHackClient.Pages.Game
                         tx = (offsetX + _mapOffsetX + width * p.X - textBounds.Width / 2);
                         ty = (offsetY + _mapOffsetY + height * p.Y - textBounds.Height / 2);
                         canvas.DrawText(str, tx, ty, textPaint);
+                    }
+                }
+                lock (_screenTextLock)
+                {
+                    if (_screenText != null)
+                    {
+                        float targetwidth = 0;
+                        float maxfontsize = 9999.0f;
+                        lock (AnimationTimerLock)
+                        {
+                            textPaint.Color = _screenText.GetTextColor(AnimationTimers.general_animation_counter);
+                            textPaint.Typeface = _screenText.GetTextTypeface(AnimationTimers.general_animation_counter);
+                            targetwidth = canvaswidth * _screenText.GetMainTextSizeRelativeToScreenWidth(AnimationTimers.general_animation_counter);
+                            maxfontsize = _screenText.GetMainTextSizeMaxSizeRelativeToMapFontSize(AnimationTimers.general_animation_counter);
+                            str = _screenText.GetText(AnimationTimers.general_animation_counter);
+                        }
+                        textPaint.TextSize = MapFontSize;
+                        textPaint.MeasureText(str, ref textBounds);
+                        if(textBounds.Width > 0)
+                        {
+                            float relativesize = targetwidth / textBounds.Width;
+                            if (relativesize > maxfontsize)
+                                relativesize = maxfontsize;
+                            textPaint.TextSize = MapFontSize * relativesize;
+                        }
+
+                        textPaint.MeasureText(str, ref textBounds);
+                        float maintextascent = textPaint.FontMetrics.Ascent;
+                        float maintextdescent = textPaint.FontMetrics.Descent;
+
+                        tx = (canvaswidth / 2 - textBounds.Width / 2);
+                        ty = (canvasheight / 2 - textBounds.Height / 2 - (maintextascent + maintextdescent) / 2);
+                        canvas.DrawText(str, tx, ty, textPaint);
+
+                        float maintextsize = textPaint.TextSize;
+                        float maintextspacing = textPaint.FontSpacing;
+                        float maintexty = ty;
+
+                        if (_screenText.HasSubText)
+                        {
+                            lock (AnimationTimerLock)
+                            {
+                                textPaint.Color = _screenText.GetSubTextColor(AnimationTimers.general_animation_counter);
+                                textPaint.Typeface = _screenText.GetSubTextTypeface(AnimationTimers.general_animation_counter);
+                                textPaint.TextSize = maintextsize * _screenText.GetSubTextSizeRelativeToMainText(AnimationTimers.general_animation_counter);
+                                str = _screenText.GetSubText(AnimationTimers.general_animation_counter);
+                            }
+                            textPaint.MeasureText(str, ref textBounds);
+                            tx = (canvaswidth / 2 - textBounds.Width / 2);
+                            if(_screenText.IsSubTextAbove)
+                                ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
+                            else
+                                ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
+
+                            canvas.DrawText(str, tx, ty, textPaint);
+                        }
+
                     }
                 }
             }

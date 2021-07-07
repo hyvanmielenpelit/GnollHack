@@ -4953,11 +4953,15 @@ double hp_d;
     int hp_after = *target_integer_part_ptr;
     int damage_dealt = hp_before - hp_after;
 
-    if (damage_dealt > 0)
+    if (damage_dealt != 0)
     {
         char buf[BUFSZ];
-        Sprintf(buf, "%d", -damage_dealt);
-        display_floating_text(u.ux, u.uy, buf, FLOATING_TEXT_DAMAGE, ATR_NONE, NO_COLOR, 0UL);
+        if(damage_dealt > 0)
+            Sprintf(buf, "%d", -damage_dealt);
+        else
+            Sprintf(buf, "+%d", -damage_dealt);
+
+        display_floating_text(u.ux, u.uy, buf, damage_dealt > 0 ? FLOATING_TEXT_DAMAGE : FLOATING_TEXT_HEALING, ATR_NONE, NO_COLOR, 0UL);
     }
 
     if (iflags.using_gui_tiles && flags.show_tile_u_hp_bar)
@@ -5016,11 +5020,15 @@ double hp_d;
     if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
         context.botl = 1;
 
-    if (canspotmon(mtmp) && damage_dealt > 0)
+    if (canspotmon(mtmp) && damage_dealt != 0)
     {
         char buf[BUFSZ];
-        Sprintf(buf, "%d", -damage_dealt);
-        display_floating_text(mtmp->mx, mtmp->my, buf, FLOATING_TEXT_DAMAGE, ATR_NONE, NO_COLOR, 0UL);
+        if(damage_dealt > 0)
+            Sprintf(buf, "%d", -damage_dealt);
+        else
+            Sprintf(buf, "+%d", -damage_dealt);
+
+        display_floating_text(mtmp->mx, mtmp->my, buf, damage_dealt > 0 ? FLOATING_TEXT_DAMAGE : FLOATING_TEXT_HEALING, ATR_NONE, NO_COLOR, 0UL);
     }
 
     return mtmp->mhp;
