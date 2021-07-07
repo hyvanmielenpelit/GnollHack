@@ -882,6 +882,19 @@ namespace GnollHackClient
 
         public void ClientCallback_DisplayFloatingText(int x, int y, string text, int style, int attr, int color, ulong tflags)
         {
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                DisplayFloatingTextData floatingTextData = new DisplayFloatingTextData();
+                floatingTextData.x = x;
+                floatingTextData.y = y;
+                floatingTextData.text = text;
+                floatingTextData.style = style;
+                floatingTextData.attr = attr;
+                floatingTextData.color = color;
+                floatingTextData.tflags = tflags;
+                queue.Enqueue(new GHRequest(this, GHRequestType.DisplayFloatingText, floatingTextData));
+            }
 
         }
 

@@ -4926,6 +4926,7 @@ double hp_d;
         target_max_ptr = &u.uhpmax;
     }
 
+    int hp_before = *target_integer_part_ptr;
     *target_integer_part_ptr -= integer_hp;
     *target_fractional_part_ptr -= fractional_hp;
 
@@ -4949,6 +4950,15 @@ double hp_d;
     }
     context.botl = 1;
 
+    int hp_after = *target_integer_part_ptr;
+    int damage_dealt = hp_before - hp_after;
+
+    if (damage_dealt > 0)
+    {
+        char buf[BUFSZ];
+        Sprintf(buf, "%d", -damage_dealt);
+        display_floating_text(u.ux, u.uy, buf, FLOATING_TEXT_DAMAGE, ATR_NONE, NO_COLOR, 0UL);
+    }
 
     if (iflags.using_gui_tiles && flags.show_tile_u_hp_bar)
         force_redraw_at(u.ux, u.uy);
@@ -4967,7 +4977,7 @@ double hp_d;
         return 0;
 
 //    mtmp->mhp -= (int)ceil(hp_d);
-
+    int hp_before = mtmp->mhp;
     int integer_hp = (int)hp_d;
     double fracionalpart_hp_d = hp_d - (double)integer_hp;
     int fractional_hp = (int)(10000 * fracionalpart_hp_d);
@@ -4994,6 +5004,9 @@ double hp_d;
         mtmp->mhp_fraction = 0;
     }
 
+    int hp_after = mtmp->mhp;
+    int damage_dealt = hp_before - hp_after;
+
     if (iflags.using_gui_tiles)
     {
         if ((!is_tame(mtmp) && flags.show_tile_mon_hp_bar) || (is_tame(mtmp) && flags.show_tile_pet_hp_bar))
@@ -5002,6 +5015,13 @@ double hp_d;
 
     if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
         context.botl = 1;
+
+    if (canspotmon(mtmp) && damage_dealt > 0)
+    {
+        char buf[BUFSZ];
+        Sprintf(buf, "%d", -damage_dealt);
+        display_floating_text(mtmp->mx, mtmp->my, buf, FLOATING_TEXT_DAMAGE, ATR_NONE, NO_COLOR, 0UL);
+    }
 
     return mtmp->mhp;
 }

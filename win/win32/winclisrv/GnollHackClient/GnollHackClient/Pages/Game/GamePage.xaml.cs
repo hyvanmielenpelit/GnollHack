@@ -108,6 +108,8 @@ namespace GnollHackClient.Pages.Game
         private List<ReplacementDefinition> _replacementDefs = null;
         private List<AutoDrawDefinition> _autoDrawDefs = null;
 
+        private object _floatingTextLock = new object();
+        private List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
 
         public bool EnableWizardMode { get; set; }
 
@@ -264,6 +266,16 @@ namespace GnollHackClient.Pages.Game
                                 AnimationTimers.special_effect_animation_counter[i] = 0;
                         }
                     }
+
+                    lock (_floatingTextLock)
+                    {
+                        for(i = _floatingTexts.Count -1; i >= 0; i--)
+                        {
+                            if(_floatingTexts[i].IsFinished(AnimationTimers.general_animation_counter))
+                                _floatingTexts.RemoveAt(i);
+                        }
+                    }
+
                 }
 
                 return true;
@@ -398,6 +410,17 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        public void DisplayFloatingText(DisplayFloatingTextData data)
+        {
+            lock(_floatingTextLock)
+            {
+                lock (AnimationTimerLock)
+                {
+                    _floatingTexts.Add(new GHFloatingText(data, AnimationTimers.general_animation_counter));
+                }
+            }
+        }
+
         private void ContextButton_Clicked(object sender, EventArgs e)
         {
             int idx = 0;
@@ -511,6 +534,9 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.AddContextMenu:
                                 AddContextMenu(req.ContextMenuData);
+                                break;
+                            case GHRequestType.DisplayFloatingText:
+                                DisplayFloatingText(req.FloatingTextData);
                                 break;
                         }
                     }
@@ -1175,8 +1201,8 @@ namespace GnollHackClient.Pages.Game
                                                 {
                                                     paint.Color = color;
                                                     paint.BlendMode = blendMode;
-                                                    tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
-                                                    ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                    tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                                                    ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
                                                     SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                                                     canvas.DrawRect(targetrect, paint);
                                                 }
@@ -1196,17 +1222,42 @@ namespace GnollHackClient.Pages.Game
                     int cx = _mapCursorX, cy = _mapCursorY;
                     str = "_";
                     textPaint.Color = SKColors.White;
-                    tx = (startX + offsetX + _mapOffsetX + width * (float)cx);
-                    ty = (startY + offsetY + _mapOffsetY + height * (float)cy);
+                    tx = (offsetX + _mapOffsetX + width * (float)cx);
+                    ty = (offsetY + _mapOffsetY + height * (float)cy);
                     canvas.DrawText(str, tx, ty, textPaint);
                 }
             }
 
+            /* Floating Texts */
+            if(GraphicsStyle != GHGraphicsStyle.ASCII)
+            {
+                lock (_floatingTextLock)
+                {
+                    foreach (GHFloatingText ft in _floatingTexts)
+                    {
+                        SKPoint p;
+                        lock (AnimationTimerLock)
+                        {
+                            p = ft.GetPosition(AnimationTimers.general_animation_counter);
+                            textPaint.Color = ft.GetColor(AnimationTimers.general_animation_counter);
+                            textPaint.Typeface = ft.GetTypeface(AnimationTimers.general_animation_counter);
+                            textPaint.TextSize = MapFontSize * ft.GetRelativeTextSize(AnimationTimers.general_animation_counter);
+                            str = ft.GetText(AnimationTimers.general_animation_counter);
+                        }
+                        textPaint.MeasureText(str, ref textBounds);
+                        tx = (offsetX + _mapOffsetX + width * p.X - textBounds.Width / 2);
+                        ty = (offsetY + _mapOffsetY + height * p.Y - textBounds.Height / 2);
+                        canvas.DrawText(str, tx, ty, textPaint);
+                    }
+                }
+            }
+
+
+            /* Window strings */
             canvasButtonRect.Top = 0; /* Maybe overrwritten below */
             canvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
             if (_clientGame != null)
             {
-                /* Window strings */
                 lock (_clientGame.WindowsLock)
                 {
                     for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
