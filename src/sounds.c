@@ -1671,13 +1671,16 @@ register struct monst *mtmp;
                 {
                   "Resistance is useless!", "You're dog meat!", "Surrender!",
                 },
-                   *const soldier_pax_msg[3] = {
-                       "What lousy pay we're getting here!",
-                       "The food's not fit for Orcs!",
-                       "My feet hurt, I've been on them all day!",
-                   };
+            *const soldier_pax_msg[3] = {
+                "What lousy pay we're getting here!",
+                "The food's not fit for Orcs!",
+                "My feet hurt, I've been on them all day!",
+            };
         int roll = rn2(3);
-        chat_line = is_peaceful(mtmp) ? roll + 3 : roll;
+        int dialogue_line = (is_watch(mtmp->data) ? WATCHMAN_LINE_RESISTANCE_IS_USELESS : 0)  + (is_peaceful(mtmp) ? roll + 3 : roll);
+        play_monster_special_dialogue_line(mtmp, dialogue_line);
+
+        chat_line = 0; // is_peaceful(mtmp) ? roll + 3 : roll;
         verbl_msg = is_peaceful(mtmp) ? soldier_pax_msg[roll]
                                     : soldier_foe_msg[roll];
         break;
