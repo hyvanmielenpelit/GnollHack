@@ -699,6 +699,7 @@ int spellnum;
         play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
         damage = m_cure_self(mtmp, is_prince(mtmp->data) ? d(12, 6) : is_lord(mtmp->data) ? d(6, 6) : d(2, 6));
         special_effect_wait_until_end(0);
+        damage = 0;
         break;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
@@ -992,6 +993,7 @@ int spellnum;
         play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
         damage = m_cure_self(mtmp, is_prince(mtmp->data) ? d(12, 6) : is_lord(mtmp->data) ? d(6, 6) : d(2, 6));
         special_effect_wait_until_end(0);
+        damage = 0;
         break;
     case CLC_OPEN_WOUNDS:
         if (Antimagic_or_resistance)
