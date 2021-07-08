@@ -1676,8 +1676,9 @@ register struct monst *mtmp;
                 "The food's not fit for Orcs!",
                 "My feet hurt, I've been on them all day!",
             };
+
         int roll = rn2(3);
-        int dialogue_line = (is_watch(mtmp->data) ? WATCHMAN_LINE_RESISTANCE_IS_USELESS : 0)  + (is_peaceful(mtmp) ? roll + 3 : roll);
+        int dialogue_line = (is_watch(mtmp->data) ? WATCHMAN_LINE_RESISTANCE_IS_USELESS : 1)  + (is_peaceful(mtmp) ? roll + 3 : roll);
         play_monster_special_dialogue_line(mtmp, dialogue_line);
 
         chat_line = 0; // is_peaceful(mtmp) ? roll + 3 : roll;
@@ -3397,19 +3398,19 @@ struct monst* mtmp;
     {
         if (iflags.using_gui_sounds)
         {
-            play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+            play_monster_standard_dialogue_line(mtmp, mtmp->mnum == PM_HIGH_PRIEST ? MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU_SECONDARY : MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
             if (has_mname(mtmp))
             {
                 if (mon_aligntyp(mtmp) == A_NONE)
-                    Sprintf(ansbuf, "I am a %s of %s.", mtmp->female ? "priestess" : "priest", Moloch);
+                    Sprintf(ansbuf, "I am a %s%s of %s.", mtmp->mnum == PM_HIGH_PRIEST ? "high " : "", mtmp->female ? "priestess" : "priest", Moloch);
                 else
-                    Sprintf(ansbuf, "I am a local %s. (The name tag indicates that %s name is %s.)", mtmp->female ? "priestess" : "priest", mhis(mtmp), MNAME(mtmp));
+                    Sprintf(ansbuf, "I am a local %s%s. (The name tag indicates that %s name is %s.)", mtmp->mnum == PM_HIGH_PRIEST ? "high " : "", mtmp->female ? "priestess" : "priest", mhis(mtmp), MNAME(mtmp));
 
                 mtmp->u_know_mname = 1;
             }
             else
             {
-                Sprintf(ansbuf, "I am a local %s.", mtmp->female ? "priestess" : "priest");
+                Sprintf(ansbuf, "I am a local %s%s.", mtmp->mnum == PM_HIGH_PRIEST ? "high " : "", mtmp->female ? "priestess" : "priest");
             }
         }
         else
@@ -3494,7 +3495,7 @@ struct monst* mtmp;
         {
             if (iflags.using_gui_sounds)
             {
-                play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+                play_monster_standard_dialogue_line(mtmp, mtmp->mnum == PM_WATCH_CAPTAIN ? MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU_SECONDARY : MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
                 if (has_mname(mtmp))
                     Sprintf(ansbuf, "I am a local %s. (The name tag indicates that %s name is %s.)", mon_monster_name(mtmp), mhis(mtmp), MNAME(mtmp));
                 else

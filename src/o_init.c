@@ -60,7 +60,7 @@ NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
     {
         "hallowed", "hallowed ", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_CURSE_RESISTANCE | MYTHIC_PREFIX_POWER_UNCURSEABLE,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS | MYTHIC_FLAG_NO_THROWN_OR_AMMO
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_NO_DEMONIC_ITEMS
     },
     {
         "witch-king's", "witch-king's ", "", 3, MYTHIC_STANDARD_PRICE_MULTIPLIER + 0.5, MYTHIC_STANDARD_PRICE_ADDITION * 4L,
@@ -115,7 +115,7 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
     {
         "demon slaying", " of demon slaying", "", 15, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_DEMON_SLAYING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS | MYTHIC_FLAG_NO_DEMONIC_ITEMS
     },
     {
         "dragon slaying", " of dragon slaying", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
@@ -205,12 +205,12 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
     {
         "orc slaying", " of orc slaying", "", 10, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_ORC_SLAYING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_ORCISH_ITEMS
     },
     {
         "elf slaying", " of elf slaying", "", 5, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_ELF_SLAYING,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_NO_ELVEN_ITEMS
     },
     {
         "returning", " of returning", "", 5, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
@@ -1252,7 +1252,13 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
         return FALSE;
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_LOW_SPELLCASTING_PENALTY_ITEMS) && objects[(obj)->otyp].oc_spell_casting_penalty < 1)
         return FALSE;
-    
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_ORCISH_ITEMS) && is_orcish_obj(obj))
+        return FALSE;
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_ELVEN_ITEMS) && is_elven_obj(obj))
+        return FALSE;
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_DEMONIC_ITEMS) && is_demon_obj(obj))
+        return FALSE;
+
     return TRUE;
 }
 
