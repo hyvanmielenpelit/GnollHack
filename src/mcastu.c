@@ -987,7 +987,7 @@ int spellnum;
         damage = 0;
         break;
     case CLC_CURE_SELF:
-        damage = m_cure_self(mtmp, damage);
+        damage = m_cure_self(mtmp, is_prince(mtmp->data) ? d(12, 6) : is_lord(mtmp->data) ? d(6, 6) : d(2, 6));
         break;
     case CLC_OPEN_WOUNDS:
         if (Antimagic_or_resistance)

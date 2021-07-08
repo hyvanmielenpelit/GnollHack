@@ -168,7 +168,7 @@ sdl_init_nhwindows(int *argc, char **argv)
     }
 # endif
 #endif
-    logDebug("sdl_init_nhwindows()\n");
+    //logDebug("sdl_init_nhwindows()\n");
 
 #ifdef USE_TILES
     process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
@@ -287,7 +287,7 @@ sdl_init_nhwindows(int *argc, char **argv)
 void
 sdl_player_selection(void)
 {
-    logDebug("sdl_player_selection()\n");
+    //logDebug("sdl_player_selection()\n");
 
     if (iflags.wc_player_selection == VIA_DIALOG) {
         /* pick player type randomly (use pre-selected
@@ -357,7 +357,7 @@ prompt_for_player_selection(void)
     menu_item *selected = 0;
     DWORD box_result;
 
-    logDebug("prompt_for_player_selection()\n");
+    //logDebug("prompt_for_player_selection()\n");
 
     /* prevent an unnecessary prompt */
     rigid_role_checks();
@@ -2329,6 +2329,7 @@ sdl_wait_loop(int milliseconds)
     reduce_counters(milliseconds);
 }
 
+
 void
 sdl_wait_loop_intervals(int intervals)
 {
@@ -2336,8 +2337,8 @@ sdl_wait_loop_intervals(int intervals)
         return;
 
     MSG msg;
-    int counter_before = context.general_animation_counter;
-    int counter_after = context.general_animation_counter;
+    int counter_before = animation_timers.general_animation_counter;
+    int counter_after = animation_timers.general_animation_counter;
 
     disallow_keyboard_commands_in_wait_loop = TRUE;
 
@@ -2357,7 +2358,7 @@ sdl_wait_loop_intervals(int intervals)
             break;
         }
         
-        counter_after = context.general_animation_counter;
+        counter_after = animation_timers.general_animation_counter;
 
     } while (counter_after - counter_before < intervals && counter_after >= counter_before);
 

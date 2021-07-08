@@ -1410,7 +1410,7 @@ genericptr_t dat;
     }
 
     if (sp->opcodes && nop) {
-        (void) memcpy(tmp, sp->opcodes, sizeof(_opcode) * nop);
+        (void) memcpy(tmp, sp->opcodes, sizeof(_opcode) * (size_t)nop);
         free(sp->opcodes);
     }
     sp->opcodes = tmp;
@@ -1449,7 +1449,7 @@ sp_lev *sp;
     while (s1 && *s1) {
         s2 = index(s1, '\n');
         if (s2) {
-            len = (s2 - s1);
+            len = (size_t)(s2 - s1);
             s1 = s2 + 1;
         } else {
             len = strlen(s1);
@@ -1466,7 +1466,7 @@ sp_lev *sp;
         tmpmap[max_hig] = (char *) alloc(max_len);
         s1 = index(map, '\n');
         if (s1) {
-            len = (s1 - map);
+            len = (size_t)(s1 - map);
             s1++;
         } else {
             len = strlen(map);

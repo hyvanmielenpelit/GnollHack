@@ -1031,7 +1031,7 @@ do_rumors()
             true_rumor_size, true_rumor_offset, false_rumor_count,
             false_rumor_size, false_rumor_offset, eof_offset);
     /* record the current position; true rumors will start here */
-    true_rumor_offset = ftell(tfp);
+    true_rumor_offset = (unsigned long)ftell(tfp);
 
     false_rumor_offset = read_rumors_file(
         ".tru", &true_rumor_count, &true_rumor_size, true_rumor_offset);
@@ -2684,7 +2684,7 @@ char *s;
         Fprintf(stderr, TEXT_TRUNC, qt_line);
     }
 
-    curr_msg->size += strlen(s);
+    curr_msg->size += (long)strlen(s);
     return;
 }
 
