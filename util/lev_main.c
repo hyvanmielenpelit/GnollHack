@@ -762,9 +762,9 @@ VA_DECL2(sp_lev *, sp, const char *, fmt)
         }
         case 'o': /* opcode */
         {
-            long i = VA_NEXT(la, int);
+            int i = (int)VA_NEXT(la, int);
             if (i < 0 || i >= MAX_SP_OPCODES)
-                lc_pline("add_opvars: unknown opcode '%ld'.", VA_PASS1(i));
+                lc_pline("add_opvars: unknown opcode '%d'.", VA_PASS1(i));
             add_opcode(sp, i, NULL);
             break;
         }
@@ -1671,10 +1671,10 @@ const char *s2;
     for (;; s1++, s2++) {
         u1 = (uchar) *s1;
         if (isupper(u1))
-            u1 = tolower(u1);
+            u1 = (uchar)tolower(u1);
         u2 = (uchar) *s2;
         if (isupper(u2))
-            u2 = tolower(u2);
+            u2 = (uchar)tolower(u2);
         if (u1 == '\0' || u1 != u2)
             break;
     }

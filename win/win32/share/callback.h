@@ -4,6 +4,7 @@
  */
 
 #include "config.h"
+#include "layer.h"
 
 #ifndef CALLBACK_H
 #define CALLBACK_H

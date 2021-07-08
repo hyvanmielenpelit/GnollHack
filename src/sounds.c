@@ -6574,7 +6574,6 @@ struct monst* mtmp;
 
     if (iflags.using_gui_sounds)
     {
-
         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_WE_CAN_DROP_THE_CASE_FOR_THIS_AMOUNT_OF_GOLD);
         Sprintf(qbuf, "\"We can drop the case for this amount of gold.\" (%ld %s in fact!) Agree?", reconcile_cost, currency(reconcile_cost));
     }
