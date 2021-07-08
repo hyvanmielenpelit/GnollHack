@@ -1282,7 +1282,7 @@ namespace GnollHackClient.Pages.Game
                             textPaint.Color = _screenText.GetTextColor(AnimationTimers.general_animation_counter);
                             textPaint.Typeface = _screenText.GetTextTypeface(AnimationTimers.general_animation_counter);
                             targetwidth = canvaswidth * _screenText.GetMainTextSizeRelativeToScreenWidth(AnimationTimers.general_animation_counter);
-                            maxfontsize = _screenText.GetMainTextSizeMaxSizeRelativeToMapFontSize(AnimationTimers.general_animation_counter);
+                            maxfontsize = _screenText.GetMainTextMaxFontSize(AnimationTimers.general_animation_counter);
                             str = _screenText.GetText(AnimationTimers.general_animation_counter);
                         }
                         textPaint.TextSize = MapFontSize;
@@ -1290,8 +1290,8 @@ namespace GnollHackClient.Pages.Game
                         if(textBounds.Width > 0)
                         {
                             float relativesize = targetwidth / textBounds.Width;
-                            if (relativesize > maxfontsize)
-                                relativesize = maxfontsize;
+                            //if (relativesize > maxfontsize)
+                            //    relativesize = maxfontsize;
                             textPaint.TextSize = MapFontSize * relativesize;
                         }
 

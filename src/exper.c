@@ -493,8 +493,9 @@ boolean incr; /* true iff via incremental experience growth */
             u.uexp = newuexp(u.ulevel);
         }
         ++u.ulevel;
+        boolean welcomenormal = (u.ulevelmax < u.ulevel);
         pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Welcome %sto experience level %d.",
-              u.ulevelmax < u.ulevel ? "" : "back ",
+            welcomenormal ? "" : "back ",
               u.ulevel);
         if (u.ulevelmax < u.ulevel)
             u.ulevelmax = u.ulevel;
@@ -502,8 +503,8 @@ boolean incr; /* true iff via incremental experience growth */
         reset_rndmonst(NON_PM);          /* new monster selection */
 
         char lvlbuf[BUFSZ];
-        Sprintf(lvlbuf, "Level %d", u.ulevel);
-        display_screen_text(lvlbuf, "Welcome to", SCREEN_TEXT_GAIN_LEVEL, 0, 0, 0UL);
+        Sprintf(lvlbuf, "Experience Level %d", u.ulevel);
+        display_screen_text(lvlbuf, welcomenormal ? "Welcome to" : "Welcome Back to", SCREEN_TEXT_GAIN_LEVEL, 0, 0, 0UL);
     }
     updatemaxhp();
     updatemaxen();

@@ -93,16 +93,16 @@ namespace GnollHackClient
                 default:
                     break;
             }
-            return 0.7f;
+            return 0.85f;
         }
-        public float GetMainTextSizeMaxSizeRelativeToMapFontSize(long counter_value)
+        public float GetMainTextMaxFontSize(long counter_value)
         {
-            return 10.0f;
+            return 48.0f;
         }
 
         public float GetSubTextSizeRelativeToMainText(long counter_value)
         {
-            return 0.3f;
+            return 0.5f;
         }
         public SKTypeface GetTextTypeface(long counter_value)
         {
