@@ -697,7 +697,7 @@ int spellnum;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
         play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
-        damage = m_cure_self(mtmp, damage);
+        damage = m_cure_self(mtmp, is_prince(mtmp->data) ? d(12, 6) : is_lord(mtmp->data) ? d(6, 6) : d(2, 6));
         special_effect_wait_until_end(0);
         break;
     case MGC_PSI_BOLT:
@@ -987,7 +987,11 @@ int spellnum;
         damage = 0;
         break;
     case CLC_CURE_SELF:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
         damage = m_cure_self(mtmp, is_prince(mtmp->data) ? d(12, 6) : is_lord(mtmp->data) ? d(6, 6) : d(2, 6));
+        special_effect_wait_until_end(0);
         break;
     case CLC_OPEN_WOUNDS:
         if (Antimagic_or_resistance)
