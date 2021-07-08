@@ -4256,7 +4256,9 @@ boolean via_attack;
 
                 if (humanoid(mon->data) || mon->isshk || mon->ispriest || mon->issmith || mon->isnpc) {
                     if (is_watch(mon->data)) {
+                        context.global_minimum_volume = 0.25f;
                         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HALT_YOURE_UNDER_ARREST);
+                        context.global_minimum_volume = 0.0f;
                         verbalize("Halt!  You're under arrest!");
                         (void) angry_guards(!!Deaf);
                     } else {

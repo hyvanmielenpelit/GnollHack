@@ -1646,7 +1646,9 @@ boolean zap;
         if (mtmp) {
             if (zap || context.digging.warned) {
                 play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HALT_VANDAL_YOURE_UNDER_ARREST);
+                context.global_minimum_volume = 0.25f;
                 verbalize("Halt, vandal!  You're under arrest!");
+                context.global_minimum_volume = 0.0f;
                 (void) angry_guards(!!Deaf);
             } else {
                 const char *str;
@@ -1674,7 +1676,9 @@ boolean zap;
                 }
 
 
+                context.global_minimum_volume = 0.25f;
                 play_monster_special_dialogue_line(mtmp, dialogueline);
+                context.global_minimum_volume = 0.0f;
                 verbalize("Hey, stop damaging that %s!", str);
                 context.digging.warned = TRUE;
             }

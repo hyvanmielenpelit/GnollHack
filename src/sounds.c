@@ -7189,7 +7189,12 @@ int special_dialogue_sound_id;
     }
 
     if (special_dialogue_sound_id > 0)
-        play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
+    {
+        if(query_style == QUERY_STYLE_SPELL)
+            play_monster_standard_dialogue_line(mtmp, special_dialogue_sound_id);
+        else
+            play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
+    }
 
     if (extra_string)
     {

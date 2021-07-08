@@ -1892,7 +1892,9 @@ dokick() {
                 if (is_watch(mtmp->data) && couldsee(mtmp->mx, mtmp->my)
                     && is_peaceful(mtmp)) 
                 {
+                    context.global_minimum_volume = 0.25f;
                     play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HALT_THIEF_YOURE_UNDER_ARREST);
+                    context.global_minimum_volume = 0.0f;
                     mon_yells(mtmp, "Halt, thief!  You're under arrest!", "yell", "angrily", FALSE);
                     (void) angry_guards(FALSE);
                     break;
@@ -1918,12 +1920,16 @@ dokick() {
                 {
                     if (levl[x][y].looted & D_WARNED)
                     {
+                        context.global_minimum_volume = 0.25f;
                         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HALT_VANDAL_YOURE_UNDER_ARREST);
+                        context.global_minimum_volume = 0.0f;
                         mon_yells(mtmp,
                                   "Halt, vandal!  You're under arrest!", "yell", "angrily", FALSE);
                         (void) angry_guards(FALSE);
                     } else {
+                        context.global_minimum_volume = 0.25f;
                         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HEY_STOP_DAMAGING_THAT_DOOR);
+                        context.global_minimum_volume = 0.0f;
                         mon_yells(mtmp, "Hey, stop damaging that door!", "yell", "angrily", FALSE);
                         levl[x][y].looted |= D_WARNED;
                     }
