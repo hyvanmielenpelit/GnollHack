@@ -2517,7 +2517,7 @@ dosacrifice()
         {
             /* Is this a conversion ? */
             /* An unaligned altar in Gehennom will always elicit rejection. */
-            if (ugod_is_angry() || molochaltar) 
+            if (ugod_is_angry() || (molochaltar && Inhell)) 
             {
                 if (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL]
                     && altaralign != A_NONE) 
@@ -2570,6 +2570,7 @@ dosacrifice()
                     levl[u.ux][u.uy].altarmask &= AM_SHRINE;
                     /* the following accommodates stupid compilers */
                     levl[u.ux][u.uy].altarmask = (levl[u.ux][u.uy].altarmask | (Align2amask(u.ualign.type)));
+                    levl[u.ux][u.uy].subtyp = ALTAR_SUBTYPE_NORMAL; /* In the case it is Moloch's altar or a high altar */
                     newsym(u.ux, u.uy);
                     if (!Blind)
                         pline_The_ex(ATR_NONE, CLR_MSG_POSITIVE, "altar glows %s.",
