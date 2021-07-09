@@ -3148,6 +3148,8 @@ register struct obj* obj;
                 Sprintf(dmgbuf, "Artifact deals triple normal damage");
             else if (artilist[obj->oartifact].attk.damn == ARTDMG_QUADRUPLE_DAMAGE)
                 Sprintf(dmgbuf, "Artifact deals quadruple normal damage");
+            else if (artilist[obj->oartifact].attk.damn < 0)
+                Sprintf(dmgbuf, "Artifact deals %d times normal damage", -artilist[obj->oartifact].attk.damn);
             else
                 Sprintf(dmgbuf, "Artifact damage bonus is %s", plusbuf);
 
