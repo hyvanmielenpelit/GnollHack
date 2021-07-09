@@ -713,7 +713,7 @@ void print_status_field(int idx, boolean first_field)
 
 void lib_status_flush(void)
 {
-    enum statusfields idx, * fieldlist;
+    enum statusfields idx;
     register int i, j;
 
     static const int fieldorder1[] = { BL_TITLE, BL_STR, BL_DX,    BL_CO,    BL_IN,

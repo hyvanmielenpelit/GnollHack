@@ -139,7 +139,7 @@ library *lp; /* library pointer to fill in */
     if (lp->rev > DLB_MAX_VERS || lp->rev < DLB_MIN_VERS)
         return FALSE;
 
-    lp->dir = (libdir *) alloc(lp->nentries * sizeof(libdir));
+    lp->dir = (libdir *) alloc((size_t)lp->nentries * sizeof(libdir));
     lp->sspace = (char *) alloc((size_t)lp->strsize);
 
     /* read in each directory entry */

@@ -124,7 +124,7 @@ long len;
     slen = (unsigned short) len;
     if (write(out, buf, slen) != slen) {
 #else
-    if (write(out, buf, len) != len) {
+    if (write(out, buf, (unsigned int)len) != (int)len) {
 #endif
         printf("Write Error in '%s'\n", library_file);
         xexit(EXIT_FAILURE);
@@ -317,7 +317,7 @@ char **argv;
                     xexit(EXIT_FAILURE);
                 }
 
-                if (write(f, buf, (int)n) != (int)n) 
+                if (write(f, buf, (unsigned int)n) != (int)n) 
                 {
                     printf("Write Error in '%s'\n", lib.dir[i].fname);
                     xexit(EXIT_FAILURE);
@@ -398,7 +398,7 @@ char **argv;
                 xexit(EXIT_FAILURE);
             }
             ld[i].fsize = lseek(fd, 0, SEEK_END);
-            ld[i].foffset = flen;
+            ld[i].foffset = (long)flen;
 
             slen += strlen(ld[i].fname); /* don't add null (yet) */
             flen += (size_t)ld[i].fsize;
@@ -434,7 +434,7 @@ char **argv;
                 printf("%s\n", ld[i].fname);
 
             fsiz = 0L;
-            while ((rint = read(fd, buf, (unsigned int)sizeof buf)) != 0) {
+            while ((rint = read(fd, buf, (unsigned int)(sizeof buf))) != 0) {
                 if (rint <= -1) {
                     printf("Read Error in '%s'\n", ld[i].fname);
                     xexit(EXIT_FAILURE);
@@ -450,7 +450,7 @@ char **argv;
                 rewrite_directory = TRUE;
             /* in case directory rewrite is needed */
             ld[i].fsize = (long)fsiz;
-            ld[i].foffset = flen;
+            ld[i].foffset = (long)flen;
             flen += fsiz;
         }
 
@@ -517,17 +517,17 @@ size_t slen, dir_size, flen;
             (long) slen + (long) strlen(DLB_DIRECTORY) + nfiles + 1,
             (long) dir_size,         /* start of first file */
             (long) flen + (long)dir_size); /* total file size */
-    Write(out, buf, strlen(buf));
+    Write(out, buf, (long)strlen(buf));
 
 /* write each file entry */
 #define ENTRY_FORMAT "%c%s %8ld\n"
     sprintf(buf, ENTRY_FORMAT, ENC_NORMAL, DLB_DIRECTORY, (long) 0);
-    Write(out, buf, strlen(buf));
+    Write(out, buf, (long)strlen(buf));
     for (i = 0; i < nfiles; i++) {
         sprintf(buf, ENTRY_FORMAT, ENC_NORMAL, /* encoding */
                 ld[i].fname,                   /* name */
-            (long)(ld[i].foffset + dir_size));     /* offset */
-        Write(out, buf, strlen(buf));
+            (long)(ld[i].foffset + (long)dir_size));     /* offset */
+        Write(out, buf, (long)strlen(buf));
     }
 }
 

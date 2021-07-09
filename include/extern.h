@@ -838,7 +838,13 @@ E const char* FDECL(get_cmap_tilename, (int));
 E void NDECL(port_help);
 #endif
 E boolean NDECL(authorize_wizard_mode);
-#endif /* UNIX */
+#endif /* UNIX && GNH_ANDROID */
+
+/* ### unixunix.c ### */
+
+#if defined(UNIX) && defined(GNH_ANDROID)
+E void NDECL(getlock);
+#endif /* UNIX && GNH_ANDROID */
 
 /* ### dungeon.c ### */
 

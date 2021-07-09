@@ -85,7 +85,7 @@ int GnollHackMain(int argc, char** argv)
 	}
 
 	register int fd;
-	boolean exact_username;
+	//boolean exact_username;
 	FILE* fp;
 
     boolean resuming = FALSE; /* assume new game */

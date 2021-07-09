@@ -7142,7 +7142,48 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-
+      { "purple-worm-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "purple-worm-statue-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "baby-purple-worm-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "baby-purple-worm-statue-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "baby-long-worm-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "baby-long-worm-statue-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
 };
 
 NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =

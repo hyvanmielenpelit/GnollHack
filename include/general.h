@@ -495,7 +495,7 @@ enum main_menu_command {
 
 #define TAMEDOG_NO_FORCED_TAMING    0
 #define TAMEDOG_FORCE_NON_UNIQUE    1
-#define TAMEDOG_FORCE_ALL            2
+#define TAMEDOG_FORCE_ALL           2
 
 
 #define MKOBJ_FLAGS_OPEN_COFFIN                        0x00000001
@@ -505,8 +505,8 @@ enum main_menu_command {
 
 #define RNDITEM_FLAGS_ALSO_RARE                        0x00000001
 
-#define MONDIED_FLAGS_NONE                      0x00000000
-#define MONDIED_FLAGS_NO_DEATH_ACTION           0x00000001
+#define MONDIED_FLAGS_NONE                             0x00000000
+#define MONDIED_FLAGS_NO_DEATH_ACTION                  0x00000001
 
 /* Moved from shk.c */
 #define NOTANGRY(mon) ((mon)->mpeaceful)
@@ -534,9 +534,14 @@ enum main_menu_command {
 #define CANDELABRUM_STARTING_AGE 6000L
 
 /* Artifact */
-#define ARTDMG_DOUBLE_DAMAGE -2
-#define ARTDMG_TRIPLE_DAMAGE -3
-#define ARTDMG_QUADRUPLE_DAMAGE -4
+#define ARTDMG_125PCT_DAMAGE -5
+#define ARTDMG_150PCT_DAMAGE -10
+#define ARTDMG_175PCT_DAMAGE -15
+#define ARTDMG_DOUBLE_DAMAGE -20
+#define ARTDMG_250PCT_DAMAGE -30
+#define ARTDMG_TRIPLE_DAMAGE -40
+#define ARTDMG_350PCT_DAMAGE -50
+#define ARTDMG_QUADRUPLE_DAMAGE -60
 
 /*
  * type nhsym: loadable symbols go into this type

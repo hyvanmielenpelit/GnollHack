@@ -1029,7 +1029,7 @@ double damage;
         if (weap->attk.damd > 0 && weap->attk.damn > 0)
             dbon += adjust_damage(d(weap->attk.damn, weap->attk.damd) + weap->attk.damp, (struct monst*)0, mon, !weap ? AD_PHYS : weap->attk.adtyp, ADFLAGS_NONE);
         else if(weap->attk.damn < 0)
-            dbon += max(-((double)weap->attk.damn) * damage, 0);
+            dbon += max(-(((double)weap->attk.damn) / 20.0) * damage, 0);
 
         return dbon;
     }
