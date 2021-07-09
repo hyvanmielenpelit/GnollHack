@@ -2172,13 +2172,23 @@ void
 reduce_item_cooldown(objchn)
 register struct obj *objchn;
 {
+    boolean reached_zero = FALSE;
+
     while (objchn) {
         //Reduce cooldown timer
         if (objchn->cooldownleft > 0)
+        {
             objchn->cooldownleft--;
+            if (!objchn->cooldownleft)
+                reached_zero = TRUE;
+        }
 
         if (objchn->repowerleft > 0)
+        {
             objchn->repowerleft--;
+            if (!objchn->repowerleft)
+                reached_zero = TRUE;
+        }
         
         //If has contents, then reduce the cooldown of the contents, too
         if (Has_contents(objchn))
@@ -2186,6 +2196,9 @@ register struct obj *objchn;
         
         objchn = objchn->nobj;
     }
+
+    if (objchn == invent && reached_zero)
+        update_inventory();
 }
 
 boolean

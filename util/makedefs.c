@@ -2456,7 +2456,7 @@ do_animation_offsets()
 
         Fprintf(ofp, "\n\t%d, /* %s */", cnt, replacements[i].replacement_name);
         //Fprintf(ofp, "\n#define\t%s_%d_OFFSET\t%d /* %s */", "REPLACEMENT_NAME_HERE", i, cnt, replacements[i].replacement_name);
-        cnt += replacements[i].number_of_tiles;
+        cnt += (int)replacements[i].number_of_tiles;
     }
     Fprintf(ofp, "\n};\n");
     repltot = cnt;
@@ -2692,13 +2692,13 @@ static void
 adjust_qt_hdrs()
 {
     int i, j;
-    long count = 0L, hdr_offset = sizeof(int)
-                                  + (sizeof(char) * LEN_HDR + sizeof(long))
-                                        * qt_hdr.n_hdr;
+    long count = 0L, hdr_offset = ((long)sizeof(int)
+                                  + ((long)sizeof(char) * LEN_HDR + (long)sizeof(long))
+                                        * (long)qt_hdr.n_hdr);
 
     for (i = 0; i < qt_hdr.n_hdr; i++) {
         qt_hdr.offset[i] = hdr_offset;
-        hdr_offset += sizeof(int) + sizeof(struct qtmsg) * msg_hdr[i].n_msg;
+        hdr_offset += ((long)sizeof(int) + (long)sizeof(struct qtmsg) * (long)msg_hdr[i].n_msg);
     }
 
     for (i = 0; i < qt_hdr.n_hdr; i++)
@@ -2722,9 +2722,9 @@ put_qt_hdrs()
         Fprintf(stderr, "%ld: header info.\n", ftell(ofp));
     (void) fwrite((genericptr_t) & (qt_hdr.n_hdr), sizeof(int), 1, ofp);
     (void) fwrite((genericptr_t) & (qt_hdr.id[0][0]), sizeof(char) * LEN_HDR,
-                  qt_hdr.n_hdr, ofp);
+                  (size_t)qt_hdr.n_hdr, ofp);
     (void) fwrite((genericptr_t) & (qt_hdr.offset[0]), sizeof(long),
-                  qt_hdr.n_hdr, ofp);
+                  (size_t)qt_hdr.n_hdr, ofp);
     if (debug) {
         for (i = 0; i < qt_hdr.n_hdr; i++)
             Fprintf(stderr, "%s @ %ld, ", qt_hdr.id[i], qt_hdr.offset[i]);
@@ -2741,7 +2741,7 @@ put_qt_hdrs()
         (void) fwrite((genericptr_t) & (msg_hdr[i].n_msg), sizeof(int), 1,
                       ofp);
         (void) fwrite((genericptr_t) & (msg_hdr[i].qt_msg[0]),
-                      sizeof(struct qtmsg), msg_hdr[i].n_msg, ofp);
+                      sizeof(struct qtmsg), (size_t)msg_hdr[i].n_msg, ofp);
         if (debug) {
             int j;
 
@@ -2879,7 +2879,7 @@ do_objs()
         SpinCursor(3);
 
 
-        objects[i].oc_name_idx = objects[i].oc_descr_idx = i; /* init */
+        objects[i].oc_name_idx = objects[i].oc_descr_idx = (short)i; /* init */
         if (!(objnam = tmpdup(OBJ_NAME(objects[i]))))
             continue;
 
@@ -3041,7 +3041,7 @@ FILE *fd;
 {
     static const int inc = 256;
     int len = inc;
-    char *c = malloc(len), *ret;
+    char *c = malloc((size_t)len), *ret;
     char* c2;
 
     for (;;) {
@@ -3055,7 +3055,7 @@ FILE *fd;
             break;
         }
         len += inc;
-        c2 = realloc(c, len);
+        c2 = realloc(c, (size_t)len);
         if (!c2 && c)
         {
             free(c);

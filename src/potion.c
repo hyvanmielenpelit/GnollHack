@@ -1301,14 +1301,7 @@ struct obj *otmp;
                 poisontell(typ, FALSE);
                 (void)adjattrib(typ, Poison_resistance ? -1 : (otmp->blessed ? -rnd(max(1,extra_data1)) : -d(2, max(1, extra_data1))), 1);
             }
-            if (!Poison_resistance) 
-            {
-                    losehp(adjust_damage(duration, (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "drinking poison", KILLED_BY);
-            }
-            else
-            {
-                losehp(adjust_damage(rnd(2), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "drinking poison", KILLED_BY);
-            }
+            losehp(adjust_damage(duration, (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "drinking poison", KILLED_BY);
             exercise(A_CON, FALSE);
         }
 

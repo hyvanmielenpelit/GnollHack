@@ -2262,7 +2262,7 @@ dump_map()
             if (ch != ' ') 
             {
                 blankrow = FALSE;
-                lastnonblank = bp - buf - 1; /* Since write_nhsym_utf8 moved the pointer one further than last nonblank */ //x - 1;
+                lastnonblank = (int)(bp - buf - 1); /* Since write_nhsym_utf8 moved the pointer one further than last nonblank */ //x - 1;
             }
         }
 

@@ -1524,7 +1524,7 @@ enum autodraw_types* autodraw_ptr;
                     return ntile;
 
                 /* Return the tile based on stone's vartyp (i.e., take the right variation) */
-                int repl_idx = min(replacements[replacement_idx].number_of_tiles - 1, levl[x][y].vartyp);
+                int repl_idx = (int)min(replacements[replacement_idx].number_of_tiles - 1, levl[x][y].vartyp);
 
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];

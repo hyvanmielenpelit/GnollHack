@@ -637,11 +637,11 @@ struct obj {
 
 /* true for gems/rocks that should have " stone" appended to their names */
 #define GemStone(typ)                                                  \
-    (typ == FLINT                                                      \
-     || (objects[typ].oc_material == MAT_GEMSTONE                          \
+    (objects[typ].oc_class == GEM_CLASS && (typ == FLINT               \
+     || (objects[typ].oc_material == MAT_GEMSTONE                      \
          && (typ != DILITHIUM_CRYSTAL && typ != RUBY && typ != DIAMOND \
              && typ != SAPPHIRE && typ != BLACK_OPAL && typ != EMERALD \
-             && typ != OPAL && typ != PEARL && typ != BLACK_PEARL)))
+             && typ != OPAL && typ != PEARL && typ != BLACK_PEARL))))
 
 /* Exceptionality */
 enum exceptionality_types {

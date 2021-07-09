@@ -5,6 +5,7 @@
 #include "general.h"
 #include "action.h"
 #include "layer.h"
+#include "config.h"
 
 #ifndef ANIMATION_H
 #define ANIMATION_H
@@ -165,16 +166,16 @@ enum animation_main_types
 struct animation_definition {
     const char* animation_name;
     enum animation_main_types animation_type;
-    char number_of_tiles;
-    char number_of_frames;
-    char number_of_tile_animations;
-    char intervals_between_frames;
+    schar number_of_tiles;
+    schar number_of_frames;
+    schar number_of_tile_animations;
+    schar intervals_between_frames;
     enum animation_play_types play_type;
     enum main_tile_use_types main_tile_use_style; /* 0 = play as first tile and frame, 1 = play as last tile and frame, 2 = ignore */
     enum autodraw_types  main_tile_autodraw;
-    char frame2tile[MAX_FRAMES_PER_ANIMATION];
-    char sound_play_frame;
-    char action_execution_frame;
+    schar frame2tile[MAX_FRAMES_PER_ANIMATION];
+    schar sound_play_frame;
+    schar action_execution_frame;
     short tile_enlargement; /* Animations always use the same single enlargement */
     enum autodraw_types frame_autodraw[MAX_FRAMES_PER_ANIMATION];
 };
@@ -1111,19 +1112,19 @@ extern NEARDATA struct animation_definition animations[];
 
 struct enlargement_definition {
     const char* enlargement_name;
-    char number_of_animation_tiles;
-    char number_of_animation_frames;
-    char number_of_enlargement_tiles;
-    char width_in_tiles;
-    char height_in_tiles;
-    char main_tile_x_coordinate; /* Always 0 or 1 on the last row */
-    char position2tile[NUM_POSITIONS_IN_ENLARGEMENT];
+    schar number_of_animation_tiles;
+    schar number_of_animation_frames;
+    schar number_of_enlargement_tiles;
+    schar width_in_tiles;
+    schar height_in_tiles;
+    schar main_tile_x_coordinate; /* Always 0 or 1 on the last row */
+    schar position2tile[NUM_POSITIONS_IN_ENLARGEMENT];
     /* Enlargement position is index in the array: number from 0 to 4, X = -1 indicates main tile
             0 1 2
             3 X 4
        Value of -1 indicates the tile does not exíst, a nonnegative value indicates tile number used for the position
     */
-    unsigned char position_flags[NUM_POSITIONS_IN_ENLARGEMENT];
+    uchar position_flags[NUM_POSITIONS_IN_ENLARGEMENT];
     enum autodraw_types position_autodraw[NUM_POSITIONS_IN_ENLARGEMENT];
 };
 
@@ -1948,7 +1949,7 @@ enum replacement_action_types
 
 struct replacement_definition {
     const char* replacement_name;
-    char number_of_tiles;
+    schar number_of_tiles;
     unsigned long replacement_events;
     enum replacement_action_types replacement_action; /* hard-coded - defines which tile to use and when */
     enum autodraw_types general_autodraw; /* For zero-tile replacements */

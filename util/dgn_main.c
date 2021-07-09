@@ -85,7 +85,7 @@ char **argv;
         for (i = 1; i < argc; i++) {
             fname = strcpy(infile, argv[i]);
             /* the input file had better be a .pdf file */
-            len = strlen(fname) - 4; /* length excluding suffix */
+            len = (int)strlen(fname) - 4; /* length excluding suffix */
             if (len < 0 || strncmp(".pdf", fname + len, 4)) {
                 Fprintf(stderr, "Error - file name \"%s\" in wrong format.\n",
                         fname);
@@ -107,7 +107,7 @@ char **argv;
 #ifdef VMS /* avoid possible interaction with logical name */
             len++; /* retain "." as trailing punctuation */
 #endif
-            (void) strncpy(basename, infile, len);
+            (void) strncpy(basename, infile, (size_t)len);
             basename[len] = '\0';
 #endif
 

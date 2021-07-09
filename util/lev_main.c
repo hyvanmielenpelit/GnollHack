@@ -1489,8 +1489,8 @@ sp_lev *sp;
 
     /* Memorize boundaries */
 
-    max_x_map = max_len - 1;
-    max_y_map = max_hig - 1;
+    max_x_map = (unsigned int)(max_len - 1);
+    max_y_map = (unsigned int)(max_hig - 1);
 
     if (max_len > MAP_X_LIM || max_hig > MAP_Y_LIM) {
         lc_error("Map too large at (%ld x %ld), max is (%ld x %ld)",
@@ -1501,7 +1501,7 @@ sp_lev *sp;
     mbuf = (char *) alloc(((max_hig - 1) * max_len) + (max_len - 1) + 2);
     for (dy = 0; dy < max_hig; dy++)
         for (dx = 0; dx < max_len; dx++)
-            mbuf[(dy * max_len) + dx] = (tmpmap[dy][dx] + 1);
+            mbuf[(dy * max_len) + dx] = (char)(tmpmap[dy][dx] + 1);
 
     mbuf[((max_hig - 1) * max_len) + (max_len - 1) + 1] = '\0';
 
