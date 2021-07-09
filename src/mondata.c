@@ -1431,6 +1431,7 @@ static const short grownups[][2] = {
     { PM_MODRON_QUINTON, PM_MODRON_QUARTON },
     { PM_MODRON_QUARTON, PM_MODRON_TERTIAN },
     { PM_MODRON_TERTIAN, PM_MODRON_SECUNDUS },
+    { PM_TREANT, PM_ELDER_TREANT },
     { NON_PM, NON_PM }
 };
 

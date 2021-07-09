@@ -10856,8 +10856,9 @@ int spl_otyp;
         mon->hasbloodlust = TRUE;
         if (u.ualign.type == A_CHAOTIC)
         {
-            mon->mpeaceful = TRUE;
-            mon->isprotector = TRUE;
+            (void)tamedog(mon, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
+            //mon->mpeaceful = TRUE;
+            //mon->isprotector = TRUE;
         }
         mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
         begin_summontimer(mon);
@@ -10907,13 +10908,6 @@ int spl_otyp UNUSED;
         mon->disregards_enemy_strength = TRUE;
         mon->disregards_own_health = FALSE;
         mon->hasbloodlust = FALSE;
-        if (u.ualign.type != A_CHAOTIC)
-        {
-            //mon->mpeaceful = TRUE;
-            //mon->isprotector = TRUE;
-        }
-        //mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
-        //begin_summontimer(mon);
         if (!Blind)
             pline("%s descends from the heavens!", Monnam(mon));
         else
