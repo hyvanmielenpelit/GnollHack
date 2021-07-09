@@ -534,9 +534,9 @@ enum main_menu_command {
 #define CANDELABRUM_STARTING_AGE 6000L
 
 /* Artifact */
-#define ARTDMG_DOUBLE_DAMAGE -1
-#define ARTDMG_TRIPLE_DAMAGE -2
-#define ARTDMG_QUADRUPLE_DAMAGE -3
+#define ARTDMG_DOUBLE_DAMAGE -2
+#define ARTDMG_TRIPLE_DAMAGE -3
+#define ARTDMG_QUADRUPLE_DAMAGE -4
 
 /*
  * type nhsym: loadable symbols go into this type
