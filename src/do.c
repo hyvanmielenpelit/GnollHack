@@ -3151,7 +3151,11 @@ register struct obj* obj;
             else
                 Sprintf(dmgbuf, "Artifact damage bonus is %s", plusbuf);
 
-            wep_avg_dmg += (double)artilist[obj->oartifact].attk.damn * (1.0 + (double)artilist[obj->oartifact].attk.damd) / 2.0 + (double)artilist[obj->oartifact].attk.damp;
+            if (artilist[obj->oartifact].attk.damn < 0)
+                wep_avg_dmg *= (double)(-artilist[obj->oartifact].attk.damn);
+            else
+                wep_avg_dmg += (double)artilist[obj->oartifact].attk.damn * (1.0 + (double)artilist[obj->oartifact].attk.damd) / 2.0 + (double)artilist[obj->oartifact].attk.damp;
+            
             if (wep_avg_dmg < 0)
                 wep_avg_dmg = 0;
 
