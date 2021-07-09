@@ -53,8 +53,8 @@ WINOBJ = $(WINTTYOBJ) $(WINCURSESOBJ)
 WINLIB = $(WINTTYLIB) $(WINCURSESLIB)
 
 # if TTY_TILES_ESCCODES
-WINSRC += tile.c
-WINOBJ += tile.o
+#WINSRC += tile.c
+#WINOBJ += tile.o
 
 WINTTYLIB=-lcurses
 
