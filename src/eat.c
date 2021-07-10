@@ -2975,16 +2975,16 @@ struct obj *otmp;
     Sprintf(eat_it_anyway, "Eat %s anyway?",
             (otmp->quan == 1L) ? "it" : "one");
 
-    if (mnum >= LOW_PM && (cadaver || otmp->otyp == EGG || otmp->otyp == TIN))
+    if (cadaver || otmp->otyp == EGG || otmp->otyp == TIN)
     {
         /* These checks must match those in eatcorpse() */
-        stoneorslime = (flesh_petrifies(&mons[mnum]) && !Stone_resistance
+        stoneorslime = (mnum >= LOW_PM && flesh_petrifies(&mons[mnum]) && !Stone_resistance
                         && !poly_when_stoned(youmonst.data));
 
         if (mnum == PM_GREEN_SLIME || otmp->otyp == GLOB_OF_GREEN_SLIME)
             stoneorslime = (!Unchanging && !slimeproof(youmonst.data));
 
-        if (cadaver && !nonrotting_corpse(mnum))
+        if (cadaver && mnum >= LOW_PM && !nonrotting_corpse(mnum))
         {
             long age = peek_at_iced_corpse_age(otmp);
 
@@ -3013,7 +3013,8 @@ struct obj *otmp;
             return 2;
     }
 
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_HALLUCINATING || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING || stoneorslime || (cadaver && mnum >= LOW_PM && (has_sickening_corpse(&mons[mnum]) || has_mummy_rotted_corpse(&mons[mnum])) && !Sick_resistance))
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_HALLUCINATING || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING 
+        || stoneorslime || (cadaver && mnum >= LOW_PM && (has_sickening_corpse(&mons[mnum]) || has_mummy_rotted_corpse(&mons[mnum])) && !Sick_resistance))
     {
         Sprintf(buf, "%s like %s could be something very dangerous!  %s",
                 foodsmell, it_or_they, eat_it_anyway);
@@ -3033,7 +3034,8 @@ struct obj *otmp;
             return 2;
     }
 
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS || (cadaver && has_poisonous_corpse(&mons[mnum]) && !Poison_resistance)) 
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS 
+        || (cadaver && mnum >= LOW_PM && has_poisonous_corpse(&mons[mnum]) && !Poison_resistance))
     {
         /* poisonous */
         Sprintf(buf, "%s like %s might be poisonous!  %s", foodsmell,
@@ -3062,7 +3064,8 @@ struct obj *otmp;
             return 2;
     }
 
-    if ((objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC || (cadaver && mnum >= LOW_PM && has_acidic_corpse(&mons[mnum]))) && !Acid_immunity && !Acid_resistance)
+    if ((objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC 
+        || (cadaver && mnum >= LOW_PM && has_acidic_corpse(&mons[mnum]))) && !Acid_immunity && !Acid_resistance)
     {
         Sprintf(buf, "%s rather acidic.  %s", foodsmell, eat_it_anyway);
         if (yn_function_ex(ATR_NONE, CLR_MSG_WARNING, buf, ynchars, 'n') == 'n')
@@ -3088,7 +3091,7 @@ struct obj *otmp;
     if (!u.uconduct.unvegan && !maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL))
         && ((material == MAT_LEATHER || material == MAT_BONE
              || material == MAT_DRAGON_HIDE || material == MAT_WAX)
-            || (cadaver && mnum >= LOW_PM && !vegan(&mons[mnum]))))
+             || (cadaver && mnum >= LOW_PM && !vegan(&mons[mnum]))))
     {
         Sprintf(buf, "%s foul and unfamiliar to you.  %s", foodsmell,
                 eat_it_anyway);
@@ -3101,7 +3104,7 @@ struct obj *otmp;
     if (!u.uconduct.unvegetarian && !maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL))
         && ((material == MAT_LEATHER || material == MAT_BONE
              || material == MAT_DRAGON_HIDE)
-            || (cadaver && mnum >= LOW_PM && !vegetarian(&mons[mnum]))))
+             || (cadaver && mnum >= LOW_PM && !vegetarian(&mons[mnum]))))
     {
         Sprintf(buf, "%s unfamiliar to you.  %s", foodsmell, eat_it_anyway);
         if (yn_function_ex(ATR_NONE, CLR_MSG_WARNING, buf, ynchars, 'n') == 'n')
