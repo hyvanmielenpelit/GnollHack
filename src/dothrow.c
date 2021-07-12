@@ -614,12 +614,14 @@ dofire()
      * and alt-wielded item is excluded because switching slots
      * would end two-weapon combat even if throw gets aborted.]
      */
+#if 0
     if (!uwep || !is_launcher(uwep))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You("are not wielding a ranged weapon that fires ammunition.");
         return 0;
     }
+#endif
 
     if (!ok_to_throw(&shotlimit))
         return 0;
