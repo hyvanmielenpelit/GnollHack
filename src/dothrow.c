@@ -664,7 +664,7 @@ dofire()
         }
     }
 
-    if (obj && !ammo_and_launcher(obj, uwep))
+    if (obj && uwep && is_launcher(uwep) && !ammo_and_launcher(obj, uwep))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot fire %s with %s.", an(cxname_singular(obj)), an(cxname_singular(uwep)));
