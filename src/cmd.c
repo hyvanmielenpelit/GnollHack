@@ -7456,12 +7456,48 @@ int x, y, mod;
             {
                 /* slight assistance to the player: choose kick/open for them
                  */
-                if (levl[u.ux + x][u.uy + y].doormask & D_LOCKED) 
+                struct rm* door = &levl[u.ux + x][u.uy + y];
+                boolean has_fitting_key = FALSE;
+                if (flags.autounlock)
                 {
-                    cmd[0] = cmd_from_func(dokick);
+                    struct obj* carried_key = 0;
+                    if ((carried_key = carrying_fitting_unlocking_tool_for_door(door)) != 0)
+                    {
+                        has_fitting_key = TRUE;
+                    }
+                }
+                if (door->doormask & D_LOCKED)
+                {
+                    if(has_fitting_key)
+                        cmd[0] = cmd_from_func(doopen);
+                    else
+                    {
+                        char ans = 'n';
+
+                        if (door->click_kick_ok)
+                            ans = 'y';
+                        else
+                        {
+                            char qbuf[BUFSIZ];
+                            Sprintf(qbuf, "The %s is locked. Do you want to kick it?", get_door_name_at_ptr(door));
+                            ans = ynq(qbuf);
+                        }
+                        if (ans == 'y')
+                        {
+                            door->click_kick_ok = 1;
+                            cmd[0] = cmd_from_func(dokick);
+                        }
+                        else if (ans == 'n')
+                            cmd[0] = cmd_from_func(doopen);
+                        else
+                            cmd[0] = '\0';
+
+                        if (cmd[0] == '\0')
+                            cmd[1] = '\0';
+                    }
                     return cmd;
                 }
-                if (levl[u.ux + x][u.uy + y].doormask & D_CLOSED) 
+                if (door->doormask & D_CLOSED)
                 {
                     cmd[0] = cmd_from_func(doopen);
                     return cmd;

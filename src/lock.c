@@ -1061,7 +1061,7 @@ int x, y;
                 {
                     if (carried_key)
                     {
-                        int pick_res = pick_lock_core(carried_key, x, y, TRUE);
+                        int pick_res = pick_lock_core(carried_key, cc.x, cc.y, TRUE);
                         if (pick_res == PICKLOCK_DID_SOMETHING)
                             res = 2;
                         else if(pick_res == PICKLOCK_LEARNED_SOMETHING)

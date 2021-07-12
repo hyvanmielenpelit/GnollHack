@@ -891,7 +891,7 @@ struct rm {
     short special_quality;     /* For doors, the special quality of the key that unlocks the door */
 
     uchar seenv;             /* seen vector */
-    unsigned short flags;             /* extra information for typ */
+    unsigned short flags;    /* extra information for typ */
     Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
     Bitfield(lit, 1);        /* speed hack for lit rooms */
     Bitfield(waslit, 1);     /* remember if a location was lit */
@@ -905,6 +905,7 @@ struct rm {
     Bitfield(candig, 1); /* Exception to Can_dig_down; was a trapdoor */
     Bitfield(use_special_tileset, 1); /* Use tileset specified below instead standard one */
     Bitfield(special_tileset, 5); /* Specific tileset applicable to this location */
+    Bitfield(click_kick_ok, 1); /* No query when clicking to kick  */
 };
 
 
