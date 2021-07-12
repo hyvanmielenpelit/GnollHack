@@ -6527,7 +6527,7 @@ register char *cmd;
             context.travel = 1;
             context.travel1 = 1;
             context.run = 8;
-            context.nopick = 1;
+            context.nopick = (spkey == NHKF_TRAVEL ? 1 : 0);
             domove_attempting |= DOMOVE_RUSH;
             context.travel_mode = (spkey == NHKF_TRAVEL_WALK) ? TRAVEL_MODE_WALK : TRAVEL_MODE_NORMAL;
             context.tmid = 0;

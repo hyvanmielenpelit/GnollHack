@@ -3878,213 +3878,7 @@ ddoinv()
 
     if (flags.inventory_obj_cmd)
     {
-        struct obj* otmp = 0;
-        for (struct obj* otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
-            if (otmp2->invlet == invlet)
-                otmp = otmp2;
-
-        if (!otmp)
-            return 0;
-
-        int cmd_idx = 0;
-
-        menu_item* pick_list = (menu_item*)0;
-        winid win;
-        anything any;
-
-        any = zeroany;
-        win = create_nhwindow(NHW_MENU);
-        start_menu(win);
-
-#define NUM_CMD_SECTIONS 3
-
-        const char* headings[NUM_CMD_SECTIONS] = { "Information", "General Commands", "Item-Specific Commands" };
-        unsigned long section_flags[NUM_CMD_SECTIONS] = { SINGLE_OBJ_CMD_INFO, SINGLE_OBJ_CMD_GENERAL, SINGLE_OBJ_CMD_SPECIFIC };
-        char buf[BUFSIZ] = "";
-        char cmdbuf[BUFSZ] = "";
-        char shortcutbuf[BUFSZ] = "";
-        char headerbuf[BUFSZ] = "";
-        register const struct ext_func_tab* efp;
-        int actioncount = 0;
-        char class_list[BUFSZ] = "";
-        int longest_len = 0;
-        int longest_len_header = 0;
-        int slen = 0;
-        unsigned long allflags = 0UL;
-        int i, j;
-        for (j = 0; j < NUM_CMD_SECTIONS; j++)
-        {
-            allflags |= section_flags[j];
-
-            slen = (int)strlen(headings[j]);
-            if (slen > longest_len_header)
-                longest_len_header = slen;
-
-        }
-        for (i = 0; extcmdlist[i].ef_txt; i++)
-        {
-            if (!(extcmdlist[i].flags & allflags) || !extcmdlist[i].getobj_word)
-                continue;
-
-            slen = (int)strlen(extcmdlist[i].ef_txt_word ? extcmdlist[i].ef_txt_word : extcmdlist[i].ef_txt);
-            if (slen > longest_len)
-                longest_len = slen;
-        }
-
-        for (j = 0; j < NUM_CMD_SECTIONS; j++)
-        {
-            int cnt = 0;
-            for (i = 0; extcmdlist[i].ef_txt; i++)
-            {
-                if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
-                    continue;
-
-                strcpy(class_list, "");
-                if (extcmdlist[i].getobj_classes)
-                    strcpy(class_list, extcmdlist[i].getobj_classes);
-                else if(!strcmp(extcmdlist[i].getobj_word, "break"))
-                    setbreakclasses(class_list);
-                else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
-                    setapplyclasses(class_list);
-                else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
-                {
-                    strcpy(class_list, (uslinging()
-                        || (uswapwep
-                            && objects[uswapwep->otyp].oc_skill == P_SLING))
-                        ? getobj_bullets
-                        : getobj_ready_objs);
-                }
-
-                if (!acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word))
-                    continue;
-
-                cnt++;
-            }
-            if (!cnt)
-                continue;
-
-            char catbuf[BUFSZ];
-            strcpy(catbuf, "");
-            if (!iflags.menu_tab_sep)
-            {
-                slen = (int)strlen(headings[j]);
-                for (int k = 0; k < max(longest_len_header, longest_len + 10) - slen; k++)
-                    Sprintf(eos(catbuf), "%s", " ");
-            }
-
-            char hbuf[BUFSZ];
-            Sprintf(hbuf, "%s%s", headings[j], catbuf);
-
-            any = zeroany;
-            add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
-                0, 0, iflags.menu_headings,
-                hbuf, MENU_UNSELECTED);
-
-            for (i = 0; extcmdlist[i].ef_txt; i++)
-            {
-                if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
-                    continue;
-
-                strcpy(class_list, "");
-                if (extcmdlist[i].getobj_classes)
-                    strcpy(class_list, extcmdlist[i].getobj_classes);
-                else if (!strcmp(extcmdlist[i].getobj_word, "break"))
-                    setbreakclasses(class_list);
-                else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
-                    setapplyclasses(class_list);
-                else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
-                {
-                    strcpy(class_list, (uslinging()
-                        || (uswapwep
-                            && objects[uswapwep->otyp].oc_skill == P_SLING))
-                        ? getobj_bullets
-                        : getobj_ready_objs);
-                }
-
-                if (!acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word))
-                    continue;
-
-                efp = &extcmdlist[i];
-                any = zeroany;
-                any.a_int = i + 1;
-                if(efp->ef_txt_word)
-                    strcpy(cmdbuf, efp->ef_txt_word);
-                else
-                    strcpy(cmdbuf, efp->ef_txt);
-
-                *cmdbuf = highc(*cmdbuf);
-
-                uchar altmask = 0x80;
-                uchar ctrlmask = 0x20 | 0x40;
-
-                char tabbuf[BUFSZ];
-                if(iflags.menu_tab_sep)
-                    strcpy(tabbuf, "\t");
-                else
-                {
-                    strcpy(tabbuf, "");
-                    slen = (int)strlen(cmdbuf);
-                    for (int k = 0; k < longest_len + 2 - slen; k++)
-                        Sprintf(eos(tabbuf), "%s", " ");
-                }
-
-                if (efp->bound_key != '\0')
-                    Sprintf(shortcutbuf, "%s(%s%c)", tabbuf,
-                        (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
-                        (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
-                else
-                    strcpy(shortcutbuf, "");
-
-                Sprintf(buf, "%s%s", cmdbuf, shortcutbuf);
-
-                add_menu(win, NO_GLYPH, &any,
-                    0, 0, ATR_NONE,
-                    buf, MENU_UNSELECTED);
-
-                actioncount++;
-            }
-        }
-
-        char obuf[BUFSZ];
-        Strcpy(obuf, short_oname(otmp, doname, thesimpleoname, BUFSZ));
-        Sprintf(headerbuf, "What do you want to do with %s?", obuf);
-        
-        end_menu(win, headerbuf);
-
-
-        if (actioncount <= 0)
-        {
-            You("can't take any actions with the %s.", cxname(otmp));
-            destroy_nhwindow(win);
-            return 0;
-        }
-
-        if (select_menu(win, PICK_ONE, &pick_list) > 0)
-        {
-            cmd_idx = pick_list->item.a_int;
-            free((genericptr_t)pick_list);
-        }
-        destroy_nhwindow(win);
-
-        if (cmd_idx < 1)
-            return 0;
-
-        int res = 0;
-        int selected_action = cmd_idx - 1;
-        if (extcmdlist[selected_action].ef_funct && pickcnt != 0)
-        {
-            if(pickcnt <= -1 || pickcnt >= otmp->quan)
-                getobj_autoselect_obj = otmp;
-            else
-            {
-                struct obj* otmpsplit = splitobj(otmp, pickcnt);
-                getobj_autoselect_obj = otmpsplit;
-            }
-            res = (extcmdlist[selected_action].ef_funct)();
-            getobj_autoselect_obj = (struct obj*)0;
-        }
-
-        return res;
+        display_item_command_menu_by_invlet(invlet, pickcnt);
     }
     else
     {
@@ -4099,6 +3893,230 @@ ddoinv()
 }
 
 
+int
+display_item_command_menu_by_invlet(invlet, pickcnt)
+char invlet;
+long pickcnt;
+{
+    struct obj* otmp = 0;
+    for (struct obj* otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
+        if (otmp2->invlet == invlet)
+            otmp = otmp2;
+
+    if (!otmp)
+        return 0;
+    else
+        return display_item_command_menu(otmp, pickcnt);
+}
+
+int
+display_item_command_menu(otmp, pickcnt)
+struct obj* otmp;
+long pickcnt;
+{
+    if (!otmp)
+        return 0;
+
+    int cmd_idx = 0;
+
+    menu_item* pick_list = (menu_item*)0;
+    winid win;
+    anything any;
+
+    any = zeroany;
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win);
+
+#define NUM_CMD_SECTIONS 3
+
+    const char* headings[NUM_CMD_SECTIONS] = { "Information", "General Commands", "Item-Specific Commands" };
+    unsigned long section_flags[NUM_CMD_SECTIONS] = { SINGLE_OBJ_CMD_INFO, SINGLE_OBJ_CMD_GENERAL, SINGLE_OBJ_CMD_SPECIFIC };
+    char buf[BUFSIZ] = "";
+    char cmdbuf[BUFSZ] = "";
+    char shortcutbuf[BUFSZ] = "";
+    char headerbuf[BUFSZ] = "";
+    register const struct ext_func_tab* efp;
+    int actioncount = 0;
+    char class_list[BUFSZ] = "";
+    int longest_len = 0;
+    int longest_len_header = 0;
+    int slen = 0;
+    unsigned long allflags = 0UL;
+    int i, j;
+    for (j = 0; j < NUM_CMD_SECTIONS; j++)
+    {
+        allflags |= section_flags[j];
+
+        slen = (int)strlen(headings[j]);
+        if (slen > longest_len_header)
+            longest_len_header = slen;
+
+    }
+    for (i = 0; extcmdlist[i].ef_txt; i++)
+    {
+        if (!(extcmdlist[i].flags & allflags) || !extcmdlist[i].getobj_word)
+            continue;
+
+        slen = (int)strlen(extcmdlist[i].ef_txt_word ? extcmdlist[i].ef_txt_word : extcmdlist[i].ef_txt);
+        if (slen > longest_len)
+            longest_len = slen;
+    }
+
+    for (j = 0; j < NUM_CMD_SECTIONS; j++)
+    {
+        int cnt = 0;
+        for (i = 0; extcmdlist[i].ef_txt; i++)
+        {
+            if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
+                continue;
+
+            strcpy(class_list, "");
+            if (extcmdlist[i].getobj_classes)
+                strcpy(class_list, extcmdlist[i].getobj_classes);
+            else if (!strcmp(extcmdlist[i].getobj_word, "break"))
+                setbreakclasses(class_list);
+            else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
+                setapplyclasses(class_list);
+            else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
+            {
+                strcpy(class_list, (uslinging()
+                    || (uswapwep
+                        && objects[uswapwep->otyp].oc_skill == P_SLING))
+                    ? getobj_bullets
+                    : getobj_ready_objs);
+            }
+
+            if (!acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word))
+                continue;
+
+            cnt++;
+        }
+        if (!cnt)
+            continue;
+
+        char catbuf[BUFSZ];
+        strcpy(catbuf, "");
+        if (!iflags.menu_tab_sep)
+        {
+            slen = (int)strlen(headings[j]);
+            for (int k = 0; k < max(longest_len_header, longest_len + 10) - slen; k++)
+                Sprintf(eos(catbuf), "%s", " ");
+        }
+
+        char hbuf[BUFSZ];
+        Sprintf(hbuf, "%s%s", headings[j], catbuf);
+
+        any = zeroany;
+        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
+            0, 0, iflags.menu_headings,
+            hbuf, MENU_UNSELECTED);
+
+        for (i = 0; extcmdlist[i].ef_txt; i++)
+        {
+            if (!(extcmdlist[i].flags & section_flags[j]) || !extcmdlist[i].getobj_word)
+                continue;
+
+            strcpy(class_list, "");
+            if (extcmdlist[i].getobj_classes)
+                strcpy(class_list, extcmdlist[i].getobj_classes);
+            else if (!strcmp(extcmdlist[i].getobj_word, "break"))
+                setbreakclasses(class_list);
+            else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
+                setapplyclasses(class_list);
+            else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
+            {
+                strcpy(class_list, (uslinging()
+                    || (uswapwep
+                        && objects[uswapwep->otyp].oc_skill == P_SLING))
+                    ? getobj_bullets
+                    : getobj_ready_objs);
+            }
+
+            if (!acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word))
+                continue;
+
+            efp = &extcmdlist[i];
+            any = zeroany;
+            any.a_int = i + 1;
+            if (efp->ef_txt_word)
+                strcpy(cmdbuf, efp->ef_txt_word);
+            else
+                strcpy(cmdbuf, efp->ef_txt);
+
+            *cmdbuf = highc(*cmdbuf);
+
+            uchar altmask = 0x80;
+            uchar ctrlmask = 0x20 | 0x40;
+
+            char tabbuf[BUFSZ];
+            if (iflags.menu_tab_sep)
+                strcpy(tabbuf, "\t");
+            else
+            {
+                strcpy(tabbuf, "");
+                slen = (int)strlen(cmdbuf);
+                for (int k = 0; k < longest_len + 2 - slen; k++)
+                    Sprintf(eos(tabbuf), "%s", " ");
+            }
+
+            if (efp->bound_key != '\0')
+                Sprintf(shortcutbuf, "%s(%s%c)", tabbuf,
+                    (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
+                    (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
+            else
+                strcpy(shortcutbuf, "");
+
+            Sprintf(buf, "%s%s", cmdbuf, shortcutbuf);
+
+            add_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE,
+                buf, MENU_UNSELECTED);
+
+            actioncount++;
+        }
+    }
+
+    char obuf[BUFSZ];
+    Strcpy(obuf, short_oname(otmp, doname, thesimpleoname, BUFSZ));
+    Sprintf(headerbuf, "What do you want to do with %s?", obuf);
+
+    end_menu(win, headerbuf);
+
+
+    if (actioncount <= 0)
+    {
+        You("can't take any actions with the %s.", cxname(otmp));
+        destroy_nhwindow(win);
+        return 0;
+    }
+
+    if (select_menu(win, PICK_ONE, &pick_list) > 0)
+    {
+        cmd_idx = pick_list->item.a_int;
+        free((genericptr_t)pick_list);
+    }
+    destroy_nhwindow(win);
+
+    if (cmd_idx < 1)
+        return 0;
+
+    int res = 0;
+    int selected_action = cmd_idx - 1;
+    if (extcmdlist[selected_action].ef_funct && pickcnt != 0)
+    {
+        if (pickcnt <= -1 || pickcnt >= otmp->quan)
+            getobj_autoselect_obj = otmp;
+        else
+        {
+            struct obj* otmpsplit = splitobj(otmp, pickcnt);
+            getobj_autoselect_obj = otmpsplit;
+        }
+        res = (extcmdlist[selected_action].ef_funct)();
+        getobj_autoselect_obj = (struct obj*)0;
+    }
+
+    return res;
+}
 
 
 

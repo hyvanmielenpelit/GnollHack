@@ -3141,8 +3141,16 @@ doeat()
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "If you can't breathe air, how can you consume solids?");
         return 0;
     }
-    if (!(otmp = floorfood("eat", 0)))
-        return 0;
+
+    if (getobj_autoselect_obj)
+    {
+        otmp = getobj_autoselect_obj;
+    }
+    else
+    {
+        if (!(otmp = floorfood("eat", 0)))
+            return 0;
+    }
 
     if (check_capacity((char *) 0))
         return 0;
