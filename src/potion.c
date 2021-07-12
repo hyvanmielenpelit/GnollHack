@@ -1201,7 +1201,8 @@ struct obj *otmp;
         break;
     case POT_MONSTER_DETECTION:
     case SPE_DETECT_MONSTERS:
-        if (otmp->blessed)
+    case SPE_IMPROVED_MONSTER_DETECTION:
+        if (otmp->blessed || otmp->otyp == SPE_IMPROVED_MONSTER_DETECTION)
         {
             int x, y;
 
@@ -1233,7 +1234,7 @@ struct obj *otmp;
         }
         if (monster_detect(otmp, 0))
         {
-            if(otmp->otyp == SPE_DETECT_MONSTERS || objects[POT_MONSTER_DETECTION].oc_name_known)
+            if(otmp->otyp == SPE_DETECT_MONSTERS || otmp->otyp == SPE_IMPROVED_MONSTER_DETECTION || objects[POT_MONSTER_DETECTION].oc_name_known)
                 play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
             return 1; /* nothing detected */
         }

@@ -2016,6 +2016,20 @@ struct materialcomponentlist matlists[] =
         }
     },
 
+    { SPE_IMPROVED_MONSTER_DETECTION,
+        "Bat guano",
+        STRANGE_OBJECT,
+        1,
+        {
+            {
+                {CLUMP_OF_BAT_GUANO, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
+                NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
+            },
+            NO_MATCOMP,
+            NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
+        }
+    },
+
     { SPE_MAGE_ARMOR,
     "Nugget of iron ore",
     STRANGE_OBJECT,

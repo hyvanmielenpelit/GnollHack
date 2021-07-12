@@ -195,18 +195,13 @@ struct context_info
     struct tribute_info tribute;
     struct novel_tracking novel;
     uchar used_fountain_subtype[MAX_FOUNTAIN_SUBTYPES];
+    unsigned last_picked_obj_oid;
 
     boolean u_action_animation_counter_on;
     boolean m_action_animation_counter_on;
     boolean explosion_animation_counter_on;
     boolean zap_animation_counter_on[MAX_PLAYED_ZAP_ANIMATIONS];
     boolean special_effect_animation_counter_on[MAX_PLAYED_SPECIAL_EFFECTS];
-    //long general_animation_counter;
-    //long u_action_animation_counter;
-    //long m_action_animation_counter;
-    //long explosion_animation_counter;
-    //long zap_animation_counter[MAX_PLAYED_ZAP_ANIMATIONS];
-    //long special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
 
     uchar m_action_animation_x;
     uchar m_action_animation_y;

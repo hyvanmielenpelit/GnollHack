@@ -199,12 +199,12 @@ struct prop {
     long extrinsic;
 /* Armor */
 #define W_ARM  0x00000001L  /* Body armor */
-#define W_ARMC 0x00000002L /* Cloak */
-#define W_ARMH 0x00000004L /* Helmet/hat */
-#define W_ARMS 0x00000008L /* Shield */
-#define W_ARMG 0x00000010L /* Gloves/gauntlets */
-#define W_ARMF 0x00000020L /* Footwear */
-#define W_ARMU 0x00000040L /* Undershirt */
+#define W_ARMC 0x00000002L  /* Cloak */
+#define W_ARMH 0x00000004L  /* Helmet/hat */
+#define W_ARMS 0x00000008L  /* Shield */
+#define W_ARMG 0x00000010L  /* Gloves/gauntlets */
+#define W_ARMF 0x00000020L  /* Footwear */
+#define W_ARMU 0x00000040L  /* Undershirt */
 #define W_ARMO 0x00000080L  /* Robe or overcoat */
 #define W_ARMB 0x00000100L  /* Bracers */
 
@@ -212,13 +212,13 @@ struct prop {
 
 
 /* Weapons */
-#define W_WEP         0x00000200L     /* Wielded weapon in the primary hand */
-#define W_WEP2        W_ARMS            /* Wielded weapon in the secondary hand (uses the same hand as W_ARMS) */
+#define W_WEP         0x00000200L        /* Wielded weapon in the primary hand */
+#define W_WEP2        W_ARMS             /* Wielded weapon in the secondary hand (uses the same hand as W_ARMS) */
 #define W_QUIVER      0x00000800L        /* Quiver for (f)iring ammo */
 #define W_SWAPWEP     0x00001000L        /* Alternate weapon in the primary hand */
 #define W_SWAPWEP2    0x00002000L        /* Alternate weapon/shield in the secondary hand */
 
-#define W_ENVIRONMENT 0x00004000L    /* Caused by environment, e.g., suffocation due to no air */
+#define W_ENVIRONMENT 0x00004000L        /* Caused by environment, e.g., suffocation due to no air */
 #define W_STUCK       0x00008000L        /* A monster in u.ustuck had grabbed you and is e.g. constricting you */
 
 #define W_WIELDED_WEAPON (W_WEP | W_WEP2)
@@ -227,8 +227,8 @@ struct prop {
 
 /* Amulets, rings, tools, and other items */
 #define W_AMUL  0x00010000L    /* Amulet */
-#define W_RINGL 0x00020000L   /* Left ring */
-#define W_RINGR 0x00040000L   /* Right ring */
+#define W_RINGL 0x00020000L    /* Left ring */
+#define W_RINGR 0x00040000L    /* Right ring */
 #define W_RING (W_RINGL | W_RINGR)
 #define W_BLINDFOLD 0x00080000L   /* Eyewear */
 
@@ -240,8 +240,8 @@ struct prop {
 
     /* new accessories*/
 #define W_MISC  0x00800000L      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
-#define W_MISC2 0x01000000L   /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
-#define W_MISC3 0x02000000L   /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+#define W_MISC2 0x01000000L      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
+#define W_MISC3 0x02000000L      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
 #define W_MISC4 0x04000000L      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
 #define W_MISC5 0x08000000L      /* Special miscellaneous item, such as a belt, a brooch, bracelet, nose ring */
 
@@ -251,21 +251,22 @@ struct prop {
 /* Special */
 #define W_ARTIFACT_CARRIED 0x10000000L     /* Carrying artifact (not really worn) */
 /*0x20000000 used by I_SPECIAL */
-#define W_ARTIFACT_INVOKED 0x40000000L    /* Invoked artifact  (not really worn) */
-#define W_CARRIED 0x80000000L  /* Carried */
+#define W_ARTIFACT_INVOKED 0x40000000L     /* Invoked artifact  (not really worn) */
+#define W_CARRIED 0x80000000L              /* Carried */
 
     /*** Timeouts, permanent properties, and other flags ***/
     long intrinsic;
+
 /* Timed properties */
-#define TIMEOUT 0x00ffffffL     /* Up to 16 million turns */
-                                /* Permanent properties */
-#define FROM_ROLE 0x01000000L   /* Gain/lose with experience, for role */
-#define FROM_RACE 0x02000000L    /* Gain/lose with experience, for race */
+#define TIMEOUT 0x00ffffffL       /* Up to 16 million turns */
+                                  /* Permanent properties */
+#define FROM_ROLE 0x01000000L     /* Gain/lose with experience, for role */
+#define FROM_RACE 0x02000000L     /* Gain/lose with experience, for race */
 #define FROM_ACQUIRED 0x04000000L /* By corpses, prayer, thrones, etc. */
 #define INTRINSIC (FROM_ACQUIRED | FROM_RACE | FROM_ROLE)
 /* Control flags */
-#define FROM_FORM 0x10000000L  /* Polyd; conferred by monster form */
-#define I_SPECIAL 0x20000000L /* Property is controllable */
+#define FROM_FORM 0x10000000L     /* Polyd; conferred by monster form */
+#define I_SPECIAL 0x20000000L     /* Property is controllable */
 };
 
 struct prop_color {

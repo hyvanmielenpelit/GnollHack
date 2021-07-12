@@ -3878,7 +3878,7 @@ ddoinv()
 
     if (flags.inventory_obj_cmd)
     {
-        display_item_command_menu_by_invlet(invlet, pickcnt);
+        return display_item_command_menu_by_invlet(invlet, pickcnt);
     }
     else
     {
