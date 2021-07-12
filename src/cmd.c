@@ -5093,6 +5093,7 @@ struct ext_func_tab extcmdlist[] = {
             dotwoweapon, AUTOCOMPLETE | INCMDMENU },
     { M('u'), "untrap", "untrap something", dountrap, AUTOCOMPLETE },
     { '<', "up", "go up a staircase", doup },
+    { M('<'), "lastpickeditem", "use the last picked item", dolastpickeditem },
     { '\0', "vanquished", "list vanquished monsters",
             dovanquished, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('v'), "version",
@@ -8253,29 +8254,6 @@ create_context_menu(VOID_ARGS)
         return;
 
     struct obj* otmp = level.objects[u.ux][u.uy];
-    if (otmp)
-    {
-        add_context_menu(',', cmd_from_func(dopickup), 0, otmp->glyph, "Pick up", cxname(otmp), 0, NO_COLOR);
-        struct obj* otmp_here;
-        boolean eat_added = FALSE;
-        boolean loot_added = FALSE;
-        for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
-        {
-            if (!eat_added && is_edible(otmp_here))
-            {
-                add_context_menu('e', cmd_from_func(doeat), 0, otmp_here->glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
-                eat_added = TRUE;
-            }
-
-            if (!loot_added && Is_container(otmp_here))
-            {
-                add_context_menu('l', cmd_from_func(doloot), 0, otmp_here->glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
-                loot_added = TRUE;
-            }
-        }
-    }
-
-
     struct rm* lev = &levl[u.ux][u.uy];
     if (IS_ALTAR(lev->typ))
     {
@@ -8311,6 +8289,35 @@ create_context_menu(VOID_ARGS)
     if (shkp)
     {
         add_context_menu('p', cmd_from_func(dopay), 0, mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
+    }
+
+    if (otmp)
+    {
+        add_context_menu(',', cmd_from_func(dopickup), 0, otmp->glyph, "Pick up", cxname(otmp), 0, NO_COLOR);
+        struct obj* otmp_here;
+        boolean eat_added = FALSE;
+        boolean loot_added = FALSE;
+        for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
+        {
+            if (!eat_added && is_edible(otmp_here))
+            {
+                add_context_menu('e', cmd_from_func(doeat), 0, otmp_here->glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
+                eat_added = TRUE;
+            }
+
+            if (!loot_added && Is_container(otmp_here))
+            {
+                add_context_menu('l', cmd_from_func(doloot), 0, otmp_here->glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
+                loot_added = TRUE;
+            }
+        }
+    }
+
+    if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration > 0)
+    {
+        struct obj* lpobj;
+        if ((lpobj = o_on(context.last_picked_obj_oid, invent)) != 0)
+            add_context_menu(M('<'), cmd_from_func(dolastpickeditem), 0, lpobj ? lpobj->glyph : 0, "Use Picked", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
     }
 }
 

@@ -196,6 +196,7 @@ struct context_info
     struct novel_tracking novel;
     uchar used_fountain_subtype[MAX_FOUNTAIN_SUBTYPES];
     unsigned last_picked_obj_oid;
+    short last_picked_obj_show_duration;
 
     boolean u_action_animation_counter_on;
     boolean m_action_animation_counter_on;

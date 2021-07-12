@@ -401,7 +401,7 @@ namespace GnollHackClient.Pages.Game
                 else if (data.cmd_def_char >= 128)
                     str = "M" + ((char)(data.cmd_def_char - 128)).ToString();
                 else if (data.cmd_def_char < 0)
-                    str = "M" + ((char)(data.cmd_def_char + 256)).ToString();
+                    str = "M" + ((char)(data.cmd_def_char + 128)).ToString();
                 else
                     str = "C" + ((char)(data.cmd_def_char + 64)).ToString();
 
@@ -409,10 +409,10 @@ namespace GnollHackClient.Pages.Game
                 contextButton.TextColor = Color.White;
                 contextButton.FontFamily = "Immortal";
                 contextButton.CornerRadius = 10;
-                contextButton.FontSize = 20;
+                contextButton.FontSize = 18;
                 contextButton.BackgroundColor = Color.DarkBlue;
                 contextButton.HeightRequest = 50;
-                contextButton.WidthRequest = 50;
+                contextButton.WidthRequest = 75;
                 contextButton.IsVisible = true;
 
                 contextButton.Clicked += ContextButton_Clicked;

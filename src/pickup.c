@@ -1566,11 +1566,6 @@ boolean telekinesis; /* not picking it up directly by hand */
     /* Finally, pick the object up */
     obj = pick_obj(obj);
 
-    if (obj)
-        context.last_picked_obj_oid = obj->o_id;
-    else
-        context.last_picked_obj_oid = 0;
-
     if (uwep && uwep == obj)
         mrg_to_wielded = TRUE;
     nearload = near_capacity();

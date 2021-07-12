@@ -1591,6 +1591,16 @@ struct obj *obj;
     addinv_core2(obj);
     carry_obj_effects(obj); /* carrying affects the obj */
 
+    if (obj)
+    {
+        context.last_picked_obj_oid = obj->o_id;
+        context.last_picked_obj_show_duration = 2;
+    }
+    else
+    {
+        context.last_picked_obj_oid = 0;
+        context.last_picked_obj_show_duration = 0;
+    }
 
     if ((
         u.uenmax != oldmanamax
@@ -1847,6 +1857,11 @@ void
 freeinv(obj)
 register struct obj *obj;
 {
+    if (obj->o_id == context.last_picked_obj_oid)
+    {
+        context.last_picked_obj_oid = 0;
+        context.last_picked_obj_show_duration = 0;
+    }
     extract_nobj(obj, &invent);
     freeinv_core(obj);
     update_inventory();
@@ -4119,6 +4134,34 @@ long pickcnt;
 }
 
 
+int
+dolastpickeditem()
+{
+    struct obj* selobj = 0;
+    if (context.last_picked_obj_oid > 0)
+    {
+        for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+        {
+            if (otmp->o_id == context.last_picked_obj_oid)
+            {
+                selobj = otmp;
+                break;
+            }
+        }
+    }
+    if (selobj)
+    {
+        int ret = display_item_command_menu(selobj, -1);
+        if (ret)
+            context.last_picked_obj_show_duration++;
+        return ret;
+    }
+    else
+    {
+        pline("There is no last picked object.");
+        return 0;
+    }
+}
 
 /*
  * find_unpaid()
