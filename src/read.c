@@ -3513,9 +3513,17 @@ int chg; /* recharging */
     /* inflict damage and destroy the wand */
     dmg = d(n, k);
     obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
-    play_sfx_sound(SFX_EXPLOSION_MAGICAL);
-    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s explodes!", Yname2(obj), expl);
-    losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE), "exploding wand", KILLED_BY_AN);
+    if (obj->oartifact)
+    {
+        play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s vanishes in thin air!", Yname2(obj), expl);
+    }
+    else
+    {
+        play_sfx_sound(SFX_EXPLOSION_MAGICAL);
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s explodes!", Yname2(obj), expl);
+        losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE), "exploding wand", KILLED_BY_AN);
+    }
     useup(obj);
     /* obscure side-effect */
     exercise(A_STR, FALSE);
