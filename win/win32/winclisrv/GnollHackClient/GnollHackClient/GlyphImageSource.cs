@@ -105,10 +105,12 @@ namespace GnollHackClient
             var bitmap = new SKBitmap(Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.Transparent);
+            int signed_glyph = Glyph;
+            int abs_glyph = Math.Abs(signed_glyph);
 
-            if (GamePage != null && Glyph > 0 && Width > 0 && Height > 0 && Glyph < GamePage.Glyph2Tile.Length)
+            if (GamePage != null && abs_glyph > 0 && Width > 0 && Height > 0 && abs_glyph < GamePage.Glyph2Tile.Length)
             {
-                int ntile = GamePage.Glyph2Tile[Glyph];
+                int ntile = GamePage.Glyph2Tile[abs_glyph];
                 int sheet_idx = GamePage.TileSheetIdx(ntile);
                 int tile_x = GamePage.TileSheetX(ntile);
                 int tile_y = GamePage.TileSheetY(ntile);

@@ -15,7 +15,7 @@ namespace GnollHackClient
         int GetTotalTiles();
         int GetUnexploredGlyph();
         int GetNoGlyph();
-        void GetOffs(out int a, out int e, out int r);
+        void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile);
         List<AnimationDefinition> GetAnimationArray();
         List<EnlargementDefinition> GetEnlargementArray();
         List<ReplacementDefinition> GetReplacementArray();
@@ -23,6 +23,7 @@ namespace GnollHackClient
         int GetTileAnimationIndexFromGlyph(int glyph);
         bool GlyphIsExplosion(int glyph);
         bool GlyphIsZap(int glyph);
+        bool GlyphIsAnyDying(int glyph);
         int GetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, out int autodraw_ptr);
 

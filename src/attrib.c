@@ -672,7 +672,7 @@ boolean verbose;
             Sprintf(buf, "You feel Fortuna %s.", diff < 0 ? "is angry with you" : "is smiling on you");
             break;
         }
-        pline("%s", buf);
+        pline_ex(ATR_NONE, diff < 0 ? CLR_MSG_NEGATIVE : CLR_MSG_POSITIVE, "%s", buf);
     }
 
 }

@@ -143,6 +143,7 @@ namespace GnollHackCommon
          LFLAGS_M_DROPPING_PIERCER =0x00000800UL,
          LFLAGS_M_WORM_TAIL =       0x00001000UL,
          LFLAGS_M_WORM_SEEN =       0x00002000UL,
+         LFLAGS_M_KILLED =          0x00004000UL,
          LFLAGS_M_MASK =            0x0000FFFFUL,
          LFLAGS_O_PILE =            0x00010000UL,
          LFLAGS_O_IN_PIT =          0x00020000UL,
@@ -332,6 +333,45 @@ namespace GnollHackCommon
         SOUND_PLAY_GROUP_NORMAL = 0,
         SOUND_PLAY_GROUP_LONG,
         MAX_SOUND_PLAY_GROUPS
+    }
+
+
+    public enum hit_tile_types
+    {
+        HIT_GENERAL = 0,
+        HIT_POISONED,
+        HIT_DISINTEGRATED,
+        HIT_CRUSHED,
+        HIT_SPLASHED_ACID,
+        HIT_ON_FIRE,
+        HIT_FROZEN,
+        HIT_ELECTROCUTED,
+        HIT_DEATH,
+        HIT_SLEEP,
+        HIT_PETRIFIED,
+        HIT_CRITICAL,
+        HIT_FLASHED_LIGHT,
+        HIT_PARALYZED,
+        HIT_SLIMED,
+        HIT_SICK,
+        HIT_FAMINE,
+        HIT_HEAL,
+        HIT_WERE,
+        HIT_DRAIN_LEVEL,
+        HIT_SLOW,
+        HIT_HALLUCINATED,
+        MAX_HIT_TILES
+    }
+
+    public enum general_tile_types
+    {
+        GENERAL_TILE_DEATH = 0,
+        GENERAL_TILE_CHAIN_IS_UP,
+        GENERAL_TILE_CHAIN_IS_RIGHT,
+        GENERAL_TILE_CHAIN_IS_DOWN,
+        GENERAL_TILE_CHAIN_IS_LEFT,
+        GENERAL_TILE_CHAIN_MAIN,
+        MAX_GENERAL_TILES
     }
 
 

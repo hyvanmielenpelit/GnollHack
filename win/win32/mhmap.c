@@ -4974,7 +4974,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 
                     /* Draw death and hit markers */
-                    if (glyph_is_dying_monster(monster_glyph) || glyph_is_female_dying_monster(monster_glyph) || glyph_is_dying_player(monster_glyph))
+                    if (data->map[i][j].layer_flags & LFLAGS_M_KILLED) //glyph_is_dying_monster(monster_glyph) || glyph_is_female_dying_monster(monster_glyph) || glyph_is_dying_player(monster_glyph))
                     {
                         int mglyph = GENERAL_TILE_DEATH + GLYPH_GENERAL_TILE_OFF;
                         int mtile = glyph2tile[mglyph];

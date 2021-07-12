@@ -148,6 +148,11 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetReplacementOff();
         [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetGeneralTileOff();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetHitTileOff();
+
+        [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetAnimationArraySize();
         [DllImport(@"libgnollhackdroid.so")]
         public static extern AnimationDefinition LibGetAnimationArrayElement(int idx);
@@ -171,6 +176,8 @@ namespace GnollHackClient.Droid
         public static extern byte LibGlyphIsExplosion(int glyph);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern byte LibGlyphIsZap(int glyph);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern byte LibGlyphIsAnyDying(int glyph);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int maybe_get_animated_tile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, out int autodraw_ptr);
@@ -335,11 +342,13 @@ namespace GnollHackClient.Droid
             return LibGetNoGlyph();
         }
 
-        public void GetOffs(out int a, out int e, out int r)
+        public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile)
         {
             a = LibGetAnimationOff();
             e = LibGetEnlargementOff();
             r = LibGetReplacementOff();
+            gen_tile = LibGetGeneralTileOff();
+            hit_tile = LibGetHitTileOff();
         }
 
         public List<AnimationDefinition> GetAnimationArray()
@@ -402,6 +411,10 @@ namespace GnollHackClient.Droid
         public bool GlyphIsZap(int glyph)
         {
             return (LibGlyphIsZap(glyph) != 0);
+        }
+        public bool GlyphIsAnyDying(int glyph)
+        {
+            return (LibGlyphIsAnyDying(glyph) != 0);
         }
 
         public int GetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,

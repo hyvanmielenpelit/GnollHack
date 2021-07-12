@@ -81,7 +81,7 @@ struct layer_info {
 #define LFLAGS_M_DROPPING_PIERCER   0x00000800UL
 #define LFLAGS_M_WORM_TAIL          0x00001000UL
 #define LFLAGS_M_WORM_SEEN          0x00002000UL
-/* free bit */
+#define LFLAGS_M_KILLED             0x00004000UL
 /* free bit */
 #define LFLAGS_M_MASK               0x0000FFFFUL
 

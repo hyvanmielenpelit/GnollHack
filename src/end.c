@@ -1181,6 +1181,7 @@ int how;
 
     if (how < PANICKED)
     {
+        add_glyph_buffer_layer_flags(u.ux, u.uy, LFLAGS_M_KILLED);
         update_u_action(ACTION_TILE_DEATH);
         if(how != STONING && how != DISINTEGRATION)
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_DEATH);
@@ -1268,10 +1269,17 @@ int how;
         killer.name[0] = '\0';
         killer.format = KILLED_BY_AN; /* reset to 0 */
         if (how < PANICKED)
+        {
+            remove_glyph_buffer_layer_flags(u.ux, u.uy, LFLAGS_M_KILLED);
             update_u_action_revert(ACTION_TILE_NO_ACTION);
+        }
         return;
     }
-    u.action = ACTION_TILE_NO_ACTION; /* Just in case revert to normal without updating screen */
+
+    /* Just in case revert to normal without updating screen */
+    remove_glyph_buffer_layer_flags(u.ux, u.uy, LFLAGS_M_KILLED);
+    u.action = ACTION_TILE_NO_ACTION;
+
     really_done(how);
     /*NOTREACHED*/
 }

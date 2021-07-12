@@ -175,6 +175,16 @@ int LibGetReplacementOff()
     return GLYPH_ANIMATION_OFF;
 }
 
+int LibGetGeneralTileOff()
+{
+    return GLYPH_GENERAL_TILE_OFF;
+}
+
+int LibGetHitTileOff()
+{
+    return GLYPH_HIT_TILE_OFF;
+}
+
 int LibGetAnimationArraySize()
 {
     return MAX_ANIMATIONS;
@@ -230,6 +240,14 @@ int glyph;
 {
     return glyph_is_zap(glyph);
 }
+
+boolean LibGlyphIsAnyDying(int glyph)
+{
+    return glyph_is_dying_monster(glyph) || glyph_is_female_dying_monster(glyph) || glyph_is_dying_player(glyph);
+}
+
+
+
 
 int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
