@@ -51,6 +51,7 @@ namespace GnollHackClient.Pages.Game
         private int _mapCursorX;
         private int _mapCursorY;
         private int _shownMessageRows = 4;
+        public int NumDisplayedMessages { get { return _shownMessageRows; } set { _shownMessageRows = value; } }
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
         private bool _cursorIsOn;
@@ -126,18 +127,25 @@ namespace GnollHackClient.Pages.Game
             InitializeComponent();
             _mainPage = mainPage;
 
-            string style = Preferences.Get("CursorStyle", "0");
+            string style = Preferences.Get("CursorStyle", "1");
             int parseint;
             if (int.TryParse(style, out parseint))
             {
                 CursorStyle = (TTYCursorStyle)parseint;
             }
 
-            string gstyle = Preferences.Get("GraphicsStyle", "0");
+            string gstyle = Preferences.Get("GraphicsStyle", "1");
             int gparseint;
             if (int.TryParse(style, out gparseint))
             {
                 GraphicsStyle = (GHGraphicsStyle)gparseint;
+            }
+
+            string msgnum = Preferences.Get("NumDisplayedMessages", "4");
+            int mparseint;
+            if (int.TryParse(msgnum, out mparseint))
+            {
+                NumDisplayedMessages = mparseint;
             }
 
             ToggleModeButton_Clicked(null, null);

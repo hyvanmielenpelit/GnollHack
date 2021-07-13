@@ -28,12 +28,32 @@ namespace GnollHackClient.Pages.Game
 
             _gamePage.GraphicsStyle = (GHGraphicsStyle)GraphicsPicker.SelectedIndex;
             Preferences.Set("GraphicsStyle", ((int)_gamePage.GraphicsStyle).ToString());
+
+            int res = 4, tryres = 0;
+            string str = MessageLengthPicker.SelectedItem.ToString();
+            if (int.TryParse(str, out tryres))
+                res = tryres;
+
+            if (res > 0)
+            {
+                _gamePage.NumDisplayedMessages = res;
+                Preferences.Set("NumDisplayedMessages", res.ToString());
+            }
         }
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             CursorPicker.SelectedIndex = (int)_gamePage.CursorStyle;
             GraphicsPicker.SelectedIndex = (int)_gamePage.GraphicsStyle;
+            for(int i = 0; i < MessageLengthPicker.Items.Count; i++)
+            {
+                int tryint = 0;
+                if (int.TryParse(MessageLengthPicker.Items[i].ToString(), out tryint) && tryint > 0 && tryint == _gamePage.NumDisplayedMessages)
+                {
+                    MessageLengthPicker.SelectedIndex = i;
+                    break;
+                }
+            }
         }
 
     }

@@ -11,6 +11,8 @@
             <Grid HorizontalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -46,6 +48,34 @@
                         <x:Array Type="{x:Type x:String}">
                             <x:String>ASCII</x:String>
                             <x:String>Tiles</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+                <Label Text="Messages" Grid.Column="0" Grid.Row="2"
+                       FontFamily="Diablo"
+                       VerticalOptions="Center" 
+                       HorizontalOptions="Start" />
+                <Picker x:Name="MessageLengthPicker"
+                        Title="Select the number of messages" Grid.Column="1" Grid.Row="2"
+                        FontFamily="Underwood" 
+                        VerticalOptions="Center"
+                        HorizontalOptions="StartAndExpand" >
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>1</x:String>
+                            <x:String>2</x:String>
+                            <x:String>3</x:String>
+                            <x:String>4</x:String>
+                            <x:String>5</x:String>
+                            <x:String>6</x:String>
+                            <x:String>7</x:String>
+                            <x:String>8</x:String>
+                            <x:String>9</x:String>
+                            <x:String>10</x:String>
+                            <x:String>15</x:String>
+                            <x:String>20</x:String>
+                            <x:String>30</x:String>
+                            <x:String>50</x:String>
                         </x:Array>
                     </Picker.ItemsSource>
                 </Picker>

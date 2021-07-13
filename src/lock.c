@@ -1074,10 +1074,10 @@ int x, y;
             if(!unlocked && context.click_kick_query) /* Click */
             {
                 char ans = 'n';
+                char qbuf[BUFSIZ];
                 context.click_kick_query = 0;
 
-                char qbuf[BUFSIZ];
-                Sprintf(qbuf, "Do you want to switch to kicking?");
+                Sprintf(qbuf, "Do you want to start kicking this door?");
                 ans = ynq(qbuf);
 
                 if (ans == 'y')
