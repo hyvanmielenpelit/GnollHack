@@ -38,7 +38,6 @@ STATIC_DCL void FDECL(eataccessory, (struct obj *));
 STATIC_DCL const char *FDECL(foodword, (struct obj *));
 STATIC_DCL int FDECL(tin_variety, (struct obj *, BOOLEAN_P));
 STATIC_DCL boolean FDECL(maybe_cannibal, (int, BOOLEAN_P));
-STATIC_DCL void FDECL(display_nutrition_floating_text, (int));
 
 char msgbuf[BUFSZ];
 
@@ -107,15 +106,18 @@ register struct obj *obj;
     return (boolean)is_obj_normally_edible(obj);
 }
 
-STATIC_OVL void
-display_nutrition_floating_text(nutr)
-int nutr;
+void
+display_nutrition_floating_text(x, y, nutr)
+int x, y, nutr;
 {
+    if (!isok(x, y))
+        return;
+
     if (nutr > 0)
     {
         char ftbuf[BUFSZ];
         Sprintf(ftbuf, "+%d nutrition", nutr);
-        display_floating_text(u.ux, u.uy, ftbuf, FLOATING_TEXT_NUTRITION_GAIN, ATR_NONE, NO_COLOR, 0UL);
+        display_floating_text(x, y, ftbuf, FLOATING_TEXT_NUTRITION_GAIN, ATR_NONE, NO_COLOR, 0UL);
     }
 }
 
@@ -491,7 +493,7 @@ boolean message;
     else
         food_after_effect(piece);
 
-    display_nutrition_floating_text(context.victual.total_nutrition);
+    display_nutrition_floating_text(u.ux, u.uy, context.victual.total_nutrition);
 
     if (carried(piece))
     {
@@ -1758,7 +1760,7 @@ const char *mesg;
         else
         {
             lesshungry(tintxts[r].nut);
-            display_nutrition_floating_text(tintxts[r].nut);
+            display_nutrition_floating_text(u.ux, u.uy, tintxts[r].nut);
         }
 
         if (tintxts[r].greasy) {
@@ -1813,7 +1815,7 @@ const char *mesg;
             ? (400 + rnd(200))   /* uncursed */
             : (200 + rnd(400)); /* cursed */
         lesshungry(nutr);
-        display_nutrition_floating_text(nutr);
+        display_nutrition_floating_text(u.ux, u.uy, nutr);
     }
 
 use_up_tin:
@@ -2638,7 +2640,7 @@ eatspecial()
     play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
     set_occupation(eatfood, "eating non-food", 0, 0, 0, 0);
     lesshungry(context.victual.nmod);
-    display_nutrition_floating_text(context.victual.nmod);
+    display_nutrition_floating_text(u.ux, u.uy, context.victual.nmod);
     occupation = 0;
     context.victual.piece = (struct obj *) 0;
     context.victual.o_id = 0;

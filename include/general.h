@@ -17,7 +17,7 @@
 #define TALK_COUNT 10  
 #define GNH_DEF_TALK_COUNT 6
 #define MAX_LAST_ITEM_SHOW_DURATION 99  
-#define DEF_LAST_ITEM_SHOW_DURATION 1  
+#define DEF_LAST_ITEM_SHOW_DURATION 3  
 #define NATTK 8             /* Maximum number of attacks per monster */
 #define MAXNASTIES 10    /* more than this can be created */
 #define WARNCOUNT 7         /* number of different warning levels */

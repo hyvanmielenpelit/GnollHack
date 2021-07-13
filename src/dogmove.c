@@ -308,6 +308,8 @@ boolean devour;
     if (mtmp->mtame > 0 && mtmp->mtame < 20)
         mtmp->mtame++;
 
+    display_nutrition_floating_text(mtmp->mx, mtmp->my, nutrit);
+
     if (x != mtmp->mx || y != mtmp->my)
     { /* moved & ate on same turn */
         newsym(x, y);

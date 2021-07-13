@@ -955,6 +955,7 @@ E int FDECL(tin_variety_txt, (char *, int *));
 E void FDECL(tin_details, (struct obj *, int, char *));
 E boolean FDECL(Popeye, (int));
 E unsigned FDECL(obj_nutrition, (struct obj*));
+E void FDECL(display_nutrition_floating_text, (int, int, int));
 
 
 /* ### encounter.c ### */
