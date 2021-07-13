@@ -38,6 +38,7 @@ STATIC_DCL void FDECL(eataccessory, (struct obj *));
 STATIC_DCL const char *FDECL(foodword, (struct obj *));
 STATIC_DCL int FDECL(tin_variety, (struct obj *, BOOLEAN_P));
 STATIC_DCL boolean FDECL(maybe_cannibal, (int, BOOLEAN_P));
+STATIC_DCL void FDECL(display_nutrition_floating_text, (int));
 
 char msgbuf[BUFSZ];
 
@@ -104,6 +105,18 @@ register struct obj *obj;
 
     /* return (boolean) !!index(comestibles, obj->oclass); */
     return (boolean)is_obj_normally_edible(obj);
+}
+
+STATIC_OVL void
+display_nutrition_floating_text(nutr)
+int nutr;
+{
+    if (nutr > 0)
+    {
+        char ftbuf[BUFSZ];
+        Sprintf(ftbuf, "+%d nutrition", nutr);
+        display_floating_text(u.ux, u.uy, ftbuf, FLOATING_TEXT_NUTRITION_GAIN, ATR_NONE, NO_COLOR, 0UL);
+    }
 }
 
 /* used for hero init, life saving (if choking), and prayer results of fix
@@ -478,6 +491,8 @@ boolean message;
     else
         food_after_effect(piece);
 
+    display_nutrition_floating_text(context.victual.total_nutrition);
+
     if (carried(piece))
     {
         if (!(piece->speflags & SPEFLAGS_ADDED_TO_YOUR_BILL) && piece->unpaid && costly_spot(u.ux, u.uy))
@@ -506,6 +521,8 @@ boolean message;
     context.victual.piece = (struct obj *) 0;
     context.victual.o_id = 0;
     context.victual.fullwarn = context.victual.eating = context.victual.doreset = FALSE;
+    context.victual.total_nutrition = 0;
+
 }
 
 void
@@ -1739,7 +1756,10 @@ const char *mesg;
         if (tintxts[r].nut < 0) /* rotten */
             make_vomiting((long) rn1(15, 10), FALSE);
         else
+        {
             lesshungry(tintxts[r].nut);
+            display_nutrition_floating_text(tintxts[r].nut);
+        }
 
         if (tintxts[r].greasy) {
             /* Assume !Glib, because you can't open tins when Glib. */
@@ -1787,11 +1807,13 @@ const char *mesg;
 
         tin = costly_tin(COST_OPEN);
 
-        lesshungry(tin->blessed
-                      ? 600                   /* blessed */
-                      : !tin->cursed
-                         ? (400 + rnd(200))   /* uncursed */
-                         : (200 + rnd(400))); /* cursed */
+        int nutr = tin->blessed
+            ? 600                   /* blessed */
+            : !tin->cursed
+            ? (400 + rnd(200))   /* uncursed */
+            : (200 + rnd(400)); /* cursed */
+        lesshungry(nutr);
+        display_nutrition_floating_text(nutr);
     }
 
 use_up_tin:
@@ -2208,6 +2230,7 @@ boolean resume;
     debugpline1("oeaten = %d", otmp->oeaten);
     context.victual.fullwarn = context.victual.doreset = FALSE;
     context.victual.eating = TRUE;
+    context.victual.total_nutrition = otmp->oeaten;
 
     if (otmp->otyp == CORPSE || otmp->globby) {
         corpse_pre_effect(context.victual.piece->corpsenm);
@@ -2615,10 +2638,12 @@ eatspecial()
     play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
     set_occupation(eatfood, "eating non-food", 0, 0, 0, 0);
     lesshungry(context.victual.nmod);
+    display_nutrition_floating_text(context.victual.nmod);
     occupation = 0;
     context.victual.piece = (struct obj *) 0;
     context.victual.o_id = 0;
     context.victual.eating = 0;
+    context.victual.total_nutrition = 0;
     if (otmp->oclass == COIN_CLASS) {
         if (carried(otmp))
             useupall(otmp);
@@ -3291,6 +3316,7 @@ doeat()
 #endif
         context.victual.nmod = basenutrit;
         context.victual.eating = TRUE; /* needed for lesshungry() */
+        context.victual.total_nutrition = basenutrit;
 
         material = objects[otmp->otyp].oc_material;
         if (material == MAT_LEATHER || material == MAT_BONE

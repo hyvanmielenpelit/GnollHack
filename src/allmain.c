@@ -504,6 +504,8 @@ boolean resuming;
                 ckmailstatus();
 #endif
                 rhack((char*)0);
+                reduce_last_item_show_duration();
+
             }
         }
 
@@ -531,9 +533,20 @@ boolean resuming;
     }
 }
 
+void
+reduce_last_item_show_duration(VOID_ARGS)
+{
+    if (context.last_picked_obj_show_duration_left > 0)
+    {
+        context.last_picked_obj_show_duration_left--;
+        if (!context.last_picked_obj_show_duration_left)
+            context.last_picked_obj_oid = 0;
+    }
+}
+
 STATIC_OVL
 void
-create_monster_or_encounter()
+create_monster_or_encounter(VOID_ARGS)
 {
 
     /* Special wraith appearance for the Ruling Ring of Yendor */

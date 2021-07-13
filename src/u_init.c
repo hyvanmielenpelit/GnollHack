@@ -1311,7 +1311,7 @@ u_init()
 
     /* clear out last picked item */
     context.last_picked_obj_oid = 0;
-    context.last_picked_obj_show_duration = 0;
+    context.last_picked_obj_show_duration_left = 0;
 
     /* make sure you can carry all you have - especially for Tourists */
     while (inv_weight() > 0) 

@@ -78,6 +78,7 @@ struct victual_info {
     int usedtime,          /* turns spent eating */
         reqtime;           /* turns required to eat */
     int nmod;              /* coded nutrition per turn */
+    int total_nutrition;   /* total nutrition of the piece when start_eating was called */
     Bitfield(canchoke, 1); /* was satiated at beginning */
 
     /* start_eating() initializes these */
@@ -196,7 +197,7 @@ struct context_info
     struct novel_tracking novel;
     uchar used_fountain_subtype[MAX_FOUNTAIN_SUBTYPES];
     unsigned last_picked_obj_oid;
-    short last_picked_obj_show_duration;
+    short last_picked_obj_show_duration_left;
     boolean click_kick_query;
 
     boolean u_action_animation_counter_on;

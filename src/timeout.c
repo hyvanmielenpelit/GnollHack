@@ -842,13 +842,6 @@ nh_timeout()
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stops galloping.", Monnam(u.usteed));
     }
 
-    if (context.last_picked_obj_show_duration)
-    {
-        context.last_picked_obj_show_duration--;
-        if (!context.last_picked_obj_show_duration)
-            context.last_picked_obj_oid = 0;
-    }
-
     //Reduce spell cooldown timers
     for (int sp_no = 0; sp_no < MAXSPELL; ++sp_no)
         if (spl_book[sp_no].sp_id == NO_SPELL)

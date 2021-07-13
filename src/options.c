@@ -368,6 +368,8 @@ static struct Comp_Opt {
     }, /*WC2*/
     { "horsename", "the name of your (first) horse (e.g., horsename:Silver)",
       PL_PSIZ, DISP_IN_GAME },
+    { "last_item_show_duration", "duration for showing last item in context menu", 3,
+      SET_IN_GAME },
     { "luggagename", "the name of your (first) luggage (e.g., luggagename:Albert)",
       PL_PSIZ, DISP_IN_GAME },
     { "map_mode", "map display mode under Windows", 20, DISP_IN_GAME }, /*WC*/
@@ -4157,6 +4159,35 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    fullname = "last_item_show_duration";
+    if (match_optname(opts, fullname, 23, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = GNH_DEF_TALK_COUNT;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 1 || itmp > MAX_LAST_ITEM_SHOW_DURATION)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 1, MAX_LAST_ITEM_SHOW_DURATION);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.talk_effect_length = itmp;
+        }
+        return retval;
+    }
+
     /* This is in fact milliseconds in delay_output, which slows down the game, not just any animation */
     fullname = "animation_interval";
     if (match_optname(opts, fullname, 17, TRUE))
@@ -6543,6 +6574,11 @@ char *buf;
             Sprintf(buf, "%d", flags.talk_effect_length);
         else
             Sprintf(buf, "%s, %d", defopt, GNH_DEF_TALK_COUNT);
+    } else if (!strcmp(optname, "last_item_show_duration")) {
+        if (flags.last_item_show_duration)
+            Sprintf(buf, "%d", flags.last_item_show_duration);
+        else
+            Sprintf(buf, "%s, %d", defopt, DEF_LAST_ITEM_SHOW_DURATION);
     } else if (!strcmp(optname, "race")) {
         Sprintf(buf, "%s", rolestring(flags.initrace, races, noun));
     } else if (!strcmp(optname, "roguesymset")) {
@@ -6631,6 +6667,10 @@ char *buf;
     else if (!strcmp(optname, "talk_effect_length"))
     {
         Sprintf(buf, "%d", flags.talk_effect_length);
+    }
+    else if (!strcmp(optname, "last_item_show_duration"))
+    {
+        Sprintf(buf, "%d", flags.last_item_show_duration);
     }
     else if (!strcmp(optname, "sound_volume_ambient"))
     {

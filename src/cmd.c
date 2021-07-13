@@ -8295,7 +8295,7 @@ create_context_menu(VOID_ARGS)
         }
     }
 
-    if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration > 0)
+    if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)
     {
         struct obj* lpobj;
         if ((lpobj = o_on(context.last_picked_obj_oid, invent)) != 0)

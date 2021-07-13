@@ -88,6 +88,7 @@ struct flag {
     int preferred_screen_scale; /* user set preference for screen scale MIN_PREF_SCREEN_SCALE...MAX_PREF_SCREEN_SCALE */
     int shield_effect_length;
     int talk_effect_length;
+    int last_item_show_duration;
     boolean showscore;       /* show score */
     boolean silent;          /* whether the bell rings or not */
     /* The story so far:

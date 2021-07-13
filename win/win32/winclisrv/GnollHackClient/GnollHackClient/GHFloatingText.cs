@@ -18,7 +18,7 @@ namespace GnollHackClient
 
         public SKPoint GetInitialPoint()
         {
-            return new SKPoint(0.5f, 0.5f);
+            return new SKPoint(0.5f, 0.25f);
         }
         public SKPoint GetVelocity(long counter_value)
         {
@@ -101,6 +101,10 @@ namespace GnollHackClient
                     return SKColors.Blue;
                 case 5:
                     return SKColors.Magenta;
+                case 6:
+                    return SKColors.LightGreen;
+                case 7:
+                    return SKColors.LightPink;
                 default:
                     break;
             }

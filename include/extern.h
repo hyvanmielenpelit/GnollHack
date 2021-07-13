@@ -312,6 +312,7 @@ E char FDECL(txt2key, (char *));
 E void FDECL(parseautocomplete, (char *, BOOLEAN_P));
 E void FDECL(reset_commands, (BOOLEAN_P));
 E void FDECL(rhack, (char *));
+E void NDECL(reduce_last_item_show_duration);
 E int NDECL(doextlist);
 E int NDECL(extcmd_via_menu);
 E int NDECL(enter_explore_mode);

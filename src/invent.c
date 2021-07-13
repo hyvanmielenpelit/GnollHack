@@ -1610,13 +1610,14 @@ struct obj *obj;
         else
         {
             context.last_picked_obj_oid = obj->o_id;
-            context.last_picked_obj_show_duration = 2;
+            /* +1 because picking or any other action through which the item was acquired reduces the counter by one immediately */
+            context.last_picked_obj_show_duration_left = 1 + (flags.last_item_show_duration > 0 && flags.last_item_show_duration <= MAX_LAST_ITEM_SHOW_DURATION ? flags.last_item_show_duration : DEF_LAST_ITEM_SHOW_DURATION);
         }
     }
     else
     {
         context.last_picked_obj_oid = 0;
-        context.last_picked_obj_show_duration = 0;
+        context.last_picked_obj_show_duration_left = 0;
     }
 
     if ((
@@ -1877,7 +1878,7 @@ register struct obj *obj;
     if (obj->o_id == context.last_picked_obj_oid)
     {
         context.last_picked_obj_oid = 0;
-        context.last_picked_obj_show_duration = 0;
+        context.last_picked_obj_show_duration_left = 0;
     }
     extract_nobj(obj, &invent);
     freeinv_core(obj);
@@ -4169,8 +4170,8 @@ dolastpickeditem()
     if (selobj)
     {
         int ret = display_item_command_menu(selobj, -1);
-        if (ret)
-            context.last_picked_obj_show_duration++;
+//        if (ret)
+            context.last_picked_obj_show_duration_left++;
         return ret;
     }
     else
