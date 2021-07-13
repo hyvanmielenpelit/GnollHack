@@ -905,6 +905,7 @@ struct rm {
     Bitfield(candig, 1); /* Exception to Can_dig_down; was a trapdoor */
     Bitfield(use_special_tileset, 1); /* Use tileset specified below instead standard one */
     Bitfield(special_tileset, 5); /* Specific tileset applicable to this location */
+
     Bitfield(click_kick_ok, 1); /* No query when clicking to kick  */
 };
 

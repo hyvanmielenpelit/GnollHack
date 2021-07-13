@@ -197,6 +197,7 @@ struct context_info
     uchar used_fountain_subtype[MAX_FOUNTAIN_SUBTYPES];
     unsigned last_picked_obj_oid;
     short last_picked_obj_show_duration;
+    boolean click_kick_query;
 
     boolean u_action_animation_counter_on;
     boolean m_action_animation_counter_on;

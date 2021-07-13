@@ -1052,6 +1052,7 @@ int x, y;
 #endif
         if (locked)
         {
+            boolean unlocked = FALSE;
             play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_TRY_LOCKED);
             update_u_action_revert(ACTION_TILE_NO_ACTION);
             if (flags.autounlock)
@@ -1063,12 +1064,28 @@ int x, y;
                     {
                         int pick_res = pick_lock_core(carried_key, cc.x, cc.y, TRUE);
                         if (pick_res == PICKLOCK_DID_SOMETHING)
-                            res = 2;
+                            res = 2, unlocked = TRUE;
                         else if(pick_res == PICKLOCK_LEARNED_SOMETHING)
                             res = 1;
                     }
                 }
             }
+
+            if(!unlocked && context.click_kick_query) /* Click */
+            {
+                char ans = 'n';
+                context.click_kick_query = 0;
+
+                char qbuf[BUFSIZ];
+                Sprintf(qbuf, "Do you want to switch to kicking?");
+                ans = ynq(qbuf);
+
+                if (ans == 'y')
+                {
+                    door->click_kick_ok = 1;
+                }
+            }
+
         }
         return res;
     }

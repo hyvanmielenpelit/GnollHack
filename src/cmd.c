@@ -7469,33 +7469,15 @@ int x, y, mod;
                 }
                 if (door->doormask & D_LOCKED)
                 {
-                    if(has_fitting_key)
-                        cmd[0] = cmd_from_func(doopen);
-                    else
+                    if (has_fitting_key || !door->click_kick_ok)
                     {
-                        char ans = 'n';
+                        if (!door->click_kick_ok)
+                            context.click_kick_query = 1;
 
-                        if (door->click_kick_ok)
-                            ans = 'y';
-                        else
-                        {
-                            char qbuf[BUFSIZ];
-                            Sprintf(qbuf, "The %s is locked. Do you want to kick it?", get_door_name_at_ptr(door));
-                            ans = ynq(qbuf);
-                        }
-                        if (ans == 'y')
-                        {
-                            door->click_kick_ok = 1;
-                            cmd[0] = cmd_from_func(dokick);
-                        }
-                        else if (ans == 'n')
-                            cmd[0] = cmd_from_func(doopen);
-                        else
-                            cmd[0] = '\0';
-
-                        if (cmd[0] == '\0')
-                            cmd[1] = '\0';
+                        cmd[0] = cmd_from_func(doopen);
                     }
+                    else
+                        cmd[0] = cmd_from_func(dokick);
                     return cmd;
                 }
                 if (door->doormask & D_CLOSED)
