@@ -5093,7 +5093,7 @@ struct ext_func_tab extcmdlist[] = {
             dotwoweapon, AUTOCOMPLETE | INCMDMENU },
     { M('u'), "untrap", "untrap something", dountrap, AUTOCOMPLETE },
     { '<', "up", "go up a staircase", doup },
-    { M('<'), "lastpickeditem", "use the last picked item", dolastpickeditem },
+    { M('<'), "lastpickeditem", "use the last picked item", dolastpickeditem, IFBURIED },
     { '\0', "vanquished", "list vanquished monsters",
             dovanquished, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('v'), "version",

@@ -2797,7 +2797,7 @@ reset_remarm()
     context.takeoff.disrobing[0] = '\0';
 }
 
-/* the 'A' command -- remove multiple worn items */
+/* the M('t') command -- remove multiple worn items */
 int
 doddoremarm()
 {
