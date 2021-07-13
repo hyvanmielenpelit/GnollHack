@@ -1509,9 +1509,13 @@ struct obj *
 addinv(obj)
 struct obj *obj;
 {
+    if (!obj)
+        return obj;
+
     struct obj *otmp, *prev;
     int saved_otyp = (int) obj->otyp; /* for panic */
     boolean obj_was_thrown;
+    long quan = obj->quan;
 
     int oldmanamax = u.uenmax;
     int oldhpmax = u.uhpmax;
@@ -1593,8 +1597,21 @@ struct obj *obj;
 
     if (obj)
     {
-        context.last_picked_obj_oid = obj->o_id;
-        context.last_picked_obj_show_duration = 2;
+        if (obj->oclass == COIN_CLASS)
+        {
+            if (quan > 0)
+            {
+                char cbuf[BUFSZ];
+                Sprintf(cbuf, "+%ld %s", quan, "gold" /*currency(quan)*/);
+                display_floating_text(u.ux, u.uy, cbuf, FLOATING_TEXT_GOLD_ACQUIRED, ATR_NONE, NO_COLOR, 0UL);
+
+            }
+        }
+        else
+        {
+            context.last_picked_obj_oid = obj->o_id;
+            context.last_picked_obj_show_duration = 2;
+        }
     }
     else
     {

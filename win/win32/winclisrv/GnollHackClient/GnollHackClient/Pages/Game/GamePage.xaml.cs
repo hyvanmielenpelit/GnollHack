@@ -333,7 +333,11 @@ namespace GnollHackClient.Pages.Game
         {
             _contextMenuData.Add(data);
             string icon_string = "";
-            switch((char)data.cmd_def_char)
+            int LastPicked = GHUtils.Meta('<');
+            if (data.cmd_def_char < 0)
+                LastPicked -= 256;
+
+            switch ((char)data.cmd_def_char)
             {
                 case 'e':
                     icon_string = "GnollHackClient.Assets.Icons.eat.png";
@@ -347,9 +351,13 @@ namespace GnollHackClient.Pages.Game
                 case ',':
                     icon_string = "GnollHackClient.Assets.Icons.pickup.png";
                     break;
+                default:
+                    if (data.cmd_def_char == LastPicked)
+                        icon_string = "GnollHackClient.Assets.Icons.inventory.png";
+                    break;
             }
 
-            if(icon_string != "")
+            if (icon_string != "")
             {
                 Image img = new Image();
                 img.Source = ImageSource.FromResource(icon_string);

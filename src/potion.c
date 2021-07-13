@@ -1759,6 +1759,7 @@ struct obj *otmp;
 
         special_effect_wait_until_action(0);
 
+        int mana_before = u.uen;
         u.uen += num;
 
         updatemaxen();
@@ -1768,6 +1769,16 @@ struct obj *otmp;
             u.uen = u.uenmax;
         else if (u.uen <= 0)
             u.uen = 0;
+
+        int mana_after = u.uen;
+        int mana_gain = mana_after - mana_before;
+        if (mana_gain > 0)
+        {
+            char fbuf[BUFSZ];
+            Sprintf(fbuf, "+%d", mana_gain);
+            display_floating_text(u.ux, u.uy, fbuf, FLOATING_TEXT_MANA_GAIN, ATR_NONE, NO_COLOR, 0UL);
+        }
+
         context.botl = 1;
         exercise(A_WIS, TRUE);
         special_effect_wait_until_end(0);

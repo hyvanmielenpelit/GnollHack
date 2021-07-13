@@ -95,6 +95,12 @@ namespace GnollHackClient
                     return SKColors.Green;
                 case 2:
                     return SKColors.Red;
+                case 3:
+                    return SKColors.Gold;
+                case 4:
+                    return SKColors.Blue;
+                case 5:
+                    return SKColors.Magenta;
                 default:
                     break;
             }

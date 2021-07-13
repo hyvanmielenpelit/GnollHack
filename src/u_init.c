@@ -1309,6 +1309,9 @@ u_init()
 
     u.umoney0 += hidden_gold(); /* in case sack has gold in it */
 
+    /* clear out last picked item */
+    context.last_picked_obj_oid = 0;
+    context.last_picked_obj_show_duration = 0;
 
     /* make sure you can carry all you have - especially for Tourists */
     while (inv_weight() > 0) 

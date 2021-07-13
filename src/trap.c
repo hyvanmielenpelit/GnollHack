@@ -4997,6 +4997,7 @@ void
 drain_en(n)
 int n;
 {
+    int mana_before = u.uen;
     play_sfx_sound(SFX_DRAIN_ENERGY);
     if (!u.uenmax)
     {
@@ -5028,6 +5029,16 @@ int n;
         }
         context.botl = 1;
     }
+
+    int mana_after = u.uen;
+    int mana_loss = mana_before - mana_after;
+    if (mana_loss > 0)
+    {
+        char fbuf[BUFSZ];
+        Sprintf(fbuf, "%d", -mana_loss);
+        display_floating_text(u.ux, u.uy, fbuf, FLOATING_TEXT_MANA_LOSS, ATR_NONE, NO_COLOR, 0UL);
+    }
+
 }
 
 /* disarm a trap */

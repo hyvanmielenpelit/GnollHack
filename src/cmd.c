@@ -8299,7 +8299,7 @@ create_context_menu(VOID_ARGS)
     {
         struct obj* lpobj;
         if ((lpobj = o_on(context.last_picked_obj_oid, invent)) != 0)
-            add_context_menu(M('<'), cmd_from_func(dolastpickeditem), 0, lpobj ? lpobj->glyph : 0, "Use Picked", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
+            add_context_menu(M('<'), cmd_from_func(dolastpickeditem), 0, lpobj ? lpobj->glyph : 0, "Last Item", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
     }
 }
 
